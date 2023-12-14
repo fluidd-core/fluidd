@@ -120,8 +120,6 @@
         <v-col>
           <gcode-preview
             ref="preview"
-            width="100%"
-            height="100%"
             :layer="currentLayer"
             :progress="moveProgress"
             :disabled="!fileLoaded"
@@ -149,6 +147,7 @@ import GcodePreview from './GcodePreview.vue'
 import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog.vue'
 import type { AppFile } from '@/store/files/types'
 import type { MinMax } from '@/store/gcodePreview/types'
+import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
 
 @Component({
   components: {
@@ -396,7 +395,10 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   handleDragOver (event: DragEvent) {
-    if (event.dataTransfer?.types.includes('x-fluidd-jobs')) {
+    if (
+      event.dataTransfer &&
+      hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')
+    ) {
       event.preventDefault()
 
       event.dataTransfer.dropEffect = 'link'
@@ -412,12 +414,14 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   handleDrop (event: DragEvent) {
     this.overlay = false
 
-    if (event.dataTransfer?.types.includes('x-fluidd-jobs')) {
-      const data = event.dataTransfer.getData('x-fluidd-jobs')
-      const files: { path: string, jobs: string[] } = JSON.parse(data)
+    if (
+      event.dataTransfer &&
+      hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')
+    ) {
+      const files = getFileDataTransferDataFromDataTransfer(event.dataTransfer, 'jobs')
       const path = files.path ? `gcodes/${files.path}` : 'gcodes'
 
-      const file = this.$store.getters['files/getFile'](path, files.jobs[0]) as AppFile | undefined
+      const file = this.$store.getters['files/getFile'](path, files.items[0]) as AppFile | undefined
 
       if (file) {
         this.loadFile(file)

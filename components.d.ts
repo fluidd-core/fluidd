@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    ActionCommandPromptDialog: typeof import('./src/components/common/ActionCommandPromptDialog.vue')['default']
     AddInstanceDialog: typeof import('./src/components/common/AddInstanceDialog.vue')['default']
     AppAnnouncementDismissMenu: typeof import('./src/components/layout/AppAnnouncementDismissMenu.vue')['default']
     AppBar: typeof import('./src/components/layout/AppBar.vue')['default']

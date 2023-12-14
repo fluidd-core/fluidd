@@ -74,6 +74,30 @@
       }
     },
     {
+      "name": "Peopoly",
+      "color": "#007CC2",
+      "isDark": true,
+      "logo": {
+        "src": "logo_peopoly.svg"
+      }
+    },
+    {
+      "name": "Prusa",
+      "color": "#E05D2D",
+      "isDark": false,
+      "logo": {
+        "src": "logo_prusa.svg"
+      }
+    },
+    {
+      "name": "Qidi Tech",
+      "color": "#5B7AEA",
+      "isDark": true,
+      "logo": {
+        "src": "logo_qidi.svg"
+      }
+    },
+    {
       "name": "RatRig",
       "color": "#76FB00",
       "isDark": true,
@@ -81,6 +105,14 @@
         "src": "logo_ratrig.svg",
         "dark": "#232323",
         "light": "#ffffff"
+      }
+    },
+    {
+      "name": "Siboor",
+      "color": "#32E0DF",
+      "isDark": true,
+      "logo": {
+        "src": "logo_siboor.svg"
       }
     },
     {

@@ -1,9 +1,9 @@
 /// <reference lib="WebWorker" />
 
-import { cleanupOutdatedCaches, createHandlerBoundToURL, precacheAndRoute, PrecacheFallbackPlugin } from 'workbox-precaching'
+import { cleanupOutdatedCaches, createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching'
 import { NavigationRoute, registerRoute } from 'workbox-routing'
 import { StaleWhileRevalidate } from 'workbox-strategies'
-import escapeRegExp from '@/util/escape-regexp'
+import { warmStrategyCache } from 'workbox-recipes'
 
 declare let self: ServiceWorkerGlobalScope
 
@@ -13,42 +13,42 @@ self.addEventListener('message', (event) => {
   }
 })
 
-registerRoute(
-  `${import.meta.env.BASE_URL}config.json`,
-  new StaleWhileRevalidate({
-    cacheName: 'config',
-    fetchOptions: {
-      cache: 'no-cache'
-    },
-    plugins: [
-      new PrecacheFallbackPlugin({
-        fallbackURL: `${import.meta.env.BASE_URL}config.json`
-      })
-    ]
-  }),
-  'GET'
-)
-
 precacheAndRoute(self.__WB_MANIFEST)
 
 cleanupOutdatedCaches()
 
-const escapedBaseUrl = escapeRegExp(import.meta.env.BASE_URL)
+const configPathname = new URL('config.json', self.location.href).pathname
+
+const configStrategy = new StaleWhileRevalidate({
+  cacheName: 'config',
+  fetchOptions: {
+    cache: 'no-cache'
+  }
+})
+
+warmStrategyCache({
+  urls: [
+    configPathname
+  ],
+  strategy: configStrategy
+})
+
+registerRoute(configPathname, configStrategy, 'GET')
 
 const denylist = import.meta.env.DEV
   ? undefined
   : [
-      'websocket',
-      '(printer|api|access|machine|server)/',
-      'webcam[2-4]?/'
-    ].map(item => new RegExp(`^${escapedBaseUrl}${item}`))
+      /\/websocket/,
+      /\/(printer|api|access|machine|server)\//,
+      /\/webcam[2-4]?\//
+    ]
 
 const allowlist = import.meta.env.DEV
   ? [/^\/$/]
   : undefined
 
 registerRoute(
-  new NavigationRoute(createHandlerBoundToURL(`${import.meta.env.BASE_URL}index.html`), {
+  new NavigationRoute(createHandlerBoundToURL('index.html'), {
     allowlist,
     denylist
   })

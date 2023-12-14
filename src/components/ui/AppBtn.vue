@@ -13,10 +13,6 @@ import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class AppBtn extends Vue {
-  get theme () {
-    return this.$store.getters['config/getTheme']
-  }
-
   get classes () {
     // Only apply the text change if this isn't;
     // - an icon, fab, outlined or text button and
@@ -34,7 +30,9 @@ export default class AppBtn extends Vue {
   }
 
   get colorIsDark () {
-    return this.$filters.isColorDark(this.theme.currentTheme[this.$attrs.color])
+    const color = this.$vuetify.theme.currentTheme[this.$attrs.color]?.toString() ?? ''
+
+    return this.$filters.isColorDark(color)
   }
 
   get attrs () {

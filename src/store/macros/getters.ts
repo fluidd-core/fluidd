@@ -47,10 +47,16 @@ export const getters: GetterTree<MacrosState, RootState> = {
     return macros
   },
 
-  getMacroByName: (state, getters) => (name: string) => {
+  getMacroByName: (state, getters) => (...names: string[]) => {
     const macros = getters.getMacros as Macro[]
 
-    return macros.find(macro => macro.name === name)
+    for (const name of names) {
+      const macro = macros.find(macro => macro.name === name)
+
+      if (macro) {
+        return macro
+      }
+    }
   },
 
   // Gets visible macros, transformed. Should include the macro's config.
@@ -60,13 +66,11 @@ export const getters: GetterTree<MacrosState, RootState> = {
     const categories = [...state.categories, defaultCategory]
 
     return categories
-      .map(({ id, name }) => {
-        return {
-          id,
-          name,
-          macros: getters.getMacrosByCategory(id).filter((macro: Macro) => macro.visible)
-        }
-      })
+      .map(({ id, name }) => ({
+        id,
+        name,
+        macros: getters.getMacrosByCategory(id).filter((macro: Macro) => macro.visible) as Macro[]
+      }))
       .filter(category => category.macros.length > 0)
       .sort((a, b) => {
         if (!a.name) return 1

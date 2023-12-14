@@ -87,7 +87,6 @@ app:
       upload_file: 上傳文件
     tooltip:
       low_on_space: 磁盤空間不足
-      move_item: '移動項目 | 移動 {count} 項'
       root_disabled: '{root} G代碼文件目錄不可用，請首先連接打印機或者檢查G代碼存放目錄的路徑與讀權限'
     url:
       klipper_config: 'https://www.klipper3d.org/zh-Hant/Config_Reference.html#%{hash}'

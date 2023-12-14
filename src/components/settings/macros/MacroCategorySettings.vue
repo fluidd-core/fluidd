@@ -54,8 +54,6 @@
         </app-btn>
       </app-setting>
 
-      <v-divider />
-
       <app-draggable
         v-model="macros"
         :options="{
@@ -66,9 +64,11 @@
         }"
       >
         <section
-          v-for="(macro, i) in macros"
+          v-for="macro in macros"
           :key="macro.name"
         >
+          <v-divider />
+
           <app-setting
             :accent-color="macro.color"
             :r-cols="2"
@@ -103,10 +103,6 @@
               @change="handleMacroVisible(macro, $event)"
             />
           </app-setting>
-
-          <v-divider
-            v-if="i < macros.length - 1 && macros.length > 0"
-          />
         </section>
       </app-draggable>
     </v-card>
@@ -153,7 +149,7 @@ export default class MacroCategorySettings extends Vue {
   get macros () {
     const id = this.categoryId
     const macros = this.$store.getters['macros/getMacrosByCategory'](id)
-      .filter((macro: Macro) => (!this.search || this.search === '') ? true : macro.name.toLowerCase().includes(this.search.toLowerCase()))
+      .filter((macro: Macro) => !this.search ? true : macro.name.includes(this.search.toLowerCase()))
 
     return macros
   }

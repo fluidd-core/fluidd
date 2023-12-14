@@ -2,6 +2,7 @@
   <video
     ref="streamingElement"
     autoplay
+    playsinline
     muted
     :style="cameraStyle"
     :crossorigin="crossorigin"
@@ -12,6 +13,10 @@
 import { Component, Ref, Mixins } from 'vue-property-decorator'
 import consola from 'consola'
 import CameraMixin from '@/mixins/camera'
+
+type RTCConfigurationWithSdpSemantics = RTCConfiguration & {
+  sdpSemantics: 'unified-plan'
+}
 
 @Component({})
 export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
@@ -39,9 +44,9 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
       .then((answer: RTCSessionDescriptionInit) => {
         this.remoteId = 'id' in answer && typeof (answer.id) === 'string' ? answer.id : null
 
-        const config = {
+        const config: RTCConfigurationWithSdpSemantics = {
           sdpSemantics: 'unified-plan'
-        } as RTCConfiguration
+        }
 
         if ('iceServers' in answer && Array.isArray(answer.iceServers)) {
           config.iceServers = answer.iceServers

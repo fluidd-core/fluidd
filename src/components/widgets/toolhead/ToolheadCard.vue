@@ -62,6 +62,7 @@
         </app-btn>
 
         <app-btn
+          v-if="hasSteppersEnabled"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ms-1 my-1"
@@ -215,34 +216,30 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     )
   }
 
-  get macros (): Macro[] {
-    return this.$store.getters['macros/getMacros'] as Macro[]
-  }
-
   get loadFilamentMacro (): Macro | undefined {
-    return this.findMacro([
+    return this.$store.getters['macros/getMacroByName'](
       'load_filament',
       'filament_load',
       'm701'
-    ])
+    ) as Macro | undefined
   }
 
   get unloadFilamentMacro (): Macro | undefined {
-    return this.findMacro([
+    return this.$store.getters['macros/getMacroByName'](
       'unload_filament',
       'filament_unload',
       'm702'
-    ])
+    ) as Macro | undefined
   }
 
   get cleanNozzleMacro (): Macro | undefined {
-    return this.findMacro([
+    return this.$store.getters['macros/getMacroByName'](
       'clean_nozzle',
       'nozzle_clean',
       'wipe_nozzle',
       'nozzle_wipe',
       'g12'
-    ])
+    ) as Macro | undefined
   }
 
   get availableTools () {
@@ -370,6 +367,10 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     )
   }
 
+  get hasSteppersEnabled (): boolean {
+    return this.$store.getters['printer/getHasSteppersEnabled'] as boolean
+  }
+
   get hasRoundBed (): boolean {
     return this.$store.getters['printer/getHasRoundBed'] as boolean
   }
@@ -388,14 +389,6 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get forceMove () {
     return this.$store.state.config.uiSettings.toolhead.forceMove
-  }
-
-  findMacro (names: string[]): Macro | undefined {
-    const [macro] = this.macros
-      .filter(macro => names.includes(macro.name))
-      .sort((a, b) => names.indexOf(a.name) - names.indexOf(b.name))
-
-    return macro
   }
 
   @Watch('isManualProbeActive')

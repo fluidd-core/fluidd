@@ -102,8 +102,8 @@ app:
         aby je wgrać
     tooltip:
       low_on_space: Mało miejsca na dysku
-      move_item: Przenieś element | Przenieś {count} elementy
       root_disabled: '{root} root jest niedostępny. Sprawdź logi.'
+      items_count: '{count} element | {count} elementy(-ów)'
     url:
       klipper_config: https://www.klipper3d.org/Config_Reference.html#%{hash}
       moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
@@ -609,6 +609,7 @@ app:
       video: Kamera IP
       webrtc_camera_streamer: WebRTC (camera-streamer)
       iframe: Strona HTTP
+      webrtc_gortc: WebRTC (go2rtc)
     btn:
       add_thermal_preset: Dodaj preset
       add_user: Dodaj użytkownika

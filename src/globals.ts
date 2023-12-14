@@ -148,6 +148,7 @@ import {
   mdiArchiveLock,
   mdiFileImage,
   mdiGauge,
+  mdiMonitorScreenshot,
   mdiRotateLeft,
   mdiRotateRight,
   mdiToothbrush
@@ -166,8 +167,8 @@ export const Globals = Object.freeze({
   APP_NAME: 'fluidd',
   HEADER_HEIGHT: 56,
   DEFAULTS: {
-    CAMERA_URL_STREAM: '/webcam?action=stream',
-    CAMERA_URL_SNAPSHOT: '/webcam?action=snapshot'
+    CAMERA_URL_STREAM: '/webcam/?action=stream',
+    CAMERA_URL_SNAPSHOT: '/webcam/?action=snapshot'
   },
   NETWORK_REQUEST_TIMEOUT: 0,
   KLIPPY_RETRY_DELAY: 1500,
@@ -226,6 +227,10 @@ export const Globals = Object.freeze({
     { filename: 'telegram.conf', service: 'moonraker-telegram-bot', link: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config' },
     { suffix: '.cfg', service: 'klipper', link: 'https://www.klipper3d.org/Config_Reference.html' }
   ],
+  FILE_DATA_TRANSFER_TYPES: {
+    files: 'x-fluidd-files',
+    jobs: 'x-fluidd-jobs'
+  },
   FILTERED_FOLDER_NAMES: ['.git'],
   FILTERED_FILES_PREFIX: ['.thumbs', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.ignoreme'],
@@ -399,6 +404,7 @@ export const Icons = Object.freeze({
   jobQueue: mdiTrayFull,
   enqueueJob: mdiTrayPlus,
   sensors: mdiGauge,
+  screenshot: mdiMonitorScreenshot,
   zRotateClockwise: mdiRotateRight,
   zRotateCounterclockwise: mdiRotateLeft
 })
@@ -438,8 +444,9 @@ export const Waits = Object.freeze({
   onKlipperFirmwareRestart: 'klipperFirmwareRestart',
   onSetVelocity: 'onSetVelocity',
   onSetAcceleration: 'onSetAcceleration',
-  onSetDeceleration: 'onSetDeceleration',
-  onSetSCV: 'onSetSCV',
+  onSetAccelToDecel: 'onSetAccelToDecel',
+  onSetMinimumCruiseRatio: 'onSetMinimumCruiseRatio',
+  onSetSquareCornerVelocity: 'onSetSquareCornerVelocity',
   onSetRetractLength: 'onSetRetractLength',
   onSetRetractSpeed: 'onSetRetractSpeed',
   onSetUnretractSpeed: 'onSetUnretractSpeed',

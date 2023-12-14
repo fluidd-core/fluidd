@@ -2,7 +2,7 @@
   <v-layout class="console-item">
     <span
       v-if="value.time"
-      class="secondary--text mr-3 d-none d-sm-block"
+      class="secondary--text mr-3 d-none d-sm-block text-no-wrap"
     >
       {{ itemTime }}&nbsp;
     </span>
@@ -17,7 +17,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Globals } from '@/globals'
-import type { ConsoleEntry } from '@/store/console/types'
+import type { ConsoleEntry, GcodeHelp } from '@/store/console/types'
 
 @Component({})
 export default class ConsoleItem extends Vue {
@@ -25,15 +25,14 @@ export default class ConsoleItem extends Vue {
   readonly value!: ConsoleEntry
 
   get knownCommands () {
-    const availableCommands = this.$store.getters['console/getAllGcodeCommands']
-    return new Set(Object.keys(availableCommands))
+    return this.$store.getters['console/getAllKnownCommands'] as GcodeHelp
   }
 
   get itemMessage () {
     let message = this.value.message
     if (this.value.type === 'response') {
       message = this.value.message.replace(/([A-Z0-9_]{2,})/gm, (match, command) => {
-        if (this.knownCommands.has(command)) return `<a class="primary--text text--lighten-1">${command.toUpperCase()}</a>`
+        if (command in this.knownCommands) return `<a class="primary--text text--lighten-1">${command.toUpperCase()}</a>`
         return match
       })
     }

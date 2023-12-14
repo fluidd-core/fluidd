@@ -93,20 +93,25 @@ export default class PauseResumeBtn extends Mixins(StateMixin) {
     )
   }
 
+  get hasPauseAtLayerMacros () {
+    const macro = this.$store.getters['macros/getMacroByName'](
+      'set_pause_next_layer',
+      'set_pause_at_layer'
+    ) as Macro | undefined
+
+    return macro != null
+  }
+
+  get setPrintStatsInfoMacro (): Macro | undefined {
+    return this.$store.getters['macros/getMacroByName']('set_print_stats_info') as Macro | undefined
+  }
+
   get hasPrintAtLayerMacros () {
-    const macros = this.$store.getters['macros/getMacros'] as Macro[]
-
-    const hasPauseAtLayerMacros = macros
-      .some(macro => ['set_pause_at_layer', 'set_pause_next_layer'].includes(macro.name))
-
-    if (!hasPauseAtLayerMacros) {
+    if (!this.hasPauseAtLayerMacros) {
       return false
     }
 
-    const setPrintStatsInfoMacro = macros
-      .find(macro => macro.name === 'set_print_stats_info')
-
-    const setPrintStatsInfoVariables = setPrintStatsInfoMacro?.variables ?? {}
+    const setPrintStatsInfoVariables = this.setPrintStatsInfoMacro?.variables ?? {}
 
     return (
       'pause_next_layer' in setPrintStatsInfoVariables &&

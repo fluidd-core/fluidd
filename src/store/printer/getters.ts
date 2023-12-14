@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
-import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize } from './types'
+import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands } from './types'
 import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
+import type { GcodeHelp } from '../console/types'
 
 export const getters: GetterTree<PrinterState, RootState> = {
 
@@ -335,19 +336,23 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return steppers
   },
 
+  getHasSteppersEnabled: (state, getters): boolean => {
+    const steppers = getters.getSteppers as Stepper[]
+
+    return Object.values(steppers)
+      .some(stepper => stepper.enabled == null || stepper.enabled)
+  },
+
   /**
    * Given axes, returns a boolean indicating if the axes are homed.
    */
   getHomedAxes: (state) => (axes?: string): boolean => {
-    if (axes && axes.length > 0) {
-      let r = false
-      const a = axes.split('')
-      a.forEach((char) => {
-        r = state.printer.toolhead.homed_axes.includes(char)
-      })
-      return r
-    }
-    return false
+    return (
+      axes != null &&
+      axes.length > 0 &&
+      axes.split('')
+        .every(char => state.printer.toolhead.homed_axes.includes(char))
+    )
   },
 
   getRunoutSensors: (state): RunoutSensor[] => {
@@ -927,6 +932,23 @@ export const getters: GetterTree<PrinterState, RootState> = {
       maxX,
       maxY
     }
+  },
+
+  getAvailableCommands: (state, getters, rootState, rootGetters): GcodeCommands => {
+    const availableCommands = state.printer.gcode.commands as GcodeCommands | null
+
+    if (availableCommands) {
+      return availableCommands
+    }
+
+    const knownCommands = rootGetters['console/getAllKnownCommands'] as GcodeHelp
+
+    return Object.entries(knownCommands)
+      .reduce((availableCommands, [key, help]) => {
+        availableCommands[key] = { help }
+
+        return availableCommands
+      }, {} as GcodeCommands)
   },
 
   getIsManualProbeActive: (state) => {

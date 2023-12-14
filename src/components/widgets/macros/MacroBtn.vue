@@ -94,6 +94,10 @@ export default class MacroBtn extends Mixins(StateMixin) {
 
   params: { [index: string]: { value: string | number; reset: string | number }} = {}
 
+  get isMacroWithRawParam () {
+    return ['m117', 'm118'].includes(this.macro.name)
+  }
+
   get filteredListeners () {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { click, ...listeners } = this.$listeners
@@ -109,17 +113,21 @@ export default class MacroBtn extends Mixins(StateMixin) {
    * The formatted run command for a macro.
    */
   get runCommand () {
-    let s = this.macro.name
+    const command = this.macro.name.toUpperCase()
+
     if (this.params) {
-      if (['m117', 'm118'].includes(this.macro.name)) {
-        s += ` ${this.params.message.value}`
-      } else {
-        for (const param of Object.keys(this.params)) {
-          s += ` ${param}=${this.params[param].value}`
-        }
+      const params = this.isMacroWithRawParam
+        ? this.params.message.value.toString()
+        : Object.entries(this.params)
+          .map(([key, param]) => `${key.toUpperCase()}=${param.value}`)
+          .join(' ')
+
+      if (params) {
+        return `${command} ${params}`
       }
     }
-    return s
+
+    return command
   }
 
   get borderStyle () {
@@ -130,13 +138,13 @@ export default class MacroBtn extends Mixins(StateMixin) {
   }
 
   handleClick () {
-    this.$emit('click', this.macro.name)
+    this.$emit('click', this.macro.name.toUpperCase())
   }
 
   mounted () {
     if (!this.macro.config || !this.macro.config.gcode) return []
 
-    if (['m117', 'm118'].includes(this.macro.name)) {
+    if (this.isMacroWithRawParam) {
       this.$set(this.params, 'message', { value: '', reset: '' })
     } else {
       for (const { name, value } of gcodeMacroParams(this.macro.config.gcode)) {

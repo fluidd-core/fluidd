@@ -131,10 +131,10 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
       }
     }
 
-    const theme = this.$store.getters['config/getTheme']
+    const theme = this.$vuetify.theme.currentTheme
     const color = [
-      theme.currentTheme.primary,
-      theme.currentTheme.secondary
+      theme.primary,
+      theme.secondary
     ]
 
     const options = {

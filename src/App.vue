@@ -8,6 +8,12 @@
     <app-tools-drawer v-model="toolsdrawer" />
     <app-nav-drawer v-model="navdrawer" />
 
+    <inline-svg
+      v-if="showBackgroundLogo && !isMobileViewport"
+      :src="logoSrc"
+      class="background-logo"
+    />
+
     <app-bar
       @toolsdrawer="handleToolsDrawerChange"
       @navdrawer="handleNavDrawerChange"
@@ -78,6 +84,7 @@
       <file-system-download-dialog />
       <updating-dialog />
       <spool-selection-dialog />
+      <action-command-prompt-dialog />
     </v-main>
 
     <app-footer />
@@ -96,28 +103,26 @@ import { EventBus } from '@/eventBus'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
-import type { LinkPropertyHref } from 'vue-meta'
+import type { LinkPropertyHref, MetaPropertyName } from 'vue-meta'
 import FileSystemDownloadDialog from '@/components/widgets/filesystem/FileSystemDownloadDialog.vue'
 import SpoolSelectionDialog from '@/components/widgets/spoolman/SpoolSelectionDialog.vue'
 import type { FlashMessage } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from './util/file-system-entry'
+import type { ThemeConfig } from '@/store/config/types'
+import ActionCommandPromptDialog from './components/common/ActionCommandPromptDialog.vue'
 
 @Component<App>({
   metaInfo () {
-    const pageTitle = this.pageTitle
-    const pageIcon = this.pageIcon
-
     return {
-      title: pageTitle,
-      link: pageIcon,
-      meta: [
-        { name: 'theme-color', content: this.primaryColor }
-      ]
+      title: this.pageTitle,
+      link: this.pageIcon,
+      meta: this.pageMeta
     }
   },
   components: {
     SpoolSelectionDialog,
-    FileSystemDownloadDialog
+    FileSystemDownloadDialog,
+    ActionCommandPromptDialog
   }
 })
 export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
@@ -131,6 +136,26 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     open: false,
     text: undefined,
     type: undefined
+  }
+
+  get theme (): ThemeConfig {
+    return this.$store.state.config.uiSettings.theme as ThemeConfig
+  }
+
+  get showBackgroundLogo () {
+    return this.theme.backgroundLogo
+  }
+
+  get logoSrc () {
+    return `${import.meta.env.BASE_URL}${this.theme.logo.src}`
+  }
+
+  get primaryColor (): string {
+    return this.$vuetify.theme.currentTheme.primary?.toString() ?? ''
+  }
+
+  get primaryOffsetColor (): string {
+    return this.$vuetify.theme.currentTheme['primary-offset']?.toString() ?? ''
   }
 
   // Our app is in a loading state when the socket isn't quite ready, or
@@ -172,12 +197,37 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get pageIcon (): LinkPropertyHref[] {
-    let icon
-    const theme = this.$store.getters['config/getTheme']
+    const iconDataUrl = this.printInProgressIconDataUrl || this.defaultIconDataUrl
+
+    return [
+      {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        sizes: '32x32',
+        href: iconDataUrl
+      },
+      {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        sizes: '16x16',
+        href: iconDataUrl
+      }
+    ]
+  }
+
+  get pageMeta (): MetaPropertyName[] {
+    return [
+      {
+        name: 'theme-color',
+        content: this.primaryColor
+      }
+    ]
+  }
+
+  get printInProgressIconDataUrl () {
     if (this.printerPrinting) {
-      // Render the progress indicator.
       const favIconSize = 64
-      const primaryColor = theme.currentTheme.primary
+      const primaryColor = this.primaryColor
       const secondaryColor = 'rgba(255, 255, 255, 0.10)'
       const canvas = document.createElement('canvas')
       const context = canvas.getContext('2d') as CanvasRenderingContext2D
@@ -208,31 +258,14 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
       context.lineWidth = lineWidth
       context.stroke()
 
-      icon = canvas.toDataURL('image/png')
+      return canvas.toDataURL('image/png')
     }
-
-    // Build a base64 encoded version of our svg with the correct theme color.
-    const svg_xml = 'data:image/svg+xml;base64,' + btoa(`<svg width="56" height="64" viewBox="0 0 314 361" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g transform="translate(-162.000000, -110.000000)"><path d="M234.444,327.531 L309.066,389.594 C309.906,390.313 310.81,390.928 311.759,391.436 L311.759,391.436 L311.771,391.442 L312.055,391.589 L312.163,391.643 L312.356,391.737 L312.534,391.821 L312.668,391.883 L312.902,391.987 L312.974,392.017 C314.656,392.733 316.433,393.128 318.217,393.206 L318.217,393.206 L318.278,393.209 L318.562,393.218 L318.674,393.22 L318.904,393.221 L319.104,393.22 L319.231,393.218 L319.529,393.208 L319.571,393.207 C321.359,393.128 323.142,392.733 324.829,392.013 L324.829,392.013 L324.877,391.993 L325.143,391.875 L325.244,391.829 L325.438,391.737 L325.643,391.638 L325.731,391.593 L326.012,391.447 L326.042,391.432 C326.989,390.925 327.891,390.311 328.729,389.593 L328.729,389.593 L398.493,331.574 L434.768,355.517 L318.896,470.422 L198.4,350.923 L234.444,327.531 Z M237.067,234.697 L310.465,281.908 C313.075,283.623 315.986,284.481 318.897,284.482 C321.805,284.482 324.713,283.626 327.325,281.912 L327.325,281.912 L400.727,234.702 L456.849,263.367 L318.897,378.093 L180.945,263.359 L237.067,234.697 Z M318.897,110.68 L475.771,168.448 L318.897,269.344 L162.024,168.44 L318.897,110.68 Z" id="Combined-Shape" fill="${theme.currentTheme.primaryOffset}"></path><path d="M318.897,110.68 L475.771,168.448 L319,269.278 L319,111 L318.028,111 L318.897,110.68 Z" id="Combined-Shape" fill="${theme.currentTheme.primary}"></path><path d="M400.727,234.702 L456.849,263.367 L319,378.007 L319.000106,284.481641 C321.735222,284.46261 324.467243,283.686291 326.949875,282.151021 L327.325,281.912 L400.727,234.702 Z" id="Combined-Shape" fill="${theme.currentTheme.primary}"></path><path d="M398.493,331.574 L434.768,355.517 L319,470.319 L319,393.22 L319.104,393.22 L319.231,393.218 L319.529,393.208 L319.571,393.207 C321.359,393.128 323.142,392.733 324.829,392.013 L324.829,392.013 L324.877,391.993 L325.143,391.875 L325.244,391.829 L325.438,391.737 L325.643,391.638 L325.731,391.593 L326.012,391.447 L326.042,391.432 C326.989,390.925 327.891,390.311 328.729,389.593 L328.729,389.593 L398.493,331.574 Z" id="Combined-Shape" fill="${theme.currentTheme.primary}"></path></g></svg>`)
-
-    return [
-      {
-        rel: 'icon',
-        type: 'image/svg+xml',
-        sizes: '32x32',
-        href: icon || svg_xml
-      },
-      {
-        rel: 'icon',
-        type: 'image/svg+xml',
-        sizes: '16x16',
-        href: icon || svg_xml
-      }
-    ]
   }
 
-  get primaryColor () {
-    const theme = this.$store.getters['config/getTheme']
-    return theme.currentTheme.primary
+  get defaultIconDataUrl () {
+    const logoWithColor = `<svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><g><path fill="${this.primaryOffsetColor}" d="m 14.853368,33.756571 11.61619,9.661168 c 0.130777,0.111917 0.271485,0.207659 0.419213,0.286738 v 0 l 0.0018,9.59e-4 0.04421,0.02288 0.01682,0.0084 0.03004,0.01466 0.02772,0.01301 0.02085,0.0096 0.03643,0.01614 0.0112,0.0048 c 0.261834,0.111457 0.538454,0.172946 0.816165,0.185089 v 0 l 0.0094,4.66e-4 0.04421,0.0014 0.01743,3.11e-4 0.03579,1.57e-4 0.03113,-1.57e-4 0.01976,-3.11e-4 0.04638,-0.0016 0.0066,-1.57e-4 c 0.278332,-0.01219 0.555886,-0.07379 0.818498,-0.185864 v 0 l 0.0076,-0.0031 0.04141,-0.01836 0.01581,-0.0072 0.03019,-0.01433 0.03192,-0.01548 0.01367,-0.0071 0.04375,-0.02273 0.0048,-0.0023 c 0.147428,-0.07893 0.287828,-0.174502 0.418278,-0.28627 v 0 L 40.390591,34.385713 46.037415,38.112852 27.999766,56 9.242502,37.397936 Z m 0.408314,-14.451202 11.425655,7.349201 c 0.406292,0.266969 0.859439,0.40053 1.312586,0.400687 0.452679,0 0.90536,-0.133247 1.311963,-0.400064 v 0 l 11.426278,-7.349045 8.736349,4.462197 -21.47459,17.859067 -21.47459,-17.86031 z M 27.999923,0 52.420045,8.9925786 27.999923,24.698769 3.579955,8.9913323 Z" /><path fill="${this.primaryColor}" d="m 28,0 -0.134766,0.05078125 h 0.150391 V 24.689453 L 52.419922,8.9921875 Z m 12.738281,19.306641 -11.425781,7.347656 -0.05859,0.03906 c -0.386465,0.238992 -0.812514,0.358329 -1.238281,0.361329 v 14.558595 l 21.45898,-17.845703 z m -0.347656,15.080078 -10.859375,9.03125 c -0.13045,0.111767 -0.270596,0.206206 -0.417969,0.285156 l -0.0059,0.002 -0.04297,0.02344 -0.01367,0.0078 -0.0332,0.01563 -0.0293,0.01367 -0.01563,0.0078 -0.04102,0.01758 -0.0078,0.0039 c -0.26261,0.112075 -0.540027,0.173357 -0.818359,0.185547 h -0.0078 l -0.04492,0.002 h -0.02148 -0.01563 V 55.984375 L 46.037109,38.113281 Z" /></g></svg>`
+
+    return `data:image/svg+xml;base64,${btoa(logoWithColor)}`
   }
 
   get customStyleSheet () {
@@ -394,3 +427,15 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .background-logo {
+    pointer-events: none;
+    position: fixed;
+    width: 50%;
+    height: auto;
+    right: -10%;
+    bottom: -20%;
+    opacity: 8%;
+  }
+</style>

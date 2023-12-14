@@ -17,14 +17,9 @@ Locales can be found in the `src/locales` folder and are in YAML format.
 
 ## How to contribute
 
-You can contribute in a couple of different ways;
+Translations are hosted on Weblate. If you want to help translating our project, please click the widget below:
 
-1. Edit translations using an existing tool. For example, [BabelEdit](https://www.codeandweb.com/babeledit)
-
-2. Edit translations using VSCode, and i18n Ally.
-
-Once you have a translation in hand, you can either PR the code changes directly
-or create an issue with the translations attached.
+[![Translation status](https://hosted.weblate.org/widget/fluidd/horizontal-auto.svg)](https://hosted.weblate.org/engage/fluidd/ "Translation status")
 
 ## Tooling
 
@@ -40,7 +35,10 @@ npm run i18n-extract
 Running the above will output a list of missing translations, and un-used keys
 should there be any.
 
-### i18n Ally
+### VSCode and i18n Ally
 
-[i18n Ally](https://marketplace.visualstudio.com/items?itemName=antfu.i18n-ally) is a VSCode extension, giving you inline detail about translations.
+If you prefer, you can use VSCode and the [i18n Ally](https://marketplace.visualstudio.com/items?itemName=antfu.i18n-ally) extension to help translating offline.
+
 If you're setup with VSCode, then this extension comes highly recommended.
+
+Once you have a translation in hand, you can either PR the code changes directly or create an issue with the translations attached.

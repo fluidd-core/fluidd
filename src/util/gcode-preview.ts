@@ -114,7 +114,7 @@ function arcIJMoveToSVGPath (toolhead: Point, move: ArcMove): string {
 // }
 
 export function arcMoveToSvgPath (toolhead: Point, move: ArcMove): string {
-  if (move.i !== undefined && move.j !== undefined) {
+  if (move.i !== undefined || move.j !== undefined) {
     return arcIJMoveToSVGPath(toolhead, move)
   }
 

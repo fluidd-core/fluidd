@@ -7,9 +7,21 @@ import Components from 'unplugin-vue-components/vite'
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 import content from '@originjs/vite-plugin-content'
-import monacoEditorPlugin from 'vite-plugin-monaco-editor'
+import monacoEditorPluginModule from 'vite-plugin-monaco-editor'
 import checker from 'vite-plugin-checker'
 import version from './vite.config.inject-version'
+
+// Fix for incorrect typings on vite-plugin-monaco-editor
+const isObjectWithDefaultFunction = (module: unknown): module is { default: typeof monacoEditorPluginModule } => (
+  module != null &&
+  typeof module === 'object' &&
+  'default' in module &&
+  typeof module.default === 'function'
+)
+
+const monacoEditorPlugin = isObjectWithDefaultFunction(monacoEditorPluginModule)
+  ? monacoEditorPluginModule.default
+  : monacoEditorPluginModule
 
 export default defineConfig({
   plugins: [
@@ -21,14 +33,13 @@ export default defineConfig({
         '**/*.svg',
         '**/*.png',
         '**/*.ico',
-        '*.json'
+        'editor.theme.json'
       ],
       injectManifest: {
         globPatterns: [
           '**/*.{js,css,html,ttf,woff,woff2,wasm}'
         ],
-        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
-        rollupFormat: 'iife'
+        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2
       },
       manifest: {
         name: 'fluidd',
@@ -118,11 +129,11 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       css: { charset: false },
+      scss: {
+        additionalData: '@import "@/scss/variables";\n'
+      },
       sass: {
-        additionalData: [
-          '@import "@/scss/variables.scss"',
-          ''
-        ].join('\n')
+        additionalData: '@import "@/scss/variables.scss"\n'
       }
     }
   },

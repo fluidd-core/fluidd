@@ -38,10 +38,6 @@ export default class AppChart extends Vue {
 
   ready = false
 
-  get isDark () {
-    return this.$store.state.config.uiSettings.theme.isDark
-  }
-
   @Watch('data')
   onData (data?: unknown[]) {
     if (this.chart && data && data.length) {

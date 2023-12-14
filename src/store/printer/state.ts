@@ -34,6 +34,7 @@ export const defaultState = (): PrinterState => {
           fan: {},
           printer: {
             max_accel_to_decel: 500,
+            minimum_cruise_ratio: 0.5,
             max_accel: 1000,
             max_velocity: 100,
             square_corner_velocity: 3,
@@ -73,7 +74,8 @@ export const defaultState = (): PrinterState => {
         estimated_print_time: 0,
         homed_axes: '',
         max_accel: 0,
-        max_accel_to_decel: 0,
+        max_accel_to_decel: null,
+        minimum_cruise_ratio: null,
         max_velocity: 0,
         position: [0, 0, 0, 0],
         axis_minimum: [],
@@ -97,6 +99,9 @@ export const defaultState = (): PrinterState => {
         estimated_time: 0,
         filament_total: 0,
         thumbnails: []
+      },
+      gcode: {
+        commands: null
       },
       gcode_move: {
         gcode_position: [0, 0, 0, 0],
