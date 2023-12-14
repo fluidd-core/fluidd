@@ -1,4 +1,6 @@
 <template>
+  <!-- Circle control adapted from Mainsail's cirlce control, new SVG icons added for toolhead centering -->
+  <!-- https://github.com/mainsail-crew/mainsail/blob/develop/src/components/panels/ToolheadControls/CircleControl.vue -->
   <div>
     <v-row>
       <v-col class="pa-0 mt-1">
