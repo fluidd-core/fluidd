@@ -3,7 +3,8 @@
     <v-row>
       <v-col class="pa-0 mt-1">
         <!--
-          SVG assets from Mainsail Toolhead Circle Control, rest of control heavly adapted from https://github.com/mainsail-crew/mainsail/blob/develop/src/components/panels/ToolheadControls/CircleControl.vue
+          SVG assets from Mainsail Toolhead Circle Control, rest of control
+          adapted for Fluidd from https://github.com/mainsail-crew/mainsail/blob/develop/src/components/panels/ToolheadControls/CircleControl.vue
         -->
         <svg
           width="100%"
