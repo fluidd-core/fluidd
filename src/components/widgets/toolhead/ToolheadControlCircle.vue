@@ -1,10 +1,10 @@
-  <!-- Circle control adapted from Mainsail's cirlce control, new SVG icons added for toolhead centering
-       heavly adapted from https://github.com/mainsail-crew/mainsail/blob/develop/src/components/panels/ToolheadControls/CrossControl.vue
-       modified to work with fluidd's concepts -->
 <template>
   <div>
     <v-row>
       <v-col class="pa-0 mt-1">
+        <!--
+          SVG assets from Mainsail Toolhead Circle Control, rest of control heavly adapted from https://github.com/mainsail-crew/mainsail/blob/develop/src/components/panels/ToolheadControls/CircleControl.vue
+        -->
         <svg
           width="100%"
           height="100%"
