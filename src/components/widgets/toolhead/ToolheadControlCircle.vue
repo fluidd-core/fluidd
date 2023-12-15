@@ -2,6 +2,10 @@
   <div>
     <v-row>
       <v-col class="pa-0 mt-1">
+        <!--
+          SVG assets from Mainsail Toolhead Circle Control, rest of control
+          adapted for Fluidd from https://github.com/mainsail-crew/mainsail/blob/develop/src/components/panels/ToolheadControls/CircleControl.vue
+        -->
         <svg
           width="100%"
           height="100%"
@@ -673,9 +677,6 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { BedSize } from '@/store/printer/types'
-
-// heavly adapted from https://github.com/mainsail-crew/mainsail/blob/develop/src/components/panels/ToolheadControls/CrossControl.vue
-// modified to work with fluidd concepts.
 
 @Component({})
 export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMixin) {
