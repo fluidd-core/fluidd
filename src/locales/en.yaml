@@ -75,6 +75,7 @@ app:
         print_start_time_desc: Filters out items you've already printed.
         hidden_files_folders: Filter hidden files and folders
         klipper_backup_files: Filter Klipper backup files
+        moonraker_backup_files: Filter Moonraker backup files
         rolled_log_files: Filter rolled log files
     label:
       dir_name: Directory name
