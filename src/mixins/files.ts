@@ -7,11 +7,11 @@ import type { FileWithPath } from '@/types'
 
 @Component
 export default class FilesMixin extends Vue {
-  get apiUrl () {
-    return this.$store.state.config.apiUrl
+  get apiUrl (): string {
+    return this.$store.state.config.apiUrl as string
   }
 
-  get isTrustedUser () {
+  get isTrustedUser (): boolean {
     const forceLogins = this.$store.getters['server/getConfig'].authorization.force_logins
 
     return forceLogins === false || this.$store.getters['auth/getCurrentUser']?.username === '_TRUSTED_USER_'

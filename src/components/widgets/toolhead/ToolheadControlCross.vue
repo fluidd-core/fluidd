@@ -196,59 +196,60 @@ type Axis = 'X' | 'Y' | 'Z'
 
 @Component({})
 export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMixin) {
-  moveLength = ''
-  fab = false
+  moveLength: number | null = null
 
-  get forceMove () {
-    return this.$store.state.config.uiSettings.toolhead.forceMove
+  get forceMove (): boolean {
+    return this.$store.state.config.uiSettings.toolhead.forceMove as boolean
   }
 
-  get canHomeXY () {
-    const hasRoundBed = this.$store.getters['printer/getHasRoundBed'] as boolean
-
-    return !hasRoundBed
+  get hasRoundBed (): boolean {
+    return this.$store.getters['printer/getHasRoundBed'] as boolean
   }
 
-  get toolheadMoveDistances () {
-    const distances = this.$store.state.config.uiSettings.general.toolheadMoveDistances
+  get canHomeXY (): boolean {
+    return !this.hasRoundBed
+  }
+
+  get toolheadMoveDistances (): number[] {
+    const distances = this.$store.state.config.uiSettings.general.toolheadMoveDistances as number[]
+
     if (distances.includes(this.toolheadMoveLength)) {
       return distances
     }
 
     // safety for when no valid move length is present
-    return [this.toolheadMoveLength, ...distances].sort((a, b) => a - b)
+    return [this.toolheadMoveLength, ...distances]
+      .sort((a, b) => a - b)
   }
 
-  get toolheadMoveLength () {
-    return (this.moveLength === '')
-      ? this.$store.state.config.uiSettings.general.defaultToolheadMoveLength
-      : this.moveLength
+  get toolheadMoveLength (): number {
+    return this.moveLength ?? this.$store.state.config.uiSettings.general.defaultToolheadMoveLength as number
   }
 
-  set toolheadMoveLength (val: string) {
+  set toolheadMoveLength (val: number) {
     this.moveLength = val
   }
 
-  axisButtonColor (axisHomed: boolean) {
+  axisButtonColor (axisHomed: boolean): string | undefined {
     if (this.forceMove) return 'error'
 
     return axisHomed ? 'primary' : undefined
   }
 
-  axisButtonDisabled (axisHomed: boolean, axisMultipleSteppers: boolean) {
+  axisButtonDisabled (axisHomed: boolean, axisMultipleSteppers: boolean): boolean {
     return !this.klippyReady || (!axisHomed && !(this.forceMove && !axisMultipleSteppers))
   }
 
   /**
    * Send a move gcode script.
    */
-  sendMoveGcode (axis: Axis, distance: string, negative = false) {
+  sendMoveGcode (axis: Axis, distance: number, negative = false) {
     const rate = axis === 'Z'
       ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
       : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
     const inverted = this.$store.state.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
     distance = negative !== inverted
-      ? '-' + distance
+      ? -distance
       : distance
 
     if (this.forceMove) {
