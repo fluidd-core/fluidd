@@ -207,7 +207,7 @@
 
         <app-setting :title="$t('app.setting.label.enable_xy_homing')">
           <v-switch
-            v-model="toolheadControlXYHomingEnabled"
+            v-model="toolheadCircleXYHomingEnabled"
             hide-details
             class="mt-0 mb-4"
           />
@@ -485,13 +485,13 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
    })
  }
 
- get toolheadControlXYHomingEnabled () {
-   return this.$store.state.config.uiSettings.general.toolheadControlXYHomingEnabled
+ get toolheadCircleXYHomingEnabled () {
+   return this.$store.state.config.uiSettings.general.toolheadCircleXYHomingEnabled
  }
 
- set toolheadControlXYHomingEnabled (value: ToolheadControlStyle) {
+ set toolheadCircleXYHomingEnabled (value: boolean) {
    this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.toolheadControlXYHomingEnabled',
+     path: 'uiSettings.general.toolheadCircleXYHomingEnabled',
      value,
      server: true
    })

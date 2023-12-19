@@ -62,7 +62,7 @@ export default class FileSystemDownloadDialog extends Mixins(StateMixin) {
   }
 
   handleCancelDownload () {
-    this.currentDownload.abortController.abort()
+    this.currentDownload?.abortController.abort()
 
     this.$store.dispatch('files/removeFileDownload')
   }

@@ -121,7 +121,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     ]
   }
 
-  get autoOpenQRDetectionCameraId (): string {
+  get autoOpenQRDetectionCameraId (): string | null {
     return this.$store.state.config.uiSettings.spoolman.autoOpenQRDetectionCamera
   }
 
