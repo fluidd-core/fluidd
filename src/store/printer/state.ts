@@ -121,9 +121,6 @@ export const defaultState = (): PrinterState => {
         accepted_screws: 0
       },
       screws_tilt_adjust: {},
-      fan: {
-        speed: 0
-      },
       webhooks: {
         state: '',
         state_message: ''

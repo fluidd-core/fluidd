@@ -150,6 +150,14 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.$store.getters['macros/getVisibleMacros'].length > 0
   }
 
+  get hasOutputs () {
+    return (
+      this.$store.getters['printer/getAllFans'].length > 0 ||
+      this.$store.getters['printer/getPins'].length > 0 ||
+      this.$store.getters['printer/getAllLeds'].length > 0
+    )
+  }
+
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
   }
@@ -203,6 +211,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (this.inLayout) return false
     if (item.id === 'camera-card' && !this.hasCameras) return true
     if (item.id === 'macros-card' && !this.hasMacros) return true
+    if (item.id === 'outputs-card' && !this.hasOutputs) return true
     if (item.id === 'printer-status-card' && !this.klippyReady) return true
     if (item.id === 'job-queue-card' && !this.supportsJobQueue) return true
     if (item.id === 'retract-card' && !this.firmwareRetractionEnabled) return true
