@@ -152,6 +152,7 @@ export interface ServerConfig {
   authorization: ServerAuthorization;
   server: ServerConfiguration;
   data_store?: DataStoreConfiguration;
+  spoolman?: SpoolmanConfiguration;
 }
 
 export interface ServerAuthorization {
@@ -166,4 +167,8 @@ export interface ServerConfiguration {
 export interface DataStoreConfiguration {
   gcode_store_size?: number;
   temperature_store_size?: number;
+}
+
+export interface SpoolmanConfiguration {
+  server?: string;
 }

@@ -1,7 +1,7 @@
 import type { KlipperBedMesh, ProcessedMesh } from '@/store/mesh/types'
 
-export const transformMesh = (bedMesh: KlipperBedMesh, meshMatrix: keyof KlipperBedMesh, makeFlat = false): ProcessedMesh => {
-  const matrix = bedMesh[meshMatrix] as number[][]
+export const transformMesh = (bedMesh: KlipperBedMesh, meshMatrix: 'probed_matrix' | 'mesh_matrix', makeFlat = false): ProcessedMesh => {
+  const matrix = bedMesh[meshMatrix]
   const coordinates = []
   let min = 0
   let mid = 0

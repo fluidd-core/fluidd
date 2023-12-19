@@ -500,7 +500,7 @@ type Axis = 'X' | 'Y' | 'Z'
 @Component({})
 export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMixin) {
   get enableXYHoming (): boolean {
-    return this.$store.state.config.uiSettings.general.toolheadControlXYHomingEnabled as boolean
+    return this.$store.state.config.uiSettings.general.toolheadCircleXYHomingEnabled as boolean
   }
 
   get stepsXY (): number[] {

@@ -160,14 +160,6 @@ export default class PrinterStatsCard extends Vue {
     return this.$store.getters['files/getUsage']
   }
 
-  get appInfo () {
-    return {
-      fluidd: this.$store.state.version.fluidd,
-      moonraker: this.$store.state.version.components.moonraker || {},
-      klipper: this.$store.state.version.components.klipper || {}
-    }
-  }
-
   get supportsHistoryComponent () {
     return this.$store.getters['server/componentSupport']('history')
   }

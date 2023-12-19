@@ -290,7 +290,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.topNavPowerToggle
   }
 
-  set topNavPowerToggle (value: string) {
+  set topNavPowerToggle (value: string | null) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.topNavPowerToggle',
       value,

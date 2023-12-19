@@ -216,7 +216,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   @Watch('open')
   onOpen () {
     if (this.open) {
-      this.selectedSpoolId = this.$store.state.spoolman.activeSpool
+      this.selectedSpoolId = this.$store.state.spoolman.activeSpool ?? null
 
       if (this.currentFileName) {
         // prefetch file metadata
