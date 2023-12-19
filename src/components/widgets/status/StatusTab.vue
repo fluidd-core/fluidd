@@ -82,7 +82,7 @@
               </status-label>
 
               <status-label :label="$t('app.general.label.filament')">
-                <span v-if="filament_used > 0 && printerPrinting">{{ $filters.getReadableLengthString(filament_used) }}</span>
+                <span v-if="filament_used > 0 && printerPrinting">{{ $filters.getReadableLengthString(filament_used) }} / {{ $filters.getReadableLengthString(filament_total) }} <br /> remaining: {{filament_weight_needed.toFixed(2)}} g  </span>
               </status-label>
 
               <status-label :label="$t('app.general.label.layer')">
@@ -374,6 +374,18 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
    */
   get filament_total () {
     return this.$store.state.printer.printer.current_file.filament_total || 0
+  }
+
+  /**
+   * Total filament weight according to the current file / slicer.
+   */
+  get filament_weight_needed () {
+    const filament_weight_total = this.$store.state.printer.printer.current_file.filament_weight_total || 0
+    if (this.filament_used > 0 && this.filament_total > 0 && filament_weight_total > 0) {
+      return (1 - this.filament_used / this.filament_total) * filament_weight_total
+    } else {
+      return 0
+    }
   }
 
   /**
