@@ -105,28 +105,6 @@
         </v-btn-toggle>
       </v-col>
     </v-row>
-
-    <v-row
-      v-show="printerPrinting"
-      justify="space-between"
-      align="center"
-      no-gutters
-    >
-      <v-col
-        cols="auto"
-        class="secondary--text text--lighten-1"
-      >
-        {{ $t('app.general.label.requested_speed') }} [ {{ liveVelocity.toFixed(2) }} mm/s ]
-      </v-col>
-      <v-col
-        cols="auto"
-        class="focus--text"
-      >
-        {{ requestedSpeed }} mm/s
-      </v-col>
-    </v-row>
-
-    <!-- </div> -->
   </div>
 </template>
 
@@ -149,10 +127,6 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
     return this.$store.state.printer.printer.motion_report.live_position
   }
 
-  get liveVelocity () {
-    return this.$store.state.printer.printer.motion_report.live_velocity
-  }
-
   get useGcodeCoords () {
     return this.$store.state.config.uiSettings.general.useGcodeCoords
   }
@@ -171,14 +145,6 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
 
   get zForceMove () {
     return this.forceMove && !this.zHasMultipleSteppers
-  }
-
-  get requestedSpeed () {
-    // Take into account the speed multiplier.
-    const multiplier = this.$store.state.printer.printer.gcode_move.speed_factor || 1
-    let speed = this.$store.state.printer.printer.gcode_move.speed || 0
-    speed = (speed * multiplier) / 60
-    return speed.toFixed()
   }
 
   get usesAbsolutePositioning () {

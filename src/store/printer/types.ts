@@ -240,3 +240,13 @@ export interface GcodeCommands {
 export interface GcodeCommand {
   help?: string
 }
+
+export interface TimeEstimates {
+  progress: number;
+  printDuration: number;
+  totalDuration: number;
+  fileLeft: number;
+  slicerLeft: number;
+  actualLeft: number;
+  eta: number;
+}

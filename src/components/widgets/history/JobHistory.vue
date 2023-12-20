@@ -128,7 +128,7 @@
         #[`item.print_duration`]="{ item }"
       >
         <span class="text-no-wrap">
-          {{ $filters.formatCounterTime(item.print_duration) }}
+          {{ $filters.formatCounterSeconds(item.print_duration) }}
         </span>
       </template>
 
@@ -136,7 +136,7 @@
         #[`item.total_duration`]="{ item }"
       >
         <span class="text-no-wrap">
-          {{ $filters.formatCounterTime(item.total_duration) }}
+          {{ $filters.formatCounterSeconds(item.total_duration) }}
         </span>
       </template>
 

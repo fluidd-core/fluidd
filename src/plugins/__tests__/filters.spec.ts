@@ -1,30 +1,30 @@
 import { Filters } from '../filters'
 import { timeTravel } from '@/../tests/unit/utils'
 
-describe('formatCounterTime', () => {
+describe('formatCounterSeconds', () => {
   it('Formats counters as expected', () => {
-    expect(Filters.formatCounterTime(10)).toBe('0m 10s')
-    expect(Filters.formatCounterTime(300)).toBe('5m 0s')
+    expect(Filters.formatCounterSeconds(10)).toBe('0m 10s')
+    expect(Filters.formatCounterSeconds(300)).toBe('5m 0s')
   })
 
   it('Includes hours if relevant', () => {
-    expect(Filters.formatCounterTime(3600)).toBe('1h 0m 0s')
-    expect(Filters.formatCounterTime(3600 * 48)).toBe('48h 0m 0s')
+    expect(Filters.formatCounterSeconds(3600)).toBe('1h 0m 0s')
+    expect(Filters.formatCounterSeconds(3600 * 48)).toBe('48h 0m 0s')
   })
 
   it('Handles negative numbers', () => {
-    expect(Filters.formatCounterTime(-300)).toBe('-5m 0s')
-    expect(Filters.formatCounterTime(-3600)).toBe('-1h 0m 0s')
+    expect(Filters.formatCounterSeconds(-300)).toBe('-5m 0s')
+    expect(Filters.formatCounterSeconds(-3600)).toBe('-1h 0m 0s')
   })
 
   it('Handles 0 gracefully', () => {
-    expect(Filters.formatCounterTime(0)).toBe('0m 0s')
+    expect(Filters.formatCounterSeconds(0)).toBe('0m 0s')
   })
 
   it('Treats invalid input as 0', () => {
-    expect(Filters.formatCounterTime(NaN)).toBe('0m 0s')
-    expect(Filters.formatCounterTime(Infinity)).toBe('0m 0s')
-    expect(Filters.formatCounterTime(-Infinity)).toBe('0m 0s')
+    expect(Filters.formatCounterSeconds(NaN)).toBe('0m 0s')
+    expect(Filters.formatCounterSeconds(Infinity)).toBe('0m 0s')
+    expect(Filters.formatCounterSeconds(-Infinity)).toBe('0m 0s')
   })
 })
 
