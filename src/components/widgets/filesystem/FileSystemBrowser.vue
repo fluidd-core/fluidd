@@ -192,7 +192,7 @@
             item-value="estimated_time"
           >
             <span v-if="item.estimated_time !== undefined">
-              {{ $filters.formatCounterTime(item.estimated_time) }}
+              {{ $filters.formatCounterSeconds(item.estimated_time) }}
             </span>
           </file-row-item>
 
@@ -202,7 +202,7 @@
             item-value="history.print_duration"
           >
             <span v-if="item.history && item.history.print_duration !== undefined">
-              {{ $filters.formatCounterTime(item.history.print_duration) }}
+              {{ $filters.formatCounterSeconds(item.history.print_duration) }}
             </span>
           </file-row-item>
 
@@ -212,7 +212,7 @@
             item-value="history.total_duration"
           >
             <span v-if="item.history && item.history.total_duration !== undefined">
-              {{ $filters.formatCounterTime(item.history.total_duration) }}
+              {{ $filters.formatCounterSeconds(item.history.total_duration) }}
             </span>
           </file-row-item>
 

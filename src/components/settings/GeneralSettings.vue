@@ -198,15 +198,6 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   @Ref('instanceName')
   readonly instanceNameElement!: VInput
 
-  get estimateTypes () {
-    return [
-      { name: this.$t('app.setting.timer_options.duration'), value: 'totals' },
-      { name: this.$t('app.setting.timer_options.slicer'), value: 'slicer' },
-      { name: this.$t('app.setting.timer_options.file'), value: 'file' },
-      { name: this.$t('app.setting.timer_options.filament'), value: 'filament' }
-    ]
-  }
-
   get instanceName () {
     return this.$store.state.config.uiSettings.general.instanceName
   }

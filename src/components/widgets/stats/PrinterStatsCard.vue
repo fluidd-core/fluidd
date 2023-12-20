@@ -65,7 +65,7 @@
               {{ $t('app.general.label.longest_job') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterTime(rollup.longest_job) }}
+              {{ $filters.formatCounterSeconds(rollup.longest_job) }}
             </div>
           </v-card>
         </v-col>
@@ -78,13 +78,13 @@
               {{ $t('app.general.label.total_time') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterTime(rollup.total_time) }}
+              {{ $filters.formatCounterSeconds(rollup.total_time) }}
             </div>
             <div class="secondary--text">
               {{ $t('app.general.label.total_time_avg') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterTime(rollup.total_avg) }}
+              {{ $filters.formatCounterSeconds(rollup.total_avg) }}
             </div>
           </v-card>
         </v-col>
@@ -97,13 +97,13 @@
               {{ $t('app.general.label.total_print_time') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterTime(rollup.total_print_time) }}
+              {{ $filters.formatCounterSeconds(rollup.total_print_time) }}
             </div>
             <div class="secondary--text">
               {{ $t('app.general.label.total_print_time_avg') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterTime(rollup.print_avg) }}
+              {{ $filters.formatCounterSeconds(rollup.print_avg) }}
             </div>
           </v-card>
         </v-col>
