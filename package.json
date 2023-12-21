@@ -37,6 +37,7 @@
     "@ctrl/tinycolor": "^4.0.2",
     "@fontsource/raleway": "^5.0.16",
     "@fontsource/roboto": "^5.0.8",
+    "@irojs/iro-core": "^1.2.1",
     "@jaames/iro": "^5.5.2",
     "axios": "^1.6.2",
     "consola": "^3.2.3",
@@ -98,6 +99,7 @@
     "madge": "^6.1.0",
     "mockdate": "^3.0.5",
     "monaco-vscode-textmate-theme-converter": "^0.1.7",
+    "rollup": "^4.9.1",
     "sass": "~1.32.13",
     "shx": "^0.3.4",
     "standard-version": "^9.5.0",
@@ -111,7 +113,12 @@
     "vue-debounce-decorator": "^1.0.1",
     "vue-i18n-extract": "^2.0.7",
     "vue-template-compiler": "^2.7.15",
-    "vue-tsc": "^1.8.25"
+    "vue-tsc": "^1.8.26",
+    "workbox-build": "^7.0.0",
+    "workbox-core": "^7.0.0",
+    "workbox-routing": "^7.0.0",
+    "workbox-strategies": "^7.0.0",
+    "workbox-window": "^7.0.0"
   },
   "_id": "fluidd@0.0.3",
   "bugs": {
