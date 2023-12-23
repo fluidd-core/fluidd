@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.27.1](https://github.com/fluidd-core/fluidd/compare/v1.27.0...v1.27.1) (2023-12-23)
+
+
+### Features
+
+* add feature to filter moonraker backup files ([#1278](https://github.com/fluidd-core/fluidd/issues/1278)) ([66c8d20](https://github.com/fluidd-core/fluidd/commit/66c8d20cb1377ff867bb33f0d2c00593fa20c14b))
+* adds help tooltips to File Browsers ([af48f3c](https://github.com/fluidd-core/fluidd/commit/af48f3c97e0d1013e4b34af93257df7b5844c4b3))
+* highlight section in circle toolhead control ([99ef5b3](https://github.com/fluidd-core/fluidd/commit/99ef5b3efe1c71e89029246fbf5cd509e24900e4))
+* new SVG assets for circle toolhead controls ([#1279](https://github.com/fluidd-core/fluidd/issues/1279)) ([62cd4c1](https://github.com/fluidd-core/fluidd/commit/62cd4c10530aef371de6f3b77450da97cf159e70))
+
+
+### Bug Fixes
+
+* corrects original source attributions ([#1276](https://github.com/fluidd-core/fluidd/issues/1276)) ([8ee1312](https://github.com/fluidd-core/fluidd/commit/8ee1312153adc1894c90f64589964741a54f8192))
+* improves estimates calculation ([#1283](https://github.com/fluidd-core/fluidd/issues/1283)) ([822a274](https://github.com/fluidd-core/fluidd/commit/822a2748e63552d663d48ffbab800336b0ef1f8a))
+* makes print cooling fan optional ([#1281](https://github.com/fluidd-core/fluidd/issues/1281)) ([de2d15c](https://github.com/fluidd-core/fluidd/commit/de2d15cccdba5292c6114815e136c83b2dfc94a7))
+* reset default move distance when availables change ([#1287](https://github.com/fluidd-core/fluidd/issues/1287)) ([720d6b2](https://github.com/fluidd-core/fluidd/commit/720d6b2f45260c5c7b479d9d3183bfa830c4b69e))
+
 ## [1.27.0](https://github.com/fluidd-core/fluidd/compare/v1.26.3...v1.27.0) (2023-12-14)
 
 
