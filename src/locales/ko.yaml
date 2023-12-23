@@ -6,20 +6,20 @@ app:
       mesh_matrix: 메쉬 매트릭스
       probed_matrix: 측정된 매트릭스
       profile_name: 프로파일 명
-      remove_profile: '%{name} 프로파일을 제거합니다.'
-      scale: Scale by min / max
+      remove_profile: '%{name} 프로파일을 제거합니다'
+      scale: 편차값 표시
       wireframe: 와이어프레임
       base: 바닥
-      active: 액티브
+      active: 사용중
     msg:
-      hint: '%{name}이 아닌 다른 항목으로 저장하는 경우에는, %{name} 프로파일을 제거하도록 선택할 수 있습니다.'
+      hint: '%{name}이 아닌 다른 항목으로 저장하는 경우에는, %{name} 프로파일을 제거하도록 선택할 수 있습니다'
       not_found: 적용된 베드 메쉬를 찾을 수 없습니다.
-      not_loaded: 메쉬가 로드되지 않았습니다.
+      not_loaded: 메쉬가 로드되지 않았습니다
     tooltip:
-      calibrate: 프로파일을 'default'로 저장하여 신규 칼리브레이션을 시작합니다.
+      calibrate: 프로파일을 'default'로 저장하고 신규 캘리브레이션을 시작합니다
       delete: 프로파일을 삭제합니다
       load: 프로파일 불러오기
-      save: 칼리브레이션이 된 프로파일을 printer.cfg에 적용합니다
+      save: 캘리브레이션이 된 프로파일을 printer.cfg에 적용합니다
       copy_image: 베드 메쉬 이미지 복사
   chart:
     label:
@@ -44,15 +44,15 @@ app:
         <kbd>&uarr;</kbd>와 <kbd>&darr;</kbd>를 사용합니다
   endpoint:
     error:
-      cant_connect: 어떤 부분이 잘못되어 Fluidd가 접속할 수 없습니다.  이것이 맞는 주소인지 확실합니까?
-      cors_error: CORS 정책에 의해 블록되었습니다.
+      cant_connect: 문제가 발생하여 Fluidd가 대상에 연결할 수 없습니다. 이것이 올바른 장치 주소인가요?
+      cors_error: CORS 정책에 의해 차단되었습니다. Moonraker 도움말을 참조하세요
       cors_note: >-
-        이는 당신의 Moonraker 설정을 수정해야 함을 의미할 수 있습니다. <a href="%{url}"
-        target="_blank">여기에서</a> 다중 프린터 설정에 대한 문서를 참조하십시오.
+        이는 당신의 Moonraker 설정을 수정해야 함을 의미할 수 있습니다. <a href="%{url}" target="_blank">여기에서</a>
+        다중 프린터 설정에 대한 문서를 참조하십시오
     hint:
-      add_printer: 예시) http://fluiddpi.local
+      add_printer: 예) http://fluiddpi.local
     msg:
-      trouble: '문제가 있습니까? 자세한 정보는 <a href="%{url}" target="_blank">여기를</a> 참조하십시오. '
+      trouble: '문제가 있습니까? 자세한 정보는 <a href="%{url}" target="_blank">여기를</a> 참조하십시오.'
     tooltip:
       endpoint_examples: >-
         API URL을 입력하십시오.<br />몇가지 예시는 다음과 같습니다;<br />
@@ -66,8 +66,8 @@ app:
   file_system:
     filters:
       label:
-        print_start_time: Filter printed
-        print_start_time_desc: Filters out items you've already printed.
+        print_start_time: 출력된 항목 숨기기
+        print_start_time_desc: 이미 출력된 항목을 숨깁니다.
         moonraker_backup_files: Moonraker 백업 파일 필터링
         rolled_log_files: 롤링된 로그 파일 필터링
         klipper_backup_files: Klipper 백업 파일 필터링
@@ -82,15 +82,15 @@ app:
       uploaded: 업로드 완료
       view_section_documentation: "'%{섹션}' 문서 보기"
     msg:
-      not_found: 파일을 찾을 수 없습니다.
-      processing: 처리중...
+      not_found: 파일을 찾을 수 없습니다
+      processing: 처리중
     title:
       add_dir: 폴더 추가
       add_file: 파일 추가
-      download_file: Retrieving file
+      download_file: 파일 검색 중
       rename_dir: 폴더명 변경
       rename_file: 파일명 변경
-      upload_file: Uploading file | Uploading files
+      upload_file: 파일 업로드
       go_to_file: 파일로 이동
       command_palette: 명령 팔레트
       duplicate_file: 파일 복제
@@ -127,8 +127,7 @@ app:
       show_parts: 부품 표시
     msg:
       confirm: >-
-        The file "%{filename}" is %{size}, this might be resource intensive for
-        your system. Are you sure?
+        "%{filename}" 파일은 %{size}입니다. 시스템 리소스를 많이 사용할 수 있습니다. 확실합니까?
     overlay:
       drag_file_load: gcode파일을 여기로 <strong>드래그</strong>하세요
   general:
@@ -139,17 +138,17 @@ app:
       add_printer: 프린터 추가
       adjust_layout: 대시보드 레이아웃 조정
       all: 모두
-      calibrate: 칼리브레이션
+      calibrate: 캘리브레이션
       cancel: 취소
       clear_profile: 프로파일 적용해제
       close: 닫기
-      config_reference: 참조 콘픽
+      config_reference: 설정 참조
       download: 다운로드
       edit: 수정
       exit_layout: 레이아웃 모드 나가기
       extrude: 압출
       heaters_off: 히터 꺼짐
-      load_all: Load all
+      load_all: 전체 다운로드
       more_information: 추가정보
       pause: 일시중지
       preheat: 예열
@@ -212,11 +211,11 @@ app:
       abort: 중단
       multiply: 곱하기
     error:
-      app_setup_link: <a target="_blank" href="%{url}">여기서.</a> Fluidd 설치 요구조건을 찾을
-        수 있습니다.
+      app_setup_link: <a target="_blank" href="%{url}">여기서</a> Fluidd 설치 요구조건을 찾을
+        수 있습니다
       app_warnings_found: '%{appName} 경고 발견.'
       components_config: <a target="_blank" href="%{url}">여기서</a> Moonraker 플러그인 설정을
-        찾을 수 있습니다.
+        찾을 수 있습니다
       failed_components: Moonraker에서 플러그인에 실패했습니다. 로그를 확인하고 설정을 업데이트 후 Moonraker를
         재시작 하십시오.
     label:
@@ -339,12 +338,12 @@ app:
     simple_form:
       error:
         arrayofnums: 숫자만 입력 가능합니다
-        exists: 이미 존재합니다.
+        exists: 이미 존재합니다
         invalid_url: 잘못된 URL
         max: 최대 %{max}
         min: 최소 %{min}
         min_or_0: 최소 %{min} or 0
-        password_username: 사용자 이름이 일치하지 않습니다.
+        password_username: 사용자 이름이 일치하지 않습니다
         required: 필수기재
         invalid_number: 유효하지 않은 번호
         invalid_expression: 유효하지 않은 표현식
@@ -397,8 +396,8 @@ app:
       add_printer: 프린터 추가
       bedmesh: 베드 메쉬
       bedmesh_controls: 베드 메쉬 제어
-      camera: 카메라 | 카메라
-      config_files: CONFIG 파일
+      camera: 카메라
+      config_files: 설정 파일
       configure: 환경설정
       console: 명령어 창
       endstops: 엔드스탑
@@ -431,7 +430,7 @@ app:
     tooltip:
       estop: 비상 정지
       reload_klipper: Klipper 설정을 다시 불러 옵니다.
-      reload_restart_klipper: Klipper 설정을 다시 불러오고, MCU(s)를 재시작 합니다.
+      reload_restart_klipper: Klipper 설정을 다시 불러오고, MCU를 재시작 합니다.
       restart_klipper: Klipper 시스템 서비스를 다시 시작합니다.
       file_browser_configuration_help: 파일과 폴더를 여기에서 끌어다 놓아 구성 파일에 복사합니다
       managed_by_moonraker: moonraker 구성으로 관리
@@ -465,13 +464,13 @@ app:
       add_category: 카테고리 추가
       add_metric: 메트릭 추가
     camera_type_options:
-      mjpegadaptive: MJPEG Adaptive
-      mjpegstream: MJPEG Stream
+      mjpegadaptive: MJPEG 적응형
+      mjpegstream: MJPEG 스트림
       video: IP 카메라
       webrtc_gortc: WebRTC (go2rtc)
       hlsstream: HLS 스트림
       iframe: HTTP 페이지
-      webrtc_camera_streamer: WebRTC (camera-streamer)
+      webrtc_camera_streamer: WebRTC (카메라 스트리머)
     label:
       all_off: 모두 끄기
       all_on: 모두 켜기
@@ -497,7 +496,7 @@ app:
       invert_y_control: Y 반전 컨트롤
       invert_z_control: Z 반전 컨트롤
       language: 표시 언어
-      move_line_width: Move Line Width
+      move_line_width: 선 너비 이동
       primary_color: 주 컬러
       printer_name: 프린터 이름
       reset: 환경설정 초기화
@@ -543,7 +542,7 @@ app:
       show_upload_and_print: 상단 내비게이션에 업로드 및 인쇄 버튼 표시
       unit: 단위
       show_code_lens: CodeLens 표시
-      thermal_preset_gcode: GCode
+      thermal_preset_gcode: G코드
       type: 타입
       last_result: 최종 결과
       right_y: 오른쪽 Y축
@@ -590,7 +589,7 @@ app:
       slicer: 슬라이서
     title:
       authentication: 인증
-      camera: 카메라 | 카메라
+      camera: 카메라
       gcode_preview: Gcode 미리보기
       general: 일반
       macros: 매크로
@@ -601,7 +600,7 @@ app:
       file_editor: 파일 편집기
       console: 콘솔
     tooltip:
-      gcode_coords: 대시보드의 툴헤드 위치 대신에 G코드 위치를 사용합니다.
+      gcode_coords: 대시보드의 툴헤드 위치 대신에 G코드 위치를 사용합니다
       theme_disclaimer: 이러한 테마에는 해당 소유자의 지적 재산인 브랜드 이름과 로고가 포함되어 있습니다.<br> 이러한 이름과
         로고의 포함은 해당 브랜드의 허가를 받아 이루어졌습니다.<br> 그러나 이러한 테마는 해당 브랜드에서 공식적으로 유지 관리하지 않는다는
         점에 유의하세요.<br> 테마와 관련된 문제나 문의 사항은 Fluidd 팀에 문의하시기 바랍니다.<br> 브랜드 이름과 로고의 사용은
@@ -693,7 +692,7 @@ app:
       update_all: 모두 업데이트
     label:
       commit_history: 커밋 이력
-      commits_on: commits on
+      commits_on: 커밋 대상
       committed: 커밋됨
       dirty: 변경 상태
       invalid: 유효하지 않은 상태
@@ -707,8 +706,8 @@ app:
     title: 소프트웨어 업데이트
     tooltip:
       commit_history: 커밋 이력
-      dirty: 마스터가 아닌 또는 유효하지 않은 원점을 나타내거나 헤드가 분리되었습니다.
-      invalid: 저장소의 내부 변경으로 유효하지 않습니다.
+      dirty: 마스터가 아닌 또는 유효하지 않은 원점을 나타내거나 헤드가 분리되었습니다
+      invalid: 저장소의 내부 변경으로 유효하지 않습니다
       packages: 패키지
       release_notes: 릴리즈 노트
   spoolman:
@@ -754,7 +753,7 @@ app:
       tracking_inactive: 필라멘트 추적이 비활성화되었습니다. 시작하려면 스풀을 선택하세요.
     title:
       scan_spool: 스풀 스캔
-      spoolman: Spoolman
+      spoolman: 스풀 관리
       spool_selection: 스풀 선택
   timelapse:
     setting:
