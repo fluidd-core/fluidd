@@ -1,65 +1,73 @@
 app:
   bedmesh:
     label:
+      active: 사용중
+      base: 베이스
       box_scale: 박스 크기
       flat_surface: 평면 보이기
       mesh_matrix: 메쉬 매트릭스
       probed_matrix: 측정된 매트릭스
       profile_name: 프로파일 명
       remove_profile: '%{name} 프로파일을 제거합니다.'
-      scale: Scale by min / max
+      scale: 편차값 표시
       wireframe: 와이어프레임
     msg:
       hint: '%{name}이 아닌 다른 항목으로 저장하는 경우에는, %{name} 프로파일을 제거하도록 선택할 수 있습니다.'
       not_found: 적용된 베드 메쉬를 찾을 수 없습니다.
       not_loaded: 메쉬가 로드되지 않았습니다.
     tooltip:
-      calibrate: 프로파일을 'default'로 저장하여 신규 칼리브레이션을 시작합니다.
+      calibrate: 프로파일을 'default'로 저장하고 신규 캘리브레이션을 시작합니다.
       delete: 프로파일을 삭제합니다
       load: 프로파일 불러오기
-      save: 칼리브레이션이 된 프로파일을 printer.cfg에 적용합니다
+      save: 캘리브레이션이 된 프로파일을 printer.cfg에 적용합니다
+      copy_image: 베드 메쉬 이미지 복사
   chart:
     label:
       current: 현재 온도
       item: 항목
       power: 전원
       target: 목표 온도
+      rate_of_change: 변경
     tooltip:
       help: >-
-        쉬프트키를 누르고 있으면 확대됩니다.<br />항목을 클릭하면 그래프가 전환됩니다.<br /> 전원을 클릭하면 그래프가
-        전환됩니다.
+        차트를 확대/축소하려면 Shift 키를 누르세요. <br>차트 표시를 전환하려면 항목 이름이나 전원을 클릭하세요.
   console:
     label:
       auto_scroll: 자동 스크롤
+      flip_layout: 레이아웃 뒤집기
       hide_temp_waits: 온도변화 숨김
-    placeholder:
-      command: '''TAB''키는 자동완성, ''help''는 명령어 확인 ''키보드 화살표''는 history 보기'
+    tooltip:
+      help: 명령을 자동으로 완성하려면 'tab'을 누르고, 기록 명령을 보려면 '↑↓'를 누르고, 명령 도움말을 보려면 'help'를 입력하세요.
   endpoint:
     error:
-      cant_connect: 어떤 부분이 잘못되어 Fluidd가 접속할 수 없습니다.  이것이 맞는 주소인지 확실합니까?
-      cors_error: CORS 정책에 의해 블록되었습니다.
+      cant_connect: 문제가 발생하여 Fluidd가 대상에 연결할 수 없습니다. 이것이 올바른 장치 주소인가요?
+      cors_error: CORS 정책에 의해 차단되었습니다. Moonraker 도움말을 참조하세요.
       cors_note: >-
         이는 당신의 Moonraker 설정을 수정해야 함을 의미할 수 있습니다. <a href="%{url}"
         target="_blank">여기에서</a> 다중 프린터 설정에 대한 문서를 참조하십시오.
     hint:
-      add_printer: 예시) http://fluiddpi.local
+      add_printer: 예) http://fluiddpi.local
     msg:
-      trouble: '문제가 있습니까? 자세한 정보는 <a href="%{url}" target="_blank">여기를</a> 참조하십시오. '
+      trouble: 문제가 있습니까? 자세한 정보는 <a href="%{url}" target="_blank">여기를</a> 참조하십시오.
     tooltip:
       endpoint_examples: >-
-        API URL을 입력하십시오.<br />몇가지 예시는 다음과 같습니다;<br />
+        Moonraker API 주소를 입력하세요.<br />예시는 다음과 같습니다;<br />
         <blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
   endstop:
     label:
       open: 열림
       triggered: 닫힘
     msg:
-      subtitle: 새로고침 버튼을 사용해서 엔드스탑 상태를 업데이트 합니다.
+      subtitle: 새로고침 버튼으로 엔드스탑 상태를 업데이트 합니다.
   file_system:
     filters:
       label:
-        print_start_time: Filter printed
-        print_start_time_desc: Filters out items you've already printed.
+        print_start_time: 출력된 항목 숨기기
+        print_start_time_desc: 이미 출력된 항목을 숨깁니다.
+        hidden_files_folders: 숨겨진 파일 및 폴더 필터링
+        klipper_backup_files: Klipper 백업 파일 숨기기
+        moonraker_backup_files: Moonraker 백업 파일 숨기기
+        rolled_log_files: 롤링된 로그 파일 필터링
     label:
       dir_name: 폴더명
       disk_usage: 디스크 사용량
@@ -68,132 +76,224 @@ app:
       file_name: 파일명
       transfer_rate: 전송 속도
       uploaded: 업로드 완료
+      view_section_documentation: >-
+        '%{section}' 문서 보기
     msg:
       not_found: 파일을 찾을 수 없습니다.
       processing: 처리중...
+    overlay:
+      drag_files_folders_upload: 업로드하려면 파일과 폴더를 여기로 <strong>드래그</strong>하세요.
+      drag_files_enqueue: 대기열에 추가하려면 파일을 여기로 <strong>드래그</strong>하세요.
     title:
       add_dir: 폴더 추가
       add_file: 파일 추가
-      download_file: Retrieving file
+      command_palette: 명령 팔레트
+      download_file: 파일 검색 중
+      duplicate_dir: 중복 디렉토리
+      duplicate_file: 중복 파일
+      go_to_file: 파일로 이동
       rename_dir: 폴더명 변경
       rename_file: 파일명 변경
-      upload_file: Uploading file | Uploading files
+      upload_file: 파일 업로드
     tooltip:
       low_on_space: 디스크 공간 부족
+      items_count: '{count}개 항목'
+      root_disabled: '{root} 루트를 사용할 수 없습니다. 로그를 확인하세요.'
+    url:
+      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
+      moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
+      crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
   gcode:
     btn:
       load_current_file: 현재 파일 불러오기
     label:
       current_layer_height: 현재 레이어 높이
+      exclude_object: 개체 제외
       follow_progress: 진행상황 따라가기
       layer: 레이어
       layers: 레이어들
       parsed: 분석완료
+      show_current_layer: 현재 레이어 표시
       show_extrusions: 압출 보이기
       show_moves: 움직임 보이기
       show_next_layer: 다음 레이어 보기
+      show_parts: 부품 표시
       show_previous_layer: 이전 레이어 보기
       show_retractions: 리트렉션 보이기
+      parsing_file: 파일 파싱 중
     msg:
       confirm: >-
-        The file "%{filename}" is %{size}, this might be resource intensive for
-        your system. Are you sure?
+        "%{filename}" 파일은 %{size}입니다. 시스템 리소스를 많이 사용할 수 있습니다. 확실합니까?
+    overlay:
+      drag_file_load: 로드하려면 여기로 G코드 파일을 <strong>드래그</strong>하세요.
   general:
     btn:
+      abort: 중단
+      accept: 수락
       add: 추가
       add_dir: 폴더 추가
       add_file: 파일 추가
       add_printer: 프린터 추가
+      add_to_queue: 목록에 추가
       adjust_layout: 대시보드 레이아웃 조정
+      adjusted: 조정됨
       all: 모두
-      calibrate: 칼리브레이션
+      auth_unsure: 이 내용이 왜 표시되는지 잘 모르겠나요?
+      calibrate: 캘리브레이션
       cancel: 취소
       clear_profile: 프로파일 적용해제
       close: 닫기
-      config_reference: 참조 콘픽
+      config_reference: 설젖 참조
+      create_zip_archive: ZIP 압축파일 생성
+      delete: 삭제
       download: 다운로드
+      duplicate: 복사
       edit: 수정
       exit_layout: 레이아웃 모드 나가기
       extrude: 압출
+      filter: 필터
+      forgot_password: 비밀번호를 잊으셨습니까?
+      go_to_file: 파일로 이동
       heaters_off: 히터 꺼짐
-      load_all: Load all
+      job_queue: 작업 대기열
+      load_all: 전체 다운로드
+      login: 로그인
+      logout: 로그아웃
       more_information: 추가정보
+      multiply: 증가
       pause: 일시중지
       preheat: 예열
       presets: 프리셋
-      preview_gcode: Gcode 미리보기
+      preview_gcode: G코드 미리보기
+      print: 출력
       quad_gantry_level: 쿼드겐트리 레벨링
       reboot: 재부팅
+      recover: 복구
       refresh: 새로고침
+      refresh_metadata: 메타데이터 새로 고침
+      reload: 새로고침
       remove: 제거
       remove_all: 모두 제거
       rename: 이름 변경
       reprint: 재출력
       reset_file: 파일 초기화
       reset_layout: 레이아웃 초기화
+      reset_default_layout: 기본 레이아웃 재설정
       restart_firmware: 펌웨어 재시작
       restart_service: '%{service} 재시작'
       restart_service_klipper: Klipper 재시작
       restart_service_moonraker: Moonraker 재시작
       resume: 재개
-      retract: 리트랙션
+      retract: 후퇴
+      retry: 재시도
+      return_dashboard: 대시보드로 돌아가기
       save: 저장
       save_as: 다른이름으로 저장
-      save_restart: 저장&다시시작
-      send: Send
-      set_color: Set Color
+      save_restart: 저장 & 재시작
+      save_config_and_restart: 설정 저장 및 재시작
+      select_columns: 열 선택
+      send: 보내기
+      set_color: 색상 설정
+      set_default_layout: 기본 레이아웃으로 설정
       shutdown: 종료
+      snooze: 나중에 알림
+      socket_reconnect: 다시 연결
       socket_refresh: 강제 새로고침
+      thumbnail_size: 썸네일 크기
       upload: 업로드
-      upload_print: 업로드&출력
+      upload_files: 파일 업로드
+      upload_folder: 폴더 업로드
+      upload_print: 업로드 & 출력
       view: 보기
+      reset_stats: 상태 초기화
     error:
-      app_setup_link: <a target="_blank" href="%{url}">여기서.</a> Fluidd 설치 요구조건을 찾을 수 있습니다.
+      app_setup_link: <a target="_blank" href="%{url}">여기에서.</a> Fluidd 설치 요구조건을 찾을 수 있습니다.
       app_warnings_found: '%{appName} 경고 발견.'
-      components_config: <a target="_blank" href="%{url}">여기서</a> Moonraker 플러그인 설정을 찾을 수 있습니다.
-      failed_components: Moonraker에서 플러그인에 실패했습니다. 로그를 확인하고 설정을 업데이트 후 Moonraker를 재시작 하십시오.
+      components_config: <a target="_blank" href="%{url}">여기에서</a> Moonraker 플러그인 설정을 찾을 수 있습니다.
+      failed_components: Moonraker 플러그인을 활성화하지 못했습니다. 로그를 확인하고 구성을 업데이트한 후 Moonraker를 다시 시작하세요.
     label:
       accel_to_decel: 감속도
       acceleration: 가속도
+      accepted_screws: 나사 확인
+      actual_time: 실제 시간
       add_camera: 카메라 추가
-      add_preset: 사전설정 추가
-      add_user: Add 사용자
+      add_filter: 필터 추가
+      add_preset: 프리셋 추가
+      add_user: 사용자 추가
+      all: 전체
       api_key: Api 키
       api_url: API URL
+      auth_source: 인증 소스
+      bars: 바
       category: 카테고리
       change_password: 비밀번호 변경
       clear_all: 모두 지우기
       color: 색깔
+      command: 명령
       confirm: 확인
+      cross: 십자
+      circle: 원
       current_password: 현재 비밀번호
-      disabled_while_printing: 프린팅중 비활성화됨
+      current_user: 현재 사용자
+      default: 기본값
+      disabled_while_printing: 출력중 비활성화됨
       edit_camera: 카메라 수정
-      edit_preset: 사전설정 수정
+      edit_filter: 필터 수정
+      edit_preset: 프리셋 수정
       edit_user: 사용자 수정
       extrude_length: 압출 길이
       extrude_speed: 압출 속도
+      filament: 필라멘트
+      file: 파일
+      finish_time: 완료
       flow: 필라멘트 공급량
       free: 사용가능
+      heaters_busy: 프린터가 현재 사용 중입니다. 히터를 끄면 출력에 실패할 수 있습니다.
       high: 높음
       host: 호스트
+      layer: 레이어
       layout: 레이아웃
+      ldap: LDAP
       longest_job: 가장 긴 출력작업
       low: 낮음
+      manage_accounts: 계정 관리
+      minimum_cruise_ratio: 최소 크루즈 비율
+      user_managed_source: '%{source} 인증으로 관리되는 사용자'
+      m117: M117
+      moonraker: Moonraker
       name: 이름
       new_password: 새 비밀번호
       no_notifications: 알림 없음
-      'off': 꺼짐
+      'on': '켜짐'
+      'off': '꺼짐'
+      numeric_prefix_sort: 숫자 접두사 정렬
       password: 비밀번호
+      partial_of_total: '%{partial} 중 %{total}'
+      pause_at_layer: 레이어에서 일시중지
+      pause_at_next_layer: 다음 레이어에서 일시중지
+      pause_at_layer_number: 레이어 번호에서 일시중지
       power: 전원
+      pressure_advance: PA
       printers: 프린터
       progress: 진행상황
+      range: 범위
       requested_speed: 요청 속도
       retract_length: 압출 길이
       retract_speed: 압출 속도
       save_as: 다른이름으로 저장
+      screw_index: 나사 인덱스
+      screw_name: 나사 이름
+      screw_number: 나사 %{index}
       services: 서비스
-      speed: 프린팅 속도
+      slicer: 슬라이서
+      smooth_time: 평활화 시간
+      speed: 출력 속도
       sqv: 코너 속도
+      stepper_enabled: 스테퍼 활성화됨
+      synced_extruder: 동기화된 압출기
+      thumbnail_size: 썸네일 크기
+      total: 전체
       total_filament: 총 필라멘트 사용량
       total_filament_avg: 총 평균 필라멘트 사용량
       total_jobs: 총 출력작업 수
@@ -201,35 +301,70 @@ app:
       total_print_time_avg: 총 출력 평균시간
       total_time: 총 시간
       total_time_avg: 총 평균시간
+      turn_device_on: '%{device} 켜기'
+      turn_device_off: '%{device} 끄기'
       uncategorized: 카테고리 없음
-      unretract_speed: Unretract 속도
+      unretract_extra_length: 추가 길이 철회
+      unretract_speed: 철회 속도
+      upload_and_print: 업로드 및 출력
       used: 사용중
+      username: 사용자 이름
       velocity: 속도
+      version_sort: 버전 정렬
       visible: 보이기
       z_offset: Z 오프셋
+      unsaved_changes: 저장되지 않은 변경사항
+      alias: 별명
+      apply_z_offset: Z 오프셋 적용 및 저장
+      edit_category: 카테고리 수정
+      add_category: 카테고리 추가
+      file_time: 파일
     msg:
       password_changed: 비밀번호 변경됨
-      wrong_password: 무언가 잘못되었습니다. 비밀번호가 일치합니까?
+      wrong_password: 비밀번호가 다릅니다
+      bed_screws_adjust: 현재 나사에 상당한 조정이 필요한 경우 (<b>조정됨</b>)을 클릭합니다. 그렇지 않으면 <b>수락</b>을 클릭하여 계속합니다.
+      welcome_back: 돌아와서 반가워요. <br>아래에서 로그인하여 프린터와 최신 정보를 받아보세요.
+      offline_ready: 이제 Fluidd를 오프라인으로 작업할 준비가 되었습니다.
+      needs_refresh: 사용 가능한 새 콘텐츠, 업데이트하려면 <b>새로고침</b> 버튼을 클릭하십시오.
+      pending_configuration_sections_deleted: 다음 섹션은 삭제되도록 표시되어 있습니다
+      rolledover_logs: >-
+        다음 응용 프로그램 로그가 롤오버되었습니다: %{applications}
     simple_form:
       error:
         arrayofnums: 숫자만 입력 가능합니다
+        credentials: 잘못된 자격 증명
         exists: 이미 존재합니다.
+        invalid_number: 잘못된 번호
         invalid_url: 잘못된 URL
+        invalid_expression: 잘못된 표현식
         max: 최대 %{max}
         min: 최소 %{min}
-        min_or_0: 최소 %{min} or 0
+        min_or_0: 최소 %{min} 또는 0
         password_username: 사용자 이름이 일치하지 않습니다.
         required: 필수기재
+        invalid_aspect: 유효하지 않은 종횡비
       msg:
         confirm: 확실합니까?
+        confirm_delete: 확실한가요? 이렇게 하면 선택한 항목이 삭제됩니다. | 확실한가요? 이렇게 하면 선택한 {count}개의 항목이 삭제됩니다.
+        confirm_exclude_object: 이 개체를 출력에서 제외하시겠습니까?
+        confirm_forcemove_toggle: 확실한가요? 프린터가 손상될 수 있습니다.
         confirm_reboot_host: 확실합니까? 호스트 시스템이 재부팅됩니다.
         confirm_shutdown_host: 확실합니까? 호스트 시스템이 종료됩니다.
+        confirm_service_start: '%{name} 서비스를 시작하시겠습니까?'
+        confirm_service_restart: '%{name} 서비스를 다시 시작하시겠습니까?'
+        confirm_service_stop: '%{name} 서비스를 중지하시겠습니까?'
+        confirm_power_device_toggle: 확실한가요? 이렇게 하면 이 장치의 전원이 전환됩니다.
+        unsaved_changes: 저장하지 않은 변경 사항이 있습니다. 이 파일을 닫으시겠습니까?
+        no_file_preview: 현재 %{name}을(를) 미리 볼 수 없습니다.
     table:
       header:
         actions: 동작
+        chamber_temp: 챔버 온도
         end_time: 종료 시간
         estimated_time: 예상 시간
         filament: 필라멘트
+        filament_name: 필라멘트 이름
+        filament_type: 필라멘트 종류
         filament_used: 사용된 필라멘트
         filament_weight_total: 필라멘트 무게
         first_layer_bed_temp: 첫 레이어 베드 온도
@@ -240,7 +375,10 @@ app:
         layer_height: 레이어 높이
         modified: 수정 시간
         name: 이름
-        print_duration: 프린팅 기간
+        nozzle_diameter: 노즐 직경
+        print_duration: 출력 시간
+        time_added: 추가된 시간
+        time_in_queue: 대기열에 있는 시간
         size: 사이즈
         slicer: 슬라이서
         slicer_version: 슬라이서 버전
@@ -248,37 +386,73 @@ app:
         status: 상태
         total_duration: 전체 기간
     title:
+      add_chart: 차트 추가
       add_printer: 프린터 추가
       bedmesh: 베드 메쉬
       bedmesh_controls: 베드 메쉬 제어
-      camera: 카메라 | 카메라
-      config_files: CONFIG 파일
+      camera: 카메라
+      config_files: 설정 파일
       configure: 환경설정
       console: 명령어 창
+      diagnostics: 진단
+      edit_chart: 차트 편집
       endstops: 엔드스탑
       fans_outputs: 팬 컨트롤
-      gcode_preview: Gcode 미리보기
+      gcode_preview: G코드 미리보기
       history: 작업 기록
       home: 대시보드
       jobs: 작업
+      job_queue: 작업 대기열
       limits: 프린터 속도 제한
       macros: 매크로
+      metrics_explorer: 메트릭 탐색기
+      not_found: 404 찾을 수 없음
+      other_files: 다른 파일
+      pending_configuration_changes: 보류 중인 구성 변경 사항
       retract: 펌웨어 리트렉션
+      rollover_logs: 롤오버 로그
       runout_sensors: 필라멘트 런아웃 센서
       settings: 설정
       stats: 프린터 상태
+      system: 시스템
       system_overview: 시스템 정보
       temperature: 온도
+      timelapse: 타임랩스
       tool: 툴헤드
       tune: 튜닝
     tooltip:
+      browse_metrics: 사용 가능한 지표 찾아보기
       estop: 비상 정지
+      managed_by_moonraker: Moonraker 구성으로 관리
+      notifications: 알림
       reload_klipper: Klipper 설정을 다시 불러 옵니다.
-      reload_restart_klipper: Klipper 설정을 다시 불러오고, MCU(s)를 재시작 합니다.
+      reload_restart_klipper: Klipper 설정을 다시 불러오고, MCU를 재시작 합니다.
       restart_klipper: Klipper 시스템 서비스를 다시 시작합니다.
+      run_collector: 수집기 실행
+      rollover_logs: 롤오버 로그
+      file_browser_help: >-
+        브라우저 외부에서 파일 또는 폴더를 끌어다 놓아 여기에 업로드<br>파일 및 폴더를 하위 폴더 또는 ".."
+      file_browser_configuration_help: >-
+        파일 및 폴더를 여기에서 끌어다 놓아 구성 파일에 복사합니다.
+  history:
+    msg:
+      confirm: 확실한가요? 이렇게 하면 모든 기록과 프린터 통계가 지워집니다
+      confirm_jobs: 확실한가요? 이렇게 하면 모든 작업이 지워집니다.
+      confirm_stats: 확실한가요? 이렇게 하면 모든 통계가 지워집니다.
+  job_queue:
+    msg:
+      confirm: 확실한가요? 이렇게 하면 전체 프린터 대기열이 지워집니다
+    label:
+      number_of_copies: 매수
+    title:
+      multiply_job: 작업 증가
+    tooltip:
+      help: >-
+        작업에서 파일을 끌어 여기에 놓아<br>작업 대기열에 넣기 대기 중인 작업을 위 또는 아래로 끌어 순서를 조정합니다
   printer:
     state:
       busy: 바쁨
+      cancelled: 취소됨
       complete: 완료
       idle: 아이들
       loading: 로딩중
@@ -286,67 +460,171 @@ app:
       printing: 출력중
       ready: 준비
       standby: 대기
+    title:
+      printer_status: 프린터 상태
   setting:
     btn:
       add_camera: 카메라 추가
+      add_category: 카테고리 추가
+      add_filter: 필터 추가
+      add_metric: 메트릭 추가
       add_thermal_preset: 설정온도 추가
       add_user: 사용자 추가
       reset: 초기화
       select_theme: 테마 선택
     camera_type_options:
-      mjpegadaptive: MJPEG Adaptive
-      mjpegstream: MJPEG Stream
+      mjpegadaptive: MJPEG 적응형
+      mjpegstream: MJPEG 스트림
+      hlsstream: HLS 스트림
+      webrtc_camera_streamer: WebRTC (카메라 스트리머)
       video: IP 카메라
+      iframe: HTTP 페이지
+      webrtc_gortc: WebRTC (go2rtc)
+    camera_rotate_options:
+      '90': 90°
+      '180': 180°
+      '270': 270°
+      none: 없음
     label:
       all_off: 모두 끄기
       all_on: 모두 켜기
+      aspect_ratio: 종횡비
+      aspect_ratio_format: '[너비 : 높이]'
+      auto_edit_extensions: 편집 모드에서 자동으로 열리는 확장 프로그램
+      auto_follow_on_file_load: 파일 로드 시 자동으로 진행 상황 추적
+      auto_load_on_print_start: 출력 시작 시 자동으로 파일 로드
+      auto_load_mobile_on_print_start: 모바일 장치에서 자동으로 파일 로드
+      axes: 축
       camera_flip_x: 수평 반전
       camera_flip_y: 수직 반전
+      camera_fullscreen_action:
+        title: 전체 화면 작업
+        embed: 포함
+        rawstream: 원시 스트림
+      camera_rotate_by: 회전 기준
       camera_stream_type: 스트림 유형
+      camera_url_snapshot: 카메라 URL 스냅샷
+      camera_url_stream: 카메라 URL 스트림
+      card: 카드
+      collector: 수집기
       confirm_on_estop: 비상정지시 확인하기
+      confirm_on_power_device_change: 장치 전원 변경 시 확인 필요
+      confirm_on_save_config_and_restart: 저장 후 다시 시작하기 전에 보류 중인 구성 변경 사항 검토
+      confirm_dirty_editor_close: 저장되지 않은 변경 사항으로 편집기를 닫을 때 확인 필요
+      contains: 포함
       dark_mode: 다크 모드
+      dashed: 점선
       default_extrude_length: 기본 압출 길이
       default_extrude_speed: 기본 압출 속도
+      default_min_layer_height: 기본 최소 레이어 높이
       default_toolhead_move_length: 기본 툴헤드 이동 길이
       default_toolhead_xy_speed: 기본 툴헤드 XY 속도
       default_toolhead_z_speed: 기본 툴헤드 Z 속도
+      dotted: 점선
       draw_background: 배경 그리기
+      draw_origin: 원점 그리기
       enable: 활성화
+      enable_diagnostics: 진단 사용
       enable_notifications: 알림 활성화
+      enable_xy_homing: XY 원점 복귀 활성화
+      expression: 식
       extrusion_line_width: 압출 라인 폭
       flip_horizontal: 수평 반전
       flip_vertical: 수평반전
+      fill_color: 채우기 색상
+      fill_opacity: 채우기 불투명도
+      filter: 필터
       fps_target: 목표 FPS
+      fps_idle_target: 초점이 맞지 않을 때의 FPS 타겟
+      height: 높이
       gcode_coords: G코드 좌표 사용
+      icon: 아이콘
       invert_x_control: X 반전 컨트롤
       invert_y_control: Y 반전 컨트롤
       invert_z_control: Z 반전 컨트롤
       language: 표시 언어
-      move_line_width: Move Line Width
+      last_result: 최종 결과
+      left_y: 왼쪽 Y축
+      line_color: 선 색상
+      line_style: 선 스타일
+      min: 최소
+      max: 최대
+      metrics: 색인
+      move_line_width: 선 너비 이동
+      name: 이름
+      never: 절대
+      none: 없음
+      optional: 선택적
+      power_toggle_in_top_nav: 상단 탐색의 전원 전환
       primary_color: 주 컬러
       printer_name: 프린터 이름
       reset: 환경설정 초기화
       retraction_icon_size: 리트랙선 아이콘 크기
+      right_y: 오른쪽 Y축
+      save_and_restore_view_state: 보기 상태 저장 및 복원
+      sections_to_ignore_pending_configuration_changes: 무시할 섹션 보류 중인 구성 변경 사항
       show_animations: 애니메이션 보이기
+      show_barometric_pressure: 기압 표시
+      show_chart: 차트 표시
+      show_code_lens: 코드 정보 표시
+      show_gas_resistance: 가스 저항 표시
+      show_legend: 범례 표시
+      show_logo_on_background: 배경에 로고 표시
+      show_rate_of_change: 온도 변화율 표시
+      show_relative_humidity: 상대 습도 표시
+      show_save_config_and_restart: 구성 저장 및 재시작 버튼을 상단 탐색에 표시
+      show_upload_and_print: 업로드 및 출력 단추를 상단 탐색에 표시
+      solid: 솔리드
+      starts_with: 다음으로 시작
       theme_preset: 커뮤니티 프리셋
+      thermal_preset_gcode: G코드
       thermal_preset_name: 설정온도명칭
+      title: 타이틀
+      to_browser_local_storage: 브라우저 로컬 저장소로
+      to_browser_session_storage: 브라우저 세션 저장소로
+      toolhead_control_style: 툴헤드 제어 스타일
+      toolhead_move_distances: 툴헤드 거리 값
+      toolhead_xy_move_distances: 툴헤드 XY 거리 값
+      toolhead_z_move_distances: 툴헤드 Z 거리 값
+      type: 형식
+      unit: 단위
       z_adjust_values: Z 조정 값
+      date_format: 날짜 형식
+      time_format: 시간 형식
+      text_sort_order: 텍스트 정렬 순서
+      force_move_toggle_warning: 강제 이동시 확인 필요 여부
+      show_manual_probe_dialog_automatically: 수동 프로브 대화상자 자동 표시
+      show_bed_screws_adjust_dialog_automatically: 자동으로 베드 나사 조정 대화상자 표시
+      show_screws_tilt_adjust_dialog_automatically: 스크류 기울기 조정 대화상자 자동 표시
     timer_options:
-      duration: 기간만
+      duration: 경과시간만 표시
       filament: 필라멘트로 추정
       file: 파일로 추정
       slicer: 슬라이서
     title:
       authentication: 인증
-      camera: 카메라 | 카메라
-      gcode_preview: Gcode 미리보기
+      console: 콘솔
+      camera: 카메라
+      file_browser: 파일 브라우저
+      file_editor: 파일 편집기
+      gcode_preview: G코드 미리보기
       general: 일반
       macros: 매크로
       theme: 테마
       thermal_presets: 온도설정
       tool: 툴헤드
     tooltip:
+      diagnostics_performance: '[베타] 진단 정보를 로깅하면 성능에 영향을 줄 수 있습니다.'
       gcode_coords: 대시보드의 툴헤드 위치 대신에 G코드 위치를 사용합니다.
+      show_manual_probe_dialog_automatically: 수동 프로브 도구를 실행하는 경우 자동으로 도우미 대화 상자를 표시합니다.
+      show_bed_screws_adjust_dialog_automatically: 베드 나사 조정 도구(BED_SCREWS_ADJUST)를 실행하면 도움말 대화 상자가 자동으로 표시됩니다
+      show_screws_tilt_adjust_dialog_automatically: 도구를 실행하는 경우 나사 기울기 계산(SCREWS_TILT_CALCULATE)도우미 대화 상자를 자동으로 표시합니다
+      theme_disclaimer: >-
+        이 테마에는 해당 소유자의 지적 재산인 브랜드 이름과 로고가 있습니다. <br>
+        이러한 이름과 로고의 포함은 브랜드의 허가를 받아 이루어집니다. <br>
+        그러나 이러한 테마는 해당 브랜드에서 공식적으로 유지 관리하지 않습니다. <br>
+        테마와 관련된 모든 문제나 문의는 Fluidd 팀에 문의해야 합니다. <br>
+        브랜드 이름과 로고의 사용은 장식 및 미적 목적으로만 사용되며 브랜드와의 공식적인 연관성이나 보증을 암시하지 않습니다.
   socket:
     msg:
       connecting: Moonraker에 접속중...
@@ -356,8 +634,9 @@ app:
       capacity: 용량
       cpu_desc: CPU 설명
       distribution_codename: 코드명
-      distribution_like: 배포판 Like
-      distribution_name: 배포판 이름
+      distribution_like: 릴리즈를 기반으로 합니다
+      distribution_name: 릴리즈
+      frequency: 빈도
       hardware_desc: 하드웨어 설명
       hostname: 호스트명
       klipper_load: Klipper 로드
@@ -365,9 +644,12 @@ app:
       manufacturer: 제조자
       mcu_awake: '{mcu} 활성시간'
       mcu_bandwidth: '{mcu} 대역폭'
+      mcu_information: '{mcu} 정보'
       mcu_load: '{mcu} 로드'
+      micro_controller: 마이크로 콘트롤러
       model: CPU 모델
       moonraker_load: Moonraker 로드
+      network: 네트워크
       processor_desc: 프로세서
       product_name: 제품명
       serial_number: 시리얼 번호
@@ -375,29 +657,64 @@ app:
       system_memory: 시스템 메모리
       system_utilization: 시스템 사용
       total_memory: 총 메모리
+      operating_system: 운영체제
+      version: 버전
+      virtualization: 가상화
   tool:
     btn:
-      home_x: X
-      home_y: 'Y'
+      home_x: 홈 X
+      home_y: 홈 Y
+      home_all: 전체 홈
+    title:
+      bed_screws_adjust: 베드 나사 조정
+      manual_probe: 수동 프로브
+      screws_tilt_adjust: 나사 틸트 조정
     tooltip:
+      absolute_positioning: 절대 위치
       extruder_disabled: 보다 온도가 낮아 익스투르더가 비활성화 되었습니다. (%{min}<small>°C</small>)
-      home_xy: 호밍 XY
-      home_z: 호밍 Z
+      home_xy: XY 홈
+      home_z: Z 홈
+      manual_probe: 수동 프로브
+      motors_off: 모터 꺼짐
+      relative_positioning: 상대 위치
+      select_tool: '%{tool} 도구 선택'
+      tools: 도구
+    label:
+      stats_active_extruder: >-
+        <span class="secondary--text">활성 압출기 구성이</span>
+        %{filamentDiameter}mm 직경 필라멘트
+        <span class="secondary--text">및</span>
+        %{nozzleDiameter}mm 노즐
+      stats_volumetric_flow: >-
+        %{extrudeSpeed}에서 돌출 mm/s<span class="secondary--text">,
+        압출기는 제공할 수 있어야 합니다</span>
+        %{estimatedVolumetricFlow} mm³/s의 예상 체적 유량
+      stats_extruded_length: >-
+        %{extrudeLength}mm의 필라멘트 압출
+        %{extrudeFactor} % flow<span class="secondary--text">,
+        를 제공합니다.</span>
+        %{estimatedExtrudedLength}mm의 예상 출력 길이
+      stats_max_speed: >-
+        <span class="secondary--text">가정</span>
+        %{layerHeight} mm 레이어 높이<span class="secondary--text">,
+        예상 최대</span> 출력 속도는 %{estimatedMaxSpeed}mm/s입니다.
   version:
     btn:
       check_for_updates: 업데이트 확인
       finish: 마침
       update: 업데이트
+      update_all: 모두 업데이트
       view_versions: 버전 보기
     label:
       commit_history: 커밋 이력
-      commits_on: commits on
+      commits_on: 커밋 대상
       committed: 커밋됨
       dirty: 변경 상태
       invalid: 유효하지 않은 상태
       os_packages: OS 패키지
       package_list: 패키지 목록
       up_to_date: 최신 상태
+      updates_available: 업데이트를 사용할 수 있습니다.
     status:
       finished: 업데이트 완료
       updating: 업데이트중...
@@ -408,3 +725,122 @@ app:
       invalid: 저장소의 내부 변경으로 유효하지 않습니다.
       packages: 패키지
       release_notes: 릴리즈 노트
+  timelapse:
+    btn:
+      render: 렌더링
+      save_frames: 프레임 저장
+    error:
+      newframe: 타임랩스 프레임 촬영 오류 발생
+    label:
+      frames: '%{frames} 프레임 | %{frames}개의 프레임'
+      length: '예상 길이: %{length}'
+      frame: 프레임
+    title:
+      timelapse_settings: 타임랩스 설정
+      timelapse_status: 타임랩스 상태
+      render_settings: 렌더링 설정
+    setting:
+      enable: 사용
+      auto_render: 자동 렌더링
+      crf: 고정 속도 계수
+      duplicatelastframe: 마지막 프레임 복제
+      fw_retract: 펌웨어 철회 사용
+      gcode_verbose: G코드 자세한 정보 표시
+      mode: 모드
+      mode_layermacro: 레이어 매크로
+      mode_hyperlapse: 하이퍼랩스
+      hyperlapse_cycle: 하이퍼랩스 주기
+      output_framerate: 출력 프레임 속도
+      park_retract_distance: 파킹 후퇴 거리
+      park_retract_speed: 파킹 후진 속도
+      park_extrude_distance: 파킹 돌출 거리
+      park_extrude_speed: 파킹 돌출 속도
+      parkhead: 파킹 헤드
+      park_time: 파킹 타임
+      park_travel_speed: 파킹 이동 속도
+      park_custom_pos_x: 파킹 위치 X
+      park_custom_pos_y: 파킹 위치 Y
+      park_custom_pos_dz: 파킹 위치 Z홉
+      parkpos:
+        label: 파킹 위치
+        custom: 사용자 지정
+        front_left: 전면 좌측
+        front_right: 전면 우측
+        center: 가운데
+        back_left: 후면 좌측
+        back_right: 후면 우측
+        x_only: X만 이동
+        y_only: Y만 이동
+      previewimage: 썸네일 생성
+      saveframes: 프레임 저장
+      stream_delay_compensation: 지연 보상
+      targetlength: 대상 길이
+      variable_fps: 가변 FPS
+      variable_fps_min: 최소 프레임 속도
+      variable_fps_max: 최대 프레임 속도
+  spoolman:
+    btn:
+      manage_spools: 스풀 관리
+      scan_code: 코드 스캔
+      select: 선택
+    title:
+      spoolman: 스풀 관리
+      spool_selection: 스풀 선택
+      scan_spool: 스풀 스캔
+    label:
+      change_spool: 스풀 변경
+      comment: 설명
+      device_camera: 장치
+      filament_name: 필라멘트
+      first_used: 처음 사용됨
+      id: ID
+      last_used: 마지막으로 사용됨
+      location: 위치
+      lot_nr: 로트 넘버
+      material: 재료
+      remaining_weight: 남은양
+      vendor: 제조사
+    msg:
+      no_spool: >-
+        스풀을 선택하지 않았습니다.
+        필라멘트 추적 없이 출력하시겠습니까?
+      no_filament: >-
+        선택한 스풀에 필라멘트가 충분히 남아 있지 않을 수 있습니다.
+        출력 작업을 성공적으로 마쳤습니다.
+        계속하시겠습니까?
+      no_required_length: >-
+        선택한 파일을 출력하는 데 필요한 필라멘트의 양을 알 수 없습니다.
+        계속하시겠습니까?
+      mismatched_filament: >-
+        선택한 필라멘트의 재질이 슬라이서에서 선택한 재질과 일치하지 않습니다.
+        계속하시겠습니까?
+      tracking_inactive: >-
+        필라멘트 추적이 비활성화되어 있습니다.
+        시작하려면 스풀을 선택하십시오.
+      info:
+        howto: >-
+          스풀의 QR 코드를 카메라에 보여줍니다.
+          이 창은 스풀이 감지되는 즉시 닫힙니다.
+      warning:
+        code_not_recognized: 이 코드는 호환되는 QR 코드처럼 보이지 않습니다.
+        invalid_spool_id: 이 QR 코드에 포함된 스풀 ID가 잘못되었습니다.
+      error:
+        cors: >-
+          카메라 피드에 액세스하는 동안 오류가 발생했습니다.
+          웹캠 서버가 CORS 액세스를 허용하는지 확인하십시오.
+        spool_not_existant: 스캔한 스풀이 데이터베이스에 없습니다.
+        no_image_data: >-
+          카메라 피드에 액세스하는 동안 오류가 발생했습니다.
+          카메라 구성을 확인하거나 다른 카메라 소스를 사용해 보십시오.
+    setting:
+      auto_open_qr_camera: QR 코드 감지를 위해 자동으로 카메라 열기
+      auto_select_spool_on_match: QR 코드 일치에서 스풀 선택 자동 커밋
+      prefer_device_camera: 가능한 경우 QR 코드 감지를 위해 장치 카메라 사용
+      show_spool_selection_dialog_on_print_start: 출력 시작 시 스풀 선택 대화상자 표시
+      warn_on_not_enough_filament: >-
+        선택한 스풀에 출력를 완료하기에 충분한 필라멘트가 남아 있지 않은 경우 경고 표시
+      warn_on_filament_type_mismatch: >-
+        스풀의 필라멘트 유형과 슬라이서에서 선택한 필라멘트 유형이 일치하지 않는 경우 경고 표시
+  sensors:
+    title:
+      sensors: 센서
