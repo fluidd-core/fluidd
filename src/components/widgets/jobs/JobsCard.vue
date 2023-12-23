@@ -4,6 +4,7 @@
     icon="$files"
     draggable
     layout-path="dashboard.jobs-card"
+    :help-tooltip="$t('app.general.tooltip.file_browser_help')"
   >
     <template #menu>
       <app-btn

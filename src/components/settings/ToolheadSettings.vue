@@ -207,7 +207,7 @@
 
         <app-setting :title="$t('app.setting.label.enable_xy_homing')">
           <v-switch
-            v-model="toolheadControlXYHomingEnabled"
+            v-model="toolheadCircleXYHomingEnabled"
             hide-details
             class="mt-0 mb-4"
           />
@@ -406,324 +406,331 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   @Ref('toolheadCircleZMoveDistances')
   readonly toolheadCircleZMoveDistancesElement!: VInput
 
- @Ref('zAdjustValues')
+  @Ref('zAdjustValues')
   readonly zAdjustValuesElement!: VInput
 
- get defaultExtrudeSpeed () {
-   return this.$store.state.config.uiSettings.general.defaultExtrudeSpeed
- }
+  get defaultExtrudeSpeed () {
+    return this.$store.state.config.uiSettings.general.defaultExtrudeSpeed
+  }
 
- setDefaultExtrudeSpeed (value: string) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.defaultExtrudeSpeed',
-     value: +value,
-     server: true
-   })
- }
+  setDefaultExtrudeSpeed (value: string) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.defaultExtrudeSpeed',
+      value: +value,
+      server: true
+    })
+  }
 
- get defaultExtrudeLength () {
-   return this.$store.state.config.uiSettings.general.defaultExtrudeLength
- }
+  get defaultExtrudeLength () {
+    return this.$store.state.config.uiSettings.general.defaultExtrudeLength
+  }
 
- setDefaultExtrudeLength (value: number) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.defaultExtrudeLength',
-     value: +value,
-     server: true
-   })
- }
+  setDefaultExtrudeLength (value: number) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.defaultExtrudeLength',
+      value: +value,
+      server: true
+    })
+  }
 
- get defaultToolheadMoveLength () {
-   return this.$store.state.config.uiSettings.general.defaultToolheadMoveLength
- }
+  get defaultToolheadMoveLength () {
+    return this.$store.state.config.uiSettings.general.defaultToolheadMoveLength
+  }
 
- setDefaultToolheadMoveLength (value: number) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.defaultToolheadMoveLength',
-     value: +value,
-     server: true
-   })
- }
+  setDefaultToolheadMoveLength (value: number) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.defaultToolheadMoveLength',
+      value: +value,
+      server: true
+    })
+  }
 
- get defaultToolheadXYSpeed () {
-   return this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
- }
+  get defaultToolheadXYSpeed () {
+    return this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+  }
 
- setDefaultToolheadYXSpeed (value: number) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.defaultToolheadXYSpeed',
-     value: +value,
-     server: true
-   })
- }
+  setDefaultToolheadYXSpeed (value: number) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.defaultToolheadXYSpeed',
+      value: +value,
+      server: true
+    })
+  }
 
- get defaultToolheadZSpeed () {
-   return this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
- }
+  get defaultToolheadZSpeed () {
+    return this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
+  }
 
- setDefaultToolheadZSpeed (value: number) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.defaultToolheadZSpeed',
-     value: +value,
-     server: true
-   })
- }
+  setDefaultToolheadZSpeed (value: number) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.defaultToolheadZSpeed',
+      value: +value,
+      server: true
+    })
+  }
 
- get zAdjustValues () {
-   return this.$store.state.config.uiSettings.general.zAdjustDistances
- }
+  get zAdjustValues () {
+    return this.$store.state.config.uiSettings.general.zAdjustDistances
+  }
 
- set zAdjustValues (value: (number | string)[]) {
-   if (!this.zAdjustValuesElement.validate(true)) {
-     return
-   }
+  set zAdjustValues (value: (number | string)[]) {
+    if (!this.zAdjustValuesElement.validate(true)) {
+      return
+    }
 
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.zAdjustDistances',
-     value: [...new Set(value.map(Number))].sort((a, b) => a - b),
-     server: true
-   })
- }
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.zAdjustDistances',
+      value: [...new Set(value.map(Number))].sort((a, b) => a - b),
+      server: true
+    })
+  }
 
- get toolheadControlXYHomingEnabled () {
-   return this.$store.state.config.uiSettings.general.toolheadControlXYHomingEnabled
- }
+  get toolheadCircleXYHomingEnabled () {
+    return this.$store.state.config.uiSettings.general.toolheadCircleXYHomingEnabled
+  }
 
- set toolheadControlXYHomingEnabled (value: ToolheadControlStyle) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.toolheadControlXYHomingEnabled',
-     value,
-     server: true
-   })
- }
+  set toolheadCircleXYHomingEnabled (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.toolheadCircleXYHomingEnabled',
+      value,
+      server: true
+    })
+  }
 
- get toolheadControlStyle () {
-   return this.$store.state.config.uiSettings.general.toolheadControlStyle
- }
+  get toolheadControlStyle () {
+    return this.$store.state.config.uiSettings.general.toolheadControlStyle
+  }
 
- set toolheadControlStyle (value: ToolheadControlStyle) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.toolheadControlStyle',
-     value,
-     server: true
-   })
- }
+  set toolheadControlStyle (value: ToolheadControlStyle) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.toolheadControlStyle',
+      value,
+      server: true
+    })
+  }
 
- get availableToolheadControlStyles () {
-   return [
-     {
-       value: 'cross',
-       text: this.$t('app.general.label.cross')
-     },
-     {
-       value: 'bars',
-       text: this.$t('app.general.label.bars')
-     },
-     {
-       value: 'circle',
-       text: this.$t('app.general.label.circle')
-     }
-   ]
- }
+  get availableToolheadControlStyles () {
+    return [
+      {
+        value: 'cross',
+        text: this.$t('app.general.label.cross')
+      },
+      {
+        value: 'bars',
+        text: this.$t('app.general.label.bars')
+      },
+      {
+        value: 'circle',
+        text: this.$t('app.general.label.circle')
+      }
+    ]
+  }
 
- get toolheadMoveDistances () {
-   return this.$store.state.config.uiSettings.general.toolheadMoveDistances
- }
+  get toolheadMoveDistances () {
+    return this.$store.state.config.uiSettings.general.toolheadMoveDistances
+  }
 
- set toolheadMoveDistances (value: (number | string)[]) {
-   if (!this.toolheadMoveDistancesElement.validate(true)) {
-     return
-   }
+  set toolheadMoveDistances (value: (number | string)[]) {
+    if (!this.toolheadMoveDistancesElement.validate(true)) {
+      return
+    }
 
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.toolheadMoveDistances',
-     value: [...new Set(value.map(Number))].sort((a, b) => a - b),
-     server: true
-   })
- }
+    const toolheadMoveDistances = [...new Set(value.map(Number))]
+      .sort((a, b) => a - b)
 
- get toolheadXYMoveDistances () {
-   return this.$store.state.config.uiSettings.general.toolheadXYMoveDistances
- }
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.toolheadMoveDistances',
+      value: toolheadMoveDistances,
+      server: true
+    })
 
- set toolheadXYMoveDistances (value: (number | string)[]) {
-   if (!this.toolheadXYMoveDistancesElement.validate(true)) {
-     return
-   }
+    if (toolheadMoveDistances.includes(this.defaultToolheadMoveLength) === false) {
+      this.setDefaultToolheadMoveLength(toolheadMoveDistances[0])
+    }
+  }
 
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.toolheadXYMoveDistances',
-     value: [...new Set(value.map(Number))].sort((a, b) => a - b),
-     server: true
-   })
- }
+  get toolheadXYMoveDistances () {
+    return this.$store.state.config.uiSettings.general.toolheadXYMoveDistances
+  }
 
- get toolheadCircleXYMoveDistances () {
-   return this.$store.state.config.uiSettings.general.toolheadCircleXYMoveDistances
- }
+  set toolheadXYMoveDistances (value: (number | string)[]) {
+    if (!this.toolheadXYMoveDistancesElement.validate(true)) {
+      return
+    }
 
- set toolheadCircleXYMoveDistances (value: (number | string)[]) {
-   if (!this.toolheadCircleXYMoveDistancesElement.validate(true)) {
-     return
-   }
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.toolheadXYMoveDistances',
+      value: [...new Set(value.map(Number))].sort((a, b) => a - b),
+      server: true
+    })
+  }
 
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.toolheadCircleXYMoveDistances',
-     value: [...new Set(value.map(Number))].sort((a, b) => a - b),
-     server: true
-   })
- }
+  get toolheadCircleXYMoveDistances () {
+    return this.$store.state.config.uiSettings.general.toolheadCircleXYMoveDistances
+  }
 
- get toolheadZMoveDistances () {
-   return this.$store.state.config.uiSettings.general.toolheadZMoveDistances
- }
+  set toolheadCircleXYMoveDistances (value: (number | string)[]) {
+    if (!this.toolheadCircleXYMoveDistancesElement.validate(true)) {
+      return
+    }
 
- set toolheadZMoveDistances (value: (number | string)[]) {
-   if (!this.toolheadZMoveDistancesElement.validate(true)) {
-     return
-   }
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.toolheadCircleXYMoveDistances',
+      value: [...new Set(value.map(Number))].sort((a, b) => a - b),
+      server: true
+    })
+  }
 
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.toolheadZMoveDistances',
-     value: [...new Set(value.map(Number))].sort((a, b) => a - b),
-     server: true
-   })
- }
+  get toolheadZMoveDistances () {
+    return this.$store.state.config.uiSettings.general.toolheadZMoveDistances
+  }
 
- get toolheadCircleZMoveDistances () {
-   return this.$store.state.config.uiSettings.general.toolheadCircleZMoveDistances
- }
+  set toolheadZMoveDistances (value: (number | string)[]) {
+    if (!this.toolheadZMoveDistancesElement.validate(true)) {
+      return
+    }
 
- set toolheadCircleZMoveDistances (value: (number | string)[]) {
-   if (!this.toolheadCircleZMoveDistancesElement.validate(true)) {
-     return
-   }
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.toolheadZMoveDistances',
+      value: [...new Set(value.map(Number))].sort((a, b) => a - b),
+      server: true
+    })
+  }
 
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.toolheadCircleZMoveDistances',
-     value: [...new Set(value.map(Number))].sort((a, b) => a - b),
-     server: true
-   })
- }
+  get toolheadCircleZMoveDistances () {
+    return this.$store.state.config.uiSettings.general.toolheadCircleZMoveDistances
+  }
 
- get useGcodeCoords () {
-   return this.$store.state.config.uiSettings.general.useGcodeCoords
- }
+  set toolheadCircleZMoveDistances (value: (number | string)[]) {
+    if (!this.toolheadCircleZMoveDistancesElement.validate(true)) {
+      return
+    }
 
- set useGcodeCoords (value: boolean) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.useGcodeCoords',
-     value,
-     server: true
-   })
- }
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.toolheadCircleZMoveDistances',
+      value: [...new Set(value.map(Number))].sort((a, b) => a - b),
+      server: true
+    })
+  }
 
- get invertX () {
-   return this.$store.state.config.uiSettings.general.axis.x.inverted
- }
+  get useGcodeCoords () {
+    return this.$store.state.config.uiSettings.general.useGcodeCoords
+  }
 
- set invertX (value: boolean) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.axis.x.inverted',
-     value,
-     server: true
-   })
- }
+  set useGcodeCoords (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.useGcodeCoords',
+      value,
+      server: true
+    })
+  }
 
- get invertY () {
-   return this.$store.state.config.uiSettings.general.axis.y.inverted
- }
+  get invertX () {
+    return this.$store.state.config.uiSettings.general.axis.x.inverted
+  }
 
- set invertY (value: boolean) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.axis.y.inverted',
-     value,
-     server: true
-   })
- }
+  set invertX (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.axis.x.inverted',
+      value,
+      server: true
+    })
+  }
 
- get invertZ () {
-   return this.$store.state.config.uiSettings.general.axis.z.inverted
- }
+  get invertY () {
+    return this.$store.state.config.uiSettings.general.axis.y.inverted
+  }
 
- set invertZ (value: boolean) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.axis.z.inverted',
-     value,
-     server: true
-   })
- }
+  set invertY (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.axis.y.inverted',
+      value,
+      server: true
+    })
+  }
 
- get printerSupportsForceMove () {
-   return this.$store.getters['printer/getPrinterSettings']('force_move.enable_force_move') ?? false
- }
+  get invertZ () {
+    return this.$store.state.config.uiSettings.general.axis.z.inverted
+  }
 
- get printerSupportsSpoolman () {
-   return this.$store.getters['spoolman/getSupported']
- }
+  set invertZ (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.axis.z.inverted',
+      value,
+      server: true
+    })
+  }
 
- get showManualProbeDialogAutomatically () {
-   return this.$store.state.config.uiSettings.general.showManualProbeDialogAutomatically
- }
+  get printerSupportsForceMove () {
+    return this.$store.getters['printer/getPrinterSettings']('force_move.enable_force_move') ?? false
+  }
 
- set showManualProbeDialogAutomatically (value: boolean) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.showManualProbeDialogAutomatically',
-     value,
-     server: true
-   })
- }
+  get printerSupportsSpoolman () {
+    return this.$store.getters['spoolman/getSupported']
+  }
 
- get showBedScrewsAdjustDialogAutomatically () {
-   return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
- }
+  get showManualProbeDialogAutomatically () {
+    return this.$store.state.config.uiSettings.general.showManualProbeDialogAutomatically
+  }
 
- set showBedScrewsAdjustDialogAutomatically (value: boolean) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.showBedScrewsAdjustDialogAutomatically',
-     value,
-     server: true
-   })
- }
+  set showManualProbeDialogAutomatically (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.showManualProbeDialogAutomatically',
+      value,
+      server: true
+    })
+  }
 
- get showScrewsTiltAdjustDialogAutomatically () {
-   return this.$store.state.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
- }
+  get showBedScrewsAdjustDialogAutomatically () {
+    return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
+  }
 
- set showScrewsTiltAdjustDialogAutomatically (value: boolean) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.showScrewsTiltAdjustDialogAutomatically',
-     value,
-     server: true
-   })
- }
+  set showBedScrewsAdjustDialogAutomatically (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.showBedScrewsAdjustDialogAutomatically',
+      value,
+      server: true
+    })
+  }
 
- get forceMoveToggleWarning () {
-   return this.$store.state.config.uiSettings.general.forceMoveToggleWarning
- }
+  get showScrewsTiltAdjustDialogAutomatically () {
+    return this.$store.state.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
+  }
 
- set forceMoveToggleWarning (value: boolean) {
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general.forceMoveToggleWarning',
-     value,
-     server: true
-   })
- }
+  set showScrewsTiltAdjustDialogAutomatically (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.showScrewsTiltAdjustDialogAutomatically',
+      value,
+      server: true
+    })
+  }
 
- handleReset () {
-   let value = defaultState().uiSettings.general
-   const current = this.$store.state.config.uiSettings.general
-   value = {
-     ...value,
-     instanceName: current.instanceName,
-     chartVisible: current.chartVisible,
-     hideTempWaits: current.hideTempWaits
-   }
-   this.$store.dispatch('config/saveByPath', {
-     path: 'uiSettings.general',
-     value,
-     server: true
-   })
- }
+  get forceMoveToggleWarning () {
+    return this.$store.state.config.uiSettings.general.forceMoveToggleWarning
+  }
+
+  set forceMoveToggleWarning (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.forceMoveToggleWarning',
+      value,
+      server: true
+    })
+  }
+
+  handleReset () {
+    let value = defaultState().uiSettings.general
+    const current = this.$store.state.config.uiSettings.general
+    value = {
+      ...value,
+      instanceName: current.instanceName,
+      chartVisible: current.chartVisible,
+      hideTempWaits: current.hideTempWaits
+    }
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general',
+      value,
+      server: true
+    })
+  }
 }
 </script>

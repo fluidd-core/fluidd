@@ -621,7 +621,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$store.getters['gcodePreview/getViewerOption'](name)
   }
 
-  getUiSetting (name: keyof GcodePreviewConfig) {
+  getUiSetting<T extends keyof GcodePreviewConfig> (name: T) {
     return this.$store.state.config.uiSettings.gcodePreview[name]
   }
 }

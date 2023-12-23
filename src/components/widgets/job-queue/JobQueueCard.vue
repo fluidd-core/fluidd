@@ -5,6 +5,7 @@
     :draggable="!fullscreen"
     :collapsable="!fullscreen"
     layout-path="dashboard.job-queue-card"
+    :help-tooltip="$t('app.job_queue.tooltip.help')"
   >
     <template #menu>
       <app-btn-collapse-group :collapsed="menuCollapsed">

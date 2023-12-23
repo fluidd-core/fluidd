@@ -1,14 +1,18 @@
+import isUserAgentDataMobileSupported from '@/util/is-user-agent-data-mobile-supported'
 import { Vue, Component } from 'vue-property-decorator'
 
 @Component
 export default class BrowserMixin extends Vue {
-  get isMobileViewport () {
+  get isMobileViewport (): boolean {
     return this.$vuetify.breakpoint.mobile
   }
 
-  get isMobileUserAgent () {
-    const mobileUARegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
+  get isMobileUserAgent (): boolean {
+    if (isUserAgentDataMobileSupported(navigator)) {
+      return navigator.userAgentData.mobile
+    }
 
-    return (navigator as any).userAgentData?.mobile ?? mobileUARegex.test(navigator.userAgent)
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
+      .test(navigator.userAgent)
   }
 }

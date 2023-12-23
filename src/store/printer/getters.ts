@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
-import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands } from './types'
+import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates } from './types'
 import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
@@ -102,7 +102,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     }
   },
 
-  getPrintProgress: (state) => {
+  getPrintProgress: (state): number => {
     const { gcode_start_byte, gcode_end_byte, path, filename } = state.printer.current_file ?? {}
     const { file_position } = state.printer.virtual_sdcard ?? {}
 
@@ -121,7 +121,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return state.printer.display_status.progress || 0
   },
 
-  getPrintLayers: (state) => {
+  getPrintLayers: (state): number => {
     const layersFromPrintStats = state.printer.print_stats.info?.total_layer
     if (typeof layersFromPrintStats === 'number') {
       return layersFromPrintStats
@@ -140,7 +140,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return 0
   },
 
-  getPrintLayer: (state) => {
+  getPrintLayer: (state): number => {
     const layerFromPrintStats = state.printer.print_stats.info?.current_layer
     if (typeof layerFromPrintStats === 'number') {
       return layerFromPrintStats
@@ -163,63 +163,42 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return 0
   },
 
-  getTimeEstimates: (state, getters) => {
-    const progress = getters.getPrintProgress
-    const endTime = Math.floor(Date.now() / 1000)
+  getTimeEstimates: (state, getters): TimeEstimates => {
+    const progress = getters.getPrintProgress as number
 
-    const duration = (
-      'print_stats' in state.printer &&
-      'print_duration' in state.printer.print_stats
-    )
-      ? state.printer.print_stats.print_duration
+    const totalDuration = state.printer.print_stats?.total_duration as number | undefined ?? 0
+    const printDuration = state.printer.print_stats?.print_duration as number | undefined ?? 0
+
+    const fileLeft = printDuration > 0 && progress > 0
+      ? printDuration / progress - printDuration
       : 0
 
-    const multiplier = state.printer.gcode_move.speed_factor || 1
+    const currentFileStatus = state.printer.current_file?.history?.status as string | undefined
+    const currentFileTotalDuration = state.printer.current_file?.history?.total_duration as number | undefined
 
-    let file = 0
-    let fileLeft = 0
-    let fileEndTime = 0
-    if (progress > 0 && duration > 0) {
-      file = duration / progress
-      fileLeft = (file - duration) / multiplier
-      fileEndTime = endTime + fileLeft
-    }
+    const actualLeft = currentFileStatus === 'completed' && currentFileTotalDuration != null
+      ? currentFileTotalDuration - printDuration
+      : 0
 
-    let actualTotal = 0
-    let actualLeft = 0
-    let actualEndTime = 0
-    if (
-      'current_file' in state.printer &&
-      'history' in state.printer.current_file &&
-      state.printer.current_file.history.status === 'completed'
-    ) {
-      actualTotal = state.printer.current_file.history.total_duration
-      actualLeft = (actualTotal - duration) / multiplier
-      actualEndTime = endTime + actualLeft
-    }
+    const slicerTotal = state.printer.current_file?.estimated_time as number | undefined
 
-    let slicer = 0
-    let slicerLeft = 0
-    let slicerEndTime = 0
-    if (
-      'current_file' in state.printer &&
-      'estimated_time' in state.printer.current_file
-    ) {
-      slicer = state.printer.current_file.estimated_time
-      slicerLeft = (slicer - duration) / multiplier
-      slicerEndTime = endTime + slicerLeft
-    }
+    const slicerLeft = slicerTotal != null && slicerTotal > 0
+      ? slicerTotal - printDuration
+      : 0
 
-    let eta = fileEndTime
-    if (slicerEndTime > 0) eta = slicerEndTime
-    if (actualEndTime > 0) eta = actualEndTime
+    const eta = Date.now() + (
+      actualLeft > 0
+        ? actualLeft
+        : fileLeft
+    ) * 1000
 
     return {
       progress: Math.floor(progress * 100),
-      duration,
-      slicer: slicerLeft,
-      file: fileLeft,
-      actual: actualLeft,
+      printDuration,
+      totalDuration,
+      slicerLeft,
+      fileLeft,
+      actualLeft,
       eta
     }
   },
