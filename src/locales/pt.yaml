@@ -76,6 +76,8 @@ app:
         print_start_time_desc: Filtrar os itens que  já imprimiu.
         hidden_files_folders: Filtrar ficheiros e pastas escondidas
         klipper_backup_files: Filtrar cópias de segurança do Klipper
+        moonraker_backup_files: Filtrar ficheiros de cópia de segurança do Moonraker
+        rolled_log_files: Filtrar ficheiros de registo antigos
     label:
       dir_name: Nome diretório
       disk_usage: Disco usado
@@ -84,6 +86,7 @@ app:
       transfer_rate: Taxa de transferência
       uploaded: Carregado
       view_section_documentation: Ver documentação para '%{section}'
+      diskinfo: Informações sobre o Disco
     msg:
       not_found: Não foram encontrados ficheiros
       processing: A processar...
@@ -105,6 +108,14 @@ app:
       duplicate_file: Duplicar ficheiro
     tooltip:
       low_on_space: Pouco espaço em disco
+      root_disabled: A raiz {root} não está disponível. Por favor verifique os seus
+        ficheiros de registo.
+      items_count: '{count} item | {count} itens'
+    url:
+      moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
+      moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
+      klipper_config: https://www.klipper3d.org/Config_Reference.html#%{hash}
+      crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
   general:
     btn:
       add: Adicionar
@@ -148,6 +159,41 @@ app:
       upload: Envio
       upload_print: Envio e impressão
       view: Ver
+      add_to_queue: Adicionar à Fila
+      auth_unsure: Não sabe porque está a ver isto?
+      restart_service: Reiniciar %{service}
+      save_config_and_restart: Guardar configuração e reiniciar
+      reload: Recarregar
+      print: Imprimir
+      delete: Apagar
+      socket_reconnect: Reconectar
+      more_information: Mais informações
+      set_color: Escolher Cor
+      logout: Terminar sessão
+      recover: Recuperar
+      reset_default_layout: Repor Layout por Omissão
+      upload_folder: Carregar Pasta
+      return_dashboard: Voltar ao painél
+      go_to_file: Ir para ficheiro
+      set_default_layout: Escolher como Layout por Omissão
+      upload_files: Carregar Ficheiros
+      exit_layout: Sair do modo de layout
+      adjusted: Ajustado
+      forgot_password: Esqueceu-se da sua palavra passe?
+      refresh: Actualizar
+      create_zip_archive: Criar Arquivo ZIP
+      retry: Repetir
+      accept: Aceitar
+      duplicate: Duplicar
+      preview_gcode: Pré-visualizar Gcode
+      login: Iniciar Sessão
+      filter: Filtrar
+      refresh_metadata: Actualizar Metadados
+      thumbnail_size: Tamanho da miniatura
+      job_queue: Fila de Trabalhos
+      select_columns: Seleccionar colunas
+      abort: Abortar
+      multiply: Multiplicar
     error:
       app_setup_link: >-
         Os requisitos de configuração do Fluidd podem ser encontrados <a
@@ -356,3 +402,26 @@ app:
       invalid: indicação de alteração do local da repo
       packages: Pacotes
       release_notes: Notas de lançamento
+  gcode:
+    label:
+      show_previous_layer: Mostrar camada anterior
+      layers: Camadas
+      show_extrusions: Apresentar extrusões
+      show_retractions: Mostrar retracções
+      parsing_file: Analizando ficheiro
+      follow_progress: Seguir progresso
+      exclude_object: Excluir Objecto
+      show_moves: Mostrar movimentos
+      layer: Camada
+      current_layer_height: Altura da Camada Actual
+      show_current_layer: Apresentar camada actual
+      show_next_layer: Mostrar camada seguinte
+      show_parts: Mostrar partes
+    btn:
+      load_current_file: Carregar ficheiro actual
+    overlay:
+      drag_file_load: <strong>Arraste</strong> um ficheiro de gcode para aqui para
+        carregar
+    msg:
+      confirm: O ficheiro "%{filename}" tem %{size}, o que pode ser bastante intensivo
+        para o seu sistema. Tem a certeza?
