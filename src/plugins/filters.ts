@@ -48,7 +48,7 @@ export const Filters = {
    * Formats a time to 00h 00m 00s
    * Expects to be passed seconds.
    */
-  formatCounterTime: (seconds: number | string) => {
+  formatCounterSeconds: (seconds: number | string) => {
     seconds = +seconds
     if (isNaN(seconds) || !isFinite(seconds)) seconds = 0
     let isNeg = false

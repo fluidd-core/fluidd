@@ -119,7 +119,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           accepts: ['.conf', '.cfg', '.md', '.css', '.jpg', '.jpeg', '.png', '.gif'],
           canView,
           canConfigure: false,
-          filterTypes: ['hidden_files', 'klipper_backup_files']
+          filterTypes: ['hidden_files', 'klipper_backup_files', 'moonraker_backup_files']
         }
       case 'config_examples':
         return {

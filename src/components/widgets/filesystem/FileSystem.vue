@@ -394,6 +394,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
             }
             break
 
+          case 'moonraker_backup_files':
+            if (file.type === 'file' && file.filename === '.moonraker.conf.bkp') {
+              return false
+            }
+            break
+
           case 'klipper_backup_files':
             if (file.type === 'file' && file.filename.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
               return false

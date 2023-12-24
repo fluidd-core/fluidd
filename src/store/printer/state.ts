@@ -100,6 +100,9 @@ export const defaultState = (): PrinterState => {
         filament_total: 0,
         thumbnails: []
       },
+      gcode: {
+        commands: null
+      },
       gcode_move: {
         gcode_position: [0, 0, 0, 0],
         homing_origin: [],
@@ -118,9 +121,6 @@ export const defaultState = (): PrinterState => {
         accepted_screws: 0
       },
       screws_tilt_adjust: {},
-      fan: {
-        speed: 0
-      },
       webhooks: {
         state: '',
         state_message: ''

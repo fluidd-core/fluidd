@@ -22,8 +22,8 @@ export default class CameraMixin extends Vue {
     this.checkPlayback()
   }
 
-  get apiUrl () {
-    return this.$store.state.config.apiUrl
+  get apiUrl (): string {
+    return this.$store.state.config.apiUrl as string
   }
 
   get cameraStyle () {
@@ -32,7 +32,7 @@ export default class CameraMixin extends Vue {
     }
   }
 
-  createTransform () {
+  createTransform (): string {
     const element = this.streamingElement
     const { rotation, flipX, flipY } = this.camera
     const transformsArray: string[] = []

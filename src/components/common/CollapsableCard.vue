@@ -342,7 +342,10 @@ export default class CollapsableCard extends Vue {
   }
 
   get inLayout (): boolean {
-    return (this.$store.state.config.layoutMode && this.draggable)
+    return (
+      this.$store.state.config.layoutMode &&
+      !!this.draggable
+    )
   }
 
   /**

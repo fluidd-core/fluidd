@@ -61,7 +61,7 @@
               v-if="item.print_duration > 0"
               class="text-no-wrap"
             >
-              {{ $filters.formatCounterTime(item.print_duration) }}
+              {{ $filters.formatCounterSeconds(item.print_duration) }}
             </span>
             <span v-else>--</span>
           </td>

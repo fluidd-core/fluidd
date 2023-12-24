@@ -89,10 +89,6 @@ export default class Console extends Mixins(StateMixin) {
 
   _pauseScroll = false
 
-  get availableCommands () {
-    return this.$store.getters['console/getAllGcodeCommands']
-  }
-
   get currentCommand () {
     return this.$store.state.console.consoleCommand
   }

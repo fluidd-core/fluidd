@@ -142,7 +142,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { GcodeCommands } from '@/store/console/types'
+import type { GcodeCommands } from '@/store/printer/types'
 
 @Component({})
 export default class ZHeightAdjust extends Mixins(StateMixin) {
@@ -173,22 +173,15 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
   }
 
   get availableCommands (): GcodeCommands {
-    return this.$store.state.console.availableCommands as GcodeCommands
-  }
-
-  get availableCommandNames (): Set<string> {
-    const availableCommandNames = new Set(Object.keys(this.availableCommands)
-      .map(commandName => commandName.toUpperCase()))
-
-    return availableCommandNames
+    return this.$store.getters['printer/getAvailableCommands'] as GcodeCommands
   }
 
   get hasZOffsetApplyProbe (): boolean {
-    return this.availableCommandNames.has('Z_OFFSET_APPLY_PROBE')
+    return 'Z_OFFSET_APPLY_PROBE' in this.availableCommands
   }
 
   get hasZOffsetApplyEndstop (): boolean {
-    return this.availableCommandNames.has('Z_OFFSET_APPLY_ENDSTOP')
+    return 'Z_OFFSET_APPLY_ENDSTOP' in this.availableCommands
   }
 
   /**

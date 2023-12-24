@@ -22,6 +22,7 @@ app:
       delete: Delete Profile
       load: Load Profile
       save: Commits calibrated profile to printer.cfg
+      copy_image: Copy bed mesh image
   chart:
     label:
       current: Actual
@@ -74,6 +75,7 @@ app:
         print_start_time_desc: Filters out items you've already printed.
         hidden_files_folders: Filter hidden files and folders
         klipper_backup_files: Filter Klipper backup files
+        moonraker_backup_files: Filter Moonraker backup files
         rolled_log_files: Filter rolled log files
     label:
       dir_name: Directory name
@@ -449,6 +451,10 @@ app:
       restart_klipper: Restarts the klipper system service.
       run_collector: Run collector
       rollover_logs: Rollover logs
+      file_browser_help: >-
+        Drag and drop files or folders from outside the browser to upload them here<br>Move files and folders by dragging and dropping them onto sub-folders or ".."
+      file_browser_configuration_help: >-
+        Copy files and folders to the Configuration Files by dragging them from here and dropping them there
   history:
     msg:
       confirm: Are you sure? This will clear all history, and printer statistics
@@ -461,6 +467,9 @@ app:
       number_of_copies: Number of copies
     title:
       multiply_job: Multiply Job | Multiply Jobs
+    tooltip:
+      help: >-
+        Queue jobs by dragging files from the Jobs and dropping them here<br>Adjust the order of queued jobs by dragging them up or down
   printer:
     state:
       busy: Busy

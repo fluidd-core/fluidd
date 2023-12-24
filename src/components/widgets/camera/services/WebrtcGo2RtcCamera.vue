@@ -36,8 +36,7 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
   abortController: AbortController | null = null
 
   // webrtc player methods
-  // adapted from https://github.com/AlexxIT/go2rtc/blob/master/www/webrtc.html
-  // also adapted from https://github.com/mainsail-crew/mainsail/pull/1651
+  // adapted from https://github.com/AlexxIT/go2rtc/blob/master/www/video-rtc.js
 
   startPlayback () {
     this.abortController?.abort()

@@ -192,69 +192,71 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
+type Axis = 'X' | 'Y' | 'Z'
+
 @Component({})
 export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMixin) {
-  moveLength = ''
-  fab = false
+  moveLength: number | null = null
 
-  get forceMove () {
-    return this.$store.state.config.uiSettings.toolhead.forceMove
+  get forceMove (): boolean {
+    return this.$store.state.config.uiSettings.toolhead.forceMove as boolean
   }
 
-  get canHomeXY () {
-    const hasRoundBed = this.$store.getters['printer/getHasRoundBed'] as boolean
-
-    return !hasRoundBed
+  get hasRoundBed (): boolean {
+    return this.$store.getters['printer/getHasRoundBed'] as boolean
   }
 
-  get toolheadMoveDistances () {
-    const distances = this.$store.state.config.uiSettings.general.toolheadMoveDistances
-    if (distances.includes(this.toolheadMoveLength)) {
-      return distances
+  get canHomeXY (): boolean {
+    return !this.hasRoundBed
+  }
+
+  get toolheadMoveDistances (): number[] {
+    return this.$store.state.config.uiSettings.general.toolheadMoveDistances as number[]
+  }
+
+  get toolheadMoveLength (): number {
+    if (this.moveLength == null) {
+      const defaultToolheadMoveLength = this.$store.state.config.uiSettings.general.defaultToolheadMoveLength as number
+
+      this.moveLength = this.toolheadMoveDistances.includes(defaultToolheadMoveLength)
+        ? defaultToolheadMoveLength
+        : this.toolheadMoveDistances[0]
     }
 
-    // safety for when no valid move length is present
-    return [this.toolheadMoveLength, ...distances].sort((a, b) => a - b)
+    return this.moveLength
   }
 
-  get toolheadMoveLength () {
-    return (this.moveLength === '')
-      ? this.$store.state.config.uiSettings.general.defaultToolheadMoveLength
-      : this.moveLength
-  }
-
-  set toolheadMoveLength (val: string) {
+  set toolheadMoveLength (val: number) {
     this.moveLength = val
   }
 
-  axisButtonColor (axisHomed: boolean) {
+  axisButtonColor (axisHomed: boolean): string | undefined {
     if (this.forceMove) return 'error'
 
     return axisHomed ? 'primary' : undefined
   }
 
-  axisButtonDisabled (axisHomed: boolean, axisMultipleSteppers: boolean) {
+  axisButtonDisabled (axisHomed: boolean, axisMultipleSteppers: boolean): boolean {
     return !this.klippyReady || (!axisHomed && !(this.forceMove && !axisMultipleSteppers))
   }
 
   /**
    * Send a move gcode script.
    */
-  sendMoveGcode (axis: string, distance: string, negative = false) {
-    axis = axis.toLowerCase()
-    const rate = (axis.toLowerCase() === 'z')
+  sendMoveGcode (axis: Axis, distance: number, negative = false) {
+    const rate = axis === 'Z'
       ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
       : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
-    const inverted = this.$store.state.config.uiSettings.general.axis[axis].inverted || false
-    distance = ((negative && !inverted) || (!negative && inverted))
-      ? '-' + distance
+    const inverted = this.$store.state.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
+    distance = negative !== inverted
+      ? -distance
       : distance
 
     if (this.forceMove) {
-      const accel = (axis.toLowerCase() === 'z')
+      const accel = axis === 'Z'
         ? this.$store.getters['printer/getPrinterSettings']('printer.max_z_accel')
         : this.$store.state.printer.printer.toolhead.max_accel
-      this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
+      this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
     } else {
       this.sendGcode(`G91
       G1 ${axis}${distance} F${rate * 60}

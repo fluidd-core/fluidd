@@ -148,6 +148,7 @@ import {
   mdiArchiveLock,
   mdiFileImage,
   mdiGauge,
+  mdiMonitorScreenshot,
   mdiRotateLeft,
   mdiRotateRight,
   mdiToothbrush
@@ -166,8 +167,8 @@ export const Globals = Object.freeze({
   APP_NAME: 'fluidd',
   HEADER_HEIGHT: 56,
   DEFAULTS: {
-    CAMERA_URL_STREAM: '/webcam?action=stream',
-    CAMERA_URL_SNAPSHOT: '/webcam?action=snapshot'
+    CAMERA_URL_STREAM: '/webcam/?action=stream',
+    CAMERA_URL_SNAPSHOT: '/webcam/?action=snapshot'
   },
   NETWORK_REQUEST_TIMEOUT: 0,
   KLIPPY_RETRY_DELAY: 1500,
@@ -403,6 +404,7 @@ export const Icons = Object.freeze({
   jobQueue: mdiTrayFull,
   enqueueJob: mdiTrayPlus,
   sensors: mdiGauge,
+  screenshot: mdiMonitorScreenshot,
   zRotateClockwise: mdiRotateRight,
   zRotateCounterclockwise: mdiRotateLeft
 })

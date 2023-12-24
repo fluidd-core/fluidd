@@ -33,14 +33,13 @@ export default defineConfig({
         '**/*.svg',
         '**/*.png',
         '**/*.ico',
-        '*.json'
+        'editor.theme.json'
       ],
       injectManifest: {
         globPatterns: [
           '**/*.{js,css,html,ttf,woff,woff2,wasm}'
         ],
-        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
-        rollupFormat: 'iife'
+        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2
       },
       manifest: {
         name: 'fluidd',

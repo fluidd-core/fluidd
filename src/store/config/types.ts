@@ -68,6 +68,7 @@ export interface GeneralConfig {
   toolheadZMoveDistances: number[];
   toolheadCircleXYMoveDistances: number[];
   toolheadCircleZMoveDistances: number[];
+  toolheadCircleXYHomingEnabled: boolean;
   useGcodeCoords: boolean;
   zAdjustDistances: number[];
   enableVersionNotifications: boolean;

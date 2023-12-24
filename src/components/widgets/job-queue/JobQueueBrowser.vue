@@ -48,7 +48,7 @@
         </template>
         <template #[`item.time_in_queue`]="{ item }">
           <span class="text-no-wrap">
-            {{ $filters.formatCounterTime(item.time_in_queue) }}
+            {{ $filters.formatCounterSeconds(item.time_in_queue) }}
           </span>
         </template>
       </v-data-table>
