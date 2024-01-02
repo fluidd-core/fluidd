@@ -239,7 +239,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return Object.entries(DateFormats)
       .map(([key, entry]) => ({
         value: key,
-        text: `${date.toLocaleDateString(entry.locales ?? this.$filters.getNavigatorLocales(), entry.options)}${entry.suffix ?? ''}`
+        text: `${date.toLocaleDateString(entry.locales ?? this.$filters.getAllLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
   }
 
@@ -261,7 +261,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return Object.entries(TimeFormats)
       .map(([key, entry]) => ({
         value: key,
-        text: `${date.toLocaleTimeString(entry.locales ?? this.$filters.getNavigatorLocales(), entry.options)}${entry.suffix ?? ''}`
+        text: `${date.toLocaleTimeString(entry.locales ?? this.$filters.getAllLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
   }
 
