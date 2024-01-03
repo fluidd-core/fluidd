@@ -7,6 +7,7 @@
       <collapsable-card
         :title="$t('app.general.title.config_files')"
         icon="$codeJson"
+        :help-tooltip="$t('app.general.tooltip.file_browser_help')"
       >
         <file-system
           :roots="['config']"
@@ -23,6 +24,7 @@
       <collapsable-card
         :title="$t('app.general.title.other_files')"
         icon="$files"
+        :help-tooltip="$t('app.general.tooltip.file_browser_configuration_help')"
       >
         <file-system
           :roots="roots"

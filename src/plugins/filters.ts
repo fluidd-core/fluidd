@@ -48,7 +48,7 @@ export const Filters = {
    * Formats a time to 00h 00m 00s
    * Expects to be passed seconds.
    */
-  formatCounterTime: (seconds: number | string) => {
+  formatCounterSeconds: (seconds: number | string) => {
     seconds = +seconds
     if (isNaN(seconds) || !isFinite(seconds)) seconds = 0
     let isNeg = false
@@ -71,16 +71,23 @@ export const Filters = {
     return navigator.languages ?? [navigator.language]
   },
 
+  getAllLocales: () => {
+    return [
+      i18n.locale,
+      ...Filters.getNavigatorLocales()
+    ]
+  },
+
   getDateFormat: (override?: string): DateTimeFormat => {
     return {
-      locales: Filters.getNavigatorLocales(),
+      locales: Filters.getAllLocales(),
       ...DateFormats[override ?? store.state.config.uiSettings.general.dateFormat]
     }
   },
 
   getTimeFormat: (override?: string): DateTimeFormat => {
     return {
-      locales: Filters.getNavigatorLocales(),
+      locales: Filters.getAllLocales(),
       ...TimeFormats[override ?? store.state.config.uiSettings.general.timeFormat]
     }
   },
@@ -157,7 +164,7 @@ export const Filters = {
   },
 
   formatRelativeTime (value: number, unit: Intl.RelativeTimeFormatUnit, options?: Intl.RelativeTimeFormatOptions) {
-    const rtf = new Intl.RelativeTimeFormat(Filters.getNavigatorLocales() as string[], {
+    const rtf = new Intl.RelativeTimeFormat(Filters.getAllLocales(), {
       numeric: 'auto',
       ...options
     })

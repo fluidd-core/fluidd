@@ -15,52 +15,7 @@
             [$vuetify.theme.dark ? 'theme--dark': 'theme--light']: true,
           }"
         >
-          <!--- Z Bottom -->
-          <g>
-            <a
-              class="cc-btn outer"
-              :class="zStepClasses"
-              @click="sendMoveGcode('Z', stepsZ[3], true)"
-            >
-              <path
-                d="m358.5,221.331v118.664c0,3.316,2.688,6.005,6.005,6.005h37.991c3.316,0,6.005-2.688,6.005-6.005v-118.664h-50Z"
-                class="cc-btn-container"
-              />
-            </a>
-            <a
-              class="cc-btn outer-mid"
-              :class="zStepClasses"
-              @click="sendMoveGcode('Z', stepsZ[2], true)"
-            >
-              <path
-                d="m358.5,308.726c8.108,1.489,16.462,2.274,25,2.274s16.892-.785,25-2.274v-87.395h-50v87.395Z"
-                class="cc-btn-container"
-              />
-            </a>
-            <a
-              class="cc-btn inner-mid"
-              :class="zStepClasses"
-              @click="sendMoveGcode('Z', stepsZ[1], true)"
-            >
-              <path
-                d="m358.5,272.923c8.002,2.006,16.376,3.077,25,3.077s16.998-1.071,25-3.077v-51.592h-50v51.592Z"
-                class="cc-btn-container"
-              />
-            </a>
-            <a
-              class="cc-btn inner"
-              :class="zStepClasses"
-              @click="sendMoveGcode('Z', stepsZ[0], true)"
-            >
-              <path
-                d="m383.5,206c-5.736,0-11.123-1.488-15.8-4.096-.767-.428-1.73-.267-2.351.354l-6.262,6.262c-.375.375-.586.885-.586,1.415v24.87c0,.838.513,1.6,1.298,1.895,7.376,2.77,15.358,4.3,23.702,4.3s16.326-1.53,23.702-4.3c.785-.295,1.298-1.057,1.298-1.895v-24.87c0-.531-.211-1.04-.586-1.415l-6.262-6.262c-.621-.621-1.584-.782-2.351-.354-4.677,2.609-10.064,4.096-15.8,4.096Z"
-                class="cc-btn-container"
-              />
-            </a>
-          </g>
-
-          <!--- Z Top -->
-          <g>
+          <g class="cc-section">
             <a
               class="cc-btn outer"
               :class="zStepClasses"
@@ -71,6 +26,29 @@
                 class="cc-btn-container"
               />
             </a>
+
+            <a
+              class="cc-btn outer"
+              :class="zStepClasses"
+              @click="sendMoveGcode('Z', stepsZ[3], true)"
+            >
+              <path
+                d="m358.5,221.331v118.664c0,3.316,2.688,6.005,6.005,6.005h37.991c3.316,0,6.005-2.688,6.005-6.005v-118.664h-50Z"
+                class="cc-btn-container"
+              />
+            </a>
+
+            <text
+              class="cc-lbl"
+              :class="zStepClasses"
+              transform="translate(382.5, 25.664)"
+              text-anchor="middle"
+            >
+              {{ stepsZ[3] }}
+            </text>
+          </g>
+
+          <g class="cc-section">
             <a
               class="cc-btn outer-mid"
               :class="zStepClasses"
@@ -81,6 +59,29 @@
                 class="cc-btn-container"
               />
             </a>
+
+            <a
+              class="cc-btn outer-mid"
+              :class="zStepClasses"
+              @click="sendMoveGcode('Z', stepsZ[2], true)"
+            >
+              <path
+                d="m358.5,308.726c8.108,1.489,16.462,2.274,25,2.274s16.892-.785,25-2.274v-87.395h-50v87.395Z"
+                class="cc-btn-container"
+              />
+            </a>
+
+            <text
+              class="cc-lbl"
+              :class="zStepClasses"
+              transform="translate(382.5, 60.664)"
+              text-anchor="middle"
+            >
+              {{ stepsZ[2] }}
+            </text>
+          </g>
+
+          <g class="cc-section">
             <a
               class="cc-btn inner-mid"
               :class="zStepClasses"
@@ -91,6 +92,29 @@
                 class="cc-btn-container"
               />
             </a>
+
+            <a
+              class="cc-btn inner-mid"
+              :class="zStepClasses"
+              @click="sendMoveGcode('Z', stepsZ[1], true)"
+            >
+              <path
+                d="m358.5,272.923c8.002,2.006,16.376,3.077,25,3.077s16.998-1.071,25-3.077v-51.592h-50v51.592Z"
+                class="cc-btn-container"
+              />
+            </a>
+
+            <text
+              class="cc-lbl"
+              :class="zStepClasses"
+              transform="translate(382.5, 95.663)"
+              text-anchor="middle"
+            >
+              {{ stepsZ[1] }}
+            </text>
+          </g>
+
+          <g class="cc-section">
             <a
               class="cc-btn inner"
               :class="zStepClasses"
@@ -101,32 +125,21 @@
                 class="cc-btn-container"
               />
             </a>
-          </g>
 
-          <!-- Z Text -->
-          <g
-            class="cc-lbls"
-            :class="zStepClasses"
-          >
-            <text
-              transform="translate(382.5, 25.664)"
-              text-anchor="middle"
+            <a
+              class="cc-btn inner"
+              :class="zStepClasses"
+              @click="sendMoveGcode('Z', stepsZ[0], true)"
             >
-              {{ stepsZ[3] }}
-            </text>
+              <path
+                d="m383.5,206c-5.736,0-11.123-1.488-15.8-4.096-.767-.428-1.73-.267-2.351.354l-6.262,6.262c-.375.375-.586.885-.586,1.415v24.87c0,.838.513,1.6,1.298,1.895,7.376,2.77,15.358,4.3,23.702,4.3s16.326-1.53,23.702-4.3c.785-.295,1.298-1.057,1.298-1.895v-24.87c0-.531-.211-1.04-.586-1.415l-6.262-6.262c-.621-.621-1.584-.782-2.351-.354-4.677,2.609-10.064,4.096-15.8,4.096Z"
+                class="cc-btn-container"
+              />
+            </a>
+
             <text
-              transform="translate(382.5, 60.664)"
-              text-anchor="middle"
-            >
-              {{ stepsZ[2] }}
-            </text>
-            <text
-              transform="translate(382.5, 95.663)"
-              text-anchor="middle"
-            >
-              {{ stepsZ[1] }}
-            </text>
-            <text
+              class="cc-lbl"
+              :class="zStepClasses"
               transform="translate(382.5, 130.664)"
               text-anchor="middle"
             >
@@ -166,52 +179,7 @@
             </a>
           </g>
 
-          <!--- X Right -->
-          <g>
-            <a
-              class="cc-btn outer"
-              :class="xStepClasses"
-              @click="sendMoveGcode('X', stepsXY[3], false)"
-            >
-              <path
-                d="m213.239,202.632l84.427,84.427c1.643,1.643,4.332,1.541,5.859-.21,26.449-30.314,42.475-69.958,42.475-113.349s-16.026-83.035-42.475-113.349c-1.528-1.751-4.216-1.853-5.859-.21l-83.997,83.997c5.856,8.189,9.314,18.21,9.314,29.045,0,11.101-3.623,21.353-9.744,29.65Z"
-                class="cc-btn-container"
-              />
-            </a>
-            <a
-              class="cc-btn outer-mid"
-              :class="xStepClasses"
-              @click="sendMoveGcode('X', stepsXY[2], false)"
-            >
-              <path
-                d="m213.239,202.632l62.642,62.642c21.833-24.34,35.119-56.504,35.119-91.774s-13.286-67.435-35.119-91.774l-62.212,62.212c5.856,8.189,9.314,18.21,9.314,29.045,0,11.101-3.623,21.353-9.744,29.65Z"
-                class="cc-btn-container"
-              />
-            </a>
-            <a
-              class="cc-btn inner-mid"
-              :class="xStepClasses"
-              @click="sendMoveGcode('X', stepsXY[1], false)"
-            >
-              <path
-                d="m213.239,202.632l37.849,37.849c15.523-17.965,24.912-41.376,24.912-66.981s-9.39-49.016-24.912-66.981l-37.419,37.419c5.856,8.189,9.314,18.21,9.314,29.045,0,11.101-3.623,21.353-9.744,29.65Z"
-                class="cc-btn-container"
-              />
-            </a>
-            <a
-              class="cc-btn inner"
-              :class="xStepClasses"
-              @click="sendMoveGcode('X', stepsXY[0], false)"
-            >
-              <path
-                d="m202.257,191.65l23.97,23.97c9.237-11.547,14.773-26.184,14.773-42.121s-5.536-30.573-14.773-42.121l-23.97,23.97c-.621.621-.782,1.584-.354,2.351,2.608,4.677,4.097,10.064,4.097,15.799s-1.489,11.122-4.097,15.799c-.428.767-.267,1.73.354,2.351Z"
-                class="cc-btn-container"
-              />
-            </a>
-          </g>
-
-          <!--- X Left -->
-          <g>
+          <g class="cc-section">
             <a
               class="cc-btn outer"
               :class="xStepClasses"
@@ -222,84 +190,18 @@
                 class="cc-btn-container"
               />
             </a>
-            <a
-              class="cc-btn outer-mid"
-              :class="xStepClasses"
-              @click="sendMoveGcode('X', stepsXY[2], true)"
-            >
-              <path
-                d="m132.727,143.333l-61.608-61.608c-21.833,24.34-35.119,56.504-35.119,91.774s13.286,67.435,35.119,91.774l62.052-62.052c-6.389-8.398-10.188-18.874-10.188-30.24,0-11.101,3.623-21.353,9.744-29.649Z"
-                class="cc-btn-container"
-              />
-            </a>
-            <a
-              class="cc-btn inner-mid"
-              :class="xStepClasses"
-              @click="sendMoveGcode('X', stepsXY[1], true)"
-            >
-              <path
-                d="m132.727,143.333l-36.814-36.814c-15.523,17.965-24.912,41.376-24.912,66.981s9.39,49.016,24.912,66.981l37.258-37.258c-6.389-8.398-10.188-18.874-10.188-30.24,0-11.101,3.623-21.353,9.744-29.649Z"
-                class="cc-btn-container"
-              />
-            </a>
-            <a
-              class="cc-btn inner"
-              :class="xStepClasses"
-              @click="sendMoveGcode('X', stepsXY[0], true)"
-            >
-              <path
-                d="m144.743,155.35l-23.97-23.97c-9.237,11.547-14.773,26.184-14.773,42.121s5.536,30.573,14.773,42.121l23.97-23.97c.621-.621.782-1.584.354-2.351-2.608-4.677-4.097-10.064-4.097-15.799s1.489-11.122,4.098-15.799c.428-.767.267-1.73-.354-2.351Z"
-                class="cc-btn-container"
-              />
-            </a>
-          </g>
 
-          <!--- Y Bottom -->
-          <g>
             <a
               class="cc-btn outer"
-              :class="yStepClasses"
-              @click="sendMoveGcode('Y', stepsXY[3], true)"
+              :class="xStepClasses"
+              @click="sendMoveGcode('X', stepsXY[3], false)"
             >
               <path
-                d="m204.986,215.593c-1.345-1.345-3.435-1.534-5.036-.506-7.781,4.995-17.034,7.896-26.967,7.896-9.684,0-18.718-2.762-26.374-7.53-1.597-.995-3.66-.795-4.991.536l-81.674,81.674c-1.644,1.644-1.542,4.335.21,5.864,30.314,26.448,69.957,42.473,113.346,42.473s83.032-16.025,113.346-42.473c1.752-1.529,1.855-4.22.21-5.864l-82.071-82.071Z"
+                d="m213.239,202.632l84.427,84.427c1.643,1.643,4.332,1.541,5.859-.21,26.449-30.314,42.475-69.958,42.475-113.349s-16.026-83.035-42.475-113.349c-1.528-1.751-4.216-1.853-5.859-.21l-83.997,83.997c5.856,8.189,9.314,18.21,9.314,29.045,0,11.101-3.623,21.353-9.744,29.65Z"
                 class="cc-btn-container"
               />
             </a>
-            <a
-              class="cc-btn outer-mid"
-              :class="yStepClasses"
-              @click="sendMoveGcode('Y', stepsXY[2], true)"
-            >
-              <path
-                d="m202.632,213.239c-8.296,6.121-18.548,9.744-29.65,9.744-10.835,0-20.856-3.458-29.045-9.314l-62.212,62.212c24.34,21.833,56.504,35.119,91.774,35.119s67.435-13.286,91.775-35.119l-62.642-62.642Z"
-                class="cc-btn-container"
-              />
-            </a>
-            <a
-              class="cc-btn inner-mid"
-              :class="yStepClasses"
-              @click="sendMoveGcode('Y', stepsXY[1], true)"
-            >
-              <path
-                d="m202.632,213.239c-8.296,6.121-18.548,9.744-29.65,9.744-10.835,0-20.856-3.458-29.045-9.314l-37.419,37.419c17.965,15.523,41.376,24.912,66.981,24.912s49.016-9.39,66.981-24.912l-37.849-37.849Z"
-                class="cc-btn-container"
-              />
-            </a>
-            <a
-              class="cc-btn inner"
-              :class="yStepClasses"
-              @click="sendMoveGcode('Y', stepsXY[0], true)"
-            >
-              <path
-                d="m191.65,202.257c-.621-.621-1.584-.782-2.351-.354-4.677,2.608-10.064,4.098-15.799,4.098s-11.122-1.489-15.799-4.098c-.767-.428-1.73-.267-2.351.354l-23.97,23.97c11.547,9.237,26.184,14.773,42.121,14.773s30.573-5.536,42.121-14.773l-23.97-23.97Z"
-                class="cc-btn-container"
-              />
-            </a>
-          </g>
 
-          <!--- Y Top -->
-          <g>
             <a
               class="cc-btn outer"
               :class="yStepClasses"
@@ -310,6 +212,51 @@
                 class="cc-btn-container"
               />
             </a>
+
+            <a
+              class="cc-btn outer"
+              :class="yStepClasses"
+              @click="sendMoveGcode('Y', stepsXY[3], true)"
+            >
+              <path
+                d="m204.986,215.593c-1.345-1.345-3.435-1.534-5.036-.506-7.781,4.995-17.034,7.896-26.967,7.896-9.684,0-18.718-2.762-26.374-7.53-1.597-.995-3.66-.795-4.991.536l-81.674,81.674c-1.644,1.644-1.542,4.335.21,5.864,30.314,26.448,69.957,42.473,113.346,42.473s83.032-16.025,113.346-42.473c1.752-1.529,1.855-4.22.21-5.864l-82.071-82.071Z"
+                class="cc-btn-container"
+              />
+            </a>
+
+            <text
+              class="cc-lbl"
+              :class="xyStepClasses"
+              transform="translate(173.5, 25.664)"
+              text-anchor="middle"
+            >
+              {{ stepsXY[3] }}
+            </text>
+          </g>
+
+          <g class="cc-section">
+            <a
+              class="cc-btn outer-mid"
+              :class="xStepClasses"
+              @click="sendMoveGcode('X', stepsXY[2], true)"
+            >
+              <path
+                d="m132.727,143.333l-61.608-61.608c-21.833,24.34-35.119,56.504-35.119,91.774s13.286,67.435,35.119,91.774l62.052-62.052c-6.389-8.398-10.188-18.874-10.188-30.24,0-11.101,3.623-21.353,9.744-29.649Z"
+                class="cc-btn-container"
+              />
+            </a>
+
+            <a
+              class="cc-btn outer-mid"
+              :class="xStepClasses"
+              @click="sendMoveGcode('X', stepsXY[2], false)"
+            >
+              <path
+                d="m213.239,202.632l62.642,62.642c21.833-24.34,35.119-56.504,35.119-91.774s-13.286-67.435-35.119-91.774l-62.212,62.212c5.856,8.189,9.314,18.21,9.314,29.045,0,11.101-3.623,21.353-9.744,29.65Z"
+                class="cc-btn-container"
+              />
+            </a>
+
             <a
               class="cc-btn outer-mid"
               :class="yStepClasses"
@@ -320,6 +267,51 @@
                 class="cc-btn-container"
               />
             </a>
+
+            <a
+              class="cc-btn outer-mid"
+              :class="yStepClasses"
+              @click="sendMoveGcode('Y', stepsXY[2], true)"
+            >
+              <path
+                d="m202.632,213.239c-8.296,6.121-18.548,9.744-29.65,9.744-10.835,0-20.856-3.458-29.045-9.314l-62.212,62.212c24.34,21.833,56.504,35.119,91.774,35.119s67.435-13.286,91.775-35.119l-62.642-62.642Z"
+                class="cc-btn-container"
+              />
+            </a>
+
+            <text
+              class="cc-lbl"
+              :class="xyStepClasses"
+              transform="translate(173.5, 60.664)"
+              text-anchor="middle"
+            >
+              {{ stepsXY[2] }}
+            </text>
+          </g>
+
+          <g class="cc-section">
+            <a
+              class="cc-btn inner-mid"
+              :class="xStepClasses"
+              @click="sendMoveGcode('X', stepsXY[1], true)"
+            >
+              <path
+                d="m132.727,143.333l-36.814-36.814c-15.523,17.965-24.912,41.376-24.912,66.981s9.39,49.016,24.912,66.981l37.258-37.258c-6.389-8.398-10.188-18.874-10.188-30.24,0-11.101,3.623-21.353,9.744-29.649Z"
+                class="cc-btn-container"
+              />
+            </a>
+
+            <a
+              class="cc-btn inner-mid"
+              :class="xStepClasses"
+              @click="sendMoveGcode('X', stepsXY[1], false)"
+            >
+              <path
+                d="m213.239,202.632l37.849,37.849c15.523-17.965,24.912-41.376,24.912-66.981s-9.39-49.016-24.912-66.981l-37.419,37.419c5.856,8.189,9.314,18.21,9.314,29.045,0,11.101-3.623,21.353-9.744,29.65Z"
+                class="cc-btn-container"
+              />
+            </a>
+
             <a
               class="cc-btn inner-mid"
               :class="yStepClasses"
@@ -330,6 +322,51 @@
                 class="cc-btn-container"
               />
             </a>
+
+            <a
+              class="cc-btn inner-mid"
+              :class="yStepClasses"
+              @click="sendMoveGcode('Y', stepsXY[1], true)"
+            >
+              <path
+                d="m202.632,213.239c-8.296,6.121-18.548,9.744-29.65,9.744-10.835,0-20.856-3.458-29.045-9.314l-37.419,37.419c17.965,15.523,41.376,24.912,66.981,24.912s49.016-9.39,66.981-24.912l-37.849-37.849Z"
+                class="cc-btn-container"
+              />
+            </a>
+
+            <text
+              class="cc-lbl"
+              :class="xyStepClasses"
+              transform="translate(173.5, 95.664)"
+              text-anchor="middle"
+            >
+              {{ stepsXY[1] }}
+            </text>
+          </g>
+
+          <g class="cc-section">
+            <a
+              class="cc-btn inner"
+              :class="xStepClasses"
+              @click="sendMoveGcode('X', stepsXY[0], true)"
+            >
+              <path
+                d="m144.743,155.35l-23.97-23.97c-9.237,11.547-14.773,26.184-14.773,42.121s5.536,30.573,14.773,42.121l23.97-23.97c.621-.621.782-1.584.354-2.351-2.608-4.677-4.097-10.064-4.097-15.799s1.489-11.122,4.098-15.799c.428-.767.267-1.73-.354-2.351Z"
+                class="cc-btn-container"
+              />
+            </a>
+
+            <a
+              class="cc-btn inner"
+              :class="xStepClasses"
+              @click="sendMoveGcode('X', stepsXY[0], false)"
+            >
+              <path
+                d="m202.257,191.65l23.97,23.97c9.237-11.547,14.773-26.184,14.773-42.121s-5.536-30.573-14.773-42.121l-23.97,23.97c-.621.621-.782,1.584-.354,2.351,2.608,4.677,4.097,10.064,4.097,15.799s-1.489,11.122-4.097,15.799c-.428.767-.267,1.73.354,2.351Z"
+                class="cc-btn-container"
+              />
+            </a>
+
             <a
               class="cc-btn inner"
               :class="yStepClasses"
@@ -340,6 +377,26 @@
                 class="cc-btn-container"
               />
             </a>
+
+            <a
+              class="cc-btn inner"
+              :class="yStepClasses"
+              @click="sendMoveGcode('Y', stepsXY[0], true)"
+            >
+              <path
+                d="m191.65,202.257c-.621-.621-1.584-.782-2.351-.354-4.677,2.608-10.064,4.098-15.799,4.098s-11.122-1.489-15.799-4.098c-.767-.428-1.73-.267-2.351.354l-23.97,23.97c11.547,9.237,26.184,14.773,42.121,14.773s30.573-5.536,42.121-14.773l-23.97-23.97Z"
+                class="cc-btn-container"
+              />
+            </a>
+
+            <text
+              class="cc-lbl"
+              :class="xyStepClasses"
+              transform="translate(173.5, 130.664)"
+              text-anchor="middle"
+            >
+              {{ stepsXY[0] }}
+            </text>
           </g>
 
           <!--- XY Center -->
@@ -373,35 +430,6 @@
               />
               <path d="m170.667,184.833v-8.5h5.667v8.5h7.083v-11.333h4.25l-14.167-12.75-14.167,12.75h4.25v11.333h7.083Z" />
             </a>
-          </g>
-
-          <!--- XY Text -->
-          <g
-            class="cc-lbls"
-            :class="xyStepClasses"
-          >
-            <text
-              transform="translate(173.5, 130.664)"
-              text-anchor="middle"
-            >
-              {{ stepsXY[0] }}
-            </text>
-            <text
-              transform="translate(173.5, 95.664)"
-              text-anchor="middle"
-            >
-              {{ stepsXY[1] }}</text>
-            <text
-              transform="translate(173.5, 60.664)"
-              text-anchor="middle"
-            >
-              {{ stepsXY[2] }}
-            </text>
-            <text
-              transform="translate(173.5, 25.664)"
-              text-anchor="middle"
-            >
-              {{ stepsXY[3] }}</text>
           </g>
 
           <!-- Homing Buttons -->
@@ -752,7 +780,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
 
     .cc-btn,
-    .cc-lbls {
+    .cc-lbl {
       fill: map-deep-get($material, 'text', 'primary');
       stroke: map-deep-get($material, 'text', 'primary');
     }
@@ -845,7 +873,11 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
       }
     }
 
-    .cc-lbls {
+    .cc-section:hover .cc-lbl {
+      font-weight: bold;
+    }
+
+    .cc-lbl {
       pointer-events: none;
       stroke-width: 0;
     }

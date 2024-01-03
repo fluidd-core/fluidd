@@ -198,15 +198,6 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   @Ref('instanceName')
   readonly instanceNameElement!: VInput
 
-  get estimateTypes () {
-    return [
-      { name: this.$t('app.setting.timer_options.duration'), value: 'totals' },
-      { name: this.$t('app.setting.timer_options.slicer'), value: 'slicer' },
-      { name: this.$t('app.setting.timer_options.file'), value: 'file' },
-      { name: this.$t('app.setting.timer_options.filament'), value: 'filament' }
-    ]
-  }
-
   get instanceName () {
     return this.$store.state.config.uiSettings.general.instanceName
   }
@@ -248,7 +239,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return Object.entries(DateFormats)
       .map(([key, entry]) => ({
         value: key,
-        text: `${date.toLocaleDateString(entry.locales ?? this.$filters.getNavigatorLocales(), entry.options)}${entry.suffix ?? ''}`
+        text: `${date.toLocaleDateString(entry.locales ?? this.$filters.getAllLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
   }
 
@@ -270,7 +261,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return Object.entries(TimeFormats)
       .map(([key, entry]) => ({
         value: key,
-        text: `${date.toLocaleTimeString(entry.locales ?? this.$filters.getNavigatorLocales(), entry.options)}${entry.suffix ?? ''}`
+        text: `${date.toLocaleTimeString(entry.locales ?? this.$filters.getAllLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
   }
 

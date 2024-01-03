@@ -97,19 +97,19 @@
               sm="6"
             >
               <status-label :label="$t('app.general.label.requested_speed')">
-                <span v-if="requestedSpeed > 0 && printerPrinting">{{ requestedSpeed }} mm/s</span>
+                <span v-if="liveVelocity > 0">{{ liveVelocity.toFixed(1) }} mm/s</span>
               </status-label>
 
               <status-label :label="$t('app.general.label.flow')">
-                <span v-if="flow.value > 0 && printerPrinting">{{ flow.value.toFixed(1) }} mm&sup3;/s</span>
+                <span v-if="liveFlow > 0">{{ liveFlow.toFixed(1) }} mm&sup3;/s</span>
               </status-label>
 
               <status-label :label="$t('app.general.label.filament')">
-                <span v-if="filament_used > 0 && printerPrinting">{{ $filters.getReadableLengthString(filament_used) }}</span>
+                <span v-if="filamentUsed > 0">{{ $filters.getReadableLengthString(filamentUsed) }}</span>
               </status-label>
 
               <status-label :label="$t('app.general.label.layer')">
-                <span v-if="layers && printerPrinting">{{ layer }} / {{ layers }}</span>
+                <span v-if="layers > 0">{{ layer }} / {{ layers }}</span>
               </status-label>
             </v-col>
 
@@ -118,29 +118,29 @@
               sm="6"
             >
               <status-label
-                v-if="estimates.actual > 0"
+                v-if="estimates.actualLeft > 0"
                 :label="$t('app.general.label.actual_time')"
               >
-                <span v-if="estimates.actual > 0">{{ $filters.formatCounterTime(estimates.actual) }}</span>
+                <span>{{ $filters.formatCounterSeconds(estimates.actualLeft) }}</span>
               </status-label>
 
               <status-label
                 v-else
                 :label="$t('app.general.label.file_time')"
               >
-                <span v-if="estimates.file > 0">{{ $filters.formatCounterTime(estimates.file) }}</span>
+                <span v-if="estimates.fileLeft > 0">{{ $filters.formatCounterSeconds(estimates.fileLeft) }}</span>
               </status-label>
 
               <status-label :label="$t('app.general.label.slicer')">
-                <span v-if="estimates.slicer > 0 && printerPrinting">{{ $filters.formatCounterTime(estimates.slicer) }}</span>
+                <span v-if="estimates.slicerLeft > 0">{{ $filters.formatCounterSeconds(estimates.slicerLeft) }}</span>
               </status-label>
 
               <status-label :label="$t('app.general.label.total')">
-                <span v-if="estimates.duration > 0 && printerPrinting">{{ $filters.formatCounterTime(estimates.duration) }}</span>
+                <span v-if="estimates.printDuration > 0">{{ $filters.formatCounterSeconds(estimates.printDuration) }}</span>
               </status-label>
 
               <status-label :label="$t('app.general.label.finish_time')">
-                <span v-if="estimates.eta > 0 && printerPrinting">{{ $filters.formatAbsoluteDateTime(estimates.eta * 1000) }}</span>
+                <span v-if="estimates.eta > 0">{{ $filters.formatAbsoluteDateTime(estimates.eta) }}</span>
               </status-label>
             </v-col>
           </v-row>
@@ -169,21 +169,21 @@
                 v-if="current_file.estimated_time"
                 :label="$t('app.general.label.slicer')"
               >
-                <span>{{ $filters.formatCounterTime(current_file.estimated_time) }}</span>
+                <span>{{ $filters.formatCounterSeconds(current_file.estimated_time) }}</span>
               </status-label>
 
               <status-label
                 v-if="current_file.history && current_file.history.print_duration > 0"
                 :label="$t('app.general.label.actual_time')"
               >
-                <span>{{ $filters.formatCounterTime(current_file.history.print_duration) }}</span>
+                <span>{{ $filters.formatCounterSeconds(current_file.history.print_duration) }}</span>
               </status-label>
 
               <status-label
                 v-if="current_file.history && current_file.history.total_duration > 0"
                 :label="$t('app.general.label.total')"
               >
-                <span>{{ $filters.formatCounterTime(current_file.history.total_duration) }}</span>
+                <span>{{ $filters.formatCounterSeconds(current_file.history.total_duration) }}</span>
               </status-label>
             </v-col>
           </v-row>
@@ -203,11 +203,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StatusLabel from './StatusLabel.vue'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
+import ToolheadMixin from '@/mixins/toolhead'
 import FilePreviewDialog from '../filesystem/FilePreviewDialog.vue'
+import type { TimeEstimates } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -215,15 +217,7 @@ import FilePreviewDialog from '../filesystem/FilePreviewDialog.vue'
     FilePreviewDialog
   }
 })
-export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
-  // Maintains the state of flow
-  flow = {
-    timestamp: Date.now(),
-    lastExtruderPosition: 0,
-    value: 0,
-    max: 0
-  }
-
+export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMixin) {
   filePreviewState: any = {
     open: false,
     filename: '',
@@ -320,29 +314,30 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
     }
   }
 
-  /**
-   * The known requested speed.
-   */
-  get requestedSpeed () {
-    // Take into account the speed multiplier.
-    const multiplier = this.$store.state.printer.printer.gcode_move.speed_factor || 1
-    let speed = this.$store.state.printer.printer.gcode_move.speed || 0
-    speed = (speed * multiplier) / 60
-    return speed.toFixed()
+  get liveVelocity (): number {
+    return this.$store.state.printer.printer.motion_report.live_velocity as number
+  }
+
+  get liveExtruderVelocity (): number {
+    return this.$store.state.printer.printer.motion_report.live_extruder_velocity as number
+  }
+
+  get liveFlow (): number {
+    return Math.PI / 4 * this.filamentDiameter ** 2 * this.liveExtruderVelocity
   }
 
   /**
    * Actual estimates for during a print.
    */
-  get estimates () {
-    return this.$store.getters['printer/getTimeEstimates']
+  get estimates (): TimeEstimates {
+    return this.$store.getters['printer/getTimeEstimates'] as TimeEstimates
   }
 
   /**
    * If the user has enabled the history component.
    */
-  get supportsHistoryComponent () {
-    return this.$store.getters['server/componentSupport']('history')
+  get supportsHistoryComponent (): boolean {
+    return this.$store.getters['server/componentSupport']('history') as boolean
   }
 
   /**
@@ -355,58 +350,33 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
   /**
    * The total estimated layer count.
    */
-  get layers () {
-    return this.$store.getters['printer/getPrintLayers']
+  get layers (): number {
+    return this.$store.getters['printer/getPrintLayers'] as number
   }
 
   /**
    * Current estimated layer based on current z pos.
    */
-  get layer () {
-    return this.$store.getters['printer/getPrintLayer']
+  get layer (): number {
+    return this.$store.getters['printer/getPrintLayer'] as number
   }
 
   /**
    * Filament used according to print stats.
    */
-  get filament_used () {
-    return this.$store.state.printer.printer.print_stats.filament_used || 0
+  get filamentUsed (): number {
+    const filamentUsed = this.$store.state.printer.printer.print_stats.filament_used as number | undefined
+
+    return filamentUsed ?? 0
   }
 
   /**
    * Total filament according to the current file / slicer.
    */
-  get filament_total () {
-    return this.$store.state.printer.printer.current_file.filament_total || 0
-  }
+  get filamentTotal () {
+    const filamentTotal = this.$store.state.printer.printer.current_file.filament_total as number | undefined
 
-  /**
-   * Work out flow provided our used filament changed, and we've not calculated
-   * within a given delta (2sec).
-   */
-  @Watch('filament_used')
-  onFilamentUsed (filament_used: string) {
-    const extruderPosition = parseFloat(filament_used)
-    const filament_diameter = this.$store.getters['printer/getPrinterSettings']('extruder.filament_diameter') || 1.75
-    const timeDelta = (Date.now() - this.flow.timestamp) / 1000
-    if (timeDelta >= 2) {
-      if (
-        this.flow.lastExtruderPosition &&
-        this.flow.lastExtruderPosition < extruderPosition &&
-        this.flow.timestamp
-      ) {
-        // console.log('getting flow', filament_diameter, timeDelta)
-        const filamentDiff = extruderPosition - this.flow.lastExtruderPosition
-        const filamentCrossSection = Math.pow(filament_diameter / 2, 2) * Math.PI
-
-        this.flow.value = filamentCrossSection * filamentDiff / timeDelta
-
-        if (this.flow.max < this.flow.value) this.flow.max = this.flow.value
-      }
-
-      this.flow.lastExtruderPosition = extruderPosition
-      this.flow.timestamp = Date.now()
-    }
+    return filamentTotal || 0
   }
 
   async handleViewThumbnail () {

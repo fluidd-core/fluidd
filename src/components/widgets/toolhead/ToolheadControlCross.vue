@@ -211,19 +211,19 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
   }
 
   get toolheadMoveDistances (): number[] {
-    const distances = this.$store.state.config.uiSettings.general.toolheadMoveDistances as number[]
-
-    if (distances.includes(this.toolheadMoveLength)) {
-      return distances
-    }
-
-    // safety for when no valid move length is present
-    return [this.toolheadMoveLength, ...distances]
-      .sort((a, b) => a - b)
+    return this.$store.state.config.uiSettings.general.toolheadMoveDistances as number[]
   }
 
   get toolheadMoveLength (): number {
-    return this.moveLength ?? this.$store.state.config.uiSettings.general.defaultToolheadMoveLength as number
+    if (this.moveLength == null) {
+      const defaultToolheadMoveLength = this.$store.state.config.uiSettings.general.defaultToolheadMoveLength as number
+
+      this.moveLength = this.toolheadMoveDistances.includes(defaultToolheadMoveLength)
+        ? defaultToolheadMoveLength
+        : this.toolheadMoveDistances[0]
+    }
+
+    return this.moveLength
   }
 
   set toolheadMoveLength (val: number) {

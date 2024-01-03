@@ -24,7 +24,7 @@
         >
           <transition-group
             type="transition"
-            :name="!inLayout ? 'flip-list' : null"
+            :name="!inLayout ? 'flip-list' : undefined"
           >
             <template v-for="c in container">
               <component
