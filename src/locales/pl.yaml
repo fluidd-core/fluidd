@@ -21,6 +21,7 @@ app:
       delete: Usuń profil
       load: Wczytaj profil
       save: Zapisuje skalibrowany profil do pliku printer.cfg
+      copy_image: Skopiuj obraz siatki stołu
   chart:
     label:
       current: Aktualnie
@@ -72,6 +73,7 @@ app:
         hidden_files_folders: Filtruj ukryte pliki i foldery
         rolled_log_files: Ukryj zarchiwizowane logi
         klipper_backup_files: Filtruj kopie zapasowe Klippera
+        moonraker_backup_files: Filtruj pliki kopii zapasowej Moonrakera
     label:
       dir_name: Nazwa katalogu
       disk_usage: Użycie dysku
@@ -216,6 +218,8 @@ app:
       cross: Krzyż
       bars: Pasek
       range: Zakres
+      minimum_cruise_ratio: Minimalne przełożenie
+      circle: Koło
     btn:
       abort: Przerwij
       add: Dodaj
@@ -420,6 +424,11 @@ app:
       run_collector: Uruchom kolektor
       browse_metrics: Przeglądaj dostępne metryki
       rollover_logs: Resetuj logi
+      file_browser_configuration_help: Skopiuj pliki i foldery do Plików Konfiguracyjnych
+        przeciągając je stąd i upuszczając je tam
+      file_browser_help: Przeciągnij i upuść pliki lub foldery z poza przeglądarki
+        aby przesłać je tutaj<br>Przenieś pliki i foldery przeciągając je i upuszczając
+        do podfolderów lub ".."
   gcode:
     label:
       current_layer_height: Aktualna wysokość warstwy
@@ -487,6 +496,7 @@ app:
       general: Ogólne
       theme: Motyw
       thermal_presets: Presety termiczne
+      file_browser: Przeglądarka plików
     label:
       confirm_on_save_config_and_restart: Sprawdź oczekujące zmiany konfiguracji przed
         zapisaniem i ponownym uruchomieniem
@@ -602,6 +612,8 @@ app:
       show_screws_tilt_adjust_dialog_automatically: Automatycznie wyświetl okno "Regulacja
         pochylenia śrubami"
       draw_origin: Rysuj początek
+      enable_xy_homing: Włącz bazowanie XY
+      show_logo_on_background: Pokaż logo w tle
     camera_type_options:
       mjpegstream: Strumień MJPEG
       mjpegadaptive: Adaptacyjny MJPEG
@@ -630,6 +642,13 @@ app:
         okno, gdy uruchomione jest narzędzie BED_SCREWS_ADJUST
       show_screws_tilt_adjust_dialog_automatically: Automatycznie wyświetla okno pomocnicze,
         jeśli uruchomione jest narzędzie SCREWS_TILT_CALCULATE
+      theme_disclaimer: Motywy te zawierają nazwy marek i logotypy, które są własnością
+        intelektualną ich właścicieli.<br> Włączenie tych nazw i logo odbywa się za
+        zgodą marek.<br> Należy jednak pamiętać, że te motywy nie są oficjalnie utrzymywane
+        przez odpowiednie marki.<br> Wszelkie problemy lub zapytania związane z tematami
+        należy kierować do zespołu Fluidd.<br> Używanie nazw marek i logo służy wyłącznie
+        celom dekoracyjnym i estetycznym i nie jest sugerowane żadne oficjalne powiązanie
+        z markami ani ich poparcie.
     camera_rotate_options:
       '90': 90°
       '180': 180°
@@ -697,6 +716,9 @@ app:
       multiply_job: Powiel zadanie | Powiel zadania
     label:
       number_of_copies: Liczba kopii
+    tooltip:
+      help: Dodaj zadania do kolejki przeciągając pliki z Zadań i upuszczając je tutaj<br>Dostosuj
+        kolejność zadań w kolejce przeciągając je do góry lub w dół
   version:
     label:
       commit_history: Historia zmian
