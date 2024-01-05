@@ -20,22 +20,24 @@
           align-self="center"
         >
           <v-row>
-            <v-progress-circular
-              :rotate="-90"
-              :size="90"
-              :width="7"
-              :value="estimates.progress"
-              color="primary"
-              class="progress-circle mx-1"
+            <v-btn
+              text
+              class="progress-button mx-2"
               @click="handleViewThumbnail"
             >
-              <div class="print-thumb-container">
+              <v-progress-circular
+                :rotate="-90"
+                :size="90"
+                :width="7"
+                :value="estimates.progress"
+                color="primary"
+              >
                 <img
-                  class="print-thumb"
+                  class="progress-button-image"
                   :src="thumbnail"
                 >
-              </div>
-            </v-progress-circular>
+              </v-progress-circular>
+            </v-btn>
           </v-row>
           <v-row justify="center">
             <span class="primary--text">{{ estimates.progress }}%</span>
@@ -385,8 +387,6 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
 </script>
 
 <style lang="scss" scoped>
-  @import 'vuetify/src/styles/styles.sass';
-
   .filename {
     white-space: nowrap;
     overflow: hidden;
@@ -396,31 +396,17 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
     text-align: left;
   }
 
-  .progress-circle {
-    cursor: pointer;
+  .progress-button {
+    width: 90px !important;
+    height: 90px !important;
+    border-radius: 50%;
+    overflow: hidden;
+  }
 
-    .print-thumb-container {
-      height: 73px;
-      width: 73px;
-      border-radius: 50%;
-      background-color: rgba(0, 0, 0, 0.5);
-      transition-duration: 0.28s;
-      transition-property: background-color;
-      transition-timing-function: map-get($transition, 'fast-out-slow-in');
-    }
-
-    .print-thumb {
-      max-height: 72px;
-      max-width: 72px;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      position: absolute;
-      border-radius: 50%;
-    }
-
-    &:hover .print-thumb-container {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
+  .progress-button-image {
+    max-width: 71px;
+    max-height: 71px;
+    border-radius: 50%;
+    overflow: hidden;
   }
 </style>
