@@ -29,10 +29,12 @@
               class="progress-circle mx-1"
               @click="handleViewThumbnail"
             >
-              <img
-                class="print-thumb"
-                :src="thumbnail"
-              >
+              <div class="print-thumb-container">
+                <img
+                  class="print-thumb"
+                  :src="thumbnail"
+                >
+              </div>
             </v-progress-circular>
           </v-row>
           <v-row justify="center">
@@ -397,22 +399,28 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
   .progress-circle {
     cursor: pointer;
 
-    :deep(.v-progress-circular__underlay) {
-      fill: rgba(0, 0, 0, 0.5);
-    }
-
-    &:hover :deep(.v-progress-circular__underlay) {
-      fill: rgba(0, 0, 0, 0.2);
+    .print-thumb-container {
+      height: 73px;
+      width: 73px;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.5);
       transition-duration: 0.28s;
-      transition-property: fill;
+      transition-property: background-color;
       transition-timing-function: map-get($transition, 'fast-out-slow-in');
     }
-  }
 
-  .print-thumb {
-    max-height: 73px;
-    max-width: 73px;
-    border-radius: 50%;
-    opacity: 0.8;
+    .print-thumb {
+      max-height: 72px;
+      max-width: 72px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    &:hover .print-thumb-container {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
   }
 </style>
