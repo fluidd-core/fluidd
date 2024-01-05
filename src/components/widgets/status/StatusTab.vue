@@ -18,38 +18,25 @@
           v-if="progressVisible && $vuetify.breakpoint.mdAndUp"
           cols="auto"
           align-self="center"
-          class="position-relative"
         >
           <v-row>
-            <div
-              class="progress-wrapper"
-              style="cursor: pointer"
+            <v-progress-circular
+              :rotate="-90"
+              :size="90"
+              :width="7"
+              :value="estimates.progress"
+              color="primary"
+              class="progress-circle mx-1"
               @click="handleViewThumbnail"
             >
-              <v-progress-circular
-                :rotate="-90"
-                :size="90"
-                :width="7"
-                :value="estimates.progress"
-                color="primary"
-                class="progress-circle"
-              />
-              <div class="thumbnail-background" />
-
-              <div class="fill-height print-thumb">
-                <img
-                  class="print-thumb"
-                  :src="thumbnail"
-                >
-              </div>
-            </div>
+              <img
+                class="print-thumb"
+                :src="thumbnail"
+              >
+            </v-progress-circular>
           </v-row>
-          <v-row
-            justify="center"
-          >
-            <div class="percentage-wrapper">
-              <span class="primary--text">{{ estimates.progress }}%</span>
-            </div>
+          <v-row justify="center">
+            <span class="primary--text">{{ estimates.progress }}%</span>
           </v-row>
         </v-col>
 
@@ -396,66 +383,36 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
 </script>
 
 <style lang="scss" scoped>
-.print-thumb {
-  display: block;
-  max-height: 110px;
-}
+  @import 'vuetify/src/styles/styles.sass';
 
-.filename {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  // width: 200px;
-  direction: rtl;
-  text-align: left;
-}
+  .filename {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    // width: 200px;
+    direction: rtl;
+    text-align: left;
+  }
 
-.position-relative {
-  position: relative;
-}
+  .progress-circle {
+    cursor: pointer;
 
-.progress-wrapper {
-  position: relative;
-  width: 90px;
-  /* Set the width and height to match progress circle size */
-  height: 90px;
-  /* Set the width and height to match progress circle size */
-  overflow: hidden;
-  border-radius: 50%;
-}
+    :deep(.v-progress-circular__underlay) {
+      fill: rgba(0, 0, 0, 0.5);
+    }
 
-.progress-circle {
-  position: absolute;
-  z-index: 4;
-}
+    &:hover :deep(.v-progress-circular__underlay) {
+      fill: rgba(0, 0, 0, 0.2);
+      transition-duration: 0.28s;
+      transition-property: fill;
+      transition-timing-function: map-get($transition, 'fast-out-slow-in');
+    }
+  }
 
-.thumbnail-background {
-  position: absolute;
-  width: 85px;
-  /* 10% less than the size of the progress circle */
-  height: 85px;
-  /* 10% less than the size of the progress circle */
-  border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.5);
-  /* Adjust transparency here */
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 0;
-}
-
-.print-thumb {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 0;
-  max-height: 73px;
-  max-width: 73px;
-  /* Adjust as needed */
-  border-radius: 50%;
-  opacity: 0.8;
-  /* Adjust opacity as needed */
-}
-
+  .print-thumb {
+    max-height: 73px;
+    max-width: 73px;
+    border-radius: 50%;
+    opacity: 0.8;
+  }
 </style>
