@@ -3,7 +3,7 @@ import { defaultState } from './state'
 import type {
   Spool,
   SpoolmanState,
-  SpoolSelectionDialogState,
+  SpoolSelectionDialogState, WebsocketBasePayload,
   WebsocketPayload
 } from '@/store/spoolman/types'
 import store from '@/store'
@@ -25,12 +25,24 @@ export const mutations: MutationTree<SpoolmanState> = {
 
   setAvailableSpools (state, payload: Spool[]) {
     // implies working communication with spoolman server
-    const supported = !!payload.length // spools available
+    state.supported = !!payload.length // spools available
 
-    if (supported && store.state.server.config.spoolman?.server) {
+    state.availableSpools = payload.map(spool => ({
+      ...spool,
+      registered: new Date(spool.registered),
+      first_used: spool.first_used ? new Date(spool.first_used) : undefined,
+      last_used: spool.last_used ? new Date(spool.last_used) : undefined
+    }))
+
+    if (state.supported && store.state.server.config.spoolman?.server) {
+      if (store.state.spoolman.socket?.readyState === WebSocket.OPEN) {
+        // we already have a working WS conn
+        return
+      }
+
       // init websocket to listen for updates
       const spoolmanUrl = new URL(store.state.server.config.spoolman?.server)
-      spoolmanUrl.pathname += `${spoolmanUrl.pathname.endsWith('/') ? '' : '/'}api/v1/spool`
+      spoolmanUrl.pathname += `${spoolmanUrl.pathname.endsWith('/') ? '' : '/'}api/v1/`
       if (spoolmanUrl.protocol === 'https:') {
         spoolmanUrl.protocol = 'wss:'
       } else {
@@ -42,7 +54,7 @@ export const mutations: MutationTree<SpoolmanState> = {
       state.socket.onmessage = event => {
         let data
         try {
-          data = JSON.parse(event.data) as WebsocketPayload
+          data = JSON.parse(event.data) as WebsocketBasePayload
         } catch (err) {
           consola.error(`${logPrefix} failed to decode websocket message`, err, event.data)
           return
@@ -54,8 +66,16 @@ export const mutations: MutationTree<SpoolmanState> = {
             store.dispatch('spoolman/onSpoolChange', data)
             break
 
+          case 'filament':
+            store.dispatch('spoolman/onFilamentChange', data)
+            break
+
+          case 'vendor':
+            store.dispatch('spoolman/onVendorChange', data)
+            break
+
           default:
-            consola.debug(`${logPrefix} ignoring websocket message with type ${data.resource}`)
+            consola.warn(`${logPrefix} ignoring websocket message with type ${data.resource}`)
         }
       }
     } else {
@@ -63,14 +83,6 @@ export const mutations: MutationTree<SpoolmanState> = {
       state.socket?.close()
       state.socket = undefined
     }
-
-    state.supported = supported
-    state.availableSpools = payload.map(spool => ({
-      ...spool,
-      registered: new Date(spool.registered),
-      first_used: spool.first_used ? new Date(spool.first_used) : undefined,
-      last_used: spool.last_used ? new Date(spool.last_used) : undefined
-    }))
   },
 
   setDialogState (state, payload: SpoolSelectionDialogState) {
