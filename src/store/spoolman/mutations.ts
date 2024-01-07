@@ -3,8 +3,8 @@ import { defaultState } from './state'
 import type {
   Spool,
   SpoolmanState,
-  SpoolSelectionDialogState, WebsocketBasePayload,
-  WebsocketPayload
+  SpoolSelectionDialogState,
+  WebsocketBasePayload
 } from '@/store/spoolman/types'
 import store from '@/store'
 import { consola } from 'consola'
