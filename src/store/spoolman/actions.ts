@@ -9,7 +9,6 @@ import type {
 } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
-import store from '@/store'
 import { consola } from 'consola'
 
 const logPrefix = '[SPOOLMAN]'
@@ -105,7 +104,7 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
     if (getters.getSupported) { dispatch('initializeWebsocketConnection') }
   },
 
-  async initializeWebsocketConnection ({ state, rootState }) {
+  async initializeWebsocketConnection ({ state, rootState, dispatch }) {
     if (rootState.server.config.spoolman?.server) {
       if (state.socket?.readyState === WebSocket.OPEN) {
         // we already have a working WS conn
@@ -135,15 +134,15 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
         consola.debug(`${logPrefix} received spoolman message:`, data)
         switch (data.resource) {
           case 'spool':
-            store.dispatch('spoolman/onSpoolChange', data)
+            dispatch('onSpoolChange', data)
             break
 
           case 'filament':
-            store.dispatch('spoolman/onFilamentChange', data)
+            dispatch('onFilamentChange', data)
             break
 
           case 'vendor':
-            store.dispatch('spoolman/onVendorChange', data)
+            dispatch('onVendorChange', data)
             break
 
           default:
