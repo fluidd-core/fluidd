@@ -21,6 +21,7 @@ app:
       delete: Удалить профиль
       load: Загрузить профиль
       save: Сохранить откалиброванный профиль в printer.cfg
+      copy_image: Скопировать изображение сетки кровати
   chart:
     label:
       current: Текущее значение
@@ -30,9 +31,9 @@ app:
       rate_of_change: Изменение
     tooltip:
       help: >-
-        Удерживайте shift для увеличения.<br />Кликните на элемент, чтобы
-        изменить его видимость на графике.<br />Кликните на мощность чтобы изменить
-        видимость шкалы на графике.
+        Удерживайте <kbd>Shift</kbd>, чтобы увеличить.<br />Щелкните по элементу,
+        чтобы включить/отключить в графе.<br />Щелкните по питанию, чтобы включить/отключить
+        в графе.
   console:
     label:
       auto_scroll: Автоматическое пролистывание
@@ -41,6 +42,9 @@ app:
     placeholder:
       command: '''tab'' для автокомплита, ''help'' for для списка комманд ''↑ и ↓''
         история команд'
+    tooltip:
+      help: Введите 'help' для команд.<br />Используйте <kbd>Tab</kbd> для автозаполнения.<br
+        />Используйте <kbd>↑</kbd> и <kbd>↓</kbd> для истории
   endpoint:
     error:
       cant_connect: >-
@@ -75,6 +79,7 @@ app:
         hidden_files_folders: Фильтровать скрытые файлы и папки
         klipper_backup_files: Фильтровать резервные копии Klipper
         rolled_log_files: Фильтровать файлы перезаписанных логов
+        moonraker_backup_files: Отфильтровать файлы резервных копий Moonraker
     label:
       dir_name: Имя папки
       disk_usage: Использование дискового пространства
@@ -102,10 +107,17 @@ app:
     tooltip:
       low_on_space: Мало места на диске
       root_disabled: Root недоступен. Проверьте файлы логов.
+      items_count: '{count} элемент | {count} элементов'
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
+      crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
+    overlay:
+      drag_files_folders_upload: <strong>Перетащите</strong> файлы и папки сюда для
+        загрузки
+      drag_files_enqueue: <strong>Перетащите</strong> файлы сюда для добавления в
+        очередь
   gcode:
     btn:
       load_current_file: Загрузить текущий файл
@@ -123,10 +135,13 @@ app:
       show_previous_layer: Отображать предыдущий слой
       show_retractions: Отображать ретракты
       parsing_file: Анализ файла
+      show_parts: Показать детали
     msg:
       confirm: >-
         Файл "%{filename}" имеет размер %{size}, это может быть ресурсоемким для
         вашей системы. Вы уверены?
+    overlay:
+      drag_file_load: <strong>Перетащите</strong> файл gcode сюда для загрузки
   general:
     btn:
       abort: Отменить
@@ -198,6 +213,15 @@ app:
       upload_print: Загрузить и напечатать
       view: Вид
       reset_stats: Сбросить Статистику
+      multiply: Умножить
+      upload_folder: Загрузить папку
+      retry: Повторить
+      go_to_file: Перейти к файлу
+      job_queue: Очередь задач
+      upload_files: Загрузить файлы
+      refresh_metadata: Обновить метаданные
+      reload: Перезагрузить
+      filter: Фильтр
     error:
       app_setup_link: >-
         Требования для установки Fluidd можно посмотреть <a target="_blank"
@@ -302,6 +326,22 @@ app:
       edit_category: Редактировать категорию
       add_category: Добавить категорию
       file_time: Файл
+      range: Диапозон
+      circle: Круг
+      upload_and_print: Загрузить и напечатать
+      all: Все
+      default: По умолчанию
+      numeric_prefix_sort: Сортировка по числовому префиксу
+      pause_at_layer: Пауза на слое
+      pause_at_next_layer: Пауза на следующем слое
+      pause_at_layer_number: Пауза на слое с номером
+      stepper_enabled: Шаговый двигатель включен
+      synced_extruder: Синхронизированный экструдер
+      command: Команда
+      minimum_cruise_ratio: Минимальное отношение крейсерской мощности
+      cross: Пересечение
+      bars: Столбцы
+      version_sort: Сортировка по версии
     msg:
       password_changed: Пароль изменен
       wrong_password: Ой, что-то пошло не так. Пароль введен верно?
@@ -345,6 +385,8 @@ app:
           закрыть файл?
         no_file_preview: >-
           %{name} в настоящее время не может быть просмотрен.
+        confirm_delete: Вы уверены? Это удалит выбранный элемент." | "Вы уверены?
+          Это удалит {count} выбранных элементов.
     table:
       header:
         actions: Действия
@@ -372,6 +414,8 @@ app:
         start_time: Время начала
         status: Статус
         total_duration: Общая продолжительность
+        time_added: Время добавления
+        time_in_queue: Время в очереди
     title:
       add_chart: Add Chart
       add_printer: Добавить принтер
@@ -406,6 +450,7 @@ app:
       timelapse: Интервальная съемка
       tool: Инструмент
       tune: Юстировка стола
+      job_queue: Очередь заданий
     tooltip:
       browse_metrics: Browse available metrics
       estop: Аварийная остановка
@@ -415,10 +460,17 @@ app:
       reload_restart_klipper: Перезагружает конфигурацию Klipper и перезапускает MCU.
       restart_klipper: Перезагружает сервис Klipper.
       run_collector: Запустить сбор данных
+      file_browser_help: Перетащите файлы или папки из-за пределов браузера, чтобы
+        загрузить их сюда.<br>Перемещайте файлы и папки, перетаскивая их в подпапки
+        или ".."
+      file_browser_configuration_help: Скопируйте файлы и папки в файлы конфигурации,
+        перетащив их отсюда и поместив туда
+      rollover_logs: Журналы опрокидывания
   history:
     msg:
       confirm_jobs: Вы уверены? Это очистит все выполненые работы.
       confirm_stats: Вы уверены? Это очистит всю статистику.
+      confirm: Вы уверены? Это очистит всю историю и статистику принтера
   printer:
     state:
       busy: Занят
@@ -430,6 +482,8 @@ app:
       printing: Идёт печать
       ready: Готов
       standby: Режим ожидания
+    title:
+      printer_status: Статус принтера
   setting:
     btn:
       add_camera: Добавить камеру
@@ -445,6 +499,9 @@ app:
       mjpegstream: MJPEG поток
       video: IP Камера
       iframe: Страница HTTP
+      webrtc_gortc: WebRTC (go2rtc)
+      hlsstream: HLS Stream
+      webrtc_camera_streamer: WebRTC (camera-streamer)
     camera_rotate_options:
       '90': 90°
       '180': 180°
@@ -481,7 +538,7 @@ app:
         несохраненными изменениями
       contains: Содержит
       dark_mode: Тёмная тема
-      dashed: Dashed
+      dashed: Пунктирная
       default_extrude_length: Длина экструдирования по умолчанию
       default_extrude_speed: Скорость экструдера по умолчанию
       default_min_layer_height: Минимальная высота слоя по умолчанию
@@ -497,8 +554,8 @@ app:
       extrusion_line_width: Ширина линии экструзии
       flip_horizontal: Сдвиг по горизонтали
       flip_vertical: Сдвиг по вертикали
-      fill_color: Fill color
-      fill_opacity: Fill opacity
+      fill_color: Цвет заливки
+      fill_opacity: Заполнить непрозрачность
       filter: Filter | Фильтры
       fps_target: Целевой FPS
       fps_idle_target: Цель FPS, когда она не в фокусе
@@ -510,7 +567,7 @@ app:
       invert_z_control: Инвертировать управление по оси Z
       language: Язык интерфейса
       last_result: Последний результат
-      left_y: Left Y-Axis
+      left_y: Левая ось Y
       line_color: Цвет линии
       line_style: Стиль линии
       min: Мин.
@@ -520,13 +577,13 @@ app:
       name: Name
       never: Никогда
       none: None
-      optional: Optional
+      optional: Необязательный
       power_toggle_in_top_nav: Переключатель питания в верхней панели навигации
       primary_color: Основной цвет
       printer_name: Имя принтера
       reset: Сбросить настройки
       retraction_icon_size: Размер иконки ретракта
-      right_y: Right Y-Axis
+      right_y: Правая ось Y
       save_and_restore_view_state: Сохранение и восстановление состояния просмотра
       show_animations: Показывать анимацию
       show_barometric_pressure: Показать атмосферное давление
@@ -553,12 +610,18 @@ app:
       date_format: Формат даты
       time_format: Формат времени
       text_sort_order: Сортировка текста
-      force_move_toggle_warning: Требовать подтверждение при активации "Форсированного
-        перемещения"
+      force_move_toggle_warning: Требовать подтверждение при активации "FORCE_MOVE"
       show_manual_probe_dialog_automatically: Автоматически показывать диалоговое
         окно "Ручная настройка стола"
       show_bed_screws_adjust_dialog_automatically: Автоматически показывать диалоговое
         окно "Регулировка винтов стола"
+      show_screws_tilt_adjust_dialog_automatically: Автоматически показывать диалоговое
+        окно "Наклона винтов"
+      auto_load_mobile_on_print_start: Автоматически загружать файл на мобильных устройствах
+      draw_origin: Показывать начало координат
+      sections_to_ignore_pending_configuration_changes: Разделы, которые следует игнорировать
+        ожидающие изменения конфигурации
+      enable_xy_homing: ''
     timer_options:
       duration: Только продолжительность
       filament: Оценка филамента
@@ -806,3 +869,13 @@ app:
   sensors:
     title:
       sensors: Сенсоры
+  job_queue:
+    label:
+      number_of_copies: Количество копий
+    title:
+      multiply_job: Умножить задание | Умножение заданий
+    tooltip:
+      help: Ставьте задания в очередь, перетаскивая файлы из заданий и помещая их
+        сюда<br>Настройте порядок заданий в очереди, перетаскивая их вверх или вниз
+    msg:
+      confirm: Вы уверены? Это очистит всю очередь принтера
