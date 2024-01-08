@@ -75,5 +75,3 @@ export interface WebsocketVendorPayload extends WebsocketBasePayload {
   resource: 'vendor';
   payload: Vendor;
 }
-
-export type WebsocketPayload = WebsocketSpoolPayload | WebsocketFilamentPayload | WebsocketVendorPayload;
