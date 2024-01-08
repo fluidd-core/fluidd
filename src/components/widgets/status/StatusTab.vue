@@ -4,7 +4,7 @@
     <v-progress-linear
       v-if="
         progressVisible &&
-          $vuetify.breakpoint.mdAndDown
+          $vuetify.breakpoint.smAndDown
       "
       :height="6"
       :value="estimates.progress"
@@ -13,21 +13,35 @@
 
     <v-card-text v-if="visible">
       <v-row>
-        <!-- Only show the circular progress for lgAndUp -->
+        <!-- Only show the circular progress for mdAndUp since its more compact now -->
         <v-col
-          v-if="progressVisible && $vuetify.breakpoint.lgAndUp"
+          v-if="progressVisible && $vuetify.breakpoint.mdAndUp"
           cols="auto"
           align-self="center"
         >
-          <v-progress-circular
-            :rotate="-90"
-            :size="90"
-            :width="7"
-            :value="estimates.progress"
-            color="primary"
-          >
-            <span class="percentComplete focus--text">{{ estimates.progress }}%</span>
-          </v-progress-circular>
+          <v-row>
+            <v-btn
+              text
+              class="progress-button mx-2"
+              @click="handleViewThumbnail"
+            >
+              <v-progress-circular
+                :rotate="-90"
+                :size="90"
+                :width="7"
+                :value="estimates.progress"
+                color="primary"
+              >
+                <img
+                  class="progress-button-image"
+                  :src="thumbnail"
+                >
+              </v-progress-circular>
+            </v-btn>
+          </v-row>
+          <v-row justify="center">
+            <span class="primary--text">{{ estimates.progress }}%</span>
+          </v-row>
         </v-col>
 
         <v-col align-self="center">
@@ -164,25 +178,6 @@
               </status-label>
             </v-col>
           </v-row>
-        </v-col>
-
-        <!-- Only show the thumb if we're lgAndUp and have a thumb to show -->
-        <v-col
-          v-if="thumbVisible"
-          cols="auto"
-          align-self="center"
-          class="pa-0"
-        >
-          <v-btn
-            text
-            height="100%"
-            @click="handleViewThumbnail"
-          >
-            <img
-              class="print-thumb"
-              :src="thumbnail"
-            >
-          </v-btn>
         </v-col>
       </v-row>
     </v-card-text>
@@ -392,11 +387,6 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
 </script>
 
 <style lang="scss" scoped>
-  .print-thumb {
-    display: block;
-    max-height: 110px;
-  }
-
   .filename {
     white-space: nowrap;
     overflow: hidden;
@@ -404,5 +394,19 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
     // width: 200px;
     direction: rtl;
     text-align: left;
+  }
+
+  .progress-button {
+    width: 90px !important;
+    height: 90px !important;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  .progress-button-image {
+    max-width: 70px;
+    max-height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
   }
 </style>

@@ -829,13 +829,13 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
         fill: var(--v-btncolor-base);
         stroke: var(--v-btncolor-darken4);
         stroke-width: 1px;
+        transition-duration: 0.28s;
+        transition-property: fill;
+        transition-timing-function: map-get($transition, 'fast-out-slow-in');
       }
 
       &:hover .cc-btn-container {
         fill: var(--v-btncolor-lighten1);
-        transition-duration: 0.28s;
-        transition-property: fill;
-        transition-timing-function: map-get($transition, 'fast-out-slow-in');
       }
 
       &:not(.disabled) {
