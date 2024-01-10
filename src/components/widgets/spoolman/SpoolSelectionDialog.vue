@@ -476,18 +476,18 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$store.state.config.uiSettings.spoolman.selectionDialogSortOrder
   }
 
-  updateSortOrderKey (value: string) {
+  updateSortOrderKey (key: string) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.spoolman.selectionDialogSortOrder.key',
-      value,
+      path: 'uiSettings.spoolman.selectionDialogSortOrder',
+      value: { ...this.sortOrder, key },
       server: true
     })
   }
 
   updateSortOrderDirection (desc: boolean) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.spoolman.selectionDialogSortOrder.order',
-      value: desc ? 'desc' : 'asc',
+      path: 'uiSettings.spoolman.selectionDialogSortOrder',
+      value: { ...this.sortOrder, order: desc ? 'desc' : 'asc' },
       server: true
     })
   }
