@@ -93,14 +93,14 @@
             :custom-filter="filterResults"
             :no-data-text="$t('app.file_system.msg.not_found')"
             :no-results-text="$t('app.file_system.msg.not_found')"
-            :sort-by="sortOrder?.key ?? 'last_used'"
-            :sort-desc="sortOrder?.order !== 'asc'"
+            :sort-by="sortOrder.key ?? undefined"
+            :sort-desc="sortOrder.desc ?? undefined"
             mobile-breakpoint="0"
             class="file-system spool-table"
             hide-default-footer
             disable-pagination
-            @update:sort-by="updateSortOrderKey"
-            @update:sort-desc="updateSortOrderDirection"
+            @update:sort-by="handleSortOrderKeyChange"
+            @update:sort-desc="handleSortOrderDescChange"
           >
             <template #item="{ item }">
               <tr
@@ -476,18 +476,18 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$store.state.config.uiSettings.spoolman.selectionDialogSortOrder
   }
 
-  updateSortOrderKey (key: string) {
+  handleSortOrderKeyChange (value?: string) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.spoolman.selectionDialogSortOrder',
-      value: { ...this.sortOrder, key },
+      path: 'uiSettings.spoolman.selectionDialogSortOrder.key',
+      value: value ?? null,
       server: true
     })
   }
 
-  updateSortOrderDirection (desc: boolean) {
+  handleSortOrderDescChange (value?: boolean) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.spoolman.selectionDialogSortOrder',
-      value: { ...this.sortOrder, order: desc ? 'desc' : 'asc' },
+      path: 'uiSettings.spoolman.selectionDialogSortOrder.desc',
+      value: value ?? null,
       server: true
     })
   }
