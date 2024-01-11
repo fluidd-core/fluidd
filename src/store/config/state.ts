@@ -149,7 +149,11 @@ export const defaultState = (): ConfigState => {
         autoSelectSpoolOnMatch: false,
         preferDeviceCamera: false,
         warnOnNotEnoughFilament: true,
-        warnOnFilamentTypeMismatch: true
+        warnOnFilamentTypeMismatch: true,
+        selectionDialogSortOrder: {
+          key: 'last_used',
+          desc: false
+        }
       }
     }
   }

@@ -93,12 +93,14 @@
             :custom-filter="filterResults"
             :no-data-text="$t('app.file_system.msg.not_found')"
             :no-results-text="$t('app.file_system.msg.not_found')"
-            sort-by="last_used"
-            sort-desc
+            :sort-by="sortOrder.key ?? undefined"
+            :sort-desc="sortOrder.desc ?? undefined"
             mobile-breakpoint="0"
             class="file-system spool-table"
             hide-default-footer
             disable-pagination
+            @update:sort-by="handleSortOrderKeyChange"
+            @update:sort-desc="handleSortOrderDescChange"
           >
             <template #item="{ item }">
               <tr
@@ -468,6 +470,26 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   get warnOnFilamentTypeMismatch (): boolean {
     return this.$store.state.config.uiSettings.spoolman.warnOnFilamentTypeMismatch
+  }
+
+  get sortOrder () {
+    return this.$store.state.config.uiSettings.spoolman.selectionDialogSortOrder
+  }
+
+  handleSortOrderKeyChange (value?: string) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.spoolman.selectionDialogSortOrder.key',
+      value: value ?? null,
+      server: true
+    })
+  }
+
+  handleSortOrderDescChange (value?: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.spoolman.selectionDialogSortOrder.desc',
+      value: value ?? null,
+      server: true
+    })
   }
 }
 </script>
