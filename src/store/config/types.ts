@@ -37,6 +37,10 @@ export interface SpoolmanConfig {
   preferDeviceCamera: boolean;
   warnOnNotEnoughFilament: boolean;
   warnOnFilamentTypeMismatch: boolean;
+  selectionDialogSortOrder: {
+    key: string | null;
+    desc: boolean | null;
+  }
 }
 
 export interface HostConfig {
