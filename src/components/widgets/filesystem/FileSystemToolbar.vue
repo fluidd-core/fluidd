@@ -142,7 +142,7 @@
     >
       <v-tabs>
         <v-tab
-          v-for="(root, index) in registeredRoots"
+          v-for="(root, index) in roots"
           :key="index"
           @change="$emit('root-change', root)"
         >
@@ -218,11 +218,6 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   // Properties of the current root.
   get rootProperties (): RootProperties {
     return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
-  }
-
-  // Only show roots that have been registered.
-  get registeredRoots () {
-    return this.roots?.filter(r => this.$store.state.server.info.registered_directories.includes(r))
   }
 
   get thumbnailSize () {
