@@ -5,7 +5,6 @@ const blur: FunctionDirective<HTMLElement> = (element) => {
     if (event.target instanceof HTMLElement) {
       event.target.blur()
     }
-    // console.log('called blur', target)
   }
 }
 
