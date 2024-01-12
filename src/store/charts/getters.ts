@@ -87,7 +87,6 @@ export const getters: GetterTree<ChartState, RootState> = {
           let text = '<div>'
           params
             .forEach((param: any) => {
-              // console.log(param)
               const xDimension = param.dimensionNames[param.encode.x]
               const yDimension = param.dimensionNames[param.encode.y]
               const ySuffix = tooltipSuffix[yDimension] || ''

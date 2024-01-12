@@ -74,7 +74,6 @@ export const actions: ActionTree<AuthState, RootState> = {
         consola.debug('checkToken - isExpiring', new Date(now * 1000), new Date(exp * 1000))
         return true
       } else {
-        // console.debug('checkToken - not isExpiring', new Date(now * 1000), new Date(exp * 1000))
         return false
       }
     }
