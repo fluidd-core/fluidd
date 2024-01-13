@@ -129,6 +129,7 @@ export const defaultState = (): ConfigState => {
         autoLoadOnPrintStart: false,
         autoLoadMobileOnPrintStart: false,
         autoFollowOnFileLoad: true,
+        hideSinglePartBoundingBox: false,
         autoZoom: false,
         flip: {
           horizontal: false,

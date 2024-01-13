@@ -205,6 +205,7 @@ export interface GcodePreviewConfig {
   autoLoadOnPrintStart: boolean;
   autoLoadMobileOnPrintStart: boolean;
   autoFollowOnFileLoad: boolean;
+  hideSinglePartBoundingBox: boolean;
   autoZoom: boolean;
   flip: {
     horizontal: boolean;
