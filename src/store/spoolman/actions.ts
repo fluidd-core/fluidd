@@ -34,23 +34,32 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
   },
 
   async onSpoolChange ({ commit, getters }, { type, payload }: WebsocketSpoolPayload) {
-    const spools = [...getters.getAvailableSpools]
+    const spools = [...getters.getAvailableSpools as Spool[]]
+
     switch (type) {
       case 'added': {
         spools.push(payload)
+
         break
       }
 
       case 'updated': {
-        const index = spools.findIndex((spool: Spool) => spool.id === payload.id)
-        spools[index] = payload
+        const index = spools.findIndex(spool => spool.id === payload.id)
+
+        if (index >= 0) {
+          spools[index] = payload
+        }
 
         break
       }
 
       case 'deleted': {
-        const index = spools.findIndex((spool: Spool) => spool.id === payload.id)
-        spools.splice(index, 1)
+        const index = spools.findIndex(spool => spool.id === payload.id)
+
+        if (index >= 0) {
+          spools.splice(index, 1)
+        }
+
         break
       }
     }
