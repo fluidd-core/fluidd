@@ -37,6 +37,10 @@ export interface SpoolmanConfig {
   preferDeviceCamera: boolean;
   warnOnNotEnoughFilament: boolean;
   warnOnFilamentTypeMismatch: boolean;
+  selectionDialogSortOrder: {
+    key: string | null;
+    desc: boolean | null;
+  }
 }
 
 export interface HostConfig {
@@ -201,6 +205,7 @@ export interface GcodePreviewConfig {
   autoLoadOnPrintStart: boolean;
   autoLoadMobileOnPrintStart: boolean;
   autoFollowOnFileLoad: boolean;
+  hideSinglePartBoundingBox: boolean;
   autoZoom: boolean;
   flip: {
     horizontal: boolean;

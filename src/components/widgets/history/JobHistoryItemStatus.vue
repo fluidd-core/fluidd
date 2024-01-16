@@ -22,6 +22,8 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
 import type { HistoryItem } from '@/store/history/types'
 
+type JobHistoryItemState = 'error' | 'warning' | 'success'
+
 @Component({})
 export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
   @Prop({ type: Object, required: true })
@@ -37,12 +39,13 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
   // }
 
   get icon () {
-    const iconMap: { [index: string]: string } = {
+    const iconMap: Record<string, string> = {
       completed: '$checkedCircle',
       printing: '$inProgress',
       in_progress: '$inProgress',
       standby: '$inProgress',
-      cancelled: '$cancelled'
+      cancelled: '$cancelled',
+      interrupted: '$cancelled'
     }
 
     const icon = iconMap[this.job.status]
@@ -51,25 +54,26 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
     return icon || '$warning'
   }
 
-  get state () {
-    if (
-      this.job.status === 'cancelled' ||
-      this.job.status === 'error' ||
-      this.job.status === 'server_exit'
-    ) return 'error'
+  get state (): JobHistoryItemState {
+    switch (this.job.status) {
+      case 'cancelled':
+      case 'error':
+      case 'interrupted':
+      case 'server_exit':
+        return 'error'
 
-    if (
-      this.job.status === 'printing' ||
-      this.job.status === 'completed' ||
-      this.job.status === 'in_progress'
-    ) return 'success'
+      case 'klippy_shutdown':
+      case 'klippy_disconnect':
+        return 'warning'
 
-    if (
-      this.job.status === 'klippy_shutdown' ||
-      this.job.status === 'klippy_disconnect'
-    ) return 'warning'
+      case 'completed':
+      case 'in_progress':
+      case 'printing':
+        return 'success'
 
-    return 'success'
+      default:
+        return 'success'
+    }
   }
 
   get inError () {

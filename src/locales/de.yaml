@@ -556,6 +556,7 @@ app:
       fps_idle_target: FPS Ziel im Ruhezustand
       gcode_coords: GCode-Koordinaten verwenden
       height: Höhe
+      hide_single_part_bounding_box: Bauteilrahmen bei Druck eines einzelnen Teils verstecken
       invert_x_control: X-Steuerung invertieren
       invert_y_control: Y-Steuerung invertieren
       invert_z_control: Z-Steuerung invertieren
