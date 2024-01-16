@@ -46,9 +46,32 @@ export interface SpoolmanState {
   activeSpool?: number;
   supported: boolean;
   dialog: SpoolSelectionDialogState;
+  socket?: WebSocket;
 }
 
 export interface SpoolSelectionDialogState {
   show: boolean;
   filename?: string;
+}
+
+export interface WebsocketBasePayload {
+  type: 'added' | 'updated' | 'deleted';
+  resource: string;
+  date: string;
+  payload: Record<string, any>;
+}
+
+export interface WebsocketSpoolPayload extends WebsocketBasePayload {
+  resource: 'spool';
+  payload: Spool;
+}
+
+export interface WebsocketFilamentPayload extends WebsocketBasePayload {
+  resource: 'filament';
+  payload: Filament;
+}
+
+export interface WebsocketVendorPayload extends WebsocketBasePayload {
+  resource: 'vendor';
+  payload: Vendor;
 }

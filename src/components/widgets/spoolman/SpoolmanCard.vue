@@ -132,10 +132,6 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     this.$store.commit('spoolman/setDialogState', { show: true })
   }
 
-  get supportsSpoolman () {
-    return this.$store.getters['spoolman/getSupported']
-  }
-
   get activeSpool (): Spool | null {
     return this.$store.getters['spoolman/getActiveSpool']
   }
