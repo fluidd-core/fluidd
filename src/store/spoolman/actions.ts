@@ -10,6 +10,7 @@ import type {
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { consola } from 'consola'
+import { EventBus } from '@/eventBus'
 
 const logPrefix = '[SPOOLMAN]'
 
@@ -108,9 +109,26 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
     commit('setAvailableSpools', spools)
   },
 
-  async onAvailableSpools ({ commit, getters, dispatch }, payload) {
+  async onAvailableSpools ({ commit, dispatch }, payload) {
+    if ('response' in payload) {
+      if (payload.error) {
+        EventBus.$emit(payload.error.message ?? payload.error, { type: 'error' })
+        return
+      }
+
+      payload = payload.response
+    }
+
     commit('setAvailableSpools', [...payload])
-    if (getters.getSupported) { dispatch('initializeWebsocketConnection') }
+    commit('setConnected', true)
+    dispatch('initializeWebsocketConnection')
+  },
+
+  async onStatusChanged ({ commit, dispatch }, payload) {
+    if (payload) {
+      // refresh data, connected state will be set on data retrieval
+      dispatch('init')
+    } else commit('setConnected', payload)
   },
 
   async initializeWebsocketConnection ({ state, rootState, dispatch }) {

@@ -4,7 +4,7 @@ export const defaultState = (): SpoolmanState => {
   return {
     availableSpools: [],
     activeSpool: undefined,
-    supported: false,
+    connected: false,
     dialog: {
       show: false,
       filename: ''
