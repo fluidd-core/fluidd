@@ -865,7 +865,7 @@ app:
       tracking_inactive: >-
         Filament-Tracking ist inaktiv.
         Bitte wählen Sie eine Spule aus um fortzufahren.
-      not_connected: Spoolman-Sserver nicht verfügbar.
+      not_connected: Spoolman-Server nicht verfügbar.
       info:
         howto: >-
           Halten Sie den QR-Code der Spule in die Kamera.
