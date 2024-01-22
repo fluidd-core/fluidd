@@ -653,6 +653,7 @@ app:
       no_connection: No moonraker connection. Please check moonraker status and / or refresh.
   system_info:
     label:
+      awake_time: awake time
       capacity: Capacity
       cpu_desc: CPU Description
       distribution_codename: Codename
@@ -662,8 +663,10 @@ app:
       hardware_desc: Hardware Description
       hostname: Hostname
       klipper_load: Klipper Load
+      load: load
       manufactured: Manufactured
       manufacturer: Manufacturer
+      memory_used: memory used
       mcu_awake: '{mcu} Awake Time'
       mcu_bandwidth: '{mcu} Bandwidth'
       mcu_information: '{mcu} Information'
@@ -839,6 +842,7 @@ app:
       tracking_inactive: >-
         Filament tracking is inactive.
         To get started, please select a spool.
+      not_connected: Spoolman server not available.
       info:
         howto: >-
           Show your spool's QR code to the camera.

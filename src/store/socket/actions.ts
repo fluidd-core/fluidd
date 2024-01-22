@@ -248,5 +248,9 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async notifyActiveSpoolSet ({ dispatch }, payload) {
     dispatch('spoolman/onActiveSpool', payload, { root: true })
+  },
+
+  async notifySpoolmanStatusChanged ({ dispatch }, payload) {
+    dispatch('spoolman/onStatusChanged', payload.spoolman_connected, { root: true })
   }
 }
