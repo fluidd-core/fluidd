@@ -15,7 +15,11 @@ export const getters: GetterTree<SpoolmanState, RootState> = {
     return state.availableSpools
   },
 
-  getSupported: (state) => {
-    return state.supported
+  getConnected: (state) => {
+    return state.connected
+  },
+
+  getAvailable: (state) => {
+    return state.connected && state.availableSpools.length
   }
 }

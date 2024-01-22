@@ -9,6 +9,7 @@
       <app-btn
         small
         class="ms-1 my-1"
+        :disabled="!isConnected"
         @click="handleSelectSpool"
       >
         {{ $t('app.spoolman.label.change_spool') }}
@@ -85,10 +86,17 @@
         </template>
 
         <v-col
-          v-else
+          v-else-if="isConnected"
           align-self="center"
         >
           {{ $t('app.spoolman.msg.tracking_inactive') }}
+        </v-col>
+
+        <v-col
+          v-else
+          align-self="center"
+        >
+          {{ $t('app.spoolman.msg.not_connected') }}
         </v-col>
 
         <v-col
@@ -105,10 +113,17 @@
             $filament
           </v-icon>
           <v-icon
-            v-else
+            v-else-if="isConnected"
             size="55px"
           >
             $progressQuestion
+          </v-icon>
+          <v-icon
+            v-else
+            color="warning"
+            size="55px"
+          >
+            $warning
           </v-icon>
         </v-col>
       </v-row>
@@ -133,7 +148,12 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
   }
 
   get activeSpool (): Spool | null {
+    if (!this.isConnected) return null
     return this.$store.getters['spoolman/getActiveSpool']
+  }
+
+  get isConnected (): boolean {
+    return this.$store.getters['spoolman/getConnected']
   }
 }
 </script>

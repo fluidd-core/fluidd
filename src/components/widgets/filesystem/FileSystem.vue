@@ -725,7 +725,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     const filename = file.path ? `${file.path}/${file.filename}` : file.filename
 
-    const spoolmanSupported = this.$store.getters['spoolman/getSupported']
+    const spoolmanSupported = this.$store.getters['spoolman/getAvailable']
     const autoSpoolSelectionDialog = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
     if (spoolmanSupported && autoSpoolSelectionDialog) {
       this.$store.commit('spoolman/setDialogState', {

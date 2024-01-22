@@ -842,6 +842,7 @@ app:
       tracking_inactive: >-
         Filament tracking is inactive.
         To get started, please select a spool.
+      not_connected: Spoolman server not available.
       info:
         howto: >-
           Show your spool's QR code to the camera.

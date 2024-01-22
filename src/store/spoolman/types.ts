@@ -44,7 +44,7 @@ export interface Spool {
 export interface SpoolmanState {
   availableSpools: Spool[];
   activeSpool?: number;
-  supported: boolean;
+  connected: boolean;
   dialog: SpoolSelectionDialogState;
   socket?: WebSocket;
 }
