@@ -12,9 +12,7 @@ export default class FilesMixin extends Vue {
   }
 
   get isTrustedUser (): boolean {
-    const forceLogins = this.$store.getters['server/getConfig'].authorization.force_logins
-
-    return forceLogins === false || this.$store.getters['auth/getCurrentUser']?.username === '_TRUSTED_USER_'
+    return this.$store.getters['auth/getCurrentUser']?.username === '_TRUSTED_USER_'
   }
 
   getThumbUrl (meta: KlipperFileMeta, root: string, path: string, large: boolean, date?: number) {
