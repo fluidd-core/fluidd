@@ -42,7 +42,7 @@ export default class SystemMemoryChart extends Vue {
 
   get series () {
     return this.$store.getters['charts/getBaseSeries']({
-      name: 'memory used',
+      name: this.$t('app.system_info.label.memory_used'),
       encode: { x: 'date', y: 'memused' }
     })
   }
