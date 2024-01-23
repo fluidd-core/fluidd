@@ -665,10 +665,6 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     return this.$store.getters['printer/getPrinterSettings']('force_move.enable_force_move') ?? false
   }
 
-  get printerSupportsSpoolman () {
-    return this.$store.getters['spoolman/getSupported']
-  }
-
   get showManualProbeDialogAutomatically () {
     return this.$store.state.config.uiSettings.general.showManualProbeDialogAutomatically
   }

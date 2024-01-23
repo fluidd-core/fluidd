@@ -22,6 +22,7 @@ app:
       delete: Profil löschen
       load: Profil laden
       save: Fügt das Mesh Profil der printer.cfg hinzu
+      copy_image: Bett-Mesh-Abbildung kopieren
   chart:
     label:
       current: Aktuell
@@ -83,6 +84,7 @@ app:
         klipper_backup_files: Klipper-Backupdateien ausblenden
         rolled_log_files: Alte Logdateien ausblenden
         hidden_files_folders: Versteckte Dateien und Ordner ausblenden
+        moonraker_backup_files: Moonraker Backup-Dateien ausblenden
     label:
       dir_name: Ordnername
       disk_usage: Belegter Speicher
@@ -471,6 +473,11 @@ app:
       restart_klipper: Starten den Klipper-Systemdienst neu.
       run_collector: Kollektor ausführen
       rollover_logs: Protokolle erneuern
+      file_browser_help: Ziehen Sie Dateien und Ordner von außerhalb des Browsers
+        hierhin, um sie hochzuladen<br>Verschieben Sie Dateien und Ordner, indem Sie
+        sie in Unterordner oder ".." ziehen
+      file_browser_configuration_help: Kopieren Sie Dateien und Ordner in die Konfigurationsdateien,
+        indem Sie diese von hier nach dort ziehen
   history:
     msg:
       confirm_jobs: Sind Sie sicher? Dadurch werden alle Aufträge gelöscht.
@@ -556,7 +563,8 @@ app:
       fps_idle_target: FPS Ziel im Ruhezustand
       gcode_coords: GCode-Koordinaten verwenden
       height: Höhe
-      hide_single_part_bounding_box: Bauteilrahmen bei Druck eines einzelnen Teils verstecken
+      hide_single_part_bounding_box: Bauteilrahmen bei Druck eines einzelnen Teils
+        verstecken
       invert_x_control: X-Steuerung invertieren
       invert_y_control: Y-Steuerung invertieren
       invert_z_control: Z-Steuerung invertieren
@@ -710,6 +718,9 @@ app:
       version: Version
       network: Netzwerk
       virtualization: Virtualisierung
+      load: Last
+      awake_time: Wachzeit
+      memory_used: Genutzter Speicher
   tool:
     btn:
       home_x: X
@@ -865,6 +876,7 @@ app:
       tracking_inactive: >-
         Filament-Tracking ist inaktiv.
         Bitte wählen Sie eine Spule aus um fortzufahren.
+      not_connected: Spoolman-Server nicht verfügbar.
       info:
         howto: >-
           Halten Sie den QR-Code der Spule in die Kamera.
@@ -875,9 +887,8 @@ app:
         invalid_spool_id: Die Spulen-ID in diesem QR-Code ist ungültig.
       error:
         cors: >-
-          Es ist ein Fehler beim Abrufen des Kamerabilds aufgetreten.
-          Bitte stellen Sie sicher, dass Ihr Kameraserver CORS-Zugriff erlaubt.
-          Please make sure your webcam server allows CORS access.
+          Es ist ein Fehler beim Abrufen des Kamerabilds aufgetreten. Bitte stellen
+          Sie sicher, dass Ihr Kameraserver CORS-Zugriff erlaubt.
         spool_not_existant: Die von Ihnen gescannte Spule existiert nicht in der Datenbank.
         no_image_data: >-
           Es ist ein Fehler beim Abrufen des Kamerabilds aufgetreten.
@@ -903,6 +914,10 @@ app:
       multiply_job: Auftrag vermehren | Aufträge vermehren
     label:
       number_of_copies: Anzahl der Kopien
+    tooltip:
+      help: Fügen Sie Jobs der Warteschlange hinzu, indem Sie diese hierhin ziehen<br>Passen
+        Sie die Reihenfolge der Warteschlange an, indem Sie die Jobs nach oben oder
+        unten verschieben
   sensors:
     title:
       sensors: Sensoren

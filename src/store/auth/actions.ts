@@ -87,7 +87,10 @@ export const actions: ActionTree<AuthState, RootState> = {
     const keys = rootGetters['config/getTokenKeys']
     const refresh_token = localStorage.getItem(keys['refresh-token'])
     return httpClientActions.accessRefreshJwtPost(refresh_token || '', {
-      withAuth: false
+      withAuth: false,
+      headers: {
+        Authorization: undefined
+      }
     })
       .then(response => response.data.result)
       .then((response) => {
@@ -120,7 +123,11 @@ export const actions: ActionTree<AuthState, RootState> = {
 
   async login ({ commit, rootGetters }, { username, password, source }) {
     const keys = rootGetters['config/getTokenKeys']
-    return httpClientActions.accessLoginPost(username, password, source)
+    return httpClientActions.accessLoginPost(username, password, source, {
+      headers: {
+        Authorization: undefined
+      }
+    })
       .then(response => response.data.result)
       .then(user => {
         // Successful login. Set the tokens and auth status and move on.

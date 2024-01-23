@@ -42,7 +42,7 @@ export default class MoonrakerLoadChart extends Vue {
 
   get series () {
     return this.$store.getters['charts/getBaseSeries']({
-      name: 'load',
+      name: this.$t('app.system_info.label.load'),
       encode: { x: 'date', y: 'load' }
     })
   }

@@ -60,7 +60,7 @@ export default class AppSettingsNav extends Vue {
   }
 
   get supportsSpoolman () {
-    return this.$store.getters['spoolman/getSupported']
+    return this.$store.getters['server/componentSupport']('spoolman')
   }
 }
 </script>
