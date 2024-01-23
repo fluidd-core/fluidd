@@ -22,6 +22,7 @@ app:
       delete: Profil törlése
       load: Profil betöltése
       save: A kalibrált profil a printer.cfg fájlba íródik
+      copy_image: Ágyhálós kép másolása
   chart:
     label:
       current: Aktuális
@@ -75,6 +76,7 @@ app:
         print_start_time_desc: Kiszűri a már kinyomtatott elemeket.
         hidden_files_folders: Rejtett fájlok és mappák szűrése
         klipper_backup_files: Klipper biztonsági fájlok szűrése
+        moonraker_backup_files: Moonraker biztonsági fájlok szűrése
         rolled_log_files: A gördített naplófájlok szűrése
     label:
       dir_name: Könyvtár neve
@@ -248,6 +250,7 @@ app:
       command: Parancs
       confirm: Megerősít
       cross: Kereszt
+      circle: Kör
       current_password: Aktuális jelszó
       current_user: Jelenlegi felhasználó
       default: Alapértelmezett
@@ -274,6 +277,7 @@ app:
       longest_job: Leghosszabb munka
       low: Alacsony
       manage_accounts: Fiókok kezelése
+      minimum_cruise_ratio: Minimális haladási arány
       user_managed_source: '%{source} hitelesítéssel kezelt felhasználó'
       m117: M117
       moonraker: Moonraker
@@ -449,6 +453,10 @@ app:
       restart_klipper: Újraindítja a klipper rendszerszolgáltatást.
       run_collector: Gyűjtő futtatása
       rollover_logs: Forgó naplók
+      file_browser_help: >-
+        Húzd át a fájlokat vagy mappákat a böngészőn kívülről, hogy ide töltsd fel őket<br>Fájlok és mappák áthelyezése almappákba vagy almappákba húzással ".."
+      file_browser_configuration_help: >-
+        Másold át a fájlokat és mappákat a konfigurációs fájlokba úgy, hogy innen húzd át őket, majd dobd oda
   history:
     msg:
       confirm: Biztos vagy benne? Törlöd az összes előzményt és a nyomtatóstatisztikát
@@ -461,6 +469,9 @@ app:
       number_of_copies: Másolatok száma
     title:
       multiply_job: Munka szorzása | Munkák szorzása
+    tooltip:
+      help: >-
+        Állítsd sorba a munkákat a Munkák menüből ide húzott fájlokkal<br> Állítsd be a sorba állított munkák sorrendjét felfelé vagy lefelé húzással.
   printer:
     state:
       busy: Elfoglalt
@@ -538,6 +549,7 @@ app:
       enable: Engedélyez
       enable_diagnostics: Diagnosztika engedélyezése
       enable_notifications: Értesítések engedélyezése
+      enable_xy_homing: Az (XY) kezdőpont engedélyezése
       expression: Kifejezés
       extrusion_line_width: Extrudálási vonal szélessége
       flip_horizontal: Vízszintes forgatás
@@ -580,6 +592,7 @@ app:
       show_code_lens: CodeLens megjelenítése
       show_gas_resistance: Gázellenállás mutatása
       show_legend: Legenda mutatása
+      show_logo_on_background: Logó megjelenítése a háttérben
       show_rate_of_change: A hőmérséklet változásának mértéke
       show_relative_humidity: Relatív páratartalom mutatása
       show_save_config_and_restart: Konfiguráció mentése, újraindítás gomb a felső navigációban
@@ -615,6 +628,7 @@ app:
       authentication: Hitelesítés
       console: Konzol
       camera: Kamera
+      file_browser: Fájlböngésző
       file_editor: Fájlszerkesztő
       gcode_preview: G-Kód előnézet
       general: Általános
@@ -628,6 +642,12 @@ app:
       show_manual_probe_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt, ha kézi szintezőeszközt futtatsz
       show_bed_screws_adjust_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt, ha a BED_SCREWS_ADJUST eszközt futtatod
       show_screws_tilt_adjust_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt, ha a SCREWS_TILT_CALCULATE eszközt futtatod
+      theme_disclaimer: >-
+        Ezek a témák márkaneveket és logókat tartalmaznak, amelyek a megfelelő tulajdonosok szellemi tulajdonát képezik.<br>
+        Ezen nevek és logók feltüntetése a márkák engedélyével történik.<br>
+        Felhívjuk azonban figyelmed, hogy ezeket a témákat hivatalosan nem a megfelelő márkák tartják karban.<br>
+        A témákkal kapcsolatos bármilyen kérdéssel vagy kéréssel a Fluidd csapatához kell fordulni.<br>
+        A márkanevek és logók használata kizárólag dekoratív és esztétikai célokat szolgál, és nem jelenti azt, hogy a márkák hivatalos kapcsolatban állnak vagy támogatmak minket.
   socket:
     msg:
       connecting: Csatlakozás a Moonraker-hez...
