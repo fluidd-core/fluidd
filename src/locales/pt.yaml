@@ -10,6 +10,7 @@ app:
       wireframe: Wireframe
       active: activo
       base: base
+      box_scale: Escala de caixa
     msg:
       hint: >-
         Se guardar como algo diferente de % {name}, pode escolher remover também o
@@ -21,6 +22,7 @@ app:
       delete: Eliminar perfil
       load: Carregar perfil
       save: Guard perfil calibrado no ficheiro printer.cfg
+      copy_image: Copiar imagem da malha da cama
   chart:
     label:
       current: Corrente
@@ -37,6 +39,7 @@ app:
     label:
       auto_scroll: Auto scroll
       hide_temp_waits: Ocultar temperaturas
+      flip_layout: Inverter layout
     placeholder:
       command: '''tab'' para autocompletar, ''help'' para comandos  ''setas'' para
         histórico'
@@ -194,6 +197,8 @@ app:
       select_columns: Seleccionar colunas
       abort: Abortar
       multiply: Multiplicar
+      snooze: Suspender
+      reset_stats: Redefinir estatísticas
     error:
       app_setup_link: >-
         Os requisitos de configuração do Fluidd podem ser encontrados <a
@@ -244,6 +249,45 @@ app:
       used: usado
       velocity: Velocidade
       z_offset: Z Offset
+      circle: Círculo
+      heaters_busy: A impressora está ocupada no momento. Desligar os aquecedores
+        pode resultar em falha na impressão.
+      retract_length: Distância de Retração
+      retract_speed: Velocidade de Retração
+      filament: Filamento
+      add_filter: Adicionar Filtro
+      'on': Ligado
+      total: Total
+      all: Tudo
+      api_key: Chave Api
+      auth_source: Fonte de autenticação
+      category: Categoria
+      file: Ficheiro
+      layer: Camada
+      manage_accounts: Gerir Contas
+      new_password: Nova password
+      slicer: Fatiador
+      no_notifications: Sem notificações
+      progress: Progresso
+      add_user: Adicionar utilizador
+      change_password: Mudar password
+      disabled_while_printing: Desativado durante a impressão
+      accepted_screws: Parafusos aceites
+      finish_time: Terminar
+      turn_device_off: Desligar %{device}
+      turn_device_on: Ligar %{device}
+      unretract_extra_length: Retrair Comprimento Extra
+      upload_and_print: Carregar e Imprimir
+      actual_time: Actual
+      current_user: Utilizador atual
+      default: Padrão
+      clear_all: Limpar tudo
+      color: Côr
+      command: Comando
+      cross: Cruzar
+      current_password: Password Atual
+      edit_filter: Editar Filtro
+      edit_user: Editar utilizador
     simple_form:
       error:
         arrayofnums: Apenas números
@@ -265,7 +309,7 @@ app:
         end_time: Terminado
         estimated_time: Tempo estimado
         filament: Filamento
-        filament_used: Filamento
+        filament_used: Filamento usado
         first_layer_bed_temp: Temperature da mesa na primeira camada
         first_layer_extr_temp: Temperatura da extrusora na primeira camada
         first_layer_height: Altura da primeira camada
@@ -425,3 +469,6 @@ app:
     msg:
       confirm: O ficheiro "%{filename}" tem %{size}, o que pode ser bastante intensivo
         para o seu sistema. Tem a certeza?
+  sensors:
+    title:
+      sensors: Sensores
