@@ -98,6 +98,7 @@ export interface GeneralConfig {
   forceMoveToggleWarning: boolean;
   enableDiagnostics: boolean;
   thumbnailSize: number;
+  showHidden: boolean;
 }
 
 export type ToolheadControlStyle = 'cross' | 'bars' | 'circle'

@@ -61,7 +61,8 @@ export const defaultState = (): ConfigState => {
         showScrewsTiltAdjustDialogAutomatically: true,
         forceMoveToggleWarning: true,
         enableDiagnostics: false,
-        thumbnailSize: 32
+        thumbnailSize: 32,
+        showHidden: false
       },
       theme: {
         isDark: true,
