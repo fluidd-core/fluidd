@@ -2,7 +2,7 @@
   <div>
     <!-- Output Pins -->
     <app-named-slider
-      v-if="pin && pin.pwm"
+      v-if="pwm"
       :label="pin.prettyName"
       :min="0"
       :max="pin.scale"
@@ -16,10 +16,10 @@
     />
 
     <app-named-switch
-      v-if="pin && !pin.pwm"
+      v-else
       :disabled="!klippyReady"
       :label="pin.prettyName"
-      :value="(pin.value > 0)"
+      :value="pin.value > 0"
       :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"
       @input="setValue"
     />
@@ -37,8 +37,15 @@ export default class OutputPin extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: Object, required: true })
   readonly pin!: IOutputPin
 
+  get pwm () {
+    return (
+      this.pin.pwm ||
+      this.pin.type === 'pwm_cycle_time'
+    )
+  }
+
   setValue (target: number) {
-    if (!this.pin.pwm) {
+    if (!this.pwm) {
       target = (target) ? this.pin.scale : 0
     }
     this.sendGcode(`SET_PIN PIN=${this.pin.name} VALUE=${target}`, `${this.$waits.onSetOutputPin}${this.pin.name}`)

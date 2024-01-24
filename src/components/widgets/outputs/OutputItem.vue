@@ -1,7 +1,7 @@
 <template>
   <div>
     <output-pin
-      v-if="item.type === 'output_pin'"
+      v-if="pinTypes.includes(item.type)"
       :key="item.key"
       :pin="item"
     />
@@ -37,6 +37,13 @@ import type { Fan, Led, OutputPin as IOutputPin } from '@/store/printer/types'
 export default class Outputs extends Vue {
   @Prop({ type: Object, required: true })
   readonly item!: Fan | Led | IOutputPin
+
+  get pinTypes () {
+    return [
+      'output_pin',
+      'pwm_cycle_time'
+    ]
+  }
 
   get fanTypes () {
     return [
