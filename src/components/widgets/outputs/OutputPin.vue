@@ -40,8 +40,15 @@ export default class OutputPin extends Mixins(StateMixin, BrowserMixin) {
   get pwm () {
     return (
       this.pin.pwm ||
-      this.pin.type === 'pwm_cycle_time'
+      this.pwmTypes.includes(this.pin.type)
     )
+  }
+
+  get pwmTypes () {
+    return [
+      'pwm_cycle_time',
+      'pwm_tool'
+    ]
   }
 
   setValue (target: number) {

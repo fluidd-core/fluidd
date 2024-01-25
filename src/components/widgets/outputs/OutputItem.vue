@@ -41,6 +41,7 @@ export default class Outputs extends Vue {
   get pinTypes () {
     return [
       'output_pin',
+      'pwm_tool',
       'pwm_cycle_time'
     ]
   }
