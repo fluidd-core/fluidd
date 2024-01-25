@@ -841,12 +841,13 @@ app:
     btn:
       manage_spools: Spulen verwalten
       scan_code: Code scannen
-      select: Auswählen
+      select: 'Auswählen | Für {macro} auswählen'
     title:
-      spool_selection: Spulenauswahl
+      spool_selection: 'Spulenauswahl | Spulenauswahl für {macro}'
       scan_spool: Spule scannen
       spoolman: Spoolman
     label:
+      active_spool: Aktive Spule
       change_spool: Spule wechseln
       comment: Kommentar
       device_camera: Gerät

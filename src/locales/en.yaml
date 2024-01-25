@@ -807,12 +807,13 @@ app:
     btn:
       manage_spools: Manage Spools
       scan_code: Scan Code
-      select: Select
+      select: 'Select | Select for {macro}'
     title:
       spoolman: Spoolman
-      spool_selection: Spool Selection
+      spool_selection: 'Spool Selection | Spool Selection for macro {macro}'
       scan_spool: Scan Spool
     label:
+      active_spool: Active Spool
       change_spool: Change Spool
       comment: Comment
       device_camera: Device

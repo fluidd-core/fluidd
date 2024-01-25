@@ -22,8 +22,15 @@
               v-on="on"
               @click="sendGcode(macro.name)"
             >
+              <v-icon
+                v-if="macro.spoolId && getSpoolById(macro.spoolId)"
+                class="mr-1"
+                :color="getSpoolColor(getSpoolById(macro.spoolId))"
+              >
+                $filament
+              </v-icon>
               <span
-                v-if="macro.color"
+                v-else-if="macro.color"
                 class="extruder-color mr-1"
                 :class="{
                   active: macro.active
@@ -47,12 +54,14 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { GcodeCommands } from '@/store/printer/types'
 import type { TranslateResult } from 'vue-i18n'
+import type { Spool } from '@/store/spoolman/types'
 
 type ToolChangeCommand = {
   name: string,
   description: string | TranslateResult,
   color?: string,
-  active?: boolean
+  active?: boolean,
+  spoolId?: number
 }
 
 @Component({})
@@ -78,7 +87,8 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
           name: command,
           description,
           color: macro?.variables?.color ? `#${macro.variables.color}` : undefined,
-          active: macro?.variables?.active ?? false
+          active: macro?.variables?.active ?? false,
+          spoolId: macro?.variables?.spool_id
         } satisfies ToolChangeCommand
       })
       .sort((a, b) => {
@@ -87,6 +97,14 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
 
         return numberA - numberB
       })
+  }
+
+  getSpoolById (id: number): Spool | undefined {
+    return this.$store.getters['spoolman/getSpoolById'](id)
+  }
+
+  getSpoolColor (spool: Spool | undefined) {
+    return `#${spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? 'fff' : '000')}`
   }
 }
 </script>
