@@ -69,7 +69,7 @@ on spool selection, saving the selected spool to the `<MACRO_NAME>__SPOOL_ID` va
 
 You can use the following macro to restore the previous selection after a restart:
 {% raw %}
-```yaml
+```sh
 [delayed_gcode RESTORE_SELECTED_SPOOLS]
 initial_duration: 0.1
 gcode:
