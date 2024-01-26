@@ -441,16 +441,17 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
     if (this.targetMacro) {
       // set spool_id via SET_GCODE_VARIABLE
-      const command = `SET_GCODE_VARIABLE MACRO=${this.targetMacro} VARIABLE=spool_id VALUE=${this.selectedSpool ?? 'None'}`
+      const commands = [
+        `SET_GCODE_VARIABLE MACRO=${this.targetMacro} VARIABLE=spool_id VALUE=${this.selectedSpool ?? 'None'}`
+      ]
 
-      /* if (this.$store.getters['printer/getPrinterConfig']('save_variables')) {
+      const supportsSaveVariables = this.$store.getters['printer/getPrinterConfig']('save_variables')
+      if (supportsSaveVariables) {
         // persist selected spool across restarts
-        // requires persistent gcode_macro variable support in save_variables
-        // ref: https://github.com/matmen/klipper/tree/feat/persistent-macro-variables
-        command = `SAVE_VARIABLE MACRO=${this.targetMacro} VARIABLE=SPOOL_ID VALUE=${this.selectedSpool ?? 'None'}`
-      } */
+        commands.push(`SAVE_VARIABLE VARIABLE=${this.targetMacro.toUpperCase()}__SPOOL_ID VALUE=${this.selectedSpool ?? 'None'}`)
+      }
 
-      await SocketActions.printerGcodeScript(command)
+      await SocketActions.printerGcodeScript(commands.join('\n'))
 
       this.open = false
       return
