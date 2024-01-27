@@ -24,7 +24,7 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
   requestTime = 0
   timeSmoothing = 0.6
   requestTimeSmoothing = 0.1
-  url: URL | undefined
+  url?: URL
 
   handleImageLoad () {
     const fpsTarget = (!document.hasFocus() && this.camera.targetFpsIdle) || this.camera.targetFps || 10
