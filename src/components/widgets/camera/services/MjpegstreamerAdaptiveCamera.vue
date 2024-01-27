@@ -24,7 +24,6 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
   requestTime = 0
   timeSmoothing = 0.6
   requestTimeSmoothing = 0.1
-  url?: URL
 
   handleImageLoad () {
     const fpsTarget = (!document.hasFocus() && this.camera.targetFpsIdle) || this.camera.targetFps || 10
@@ -55,13 +54,17 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
       this.$emit('frames-per-second', framesPerSecond)
 
       this.$nextTick(() => {
-        if (!this.url) return
+        const cameraImageSource = this.cameraImageSource
 
-        this.url.searchParams.set('cacheBust', Date.now().toString())
+        if (cameraImageSource) {
+          const url = new URL(cameraImageSource)
 
-        this.requestStartTime = performance.now()
+          url.searchParams.set('cacheBust', Date.now().toString())
 
-        this.cameraImageSource = this.url.toString()
+          this.requestStartTime = performance.now()
+
+          this.cameraImageSource = url.toString()
+        }
       })
     } else {
       this.stopPlayback()
@@ -75,7 +78,6 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
 
     url.searchParams.set('cacheBust', Date.now().toString())
 
-    this.url = url
     this.cameraImageSource = url.toString()
 
     const rawUrl = this.buildAbsoluteUrl(this.camera.urlStream || '')
@@ -88,7 +90,6 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
   stopPlayback () {
     this.cameraImageSource = ''
     this.cameraImage.src = ''
-    this.url = undefined
   }
 }
 </script>
