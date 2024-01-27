@@ -453,6 +453,12 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
       await SocketActions.printerGcodeScript(commands.join('\n'))
 
+      const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro.toLowerCase())
+      if (macro?.variables.active) {
+        // selected tool is active, update active spool
+        await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpool ?? undefined)
+      }
+
       this.open = false
       return
     }
