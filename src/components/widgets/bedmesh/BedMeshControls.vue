@@ -34,7 +34,7 @@
             :key="item.name"
           >
             <td class="">
-              {{ item.name }}
+              {{ item.adaptive ? $t('app.general.label.adaptive') : item.name }}
             </td>
             <td>
               <v-chip
@@ -84,6 +84,7 @@
                     fab
                     text
                     x-small
+                    :disabled="item.adaptive"
                     @click="removeProfile(item.name)"
                     v-on="on"
                   >
@@ -146,7 +147,7 @@
                 block
                 small
                 color="primary"
-                :disabled="!meshLoaded"
+                :disabled="!meshLoaded || meshIsAdaptive"
                 v-on="on"
                 @click="handleOpenSaveDialog()"
               >
@@ -280,7 +281,12 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import SaveMeshDialog from './SaveMeshDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import type { MeshState, BedMeshProfile, KlipperBedMesh, MatrixType } from '@/store/mesh/types'
+import type {
+  MeshState,
+  KlipperBedMesh,
+  MatrixType,
+  BedMeshProfileListEntry
+} from '@/store/mesh/types'
 
 @Component({
   components: {
@@ -343,8 +349,8 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   // The available meshes.
-  get bedMeshProfiles () {
-    return this.$store.getters['mesh/getBedMeshProfiles'] as BedMeshProfile[]
+  get bedMeshProfiles (): BedMeshProfileListEntry[] {
+    return this.$store.getters['mesh/getBedMeshProfiles']
   }
 
   // The current mesh, unprocessed.
@@ -355,6 +361,10 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   // If we have a mesh loaded.
   get meshLoaded (): boolean {
     return ('profile_name' in this.currentMesh && this.currentMesh.profile_name.length > 0)
+  }
+
+  get meshIsAdaptive (): boolean {
+    return this.$store.getters['mesh/getUsingAdaptiveMesh']
   }
 
   // If the printer supports QGL
