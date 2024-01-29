@@ -73,7 +73,7 @@ export const getters: GetterTree<MeshState, RootState> = {
       })
     }
 
-    if (getters.getUsingAdaptiveMesh) {
+    if (!(bedMesh.profile_name in klipperProfiles)) {
       const min = Math.min(...(bedMesh.mesh_matrix?.flat() ?? [0]))
       const max = Math.max(...(bedMesh.mesh_matrix?.flat() ?? [0]))
 
@@ -86,22 +86,14 @@ export const getters: GetterTree<MeshState, RootState> = {
     }
 
     return profiles.sort((a, b) =>
-      a.name === 'default' || a.adaptive
+      a.name === 'default'
         ? -1
         : (
-            b.name === 'default' || b.adaptive
+            b.name === 'default'
               ? 1
               : a.name.localeCompare(b.name)
           )
     )
-  },
-
-  getUsingAdaptiveMesh: (state, getters, rootState): boolean => {
-    const bedMesh = rootState.printer.printer.bed_mesh as KlipperBedMesh
-    if (!bedMesh.profile_name?.startsWith('adaptive-')) return false
-
-    const klipperProfiles = bedMesh.profiles ?? getters.getLegacyBedMeshProfiles as Record<string, KlipperBedMeshProfile>
-    return !(bedMesh.profile_name in klipperProfiles)
   },
 
   /**

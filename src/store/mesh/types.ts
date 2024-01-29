@@ -58,11 +58,6 @@ export interface BedMeshProfileListEntry {
   range: number;
 }
 
-export interface BedMeshProfile extends KlipperBedMeshProfile, BedMeshProfileListEntry {
-  min: number;
-  max: number,
-}
-
 export interface AppMeshes {
   [index: string]: ProcessedMesh;
 }

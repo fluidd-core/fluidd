@@ -34,7 +34,7 @@
             :key="item.name"
           >
             <td class="">
-              {{ item.adaptive ? $t('app.general.label.adaptive') : item.name }}
+              {{ item.name }}
             </td>
             <td>
               <v-chip
@@ -147,7 +147,7 @@
                 block
                 small
                 color="primary"
-                :disabled="!meshLoaded || meshIsAdaptive"
+                :disabled="!meshLoaded"
                 v-on="on"
                 @click="handleOpenSaveDialog()"
               >
@@ -361,10 +361,6 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   // If we have a mesh loaded.
   get meshLoaded (): boolean {
     return ('profile_name' in this.currentMesh && this.currentMesh.profile_name.length > 0)
-  }
-
-  get meshIsAdaptive (): boolean {
-    return this.$store.getters['mesh/getUsingAdaptiveMesh']
   }
 
   // If the printer supports QGL

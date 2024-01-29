@@ -243,7 +243,6 @@ app:
       accel_to_decel: Beschleunigen zu Bremsen
       acceleration: Beschleunigung
       actual_time: Wirklich
-      adaptive: adaptiv
       add_camera: Kamera hinzufügen
       add_filter: Filter hinzufügen
       add_preset: Voreinstellingen hinzufügen

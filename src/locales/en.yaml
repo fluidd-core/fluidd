@@ -233,7 +233,6 @@ app:
       acceleration: Acceleration
       accepted_screws: Accepted screws
       actual_time: Actual
-      adaptive: adaptive
       add_camera: Add Camera
       add_filter: Add Filter
       add_preset: Add Preset
