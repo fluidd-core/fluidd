@@ -59,7 +59,9 @@ export const convertFilesToFilesWithPath = (files: File[] | FileList) => {
   return [...files]
     .map((file): FileWithPath => ({
       file,
-      path: file.webkitRelativePath.slice(0, -file.name.length)
+      path: file.webkitRelativePath === file.name
+        ? ''
+        : file.webkitRelativePath.slice(0, -file.name.length - 1)
     }))
 }
 
@@ -89,7 +91,9 @@ export const getFilesFromFileSystemEntries = async (entries: readonly FileSystem
         for (const entry of subEntries) {
           items.push({
             entry,
-            path: item.path + item.entry.name + '/'
+            path: item.path
+              ? `${item.path}/${item.entry.name}`
+              : item.entry.name
           })
         }
       }
