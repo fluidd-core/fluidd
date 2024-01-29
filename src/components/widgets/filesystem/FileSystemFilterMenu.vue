@@ -128,6 +128,13 @@ export default class FileSystemFilterMenu extends Vue {
       })
     }
 
+    if (rootFilterTypes.includes('crowsnest_backup_files')) {
+      filters.push({
+        type: 'crowsnest_backup_files',
+        text: this.$tc('app.file_system.filters.label.crowsnest_backup_files')
+      })
+    }
+
     return filters
   }
 
