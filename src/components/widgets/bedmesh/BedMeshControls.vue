@@ -266,6 +266,7 @@
       v-if="saveDialogState.open"
       v-model="saveDialogState.open"
       :existing-name="saveDialogState.existingName"
+      :adaptive="saveDialogState.adaptive"
       @save="handleMeshSave"
     />
 
@@ -301,7 +302,8 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
 
   saveDialogState = {
     open: false,
-    existingName: 'default'
+    existingName: 'default',
+    adaptive: false
   }
 
   get matrix () {
@@ -414,9 +416,11 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   handleOpenSaveDialog () {
+    const profile = this.bedMeshProfiles.find(mesh => mesh.name === this.currentMesh.profile_name)
     this.saveDialogState = {
       open: true,
-      existingName: this.currentMesh.profile_name
+      existingName: this.currentMesh.profile_name,
+      adaptive: profile?.adaptive ?? false
     }
   }
 
