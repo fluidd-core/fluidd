@@ -422,6 +422,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
               return false
             }
             break
+
+          case 'crowsnest_backup_files':
+            if (file.type === 'file' && file.filename.match(/^crowsnest\.conf\.\d{4}-\d{2}-\d{2}-\d{4}$/)) {
+              return false
+            }
+            break
         }
       }
 
