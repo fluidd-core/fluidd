@@ -73,7 +73,7 @@ export const getters: GetterTree<MeshState, RootState> = {
       })
     }
 
-    if (!(bedMesh.profile_name in klipperProfiles)) {
+    if (bedMesh.profile_name && !(bedMesh.profile_name in klipperProfiles)) {
       const min = Math.min(...(bedMesh.mesh_matrix?.flat() ?? [0]))
       const max = Math.max(...(bedMesh.mesh_matrix?.flat() ?? [0]))
 
