@@ -160,7 +160,7 @@ app:
       download: Download
       duplicate: Duplicate
       edit: Edit
-      exit_layout: Exit layout mode
+      exit_layout: Exit
       extrude: Extrude
       filter: Filter
       forgot_password: Forgotten your password?
@@ -188,8 +188,8 @@ app:
       rename: Rename
       reprint: Re-Print
       reset_file: Clear File
-      reset_layout: Reset to Default Layout
-      reset_default_layout: Reset Default Layout
+      reset_layout: Reset
+      reset_default_layout: Reset Default
       restart_firmware: Firmware Restart
       restart_service: Restart %{service}
       restart_service_klipper: Restart Klipper
@@ -205,7 +205,7 @@ app:
       select_columns: Select columns
       send: Send
       set_color: Set Color
-      set_default_layout: Set as Default Layout
+      set_default_layout: Save As Default
       shutdown: Shutdown
       snooze: Snooze
       socket_reconnect: Re-Connect
@@ -444,13 +444,17 @@ app:
     tooltip:
       browse_metrics: Browse available metrics
       estop: Emergency Stop
+      exit_layout: Exit layout mode
       managed_by_moonraker: Managed by your moonraker configuration
       notifications: Notifications
       reload_klipper: Reloads klipper configuration.
       reload_restart_klipper: Reloads klipper configuration and restarts MCU's.
+      reset_layout: Reset current layout to server-wide default layout
+      reset_default_layout: Reset server-wide default layout to factory defaults
       restart_klipper: Restarts the klipper system service.
       run_collector: Run collector
       rollover_logs: Rollover logs
+      set_default_layout: Set current layout as server-wide default layout
       file_browser_help: >-
         Drag and drop files or folders from outside the browser to upload them here<br>Move files and folders by dragging and dropping them onto sub-folders or ".."
       file_browser_configuration_help: >-
