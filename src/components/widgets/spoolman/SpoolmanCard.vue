@@ -29,6 +29,7 @@
             v-bind="attrs"
             small
             class="ms-1 my-1"
+            :disabled="!isConnected"
             v-on="on"
           >
             {{ $t('app.spoolman.label.change_spool') }}
