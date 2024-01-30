@@ -85,6 +85,7 @@ app:
         rolled_log_files: Alte Logdateien ausblenden
         hidden_files_folders: Versteckte Dateien und Ordner ausblenden
         moonraker_backup_files: Moonraker Backup-Dateien ausblenden
+        crowsnest_backup_files: Crowsnest-Backupdateien ausblenden
     label:
       dir_name: Ordnername
       disk_usage: Belegter Speicher
