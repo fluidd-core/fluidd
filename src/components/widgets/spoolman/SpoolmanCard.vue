@@ -55,6 +55,7 @@
             >
               <v-icon
                 :color="getSpoolColor(activeSpool)"
+                class="spool-icon"
               >
                 $filament
               </v-icon>
@@ -78,6 +79,7 @@
               >
                 <v-icon
                   :color="getSpoolColor(getSpoolById(macro.variables.spool_id))"
+                  class="spool-icon"
                 >
                   $filament
                 </v-icon>
@@ -181,6 +183,7 @@
             v-if="activeSpool"
             :color="getSpoolColor(activeSpool)"
             size="110px"
+            class="spool-icon"
           >
             $filament
           </v-icon>

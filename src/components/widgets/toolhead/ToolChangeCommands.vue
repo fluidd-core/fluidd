@@ -24,7 +24,7 @@
             >
               <v-icon
                 v-if="macro.spoolId && getSpoolById(macro.spoolId)"
-                class="mr-1"
+                class="mr-1 spool-icon"
                 :color="getSpoolColor(getSpoolById(macro.spoolId))"
               >
                 $filament

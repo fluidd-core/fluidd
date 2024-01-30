@@ -63,3 +63,12 @@ input[type=number] {
 .constrained-width.quad {
   max-width: map-get($container-max-widths, 'xl') * 2;
 }
+
+.spool-icon {
+  stroke: rgba(0,0,0, 0.25);
+  stroke-width: .025rem;
+}
+
+.theme--dark .spool-icon {
+  stroke: rgba(0,0,0, 0.5);
+}
