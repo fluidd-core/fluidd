@@ -71,6 +71,7 @@ app:
   file_system:
     filters:
       label:
+        crowsnest_backup_files: Filter Crowsnest backup files
         print_start_time: Filter printed
         print_start_time_desc: Filters out items you've already printed.
         hidden_files_folders: Filter hidden files and folders

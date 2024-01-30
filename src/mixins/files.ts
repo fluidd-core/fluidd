@@ -161,11 +161,9 @@ export default class FilesMixin extends Vue {
    * @param options Axios request options
    */
   async uploadFile (file: File, path: string, root: string, andPrint: boolean, options?: AxiosRequestConfig) {
-    // let filename = file.name.replace(' ', '_')
-    let filepath = `${path}${file.name}`
-    filepath = (filepath.startsWith('/'))
-      ? filepath
-      : '/' + filepath
+    const filepath = path
+      ? `${path}/${file.name}`
+      : file.name
 
     const abortController = new AbortController()
 
@@ -205,7 +203,9 @@ export default class FilesMixin extends Vue {
   getFullPathAndFile (rootPath: string, file: File | FileWithPath): [string, File] {
     if ('path' in file) {
       return [
-        `${rootPath}/${file.path}`,
+        [rootPath, file.path]
+          .filter(path => !!path)
+          .join('/'),
         file.file
       ]
     } else {
@@ -222,10 +222,10 @@ export default class FilesMixin extends Vue {
     for (const file of files) {
       const [fullPath, fileObject] = this.getFullPathAndFile(path, file)
 
-      let filepath = `${fullPath}${fileObject.name}`
-      filepath = (filepath.startsWith('/'))
-        ? filepath
-        : '/' + filepath
+      const filepath = fullPath
+        ? `${fullPath}/${fileObject.name}`
+        : fileObject.name
+
       this.$store.dispatch('files/updateFileUpload', {
         filepath,
         size: fileObject.size,
@@ -244,10 +244,10 @@ export default class FilesMixin extends Vue {
     for (const file of files) {
       const [fullPath, fileObject] = this.getFullPathAndFile(path, file)
 
-      let filepath = `${fullPath}${fileObject.name}`
-      filepath = (filepath.startsWith('/'))
-        ? filepath
-        : '/' + filepath
+      const filepath = fullPath
+        ? `${fullPath}/${fileObject.name}`
+        : fileObject.name
+
       const fileState = this.$store.state.files.uploads.find((u: FilesUpload) => u.filepath === filepath)
 
       if (fileState && !fileState?.cancelled) {
