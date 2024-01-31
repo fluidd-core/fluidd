@@ -379,7 +379,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
     const result = (
       !this.printerPrinting ||
       await this.$confirm(
-        this.$t('app.general.simple_form.msg.confirm_load_profile', { name }).toString(),
+        this.$t('app.general.simple_form.msg.confirm_load_bedmesh_profile', { name }).toString(),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
       )
     )
