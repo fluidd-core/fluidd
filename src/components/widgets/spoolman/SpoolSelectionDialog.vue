@@ -6,27 +6,60 @@
       scrollable
       :max-width="isMobileViewport ? '90vw' : '75vw'"
     >
-      <v-card>
-        <v-toolbar
-          dense
-          class="mb-2"
-        >
-          <v-toolbar-title>
-            <v-icon>$changeFilament</v-icon>
-            {{ $tc('app.spoolman.title.spool_selection') }}
-          </v-toolbar-title>
+      <v-card class="collapsable-card">
+        <v-card-title class="collapsable-card-title card-heading py-2">
+          <v-row>
+            <v-col align-self="center">
+              <v-icon left>
+                $changeFilament
+              </v-icon>
+              <span class="font-weight-light">{{ $tc('app.spoolman.title.spool_selection') }}</span>
+            </v-col>
 
-          <v-spacer />
+            <v-col cols="auto">
+              <v-menu
+                v-if="cameras.length > 1"
+                v-model="cameraSelectionMenuOpen"
+                location="top"
+              >
+                <template #activator="{ on }">
+                  <app-btn
+                    class="mr-1 my-2"
+                    v-on="on"
+                  >
+                    <v-icon
+                      class="mr-1"
+                      small
+                    >
+                      $camera
+                    </v-icon>
+                    <template v-if="!isMobileViewport">
+                      {{ $t('app.spoolman.btn.scan_code') }}
+                    </template>
+                  </app-btn>
+                </template>
 
-          <v-menu
-            v-if="cameras.length > 1"
-            v-model="cameraSelectionMenuOpen"
-            location="top"
-          >
-            <template #activator="{ on }">
+                <v-list>
+                  <v-list-item
+                    v-for="camera in cameras"
+                    :key="camera.id"
+                    @click="scanSource = camera.id"
+                  >
+                    <v-list-item-title>
+                      <v-icon
+                        small
+                        class="mr-1"
+                      >
+                        $camera
+                      </v-icon>
+                      {{ camera.name }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
               <app-btn
-                class="mr-2"
-                v-on="on"
+                v-else-if="cameras.length"
+                @click="cameraScanSource = cameras[0].id"
               >
                 <v-icon
                   class="mr-1"
@@ -38,41 +71,19 @@
                   {{ $t('app.spoolman.btn.scan_code') }}
                 </template>
               </app-btn>
-            </template>
+            </v-col>
+          </v-row>
+        </v-card-title>
 
-            <v-list>
-              <v-list-item
-                v-for="camera in cameras"
-                :key="camera.id"
-                @click="scanSource = camera.id"
-              >
-                <v-list-item-title>
-                  <v-icon
-                    small
-                    class="mr-1"
-                  >
-                    $camera
-                  </v-icon>
-                  {{ camera.name }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-          <app-btn
-            v-else-if="cameras.length"
-            class="mr-2"
-            @click="cameraScanSource = cameras[0].id"
-          >
-            <v-icon
-              class="mr-1"
-              small
-            >
-              $camera
-            </v-icon>
-            <template v-if="!isMobileViewport">
-              {{ $t('app.spoolman.btn.scan_code') }}
-            </template>
-          </app-btn>
+        <v-toolbar
+          dense
+        >
+          <v-spacer />
+
+          <app-column-picker
+            key-name="spoolman"
+            :headers="headers"
+          />
 
           <v-text-field
             v-model="search"
@@ -82,13 +93,14 @@
             hide-details
             append-icon="$magnify"
             style="max-width: 360px"
+            class="mx-2"
           />
         </v-toolbar>
 
         <v-card-text>
           <v-data-table
             :items="availableSpools"
-            :headers="headers"
+            :headers="visibleHeaders"
             :search="search"
             :custom-filter="filterResults"
             :no-data-text="$t('app.file_system.msg.not_found')"
@@ -96,7 +108,7 @@
             :sort-by="sortOrder.key ?? undefined"
             :sort-desc="sortOrder.desc ?? undefined"
             mobile-breakpoint="0"
-            class="file-system spool-table"
+            class="spool-table"
             hide-default-footer
             disable-pagination
             @update:sort-by="handleSortOrderKeyChange"
@@ -130,11 +142,12 @@
                     </div>
                   </div>
                 </td>
-                <td>{{ item.id }}</td>
-                <td>{{ item.filament.material }}</td>
-                <td>{{ item.location }}</td>
-                <td>{{ item.comment }}</td>
-                <td>{{ item.last_used ? $filters.formatRelativeTimeToNow(item.last_used) : $tc('app.setting.label.never') }}</td>
+                <td
+                  v-for="header in visibleHeaders.filter(h => h.value !== 'filament_name')"
+                  :key="header.value"
+                >
+                  {{ item[header.value] }}
+                </td>
               </tr>
             </template>
           </v-data-table>
@@ -198,6 +211,7 @@ import BrowserMixin from '@/mixins/browser'
 import QRReader from '@/components/widgets/spoolman/QRReader.vue'
 import type { CameraConfig } from '@/store/cameras/types'
 import QrScanner from 'qr-scanner'
+import type { AppTableHeader } from '@/types'
 
 @Component({
   components: { QRReader }
@@ -262,15 +276,16 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       spools.push({
         ...spool,
         filament_name: filamentName,
-        filament_material: spool.filament.material
+        filament_material: spool.filament.material,
+        last_used: spool.last_used ? this.$filters.formatRelativeTimeToNow(spool.last_used) : this.$tc('app.setting.label.never')
       })
     }
 
     return spools
   }
 
-  get headers () {
-    return [
+  get headers (): AppTableHeader[] {
+    const headers = [
       'filament_name',
       'id',
       'material',
@@ -279,8 +294,15 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       'last_used'
     ].map((value) => ({
       text: this.$tc(`app.spoolman.label.${value}`),
-      value
+      value,
+      configurable: value !== 'filament_name'
     }))
+
+    return this.$store.getters['config/getMergedTableHeaders'](headers, 'spoolman')
+  }
+
+  get visibleHeaders (): AppTableHeader[] {
+    return this.headers.filter(header => header.visible || header.visible === undefined)
   }
 
   get selectedSpool () {
@@ -444,8 +466,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   filterResults (value: string, query: string, item: Spool): boolean {
     query = query.toLowerCase()
-    return [item.comment, item.filament.name, item.filament.material, item.filament.vendor?.name]
-      .some(val => val?.toLowerCase().includes(query))
+    return [item.id, item.comment, item.filament.name, item.filament.material, item.filament.vendor?.name]
+      .some(val => val?.toString().toLowerCase().includes(query))
   }
 
   get spoolmanURL () {
