@@ -3,24 +3,23 @@
     <v-simple-table class="temperature-table">
       <thead>
         <tr>
-          <th width="1%" />
-          <th :width="showRateOfChange ? '94%' : '95%'">
+          <th />
+          <th width="100%">
             {{ $t('app.chart.label.item') }}
           </th>
-          <th width="1%">
+          <th>
             {{ $t('app.chart.label.power') }}
           </th>
           <th
             v-if="showRateOfChange"
-            width="1%"
           >
             {{ $t('app.chart.label.rate_of_change') }}
           </th>
-          <th width="1%">
+          <th>
             {{ $t('app.chart.label.current') }}
           </th>
-          <th width="1%" />
-          <th width="1%">
+          <th />
+          <th>
             {{ $t('app.chart.label.target') }}
           </th>
         </tr>
@@ -61,7 +60,7 @@
           </td>
           <td
             v-if="showRateOfChange"
-            class="rate-of-change"
+            class="text-no-wrap"
           >
             <span
               :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
@@ -136,7 +135,7 @@
           </td>
           <td
             v-if="showRateOfChange"
-            class="rate-of-change"
+            class="text-no-wrap"
           >
             <span
               :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
@@ -205,7 +204,7 @@
           </td>
           <td
             v-if="showRateOfChange"
-            class="rate-of-change"
+            class="text-no-wrap"
           >
             <span class="legend-item">
               {{ getRateOfChange(item) }}<small>&deg;C/s</small>
