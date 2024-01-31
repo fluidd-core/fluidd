@@ -236,11 +236,15 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
   }
 
   get targetableMacros (): MacroWithSpoolId[] {
-    const collator = new Intl.Collator()
-    return this.$store.getters['macros/getMacros']
-      .filter((macro: Macro) => macro.variables && 'spool_id' in macro.variables)
-      .map((macro: Macro) => ({ ...macro, name: macro.name.toUpperCase() }))
-      .sort((a: Macro, b: Macro) => collator.compare(a.name, b.name))
+    const macros = this.$store.getters['macros/getMacros'] as Macro[]
+
+    return macros
+      .filter((macro): macro is MacroWithSpoolId => macro.variables != null && 'spool_id' in macro.variables)
+      .map(macro => ({
+        ...macro,
+        name: macro.name.toUpperCase()
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name))
   }
 
   getSpoolById (id: number): Spool | undefined {
