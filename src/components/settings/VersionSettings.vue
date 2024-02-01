@@ -128,7 +128,7 @@
         <template v-if="'anomalies' in component">
           <v-alert
             v-for="(anomaly, index) in component.anomalies ?? []"
-            :key="`anomaly-${index}`"
+            :key="`anomaly-${component.key}-${index}`"
             dense
             icon="$info"
             text
