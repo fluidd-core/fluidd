@@ -399,6 +399,15 @@ app:
         confirm_forcemove_toggle: Sind Sie sicher? Dies kann Schäden am Drucker verursachen.
         confirm_service_start: Sind Sie sicher, dass Sie den %{name}-Dienst starten
           wollen?
+        confirm_cancel_print: Sind Sie sicher, dass sie den Druck abbrechen wollen?
+        confirm_clear_mesh: Der Drucker ist gerade beschäftigt. Sind Sie sicher, dass
+          sie das Bett-Mesh leeren wollen?
+        confirm_load_bedmesh_profile: Der Drucker ist gerade beschäftigt. Sind Sie
+          sicher, dass Sie das Profil %{name} laden wollen?
+        confirm_emergency_stop: Sind Sie sicher, dass sie den Drucker notausschalten
+          wollen?
+        confirm_remove_user: Sind Sie sicher, dass Sie den Benutzer %{username} entfernen
+          wollen?
     table:
       header:
         actions: Aktionen
