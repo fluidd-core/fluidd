@@ -117,14 +117,7 @@ export const defaultState = (): ConfigState => {
           { value: 'time_added', visible: true },
           { value: 'time_in_queue', visible: false }
         ],
-        spoolman: [
-          { value: 'filament_name', visible: true },
-          { value: 'id', visible: true },
-          { value: 'material', visible: true },
-          { value: 'location', visible: true },
-          { value: 'comment', visible: true },
-          { value: 'last_used', visible: true }
-        ]
+        spoolman: []
       },
       gcodePreview: {
         extrusionLineWidth: 0.3,
