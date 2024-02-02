@@ -1,205 +1,197 @@
 <template>
-  <div>
-    <v-dialog
-      v-model="open"
-      no-actions
-      scrollable
-      :max-width="isMobileViewport ? '90vw' : '75vw'"
-    >
-      <v-card class="collapsable-card">
-        <v-card-title class="collapsable-card-title card-heading py-2">
-          <v-row>
-            <v-col align-self="center">
-              <v-icon left>
-                $changeFilament
-              </v-icon>
-              <span class="font-weight-light">{{ $tc('app.spoolman.title.spool_selection') }}</span>
-            </v-col>
+  <app-dialog
+    v-model="open"
+    scrollable
+    :max-width="isMobileViewport ? '90vw' : '75vw'"
+    title-shadow
+  >
+    <template #title>
+      <span class="focus--text">{{ $t('app.spoolman.title.spool_selection') }}</span>
 
-            <v-col cols="auto">
-              <v-menu
-                v-if="cameras.length > 1"
-                v-model="cameraSelectionMenuOpen"
-                location="top"
-              >
-                <template #activator="{ on }">
-                  <app-btn
-                    class="mr-1 my-2"
-                    v-on="on"
-                  >
-                    <v-icon
-                      class="mr-1"
-                      small
-                    >
-                      $camera
-                    </v-icon>
-                    <template v-if="!isMobileViewport">
-                      {{ $t('app.spoolman.btn.scan_code') }}
-                    </template>
-                  </app-btn>
-                </template>
+      <v-spacer />
 
-                <v-list>
-                  <v-list-item
-                    v-for="camera in cameras"
-                    :key="camera.id"
-                    @click="scanSource = camera.id"
-                  >
-                    <v-list-item-title>
-                      <v-icon
-                        small
-                        class="mr-1"
-                      >
-                        $camera
-                      </v-icon>
-                      {{ camera.name }}
-                    </v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-              <app-btn
-                v-else-if="cameras.length"
-                @click="cameraScanSource = cameras[0].id"
-              >
-                <v-icon
-                  class="mr-1"
-                  small
-                >
-                  $camera
-                </v-icon>
-                <template v-if="!isMobileViewport">
-                  {{ $t('app.spoolman.btn.scan_code') }}
-                </template>
-              </app-btn>
-            </v-col>
-          </v-row>
-        </v-card-title>
-
-        <v-toolbar
-          dense
-        >
-          <v-spacer />
-
-          <app-column-picker
-            key-name="spoolman"
-            :headers="headers"
-          />
-
-          <v-text-field
-            v-model="search"
-            outlined
-            dense
-            single-line
-            hide-details
-            append-icon="$magnify"
-            style="max-width: 360px"
-            class="mx-2"
-          />
-        </v-toolbar>
-
-        <v-card-text>
-          <v-data-table
-            :items="availableSpools"
-            :headers="visibleHeaders"
-            :search="search"
-            :custom-filter="filterResults"
-            :no-data-text="$t('app.file_system.msg.not_found')"
-            :no-results-text="$t('app.file_system.msg.not_found')"
-            :sort-by="sortOrder.key ?? undefined"
-            :sort-desc="sortOrder.desc ?? undefined"
-            mobile-breakpoint="0"
-            class="spool-table"
-            hide-default-footer
-            disable-pagination
-            @update:sort-by="handleSortOrderKeyChange"
-            @update:sort-desc="handleSortOrderDescChange"
-          >
-            <template #item="{ item }">
-              <tr
-                :class="{ 'v-data-table__selected': (item.id === selectedSpool) }"
-                class="row-select px-1"
-                @click.prevent="selectedSpool = selectedSpool === item.id ? null : item.id"
-              >
-                <td>
-                  <div class="d-flex">
-                    <v-icon
-                      :color="`#${item.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
-                      x-large
-                      class="mr-4 flex-column"
-                    >
-                      {{ item.id === selectedSpool ? '$markedCircle' : '$filament' }}
-                    </v-icon>
-                    <div class="flex-column">
-                      <div class="flex-row">
-                        {{ item.filament_name }}
-                      </div>
-                      <div class="flex-row">
-                        <small>
-                          <b>{{ $filters.getReadableWeightString(item.remaining_weight) }}</b>
-                          / {{ $filters.getReadableWeightString(item.filament.weight) }}
-                        </small>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td
-                  v-for="header in visibleHeaders.filter(h => h.value !== 'filament_name')"
-                  :key="header.value"
-                >
-                  {{ item[header.value] }}
-                </td>
-              </tr>
-            </template>
-          </v-data-table>
-        </v-card-text>
-
-        <v-divider />
-
-        <v-card-actions
-          class="pt-4"
-        >
+      <v-menu
+        v-if="cameras.length > 1"
+        left
+        offset-y
+        transition="slide-y-transition"
+      >
+        <template #activator="{ on, attrs, value }">
           <app-btn
-            v-if="spoolmanURL"
-            :href="spoolmanURL"
-            target="_blank"
+            v-bind="attrs"
+            small
+            class="ms-1 my-1"
+            v-on="on"
           >
             <v-icon
+              class="mr-1"
               small
-              class="mr-2"
             >
-              $edit
+              $camera
             </v-icon>
-            {{ isMobileViewport ? '' : $tc('app.spoolman.btn.manage_spools') }}
-          </app-btn>
-
-          <v-spacer />
-
-          <app-btn
-            text
-            color="warning"
-            @click="open = false"
-          >
-            {{ $t('app.general.btn.cancel') }}
-          </app-btn>
-          <app-btn
-            color="primary"
-            @click="handleSelectSpool"
-          >
-            <v-icon class="mr-2">
-              {{ filename ? '$printer' : '$send' }}
+            {{ $t('app.spoolman.btn.scan_code') }}
+            <v-icon
+              small
+              class="ml-1"
+              :class="{ 'rotate-180': value }"
+            >
+              $chevronDown
             </v-icon>
-            {{ filename ? $t('app.general.btn.print') : $t('app.spoolman.btn.select') }}
           </app-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+        </template>
+        <v-list dense>
+          <v-list-item
+            v-for="camera in cameras"
+            :key="camera.id"
+            @click="scanSource = camera.id"
+          >
+            <v-list-item-icon>
+              <v-icon>
+                $camera
+              </v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ camera.name }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      <app-btn
+        v-else-if="cameras.length"
+        small
+        class="ms-1 my-1"
+        @click="cameraScanSource = cameras[0].id"
+      >
+        <v-icon
+          class="mr-1"
+          small
+        >
+          $camera
+        </v-icon>
+        {{ $t('app.spoolman.btn.scan_code') }}
+      </app-btn>
+    </template>
+
+    <v-toolbar dense>
+      <v-spacer />
+
+      <app-column-picker
+        key-name="spoolman"
+        :headers="headers"
+      />
+
+      <v-text-field
+        v-model="search"
+        outlined
+        dense
+        single-line
+        hide-details
+        append-icon="$magnify"
+        style="max-width: 360px"
+        class="ml-1"
+      />
+    </v-toolbar>
+
+    <v-card-text class="pt-0">
+      <v-data-table
+        :items="availableSpools"
+        :headers="visibleHeaders"
+        :search="search"
+        :custom-filter="filterResults"
+        :no-data-text="$t('app.file_system.msg.not_found')"
+        :no-results-text="$t('app.file_system.msg.not_found')"
+        :sort-by="sortOrder.key ?? undefined"
+        :sort-desc="sortOrder.desc ?? undefined"
+        mobile-breakpoint="0"
+        class="spool-table"
+        hide-default-footer
+        disable-pagination
+        @update:sort-by="handleSortOrderKeyChange"
+        @update:sort-desc="handleSortOrderDescChange"
+      >
+        <template #item="{ item }">
+          <tr
+            :class="{ 'v-data-table__selected': (item.id === selectedSpool) }"
+            class="row-select px-1"
+            @click.prevent="selectedSpool = selectedSpool === item.id ? null : item.id"
+          >
+            <td>
+              <div class="d-flex">
+                <v-icon
+                  :color="`#${item.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
+                  x-large
+                  class="mr-4 flex-column"
+                >
+                  {{ item.id === selectedSpool ? '$markedCircle' : '$filament' }}
+                </v-icon>
+                <div class="flex-column">
+                  <div class="flex-row">
+                    {{ item.filament_name }}
+                  </div>
+                  <div class="flex-row">
+                    <small>
+                      <b>{{ $filters.getReadableWeightString(item.remaining_weight) }}</b>
+                      / {{ $filters.getReadableWeightString(item.filament.weight) }}
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td
+              v-for="header in visibleHeaders.filter(h => h.value !== 'filament_name')"
+              :key="header.value"
+            >
+              {{ item[header.value] }}
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </v-card-text>
+
+    <template #actions>
+      <app-btn
+        v-if="spoolmanURL"
+        :href="spoolmanURL"
+        target="_blank"
+      >
+        <v-icon
+          small
+          class="mr-2"
+        >
+          $edit
+        </v-icon>
+        {{ isMobileViewport ? '' : $tc('app.spoolman.btn.manage_spools') }}
+      </app-btn>
+
+      <v-spacer />
+
+      <app-btn
+        text
+        color="warning"
+        @click="open = false"
+      >
+        {{ $t('app.general.btn.cancel') }}
+      </app-btn>
+      <app-btn
+        color="primary"
+        @click="handleSelectSpool"
+      >
+        <v-icon class="mr-2">
+          {{ filename ? '$printer' : '$send' }}
+        </v-icon>
+        {{ filename ? $t('app.general.btn.print') : $t('app.spoolman.btn.select') }}
+      </app-btn>
+    </template>
 
     <QRReader
       v-if="scanSource"
       v-model="scanSource"
       @detected="handleQRCodeDetected"
     />
-  </div>
+  </app-dialog>
 </template>
 
 <script lang="ts">
@@ -221,7 +213,6 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   selectedSpoolId: number | null = null
 
   cameraScanSource: null | string = null
-  cameraSelectionMenuOpen = false
 
   hasDeviceCamera = false
 
