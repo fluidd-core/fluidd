@@ -6,7 +6,7 @@
     title-shadow
   >
     <template #title>
-      <span class="focus--text">{{ $t('app.spoolman.title.spool_selection') }}</span>
+      <span class="focus--text">$tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro })</span>
 
       <v-spacer />
 
@@ -122,8 +122,8 @@
               <div class="d-flex">
                 <v-icon
                   :color="`#${item.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
-                  x-large
-                  class="mr-4 flex-column"
+                  size="42px"
+                  class="mr-4 flex-column spool-icon"
                 >
                   {{ item.id === selectedSpool ? '$markedCircle' : '$filament' }}
                 </v-icon>
@@ -182,7 +182,7 @@
         <v-icon class="mr-2">
           {{ filename ? '$printer' : '$send' }}
         </v-icon>
-        {{ filename ? $t('app.general.btn.print') : $t('app.spoolman.btn.select') }}
+        {{ filename ? $t('app.general.btn.print') : $tc('app.spoolman.btn.select', targetMacro ? 2 : 1, { macro: targetMacro }) }}
       </app-btn>
     </template>
 
@@ -198,7 +198,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import type { Spool } from '@/store/spoolman/types'
+import type { MacroWithSpoolId, Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
 import QRReader from '@/components/widgets/spoolman/QRReader.vue'
 import type { CameraConfig } from '@/store/cameras/types'
@@ -224,6 +224,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   onOpen () {
     if (this.open) {
       this.selectedSpoolId = this.$store.state.spoolman.activeSpool ?? null
+      if (this.targetMacro) {
+        const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro.toLowerCase())
+        this.selectedSpoolId = macro?.variables.spool_id ?? null
+      }
 
       if (this.currentFileName) {
         // prefetch file metadata
@@ -325,6 +329,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     const filename = splitFilepath.pop()
     const filepath = splitFilepath.join('/')
     return this.$store.getters['files/getFile'](filepath ? `gcodes/${filepath}` : 'gcodes', filename)
+  }
+
+  get targetMacro (): string | undefined {
+    return this.$store.state.spoolman.dialog.targetMacro
   }
 
   get cameras () {
@@ -444,6 +452,30 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       }
     }
 
+    if (this.targetMacro) {
+      // set spool_id via SET_GCODE_VARIABLE
+      const commands = [
+        `SET_GCODE_VARIABLE MACRO=${this.targetMacro} VARIABLE=spool_id VALUE=${this.selectedSpool ?? 'None'}`
+      ]
+
+      const supportsSaveVariables = this.$store.getters['printer/getPrinterConfig']('save_variables')
+      if (supportsSaveVariables) {
+        // persist selected spool across restarts
+        commands.push(`SAVE_VARIABLE VARIABLE=${this.targetMacro.toUpperCase()}__SPOOL_ID VALUE=${this.selectedSpool ?? 'None'}`)
+      }
+
+      await SocketActions.printerGcodeScript(commands.join('\n'))
+
+      const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro.toLowerCase())
+      if (macro?.variables.active) {
+        // selected tool is active, update active spool
+        await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpool ?? undefined)
+      }
+
+      this.open = false
+      return
+    }
+
     await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpool ?? undefined)
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
@@ -452,6 +484,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         this.$router.push({ path: '/' })
       }
     }
+
     this.open = false
   }
 

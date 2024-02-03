@@ -6,8 +6,7 @@ export const defaultState = (): SpoolmanState => {
     activeSpool: undefined,
     connected: false,
     dialog: {
-      show: false,
-      filename: ''
+      show: false
     }
   }
 }

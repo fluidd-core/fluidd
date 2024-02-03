@@ -158,7 +158,6 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
           return
         }
 
-        consola.debug(`${logPrefix} received spoolman message:`, data)
         switch (data.resource) {
           case 'spool':
             dispatch('onSpoolChange', data)

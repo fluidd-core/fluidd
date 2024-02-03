@@ -7,13 +7,87 @@
   >
     <template #menu>
       <app-btn
+        v-if="!targetableMacros.length"
         small
         class="ms-1 my-1"
         :disabled="!isConnected"
-        @click="handleSelectSpool"
+        @click="() => handleSelectSpool()"
       >
         {{ $t('app.spoolman.label.change_spool') }}
       </app-btn>
+
+      <v-menu
+        v-else
+        bottom
+        left
+        offset-y
+        transition="slide-y-transition"
+        min-width="150"
+      >
+        <template #activator="{ on, attrs, value }">
+          <app-btn
+            v-bind="attrs"
+            small
+            class="ms-1 my-1"
+            :disabled="!isConnected"
+            v-on="on"
+          >
+            {{ $t('app.spoolman.label.change_spool') }}
+            <v-icon
+              small
+              class="ml-1"
+              :class="{ 'rotate-180': value }"
+            >
+              $chevronDown
+            </v-icon>
+          </app-btn>
+        </template>
+        <v-list dense>
+          <v-list-item @click="() => handleSelectSpool()">
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ $t('app.spoolman.label.active_spool') }}
+              </v-list-item-title>
+            </v-list-item-content>
+
+            <v-list-item-icon
+              v-if="activeSpool"
+            >
+              <v-icon
+                :color="getSpoolColor(activeSpool)"
+                class="spool-icon"
+              >
+                $filament
+              </v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+
+          <template v-for="macro of targetableMacros">
+            <v-list-item
+              :key="macro.name"
+              :class="{primary: macro.variables?.active}"
+              @click="() => handleSelectSpool(macro)"
+            >
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ macro.name }}
+                </v-list-item-title>
+              </v-list-item-content>
+
+              <v-list-item-icon
+                v-if="macro.variables.spool_id"
+              >
+                <v-icon
+                  :color="getSpoolColor(getSpoolById(macro.variables.spool_id))"
+                  class="spool-icon"
+                >
+                  $filament
+                </v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </template>
+        </v-list>
+      </v-menu>
     </template>
 
     <v-progress-linear
@@ -107,8 +181,9 @@
         >
           <v-icon
             v-if="activeSpool"
-            :color="activeSpool.filament.color_hex ? `#${activeSpool.filament.color_hex}` : undefined"
+            :color="getSpoolColor(activeSpool)"
             size="110px"
+            class="spool-icon"
           >
             $filament
           </v-icon>
@@ -134,8 +209,9 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { Spool } from '@/store/spoolman/types'
+import type { MacroWithSpoolId, Spool } from '@/store/spoolman/types'
 import StatusLabel from '@/components/widgets/status/StatusLabel.vue'
+import type { Macro } from '@/store/macros/types'
 
 @Component({
   components: { StatusLabel }
@@ -143,8 +219,11 @@ import StatusLabel from '@/components/widgets/status/StatusLabel.vue'
 export default class SpoolmanCard extends Mixins(StateMixin) {
   labelWidth = '86px'
 
-  handleSelectSpool () {
-    this.$store.commit('spoolman/setDialogState', { show: true })
+  handleSelectSpool (targetMacro?: Macro) {
+    this.$store.commit('spoolman/setDialogState', {
+      show: true,
+      targetMacro: targetMacro?.name
+    })
   }
 
   get activeSpool (): Spool | null {
@@ -154,6 +233,26 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
 
   get isConnected (): boolean {
     return this.$store.getters['spoolman/getConnected']
+  }
+
+  get targetableMacros (): MacroWithSpoolId[] {
+    const macros = this.$store.getters['macros/getMacros'] as Macro[]
+
+    return macros
+      .filter((macro): macro is MacroWithSpoolId => macro.variables != null && 'spool_id' in macro.variables)
+      .map(macro => ({
+        ...macro,
+        name: macro.name.toUpperCase()
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name))
+  }
+
+  getSpoolById (id: number): Spool | undefined {
+    return this.$store.getters['spoolman/getSpoolById'](id)
+  }
+
+  getSpoolColor (spool?: Spool) {
+    return `#${spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? 'fff' : '000')}`
   }
 }
 </script>
