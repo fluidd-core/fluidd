@@ -588,7 +588,7 @@ app:
       type: Art
       z_adjust_values: Z-Werte anpassen
       show_code_lens: CodeLens anzeigen
-      show_save_config_and_restart: Speichern & Neu starten Schaltfläche in der Navigationsleite
+      show_save_config_and_restart: Speichern & Neu starten Schaltfläche in der Navigationsleiste
       icon: Symbol
       solid: Durchgängig
       title: Titel
