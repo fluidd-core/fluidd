@@ -151,7 +151,7 @@ export default class AuthSettings extends Vue {
 
   async handleRemoveUser (user: AppUser) {
     const result = await this.$confirm(
-      this.$tc('app.general.simple_form.msg.confirm'),
+      this.$t('app.general.simple_form.msg.confirm_remove_user', { username: user.username }).toString(),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 

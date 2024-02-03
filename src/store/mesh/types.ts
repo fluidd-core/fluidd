@@ -51,11 +51,10 @@ export interface KlipperBedMeshProfileMeshParams {
   y_count: number;
 }
 
-export interface BedMeshProfile extends KlipperBedMeshProfile {
+export interface BedMeshProfileListEntry {
   name: string;
   active: boolean;
-  min: number;
-  max: number,
+  adaptive: boolean;
   range: number;
 }
 

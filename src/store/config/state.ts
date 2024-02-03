@@ -116,7 +116,8 @@ export const defaultState = (): ConfigState => {
         job_queue: [
           { value: 'time_added', visible: true },
           { value: 'time_in_queue', visible: false }
-        ]
+        ],
+        spoolman: []
       },
       gcodePreview: {
         extrusionLineWidth: 0.3,
