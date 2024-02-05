@@ -117,12 +117,13 @@ async function setupMonaco () {
 
       const sections = linesContent.reduce((ranges, lineContent, index) => {
         const section = /^\[([^\]]+)\]/.exec(lineContent)
+
         if (section) {
           const [sectionName] = section[1].split(' ', 1)
 
           const referenceSection = getDocsSection(service, sectionName)
 
-          return ranges.concat({
+          ranges.push({
             referenceSection,
             range: {
               startLineNumber: index + 1,
@@ -132,6 +133,7 @@ async function setupMonaco () {
             }
           })
         }
+
         return ranges
       }, [] as { referenceSection: string, range: monaco.IRange }[])
 
@@ -161,16 +163,16 @@ async function setupMonaco () {
         const isSection = /^\[([^\]]+)\]/.test(lineContent)
 
         if (isSection) {
-          return sectionBlocks.concat({
+          sectionBlocks.push({
             start: index + 1,
             end: index + 1
           })
-        }
+        } else {
+          const isNotComment = /^\s*[^#;]/.test(lineContent)
 
-        const isNotComment = /^\s*[^#;]/.test(lineContent)
-
-        if (isNotComment && sectionBlocks.length > 0) {
-          sectionBlocks[sectionBlocks.length - 1].end = index + 1
+          if (isNotComment && sectionBlocks.length > 0) {
+            sectionBlocks[sectionBlocks.length - 1].end = index + 1
+          }
         }
 
         return sectionBlocks
@@ -188,7 +190,7 @@ async function setupMonaco () {
             if (lastCommentBlock && !lastCommentBlock.complete) {
               lastCommentBlock.end = index + 1
             } else {
-              return commentBlocks.concat({
+              commentBlocks.push({
                 start: index + 1,
                 end: index + 1,
                 complete: false
@@ -217,16 +219,16 @@ async function setupMonaco () {
         const isLayer = /^\s*SET_PRINT_STATS_INFO .*CURRENT_LAYER=/i.test(lineContent)
 
         if (isLayer) {
-          return layerBlocks.concat({
+          layerBlocks.push({
             start: index + 1,
             end: index + 1
           })
-        }
+        } else {
+          const isNotComment = /^\s*[^;]/.test(lineContent)
 
-        const isNotComment = /^\s*[^;]/.test(lineContent)
-
-        if (isNotComment && layerBlocks.length > 0) {
-          layerBlocks[layerBlocks.length - 1].end = index + 1
+          if (isNotComment && layerBlocks.length > 0) {
+            layerBlocks[layerBlocks.length - 1].end = index + 1
+          }
         }
 
         return layerBlocks
@@ -243,11 +245,12 @@ async function setupMonaco () {
           if (isObject) {
             switch (isObject[1].toUpperCase()) {
               case 'START':
-                return objectBlocks.concat({
+                objectBlocks.push({
                   start: index + 1,
                   end: index + 1,
                   complete: false
                 })
+                break
 
               case 'END':
                 if (lastObjectBlock) {
@@ -271,10 +274,11 @@ async function setupMonaco () {
 
           switch (type) {
             case 'begin':
-              return thumbnailBlocks.concat({
+              thumbnailBlocks.push({
                 start: index + 1,
                 end: index + 1
               })
+              break
 
             case 'end':
               if (thumbnailBlocks.length > 0) {
@@ -303,7 +307,7 @@ async function setupMonaco () {
             if (lastCommentBlock && !lastCommentBlock.complete) {
               lastCommentBlock.end = index + 1
             } else {
-              return commentBlocks.concat({
+              commentBlocks.push({
                 start: index + 1,
                 end: index + 1,
                 complete: false
