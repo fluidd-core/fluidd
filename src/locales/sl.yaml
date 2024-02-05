@@ -466,7 +466,7 @@ app:
     label:
       number_of_copies: Število kopij
     title:
-      multiply_job: Podvoji opravilo |Podvoji opravila
+      multiply_job: Podvoji opravilo | Podvoji opravila
     tooltip:
       help: >-
         Dodajte opravila v vrsto tako, da datoteke povlečete iz Opravil in spustite sem.<br>Nastavite vrstni red opravil v vrsti tako, da jih povlečete gor ali dol.
