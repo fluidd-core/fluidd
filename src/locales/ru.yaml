@@ -71,7 +71,7 @@ app:
       open: Открыто
       triggered: Есть контакт
     msg:
-      subtitle: Используйте кнопку обновить, чтобы обновить состояние концевиков
+      subtitle: Используйте кнопку обновить, чтобы обновить состояние концевиков.
   file_system:
     filters:
       label:
@@ -81,6 +81,7 @@ app:
         klipper_backup_files: Фильтровать резервные копии Klipper
         rolled_log_files: Фильтровать файлы перезаписанных логов
         moonraker_backup_files: Отфильтровать файлы резервных копий Moonraker
+        crowsnest_backup_files: Фильтровать файлы резервных копий Crowsnest
     label:
       dir_name: Имя папки
       disk_usage: Использование дискового пространства
@@ -93,7 +94,7 @@ app:
         Просмотр '%{section}' документации
     msg:
       not_found: Файлы не найдены
-      processing: Обработка...
+      processing: Обработка
     title:
       add_dir: Добавить папку
       add_file: Добавить файл
@@ -348,19 +349,19 @@ app:
       wrong_password: Ой, что-то пошло не так. Пароль введен верно?
       bed_screws_adjust: >-
         Нажмите <b>Скорректировать</b>, если требуется корректировка текущего винта;
-        в противном случае нажмите <b>Принять</b>, чтобы продолжить
+        в противном случае нажмите <b>Принять</b>, чтобы продолжить.
       welcome_back: >-
         С возвращением.<br>Войдите в систему, чтобы подключится к принтеру.
       offline_ready: Fluidd теперь готов к работе в автономном режиме.
       needs_refresh: Доступен новый контент. Пожалуйста, нажмите кнопку <b>Обновить</b>,
         чтобы обновить.
-      pending_configuration_sections_deleted: Следующие разделы помечены для удаления.
+      pending_configuration_sections_deleted: Следующие разделы помечены для удаления
       rolledover_logs: >-
         Логи следующих приложений были перезаписаны: %{applications}
     simple_form:
       error:
         arrayofnums: Только цифры
-        credentials: Invalid credentials
+        credentials: Недействительные учетные данные
         exists: Уже существует
         invalid_number: Неверный номер
         invalid_url: Невалидный URL
@@ -370,11 +371,11 @@ app:
         min_or_0: Мин %{min} или 0
         password_username: Не удается сопоставить имя пользователя
         required: Требуется
-        invalid_aspect: Invalid Aspect Ratio
+        invalid_aspect: Недопустимое соотношение сторон
       msg:
         confirm: Вы уверены?
         confirm_exclude_object: Вы уверены, что хотите исключить этот объект из печати?
-        confirm_forcemove_toggle: Вы уверены? Это может повредить принтер
+        confirm_forcemove_toggle: Вы уверены? Это может повредить принтер.
         confirm_reboot_host: Вы уверены? Это приведёт к перезагрузке вашей хост системы.
         confirm_shutdown_host: Вы уверены? Это приведёт к выключению вашей хост системы.
         confirm_service_start: Вы уверены, что хотите запустить службу %{name}?
@@ -388,6 +389,13 @@ app:
           %{name} в настоящее время не может быть просмотрен.
         confirm_delete: Вы уверены? Это удалит выбранный элемент." | "Вы уверены?
           Это удалит {count} выбранных элементов.
+        confirm_clear_mesh: Принтер в настоящее время занят. Вы уверены, что хотите
+          очистить сетку стола?
+        confirm_load_bedmesh_profile: Принтер в настоящее время занят. Вы уверены,
+          что хотите загрузить профиль %{name}?
+        confirm_cancel_print: Вы уверены, что хотите отменить текущую печать?
+        confirm_emergency_stop: Вы уверены, что хотите аварийно остановить принтер?
+        confirm_remove_user: Вы уверены, что хотите удалить пользователя %{username}?
     table:
       header:
         actions: Действия
@@ -418,7 +426,7 @@ app:
         time_added: Время добавления
         time_in_queue: Время в очереди
     title:
-      add_chart: Add Chart
+      add_chart: Добавить диаграмму
       add_printer: Добавить принтер
       bedmesh: Профиль высот стола
       bedmesh_controls: Управление профилями высот стола
@@ -427,7 +435,7 @@ app:
       configure: Конфигурация
       console: Консоль
       diagnostics: Диагностика
-      edit_chart: Edit Chart
+      edit_chart: Редактировать диаграмму
       endstops: Концевики
       fans_outputs: Вентиляторы и выходы
       gcode_preview: Предпросмотр GCode
@@ -436,7 +444,7 @@ app:
       jobs: Файлы для печати
       limits: Лимиты принтера
       macros: Макросы
-      metrics_explorer: Metrics Explorer
+      metrics_explorer: Исследователь метрик
       not_found: 404 Не найдено
       other_files: Другие файлы
       pending_configuration_changes: Ожидающие изменения конфигурации
@@ -453,7 +461,7 @@ app:
       tune: Юстировка стола
       job_queue: Очередь заданий
     tooltip:
-      browse_metrics: Browse available metrics
+      browse_metrics: Просмотр доступных метрик
       estop: Аварийная остановка
       managed_by_moonraker: Управляется вашей конфигурацией moonraker
       notifications: Оповещения
@@ -479,7 +487,7 @@ app:
       complete: Готово
       idle: Бездействует
       loading: Загрузка
-      paused: Пауза
+      paused: Приостановлено
       printing: Идёт печать
       ready: Готов
       standby: Режим ожидания
@@ -490,7 +498,7 @@ app:
       add_camera: Добавить камеру
       add_category: Добавить категорию
       add_filter: Добавить фильтр
-      add_metric: Add Metric
+      add_metric: Добавить метрику
       add_thermal_preset: Добавить температурую предустановку
       add_user: Добавить пользователя
       reset: Сбросить
@@ -501,7 +509,7 @@ app:
       video: IP Камера
       iframe: Страница HTTP
       webrtc_gortc: WebRTC (go2rtc)
-      hlsstream: HLS Stream
+      hlsstream: Поток HLS
       webrtc_camera_streamer: WebRTC (camera-streamer)
     camera_rotate_options:
       '90': 90°
@@ -512,7 +520,7 @@ app:
       all_off: Всё выключить
       all_on: Всё включить
       aspect_ratio: Соотношение сторон
-      aspect_ratio_format: '[width : height]'
+      aspect_ratio_format: '[ширина : высота]'
       auto_edit_extensions: Расширения для автоматического открытия в режиме редактирования
       auto_follow_on_file_load: Автоматически наблюдать за прогрессом печати при загрузке
         файла
@@ -546,7 +554,7 @@ app:
       default_toolhead_move_length: Длина перемещения головки по умолчанию
       default_toolhead_xy_speed: Скорость головки для осей XY по умолчанию
       default_toolhead_z_speed: Скорость головки для оси Z по умолчанию
-      dotted: Dotted
+      dotted: Пунктирный
       draw_background: Отображать фон
       enable: Вкл.
       enable_diagnostics: Включить диагностику
@@ -561,7 +569,7 @@ app:
       fps_target: Целевой FPS
       fps_idle_target: Цель FPS, когда она не в фокусе
       height: Высота
-      gcode_coords: Испрользовать координаты GCode
+      gcode_coords: Использовать координаты GCode
       icon: Иконка
       invert_x_control: Инвертировать управление по оси X
       invert_y_control: Инвертировать управление по оси Y
@@ -573,7 +581,7 @@ app:
       line_style: Стиль линии
       min: Мин.
       max: Макс.
-      metrics: Metrics
+      metrics: Метрики
       move_line_width: Ширина линии движения
       name: Name
       never: Никогда
@@ -628,6 +636,8 @@ app:
       toolhead_z_move_distances: Значения расстояния инструмента по оси Z
       toolhead_control_style: Стиль управления инструментом
       toolhead_xy_move_distances: Расстояния инструмента по осям XY
+      hide_single_part_bounding_box: Скрыть рамку ограничения части при печати одной
+        части
     timer_options:
       duration: Только продолжительность
       filament: Оценка филамента
@@ -651,9 +661,9 @@ app:
       gcode_coords: Использовать GCode положение вместо положение инструментальной
         головки на панели управления
       show_manual_probe_dialog_automatically: Автоматически отображает вспомогательное
-        диалоговое окно при запуске инструмента ручного зондирования.
+        диалоговое окно при запуске инструмента ручного зондирования
       show_bed_screws_adjust_dialog_automatically: Автоматически отображает вспомогательное
-        диалоговое окно при запуске инструмента BED_SCREWS_ADJUST.
+        диалоговое окно при запуске инструмента BED_SCREWS_ADJUST
       theme_disclaimer: Эти темы содержат названия брендов и логотипы, которые являются
         интеллектуальной собственностью соответствующих владельцев. <br> Включение
         этих названий и логотипов производится с разрешения брендов. <br> Однако следует
@@ -700,6 +710,9 @@ app:
       version: Версия
       virtualization: Виртуализация
       network: Сеть
+      awake_time: Время бодрствования
+      load: нагрузка
+      memory_used: используемая память
   tool:
     btn:
       home_x: X
@@ -730,15 +743,13 @@ app:
         экструдер должен обеспечить </span>
         объем потока %{estimatedVolumetricFlow} мм³/сек
       stats_extruded_length: >-
-        <span class="secondary--text">При экструзии </span>%{extrudeLength} мм филамента
-        при
-        %{extrudeFactor} % потоке<span class="secondary--text">,
-        обеспечивает </span>
-        выходную длину из сопла на %{estimatedExtrudedLength} мм
+        Экструзия %{extrudeLength} мм филамента при %{extrudeFactor} % потоке<span
+        class="secondary--text">, обеспечит</span> ожидаемую длину вывода %{estimatedExtrudedLength}
+        мм
       stats_max_speed: >-
-        <span class="secondary--text">При высоте слоя </span>
-        %{layerHeight} мм
-        максимальная скорость печати составляет %{estimatedMaxSpeed} мм/сек
+        <span class="secondary--text">При предполагаемой высоте слоя</span> %{layerHeight}
+        мм<span class="secondary--text">, ожидаемая максимальная скорость печати составляет</span>
+        %{estimatedMaxSpeed} мм/с
   version:
     btn:
       check_for_updates: Проверить обновления
@@ -824,10 +835,10 @@ app:
     btn:
       manage_spools: Менеджер катушек
       scan_code: Сканировать код
-      select: Выбор
+      select: Выбрать | Выбрать для {macro}
     title:
       spoolman: Spoolman
-      spool_selection: Выбор катушки
+      spool_selection: Выбор катушки | Выбор катушки для макроса {macro}
       scan_spool: Сканировать катушку
     label:
       change_spool: Изменить катушку
@@ -842,6 +853,7 @@ app:
       material: Тип
       remaining_weight: Оставшийся вес
       vendor: Производитель
+      active_spool: Активная катушка
     msg:
       no_spool: >-
         Вы не выбрали катушку.
@@ -871,6 +883,7 @@ app:
       info:
         howto: Покажите QR-код вашей катушки камере. Это окно закроется, как только
           будет обнаружена катушка.
+      not_connected: Сервер Spoolman недоступен.
     setting:
       auto_open_qr_camera: Автоматически открывать камеру для обнаружения QR-кода
       auto_select_spool_on_match: Автоматически фиксировать выбор катушки при совпадении
