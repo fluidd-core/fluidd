@@ -1,18 +1,17 @@
 <template>
   <div>
-    <!-- Output Pins -->
     <app-named-slider
       v-if="pwm"
       :label="pin.prettyName"
       :min="0"
       :max="pin.scale"
       :step="0.01"
-      :value="(pin.value * pin.scale) / 1"
+      :value="value"
       :reset-value="pin.config.value || 0"
       :disabled="!klippyReady"
       :locked="isMobileViewport"
       :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"
-      @submit="setValue"
+      @submit="handleChange"
     />
 
     <app-named-switch
@@ -21,7 +20,7 @@
       :label="pin.prettyName"
       :value="pin.value > 0"
       :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"
-      @input="setValue"
+      @input="handleChange"
     />
   </div>
 </template>
@@ -51,10 +50,17 @@ export default class OutputPin extends Mixins(StateMixin, BrowserMixin) {
     ]
   }
 
-  setValue (target: number) {
+  get value () {
+    return Math.round(this.pin.value * this.pin.scale * 100) / 100
+  }
+
+  handleChange (target: number) {
     if (!this.pwm) {
-      target = (target) ? this.pin.scale : 0
+      target = target
+        ? this.pin.scale
+        : 0
     }
+
     this.sendGcode(`SET_PIN PIN=${this.pin.name} VALUE=${target}`, `${this.$waits.onSetOutputPin}${this.pin.name}`)
   }
 }
