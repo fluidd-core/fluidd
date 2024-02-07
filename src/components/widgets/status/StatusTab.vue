@@ -13,36 +13,53 @@
 
     <v-card-text v-if="visible">
       <v-row>
-        <!-- Only show the circular progress for mdAndUp since its more compact now -->
-        <v-col
-          v-if="progressVisible && $vuetify.breakpoint.mdAndUp"
-          cols="auto"
-          align-self="center"
-        >
-          <v-row>
-            <v-btn
-              text
-              class="progress-button mx-2"
-              @click="handleViewThumbnail"
+        <template v-if="progressVisible">
+          <v-col
+            v-if="printInProgressLayout === 'default' && $vuetify.breakpoint.lgAndUp"
+            cols="auto"
+            align-self="center"
+          >
+            <v-progress-circular
+              :rotate="-90"
+              :size="90"
+              :width="7"
+              :value="estimates.progress"
+              color="primary"
             >
-              <v-progress-circular
-                :rotate="-90"
-                :size="90"
-                :width="7"
-                :value="estimates.progress"
-                color="primary"
+              <span class="percentComplete focus--text">{{ estimates.progress }}%</span>
+            </v-progress-circular>
+          </v-col>
+
+          <v-col
+            v-else-if="printInProgressLayout === 'compact' && $vuetify.breakpoint.mdAndUp"
+            cols="auto"
+            align-self="center"
+          >
+            <v-row>
+              <v-btn
+                text
+                class="progress-button mx-2"
+                @click="handleViewThumbnail"
               >
-                <img
-                  class="progress-button-image"
-                  :src="thumbnail"
+                <v-progress-circular
+                  :rotate="-90"
+                  :size="90"
+                  :width="7"
+                  :value="estimates.progress"
+                  color="primary"
                 >
-              </v-progress-circular>
-            </v-btn>
-          </v-row>
-          <v-row justify="center">
-            <span class="primary--text">{{ estimates.progress }}%</span>
-          </v-row>
-        </v-col>
+                  <img
+                    class="progress-button-image"
+                    :src="thumbnail"
+                  >
+                </v-progress-circular>
+              </v-btn>
+            </v-row>
+            <v-row justify="center">
+              <span class="primary--text">{{ estimates.progress }}%</span>
+            </v-row>
+          </v-col>
+        </template>
 
         <v-col align-self="center">
           <!-- Visible dependent on knowing the file, message or mdAndDown -->
@@ -179,6 +196,24 @@
             </v-col>
           </v-row>
         </v-col>
+
+        <v-col
+          v-if="thumbVisible && printInProgressLayout === 'default'"
+          cols="auto"
+          align-self="center"
+          class="pa-0"
+        >
+          <v-btn
+            text
+            height="100%"
+            @click="handleViewThumbnail"
+          >
+            <img
+              class="print-thumb"
+              :src="thumbnail"
+            >
+          </v-btn>
+        </v-col>
       </v-row>
     </v-card-text>
 
@@ -201,6 +236,7 @@ import FilesMixin from '@/mixins/files'
 import ToolheadMixin from '@/mixins/toolhead'
 import FilePreviewDialog from '../filesystem/FilePreviewDialog.vue'
 import type { TimeEstimates } from '@/store/printer/types'
+import type { PrintInProgressLayout } from '@/store/config/types'
 
 @Component({
   components: {
@@ -259,6 +295,10 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
       this.thumbnail &&
       this.$vuetify.breakpoint.lgAndUp
     )
+  }
+
+  get printInProgressLayout (): PrintInProgressLayout {
+    return this.$store.state.config.uiSettings.general.printInProgressLayout as PrintInProgressLayout
   }
 
   /**
@@ -387,6 +427,11 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
 </script>
 
 <style lang="scss" scoped>
+  .print-thumb {
+    display: block;
+    max-height: 110px;
+  }
+
   .filename {
     white-space: nowrap;
     overflow: hidden;

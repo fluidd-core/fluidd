@@ -251,6 +251,7 @@ app:
       confirm: Confirm
       cross: Cross
       circle: Circle
+      compact: Compact
       current_password: Current password
       current_user: Current user
       default: Default
@@ -585,6 +586,7 @@ app:
       optional: Optional
       power_toggle_in_top_nav: Power toggle in top navigation
       primary_color: Primary color
+      print_in_progress_layout: Print in Progress layout
       printer_name: Printer Name
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size

@@ -170,6 +170,20 @@
       <v-divider />
 
       <app-setting
+        :title="$t('app.setting.label.print_in_progress_layout')"
+      >
+        <v-select
+          v-model="printInProgressLayout"
+          filled
+          dense
+          hide-details="auto"
+          :items="availablePrintInProgressLayouts"
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting
         :title="$t('app.setting.label.enable_diagnostics')"
         :sub-title="$t('app.setting.tooltip.diagnostics_performance')"
       >
@@ -190,6 +204,7 @@ import type { VInput } from '@/types'
 import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
 import type { OutputPin } from '@/store/printer/types'
 import type { Device } from '@/store/power/types'
+import type { PrintInProgressLayout } from '@/store/config/types'
 
 @Component({
   components: {}
@@ -370,6 +385,31 @@ export default class GeneralSettings extends Mixins(StateMixin) {
       value: [...new Set(value)].sort((a, b) => a.localeCompare(b)),
       server: true
     })
+  }
+
+  get printInProgressLayout (): PrintInProgressLayout {
+    return this.$store.state.config.uiSettings.general.printInProgressLayout as PrintInProgressLayout
+  }
+
+  set printInProgressLayout (value: PrintInProgressLayout) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.printInProgressLayout',
+      value,
+      server: true
+    })
+  }
+
+  get availablePrintInProgressLayouts () {
+    return [
+      {
+        value: 'default',
+        text: this.$t('app.general.label.default')
+      },
+      {
+        value: 'compact',
+        text: this.$t('app.general.label.compact')
+      }
+    ]
   }
 
   get enableDiagnostics () {

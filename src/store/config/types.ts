@@ -96,6 +96,7 @@ export interface GeneralConfig {
   showBedScrewsAdjustDialogAutomatically: boolean;
   showScrewsTiltAdjustDialogAutomatically: boolean;
   forceMoveToggleWarning: boolean;
+  printInProgressLayout: PrintInProgressLayout;
   enableDiagnostics: boolean;
   thumbnailSize: number;
 }
@@ -105,6 +106,8 @@ export type ToolheadControlStyle = 'cross' | 'bars' | 'circle'
 export type TextSortOrder = 'default' | 'numeric-prefix' | 'version'
 
 export type CameraFullscreenAction = 'embed' | 'rawstream';
+
+export type PrintInProgressLayout = 'default' | 'compact'
 
 // Config stored in moonraker db
 export interface ThemeConfig {
