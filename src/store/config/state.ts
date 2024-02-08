@@ -60,6 +60,7 @@ export const defaultState = (): ConfigState => {
         showBedScrewsAdjustDialogAutomatically: true,
         showScrewsTiltAdjustDialogAutomatically: true,
         forceMoveToggleWarning: true,
+        printInProgressLayout: 'default',
         enableDiagnostics: false,
         thumbnailSize: 32
       },
