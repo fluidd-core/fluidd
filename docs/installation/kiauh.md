@@ -19,4 +19,4 @@ or have more of an advanced setup.
 
 For more information on KIAUH, please visit its github page.
 
-[View on GitHub](https://github.com/th33xitus/kiauh){: .btn .fs-5 .mb-4 .mb-md-0 }
+[View on GitHub](https://github.com/dw-0/kiauh){: .btn .fs-5 .mb-4 .mb-md-0 }
