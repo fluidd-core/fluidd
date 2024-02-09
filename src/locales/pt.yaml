@@ -81,6 +81,7 @@ app:
         klipper_backup_files: Filtrar cópias de segurança do Klipper
         moonraker_backup_files: Filtrar ficheiros de cópia de segurança do Moonraker
         rolled_log_files: Filtrar ficheiros de registo antigos
+        crowsnest_backup_files: Filtrar ficheiros de cópia de segurança do Crowsnest
     label:
       dir_name: Nome diretório
       disk_usage: Disco usado
@@ -288,6 +289,26 @@ app:
       current_password: Password Atual
       edit_filter: Editar Filtro
       edit_user: Editar utilizador
+      thumbnail_size: Tamanho da Miniatura
+      user_managed_source: Utilizador gerido pela autenticação %{source}
+      screw_name: Nome do parafuso
+      stepper_enabled: Motor Ligado
+      partial_of_total: '%{partial} de %{total}'
+      pause_at_layer: Pausa na Camada
+      screw_number: Parafuso %{index}
+      compact: Compacto
+      ldap: LDAP
+      m117: M117
+      moonraker: Moonraker
+      pause_at_next_layer: Pausa na próxima camada
+      numeric_prefix_sort: Ordenar por prefixo numeral
+      password: Palavra passe
+      screw_index: Índice do Parafuso
+      bars: Barras
+      pause_at_layer_number: Pausa na camada número
+      username: Utilizador
+      version_sort: Ordenar por versão
+      visible: Visível
     simple_form:
       error:
         arrayofnums: Apenas números
