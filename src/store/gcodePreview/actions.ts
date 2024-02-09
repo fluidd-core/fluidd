@@ -26,7 +26,7 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
     }
   },
 
-  async loadGcode ({ commit, getters, state }, payload: { file: AppFile; gcode: string }) {
+  async loadGcode ({ commit, getters, state, rootState }, payload: { file: AppFile; gcode: string }) {
     const worker = new ParseGcodeWorker()
 
     commit('setParserWorker', worker)
@@ -46,6 +46,10 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
             commit('setLayers', data.layers)
             commit('setParts', data.parts)
             commit('setParserProgress', payload.file.size ?? payload.gcode.length)
+
+            if (rootState.config.uiSettings.gcodePreview.hideSinglePartBoundingBox && data.parts.length <= 1) {
+              commit('setViewerState', { showParts: false })
+            }
           } catch (error) {
             consola.error('Parser worker error', error)
           }

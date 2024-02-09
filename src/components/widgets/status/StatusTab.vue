@@ -4,7 +4,7 @@
     <v-progress-linear
       v-if="
         progressVisible &&
-          $vuetify.breakpoint.mdAndDown
+          $vuetify.breakpoint.smAndDown
       "
       :height="6"
       :value="estimates.progress"
@@ -13,22 +13,53 @@
 
     <v-card-text v-if="visible">
       <v-row>
-        <!-- Only show the circular progress for lgAndUp -->
-        <v-col
-          v-if="progressVisible && $vuetify.breakpoint.lgAndUp"
-          cols="auto"
-          align-self="center"
-        >
-          <v-progress-circular
-            :rotate="-90"
-            :size="90"
-            :width="7"
-            :value="estimates.progress"
-            color="primary"
+        <template v-if="progressVisible">
+          <v-col
+            v-if="printInProgressLayout === 'default' && $vuetify.breakpoint.lgAndUp"
+            cols="auto"
+            align-self="center"
           >
-            <span class="percentComplete focus--text">{{ estimates.progress }}%</span>
-          </v-progress-circular>
-        </v-col>
+            <v-progress-circular
+              :rotate="-90"
+              :size="90"
+              :width="7"
+              :value="estimates.progress"
+              color="primary"
+            >
+              <span class="percentComplete focus--text">{{ estimates.progress }}%</span>
+            </v-progress-circular>
+          </v-col>
+
+          <v-col
+            v-else-if="printInProgressLayout === 'compact' && $vuetify.breakpoint.mdAndUp"
+            cols="auto"
+            align-self="center"
+          >
+            <v-row>
+              <v-btn
+                text
+                class="progress-button mx-2"
+                @click="handleViewThumbnail"
+              >
+                <v-progress-circular
+                  :rotate="-90"
+                  :size="90"
+                  :width="7"
+                  :value="estimates.progress"
+                  color="primary"
+                >
+                  <img
+                    class="progress-button-image"
+                    :src="thumbnail"
+                  >
+                </v-progress-circular>
+              </v-btn>
+            </v-row>
+            <v-row justify="center">
+              <span class="primary--text">{{ estimates.progress }}%</span>
+            </v-row>
+          </v-col>
+        </template>
 
         <v-col align-self="center">
           <!-- Visible dependent on knowing the file, message or mdAndDown -->
@@ -166,9 +197,8 @@
           </v-row>
         </v-col>
 
-        <!-- Only show the thumb if we're lgAndUp and have a thumb to show -->
         <v-col
-          v-if="thumbVisible"
+          v-if="thumbVisible && printInProgressLayout === 'default'"
           cols="auto"
           align-self="center"
           class="pa-0"
@@ -206,6 +236,7 @@ import FilesMixin from '@/mixins/files'
 import ToolheadMixin from '@/mixins/toolhead'
 import FilePreviewDialog from '../filesystem/FilePreviewDialog.vue'
 import type { TimeEstimates } from '@/store/printer/types'
+import type { PrintInProgressLayout } from '@/store/config/types'
 
 @Component({
   components: {
@@ -264,6 +295,10 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
       this.thumbnail &&
       this.$vuetify.breakpoint.lgAndUp
     )
+  }
+
+  get printInProgressLayout (): PrintInProgressLayout {
+    return this.$store.state.config.uiSettings.general.printInProgressLayout as PrintInProgressLayout
   }
 
   /**
@@ -404,5 +439,19 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
     // width: 200px;
     direction: rtl;
     text-align: left;
+  }
+
+  .progress-button {
+    width: 90px !important;
+    height: 90px !important;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  .progress-button-image {
+    max-width: 70px;
+    max-height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
   }
 </style>

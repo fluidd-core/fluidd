@@ -37,6 +37,10 @@ export interface SpoolmanConfig {
   preferDeviceCamera: boolean;
   warnOnNotEnoughFilament: boolean;
   warnOnFilamentTypeMismatch: boolean;
+  selectionDialogSortOrder: {
+    key: string | null;
+    desc: boolean | null;
+  }
 }
 
 export interface HostConfig {
@@ -92,6 +96,7 @@ export interface GeneralConfig {
   showBedScrewsAdjustDialogAutomatically: boolean;
   showScrewsTiltAdjustDialogAutomatically: boolean;
   forceMoveToggleWarning: boolean;
+  printInProgressLayout: PrintInProgressLayout;
   enableDiagnostics: boolean;
   thumbnailSize: number;
 }
@@ -101,6 +106,8 @@ export type ToolheadControlStyle = 'cross' | 'bars' | 'circle'
 export type TextSortOrder = 'default' | 'numeric-prefix' | 'version'
 
 export type CameraFullscreenAction = 'embed' | 'rawstream';
+
+export type PrintInProgressLayout = 'default' | 'compact'
 
 // Config stored in moonraker db
 export interface ThemeConfig {
@@ -201,6 +208,7 @@ export interface GcodePreviewConfig {
   autoLoadOnPrintStart: boolean;
   autoLoadMobileOnPrintStart: boolean;
   autoFollowOnFileLoad: boolean;
+  hideSinglePartBoundingBox: boolean;
   autoZoom: boolean;
   flip: {
     horizontal: boolean;

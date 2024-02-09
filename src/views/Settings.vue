@@ -79,7 +79,7 @@ export default class Settings extends Mixins(StateMixin) {
   }
 
   get supportsSpoolman () {
-    return this.$store.getters['spoolman/getSupported']
+    return this.$store.getters['server/componentSupport']('spoolman')
   }
 }
 </script>

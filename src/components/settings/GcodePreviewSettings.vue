@@ -174,6 +174,17 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.setting.label.hide_single_part_bounding_box')">
+        <v-switch
+          v-model="hideSinglePartBoundingBox"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -339,6 +350,18 @@ export default class GcodePreviewSettings extends Vue {
   set autoFollowOnFileLoad (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.autoFollowOnFileLoad',
+      value,
+      server: true
+    })
+  }
+
+  get hideSinglePartBoundingBox () {
+    return this.$store.state.config.uiSettings.gcodePreview.hideSinglePartBoundingBox
+  }
+
+  set hideSinglePartBoundingBox (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.hideSinglePartBoundingBox',
       value,
       server: true
     })

@@ -1,67 +1,27 @@
 <template>
-  <div>
-    <v-dialog
-      v-model="open"
-      no-actions
-      scrollable
-      :max-width="isMobileViewport ? '90vw' : '75vw'"
-    >
-      <v-card>
-        <v-toolbar
-          dense
-          class="mb-2"
-        >
-          <v-toolbar-title>
-            <v-icon>$changeFilament</v-icon>
-            {{ $tc('app.spoolman.title.spool_selection') }}
-          </v-toolbar-title>
+  <app-dialog
+    v-model="open"
+    scrollable
+    :max-width="isMobileViewport ? '90vw' : '75vw'"
+    title-shadow
+  >
+    <template #title>
+      <span class="focus--text">$tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro })</span>
 
-          <v-spacer />
+      <v-spacer />
 
-          <v-menu
-            v-if="cameras.length > 1"
-            v-model="cameraSelectionMenuOpen"
-            location="top"
-          >
-            <template #activator="{ on }">
-              <app-btn
-                class="mr-2"
-                v-on="on"
-              >
-                <v-icon
-                  class="mr-1"
-                  small
-                >
-                  $camera
-                </v-icon>
-                <template v-if="!isMobileViewport">
-                  {{ $t('app.spoolman.btn.scan_code') }}
-                </template>
-              </app-btn>
-            </template>
-
-            <v-list>
-              <v-list-item
-                v-for="camera in cameras"
-                :key="camera.id"
-                @click="scanSource = camera.id"
-              >
-                <v-list-item-title>
-                  <v-icon
-                    small
-                    class="mr-1"
-                  >
-                    $camera
-                  </v-icon>
-                  {{ camera.name }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
+      <v-menu
+        v-if="cameras.length > 1"
+        left
+        offset-y
+        transition="slide-y-transition"
+      >
+        <template #activator="{ on, attrs, value }">
           <app-btn
-            v-else-if="cameras.length"
-            class="mr-2"
-            @click="cameraScanSource = cameras[0].id"
+            v-bind="attrs"
+            small
+            class="ms-1 my-1"
+            v-on="on"
           >
             <v-icon
               class="mr-1"
@@ -69,133 +29,181 @@
             >
               $camera
             </v-icon>
-            <template v-if="!isMobileViewport">
-              {{ $t('app.spoolman.btn.scan_code') }}
-            </template>
-          </app-btn>
-
-          <v-text-field
-            v-model="search"
-            outlined
-            dense
-            single-line
-            hide-details
-            append-icon="$magnify"
-            style="max-width: 360px"
-          />
-        </v-toolbar>
-
-        <v-card-text>
-          <v-data-table
-            :items="availableSpools"
-            :headers="headers"
-            :search="search"
-            :custom-filter="filterResults"
-            :no-data-text="$t('app.file_system.msg.not_found')"
-            :no-results-text="$t('app.file_system.msg.not_found')"
-            sort-by="last_used"
-            sort-desc
-            mobile-breakpoint="0"
-            class="file-system spool-table"
-            hide-default-footer
-            disable-pagination
-          >
-            <template #item="{ item }">
-              <tr
-                :class="{ 'v-data-table__selected': (item.id === selectedSpool) }"
-                class="row-select px-1"
-                @click.prevent="selectedSpool = selectedSpool === item.id ? null : item.id"
-              >
-                <td>
-                  <div class="d-flex">
-                    <v-icon
-                      :color="`#${item.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
-                      x-large
-                      class="mr-4 flex-column"
-                    >
-                      {{ item.id === selectedSpool ? '$markedCircle' : '$filament' }}
-                    </v-icon>
-                    <div class="flex-column">
-                      <div class="flex-row">
-                        {{ item.filament_name }}
-                      </div>
-                      <div class="flex-row">
-                        <small>
-                          <b>{{ $filters.getReadableWeightString(item.remaining_weight) }}</b>
-                          / {{ $filters.getReadableWeightString(item.filament.weight) }}
-                        </small>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td>{{ item.id }}</td>
-                <td>{{ item.filament.material }}</td>
-                <td>{{ item.location }}</td>
-                <td>{{ item.comment }}</td>
-                <td>{{ item.last_used ? $filters.formatRelativeTimeToNow(item.last_used) : $tc('app.setting.label.never') }}</td>
-              </tr>
-            </template>
-          </v-data-table>
-        </v-card-text>
-
-        <v-divider />
-
-        <v-card-actions
-          class="pt-4"
-        >
-          <app-btn
-            v-if="spoolmanURL"
-            :href="spoolmanURL"
-            target="_blank"
-          >
+            {{ $t('app.spoolman.btn.scan_code') }}
             <v-icon
               small
-              class="mr-2"
+              class="ml-1"
+              :class="{ 'rotate-180': value }"
             >
-              $edit
+              $chevronDown
             </v-icon>
-            {{ isMobileViewport ? '' : $tc('app.spoolman.btn.manage_spools') }}
           </app-btn>
-
-          <v-spacer />
-
-          <app-btn
-            text
-            color="warning"
-            @click="open = false"
+        </template>
+        <v-list dense>
+          <v-list-item
+            v-for="camera in cameras"
+            :key="camera.id"
+            @click="scanSource = camera.id"
           >
-            {{ $t('app.general.btn.cancel') }}
-          </app-btn>
-          <app-btn
-            color="primary"
-            @click="handleSelectSpool"
+            <v-list-item-icon>
+              <v-icon>
+                $camera
+              </v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ camera.name }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      <app-btn
+        v-else-if="cameras.length"
+        small
+        class="ms-1 my-1"
+        @click="cameraScanSource = cameras[0].id"
+      >
+        <v-icon
+          class="mr-1"
+          small
+        >
+          $camera
+        </v-icon>
+        {{ $t('app.spoolman.btn.scan_code') }}
+      </app-btn>
+    </template>
+
+    <v-toolbar dense>
+      <v-spacer />
+
+      <app-column-picker
+        key-name="spoolman"
+        :headers="headers"
+      />
+
+      <v-text-field
+        v-model="search"
+        outlined
+        dense
+        single-line
+        hide-details
+        append-icon="$magnify"
+        style="max-width: 360px"
+        class="ml-1"
+      />
+    </v-toolbar>
+
+    <v-card-text class="pt-0">
+      <v-data-table
+        :items="availableSpools"
+        :headers="visibleHeaders"
+        :search="search"
+        :custom-filter="filterResults"
+        :no-data-text="$t('app.file_system.msg.not_found')"
+        :no-results-text="$t('app.file_system.msg.not_found')"
+        :sort-by="sortOrder.key ?? undefined"
+        :sort-desc="sortOrder.desc ?? undefined"
+        mobile-breakpoint="0"
+        class="spool-table"
+        hide-default-footer
+        disable-pagination
+        @update:sort-by="handleSortOrderKeyChange"
+        @update:sort-desc="handleSortOrderDescChange"
+      >
+        <template #item="{ item }">
+          <tr
+            :class="{ 'v-data-table__selected': (item.id === selectedSpool) }"
+            class="row-select px-1"
+            @click.prevent="selectedSpool = selectedSpool === item.id ? null : item.id"
           >
-            <v-icon class="mr-2">
-              {{ filename ? '$printer' : '$send' }}
-            </v-icon>
-            {{ filename ? $t('app.general.btn.print') : $t('app.spoolman.btn.select') }}
-          </app-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+            <td>
+              <div class="d-flex">
+                <v-icon
+                  :color="`#${item.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
+                  size="42px"
+                  class="mr-4 flex-column spool-icon"
+                >
+                  {{ item.id === selectedSpool ? '$markedCircle' : '$filament' }}
+                </v-icon>
+                <div class="flex-column">
+                  <div class="flex-row">
+                    {{ item.filament_name }}
+                  </div>
+                  <div class="flex-row">
+                    <small>
+                      <b>{{ $filters.getReadableWeightString(item.remaining_weight) }}</b>
+                      / {{ $filters.getReadableWeightString(item.filament.weight) }}
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td
+              v-for="header in visibleHeaders.filter(h => h.value !== 'filament_name')"
+              :key="header.value"
+            >
+              {{ item[header.value] }}
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </v-card-text>
+
+    <template #actions>
+      <app-btn
+        v-if="spoolmanURL"
+        :href="spoolmanURL"
+        target="_blank"
+      >
+        <v-icon
+          small
+          class="mr-2"
+        >
+          $edit
+        </v-icon>
+        {{ isMobileViewport ? '' : $tc('app.spoolman.btn.manage_spools') }}
+      </app-btn>
+
+      <v-spacer />
+
+      <app-btn
+        text
+        color="warning"
+        @click="open = false"
+      >
+        {{ $t('app.general.btn.cancel') }}
+      </app-btn>
+      <app-btn
+        color="primary"
+        @click="handleSelectSpool"
+      >
+        <v-icon class="mr-2">
+          {{ filename ? '$printer' : '$send' }}
+        </v-icon>
+        {{ filename ? $t('app.general.btn.print') : $tc('app.spoolman.btn.select', targetMacro ? 2 : 1, { macro: targetMacro }) }}
+      </app-btn>
+    </template>
 
     <QRReader
       v-if="scanSource"
       v-model="scanSource"
       @detected="handleQRCodeDetected"
     />
-  </div>
+  </app-dialog>
 </template>
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import type { Spool } from '@/store/spoolman/types'
+import type { MacroWithSpoolId, Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
 import QRReader from '@/components/widgets/spoolman/QRReader.vue'
 import type { CameraConfig } from '@/store/cameras/types'
 import QrScanner from 'qr-scanner'
+import type { AppTableHeader } from '@/types'
 
 @Component({
   components: { QRReader }
@@ -205,7 +213,6 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   selectedSpoolId: number | null = null
 
   cameraScanSource: null | string = null
-  cameraSelectionMenuOpen = false
 
   hasDeviceCamera = false
 
@@ -217,6 +224,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   onOpen () {
     if (this.open) {
       this.selectedSpoolId = this.$store.state.spoolman.activeSpool ?? null
+      if (this.targetMacro) {
+        const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro.toLowerCase())
+        this.selectedSpoolId = macro?.variables.spool_id ?? null
+      }
 
       if (this.currentFileName) {
         // prefetch file metadata
@@ -260,15 +271,16 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       spools.push({
         ...spool,
         filament_name: filamentName,
-        filament_material: spool.filament.material
+        filament_material: spool.filament.material,
+        last_used: spool.last_used ? this.$filters.formatRelativeTimeToNow(spool.last_used) : this.$tc('app.setting.label.never')
       })
     }
 
     return spools
   }
 
-  get headers () {
-    return [
+  get headers (): AppTableHeader[] {
+    const headers = [
       'filament_name',
       'id',
       'material',
@@ -277,8 +289,15 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       'last_used'
     ].map((value) => ({
       text: this.$tc(`app.spoolman.label.${value}`),
-      value
+      value,
+      configurable: value !== 'filament_name'
     }))
+
+    return this.$store.getters['config/getMergedTableHeaders'](headers, 'spoolman')
+  }
+
+  get visibleHeaders (): AppTableHeader[] {
+    return this.headers.filter(header => header.visible || header.visible === undefined)
   }
 
   get selectedSpool () {
@@ -310,6 +329,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     const filename = splitFilepath.pop()
     const filepath = splitFilepath.join('/')
     return this.$store.getters['files/getFile'](filepath ? `gcodes/${filepath}` : 'gcodes', filename)
+  }
+
+  get targetMacro (): string | undefined {
+    return this.$store.state.spoolman.dialog.targetMacro
   }
 
   get cameras () {
@@ -429,6 +452,30 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       }
     }
 
+    if (this.targetMacro) {
+      // set spool_id via SET_GCODE_VARIABLE
+      const commands = [
+        `SET_GCODE_VARIABLE MACRO=${this.targetMacro} VARIABLE=spool_id VALUE=${this.selectedSpool ?? 'None'}`
+      ]
+
+      const supportsSaveVariables = this.$store.getters['printer/getPrinterConfig']('save_variables')
+      if (supportsSaveVariables) {
+        // persist selected spool across restarts
+        commands.push(`SAVE_VARIABLE VARIABLE=${this.targetMacro.toUpperCase()}__SPOOL_ID VALUE=${this.selectedSpool ?? 'None'}`)
+      }
+
+      await SocketActions.printerGcodeScript(commands.join('\n'))
+
+      const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro.toLowerCase())
+      if (macro?.variables.active) {
+        // selected tool is active, update active spool
+        await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpool ?? undefined)
+      }
+
+      this.open = false
+      return
+    }
+
     await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpool ?? undefined)
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
@@ -437,13 +484,14 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         this.$router.push({ path: '/' })
       }
     }
+
     this.open = false
   }
 
   filterResults (value: string, query: string, item: Spool): boolean {
     query = query.toLowerCase()
-    return [item.comment, item.filament.name, item.filament.material, item.filament.vendor?.name]
-      .some(val => val?.toLowerCase().includes(query))
+    return [item.id, item.comment, item.filament.name, item.filament.material, item.filament.vendor?.name]
+      .some(val => val?.toString().toLowerCase().includes(query))
   }
 
   get spoolmanURL () {
@@ -468,6 +516,26 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   get warnOnFilamentTypeMismatch (): boolean {
     return this.$store.state.config.uiSettings.spoolman.warnOnFilamentTypeMismatch
+  }
+
+  get sortOrder () {
+    return this.$store.state.config.uiSettings.spoolman.selectionDialogSortOrder
+  }
+
+  handleSortOrderKeyChange (value?: string) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.spoolman.selectionDialogSortOrder.key',
+      value: value ?? null,
+      server: true
+    })
+  }
+
+  handleSortOrderDescChange (value?: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.spoolman.selectionDialogSortOrder.desc',
+      value: value ?? null,
+      server: true
+    })
   }
 }
 </script>

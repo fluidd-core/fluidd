@@ -39,10 +39,8 @@ export const mutations: MutationTree<ChartState> = {
     // Dont keep data older than our set retention
     if (!state[payload.type]) {
       Vue.set(state, payload.type, [])
-      // console.log('created new array', payload.type)
     }
     state[payload.type].push(payload.data)
-    // console.log('set data', payload.type, payload.data)
     const firstInRange = state[payload.type].findIndex((entry: ChartData) => (Date.now() - entry.date.valueOf()) / 1000 < payload.retention)
     if (firstInRange > 0) state[payload.type].splice(0, firstInRange)
   },

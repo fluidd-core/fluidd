@@ -33,7 +33,7 @@ jobs:
 
       - name: Run circular references check
         run: |
-          npm run circular-check -- --no-spinner
+          npm run circular-check
 
       - name: Build
         run: |

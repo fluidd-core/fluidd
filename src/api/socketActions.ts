@@ -734,7 +734,8 @@ export const SocketActions = {
       'server.spoolman.proxy', {
         params: {
           request_method: 'GET',
-          path: '/v1/spool'
+          path: '/v1/spool',
+          use_v2_response: true
         },
         dispatch: 'spoolman/onAvailableSpools'
       }

@@ -24,7 +24,7 @@
         >
           <transition-group
             type="transition"
-            :name="!inLayout ? 'flip-list' : null"
+            :name="!inLayout ? 'flip-list' : undefined"
           >
             <template v-for="c in container">
               <component
@@ -143,7 +143,7 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get supportsSpoolman () {
-    return this.$store.getters['spoolman/getSupported']
+    return this.$store.getters['server/componentSupport']('spoolman')
   }
 
   get hasMacros () {

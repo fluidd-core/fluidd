@@ -34,7 +34,7 @@ Running PrusaSlicer `2.3.0+`?
 
 - With PrusaSlicer open, navigate to `Printer Settings`.
 - On the `General` tab, under the heading `Firmware` find the `G-code thumbnails` option.
-- Enter `48x48,300x300`
+- Enter `48x48/PNG, 300x300/PNG`
 
 Running PrusaSlicer `2.2.0` or below?
 

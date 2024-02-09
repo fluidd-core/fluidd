@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { SpoolmanState } from './types'
+import type { Spool, SpoolmanState } from './types'
 import type { RootState } from '../types'
 
 export const getters: GetterTree<SpoolmanState, RootState> = {
@@ -15,7 +15,15 @@ export const getters: GetterTree<SpoolmanState, RootState> = {
     return state.availableSpools
   },
 
-  getSupported: (state) => {
-    return state.supported
+  getSpoolById: (state) => {
+    return (id: number) => state.availableSpools.find((spool: Spool) => spool.id === id)
+  },
+
+  getConnected: (state) => {
+    return state.connected
+  },
+
+  getAvailable: (state) => {
+    return state.connected && state.availableSpools.length
   }
 }

@@ -60,6 +60,7 @@ export const defaultState = (): ConfigState => {
         showBedScrewsAdjustDialogAutomatically: true,
         showScrewsTiltAdjustDialogAutomatically: true,
         forceMoveToggleWarning: true,
+        printInProgressLayout: 'default',
         enableDiagnostics: false,
         thumbnailSize: 32
       },
@@ -116,7 +117,8 @@ export const defaultState = (): ConfigState => {
         job_queue: [
           { value: 'time_added', visible: true },
           { value: 'time_in_queue', visible: false }
-        ]
+        ],
+        spoolman: []
       },
       gcodePreview: {
         extrusionLineWidth: 0.3,
@@ -129,6 +131,7 @@ export const defaultState = (): ConfigState => {
         autoLoadOnPrintStart: false,
         autoLoadMobileOnPrintStart: false,
         autoFollowOnFileLoad: true,
+        hideSinglePartBoundingBox: false,
         autoZoom: false,
         flip: {
           horizontal: false,
@@ -149,7 +152,11 @@ export const defaultState = (): ConfigState => {
         autoSelectSpoolOnMatch: false,
         preferDeviceCamera: false,
         warnOnNotEnoughFilament: true,
-        warnOnFilamentTypeMismatch: true
+        warnOnFilamentTypeMismatch: true,
+        selectionDialogSortOrder: {
+          key: 'last_used',
+          desc: false
+        }
       }
     }
   }
