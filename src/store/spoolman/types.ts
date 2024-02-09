@@ -85,3 +85,13 @@ export interface MacroWithSpoolId extends Macro {
     [key: string]: unknown;
   }
 }
+
+export type SpoolmanProxyResponse<T> = T | {
+  response: T,
+  error: null
+} | {
+  response: null,
+  error: string | {
+    message: string
+  }
+}
