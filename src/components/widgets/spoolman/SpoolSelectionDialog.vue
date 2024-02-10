@@ -6,7 +6,9 @@
     title-shadow
   >
     <template #title>
-      <span class="focus--text">$tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro })</span>
+      <span class="focus--text">
+        {{ $tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro }) }}
+      </span>
 
       <v-spacer />
 
