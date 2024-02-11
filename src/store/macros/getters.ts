@@ -25,8 +25,8 @@ export const getters: GetterTree<MacrosState, RootState> = {
           disabledWhilePrinting: false,
           color: '',
           categoryId: '0',
-          variables,
           ...stored,
+          variables,
           ...{ config }
         }
 
