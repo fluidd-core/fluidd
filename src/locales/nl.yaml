@@ -287,7 +287,7 @@ app:
       total_time_avg: Gemiddelde tijd
       uncategorized: Zonder categorie
       unretract_speed: Terugduw lengte
-      used: Gebruikt
+      used: gebruikt
       velocity: Snelheid
       visible: Zichtbaar
       z_offset: Z-Offset
@@ -332,6 +332,8 @@ app:
       unsaved_changes: Niet Opgeslagen Wijzigingen
       compact: Compact
       user_managed_source: Gebruiker beheerd door %{source} authenticatie
+      range: Bereik
+      synced_extruder: Gesynchroniseerde Extruder
     msg:
       password_changed: Wachtwoord aangepast
       wrong_password: Oeps! Er is iets fout gegaan, klopt je wachtwoord wel?
@@ -376,7 +378,7 @@ app:
         no_file_preview: '%(name) kan momenteel geen voorvertoning laten zien.'
         confirm_remove_user: Weet je zeker dat je gebruiker %{username} wilt verwijderen?
         confirm_cancel_print: Weet je zeker dat je de huidige print wilt annuleren?
-        confirm_clear_mesh: De printer is momenteel bezig. Weet je zeker date je de
+        confirm_clear_mesh: De printer is momenteel bezig. Weet je zeker dat je de
           bed mesh wilt legen?
         confirm_load_bedmesh_profile: De printer is momenteel bezig. Weet je zeker
           dat je profiel %{name} wilt laden?
