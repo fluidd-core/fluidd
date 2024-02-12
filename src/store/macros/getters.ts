@@ -2,6 +2,15 @@ import type { GetterTree } from 'vuex'
 import type { Macro, MacrosState } from './types'
 import type { RootState } from '../types'
 
+export const MACRO_DEFAULTS = {
+  alias: '',
+  visible: true,
+  disabledWhilePrinting: false,
+  color: '',
+  categoryId: '0',
+  order: undefined
+}
+
 export const getters: GetterTree<MacrosState, RootState> = {
 
   /**
@@ -19,12 +28,8 @@ export const getters: GetterTree<MacrosState, RootState> = {
         const variables = rootState.printer.printer[key]
 
         const macro: Macro = {
+          ...MACRO_DEFAULTS,
           name,
-          alias: '',
-          visible: true,
-          disabledWhilePrinting: false,
-          color: '',
-          categoryId: '0',
           ...stored,
           variables,
           ...{ config }
