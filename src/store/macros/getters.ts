@@ -7,7 +7,8 @@ export const MACRO_DEFAULTS = {
   visible: true,
   disabledWhilePrinting: false,
   color: '',
-  categoryId: '0'
+  categoryId: '0',
+  order: undefined
 }
 
 export const getters: GetterTree<MacrosState, RootState> = {
