@@ -663,6 +663,7 @@ app:
     label:
       awake_time: awake time
       capacity: Capacity
+      constants: Constants
       cpu_desc: CPU Description
       distribution_codename: Codename
       distribution_like: Distribution Like
@@ -682,6 +683,7 @@ app:
       micro_controller: Micro-Controller
       model: CPU Model
       moonraker_load: Moonraker Load
+      last_stats: Last Stats
       network: Network
       processor_desc: Processor
       product_name: Product Name
