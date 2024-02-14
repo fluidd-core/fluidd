@@ -56,14 +56,10 @@ export type StepperType<T = Record<string, any>> = {
 
 export interface MCU {
   name: string;
-  last_stats: MCUData;
+  last_stats: Record<string, string | number>;
   mcu_build_versions: string;
-  mcu_constants: MCUData;
+  mcu_constants: Record<string, string | number>;
   mcu_version: string;
-}
-
-export interface MCUData {
-  [index: string]: string | number;
 }
 
 export type OutputType<T = Record<string, any>> = {
