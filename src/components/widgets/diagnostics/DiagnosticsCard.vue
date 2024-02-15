@@ -92,6 +92,9 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
     const options = {
       grid,
       color,
+      textStyle: {
+        fontFamily: 'Roboto'
+      },
       legend: {
         show: false
       },
