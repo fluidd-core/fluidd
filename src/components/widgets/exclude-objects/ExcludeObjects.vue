@@ -25,10 +25,10 @@
           :d="iconCircle"
           class="hitarea"
           @click="$emit('cancel', name)"
-          @touchstart="touchedElement = name"
+          @touchstart="handleTouchStart(name)"
           @touchend="handleTouchEnd(name)"
           @touchcancel="touchedElement = undefined"
-          @touchmove="touchedElement = undefined"
+          @touchmove="handleTouchMove"
         />
       </svg>
     </g>
@@ -46,10 +46,34 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
   readonly shapeRendering?: string
 
   touchedElement?: string
+  lastTouchPosition?: [number, number]
+  touchMoveDistance = 0
+
+  handleTouchStart (name: string) {
+    this.lastTouchPosition = undefined
+    this.touchMoveDistance = 0
+    this.touchedElement = name
+  }
 
   handleTouchEnd (name: string) {
+    this.lastTouchPosition = undefined
+    if (this.touchMoveDistance * window.devicePixelRatio > 25) {
+      // assume view was moved intentionally
+      this.touchedElement = undefined
+      return
+    }
+
     if (this.touchedElement === name) this.$emit('cancel', name)
     this.touchedElement = undefined
+  }
+
+  handleTouchMove (ev: TouchEvent) {
+    const [touch] = ev.changedTouches
+    if (this.lastTouchPosition) {
+      this.touchMoveDistance += Math.abs(touch.clientX - this.lastTouchPosition[0]) + Math.abs(touch.clientY - this.lastTouchPosition[1])
+    }
+
+    this.lastTouchPosition = [touch.clientX, touch.clientY]
   }
 
   get parts () {
