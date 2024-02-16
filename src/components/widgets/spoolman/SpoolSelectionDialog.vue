@@ -279,8 +279,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       spools.push({
         ...spool,
         filament_name: filamentName,
-        filament_material: spool.filament.material,
-        last_used: spool.last_used
+        filament_material: spool.filament.material
       })
     }
 
