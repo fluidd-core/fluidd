@@ -146,7 +146,13 @@
               v-for="header in visibleHeaders.filter(h => h.value !== 'filament_name')"
               :key="header.value"
             >
-              {{ item[header.value] }}
+              <template v-if="header.value === 'last_used'">
+                {{ item[header.value] ? $filters.formatRelativeTimeToNow(item[header.value]) : $tc('app.setting.label.never') }}
+              </template>
+
+              <template v-else>
+                {{ item[header.value] }}
+              </template>
             </td>
           </tr>
         </template>
@@ -274,7 +280,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         ...spool,
         filament_name: filamentName,
         filament_material: spool.filament.material,
-        last_used: spool.last_used ? this.$filters.formatRelativeTimeToNow(spool.last_used) : this.$tc('app.setting.label.never')
+        last_used: spool.last_used
       })
     }
 
