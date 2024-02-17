@@ -19,6 +19,7 @@ import vuetify from './plugins/vuetify'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import VueMeta from 'vue-meta'
 import VuetifyConfirm from 'vuetify-confirm'
+import Vue2TouchEvents from 'vue2-touch-events'
 import { InlineSvgPlugin } from 'vue-inline-svg'
 
 // Init.
@@ -52,6 +53,7 @@ Vue.use(VuetifyConfirm, {
   vuetify
 })
 Vue.use(InlineSvgPlugin)
+Vue.use(Vue2TouchEvents)
 
 Vue.use(HttpClientPlugin, {
   store

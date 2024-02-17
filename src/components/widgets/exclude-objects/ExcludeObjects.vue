@@ -22,13 +22,9 @@
         <path :d="iconCancelled" />
         <path
           v-if="!isPartExcluded(name)"
+          v-touch:tap="() => $emit('cancel', name)"
           :d="iconCircle"
           class="hitarea"
-          @click="$emit('cancel', name)"
-          @touchstart="touchedElement = name"
-          @touchend="handleTouchEnd(name)"
-          @touchcancel="touchedElement = undefined"
-          @touchmove="touchedElement = undefined"
         />
       </svg>
     </g>
@@ -44,13 +40,6 @@ import { Icons } from '@/globals'
 export default class ExcludeObjects extends Mixins(StateMixin) {
   @Prop({ type: String })
   readonly shapeRendering?: string
-
-  touchedElement?: string
-
-  handleTouchEnd (name: string) {
-    if (this.touchedElement === name) this.$emit('cancel', name)
-    this.touchedElement = undefined
-  }
 
   get parts () {
     const parts = this.$store.getters['parts/getParts']
