@@ -139,6 +139,9 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
     const options = {
       grid,
+      textStyle: {
+        fontFamily: 'Roboto'
+      },
       color,
       legend: {
         show: false,

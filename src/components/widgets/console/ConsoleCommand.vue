@@ -8,6 +8,7 @@
           :value="newValue"
           :items="history"
           :disabled="disabled"
+          :autofocus="autofocus"
           auto-grow
           clearable
           outlined
@@ -54,6 +55,9 @@ export default class ConsoleCommand extends Vue {
 
   @Prop({ type: Boolean })
   readonly disabled?: boolean
+
+  @Prop({ type: Boolean })
+  readonly autofocus?: boolean
 
   @Watch('value')
   onValueChange (val: string) {

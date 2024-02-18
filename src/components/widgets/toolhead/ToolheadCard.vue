@@ -206,7 +206,10 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get printerSupportsProbeCalibrate (): boolean {
-    return 'probe' in this.printerSettings || 'bltouch' in this.printerSettings
+    return (
+      'probe' in this.printerSettings ||
+      'bltouch' in this.printerSettings
+    )
   }
 
   get printerSupportsZEndstopCalibrate (): boolean {
@@ -319,17 +322,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
     if (this.printerSupportsProbeCalibrate) {
       tools.push({
+        name: 'PROBE_ACCURACY',
+        disabled: !this.allHomed,
+        wait: this.$waits.onProbeAccuracy
+      })
+      tools.push({
         name: 'PROBE_CALIBRATE',
         disabled: !this.allHomed,
         wait: this.$waits.onProbeCalibrate
-      })
-    }
-
-    if (this.printerSupportsBedScrewsCalculate) {
-      tools.push({
-        name: 'SCREWS_TILT_CALCULATE',
-        disabled: !this.allHomed || this.isManualProbeActive,
-        wait: this.$waits.onBedScrewsCalculate
       })
     }
 
@@ -338,6 +338,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
         name: 'QUAD_GANTRY_LEVEL',
         disabled: !this.allHomed || this.isManualProbeActive,
         wait: this.$waits.onQGL
+      })
+    }
+
+    if (this.printerSupportsBedScrewsCalculate) {
+      tools.push({
+        name: 'SCREWS_TILT_CALCULATE',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onBedScrewsCalculate
       })
     }
 

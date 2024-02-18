@@ -6,7 +6,9 @@
     title-shadow
   >
     <template #title>
-      <span class="focus--text">$tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro })</span>
+      <span class="focus--text">
+        {{ $tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro }) }}
+      </span>
 
       <v-spacer />
 
@@ -144,7 +146,13 @@
               v-for="header in visibleHeaders.filter(h => h.value !== 'filament_name')"
               :key="header.value"
             >
-              {{ item[header.value] }}
+              <template v-if="header.value === 'last_used'">
+                {{ item[header.value] ? $filters.formatRelativeTimeToNow(item[header.value]) : $tc('app.setting.label.never') }}
+              </template>
+
+              <template v-else>
+                {{ item[header.value] }}
+              </template>
             </td>
           </tr>
         </template>
@@ -271,8 +279,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       spools.push({
         ...spool,
         filament_name: filamentName,
-        filament_material: spool.filament.material,
-        last_used: spool.last_used ? this.$filters.formatRelativeTimeToNow(spool.last_used) : this.$tc('app.setting.label.never')
+        filament_material: spool.filament.material
       })
     }
 

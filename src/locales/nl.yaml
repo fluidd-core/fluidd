@@ -83,6 +83,7 @@ app:
         klipper_backup_files: Filter Klipper backup bestanden
         hidden_files_folders: Filter verborgen bestanden en mappen
         moonraker_backup_files: Filter Moonraker backup bestanden
+        crowsnest_backup_files: Filter Crowsnest backup bestanden
     label:
       dir_name: Mapnaam
       disk_usage: Schijfgebruik
@@ -223,6 +224,7 @@ app:
       abort: Afbreken
       recover: Herstel
       multiply: Vermenigvuldig
+      job_queue: Job Wachtrij
     error:
       app_setup_link: >-
         Fluidd opstart vereisten kan je <a target="_blank" href="%{url}">hier</a>
@@ -285,7 +287,7 @@ app:
       total_time_avg: Gemiddelde tijd
       uncategorized: Zonder categorie
       unretract_speed: Terugduw lengte
-      used: Gebruikt
+      used: gebruikt
       velocity: Snelheid
       visible: Zichtbaar
       z_offset: Z-Offset
@@ -327,6 +329,11 @@ app:
         resulteren in een mislukte print.
       ldap: LDAP
       apply_z_offset: Toepassen en Opslaan Z_Offset
+      unsaved_changes: Niet Opgeslagen Wijzigingen
+      compact: Compact
+      user_managed_source: Gebruiker beheerd door %{source} authenticatie
+      range: Bereik
+      synced_extruder: Gesynchroniseerde Extruder
     msg:
       password_changed: Wachtwoord aangepast
       wrong_password: Oeps! Er is iets fout gegaan, klopt je wachtwoord wel?
@@ -369,6 +376,12 @@ app:
         confirm_delete: Weet je het zeker? Dit zal het geselecteerde item verwijderen.
           | Weet je het zeker? Dit zal de {count} geselecteerde items verwijderen.
         no_file_preview: '%(name) kan momenteel geen voorvertoning laten zien.'
+        confirm_remove_user: Weet je zeker dat je gebruiker %{username} wilt verwijderen?
+        confirm_cancel_print: Weet je zeker dat je de huidige print wilt annuleren?
+        confirm_clear_mesh: De printer is momenteel bezig. Weet je zeker dat je de
+          bed mesh wilt legen?
+        confirm_load_bedmesh_profile: De printer is momenteel bezig. Weet je zeker
+          dat je profiel %{name} wilt laden?
     table:
       header:
         actions: Acties
@@ -453,6 +466,8 @@ app:
       ready: Klaar
       standby: Standby
       cancelled: Geannuleerd
+    title:
+      printer_status: Printer Status
   setting:
     btn:
       add_camera: Camera toevoegen
@@ -468,6 +483,7 @@ app:
       video: IP Camera
       hlsstream: HLS Stream
       iframe: HTTP pagina
+      webrtc_camera_streamer: WebRTC (camera-streamer)
     label:
       all_off: Alles uit
       all_on: Alles aan
@@ -556,6 +572,9 @@ app:
       expression: Expressie
       toolhead_z_move_distances: Toolhead Z afstandswaarden
       show_gas_resistance: Toon gas druk
+      dashed: Gestreept
+      camera_fullscreen_action:
+        title: Volledig scherm actie
     timer_options:
       duration: Alleen tijdsduur
       filament: Filamentschatting
@@ -575,6 +594,9 @@ app:
       gcode_coords: Gebruik GCode positie in plaats van toolhead positie op het dashboard.
     camera_rotate_options:
       none: Geen
+      '90': 90°
+      '180': 180°
+      '270': 270°
   socket:
     msg:
       connecting: Verbinden met Moonraker...

@@ -148,6 +148,9 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
       legend: {
         show: false
       },
+      textStyle: {
+        fontFamily: 'Roboto'
+      },
       darkMode,
       tooltip: {
         backgroundColor: labelBackground,
@@ -221,7 +224,7 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
         <div>
           <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${params.color};"></span>
           <span style="font-size:16px;color:#666;font-weight:400;margin-left:2px">
-            ${params.seriesName}
+            ${this.$filters.startCase(params.seriesName)}
           </span>
           <div style="clear: both"></div>
           <span style="font-size:16px;color:#666;font-weight:400;margin-left:2px">
