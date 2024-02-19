@@ -560,6 +560,7 @@ app:
       fps_target: FPS Cél
       fps_idle_target: FPS Cél, ha nincs fókuszban
       height: Magasság
+      hide_single_part_bounding_box: Alkatrészhatároló doboz elrejtése egyetlen tárgy nyomtatásakor
       gcode_coords: G-Kód koordináták használata
       icon: Ikon
       invert_x_control: Fordított (X) vezérlés
@@ -654,6 +655,7 @@ app:
       no_connection: Nincs Moonraker kapcsolat. Kérjük, ellenőrizd a Moonraker állapotát és/vagy frissítsd.
   system_info:
     label:
+      awake_time: Ébrenléti idő
       capacity: Kapacitás
       cpu_desc: CPU leírása
       distribution_codename: Kódnév
@@ -663,8 +665,10 @@ app:
       hardware_desc: Hardver leírás
       hostname: Gazdanév
       klipper_load: Klipper Terheltsége
+      load: Töltés
       manufactured: Gyártva
       manufacturer: Gyártó
+      memory_used: Memóriahasználat
       mcu_awake: '{mcu} Ébredés ideje'
       mcu_bandwidth: '{mcu} Sávszélesség'
       mcu_information: '{mcu} Információ'
@@ -840,6 +844,7 @@ app:
       tracking_inactive: >-
         A szálkövetés inaktív.
         A kezdéshez kérjük, válassz egy orsót.
+      not_connected: Spoolman szerver nem elérhető.
       info:
         howto: >-
           Mutasd meg az orsó QR-kódját a kamerának.
