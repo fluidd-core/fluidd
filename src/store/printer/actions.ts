@@ -92,7 +92,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
       }
       let key = k
       if (k.includes(' ')) key = key.replace(' ', '.')
-      commit('printer/setPrinterObjectList', key, { root: true })
+      commit('setPrinterObjectList', key)
     })
 
     SocketActions.printerObjectsSubscribe(intendedSubscriptions)
@@ -154,7 +154,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
       for (const key in payload) {
         const val = payload[key]
         // Commit the value.
-        commit('printer/setSocketNotify', { key, payload: val }, { root: true })
+        commit('setSocketNotify', { key, payload: val })
       }
 
       // Add a temp chart entry
@@ -173,7 +173,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
     // This is because moonraker currently sends notification updates
     // prior to subscribing on browser refresh.
     if (payload && rootState.socket.acceptingNotifications) {
-      commit('printer/setSocketNotify', payload, { root: true })
+      commit('setSocketNotify', payload)
       dispatch('onDiagnosticsMetricsUpdate')
     }
   },

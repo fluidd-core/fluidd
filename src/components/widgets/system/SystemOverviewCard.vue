@@ -4,6 +4,24 @@
     icon="$desktopTower"
   >
     <template #menu>
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <app-btn
+            v-bind="attrs"
+            color=""
+            fab
+            x-small
+            text
+            class="ms-1 my-1"
+            v-on="on"
+            @click="peripheralsDialogOpen = true"
+          >
+            <v-icon>$devices</v-icon>
+          </app-btn>
+        </template>
+        <span>{{ $t('app.system_info.label.devices') }}</span>
+      </v-tooltip>
+
       <v-tooltip
         v-if="canRolloverLogs"
         bottom
@@ -94,6 +112,11 @@
       v-if="rolloverLogsDialogOpen"
       v-model="rolloverLogsDialogOpen"
     />
+
+    <peripherals-dialog
+      v-if="peripheralsDialogOpen"
+      v-model="peripheralsDialogOpen"
+    />
   </collapsable-card>
 </template>
 
@@ -105,6 +128,7 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class PrinterStatsCard extends Mixins(StateMixin) {
   rolloverLogsDialogOpen = false
+  peripheralsDialogOpen = false
 
   get systemInfo (): SystemInfo | null {
     return this.$store.getters['server/getSystemInfo']

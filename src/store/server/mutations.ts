@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import type { ServerInfo, ServerState, ServiceState, SystemInfo } from './types'
+import type { CanbusUuid, Peripherals, ServerInfo, ServerState, ServiceState, SystemInfo } from './types'
 
 export const mutations: MutationTree<ServerState> = {
   /**
@@ -27,6 +27,20 @@ export const mutations: MutationTree<ServerState> = {
   setSystemInfo (state, payload: { system_info?: SystemInfo }) {
     if (payload.system_info) {
       Vue.set(state, 'system_info', payload.system_info)
+    }
+  },
+
+  setMachinePeripherals (state, payload: Partial<Peripherals>) {
+    state.peripherals = {
+      ...state.peripherals,
+      ...payload
+    }
+  },
+
+  setMachinePeripheralsCanbus (state, payload: { canbusInterface: string, canUuids: CanbusUuid[] }) {
+    state.can_uuids = {
+      ...state.can_uuids,
+      [payload.canbusInterface]: payload.canUuids
     }
   },
 
