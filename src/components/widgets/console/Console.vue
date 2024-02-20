@@ -6,6 +6,7 @@
       v-if="!readonly && flipLayout"
       v-model="currentCommand"
       :disabled="!klippyReady"
+      :autofocus="fullscreen"
       @send="sendCommand"
     />
     <v-card
