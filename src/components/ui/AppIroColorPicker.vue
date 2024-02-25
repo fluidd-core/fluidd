@@ -5,78 +5,51 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Ref, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop, Ref, Watch, VModel } from 'vue-property-decorator'
 import iro from '@jaames/iro'
 import { IroColor } from '@irojs/iro-core'
 import type { ColorPickerProps, IroColorPicker } from '@jaames/iro/dist/ColorPicker'
 
-@Component({
-  components: {}
-})
+@Component({})
 export default class AppColorPicker extends Vue {
-  @Prop({ type: [Object, String], default: '#ffffff' })
-  readonly color!: IroColor
+  @VModel({ type: String, default: '#ffffff' })
+    inputValue!: string
 
-  @Prop({ type: Object, default: () => {} })
-  readonly options!: ColorPickerProps
+  @Prop({ type: Object })
+  readonly options?: Partial<ColorPickerProps>
 
   @Ref('picker')
   readonly picker!: HTMLElement
 
-  colorPicker: null | IroColorPicker = null
-  supportedEvents = [
-    'mount',
-    'color:init',
-    // 'color:setActive',
-    'color:change'
-    // 'color:remove',
-    // 'input:change',
-    // 'input:start',
-    // 'input:move',
-    // 'input:end'
-  ]
+  colorPicker: IroColorPicker | null = null
 
-  @Watch('color', { deep: true })
-  onColorChange (value: string) {
-    if (this.colorPicker) this.colorPicker.color.hexString = value
-  }
-
-  get opts () {
-    const opts: ColorPickerProps = {
-      ...this.options,
-      color: this.color,
-      sliderSize: 14
+  @Watch('value')
+  onValue (value: string) {
+    if (value && this.colorPicker) {
+      this.colorPicker.color.set(value)
     }
-    return opts
   }
 
   mounted () {
-    // Create the picker
-    this.colorPicker = iro.ColorPicker(this.picker, this.opts)
+    const options: Partial<ColorPickerProps> = {
+      ...this.options,
+      color: this.inputValue,
+      sliderSize: 14
+    }
 
-    // Bind events.
-    this.supportedEvents.forEach((name) => {
-      if (this.colorPicker) {
-        this.colorPicker.on(name, (color: IroColor) => {
-          this.eventHandler(name, color)
-        })
-      }
-    })
+    this.colorPicker = iro.ColorPicker(this.picker, options)
+
+    this.colorPicker.on('input:end', this.handleColorChange)
   }
 
   beforeUnmount () {
     if (this.colorPicker) {
-      this.colorPicker.off(this.supportedEvents, this.eventHandler)
+      this.colorPicker.off('input:end', this.handleColorChange)
     }
   }
 
   handleColorChange (color: IroColor) {
-    this.$emit('change', color)
-    this.$emit('update:color', color)
-  }
-
-  eventHandler (e: string, c: IroColor) {
-    this.$emit(e, c)
+    this.inputValue = color.hexString
   }
 }
 </script>

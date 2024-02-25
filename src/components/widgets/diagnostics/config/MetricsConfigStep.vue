@@ -75,7 +75,7 @@
 
               <app-setting :title="$t('app.setting.label.line_color')">
                 <app-color-picker
-                  :primary="metric.style.lineColor"
+                  :value="metric.style.lineColor"
                   :title="metric.name"
                   dot
                   @change="handleColorChange('lineColor', metric, $event)"
@@ -99,7 +99,7 @@
 
               <app-setting :title="$t('app.setting.label.fill_color')">
                 <app-color-picker
-                  :primary="metric.style.fillColor ?? metric.style.lineColor"
+                  :value="metric.style.fillColor ?? metric.style.lineColor"
                   :title="metric.name"
                   dot
                   @change="handleColorChange('fillColor', metric, $event)"
