@@ -170,5 +170,13 @@ video, img {
   :deep(img) {
     max-width: 100% !important;
   }
+
+  :deep(table) {
+    border-collapse: collapse;
+    th, td {
+      border: 1px solid;
+      padding: 2px 6px;
+    }
+  }
 }
 </style>
