@@ -166,17 +166,26 @@ video, img {
   max-height: calc(90vh - 144px);
 }
 
-.markdown-container {
-  :deep(img) {
+:deep(.markdown-container) {
+  img {
     max-width: 100% !important;
   }
 
-  :deep(table) {
+  table {
     border-collapse: collapse;
+
     th, td {
       border: 1px solid;
       padding: 2px 6px;
     }
+  }
+
+  pre > code {
+    display: block;
+  }
+
+  * {
+    margin-bottom: 1em;
   }
 }
 </style>
