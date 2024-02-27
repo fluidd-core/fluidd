@@ -125,6 +125,7 @@
       :type="filePreviewState.type"
       :width="filePreviewState.width"
       :readonly="filePreviewState.readonly"
+      :path="currentPath"
       @remove="handleRemove"
       @download="handleDownload"
     />

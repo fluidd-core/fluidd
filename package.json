@@ -48,6 +48,8 @@
     "hls.js": "^1.5.6",
     "jwt-decode": "^4.0.0",
     "lodash-es": "^4.17.21",
+    "marked": "^12.0.0",
+    "marked-base-url": "^1.1.3",
     "md5": "^2.3.0",
     "monaco-editor": "^0.46.0",
     "monaco-editor-textmate": "^4.0.0",
