@@ -74,8 +74,27 @@
           />
         </v-layout>
 
+        <div class="text-right mt-4 mr-1">
+          <app-btn-group>
+            <v-btn
+              x-small
+              :color="valueRange === 'absolute' ? 'primary' : undefined"
+              @click="valueRange = 'absolute'"
+            >
+              0..255
+            </v-btn>
+            <v-btn
+              x-small
+              :color="valueRange === 'percentage' ? 'primary' : undefined"
+              @click="valueRange = 'percentage'"
+            >
+              0..1
+            </v-btn>
+          </app-btn-group>
+        </div>
+
         <v-layout
-          class="mt-4"
+          class="mt-2"
           justify-space-between
         >
           <div
@@ -213,6 +232,7 @@ export default class AppColorPicker extends Vue {
 
   currentPrimaryColor = new IroColor()
   currentWhiteColor = new IroColor()
+  valueRange: 'absolute' | 'percentage' = 'absolute'
 
   @Watch('value')
   onValue (value: string) {
@@ -225,35 +245,35 @@ export default class AppColorPicker extends Vue {
   }
 
   get currentRed (): number {
-    return this.currentPrimaryColor.red
+    return this.convertValueRange(this.currentPrimaryColor.red, 'out')
   }
 
   set currentRed (value: number) {
-    this.currentPrimaryColor.red = value
+    this.currentPrimaryColor.red = this.convertValueRange(value, 'in')
   }
 
   get currentGreen (): number {
-    return this.currentPrimaryColor.green
+    return this.convertValueRange(this.currentPrimaryColor.green, 'out')
   }
 
   set currentGreen (value: number) {
-    this.currentPrimaryColor.green = value
+    this.currentPrimaryColor.green = this.convertValueRange(value, 'in')
   }
 
   get currentBlue (): number {
-    return this.currentPrimaryColor.blue
+    return this.convertValueRange(this.currentPrimaryColor.blue, 'out')
   }
 
   set currentBlue (value: number) {
-    this.currentPrimaryColor.blue = value
+    this.currentPrimaryColor.blue = this.convertValueRange(value, 'in')
   }
 
   get currentWhite (): number {
-    return this.currentWhiteColor.red
+    return this.convertValueRange(this.currentWhiteColor.red, 'out')
   }
 
   set currentWhite (value: number) {
-    this.currentWhiteColor.set(this.valueToHexColor(value))
+    this.currentWhiteColor.set(this.valueToHexColor(this.convertValueRange(value, 'in')))
   }
 
   get inputWhiteColor (): string {
@@ -326,6 +346,16 @@ export default class AppColorPicker extends Vue {
     const newPosition = { x: event.touches[0].clientX, y: event.touches[0].clientY }
     this.relativeMove(newPosition)
     this.lastPointerPosition = newPosition
+  }
+
+  convertValueRange (value: number, direction: 'in' | 'out') {
+    if (this.valueRange === 'absolute') return value
+
+    let factor = 1
+    if (this.valueRange === 'percentage') factor = 255
+    if (direction === 'out') factor = 1 / factor
+
+    return Math.round(value * factor * 1000) / 1000
   }
 }
 </script>
