@@ -75,22 +75,24 @@
         </v-layout>
 
         <div class="text-right mt-4 mr-1">
-          <app-btn-group>
+          <v-btn-toggle
+            v-model="valueRange"
+            color="primary"
+            mandatory
+          >
             <v-btn
               x-small
-              :color="valueRange === 'absolute' ? 'primary' : undefined"
-              @click="valueRange = 'absolute'"
+              value="absolute"
             >
               0..255
             </v-btn>
             <v-btn
               x-small
-              :color="valueRange === 'percentage' ? 'primary' : undefined"
-              @click="valueRange = 'percentage'"
+              value="percentage"
             >
               0..1
             </v-btn>
-          </app-btn-group>
+          </v-btn-toggle>
         </div>
 
         <v-layout
