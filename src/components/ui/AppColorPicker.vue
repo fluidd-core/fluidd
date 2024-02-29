@@ -164,6 +164,7 @@ import { Component, Vue, Prop, Ref, VModel, PropSync, Watch } from 'vue-property
 import iro from '@jaames/iro'
 import { IroColor } from '@irojs/iro-core'
 import type { ColorPickerProps } from '@jaames/iro/dist/ColorPicker'
+import type { ColorPickerValueRange } from '@/store/config/types'
 
 interface PointerPosition {
   x: number;
@@ -232,7 +233,6 @@ export default class AppColorPicker extends Vue {
 
   currentPrimaryColor = new IroColor()
   currentWhiteColor = new IroColor()
-  valueRange: 'absolute' | 'percentage' = 'absolute'
 
   @Watch('value')
   onValue (value: string) {
@@ -286,6 +286,18 @@ export default class AppColorPicker extends Vue {
         ? this.inputWhiteColor
         : this.inputPrimaryColor
     )
+  }
+
+  get valueRange (): ColorPickerValueRange {
+    return this.$store.state.config.uiSettings.general.colorPickerValueRange
+  }
+
+  set valueRange (value: ColorPickerValueRange) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.colorPickerValueRange',
+      value,
+      server: true
+    })
   }
 
   handleSubmitPrimary () {

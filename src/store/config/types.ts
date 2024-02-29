@@ -99,6 +99,7 @@ export interface GeneralConfig {
   printInProgressLayout: PrintInProgressLayout;
   enableDiagnostics: boolean;
   thumbnailSize: number;
+  colorPickerValueRange: ColorPickerValueRange;
 }
 
 export type ToolheadControlStyle = 'cross' | 'bars' | 'circle'
@@ -108,6 +109,8 @@ export type TextSortOrder = 'default' | 'numeric-prefix' | 'version'
 export type CameraFullscreenAction = 'embed' | 'rawstream';
 
 export type PrintInProgressLayout = 'default' | 'compact'
+
+export type ColorPickerValueRange = 'absolute' | 'percentage'
 
 // Config stored in moonraker db
 export interface ThemeConfig {
