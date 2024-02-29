@@ -503,8 +503,9 @@ export const SupportedImageFormats = Object.freeze([
 ])
 
 export const SupportedMarkdownFormats = Object.freeze([
+  '.markdown',
   '.md',
-  '.mardown'
+  '.mdown'
 ])
 
 export const SupportedVideoFormats = Object.freeze([
