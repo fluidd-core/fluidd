@@ -77,21 +77,20 @@
         <div class="text-right mt-4 mr-1">
           <v-btn-toggle
             v-model="valueRange"
-            color="primary"
             mandatory
           >
-            <v-btn
+            <app-btn
               x-small
               value="absolute"
             >
               0..255
-            </v-btn>
-            <v-btn
+            </app-btn>
+            <app-btn
               x-small
               value="percentage"
             >
               0..1
-            </v-btn>
+            </app-btn>
           </v-btn-toggle>
         </div>
 
