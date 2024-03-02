@@ -74,14 +74,15 @@ import StateMixin from '@/mixins/state'
 import type { AppFile } from '@/store/files/types'
 import { Marked, type MarkedExtension } from 'marked'
 import { baseUrl } from 'marked-base-url'
+import { consola } from 'consola'
 
 @Component({})
 export default class FilePreviewDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
     open?: boolean
 
-  @Prop({ type: String, required: true })
-  readonly path!: string
+  @Prop({ type: String })
+  readonly path?: string
 
   @Prop({ type: Object })
   readonly file?: AppFile
@@ -128,6 +129,12 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   }
 
   async LoadMarkdown () {
+    if (!this.path) {
+      // refuse rendering markdown if no base path has been supplied
+      consola.error('[FilePreviewDialog] missing path property in markdown viewer')
+      return
+    }
+
     const response = await fetch(this.src)
     const data = await response.text()
 
