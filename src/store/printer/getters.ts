@@ -102,7 +102,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     }
   },
 
-  getPrintProgress: (state): number => {
+  getFilePrintProgress: (state): number => {
     const { gcode_start_byte, gcode_end_byte, path, filename } = state.printer.current_file ?? {}
     const { file_position } = state.printer.virtual_sdcard ?? {}
 
@@ -119,6 +119,34 @@ export const getters: GetterTree<PrinterState, RootState> = {
     }
 
     return state.printer.display_status.progress || 0
+  },
+
+  getSlicerPrintProgress: (state): number => {
+    return state.printer.display_status.progress || 0
+  },
+
+  getPrintProgress: (state, getters, rootState): number => {
+    const printProgressCalculation = rootState.config.uiSettings.general.printProgressCalculation
+
+    const printProgressCalculationResults = printProgressCalculation
+      .map(type => {
+        switch (type) {
+          case 'file':
+            return getters.getFilePrintProgress
+
+          case 'slicer':
+            return getters.getSlicerPrintProgress
+
+          default:
+            return 0
+        }
+      })
+      .filter(result => result > 0)
+
+    const printProgress = printProgressCalculationResults
+      .reduce((a, b) => a + b, 0) / printProgressCalculationResults.length
+
+    return printProgress
   },
 
   getPrintLayers: (state): number => {
@@ -163,14 +191,15 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return 0
   },
 
-  getTimeEstimates: (state, getters): TimeEstimates => {
+  getTimeEstimates: (state, getters, rootGetters): TimeEstimates => {
     const progress = getters.getPrintProgress as number
+    const fileProgress = getters.getFilePrintProgress as number
 
     const totalDuration = state.printer.print_stats?.total_duration as number | undefined ?? 0
     const printDuration = state.printer.print_stats?.print_duration as number | undefined ?? 0
 
-    const fileLeft = printDuration > 0 && progress > 0
-      ? printDuration / progress - printDuration
+    const fileLeft = printDuration > 0 && fileProgress > 0
+      ? printDuration / fileProgress - printDuration
       : 0
 
     const currentFileStatus = state.printer.current_file?.history?.status as string | undefined
@@ -186,11 +215,31 @@ export const getters: GetterTree<PrinterState, RootState> = {
       ? slicerTotal - printDuration
       : 0
 
-    const eta = Date.now() + (
-      actualLeft > 0
-        ? actualLeft
-        : fileLeft
-    ) * 1000
+    const printEtaCalculation = rootGetters.config.uiSettings.general.printEtaCalculation
+
+    const printEtaCalculationResults = printEtaCalculation
+      .map(type => {
+        switch (type) {
+          case 'file':
+            return (
+              actualLeft > 0
+                ? actualLeft
+                : fileLeft
+            )
+
+          case 'slicer':
+            return slicerLeft
+
+          default:
+            return 0
+        }
+      })
+      .filter(result => result > 0)
+
+    const etaLeft = printEtaCalculationResults
+      .reduce((a, b) => a + b, 0) / printEtaCalculationResults.length
+
+    const eta = Date.now() + etaLeft * 1000
 
     return {
       progress: Math.floor(progress * 100),
