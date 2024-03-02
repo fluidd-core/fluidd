@@ -121,14 +121,32 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return state.printer.display_status.progress || 0
   },
 
+  getSlicerPrintProgress: (state): number => {
+    return state.printer.display_status.progress || 0
+  },
+
   getPrintProgress: (state, getters, rootState): number => {
-    const type = rootState.config.uiSettings.general.printProgressCalculation || 'file'
+    const printProgressCalculation = rootState.config.uiSettings.general.printProgressCalculation
 
-    if (type === 'slicer') {
-      return state.printer.display_status.progress || 0
-    }
+    const printProgressCalculationResults = printProgressCalculation
+      .map(type => {
+        switch (type) {
+          case 'file':
+            return getters.getFilePrintProgress
 
-    return getters.getFilePrintProgress as number
+          case 'slicer':
+            return getters.getSlicerPrintProgress
+
+          default:
+            return 0
+        }
+      })
+      .filter(result => result > 0)
+
+    const printProgress = printProgressCalculationResults
+      .reduce((a, b) => a + b, 0) / printProgressCalculationResults.length
+
+    return printProgress
   },
 
   getPrintLayers: (state): number => {
@@ -197,12 +215,30 @@ export const getters: GetterTree<PrinterState, RootState> = {
       ? slicerTotal - printDuration
       : 0
 
-    const etaType = rootGetters.config.uiSettings.general.etaCalculation || 'file'
-    const etaLeft = etaType === 'slicer'
-      ? slicerLeft
-      : (actualLeft > 0
-          ? actualLeft
-          : fileLeft)
+    const printEtaCalculation = rootGetters.config.uiSettings.general.printEtaCalculation
+
+    const printEtaCalculationResults = printEtaCalculation
+      .map(type => {
+        switch (type) {
+          case 'file':
+            return (
+              actualLeft > 0
+                ? actualLeft
+                : fileLeft
+            )
+
+          case 'slicer':
+            return slicerLeft
+
+          default:
+            return 0
+        }
+      })
+      .filter(result => result > 0)
+
+    const etaLeft = printEtaCalculationResults
+      .reduce((a, b) => a + b, 0) / printEtaCalculationResults.length
+
     const eta = Date.now() + etaLeft * 1000
 
     return {

@@ -555,7 +555,6 @@ app:
       enable_diagnostics: Enable diagnostics
       enable_notifications: Enable notifications
       enable_xy_homing: Enable XY Homing
-      eta_calculation: ETA calculation
       expression: Expression
       extrusion_line_width: Extrusion Line Width
       flip_horizontal: Horizontal Flip
@@ -587,6 +586,7 @@ app:
       optional: Optional
       power_toggle_in_top_nav: Power toggle in top navigation
       primary_color: Primary color
+      print_eta_calculation: Print ETA calculation
       print_in_progress_layout: Print in Progress layout
       print_progress_calculation: Print Progress calculation
       printer_name: Printer Name
@@ -647,6 +647,7 @@ app:
       thermal_presets: Thermal Presets
       tool: Tool
     tooltip:
+      average_calculation: If more than one option is select, an average will be calculated
       diagnostics_performance: '[BETA] Logging diagnostics info may impact performance'
       gcode_coords: Use GCode position instead of toolhead position on dashboard
       show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool

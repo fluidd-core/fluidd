@@ -167,25 +167,39 @@
 
       <v-divider />
 
-      <app-setting :title="$t('app.setting.label.print_progress_calculation')">
+      <app-setting
+        :title="$t('app.setting.label.print_progress_calculation')"
+        :sub-title="$t('app.setting.tooltip.average_calculation')"
+      >
         <v-select
           v-model="printProgressCalculation"
+          multiple
           filled
           dense
           hide-details="auto"
+          :rules="[
+            $rules.lengthGreaterThanOrEqual(1),
+          ]"
           :items="availablePrintProgressCalculation"
         />
       </app-setting>
 
       <v-divider />
 
-      <app-setting :title="$t('app.setting.label.eta_calculation')">
+      <app-setting
+        :title="$t('app.setting.label.print_eta_calculation')"
+        :sub-title="$t('app.setting.tooltip.average_calculation')"
+      >
         <v-select
-          v-model="etaCalculation"
+          v-model="printEtaCalculation"
+          multiple
           filled
           dense
           hide-details="auto"
-          :items="availableEtaCalculation"
+          :rules="[
+            $rules.lengthGreaterThanOrEqual(1),
+          ]"
+          :items="availablePrintEtaCalculation"
         />
       </app-setting>
 
@@ -212,7 +226,7 @@ import type { VInput } from '@/types'
 import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
 import type { OutputPin } from '@/store/printer/types'
 import type { Device } from '@/store/power/types'
-import type { EtaCalculation, PrintInProgressLayout, PrintProgressCalculation } from '@/store/config/types'
+import type { PrintEtaCalculation, PrintInProgressLayout, PrintProgressCalculation } from '@/store/config/types'
 
 @Component({
   components: {}
@@ -445,7 +459,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
-  get availableEtaCalculation () {
+  get availablePrintEtaCalculation () {
     return [
       {
         value: 'file',
@@ -458,13 +472,13 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     ]
   }
 
-  get etaCalculation () {
-    return this.$store.state.config.uiSettings.general.etaCalculation as EtaCalculation
+  get printEtaCalculation () {
+    return this.$store.state.config.uiSettings.general.printEtaCalculation as PrintEtaCalculation[]
   }
 
-  set etaCalculation (value: string) {
+  set printEtaCalculation (value: PrintEtaCalculation[]) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.etaCalculation',
+      path: 'uiSettings.general.printEtaCalculation',
       value,
       server: true
     })
