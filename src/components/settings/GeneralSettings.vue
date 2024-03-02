@@ -66,9 +66,7 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.setting.label.confirm_on_estop')"
-      >
+      <app-setting :title="$t('app.setting.label.confirm_on_estop')">
         <v-switch
           v-model="confirmOnEstop"
           hide-details
@@ -79,9 +77,7 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.setting.label.show_upload_and_print')"
-      >
+      <app-setting :title="$t('app.setting.label.show_upload_and_print')">
         <v-switch
           v-model="showUploadAndPrint"
           hide-details
@@ -92,9 +88,7 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.setting.label.power_toggle_in_top_nav')"
-      >
+      <app-setting :title="$t('app.setting.label.power_toggle_in_top_nav')">
         <v-select
           v-model="topNavPowerToggle"
           filled
@@ -107,9 +101,7 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.setting.label.confirm_on_power_device_change')"
-      >
+      <app-setting :title="$t('app.setting.label.confirm_on_power_device_change')">
         <v-switch
           v-model="confirmOnPowerDeviceChange"
           hide-details
@@ -120,9 +112,7 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.setting.label.show_save_config_and_restart')"
-      >
+      <app-setting :title="$t('app.setting.label.show_save_config_and_restart')">
         <v-switch
           v-model="showSaveConfigAndRestart"
           hide-details
@@ -134,9 +124,7 @@
       <template v-if="showSaveConfigAndRestart">
         <v-divider />
 
-        <app-setting
-          :title="$t('app.setting.label.confirm_on_save_config_and_restart')"
-        >
+        <app-setting :title="$t('app.setting.label.confirm_on_save_config_and_restart')">
           <v-switch
             v-model="confirmOnSaveConfigAndRestart"
             hide-details
@@ -149,9 +137,7 @@
       <template v-if="showSaveConfigAndRestart && confirmOnSaveConfigAndRestart">
         <v-divider />
 
-        <app-setting
-          :title="$t('app.setting.label.sections_to_ignore_pending_configuration_changes')"
-        >
+        <app-setting :title="$t('app.setting.label.sections_to_ignore_pending_configuration_changes')">
           <v-combobox
             v-model="sectionsToIgnorePendingConfigurationChanges"
             :items="['bed_mesh default', 'bed_tilt']"
@@ -169,15 +155,37 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.setting.label.print_in_progress_layout')"
-      >
+      <app-setting :title="$t('app.setting.label.print_in_progress_layout')">
         <v-select
           v-model="printInProgressLayout"
           filled
           dense
           hide-details="auto"
           :items="availablePrintInProgressLayouts"
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.print_progress_calculation')">
+        <v-select
+          v-model="printProgressCalculation"
+          filled
+          dense
+          hide-details="auto"
+          :items="availablePrintProgressCalculation"
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.eta_calculation')">
+        <v-select
+          v-model="etaCalculation"
+          filled
+          dense
+          hide-details="auto"
+          :items="availableEtaCalculation"
         />
       </app-setting>
 
@@ -204,7 +212,7 @@ import type { VInput } from '@/types'
 import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
 import type { OutputPin } from '@/store/printer/types'
 import type { Device } from '@/store/power/types'
-import type { PrintInProgressLayout } from '@/store/config/types'
+import type { EtaCalculation, PrintInProgressLayout, PrintProgressCalculation } from '@/store/config/types'
 
 @Component({
   components: {}
@@ -410,6 +418,56 @@ export default class GeneralSettings extends Mixins(StateMixin) {
         text: this.$t('app.general.label.compact')
       }
     ]
+  }
+
+  get availablePrintProgressCalculation () {
+    return [
+      {
+        value: 'file',
+        text: this.$t('app.setting.timer_options.file')
+      },
+      {
+        value: 'slicer',
+        text: this.$t('app.setting.timer_options.slicer_m73')
+      }
+    ]
+  }
+
+  get printProgressCalculation () {
+    return this.$store.state.config.uiSettings.general.printProgressCalculation as PrintProgressCalculation
+  }
+
+  set printProgressCalculation (value: string) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.printProgressCalculation',
+      value,
+      server: true
+    })
+  }
+
+  get availableEtaCalculation () {
+    return [
+      {
+        value: 'file',
+        text: this.$t('app.setting.timer_options.file')
+      },
+      {
+        value: 'slicer',
+        text: this.$t('app.setting.timer_options.slicer')
+      }
+    ]
+  }
+
+  get etaCalculation () {
+    return this.$store.state.config.uiSettings.general.etaCalculation as EtaCalculation
+  }
+
+  set etaCalculation (value: string) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.etaCalculation',
+      value,
+      server: true
+    })
   }
 
   get enableDiagnostics () {

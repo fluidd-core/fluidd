@@ -555,6 +555,7 @@ app:
       enable_diagnostics: Enable diagnostics
       enable_notifications: Enable notifications
       enable_xy_homing: Enable XY Homing
+      eta_calculation: ETA calculation
       expression: Expression
       extrusion_line_width: Extrusion Line Width
       flip_horizontal: Horizontal Flip
@@ -587,6 +588,7 @@ app:
       power_toggle_in_top_nav: Power toggle in top navigation
       primary_color: Primary color
       print_in_progress_layout: Print in Progress layout
+      print_progress_calculation: Print Progress calculation
       printer_name: Printer Name
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
@@ -631,6 +633,7 @@ app:
       filament: Filament Estimation
       file: File Estimation
       slicer: Slicer
+      slicer_m73: Slicer (M73)
     title:
       authentication: Authentication
       console: Console

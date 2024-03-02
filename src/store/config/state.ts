@@ -61,6 +61,8 @@ export const defaultState = (): ConfigState => {
         showScrewsTiltAdjustDialogAutomatically: true,
         forceMoveToggleWarning: true,
         printInProgressLayout: 'default',
+        printProgressCalculation: 'file',
+        etaCalculation: 'file',
         enableDiagnostics: false,
         thumbnailSize: 32,
         colorPickerValueRange: 'absolute'
