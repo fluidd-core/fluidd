@@ -6,48 +6,41 @@ import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
 import type { GcodeHelp } from '../console/types'
+import type { ServerInfo } from '../server/types'
 
 export const getters: GetterTree<PrinterState, RootState> = {
 
   /**
    * Indicates if klippy is connected or not.
    */
-  getklippyReady: (state, getters, rootState, rootGetters): boolean => {
+  getKlippyReady: (state, getters, rootState, rootGetters): boolean => {
     // Valid states are;
     // ready, startup, shutdown, error
-    const serverInfo = rootGetters['server/getInfo']
-    const server_klippy_state = serverInfo.klippy_state || ''
-    const connected = serverInfo.klippy_connected || false
-    if (
-      server_klippy_state !== 'ready' ||
-      !connected
-    ) {
-      return false
-    }
-    return true
+    const serverInfo = rootGetters['server/getInfo'] as ServerInfo
+
+    return (
+      serverInfo.klippy_state === 'ready' &&
+      serverInfo.klippy_connected
+    )
+  },
+
+  getKlippyConnected: (state, getters, rootState, rootGetters): boolean => {
+    const serverInfo = rootGetters['server/getInfo'] as ServerInfo
+
+    return serverInfo.klippy_connected
   },
 
   getKlippyState: (state, getters, rootState, rootGetters): string => {
-    const serverInfo = rootGetters['server/getInfo']
-    const server_klippy_state = serverInfo.klippy_state || ''
-    return Vue.$filters.capitalize(server_klippy_state)
-    // if (state1 === state2) {
-    //   return Vue.$filters.capitalize(state1)
-    // }
-    // if (state1 !== 'ready' && state1 !== '') {
-    //   return Vue.$filters.capitalize(state1)
-    // }
-    // if (state2 !== 'ready' && state1 !== '') {
-    //   return Vue.$filters.capitalize(state2)
-    // }
-    // return state1
+    const serverInfo = rootGetters['server/getInfo'] as ServerInfo
+
+    return Vue.$filters.capitalize(serverInfo.klippy_state || '')
   },
 
   getKlippyStateMessage: (state, getters, rootState, rootGetters): string => {
     const regex = /(?:\r\n|\r|\n)/g
     // If there's absolutely no connection to klipper, then
     // say so.
-    const serverInfo = rootGetters['server/getInfo']
+    const serverInfo = rootGetters['server/getInfo'] as ServerInfo
     if (serverInfo.klippy_connected === false) {
       return 'Klippy not connected.'
     }
@@ -910,11 +903,15 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getMoonrakerFailedComponents: (state, getters, rootState, rootGetters) => {
-    return rootGetters['server/getInfo'].failed_components || []
+    const serverInfo = rootGetters['server/getInfo'] as ServerInfo
+
+    return serverInfo.failed_components || []
   },
 
   getMoonrakerWarnings: (state, getters, rootState, rootGetters) => {
-    return rootGetters['server/getInfo'].warnings || []
+    const serverInfo = rootGetters['server/getInfo'] as ServerInfo
+
+    return serverInfo.warnings || []
   },
 
   getSaveConfigPending: (state): boolean => {

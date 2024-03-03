@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import { SocketActions } from '@/api/socketActions'
 import { Component } from 'vue-property-decorator'
-import type { ServerInfo } from '@/store/server/types'
 
 @Component
 export default class StateMixin extends Vue {
@@ -22,13 +21,11 @@ export default class StateMixin extends Vue {
   }
 
   get klippyReady (): boolean {
-    return this.$store.getters['printer/getklippyReady'] as boolean
+    return this.$store.getters['printer/getKlippyReady'] as boolean
   }
 
   get klippyConnected (): boolean {
-    const server = this.$store.getters['server/getInfo'] as ServerInfo
-
-    return server.klippy_connected
+    return this.$store.getters['printer/getKlippyConnected'] as boolean
   }
 
   get hasWarnings (): boolean {
