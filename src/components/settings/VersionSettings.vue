@@ -28,7 +28,7 @@
           outlined
           small
           color="primary"
-          :disabled="isRefreshing"
+          :disabled="isRefreshing || printerPrinting"
           @click="forceCheck()"
         >
           <v-icon
