@@ -754,6 +754,8 @@ app:
       package_list: Package List
       up_to_date: UP TO DATE
       updates_available: Updates are available
+      old_component_version: >-
+        You are using an old version of %{name} that does not support all features of Fluidd.<br>Update %{name} to at least %{version}.
     status:
       finished: Updates finished
       updating: Updating...

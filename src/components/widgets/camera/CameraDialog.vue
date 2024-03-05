@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
-import type { CameraConfig } from '@/store/cameras/types'
+import type { WebcamConfig } from '@/store/webcams/types'
 
 @Component({
   components: {
@@ -24,7 +24,7 @@ export default class CameraDialog extends Vue {
     open?: boolean
 
   @Prop({ type: Object, required: true })
-  readonly camera!: CameraConfig
+  readonly camera!: WebcamConfig
 }
 </script>
 

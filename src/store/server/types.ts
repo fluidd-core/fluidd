@@ -37,6 +37,7 @@ export interface ServerInfo {
   components: string[];
   registered_directories: string[];
   warnings: string[];
+  moonraker_version?: string;
   api_version?: number[]
   api_version_string?: string
 }
@@ -51,6 +52,7 @@ export interface SystemInfo {
   network?: NetworkState;
   canbus?: CanBusState;
   instance_ids: InstanceIds;
+  software_version?: string;
 }
 
 export interface ServiceState {

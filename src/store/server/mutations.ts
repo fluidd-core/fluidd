@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import type { ServerState, ServiceState } from './types'
+import type { ServerInfo, ServerState, ServiceState, SystemInfo } from './types'
 
 export const mutations: MutationTree<ServerState> = {
   /**
@@ -20,11 +20,11 @@ export const mutations: MutationTree<ServerState> = {
     })
   },
 
-  setServerInfo (state, payload) {
+  setServerInfo (state, payload: ServerInfo) {
     Vue.set(state, 'info', payload)
   },
 
-  setSystemInfo (state, payload) {
+  setSystemInfo (state, payload: { system_info?: SystemInfo }) {
     if (payload.system_info) {
       Vue.set(state, 'system_info', payload.system_info)
     }

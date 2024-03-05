@@ -37,7 +37,7 @@
       v-if="!fullscreen && (fullscreenMode === 'embed' || !rawCameraUrl) && camera.service !== 'device'"
       class="camera-fullscreen"
     >
-      <a :href="`/#/camera/${camera.id}`">
+      <a :href="`/#/camera/${encodeURI(camera.uid)}`">
         <v-icon>$fullScreen</v-icon>
       </a>
     </div>
@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import type { CameraConfig } from '@/store/cameras/types'
+import type { WebcamConfig } from '@/store/webcams/types'
 import type { CameraFullscreenAction } from '@/store/config/types'
 import { CameraComponents } from '@/dynamicImports'
 import CameraMixin from '@/mixins/camera'
@@ -65,7 +65,7 @@ import CameraMixin from '@/mixins/camera'
 @Component({})
 export default class CameraItem extends Vue {
   @Prop({ type: Object, required: true })
-  readonly camera!: CameraConfig
+  readonly camera!: WebcamConfig
 
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean

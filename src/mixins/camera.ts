@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import { Component, Prop, Ref, Watch } from 'vue-property-decorator'
-import type { CameraConfig } from '@/store/cameras/types'
+import type { WebcamConfig } from '@/store/webcams/types'
 
 @Component
 export default class CameraMixin extends Vue {
   @Prop({ type: Object, required: true })
-  readonly camera!: CameraConfig
+  readonly camera!: WebcamConfig
 
   @Prop({ type: String })
   readonly crossorigin?: 'anonymous' | 'use-credentials' | ''
@@ -34,7 +34,7 @@ export default class CameraMixin extends Vue {
 
   createTransform (): string {
     const element = this.streamingElement
-    const { rotation, flipX, flipY } = this.camera
+    const { rotation, flip_horizontal, flip_vertical } = this.camera
     const transformsArray: string[] = []
 
     const { clientWidth, clientHeight } = element
@@ -50,12 +50,12 @@ export default class CameraMixin extends Vue {
         ? clientHeight / clientWidth
         : clientWidth / clientHeight
 
-    if (scale !== 1 || flipX) {
-      transformsArray.push(`scaleX(${flipX ? -scale : scale})`)
+    if (scale !== 1 || flip_horizontal) {
+      transformsArray.push(`scaleX(${flip_horizontal ? -scale : scale})`)
     }
 
-    if (scale !== 1 || flipY) {
-      transformsArray.push(`scaleY(${flipY ? -scale : scale})`)
+    if (scale !== 1 || flip_vertical) {
+      transformsArray.push(`scaleY(${flip_vertical ? -scale : scale})`)
     }
 
     if (rotation !== 0) {

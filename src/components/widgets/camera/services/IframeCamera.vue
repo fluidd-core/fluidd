@@ -4,7 +4,7 @@
     :src="cameraIFrameSource"
     style="border: none; width: 100%"
     :style="{
-      'aspect-ratio': (camera.aspectRatio || '16:9').replace(':', '/'),
+      'aspect-ratio': (camera.aspect_ratio || '16:9').replace(':', '/'),
       ...cameraStyle
     }"
   />
@@ -22,7 +22,7 @@ export default class IframeCamera extends Mixins(CameraMixin) {
   cameraIFrameSource = ''
 
   startPlayback () {
-    const url = this.buildAbsoluteUrl(this.camera.urlStream || '').toString()
+    const url = this.buildAbsoluteUrl(this.camera.stream_url || '').toString()
 
     this.cameraIFrameSource = url
 

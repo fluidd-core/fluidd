@@ -21,7 +21,7 @@
       <template v-for="camera in cameras">
         <v-col
           v-if="!collapsed"
-          :key="camera.id"
+          :key="camera.uid"
           cols="12"
           :sm="cols"
         >
@@ -44,7 +44,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import CameraMenu from './CameraMenu.vue'
 import StateMixin from '@/mixins/state'
-import type { CameraConfig } from '@/store/cameras/types'
+import type { WebcamConfig } from '@/store/webcams/types'
 
 @Component({
   components: {
@@ -61,12 +61,12 @@ export default class CameraCard extends Mixins(StateMixin) {
     if (this.cameras.length > 2) return 4
   }
 
-  get cameras (): CameraConfig[] {
-    return this.$store.getters['cameras/getVisibleCameras'] as CameraConfig[]
+  get cameras (): WebcamConfig[] {
+    return this.$store.getters['webcams/getVisibleWebcams'] as WebcamConfig[]
   }
 
-  handleCameraSelect (cam: string) {
-    this.$store.dispatch('cameras/updateActiveCamera', cam)
+  handleCameraSelect (id: string) {
+    this.$store.dispatch('webcams/updateActiveWebcam', id)
   }
 }
 </script>

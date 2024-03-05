@@ -1,11 +1,11 @@
 <template>
   <app-dialog
     v-model="open"
-    :title="(camera.id != '') ? $t('app.general.label.edit_camera') : $t('app.general.label.add_camera')"
-    :cancel-button-text="camera.source === 'config' ? $t('app.general.btn.close') : $t('app.general.btn.cancel')"
-    :save-button-text="(camera.id !== '') ? $t('app.general.btn.save') : $t('app.general.btn.add')"
+    :title="camera.uid ? $t('app.general.label.edit_camera') : $t('app.general.label.add_camera')"
+    :save-button-text="camera.uid ? $t('app.general.btn.save') : $t('app.general.btn.add')"
     max-width="600"
     :disabled="camera.source === 'config'"
+    :no-actions="camera.source === 'config'"
     @save="handleSave"
   >
     <div class="overflow-y-auto">
@@ -36,7 +36,7 @@
 
       <app-setting :title="$t('app.setting.label.camera_flip_x')">
         <v-switch
-          v-model="camera.flipX"
+          v-model="camera.flip_horizontal"
           hide-details
         />
       </app-setting>
@@ -45,7 +45,7 @@
 
       <app-setting :title="$t('app.setting.label.camera_flip_y')">
         <v-switch
-          v-model="camera.flipY"
+          v-model="camera.flip_vertical"
           class="mb-4"
           hide-details
         />
@@ -101,7 +101,7 @@
           :title="$t('app.setting.label.fps_target')"
         >
           <v-text-field
-            v-model.number="camera.targetFps"
+            v-model.number="camera.target_fps"
             class="mt-5"
             filled
             dense
@@ -119,7 +119,7 @@
           :title="$t('app.setting.label.fps_idle_target')"
         >
           <v-text-field
-            v-model.number="camera.targetFpsIdle"
+            v-model.number="camera.target_fps_idle"
             class="mt-5"
             filled
             dense
@@ -133,7 +133,7 @@
 
       <app-setting :title="$t('app.setting.label.camera_url_stream')">
         <v-text-field
-          v-model="camera.urlStream"
+          v-model="camera.stream_url"
           type="url"
           spellcheck="false"
           class="mt-5"
@@ -151,7 +151,7 @@
 
       <app-setting :title="$t('app.setting.label.camera_url_snapshot')">
         <v-text-field
-          v-model="camera.urlSnapshot"
+          v-model="camera.snapshot_url"
           type="url"
           spellcheck="false"
           class="mt-5"
@@ -173,7 +173,7 @@
           :sub-title="$t('app.setting.label.aspect_ratio_format')"
         >
           <v-text-field
-            v-model="camera.aspectRatio"
+            v-model="camera.aspect_ratio"
             spellcheck="false"
             class="mt-5"
             filled
@@ -193,7 +193,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import type { CameraConfig } from '@/store/cameras/types'
+import type { WebcamConfig } from '@/store/webcams/types'
 
 @Component({})
 export default class CameraConfigDialog extends Vue {
@@ -201,7 +201,7 @@ export default class CameraConfigDialog extends Vue {
     open?: boolean
 
   @Prop({ type: Object, required: true })
-  readonly camera!: CameraConfig
+  readonly camera!: WebcamConfig
 
   handleSave () {
     this.$emit('save', this.camera)

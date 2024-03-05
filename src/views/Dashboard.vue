@@ -115,7 +115,7 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get hasCameras (): boolean {
-    return this.$store.getters['cameras/getEnabledCameras'].length > 0
+    return this.$store.getters['webcams/getEnabledWebcams'].length > 0
   }
 
   get hasHeatersOrTemperatureSensors () {
