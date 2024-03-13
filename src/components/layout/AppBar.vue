@@ -2,7 +2,7 @@
   <v-app-bar
     app
     clipped-left
-    extension-height="46"
+    :extension-height="46 * (isMobileViewport ? 3 : 2)"
     :color="$vuetify.theme.currentTheme.appbar"
     :height="$globals.HEADER_HEIGHT"
   >
@@ -129,43 +129,97 @@
       v-if="inLayout"
       #extension
     >
-      <app-btn
-        small
-        class="mx-2"
-        color="primary"
-        @click.stop="handleExitLayout"
-      >
-        {{ $t('app.general.btn.exit_layout') }}
-      </app-btn>
-      <app-btn
-        small
-        class="mx-2"
-        color="primary"
-        @click.stop="handleResetLayout"
-      >
-        {{ $t('app.general.btn.reset_layout') }}
-      </app-btn>
+      <template v-if="currentUser">
+        <div>
+          <v-icon class="mr-2">
+            $account
+          </v-icon>
+          <code>{{ currentUser.username }}</code>
+
+          <v-icon class="ml-4 mr-2">
+            $screenshot
+          </v-icon>
+          <code>{{ currentBreakpoint.toUpperCase() }}</code>
+        </div>
+
+        <div style="flex-basis: 100%; height: 0" />
+      </template>
+
+      <app-btn-group class="mx-2">
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <app-btn
+              small
+              v-bind="attrs"
+              color="primary"
+              @click.stop="handleExitLayout"
+              v-on="on"
+            >
+              <v-icon left>
+                $close
+              </v-icon>
+              {{ $t('app.general.btn.exit_layout') }}
+            </app-btn>
+          </template>
+          <span>{{ $t('app.general.tooltip.exit_layout') }}</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <app-btn
+              small
+              v-bind="attrs"
+              color="primary"
+              @click.stop="handleResetLayout"
+              v-on="on"
+            >
+              <v-icon left>
+                $accountSettings
+              </v-icon>
+              {{ $t('app.general.btn.reset_layout') }}
+            </app-btn>
+          </template>
+          <span>{{ $t('app.general.tooltip.reset_layout') }}</span>
+        </v-tooltip>
+      </app-btn-group>
+
       <template v-if="isDashboard">
-        <v-divider
-          vertical
-          class="mx-2"
-        />
-        <app-btn
-          small
-          class="mx-2"
-          color="primary"
-          @click.stop="handleSetDefaultLayout"
-        >
-          {{ $t('app.general.btn.set_default_layout') }}
-        </app-btn>
-        <app-btn
-          small
-          class="mx-2"
-          color="primary"
-          @click.stop="handleResetDefaultLayout"
-        >
-          {{ $t('app.general.btn.reset_default_layout') }}
-        </app-btn>
+        <app-btn-group class="mx-2">
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <app-btn
+                small
+                v-bind="attrs"
+                color="primary"
+                @click.stop="handleSetDefaultLayout"
+                v-on="on"
+              >
+                <v-icon left>
+                  $saveDefault
+                </v-icon>
+                {{ $t('app.general.btn.set_default_layout') }}
+              </app-btn>
+            </template>
+            <span>{{ $t('app.general.tooltip.set_default_layout') }}</span>
+          </v-tooltip>
+
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <app-btn
+                small
+                v-bind="attrs"
+                color="primary"
+                @click.stop="handleResetDefaultLayout"
+                v-on="on"
+              >
+                <v-icon left>
+                  $resetDefaults
+                </v-icon>
+                {{ $t('app.general.btn.reset_default_layout') }}
+              </app-btn>
+            </template>
+            <span>{{ $t('app.general.tooltip.reset_default_layout') }}</span>
+          </v-tooltip>
+        </app-btn-group>
       </template>
     </template>
 
@@ -196,6 +250,7 @@ import BrowserMixin from '@/mixins/browser'
 import { SocketActions } from '@/api/socketActions'
 import type { OutputPin } from '@/store/printer/types'
 import type { Device } from '@/store/power/types'
+import vuetify from '@/plugins/vuetify'
 
 @Component({
   components: {
@@ -366,11 +421,22 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     })
   }
 
+  get currentLayoutName () {
+    return this.$store.getters['layout/getSpecificLayoutName']
+  }
+
+  get currentUser () {
+    return this.$store.getters['auth/getCurrentUser']
+  }
+
+  get currentBreakpoint () {
+    return vuetify.framework.breakpoint.name
+  }
+
   handleSetDefaultLayout () {
-    const currentLayoutName = this.$store.getters['layout/getSpecificLayoutName']
     this.$store.dispatch('layout/onLayoutChange', {
       name: 'dashboard',
-      value: this.$store.getters['layout/getLayout'](currentLayoutName)
+      value: this.$store.getters['layout/getLayout'](this.currentLayoutName)
     })
   }
 
@@ -495,9 +561,10 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
   :deep(.v-toolbar__extension) {
     flex: 1 1 auto;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    padding: 0;
+    padding: 8px;
   }
 
   :deep(.v-toolbar__content) {
