@@ -98,6 +98,7 @@ app:
       add_dir: Add Directory
       add_file: Add File
       command_palette: Command Palette
+      devices: Devices
       download_file: Retrieving file
       duplicate_dir: Duplicate Directory
       duplicate_file: Duplicate File
@@ -156,6 +157,8 @@ app:
       clear_profile: Clear Profile
       close: Close
       config_reference: Config Reference
+      copied: Copied
+      copy: Copy
       create_zip_archive: Create ZIP Archive
       delete: Delete
       download: Download
@@ -324,6 +327,7 @@ app:
       turn_device_on: Turn %{device} on
       turn_device_off: Turn %{device} off
       uncategorized: Uncategorized
+      unknown: Unknown
       unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
       upload_and_print: Upload and Print
@@ -669,6 +673,7 @@ app:
       capacity: Capacity
       constants: Constants
       cpu_desc: CPU Description
+      devices: Devices
       distribution_codename: Codename
       distribution_like: Distribution Like
       distribution_name: Distribution
@@ -699,6 +704,13 @@ app:
       operating_system: Operating System
       version: Version
       virtualization: Virtualization
+    msg:
+      canbus_warning: >-
+        Only unassigned CAN bus nodes can be detected.<br>
+        It is recommended to have only one unassigned device connected to the CAN bus to avoid communication issues.<br>
+        More information can be found <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">here.</a>
+      no_devices_found: No devices found
+      no_devices_searched: Use the refresh button to search for devices
   tool:
     btn:
       home_x: X

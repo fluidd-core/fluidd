@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { ActionTree } from 'vuex'
-import type { ServerInfo, ServerState, ServerThrottledState, ServiceState, SystemInfo } from './types'
+import type { CanbusUuid, Peripherals, ServerInfo, ServerState, ServerThrottledState, ServiceState, SystemInfo } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
@@ -179,6 +179,16 @@ export const actions: ActionTree<ServerState, RootState> = {
     commit('setSystemInfo', payload)
 
     dispatch('checkKlipperMinVersion')
+  },
+
+  async onMachinePeripherals ({ commit }, payload: Partial<Peripherals>) {
+    commit('setMachinePeripherals', payload)
+  },
+
+  async onMachinePeripheralsCanbus ({ commit }, payload: { can_uuids: CanbusUuid[], __request__: any }) {
+    const { interface: canbusInterface } = payload.__request__.params
+
+    commit('setMachinePeripheralsCanbus', { canbusInterface, can_uuids: payload.can_uuids })
   },
 
   async onServiceStateChanged ({ commit }, payload: ServiceState) {

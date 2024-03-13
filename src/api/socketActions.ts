@@ -190,6 +190,46 @@ export const SocketActions = {
     )
   },
 
+  async machinePeripheralsUsb () {
+    baseEmit(
+      'machine.peripherals.usb', {
+        dispatch: 'server/onMachinePeripherals',
+        wait: Waits.onMachinePeripheralsUsb
+      }
+    )
+  },
+
+  async machinePeripheralsSerial () {
+    baseEmit(
+      'machine.peripherals.serial', {
+        dispatch: 'server/onMachinePeripherals',
+        wait: Waits.onMachinePeripheralsSerial
+      }
+    )
+  },
+
+  async machinePeripheralsVideo () {
+    baseEmit(
+      'machine.peripherals.video', {
+        dispatch: 'server/onMachinePeripherals',
+        wait: Waits.onMachinePeripheralsVideo
+      }
+    )
+  },
+
+  async machinePeripheralsCanbus (canbusInterface: string) {
+    const wait = `${Waits.onMachinePeripheralsCanbus}/${canbusInterface}`
+    baseEmit(
+      'machine.peripherals.canbus', {
+        dispatch: 'server/onMachinePeripheralsCanbus',
+        params: {
+          interface: canbusInterface
+        },
+        wait
+      }
+    )
+  },
+
   async machineTimelapseSetSettings (settings: Partial<TimelapseWritableSettings>, wait?: string) {
     baseEmit(
       'machine.timelapse.post_settings', {
