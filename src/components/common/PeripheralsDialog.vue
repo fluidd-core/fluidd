@@ -61,11 +61,11 @@
           :key="peripheralGroup.type"
         >
           <template v-if="peripheralGroup.count == null">
-            Click on the refresh button to search for devices
+            {{ $t('app.system_info.msg.no_devices_searched') }}
           </template>
 
           <template v-else-if="peripheralGroup.count == 0">
-            No devices found
+            {{ $t('app.system_info.msg.no_devices_found') }}
 
             <v-alert
               v-if="peripheralGroup.type === 'can'"
@@ -73,7 +73,7 @@
               text
               class="mt-4 mb-0"
             >
-              <span v-html="$t('app.system_info.label.canbus_warning')" />
+              <span v-html="$t('app.system_info.msg.canbus_warning')" />
             </v-alert>
           </template>
 

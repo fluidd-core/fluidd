@@ -668,10 +668,6 @@ app:
       no_connection: No moonraker connection. Please check moonraker status and / or refresh.
   system_info:
     label:
-      canbus_warning: >-
-        Only unassigned CAN bus nodes can be detected.<br>
-        It is recommended to have only one unassigned device connected to the CAN bus to avoid communication issues.<br>
-        More information can be found <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">here.</a>
       awake_time: awake time
       capacity: Capacity
       constants: Constants
@@ -707,6 +703,13 @@ app:
       operating_system: Operating System
       version: Version
       virtualization: Virtualization
+    msg:
+      canbus_warning: >-
+        Only unassigned CAN bus nodes can be detected.<br>
+        It is recommended to have only one unassigned device connected to the CAN bus to avoid communication issues.<br>
+        More information can be found <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">here.</a>
+      no_devices_found: No devices found
+      no_devices_searched: Use the refresh button to search for devices
   tool:
     btn:
       home_x: X
