@@ -58,10 +58,10 @@
               <th>{{ $t('app.system_info.label.operating_system') }}</th>
               <td>{{ distribution.name }}</td>
             </tr>
-            <tr v-if="distribution.release_info?.name">
+            <tr v-if="distributionName">
               <th>{{ $t('app.system_info.label.distribution_name') }}</th>
               <td>
-                {{ distribution.release_info.name }} {{ distribution.release_info.version_id }}
+                {{ distributionName }}
               </td>
             </tr>
             <tr v-if="distribution.like">
@@ -116,6 +116,22 @@ export default class PrinterStatsCard extends Mixins(StateMixin) {
 
   get distribution () {
     return this.systemInfo?.distribution || {} as DistroInfo
+  }
+
+  get distributionName (): string | undefined {
+    const { name, id } = this.distribution
+
+    if (name) {
+      if (name.startsWith('0.')) {
+        return undefined
+      }
+
+      return `${(
+        name.startsWith('#')
+          ? id
+          : name
+      )} ${this.distribution.release_info?.version_id} ?? ''`
+    }
   }
 
   get virtualization () {
