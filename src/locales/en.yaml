@@ -327,6 +327,7 @@ app:
       turn_device_on: Turn %{device} on
       turn_device_off: Turn %{device} off
       uncategorized: Uncategorized
+      unknown: Unknown
       unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
       upload_and_print: Upload and Print

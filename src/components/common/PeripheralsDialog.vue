@@ -154,8 +154,8 @@
             >
               <v-col>
                 <v-card outlined>
-                  <v-card-title>{{ device.product ?? 'Unknown' }} ({{ device.vendor_id }}:{{ device.product_id }})</v-card-title>
-                  <v-card-subtitle>{{ device.description ?? 'Unknown' }}</v-card-subtitle>
+                  <v-card-title>{{ device.product ?? $t("app.general.label.unknown") }} ({{ device.vendor_id }}:{{ device.product_id }})</v-card-title>
+                  <v-card-subtitle>{{ device.description ?? $t("app.general.label.unknown") }}</v-card-subtitle>
 
                   <v-divider />
 
