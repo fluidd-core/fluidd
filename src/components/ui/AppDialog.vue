@@ -23,22 +23,49 @@
             'collapsable-card-title': titleShadow
           }"
         >
-          <slot name="title">
-            <span class="focus--text">{{ title }}</span>
-          </slot>
-
-          <v-spacer />
-
-          <v-btn
-            fab
-            text
-            x-small
-            @click="open = false"
+          <v-row
+            no-gutters
+            class="flex-nowrap"
           >
-            <v-icon>
-              $close
-            </v-icon>
-          </v-btn>
+            <v-col
+              align-self="center"
+              class="text-no-wrap"
+            >
+              <slot name="title">
+                <span class="focus--text">{{ title }}</span>
+                <app-inline-help
+                  v-if="helpTooltip"
+                  bottom
+                  small
+                  :tooltip="helpTooltip"
+                />
+              </slot>
+            </v-col>
+
+            <v-col
+              cols="auto"
+              align-self="center"
+            >
+              <slot name="menu" />
+            </v-col>
+
+            <v-col
+              cols="auto"
+              align-self="center"
+            >
+              <v-btn
+                fab
+                text
+                x-small
+                class="ml-1"
+                @click="open = false"
+              >
+                <v-icon>
+                  $close
+                </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-card-title>
 
         <v-card-subtitle
@@ -100,6 +127,9 @@ export default class AppDialog extends Mixins(BrowserMixin) {
 
   @Prop({ type: String })
   readonly title?: string
+
+  @Prop({ type: String })
+  readonly helpTooltip?: string
 
   @Prop({ type: String })
   readonly subTitle?: string

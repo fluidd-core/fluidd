@@ -6,7 +6,7 @@
     :save-button-text="$t('app.general.btn.accept')"
     @save="sendAccept"
   >
-    <div class="overflow-y-auto">
+    <v-card-text class="pa-0">
       <template v-if="setPauseNextLayerMacro">
         <app-setting :title="$t('app.general.label.pause_at_next_layer')">
           <v-switch
@@ -74,7 +74,7 @@
           </app-setting>
         </template>
       </template>
-    </div>
+    </v-card-text>
   </app-dialog>
 </template>
 

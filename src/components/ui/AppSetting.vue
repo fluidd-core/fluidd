@@ -109,6 +109,10 @@ export default class AppSetting extends Vue {
     padding-right: 12px;
   }
 
+  .col.setting-title {
+    font-size: initial;
+  }
+
   .col.setting-title > .setting-sub-title {
     font-size: 0.875rem;
   }

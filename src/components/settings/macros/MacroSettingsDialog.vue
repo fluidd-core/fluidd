@@ -7,7 +7,7 @@
     max-width="480"
     @save="handleSave"
   >
-    <div class="overflow-y-auto">
+    <v-card-text class="pa-0">
       <app-setting
         :title="$t('app.general.label.alias')"
       >
@@ -95,7 +95,7 @@
           hide-details
         />
       </app-setting>
-    </div>
+    </v-card-text>
   </app-dialog>
 </template>
 

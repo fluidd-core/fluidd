@@ -51,7 +51,7 @@
       </v-tooltip>
     </v-toolbar>
 
-    <v-card-text>
+    <v-card-text class="fill-height">
       <v-tabs-items
         v-model="tab"
         touchless

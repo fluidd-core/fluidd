@@ -45,6 +45,8 @@
     </v-card-text>
 
     <template #actions>
+      <v-spacer v-if="isMobileViewport" />
+
       <app-btn
         v-if="config.id !== ''"
         color="error"
@@ -54,7 +56,7 @@
         {{ $t('app.general.btn.remove') }}
       </app-btn>
 
-      <v-spacer />
+      <v-spacer v-if="!isMobileViewport" />
 
       <app-btn
         color="warning"
@@ -74,14 +76,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
+import { Component, Prop, VModel, Mixins } from 'vue-property-decorator'
 import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
 import CardConfigStep from './config/CardConfigStep.vue'
 import AxesConfigStep from './config/AxesConfigStep.vue'
 import MetricsConfigStep from './config/MetricsConfigStep.vue'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class DiagnosticsCardConfigDialog extends Vue {
+export default class DiagnosticsCardConfigDialog extends Mixins(BrowserMixin) {
   @VModel({ type: Boolean })
     open?: boolean
 
