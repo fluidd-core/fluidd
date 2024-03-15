@@ -4,17 +4,11 @@
     max-width="320"
     :save-button-disabled="!verified"
     :valid.sync="valid"
+    :title="$t('app.general.title.add_printer')"
+    :help-tooltip="$t('app.endpoint.tooltip.endpoint_examples')"
     persistent
     @save="addInstance"
   >
-    <template #title>
-      <span class="focus--text">{{ $t('app.general.title.add_printer') }}</span>
-      <v-spacer />
-      <app-inline-help bottom>
-        <span v-html="$t('app.endpoint.tooltip.endpoint_examples')" />
-      </app-inline-help>
-    </template>
-
     <v-card-text>
       <span v-html="helpTxt" />
 

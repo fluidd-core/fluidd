@@ -61,8 +61,11 @@ export const defaultState = (): ConfigState => {
         showScrewsTiltAdjustDialogAutomatically: true,
         forceMoveToggleWarning: true,
         printInProgressLayout: 'default',
+        printProgressCalculation: ['file'],
+        printEtaCalculation: ['file'],
         enableDiagnostics: false,
-        thumbnailSize: 32
+        thumbnailSize: 32,
+        colorPickerValueRange: 'absolute'
       },
       theme: {
         isDark: true,
@@ -74,7 +77,7 @@ export const defaultState = (): ConfigState => {
       },
       editor: {
         confirmDirtyEditorClose: true,
-        autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.md', '.sh', '.txt'],
+        autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.sh', '.txt'],
         restoreViewState: 'session',
         codeLens: true
       },

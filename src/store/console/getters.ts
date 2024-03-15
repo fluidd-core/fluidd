@@ -25,12 +25,12 @@ export const getters: GetterTree<ConsoleState, RootState> = {
   },
 
   getAllKnownCommands: (state): GcodeHelp => {
-    const commands = state.gcodeHelp
-
-    for (const extraCommand of ['TESTZ', 'ABORT', 'ACCEPT', 'ADJUSTED']) {
-      if (extraCommand in commands !== true) {
-        commands[extraCommand] = ''
-      }
+    const commands: GcodeHelp = {
+      TESTZ: '',
+      ABORT: '',
+      ACCEPT: '',
+      ADJUSTED: '',
+      ...state.gcodeHelp
     }
 
     return commands

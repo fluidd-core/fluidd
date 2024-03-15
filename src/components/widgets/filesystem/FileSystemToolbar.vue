@@ -140,7 +140,7 @@
       v-if="roots && roots.length > 1"
       #extension
     >
-      <v-tabs>
+      <v-tabs show-arrows>
         <v-tab
           v-for="(root, index) in roots"
           :key="index"

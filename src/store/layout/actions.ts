@@ -12,7 +12,7 @@ export const actions: ActionTree<LayoutState, RootState> = {
     commit('setReset')
   },
 
-  async initLayout ({ commit }, payload) {
+  async initLayout ({ commit }, payload: LayoutState) {
     commit('setInitLayout', payload)
   },
 

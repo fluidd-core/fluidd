@@ -115,6 +115,7 @@ app:
       duplicate_dir: Doppelter Ordner
       duplicate_file: Doppelte Datei
       go_to_file: Zur Datei gehen
+      devices: Geräte
     tooltip:
       low_on_space: Wenig Speicherplatz auf der Festplatte
       root_disabled: '{root} ist nicht verfügbar. Bitte überprüfen Sie Ihre Logdateien.'
@@ -229,6 +230,8 @@ app:
       select_columns: Spalten auswählen
       retry: Wiederholen
       multiply: Vermehren
+      copied: Kopiert
+      copy: Kopieren
     error:
       app_setup_link: >-
         Die Anforderungen für die Einrichtung von Fluidd finden Sie <a
@@ -350,6 +353,7 @@ app:
       circle: Kreis
       minimum_cruise_ratio: Minimales Konstantfahrtverhältnis
       compact: Kompakt
+      unknown: Unbekannt
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -655,11 +659,14 @@ app:
       enable_xy_homing: XY-Homing aktivieren
       show_logo_on_background: Logo auf dem Hintergrund anzeigen
       print_in_progress_layout: Druckfortschritt-Layout
+      print_eta_calculation: Druckendzeit-Berechnung
+      print_progress_calculation: Druckfortschritt-Berechnung
     timer_options:
       duration: Nur Dauer
       filament: Filament-Schätzung
       file: Datei-Schätzung
       slicer: Slicer
+      slicer_m73: Slicer (M73)
     title:
       authentication: Authentifizierung
       camera: Kamera | Kameras
@@ -693,6 +700,8 @@ app:
         gerichtet werden.<br> Die Verwendung der Markennamen und Logos dient ausschließlich
         zu dekorativen und ästhetischen Zwecken und stellt keine offizielle Verbindung
         zu den Firmen oder eine Billigung dieser dar.
+      average_calculation: Wenn mehr als eine Option gewählt ist, wird ein Durchschnittswert
+        berechnet
   socket:
     msg:
       connecting: Verbinde mit Moonraker...
@@ -733,6 +742,17 @@ app:
       load: Last
       awake_time: Wachzeit
       memory_used: Genutzter Speicher
+      constants: Konstanten
+      last_stats: Letzte Statistiken
+      devices: Geräte
+    msg:
+      no_devices_found: Keine Geräte gefunden
+      no_devices_searched: Nutzen Sie den Aktualisieren-Knopf, um nach Geräten zu
+        suchen
+      canbus_warning: Nur unzugewiesene CAN-Bus-Knoten werden erkannt.<br>Es ist empfohlen,
+        nur ein unzugewiesenes Gerät an den CAN-Bus anzuschließen, um Kommunikationsprobleme
+        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank" 
+        href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">hier.</a>
   tool:
     btn:
       home_x: X
@@ -784,6 +804,9 @@ app:
       package_list: Paketliste
       up_to_date: AKTUELL
       updates_available: Updates sind verfügbar
+      old_component_version: Sie verwenden eine veraltete Version von %{name}, welche
+        nicht alle Features von Fluidd unterstützt.<b>Aktualisieren Sie %{name} auf
+        mindestens %{version}.
     status:
       finished: Aktualisierung abgeschlossen
       updating: Aktualisieren...

@@ -76,7 +76,7 @@ app:
     filters:
       label:
         print_start_time: Filtrar já impresso
-        print_start_time_desc: Filtrar os itens que  já imprimiu.
+        print_start_time_desc: Filtrar os itens que já imprimiu.
         hidden_files_folders: Filtrar ficheiros e pastas escondidas
         klipper_backup_files: Filtrar cópias de segurança do Klipper
         moonraker_backup_files: Filtrar ficheiros de cópia de segurança do Moonraker
@@ -93,7 +93,7 @@ app:
       diskinfo: Informações sobre o Disco
     msg:
       not_found: Não foram encontrados ficheiros
-      processing: A processar...
+      processing: A processar
     overlay:
       drag_files_enqueue: <strong>Arrastar</strong> para aqui ficheiros para juntar
         à fila
@@ -110,6 +110,7 @@ app:
       duplicate_dir: Duplicar directório
       go_to_file: Ir para ficheiro
       duplicate_file: Duplicar ficheiro
+      devices: Dispositivos
     tooltip:
       low_on_space: Pouco espaço em disco
       root_disabled: A raiz {root} não está disponível. Por favor verifique os seus
@@ -200,6 +201,8 @@ app:
       multiply: Multiplicar
       snooze: Suspender
       reset_stats: Redefinir estatísticas
+      copy: Copiar
+      copied: Copiado
     error:
       app_setup_link: >-
         Os requisitos de configuração do Fluidd podem ser encontrados <a
@@ -403,7 +406,7 @@ app:
       default_extrude_speed: Velocidade de extrusão padrão
       default_toolhead_move_length: Comprimento de movimento do toolhead padrão
       default_toolhead_xy_speed: Velocidade XY do toolhead padrão
-      default_toolhead_z_speed: Velocidade Z do toolhead  padrão
+      default_toolhead_z_speed: Velocidade Z do toolhead padrão
       enable: Habilitar
       enable_notifications: Ativar notificações
       fps_target: Frames por segundo
@@ -419,7 +422,7 @@ app:
       z_adjust_values: Ajustar valores Z
     timer_options:
       duration: Só duração
-      filament: Estimativas filamento.
+      filament: Estimativas filamento
       file: Estimativa do ficheiro
       slicer: Slicer
     title:
@@ -462,8 +465,7 @@ app:
     title: Atualizações de software
     tooltip:
       dirty: >-
-        indicação de erro no cabeçalho, não existente na fonte ou fonte
-        inválida.
+        indicação de erro no cabeçalho, não existente na fonte ou fonte inválida
       invalid: indicação de alteração do local da repo
       packages: Pacotes
       release_notes: Notas de lançamento

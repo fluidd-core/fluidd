@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import type { CameraConfig } from '@/store/cameras/types'
+import type { WebcamConfig } from '@/store/webcams/types'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 
 @Component({
@@ -21,12 +21,13 @@ import CameraItem from '@/components/widgets/camera/CameraItem.vue'
   }
 })
 export default class FullscreenCamera extends Vue {
-  cameraId: string | null = null
-  camera: CameraConfig | null = null
+  camera: WebcamConfig | null = null
 
   created () {
-    this.cameraId = this.$route.params.cameraId
-    this.camera = this.$store.getters['cameras/getCameras'].find((camera: CameraConfig) => camera.id === this.cameraId)
+    const cameraId = this.$route.params.cameraId
+    const camera = this.$store.getters['webcams/getWebcamById'](cameraId) as WebcamConfig | undefined
+
+    this.camera = camera ?? null
   }
 }
 </script>

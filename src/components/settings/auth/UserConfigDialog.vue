@@ -6,7 +6,7 @@
     max-width="500"
     @save="handleSave"
   >
-    <div class="overflow-y-auto">
+    <v-card-text class="pa-0">
       <app-setting :title="$t('app.general.label.name')">
         <v-text-field
           v-model="user.username"
@@ -42,7 +42,7 @@
           ]"
         />
       </app-setting>
-    </div>
+    </v-card-text>
   </app-dialog>
 </template>
 
