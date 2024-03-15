@@ -37,8 +37,6 @@ app:
       auto_scroll: オートスクロール
       flip_layout: レイアウト上下変更
       hide_temp_waits: 待機中を隠す
-    placeholder:
-      command: ''
     tooltip:
       help: >-
         コマンドに「help」と入力します<br />オートコンプリートには <kbd>タブ</kbd> を使用します<br />履歴には
