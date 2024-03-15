@@ -3,15 +3,10 @@
     v-model="open"
     scrollable
     :max-width="isMobileViewport ? '90vw' : '75vw'"
+    :title="$tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro })"
     title-shadow
   >
-    <template #title>
-      <span class="focus--text">
-        {{ $tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro }) }}
-      </span>
-
-      <v-spacer />
-
+    <template #menu>
       <v-menu
         v-if="availableCameras.length > 1"
         left
@@ -97,7 +92,7 @@
       />
     </v-toolbar>
 
-    <v-card-text class="pt-0">
+    <v-card-text class="fill-height pt-0">
       <v-data-table
         :items="availableSpools"
         :headers="visibleHeaders"
@@ -160,21 +155,20 @@
     </v-card-text>
 
     <template #actions>
+      <v-spacer v-if="isMobileViewport" />
+
       <app-btn
         v-if="spoolmanURL"
         :href="spoolmanURL"
         target="_blank"
+        color="primary"
+        text
+        type="button"
       >
-        <v-icon
-          small
-          class="mr-2"
-        >
-          $edit
-        </v-icon>
-        {{ isMobileViewport ? '' : $tc('app.spoolman.btn.manage_spools') }}
+        {{ $t('app.spoolman.btn.manage_spools') }}
       </app-btn>
 
-      <v-spacer />
+      <v-spacer v-if="!isMobileViewport" />
 
       <app-btn
         text
@@ -187,9 +181,6 @@
         color="primary"
         @click="handleSelectSpool"
       >
-        <v-icon class="mr-2">
-          {{ filename ? '$printer' : '$send' }}
-        </v-icon>
         {{ filename ? $t('app.general.btn.print') : $tc('app.spoolman.btn.select', targetMacro ? 2 : 1, { macro: targetMacro }) }}
       </app-btn>
     </template>

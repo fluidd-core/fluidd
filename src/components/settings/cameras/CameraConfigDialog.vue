@@ -8,7 +8,7 @@
     :no-actions="camera.source === 'config'"
     @save="handleSave"
   >
-    <div class="overflow-y-auto">
+    <v-card-text class="pa-0">
       <app-setting :title="$t('app.setting.label.enable')">
         <v-switch
           v-model="camera.enabled"
@@ -187,7 +187,7 @@
           />
         </app-setting>
       </template>
-    </div>
+    </v-card-text>
   </app-dialog>
 </template>
 

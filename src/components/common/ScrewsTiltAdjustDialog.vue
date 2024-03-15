@@ -5,7 +5,7 @@
     max-width="500"
     @save="retry"
   >
-    <div class="overflow-y-auto">
+    <v-card-text class="pa-0">
       <v-simple-table>
         <thead>
           <tr>
@@ -54,7 +54,7 @@
           </tr>
         </tbody>
       </v-simple-table>
-    </div>
+    </v-card-text>
 
     <template #actions>
       <v-spacer />

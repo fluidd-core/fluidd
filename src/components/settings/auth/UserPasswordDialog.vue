@@ -7,19 +7,18 @@
     max-width="500"
     @save="handleSave"
   >
-    <div class="overflow-y-auto">
-      <v-card-text
-        v-if="error"
-        class="mb-0"
-      >
+    <v-card-text class="pa-0">
+      <template v-if="error">
         <v-alert
           type="error"
           text
-          class="mb-0"
+          class="mx-4 mt-4"
         >
           {{ $t('app.general.msg.wrong_password') }}
         </v-alert>
-      </v-card-text>
+
+        <v-divider />
+      </template>
 
       <app-setting :title="$t('app.general.label.current_password')">
         <v-text-field
@@ -54,7 +53,7 @@
           ]"
         />
       </app-setting>
-    </div>
+    </v-card-text>
   </app-dialog>
 </template>
 

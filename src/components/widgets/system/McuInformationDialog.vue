@@ -5,7 +5,7 @@
     max-width="500"
     no-actions
   >
-    <div class="overflow-y-auto">
+    <v-card-text class="pa-0">
       <v-card flat>
         <v-card-title>{{ $t('app.system_info.label.constants') }}</v-card-title>
 
@@ -37,7 +37,7 @@
           </tbody>
         </v-simple-table>
       </v-card>
-    </div>
+    </v-card-text>
   </app-dialog>
 </template>
 
