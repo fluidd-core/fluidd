@@ -1,27 +1,26 @@
 <template>
   <div>
-    <!-- Output Pins -->
     <app-named-slider
-      v-if="pin && pin.pwm"
+      v-if="pwm"
       :label="pin.prettyName"
       :min="0"
       :max="pin.scale"
       :step="0.01"
-      :value="(pin.value * pin.scale) / 1"
+      :value="value"
       :reset-value="pin.config.value || 0"
       :disabled="!klippyReady"
       :locked="isMobileViewport"
       :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"
-      @submit="setValue"
+      @submit="handleChange"
     />
 
     <app-named-switch
-      v-if="pin && !pin.pwm"
+      v-else
       :disabled="!klippyReady"
       :label="pin.prettyName"
-      :value="(pin.value > 0)"
+      :value="pin.value > 0"
       :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"
-      @input="setValue"
+      @input="handleChange"
     />
   </div>
 </template>
@@ -37,10 +36,31 @@ export default class OutputPin extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: Object, required: true })
   readonly pin!: IOutputPin
 
-  setValue (target: number) {
-    if (!this.pin.pwm) {
-      target = (target) ? this.pin.scale : 0
+  get pwm () {
+    return (
+      this.pin.pwm ||
+      this.pwmTypes.includes(this.pin.type)
+    )
+  }
+
+  get pwmTypes () {
+    return [
+      'pwm_cycle_time',
+      'pwm_tool'
+    ]
+  }
+
+  get value () {
+    return Math.round(this.pin.value * this.pin.scale * 100) / 100
+  }
+
+  handleChange (target: number) {
+    if (!this.pwm) {
+      target = target
+        ? this.pin.scale
+        : 0
     }
+
     this.sendGcode(`SET_PIN PIN=${this.pin.name} VALUE=${target}`, `${this.$waits.onSetOutputPin}${this.pin.name}`)
   }
 }

@@ -95,7 +95,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/state'
 import StateMixin from '@/mixins/state'
-import type { CameraConfig } from '@/store/cameras/types'
+import type { WebcamConfig } from '@/store/webcams/types'
 
 @Component({
   components: {}
@@ -113,11 +113,22 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get supportedCameras () {
+  get enabledWebcams (): WebcamConfig[] {
+    return this.$store.getters['webcams/getEnabledWebcams'] as WebcamConfig[]
+  }
+
+  get supportedCameras (): Array<{ text?: string, value: string | null, disabled?: boolean }> {
     return [
-      { text: this.$tc('app.setting.label.none', 0), value: null },
-      ...this.$store.getters['cameras/getEnabledCameras']
-        .map((camera: CameraConfig) => ({ text: camera.name, value: camera.id, disabled: !camera.enabled || camera.service === 'iframe' }))
+      {
+        text: this.$tc('app.setting.label.none'),
+        value: null
+      },
+      ...this.enabledWebcams
+        .map(camera => ({
+          text: camera.name,
+          value: camera.uid,
+          disabled: camera.service === 'iframe'
+        }))
     ]
   }
 

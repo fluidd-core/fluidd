@@ -84,6 +84,7 @@
                     fab
                     text
                     x-small
+                    :disabled="item.adaptive"
                     @click="removeProfile(item.name)"
                     v-on="on"
                   >
@@ -265,6 +266,7 @@
       v-if="saveDialogState.open"
       v-model="saveDialogState.open"
       :existing-name="saveDialogState.existingName"
+      :adaptive="saveDialogState.adaptive"
       @save="handleMeshSave"
     />
 
@@ -280,7 +282,12 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import SaveMeshDialog from './SaveMeshDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import type { MeshState, BedMeshProfile, KlipperBedMesh, MatrixType } from '@/store/mesh/types'
+import type {
+  MeshState,
+  KlipperBedMesh,
+  MatrixType,
+  BedMeshProfileListEntry
+} from '@/store/mesh/types'
 
 @Component({
   components: {
@@ -295,7 +302,8 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
 
   saveDialogState = {
     open: false,
-    existingName: 'default'
+    existingName: 'default',
+    adaptive: false
   }
 
   get matrix () {
@@ -343,8 +351,8 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   // The available meshes.
-  get bedMeshProfiles () {
-    return this.$store.getters['mesh/getBedMeshProfiles'] as BedMeshProfile[]
+  get bedMeshProfiles (): BedMeshProfileListEntry[] {
+    return this.$store.getters['mesh/getBedMeshProfiles']
   }
 
   // The current mesh, unprocessed.
@@ -371,7 +379,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
     const result = (
       !this.printerPrinting ||
       await this.$confirm(
-        this.$tc('app.general.simple_form.msg.confirm'),
+        this.$t('app.general.simple_form.msg.confirm_load_bedmesh_profile', { name }).toString(),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
       )
     )
@@ -384,7 +392,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
     const result = (
       !this.printerPrinting ||
       await this.$confirm(
-        this.$tc('app.general.simple_form.msg.confirm'),
+        this.$tc('app.general.simple_form.msg.confirm_clear_mesh'),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
       )
     )
@@ -408,9 +416,11 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   handleOpenSaveDialog () {
+    const profile = this.bedMeshProfiles.find(mesh => mesh.name === this.currentMesh.profile_name)
     this.saveDialogState = {
       open: true,
-      existingName: this.currentMesh.profile_name
+      existingName: this.currentMesh.profile_name,
+      adaptive: profile?.adaptive ?? false
     }
   }
 

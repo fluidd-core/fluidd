@@ -125,6 +125,7 @@
       :type="filePreviewState.type"
       :width="filePreviewState.width"
       :readonly="filePreviewState.readonly"
+      :path="currentPath"
       @remove="handleRemove"
       @download="handleDownload"
     />
@@ -419,6 +420,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
           case 'rolled_log_files':
             if (file.type === 'file' && file.filename.match(/\.\d{4}-\d{2}-\d{2}$/)) {
+              return false
+            }
+            break
+
+          case 'crowsnest_backup_files':
+            if (file.type === 'file' && file.filename.match(/^crowsnest\.conf\.\d{4}-\d{2}-\d{2}-\d{4}$/)) {
               return false
             }
             break
@@ -930,9 +937,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleCreateZip (file: FileBrowserEntry | FileBrowserEntry[]) {
+    const date = new Date()
+    const timestamp = `${date.getFullYear()}${date.getMonth()}${date.getDate()}-${date.getHours()}${date.getMinutes()}${date.getSeconds()}`
     const dest = Array.isArray(file)
-      ? `${this.currentPath}/${Date.now()}.zip`
-      : `${this.currentPath}/${file.name}_${Date.now()}.zip`
+      ? `${this.currentPath}/${timestamp}.zip`
+      : `${this.currentPath}/${file.name}-${timestamp}.zip`
 
     const items = (Array.isArray(file) ? file : [file])
       .map(item => `${this.currentPath}/${item.name}`)

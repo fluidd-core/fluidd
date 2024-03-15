@@ -5,7 +5,8 @@
     <console-command
       v-if="!readonly && flipLayout"
       v-model="currentCommand"
-      :disabled="!klippyReady"
+      :disabled="!klippyConnected"
+      :autofocus="fullscreen"
       @send="sendCommand"
     />
     <v-card
@@ -47,7 +48,8 @@
     <console-command
       v-if="!readonly && !flipLayout"
       v-model="currentCommand"
-      :disabled="!klippyReady"
+      :disabled="!klippyConnected"
+      :autofocus="fullscreen"
       @send="sendCommand"
     />
   </div>

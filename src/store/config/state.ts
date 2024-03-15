@@ -60,8 +60,12 @@ export const defaultState = (): ConfigState => {
         showBedScrewsAdjustDialogAutomatically: true,
         showScrewsTiltAdjustDialogAutomatically: true,
         forceMoveToggleWarning: true,
+        printInProgressLayout: 'default',
+        printProgressCalculation: ['file'],
+        printEtaCalculation: ['file'],
         enableDiagnostics: false,
-        thumbnailSize: 32
+        thumbnailSize: 32,
+        colorPickerValueRange: 'absolute'
       },
       theme: {
         isDark: true,
@@ -73,7 +77,7 @@ export const defaultState = (): ConfigState => {
       },
       editor: {
         confirmDirtyEditorClose: true,
-        autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.md', '.sh', '.txt'],
+        autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.sh', '.txt'],
         restoreViewState: 'session',
         codeLens: true
       },
@@ -116,7 +120,8 @@ export const defaultState = (): ConfigState => {
         job_queue: [
           { value: 'time_added', visible: true },
           { value: 'time_in_queue', visible: false }
-        ]
+        ],
+        spoolman: []
       },
       gcodePreview: {
         extrusionLineWidth: 0.3,

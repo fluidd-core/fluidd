@@ -19,7 +19,7 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
   cameraImageSource = ''
 
   startPlayback () {
-    const url = this.buildAbsoluteUrl(this.camera.urlStream || '')
+    const url = this.buildAbsoluteUrl(this.camera.stream_url || '')
 
     url.searchParams.set('cacheBust', Date.now().toString())
 

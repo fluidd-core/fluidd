@@ -2,7 +2,7 @@ import type { GetterTree } from 'vuex'
 import type { AppDirectory, AppFileWithMeta, FileBrowserEntry, FilesState, RootProperties } from './types'
 import type { RootState } from '../types'
 import type { HistoryItem } from '../history/types'
-import { SupportedImageFormats, SupportedVideoFormats } from '@/globals'
+import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
 
 export const getters: GetterTree<FilesState, RootState> = {
   /**
@@ -101,6 +101,7 @@ export const getters: GetterTree<FilesState, RootState> = {
   getRootProperties: () => (root: string): RootProperties => {
     const canView = [
       ...SupportedImageFormats,
+      ...SupportedMarkdownFormats,
       ...SupportedVideoFormats
     ]
 
@@ -119,7 +120,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           accepts: ['.conf', '.cfg', '.md', '.css', '.jpg', '.jpeg', '.png', '.gif'],
           canView,
           canConfigure: false,
-          filterTypes: ['hidden_files', 'klipper_backup_files', 'moonraker_backup_files']
+          filterTypes: ['hidden_files', 'klipper_backup_files', 'moonraker_backup_files', 'crowsnest_backup_files']
         }
       case 'config_examples':
         return {

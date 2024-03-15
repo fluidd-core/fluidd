@@ -1,5 +1,12 @@
 import type { GetterTree } from 'vuex'
-import type { BedMeshProfile, MeshState, AppMeshes, KlipperBedMesh, KlipperBedMeshProfile, LegacyKlipperBedMeshProfile } from './types'
+import type {
+  MeshState,
+  AppMeshes,
+  KlipperBedMesh,
+  KlipperBedMeshProfile,
+  LegacyKlipperBedMeshProfile,
+  BedMeshProfileListEntry
+} from './types'
 import type { RootState } from '../types'
 import { transformMesh } from '@/util/transform-mesh'
 
@@ -47,8 +54,8 @@ export const getters: GetterTree<MeshState, RootState> = {
     return klipperProfiles
   },
 
-  getBedMeshProfiles: (state, getters, rootState) => {
-    const profiles: BedMeshProfile[] = []
+  getBedMeshProfiles: (state, getters, rootState): BedMeshProfileListEntry[] => {
+    const profiles: BedMeshProfileListEntry[] = []
     const bedMesh = rootState.printer.printer.bed_mesh as KlipperBedMesh
 
     const klipperProfiles = bedMesh.profiles ?? getters.getLegacyBedMeshProfiles as Record<string, KlipperBedMeshProfile>
@@ -61,10 +68,20 @@ export const getters: GetterTree<MeshState, RootState> = {
       profiles.push({
         name,
         active: name === bedMesh.profile_name,
-        min,
-        max,
-        range: Math.abs(min - max),
-        ...profile
+        adaptive: false,
+        range: Math.abs(min - max)
+      })
+    }
+
+    if (bedMesh.profile_name && !(bedMesh.profile_name in klipperProfiles)) {
+      const min = Math.min(...(bedMesh.mesh_matrix?.flat() ?? [0]))
+      const max = Math.max(...(bedMesh.mesh_matrix?.flat() ?? [0]))
+
+      profiles.push({
+        name: bedMesh.profile_name,
+        active: true,
+        adaptive: true,
+        range: max - min
       })
     }
 

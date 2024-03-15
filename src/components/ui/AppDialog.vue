@@ -3,6 +3,8 @@
     v-model="open"
     :scrollable="scrollable"
     v-bind="$attrs"
+    :fullscreen="isMobileViewport"
+    :transition="isMobileViewport ? 'dialog-bottom-transition' : undefined"
   >
     <v-form
       ref="form"
@@ -10,11 +12,60 @@
       :disabled="disabled"
       @submit.prevent="handleSave"
     >
-      <v-card>
-        <v-card-title class="card-heading py-2">
-          <slot name="title">
-            <span class="focus--text">{{ title }}</span>
-          </slot>
+      <v-card
+        :class="{
+          'collapsable-card': titleShadow
+        }"
+      >
+        <v-card-title
+          class="card-heading py-2"
+          :class="{
+            'collapsable-card-title': titleShadow
+          }"
+        >
+          <v-row
+            no-gutters
+            class="flex-nowrap"
+          >
+            <v-col
+              align-self="center"
+              class="text-no-wrap"
+            >
+              <slot name="title">
+                <span class="focus--text">{{ title }}</span>
+                <app-inline-help
+                  v-if="helpTooltip"
+                  bottom
+                  small
+                  :tooltip="helpTooltip"
+                />
+              </slot>
+            </v-col>
+
+            <v-col
+              cols="auto"
+              align-self="center"
+            >
+              <slot name="menu" />
+            </v-col>
+
+            <v-col
+              cols="auto"
+              align-self="center"
+            >
+              <v-btn
+                fab
+                text
+                x-small
+                class="ml-1"
+                @click="open = false"
+              >
+                <v-icon>
+                  $close
+                </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-card-title>
 
         <v-card-subtitle
@@ -62,11 +113,12 @@
 </template>
 
 <script lang="ts">
+import BrowserMixin from '@/mixins/browser'
 import type { VForm } from '@/types'
-import { Component, Vue, Prop, VModel, Ref, PropSync } from 'vue-property-decorator'
+import { Component, Prop, VModel, Ref, PropSync, Mixins } from 'vue-property-decorator'
 
 @Component({})
-export default class AppDialog extends Vue {
+export default class AppDialog extends Mixins(BrowserMixin) {
   @VModel({ type: Boolean })
     open?: boolean
 
@@ -75,6 +127,9 @@ export default class AppDialog extends Vue {
 
   @Prop({ type: String })
   readonly title?: string
+
+  @Prop({ type: String })
+  readonly helpTooltip?: string
 
   @Prop({ type: String })
   readonly subTitle?: string
@@ -99,6 +154,9 @@ export default class AppDialog extends Vue {
 
   @Prop({ type: Boolean })
   readonly noActions?: boolean
+
+  @Prop({ type: Boolean })
+  readonly titleShadow?: boolean
 
   @PropSync('valid', { type: Boolean })
     validModel?: boolean

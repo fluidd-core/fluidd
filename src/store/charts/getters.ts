@@ -77,6 +77,9 @@ export const getters: GetterTree<ChartState, RootState> = {
     return {
       color,
       grid,
+      textStyle: {
+        fontFamily: 'Roboto'
+      },
       tooltip: {
         ...tooltip,
         show: true,
@@ -107,7 +110,7 @@ export const getters: GetterTree<ChartState, RootState> = {
                   <div style="white-space: nowrap;">
                     ${param.marker}
                     <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
-                      ${param.seriesName}:
+                      ${Vue.$filters.startCase(param.seriesName)}:
                     </span>
                     <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
                       ${param.value[yDimension]}${ySuffix}

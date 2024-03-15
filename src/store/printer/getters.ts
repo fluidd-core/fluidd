@@ -6,48 +6,41 @@ import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
 import type { GcodeHelp } from '../console/types'
+import type { ServerInfo } from '../server/types'
 
 export const getters: GetterTree<PrinterState, RootState> = {
 
   /**
    * Indicates if klippy is connected or not.
    */
-  getklippyReady: (state, getters, rootState, rootGetters): boolean => {
+  getKlippyReady: (state, getters, rootState, rootGetters): boolean => {
     // Valid states are;
     // ready, startup, shutdown, error
-    const serverInfo = rootGetters['server/getInfo']
-    const server_klippy_state = serverInfo.klippy_state || ''
-    const connected = serverInfo.klippy_connected || false
-    if (
-      server_klippy_state !== 'ready' ||
-      !connected
-    ) {
-      return false
-    }
-    return true
+    const serverInfo = rootGetters['server/getInfo'] as ServerInfo
+
+    return (
+      serverInfo.klippy_state === 'ready' &&
+      serverInfo.klippy_connected
+    )
+  },
+
+  getKlippyConnected: (state, getters, rootState, rootGetters): boolean => {
+    const serverInfo = rootGetters['server/getInfo'] as ServerInfo
+
+    return serverInfo.klippy_connected
   },
 
   getKlippyState: (state, getters, rootState, rootGetters): string => {
-    const serverInfo = rootGetters['server/getInfo']
-    const server_klippy_state = serverInfo.klippy_state || ''
-    return Vue.$filters.capitalize(server_klippy_state)
-    // if (state1 === state2) {
-    //   return Vue.$filters.capitalize(state1)
-    // }
-    // if (state1 !== 'ready' && state1 !== '') {
-    //   return Vue.$filters.capitalize(state1)
-    // }
-    // if (state2 !== 'ready' && state1 !== '') {
-    //   return Vue.$filters.capitalize(state2)
-    // }
-    // return state1
+    const serverInfo = rootGetters['server/getInfo'] as ServerInfo
+
+    return Vue.$filters.capitalize(serverInfo.klippy_state || '')
   },
 
   getKlippyStateMessage: (state, getters, rootState, rootGetters): string => {
     const regex = /(?:\r\n|\r|\n)/g
     // If there's absolutely no connection to klipper, then
     // say so.
-    const serverInfo = rootGetters['server/getInfo']
+    const serverInfo = rootGetters['server/getInfo'] as ServerInfo
     if (serverInfo.klippy_connected === false) {
       return 'Klippy not connected.'
     }
@@ -102,7 +95,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     }
   },
 
-  getPrintProgress: (state): number => {
+  getFilePrintProgress: (state): number => {
     const { gcode_start_byte, gcode_end_byte, path, filename } = state.printer.current_file ?? {}
     const { file_position } = state.printer.virtual_sdcard ?? {}
 
@@ -119,6 +112,34 @@ export const getters: GetterTree<PrinterState, RootState> = {
     }
 
     return state.printer.display_status.progress || 0
+  },
+
+  getSlicerPrintProgress: (state): number => {
+    return state.printer.display_status.progress || 0
+  },
+
+  getPrintProgress: (state, getters, rootState): number => {
+    const printProgressCalculation = rootState.config.uiSettings.general.printProgressCalculation
+
+    const printProgressCalculationResults = printProgressCalculation
+      .map(type => {
+        switch (type) {
+          case 'file':
+            return getters.getFilePrintProgress
+
+          case 'slicer':
+            return getters.getSlicerPrintProgress
+
+          default:
+            return 0
+        }
+      })
+      .filter(result => result > 0)
+
+    const printProgress = printProgressCalculationResults
+      .reduce((a, b) => a + b, 0) / printProgressCalculationResults.length
+
+    return printProgress
   },
 
   getPrintLayers: (state): number => {
@@ -163,14 +184,15 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return 0
   },
 
-  getTimeEstimates: (state, getters): TimeEstimates => {
+  getTimeEstimates: (state, getters, rootGetters): TimeEstimates => {
     const progress = getters.getPrintProgress as number
+    const fileProgress = getters.getFilePrintProgress as number
 
     const totalDuration = state.printer.print_stats?.total_duration as number | undefined ?? 0
     const printDuration = state.printer.print_stats?.print_duration as number | undefined ?? 0
 
-    const fileLeft = printDuration > 0 && progress > 0
-      ? printDuration / progress - printDuration
+    const fileLeft = printDuration > 0 && fileProgress > 0
+      ? printDuration / fileProgress - printDuration
       : 0
 
     const currentFileStatus = state.printer.current_file?.history?.status as string | undefined
@@ -186,11 +208,31 @@ export const getters: GetterTree<PrinterState, RootState> = {
       ? slicerTotal - printDuration
       : 0
 
-    const eta = Date.now() + (
-      actualLeft > 0
-        ? actualLeft
-        : fileLeft
-    ) * 1000
+    const printEtaCalculation = rootGetters.config.uiSettings.general.printEtaCalculation
+
+    const printEtaCalculationResults = printEtaCalculation
+      .map(type => {
+        switch (type) {
+          case 'file':
+            return (
+              actualLeft > 0
+                ? actualLeft
+                : fileLeft
+            )
+
+          case 'slicer':
+            return slicerLeft
+
+          default:
+            return 0
+        }
+      })
+      .filter(result => result > 0)
+
+    const etaLeft = printEtaCalculationResults
+      .reduce((a, b) => a + b, 0) / printEtaCalculationResults.length
+
+    const eta = Date.now() + etaLeft * 1000
 
     return {
       progress: Math.floor(progress * 100),
@@ -482,7 +524,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
    */
   getPins: (_, getters) => {
     const outputs = getters.getOutputs([
-      'output_pin'
+      'output_pin',
+      'pwm_tool',
+      'pwm_cycle_time'
     ])
     return outputs.sort((output: OutputPin) => output.pwm ? 1 : -1)
   },
@@ -508,7 +552,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
     // Generic pins...
     const outputPins = [
-      'output_pin'
+      'output_pin',
+      'pwm_tool',
+      'pwm_cycle_time'
     ]
 
     // LEDs...
@@ -523,6 +569,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'fan',
       'fan_generic',
       'output_pin',
+      'pwm_tool',
+      'pwm_cycle_time',
       'led',
       'neopixel',
       'dotstar'
@@ -536,6 +584,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
     // Should we filter visiblity based on the _ prefix?
     const filterByPrefix = [
       'output_pin',
+      'pwm_tool',
+      'pwm_cycle_time',
       'temperature_fan',
       'controller_fan',
       'heater_fan',
@@ -853,11 +903,15 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getMoonrakerFailedComponents: (state, getters, rootState, rootGetters) => {
-    return rootGetters['server/getInfo'].failed_components || []
+    const serverInfo = rootGetters['server/getInfo'] as ServerInfo
+
+    return serverInfo.failed_components || []
   },
 
   getMoonrakerWarnings: (state, getters, rootState, rootGetters) => {
-    return rootGetters['server/getInfo'].warnings || []
+    const serverInfo = rootGetters['server/getInfo'] as ServerInfo
+
+    return serverInfo.warnings || []
   },
 
   getSaveConfigPending: (state): boolean => {

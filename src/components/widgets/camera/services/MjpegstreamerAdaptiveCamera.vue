@@ -18,6 +18,7 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
   readonly cameraImage!: HTMLImageElement
 
   cameraImageSource = ''
+  cameraImageSourceUrl: URL | null = null
   requestStartTime = performance.now()
   startTime = performance.now()
   time = 0
@@ -26,7 +27,7 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
   requestTimeSmoothing = 0.1
 
   handleImageLoad () {
-    const fpsTarget = (!document.hasFocus() && this.camera.targetFpsIdle) || this.camera.targetFps || 10
+    const fpsTarget = (!document.hasFocus() && this.camera.target_fps_idle) || this.camera.target_fps || 10
     const endTime = performance.now()
     const currentTime = endTime - this.startTime
 
@@ -53,30 +54,30 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
 
       this.$emit('frames-per-second', framesPerSecond)
 
-      this.$nextTick(() => {
-        const url = new URL(this.cameraImageSource)
-
-        url.searchParams.set('cacheBust', Date.now().toString())
-
-        this.requestStartTime = performance.now()
-
-        this.cameraImageSource = url.toString()
-      })
+      this.$nextTick(() => this.updateCameraImageSource())
     } else {
       this.stopPlayback()
     }
   }
 
+  updateCameraImageSource () {
+    const url = this.cameraImageSourceUrl
+
+    if (url) {
+      url.searchParams.set('cacheBust', Date.now().toString())
+
+      this.requestStartTime = performance.now()
+
+      this.cameraImageSource = url.toString()
+    }
+  }
+
   startPlayback () {
-    const url = this.buildAbsoluteUrl(this.camera.urlSnapshot || '')
+    this.cameraImageSourceUrl = this.buildAbsoluteUrl(this.camera.snapshot_url || '')
 
-    this.requestStartTime = performance.now()
+    this.updateCameraImageSource()
 
-    url.searchParams.set('cacheBust', Date.now().toString())
-
-    this.cameraImageSource = url.toString()
-
-    const rawUrl = this.buildAbsoluteUrl(this.camera.urlStream || '')
+    const rawUrl = this.buildAbsoluteUrl(this.camera.stream_url || '')
 
     rawUrl.searchParams.set('cacheBust', Date.now().toString())
 
@@ -84,6 +85,7 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
   }
 
   stopPlayback () {
+    this.cameraImageSourceUrl = null
     this.cameraImageSource = ''
     this.cameraImage.src = ''
   }

@@ -170,7 +170,26 @@ export const httpClientActions = {
     }, options)
   },
 
+  serverDatabaseItemDelete<T = unknown> (namespace: string, key: string, options?: AxiosRequestConfig) {
+    return this.delete<{
+      result: {
+        namespace: string,
+        key: string,
+        value: T
+      }
+    }>(`/server/database/item?namespace=${namespace}&key=${key}`, options)
+  },
+
   serverFilesUploadPost (file: File, path: string, root: string, print?: boolean, options?: AxiosRequestConfig) {
+    const formData = new FormData()
+
+    formData.append('file', file, file.name)
+    formData.append('path', path)
+    formData.append('root', root)
+    if (print) {
+      formData.append('print', 'true')
+    }
+
     return this.postForm<{
       result: {
         item: {
@@ -180,12 +199,7 @@ export const httpClientActions = {
         print_started?: boolean,
         action: string
       }
-    }>('/server/files/upload', {
-      file,
-      path,
-      root,
-      print
-    }, options)
+    }>('/server/files/upload', formData, options)
   },
 
   serverFilesGet<T = unknown> (filepath: string, options?: AxiosRequestConfig) {
