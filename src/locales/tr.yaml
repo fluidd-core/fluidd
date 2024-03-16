@@ -1,0 +1,907 @@
+app:
+  bedmesh:
+    label:
+      active: aktif
+      base: temel
+      box_scale: Kutu ölçeği
+      flat_surface: Düzlem yüzeyi göster
+      mesh_matrix: Örgü matrisi
+      probed_matrix: Ölçülen matris
+      profile_name: Profil Adı
+      remove_profile: >-
+        %{name} profilini kaldır
+      scale: Renk ölçeği
+      wireframe: Tel örgü
+    msg:
+      hint: >-
+        %{name} dışında kaydederken,
+        %{name} profili de kaldırmayı seçebilirsiniz.
+      not_found: Mevcut yatak örgüleri bulunamadı.
+      not_loaded: Örgü yüklenmedi
+    tooltip:
+      calibrate: Yeni bir kalibrasyon başlatır, varsayılan olarak 'default' profiline kaydeder
+      delete: Profili Sil
+      load: Profili Yükle
+      save: Kalibre edilmiş profili printer.cfg'ye kaydeder
+      copy_image: Yatak örgüsü görüntüsünü kopyala
+  chart:
+    label:
+      current: Gerçek
+      item: Ad
+      power: Güç
+      target: Hedef
+      rate_of_change: Değişim
+    tooltip:
+      help: >-
+        Yakınlaştırmak için <kbd>Shift</kbd>'i basılı tutun.<br />Grafikte bir öğeyi değiştirmek için tıklayın.<br
+        />Grafikte bir gücü değiştirmek için tıklayın.
+  console:
+    label:
+      auto_scroll: Otomatik kaydırma
+      flip_layout: Düzeni çevir
+      hide_temp_waits: Sıcaklık bekleme sürelerini gizle
+    tooltip:
+      help: >-
+        Komutlar için "yardım" yazın<br />Otomatik tamamlama için <kbd>Tab</kbd> kullanın<br />Geçmiş için <kbd>&uarr;</kbd> ve <kbd>&darr;</kbd> tuşlarını kullanın
+  endpoint:
+    error:
+      cant_connect: >-
+        Bir şeyler ters gitti ve fluidd hedefe ulaşamıyor.
+        Bu doğru adres olduğundan emin misiniz?
+      cors_error: CORS politikası tarafından engellendi
+      cors_note: >-
+        Bu, moonraker yapılandırmanızı değiştirmeniz gerektiği anlamına gelebilir.
+        Çoklu yazıcı kurulumları hakkında belgeleri görmek için lütfen <a href="%{url}"
+        target="_blank">buraya</a> bakın.
+    hint:
+      add_printer: Örnek, http://fluiddpi.local
+    msg:
+      trouble: >-
+        Sorun mu yaşıyorsunuz? Daha fazla bilgi için <a href="%{url}" target="_blank">buraya</a>
+        bakın.
+    tooltip:
+      endpoint_examples: >-
+        API URL'nizi girin.<br />Bazı örnekler şunlar olabilir;<br
+        /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
+  endstop:
+    label:
+      open: AÇIK
+      triggered: TETİKLENDİ
+    msg:
+      subtitle: Endstop durumunu güncellemek için yenile düğmesini kullanın.
+  file_system:
+    filters:
+      label:
+        crowsnest_backup_files: Crowsnest yedek dosyalarını filtrele
+        print_start_time: Basılanları filtrele
+        print_start_time_desc: Zaten bastığınız öğeleri filtreler.
+        hidden_files_folders: Gizli dosya ve klasörleri filtrele
+        klipper_backup_files: Klipper yedek dosyalarını filtrele
+        moonraker_backup_files: Moonraker yedek dosyalarını filtrele
+        rolled_log_files: Katlanmış günlük dosyalarını filtrele
+    label:
+      dir_name: Klasör adı
+      disk_usage: Disk Kullanımı
+      diskinfo: Disk Bilgileri
+      downloaded: İndirilen
+      file_name: Dosya adı
+      transfer_rate: Transfer hızı
+      uploaded: Yüklenen
+      view_section_documentation: >-
+        '%{section}' belgelerini görüntüle
+    msg:
+      not_found: Dosya bulunamadı
+      processing: İşleniyor
+    overlay:
+      drag_files_folders_upload: Dosyaları ve klasörleri yüklemek için buraya <strong>sürükleyin</strong>
+      drag_files_enqueue: Dosyaları buraya <strong>sürükleyin</strong> sıraya eklemek için
+    title:
+      add_dir: Klasör Ekle
+      add_file: Dosya Ekle
+      command_palette: Komut Paleti
+      devices: Aygıtlar
+      download_file: Dosya alınıyor
+      duplicate_dir: Klasörü Kopyala
+      duplicate_file: Dosyayı Kopyala
+      go_to_file: Dosyaya git
+      rename_dir: Klasörü Yeniden Adlandır
+      rename_file: Dosyayı Yeniden Adlandır
+      upload_file: Dosya Yükleniyor | Dosyalar Yükleniyor
+    tooltip:
+      low_on_space: Disk alanı az
+      items_count: '{count} öğe | {count} öğeler'
+      root_disabled: '{root} kökü mevcut değil. Lütfen günlüklerinizi kontrol edin.'
+    url:
+      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
+      moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
+      crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
+  gcode:
+    btn:
+      load_current_file: Mevcut Dosyayı Yükle
+    label:
+      current_layer_height: Mevcut Katman Yüksekliği
+      exclude_object: Nesneyi Hariç Tut
+      follow_progress: İlerlemeyi Takip Et
+      layer: Katman
+      layers: Katmanlar
+      parsed: Ayrıştırıldı
+      show_current_layer: Mevcut katmanı göster
+      show_extrusions: Ekstrüzyonları göster
+      show_moves: Hareketleri göster
+      show_next_layer: Sonraki katmanı göster
+      show_parts: Parçaları göster
+      show_previous_layer: Önceki katmanı göster
+      show_retractions: Geri çekilmeleri göster
+      parsing_file: Dosya ayrıştırılıyor
+    msg:
+      confirm: >-
+        "%{filename}" dosyası %{size} büyüklüğünde,
+        bu sistem için kaynak yoğun olabilir. Emin misiniz?
+    overlay:
+      drag_file_load: Dosyayı yüklemek için buraya <strong>sürükleyin</strong>
+  general:
+    btn:
+      abort: İptal
+      accept: Kabul Et
+      add: Ekle
+      add_dir: Klasör Ekle
+      add_file: Dosya Ekle
+      add_printer: Yazıcı Ekle
+      add_to_queue: Kuyruğa Ekle
+      adjust_layout: Gösterge paneli düzenini ayarla
+      adjusted: Düzenlendi
+      all: Tümü
+      auth_unsure: Neden bunu gördüğünüzden emin değil misiniz?
+      calibrate: Kalibre et
+      cancel: İptal
+      clear_profile: Profili Temizle
+      close: Kapat
+      config_reference: Yapılandırma Referansı
+      copied: Kopyalandı
+      copy: Kopyala
+      create_zip_archive: ZIP Arşivi Oluştur
+      delete: Sil
+      download: İndir
+      duplicate: Çoğalt
+      edit: Düzenle
+      exit_layout: Düzenleme modundan çık
+      extrude: Ekstrüzyon
+      filter: Filtrele
+      forgot_password: Parolanızı mı unuttunuz?
+      go_to_file: Dosyaya git
+      heaters_off: Isıtıcılar kapalı
+      job_queue: İş Kuyruğu
+      load_all: Tümünü Yükle
+      login: Giriş yap
+      logout: Çıkış yap
+      more_information: Daha fazla bilgi
+      multiply: Çoğalt
+      pause: Duraklat
+      preheat: Önceden ısıt
+      presets: Ön ayarlar
+      preview_gcode: Gcode Önizle
+      print: Yazdır
+      quad_gantry_level: Dört direk düzleme
+      reboot: Yeniden başlat
+      recover: Kurtar
+      refresh: Yenile
+      refresh_metadata: Metadata'yı Yenile
+      reload: Yeniden Yükle
+      remove: Kaldır
+      remove_all: Tümünü Kaldır
+      rename: Yeniden Adlandır
+      reprint: Yeniden Yazdır
+      reset_file: Dosyayı Temizle
+      reset_layout: Varsayılan Düzen'e Sıfırla
+      reset_default_layout: Varsayılan Düzeni Sıfırla
+      restart_firmware: Firmware Yeniden Başlat
+      restart_service: >-
+        %{service} Yeniden Başlat
+      restart_service_klipper: Klipper'i Yeniden Başlat
+      restart_service_moonraker: Moonraker'ı Yeniden Başlat
+      resume: Devam Et
+      retract: Geri Çek
+      retry: Yeniden Dene
+      return_dashboard: Kontrol paneline dön
+      save: Kaydet
+      save_as: Farklı Kaydet
+      save_restart: Kaydet ve Yeniden Başlat
+      save_config_and_restart: Yapılandırmayı Kaydet ve Yeniden Başlat
+      select_columns: Sütunları Seç
+      send: Gönder
+      set_color: Renk Ayarla
+      set_default_layout: Varsayılan Düzen Olarak Ayarla
+      shutdown: Kapat
+      snooze: Ertele
+      socket_reconnect: Yeniden Bağlan
+      socket_refresh: Zorla Yenile
+      thumbnail_size: Küçük Resim Boyutu
+      upload: Yükle
+      upload_files: Dosyaları Yükle
+      upload_folder: Klasörü Yükle
+      upload_print: Yükle ve Yazdır
+      view: Görüntüle
+      reset_stats: İstatistikleri Sıfırla
+    error:
+      app_setup_link: >-
+        Fluidd kurulum gereksinimlerini <a target="_blank"
+        href="%{url}">buradan</a> bulabilirsiniz.
+      app_warnings_found: '%{appName} uyarıları bulundu.'
+      components_config: >-
+        Moonraker eklenti yapılandırmasını <a target="_blank"
+        href="%{url}">buradan</a> bulabilirsiniz.
+      failed_components: >-
+        Moonraker'da başarısız eklentiler var, lütfen günlüklerinizi kontrol edin,
+        yapılandırmanızı güncelleyin ve moonraker'ı yeniden başlatın.
+    label:
+      accel_to_decel: Hızlanmadan Yavaşlamaya
+      acceleration: Hızlanma
+      accepted_screws: Kabul Edilen Vidalar
+      actual_time: Gerçek Zaman
+      add_camera: Kamera Ekle
+      add_filter: Filtre Ekle
+      add_preset: Ön Ayar Ekle
+      add_user: Kullanıcı Ekle
+      all: Tümü
+      api_key: API Anahtarı
+      api_url: API URL'si
+      auth_source: Kimlik Doğrulama Kaynağı
+      bars: Çubuklar
+      category: Kategori
+      change_password: Şifre Değiştir
+      clear_all: Tümünü Temizle
+      color: Renk
+      command: Komut
+      confirm: Onayla
+      cross: Çarpı
+      circle: Daire
+      compact: Kompakt
+      current_password: Mevcut şifre
+      current_user: Mevcut kullanıcı
+      default: Varsayılan
+      disabled_while_printing: Baskı yapılırken devre dışı
+      edit_camera: Kamera Düzenle
+      edit_filter: Filtre Düzenle
+      edit_preset: Ön Ayar Düzenle
+      edit_user: Kullanıcı Düzenle
+      extrude_length: Ekstrüzyon Uzunluğu
+      extrude_speed: Ekstrüzyon Hızı
+      filament: Filament
+      file: Dosya
+      finish_time: Bitti
+      flow: Akış
+      free: boş
+      heaters_busy: >-
+        Yazıcı şu anda meşgul. Isıtıcıları kapatmak,
+        başarısız bir baskıya neden olabilir.
+      high: Yüksek
+      host: Ana Bilgisayar
+      layer: Katman
+      layout: Düzen
+      ldap: LDAP
+      longest_job: En uzun iş
+      low: Düşük
+      manage_accounts: Hesapları Yönet
+      minimum_cruise_ratio: Minimum Cruise Oranı
+      user_managed_source: Kullanıcı %{source} kimlik doğrulamasıyla yönetiliyor
+      m117: M117
+      moonraker: Moonraker
+      name: Ad
+      new_password: Yeni şifre
+      no_notifications: Bildirim Yok
+      'on': 'Açık'
+      'off': 'Kapalı'
+      numeric_prefix_sort: Sayısal Önek sıralaması
+      password: Şifre
+      partial_of_total: '%{partial} / %{total}'
+      pause_at_layer: Katmanda Duraklat
+      pause_at_next_layer: Sonraki katmanda duraklat
+      pause_at_layer_number: Katman numarasında duraklat
+      power: Güç
+      pressure_advance: Basınç İlerlemesi
+      printers: Yazıcılar
+      progress: İlerleme
+      range: Aralık
+      requested_speed: Hız
+      retract_length: Geri Çekme Uzunluğu
+      retract_speed: Geri Çekme Hızı
+      save_as: Farklı Kaydet
+      screw_index: Vida dizini
+      screw_name: Vida adı
+      screw_number: Vida %{index}
+      services: Servisler
+      slicer: Dilimleyici
+      smooth_time: Pürüzsüz Zaman
+      speed: Hız
+      sqv: Köşe Hızı
+      stepper_enabled: Step Motor Etkin
+      synced_extruder: Senkronize Ekstruder
+      thumbnail_size: Önizleme Boyutu
+      total: Toplam
+      total_filament: Kullanılan toplam filament
+      total_filament_avg: Ortalama her baskı için
+      total_jobs: Toplam baskı işleri
+      total_print_time: Toplam baskı süresi
+      total_print_time_avg: Ortalama her baskı için
+      total_time: Toplam süre
+      total_time_avg: Ortalama her baskı için
+      turn_device_on: >-
+        %{device} aç
+      turn_device_off: >-
+        %{device} kapat
+      uncategorized: Kategorize Edilmemiş
+      unknown: Bilinmeyen
+      unretract_extra_length: Geri çekme ek uzunluk
+      unretract_speed: Geri çekme hızı
+      upload_and_print: Yükle ve Yazdır
+      used: kullanıldı
+      username: Kullanıcı Adı
+      velocity: Hız
+      version_sort: Sürüm sıralaması
+      visible: Görünür
+      z_offset: Z Kaydırma
+      unsaved_changes: Kaydedilmemiş Değişiklikler
+      alias: Takma Ad
+      apply_z_offset: Z Kaydırma'yı Uygula ve Kaydet
+      edit_category: Kategori Düzenle
+      add_category: Kategori Ekle
+      file_time: Dosya
+    msg:
+      password_changed: Şifre değiştirildi
+      wrong_password: Ups, bir şeyler ters gitti. Şifreniz doğru mu?
+      bed_screws_adjust: >-
+        Mevcut vida için önemli bir ayarlama gerekiyorsa <b>Düzenlendi</b>'yi tıklayın; aksi halde devam etmek için <b>Kabul Et</b>'i tıklayın.
+      welcome_back: >-
+        Tekrar hoş geldiniz.<br>Yazıcınızla iletişimde kalabilmek için aşağıdan oturum açın.
+      offline_ready: Fluidd artık çevrimdışı olarak kullanıma hazır.
+      needs_refresh: Yeni içerik mevcut, lütfen güncellemek için <b>Yenile</b> düğmesine tıklayın.
+      pending_configuration_sections_deleted: Aşağıdaki bölümler silinmek üzere işaretlendi
+      rolledover_logs: >-
+        Aşağıdaki uygulama günlükleri katlanmıştır: %{applications}
+    simple_form:
+      error:
+        arrayofnums: Sadece rakamlar
+        credentials: Geçersiz kimlik bilgileri
+        exists: Zaten var
+        invalid_number: Geçersiz Sayı
+        invalid_url: Geçersiz URL
+        invalid_expression: Geçersiz İfade
+        max: Maks %{max}
+        min: Min %{min}
+        min_or_0: Min %{min} veya 0
+        password_username: Kullanıcı adıyla eşleştirilemez
+        required: Gerekli
+        invalid_aspect: Geçersiz En Boy Oranı
+      msg:
+        confirm: Emin misiniz?
+        confirm_cancel_print: Mevcut baskıyı iptal etmek istediğinizden emin misiniz?
+        confirm_clear_mesh: Yazıcı şu anda meşgul. Yatak meshini silmek istediğinizden emin misiniz?
+        confirm_delete: Emin misiniz? Seçilen öğe silinecektir. | Emin misiniz? {count} seçili öğe silinecektir.
+        confirm_emergency_stop: Yazıcıyı acil duraklatmak istediğinizden emin misiniz?
+        confirm_exclude_object: Bu nesneyi baskıdan hariç tutmak istediğinizden emin misiniz?
+        confirm_forcemove_toggle: Emin misiniz? Bu, yazıcıya zarar verebilir.
+        confirm_load_bedmesh_profile: Yazıcı şu anda meşgul. %{name} profilini yüklemek istediğinizden emin misiniz?
+        confirm_reboot_host: Emin misiniz? Bu, ana bilgisayar sisteminizi yeniden başlatacaktır.
+        confirm_remove_user: >-
+          %{username} kullanıcısını kaldırmak istediğinizden emin misiniz?
+        confirm_shutdown_host: Emin misiniz? Bu, ana bilgisayar sistemini kapatır.
+        confirm_service_start: >-
+          %{name} hizmetini başlatmak istediğinizden emin misiniz?
+        confirm_service_restart: >-
+          %{name} hizmetini yeniden başlatmak istediğinizden emin misiniz?
+        confirm_service_stop: >-
+          %{name} hizmetini durdurmak istediğinizden emin misiniz?
+        confirm_power_device_toggle: Emin misiniz? Bu, cihazın gücünü açıp kapatır.
+        unsaved_changes: Kaydedilmemiş değişiklikleriniz var. Bu dosyayı kapatmak istediğinizden emin misiniz?
+        no_file_preview: >-
+          Şu anda %{name} önizlenemiyor.
+    table:
+      header:
+        actions: Eylemler
+        chamber_temp: Oda sıcaklığı
+        end_time: Bitiş
+        estimated_time: Tahmini süre
+        filament: Filament
+        filament_name: Filament adı
+        filament_type: Filament tipi
+        filament_used: Kullanılan filament
+        filament_weight_total: Filament ağırlığı
+        first_layer_bed_temp: İlk katman yatak sıcaklığı
+        first_layer_extr_temp: İlk katman ekstruder sıcaklığı
+        first_layer_height: İlk katman yüksekliği
+        height: Yükseklik
+        last_printed: Son baskı
+        layer_height: Katman yüksekliği
+        modified: Değiştirildi
+        name: Ad
+        nozzle_diameter: Nozül çapı
+        print_duration: Baskı süresi
+        time_added: Eklenme zamanı
+        time_in_queue: Kuyrukta geçen süre
+        size: Boyut
+        slicer: Dilimleyici
+        slicer_version: Dilimleyici sürümü
+        start_time: Başlangıç
+        status: Durum
+        total_duration: Toplam süre
+    title:
+      add_chart: Grafik Ekle
+      add_printer: Yazıcı Ekle
+      bedmesh: Yatak Ağı
+      bedmesh_controls: Yatak Ağı Kontrolleri
+      camera: Kamera | Kameralar
+      config_files: Yapılandırma Dosyaları
+      configure: Yapılandırma
+      console: Konsol
+      diagnostics: Tanı
+      edit_chart: Grafik Düzenle
+      endstops: Endstop'lar
+      fans_outputs: Fanlar ve Çıkışlar
+      gcode_preview: Gcode Önizleme
+      history: Geçmiş
+      home: Anasayfa
+      jobs: İşler
+      job_queue: İş Kuyruğu
+      limits: Yazıcı Sınırları
+      macros: Makrolar
+      metrics_explorer: Metrik Gezgini
+      not_found: 404 Bulunamadı
+      other_files: Diğer Dosyalar
+      pending_configuration_changes: Bekleyen Yapılandırma Değişiklikleri
+      retract: Firmware Geri Çekme
+      rollover_logs: Günlükleri Katla
+      runout_sensors: Bitiş Sensörleri
+      settings: Ayarlar
+      stats: Yazıcı İstatistikleri
+      system: Sistem
+      system_overview: Sistem Bilgileri
+      temperature: Sıcaklık
+      timelapse: Zaman Atlama
+      tool: Araç
+      tune: Ayarla
+    tooltip:
+      browse_metrics: Mevcut metrikleri göz atın
+      estop: Acil Dur
+      managed_by_moonraker: Moonraker yapılandırmanız tarafından yönetilmektedir
+      notifications: Bildirimler
+      reload_klipper: Klipper yapılandırmasını yeniden yükler.
+      reload_restart_klipper: Klipper yapılandırmasını yeniden yükler ve MCU'ları yeniden başlatır.
+      restart_klipper: Klipper sistem hizmetini yeniden başlatır.
+      run_collector: Toplayıcıyı Çalıştır
+      rollover_logs: Günlükleri Katla
+      file_browser_help: >-
+        Buradan yükleme yapmak için dışarıdan dosya veya klasörleri buraya sürükleyip bırakın<br>Dosyaları ve klasörleri buradan alıp Yapılandırma Dosyalarına sürükleyip bırakarak taşıyın
+      file_browser_configuration_help: >-
+        Dosyaları ve klasörleri buradan alıp Yapılandırma Dosyalarına sürükleyip bırakarak kopyalayın
+  history:
+    msg:
+      confirm: Emin misiniz? Bu, tüm geçmişi ve yazıcı istatistiklerini silecek
+      confirm_jobs: Emin misiniz? Bu, tüm işleri silecek.
+      confirm_stats: Emin misiniz? Bu, tüm istatistikleri silecek.
+  job_queue:
+    msg:
+      confirm: Emin misiniz? Bu, tüm yazıcı kuyruğunu temizleyecek
+    label:
+      number_of_copies: Kopya Sayısı
+    title:
+      multiply_job: İşi Çoğalt | İşleri Çoğalt
+    tooltip:
+      help: >-
+        İşleri buradan Jobs'e sürükleyerek sıraya ekleyin<br>Sıradaki işlerin sırasını yukarı veya aşağı sürükleyerek ayarlayın
+  printer:
+    state:
+      busy: Meşgul
+      cancelled: İptal Edildi
+      complete: Tamamlandı
+      idle: Boşta
+      loading: Yükleniyor
+      paused: Duraklatıldı
+      printing: Baskı Yapılıyor
+      ready: Hazır
+      standby: Beklemede
+    title:
+      printer_status: Yazıcı Durumu
+  setting:
+    btn:
+      add_camera: Kamera Ekle
+      add_category: Kategori Ekle
+      add_filter: Filtre Ekle
+      add_metric: Metrik Ekle
+      add_thermal_preset: Preset Ekle
+      add_user: Kullanıcı Ekle
+      reset: Sıfırla
+      select_theme: Tema Seç
+    camera_type_options:
+      mjpegadaptive: MJPEG Adaptif
+      mjpegstream: MJPEG Akışı
+      hlsstream: HLS Akışı
+      webrtc_camera_streamer: WebRTC (kamera akışı)
+      video: IP Kamera
+      iframe: HTTP sayfa
+      webrtc_gortc: WebRTC (go2rtc)
+    camera_rotate_options:
+      '90': 90°
+      '180': 180°
+      '270': 270°
+      none: Hiçbiri
+    label:
+      all_off: Hepsi Kapalı
+      all_on: Hepsi Açık
+      aspect_ratio: En Boy Oranı
+      aspect_ratio_format: '[genişlik : yükseklik]'
+      auto_edit_extensions: Otomatik düzenleme modunda açılacak uzantılar
+      auto_follow_on_file_load: Dosya yüklemesinde ilerlemeyi otomatik takip et
+      auto_load_on_print_start: Baskı başlangıcında dosyayı otomatik yükle
+      auto_load_mobile_on_print_start: Mobil cihazlarda baskı başlangıcında dosyayı otomatik yükle
+      axes: Eksenler
+      camera_flip_x: Yatayda çevir
+      camera_flip_y: Dikeyde çevir
+      camera_fullscreen_action:
+        title: Tam ekran işlemi
+        embed: Gömülü
+        rawstream: Ham akış
+      camera_rotate_by: Döndürme miktarı
+      camera_stream_type: Akış türü
+      camera_url_snapshot: Kamera URL Anlık Görüntü
+      camera_url_stream: Kamera URL Akış
+      card: Kart
+      collector: Toplayıcı
+      confirm_on_estop: Acil durdurma için onay iste
+      confirm_on_power_device_change: Cihaz Güç değişiklikleri için onay iste
+      confirm_on_save_config_and_restart: Kaydet ve yeniden başlatmadan önce Bekleyen Yapılandırma Değişikliklerini İncele
+      confirm_dirty_editor_close: Kaydedilmemiş değişikliklerle editörü kapatırken onay iste
+      contains: İçerir
+      dark_mode: Koyu mod
+      dashed: Kesikli
+      default_extrude_length: Varsayılan ekstrüde uzunluğu
+      default_extrude_speed: Varsayılan ekstrüde hızı
+      default_min_layer_height: Varsayılan minimum katman yüksekliği
+      default_toolhead_move_length: Varsayılan araç kafa hareket uzunluğu
+      default_toolhead_xy_speed: Varsayılan araç kafa XY hızı
+      default_toolhead_z_speed: Varsayılan araç kafa Z hızı
+      dotted: Noktalı
+      draw_background: Arkaplanı Çiz
+      draw_origin: Kökeni çiz
+      enable: Etkinleştir
+      enable_diagnostics: Tanıları etkinleştir
+      enable_notifications: Bildirimleri etkinleştir
+      enable_xy_homing: XY Homing'i etkinleştir
+      expression: İfade
+      extrusion_line_width: Ekstrüzyon Çizgi Genişliği
+      flip_horizontal: Yatay Çevir
+      flip_vertical: Dikey Çevir
+      fill_color: Dolgu rengi
+      fill_opacity: Dolgu saydamlığı
+      filter: Filtre | Filtreler
+      fps_target: FPS Hedefi
+      fps_idle_target: Odaklanmadayken FPS Hedefi
+      height: Yükseklik
+      hide_single_part_bounding_box: Tek bir parça basıldığında parça sınırlayıcı kutusunu gizle
+      gcode_coords: GCode Koordinatlarını Kullan
+      icon: Simge
+      invert_x_control: X Kontrolünü Ters Çevir
+      invert_y_control: Y Kontrolünü Ters Çevir
+      invert_z_control: Z Kontrolünü Ters Çevir
+      language: Dil Seçimi
+      last_result: Sonuç
+      left_y: Sol Y-Ekseni
+      line_color: Çizgi rengi
+      line_style: Çizgi stili
+      min: Minimum
+      max: Maksimum
+      metrics: Metrikler
+      move_line_width: Hareket Çizgi Genişliği
+      name: İsim
+      never: Asla
+      none: Yok
+      optional: İsteğe Bağlı
+      power_toggle_in_top_nav: Üst gezinimde Güç anahtarlama
+      primary_color: Birincil renk
+      print_eta_calculation: Baskı ETA hesaplama
+      print_in_progress_layout: Devam eden baskı düzeni
+      print_progress_calculation: Baskı İlerleme hesaplama
+      printer_name: Yazıcı Adı
+      reset: Ayarları Sıfırla
+      retraction_icon_size: Geri Çekme Simge Boyutu
+      right_y: Sağ Y-Ekseni
+      save_and_restore_view_state: Görünüm durumunu kaydet ve geri yükle
+      sections_to_ignore_pending_configuration_changes: Bekleyen Yapılandırma Değişikliklerini Yoksayılacak Bölümler
+      show_animations: Animasyonları Göster
+      show_barometric_pressure: Barometrik basıncı göster
+      show_chart: Grafikleri Göster
+      show_code_lens: Kod Lenslerini Göster
+      show_gas_resistance: Gaz direncini göster
+      show_legend: Açıklamaları Göster
+      show_logo_on_background: Arka plana logo göster
+      show_rate_of_change: Sıcaklık değişim hızını göster
+      show_relative_humidity: İlgili nem göster
+      show_save_config_and_restart: Üst gezinimde Yapılandırmayı Kaydet ve Yeniden Başlat düğmesini göster
+      show_upload_and_print: Üst gezinimde Yükle ve Baskı Yap düğmesini göster
+      solid: Katı
+      starts_with: İle başlar
+      theme_preset: Topluluk teması
+      thermal_preset_gcode: GCode
+      thermal_preset_name: Preset Adı
+      title: Başlık
+      to_browser_local_storage: Tarayıcı yerel depolamaya
+      to_browser_session_storage: Tarayıcı oturum depolamaya
+      toolhead_control_style: Aracı kafa kontrol stili
+      toolhead_move_distances: Aracı kafa hareket mesafeleri
+      toolhead_xy_move_distances: Aracı kafa XY hareket mesafeleri
+      toolhead_z_move_distances: Aracı kafa Z hareket mesafeleri
+      type: Tür
+      unit: Birim
+      z_adjust_values: Z Ayar değerleri
+      date_format: Tarih formatı
+      time_format: Zaman formatı
+      text_sort_order: Metin sıralama düzeni
+      force_move_toggle_warning: FORCE_MOVE aktive edilirken onay gerektirir
+      show_manual_probe_dialog_automatically: Manuel Sondaj iletişim kutusunu otomatik olarak göster
+      show_bed_screws_adjust_dialog_automatically: Yatak Vidaları Ayar iletişim kutusunu otomatik olarak göster
+      show_screws_tilt_adjust_dialog_automatically: Vida Eğim Ayar iletişim kutusunu otomatik olarak göster
+    timer_options:
+      duration: Süre sadece
+      filament: Filament Tahmini
+      file: Dosya Tahmini
+      slicer: Dilimleyici
+      slicer_m73: Dilimleyici (M73)
+    title:
+      authentication: Kimlik Doğrulama
+      console: Konsol
+      camera: Kamera | Kameralar
+      file_browser: Dosya Tarayıcı
+      file_editor: Dosya Düzenleyici
+      gcode_preview: Gcode Önizleme
+      general: Genel
+      macros: Makrolar
+      theme: Tema
+      thermal_presets: Termal Ön Ayarlar
+      tool: Araç
+    tooltip:
+      average_calculation: Birden fazla seçenek seçilirse, ortalama hesaplanır
+      diagnostics_performance: '[BETA] Tanısal bilgi kaydı performansı etkileyebilir'
+      gcode_coords: Gösterge tablosunda araç başı konumu yerine GCode konumunu kullanın
+      show_manual_probe_dialog_automatically: Elle Sondaj aracı çalıştırılırsa yardımcı iletişim kutusu otomatik olarak gösterilir
+      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST aracı çalıştırılırsa yardımcı iletişim kutusu otomatik olarak gösterilir
+      show_screws_tilt_adjust_dialog_automatically: SCREWS_TILT_CALCULATE aracı çalıştırılırsa yardımcı iletişim kutusu otomatik olarak gösterilir
+      theme_disclaimer: >-
+        Bu temalar, ilgili sahiplerin fikri mülkiyetinde olan marka adlarını ve logolarını içerir.<br>
+        Bu isimlerin ve logoların dahil edilmesi markalardan izin alınarak gerçekleştirilmiştir.<br>
+        Ancak, lütfen bu temaların ilgili markalar tarafından resmi olarak bakımının yapılmadığını unutmayın.<br>
+        Temalarla ilgili herhangi bir sorun veya soruşturma, Fluidd ekibine yönlendirilmelidir.<br>
+        Marka adlarının ve logolarının kullanımı sadece dekoratif ve estetik amaçlarla yapılmış olup, markalarla resmi bir ilişki veya onay ima edilmez.
+  socket:
+    msg:
+      connecting: Moonraker'a bağlanılıyor...
+      no_connection: Moonraker bağlantısı yok. Lütfen moonraker durumunu kontrol edin ve/veya yenileyin.
+  system_info:
+    label:
+      awake_time: Uyanık Süre
+      capacity: Kapasite
+      constants: Sabitler
+      cpu_desc: CPU Tanımı
+      devices: Cihazlar
+      distribution_codename: Kod Adı
+      distribution_like: Dağıtım Türü
+      distribution_name: Dağıtım Adı
+      frequency: Frekans
+      hardware_desc: Donanım Tanımı
+      hostname: Ana Bilgisayar Adı
+      klipper_load: Klipper Yükü
+      load: Yük
+      manufactured: Üretim Tarihi
+      manufacturer: Üretici
+      memory_used: Kullanılan Bellek
+      mcu_awake: '{mcu} Uyanık Süre'
+      mcu_bandwidth: '{mcu} Bant Genişliği'
+      mcu_information: '{mcu} Bilgileri'
+      mcu_load: '{mcu} Yükü'
+      micro_controller: Mikrodenetleyici
+      model: CPU Modeli
+      moonraker_load: Moonraker Yükü
+      last_stats: Son İstatistikler
+      network: Ağ
+      processor_desc: İşlemci Tanımı
+      product_name: Ürün Adı
+      serial_number: Seri Numarası
+      system_load: Sistem Yükü
+      system_memory: Sistem Belleği
+      system_utilization: Sistem Kullanımı
+      total_memory: Toplam Bellek
+      operating_system: İşletim Sistemi
+      version: Sürüm
+      virtualization: Sanallaştırma
+    msg:
+      canbus_warning: >-
+        Sadece atanmamış CAN bus düğümleri algılanabilir.<br>
+        İletişim sorunlarını önlemek için CAN bus'a yalnızca bir atanmamış cihaz bağlı olması önerilir.<br>
+        Daha fazla bilgiye <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">buradan</a> ulaşabilirsiniz.
+      no_devices_found: Cihaz bulunamadı
+      no_devices_searched: Cihazları aramak için yenileme düğmesini kullanın
+  tool:
+    btn:
+      home_x: X
+      home_y: 'Y'
+      home_all: Tümü
+    title:
+      bed_screws_adjust: Yatak Vida Ayarı
+      manual_probe: Manuel Sondaj
+      screws_tilt_adjust: Vida Eğim Ayarı
+    tooltip:
+      absolute_positioning: Mutlak Konumlama
+      extruder_disabled: Ekstruder devre dışı, min_extrude_temp (%{min}<small>°C</small>) altında
+      home_xy: XY Eksenlerini Ana Konumuna Getir
+      home_z: Z Eksenini Ana Konumuna Getir
+      manual_probe: Manuel Sondaj
+      motors_off: Motorlar Kapatıldı
+      relative_positioning: Göreceli Konumlama
+      select_tool: Aracı Seç %{tool}
+      tools: Araçlar
+    label:
+      stats_active_extruder: >-
+        <span class="secondary--text">Etkin ekstruder yapılandırması şu şekildedir</span>
+        %{filamentDiameter} mm çapında filament için
+        <span class="secondary--text">ve</span>
+        %{nozzleDiameter} mm çapında nozul için
+      stats_volumetric_flow: >-
+        %{extrudeSpeed} mm/s hızında ekstrüde edilirken<span class="secondary--text">,
+        ekstruderin sağlayabileceği tahmini hacimsel akış</span>
+        %{estimatedVolumetricFlow} mm³/s olarak tahmin edilmektedir
+      stats_extruded_length: >-
+        Filament %{extrudeFactor} % akışında %{extrudeLength} mm ekstrüde edilirken
+        <span class="secondary--text">,
+        tahmini çıktı uzunluğu</span>
+        %{estimatedExtrudedLength} mm olarak tahmin edilmektedir
+      stats_max_speed: >-
+        <span class="secondary--text">Bir</span>
+        %{layerHeight} mm katman yüksekliği varsayılarak<span class="secondary--text">,
+        tahmini maksimum baskı hızı</span> %{estimatedMaxSpeed} mm/s olarak tahmin edilmektedir
+  version:
+    btn:
+      check_for_updates: Güncellemeleri Kontrol Et
+      finish: Bitir
+      update: Güncelle
+      update_all: Tümünü Güncelle
+      view_versions: Sürümleri Görüntüle
+    label:
+      commit_history: Taahhüt Geçmişi
+      commits_on: taahhütler üzerinde
+      committed: Taahhüt
+      dirty: KİRİK
+      invalid: GEÇERSİZ
+      os_packages: İşletim Sistemi Paketleri
+      package_list: Paket Listesi
+      up_to_date: GÜNCEL
+      updates_available: Güncellemeler mevcut
+      old_component_version: >-
+        Tüm özellikleri desteklemeyen eski bir %{name} sürümünü kullanıyorsunuz.<br>%{name}'yi en az %{version} sürümüne güncelleyin.
+    status:
+      finished: Güncellemeler tamamlandı
+      updating: Güncelleniyor...
+    title: Yazılım Güncellemeleri
+    tooltip:
+      commit_history: Taahhüt geçmişi
+      dirty: master'dan ayrık, master değil veya geçersiz kökeni gösterir
+      invalid: havuzdaki yerel değişiklikleri gösterir
+      packages: Paketler
+      release_notes: Sürüm notları
+  timelapse:
+    btn:
+      render: Oluştur
+      save_frames: Kareleri Kaydet
+    error:
+      newframe: Timelapse karesi alınırken hata oluştu
+    label:
+      frames: '%{frames} kare | %{frames} kareler'
+      length: 'Tahmini uzunluk: %{length}'
+      frame: Kare | Kareler
+    title:
+      timelapse_settings: Timelapse Ayarları
+      timelapse_status: Timelapse Durumu
+      render_settings: Render Ayarları
+    setting:
+      enable: Etkin
+      auto_render: Otomatik Oluştur
+      crf: Sabit Oran Faktörü
+      duplicatelastframe: Son kareleri çoğalt
+      fw_retract: Firmware Geri Çekme Kullan
+      gcode_verbose: Detaylı Gcode
+      mode: Mod
+      mode_layermacro: Katman Makrosu
+      mode_hyperlapse: Hyperlapse
+      hyperlapse_cycle: Hyperlapse Döngüsü
+      output_framerate: Çıkış Kare Hızı
+      park_retract_distance: Park Geri Çekme Mesafesi
+      park_retract_speed: Park Geri Çekme Hızı
+      park_extrude_distance: Park Ekstrüzyon Mesafesi
+      park_extrude_speed: Park Ekstrüzyon Hızı
+      parkhead: Kafa Parkı
+      park_time: Park Süresi
+      park_travel_speed: Park Seyahat Hızı
+      park_custom_pos_x: Park Pozisyonu X
+      park_custom_pos_y: Park Pozisyonu Y
+      park_custom_pos_dz: Park Pozisyonu Z-Sıçrama
+      parkpos:
+        label: Park Pozisyonu
+        custom: Özel
+        front_left: Sol Ön
+        front_right: Sağ Ön
+        center: Merkez
+        back_left: Sol Arka
+        back_right: Sağ Arka
+        x_only: Sadece X'i Taşı
+        y_only: Sadece Y'yi Taşı
+      previewimage: Küçük Resim Oluştur
+      saveframes: Kareleri Kaydet
+      stream_delay_compensation: Gecikme Telafisi
+      targetlength: Hedef Uzunluk
+      variable_fps: Değişken FPS
+      variable_fps_min: Minimum Kare Hızı
+      variable_fps_max: Maksimum Kare Hızı
+  spoolman:
+    btn:
+      manage_spools: Makaraları Yönet
+      scan_code: Kodu Tara
+      select: 'Seç | {macro} için Seç'
+    title:
+      spoolman: Makara Yöneticisi
+      spool_selection: '{macro} için Makara Seçimi | {macro} için Makara Seçimi'
+      scan_spool: Makara Tara
+    label:
+      active_spool: Aktif Makara
+      change_spool: Makara Değiştir
+      comment: Yorum
+      device_camera: Aygıt
+      filament_name: Filament
+      first_used: İlk Kullanım
+      id: Kimlik
+      last_used: Son Kullanım
+      location: Konum
+      lot_nr: Lot No
+      material: Malzeme
+      remaining_weight: Kalan
+      vendor: Satıcı
+    msg:
+      no_spool: >-
+        Bir makara seçmediniz.
+        Filament takibi olmadan yazdırmak istediğinizden emin misiniz?
+      no_filament: >-
+        Seçtiğiniz makaranın, baskı işlemini başarıyla tamamlamak için yeterli filamenti olmayabilir.
+        Devam etmek istediğinizden emin misiniz?
+      no_required_length: >-
+        Seçilen dosyayı yazdırmak için gereken filament miktarı bilinmiyor.
+        Devam etmek istiyor musunuz?
+      mismatched_filament: >-
+        Seçilen filamentin malzemesi, slicer'da seçilen malzemeyle eşleşmiyor.
+        Devam etmek istediğinizden emin misiniz?
+      tracking_inactive: >-
+        Filament takibi etkin değil.
+        Başlamak için lütfen bir makara seçin.
+      not_connected: Makara yöneticisi sunucusu mevcut değil.
+      info:
+        howto: >-
+          Makaranızın QR kodunu kameraya gösterin.
+          Bu pencere, bir makaranın algılandığı anda kapanacaktır.
+      warning:
+        code_not_recognized: Bu kod, uyumlu bir QR kodu gibi görünmüyor.
+        invalid_spool_id: Bu QR kodundaki makara kimliği geçersiz.
+      error:
+        cors: >-
+          Kameraların beslemesine erişirken bir hata oluştu.
+          Lütfen web kamerası sunucunuzun CORS erişimine izin verdiğinden emin olun.
+        spool_not_existant: Taramış olduğunuz makara veritabanında mevcut değil.
+        no_image_data: >-
+          Kameraların beslemesine erişirken bir hata oluştu.
+          Lütfen kamera yapılandırmanızı kontrol edin veya başka bir kamera kaynağı deneyin.
+    setting:
+      auto_open_qr_camera: QR kodu algılama için kamerayı otomatik olarak aç
+      auto_select_spool_on_match: QR kodu eşleşmesinde makara seçimini otomatik olarak onayla
+      prefer_device_camera: Mevcutsa QR kodu algılama için aygıt kamerasını kullan
+      show_spool_selection_dialog_on_print_start: Yazdırma başlangıcında makara seçim iletişim kutusunu göster
+      warn_on_not_enough_filament: Seçilen makaranın baskıyı tamamlamak için yeterli filamenti olmadığında bir uyarı göster
+      warn_on_filament_type_mismatch: Makaranın filament tipi ile slicer'da seçilen filament tipi eşleşmediğinde bir uyarı göster
+  sensors:
+    title:
+      sensors: Sensörler
+
