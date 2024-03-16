@@ -97,8 +97,11 @@ export interface GeneralConfig {
   showScrewsTiltAdjustDialogAutomatically: boolean;
   forceMoveToggleWarning: boolean;
   printInProgressLayout: PrintInProgressLayout;
+  printProgressCalculation: PrintProgressCalculation[];
+  printEtaCalculation: PrintEtaCalculation[];
   enableDiagnostics: boolean;
   thumbnailSize: number;
+  colorPickerValueRange: ColorPickerValueRange;
 }
 
 export type ToolheadControlStyle = 'cross' | 'bars' | 'circle'
@@ -108,6 +111,12 @@ export type TextSortOrder = 'default' | 'numeric-prefix' | 'version'
 export type CameraFullscreenAction = 'embed' | 'rawstream';
 
 export type PrintInProgressLayout = 'default' | 'compact'
+
+export type ColorPickerValueRange = 'absolute' | 'percentage'
+
+export type PrintProgressCalculation = 'file' | 'slicer'
+
+export type PrintEtaCalculation = 'file' | 'slicer'
 
 // Config stored in moonraker db
 export interface ThemeConfig {

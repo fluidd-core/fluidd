@@ -170,6 +170,16 @@ export const httpClientActions = {
     }, options)
   },
 
+  serverDatabaseItemDelete<T = unknown> (namespace: string, key: string, options?: AxiosRequestConfig) {
+    return this.delete<{
+      result: {
+        namespace: string,
+        key: string,
+        value: T
+      }
+    }>(`/server/database/item?namespace=${namespace}&key=${key}`, options)
+  },
+
   serverFilesUploadPost (file: File, path: string, root: string, print?: boolean, options?: AxiosRequestConfig) {
     const formData = new FormData()
 

@@ -44,8 +44,22 @@
             $circle
           </v-icon>
         </v-toolbar-title>
+
         <v-spacer />
+
         <v-toolbar-items>
+          <app-btn
+            v-if="!$vuetify.breakpoint.smAndDown"
+            @click="peripheralsDialogOpen = true"
+          >
+            <v-icon
+              small
+              left
+            >
+              $devices
+            </v-icon>
+            <span>{{ $t('app.file_system.title.devices') }}</span>
+          </app-btn>
           <app-btn
             v-if="!useTextOnlyEditor"
             @click="handleCommandPalette"
@@ -130,6 +144,11 @@
         :readonly="readonly"
         @ready="editorReady = true"
       />
+
+      <peripherals-dialog
+        v-if="peripheralsDialogOpen"
+        v-model="peripheralsDialogOpen"
+      />
     </v-card>
   </v-dialog>
 </template>
@@ -176,6 +195,7 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
   updatedContent: string | null = null
   lastSavedContent: string | null = null
   editorReady = false
+  peripheralsDialogOpen = false
 
   get ready () {
     return (

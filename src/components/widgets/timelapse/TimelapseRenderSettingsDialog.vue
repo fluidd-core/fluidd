@@ -5,7 +5,7 @@
     max-width="640"
     :no-actions="!renderable"
   >
-    <div class="overflow-y-auto">
+    <v-card-text class="pa-0">
       <app-setting
         :title="$t('app.timelapse.setting.variable_fps')"
         :sub-title="subtitleIfBlocked(variableFpsBlocked)"
@@ -180,7 +180,7 @@
           @click.native.stop
         />
       </app-setting>
-    </div>
+    </v-card-text>
 
     <template #actions>
       <v-spacer />

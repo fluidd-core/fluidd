@@ -3,17 +3,12 @@
     v-model="open"
     scrollable
     :max-width="isMobileViewport ? '90vw' : '75vw'"
+    :title="$tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro })"
     title-shadow
   >
-    <template #title>
-      <span class="focus--text">
-        {{ $tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro }) }}
-      </span>
-
-      <v-spacer />
-
+    <template #menu>
       <v-menu
-        v-if="cameras.length > 1"
+        v-if="availableCameras.length > 1"
         left
         offset-y
         transition="slide-y-transition"
@@ -43,9 +38,9 @@
         </template>
         <v-list dense>
           <v-list-item
-            v-for="camera in cameras"
-            :key="camera.id"
-            @click="scanSource = camera.id"
+            v-for="camera in availableCameras"
+            :key="camera.uid"
+            @click="cameraScanSource = camera.uid"
           >
             <v-list-item-icon>
               <v-icon>
@@ -62,10 +57,10 @@
       </v-menu>
 
       <app-btn
-        v-else-if="cameras.length"
+        v-else-if="availableCameras.length"
         small
         class="ms-1 my-1"
-        @click="cameraScanSource = cameras[0].id"
+        @click="cameraScanSource = availableCameras[0].uid"
       >
         <v-icon
           class="mr-1"
@@ -97,7 +92,7 @@
       />
     </v-toolbar>
 
-    <v-card-text class="pt-0">
+    <v-card-text class="fill-height pt-0">
       <v-data-table
         :items="availableSpools"
         :headers="visibleHeaders"
@@ -160,21 +155,20 @@
     </v-card-text>
 
     <template #actions>
+      <v-spacer v-if="isMobileViewport" />
+
       <app-btn
         v-if="spoolmanURL"
         :href="spoolmanURL"
         target="_blank"
+        color="primary"
+        text
+        type="button"
       >
-        <v-icon
-          small
-          class="mr-2"
-        >
-          $edit
-        </v-icon>
-        {{ isMobileViewport ? '' : $tc('app.spoolman.btn.manage_spools') }}
+        {{ $t('app.spoolman.btn.manage_spools') }}
       </app-btn>
 
-      <v-spacer />
+      <v-spacer v-if="!isMobileViewport" />
 
       <app-btn
         text
@@ -187,16 +181,13 @@
         color="primary"
         @click="handleSelectSpool"
       >
-        <v-icon class="mr-2">
-          {{ filename ? '$printer' : '$send' }}
-        </v-icon>
         {{ filename ? $t('app.general.btn.print') : $tc('app.spoolman.btn.select', targetMacro ? 2 : 1, { macro: targetMacro }) }}
       </app-btn>
     </template>
 
     <QRReader
-      v-if="scanSource"
-      v-model="scanSource"
+      v-if="cameraScanSource"
+      v-model="cameraScanSource"
       @detected="handleQRCodeDetected"
     />
   </app-dialog>
@@ -209,7 +200,7 @@ import { SocketActions } from '@/api/socketActions'
 import type { MacroWithSpoolId, Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
 import QRReader from '@/components/widgets/spoolman/QRReader.vue'
-import type { CameraConfig } from '@/store/cameras/types'
+import type { WebcamConfig } from '@/store/webcams/types'
 import QrScanner from 'qr-scanner'
 import type { AppTableHeader } from '@/types'
 
@@ -246,7 +237,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         this.$nextTick(() => (this.cameraScanSource = 'device'))
       } else {
         const autoOpenCameraId = this.autoOpenQRDetectionCamera
-        if (this.$store.getters['cameras/getCameraById'](autoOpenCameraId)) {
+        if (this.$store.getters['webcams/getWebcamById'](autoOpenCameraId)) {
           this.$nextTick(() => (this.cameraScanSource = autoOpenCameraId))
         }
       }
@@ -279,7 +270,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       spools.push({
         ...spool,
         filament_name: filamentName,
-        filament_material: spool.filament.material
+        material: spool.filament.material
       })
     }
 
@@ -342,24 +333,23 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$store.state.spoolman.dialog.targetMacro
   }
 
-  get cameras () {
-    const cameras = this.$store.getters['cameras/getEnabledCameras']
-      .filter((camera: CameraConfig) => camera.service !== 'iframe')
+  get enabledWebcams (): WebcamConfig[] {
+    return this.$store.getters['webcams/getEnabledWebcams'] as WebcamConfig[]
+  }
+
+  get availableCameras (): Pick<WebcamConfig, 'uid' | 'name'>[] {
+    const cameras: Pick<WebcamConfig, 'uid' | 'name'>[] = this.enabledWebcams
+      .filter(camera => camera.service !== 'iframe')
 
     if (this.hasDeviceCamera) {
       // always show device camera first
-      cameras.unshift({ name: this.$t('app.spoolman.label.device_camera'), id: 'device' })
+      cameras.unshift({
+        name: this.$t('app.spoolman.label.device_camera').toString(),
+        uid: 'device'
+      })
     }
 
     return cameras
-  }
-
-  get scanSource () {
-    return this.cameraScanSource
-  }
-
-  set scanSource (source) {
-    this.cameraScanSource = source
   }
 
   handleQRCodeDetected (id: number) {

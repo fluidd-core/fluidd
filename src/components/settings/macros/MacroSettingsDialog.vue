@@ -7,7 +7,7 @@
     max-width="480"
     @save="handleSave"
   >
-    <div class="overflow-y-auto">
+    <v-card-text class="pa-0">
       <app-setting
         :title="$t('app.general.label.alias')"
       >
@@ -50,9 +50,8 @@
           {{ $t('app.setting.btn.reset') }}
         </app-btn>
         <app-color-picker
+          v-model="color"
           :title="$t('app.general.btn.set_color')"
-          :primary="color"
-          @change="handleColorChange"
         />
       </app-setting>
 
@@ -96,14 +95,13 @@
           hide-details
         />
       </app-setting>
-    </div>
+    </v-card-text>
   </app-dialog>
 </template>
 
 <script lang="ts">
 import type { Macro } from '@/store/macros/types'
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import type { IroColor } from '@irojs/iro-core'
 
 @Component({})
 export default class MacroMoveDialog extends Vue {
@@ -131,11 +129,11 @@ export default class MacroMoveDialog extends Vue {
     if (this.newMacro && this.newMacro.color !== '') {
       return this.newMacro.color
     }
-    return this.$vuetify.theme.currentTheme.secondary
+    return this.$vuetify.theme.currentTheme.secondary?.toString()
   }
 
-  handleColorChange (color: { channel: string, color: IroColor }) {
-    if (this.newMacro) this.newMacro.color = color.color.hexString
+  set color (value: string | undefined) {
+    if (this.newMacro) this.newMacro.color = value
   }
 
   handleResetColor () {

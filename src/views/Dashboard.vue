@@ -61,6 +61,7 @@ import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCar
 import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
 import SpoolmanCard from '@/components/widgets/spoolman/SpoolmanCard.vue'
 import SensorsCard from '@/components/widgets/sensors/SensorsCard.vue'
+import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
 
 @Component({
   components: {
@@ -78,7 +79,8 @@ import SensorsCard from '@/components/widgets/sensors/SensorsCard.vue'
     GcodePreviewCard,
     JobQueueCard,
     SpoolmanCard,
-    SensorsCard
+    SensorsCard,
+    RunoutSensorsCard
   }
 })
 export default class Dashboard extends Mixins(StateMixin) {
@@ -115,7 +117,7 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get hasCameras (): boolean {
-    return this.$store.getters['cameras/getEnabledCameras'].length > 0
+    return this.$store.getters['webcams/getEnabledWebcams'].length > 0
   }
 
   get hasHeatersOrTemperatureSensors () {
@@ -140,6 +142,10 @@ export default class Dashboard extends Mixins(StateMixin) {
 
   get supportsBedMesh () {
     return this.$store.getters['mesh/getSupportsBedMesh']
+  }
+
+  get supportsRunoutSensors () {
+    return this.$store.getters['printer/getRunoutSensors'].length > 0
   }
 
   get supportsSpoolman () {
@@ -216,6 +222,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'job-queue-card' && !this.supportsJobQueue) return true
     if (item.id === 'retract-card' && !this.firmwareRetractionEnabled) return true
     if (item.id === 'bed-mesh-card' && !this.supportsBedMesh) return true
+    if (item.id === 'runout-sensors-card' && !this.supportsRunoutSensors) return true
     if (item.id === 'spoolman-card' && !this.supportsSpoolman) return true
     if (item.id === 'sensors-card' && !this.hasSensors) return true
     if (item.id === 'temperature-card' && !this.hasHeatersOrTemperatureSensors) return true
