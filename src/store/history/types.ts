@@ -1,4 +1,4 @@
-import { KlipperFileMeta } from '@/store/files/types.metadata'
+import type { KlipperFileMeta } from '@/store/files/types.metadata'
 
 export interface HistoryState {
   count: number;
@@ -29,13 +29,4 @@ export interface HistoryRollUp {
   longest_print: number;
 }
 
-export enum HistoryItemStatus {
-  Completed = 'completed',
-  Cancelled = 'cancelled',
-  Error = 'error',
-  Printing = 'printing',
-  InProgress = 'in_progress',
-  Server_Exit = 'server_exit',
-  Klippy_Shutdown = 'klippy_shutdown',
-  Klippy_Disconnect = 'klippy_disconnect'
-}
+export type HistoryItemStatus = 'completed' | 'cancelled' | 'error' | 'printing' | 'in_progress' | 'server_exit' | 'klippy_shutdown' | 'klippy_disconnect' | 'interrupted'

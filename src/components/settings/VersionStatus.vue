@@ -76,19 +76,19 @@ import { Component, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class VersionStatus extends Vue {
-  @Prop({ type: Boolean, default: false })
-  readonly hasUpdate!: boolean
+  @Prop({ type: Boolean })
+  readonly hasUpdate?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly loading!: boolean
+  @Prop({ type: Boolean })
+  readonly loading?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly dirty!: boolean
+  @Prop({ type: Boolean })
+  readonly dirty?: boolean
 
   @Prop({ type: Boolean, default: true })
-  readonly valid!: boolean
+  readonly valid?: boolean
 }
 </script>

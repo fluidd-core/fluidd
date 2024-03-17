@@ -33,8 +33,8 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator'
-import { DiagnosticsCardConfig } from '@/store/diagnostics/types'
-import { EChartsOption } from 'echarts'
+import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
+import type { EChartsOption } from 'echarts'
 import BrowserMixin from '@/mixins/browser'
 
 @Component({})
@@ -81,10 +81,10 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
       }
     }
 
-    const theme = this.$store.getters['config/getTheme']
+    const theme = this.$vuetify.theme.currentTheme
     const color = [
-      theme.currentTheme.primary,
-      theme.currentTheme.secondary
+      theme.primary,
+      theme.secondary
     ]
 
     const series = this.series
@@ -92,6 +92,9 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
     const options = {
       grid,
       color,
+      textStyle: {
+        fontFamily: 'Roboto'
+      },
       legend: {
         show: false
       },
@@ -214,7 +217,7 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
           unit: yAxis.unit,
           displayLegend: metric.style.displayLegend,
           type: 'line',
-          yAxisIndex: Number(yAxisIndex),
+          yAxisIndex: +yAxisIndex,
           showSymbol: false,
           animation: false,
           color: metric.style.lineColor,

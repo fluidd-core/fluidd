@@ -3,13 +3,18 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { loadWASM } from 'onigasm'
 import onigasmWasm from 'onigasm/lib/onigasm.wasm?url'
 
-import { IGrammarDefinition, Registry } from 'monaco-textmate'
+import { Registry, type IGrammarDefinition } from 'monaco-textmate'
 import { wireTmGrammars } from 'monaco-editor-textmate'
 import getVueApp from '@/util/get-vue-app'
 import themeDark from '@/monaco/theme/editor.dark.theme.json'
 import themeLight from '@/monaco/theme/editor.light.theme.json'
 
 import { MonacoLanguageImports } from '@/dynamicImports'
+
+type ReduceState<T> = {
+  current?: T,
+  result: T[]
+}
 
 type CodeLensSupportedService = 'klipper' | 'moonraker' | 'moonraker-telegram-bot' | 'crowsnest'
 
@@ -104,28 +109,42 @@ async function setupMonaco () {
 
       const linesContent = model.getLinesContent()
 
-      const sections = linesContent.reduce((ranges, lineContent, index) => {
-        const section = /^\[([^\]]+)\]/.exec(lineContent)
-        if (section) {
-          const [sectionName] = section[1].split(' ', 1)
+      const sectionBlocks = linesContent
+        .reduce((state, lineContent, index) => {
+          const section = /^\[([^\]]+)\]/.exec(lineContent)
 
-          const referenceSection = getDocsSection(service, sectionName)
+          if (section) {
+            const [sectionName] = section[1].split(' ', 1)
 
-          return ranges.concat({
-            referenceSection,
-            range: {
-              startLineNumber: index + 1,
-              startColumn: model.getLineFirstNonWhitespaceColumn(index + 1),
-              endLineNumber: index + 1,
-              endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
+            const referenceSection = getDocsSection(service, sectionName)
+
+            state.result.push(state.current = {
+              referenceSection,
+              range: {
+                startLineNumber: index + 1,
+                startColumn: model.getLineFirstNonWhitespaceColumn(index + 1),
+                endLineNumber: index + 1,
+                endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
+              }
+            })
+          } else {
+            const isNotComment = /^\s*[^#;]/.test(lineContent)
+
+            if (isNotComment && state.current) {
+              state.current.range = {
+                ...state.current.range,
+                endLineNumber: index + 1,
+                endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
+              }
             }
-          })
-        }
-        return ranges
-      }, [] as { referenceSection: string, range: monaco.IRange }[])
+          }
+
+          return state
+        }, { result: [] } as ReduceState<{ referenceSection: string, range: monaco.IRange }>)
+        .result
 
       return {
-        lenses: sections.map((section, index) =>
+        lenses: sectionBlocks.map((section, index) =>
           ({
             range: section.range,
             id: `docs${index}`,
@@ -146,69 +165,183 @@ async function setupMonaco () {
     provideFoldingRanges: (model) => {
       const linesContent = model.getLinesContent()
 
-      const sectionBlocks = linesContent.reduce((sectionBlocks, lineContent, index) => {
-        const isSection = /^\[([^\]]+)\]/.test(lineContent)
+      const sectionBlocks = linesContent
+        .reduce((state, lineContent, index) => {
+          const isSection = /^\[([^\]]+)\]/.test(lineContent)
 
-        if (isSection) {
-          return sectionBlocks.concat({
-            start: index + 1,
-            end: index + 1
-          })
-        }
+          if (isSection) {
+            state.result.push(state.current = {
+              kind: monaco.languages.FoldingRangeKind.Region,
+              start: index + 1,
+              end: index + 1
+            })
+          } else {
+            const isNotComment = /^\s*[^#;]/.test(lineContent)
 
-        const isNotComment = /^\s*[^#;]/.test(lineContent)
-
-        if (isNotComment && sectionBlocks.length > 0) {
-          sectionBlocks[sectionBlocks.length - 1].end = index + 1
-        }
-
-        return sectionBlocks
-      }, [] as Array<{ start: number, end: number }>)
-
-      const commentBlocks = linesContent.reduce((commentBlocks, lineContent, index) => {
-        lineContent = lineContent.trim()
-
-        if (lineContent.length > 0) {
-          const isComment = ['#', ';'].includes(lineContent[0])
-
-          const lastCommentBlock = commentBlocks.length > 0 ? commentBlocks[commentBlocks.length - 1] : undefined
-
-          if (isComment) {
-            if (lastCommentBlock && !lastCommentBlock.complete) {
-              lastCommentBlock.end = index + 1
-            } else {
-              return commentBlocks.concat({
-                start: index + 1,
-                end: index + 1,
-                complete: false
-              })
+            if (isNotComment && state.current) {
+              state.current.end = index + 1
             }
-          } else if (lastCommentBlock) {
-            lastCommentBlock.complete = true
           }
-        }
 
-        return commentBlocks
-      }, [] as Array<{start: number, end: number, complete: boolean}>)
+          return state
+        }, { result: [] } as ReduceState<monaco.languages.FoldingRange>)
+        .result
+
+      const commentBlocks = linesContent
+        .reduce((state, lineContent, index) => {
+          lineContent = lineContent.trim()
+
+          if (lineContent.length > 0) {
+            const isComment = ['#', ';'].includes(lineContent[0])
+
+            if (isComment) {
+              if (state.current) {
+                state.current.end = index + 1
+              } else {
+                state.result.push(state.current = {
+                  kind: monaco.languages.FoldingRangeKind.Comment,
+                  start: index + 1,
+                  end: index + 1
+                })
+              }
+            } else {
+              state.current = undefined
+            }
+          }
+
+          return state
+        }, { result: [] } as ReduceState<monaco.languages.FoldingRange>)
+        .result
 
       return [
-        ...sectionBlocks.map(section => ({
-          start: section.start,
-          end: section.end,
-          kind: monaco.languages.FoldingRangeKind.Region
-        })),
-        ...commentBlocks.map(section => ({
-          start: section.start,
-          end: section.end,
-          kind: monaco.languages.FoldingRangeKind.Comment
-        }))
+        ...sectionBlocks,
+        ...commentBlocks
+      ]
+    }
+  })
+
+  monaco.languages.registerFoldingRangeProvider('gcode', {
+    provideFoldingRanges: (model) => {
+      const linesContent = model.getLinesContent()
+
+      const layerBlocks = linesContent
+        .reduce((state, lineContent, index) => {
+          const isLayer = /^\s*SET_PRINT_STATS_INFO .*CURRENT_LAYER=/i.test(lineContent)
+
+          if (isLayer) {
+            state.result.push(state.current = {
+              kind: monaco.languages.FoldingRangeKind.Region,
+              start: index + 1,
+              end: index + 1
+            })
+          } else {
+            const isNotComment = /^\s*[^;]/.test(lineContent)
+
+            if (isNotComment && state.current) {
+              state.current.end = index + 1
+            }
+          }
+
+          return state
+        }, { result: [] } as ReduceState<monaco.languages.FoldingRange>)
+        .result
+
+      const objectBlocks = linesContent
+        .reduce((state, lineContent, index) => {
+          lineContent = lineContent.trim()
+
+          if (lineContent.length > 0) {
+            const isObject = /^\s*EXCLUDE_OBJECT_(START|END) /i.exec(lineContent)
+
+            if (isObject) {
+              switch (isObject[1].toUpperCase()) {
+                case 'START':
+                  state.result.push(state.current = {
+                    kind: monaco.languages.FoldingRangeKind.Region,
+                    start: index + 1,
+                    end: index + 1
+                  })
+                  break
+
+                case 'END':
+                  state.current = undefined
+                  break
+              }
+            } else {
+              if (state.current) {
+                state.current.end = index + 1
+              }
+            }
+          }
+
+          return state
+        }, { result: [] } as ReduceState<monaco.languages.FoldingRange>)
+        .result
+
+      const thumbnailBlocks = linesContent
+        .reduce((state, lineContent, index) => {
+          if (lineContent.startsWith('; thumbnail')) {
+            const type = lineContent.substring(11).split(' ')[1]
+
+            switch (type) {
+              case 'begin':
+                state.result.push(state.current = {
+                  kind: monaco.languages.FoldingRangeKind.Comment,
+                  start: index + 1,
+                  end: index + 1
+                })
+                break
+
+              case 'end':
+                if (state.current && state.current.start === state.current.end) {
+                  state.current.end = index
+                }
+                break
+            }
+          }
+
+          return state
+        }, { result: [] } as ReduceState<monaco.languages.FoldingRange>)
+        .result
+
+      const commentBlocks = linesContent
+        .reduce((state, lineContent, index) => {
+          lineContent = lineContent.trim()
+
+          if (lineContent.length > 0) {
+            const isComment = lineContent.startsWith(';')
+
+            if (isComment) {
+              if (state.current) {
+                state.current.end = index + 1
+              } else {
+                state.result.push(state.current = {
+                  kind: monaco.languages.FoldingRangeKind.Comment,
+                  start: index + 1,
+                  end: index + 1
+                })
+              }
+            } else {
+              state.current = undefined
+            }
+          }
+
+          return state
+        }, { result: [] } as ReduceState<monaco.languages.FoldingRange>)
+        .result
+
+      return [
+        ...layerBlocks,
+        ...objectBlocks,
+        ...commentBlocks,
+        ...thumbnailBlocks
       ]
     }
   })
 
   // Defined the themes.
-  monaco.editor.defineTheme('dark-converted', themeDark as any)
-  monaco.editor.defineTheme('light-converted', themeLight as any)
+  monaco.editor.defineTheme('dark-converted', themeDark as monaco.editor.IStandaloneThemeData)
+  monaco.editor.defineTheme('light-converted', themeLight as monaco.editor.IStandaloneThemeData)
 
   // Wire it up.
   await wireTmGrammars(monaco, registry, grammars)

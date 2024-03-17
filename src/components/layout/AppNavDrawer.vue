@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer
     v-model="open"
-    :color="theme.currentTheme.drawer"
+    :color="$vuetify.theme.currentTheme.drawer"
     :mini-variant="!showSubNavigation"
     :floating="!showSubNavigation"
     clipped
@@ -12,12 +12,13 @@
       no-gutters
     >
       <v-navigation-drawer
-        :color="theme.currentTheme.drawer"
+        :color="$vuetify.theme.currentTheme.drawer"
         mini-variant
         :value="open"
+        class="pb-16 pb-sm-0"
       >
         <div
-          v-show="isMobileViewport"
+          v-if="isMobileViewport"
           :style="`height: ${$globals.HEADER_HEIGHT}px;`"
           class="app-icon"
         >
@@ -129,12 +130,8 @@ import BrowserMixin from '@/mixins/browser'
 
 @Component({})
 export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
-  @VModel({ type: Boolean, default: true })
-    open!: boolean
-
-  get theme () {
-    return this.$store.getters['config/getTheme']
-  }
+  @VModel({ type: Boolean })
+    open?: boolean
 
   get supportsHistory () {
     return this.$store.getters['server/componentSupport']('history')

@@ -1,12 +1,14 @@
 import Vue from 'vue'
-import { MutationTree } from 'vuex'
-import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
+import type { MutationTree } from 'vuex'
+import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 import { merge, set } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
-import { AppTableHeader } from '@/types'
-import { AppTablePartialHeader } from '@/types/tableheaders'
+import type { AppTableHeader } from '@/types'
+import type { AppTablePartialHeader } from '@/types/tableheaders'
+import type { FileFilterType } from '../files/types'
+import consola from 'consola'
 
 export const mutations: MutationTree<ConfigState> = {
   /**
@@ -19,22 +21,50 @@ export const mutations: MutationTree<ConfigState> = {
   /**
    * Inits UI settings from the db
    */
-  setInitUiSettings (state, payload: UiSettings) {
+  setInitUiSettings (state, payload: Partial<UiSettings>) {
     if (payload) {
+      if (payload.theme) {
+        // check for legacy theme color
+        if (
+          payload.theme.color == null &&
+          'currentTheme' in payload.theme &&
+          typeof payload.theme.currentTheme === 'object' &&
+          payload.theme.currentTheme != null &&
+          'primary' in payload.theme.currentTheme &&
+          typeof payload.theme.currentTheme.primary === 'string'
+        ) {
+          consola.debug('Converting legacy theme color')
+
+          payload.theme.color = payload.theme.currentTheme.primary
+
+          delete payload.theme.currentTheme
+        }
+
+        const logoSrc = payload.theme.logo?.src
+
+        if (logoSrc?.startsWith('/')) {
+          payload.theme.logo.src = logoSrc.substring(1)
+        }
+      }
+
       // Most settings should be merged, so start there.
       const processed = merge(state.uiSettings, payload)
 
       // Apply overrides.
-      if (payload.general && payload.general.zAdjustDistances) {
+      if (payload.general?.zAdjustDistances) {
         Vue.set(processed.general, 'zAdjustDistances', payload.general.zAdjustDistances)
       }
 
-      if (payload.general && payload.general.toolheadMoveDistances) {
+      if (payload.general?.toolheadMoveDistances) {
         Vue.set(processed.general, 'toolheadMoveDistances', payload.general.toolheadMoveDistances)
       }
 
-      if (payload.editor && payload.editor.autoEditExtensions) {
+      if (payload.editor?.autoEditExtensions) {
         Vue.set(processed.editor, 'autoEditExtensions', payload.editor.autoEditExtensions)
+      }
+
+      if (payload.fileSystem?.activeFilters) {
+        Vue.set(processed.fileSystem, 'activeFilters', payload.fileSystem.activeFilters)
       }
 
       Vue.set(state, 'uiSettings', processed)
@@ -56,21 +86,6 @@ export const mutations: MutationTree<ConfigState> = {
     state.hostConfig.endpoints = payload.endpoints
     state.hostConfig.hosted = payload.hosted
     state.hostConfig.themePresets = payload.themePresets
-
-    // Ensure the default (first item..) is applied for fresh setups.
-    if (payload.themePresets && payload.themePresets.length >= 1) {
-      const d = payload.themePresets[0]
-      Vue.set(state.uiSettings, 'theme', {
-        ...{
-          isDark: d.isDark,
-          logo: d.logo,
-          currentTheme: {
-            primary: d.color
-          }
-        },
-        ...state.uiSettings.theme
-      })
-    }
   },
 
   setInitInstances (state, payload: InitConfig) {
@@ -152,6 +167,10 @@ export const mutations: MutationTree<ConfigState> = {
   setRemovePreset (state, payload) {
     const i = state.uiSettings.dashboard.tempPresets.findIndex(preset => preset.id === payload.id)
     state.uiSettings.dashboard.tempPresets.splice(i, 1)
+  },
+
+  setFileSystemActiveFilters (state, payload: { root: string, value: FileFilterType[] }) {
+    Vue.set(state.uiSettings.fileSystem.activeFilters, payload.root, payload.value)
   },
 
   /**

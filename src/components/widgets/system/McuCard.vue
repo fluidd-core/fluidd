@@ -10,7 +10,7 @@
         x-small
         text
         class="ms-1 my-1"
-        @click="showMcuConstantsDialog"
+        @click="showMcuInformationDialog"
       >
         <v-icon>$viewHeadline</v-icon>
       </app-btn>
@@ -33,32 +33,32 @@
       </tbody>
     </v-simple-table>
 
-    <mcu-constants-dialog
-      v-if="mcuConstantsDialogOpen"
-      v-model="mcuConstantsDialogOpen"
+    <mcu-information-dialog
+      v-if="mcuInformationDialogOpen"
+      v-model="mcuInformationDialogOpen"
       :mcu="mcu"
     />
   </collapsable-card>
 </template>
 
 <script lang="ts">
-import McuConstantsDialog from './McuConstantsDialog.vue'
-import { MCU } from '@/store/printer/types'
+import McuInformationDialog from './McuInformationDialog.vue'
+import type { MCU } from '@/store/printer/types'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
   components: {
-    McuConstantsDialog
+    McuInformationDialog
   }
 })
 export default class PrinterStatsCard extends Vue {
   @Prop({ type: Object, required: true })
   readonly mcu!: MCU
 
-  mcuConstantsDialogOpen = false
+  mcuInformationDialogOpen = false
 
-  showMcuConstantsDialog () {
-    this.mcuConstantsDialogOpen = true
+  showMcuInformationDialog () {
+    this.mcuInformationDialogOpen = true
   }
 }
 </script>

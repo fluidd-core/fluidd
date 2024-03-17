@@ -23,8 +23,6 @@ app:
     label:
       current: 當前值
       item: 名稱
-      'off': 關閉圖表
-      'on': 開啟圖表
       power: 功率
       target: 目標值
       rate_of_change: 變化值
@@ -89,7 +87,6 @@ app:
       upload_file: 上傳文件
     tooltip:
       low_on_space: 磁盤空間不足
-      move_item: '移動項目 | 移動 {count} 項'
       root_disabled: '{root} G代碼文件目錄不可用，請首先連接打印機或者檢查G代碼存放目錄的路徑與讀權限'
     url:
       klipper_config: 'https://www.klipper3d.org/zh-Hant/Config_Reference.html#%{hash}'
@@ -286,7 +283,6 @@ app:
       upload_and_print: 上傳和打印
       used: 已用
       username: 用戶名
-      variance: 偏差值
       velocity: 速度
       version_sort: 版本排序
       visible: 可見性
@@ -409,11 +405,11 @@ app:
   history:
     msg:
       confirm: 這將清除所有歷史記錄和打印機統計信息！是否確認？
+      confirm_jobs: 這將清除所有作業！是否確認？
+      confirm_stats: 這將清除所有統計數據！是否確認？
   job_queue:
     msg:
       confirm: 這將清除整個打印機隊列！是否確認？
-      confirm_jobs: 這將清除所有作業！是否確認？
-      confirm_stats: 這將清除所有統計數據！是否確認？
   printer:
     state:
       busy: 處理中
@@ -464,7 +460,6 @@ app:
         rawstream: 原始流
       camera_rotate_by: 旋轉角度
       camera_stream_type: 視頻流類型
-      camera_url: 攝像頭地址
       card: 卡片
       collector: 收集器
       confirm_on_estop: 緊急停止時是否需要確認

@@ -12,8 +12,7 @@
       "color": "#2196F3",
       "isDark": true,
       "logo": {
-        "src": "/logo_fluidd.svg",
-        "dynamic": true
+        "src": "logo_fluidd.svg"
       }
     },
     {
@@ -21,8 +20,7 @@
       "color": "#96CC4A",
       "isDark": true,
       "logo": {
-        "src": "/logo_annex.svg",
-        "dynamic": true
+        "src": "logo_annex.svg"
       }
     },
     {
@@ -30,8 +28,7 @@
       "color": "#475A91",
       "isDark": true,
       "logo": {
-        "src": "/logo_btt.svg",
-        "dynamic": true
+        "src": "logo_btt.svg"
       }
     },
     {
@@ -39,10 +36,9 @@
       "color": "#76FB00",
       "isDark": true,
       "logo": {
-        "src": "/logo_eva.svg",
+        "src": "logo_eva.svg",
         "dark": "#232323",
-        "light": "#ffffff",
-        "dynamic": false
+        "light": "#ffffff"
       }
     },
     {
@@ -50,8 +46,7 @@
       "color": "#dfff3e",
       "isDark": true,
       "logo": {
-        "src": "/logo_hevort.svg",
-        "dynamic": true
+        "src": "logo_hevort.svg"
       }
     },
     {
@@ -59,8 +54,7 @@
       "color": "#DA7A2C",
       "isDark": true,
       "logo": {
-        "src": "/logo_kingroon.svg",
-        "dynamic": false
+        "src": "logo_kingroon.svg"
       }
     },
     {
@@ -68,8 +62,39 @@
       "color": "#B12F36",
       "isDark": true,
       "logo": {
-        "src": "/logo_klipper.svg",
-        "dynamic": false
+        "src": "logo_klipper.svg"
+      }
+    },
+    {
+      "name": "LDO",
+      "color": "#326799",
+      "isDark": true,
+      "logo": {
+        "src": "logo_ldo.svg"
+      }
+    },
+    {
+      "name": "Peopoly",
+      "color": "#007CC2",
+      "isDark": true,
+      "logo": {
+        "src": "logo_peopoly.svg"
+      }
+    },
+    {
+      "name": "Prusa",
+      "color": "#E05D2D",
+      "isDark": false,
+      "logo": {
+        "src": "logo_prusa.svg"
+      }
+    },
+    {
+      "name": "Qidi Tech",
+      "color": "#5B7AEA",
+      "isDark": true,
+      "logo": {
+        "src": "logo_qidi.svg"
       }
     },
     {
@@ -77,10 +102,17 @@
       "color": "#76FB00",
       "isDark": true,
       "logo": {
-        "src": "/logo_ratrig.svg",
+        "src": "logo_ratrig.svg",
         "dark": "#232323",
-        "light": "#ffffff",
-        "dynamic": false
+        "light": "#ffffff"
+      }
+    },
+    {
+      "name": "Siboor",
+      "color": "#32E0DF",
+      "isDark": true,
+      "logo": {
+        "src": "logo_siboor.svg"
       }
     },
     {
@@ -88,8 +120,7 @@
       "color": "#FF2300",
       "isDark": true,
       "logo": {
-        "src": "/logo_voron.svg",
-        "dynamic": true
+        "src": "logo_voron.svg"
       }
     },
     {
@@ -97,8 +128,7 @@
       "color": "#FF2300",
       "isDark": true,
       "logo": {
-        "src": "/logo_vzbot.svg",
-        "dynamic": false
+        "src": "logo_vzbot.svg"
       }
     },
     {
@@ -106,8 +136,7 @@
       "color": "#e34234",
       "isDark": true,
       "logo": {
-        "src": "/logo_zerog.svg",
-        "dynamic": true
+        "src": "logo_zerog.svg"
       }
     },
     {
@@ -115,8 +144,7 @@
       "color": "#4bc3ca",
       "isDark": true,
       "logo": {
-        "src": "/logo_snakeoil.svg",
-        "dynamic": false
+        "src": "logo_snakeoil.svg"
       }
     }
   ]

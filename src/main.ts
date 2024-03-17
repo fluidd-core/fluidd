@@ -19,11 +19,12 @@ import vuetify from './plugins/vuetify'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import VueMeta from 'vue-meta'
 import VuetifyConfirm from 'vuetify-confirm'
+import Vue2TouchEvents from 'vue2-touch-events'
 import { InlineSvgPlugin } from 'vue-inline-svg'
 
 // Init.
 import { appInit } from './init'
-import { InitConfig } from './store/config/types'
+import type { InitConfig } from './store/config/types'
 
 // Import plugins
 import { HttpClientPlugin } from './plugins/httpClient'
@@ -36,11 +37,9 @@ import App from './App.vue'
 
 // Register global directives.
 import Blur from '@/directives/blur'
-import SortableDataTable from '@/directives/sortableDataTable'
 
 // Directives...
 Vue.directive('blur', Blur)
-Vue.directive('sortableDataTable', SortableDataTable)
 
 // v-chart component asynchronously loaded from a split chunk
 Vue.component('EChart', () => import('./vue-echarts-chunk'))
@@ -54,6 +53,7 @@ Vue.use(VuetifyConfirm, {
   vuetify
 })
 Vue.use(InlineSvgPlugin)
+Vue.use(Vue2TouchEvents)
 
 Vue.use(HttpClientPlugin, {
   store

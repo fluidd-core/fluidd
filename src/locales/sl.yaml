@@ -2,6 +2,7 @@ app:
   bedmesh:
     label:
       active: aktivno
+      base: osnova
       box_scale: Skaliranje
       flat_surface: Prikaži ravno ravnino
       mesh_matrix: Mrežasta matrika
@@ -17,30 +18,30 @@ app:
       not_found: Ni obstoječe posteljne mreže
       not_loaded: Nobena mreža ni naložena
     tooltip:
-      calibrate: Prične novo kalibracijo, ki jo shrani kot profil 'default'.
-      delete: Zbriši profil. To dejanje bo ponovno zagnalo tiskalnik.
+      calibrate: Prične novo kalibracijo, ki jo shrani kot profil 'default'
+      delete: Zbriši profil
       load: Naloži profil
       save: Shrani kalibriran profil v printer.cfg.
+      copy_image: Kopiraj sliko posteljne mreže
   chart:
     label:
       current: Dejansko
       item: Ime
-      'off': Skrij graf
-      'on': Prikaži graf
       power: Moč
       target: Cilj
       rate_of_change: Sprememba
     tooltip:
       help: >-
-        Držite shift za približevanje.<br />Kliknite na objekt, da mu spremenite vidnost v grafu.<br
+        Držite <kbd>shift</kbd> za približevanje.<br />Kliknite na objekt, da mu spremenite vidnost v grafu.<br
         />Kliknite na moč, da spremenite vidnost v grafu.
   console:
     label:
       auto_scroll: Samodejno drsenje
       flip_layout: Obrni postavitev
       hide_temp_waits: Skrij čakanje temperature
-    placeholder:
-      command: '''tab'' za samodejno dokončanje, ''help'' za seznam ukazov ''puščice'' za zgodovino'
+    tooltip:
+      help: >-
+        Vnesite "help" za nabor ukazov.<br />Uporabite <kbd>Tab</kbd> za samo domončanje. Uporabite <kbd>&uarr;</kbd> in <kbd>&darr;</kbd> za zgodovino.
   endpoint:
     error:
       cant_connect: >-
@@ -48,7 +49,7 @@ app:
         da je to pravi naslov?
       cors_error: blokirano zaradi CORS politike
       cors_note: >-
-        To pomeni, da je mogoče potrebno spremeniti moonraker konfiguracijo.
+        To pomeni, da je potrebno spremeniti moonraker konfiguracijo.
         Prosimo, preberite dokumentacijo o <a href="%{url}"
         target="_blank">nastavitvi</a> več tiskalnikov.
     hint:
@@ -71,9 +72,10 @@ app:
     filters:
       label:
         print_start_time: Filtriraj natisnjeno
-        print_start_time_desc: Filtriraj že natisnjene izdelke.
-        hidden_files: Filtriraj skrite datoteke
+        print_start_time_desc: Filtrira že natisnjene izdelke.
+        hidden_files_folders: Fitriraj skrite mape in datoteke
         klipper_backup_files: Filtriraj Klipperjeve varnostne kopije
+        moonraker_backup_files: Filtriraj Moonrakerjeve varnostne kopije
         rolled_log_files: Filtriraj zavite dnevniške datoteke
     label:
       dir_name: Ime mape
@@ -89,25 +91,28 @@ app:
       not_found: Ni najdenih datotek
       processing: Procesiram
     overlay:
-      drag_files_folders: <strong>Povlecite</strong> datoteke in mape sem.
+      drag_files_folders_upload: <strong>Povlecite</strong> mape in datoteke sem, da jih naložite.
       drag_files_enqueue: <strong>Povlecite</strong> datoteke sem za dodajanje v vrsto.
     title:
       add_dir: Dodaj mapo
       add_file: Dodaj datoteko
       command_palette: Nadzorna plošča
       download_file: Pridobivam datoteko
+      duplicate_dir: Podvoji mapo
+      duplicate_file: Podvoji datoteko
       go_to_file: Pojdi v datoteko
       rename_dir: Preimenuj mapo
       rename_file: Preimenuj datoteko
       upload_file: Nalaganje datoteke | Nalaganje datotek
     tooltip:
       low_on_space: Na disku primanjkuje prostora
-      move_item: Premakni element | Premakni {count} elementov
+      items_count: '{count} element | {count} elementov'
       root_disabled: '{root} root ni na voljo. Prosimo, preverite dnevnike.'
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
+      crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
   gcode:
     btn:
       load_current_file: Naloži trenutno datoteko
@@ -129,7 +134,9 @@ app:
     msg:
       confirm: >-
         Datoteka "%{filename}" je velika %{size}. To lahko povzroči dodatno obremenitev
-        za sistem. Ste prepričani?
+        sistema. Ste prepričani?
+    overlay:
+      drag_file_load: <strong>Povlecite</strong> g-koda datoteko sem, da jo naložite.
   general:
     btn:
       abort: Prekini
@@ -151,6 +158,7 @@ app:
       create_zip_archive: Ustvari ZIP arhiv
       delete: Zbriši
       download: Prenesi
+      duplicate: Podvoji
       edit: Uredi
       exit_layout: Izhod iz načina postavitve
       extrude: Iztisni
@@ -163,15 +171,17 @@ app:
       login: Prijava
       logout: Odjava
       more_information: Več informacij
+      multiply: Podvoji
       pause: Premor
       preheat: Predgrej
-      presets: Prednastavitev
+      presets: Prednastavitve
       preview_gcode: Predogled g-kode
       print: Tiskaj
       quad_gantry_level: QGL
       reboot: Ponoven zagon
       recover: Obnovi
       refresh: Osveži
+      refresh_metadata: Osveži metapodatke
       reload: Ponovno naloži
       remove: Odstrani
       remove_all: Odstrani vse
@@ -186,11 +196,13 @@ app:
       restart_service_moonraker: Ponovno zaženi Moonraker
       resume: Nadaljuj
       retract: Umik
+      retry: Ponovi
       return_dashboard: Vrni se na armaturno ploščo
       save: Shrani
       save_as: Shrani kot
       save_restart: Shrani & ponovno zaženi
       save_config_and_restart: Shrani konfiguracijo & ponovno zaženi
+      select_columns: Izberi stolpce
       send: Pošlji
       set_color: Nastavi barvo
       set_default_layout: Nastavi kot privzeto postavitev
@@ -198,6 +210,7 @@ app:
       snooze: Dremež
       socket_reconnect: Ponovno poveži
       socket_refresh: Prisilna osvežitev
+      thumbnail_size: Velikost sličice
       upload: Naloži
       upload_files: Naloži datoteke
       upload_folder: Naloži mape
@@ -228,12 +241,15 @@ app:
       api_key: Api ključ
       api_url: API URL
       auth_source: Vir pristnosti
+      bars: Vrstični
       category: Kategorija
       change_password: Spremeni geslo
       clear_all: Počisti vse
       color: Barva
       command: Ukaz
       confirm: Potrdi
+      cross: Križni
+      circle: Krožni
       current_password: Trenutno geslo
       current_user: Trenutni uporabnik
       default: Privzeto
@@ -260,6 +276,7 @@ app:
       longest_job: Najdaljše opravilo
       low: Nizko
       manage_accounts: Urejaj račune
+      minimum_cruise_ratio: Najnižje potovalno razmerje
       user_managed_source: "Uporabnika nadzoruje pristnost: %{source}"
       m117: M117
       moonraker: Moonraker
@@ -278,6 +295,7 @@ app:
       pressure_advance: Napredni tlak
       printers: Tiskalniki
       progress: Napredek
+      range: Razpon
       requested_speed: Hitrost
       retract_length: Dolžina umika
       retract_speed: Hitrost umika
@@ -309,7 +327,6 @@ app:
       upload_and_print: Naloži in tiskaj
       used: porabljeno
       username: Uporabniško ime
-      variance: Odstopanje
       velocity: Hitrost
       version_sort: Sortiraj po verziji
       visible: Vidno
@@ -348,6 +365,7 @@ app:
         invalid_aspect: Napačno razmerje
       msg:
         confirm: Ste prepričani?
+        confirm_delete: Ste prepričani? To dejanje bo izbrisalo izbrane elemente. | Ste prepričani? To dejanje bo izbrisalo {count} elementov.
         confirm_exclude_object: Ste prepričani, da želite izključiti ta objekt iz tiskanja?
         confirm_forcemove_toggle: Ste prepričani? To dejanje lahko poškoduje tiskalnik.
         confirm_reboot_host: Ste prepričani? To dejanje bo ponovno zagnalo gostitelja.
@@ -433,25 +451,38 @@ app:
       restart_klipper: Ponovno zažene sistemsko storitev klipper.
       run_collector: Zaženi zbiralnik
       rollover_logs: Zaviti dnevniki
+      file_browser_help: >-
+        Povlecite in spustite mape ali datoteke v brskalink, da jih naložite.<br>Prestavite mape ali datoteke v pod mape tako, da jih povlečete vanje.
+      file_browser_configuration_help: >-
+        Kopirajte mape ali datoteke v Nastavitvene datoteke tako, da jih povlečete in spustite sem.
   history:
     msg:
       confirm: Ste prepričani? To dejanje bo počistilo celotno zgodovino in statistiko.
+      confirm_jobs: Ste prepričani? To dejanje bo počistilo vsa opravila.
+      confirm_stats: Ste prepričani? To dejanje bo počistilo vso statistiko.
   job_queue:
     msg:
       confirm: Ste prepričani? To dejanje bo počistilo vrsto za tiskanje.
-      confirm_jobs: Ste prepričani? To dejanje bo počistilo vsa dejanja.
-      confirm_stats: Ste prepričani? To dejanje bo počistilo vso statistiko.
+    label:
+      number_of_copies: Število kopij
+    title:
+      multiply_job: Podvoji opravilo | Podvoji opravila
+    tooltip:
+      help: >-
+        Dodajte opravila v vrsto tako, da datoteke povlečete iz Opravil in spustite sem.<br>Nastavite vrstni red opravil v vrsti tako, da jih povlečete gor ali dol.
   printer:
     state:
       busy: Zaseden
       cancelled: Preklicano
       complete: Končano
       idle: V mirovanju
-      loading: Nalagam
+      loading: Nalaganje
       paused: Zaustavljeno
       printing: Tiskanje
       ready: Pripravljen
       standby: V pripravljenosti
+    title:
+      printer_status: Status tiskalnika
   setting:
     btn:
       add_camera: Dodaj kamero
@@ -466,8 +497,10 @@ app:
       mjpegadaptive: MJPEG adaptivno
       mjpegstream: MJPEG pretok
       hlsstream: HLS pretok
+      webrtc_camera_streamer: WebRTC (pretočnik kamere)
       video: IP Kamera
       iframe: HTTP stran
+      webrtc_gortc: WebRTC (go2rtc)
     camera_rotate_options:
       '90': 90°
       '180': 180°
@@ -479,7 +512,7 @@ app:
       aspect_ratio: Razmerje
       aspect_ratio_format: '[širina : višina]'
       auto_edit_extensions: Razširitve naj se samodejno odprejo v urejevalnem načinu
-      auto_follow_on_file_load: Samodejno spremljaj napreden na naloženih datotekah
+      auto_follow_on_file_load: Samodejno spremljaj napredek na naloženih datotekah
       auto_load_on_print_start: Samodejno naloži datoteko ob začetku tiska
       auto_load_mobile_on_print_start: Samodejno naloži datoteko na mobilnih napravah
       axes: Osi
@@ -491,7 +524,8 @@ app:
         rawstream: Surov pretok
       camera_rotate_by: Zavrti za
       camera_stream_type: Pretočni tip
-      camera_url: URL kamere
+      camera_url_snapshot: URL zajema slike kamere
+      camera_url_stream: URL pretoka kamere
       card: Kartica
       collector: Krmilnik
       confirm_on_estop: Zahtevaj potrditev za zasilni izklop
@@ -503,14 +537,17 @@ app:
       dashed: Črtice
       default_extrude_length: Privzeta dolžina iztiskovanja
       default_extrude_speed: Privzeta hitrost iztiskovanja
-      default_toolhead_move_length: Privzeta dolžina premika orodja
-      default_toolhead_xy_speed: Privzeta XY hitrost orodja
-      default_toolhead_z_speed: Privzeta Z hitrost orodja
+      default_min_layer_height: Privzeta minimalna višina plasti
+      default_toolhead_move_length: Privzeta dolžina premika orodne glave
+      default_toolhead_xy_speed: Privzeta XY hitrost orodne glave
+      default_toolhead_z_speed: Privzeta Z hitrost orodne glave
       dotted: Pike
       draw_background: Nariši ozadje
+      draw_origin: Prikaži izvor
       enable: Omogoči
       enable_diagnostics: Vklopi diagnostiko
       enable_notifications: Vklopi obvestila
+      enable_xy_homing: Omogoči XY nuliranje
       expression: Izraz
       extrusion_line_width: Širina iztiska
       flip_horizontal: Zrcali vodoravno
@@ -521,8 +558,8 @@ app:
       fps_target: Želene slike na sekundo
       fps_idle_target: Želene slike na sekundo, kadar ni v fokusu
       height: Višina
+      hide_single_part_bounding_box: Skrij mejni okvir pri tiskanju enega objekta
       gcode_coords: Uporabi koordinate iz g-kode
-      group_lower_layers: Združi spodnje plasti
       icon: Ikona
       invert_x_control: Zrcali X pomike
       invert_y_control: Zrcali Y pomike
@@ -537,6 +574,7 @@ app:
       metrics: Meritve
       move_line_width: Širina črte premikov
       name: Ime
+      never: Nikoli
       none: Brez
       optional: Poljubno
       power_toggle_in_top_nav: Preklop napajanja v navigaciji zgoraj
@@ -545,11 +583,15 @@ app:
       reset: Ponastavitev nastavitev
       retraction_icon_size: Velikost umikov
       right_y: Desna Y os
+      save_and_restore_view_state: Shrani in obnovi stanje pogleda
+      sections_to_ignore_pending_configuration_changes: Prezri razdelke za konfiguracije na čakanju
       show_animations: Prikaži animacije
       show_barometric_pressure: Prikaži barometrični tlak
+      show_chart: Prikaži graf
       show_code_lens: Prikaži CodeLens
       show_gas_resistance: Prikaži upor plina
       show_legend: Prikaži legendo
+      show_logo_on_background: Prikaži logotip na ozadju
       show_rate_of_change: Prikaži hitrost temperature
       show_relative_humidity: Prikaži relativno vlažnost
       show_save_config_and_restart: Shrani konfiguracijo in ponovno zaženi gumb v navigaciji zgoraj
@@ -560,7 +602,12 @@ app:
       thermal_preset_gcode: G-koda
       thermal_preset_name: Ime prednastavitve
       title: Naslov
-      toolhead_move_distances: Vrednost oddaljenosti orodja
+      to_browser_local_storage: V lokalno shrambo brskalnika
+      to_browser_session_storage: V shrambo seje brskalnika
+      toolhead_control_style: Slog pomika orodne glave
+      toolhead_move_distances: Vrednosti pomika orodne glave
+      toolhead_xy_move_distances: Vrednosti XY pomika orodne glave
+      toolhead_z_move_distances: Vrednosti Z pomika orodne glave
       type: Tip
       unit: Enota
       z_adjust_values: Vrednosti Z nastavitve
@@ -568,8 +615,9 @@ app:
       time_format: Format datuma
       text_sort_order: Vrstni red sortiranja
       force_move_toggle_warning: Zahtevaj potrditev za prisilen gib
-      show_manual_probe_dialog_automatically: Prikaži dialog za ročno sondiranje samodejno
-      show_bed_screws_adjust_dialog_automatically: Prikaži dialog za nastavitev posteljnih vijakov samodejno
+      show_manual_probe_dialog_automatically: Samodejno prikaži dialog za ročno sondiranje
+      show_bed_screws_adjust_dialog_automatically: Samodejno prikaži dialog za nastavitev posteljnih vijakov
+      show_screws_tilt_adjust_dialog_automatically: Samodejno prikaži dialog za naklon vijakov
     timer_options:
       duration: Samo trajanje
       filament: Ocena filamenta
@@ -579,6 +627,7 @@ app:
       authentication: Pristnost
       console: Konzola
       camera: Kamera | Kamere
+      file_browser: Pregledovalnik datotek
       file_editor: Urejevalnik datotek
       gcode_preview: Predogled g-kode
       general: Splošno
@@ -591,12 +640,20 @@ app:
       gcode_coords: Uporabi položaj g-kode, namesto orodja v armaturi
       show_manual_probe_dialog_automatically: Samodejno prikaže dialog za pomoč, če ročno sondirate
       show_bed_screws_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč, če nastavljate posteljne vijake
+      show_screws_tilt_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč, če nastavljate naklon vijakov
+      theme_disclaimer: >-
+        Te teme vsebujejo imena blagovnih znamk in logotipe, ki so intelektualna lastnina njihovih lastnikov.<br>
+        Ta imena in logotipi so vključeni z dovoljenjem lastnikov blagovnih znamk.<br>
+        Vendar upoštevajte, da blagovne znamke teh tem uradno ne vzdržujejo.<br>
+        Morebitna vprašanja ali poizvedbe v zvezi s temami naslovite na ekipo Fluidd.<br>
+        Uporaba imen in logotipov blagovnih znamk je zgolj v dekorativne in estetske namene in ne pomeni nobene uradne povezave z blagovnimi znamkami ali njihove podpore.
   socket:
     msg:
       connecting: Povezujem se na moonraker...
       no_connection: Ni povezave z moonrakerjem. Prosimo, preverite status moonrakerja ali osvežite stran.
   system_info:
     label:
+      awake_time: čas budnosti
       capacity: Kapaciteta
       cpu_desc: Opis CPE
       distribution_codename: Šifra
@@ -609,14 +666,15 @@ app:
       load: obremenitev
       manufactured: Proizvedeno
       manufacturer: Proizvajalec
+      memory_used: porabljenega spomina
       mcu_awake: '{mcu} čas budnosti'
       mcu_bandwidth: '{mcu} pasovna širina'
       mcu_information: '{mcu} informacije'
       mcu_load: '{mcu} obremenitev'
-      memory_used: porabljenega spomina
       micro_controller: Mikrokrmilnik
       model: Model CPE
       moonraker_load: Obremenitev Moonrakerja
+      network: Omrežje
       processor_desc: Procesor
       product_name: Ime izdelka
       serial_number: Serijska številka
@@ -626,6 +684,7 @@ app:
       total_memory: Skupno spomina
       operating_system: Operacijski sistem
       version: Verzija
+      virtualization: Virtualizacija
   tool:
     btn:
       home_x: X
@@ -634,6 +693,7 @@ app:
     title:
       bed_screws_adjust: Nastavitev posteljnih vijakov
       manual_probe: Ročna sonda
+      screws_tilt_adjust: Nastavitev nagiba vijakov
     tooltip:
       absolute_positioning: Absolutna pozicija
       extruder_disabled: ekstruder je izklopljen, ker je pod min_extrude_temp (%{min}<small>°C</small>)
@@ -642,6 +702,7 @@ app:
       manual_probe: Ročna sonda
       motors_off: IZKLOP MOTORJEV
       relative_positioning: Relativna pozicija
+      select_tool: Izberi orodje %{tool}
       tools: Orodja
     label:
       stats_active_extruder: >-
@@ -742,3 +803,70 @@ app:
       variable_fps: Spremenljiva hitrost zajema
       variable_fps_min: Najmanjša hitrost zajema
       variable_fps_max: Največja hitrost zajema
+  spoolman:
+    btn:
+      manage_spools: Upravljaj kolute
+      scan_code: Skeniraj kodo
+      select: Izberi
+    title:
+      spoolman: Spoolman
+      spool_selection: Izbor koluta
+      scan_spool: Skeniraj kolut
+    label:
+      change_spool: Spremeni kolut
+      comment: Komentar
+      device_camera: Naprava
+      filament_name: Filament
+      first_used: Prvič uporabljeno
+      id: ID
+      last_used: Zadnjič uporabljeno
+      location: Lokacija
+      lot_nr: Serija
+      material: Material
+      remaining_weight: Preostanek
+      vendor: Proizvajalec
+    msg:
+      no_spool: >-
+        Niste izbrali koluta.
+        Želite tiskati brez beleženja porabe filamenta?
+      no_filament: >-
+        Kolut, ki ste ga izbrali, najbrž nima dovolj filamenta na voljo
+        za uspešno dokončanje tiska.
+        Želite vseeno nadaljevati?
+      no_required_length: >-
+        Količina potrebnega filamenta za tisk izbrane datoteke ni znana.
+        Želite vseeno nadaljevati?
+      mismatched_filament: >-
+        Izbran material se ne ujema z materialom v rezalniku.
+        Želite vseeno nadaljevati?
+      tracking_inactive: >-
+        Beleženje porabe filamenta ni aktivno.
+        Za začetek beleženja, izberite kolut.
+      not_connected: Spoolman strežnik ni na voljo.
+      info:
+        howto: >-
+          Pokažite QR kodo koluta kameri.
+          To okno se bo zaprlo, ko bo kolut zaznan.
+      warning:
+        code_not_recognized: Ne morem prebrati QR kode.
+        invalid_spool_id: ID koluta v QR kodi ni pravilen.
+      error:
+        cors: >-
+          Ne morem dostopati do kamere.
+          Prepričajte se, da ima vaša spletna kamera dovoljenje za CORS dostop.
+        spool_not_existant: Tega koluta ne najdem v bazi.
+        no_image_data: >-
+          Ne morem dostopati do kamere.
+          Preglejte nastavitve kamere ali izberite drug vir kamere.
+    setting:
+      auto_open_qr_camera: Samodejno odpri kamero za zajem QR kode
+      auto_select_spool_on_match: Samodejno potrdi izbiro koluta, če se QR koda ujema
+      prefer_device_camera: Če je na voljo, uporabi kamero naprave za zajem QR kode
+      show_spool_selection_dialog_on_print_start: Prikaži okno za izbiro koluta ob začetku tiskanja
+      warn_on_not_enough_filament: >-
+        Prikaži opozorilo, če izbran kolut nima dovolj filamenta za dokončanje tiska        
+      warn_on_filament_type_mismatch: >-
+        Prikaži opozorilo, če material na izbranem kolutu ne ustreza materialu navedenemu v rezalniku
+  sensors:
+    title:
+      sensors: Senzorji

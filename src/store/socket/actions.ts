@@ -1,13 +1,13 @@
 import Vue from 'vue'
-import { ActionTree } from 'vuex'
+import type { ActionTree } from 'vuex'
 import { consola } from 'consola'
-import { SocketState } from './types'
-import { RootState } from '../types'
+import type { SocketState } from './types'
+import type { RootState } from '../types'
 import { Globals } from '@/globals'
 import { SocketActions } from '@/api/socketActions'
-import { EventBus, FlashMessageTypes } from '@/eventBus'
+import { EventBus } from '@/eventBus'
 import { upperFirst, camelCase } from 'lodash-es'
-import IsKeyOf from '@/util/is-key-of'
+import isKeyOf from '@/util/is-key-of'
 
 let retryTimeout: number
 
@@ -45,18 +45,18 @@ export const actions: ActionTree<SocketState, RootState> = {
   /**
    * Fired when the socket closes.
    */
-  async onSocketClose ({ dispatch, commit, state }, e: CloseEvent) {
+  async onSocketClose ({ dispatch, commit, state }, event: CloseEvent) {
     const retry = state.disconnecting
     const modules = ['server', 'power', 'webcams', 'jobQueue', 'charts', 'socket', 'wait', 'gcodePreview']
 
-    if (e.wasClean && retry) {
+    if (event.wasClean && retry) {
       // This is most likely a moonraker restart, so only partially reset.
       await dispatch('reset', modules, { root: true })
       commit('setSocketConnecting', true)
       Vue.$socket.connect()
     }
 
-    if (e.wasClean && !retry) {
+    if (event.wasClean && !retry) {
       // Set the socket state to closed.
       // If we swap printer endpoints, then the init will run
       // which will reset the state if necessary.
@@ -64,7 +64,7 @@ export const actions: ActionTree<SocketState, RootState> = {
       commit('setSocketOpen', false)
     }
 
-    if (!e.wasClean) {
+    if (!event.wasClean) {
       // Not a clean disconnect. Service went down?
       // Socket should attempt to reconnect itself.
       await dispatch('reset', modules, { root: true })
@@ -100,7 +100,7 @@ export const actions: ActionTree<SocketState, RootState> = {
         message = payload.message
       }
 
-      EventBus.$emit(message, { type: FlashMessageTypes.error })
+      EventBus.$emit(message, { type: 'error' })
     }
     if (payload.code === 503) {
       // This indicates klippy is non-responsive, or there's a configuration error
@@ -124,13 +124,13 @@ export const actions: ActionTree<SocketState, RootState> = {
     commit('setConnectionId', connection_id)
   },
 
-  async onServerRead ({ dispatch }, payload: {namespace: string, key?: string, value: any}) {
+  async onServerRead ({ dispatch }, payload: {namespace: string, key?: string, value: unknown}) {
     const { namespace, key, value } = payload
 
-    if (IsKeyOf(namespace, Globals.MOONRAKER_DB)) {
+    if (isKeyOf(namespace, Globals.MOONRAKER_DB)) {
       const roots = Globals.MOONRAKER_DB[namespace].ROOTS
 
-      const root = key && IsKeyOf(key, roots) ? roots[key] : Object.values(roots)[0]
+      const root = key && isKeyOf(key, roots) ? roots[key] : Object.values(roots)[0]
 
       dispatch(root.dispatch, value, { root: true })
     }
@@ -238,7 +238,19 @@ export const actions: ActionTree<SocketState, RootState> = {
     dispatch('webcams/onWebcamsChanged', payload, { root: true })
   },
 
+  async notifySensorUpdate ({ dispatch }, payload) {
+    dispatch('sensors/onSensorUpdate', payload, { root: true })
+  },
+
   async notifyJobQueueChanged ({ dispatch }, payload) {
     dispatch('jobQueue/onJobQueueChanged', payload, { root: true })
+  },
+
+  async notifyActiveSpoolSet ({ dispatch }, payload) {
+    dispatch('spoolman/onActiveSpool', payload, { root: true })
+  },
+
+  async notifySpoolmanStatusChanged ({ dispatch }, payload) {
+    dispatch('spoolman/onStatusChanged', payload.spoolman_connected, { root: true })
   }
 }

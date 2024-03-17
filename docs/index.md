@@ -40,20 +40,22 @@ firmware.
 - [Print history](/features/print_history)
 - [Version management](/updates/automated) and upgrades
 - Utilization graphs
+- Filament [spool management](/features/spoolman)
 
 ## Supporting Fluidd
 
-Fluidd was created by [Craig Bassett](https://github.com/cadriel) and is currently
-developed and maintained by the [Fluidd team](https://github.com/orgs/fluidd-core/people)
-and our contributors - along with support from the entire Klipper Team, associated
-printer communities and you, the user.
+Fluidd development is driven by passionate volunteers who dedicate their time to improving and expanding its capabilities.
+
+Your sponsorship can help us enhance Fluidd, introduce new features, and ensure it remains accessible to all Klipper users.
+
+Your support can make a significant impact on the evolution of Fluidd. Please consider [sponsoring Fluidd](https://github.com/sponsors/fluidd-core).
 
 ## Docker
 
 Fluidd ships with Docker support built in. The official docker can be found
 [here](https://github.com/fluidd-core/fluidd/pkgs/container/fluidd), and further information can be found [here](/installation/docker).
 
-## Support
+## Need help?
 
 Primary support is provided via Discord, or Github Issues.
 
@@ -67,7 +69,7 @@ to edit this page. Any help is appreciated.
 
 ## Architecture
 
-Fluidd relies on [Moonraker](https://github.com/Arksine/moonraker/tree/master/docs) and
+Fluidd relies on [Moonraker](https://moonraker.readthedocs.io/) and
 [Klipper](https://www.klipper3d.org/) to function. To learn more about the
 architecture and how these components work together, visit the development
 resources [here](/development).

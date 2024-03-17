@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import { Globals, Waits } from '@/globals'
-import { NotifyOptions } from '@/plugins/socketClient'
+import type { NotifyOptions } from '@/plugins/socketClient'
 import { consola } from 'consola'
-import { TimelapseWritableSettings } from '@/store/timelapse/types'
+import type { TimelapseWritableSettings } from '@/store/timelapse/types'
+import type { WebcamConfig } from '@/store/webcams/types'
 
 const baseEmit = (method: string, options: NotifyOptions) => {
   if (!Vue.$socket) {
@@ -184,6 +185,46 @@ export const SocketActions = {
       emit, {
         dispatch: 'power/onToggle',
         params: { [device]: null },
+        wait
+      }
+    )
+  },
+
+  async machinePeripheralsUsb () {
+    baseEmit(
+      'machine.peripherals.usb', {
+        dispatch: 'server/onMachinePeripherals',
+        wait: Waits.onMachinePeripheralsUsb
+      }
+    )
+  },
+
+  async machinePeripheralsSerial () {
+    baseEmit(
+      'machine.peripherals.serial', {
+        dispatch: 'server/onMachinePeripherals',
+        wait: Waits.onMachinePeripheralsSerial
+      }
+    )
+  },
+
+  async machinePeripheralsVideo () {
+    baseEmit(
+      'machine.peripherals.video', {
+        dispatch: 'server/onMachinePeripherals',
+        wait: Waits.onMachinePeripheralsVideo
+      }
+    )
+  },
+
+  async machinePeripheralsCanbus (canbusInterface: string) {
+    const wait = `${Waits.onMachinePeripheralsCanbus}/${canbusInterface}`
+    baseEmit(
+      'machine.peripherals.canbus', {
+        dispatch: 'server/onMachinePeripheralsCanbus',
+        params: {
+          interface: canbusInterface
+        },
         wait
       }
     )
@@ -371,7 +412,7 @@ export const SocketActions = {
   /**
    * Writes data to moonraker's DB.
    */
-  async serverWrite (key: string, value: any, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+  async serverWrite (key: string, value: unknown, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
     baseEmit(
       'server.database.post_item', {
         params: {
@@ -417,7 +458,10 @@ export const SocketActions = {
   async serverTemperatureStore () {
     baseEmit(
       'server.temperature_store', {
-        dispatch: 'charts/initTempStore'
+        dispatch: 'charts/initTempStore',
+        params: {
+          include_monitors: true
+        }
       }
     )
   },
@@ -529,9 +573,18 @@ export const SocketActions = {
    * Expects the full path including root.
    * Optionally pass the just the filename and path.
    */
-  async serverFilesMetaData (filepath: string) {
+  async serverFilesMetadata (filepath: string) {
     baseEmit(
       'server.files.metadata', {
+        dispatch: 'files/onFileMetaData',
+        params: { filename: filepath }
+      }
+    )
+  },
+
+  async serverFilesMetascan (filepath: string) {
+    baseEmit(
+      'server.files.metascan', {
         dispatch: 'files/onFileMetaData',
         params: { filename: filepath }
       }
@@ -688,6 +741,62 @@ export const SocketActions = {
     baseEmit(
       'server.webcams.list', {
         dispatch: 'webcams/onWebcamsList'
+      }
+    )
+  },
+
+  async serverWebcamsWrite (webcam: WebcamConfig) {
+    baseEmit(
+      'server.webcams.post_item', {
+        params: webcam
+      }
+    )
+  },
+
+  async serverWebcamsDelete (uid: string) {
+    baseEmit(
+      'server.webcams.delete_item', {
+        params: {
+          uid
+        }
+      }
+    )
+  },
+
+  async serverSensorsList () {
+    baseEmit(
+      'server.sensors.list', {
+        dispatch: 'sensors/onSensorsList'
+      }
+    )
+  },
+
+  async serverSpoolmanGetSpoolId () {
+    baseEmit(
+      'server.spoolman.get_spool_id', {
+        dispatch: 'spoolman/onActiveSpool'
+      }
+    )
+  },
+
+  async serverSpoolmanPostSpoolId (spoolId: number | undefined) {
+    baseEmit(
+      'server.spoolman.post_spool_id', {
+        params: { spool_id: spoolId },
+        dispatch: 'spoolman/onActiveSpool'
+      }
+    )
+  },
+
+  async serverSpoolmanProxyGetAvailableSpools () {
+    baseEmit(
+      'server.spoolman.proxy', {
+        params: {
+          request_method: 'GET',
+          path: '/v1/spool',
+          use_v2_response: true
+        },
+        dispatch: 'spoolman/onAvailableSpools'
       }
     )
   }

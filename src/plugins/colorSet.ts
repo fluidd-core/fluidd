@@ -2,23 +2,23 @@
  * A basic class to manage color steps for our graphs.
  */
 import _Vue from 'vue'
-import tinycolor from '@ctrl/tinycolor'
+import { TinyColor } from '@ctrl/tinycolor'
 
 export class ColorSet {
   logPrefix = '[WEBSOCKET]'
   colorList: ColorList = {}
 
-  constructor (options: Options) {
+  constructor (options: ColorSetPluginOptions) {
     if (options.colorList) {
       for (const item in options.colorList) {
         if ('base' in options.colorList[item]) {
           const opts = options.colorList[item] as ColorGenOption
-          // this.colorList[item] = tinycolor(opts.base).analogous(opts.count, 20)
+          // this.colorList[item] = new Tinycolor(opts.base).analogous(opts.count, 20)
           //   .map((color: TinyColor) => {
-          //     // const color = tinycolor({ h: num, s: 0.8, l: 0.8 }).toHexString()
+          //     // const color = new Tinycolor({ h: num, s: 0.8, l: 0.8 }).toHexString()
           //     return { color: color.toHexString(), used: false }
           //   })
-          const base = tinycolor(opts.base).toHsl()
+          const base = new TinyColor(opts.base).toHsl()
           let h = base.h
           let l = base.l
           const s = base.s
@@ -29,7 +29,7 @@ export class ColorSet {
             ...Array(opts.count).keys()
           ]
             .map(() => {
-              const color = tinycolor({ h, s, l }).toHexString()
+              const color = new TinyColor({ h, s, l }).toHexString()
               h = h + hsplit
               l = l - lsplit
               return { color, used: false }
@@ -105,15 +105,15 @@ export class ColorSet {
 }
 
 export const ColorSetPlugin = {
-  install (Vue: typeof _Vue, options?: Options) {
+  install (Vue: typeof _Vue, options?: ColorSetPluginOptions) {
     // Provide a specific list, or an option object to
     // define the color lists.
-    const opts: Options = {
+    const opts: ColorSetPluginOptions = {
       colorList: {
         heater: { base: '#ff5252', hsplit: 20, count: 3 },
         bed: { base: '#1fb0ff', hsplit: 20, count: 2 },
         fan: ['#3DC25A', '#58FC7C', '#10EB40', '#7EF297'],
-        sensor: ['#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819']
+        sensor: ['#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B', '#3F51B5']
       }
     }
     const colorset = new ColorSet({ ...opts, ...options })
@@ -131,7 +131,7 @@ declare module 'vue/types/vue' {
   }
 }
 
-interface Options {
+interface ColorSetPluginOptions {
   colorList?: ColorListOption;
 }
 

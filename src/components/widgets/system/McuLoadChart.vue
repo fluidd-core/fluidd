@@ -71,12 +71,12 @@ export default class McuLoadChart extends Vue {
 
   get series () {
     const load = this.$store.getters['charts/getBaseSeries']({
-      name: 'load',
+      name: this.$t('app.system_info.label.load'),
       encode: { x: 'date', y: 'load' }
     })
 
     const awake = this.$store.getters['charts/getBaseSeries']({
-      name: 'awake time',
+      name: this.$t('app.system_info.label.awake_time'),
       encode: { x: 'date', y: 'awake' }
     })
 

@@ -6,3 +6,15 @@ button .v-btn {
 button .v-icon {
   touch-action: manipulation;
 }
+
+.v-btn-toggle > .v-btn.v-btn {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+
+  &:first-child {
+    border-left: 0 !important;
+  }
+  &:last-child {
+    border-right: 0 !important;
+  }
+}

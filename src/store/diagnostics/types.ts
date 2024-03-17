@@ -1,4 +1,4 @@
-import { LayoutConfig } from '@/store/layout/types'
+import type { LayoutConfig } from '@/store/layout/types'
 
 export interface DiagnosticsCardContainer {
   [key: string]: DiagnosticsCardConfig[]
@@ -31,7 +31,7 @@ export interface Metric {
 export interface MetricStyle {
   lineColor: string
   lineStyle: 'solid' | 'dashed' | 'dotted'
-  fillColor?: string
+  fillColor: string | null
   fillOpacity: number
   displayLegend: boolean
 }

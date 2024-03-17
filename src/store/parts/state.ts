@@ -1,4 +1,4 @@
-import { PartsState } from './types'
+import type { PartsState } from './types'
 
 export const defaultState = (): PartsState => {
   return {

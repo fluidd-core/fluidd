@@ -65,7 +65,7 @@
               {{ $t('app.general.label.longest_job') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterTime(rollup.longest_job) }}
+              {{ $filters.formatCounterSeconds(rollup.longest_job) }}
             </div>
           </v-card>
         </v-col>
@@ -78,13 +78,13 @@
               {{ $t('app.general.label.total_time') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterTime(rollup.total_time) }}
+              {{ $filters.formatCounterSeconds(rollup.total_time) }}
             </div>
             <div class="secondary--text">
               {{ $t('app.general.label.total_time_avg') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterTime(rollup.total_avg) }}
+              {{ $filters.formatCounterSeconds(rollup.total_avg) }}
             </div>
           </v-card>
         </v-col>
@@ -97,13 +97,13 @@
               {{ $t('app.general.label.total_print_time') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterTime(rollup.total_print_time) }}
+              {{ $filters.formatCounterSeconds(rollup.total_print_time) }}
             </div>
             <div class="secondary--text">
               {{ $t('app.general.label.total_print_time_avg') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterTime(rollup.print_avg) }}
+              {{ $filters.formatCounterSeconds(rollup.print_avg) }}
             </div>
           </v-card>
         </v-col>
@@ -142,8 +142,8 @@ import { SocketActions } from '@/api/socketActions'
   }
 })
 export default class PrinterStatsCard extends Vue {
-  @Prop({ type: Boolean, default: false })
-  readonly menuCollapsed!: boolean
+  @Prop({ type: Boolean })
+  readonly menuCollapsed?: boolean
 
   get rollup () {
     return this.$store.getters['history/getRollUp']
@@ -160,28 +160,19 @@ export default class PrinterStatsCard extends Vue {
     return this.$store.getters['files/getUsage']
   }
 
-  get appInfo () {
-    return {
-      fluidd: this.$store.state.version.fluidd,
-      moonraker: this.$store.state.version.components.moonraker || {},
-      klipper: this.$store.state.version.components.klipper || {}
-    }
-  }
-
   get supportsHistoryComponent () {
     return this.$store.getters['server/componentSupport']('history')
   }
 
-  handleResetStats () {
-    this.$confirm(
+  async handleResetStats () {
+    const result = await this.$confirm(
       this.$tc('app.history.msg.confirm_stats'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
-      .then(res => {
-        if (res) {
-          SocketActions.serverHistoryResetTotals()
-        }
-      })
+
+    if (result) {
+      SocketActions.serverHistoryResetTotals()
+    }
   }
 }
 </script>

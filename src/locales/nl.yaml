@@ -9,9 +9,12 @@ app:
       remove_profile: Verwijder %{name} profiel
       scale: Kleurschaal
       wireframe: Draadframe
+      base: base
+      active: actief
     msg:
       hint: >-
-        Als je je bestand opslaat onder een andere naam dan %{name}, kun je er ook voor
+        Als je je bestand opslaat onder een andere naam dan %{name}, kun je er ook
+        voor
         kiezen %{name} te verwijderen.
       not_found: Geen bedmeshes gevonden.
       not_loaded: Geen meshes geladen
@@ -20,26 +23,31 @@ app:
       delete: Verwijder profiel
       load: Laad profiel
       save: Slaat afgesteld profiel op naar printer.cfg
+      copy_image: Kopieer bed mesh afbeelding
   chart:
     label:
       current: Huidig
       item: Item
-      'off': Grafiek uit
-      'on': Grafiek aan
       power: Kracht
       target: Doelwit
+      rate_of_change: Wijzig
     tooltip:
       help: >-
-        Houd shift ingedrukt om te zoomen.<br />Klik op een item om deze aan of uit te
-        schakelen in de grafiek.
+        Houd <kbd>shift</kbd> ingedrukt om te zoomen.<br />Klik op een item om deze
+        aan of uit te schakelen in de grafiek.<br />Click a power to toggle in the
+        graph.
   console:
     label:
       auto_scroll: Automatisch scrollen
       hide_temp_waits: Verberg temperatuurwachten
+      flip_layout: Flip layout
     placeholder:
       command: >-
         'tab' voor autocomplete, 'help' voor commandos 'pijltjes' voor
         geschiedenis
+    tooltip:
+      help: Typ "help" voor commando's<br />Gebruik <kbd>Tab</kbd>voor automatisch
+        aanvullen<br />Gebruik <kbd>&uarr;</kbd> en<kbd>&darr;</kbd> voor geschiedenis
   endpoint:
     error:
       cant_connect: >-
@@ -71,6 +79,11 @@ app:
       label:
         print_start_time: Filter geprint
         print_start_time_desc: Filtert de items die je al geprint hebt weg
+        rolled_log_files: Filter roterende log bestanden
+        klipper_backup_files: Filter Klipper backup bestanden
+        hidden_files_folders: Filter verborgen bestanden en mappen
+        moonraker_backup_files: Filter Moonraker backup bestanden
+        crowsnest_backup_files: Filter Crowsnest backup bestanden
     label:
       dir_name: Mapnaam
       disk_usage: Schijfgebruik
@@ -79,11 +92,10 @@ app:
       file_name: Bestandsnaam
       transfer_rate: Snelheid
       uploaded: Geüpload
+      view_section_documentation: Bekijk '%{section}' documentatie
     msg:
       not_found: Geen bestanden gevonden
       processing: Verwerken...
-    overlay:
-      label: <strong>Sleep</strong> een bestand naar hier
     title:
       add_dir: Map toevoegen
       add_file: Bestand toevoegen
@@ -91,9 +103,23 @@ app:
       rename_dir: Map hernoemen
       rename_file: Bestand hernoemen
       upload_file: Upload bestand | Bestanden uploaden
+      go_to_file: Ga naar bestand
+      command_palette: Command Palette
+      duplicate_file: Dupliceer Bestand
+      duplicate_dir: Dupliceer Directory
     tooltip:
       low_on_space: Weinig geheugen over op de schijf
       root_disabled: '{root} is niet beschikbaar. Controleer je logs.'
+      items_count: '{count} item | {count} items'
+    overlay:
+      drag_files_enqueue: <strong>Sleep</strong> bestanden hier om in rij te zetten
+      drag_files_folders_upload: <strong>Sleep</strong> bestanden en mappen hierheen
+        voor upload
+    url:
+      moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
+      moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
+      klipper_config: https://www.klipper3d.org/Config_Reference.html#%{hash}
+      crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
   gcode:
     btn:
       load_current_file: Laad huidig ​​bestand
@@ -108,12 +134,18 @@ app:
       show_next_layer: Toon volgende laag
       show_previous_layer: Toon vorige laag
       show_retractions: Toon terugtrekpunten
+      parsing_file: Analyseren bestand
+      exclude_object: Uitsluiten Object
+      show_current_layer: Toon huidige laag
+      show_parts: Toon onderdelen
     msg:
       confirm: >-
         Het bestand "% {filename}" is% {size}, dit kan resource-intensief zijn
         voor uw systeem.
 
         Weet je het zeker?
+    overlay:
+      drag_file_load: <strong>Sleep</strong> hier een gcode bestand om te laden
   general:
     btn:
       add: Toevoegen
@@ -163,6 +195,36 @@ app:
       upload: Uploaden
       upload_print: Uploaden & Printen
       view: Bekijken
+      add_to_queue: Voeg toe aan Queue
+      auth_unsure: Niet zeker waarom je dit ziet?
+      save_config_and_restart: Opslaan configuratie & herstarten
+      reload: Herladen
+      print: Print
+      delete: Verwijder
+      logout: Uitloggen
+      reset_default_layout: Reset Standaard Indeling
+      upload_folder: Upload Map
+      reset_stats: Reset Stats
+      return_dashboard: Ga terug naar het dashboard
+      snooze: Snooze
+      go_to_file: Ga naar bestand
+      set_default_layout: Gebruik als Standaard Indeling
+      upload_files: Bestanden Uploaden
+      adjusted: Bijgesteld
+      forgot_password: Wachtwoord vergeten?
+      create_zip_archive: Maak ZIP Archief
+      retry: Opnieuw
+      accept: Accepteren
+      duplicate: Dupliceer
+      login: Inloggen
+      filter: Filter
+      refresh_metadata: Ververs Metadata
+      thumbnail_size: Thumbnail grootte
+      select_columns: Selecteer kolommen
+      abort: Afbreken
+      recover: Herstel
+      multiply: Vermenigvuldig
+      job_queue: Job Wachtrij
     error:
       app_setup_link: >-
         Fluidd opstart vereisten kan je <a target="_blank" href="%{url}">hier</a>
@@ -225,14 +287,64 @@ app:
       total_time_avg: Gemiddelde tijd
       uncategorized: Zonder categorie
       unretract_speed: Terugduw lengte
-      used: Gebruikt
-      variance: Afwijking
+      used: gebruikt
       velocity: Snelheid
       visible: Zichtbaar
       z_offset: Z-Offset
+      turn_device_off: Zet %{device} uit
+      edit_filter: Wijzig Filter
+      pause_at_layer: Pauzeer bij Laag
+      cross: Kruis
+      command: Commando
+      current_user: Huidige gebruiker
+      'on': Aan
+      layer: Laag
+      slicer: Slicer
+      all: Alle
+      edit_category: Wijzig categorie
+      thumbnail_size: Thumbnail Grootte
+      upload_and_print: Uploaden en Printen
+      file_time: Bestand
+      pause_at_layer_number: Pauzeer bij laag nummer
+      file: Bestand
+      auth_source: Authenticatie Bron
+      username: Gebruikersnaam
+      actual_time: Werkelijke
+      circle: Cirkel
+      finish_time: Afronden
+      total: Totaal
+      add_category: Voeg categorie toe
+      filament: Filament
+      accepted_screws: Geaccepteerde screws
+      turn_device_on: Zet %{device} aan
+      default: Standaard
+      pause_at_next_layer: Pauzeer bij volgende laag
+      add_filter: Filter Toevoegen
+      alias: Alias
+      m117: M117
+      partial_of_total: '%{partial} van %{total}'
+      manage_accounts: Beheer Accounts
+      moonraker: Moonraker
+      heaters_busy: De printer is momenteel bezig. Uitschakelen van de heaters kan
+        resulteren in een mislukte print.
+      ldap: LDAP
+      apply_z_offset: Toepassen en Opslaan Z_Offset
+      unsaved_changes: Niet Opgeslagen Wijzigingen
+      compact: Compact
+      user_managed_source: Gebruiker beheerd door %{source} authenticatie
+      range: Bereik
+      synced_extruder: Gesynchroniseerde Extruder
     msg:
       password_changed: Wachtwoord aangepast
       wrong_password: Oeps! Er is iets fout gegaan, klopt je wachtwoord wel?
+      offline_ready: Fluidd is nu klaar om offline te werken.
+      bed_screws_adjust: Klik <b>Aangepast</b> als een significante aanpassing nodig
+        is voor de huidige schroef; anders, klik <b>Accepteer</b> om door te gaan.
+      welcome_back: Welkom terug.<br>Log hieronder in om je printer te beheren.
+      pending_configuration_sections_deleted: De volgende secties zijn gemarkeerd
+        om te verwijderen
+      needs_refresh: Nieuwe content beschikbaar, klik op de <b>Herladen</b> knop om
+        te updaten.
     simple_form:
       error:
         arrayofnums: Alleen nummers
@@ -243,10 +355,33 @@ app:
         min_or_0: Min %{min} or 0
         password_username: Gebruikersnaam mag niet overeenkomen met je wachtwoord.
         required: Vereist
+        invalid_number: Ongeldig Getal
+        credentials: Ongeldige credentials
+        invalid_expression: Incorrecte Expressie
+        invalid_aspect: Incorrect Aspect Ratio
       msg:
         confirm: Weet je dit zeker?
         confirm_reboot_host: Weet je dit zeker? Hierdoor zal je host systeem herstarten.
         confirm_shutdown_host: Weet je dit zeker? Hierdoor zal je host systeem afsluiten.
+        unsaved_changes: Er zijn niet opgeslagen wijzigingen. Weet je zeker dat je
+          dit bestand wilt sluiten?
+        confirm_forcemove_toggle: Weet je het zeker? Dit kan de printer beschadigen.
+        confirm_service_stop: Weet je zeker dat je de %{name} service wilt stoppen?
+        confirm_service_start: Weet je zeker dat je de %{name} service wilt starten?
+        confirm_service_restart: Weet je zeker dat je de %{name} service wilt herstarten?
+        confirm_exclude_object: Weet je zeker dat je dit object wilt uitsluiten voor
+          printen?
+        confirm_power_device_toggle: Weet je het zeker? Dit schakelt de stroom van
+          het apparaat aan of uit.
+        confirm_delete: Weet je het zeker? Dit zal het geselecteerde item verwijderen.
+          | Weet je het zeker? Dit zal de {count} geselecteerde items verwijderen.
+        no_file_preview: '%(name) kan momenteel geen voorvertoning laten zien.'
+        confirm_remove_user: Weet je zeker dat je gebruiker %{username} wilt verwijderen?
+        confirm_cancel_print: Weet je zeker dat je de huidige print wilt annuleren?
+        confirm_clear_mesh: De printer is momenteel bezig. Weet je zeker dat je de
+          bed mesh wilt legen?
+        confirm_load_bedmesh_profile: De printer is momenteel bezig. Weet je zeker
+          dat je profiel %{name} wilt laden?
     table:
       header:
         actions: Acties
@@ -270,6 +405,12 @@ app:
         start_time: Gestart
         status: Status
         total_duration: Totale tijd
+        filament_type: Filament type
+        filament_name: Filament naam
+        time_in_queue: Tijd in Wachtrij
+        chamber_temp: Ruimte temp
+        time_added: Tijd Toegevoegd
+        nozzle_diameter: Nozzle diameter
     title:
       add_printer: Printer toevoegen
       bedmesh: Bed Mesh
@@ -295,13 +436,25 @@ app:
       temperature: Temperaturen
       tool: Werktuig
       tune: Afstellen
+      other_files: Andere Bestanden
+      timelapse: Tijdsverloop
+      pending_configuration_changes: Configuratie Wijzigingen In Behandeling
+      add_chart: Voeg Grafiek Toe
+      not_found: 404 Niet Gevonden
+      edit_chart: Bewerk Grafiek
     tooltip:
       estop: Noodstop
       reload_klipper: Herlaad de klipper configuratie.
       reload_restart_klipper: Herlaad de klipper configuratie en herstart de MCUs.
       restart_klipper: Start klipper opnieuw op.
-  history:
-    msg: {}
+      notifications: Notificaties
+      file_browser_configuration_help: Kopieer bestanden en mappen naar de Configuratie
+        Bestanden door ze vanaf hier daar naartoe te slepen
+      managed_by_moonraker: Beheerd door je moonraker configuratie
+      run_collector: Uitvoeren collector
+      file_browser_help: Sleep bestanden of mappen hier in de browser om deze up te
+        loaden<br>Verplaats bestanden en mappen door ze op submappen of ".." te slepen
+      browse_metrics: Bekijk beschikbare statistieken
   printer:
     state:
       busy: Bezig
@@ -312,6 +465,9 @@ app:
       printing: Printen
       ready: Klaar
       standby: Standby
+      cancelled: Geannuleerd
+    title:
+      printer_status: Printer Status
   setting:
     btn:
       add_camera: Camera toevoegen
@@ -319,17 +475,21 @@ app:
       add_user: Voeg gebruiker toe
       reset: Reset
       select_theme: Selecteer Theme
+      add_filter: Filter Toevoegen
+      add_category: Categorie Toevoegen
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
       video: IP Camera
+      hlsstream: HLS Stream
+      iframe: HTTP pagina
+      webrtc_camera_streamer: WebRTC (camera-streamer)
     label:
       all_off: Alles uit
       all_on: Alles aan
       camera_flip_x: Flip horizontaal
       camera_flip_y: Flip vertikaal
       camera_stream_type: Stream type
-      camera_url: Camera Url
       confirm_on_estop: Weet je dit zeker?
       dark_mode: Donker modus
       default_extrude_length: Standaard extrudelengte
@@ -359,6 +519,62 @@ app:
       thermal_preset_gcode: GCode
       thermal_preset_name: Voorkeursnaam
       z_adjust_values: Z Aanpassingswaardes
+      dotted: Gestippeld
+      show_relative_humidity: Toon relatieve vochtigheid
+      show_chart: Toon grafiek
+      auto_load_on_print_start: Laad bestand automatisch bij start printen
+      none: Geen
+      show_bed_screws_adjust_dialog_automatically: Toon Bed Screws Aanpassen venster
+        automatisch
+      auto_edit_extensions: Extensies die automatisch worden geopend in edit mode
+      height: Hoogte
+      confirm_dirty_editor_close: Vraag om bevestiging als de editor word gesloten
+        met niet opgeslagen wijzigingen
+      confirm_on_power_device_change: Vraag voor bevestiging als Device Power wijzigt
+      show_barometric_pressure: Toon barometrische druk
+      line_color: Lijn kleur
+      optional: Optioneel
+      fps_idle_target: FPS Doel als er geen focus is
+      min: Minimum
+      contains: Bevat
+      enable_xy_homing: Inschakelen XY Homing
+      filter: Filter | Filters
+      toolhead_move_distances: Toolhead afstandswaarden
+      aspect_ratio_format: '[breedte : hoogte]'
+      line_style: Lijn stijl
+      show_legend: Toon legenda
+      show_upload_and_print: Toon Upload en Print knoppen in bovenste navigatie
+      unit: Eenheid
+      show_code_lens: Toon CodeLens
+      type: Type
+      last_result: Laatste resultaat
+      right_y: Rechter Y-Axis
+      starts_with: Begint met
+      icon: Icoon
+      max: Maximum
+      to_browser_local_storage: Naar browser local storage
+      default_min_layer_height: Standaard minimum laag hoogte
+      to_browser_session_storage: Naar browser sessie storage
+      fill_color: Vul kleur
+      auto_load_mobile_on_print_start: Laad bestand automatisch op mobiele apparaten
+      date_format: Datum formaat
+      show_manual_probe_dialog_automatically: Toon Manual Probe venster automatisch
+      toolhead_xy_move_distances: Toolhead XY afstandswaarden
+      show_logo_on_background: Toon logo op achtergrond
+      camera_rotate_by: Roteer met
+      left_y: Linker Y-Axis
+      name: Naam
+      title: Titel
+      text_sort_order: Tekst sorteer volgorde
+      card: Kaart
+      never: Nooit
+      time_format: Tijd formaat
+      expression: Expressie
+      toolhead_z_move_distances: Toolhead Z afstandswaarden
+      show_gas_resistance: Toon gas druk
+      dashed: Gestreept
+      camera_fullscreen_action:
+        title: Volledig scherm actie
     timer_options:
       duration: Alleen tijdsduur
       filament: Filamentschatting
@@ -373,8 +589,14 @@ app:
       theme: Theme
       thermal_presets: Temperatuurvoorkeuren
       tool: Werktuig
+      console: Console
     tooltip:
       gcode_coords: Gebruik GCode positie in plaats van toolhead positie op het dashboard.
+    camera_rotate_options:
+      none: Geen
+      '90': 90°
+      '180': 180°
+      '270': 270°
   socket:
     msg:
       connecting: Verbinden met Moonraker...
@@ -405,22 +627,36 @@ app:
       system_memory: Systeemgeheugen
       system_utilization: Systeemgebruik
       total_memory: Totaal geheugen
+      mcu_information: '{mcu} Informatie'
+      micro_controller: Micro-Controller
+      frequency: Frequentie
+      operating_system: Besturingssysteem
+      network: Netwerk
+      version: Versie
+      virtualization: Virtualisatie
   tool:
     btn:
       home_x: X
       home_y: 'Y'
+      home_all: Alle
     tooltip:
       extruder_disabled: >-
         extruder uitgeschakeld, onder de min_extrude_temp
         (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
+      select_tool: Selecteer tool %{tool}
+      manual_probe: Handmatige Probe
+      motors_off: Motors Uitschakelen
+    title:
+      manual_probe: Handmatige Probe
   version:
     btn:
       check_for_updates: Controleer voor updates
       finish: Klaar
       update: Updaten
       view_versions: Bekijk versies
+      update_all: Alles updaten
     label:
       commit_history: Versiehistoriek
       commits_on: commits op
@@ -441,3 +677,95 @@ app:
       invalid: duidt op lokale veranderingen in je repo
       packages: Pakketten
       release_notes: Release notities
+  sensors:
+    title:
+      sensors: Sensoren
+  spoolman:
+    label:
+      first_used: Eerst Gebruikt
+      remaining_weight: Resterend
+      last_used: Laatst Gebruikt
+      filament_name: Filament
+      material: Materiaal
+      id: ID
+      device_camera: Apparaat
+      location: Lokatie
+      vendor: Leverancier
+      change_spool: Wijzig Spoel
+    setting:
+      auto_open_qr_camera: Open camera automatisch voor QR code detectie
+      warn_on_not_enough_filament: Toon een waarschuwing als de geselecteerde spoel
+        niet genoeg filament bevat om de print te kunnen voltooien
+      show_spool_selection_dialog_on_print_start: Toon spoel selectie venster bij
+        starten print
+      warn_on_filament_type_mismatch: Toon een waarschuwing als het type filament
+        van de spoel en slicer niet overeenkomen
+    btn:
+      scan_code: Scan Code
+      manage_spools: Beheer Spoelen
+      select: Selecteer
+    msg:
+      no_filament: De spoel die je hebt geselecteerd heeft waarschijnlijk niet genoeg
+        filament meer om de print job te voltooien. Weet je zeker dat je door wilt
+        gaan?
+      warning:
+        invalid_spool_id: De spoel ID in deze QR code is incorrect.
+        code_not_recognized: Deze code lijkt niet op een ondersteunde QR code.
+      no_required_length: De benodigde hoeveelheid filament om het geselecteerde bestand
+        te printen is onbekend. Weet je zeker dat je verder wilt gaan?
+      info:
+        howto: Toon de QR code van je spoel aan de camera. Het venster zal sluiten
+          zodra een spoel is gedetecteerd.
+      error:
+        spool_not_existant: De spoel die je hebt gescand komt niet voor in de database.
+      no_spool: Je hebt geen spoel geselecteerd. Weet je zeker dat je wilt printen
+        zonder filament tracking?
+      mismatched_filament: Het materiaal van het geselecteerde filament past niet
+        bij het geselecteerde materiaal in de slicer. Weet je zeker dat je verder
+        wilt gaan?
+      tracking_inactive: Filament tracking is niet actief. Selecteer een spoel om
+        te beginnen.
+    title:
+      scan_spool: Scan Spoel
+      spool_selection: Spoel Selectie
+  job_queue:
+    tooltip:
+      help: Zet opdrachten in de wachtrij door bestanden vanuit Jobs hiernaartoe te
+        slepen<br>Pas de volgorde van de opdrachten in de wachtrij aan door ze naar
+        boven of beneden te slepen
+    msg:
+      confirm: Weet je het zeker? Dit zal de gehele printer wachtrij wissen
+    title:
+      multiply_job: Vermenigvuldig Opdracht | Vermenigvuldig Opdrachten
+    label:
+      number_of_copies: Aantal kopieën
+  timelapse:
+    setting:
+      parkpos:
+        back_left: Achter Links
+        front_right: Vooraan Rechts
+        back_right: Achter Rechts
+        x_only: Verplaats X alleen
+        center: Midden
+        y_only: Verplaats Y alleen
+        front_left: Vooraan Links
+      targetlength: Doel lengte
+      previewimage: Genereer Thumbnail
+      mode_layermacro: Laag Macro
+      mode: Mode
+      duplicatelastframe: Dupliceer laatste frames
+      enable: Ingeschakeld
+      saveframes: Frames Opslaan
+    label:
+      frames: '%{frames} frame | %{frames} frames'
+      length: 'Geschatte lengte: %{length}'
+    title:
+      render_settings: Render Instellingen
+    btn:
+      save_frames: Frames Opslaan
+  history:
+    msg:
+      confirm_jobs: Weet je het zeker? Dit zal alle opdrachten verwijderen.
+      confirm_stats: Weet je het zeker? Dit zal alle statistieken wissen.
+      confirm: Weet je het zeker? Dit zal alle geschiedenis en printer statistieken
+        wissen

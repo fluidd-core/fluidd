@@ -47,7 +47,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import OutputItem from '@/components/widgets/outputs/OutputItem.vue'
 import StateMixin from '@/mixins/state'
-import { Fan, Led, OutputPin } from '@/store/printer/types'
+import type { Fan, Led, OutputPin } from '@/store/printer/types'
 
 @Component({
   components: {

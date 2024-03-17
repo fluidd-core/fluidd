@@ -7,6 +7,7 @@
       <collapsable-card
         :title="$t('app.general.title.config_files')"
         icon="$codeJson"
+        :help-tooltip="$t('app.general.tooltip.file_browser_help')"
       >
         <file-system
           :roots="['config']"
@@ -23,9 +24,10 @@
       <collapsable-card
         :title="$t('app.general.title.other_files')"
         icon="$files"
+        :help-tooltip="$t('app.general.tooltip.file_browser_configuration_help')"
       >
         <file-system
-          :roots="['logs', 'docs', 'config_examples']"
+          :roots="roots"
           max-height="816"
           name="configure"
         />
@@ -67,8 +69,17 @@ export default class Configure extends Mixins(StateMixin) {
     return 6
   }
 
-  get supportsHistory () {
-    return this.$store.getters['server/componentSupport']('history')
+  get roots () {
+    const roots = ['logs', 'docs', 'config_examples']
+    const excludeRoots = ['gcodes', 'config', 'timelapse', 'timelapse_frames']
+
+    for (const root of this.$store.state.server.info.registered_directories || []) {
+      if (!excludeRoots.includes(root) && !roots.includes(root)) {
+        roots.push(root)
+      }
+    }
+
+    return roots
   }
 }
 </script>

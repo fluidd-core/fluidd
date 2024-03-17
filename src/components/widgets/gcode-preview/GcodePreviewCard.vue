@@ -2,8 +2,8 @@
   <collapsable-card
     :title="$tc('app.general.title.gcode_preview')"
     icon="$cubeScan"
-    :draggable="!fullScreen"
-    :collapsable="!fullScreen"
+    :draggable="!fullscreen"
+    :collapsable="!fullscreen"
     layout-path="dashboard.gcode-preview-card"
   >
     <template #menu>
@@ -18,7 +18,7 @@
         </app-btn>
 
         <app-btn
-          v-if="!fullScreen"
+          v-if="!fullscreen"
           color=""
           fab
           x-small
@@ -31,7 +31,13 @@
       </app-btn-collapse-group>
     </template>
 
-    <v-card-text>
+    <v-card-text
+      :class="{ 'no-pointer-events': overlay }"
+      @dragover="handleDragOver"
+      @dragenter.self.prevent
+      @dragleave.self.prevent="handleDragLeave"
+      @drop.self.prevent="handleDrop"
+    >
       <gcode-preview-parser-progress-dialog
         v-if="showParserProgressDialog"
         :value="showParserProgressDialog"
@@ -114,8 +120,6 @@
         <v-col>
           <gcode-preview
             ref="preview"
-            width="100%"
-            height="100%"
             :layer="currentLayer"
             :progress="moveProgress"
             :disabled="!fileLoaded"
@@ -123,6 +127,13 @@
           />
         </v-col>
       </v-row>
+
+      <app-drag-overlay
+        v-model="overlay"
+        :message="$t('app.gcode.overlay.drag_file_load')"
+        icon="$cubeScan"
+        absolute
+      />
     </v-card-text>
   </collapsable-card>
 </template>
@@ -134,8 +145,9 @@ import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
 import GcodePreview from './GcodePreview.vue'
 import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog.vue'
-import { AppFile } from '@/store/files/types'
-import { MinMax } from '@/store/gcodePreview/types'
+import type { AppFile } from '@/store/files/types'
+import type { MinMax } from '@/store/gcodePreview/types'
+import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
 
 @Component({
   components: {
@@ -144,17 +156,18 @@ import { MinMax } from '@/store/gcodePreview/types'
   }
 })
 export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
-  @Prop({ type: Boolean, default: false })
-  readonly menuCollapsed!: boolean
+  @Prop({ type: Boolean })
+  readonly menuCollapsed?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly fullScreen!: boolean
+  @Prop({ type: Boolean })
+  readonly fullscreen?: boolean
 
   @Ref('preview')
   readonly preview!: GcodePreview
 
   currentLayer = 0
   moveProgress = 0
+  overlay = false
 
   @Watch('layerCount')
   onLayerCountChanged () {
@@ -311,10 +324,19 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   async loadCurrent () {
-    const file = this.printerFile as AppFile
+    const printerFile = this.printerFile
+
+    if (printerFile) {
+      this.loadFile(printerFile)
+    }
+  }
+
+  async loadFile (file: AppFile) {
     this.getGcode(file)
       .then(response => response?.data)
       .then(gcode => {
+        if (!gcode) return
+
         this.$store.dispatch('gcodePreview/loadGcode', {
           file,
           gcode
@@ -356,12 +378,12 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   async cancelObject (id: string) {
-    const res = await this.$confirm(
+    const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_exclude_object'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 
-    if (res) {
+    if (result) {
       const reqId = id.toUpperCase().replace(/\s/g, '_')
 
       this.sendGcode(`EXCLUDE_OBJECT NAME=${reqId}`)
@@ -370,6 +392,41 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
 
   get parts () {
     return Object.values(this.$store.getters['parts/getParts'])
+  }
+
+  handleDragOver (event: DragEvent) {
+    if (
+      event.dataTransfer &&
+      hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')
+    ) {
+      event.preventDefault()
+
+      event.dataTransfer.dropEffect = 'link'
+
+      this.overlay = true
+    }
+  }
+
+  handleDragLeave () {
+    this.overlay = false
+  }
+
+  handleDrop (event: DragEvent) {
+    this.overlay = false
+
+    if (
+      event.dataTransfer &&
+      hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')
+    ) {
+      const files = getFileDataTransferDataFromDataTransfer(event.dataTransfer, 'jobs')
+      const path = files.path ? `gcodes/${files.path}` : 'gcodes'
+
+      const file = this.$store.getters['files/getFile'](path, files.items[0]) as AppFile | undefined
+
+      if (file) {
+        this.loadFile(file)
+      }
+    }
   }
 
   created () {

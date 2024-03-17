@@ -1,7 +1,7 @@
 import Vue from 'vue'
-import { ActionTree } from 'vuex'
-import { AuthState } from './types'
-import { RootState } from '../types'
+import type { ActionTree } from 'vuex'
+import type { AuthState } from './types'
+import type { RootState } from '../types'
 import { httpClientActions } from '@/api/httpClientActions'
 import router from '@/router'
 import { consola } from 'consola'
@@ -74,7 +74,6 @@ export const actions: ActionTree<AuthState, RootState> = {
         consola.debug('checkToken - isExpiring', new Date(now * 1000), new Date(exp * 1000))
         return true
       } else {
-        // console.debug('checkToken - not isExpiring', new Date(now * 1000), new Date(exp * 1000))
         return false
       }
     }
@@ -88,7 +87,10 @@ export const actions: ActionTree<AuthState, RootState> = {
     const keys = rootGetters['config/getTokenKeys']
     const refresh_token = localStorage.getItem(keys['refresh-token'])
     return httpClientActions.accessRefreshJwtPost(refresh_token || '', {
-      withAuth: false
+      withAuth: false,
+      headers: {
+        Authorization: undefined
+      }
     })
       .then(response => response.data.result)
       .then((response) => {
@@ -121,7 +123,11 @@ export const actions: ActionTree<AuthState, RootState> = {
 
   async login ({ commit, rootGetters }, { username, password, source }) {
     const keys = rootGetters['config/getTokenKeys']
-    return httpClientActions.accessLoginPost(username, password, source)
+    return httpClientActions.accessLoginPost(username, password, source, {
+      headers: {
+        Authorization: undefined
+      }
+    })
       .then(response => response.data.result)
       .then(user => {
         // Successful login. Set the tokens and auth status and move on.

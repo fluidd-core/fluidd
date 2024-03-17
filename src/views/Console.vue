@@ -1,17 +1,13 @@
 <template>
   <v-row :dense="$vuetify.breakpoint.smAndDown">
     <v-col cols="12">
-      <console-card
-        full-screen
-      />
+      <console-card fullscreen />
     </v-col>
   </v-row>
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-
+import { Component, Vue } from 'vue-property-decorator'
 import ConsoleCard from '@/components/widgets/console/ConsoleCard.vue'
 
 @Component({
@@ -19,6 +15,6 @@ import ConsoleCard from '@/components/widgets/console/ConsoleCard.vue'
     ConsoleCard
   }
 })
-export default class Console extends Mixins(StateMixin) {
+export default class Console extends Vue {
 }
 </script>

@@ -11,7 +11,6 @@
         :option="opts"
         :update-options="{ notMerge: true }"
         :init-options="{ renderer: 'svg' }"
-        :events="events"
         autoresize
       />
     </div>
@@ -26,28 +25,21 @@ import { merge } from 'lodash-es'
 @Component({})
 export default class AppChart extends Vue {
   @Prop({ type: Array, required: true })
-  readonly data!: any
+  readonly data!: unknown[]
 
-  @Prop({ type: Object, default: {} })
-  readonly options!: any
+  @Prop({ type: Object, default: () => {} })
+  readonly options!: Record<string, unknown>
 
   @Prop({ type: String, default: '100%' })
   readonly height!: string
-
-  @Prop({ type: Array, default: () => [] })
-  readonly events!: any
 
   @Ref('chart')
   readonly chart!: ECharts
 
   ready = false
 
-  get isDark () {
-    return this.$store.state.config.uiSettings.theme.isDark
-  }
-
   @Watch('data')
-  onData (data: any) {
+  onData (data?: unknown[]) {
     if (this.chart && data && data.length) {
       this.chart.setOption({
         dataset: {

@@ -7,44 +7,39 @@ import Components from 'unplugin-vue-components/vite'
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 import content from '@originjs/vite-plugin-content'
-import monacoEditorPlugin from 'vite-plugin-monaco-editor'
+import monacoEditorPluginModule from 'vite-plugin-monaco-editor'
 import checker from 'vite-plugin-checker'
 import version from './vite.config.inject-version'
+
+// Fix for incorrect typings on vite-plugin-monaco-editor
+const isObjectWithDefaultFunction = (module: unknown): module is { default: typeof monacoEditorPluginModule } => (
+  module != null &&
+  typeof module === 'object' &&
+  'default' in module &&
+  typeof module.default === 'function'
+)
+
+const monacoEditorPlugin = isObjectWithDefaultFunction(monacoEditorPluginModule)
+  ? monacoEditorPluginModule.default
+  : monacoEditorPluginModule
 
 export default defineConfig({
   plugins: [
     VitePWA({
+      srcDir: 'src',
+      filename: 'sw.ts',
+      strategies: 'injectManifest',
       includeAssets: [
         '**/*.svg',
         '**/*.png',
         '**/*.ico',
-        '*.json'
+        'editor.theme.json'
       ],
-      workbox: {
+      injectManifest: {
         globPatterns: [
           '**/*.{js,css,html,ttf,woff,woff2,wasm}'
         ],
-        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
-        navigateFallbackDenylist: [
-          /^\/websocket/,
-          /^\/(printer|api|access|machine|server)\//,
-          /^\/webcam[2-4]?\//
-        ],
-        runtimeCaching: [
-          {
-            urlPattern: (options) => (options.sameOrigin && options.url.pathname.startsWith('/config.json')),
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'config',
-              matchOptions: {
-                ignoreSearch: true
-              },
-              precacheFallback: {
-                fallbackURL: 'config.json'
-              }
-            }
-          }
-        ]
+        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2
       },
       manifest: {
         name: 'fluidd',
@@ -54,23 +49,23 @@ export default defineConfig({
         background_color: '#000000',
         icons: [
           {
-            src: '/img/icons/android-chrome-192x192.png',
+            src: 'img/icons/android-chrome-192x192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/img/icons/android-chrome-512x512.png',
+            src: 'img/icons/android-chrome-512x512.png',
             sizes: '512x512',
             type: 'image/png'
           },
           {
-            src: '/img/icons/android-chrome-maskable-192x192.png',
+            src: 'img/icons/android-chrome-maskable-192x192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'maskable'
           },
           {
-            src: '/img/icons/android-chrome-maskable-512x512.png',
+            src: 'img/icons/android-chrome-maskable-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
@@ -79,10 +74,10 @@ export default defineConfig({
         shortcuts: [
           {
             name: 'Configuration',
-            url: '/#/configure',
+            url: '#/configure',
             icons: [
               {
-                src: '/img/icons/shortcut-configuration-96x96.png',
+                src: 'img/icons/shortcut-configuration-96x96.png',
                 sizes: '96x96',
                 type: 'image/png'
               }
@@ -90,10 +85,10 @@ export default defineConfig({
           },
           {
             name: 'Settings',
-            url: '/#/settings',
+            url: '#/settings',
             icons: [
               {
-                src: '/img/icons/shortcut-settings-96x96.png',
+                src: 'img/icons/shortcut-settings-96x96.png',
                 sizes: '96x96',
                 type: 'image/png'
               }
@@ -103,7 +98,8 @@ export default defineConfig({
       },
       devOptions: {
         enabled: true,
-        type: 'module'
+        type: 'module',
+        navigateFallback: 'index.html'
       }
     }),
     vue(),
@@ -133,11 +129,11 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       css: { charset: false },
+      scss: {
+        additionalData: '@import "@/scss/variables";\n'
+      },
       sass: {
-        additionalData: [
-          '@import "@/scss/variables.scss"',
-          ''
-        ].join('\n')
+        additionalData: '@import "@/scss/variables.scss"\n'
       }
     }
   },
@@ -160,6 +156,8 @@ export default defineConfig({
       { find: /^vue$/, replacement: 'vue/dist/vue.runtime.common.js' }
     ]
   },
+
+  base: './',
 
   server: {
     host: '0.0.0.0',

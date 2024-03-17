@@ -15,7 +15,7 @@
       <v-tooltip bottom>
         <template #activator="{ on, attrs }">
           <v-icon
-            v-show="!extruderReady"
+            v-show="hasExtruder && !extruderReady"
             v-bind="attrs"
             class="ml-3"
             color="info"
@@ -62,6 +62,7 @@
         </app-btn>
 
         <app-btn
+          v-if="hasSteppersEnabled"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ms-1 my-1"
@@ -140,6 +141,11 @@
       v-if="bedScrewsAdjustDialogOpen"
       v-model="bedScrewsAdjustDialogOpen"
     />
+
+    <screws-tilt-adjust-dialog
+      v-if="screwsTiltAdjustDialogOpen"
+      v-model="screwsTiltAdjustDialogOpen"
+    />
   </collapsable-card>
 </template>
 
@@ -148,7 +154,7 @@ import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import Toolhead from './Toolhead.vue'
-import { Macro } from '@/store/macros/types'
+import type { Macro } from '@/store/macros/types'
 
 type Tool = {
   name: string,
@@ -166,9 +172,10 @@ type Tool = {
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   manualProbeDialogOpen = false
   bedScrewsAdjustDialogOpen = false
+  screwsTiltAdjustDialogOpen = false
 
-  @Prop({ type: Boolean, default: false })
-  readonly menuCollapsed!: boolean
+  @Prop({ type: Boolean })
+  readonly menuCollapsed?: boolean
 
   get printerSettings () {
     return this.$store.getters['printer/getPrinterSettings']()
@@ -199,7 +206,10 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get printerSupportsProbeCalibrate (): boolean {
-    return 'probe' in this.printerSettings || 'bltouch' in this.printerSettings
+    return (
+      'probe' in this.printerSettings ||
+      'bltouch' in this.printerSettings
+    )
   }
 
   get printerSupportsZEndstopCalibrate (): boolean {
@@ -209,24 +219,30 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     )
   }
 
-  get macros (): Macro[] {
-    return this.$store.getters['macros/getMacros'] as Macro[]
-  }
-
   get loadFilamentMacro (): Macro | undefined {
-    const [loadFilamentMacro] = this.macros
-      .filter(macro => ['load_filament', 'm701'].includes(macro.name))
-      .sort(macro => macro.name === 'load_filament' ? -1 : 1)
-
-    return loadFilamentMacro
+    return this.$store.getters['macros/getMacroByName'](
+      'load_filament',
+      'filament_load',
+      'm701'
+    ) as Macro | undefined
   }
 
   get unloadFilamentMacro (): Macro | undefined {
-    const [unloadFilamentMacro] = this.macros
-      .filter(macro => ['unload_filament', 'm702'].includes(macro.name))
-      .sort(macro => macro.name === 'unload_filament' ? -1 : 1)
+    return this.$store.getters['macros/getMacroByName'](
+      'unload_filament',
+      'filament_unload',
+      'm702'
+    ) as Macro | undefined
+  }
 
-    return unloadFilamentMacro
+  get cleanNozzleMacro (): Macro | undefined {
+    return this.$store.getters['macros/getMacroByName'](
+      'clean_nozzle',
+      'nozzle_clean',
+      'wipe_nozzle',
+      'nozzle_wipe',
+      'g12'
+    ) as Macro | undefined
   }
 
   get availableTools () {
@@ -255,6 +271,16 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
         label: unloadFilamentMacro.name === 'm702' ? 'M702 (Unload Filament)' : undefined,
         icon: '$unloadFilament',
         disabled: !(ignoreMinExtrudeTemp || this.extruderReady)
+      })
+    }
+
+    const cleanNozzleMacro = this.cleanNozzleMacro
+
+    if (cleanNozzleMacro) {
+      tools.push({
+        name: cleanNozzleMacro.name.toUpperCase(),
+        label: cleanNozzleMacro.name === 'g12' ? 'G12 (Clean the Nozzle)' : undefined,
+        icon: '$cleanNozzle'
       })
     }
 
@@ -296,17 +322,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
     if (this.printerSupportsProbeCalibrate) {
       tools.push({
+        name: 'PROBE_ACCURACY',
+        disabled: !this.allHomed,
+        wait: this.$waits.onProbeAccuracy
+      })
+      tools.push({
         name: 'PROBE_CALIBRATE',
         disabled: !this.allHomed,
         wait: this.$waits.onProbeCalibrate
-      })
-    }
-
-    if (this.printerSupportsBedScrewsCalculate) {
-      tools.push({
-        name: 'SCREWS_TILT_CALCULATE',
-        disabled: !this.allHomed || this.isManualProbeActive,
-        wait: this.$waits.onBedScrewsCalculate
       })
     }
 
@@ -315,6 +338,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
         name: 'QUAD_GANTRY_LEVEL',
         disabled: !this.allHomed || this.isManualProbeActive,
         wait: this.$waits.onQGL
+      })
+    }
+
+    if (this.printerSupportsBedScrewsCalculate) {
+      tools.push({
+        name: 'SCREWS_TILT_CALCULATE',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onBedScrewsCalculate
       })
     }
 
@@ -340,12 +371,16 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   get printerSupportsForceMove () {
     return (
       (this.printerSettings.force_move?.enable_force_move ?? false) &&
-      !this.printerIsDelta
+      !this.hasRoundBed
     )
   }
 
-  get printerIsDelta () {
-    return ['delta', 'rotary_delta'].includes(this.printerSettings.printer.kinematics)
+  get hasSteppersEnabled (): boolean {
+    return this.$store.getters['printer/getHasSteppersEnabled'] as boolean
+  }
+
+  get hasRoundBed (): boolean {
+    return this.$store.getters['printer/getHasRoundBed'] as boolean
   }
 
   get showManualProbeDialogAutomatically () {
@@ -356,43 +391,65 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
   }
 
+  get showScrewsTiltAdjustDialogAutomatically () {
+    return this.$store.state.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
+  }
+
   get forceMove () {
     return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 
   @Watch('isManualProbeActive')
   onIsManualProbeActive (value: boolean) {
-    if (value && this.showManualProbeDialogAutomatically &&
-      this.klippyReady && !this.printerPrinting) {
+    if (
+      value &&
+      this.showManualProbeDialogAutomatically &&
+      this.klippyReady &&
+      !this.printerPrinting
+    ) {
       this.manualProbeDialogOpen = true
     }
   }
 
   @Watch('isBedScrewsAdjustActive')
   onIsBedScrewsAdjustActive (value: boolean) {
-    if (value && this.showBedScrewsAdjustDialogAutomatically &&
-      this.klippyReady && !this.printerPrinting) {
+    if (
+      value &&
+      this.showBedScrewsAdjustDialogAutomatically &&
+      this.klippyReady &&
+      !this.printerPrinting
+    ) {
       this.bedScrewsAdjustDialogOpen = true
     }
   }
 
+  @Watch('hasScrewsTiltAdjustResults')
+  onHasScrewsTiltAdjustResults (value: boolean) {
+    this.screwsTiltAdjustDialogOpen = (
+      value &&
+      this.showScrewsTiltAdjustDialogAutomatically &&
+      this.klippyReady &&
+      !this.printerPrinting
+    )
+  }
+
   async toggleForceMove () {
-    if (!this.forceMove && this.$store.state.config.uiSettings.general.forceMoveToggleWarning) {
-      const result = await this.$confirm(
+    const result = (
+      this.forceMove ||
+      !this.$store.state.config.uiSettings.general.forceMoveToggleWarning ||
+      await this.$confirm(
         this.$tc('app.general.simple_form.msg.confirm_forcemove_toggle'),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
       )
+    )
 
-      if (!result) {
-        return
-      }
+    if (result) {
+      this.$store.dispatch('config/saveByPath', {
+        path: 'uiSettings.toolhead.forceMove',
+        value: !this.forceMove,
+        server: false
+      })
     }
-
-    this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.toolhead.forceMove',
-      value: !this.forceMove,
-      server: false
-    })
   }
 }
 </script>

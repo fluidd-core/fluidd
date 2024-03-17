@@ -1,6 +1,6 @@
-import { GetterTree } from 'vuex'
-import { TimelapseSettings, TimelapseState } from './types'
-import { RootState } from '../types'
+import type { GetterTree } from 'vuex'
+import type { TimelapseSettings, TimelapseState } from './types'
+import type { RootState } from '../types'
 
 export const getters: GetterTree<TimelapseState, RootState> = {
   getSettings: (state) => {

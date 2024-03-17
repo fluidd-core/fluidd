@@ -36,16 +36,22 @@
           :lg="columnSpan"
           :class="{ 'drag': inLayout }"
         >
-          <draggable
+          <app-draggable
             v-model="containers[containerIndex]"
             class="list-group"
-            v-bind="dragOptions"
-            @start.stop="drag = true"
+            :options="{
+              animation: 200,
+              handle: '.handle',
+              group: 'diagnostics',
+              disabled: !inLayout,
+              ghostClass: 'ghost'
+            }"
+            target=":first-child"
             @end.stop="updateLayout"
           >
             <transition-group
               type="transition"
-              :name="!drag ? 'flip-list' : null"
+              :name="!inLayout ? 'flip-list' : undefined"
             >
               <template v-for="c in container">
                 <diagnostics-card
@@ -57,7 +63,7 @@
                 />
               </template>
             </transition-group>
-          </draggable>
+          </app-draggable>
         </v-col>
       </template>
     </v-row>
@@ -74,18 +80,16 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import draggable from 'vuedraggable'
 import { v4 as uuidv4 } from 'uuid'
 import StateMixin from '@/mixins/state'
-import { DiagnosticsCardConfig, DiagnosticsCardContainer } from '@/store/diagnostics/types'
+import type { DiagnosticsCardConfig, DiagnosticsCardContainer } from '@/store/diagnostics/types'
 import DiagnosticsCard from '@/components/widgets/diagnostics/DiagnosticsCard.vue'
 import DiagnosticsCardConfigDialog from '@/components/widgets/diagnostics/DiagnosticsCardConfigDialog.vue'
-import { LayoutConfig } from '@/store/layout/types'
+import type { LayoutConfig } from '@/store/layout/types'
 import { defaultState } from '@/store/layout/state'
 
 @Component({
   components: {
-    draggable,
     DiagnosticsCard,
     DiagnosticsCardConfigDialog
   }
@@ -96,7 +100,6 @@ export default class Diagnostics extends Mixins(StateMixin) {
     card: null
   }
 
-  drag = false
   containers: Array<DiagnosticsCardConfig[]> = []
 
   mounted () {
@@ -173,18 +176,7 @@ export default class Diagnostics extends Mixins(StateMixin) {
     this.containers = containers.slice(0, 4)
   }
 
-  get dragOptions () {
-    return {
-      animation: 200,
-      handle: '.handle',
-      group: 'diagnostics',
-      disabled: !this.inLayout,
-      ghostClass: 'ghost'
-    }
-  }
-
   updateLayout () {
-    this.drag = false
     this.$store.dispatch('layout/onLayoutChange', {
       name: 'diagnostics',
       value: {

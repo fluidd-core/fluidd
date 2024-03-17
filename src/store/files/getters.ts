@@ -1,7 +1,8 @@
-import { GetterTree } from 'vuex'
-import { AppDirectory, AppFile, AppFileWithMeta, FileBrowserEntry, FilesState } from './types'
-import { RootState } from '../types'
-import { HistoryItem } from '../history/types'
+import type { GetterTree } from 'vuex'
+import type { AppDirectory, AppFileWithMeta, FileBrowserEntry, FilesState, RootProperties } from './types'
+import type { RootState } from '../types'
+import type { HistoryItem } from '../history/types'
+import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
 
 export const getters: GetterTree<FilesState, RootState> = {
   /**
@@ -67,7 +68,6 @@ export const getters: GetterTree<FilesState, RootState> = {
             item.thumbnails = [
               {
                 // we have no data regarding the thumbnail other than it's URL, but setting it is mandatory...
-                data: '',
                 height: 0,
                 width: 0,
                 size: 0,
@@ -98,15 +98,19 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns the properties of a root.
    */
-  getRootProperties: () => (root: string) => {
+  getRootProperties: () => (root: string): RootProperties => {
+    const canView = [
+      ...SupportedImageFormats,
+      ...SupportedMarkdownFormats,
+      ...SupportedVideoFormats
+    ]
+
     switch (root) {
       case 'gcodes':
         return {
           readonly: false,
           accepts: ['.gcode', '.g', '.gc', '.gco', '.ufp', '.nc'],
-          canEdit: true,
-          canView: false,
-          canPrint: true,
+          canView,
           canConfigure: true,
           filterTypes: ['hidden_files', 'print_start_time']
         }
@@ -114,19 +118,15 @@ export const getters: GetterTree<FilesState, RootState> = {
         return {
           readonly: false,
           accepts: ['.conf', '.cfg', '.md', '.css', '.jpg', '.jpeg', '.png', '.gif'],
-          canEdit: true,
-          canView: false,
-          canPrint: false,
+          canView,
           canConfigure: false,
-          filterTypes: ['hidden_files', 'klipper_backup_files']
+          filterTypes: ['hidden_files', 'klipper_backup_files', 'moonraker_backup_files', 'crowsnest_backup_files']
         }
       case 'config_examples':
         return {
           readonly: true,
           accepts: [],
-          canEdit: false,
-          canView: true,
-          canPrint: false,
+          canView,
           canConfigure: false,
           filterTypes: ['hidden_files']
         }
@@ -134,9 +134,7 @@ export const getters: GetterTree<FilesState, RootState> = {
         return {
           readonly: true,
           accepts: [],
-          canEdit: false,
-          canView: true,
-          canPrint: false,
+          canView,
           canConfigure: false,
           filterTypes: ['hidden_files']
         }
@@ -144,33 +142,25 @@ export const getters: GetterTree<FilesState, RootState> = {
         return {
           readonly: true,
           accepts: [],
-          canEdit: false,
-          canView: true,
-          canPrint: false,
+          canView,
           canConfigure: false,
           filterTypes: ['hidden_files', 'rolled_log_files']
         }
       case 'timelapse':
         return {
-          readonly: true,
+          readonly: false,
           accepts: [],
-          canEdit: false,
-          canView: true,
-          canPrint: false,
+          canView,
           canConfigure: false,
-          canDelete: true,
-          canCreateDirectory: true,
           filterTypes: ['hidden_files']
         }
       default:
         return {
           readonly: true,
           accepts: [],
-          canEdit: false,
-          canView: true,
-          canPrint: false,
+          canView: [],
           canConfigure: false,
-          filterTypes: []
+          filterTypes: ['hidden_files']
         }
     }
   },
@@ -178,19 +168,24 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns a specific file.
    */
-  getFile: (state) => (root: string, path: string, filename: string) => {
+  getFile: (state, getters, rootState) => (path: string, filename: string) => {
     const pathContent = state.pathFiles[path]
 
     const file = pathContent?.files.find(file => file.filename === filename)
 
     if (file) {
-      const item: AppFile = {
+      const history = (file.job_id && rootState.history.jobs.find(job => job.job_id === file.job_id)) || {} as HistoryItem
+      const [, ...restOfPath] = path.split('/')
+      const pathNoRoot = restOfPath.join('/')
+
+      const item: AppFileWithMeta = {
         ...file,
         type: 'file',
         name: file.filename,
         extension: file.filename.split('.').pop() || '',
-        path,
-        modified: new Date(file.modified).getDate()
+        path: pathNoRoot,
+        modified: new Date(file.modified).getDate(),
+        history
       }
 
       return item

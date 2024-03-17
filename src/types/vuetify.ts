@@ -3,6 +3,13 @@ export type VForm = Vue & HTMLFormElement & {
   validate: () => boolean,
 }
 
+export type VTextArea = Vue & HTMLTextAreaElement & {
+  reset: () => void,
+  resetValidation: () => void,
+  valid: boolean,
+  validate: (force?: boolean) => boolean,
+}
+
 export type VInput = Vue & HTMLInputElement & {
   hasColor: boolean,
   hasFocused: boolean,

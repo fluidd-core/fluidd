@@ -1,6 +1,6 @@
-import { ActionTree } from 'vuex'
-import { LayoutConfig, LayoutState } from './types'
-import { RootState } from '../types'
+import type { ActionTree } from 'vuex'
+import type { LayoutConfig, LayoutState } from './types'
+import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 
@@ -12,7 +12,7 @@ export const actions: ActionTree<LayoutState, RootState> = {
     commit('setReset')
   },
 
-  async initLayout ({ commit }, payload) {
+  async initLayout ({ commit }, payload: LayoutState) {
     commit('setInitLayout', payload)
   },
 

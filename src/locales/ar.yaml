@@ -24,8 +24,6 @@ app:
     label:
       current: درجة الحرارة
       item: الاسم
-      'off': اخفاء الرسم البياني
-      'on': عرض الرسم البياني
       power: الطاقة
       target: الهدف
     tooltip:
@@ -80,8 +78,6 @@ app:
     msg:
       not_found: لا يوجد ملفات
       processing: جاري المعالجة
-    overlay:
-      label: <strong>الق</strong> ملف هنا
     title:
       add_dir: اضافة مجلد
       add_file: اضافة ملف
@@ -221,7 +217,6 @@ app:
       uncategorized: غير مصنف
       unretract_speed: سرعة الكسر
       used: مستخدم
-      variance: التباين
       velocity: السرعة
       visible: ظاهر
       z_offset: موازنة Z
@@ -295,8 +290,6 @@ app:
       reload_klipper: اعادة تحميل تكوين klipper.
       reload_restart_klipper: اعادة تحميل تكوين klipper واعادة تشغيل الطابعة.
       restart_klipper: اعادة تشغيل خدمة klipper الخاصة بالنظام
-  history:
-    msg: {}
   printer:
     state:
       busy: مشغولة
@@ -324,7 +317,6 @@ app:
       camera_flip_x: عكس افقي
       camera_flip_y: عكس عمودي
       camera_stream_type: نوع البث
-      camera_url: رابط الكاميرا
       confirm_on_estop: ايقاف الطوارئ يحتاج تأكيد
       dark_mode: الوضع الداكن
       default_extrude_length: Default extrude length

@@ -1,22 +1,19 @@
 import Vue from 'vue'
 import { v4 as uuidv4 } from 'uuid'
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
-import { ConsoleEntry, ConsoleFilter, ConsoleFilterType, ConsoleState } from './types'
+import type { ConsoleEntry, ConsoleFilter, ConsoleState, PromptDialogItemButton, PromptDialogItem } from './types'
+import escapeRegExp from '@/util/escape-regexp'
 
-const _compileExpression = (filter: ConsoleFilter): RegExp => {
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
-  function escapeRegExp (s: string) {
-    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  }
+const compileExpression = (filter: ConsoleFilter): RegExp => {
   switch (filter.type) {
-    case ConsoleFilterType.Contains:
-      return new RegExp(`.*${escapeRegExp(filter.value)}.*`, 'i')
-    case ConsoleFilterType.StartsWith:
+    case 'starts-with':
       return new RegExp(`^${escapeRegExp(filter.value)}.*`, 'i')
-    case ConsoleFilterType.Expression:
+    case 'expression':
       return new RegExp(filter.value)
+    default:
+      return new RegExp(`.*${escapeRegExp(filter.value)}.*`, 'i')
   }
 }
 
@@ -50,11 +47,34 @@ export const mutations: MutationTree<ConsoleState> = {
     state.console = payload
   },
 
+  setResetPromptDialog (state, payload: string) {
+    const { promptDialog } = defaultState()
+
+    Object.assign(state, {
+      promptDialog: {
+        ...promptDialog,
+        title: payload
+      }
+    })
+  },
+
+  setPromptDialogItem (state, payload: PromptDialogItem) {
+    state.promptDialog.items.push(payload)
+  },
+
+  setPromptDialogFooterButton (state, payload: PromptDialogItemButton) {
+    state.promptDialog.footerButtons.push(payload)
+  },
+
+  setPromptDialogOpen (state, payload: boolean) {
+    state.promptDialog.open = payload
+  },
+
   /**
    * Defines the list of available commands
    */
   setGcodeHelp (state, payload) {
-    Vue.set(state, 'availableCommands', payload)
+    Vue.set(state, 'gcodeHelp', payload)
   },
 
   /**
@@ -63,7 +83,25 @@ export const mutations: MutationTree<ConsoleState> = {
   setInitConsole (state, payload: ConsoleState) {
     if (payload) {
       if (payload.consoleFilters) {
-        payload.consoleFiltersRegexp = payload.consoleFilters.map(f => _compileExpression(f))
+        payload.consoleFiltersRegexp = payload.consoleFilters
+          .map(filter => {
+            if (typeof filter.type === 'number') {
+              switch (filter.type) {
+                case 1:
+                  filter.type = 'starts-with'
+                  break
+
+                case 2:
+                  filter.type = 'expression'
+                  break
+
+                default:
+                  filter.type = 'contains'
+              }
+            }
+
+            return compileExpression(filter)
+          })
       }
       Object.assign(state, payload)
     }
@@ -93,18 +131,21 @@ export const mutations: MutationTree<ConsoleState> = {
   },
 
   setFilter (state, filter: ConsoleFilter) {
-    const filterRegex = _compileExpression(filter)
-
     if (filter.id) {
       const i = state.consoleFilters.findIndex(c => c.id === filter.id)
       if (i >= 0) {
+        const { type, value } = state.consoleFilters[i]
+
         Vue.set(state.consoleFilters, i, filter)
-        Vue.set(state.consoleFiltersRegexp, i, filterRegex)
+
+        if (type !== filter.type || value !== filter.value) {
+          Vue.set(state.consoleFiltersRegexp, i, compileExpression(filter))
+        }
       }
     } else {
       filter.id = uuidv4()
       state.consoleFilters.push(filter)
-      state.consoleFiltersRegexp.push(filterRegex)
+      state.consoleFiltersRegexp.push(compileExpression(filter))
     }
   },
 

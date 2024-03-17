@@ -41,44 +41,38 @@
         v-model="selectedFilterTypes"
         multiple
       >
-        <template v-for="(filter, i) in filters">
-          <v-list-item
-            v-if="filter.enabled"
-            :key="`filter-${i}`"
-            :value="filter.type"
-          >
-            <template #default="{ active }">
-              <v-list-item-action class="my-0">
-                <v-checkbox :input-value="active" />
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title>
-                  {{ filter.text }}
-                </v-list-item-title>
-                <v-list-item-subtitle v-if="filter.desc !== undefined">
-                  {{ filter.desc }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </template>
-          </v-list-item>
-        </template>
+        <v-list-item
+          v-for="filter in filters"
+          :key="`filter-${filter.type}`"
+          :value="filter.type"
+        >
+          <template #default="{ active }">
+            <v-list-item-action class="my-0">
+              <v-checkbox :input-value="active" />
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ filter.text }}
+              </v-list-item-title>
+              <v-list-item-subtitle v-if="filter.desc !== undefined">
+                {{ filter.desc }}
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </template>
+        </v-list-item>
       </v-list-item-group>
     </v-list>
   </v-menu>
 </template>
 
 <script lang="ts">
-import { FileFilterType } from '@/store/files/types'
+import type { FileFilterType, RootProperties } from '@/store/files/types'
 import { Component, Vue, Prop } from 'vue-property-decorator'
 
-type FileFilterEntry = {
-  enabled: boolean,
+type FileFilter = {
+  type: FileFilterType,
   text: string,
   desc?: string,
-}
-
-type FileFilter = FileFilterEntry & {
-  type: FileFilterType,
 }
 
 @Component({})
@@ -86,43 +80,71 @@ export default class FileSystemFilterMenu extends Vue {
   @Prop({ type: String, required: true })
   readonly root!: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
-  availableFilters: Record<FileFilterType, FileFilterEntry> = {
-    print_start_time: {
-      enabled: this.supportsHistoryComponent,
-      text: this.$tc('app.file_system.filters.label.print_start_time'),
-      desc: this.$tc('app.file_system.filters.label.print_start_time_desc')
-    },
-    hidden_files: {
-      enabled: true,
-      text: this.$tc('app.file_system.filters.label.hidden_files_folders')
-    },
-    klipper_backup_files: {
-      enabled: true,
-      text: this.$tc('app.file_system.filters.label.klipper_backup_files')
-    },
-    rolled_log_files: {
-      enabled: true,
-      text: this.$tc('app.file_system.filters.label.rolled_log_files')
+  get rootProperties (): RootProperties {
+    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+  }
+
+  get filters () {
+    const filters: FileFilter[] = []
+
+    const rootFilterTypes = this.rootProperties.filterTypes
+
+    if (rootFilterTypes.includes('print_start_time') && this.supportsHistoryComponent) {
+      filters.push({
+        type: 'print_start_time',
+        text: this.$tc('app.file_system.filters.label.print_start_time'),
+        desc: this.$tc('app.file_system.filters.label.print_start_time_desc')
+      })
     }
-  }
 
-  get rootFilterTypes (): FileFilterType[] {
-    return this.$store.getters['files/getRootProperties'](this.root).filterTypes
-  }
+    if (rootFilterTypes.includes('hidden_files')) {
+      filters.push({
+        type: 'hidden_files',
+        text: this.$tc('app.file_system.filters.label.hidden_files_folders')
+      })
+    }
 
-  get filters (): FileFilter[] {
-    return this.rootFilterTypes
-      .map((type): FileFilter => ({
-        ...this.availableFilters[type],
-        type
-      }))
+    if (rootFilterTypes.includes('klipper_backup_files')) {
+      filters.push({
+        type: 'klipper_backup_files',
+        text: this.$tc('app.file_system.filters.label.klipper_backup_files')
+      })
+    }
+
+    if (rootFilterTypes.includes('moonraker_backup_files')) {
+      filters.push({
+        type: 'moonraker_backup_files',
+        text: this.$tc('app.file_system.filters.label.moonraker_backup_files')
+      })
+    }
+
+    if (rootFilterTypes.includes('rolled_log_files')) {
+      filters.push({
+        type: 'rolled_log_files',
+        text: this.$tc('app.file_system.filters.label.rolled_log_files')
+      })
+    }
+
+    if (rootFilterTypes.includes('crowsnest_backup_files')) {
+      filters.push({
+        type: 'crowsnest_backup_files',
+        text: this.$tc('app.file_system.filters.label.crowsnest_backup_files')
+      })
+    }
+
+    return filters
   }
 
   get selectedFilterTypes (): FileFilterType[] {
-    return this.$store.state.config.uiSettings.fileSystem.activeFilters[this.root] ?? []
+    const selectedFilters = this.$store.state.config.uiSettings.fileSystem.activeFilters[this.root] as FileFilterType[] ?? []
+    const filters = new Set(this.filters
+      .map(filter => filter.type))
+
+    return selectedFilters
+      .filter(selectedFilter => filters.has(selectedFilter))
   }
 
   set selectedFilterTypes (value: FileFilterType[]) {

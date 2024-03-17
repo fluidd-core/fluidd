@@ -1,5 +1,9 @@
 <template>
-  <GcodePreviewCard full-screen />
+  <v-row :dense="$vuetify.breakpoint.smAndDown">
+    <v-col cols="12">
+      <GcodePreviewCard fullscreen />
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">

@@ -1,6 +1,15 @@
-import { GetterTree } from 'vuex'
-import { Macro, MacrosState } from './types'
-import { RootState } from '../types'
+import type { GetterTree } from 'vuex'
+import type { Macro, MacrosState } from './types'
+import type { RootState } from '../types'
+
+export const MACRO_DEFAULTS = {
+  alias: '',
+  visible: true,
+  disabledWhilePrinting: false,
+  color: '',
+  categoryId: '0',
+  order: undefined
+}
 
 export const getters: GetterTree<MacrosState, RootState> = {
 
@@ -19,14 +28,10 @@ export const getters: GetterTree<MacrosState, RootState> = {
         const variables = rootState.printer.printer[key]
 
         const macro: Macro = {
+          ...MACRO_DEFAULTS,
           name,
-          alias: '',
-          visible: true,
-          disabledWhilePrinting: false,
-          color: '',
-          categoryId: '0',
-          variables,
           ...stored,
+          variables,
           ...{ config }
         }
 
@@ -47,6 +52,18 @@ export const getters: GetterTree<MacrosState, RootState> = {
     return macros
   },
 
+  getMacroByName: (state, getters) => (...names: string[]) => {
+    const macros = getters.getMacros as Macro[]
+
+    for (const name of names) {
+      const macro = macros.find(macro => macro.name === name)
+
+      if (macro) {
+        return macro
+      }
+    }
+  },
+
   // Gets visible macros, transformed. Should include the macro's config.
   // Is only used on the dashboard. Grouped by category.
   getVisibleMacros: (state, getters) => {
@@ -54,13 +71,11 @@ export const getters: GetterTree<MacrosState, RootState> = {
     const categories = [...state.categories, defaultCategory]
 
     return categories
-      .map(({ id, name }) => {
-        return {
-          id,
-          name,
-          macros: getters.getMacrosByCategory(id).filter((macro: Macro) => macro.visible)
-        }
-      })
+      .map(({ id, name }) => ({
+        id,
+        name,
+        macros: getters.getMacrosByCategory(id).filter((macro: Macro) => macro.visible) as Macro[]
+      }))
       .filter(category => category.macros.length > 0)
       .sort((a, b) => {
         if (!a.name) return 1

@@ -1,67 +1,55 @@
 <template>
-  <v-dialog
+  <v-snackbar
     v-model="open"
-    max-width="500"
-    persistent
+    timeout="-1"
+    multi-line
+    elevation="24"
+    bottom
+    right
+    :vertical="$vuetify.breakpoint.smAndDown"
   >
-    <v-card v-if="file">
-      <v-card-title class="card-heading py-2 px-5">
-        <v-icon left>
-          $cubeScan
-        </v-icon>
-        <span class="focus--text">
-          {{ $t('app.gcode.label.parsing_file') }}
-        </span>
-      </v-card-title>
-
-      <v-card-text class="py-3 px-5">
-        <div class="mb-2">
-          {{ file.filename }}
-        </div>
-        <v-progress-linear
-          :value="percent"
-          color="primary"
-          class="mb-2"
-        />
-        <table>
-          <tr>
-            <td class="pr-2">
-              {{ $t('app.gcode.label.parsed') }}:
-            </td>
-            <td>
-              {{ percent }}%
-              ({{ $filters.getReadableFileSizeString(progress) }} /
-              {{ $filters.getReadableFileSizeString(file.size) }})
-            </td>
-          </tr>
-        </table>
-      </v-card-text>
-
-      <v-divider />
-
-      <v-card-actions class="py-2 px-5">
-        <v-spacer />
-        <app-btn
-          color="error"
-          text
-          @click="$emit('cancel'); open = false"
-        >
-          {{ $t('app.general.btn.cancel') }}
-        </app-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+    <template v-if="file">
+      <div class="mb-2">
+        {{ $t('app.gcode.label.parsing_file') }}: {{ file.filename }}
+      </div>
+      <v-progress-linear
+        :value="percent"
+        color="primary"
+        class="mb-2"
+      />
+      <table>
+        <tr>
+          <td class="pr-2">
+            {{ $t('app.gcode.label.parsed') }}:
+          </td>
+          <td>
+            {{ percent }}%
+            ({{ $filters.getReadableFileSizeString(progress) }} /
+            {{ $filters.getReadableFileSizeString(file.size) }})
+          </td>
+        </tr>
+      </table>
+    </template>
+    <template #action="{ attrs }">
+      <app-btn
+        v-bind="attrs"
+        @click="$emit('cancel'); open = false"
+      >
+        {{ $t('app.general.btn.cancel') }}
+      </app-btn>
+    </template>
+  </v-snackbar>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { AppFile } from '@/store/files/types'
+import type { AppFile } from '@/store/files/types'
 
 @Component({})
 export default class GcodePreviewParserProgressDialog extends Mixins(StateMixin) {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Number })
   readonly progress!: number

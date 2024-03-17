@@ -12,7 +12,7 @@
         auto-grow
         rows="1"
         :value="saveConfigPendingItems"
-        :spellcheck="false"
+        spellcheck="false"
         style="width: 100%; font-family: monospace; font-size: 1rem; font-weight: 100 !important;"
       />
     </v-card-text>
@@ -24,8 +24,8 @@ import { Component, Vue, VModel } from 'vue-property-decorator'
 
 @Component({})
 export default class PendingChangesDialog extends Vue {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   get saveConfigPendingItems () {
     const saveConfigPendingItems = this.$store.getters['printer/getSaveConfigPendingItems'] as Record<string, Record<string, string>>

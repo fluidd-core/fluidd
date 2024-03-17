@@ -9,6 +9,17 @@
     right
   >
     <v-list dense>
+      <v-list-item @click="$emit('multiply', job)">
+        <v-list-item-icon>
+          <v-icon>
+            $duplicate
+          </v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('app.general.btn.multiply') }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
       <v-list-item @click="$emit('remove', job)">
         <v-list-item-icon>
           <v-icon>
@@ -25,12 +36,12 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import { QueuedJob } from '@/store/jobQueue/types'
+import type { QueuedJob } from '@/store/jobQueue/types'
 
 @Component({})
 export default class JobQueueContextMenu extends Vue {
-  @VModel({ type: Boolean, default: false })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Number, required: true })
   readonly positionX!: number

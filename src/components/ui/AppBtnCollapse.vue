@@ -8,9 +8,9 @@
       fab
       x-small
       text
-      @click="$emit('update:collapsed', !collapsed)"
+      @click="collapsedModel = !collapsedModel"
     >
-      <v-icon :class="{ 'rotate-180': collapsed }">
+      <v-icon :class="{ 'rotate-180': collapsedModel }">
         $chevronUp
       </v-icon>
     </app-btn>
@@ -19,10 +19,9 @@
     <v-layout>
       <v-checkbox
         v-if="inLayout"
-        :input-value="enabled"
+        v-model="enabledModel"
         hide-details
         class="mt-0 pt-0"
-        @change="$emit('update:enabled', $event)"
       />
       <v-icon
         v-if="inLayout"
@@ -36,22 +35,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, PropSync } from 'vue-property-decorator'
 
 @Component({})
 export default class AppBtnCollapse extends Vue {
-  @Prop({ type: Boolean, default: false })
-  readonly collapsed!: boolean
+  @PropSync('collapsed', { type: Boolean })
+    collapsedModel?: boolean
 
-  @Prop({ type: Boolean, default: true })
-  readonly enabled!: boolean
+  @PropSync('enabled', { type: Boolean, default: true })
+    enabledModel?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly inLayout!: boolean
-
-  // emitChange (value: boolean) {
-  //   this.$emit('input', value)
-  // }
+  @Prop({ type: Boolean })
+  readonly inLayout?: boolean
 }
 </script>
 

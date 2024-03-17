@@ -1,32 +1,7 @@
 <template>
   <div>
-    <v-subheader class="px-0">
-      <app-btn
-        fab
-        small
-        color=""
-        class="mr-4"
-        exact
-        @click="handleBack"
-      >
-        <v-icon small>
-          $left
-        </v-icon>
-      </app-btn>
-
-      {{ category.name }} {{ $t('app.setting.title.macros') }}
-
-      <v-spacer />
-
-      <v-text-field
-        v-model="search"
-        clearable
-        outlined
-        dense
-        single-line
-        hide-details
-        append-icon="$magnify"
-      />
+    <v-subheader id="macros">
+      {{ $t('app.setting.title.macros') }}
     </v-subheader>
     <v-card
       :elevation="5"
@@ -38,183 +13,171 @@
           outlined
           small
           color="primary"
-          @click="handleAllOff"
+          @click="handleAddCategoryDialog"
         >
-          {{ $t('app.setting.label.all_off') }}
-        </app-btn>
-
-        <app-btn
-          outlined
-          small
-          color="primary"
-          class="ml-2"
-          @click="handleAllOn"
-        >
-          {{ $t('app.setting.label.all_on') }}
+          <v-icon
+            small
+            left
+          >
+            $plus
+          </v-icon>
+          {{ $t('app.setting.btn.add_category') }}
         </app-btn>
       </app-setting>
 
-      <v-divider />
-      <draggable
-        v-model="macros"
-        v-bind="dragOptions"
-      >
-        <section
-          v-for="(macro, i) in macros"
-          :key="macro.name"
+      <template v-for="category in categories">
+        <v-divider :key="`divider-${category.name}`" />
+
+        <app-setting
+          :key="`category-${category.name}`"
+          :r-cols="3"
+          @click="handleCategoryClick(category)"
         >
-          <app-setting
-            :key="`macro-${macro.name}`"
-            :accent-color="macro.color"
-            :r-cols="2"
-            @click="handleSettingsDialog(macro)"
-          >
-            <template #title>
-              <v-icon
-                class="handle"
-                left
-              >
-                $drag
-              </v-icon>
-
-              {{ macro.name.toUpperCase() }}
-            </template>
-
-            <template
-              v-if="macro.config.description && macro.config.description !== 'G-Code macro'"
-              #sub-title
+          <template #title>
+            {{ category.name }}
+            <v-chip
+              small
+              class="mr-4"
             >
-              <span class="ml-1 mr-2">
-                {{ macro.config.description }}
-              </span>
-            </template>
+              {{ category.visible }} / {{ category.count }}
+            </v-chip>
+          </template>
 
-            <v-switch
-              class="mt-0 pt-0"
-              :input-value="macro.visible"
-              color="primary"
-              hide-details
-              @click.stop
-              @change="handleMacroVisible(macro, $event)"
-            />
-          </app-setting>
+          <app-btn
+            fab
+            text
+            x-small
+            color=""
+            @click.stop="handleEditCategoryDialog(category)"
+          >
+            <v-icon color="">
+              $edit
+            </v-icon>
+          </app-btn>
 
-          <v-divider
-            v-if="i < macros.length - 1 && macros.length > 0"
-            :key="`divider-${macro.name}`"
-          />
-        </section>
-      </draggable>
+          <app-btn
+            fab
+            text
+            x-small
+            color=""
+            @click.stop="handleRemoveCategory(category)"
+          >
+            <v-icon color="">
+              $close
+            </v-icon>
+          </app-btn>
+
+          <!-- <v-icon>$chevronRight</v-icon> -->
+        </app-setting>
+      </template>
+
+      <template v-if="uncategorizedMacros.count > 0">
+        <v-divider />
+
+        <!-- Add the uncategorized macros.. -->
+        <app-setting
+          :key="`category-uncategorized`"
+          :r-cols="3"
+          @click="handleCategoryClick()"
+        >
+          <template #title>
+            {{ $t('app.general.label.uncategorized') }}
+            <v-chip small>
+              {{ uncategorizedMacros.visible }} / {{ uncategorizedMacros.count }}
+            </v-chip>
+          </template>
+          <v-icon>$chevronRight</v-icon>
+        </app-setting>
+      </template>
+
+      <macro-category-dialog
+        v-if="categoryDialogState.open"
+        v-model="categoryDialogState.open"
+        :title="categoryDialogState.title"
+        :label="categoryDialogState.label"
+        :name="categoryDialogState.name"
+        @save="categoryDialogState.handler"
+      />
     </v-card>
-
-    <macro-settings-dialog
-      v-if="dialogState.open"
-      v-model="dialogState.open"
-      :macro="dialogState.macro"
-    />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import draggable from 'vuedraggable'
-import MacroSettingsDialog from './MacroSettingsDialog.vue'
-import { Macro, MacroCategory } from '@/store/macros/types'
-import store from '@/store'
-
-const routeGuard = (to: any) => {
-  // No need to translate here, these are just used for the route.
-  const id = to.params.categoryId
-  const categories = store.getters['macros/getCategories']
-  const i = categories.findIndex((c: MacroCategory) => c.id === id)
-  return (i > -1 || id === '0')
-    ? true
-    : { path: '/settings', hash: 'macros' }
-}
+import { Component, Mixins } from 'vue-property-decorator'
+import MacroCategoryDialog from './MacroCategoryDialog.vue'
+import StateMixin from '@/mixins/state'
+import type { Macro, MacroCategory } from '@/store/macros/types'
 
 @Component({
   components: {
-    MacroSettingsDialog,
-    draggable
+    MacroCategoryDialog
   }
 })
-export default class MacroSettings extends Vue {
-  search = ''
-  categoryId: string | undefined = undefined
-
-  dialogState: any = {
+export default class MacroSettings extends Mixins(StateMixin) {
+  categoryDialogState: any = {
     open: false,
-    macro: null
+    title: 'add',
+    label: '',
+    category: null,
+    name: '',
+    handler: this.handleAddCategory
   }
 
-  get dragOptions () {
-    return {
-      animation: 200,
-      handle: '.handle',
-      group: `macro-settings-${this.category.name}`,
-      ghostClass: 'ghost'
-    }
-  }
-
-  get macros () {
-    const id = this.categoryId
-    const macros = this.$store.getters['macros/getMacrosByCategory'](id)
-      .filter((macro: Macro) => (!this.search || this.search === '') ? true : macro.name.toLowerCase().includes(this.search.toLowerCase()))
-
-    return macros
-  }
-
-  set macros (macros: Macro[]) {
-    this.$store.dispatch('macros/saveAllOrder', macros)
-  }
-
-  get categories (): MacroCategory[] {
+  get categories () {
     return this.$store.getters['macros/getCategories']
   }
 
-  get category () {
-    const category = this.categoryId !== '0' && this.categories.find(category => category.id === this.categoryId)
-
-    return category || {
-      id: '0', name: this.$tc('app.general.label.uncategorized')
+  get uncategorizedMacros () {
+    const uncategorized = this.$store.getters['macros/getMacrosByCategory']()
+    const count = uncategorized.length
+    const visible = uncategorized.filter((macro: Macro) => macro.visible).length
+    return {
+      count,
+      visible
     }
   }
 
-  beforeRouteEnter (to: any, from: any, next: any) {
-    next(routeGuard(to))
-  }
-
-  beforeRouteUpdate (to: any, from: any, next: any) {
-    next(routeGuard(to))
-  }
-
-  created () {
-    this.search = ''
-    this.categoryId = this.$route.params.categoryId
-  }
-
-  handleBack () {
-    this.$router.go(-1)
-  }
-
-  handleSettingsDialog (macro: Macro) {
-    this.dialogState.macro = macro
-    this.dialogState.open = true
-  }
-
-  handleAllOn () {
-    this.$store.dispatch('macros/saveAllOn', this.macros)
-  }
-
-  handleAllOff () {
-    this.$store.dispatch('macros/saveAllOff', this.macros)
-  }
-
-  handleMacroVisible (macro: Macro, value: boolean) {
-    const newMacro = {
-      ...macro, visible: value
+  handleAddCategoryDialog () {
+    this.categoryDialogState = {
+      open: true,
+      title: this.$t('app.general.label.add_category'),
+      label: this.$t('app.general.label.name'),
+      category: null,
+      name: '',
+      handler: this.handleAddCategory
     }
-    this.$store.dispatch('macros/saveMacro', newMacro)
+  }
+
+  handleEditCategoryDialog (category: MacroCategory) {
+    this.categoryDialogState = {
+      open: true,
+      title: this.$t('app.general.label.edit_category'),
+      label: this.$t('app.general.label.name'),
+      category,
+      name: category.name,
+      handler: this.handleEditCategory
+    }
+  }
+
+  handleRemoveCategory (category: MacroCategory) {
+    this.$store.dispatch('macros/removeCategory', category)
+  }
+
+  handleAddCategory (category: string) {
+    this.$store.dispatch('macros/addCategory', category)
+  }
+
+  handleEditCategory (name: string) {
+    const category = {
+      ...this.categoryDialogState.category,
+      name
+    }
+    this.$store.dispatch('macros/editCategory', category)
+  }
+
+  handleCategoryClick (category?: MacroCategory) {
+    const id = category?.id ?? 0
+    this.$router.push(`/settings/macros/${id}`)
   }
 }
 </script>

@@ -23,20 +23,24 @@ export default new Vuetify({
     },
     themes: {
       dark: {
-        primary: colors.blue.base,
+        primary: '#2196F3',
+        'primary-offset': '#2E75AE',
         secondary: '#888888', // colors.grey.darken1,
         'card-heading': '#333337',
         btncolor: '#4A4A4F',
         drawer: '#28282B',
-        appbar: '#1E1E20'
+        appbar: '#1E1E20',
+        logo: '#2196F3'
       },
       light: {
-        primary: colors.blue.darken2,
+        primary: '#2196F3',
+        'primary-offset': '#2E75AE',
         secondary: colors.grey.lighten1,
         'card-heading': '#E9E9E9',
         btncolor: '#E9E9E9',
         drawer: '#F4F4F4',
-        appbar: '#FFFFFF'
+        appbar: '#FFFFFF',
+        logo: '#2196F3'
       }
     }
   }

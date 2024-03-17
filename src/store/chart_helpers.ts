@@ -1,6 +1,6 @@
-import { Commit } from 'vuex'
-import { RootState } from './types'
-import { ChartData } from './charts/types'
+import type { Commit } from 'vuex'
+import type { RootState } from './types'
+import type { ChartData } from './charts/types'
 
 export const handleMcuStatsChange = (payload: any, state: RootState, commit: Commit) => {
   const keys = Object.keys(payload).filter(key => key.startsWith('mcu'))
@@ -132,15 +132,14 @@ export const handleAddChartEntry = (retention: number, state: RootState, commit:
     const keys: string[] = getters.getChartableSensors
 
     keys.forEach((key) => {
-      const label = key.split(' ', 2).pop() || ''
       const temp = state.printer.printer[key].temperature
       const target = state.printer.printer[key].target
       const power = state.printer.printer[key].power
       const speed = state.printer.printer[key].speed
-      r[label] = temp
-      if (target !== undefined) r[`${label}Target`] = target
-      if (power !== undefined) r[`${label}Power`] = power
-      if (speed !== undefined) r[`${label}Speed`] = speed
+      r[key] = temp
+      if (target != null) r[`${key}Target`] = target
+      if (power != null) r[`${key}Power`] = power
+      if (speed != null) r[`${key}Speed`] = speed
     })
 
     return r

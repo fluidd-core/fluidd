@@ -1,10 +1,10 @@
 <template>
   <v-card
     :class="{ 'no-pointer-events': overlay }"
-    @dragenter.capture.prevent="handleDragEnter"
-    @dragover.prevent
+    @dragover="handleDragOver"
+    @dragenter.self.prevent
     @dragleave.self.prevent="handleDragLeave"
-    @drop.prevent.stop="handleDropJob"
+    @drop.self.prevent="handleDrop"
   >
     <job-queue-toolbar
       v-if="selected.length === 0"
@@ -16,6 +16,7 @@
     <job-queue-bulk-actions
       v-else
       @remove="handleRemove(selected)"
+      @multiply="handleMultiplyDialog(selected)"
     />
 
     <job-queue-browser
@@ -30,6 +31,7 @@
       v-model="overlay"
       :message="$t('app.file_system.overlay.drag_files_enqueue')"
       icon="$enqueueJob"
+      absolute
     />
 
     <job-queue-context-menu
@@ -39,25 +41,36 @@
       :position-x="contextMenuState.x"
       :position-y="contextMenuState.y"
       @remove="handleRemove"
+      @multiply="handleMultiplyDialog"
+    />
+
+    <job-queue-multiply-job-dialog
+      v-if="multiplyJobDialogState.open"
+      v-model="multiplyJobDialogState.open"
+      :job="multiplyJobDialogState.job"
+      @save="handleMultiply"
     />
   </v-card>
 </template>
 
 <script lang="ts">
 import { SocketActions } from '@/api/socketActions'
-import { QueuedJob } from '@/store/jobQueue/types'
+import type { QueuedJob } from '@/store/jobQueue/types'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import JobQueueToolbar from './JobQueueToolbar.vue'
 import JobQueueBulkActions from './JobQueueBulkActions.vue'
 import JobQueueBrowser from './JobQueueBrowser.vue'
 import JobQueueContextMenu from './JobQueueContextMenu.vue'
-import { AppTableHeader } from '@/types'
+import JobQueueMultiplyJobDialog from './JobQueueMultiplyJobDialog.vue'
+import type { AppTableHeader } from '@/types'
+import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
 
 @Component({
   components: {
     JobQueueToolbar,
     JobQueueBulkActions,
     JobQueueBrowser,
+    JobQueueMultiplyJobDialog,
     JobQueueContextMenu
   }
 })
@@ -69,14 +82,19 @@ export default class JobQueue extends Vue {
     job: null
   }
 
+  multiplyJobDialogState: any = {
+    open: false,
+    job: null
+  }
+
   selected: QueuedJob[] = []
   overlay = false
 
-  @Prop({ type: Boolean, default: false })
-  readonly dense!: boolean
+  @Prop({ type: Boolean })
+  readonly dense?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly bulkActions!: boolean
+  @Prop({ type: Boolean })
+  readonly bulkActions?: boolean
 
   get headers (): AppTableHeader[] {
     const headers = [
@@ -93,11 +111,11 @@ export default class JobQueue extends Vue {
     return this.headers.filter(header => header.visible || header.visible === undefined)
   }
 
-  handleRowClick (item: QueuedJob, e: MouseEvent) {
+  handleRowClick (item: QueuedJob, event: MouseEvent) {
     if (this.contextMenuState.open) {
       this.contextMenuState.open = false
 
-      if (e.type !== 'contextmenu') {
+      if (event.type !== 'contextmenu') {
         return
       }
     }
@@ -110,8 +128,8 @@ export default class JobQueue extends Vue {
     }
 
     // Open the context menu
-    this.contextMenuState.x = e.clientX
-    this.contextMenuState.y = e.clientY
+    this.contextMenuState.x = event.clientX
+    this.contextMenuState.y = event.clientY
     this.contextMenuState.job = this.selected.length > 1
       ? this.selected
       : item
@@ -121,12 +139,12 @@ export default class JobQueue extends Vue {
   }
 
   async handleRemoveAll () {
-    const res = await this.$confirm(
+    const result = await this.$confirm(
       this.$tc('app.job_queue.msg.confirm'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 
-    if (res) {
+    if (result) {
       SocketActions.serverJobQueueDeleteJobs(['all'])
     }
   }
@@ -143,8 +161,34 @@ export default class JobQueue extends Vue {
     SocketActions.serverJobQueueDeleteJobs(jobIds)
   }
 
-  handleDragEnter (e: DragEvent) {
-    if (e.dataTransfer?.types.includes('jobs')) {
+  handleMultiplyDialog (jobs: QueuedJob | QueuedJob[]) {
+    this.multiplyJobDialogState = {
+      open: true,
+      job: jobs
+    }
+  }
+
+  handleMultiply (jobs: QueuedJob | QueuedJob[], copies: number) {
+    const filenames = Array.isArray(jobs)
+      ? jobs.map(job => job.filename)
+      : [jobs.filename]
+
+    const multipliedFilenames = Array.from({ length: copies })
+      .map(() => filenames)
+      .flat()
+
+    SocketActions.serverJobQueuePostJob(multipliedFilenames)
+  }
+
+  handleDragOver (event: DragEvent) {
+    if (
+      event.dataTransfer &&
+      hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')
+    ) {
+      event.preventDefault()
+
+      event.dataTransfer.dropEffect = 'link'
+
       this.overlay = true
     }
   }
@@ -153,14 +197,16 @@ export default class JobQueue extends Vue {
     this.overlay = false
   }
 
-  handleDropJob (e: DragEvent) {
+  handleDrop (event: DragEvent) {
     this.overlay = false
 
-    if (e.dataTransfer?.types.includes('jobs')) {
-      const data = e.dataTransfer.getData('jobs')
-      const files: { path: string, jobs: string[] } = JSON.parse(data)
+    if (
+      event.dataTransfer &&
+      hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')
+    ) {
+      const files = getFileDataTransferDataFromDataTransfer(event.dataTransfer, 'jobs')
       const filePath = files.path ? `${files.path}/` : ''
-      const filenames = files.jobs
+      const filenames = files.items
         .map(file => `${filePath}${file}`)
 
       SocketActions.serverJobQueuePostJob(filenames)

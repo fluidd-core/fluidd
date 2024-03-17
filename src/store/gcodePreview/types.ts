@@ -1,4 +1,4 @@
-import { AppFile } from '@/store/files/types'
+import type { AppFile } from '@/store/files/types'
 
 export type LayerNr = number
 
@@ -9,17 +9,18 @@ export interface GcodePreviewState {
   file?: AppFile;
   parserProgress: number;
   parserWorker: Worker | null;
+  viewer: ViewerOptions;
+}
 
-  viewer: {
-    showCurrentLayer: boolean;
-    showNextLayer: boolean;
-    showPreviousLayer: boolean;
-    showMoves: boolean;
-    showExtrusions: boolean;
-    showRetractions: boolean;
-    showParts: boolean;
-    followProgress: boolean;
-  };
+export interface ViewerOptions {
+  showCurrentLayer: boolean;
+  showNextLayer: boolean;
+  showPreviousLayer: boolean;
+  showMoves: boolean;
+  showExtrusions: boolean;
+  showRetractions: boolean;
+  showParts: boolean;
+  followProgress: boolean;
 }
 
 export interface LinearMove {
@@ -41,10 +42,7 @@ export interface ArcMove extends LinearMove {
 
 export type Move = LinearMove | ArcMove;
 
-export enum Rotation {
-  Clockwise = 'clockwise',
-  CounterClockwise = 'counter-clockwise',
-}
+export type Rotation = 'clockwise' | 'counter-clockwise'
 
 export interface LayerPaths {
   moves: string;
@@ -63,10 +61,7 @@ export interface Point3D extends Point {
   z: number;
 }
 
-export enum PositioningMode {
-  Relative = 'relative',
-  Absolute = 'absolute'
-}
+export type PositioningMode = 'relative' | 'absolute'
 
 export interface Layer {
   move: number;

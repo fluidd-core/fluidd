@@ -123,18 +123,16 @@ export default class StatusControls extends Mixins(StateMixin) {
     return Object.keys(this.$store.getters['parts/getParts']).length > 0
   }
 
-  cancelPrint () {
-    this.$tc('app.general.simple_form.msg.confirm')
-    this.$confirm(
-      this.$tc('app.general.simple_form.msg.confirm'),
+  async cancelPrint () {
+    const result = await this.$confirm(
+      this.$tc('app.general.simple_form.msg.confirm_cancel_print'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
-      .then(res => {
-        if (res) {
-          SocketActions.printerPrintCancel()
-          this.addConsoleEntry('CANCEL_PRINT')
-        }
-      })
+
+    if (result) {
+      SocketActions.printerPrintCancel()
+      this.addConsoleEntry('CANCEL_PRINT')
+    }
   }
 
   pausePrint () {

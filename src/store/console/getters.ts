@@ -1,6 +1,6 @@
-import { GetterTree } from 'vuex'
-import { ConsoleState } from './types'
-import { RootState } from '../types'
+import type { GetterTree } from 'vuex'
+import type { ConsoleState, GcodeHelp } from './types'
+import type { RootState } from '../types'
 
 const _tempWaitExpr = /^(?:ok\s+)?(b|t\d+):\d+\.\d+ \/\d+\.+\d+/i
 
@@ -24,30 +24,14 @@ export const getters: GetterTree<ConsoleState, RootState> = {
     return state.consoleFilters
   },
 
-  getAvailableCalibrationCommands: (state) => {
-    return Object.keys(state.availableCommands)
-      .filter(key => key.endsWith('CALIBRATE'))
-      .reduce((o, key) => {
-        return {
-          ...o,
-          [key]: state.availableCommands[key]
-        }
-      }, {})
-  },
-
-  getAllGcodeCommands: (state) => {
-    const commands = state.availableCommands
-    const additional = [
-      'TESTZ',
-      'ABORT',
-      'ACCEPT',
-      'ADJUSTED'
-    ]
-    additional.forEach(command => {
-      if (command in commands !== true) {
-        commands[command] = ''
-      }
-    })
+  getAllKnownCommands: (state): GcodeHelp => {
+    const commands: GcodeHelp = {
+      TESTZ: '',
+      ABORT: '',
+      ACCEPT: '',
+      ADJUSTED: '',
+      ...state.gcodeHelp
+    }
 
     return commands
   }

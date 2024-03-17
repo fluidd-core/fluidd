@@ -95,7 +95,7 @@
 </template>
 
 <script lang="ts">
-import { AppUser } from '@/store/auth/types'
+import type { AppUser } from '@/store/auth/types'
 import { Component, Vue } from 'vue-property-decorator'
 import UserConfigDialog from './UserConfigDialog.vue'
 import ApiKeyDialog from './ApiKeyDialog.vue'
@@ -108,7 +108,7 @@ import ApiKeyDialog from './ApiKeyDialog.vue'
 })
 export default class AuthSettings extends Vue {
   search = ''
-  categoryId: string | undefined = undefined
+  categoryId?: string = undefined
 
   userDialogState: any = {
     open: false,
@@ -149,16 +149,15 @@ export default class AuthSettings extends Vue {
     this.apiKeyDialogState.open = true
   }
 
-  handleRemoveUser (user: AppUser) {
-    this.$confirm(
-      this.$tc('app.general.simple_form.msg.confirm'),
+  async handleRemoveUser (user: AppUser) {
+    const result = await this.$confirm(
+      this.$t('app.general.simple_form.msg.confirm_remove_user', { username: user.username }).toString(),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
-      .then(res => {
-        if (res) {
-          this.$store.dispatch('auth/removeUser', user)
-        }
-      })
+
+    if (result) {
+      this.$store.dispatch('auth/removeUser', user)
+    }
   }
 
   async handleSaveUser (user: AppUser) {

@@ -43,7 +43,7 @@
                 <td class="pr-2">
                   {{ $t('app.file_system.label.transfer_rate') }}:
                 </td>
-                <td>{{ file.speed.toFixed(2) }} {{ file.unit }}/Sec</td>
+                <td>{{ $filters.getReadableDataRateString(file.speed) }}</td>
               </tr>
             </table>
           </v-col>
@@ -75,14 +75,14 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { FilesUpload } from '@/store/files/types'
+import type { FilesUpload } from '@/store/files/types'
 
 @Component({})
 export default class FileSystemUploadDialog extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, default: false })
-  readonly value!: boolean
+  @Prop({ type: Boolean })
+  readonly value?: boolean
 
-  @Prop({ type: Array })
+  @Prop({ type: Array<FilesUpload>, required: true })
   readonly files!: FilesUpload[]
 }
 </script>

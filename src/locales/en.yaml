@@ -2,6 +2,7 @@ app:
   bedmesh:
     label:
       active: active
+      base: base
       box_scale: Box scale
       flat_surface: Show flat plane
       mesh_matrix: Mesh matrix
@@ -21,26 +22,26 @@ app:
       delete: Delete Profile
       load: Load Profile
       save: Commits calibrated profile to printer.cfg
+      copy_image: Copy bed mesh image
   chart:
     label:
       current: Actual
       item: Name
-      'off': Chart off
-      'on': Chart on
       power: Power
       target: Target
       rate_of_change: Change
     tooltip:
       help: >-
-        Hold shift to zoom.<br />Click an item to toggle in the graph.<br
+        Hold <kbd>Shift</kbd> to zoom.<br />Click an item to toggle in the graph.<br
         />Click a power to toggle in the graph.
   console:
     label:
       auto_scroll: Auto scroll
       flip_layout: Flip layout
       hide_temp_waits: Hide temp waits
-    placeholder:
-      command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
+    tooltip:
+      help: >-
+        Enter "help" for commands<br />Use <kbd>Tab</kbd> for autocomplete<br />Use <kbd>&uarr;</kbd> and <kbd>&darr;</kbd> for history
   endpoint:
     error:
       cant_connect: >-
@@ -70,10 +71,12 @@ app:
   file_system:
     filters:
       label:
+        crowsnest_backup_files: Filter Crowsnest backup files
         print_start_time: Filter printed
         print_start_time_desc: Filters out items you've already printed.
         hidden_files_folders: Filter hidden files and folders
         klipper_backup_files: Filter Klipper backup files
+        moonraker_backup_files: Filter Moonraker backup files
         rolled_log_files: Filter rolled log files
     label:
       dir_name: Directory name
@@ -95,6 +98,7 @@ app:
       add_dir: Add Directory
       add_file: Add File
       command_palette: Command Palette
+      devices: Devices
       download_file: Retrieving file
       duplicate_dir: Duplicate Directory
       duplicate_file: Duplicate File
@@ -104,7 +108,7 @@ app:
       upload_file: Uploading file | Uploading files
     tooltip:
       low_on_space: Low on disk space
-      move_item: Move item | Move {count} items
+      items_count: '{count} item | {count} items'
       root_disabled: '{root} root is not available. Please check your logs.'
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
@@ -133,6 +137,8 @@ app:
       confirm: >-
         The file "%{filename}" is %{size}, this might be resource intensive for
         your system. Are you sure?
+    overlay:
+      drag_file_load: <strong>Drag</strong> a gcode file here to load
   general:
     btn:
       abort: Abort
@@ -151,6 +157,8 @@ app:
       clear_profile: Clear Profile
       close: Close
       config_reference: Config Reference
+      copied: Copied
+      copy: Copy
       create_zip_archive: Create ZIP Archive
       delete: Delete
       download: Download
@@ -167,6 +175,7 @@ app:
       login: Login
       logout: Logout
       more_information: More information
+      multiply: Multiply
       pause: Pause
       preheat: Preheat
       presets: Presets
@@ -176,6 +185,7 @@ app:
       reboot: Reboot
       recover: Recover
       refresh: Refresh
+      refresh_metadata: Refresh Metadata
       reload: Reload
       remove: Remove
       remove_all: Remove all
@@ -190,6 +200,7 @@ app:
       restart_service_moonraker: Restart Moonraker
       resume: Resume
       retract: Retract
+      retry: Retry
       return_dashboard: Return to the dashboard
       save: Save
       save_as: Save As
@@ -234,12 +245,16 @@ app:
       api_key: Api Key
       api_url: API URL
       auth_source: Authentication Source
+      bars: Bars
       category: Category
       change_password: Change password
       clear_all: Clear all
       color: Color
       command: Command
       confirm: Confirm
+      cross: Cross
+      circle: Circle
+      compact: Compact
       current_password: Current password
       current_user: Current user
       default: Default
@@ -266,6 +281,7 @@ app:
       longest_job: Longest job
       low: Low
       manage_accounts: Manage Accounts
+      minimum_cruise_ratio: Minimum Cruise Ratio
       user_managed_source: User managed by %{source} authentication
       m117: M117
       moonraker: Moonraker
@@ -284,6 +300,7 @@ app:
       pressure_advance: Pressure Advance
       printers: Printers
       progress: Progress
+      range: Range
       requested_speed: Speed
       retract_length: Retract Length
       retract_speed: Retract Speed
@@ -310,12 +327,12 @@ app:
       turn_device_on: Turn %{device} on
       turn_device_off: Turn %{device} off
       uncategorized: Uncategorized
+      unknown: Unknown
       unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
       upload_and_print: Upload and Print
       used: used
       username: Username
-      variance: Variance
       velocity: Velocity
       version_sort: Version sort
       visible: Visible
@@ -354,10 +371,15 @@ app:
         invalid_aspect: Invalid Aspect Ratio
       msg:
         confirm: Are you sure?
+        confirm_cancel_print: Are you sure you want to cancel the current print?
+        confirm_clear_mesh: The printer is currently busy. Are you sure you want to clear the bed mesh?
         confirm_delete: Are you sure? This will delete the selected item. | Are you sure? This will delete the {count} selected items.
+        confirm_emergency_stop: Are you sure you want to emergency stop the printer?
         confirm_exclude_object: Are you sure you want to exclude this object from printing?
         confirm_forcemove_toggle: Are you sure? This can damage the printer.
+        confirm_load_bedmesh_profile: The printer is currently busy. Are you sure you want to load profile %{name}?
         confirm_reboot_host: Are you sure? This will reboot your host system.
+        confirm_remove_user: Are you sure you want to remove user %{username}?
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
         confirm_service_start: Are you sure you want to start the %{name} service?
         confirm_service_restart: Are you sure you want to restart the %{name} service?
@@ -440,14 +462,25 @@ app:
       restart_klipper: Restarts the klipper system service.
       run_collector: Run collector
       rollover_logs: Rollover logs
+      file_browser_help: >-
+        Drag and drop files or folders from outside the browser to upload them here<br>Move files and folders by dragging and dropping them onto sub-folders or ".."
+      file_browser_configuration_help: >-
+        Copy files and folders to the Configuration Files by dragging them from here and dropping them there
   history:
     msg:
       confirm: Are you sure? This will clear all history, and printer statistics
+      confirm_jobs: Are you sure? This will clear all jobs.
+      confirm_stats: Are you sure? This will clear all stats.
   job_queue:
     msg:
       confirm: Are you sure? This will clear the entire printer queue
-      confirm_jobs: Are you sure? This will clear all jobs.
-      confirm_stats: Are you sure? This will clear all stats.
+    label:
+      number_of_copies: Number of copies
+    title:
+      multiply_job: Multiply Job | Multiply Jobs
+    tooltip:
+      help: >-
+        Queue jobs by dragging files from the Jobs and dropping them here<br>Adjust the order of queued jobs by dragging them up or down
   printer:
     state:
       busy: Busy
@@ -459,6 +492,8 @@ app:
       printing: Printing
       ready: Ready
       standby: Standby
+    title:
+      printer_status: Printer Status
   setting:
     btn:
       add_camera: Add Camera
@@ -476,6 +511,7 @@ app:
       webrtc_camera_streamer: WebRTC (camera-streamer)
       video: IP Camera
       iframe: HTTP page
+      webrtc_gortc: WebRTC (go2rtc)
     camera_rotate_options:
       '90': 90°
       '180': 180°
@@ -499,7 +535,8 @@ app:
         rawstream: Raw stream
       camera_rotate_by: Rotate by
       camera_stream_type: Stream type
-      camera_url: Camera Url
+      camera_url_snapshot: Camera Url Snapshot
+      camera_url_stream: Camera Url Stream
       card: Card
       collector: Collector
       confirm_on_estop: Require confirm on Emergency Stop
@@ -517,9 +554,11 @@ app:
       default_toolhead_z_speed: Default toolhead Z speed
       dotted: Dotted
       draw_background: Draw Background
+      draw_origin: Draw origin
       enable: Enable
       enable_diagnostics: Enable diagnostics
       enable_notifications: Enable notifications
+      enable_xy_homing: Enable XY Homing
       expression: Expression
       extrusion_line_width: Extrusion Line Width
       flip_horizontal: Horizontal Flip
@@ -530,9 +569,9 @@ app:
       fps_target: FPS Target
       fps_idle_target: FPS Target when not in focus
       height: Height
+      hide_single_part_bounding_box: Hide part bounding box when printing a single part
       gcode_coords: Use GCode Coordinates
       icon: Icon
-      ignore_default_bed_mesh_pending_configuration_changes: Ignore default bed mesh Pending Configuration Changes
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
@@ -551,16 +590,22 @@ app:
       optional: Optional
       power_toggle_in_top_nav: Power toggle in top navigation
       primary_color: Primary color
+      print_eta_calculation: Print ETA calculation
+      print_in_progress_layout: Print in Progress layout
+      print_progress_calculation: Print Progress calculation
       printer_name: Printer Name
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
       right_y: Right Y-Axis
       save_and_restore_view_state: Save and restore view state
+      sections_to_ignore_pending_configuration_changes: Sections to ignore Pending Configuration Changes
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
+      show_chart: Show chart
       show_code_lens: Show CodeLens
       show_gas_resistance: Show gas resistance
       show_legend: Show legend
+      show_logo_on_background: Show logo on background
       show_rate_of_change: Show temperature rate of change
       show_relative_humidity: Show relative humidity
       show_save_config_and_restart: Save Config and Restart button in top navigation
@@ -573,25 +618,31 @@ app:
       title: Title
       to_browser_local_storage: To browser local storage
       to_browser_session_storage: To browser session storage
+      toolhead_control_style: Toolhead control style
       toolhead_move_distances: Toolhead distance values
+      toolhead_xy_move_distances: Toolhead XY distance values
+      toolhead_z_move_distances: Toolhead Z distance values
       type: Type
       unit: Unit
       z_adjust_values: Z Adjust values
       date_format: Date format
       time_format: Time format
-      text_sort_order: Text Sort Order
+      text_sort_order: Text sort order
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically
+      show_screws_tilt_adjust_dialog_automatically: Show Screws Tilt Adjust dialog automatically
     timer_options:
       duration: Duration only
       filament: Filament Estimation
       file: File Estimation
       slicer: Slicer
+      slicer_m73: Slicer (M73)
     title:
       authentication: Authentication
       console: Console
       camera: Camera | Cameras
+      file_browser: File Browser
       file_editor: File Editor
       gcode_preview: Gcode Preview
       general: General
@@ -600,18 +651,29 @@ app:
       thermal_presets: Thermal Presets
       tool: Tool
     tooltip:
+      average_calculation: If more than one option is select, an average will be calculated
       diagnostics_performance: '[BETA] Logging diagnostics info may impact performance'
       gcode_coords: Use GCode position instead of toolhead position on dashboard
       show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
       show_bed_screws_adjust_dialog_automatically: Automatically shows helper dialog if running BED_SCREWS_ADJUST tool
+      show_screws_tilt_adjust_dialog_automatically: Automatically shows helper dialog if running SCREWS_TILT_CALCULATE tool
+      theme_disclaimer: >-
+        These themes feature brand names and logos that are the intellectual property of their respective owners.<br>
+        The inclusion of these names and logos is done with permission from the brands.<br>
+        However, please note that these themes are not officially maintained by the respective brands.<br>
+        Any issues or inquiries related to the themes should be directed to the Fluidd team.<br>
+        The use of brand names and logos is for decorative and aesthetic purposes only, and no official association with or endorsement by the brands is implied.
   socket:
     msg:
       connecting: Connecting to moonraker...
       no_connection: No moonraker connection. Please check moonraker status and / or refresh.
   system_info:
     label:
+      awake_time: awake time
       capacity: Capacity
+      constants: Constants
       cpu_desc: CPU Description
+      devices: Devices
       distribution_codename: Codename
       distribution_like: Distribution Like
       distribution_name: Distribution
@@ -619,8 +681,10 @@ app:
       hardware_desc: Hardware Description
       hostname: Hostname
       klipper_load: Klipper Load
+      load: load
       manufactured: Manufactured
       manufacturer: Manufacturer
+      memory_used: memory used
       mcu_awake: '{mcu} Awake Time'
       mcu_bandwidth: '{mcu} Bandwidth'
       mcu_information: '{mcu} Information'
@@ -628,6 +692,7 @@ app:
       micro_controller: Micro-Controller
       model: CPU Model
       moonraker_load: Moonraker Load
+      last_stats: Last Stats
       network: Network
       processor_desc: Processor
       product_name: Product Name
@@ -639,6 +704,13 @@ app:
       operating_system: Operating System
       version: Version
       virtualization: Virtualization
+    msg:
+      canbus_warning: >-
+        Only unassigned CAN bus nodes can be detected.<br>
+        It is recommended to have only one unassigned device connected to the CAN bus to avoid communication issues.<br>
+        More information can be found <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">here.</a>
+      no_devices_found: No devices found
+      no_devices_searched: Use the refresh button to search for devices
   tool:
     btn:
       home_x: X
@@ -647,6 +719,7 @@ app:
     title:
       bed_screws_adjust: Bed Screws Adjust
       manual_probe: Manual Probe
+      screws_tilt_adjust: Screws Tilt Adjust
     tooltip:
       absolute_positioning: Absolute Positioning
       extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
@@ -655,6 +728,7 @@ app:
       manual_probe: Manual Probe
       motors_off: Motors Off
       relative_positioning: Relative Positioning
+      select_tool: Select tool %{tool}
       tools: Tools
     label:
       stats_active_extruder: >-
@@ -692,6 +766,8 @@ app:
       package_list: Package List
       up_to_date: UP TO DATE
       updates_available: Updates are available
+      old_component_version: >-
+        You are using an old version of %{name} that does not support all features of Fluidd.<br>Update %{name} to at least %{version}.
     status:
       finished: Updates finished
       updating: Updating...
@@ -755,3 +831,71 @@ app:
       variable_fps: Variable FPS
       variable_fps_min: Minimum Framerate
       variable_fps_max: Maximum Framerate
+  spoolman:
+    btn:
+      manage_spools: Manage Spools
+      scan_code: Scan Code
+      select: 'Select | Select for {macro}'
+    title:
+      spoolman: Spoolman
+      spool_selection: 'Spool Selection | Spool Selection for macro {macro}'
+      scan_spool: Scan Spool
+    label:
+      active_spool: Active Spool
+      change_spool: Change Spool
+      comment: Comment
+      device_camera: Device
+      filament_name: Filament
+      first_used: First Used
+      id: ID
+      last_used: Last Used
+      location: Location
+      lot_nr: Lot Nr
+      material: Material
+      remaining_weight: Remaining
+      vendor: Vendor
+    msg:
+      no_spool: >-
+        You haven't selected a spool.
+        Are you sure you want to print without filament tracking?
+      no_filament: >-
+        The spool you selected may not have enough filament left on it to
+        successfully finish the print job.
+        Are you sure you want to continue?
+      no_required_length: >-
+        The amount of filament required to print the selected file is unknown.
+        Do you wish to continue?
+      mismatched_filament: >-
+        The material of the selected filament does not match the selected material in the slicer.
+        Are you sure you want to continue?
+      tracking_inactive: >-
+        Filament tracking is inactive.
+        To get started, please select a spool.
+      not_connected: Spoolman server not available.
+      info:
+        howto: >-
+          Show your spool's QR code to the camera.
+          This window will close as soon as a spool is detected.
+      warning:
+        code_not_recognized: This code doesn't look like a compatible QR code.
+        invalid_spool_id: The spool ID contained in this QR code is invalid.
+      error:
+        cors: >-
+          There was an error accessing the cameras feed.
+          Please make sure your webcam server allows CORS access.
+        spool_not_existant: The spool you scanned doesn't exist in the database.
+        no_image_data: >-
+          There was an error accessing the cameras feed.
+          Please check your camera configuration or try another camera source.
+    setting:
+      auto_open_qr_camera: Automatically open camera for QR code detection
+      auto_select_spool_on_match: Automatically commit spool selection on QR code match
+      prefer_device_camera: Use device camera for QR code detection if available
+      show_spool_selection_dialog_on_print_start: Show spool selection dialog on print start
+      warn_on_not_enough_filament: >-
+        Show a warning when the selected spool doesn't have enough filament left on it to finish the print
+      warn_on_filament_type_mismatch: >-
+        Show a warning when the spool's filament type and the one selected in the slicer don't match
+  sensors:
+    title:
+      sensors: Sensors

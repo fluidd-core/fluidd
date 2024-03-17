@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-list-group
+      v-if="canControlHost"
       prepend-icon="$host"
       no-action
     >
@@ -36,7 +37,7 @@
     </v-list-group>
 
     <v-list-group
-      v-if="devicePowerComponentEnabled"
+      v-if="devicePowerComponentEnabled && powerDevices.length"
       prepend-icon="$power"
       no-action
     >
@@ -126,47 +127,60 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { Device } from '@/store/power/types'
+import type { Device } from '@/store/power/types'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/api/socketActions'
-import { ServiceInfo } from '@/store/server/types'
+import type { ServerInfo, ServiceInfo, SystemInfo } from '@/store/server/types'
 
 @Component({})
 export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
-  get serverInfo () {
-    return this.$store.getters['server/getInfo']
+  get serverInfo (): ServerInfo {
+    return this.$store.getters['server/getInfo'] as ServerInfo
   }
 
-  get hosted () {
-    return this.$store.state.config.hostConfig.hosted
+  get hosted (): boolean {
+    return this.$store.state.config.hostConfig.hosted as boolean
   }
 
-  get powerDevices () {
-    return this.$store.state.power.devices
+  get powerDevices (): Device[] {
+    return this.$store.getters['power/getDevices'] as Device[]
   }
 
-  get devicePowerComponentEnabled () {
-    return this.$store.getters['server/componentSupport']('power')
+  get devicePowerComponentEnabled (): boolean {
+    return this.$store.getters['server/componentSupport']('power') as boolean
   }
 
-  get services () {
-    return this.$store.getters['server/getServices'].filter((service: ServiceInfo) => service.name !== 'klipper_mcu')
+  get services (): ServiceInfo[] {
+    const services = this.$store.getters['server/getServices'] as ServiceInfo[]
+
+    return services
+      .filter(service => service.name !== 'klipper_mcu')
   }
 
-  async checkDialog (executableFunction: any, service: ServiceInfo, action: string) {
-    if (this.printerPrinting || ['restart', 'stop'].includes(action)) {
-      const res = await this.$confirm(
+  get systemInfo (): SystemInfo | null {
+    return this.$store.getters['server/getSystemInfo'] as SystemInfo | null
+  }
+
+  get canControlHost (): boolean {
+    return this.systemInfo?.virtualization?.virt_type !== 'container'
+  }
+
+  async checkDialog (executableFunction: (service: ServiceInfo) => Promise<unknown>, service: ServiceInfo, action: string) {
+    const result = (
+      !(
+        this.printerPrinting ||
+        ['restart', 'stop'].includes(action)
+      ) ||
+      await this.$confirm(
         this.$t(
           `app.general.simple_form.msg.confirm_service_${action}`,
           { name: service.name })?.toString(),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
       )
-      if (res) {
-        this.$emit('click')
-        await executableFunction(service)
-      }
-    } else {
+    )
+
+    if (result) {
       this.$emit('click')
       await executableFunction(service)
     }
@@ -184,42 +198,42 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     await this.serviceStopByName(service.name)
   }
 
-  handleHostReboot () {
-    this.$confirm(
+  async handleHostReboot () {
+    const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_reboot_host'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
-      .then(res => {
-        if (res) {
-          this.$emit('click')
-          this.hostReboot()
-        }
-      })
+
+    if (result) {
+      this.$emit('click')
+      this.hostReboot()
+    }
   }
 
-  handleHostShutdown () {
-    this.$confirm(
+  async handleHostShutdown () {
+    const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_shutdown_host'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
-      .then(res => {
-        if (res) {
-          this.$emit('click')
-          this.hostShutdown()
-        }
-      })
+
+    if (result) {
+      this.$emit('click')
+      this.hostShutdown()
+    }
   }
 
   async togglePowerDevice (device: Device, wait?: string) {
     const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
-    let res: boolean | undefined = true
-    if (confirmOnPowerDeviceChange) {
-      res = await this.$confirm(
+
+    const result = (
+      !confirmOnPowerDeviceChange ||
+      await this.$confirm(
         this.$tc('app.general.simple_form.msg.confirm_power_device_toggle'),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
       )
-    }
-    if (res) {
+    )
+
+    if (result) {
       const state = (device.status === 'on') ? 'off' : 'on'
       SocketActions.machineDevicePowerToggle(device.device, state, wait)
     }

@@ -75,10 +75,10 @@
 
               <app-setting :title="$t('app.setting.label.line_color')">
                 <app-color-picker
-                  :primary="metric.style.lineColor"
+                  :value="metric.style.lineColor"
                   :title="metric.name"
                   dot
-                  @change="handleColorChange('lineColor', metric, $event)"
+                  @input="metric.style.lineColor = $event"
                 />
               </app-setting>
 
@@ -99,10 +99,10 @@
 
               <app-setting :title="$t('app.setting.label.fill_color')">
                 <app-color-picker
-                  :primary="metric.style.fillColor ?? metric.style.lineColor"
+                  :value="metric.style.fillColor ?? metric.style.lineColor"
                   :title="metric.name"
                   dot
-                  @change="handleColorChange('fillColor', metric, $event)"
+                  @input="metric.style.fillColor = $event"
                 />
               </app-setting>
 
@@ -158,7 +158,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { DiagnosticsCardConfig, Metric } from '@/store/diagnostics/types'
+import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
 import MetricsCollectorConfig from './MetricsCollectorConfig.vue'
 import { defaultState } from '@/store/layout/state'
 
@@ -179,10 +179,6 @@ export default class MetricsConfigStep extends Vue {
     { text: this.$t('app.setting.label.dotted'), value: 'dotted' },
     { text: this.$t('app.setting.label.dashed'), value: 'dashed' }
   ]
-
-  handleColorChange (prop: 'lineColor' | 'fillColor', metric: Metric, event: any) {
-    metric.style[prop] = event.color.hexString
-  }
 
   addMetric (axis: number) {
     const defaultCard = defaultState().layouts.diagnostics.container1[0] as DiagnosticsCardConfig

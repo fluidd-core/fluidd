@@ -1,7 +1,8 @@
 import Vue from 'vue'
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 import { defaultState as getDefaultState } from './state'
-import { LayoutConfig, LayoutState, Layouts } from './types'
+import type { LayoutConfig, LayoutState, Layouts } from './types'
+import type { DiagnosticsCardContainer } from '../diagnostics/types'
 
 export const mutations: MutationTree<LayoutState> = {
   /**
@@ -20,22 +21,48 @@ export const mutations: MutationTree<LayoutState> = {
   setInitLayout (state, payload: LayoutState) {
     if (payload && Object.keys(payload).length > 0) {
       const defaultState = getDefaultState()
-      const migratableLayouts = ['dashboard']
 
-      for (const [layout, defaultComponents] of Object.entries(defaultState.layouts)) {
-        if (!payload.layouts[layout]) {
-          payload.layouts[layout] = defaultComponents
-        } else if (migratableLayouts.includes(layout)) {
-          const defaultComponentIds = Object.values(defaultComponents).flat().map(card => card.id)
-          const currentComponentIds = Object.values(payload.layouts[layout]).flat().map(card => card.id)
+      // add new layouts
+      for (const [layoutKey, defaultLayout] of Object.entries(defaultState.layouts)) {
+        if (!payload.layouts[layoutKey]) {
+          payload.layouts[layoutKey] = defaultLayout
+        }
+      }
 
-          for (const [container, defaultContainerComponents] of Object.entries(defaultComponents)) {
-            const currentContainerComponents = payload.layouts[layout][container] || []
+      // migrate existing layouts
+      const migratableLayoutKeys = ['dashboard']
 
-            payload.layouts[layout][container] = [
+      for (const layoutKey of Object.keys(payload.layouts)) {
+        const migratableLayoutKey = migratableLayoutKeys.find(key => layoutKey.startsWith(key))
+
+        if (migratableLayoutKey) {
+          const defaultLayout = defaultState.layouts[migratableLayoutKey]
+          const defaultComponentIds = Object.values(defaultLayout).flat().map(card => card.id)
+          const currentLayout = payload.layouts[layoutKey]
+          const currentComponentIds = Object.values(currentLayout).flat().map(card => card.id)
+
+          for (const [containerKey, defaultContainerComponents] of Object.entries(defaultLayout)) {
+            const currentContainerComponents = currentLayout[containerKey] || []
+
+            currentLayout[containerKey] = [
               ...currentContainerComponents.filter(component => defaultComponentIds.includes(component.id)),
               ...defaultContainerComponents.filter(component => !currentComponentIds.includes(component.id))
             ]
+          }
+        }
+
+        // diagnostics specific layout updates
+        if (layoutKey.startsWith('diagnostics')) {
+          const diagnostics = payload.layouts[layoutKey] as DiagnosticsCardContainer
+
+          for (const diagnosticsCardConfigs of Object.values(diagnostics)) {
+            for (const diagnosticsCardConfig of diagnosticsCardConfigs) {
+              for (const axis of diagnosticsCardConfig.axes) {
+                for (const metric of axis.metrics) {
+                  metric.style.fillColor = metric.style.fillColor ?? null
+                }
+              }
+            }
           }
         }
       }

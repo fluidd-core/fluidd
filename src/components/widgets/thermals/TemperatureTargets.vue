@@ -3,24 +3,23 @@
     <v-simple-table class="temperature-table">
       <thead>
         <tr>
-          <th width="1%" />
-          <th :width="showRateOfChange ? '94%' : '95%'">
+          <th />
+          <th width="100%">
             {{ $t('app.chart.label.item') }}
           </th>
-          <th width="1%">
+          <th>
             {{ $t('app.chart.label.power') }}
           </th>
           <th
             v-if="showRateOfChange"
-            width="1%"
           >
             {{ $t('app.chart.label.rate_of_change') }}
           </th>
-          <th width="1%">
+          <th>
             {{ $t('app.chart.label.current') }}
           </th>
-          <th width="1%" />
-          <th width="1%">
+          <th />
+          <th>
             {{ $t('app.chart.label.target') }}
           </th>
         </tr>
@@ -28,7 +27,7 @@
       <tbody v-if="klippyReady">
         <tr
           v-for="item in heaters"
-          :key="item.name"
+          :key="item.key"
         >
           <td>
             <v-icon
@@ -40,8 +39,8 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': !(item.name in chartSelectedLegends) || chartSelectedLegends[item.name] }"
-              class="legend-item"
+              :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
+              class="legend-item toggle"
               @click="$emit('legendClick', item)"
             >
               {{ item.prettyName }}
@@ -49,8 +48,8 @@
           </td>
           <td class="temp-power">
             <span
-              :class="{ 'active': chartSelectedLegends[item.name + 'Power'] }"
-              class="legend-item"
+              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
+              class="legend-item toggle"
               @click="$emit('legendPowerClick', item)"
             >
               <span v-if="item.power <= 0 && item.target <= 0">off</span>
@@ -61,11 +60,12 @@
           </td>
           <td
             v-if="showRateOfChange"
-            class="rate-of-change"
+            class="text-no-wrap"
           >
             <span
-              :class="{ 'active': chartSelectedLegends[item.name + 'Power'] }"
-              class="legend-item"
+              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
+              class="legend-item toggle"
+              @click="$emit('legendPowerClick', item)"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -97,7 +97,7 @@
         </tr>
         <tr
           v-for="item in fans"
-          :key="item.name"
+          :key="item.key"
         >
           <td>
             <v-icon
@@ -110,8 +110,8 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': !(item.name in chartSelectedLegends) || chartSelectedLegends[item.name] }"
-              class="legend-item"
+              :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
+              class="legend-item toggle"
               @click="$emit('legendClick', item)"
             >
               {{ item.prettyName }}
@@ -120,8 +120,8 @@
           <td class="temp-power">
             <span
               v-if="item.speed"
-              :class="{ 'active': chartSelectedLegends[item.name + 'Speed'] }"
-              class="legend-item"
+              :class="{ 'active': chartSelectedLegends[item.key + 'Speed'] }"
+              class="legend-item toggle"
               @click="$emit('legendPowerClick', item)"
             >
               <span v-if="item.speed > 0 && (item.target > 0 || !item.target)">
@@ -135,11 +135,12 @@
           </td>
           <td
             v-if="showRateOfChange"
-            class="rate-of-change"
+            class="text-no-wrap"
           >
             <span
-              :class="{ 'active': chartSelectedLegends[item.name + 'Power'] }"
-              class="legend-item"
+              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
+              class="legend-item toggle"
+              @click="$emit('legendPowerClick', item)"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -147,9 +148,12 @@
           <td class="temp-actual">
             <span v-if="item.temperature">
               {{ item.temperature.toFixed(1) }}<small>°C</small>
-              <small v-if="item.humidity && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
-              <small v-if="item.pressure && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
-              <small v-if="item.gas && showGasResistance"><br>{{ item.gas.toFixed(1) }}&nbsp;&ohm;</small>
+              <small v-if="item.humidity != null && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }} %</small>
+              <small v-if="item.pressure != null && showBarometricPressure"><br>{{ $filters.getReadableAtmosphericPressureString(item.pressure) }}</small>
+              <small v-if="item.gas != null && showGasResistance"><br>{{ $filters.getReadableResistanceString(item.gas) }}</small>
+            </span>
+            <span v-else>
+              -
             </span>
           </td>
           <td>/</td>
@@ -176,7 +180,7 @@
         </tr>
         <tr
           v-for="item in sensors"
-          :key="item.name"
+          :key="item.key"
         >
           <td>
             <v-icon
@@ -188,36 +192,44 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': !(item.name in chartSelectedLegends) || chartSelectedLegends[item.name] }"
-              class="legend-item"
+              :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
+              class="legend-item toggle"
               @click="$emit('legendClick', item)"
             >
               {{ item.prettyName }}
             </span>
           </td>
           <td class="temp-power">
-&nbsp;
+            &nbsp;
           </td>
           <td
             v-if="showRateOfChange"
-            class="rate-of-change"
+            class="text-no-wrap"
           >
             <span class="legend-item">
               {{ getRateOfChange(item) }}<small>&deg;C/s</small>
             </span>
           </td>
           <td class="temp-actual">
-            <v-tooltip left>
+            <v-tooltip
+              left
+              :disabled="[item.measured_max_temp, item.measured_min_temp].every(x => x === undefined)"
+            >
               <template #activator="{ on, attrs }">
                 <div
                   v-bind="attrs"
                   v-on="on"
                 >
-                  {{ item.temperature.toFixed(1) }}<small>°C</small>
-                  <small v-if="item.humidity && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
-                  <small v-if="item.pressure && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
-                  <small v-if="item.gas && showGasResistance"><br>{{ item.gas.toFixed(1) }}&nbsp;&ohm;</small>
-                  <small v-if="item.current_z_adjust !== undefined"><br>{{ $filters.getReadableLengthString(item.current_z_adjust, true) }}</small>
+                  <span v-if="item.temperature != null">
+                    {{ item.temperature.toFixed(1) }}<small>°C</small>
+                    <small v-if="item.humidity != null && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }} %</small>
+                    <small v-if="item.pressure != null && showBarometricPressure"><br>{{ $filters.getReadableAtmosphericPressureString(item.pressure) }}</small>
+                    <small v-if="item.gas != null && showGasResistance"><br>{{ $filters.getReadableResistanceString(item.gas) }}</small>
+                    <small v-if="item.current_z_adjust != null"><br>{{ $filters.getReadableLengthString(item.current_z_adjust, true) }}</small>
+                  </span>
+                  <span v-else>
+                    -
+                  </span>
                 </div>
               </template>
               <span v-if="[item.measured_max_temp, item.measured_min_temp].every(x => x !== undefined)">
@@ -238,7 +250,9 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
 import StateMixin from '@/mixins/state'
-import { Heater, Sensor } from '@/store/printer/types'
+import type { Heater, Sensor } from '@/store/printer/types'
+import { takeRightWhile } from 'lodash-es'
+import type { ChartData } from '@/store/charts/types'
 
 @Component({
   components: {
@@ -270,6 +284,10 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     return this.$store.getters['charts/getSelectedLegends']
   }
 
+  get chartData (): ChartData[] {
+    return this.$store.getters['charts/getChartData'] as ChartData[]
+  }
+
   get showRateOfChange () {
     return this.$store.state.config.uiSettings.general.showRateOfChange
   }
@@ -295,12 +313,16 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   }
 
   getRateOfChange (item: Heater | Sensor) {
-    const chartData = this.$store.getters['charts/getChartData']
+    const recentChartData = this.chartData
+      .slice(-5)
+    const filteredChartData = takeRightWhile(recentChartData, x => x[item.key] != null)
+
     let rateOfChange = 0
-    if (chartData.length >= 2) {
-      const curr = chartData[chartData.length - 1]
-      const prev = chartData[chartData.length - Math.min(chartData.length, 5)] // rolling average of the last min(n, 5) data points
-      rateOfChange = (curr[item.name] - prev[item.name]) / (curr.date - prev.date) * 1000
+    if (filteredChartData.length >= 2) {
+      const curr = filteredChartData[filteredChartData.length - 1]
+      const prev = filteredChartData[0]
+
+      rateOfChange = (+curr[item.key] - +prev[item.key]) / (+curr.date - +prev.date) * 1000
 
       if (Math.abs(rateOfChange) < 0.05) {
         rateOfChange = 0 // prevent constant change of sign
@@ -339,6 +361,7 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     .temp-actual {
       font-weight: 300;
       font-size: 1.125rem;
+      white-space: nowrap;
     }
 
     > thead > tr > th {
@@ -380,8 +403,11 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
 
   .legend-item {
     display: inline-block;
-    cursor: pointer;
     opacity: 0.45
+  }
+
+  .legend-item.toggle {
+    cursor: pointer;
   }
 
   .legend-item.active {

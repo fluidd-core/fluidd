@@ -66,21 +66,7 @@
 
       <v-divider />
 
-      <app-setting :title="$t('app.setting.label.text_sort_order')">
-        <v-select
-          v-model="textSortOrder"
-          filled
-          dense
-          hide-details="auto"
-          :items="availableTextSortOrders"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting
-        :title="$t('app.setting.label.confirm_on_estop')"
-      >
+      <app-setting :title="$t('app.setting.label.confirm_on_estop')">
         <v-switch
           v-model="confirmOnEstop"
           hide-details
@@ -91,9 +77,7 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.setting.label.show_upload_and_print')"
-      >
+      <app-setting :title="$t('app.setting.label.show_upload_and_print')">
         <v-switch
           v-model="showUploadAndPrint"
           hide-details
@@ -104,9 +88,7 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.setting.label.power_toggle_in_top_nav')"
-      >
+      <app-setting :title="$t('app.setting.label.power_toggle_in_top_nav')">
         <v-select
           v-model="topNavPowerToggle"
           filled
@@ -119,9 +101,7 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.setting.label.confirm_on_power_device_change')"
-      >
+      <app-setting :title="$t('app.setting.label.confirm_on_power_device_change')">
         <v-switch
           v-model="confirmOnPowerDeviceChange"
           hide-details
@@ -132,9 +112,7 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.setting.label.show_save_config_and_restart')"
-      >
+      <app-setting :title="$t('app.setting.label.show_save_config_and_restart')">
         <v-switch
           v-model="showSaveConfigAndRestart"
           hide-details
@@ -146,9 +124,7 @@
       <template v-if="showSaveConfigAndRestart">
         <v-divider />
 
-        <app-setting
-          :title="$t('app.setting.label.confirm_on_save_config_and_restart')"
-        >
+        <app-setting :title="$t('app.setting.label.confirm_on_save_config_and_restart')">
           <v-switch
             v-model="confirmOnSaveConfigAndRestart"
             hide-details
@@ -156,20 +132,76 @@
             @click.native.stop
           />
         </app-setting>
+      </template>
 
+      <template v-if="showSaveConfigAndRestart && confirmOnSaveConfigAndRestart">
         <v-divider />
 
-        <app-setting
-          :title="$t('app.setting.label.ignore_default_bed_mesh_pending_configuration_changes')"
-        >
-          <v-switch
-            v-model="ignoreDefaultBedMeshPendingConfigurationChanges"
-            hide-details
-            class="mb-5"
-            @click.native.stop
+        <app-setting :title="$t('app.setting.label.sections_to_ignore_pending_configuration_changes')">
+          <v-combobox
+            v-model="sectionsToIgnorePendingConfigurationChanges"
+            :items="['bed_mesh default', 'bed_tilt']"
+            filled
+            dense
+            hide-selected
+            hide-details="auto"
+            multiple
+            small-chips
+            append-icon=""
+            deletable-chips
           />
         </app-setting>
       </template>
+
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.print_in_progress_layout')">
+        <v-select
+          v-model="printInProgressLayout"
+          filled
+          dense
+          hide-details="auto"
+          :items="availablePrintInProgressLayouts"
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting
+        :title="$t('app.setting.label.print_progress_calculation')"
+        :sub-title="$t('app.setting.tooltip.average_calculation')"
+      >
+        <v-select
+          v-model="printProgressCalculation"
+          multiple
+          filled
+          dense
+          hide-details="auto"
+          :rules="[
+            $rules.lengthGreaterThanOrEqual(1),
+          ]"
+          :items="availablePrintProgressCalculation"
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting
+        :title="$t('app.setting.label.print_eta_calculation')"
+        :sub-title="$t('app.setting.tooltip.average_calculation')"
+      >
+        <v-select
+          v-model="printEtaCalculation"
+          multiple
+          filled
+          dense
+          hide-details="auto"
+          :rules="[
+            $rules.lengthGreaterThanOrEqual(1),
+          ]"
+          :items="availablePrintEtaCalculation"
+        />
+      </app-setting>
 
       <v-divider />
 
@@ -190,10 +222,11 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { VInput } from '@/types'
+import type { VInput } from '@/types'
 import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
-import { OutputPin } from '@/store/printer/types'
-import { Device } from '@/store/power/types'
+import type { OutputPin } from '@/store/printer/types'
+import type { Device } from '@/store/power/types'
+import type { PrintEtaCalculation, PrintInProgressLayout, PrintProgressCalculation } from '@/store/config/types'
 
 @Component({
   components: {}
@@ -201,15 +234,6 @@ import { Device } from '@/store/power/types'
 export default class GeneralSettings extends Mixins(StateMixin) {
   @Ref('instanceName')
   readonly instanceNameElement!: VInput
-
-  get estimateTypes () {
-    return [
-      { name: this.$t('app.setting.timer_options.duration'), value: 'totals' },
-      { name: this.$t('app.setting.timer_options.slicer'), value: 'slicer' },
-      { name: this.$t('app.setting.timer_options.file'), value: 'file' },
-      { name: this.$t('app.setting.timer_options.filament'), value: 'filament' }
-    ]
-  }
 
   get instanceName () {
     return this.$store.state.config.uiSettings.general.instanceName
@@ -252,7 +276,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return Object.entries(DateFormats)
       .map(([key, entry]) => ({
         value: key,
-        text: `${date.toLocaleDateString(entry.locale ?? this.$i18n.locale, entry.options)}${entry.suffix ?? ''}`
+        text: `${date.toLocaleDateString(entry.locales ?? this.$filters.getAllLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
   }
 
@@ -274,37 +298,8 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return Object.entries(TimeFormats)
       .map(([key, entry]) => ({
         value: key,
-        text: `${date.toLocaleTimeString(entry.locale ?? this.$i18n.locale, entry.options)}${entry.suffix ?? ''}`
+        text: `${date.toLocaleTimeString(entry.locales ?? this.$filters.getAllLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
-  }
-
-  get textSortOrder () {
-    return this.$store.state.config.uiSettings.general.textSortOrder
-  }
-
-  set textSortOrder (value: string) {
-    this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.textSortOrder',
-      value,
-      server: true
-    })
-  }
-
-  get availableTextSortOrders () {
-    return [
-      {
-        value: 'default',
-        text: this.$t('app.general.label.default')
-      },
-      {
-        value: 'numeric-prefix',
-        text: this.$t('app.general.label.numeric_prefix_sort')
-      },
-      {
-        value: 'version',
-        text: this.$t('app.general.label.version_sort')
-      }
-    ]
   }
 
   get confirmOnEstop () {
@@ -323,7 +318,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.topNavPowerToggle
   }
 
-  set topNavPowerToggle (value: string) {
+  set topNavPowerToggle (value: string | null) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.topNavPowerToggle',
       value,
@@ -332,7 +327,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get powerDevicesList () {
-    const devices = this.$store.state.power.devices as Device[]
+    const devices = this.$store.getters['power/getDevices'] as Device[]
     const deviceEntries = devices.length
       ? [
           { header: 'Moonraker' },
@@ -402,13 +397,88 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
-  get ignoreDefaultBedMeshPendingConfigurationChanges (): boolean {
-    return this.$store.state.config.uiSettings.general.ignoreDefaultBedMeshPendingConfigurationChanges as boolean
+  get sectionsToIgnorePendingConfigurationChanges (): string[] {
+    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges as string[]
   }
 
-  set ignoreDefaultBedMeshPendingConfigurationChanges (value: boolean) {
+  set sectionsToIgnorePendingConfigurationChanges (value: string[]) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.ignoreDefaultBedMeshPendingConfigurationChanges',
+      path: 'uiSettings.general.sectionsToIgnorePendingConfigurationChanges',
+      value: [...new Set(value)].sort((a, b) => a.localeCompare(b)),
+      server: true
+    })
+  }
+
+  get printInProgressLayout (): PrintInProgressLayout {
+    return this.$store.state.config.uiSettings.general.printInProgressLayout as PrintInProgressLayout
+  }
+
+  set printInProgressLayout (value: PrintInProgressLayout) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.printInProgressLayout',
+      value,
+      server: true
+    })
+  }
+
+  get availablePrintInProgressLayouts () {
+    return [
+      {
+        value: 'default',
+        text: this.$t('app.general.label.default')
+      },
+      {
+        value: 'compact',
+        text: this.$t('app.general.label.compact')
+      }
+    ]
+  }
+
+  get availablePrintProgressCalculation () {
+    return [
+      {
+        value: 'file',
+        text: this.$t('app.setting.timer_options.file')
+      },
+      {
+        value: 'slicer',
+        text: this.$t('app.setting.timer_options.slicer_m73')
+      }
+    ]
+  }
+
+  get printProgressCalculation () {
+    return this.$store.state.config.uiSettings.general.printProgressCalculation as PrintProgressCalculation
+  }
+
+  set printProgressCalculation (value: string) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.printProgressCalculation',
+      value,
+      server: true
+    })
+  }
+
+  get availablePrintEtaCalculation () {
+    return [
+      {
+        value: 'file',
+        text: this.$t('app.setting.timer_options.file')
+      },
+      {
+        value: 'slicer',
+        text: this.$t('app.setting.timer_options.slicer')
+      }
+    ]
+  }
+
+  get printEtaCalculation () {
+    return this.$store.state.config.uiSettings.general.printEtaCalculation as PrintEtaCalculation[]
+  }
+
+  set printEtaCalculation (value: PrintEtaCalculation[]) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.printEtaCalculation',
       value,
       server: true
     })
@@ -424,10 +494,6 @@ export default class GeneralSettings extends Mixins(StateMixin) {
       value,
       server: true
     })
-  }
-
-  get current_time () {
-    return Math.floor(Date.now() / 1000)
   }
 }
 </script>

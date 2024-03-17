@@ -51,22 +51,22 @@ import { Component, Prop, Vue, VModel } from 'vue-property-decorator'
 @Component({})
 export default class AppNamedSelect extends Vue {
   @VModel({ })
-    inputValue?: any
+    inputValue?: unknown
 
   @Prop({ })
-  readonly resetValue?: any
+  readonly resetValue?: unknown
 
   @Prop({ type: Array })
-  readonly items?: any[]
+  readonly items?: unknown[]
 
   @Prop({ type: String, required: true })
   readonly label!: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly loading!: boolean
+  @Prop({ type: Boolean })
+  readonly loading?: boolean
 
   @Prop({ type: String })
   readonly prefix?: string

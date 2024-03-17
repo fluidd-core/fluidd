@@ -32,12 +32,7 @@ export interface ExtruderConfig {
   pressure_advance_smooth_time?: number;
 }
 
-export interface ExtruderStepper {
-  config: ExtruderStepperConfig;
-  name: string;
-  prettyName: string;
-  key: string;
-  enabled?: boolean;
+export interface ExtruderStepper extends StepperType<ExtruderStepperConfig> {
   motion_queue?: string | null;
   pressure_advance?: number;
   smooth_time?: number;
@@ -49,16 +44,22 @@ export interface ExtruderStepperConfig {
   pressure_advance_smooth_time?: number;
 }
 
-export interface MCU {
+export interface Stepper extends StepperType {}
+
+export type StepperType<T = Record<string, any>> = {
+  config: T;
   name: string;
-  last_stats: MCUData;
-  mcu_build_versions: string;
-  mcu_constants: MCUData;
-  mcu_version: string;
+  prettyName: string;
+  key: string;
+  enabled?: boolean;
 }
 
-export interface MCUData {
-  [index: string]: string | number;
+export interface MCU {
+  name: string;
+  last_stats: Record<string, string | number>;
+  mcu_build_versions: string;
+  mcu_constants: Record<string, string | number>;
+  mcu_version: string;
 }
 
 export type OutputType<T = Record<string, any>> = {
@@ -154,6 +155,34 @@ export interface Probe {
 
 export type ProbeName = 'bltouch' | 'smart_effector' | 'probe'
 
+export interface BedScrews {
+  key: string;
+  name: string;
+  prettyName: string;
+  fine: number;
+  x: number;
+  y: number;
+}
+
+export interface ScrewsTiltAdjust {
+  error: boolean;
+  max_deviation?: number | null;
+  screws: ScrewsTiltAdjustScrew[]
+}
+
+export interface ScrewsTiltAdjustScrew {
+  key: string;
+  name: string;
+  prettyName: string;
+  adjustMinutes: number;
+  x: number;
+  y: number;
+  z: number;
+  sign: 'CW' | 'CCW';
+  adjust: string;
+  is_base: boolean;
+}
+
 // printer.mcu[num]
 export interface KlipperMcu {
   last_stats: KlipperMcuStats;
@@ -191,4 +220,29 @@ export interface SystemStats {
   cputime: number;
   memavail: number;
   sysload: number;
+}
+
+export interface BedSize {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+}
+
+export interface GcodeCommands {
+  [key: string]: GcodeCommand
+}
+
+export interface GcodeCommand {
+  help?: string
+}
+
+export interface TimeEstimates {
+  progress: number;
+  printDuration: number;
+  totalDuration: number;
+  fileLeft: number;
+  slicerLeft: number;
+  actualLeft: number;
+  eta: number;
 }

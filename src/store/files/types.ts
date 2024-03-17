@@ -1,13 +1,11 @@
-import { KlipperFileMeta, Thumbnail } from './types.metadata'
-import { HistoryItem } from '@/store/history/types'
-import { CancelTokenSource } from 'axios'
+import type { KlipperFileMeta, KlipperFileMetaThumbnail } from './types.metadata'
+import type { HistoryItem } from '@/store/history/types'
 
-export type { KlipperFileMeta, Thumbnail }
+export type { KlipperFileMeta, KlipperFileMetaThumbnail }
 
 export interface FilesState {
   uploads: FilesUpload[];
   download: FileDownload | null;
-  fileTransferCancelTokenSource: CancelTokenSource | null;
   currentPaths: Record<string, string>;
   disk_usage: DiskUsage;
   rootFiles: Record<string, MoonrakerRootFile[] | undefined>;
@@ -56,6 +54,10 @@ export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
   history: HistoryItem;
 }
 
+export interface AppFileThumbnail extends KlipperFileMetaThumbnail {
+  url: string;
+}
+
 export interface AppDirectory extends KlipperDir {
   type: 'directory';
   name: string;
@@ -83,6 +85,7 @@ export interface FilePaths {
   filename: string;
   path: string;
   rootPath: string;
+  filtered: boolean;
 }
 
 export interface FileUpdate {
@@ -97,7 +100,7 @@ export interface FileDownload {
   loaded: number;
   percent: number;
   speed: number;
-  unit: string;
+  abortController: AbortController;
 }
 
 export interface FilesUpload extends FileDownload {
@@ -105,17 +108,16 @@ export interface FilesUpload extends FileDownload {
   cancelled: boolean; // in a cancelled state, don't show - nor try to upload.
 }
 
-export type FileFilterType = 'print_start_time' | 'hidden_files' | 'klipper_backup_files' | 'rolled_log_files'
+export type FileFilterType = 'print_start_time' | 'hidden_files' | 'klipper_backup_files' | 'rolled_log_files' | 'moonraker_backup_files' | 'crowsnest_backup_files'
 
 export type FileBrowserEntry = AppFile | AppFileWithMeta | AppDirectory
 
-export interface FilePreviewState {
-  open: boolean;
-  filename: string;
-  src: string;
-  type: string;
-  appFile?: AppFile;
-  width?: number;
+export interface RootProperties {
+  readonly: boolean;
+  accepts: string[];
+  canView: string[];
+  canConfigure: boolean;
+  filterTypes: FileFilterType[]
 }
 
 export interface MoonrakerRootFile {

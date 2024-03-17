@@ -4,35 +4,21 @@
     class="camera-container"
     v-on="$listeners"
   >
-    <img
-      v-if="camera.service === 'mjpegstreamer' || camera.service === 'mjpegstreamer-adaptive'"
-      ref="camera_image"
-      :src="cameraUrl"
-      class="camera-image"
-      @load="handleImgLoad"
-    >
-
-    <video
-      v-else-if="camera.service === 'ipstream' || camera.service === 'hlsstream' || camera.service === 'webrtc-camerastreamer'"
-      ref="camera_image"
-      :src="cameraUrl"
-      autoplay
-      muted
-      class="camera-image"
-    />
-
-    <iframe
-      v-else-if="camera.service === 'iframe'"
-      ref="camera_image"
-      :src="cameraUrl"
-      class="camera-image"
-      style="border: none; width: 100%"
-      :style="{
-        height: !camera.aspectRatio ? (fullscreen ? '100vh' : '720px') : undefined,
-        'aspect-ratio': camera.aspectRatio ? camera.aspectRatio.replace(':', '/') : undefined,
-        'max-height': camera.aspectRatio ? 'unset' : undefined
-      }"
-    />
+    <template v-if="cameraComponent">
+      <component
+        :is="cameraComponent"
+        ref="component-instance"
+        :camera="camera"
+        :crossorigin="crossorigin"
+        class="camera-image"
+        @raw-camera-url="rawCameraUrl = $event"
+        @frames-per-second="framesPerSecond = $event"
+        @playback="setupFrameEvents()"
+      />
+    </template>
+    <div v-else>
+      Camera service not supported!
+    </div>
 
     <div
       v-if="camera.name"
@@ -41,20 +27,29 @@
       {{ camera.name }}
     </div>
     <div
-      v-if="camera.service === 'mjpegstreamer-adaptive' && time"
+      v-if="framesPerSecond"
       class="camera-frames"
     >
-      fps: {{ currentFPS }}
+      fps: {{ framesPerSecond }}
+    </div>
+
+    <div
+      v-if="!fullscreen && (fullscreenMode === 'embed' || !rawCameraUrl) && camera.service !== 'device'"
+      class="camera-fullscreen"
+    >
+      <a :href="`/#/camera/${encodeURI(camera.uid)}`">
+        <v-icon>$fullScreen</v-icon>
+      </a>
     </div>
     <div
-      v-if="cameraFullScreenUrl && (!fullscreen || fullscreenMode === 'embed')"
+      v-else-if="rawCameraUrl"
       class="camera-fullscreen"
     >
       <a
-        :href="cameraFullScreenUrl"
-        :target="fullscreen || fullscreenMode === 'rawstream' ? '_blank' : ''"
+        :href="rawCameraUrl"
+        target="_blank"
       >
-        <v-icon>${{ (fullscreen || fullscreenMode === 'rawstream') ? 'openInNew' : 'fullScreen' }}</v-icon>
+        <v-icon>$openInNew</v-icon>
       </a>
     </div>
   </v-sheet>
@@ -62,354 +57,71 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import { CameraConfig } from '@/store/cameras/types'
-import { noop } from 'vue-class-component/lib/util'
-import { CameraFullscreenAction } from '@/store/config/types'
-import type HlsType from 'hls.js'
-import consola from 'consola'
-let Hls: typeof HlsType
+import type { WebcamConfig } from '@/store/webcams/types'
+import type { CameraFullscreenAction } from '@/store/config/types'
+import { CameraComponents } from '@/dynamicImports'
+import CameraMixin from '@/mixins/camera'
 
-/**
- * Adaptive load credit to https://github.com/Rejdukien
- */
 @Component({})
 export default class CameraItem extends Vue {
   @Prop({ type: Object, required: true })
-  readonly camera!: CameraConfig
+  readonly camera!: WebcamConfig
 
-  @Prop({ type: Boolean, required: false, default: false })
-  readonly fullscreen!: boolean
+  @Prop({ type: Boolean })
+  readonly fullscreen?: boolean
 
-  @Ref('camera_image')
-  readonly cameraImage!: HTMLImageElement | HTMLVideoElement | HTMLIFrameElement
+  @Prop({ type: String })
+  readonly crossorigin?: 'anonymous' | 'use-credentials' | ''
 
-  // Adaptive load counters
-  request_start_time = performance.now()
-  start_time = performance.now()
-  time = 0
-  request_time = 0
-  time_smoothing = 0.6
-  request_time_smoothing = 0.1
-  currentFPS = '0'
-  hls: HlsType | null = null
-  pc: RTCPeerConnection | null = null
-  remoteId: string | null = null
+  @Ref('component-instance')
+  readonly componentInstance!: CameraMixin
 
-  // URL used by camera
-  cameraUrl = ''
-  cameraFullScreenUrl = ''
-
-  // Maintains the last cachebust string
-  refresh = Date.now()
-
-  // Callback to cancel requestAnimationFrame() when component is being destroyed.
-  cancelCameraTransform = noop
-
-  /**
-   * Handle any transforms the user may have set on the camera image.
-   */
-  cameraTransformStyle (element: HTMLElement) {
-    const config = this.camera
-    let transforms = ''
-
-    if (config.rotation === 0) {
-      transforms += config && config.flipX ? ' scaleX(-1)' : ''
-      transforms += config && config.flipY ? ' scaleY(-1)' : ''
-    } else {
-      let scaling = 1
-      if (config.rotation !== 180) {
-        scaling = element.clientHeight / element.clientWidth
-        if (scaling > 1) {
-          scaling = element.clientWidth / element.clientHeight
-        }
-      }
-
-      transforms += config && config.flipX ? ` scaleX(-${scaling})` : ` scaleX(${scaling})`
-      transforms += config && config.flipY ? ` scaleY(-${scaling})` : ` scaleY(${scaling})`
-      transforms += ` rotate(${config.rotation}deg)`
-    }
-
-    return transforms.trimLeft().length
-      ? { transform: transforms.trimLeft() }
-      : {}
-  }
-
-  @Watch('camera', { immediate: true })
-  onCameraChange () {
-    this.setUrl()
-    if (!this.fullscreen && this.fullscreenMode === 'embed') {
-      this.cameraFullScreenUrl = `/#/camera/${this.camera.id}`
-    }
-  }
-
-  /**
-   * On creation, set the initial urls and bind the visibility listener.
-   */
-  created () {
-    document.addEventListener('visibilitychange', this.setUrl, false)
-    this.cancelCameraTransform = this.createTransformAnimation()
-  }
+  rawCameraUrl: string | null = null
+  framesPerSecond : string | null = null
 
   mounted () {
-    this.setUrl()
+    this.setupFrameEvents()
   }
 
-  /**
-   * make sure to clear the URL and remove the listener when we destroy the
-   * component.
-   */
-  beforeDestroy () {
-    this.hls?.destroy()
-    this.pc?.close()
-    this.cancelCameraTransform()
-    this.cameraUrl = this.cameraImage.src = ''
-    this.cameraFullScreenUrl = ''
-    document.removeEventListener('visibilitychange', this.setUrl)
-  }
-
-  /**
-   * For image based streams / adaptive loads, set the refresh token
-   * and set the new cachebusted url.
-   */
-  handleRefresh () {
-    if (!document.hidden) {
-      this.refresh = Date.now()
-      // this.setUrl()
-      this.currentFPS = Math.round(1000 / this.time).toLocaleString(undefined, { minimumIntegerDigits: 2 })
-      this.$nextTick(() => {
-        const hostUrl = new URL(document.URL)
-        const url = new URL(this.cameraUrl, hostUrl.origin)
-        url.searchParams.set('cacheBust', this.refresh.toString())
-        this.request_start_time = performance.now()
-        this.cameraUrl = url.toString()
-      })
-    } else {
-      this.cameraUrl = ''
-    }
-  }
-
-  /**
-   * Handles the reload of the image, forces a new cachebust and sets the
-   * performance counters for the next load.
-   * It only used for the adaptive load type.
-   */
-  handleImgLoad () {
-    if (
-      this.camera &&
-      this.camera.service === 'mjpegstreamer-adaptive'
-    ) {
-      const fpsTarget = (!document.hasFocus() && this.camera.targetFpsIdle) || this.camera.targetFps || 10
-      const end_time = performance.now()
-      const current_time = end_time - this.start_time
-      this.time = (this.time * this.time_smoothing) + (current_time * (1.0 - this.time_smoothing))
-      this.start_time = end_time
-
-      const target_time = 1000 / fpsTarget
-
-      const current_request_time = performance.now() - this.request_start_time
-      this.request_time = (this.request_time * this.request_time_smoothing) + (current_request_time * (1.0 - this.request_time_smoothing))
-      const timeout = Math.max(0, target_time - this.request_time)
-
-      this.$nextTick(() => {
-        setTimeout(this.handleRefresh, timeout)
-      })
-    }
-  }
-
-  /**
-   * Sets the correct (cachebusted if applicable) camera url.
-   */
-  async setUrl () {
-    if (!document.hidden && this.cameraImage !== undefined) {
-      const type = this.camera.service
-      const baseUrl = this.camera.urlStream || this.camera.urlSnapshot || ''
-      const hostUrl = new URL(document.URL)
-      const url = new URL(baseUrl, hostUrl.origin)
-
-      switch (type) {
-        case 'mjpegstreamer':
-          url.searchParams.append('cacheBust', this.refresh.toString())
-          if (!url.searchParams.get('action')?.startsWith('stream')) {
-            url.searchParams.set('action', 'stream')
-          }
-          this.cameraUrl = url.toString()
-          if (!this.cameraFullScreenUrl) {
-            this.cameraFullScreenUrl = this.cameraUrl
-          }
-          break
-
-        case 'mjpegstreamer-adaptive':
-          this.request_start_time = performance.now()
-          url.searchParams.append('cacheBust', this.refresh.toString())
-          if (!url.searchParams.get('action')?.startsWith('snapshot')) {
-            url.searchParams.set('action', 'snapshot')
-          }
-          this.cameraUrl = url.toString()
-          if (!this.cameraFullScreenUrl) {
-            url.searchParams.set('action', 'stream')
-            this.cameraFullScreenUrl = url.toString()
-          }
-          break
-
-        case 'ipstream':
-        case 'iframe':
-          this.cameraUrl = baseUrl
-          if (!this.cameraFullScreenUrl) {
-            this.cameraFullScreenUrl = baseUrl
-          }
-          break
-
-        case 'hlsstream': {
-          const cameraVideo = this.cameraImage as HTMLVideoElement
-
-          if (!Hls) {
-            Hls = (await import('hls.js')).default
-          }
-
-          if (Hls.isSupported()) {
-            this.hls?.destroy()
-
-            this.hls = new Hls({
-              enableWorker: true,
-              lowLatencyMode: true,
-              maxLiveSyncPlaybackRate: 2,
-              liveSyncDuration: 0.5,
-              liveMaxLatencyDuration: 2,
-              backBufferLength: 5
-            })
-            this.hls.loadSource(baseUrl)
-            this.hls.attachMedia(cameraVideo)
-            this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
-              cameraVideo.play()
-            })
-          } else if (cameraVideo.canPlayType('application/vnd.apple.mpegurl')) {
-            fetch(baseUrl).then(() => {
-              cameraVideo.src = baseUrl
-              cameraVideo.play()
-            })
-          }
-          break
-        }
-
-        case 'webrtc-camerastreamer': {
-          const cameraVideo = this.cameraImage as HTMLVideoElement
-
-          this.pc?.close()
-
-          fetch(baseUrl, {
-            body: JSON.stringify({
-              type: 'request'
-            }),
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            method: 'POST'
-          })
-            .then(response => response.json())
-            .then((answer: RTCSessionDescriptionInit) => {
-              this.remoteId = 'id' in answer && typeof (answer.id) === 'string' ? answer.id : null
-
-              const config = {
-                sdpSemantics: 'unified-plan'
-              } as RTCConfiguration
-
-              if ('iceServers' in answer && Array.isArray(answer.iceServers)) {
-                config.iceServers = answer.iceServers
-              }
-
-              this.pc = new RTCPeerConnection(config)
-
-              this.pc.addTransceiver('video', {
-                direction: 'recvonly'
-              })
-
-              this.pc.ontrack = (evt: RTCTrackEvent) => {
-                if (evt.track.kind === 'video' && cameraVideo) {
-                  cameraVideo.srcObject = evt.streams[0]
-                }
-              }
-
-              this.pc.onicecandidate = (e: RTCPeerConnectionIceEvent) => {
-                if (e.candidate) {
-                  return fetch(baseUrl, {
-                    body: JSON.stringify({
-                      type: 'remote_candidate',
-                      id: this.remoteId,
-                      candidates: [e.candidate]
-                    }),
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    method: 'POST'
-                  })
-                    .catch(e => consola.error('[CameraItem] onicecandidate', e))
-                }
-              }
-
-              return this.pc?.setRemoteDescription(answer)
-            })
-            .then(() => this.pc?.createAnswer())
-            .then(answer => this.pc?.setLocalDescription(answer))
-            .then(() => {
-              const offer = this.pc?.localDescription
-
-              return fetch(baseUrl, {
-                body: JSON.stringify({
-                  type: offer?.type,
-                  id: this.remoteId,
-                  sdp: offer?.sdp
-                }),
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                method: 'POST'
-              })
-            })
-            .then(response => response.json())
-            .catch(e => consola.error('[CameraItem] setUrl', e))
-        }
+  setupFrameEvents () {
+    if (this.$listeners?.frame && this.componentInstance) {
+      if (this.componentInstance.streamingElement instanceof HTMLImageElement) {
+        this.componentInstance.streamingElement.addEventListener('load', () => this.handleFrame())
+      } else if (this.componentInstance.streamingElement instanceof HTMLVideoElement) {
+        this.handleFrame(true)
       }
-    } else {
-      this.hls?.destroy()
-      this.pc?.close()
-      this.cameraUrl = ''
     }
   }
 
-  /**
-   * Calls `requestAnimationFrame` indefinitely to apply camera transformations.
-   * The call to `requestAnimationFrame` is required because of the dependency
-   * on loaded node sizes in the document.
-   */
-  createTransformAnimation () {
-    let animating = true
-
-    const animate = () => {
-      requestAnimationFrame(() => {
-        if (!animating) {
-          return
-        }
-
-        const image = this.cameraImage
-
-        if (image) {
-          // Call to Object.assign() might not be suitable here.
-          Object.assign(image.style, this.cameraTransformStyle(image))
-        }
-
-        animate()
-      })
+  handleFrame (animate = false) {
+    const element = this.componentInstance?.streamingElement as HTMLImageElement | HTMLVideoElement
+    if (element) {
+      this.$emit('frame', element)
     }
 
-    animate()
-
-    return () => {
-      animating = false
+    if (animate) {
+      requestAnimationFrame(() => this.handleFrame(this.componentInstance.animating))
     }
+  }
+
+  @Watch('camera')
+  onCamera () {
+    this.rawCameraUrl = ''
+    this.framesPerSecond = ''
   }
 
   get fullscreenMode (): CameraFullscreenAction {
     return this.$store.state.config.uiSettings.general.cameraFullscreenAction
+  }
+
+  get cameraComponent () {
+    if (this.camera.service) {
+      const componentName = `${this.$filters.startCase(this.camera.service).replace(/ /g, '')}Camera`
+
+      if (componentName in CameraComponents) {
+        return CameraComponents[componentName]
+      }
+    }
   }
 }
 </script>
@@ -418,7 +130,8 @@ export default class CameraItem extends Vue {
   .camera-image {
     display: block;
     max-width: 100%;
-    max-height: calc(100vh - 56px - 32px);
+    max-height: calc(100vh - 130px);
+    max-height: calc(100svh - 130px);
     white-space: nowrap;
     margin: auto;
   }

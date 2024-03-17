@@ -1,11 +1,8 @@
+import type { FileWithPath } from '@/types'
 import { consola } from 'consola'
 
-type EntryWithPath = {
+type FileSystemEntryWithPath = {
   entry: FileSystemEntry,
-  path: string
-}
-export type FileWithPath = {
-  file: File,
   path: string
 }
 
@@ -62,14 +59,16 @@ export const convertFilesToFilesWithPath = (files: File[] | FileList) => {
   return [...files]
     .map((file): FileWithPath => ({
       file,
-      path: file.webkitRelativePath.slice(0, -file.name.length)
+      path: file.webkitRelativePath === file.name
+        ? ''
+        : file.webkitRelativePath.slice(0, -file.name.length - 1)
     }))
 }
 
 export const getFilesFromFileSystemEntries = async (entries: readonly FileSystemEntry[]) => {
   const files: FileWithPath[] = []
   const items = entries
-    .map((entry): EntryWithPath => ({
+    .map((entry): FileSystemEntryWithPath => ({
       entry,
       path: ''
     }))
@@ -92,7 +91,9 @@ export const getFilesFromFileSystemEntries = async (entries: readonly FileSystem
         for (const entry of subEntries) {
           items.push({
             entry,
-            path: item.path + item.entry.name + '/'
+            path: item.path
+              ? `${item.path}/${item.entry.name}`
+              : item.entry.name
           })
         }
       }

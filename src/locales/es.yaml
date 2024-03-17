@@ -9,6 +9,8 @@ app:
       remove_profile: 'Borrar el perfil %{name}'
       scale: Escala de color
       wireframe: Wireframe
+      base: base
+      active: activo
     msg:
       hint: >-
         Si guarda el perfil con un nombre que no sea %{name}, también puede
@@ -24,8 +26,6 @@ app:
     label:
       current: Tª
       item: Nombre
-      'off': Gráfico desactivado
-      'on': Gráfico activado
       power: Potencia
       rate_of_change: Cambio
       target: Objetivo
@@ -43,6 +43,9 @@ app:
       command: >-
         ''tabulador'' para autocompletar, ''help'' para comandos, ''flechas''
         para historia
+    tooltip:
+      help: Introduce "help" para los comandos<br />Utiliza <kbd>Tab</kbd> para autocompletar<br
+        />Utiliza <kbd>&uarr;</kbd> y <kbd>&darr;</kbd> para el historial
   endpoint:
     error:
       cant_connect: >-
@@ -74,6 +77,7 @@ app:
       label:
         print_start_time: Filtrar ya impresos
         print_start_time_desc: Filtrar archivos que ya ha impreso anteriormente
+        hidden_files_folders: Filtrar archivos y carpetas ocultos
     label:
       dir_name: Nombre de la carpeta
       disk_usage: Uso del disco
@@ -86,8 +90,6 @@ app:
     msg:
       not_found: No se encontraron archivos
       processing: Procesando...
-    overlay:
-      label: <strong>Arrastrar</strong> un archivo aquí
     title:
       add_dir: Agregar una carpeta
       add_file: Agregar un archivo
@@ -268,10 +270,10 @@ app:
       unsaved_changes: Cambios sin guardar
       used: Usado
       username: Usuario
-      variance: Variación
       velocity: Velocidad
       visible: Visible
       z_offset: Z Offset
+      range: Rango
     msg:
       bed_screws_adjust: >-
         Haga click en <b>Ajustado</b> si fue necesario un ajuste significativo
@@ -293,7 +295,8 @@ app:
         required: Obligatorio
       msg:
         confirm: ¿Está seguro?
-        confirm_power_device_toggle: ¿Está seguro? Esto alternará la alimentación del dispositivo.
+        confirm_power_device_toggle: ¿Está seguro? Esto alternará la alimentación
+          del dispositivo.
         confirm_reboot_host: ¿Está seguro? Esto reiniciará el sistema anfitrión.
         confirm_shutdown_host: ¿Está seguro? Esto apagará el sistema anfitrión.
     table:
@@ -381,7 +384,6 @@ app:
       camera_flip_x: Voltear horizontalmente
       camera_flip_y: Voltear verticalmente
       camera_stream_type: Tipo de stream
-      camera_url: URL de la cámara
       confirm_on_estop: Requerir confirmación para la Parada de Emergencia
       confirm_on_power_device_change: Requiere confirmar cambios de alimentación
       dark_mode: Modo oscuro
@@ -414,7 +416,8 @@ app:
       reset: Restablecer opciones
       retraction_icon_size: Tamaño del icono de retracción
       show_animations: Mostrar animaciones
-      show_bed_screws_adjust_dialog_automatically: Mostrar diálogo de ajuste de tornillos de cama automáticamente
+      show_bed_screws_adjust_dialog_automatically: Mostrar diálogo de ajuste de tornillos
+        de cama automáticamente
       show_rate_of_change: Mostrar tasa de cambio de temperatura
       solid: Sólido
       starts_with: Comienza con
@@ -426,6 +429,7 @@ app:
       type: Tipo
       unit: Unidad
       z_adjust_values: Valores de ajuste de Z
+      show_logo_on_background: Mostrar logotipo en el fondo
     timer_options:
       duration: Solo duración
       filament: Estimación por filamento

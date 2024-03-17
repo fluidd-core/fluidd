@@ -75,10 +75,11 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import { RenderStatus, TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
+import type { RenderStatus, TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import FilesMixin from '@/mixins/files'
+import type { WebcamConfig } from '@/store/webcams/types'
 
 @Component({
   components: {
@@ -125,8 +126,8 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
     return this.lastFrame?.uniqueCount
   }
 
-  get camera () {
-    return this.$store.getters['cameras/getCameraById'](this.settings.camera)
+  get camera (): WebcamConfig | undefined {
+    return this.$store.getters['webcams/getWebcamById'](this.settings.camera) as WebcamConfig | undefined
   }
 
   get settings (): TimelapseSettings {

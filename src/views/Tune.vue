@@ -8,7 +8,7 @@
       cols="12"
       md="8"
     >
-      <bed-mesh-card full-screen />
+      <bed-mesh-card fullscreen />
     </v-col>
     <v-col
       cols="12"
@@ -19,7 +19,10 @@
         class="mb-2 mb-sm-4"
       />
       <end-stops-card class="mb-2 mb-sm-4" />
-      <runout-sensors-card v-if="supportsRunoutSensors" />
+      <runout-sensors-card
+        v-if="supportsRunoutSensors"
+        fullscreen
+      />
     </v-col>
   </v-row>
 </template>

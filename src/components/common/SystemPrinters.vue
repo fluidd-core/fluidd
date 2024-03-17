@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { InitConfig, InstanceConfig } from '@/store/config/types'
+import type { InitConfig, InstanceConfig } from '@/store/config/types'
 import StateMixin from '@/mixins/state'
 import { appInit } from '@/init'
 

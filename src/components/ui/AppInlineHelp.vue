@@ -32,25 +32,25 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class AppInlineHelp extends Vue {
-  @Prop({ type: String, required: false })
-  readonly tooltip!: string
+  @Prop({ type: String })
+  readonly tooltip?: string
 
   @Prop({ type: String, default: 'primary' })
   readonly type!: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly top!: boolean
+  @Prop({ type: Boolean })
+  readonly top?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly bottom!: boolean
+  @Prop({ type: Boolean })
+  readonly bottom?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly left!: boolean
+  @Prop({ type: Boolean })
+  readonly left?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly right!: boolean
+  @Prop({ type: Boolean })
+  readonly right?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly small!: boolean
+  @Prop({ type: Boolean })
+  readonly small?: boolean
 }
 </script>

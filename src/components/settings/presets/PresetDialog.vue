@@ -6,7 +6,7 @@
     :save-button-text="(preset.id !== -1) ? $t('app.general.btn.save') : $t('app.general.btn.add')"
     @save="handleSave"
   >
-    <div class="overflow-y-auto">
+    <v-card-text class="pa-0">
       <app-setting :title="$t('app.setting.label.thermal_preset_name')">
         <v-text-field
           v-model="preset.name"
@@ -21,12 +21,10 @@
 
       <v-divider />
 
-      <template
-        v-for="(item, i) in heaters"
-      >
+      <template v-for="(item, i) in heaters">
         <app-setting
           :key="`${i}heater`"
-          :title="item.name"
+          :title="$filters.startCase(item.name)"
         >
           <v-checkbox
             v-model="preset.values[item.name].active"
@@ -52,12 +50,10 @@
         <v-divider :key="i + 'heaterd'" />
       </template>
 
-      <template
-        v-for="(item, i) in fans"
-      >
+      <template v-for="(item, i) in fans">
         <app-setting
           :key="`${i}fan`"
-          :title="item.name"
+          :title="$filters.startCase(item.name)"
         >
           <v-checkbox
             v-model="preset.values[item.name].active"
@@ -89,21 +85,23 @@
           rows="2"
           hide-details="auto"
           filled
+          spellcheck="false"
+          class="console-command"
         />
       </app-setting>
-    </div>
+    </v-card-text>
   </app-dialog>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import { TemperaturePreset } from '@/store/config/types'
-import { Fan, Heater } from '@/store/printer/types'
+import type { TemperaturePreset } from '@/store/config/types'
+import type { Fan, Heater } from '@/store/printer/types'
 
 @Component({})
 export default class TemperaturePresetDialog extends Vue {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Object, required: true })
   readonly preset!: TemperaturePreset
@@ -122,3 +120,9 @@ export default class TemperaturePresetDialog extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .console-command {
+    font-family: monospace;
+  }
+</style>

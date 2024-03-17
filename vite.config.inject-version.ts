@@ -5,6 +5,26 @@ import { version } from './package.json'
 
 import type { Plugin } from 'vite'
 
+const writeVersionFile = async () => {
+  const versionFile = await fs.promises.open(path.resolve(__dirname, 'dist/.version'), 'w')
+
+  await versionFile.writeFile(`v${version}`)
+
+  await versionFile.close()
+}
+
+const writeReleaseInfoFile = async () => {
+  const releaseInfoFile = await fs.promises.open(path.resolve(__dirname, 'dist/release_info.json'), 'w')
+
+  await releaseInfoFile.writeFile(JSON.stringify({
+    project_name: 'fluidd',
+    project_owner: 'fluidd-core',
+    version: `v${version}`
+  }))
+
+  await releaseInfoFile.close()
+}
+
 const vitePluginInjectVersion = (): Plugin => {
   return {
     name: 'version',
@@ -22,11 +42,8 @@ const vitePluginInjectVersion = (): Plugin => {
     },
     writeBundle: () => {
       setImmediate(async () => {
-        const versionFile = await fs.promises.open(path.resolve(__dirname, 'dist/.version'), 'w')
-
-        await versionFile.writeFile(`v${version}`)
-
-        await versionFile.close()
+        await writeVersionFile()
+        await writeReleaseInfoFile()
       })
     }
   }

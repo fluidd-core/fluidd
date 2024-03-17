@@ -1,7 +1,7 @@
-import { ActionTree } from 'vuex'
-import { GcodePreviewState, ParseGcodeWorkerClientMessage, ParseGcodeWorkerServerMessage } from './types'
-import { RootState } from '../types'
-import { AppFile } from '@/store/files/types'
+import type { ActionTree } from 'vuex'
+import type { GcodePreviewState, ParseGcodeWorkerClientMessage, ParseGcodeWorkerServerMessage } from './types'
+import type { RootState } from '../types'
+import type { AppFile } from '@/store/files/types'
 import { consola } from 'consola'
 
 import ParseGcodeWorker from '../../workers/parseGcode.worker.ts?worker'
@@ -26,13 +26,13 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
     }
   },
 
-  async loadGcode ({ commit, getters, state }, payload: { file: AppFile; gcode: string }) {
+  async loadGcode ({ commit, getters, state, rootState }, payload: { file: AppFile; gcode: string }) {
     const worker = new ParseGcodeWorker()
 
     commit('setParserWorker', worker)
 
-    worker.addEventListener('message', (e) => {
-      const data: ParseGcodeWorkerClientMessage = e.data
+    worker.addEventListener('message', (event) => {
+      const data: ParseGcodeWorkerClientMessage = event.data
 
       switch (data.action) {
         case 'progress': {
@@ -46,6 +46,10 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
             commit('setLayers', data.layers)
             commit('setParts', data.parts)
             commit('setParserProgress', payload.file.size ?? payload.gcode.length)
+
+            if (rootState.config.uiSettings.gcodePreview.hideSinglePartBoundingBox && data.parts.length <= 1) {
+              commit('setViewerState', { showParts: false })
+            }
           } catch (error) {
             consola.error('Parser worker error', error)
           }

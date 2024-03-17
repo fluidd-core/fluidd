@@ -11,19 +11,36 @@ permalink: /features/print_history
 
 ---
 
-Fluidd supports Moonrakers Print History component. This allows you to
-view print history, but more importantly - lets you sort your jobs by last
-print date, filter jobs you've already printed and view printer statistics
-over time - like total print time, total filament used.
+Fluidd seamlessly integrates with Moonraker's Print History component,
+providing you with comprehensive insights into your 3D prints.
 
-Secondarily, being able to re-print failed or cancelled jobs also comes with
-this feature.
+Here's what you can achieve with this feature:
 
-For the moment, Fluidd loads the last 50 prints from history. The limit is
-10,000 history items - however, loading this up front may cause a performance
-hit and is likely unecessary.
+- **Effortless Viewing**  
+  Review your print history effortlessly, gaining quick access to a
+  chronological list of your past prints.
 
-Feedback is welcome on the current state of this feature!
+- **Smart Sorting**  
+  Easily sort your print jobs by their last print date, enabling efficient
+  organization and retrieval of relevant information.
+
+- **Advanced Filtering**  
+  Filter jobs you've already printed, streamlining your view to focus on
+  the prints that matter most to you.
+
+- **Printer Statistics**  
+  Gain valuable insights into printer performance over time. Track metrics
+  such as total print time and filament usage to optimize your printing
+  workflow.
+
+- **Re-Print Capability**  
+  In case of failed or cancelled jobs, utilize the re-print feature seamlessly
+  integrated into this component.
+
+Fluidd is designed to balance functionality and performance for an optimal user
+experience, and for that reason, it will only load the last 50 prints from the
+history. While the limit extends to 10,000 history items, preloading this
+extensive history may lead to unnecessary performance impacts.
 
 ![screenshot](/assets/images/print_history.png)
 ![screenshot](/assets/images/print_stats.png)

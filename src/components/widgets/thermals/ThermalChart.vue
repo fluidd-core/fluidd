@@ -10,7 +10,7 @@
       :update-options="{ notMerge: true }"
       :init-options="{ renderer: 'svg' }"
       autoresize
-      @legendselectchanged="handleLegendSelectChange"
+      @legendselectchanged="handleLegendSelectChanged"
     />
   </div>
 </template>
@@ -31,13 +31,13 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
   loading = false
   series: any[] = []
-  initialSelected: any = {}
+  initialSelected: Record<string, boolean> = {}
 
-  handleLegendSelectChange (e: { name: string; type: string; selected: {[index: string]: boolean } }) {
-    this.$store.dispatch('charts/saveSelectedLegends', e.selected)
+  handleLegendSelectChanged (event: { selected: Record<string, boolean> }) {
+    this.$store.dispatch('charts/saveSelectedLegends', event.selected)
 
     let right = (this.isMobileViewport) ? 15 : 20
-    if (this.showPowerAxis(e.selected)) {
+    if (this.showPowerAxis(event.selected)) {
       right = (this.isMobileViewport) ? 25 : 45
     }
 
@@ -49,7 +49,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
         grid: { right },
         yAxis: [
           {},
-          { show: this.showPowerAxis(e.selected) }
+          { show: this.showPowerAxis(event.selected) }
         ]
       })
     }
@@ -88,12 +88,10 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     const keys = this.$store.getters['printer/getChartableSensors'] as string[]
 
     keys.forEach((key) => {
-      const label = key.split(' ', 2).pop() || ''
-
-      this.series.push(this.createSeries(label, key))
-      if (dataKeys.includes(label + 'Target')) this.series.push(this.createSeries(label + 'Target', key))
-      if (dataKeys.includes(label + 'Power')) this.series.push(this.createSeries(label + 'Power', key))
-      if (dataKeys.includes(label + 'Speed')) this.series.push(this.createSeries(label + 'Speed', key))
+      this.series.push(this.createSeries(key))
+      if (dataKeys.includes(`${key}Target`)) this.series.push(this.createSeries(`${key}Target`))
+      if (dataKeys.includes(`${key}Power`)) this.series.push(this.createSeries(`${key}Power`))
+      if (dataKeys.includes(`${key}Speed`)) this.series.push(this.createSeries(`${key}Speed`))
     })
   }
 
@@ -133,14 +131,17 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
       }
     }
 
-    const theme = this.$store.getters['config/getTheme']
+    const theme = this.$vuetify.theme.currentTheme
     const color = [
-      theme.currentTheme.primary,
-      theme.currentTheme.secondary
+      theme.primary,
+      theme.secondary
     ]
 
     const options = {
       grid,
+      textStyle: {
+        fontFamily: 'Roboto'
+      },
       color,
       legend: {
         show: false,
@@ -169,13 +170,14 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
                 !param.seriesName.toLowerCase().endsWith('power') &&
                 !param.seriesName.toLowerCase().endsWith('speed') &&
                 param.seriesName &&
-                param.seriesName in param.value
+                param.value[param.seriesName] != null
               ) {
+                const name = param.seriesName.split(' ', 2).pop()
                 text += `
                   <div>
                     ${param.marker}
                     <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
-                      ${this.$filters.startCase(param.seriesName)}:
+                      ${this.$filters.startCase(name)}:
                     </span>
                     <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
                       ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`
@@ -289,13 +291,13 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     return options
   }
 
-  createSeries (label: string, key: string) {
+  createSeries (key: string) {
     // Grab the color
     const color = this.$colorset.next(getKlipperType(key), key)
 
     // Base properties
     const series: any = {
-      name: label,
+      name: key,
       // id,
       type: 'line',
       yAxisIndex: 0,
@@ -314,11 +316,11 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
         opacity: 1
       },
       areaStyle: { opacity: 0.05 },
-      encode: { x: 'date', y: label }
+      encode: { x: 'date', y: key }
     }
 
     // If this is a target, adjust its display.
-    if (label.toLowerCase().endsWith('target')) {
+    if (key.toLowerCase().endsWith('target')) {
       series.yAxisIndex = 0
       series.emphasis.lineStyle.width = 1
       series.lineStyle.width = 1
@@ -329,8 +331,8 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
     // If this is a power or speed, adjust its display.
     if (
-      label.toLowerCase().endsWith('power') ||
-      label.toLowerCase().endsWith('speed')
+      key.toLowerCase().endsWith('power') ||
+      key.toLowerCase().endsWith('speed')
     ) {
       series.yAxisIndex = 1
       series.emphasis.lineStyle.width = 1
@@ -342,12 +344,12 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
     // Set the initial legend state (power and speed default off)
     const storedLegends = this.$store.getters['charts/getSelectedLegends']
-    if (storedLegends[label] !== undefined) {
-      this.initialSelected[label] = storedLegends[label]
+    if (storedLegends[key] !== undefined) {
+      this.initialSelected[key] = storedLegends[key]
     } else {
-      this.initialSelected[label] = !(
-        label.toLowerCase().endsWith('power') ||
-        label.toLowerCase().endsWith('speed')
+      this.initialSelected[key] = !(
+        key.toLowerCase().endsWith('power') ||
+        key.toLowerCase().endsWith('speed')
       )
     }
 
@@ -355,7 +357,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     return series
   }
 
-  showPowerAxis (selected: any) {
+  showPowerAxis (selected: Record<string, boolean>) {
     const filtered = Object.keys(selected)
       .filter(key => key.toLowerCase().endsWith('power') || key.toLowerCase().endsWith('speed'))
       .filter(key => selected[key] === true)

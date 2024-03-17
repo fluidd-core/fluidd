@@ -40,7 +40,7 @@
             <img
               v-else
               class="mr-2 file-icon-thumb"
-              :src="getThumbUrl(item.metadata.thumbnails, 'gcodes', getFilePaths(item.filename).path, false, item.metadata.modified)"
+              :src="getThumbUrl(item.metadata, 'gcodes', getFilePaths(item.filename).path, false, item.metadata.modified)"
               :width="24"
               @error="handleJobThumbnailError(item)"
             >
@@ -61,7 +61,7 @@
               v-if="item.print_duration > 0"
               class="text-no-wrap"
             >
-              {{ $filters.formatCounterTime(item.print_duration) }}
+              {{ $filters.formatCounterSeconds(item.print_duration) }}
             </span>
             <span v-else>--</span>
           </td>
@@ -92,7 +92,7 @@ import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
 import getFilePaths from '@/util/get-file-paths'
 import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
-import { HistoryItem } from '@/store/history/types'
+import type { HistoryItem } from '@/store/history/types'
 
 @Component({
   components: {

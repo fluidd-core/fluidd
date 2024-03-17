@@ -6,7 +6,7 @@
     max-width="500"
     @save="handleSave"
   >
-    <div class="overflow-y-auto">
+    <v-card-text class="pa-0">
       <app-setting :title="$t('app.general.label.name')">
         <v-text-field
           v-model="user.username"
@@ -14,6 +14,7 @@
           :disabled="(user.created_on)"
           filled
           dense
+          spellcheck="false"
           class="mt-0"
           hide-details="auto"
           :rules="[
@@ -41,18 +42,18 @@
           ]"
         />
       </app-setting>
-    </div>
+    </v-card-text>
   </app-dialog>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import { AppUser } from '@/store/auth/types'
+import type { AppUser } from '@/store/auth/types'
 
 @Component({})
 export default class UserConfigDialog extends Vue {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Object, required: true })
   readonly user!: AppUser

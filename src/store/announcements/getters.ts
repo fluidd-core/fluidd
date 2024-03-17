@@ -1,6 +1,6 @@
-import { GetterTree } from 'vuex'
-import { AnnouncementsState } from './types'
-import { RootState } from '../types'
+import type { GetterTree } from 'vuex'
+import type { AnnouncementsState } from './types'
+import type { RootState } from '../types'
 
 export const getters: GetterTree<AnnouncementsState, RootState> = {
   getAnnouncements: (state) => {

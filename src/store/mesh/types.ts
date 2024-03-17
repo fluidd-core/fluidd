@@ -1,5 +1,5 @@
 export interface MeshState {
-  variance: number;
+  range: number;
   wireframe: boolean;
   scale: number;
   boxScale: number;
@@ -51,12 +51,11 @@ export interface KlipperBedMeshProfileMeshParams {
   y_count: number;
 }
 
-export interface BedMeshProfile extends KlipperBedMeshProfile {
+export interface BedMeshProfileListEntry {
   name: string;
   active: boolean;
-  min: number;
-  max: number,
-  variance: number;
+  adaptive: boolean;
+  range: number;
 }
 
 export interface AppMeshes {
@@ -65,7 +64,8 @@ export interface AppMeshes {
 
 export interface ProcessedMesh {
   coordinates: MeshCoordinates[];
-  variance: number;
+  dimensions: [number, number];
+  range: number;
   min: number;
   mid: number;
   max: number;

@@ -20,7 +20,9 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
-import { HistoryItem, HistoryItemStatus } from '@/store/history/types'
+import type { HistoryItem } from '@/store/history/types'
+
+type JobHistoryItemState = 'error' | 'warning' | 'success'
 
 @Component({})
 export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
@@ -28,8 +30,8 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
   readonly job!: HistoryItem
 
   // get status () {
-  //   if (this.job.status === HistoryItemStatus.Completed) return HistoryItemStatus.Completed
-  //   if (this.job.status === HistoryItemStatus.InProgress) return HistoryItemStatus.InProgress
+  //   if (this.job.status === 'completed') return 'completed'
+  //   if (this.job.status === 'in_progress') return 'in_progress'
   //   if (this.job.status.indexOf('_')) {
   //     return this.job.status.split('_').pop()
   //   }
@@ -37,12 +39,13 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
   // }
 
   get icon () {
-    const iconMap: { [index: string]: string } = {
+    const iconMap: Record<string, string> = {
       completed: '$checkedCircle',
       printing: '$inProgress',
       in_progress: '$inProgress',
       standby: '$inProgress',
-      cancelled: '$cancelled'
+      cancelled: '$cancelled',
+      interrupted: '$cancelled'
     }
 
     const icon = iconMap[this.job.status]
@@ -51,31 +54,32 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
     return icon || '$warning'
   }
 
-  get state () {
-    if (
-      this.job.status === HistoryItemStatus.Cancelled ||
-      this.job.status === HistoryItemStatus.Error ||
-      this.job.status === HistoryItemStatus.Server_Exit
-    ) return 'error'
+  get state (): JobHistoryItemState {
+    switch (this.job.status) {
+      case 'cancelled':
+      case 'error':
+      case 'interrupted':
+      case 'server_exit':
+        return 'error'
 
-    if (
-      this.job.status === HistoryItemStatus.Printing ||
-      this.job.status === HistoryItemStatus.Completed ||
-      this.job.status === HistoryItemStatus.InProgress
-    ) return 'success'
+      case 'klippy_shutdown':
+      case 'klippy_disconnect':
+        return 'warning'
 
-    if (
-      this.job.status === HistoryItemStatus.Klippy_Shutdown ||
-      this.job.status === HistoryItemStatus.Klippy_Disconnect
-    ) return 'warning'
+      case 'completed':
+      case 'in_progress':
+      case 'printing':
+        return 'success'
 
-    return 'success'
+      default:
+        return 'success'
+    }
   }
 
   get inError () {
     return (
-      this.job.status !== HistoryItemStatus.Completed &&
-      this.job.status !== HistoryItemStatus.InProgress
+      this.job.status !== 'completed' &&
+      this.job.status !== 'in_progress'
     )
   }
 }

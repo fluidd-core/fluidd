@@ -1,4 +1,4 @@
-import { GcodePreviewState } from './types'
+import type { GcodePreviewState } from './types'
 
 export const defaultState = (): GcodePreviewState => {
   return {

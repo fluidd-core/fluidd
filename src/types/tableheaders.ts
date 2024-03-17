@@ -1,4 +1,4 @@
-import { DataTableHeader } from 'vuetify'
+import type { DataTableHeader } from 'vuetify'
 
 /**
  * Vuetify table headers, extended with data so we can more easily save

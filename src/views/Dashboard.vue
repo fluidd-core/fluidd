@@ -9,28 +9,34 @@
         :lg="columnSpan"
         :class="{ 'drag': inLayout }"
       >
-        <draggable
+        <app-draggable
           v-model="containers[containerIndex]"
           class="list-group"
-          v-bind="dragOptions"
-          @start.stop="drag = true"
-          @end.stop="handleStopDrag"
+          :options="{
+            animation: 200,
+            handle: '.handle',
+            group: 'dashboard',
+            disabled: !inLayout,
+            ghostClass: 'ghost'
+          }"
+          target=":first-child"
+          @end="handleUpdateLayout"
         >
           <transition-group
             type="transition"
-            :name="!drag ? 'flip-list' : null"
+            :name="!inLayout ? 'flip-list' : undefined"
           >
             <template v-for="c in container">
               <component
                 :is="c.id"
-                v-if="(c.enabled && !filtered(c)) || inLayout"
+                v-if="inLayout || (c.enabled && !filtered(c))"
                 :key="c.id"
                 :menu-collapsed="menuCollapsed"
                 class="mb-2 mb-sm-4"
               />
             </template>
           </transition-group>
-        </draggable>
+        </app-draggable>
       </v-col>
     </template>
   </v-row>
@@ -39,8 +45,6 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import draggable from 'vuedraggable'
-
 import PrinterStatusCard from '@/components/widgets/status/PrinterStatusCard.vue'
 import JobsCard from '@/components/widgets/jobs/JobsCard.vue'
 import ToolheadCard from '@/components/widgets/toolhead/ToolheadCard.vue'
@@ -51,14 +55,16 @@ import ConsoleCard from '@/components/widgets/console/ConsoleCard.vue'
 import OutputsCard from '@/components/widgets/outputs/OutputsCard.vue'
 import PrinterLimitsCard from '@/components/widgets/limits/PrinterLimitsCard.vue'
 import RetractCard from '@/components/widgets/retract/RetractCard.vue'
-import { LayoutConfig } from '@/store/layout/types'
+import type { LayoutConfig } from '@/store/layout/types'
 import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
 import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
+import SpoolmanCard from '@/components/widgets/spoolman/SpoolmanCard.vue'
+import SensorsCard from '@/components/widgets/sensors/SensorsCard.vue'
+import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
 
 @Component({
   components: {
-    draggable,
     PrinterStatusCard,
     JobsCard,
     ToolheadCard,
@@ -71,11 +77,13 @@ import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
     OutputsCard,
     BedMeshCard,
     GcodePreviewCard,
-    JobQueueCard
+    JobQueueCard,
+    SpoolmanCard,
+    SensorsCard,
+    RunoutSensorsCard
   }
 })
 export default class Dashboard extends Mixins(StateMixin) {
-  drag = false
   menuCollapsed = false
   containers: Array<LayoutConfig[]> = []
 
@@ -109,7 +117,19 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get hasCameras (): boolean {
-    return this.$store.getters['cameras/getEnabledCameras'].length
+    return this.$store.getters['webcams/getEnabledWebcams'].length > 0
+  }
+
+  get hasHeatersOrTemperatureSensors () {
+    return (
+      this.$store.getters['printer/getHeaters'].length > 0 ||
+      this.$store.getters['printer/getOutputs'](['temperature_fan']).length > 0 ||
+      this.$store.getters['printer/getSensors'].length > 0
+    )
+  }
+
+  get hasSensors (): boolean {
+    return this.$store.getters['sensors/getSensors'].length > 0
   }
 
   get firmwareRetractionEnabled (): boolean {
@@ -124,8 +144,24 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.$store.getters['mesh/getSupportsBedMesh']
   }
 
-  get macros () {
-    return this.$store.getters['macros/getVisibleMacros']
+  get supportsRunoutSensors () {
+    return this.$store.getters['printer/getRunoutSensors'].length > 0
+  }
+
+  get supportsSpoolman () {
+    return this.$store.getters['server/componentSupport']('spoolman')
+  }
+
+  get hasMacros () {
+    return this.$store.getters['macros/getVisibleMacros'].length > 0
+  }
+
+  get hasOutputs () {
+    return (
+      this.$store.getters['printer/getAllFans'].length > 0 ||
+      this.$store.getters['printer/getPins'].length > 0 ||
+      this.$store.getters['printer/getAllLeds'].length > 0
+    )
   }
 
   get inLayout (): boolean {
@@ -156,22 +192,11 @@ export default class Dashboard extends Mixins(StateMixin) {
     this.containers = containers.slice(0, 4)
   }
 
-  get dragOptions () {
-    return {
-      animation: 200,
-      handle: '.handle',
-      group: 'dashboard',
-      disabled: !this.inLayout,
-      ghostClass: 'ghost'
-    }
-  }
-
   updateMenuCollapsed () {
     this.menuCollapsed = (this.$el.clientWidth / this.columnCount) < 560
   }
 
-  handleStopDrag () {
-    this.drag = false
+  handleUpdateLayout () {
     this.$store.dispatch('layout/onLayoutChange', {
       name: this.$store.getters['layout/getSpecificLayoutName'],
       value: {
@@ -191,11 +216,16 @@ export default class Dashboard extends Mixins(StateMixin) {
     // Take care of special cases.
     if (this.inLayout) return false
     if (item.id === 'camera-card' && !this.hasCameras) return true
-    if (item.id === 'macros-card' && (this.macros.length <= 0)) return true
+    if (item.id === 'macros-card' && !this.hasMacros) return true
+    if (item.id === 'outputs-card' && !this.hasOutputs) return true
     if (item.id === 'printer-status-card' && !this.klippyReady) return true
     if (item.id === 'job-queue-card' && !this.supportsJobQueue) return true
     if (item.id === 'retract-card' && !this.firmwareRetractionEnabled) return true
     if (item.id === 'bed-mesh-card' && !this.supportsBedMesh) return true
+    if (item.id === 'runout-sensors-card' && !this.supportsRunoutSensors) return true
+    if (item.id === 'spoolman-card' && !this.supportsSpoolman) return true
+    if (item.id === 'sensors-card' && !this.hasSensors) return true
+    if (item.id === 'temperature-card' && !this.hasHeatersOrTemperatureSensors) return true
 
     // Otherwise return the opposite of whatever the enabled state is.
     return !item.enabled

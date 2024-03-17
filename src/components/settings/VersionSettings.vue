@@ -28,7 +28,7 @@
           outlined
           small
           color="primary"
-          :disabled="isRefreshing"
+          :disabled="isRefreshing || printerPrinting"
           @click="forceCheck()"
         >
           <v-icon
@@ -57,10 +57,32 @@
       <v-divider />
 
       <template v-for="(component, i) in components">
-        <app-setting
-          :key="`component-${component.key}-${component.name}`"
-          :title="packageTitle(component)"
-        >
+        <app-setting :key="`component-${component.key}-${component.name}`">
+          <template #title>
+            {{ packageTitle(component) }}
+            <v-tooltip
+              v-if="'remote_url' in component"
+              bottom
+            >
+              <template #activator="{ attrs, on }">
+                <a
+                  v-bind="attrs"
+                  :href="component.remote_url"
+                  target="_blank"
+                  v-on="on"
+                >
+                  <v-icon
+                    small
+                    right
+                  >
+                    $openInNew
+                  </v-icon>
+                </a>
+              </template>
+              <span>{{ component.remote_url }}</span>
+            </v-tooltip>
+          </template>
+
           <template #sub-title>
             <span v-if="component.key !== 'system' && 'full_version_string' in component">
               {{ component.full_version_string }}
@@ -83,7 +105,6 @@
           >
             <template #activator="{ attrs, on }">
               <app-btn
-                v-if="hasUpdate(component.key) && !inError(component)"
                 v-bind="attrs"
                 color="primary"
                 icon
@@ -97,8 +118,8 @@
               </app-btn>
             </template>
             <span v-if="'name' in component">{{ $t('app.version.tooltip.release_notes') }}</span>
-            <span v-if="'commits_behind' in component">{{ $t('app.version.tooltip.commit_history') }}</span>
-            <span v-if="'package_list' in component">{{ $t('app.version.tooltip.packages') }}</span>
+            <span v-else-if="'commits_behind' in component">{{ $t('app.version.tooltip.commit_history') }}</span>
+            <span v-else-if="'package_list' in component">{{ $t('app.version.tooltip.packages') }}</span>
           </v-tooltip>
 
           <version-status
@@ -111,6 +132,32 @@
             @on-recover="handleRecoverComponent(component)"
           />
         </app-setting>
+
+        <template v-if="'warnings' in component">
+          <v-alert
+            v-for="(warning, index) in component.warnings ?? []"
+            :key="`warning-${component.key}-${index}`"
+            dense
+            type="warning"
+            text
+            class="mx-4"
+          >
+            {{ warning }}
+          </v-alert>
+        </template>
+
+        <template v-if="'anomalies' in component">
+          <v-alert
+            v-for="(anomaly, index) in component.anomalies ?? []"
+            :key="`anomaly-${component.key}-${index}`"
+            dense
+            icon="$info"
+            text
+            class="mx-4"
+          >
+            {{ anomaly }}
+          </v-alert>
+        </template>
 
         <v-divider
           v-if="i < components.length - 1 && components.length > 0"
@@ -133,7 +180,7 @@ import VersionStatus from './VersionStatus.vue'
 import VersionCommitHistoryDialog from './VersionInformationDialog.vue'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
+import type { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
 
 @Component({
   components: {
@@ -190,12 +237,6 @@ export default class VersionSettings extends Mixins(StateMixin) {
     return (dirty || !valid)
   }
 
-  packageUrl (component: HashVersion | OSPackage | ArtifactVersion) {
-    if (component.key === 'klipper') return 'https://github.com/Klipper3d/klipper/commits/master'
-    if (component.key === 'moonraker') return 'https://github.com/Arksine/moonraker/commits/master'
-    if (component.key === 'fluidd' && 'name' in component && component.name === 'fluidd') return 'https://github.com/fluidd-core/fluidd/releases'
-  }
-
   // Will attempt to update the requirec component based on its type.
   handleUpdateComponent (key: string) {
     this.$store.dispatch('version/onUpdateStatus', { busy: true })
@@ -242,6 +283,9 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   getBaseUrl (component: HashVersion | ArtifactVersion) {
+    if ('remote_url' in component && component.remote_url) {
+      return component.remote_url
+    }
     if ('owner' in component) {
       return `https://github.com/${component.owner}/${component.key}`
     }

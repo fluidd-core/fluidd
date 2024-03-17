@@ -19,6 +19,17 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.setting.label.draw_origin')">
+        <v-switch
+          v-model="drawOrigin"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.draw_background')">
         <v-switch
           v-model="drawBackground"
@@ -163,6 +174,17 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.setting.label.hide_single_part_bounding_box')">
+        <v-switch
+          v-model="hideSinglePartBoundingBox"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -245,6 +267,18 @@ export default class GcodePreviewSettings extends Vue {
     })
   }
 
+  get drawOrigin () {
+    return this.$store.state.config.uiSettings.gcodePreview.drawOrigin
+  }
+
+  set drawOrigin (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.drawOrigin',
+      value,
+      server: true
+    })
+  }
+
   get drawBackground () {
     return this.$store.state.config.uiSettings.gcodePreview.drawBackground
   }
@@ -316,6 +350,18 @@ export default class GcodePreviewSettings extends Vue {
   set autoFollowOnFileLoad (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.autoFollowOnFileLoad',
+      value,
+      server: true
+    })
+  }
+
+  get hideSinglePartBoundingBox () {
+    return this.$store.state.config.uiSettings.gcodePreview.hideSinglePartBoundingBox
+  }
+
+  set hideSinglePartBoundingBox (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.hideSinglePartBoundingBox',
       value,
       server: true
     })

@@ -44,8 +44,22 @@
             $circle
           </v-icon>
         </v-toolbar-title>
+
         <v-spacer />
+
         <v-toolbar-items>
+          <app-btn
+            v-if="!$vuetify.breakpoint.smAndDown"
+            @click="peripheralsDialogOpen = true"
+          >
+            <v-icon
+              small
+              left
+            >
+              $devices
+            </v-icon>
+            <span>{{ $t('app.file_system.title.devices') }}</span>
+          </app-btn>
           <app-btn
             v-if="!useTextOnlyEditor"
             @click="handleCommandPalette"
@@ -130,6 +144,11 @@
         :readonly="readonly"
         @ready="editorReady = true"
       />
+
+      <peripherals-dialog
+        v-if="peripheralsDialogOpen"
+        v-model="peripheralsDialogOpen"
+      />
     </v-card>
   </v-dialog>
 </template>
@@ -149,8 +168,8 @@ import isWebAssemblySupported from '@/util/is-web-assembly-supported'
   }
 })
 export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: String, required: true })
   readonly root!: string
@@ -164,11 +183,11 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: String, required: true })
   readonly contents!: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly loading!: boolean
+  @Prop({ type: Boolean })
+  readonly loading?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly readonly!: boolean
+  @Prop({ type: Boolean })
+  readonly readonly?: boolean
 
   @Ref('editor')
   readonly editor?: FileEditor
@@ -176,6 +195,7 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
   updatedContent: string | null = null
   lastSavedContent: string | null = null
   editorReady = false
+  peripheralsDialogOpen = false
 
   get ready () {
     return (
@@ -204,10 +224,6 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
     return this.$store.state.files.uploads.length > 0
   }
 
-  get rootProperties () {
-    return this.$store.getters['files/getRootProperties'](this.root)
-  }
-
   get configMap () {
     return this.$store.getters['server/getConfigMapByFilename'](this.filename)
   }
@@ -234,24 +250,23 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
   }
 
   async emitClose () {
-    if (this.showDirtyEditorWarning) {
-      const result = await this.$confirm(
+    const result = (
+      !this.showDirtyEditorWarning ||
+      await this.$confirm(
         this.$tc('app.general.simple_form.msg.unsaved_changes'),
         { title: this.$tc('app.general.label.unsaved_changes'), color: 'card-heading', icon: '$error' }
       )
+    )
 
-      if (!result) {
-        return
-      }
+    if (result) {
+      this.open = false
     }
-
-    this.open = false
   }
 
-  handleBeforeUnload (e: Event) {
+  handleBeforeUnload (event: Event) {
     if (this.showDirtyEditorWarning) {
-      e.preventDefault() // show browser-native "Leave site?" modal
-      return ((e || window.event).returnValue = true) // fallback
+      event.preventDefault() // show browser-native "Leave site?" modal
+      return ((event || window.event).returnValue = true) // fallback
     }
   }
 

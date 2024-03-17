@@ -1,6 +1,6 @@
 import Vue from 'vue'
-import { MutationTree } from 'vuex'
-import { FilesState, FileUpdate, MoonrakerRootFile, MoonrakerPathContent, KlipperFile } from './types'
+import type { MutationTree } from 'vuex'
+import type { FilesState, FileUpdate, MoonrakerRootFile, MoonrakerPathContent, KlipperFile } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 
@@ -127,10 +127,6 @@ export const mutations: MutationTree<FilesState> = {
 
   setRemoveFileDownload (state) {
     state.download = null
-  },
-
-  setFileTransferCancelTokenSource (state, payload) {
-    state.fileTransferCancelTokenSource = payload
   },
 
   setCurrentPath (state, payload) {

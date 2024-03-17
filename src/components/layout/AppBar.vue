@@ -3,11 +3,11 @@
     app
     clipped-left
     extension-height="46"
-    :color="theme.currentTheme.appbar"
+    :color="$vuetify.theme.currentTheme.appbar"
     :height="$globals.HEADER_HEIGHT"
   >
     <router-link
-      v-show="!isMobileViewport"
+      v-if="!isMobileViewport"
       to="/"
       class="toolbar-logo"
     >
@@ -194,8 +194,8 @@ import ServicesMixin from '@/mixins/services'
 import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
 import { SocketActions } from '@/api/socketActions'
-import { OutputPin } from '@/store/printer/types'
-import { Device } from '@/store/power/types'
+import type { OutputPin } from '@/store/printer/types'
+import type { Device } from '@/store/power/types'
 
 @Component({
   components: {
@@ -243,21 +243,18 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
       return false
     }
 
-    if (!this.ignoreDefaultBedMeshPendingConfigurationChanges) {
-      return true
-    }
+    const sectionsToIgnore = this.sectionsToIgnorePendingConfigurationChanges
 
-    const saveConfigPendingItemsKeys = Object.keys(this.saveConfigPendingItems)
-
-    return saveConfigPendingItemsKeys.length > 1 || saveConfigPendingItemsKeys[0] !== 'bed_mesh default'
+    return (
+      sectionsToIgnore.length === 0 ||
+      Object.keys(this.saveConfigPendingItems)
+        .filter(key => !sectionsToIgnore.includes(key))
+        .length > 0
+    )
   }
 
   get devicePowerComponentEnabled () {
     return this.$store.getters['server/componentSupport']('power')
-  }
-
-  get theme () {
-    return this.$store.getters['config/getTheme']
   }
 
   get inLayout (): boolean {
@@ -268,8 +265,8 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart as boolean
   }
 
-  get ignoreDefaultBedMeshPendingConfigurationChanges (): boolean {
-    return this.$store.state.config.uiSettings.general.ignoreDefaultBedMeshPendingConfigurationChanges as boolean
+  get sectionsToIgnorePendingConfigurationChanges (): string[] {
+    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges as string[]
   }
 
   get showUploadAndPrint (): boolean {
@@ -295,8 +292,8 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
       }
 
       default: {
-        const devices = this.$store.state.power.devices as Device[]
-        const device = devices.find(device => device.device === topNavPowerToggle)
+        const device = this.$store.getters['power/getDeviceByName'](topNavPowerToggle) as Device
+
         return {
           type: 'moonraker' as const,
           name: topNavPowerToggle,
@@ -390,15 +387,16 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     if (!device) return
 
     const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
-    let res: boolean | undefined = true
-    if (confirmOnPowerDeviceChange) {
-      res = await this.$confirm(
+
+    const result = (
+      !confirmOnPowerDeviceChange ||
+      await this.$confirm(
         this.$tc('app.general.simple_form.msg.confirm_power_device_toggle'),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
       )
-    }
+    )
 
-    if (res) {
+    if (result) {
       switch (type) {
         case 'moonraker': {
           const state = (device.status === 'on') ? 'off' : 'on'

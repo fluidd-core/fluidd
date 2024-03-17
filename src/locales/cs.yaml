@@ -24,8 +24,6 @@ app:
     label:
       current: Teplota
       item: Název
-      'off': Vypnout graf
-      'on': Zapnout graf
       power: Zatížení
       target: Cílová
     tooltip:
@@ -80,8 +78,6 @@ app:
     msg:
       not_found: Žádný soubor nenalezen
       processing: Zpracovávám
-    overlay:
-      label: <strong>Přetáhněte</strong> soubor sem
     title:
       add_dir: Přidat adresář
       add_file: Přidat soubor
@@ -232,7 +228,6 @@ app:
       unretract_extra_length: Extra délka detrakce
       unretract_speed: Rychlost detrakce
       used: použito
-      variance: Rozptyl
       velocity: Rychlost
       visible: Viditelné
       z_offset: Odchylka Z
@@ -306,8 +301,6 @@ app:
       reload_klipper: Obnoví konfiguraci klipperu.
       reload_restart_klipper: Obnoví konfiguraci klipperu a restartuje MCU.
       restart_klipper: Restartuje systémovou službu klipper.
-  history:
-    msg: {}
   printer:
     state:
       busy: Zaneprázdněn
@@ -335,7 +328,6 @@ app:
       camera_flip_x: Překlopit horizontálně
       camera_flip_y: Překlopit vertikálně
       camera_stream_type: Typ streamu
-      camera_url: URL kamery
       confirm_on_estop: Požadovat potvrzení při nouzovém zastavení
       dark_mode: Tmavý režim
       default_extrude_length: Výchozí délka extruze

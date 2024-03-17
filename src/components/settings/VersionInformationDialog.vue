@@ -91,13 +91,13 @@
 </template>
 
 <script lang="ts">
-import { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
+import type { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 
 @Component({})
 export default class VersionInformationDialog extends Vue {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Object })
   readonly component!: HashVersion | ArtifactVersion | OSPackage

@@ -1,5 +1,5 @@
 <template>
-  <app-btn-group>
+  <app-btn-group divided>
     <app-btn
       :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
       :style="borderStyle"
@@ -46,7 +46,8 @@
                 outlined
                 dense
                 hide-details="auto"
-                class=""
+                spellcheck="false"
+                class="console-command"
                 :class="{ 'mb-3': (i < paramList.length - 1) }"
               >
                 <template #append>
@@ -83,7 +84,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Macro } from '@/store/macros/types'
+import type { Macro } from '@/store/macros/types'
 import gcodeMacroParams from '@/util/gcode-macro-params'
 
 @Component({})
@@ -92,6 +93,10 @@ export default class MacroBtn extends Mixins(StateMixin) {
   readonly macro!: Macro
 
   params: { [index: string]: { value: string | number; reset: string | number }} = {}
+
+  get isMacroWithRawParam () {
+    return ['m117', 'm118'].includes(this.macro.name)
+  }
 
   get filteredListeners () {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -108,17 +113,21 @@ export default class MacroBtn extends Mixins(StateMixin) {
    * The formatted run command for a macro.
    */
   get runCommand () {
-    let s = this.macro.name
+    const command = this.macro.name.toUpperCase()
+
     if (this.params) {
-      if (['m117', 'm118'].includes(this.macro.name)) {
-        s += ` ${this.params.message.value}`
-      } else {
-        for (const param of Object.keys(this.params)) {
-          s += ` ${param}=${this.params[param].value}`
-        }
+      const params = this.isMacroWithRawParam
+        ? this.params.message.value.toString()
+        : Object.entries(this.params)
+          .map(([key, param]) => `${key.toUpperCase()}=${param.value}`)
+          .join(' ')
+
+      if (params) {
+        return `${command} ${params}`
       }
     }
-    return s
+
+    return command
   }
 
   get borderStyle () {
@@ -129,13 +138,13 @@ export default class MacroBtn extends Mixins(StateMixin) {
   }
 
   handleClick () {
-    this.$emit('click', this.macro.name)
+    this.$emit('click', this.macro.name.toUpperCase())
   }
 
   mounted () {
     if (!this.macro.config || !this.macro.config.gcode) return []
 
-    if (['m117', 'm118'].includes(this.macro.name)) {
+    if (this.isMacroWithRawParam) {
       this.$set(this.params, 'message', { value: '', reset: '' })
     } else {
       for (const { name, value } of gcodeMacroParams(this.macro.config.gcode)) {
@@ -157,5 +166,9 @@ export default class MacroBtn extends Mixins(StateMixin) {
   }
   .macro-params > * {
     flex: 1 1 40px;
+  }
+
+  .console-command :deep(.v-text-field__slot input) {
+    font-family: monospace;
   }
 </style>

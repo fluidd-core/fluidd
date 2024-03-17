@@ -19,12 +19,12 @@
     </template>
 
     <template v-if="bedMeshProfiles.length > 0">
-      <v-simple-table class="no-hover">
+      <v-simple-table>
         <thead>
           <tr>
             <th>{{ $t('app.general.label.name') }}</th>
             <th>&nbsp;</th>
-            <th>{{ $t('app.general.label.variance') }}</th>
+            <th>{{ $t('app.general.label.range') }}</th>
             <th>&nbsp;</th>
           </tr>
         </thead>
@@ -47,7 +47,7 @@
             </td>
             <td class="focus--text">
               <span>
-                {{ item.variance.toFixed(4) }}
+                {{ item.range.toFixed(4) }}
               <!-- / {{ mesh.min }} / {{ mesh.mid }} / {{ mesh.max }} -->
               </span>
             </td>
@@ -84,6 +84,7 @@
                     fab
                     text
                     x-small
+                    :disabled="item.adaptive"
                     @click="removeProfile(item.name)"
                     v-on="on"
                   >
@@ -265,6 +266,7 @@
       v-if="saveDialogState.open"
       v-model="saveDialogState.open"
       :existing-name="saveDialogState.existingName"
+      :adaptive="saveDialogState.adaptive"
       @save="handleMeshSave"
     />
 
@@ -280,7 +282,12 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import SaveMeshDialog from './SaveMeshDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import { MeshState, BedMeshProfile, KlipperBedMesh, MatrixType } from '@/store/mesh/types'
+import type {
+  MeshState,
+  KlipperBedMesh,
+  MatrixType,
+  BedMeshProfileListEntry
+} from '@/store/mesh/types'
 
 @Component({
   components: {
@@ -295,7 +302,8 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
 
   saveDialogState = {
     open: false,
-    existingName: 'default'
+    existingName: 'default',
+    adaptive: false
   }
 
   get matrix () {
@@ -343,8 +351,8 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   // The available meshes.
-  get bedMeshProfiles () {
-    return this.$store.getters['mesh/getBedMeshProfiles'] as BedMeshProfile[]
+  get bedMeshProfiles (): BedMeshProfileListEntry[] {
+    return this.$store.getters['mesh/getBedMeshProfiles']
   }
 
   // The current mesh, unprocessed.
@@ -368,33 +376,30 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   async clearMesh () {
-    if (this.printerPrinting) {
-      const result = await this.$confirm(
-        this.$tc('app.general.simple_form.msg.confirm'),
+    const result = (
+      !this.printerPrinting ||
+      await this.$confirm(
+        this.$t('app.general.simple_form.msg.confirm_load_bedmesh_profile', { name }).toString(),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
       )
-
-      if (!result) {
-        return
-      }
+    )
+    if (result) {
+      this.sendGcode('BED_MESH_CLEAR')
     }
-
-    this.sendGcode('BED_MESH_CLEAR')
   }
 
   async loadProfile (name: string) {
-    if (this.printerPrinting) {
-      const result = await this.$confirm(
-        this.$tc('app.general.simple_form.msg.confirm'),
+    const result = (
+      !this.printerPrinting ||
+      await this.$confirm(
+        this.$tc('app.general.simple_form.msg.confirm_clear_mesh'),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
       )
+    )
 
-      if (!result) {
-        return
-      }
+    if (result) {
+      this.sendGcode(`BED_MESH_PROFILE LOAD="${name}"`)
     }
-
-    this.sendGcode(`BED_MESH_PROFILE LOAD="${name}"`)
   }
 
   removeProfile (name: string) {
@@ -411,9 +416,11 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   handleOpenSaveDialog () {
+    const profile = this.bedMeshProfiles.find(mesh => mesh.name === this.currentMesh.profile_name)
     this.saveDialogState = {
       open: true,
-      existingName: this.currentMesh.profile_name
+      existingName: this.currentMesh.profile_name,
+      adaptive: profile?.adaptive ?? false
     }
   }
 

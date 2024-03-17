@@ -1,4 +1,4 @@
-import { ServerState } from './types'
+import type { ServerState } from './types'
 
 export const defaultState = (): ServerState => {
   return {
@@ -12,6 +12,13 @@ export const defaultState = (): ServerState => {
       warnings: []
     },
     system_info: null,
+    peripherals: {
+      usb_devices: null,
+      serial_devices: null,
+      v4l2_devices: null,
+      libcamera_devices: null
+    },
+    can_uuids: null,
     config: {
       authorization: {
         enabled: true

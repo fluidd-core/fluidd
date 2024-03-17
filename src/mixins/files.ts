@@ -1,64 +1,36 @@
-import { AppFile, FilesUpload, Thumbnail } from '@/store/files/types'
+import type { AppFile, FilesUpload, AppFileThumbnail, KlipperFileMeta } from '@/store/files/types'
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { AxiosRequestConfig } from 'axios'
+import type { AxiosRequestConfig, AxiosProgressEvent } from 'axios'
 import { httpClientActions } from '@/api/httpClientActions'
-import { FileWithPath } from '@/util/file-system-entry'
+import type { FileWithPath } from '@/types'
 
 @Component
 export default class FilesMixin extends Vue {
-  get cancelTokenSource () {
-    return this.$store.state.files.fileTransferCancelTokenSource
+  get apiUrl (): string {
+    return this.$store.state.config.apiUrl as string
   }
 
-  get apiUrl () {
-    return this.$store.state.config.apiUrl
+  get isTrustedUser (): boolean {
+    return this.$store.getters['auth/getCurrentUser']?.username === '_TRUSTED_USER_'
   }
 
-  get isTrustedUser () {
-    const forceLogins = this.$store.getters['server/getConfig'].authorization.force_logins
+  getThumbUrl (meta: KlipperFileMeta, root: string, path: string, large: boolean, date?: number) {
+    const thumb = this.getThumb(meta, root, path, large, date)
 
-    return forceLogins === false || this.$store.getters['auth/getCurrentUser']?.username === '_TRUSTED_USER_'
+    return thumb?.url ?? ''
   }
 
-  getThumbUrl (thumbnails: Thumbnail[], root: string, path: string, large: boolean, date?: number) {
-    if (thumbnails.length) {
-      const thumb = this.getThumb(thumbnails, root, path, large, date)
+  getThumb (meta: KlipperFileMeta, root: string, path: string, large = true, date?: number): AppFileThumbnail | undefined {
+    if (meta.thumbnails?.length) {
+      const thumb = meta.thumbnails.reduce((a, b) => (a.size > b.size) === large ? a : b)
 
-      if (thumb) {
-        return thumb.absolute_path || thumb.data || ''
-      }
-    }
-    return ''
-  }
+      if (thumb.relative_path) {
+        const filepath = path ? `${root}/${path}` : root
 
-  getThumb (thumbnails: Thumbnail[], root: string, path: string, large = true, date?: number) {
-    if (thumbnails.length) {
-      let thumb: Thumbnail | undefined
-      if (thumbnails) {
-        if (large) {
-          thumb = thumbnails.reduce((a, c) => (a.size && c.size && (a.size > c.size)) ? a : c)
-        } else {
-          thumb = thumbnails.reduce((a, c) => (a.size && c.size && (a.size < c.size)) ? a : c)
-        }
-        if (thumb) {
-          if (thumb.relative_path && thumb.relative_path.length > 0) {
-            const filepath = path ? `${root}/${path}` : root
-
-            return {
-              ...thumb,
-              absolute_path: this.createFileUrl(thumb.relative_path, filepath, date)
-            }
-          }
-          if (thumb.data) {
-            return {
-              ...thumb,
-              data: 'data:image/gif;base64,' + thumb.data
-            }
-          }
-          if (thumb.absolute_path) {
-            return thumb
-          }
+        return {
+          ...thumb,
+          url: this.createFileUrl(thumb.relative_path, filepath, date)
         }
       }
     }
@@ -69,10 +41,10 @@ export default class FilesMixin extends Vue {
    */
   async getGcode (file: AppFile) {
     const sizeInMB = file.size / 1024 / 1024
-    let res: boolean | undefined = true
 
-    if (sizeInMB >= 100) {
-      res = await this.$confirm(
+    const result = (
+      sizeInMB < 100 ||
+      await this.$confirm(
         this.$t('app.gcode.msg.confirm', {
           filename: file.filename,
           size: this.$filters.getReadableFileSizeString(file.size)
@@ -81,16 +53,13 @@ export default class FilesMixin extends Vue {
           color: 'card-heading',
           icon: '$error'
         })
-    }
+    )
 
-    if (res) {
-      this.$store.dispatch('files/createFileTransferCancelTokenSource')
-
+    if (result) {
       const path = file.path ? `gcodes/${file.path}` : 'gcodes'
-      return await this.getFile(file.filename, path, file.size, {
+      return await this.getFile<string>(file.filename, path, file.size, {
         responseType: 'text',
-        transformResponse: [v => v],
-        cancelToken: this.cancelTokenSource.token
+        transformResponse: [v => v]
       })
     }
   }
@@ -100,55 +69,43 @@ export default class FilesMixin extends Vue {
    * @param filename The filename to retrieve
    * @param path The path to the file
    */
-  async getFile (filename: string, path: string, size = 0, options?: AxiosRequestConfig) {
+  async getFile<T = any> (filename: string, path: string, size = 0, options?: AxiosRequestConfig) {
     // Sort out the filepath
     const filepath = path ? `${path}/${filename}` : filename
 
+    const abortController = new AbortController()
+
     // Add an entry to vuex indicating we're downloading a file.
-    const startTime = performance.now()
     this.$store.dispatch('files/updateFileDownload', {
-      // starttime: performance.now(),
       filepath,
       size,
       loaded: 0,
       percent: 0,
       speed: 0,
-      unit: 'kB'
+      abortController
     })
 
     // Append any additional options.
     const o = {
       ...options,
-      onDownloadProgress: (progressEvent: ProgressEvent) => {
-        const units = ['kB', 'MB', 'GB']
-        let speed = 0
-        let i = 0
-        const delta = performance.now() - startTime
-        if (delta > 0) {
-          speed = progressEvent.loaded / delta
-          while (speed > 1024) {
-            speed /= 1024
-            i = Math.min(2, i + 1)
-          }
-        }
-
+      signal: abortController.signal,
+      onDownloadProgress: (event: AxiosProgressEvent) => {
         const payload: any = {
           filepath,
-          loaded: progressEvent.loaded,
-          percent: Math.round(progressEvent.loaded / size * 100),
-          speed,
-          unit: units[i]
+          loaded: event.loaded,
+          percent: event.progress ? Math.round(event.progress * 100) : 0,
+          speed: event.rate ?? 0
         }
 
-        if (progressEvent.lengthComputable) {
-          size = payload.size = progressEvent.total
+        if (event.total) {
+          size = payload.size = event.total
         }
 
         this.$store.dispatch('files/updateFileDownload', payload)
       }
     }
 
-    return await httpClientActions.serverFilesGet(filepath, o)
+    return await httpClientActions.serverFilesGet<T>(filepath, o)
   }
 
   /**
@@ -204,53 +161,31 @@ export default class FilesMixin extends Vue {
    * @param options Axios request options
    */
   async uploadFile (file: File, path: string, root: string, andPrint: boolean, options?: AxiosRequestConfig) {
-    const formData = new FormData()
-    // let filename = file.name.replace(' ', '_')
-    let filepath = `${path}${file.name}`
-    filepath = (filepath.startsWith('/'))
-      ? filepath
-      : '/' + filepath
-    formData.append('file', file, file.name)
-    formData.append('path', path)
-    formData.append('root', root)
-    if (andPrint) {
-      formData.append('print', 'true')
-    }
+    const filepath = path
+      ? `${path}/${file.name}`
+      : file.name
 
-    const startTime = performance.now()
+    const abortController = new AbortController()
+
     this.$store.dispatch('files/updateFileUpload', {
       filepath,
       size: file.size,
       loaded: 0,
       percent: 0,
       speed: 0,
-      unit: 'kB',
-      cancelled: false
+      cancelled: false,
+      abortController
     })
 
-    return httpClientActions.serverFilesUploadPost(formData, {
+    return httpClientActions.serverFilesUploadPost(file, path, root, andPrint, {
       ...options,
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      onUploadProgress: (progressEvent: ProgressEvent) => {
-        const units = ['kB', 'MB', 'GB']
-        let speed = 0
-        let i = 0
-        const delta = performance.now() - startTime
-        if (delta > 0) {
-          speed = progressEvent.loaded / delta
-          while (speed > 1024) {
-            speed /= 1024
-            i = Math.min(2, i + 1)
-          }
-        }
+      signal: abortController.signal,
+      onUploadProgress: (event: AxiosProgressEvent) => {
         this.$store.dispatch('files/updateFileUpload', {
           filepath,
-          loaded: progressEvent.loaded,
-          percent: Math.round(progressEvent.loaded / progressEvent.total * 100),
-          speed,
-          unit: units[i]
+          loaded: event.loaded,
+          percent: event.progress ? Math.round(event.progress * 100) : 0,
+          speed: event.rate ?? 0
         })
       }
     })
@@ -268,7 +203,9 @@ export default class FilesMixin extends Vue {
   getFullPathAndFile (rootPath: string, file: File | FileWithPath): [string, File] {
     if ('path' in file) {
       return [
-        `${rootPath}/${file.path}`,
+        [rootPath, file.path]
+          .filter(path => !!path)
+          .join('/'),
         file.file
       ]
     } else {
@@ -285,10 +222,10 @@ export default class FilesMixin extends Vue {
     for (const file of files) {
       const [fullPath, fileObject] = this.getFullPathAndFile(path, file)
 
-      let filepath = `${fullPath}${fileObject.name}`
-      filepath = (filepath.startsWith('/'))
-        ? filepath
-        : '/' + filepath
+      const filepath = fullPath
+        ? `${fullPath}/${fileObject.name}`
+        : fileObject.name
+
       this.$store.dispatch('files/updateFileUpload', {
         filepath,
         size: fileObject.size,
@@ -307,19 +244,15 @@ export default class FilesMixin extends Vue {
     for (const file of files) {
       const [fullPath, fileObject] = this.getFullPathAndFile(path, file)
 
-      let filepath = `${fullPath}${fileObject.name}`
-      filepath = (filepath.startsWith('/'))
-        ? filepath
-        : '/' + filepath
+      const filepath = fullPath
+        ? `${fullPath}/${fileObject.name}`
+        : fileObject.name
+
       const fileState = this.$store.state.files.uploads.find((u: FilesUpload) => u.filepath === filepath)
-      // consola.error('about to process...', fileState)
+
       if (fileState && !fileState?.cancelled) {
         try {
-          this.$store.dispatch('files/createFileTransferCancelTokenSource')
-
-          await this.uploadFile(fileObject, fullPath, root, andPrint, {
-            cancelToken: this.cancelTokenSource.token
-          })
+          await this.uploadFile(fileObject, fullPath, root, andPrint)
         } catch (e) {
           return e
         }

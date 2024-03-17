@@ -1,48 +1,56 @@
 app:
   bedmesh:
     label:
-      flat_surface: Mostrar plano plano
+      flat_surface: Mostrar plano raso
       mesh_matrix: Matriz de malha
       probed_matrix: Matriz sondada
       profile_name: Perfil
       remove_profile: Remover perfil %{name}
       scale: Escala por min / max
       wireframe: Wireframe
+      active: activo
+      base: base
+      box_scale: Escala de caixa
     msg:
       hint: >-
-        Se salvar algo diferente de % {name},  pode escolher remover também o
-        perfi % {name}
+        Se guardar como algo diferente de % {name}, pode escolher remover também o
+        perfil % {name}
       not_found: Não foram encontrados nivelamentos da mesa.
       not_loaded: Nenhuma malha carregada
     tooltip:
       calibrate: Nova calibração, salvando o perfil como 'default'
       delete: Eliminar perfil
       load: Carregar perfil
-      save: Carregar o perfil calibrado no ficheiro printer.cfg
+      save: Guard perfil calibrado no ficheiro printer.cfg
+      copy_image: Copiar imagem da malha da cama
   chart:
     label:
       current: Corrente
       item: Item
-      'off': Gráfico desligado
-      'on': Gráfico ligado
       power: Energia
       target: Alvo
+      rate_of_change: Mudança
     tooltip:
       help: >-
-        Mantenha a tecla Shift pressionada para aumentar o zoom. <br /> Clique
-        num item para alternar no gráfico. <br /> Clique em Ligar para alternar
+        Mantenha a tecla <kbd>Shift</kbd> pressionada para aumentar o zoom. <br />
+        Clique num item para alternar no gráfico. <br /> Clique em Ligar para alternar
         no gráfico.
   console:
     label:
       auto_scroll: Auto scroll
       hide_temp_waits: Ocultar temperaturas
+      flip_layout: Inverter layout
     placeholder:
-      command: '''tab'' para autocompletar, ''help'' para comandos  ''setas'' para histórico'
+      command: '''tab'' para autocompletar, ''help'' para comandos  ''setas'' para
+        histórico'
+    tooltip:
+      help: Introduza "help" para comandos<br />Carregue em <kbd>Tab</kbd> para autocomplemento<br
+        />Carregue em <kbd>&uarr;</kbd> e <kbd>&darr;</kbd> para o historico
   endpoint:
     error:
       cant_connect: >-
-        Algo está errado e não é possivel carregar o fluidd  . Tem a certeza de
-        que este é o endereço correto?
+        Algo está errado e não é possível carregar o fluidd . Tem a certeza de que
+        este é o endereço correto?
       cors_error: bloqueado pela política CORS
       cors_note: >-
         Isso pode significar que você precisa modificar a configuração do
@@ -68,7 +76,12 @@ app:
     filters:
       label:
         print_start_time: Filtrar já impresso
-        print_start_time_desc: Filtrar os itens que  já imprimiu.
+        print_start_time_desc: Filtrar os itens que já imprimiu.
+        hidden_files_folders: Filtrar ficheiros e pastas escondidas
+        klipper_backup_files: Filtrar cópias de segurança do Klipper
+        moonraker_backup_files: Filtrar ficheiros de cópia de segurança do Moonraker
+        rolled_log_files: Filtrar ficheiros de registo antigos
+        crowsnest_backup_files: Filtrar ficheiros de cópia de segurança do Crowsnest
     label:
       dir_name: Nome diretório
       disk_usage: Disco usado
@@ -76,11 +89,16 @@ app:
       file_name: Nome ficheiro
       transfer_rate: Taxa de transferência
       uploaded: Carregado
+      view_section_documentation: Ver documentação para '%{section}'
+      diskinfo: Informações sobre o Disco
     msg:
       not_found: Não foram encontrados ficheiros
-      processing: A processar...
+      processing: A processar
     overlay:
-      label: <strong>Largar</strong> um ficheiro aqui.
+      drag_files_enqueue: <strong>Arrastar</strong> para aqui ficheiros para juntar
+        à fila
+      drag_files_folders_upload: <strong>Arrastar</strong> para aqui ficheiros e pastas
+        para carregar
     title:
       add_dir: Adicionar diretório
       add_file: Adicionar ficheiro
@@ -89,8 +107,20 @@ app:
       rename_dir: Renomear diretório
       rename_file: Renomear ficheiro
       upload_file: Carregando ficheiro | Carregando ficheiros
+      duplicate_dir: Duplicar directório
+      go_to_file: Ir para ficheiro
+      duplicate_file: Duplicar ficheiro
+      devices: Dispositivos
     tooltip:
       low_on_space: Pouco espaço em disco
+      root_disabled: A raiz {root} não está disponível. Por favor verifique os seus
+        ficheiros de registo.
+      items_count: '{count} item | {count} itens'
+    url:
+      moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
+      moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
+      klipper_config: https://www.klipper3d.org/Config_Reference.html#%{hash}
+      crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
   general:
     btn:
       add: Adicionar
@@ -134,6 +164,45 @@ app:
       upload: Envio
       upload_print: Envio e impressão
       view: Ver
+      add_to_queue: Adicionar à Fila
+      auth_unsure: Não sabe porque está a ver isto?
+      restart_service: Reiniciar %{service}
+      save_config_and_restart: Guardar configuração e reiniciar
+      reload: Recarregar
+      print: Imprimir
+      delete: Apagar
+      socket_reconnect: Reconectar
+      more_information: Mais informações
+      set_color: Escolher Cor
+      logout: Terminar sessão
+      recover: Recuperar
+      reset_default_layout: Repor Layout por Omissão
+      upload_folder: Carregar Pasta
+      return_dashboard: Voltar ao painél
+      go_to_file: Ir para ficheiro
+      set_default_layout: Escolher como Layout por Omissão
+      upload_files: Carregar Ficheiros
+      exit_layout: Sair do modo de layout
+      adjusted: Ajustado
+      forgot_password: Esqueceu-se da sua palavra passe?
+      refresh: Actualizar
+      create_zip_archive: Criar Arquivo ZIP
+      retry: Repetir
+      accept: Aceitar
+      duplicate: Duplicar
+      preview_gcode: Pré-visualizar Gcode
+      login: Iniciar Sessão
+      filter: Filtrar
+      refresh_metadata: Actualizar Metadados
+      thumbnail_size: Tamanho da miniatura
+      job_queue: Fila de Trabalhos
+      select_columns: Seleccionar colunas
+      abort: Abortar
+      multiply: Multiplicar
+      snooze: Suspender
+      reset_stats: Redefinir estatísticas
+      copy: Copiar
+      copied: Copiado
     error:
       app_setup_link: >-
         Os requisitos de configuração do Fluidd podem ser encontrados <a
@@ -167,6 +236,7 @@ app:
       'off': Desligado
       power: Energia
       printers: Impressoras
+      range: Amplitude
       requested_speed: Velocidade requerida
       save_as: Salvar como
       services: Serviços
@@ -181,9 +251,67 @@ app:
       total_time_avg: Média por impressão
       uncategorized: Sem categoria
       used: usado
-      variance: Variação
       velocity: Velocidade
       z_offset: Z Offset
+      circle: Círculo
+      heaters_busy: A impressora está ocupada no momento. Desligar os aquecedores
+        pode resultar em falha na impressão.
+      retract_length: Distância de Retração
+      retract_speed: Velocidade de Retração
+      filament: Filamento
+      add_filter: Adicionar Filtro
+      'on': Ligado
+      total: Total
+      all: Tudo
+      api_key: Chave Api
+      auth_source: Fonte de autenticação
+      category: Categoria
+      file: Ficheiro
+      layer: Camada
+      manage_accounts: Gerir Contas
+      new_password: Nova password
+      slicer: Fatiador
+      no_notifications: Sem notificações
+      progress: Progresso
+      add_user: Adicionar utilizador
+      change_password: Mudar password
+      disabled_while_printing: Desativado durante a impressão
+      accepted_screws: Parafusos aceites
+      finish_time: Terminar
+      turn_device_off: Desligar %{device}
+      turn_device_on: Ligar %{device}
+      unretract_extra_length: Retrair Comprimento Extra
+      upload_and_print: Carregar e Imprimir
+      actual_time: Actual
+      current_user: Utilizador atual
+      default: Padrão
+      clear_all: Limpar tudo
+      color: Côr
+      command: Comando
+      cross: Cruzar
+      current_password: Password Atual
+      edit_filter: Editar Filtro
+      edit_user: Editar utilizador
+      thumbnail_size: Tamanho da Miniatura
+      user_managed_source: Utilizador gerido pela autenticação %{source}
+      screw_name: Nome do parafuso
+      stepper_enabled: Motor Ligado
+      partial_of_total: '%{partial} de %{total}'
+      pause_at_layer: Pausa na Camada
+      screw_number: Parafuso %{index}
+      compact: Compacto
+      ldap: LDAP
+      m117: M117
+      moonraker: Moonraker
+      pause_at_next_layer: Pausa na próxima camada
+      numeric_prefix_sort: Ordenar por prefixo numeral
+      password: Palavra passe
+      screw_index: Índice do Parafuso
+      bars: Barras
+      pause_at_layer_number: Pausa na camada número
+      username: Utilizador
+      version_sort: Ordenar por versão
+      visible: Visível
     simple_form:
       error:
         arrayofnums: Apenas números
@@ -195,7 +323,8 @@ app:
         required: Obrigatório
       msg:
         confirm: Tem a certeza?
-        confirm_delete: Tem a certeza? Vai excluir o item selecionado. | Tem a certeza? Vai excluir os {count} itens selecionados.
+        confirm_delete: Tem a certeza? Vai excluir o item selecionado. | Tem a certeza?
+          Vai excluir os {count} itens selecionados.
         confirm_reboot_host: Tem certeza? O sistema vai reiniciar.
         confirm_shutdown_host: Tem certeza? O sistema vai desligar.
     table:
@@ -204,7 +333,7 @@ app:
         end_time: Terminado
         estimated_time: Tempo estimado
         filament: Filamento
-        filament_used: Filamento
+        filament_used: Filamento usado
         first_layer_bed_temp: Temperature da mesa na primeira camada
         first_layer_extr_temp: Temperatura da extrusora na primeira camada
         first_layer_height: Altura da primeira camada
@@ -246,8 +375,6 @@ app:
       reload_klipper: Recarrega a configuração do klipper.
       reload_restart_klipper: Recarrega a configuração do klipper e reinicia os MCUs.
       restart_klipper: Reinicia o serviço do sistema klipper.
-  history:
-    msg: {}
   printer:
     state:
       busy: Ocupada
@@ -274,13 +401,12 @@ app:
       camera_flip_x: Virar horizontal
       camera_flip_y: Virar vertical
       camera_stream_type: Tipo stream
-      camera_url: 'Url Camera '
       dark_mode: Modo escuro
       default_extrude_length: Comprimento de extrusão padrão
       default_extrude_speed: Velocidade de extrusão padrão
       default_toolhead_move_length: Comprimento de movimento do toolhead padrão
       default_toolhead_xy_speed: Velocidade XY do toolhead padrão
-      default_toolhead_z_speed: Velocidade Z do toolhead  padrão
+      default_toolhead_z_speed: Velocidade Z do toolhead padrão
       enable: Habilitar
       enable_notifications: Ativar notificações
       fps_target: Frames por segundo
@@ -296,7 +422,7 @@ app:
       z_adjust_values: Ajustar valores Z
     timer_options:
       duration: Só duração
-      filament: Estimativas filamento.
+      filament: Estimativas filamento
       file: Estimativa do ficheiro
       slicer: Slicer
     title:
@@ -339,8 +465,33 @@ app:
     title: Atualizações de software
     tooltip:
       dirty: >-
-        indicação de erro no cabeçalho, não existente na fonte ou fonte
-        inválida.
+        indicação de erro no cabeçalho, não existente na fonte ou fonte inválida
       invalid: indicação de alteração do local da repo
       packages: Pacotes
       release_notes: Notas de lançamento
+  gcode:
+    label:
+      show_previous_layer: Mostrar camada anterior
+      layers: Camadas
+      show_extrusions: Apresentar extrusões
+      show_retractions: Mostrar retracções
+      parsing_file: Analizando ficheiro
+      follow_progress: Seguir progresso
+      exclude_object: Excluir Objecto
+      show_moves: Mostrar movimentos
+      layer: Camada
+      current_layer_height: Altura da Camada Actual
+      show_current_layer: Apresentar camada actual
+      show_next_layer: Mostrar camada seguinte
+      show_parts: Mostrar partes
+    btn:
+      load_current_file: Carregar ficheiro actual
+    overlay:
+      drag_file_load: <strong>Arraste</strong> um ficheiro de gcode para aqui para
+        carregar
+    msg:
+      confirm: O ficheiro "%{filename}" tem %{size}, o que pode ser bastante intensivo
+        para o seu sistema. Tem a certeza?
+  sensors:
+    title:
+      sensors: Sensores

@@ -49,19 +49,18 @@ import { SocketActions } from '@/api/socketActions'
   }
 })
 export default class PrinterHistoryCard extends Vue {
-  @Prop({ type: Boolean, default: false })
-  readonly menuCollapsed!: boolean
+  @Prop({ type: Boolean })
+  readonly menuCollapsed?: boolean
 
-  handleRemoveAll () {
-    this.$confirm(
+  async handleRemoveAll () {
+    const result = await this.$confirm(
       this.$tc('app.history.msg.confirm_jobs'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
-      .then(res => {
-        if (res) {
-          SocketActions.serverHistoryDeleteJob('all')
-        }
-      })
+
+    if (result) {
+      SocketActions.serverHistoryDeleteJob('all')
+    }
   }
 
   handleLoadAll () {
