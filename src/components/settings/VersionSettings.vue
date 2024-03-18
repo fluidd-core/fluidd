@@ -61,7 +61,7 @@
           <template #title>
             {{ packageTitle(component) }}
             <v-tooltip
-              v-if="'remote_url' in component"
+              v-if="'remote_url' in component && component.remote_url !== '?'"
               bottom
             >
               <template #activator="{ attrs, on }">
