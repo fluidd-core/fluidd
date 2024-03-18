@@ -143,6 +143,7 @@ export default class PrinterStatsCard extends Mixins(StateMixin) {
   }
 
   get distributionName (): string | undefined {
+    console.log(this.distribution)
     const { name, id } = this.distribution
 
     if (name) {
@@ -154,7 +155,7 @@ export default class PrinterStatsCard extends Mixins(StateMixin) {
         name.startsWith('#')
           ? id
           : name
-      )} ${this.distribution.release_info?.version_id} ?? ''`
+      )} ${this.distribution.release_info?.version_id ?? ''}`
     }
   }
 
