@@ -74,7 +74,6 @@ app:
     filters:
       label:
         print_start_time: Nyomtatottak szűrése
-        print_start_time_desc: Kiszűri a már kinyomtatott elemeket.
         hidden_files_folders: Rejtett fájlok és mappák szűrése
         klipper_backup_files: Klipper biztonsági fájlok szűrése
         moonraker_backup_files: Moonraker biztonsági fájlok szűrése

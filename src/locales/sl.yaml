@@ -72,7 +72,6 @@ app:
     filters:
       label:
         print_start_time: Filtriraj natisnjeno
-        print_start_time_desc: Filtrira že natisnjene izdelke.
         hidden_files_folders: Fitriraj skrite mape in datoteke
         klipper_backup_files: Filtriraj Klipperjeve varnostne kopije
         moonraker_backup_files: Filtriraj Moonrakerjeve varnostne kopije
@@ -864,7 +863,7 @@ app:
       prefer_device_camera: Če je na voljo, uporabi kamero naprave za zajem QR kode
       show_spool_selection_dialog_on_print_start: Prikaži okno za izbiro koluta ob začetku tiskanja
       warn_on_not_enough_filament: >-
-        Prikaži opozorilo, če izbran kolut nima dovolj filamenta za dokončanje tiska        
+        Prikaži opozorilo, če izbran kolut nima dovolj filamenta za dokončanje tiska
       warn_on_filament_type_mismatch: >-
         Prikaži opozorilo, če material na izbranem kolutu ne ustreza materialu navedenemu v rezalniku
   sensors:

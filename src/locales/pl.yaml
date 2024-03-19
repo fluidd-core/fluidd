@@ -69,7 +69,6 @@ app:
     filters:
       label:
         print_start_time: Ukryj wydrukowane
-        print_start_time_desc: Ukrywa wydrukowane elementy.
         hidden_files_folders: Filtruj ukryte pliki i foldery
         rolled_log_files: Ukryj zarchiwizowane logi
         klipper_backup_files: Filtruj kopie zapasowe Klippera

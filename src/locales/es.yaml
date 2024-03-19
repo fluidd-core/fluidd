@@ -76,7 +76,6 @@ app:
     filters:
       label:
         print_start_time: Filtrar ya impresos
-        print_start_time_desc: Filtrar archivos que ya ha impreso anteriormente
         hidden_files_folders: Filtrar archivos y carpetas ocultos
     label:
       dir_name: Nombre de la carpeta
