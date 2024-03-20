@@ -71,7 +71,6 @@ app:
     filters:
       label:
         print_start_time: Filtrer les impressions passées
-        print_start_time_desc: Filtrer les fichiers déjà imprimés
     label:
       dir_name: Nom du dossier
       disk_usage: Utilisation du disque

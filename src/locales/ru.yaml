@@ -76,7 +76,6 @@ app:
     filters:
       label:
         print_start_time: Фильтровать напечатанное
-        print_start_time_desc: Фильтровывать уже напечатанные элементы.
         hidden_files_folders: Фильтровать скрытые файлы и папки
         klipper_backup_files: Фильтровать резервные копии Klipper
         rolled_log_files: Фильтровать файлы перезаписанных логов

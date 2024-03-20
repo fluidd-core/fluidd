@@ -67,7 +67,6 @@ app:
     filters:
       label:
         print_start_time: 출력된 항목 숨기기
-        print_start_time_desc: 이미 출력된 항목을 숨깁니다.
         moonraker_backup_files: Moonraker 백업 파일 필터링
         rolled_log_files: 롤링된 로그 파일 필터링
         klipper_backup_files: Klipper 백업 파일 필터링

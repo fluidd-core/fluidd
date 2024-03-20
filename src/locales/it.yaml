@@ -85,7 +85,6 @@ app:
     filters:
       label:
         print_start_time: Filtra per inizio di stampa
-        print_start_time_desc: Non mostrare gli elementi che hai già stampato.
         klipper_backup_files: Filtra backup di Klipper
         hidden_files_folders: Filtra cartelle e file nascosti
     label:

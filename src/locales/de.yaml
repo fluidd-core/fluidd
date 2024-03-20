@@ -80,7 +80,6 @@ app:
     filters:
       label:
         print_start_time: Nur ungedruckte
-        print_start_time_desc: Blendet Elemente aus, die Sie bereits gedruckt haben.
         klipper_backup_files: Klipper-Backupdateien ausblenden
         rolled_log_files: Alte Logdateien ausblenden
         hidden_files_folders: Versteckte Dateien und Ordner ausblenden
@@ -751,7 +750,7 @@ app:
         suchen
       canbus_warning: Nur unzugewiesene CAN-Bus-Knoten werden erkannt.<br>Es ist empfohlen,
         nur ein unzugewiesenes Gerät an den CAN-Bus anzuschließen, um Kommunikationsprobleme
-        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank" 
+        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank"
         href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">hier.</a>
   tool:
     btn:

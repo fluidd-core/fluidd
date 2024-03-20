@@ -78,7 +78,6 @@ app:
     filters:
       label:
         print_start_time: Filter geprint
-        print_start_time_desc: Filtert de items die je al geprint hebt weg
         rolled_log_files: Filter roterende log bestanden
         klipper_backup_files: Filter Klipper backup bestanden
         hidden_files_folders: Filter verborgen bestanden en mappen
