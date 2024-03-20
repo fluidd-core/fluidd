@@ -70,7 +70,6 @@ app:
         klipper_backup_files: バックアップファイルを非表示
         moonraker_backup_files: Moonraker バックアップ ファイルをフィルタリングする
         print_start_time: 印刷済みを隠す
-        print_start_time_desc: すでに印刷したものをフィルタリングします。
         rolled_log_files: ロールされたログファイルを非表示
     label:
       dir_name: ディレクトリ名

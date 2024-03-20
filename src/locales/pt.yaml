@@ -76,7 +76,6 @@ app:
     filters:
       label:
         print_start_time: Filtrar já impresso
-        print_start_time_desc: Filtrar os itens que já imprimiu.
         hidden_files_folders: Filtrar ficheiros e pastas escondidas
         klipper_backup_files: Filtrar cópias de segurança do Klipper
         moonraker_backup_files: Filtrar ficheiros de cópia de segurança do Moonraker

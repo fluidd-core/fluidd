@@ -60,7 +60,6 @@ app:
     filters:
       label:
         print_start_time: 隱藏已打印項目
-        print_start_time_desc: 隱藏已經打印的項目文件
         klipper_backup_files: 隱藏Klipper備份文件
     label:
       dir_name: 目錄名稱
