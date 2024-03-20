@@ -20,8 +20,13 @@ export default class ToolheadMixin extends Vue {
     const activeExtruder = this.activeExtruder
 
     return (
-      activeExtruder !== undefined &&
-      activeExtruder.temperature >= activeExtruder.min_extrude_temp
+      activeExtruder?.can_extrude ??
+      (
+        activeExtruder !== undefined &&
+        activeExtruder.temperature >= 0 &&
+        activeExtruder.min_extrude_temp >= 0 &&
+        activeExtruder.temperature >= activeExtruder.min_extrude_temp
+      )
     )
   }
 
