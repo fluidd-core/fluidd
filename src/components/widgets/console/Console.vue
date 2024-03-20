@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="console"
-  >
+  <div class="console">
     <console-command
       v-if="!readonly && flipLayout"
       v-model="currentCommand"
@@ -22,7 +20,7 @@
         :class="{
           'console-scroller-fullscreen': fullscreen
         }"
-        :key-field="keyField"
+        key-field="id"
         :buffer="600"
         @resize="scrollToLatest()"
       >
@@ -36,7 +34,7 @@
             :data-index="index"
           >
             <console-item
-              :key="item[keyField]"
+              :key="item.id"
               :value="item"
               class="console-item"
               @click="handleEntryClick"
@@ -63,6 +61,7 @@ import ConsoleItem from './ConsoleItem.vue'
 import { SocketActions } from '@/api/socketActions'
 import type { DinamicScroller } from 'vue-virtual-scroller'
 import type { ConsoleEntry } from '@/store/console/types'
+import type { UpdateResponse } from '@/store/version/types'
 
 @Component({
   components: {
@@ -71,11 +70,8 @@ import type { ConsoleEntry } from '@/store/console/types'
   }
 })
 export default class Console extends Mixins(StateMixin) {
-  @Prop({ type: Array<ConsoleEntry>, default: () => [] })
-  readonly items!: ConsoleEntry[]
-
-  @Prop({ type: String, default: 'id' })
-  readonly keyField!: string
+  @Prop({ type: [Array<ConsoleEntry>, Array<UpdateResponse>], default: () => [] })
+  readonly items!: ConsoleEntry[] | UpdateResponse[]
 
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean

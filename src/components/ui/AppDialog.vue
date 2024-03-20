@@ -13,6 +13,7 @@
       @submit.prevent="handleSave"
     >
       <v-card
+        :loading="loading"
         :class="{
           'collapsable-card': titleShadow
         }"
@@ -58,6 +59,7 @@
                 text
                 x-small
                 class="ml-1"
+                :disabled="closeButtonDisabled"
                 @click="open = false"
               >
                 <v-icon>
@@ -134,6 +136,9 @@ export default class AppDialog extends Mixins(BrowserMixin) {
   @Prop({ type: String })
   readonly subTitle?: string
 
+  @Prop({ type: Boolean })
+  readonly closeButtonDisabled?: boolean
+
   @Prop({ type: String })
   readonly cancelButtonText?: string
 
@@ -154,6 +159,9 @@ export default class AppDialog extends Mixins(BrowserMixin) {
 
   @Prop({ type: Boolean })
   readonly noActions?: boolean
+
+  @Prop({ type: [Boolean, String] })
+  readonly loading?: boolean | string
 
   @Prop({ type: Boolean })
   readonly titleShadow?: boolean
