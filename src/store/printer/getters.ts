@@ -621,7 +621,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
         let output: Fan | Led | OutputPin = {
           ...state.printer[pin],
-          ...getters.getExtraSensorData(config?.sensor_type, name),
+          ...getters.getExtraSensorData(config?.sensor_type?.toLowerCase(), name),
           config: { ...config },
           name,
           prettyName,
@@ -678,7 +678,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
           groups[name] = {
             ...state.printer[item],
-            ...getters.getExtraSensorData(config?.sensor_type, name),
+            ...getters.getExtraSensorData(config?.sensor_type?.toLowerCase(), name),
             config: { ...config },
             minTemp: config?.min_temp ?? null,
             maxTemp: config?.max_temp ?? null,
@@ -705,7 +705,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'nevermoresensor'
     ]
 
-    if (supportedSensors.includes(sensorType?.toLowerCase())) {
+    if (supportedSensors.includes(sensorType)) {
       const sensor = state.printer[`${sensorType} ${name}`]
 
       if (sensor) {
