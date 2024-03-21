@@ -137,7 +137,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       .filter(result => result > 0)
 
     const printProgress = printProgressCalculationResults
-      .reduce((a, b) => a + b, 0) / printProgressCalculationResults.length
+      .reduce((a, b) => a + b, 0) / printProgressCalculationResults.length || 0
 
     return printProgress
   },
@@ -230,7 +230,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       .filter(result => result > 0)
 
     const etaLeft = printEtaCalculationResults
-      .reduce((a, b) => a + b, 0) / printEtaCalculationResults.length
+      .reduce((a, b) => a + b, 0) / printEtaCalculationResults.length || 0
 
     const eta = Date.now() + etaLeft * 1000
 
