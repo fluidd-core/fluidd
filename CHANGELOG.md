@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.29.1](https://github.com/fluidd-core/fluidd/compare/v1.29.0...v1.29.1) (2024-03-31)
+
+
+### Features
+
+* basic Nevermore Controller support ([#1114](https://github.com/fluidd-core/fluidd/issues/1114)) ([91ee7d5](https://github.com/fluidd-core/fluidd/commit/91ee7d5de555f58f20766e07314e698480c66d0a))
+* **i18n-hu:** Update Hungarian translations ([5670637](https://github.com/fluidd-core/fluidd/commit/5670637082f42137b8724a91513d62b54d3415a5))
+* **i18n-ru:** Update Russian translations ([41270c3](https://github.com/fluidd-core/fluidd/commit/41270c3280e3de4118107f3bc16517ee4976701b))
+* **i18n-tr:** Update Turkish translations ([665bc46](https://github.com/fluidd-core/fluidd/commit/665bc466602e5f1a3e13d102ee861d4d2ba8a18a))
+* **i18n-TR:** Updates Turkish translations ([#1393](https://github.com/fluidd-core/fluidd/issues/1393)) ([3fba2e4](https://github.com/fluidd-core/fluidd/commit/3fba2e47faf5ecd142b89d460efc97148582d49d))
+
+
+### Bug Fixes
+
+* distribution info formatting ([b35f6be](https://github.com/fluidd-core/fluidd/commit/b35f6beaa028da26f752329ba6ace97ea94c5912))
+* hide link in software updates if repo unknown ([cbe4307](https://github.com/fluidd-core/fluidd/commit/cbe4307fed446d2726c8f0932dcb95cb4ed0e8ac))
+* PeripheralsDialog labels ([6f617c2](https://github.com/fluidd-core/fluidd/commit/6f617c29a9d69ef2b0cda82df599e461e4865f83))
+* progress not shown a number ([#1399](https://github.com/fluidd-core/fluidd/issues/1399)) ([9ebd037](https://github.com/fluidd-core/fluidd/commit/9ebd03778c5c73fab1dc9c01185da63fa6963aaf))
+* remove leftover console log statement ([febb3e8](https://github.com/fluidd-core/fluidd/commit/febb3e808e82bd0e51d2f8a5d4daa4b86c4efa81))
+* removes "Filter printed" menu item description ([#1396](https://github.com/fluidd-core/fluidd/issues/1396)) ([8d354b6](https://github.com/fluidd-core/fluidd/commit/8d354b67aefa217e42425cf2d2d4951d7d1dba57))
+* rolled log files filter ([9d2a1cb](https://github.com/fluidd-core/fluidd/commit/9d2a1cbfba50f57e5c32f5c35d124027581a34ba))
+* use Klipper can_extrude by default ([#1397](https://github.com/fluidd-core/fluidd/issues/1397)) ([83f4fb2](https://github.com/fluidd-core/fluidd/commit/83f4fb2ce1d51dde4e8d1017519b1943a8625d5e))
+
 ## [1.29.0](https://github.com/fluidd-core/fluidd/compare/v1.28.1...v1.29.0) (2024-03-16)
 
 
