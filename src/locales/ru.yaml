@@ -76,7 +76,6 @@ app:
     filters:
       label:
         print_start_time: Фильтровать напечатанное
-        print_start_time_desc: Фильтровывать уже напечатанные элементы.
         hidden_files_folders: Фильтровать скрытые файлы и папки
         klipper_backup_files: Фильтровать резервные копии Klipper
         rolled_log_files: Фильтровать файлы перезаписанных логов
@@ -106,6 +105,7 @@ app:
       rename_dir: Переименовать папку
       rename_file: Переименовать файл
       upload_file: Загрузка файла | Загрузка файлов
+      devices: Устройства
     tooltip:
       low_on_space: Мало места на диске
       root_disabled: Root недоступен. Проверьте файлы логов.
@@ -153,7 +153,7 @@ app:
       add_file: Добавить файл
       add_printer: Добавить принтер
       add_to_queue: Добавить в очередь
-      adjust_layout: Настроить компановку интерфейса панели управления
+      adjust_layout: Настроить компоновку интерфейса панели управления
       adjusted: Настроено
       all: Все
       auth_unsure: Не знаете, почему вы это видите?
@@ -189,8 +189,8 @@ app:
       rename: Переименовать
       reprint: Перепечатать
       reset_file: Сбросить файл
-      reset_layout: Сбросить компановку интерфейса
-      reset_default_layout: Сбросить компановку интерфейса
+      reset_layout: Сбросить компоновку интерфейса
+      reset_default_layout: Сбросить компоновку интерфейса
       restart_firmware: Перезагрузить прошивку
       restart_service: Перезапустить %{service}
       restart_service_klipper: Перезагрузить Klipper
@@ -224,6 +224,8 @@ app:
       refresh_metadata: Обновить метаданные
       reload: Перезагрузить
       filter: Фильтр
+      copied: Скопировано
+      copy: Скопировать
     error:
       app_setup_link: >-
         Требования для установки Fluidd можно посмотреть <a target="_blank"
@@ -344,6 +346,8 @@ app:
       cross: Пересечение
       bars: Столбцы
       version_sort: Сортировка по версии
+      compact: Компактно
+      unknown: Неизвестно
     msg:
       password_changed: Пароль изменен
       wrong_password: Ой, что-то пошло не так. Пароль введен верно?
@@ -638,11 +642,16 @@ app:
       toolhead_xy_move_distances: Расстояния инструмента по осям XY
       hide_single_part_bounding_box: Скрыть рамку ограничения части при печати одной
         части
+      print_eta_calculation: Вывести расчёт оставшегося времени
+      print_in_progress_layout: Компоновка Прогресса Печати
+      print_progress_calculation: Расчёт Прогресса Печати
+      show_gas_resistance: Показать сопротивление газа
     timer_options:
       duration: Только продолжительность
       filament: Оценка филамента
       file: Оценка времени на основе файла
       slicer: Слайсер
+      slicer_m73: Слайсер (M73)
     title:
       authentication: Аутентификация
       console: Консоль
@@ -674,6 +683,7 @@ app:
         одобрение со стороны брендов не подразумевается.
       show_screws_tilt_adjust_dialog_automatically: Автоматически отображает вспомогательный
         диалог при выполнении инструмента SCREWS_TILT_CALCULATE
+      average_calculation: При выборе нескольких опций будет посчитано среднее значение
   socket:
     msg:
       connecting: Подключение к moonraker...
@@ -713,6 +723,17 @@ app:
       awake_time: Время бодрствования
       load: нагрузка
       memory_used: используемая память
+      devices: Устройства
+      constants: Константы
+      last_stats: Последняя Статистика
+    msg:
+      no_devices_searched: Используйте кнопку обновления для поиска устройств
+      canbus_warning: Только не назначенные узлы CAN могут быть обнаружены.<br> Рекомендуется
+        иметь не более одного не назначенного устройства, подключённого к шине CAN,
+        во избежание проблем с обменом данными. Дополнительную информацию можно найти
+        <a target="_blank" 
+        href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">здесь.</a>
+      no_devices_found: Устройства не найдены
   tool:
     btn:
       home_x: X
@@ -767,6 +788,8 @@ app:
       package_list: Список пакетов
       up_to_date: Актуальная версия
       updates_available: Доступны обновления
+      old_component_version: Вы используете старую версию %{name}, которая не поддерживает
+        все функции Fluidd.<br>Обновите %{name} как минимум до %{version}.
     status:
       finished: Обновление завершено
       updating: Обновление...

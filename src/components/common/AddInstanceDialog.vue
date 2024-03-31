@@ -6,7 +6,6 @@
     :valid.sync="valid"
     :title="$t('app.general.title.add_printer')"
     :help-tooltip="$t('app.endpoint.tooltip.endpoint_examples')"
-    persistent
     @save="addInstance"
   >
     <v-card-text>

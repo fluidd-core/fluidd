@@ -32,9 +32,9 @@ app:
       rate_of_change: Változás
     tooltip:
       help: >-
-        Tartsd lenyomva a Shift-et a nagyításhoz.<br />Kattints egy
-        elemre a grafikonon való váltáshoz.<br />Kattints egy teljesítményre
-        a grafikonon való váltáshoz.
+        A nagyításhoz tartsd lenyomva a <kbd>Shift</kbd> billentyűt.<br />Kattints
+        egy elemre a grafikonon való váltáshoz.<br />Kattints egy teljesítményre a
+        grafikonon való váltáshoz.
   console:
     label:
       auto_scroll: Automatikus görgetés
@@ -74,11 +74,11 @@ app:
     filters:
       label:
         print_start_time: Nyomtatottak szűrése
-        print_start_time_desc: Kiszűri a már kinyomtatott elemeket.
         hidden_files_folders: Rejtett fájlok és mappák szűrése
         klipper_backup_files: Klipper biztonsági fájlok szűrése
         moonraker_backup_files: Moonraker biztonsági fájlok szűrése
         rolled_log_files: A gördített naplófájlok szűrése
+        crowsnest_backup_files: Crowsnest biztonsági mentési fájlok szűrése
     label:
       dir_name: Könyvtár neve
       disk_usage: Lemezhasználat
@@ -107,6 +107,7 @@ app:
       rename_dir: Könyvtár átnevezése
       rename_file: Fájl átnevezése
       upload_file: Fájl feltöltése
+      devices: Eszközök
     tooltip:
       low_on_space: Kevés a lemezterület
       items_count: '{count} tétel | {count} tételeket'
@@ -220,6 +221,8 @@ app:
       upload_print: Feltöltés & Nyomtatás
       view: Nézet
       reset_stats: Statisztikák törlése
+      copied: Másolva
+      copy: Másolás
     error:
       app_setup_link: >-
         A Fluidd telepítési követelményeit <a target="_blank" href="%{url}">itt
@@ -340,6 +343,8 @@ app:
       edit_category: Kategória szerkesztése
       add_category: Kategória hozzáadása
       file_time: Fájl
+      unknown: Ismeretlen
+      compact: Kompakt
     msg:
       password_changed: A jelszó megváltozott
       wrong_password: Hoppá! Valami rosszul sült el. Ez a jelszavad?
@@ -375,15 +380,23 @@ app:
           vagy benne? Törölsz {count} elemet.
         confirm_exclude_object: Biztosan kizárod ezt az objektumot a nyomtatásból?
         confirm_forcemove_toggle: Biztos vagy benne? Ez károsíthatja a nyomtatót.
-        confirm_reboot_host: Biztos, hogy újraindítod a gazdagépet?
-        confirm_shutdown_host: Biztos, hogy leállítod a gazdagépet?
+        confirm_reboot_host: Biztos vagy benne? Ez újraindítja a gazdagépet.
+        confirm_shutdown_host: Biztos vagy benne? Ez leállítja a gazdagépet.
         confirm_service_start: Biztos elindítod a %{name} szolgáltatást?
         confirm_service_restart: Biztos, hogy újraindítod a %{name} szolgáltatást?
         confirm_service_stop: Biztos, hogy leállítod a %{name} szolgáltatást?
-        confirm_power_device_toggle: Biztos, hogy átkapcsolod az eszköz teljesítményét?
+        confirm_power_device_toggle: Biztos vagy benne? Ez átkapcsolja az eszköz teljesítményét.
         unsaved_changes: Nem mentett módosításaid vannak. Biztosan bezárod ezt a fájlt?
         no_file_preview: >-
           %{name} jelenleg nem tekinthető meg.
+        confirm_remove_user: Biztosan eltávolítod a felhasználót %{username}?
+        confirm_cancel_print: Biztosan megszakítod az aktuális nyomtatást?
+        confirm_emergency_stop: Biztos, hogy a vészhelyzeti kapcsolóval állítod le
+          a nyomtatót?
+        confirm_clear_mesh: A nyomtató jelenleg foglalt. Biztos, hogy tisztázni akarod
+          az ágyhálót?
+        confirm_load_bedmesh_profile: A nyomtató jelenleg foglalt. Biztosan betöltöd
+          a %{name} profilt?
     table:
       header:
         actions: Tevékenységek
@@ -479,8 +492,9 @@ app:
       multiply_job: Munka szorzása | Munkák szorzása
     tooltip:
       help: >-
-        Állítsd sorba a munkákat a Munkák menüből ide húzott fájlokkal<br> Állítsd
-        be a sorba állított munkák sorrendjét felfelé vagy lefelé húzással.
+        Feladatok sorba rendezése úgy, hogy áthúzod a fájlokat a Feladatok közül,
+        és ide dobod<br>Módosítsd a sorban álló feladatok sorrendjét felfelé vagy
+        lefelé húzással
   printer:
     state:
       busy: Elfoglalt
@@ -571,7 +585,8 @@ app:
       fps_target: FPS Cél
       fps_idle_target: FPS Cél, ha nincs fókuszban
       height: Magasság
-      hide_single_part_bounding_box: Alkatrészhatároló doboz elrejtése egyetlen tárgy nyomtatásakor
+      hide_single_part_bounding_box: Alkatrészhatároló doboz elrejtése egyetlen tárgy
+        nyomtatásakor
       gcode_coords: G-Kód koordináták használata
       icon: Ikon
       invert_x_control: Fordított (X) vezérlés
@@ -636,11 +651,15 @@ app:
         automatikus megjelenítése
       show_screws_tilt_adjust_dialog_automatically: Ágycsavarok dőlésszögének beállítása
         párbeszédpanel automatikus megjelenítése
+      print_progress_calculation: Nyomtatási folyamat számítás
+      print_eta_calculation: Nyomtatás ETA számítása
+      print_in_progress_layout: Nyomtatási folyamat elrendezés
     timer_options:
       duration: Csak időtartam
       filament: Nyomtatószál becslés
       file: Fájlbecslés
       slicer: Szeletelő
+      slicer_m73: Szeletelő (M73)
     title:
       authentication: Hitelesítés
       console: Konzol
@@ -674,6 +693,8 @@ app:
         A márkanevek és logók használata kizárólag dekoratív és esztétikai célokat
         szolgál, és nem jelenti azt, hogy a márkák hivatalos kapcsolatban állnak vagy
         támogatmak minket.
+      average_calculation: Ha egynél több lehetőség van kiválasztva, a rendszer átlagot
+        számít ki
   socket:
     msg:
       connecting: Csatlakozás a Moonraker-hez...
@@ -713,6 +734,16 @@ app:
       operating_system: Operációs rendszer
       version: Változat
       virtualization: Virtualizáció
+      constants: Állandók
+      devices: Eszközök
+      last_stats: Utolsó statisztika
+    msg:
+      no_devices_found: Nem találhatóak eszközök
+      no_devices_searched: Eszközök kereséséhez használd a frissítés gombot
+      canbus_warning: 'Csak a hozzá nem rendelt CAN-busz-csomópontok észlelhetők.<br>
+        Javasoljuk, hogy a kommunikációs problémák elkerülése érdekében csak egy hozzá
+        nem rendelt eszközt csatlakoztass a CAN-buszhoz.<br> További információk:
+        <a target="_blank" href="https ://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">itt.</a>'
   tool:
     btn:
       home_x: X
@@ -732,7 +763,7 @@ app:
       motors_off: Motorok Ki
       relative_positioning: Relatív pozicionálás
       select_tool: Eszköz kiválasztása %{tool}
-      tools: Eszközök
+      tools: Szerszámok
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Az aktív extruder konfigurációja be van állítva</span>
@@ -769,6 +800,9 @@ app:
       package_list: Csomaglista
       up_to_date: NAPRAKÉSZ
       updates_available: Frissítések állnak rendelkezésre
+      old_component_version: A(z) %{name} régi verzióját használod, amely nem támogatja
+        a Fluidd összes funkcióját.<br>Frissítsd a(z) %{name} terméket legalább %{version}
+        értékre.
     status:
       finished: A frissítések befejeződtek
       updating: Frissítés...
@@ -836,10 +870,10 @@ app:
     btn:
       manage_spools: Orsók kezelése
       scan_code: Kód beolvasása
-      select: Kiválaszt
+      select: 'Válaszd | Válaszd ki: {macro}'
     title:
       spoolman: Orsómester
-      spool_selection: Orsó kiválasztása
+      spool_selection: Tekercs kiválasztása | Tekercs kiválasztása a makróhoz {macro}
       scan_spool: Orsó beolvasása
     label:
       change_spool: Orsó cseréje
@@ -854,6 +888,7 @@ app:
       material: Anyag
       remaining_weight: Maradék
       vendor: Forgalmazó
+      active_spool: Aktív tekercs
     msg:
       no_spool: >-
         Nem választottál ki orsót.
@@ -896,11 +931,11 @@ app:
       show_spool_selection_dialog_on_print_start: Orsókiválasztó párbeszédpanel megjelenítése
         nyomtatás indításakor
       warn_on_not_enough_filament: >-
-        Figyelmeztetés megjelenítése, ha a kiválasztott orsón nem maradt elég szál
-        a nyomtatás befejezéséhez.
+        Figyelmeztetés megjelenítése, ha a kiválasztott tekercsen nincs elég szál
+        a nyomtatás befejezéséhez
       warn_on_filament_type_mismatch: >-
-        Figyelmeztetés megjelenítése, ha az orsó szál típusa és a szeletelőben kiválasztott
-        szál típusa nem egyezik meg.
+        Figyelmeztetés megjelenítése, ha a tekercsen lévő szál típusa és a szeletelőben
+        kiválasztott szál típusa nem egyezik
   sensors:
     title:
       sensors: Érzékelők

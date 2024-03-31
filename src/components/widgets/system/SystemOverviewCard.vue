@@ -154,7 +154,7 @@ export default class PrinterStatsCard extends Mixins(StateMixin) {
         name.startsWith('#')
           ? id
           : name
-      )} ${this.distribution.release_info?.version_id} ?? ''`
+      )} ${this.distribution.release_info?.version_id ?? ''}`
     }
   }
 

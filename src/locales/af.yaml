@@ -69,7 +69,6 @@ app:
     filters:
       label:
         print_start_time: Filter druktyd.
-        print_start_time_desc: Filter items wat reeds gedruk is.
         hidden_files_folders: Filter versteekte lêers and vouers.
         klipper_backup_files: Filter Klipper rugsteunlêers.
         rolled_log_files: Filter log-lêers wat oorgeslaan het.

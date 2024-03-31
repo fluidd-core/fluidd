@@ -137,7 +137,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       .filter(result => result > 0)
 
     const printProgress = printProgressCalculationResults
-      .reduce((a, b) => a + b, 0) / printProgressCalculationResults.length
+      .reduce((a, b) => a + b, 0) / printProgressCalculationResults.length || 0
 
     return printProgress
   },
@@ -230,7 +230,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       .filter(result => result > 0)
 
     const etaLeft = printEtaCalculationResults
-      .reduce((a, b) => a + b, 0) / printEtaCalculationResults.length
+      .reduce((a, b) => a + b, 0) / printEtaCalculationResults.length || 0
 
     const eta = Date.now() + etaLeft * 1000
 
@@ -699,9 +699,10 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
   getExtraSensorData: (state) => (sensorType: string, name: string) => {
     const supportedSensors = [
+      'aht10',
       'bme280',
       'htu21d',
-      'aht10'
+      'nevermoresensor'
     ]
 
     if (supportedSensors.includes(sensorType)) {

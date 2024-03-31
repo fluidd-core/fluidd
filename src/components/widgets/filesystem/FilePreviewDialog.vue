@@ -30,16 +30,11 @@
         </div>
       </v-layout>
 
-      <template v-else-if="isMarkdown">
-        <promise-wrapper :promise="resultPromise">
-          <template #default="{result}">
-            <div
-              class="markdown-container"
-              v-html="result"
-            />
-          </template>
-        </promise-wrapper>
-      </template>
+      <div
+        v-else-if="renderedMarkdown"
+        class="markdown-container"
+        v-html="renderedMarkdown"
+      />
     </v-card-text>
 
     <template v-if="file">
@@ -105,7 +100,7 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean })
   readonly readonly?: boolean
 
-  resultPromise: Promise<string> | null = null
+  renderedMarkdown: string | null = null
 
   get calculatedWidth () {
     const defaultWidth = window.innerWidth * (this.$vuetify.breakpoint.mdAndDown ? 1 : 0.75)
@@ -132,6 +127,7 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
     if (!this.path) {
       // refuse rendering markdown if no base path has been supplied
       consola.error('[FilePreviewDialog] missing path property in markdown viewer')
+
       return
     }
 
@@ -154,9 +150,9 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
 
     const marked = new Marked(baseUrlExtension, customExtension)
 
-    this.resultPromise = marked.parse(data, {
+    this.renderedMarkdown = await marked.parse(data, {
       async: true
-    }) as Promise<string>
+    })
   }
 
   mounted () {

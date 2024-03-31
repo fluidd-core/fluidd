@@ -105,7 +105,7 @@
                       <v-col>
                         <app-text-field-with-copy
                           :value="device.path_by_id"
-                          label="device_path"
+                          label="path_by_id"
                           outlined
                           dense
                           readonly
@@ -118,7 +118,7 @@
                       <v-col>
                         <app-text-field-with-copy
                           :value="device.path_by_hardware"
-                          label="device_path"
+                          label="path_by_hardware"
                           outlined
                           dense
                           readonly

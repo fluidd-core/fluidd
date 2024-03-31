@@ -419,7 +419,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
             break
 
           case 'rolled_log_files':
-            if (file.type === 'file' && file.filename.match(/\.\d{4}-\d{2}-\d{2}$/)) {
+            if (file.type === 'file' && file.filename.match(/\.\d{4}-\d{2}-\d{2}(_\d{2}-\d{2}-\d{2})?$/)) {
               return false
             }
             break

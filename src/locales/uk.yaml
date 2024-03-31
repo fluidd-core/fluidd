@@ -72,7 +72,6 @@ app:
     filters:
       label:
         print_start_time: Відфільтрувати надруковане
-        print_start_time_desc: Відфільтрувати вже надруковані деталі.
         klipper_backup_files: Відфільтрувати резервні копії klipperа
     label:
       dir_name: Імʼя каталогу
