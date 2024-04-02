@@ -1,15 +1,13 @@
 <template>
   <div>
-    <div v-if="klippyConnected">
-      <v-tooltip
-        bottom
-      >
+    <template v-if="klippyConnected">
+      <v-tooltip bottom>
         <template #activator="{ on, attrs }">
           <app-btn
             v-bind="attrs"
             block
             color="primary"
-            class="me-2 mb-2"
+            class="mb-2"
             v-on="on"
             @click="restartKlippy"
           >
@@ -18,38 +16,14 @@
         </template>
         <span>{{ $t('app.general.tooltip.reload_klipper') }}</span>
       </v-tooltip>
-    </div>
 
-    <div v-else>
-      <v-tooltip
-        bottom
-      >
+      <v-tooltip bottom>
         <template #activator="{ on, attrs }">
           <app-btn
             v-bind="attrs"
             block
             color="primary"
-            class="me-2 mb-2"
-            v-on="on"
-            @click="serviceRestartKlipper"
-          >
-            {{ $t('app.general.btn.restart_service_klipper') }}
-          </app-btn>
-        </template>
-        <span>{{ $t('app.general.tooltip.restart_klipper') }}</span>
-      </v-tooltip>
-    </div>
-
-    <div v-if="klippyConnected">
-      <v-tooltip
-        bottom
-      >
-        <template #activator="{ on, attrs }">
-          <app-btn
-            v-bind="attrs"
-            block
-            color="primary"
-            class="me-2 mb-2"
+            class="mb-2"
             v-on="on"
             @click="firmwareRestartKlippy"
           >
@@ -58,7 +32,25 @@
         </template>
         <span>{{ $t('app.general.tooltip.reload_restart_klipper') }}</span>
       </v-tooltip>
-    </div>
+    </template>
+
+    <template v-else>
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <app-btn
+            v-bind="attrs"
+            block
+            color="primary"
+            class="mb-2"
+            v-on="on"
+            @click="serviceRestartKlipper"
+          >
+            {{ $t('app.general.btn.restart_service_klipper') }}
+          </app-btn>
+        </template>
+        <span>{{ $t('app.general.tooltip.restart_klipper') }}</span>
+      </v-tooltip>
+    </template>
 
     <app-btn
       block
@@ -76,7 +68,7 @@
 
     <app-btn
       block
-      class="me-2 mb-2"
+      class="me-2"
       @click="getMoonrakerLog()"
     >
       <v-icon

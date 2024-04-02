@@ -4,8 +4,9 @@
     dense
     icon="$warning"
     type="warning"
+    class="mb-0"
   >
-    <div v-if="printerWarnings.length > 0">
+    <template v-if="printerWarnings.length > 0">
       <div class="mb-2">
         {{ $t('app.general.error.app_warnings_found', { appName }) }}
       </div>
@@ -16,9 +17,9 @@
           v-html="linkExternalUrls(warning.message)"
         />
       </ul>
-    </div>
+    </template>
 
-    <div v-if="klipperWarnings.length > 0">
+    <template v-if="klipperWarnings.length > 0">
       <div class="mb-2">
         {{ $t('app.general.error.app_warnings_found', { appName: 'Klipper' }) }}
       </div>
@@ -29,9 +30,9 @@
           v-html="linkExternalUrls(warning.message)"
         />
       </ul>
-    </div>
+    </template>
 
-    <div v-if="moonrakerFailedComponents.length > 0">
+    <template v-if="moonrakerFailedComponents.length > 0">
       <div class="mb-2">
         {{ $t('app.general.error.failed_components') }}
       </div>
@@ -42,9 +43,9 @@
           v-html="linkExternalUrls(failedComponent)"
         />
       </ul>
-    </div>
+    </template>
 
-    <div v-if="moonrakerWarnings.length > 0">
+    <template v-if="moonrakerWarnings.length > 0">
       <div class="mb-2">
         {{ $t('app.general.error.app_warnings_found', { appName: 'Moonraker' }) }}
       </div>
@@ -55,7 +56,7 @@
           v-html="linkExternalUrls(warning)"
         />
       </ul>
-    </div>
+    </template>
 
     <div v-if="printerWarnings.length > 0">
       <span v-html="printerWarningsTxt" />
