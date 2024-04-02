@@ -66,6 +66,17 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.setting.label.keyboard_shortcuts')">
+        <v-switch
+          v-model="enableKeyboardShortcuts"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.confirm_on_estop')">
         <v-switch
           v-model="confirmOnEstop"
@@ -300,6 +311,18 @@ export default class GeneralSettings extends Mixins(StateMixin) {
         value: key,
         text: `${date.toLocaleTimeString(entry.locales ?? this.$filters.getAllLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
+  }
+
+  get enableKeyboardShortcuts (): boolean {
+    return this.$store.state.config.uiSettings.general.enableKeyboardShortcuts
+  }
+
+  set enableKeyboardShortcuts (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.enableKeyboardShortcuts',
+      value,
+      server: true
+    })
   }
 
   get confirmOnEstop () {

@@ -574,6 +574,7 @@ app:
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
+      keyboard_shortcuts: Keyboard Shortcuts
       language: Display Language
       last_result: Last result
       left_y: Left Y-Axis
@@ -898,3 +899,10 @@ app:
   sensors:
     title:
       sensors: Sensors
+  keyboard_shortcuts:
+    title:
+      keyboard_shortcuts: Keyboard Shortcuts
+    label:
+      actions: Actions
+      navigation: Navigation
+      open_keyboard_shortcut_help: Open keyboard shortcut help

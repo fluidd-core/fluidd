@@ -82,6 +82,7 @@ export interface GeneralConfig {
   sectionsToIgnorePendingConfigurationChanges: string[];
   dateFormat: string;
   timeFormat: string;
+  enableKeyboardShortcuts: boolean;
   textSortOrder: TextSortOrder;
   showRateOfChange: boolean;
   showRelativeHumidity: boolean;
