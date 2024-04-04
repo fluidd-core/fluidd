@@ -69,7 +69,7 @@
             {{ $t('app.general.tooltip.estop') }}
             <template v-if="enableKeyboardShortcuts">
               <br>
-              <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>F12</kbd>
+              <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>F12</kbd>
             </template>
           </span>
         </v-tooltip>

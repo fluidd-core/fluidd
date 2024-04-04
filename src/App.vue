@@ -435,17 +435,46 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   handleKeyDown (event: KeyboardEvent) {
-    const { key, shiftKey, ctrlKey } = event
+    if (!this.enableKeyboardShortcuts) {
+      return
+    }
+
+    const { key, ctrlKey, altKey, shiftKey } = event
 
     if (
-      this.enableKeyboardShortcuts &&
-      key === 'F12' &&
-      shiftKey &&
-      ctrlKey
+      ctrlKey &&
+      altKey &&
+      key === 'F12'
     ) {
       event.preventDefault()
 
       this.emergencyStop()
+
+      return
+    }
+
+    if (
+      ctrlKey &&
+      shiftKey &&
+      !altKey
+    ) {
+      if (
+        key === 'C' && (
+          this.printerPrinting ||
+          this.printerPaused
+        )
+      ) {
+        event.preventDefault()
+
+        this.cancelPrint()
+      } else if (
+        key === 'P' &&
+        this.printerPrinting
+      ) {
+        event.preventDefault()
+
+        this.pausePrint()
+      }
     }
   }
 }

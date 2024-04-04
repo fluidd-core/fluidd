@@ -906,3 +906,4 @@ app:
       actions: Actions
       navigation: Navigation
       open_keyboard_shortcut_help: Open keyboard shortcut help
+      printing: Printing

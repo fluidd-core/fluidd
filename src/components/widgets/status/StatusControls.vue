@@ -93,7 +93,6 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { SocketActions } from '@/api/socketActions'
 import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
 import ExcludeObjectsDialog from '@/components/widgets/exclude-objects/ExcludeObjectsDialog.vue'
 import PauseResumeBtn from './PauseResumeBtn.vue'
@@ -121,28 +120,6 @@ export default class StatusControls extends Mixins(StateMixin) {
 
   get hasParts () {
     return Object.keys(this.$store.getters['parts/getParts']).length > 0
-  }
-
-  async cancelPrint () {
-    const result = await this.$confirm(
-      this.$tc('app.general.simple_form.msg.confirm_cancel_print'),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-    )
-
-    if (result) {
-      SocketActions.printerPrintCancel()
-      this.addConsoleEntry('CANCEL_PRINT')
-    }
-  }
-
-  pausePrint () {
-    SocketActions.printerPrintPause()
-    this.addConsoleEntry('PAUSE')
-  }
-
-  resumePrint () {
-    SocketActions.printerPrintResume()
-    this.addConsoleEntry('RESUME')
   }
 
   resetFile () {
