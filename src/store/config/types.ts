@@ -227,5 +227,7 @@ export interface GcodePreviewConfig {
 }
 
 export interface FileSystemConfig {
-  activeFilters: Record<string, FileFilterType[]>
+  activeFilters: Record<string, FileFilterType[]>;
+  sortBy: Record<string, string | null>;
+  sortDesc: Record<string, boolean | null>;
 }

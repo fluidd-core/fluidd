@@ -12,7 +12,6 @@
       :dense="dense"
       disable-pagination
       :loading="loading"
-      sort-desc
       :custom-sort="customSort"
       :search="search"
       :show-select="bulkActions"
@@ -21,7 +20,9 @@
       item-key="name"
       height="100%"
       mobile-breakpoint="0"
-      sort-by="modified"
+      must-sort
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
       hide-default-footer
       class="rounded-0"
       fixed-header
@@ -367,6 +368,22 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     }
 
     return []
+  }
+
+  get sortBy () {
+    return this.$store.state.config.uiSettings.fileSystem.sortBy[this.root] as string | null ?? 'modified'
+  }
+
+  set sortBy (value: string | null | undefined) {
+    this.$store.dispatch('config/updateFileSystemSortBy', { root: this.root, value: value ?? null })
+  }
+
+  get sortDesc () {
+    return this.$store.state.config.uiSettings.fileSystem.sortDesc[this.root] as boolean | null ?? true
+  }
+
+  set sortDesc (value: boolean | null | undefined) {
+    this.$store.dispatch('config/updateFileSystemSortDesc', { root: this.root, value: value ?? null })
   }
 
   customSort (items: FileBrowserEntry[], sortBy: string[], sortDesc: boolean[], locale: string) {

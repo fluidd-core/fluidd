@@ -143,7 +143,9 @@ export const defaultState = (): ConfigState => {
         }
       },
       fileSystem: {
-        activeFilters: {}
+        activeFilters: {},
+        sortBy: {},
+        sortDesc: {}
       },
       toolhead: {
         forceMove: false,
