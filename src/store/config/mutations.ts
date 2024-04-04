@@ -10,6 +10,18 @@ import type { AppTablePartialHeader } from '@/types/tableheaders'
 import type { FileFilterType } from '../files/types'
 import consola from 'consola'
 
+const multipleVueSet = <T>(destination: object, source: T) => {
+  if (destination == null || source == null) {
+    return
+  }
+
+  for (const propertyName in source) {
+    if (typeof source[propertyName] === 'object') {
+      Vue.set(destination, propertyName, source[propertyName])
+    }
+  }
+}
+
 export const mutations: MutationTree<ConfigState> = {
   /**
    * Reset state
@@ -50,21 +62,11 @@ export const mutations: MutationTree<ConfigState> = {
       // Most settings should be merged, so start there.
       const processed = merge(state.uiSettings, payload)
 
-      // Apply overrides.
-      if (payload.general?.zAdjustDistances) {
-        Vue.set(processed.general, 'zAdjustDistances', payload.general.zAdjustDistances)
-      }
-
-      if (payload.general?.toolheadMoveDistances) {
-        Vue.set(processed.general, 'toolheadMoveDistances', payload.general.toolheadMoveDistances)
-      }
-
-      if (payload.editor?.autoEditExtensions) {
-        Vue.set(processed.editor, 'autoEditExtensions', payload.editor.autoEditExtensions)
-      }
-
-      if (payload.fileSystem?.activeFilters) {
-        Vue.set(processed.fileSystem, 'activeFilters', payload.fileSystem.activeFilters)
+      for (const propertyName in payload) {
+        multipleVueSet(
+          processed[propertyName as keyof UiSettings],
+          payload[propertyName as keyof UiSettings]
+        )
       }
 
       Vue.set(state, 'uiSettings', processed)
@@ -171,6 +173,14 @@ export const mutations: MutationTree<ConfigState> = {
 
   setFileSystemActiveFilters (state, payload: { root: string, value: FileFilterType[] }) {
     Vue.set(state.uiSettings.fileSystem.activeFilters, payload.root, payload.value)
+  },
+
+  setFileSystemSortBy (state, payload: { root: string, value: string | null }) {
+    Vue.set(state.uiSettings.fileSystem.sortBy, payload.root, payload.value)
+  },
+
+  setFileSystemSortDesc (state, payload: { root: string, value: boolean | null }) {
+    Vue.set(state.uiSettings.fileSystem.sortDesc, payload.root, payload.value)
   },
 
   /**
