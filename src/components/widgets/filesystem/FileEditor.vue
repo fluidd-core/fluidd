@@ -110,6 +110,15 @@ export default class FileEditor extends Mixins(BrowserMixin) {
       }
     })
 
+    this.editor.addAction({
+      id: 'action-emergency-stop',
+      label: this.$tc('app.general.tooltip.estop'),
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.F12],
+      run: () => {
+        this.$emit('emergency-stop')
+      }
+    })
+
     const filename = this.path ? `${this.path}/${this.filename}` : this.filename
     const apiFileUrl = `${this.activeInstance.apiUrl}/server/files/${filename}`
 
