@@ -454,8 +454,8 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     }
 
     if (
-      ctrlKey &&
       shiftKey &&
+      !ctrlKey &&
       !altKey
     ) {
       if (
