@@ -36,7 +36,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
-import eventTargetIsContentEditable from '@/util/event-target-is-content-editable'
+import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
 import { Globals } from '@/globals'
 import isKeyOf from '@/util/is-key-of'
 
@@ -78,13 +78,10 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
       return
     }
 
-    const { key, ctrlKey, altKey, shiftKey } = event
+    const shortcut = keyboardEventToKeyboardShortcut(event)
 
     if (
-      key === this.accelerator &&
-      !ctrlKey &&
-      !altKey &&
-      !shiftKey &&
+      shortcut === this.accelerator &&
       !eventTargetIsContentEditable(event) &&
       this.$router.currentRoute.path !== this.to
     ) {

@@ -905,6 +905,11 @@ app:
       keyboard_shortcuts: Keyboard Shortcuts
     label:
       actions: Actions
+      cancel: Cancel
+      emergency_stop: Emergency stop
+      home_all: Home all
       navigation: Navigation
       open_keyboard_shortcut_help: Open keyboard shortcut help
+      pause: Pause
       printing: Printing
+      tool: Tool

@@ -14,7 +14,7 @@
           :loading="hasWait($waits.onHomeAll)"
           :color="!allHomed ? 'primary' : undefined"
           class="px-2 mr-2"
-          @click="sendGcode('G28', $waits.onHomeAll)"
+          @click="homeAll"
         >
           <v-icon
             small

@@ -140,4 +140,8 @@ export default class StateMixin extends Vue {
     SocketActions.printerPrintResume()
     this.addConsoleEntry('RESUME')
   }
+
+  homeAll () {
+    this.sendGcode('G28', this.$waits.onHomeAll)
+  }
 }

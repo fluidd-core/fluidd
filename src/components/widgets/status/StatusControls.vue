@@ -7,7 +7,7 @@
         :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
         class="ms-1 my-1"
-        @click="cancelPrint()"
+        @click="cancelPrint"
       >
         <v-icon
           small

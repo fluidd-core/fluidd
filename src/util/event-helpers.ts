@@ -1,4 +1,4 @@
-const eventTargetIsContentEditable = (event: KeyboardEvent): boolean => {
+export const eventTargetIsContentEditable = (event: Event): boolean => {
   if (event.target) {
     const { isContentEditable, tagName, type, readOnly } = event.target as HTMLInputElement
 
@@ -22,4 +22,22 @@ const eventTargetIsContentEditable = (event: KeyboardEvent): boolean => {
   return false
 }
 
-export default eventTargetIsContentEditable
+export const keyboardEventToKeyboardShortcut = (event: KeyboardEvent): string => {
+  const keys: string[] = []
+
+  if (event.ctrlKey) {
+    keys.push('Ctrl')
+  }
+
+  if (event.altKey) {
+    keys.push('Alt')
+  }
+
+  if (event.shiftKey) {
+    keys.push('Shift')
+  }
+
+  keys.push(event.key)
+
+  return keys.join('+')
+}

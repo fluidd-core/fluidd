@@ -60,16 +60,29 @@
       </v-card>
 
       <v-card flat>
+        <v-card-title>{{ $t('app.keyboard_shortcuts.label.tool') }}</v-card-title>
+
+        <v-simple-table dense>
+          <tbody>
+            <tr>
+              <th>{{ $t('app.keyboard_shortcuts.label.home_all') }}</th>
+              <td><kbd>Shift</kbd> + <kbd>h</kbd></td>
+            </tr>
+          </tbody>
+        </v-simple-table>
+      </v-card>
+
+      <v-card flat>
         <v-card-title>{{ $t('app.keyboard_shortcuts.label.printing') }}</v-card-title>
 
         <v-simple-table dense>
           <tbody>
             <tr>
-              <th>{{ $t('app.general.btn.pause') }}</th>
+              <th>{{ $t('app.keyboard_shortcuts.label.pause') }}</th>
               <td><kbd>Shift</kbd> + <kbd>p</kbd></td>
             </tr>
             <tr>
-              <th>{{ $t('app.general.btn.cancel') }}</th>
+              <th>{{ $t('app.keyboard_shortcuts.label.cancel') }}</th>
               <td><kbd>Shift</kbd> + <kbd>c</kbd></td>
             </tr>
           </tbody>
@@ -82,7 +95,7 @@
         <v-simple-table dense>
           <tbody>
             <tr>
-              <th>{{ $t('app.general.tooltip.estop') }}</th>
+              <th>{{ $t('app.keyboard_shortcuts.label.emergency_stop') }}</th>
               <td><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>F12</kbd></td>
             </tr>
             <tr>
@@ -98,7 +111,7 @@
 
 <script lang="ts">
 import { Globals } from '@/globals'
-import eventTargetIsContentEditable from '@/util/event-target-is-content-editable'
+import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
@@ -130,12 +143,10 @@ export default class KeyboardShortcutsDialog extends Vue {
       return
     }
 
-    const { key, ctrlKey, altKey } = event
+    const shortcut = keyboardEventToKeyboardShortcut(event)
 
     if (
-      key === '?' &&
-      !ctrlKey &&
-      !altKey &&
+      ['?', 'Shift+?'].includes(shortcut) &&
       !eventTargetIsContentEditable(event)
     ) {
       event.preventDefault()

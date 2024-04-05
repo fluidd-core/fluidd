@@ -112,6 +112,7 @@ import { getFilesFromDataTransfer, hasFilesInDataTransfer } from './util/file-sy
 import type { ThemeConfig } from '@/store/config/types'
 import ActionCommandPromptDialog from './components/common/ActionCommandPromptDialog.vue'
 import KeyboardShortcutsDialog from './components/common/KeyboardShortcutsDialog.vue'
+import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from './util/event-helpers'
 
 @Component<App>({
   metaInfo () {
@@ -439,13 +440,9 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
       return
     }
 
-    const { key, ctrlKey, altKey, shiftKey } = event
+    const shortcut = keyboardEventToKeyboardShortcut(event)
 
-    if (
-      ctrlKey &&
-      altKey &&
-      key === 'F12'
-    ) {
+    if (shortcut === 'Ctrl+Alt+F12') {
       event.preventDefault()
 
       this.emergencyStop()
@@ -454,27 +451,39 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     }
 
     if (
-      shiftKey &&
-      !ctrlKey &&
-      !altKey
+      !this.klippyReady ||
+      eventTargetIsContentEditable(event)
     ) {
-      if (
-        key === 'C' && (
+      return
+    }
+
+    switch (shortcut) {
+      case 'Shift+C':
+        if (
           this.printerPrinting ||
           this.printerPaused
-        )
-      ) {
-        event.preventDefault()
+        ) {
+          event.preventDefault()
 
-        this.cancelPrint()
-      } else if (
-        key === 'P' &&
-        this.printerPrinting
-      ) {
-        event.preventDefault()
+          this.cancelPrint()
+        }
+        break
 
-        this.pausePrint()
-      }
+      case 'Shift+P':
+        if (this.printerPrinting) {
+          event.preventDefault()
+
+          this.pausePrint()
+        }
+        break
+
+      case 'Shift+H':
+        if (!this.printerPrinting) {
+          event.preventDefault()
+
+          this.homeAll()
+        }
+        break
     }
   }
 }
