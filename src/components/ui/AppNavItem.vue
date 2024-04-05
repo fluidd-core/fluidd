@@ -78,13 +78,12 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
       return
     }
 
-    const { key, ctrlKey, altKey, shiftKey } = event
+    const { key, ctrlKey, altKey } = event
 
     if (
-      key === this.accelerator &&
+      key.toLowerCase() === this.accelerator &&
       !ctrlKey &&
       !altKey &&
-      !shiftKey &&
       !eventTargetIsContentEditable(event) &&
       this.$router.currentRoute.path !== this.to
     ) {

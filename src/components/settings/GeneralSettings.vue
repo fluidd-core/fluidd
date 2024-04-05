@@ -66,7 +66,10 @@
 
       <v-divider />
 
-      <app-setting :title="$t('app.setting.label.keyboard_shortcuts')">
+      <app-setting
+        :title="$t('app.setting.label.keyboard_shortcuts')"
+        :sub-title="$t('app.setting.tooltip.keyboard_shortcuts')"
+      >
         <v-switch
           v-model="enableKeyboardShortcuts"
           hide-details

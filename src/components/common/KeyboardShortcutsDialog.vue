@@ -66,11 +66,11 @@
           <tbody>
             <tr>
               <th>{{ $t('app.general.btn.pause') }}</th>
-              <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd></td>
+              <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>p</kbd></td>
             </tr>
             <tr>
               <th>{{ $t('app.general.btn.cancel') }}</th>
-              <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd></td>
+              <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>c</kbd></td>
             </tr>
           </tbody>
         </v-simple-table>
