@@ -141,10 +141,6 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
     return this.$store.getters['server/componentSupport']('timelapse')
   }
 
-  get supportsVersions () {
-    return this.$store.getters['server/componentSupport']('update_manager')
-  }
-
   get enableDiagnostics () {
     return this.$store.state.config.uiSettings.general.enableDiagnostics
   }

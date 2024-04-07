@@ -420,7 +420,7 @@
               v-else
               class="cc-btn"
               :class="xyzHomeClasses"
-              @click="sendGcode('G28', $waits.onHomeAll)"
+              @click="homeAll"
             >
               <circle
                 cx="173.5"
@@ -502,7 +502,7 @@
               v-else
               class="cc-btn large"
               :class="xyzHomeClasses"
-              @click="sendGcode('G28', $waits.onHomeAll)"
+              @click="homeAll"
             >
               <path
                 d="m8.5,283.781v48.724c0,3.311,2.684,5.995,5.995,5.995h48.724c5.851,0,8.259-7.555,3.454-10.892-18.441-12.807-34.473-28.839-47.28-47.28-3.337-4.805-10.892-2.397-10.892,3.454Z"

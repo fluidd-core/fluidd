@@ -135,6 +135,7 @@
         :code-lens="codeLens"
         @ready="editorReady = true"
         @save="emitSave(false)"
+        @emergency-stop="emergencyStop"
       />
 
       <file-editor-text-only

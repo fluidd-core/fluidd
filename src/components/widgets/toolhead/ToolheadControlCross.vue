@@ -36,7 +36,7 @@
           :disabled="!klippyReady || printerPrinting"
           icon="$home"
           small-icon
-          @click="sendGcode('G28', $waits.onHomeAll)"
+          @click="homeAll"
         >
           {{ $t('app.tool.btn.home_all') }}
         </app-btn-toolhead-move>

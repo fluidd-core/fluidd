@@ -65,7 +65,13 @@
               </v-icon>
             </app-btn>
           </template>
-          <span>{{ $t('app.general.tooltip.estop') }}</span>
+          <span>
+            {{ $t('app.general.tooltip.estop') }}
+            <template v-if="enableKeyboardShortcuts">
+              <br>
+              <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>F12</kbd>
+            </template>
+          </span>
         </v-tooltip>
       </div>
 
@@ -333,6 +339,10 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     }
 
     return true
+  }
+
+  get enableKeyboardShortcuts (): boolean {
+    return this.$store.state.config.uiSettings.general.enableKeyboardShortcuts
   }
 
   handleExitLayout () {

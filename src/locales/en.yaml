@@ -574,6 +574,7 @@ app:
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
+      keyboard_shortcuts: Keyboard shortcuts
       language: Display Language
       last_result: Last result
       left_y: Left Y-Axis
@@ -653,6 +654,7 @@ app:
       average_calculation: If more than one option is select, an average will be calculated
       diagnostics_performance: '[BETA] Logging diagnostics info may impact performance'
       gcode_coords: Use GCode position instead of toolhead position on dashboard
+      keyboard_shortcuts: Once enabled, press '?' to view the list of available keyboard shortcuts
       show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
       show_bed_screws_adjust_dialog_automatically: Automatically shows helper dialog if running BED_SCREWS_ADJUST tool
       show_screws_tilt_adjust_dialog_automatically: Automatically shows helper dialog if running SCREWS_TILT_CALCULATE tool
@@ -898,3 +900,16 @@ app:
   sensors:
     title:
       sensors: Sensors
+  keyboard_shortcuts:
+    title:
+      keyboard_shortcuts: Keyboard Shortcuts
+    label:
+      actions: Actions
+      cancel: Cancel
+      emergency_stop: Emergency stop
+      home_all: Home all
+      navigation: Navigation
+      open_keyboard_shortcut_help: Open keyboard shortcut help
+      pause: Pause
+      printing: Printing
+      tool: Tool

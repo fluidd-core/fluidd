@@ -118,4 +118,30 @@ export default class StateMixin extends Vue {
       SocketActions.printerEmergencyStop()
     }
   }
+
+  async cancelPrint () {
+    const result = await this.$confirm(
+      this.$tc('app.general.simple_form.msg.confirm_cancel_print'),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+
+    if (result) {
+      SocketActions.printerPrintCancel()
+      this.addConsoleEntry('CANCEL_PRINT')
+    }
+  }
+
+  pausePrint () {
+    SocketActions.printerPrintPause()
+    this.addConsoleEntry('PAUSE')
+  }
+
+  resumePrint () {
+    SocketActions.printerPrintResume()
+    this.addConsoleEntry('RESUME')
+  }
+
+  homeAll () {
+    this.sendGcode('G28', this.$waits.onHomeAll)
+  }
 }

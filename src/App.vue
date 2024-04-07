@@ -85,6 +85,7 @@
       <updating-dialog />
       <spool-selection-dialog />
       <action-command-prompt-dialog />
+      <keyboard-shortcuts-dialog />
     </v-main>
 
     <app-footer />
@@ -110,6 +111,8 @@ import type { FlashMessage } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from './util/file-system-entry'
 import type { ThemeConfig } from '@/store/config/types'
 import ActionCommandPromptDialog from './components/common/ActionCommandPromptDialog.vue'
+import KeyboardShortcutsDialog from './components/common/KeyboardShortcutsDialog.vue'
+import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from './util/event-helpers'
 
 @Component<App>({
   metaInfo () {
@@ -122,13 +125,13 @@ import ActionCommandPromptDialog from './components/common/ActionCommandPromptDi
   components: {
     SpoolSelectionDialog,
     FileSystemDownloadDialog,
-    ActionCommandPromptDialog
+    ActionCommandPromptDialog,
+    KeyboardShortcutsDialog
   }
 })
 export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   toolsdrawer: boolean | null = null
   navdrawer: boolean | null = null
-  showUpdateUI = false
   dragState = false
   customBackgroundImageStyle: Record<string, string> = {}
 
@@ -317,11 +320,16 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     }
   }
 
+  get enableKeyboardShortcuts (): boolean {
+    return this.$store.state.config.uiSettings.general.enableKeyboardShortcuts
+  }
+
   mounted () {
     window.addEventListener('dragover', this.handleDragOver)
     window.addEventListener('dragenter', this.handleDragEnter)
     window.addEventListener('dragleave', this.handleDragLeave)
     window.addEventListener('drop', this.handleDrop)
+    window.addEventListener('keydown', this.handleKeyDown, false)
 
     // this.onLoadLocale(this.$i18n.locale)
     EventBus.bus.$on('flashMessage', (payload: FlashMessage) => {
@@ -354,6 +362,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     window.removeEventListener('dragenter', this.handleDragEnter)
     window.removeEventListener('dragleave', this.handleDragLeave)
     window.removeEventListener('drop', this.handleDrop)
+    window.removeEventListener('keydown', this.handleKeyDown)
   }
 
   handleToolsDrawerChange () {
@@ -423,6 +432,58 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
           this.$store.dispatch('wait/removeWait', wait)
         }
       }
+    }
+  }
+
+  handleKeyDown (event: KeyboardEvent) {
+    if (!this.enableKeyboardShortcuts) {
+      return
+    }
+
+    const shortcut = keyboardEventToKeyboardShortcut(event)
+
+    if (shortcut === 'Ctrl+Alt+F12') {
+      event.preventDefault()
+
+      this.emergencyStop()
+
+      return
+    }
+
+    if (
+      !this.klippyReady ||
+      eventTargetIsContentEditable(event)
+    ) {
+      return
+    }
+
+    switch (shortcut) {
+      case 'Shift+C':
+        if (
+          this.printerPrinting ||
+          this.printerPaused
+        ) {
+          event.preventDefault()
+
+          this.cancelPrint()
+        }
+        break
+
+      case 'Shift+P':
+        if (this.printerPrinting) {
+          event.preventDefault()
+
+          this.pausePrint()
+        }
+        break
+
+      case 'Shift+H':
+        if (!this.printerPrinting) {
+          event.preventDefault()
+
+          this.homeAll()
+        }
+        break
     }
   }
 }
