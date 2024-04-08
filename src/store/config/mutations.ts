@@ -1,26 +1,14 @@
-import Vue from 'vue'
+import Vue, { reactive } from 'vue'
 import type { MutationTree } from 'vuex'
 import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
-import { merge, set } from 'lodash-es'
+import { mergeWith, set } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
 import type { AppTableHeader } from '@/types'
 import type { AppTablePartialHeader } from '@/types/tableheaders'
 import type { FileFilterType } from '../files/types'
 import consola from 'consola'
-
-const multipleVueSet = <T>(destination: object, source: T) => {
-  if (destination == null || source == null) {
-    return
-  }
-
-  for (const propertyName in source) {
-    if (typeof source[propertyName] === 'object') {
-      Vue.set(destination, propertyName, source[propertyName])
-    }
-  }
-}
 
 export const mutations: MutationTree<ConfigState> = {
   /**
@@ -59,17 +47,13 @@ export const mutations: MutationTree<ConfigState> = {
         }
       }
 
-      // Most settings should be merged, so start there.
-      const processed = merge(state.uiSettings, payload)
+      const mergedSettings = mergeWith(
+        state.uiSettings,
+        payload,
+        (dest, src) => Array.isArray(dest) ? src : undefined
+      )
 
-      for (const propertyName in payload) {
-        multipleVueSet(
-          processed[propertyName as keyof UiSettings],
-          payload[propertyName as keyof UiSettings]
-        )
-      }
-
-      Vue.set(state, 'uiSettings', processed)
+      Vue.set(state, 'uiSettings', reactive(mergedSettings))
     }
   },
 
