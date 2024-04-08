@@ -512,7 +512,7 @@ app:
       mjpegstream: MJPEG поток
       video: IP Камера
       iframe: Страница HTTP
-      webrtc_gortc: WebRTC (go2rtc)
+      webrtc_go2rtc: WebRTC (go2rtc)
       hlsstream: Поток HLS
       webrtc_camera_streamer: WebRTC (camera-streamer)
     camera_rotate_options:
@@ -731,7 +731,7 @@ app:
       canbus_warning: Только не назначенные узлы CAN могут быть обнаружены.<br> Рекомендуется
         иметь не более одного не назначенного устройства, подключённого к шине CAN,
         во избежание проблем с обменом данными. Дополнительную информацию можно найти
-        <a target="_blank" 
+        <a target="_blank"
         href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">здесь.</a>
       no_devices_found: Устройства не найдены
   tool:

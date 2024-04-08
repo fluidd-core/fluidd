@@ -620,7 +620,7 @@ app:
       video: Kamera IP
       webrtc_camera_streamer: WebRTC (camera-streamer)
       iframe: Strona HTTP
-      webrtc_gortc: WebRTC (go2rtc)
+      webrtc_go2rtc: WebRTC (go2rtc)
     btn:
       add_thermal_preset: Dodaj preset
       add_user: Dodaj użytkownika

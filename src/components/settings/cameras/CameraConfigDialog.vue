@@ -86,7 +86,8 @@
             { text: $t('app.setting.camera_type_options.webrtc_camera_streamer'), value: 'webrtc-camerastreamer' },
             { text: $t('app.setting.camera_type_options.video'), value: 'ipstream' },
             { text: $t('app.setting.camera_type_options.iframe'), value: 'iframe' },
-            { text: $t('app.setting.camera_type_options.webrtc_gortc'), value: 'webrtc-go2rtc' }
+            { text: $t('app.setting.camera_type_options.webrtc_go2rtc'), value: 'webrtc-go2rtc' },
+            { text: $t('app.setting.camera_type_options.webrtc_mediamtx'), value: 'webrtc-mediamtx' }
           ]"
           item-value="value"
           item-text="text"
