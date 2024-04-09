@@ -36,24 +36,12 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
   // webrtc player methods
   // adapted from https://github.com/bluenviron/mediamtx/blob/main/internal/servers/webrtc/read_index.html
 
-  retryPause = 2000
-
-  url: string = ''
+  whepUrl: string = ''
   sessionUrl: string = ''
   pc: RTCPeerConnection | null = null
   restartTimeout: number | null = null
   offerData: MediamtxOffer | null = null
   queuedCandidates: RTCIceCandidate[] = []
-  defaultControls = false
-
-  setMessage (str: string) {
-    if (str) {
-      this.cameraVideo.controls = false
-    } else {
-      this.cameraVideo.controls = this.defaultControls
-    }
-    consola.debug('[WebrtcMediamtxCamera] ' + str)
-  }
 
   unquoteCredential (v: string): string {
     return JSON.parse(`"${v}"`)
@@ -82,7 +70,7 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
     const ret: MediamtxOffer = {
       iceUfrag: '',
       icePwd: '',
-      medias: [] as string[]
+      medias: []
     }
 
     for (const line of offer.split('\r\n')) {
@@ -98,50 +86,9 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
     return ret
   }
 
-  enableStereoOpus (section: string): string {
-    let opusPayloadFormat = ''
-    const lines = section.split('\r\n')
-
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].startsWith('a=rtpmap:') && lines[i].toLowerCase().includes('opus/')) {
-        opusPayloadFormat = lines[i].slice('a=rtpmap:'.length).split(' ')[0]
-        break
-      }
-    }
-
-    if (opusPayloadFormat === '') {
-      return section
-    }
-
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].startsWith('a=fmtp:' + opusPayloadFormat + ' ')) {
-        if (!lines[i].includes('stereo')) {
-          lines[i] += ';stereo=1'
-        }
-        if (!lines[i].includes('sprop-stereo')) {
-          lines[i] += ';sprop-stereo=1'
-        }
-      }
-    }
-
-    return lines.join('\r\n')
-  }
-
-  editOffer (offer: RTCSessionDescriptionInit) {
-    const sections = offer.sdp?.split('m=') ?? []
-
-    for (let i = 0; i < sections.length; i++) {
-      const section = sections[i]
-      if (section.startsWith('audio')) {
-        sections[i] = this.enableStereoOpus(section)
-      }
-    }
-
-    offer.sdp = sections.join('m=')
-  }
-
   generateSdpFragment (od: MediamtxOffer, candidates: RTCIceCandidate[]) {
     const candidatesByMedia: Record<number, RTCIceCandidate[]> = {}
+
     for (const candidate of candidates) {
       const mid = candidate.sdpMLineIndex!
       if (candidatesByMedia[mid] === undefined) {
@@ -168,37 +115,93 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
     return frag
   }
 
-  loadStream () {
-    this.requestICEServers()
-  }
+  async loadStream () {
+    try {
+      const res = await fetch(this.whepUrl, {
+        method: 'OPTIONS'
+      })
 
-  onError (err: unknown) {
-    if (this.restartTimeout === null) {
-      this.setMessage(err + ', retrying in some seconds')
-
-      if (this.pc !== null) {
-        this.pc.close()
-        this.pc = null
+      const config: RTCConfigurationWithSdpSemantics = {
+        iceServers: this.linkToIceServers(res.headers.get('Link')),
+        // https://webrtc.org/getting-started/unified-plan-transition-guide
+        sdpSemantics: 'unified-plan'
       }
 
-      this.restartTimeout = window.setTimeout(() => {
-        this.restartTimeout = null
-        this.loadStream()
-      }, this.retryPause)
+      this.pc = new RTCPeerConnection(config)
 
-      if (this.sessionUrl) {
-        fetch(this.sessionUrl, {
-          method: 'DELETE'
-        })
+      this.pc.addTransceiver('video', { direction: 'recvonly' })
+
+      this.pc.onicecandidate = evt => {
+        if (this.restartTimeout !== null) {
+          return
+        }
+
+        if (evt.candidate !== null) {
+          if (this.sessionUrl === '') {
+            this.queuedCandidates.push(evt.candidate)
+          } else {
+            this.sendLocalCandidates([evt.candidate])
+          }
+        }
       }
 
-      this.queuedCandidates = []
+      this.pc.oniceconnectionstatechange = () => {
+        if (this.restartTimeout !== null) {
+          return
+        }
+
+        if (this.pc?.iceConnectionState === 'disconnected') {
+          consola.warn('[WebrtcMediamtxCamera] peer connection disconnected')
+
+          this.onError()
+        }
+      }
+
+      this.pc.ontrack = (evt) => {
+        this.cameraVideo.srcObject = evt.streams[0]
+      }
+
+      const offer = await this.pc.createOffer()
+
+      this.offerData = this.parseOffer(offer.sdp ?? '')
+
+      this.pc.setLocalDescription(offer)
+
+      this.sendOffer(offer)
+    } catch (err: unknown) {
+      consola.error('[WebrtcMediamtxCamera] error on loadStream', err)
+
+      this.onError()
     }
   }
 
-  async sendLocalCandidates (candidates: RTCIceCandidate[]) {
-    consola.debug('[WebrtcMediamtxCamera] sendLocalCandidates')
+  onError () {
+    if (this.restartTimeout !== null) {
+      return
+    }
 
+    if (this.pc !== null) {
+      this.pc.close()
+      this.pc = null
+    }
+
+    this.restartTimeout = window.setTimeout(() => {
+      this.restartTimeout = null
+      this.loadStream()
+    }, 2000)
+
+    if (this.sessionUrl) {
+      fetch(this.sessionUrl, {
+        method: 'DELETE'
+      })
+
+      this.sessionUrl = ''
+    }
+
+    this.queuedCandidates = []
+  }
+
+  async sendLocalCandidates (candidates: RTCIceCandidate[]) {
     try {
       const res = await fetch(this.sessionUrl, {
         method: 'PATCH',
@@ -208,32 +211,21 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
         },
         body: this.generateSdpFragment(this.offerData!, candidates)
       })
+
       switch (res.status) {
         case 204:
           break
+
         case 404:
           throw new Error('stream not found')
+
         default:
           throw new Error(`bad status code ${res.status}`)
       }
     } catch (err: unknown) {
-      this.onError(err)
-    }
-  }
+      consola.error('[WebrtcMediamtxCamera] error on sendLocalCandidates', err)
 
-  onLocalCandidate (evt: RTCPeerConnectionIceEvent) {
-    consola.debug('[WebrtcMediamtxCamera] onLocalCandidate')
-
-    if (this.restartTimeout !== null) {
-      return
-    }
-
-    if (evt.candidate !== null) {
-      if (this.sessionUrl === '') {
-        this.queuedCandidates.push(evt.candidate)
-      } else {
-        this.sendLocalCandidates([evt.candidate])
-      }
+      this.onError()
     }
   }
 
@@ -254,10 +246,8 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
   }
 
   async sendOffer (offer: RTCSessionDescriptionInit) {
-    consola.debug('[WebrtcMediamtxCamera] sendOffer')
-
     try {
-      const res = await fetch(this.url, {
+      const res = await fetch(this.whepUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/sdp'
@@ -268,96 +258,24 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
       switch (res.status) {
         case 201:
           break
+
         case 404:
           throw new Error('stream not found')
+
         default:
           throw new Error(`bad status code ${res.status}`)
       }
+
       this.sessionUrl = new URL(res.headers.get('location') ?? '', this.baseUrl).toString()
 
       const sdp = await res.text()
 
       this.onRemoteAnswer(sdp)
     } catch (err: unknown) {
-      this.onError(err)
+      consola.error('[WebrtcMediamtxCamera] error on sendOffer', err)
+
+      this.onError()
     }
-  }
-
-  async createOffer () {
-    const offer = await this.pc?.createOffer()
-
-    if (offer) {
-      this.editOffer(offer)
-      this.offerData = this.parseOffer(offer.sdp ?? '')
-      this.pc?.setLocalDescription(offer)
-
-      this.sendOffer(offer)
-    }
-  }
-
-  onConnectionState () {
-    if (this.restartTimeout !== null) {
-      return
-    }
-
-    if (this.pc?.iceConnectionState === 'disconnected') {
-      this.onError('peer connection disconnected')
-    }
-  }
-
-  onTrack (evt: RTCTrackEvent) {
-    this.setMessage('')
-    this.cameraVideo.srcObject = evt.streams[0]
-  }
-
-  async requestICEServers () {
-    consola.debug('[WebrtcMediamtxCamera] requestICEServers')
-
-    try {
-      const res = await fetch(this.url, {
-        method: 'OPTIONS'
-      })
-
-      const config: RTCConfigurationWithSdpSemantics = {
-        iceServers: this.linkToIceServers(res.headers.get('Link')),
-        // https://webrtc.org/getting-started/unified-plan-transition-guide
-        sdpSemantics: 'unified-plan'
-      }
-      this.pc = new RTCPeerConnection(config)
-
-      const direction = 'sendrecv'
-      this.pc.addTransceiver('video', { direction })
-      this.pc.addTransceiver('audio', { direction })
-
-      this.pc.onicecandidate = (evt) => this.onLocalCandidate(evt)
-      this.pc.oniceconnectionstatechange = () => this.onConnectionState()
-      this.pc.ontrack = (evt) => this.onTrack(evt)
-
-      this.createOffer()
-    } catch (err: unknown) {
-      this.onError(err)
-    }
-  }
-
-  parseBoolString (str: string | null | undefined, defaultVal: boolean) {
-    str = (str || '')
-
-    if (['1', 'yes', 'true'].includes(str.toLowerCase())) {
-      return true
-    }
-    if (['0', 'no', 'false'].includes(str.toLowerCase())) {
-      return false
-    }
-    return defaultVal
-  }
-
-  loadAttributesFromQuery () {
-    const params = new URLSearchParams(window.location.search)
-    this.cameraVideo.controls = this.parseBoolString(params.get('controls'), true)
-    this.cameraVideo.muted = this.parseBoolString(params.get('muted'), true)
-    this.cameraVideo.autoplay = this.parseBoolString(params.get('autoplay'), true)
-    this.cameraVideo.playsInline = this.parseBoolString(params.get('playsinline'), true)
-    this.defaultControls = this.cameraVideo.controls
   }
 
   get baseUrl () {
@@ -371,12 +289,15 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
   }
 
   startPlayback () {
-    this.url = new URL('whep', this.baseUrl).toString()
+    this.whepUrl = new URL('whep', this.baseUrl).toString()
 
     this.loadStream()
   }
 
   stopPlayback () {
+    this.sessionUrl = ''
+    this.queuedCandidates = []
+
     if (this.restartTimeout) {
       clearTimeout(this.restartTimeout)
       this.restartTimeout = null
