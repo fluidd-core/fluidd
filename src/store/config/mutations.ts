@@ -1,9 +1,9 @@
-import Vue, { reactive } from 'vue'
+import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
-import { mergeWith, set } from 'lodash-es'
+import { cloneDeep, mergeWith, set } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
 import type { AppTableHeader } from '@/types'
 import type { AppTablePartialHeader } from '@/types/tableheaders'
@@ -48,12 +48,12 @@ export const mutations: MutationTree<ConfigState> = {
       }
 
       const mergedSettings = mergeWith(
-        state.uiSettings,
+        cloneDeep(state.uiSettings),
         payload,
         (dest, src) => Array.isArray(dest) ? src : undefined
       )
 
-      Vue.set(state, 'uiSettings', reactive(mergedSettings))
+      Vue.set(state, 'uiSettings', mergedSettings)
     }
   },
 
