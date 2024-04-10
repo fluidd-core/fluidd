@@ -47,6 +47,10 @@ The current supported types are:
   - Loads a webrtc stream from go2rtc.
   - Example stream URL: `http(s)://your.domain/webrtc/stream.html?src=trident&mode=webrtc`
 
+- **WebRTC (MediaMTX)**  
+  - Loads a webrtc stream from MediaMTX.
+  - Example stream URL: `http(s)://your.domain/stream`
+
 - **IP Camera**  
   - Experimental option replacing the `<img>` tag with a `<video>` tag.
   - Use only if your provided URL supports native HTML5 video tags.
