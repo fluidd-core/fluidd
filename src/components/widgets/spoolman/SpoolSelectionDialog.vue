@@ -203,6 +203,7 @@ import QRReader from '@/components/widgets/spoolman/QRReader.vue'
 import type { WebcamConfig } from '@/store/webcams/types'
 import QrScanner from 'qr-scanner'
 import type { AppTableHeader } from '@/types'
+import getFilePaths from '@/util/get-file-paths'
 
 @Component({
   components: { QRReader }
@@ -233,8 +234,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         if (!this.currentFile && this.currentFileName.includes('/')) {
           // if the file is in a subdirectory and isn't cached
           // we need to populate the cache
-          const [, filepath] = this.splitFilePath(this.currentFileName)
-          SocketActions.serverFilesGetDirectory('gcodes', `gcodes/${filepath}`)
+          const { rootPath } = getFilePaths(this.currentFileName, 'gcodes')
+          SocketActions.serverFilesGetDirectory('gcodes', rootPath)
         } else {
           // otherwise just refresh the corresponding file
           SocketActions.serverFilesMetadata(this.currentFileName)
@@ -330,16 +331,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.filename || this.$store.state.printer.printer.print_stats.filename
   }
 
-  splitFilePath (path: string): [string, string] {
-    const splitFilepath = path.split('/')
-    const filename = splitFilepath.pop()!
-    const filepath = splitFilepath.join('/')
-    return [filename, filepath]
-  }
-
   get currentFile () {
-    const [filename, filepath] = this.splitFilePath(this.currentFileName)
-    return this.$store.getters['files/getFile'](filepath ? `gcodes/${filepath}` : 'gcodes', filename)
+    const { filename, rootPath } = getFilePaths(this.currentFileName, 'gcodes')
+    return this.$store.getters['files/getFile'](rootPath, filename)
   }
 
   get targetMacro (): string | undefined {
