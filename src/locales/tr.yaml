@@ -536,7 +536,7 @@ app:
       webrtc_camera_streamer: WebRTC (kamera akışı)
       video: IP Kamera
       iframe: HTTP sayfa
-      webrtc_gortc: WebRTC (go2rtc)
+      webrtc_go2rtc: WebRTC (go2rtc)
     camera_rotate_options:
       '90': 90°
       '180': 180°
