@@ -496,7 +496,7 @@ app:
       mjpegstream: MJPEG Stream
       video: IP Camera
       webrtc_camera_streamer: WebRTC (カメラストリーマー)
-      webrtc_gortc: WebRTC (go2rtc)
+      webrtc_go2rtc: WebRTC (go2rtc)
     label:
       all_off: すべてオフ
       all_on: すべてオン

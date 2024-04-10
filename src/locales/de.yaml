@@ -528,7 +528,7 @@ app:
       video: IP Camera
       webrtc_camera_streamer: WebRTC (camera-streamer)
       hlsstream: HLS-Stream
-      webrtc_gortc: WebRTC (go2rtc)
+      webrtc_go2rtc: WebRTC (go2rtc)
     camera_rotate_options:
       none: Keine Drehung
       90: 90°
