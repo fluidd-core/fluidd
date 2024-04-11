@@ -203,6 +203,7 @@ import QRReader from '@/components/widgets/spoolman/QRReader.vue'
 import type { WebcamConfig } from '@/store/webcams/types'
 import QrScanner from 'qr-scanner'
 import type { AppTableHeader } from '@/types'
+import getFilePaths from '@/util/get-file-paths'
 
 @Component({
   components: { QRReader }
@@ -230,7 +231,15 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
       if (this.currentFileName) {
         // prefetch file metadata
-        SocketActions.serverFilesMetadata(this.currentFileName)
+        if (!this.currentFile && this.currentFileName.includes('/')) {
+          // if the file is in a subdirectory and isn't cached
+          // we need to populate the cache
+          const { rootPath } = getFilePaths(this.currentFileName, 'gcodes')
+          SocketActions.serverFilesGetDirectory('gcodes', rootPath)
+        } else {
+          // otherwise just refresh the corresponding file
+          SocketActions.serverFilesMetadata(this.currentFileName)
+        }
       }
 
       if (this.hasDeviceCamera && this.preferDeviceCamera) {
@@ -323,10 +332,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get currentFile () {
-    const splitFilepath = this.currentFileName.split('/')
-    const filename = splitFilepath.pop()
-    const filepath = splitFilepath.join('/')
-    return this.$store.getters['files/getFile'](filepath ? `gcodes/${filepath}` : 'gcodes', filename)
+    const { filename, rootPath } = getFilePaths(this.currentFileName, 'gcodes')
+    return this.$store.getters['files/getFile'](rootPath, filename)
   }
 
   get targetMacro (): string | undefined {
@@ -383,73 +390,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       }
     }
 
-    const spool = this.availableSpools.find(spool => spool.id === this.selectedSpool)
-    if (spool && this.filename && (this.warnOnFilamentTypeMismatch || this.warnOnNotEnoughFilament)) {
-      let requiredLength = 0 // l[mm]
-
-      if (this.currentFile) {
-        if (this.warnOnFilamentTypeMismatch) {
-          const fileMaterials = this.currentFile.filament_type?.toLowerCase()
-            .split(';').map((x: string) => x.replace(/"/g, ''))
-          const spoolMaterial = spool.filament.material?.toLowerCase()
-          if (spoolMaterial && fileMaterials && !fileMaterials.includes(spoolMaterial)) {
-            // filament materials don't match
-
-            const confirmation = await this.$confirm(
-              this.$tc('app.spoolman.msg.mismatched_filament'),
-              { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
-            )
-
-            if (!confirmation) {
-              return
-            }
-          }
-        }
-
-        requiredLength = this.currentFile?.filament_total ?? 0
-        if (this.$store.getters['printer/getPrinterState'] !== 'idle') {
-          // subtract already printed length
-          requiredLength -= this.$store.state.printer.printer.print_stats?.filament_used ?? 0
-          requiredLength = Math.max(requiredLength, 0)
-        }
-      }
-
-      if (!requiredLength) {
-        // missing file metadata
-
-        const confirmation = await this.$confirm(
-          this.$tc('app.spoolman.msg.no_required_length'),
-          { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
-        )
-
-        if (!confirmation) {
-          return
-        }
-      }
-
-      if (this.warnOnNotEnoughFilament) {
-        let remainingLength = spool.remaining_length
-        if (!remainingLength && spool.remaining_weight) {
-          // l[mm] = m[g]/D[g/cm³]/A[mm²]*(1000mm³/cm³)
-          remainingLength = spool.remaining_weight / spool.filament.density / (Math.PI * (spool.filament.diameter / 2) ** 2) * 1000
-        }
-
-        if (typeof remainingLength === 'number' && requiredLength >= remainingLength) {
-          // not enough filament
-
-          const confirmation = await this.$confirm(
-            this.$tc('app.spoolman.msg.no_filament'),
-            { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
-          )
-
-          if (!confirmation) {
-            return
-          }
-        }
-      }
-    }
-
     if (this.targetMacro) {
+      // no need to run sanity checks or start a print when we target a macro, so we return early
+
       // set spool_id via SET_GCODE_VARIABLE
       const commands = [
         `SET_GCODE_VARIABLE MACRO=${this.targetMacro} VARIABLE=spool_id VALUE=${this.selectedSpool ?? 'None'}`
@@ -471,6 +414,75 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
       this.open = false
       return
+    }
+
+    const spool = this.availableSpools.find(spool => spool.id === this.selectedSpool)
+    if (spool && this.currentFileName && (this.warnOnFilamentTypeMismatch || this.warnOnNotEnoughFilament)) {
+      // trigger sanity checks when we have an active file
+      // (current print or new print) and sanity checks are enabled.
+
+      if (this.currentFile && (this.filename || !['complete', 'cancelled'].includes(this.printerState))) {
+        // if we're tracking a file and starting a new print or the current one hasn't ended yet
+
+        if (this.warnOnFilamentTypeMismatch) {
+          const fileMaterials = this.currentFile.filament_type?.toLowerCase()
+            .split(';').map((x: string) => x.replace(/"/g, ''))
+          const spoolMaterial = spool.filament.material?.toLowerCase()
+          if (spoolMaterial && fileMaterials && !fileMaterials.includes(spoolMaterial)) {
+            // filament materials don't match
+
+            const confirmation = await this.$confirm(
+              this.$tc('app.spoolman.msg.mismatched_filament'),
+              { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+            )
+
+            if (!confirmation) {
+              return
+            }
+          }
+        }
+
+        let requiredLength = this.currentFile?.filament_total
+        if (requiredLength && ['printing', 'paused'].includes(this.printerState)) {
+          // if we're currently running a print job, subtract the already printed amount from the required length
+          requiredLength -= this.$store.state.printer.printer.print_stats?.filament_used ?? 0
+          requiredLength = Math.max(requiredLength, 0)
+        }
+
+        if (!requiredLength) {
+          // missing file metadata
+
+          const confirmation = await this.$confirm(
+            this.$tc('app.spoolman.msg.no_required_length'),
+            { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+          )
+
+          if (!confirmation) {
+            return
+          }
+        }
+
+        if (this.warnOnNotEnoughFilament) {
+          let remainingLength = spool.remaining_length
+          if (!remainingLength && spool.remaining_weight) {
+            // l[mm] = m[g]/D[g/cm³]/A[mm²]*(1000mm³/cm³)
+            remainingLength = spool.remaining_weight / spool.filament.density / (Math.PI * (spool.filament.diameter / 2) ** 2) * 1000
+          }
+
+          if (typeof remainingLength === 'number' && requiredLength >= remainingLength) {
+            // not enough filament
+
+            const confirmation = await this.$confirm(
+              this.$tc('app.spoolman.msg.no_filament'),
+              { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+            )
+
+            if (!confirmation) {
+              return
+            }
+          }
+        }
+      }
     }
 
     await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpool ?? undefined)

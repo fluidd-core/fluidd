@@ -72,7 +72,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     // If the idle state says we're printing, but the print_stats say otherwise - then
     // we're probably busy moving the toolhead or doing some other process.
     // Possible values are;
-    // printing, busy, paused, ready, idle, standby
+    // printing, busy, paused, cancelled, ready, idle, standby
     if (state1 && state2) {
       if (
         state2.toLowerCase() === 'paused' ||
