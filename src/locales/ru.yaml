@@ -794,7 +794,7 @@ app:
       auto_render: Авторендеринг
       crf: Фактор постоянного оценивания (CRF)
       duplicatelastframe: Дублирование последних n кадров
-      fw_retract: Используется откат из прошивки
+      fw_retract: Использовать откат из прошивки
       gcode_verbose: Подробный G-кодe
       mode: Режим
       mode_layermacro: Послойная съемка (layer macro)
