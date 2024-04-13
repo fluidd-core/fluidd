@@ -120,27 +120,35 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
     } else if (type === 'gcode') {
       switch (command) {
         case 'G0':
-        case 'G1':
-          move = {
-            ...pick(args, [
-              'x', 'y', 'z', 'e'
-            ]),
-            filePosition: toolhead.filePosition
-          } satisfies LinearMove
+        case 'G1': {
+          const values = pick(args, [
+            'x', 'y', 'z', 'e'
+          ])
+          if (Object.keys(values).length) {
+            move = {
+              ...values,
+              filePosition: toolhead.filePosition
+            } satisfies LinearMove
+          }
           break
+        }
         case 'G2':
-        case 'G3':
-          move = {
-            ...pick(args, [
-              'x', 'y', 'z', 'e',
-              'i', 'j', 'k', 'r'
-            ]),
-            direction: command === 'G2'
-              ? 'clockwise'
-              : 'counter-clockwise',
-            filePosition: toolhead.filePosition
-          } satisfies ArcMove
+        case 'G3': {
+          const values = pick(args, [
+            'x', 'y', 'z', 'e',
+            'i', 'j', 'k', 'r'
+          ])
+          if (Object.keys(values).length) {
+            move = {
+              ...values,
+              direction: command === 'G2'
+                ? 'clockwise'
+                : 'counter-clockwise',
+              filePosition: toolhead.filePosition
+            } satisfies ArcMove
+          }
           break
+        }
         case 'G10':
           move = {
             e: -fwretraction.length,
