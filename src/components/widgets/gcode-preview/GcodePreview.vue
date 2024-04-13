@@ -210,7 +210,7 @@
           </g>
 
           <g
-            v-if="getViewerOption('showRetractions') && svgPathCurrent.retractions.length > 0"
+            v-if="getViewerOption('showRetractions') && svgPathCurrent.extrusionStarts.length > 0"
             id="extrusionStarts"
           >
             <use
