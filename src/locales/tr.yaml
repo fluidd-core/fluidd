@@ -668,8 +668,8 @@ app:
         otomatik olarak göster
     timer_options:
       duration: Süre sadece
-      filament: Filament Tahmini
-      file: Dosya Tahmini
+      filament: Filament
+      file: Dosya
       slicer: Dilimleyici
       slicer_m73: Dilimleyici (M73)
     title:

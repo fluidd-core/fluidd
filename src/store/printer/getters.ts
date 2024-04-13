@@ -95,9 +95,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
     }
   },
 
-  getFilePrintProgress: (state): number => {
+  getFileRelativePrintProgress: (state): number => {
     const { gcode_start_byte, gcode_end_byte, path, filename } = state.printer.current_file ?? {}
-    const { file_position } = state.printer.virtual_sdcard ?? {}
+    const { file_position, progress } = state.printer.virtual_sdcard ?? {}
 
     const fullFilename = path ? `${path}/${filename}` : filename
 
@@ -111,11 +111,28 @@ export const getters: GetterTree<PrinterState, RootState> = {
       if (currentPosition > 0 && endPosition > 0) return currentPosition / endPosition
     }
 
-    return state.printer.display_status.progress || 0
+    return progress || 0
+  },
+
+  getFileAbsolutePrintProgress: (state): number => {
+    return state.printer.virtual_sdcard?.progress || 0
   },
 
   getSlicerPrintProgress: (state): number => {
     return state.printer.display_status.progress || 0
+  },
+
+  getFilamentPrintProgress: (state) => {
+    const { filament_used, filename: statsFilename } = state.printer.print_stats ?? {}
+    const { filament_total, path, filename } = state.printer.current_file ?? {}
+
+    const fullFilename = path ? `${path}/${filename}` : filename
+
+    if (filament_used && filament_total && fullFilename === statsFilename) {
+      return filament_used / filament_total
+    }
+
+    return state.printer.virtual_sdcard?.progress || 0
   },
 
   getPrintProgress: (state, getters, rootState): number => {
@@ -125,10 +142,16 @@ export const getters: GetterTree<PrinterState, RootState> = {
       .map(type => {
         switch (type) {
           case 'file':
-            return getters.getFilePrintProgress
+            return getters.getFileRelativePrintProgress
+
+          case 'fileAbsolute':
+            return getters.getFileAbsolutePrintProgress
 
           case 'slicer':
             return getters.getSlicerPrintProgress
+
+          case 'filament':
+            return getters.getFilamentPrintProgress
 
           default:
             return 0

@@ -662,8 +662,8 @@ app:
       print_progress_calculation: Druckfortschritt-Berechnung
     timer_options:
       duration: Nur Dauer
-      filament: Filament-Schätzung
-      file: Datei-Schätzung
+      filament: Filament
+      file: Datei
       slicer: Slicer
       slicer_m73: Slicer (M73)
     title:

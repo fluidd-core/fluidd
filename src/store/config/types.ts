@@ -115,7 +115,7 @@ export type PrintInProgressLayout = 'default' | 'compact'
 
 export type ColorPickerValueRange = 'absolute' | 'percentage'
 
-export type PrintProgressCalculation = 'file' | 'slicer'
+export type PrintProgressCalculation = 'file' | 'fileAbsolute' | 'slicer' | 'filament'
 
 export type PrintEtaCalculation = 'file' | 'slicer'
 
