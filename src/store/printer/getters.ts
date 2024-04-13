@@ -128,7 +128,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
     const fullFilename = path ? `${path}/${filename}` : filename
 
-    if (filament_used && filament_total && fullFilename === statsFilename) {
+    if (filament_used != null && filament_total && fullFilename === statsFilename) {
       return filament_used / filament_total
     }
 
