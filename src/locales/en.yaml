@@ -634,9 +634,11 @@ app:
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically
       show_screws_tilt_adjust_dialog_automatically: Show Screws Tilt Adjust dialog automatically
     timer_options:
+      absolute_file_position: Absolute file position
       duration: Duration only
-      filament: Filament Estimation
-      file: File Estimation
+      filament: Filament
+      file: File
+      relative_file_position: Relative file position
       slicer: Slicer
       slicer_m73: Slicer (M73)
     title:
