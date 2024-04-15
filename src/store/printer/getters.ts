@@ -209,7 +209,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
   getTimeEstimates: (state, getters, rootGetters): TimeEstimates => {
     const progress = getters.getPrintProgress as number
-    const fileProgress = getters.getFilePrintProgress as number
+    const fileProgress = getters.getFileRelativePrintProgress as number
 
     const totalDuration = state.printer.print_stats?.total_duration as number | undefined ?? 0
     const printDuration = state.printer.print_stats?.print_duration as number | undefined ?? 0
