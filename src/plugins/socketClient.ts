@@ -9,9 +9,8 @@
 import _Vue from 'vue'
 import { Globals } from '@/globals'
 import { consola } from 'consola'
-import { camelCase } from 'lodash-es'
+import { camelCase, mergeWith } from 'lodash-es'
 import { httpClientActions } from '@/api/httpClientActions'
-import deepMerge from 'deepmerge'
 import type { Store } from 'vuex'
 import type { RootState } from '@/store/types'
 
@@ -173,7 +172,7 @@ export class WebSocketClient {
 
                 this.cache = (!this.cache)
                   ? { timestamp, params }
-                  : { timestamp: this.cache.timestamp, params: deepMerge(this.cache.params, params, { arrayMerge: (_, y) => y }) }
+                  : { timestamp: this.cache.timestamp, params: mergeWith(this.cache.params, params, (dest, src) => Array.isArray(dest) ? src : undefined) }
 
                 // If there's a second or more difference, flush the cache.
                 if (timestamp - this.cache.timestamp >= 1000) {
