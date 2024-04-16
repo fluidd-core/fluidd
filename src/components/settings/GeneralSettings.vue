@@ -464,11 +464,19 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return [
       {
         value: 'file',
-        text: this.$t('app.setting.timer_options.file')
+        text: this.$t('app.setting.timer_options.relative_file_position')
+      },
+      {
+        value: 'fileAbsolute',
+        text: this.$t('app.setting.timer_options.absolute_file_position')
       },
       {
         value: 'slicer',
         text: this.$t('app.setting.timer_options.slicer_m73')
+      },
+      {
+        value: 'filament',
+        text: this.$t('app.setting.timer_options.filament')
       }
     ]
   }
