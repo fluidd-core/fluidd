@@ -634,9 +634,11 @@ app:
       show_bed_screws_adjust_dialog_automatically: Показывать окно для регулировки винтов стола
       show_screws_tilt_adjust_dialog_automatically: Показывать окно для регулировки поворота винтов стола
     timer_options:
+      absolute_file_position: Абсолютное расположение файла
       duration: Продолжительность печати
       filament: Оценка по расходу прутка
       file: Оценка по файлу
+      relative_file_position: Относительное расположение файла
       slicer: Оценка слайсера
       slicer_m73: Оценка слайсера (M73)
     title:
