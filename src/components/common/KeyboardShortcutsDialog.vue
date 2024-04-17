@@ -96,7 +96,7 @@
           <tbody>
             <tr>
               <th>{{ $t('app.keyboard_shortcuts.label.emergency_stop') }}</th>
-              <td><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>F12</kbd></td>
+              <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>e</kbd></td>
             </tr>
             <tr>
               <th>{{ $t('app.keyboard_shortcuts.label.open_keyboard_shortcut_help') }}</th>
@@ -164,3 +164,9 @@ export default class KeyboardShortcutsDialog extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  td:nth-child(2) {
+    text-align: right;
+  }
+</style>

@@ -442,7 +442,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
     const shortcut = keyboardEventToKeyboardShortcut(event)
 
-    if (shortcut === 'Ctrl+Alt+F12') {
+    if (shortcut === 'Ctrl+Shift+E') {
       event.preventDefault()
 
       this.emergencyStop()
