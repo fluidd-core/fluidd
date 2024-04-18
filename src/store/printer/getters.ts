@@ -665,9 +665,10 @@ export const getters: GetterTree<PrinterState, RootState> = {
         if (outputPins.includes(type)) {
           output = {
             ...output,
-            pwm: (config && config.pwm) ? config.pwm : false,
-            scale: (config && config.scale) ? config.scale : 1,
-            controllable: (config && config.static_value) ? false : (controllable.includes(type))
+            pwm: config?.pwm ?? false,
+            scale: config?.scale ?? 1,
+            resetValue: config?.value ?? 0,
+            controllable: config?.static_value ? false : controllable.includes(type)
           }
         }
 
