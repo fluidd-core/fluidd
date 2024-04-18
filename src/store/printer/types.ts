@@ -106,17 +106,18 @@ export interface OutputPin extends OutputType<OutputPinConfig> {
   scale: number;
   static: number;
   value: number;
+  resetValue: number;
 }
 
 export interface OutputPinConfig {
-  [index: string]: string | undefined;
-  pwm?: string;
-  static_value?: string;
-  value?: string;
-  shutdown_value?: string;
-  cycle_time?: string;
-  hardware_pwm?: string;
-  scale?: string;
+  [index: string]: string | number | boolean | undefined;
+  pwm?: boolean;
+  static_value?: number;
+  value?: number;
+  shutdown_value?: number;
+  cycle_time?: number;
+  hardware_pwm?: boolean;
+  scale?: number;
 }
 
 export interface Sensor {
