@@ -526,6 +526,7 @@ app:
       video: IP Kamera
       iframe: HTTP oldal
       webrtc_go2rtc: WebRTC (go2rtc)
+      webrtc_mediamtx: WebRTC (MediaMTX)
     camera_rotate_options:
       '90': 90°
       '180': 180°
@@ -654,12 +655,15 @@ app:
       print_progress_calculation: Nyomtatási folyamat számítás
       print_eta_calculation: Nyomtatás ETA számítása
       print_in_progress_layout: Nyomtatási folyamat elrendezés
+      keyboard_shortcuts: Billentyűparancsok
     timer_options:
       duration: Csak időtartam
-      filament: Nyomtatószál becslés
-      file: Fájlbecslés
+      filament: Nyomtatószál
+      file: Fájl
       slicer: Szeletelő
       slicer_m73: Szeletelő (M73)
+      absolute_file_position: Abszolút fájlpozíció
+      relative_file_position: Relatív fájlpozíció
     title:
       authentication: Hitelesítés
       console: Konzol
@@ -695,6 +699,8 @@ app:
         támogatmak minket.
       average_calculation: Ha egynél több lehetőség van kiválasztva, a rendszer átlagot
         számít ki
+      keyboard_shortcuts: "[BETA] Engedélyezd és nyomd meg a '?' gombot az elérhető
+        billentyűparancsok listájának megtekintéséhez"
   socket:
     msg:
       connecting: Csatlakozás a Moonraker-hez...
@@ -939,3 +945,16 @@ app:
   sensors:
     title:
       sensors: Érzékelők
+  keyboard_shortcuts:
+    title:
+      keyboard_shortcuts: Billentyűparancsok
+    label:
+      actions: Tevékenységek
+      cancel: Mégsem
+      emergency_stop: Vész STOP
+      home_all: Kezdőpont X-Y-Z
+      navigation: Navigáció
+      open_keyboard_shortcut_help: Billentyűparancsok súgójának megnyitása
+      pause: Szünet
+      printing: Nyomtatás
+      tool: Szerszám
