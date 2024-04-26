@@ -364,7 +364,8 @@ app:
   socket:
     msg:
       connecting: Connecting to moonraker...
-      no_connection: No moonraker connection. Please check moonraker status and / or refresh.
+      no_connection: No moonraker connection. Please check moonraker status and /
+        or refresh.
   system_info:
     label:
       capacity: السعة
