@@ -77,7 +77,7 @@
 		},
 		"known_extruder_sensor_type": {
 			"name": "support.type",
-			"match": "(?i)\\b(MAX6675|MAX31855|MAX31856|MAX31865|PT100 INA826|AD595|AD597|AD8494|AD8495|AD8496|AD8497|PT1000|BMP280|BME280|BME680|HTU21D|SI7013|SI7020|SI7021|SHT21|LM75|temperature_mcu|temperature_host|DS18B20)\\b"
+			"match": "(?i)\\b(MAX6675|MAX31855|MAX31856|MAX31865|PT100 INA826|AD595|AD597|AD8494|AD8495|AD8496|AD8497|AHT10|PT1000|BMP280|BME280|BME680|HTU21D|SHT3X|SI7013|SI7020|SI7021|SHT21|LM75|temperature_mcu|temperature_host|DS18B20)\\b"
 		},
 		"known_control_type": {
 			"name": "support.type",

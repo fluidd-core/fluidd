@@ -209,7 +209,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
   getTimeEstimates: (state, getters, rootGetters): TimeEstimates => {
     const progress = getters.getPrintProgress as number
-    const fileProgress = getters.getFilePrintProgress as number
+    const fileProgress = getters.getFileRelativePrintProgress as number
 
     const totalDuration = state.printer.print_stats?.total_duration as number | undefined ?? 0
     const printDuration = state.printer.print_stats?.print_duration as number | undefined ?? 0
@@ -665,9 +665,10 @@ export const getters: GetterTree<PrinterState, RootState> = {
         if (outputPins.includes(type)) {
           output = {
             ...output,
-            pwm: (config && config.pwm) ? config.pwm : false,
-            scale: (config && config.scale) ? config.scale : 1,
-            controllable: (config && config.static_value) ? false : (controllable.includes(type))
+            pwm: config?.pwm ?? false,
+            scale: config?.scale ?? 1,
+            resetValue: config?.value ?? 0,
+            controllable: config?.static_value ? false : controllable.includes(type)
           }
         }
 
@@ -725,7 +726,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'aht10',
       'bme280',
       'htu21d',
-      'nevermoresensor'
+      'nevermoresensor',
+      'sht3x'
     ]
 
     if (supportedSensors.includes(sensorType)) {

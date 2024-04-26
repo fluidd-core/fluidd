@@ -113,7 +113,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
     this.editor.addAction({
       id: 'action-emergency-stop',
       label: this.$tc('app.general.tooltip.estop'),
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.F12],
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyE],
       run: () => {
         this.$emit('emergency-stop')
       }

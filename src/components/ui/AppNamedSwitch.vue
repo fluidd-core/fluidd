@@ -12,6 +12,8 @@
       v-model="inputValue"
       class="mt-0"
       :disabled="disabled || loading"
+      :true-value="trueValue"
+      :false-value="falseValue"
       hide-details
       v-on="$listeners"
     />
@@ -34,5 +36,11 @@ export default class AppNamedSwitch extends Vue {
 
   @Prop({ type: Boolean })
   readonly loading?: boolean
+
+  @Prop({ })
+  readonly trueValue?: unknown
+
+  @Prop({ })
+  readonly falseValue?: unknown
 }
 </script>
