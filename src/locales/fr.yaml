@@ -9,6 +9,8 @@ app:
       remove_profile: Supprimer le profile %{name}
       scale: Échelle au min / max
       wireframe: Armature
+      active: actif
+      base: base
     msg:
       hint: >-
         Si vous enregistrez le profil sous un autre nom que '%{profileName}',
@@ -29,18 +31,23 @@ app:
       item: Élément
       power: Puissance
       target: Cible
+      rate_of_change: Changement
     tooltip:
       help: >-
-        Maintenez shift pour zoomer.<br />Cliquez un élément pour l'afficher
-        .<br />Cliquez une puissance pour l'afficher .
+        Maintenez <kbd>Shift</kbd> pour zoomer.<br />Cliquez sur un élément pour l'afficher
+        .<br />Cliquez sur une puissance pour l'afficher .
   console:
     label:
       auto_scroll: Scroll auto
       hide_temp_waits: Cacher les messages de température
+      flip_layout: Inverser disposition
     placeholder:
       command: >-
         'tab' pour l'autocomplete, 'help' pour les commandes, les flêches pour
         l'historique
+    tooltip:
+      help: Saisir "help" pour les commandes<br />Utiliser <kbd>Tab</kbd> pour l'autocomplétion<br
+        />Utiliser <kbd>&uarr;</kbd> et <kbd>&darr;</kbd> pour l'historique
   endpoint:
     error:
       cant_connect: >-
@@ -66,11 +73,17 @@ app:
       open: OUVERT
       triggered: ACTIF
     msg:
-      subtitle: 'Appuyez sur le bouton ''Rafraîchir'' pour mettre à jour le statut . '
+      subtitle: 'Appuyez sur le bouton ''Rafraîchir'' pour mettre à jour le statut
+        . '
   file_system:
     filters:
       label:
         print_start_time: Filtrer les impressions passées
+        moonraker_backup_files: Filtrer les fichiers de sauvegarde Moonraker
+        klipper_backup_files: Filtrer les fichiers de sauvegardes Klipper
+        rolled_log_files: Filtrer les fichiers log rotatifs
+        crowsnest_backup_files: Filtrer les fichiers de sauvegarde de Crowsnest
+        hidden_files_folders: Filtrer les fichiers et dossiers cachés
     label:
       dir_name: Nom du dossier
       disk_usage: Utilisation du disque
@@ -79,6 +92,7 @@ app:
       file_name: Nom du fichier
       transfer_rate: Vitesse de transfert
       uploaded: Téléchargé
+      view_section_documentation: "Voir la documentation : '%{section}'"
     msg:
       not_found: Aucun fichier trouvé
       processing: Traitement en cours ...
@@ -89,9 +103,25 @@ app:
       rename_dir: Renommer le dossier
       rename_file: Renommer le fichier
       upload_file: Upload en cours
+      devices: Périphériques
+      duplicate_dir: Répertoire des doublons
+      duplicate_file: Fichier Dupliqués
+      go_to_file: Aller au fichier
+      command_palette: Palette de commandes
     tooltip:
       low_on_space: Espace disque limité
-      root_disabled: La racine {root} n'est pas disponible. Veuillez vérifier vos logs.
+      root_disabled: La racine {root} n'est pas disponible. Veuillez vérifier vos
+        logs.
+      items_count: élément {count} | éléments {count}
+    url:
+      moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
+      klipper_config: https://www.klipper3d.org/Config_Reference.html#%{hash}
+      moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
+    overlay:
+      drag_files_enqueue: <strong>Glisser</strong> les fichiers ici pour les mettre
+        en file d'attente
+      drag_files_folders_upload: <strong>Glisser</strong> les fichiers et les dossiers
+        ici pour les télécharger
   gcode:
     btn:
       load_current_file: Charger le fichier actuel
@@ -250,8 +280,10 @@ app:
         required: Requis
       msg:
         confirm: Êtes-vous sûr(e) ?
-        confirm_reboot_host: Êtes-vous sûr(e)? Ceci va redémarrer le système hôte .
-        confirm_shutdown_host: Êtes-vous sûr(e)? Ceci va éteindre le système hôte .
+        confirm_reboot_host: Êtes-vous sûr(e)? Ceci va redémarrer le système hôte
+          .
+        confirm_shutdown_host: Êtes-vous sûr(e)? Ceci va éteindre le système hôte
+          .
     table:
       header:
         actions: Actions
@@ -303,7 +335,8 @@ app:
     tooltip:
       estop: Arrêt d'urgence
       reload_klipper: Recharge la configuration Klipper.
-      reload_restart_klipper: Recharge la configuration Klipper et redémarre les cartes de contrôle.
+      reload_restart_klipper: Recharge la configuration Klipper et redémarre les cartes
+        de contrôle.
       restart_klipper: Redémarre le service klipper
   printer:
     state:
@@ -336,7 +369,8 @@ app:
       dark_mode: Mode sombre
       default_extrude_length: Longueur d'extrusion par défaut
       default_extrude_speed: Vitesse d'extrusion par défaut
-      default_toolhead_move_length: Longueur de déplacement de la tête d'outil par défaut
+      default_toolhead_move_length: Longueur de déplacement de la tête d'outil par
+        défaut
       default_toolhead_xy_speed: Vitesse XY de la tête d'outil par défaut
       default_toolhead_z_speed: Vitesse Z de la tête d'outil par défaut
       draw_background: Afficher le fond d'écran
