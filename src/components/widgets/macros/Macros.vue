@@ -46,6 +46,7 @@
             v-for="macro in category.macros"
             :key="`category-${macro.name}`"
             top
+            :disabled="!macro.config.description || macro.config.description === 'G-Code macro'"
           >
             <template #activator="{ on, attrs }">
               <macro-btn
