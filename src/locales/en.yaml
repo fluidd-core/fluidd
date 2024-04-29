@@ -342,6 +342,8 @@ app:
       edit_category: Edit category
       add_category: Add category
       file_time: File
+      stepper_driver: >-
+        %{name} Driver
     msg:
       password_changed: Password changed
       wrong_password: Oops, something went wrong. Is your password correct?
