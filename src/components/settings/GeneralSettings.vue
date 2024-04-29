@@ -229,7 +229,38 @@
           class="mt-0 mb-4"
         />
       </app-setting>
+
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.fluidd_settings_in_moonraker_db')">
+        <app-btn
+          outlined
+          small
+          color="primary"
+          class="mr-2"
+          @click="handleBackupSettings"
+        >
+          {{ $t('app.setting.btn.backup') }}
+        </app-btn>
+
+        <app-btn
+          outlined
+          small
+          color="primary"
+          @click="uploadSettingsFile.click()"
+        >
+          {{ $t('app.setting.btn.restore') }}
+        </app-btn>
+      </app-setting>
     </v-card>
+
+    <input
+      ref="uploadSettingsFile"
+      type="file"
+      accept=".json"
+      style="display: none"
+      @change="handleRestoreSettings"
+    >
   </div>
 </template>
 
@@ -241,6 +272,9 @@ import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
 import type { OutputPin } from '@/store/printer/types'
 import type { Device } from '@/store/power/types'
 import type { PrintEtaCalculation, PrintInProgressLayout, PrintProgressCalculation } from '@/store/config/types'
+import { httpClientActions } from '@/api/httpClientActions'
+import consola from 'consola'
+import { readFileAsTextAsync } from '@/util/file-system-entry'
 
 @Component({
   components: {}
@@ -248,6 +282,9 @@ import type { PrintEtaCalculation, PrintInProgressLayout, PrintProgressCalculati
 export default class GeneralSettings extends Mixins(StateMixin) {
   @Ref('instanceName')
   readonly instanceNameElement!: VInput
+
+  @Ref('uploadSettingsFile')
+  readonly uploadSettingsFile!: HTMLInputElement
 
   get instanceName () {
     return this.$store.state.config.uiSettings.general.instanceName
@@ -528,6 +565,52 @@ export default class GeneralSettings extends Mixins(StateMixin) {
       value,
       server: true
     })
+  }
+
+  async handleBackupSettings () {
+    try {
+      const response = await httpClientActions.serverDatabaseItemGet('fluidd')
+
+      const data = response.data?.result?.value
+
+      if (data) {
+        const link = document.createElement('a')
+
+        link.href = `data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`
+        link.download = 'backup-fluidd.json'
+        link.target = '_blank'
+
+        document.body.appendChild(link)
+
+        link.click()
+
+        document.body.removeChild(link)
+      }
+    } catch (e) {
+      consola.error('[Settings] backup failed', e)
+    }
+  }
+
+  async handleRestoreSettings () {
+    try {
+      if (this.uploadSettingsFile?.files?.length === 1) {
+        const data = await readFileAsTextAsync(this.uploadSettingsFile.files[0])
+
+        if (data) {
+          const dataAsJson = JSON.parse(data)
+
+          for (const key in dataAsJson) {
+            await httpClientActions.serverDatabaseItemPost('fluidd', key, dataAsJson[key])
+          }
+
+          window.location.reload()
+        }
+      }
+    } catch (e) {
+      consola.error('[Settings] restore failed', e)
+    } finally {
+      this.uploadSettingsFile.value = ''
+    }
   }
 }
 </script>
