@@ -275,6 +275,8 @@ import type { PrintEtaCalculation, PrintInProgressLayout, PrintProgressCalculati
 import { httpClientActions } from '@/api/httpClientActions'
 import consola from 'consola'
 import { readFileAsTextAsync } from '@/util/file-system-entry'
+import { EventBus } from '@/eventBus'
+import { isFluiddContent, toFluiddContent } from '@/util/fluidd-content'
 
 @Component({
   components: {}
@@ -574,9 +576,12 @@ export default class GeneralSettings extends Mixins(StateMixin) {
       const data = response.data?.result?.value
 
       if (data) {
+        const backupData = toFluiddContent('settings-backup', data)
+        const backupDataAsString = JSON.stringify(backupData)
+
         const link = document.createElement('a')
 
-        link.href = `data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`
+        link.href = `data:text/plain;charset=utf-8,${encodeURIComponent(backupDataAsString)}`
         link.download = `backup-fluidd-v${import.meta.env.VERSION}-${this.instanceName}.json`
         link.target = '_blank'
 
@@ -588,19 +593,29 @@ export default class GeneralSettings extends Mixins(StateMixin) {
       }
     } catch (e) {
       consola.error('[Settings] backup failed', e)
+
+      EventBus.$emit(this.$t('app.general.msg.fluidd_settings_backup_failed').toString(), { type: 'error' })
     }
   }
 
   async handleRestoreSettings () {
     try {
       if (this.uploadSettingsFile?.files?.length === 1) {
-        const data = await readFileAsTextAsync(this.uploadSettingsFile.files[0])
+        const backupDataAsString = await readFileAsTextAsync(this.uploadSettingsFile.files[0])
 
-        if (data) {
-          const dataAsJson = JSON.parse(data)
+        if (backupDataAsString) {
+          const backupData = JSON.parse(backupDataAsString)
 
-          for (const key in dataAsJson) {
-            await httpClientActions.serverDatabaseItemPost('fluidd', key, dataAsJson[key])
+          if (
+            !isFluiddContent<Record<string, unknown>>('settings-backup', backupData)
+          ) {
+            EventBus.$emit(this.$t('app.general.msg.not_valid_fluidd_backup_file').toString(), { type: 'error' })
+
+            return
+          }
+
+          for (const key in backupData.data) {
+            await httpClientActions.serverDatabaseItemPost('fluidd', key, backupData.data[key])
           }
 
           window.location.reload()
@@ -608,6 +623,8 @@ export default class GeneralSettings extends Mixins(StateMixin) {
       }
     } catch (e) {
       consola.error('[Settings] restore failed', e)
+
+      EventBus.$emit(this.$t('app.general.msg.fluidd_settings_restore_failed').toString(), { type: 'error' })
     } finally {
       this.uploadSettingsFile.value = ''
     }

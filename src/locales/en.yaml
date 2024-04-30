@@ -356,6 +356,9 @@ app:
       pending_configuration_sections_deleted: The following sections are marked for deletion
       rolledover_logs: >-
         The following application logs have been rolled over: %{applications}
+      not_valid_fluidd_backup_file: Not a valid Fluidd backup file!
+      fluidd_settings_backup_failed: Failed to backup Fluidd settings!
+      fluidd_settings_restore_failed: Failed to restore Fluidd settings!
     simple_form:
       error:
         arrayofnums: Only numbers
