@@ -356,6 +356,9 @@ app:
       pending_configuration_sections_deleted: The following sections are marked for deletion
       rolledover_logs: >-
         The following application logs have been rolled over: %{applications}
+      not_valid_fluidd_backup_file: Not a valid Fluidd backup file!
+      fluidd_settings_backup_failed: Failed to backup Fluidd settings!
+      fluidd_settings_restore_failed: Failed to restore Fluidd settings!
     simple_form:
       error:
         arrayofnums: Only numbers
@@ -503,7 +506,9 @@ app:
       add_metric: Add Metric
       add_thermal_preset: Add Preset
       add_user: Add user
+      backup: Backup
       reset: Reset
+      restore: Restore
       select_theme: Select Theme
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
@@ -568,6 +573,7 @@ app:
       fill_color: Fill color
       fill_opacity: Fill opacity
       filter: Filter | Filters
+      fluidd_settings_in_moonraker_db: Fluidd settings in Moonraker database
       fps_target: FPS Target
       fps_idle_target: FPS Target when not in focus
       height: Height
