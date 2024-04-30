@@ -689,6 +689,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'tmc2240',
       'z_thermal_adjust'
     ]
+    const supportedDrivers = [
+      'tmc2240'
+    ]
 
     const sensors = Object.keys(state.printer)
       .reduce((groups, item) => {
@@ -696,7 +699,15 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
         if (supportedSensors.includes(type)) {
           const name = nameFromSplit ?? item
-          const prettyName = Vue.$filters.startCase(name)
+          const prettyName = supportedDrivers.includes(type)
+            ? i18n.t('app.general.label.stepper_driver',
+              {
+                name:
+                  name.startsWith('stepper_')
+                    ? name.substring(8).toUpperCase()
+                    : Vue.$filters.startCase(name)
+              })
+            : Vue.$filters.startCase(name)
           const color = Vue.$colorset.next(getKlipperType(item), item)
           const config = getters.getPrinterSettings(item)
 
