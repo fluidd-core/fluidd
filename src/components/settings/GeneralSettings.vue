@@ -577,7 +577,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
         const link = document.createElement('a')
 
         link.href = `data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`
-        link.download = 'backup-fluidd.json'
+        link.download = `backup-fluidd-v${import.meta.env.VERSION}-${this.instanceName}.json`
         link.target = '_blank'
 
         document.body.appendChild(link)
