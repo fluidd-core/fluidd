@@ -165,7 +165,7 @@
             :loading="hasWait($waits.onHomeAll)"
             :disabled="printerBusy"
             :color="(!allHomed) ? 'primary' : undefined"
-            @click="sendGcode('G28', $waits.onHomeAll)"
+            @click="homeAll"
           >
             <v-icon
               small

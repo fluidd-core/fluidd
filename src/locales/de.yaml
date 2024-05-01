@@ -528,7 +528,8 @@ app:
       video: IP Camera
       webrtc_camera_streamer: WebRTC (camera-streamer)
       hlsstream: HLS-Stream
-      webrtc_gortc: WebRTC (go2rtc)
+      webrtc_go2rtc: WebRTC (go2rtc)
+      webrtc_mediamtx: WebRTC (MediaMTX)
     camera_rotate_options:
       none: Keine Drehung
       90: 90°
@@ -660,12 +661,15 @@ app:
       print_in_progress_layout: Druckfortschritt-Layout
       print_eta_calculation: Druckendzeit-Berechnung
       print_progress_calculation: Druckfortschritt-Berechnung
+      keyboard_shortcuts: Tastenkürzel
     timer_options:
       duration: Nur Dauer
-      filament: Filament-Schätzung
-      file: Datei-Schätzung
+      filament: Filament
+      file: Datei
       slicer: Slicer
       slicer_m73: Slicer (M73)
+      absolute_file_position: Absolute Dateiposition
+      relative_file_position: Relative Dateiposition
     title:
       authentication: Authentifizierung
       camera: Kamera | Kameras
@@ -701,6 +705,8 @@ app:
         zu den Firmen oder eine Billigung dieser dar.
       average_calculation: Wenn mehr als eine Option gewählt ist, wird ein Durchschnittswert
         berechnet
+      keyboard_shortcuts: Sobald aktiviert können Sie '?' drücken, um eine Liste aller
+        Kürzel anzuzeigen
   socket:
     msg:
       connecting: Verbinde mit Moonraker...
@@ -750,7 +756,7 @@ app:
         suchen
       canbus_warning: Nur unzugewiesene CAN-Bus-Knoten werden erkannt.<br>Es ist empfohlen,
         nur ein unzugewiesenes Gerät an den CAN-Bus anzuschließen, um Kommunikationsprobleme
-        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank"
+        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank" 
         href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">hier.</a>
   tool:
     btn:
@@ -956,3 +962,16 @@ app:
   sensors:
     title:
       sensors: Sensoren
+  keyboard_shortcuts:
+    title:
+      keyboard_shortcuts: Tastenkürzel
+    label:
+      actions: Aktionen
+      cancel: Abbrechen
+      emergency_stop: Not-Aus
+      home_all: Alle homen
+      navigation: Navigation
+      open_keyboard_shortcut_help: Tastenkürzel-Hilfe öffnen
+      pause: Pausieren
+      printing: Drucken
+      tool: Werkzeug

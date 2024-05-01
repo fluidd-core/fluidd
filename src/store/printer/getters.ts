@@ -72,7 +72,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     // If the idle state says we're printing, but the print_stats say otherwise - then
     // we're probably busy moving the toolhead or doing some other process.
     // Possible values are;
-    // printing, busy, paused, ready, idle, standby
+    // printing, busy, paused, cancelled, ready, idle, standby
     if (state1 && state2) {
       if (
         state2.toLowerCase() === 'paused' ||
@@ -95,9 +95,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
     }
   },
 
-  getFilePrintProgress: (state): number => {
+  getFileRelativePrintProgress: (state): number => {
     const { gcode_start_byte, gcode_end_byte, path, filename } = state.printer.current_file ?? {}
-    const { file_position } = state.printer.virtual_sdcard ?? {}
+    const { file_position, progress } = state.printer.virtual_sdcard ?? {}
 
     const fullFilename = path ? `${path}/${filename}` : filename
 
@@ -111,11 +111,28 @@ export const getters: GetterTree<PrinterState, RootState> = {
       if (currentPosition > 0 && endPosition > 0) return currentPosition / endPosition
     }
 
-    return state.printer.display_status.progress || 0
+    return progress || 0
+  },
+
+  getFileAbsolutePrintProgress: (state): number => {
+    return state.printer.virtual_sdcard?.progress || 0
   },
 
   getSlicerPrintProgress: (state): number => {
     return state.printer.display_status.progress || 0
+  },
+
+  getFilamentPrintProgress: (state) => {
+    const { filament_used, filename: statsFilename } = state.printer.print_stats ?? {}
+    const { filament_total, path, filename } = state.printer.current_file ?? {}
+
+    const fullFilename = path ? `${path}/${filename}` : filename
+
+    if (filament_used != null && filament_total && fullFilename === statsFilename) {
+      return filament_used / filament_total
+    }
+
+    return state.printer.virtual_sdcard?.progress || 0
   },
 
   getPrintProgress: (state, getters, rootState): number => {
@@ -125,10 +142,16 @@ export const getters: GetterTree<PrinterState, RootState> = {
       .map(type => {
         switch (type) {
           case 'file':
-            return getters.getFilePrintProgress
+            return getters.getFileRelativePrintProgress
+
+          case 'fileAbsolute':
+            return getters.getFileAbsolutePrintProgress
 
           case 'slicer':
             return getters.getSlicerPrintProgress
+
+          case 'filament':
+            return getters.getFilamentPrintProgress
 
           default:
             return 0
@@ -186,7 +209,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
   getTimeEstimates: (state, getters, rootGetters): TimeEstimates => {
     const progress = getters.getPrintProgress as number
-    const fileProgress = getters.getFilePrintProgress as number
+    const fileProgress = getters.getFileRelativePrintProgress as number
 
     const totalDuration = state.printer.print_stats?.total_duration as number | undefined ?? 0
     const printDuration = state.printer.print_stats?.print_duration as number | undefined ?? 0
@@ -642,9 +665,10 @@ export const getters: GetterTree<PrinterState, RootState> = {
         if (outputPins.includes(type)) {
           output = {
             ...output,
-            pwm: (config && config.pwm) ? config.pwm : false,
-            scale: (config && config.scale) ? config.scale : 1,
-            controllable: (config && config.static_value) ? false : (controllable.includes(type))
+            pwm: config?.pwm ?? false,
+            scale: config?.scale ?? 1,
+            resetValue: config?.value ?? 0,
+            controllable: config?.static_value ? false : controllable.includes(type)
           }
         }
 
@@ -665,6 +689,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'tmc2240',
       'z_thermal_adjust'
     ]
+    const supportedDrivers = [
+      'tmc2240'
+    ]
 
     const sensors = Object.keys(state.printer)
       .reduce((groups, item) => {
@@ -672,7 +699,15 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
         if (supportedSensors.includes(type)) {
           const name = nameFromSplit ?? item
-          const prettyName = Vue.$filters.startCase(name)
+          const prettyName = supportedDrivers.includes(type)
+            ? i18n.t('app.general.label.stepper_driver',
+              {
+                name:
+                  name.startsWith('stepper_')
+                    ? name.substring(8).toUpperCase()
+                    : Vue.$filters.startCase(name)
+              })
+            : Vue.$filters.startCase(name)
           const color = Vue.$colorset.next(getKlipperType(item), item)
           const config = getters.getPrinterSettings(item)
 
@@ -702,7 +737,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'aht10',
       'bme280',
       'htu21d',
-      'nevermoresensor'
+      'nevermoresensor',
+      'sht3x'
     ]
 
     if (supportedSensors.includes(sensorType)) {

@@ -466,7 +466,7 @@ app:
       mjpegadaptive: MJPEG 적응형
       mjpegstream: MJPEG 스트림
       video: IP 카메라
-      webrtc_gortc: WebRTC (go2rtc)
+      webrtc_go2rtc: WebRTC (go2rtc)
       hlsstream: HLS 스트림
       iframe: HTTP 페이지
       webrtc_camera_streamer: WebRTC (카메라 스트리머)

@@ -66,6 +66,20 @@
 
       <v-divider />
 
+      <app-setting
+        :title="$t('app.setting.label.keyboard_shortcuts')"
+        :sub-title="$t('app.setting.tooltip.keyboard_shortcuts')"
+      >
+        <v-switch
+          v-model="enableKeyboardShortcuts"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.confirm_on_estop')">
         <v-switch
           v-model="confirmOnEstop"
@@ -215,7 +229,38 @@
           class="mt-0 mb-4"
         />
       </app-setting>
+
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.fluidd_settings_in_moonraker_db')">
+        <app-btn
+          outlined
+          small
+          color="primary"
+          class="mr-2"
+          @click="handleBackupSettings"
+        >
+          {{ $t('app.setting.btn.backup') }}
+        </app-btn>
+
+        <app-btn
+          outlined
+          small
+          color="primary"
+          @click="uploadSettingsFile.click()"
+        >
+          {{ $t('app.setting.btn.restore') }}
+        </app-btn>
+      </app-setting>
     </v-card>
+
+    <input
+      ref="uploadSettingsFile"
+      type="file"
+      accept=".json"
+      style="display: none"
+      @change="handleRestoreSettings"
+    >
   </div>
 </template>
 
@@ -227,6 +272,11 @@ import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
 import type { OutputPin } from '@/store/printer/types'
 import type { Device } from '@/store/power/types'
 import type { PrintEtaCalculation, PrintInProgressLayout, PrintProgressCalculation } from '@/store/config/types'
+import { httpClientActions } from '@/api/httpClientActions'
+import consola from 'consola'
+import { readFileAsTextAsync } from '@/util/file-system-entry'
+import { EventBus } from '@/eventBus'
+import { isFluiddContent, toFluiddContent } from '@/util/fluidd-content'
 
 @Component({
   components: {}
@@ -234,6 +284,9 @@ import type { PrintEtaCalculation, PrintInProgressLayout, PrintProgressCalculati
 export default class GeneralSettings extends Mixins(StateMixin) {
   @Ref('instanceName')
   readonly instanceNameElement!: VInput
+
+  @Ref('uploadSettingsFile')
+  readonly uploadSettingsFile!: HTMLInputElement
 
   get instanceName () {
     return this.$store.state.config.uiSettings.general.instanceName
@@ -300,6 +353,18 @@ export default class GeneralSettings extends Mixins(StateMixin) {
         value: key,
         text: `${date.toLocaleTimeString(entry.locales ?? this.$filters.getAllLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
+  }
+
+  get enableKeyboardShortcuts (): boolean {
+    return this.$store.state.config.uiSettings.general.enableKeyboardShortcuts
+  }
+
+  set enableKeyboardShortcuts (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.enableKeyboardShortcuts',
+      value,
+      server: true
+    })
   }
 
   get confirmOnEstop () {
@@ -438,11 +503,19 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return [
       {
         value: 'file',
-        text: this.$t('app.setting.timer_options.file')
+        text: this.$t('app.setting.timer_options.relative_file_position')
+      },
+      {
+        value: 'fileAbsolute',
+        text: this.$t('app.setting.timer_options.absolute_file_position')
       },
       {
         value: 'slicer',
         text: this.$t('app.setting.timer_options.slicer_m73')
+      },
+      {
+        value: 'filament',
+        text: this.$t('app.setting.timer_options.filament')
       }
     ]
   }
@@ -494,6 +567,67 @@ export default class GeneralSettings extends Mixins(StateMixin) {
       value,
       server: true
     })
+  }
+
+  async handleBackupSettings () {
+    try {
+      const response = await httpClientActions.serverDatabaseItemGet('fluidd')
+
+      const data = response.data?.result?.value
+
+      if (data) {
+        const backupData = toFluiddContent('settings-backup', data)
+        const backupDataAsString = JSON.stringify(backupData)
+
+        const link = document.createElement('a')
+
+        link.href = `data:text/plain;charset=utf-8,${encodeURIComponent(backupDataAsString)}`
+        link.download = `backup-fluidd-v${import.meta.env.VERSION}-${this.instanceName}.json`
+        link.target = '_blank'
+
+        document.body.appendChild(link)
+
+        link.click()
+
+        document.body.removeChild(link)
+      }
+    } catch (e) {
+      consola.error('[Settings] backup failed', e)
+
+      EventBus.$emit(this.$t('app.general.msg.fluidd_settings_backup_failed').toString(), { type: 'error' })
+    }
+  }
+
+  async handleRestoreSettings () {
+    try {
+      if (this.uploadSettingsFile?.files?.length === 1) {
+        const backupDataAsString = await readFileAsTextAsync(this.uploadSettingsFile.files[0])
+
+        if (backupDataAsString) {
+          const backupData = JSON.parse(backupDataAsString)
+
+          if (
+            !isFluiddContent<Record<string, unknown>>('settings-backup', backupData)
+          ) {
+            EventBus.$emit(this.$t('app.general.msg.not_valid_fluidd_backup_file').toString(), { type: 'error' })
+
+            return
+          }
+
+          for (const key in backupData.data) {
+            await httpClientActions.serverDatabaseItemPost('fluidd', key, backupData.data[key])
+          }
+
+          window.location.reload()
+        }
+      }
+    } catch (e) {
+      consola.error('[Settings] restore failed', e)
+
+      EventBus.$emit(this.$t('app.general.msg.fluidd_settings_restore_failed').toString(), { type: 'error' })
+    } finally {
+      this.uploadSettingsFile.value = ''
+    }
   }
 }
 </script>

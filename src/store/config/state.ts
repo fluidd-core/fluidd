@@ -46,6 +46,7 @@ export const defaultState = (): ConfigState => {
         sectionsToIgnorePendingConfigurationChanges: [],
         dateFormat: 'iso',
         timeFormat: 'iso',
+        enableKeyboardShortcuts: true,
         textSortOrder: 'default',
         showRateOfChange: false,
         showRelativeHumidity: true,
@@ -142,7 +143,9 @@ export const defaultState = (): ConfigState => {
         }
       },
       fileSystem: {
-        activeFilters: {}
+        activeFilters: {},
+        sortBy: {},
+        sortDesc: {}
       },
       toolhead: {
         forceMove: false,

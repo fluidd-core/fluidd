@@ -30,7 +30,8 @@ app:
       rate_of_change: Verandering
     tooltip:
       help: >-
-        Hou shift in om te zoem.<br />Klik op 'n item om dit aan en af te skakel op die grafiek.<br
+        Hou shift in om te zoem.<br />Klik op 'n item om dit aan en af te skakel op
+        die grafiek.<br
         />Klik 'n drywing om dit aan en af te skakel op die grafiek.
   console:
     label:
@@ -86,8 +87,10 @@ app:
       not_found: Geen lêers gevind nie
       processing: Verwerk tans
     overlay:
-      drag_files_folders_upload: <strong>Sleep</strong> lêers en vouers hier om op te laai
-      drag_files_enqueue: <strong>Sleep</strong> lêers hier om dit op die waglys te plaas
+      drag_files_folders_upload: <strong>Sleep</strong> lêers en vouers hier om op
+        te laai
+      drag_files_enqueue: <strong>Sleep</strong> lêers hier om dit op die waglys te
+        plaas
     title:
       add_dir: Voeg Vouer By
       add_file: Voeg Lêer By
@@ -326,12 +329,15 @@ app:
       password_changed: Wagwoord is verander
       wrong_password: Gits, iets het verkeerd gegaan. Is die wagwoord korrek?
       bed_screws_adjust: >-
-        Klik <b>Aangepas</b> as 'n noemenswaardige verstelling van die huidige skroef nodig is; anders, klink <b>Aanvaar</b> om te begin.
+        Klik <b>Aangepas</b> as 'n noemenswaardige verstelling van die huidige skroef
+        nodig is; anders, klink <b>Aanvaar</b> om te begin.
       welcome_back: >-
         Welkom terug.<br>Teken hier onder in om in verbinding te bly met jou drukker.
       offline_ready: Fluidd is nou gereed om vanlyn te werk.
-      needs_refresh: Nuwe inhoud beskikbaar, druk die <b>Herlaai</b> knoppie om op te dateer.
-      pending_configuration_sections_deleted: Die volgende afdelings is gemerk om uitgevee te word
+      needs_refresh: Nuwe inhoud beskikbaar, druk die <b>Herlaai</b> knoppie om op
+        te dateer.
+      pending_configuration_sections_deleted: Die volgende afdelings is gemerk om
+        uitgevee te word
       rolledover_logs: >-
         Die volgende toepassing-logs het oorgeslaan: %{applications}
     simple_form:
@@ -350,7 +356,8 @@ app:
         invalid_aspect: Ongeldige verhouding
       msg:
         confirm: Is jy seker?
-        confirm_delete: Is jy seker? Die geselekteerde item gaan uitgevee word. | Is jy seker? Die {count} geselekteerde items gaan uitgevee word.
+        confirm_delete: Is jy seker? Die geselekteerde item gaan uitgevee word. |
+          Is jy seker? Die {count} geselekteerde items gaan uitgevee word.
         confirm_exclude_object: Is jy seker jy wil hierdie item uitlaat om te druk?
         confirm_forcemove_toggle: Is jy seker? Dit kan die drukker beskadig.
         confirm_reboot_host: Is jy seker? Hierdie gaan die stelsel herbegin.
@@ -359,7 +366,8 @@ app:
         confirm_service_restart: Is jy seker jy wil die diens %{name} herlaai?
         confirm_service_stop: Is jy seker jy wil die diens %{name} stop?
         confirm_power_device_toggle: Is jy seker? Hierdie gaan die krag afsit.
-        unsaved_changes: Daar is ongestoorde veranderinge. Is jy seker jy wil die lêer toe maak?
+        unsaved_changes: Daar is ongestoorde veranderinge. Is jy seker jy wil die
+          lêer toe maak?
         no_file_preview: >-
           %{name} het tans geen voorskou beskikbaar nie.
     table:
@@ -499,8 +507,10 @@ app:
       collector: Versamelaar
       confirm_on_estop: Bevestig 'n Noodstop
       confirm_on_power_device_change: Bevestig toestelkragveranderinge
-      confirm_on_save_config_and_restart: Hersien hangende konfigurasieveranderinge voor Stoor-en-Herlaai.
-      confirm_dirty_editor_close: Bevestig voordat redigeerder toegemaak word met ongestoorde veranderinge
+      confirm_on_save_config_and_restart: Hersien hangende konfigurasieveranderinge
+        voor Stoor-en-Herlaai.
+      confirm_dirty_editor_close: Bevestig voordat redigeerder toegemaak word met
+        ongestoorde veranderinge
       contains: Bevat
       dark_mode: Donkermodus
       dashed: Gestippel
@@ -557,7 +567,8 @@ app:
       show_legend: Wys verduideliking
       show_rate_of_change: Wys temperatuur tempo-van-verandering
       show_relative_humidity: Wys relatiewe humiditeit
-      show_save_config_and_restart: Toon Stoor-Konfigurasie-en-Herlaai knop in boonste navigasiebalk
+      show_save_config_and_restart: Toon Stoor-Konfigurasie-en-Herlaai knop in boonste
+        navigasiebalk
       show_upload_and_print: Toon Laai-Op-en-Druk knop in boonste navigasiebalk
       solid: Solied
       starts_with: Begin met
@@ -576,7 +587,8 @@ app:
       text_sort_order: Tekssorteervolgorde
       force_move_toggle_warning: Bevestig voordat FORCE_MOVE aangeskakel word
       show_manual_probe_dialog_automatically: Wys Handmatige-probe-dialoog outomaties
-      show_bed_screws_adjust_dialog_automatically: Wys bedskroefverstelling-dialoog outomaties
+      show_bed_screws_adjust_dialog_automatically: Wys bedskroefverstelling-dialoog
+        outomaties
     timer_options:
       duration: Slegs Tydsduur
       filament: Filamentskatting
@@ -594,14 +606,18 @@ app:
       thermal_presets: Temperatuur-Voorafinstellings
       tool: Druktuig
     tooltip:
-      diagnostics_performance: '[BETA] Die loghou van diagnostieke inligting mag die prestasie beïnvloed.'
+      diagnostics_performance: '[BETA] Die loghou van diagnostieke inligting mag die
+        prestasie beïnvloed.'
       gcode_coords: Gebruik GCode posisie i.p.v. druktuigposisie op paneelblad
-      show_manual_probe_dialog_automatically: Wys hulpdialoog outomaties wanneer 'n probe met die hand uitgevoer word
-      show_bed_screws_adjust_dialog_automatically: Wys hulpdialoog outomaties wanneer BED_SCREWS_ADJUST geloop word
+      show_manual_probe_dialog_automatically: Wys hulpdialoog outomaties wanneer 'n
+        probe met die hand uitgevoer word
+      show_bed_screws_adjust_dialog_automatically: Wys hulpdialoog outomaties wanneer
+        BED_SCREWS_ADJUST geloop word
   socket:
     msg:
       connecting: Konnekteer tans aan moonraker...
-      no_connection: Geen moonraker-konneksie nie. Gaan moonraker-status na en / of vervris.
+      no_connection: Geen moonraker-konneksie nie. Gaan moonraker-status na en / of
+        vervris.
   system_info:
     label:
       capacity: Kapasiteit
@@ -652,7 +668,8 @@ app:
       tools: Gereedskap
     label:
       stats_active_extruder: >-
-        <span class="secondary--text">Die huidige ekstruderkonfigurasie is gestel vir</span>
+        <span class="secondary--text">Die huidige ekstruderkonfigurasie is gestel
+        vir</span>
         %{filamentDiameter} mm diameter filament
         <span class="secondary--text">en</span>
         %{nozzleDiameter} mm mondstuk

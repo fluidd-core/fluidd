@@ -342,6 +342,8 @@ app:
       edit_category: Edit category
       add_category: Add category
       file_time: File
+      stepper_driver: >-
+        %{name} Driver
     msg:
       password_changed: Password changed
       wrong_password: Oops, something went wrong. Is your password correct?
@@ -354,6 +356,9 @@ app:
       pending_configuration_sections_deleted: The following sections are marked for deletion
       rolledover_logs: >-
         The following application logs have been rolled over: %{applications}
+      not_valid_fluidd_backup_file: Not a valid Fluidd backup file!
+      fluidd_settings_backup_failed: Failed to backup Fluidd settings!
+      fluidd_settings_restore_failed: Failed to restore Fluidd settings!
     simple_form:
       error:
         arrayofnums: Only numbers
@@ -501,7 +506,9 @@ app:
       add_metric: Add Metric
       add_thermal_preset: Add Preset
       add_user: Add user
+      backup: Backup
       reset: Reset
+      restore: Restore
       select_theme: Select Theme
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
@@ -510,7 +517,8 @@ app:
       webrtc_camera_streamer: WebRTC (camera-streamer)
       video: IP Camera
       iframe: HTTP page
-      webrtc_gortc: WebRTC (go2rtc)
+      webrtc_go2rtc: WebRTC (go2rtc)
+      webrtc_mediamtx: WebRTC (MediaMTX)
     camera_rotate_options:
       '90': 90°
       '180': 180°
@@ -565,6 +573,7 @@ app:
       fill_color: Fill color
       fill_opacity: Fill opacity
       filter: Filter | Filters
+      fluidd_settings_in_moonraker_db: Fluidd settings in Moonraker database
       fps_target: FPS Target
       fps_idle_target: FPS Target when not in focus
       height: Height
@@ -574,6 +583,7 @@ app:
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
+      keyboard_shortcuts: Keyboard shortcuts
       language: Display Language
       last_result: Last result
       left_y: Left Y-Axis
@@ -632,9 +642,11 @@ app:
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically
       show_screws_tilt_adjust_dialog_automatically: Show Screws Tilt Adjust dialog automatically
     timer_options:
+      absolute_file_position: Absolute file position
       duration: Duration only
-      filament: Filament Estimation
-      file: File Estimation
+      filament: Filament
+      file: File
+      relative_file_position: Relative file position
       slicer: Slicer
       slicer_m73: Slicer (M73)
     title:
@@ -653,6 +665,8 @@ app:
       average_calculation: If more than one option is select, an average will be calculated
       diagnostics_performance: '[BETA] Logging diagnostics info may impact performance'
       gcode_coords: Use GCode position instead of toolhead position on dashboard
+      keyboard_shortcuts: >-
+        [BETA] Enable and press '?' to view the list of available keyboard shortcuts
       show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
       show_bed_screws_adjust_dialog_automatically: Automatically shows helper dialog if running BED_SCREWS_ADJUST tool
       show_screws_tilt_adjust_dialog_automatically: Automatically shows helper dialog if running SCREWS_TILT_CALCULATE tool
@@ -898,3 +912,16 @@ app:
   sensors:
     title:
       sensors: Sensors
+  keyboard_shortcuts:
+    title:
+      keyboard_shortcuts: Keyboard Shortcuts
+    label:
+      actions: Actions
+      cancel: Cancel
+      emergency_stop: Emergency stop
+      home_all: Home all
+      navigation: Navigation
+      open_keyboard_shortcut_help: Open keyboard shortcut help
+      pause: Pause
+      printing: Printing
+      tool: Tool

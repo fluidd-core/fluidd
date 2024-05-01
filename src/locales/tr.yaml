@@ -4,7 +4,7 @@ app:
       active: aktif
       base: temel
       box_scale: Kutu ölçeği
-      flat_surface: Düzlem yüzeyi göster
+      flat_surface: Yüzey düzlemini göster
       mesh_matrix: Örgü matrisi
       probed_matrix: Ölçülen matris
       profile_name: Profil Adı
@@ -22,7 +22,7 @@ app:
       calibrate: Yeni bir kalibrasyon başlatır, varsayılan olarak 'default' profiline
         kaydeder
       delete: Profili Sil
-      load: Profili Yükle
+      load: Profil Yükle
       save: Kalibre edilmiş profili printer.cfg'ye kaydeder
       copy_image: Yatak örgüsü görüntüsünü kopyala
   chart:
@@ -49,8 +49,8 @@ app:
   endpoint:
     error:
       cant_connect: >-
-        Bir şeyler ters gitti ve fluidd hedefe ulaşamıyor.
-        Bu doğru adres olduğundan emin misiniz?
+        Bir şeyler ters gitti ve fluidd hedefe ulaşamıyor. Bunun doğru adres olduğundan
+        emin misiniz?
       cors_error: CORS politikası tarafından engellendi
       cors_note: >-
         Bu, moonraker yapılandırmanızı değiştirmeniz gerektiği anlamına gelebilir.
@@ -76,13 +76,13 @@ app:
     filters:
       label:
         crowsnest_backup_files: Crowsnest yedek dosyalarını filtrele
-        print_start_time: Basılanları filtrele
+        print_start_time: Yazdırılanları filtrele
         hidden_files_folders: Gizli dosya ve klasörleri filtrele
         klipper_backup_files: Klipper yedek dosyalarını filtrele
-        moonraker_backup_files: Moonraker yedek dosyalarını filtrele
-        rolled_log_files: Katlanmış günlük dosyalarını filtrele
+        moonraker_backup_files: Moonraker yedekleme dosyalarını filtrele
+        rolled_log_files: Sarılmış günlük dosyalarını filtrele
     label:
-      dir_name: Klasör adı
+      dir_name: Dizin adı
       disk_usage: Disk Kullanımı
       diskinfo: Disk Bilgileri
       downloaded: İndirilen
@@ -99,15 +99,15 @@ app:
       drag_files_enqueue: Dosyaları buraya <strong>sürükleyin</strong> sıraya eklemek
         için
     title:
-      add_dir: Klasör Ekle
+      add_dir: Dizin Ekle
       add_file: Dosya Ekle
       command_palette: Komut Paleti
       devices: Aygıtlar
       download_file: Dosya alınıyor
-      duplicate_dir: Klasörü Kopyala
-      duplicate_file: Dosyayı Kopyala
+      duplicate_dir: Dizini Çoğalt
+      duplicate_file: Dosyayı Çoğalt
       go_to_file: Dosyaya git
-      rename_dir: Klasörü Yeniden Adlandır
+      rename_dir: Dizini Yeniden Adlandır
       rename_file: Dosyayı Yeniden Adlandır
       upload_file: Dosya Yükleniyor | Dosyalar Yükleniyor
     tooltip:
@@ -121,15 +121,15 @@ app:
       crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
   gcode:
     btn:
-      load_current_file: Mevcut Dosyayı Yükle
+      load_current_file: Geçerli Dosyayı Yükle
     label:
-      current_layer_height: Mevcut Katman Yüksekliği
+      current_layer_height: Geçerli Katman Yüksekliği
       exclude_object: Nesneyi Hariç Tut
-      follow_progress: İlerlemeyi Takip Et
+      follow_progress: İlerlemeyi takip et
       layer: Katman
       layers: Katmanlar
       parsed: Ayrıştırıldı
-      show_current_layer: Mevcut katmanı göster
+      show_current_layer: Geçerli katmanı göster
       show_extrusions: Ekstrüzyonları göster
       show_moves: Hareketleri göster
       show_next_layer: Sonraki katmanı göster
@@ -536,7 +536,8 @@ app:
       webrtc_camera_streamer: WebRTC (kamera akışı)
       video: IP Kamera
       iframe: HTTP sayfa
-      webrtc_gortc: WebRTC (go2rtc)
+      webrtc_go2rtc: WebRTC (go2rtc)
+      webrtc_mediamtx: WebRTC (MedyaMTX)
     camera_rotate_options:
       '90': 90°
       '180': 180°
@@ -666,12 +667,15 @@ app:
         otomatik olarak göster
       show_screws_tilt_adjust_dialog_automatically: Vida Eğim Ayar iletişim kutusunu
         otomatik olarak göster
+      keyboard_shortcuts: Klavye kısayolları
     timer_options:
       duration: Süre sadece
-      filament: Filament Tahmini
-      file: Dosya Tahmini
+      filament: Filament
+      file: Dosya
       slicer: Dilimleyici
       slicer_m73: Dilimleyici (M73)
+      relative_file_position: Bağıl dosya konumu
+      absolute_file_position: Mutlak dosya konumu
     title:
       authentication: Kimlik Doğrulama
       console: Konsol
@@ -703,6 +707,8 @@ app:
         Temalarla ilgili herhangi bir sorun veya soruşturma, Fluidd ekibine yönlendirilmelidir.<br>
         Marka adlarının ve logolarının kullanımı sadece dekoratif ve estetik amaçlarla
         yapılmış olup, markalarla resmi bir ilişki veya onay ima edilmez.
+      keyboard_shortcuts: Kullanılabilir klavye kısayollarını görüntülemek için "?"
+        tuşuna basın
   socket:
     msg:
       connecting: Moonraker'a bağlanılıyor...
@@ -949,3 +955,16 @@ app:
     title:
       sensors: Sensörler
 
+  keyboard_shortcuts:
+    label:
+      open_keyboard_shortcut_help: Klavye kısayolları yardımını aç
+      pause: Araver
+      printing: Yazdırılıyor
+      cancel: İptal et
+      emergency_stop: Acil Stop
+      actions: Eylemler
+      tool: Araç
+      home_all: Eksenleri sıfırla
+      navigation: Yönlendirme
+    title:
+      keyboard_shortcuts: Klavye Kısayolları

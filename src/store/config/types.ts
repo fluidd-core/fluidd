@@ -82,6 +82,7 @@ export interface GeneralConfig {
   sectionsToIgnorePendingConfigurationChanges: string[];
   dateFormat: string;
   timeFormat: string;
+  enableKeyboardShortcuts: boolean;
   textSortOrder: TextSortOrder;
   showRateOfChange: boolean;
   showRelativeHumidity: boolean;
@@ -114,7 +115,7 @@ export type PrintInProgressLayout = 'default' | 'compact'
 
 export type ColorPickerValueRange = 'absolute' | 'percentage'
 
-export type PrintProgressCalculation = 'file' | 'slicer'
+export type PrintProgressCalculation = 'file' | 'fileAbsolute' | 'slicer' | 'filament'
 
 export type PrintEtaCalculation = 'file' | 'slicer'
 
@@ -226,5 +227,7 @@ export interface GcodePreviewConfig {
 }
 
 export interface FileSystemConfig {
-  activeFilters: Record<string, FileFilterType[]>
+  activeFilters: Record<string, FileFilterType[]>;
+  sortBy: Record<string, string | null>;
+  sortDesc: Record<string, boolean | null>;
 }
