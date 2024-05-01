@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.30.0](https://github.com/fluidd-core/fluidd/compare/v1.29.1...v1.30.0) (2024-05-01)
+
+
+### Features
+
+* adds keyboard shortcuts ([#1404](https://github.com/fluidd-core/fluidd/issues/1404)) ([79a6bcc](https://github.com/fluidd-core/fluidd/commit/79a6bcc979239e40b60542d4ce7a6061ae8631bc))
+* adds SHT3X sensor support ([8637e47](https://github.com/fluidd-core/fluidd/commit/8637e47e7346a678c51f9c8a08f44f962f36286b))
+* adds WebRTC (MediaMTX) support ([#1409](https://github.com/fluidd-core/fluidd/issues/1409)) ([7b8d988](https://github.com/fluidd-core/fluidd/commit/7b8d988c927828f54324bf897a404f66412dd09f))
+* backup and restore settings ([#1427](https://github.com/fluidd-core/fluidd/issues/1427)) ([5029dab](https://github.com/fluidd-core/fluidd/commit/5029dab0a6fe7b44ab7db55f37a2ba739bfa4e9c))
+* corrects print progress store getter ([befcce0](https://github.com/fluidd-core/fluidd/commit/befcce0fbaf86f90bd626d5df76bbcfd7e73c1ba))
+* **FileSystem:** remember last sort order ([#1406](https://github.com/fluidd-core/fluidd/issues/1406)) ([5cf9a49](https://github.com/fluidd-core/fluidd/commit/5cf9a49053d9c1a3715c88e08ffaae351d467763))
+* **i18n-af:** Update Afrikaans translations ([1305381](https://github.com/fluidd-core/fluidd/commit/1305381e0522bd448aff24c101fd8a685e74cbd8))
+* **i18n-ar:** Update Arabic translations ([6d7fa1b](https://github.com/fluidd-core/fluidd/commit/6d7fa1b17b6fe921b97adcebf3f3e6573393f9cf))
+* **i18n-de:** Update German translations ([6245d44](https://github.com/fluidd-core/fluidd/commit/6245d44c3eed98fedaf10411d123cd0bdc162384))
+* **i18n-fr:** Update French translations ([d02c6ca](https://github.com/fluidd-core/fluidd/commit/d02c6ca3b911bfde812ce19c87a72532220884b3))
+* **i18n-fr:** Update French translations ([f4a0187](https://github.com/fluidd-core/fluidd/commit/f4a01870e65ec8f42acd39715f317fe290a9598a))
+* **i18n-hu:** Update Hungarian translations ([8f8c18b](https://github.com/fluidd-core/fluidd/commit/8f8c18b15c3e56e76685f3f1c21b4f2953ead08d))
+* **i18n-ja:** Update Japanese translations ([fa9de72](https://github.com/fluidd-core/fluidd/commit/fa9de723a2749e878d2940b0660da8b95433447a))
+* **i18n-ru:** Update Russian translations ([c634b8f](https://github.com/fluidd-core/fluidd/commit/c634b8fa72f520b3d2547b2f4d41591971f14754))
+* **i18n-RU:** update Russian translations ([#1413](https://github.com/fluidd-core/fluidd/issues/1413)) ([dc9a9c3](https://github.com/fluidd-core/fluidd/commit/dc9a9c38aed7d63f9d4b8d996928ceaae3e8c52e))
+* **i18n-sl:** Update Slovenian translations ([8323043](https://github.com/fluidd-core/fluidd/commit/8323043d91f8d410822de76a851a6796dd6e5a48))
+* **i18n-tr:** Update Turkish translations ([f3ab0f1](https://github.com/fluidd-core/fluidd/commit/f3ab0f1cf69877633a5eee1bdb6b1aaa4dce34c0))
+* **i18n-uk:** Update Ukrainian translations ([b3941b8](https://github.com/fluidd-core/fluidd/commit/b3941b893df5fb68d8a8cd55ada42b3d12f4a8ba))
+* print progress estimation improvements ([#1414](https://github.com/fluidd-core/fluidd/issues/1414)) ([8ad71bc](https://github.com/fluidd-core/fluidd/commit/8ad71bc4fe25c7c42213259a9bfa2ece48ffedb8))
+* show all fan and pin values as percentages ([#1418](https://github.com/fluidd-core/fluidd/issues/1418)) ([192ee19](https://github.com/fluidd-core/fluidd/commit/192ee192f45b81fdb2094046c2905335be91b8f8))
+* use correct stepper temperature label ([#1425](https://github.com/fluidd-core/fluidd/issues/1425)) ([9e05ef4](https://github.com/fluidd-core/fluidd/commit/9e05ef48d144e9d6e23852e2757bd7a55ecc64d8))
+
+
+### Bug Fixes
+
+* broken state merging ([c99b7f3](https://github.com/fluidd-core/fluidd/commit/c99b7f39e7bd5c5e779f329884bd45bed770f937))
+* broken state merging (cont.) ([6ad2aca](https://github.com/fluidd-core/fluidd/commit/6ad2acae58d6ca79a69097c62650b0a04f340faa))
+* **gcodepreview:** ignore moves without coordinates ([#1416](https://github.com/fluidd-core/fluidd/issues/1416)) ([8748e16](https://github.com/fluidd-core/fluidd/commit/8748e166f8e2151166542da366e281fafa8ca214))
+* **gcodepreview:** retraction values ([2970a11](https://github.com/fluidd-core/fluidd/commit/2970a11765606c125d7ff0a5ec8db29ddb0269e6))
+* **spoolman:** improve sanity check logic ([#1411](https://github.com/fluidd-core/fluidd/issues/1411)) ([6930a24](https://github.com/fluidd-core/fluidd/commit/6930a24b024dd97d9d54edcefa9e4b79d4e789c9))
+
 ## [1.29.1](https://github.com/fluidd-core/fluidd/compare/v1.29.0...v1.29.1) (2024-03-31)
 
 
