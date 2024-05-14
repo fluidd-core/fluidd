@@ -90,10 +90,16 @@ export default class FilesMixin extends Vue {
       ...options,
       signal: abortController.signal,
       onDownloadProgress: (event: AxiosProgressEvent) => {
+        const progress = event.progress ?? (
+          size > 0
+            ? event.loaded / size
+            : 0
+        )
+
         const payload: any = {
           filepath,
           loaded: event.loaded,
-          percent: event.progress ? Math.round(event.progress * 100) : 0,
+          percent: Math.round(progress * 100),
           speed: event.rate ?? 0
         }
 
