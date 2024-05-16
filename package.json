@@ -18,8 +18,6 @@
     "lint": "eslint --ext .ts,.js,.vue ./src",
     "bootstrap": "husky",
     "copy:host:config": "shx cp -f ./server/config.json ./dist/config.json",
-    "deploy:host": "npx --yes -p @0x4447/potato potato -s dist -u -b app.fluidd.xyz -a \"$AWS_ACCESS_KEY_ID\" -t \"$AWS_SECRET_ACCESS_KEY\"",
-    "deploy:host:dev": "npx --yes -p @0x4447/potato potato -s dist -u -b dev-app.fluidd.xyz",
     "i18n-extract": "vue-i18n-extract use-config",
     "release": "standard-version",
     "release:major": "npm run release -- --release-as major",
