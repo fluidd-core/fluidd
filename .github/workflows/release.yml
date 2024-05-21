@@ -42,8 +42,7 @@ jobs:
       - name: Create Artifact
         run: |
           cd ./dist
-          zip -r fluidd.zip ./
-          cd ..
+          zip -r ../fluidd.zip ./
 
       - name: Get version from tag
         id: tag_name
@@ -78,7 +77,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/fluidd.zip
+          asset_path: ./fluidd.zip
           asset_name: fluidd.zip
           asset_content_type: application/zip
 
