@@ -12,10 +12,6 @@ on:
       - develop
       - master
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   build:
     name: Build
@@ -112,6 +108,9 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/develop' }}
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
