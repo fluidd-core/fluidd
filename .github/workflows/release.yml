@@ -85,7 +85,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: fluidd-${{ github.ref }}.zip
+          name: fluidd-${{ github.sha }}.zip
           path: ./dist
 
       - name: Publish Release
@@ -109,7 +109,7 @@ jobs:
       - name: Download fluidd.zip
         uses: actions/download-artifact@v4
         with:
-          name: fluidd-${{ github.ref }}.zip
+          name: fluidd-${{ github.sha }}.zip
           path: ./dist
 
       - name: Prepare Deploy
