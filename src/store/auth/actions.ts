@@ -158,10 +158,8 @@ export const actions: ActionTree<AuthState, RootState> = {
    */
   async logout ({ commit, rootGetters }, options?: { invalidate: boolean; partial: boolean }) {
     const opts = {
-      ...{
         invalidate: false,
-        partial: false
-      },
+      partial: false,
       ...options
     }
 
