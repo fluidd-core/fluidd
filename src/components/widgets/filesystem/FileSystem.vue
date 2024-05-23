@@ -158,6 +158,7 @@ import FilePreviewDialog from './FilePreviewDialog.vue'
 import type { AppTableHeader, FileWithPath } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer, setFileDataTransferDataInDataTransfer } from '@/util/file-data-transfer'
+import consola from 'consola'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
@@ -637,69 +638,70 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     this.goToFileDialogOpen = true
   }
 
-  handleFileOpenDialog (file: AppFile, mode: 'edit' | 'view' | undefined = undefined) {
-    const viewOnly = mode
-      ? mode === 'view'
-      : this.rootProperties.canView.includes(`.${file.extension}`)
+  async handleFileOpenDialog (file: AppFile, mode: 'edit' | 'view' | undefined = undefined) {
+    try {
+      const viewOnly = mode
+        ? mode === 'view'
+        : this.rootProperties.canView.includes(`.${file.extension}`)
 
-    // Grab the file. This should provide a dialog.
-    this.getFile(
-      file.filename,
-      this.currentPath,
-      file.size,
-      {
-        responseType: viewOnly ? 'arraybuffer' : 'text',
-        transformResponse: [v => v]
-      }
-    )
-      .then(response => {
-        if (viewOnly) {
-          // Open the file preview dialog.
-          const type = response.headers['content-type']
-          const blob = new Blob([response.data], { type })
-          this.filePreviewState = {
-            open: true,
-            file,
-            filename: file.filename,
-            extension: file.extension,
-            src: URL.createObjectURL(blob),
-            type,
-            readonly: file.permissions === 'r' || this.rootProperties.readonly
-          }
-        } else {
-          // Open the edit dialog.
-          this.fileEditorDialogState = {
-            open: true,
-            contents: response.data,
-            filename: file.filename,
-            loading: false,
-            readonly: file.permissions === 'r' || this.rootProperties.readonly
-          }
+      // Grab the file. This should provide a dialog.
+      const response = await this.getFile(
+        file.filename,
+        this.currentPath,
+        file.size,
+        {
+          responseType: viewOnly ? 'arraybuffer' : 'text',
+          transformResponse: [v => v]
         }
-      })
-      .finally(() => this.$store.dispatch('files/removeFileDownload'))
-      .catch(e => e)
+      )
+
+      if (viewOnly) {
+        // Open the file preview dialog.
+        const type = response.headers['content-type']
+        const blob = new Blob([response.data], { type })
+        this.filePreviewState = {
+          open: true,
+          file,
+          filename: file.filename,
+          extension: file.extension,
+          src: URL.createObjectURL(blob),
+          type,
+          readonly: file.permissions === 'r' || this.rootProperties.readonly
+        }
+      } else {
+        // Open the edit dialog.
+        this.fileEditorDialogState = {
+          open: true,
+          contents: response.data,
+          filename: file.filename,
+          loading: false,
+          readonly: file.permissions === 'r' || this.rootProperties.readonly
+        }
+      }
+    } catch (error: unknown) {
+      consola.error('[FileSystem] open file', error)
+    }
   }
 
   async handlePreviewGcode (file: AppFile | AppFileWithMeta) {
-    this.getGcode(file)
-      .then(response => response?.data)
-      .then(gcode => {
-        if (!gcode) return
+    try {
+      const response = await this.getGcode(file)
 
-        if (this.$router.currentRoute.path !== '/' || !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')) {
-          this.$router.push({ path: '/preview' })
-        }
+      const gcode = response?.data
 
-        this.$store.dispatch('gcodePreview/loadGcode', {
-          file,
-          gcode
-        })
+      if (!gcode) return
+
+      if (this.$router.currentRoute.path !== '/' || !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')) {
+        this.$router.push({ path: '/preview' })
+      }
+
+      this.$store.dispatch('gcodePreview/loadGcode', {
+        file,
+        gcode
       })
-      .catch(e => e)
-      .finally(() => {
-        this.$store.dispatch('files/removeFileDownload')
-      })
+    } catch (error: unknown) {
+      consola.error('[FileSystem] preview gcode', error)
+    }
   }
 
   handleRefreshMetadata (file: AppFileWithMeta) {

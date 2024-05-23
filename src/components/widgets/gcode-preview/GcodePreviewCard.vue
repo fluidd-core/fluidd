@@ -148,6 +148,7 @@ import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog
 import type { AppFile } from '@/store/files/types'
 import type { MinMax } from '@/store/gcodePreview/types'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
+import consola from 'consola'
 
 @Component({
   components: {
@@ -332,20 +333,20 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   async loadFile (file: AppFile) {
-    this.getGcode(file)
-      .then(response => response?.data)
-      .then(gcode => {
-        if (!gcode) return
+    try {
+      const response = await this.getGcode(file)
 
-        this.$store.dispatch('gcodePreview/loadGcode', {
-          file,
-          gcode
-        })
+      const gcode = response?.data
+
+      if (!gcode) return
+
+      this.$store.dispatch('gcodePreview/loadGcode', {
+        file,
+        gcode
       })
-      .catch(e => e)
-      .finally(() => {
-        this.$store.dispatch('files/removeFileDownload')
-      })
+    } catch (error: unknown) {
+      consola.error('[GcodePreview] load', error)
+    }
   }
 
   get printerFile (): AppFile | undefined {
