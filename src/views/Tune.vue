@@ -23,6 +23,10 @@
         v-if="supportsRunoutSensors"
         fullscreen
       />
+      <beacon-card
+        v-if="supportsBeacon"
+        fullscreen
+      />
     </v-col>
   </v-row>
 </template>
@@ -35,13 +39,15 @@ import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import BedMeshControls from '@/components/widgets/bedmesh/BedMeshControls.vue'
 import EndStopsCard from '@/components/widgets/endstops/EndStopsCard.vue'
 import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
+import BeaconCard from '@/components/widgets/beacon/BeaconCard.vue'
 
 @Component({
   components: {
     BedMeshCard,
     BedMeshControls,
     EndStopsCard,
-    RunoutSensorsCard
+    RunoutSensorsCard,
+    BeaconCard
   }
 })
 export default class Tune extends Mixins(StateMixin) {
@@ -56,6 +62,10 @@ export default class Tune extends Mixins(StateMixin) {
   get supportsEndstops () {
     const endStops = this.$store.getters['printer/getEndstops']
     return (Object.keys(endStops).length > 0)
+  }
+
+  get supportsBeacon () {
+    return this.$store.getters['printer/getSupportsBeacon']
   }
 }
 </script>

@@ -62,6 +62,7 @@ import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
 import SpoolmanCard from '@/components/widgets/spoolman/SpoolmanCard.vue'
 import SensorsCard from '@/components/widgets/sensors/SensorsCard.vue'
 import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
+import BeaconCard from '@/components/widgets/beacon/BeaconCard.vue'
 
 @Component({
   components: {
@@ -80,7 +81,8 @@ import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensors
     JobQueueCard,
     SpoolmanCard,
     SensorsCard,
-    RunoutSensorsCard
+    RunoutSensorsCard,
+    BeaconCard
   }
 })
 export default class Dashboard extends Mixins(StateMixin) {
@@ -142,6 +144,10 @@ export default class Dashboard extends Mixins(StateMixin) {
 
   get supportsBedMesh () {
     return this.$store.getters['mesh/getSupportsBedMesh']
+  }
+
+  get supportsBeacon (): boolean {
+    return this.$store.getters['printer/getSupportsBeacon']
   }
 
   get supportsRunoutSensors () {
@@ -222,6 +228,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'job-queue-card' && !this.supportsJobQueue) return true
     if (item.id === 'retract-card' && !this.firmwareRetractionEnabled) return true
     if (item.id === 'bed-mesh-card' && !this.supportsBedMesh) return true
+    if (item.id === 'beacon-card' && !this.supportsBeacon) return true
     if (item.id === 'runout-sensors-card' && !this.supportsRunoutSensors) return true
     if (item.id === 'spoolman-card' && !this.supportsSpoolman) return true
     if (item.id === 'sensors-card' && !this.hasSensors) return true

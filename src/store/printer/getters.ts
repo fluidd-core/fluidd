@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
-import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates } from './types'
+import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, BeaconState } from './types'
 import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
@@ -1049,5 +1049,26 @@ export const getters: GetterTree<PrinterState, RootState> = {
       results &&
       Object.keys(results).length > 0
     )
+  },
+
+  getSupportsBeacon: (state, getters) => {
+    return getters.getPrinterSettings('beacon') != null
+  },
+
+  getBeaconModels: (state, getters) => {
+    const beacon = state.printer.beacon as BeaconState
+
+    const models = Object.keys(getters.getPrinterSettings())
+      .filter(key => key.startsWith('beacon model '))
+      .map(key => {
+        const name = key.substring(13)
+
+        return {
+          name,
+          active: beacon.model === name
+        }
+      })
+
+    return models
   }
 }
