@@ -129,9 +129,13 @@
                     {{ item.filament_name }}
                   </div>
                   <div class="flex-row">
-                    <small>
+                    <small v-if="remainingFilamentUnit === 'weight'">
                       <b>{{ $filters.getReadableWeightString(item.remaining_weight) }}</b>
                       / {{ $filters.getReadableWeightString(item.filament.weight) }}
+                    </small>
+                    <small v-else-if="remainingFilamentUnit === 'length'">
+                      <b>{{ $filters.getReadableLengthString(item.remaining_length) }}</b>
+                      / {{ $filters.getReadableLengthString($filters.convertFilamentWeightToLength(item.filament.weight ?? 0, item.filament.density, item.filament.diameter)) }}
                     </small>
                   </div>
                 </div>
@@ -359,6 +363,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return cameras
   }
 
+  get remainingFilamentUnit () {
+    return this.$store.state.config.uiSettings.spoolman.remainingFilamentUnit
+  }
+
   handleQRCodeDetected (id: number) {
     this.cameraScanSource = null
     this.selectedSpoolId = id
@@ -465,8 +473,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         if (this.warnOnNotEnoughFilament) {
           let remainingLength = spool.remaining_length
           if (!remainingLength && spool.remaining_weight) {
-            // l[mm] = m[g]/D[g/cm³]/A[mm²]*(1000mm³/cm³)
-            remainingLength = spool.remaining_weight / spool.filament.density / (Math.PI * (spool.filament.diameter / 2) ** 2) * 1000
+            remainingLength = this.$filters.convertFilamentWeightToLength(spool.remaining_weight, spool.filament.density, spool.filament.diameter)
           }
 
           if (typeof remainingLength === 'number' && requiredLength >= remainingLength) {

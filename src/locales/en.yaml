@@ -867,6 +867,8 @@ app:
       material: Material
       remaining_weight: Remaining
       vendor: Vendor
+      weight: Weight
+      length: Length
     msg:
       no_spool: >-
         You haven't selected a spool.
@@ -909,6 +911,7 @@ app:
         Show a warning when the selected spool doesn't have enough filament left on it to finish the print
       warn_on_filament_type_mismatch: >-
         Show a warning when the spool's filament type and the one selected in the slicer don't match
+      remaining_filament_unit: Show remaining filament as
   sensors:
     title:
       sensors: Sensors
