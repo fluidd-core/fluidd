@@ -112,16 +112,9 @@ export const mutations: MutationTree<FilesState> = {
   },
 
   setUpdateFileDownload (state, payload) {
-    if (
-      !state.download ||
-      state.download === null
-    ) {
-      state.download = payload
-    } else {
-      state.download = {
-        ...state.download,
-        ...payload
-      }
+    state.download = {
+      ...state.download,
+      ...payload
     }
   },
 

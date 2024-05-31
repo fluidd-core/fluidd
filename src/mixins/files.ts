@@ -91,6 +91,10 @@ export default class FilesMixin extends Vue {
         ...options,
         signal: abortController.signal,
         onDownloadProgress: (event: AxiosProgressEvent) => {
+          if (abortController.signal.aborted) {
+            return
+          }
+
           const progress = event.progress ?? (
             size > 0
               ? event.loaded / size
@@ -111,6 +115,8 @@ export default class FilesMixin extends Vue {
           this.$store.dispatch('files/updateFileDownload', payload)
         }
       })
+
+      abortController.abort()
 
       return response
     } finally {
@@ -192,6 +198,10 @@ export default class FilesMixin extends Vue {
         ...options,
         signal: abortController.signal,
         onUploadProgress: (event: AxiosProgressEvent) => {
+          if (abortController.signal.aborted) {
+            return
+          }
+
           this.$store.dispatch('files/updateFileUpload', {
             filepath,
             loaded: event.loaded,
@@ -200,6 +210,8 @@ export default class FilesMixin extends Vue {
           })
         }
       })
+
+      abortController.abort()
 
       return response
     } finally {
