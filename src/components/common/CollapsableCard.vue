@@ -59,6 +59,12 @@
       </v-row>
     </v-card-title>
 
+    <v-expand-transition>
+      <div v-show="isCollapsed && !inLayout">
+        <slot name="collapsed-content" />
+      </div>
+    </v-expand-transition>
+
     <v-expand-transition v-if="!lazy">
       <div
         v-if="!isCollapsed && !inLayout"

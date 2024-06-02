@@ -39,6 +39,14 @@
       />
     </template>
 
+    <template #collapsed-content>
+      <v-progress-linear
+        :height="6"
+        :value="estimates.progress"
+        color="primary"
+      />
+    </template>
+
     <v-tabs-items
       v-model="tab"
       touchless
@@ -66,6 +74,7 @@ import StateMixin from '@/mixins/state'
 import StatusControls from './StatusControls.vue'
 import StatusTab from './StatusTab.vue'
 import ReprintTab from './ReprintTab.vue'
+import type { TimeEstimates } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -94,6 +103,10 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
 
   get filename () {
     return this.$store.state.printer.printer.print_stats.filename
+  }
+
+  get estimates (): TimeEstimates {
+    return this.$store.getters['printer/getTimeEstimates'] as TimeEstimates
   }
 
   @Watch('filename')
