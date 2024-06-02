@@ -39,7 +39,10 @@
       />
     </template>
 
-    <template #collapsed-content>
+    <template
+      v-if="printerPrinting"
+      #collapsed-content
+    >
       <v-progress-linear
         :height="6"
         :value="estimates.progress"
