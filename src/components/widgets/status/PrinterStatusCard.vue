@@ -40,7 +40,7 @@
     </template>
 
     <template
-      v-if="printerPrinting"
+      v-if="printerPrinting || printerPaused || filename"
       #collapsed-content
     >
       <v-progress-linear
