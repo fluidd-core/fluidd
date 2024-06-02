@@ -696,9 +696,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const sensors = Object.keys(state.printer)
       .reduce((groups, item) => {
         const [type, nameFromSplit] = item.split(' ', 2)
+        const name = nameFromSplit ?? item
 
-        if (supportedSensors.includes(type)) {
-          const name = nameFromSplit ?? item
+        if (supportedSensors.includes(type) && !name.startsWith('_')) {
           const prettyName = supportedDrivers.includes(type)
             ? i18n.t('app.general.label.stepper_driver',
               {
@@ -775,19 +775,11 @@ export const getters: GetterTree<PrinterState, RootState> = {
       ]
     ]
 
-    const filterByPrefix = [
-      'temperature_fan'
-    ]
-
     const printerKeys = Object.keys(state.printer)
 
     const sensors = keyGroups.flatMap(keyGroup => {
       const keyGroupRegExpArray = keyGroup
-        .map(x => new RegExp(
-          filterByPrefix.includes(x)
-            ? `^${x}(?! _)`
-            : `^${x}`)
-        )
+        .map(x => new RegExp(`^${x}(?! _)`))
 
       return printerKeys
         .filter(key => keyGroupRegExpArray.some(x => x.test(key)))
