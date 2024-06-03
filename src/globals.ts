@@ -227,7 +227,14 @@ export const Globals = Object.freeze({
     { filename: 'mooncord-webcam.json', service: 'webcamd', link: 'https://github.com/eliteSchwein/mooncord' },
     { prefix: 'mooncord', service: 'MoonCord', link: 'https://github.com/eliteSchwein/mooncord' },
     { filename: 'telegram.conf', service: 'moonraker-telegram-bot', link: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config' },
-    { suffix: '.cfg', service: 'klipper', link: 'https://www.klipper3d.org/Config_Reference.html' }
+    {
+      suffix: '.cfg',
+      service: 'klipper',
+      link: 'https://www.klipper3d.org/Config_Reference.html',
+      linkOverride: {
+        'danger-klipper': 'https://dangerklipper.io/Config_Reference.html'
+      }
+    }
   ],
   FILE_DATA_TRANSFER_TYPES: {
     files: 'x-fluidd-files',
