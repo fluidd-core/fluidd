@@ -237,7 +237,7 @@ export default class CollapsableCard extends Vue {
     return {
       ...classes,
       ...this.baseCardClasses,
-      collapsed: this.isCollapsed || !this.hasDefaultSlot
+      collapsed: (this.isCollapsed || !this.hasDefaultSlot) && !this.hasCollapsedContentSlot
     }
   }
 
@@ -380,6 +380,10 @@ export default class CollapsableCard extends Vue {
    */
   get hasCollapseButtonSlot () {
     return !!this.$slots['collapse-button'] || !!this.$scopedSlots['collapse-button']
+  }
+
+  get hasCollapsedContentSlot () {
+    return !!this.$slots['collapsed-content'] || !!this.$scopedSlots['collapsed-content']
   }
 
   mounted () {
