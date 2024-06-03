@@ -162,7 +162,8 @@ export const defaultState = (): ConfigState => {
         selectionDialogSortOrder: {
           key: 'last_used',
           desc: false
-        }
+        },
+        remainingFilamentUnit: 'weight'
       }
     }
   }

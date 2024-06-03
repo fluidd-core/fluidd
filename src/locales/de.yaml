@@ -756,7 +756,7 @@ app:
         suchen
       canbus_warning: Nur unzugewiesene CAN-Bus-Knoten werden erkannt.<br>Es ist empfohlen,
         nur ein unzugewiesenes Gerät an den CAN-Bus anzuschließen, um Kommunikationsprobleme
-        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank" 
+        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank"
         href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">hier.</a>
   tool:
     btn:
@@ -900,6 +900,8 @@ app:
       remaining_weight: Verbleibend
       vendor: Hersteller
       id: ID
+      weight: Gewicht
+      length: Länge
     msg:
       no_spool: >-
         Sie haben keine Spule ausgewählt.
@@ -948,6 +950,7 @@ app:
       warn_on_filament_type_mismatch: >-
         Warnung anzeigen, wenn der Filamenttyp der Spule nicht mit dem im Slicer ausgewählten
         übereinstimmt
+      remaining_filament_unit: Verbleibendes Filament anzeigen als
   job_queue:
     msg:
       confirm: Sind Sie sicher? Hierdurch wird die gesamte Druckwarteschlange geleert

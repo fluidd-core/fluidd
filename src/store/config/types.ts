@@ -40,7 +40,8 @@ export interface SpoolmanConfig {
   selectionDialogSortOrder: {
     key: string | null;
     desc: boolean | null;
-  }
+  },
+  remainingFilamentUnit: 'weight' | 'length'
 }
 
 export interface HostConfig {
