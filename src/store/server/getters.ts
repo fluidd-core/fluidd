@@ -3,6 +3,7 @@ import type { ServerInfo, ServerConfig, ServerState, SystemInfo, ServerSystemSta
 import type { RootState } from '../types'
 import { Globals } from '@/globals'
 import { gte, valid } from 'semver'
+import isKeyOf from '@/util/is-key-of'
 
 export const getters: GetterTree<ServerState, RootState> = {
   /**
@@ -66,7 +67,7 @@ export const getters: GetterTree<ServerState, RootState> = {
    * Maps configuration files to an object representing a config doc link,
    * along with a service name.
    */
-  getConfigMapByFilename: (state, getters, rootState) => (filename: string) => {
+  getConfigMapByFilename: (state, getters, rootState, rootGetters) => (filename: string) => {
     const configMap = Globals.CONFIG_SERVICE_MAP
 
     // First, see if can find an exact match.
@@ -80,6 +81,17 @@ export const getters: GetterTree<ServerState, RootState> = {
     // Finally, try suffixes.
     if (!item) {
       item = configMap.find(o => o.suffix && filename.endsWith(o.suffix.toLowerCase()))
+    }
+
+    if (
+      item?.service === 'klipper' &&
+      item.linkOverride
+    ) {
+      const app = rootGetters['printer/getKlippyApp'].toLowerCase()
+
+      if (isKeyOf(app, item.linkOverride)) {
+        item.link = item.linkOverride[app]
+      }
     }
 
     if (item) {

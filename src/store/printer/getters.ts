@@ -63,6 +63,21 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return 'Unknown'
   },
 
+  getKlippyApp: (state) => {
+    const supportedKlippyApps = [
+      'Klipper',
+      'Danger-Klipper'
+    ]
+
+    const app = state.printer.info.app
+
+    if (supportedKlippyApps.includes(app)) {
+      return app
+    }
+
+    return 'Klipper'
+  },
+
   /**
    * Returns a string value indicating the state of the printer.
    */
