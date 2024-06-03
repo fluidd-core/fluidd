@@ -383,7 +383,11 @@ export default class CollapsableCard extends Vue {
   }
 
   get hasCollapsedContentSlot () {
-    return !!this.$slots['collapsed-content'] || !!this.$scopedSlots['collapsed-content']
+    // no idea if the slot has children, so we assume it does
+    if (this.$scopedSlots['collapse-button']) return true
+
+    // return true if slot is defined and has child elements
+    return !!this.$slots['collapsed-content']?.length
   }
 
   mounted () {

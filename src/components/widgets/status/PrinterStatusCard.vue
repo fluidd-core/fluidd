@@ -39,11 +39,9 @@
       />
     </template>
 
-    <template
-      v-if="printerPrinting || printerPaused || filename"
-      #collapsed-content
-    >
+    <template #collapsed-content>
       <v-progress-linear
+        v-if="printerPrinting || printerPaused || filename"
         :height="6"
         :value="estimates.progress"
         color="primary"
