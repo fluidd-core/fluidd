@@ -193,6 +193,10 @@ export default class Console extends Mixins(StateMixin) {
     display: block;
   }
 
+  .console-item {
+    white-space: pre-wrap;
+  }
+
   .console-wrapper {
     font-family: monospace;
     font-size: 1rem; // 15 px
