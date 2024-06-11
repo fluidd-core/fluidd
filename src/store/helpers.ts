@@ -1,6 +1,35 @@
 import type { Commit, Dispatch } from 'vuex'
 import type { RootState } from './types'
 import { SocketActions } from '@/api/socketActions'
+import type { AppPushNotification } from './notifications/types'
+
+export const handleTrinamicDriversChange = (payload: any, state: RootState, dispatch: Dispatch) => {
+  for (const item in payload) {
+    const [type, nameFromSplit] = item.split(' ', 2)
+
+    if (
+      /^tmc\d{4}$/.exec(type) &&
+      payload[item]?.drv_status?.otpw != null &&
+      state.printer.printer?.[item]?.drv_status?.otpw == null
+    ) {
+      const name = nameFromSplit ?? item
+
+      const notification: AppPushNotification = {
+        id: `${item}-otpw`,
+        title: `Stepper driver '${name}' is over-heating`,
+        description: 'This may lead to a failed print',
+        to: 'https://www.klipper3d.org/TMC_Drivers.html#tmc-reports-error-ot1overtemperror',
+        type: 'error',
+        snackbar: true,
+        merge: true,
+        clear: true,
+        noCount: true
+      }
+
+      dispatch('notifications/pushNotification', notification, { root: true })
+    }
+  }
+}
 
 export const handleExcludeObjectChange = (payload: any, state: RootState, dispatch: Dispatch) => {
   // For every notify - if print_stats.state changes from standby -> printing,
