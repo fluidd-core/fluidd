@@ -93,13 +93,13 @@ async function setupMonaco () {
   const app = getVueApp()
 
   monaco.editor.registerCommand('fluidd_open_docs', (_, service: CodeLensSupportedService, hash: string) => {
-    const serviceKey = (
-      service === 'klipper'
-        ? app.$store.getters['printer/getKlippyApp']
-        : service
-    ).toLowerCase().replace(/-/g, '_')
+    const serviceKey = service.replace(/-/g, '_')
+    const klippyApp = app.$store.getters['printer/getKlippyApp']
 
-    const url = app.$t(`app.file_system.url.${serviceKey}_config`, { hash }).toString()
+    const url = app.$t(`app.file_system.url.${serviceKey}_config`, {
+      hash,
+      klipperDomain: klippyApp.domain
+    }).toString()
 
     window.open(url)
   })
