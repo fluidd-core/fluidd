@@ -150,7 +150,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
       handleExcludeObjectChange(payload, rootState, dispatch)
       handleSystemStatsChange(payload, rootState, commit)
       handleMcuStatsChange(payload, rootState, commit)
-      handleTrinamicDriversChange(payload, rootState, dispatch)
+      handleTrinamicDriversChange(payload, rootState, dispatch, getters)
 
       for (const key in payload) {
         const val = payload[key]

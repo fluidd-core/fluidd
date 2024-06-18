@@ -7,6 +7,8 @@ import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
 import type { GcodeHelp } from '../console/types'
 import type { ServerInfo } from '../server/types'
+import { Globals } from '@/globals'
+import isKeyOf from '@/util/is-key-of'
 
 export const getters: GetterTree<PrinterState, RootState> = {
 
@@ -64,18 +66,16 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getKlippyApp: (state) => {
-    const supportedKlippyApps = [
-      'Klipper',
-      'Danger-Klipper'
-    ]
+    const app = state.printer.info.app?.toLowerCase()
 
-    const app = state.printer.info.app
+    const klippyApp = isKeyOf(app, Globals.SUPPORTED_SERVICES.klipper)
+      ? app
+      : 'klipper'
 
-    if (supportedKlippyApps.includes(app)) {
-      return app
+    return {
+      name: klippyApp,
+      ...Globals.SUPPORTED_SERVICES.klipper[klippyApp]
     }
-
-    return 'Klipper'
   },
 
   /**

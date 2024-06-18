@@ -2,8 +2,9 @@ import type { Commit, Dispatch } from 'vuex'
 import type { RootState } from './types'
 import { SocketActions } from '@/api/socketActions'
 import type { AppPushNotification } from './notifications/types'
+import i18n from '@/plugins/i18n'
 
-export const handleTrinamicDriversChange = (payload: any, state: RootState, dispatch: Dispatch) => {
+export const handleTrinamicDriversChange = (payload: any, state: RootState, dispatch: Dispatch, getters: any) => {
   for (const item in payload) {
     const [type, nameFromSplit] = item.split(' ', 2)
 
@@ -14,11 +15,13 @@ export const handleTrinamicDriversChange = (payload: any, state: RootState, disp
     ) {
       const name = nameFromSplit ?? item
 
+      const klippyApp = getters.getKlippyApp
+
       const notification: AppPushNotification = {
         id: `${item}-otpw`,
-        title: `Stepper driver '${name}' is over-heating`,
-        description: 'This may lead to a failed print',
-        to: 'https://www.klipper3d.org/TMC_Drivers.html#tmc-reports-error-ot1overtemperror',
+        title: i18n.t('app.printer.title.stepper_driver_overheating', { name }).toString(),
+        description: i18n.t('app.printer.msg.possible_print_failure').toString(),
+        to: i18n.t('app.printer.url.stepper_driver_overheating', { klipperDomain: klippyApp.domain }).toString(),
         type: 'error',
         snackbar: true,
         merge: true,

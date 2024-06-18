@@ -3,7 +3,6 @@ import type { ServerInfo, ServerConfig, ServerState, SystemInfo, ServerSystemSta
 import type { RootState } from '../types'
 import { Globals } from '@/globals'
 import { gte, valid } from 'semver'
-import isKeyOf from '@/util/is-key-of'
 
 export const getters: GetterTree<ServerState, RootState> = {
   /**
@@ -85,13 +84,11 @@ export const getters: GetterTree<ServerState, RootState> = {
 
     if (
       item?.service === 'klipper' &&
-      item.linkOverride
+      item.link
     ) {
-      const app = rootGetters['printer/getKlippyApp'].toLowerCase()
+      const klippyApp = rootGetters['printer/getKlippyApp']
 
-      if (isKeyOf(app, item.linkOverride)) {
-        item.link = item.linkOverride[app]
-      }
+      item.link = item.link.replace('{klipperDomain}', klippyApp.domain)
     }
 
     if (item) {
