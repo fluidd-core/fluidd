@@ -9,7 +9,7 @@ app:
       remove_profile: Verwijder %{name} profiel
       scale: Kleurschaal
       wireframe: Draadframe
-      base: base
+      base: basis
       active: actief
     msg:
       hint: >-
@@ -224,6 +224,7 @@ app:
       recover: Herstel
       multiply: Vermenigvuldig
       job_queue: Job Wachtrij
+      socket_reconnect: Verbind opnieuw
     error:
       app_setup_link: >-
         Fluidd opstart vereisten kan je <a target="_blank" href="%{url}">hier</a>
@@ -333,6 +334,8 @@ app:
       user_managed_source: Gebruiker beheerd door %{source} authenticatie
       range: Bereik
       synced_extruder: Gesynchroniseerde Extruder
+      stepper_enabled: Stappenmotor ingeschakeld
+      screw_name: Schroef naam
     msg:
       password_changed: Wachtwoord aangepast
       wrong_password: Oeps! Er is iets fout gegaan, klopt je wachtwoord wel?
@@ -441,6 +444,8 @@ app:
       add_chart: Voeg Grafiek Toe
       not_found: 404 Niet Gevonden
       edit_chart: Bewerk Grafiek
+      job_queue: Opdrachten wachtrij
+      diagnostics: Diagnostiek
     tooltip:
       estop: Noodstop
       reload_klipper: Herlaad de klipper configuratie.
