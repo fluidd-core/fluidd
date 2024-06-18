@@ -296,7 +296,7 @@ app:
       slicer: スライサー
       smooth_time: スムーズタイム
       speed: スピード
-      sqv: 正方形角速度
+      sqv: コーナー速度(SCV)
       stepper_enabled: ステッパーの停止
       synced_extruder: エクストルーダーの同期
       thumbnail_size: サムネイルのサイズ
