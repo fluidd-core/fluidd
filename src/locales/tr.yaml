@@ -14,8 +14,7 @@ app:
       wireframe: Tel örgü
     msg:
       hint: >-
-        %{name} dışında kaydederken,
-        %{name} profili de kaldırmayı seçebilirsiniz.
+        %{name} dışında kaydederken, %{name} profili de kaldırmayı seçebilirsiniz
       not_found: Mevcut yatak örgüleri bulunamadı.
       not_loaded: Örgü yüklenmedi
     tooltip:
@@ -55,7 +54,7 @@ app:
       cors_note: >-
         Bu, moonraker yapılandırmanızı değiştirmeniz gerektiği anlamına gelebilir.
         Çoklu yazıcı kurulumları hakkında belgeleri görmek için lütfen <a href="%{url}"
-        target="_blank">buraya</a> bakın.
+        target="_blank">buraya</a> bakın
     hint:
       add_printer: Örnek, http://fluiddpi.local
     msg:
@@ -119,6 +118,7 @@ app:
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
       crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
+      danger_klipper_config: https://dangerklipper.io/Config_Reference.html#%{hash}
   gcode:
     btn:
       load_current_file: Geçerli Dosyayı Yükle
@@ -350,6 +350,7 @@ app:
       edit_category: Kategori Düzenle
       add_category: Kategori Ekle
       file_time: Dosya
+      stepper_driver: '%{name} Sürücü'
     msg:
       password_changed: Şifre değiştirildi
       wrong_password: Ups, bir şeyler ters gitti. Şifreniz doğru mu?
@@ -365,6 +366,9 @@ app:
       pending_configuration_sections_deleted: Aşağıdaki bölümler silinmek üzere işaretlendi
       rolledover_logs: >-
         Aşağıdaki uygulama günlükleri katlanmıştır: %{applications}
+      fluidd_settings_backup_failed: Fluidd ayarlarını yedekleme başarısız oldu!
+      fluidd_settings_restore_failed: Fluidd ayarlarını geri yükleme başarısız oldu!
+      not_valid_fluidd_backup_file: Geçerli bir Fluidd yedek dosyası değil!
     simple_form:
       error:
         arrayofnums: Sadece rakamlar
@@ -529,6 +533,8 @@ app:
       add_user: Kullanıcı Ekle
       reset: Sıfırla
       select_theme: Tema Seç
+      backup: Yedekleme
+      restore: Geri Yükleme
     camera_type_options:
       mjpegadaptive: MJPEG Adaptif
       mjpegstream: MJPEG Akışı
@@ -668,6 +674,7 @@ app:
       show_screws_tilt_adjust_dialog_automatically: Vida Eğim Ayar iletişim kutusunu
         otomatik olarak göster
       keyboard_shortcuts: Klavye kısayolları
+      fluidd_settings_in_moonraker_db: Moonraker veritabanındaki Fluidd ayarları
     timer_options:
       duration: Süre sadece
       filament: Filament
@@ -906,6 +913,8 @@ app:
       material: Malzeme
       remaining_weight: Kalan
       vendor: Satıcı
+      weight: Ağırlık
+      length: Uzunluk
     msg:
       no_spool: >-
         Bir makara seçmediniz.
@@ -951,6 +960,7 @@ app:
         filamenti olmadığında bir uyarı göster
       warn_on_filament_type_mismatch: Makaranın filament tipi ile slicer'da seçilen
         filament tipi eşleşmediğinde bir uyarı göster
+      remaining_filament_unit: Kalan filamenti şu şekilde göster
   sensors:
     title:
       sensors: Sensörler

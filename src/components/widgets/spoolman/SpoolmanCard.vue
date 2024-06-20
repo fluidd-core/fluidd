@@ -117,9 +117,13 @@
               :label="$t('app.spoolman.label.remaining_weight')"
               :label-width="labelWidth"
             >
-              <span>
+              <span v-if="remainingFilamentUnit === 'weight'">
                 {{ $filters.getReadableWeightString(activeSpool.remaining_weight) }}
                 <small>/ {{ $filters.getReadableWeightString(activeSpool.filament.weight) }}</small>
+              </span>
+              <span v-else-if="remainingFilamentUnit === 'length'">
+                {{ $filters.getReadableLengthString(activeSpool.remaining_length) }}
+                <small>/ {{ $filters.getReadableLengthString($filters.convertFilamentWeightToLength(activeSpool.filament.weight ?? 0, activeSpool.filament.density, activeSpool.filament.diameter)) }}</small>
               </span>
             </status-label>
             <status-label
@@ -245,6 +249,10 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
         name: macro.name.toUpperCase()
       }))
       .sort((a, b) => a.name.localeCompare(b.name))
+  }
+
+  get remainingFilamentUnit () {
+    return this.$store.state.config.uiSettings.spoolman.remainingFilamentUnit
   }
 
   getSpoolById (id: number): Spool | undefined {

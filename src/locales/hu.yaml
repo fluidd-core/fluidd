@@ -117,6 +117,7 @@ app:
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
       crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
+      danger_klipper_config: https://dangerklipper.io/Config_Reference.html#%{hash}
   gcode:
     btn:
       load_current_file: Aktuális fájl betöltése
@@ -345,6 +346,7 @@ app:
       file_time: Fájl
       unknown: Ismeretlen
       compact: Kompakt
+      stepper_driver: '%{name} Meghajtó'
     msg:
       password_changed: A jelszó megváltozott
       wrong_password: Hoppá! Valami rosszul sült el. Ez a jelszavad?
@@ -360,6 +362,9 @@ app:
         jelölve
       rolledover_logs: >-
         A következő alkalmazási naplók átkerültek: %{applications}
+      fluidd_settings_backup_failed: Nem sikerült a Fluidd beállítások mentése!
+      fluidd_settings_restore_failed: Nem sikerült visszaállítani a Fluidd beállításokat!
+      not_valid_fluidd_backup_file: Nem érvényes Fluidd visszaállító fájl!
     simple_form:
       error:
         arrayofnums: Csak számok
@@ -441,7 +446,7 @@ app:
       fans_outputs: Ventilátorok & Kimenetek
       gcode_preview: G-Kód előnézet
       history: Történet
-      home: Otthon
+      home: Kezdőlap
       jobs: Feladatok
       job_queue: Feladatsor
       limits: Nyomtató határai
@@ -518,6 +523,8 @@ app:
       add_user: Felhasználó hozzáadása
       reset: Frissítés
       select_theme: Válassz témát
+      backup: Biztonsági mentés
+      restore: Visszaállítás
     camera_type_options:
       mjpegadaptive: MJPEG Adaptív
       mjpegstream: MJPEG Sugárzás
@@ -656,6 +663,7 @@ app:
       print_eta_calculation: Nyomtatás ETA számítása
       print_in_progress_layout: Nyomtatási folyamat elrendezés
       keyboard_shortcuts: Billentyűparancsok
+      fluidd_settings_in_moonraker_db: Fluidd beállítások a Moonraker adatbázisban
     timer_options:
       duration: Csak időtartam
       filament: Nyomtatószál
@@ -895,6 +903,8 @@ app:
       remaining_weight: Maradék
       vendor: Forgalmazó
       active_spool: Aktív tekercs
+      length: Hossz
+      weight: Súly
     msg:
       no_spool: >-
         Nem választottál ki orsót.
@@ -942,6 +952,7 @@ app:
       warn_on_filament_type_mismatch: >-
         Figyelmeztetés megjelenítése, ha a tekercsen lévő szál típusa és a szeletelőben
         kiválasztott szál típusa nem egyezik
+      remaining_filament_unit: Mutasd a maradék nyomtatószálat
   sensors:
     title:
       sensors: Érzékelők

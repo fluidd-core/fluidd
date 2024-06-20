@@ -110,7 +110,7 @@ app:
       items_count: '{count} item | {count} items'
       root_disabled: '{root} root is not available. Please check your logs.'
     url:
-      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
       crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
@@ -498,6 +498,11 @@ app:
       standby: Standby
     title:
       printer_status: Printer Status
+      stepper_driver_overheating: Stepper driver '%{name}' is over-heating
+    msg:
+      possible_print_failure: This may lead to a failed print
+    url:
+      stepper_driver_overheating: '%{klipperDomain}/TMC_Drivers.html#tmc-reports-error-ot1overtemperror'
   setting:
     btn:
       add_camera: Add Camera
@@ -867,6 +872,8 @@ app:
       material: Material
       remaining_weight: Remaining
       vendor: Vendor
+      weight: Weight
+      length: Length
     msg:
       no_spool: >-
         You haven't selected a spool.
@@ -909,6 +916,7 @@ app:
         Show a warning when the selected spool doesn't have enough filament left on it to finish the print
       warn_on_filament_type_mismatch: >-
         Show a warning when the spool's filament type and the one selected in the slicer don't match
+      remaining_filament_unit: Show remaining filament as
   sensors:
     title:
       sensors: Sensors

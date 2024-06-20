@@ -1,6 +1,38 @@
 import type { Commit, Dispatch } from 'vuex'
 import type { RootState } from './types'
 import { SocketActions } from '@/api/socketActions'
+import type { AppPushNotification } from './notifications/types'
+import i18n from '@/plugins/i18n'
+
+export const handleTrinamicDriversChange = (payload: any, state: RootState, dispatch: Dispatch, getters: any) => {
+  for (const item in payload) {
+    const [type, nameFromSplit] = item.split(' ', 2)
+
+    if (
+      /^tmc\d{4}$/.exec(type) &&
+      payload[item]?.drv_status?.otpw != null &&
+      state.printer.printer?.[item]?.drv_status?.otpw == null
+    ) {
+      const name = nameFromSplit ?? item
+
+      const klippyApp = getters.getKlippyApp
+
+      const notification: AppPushNotification = {
+        id: `${item}-otpw`,
+        title: i18n.t('app.printer.title.stepper_driver_overheating', { name }).toString(),
+        description: i18n.t('app.printer.msg.possible_print_failure').toString(),
+        to: i18n.t('app.printer.url.stepper_driver_overheating', { klipperDomain: klippyApp.domain }).toString(),
+        type: 'error',
+        snackbar: true,
+        merge: true,
+        clear: true,
+        noCount: true
+      }
+
+      dispatch('notifications/pushNotification', notification, { root: true })
+    }
+  }
+}
 
 export const handleExcludeObjectChange = (payload: any, state: RootState, dispatch: Dispatch) => {
   // For every notify - if print_stats.state changes from standby -> printing,

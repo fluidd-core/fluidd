@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import type { InitConfig, InstanceConfig } from '@/store/config/types'
+import type { InstanceConfig } from '@/store/config/types'
 import StateMixin from '@/mixins/state'
 import { appInit } from '@/init'
 
@@ -84,7 +84,7 @@ export default class SystemPrinters extends Mixins(StateMixin) {
     this.instanceDialogOpen = true
   }
 
-  activateInstance (instance: InstanceConfig) {
+  async activateInstance (instance: InstanceConfig) {
     // Close the drawer
     this.$emit('click')
     if (!instance.active) {
@@ -92,13 +92,12 @@ export default class SystemPrinters extends Mixins(StateMixin) {
       this.$socket.close()
 
       // Re-init the app.
-      appInit(instance, this.$store.state.config.hostConfig)
-        .then((config: InitConfig) => {
-          // Reconnect the socket with the new instance url.
-          if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {
-            this.$socket.connect(config.apiConfig.socketUrl)
-          }
-        })
+      const config = await appInit(instance, this.$store.state.config.hostConfig)
+
+      // Reconnect the socket with the new instance url.
+      if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {
+        this.$socket.connect(config.apiConfig.socketUrl)
+      }
     }
   }
 }

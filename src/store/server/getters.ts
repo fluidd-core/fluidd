@@ -66,7 +66,7 @@ export const getters: GetterTree<ServerState, RootState> = {
    * Maps configuration files to an object representing a config doc link,
    * along with a service name.
    */
-  getConfigMapByFilename: (state, getters, rootState) => (filename: string) => {
+  getConfigMapByFilename: (state, getters, rootState, rootGetters) => (filename: string) => {
     const configMap = Globals.CONFIG_SERVICE_MAP
 
     // First, see if can find an exact match.
@@ -80,6 +80,15 @@ export const getters: GetterTree<ServerState, RootState> = {
     // Finally, try suffixes.
     if (!item) {
       item = configMap.find(o => o.suffix && filename.endsWith(o.suffix.toLowerCase()))
+    }
+
+    if (
+      item?.service === 'klipper' &&
+      item.link
+    ) {
+      const klippyApp = rootGetters['printer/getKlippyApp']
+
+      item.link = item.link.replace('{klipperDomain}', klippyApp.domain)
     }
 
     if (item) {

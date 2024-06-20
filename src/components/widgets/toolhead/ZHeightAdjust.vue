@@ -1,5 +1,6 @@
 <template>
   <v-row
+    v-if="hasZOffsetApplyEndstop || hasZOffsetApplyProbe"
     align="start"
     justify="end"
   >

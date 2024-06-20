@@ -108,6 +108,9 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/develop' }}
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -122,9 +125,18 @@ jobs:
         run: |
           cp ./server/config.json ./dist/config.json
 
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+
       - name: Deploy to Host
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: |
-          npm run deploy:host:dev
+        uses: reggionick/s3-deploy@v4
+        with:
+          folder: dist
+          bucket: ${{ secrets.DEV_S3_BUCKET_NAME }}
+          bucket-region: us-east-1
+          dist-id: ${{ secrets.DEV_CF_DISTRIBUTION_ID }}
+          delete-removed: true
+          no-cache: true
+          private: true

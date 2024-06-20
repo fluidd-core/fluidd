@@ -4,6 +4,7 @@ import { Component } from 'vue-property-decorator'
 import type { AxiosRequestConfig, AxiosProgressEvent } from 'axios'
 import { httpClientActions } from '@/api/httpClientActions'
 import type { FileWithPath } from '@/types'
+import consola from 'consola'
 
 @Component
 export default class FilesMixin extends Vue {
@@ -73,39 +74,54 @@ export default class FilesMixin extends Vue {
     // Sort out the filepath
     const filepath = path ? `${path}/${filename}` : filename
 
-    const abortController = new AbortController()
+    try {
+      const abortController = new AbortController()
 
-    // Add an entry to vuex indicating we're downloading a file.
-    this.$store.dispatch('files/updateFileDownload', {
-      filepath,
-      size,
-      loaded: 0,
-      percent: 0,
-      speed: 0,
-      abortController
-    })
+      // Add an entry to vuex indicating we're downloading a file.
+      this.$store.dispatch('files/updateFileDownload', {
+        filepath,
+        size,
+        loaded: 0,
+        percent: 0,
+        speed: 0,
+        abortController
+      })
 
-    // Append any additional options.
-    const o = {
-      ...options,
-      signal: abortController.signal,
-      onDownloadProgress: (event: AxiosProgressEvent) => {
-        const payload: any = {
-          filepath,
-          loaded: event.loaded,
-          percent: event.progress ? Math.round(event.progress * 100) : 0,
-          speed: event.rate ?? 0
+      const response = await httpClientActions.serverFilesGet<T>(filepath, {
+        ...options,
+        signal: abortController.signal,
+        onDownloadProgress: (event: AxiosProgressEvent) => {
+          if (abortController.signal.aborted) {
+            return
+          }
+
+          const progress = event.progress ?? (
+            size > 0
+              ? event.loaded / size
+              : 0
+          )
+
+          const payload: any = {
+            filepath,
+            loaded: event.loaded,
+            percent: Math.round(progress * 100),
+            speed: event.rate ?? 0
+          }
+
+          if (event.total) {
+            size = payload.size = event.total
+          }
+
+          this.$store.dispatch('files/updateFileDownload', payload)
         }
+      })
 
-        if (event.total) {
-          size = payload.size = event.total
-        }
+      abortController.abort()
 
-        this.$store.dispatch('files/updateFileDownload', payload)
-      }
+      return response
+    } finally {
+      this.$store.dispatch('files/removeFileDownload')
     }
-
-    return await httpClientActions.serverFilesGet<T>(filepath, o)
   }
 
   /**
@@ -165,39 +181,42 @@ export default class FilesMixin extends Vue {
       ? `${path}/${file.name}`
       : file.name
 
-    const abortController = new AbortController()
+    try {
+      const abortController = new AbortController()
 
-    this.$store.dispatch('files/updateFileUpload', {
-      filepath,
-      size: file.size,
-      loaded: 0,
-      percent: 0,
-      speed: 0,
-      cancelled: false,
-      abortController
-    })
+      this.$store.dispatch('files/updateFileUpload', {
+        filepath,
+        size: file.size,
+        loaded: 0,
+        percent: 0,
+        speed: 0,
+        cancelled: false,
+        abortController
+      })
 
-    return httpClientActions.serverFilesUploadPost(file, path, root, andPrint, {
-      ...options,
-      signal: abortController.signal,
-      onUploadProgress: (event: AxiosProgressEvent) => {
-        this.$store.dispatch('files/updateFileUpload', {
-          filepath,
-          loaded: event.loaded,
-          percent: event.progress ? Math.round(event.progress * 100) : 0,
-          speed: event.rate ?? 0
-        })
-      }
-    })
-      .then((response) => {
-        return response
+      const response = await httpClientActions.serverFilesUploadPost(file, path, root, andPrint, {
+        ...options,
+        signal: abortController.signal,
+        onUploadProgress: (event: AxiosProgressEvent) => {
+          if (abortController.signal.aborted) {
+            return
+          }
+
+          this.$store.dispatch('files/updateFileUpload', {
+            filepath,
+            loaded: event.loaded,
+            percent: event.progress ? Math.round(event.progress * 100) : 0,
+            speed: event.rate ?? 0
+          })
+        }
       })
-      .catch(e => {
-        return e
-      })
-      .finally(() => {
-        this.$store.dispatch('files/removeFileUpload', filepath)
-      })
+
+      abortController.abort()
+
+      return response
+    } finally {
+      this.$store.dispatch('files/removeFileUpload', filepath)
+    }
   }
 
   getFullPathAndFile (rootPath: string, file: File | FileWithPath): [string, File] {
@@ -253,8 +272,8 @@ export default class FilesMixin extends Vue {
       if (fileState && !fileState?.cancelled) {
         try {
           await this.uploadFile(fileObject, fullPath, root, andPrint)
-        } catch (e) {
-          return e
+        } catch (error: unknown) {
+          consola.error('[FileUpload] file', error)
         }
       } else {
         this.$store.dispatch('files/removeFileUpload', filepath)

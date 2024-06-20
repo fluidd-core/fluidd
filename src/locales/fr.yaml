@@ -323,7 +323,7 @@ app:
       turn_device_off: Éteindre %{device}
       unknown: Inconnu
       alias: Alias
-      apply_z_offset: Appliquer et sauvegarder Z_Offset
+      apply_z_offset: Appliquer et sauvegarder le Z_Offset
       edit_filter: Modifier le filtre
       all: Tout
       ldap: LDAP
@@ -348,6 +348,7 @@ app:
       partial_of_total: '%{partial} de %{total}'
       username: Nom d'utilisateur
       edit_category: Modifier la catégorie
+      stepper_driver: '%{name} Driver'
     msg:
       password_changed: Mot de passe modifié
       wrong_password: Oops, il y a eu un problème. Le mot de passe est il correct ?
@@ -361,6 +362,9 @@ app:
       welcome_back: Bienvenue. <br>Connectez-vous ci-dessous pour rester en communication
         avec votre imprimante.
       offline_ready: Fluidd est maintenant prêt à travailler hors ligne.
+      fluidd_settings_restore_failed: Échec de la restauration des paramètres Fluidd !
+      not_valid_fluidd_backup_file: Fichier de sauvegarde Fluidd non valide !
+      fluidd_settings_backup_failed: Échec de la sauvegarde des paramètres Fluidd !
     simple_form:
       error:
         arrayofnums: Nombres uniquement
@@ -504,6 +508,8 @@ app:
       add_category: Ajouter une catégorie
       add_filter: Ajouter un filtre
       add_metric: Ajouter un indicateur
+      backup: Sauvegarde
+      restore: Restaurer
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: Flux MJPEG
@@ -523,8 +529,8 @@ app:
       dark_mode: Mode sombre
       default_extrude_length: Longueur d'extrusion par défaut
       default_extrude_speed: Vitesse d'extrusion par défaut
-      default_toolhead_move_length: Longueur de déplacement de la tête d'outil par
-        défaut
+      default_toolhead_move_length: Longueur de déplacement par défaut de la tête
+        d'outil
       default_toolhead_xy_speed: Vitesse XY de la tête d'outil par défaut
       default_toolhead_z_speed: Vitesse Z de la tête d'outil par défaut
       draw_background: Afficher le fond d'écran
@@ -564,12 +570,12 @@ app:
       dashed: En pointillés
       metrics: Indicateurs
       name: Nom
-      show_save_config_and_restart: Bouton de sauvegarde de la configuration et de
-        redémarrage dans la navigation supérieure
+      show_save_config_and_restart: Bouton "Sauvegarder la configuration et redémarrer"
+        dans la barre de navigation supérieure
       auto_load_mobile_on_print_start: Chargement automatique des fichiers sur les
         appareils mobiles
-      confirm_on_power_device_change: Confirmation obligatoire des modifications de
-        l'alimentation de l'appareil
+      confirm_on_power_device_change: Demander une confirmation pour le changement
+        d'état de l'alimentation de l'appareil
       confirm_on_save_config_and_restart: Examiner les modifications de configuration
         en cours avant l'enregistrement et le redémarrage
       enable_diagnostics: Activer les diagnostics
@@ -584,8 +590,8 @@ app:
         la barre de navigation supérieure
       toolhead_move_distances: Valeurs de distance de la tête d'outil
       show_gas_resistance: Montrer la résistance au gaz
-      sections_to_ignore_pending_configuration_changes: Sections pour ignorer les
-        changements de configuration en attente
+      sections_to_ignore_pending_configuration_changes: Sections ignorant les changements
+        de configuration en attente
       show_rate_of_change: Afficher le taux de variation de la température
       show_relative_humidity: Afficher l'humidité relative
       solid: Solide
@@ -614,7 +620,7 @@ app:
       enable_xy_homing: Activer le Homing XY
       aspect_ratio: Ratio d'aspect
       aspect_ratio_format: '[width : height]'
-      auto_edit_extensions: Ouverture automatique des extensions en mode édition
+      auto_edit_extensions: Extensions à ouvrir automatiquement en mode édition
       auto_follow_on_file_load: Suivi automatique de la progression du chargement
         des fichiers
       auto_load_on_print_start: Chargement automatique du fichier au démarrage de
@@ -622,12 +628,12 @@ app:
       camera_rotate_by: Rotation par
       camera_url_stream: URL du flux de la caméra
       draw_origin: Dessiner l'origine
-      confirm_dirty_editor_close: Confirmation obligatoire lors de la fermeture de
-        l'éditeur avec des modifications non enregistrées
+      confirm_dirty_editor_close: Demander confirmation avant fermeture de l'éditeur
+        avec changements non sauvegardés
       expression: Expression
       fill_opacity: Opacité du remplissage
-      hide_single_part_bounding_box: Masquer le cadre de la pièce lors de l'impression
-        d'une seule pièce
+      hide_single_part_bounding_box: Masquer la boîte englobante de la pièce lors
+        de l'impression d'une seule pièce
       fill_color: Couleur de remplissage
       fps_idle_target: FPS Cible sans mise au point
       left_y: Axe Y gauche
@@ -644,6 +650,7 @@ app:
         FORCE_MOVE
       camera_url_snapshot: URL de l'instatané de la caméra
       card: Carte
+      fluidd_settings_in_moonraker_db: Paramètres Fluidd dans la base de données Moonraker
     timer_options:
       duration: Durée uniquement
       filament: Filament
@@ -887,7 +894,7 @@ app:
     setting:
       park_retract_distance: Distance de rétractation du mode Park
       park_time: Temps du mode Park
-      parkhead: Tête du mode Park
+      parkhead: Parquer la tête d'impression
       parkpos:
         center: Centre
         front_right: Avant Droit

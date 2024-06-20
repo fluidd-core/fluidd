@@ -32,7 +32,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
           name,
           ...stored,
           variables,
-          ...{ config }
+          config
         }
 
         // Handle categories, incl those that no longer exist.

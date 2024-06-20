@@ -1,7 +1,7 @@
 import type { ActionTree } from 'vuex'
 import type { PrinterState } from './types'
 import type { RootState } from '../types'
-import { handlePrintStateChange, handleCurrentFileChange, handleExcludeObjectChange } from '../helpers'
+import { handlePrintStateChange, handleCurrentFileChange, handleExcludeObjectChange, handleTrinamicDriversChange } from '../helpers'
 import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
@@ -150,6 +150,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
       handleExcludeObjectChange(payload, rootState, dispatch)
       handleSystemStatsChange(payload, rootState, commit)
       handleMcuStatsChange(payload, rootState, commit)
+      handleTrinamicDriversChange(payload, rootState, dispatch, getters)
 
       for (const key in payload) {
         const val = payload[key]

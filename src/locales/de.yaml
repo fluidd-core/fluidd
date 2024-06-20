@@ -353,6 +353,7 @@ app:
       minimum_cruise_ratio: Minimales Konstantfahrtverhältnis
       compact: Kompakt
       unknown: Unbekannt
+      stepper_driver: '%{name} Treiber'
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -369,6 +370,10 @@ app:
       pending_configuration_sections_deleted: Die folgenden Sektionen sind zur Löschung
         markiert
       rolledover_logs: 'Die folgenden Applikations-Protokolle wurden erneuert: %{applications}'
+      fluidd_settings_backup_failed: Konnte kein Backup der Fluidd-Einstellungen erstellen!
+      not_valid_fluidd_backup_file: Keine gültige Fluidd-Backupdatei!
+      fluidd_settings_restore_failed: Konnte das Backup der Fluidd-Einstellungen nicht
+        wiederherstellen!
     simple_form:
       error:
         arrayofnums: Nur Zahlen
@@ -521,6 +526,8 @@ app:
       reset: Zurücksetzen
       select_theme: Farbschema auswählen
       add_metric: Metrik hinzufügen
+      backup: Backup
+      restore: Wiederherstellen
     camera_type_options:
       iframe: HTTP-Seite
       mjpegadaptive: Adaptives MJPEG
@@ -662,6 +669,7 @@ app:
       print_eta_calculation: Druckendzeit-Berechnung
       print_progress_calculation: Druckfortschritt-Berechnung
       keyboard_shortcuts: Tastenkürzel
+      fluidd_settings_in_moonraker_db: Fluidd-Einstellungen in Moonraker-Datenbank
     timer_options:
       duration: Nur Dauer
       filament: Filament
@@ -705,8 +713,8 @@ app:
         zu den Firmen oder eine Billigung dieser dar.
       average_calculation: Wenn mehr als eine Option gewählt ist, wird ein Durchschnittswert
         berechnet
-      keyboard_shortcuts: Sobald aktiviert können Sie '?' drücken, um eine Liste aller
-        Kürzel anzuzeigen
+      keyboard_shortcuts: "[BETA] Aktivieren Sie Kürzel und drücken Sie '?', um eine
+        Liste aller Kürzel anzuzeigen"
   socket:
     msg:
       connecting: Verbinde mit Moonraker...
@@ -900,6 +908,8 @@ app:
       remaining_weight: Verbleibend
       vendor: Hersteller
       id: ID
+      weight: Gewicht
+      length: Länge
     msg:
       no_spool: >-
         Sie haben keine Spule ausgewählt.
@@ -948,6 +958,7 @@ app:
       warn_on_filament_type_mismatch: >-
         Warnung anzeigen, wenn der Filamenttyp der Spule nicht mit dem im Slicer ausgewählten
         übereinstimmt
+      remaining_filament_unit: Verbleibendes Filament anzeigen als
   job_queue:
     msg:
       confirm: Sind Sie sicher? Hierdurch wird die gesamte Druckwarteschlange geleert

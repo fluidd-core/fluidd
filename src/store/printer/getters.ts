@@ -7,6 +7,8 @@ import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
 import type { GcodeHelp } from '../console/types'
 import type { ServerInfo } from '../server/types'
+import { Globals } from '@/globals'
+import isKeyOf from '@/util/is-key-of'
 
 export const getters: GetterTree<PrinterState, RootState> = {
 
@@ -61,6 +63,19 @@ export const getters: GetterTree<PrinterState, RootState> = {
       return state.printer.webhooks.state_message.trim().replace(regex, '<br />')
     }
     return 'Unknown'
+  },
+
+  getKlippyApp: (state) => {
+    const app = state.printer.info.app?.toLowerCase()
+
+    const klippyApp = isKeyOf(app, Globals.SUPPORTED_SERVICES.klipper)
+      ? app
+      : 'klipper'
+
+    return {
+      name: klippyApp,
+      ...Globals.SUPPORTED_SERVICES.klipper[klippyApp]
+    }
   },
 
   /**
@@ -696,9 +711,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const sensors = Object.keys(state.printer)
       .reduce((groups, item) => {
         const [type, nameFromSplit] = item.split(' ', 2)
+        const name = nameFromSplit ?? item
 
-        if (supportedSensors.includes(type)) {
-          const name = nameFromSplit ?? item
+        if (supportedSensors.includes(type) && !name.startsWith('_')) {
           const prettyName = supportedDrivers.includes(type)
             ? i18n.t('app.general.label.stepper_driver',
               {
@@ -775,19 +790,11 @@ export const getters: GetterTree<PrinterState, RootState> = {
       ]
     ]
 
-    const filterByPrefix = [
-      'temperature_fan'
-    ]
-
     const printerKeys = Object.keys(state.printer)
 
     const sensors = keyGroups.flatMap(keyGroup => {
       const keyGroupRegExpArray = keyGroup
-        .map(x => new RegExp(
-          filterByPrefix.includes(x)
-            ? `^${x}(?! _)`
-            : `^${x}`)
-        )
+        .map(x => new RegExp(`^${x}(?! _)`))
 
       return printerKeys
         .filter(key => keyGroupRegExpArray.some(x => x.test(key)))

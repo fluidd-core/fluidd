@@ -59,6 +59,12 @@
       </v-row>
     </v-card-title>
 
+    <v-expand-transition>
+      <div v-show="isCollapsed && !inLayout">
+        <slot name="collapsed-content" />
+      </div>
+    </v-expand-transition>
+
     <v-expand-transition v-if="!lazy">
       <div
         v-if="!isCollapsed && !inLayout"
@@ -231,7 +237,7 @@ export default class CollapsableCard extends Vue {
     return {
       ...classes,
       ...this.baseCardClasses,
-      collapsed: this.isCollapsed || !this.hasDefaultSlot
+      collapsed: (this.isCollapsed || !this.hasDefaultSlot) && !this.hasCollapsedContentSlot
     }
   }
 
@@ -374,6 +380,14 @@ export default class CollapsableCard extends Vue {
    */
   get hasCollapseButtonSlot () {
     return !!this.$slots['collapse-button'] || !!this.$scopedSlots['collapse-button']
+  }
+
+  get hasCollapsedContentSlot () {
+    // no idea if the slot has children, so we assume it does
+    if (this.$scopedSlots['collapse-button']) return true
+
+    // return true if slot is defined and has child elements
+    return !!this.$slots['collapsed-content']?.length
   }
 
   mounted () {

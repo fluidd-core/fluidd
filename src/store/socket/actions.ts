@@ -145,10 +145,9 @@ export const actions: ActionTree<SocketState, RootState> = {
    */
 
   async notifyStatusUpdate ({ state, commit, dispatch }, payload) {
-    dispatch('printer/onNotifyStatusUpdate', payload, { root: true })
-      .then(() => {
-        if (!state.ready) commit('setSocketReadyState', true)
-      })
+    await dispatch('printer/onNotifyStatusUpdate', payload, { root: true })
+
+    if (!state.ready) commit('setSocketReadyState', true)
   },
 
   async notifyGcodeResponse ({ dispatch }, payload) {

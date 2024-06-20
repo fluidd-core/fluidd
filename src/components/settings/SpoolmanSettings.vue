@@ -77,6 +77,23 @@
       </app-setting>
 
       <v-divider />
+      <app-setting
+        :title="$tc('app.spoolman.setting.remaining_filament_unit')"
+      >
+        <v-select
+          v-model="remainingFilamentUnit"
+          filled
+          dense
+          single-line
+          hide-details="auto"
+          :items="[
+            {text: $tc('app.spoolman.label.weight'), value: 'weight'},
+            {text: $tc('app.spoolman.label.length'), value: 'length'}
+          ]"
+        />
+      </app-setting>
+
+      <v-divider />
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -187,6 +204,18 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   set warnOnFilamentTypeMismatch (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.warnOnFilamentTypeMismatch',
+      value,
+      server: true
+    })
+  }
+
+  get remainingFilamentUnit () {
+    return this.$store.state.config.uiSettings.spoolman.remainingFilamentUnit
+  }
+
+  set remainingFilamentUnit (value: string) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.spoolman.remainingFilamentUnit',
       value,
       server: true
     })

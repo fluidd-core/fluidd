@@ -267,7 +267,11 @@ export const Filters = {
   /**
    * Formats a number representing mm to human readable distance.
    */
-  getReadableLengthString (lengthInMm: number, showMicrons = false) {
+  getReadableLengthString (lengthInMm: number | undefined | null, showMicrons = false) {
+    if (lengthInMm === undefined || lengthInMm === null) {
+      return '-'
+    }
+
     if (lengthInMm >= 1000) return (lengthInMm / 1000).toFixed(2) + ' m'
     if (lengthInMm > 100) return (lengthInMm / 10).toFixed(1) + ' cm'
     if (lengthInMm < 0.1 && showMicrons) return (lengthInMm * 1000).toFixed(0) + ' μm'
@@ -424,6 +428,14 @@ export const Filters = {
    */
   routeTo (router: VueRouter, path: string) {
     if (router.currentRoute.fullPath !== path) router.push(path)
+  },
+
+  /**
+   * Converts a given weight (in grams) to its corresponding length (in mm)
+   */
+  convertFilamentWeightToLength (weight: number, density: number, diameter: number) {
+    // l[mm] = m[g]/D[g/cm³]/A[mm²]*(1000mm³/cm³)
+    return weight / density / (Math.PI * (diameter / 2) ** 2) * 1000
   }
 }
 
