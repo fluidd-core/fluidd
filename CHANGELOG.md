@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.30.1](https://github.com/fluidd-core/fluidd/compare/v1.30.0...v1.30.1) (2024-06-20)
+
+
+### Features
+
+* adds Danger Klipper config support ([#1446](https://github.com/fluidd-core/fluidd/issues/1446)) ([0c4f79e](https://github.com/fluidd-core/fluidd/commit/0c4f79ecb705d2c946384fa86620212b95e031bb))
+* hides thermal sensors starting with "_" ([#1443](https://github.com/fluidd-core/fluidd/issues/1443)) ([ea0ea9e](https://github.com/fluidd-core/fluidd/commit/ea0ea9e674aaacbd0fb6098b51a582f10e5b7143))
+* **i18n-de:** Update German translations ([dd7d1b2](https://github.com/fluidd-core/fluidd/commit/dd7d1b20a67a2d697a6fb10ccfc00d3eed2cffcf))
+* **i18n-es:** Update Spanish translations ([b3a5e60](https://github.com/fluidd-core/fluidd/commit/b3a5e60a85318543aeeaca029f9333cec18679b3))
+* **i18n-fr:** Update French translations ([66b4fcb](https://github.com/fluidd-core/fluidd/commit/66b4fcbc592ad79eed316f409ba374d5a0f63fb2))
+* **i18n-hu:** Update Hungarian translations ([68ffd27](https://github.com/fluidd-core/fluidd/commit/68ffd275d155d4355513d5dee255404352071128))
+* **i18n-ja:** Update Japanese translations ([51a69d6](https://github.com/fluidd-core/fluidd/commit/51a69d6cb4bee24bcc01b2b8040061da40f629b6))
+* **i18n-nl:** Update Dutch translations ([0dbedc9](https://github.com/fluidd-core/fluidd/commit/0dbedc9b23adf3d5867df029fddbc5c7404cfefb))
+* **i18n-ru:** Update Russian translations ([668db6c](https://github.com/fluidd-core/fluidd/commit/668db6c4023b089dd0aa4b0c8118c3c03abe53c5))
+* **i18n-SL:** Update Slovenian translation ([#1452](https://github.com/fluidd-core/fluidd/issues/1452)) ([8225b0f](https://github.com/fluidd-core/fluidd/commit/8225b0f0e5a7ec4e36e28ed35c9b5e50e32beb9a))
+* **i18n-tr:** Update Turkish translations ([8581533](https://github.com/fluidd-core/fluidd/commit/858153312a3a383e52d04eb1bbbc8c78404557fd))
+* show print progress when status panel is collapsed ([#1445](https://github.com/fluidd-core/fluidd/issues/1445)) ([0f72501](https://github.com/fluidd-core/fluidd/commit/0f7250133338c7e2f68e875017cd0f953d8e6245))
+* show warning for Trinamic OTPW flag ([#1448](https://github.com/fluidd-core/fluidd/issues/1448)) ([ac2a0a8](https://github.com/fluidd-core/fluidd/commit/ac2a0a854e25f98dc6da15ea5c758d517bb9e698))
+* **spoolman:** add remaining filament display unit setting ([#1444](https://github.com/fluidd-core/fluidd/issues/1444)) ([b8b1924](https://github.com/fluidd-core/fluidd/commit/b8b19241ce8b13d7fe5711aa6795933206789748))
+
+
+### Bug Fixes
+
+* **FileSystem:** zip timestamp format ([df59f78](https://github.com/fluidd-core/fluidd/commit/df59f785b25d7ea90245e7e676aef307745d41cb))
+* hide z-offset controls if not available ([2a2093f](https://github.com/fluidd-core/fluidd/commit/2a2093f9bf0dc28a6e6fc4aa02a018f4082e7d44))
+* race condition on file upload/download state ([9ae83b6](https://github.com/fluidd-core/fluidd/commit/9ae83b66d002babfc5783d1c96ab55f92617bdbf))
+* use file size as download progress fallback calculation ([8d21a84](https://github.com/fluidd-core/fluidd/commit/8d21a848a6036291dfe5d05c50f520d645ea4c8c))
+
 ## [1.30.0](https://github.com/fluidd-core/fluidd/compare/v1.29.1...v1.30.0) (2024-05-01)
 
 
