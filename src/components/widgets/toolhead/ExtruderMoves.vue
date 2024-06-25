@@ -29,9 +29,10 @@
       </v-col>
       <v-col cols="6">
         <app-btn
-          :disabled="!klippyReady || !extruderReady || !valid"
+          :color="(forceMove) ? 'error' : 'primary'"
+          :disabled="!klippyReady || !(extruderReady || forceMove) || !valid"
           block
-          @click="sendRetractGcode(extrudeLength, extrudeSpeed, $waits.onExtrude)"
+          @click="sendExtrudeGcode(-extrudeLength, extrudeSpeed, $waits.onExtrude)"
         >
           {{ $t('app.general.btn.retract') }}
           <v-icon>$chevronUp</v-icon>
@@ -66,7 +67,8 @@
       </v-col>
       <v-col cols="6">
         <app-btn
-          :disabled="!klippyReady || !extruderReady || !valid"
+          :color="(forceMove) ? 'error' : 'primary'"
+          :disabled="!klippyReady || !(extruderReady || forceMove) || !valid"
           block
           @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, $waits.onExtrude)"
         >
@@ -136,19 +138,19 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
     return this.$rules.numberLessThanOrEqual(this.maxExtrudeSpeed)(value)
   }
 
-  sendRetractGcode (amount: number, rate: number, wait?: string) {
-    if (this.valid) {
-      const gcode = `M83
-        G1 E-${amount} F${rate * 60}`
-      this.sendGcode(gcode, wait)
-    }
+  get forceMove () {
+    return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 
   sendExtrudeGcode (amount: number, rate: number, wait?: string) {
     if (this.valid) {
-      const gcode = `M83
-        G1 E${amount} F${rate * 60}`
-      this.sendGcode(gcode, wait)
+      if (this.forceMove) {
+        const extruderName = this.$store.state.printer.printer.toolhead.extruder
+        this.sendGcode(`FORCE_MOVE STEPPER=${extruderName} DISTANCE=${amount} VELOCITY=${rate}`, wait)
+      } else {
+        this.sendGcode(`M83
+          G1 E${amount} F${rate * 60}`, wait)
+      }
     }
   }
 
