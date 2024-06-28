@@ -139,7 +139,7 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   sendRetractGcode (amount: number, rate: number, wait?: string) {
     if (this.valid) {
       const gcode = `M83
-        G1 E-${amount} F${rate * 60}`
+G1 E-${amount} F${rate * 60}`
       this.sendGcode(gcode, wait)
     }
   }
@@ -147,7 +147,7 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   sendExtrudeGcode (amount: number, rate: number, wait?: string) {
     if (this.valid) {
       const gcode = `M83
-        G1 E${amount} F${rate * 60}`
+G1 E${amount} F${rate * 60}`
       this.sendGcode(gcode, wait)
     }
   }
