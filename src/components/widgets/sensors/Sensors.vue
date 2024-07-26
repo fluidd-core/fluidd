@@ -5,7 +5,7 @@
       :key="sensor.id"
     >
       <v-col>
-        {{ $filters.startCase(sensor.friendly_name) }}
+        {{ $filters.prettyCase(sensor.friendly_name) }}
 
         <v-chip
           v-for="(value, key) in sensor.values"
@@ -13,7 +13,7 @@
           small
           class="ml-2"
         >
-          {{ $filters.startCase(key.toString()) }}: {{ Math.round(value * 100) / 100 }}
+          {{ $filters.prettyCase(key.toString()) }}: {{ Math.round(value * 100) / 100 }}
         </v-chip>
       </v-col>
     </v-row>
