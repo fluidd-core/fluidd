@@ -20,30 +20,32 @@
       </app-btn>
     </template>
 
-    <v-card-text>
-      <v-layout
+    <v-container class="px-0 py-2">
+      <v-row
         v-for="item in sensors"
         :key="item.name"
-        align-center
-        justify-start
-        class="py-1"
       >
-        <span class="text-subtitle-1">{{ item.name }}</span>
-        <v-icon
-          :color="(item.filament_detected) ? 'success' : 'warning'"
-          class="ml-3"
-          left
-        >
-          {{ (item.filament_detected) ? '$checkedCircle' : '$alertCircle' }}
-        </v-icon>
-        <v-switch
-          class="ml-2"
-          color="success"
-          :input-value="item.enabled"
-          @change="changeSensor(item, $event)"
-        />
-      </v-layout>
-    </v-card-text>
+        <v-col class="pb-0">
+          <v-subheader>
+            <span>{{ item.name }}</span>
+            <v-spacer />
+            <v-icon
+              :color="(item.filament_detected) ? 'success' : 'warning'"
+              class="ml-3"
+              left
+            >
+              {{ (item.filament_detected) ? '$checkedCircle' : '$alertCircle' }}
+            </v-icon>
+            <v-switch
+              class="ml-2"
+              color="success"
+              :input-value="item.enabled"
+              @change="changeSensor(item, $event)"
+            />
+          </v-subheader>
+        </v-col>
+      </v-row>
+    </v-container>
   </collapsable-card>
 </template>
 
