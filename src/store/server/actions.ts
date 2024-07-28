@@ -141,7 +141,7 @@ export const actions: ActionTree<ServerState, RootState> = {
       EventBus.$emit(message, { type: 'error' })
     } else if (payload?.rolled_over && payload.rolled_over.length) {
       const applications = payload.rolled_over
-        .map(Vue.$filters.startCase)
+        .map(Vue.$filters.prettyCase)
         .join(', ')
       const message = i18n.tc('app.general.msg.rolledover_logs', 0, { applications })
 

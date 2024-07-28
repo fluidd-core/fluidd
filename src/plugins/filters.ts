@@ -1,6 +1,6 @@
 import _Vue from 'vue'
 import VueRouter from 'vue-router'
-import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
+import { camelCase, startCase, capitalize, isFinite, upperFirst } from 'lodash-es'
 import type { ApiConfig, TextSortOrder } from '@/store/config/types'
 import { TinyColor } from '@ctrl/tinycolor'
 import { DateFormats, Globals, TimeFormats, Waits, type DateTimeFormat } from '@/globals'
@@ -209,6 +209,19 @@ export const Filters = {
     const today = new Date()
 
     return date.getFullYear() === today.getFullYear()
+  },
+
+  upperFirst: (value: string) => {
+    return upperFirst(value)
+  },
+
+  prettyCase: (value: string) => {
+    return value
+      .replace(/_/g, ' ')
+      .split(' ')
+      .filter(x => x)
+      .map(Filters.upperFirst)
+      .join(' ')
   },
 
   /**

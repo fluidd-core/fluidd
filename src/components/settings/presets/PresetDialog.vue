@@ -24,7 +24,7 @@
       <template v-for="(item, i) in heaters">
         <app-setting
           :key="`${i}heater`"
-          :title="$filters.startCase(item.name)"
+          :title="$filters.prettyCase(item.name)"
         >
           <v-checkbox
             v-model="preset.values[item.name].active"
@@ -53,7 +53,7 @@
       <template v-for="(item, i) in fans">
         <app-setting
           :key="`${i}fan`"
-          :title="$filters.startCase(item.name)"
+          :title="$filters.prettyCase(item.name)"
         >
           <v-checkbox
             v-model="preset.values[item.name].active"
