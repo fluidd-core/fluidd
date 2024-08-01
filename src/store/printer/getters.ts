@@ -425,6 +425,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
         const sensor = get(state.printer, item, undefined)
         sensors.push({
           name,
+          prettyName: Vue.$filters.prettyCase(name),
           ...sensor
         })
       }

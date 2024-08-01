@@ -20,32 +20,36 @@
       </app-btn>
     </template>
 
-    <v-container class="px-0 py-2">
-      <v-row
+    <v-list>
+      <v-list-item
         v-for="item in sensors"
         :key="item.name"
       >
-        <v-col class="pb-0">
-          <v-subheader>
-            <span>{{ item.name }}</span>
-            <v-spacer />
-            <v-icon
-              :color="(item.filament_detected) ? 'success' : 'warning'"
-              class="ml-3"
-              left
-            >
-              {{ (item.filament_detected) ? '$checkedCircle' : '$alertCircle' }}
-            </v-icon>
-            <v-switch
-              class="ml-2"
-              color="success"
-              :input-value="item.enabled"
-              @change="changeSensor(item, $event)"
-            />
-          </v-subheader>
-        </v-col>
-      </v-row>
-    </v-container>
+        <v-list-item-content>
+          <v-list-item-title>{{ item.prettyName }}</v-list-item-title>
+        </v-list-item-content>
+        <v-list-item-icon>
+          <v-icon
+            v-if="item.filament_detected"
+            color="success"
+          >
+            $checkedCircle
+          </v-icon>
+          <v-icon
+            v-else
+            color="warning"
+          >
+            $alertCircle
+          </v-icon>
+        </v-list-item-icon>
+        <v-list-item-action>
+          <v-switch
+            :input-value="item.enabled"
+            @change="changeSensor(item, $event)"
+          />
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
   </collapsable-card>
 </template>
 
@@ -64,8 +68,7 @@ export default class RunoutSensorsCard extends Mixins(StateMixin) {
   }
 
   changeSensor (item: RunoutSensor, value: boolean) {
-    const enable: number = (value) ? 1 : 0
-    this.sendGcode(`SET_FILAMENT_SENSOR SENSOR=${item.name} ENABLE=${enable}`)
+    this.sendGcode(`SET_FILAMENT_SENSOR SENSOR=${item.name} ENABLE=${+value}`)
   }
 }
 </script>
