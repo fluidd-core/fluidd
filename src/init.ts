@@ -10,6 +10,7 @@ import sanitizeEndpoint from './util/sanitize-endpoint'
 import webSocketWrapper from './util/web-socket-wrapper'
 import promiseAny from './util/promise-any'
 import sleep from './util/sleep'
+import { isFluiddContent } from '@/util/fluidd-content'
 
 // Load API configuration
 /**
@@ -176,6 +177,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   // Load any configuration we may have in moonrakers db
   let apiConnected = true
   let apiAuthenticated = true
+  let configLoaded = false
   for (const { NAMESPACE, ROOTS } of Object.values(Globals.MOONRAKER_DB)) {
     if (!apiConnected && !apiAuthenticated) {
       break
@@ -217,6 +219,32 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     })
 
     await Promise.all(promises)
+    configLoaded = true
+  }
+
+  // if no moonraker config has been loaded check for a default template inside .fluidd-theme folder
+  configLoaded = false
+  if (!configLoaded) {
+    try {
+      const defaultTemplateFile = store.getters['config/getCustomThemeFile']('default', ['.json'])
+      if (defaultTemplateFile?.length > 0) {
+        const responseDefault = await fetch(defaultTemplateFile)
+        let defaults: any = {}
+        if (responseDefault) {
+          defaults = await responseDefault.json()
+          if (defaults.error?.code !== 404) {
+            const backupData = JSON.parse(defaults)
+            if (isFluiddContent<Record<string, unknown>>('settings-backup', backupData)) {
+              for (const key in backupData.data) {
+                await httpClientActions.serverDatabaseItemPost('fluidd', key, backupData.data[key])
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      consola.debug('Error loading default settings', e)
+    }
   }
 
   // apiConfig could have empty strings, meaning we have no valid connection.
