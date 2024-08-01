@@ -223,7 +223,6 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   }
 
   // if no moonraker config has been loaded check for a default template inside .fluidd-theme folder
-  configLoaded = false
   if (!configLoaded) {
     try {
       const defaultTemplateFile = store.getters['config/getCustomThemeFile']('default', ['.json'])
