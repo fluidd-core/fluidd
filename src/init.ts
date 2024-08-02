@@ -225,24 +225,30 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   // if no moonraker config has been loaded check for a default template inside .fluidd-theme folder
   if (!configLoaded) {
     try {
-      const defaultTemplateFile = store.getters['config/getCustomThemeFile']('default', ['.json'])
+      const defaultTemplateFile = apiConfig.apiUrl + '/server/files/config/.fluidd-theme/default.json'
       if (defaultTemplateFile?.length > 0) {
-        const responseDefault = await fetch(defaultTemplateFile)
-        let defaults: any = {}
-        if (responseDefault) {
-          defaults = await responseDefault.json()
-          if (defaults.error?.code !== 404) {
-            const backupData = JSON.parse(defaults)
-            if (isFluiddContent<Record<string, unknown>>('settings-backup', backupData)) {
-              for (const key in backupData.data) {
+        const backupData = await (await fetch(defaultTemplateFile)).json()
+        if (backupData) {
+          if (isFluiddContent<Record<string, unknown>>('settings-backup', backupData)) {
+            for (const key in backupData.data) {
+              if (key !== 'webcams') {
                 await httpClientActions.serverDatabaseItemPost('fluidd', key, backupData.data[key])
+                if (key === 'charts') await store.dispatch(Globals.MOONRAKER_DB.fluidd.ROOTS.charts.dispatch, backupData.data[key] || {})
+                if (key === 'console') await store.dispatch(Globals.MOONRAKER_DB.fluidd.ROOTS.console.dispatch, backupData.data[key] || {})
+                if (key === 'layout') await store.dispatch(Globals.MOONRAKER_DB.fluidd.ROOTS.layout.dispatch, backupData.data[key] || {})
+                if (key === 'macros') await store.dispatch(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.dispatch, backupData.data[key] || {})
+                if (key === 'uiSettings') await store.dispatch(Globals.MOONRAKER_DB.fluidd.ROOTS.uiSettings.dispatch, backupData.data[key] || {})
               }
             }
+          } else {
+            console.error('Error loading default settings')
           }
+        } else {
+          console.error('Error loading default settings')
         }
       }
     } catch (e) {
-      consola.debug('Error loading default settings', e)
+      console.error('Error loading default settings: ' + e)
     }
   }
 
