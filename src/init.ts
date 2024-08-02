@@ -209,6 +209,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
         if (!value) {
           try {
             await httpClientActions.serverDatabaseItemPost(NAMESPACE, root.name, {})
+            configLoaded = true
           } catch (e) {
             consola.debug('Error creating database item', e)
           }
@@ -219,7 +220,6 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     })
 
     await Promise.all(promises)
-    configLoaded = true
   }
 
   // if no moonraker config has been loaded check for a default template inside .fluidd-theme folder
