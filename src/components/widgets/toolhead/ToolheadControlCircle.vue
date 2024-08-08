@@ -736,8 +736,8 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
       this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
     } else {
       this.sendGcode(`G91
-      G1 ${axis}${distance} F${rate * 60}
-      G90`)
+G1 ${axis}${distance} F${rate * 60}
+G90`)
     }
   }
 
