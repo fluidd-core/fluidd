@@ -87,7 +87,7 @@ app:
       low_on_space: 磁盤空間不足
       root_disabled: '{root} G代碼文件目錄不可用，請檢查您的日誌。'
     url:
-      klipper_config: 'https://www.klipper3d.org/zh-Hant/Config_Reference.html#%{hash}'
+      klipper_config: '%{klipperDomain}/zh-Hant/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: >-
         https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}

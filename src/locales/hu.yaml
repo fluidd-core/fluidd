@@ -117,7 +117,6 @@ app:
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
       crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
-      danger_klipper_config: https://dangerklipper.io/Config_Reference.html#%{hash}
   gcode:
     btn:
       load_current_file: Aktuális fájl betöltése

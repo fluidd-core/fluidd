@@ -92,7 +92,7 @@ app:
       low_on_space: 磁盘空间不足
       root_disabled: '{root} G代码文件目录不可用，请首先连接打印机或者检查G代码存放目录的路径与读权限'
     url:
-      klipper_config: 'https://www.klipper3d.org/zh/Config_Reference.html#%{hash}'
+      klipper_config: '%{klipperDomain}/zh/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
   gcode:
