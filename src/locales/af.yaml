@@ -106,7 +106,7 @@ app:
       low_on_space: Stoorspasie is min
       root_disabled: '{root} root is nie beskikbaar nie. Sien die logs.'
     url:
-      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
       crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'

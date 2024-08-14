@@ -175,7 +175,7 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
         this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate} ACCEL=${accel}`)
       } else {
         this.sendGcode(`G90
-        G1 ${axis}${pos} F${rate * 60}`)
+G1 ${axis}${pos} F${rate * 60}`)
       }
     }
   }

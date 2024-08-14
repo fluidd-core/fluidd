@@ -12,7 +12,7 @@ app:
       wireframe: 顯示網格線
     msg:
       hint: '如果將 %{name} 另存, 你也可以選擇刪除此 %{name} 配置'
-      not_found: 熱床網格配置不存在
+      not_found: 熱床網格配置不存在。
       not_loaded: 熱床網格配置不存在
     tooltip:
       calibrate: 開始校準，該校準信息會默認保存為 defalut
@@ -27,7 +27,7 @@ app:
       target: 目標值
       rate_of_change: 變化值
     tooltip:
-      help: 按住 Shift 鍵可縮放圖表。<br />單擊一個項目名稱或功率可在圖表中切換顯示。
+      help: 按住 <kbd>Shift 鍵</kbd>可縮放圖表。<br />單擊一個項目名稱可切換其在圖表中的顯示。<br />單擊開關可切換圖表顯示。
   console:
     label:
       auto_scroll: 自動滾動
@@ -40,8 +40,7 @@ app:
       cant_connect: 出了點問題，Fluidd 無法連接目標。你確定這是正確的設備地址？
       cors_error: 被 CORS 政策阻止，請查看 Moonraker 幫助
       cors_note: >-
-        這可能意味著您需要修改 Moonraker 配置。請參閱有關多打印機設置的<a href=\"%{url}\"
-        target=\"_blank\">文檔</a>
+        這可能意味著您需要修改 Moonraker 配置。請參閱有關多打印機設置的<a href="%{url}" target="_blank">文檔</a>
     hint:
       add_printer: '例如：http://fluiddpi.local'
     msg:
@@ -72,7 +71,7 @@ app:
       view_section_documentation: '%{section} 查看文檔'
     msg:
       not_found: 文件未找到
-      processing: 處理中...
+      processing: 處理中
     overlay:
       drag_files_folders_upload: <strong>拖動</strong>文件和文件夾到這裡上傳
       drag_files_enqueue: <strong>拖動</strong>文件到這裡排隊
@@ -86,9 +85,9 @@ app:
       upload_file: 上傳文件
     tooltip:
       low_on_space: 磁盤空間不足
-      root_disabled: '{root} G代碼文件目錄不可用，請首先連接打印機或者檢查G代碼存放目錄的路徑與讀權限'
+      root_disabled: '{root} G代碼文件目錄不可用，請檢查您的日誌。'
     url:
-      klipper_config: 'https://www.klipper3d.org/zh-Hant/Config_Reference.html#%{hash}'
+      klipper_config: '%{klipperDomain}/zh-Hant/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: >-
         https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
@@ -187,9 +186,9 @@ app:
       reset_stats: 重置統計信息
     error:
       app_setup_link: '如需查看 Fluidd 詳細配置規則，請點擊<a target="_blank" href="%{url}">此處</a>。'
-      app_warnings_found: '％{appName} 出現警告'
+      app_warnings_found: '％{appName} 出現警告。'
       components_config: '如需查看 Moonraker 詳細配置規則，請點擊<a target="_blank" href="%{url}">此處</a>。'
-      failed_components: Moonraker 插件啟用失敗，請檢查您的日志，更新您的配置並重新啟動 Moonraker。
+      failed_components: Moonraker 插件啟用失敗，請檢查您的日誌，更新您的配置並重新啟動 Moonraker。
     label:
       accel_to_decel: 加速到減速度
       acceleration: 加速度
@@ -294,7 +293,7 @@ app:
       file_time: 預計剩余
     msg:
       password_changed: 密碼已更改
-      wrong_password: 密碼錯誤
+      wrong_password: 出現不明錯誤。您確定輸入正確密碼嗎？
       bed_screws_adjust: 如果需要對當前螺釘進行重大調整，請單擊<b>已調整</b>； 否則，單擊<b>接受</b>繼續。
       welcome_back: 歡迎回來。<br>在下面登錄以與您的打印機保持聯繫。
       offline_ready: Fluidd 現在可以離線工作了。
@@ -318,15 +317,15 @@ app:
       msg:
         confirm: 是否確認？
         confirm_exclude_object: 您確定要從打印中排除該對象嗎？
-        confirm_forcemove_toggle: 這可能會損壞打印機！是否確認？
-        confirm_reboot_host: 這會重啟您的系統！是否確認？
-        confirm_shutdown_host: 這會關閉您的系統！是否確認？
+        confirm_forcemove_toggle: 確認繼續？這可能會損壞打印機。
+        confirm_reboot_host: 確認繼續？這會重啟您的系統。
+        confirm_shutdown_host: 確認繼續？這會關閉您的系統。
         confirm_service_start: '您確定要啟動 %{name} 服務嗎？'
         confirm_service_restart: '你確定要重啟 %{name} 服務嗎?'
         confirm_service_stop: '你確定要停止 %{name} 服務嗎?'
-        confirm_power_device_toggle: 這會切換設備開關狀態！是否確認？
+        confirm_power_device_toggle: 確認繼續？這會切換設備開關狀態。
         unsaved_changes: 這會丟失未保存的更改！是否確認？
-        no_file_preview: ' 當前無法預覽%{name} 。'
+        no_file_preview: '現在無法預覽%{name} 。'
     table:
       header:
         actions: 展開
@@ -396,19 +395,19 @@ app:
       estop: 緊急停止
       managed_by_moonraker: 由您的 moonraker 配置進行管理
       notifications: 通知
-      reload_klipper: 重新載入 Klipper 配置文件
-      reload_restart_klipper: 重新載入 Klipper 配置並重啟 MCU
-      restart_klipper: 重啟 Klipper 服務
+      reload_klipper: 重新載入 Klipper 配置文件。
+      reload_restart_klipper: 重新載入 Klipper 配置並重啟 MCU。
+      restart_klipper: 重啟 Klipper 服務。
       run_collector: 運行收集器
       rollover_logs: 滾動日誌
   history:
     msg:
-      confirm: 這將清除所有歷史記錄和打印機統計信息！是否確認？
-      confirm_jobs: 這將清除所有作業！是否確認？
-      confirm_stats: 這將清除所有統計數據！是否確認？
+      confirm: 確認繼續？這將清除所有歷史記錄和打印機統計信息
+      confirm_jobs: 確認繼續？這將清除所有作業。
+      confirm_stats: 確認繼續？這將清除所有統計數據。
   job_queue:
     msg:
-      confirm: 這將清除整個打印機隊列！是否確認？
+      confirm: 確認繼續？這將清除整個打印機隊列
   printer:
     state:
       busy: 處理中
@@ -611,12 +610,13 @@ app:
       relative_positioning: 相對位置
       tools: 工具
     label:
-      stats_active_extruder: '擠出機配置為耗材直徑 %{filamentDiameter}mm，噴嘴直徑 %{nozzleDiameter}mm'
+      stats_active_extruder: '<span class="secondary--text">擠出機配置為</span>耗材直徑 %{filamentDiameter}mm<span
+        class="secondary--text">及</span>噴嘴直徑 %{nozzleDiameter}mm'
       stats_volumetric_flow: '以 %{extrudeSpeed}mm/s 的速度，預估擠出耗材體積為 %{estimatedVolumetricFlow}mm³/s'
       stats_extruded_length: >-
-        以 %{extrudeFactor}% 流量挤出%{extrudeLength}mm 耗材，预估输出长度為
-        %{estimatedExtrudedLength}mm
-      stats_max_speed: '假設層高為 %{layerHeight} mm，預估的最大打印速度為 %{estimatedMaxSpeed} mm/s'
+        以 %{extrudeFactor}% 流量擠出%{extrudeLength}mm 耗材，預估輸出長度為 %{estimatedExtrudedLength}mm
+      stats_max_speed: '<span class="secondary--text">假設</span>層高為 %{layerHeight}
+        mm，預估的最大打印速度為 %{estimatedMaxSpeed} mm/s'
   version:
     btn:
       check_for_updates: 檢查更新

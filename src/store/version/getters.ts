@@ -47,7 +47,9 @@ export const getters: GetterTree<VersionState, RootState> = {
       }
     } else if ('package_count' in componentVersionInfo) {
       return componentVersionInfo.package_count > 0
-    } else {
+    }
+
+    if ('current_hash' in componentVersionInfo && 'remote_hash' in componentVersionInfo) {
       return componentVersionInfo.current_hash !== componentVersionInfo.remote_hash
     }
 

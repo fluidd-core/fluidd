@@ -15,7 +15,7 @@
           :key="peripheralGroup.type"
         >
           <div>
-            {{ $filters.startCase(peripheralGroup.type) }}
+            {{ $filters.prettyCase(peripheralGroup.type) }}
             <v-chip
               small
               link
@@ -85,7 +85,7 @@
               <v-col>
                 <v-card outlined>
                   <v-card-title>{{ device.device_name }}</v-card-title>
-                  <v-card-subtitle>{{ $filters.startCase(device.device_type) }}</v-card-subtitle>
+                  <v-card-subtitle>{{ $filters.prettyCase(device.device_type) }}</v-card-subtitle>
 
                   <v-card-text>
                     <v-row>

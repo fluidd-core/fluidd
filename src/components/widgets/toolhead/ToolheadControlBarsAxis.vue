@@ -79,8 +79,8 @@ export default class ToolheadControlBarsAxis extends Mixins(StateMixin, Toolhead
 
   sendMoveGcode (distance: number) {
     this.sendGcode(`G91
-    G1 ${this.axis}${distance} F${this.rate * 60}
-    G90`)
+G1 ${this.axis}${distance} F${this.rate * 60}
+G90`)
   }
 
   sendHomeGcode () {

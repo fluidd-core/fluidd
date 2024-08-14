@@ -114,7 +114,7 @@ app:
       items_count: élément {count} | éléments {count}
     url:
       moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
-      klipper_config: https://www.klipper3d.org/Config_Reference.html#%{hash}
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
       moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
       crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
     overlay:
@@ -750,7 +750,7 @@ app:
       canbus_warning: Seuls les nœuds de bus CAN non assignés peuvent être détectés.<br>
         Il est recommandé de n'avoir qu'un seul dispositif non assigné connecté au
         bus CAN pour éviter les problèmes de communication.<br> De plus amples informations
-        peuvent être trouvées <a target="_blank" 
+        peuvent être trouvées <a target="_blank"
         href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">ici.</a>
   tool:
     btn:
