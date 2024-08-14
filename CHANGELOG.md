@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.30.2](https://github.com/fluidd-core/fluidd/compare/v1.30.1...v1.30.2) (2024-08-14)
+
+
+### Features
+
+* **i18n-de:** Update German translations ([aee3cfa](https://github.com/fluidd-core/fluidd/commit/aee3cfaf779e0a099ef75f4577f9c7f7e3518bd9))
+* **i18n-hu:** Update Hungarian translations ([48c0b3e](https://github.com/fluidd-core/fluidd/commit/48c0b3e87c36445d956030fbf2eb2f892998f059))
+* **i18n-ru:** Update Russian translations ([3697b2d](https://github.com/fluidd-core/fluidd/commit/3697b2d6c3fb3b944df758ca41976a91ba8d305b))
+* **i18n-zh-HK:** Update Chinese (Traditional, Hong Kong) translations ([1fbdc42](https://github.com/fluidd-core/fluidd/commit/1fbdc42960e1c7d225ad753e7dd9be920e160715))
+* improve alignment of runout sensor switch and icon ([#1469](https://github.com/fluidd-core/fluidd/issues/1469)) ([7d0a890](https://github.com/fluidd-core/fluidd/commit/7d0a8901fe275fe4931f16500c04bca185090586))
+
+
+### Bug Fixes
+
+* Check for Meta key on keyboard shortcuts ([#1477](https://github.com/fluidd-core/fluidd/issues/1477)) ([415521e](https://github.com/fluidd-core/fluidd/commit/415521e313e7a62ae79f7136ce3cf396f64cb218))
+* Fix repo URLs in version information dialog ([#1464](https://github.com/fluidd-core/fluidd/issues/1464)) ([bda900d](https://github.com/fluidd-core/fluidd/commit/bda900dc117240ae3f6680e74f8990e06ae4aac9))
+* item name format and capitalization ([#1468](https://github.com/fluidd-core/fluidd/issues/1468)) ([d1ba830](https://github.com/fluidd-core/fluidd/commit/d1ba8301da50e35764e84cd0b71b6ff49d7469ff))
+* Translation keys for base domains ([e2cb461](https://github.com/fluidd-core/fluidd/commit/e2cb4618c9f78bdd75ff04d04334e3caed6fd604))
+
 ## [1.30.1](https://github.com/fluidd-core/fluidd/compare/v1.30.0...v1.30.1) (2024-06-20)
 
 
