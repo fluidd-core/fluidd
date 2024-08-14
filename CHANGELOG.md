@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.30.3](https://github.com/fluidd-core/fluidd/compare/v1.30.2...v1.30.3) (2024-08-14)
+
+
+### Bug Fixes
+
+* Dynamic loading of camera components ([#1479](https://github.com/fluidd-core/fluidd/issues/1479)) ([e6ac387](https://github.com/fluidd-core/fluidd/commit/e6ac387a5e9b93f43daf3a594de4d1f52e1418ba))
+
 ## [1.30.2](https://github.com/fluidd-core/fluidd/compare/v1.30.1...v1.30.2) (2024-08-14)
 
 
