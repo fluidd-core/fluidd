@@ -1,4 +1,15 @@
-import { gcodeMacroParamDefault } from '../gcode-macro-params'
+import gcodeMacroParams, { gcodeMacroParamDefault } from '../gcode-macro-params'
+
+describe('gcodeMacroParams', () => {
+  it.each([
+    ['{% set ENABLE = params.ENABLE %}', [{ name: 'ENABLE', value: '' }]],
+    ['{% set ENABLE = params.ENABLE | default(1) %}', [{ name: 'ENABLE', value: '1' }]],
+    ['{% set ENABLE = params._ENABLE %}', []],
+    ['{% set ENABLE = params._ENABLE | default(1) %}', []]
+  ])('Expects params of "%s", to be %s', (param, expected) => {
+    expect(gcodeMacroParams(param)).toStrictEqual(expected)
+  })
+})
 
 describe('gcodeMacroParamDefault', () => {
   it.each([
