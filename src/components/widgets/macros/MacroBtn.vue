@@ -155,7 +155,7 @@ export default class MacroBtn extends Mixins(StateMixin) {
       this.$set(this.params, 'message', { value: '', reset: '' })
     } else {
       for (const { name, value } of gcodeMacroParams(this.macro.config.gcode)) {
-        if (!this.params[name]) {
+        if (!name.startsWith('_') && !this.params[name]) {
           this.$set(this.params, name, { value, reset: value })
         }
       }
