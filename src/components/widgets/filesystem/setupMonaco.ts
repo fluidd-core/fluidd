@@ -172,7 +172,7 @@ async function setupMonaco () {
 
       const sectionBlocks = linesContent
         .reduce((state, lineContent, index) => {
-          const isSection = /^\[([^\]]+)\]/.test(lineContent)
+          const isSection = /^\[[^\]]+\]/.test(lineContent)
 
           if (isSection) {
             state.result.push(state.current = {
