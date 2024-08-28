@@ -118,15 +118,29 @@ export default class MacroBtn extends Mixins(StateMixin) {
    */
   get runCommand () {
     const command = this.macro.name.toUpperCase()
-    const paramSeparator = this.isMacroForGcodeCommand
-      ? ''
-      : '='
+    const isMacroForGcodeCommand = this.isMacroForGcodeCommand
 
     if (this.params) {
       const params = this.isMacroWithRawParam
         ? this.params.message.value.toString()
         : Object.entries(this.params)
-          .map(([key, param]) => `${key.toUpperCase()}${paramSeparator}${param.value}`)
+          .map(([key, param]) => {
+            const value = param.value.toString()
+
+            if (!value) {
+              return null
+            }
+
+            const valueDelimiter = value.includes(' ')
+              ? '"'
+              : ''
+            const paramSeparator = isMacroForGcodeCommand && !valueDelimiter
+              ? ''
+              : '='
+
+            return `${key.toUpperCase()}${paramSeparator}${valueDelimiter}${value}${valueDelimiter}`
+          })
+          .filter(x => x != null)
           .join(' ')
 
       if (params) {
