@@ -522,6 +522,11 @@ app:
       standby: Beklemede
     title:
       printer_status: Yazıcı Durumu
+      stepper_driver_overheating: Step sürücü '%{name}' aşırı ısınıyor
+    msg:
+      possible_print_failure: Bu, başarısız bir yazdırmaya yol açabilir
+    url:
+      stepper_driver_overheating: '%{klipperDomain}/TMC_Drivers.html#tmc-reports-error-ot1overtemperror'
   setting:
     btn:
       add_camera: Kamera Ekle
