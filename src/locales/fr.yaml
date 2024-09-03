@@ -498,6 +498,11 @@ app:
       cancelled: Annulé
     title:
       printer_status: État de l'imprimante
+      stepper_driver_overheating: Le moteur pas à pas '%{name}' surchauffe
+    url:
+      stepper_driver_overheating: '%{klipperDomain}/TMC_Drivers.html#tmc-reports-error-ot1overtemperror'
+    msg:
+      possible_print_failure: Cela peut entraîner un échec de l'impression
   setting:
     btn:
       add_camera: Ajouter une caméra
@@ -750,7 +755,7 @@ app:
       canbus_warning: Seuls les nœuds de bus CAN non assignés peuvent être détectés.<br>
         Il est recommandé de n'avoir qu'un seul dispositif non assigné connecté au
         bus CAN pour éviter les problèmes de communication.<br> De plus amples informations
-        peuvent être trouvées <a target="_blank"
+        peuvent être trouvées <a target="_blank" 
         href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">ici.</a>
   tool:
     btn:
@@ -862,6 +867,8 @@ app:
       last_used: Dernière utilisation
       device_camera: Périphérique
       vendor: Vendeur
+      weight: Poids
+      length: Longueur
     btn:
       scan_code: Scanner le code
       select: Sélectionner | Sélectionner pour {macro}
@@ -884,6 +891,7 @@ app:
       warn_on_filament_type_mismatch: Afficher un avertissement lorsque le type de
         filament de la bobine et celui sélectionné dans le slicer ne correspondent
         pas
+      remaining_filament_unit: Montrer le filament restant comme
   history:
     msg:
       confirm_jobs: Êtes-vous sûr ? Cette opération effacera tous les jobs.
