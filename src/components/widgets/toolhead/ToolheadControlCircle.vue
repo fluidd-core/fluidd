@@ -735,9 +735,10 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
         : this.$store.state.printer.printer.toolhead.max_accel
       this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
     } else {
-      this.sendGcode(`G91
+      this.sendGcode(`SAVE_GCODE_STATE NAME=_ui_movement
+G91
 G1 ${axis}${distance} F${rate * 60}
-G90`)
+RESTORE_GCODE_STATE NAME=_ui_movement`)
     }
   }
 
@@ -765,7 +766,10 @@ G90`)
     const bedCenter = this.bedCenter
     const rate = this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
 
-    this.sendGcode(`G1 X${bedCenter.x} Y${bedCenter.y} F${rate * 60}`)
+    this.sendGcode(`SAVE_GCODE_STATE NAME=_ui_movement
+G90
+G1 X${bedCenter.x} Y${bedCenter.y} F${rate * 60}
+RESTORE_GCODE_STATE NAME=_ui_movement`)
   }
 }
 </script>
