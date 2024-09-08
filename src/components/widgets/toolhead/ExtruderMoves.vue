@@ -31,7 +31,7 @@
         <app-btn
           :disabled="!klippyReady || !extruderReady || !valid"
           block
-          @click="sendRetractGcode(extrudeLength, extrudeSpeed, $waits.onExtrude)"
+          @click="retract"
         >
           {{ $t('app.general.btn.retract') }}
           <v-icon>$chevronUp</v-icon>
@@ -68,7 +68,7 @@
         <app-btn
           :disabled="!klippyReady || !extruderReady || !valid"
           block
-          @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, $waits.onExtrude)"
+          @click="extrude"
         >
           {{ $t('app.general.btn.extrude') }}
           <v-icon>$chevronDown</v-icon>
@@ -136,24 +136,12 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
     return this.$rules.numberLessThanOrEqual(this.maxExtrudeSpeed)(value)
   }
 
-  sendRetractGcode (amount: number, rate: number, wait?: string) {
-    if (this.valid) {
-      const gcode = `SAVE_GCODE_STATE NAME=_ui_retract
-M83
-G1 E-${amount} F${rate * 60}
-RESTORE_GCODE_STATE NAME=_ui_retract`
-      this.sendGcode(gcode, wait)
-    }
+  retract () {
+    this.sendExtrudeGcode(-this.extrudeLength, this.extrudeSpeed, this.$waits.onExtrude)
   }
 
-  sendExtrudeGcode (amount: number, rate: number, wait?: string) {
-    if (this.valid) {
-      const gcode = `SAVE_GCODE_STATE NAME=_ui_retract
-M83
-G1 E${amount} F${rate * 60}
-RESTORE_GCODE_STATE NAME=_ui_retract`
-      this.sendGcode(gcode, wait)
-    }
+  extrude () {
+    this.sendExtrudeGcode(this.extrudeLength, this.extrudeSpeed, this.$waits.onExtrude)
   }
 
   mounted () {

@@ -20,7 +20,7 @@
           :disabled="!klippyReady || (!xHomed && !xForceMove)"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
-          @change="moveTo('X', $event)"
+          @change="moveAxisTo('X', $event)"
           @focus="$event.target.select()"
         />
       </v-col>
@@ -39,7 +39,7 @@
           :disabled="!klippyReady || (!yHomed && !yForceMove)"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
-          @change="moveTo('Y', $event)"
+          @change="moveAxisTo('Y', $event)"
           @focus="$event.target.select()"
         />
       </v-col>
@@ -58,7 +58,7 @@
           :disabled="!klippyReady || (!zHomed && !zForceMove)"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
-          @change="moveTo('Z', $event)"
+          @change="moveAxisTo('Z', $event)"
           @focus="$event.target.select()"
         />
       </v-col>
@@ -159,7 +159,7 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
     this.sendGcode(`G9${value}`)
   }
 
-  moveTo (axis: string, pos: string) {
+  moveAxisTo (axis: string, pos: string) {
     const axisIndexMap: any = { X: 0, Y: 1, Z: 2 }
     const currentPos = (this.useGcodeCoords)
       ? this.gcodePosition[axisIndexMap[axis]]
@@ -174,10 +174,7 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
           : this.$store.state.printer.printer.toolhead.max_accel
         this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate} ACCEL=${accel}`)
       } else {
-        this.sendGcode(`SAVE_GCODE_STATE NAME=_ui_movement
-G90
-G1 ${axis}${pos} F${rate * 60}
-RESTORE_GCODE_STATE NAME=_ui_movement`)
+        this.sendMoveGcode(`${axis}${pos}`, rate, true)
       }
     }
   }
