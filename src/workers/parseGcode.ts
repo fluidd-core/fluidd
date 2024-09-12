@@ -7,7 +7,7 @@ import shlex from 'shlex'
 const getArgsFromGcodeCommandArgs = (gcodeCommandArgs: string) => {
   const args: Record<string, number> = {}
 
-  for (const [, key, value] of gcodeCommandArgs.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))/ig)) {
+  for (const [, key, value] of gcodeCommandArgs.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))/gi)) {
     args[key.toLowerCase()] = +value
   }
 
@@ -33,7 +33,7 @@ const parseLine = (line: string) => {
     .split(';', 2)[0]
 
   const [, gcodeCommand, gcodeCommandArgs = ''] = clearedLine
-    .split(/^([gm][0-9]+)\s*/i)
+    .split(/^([gm]\d+)\s*/i)
 
   if (gcodeCommand) {
     return {

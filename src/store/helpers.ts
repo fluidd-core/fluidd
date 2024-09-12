@@ -9,7 +9,7 @@ export const handleTrinamicDriversChange = (payload: any, state: RootState, disp
     const [type, nameFromSplit] = item.split(' ', 2)
 
     if (
-      /^tmc\d{4}$/.exec(type) &&
+      /^tmc\d{4}$/.test(type) &&
       payload[item]?.drv_status?.otpw != null &&
       state.printer.printer?.[item]?.drv_status?.otpw == null
     ) {

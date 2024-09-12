@@ -2,7 +2,7 @@ import type { GetterTree } from 'vuex'
 import type { ConsoleState, GcodeHelp } from './types'
 import type { RootState } from '../types'
 
-const _tempWaitExpr = /^(?:ok\s+)?(b|t\d+):\d+\.\d+ \/\d+\.+\d+/i
+const _tempWaitExpr = /^(?:ok\s+)?(?:b|t\d+):\d+\.\d+ \/\d+\.+\d+/i
 
 export const getters: GetterTree<ConsoleState, RootState> = {
   /**

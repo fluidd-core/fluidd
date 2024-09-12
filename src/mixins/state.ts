@@ -99,6 +99,24 @@ export default class StateMixin extends Vue {
     this.addConsoleEntry(gcode)
   }
 
+  sendMoveGcode (movementGcode: string, rate: number, absolute = false, wait?: string) {
+    const gcode = `SAVE_GCODE_STATE NAME=_ui_movement
+G9${absolute ? 0 : 1}
+G1 ${movementGcode} F${rate * 60}
+RESTORE_GCODE_STATE NAME=_ui_movement`
+
+    this.sendGcode(gcode, wait)
+  }
+
+  sendExtrudeGcode (amount: number, rate: number, wait?: string) {
+    const gcode = `SAVE_GCODE_STATE NAME=_ui_retract
+M83
+G1 E${amount} F${rate * 60}
+RESTORE_GCODE_STATE NAME=_ui_retract`
+
+    this.sendGcode(gcode, wait)
+  }
+
   addConsoleEntry (message: string) {
     this.$store.dispatch('console/onAddConsoleEntry', { message, type: 'command' })
   }

@@ -39,7 +39,6 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getKlippyStateMessage: (state, getters, rootState, rootGetters): string => {
-    const regex = /(?:\r\n|\r|\n)/g
     // If there's absolutely no connection to klipper, then
     // say so.
     const serverInfo = rootGetters['server/getInfo'] as ServerInfo
@@ -54,13 +53,13 @@ export const getters: GetterTree<PrinterState, RootState> = {
       state.printer.info.state_message &&
       state.printer.info.state_message !== ''
     ) {
-      return state.printer.info.state_message.trim().replace(regex, '<br />')
+      return state.printer.info.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
     }
     if (
       state.printer.webhooks.state_message &&
       state.printer.webhooks.state_message !== ''
     ) {
-      return state.printer.webhooks.state_message.trim().replace(regex, '<br />')
+      return state.printer.webhooks.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
     }
     return 'Unknown'
   },
