@@ -4,7 +4,6 @@
     :src="cameraImageSource"
     :style="cameraStyle"
     :crossorigin="crossorigin"
-    class="no-pointer-events"
   >
 </template>
 
