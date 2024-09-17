@@ -175,7 +175,7 @@
             @click="$emit('view-thumbnail', file)"
           >
             <img
-              class="mx-2"
+              class="mx-2 no-pointer-events"
               :src="getThumbUrl(file, root, file.path, true, file.modified)"
               :height="150"
             >

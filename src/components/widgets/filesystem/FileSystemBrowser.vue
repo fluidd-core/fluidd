@@ -67,6 +67,7 @@
               </v-icon>
               <img
                 v-else
+                class="no-pointer-events"
                 :style="{'max-width': `${thumbnailSize}px`, 'max-height': `${thumbnailSize}px`}"
                 :src="getThumbUrl(item, root, item.path, thumbnailSize > 16, item.modified)"
               >

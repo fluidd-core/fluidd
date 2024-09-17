@@ -4,6 +4,7 @@
     :src="cameraImageSource"
     :style="cameraStyle"
     :crossorigin="crossorigin"
+    class="no-pointer-events"
     @load="handleImageLoad"
   >
 </template>
