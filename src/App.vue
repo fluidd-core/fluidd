@@ -326,7 +326,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
   mounted () {
     window.addEventListener('dragover', this.handleDragOver)
-    window.addEventListener('dragenter', this.handleDragEnter)
+    window.addEventListener('dragenter', this.handleDragOver)
     window.addEventListener('dragleave', this.handleDragLeave)
     window.addEventListener('drop', this.handleDrop)
     window.addEventListener('keydown', this.handleKeyDown, false)
@@ -359,7 +359,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
   beforeDestroy () {
     window.removeEventListener('dragover', this.handleDragOver)
-    window.removeEventListener('dragenter', this.handleDragEnter)
+    window.removeEventListener('dragenter', this.handleDragOver)
     window.removeEventListener('dragleave', this.handleDragLeave)
     window.removeEventListener('drop', this.handleDrop)
     window.removeEventListener('keydown', this.handleKeyDown)
@@ -384,12 +384,6 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
       this.dragState = true
 
       event.dataTransfer.dropEffect = 'copy'
-    }
-  }
-
-  handleDragEnter (event: DragEvent) {
-    if (this.fileDropRoot) {
-      event.preventDefault()
     }
   }
 
