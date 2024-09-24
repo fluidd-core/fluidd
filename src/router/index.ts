@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import VueRouter, { type NavigationGuardNext, type Route, type RouteConfig } from 'vue-router'
+import VueRouter, { type RouteConfig } from 'vue-router'
 
 // Views
 import Dashboard from '@/views/Dashboard.vue'
@@ -22,19 +22,19 @@ import Icons from '@/views/Icons.vue'
 
 Vue.use(VueRouter)
 
-const ifAuthenticated = (to: Route, from: Route, next: NavigationGuardNext<Vue>) => {
-  if (
-    router.app.$store.getters['auth/getAuthenticated'] ||
-    !router.app.$store.state.socket.apiConnected
-  ) {
-    next()
-  } else {
-    next('/login')
-  }
-}
+const isAuthenticated = () => (
+  router.app.$store.getters['auth/getAuthenticated'] ||
+  !router.app.$store.state.socket.apiConnected
+)
 
 const defaultRouteConfig: Partial<RouteConfig> = {
-  beforeEnter: ifAuthenticated,
+  beforeEnter: (to, from, next) => {
+    if (isAuthenticated()) {
+      next()
+    } else {
+      next('/login')
+    }
+  },
   meta: {
     fileDropRoot: 'gcodes'
   }
@@ -140,6 +140,13 @@ const routes: Array<RouteConfig> = [
     path: '/login',
     name: 'Login',
     component: Login,
+    beforeEnter: (to, from, next) => {
+      if (isAuthenticated()) {
+        next('/')
+      } else {
+        next()
+      }
+    },
     meta: {
       fillHeight: true
     }
