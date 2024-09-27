@@ -5,7 +5,6 @@ export interface VersionState {
   github_limit_reset_time: number;
   version_info: VersionComponents;
   responses: UpdateResponse[];
-  fluidd: FluiddVersion;
 }
 
 export type VersionComponents = Record<string, UpdatePackage>;
@@ -99,11 +98,6 @@ export interface OSPackage {
   key: string;
   package_count: number;
   package_list: string[];
-}
-
-export interface FluiddVersion {
-  version: string;
-  hash: string;
 }
 
 export interface UpdateResponse {
