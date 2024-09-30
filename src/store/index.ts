@@ -77,7 +77,7 @@ export default new Vuex.Store<RootState>({
           p.push(dispatch(key + '/reset'))
         }
       })
-      return Promise.all(p)
+      await Promise.all(p)
     },
 
     async init ({ dispatch, commit }, payload: InitConfig) {
@@ -85,10 +85,12 @@ export default new Vuex.Store<RootState>({
       commit('socket/setApiConnected', payload.apiConnected)
 
       // Init the host and local configs..
-      return [
-        await dispatch('config/initHost', payload),
-        await dispatch('config/initLocal', payload)
-      ]
+      await Promise.all([
+        dispatch('config/initHost', payload),
+        dispatch('config/initLocal', payload)
+      ])
+
+      commit('config/setAppReady', true)
     },
 
     /**

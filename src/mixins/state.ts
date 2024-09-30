@@ -4,6 +4,10 @@ import { Component } from 'vue-property-decorator'
 
 @Component
 export default class StateMixin extends Vue {
+  get appReady (): boolean {
+    return this.$store.getters['config/getAppReady'] as boolean
+  }
+
   get authenticated (): boolean {
     return this.$store.getters['auth/getAuthenticated'] as boolean
   }

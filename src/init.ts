@@ -202,7 +202,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
       const value = root.name ? data[root.name] : data
 
       if (root.migrate_only) {
-        if (value) store.dispatch(root.dispatch, value)
+        if (value) await store.dispatch(root.dispatch, value)
       } else {
         if (!value) {
           try {
@@ -222,8 +222,15 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   // apiConfig could have empty strings, meaning we have no valid connection.
   await store.dispatch('init', { apiConfig, hostConfig, apiConnected })
 
-  // Ensure users start on the dash.
-  if (router.currentRoute.path !== '/' && store.state.auth.authenticated) router.push('/')
+  if (store.state.auth.authenticated) {
+    if (router.currentRoute.path !== '/') {
+      await router.push('/')
+    }
+  } else {
+    if (router.currentRoute.path !== '/login') {
+      await router.push('/login')
+    }
+  }
 
   return { apiConfig, hostConfig, apiConnected, apiAuthenticated }
 }
