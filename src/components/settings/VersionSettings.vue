@@ -15,7 +15,7 @@
           small
           color="primary"
           class="mr-2"
-          :disabled="!hasUpdates || isRefreshing || printerPrinting"
+          :disabled="!hasUpdates || hasInvalidComponent || isRefreshing || printerPrinting"
           @click="handleUpdateComponent('all')"
         >
           <v-icon left>
@@ -205,6 +205,10 @@ export default class VersionSettings extends Mixins(StateMixin) {
   get hasUpdates () {
     const d = this.$store.getters['version/hasUpdates']
     return d
+  }
+
+  get hasInvalidComponent () {
+    return !!this.components.find((c: HashVersion) => 'is_valid' in c && !c.is_valid)
   }
 
   get enableNotifications () {
