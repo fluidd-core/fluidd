@@ -29,6 +29,10 @@ export const keyboardEventToKeyboardShortcut = (event: KeyboardEvent): string =>
     keys.push('Ctrl')
   }
 
+  if (event.metaKey) {
+    keys.push('Meta')
+  }
+
   if (event.altKey) {
     keys.push('Alt')
   }

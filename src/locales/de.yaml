@@ -120,7 +120,7 @@ app:
       root_disabled: '{root} ist nicht verfügbar. Bitte überprüfen Sie Ihre Logdateien.'
       items_count: '{count} Element | {count} Elemente'
     url:
-      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: >-
         https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
@@ -516,6 +516,11 @@ app:
       standby: Standby
     title:
       printer_status: Druckerstatus
+      stepper_driver_overheating: Schrittmotor-Treiber '%{name}' überhitzt
+    msg:
+      possible_print_failure: Dies kann zu einem fehlgeschlagenen Druck führen
+    url:
+      stepper_driver_overheating: '%{klipperDomain}/TMC_Drivers.html#tmc-reports-error-ot1overtemperror'
   setting:
     btn:
       add_camera: Kamera hinzufügen

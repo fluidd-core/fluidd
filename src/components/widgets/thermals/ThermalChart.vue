@@ -177,7 +177,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
                   <div>
                     ${param.marker}
                     <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
-                      ${this.$filters.startCase(name)}:
+                      ${this.$filters.prettyCase(name)}:
                     </span>
                     <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
                       ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`

@@ -57,7 +57,10 @@
           </td>
           <td>
             <!-- icons are 16px small, or 24px for standard size. -->
-            <v-layout justify-center>
+            <v-layout
+              justify-center
+              class="no-pointer-events"
+            >
               <v-icon
                 v-if="!item.thumbnails || !item.thumbnails.length"
                 :small="dense"

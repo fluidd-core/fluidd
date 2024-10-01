@@ -81,10 +81,6 @@ export default new Vuex.Store<RootState>({
     },
 
     async init ({ dispatch, commit }, payload: InitConfig) {
-      // Sets the version and hash of Fluidd.
-      commit('version/setVersion', import.meta.env.VERSION)
-      commit('version/setHash', import.meta.env.HASH)
-
       // Set the api connection state..
       commit('socket/setApiConnected', payload.apiConnected)
 

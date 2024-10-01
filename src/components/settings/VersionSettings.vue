@@ -180,7 +180,7 @@ import VersionStatus from './VersionStatus.vue'
 import VersionCommitHistoryDialog from './VersionInformationDialog.vue'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import type { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
+import type { VersionedUpdatePackage, UpdatePackage } from '@/store/version/types'
 
 @Component({
   components: {
@@ -223,7 +223,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
     })
   }
 
-  packageTitle (component: HashVersion | OSPackage | ArtifactVersion) {
+  packageTitle (component: UpdatePackage) {
     if (component.key === 'system') {
       return this.$t('app.version.label.os_packages')
     }
@@ -235,7 +235,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
     return this.$store.getters['version/hasUpdate'](component)
   }
 
-  inError (component: HashVersion | OSPackage | ArtifactVersion) {
+  inError (component: UpdatePackage) {
     const dirty = ('is_dirty' in component) ? component.is_dirty : false
     const valid = ('is_valid' in component) ? component.is_valid : true
     return (dirty || !valid)
@@ -266,7 +266,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   // Will attempt to recover a component based on its type and current status.
-  handleRecoverComponent (component: HashVersion | OSPackage | ArtifactVersion) {
+  handleRecoverComponent (component: UpdatePackage) {
     this.$store.dispatch('version/onUpdateStatus', { busy: true })
     const dirty = ('is_dirty' in component) ? component.is_dirty : false
     const valid = ('is_valid' in component) ? component.is_valid : true
@@ -286,17 +286,17 @@ export default class VersionSettings extends Mixins(StateMixin) {
     }
   }
 
-  getBaseUrl (component: HashVersion | ArtifactVersion) {
+  getBaseUrl (component: VersionedUpdatePackage) {
     if ('remote_url' in component && component.remote_url) {
       return component.remote_url
     }
     if ('owner' in component) {
-      return `https://github.com/${component.owner}/${component.key}`
+      return `https://github.com/${component.owner}/${component.repo_name || component.key}`
     }
     return ''
   }
 
-  handleInformationDialog (component: HashVersion | OSPackage | ArtifactVersion) {
+  handleInformationDialog (component: UpdatePackage) {
     if (
       'commits_behind' in component ||
       'package_list' in component

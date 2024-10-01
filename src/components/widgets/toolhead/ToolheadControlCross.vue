@@ -13,7 +13,7 @@
           :color="axisButtonColor(yHomed)"
           :disabled="axisButtonDisabled(yHomed, yHasMultipleSteppers)"
           icon="$up"
-          @click="sendMoveGcode('Y', toolheadMoveLength)"
+          @click="moveAxisBy('Y', toolheadMoveLength)"
         />
       </v-col>
       <v-col
@@ -24,7 +24,7 @@
           :color="axisButtonColor(zHomed)"
           :disabled="axisButtonDisabled(zHomed, zHasMultipleSteppers)"
           icon="$up"
-          @click="sendMoveGcode('Z', toolheadMoveLength)"
+          @click="moveAxisBy('Z', toolheadMoveLength)"
         />
       </v-col>
       <v-col
@@ -57,7 +57,7 @@
           :color="axisButtonColor(xHomed)"
           :disabled="axisButtonDisabled(xHomed, xHasMultipleSteppers)"
           icon="$left"
-          @click="sendMoveGcode('X', toolheadMoveLength, true)"
+          @click="moveAxisBy('X', toolheadMoveLength, true)"
         />
       </v-col>
       <v-col
@@ -83,7 +83,7 @@
           :color="axisButtonColor(xHomed)"
           :disabled="axisButtonDisabled(xHomed, xHasMultipleSteppers)"
           icon="$right"
-          @click="sendMoveGcode('X', toolheadMoveLength)"
+          @click="moveAxisBy('X', toolheadMoveLength)"
         />
       </v-col>
       <v-col
@@ -129,7 +129,7 @@
           :color="axisButtonColor(yHomed)"
           :disabled="axisButtonDisabled(yHomed, yHasMultipleSteppers)"
           icon="$down"
-          @click="sendMoveGcode('Y', toolheadMoveLength, true)"
+          @click="moveAxisBy('Y', toolheadMoveLength, true)"
         />
       </v-col>
       <v-col
@@ -140,7 +140,7 @@
           :color="axisButtonColor(zHomed)"
           :disabled="axisButtonDisabled(zHomed, zHasMultipleSteppers)"
           icon="$down"
-          @click="sendMoveGcode('Z', toolheadMoveLength, true)"
+          @click="moveAxisBy('Z', toolheadMoveLength, true)"
         />
       </v-col>
       <v-col
@@ -243,7 +243,7 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
   /**
    * Send a move gcode script.
    */
-  sendMoveGcode (axis: Axis, distance: number, negative = false) {
+  moveAxisBy (axis: Axis, distance: number, negative = false) {
     const rate = axis === 'Z'
       ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
       : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
@@ -258,9 +258,7 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
         : this.$store.state.printer.printer.toolhead.max_accel
       this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
     } else {
-      this.sendGcode(`G91
-      G1 ${axis}${distance} F${rate * 60}
-      G90`)
+      this.sendMoveGcode(`${axis}${distance}`, rate)
     }
   }
 }

@@ -13,12 +13,12 @@ app:
       wireframe: Каркасная сетка
     msg:
       hint: >-
-        Чтобы удалить профиль с именем %{name},  новый профиль должен быть с другим
-        именем.
+        Чтобы удалить профиль с именем %{name}, новый профиль должен быть с другим
+        именем
       not_found: Не найдено существующих сеток стола.
       not_loaded: Сетка не загружена
     tooltip:
-      calibrate: Начать новую калибровку. Профиль будет сохранён с именем 'default'.
+      calibrate: Начать новую калибровку. Профиль будет сохранён с именем 'default'
       delete: Удалить профиль
       load: Загрузить профиль
       save: Сохранить данные откалиброванного профиля в printer.cfg
@@ -33,8 +33,9 @@ app:
     tooltip:
       help: >-
         Для масштабирования графика удерживайте клавишу <kbd>Shift</kbd>.<br />Щелкните
-        по названию датчика, чтобы включить/отключить его отображение на графике.<br  />Щелкните
-        по мощности датчика, чтобы включить/отключить отображение его шкалы на графике.
+        по названию датчика, чтобы включить/отключить его отображение на графике.<br
+        />Щелкните по мощности датчика, чтобы включить/отключить отображение его шкалы
+        на графике.
   console:
     label:
       auto_scroll: Автопрокрутка
@@ -44,7 +45,7 @@ app:
       help: >-
         Для отображения списка доступных команд введите 'help'.<br />Используйте <kbd>Tab</kbd>
         для автозаполнения.<br />Используйте стрелочки <kbd>↑</kbd> и <kbd>↓</kbd>
-        для пролистывания истории.
+        для пролистывания истории
   endpoint:
     error:
       cant_connect: >-
@@ -60,8 +61,8 @@ app:
       add_printer: Например, http://fluiddpi.local
     msg:
       trouble: >-
-        Столкнулись с проблемами?<br>
-        Для получения дополнительной информации обратитесь к <a href="%{url}" target="_blank">документации</a>.
+        У вас возникли проблемы? <a href="%{url}" target="_blank">Посмотрите здесь</a>
+        для получения дополнительной информации.
     tooltip:
       endpoint_examples: >-
         Введите URL-адрес API.<br />В качестве примера, может быть что-то
@@ -93,12 +94,12 @@ app:
         Просмотр '%{section}' документации
     msg:
       not_found: Файлы не найдены
-      processing: Обработка...
+      processing: Обработка
     overlay:
       drag_files_folders_upload: Для загрузки файлов и папок <strong>перетащите</strong>
-        их сюда.
-      drag_files_enqueue: Для добавления  файлов в очередь, <strong>перетащите</strong>
-        их сюда.
+        их сюда
+      drag_files_enqueue: Для добавления файлов в очередь, <strong>перетащите</strong>
+        их сюда
     title:
       add_dir: Создать папку
       add_file: Создать файл
@@ -116,7 +117,7 @@ app:
       items_count: '{count} элемент | {count} элементов'
       root_disabled: Корневая папка недоступна. Пожалуйста, проверьте файлы журналов.
     url:
-      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
       crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
@@ -143,7 +144,7 @@ app:
         Файл "%{filename}" имеет размер %{size}, что может быть ресурсоёмкой задачей
         для вашей системы. Продолжить?
     overlay:
-      drag_file_load: Для загрузки G-код файла <strong>перетащите</strong> его сюда.
+      drag_file_load: Для загрузки G-код файла <strong>перетащите</strong> его сюда
   general:
     btn:
       abort: Отменить
@@ -341,13 +342,14 @@ app:
       velocity: Скорость
       version_sort: Сортировка по версии
       visible: Видимый
-      z_offset: Смещение Z коорд.
+      z_offset: Смещение Z
       unsaved_changes: Несохранённые изменения
       alias: Псевдоним
       apply_z_offset: Применить и сохранить смещение Z координаты
       edit_category: Редактирование категории
       add_category: Добавить категорию
       file_time: Файл
+      stepper_driver: '%{name} Драйвер'
     msg:
       password_changed: Пароль изменён
       wrong_password: Ой, что-то пошло не так. Пароль введен верно?
@@ -363,6 +365,9 @@ app:
       pending_configuration_sections_deleted: Следующие разделы помечены для удаления
       rolledover_logs: >-
         Файлы журналов следующих приложений были перезаписаны: %{applications}
+      not_valid_fluidd_backup_file: Неверный файл резервной копии Fluidd!
+      fluidd_settings_backup_failed: Не удалось создать резервную копию настроек Fluidd!
+      fluidd_settings_restore_failed: Не удалось восстановить настройки Fluidd!
     simple_form:
       error:
         arrayofnums: Только цифры
@@ -382,8 +387,8 @@ app:
         confirm_cancel_print: Вы уверены, что хотите отменить текущую печать?
         confirm_clear_mesh: Принтер в данный момент занят. Вы уверены, что хотите
           очистить сетку стола?
-        confirm_delete: Вы уверены, что хотите удалить выбранный элемент. | Выбрано
-          элементов - {count}. Вы уверены, что хотите удалить?
+        confirm_delete: Вы уверены? Это действие удалит выбранный элемент. | Вы уверены?
+          Это действие удалит выбранные {count} элемента.
         confirm_emergency_stop: Вы уверены, что хотите аварийно остановить принтер?
         confirm_exclude_object: Вы уверены, что хотите исключить эту модель из печати?
         confirm_forcemove_toggle: Вы уверены? Это может повредить принтер.
@@ -395,8 +400,8 @@ app:
         confirm_service_start: Вы уверены, что хотите запустить службу %{name}?
         confirm_service_restart: Вы уверены, что хотите перезапустить службу %{name}?
         confirm_service_stop: Вы уверены, что хотите остановить службу %{name}?
-        confirm_power_device_toggle: Вы уверены, что хотите изменить статус питания
-          принтера?
+        confirm_power_device_toggle: Вы уверены? Это изменит состояние питания этого
+          устройства.
         unsaved_changes: У вас есть несохранённые изменения.<br>Вы уверены, что хотите
           закрыть файл?
         no_file_preview: >-
@@ -476,27 +481,27 @@ app:
       run_collector: Запустить сбор данных
       rollover_logs: Сброс данных журналов
       file_browser_help: >-
-        Для загрузки файлов или папок из-за пределов браузера, перетащите их сюда.<br>Также
-        поддерживается перемещение файлов и папок в подпапки.
+        Перетащите файлы или папки извне браузера, чтобы загрузить их сюда<br>Переместите
+        файлы и папки, перетащив их на подпапки или ".."
       file_browser_configuration_help: >-
         Для копирования файлов и папок в конфигурационные файлы, перетащите их отсюда
-        туда. 
+        туда
   history:
     msg:
-      confirm: Вы уверены, что хотите очистить всю историю и статистику принтера?
-      confirm_jobs: Вы уверены, что хотите очистить всю историю?
-      confirm_stats: Вы уверены, что хотите очистит всю статистику?
+      confirm: Вы уверены? Это удалит всю историю и статистику принтера
+      confirm_jobs: Вы уверены? Это удалит все задания.
+      confirm_stats: Вы уверены? Это удалит все статистические данные.
   job_queue:
     msg:
-      confirm: Вы уверены, что хотите очистить всю очередь печати?
+      confirm: Вы уверены? Это удалит всю очередь печати
     label:
       number_of_copies: Количество копий
     title:
       multiply_job: Размножить задание | Размножить задания
     tooltip:
       help: >-
-        Чтобы поставить задание в очередь перетащите его сюда.<br>Для изменения очерёдности
-        печати заданий, перетаскивайте их вверх или вниз.
+        Очередь заданий можно изменить, перетащив файлы из раздела "Задания" сюда<br>Измените
+        порядок задач в очереди, перетащив их вверх или вниз
   printer:
     state:
       busy: Занят
@@ -510,6 +515,11 @@ app:
       standby: Режим ожидания
     title:
       printer_status: Статус принтера
+      stepper_driver_overheating: Драйвер шагового двигателя '%{name}' перегревается
+    msg:
+      possible_print_failure: Это может привести к неудачной печати
+    url:
+      stepper_driver_overheating: '%{klipperDomain}/TMC_Drivers.html#tmc-reports-error-ot1overtemperror'
   setting:
     btn:
       add_camera: Добавить видеокамеру
@@ -520,10 +530,12 @@ app:
       add_user: Добавить пользователя
       reset: Сбросить
       select_theme: Выбрать тему
+      backup: Резервная копия
+      restore: Восстановление
     camera_type_options:
       mjpegadaptive: Адаптивный MJPEG
       mjpegstream: MJPEG-поток
-      hlsstream: HLS Stream
+      hlsstream: HLS Поток
       webrtc_camera_streamer: WebRTC (camera-streamer)
       video: IP-видеокамера
       iframe: Страница HTTP
@@ -580,11 +592,11 @@ app:
       expression: Выражение
       extrusion_line_width: Ширина экструзии
       flip_horizontal: Отразить по горизонтали
-      flip_vertical: Отразить по вертикали
+      flip_vertical: Вертикальное отражение
       fill_color: Цвет заливки
       fill_opacity: Непрозрачность заливки
       filter: Фильтр | Фильтры
-      fps_target: Частота кадров
+      fps_target: Целевой FPS
       fps_idle_target: Частота кадров при расфокусировке
       height: Высота
       hide_single_part_bounding_box: При печати одной модели скрывать её ограничивающую
@@ -658,6 +670,7 @@ app:
         винтов стола
       show_screws_tilt_adjust_dialog_automatically: Показывать окно для регулировки
         поворота винтов стола
+      fluidd_settings_in_moonraker_db: Настройки Fluidd в базе данных Moonraker
     timer_options:
       absolute_file_position: Абсолютное расположение файла
       duration: Продолжительность печати
@@ -679,19 +692,19 @@ app:
       thermal_presets: Предустановки преднагрева
       tool: Инструменты
     tooltip:
-      average_calculation: Если выбрано несколько, будет рассчитано среднее значение.
+      average_calculation: Если выбрано несколько, будет рассчитано среднее значение
       diagnostics_performance: '[BETA] Запись диагностических данных может замедлить
-        работу системы.'
+        работу системы'
       gcode_coords: Использовать координаты из G-кода вместо позиции печатающей головы
-        на панели управления.
-      keyboard_shortcuts: После включения нажмите на «?», чтобы просмотреть список
-        доступных сочетаний клавиш.
-      show_manual_probe_dialog_automatically: Автоматически отображать вспомогательное
-        диалоговое окно ручного зондирования стола.
-      show_bed_screws_adjust_dialog_automatically: Отображать вспомогательное диалоговое
-        окно для регулировки винтов стола (BED_SCREWS_ADJUST).
-      show_screws_tilt_adjust_dialog_automatically: Отображать вспомогательное диалоговое
-        окно для регулировки поворота винтов стола (SCREWS_TILT_CALCULATE).
+        на панели управления
+      keyboard_shortcuts: "[BETA] Включите и нажмите '?', чтобы увидеть список доступных
+        сочетаний клавиш"
+      show_manual_probe_dialog_automatically: Автоматически отображает диалог помощи
+        при запуске инструмента ручного зондирования
+      show_bed_screws_adjust_dialog_automatically: Автоматически отображает диалог
+        помощи при запуске инструмента BED_SCREWS_ADJUST
+      show_screws_tilt_adjust_dialog_automatically: Автоматически отображает диалог
+        помощи при запуске инструмента SCREWS_TILT_CALCULATE
       theme_disclaimer: >-
         Эти темы содержат названия и логотипы брендов, которые являются<br>
         интеллектуальной собственностью соответствующих владельцев.<br>
@@ -749,10 +762,10 @@ app:
       canbus_warning: >-
         Могут быть обнаружены только неназначенные узлы (устройства) на CAN-шины.<br>
         Во избежание проблем со связью рекомендуется подключать к CAN-шине только
-        одно неназначенное устройство.<br>
-        Подробнее об этом написано <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">здесь</a>.
-      no_devices_found: Устройства не найдены.
-      no_devices_searched: Используйте кнопку обновления для поиска устройств.
+        одно неназначенное устройство.<br> Подробнее об этом написано <a target="_blank"
+        href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">здесь</a>
+      no_devices_found: Устройства не найдены
+      no_devices_searched: Используйте кнопку обновления для поиска устройств
   tool:
     btn:
       home_x: X
@@ -764,8 +777,7 @@ app:
       screws_tilt_adjust: Регулировка поворота винтов стола
     tooltip:
       absolute_positioning: Абсолютная позиция
-      extruder_disabled: Работа экструдера заблокирована, т.к. температура<br />ниже
-        минимально разращённой %{min}°C.
+      extruder_disabled: экструдер отключен, температура ниже min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Парковка XY
       home_z: Парковка Z
       manual_probe: Ручное зондирование стола
@@ -775,20 +787,21 @@ app:
       tools: Инструменты
     label:
       stats_active_extruder: >-
-        <span class="secondary--text">Активный экструдер - </span> диаметр сопла %{nozzleDiameter}
-        мм, <span class="secondary--text"> </span> диаметр прутка %{filamentDiameter}
-        мм.
+        <span class="secondary--text">Конфигурация активного экструдера настроена
+        на</span> нить диаметром %{filamentDiameter} мм <span class="secondary--text">и</span>
+        сопло диаметром %{nozzleDiameter} мм
       stats_volumetric_flow: >-
-        Экструзия со скоростью %{extrudeSpeed} мм/сек<span class="secondary--text">
-        должна обеспечить </span> объёмную скорость потока в %{estimatedVolumetricFlow}
-        мм³/сек.
+        Экструзия со скоростью %{extrudeSpeed} мм/с<span class="secondary--text">,
+        экструдер должен обеспечивать</span> ожидаемый объемный расход в %{estimatedVolumetricFlow}
+        мм³/с
       stats_extruded_length: >-
-        Экструзия </span>%{extrudeLength} мм прутка при %{extrudeFactor}% потоке<span
-        class="secondary--text"> обеспечит</span> выходную длину материала %{estimatedExtrudedLength}
-        мм.
+        Экструзия %{extrudeLength} мм филамента при %{extrudeFactor} % потока<span
+        class="secondary--text">, даст ожидаемую</span> длину выхода %{estimatedExtrudedLength}
+        мм
       stats_max_speed: >-
-        <span class="secondary--text">При высоте слоя </span> %{layerHeight} мм расчётная
-        максимальная скорость печати составит %{estimatedMaxSpeed} мм/сек.
+        <span class="secondary--text">При предполагаемой высоте слоя</span> %{layerHeight}
+        мм<span class="secondary--text">, ожидаемая максимальная скорость печати составит</span>
+        %{estimatedMaxSpeed} мм/с
   version:
     btn:
       check_for_updates: Проверить обновления
@@ -816,8 +829,8 @@ app:
     tooltip:
       commit_history: История коммитов
       dirty: Оповещает о отсоединенном состоянии указателя HEAD, не в мастер-ветке
-        или ошибочный репозиторий.
-      invalid: Оповещает о локальных изменениях в репозитории.
+        или ошибочный репозиторий
+      invalid: Оповещает о локальных изменениях в репозитории
       packages: Пакеты
       release_notes: Примечания к релизу
   timelapse:
@@ -872,7 +885,7 @@ app:
       targetlength: Длительность видео
       variable_fps: Переменная частота кадров
       variable_fps_min: Минимальная частота кадров
-      variable_fps_max: Максимальная частота частота
+      variable_fps_max: Максимальная частота кадров
   spoolman:
     btn:
       manage_spools: Менеджер катушек
@@ -891,11 +904,13 @@ app:
       first_used: Первое использование
       id: ID
       last_used: Последнее использование
-      location: Расположен.
+      location: Расположен
       lot_nr: № партии
       material: Тип
       remaining_weight: Осталось
       vendor: Произв-ль
+      length: Длина
+      weight: Вес
     msg:
       no_spool: >-
         Вы не выбрали катушку.
@@ -916,33 +931,34 @@ app:
       not_connected: Сервер Spoolman недоступен.
       info:
         howto: >-
-          Покажите QR-код вашей катушки в видеокамеру.  Это окно закроется, как только
+          Покажите QR-код вашей катушки в видеокамеру. Это окно закроется, как только
           будет обнаружена катушка.
       warning:
         code_not_recognized: Этот код не похож на совместимый QR-код.
         invalid_spool_id: Идентификатор катушки, содержащийся в этом QR-коде, недействителен.
       error:
         cors: >-
-          Произошла ошибка доступа к видеокамере.  Убедитесь, что ваш сервер веб-камеры
+          Произошла ошибка доступа к видеокамере. Убедитесь, что ваш сервер веб-камеры
           разрешает доступ посредством механизма CORS.
         spool_not_existant: Отсканированная вами катушка отсутствует в базе данных.
         no_image_data: >-
           Произошла ошибка при доступе к видеокамере.
           Проверьте конфигурацию видеокамеры или попробуйте другой источник видеокамеры.
     setting:
-      auto_open_qr_camera: Автоматически открывать видеокамеру для обнаружения QR-кода.
+      auto_open_qr_camera: Автоматически открывать видеокамеру для обнаружения QR-кода
       auto_select_spool_on_match: Автоматически фиксировать выбор катушки при совпадении
-        QR-кода.
+        QR-кода
       prefer_device_camera: Использовать видеокамеру устройства для обнаружения QR-кода,
-        если она доступна.
+        если она доступна
       show_spool_selection_dialog_on_print_start: Показывать диалоговое окно выбора
-        катушки при запуске печати.
+        катушки при запуске печати
       warn_on_not_enough_filament: >-
         Показывать предупреждение, если на выбранной катушке недостаточно материала
-        для завершения печати.
+        для завершения печати
       warn_on_filament_type_mismatch: >-
         Показывать предупреждение, если тип материала на катушке не соответствует
-        тому что выбрано в слайсере.
+        тому что выбрано в слайсере
+      remaining_filament_unit: Показать оставшийся филамент как
   sensors:
     title:
       sensors: Датчики

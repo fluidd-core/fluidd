@@ -1,0 +1,626 @@
+app:
+  bedmesh:
+    label:
+      active: ativo
+      base: base
+      box_scale: Caixa de escala
+      flat_surface: Mostrar plano baixo
+      mesh_matrix: Matriz de malha
+      wireframe: Wireframe
+      scale: Escala de cor
+      profile_name: Perfil
+      remove_profile: Remover perfil %{name}
+      probed_matrix: Matriz sondada
+    msg:
+      hint: Se salvar como algo diferente de % {name}, pode escolher remover também
+        o perfil % {name}
+      not_found: Não existe uma malha de nivelamentos da mesa.
+      not_loaded: Nenhuma malha carregada
+    tooltip:
+      load: Carregar perfil
+      copy_image: Copiar imagem da malha da cama
+      calibrate: Começa uma nova calibração, salvando o perfil como 'default'
+      delete: Apagar perfil
+      save: Salva perfil calibrado no arquivo printer.cfg
+  endpoint:
+    msg:
+      trouble: Está com problemas? <a href="%{url}" target="_blank"> Veja aqui </a>
+        para mais informações.
+    error:
+      cors_error: bloqueado pela política CORS
+      cors_note: Isso pode significar que você precisa modificar a configuração do
+        moonraker. Consulte a documentação sobre configurações de várias impressoras
+        <a href="%{url}" target="_blank"> aqui </a>
+      cant_connect: Algo está errado! O Fluidd não é possível encontrar o destino.
+        Tem a certeza de que este é o endereço correto?
+    hint:
+      add_printer: Ex., http://fluiddpi.local
+    tooltip:
+      endpoint_examples: 'Insira o URL da API. <br /> Alguns exemplos podem ser; <br
+        /> <blockquote> http: //fluidd.local, http://192.168.1.150 </blockquote>'
+  file_system:
+    label:
+      transfer_rate: Taxa de transferência
+      uploaded: Carregado
+      view_section_documentation: Ver documentação para '%{section}'
+      dir_name: Nome diretório
+      disk_usage: Disco usado
+      diskinfo: Informações sobre o Disco
+      downloaded: Descarregado
+      file_name: Nome arquivo
+    title:
+      add_dir: Adicionar diretório
+      rename_dir: Renomear diretório
+      command_palette: Palete de comandos
+      devices: Dispositivos
+      duplicate_dir: Duplicar diretório
+      add_file: Adicionar arquivo
+      download_file: Recuperando arquivo
+      duplicate_file: Duplicar arquivo
+      go_to_file: Ir para arquivo
+      rename_file: Renomear arquivo
+      upload_file: Carregando arquivo | Carregando arquivos
+    filters:
+      label:
+        klipper_backup_files: Filtrar cópias de segurança do Klipper
+        hidden_files_folders: Filtrar arquivos e pastas escondidas
+        crowsnest_backup_files: Filtrar arquivos de cópia de segurança do Crowsnest
+        print_start_time: Filtrar já impressos
+        moonraker_backup_files: Filtrar arquivos de cópia de segurança do Moonraker
+        rolled_log_files: Filtrar arquivos de registo antigos
+    tooltip:
+      low_on_space: Pouco espaço em disco
+      items_count: '{count} item | {count} itens'
+      root_disabled: A raiz {root} não está disponível. Por favor verifique os seus
+        arquivos de log.
+    url:
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
+      moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
+      moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
+      crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
+    msg:
+      not_found: Não foram encontrados arquivos
+      processing: Processando
+    overlay:
+      drag_files_folders_upload: <strong>Arrastar</strong> aqui, arquivos e pastas
+        para carregar
+      drag_files_enqueue: <strong>Arrastar</strong> para aqui, arquivos para juntar
+        à fila
+  gcode:
+    btn:
+      load_current_file: Carregar arquivo atual
+    label:
+      layer: Camada
+      layers: Camadas
+      parsed: Analisado
+      show_next_layer: Mostrar camada seguinte
+      show_parts: Mostrar partes
+      current_layer_height: Altura da Camada Atual
+      exclude_object: Excluir Objeto
+      show_current_layer: Apresentar camada atual
+      show_retractions: Mostrar retrações
+      parsing_file: Analisando Arquivo
+      follow_progress: Seguir progresso
+      show_extrusions: Apresentar extrusões
+      show_moves: Mostrar movimentos
+      show_previous_layer: Mostrar camada anterior
+    msg:
+      confirm: O arquivo "%{filename}" tem %{size}, o que pode consumir bastante recurso
+        para o seu sistema. Tem a certeza?
+    overlay:
+      drag_file_load: <strong>Arraste</strong> um arquivo de gcode para aqui afim
+        de carregar
+  general:
+    btn:
+      abort: Abortar
+      accept: Aceitar
+      add: Adicionar
+      add_dir: Adicionar diretório
+      add_file: Adicionar arquivo
+      add_to_queue: Adicionar à Fila
+      adjust_layout: Ajuste o layout do painel
+      clear_profile: Limpar Perfil
+      close: Fechar
+      config_reference: Referencias da configuração
+      copied: Copiado
+      copy: Copiar
+      create_zip_archive: Criar Arquivo ZIP
+      download: Download
+      duplicate: Duplicar
+      edit: Editar
+      exit_layout: Sair do modo de layout
+      filter: Filtrar
+      extrude: Extrudar
+      heaters_off: Heaters desligados
+      forgot_password: Esqueceu sua senha?
+      go_to_file: Ir para arquivo
+      remove: Remover
+      remove_all: Remover todos
+      rename: Renomear
+      reprint: Reimprimir
+      reset_file: Limpar arquivo
+      reset_layout: Reiniciar layout
+      restart_service_moonraker: Reiniciar Moonraker
+      resume: Retomar
+      retract: Retração
+      retry: Repetir
+      save: Salvar
+      return_dashboard: Voltar ao painel
+      shutdown: Desligar
+      set_default_layout: Escolher como Layout Padrão
+      upload_files: Carregar Arquivos
+      add_printer: Adicionar impressora
+      adjusted: Ajustado
+      all: Tudo
+      calibrate: Calibrar
+      cancel: Cancelar
+      delete: Apagar
+      load_all: Carregar tudo
+      auth_unsure: Não sabe porque está vendo isto?
+      job_queue: Fila de Trabalho
+      login: Login
+      logout: Logout
+      more_information: Mais informações
+      multiply: Multiplicar
+      pause: Pausa
+      preheat: Pré aquecer
+      restart_firmware: Reiniciar firmware
+      restart_service: Reiniciar %{service}
+      restart_service_klipper: Reiniciar Klipper
+      save_as: Salvar como
+      send: Enviar
+      set_color: Escolher Cor
+      snooze: Suspender
+      socket_reconnect: Reconectar
+      socket_refresh: Forçar atualização
+      thumbnail_size: Tamanho da miniatura
+      upload: Envio
+      upload_folder: Carregar Pasta
+      view: Ver
+      reset_default_layout: Voltar para o Layout Padrão
+      save_config_and_restart: Salvar a configuração e reiniciar
+      select_columns: Selecionar colunas
+      reset_stats: Reiniciar estatísticas
+      save_restart: Salvar e Reiniciar
+      upload_print: Envio e Impressão
+      refresh_metadata: Atualizar Metadados
+      presets: Pre configuração
+      refresh: Atualizar
+      preview_gcode: Pré-visualizar Gcode
+      quad_gantry_level: QGL
+      reload: Recarregar
+      print: Imprimir
+      reboot: Reiniciar
+      recover: Recuperar
+    error:
+      app_warnings_found: '%{appName} avisos encontrados.'
+      app_setup_link: Os requisitos de configuração do Fluidd podem ser encontrados
+        <a target="_blank" href="%{url}"> aqui. </a>
+      components_config: A configuração do plugin Moonraker pode ser encontrada <a
+        target="_blank" href="%{url}"> aqui. </a>
+      failed_components: O Moonraker tem falhas nos plug-ins, verifique os logs, atualize
+        a sua configuração e reinicie o moonraker.
+    label:
+      add_filter: Adicionar Filtro
+      add_preset: Adicionar predefinição
+      layer: Camada
+      layout: Layout
+      ldap: LDAP
+      longest_job: Maior trabalho
+      pressure_advance: Pressure Advance
+      unknown: Desconhecido
+      unretract_speed: Velocidade de DesRetração
+      unsaved_changes: Mudanças não Salvas
+      alias: Apelido
+      apply_z_offset: Aplicar e atualizar Z_Offset
+      add_category: Adicionar categoria
+      accel_to_decel: Acel. para Desacel.
+      acceleration: Aceleração
+      actual_time: Atual
+      add_user: Adicionar usuário
+      all: Tudo
+      bars: Barras
+      command: Comando
+      clear_all: Limpar tudo
+      confirm: Confirmar
+      cross: Cruzar
+      circle: Círculo
+      compact: Compacto
+      current_password: Senha Atual
+      default: Padrão
+      edit_camera: Editar câmera
+      edit_filter: Editar Filtro
+      edit_preset: Editar predefinição
+      extrude_length: Comprimento extrusão
+      extrude_speed: Velocidade extrusão
+      filament: Filamento
+      finish_time: Terminar
+      flow: Fluxo
+      free: livre
+      heaters_busy: A impressora está ocupada no momento. Desligar os aquecedores
+        pode resultar em falha na impressão.
+      high: Alto
+      low: Baixo
+      m117: M117
+      moonraker: Moonraker
+      name: Nome
+      no_notifications: Sem notificações
+      'on': Ligado
+      'off': Desligado
+      partial_of_total: '%{partial} de %{total}'
+      pause_at_layer: Pausa na Camada
+      pause_at_next_layer: Pausa na próxima camada
+      pause_at_layer_number: Pausa na camada número
+      power: Energia
+      printers: Impressoras
+      progress: Progresso
+      retract_length: Distância de Retração
+      retract_speed: Velocidade de Retração
+      save_as: Salvar como
+      screw_index: Índice do Parafuso
+      screw_name: Nome do parafuso
+      screw_number: Parafuso %{index}
+      services: Serviços
+      slicer: Fatiador
+      speed: Velocidade
+      sqv: Velocidade do canto quadrado
+      host: Host
+      manage_accounts: Administrar Contas
+      numeric_prefix_sort: Ordenar por prefixo numérico
+      range: Faixa
+      total_time: Tempo total
+      z_offset: Z Offset
+      username: Usuário
+      color: Cor
+      accepted_screws: Parafusos aceitos
+      add_camera: Adicionar Câmera
+      api_url: URL da API
+      change_password: Mudar Senha
+      file: Arquivo
+      current_user: Usuário atual
+      edit_user: Editar usuário
+      requested_speed: Velocidade
+      minimum_cruise_ratio: Taxa mínima de deslocamento
+      user_managed_source: Usuário administrado por autenticação %{source}
+      new_password: Nova senha
+      password: Senha
+      unretract_extra_length: Comprimento Extra de DesRetração
+      edit_category: Editar Categoria
+      file_time: Arquivo
+      api_key: Chave Api
+      category: Categoria
+      stepper_enabled: Motor Ligado
+      total_filament: Total filamento usado
+      total_jobs: Total trabalhos impressos
+      total_print_time_avg: Média por impressão
+      total_time_avg: Média por impressão
+      turn_device_off: Desligar %{device}
+      velocity: Velocidade
+      version_sort: Ordenar por versão
+      visible: Visível
+      thumbnail_size: Tamanho da Miniatura
+      auth_source: Fonte de Autenticação
+      total: Total
+      turn_device_on: Ligar %{device}
+      upload_and_print: Carregar e Imprimir
+      used: usado
+      total_filament_avg: Média por impressão
+      disabled_while_printing: Desativado durante a impressão
+      uncategorized: Sem categoria
+      total_print_time: Tempo de impressão total
+      smooth_time: Tempo de Suavização
+      synced_extruder: Extrusora sincronizada
+    msg:
+      password_changed: Senha trocada
+      wrong_password: Oops, algo errado! Sua senha esta correta?
+      welcome_back: Bem-vindo de volta.<br>Faça login abaixo para manter contato com
+        sua impressora.
+      offline_ready: Fluidd está pronto para trabalhar offline.
+      needs_refresh: Novo conteúdo disponível, clique no botão <b>Recarregar</b> para
+        atualizar.
+      pending_configuration_sections_deleted: As seguintes seções estão marcadas para
+        exclusão
+      rolledover_logs: 'Os seguintes logs de aplicativos foram transferidos: %{applications}'
+      not_valid_fluidd_backup_file: Não é um arquivo de backup válido do Fluidd!
+      fluidd_settings_backup_failed: Falha ao fazer backup das configurações do Fluidd!
+      fluidd_settings_restore_failed: Falha ao restaurar as configurações do Fluidd!
+      bed_screws_adjust: Clique em <b>Ajustado</b> se for necessário um ajuste significativo
+        no parafuso atual; caso contrário, clique em <b>Aceitar</b> para continuar.
+    simple_form:
+      msg:
+        confirm_reboot_host: Tem certeza? O sistema vai reiniciar.
+        confirm_shutdown_host: Tem certeza? O sistema vai desligar.
+        confirm: Tem certeza?
+        confirm_delete: Tem a certeza? Vai excluir o item selecionado. | Tem certeza?
+          Vai excluir os {count} itens selecionados.
+        confirm_clear_mesh: A impressora está ocupada no momento. Tem certeza de que
+          deseja limpar a malha da cama?
+        confirm_forcemove_toggle: Tem certeza? Isso pode danificar a impressora.
+        confirm_load_bedmesh_profile: A impressora está ocupada no momento. Tem certeza
+          de que deseja carregar o perfil %{name}?
+        confirm_remove_user: Tem certeza de que deseja remover o usuário %{username}?
+        confirm_service_start: Tem certeza de que deseja iniciar o serviço %{name}?
+        confirm_service_restart: Tem certeza de que deseja reiniciar o serviço %{name}?
+        confirm_service_stop: Tem certeza de que deseja interromper o serviço %{name}?
+        no_file_preview: '%{name} não pode ser visualizado no momento.'
+        confirm_cancel_print: Tem certeza de que deseja cancelar a impressão atual?
+        confirm_emergency_stop: Tem certeza de que deseja parar a impressora em emergência?
+        confirm_exclude_object: Tem certeza de que deseja excluir este objeto da impressão?
+        confirm_power_device_toggle: Tem certeza? Isso alternará a energia deste dispositivo.
+        unsaved_changes: Você tem alterações não salvas. Tem certeza de que deseja
+          fechar este arquivo?
+      error:
+        arrayofnums: Apenas números
+        exists: Já existe
+        invalid_url: URL inválido
+        max: Max. %{max}
+        min: Min. %{min}
+        min_or_0: Min %{min} ou 0
+        required: Obrigatório
+        credentials: Credenciais inválidas
+        invalid_number: Número Inválido
+        invalid_expression: Expressão inválida
+        password_username: Não é possível encontrar o usuário
+        invalid_aspect: Proporção de Aspecto Inválida
+    table:
+      header:
+        slicer_version: Versão do Fatiador
+        start_time: Iniciado
+        size: Tamanho
+        actions: Ações
+        end_time: Terminado
+        estimated_time: Tempo estimado
+        filament: Filamento
+        filament_used: Filamento usado
+        first_layer_bed_temp: Temperatura da mesa na primeira camada
+        first_layer_extr_temp: Temperatura da extrusora na primeira camada
+        first_layer_height: Altura da primeira camada
+        height: Altura
+        last_printed: Ultima impressão
+        layer_height: Altura da camada
+        modified: Modificado
+        name: Nome
+        print_duration: Tempo de impressão
+        slicer: Fatiador
+        status: Estado
+        total_duration: Duração total
+        chamber_temp: Temperatura da câmara
+        filament_type: Tipo de filamento
+        filament_weight_total: Peso do filamento
+        filament_name: Nome do filamento
+        nozzle_diameter: Diâmetro do bico
+        time_added: Tempo adicionado
+        time_in_queue: Tempo na fila
+    title:
+      config_files: Arquivos de Configuração
+      add_printer: Adicionar impressora
+      bedmesh: Malha da Cama
+      bedmesh_controls: Controles da malha de cama
+      camera: Câmera | Cameras
+      configure: Configuração
+      endstops: Fins de curso
+      fans_outputs: Ventoinhas e saídas
+      history: Histórico trabalhos
+      home: Painel
+      jobs: Trabalhos
+      limits: Limites da impressora
+      macros: Macros
+      runout_sensors: Sensores filamento
+      settings: Definições
+      stats: Estatísticas da impressora
+      temperature: Temperatura
+      tool: Ferramenta
+      tune: Afinação
+      console: Console
+      add_chart: Adicionar gráfico
+      diagnostics: Diagnósticos
+      edit_chart: Editar gráfico
+      gcode_preview: Prévia do Gcode
+      job_queue: Fila de Trabalhos
+      metrics_explorer: Explorador de Métricas
+      not_found: 404 Não Encontrado
+      other_files: Outros arquivos
+      pending_configuration_changes: Alterações de configuração pendentes
+      retract: Retração pelo Firmware
+      rollover_logs: Limpar logs
+      system_overview: Informações do Sistema
+      system: Sistema
+    tooltip:
+      estop: Parada de Emergência
+      reload_klipper: Recarrega a configuração do klipper.
+      reload_restart_klipper: Recarrega a configuração do klipper e reinicia os MCUs.
+      restart_klipper: Reinicia o serviço do sistema klipper.
+      browse_metrics: Navegue pelas métricas disponíveis
+      managed_by_moonraker: Gerenciado pela sua configuração do moonraker
+      notifications: Notificações
+      file_browser_help: Arraste e solte arquivos ou pastas de fora do navegador para
+        carregá-los aqui<br>Mova arquivos e pastas arrastando e soltando-os em subpastas
+        ou ".."
+      file_browser_configuration_help: Copie arquivos e pastas para os Arquivos de
+        Configuração arrastando-os daqui e soltando-os ali
+      run_collector: Executar coletor
+      rollover_logs: Limpar Logs
+  setting:
+    btn:
+      add_thermal_preset: Adicionar Predefinição
+      reset: Reset
+      select_theme: Selecionar tema
+      add_camera: Adicionar Câmera
+      add_category: Adicionar categoria
+      add_metric: Adicionar métrica
+      add_user: Adicionar Usuário
+      restore: Restaurar
+      add_filter: Adicionar filtro
+    title:
+      camera: Camera | Cameras
+      general: Geral
+      macros: Macros
+      theme: Tema
+      thermal_presets: Pré-ajustes térmicos
+      tool: Ferramentas
+    camera_type_options:
+      mjpegadaptive: MJPEG Adaptativo
+      mjpegstream: MJPEG Stream
+      video: IP Câmera
+      iframe: Página HTTP
+    label:
+      all_off: Tudo Desligado
+      all_on: Tudo Ligado
+      camera_flip_x: Girar horizontal
+      camera_flip_y: Girar vertical
+      camera_stream_type: Tipo do stream
+      dark_mode: Modo escuro
+      default_extrude_length: Comprimento de extrusão padrão
+      default_extrude_speed: Velocidade de extrusão padrão
+      default_toolhead_move_length: Comprimento de movimento da Cabeça de Impressão
+        padrão
+      default_toolhead_xy_speed: Velocidade XY da Cabeça de Impressão padrão
+      default_toolhead_z_speed: Velocidade Z da Cabeça de Impressão padrão
+      enable: Habilitar
+      enable_notifications: Ativar notificações
+      fps_target: Frames por segundo
+      gcode_coords: Usar Coordenadas GCode
+      invert_x_control: Inverter controlo X
+      invert_y_control: Inverter controlo Y
+      invert_z_control: Inverter controlo Z
+      language: Mostrar Linguagem
+      primary_color: Cor principal
+      printer_name: Nome impressora
+      reset: Redefinir as configurações
+      thermal_preset_name: Nome predefinição
+      z_adjust_values: Ajustar valores Z
+      aspect_ratio: proporções de aspecto
+      auto_edit_extensions: Extensões para abrir automaticamente no modo de edição
+      auto_follow_on_file_load: Acompanhar automaticamente o progresso no carregamento
+        do arquivo
+      auto_load_on_print_start: Carregar arquivo automaticamente no início da impressão
+      auto_load_mobile_on_print_start: Carregar arquivo automaticamente em dispositivos
+        móveis
+      axes: Eixos
+      camera_fullscreen_action:
+        embed: Incorporado
+        title: Ação em tela cheia
+      camera_rotate_by: Girar por
+      camera_url_snapshot: URL para foto instantânea da câmera
+      camera_url_stream: URL para Stream da câmera
+      card: Cartão
+      collector: Coletor
+      confirm_on_estop: Exigir confirmação na Parada de Emergência
+      confirm_on_save_config_and_restart: Revise as alterações de configuração pendentes
+        antes de salvar e reiniciar
+      confirm_dirty_editor_close: Exigir confirmação ao fechar o editor com alterações
+        não salvas
+      contains: Contém
+      dashed: Tracejado
+      default_min_layer_height: Altura mínima padrão da camada
+      dotted: Pontilhado
+      draw_background: Desenhar fundo
+      draw_origin: Desenhar origem
+      enable_diagnostics: Habilitar diagnósticos
+      enable_xy_homing: Habilitar XY Homing
+      expression: Expressão
+      extrusion_line_width: Largura da linha de extrusão
+      confirm_on_power_device_change: Exigir confirmação sobre alterações de energia
+        do dispositivo
+    timer_options:
+      file: Estimativa do ficheiro
+      slicer: Slicer
+      duration: Só duração
+      filament: Estimativas filamento
+    tooltip:
+      gcode_coords: Usar a posição GCode em vez da posição da toolhead no painel
+    camera_rotate_options:
+      none: Nenhum
+  socket:
+    msg:
+      connecting: A conectar ao moonraker...
+      no_connection: Sem coneção ao moonraker. Por favor verifique o estado do moonraker
+        e / ou faça atualizar.
+  sensors:
+    title:
+      sensors: Sensores
+  console:
+    label:
+      flip_layout: Inverter layout
+      auto_scroll: Auto rolagem
+      hide_temp_waits: Ocultar espera de temperaturas
+    tooltip:
+      help: Introduza "help" para comandos<br />Carregue em <kbd>Tab</kbd> para auto
+        complemento<br />Carregue em <kbd>&uarr;</kbd> e <kbd>&darr;</kbd> para o
+        histórico
+  chart:
+    label:
+      power: Energia
+      target: Alvo
+      rate_of_change: Mudança
+      current: Atual
+      item: Nome
+    tooltip:
+      help: Mantenha a tecla <kbd>Shift</kbd> pressionada para aumentar o zoom. <br
+        /> Clique num item para alternar no gráfico. <br /> Clique em Ligar para alternar
+        no gráfico.
+  endstop:
+    label:
+      triggered: ATIVADO
+      open: ABERTO
+    msg:
+      subtitle: Use o botão de atualização para atualizar o status do fim de curso.
+  printer:
+    state:
+      busy: Ocupado
+      complete: Completo
+      idle: Disponivel
+      loading: Carregando
+      paused: Pausado
+      printing: Imprimindo
+      ready: Pronto
+      standby: Aguardando
+      cancelled: Cancelado
+    title:
+      printer_status: Status da impressora
+      stepper_driver_overheating: O driver do motor de passo '%{name}' está superaquecendo
+    msg:
+      possible_print_failure: Isso pode levar a uma impressão com falha
+  tool:
+    btn:
+      home_x: X
+      home_y: Y
+    tooltip:
+      extruder_disabled: extruder disabilitado, abaixo min_extrude_temp (%{min}<small>°C</small>)
+      home_xy: Origem XY
+      home_z: Origem Z
+  version:
+    btn:
+      check_for_updates: Verificar atualizações
+      finish: Terminar
+      update: Atualizar
+    label:
+      dirty: DIRTY
+      invalid: INVÁLIDO
+      os_packages: Pacotes de SO
+      package_list: Lista de Pacotes
+      up_to_date: ATUALIZADO
+    status:
+      finished: Atualizações terminadas
+      updating: A atualizar...
+    title: Atualizações de software
+    tooltip:
+      dirty: indicação de erro no cabeçalho, não existente na fonte ou fonte inválida
+      invalid: indicação de alteração do local da repo
+      packages: Pacotes
+      release_notes: Notas de lançamento
+  history:
+    msg:
+      confirm: Tem certeza? Isso limpará todo o histórico e as estatísticas da impressora
+      confirm_jobs: Tem certeza? Isso limpará todos os trabalhos.
+      confirm_stats: Tem certeza? Isso limpará todas as estatísticas.
+  job_queue:
+    msg:
+      confirm: Tem certeza? Isso limpará toda a fila da impressora
+    label:
+      number_of_copies: Número de cópias
+    title:
+      multiply_job: Multiplicar Trabalho | Multiplicar Trabalhos
+    tooltip:
+      help: Enfileirar trabalhos arrastando arquivos dos trabalhos e soltando-os aqui<br>Ajuste
+        a ordem dos trabalhos enfileirados arrastando-os para cima ou para baixo

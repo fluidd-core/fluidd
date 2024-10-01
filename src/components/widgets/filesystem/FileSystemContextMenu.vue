@@ -172,6 +172,7 @@
           <v-btn
             text
             height="100%"
+            class="no-pointer-events"
             @click="$emit('view-thumbnail', file)"
           >
             <img

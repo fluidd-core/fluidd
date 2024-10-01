@@ -134,6 +134,7 @@ export default class CameraItem extends Vue {
     max-height: calc(100svh - 130px);
     white-space: nowrap;
     margin: auto;
+    pointer-events: none;
   }
 
   .camera-container {

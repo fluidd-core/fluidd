@@ -114,11 +114,10 @@ app:
       items_count: '{count} öğe | {count} öğeler'
       root_disabled: '{root} kökü mevcut değil. Lütfen günlüklerinizi kontrol edin.'
     url:
-      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
       crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
-      danger_klipper_config: https://dangerklipper.io/Config_Reference.html#%{hash}
   gcode:
     btn:
       load_current_file: Geçerli Dosyayı Yükle
@@ -523,6 +522,11 @@ app:
       standby: Beklemede
     title:
       printer_status: Yazıcı Durumu
+      stepper_driver_overheating: Step sürücü '%{name}' aşırı ısınıyor
+    msg:
+      possible_print_failure: Bu, başarısız bir yazdırmaya yol açabilir
+    url:
+      stepper_driver_overheating: '%{klipperDomain}/TMC_Drivers.html#tmc-reports-error-ot1overtemperror'
   setting:
     btn:
       add_camera: Kamera Ekle
