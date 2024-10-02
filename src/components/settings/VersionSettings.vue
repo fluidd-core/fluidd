@@ -208,7 +208,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   get hasInvalidComponent () {
-    return !!this.components.find((c: HashVersion) => 'is_valid' in c && !c.is_valid)
+    return !!this.components.find((c: UpdatePackage) => 'is_valid' in c && !c.is_valid)
   }
 
   get enableNotifications () {
