@@ -470,10 +470,18 @@ export const Rules = {
   },
 
   numberGreaterThanOrEqualOrZero (min: number) {
+    if (min === 0) {
+      return Rules.numberGreaterThanOrEqual(0)
+    }
+
     return (v: number) => +v === 0 || v >= min || i18n.t('app.general.simple_form.error.min_or_0', { min })
   },
 
   numberGreaterThanOrZero (min: number) {
+    if (min === 0) {
+      return Rules.numberGreaterThan(0)
+    }
+
     return (v: number) => +v === 0 || v > min || i18n.t('app.general.simple_form.error.min_or_0', { min: `> ${min}` })
   },
 
