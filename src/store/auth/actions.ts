@@ -191,7 +191,7 @@ export const actions: ActionTree<AuthState, RootState> = {
     if (!opts.partial) {
       if (Vue.$socket) Vue.$socket.close()
       commit('setAuthenticated', false)
-      if (router.currentRoute.path !== '/login') router.push('/login')
+      if (router.currentRoute.path !== '/login') await router.push('/login')
     }
   },
 

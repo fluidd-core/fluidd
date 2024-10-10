@@ -27,6 +27,10 @@ export const getters: GetterTree<ConfigState, RootState> = {
     return state.hostConfig
   },
 
+  getAppReady: (state) => {
+    return state.appReady
+  },
+
   /**
    * Return temp presets. Ensure we only return a preset
    * for a known heater or fan, incase things change

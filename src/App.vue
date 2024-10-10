@@ -1,7 +1,5 @@
 <template>
-  <v-app v-if="loading" />
   <v-app
-    v-else
     class="fluidd"
     :class="{ 'no-pointer-events': dragState }"
   >
@@ -43,7 +41,6 @@
     </v-btn>
 
     <v-main :style="customBackgroundImageStyle">
-      <!-- <pre>authenticated {{ authenticated }}, socketConnected {{ socketConnected }}, apiConnected {{ apiConnected }}</pre> -->
       <v-container
         fluid
         :class="{
@@ -177,10 +174,6 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
   get fileDropRoot () {
     return this.$route.meta?.fileDropRoot
-  }
-
-  get loading () {
-    return this.hasWait(this.$waits.onLoadLanguage)
   }
 
   get progress (): number {

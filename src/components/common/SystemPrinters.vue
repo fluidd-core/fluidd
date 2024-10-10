@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import type { InstanceConfig } from '@/store/config/types'
 import StateMixin from '@/mixins/state'
 import { appInit } from '@/init'
@@ -69,10 +69,12 @@ export default class SystemPrinters extends Mixins(StateMixin) {
     return this.$store.getters['config/getInstances']
   }
 
-  mounted () {
-    // If we have no api's configured at all, open the dialog.
-    if (this.$store.state.config.apiUrl === '') {
-      this.instanceDialogOpen = true
+  @Watch('appReady')
+  onAppReady (value: boolean) {
+    if (value) {
+      if (this.$store.state.config.apiUrl === '') {
+        this.instanceDialogOpen = true
+      }
     }
   }
 

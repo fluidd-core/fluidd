@@ -3,6 +3,7 @@ import type { FileFilterType } from '../files/types'
 
 export interface ConfigState {
   [key: string]: any;
+  appReady: boolean;
   apiUrl: string;
   socketUrl: string;
   layoutMode: boolean;
