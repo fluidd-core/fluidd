@@ -57,6 +57,10 @@ export const mutations: MutationTree<ConfigState> = {
     }
   },
 
+  setAppReady (state, payload: boolean) {
+    state.appReady = payload
+  },
+
   /**
    * Sets the API and Socket URLS on first load and
    * ensure the instance is configured in local storage
