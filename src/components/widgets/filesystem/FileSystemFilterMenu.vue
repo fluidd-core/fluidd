@@ -120,6 +120,13 @@ export default class FileSystemFilterMenu extends Vue {
       })
     }
 
+    if (rootFilterTypes.includes('moonraker_temporary_upload_files')) {
+      filters.push({
+        type: 'moonraker_temporary_upload_files',
+        text: this.$tc('app.file_system.filters.label.moonraker_temporary_upload_files')
+      })
+    }
+
     if (rootFilterTypes.includes('rolled_log_files')) {
       filters.push({
         type: 'rolled_log_files',

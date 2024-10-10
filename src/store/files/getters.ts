@@ -112,7 +112,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           accepts: ['.gcode', '.g', '.gc', '.gco', '.ufp', '.nc'],
           canView,
           canConfigure: true,
-          filterTypes: ['hidden_files', 'print_start_time']
+          filterTypes: ['hidden_files', 'print_start_time', 'moonraker_temporary_upload_files']
         }
       case 'config':
         return {
@@ -120,7 +120,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           accepts: ['.conf', '.cfg', '.md', '.css', '.jpg', '.jpeg', '.png', '.gif'],
           canView,
           canConfigure: false,
-          filterTypes: ['hidden_files', 'klipper_backup_files', 'moonraker_backup_files', 'crowsnest_backup_files']
+          filterTypes: ['hidden_files', 'klipper_backup_files', 'moonraker_backup_files', 'moonraker_temporary_upload_files', 'crowsnest_backup_files']
         }
       case 'config_examples':
         return {
@@ -152,7 +152,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           accepts: [],
           canView,
           canConfigure: false,
-          filterTypes: ['hidden_files']
+          filterTypes: ['hidden_files', 'moonraker_temporary_upload_files']
         }
       default:
         return {
