@@ -17,6 +17,7 @@
             $rules.numberValid
           ]"
           outlined
+          persistent-placeholder
           hide-details
           dense
           small
@@ -39,6 +40,7 @@
             $rules.numberValid
           ]"
           outlined
+          persistent-placeholder
           hide-details
           dense
           small
@@ -61,6 +63,7 @@
             $rules.numberValid
           ]"
           outlined
+          persistent-placeholder
           hide-details
           dense
           small
