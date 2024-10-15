@@ -79,6 +79,11 @@ export const actions: ActionTree<ServerState, RootState> = {
     SocketActions.machineProcStats()
     SocketActions.machineSystemInfo()
 
+    const klippyConnectedNow = (
+      payload.klippy_connected &&
+      !state.info.klippy_connected
+    )
+
     commit('setServerInfo', payload)
 
     dispatch('checkMoonrakerMinVersion')
@@ -86,7 +91,12 @@ export const actions: ActionTree<ServerState, RootState> = {
     if (payload.klippy_state !== 'ready') {
       // If klippy is not connected, we'll continue to
       // retry the init process.
-      if (state.klippy_retries === 0) dispatch('initComponents', payload)
+      if (state.klippy_retries === 0) {
+        dispatch('initComponents', payload)
+      }
+      if (klippyConnectedNow) {
+        SocketActions.printerObjectsList()
+      }
       commit('setKlippyRetries', state.klippy_retries + 1)
       clearTimeout(retryTimeout)
       retryTimeout = window.setTimeout(() => {
