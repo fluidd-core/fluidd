@@ -14,7 +14,7 @@ app:
     msg:
       hint: >-
         Wird das Profil mit einem anderen Namen als %{name} gespeichert, kann ausgewählt
-        werden das Profil %{name} zu löschen
+        werden, das Profil %{name} zu löschen
       not_found: Keine Bett-Meshes gefunden.
       not_loaded: Kein Mesh geladen
     tooltip:
@@ -83,8 +83,9 @@ app:
         klipper_backup_files: Klipper-Backupdateien ausblenden
         rolled_log_files: Alte Logdateien ausblenden
         hidden_files_folders: Versteckte Dateien und Ordner ausblenden
-        moonraker_backup_files: Moonraker Backup-Dateien ausblenden
+        moonraker_backup_files: Moonraker-Backupdateien ausblenden
         crowsnest_backup_files: Crowsnest-Backupdateien ausblenden
+        moonraker_temporary_upload_files: Temporäre Moonraker-Uploaddateien ausblenden
     label:
       dir_name: Ordnername
       disk_usage: Belegter Speicher
@@ -145,8 +146,8 @@ app:
       show_parts: Teile anzeigen
     msg:
       confirm: >-
-        Die Datei "%{filename}" ist %{size} groß, dies kann sehr
-        Ressourcenintensiv für Ihr System sein. Sind Sie sicher?
+        Die Datei "%{filename}" ist %{size} groß, dies kann sehr ressourcenintensiv
+        für Ihr System sein. Sind Sie sicher?
     overlay:
       drag_file_load: <strong>Ziehe</strong> eine Gcode-Datei hierher, um sie zu laden
   general:
@@ -364,7 +365,7 @@ app:
       welcome_back: >-
         Willkommen zurück.<br>Melden Sie sich unten an, um mit Ihrem Drucker in Kontakt
         zu bleiben.
-      needs_refresh: Neue Inhalte verfügbar, bitte klicken Sie den <b>Aktualisieren</b>-Button
+      needs_refresh: Neue Inhalte verfügbar, bitte klicken Sie den <b>Aktualisieren</b>-Button,
         um zu aktualisieren.
       offline_ready: Fluidd ist jetzt bereit, offline zu arbeiten.
       pending_configuration_sections_deleted: Die folgenden Sektionen sind zur Löschung
@@ -408,9 +409,9 @@ app:
         confirm_forcemove_toggle: Sind Sie sicher? Dies kann Schäden am Drucker verursachen.
         confirm_service_start: Sind Sie sicher, dass Sie den %{name}-Dienst starten
           wollen?
-        confirm_cancel_print: Sind Sie sicher, dass sie den Druck abbrechen wollen?
-        confirm_clear_mesh: Der Drucker ist gerade beschäftigt. Sind Sie sicher, dass
-          sie das Bett-Mesh leeren wollen?
+        confirm_cancel_print: Sind Sie sicher, dass Sie den Druck abbrechen wollen?
+        confirm_clear_mesh: Der Drucker ist derzeit beschäftigt. Sind Sie sicher,
+          dass Sie das Bett-Mesh entfernen möchten?
         confirm_load_bedmesh_profile: Der Drucker ist gerade beschäftigt. Sind Sie
           sicher, dass Sie das Profil %{name} laden wollen?
         confirm_emergency_stop: Sind Sie sicher, dass sie den Drucker notausschalten
@@ -484,7 +485,7 @@ app:
     tooltip:
       browse_metrics: Verfügbare Metriken durchsuchen
       estop: NOT-AUS
-      managed_by_moonraker: Verwaltet durch Ihre moonraker-Konfiguration
+      managed_by_moonraker: Verwaltet durch Ihre Moonraker-Konfiguration
       notifications: Benachrichtigungen
       reload_klipper: Lädt die Klipper-Konfiguration neu.
       reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die MCUs
@@ -696,21 +697,21 @@ app:
       tool: Druckkopf
       file_browser: Dateibrowser
     tooltip:
-      gcode_coords: GCode-Position anstelle der Toolhead-Position auf dem Dashboard
+      gcode_coords: GCode-Position anstelle der Druckkopf-Position auf dem Dashboard
         anzeigen
       show_manual_probe_dialog_automatically: >-
         Öffnet automatisch einen Hilfsdialog,
         wenn ein manuelles Probe-Tool ausgeführt wird
       show_bed_screws_adjust_dialog_automatically: >-
-        Öffnet automatisch einen Hilfsdialog, wenn das BED_SCREWS_ADJUST-Werkzeug
+        Öffnet automatisch einen Hilfsdialog, wenn das BED_SCREWS_ADJUST Werkzeug
         ausgeführt wird
       diagnostics_performance: >-
         [BETA] Das Protokollieren von Diagnoseinformationen kann die Leistung beeinträchtigen
       show_screws_tilt_adjust_dialog_automatically: Öffnet automatisch einen Hilfsdialog,
-        wenn das SCREWS_TILT_CALCULATE-Werkzeug ausgeführt wird
+        wenn das SCREWS_TILT_CALCULATE Werkzeug ausgeführt wird
       theme_disclaimer: Diese Farbschemata enthalten Markennamen und Logos, die geistiges
         Eigentum ihrer jeweiligen Eigentümer sind.<br> Die Nutzung dieser Namen und
-        Logos erfolgt mit Genehmigung dieser Marken.<br> Bitte beachten SIe jedoch,
+        Logos erfolgt mit Genehmigung dieser Marken.<br> Bitte beachten Sie jedoch,
         dass die Farbschemata nicht offiziell von diesen Marken gepflegt werden.<br>
         Alle Probleme oder Anfragen bezüglich dieser Schemata sollten an das Fluidd-Team
         gerichtet werden.<br> Die Verwendung der Markennamen und Logos dient ausschließlich
@@ -799,7 +800,7 @@ app:
       stats_extruded_length: Bei der Extrusion von %{extrudeLength} mm Filament bei
         %{extrudeFactor} % Fluss<span class="secondary--text"> wird eine</span> ungefähre
         Austrittslänge von %{estimatedExtrudedLength} mm extrudiert
-      stats_active_extruder: <span class="secondary--text">Die aktive Extruderkonfiguration
+      stats_active_extruder: <span class="secondary--text">Die aktive Extruder-Konfiguration
         ist auf ein</span> %{filamentDiameter} mm Durchmesser Filament<span class="secondary--text">und</span>
         eine %{nozzleDiameter} mm Düse eingestellt
       stats_max_speed: <span class="secondary--text">Unter der Annahme einer </span>
@@ -930,8 +931,7 @@ app:
         Das Material des ausgewählten Filaments stimmt nicht mit dem im Slicer ausgewählten
         Material überein. Sind Sie sicher, dass Sie fortfahren wollen?
       tracking_inactive: >-
-        Filament-Tracking ist inaktiv.
-        Bitte wählen Sie eine Spule aus um fortzufahren.
+        Filament-Tracking ist inaktiv. Bitte wählen Sie eine Spule aus, um fortzufahren.
       not_connected: Spoolman-Server nicht verfügbar.
       info:
         howto: >-
@@ -951,10 +951,10 @@ app:
           Bitte überprüfen Sie Ihre Kameraeinstellungen oder versuchen Sie,
           eine andere Kameraquelle zu verwenden.
     setting:
-      auto_open_qr_camera: Kamera automatisch zur QR-Code- Erkennung öffnen
-      auto_select_spool_on_match: Spulenauswahl bei QR-Code- Übereinstimmung automatisch
+      auto_open_qr_camera: Kamera automatisch zur QR-Code-Erkennung öffnen
+      auto_select_spool_on_match: Spulenauswahl bei QR-Code-Übereinstimmung automatisch
         übernehmen
-      prefer_device_camera: Gerätekamera wenn verfügbar zur QR-Code- Erkennung verwenden
+      prefer_device_camera: Gerätekamera, wenn verfügbar zur QR-Code-Erkennung verwenden
       show_spool_selection_dialog_on_print_start: Spulenauswahl-Dialog automatisch
         bei Druckstart anzeigen
       warn_on_not_enough_filament: >-
