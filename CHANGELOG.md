@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.30.5](https://github.com/fluidd-core/fluidd/compare/v1.30.4...v1.30.5) (2024-10-16)
+
+
+### Features
+
+* **FileSystem:** allow filtering Moonraker temp upload files ([#1507](https://github.com/fluidd-core/fluidd/issues/1507)) ([4522522](https://github.com/fluidd-core/fluidd/commit/4522522803463ed48402972b5653d8bb8c6642b8))
+* **i18n-de:** Update German translations ([e96b3a1](https://github.com/fluidd-core/fluidd/commit/e96b3a199729f0419fb5ce698680db8f131d4b3d))
+* **i18n-es:** Update Spanish translations ([de444e0](https://github.com/fluidd-core/fluidd/commit/de444e02d0bf0e91135dab0add66d1f55a4269f7))
+* **i18n-nl:** Update Dutch translations ([0db2396](https://github.com/fluidd-core/fluidd/commit/0db2396ad579d10e4c09296bf8e212e6062b1747))
+* **i18n-pl:** Update Polish translations ([319331b](https://github.com/fluidd-core/fluidd/commit/319331b317af4f51d20c08456dff554757e3d71d))
+* increase Z precision to 3 decimals ([#1505](https://github.com/fluidd-core/fluidd/issues/1505)) ([3cea36e](https://github.com/fluidd-core/fluidd/commit/3cea36e02141924a40c8e4f3ad30fe083289c31e))
+* show application as soon as possible ([#1499](https://github.com/fluidd-core/fluidd/issues/1499)) ([845d044](https://github.com/fluidd-core/fluidd/commit/845d044dbd535b1b566192af94e2e38a8d6cf82c))
+
+
+### Bug Fixes
+
+* check for Klipper minimum version ([adb2c95](https://github.com/fluidd-core/fluidd/commit/adb2c95e74025f0cef802c17138eb1c50ece924a))
+* **Console:** improve highlight regular expression ([e567cc5](https://github.com/fluidd-core/fluidd/commit/e567cc5f02b47dc08be3d90a46414e4ddd43c564))
+* disable "Update All" button when an invalid repo is detected ([#1500](https://github.com/fluidd-core/fluidd/issues/1500)) ([a2cc361](https://github.com/fluidd-core/fluidd/commit/a2cc36164de25b9c00d8e7a1a567b8ac6e36701b))
+* hide drag overlay on mouse drag leave ([#1496](https://github.com/fluidd-core/fluidd/issues/1496)) ([74890da](https://github.com/fluidd-core/fluidd/commit/74890dac90bea148600cf82352ef841497d7b1b0))
+* no pointer events on images ([8e2c501](https://github.com/fluidd-core/fluidd/commit/8e2c501f844d1d185dcb468ba3960c576da2addc))
+* redirect from login page if authenticated ([#1498](https://github.com/fluidd-core/fluidd/issues/1498)) ([988daa0](https://github.com/fluidd-core/fluidd/commit/988daa045d5cc60965204392ed73aac42a7913cf))
+* refresh Klipper objects on klippy connect ([abfcc60](https://github.com/fluidd-core/fluidd/commit/abfcc60fbe1c2884c123145d2959e9214639fbe1))
+* set Minimum Cruise Ratio maximum to 99% ([0bddef2](https://github.com/fluidd-core/fluidd/commit/0bddef26a72826dd677e4beca4cba4cd48633b46))
+
 ## [1.30.4](https://github.com/fluidd-core/fluidd/compare/v1.30.3...v1.30.4) (2024-09-12)
 
 
