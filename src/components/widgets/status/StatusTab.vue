@@ -430,6 +430,7 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
   .print-thumb {
     display: block;
     max-height: 110px;
+    pointer-events: none;
   }
 
   .filename {
@@ -453,5 +454,6 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
     max-height: 70px;
     border-radius: 50%;
     overflow: hidden;
+    pointer-events: none;
   }
 </style>

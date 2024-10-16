@@ -77,22 +77,20 @@ export default new Vuex.Store<RootState>({
           p.push(dispatch(key + '/reset'))
         }
       })
-      return Promise.all(p)
+      await Promise.all(p)
     },
 
     async init ({ dispatch, commit }, payload: InitConfig) {
-      // Sets the version and hash of Fluidd.
-      commit('version/setVersion', import.meta.env.VERSION)
-      commit('version/setHash', import.meta.env.HASH)
-
       // Set the api connection state..
       commit('socket/setApiConnected', payload.apiConnected)
 
       // Init the host and local configs..
-      return [
-        await dispatch('config/initHost', payload),
-        await dispatch('config/initLocal', payload)
-      ]
+      await Promise.all([
+        dispatch('config/initHost', payload),
+        dispatch('config/initLocal', payload)
+      ])
+
+      commit('config/setAppReady', true)
     },
 
     /**

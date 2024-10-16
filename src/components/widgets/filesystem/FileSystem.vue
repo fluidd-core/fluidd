@@ -407,6 +407,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
             }
             break
 
+          case 'moonraker_temporary_upload_files':
+            if (file.name.endsWith('.mru')) {
+              return false
+            }
+            break
+
           case 'klipper_backup_files':
             if (file.type === 'file' && file.filename.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
               return false

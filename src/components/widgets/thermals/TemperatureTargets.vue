@@ -90,7 +90,7 @@
               single-line
               hide-details="auto"
               suffix="°C"
-              class="v-input--width-x-small"
+              x-small
               @submit="setHeaterTargetTemp(item.name, +$event)"
             />
           </td>
@@ -173,7 +173,7 @@
               single-line
               hide-details="auto"
               suffix="°C"
-              class="v-input--width-x-small"
+              x-small
               @submit="setFanTargetTemp(item.name, +$event)"
             />
           </td>

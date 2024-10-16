@@ -6,6 +6,10 @@
     <v-text-field
       v-bind="$attrs"
       v-model="currentValue"
+      :class="{
+        'v-input--width-small': small,
+        'v-input--width-x-small': xSmall
+      }"
       v-on="filteredListeners"
       @focus="handleFocus"
       @blur="handleBlur"
@@ -21,12 +25,20 @@
 
 <script lang="ts">
 import type { VForm } from '@/types'
-import { Component, Vue, VModel, Watch, Ref } from 'vue-property-decorator'
+import { Component, Vue, VModel, Watch, Ref, Prop } from 'vue-property-decorator'
 
-@Component({})
+@Component({
+  inheritAttrs: false
+})
 export default class AppTextField extends Vue {
   @VModel()
     inputValue!: unknown
+
+  @Prop({ type: Boolean })
+  readonly small?: boolean
+
+  @Prop({ type: Boolean })
+  readonly xSmall?: boolean
 
   @Ref('form')
   readonly form!: VForm

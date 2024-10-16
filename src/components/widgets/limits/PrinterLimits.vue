@@ -79,9 +79,8 @@
             :value="minimumCruiseRatio"
             :reset-value="defaultMinimumCruiseRatio"
             :min="0"
-            :max="100"
+            :max="99"
             :disabled="!klippyReady"
-            overridable
             :locked="isMobileViewport"
             :loading="hasWait($waits.onSetMinimumCruiseRatio)"
             suffix="%"

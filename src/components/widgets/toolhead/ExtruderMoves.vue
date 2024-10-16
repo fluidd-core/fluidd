@@ -21,6 +21,7 @@
           type="number"
           hide-details
           outlined
+          persistent-placeholder
           dense
           :label="$t('app.general.label.extrude_length')"
           suffix="mm"
@@ -58,6 +59,7 @@
           type="number"
           hide-details
           outlined
+          persistent-placeholder
           dense
           :label="$t('app.general.label.extrude_speed')"
           suffix="mm/s"

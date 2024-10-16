@@ -68,30 +68,6 @@ export const actions: ActionTree<ServerState, RootState> = {
     }
   },
 
-  async checkKlipperMinVersion ({ state, dispatch }) {
-    const klipperVersion = state.system_info?.software_version ?? '?'
-
-    const fullKlipperVersion = klipperVersion.includes('-')
-      ? klipperVersion
-      : `${klipperVersion}-0`
-
-    if (
-      valid(klipperVersion) &&
-      valid(Globals.KLIPPER_MIN_VERSION) &&
-      !gte(fullKlipperVersion, Globals.KLIPPER_MIN_VERSION)
-    ) {
-      dispatch('notifications/pushNotification', {
-        id: `old-klipper-${klipperVersion}`,
-        title: 'Klipper',
-        description: i18n.t('app.version.label.old_component_version', { name: 'Klipper', version: Globals.KLIPPER_MIN_VERSION }),
-        to: '/settings#versions',
-        btnText: i18n.t('app.version.btn.view_versions'),
-        type: 'warning',
-        merge: true
-      }, { root: true })
-    }
-  },
-
   /**
    * On server info
    */
@@ -103,6 +79,11 @@ export const actions: ActionTree<ServerState, RootState> = {
     SocketActions.machineProcStats()
     SocketActions.machineSystemInfo()
 
+    const klippyConnectedNow = (
+      payload.klippy_connected &&
+      !state.info.klippy_connected
+    )
+
     commit('setServerInfo', payload)
 
     dispatch('checkMoonrakerMinVersion')
@@ -110,7 +91,12 @@ export const actions: ActionTree<ServerState, RootState> = {
     if (payload.klippy_state !== 'ready') {
       // If klippy is not connected, we'll continue to
       // retry the init process.
-      if (state.klippy_retries === 0) dispatch('initComponents', payload)
+      if (state.klippy_retries === 0) {
+        dispatch('initComponents', payload)
+      }
+      if (klippyConnectedNow) {
+        SocketActions.printerObjectsList()
+      }
       commit('setKlippyRetries', state.klippy_retries + 1)
       clearTimeout(retryTimeout)
       retryTimeout = window.setTimeout(() => {
@@ -175,10 +161,8 @@ export const actions: ActionTree<ServerState, RootState> = {
     }
   },
 
-  async onMachineSystemInfo ({ commit, dispatch }, payload: { system_info?: SystemInfo }) {
+  async onMachineSystemInfo ({ commit }, payload: { system_info?: SystemInfo }) {
     commit('setSystemInfo', payload)
-
-    dispatch('checkKlipperMinVersion')
   },
 
   async onMachinePeripherals ({ commit }, payload: Partial<Peripherals>) {

@@ -107,6 +107,7 @@
               dense
               hide-details
               outlined
+              persistent-placeholder
               @blur="handleReset"
               @keyup.enter.exact="handleSubmitPrimary"
             />
@@ -121,6 +122,7 @@
               dense
               hide-details
               outlined
+              persistent-placeholder
               @blur="handleReset"
               @keyup.enter.exact="handleSubmitPrimary"
             />
@@ -135,6 +137,7 @@
               dense
               hide-details
               outlined
+              persistent-placeholder
               @blur="handleReset"
               @keyup.enter.exact="handleSubmitPrimary"
             />
@@ -149,6 +152,7 @@
               dense
               hide-details
               outlined
+              persistent-placeholder
               @blur="handleReset"
               @keyup.enter.exact="handleSubmitWhite"
             />

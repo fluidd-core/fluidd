@@ -14,6 +14,7 @@
     line-height: 1;
     position: relative;
     vertical-align: middle;
+    pointer-events: none;
   }
 
   .v-data-table > .v-data-table__wrapper > table > tbody > tr > td,

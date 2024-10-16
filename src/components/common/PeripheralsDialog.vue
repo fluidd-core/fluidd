@@ -94,6 +94,7 @@
                           :value="device.device_path"
                           label="device_path"
                           outlined
+                          persistent-placeholder
                           dense
                           readonly
                           hide-details
@@ -107,6 +108,7 @@
                           :value="device.path_by_id"
                           label="path_by_id"
                           outlined
+                          persistent-placeholder
                           dense
                           readonly
                           hide-details
@@ -120,6 +122,7 @@
                           :value="device.path_by_hardware"
                           label="path_by_hardware"
                           outlined
+                          persistent-placeholder
                           dense
                           readonly
                           hide-details
@@ -287,6 +290,7 @@
                           :value="canUuid.uuid"
                           :label="canUuid.application"
                           outlined
+                          persistent-placeholder
                           dense
                           readonly
                           hide-details

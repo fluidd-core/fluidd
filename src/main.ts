@@ -59,6 +59,16 @@ Vue.use(HttpClientPlugin, {
   store
 })
 
+Vue.config.productionTip = false
+
+new Vue({
+  i18n,
+  router,
+  store,
+  vuetify,
+  render: (h) => h(App)
+}).$mount('#app')
+
 appInit()
   .then((config: InitConfig) => {
     consola.debug('Loaded App Configuration', config)
@@ -74,16 +84,6 @@ appInit()
     if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {
       Vue.$socket.connect(config.apiConfig.socketUrl)
     }
-
-    // Init Vue
-    Vue.config.productionTip = false
-    new Vue({
-      i18n,
-      router,
-      store,
-      vuetify,
-      render: (h) => h(App)
-    }).$mount('#app')
   })
   .catch((e) => {
     consola.debug('Error attempting to init App:', e)

@@ -157,6 +157,7 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
 <style lang="scss" scoped>
 .thumbnail {
   width: 100%;
+  pointer-events: none;
 }
 
 .render-progress {
