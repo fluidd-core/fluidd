@@ -4,12 +4,14 @@
     left
     max-width="260"
     :close-on-content-click="false"
+    :disabled="disabled"
   >
     <template #activator="{ on, attrs }">
       <v-btn
         v-if="!dot"
         v-bind="attrs"
         :color="controlColor"
+        :disabled="disabled"
         outlined
         small
         v-on="on"
@@ -21,6 +23,7 @@
         v-else
         v-bind="attrs"
         :color="controlColor"
+        :disabled="disabled"
         v-on="on"
       >
         $circle
@@ -192,6 +195,9 @@ export default class AppColorPicker extends Vue {
 
   @Prop({ type: String, default: 'RGB' })
   readonly supportedChannels!: string
+
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
   @Ref('card')
   readonly card!: Vue
