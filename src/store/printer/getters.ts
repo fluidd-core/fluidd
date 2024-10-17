@@ -520,7 +520,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return getters.getOutputs([
       'led',
       'neopixel',
-      'dotstar'
+      'dotstar',
+      'pca9533',
+      'pca9632'
     ])
   },
 
@@ -599,7 +601,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const leds = [
       'led',
       'neopixel',
-      'dotstar'
+      'dotstar',
+      'pca9533',
+      'pca9632'
     ]
 
     // Are they controllable?
@@ -611,7 +615,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'pwm_cycle_time',
       'led',
       'neopixel',
-      'dotstar'
+      'dotstar',
+      'pca9533',
+      'pca9632'
     ]
 
     // Should we apply a color?
@@ -630,7 +636,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'fan_generic',
       'led',
       'neopixel',
-      'dotstar'
+      'dotstar',
+      'pca9533',
+      'pca9632'
     ]
 
     const supportedTypes = (filter && filter.length)
