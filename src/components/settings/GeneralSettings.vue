@@ -521,10 +521,10 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get printProgressCalculation () {
-    return this.$store.state.config.uiSettings.general.printProgressCalculation as PrintProgressCalculation
+    return this.$store.state.config.uiSettings.general.printProgressCalculation as PrintProgressCalculation[]
   }
 
-  set printProgressCalculation (value: string) {
+  set printProgressCalculation (value: PrintProgressCalculation[]) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.printProgressCalculation',
       value,
