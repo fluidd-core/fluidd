@@ -27,6 +27,7 @@ export interface KlipperFile {
   filename: string;
   modified: number | string;
   size: number;
+  uuid?: string;
   permissions?: '' | 'r' | 'rw';
   print_start_time?: number | null;
   job_id?: string | null;
@@ -51,6 +52,7 @@ export interface AppFile extends KlipperFile {
 }
 
 export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
+  modified: number;
   history: HistoryItem;
 }
 

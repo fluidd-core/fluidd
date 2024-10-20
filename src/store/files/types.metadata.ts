@@ -1,4 +1,7 @@
 export interface KlipperFileMeta {
+  modified: number | string;
+  size: number;
+  uuid?: string;
   chamber_temp?: number;
   estimated_time?: number;
   filament_name?: string;

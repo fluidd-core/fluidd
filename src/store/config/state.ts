@@ -88,6 +88,7 @@ export const defaultState = (): ConfigState => {
       },
       tableHeaders: {
         gcodes_dashboard: [
+          { value: 'history.status', visible: false },
           { value: 'first_layer_extr_temp', visible: false },
           { value: 'first_layer_bed_temp', visible: false },
           { value: 'chamber_temp', visible: false },
