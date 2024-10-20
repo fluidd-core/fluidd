@@ -223,7 +223,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   await store.dispatch('init', { apiConfig, hostConfig, apiConnected })
 
   if (store.state.auth.authenticated) {
-    if (router.currentRoute.path !== '/') {
+    if (router.currentRoute.path === '/login') {
       await router.push('/')
     }
   } else {
