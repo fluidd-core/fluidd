@@ -319,6 +319,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.currentRoot === 'gcodes') {
       headers = [
         ...headers,
+        { text: this.$t('app.general.table.header.status'), value: 'history.status', configurable: true },
         { text: this.$t('app.general.table.header.height'), value: 'object_height', configurable: true },
         { text: this.$t('app.general.table.header.first_layer_height'), value: 'first_layer_height', configurable: true },
         { text: this.$t('app.general.table.header.layer_height'), value: 'layer_height', configurable: true },
