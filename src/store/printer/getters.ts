@@ -914,39 +914,44 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getHasWarnings: (state, getters, rootState) => {
-    if (
-      (rootState.socket && rootState.socket.open && rootState.socket.ready) &&
-      (getters.getPrinterWarnings.length > 0 || getters.getKlipperWarnings.length > 0 ||
-        getters.getMoonrakerFailedComponents.length > 0 || getters.getMoonrakerWarnings.length > 0)
-    ) {
-      return true
-    } else {
-      return false
-    }
+    return (
+      rootState.socket &&
+      rootState.socket.open &&
+      rootState.socket.ready &&
+      (
+        getters.getPrinterWarnings.length > 0 ||
+        getters.getKlipperWarnings.length > 0 ||
+        getters.getMoonrakerFailedComponents.length > 0 ||
+        getters.getMoonrakerWarnings.length > 0
+      )
+    )
   },
 
   getPrinterWarnings: (state, getters) => {
     const config = getters.getPrinterConfig()
     const warnings = []
 
-    if (config && !('virtual_sdcard' in config)) {
-      warnings.push({ message: '[virtual_sdcard] not found in printer configuration.' })
+    if (config) {
+      if (!('virtual_sdcard' in config)) {
+        warnings.push({ message: '[virtual_sdcard] not found in printer configuration.' })
+      }
+
+      if (!('pause_resume' in config)) {
+        warnings.push({ message: '[pause_resume] not found in printer configuration.' })
+      }
+
+      if (
+        !('display' in config) &&
+        !('display_status' in config)
+      ) {
+        warnings.push({ message: '[display_status] is required if you do not have a [display] defined.' })
+      }
+
+      if (!('gcode_macro CANCEL_PRINT' in config)) {
+        warnings.push({ message: 'CANCEL_PRINT macro not found in configuration.' })
+      }
     }
 
-    if (config && !('pause_resume' in config)) {
-      warnings.push({ message: '[pause_resume] not found in printer configuration.' })
-    }
-
-    if (
-      config &&
-      !('display' in config) && !('display_status' in config)
-    ) {
-      warnings.push({ message: '[display_status] is required if you do not have a [display] defined.' })
-    }
-
-    if (config && !('gcode_macro CANCEL_PRINT' in config)) {
-      warnings.push({ message: 'CANCEL_PRINT macro not found in configuration.' })
-    }
     return warnings
   },
 
@@ -976,15 +981,6 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const saveConfigPendingItems = state.printer.configfile?.save_config_pending_items as Record<string, Record<string, string>> | undefined
 
     return saveConfigPendingItems || {}
-  },
-
-  getHasHomingOverride: (state, getters) => {
-    const config = getters.getPrinterConfig()
-    if (config && ('homing_override' in config)) {
-      return true
-    } else {
-      return false
-    }
   },
 
   getHasRoundBed: (_, getters): boolean => {
