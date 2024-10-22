@@ -9,7 +9,7 @@ import consola from 'consola'
 @Component
 export default class FilesMixin extends Vue {
   get apiUrl (): string {
-    return this.$store.state.config.apiUrl as string
+    return this.$store.state.config.apiUrl
   }
 
   get isTrustedUser (): boolean {

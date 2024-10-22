@@ -140,7 +140,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   }
 
   get hosted (): boolean {
-    return this.$store.state.config.hostConfig.hosted as boolean
+    return this.$store.state.config.hostConfig.hosted
   }
 
   get powerDevices (): Device[] {

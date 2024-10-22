@@ -139,7 +139,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get theme (): ThemeConfig {
-    return this.$store.state.config.uiSettings.theme as ThemeConfig
+    return this.$store.state.config.uiSettings.theme
   }
 
   get showBackgroundLogo () {
@@ -169,7 +169,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get columnCount (): number {
-    return this.$store.state.config.containerColumnCount as number
+    return this.$store.state.config.containerColumnCount
   }
 
   get fileDropRoot () {

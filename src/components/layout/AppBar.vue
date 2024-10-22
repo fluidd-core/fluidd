@@ -268,11 +268,11 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   get showSaveConfigAndRestart (): boolean {
-    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart as boolean
+    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart
   }
 
   get sectionsToIgnorePendingConfigurationChanges (): string[] {
-    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges as string[]
+    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges
   }
 
   get showUploadAndPrint (): boolean {
@@ -280,7 +280,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   get topNavPowerToggle () {
-    const topNavPowerToggle = this.$store.state.config.uiSettings.general.topNavPowerToggle as string | null
+    const topNavPowerToggle: string | null = this.$store.state.config.uiSettings.general.topNavPowerToggle
 
     if (!topNavPowerToggle) return null
 

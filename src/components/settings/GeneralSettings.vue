@@ -451,7 +451,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get confirmOnSaveConfigAndRestart (): boolean {
-    return this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart as boolean
+    return this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart
   }
 
   set confirmOnSaveConfigAndRestart (value: boolean) {
@@ -463,7 +463,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get sectionsToIgnorePendingConfigurationChanges (): string[] {
-    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges as string[]
+    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges
   }
 
   set sectionsToIgnorePendingConfigurationChanges (value: string[]) {
@@ -475,7 +475,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get printInProgressLayout (): PrintInProgressLayout {
-    return this.$store.state.config.uiSettings.general.printInProgressLayout as PrintInProgressLayout
+    return this.$store.state.config.uiSettings.general.printInProgressLayout
   }
 
   set printInProgressLayout (value: PrintInProgressLayout) {
@@ -520,8 +520,8 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     ]
   }
 
-  get printProgressCalculation () {
-    return this.$store.state.config.uiSettings.general.printProgressCalculation as PrintProgressCalculation[]
+  get printProgressCalculation (): PrintProgressCalculation[] {
+    return this.$store.state.config.uiSettings.general.printProgressCalculation
   }
 
   set printProgressCalculation (value: PrintProgressCalculation[]) {
@@ -545,8 +545,8 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     ]
   }
 
-  get printEtaCalculation () {
-    return this.$store.state.config.uiSettings.general.printEtaCalculation as PrintEtaCalculation[]
+  get printEtaCalculation (): PrintEtaCalculation[] {
+    return this.$store.state.config.uiSettings.general.printEtaCalculation
   }
 
   set printEtaCalculation (value: PrintEtaCalculation[]) {

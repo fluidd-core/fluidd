@@ -286,7 +286,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   get followProgress (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.followProgress as boolean
+    return this.$store.state.config.uiSettings.gcodePreview.followProgress
   }
 
   set followProgress (value: boolean) {

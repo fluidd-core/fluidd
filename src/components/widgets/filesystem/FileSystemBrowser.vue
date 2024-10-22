@@ -368,16 +368,20 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     return []
   }
 
-  get sortBy () {
-    return this.$store.state.config.uiSettings.fileSystem.sortBy[this.root] as string | null ?? 'modified'
+  get sortBy (): string {
+    const sortBy: string | null = this.$store.state.config.uiSettings.fileSystem.sortBy[this.root]
+
+    return sortBy ?? 'modified'
   }
 
   set sortBy (value: string | null | undefined) {
     this.$store.dispatch('config/updateFileSystemSortBy', { root: this.root, value: value ?? null })
   }
 
-  get sortDesc () {
-    return this.$store.state.config.uiSettings.fileSystem.sortDesc[this.root] as boolean | null ?? true
+  get sortDesc (): boolean {
+    const sortDesc: boolean | null = this.$store.state.config.uiSettings.fileSystem.sortDesc[this.root]
+
+    return sortDesc ?? true
   }
 
   set sortDesc (value: boolean | null | undefined) {

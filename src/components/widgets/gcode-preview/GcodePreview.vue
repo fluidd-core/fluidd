@@ -512,7 +512,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       return true
     }
 
-    const printerFile = this.$store.state.printer.printer.current_file as AppFile
+    const printerFile: AppFile = this.$store.state.printer.printer.current_file
 
     if (printerFile.filename) {
       return `${file.path}/${file.filename}` === `${printerFile.path}/${printerFile.filename}`

@@ -50,7 +50,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
 
   get restoreViewState (): RestoreViewState {
-    return this.$store.state.config.uiSettings.editor.restoreViewState as RestoreViewState
+    return this.$store.state.config.uiSettings.editor.restoreViewState
   }
 
   get activeInstance (): InstanceConfig {

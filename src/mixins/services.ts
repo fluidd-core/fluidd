@@ -5,7 +5,9 @@ import { Component } from 'vue-property-decorator'
 @Component
 export default class ServicesMixin extends Vue {
   get moonrakerServiceName (): string {
-    return this.$store.state.server.system_info?.instance_ids?.moonraker as string || 'moonraker'
+    const moonrakerServiceName: string | undefined = this.$store.state.server.system_info?.instance_ids?.moonraker
+
+    return moonrakerServiceName || 'moonraker'
   }
 
   /**

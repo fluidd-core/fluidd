@@ -346,8 +346,8 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
     this.$store.dispatch('mesh/onFlatSurface', val)
   }
 
-  get mesh () {
-    return this.$store.state.mesh as MeshState
+  get mesh (): MeshState {
+    return this.$store.state.mesh
   }
 
   // The available meshes.
@@ -356,8 +356,8 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   // The current mesh, unprocessed.
-  get currentMesh () {
-    return this.$store.state.printer.printer.bed_mesh as KlipperBedMesh
+  get currentMesh (): KlipperBedMesh {
+    return this.$store.state.printer.printer.bed_mesh
   }
 
   // If we have a mesh loaded.

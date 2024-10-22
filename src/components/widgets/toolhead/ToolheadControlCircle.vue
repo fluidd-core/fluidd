@@ -528,15 +528,15 @@ type Axis = 'X' | 'Y' | 'Z'
 @Component({})
 export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMixin) {
   get enableXYHoming (): boolean {
-    return this.$store.state.config.uiSettings.general.toolheadCircleXYHomingEnabled as boolean
+    return this.$store.state.config.uiSettings.general.toolheadCircleXYHomingEnabled
   }
 
   get stepsXY (): number[] {
-    return this.$store.state.config.uiSettings.general.toolheadCircleXYMoveDistances as number[]
+    return this.$store.state.config.uiSettings.general.toolheadCircleXYMoveDistances
   }
 
   get stepsZ (): number[] {
-    return this.$store.state.config.uiSettings.general.toolheadCircleZMoveDistances as number[]
+    return this.$store.state.config.uiSettings.general.toolheadCircleZMoveDistances
   }
 
   get forceMove () {
