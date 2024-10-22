@@ -142,7 +142,15 @@ export const defaultState = (): ConfigState => {
         flip: {
           horizontal: false,
           vertical: true
-        }
+        },
+        showCurrentLayer: true,
+        showNextLayer: false,
+        showPreviousLayer: false,
+        showMoves: true,
+        showExtrusions: true,
+        showRetractions: true,
+        showParts: true,
+        followProgress: false
       },
       fileSystem: {
         activeFilters: {},
