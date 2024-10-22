@@ -131,7 +131,7 @@
           />
         </g>
         <g
-          v-if="getViewerOption('showParts') && !showExcludeObjects && svgPathParts.length > 0"
+          v-if="showParts && !showExcludeObjects && svgPathParts.length > 0"
           id="parts"
         >
           <path
@@ -143,7 +143,7 @@
           />
         </g>
         <g
-          v-if="getViewerOption('showPreviousLayer')"
+          v-if="showPreviousLayer"
           id="previousLayer"
           class="layer"
         >
@@ -156,7 +156,7 @@
           />
         </g>
         <g
-          v-if="getViewerOption('showCurrentLayer')"
+          v-if="showCurrentLayer"
           id="activeLayer"
           class="layer"
         >
@@ -173,14 +173,14 @@
           class="layer"
         >
           <path
-            v-if="getViewerOption('showExtrusions')"
+            v-if="showExtrusions"
             :d="svgPathCurrent.extrusions"
             :stroke="themeIsDark ? 'white' : 'black'"
             :stroke-width="extrusionLineWidth"
             :shape-rendering="shapeRendering"
           />
           <path
-            v-if="getViewerOption('showMoves')"
+            v-if="showMoves"
             :d="svgPathCurrent.moves"
             stroke="gray"
             :stroke-width="moveLineWidth"
@@ -196,7 +196,7 @@
           />
 
           <g
-            v-if="getViewerOption('showRetractions') && svgPathCurrent.retractions.length > 0"
+            v-if="showRetractions && svgPathCurrent.retractions.length > 0"
             id="retractions"
           >
             <use
@@ -210,7 +210,7 @@
           </g>
 
           <g
-            v-if="getViewerOption('showRetractions') && svgPathCurrent.extrusionStarts.length > 0"
+            v-if="showRetractions && svgPathCurrent.extrusionStarts.length > 0"
             id="extrusionStarts"
           >
             <use
@@ -224,7 +224,7 @@
           </g>
         </g>
         <g
-          v-if="getViewerOption('showNextLayer')"
+          v-if="showNextLayer"
           id="nextLayer"
           class="layer"
         >
@@ -237,7 +237,7 @@
           />
         </g>
         <exclude-objects
-          v-if="getViewerOption('showParts') && showExcludeObjects"
+          v-if="showParts && showExcludeObjects"
           :shape-rendering="shapeRendering"
           @cancel="$emit('cancelObject', $event)"
         />
@@ -253,49 +253,49 @@
       @touchend="panzoom?.resume()"
     >
       <gcode-preview-button
-        name="followProgress"
+        v-model="followProgress"
         icon="$play"
         :tooltip="$t('app.gcode.label.follow_progress')"
       />
 
       <gcode-preview-button
-        name="showPreviousLayer"
+        v-model="showPreviousLayer"
         icon="$previousLayer"
         :tooltip="$t('app.gcode.label.show_previous_layer')"
       />
 
       <gcode-preview-button
-        name="showCurrentLayer"
+        v-model="showCurrentLayer"
         icon="$currentLayer"
         :tooltip="$t('app.gcode.label.show_current_layer')"
       />
 
       <gcode-preview-button
-        name="showNextLayer"
+        v-model="showNextLayer"
         icon="$nextLayer"
         :tooltip="$t('app.gcode.label.show_next_layer')"
       />
 
       <gcode-preview-button
-        name="showMoves"
+        v-model="showMoves"
         icon="$moves"
         :tooltip="$t('app.gcode.label.show_moves')"
       />
 
       <gcode-preview-button
-        name="showExtrusions"
+        v-model="showExtrusions"
         icon="$extrusions"
         :tooltip="$t('app.gcode.label.show_extrusions')"
       />
 
       <gcode-preview-button
-        name="showRetractions"
+        v-model="showRetractions"
         icon="$retractions"
         :tooltip="$t('app.gcode.label.show_retractions')"
       />
 
       <gcode-preview-button
-        name="showParts"
+        v-model="showParts"
         icon="$parts"
         :tooltip="$t('app.gcode.label.show_parts')"
       />
@@ -323,7 +323,6 @@ import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import panzoom, { type PanZoom } from 'panzoom'
 import type { BBox, Layer, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
-import type { GcodePreviewConfig } from '@/store/config/types'
 import AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
 import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
 import GcodePreviewButton from './GcodePreviewButton.vue'
@@ -366,32 +365,32 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$store.state.printer.printer.virtual_sdcard.file_position
   }
 
-  get extrusionLineWidth () {
-    return this.getUiSetting('extrusionLineWidth')
+  get extrusionLineWidth (): number {
+    return this.$store.state.config.uiSettings.gcodePreview.extrusionLineWidth
   }
 
-  get moveLineWidth () {
-    return this.getUiSetting('moveLineWidth')
+  get moveLineWidth (): number {
+    return this.$store.state.config.uiSettings.gcodePreview.moveLineWidth
   }
 
-  get retractionIconSize () {
-    return this.getUiSetting('retractionIconSize')
+  get retractionIconSize (): number {
+    return this.$store.state.config.uiSettings.gcodePreview.retractionIconSize
   }
 
-  get drawBackground () {
-    return this.getUiSetting('drawBackground')
+  get drawBackground (): boolean {
+    return this.$store.state.config.uiSettings.gcodePreview.drawBackground
   }
 
-  get drawOrigin () {
-    return this.getUiSetting('drawOrigin')
+  get drawOrigin (): boolean {
+    return this.$store.state.config.uiSettings.gcodePreview.drawOrigin
   }
 
-  get showAnimations () {
-    return this.getUiSetting('showAnimations')
+  get showAnimations (): boolean {
+    return this.$store.state.config.uiSettings.gcodePreview.showAnimations
   }
 
-  get autoZoom () {
-    return this.getUiSetting('autoZoom')
+  get autoZoom (): boolean {
+    return this.$store.state.config.uiSettings.gcodePreview.autoZoom
   }
 
   set autoZoom (value: boolean) {
@@ -402,6 +401,102 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     })
 
     this.reset()
+  }
+
+  get followProgress (): boolean {
+    return this.$store.state.config.uiSettings.gcodePreview.followProgress
+  }
+
+  set followProgress (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.followProgress',
+      value,
+      server: true
+    })
+  }
+
+  get showPreviousLayer (): boolean {
+    return this.$store.state.config.uiSettings.gcodePreview.showPreviousLayer
+  }
+
+  set showPreviousLayer (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.showPreviousLayer',
+      value,
+      server: true
+    })
+  }
+
+  get showCurrentLayer (): boolean {
+    return this.$store.state.config.uiSettings.gcodePreview.showCurrentLayer
+  }
+
+  set showCurrentLayer (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.showCurrentLayer',
+      value,
+      server: true
+    })
+  }
+
+  get showNextLayer (): boolean {
+    return this.$store.state.config.uiSettings.gcodePreview.showNextLayer
+  }
+
+  set showNextLayer (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.showNextLayer',
+      value,
+      server: true
+    })
+  }
+
+  get showMoves (): boolean {
+    return this.$store.state.config.uiSettings.gcodePreview.showMoves
+  }
+
+  set showMoves (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.showMoves',
+      value,
+      server: true
+    })
+  }
+
+  get showExtrusions (): boolean {
+    return this.$store.state.config.uiSettings.gcodePreview.showExtrusions
+  }
+
+  set showExtrusions (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.showExtrusions',
+      value,
+      server: true
+    })
+  }
+
+  get showRetractions (): boolean {
+    return this.$store.state.config.uiSettings.gcodePreview.showRetractions
+  }
+
+  set showRetractions (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.showRetractions',
+      value,
+      server: true
+    })
+  }
+
+  get showParts (): boolean {
+    return this.$store.state.config.uiSettings.gcodePreview.showParts
+  }
+
+  set showParts (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.showParts',
+      value,
+      server: true
+    })
   }
 
   get shapeRendering () {
@@ -523,7 +618,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
 
     const layer = this.$store.getters['gcodePreview/getLayers'][this.layer] as Layer | undefined
 
-    if (this.getViewerOption('followProgress')) {
+    if (this.followProgress) {
       const end = this.$store.getters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
 
       return this.$store.getters['gcodePreview/getPaths'](layer?.move ?? 0, end)
@@ -615,14 +710,6 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     if (!this.isMobileViewport) {
       this.container.focus()
     }
-  }
-
-  getViewerOption (name: string) {
-    return this.$store.getters['gcodePreview/getViewerOption'](name)
-  }
-
-  getUiSetting<T extends keyof GcodePreviewConfig> (name: T) {
-    return this.$store.state.config.uiSettings.gcodePreview[name]
   }
 }
 </script>

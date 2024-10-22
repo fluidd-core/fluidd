@@ -7,18 +7,7 @@ export const defaultState = (): GcodePreviewState => {
     parts: [],
     file: undefined,
     parserProgress: 0,
-    parserWorker: null,
-
-    viewer: {
-      showCurrentLayer: true,
-      showNextLayer: false,
-      showPreviousLayer: false,
-      showMoves: true,
-      showExtrusions: true,
-      showRetractions: true,
-      showParts: true,
-      followProgress: false
-    }
+    parserWorker: null
   }
 }
 
