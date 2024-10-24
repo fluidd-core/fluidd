@@ -74,6 +74,14 @@
       }
     },
     {
+      "name": "Mellow",
+      "color": "#003DFF",
+      "isDark": true,
+      "logo": {
+        "src": "logo_mellow.svg"
+      }
+    },
+    {
       "name": "Peopoly",
       "color": "#007CC2",
       "isDark": true,
