@@ -93,6 +93,19 @@ export default new Vuex.Store<RootState>({
       commit('config/setAppReady', true)
     },
 
+    async resetKlippy ({ dispatch, commit }) {
+      commit('socket/setAcceptNotifications', false)
+
+      await Promise.all([
+        dispatch('server/resetKlippy'),
+        dispatch('charts/resetChartStore'),
+        dispatch('reset', [
+          'printer',
+          'wait'
+        ])
+      ])
+    },
+
     /**
      * A void action. Some socket commands may not need processing.
      */

@@ -260,10 +260,6 @@ import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
   }
 })
 export default class TemperatureTargets extends Mixins(StateMixin) {
-  get extruder () {
-    return this.$store.state.printer.printer.extruder
-  }
-
   get heaters () {
     return this.$store.getters['printer/getHeaters']
   }
