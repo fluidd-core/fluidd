@@ -17,6 +17,15 @@ export const mutations: MutationTree<ChartState> = {
     Object.assign(state, defaultState())
   },
 
+  setResetChartStore (state) {
+    const { chart, ready } = defaultState()
+
+    Object.assign(state, {
+      chart,
+      ready
+    })
+  },
+
   /**
    * Init the chart store from db
    */
