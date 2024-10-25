@@ -157,7 +157,9 @@ export const actions: ActionTree<SocketState, RootState> = {
   /**
    * This is fired when, for example - the service is stopped.
    */
-  async notifyKlippyDisconnected () {
+  async notifyKlippyDisconnected ({ dispatch }) {
+    await dispatch('resetKlippy', undefined, { root: true })
+
     SocketActions.serverInfo()
   },
 

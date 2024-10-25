@@ -13,6 +13,10 @@ export const actions: ActionTree<ChartState, RootState> = {
     commit('setReset')
   },
 
+  async resetChartStore ({ commit }) {
+    commit('setResetChartStore')
+  },
+
   /**
    * Loads stored server data for the past 20 minutes.
    */
