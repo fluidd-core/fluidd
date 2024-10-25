@@ -10,6 +10,12 @@ export default class ServicesMixin extends Vue {
     return moonrakerServiceName || 'moonraker'
   }
 
+  get klipperServiceName (): string {
+    const klipperServiceName: string | undefined = this.$store.state.server.system_info?.instance_ids?.klipper
+
+    return klipperServiceName || 'klipper'
+  }
+
   /**
    * Resets the UI when restarting/resetting Klipper
    */
@@ -41,7 +47,7 @@ export default class ServicesMixin extends Vue {
    * Restart the klipper service itself.
    */
   async serviceRestartKlipper () {
-    this.serviceRestartByName('klipper')
+    this.serviceRestartByName(this.klipperServiceName)
   }
 
   /**
@@ -59,7 +65,7 @@ export default class ServicesMixin extends Vue {
       SocketActions.serverRestart()
       this.$store.commit('socket/setSocketDisconnecting', true)
     } else {
-      if (name === 'klipper') {
+      if (name === this.klipperServiceName) {
         await this._klipperReset()
       }
 
@@ -81,7 +87,7 @@ export default class ServicesMixin extends Vue {
     if (name === this.moonrakerServiceName) {
       throw new Error('Stopping the moonraker service is not supported')
     } else {
-      if (name === 'klipper') {
+      if (name === this.klipperServiceName) {
         await this._klipperReset()
       }
 
