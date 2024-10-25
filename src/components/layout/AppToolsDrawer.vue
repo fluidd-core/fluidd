@@ -40,7 +40,7 @@ export default class AppToolsDrawer extends Mixins(StateMixin) {
     return this.$store.getters['server/componentSupport']('history')
   }
 
-  get instanceName () {
+  get instanceName (): string {
     return this.$store.state.config.uiSettings.general.instanceName
   }
 
@@ -48,7 +48,7 @@ export default class AppToolsDrawer extends Mixins(StateMixin) {
     return this.$store.getters['server/getInfo']
   }
 
-  get hasUpdates () {
+  get hasUpdates (): boolean {
     return this.$store.getters['version/hasUpdates']
   }
 }

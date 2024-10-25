@@ -192,7 +192,7 @@ export default class ConsoleCard extends Vue {
     return (this.$store.state.config.layoutMode)
   }
 
-  get autoScroll () {
+  get autoScroll (): boolean {
     return this.$store.state.console.autoScroll
   }
 

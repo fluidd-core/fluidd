@@ -211,7 +211,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
     return !!this.components.find((c: UpdatePackage) => 'is_valid' in c && !c.is_valid)
   }
 
-  get enableNotifications () {
+  get enableNotifications (): boolean {
     return this.$store.state.config.uiSettings.general.enableVersionNotifications
   }
 

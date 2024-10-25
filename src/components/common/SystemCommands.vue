@@ -223,7 +223,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   }
 
   async togglePowerDevice (device: Device, wait?: string) {
-    const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+    const confirmOnPowerDeviceChange: boolean = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
 
     const result = (
       !confirmOnPowerDeviceChange ||

@@ -220,16 +220,8 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     return this.$store.getters['server/componentSupport']('authorization')
   }
 
-  get instances () {
-    return this.$store.state.config.instances
-  }
-
-  get instanceName () {
+  get instanceName (): string {
     return this.$store.state.config.uiSettings.general.instanceName
-  }
-
-  get currentFile () {
-    return this.$store.state.printer.printer.print_stats.filename
   }
 
   get hasUpdates () {
@@ -396,7 +388,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
     if (!device) return
 
-    const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+    const confirmOnPowerDeviceChange: boolean = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
 
     const result = (
       !confirmOnPowerDeviceChange ||
@@ -429,7 +421,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
   saveConfigAndRestart (force = false) {
     if (!force) {
-      const confirmOnSaveConfigAndRestart = this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart
+      const confirmOnSaveConfigAndRestart: boolean = this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart
 
       if (confirmOnSaveConfigAndRestart) {
         this.pendingChangesDialogOpen = true

@@ -161,11 +161,11 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
     return zHomingOrigin
   }
 
-  get zAdjustValues () {
+  get zAdjustValues (): number[] {
     return this.$store.state.config.uiSettings.general.zAdjustDistances
   }
 
-  get moveDistance () {
+  get moveDistance (): number {
     return this.moveDistanceValue || this.zAdjustValues[0]
   }
 

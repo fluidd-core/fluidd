@@ -285,6 +285,7 @@ import FilesMixin from '@/mixins/files'
 import FileRowItem from './FileRowItem.vue'
 import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
 import { SupportedImageFormats, SupportedVideoFormats } from '@/globals'
+import type { TextSortOrder } from '@/store/config/types'
 
 @Component({
   components: {
@@ -344,12 +345,12 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   get thumbnailSize () {
-    const thumbnailSize = this.$store.state.config.uiSettings.general.thumbnailSize
+    const thumbnailSize: number = this.$store.state.config.uiSettings.general.thumbnailSize
 
     return this.dense ? thumbnailSize / 2 : thumbnailSize
   }
 
-  get textSortOrder () {
+  get textSortOrder (): TextSortOrder {
     return this.$store.state.config.uiSettings.general.textSortOrder
   }
 

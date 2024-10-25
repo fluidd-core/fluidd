@@ -110,11 +110,11 @@ export default class StatusControls extends Mixins(StateMixin) {
   showExcludeObjectDialog = false
   showPauseAtLayerDialog = false
 
-  get filename () {
+  get filename (): string {
     return this.$store.state.printer.printer.print_stats.filename
   }
 
-  get supportsHistoryComponent () {
+  get supportsHistoryComponent (): boolean {
     return this.$store.getters['server/componentSupport']('history')
   }
 

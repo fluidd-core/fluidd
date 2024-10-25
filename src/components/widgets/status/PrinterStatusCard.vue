@@ -102,7 +102,7 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
     )
   }
 
-  get filename () {
+  get filename (): string {
     return this.$store.state.printer.printer.print_stats.filename
   }
 
@@ -129,7 +129,7 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
 
   handlePrint (filename: string) {
     const spoolmanSupported = this.$store.getters['spoolman/getAvailable']
-    const autoSpoolSelectionDialog = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
+    const autoSpoolSelectionDialog: boolean = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
     if (spoolmanSupported && autoSpoolSelectionDialog) {
       this.$store.commit('spoolman/setDialogState', {
         show: true,

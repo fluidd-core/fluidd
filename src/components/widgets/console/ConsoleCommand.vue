@@ -77,7 +77,7 @@ export default class ConsoleCommand extends Vue {
 
   mounted () {
     this.newValue = this.value
-    const savedHistory = this.$store.state.console.commandHistory
+    const savedHistory: string[] = this.$store.state.console.commandHistory
     this.history = [...savedHistory]
     this.originalHistory = [...savedHistory]
   }

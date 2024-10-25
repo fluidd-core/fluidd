@@ -207,7 +207,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
     })
   }
 
-  get hosted () {
+  get hosted (): boolean {
     return this.$store.state.config.hostConfig.hosted
   }
 

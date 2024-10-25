@@ -510,7 +510,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       .some(val => val?.toString().toLowerCase().includes(query))
   }
 
-  get spoolmanURL () {
+  get spoolmanURL (): string | undefined {
     return this.$store.state.server.config.spoolman?.server
   }
 
@@ -518,15 +518,15 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$store.state.config.uiSettings.spoolman.preferDeviceCamera
   }
 
-  get autoOpenQRDetectionCamera () {
+  get autoOpenQRDetectionCamera (): string | null {
     return this.$store.state.config.uiSettings.spoolman.autoOpenQRDetectionCamera
   }
 
-  get autoSelectSpoolOnMatch () {
+  get autoSelectSpoolOnMatch (): boolean {
     return this.$store.state.config.uiSettings.spoolman.autoSelectSpoolOnMatch
   }
 
-  get warnOnNotEnoughFilament () {
+  get warnOnNotEnoughFilament (): boolean {
     return this.$store.state.config.uiSettings.spoolman.warnOnNotEnoughFilament
   }
 

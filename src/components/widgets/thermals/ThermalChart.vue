@@ -20,6 +20,7 @@ import { Component, Watch, Prop, Ref, Mixins } from 'vue-property-decorator'
 import type { ECharts, EChartsOption } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
 import BrowserMixin from '@/mixins/browser'
+import type { ChartSelectedLegends } from '@/store/charts/types'
 
 @Component({})
 export default class ThermalChart extends Mixins(BrowserMixin) {
@@ -96,7 +97,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   }
 
   get options () {
-    const isDark = this.$store.state.config.uiSettings.theme.isDark
+    const isDark: boolean = this.$store.state.config.uiSettings.theme.isDark
 
     const fontColor = (isDark) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
     const fontSize = (this.isMobileViewport) ? 13 : 14
@@ -343,7 +344,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
 
     // Set the initial legend state (power and speed default off)
-    const storedLegends = this.$store.getters['charts/getSelectedLegends']
+    const storedLegends = this.$store.getters['charts/getSelectedLegends'] as ChartSelectedLegends
     if (storedLegends[key] !== undefined) {
       this.initialSelected[key] = storedLegends[key]
     } else {

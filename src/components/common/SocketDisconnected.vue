@@ -68,7 +68,7 @@ export default class SocketDisconnected extends Mixins(StateMixin) {
     return this.$store.getters['config/getCurrentInstance']
   }
 
-  get apiUrl () {
+  get apiUrl (): string {
     return this.$store.state.config.apiUrl
   }
 

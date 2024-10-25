@@ -165,7 +165,7 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get inLayout (): boolean {
-    return (this.$store.state.config.layoutMode)
+    return this.$store.state.config.layoutMode
   }
 
   get layout () {

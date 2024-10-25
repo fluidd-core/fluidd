@@ -424,7 +424,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
     }
   }
 
-  get showManualProbeDialogAutomatically () {
+  get showManualProbeDialogAutomatically (): boolean {
     return this.$store.state.config.uiSettings.general.showManualProbeDialogAutomatically
   }
 

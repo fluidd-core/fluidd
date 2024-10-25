@@ -244,7 +244,7 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
    * Send a move gcode script.
    */
   moveAxisBy (axis: Axis, distance: number, negative = false) {
-    const rate = axis === 'Z'
+    const rate: number = axis === 'Z'
       ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
       : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
     const inverted = this.$store.state.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false

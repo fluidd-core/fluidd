@@ -133,15 +133,15 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   @VModel({ type: Boolean })
     open?: boolean
 
-  get supportsHistory () {
+  get supportsHistory (): boolean {
     return this.$store.getters['server/componentSupport']('history')
   }
 
-  get supportsTimelapse () {
+  get supportsTimelapse (): boolean {
     return this.$store.getters['server/componentSupport']('timelapse')
   }
 
-  get enableDiagnostics () {
+  get enableDiagnostics (): boolean {
     return this.$store.state.config.uiSettings.general.enableDiagnostics
   }
 

@@ -61,7 +61,7 @@ import { appInit } from '@/init'
 export default class SystemPrinters extends Mixins(StateMixin) {
   instanceDialogOpen = false
 
-  get instanceName () {
+  get instanceName (): string {
     return this.$store.state.config.uiSettings.general.instanceName
   }
 

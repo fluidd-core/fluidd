@@ -381,7 +381,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     return true
   }
 
-  get autoLoadOnPrintStart () {
+  get autoLoadOnPrintStart (): boolean {
     if (this.isMobileViewport) {
       return this.$store.state.config.uiSettings.gcodePreview.autoLoadMobileOnPrintStart
     }

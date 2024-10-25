@@ -252,7 +252,7 @@ import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
 import StateMixin from '@/mixins/state'
 import type { Heater, Sensor } from '@/store/printer/types'
 import { takeRightWhile } from 'lodash-es'
-import type { ChartData } from '@/store/charts/types'
+import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
 
 @Component({
   components: {
@@ -276,27 +276,27 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     return this.$store.getters['printer/getSensors']
   }
 
-  get chartSelectedLegends () {
-    return this.$store.getters['charts/getSelectedLegends']
+  get chartSelectedLegends (): ChartSelectedLegends {
+    return this.$store.getters['charts/getSelectedLegends'] as ChartSelectedLegends
   }
 
   get chartData (): ChartData[] {
     return this.$store.getters['charts/getChartData'] as ChartData[]
   }
 
-  get showRateOfChange () {
+  get showRateOfChange (): boolean {
     return this.$store.state.config.uiSettings.general.showRateOfChange
   }
 
-  get showRelativeHumidity () {
+  get showRelativeHumidity (): boolean {
     return this.$store.state.config.uiSettings.general.showRelativeHumidity
   }
 
-  get showBarometricPressure () {
+  get showBarometricPressure (): boolean {
     return this.$store.state.config.uiSettings.general.showBarometricPressure
   }
 
-  get showGasResistance () {
+  get showGasResistance (): boolean {
     return this.$store.state.config.uiSettings.general.showGasResistance
   }
 

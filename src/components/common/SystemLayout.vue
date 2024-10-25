@@ -22,7 +22,7 @@ import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class SystemLayout extends Mixins(StateMixin) {
-  get layoutMode () {
+  get layoutMode (): boolean {
     return this.$store.state.config.layoutMode
   }
 
