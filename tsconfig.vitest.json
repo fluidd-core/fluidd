@@ -8,7 +8,6 @@
   ],
   "exclude": [],
   "compilerOptions": {
-    "composite": true,
     "lib": [
       "ES2016"
     ],
