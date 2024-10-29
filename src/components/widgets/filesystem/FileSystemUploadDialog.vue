@@ -75,15 +75,15 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { FilesUpload } from '@/store/files/types'
+import type { FileUpload } from '@/store/files/types'
 
 @Component({})
 export default class FileSystemUploadDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean })
   readonly value?: boolean
 
-  @Prop({ type: Array<FilesUpload>, required: true })
-  readonly files!: FilesUpload[]
+  @Prop({ type: Array<FileUpload>, required: true })
+  readonly files!: FileUpload[]
 }
 </script>
 

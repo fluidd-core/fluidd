@@ -142,7 +142,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
-import type { AppDirectory, AppFile, AppFileWithMeta, FilesUpload, FileFilterType, FileBrowserEntry, RootProperties } from '@/store/files/types'
+import type { AppDirectory, AppFile, AppFileWithMeta, FileUpload, FileFilterType, FileBrowserEntry, RootProperties } from '@/store/files/types'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import ServicesMixin from '@/mixins/services'
@@ -467,7 +467,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   // Get a list of currently active uploads.
-  get currentUploads (): FilesUpload[] {
+  get currentUploads (): FileUpload[] {
     return this.$store.state.files.uploads
   }
 
@@ -884,12 +884,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     this.$store.dispatch('wait/removeWait', wait)
   }
 
-  handleCancelUpload (file: FilesUpload) {
+  handleCancelUpload (file: FileUpload) {
     if (!file.complete) {
       // Hasn't started uploading...
       if (file.loaded === 0) {
         this.$store.dispatch('files/updateFileUpload', {
-          filepath: file.filepath,
+          uid: file.uid,
           cancelled: true
         })
       }
