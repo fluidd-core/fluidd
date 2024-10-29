@@ -82,7 +82,7 @@
     "@types/jsdom": "^21.1.7",
     "@types/lodash-es": "^4.17.12",
     "@types/md5": "^2.3.5",
-    "@types/node": "^20.16.11",
+    "@types/node": "^22.8.2",
     "@types/semver": "^7.5.8",
     "@types/sortablejs": "^1.15.8",
     "@types/uuid": "^10.0.0",
@@ -136,6 +136,6 @@
     "url": "git+https://github.com/fluidd-core/fluidd.git"
   },
   "engines": {
-    "node": "^18 || ^20"
+    "node": "^20 || ^22"
   }
 }
