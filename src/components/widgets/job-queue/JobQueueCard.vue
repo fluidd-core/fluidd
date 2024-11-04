@@ -46,7 +46,7 @@
         x-small
         text
         class="ms-1 my-1"
-        @click="$filters.routeTo($router, '/jobs')"
+        @click="$filters.routeTo({ name: 'jobs' })"
       >
         <v-icon>$fullScreen</v-icon>
       </app-btn>

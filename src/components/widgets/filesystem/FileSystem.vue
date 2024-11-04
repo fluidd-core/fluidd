@@ -701,8 +701,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
       if (!gcode) return
 
-      if (this.$router.currentRoute.path !== '/' || !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')) {
-        this.$router.push({ path: '/preview' })
+      if (
+        this.$router.currentRoute.name !== 'home' ||
+        !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')
+      ) {
+        this.$router.push({ name: 'preview' })
       }
 
       this.$store.dispatch('gcodePreview/loadGcode', {
@@ -758,8 +761,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     SocketActions.printerPrintStart(filename)
 
     // If we aren't on the dashboard, push the user back there.
-    if (this.$router.currentRoute.path !== '/') {
-      this.$router.push({ path: '/' })
+    if (this.$router.currentRoute.name !== 'home') {
+      this.$router.push({ name: 'home' })
     }
   }
 

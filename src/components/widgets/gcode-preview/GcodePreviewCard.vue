@@ -24,7 +24,7 @@
           x-small
           text
           class="ms-1 my-1"
-          @click="$filters.routeTo($router, '/preview')"
+          @click="$filters.routeTo({ name: 'preview' })"
         >
           <v-icon>$fullScreen</v-icon>
         </app-btn>

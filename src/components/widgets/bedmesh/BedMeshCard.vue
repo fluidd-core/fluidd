@@ -48,7 +48,7 @@
         x-small
         text
         class="ms-1 my-1"
-        @click="$filters.routeTo($router, '/tune')"
+        @click="$filters.routeTo({ name: 'tune' })"
       >
         <v-icon>$fullScreen</v-icon>
       </app-btn>

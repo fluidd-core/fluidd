@@ -8,7 +8,7 @@
   >
     <router-link
       v-if="!isMobileViewport"
-      to="/"
+      :to="{ name: 'home' }"
       class="toolbar-logo"
     >
       <app-icon />
@@ -29,7 +29,7 @@
 
       <v-toolbar-title class="printer-title text--secondary">
         <router-link
-          to="/"
+          :to="{ name: 'home' }"
           v-html="instanceName"
         />
       </v-toolbar-title>

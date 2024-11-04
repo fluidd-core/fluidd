@@ -22,7 +22,7 @@
           :style="`height: ${$globals.HEADER_HEIGHT}px;`"
           class="app-icon"
         >
-          <router-link to="/">
+          <router-link :to="{ name: 'home' }">
             <app-icon />
           </router-link>
         </div>
@@ -34,28 +34,28 @@
           <app-nav-item
             icon="$dash"
             exact
-            to="/"
+            to="home"
           >
             {{ $t('app.general.title.home') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$console"
-            to="/console"
+            to="console"
           >
             {{ $t('app.general.title.console') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$cubeScan"
-            to="/preview"
+            to="preview"
           >
             {{ $t('app.general.title.gcode_preview') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$files"
-            to="/jobs"
+            to="jobs"
           >
             {{ $t('app.general.title.jobs') }}
           </app-nav-item>
@@ -63,7 +63,7 @@
           <app-nav-item
             v-if="supportsHistory"
             icon="$history"
-            to="/history"
+            to="history"
           >
             {{ $t('app.general.title.history') }}
           </app-nav-item>
@@ -71,14 +71,14 @@
           <app-nav-item
             v-if="supportsTimelapse"
             icon="$video"
-            to="/timelapse"
+            to="timelapse"
           >
             {{ $t('app.general.title.timelapse') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$tune"
-            to="/tune"
+            to="tune"
           >
             {{ $t('app.general.title.tune') }}
           </app-nav-item>
@@ -86,28 +86,28 @@
           <app-nav-item
             v-if="enableDiagnostics"
             icon="$chart"
-            to="/diagnostics"
+            to="diagnostics"
           >
             {{ $t('app.general.title.diagnostics') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$codeJson"
-            to="/configure"
+            to="configure"
           >
             {{ $t('app.general.title.configure') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$desktopTower"
-            to="/system"
+            to="system"
           >
             {{ $t('app.general.title.system') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$cog"
-            to="/settings"
+            to="settings"
           >
             {{ $t('app.general.title.settings') }}
           </app-nav-item>
