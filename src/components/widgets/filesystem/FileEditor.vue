@@ -19,7 +19,7 @@
 import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
-import md5AsBase64 from '@/util/md5-as-base64'
+import md5 from 'md5'
 import type { InstanceConfig, RestoreViewState } from '@/store/config/types'
 import consola from 'consola'
 let monaco: typeof Monaco // dynamically imported
@@ -133,7 +133,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
     const restoreViewStateStorage = this.restoreViewStateStorage
 
     if (restoreViewStateStorage) {
-      this.viewStateHash = 'monaco.' + md5AsBase64(apiFileUrl)
+      this.viewStateHash = 'monaco.' + md5(apiFileUrl)
 
       const viewState = restoreViewStateStorage.getItem(this.viewStateHash)
 
