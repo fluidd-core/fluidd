@@ -155,8 +155,15 @@ export default class CameraSettings extends Vue {
     this.$store.dispatch('webcams/updateWebcam', camera)
   }
 
-  handleRemoveCamera (camera: WebcamConfig) {
-    this.$store.dispatch('webcams/removeWebcam', camera.uid)
+  async handleRemoveCamera (camera: WebcamConfig) {
+    const result = await this.$confirm(
+      this.$t('app.general.simple_form.msg.confirm_remove_camera', { name: camera.name }).toString(),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+
+    if (result) {
+      this.$store.dispatch('webcams/removeWebcam', camera.uid)
+    }
   }
 
   get defaultFullscreenAction (): string {

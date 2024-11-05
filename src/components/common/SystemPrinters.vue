@@ -78,8 +78,15 @@ export default class SystemPrinters extends Mixins(StateMixin) {
     }
   }
 
-  removeInstance (instance: InstanceConfig) {
-    this.$store.dispatch('config/removeInstance', instance)
+  async removeInstance (instance: InstanceConfig) {
+    const result = await this.$confirm(
+      this.$t('app.general.simple_form.msg.confirm_remove_printer', { name: instance.name }).toString(),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+
+    if (result) {
+      this.$store.dispatch('config/removeInstance', instance)
+    }
   }
 
   addInstanceDialog () {

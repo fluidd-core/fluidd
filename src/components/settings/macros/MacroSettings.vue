@@ -161,8 +161,15 @@ export default class MacroSettings extends Mixins(StateMixin) {
     }
   }
 
-  handleRemoveCategory (category: MacroCategory) {
-    this.$store.dispatch('macros/removeCategory', category)
+  async handleRemoveCategory (category: MacroCategory) {
+    const result = await this.$confirm(
+      this.$t('app.general.simple_form.msg.confirm_remove_macro_category', { name: category.name }).toString(),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+
+    if (result) {
+      this.$store.dispatch('macros/removeCategory', category)
+    }
   }
 
   handleAddCategory (category: string) {
