@@ -48,6 +48,7 @@
             text
             x-small
             color=""
+            class="ms-1"
             @click.stop="handleEditCategoryDialog(category)"
           >
             <v-icon color="">
@@ -60,10 +61,11 @@
             text
             x-small
             color=""
+            class="ms-1"
             @click.stop="handleRemoveCategory(category)"
           >
             <v-icon color="">
-              $close
+              $delete
             </v-icon>
           </app-btn>
 

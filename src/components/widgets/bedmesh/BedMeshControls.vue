@@ -89,7 +89,7 @@
                     v-on="on"
                   >
                     <v-icon color="">
-                      $close
+                      $delete
                     </v-icon>
                   </app-btn>
                 </template>

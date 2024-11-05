@@ -44,15 +44,17 @@
               {{ k }}: {{ value.value }}<small>°C</small>
             </span>
           </template>
+
           <app-btn
             fab
             text
             x-small
             color=""
+            class="ms-1"
             @click.stop="handleRemovePreset(preset)"
           >
             <v-icon color="">
-              $close
+              $delete
             </v-icon>
           </app-btn>
         </app-setting>

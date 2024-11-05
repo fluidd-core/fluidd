@@ -41,6 +41,7 @@
             text
             x-small
             color=""
+            class="ms-1"
             @click.stop="handleEditFilterDialog(filter)"
           >
             <v-icon color="">
@@ -53,10 +54,11 @@
             text
             x-small
             color=""
+            class="ms-1"
             @click.stop="handleRemoveFilter(filter)"
           >
             <v-icon color="">
-              $close
+              $delete
             </v-icon>
           </app-btn>
         </app-setting>
