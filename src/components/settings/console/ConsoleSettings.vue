@@ -112,8 +112,15 @@ export default class ConsoleSettings extends Mixins(StateMixin) {
     }
   }
 
-  handleRemoveFilter (filter: ConsoleFilter) {
-    this.$store.dispatch('console/onRemoveFilter', filter)
+  async handleRemoveFilter (filter: ConsoleFilter) {
+    const result = await this.$confirm(
+      this.$t('app.general.simple_form.msg.confirm_remove_console_filter', { name: filter.name }).toString(),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+
+    if (result) {
+      this.$store.dispatch('console/onRemoveFilter', filter)
+    }
   }
 
   handleSaveFilter (filter: ConsoleFilter) {

@@ -384,6 +384,11 @@ app:
         confirm_forcemove_toggle: Are you sure? This can damage the printer.
         confirm_load_bedmesh_profile: The printer is currently busy. Are you sure you want to load profile %{name}?
         confirm_reboot_host: Are you sure? This will reboot your host system.
+        confirm_remove_camera: Are you sure you want to remove the camera %{name}?
+        confirm_remove_console_filter: Are you sure you want to remove the console filter %{name}?
+        confirm_remove_macro_category: Are you sure you want to remove the macro category %{name}?
+        confirm_remove_printer: Are you sure you want to remove the printer %{name}?
+        confirm_remove_thermal_preset: Are you sure you want to remove the thermal preset %{name}?
         confirm_remove_user: Are you sure you want to remove user %{username}?
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
         confirm_service_start: Are you sure you want to start the %{name} service?

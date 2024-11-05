@@ -246,8 +246,15 @@ export default class JobHistory extends Mixins(FilesMixin) {
     return filename.split('/').pop() || ''
   }
 
-  handleRemoveJob (job: HistoryItem) {
-    SocketActions.serverHistoryDeleteJob(job.job_id)
+  async handleRemoveJob (job: HistoryItem) {
+    const result = await this.$confirm(
+      this.$tc('app.general.simple_form.msg.confirm_delete', 1),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+
+    if (result) {
+      SocketActions.serverHistoryDeleteJob(job.job_id)
+    }
   }
 
   handleJobThumbnailError (job: HistoryItem) {
