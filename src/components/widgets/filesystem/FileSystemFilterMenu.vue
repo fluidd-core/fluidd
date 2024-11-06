@@ -145,7 +145,7 @@ export default class FileSystemFilterMenu extends Vue {
   }
 
   get selectedFilterTypes (): FileFilterType[] {
-    const selectedFilters = this.$store.state.config.uiSettings.fileSystem.activeFilters[this.root] as FileFilterType[] ?? []
+    const selectedFilters: FileFilterType[] = this.$store.state.config.uiSettings.fileSystem.activeFilters[this.root] ?? []
     const filters = new Set(this.filters
       .map(filter => filter.type))
 

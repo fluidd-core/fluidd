@@ -7,12 +7,10 @@ export const getters: GetterTree<WaitState, RootState> = {
    * Determine if we have a specific wait, or list of waits active or not.
    */
   hasWait: (state) => (wait: string | string[]): boolean => {
-    if (Array.isArray(wait) && wait.length) {
-      let waits = wait as string[]
-      waits = waits.filter(val => state.waits.includes(val))
-      return (waits.length > 0)
+    if (Array.isArray(wait)) {
+      return wait
+        .some(val => state.waits.includes(val))
     } else {
-      wait = wait as string
       return state.waits.includes(wait)
     }
   },
@@ -28,7 +26,7 @@ export const getters: GetterTree<WaitState, RootState> = {
    * Determine if we have any waits prefixed with...
    */
   hasWaitsBy: (state) => (prefix: string) => {
-    const waits = state.waits.filter(wait => wait.startsWith(prefix))
-    return waits.length > 0
+    return state.waits
+      .some(wait => wait.startsWith(prefix))
   }
 }

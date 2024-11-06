@@ -229,7 +229,7 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
     return this.$store.getters['server/getConfigMapByFilename'](this.filename)
   }
 
-  get codeLens () {
+  get codeLens (): boolean {
     return this.$store.state.config.uiSettings.editor.codeLens
   }
 
@@ -247,7 +247,12 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get showDirtyEditorWarning () {
-    return this.$store.state.config.uiSettings.editor.confirmDirtyEditorClose && this.updatedContent !== this.lastSavedContent
+    const confirmDirtyEditorClose: boolean = this.$store.state.config.uiSettings.editor.confirmDirtyEditorClose
+
+    return (
+      confirmDirtyEditorClose &&
+      this.updatedContent !== this.lastSavedContent
+    )
   }
 
   async emitClose () {

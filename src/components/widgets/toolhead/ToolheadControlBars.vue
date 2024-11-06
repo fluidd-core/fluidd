@@ -75,7 +75,7 @@ export default class ToolheadControlBars extends Mixins(StateMixin, ToolheadMixi
   }
 
   get forceMove (): boolean {
-    return this.$store.state.config.uiSettings.toolhead.forceMove as boolean
+    return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 }
 </script>

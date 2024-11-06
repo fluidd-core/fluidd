@@ -165,7 +165,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     }
   }
 
-  get chartVisible () {
+  get chartVisible (): boolean {
     return this.$store.state.config.uiSettings.general.chartVisible
   }
 
@@ -177,7 +177,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get showRateOfChange () {
+  get showRateOfChange (): boolean {
     return this.$store.state.config.uiSettings.general.showRateOfChange
   }
 
@@ -189,7 +189,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get showRelativeHumidity () {
+  get showRelativeHumidity (): boolean {
     return this.$store.state.config.uiSettings.general.showRelativeHumidity
   }
 
@@ -201,7 +201,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get showBarometricPressure () {
+  get showBarometricPressure (): boolean {
     return this.$store.state.config.uiSettings.general.showBarometricPressure
   }
 
@@ -213,7 +213,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get showGasResistance () {
+  get showGasResistance (): boolean {
     return this.$store.state.config.uiSettings.general.showGasResistance
   }
 

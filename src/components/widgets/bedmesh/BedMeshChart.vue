@@ -41,7 +41,7 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
   @Ref('chart')
   readonly chart!: ECharts
 
-  get flatSurface () {
+  get flatSurface (): boolean {
     return this.$store.state.mesh.flatSurface
   }
 
@@ -70,7 +70,7 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
   get opts (): EChartsOption {
     // If options includes series data, rip it out so we can merge it with
     // the given series in our initial options.
-    const darkMode = this.$store.state.config.uiSettings.theme.isDark
+    const darkMode: boolean = this.$store.state.config.uiSettings.theme.isDark
 
     const fontColor = (darkMode) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
     const fontSize = (this.isMobileViewport) ? 14 : 16

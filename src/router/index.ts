@@ -32,7 +32,7 @@ const defaultRouteConfig: Partial<RouteConfig> = {
     if (isAuthenticated()) {
       next()
     } else {
-      next('/login')
+      next({ name: 'login' })
     }
   },
   meta: {
@@ -43,37 +43,37 @@ const defaultRouteConfig: Partial<RouteConfig> = {
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    name: 'Dashboard',
+    name: 'home',
     component: Dashboard,
     ...defaultRouteConfig
   },
   {
     path: '/console',
-    name: 'Console',
+    name: 'console',
     component: Console,
     ...defaultRouteConfig
   },
   {
     path: '/jobs',
-    name: 'Jobs',
+    name: 'jobs',
     component: Jobs,
     ...defaultRouteConfig
   },
   {
     path: '/tune',
-    name: 'Tune',
+    name: 'tune',
     component: Tune,
     ...defaultRouteConfig
   },
   {
     path: '/diagnostics',
-    name: 'Diagnostics',
+    name: 'diagnostics',
     component: Diagnostics,
     ...defaultRouteConfig
   },
   {
     path: '/timelapse',
-    name: 'Timelapse',
+    name: 'timelapse',
     component: Timelapse,
     ...defaultRouteConfig,
     meta: {
@@ -82,26 +82,26 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/history',
-    name: 'History',
+    name: 'history',
     component: History,
     ...defaultRouteConfig
   },
   {
     path: '/system',
-    name: 'System',
+    name: 'system',
     component: System,
     ...defaultRouteConfig
   },
   {
     path: '/configure',
-    name: 'Configuration',
+    name: 'configure',
     component: Configure,
     ...defaultRouteConfig,
     meta: {}
   },
   {
     path: '/settings',
-    name: 'Settings',
+    name: 'settings',
     ...defaultRouteConfig,
     meta: {
       hasSubNavigation: true
@@ -112,8 +112,8 @@ const routes: Array<RouteConfig> = [
     },
     children: [
       {
-        path: '/settings/macros/:categoryId',
-        name: 'Macros',
+        path: 'macros/:categoryId',
+        name: 'settings_macro_category',
         meta: {
           hasSubNavigation: true
         },
@@ -126,23 +126,23 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/camera/:cameraId',
-    name: 'Camera',
+    name: 'camera',
     component: FullscreenCamera,
     ...defaultRouteConfig
   },
   {
     path: '/preview',
-    name: 'Gcode Preview',
+    name: 'preview',
     component: GcodePreview,
     ...defaultRouteConfig
   },
   {
     path: '/login',
-    name: 'Login',
+    name: 'login',
     component: Login,
     beforeEnter: (to, from, next) => {
       if (isAuthenticated()) {
-        next('/')
+        next({ name: 'home' })
       } else {
         next()
       }
@@ -153,7 +153,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/icons',
-    name: 'Icons',
+    name: 'icons',
     component: Icons
   },
   {

@@ -32,7 +32,6 @@
           :key="preset.index"
           :title="preset.name"
           :r-cols="2"
-          @click="openEditDialog(preset)"
         >
           <template #sub-title>
             <span
@@ -44,15 +43,30 @@
               {{ k }}: {{ value.value }}<small>°C</small>
             </span>
           </template>
+
           <app-btn
             fab
             text
             x-small
             color=""
+            class="ms-1"
+            @click.stop="openEditDialog(preset)"
+          >
+            <v-icon color="">
+              $edit
+            </v-icon>
+          </app-btn>
+
+          <app-btn
+            fab
+            text
+            x-small
+            color=""
+            class="ms-1"
             @click.stop="handleRemovePreset(preset)"
           >
             <v-icon color="">
-              $close
+              $delete
             </v-icon>
           </app-btn>
         </app-setting>
@@ -132,8 +146,15 @@ export default class TemperaturePresetSettings extends Mixins(StateMixin) {
     this.$store.dispatch('config/updatePreset', preset)
   }
 
-  handleRemovePreset (preset: TemperaturePreset) {
-    this.$store.dispatch('config/removePreset', preset)
+  async handleRemovePreset (preset: TemperaturePreset) {
+    const result = await this.$confirm(
+      this.$t('app.general.simple_form.msg.confirm_remove_thermal_preset', { name: preset.name }).toString(),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+
+    if (result) {
+      this.$store.dispatch('config/removePreset', preset)
+    }
   }
 }
 </script>

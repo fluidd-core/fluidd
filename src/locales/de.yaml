@@ -538,7 +538,7 @@ app:
       iframe: HTTP-Seite
       mjpegadaptive: Adaptives MJPEG
       mjpegstream: MJPEG Stream
-      video: IP Camera
+      video: IP Kamera
       webrtc_camera_streamer: WebRTC (camera-streamer)
       hlsstream: HLS-Stream
       webrtc_go2rtc: WebRTC (go2rtc)

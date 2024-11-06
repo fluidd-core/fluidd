@@ -126,7 +126,7 @@ RESTORE_GCODE_STATE NAME=_ui_retract`
   }
 
   async emergencyStop () {
-    const confirmOnEstop = this.$store.state.config.uiSettings.general.confirmOnEstop
+    const confirmOnEstop: boolean = this.$store.state.config.uiSettings.general.confirmOnEstop
 
     const result = (
       !confirmOnEstop ||

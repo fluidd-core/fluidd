@@ -120,7 +120,7 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   }
 
   get apiUrl (): string {
-    return this.$store.state.config.apiUrl as string
+    return this.$store.state.config.apiUrl
   }
 
   async LoadMarkdown () {

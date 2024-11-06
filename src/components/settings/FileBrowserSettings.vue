@@ -23,14 +23,15 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import type { TextSortOrder } from '@/store/config/types'
 
 @Component({})
 export default class FileEditorSettings extends Vue {
-  get textSortOrder () {
+  get textSortOrder (): TextSortOrder {
     return this.$store.state.config.uiSettings.general.textSortOrder
   }
 
-  set textSortOrder (value: string) {
+  set textSortOrder (value: TextSortOrder) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.textSortOrder',
       value,

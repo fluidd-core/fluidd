@@ -8,7 +8,7 @@
   >
     <router-link
       v-if="!isMobileViewport"
-      to="/"
+      :to="{ name: 'home' }"
       class="toolbar-logo"
     >
       <app-icon />
@@ -29,7 +29,7 @@
 
       <v-toolbar-title class="printer-title text--secondary">
         <router-link
-          to="/"
+          :to="{ name: 'home' }"
           v-html="instanceName"
         />
       </v-toolbar-title>
@@ -220,16 +220,8 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     return this.$store.getters['server/componentSupport']('authorization')
   }
 
-  get instances () {
-    return this.$store.state.config.instances
-  }
-
-  get instanceName () {
+  get instanceName (): string {
     return this.$store.state.config.uiSettings.general.instanceName
-  }
-
-  get currentFile () {
-    return this.$store.state.printer.printer.print_stats.filename
   }
 
   get hasUpdates () {
@@ -268,11 +260,11 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   get showSaveConfigAndRestart (): boolean {
-    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart as boolean
+    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart
   }
 
   get sectionsToIgnorePendingConfigurationChanges (): string[] {
-    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges as string[]
+    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges
   }
 
   get showUploadAndPrint (): boolean {
@@ -280,7 +272,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   get topNavPowerToggle () {
-    const topNavPowerToggle = this.$store.state.config.uiSettings.general.topNavPowerToggle as string | null
+    const topNavPowerToggle: string | null = this.$store.state.config.uiSettings.general.topNavPowerToggle
 
     if (!topNavPowerToggle) return null
 
@@ -396,7 +388,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
     if (!device) return
 
-    const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+    const confirmOnPowerDeviceChange: boolean = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
 
     const result = (
       !confirmOnPowerDeviceChange ||
@@ -429,7 +421,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
   saveConfigAndRestart (force = false) {
     if (!force) {
-      const confirmOnSaveConfigAndRestart = this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart
+      const confirmOnSaveConfigAndRestart: boolean = this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart
 
       if (confirmOnSaveConfigAndRestart) {
         this.pendingChangesDialogOpen = true

@@ -147,11 +147,11 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
     return this.$store.state.printer.printer.motion_report.live_position
   }
 
-  get useGcodeCoords () {
+  get useGcodeCoords (): boolean {
     return this.$store.state.config.uiSettings.general.useGcodeCoords
   }
 
-  get forceMove () {
+  get forceMove (): boolean {
     return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 
@@ -186,7 +186,7 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
       : this.toolheadPosition[axisIndex]
 
     if (currentPos !== pos) {
-      const rate = axis === 'Z'
+      const rate: number = axis === 'Z'
         ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
         : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
 

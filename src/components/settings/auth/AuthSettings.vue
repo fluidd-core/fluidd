@@ -65,10 +65,11 @@
             text
             x-small
             color=""
+            class="ms-1"
             @click.stop="handleRemoveUser(user)"
           >
             <v-icon color="">
-              $close
+              $delete
             </v-icon>
           </app-btn>
         </app-setting>

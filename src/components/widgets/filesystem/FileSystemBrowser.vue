@@ -80,185 +80,178 @@
             {{ item.name }}
           </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="object_height"
-          >
-            <span v-if="item.object_height !== undefined">
-              {{ $filters.getReadableLengthString(item.object_height) }}
-            </span>
-          </file-row-item>
+          <template v-if="root === 'gcodes'">
+            <file-row-item
+              :headers="headers"
+              item-value="history.status"
+            >
+              <span v-if="item.history && item.history.status !== undefined">
+                <job-history-item-status :job="item.history" />
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="first_layer_height"
-          >
-            <span v-if="item.first_layer_height !== undefined">
-              {{ item.first_layer_height }} mm
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="object_height"
+            >
+              <span v-if="item.object_height !== undefined">
+                {{ $filters.getReadableLengthString(item.object_height) }}
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="layer_height"
-          >
-            <span v-if="item.layer_height !== undefined">
-              {{ item.layer_height }} mm
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="first_layer_height"
+            >
+              <span v-if="item.first_layer_height !== undefined">
+                {{ item.first_layer_height }} mm
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="filament_name"
-          >
-            <span v-if="item.filament_name !== undefined">
-              {{ item.filament_name }}
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="layer_height"
+            >
+              <span v-if="item.layer_height !== undefined">
+                {{ item.layer_height }} mm
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="filament_type"
-          >
-            <span v-if="item.filament_type !== undefined">
-              {{ item.filament_type }}
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="filament_name"
+            >
+              <span v-if="item.filament_name !== undefined">
+                {{ item.filament_name }}
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="filament_total"
-          >
-            <span v-if="item.filament_total !== undefined">
-              {{ $filters.getReadableLengthString(item.filament_total) }}
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="filament_type"
+            >
+              <span v-if="item.filament_type !== undefined">
+                {{ item.filament_type }}
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="filament_weight_total"
-          >
-            <span v-if="item.filament_weight_total !== undefined">
-              {{ $filters.getReadableWeightString(item.filament_weight_total) }}
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="filament_total"
+            >
+              <span v-if="item.filament_total !== undefined">
+                {{ $filters.getReadableLengthString(item.filament_total) }}
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="history.filament_used"
-          >
-            <span v-if="item.history && item.history.filament_used !== undefined">
-              {{ $filters.getReadableLengthString(item.history.filament_used) }}
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="filament_weight_total"
+            >
+              <span v-if="item.filament_weight_total !== undefined">
+                {{ $filters.getReadableWeightString(item.filament_weight_total) }}
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="nozzle_diameter"
-          >
-            <span v-if="item.nozzle_diameter !== undefined">
-              {{ item.nozzle_diameter }} mm
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="history.filament_used"
+            >
+              <span v-if="item.history && item.history.filament_used !== undefined">
+                {{ $filters.getReadableLengthString(item.history.filament_used) }}
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="slicer"
-          >
-            <span v-if="item.slicer !== undefined">
-              {{ item.slicer }}
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="nozzle_diameter"
+            >
+              <span v-if="item.nozzle_diameter !== undefined">
+                {{ item.nozzle_diameter }} mm
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="slicer_version"
-          >
-            <span v-if="item.slicer_version !== undefined">
-              {{ item.slicer_version }}
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="slicer"
+            >
+              <span v-if="item.slicer !== undefined">
+                {{ item.slicer }}
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="estimated_time"
-          >
-            <span v-if="item.estimated_time !== undefined">
-              {{ $filters.formatCounterSeconds(item.estimated_time) }}
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="slicer_version"
+            >
+              <span v-if="item.slicer_version !== undefined">
+                {{ item.slicer_version }}
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="history.print_duration"
-          >
-            <span v-if="item.history && item.history.print_duration !== undefined">
-              {{ $filters.formatCounterSeconds(item.history.print_duration) }}
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="estimated_time"
+            >
+              <span v-if="item.estimated_time !== undefined">
+                {{ $filters.formatCounterSeconds(item.estimated_time) }}
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="history.total_duration"
-          >
-            <span v-if="item.history && item.history.total_duration !== undefined">
-              {{ $filters.formatCounterSeconds(item.history.total_duration) }}
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="history.print_duration"
+            >
+              <span v-if="item.history && item.history.print_duration !== undefined">
+                {{ $filters.formatCounterSeconds(item.history.print_duration) }}
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="first_layer_bed_temp"
-          >
-            <span v-if="item.first_layer_bed_temp !== undefined">
-              {{ item.first_layer_bed_temp }}<small>°C</small>
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="history.total_duration"
+            >
+              <span v-if="item.history && item.history.total_duration !== undefined">
+                {{ $filters.formatCounterSeconds(item.history.total_duration) }}
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="first_layer_extr_temp"
-          >
-            <span v-if="item.first_layer_extr_temp !== undefined">
-              {{ item.first_layer_extr_temp }}<small>°C</small>
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="first_layer_bed_temp"
+            >
+              <span v-if="item.first_layer_bed_temp !== undefined">
+                {{ item.first_layer_bed_temp }}<small>°C</small>
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="chamber_temp"
-          >
-            <span v-if="item.chamber_temp !== undefined">
-              {{ item.chamber_temp }}<small>°C</small>
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="first_layer_extr_temp"
+            >
+              <span v-if="item.first_layer_extr_temp !== undefined">
+                {{ item.first_layer_extr_temp }}<small>°C</small>
+              </span>
+            </file-row-item>
 
-          <file-row-item
-            v-if="root === 'gcodes'"
-            :headers="headers"
-            item-value="print_start_time"
-          >
-            <span v-if="item.print_start_time !== undefined && item.print_start_time !== null">
-              {{ $filters.formatDateTime(item.print_start_time * 1000) }}
-            </span>
-          </file-row-item>
+            <file-row-item
+              :headers="headers"
+              item-value="chamber_temp"
+            >
+              <span v-if="item.chamber_temp !== undefined">
+                {{ item.chamber_temp }}<small>°C</small>
+              </span>
+            </file-row-item>
+
+            <file-row-item
+              :headers="headers"
+              item-value="print_start_time"
+            >
+              <span v-if="item.print_start_time !== undefined && item.print_start_time !== null">
+                {{ $filters.formatDateTime(item.print_start_time * 1000) }}
+              </span>
+            </file-row-item>
+          </template>
 
           <file-row-item
             :headers="headers"
@@ -290,11 +283,14 @@ import type { AppTableHeader } from '@/types'
 import FilesMixin from '@/mixins/files'
 
 import FileRowItem from './FileRowItem.vue'
+import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
 import { SupportedImageFormats, SupportedVideoFormats } from '@/globals'
+import type { TextSortOrder } from '@/store/config/types'
 
 @Component({
   components: {
-    FileRowItem
+    FileRowItem,
+    JobHistoryItemStatus
   }
 })
 export default class FileSystemBrowser extends Mixins(FilesMixin) {
@@ -349,12 +345,12 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   get thumbnailSize () {
-    const thumbnailSize = this.$store.state.config.uiSettings.general.thumbnailSize
+    const thumbnailSize: number = this.$store.state.config.uiSettings.general.thumbnailSize
 
     return this.dense ? thumbnailSize / 2 : thumbnailSize
   }
 
-  get textSortOrder () {
+  get textSortOrder (): TextSortOrder {
     return this.$store.state.config.uiSettings.general.textSortOrder
   }
 
@@ -373,16 +369,20 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     return []
   }
 
-  get sortBy () {
-    return this.$store.state.config.uiSettings.fileSystem.sortBy[this.root] as string | null ?? 'modified'
+  get sortBy (): string {
+    const sortBy: string | null = this.$store.state.config.uiSettings.fileSystem.sortBy[this.root]
+
+    return sortBy ?? 'modified'
   }
 
   set sortBy (value: string | null | undefined) {
     this.$store.dispatch('config/updateFileSystemSortBy', { root: this.root, value: value ?? null })
   }
 
-  get sortDesc () {
-    return this.$store.state.config.uiSettings.fileSystem.sortDesc[this.root] as boolean | null ?? true
+  get sortDesc (): boolean {
+    const sortDesc: boolean | null = this.$store.state.config.uiSettings.fileSystem.sortDesc[this.root]
+
+    return sortDesc ?? true
   }
 
   set sortDesc (value: boolean | null | undefined) {

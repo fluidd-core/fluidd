@@ -4,7 +4,7 @@ import type { HistoryItem } from '@/store/history/types'
 export type { KlipperFileMeta, KlipperFileMetaThumbnail }
 
 export interface FilesState {
-  uploads: FilesUpload[];
+  uploads: FileUpload[];
   download: FileDownload | null;
   currentPaths: Record<string, string>;
   disk_usage: DiskUsage;
@@ -27,6 +27,7 @@ export interface KlipperFile {
   filename: string;
   modified: number | string;
   size: number;
+  uuid?: string;
   permissions?: '' | 'r' | 'rw';
   print_start_time?: number | null;
   job_id?: string | null;
@@ -51,6 +52,7 @@ export interface AppFile extends KlipperFile {
 }
 
 export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
+  modified: number;
   history: HistoryItem;
 }
 
@@ -95,6 +97,7 @@ export interface FileUpdate {
 }
 
 export interface FileDownload {
+  uid: string;
   filepath: string;
   size: number;
   loaded: number;
@@ -103,7 +106,7 @@ export interface FileDownload {
   abortController: AbortController;
 }
 
-export interface FilesUpload extends FileDownload {
+export interface FileUpload extends FileDownload {
   complete: boolean; // indicates moonraker is finished with the file.
   cancelled: boolean; // in a cancelled state, don't show - nor try to upload.
 }

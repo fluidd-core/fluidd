@@ -288,7 +288,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   @Ref('uploadSettingsFile')
   readonly uploadSettingsFile!: HTMLInputElement
 
-  get instanceName () {
+  get instanceName (): string {
     return this.$store.state.config.uiSettings.general.instanceName
   }
 
@@ -296,7 +296,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     if (this.instanceNameElement.valid) this.$store.dispatch('config/updateInstance', value)
   }
 
-  get locale () {
+  get locale (): string {
     return this.$store.state.config.uiSettings.general.locale
   }
 
@@ -311,7 +311,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     this.$store.dispatch('config/onLocaleChange', value)
   }
 
-  get dateFormat () {
+  get dateFormat (): string {
     return this.$store.state.config.uiSettings.general.dateFormat
   }
 
@@ -333,7 +333,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
       }))
   }
 
-  get timeFormat () {
+  get timeFormat (): string {
     return this.$store.state.config.uiSettings.general.timeFormat
   }
 
@@ -367,7 +367,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
-  get confirmOnEstop () {
+  get confirmOnEstop (): boolean {
     return this.$store.state.config.uiSettings.general.confirmOnEstop
   }
 
@@ -379,7 +379,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
-  get topNavPowerToggle () {
+  get topNavPowerToggle (): string | null {
     return this.$store.state.config.uiSettings.general.topNavPowerToggle
   }
 
@@ -414,7 +414,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     ]
   }
 
-  get confirmOnPowerDeviceChange () {
+  get confirmOnPowerDeviceChange (): boolean {
     return this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
   }
 
@@ -426,7 +426,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
-  get showSaveConfigAndRestart () {
+  get showSaveConfigAndRestart (): boolean {
     return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart
   }
 
@@ -438,7 +438,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
-  get showUploadAndPrint () {
+  get showUploadAndPrint (): boolean {
     return this.$store.state.config.uiSettings.general.showUploadAndPrint
   }
 
@@ -451,7 +451,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get confirmOnSaveConfigAndRestart (): boolean {
-    return this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart as boolean
+    return this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart
   }
 
   set confirmOnSaveConfigAndRestart (value: boolean) {
@@ -463,7 +463,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get sectionsToIgnorePendingConfigurationChanges (): string[] {
-    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges as string[]
+    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges
   }
 
   set sectionsToIgnorePendingConfigurationChanges (value: string[]) {
@@ -475,7 +475,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get printInProgressLayout (): PrintInProgressLayout {
-    return this.$store.state.config.uiSettings.general.printInProgressLayout as PrintInProgressLayout
+    return this.$store.state.config.uiSettings.general.printInProgressLayout
   }
 
   set printInProgressLayout (value: PrintInProgressLayout) {
@@ -520,11 +520,11 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     ]
   }
 
-  get printProgressCalculation () {
-    return this.$store.state.config.uiSettings.general.printProgressCalculation as PrintProgressCalculation
+  get printProgressCalculation (): PrintProgressCalculation[] {
+    return this.$store.state.config.uiSettings.general.printProgressCalculation
   }
 
-  set printProgressCalculation (value: string) {
+  set printProgressCalculation (value: PrintProgressCalculation[]) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.printProgressCalculation',
       value,
@@ -545,8 +545,8 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     ]
   }
 
-  get printEtaCalculation () {
-    return this.$store.state.config.uiSettings.general.printEtaCalculation as PrintEtaCalculation[]
+  get printEtaCalculation (): PrintEtaCalculation[] {
+    return this.$store.state.config.uiSettings.general.printEtaCalculation
   }
 
   set printEtaCalculation (value: PrintEtaCalculation[]) {
@@ -557,7 +557,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
-  get enableDiagnostics () {
+  get enableDiagnostics (): boolean {
     return this.$store.state.config.uiSettings.general.enableDiagnostics
   }
 

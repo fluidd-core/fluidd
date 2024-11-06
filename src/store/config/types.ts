@@ -226,6 +226,14 @@ export interface GcodePreviewConfig {
     horizontal: boolean;
     vertical: boolean;
   };
+  showCurrentLayer: boolean;
+  showNextLayer: boolean;
+  showPreviousLayer: boolean;
+  showMoves: boolean;
+  showExtrusions: boolean;
+  showRetractions: boolean;
+  showParts: boolean;
+  followProgress: boolean;
 }
 
 export interface FileSystemConfig {

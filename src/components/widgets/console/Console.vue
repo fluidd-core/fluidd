@@ -87,7 +87,7 @@ export default class Console extends Mixins(StateMixin) {
 
   _pauseScroll = false
 
-  get currentCommand () {
+  get currentCommand (): string {
     return this.$store.state.console.consoleCommand
   }
 

@@ -78,10 +78,6 @@ export default class ToolheadMixin extends Vue {
     return !!this.$store.getters['printer/getPrinterSettings']('stepper_z1') as boolean
   }
 
-  get hasHomingOverride (): boolean {
-    return this.$store.getters['printer/getHasHomingOverride'] as boolean
-  }
-
   get isManualProbeActive (): boolean {
     return this.$store.getters['printer/getIsManualProbeActive'] as boolean
   }

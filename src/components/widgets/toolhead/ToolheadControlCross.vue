@@ -199,7 +199,7 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
   moveLength: number | null = null
 
   get forceMove (): boolean {
-    return this.$store.state.config.uiSettings.toolhead.forceMove as boolean
+    return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 
   get hasRoundBed (): boolean {
@@ -211,12 +211,12 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
   }
 
   get toolheadMoveDistances (): number[] {
-    return this.$store.state.config.uiSettings.general.toolheadMoveDistances as number[]
+    return this.$store.state.config.uiSettings.general.toolheadMoveDistances
   }
 
   get toolheadMoveLength (): number {
     if (this.moveLength == null) {
-      const defaultToolheadMoveLength = this.$store.state.config.uiSettings.general.defaultToolheadMoveLength as number
+      const defaultToolheadMoveLength: number = this.$store.state.config.uiSettings.general.defaultToolheadMoveLength
 
       this.moveLength = this.toolheadMoveDistances.includes(defaultToolheadMoveLength)
         ? defaultToolheadMoveLength
@@ -244,7 +244,7 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
    * Send a move gcode script.
    */
   moveAxisBy (axis: Axis, distance: number, negative = false) {
-    const rate = axis === 'Z'
+    const rate: number = axis === 'Z'
       ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
       : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
     const inverted = this.$store.state.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false

@@ -24,7 +24,7 @@
           x-small
           text
           class="ms-1 my-1"
-          @click="$filters.routeTo($router, '/preview')"
+          @click="$filters.routeTo({ name: 'preview' })"
         >
           <v-icon>$fullScreen</v-icon>
         </app-btn>
@@ -197,9 +197,14 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   @Watch('filePosition')
   onFilePositionChanged () {
     if (this.followProgress) {
+      const moves = this.$store.getters['gcodePreview/getMoves']
+
+      if (moves.length === 0) {
+        return
+      }
+
       this.syncMoveProgress()
 
-      const moves = this.$store.getters['gcodePreview/getMoves']
       const {
         min,
         max
@@ -239,10 +244,12 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
 
   @Watch('fileLoaded')
   onFileLoaded () {
-    if (this.fileLoaded &&
-        this.$store.state.config.uiSettings.gcodePreview.autoFollowOnFileLoad &&
-        this.printerFileLoaded) {
-      this.$store.commit('gcodePreview/setViewerState', { followProgress: true }, { root: true })
+    if (
+      this.fileLoaded &&
+      this.$store.state.config.uiSettings.gcodePreview.autoFollowOnFileLoad &&
+      this.printerFileLoaded
+    ) {
+      this.followProgress = true
     }
   }
 
@@ -279,11 +286,15 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   get followProgress (): boolean {
-    return this.$store.getters['gcodePreview/getViewerOption']('followProgress')
+    return this.$store.state.config.uiSettings.gcodePreview.followProgress
   }
 
-  set followProgress (value) {
-    this.$store.commit('gcodePreview/setViewerState', { followProgress: value })
+  set followProgress (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.followProgress',
+      value,
+      server: true
+    })
   }
 
   get currentLayerMoveRange (): MinMax {
@@ -362,7 +373,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     const printerFile = this.printerFile
 
     if (!file || !printerFile || (file.path + '/' + file.filename) !== (printerFile.path + '/' + printerFile.filename)) {
-      this.$store.commit('gcodePreview/setViewerState', { followProgress: false })
+      this.followProgress = false
 
       return false
     }
@@ -370,7 +381,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     return true
   }
 
-  get autoLoadOnPrintStart () {
+  get autoLoadOnPrintStart (): boolean {
     if (this.isMobileViewport) {
       return this.$store.state.config.uiSettings.gcodePreview.autoLoadMobileOnPrintStart
     }

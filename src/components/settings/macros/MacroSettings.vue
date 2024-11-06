@@ -48,6 +48,7 @@
             text
             x-small
             color=""
+            class="ms-1"
             @click.stop="handleEditCategoryDialog(category)"
           >
             <v-icon color="">
@@ -60,10 +61,11 @@
             text
             x-small
             color=""
+            class="ms-1"
             @click.stop="handleRemoveCategory(category)"
           >
             <v-icon color="">
-              $close
+              $delete
             </v-icon>
           </app-btn>
 
@@ -159,8 +161,15 @@ export default class MacroSettings extends Mixins(StateMixin) {
     }
   }
 
-  handleRemoveCategory (category: MacroCategory) {
-    this.$store.dispatch('macros/removeCategory', category)
+  async handleRemoveCategory (category: MacroCategory) {
+    const result = await this.$confirm(
+      this.$t('app.general.simple_form.msg.confirm_remove_macro_category', { name: category.name }).toString(),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+
+    if (result) {
+      this.$store.dispatch('macros/removeCategory', category)
+    }
   }
 
   handleAddCategory (category: string) {
@@ -176,8 +185,13 @@ export default class MacroSettings extends Mixins(StateMixin) {
   }
 
   handleCategoryClick (category?: MacroCategory) {
-    const id = category?.id ?? 0
-    this.$router.push(`/settings/macros/${id}`)
+    const categoryId = category?.id ?? '0'
+    this.$router.push({
+      name: 'settings_macro_category',
+      params: {
+        categoryId
+      }
+    })
   }
 }
 </script>

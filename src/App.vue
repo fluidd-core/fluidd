@@ -139,7 +139,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get theme (): ThemeConfig {
-    return this.$store.state.config.uiSettings.theme as ThemeConfig
+    return this.$store.state.config.uiSettings.theme
   }
 
   get showBackgroundLogo () {
@@ -160,7 +160,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
   // Our app is in a loading state when the socket isn't quite ready, or
   // our translations are loading.
-  get updating () {
+  get updating (): boolean {
     return this.$store.state.version.busy
   }
 
@@ -169,7 +169,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get columnCount (): number {
-    return this.$store.state.config.containerColumnCount as number
+    return this.$store.state.config.containerColumnCount
   }
 
   get fileDropRoot () {
@@ -182,7 +182,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get pageTitle () {
-    const instanceName = this.$store.state.config.uiSettings.general.instanceName || ''
+    const instanceName: string = this.$store.state.config.uiSettings.general.instanceName || ''
     const pageName = this.$route.name
 
     if (this.printerPrinting) {

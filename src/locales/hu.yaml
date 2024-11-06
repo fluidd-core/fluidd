@@ -79,6 +79,7 @@ app:
         moonraker_backup_files: Moonraker biztonsági fájlok szűrése
         rolled_log_files: A gördített naplófájlok szűrése
         crowsnest_backup_files: Crowsnest biztonsági mentési fájlok szűrése
+        moonraker_temporary_upload_files: Moonraker ideiglenes feltöltési fájlok szűrése
     label:
       dir_name: Könyvtár neve
       disk_usage: Lemezhasználat
@@ -401,6 +402,14 @@ app:
           az ágyhálót?
         confirm_load_bedmesh_profile: A nyomtató jelenleg foglalt. Biztosan betöltöd
           a %{name} profilt?
+        confirm_remove_camera: Biztosan szeretnéd eltávolítani a kamerát %{name}?
+        confirm_remove_macro_category: Biztos, hogy el szeretnéd távolítani a makró
+          kategóriát %{name}?
+        confirm_remove_console_filter: Biztos, hogy el szeretnéd távolítani a konzol
+          szűrőjét %{name}?
+        confirm_remove_printer: Biztos, hogy el szeretnéd távolítani a nyomtatót %{name}?
+        confirm_remove_thermal_preset: Biztos, hogy el szeretnéd távolítani a hőmérsékleti
+          előbeállításokat %{name}?
     table:
       header:
         actions: Tevékenységek

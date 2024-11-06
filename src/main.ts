@@ -59,6 +59,12 @@ Vue.use(HttpClientPlugin, {
   store
 })
 
+Vue.use(SocketPlugin, {
+  reconnectEnabled: true,
+  reconnectInterval: Globals.SOCKET_RETRY_DELAY,
+  store
+})
+
 Vue.config.productionTip = false
 
 new Vue({
@@ -72,14 +78,6 @@ new Vue({
 appInit()
   .then((config: InitConfig) => {
     consola.debug('Loaded App Configuration', config)
-
-    // Init the socket plugin
-    Vue.use(SocketPlugin, {
-      url: config.apiConfig.socketUrl,
-      reconnectEnabled: true,
-      reconnectInterval: Globals.SOCKET_RETRY_DELAY,
-      store
-    })
 
     if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {
       Vue.$socket.connect(config.apiConfig.socketUrl)

@@ -528,15 +528,15 @@ type Axis = 'X' | 'Y' | 'Z'
 @Component({})
 export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMixin) {
   get enableXYHoming (): boolean {
-    return this.$store.state.config.uiSettings.general.toolheadCircleXYHomingEnabled as boolean
+    return this.$store.state.config.uiSettings.general.toolheadCircleXYHomingEnabled
   }
 
   get stepsXY (): number[] {
-    return this.$store.state.config.uiSettings.general.toolheadCircleXYMoveDistances as number[]
+    return this.$store.state.config.uiSettings.general.toolheadCircleXYMoveDistances
   }
 
   get stepsZ (): number[] {
-    return this.$store.state.config.uiSettings.general.toolheadCircleZMoveDistances as number[]
+    return this.$store.state.config.uiSettings.general.toolheadCircleZMoveDistances
   }
 
   get forceMove () {
@@ -721,7 +721,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   moveAxisBy (axis: Axis, distance: number, negative = false) {
-    const rate = axis === 'Z'
+    const rate: number = axis === 'Z'
       ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
       : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
     const inverted = this.$store.state.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
@@ -761,7 +761,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   sendMoveCenterGcode () {
     const bedCenter = this.bedCenter
-    const rate = this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+    const rate: number = this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
 
     this.sendMoveGcode(`X${bedCenter.x} Y${bedCenter.y}`, rate, true)
   }

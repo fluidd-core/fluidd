@@ -32,7 +32,7 @@
         x-small
         text
         class="ms-1 my-1"
-        @click="$filters.routeTo($router, '/console')"
+        @click="$filters.routeTo({ name: 'console' })"
       >
         <v-icon>$fullScreen</v-icon>
       </app-btn>
@@ -192,7 +192,7 @@ export default class ConsoleCard extends Vue {
     return (this.$store.state.config.layoutMode)
   }
 
-  get autoScroll () {
+  get autoScroll (): boolean {
     return this.$store.state.console.autoScroll
   }
 
