@@ -90,9 +90,9 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
     keys.forEach((key) => {
       this.series.push(this.createSeries(key))
-      if (dataKeys.includes(`${key}Target`)) this.series.push(this.createSeries(`${key}Target`))
-      if (dataKeys.includes(`${key}Power`)) this.series.push(this.createSeries(`${key}Power`))
-      if (dataKeys.includes(`${key}Speed`)) this.series.push(this.createSeries(`${key}Speed`))
+      if (dataKeys.includes(`${key}Target`)) this.series.push(this.createSeries(key, 'Target'))
+      if (dataKeys.includes(`${key}Power`)) this.series.push(this.createSeries(key, 'Power'))
+      if (dataKeys.includes(`${key}Speed`)) this.series.push(this.createSeries(key, 'Speed'))
     })
   }
 
@@ -167,10 +167,10 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
           params
             .forEach((param: any) => {
               if (
-                !param.seriesName.toLowerCase().endsWith('target') &&
-                !param.seriesName.toLowerCase().endsWith('power') &&
-                !param.seriesName.toLowerCase().endsWith('speed') &&
                 param.seriesName &&
+                !param.seriesName.endsWith('Target') &&
+                !param.seriesName.endsWith('Power') &&
+                !param.seriesName.endsWith('Speed') &&
                 param.value[param.seriesName] != null
               ) {
                 const name = param.seriesName.split(' ', 2).pop()
@@ -292,9 +292,10 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     return options
   }
 
-  createSeries (key: string) {
+  createSeries (baseKey: string, subKey?: string) {
     // Grab the color
-    const color = this.$colorset.next(getKlipperType(key), key)
+    const key = `${baseKey}${subKey ?? ''}`
+    const color = this.$colorset.next(getKlipperType(baseKey), baseKey)
 
     // Base properties
     const series: any = {
@@ -321,7 +322,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
 
     // If this is a target, adjust its display.
-    if (key.toLowerCase().endsWith('target')) {
+    if (subKey === 'Target') {
       series.yAxisIndex = 0
       series.emphasis.lineStyle.width = 1
       series.lineStyle.width = 1
@@ -331,10 +332,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
 
     // If this is a power or speed, adjust its display.
-    if (
-      key.toLowerCase().endsWith('power') ||
-      key.toLowerCase().endsWith('speed')
-    ) {
+    if (subKey === 'Power' || subKey === 'Speed') {
       series.yAxisIndex = 1
       series.emphasis.lineStyle.width = 1
       series.lineStyle.width = 1
@@ -348,10 +346,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     if (storedLegends[key] !== undefined) {
       this.initialSelected[key] = storedLegends[key]
     } else {
-      this.initialSelected[key] = !(
-        key.toLowerCase().endsWith('power') ||
-        key.toLowerCase().endsWith('speed')
-      )
+      this.initialSelected[key] = (subKey !== 'Power' && subKey !== 'Speed')
     }
 
     // Push the series into our options object.
@@ -360,7 +355,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
   showPowerAxis (selected: Record<string, boolean>) {
     const filtered = Object.keys(selected)
-      .filter(key => key.toLowerCase().endsWith('power') || key.toLowerCase().endsWith('speed'))
+      .filter(key => key.endsWith('Power') || key.endsWith('Speed'))
       .filter(key => selected[key] === true)
 
     return (filtered.length > 0)
