@@ -48,7 +48,7 @@
           </td>
           <td class="temp-power">
             <span
-              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
+              :class="{ 'active': chartSelectedLegends[item.key + '#power'] }"
               class="legend-item toggle"
               @click="$emit('legendPowerClick', item)"
             >
@@ -63,7 +63,7 @@
             class="text-no-wrap"
           >
             <span
-              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
+              :class="{ 'active': chartSelectedLegends[item.key + '#power'] }"
               class="legend-item toggle"
               @click="$emit('legendPowerClick', item)"
             >
@@ -120,7 +120,7 @@
           <td class="temp-power">
             <span
               v-if="item.speed"
-              :class="{ 'active': chartSelectedLegends[item.key + 'Speed'] }"
+              :class="{ 'active': chartSelectedLegends[item.key + '#speed'] }"
               class="legend-item toggle"
               @click="$emit('legendPowerClick', item)"
             >
@@ -138,7 +138,7 @@
             class="text-no-wrap"
           >
             <span
-              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
+              :class="{ 'active': chartSelectedLegends[item.key + '#power'] }"
               class="legend-item toggle"
               @click="$emit('legendPowerClick', item)"
             >

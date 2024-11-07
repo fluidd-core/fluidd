@@ -77,9 +77,9 @@ export const actions: ActionTree<ChartState, RootState> = {
       keys.forEach(key => {
         if (rootState.printer.printer[key]) {
           r[key] = payload[key].temperatures[i]
-          if ('targets' in payload[key]) r[`${key}Target`] = payload[key].targets[i]
-          if ('powers' in payload[key]) r[`${key}Power`] = payload[key].powers[i]
-          if ('speeds' in payload[key]) r[`${key}Speed`] = payload[key].speeds[i]
+          if ('targets' in payload[key]) r[`${key}#target`] = payload[key].targets[i]
+          if ('powers' in payload[key]) r[`${key}#power`] = payload[key].powers[i]
+          if ('speeds' in payload[key]) r[`${key}#speed`] = payload[key].speeds[i]
         }
       })
       d.push(r)

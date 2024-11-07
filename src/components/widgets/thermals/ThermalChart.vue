@@ -90,9 +90,9 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
     keys.forEach((key) => {
       this.series.push(this.createSeries(key))
-      if (dataKeys.includes(`${key}Target`)) this.series.push(this.createSeries(key, 'Target'))
-      if (dataKeys.includes(`${key}Power`)) this.series.push(this.createSeries(key, 'Power'))
-      if (dataKeys.includes(`${key}Speed`)) this.series.push(this.createSeries(key, 'Speed'))
+      if (dataKeys.includes(`${key}#target`)) this.series.push(this.createSeries(key, '#target'))
+      if (dataKeys.includes(`${key}#power`)) this.series.push(this.createSeries(key, '#power'))
+      if (dataKeys.includes(`${key}#speed`)) this.series.push(this.createSeries(key, '#speed'))
     })
   }
 
@@ -168,9 +168,9 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
             .forEach((param: any) => {
               if (
                 param.seriesName &&
-                !param.seriesName.endsWith('Target') &&
-                !param.seriesName.endsWith('Power') &&
-                !param.seriesName.endsWith('Speed') &&
+                !param.seriesName.endsWith('#target') &&
+                !param.seriesName.endsWith('#power') &&
+                !param.seriesName.endsWith('#speed') &&
                 param.value[param.seriesName] != null
               ) {
                 const name = param.seriesName.split(' ', 2).pop()
@@ -183,14 +183,14 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
                     <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
                       ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`
 
-                if (param.seriesName + 'Target' in param.value) {
-                  text += ` / ${param.value[param.seriesName + 'Target'].toFixed()}<small>°C</small>`
+                if (param.seriesName + '#target' in param.value) {
+                  text += ` / ${param.value[param.seriesName + '#target'].toFixed()}<small>°C</small>`
                 }
-                if (param.seriesName + 'Power' in param.value) {
-                  text += ` / ${(param.value[param.seriesName + 'Power'] * 100).toFixed()}<small>%</small>`
+                if (param.seriesName + '#power' in param.value) {
+                  text += ` / ${(param.value[param.seriesName + '#power'] * 100).toFixed()}<small>%</small>`
                 }
-                if (param.seriesName + 'Speed' in param.value) {
-                  text += ` / ${(param.value[param.seriesName + 'Speed'] * 100).toFixed()}<small>%</small>`
+                if (param.seriesName + '#speed' in param.value) {
+                  text += ` / ${(param.value[param.seriesName + '#speed'] * 100).toFixed()}<small>%</small>`
                 }
                 text += `</span>
                   <div style="clear: both"></div>
@@ -322,7 +322,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
 
     // If this is a target, adjust its display.
-    if (subKey === 'Target') {
+    if (subKey === '#target') {
       series.yAxisIndex = 0
       series.emphasis.lineStyle.width = 1
       series.lineStyle.width = 1
@@ -332,7 +332,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
 
     // If this is a power or speed, adjust its display.
-    if (subKey === 'Power' || subKey === 'Speed') {
+    if (subKey === '#power' || subKey === '#speed') {
       series.yAxisIndex = 1
       series.emphasis.lineStyle.width = 1
       series.lineStyle.width = 1
@@ -346,7 +346,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     if (storedLegends[key] !== undefined) {
       this.initialSelected[key] = storedLegends[key]
     } else {
-      this.initialSelected[key] = (subKey !== 'Power' && subKey !== 'Speed')
+      this.initialSelected[key] = (subKey !== '#power' && subKey !== '#speed')
     }
 
     // Push the series into our options object.
@@ -355,7 +355,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
   showPowerAxis (selected: Record<string, boolean>) {
     const filtered = Object.keys(selected)
-      .filter(key => key.endsWith('Power') || key.endsWith('Speed'))
+      .filter(key => key.endsWith('#power') || key.endsWith('#speed'))
       .filter(key => selected[key] === true)
 
     return (filtered.length > 0)
