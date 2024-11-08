@@ -53,7 +53,13 @@ export default class OutputLed extends Mixins(StateMixin) {
     const { type, config } = this.led
 
     if ('color_order' in config) {
-      return config.color_order[0]
+      const colorOrder = Array.isArray(config.color_order)
+        ? config.color_order[0]
+        : config.color_order
+
+      if (typeof colorOrder === 'string') {
+        return colorOrder
+      }
     }
 
     switch (type) {
