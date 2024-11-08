@@ -60,6 +60,14 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     return this.$store.getters['charts/getChartData']
   }
 
+  get chartableSensors (): string[] {
+    return this.$store.getters['printer/getChartableSensors'] as string[]
+  }
+
+  get chartSelectedLegends (): ChartSelectedLegends {
+    return this.$store.getters['charts/getSelectedLegends'] as ChartSelectedLegends
+  }
+
   @Watch('chartData')
   onDataChange (data: any) {
     if (this.chart && !this.loading) {
@@ -86,7 +94,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   init () {
     // Create the series and associated legends.
     const dataKeys = Object.keys(this.chartData[0])
-    const keys = this.$store.getters['printer/getChartableSensors'] as string[]
+    const keys = this.chartableSensors
 
     keys.forEach((key) => {
       this.series.push(this.createSeries(key))
@@ -183,14 +191,14 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
                     <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
                       ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`
 
-                if (param.seriesName + '#target' in param.value) {
-                  text += ` / ${param.value[param.seriesName + '#target'].toFixed()}<small>°C</small>`
+                if (param.value[`${param.seriesName}#target`] != null) {
+                  text += ` / ${param.value[`${param.seriesName}#target`].toFixed()}<small>°C</small>`
                 }
-                if (param.seriesName + '#power' in param.value) {
-                  text += ` / ${(param.value[param.seriesName + '#power'] * 100).toFixed()}<small>%</small>`
+                if (param.value[`${param.seriesName}#power`] != null) {
+                  text += ` / ${(param.value[`${param.seriesName}#power`] * 100).toFixed()}<small>%</small>`
                 }
-                if (param.seriesName + '#speed' in param.value) {
-                  text += ` / ${(param.value[param.seriesName + '#speed'] * 100).toFixed()}<small>%</small>`
+                if (param.value[`${param.seriesName}#speed`] != null) {
+                  text += ` / ${(param.value[`${param.seriesName}#speed`] * 100).toFixed()}<small>%</small>`
                 }
                 text += `</span>
                   <div style="clear: both"></div>
@@ -342,12 +350,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
 
     // Set the initial legend state (power and speed default off)
-    const storedLegends = this.$store.getters['charts/getSelectedLegends'] as ChartSelectedLegends
-    if (storedLegends[key] !== undefined) {
-      this.initialSelected[key] = storedLegends[key]
-    } else {
-      this.initialSelected[key] = (subKey !== '#power' && subKey !== '#speed')
-    }
+    this.initialSelected[key] = this.chartSelectedLegends[key] ?? (subKey !== '#power' && subKey !== '#speed')
 
     // Push the series into our options object.
     return series
@@ -361,12 +364,16 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     return (filtered.length > 0)
   }
 
-  legendToggleSelect (name: string) {
+  updateChartSelectedLegends (chartSelectedLegends: ChartSelectedLegends) {
     if (this.chart) {
-      this.chart.dispatchAction({
-        type: 'legendToggleSelect',
-        name
-      })
+      for (const [name, value] of Object.entries(chartSelectedLegends)) {
+        this.chart.dispatchAction({
+          type: value
+            ? 'legendSelect'
+            : 'legendUnSelect',
+          name
+        })
+      }
     }
   }
 

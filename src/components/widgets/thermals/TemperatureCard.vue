@@ -97,8 +97,7 @@
     </template>
 
     <temperature-targets
-      @legendClick="legendToggleSelect"
-      @legendPowerClick="legendTogglePowerSelect"
+      @updateChartSelectedLegends="updateChartSelectedLegends"
     />
 
     <template v-if="chartReady && chartVisible">
@@ -116,12 +115,12 @@
 import { Component, Mixins, Prop, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
-import type { Fan, Heater } from '@/store/printer/types'
 
 import ThermalChart from '@/components/widgets/thermals/ThermalChart.vue'
 import TemperatureTargets from '@/components/widgets/thermals/TemperatureTargets.vue'
 import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
 import type { TemperaturePreset } from '@/store/config/types'
+import type { ChartSelectedLegends } from '@/store/charts/types'
 
 @Component({
   components: {
@@ -146,22 +145,9 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     )
   }
 
-  legendToggleSelect (item: Heater | Fan) {
-    // If this has a target, toggle that too.
+  updateChartSelectedLegends (chartSelectedLegends: ChartSelectedLegends) {
     if (this.chartVisible) {
-      if ('target' in item) {
-        this.thermalChartElement.legendToggleSelect(item.key + '#target')
-      }
-      this.thermalChartElement.legendToggleSelect(item.key)
-    }
-  }
-
-  legendTogglePowerSelect (item: Heater | Fan) {
-    if (this.chartVisible) {
-      const name = ('speed' in item)
-        ? item.key + '#speed'
-        : item.key + '#power'
-      this.thermalChartElement.legendToggleSelect(name)
+      this.thermalChartElement.updateChartSelectedLegends(chartSelectedLegends)
     }
   }
 
