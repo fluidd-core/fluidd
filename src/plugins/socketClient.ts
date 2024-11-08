@@ -1,7 +1,3 @@
-/* eslint-disable lines-between-class-members */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable array-callback-return */
-
 /**
  * Taken from https://github.com/DimanVorosh/vue-json-rpc-websocket/blob/master/src/wsClient.js
  * and refactored.

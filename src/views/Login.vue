@@ -125,7 +125,7 @@ export default class Login extends Vue {
     this.loading = true
     try {
       await this.$store.dispatch('auth/login', { username: this.username, password: this.password, source: this.source })
-    } catch (err) {
+    } catch {
       this.error = true
     }
     this.loading = false
