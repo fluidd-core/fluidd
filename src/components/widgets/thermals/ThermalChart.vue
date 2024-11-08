@@ -11,6 +11,8 @@
       :init-options="{ renderer: 'svg' }"
       autoresize
       @legendselectchanged="handleLegendSelectChanged"
+      @legendselected="handleLegendSelectChanged"
+      @legendunselected="handleLegendSelectChanged"
     />
   </div>
 </template>
@@ -35,8 +37,6 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   initialSelected: Record<string, boolean> = {}
 
   handleLegendSelectChanged (event: { selected: Record<string, boolean> }) {
-    this.$store.dispatch('charts/saveSelectedLegends', event.selected)
-
     let right = (this.isMobileViewport) ? 15 : 20
     if (this.showPowerAxis(event.selected)) {
       right = (this.isMobileViewport) ? 25 : 45
@@ -357,11 +357,14 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   }
 
   showPowerAxis (selected: Record<string, boolean>) {
-    const filtered = Object.keys(selected)
-      .filter(key => key.endsWith('#power') || key.endsWith('#speed'))
-      .filter(key => selected[key] === true)
-
-    return (filtered.length > 0)
+    return Object.keys(selected)
+      .some(key =>
+        (
+          key.endsWith('#power') ||
+          key.endsWith('#speed')
+        ) &&
+        selected[key] === true
+      )
   }
 
   updateChartSelectedLegends (chartSelectedLegends: ChartSelectedLegends) {
