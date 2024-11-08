@@ -47,11 +47,14 @@ export const actions: ActionTree<SocketState, RootState> = {
    */
   async onSocketClose ({ dispatch, commit, state }, event: CloseEvent) {
     const retry = state.disconnecting
-    const modules = ['server', 'power', 'webcams', 'jobQueue', 'charts', 'socket', 'wait', 'gcodePreview']
+    const modules = ['server', 'power', 'webcams', 'jobQueue', 'socket', 'wait', 'gcodePreview']
 
     if (event.wasClean && retry) {
       // This is most likely a moonraker restart, so only partially reset.
-      await dispatch('reset', modules, { root: true })
+      await Promise.all([
+        dispatch('charts/resetChartStore', undefined, { root: true }),
+        dispatch('reset', modules, { root: true })
+      ])
       commit('setSocketConnecting', true)
       Vue.$socket.connect()
     }
@@ -67,7 +70,10 @@ export const actions: ActionTree<SocketState, RootState> = {
     if (!event.wasClean) {
       // Not a clean disconnect. Service went down?
       // Socket should attempt to reconnect itself.
-      await dispatch('reset', modules, { root: true })
+      await Promise.all([
+        dispatch('charts/resetChartStore', undefined, { root: true }),
+        dispatch('reset', modules, { root: true })
+      ])
       commit('setSocketConnecting', true)
       commit('setSocketOpen', false)
     }
