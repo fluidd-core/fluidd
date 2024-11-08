@@ -532,10 +532,9 @@ export const Rules = {
 
   regExpPatternValid (v: string) {
     try {
-      // eslint-disable-next-line no-new
       new RegExp(v)
       return true
-    } catch (e) {
+    } catch {
       return i18n.t('app.general.simple_form.error.invalid_expression')
     }
   },
