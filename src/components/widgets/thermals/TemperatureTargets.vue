@@ -39,18 +39,18 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
+              :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click="$emit('legendClick', item)"
+              @click="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
           </td>
           <td class="temp-power">
             <span
-              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
+              :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click="$emit('legendPowerClick', item)"
+              @click="legendClick(item, '#power')"
             >
               <span v-if="item.power <= 0 && item.target <= 0">off</span>
               <span v-if="item.target > 0">
@@ -63,9 +63,9 @@
             class="text-no-wrap"
           >
             <span
-              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
+              :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click="$emit('legendPowerClick', item)"
+              @click="legendClick(item, '#power')"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -110,9 +110,9 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
+              :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click="$emit('legendClick', item)"
+              @click="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
@@ -120,9 +120,9 @@
           <td class="temp-power">
             <span
               v-if="item.speed"
-              :class="{ 'active': chartSelectedLegends[item.key + 'Speed'] }"
+              :class="{ 'active':isLegendSelected(item, '#speed') }"
               class="legend-item toggle"
-              @click="$emit('legendPowerClick', item)"
+              @click="legendClick(item, '#speed')"
             >
               <span v-if="item.speed > 0 && (item.target > 0 || !item.target)">
                 {{ (item.speed * 100).toFixed(0) }}<small>%</small>
@@ -138,9 +138,9 @@
             class="text-no-wrap"
           >
             <span
-              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
+              :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click="$emit('legendPowerClick', item)"
+              @click="legendClick(item, '#power')"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -192,9 +192,9 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
+              :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click="$emit('legendClick', item)"
+              @click="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
@@ -250,7 +250,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
 import StateMixin from '@/mixins/state'
-import type { Heater, Sensor } from '@/store/printer/types'
+import type { Fan, Heater, Sensor } from '@/store/printer/types'
 import { takeRightWhile } from 'lodash-es'
 import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
 
@@ -322,6 +322,31 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     }
 
     return `${rateOfChange < 0 ? '' : '+'}${rateOfChange.toFixed(1)}`
+  }
+
+  isLegendSelected (item: Heater | Fan, subKey?: string) {
+    const key = `${item.key}${subKey ?? ''}`
+
+    return this.chartSelectedLegends[key] ?? (subKey !== '#power' && subKey !== '#speed')
+  }
+
+  legendClick (item: Heater | Fan, subKey?: string) {
+    const value = !this.isLegendSelected(item, subKey)
+    const key = `${item.key}${subKey ?? ''}`
+
+    const chartSelectedLegends: ChartSelectedLegends = {
+      [key]: value
+    }
+
+    // If this has a target, toggle that too.
+    if (
+      !subKey &&
+      'target' in item
+    ) {
+      chartSelectedLegends[`${item.key}#target`] = value
+    }
+
+    this.$emit('updateChartSelectedLegends', chartSelectedLegends)
   }
 }
 </script>
