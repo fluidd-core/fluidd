@@ -115,7 +115,7 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
     this.init(val)
   }
 
-  mounted () {
+  created () {
     this.init(this.filename)
   }
 
