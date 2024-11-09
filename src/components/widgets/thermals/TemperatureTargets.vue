@@ -346,11 +346,6 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
       chartSelectedLegends[`${item.key}#target`] = value
     }
 
-    this.$store.dispatch('charts/saveSelectedLegends', {
-      ...this.chartSelectedLegends,
-      ...chartSelectedLegends
-    })
-
     this.$emit('updateChartSelectedLegends', chartSelectedLegends)
   }
 }

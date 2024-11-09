@@ -37,6 +37,8 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   initialSelected: Record<string, boolean> = {}
 
   handleLegendSelectChanged (event: { selected: Record<string, boolean> }) {
+    this.$store.dispatch('charts/saveSelectedLegends', event.selected)
+
     let right = (this.isMobileViewport) ? 15 : 20
     if (this.showPowerAxis(event.selected)) {
       right = (this.isMobileViewport) ? 25 : 45
@@ -369,12 +371,20 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
   updateChartSelectedLegends (chartSelectedLegends: ChartSelectedLegends) {
     if (this.chart) {
-      for (const [name, value] of Object.entries(chartSelectedLegends)) {
+      const entries = Object.entries(chartSelectedLegends)
+      let index = entries.length
+
+      for (const [name, value] of entries) {
+         // only raise events for the last change
+        const silent = --index !== 0
+
         this.chart.dispatchAction({
           type: value
             ? 'legendSelect'
             : 'legendUnSelect',
           name
+        },{
+          silent
         })
       }
     }
