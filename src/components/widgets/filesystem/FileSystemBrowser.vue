@@ -354,6 +354,10 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     return this.$store.state.config.uiSettings.general.textSortOrder
   }
 
+  get filesAndFoldersDragAndDrop (): boolean {
+    return this.$store.state.config.uiSettings.general.filesAndFoldersDragAndDrop
+  }
+
   get draggedItems () {
     if (this.dragItem) {
       const filteredSelectedItems = this.selected
@@ -430,6 +434,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   // Determines if a row is currently in a draggable state or not.
   isItemDraggable (item: FileBrowserEntry) {
     return (
+      this.filesAndFoldersDragAndDrop &&
       item.name !== '..' &&
       this.files.length > 0 &&
       (
