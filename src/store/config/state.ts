@@ -49,6 +49,7 @@ export const defaultState = (): ConfigState => {
         timeFormat: 'iso',
         enableKeyboardShortcuts: true,
         textSortOrder: 'default',
+        filesAndFoldersDragAndDrop: true,
         showRateOfChange: false,
         showRelativeHumidity: true,
         showBarometricPressure: true,

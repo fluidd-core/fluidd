@@ -648,6 +648,7 @@ app:
       date_format: Date format
       time_format: Time format
       text_sort_order: Text sort order
+      drag_and_drop_functionality_for_files_and_folders: Drag-and-drop functionality for files and folders
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically

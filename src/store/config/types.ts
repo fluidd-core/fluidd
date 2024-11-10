@@ -86,6 +86,7 @@ export interface GeneralConfig {
   timeFormat: string;
   enableKeyboardShortcuts: boolean;
   textSortOrder: TextSortOrder;
+  filesAndFoldersDragAndDrop: boolean;
   showRateOfChange: boolean;
   showRelativeHumidity: boolean;
   showBarometricPressure: boolean;
