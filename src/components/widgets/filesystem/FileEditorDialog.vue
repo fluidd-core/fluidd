@@ -170,7 +170,7 @@ import isWebAssemblySupported from '@/util/is-web-assembly-supported'
 })
 export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: String, required: true })
   readonly root!: string

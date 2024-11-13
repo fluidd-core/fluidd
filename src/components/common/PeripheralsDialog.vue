@@ -324,7 +324,7 @@ type PeripheralGroup = {
 @Component({})
 export default class ManualProbeDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   tab: number | null = null
 

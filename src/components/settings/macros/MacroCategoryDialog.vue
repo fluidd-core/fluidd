@@ -28,7 +28,7 @@ import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 @Component({})
 export default class MacroCategoryDialog extends Vue {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: String, required: true })
   readonly title!: string

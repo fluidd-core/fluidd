@@ -130,7 +130,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     commit('setConnectionId', connection_id)
   },
 
-  async onServerRead ({ dispatch }, payload: {namespace: string, key?: string, value: unknown}) {
+  async onServerRead ({ dispatch }, payload: { namespace: string, key?: string, value: unknown }) {
     const { namespace, key, value } = payload
 
     if (isKeyOf(namespace, Globals.MOONRAKER_DB)) {

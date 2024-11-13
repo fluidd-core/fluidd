@@ -77,7 +77,7 @@ export default class CameraItem extends Vue {
   readonly componentInstance!: CameraMixin
 
   rawCameraUrl: string | null = null
-  framesPerSecond : string | null = null
+  framesPerSecond: string | null = null
 
   mounted () {
     this.setupFrameEvents()

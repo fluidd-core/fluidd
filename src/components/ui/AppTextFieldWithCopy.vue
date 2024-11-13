@@ -42,7 +42,7 @@ import { Component, VModel, Vue } from 'vue-property-decorator'
 @Component({})
 export default class AppTextFieldWithCopy extends Vue {
   @VModel()
-    inputValue!: unknown
+  inputValue!: unknown
 
   hasCopied = false
 

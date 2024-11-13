@@ -182,10 +182,10 @@ interface PointerPosition {
 @Component({})
 export default class AppColorPicker extends Vue {
   @VModel({ type: String, required: true })
-    inputPrimaryColor!: string
+  inputPrimaryColor!: string
 
   @PropSync('white', { type: Number, default: 0 })
-    inputWhiteValue!: number
+  inputWhiteValue!: number
 
   @Prop({ type: String, default: '' })
   readonly title!: string

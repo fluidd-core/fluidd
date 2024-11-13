@@ -44,7 +44,7 @@ import ToolheadMixin from '@/mixins/toolhead'
 @Component({})
 export default class SaveMeshDialog extends Mixins(StateMixin, ToolheadMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: String })
   readonly existingName!: string

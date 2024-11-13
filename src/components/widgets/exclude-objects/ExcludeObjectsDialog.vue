@@ -49,7 +49,7 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class ExcludeObjectDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   get parts () {
     const parts = this.$store.getters['parts/getParts']

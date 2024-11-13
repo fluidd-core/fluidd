@@ -86,7 +86,7 @@ import BrowserMixin from '@/mixins/browser'
 @Component({})
 export default class DiagnosticsCardConfigDialog extends Mixins(BrowserMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: Object, required: true })
   readonly config!: DiagnosticsCardConfig

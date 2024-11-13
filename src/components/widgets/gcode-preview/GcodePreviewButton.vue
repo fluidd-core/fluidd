@@ -26,7 +26,7 @@ import BrowserMixin from '@/mixins/browser'
 @Component({})
 export default class GcodePreviewButton extends Mixins(BrowserMixin) {
   @VModel({ type: Boolean })
-    inputValue?: boolean
+  inputValue?: boolean
 
   @Prop({ type: String, required: true })
   readonly icon!: string

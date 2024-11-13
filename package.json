@@ -97,6 +97,7 @@
     "jsdom": "^25.0.1",
     "mockdate": "^3.0.5",
     "monaco-vscode-textmate-theme-converter": "^0.1.7",
+    "neostandard": "^0.11.8",
     "rollup": "^4.26.0",
     "sass": "~1.32.13",
     "shx": "^0.3.4",

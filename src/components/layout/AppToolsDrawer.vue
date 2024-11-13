@@ -34,7 +34,7 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class AppToolsDrawer extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   get supportsHistory () {
     return this.$store.getters['server/componentSupport']('history')

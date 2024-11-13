@@ -54,7 +54,7 @@ const getDocsSection = (service: CodeLensSupportedService, sectionName: string) 
   return sectionName
 }
 
-async function setupMonaco() {
+async function setupMonaco () {
   await Promise.all([
     loadWASM(onigasmWasm),
     import('./setupMonaco.features')

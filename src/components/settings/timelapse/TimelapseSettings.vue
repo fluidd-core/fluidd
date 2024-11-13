@@ -143,7 +143,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
 
   renderSettingsDialogOpen = false
 
-  get supportedModes (): {text: string, value: TimelapseMode}[] {
+  get supportedModes (): { text: string, value: TimelapseMode }[] {
     return [{
       text: this.$tc('app.timelapse.setting.mode_layermacro'),
       value: 'layermacro'
@@ -153,7 +153,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
     }]
   }
 
-  get cameras (): Array<{text?: string, value: string, disabled: boolean}> {
+  get cameras (): Array<{ text?: string, value: string, disabled: boolean }> {
     const cameras = this.$store.getters['webcams/getWebcams'] as WebcamConfig[]
 
     return cameras

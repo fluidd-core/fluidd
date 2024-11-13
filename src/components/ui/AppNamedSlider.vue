@@ -101,7 +101,7 @@ import BrowserMixin from '@/mixins/browser'
 })
 export default class AppNamedSlider extends Mixins(BrowserMixin) {
   @VModel({ type: Number, required: true })
-    inputValue!: number
+  inputValue!: number
 
   @Prop({ type: Number })
   readonly resetValue?: number

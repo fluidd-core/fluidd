@@ -75,7 +75,7 @@ const createHttpClient = (store: Store<RootState>) => {
     return response
   }
 
-  const errorInterceptor = async (error: AxiosError<string | { error?: { message?: string} } | undefined>) => {
+  const errorInterceptor = async (error: AxiosError<string | { error?: { message?: string } } | undefined>) => {
     let message: string | undefined
 
     // Check if its a network / server error.

@@ -19,7 +19,7 @@ const isTargetHtmlElement = (element: HTMLElement): element is TargetHtmlElement
 @Component({})
 export default class AppDraggable extends Vue {
   @VModel({ type: Array, default: () => [] })
-    items!: unknown[]
+  items!: unknown[]
 
   @Prop({ type: Object })
   readonly options?: Sortable.Options

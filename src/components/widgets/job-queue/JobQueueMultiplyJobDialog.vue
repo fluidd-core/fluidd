@@ -32,7 +32,7 @@ export default class JobQueueMultiplyJobDialog extends Vue {
   copies = 1
 
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: [Object, Array], required: true })
   readonly job!: QueuedJob | QueuedJob[]

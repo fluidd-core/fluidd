@@ -206,7 +206,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
   expanded: HistoryItem[] = []
 
   @PropSync('search', { type: String, default: '' })
-    searchModel!: string
+  searchModel!: string
 
   get headers (): AppTableHeader[] {
     const headers = [

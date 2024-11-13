@@ -131,7 +131,7 @@ import BrowserMixin from '@/mixins/browser'
 @Component({})
 export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   get supportsHistory (): boolean {
     return this.$store.getters['server/componentSupport']('history')

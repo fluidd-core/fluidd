@@ -1,3 +1,4 @@
+/* eslint-disable no-fallthrough */
 import type { ArcMove, Layer, LinearMove, Move, Part, Point, PositioningMode } from '@/store/gcodePreview/types'
 import isKeyOf from '@/util/is-key-of'
 import { pick } from 'lodash-es'

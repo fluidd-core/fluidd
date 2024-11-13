@@ -80,7 +80,7 @@ export default class Console extends Mixins(StateMixin) {
   readonly readonly?: boolean
 
   @PropSync('scrollingPaused', { type: Boolean })
-    scrollingPausedModel?: boolean
+  scrollingPausedModel?: boolean
 
   @Ref('scroller')
   readonly dynamicScroller!: DinamicScroller

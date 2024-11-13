@@ -196,7 +196,7 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   readonly loading?: boolean
 
   @PropSync('search', { type: String, default: '' })
-    searchModel!: string
+  searchModel!: string
 
   get readonly () {
     return this.rootProperties.readonly

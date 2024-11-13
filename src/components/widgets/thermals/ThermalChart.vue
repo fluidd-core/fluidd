@@ -375,7 +375,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
       let index = entries.length
 
       for (const [name, value] of entries) {
-         // only raise events for the last change
+        // only raise events for the last change
         const silent = --index !== 0
 
         this.chart.dispatchAction({
@@ -383,7 +383,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
             ? 'legendSelect'
             : 'legendUnSelect',
           name
-        },{
+        }, {
           silent
         })
       }

@@ -71,7 +71,7 @@ type QueueJobWithKey = QueuedJob & {
 @Component({})
 export default class JobQueueBrowser extends Mixins(StateMixin) {
   @VModel({ type: Array<QueuedJob>, default: () => [] })
-    selected!: QueuedJob[]
+  selected!: QueuedJob[]
 
   @Prop({ type: Boolean })
   readonly dense?: boolean

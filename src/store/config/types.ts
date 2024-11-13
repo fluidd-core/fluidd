@@ -112,7 +112,7 @@ export type ToolheadControlStyle = 'cross' | 'bars' | 'circle'
 
 export type TextSortOrder = 'default' | 'numeric-prefix' | 'version'
 
-export type CameraFullscreenAction = 'embed' | 'rawstream';
+export type CameraFullscreenAction = 'embed' | 'rawstream'
 
 export type PrintInProgressLayout = 'default' | 'compact'
 
