@@ -227,7 +227,7 @@ async function setupMonaco () {
           lineContent = lineContent.trim()
 
           if (lineContent.length > 0) {
-            const isComment = /^;|#(?!(region|endregion)\b)/.test(lineContent)
+            const isComment = /^;|#(?!(?:region|endregion)\b)/.test(lineContent)
 
             if (isComment) {
               if (state.current) {
