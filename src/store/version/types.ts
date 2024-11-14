@@ -5,10 +5,9 @@ export interface VersionState {
   github_limit_reset_time: number;
   version_info: VersionComponents;
   responses: UpdateResponse[];
-  fluidd: FluiddVersion;
 }
 
-export type VersionComponents = Record<string, UpdatePackage>;
+export type VersionComponents = Record<string, UpdatePackage>
 
 /**
  * Base interface for all versioned packages
@@ -82,8 +81,8 @@ export interface ZipUpdatePackage extends VersionedPackage {
   last_error?: string;
 }
 
-export type VersionedUpdatePackage = GitUpdatePackage | WebUpdatePackage | ZipUpdatePackage;
-export type UpdatePackage = VersionedUpdatePackage | OSPackage;
+export type VersionedUpdatePackage = GitUpdatePackage | WebUpdatePackage | ZipUpdatePackage
+export type UpdatePackage = VersionedUpdatePackage | OSPackage
 
 export interface CommitItem {
   author: string;
@@ -99,11 +98,6 @@ export interface OSPackage {
   key: string;
   package_count: number;
   package_list: string[];
-}
-
-export interface FluiddVersion {
-  version: string;
-  hash: string;
 }
 
 export interface UpdateResponse {

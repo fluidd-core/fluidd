@@ -128,7 +128,7 @@ const routeGuard = (to: Route): Parameters<NavigationGuardNext>[0] => {
   const categories = store.getters['macros/getCategories']
   const i = categories.findIndex((c: MacroCategory) => c.id === id)
   if (id !== '0' && i === -1) {
-    return { path: '/settings', hash: 'macros' } satisfies Location
+    return { name: 'settings', hash: '#macros' } satisfies Location
   }
 }
 
@@ -170,11 +170,11 @@ export default class MacroCategorySettings extends Vue {
     }
   }
 
-  beforeRouteEnter (to: Route, from: Route, next: NavigationGuardNext<Vue>) {
+  beforeRouteEnter (to: Route, from: Route, next: NavigationGuardNext) {
     next(routeGuard(to))
   }
 
-  beforeRouteUpdate (to: Route, from: Route, next: NavigationGuardNext<Vue>) {
+  beforeRouteUpdate (to: Route, from: Route, next: NavigationGuardNext) {
     next(routeGuard(to))
   }
 

@@ -39,7 +39,6 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getKlippyStateMessage: (state, getters, rootState, rootGetters): string => {
-    const regex = /(?:\r\n|\r|\n)/g
     // If there's absolutely no connection to klipper, then
     // say so.
     const serverInfo = rootGetters['server/getInfo'] as ServerInfo
@@ -54,13 +53,13 @@ export const getters: GetterTree<PrinterState, RootState> = {
       state.printer.info.state_message &&
       state.printer.info.state_message !== ''
     ) {
-      return state.printer.info.state_message.trim().replace(regex, '<br />')
+      return state.printer.info.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
     }
     if (
       state.printer.webhooks.state_message &&
       state.printer.webhooks.state_message !== ''
     ) {
-      return state.printer.webhooks.state_message.trim().replace(regex, '<br />')
+      return state.printer.webhooks.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
     }
     return 'Unknown'
   },
@@ -521,7 +520,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return getters.getOutputs([
       'led',
       'neopixel',
-      'dotstar'
+      'dotstar',
+      'pca9533',
+      'pca9632'
     ])
   },
 
@@ -600,7 +601,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const leds = [
       'led',
       'neopixel',
-      'dotstar'
+      'dotstar',
+      'pca9533',
+      'pca9632'
     ]
 
     // Are they controllable?
@@ -612,7 +615,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'pwm_cycle_time',
       'led',
       'neopixel',
-      'dotstar'
+      'dotstar',
+      'pca9533',
+      'pca9632'
     ]
 
     // Should we apply a color?
@@ -631,7 +636,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'fan_generic',
       'led',
       'neopixel',
-      'dotstar'
+      'dotstar',
+      'pca9533',
+      'pca9632'
     ]
 
     const supportedTypes = (filter && filter.length)
@@ -907,39 +914,44 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getHasWarnings: (state, getters, rootState) => {
-    if (
-      (rootState.socket && rootState.socket.open && rootState.socket.ready) &&
-      (getters.getPrinterWarnings.length > 0 || getters.getKlipperWarnings.length > 0 ||
-        getters.getMoonrakerFailedComponents.length > 0 || getters.getMoonrakerWarnings.length > 0)
-    ) {
-      return true
-    } else {
-      return false
-    }
+    return (
+      rootState.socket &&
+      rootState.socket.open &&
+      rootState.socket.ready &&
+      (
+        getters.getPrinterWarnings.length > 0 ||
+        getters.getKlipperWarnings.length > 0 ||
+        getters.getMoonrakerFailedComponents.length > 0 ||
+        getters.getMoonrakerWarnings.length > 0
+      )
+    )
   },
 
   getPrinterWarnings: (state, getters) => {
     const config = getters.getPrinterConfig()
     const warnings = []
 
-    if (config && !('virtual_sdcard' in config)) {
-      warnings.push({ message: '[virtual_sdcard] not found in printer configuration.' })
+    if (config) {
+      if (!('virtual_sdcard' in config)) {
+        warnings.push({ message: '[virtual_sdcard] not found in printer configuration.' })
+      }
+
+      if (!('pause_resume' in config)) {
+        warnings.push({ message: '[pause_resume] not found in printer configuration.' })
+      }
+
+      if (
+        !('display' in config) &&
+        !('display_status' in config)
+      ) {
+        warnings.push({ message: '[display_status] is required if you do not have a [display] defined.' })
+      }
+
+      if (!('gcode_macro CANCEL_PRINT' in config)) {
+        warnings.push({ message: 'CANCEL_PRINT macro not found in configuration.' })
+      }
     }
 
-    if (config && !('pause_resume' in config)) {
-      warnings.push({ message: '[pause_resume] not found in printer configuration.' })
-    }
-
-    if (
-      config &&
-      !('display' in config) && !('display_status' in config)
-    ) {
-      warnings.push({ message: '[display_status] is required if you do not have a [display] defined.' })
-    }
-
-    if (config && !('gcode_macro CANCEL_PRINT' in config)) {
-      warnings.push({ message: 'CANCEL_PRINT macro not found in configuration.' })
-    }
     return warnings
   },
 
@@ -969,15 +981,6 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const saveConfigPendingItems = state.printer.configfile?.save_config_pending_items as Record<string, Record<string, string>> | undefined
 
     return saveConfigPendingItems || {}
-  },
-
-  getHasHomingOverride: (state, getters) => {
-    const config = getters.getPrinterConfig()
-    if (config && ('homing_override' in config)) {
-      return true
-    } else {
-      return false
-    }
   },
 
   getHasRoundBed: (_, getters): boolean => {

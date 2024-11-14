@@ -7,6 +7,7 @@
       align-self="center"
       cols="5"
       class="text-body-1 py-0"
+      :class="{ 'text--disabled': !klippyReady }"
     >
       {{ led.prettyName }}
     </v-col>
@@ -16,6 +17,7 @@
         :white.sync="whiteValue"
         :title="led.prettyName"
         :supported-channels="supportedChannels"
+        :disabled="!klippyReady"
         dot
       />
     </v-col>
@@ -51,7 +53,13 @@ export default class OutputLed extends Mixins(StateMixin) {
     const { type, config } = this.led
 
     if ('color_order' in config) {
-      return config.color_order[0]
+      const colorOrder = Array.isArray(config.color_order)
+        ? config.color_order[0]
+        : config.color_order
+
+      if (typeof colorOrder === 'string') {
+        return colorOrder
+      }
     }
 
     switch (type) {

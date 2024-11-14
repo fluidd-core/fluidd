@@ -11,7 +11,7 @@
       <v-list-item
         v-if="item.visible"
         :key="item.name"
-        :to="`/settings${item.hash}`"
+        :to="{ name: 'settings', hash: item.hash }"
         :exact="false"
         link
       >

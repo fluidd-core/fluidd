@@ -142,7 +142,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
-import type { AppDirectory, AppFile, AppFileWithMeta, FilesUpload, FileFilterType, FileBrowserEntry, RootProperties } from '@/store/files/types'
+import type { AppDirectory, AppFile, AppFileWithMeta, FileUpload, FileFilterType, FileBrowserEntry, RootProperties } from '@/store/files/types'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import ServicesMixin from '@/mixins/services'
@@ -319,6 +319,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.currentRoot === 'gcodes') {
       headers = [
         ...headers,
+        { text: this.$t('app.general.table.header.status'), value: 'history.status', configurable: true },
         { text: this.$t('app.general.table.header.height'), value: 'object_height', configurable: true },
         { text: this.$t('app.general.table.header.first_layer_height'), value: 'first_layer_height', configurable: true },
         { text: this.$t('app.general.table.header.layer_height'), value: 'layer_height', configurable: true },
@@ -407,6 +408,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
             }
             break
 
+          case 'moonraker_temporary_upload_files':
+            if (file.name.endsWith('.mru')) {
+              return false
+            }
+            break
+
           case 'klipper_backup_files':
             if (file.type === 'file' && file.filename.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
               return false
@@ -420,7 +427,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
             break
 
           case 'rolled_log_files':
-            if (file.type === 'file' && file.filename.match(/\.\d{4}-\d{2}-\d{2}(_\d{2}-\d{2}-\d{2})?$/)) {
+            if (file.type === 'file' && (
+              file.filename.match(/\.\d{4}-\d{2}-\d{2}(_\d{2}-\d{2}-\d{2})?$/) ||
+              file.filename.match(/\.log\.\d+$/)
+            )) {
               return false
             }
             break
@@ -457,7 +467,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   // Get a list of currently active uploads.
-  get currentUploads (): FilesUpload[] {
+  get currentUploads (): FileUpload[] {
     return this.$store.state.files.uploads
   }
 
@@ -691,8 +701,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
       if (!gcode) return
 
-      if (this.$router.currentRoute.path !== '/' || !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')) {
-        this.$router.push({ path: '/preview' })
+      if (
+        this.$router.currentRoute.name !== 'home' ||
+        !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')
+      ) {
+        this.$router.push({ name: 'preview' })
       }
 
       this.$store.dispatch('gcodePreview/loadGcode', {
@@ -735,7 +748,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     const filename = file.path ? `${file.path}/${file.filename}` : file.filename
 
     const spoolmanSupported = this.$store.getters['spoolman/getAvailable']
-    const autoSpoolSelectionDialog = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
+    const autoSpoolSelectionDialog: boolean = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
     if (spoolmanSupported && autoSpoolSelectionDialog) {
       this.$store.commit('spoolman/setDialogState', {
         show: true,
@@ -748,8 +761,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     SocketActions.printerPrintStart(filename)
 
     // If we aren't on the dashboard, push the user back there.
-    if (this.$router.currentRoute.path !== '/') {
-      this.$router.push({ path: '/' })
+    if (this.$router.currentRoute.name !== 'home') {
+      this.$router.push({ name: 'home' })
     }
   }
 
@@ -874,12 +887,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     this.$store.dispatch('wait/removeWait', wait)
   }
 
-  handleCancelUpload (file: FilesUpload) {
+  handleCancelUpload (file: FileUpload) {
     if (!file.complete) {
       // Hasn't started uploading...
       if (file.loaded === 0) {
         this.$store.dispatch('files/updateFileUpload', {
-          filepath: file.filepath,
+          uid: file.uid,
           cancelled: true
         })
       }

@@ -5,7 +5,7 @@
   >
     <template #activator="{ attrs, on }">
       <v-list-item
-        :to="to"
+        :to="{ name: to }"
         :exact="exact"
         link
         color="secondary"
@@ -55,15 +55,9 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
   readonly icon?: string
 
   get accelerator (): string | undefined {
-    if (this.to) {
-      const destination = this.to === '/'
-        ? 'home'
-        : this.to.substring(1)
-
-      return isKeyOf(destination, Globals.KEYBOARD_SHORTCUTS)
-        ? Globals.KEYBOARD_SHORTCUTS[destination]
-        : undefined
-    }
+    return isKeyOf(this.to, Globals.KEYBOARD_SHORTCUTS)
+      ? Globals.KEYBOARD_SHORTCUTS[this.to]
+      : undefined
   }
 
   get enableKeyboardShortcuts (): boolean {
@@ -83,11 +77,11 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
     if (
       shortcut === this.accelerator &&
       !eventTargetIsContentEditable(event) &&
-      this.$router.currentRoute.path !== this.to
+      this.$router.currentRoute.name !== this.to
     ) {
       event.preventDefault()
 
-      this.$router.push(this.to)
+      this.$router.push({ name: this.to })
     }
   }
 

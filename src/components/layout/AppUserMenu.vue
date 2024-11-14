@@ -59,7 +59,7 @@
         dense
         class="py-0"
       >
-        <v-list-item @click="$filters.routeTo($router, '/settings#auth')">
+        <v-list-item @click="$filters.routeTo({ name: 'settings', hash: '#auth' })">
           <v-list-item-icon>
             <v-icon>$addAccount</v-icon>
           </v-list-item-icon>

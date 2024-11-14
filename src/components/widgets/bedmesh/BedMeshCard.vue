@@ -48,7 +48,7 @@
         x-small
         text
         class="ms-1 my-1"
-        @click="$filters.routeTo($router, '/tune')"
+        @click="$filters.routeTo({ name: 'tune' })"
       >
         <v-icon>$fullScreen</v-icon>
       </app-btn>
@@ -75,7 +75,7 @@ import BedMeshChart from './BedMeshChart.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import BrowserMixin from '@/mixins/browser'
-import type { AppMeshes } from '@/store/mesh/types'
+import type { AppMeshes, MatrixType } from '@/store/mesh/types'
 
 @Component({
   components: {
@@ -207,23 +207,23 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
     this.sendGcode('BED_MESH_CALIBRATE', this.$waits.onMeshCalibrate)
   }
 
-  get matrix () {
+  get matrix (): MatrixType {
     return this.$store.state.mesh.matrix
   }
 
-  get scale () {
+  get scale (): number {
     return this.$store.state.mesh.scale
   }
 
-  get boxScale () {
+  get boxScale (): number {
     return this.$store.state.mesh.boxScale
   }
 
-  get wireframe () {
+  get wireframe (): boolean {
     return this.$store.state.mesh.wireframe
   }
 
-  get flatSurface () {
+  get flatSurface (): boolean {
     return this.$store.state.mesh.flatSurface
   }
 

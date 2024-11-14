@@ -74,7 +74,7 @@ import { consola } from 'consola'
 @Component({})
 export default class FilePreviewDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: String })
   readonly path?: string
@@ -120,7 +120,7 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   }
 
   get apiUrl (): string {
-    return this.$store.state.config.apiUrl as string
+    return this.$store.state.config.apiUrl
   }
 
   async LoadMarkdown () {

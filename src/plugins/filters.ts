@@ -1,5 +1,5 @@
-import _Vue from 'vue'
-import VueRouter from 'vue-router'
+import type _Vue from 'vue'
+import { isNavigationFailure, NavigationFailureType, type RawLocation } from 'vue-router'
 import { camelCase, startCase, capitalize, isFinite, upperFirst } from 'lodash-es'
 import type { ApiConfig, TextSortOrder } from '@/store/config/types'
 import { TinyColor } from '@ctrl/tinycolor'
@@ -7,8 +7,10 @@ import { DateFormats, Globals, TimeFormats, Waits, type DateTimeFormat } from '@
 import i18n from '@/plugins/i18n'
 import type { TranslateResult } from 'vue-i18n'
 import store from '@/store'
+import router from '@/router'
 import type { FileBrowserEntry } from '@/store/files/types'
 import versionStringCompare from '@/util/version-string-compare'
+import consola from 'consola'
 
 /**
  * credit: taken from Vuetify source
@@ -439,8 +441,15 @@ export const Filters = {
    * Simple approach to route somewhere when we don't necessarily want
    * route matching via :to
    */
-  routeTo (router: VueRouter, path: string) {
-    if (router.currentRoute.fullPath !== path) router.push(path)
+  async routeTo (to: RawLocation) {
+    try {
+      await router.push(to)
+    } catch (error) {
+      // Ignore any duplicate navigation error but log the others
+      if (!isNavigationFailure(error, NavigationFailureType.duplicated)) {
+        consola.error('[Router]', error)
+      }
+    }
   },
 
   /**
@@ -470,10 +479,18 @@ export const Rules = {
   },
 
   numberGreaterThanOrEqualOrZero (min: number) {
+    if (min === 0) {
+      return Rules.numberGreaterThanOrEqual(0)
+    }
+
     return (v: number) => +v === 0 || v >= min || i18n.t('app.general.simple_form.error.min_or_0', { min })
   },
 
   numberGreaterThanOrZero (min: number) {
+    if (min === 0) {
+      return Rules.numberGreaterThan(0)
+    }
+
     return (v: number) => +v === 0 || v > min || i18n.t('app.general.simple_form.error.min_or_0', { min: `> ${min}` })
   },
 
@@ -518,7 +535,7 @@ export const Rules = {
       // eslint-disable-next-line no-new
       new RegExp(v)
       return true
-    } catch (e) {
+    } catch {
       return i18n.t('app.general.simple_form.error.invalid_expression')
     }
   },

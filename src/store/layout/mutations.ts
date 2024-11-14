@@ -32,13 +32,17 @@ export const mutations: MutationTree<LayoutState> = {
       // migrate existing layouts
       const migratableLayoutKeys = ['dashboard']
 
-      for (const layoutKey of Object.keys(payload.layouts)) {
+      for (const [layoutKey, currentLayout] of Object.entries(payload.layouts)) {
+        for (const [containerKey, components] of Object.entries(currentLayout)) {
+          currentLayout[containerKey] = components
+            .filter(card => card != null)
+        }
+
         const migratableLayoutKey = migratableLayoutKeys.find(key => layoutKey.startsWith(key))
 
         if (migratableLayoutKey) {
           const defaultLayout = defaultState.layouts[migratableLayoutKey]
           const defaultComponentIds = Object.values(defaultLayout).flat().map(card => card.id)
-          const currentLayout = payload.layouts[layoutKey]
           const currentComponentIds = Object.values(currentLayout).flat().map(card => card.id)
 
           for (const [containerKey, defaultContainerComponents] of Object.entries(defaultLayout)) {
@@ -53,7 +57,7 @@ export const mutations: MutationTree<LayoutState> = {
 
         // diagnostics specific layout updates
         if (layoutKey.startsWith('diagnostics')) {
-          const diagnostics = payload.layouts[layoutKey] as DiagnosticsCardContainer
+          const diagnostics = currentLayout as DiagnosticsCardContainer
 
           for (const diagnosticsCardConfigs of Object.values(diagnostics)) {
             for (const diagnosticsCardConfig of diagnosticsCardConfigs) {

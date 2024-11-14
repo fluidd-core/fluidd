@@ -60,7 +60,9 @@ export default class Outputs extends Vue {
     return [
       'led',
       'neopixel',
-      'dotstar'
+      'dotstar',
+      'pca9533',
+      'pca9632'
     ]
   }
 }

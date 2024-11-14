@@ -79,6 +79,7 @@ app:
         moonraker_backup_files: Moonraker biztonsági fájlok szűrése
         rolled_log_files: A gördített naplófájlok szűrése
         crowsnest_backup_files: Crowsnest biztonsági mentési fájlok szűrése
+        moonraker_temporary_upload_files: Moonraker ideiglenes feltöltési fájlok szűrése
     label:
       dir_name: Könyvtár neve
       disk_usage: Lemezhasználat
@@ -113,11 +114,10 @@ app:
       items_count: '{count} tétel | {count} tételeket'
       root_disabled: '{root} nem elérhető. Kérjük, ellenőrizd a naplókat.'
     url:
-      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
       crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
-      danger_klipper_config: https://dangerklipper.io/Config_Reference.html#%{hash}
   gcode:
     btn:
       load_current_file: Aktuális fájl betöltése
@@ -402,6 +402,14 @@ app:
           az ágyhálót?
         confirm_load_bedmesh_profile: A nyomtató jelenleg foglalt. Biztosan betöltöd
           a %{name} profilt?
+        confirm_remove_camera: Biztosan szeretnéd eltávolítani a kamerát %{name}?
+        confirm_remove_macro_category: Biztos, hogy el szeretnéd távolítani a makró
+          kategóriát %{name}?
+        confirm_remove_console_filter: Biztos, hogy el szeretnéd távolítani a konzol
+          szűrőjét %{name}?
+        confirm_remove_printer: Biztos, hogy el szeretnéd távolítani a nyomtatót %{name}?
+        confirm_remove_thermal_preset: Biztos, hogy el szeretnéd távolítani a hőmérsékleti
+          előbeállításokat %{name}?
     table:
       header:
         actions: Tevékenységek
@@ -513,10 +521,15 @@ app:
       standby: Készenlét
     title:
       printer_status: Nyomtató állapota
+      stepper_driver_overheating: A '%{name}' léptetőmotor meghajtó túlmelegedett
+    msg:
+      possible_print_failure: Ez sikertelen nyomtatáshoz vezethet
+    url:
+      stepper_driver_overheating: '%{klipperDomain}/TMC_Drivers.html#tmc-reports-error-ot1overtemperror'
   setting:
     btn:
       add_camera: Kamera hozzáadása
-      add_category: Kategória hozzáadása
+      add_category: Kategória Hozzáadása
       add_filter: Szűrő hozzáadása
       add_metric: Metrika hozzáadása
       add_thermal_preset: Előbeállítás hozzáadása

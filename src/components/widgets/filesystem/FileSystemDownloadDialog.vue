@@ -57,7 +57,7 @@ export default class FileSystemDownloadDialog extends Mixins(StateMixin) {
     this.open = !!val
   }
 
-  get currentDownload () {
+  get currentDownload (): FileDownload | null {
     return this.$store.state.files.download
   }
 

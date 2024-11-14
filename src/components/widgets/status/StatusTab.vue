@@ -298,7 +298,7 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
   }
 
   get printInProgressLayout (): PrintInProgressLayout {
-    return this.$store.state.config.uiSettings.general.printInProgressLayout as PrintInProgressLayout
+    return this.$store.state.config.uiSettings.general.printInProgressLayout
   }
 
   /**
@@ -346,11 +346,11 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
   }
 
   get liveVelocity (): number {
-    return this.$store.state.printer.printer.motion_report.live_velocity as number
+    return this.$store.state.printer.printer.motion_report.live_velocity
   }
 
   get liveExtruderVelocity (): number {
-    return this.$store.state.printer.printer.motion_report.live_extruder_velocity as number
+    return this.$store.state.printer.printer.motion_report.live_extruder_velocity
   }
 
   get liveFlow (): number {
@@ -396,7 +396,7 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
    * Filament used according to print stats.
    */
   get filamentUsed (): number {
-    const filamentUsed = this.$store.state.printer.printer.print_stats.filament_used as number | undefined
+    const filamentUsed: number | undefined = this.$store.state.printer.printer.print_stats.filament_used
 
     return filamentUsed ?? 0
   }
@@ -404,8 +404,8 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
   /**
    * Total filament according to the current file / slicer.
    */
-  get filamentTotal () {
-    const filamentTotal = this.$store.state.printer.printer.current_file.filament_total as number | undefined
+  get filamentTotal (): number {
+    const filamentTotal: number | undefined = this.$store.state.printer.printer.current_file.filament_total
 
     return filamentTotal || 0
   }
@@ -430,6 +430,7 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
   .print-thumb {
     display: block;
     max-height: 110px;
+    pointer-events: none;
   }
 
   .filename {
@@ -453,5 +454,6 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
     max-height: 70px;
     border-radius: 50%;
     overflow: hidden;
+    pointer-events: none;
   }
 </style>

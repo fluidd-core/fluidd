@@ -100,7 +100,7 @@ type PrintStatsMacroVariables = {
 @Component({})
 export default class PauseAtLayerDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   pauseNextLayer: PauseNextLayer = {
     enable: false,
@@ -131,11 +131,11 @@ export default class PauseAtLayerDialog extends Mixins(StateMixin) {
     return variables
   }
 
-  get currentLayer () {
+  get currentLayer (): number {
     return this.$store.state.printer.printer.print_stats.info?.current_layer ?? 0
   }
 
-  get totalLayers () {
+  get totalLayers (): number {
     return this.$store.state.printer.printer.print_stats.info?.total_layer ?? 0
   }
 

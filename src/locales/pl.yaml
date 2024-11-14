@@ -96,6 +96,7 @@ app:
       rename_file: Zmień nazwę pliku
       rename_dir: Zmień nazwę katalogu
       upload_file: Wgrywanie pliku | Wgrywanie plików
+      devices: Urządzenia
     overlay:
       drag_files_enqueue: <strong>Przeciągnij</strong> pliki tutaj, aby umieścić je
         w kolejce
@@ -106,7 +107,7 @@ app:
       root_disabled: '{root} root jest niedostępny. Sprawdź logi.'
       items_count: '{count} element | {count} elementy(-ów)'
     url:
-      klipper_config: https://www.klipper3d.org/Config_Reference.html#%{hash}
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
       moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
       moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
       crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section

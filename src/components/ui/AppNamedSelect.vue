@@ -51,7 +51,7 @@ import { Component, Prop, Vue, VModel } from 'vue-property-decorator'
 @Component({})
 export default class AppNamedSelect extends Vue {
   @VModel({ })
-    inputValue?: unknown
+  inputValue?: unknown
 
   @Prop({ })
   readonly resetValue?: unknown

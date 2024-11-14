@@ -3,7 +3,7 @@ import type { Point, Part, PartsState } from './types'
 import type { RootState } from '../types'
 
 export const getters: GetterTree<PartsState, RootState> = {
-  getParts: (state): {[key: string]: Part} => {
+  getParts: (state): { [key: string]: Part } => {
     return state.parts
   },
 

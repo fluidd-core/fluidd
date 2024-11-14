@@ -80,14 +80,14 @@ export default class Console extends Mixins(StateMixin) {
   readonly readonly?: boolean
 
   @PropSync('scrollingPaused', { type: Boolean })
-    scrollingPausedModel?: boolean
+  scrollingPausedModel?: boolean
 
   @Ref('scroller')
   readonly dynamicScroller!: DinamicScroller
 
   _pauseScroll = false
 
-  get currentCommand () {
+  get currentCommand (): string {
     return this.$store.state.console.consoleCommand
   }
 

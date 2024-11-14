@@ -1,7 +1,3 @@
-/* eslint-disable lines-between-class-members */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable array-callback-return */
-
 /**
  * Taken from https://github.com/DimanVorosh/vue-json-rpc-websocket/blob/master/src/wsClient.js
  * and refactored.
@@ -29,7 +25,6 @@ export class WebSocketClient {
   cache: CachedParams | null = null
 
   constructor (options: SocketPluginOptions) {
-    this.url = options.url
     this.reconnectEnabled = options.reconnectEnabled || false
     this.reconnectInterval = options.reconnectInterval || 1000
     this.store = options.store ? options.store : null
@@ -259,7 +254,7 @@ export class WebSocketClient {
 
 export const SocketPlugin = {
   install (Vue: typeof _Vue, options?: SocketPluginOptions) {
-    if (options?.url == null || options.store == null) {
+    if (options?.store == null) {
       throw new Error('options required')
     }
 
@@ -280,7 +275,6 @@ declare module 'vue/types/vue' {
 }
 
 interface SocketPluginOptions {
-  url: string;
   token?: string;
   reconnectEnabled?: boolean;
   reconnectInterval?: number;

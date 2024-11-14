@@ -2,10 +2,10 @@ export interface MoonrakerSensorsState {
   sensors: MoonrakerSensors;
 }
 
-export interface MoonrakerSensors extends Record<string, MoonrakerSensor>{
+export interface MoonrakerSensors extends Record<string, MoonrakerSensor> {
 }
 
-export type MoonrakerSensorTypes = 'mqtt';
+export type MoonrakerSensorTypes = 'mqtt'
 
 export interface MoonrakerSensor {
   id: string;

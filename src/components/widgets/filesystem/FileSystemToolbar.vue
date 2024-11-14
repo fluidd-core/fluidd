@@ -196,7 +196,7 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   readonly loading?: boolean
 
   @PropSync('search', { type: String, default: '' })
-    searchModel!: string
+  searchModel!: string
 
   get readonly () {
     return this.rootProperties.readonly
@@ -220,7 +220,7 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
     return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
   }
 
-  get thumbnailSize () {
+  get thumbnailSize (): number {
     return this.$store.state.config.uiSettings.general.thumbnailSize
   }
 

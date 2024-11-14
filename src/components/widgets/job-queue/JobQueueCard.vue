@@ -46,7 +46,7 @@
         x-small
         text
         class="ms-1 my-1"
-        @click="$filters.routeTo($router, '/jobs')"
+        @click="$filters.routeTo({ name: 'jobs' })"
       >
         <v-icon>$fullScreen</v-icon>
       </app-btn>
@@ -63,6 +63,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import JobQueue from '@/components/widgets/job-queue/JobQueue.vue'
 import { SocketActions } from '@/api/socketActions'
+import type { QueueState } from '@/store/jobQueue/types'
 
 @Component({
   components: {
@@ -76,7 +77,7 @@ export default class JobQueueCard extends Vue {
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean
 
-  get queueStatus () {
+  get queueStatus (): QueueState {
     return this.$store.state.jobQueue.queue_state
   }
 

@@ -109,9 +109,9 @@ app:
     tooltip:
       low_on_space: Espacio en disco limitado
       root_disabled: '{root} root no esta disponible. Por favor chequear los registros.'
+      items_count: '{count} elemento | {count} elementos'
     url:
-      danger_klipper_config: https://dangerklipper.io/Config_Reference.html#%{hash}
-      klipper_config: https://www.klipper3d.org/Config_Reference.html#%{hash}
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
       crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
       moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
       moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
@@ -218,6 +218,13 @@ app:
       filter: Filtro
       recover: Recuperar
       reset_default_layout: Restaurar diseño predeterminado
+      select_columns: Seleccionar columnas
+      set_default_layout: Seleccionar el diseño por defecto
+      thumbnail_size: Tamaño de vista previa
+      upload_folder: Subir carpeta
+      refresh_metadata: Actualizar metadatos
+      upload_files: Subir archivos
+      return_dashboard: Volver al panel de control
     error:
       app_setup_link: >-
         Las instrucciones de instalación de Fluidd están disponibles <a
@@ -320,6 +327,23 @@ app:
       unknown: Desconocido
       thumbnail_size: Tamaño de la miniatura
       file_time: Archivo
+      pause_at_next_layer: Pausar en la siguiente capa
+      pause_at_layer_number: Pausar en el número siguiente
+      pressure_advance: Avance de Presión
+      circle: Círculo
+      numeric_prefix_sort: Ordenar Prefijo Numérico
+      auth_source: Fuente de autenticación
+      command: Comando
+      default: Defecto
+      pause_at_layer: Pausar en la Capa
+      compact: Compactar
+      all: Todo
+      manage_accounts: Gestionar Cuentas
+      moonraker: Moonraker
+      version_sort: Ordenar Versión
+      bars: Barras
+      ldap: LDAP
+      cross: Cruz
     msg:
       bed_screws_adjust: >-
         Haga click en <b>Ajustado</b> si fue necesario un ajuste significativo
@@ -327,6 +351,14 @@ app:
         continuar.
       password_changed: Contraseña cambiada
       wrong_password: Se ha producido un error. ¿Es su contraseña correcta?
+      fluidd_settings_restore_failed: Fallo al restaurar los Ajustes de Fluid!
+      offline_ready: Fluidd se encuentra listo para trabajar fuera de línea.
+      welcome_back: Bienvenido de nuevo. <br>A continuación, inicie sesión para mantenerse
+        conectado a su impresora.
+      needs_refresh: Nuevo contenido disponible. Haga clic en botón <b>Actualizar</b>
+        para ver los cambios.
+      pending_configuration_sections_deleted: Las siguientes secciones se encuentran
+        marcadas para ser eliminadas
     simple_form:
       error:
         arrayofnums: Solo números

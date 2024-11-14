@@ -77,7 +77,7 @@ export default class CameraItem extends Vue {
   readonly componentInstance!: CameraMixin
 
   rawCameraUrl: string | null = null
-  framesPerSecond : string | null = null
+  framesPerSecond: string | null = null
 
   mounted () {
     this.setupFrameEvents()
@@ -116,7 +116,7 @@ export default class CameraItem extends Vue {
 
   get cameraComponent () {
     if (this.camera.service) {
-      const componentName = `${this.$filters.prettyCase(this.camera.service).replace(/ /g, '')}Camera`
+      const componentName = `${this.$filters.startCase(this.camera.service).replace(/ /g, '')}Camera`
 
       if (componentName in CameraComponents) {
         return CameraComponents[componentName]
@@ -134,6 +134,7 @@ export default class CameraItem extends Vue {
     max-height: calc(100svh - 130px);
     white-space: nowrap;
     margin: auto;
+    pointer-events: none;
   }
 
   .camera-container {

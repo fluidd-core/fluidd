@@ -161,7 +161,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get preferDeviceCamera () {
+  get preferDeviceCamera (): boolean {
     return this.$store.state.config.uiSettings.spoolman.preferDeviceCamera
   }
 
@@ -173,7 +173,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get autoSelectSpoolOnMatch () {
+  get autoSelectSpoolOnMatch (): boolean {
     return this.$store.state.config.uiSettings.spoolman.autoSelectSpoolOnMatch
   }
 
@@ -185,7 +185,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get warnOnNotEnoughFilament () {
+  get warnOnNotEnoughFilament (): boolean {
     return this.$store.state.config.uiSettings.spoolman.warnOnNotEnoughFilament
   }
 
@@ -197,7 +197,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get warnOnFilamentTypeMismatch () {
+  get warnOnFilamentTypeMismatch (): boolean {
     return this.$store.state.config.uiSettings.spoolman.warnOnFilamentTypeMismatch
   }
 
@@ -209,7 +209,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get remainingFilamentUnit () {
+  get remainingFilamentUnit (): string {
     return this.$store.state.config.uiSettings.spoolman.remainingFilamentUnit
   }
 

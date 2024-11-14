@@ -40,10 +40,10 @@ import { Component, Vue, Prop, PropSync } from 'vue-property-decorator'
 @Component({})
 export default class AppBtnCollapse extends Vue {
   @PropSync('collapsed', { type: Boolean })
-    collapsedModel?: boolean
+  collapsedModel?: boolean
 
   @PropSync('enabled', { type: Boolean, default: true })
-    enabledModel?: boolean
+  enabledModel?: boolean
 
   @Prop({ type: Boolean })
   readonly inLayout?: boolean

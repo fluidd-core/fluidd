@@ -8,6 +8,8 @@ import { Globals } from '@/globals'
 import { consola } from 'consola'
 import type { DiagnosticsCardContainer } from '@/store/diagnostics/types'
 import sandboxedEval from '@/plugins/sandboxedEval'
+import { gte, valid } from 'semver'
+import i18n from '@/plugins/i18n'
 
 // let retryTimeout: number
 
@@ -19,11 +21,37 @@ export const actions: ActionTree<PrinterState, RootState> = {
     commit('setReset')
   },
 
+  async checkKlipperMinVersion ({ state, dispatch }) {
+    const klipperVersion = state.printer.info.software_version ?? '?'
+
+    const fullKlipperVersion = klipperVersion.includes('-')
+      ? klipperVersion
+      : `${klipperVersion}-0`
+
+    if (
+      valid(klipperVersion) &&
+      valid(Globals.KLIPPER_MIN_VERSION) &&
+      !gte(fullKlipperVersion, Globals.KLIPPER_MIN_VERSION)
+    ) {
+      dispatch('notifications/pushNotification', {
+        id: `old-klipper-${klipperVersion}`,
+        title: 'Klipper',
+        description: i18n.t('app.version.label.old_component_version', { name: 'Klipper', version: Globals.KLIPPER_MIN_VERSION }),
+        to: '/settings#versions',
+        btnText: i18n.t('app.version.btn.view_versions'),
+        type: 'warning',
+        merge: true
+      }, { root: true })
+    }
+  },
+
   /**
    * Printer Info
    */
-  async onPrinterInfo ({ commit }, payload) {
+  async onPrinterInfo ({ commit, dispatch }, payload) {
     commit('setPrinterInfo', payload)
+
+    dispatch('checkKlipperMinVersion')
   },
 
   /**

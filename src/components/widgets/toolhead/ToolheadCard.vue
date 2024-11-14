@@ -383,19 +383,19 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     return this.$store.getters['printer/getHasRoundBed'] as boolean
   }
 
-  get showManualProbeDialogAutomatically () {
+  get showManualProbeDialogAutomatically (): boolean {
     return this.$store.state.config.uiSettings.general.showManualProbeDialogAutomatically
   }
 
-  get showBedScrewsAdjustDialogAutomatically () {
+  get showBedScrewsAdjustDialogAutomatically (): boolean {
     return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
   }
 
-  get showScrewsTiltAdjustDialogAutomatically () {
+  get showScrewsTiltAdjustDialogAutomatically (): boolean {
     return this.$store.state.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
   }
 
-  get forceMove () {
+  get forceMove (): boolean {
     return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 

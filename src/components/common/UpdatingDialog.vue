@@ -62,7 +62,7 @@ export default class UpdatingDialog extends Mixins(StateMixin, BrowserMixin) {
     }
   }
 
-  get updating () {
+  get updating (): boolean {
     return this.$store.state.version.busy
   }
 

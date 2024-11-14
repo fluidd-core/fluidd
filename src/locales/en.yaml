@@ -76,6 +76,7 @@ app:
         hidden_files_folders: Filter hidden files and folders
         klipper_backup_files: Filter Klipper backup files
         moonraker_backup_files: Filter Moonraker backup files
+        moonraker_temporary_upload_files: Filter Moonraker temporary upload files
         rolled_log_files: Filter rolled log files
     label:
       dir_name: Directory name
@@ -383,6 +384,11 @@ app:
         confirm_forcemove_toggle: Are you sure? This can damage the printer.
         confirm_load_bedmesh_profile: The printer is currently busy. Are you sure you want to load profile %{name}?
         confirm_reboot_host: Are you sure? This will reboot your host system.
+        confirm_remove_camera: Are you sure you want to remove the camera %{name}?
+        confirm_remove_console_filter: Are you sure you want to remove the console filter %{name}?
+        confirm_remove_macro_category: Are you sure you want to remove the macro category %{name}?
+        confirm_remove_printer: Are you sure you want to remove the printer %{name}?
+        confirm_remove_thermal_preset: Are you sure you want to remove the thermal preset %{name}?
         confirm_remove_user: Are you sure you want to remove user %{username}?
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
         confirm_service_start: Are you sure you want to start the %{name} service?
@@ -642,6 +648,7 @@ app:
       date_format: Date format
       time_format: Time format
       text_sort_order: Text sort order
+      drag_and_drop_functionality_for_files_and_folders: Drag-and-drop functionality for files and folders
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically

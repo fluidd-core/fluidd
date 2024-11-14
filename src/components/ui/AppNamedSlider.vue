@@ -96,10 +96,12 @@ import type { InputValidationRules } from 'vuetify'
 import type { VForm } from '@/types'
 import BrowserMixin from '@/mixins/browser'
 
-@Component({})
+@Component({
+  inheritAttrs: false
+})
 export default class AppNamedSlider extends Mixins(BrowserMixin) {
   @VModel({ type: Number, required: true })
-    inputValue!: number
+  inputValue!: number
 
   @Prop({ type: Number })
   readonly resetValue?: number

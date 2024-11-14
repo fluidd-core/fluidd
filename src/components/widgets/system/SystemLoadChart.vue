@@ -30,7 +30,7 @@ export default class SystemLoadChart extends Vue {
     return this.$store.state.charts.klipper || []
   }
 
-  get cores () {
+  get cores (): number {
     return this.$store.state.server.system_info?.cpu_info?.cpu_count || 1
   }
 

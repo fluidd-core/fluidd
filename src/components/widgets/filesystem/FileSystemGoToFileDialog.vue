@@ -48,7 +48,7 @@ import type { MoonrakerRootFile } from '@/store/files/types'
 import getFilePaths from '@/util/get-file-paths'
 import StateMixin from '@/mixins/state'
 
-type File = MoonrakerRootFile &{
+type File = MoonrakerRootFile & {
   filename: string
   filepath: string
   rootPath: string
@@ -57,7 +57,7 @@ type File = MoonrakerRootFile &{
 @Component({})
 export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: String, required: true })
   readonly root!: string

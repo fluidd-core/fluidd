@@ -3,8 +3,7 @@ export interface WebcamsState {
   activeWebcam: string;
 }
 
-export interface NewWebcamConfig
-{
+export interface NewWebcamConfig {
   name?: string;
   location?: string;
   service?: WebcamService;
@@ -21,8 +20,7 @@ export interface NewWebcamConfig
   extra_data?: Record<string, unknown>;
 }
 
-export interface WebcamConfig extends NewWebcamConfig
-{
+export interface WebcamConfig extends NewWebcamConfig {
   uid: string;
   source: WebcamSource;
 }

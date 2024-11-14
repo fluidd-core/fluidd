@@ -79,7 +79,7 @@ import webSocketWrapper from '@/util/web-socket-wrapper'
 @Component({})
 export default class AddInstanceDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   valid = true
   verifying = false
@@ -207,7 +207,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
     })
   }
 
-  get hosted () {
+  get hosted (): boolean {
     return this.$store.state.config.hostConfig.hosted
   }
 

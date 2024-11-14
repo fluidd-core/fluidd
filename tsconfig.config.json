@@ -7,9 +7,16 @@
     "package.json"
   ],
   "compilerOptions": {
-    "composite": true,
     "types": [
       "node"
-    ]
+    ],
+
+    "preserveValueImports": false,
+
+    "importsNotUsedAsValues": "remove",
+
+    "experimentalDecorators": true,
+
+    "verbatimModuleSyntax": true
   }
 }

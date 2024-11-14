@@ -47,7 +47,7 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
   }
 
   get options () {
-    const isDark = this.$store.state.config.uiSettings.theme.isDark
+    const isDark: boolean = this.$store.state.config.uiSettings.theme.isDark
 
     const fontColor = (isDark) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
     const fontSize = (this.isMobileViewport) ? 13 : 14

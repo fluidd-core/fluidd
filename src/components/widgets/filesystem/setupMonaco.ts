@@ -16,9 +16,14 @@ type ReduceState<T> = {
   result: T[]
 }
 
+type StackReduceState<U, T> = {
+  stack: U[],
+  result: T[]
+}
+
 type CodeLensSupportedService = 'klipper' | 'moonraker' | 'moonraker-telegram-bot' | 'crowsnest'
 
-const isCodeLensSupportedService = (service: string) : service is CodeLensSupportedService => [
+const isCodeLensSupportedService = (service: string): service is CodeLensSupportedService => [
   'klipper',
   'moonraker',
   'moonraker-telegram-bot',
@@ -149,8 +154,8 @@ async function setupMonaco () {
         .result
 
       return {
-        lenses: sectionBlocks.map((section, index) =>
-          ({
+        lenses: sectionBlocks
+          .map((section, index) => ({
             range: section.range,
             id: `docs${index}`,
             command: {
@@ -158,8 +163,7 @@ async function setupMonaco () {
               title: app.$t('app.file_system.label.view_section_documentation', { section: section.referenceSection }).toString(),
               arguments: [service, section.referenceSection]
             }
-          })
-        ),
+          })),
         dispose: () => undefined
       }
     },
@@ -172,7 +176,7 @@ async function setupMonaco () {
 
       const sectionBlocks = linesContent
         .reduce((state, lineContent, index) => {
-          const isSection = /^\[([^\]]+)\]/.test(lineContent)
+          const isSection = /^\[[^\]]+\]/.test(lineContent)
 
           if (isSection) {
             state.result.push(state.current = {
@@ -192,12 +196,38 @@ async function setupMonaco () {
         }, { result: [] } as ReduceState<monaco.languages.FoldingRange>)
         .result
 
+      const regionBlocks = linesContent
+        .reduce((state, lineContent, index) => {
+          lineContent = lineContent.trim()
+
+          if (lineContent.length > 0) {
+            const isRegion = /^#region\b/.test(lineContent)
+
+            if (isRegion) {
+              state.stack.push(index + 1)
+            } else {
+              const isEndRegion = /^#endregion\b/.test(lineContent)
+
+              if (isEndRegion && state.stack.length > 0) {
+                state.result.push({
+                  kind: monaco.languages.FoldingRangeKind.Region,
+                  start: state.stack.pop() ?? 0,
+                  end: index + 1
+                })
+              }
+            }
+          }
+
+          return state
+        }, { stack: [], result: [] } as StackReduceState<number, monaco.languages.FoldingRange>)
+        .result
+
       const commentBlocks = linesContent
         .reduce((state, lineContent, index) => {
           lineContent = lineContent.trim()
 
           if (lineContent.length > 0) {
-            const isComment = ['#', ';'].includes(lineContent[0])
+            const isComment = /^;|#(?!(region|endregion)\b)/.test(lineContent)
 
             if (isComment) {
               if (state.current) {
@@ -220,6 +250,7 @@ async function setupMonaco () {
 
       return [
         ...sectionBlocks,
+        ...regionBlocks,
         ...commentBlocks
       ]
     }

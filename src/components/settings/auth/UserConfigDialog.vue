@@ -53,7 +53,7 @@ import type { AppUser } from '@/store/auth/types'
 @Component({})
 export default class UserConfigDialog extends Vue {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: Object, required: true })
   readonly user!: AppUser

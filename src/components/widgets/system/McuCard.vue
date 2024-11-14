@@ -20,11 +20,11 @@
       <tbody>
         <tr>
           <th>{{ $t('app.system_info.label.micro_controller') }}</th>
-          <td>{{ mcu.mcu_constants.MCU }}</td>
+          <td>{{ mcuConstants.MCU }}</td>
         </tr>
         <tr>
           <th>{{ $t('app.system_info.label.frequency') }}</th>
-          <td>{{ $filters.getReadableFrequencyString(+mcu.mcu_constants.CLOCK_FREQ) }}</td>
+          <td>{{ $filters.getReadableFrequencyString(+mcuConstants.CLOCK_FREQ) }}</td>
         </tr>
         <tr>
           <th>{{ $t('app.system_info.label.version') }}</th>
@@ -54,6 +54,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 export default class PrinterStatsCard extends Vue {
   @Prop({ type: Object, required: true })
   readonly mcu!: MCU
+
+  get mcuConstants () {
+    return this.mcu.mcu_constants || {} as Record<string, string | number>
+  }
 
   mcuInformationDialogOpen = false
 

@@ -77,7 +77,7 @@ export default class ConsoleCommand extends Vue {
 
   mounted () {
     this.newValue = this.value
-    const savedHistory = this.$store.state.console.commandHistory
+    const savedHistory: string[] = this.$store.state.console.commandHistory
     this.history = [...savedHistory]
     this.originalHistory = [...savedHistory]
   }
@@ -135,11 +135,11 @@ export default class ConsoleCommand extends Vue {
 
       if (commands.length === 1) {
         this.emitChange(commands[0])
-      } else {
-        commands.forEach(command => {
-          const message = `// ${command}: ${availableCommands[command].help ?? ''}`
-          this.$store.dispatch('console/onAddConsoleEntry', { message, type: 'response' })
-        })
+      } else if (commands.length > 0) {
+        const message = commands
+          .map(command => `// ${command}: ${availableCommands[command].help ?? ''}`)
+          .join('\n')
+        this.$store.dispatch('console/onAddConsoleEntry', { message, type: 'response' })
       }
     }
   }

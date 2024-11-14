@@ -32,7 +32,6 @@
           :key="`camera-${camera.uid}`"
           :r-cols="2"
           :sub-title="camera.source === 'config' ? $t('app.general.tooltip.managed_by_moonraker') : undefined"
-          @click="handleEditDialog(camera)"
         >
           <template #title>
             {{ camera.name }} <v-icon
@@ -44,16 +43,31 @@
               $warning
             </v-icon>
           </template>
+
           <app-btn
-            v-if="camera.source !== 'config'"
             fab
             text
             x-small
             color=""
+            class="ms-1"
+            @click.stop="handleEditDialog(camera)"
+          >
+            <v-icon color="">
+              $edit
+            </v-icon>
+          </app-btn>
+
+          <app-btn
+            :disabled="camera.source === 'config'"
+            fab
+            text
+            x-small
+            color=""
+            class="ms-1"
             @click.stop="handleRemoveCamera(camera)"
           >
             <v-icon color="">
-              $close
+              $delete
             </v-icon>
           </app-btn>
         </app-setting>
@@ -141,8 +155,15 @@ export default class CameraSettings extends Vue {
     this.$store.dispatch('webcams/updateWebcam', camera)
   }
 
-  handleRemoveCamera (camera: WebcamConfig) {
-    this.$store.dispatch('webcams/removeWebcam', camera.uid)
+  async handleRemoveCamera (camera: WebcamConfig) {
+    const result = await this.$confirm(
+      this.$t('app.general.simple_form.msg.confirm_remove_camera', { name: camera.name }).toString(),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+
+    if (result) {
+      this.$store.dispatch('webcams/removeWebcam', camera.uid)
+    }
   }
 
   get defaultFullscreenAction (): string {

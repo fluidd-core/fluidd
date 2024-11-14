@@ -122,7 +122,7 @@ import { Component, Prop, VModel, Ref, PropSync, Mixins } from 'vue-property-dec
 @Component({})
 export default class AppDialog extends Mixins(BrowserMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: Boolean })
   readonly disabled?: boolean
@@ -167,7 +167,7 @@ export default class AppDialog extends Mixins(BrowserMixin) {
   readonly titleShadow?: boolean
 
   @PropSync('valid', { type: Boolean })
-    validModel?: boolean
+  validModel?: boolean
 
   @Ref('form')
   readonly form!: VForm

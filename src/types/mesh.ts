@@ -13,5 +13,5 @@ export interface MeshData {
 }
 
 export interface MeshColorBar {
-  tickfont: {[key: string]: any};
+  tickfont: { [key: string]: any };
 }

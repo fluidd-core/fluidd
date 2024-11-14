@@ -11,6 +11,7 @@
           <v-text-field
             :label="$t('app.general.label.screw_name')"
             outlined
+            persistent-placeholder
             hide-details
             dense
             disabled
@@ -23,6 +24,7 @@
           <v-text-field
             :label="$t('app.general.label.screw_index')"
             outlined
+            persistent-placeholder
             hide-details
             dense
             disabled
@@ -35,6 +37,7 @@
           <v-text-field
             :label="$t('app.general.label.accepted_screws')"
             outlined
+            persistent-placeholder
             hide-details
             dense
             disabled
@@ -96,7 +99,7 @@ import type { BedScrews } from '@/store/printer/types'
 @Component({})
 export default class BedScrewsAdjustDialog extends Mixins(StateMixin, ToolheadMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   get bedScrews (): BedScrews[] {
     return this.$store.getters['printer/getBedScrews'] as BedScrews[]
@@ -107,7 +110,7 @@ export default class BedScrewsAdjustDialog extends Mixins(StateMixin, ToolheadMi
   }
 
   get currentState () {
-    return this.bedScrewsAdjust.state || ' '
+    return this.bedScrewsAdjust.state
   }
 
   get currentScrewIndex () {

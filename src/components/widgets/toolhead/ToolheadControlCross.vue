@@ -13,7 +13,7 @@
           :color="axisButtonColor(yHomed)"
           :disabled="axisButtonDisabled(yHomed, yHasMultipleSteppers)"
           icon="$up"
-          @click="sendMoveGcode('Y', toolheadMoveLength)"
+          @click="moveAxisBy('Y', toolheadMoveLength)"
         />
       </v-col>
       <v-col
@@ -24,7 +24,7 @@
           :color="axisButtonColor(zHomed)"
           :disabled="axisButtonDisabled(zHomed, zHasMultipleSteppers)"
           icon="$up"
-          @click="sendMoveGcode('Z', toolheadMoveLength)"
+          @click="moveAxisBy('Z', toolheadMoveLength)"
         />
       </v-col>
       <v-col
@@ -57,7 +57,7 @@
           :color="axisButtonColor(xHomed)"
           :disabled="axisButtonDisabled(xHomed, xHasMultipleSteppers)"
           icon="$left"
-          @click="sendMoveGcode('X', toolheadMoveLength, true)"
+          @click="moveAxisBy('X', toolheadMoveLength, true)"
         />
       </v-col>
       <v-col
@@ -83,7 +83,7 @@
           :color="axisButtonColor(xHomed)"
           :disabled="axisButtonDisabled(xHomed, xHasMultipleSteppers)"
           icon="$right"
-          @click="sendMoveGcode('X', toolheadMoveLength)"
+          @click="moveAxisBy('X', toolheadMoveLength)"
         />
       </v-col>
       <v-col
@@ -129,7 +129,7 @@
           :color="axisButtonColor(yHomed)"
           :disabled="axisButtonDisabled(yHomed, yHasMultipleSteppers)"
           icon="$down"
-          @click="sendMoveGcode('Y', toolheadMoveLength, true)"
+          @click="moveAxisBy('Y', toolheadMoveLength, true)"
         />
       </v-col>
       <v-col
@@ -140,7 +140,7 @@
           :color="axisButtonColor(zHomed)"
           :disabled="axisButtonDisabled(zHomed, zHasMultipleSteppers)"
           icon="$down"
-          @click="sendMoveGcode('Z', toolheadMoveLength, true)"
+          @click="moveAxisBy('Z', toolheadMoveLength, true)"
         />
       </v-col>
       <v-col
@@ -199,7 +199,7 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
   moveLength: number | null = null
 
   get forceMove (): boolean {
-    return this.$store.state.config.uiSettings.toolhead.forceMove as boolean
+    return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 
   get hasRoundBed (): boolean {
@@ -211,12 +211,12 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
   }
 
   get toolheadMoveDistances (): number[] {
-    return this.$store.state.config.uiSettings.general.toolheadMoveDistances as number[]
+    return this.$store.state.config.uiSettings.general.toolheadMoveDistances
   }
 
   get toolheadMoveLength (): number {
     if (this.moveLength == null) {
-      const defaultToolheadMoveLength = this.$store.state.config.uiSettings.general.defaultToolheadMoveLength as number
+      const defaultToolheadMoveLength: number = this.$store.state.config.uiSettings.general.defaultToolheadMoveLength
 
       this.moveLength = this.toolheadMoveDistances.includes(defaultToolheadMoveLength)
         ? defaultToolheadMoveLength
@@ -243,8 +243,8 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
   /**
    * Send a move gcode script.
    */
-  sendMoveGcode (axis: Axis, distance: number, negative = false) {
-    const rate = axis === 'Z'
+  moveAxisBy (axis: Axis, distance: number, negative = false) {
+    const rate: number = axis === 'Z'
       ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
       : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
     const inverted = this.$store.state.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
@@ -258,9 +258,7 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
         : this.$store.state.printer.printer.toolhead.max_accel
       this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
     } else {
-      this.sendGcode(`G91
-G1 ${axis}${distance} F${rate * 60}
-G90`)
+      this.sendMoveGcode(`${axis}${distance}`, rate)
     }
   }
 }

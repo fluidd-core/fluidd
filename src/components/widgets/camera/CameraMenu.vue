@@ -58,7 +58,7 @@ import type { WebcamConfig } from '@/store/webcams/types'
 @Component({})
 export default class CamerasMenu extends Mixins(StateMixin) {
   get activeCamera () {
-    const activeWebcam = this.$store.state.webcams.activeWebcam as string
+    const activeWebcam: string = this.$store.state.webcams.activeWebcam
     const camera = this.$store.getters['webcams/getWebcamById'](activeWebcam) as WebcamConfig | undefined
 
     return !camera

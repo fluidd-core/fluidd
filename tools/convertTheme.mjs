@@ -21,8 +21,8 @@
  *
  * which will write the appropriate theme files in their intended location.
  */
-const converter = require('monaco-vscode-textmate-theme-converter')
-const fs = require('fs')
+import converter from 'monaco-vscode-textmate-theme-converter'
+import fs from 'fs'
 
 // Load the themes.
 const dark = fs.readFileSync('../src/monaco/theme/base.theme.dark.json', 'utf8')

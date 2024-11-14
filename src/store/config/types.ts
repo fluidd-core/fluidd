@@ -3,6 +3,7 @@ import type { FileFilterType } from '../files/types'
 
 export interface ConfigState {
   [key: string]: any;
+  appReady: boolean;
   apiUrl: string;
   socketUrl: string;
   layoutMode: boolean;
@@ -85,6 +86,7 @@ export interface GeneralConfig {
   timeFormat: string;
   enableKeyboardShortcuts: boolean;
   textSortOrder: TextSortOrder;
+  filesAndFoldersDragAndDrop: boolean;
   showRateOfChange: boolean;
   showRelativeHumidity: boolean;
   showBarometricPressure: boolean;
@@ -110,7 +112,7 @@ export type ToolheadControlStyle = 'cross' | 'bars' | 'circle'
 
 export type TextSortOrder = 'default' | 'numeric-prefix' | 'version'
 
-export type CameraFullscreenAction = 'embed' | 'rawstream';
+export type CameraFullscreenAction = 'embed' | 'rawstream'
 
 export type PrintInProgressLayout = 'default' | 'compact'
 
@@ -225,6 +227,14 @@ export interface GcodePreviewConfig {
     horizontal: boolean;
     vertical: boolean;
   };
+  showCurrentLayer: boolean;
+  showNextLayer: boolean;
+  showPreviousLayer: boolean;
+  showMoves: boolean;
+  showExtrusions: boolean;
+  showRetractions: boolean;
+  showParts: boolean;
+  followProgress: boolean;
 }
 
 export interface FileSystemConfig {

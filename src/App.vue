@@ -1,7 +1,5 @@
 <template>
-  <v-app v-if="loading" />
   <v-app
-    v-else
     class="fluidd"
     :class="{ 'no-pointer-events': dragState }"
   >
@@ -43,7 +41,6 @@
     </v-btn>
 
     <v-main :style="customBackgroundImageStyle">
-      <!-- <pre>authenticated {{ authenticated }}, socketConnected {{ socketConnected }}, apiConnected {{ apiConnected }}</pre> -->
       <v-container
         fluid
         :class="{
@@ -142,7 +139,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get theme (): ThemeConfig {
-    return this.$store.state.config.uiSettings.theme as ThemeConfig
+    return this.$store.state.config.uiSettings.theme
   }
 
   get showBackgroundLogo () {
@@ -163,7 +160,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
   // Our app is in a loading state when the socket isn't quite ready, or
   // our translations are loading.
-  get updating () {
+  get updating (): boolean {
     return this.$store.state.version.busy
   }
 
@@ -172,15 +169,11 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get columnCount (): number {
-    return this.$store.state.config.containerColumnCount as number
+    return this.$store.state.config.containerColumnCount
   }
 
   get fileDropRoot () {
     return this.$route.meta?.fileDropRoot
-  }
-
-  get loading () {
-    return this.hasWait(this.$waits.onLoadLanguage)
   }
 
   get progress (): number {
@@ -189,7 +182,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get pageTitle () {
-    const instanceName = this.$store.state.config.uiSettings.general.instanceName || ''
+    const instanceName: string = this.$store.state.config.uiSettings.general.instanceName || ''
     const pageName = this.$route.name
 
     if (this.printerPrinting) {
@@ -326,7 +319,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
   mounted () {
     window.addEventListener('dragover', this.handleDragOver)
-    window.addEventListener('dragenter', this.handleDragEnter)
+    window.addEventListener('dragenter', this.handleDragOver)
     window.addEventListener('dragleave', this.handleDragLeave)
     window.addEventListener('drop', this.handleDrop)
     window.addEventListener('keydown', this.handleKeyDown, false)
@@ -359,7 +352,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
   beforeDestroy () {
     window.removeEventListener('dragover', this.handleDragOver)
-    window.removeEventListener('dragenter', this.handleDragEnter)
+    window.removeEventListener('dragenter', this.handleDragOver)
     window.removeEventListener('dragleave', this.handleDragLeave)
     window.removeEventListener('drop', this.handleDrop)
     window.removeEventListener('keydown', this.handleKeyDown)
@@ -384,12 +377,6 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
       this.dragState = true
 
       event.dataTransfer.dropEffect = 'copy'
-    }
-  }
-
-  handleDragEnter (event: DragEvent) {
-    if (this.fileDropRoot) {
-      event.preventDefault()
     }
   }
 

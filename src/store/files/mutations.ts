@@ -96,7 +96,7 @@ export const mutations: MutationTree<FilesState> = {
   },
 
   setUpdateFileUpload (state, payload) {
-    const i = state.uploads.findIndex((u) => u.filepath === payload.filepath)
+    const i = state.uploads.findIndex((u) => u.uid === payload.uid)
     if (i >= 0) {
       Vue.set(state.uploads, i, { ...state.uploads[i], ...payload })
     } else {
@@ -104,22 +104,29 @@ export const mutations: MutationTree<FilesState> = {
     }
   },
 
-  setRemoveFileUpload (state, payload) {
-    const i = state.uploads.findIndex((u) => u.filepath === payload)
+  setRemoveFileUpload (state, payload: string) {
+    const i = state.uploads.findIndex((u) => u.uid === payload)
     if (i >= 0) {
       state.uploads.splice(i, 1)
     }
   },
 
   setUpdateFileDownload (state, payload) {
-    state.download = {
-      ...state.download,
-      ...payload
+    if (
+      state.download == null ||
+      state.download.uid === payload.uid
+    ) {
+      state.download = {
+        ...state.download,
+        ...payload
+      }
     }
   },
 
-  setRemoveFileDownload (state) {
-    state.download = null
+  setRemoveFileDownload (state, payload: string) {
+    if (state.download?.uid === payload) {
+      state.download = null
+    }
   },
 
   setCurrentPath (state, payload) {

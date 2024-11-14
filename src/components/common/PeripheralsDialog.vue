@@ -94,6 +94,7 @@
                           :value="device.device_path"
                           label="device_path"
                           outlined
+                          persistent-placeholder
                           dense
                           readonly
                           hide-details
@@ -107,6 +108,7 @@
                           :value="device.path_by_id"
                           label="path_by_id"
                           outlined
+                          persistent-placeholder
                           dense
                           readonly
                           hide-details
@@ -120,6 +122,7 @@
                           :value="device.path_by_hardware"
                           label="path_by_hardware"
                           outlined
+                          persistent-placeholder
                           dense
                           readonly
                           hide-details
@@ -287,6 +290,7 @@
                           :value="canUuid.uuid"
                           :label="canUuid.application"
                           outlined
+                          persistent-placeholder
                           dense
                           readonly
                           hide-details
@@ -320,20 +324,20 @@ type PeripheralGroup = {
 @Component({})
 export default class ManualProbeDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   tab: number | null = null
 
   get peripherals (): Peripherals {
-    return this.$store.state.server.peripherals as Peripherals
+    return this.$store.state.server.peripherals
   }
 
   get canbusUuids (): Record<string, CanbusUuid[]> | null {
-    return this.$store.state.server.can_uuids as Record<string, CanbusUuid[]> | null
+    return this.$store.state.server.can_uuids
   }
 
   get systemInfo (): SystemInfo | null {
-    return this.$store.state.server.system_info as SystemInfo | null
+    return this.$store.state.server.system_info
   }
 
   get canbusInterfaces (): string[] {

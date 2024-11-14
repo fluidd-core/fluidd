@@ -23,7 +23,7 @@ export default class CameraMixin extends Vue {
   }
 
   get apiUrl (): string {
-    return this.$store.state.config.apiUrl as string
+    return this.$store.state.config.apiUrl
   }
 
   get cameraStyle () {

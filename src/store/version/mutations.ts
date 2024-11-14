@@ -43,12 +43,5 @@ export const mutations: MutationTree<VersionState> = {
 
   setClearUpdateResponse (state) {
     state.responses = []
-  },
-
-  setVersion (state, payload) {
-    state.fluidd.version = payload
-  },
-  setHash (state, payload) {
-    state.fluidd.hash = payload
   }
 }
