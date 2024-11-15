@@ -1,4 +1,5 @@
 import pluginVue from 'eslint-plugin-vue'
+import * as pluginRegexp from 'eslint-plugin-regexp'
 import neostandard from 'neostandard'
 import vueTsEslintConfig from '@vue/eslint-config-typescript'
 
@@ -16,6 +17,7 @@ export default [
     ]
   },
   ...pluginVue.configs['flat/vue2-recommended'],
+  pluginRegexp.configs['flat/recommended'],
   ...neostandard(),
   ...vueTsEslintConfig(),
   {

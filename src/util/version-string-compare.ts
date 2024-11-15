@@ -1,7 +1,7 @@
 // https://github.com/coreutils/gnulib/blob/master/lib/filevercmp.h
 // https://github.com/coreutils/gnulib/blob/master/lib/filevercmp.c
 
-const extensionRegExp = /((?:\.[A-Za-z~][A-Za-z0-9~]*)*)$/
+const extensionRegExp = /((?:\.[a-z~][a-z0-9~]*)*)$/i
 
 const charCode_0 = 0x30
 const charCode_9 = 0x39
