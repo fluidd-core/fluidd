@@ -78,7 +78,11 @@ export default class ToolheadControlBarsAxis extends Mixins(StateMixin, Toolhead
   }
 
   moveBy (distance: number) {
-    this.sendMoveGcode(`${this.axis}${distance}`, this.rate)
+    this.sendMoveGcode(
+      {
+        [this.axis]: distance
+      },
+      this.rate)
   }
 
   home () {

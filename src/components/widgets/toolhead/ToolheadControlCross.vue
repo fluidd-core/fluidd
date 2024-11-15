@@ -258,7 +258,11 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
         : this.$store.state.printer.printer.toolhead.max_accel
       this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
     } else {
-      this.sendMoveGcode(`${axis}${distance}`, rate)
+      this.sendMoveGcode(
+        {
+          [axis]: distance
+        },
+        rate)
     }
   }
 }
