@@ -16,7 +16,7 @@
         class="ms-1 my-1"
       >
         <v-text-field
-          v-model="searchModel"
+          v-model="search"
           outlined
           dense
           single-line
@@ -32,7 +32,7 @@
       :items-per-page="15"
       :item-class="getRowClasses"
       single-expand
-      :search="searchModel"
+      :search="search"
       :expanded="expanded"
       mobile-breakpoint="0"
       item-key="job_id"
@@ -189,7 +189,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, PropSync } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import JobHistoryItemStatus from './JobHistoryItemStatus.vue'
 import FilesMixin from '@/mixins/files'
 import getFilePaths from '@/util/get-file-paths'
@@ -204,9 +204,7 @@ import type { AppTableHeader } from '@/types'
 })
 export default class JobHistory extends Mixins(FilesMixin) {
   expanded: HistoryItem[] = []
-
-  @PropSync('search', { type: String, default: '' })
-  searchModel!: string
+  search = ''
 
   get headers (): AppTableHeader[] {
     const headers = [
