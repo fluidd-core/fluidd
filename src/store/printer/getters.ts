@@ -638,7 +638,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'neopixel',
       'dotstar',
       'pca9533',
-      'pca9632'
+      'pca9632',
+      'nevermore'
     ]
 
     const supportedTypes = (filter && filter.length)
@@ -760,7 +761,6 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'aht10',
       'bme280',
       'htu21d',
-      'nevermoresensor',
       'sht3x'
     ]
 
