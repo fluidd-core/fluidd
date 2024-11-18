@@ -265,7 +265,7 @@
             <span>
               <template v-for="sensor in getNevermoreSensors(item)">
                 <v-tooltip
-                  :key="sensor"
+                  :key="`${item.key}-${sensor.key}`"
                   left
                   :disabled="sensor.disableTooltip"
                 >
