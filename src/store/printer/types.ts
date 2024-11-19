@@ -247,3 +247,35 @@ export interface TimeEstimates {
   actualLeft: number;
   eta: number;
 }
+
+export interface BeaconState {
+  last_sample?: BeaconLastSample | null;
+  last_received_sample?: BeaconLastReceivedSample | null;
+  last_z_result?: number | null,
+  last_probe_position?: [number, number] | null,
+  last_probe_result?: number | null,
+  last_offset_result?: number | null,
+  last_poke_result?: number | null
+  model?: string | null;
+}
+
+export interface BeaconLastSample {
+  time: number;
+  value: number;
+  temp: number;
+  dist?: number | null;
+}
+
+export interface BeaconLastReceivedSample {
+  temp: number;
+  clock: number;
+  time: number;
+  data: number;
+  data_smooth: number;
+  freq: number;
+}
+
+export interface BeaconModel {
+  name: string;
+  active: boolean;
+}
