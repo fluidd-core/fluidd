@@ -54,7 +54,6 @@ export interface SystemInfo {
   network?: NetworkState;
   canbus?: CanBusState;
   instance_ids: InstanceIds;
-  software_version?: string;
 }
 
 export interface ServiceState {

@@ -62,13 +62,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import JobHistory from '@/components/widgets/history/JobHistory.vue'
 
-@Component({
-  components: {
-    JobHistory
-  }
-})
+@Component({})
 export default class PrinterStatsCard extends Vue {
   get sdInfo () {
     const info = this.$store.getters['server/getSystemInfo']
