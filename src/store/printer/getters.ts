@@ -49,25 +49,19 @@ export const getters: GetterTree<PrinterState, RootState> = {
     // If an external source fires an estop, or the client
     // is refreshed while klipper is down - the webhook data maybe invalid
     // but the printer info should be good.
-    if (
-      state.printer.info.state_message &&
-      state.printer.info.state_message !== ''
-    ) {
-      return state.printer.info.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
+    if (state.info.state_message) {
+      return state.info.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
     }
-    if (
-      state.printer.webhooks.state_message &&
-      state.printer.webhooks.state_message !== ''
-    ) {
+    if (state.printer.webhooks.state_message) {
       return state.printer.webhooks.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
     }
     return 'Unknown'
   },
 
   getKlippyApp: (state) => {
-    const app = state.printer.info.app?.toLowerCase()
+    const app = state.info.app?.toLowerCase()
 
-    const klippyApp = isKeyOf(app, Globals.SUPPORTED_SERVICES.klipper)
+    const klippyApp = app && isKeyOf(app, Globals.SUPPORTED_SERVICES.klipper)
       ? app
       : 'klipper'
 

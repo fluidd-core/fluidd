@@ -14,15 +14,11 @@ export const mutations: MutationTree<PrinterState> = {
   },
 
   setPrinterInfo (state, payload) {
-    Vue.set(state.printer, 'info', payload)
+    state.info = payload
   },
 
   setQueryEndstops (state, payload) {
     state.printer.endstops = payload
-  },
-
-  setPrinterBusy (state, payload: boolean) {
-    state.printer.busy = payload
   },
 
   setPrinterObjectList (state, payload) {
