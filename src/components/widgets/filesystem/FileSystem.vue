@@ -19,7 +19,7 @@
       :path="visiblePath"
       :disabled="disabled"
       :loading="filesLoading"
-      :headers="headers"
+      :headers="configurableHeaders"
       @root-change="handleRootChange"
       @refresh="refreshPath(currentPath)"
       @add-file="handleAddFileDialog"
@@ -41,7 +41,7 @@
     <file-system-browser
       v-if="headers"
       v-model="selected"
-      :headers="visibleHeaders"
+      :headers="headers"
       :root="currentRoot"
       :dense="dense"
       :loading="filesLoading"
@@ -159,6 +159,7 @@ import type { AppTableHeader, FileWithPath } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer, setFileDataTransferDataInDataTransfer } from '@/util/file-data-transfer'
 import consola from 'consola'
+import type { DataTableHeader } from 'vuetify'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
@@ -304,61 +305,49 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  // The available headers, based on the current root and system configuration.
-  get headers (): AppTableHeader[] {
-    // Base headers. All roots have these.
-    let headers: any = [
-      { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-      {
-        text: this.$t('app.general.table.header.name'),
-        value: 'name'
-      }
+  get configurableHeaders (): AppTableHeader[] {
+    const headers: AppTableHeader[] = [
+      ...this.currentRoot === 'gcodes'
+        ? [
+            { text: this.$tc('app.general.table.header.status'), value: 'history.status', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.height'), value: 'object_height', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.first_layer_height'), value: 'first_layer_height', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.layer_height'), value: 'layer_height', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.filament_name'), value: 'filament_name', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.filament_type'), value: 'filament_type', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.filament'), value: 'filament_total', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.filament_weight_total'), value: 'filament_weight_total', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.filament_used'), value: 'history.filament_used', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.nozzle_diameter'), value: 'nozzle_diameter', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.slicer'), value: 'slicer', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.slicer_version'), value: 'slicer_version', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.estimated_time'), value: 'estimated_time', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.print_duration'), value: 'history.print_duration', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.total_duration'), value: 'history.total_duration', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.first_layer_bed_temp'), value: 'first_layer_bed_temp', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.first_layer_extr_temp'), value: 'first_layer_extr_temp', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.chamber_temp'), value: 'chamber_temp', cellClass: 'text-no-wrap' },
+            { text: this.$tc('app.general.table.header.last_printed'), value: 'print_start_time', cellClass: 'text-no-wrap' }
+          ]
+        : [],
+      { text: this.$tc('app.general.table.header.modified'), value: 'modified', cellClass: 'text-no-wrap', width: '1%' },
+      { text: this.$tc('app.general.table.header.size'), value: 'size', cellClass: 'text-no-wrap', width: '1%' }
     ]
 
-    // If this is a gcode root, then metadata is available, including potentially history data.
-    if (this.currentRoot === 'gcodes') {
-      headers = [
-        ...headers,
-        { text: this.$t('app.general.table.header.status'), value: 'history.status', configurable: true },
-        { text: this.$t('app.general.table.header.height'), value: 'object_height', configurable: true },
-        { text: this.$t('app.general.table.header.first_layer_height'), value: 'first_layer_height', configurable: true },
-        { text: this.$t('app.general.table.header.layer_height'), value: 'layer_height', configurable: true },
-        { text: this.$t('app.general.table.header.filament_name'), value: 'filament_name', configurable: true },
-        { text: this.$t('app.general.table.header.filament_type'), value: 'filament_type', configurable: true },
-        { text: this.$t('app.general.table.header.filament'), value: 'filament_total', configurable: true },
-        { text: this.$t('app.general.table.header.filament_weight_total'), value: 'filament_weight_total', configurable: true },
-        { text: this.$t('app.general.table.header.filament_used'), value: 'history.filament_used', configurable: true },
-        { text: this.$t('app.general.table.header.nozzle_diameter'), value: 'nozzle_diameter', configurable: true },
-        { text: this.$t('app.general.table.header.slicer'), value: 'slicer', configurable: true },
-        { text: this.$t('app.general.table.header.slicer_version'), value: 'slicer_version', configurable: true },
-        { text: this.$t('app.general.table.header.estimated_time'), value: 'estimated_time', configurable: true },
-        { text: this.$t('app.general.table.header.print_duration'), value: 'history.print_duration', configurable: true },
-        { text: this.$t('app.general.table.header.total_duration'), value: 'history.total_duration', configurable: true },
-        { text: this.$t('app.general.table.header.first_layer_bed_temp'), value: 'first_layer_bed_temp', configurable: true },
-        { text: this.$t('app.general.table.header.first_layer_extr_temp'), value: 'first_layer_extr_temp', configurable: true },
-        { text: this.$t('app.general.table.header.chamber_temp'), value: 'chamber_temp', configurable: true },
-        {
-          text: this.$t('app.general.table.header.last_printed'),
-          value: 'print_start_time',
-          configurable: true
-        }
-      ]
-    }
-
-    // Final headers. All roots have these.
-    headers = [
-      ...headers,
-      { text: this.$t('app.general.table.header.modified'), value: 'modified', width: '1%', configurable: true },
-      { text: this.$t('app.general.table.header.size'), value: 'size', width: '1%', configurable: true }
-    ]
-
-    // Return headers
     const key = `${this.currentRoot}_${this.name}`
-    return this.$store.getters['config/getMergedTableHeaders'](headers, key)
+    const mergedTableHeaders = this.$store.getters['config/getMergedTableHeaders'](headers, key) as AppTableHeader[]
+
+    return mergedTableHeaders
   }
 
-  get visibleHeaders (): AppTableHeader[] {
-    return this.headers.filter(header => header.visible || header.visible === undefined)
+  // The available headers, based on the current root and system configuration.
+  get headers (): DataTableHeader[] {
+    return [
+      { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
+      { text: this.$tc('app.general.table.header.name'), value: 'name' },
+      ...this.configurableHeaders
+        .filter(header => header.visible !== false)
+    ]
   }
 
   // The current path for the given root.
