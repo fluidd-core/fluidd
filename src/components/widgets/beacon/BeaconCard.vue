@@ -136,7 +136,7 @@
       v-if="saveDialogState.open"
       v-model="saveDialogState.open"
       :existing-name="saveDialogState.existingName"
-      @save="handlModelSave"
+      @save="handleModelSave"
     />
   </collapsable-card>
 </template>
@@ -199,7 +199,7 @@ export default class BeaconCard extends Mixins(StateMixin, ToolheadMixin) {
     }
   }
 
-  handlModelSave (config: { name: string; removeDefault: boolean }) {
+  handleModelSave (config: { name: string; removeDefault: boolean }) {
     if (config.name !== this.beacon.model) {
       this.sendGcode(`BEACON_MODEL_SAVE NAME="${config.name}"`)
     }
