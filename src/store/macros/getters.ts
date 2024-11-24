@@ -19,7 +19,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
    */
   getMacros: (state, getters, rootState) => {
     const macros = Object.keys(rootState.printer.printer)
-      .filter(key => /^gcode_macro (?!_)/.test(key))
+      .filter(key => key.startsWith('gcode_macro '))
       .map(key => {
         const lowerCaseKey = key.toLocaleLowerCase()
         const name = lowerCaseKey.split(' ', 2)[1]
@@ -97,7 +97,10 @@ export const getters: GetterTree<MacrosState, RootState> = {
     const macros = getters.getMacros as Macro[]
 
     return macros
-      .filter(macro => macro.categoryId === id)
+      .filter(macro => (
+        !macro.name.startsWith('_') &&
+        macro.categoryId === id
+      ))
       .sort((a: Macro, b: Macro) => {
         // Sorts preferrentially by order, then by name
         // This offers backward compatibility with macros that have no order

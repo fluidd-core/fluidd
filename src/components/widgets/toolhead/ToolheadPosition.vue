@@ -196,7 +196,12 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
           : this.$store.state.printer.printer.toolhead.max_accel
         this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate} ACCEL=${accel}`)
       } else {
-        this.sendMoveGcode(`${axis}${pos}`, rate, true)
+        this.sendMoveGcode(
+          {
+            [axis]: pos
+          },
+          rate,
+          true)
       }
     }
   }
