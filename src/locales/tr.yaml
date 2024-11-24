@@ -80,6 +80,7 @@ app:
         klipper_backup_files: Klipper yedek dosyalarını filtrele
         moonraker_backup_files: Moonraker yedekleme dosyalarını filtrele
         rolled_log_files: Sarılmış günlük dosyalarını filtrele
+        moonraker_temporary_upload_files: Moonraker geçici yükleme dosyalarını filtrele
     label:
       dir_name: Dizin adı
       disk_usage: Disk Kullanımı
@@ -411,6 +412,16 @@ app:
           istediğinizden emin misiniz?
         no_file_preview: >-
           Şu anda %{name} önizlenemiyor.
+        confirm_remove_camera: Kamerayı %{name} kaldırmak istediğinizden emin misiniz?
+        confirm_remove_console_filter: Konsol filtresini %{name} kaldırmak istediğinizden
+          emin misiniz?
+        confirm_remove_macro_category: Makro kategorisi %{name}'i kaldırmak istediğinizden
+          emin misiniz?
+        confirm_remove_printer: Yazıcıyı %{name} kaldırmak istediğinizden emin misiniz?
+        confirm_remove_thermal_preset: Termal ön ayar %{name}'i kaldırmak istediğinizden
+          emin misiniz?
+        confirm_change_beacon_model: Yazıcı şu anda meşgul. Beacon modelini değiştirmek
+          istediğinizden emin misiniz?
     table:
       header:
         actions: Eylemler
@@ -475,6 +486,7 @@ app:
       timelapse: Zaman Atlama
       tool: Araç
       tune: Ayarla
+      beacon: Beacon
     tooltip:
       browse_metrics: Mevcut metrikleri göz atın
       estop: Acil Dur
@@ -679,6 +691,8 @@ app:
         otomatik olarak göster
       keyboard_shortcuts: Klavye kısayolları
       fluidd_settings_in_moonraker_db: Moonraker veritabanındaki Fluidd ayarları
+      drag_and_drop_functionality_for_files_and_folders: Dosya ve klasörler için sürükle-bırak
+        işlevi
     timer_options:
       duration: Süre sadece
       filament: Filament
@@ -982,3 +996,15 @@ app:
       navigation: Yönlendirme
     title:
       keyboard_shortcuts: Klavye Kısayolları
+  beacon:
+    label:
+      active: aktif
+      model_name: Model Adı
+      remove_model: '%{name} modelini kaldır'
+    tooltip:
+      delete: Modeli Sil
+      load: Modeli Yükle
+    msg:
+      hint: Eğer %{name} dışında bir şekilde kaydediyorsanız, %{name} modelini de
+        kaldırmayı seçebilirsiniz
+      not_found: Mevcut bir beacon modeli bulunamadı.

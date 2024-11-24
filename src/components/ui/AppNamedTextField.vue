@@ -52,7 +52,7 @@ import type { InputValidationRules } from 'vuetify'
 @Component({})
 export default class AppNamedTextField extends Mixins(StateMixin) {
   @VModel({ })
-    inputValue?: unknown
+  inputValue?: unknown
 
   @Prop({ type: String })
   readonly type?: string

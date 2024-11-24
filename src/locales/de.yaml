@@ -418,6 +418,18 @@ app:
           wollen?
         confirm_remove_user: Sind Sie sicher, dass Sie den Benutzer %{username} entfernen
           wollen?
+        confirm_remove_macro_category: Sind Sie sicher, dass Sie die Makrokategorie
+          %{name} entfernen möchten?
+        confirm_remove_printer: Sind Sie sicher, dass Sie den Drucker %{Name} entfernen
+          möchten?
+        confirm_remove_camera: Sind Sie sicher, dass Sie die Kamera %{name} entfernen
+          möchten?
+        confirm_remove_console_filter: Sind Sie sicher, dass Sie den Konsolenfilter
+          %{name} entfernen möchten?
+        confirm_remove_thermal_preset: Sind Sie sicher, dass Sie die Temperaturvoreinstellung
+          %{name} entfernen möchten?
+        confirm_change_beacon_model: Der Drucker ist momentan beschäftigt. Sind Sie
+          sicher, dass Sie das Beacon-Modell ändern möchten?
     table:
       header:
         actions: Aktionen
@@ -474,7 +486,7 @@ app:
       temperature: Temperaturen
       timelapse: Zeitraffer
       tool: Druckkopf
-      tune: Tune
+      tune: Kalibrieren
       pending_configuration_changes: Ausstehende Konfigurationsänderungen
       metrics_explorer: Metrik-Explorer
       not_found: 404 Nicht Gefunden
@@ -482,6 +494,7 @@ app:
       add_chart: Diagramm hinzufügen
       job_queue: Job-Warteschlange
       rollover_logs: Protokolle erneuern
+      beacon: Beacon
     tooltip:
       browse_metrics: Verfügbare Metriken durchsuchen
       estop: NOT-AUS
@@ -676,6 +689,8 @@ app:
       print_progress_calculation: Druckfortschritt-Berechnung
       keyboard_shortcuts: Tastenkürzel
       fluidd_settings_in_moonraker_db: Fluidd-Einstellungen in Moonraker-Datenbank
+      drag_and_drop_functionality_for_files_and_folders: Drag-and-Drop-Funktionalität
+        für Dateien und Ordner
     timer_options:
       duration: Nur Dauer
       filament: Filament
@@ -991,3 +1006,15 @@ app:
       pause: Pausieren
       printing: Drucken
       tool: Werkzeug
+  beacon:
+    msg:
+      hint: Wird das Modell mit einem anderen Namen als %{name} gespeichert, kann
+        ausgewählt werden, das Modell %{name} zu löschen
+      not_found: Keine existierenden Beacon-Modelle gefunden.
+    tooltip:
+      load: Modell laden
+      delete: Modell löschen
+    label:
+      active: aktiv
+      model_name: Modell-Name
+      remove_model: Modell %{name} entfernen

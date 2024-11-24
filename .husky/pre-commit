@@ -1,4 +1,4 @@
-FILES_TO_LINT=$(git diff --cached --name-only --diff-filter=ACM | grep -iE "\.(js|jsx|ts|tsx|vue)$" || true)
+FILES_TO_LINT=$(git diff --cached --name-only --diff-filter=ACM | grep -iE "\.(js|jsx|mjs|ts|tsx|vue)$" || true)
 
 if [ -n "$FILES_TO_LINT" ]; then
   npx --no eslint -- --max-warnings 0 $FILES_TO_LINT

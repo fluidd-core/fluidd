@@ -32,7 +32,7 @@ import { Component, Vue, VModel, Watch, Ref, Prop } from 'vue-property-decorator
 })
 export default class AppTextField extends Vue {
   @VModel()
-    inputValue!: unknown
+  inputValue!: unknown
 
   @Prop({ type: Boolean })
   readonly small?: boolean

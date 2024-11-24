@@ -410,6 +410,8 @@ app:
         confirm_remove_printer: Biztos, hogy el szeretnéd távolítani a nyomtatót %{name}?
         confirm_remove_thermal_preset: Biztos, hogy el szeretnéd távolítani a hőmérsékleti
           előbeállításokat %{name}?
+        confirm_change_beacon_model: A nyomtató jelenleg foglalt. Biztos, hogy meg
+          akarod változtatni a jeladó modellt?
     table:
       header:
         actions: Tevékenységek
@@ -474,6 +476,7 @@ app:
       timelapse: Timelapse
       tool: Eszköz
       tune: Hangolás
+      beacon: Jeladó
     tooltip:
       browse_metrics: A böngészőben elérhető mutatók
       estop: VészSTOP
@@ -677,6 +680,8 @@ app:
       print_in_progress_layout: Nyomtatási folyamat elrendezés
       keyboard_shortcuts: Billentyűparancsok
       fluidd_settings_in_moonraker_db: Fluidd beállítások a Moonraker adatbázisban
+      drag_and_drop_functionality_for_files_and_folders: Fájlok és mappák húzás és
+        eldobás funkciója
     timer_options:
       duration: Csak időtartam
       filament: Nyomtatószál
@@ -982,3 +987,14 @@ app:
       pause: Szünet
       printing: Nyomtatás
       tool: Szerszám
+  beacon:
+    label:
+      active: aktív
+      model_name: Modell neve
+      remove_model: '%{name} modell eltávolítása'
+    msg:
+      hint: Ha nem %{name} néven mentesz, akkor a %{name} modellt is eltávolítod
+      not_found: Nem találtam létező jelzőfény-modellt.
+    tooltip:
+      delete: Modell törlése
+      load: Modell betöltése

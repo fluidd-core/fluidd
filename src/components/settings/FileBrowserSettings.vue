@@ -17,6 +17,19 @@
           :items="availableTextSortOrders"
         />
       </app-setting>
+
+      <v-divider />
+
+      <app-setting
+        :title="$t('app.setting.label.drag_and_drop_functionality_for_files_and_folders')"
+      >
+        <v-switch
+          v-model="filesAndFoldersDragAndDrop"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
     </v-card>
   </div>
 </template>
@@ -54,6 +67,18 @@ export default class FileEditorSettings extends Vue {
         text: this.$t('app.general.label.version_sort')
       }
     ]
+  }
+
+  get filesAndFoldersDragAndDrop (): boolean {
+    return this.$store.state.config.uiSettings.general.filesAndFoldersDragAndDrop
+  }
+
+  set filesAndFoldersDragAndDrop (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.filesAndFoldersDragAndDrop',
+      value,
+      server: true
+    })
   }
 }
 </script>

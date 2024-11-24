@@ -28,7 +28,7 @@ export interface ArcMove extends LinearMove {
   direction: Rotation;
 }
 
-export type Move = LinearMove | ArcMove;
+export type Move = LinearMove | ArcMove
 
 export type Rotation = 'clockwise' | 'counter-clockwise'
 

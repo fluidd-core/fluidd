@@ -8,7 +8,7 @@
       <app-column-picker
         v-if="headers"
         key-name="history"
-        :headers="headers"
+        :headers="configurableHeaders"
       />
 
       <div
@@ -16,7 +16,7 @@
         class="ms-1 my-1"
       >
         <v-text-field
-          v-model="searchModel"
+          v-model="search"
           outlined
           dense
           single-line
@@ -28,11 +28,11 @@
 
     <v-data-table
       :items="history"
-      :headers="visibleHeaders"
+      :headers="headers"
       :items-per-page="15"
       :item-class="getRowClasses"
       single-expand
-      :search="searchModel"
+      :search="search"
       :expanded="expanded"
       mobile-breakpoint="0"
       item-key="job_id"
@@ -59,9 +59,7 @@
         </td>
       </template>
 
-      <template
-        #[`item.data-table-icons`]="{ item }"
-      >
+      <template #[`item.data-table-icons`]="{ item }">
         <!-- If the item no longer exists. -->
         <v-icon
           v-if="!item.exists"
@@ -90,112 +88,79 @@
         >
       </template>
 
-      <template
-        #[`item.filename`]="{ item }"
-      >
-        <span class="">
-          {{ getFilePaths(item.filename).filename }}
-        </span>
+      <template #[`item.filename`]="{ value }">
+        {{ getFilePaths(value).filename }}
       </template>
 
-      <template
-        #[`item.status`]="{ item }"
-      >
+      <template #[`item.status`]="{ item }">
         <job-history-item-status :job="item" />
       </template>
 
-      <template
-        #[`item.start_time`]="{ item }"
-      >
-        <span class="text-no-wrap">
-          {{ $filters.formatDateTime(item.start_time * 1000) }}
-        </span>
+      <template #[`item.start_time`]="{ value }">
+        {{ $filters.formatDateTime(value * 1000) }}
       </template>
 
-      <template
-        #[`item.end_time`]="{ item }"
-      >
-        <span
-          v-if="item.status !== 'in_progress'"
-          class="text-no-wrap"
+      <template #[`item.end_time`]="{ item, value }">
+        {{
+          item.status !== 'in_progress'
+            ? $filters.formatDateTime(value * 1000)
+            : '--'
+        }}
+      </template>
+
+      <template #[`item.print_duration`]="{ value }">
+        {{ $filters.formatCounterSeconds(value) }}
+      </template>
+
+      <template #[`item.total_duration`]="{ value }">
+        {{ $filters.formatCounterSeconds(value) }}
+      </template>
+
+      <template #[`item.filament_used`]="{ value }">
+        {{ $filters.getReadableLengthString(value) }}
+      </template>
+
+      <template #[`item.metadata.size`]="{ value }">
+        {{ $filters.getReadableFileSizeString(value) }}
+      </template>
+
+      <template #[`item.actions`]="{ item }">
+        <v-btn
+          icon
+          small
+          @click="handleRemoveJob(item)"
         >
-          {{ $filters.formatDateTime(item.end_time * 1000) }}
-        </span>
-        <span v-else>--</span>
-      </template>
-
-      <template
-        #[`item.print_duration`]="{ item }"
-      >
-        <span class="text-no-wrap">
-          {{ $filters.formatCounterSeconds(item.print_duration) }}
-        </span>
-      </template>
-
-      <template
-        #[`item.total_duration`]="{ item }"
-      >
-        <span class="text-no-wrap">
-          {{ $filters.formatCounterSeconds(item.total_duration) }}
-        </span>
-      </template>
-
-      <template
-        #[`item.filament_used`]="{ item }"
-      >
-        <span class="text-no-wrap">
-          {{ $filters.getReadableLengthString(item.filament_used) }}
-        </span>
-      </template>
-
-      <template
-        #[`item.metadata.size`]="{ item }"
-      >
-        <span class="text-no-wrap">
-          {{ $filters.getReadableFileSizeString(item.metadata.size) }}
-        </span>
-      </template>
-
-      <template
-        #[`item.actions`]="{ item }"
-      >
-        <div class="text-no-wrap">
-          <v-btn
-            icon
+          <v-icon
             small
-            @click="handleRemoveJob(item)"
-          >
-            <v-icon
-              small
-              color=""
-            >
-              $delete
-            </v-icon>
-          </v-btn>
-          <v-btn
-            class="v-data-table__expand-icon"
             color=""
-            :class="{ 'v-data-table__expand-icon--active': isExpanded(item) }"
-            icon
-            small
-            @click.prevent.stop="toggleRowExpand(item)"
           >
-            <v-icon>$chevronDown</v-icon>
-          </v-btn>
-        </div>
+            $delete
+          </v-icon>
+        </v-btn>
+        <v-btn
+          class="v-data-table__expand-icon"
+          color=""
+          :class="{ 'v-data-table__expand-icon--active': isExpanded(item) }"
+          icon
+          small
+          @click.prevent.stop="toggleRowExpand(item)"
+        >
+          <v-icon>$chevronDown</v-icon>
+        </v-btn>
       </template>
     </v-data-table>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, PropSync } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import JobHistoryItemStatus from './JobHistoryItemStatus.vue'
 import FilesMixin from '@/mixins/files'
 import getFilePaths from '@/util/get-file-paths'
 import type { HistoryItem } from '@/store/history/types'
 import { SocketActions } from '@/api/socketActions'
 import type { AppTableHeader } from '@/types'
+import type { DataTableHeader } from 'vuetify'
 
 @Component({
   components: {
@@ -204,29 +169,76 @@ import type { AppTableHeader } from '@/types'
 })
 export default class JobHistory extends Mixins(FilesMixin) {
   expanded: HistoryItem[] = []
+  search = ''
 
-  @PropSync('search', { type: String, default: '' })
-    searchModel!: string
-
-  get headers (): AppTableHeader[] {
-    const headers = [
-      { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-      { text: this.$tc('app.general.table.header.name'), value: 'filename' },
-      { text: this.$tc('app.general.table.header.status'), value: 'status', configurable: true },
-      { text: this.$tc('app.general.table.header.start_time'), value: 'start_time', configurable: true },
-      { text: this.$tc('app.general.table.header.end_time'), value: 'end_time', configurable: true },
-      { text: this.$tc('app.general.table.header.print_duration'), value: 'print_duration', configurable: true },
-      { text: this.$tc('app.general.table.header.total_duration'), value: 'total_duration', configurable: true },
-      { text: this.$tc('app.general.table.header.filament_used'), value: 'filament_used', configurable: true },
-      { text: this.$t('app.general.table.header.size'), value: 'metadata.size', width: '1%', configurable: true },
-      { text: this.$tc('app.general.table.header.actions'), value: 'actions', sortable: false, align: 'end' }
+  get configurableHeaders (): AppTableHeader[] {
+    const headers: AppTableHeader[] = [
+      {
+        text: this.$tc('app.general.table.header.status'),
+        value: 'status',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.start_time'),
+        value: 'start_time',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.end_time'),
+        value: 'end_time',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.print_duration'),
+        value: 'print_duration',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.total_duration'),
+        value: 'total_duration',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.filament_used'),
+        value: 'filament_used',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.size'),
+        value: 'metadata.size',
+        cellClass: 'text-no-wrap',
+        width: '1%'
+      },
     ]
-    const key = 'history'
-    return this.$store.getters['config/getMergedTableHeaders'](headers, key)
+
+    const mergedTableHeaders = this.$store.getters['config/getMergedTableHeaders'](headers, 'history') as AppTableHeader[]
+
+    return mergedTableHeaders
   }
 
-  get visibleHeaders (): AppTableHeader[] {
-    return this.headers.filter(header => header.visible || header.visible === undefined)
+  get headers (): DataTableHeader[] {
+    return [
+      {
+        text: '',
+        value: 'data-table-icons',
+        sortable: false,
+        width: '24px'
+      },
+      {
+        text: this.$tc('app.general.table.header.name'),
+        value: 'filename'
+      },
+      ...this.configurableHeaders
+        .filter(header => header.visible !== false),
+      {
+        text: this.$tc('app.general.table.header.actions'),
+        value: 'actions',
+        sortable: false,
+        align: 'end'
+      }
+    ]
   }
 
   get history () {

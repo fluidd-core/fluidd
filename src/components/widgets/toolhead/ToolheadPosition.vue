@@ -23,7 +23,7 @@
           small
           type="number"
           :disabled="!klippyReady || (!xHomed && !xForceMove)"
-          :readonly="printerBusy"
+          :readonly="printerPrinting"
           :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
           @submit="moveAxisTo('X', +$event)"
         />
@@ -46,7 +46,7 @@
           small
           type="number"
           :disabled="!klippyReady || (!yHomed && !yForceMove)"
-          :readonly="printerBusy"
+          :readonly="printerPrinting"
           :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
           @submit="moveAxisTo('Y', +$event)"
         />
@@ -69,7 +69,7 @@
           small
           type="number"
           :disabled="!klippyReady || (!zHomed && !zForceMove)"
-          :readonly="printerBusy"
+          :readonly="printerPrinting"
           :value="(useGcodeCoords) ? gcodePosition[2].toFixed(3) : toolheadPosition[2].toFixed(3)"
           @submit="moveAxisTo('Z', +$event)"
         />
@@ -89,7 +89,7 @@
               <app-btn
                 v-bind="attrs"
                 class="positioning-toggle-button"
-                :disabled="!klippyReady || printerBusy"
+                :disabled="!klippyReady || printerPrinting"
                 v-on="on"
               >
                 <v-icon small>
@@ -104,7 +104,7 @@
               <app-btn
                 v-bind="attrs"
                 class="positioning-toggle-button"
-                :disabled="!klippyReady || printerBusy"
+                :disabled="!klippyReady || printerPrinting"
                 v-on="on"
               >
                 <v-icon small>
@@ -196,7 +196,12 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
           : this.$store.state.printer.printer.toolhead.max_accel
         this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate} ACCEL=${accel}`)
       } else {
-        this.sendMoveGcode(`${axis}${pos}`, rate, true)
+        this.sendMoveGcode(
+          {
+            [axis]: pos
+          },
+          rate,
+          true)
       }
     }
   }

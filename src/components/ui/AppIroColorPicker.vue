@@ -13,7 +13,7 @@ import type { ColorPickerProps, IroColorPicker } from '@jaames/iro/dist/ColorPic
 @Component({})
 export default class AppColorPicker extends Vue {
   @VModel({ type: String, default: '#ffffff' })
-    inputValue!: string
+  inputValue!: string
 
   @Prop({ type: Object })
   readonly options?: Partial<ColorPickerProps>

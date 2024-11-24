@@ -95,7 +95,7 @@ export default class MacroBtn extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   readonly macro!: Macro
 
-  params: { [index: string]: { value: string | number; reset: string | number }} = {}
+  params: { [index: string]: { value: string | number; reset: string | number } } = {}
 
   get isMacroWithRawParam () {
     return ['m117', 'm118'].includes(this.macro.name)

@@ -21,7 +21,7 @@ export const mutations: MutationTree<PartsState> = {
     }
 
     if ('objects' in payload) {
-      const partMap: { [key: string]: Part} = {}
+      const partMap: { [key: string]: Part } = {}
       payload.objects.forEach((obj: PartObject) => {
         const name = obj.name
         const part: Part = {

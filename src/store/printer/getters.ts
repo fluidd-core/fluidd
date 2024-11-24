@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
-import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates } from './types'
+import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, BeaconState } from './types'
 import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
@@ -49,25 +49,19 @@ export const getters: GetterTree<PrinterState, RootState> = {
     // If an external source fires an estop, or the client
     // is refreshed while klipper is down - the webhook data maybe invalid
     // but the printer info should be good.
-    if (
-      state.printer.info.state_message &&
-      state.printer.info.state_message !== ''
-    ) {
-      return state.printer.info.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
+    if (state.info.state_message) {
+      return state.info.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
     }
-    if (
-      state.printer.webhooks.state_message &&
-      state.printer.webhooks.state_message !== ''
-    ) {
+    if (state.printer.webhooks.state_message) {
       return state.printer.webhooks.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
     }
     return 'Unknown'
   },
 
   getKlippyApp: (state) => {
-    const app = state.printer.info.app?.toLowerCase()
+    const app = state.info.app?.toLowerCase()
 
-    const klippyApp = isKeyOf(app, Globals.SUPPORTED_SERVICES.klipper)
+    const klippyApp = app && isKeyOf(app, Globals.SUPPORTED_SERVICES.klipper)
       ? app
       : 'klipper'
 
@@ -638,7 +632,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'neopixel',
       'dotstar',
       'pca9533',
-      'pca9632'
+      'pca9632',
+      'nevermore'
     ]
 
     const supportedTypes = (filter && filter.length)
@@ -760,7 +755,6 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'aht10',
       'bme280',
       'htu21d',
-      'nevermoresensor',
       'sht3x'
     ]
 
@@ -1049,5 +1043,26 @@ export const getters: GetterTree<PrinterState, RootState> = {
       results &&
       Object.keys(results).length > 0
     )
+  },
+
+  getSupportsBeacon: (state, getters) => {
+    return getters.getPrinterSettings('beacon') != null
+  },
+
+  getBeaconModels: (state, getters) => {
+    const beacon = state.printer.beacon as BeaconState
+
+    const models = Object.keys(getters.getPrinterSettings())
+      .filter(key => key.startsWith('beacon model '))
+      .map(key => {
+        const name = key.substring(13)
+
+        return {
+          name,
+          active: beacon.model === name
+        }
+      })
+
+    return models
   }
 }

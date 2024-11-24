@@ -295,7 +295,7 @@ export const SocketActions = {
     )
   },
 
-  async printerObjectsSubscribe (objects: {[key: string]: null}) {
+  async printerObjectsSubscribe (objects: { [key: string]: null }) {
     baseEmit(
       'printer.objects.subscribe', {
         dispatch: 'printer/onPrinterObjectsSubscribe',

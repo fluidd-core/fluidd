@@ -124,6 +124,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import type { SystemInfo, CpuInfo, DistroInfo, Virtualization } from '@/store/server/types'
 import StateMixin from '@/mixins/state'
+import type { PrinterInfo } from '@/store/printer/types'
 
 @Component({})
 export default class PrinterStatsCard extends Mixins(StateMixin) {
@@ -174,8 +175,8 @@ export default class PrinterStatsCard extends Mixins(StateMixin) {
       .join(', ')
   }
 
-  get printerInfo () {
-    return this.$store.state.printer.printer.info
+  get printerInfo (): PrinterInfo {
+    return this.$store.state.printer.info
   }
 
   get canRolloverLogs (): boolean {

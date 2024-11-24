@@ -199,7 +199,7 @@ import type { WebcamConfig } from '@/store/webcams/types'
 @Component({})
 export default class CameraConfigDialog extends Vue {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: Object, required: true })
   readonly camera!: WebcamConfig

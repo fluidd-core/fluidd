@@ -252,7 +252,7 @@ export const Filters = {
   /**
    * Formats a number (in bytes) to a human readable file size.
    */
-  getReadableFileSizeString (fileSizeInBytes: number) {
+  getReadableFileSizeString (fileSizeInBytes: number, fractionDigits = 1) {
     let i = -1
     const byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB']
     if (fileSizeInBytes === 0) return `0${byteUnits[0]}`
@@ -261,13 +261,13 @@ export const Filters = {
       i++
     } while (fileSizeInBytes > 1024)
 
-    return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i]
+    return Math.max(fileSizeInBytes, 0.1).toFixed(fractionDigits) + byteUnits[i]
   },
 
   /**
    * Formats a number (in bytes/sec) to a human readable data rate.
    */
-  getReadableDataRateString (dataRateInBytesPerSec: number) {
+  getReadableDataRateString (dataRateInBytesPerSec: number, fractionDigits = 1) {
     let i = -1
     const byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB']
     if (dataRateInBytesPerSec === 0) return `0${byteUnits[0]}`
@@ -276,7 +276,7 @@ export const Filters = {
       i++
     } while (dataRateInBytesPerSec > 1024)
 
-    return Math.max(dataRateInBytesPerSec, 0.2).toFixed(1) + byteUnits[i] + '/Sec'
+    return Math.max(dataRateInBytesPerSec, 0.2).toFixed(fractionDigits) + byteUnits[i] + '/Sec'
   },
 
   /**
@@ -296,46 +296,46 @@ export const Filters = {
   /**
    * Formats a number representing g to human readable weight.
    */
-  getReadableWeightString (weightInG: number | undefined | null) {
+  getReadableWeightString (weightInG: number | undefined | null, fractionDigits = 2) {
     if (weightInG === undefined || weightInG === null) {
       return '-'
     }
 
-    if (weightInG >= 1000) return (weightInG / 1000).toFixed(2) + ' kg'
-    return weightInG.toFixed(2) + ' g'
+    if (weightInG >= 1000) return (weightInG / 1000).toFixed(fractionDigits) + ' kg'
+    return weightInG.toFixed(fractionDigits) + ' g'
   },
 
   /**
    * Formats a number (in Hz) to a human readable frequency.
    */
-  getReadableFrequencyString (frequencyInHz: number) {
+  getReadableFrequencyString (frequencyInHz: number, fractionDigits = 0) {
     let i = 0
     const frequencyUnits = [' Hz', ' kHz', ' MHz', ' GHz', ' THz']
     while (frequencyInHz >= 1000) {
       frequencyInHz = frequencyInHz / 1000
       i++
     }
-    return frequencyInHz.toFixed() + frequencyUnits[i]
+    return frequencyInHz.toFixed(fractionDigits) + frequencyUnits[i]
   },
 
   /**
    * Formats a number (in ohms) to a human readable resistance.
    */
-  getReadableResistanceString (resistanceInOhms: number) {
+  getReadableResistanceString (resistanceInOhms: number, fractionDigits = 1) {
     let i = 0
     const resistanceUnits = [' Ω', ' kΩ', ' MΩ', ' GΩ', ' TΩ']
     while (resistanceInOhms >= 1000) {
       resistanceInOhms = resistanceInOhms / 1000
       i++
     }
-    return resistanceInOhms.toFixed(1) + resistanceUnits[i]
+    return resistanceInOhms.toFixed(fractionDigits) + resistanceUnits[i]
   },
 
   /**
    * Formats a number (in hPa) to human readable atmospheric pressure.
    */
-  getReadableAtmosphericPressureString (pressumeInHPa: number) {
-    return pressumeInHPa.toFixed(1) + ' hPa'
+  getReadableAtmosphericPressureString (pressumeInHPa: number, fractionDigits = 1) {
+    return pressumeInHPa.toFixed(fractionDigits) + ' hPa'
   },
 
   /**
@@ -535,7 +535,7 @@ export const Rules = {
       // eslint-disable-next-line no-new
       new RegExp(v)
       return true
-    } catch (e) {
+    } catch {
       return i18n.t('app.general.simple_form.error.invalid_expression')
     }
   },

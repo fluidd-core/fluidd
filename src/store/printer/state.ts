@@ -6,6 +6,10 @@ import type { PrinterState } from './types'
  */
 export const defaultState = (): PrinterState => {
   return {
+    info: {
+      state: '',
+      state_message: ''
+    },
     printer: {
       endstops: {},
       bed_mesh: {
@@ -14,10 +18,6 @@ export const defaultState = (): PrinterState => {
       heaters: {
         available_heaters: [],
         available_sensors: []
-      },
-      info: {
-        state: '',
-        state_message: ''
       },
       configfile: {
         warnings: [],

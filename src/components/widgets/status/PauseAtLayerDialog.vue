@@ -100,7 +100,7 @@ type PrintStatsMacroVariables = {
 @Component({})
 export default class PauseAtLayerDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   pauseNextLayer: PauseNextLayer = {
     enable: false,

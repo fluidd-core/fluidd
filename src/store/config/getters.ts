@@ -90,25 +90,27 @@ export const getters: GetterTree<ConfigState, RootState> = {
 
   getMergedTableHeaders: (state, getters) => (headers: AppTableHeader[], key: string) => {
     const configured: AppTablePartialHeader[] = getters.getConfiguredTableHeaders(key)
+
     if (!configured) {
       return headers
     }
-    const merged: AppTableHeader[] = []
-    headers.forEach(header => {
-      const keyBy = (header.key)
-        ? 'key'
-        : 'value'
 
-      const o = {
-        visible: true,
-        configurable: false,
-        ...header,
-        ...configured.find(p => p[keyBy] === header[keyBy])
-      }
-
-      merged.push(o)
-    })
-    return merged
+    // if the number of configured headers is the same as the available headers,
+    // then use configured headers to keep order
+    // else go with available headers
+    return headers.length === configured.length
+      ? configured
+        .map(header => ({
+          visible: true,
+          ...headers.find(p => p.value === header.value),
+          ...header,
+        }))
+      : headers
+        .map(header => ({
+          visible: true,
+          ...header,
+          ...configured.find(p => p.value === header.value)
+        }))
   },
 
   getConfiguredTableHeaders: (state) => (key: string) => {

@@ -25,7 +25,7 @@ import { Component, Vue, VModel } from 'vue-property-decorator'
 @Component({})
 export default class PendingChangesDialog extends Vue {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   get saveConfigPendingItems () {
     const saveConfigPendingItems = this.$store.getters['printer/getSaveConfigPendingItems'] as Record<string, Record<string, string>>

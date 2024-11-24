@@ -46,10 +46,10 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
   context!: CanvasRenderingContext2D
 
   @VModel({ type: String, default: null })
-    source!: null | string
+  source!: null | string
 
   @Ref('canvas')
-    canvas!: HTMLCanvasElement
+  canvas!: HTMLCanvasElement
 
   get camera () {
     if (this.source === 'device') {

@@ -39,18 +39,18 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
+              :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click="$emit('legendClick', item)"
+              @click="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
           </td>
           <td class="temp-power">
             <span
-              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
+              :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click="$emit('legendPowerClick', item)"
+              @click="legendClick(item, '#power')"
             >
               <span v-if="item.power <= 0 && item.target <= 0">off</span>
               <span v-if="item.target > 0">
@@ -63,9 +63,9 @@
             class="text-no-wrap"
           >
             <span
-              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
+              :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click="$emit('legendPowerClick', item)"
+              @click="legendClick(item, '#power')"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -110,9 +110,9 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
+              :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click="$emit('legendClick', item)"
+              @click="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
@@ -120,9 +120,9 @@
           <td class="temp-power">
             <span
               v-if="item.speed"
-              :class="{ 'active': chartSelectedLegends[item.key + 'Speed'] }"
+              :class="{ 'active':isLegendSelected(item, '#speed') }"
               class="legend-item toggle"
-              @click="$emit('legendPowerClick', item)"
+              @click="legendClick(item, '#speed')"
             >
               <span v-if="item.speed > 0 && (item.target > 0 || !item.target)">
                 {{ (item.speed * 100).toFixed(0) }}<small>%</small>
@@ -138,9 +138,9 @@
             class="text-no-wrap"
           >
             <span
-              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
+              :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click="$emit('legendPowerClick', item)"
+              @click="legendClick(item, '#power')"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -192,9 +192,9 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
+              :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click="$emit('legendClick', item)"
+              @click="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
@@ -213,7 +213,7 @@
           <td class="temp-actual">
             <v-tooltip
               left
-              :disabled="[item.measured_max_temp, item.measured_min_temp].every(x => x === undefined)"
+              :disabled="item.measured_max_temp == null && item.measured_min_temp == null"
             >
               <template #activator="{ on, attrs }">
                 <div
@@ -232,11 +232,61 @@
                   </span>
                 </div>
               </template>
-              <span v-if="[item.measured_max_temp, item.measured_min_temp].every(x => x !== undefined)">
-                <span>{{ $t('app.general.label.high') }}: {{ item.measured_max_temp.toFixed(1) }}°C</span><br>
-                <span>{{ $t('app.general.label.low') }}: {{ item.measured_min_temp.toFixed(1) }}°C</span>
+              <span>
+                {{ $t('app.general.label.high') }}: {{ item.measured_max_temp?.toFixed(1) ?? '-' }}°C<br>
+                {{ $t('app.general.label.low') }}: {{ item.measured_min_temp?.toFixed(1) ?? '-' }}°C
               </span>
             </v-tooltip>
+          </td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr
+          v-for="item in nevermore"
+          :key="item.key"
+        >
+          <td>
+            <v-icon
+              small
+              :color="item.color"
+            >
+              $fan
+            </v-icon>
+          </td>
+          <td class="temp-name">
+            <span class="legend-item">
+              {{ item.prettyName }}
+            </span>
+          </td>
+          <td
+            class="temp-actual"
+            :colspan="showRateOfChange ? 3 : 2"
+          >
+            <span>
+              <template v-for="sensor in getNevermoreSensors(item)">
+                <v-tooltip
+                  :key="`${item.key}-${sensor.key}`"
+                  left
+                  :disabled="sensor.disableTooltip"
+                >
+                  <template #activator="{ on, attrs }">
+                    <div
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      <component :is="sensor.small ? 'small' : 'span'">
+                        {{ sensor.intake ?? '-' }} &rarr; {{ sensor.exhaust ?? '-' }}{{ sensor.unit }}
+                      </component>
+                    </div>
+                  </template>
+                  <span>
+                    {{ $t('app.general.label.high') }}: {{ sensor.intake_max ?? '-' }} &rarr; {{ sensor.exhaust_max ?? '-' }}{{ sensor.unit }}<br>
+                    {{ $t('app.general.label.low') }}: {{ sensor.intake_min ?? '-' }} &rarr; {{ sensor.exhaust_min ?? '-' }}{{ sensor.unit }}
+                  </span>
+                </v-tooltip>
+              </template>
+              <small v-if="item.rpm != null">{{ item.rpm }} RPM</small>
+            </span>
           </td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
@@ -250,7 +300,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
 import StateMixin from '@/mixins/state'
-import type { Heater, Sensor } from '@/store/printer/types'
+import type { Fan, Heater, Sensor } from '@/store/printer/types'
 import { takeRightWhile } from 'lodash-es'
 import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
 
@@ -266,6 +316,10 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
 
   get fans () {
     return this.$store.getters['printer/getOutputs'](['temperature_fan'])
+  }
+
+  get nevermore () {
+    return this.$store.getters['printer/getOutputs'](['nevermore'])
   }
 
   get sensors () {
@@ -323,6 +377,92 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
 
     return `${rateOfChange < 0 ? '' : '+'}${rateOfChange.toFixed(1)}`
   }
+
+  isLegendSelected (item: Heater | Fan, subKey?: string) {
+    const key = `${item.key}${subKey ?? ''}`
+
+    return this.chartSelectedLegends[key] ?? (subKey !== '#power' && subKey !== '#speed')
+  }
+
+  legendClick (item: Heater | Fan, subKey?: string) {
+    const value = !this.isLegendSelected(item, subKey)
+    const key = `${item.key}${subKey ?? ''}`
+
+    const chartSelectedLegends: ChartSelectedLegends = {
+      [key]: value
+    }
+
+    // If this has a target, toggle that too.
+    if (
+      !subKey &&
+      'target' in item
+    ) {
+      chartSelectedLegends[`${item.key}#target`] = value
+    }
+
+    this.$emit('updateChartSelectedLegends', chartSelectedLegends)
+  }
+
+  getNevermoreSensors (item: Record<string, number | undefined>) {
+    const sensors = [
+      {
+        key: 'gas',
+        unit: '',
+        digits: 0,
+        small: false
+      },
+      {
+        key: 'temperature',
+        unit: ' °C',
+        digits: 1,
+        small: true
+      }
+    ]
+
+    if (this.showRelativeHumidity) {
+      sensors.push({
+        key: 'humidity',
+        unit: ' %',
+        digits: 1,
+        small: true
+      })
+    }
+
+    if (this.showBarometricPressure) {
+      sensors.push({
+        key: 'pressure',
+        unit: ' hPa',
+        digits: 0,
+        small: true
+      })
+    }
+
+    return sensors
+      .map(sensor => {
+        const intake = item[`intake_${sensor.key}`]?.toFixed(sensor.digits)
+        const intake_min = item[`intake_${sensor.key}_min`]?.toFixed(sensor.digits)
+        const intake_max = item[`intake_${sensor.key}_max`]?.toFixed(sensor.digits)
+        const exhaust = item[`exhaust_${sensor.key}`]?.toFixed(sensor.digits)
+        const exhaust_min = item[`exhaust_${sensor.key}_min`]?.toFixed(sensor.digits)
+        const exhaust_max = item[`exhaust_${sensor.key}_max`]?.toFixed(sensor.digits)
+
+        return {
+          ...sensor,
+          intake,
+          intake_min,
+          intake_max,
+          exhaust,
+          exhaust_min,
+          exhaust_max,
+          disableTooltip: (
+            intake_min == null &&
+            intake_max == null &&
+            exhaust_min == null &&
+            exhaust_max == null
+          )
+        }
+      })
+  }
 }
 </script>
 
@@ -354,6 +494,7 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
       font-weight: 300;
       font-size: 1.125rem;
       white-space: nowrap;
+      text-align: right;
     }
 
     > thead > tr > th {

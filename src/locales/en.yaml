@@ -377,6 +377,7 @@ app:
       msg:
         confirm: Are you sure?
         confirm_cancel_print: Are you sure you want to cancel the current print?
+        confirm_change_beacon_model: The printer is currently busy. Are you sure you want to change the beacon model?
         confirm_clear_mesh: The printer is currently busy. Are you sure you want to clear the bed mesh?
         confirm_delete: Are you sure? This will delete the selected item. | Are you sure? This will delete the {count} selected items.
         confirm_emergency_stop: Are you sure you want to emergency stop the printer?
@@ -430,6 +431,7 @@ app:
     title:
       add_chart: Add Chart
       add_printer: Add Printer
+      beacon: Beacon
       bedmesh: Bed Mesh
       bedmesh_controls: Bed Mesh Controls
       camera: Camera | Cameras
@@ -648,6 +650,7 @@ app:
       date_format: Date format
       time_format: Time format
       text_sort_order: Text sort order
+      drag_and_drop_functionality_for_files_and_folders: Drag-and-drop functionality for files and folders
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically
@@ -939,3 +942,16 @@ app:
       pause: Pause
       printing: Printing
       tool: Tool
+  beacon:
+    label:
+      active: active
+      model_name: Model Name
+      remove_model: Remove %{name} model
+    msg:
+      hint: >-
+        If saving as something other than %{name}, you can choose to also remove
+        the %{name} model
+      not_found: No existing beacon models found.
+    tooltip:
+      delete: Delete Model
+      load: Load Model

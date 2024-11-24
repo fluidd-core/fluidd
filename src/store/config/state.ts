@@ -49,6 +49,7 @@ export const defaultState = (): ConfigState => {
         timeFormat: 'iso',
         enableKeyboardShortcuts: true,
         textSortOrder: 'default',
+        filesAndFoldersDragAndDrop: true,
         showRateOfChange: false,
         showRelativeHumidity: true,
         showBarometricPressure: true,
@@ -87,43 +88,10 @@ export const defaultState = (): ConfigState => {
         tempPresets: []
       },
       tableHeaders: {
-        gcodes_dashboard: [
-          { value: 'history.status', visible: false },
-          { value: 'first_layer_extr_temp', visible: false },
-          { value: 'first_layer_bed_temp', visible: false },
-          { value: 'chamber_temp', visible: false },
-          { value: 'history.total_duration', visible: false },
-          { value: 'history.print_duration', visible: false },
-          { value: 'estimated_time', visible: false },
-          { value: 'nozzle_diameter', visible: false },
-          { value: 'slicer_version', visible: false },
-          { value: 'slicer', visible: false },
-          { value: 'history.filament_used', visible: false },
-          { value: 'filament_name', visible: false },
-          { value: 'filament_type', visible: false },
-          { value: 'filament_total', visible: false },
-          { value: 'filament_weight_total', visible: false },
-          { value: 'object_height', visible: false },
-          { value: 'first_layer_height', visible: false },
-          { value: 'layer_height', visible: false }
-        ],
-        gcodes_jobs: [
-          { value: 'first_layer_height', visible: false },
-          { value: 'history.filament_used', visible: false },
-          { value: 'slicer_version', visible: false },
-          { value: 'history.print_duration', visible: false },
-          { value: 'chamber_temp', visible: false },
-          { value: 'first_layer_extr_temp', visible: false },
-          { value: 'first_layer_bed_temp', visible: false }
-        ],
-        history: [
-          { value: 'print_duration', visible: false },
-          { value: 'filament_used', visible: false }
-        ],
-        job_queue: [
-          { value: 'time_added', visible: true },
-          { value: 'time_in_queue', visible: false }
-        ],
+        gcodes_dashboard: [],
+        gcodes_jobs: [],
+        history: [],
+        job_queue: [],
         spoolman: []
       },
       gcodePreview: {

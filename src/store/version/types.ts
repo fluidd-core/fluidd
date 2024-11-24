@@ -7,7 +7,7 @@ export interface VersionState {
   responses: UpdateResponse[];
 }
 
-export type VersionComponents = Record<string, UpdatePackage>;
+export type VersionComponents = Record<string, UpdatePackage>
 
 /**
  * Base interface for all versioned packages
@@ -81,8 +81,8 @@ export interface ZipUpdatePackage extends VersionedPackage {
   last_error?: string;
 }
 
-export type VersionedUpdatePackage = GitUpdatePackage | WebUpdatePackage | ZipUpdatePackage;
-export type UpdatePackage = VersionedUpdatePackage | OSPackage;
+export type VersionedUpdatePackage = GitUpdatePackage | WebUpdatePackage | ZipUpdatePackage
+export type UpdatePackage = VersionedUpdatePackage | OSPackage
 
 export interface CommitItem {
   author: string;

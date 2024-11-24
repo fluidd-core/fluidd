@@ -84,7 +84,7 @@ import type { ConsoleFilter } from '@/store/console/types'
 @Component({})
 export default class ConsoleFilterDialog extends Vue {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: Object, required: true })
   readonly filter!: ConsoleFilter

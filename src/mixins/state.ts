@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { SocketActions } from '@/api/socketActions'
 import { Component } from 'vue-property-decorator'
+import type { Macro } from '@/store/macros/types'
 
 @Component
 export default class StateMixin extends Vue {
@@ -103,8 +104,19 @@ export default class StateMixin extends Vue {
     this.addConsoleEntry(gcode)
   }
 
-  sendMoveGcode (movementGcode: string, rate: number, absolute = false, wait?: string) {
-    const gcode = `SAVE_GCODE_STATE NAME=_ui_movement
+  sendMoveGcode (movement: { X?: number, Y?: number, Z?: number }, rate: number, absolute = false, wait?: string) {
+    const macro = this.$store.getters['macros/getMacroByName']('_client_linear_move') as Macro | undefined
+
+    const paramSeparator = macro
+      ? '='
+      : ''
+    const movementGcode = Object.entries(movement)
+      .map(([key, value]) => `${key}${paramSeparator}${value}`)
+      .join(' ')
+
+    const gcode = macro
+      ? `${macro.name.toUpperCase()} ${movementGcode} F=${rate * 60}${absolute ? ' ABSOLUTE=1' : ''}`
+      : `SAVE_GCODE_STATE NAME=_ui_movement
 G9${absolute ? 0 : 1}
 G1 ${movementGcode} F${rate * 60}
 RESTORE_GCODE_STATE NAME=_ui_movement`
@@ -113,7 +125,11 @@ RESTORE_GCODE_STATE NAME=_ui_movement`
   }
 
   sendExtrudeGcode (amount: number, rate: number, wait?: string) {
-    const gcode = `SAVE_GCODE_STATE NAME=_ui_retract
+    const macro = this.$store.getters['macros/getMacroByName']('_client_linear_move') as Macro | undefined
+
+    const gcode = macro
+      ? `${macro.name.toUpperCase()} E=${amount} F=${rate * 60}`
+      : `SAVE_GCODE_STATE NAME=_ui_retract
 M83
 G1 E${amount} F${rate * 60}
 RESTORE_GCODE_STATE NAME=_ui_retract`

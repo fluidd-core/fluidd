@@ -735,7 +735,11 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
         : this.$store.state.printer.printer.toolhead.max_accel
       this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
     } else {
-      this.sendMoveGcode(`${axis}${distance}`, rate)
+      this.sendMoveGcode(
+        {
+          [axis]: distance
+        },
+        rate)
     }
   }
 
@@ -763,7 +767,13 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     const bedCenter = this.bedCenter
     const rate: number = this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
 
-    this.sendMoveGcode(`X${bedCenter.x} Y${bedCenter.y}`, rate, true)
+    this.sendMoveGcode(
+      {
+        X: bedCenter.x,
+        Y: bedCenter.y
+      },
+      rate,
+      true)
   }
 }
 </script>

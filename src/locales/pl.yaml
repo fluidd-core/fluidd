@@ -71,8 +71,10 @@ app:
         print_start_time: Ukryj wydrukowane
         hidden_files_folders: Filtruj ukryte pliki i foldery
         rolled_log_files: Ukryj zarchiwizowane logi
-        klipper_backup_files: Filtruj kopie zapasowe Klippera
-        moonraker_backup_files: Filtruj pliki kopii zapasowej Moonrakera
+        klipper_backup_files: Ukryj kopie zapasowe Klippera
+        moonraker_backup_files: Ukryj kopie zapasowe Moonrakera
+        crowsnest_backup_files: Ukryj kopie zapasowe Crowsnest
+        moonraker_temporary_upload_files: Ukryj tymczasowo przesłane pliki Moonrakera
     label:
       dir_name: Nazwa katalogu
       disk_usage: Użycie dysku
@@ -220,6 +222,7 @@ app:
       range: Zakres
       minimum_cruise_ratio: Minimalne przełożenie
       circle: Koło
+      stepper_driver: Sterownik %{name}
     btn:
       abort: Przerwij
       add: Dodaj
@@ -299,6 +302,8 @@ app:
       refresh_metadata: Odśwież metadane
       multiply: Powiel
       retry: Ponów
+      copied: Skopiowano
+      copy: Kopiuj
     title:
       home: Ekran główny
       camera: Kamera | Kamery
@@ -347,6 +352,10 @@ app:
         korekta bieżącej śruby; w przeciwnym razie kliknij przycisk <b>Akceptuj</b>,
         aby kontynuować.
       rolledover_logs: 'Następujące logi aplikacji zostały zresetowane: %{applications}'
+      not_valid_fluidd_backup_file: Nieprawidłowy plik kopii zapasowej Fluidd!
+      fluidd_settings_backup_failed: Nie udało się utworzyć kopii zapasowej ustawień
+        Fluidd!
+      fluidd_settings_restore_failed: Nie udało się przywrócić ustawień Fluidd!
     simple_form:
       error:
         exists: Już istnieje
@@ -377,6 +386,18 @@ app:
           ten plik?
         no_file_preview: Nie można obecnie wyświetlić podglądu %{name}.
         confirm_service_restart: Czy na pewno chcesz zrestartować usługę %{name}?
+        confirm_clear_mesh: Drukarka jest zajęta. Czy na pewno chcesz wyczyścić siatkę
+          stołu?
+        confirm_remove_printer: Czy na pewno chcesz usunąć drukarkę %{name}?
+        confirm_remove_console_filter: Czy na pewno chcesz usunąć filtr konsoli %{name}?
+        confirm_remove_camera: Czy na pewno chcesz usunąć kamerę %{name}?
+        confirm_cancel_print: Czy na pewno chcesz przerwać aktualne drukowanie?
+        confirm_emergency_stop: Czy na pewno chcesz awaryjnie zatrzymać drukarkę?
+        confirm_load_bedmesh_profile: Drukarka jest zajęta. Czy na pewno chcesz wczytać
+          profil %{name}?
+        confirm_remove_user: Czy na pewno chcesz usunąć użytkownika %{username}?
+        confirm_remove_thermal_preset: Czy na pewno chcesz usunąć preset termiczny
+          %{name}?
     error:
       app_warnings_found: '%{appName} - znaleziono ostrzeżenia.'
       app_setup_link: Wymagania dotyczące konfiguracji Fluidd można znaleźć <a target="_blank"
@@ -657,8 +678,9 @@ app:
     timer_options:
       duration: Tylko czas trwania
       filament: Oszacowanie filamentu
-      file: Oszacowanie pliku
+      file: Plik
       slicer: Slicer
+      slicer_m73: Slicer (M73)
   printer:
     state:
       busy: Zajęta
@@ -672,6 +694,11 @@ app:
       printing: Drukowanie
     title:
       printer_status: Status drukarki
+      stepper_driver_overheating: Sterownik krokowy „%{name}” przegrzewa się
+    msg:
+      possible_print_failure: Może to spowodować nieudany wydruk
+    url:
+      stepper_driver_overheating: '%{klipperDomain}/TMC_Drivers.html#tmc-reports-error-ot1overtemperror'
   system_info:
     label:
       distribution_codename: Nazwa kodowa
@@ -703,6 +730,7 @@ app:
       serial_number: Numer seryjny
       system_load: Obciążenie systemu
       system_memory: Użycie RAMu
+      devices: Urządzenia
   history:
     msg:
       confirm: Czy na pewno? Spowoduje to wyczyszczenie całej historii i statystyk
@@ -807,11 +835,11 @@ app:
   spoolman:
     btn:
       scan_code: Skanuj kod
-      select: Wybierz
+      select: Wybierz | Wybierz dla {macro}
       manage_spools: Zarządzaj szpulami
     title:
       spoolman: Spoolman
-      spool_selection: Wybór szpuli
+      spool_selection: Wybór szpuli | Wybór szpuli dla makra {macro}
       scan_spool: Skanuj szpulę
     label:
       change_spool: Zmień szpulę
@@ -863,3 +891,6 @@ app:
   sensors:
     title:
       sensors: Czujniki
+  keyboard_shortcuts:
+    label:
+      emergency_stop: Awaryjny stop
