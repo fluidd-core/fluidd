@@ -185,32 +185,29 @@ export const mutations: MutationTree<ConfigState> = {
   /**
    * Toggle a tables header state based on its name and key.
    */
-  setUpdateHeader (state, payload: { name: string; header: AppTableHeader }) {
-    const header = payload.header
-    const keyBy = (header.key)
-      ? 'key'
-      : 'value'
+  setUpdateHeader (state, payload: { name: string; header: AppTablePartialHeader }) {
+    const { value, visible } = payload.header
 
-    const key = header[keyBy]
     const headers: AppTablePartialHeader[] = state.uiSettings.tableHeaders[payload.name]
 
     if (headers) {
-      const i = headers.findIndex(item => {
-        return item[keyBy] === key
-      })
+      const i = headers.findIndex(item => item.value === value)
+
       if (i >= 0) {
         Vue.set(headers, i, {
           ...headers[i],
-          visible: header.visible
+          visible
         })
       } else {
-        const o: AppTablePartialHeader = {
-          value: header.value,
-          visible: header.visible
-        }
-        if (keyBy === 'key') o.key = header.key
-        headers.push(o)
+        headers.push({
+          value,
+          visible
+        })
       }
     }
+  },
+
+  setUpdateHeaders (state, payload: { name: string; headers: AppTableHeader[] }) {
+    state.uiSettings.tableHeaders[payload.name] = payload.headers
   }
 }
