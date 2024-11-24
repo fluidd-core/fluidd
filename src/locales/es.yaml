@@ -508,6 +508,9 @@ app:
       unit: Unidad
       z_adjust_values: Valores de ajuste de Z
       show_logo_on_background: Mostrar logotipo en el fondo
+      drag_and_drop_functionality_for_files_and_folders: Función de arrastrar y soltar
+        archivos y carpetas
+      force_move_toggle_warning: Requerir confirmación al activar FORCE_MOVE
     timer_options:
       duration: Solo duración
       filament: Estimación por filamento
