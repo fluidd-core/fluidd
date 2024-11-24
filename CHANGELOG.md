@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.31.0](https://github.com/fluidd-core/fluidd/compare/v1.30.6...v1.31.0) (2024-11-24)
+
+
+### Features
+
+* adds _CLIENT_LINEAR_MOVE macro support ([#1530](https://github.com/fluidd-core/fluidd/issues/1530)) ([be9b053](https://github.com/fluidd-core/fluidd/commit/be9b053922c5685573c74e8dc7e5fe8219baa3be))
+* adds config file #region folding support ([#1528](https://github.com/fluidd-core/fluidd/issues/1528)) ([e0ecc8c](https://github.com/fluidd-core/fluidd/commit/e0ecc8cd186e148f7a5caa40ec0bcc594199a3bf))
+* adds setting for files and folders drag & drop ([#1524](https://github.com/fluidd-core/fluidd/issues/1524)) ([bf57bb9](https://github.com/fluidd-core/fluidd/commit/bf57bb989deff40af245f55f11d1d4880a2e860b))
+* Beacon support ([#1534](https://github.com/fluidd-core/fluidd/issues/1534)) ([aed7108](https://github.com/fluidd-core/fluidd/commit/aed71089d8321a8d476998cb0c38a347cba0c365))
+* column reordering ([#1539](https://github.com/fluidd-core/fluidd/issues/1539)) ([852c0ee](https://github.com/fluidd-core/fluidd/commit/852c0ee550b15a360fbe30cb0830c1d4dd610dd8))
+* **i18n-de:** Update German translations ([5197f0c](https://github.com/fluidd-core/fluidd/commit/5197f0c3ac6ee6bead5b28f2f9dd978e7e9bc054))
+* **i18n-es:** Update Spanish translations ([64360bf](https://github.com/fluidd-core/fluidd/commit/64360bf6bdd149d74a62ccd11078f23649753b54))
+* **i18n-hu:** Update Hungarian translations ([5b5779f](https://github.com/fluidd-core/fluidd/commit/5b5779f1415b2b96647ff4b4b54e1430c19c01c5))
+* **i18n-pl:** Update Polish translations ([5fc103f](https://github.com/fluidd-core/fluidd/commit/5fc103f1c53cd5f1892d655142031c4ecd9caefd))
+* **i18n-tr:** Update Turkish translations ([0126bfd](https://github.com/fluidd-core/fluidd/commit/0126bfd66b3c1912786850e7761c8dfb4efdbdab))
+* Mellow theme ([#1472](https://github.com/fluidd-core/fluidd/issues/1472)) ([405b1b1](https://github.com/fluidd-core/fluidd/commit/405b1b1f7d114ca0230259abbbd3e1e5bd85166c))
+* Nevermore Controller support ([#1527](https://github.com/fluidd-core/fluidd/issues/1527)) ([ab16ea2](https://github.com/fluidd-core/fluidd/commit/ab16ea2066e5259b8e9f112d108960672d429c83))
+
+
+### Bug Fixes
+
+* **Charts:** reset chart store on moonraker reset ([24d0db9](https://github.com/fluidd-core/fluidd/commit/24d0db9515f20fc7715c3b01fecd70ddf88489e4))
+* Job History search ([#1535](https://github.com/fluidd-core/fluidd/issues/1535)) ([fe30cd2](https://github.com/fluidd-core/fluidd/commit/fe30cd2b2249efa6650b59033ae03c472a318087))
+* led color_order handling ([71e8cf1](https://github.com/fluidd-core/fluidd/commit/71e8cf1e65e4ad7a4ec8d382357c452b99e69d73))
+* printer status card load improvement ([6cd1300](https://github.com/fluidd-core/fluidd/commit/6cd1300b2764f95e82f61d0b02bd70c5850d9fb5))
+* temperature targets item key ([d2a86b5](https://github.com/fluidd-core/fluidd/commit/d2a86b587d835429ac62ae6f40c9f3eecb77c81e))
+* **ThermalChart:** consistent chart color on single device ([#1522](https://github.com/fluidd-core/fluidd/issues/1522)) ([f217cd4](https://github.com/fluidd-core/fluidd/commit/f217cd44cc8153068ae9057ddff7fce47588c9b3))
+* toolhead position controls enabled on pause ([#1533](https://github.com/fluidd-core/fluidd/issues/1533)) ([30905b2](https://github.com/fluidd-core/fluidd/commit/30905b2bdfc180d661ae4912a3acb0bd61d1a282))
+
 ## [1.30.6](https://github.com/fluidd-core/fluidd/compare/v1.30.5...v1.30.6) (2024-11-06)
 
 
