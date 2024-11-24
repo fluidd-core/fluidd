@@ -5,9 +5,9 @@ import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'
 import { Waits } from '@/globals'
-import type { AppTableHeader } from '@/types'
 import type { FileFilterType } from '../files/types'
 import { TinyColor } from '@ctrl/tinycolor'
+import type { AppTablePartialHeader } from '@/types/tableheaders'
 
 export const actions: ActionTree<ConfigState, RootState> = {
   /**
@@ -177,8 +177,15 @@ export const actions: ActionTree<ConfigState, RootState> = {
   /**
    * Toggle a tables header state based on its name and key.
    */
-  async updateHeader ({ commit, state }, payload: { name: string; header: AppTableHeader }) {
+  async updateHeader ({ commit, state }, payload: { name: string; header: AppTablePartialHeader }) {
     commit('setUpdateHeader', payload)
+    if (state.uiSettings.tableHeaders[payload.name]) {
+      SocketActions.serverWrite(`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
+    }
+  },
+
+  async updateHeaders ({ commit, state }, payload: { name: string; headers: AppTablePartialHeader[] }) {
+    commit('setUpdateHeaders', payload)
     if (state.uiSettings.tableHeaders[payload.name]) {
       SocketActions.serverWrite(`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
     }

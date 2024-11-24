@@ -11,7 +11,6 @@
       <v-tooltip bottom>
         <template #activator="{ on: tooltip }">
           <v-btn
-            :disabled="disabled"
             fab
             small
             text
@@ -26,45 +25,71 @@
         <span>{{ $t('app.general.btn.select_columns') }}</span>
       </v-tooltip>
     </template>
+
     <v-list
       dense
       class="overflow-y-auto"
     >
-      <template v-for="header in headers">
-        <v-list-item
-          v-if="header.text !== '' && header.configurable"
-          :key="header.value"
-          @click="handleToggleHeader(header)"
-        >
-          <v-list-item-action class="my-0">
-            <v-checkbox :input-value="header.visible" />
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>{{ header.text }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </template>
+      <app-draggable
+        v-model="configurableHeaders"
+        :options="{
+          animation: '200',
+          handle: '.handle',
+          group: 'jobQueue',
+          ghostClass: 'ghost',
+        }"
+      >
+        <template v-for="header in configurableHeaders">
+          <v-list-item
+            :key="header.value"
+            @click="handleToggleHeader(header)"
+          >
+            <v-list-item-action class="my-0">
+              <v-icon class="handle">
+                $drag
+              </v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>{{ header.text }}</v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-action class="my-0">
+              <v-checkbox :input-value="header.visible" />
+            </v-list-item-action>
+          </v-list-item>
+        </template>
+      </app-draggable>
     </v-list>
   </v-menu>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import type { AppTableHeader } from '@/types'
+import type { AppTablePartialHeader } from '@/types/tableheaders'
 
 @Component({})
-export default class AppColumnPicker extends Mixins(StateMixin) {
+export default class AppColumnPicker extends Vue {
   @Prop({ type: String, required: true })
   readonly keyName!: string
 
   @Prop({ type: Array<AppTableHeader>, required: true })
   readonly headers!: AppTableHeader[]
 
-  @Prop({ type: Boolean })
-  readonly disabled?: boolean
+  get configurableHeaders (): AppTableHeader[] {
+    return this.headers
+  }
 
-  handleToggleHeader (header: AppTableHeader) {
+  set configurableHeaders (value: AppTableHeader[]) {
+    const headers = value
+      .map(({ value, visible }): AppTablePartialHeader => ({
+        value,
+        visible
+      }))
+
+    this.$store.dispatch('config/updateHeaders', { name: this.keyName, headers })
+  }
+
+  handleToggleHeader (header: AppTablePartialHeader) {
     header.visible = !header.visible
     this.$store.dispatch('config/updateHeader', { name: this.keyName, header })
   }
