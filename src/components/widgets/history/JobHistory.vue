@@ -173,13 +173,44 @@ export default class JobHistory extends Mixins(FilesMixin) {
 
   get configurableHeaders (): AppTableHeader[] {
     const headers: AppTableHeader[] = [
-      { text: this.$tc('app.general.table.header.status'), value: 'status', cellClass: 'text-no-wrap' },
-      { text: this.$tc('app.general.table.header.start_time'), value: 'start_time', cellClass: 'text-no-wrap' },
-      { text: this.$tc('app.general.table.header.end_time'), value: 'end_time', cellClass: 'text-no-wrap' },
-      { text: this.$tc('app.general.table.header.print_duration'), value: 'print_duration', cellClass: 'text-no-wrap' },
-      { text: this.$tc('app.general.table.header.total_duration'), value: 'total_duration', cellClass: 'text-no-wrap' },
-      { text: this.$tc('app.general.table.header.filament_used'), value: 'filament_used', cellClass: 'text-no-wrap' },
-      { text: this.$tc('app.general.table.header.size'), value: 'metadata.size', cellClass: 'text-no-wrap', width: '1%' },
+      {
+        text: this.$tc('app.general.table.header.status'),
+        value: 'status',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.start_time'),
+        value: 'start_time',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.end_time'),
+        value: 'end_time',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.print_duration'),
+        value: 'print_duration',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.total_duration'),
+        value: 'total_duration',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.filament_used'),
+        value: 'filament_used',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.size'),
+        value: 'metadata.size',
+        cellClass: 'text-no-wrap',
+        width: '1%'
+      },
     ]
 
     const mergedTableHeaders = this.$store.getters['config/getMergedTableHeaders'](headers, 'history') as AppTableHeader[]
@@ -189,11 +220,24 @@ export default class JobHistory extends Mixins(FilesMixin) {
 
   get headers (): DataTableHeader[] {
     return [
-      { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-      { text: this.$tc('app.general.table.header.name'), value: 'filename' },
+      {
+        text: '',
+        value: 'data-table-icons',
+        sortable: false,
+        width: '24px'
+      },
+      {
+        text: this.$tc('app.general.table.header.name'),
+        value: 'filename'
+      },
       ...this.configurableHeaders
         .filter(header => header.visible !== false),
-      { text: this.$tc('app.general.table.header.actions'), value: 'actions', sortable: false, align: 'end' }
+      {
+        text: this.$tc('app.general.table.header.actions'),
+        value: 'actions',
+        sortable: false,
+        align: 'end'
+      }
     ]
   }
 

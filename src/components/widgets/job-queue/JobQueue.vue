@@ -99,8 +99,19 @@ export default class JobQueue extends Vue {
 
   get configurableHeaders (): AppTableHeader[] {
     const headers: AppTableHeader[] = [
-      { text: this.$tc('app.general.table.header.time_added'), value: 'time_added', sortable: false, cellClass: 'text-no-wrap' },
-      { text: this.$tc('app.general.table.header.time_in_queue'), value: 'time_in_queue', sortable: false, cellClass: 'text-no-wrap' }
+      {
+        text: this.$tc('app.general.table.header.time_added'),
+        value: 'time_added',
+        sortable: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.time_in_queue'),
+        value: 'time_in_queue',
+        visible: false,
+        sortable: false,
+        cellClass: 'text-no-wrap'
+      }
     ]
 
     const mergedTableHeaders = this.$store.getters['config/getMergedTableHeaders'](headers, 'job_queue') as AppTableHeader[]
@@ -110,8 +121,17 @@ export default class JobQueue extends Vue {
 
   get headers (): DataTableHeader[] {
     return [
-      { text: '', value: 'handle', sortable: false, width: '24px' },
-      { text: this.$tc('app.general.table.header.name'), value: 'filename', sortable: false },
+      {
+        text: '',
+        value: 'handle',
+        sortable: false,
+        width: '24px'
+      },
+      {
+        text: this.$tc('app.general.table.header.name'),
+        value: 'filename',
+        sortable: false
+      },
       ...this.configurableHeaders
         .filter(header => header.visible !== false)
     ]

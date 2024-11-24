@@ -306,32 +306,138 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   get configurableHeaders (): AppTableHeader[] {
+    const isNotDashboard = this.name !== 'dashboard'
+
     const headers: AppTableHeader[] = [
       ...this.currentRoot === 'gcodes'
         ? [
-            { text: this.$tc('app.general.table.header.status'), value: 'history.status', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.height'), value: 'object_height', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.first_layer_height'), value: 'first_layer_height', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.layer_height'), value: 'layer_height', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.filament_name'), value: 'filament_name', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.filament_type'), value: 'filament_type', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.filament'), value: 'filament_total', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.filament_weight_total'), value: 'filament_weight_total', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.filament_used'), value: 'history.filament_used', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.nozzle_diameter'), value: 'nozzle_diameter', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.slicer'), value: 'slicer', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.slicer_version'), value: 'slicer_version', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.estimated_time'), value: 'estimated_time', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.print_duration'), value: 'history.print_duration', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.total_duration'), value: 'history.total_duration', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.first_layer_bed_temp'), value: 'first_layer_bed_temp', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.first_layer_extr_temp'), value: 'first_layer_extr_temp', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.chamber_temp'), value: 'chamber_temp', cellClass: 'text-no-wrap' },
-            { text: this.$tc('app.general.table.header.last_printed'), value: 'print_start_time', cellClass: 'text-no-wrap' }
+            {
+              text: this.$tc('app.general.table.header.status'),
+              value: 'history.status',
+              visible: isNotDashboard,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.height'),
+              value: 'object_height',
+              visible: isNotDashboard,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.first_layer_height'),
+              value: 'first_layer_height',
+              visible: false,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.layer_height'),
+              value: 'layer_height',
+              visible: isNotDashboard,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.filament_name'),
+              value: 'filament_name',
+              visible: isNotDashboard,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.filament_type'),
+              value: 'filament_type',
+              visible: isNotDashboard,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.filament'),
+              value: 'filament_total',
+              visible: isNotDashboard,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.filament_weight_total'),
+              value: 'filament_weight_total',
+              visible: isNotDashboard,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.filament_used'),
+              value: 'history.filament_used',
+              visible: false,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.nozzle_diameter'),
+              value: 'nozzle_diameter',
+              visible: isNotDashboard,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.slicer'),
+              value: 'slicer',
+              visible: isNotDashboard,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.slicer_version'),
+              value: 'slicer_version',
+              visible: false,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.estimated_time'),
+              value: 'estimated_time',
+              visible: isNotDashboard,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.print_duration'),
+              value: 'history.print_duration',
+              visible: false,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.total_duration'),
+              value: 'history.total_duration',
+              visible: isNotDashboard,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.first_layer_bed_temp'),
+              value: 'first_layer_bed_temp',
+              visible: false,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.first_layer_extr_temp'),
+              value: 'first_layer_extr_temp',
+              visible: false,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.chamber_temp'),
+              value: 'chamber_temp',
+              visible: false,
+              cellClass: 'text-no-wrap'
+            },
+            {
+              text: this.$tc('app.general.table.header.last_printed'),
+              value: 'print_start_time',
+              cellClass: 'text-no-wrap'
+            }
           ]
         : [],
-      { text: this.$tc('app.general.table.header.modified'), value: 'modified', cellClass: 'text-no-wrap', width: '1%' },
-      { text: this.$tc('app.general.table.header.size'), value: 'size', cellClass: 'text-no-wrap', width: '1%' }
+      {
+        text: this.$tc('app.general.table.header.modified'),
+        value: 'modified',
+        cellClass: 'text-no-wrap',
+        width: '1%'
+      },
+      {
+        text: this.$tc('app.general.table.header.size'),
+        value: 'size',
+        cellClass: 'text-no-wrap',
+        width: '1%'
+      }
     ]
 
     const key = `${this.currentRoot}_${this.name}`
@@ -343,8 +449,16 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   // The available headers, based on the current root and system configuration.
   get headers (): DataTableHeader[] {
     return [
-      { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-      { text: this.$tc('app.general.table.header.name'), value: 'name' },
+      {
+        text: '',
+        value: 'data-table-icons',
+        sortable: false,
+        width: '24px'
+      },
+      {
+        text: this.$tc('app.general.table.header.name'),
+        value: 'name'
+      },
       ...this.configurableHeaders
         .filter(header => header.visible !== false)
     ]

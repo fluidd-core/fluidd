@@ -294,11 +294,26 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   get configurableHeaders (): AppTableHeader[] {
     const headers: AppTableHeader[] = [
-      { text: this.$tc('app.spoolman.label.id'), value: 'id' },
-      { text: this.$tc('app.spoolman.label.material'), value: 'material' },
-      { text: this.$tc('app.spoolman.label.location'), value: 'location' },
-      { text: this.$tc('app.spoolman.label.comment'), value: 'comment' },
-      { text: this.$tc('app.spoolman.label.last_used'), value: 'last_used' },
+      {
+        text: this.$tc('app.spoolman.label.id'),
+        value: 'id'
+      },
+      {
+        text: this.$tc('app.spoolman.label.material'),
+        value: 'material'
+      },
+      {
+        text: this.$tc('app.spoolman.label.location'),
+        value: 'location'
+      },
+      {
+        text: this.$tc('app.spoolman.label.comment'),
+        value: 'comment'
+      },
+      {
+        text: this.$tc('app.spoolman.label.last_used'),
+        value: 'last_used'
+      },
     ]
 
     const mergedTableHeaders = this.$store.getters['config/getMergedTableHeaders'](headers, 'spoolman') as AppTableHeader[]
@@ -308,7 +323,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   get headers (): DataTableHeader[] {
     return [
-      { text: this.$tc('app.spoolman.label.filament_name'), value: 'filament_name' },
+      {
+        text: this.$tc('app.spoolman.label.filament_name'),
+        value: 'filament_name'
+      },
       ...this.configurableHeaders
         .filter(header => header.visible !== false)
     ]
