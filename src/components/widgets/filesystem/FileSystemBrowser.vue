@@ -72,7 +72,10 @@
               </v-icon>
               <img
                 v-else
-                :style="{'max-width': `${thumbnailSize}px`, 'max-height': `${thumbnailSize}px`}"
+                :style="{
+                  'max-width': `${thumbnailSize}px`,
+                  'max-height': `${thumbnailSize}px`
+                }"
                 :src="getThumbUrl(item, root, item.path, thumbnailSize > 16, item.modified)"
               >
             </v-layout>
@@ -144,7 +147,7 @@
             {{
               value != null
                 ? $filters.getReadableLengthString(value)
-                :'--'
+                : '--'
             }}
           </template>
 
@@ -184,7 +187,7 @@
             {{
               value != null
                 ? $filters.formatCounterSeconds(value)
-                :'--'
+                : '--'
             }}
           </template>
 
@@ -219,7 +222,7 @@
             {{
               value != null
                 ? $filters.formatDateTime(value * 1000)
-                :'--'
+                : '--'
             }}
           </template>
 
@@ -384,7 +387,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
         return readonly ? '$fileZipLock' : '$fileZip'
       } else if (
         SupportedImageFormats.includes(`.${item.extension}`) ||
-            SupportedVideoFormats.includes(`.${item.extension}`)
+        SupportedVideoFormats.includes(`.${item.extension}`)
       ) {
         return readonly ? '$fileImageLock' : '$fileImage'
       } else {

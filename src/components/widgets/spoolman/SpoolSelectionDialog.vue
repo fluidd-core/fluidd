@@ -109,11 +109,10 @@
         @update:sort-by="handleSortOrderKeyChange"
         @update:sort-desc="handleSortOrderDescChange"
       >
-        <template #item="{ headers, item, index}">
+        <template #item="{ headers, item }">
           <app-data-table-row
             :headers="headers"
             :item="item"
-            :index="index"
             :is-selected="item.id === selectedSpool"
             class="px-1"
             @click.prevent="selectedSpool = selectedSpool === item.id ? null : item.id"
@@ -184,7 +183,11 @@
         color="primary"
         @click="handleSelectSpool"
       >
-        {{ filename ? $t('app.general.btn.print') : $tc('app.spoolman.btn.select', targetMacro ? 2 : 1, { macro: targetMacro }) }}
+        {{
+          filename
+            ? $t('app.general.btn.print')
+            : $tc('app.spoolman.btn.select', targetMacro ? 2 : 1, { macro: targetMacro })
+        }}
       </app-btn>
     </template>
 
