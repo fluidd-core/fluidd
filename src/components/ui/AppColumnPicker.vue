@@ -35,7 +35,7 @@
         :options="{
           animation: '200',
           handle: '.handle',
-          group: 'jobQueue',
+          group: 'columnPicker',
           ghostClass: 'ghost',
         }"
       >
