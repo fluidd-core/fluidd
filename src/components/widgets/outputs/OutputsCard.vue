@@ -6,8 +6,7 @@
     layout-path="dashboard.outputs-card"
     menu-breakpoint="lg"
   >
-  <template #menu>
-
+    <template #menu>
       <v-menu
         bottom
         left
