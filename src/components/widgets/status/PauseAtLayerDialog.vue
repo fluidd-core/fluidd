@@ -114,15 +114,15 @@ export default class PauseAtLayerDialog extends Mixins(StateMixin) {
   }
 
   get setPauseNextLayerMacro () : Macro | undefined {
-    return this.$store.getters['macros/getMacroByName']('set_pause_next_layer') as Macro | undefined
+    return this.$store.getters['macros/getMacroByName']('SET_PAUSE_NEXT_LAYER') as Macro | undefined
   }
 
   get setPauseAtLayerMacro () : Macro | undefined {
-    return this.$store.getters['macros/getMacroByName']('set_pause_at_layer') as Macro | undefined
+    return this.$store.getters['macros/getMacroByName']('SET_PAUSE_AT_LAYER') as Macro | undefined
   }
 
   get setPrintStatsInfoMacro () : Macro | undefined {
-    return this.$store.getters['macros/getMacroByName']('set_print_stats_info') as Macro | undefined
+    return this.$store.getters['macros/getMacroByName']('SET_PRINT_STATS_INFO') as Macro | undefined
   }
 
   get printStatsMacroVariables () {

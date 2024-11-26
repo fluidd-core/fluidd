@@ -81,7 +81,7 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
           ? help
           : this.$t('app.tool.tooltip.select_tool', { tool: command.substring(1) })
 
-        const macro = this.$store.getters['macros/getMacroByName'](command.toLowerCase())
+        const macro = this.$store.getters['macros/getMacroByName'](command)
 
         return {
           name: command,

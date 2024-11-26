@@ -221,27 +221,27 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get loadFilamentMacro (): Macro | undefined {
     return this.$store.getters['macros/getMacroByName'](
-      'load_filament',
-      'filament_load',
-      'm701'
+      'LOAD_FILAMENT',
+      'FILAMENT_LOAD',
+      'M701'
     ) as Macro | undefined
   }
 
   get unloadFilamentMacro (): Macro | undefined {
     return this.$store.getters['macros/getMacroByName'](
-      'unload_filament',
-      'filament_unload',
-      'm702'
+      'UNLOAD_FILAMENT',
+      'FILAMENT_UNLOAD',
+      'M702'
     ) as Macro | undefined
   }
 
   get cleanNozzleMacro (): Macro | undefined {
     return this.$store.getters['macros/getMacroByName'](
-      'clean_nozzle',
-      'nozzle_clean',
-      'wipe_nozzle',
-      'nozzle_wipe',
-      'g12'
+      'CLEAN_NOZZLE',
+      'NOZZLE_CLEAN',
+      'WIPE_NOZZLE',
+      'NOZZLE_WIPE',
+      'G12'
     ) as Macro | undefined
   }
 
