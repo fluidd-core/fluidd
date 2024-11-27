@@ -78,12 +78,6 @@ export const getters: GetterTree<MacrosState, RootState> = {
         macros: getters.getMacrosByCategory(id).filter((macro: Macro) => macro.visible) as Macro[]
       }))
       .filter(category => category.macros.length > 0)
-      .sort((a, b) => {
-        if (!a.name) return 1
-        if (!b.name) return -1
-
-        return a.name.localeCompare(b.name)
-      })
   },
 
   /**
@@ -135,7 +129,6 @@ export const getters: GetterTree<MacrosState, RootState> = {
           count
         }
       })
-      .sort((a, b) => a.name.localeCompare(b.name))
 
     return categories
   }
