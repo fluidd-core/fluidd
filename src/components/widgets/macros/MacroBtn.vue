@@ -89,17 +89,25 @@ import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { Macro } from '@/store/macros/types'
 import gcodeMacroParams from '@/util/gcode-macro-params'
+import isKeyOf from '@/util/is-key-of'
+
+type MacroParameter = {
+  value: string | number
+  reset: string | number
+}
 
 @Component({})
 export default class MacroBtn extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   readonly macro!: Macro
 
-  params: { [index: string]: { value: string | number; reset: string | number } } = {}
+  params: Record<string, MacroParameter> = {}
 
-  get isMacroWithRawParam () {
-    return ['m117', 'm118'].includes(this.macro.name)
-  }
+  macrosWithRawParams = {
+    m117: 'message',
+    m118: 'message',
+    m23: 'filename'
+  } as const
 
   get isMacroForGcodeCommand () {
     return /^[gm]\d+$/i.test(this.macro.name)
@@ -124,8 +132,8 @@ export default class MacroBtn extends Mixins(StateMixin) {
     const isMacroForGcodeCommand = this.isMacroForGcodeCommand
 
     if (this.params) {
-      const params = this.isMacroWithRawParam
-        ? this.params.message.value.toString()
+      const params = isKeyOf(this.macro.name, this.macrosWithRawParams)
+        ? this.params[this.macrosWithRawParams[this.macro.name]].value.toString()
         : Object.entries(this.params)
           .map(([key, param]) => {
             const value = param.value.toString()
@@ -168,8 +176,8 @@ export default class MacroBtn extends Mixins(StateMixin) {
   mounted () {
     if (!this.macro.config || !this.macro.config.gcode) return []
 
-    if (this.isMacroWithRawParam) {
-      this.$set(this.params, 'message', { value: '', reset: '' })
+    if (isKeyOf(this.macro.name, this.macrosWithRawParams)) {
+      this.$set(this.params, this.macrosWithRawParams[this.macro.name], { value: '', reset: '' })
     } else {
       for (const { name, value } of gcodeMacroParams(this.macro.config.gcode)) {
         if (!name.startsWith('_') && !this.params[name]) {
