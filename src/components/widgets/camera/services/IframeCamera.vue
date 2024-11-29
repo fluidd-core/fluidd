@@ -26,7 +26,7 @@ export default class IframeCamera extends Mixins(CameraMixin) {
 
     this.cameraIFrameSource = url
 
-    this.$emit('raw-camera-url', url)
+    this.$emit('update:raw-camera-url', url)
   }
 
   stopPlayback () {

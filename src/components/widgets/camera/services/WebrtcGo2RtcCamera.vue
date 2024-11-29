@@ -59,7 +59,7 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
     this.ws.onmessage = this.onWebSocketMessage
     this.ws.onclose = this.onWebSocketClose
 
-    this.$emit('raw-camera-url', url)
+    this.$emit('update:raw-camera-url', url.toString())
   }
 
   async onWebSocketOpen () {

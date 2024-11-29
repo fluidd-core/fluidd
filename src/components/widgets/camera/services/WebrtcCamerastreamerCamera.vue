@@ -108,6 +108,7 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
     this.pc?.close()
     this.pc = null
     this.cameraVideo.src = ''
+    this.cameraVideo.srcObject = null
   }
 }
 </script>

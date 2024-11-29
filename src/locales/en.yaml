@@ -258,11 +258,13 @@ app:
       current_password: Current password
       current_user: Current user
       default: Default
+      device: Device
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_filter: Edit Filter
       edit_preset: Edit Preset
       edit_user: Edit user
+      environment_facing: Environment Facing
       extrude_length: Extrude Length
       extrude_speed: Extrude Speed
       filament: Filament
@@ -332,6 +334,7 @@ app:
       unretract_speed: Unretract Speed
       upload_and_print: Upload and Print
       used: used
+      user_facing: User Facing
       username: Username
       velocity: Velocity
       version_sort: Version sort
