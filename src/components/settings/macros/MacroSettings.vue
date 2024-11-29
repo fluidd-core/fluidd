@@ -45,16 +45,11 @@
             @click="handleCategoryClick(category)"
           >
             <template #title>
-              <v-icon
-                class="handle"
-                left
-              >
-                $drag
-              </v-icon>
+              <app-drag-icon class="me-1" />
               {{ category.name }}
               <v-chip
                 small
-                class="mr-4"
+                class="ms-1 me-4"
               >
                 {{ category.visible }} / {{ category.count }}
               </v-chip>
@@ -100,7 +95,10 @@
         >
           <template #title>
             {{ $t('app.general.label.uncategorized') }}
-            <v-chip small>
+            <v-chip
+              small
+              class="ms-1"
+            >
               {{ uncategorizedMacros.visible }} / {{ uncategorizedMacros.count }}
             </v-chip>
           </template>

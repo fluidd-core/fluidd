@@ -22,6 +22,7 @@ declare module 'vue' {
     AppDataTableRow: typeof import('./src/components/ui/AppDataTableRow.vue')['default']
     AppDialog: typeof import('./src/components/ui/AppDialog.vue')['default']
     AppDraggable: typeof import('./src/components/ui/AppDraggable.vue')['default']
+    AppDragIcon: typeof import('./src/components/ui/AppDragIcon.vue')['default']
     AppDragOverlay: typeof import('./src/components/ui/AppDragOverlay.vue')['default']
     AppFocusableContainer: typeof import('./src/components/ui/AppFocusableContainer.vue')['default']
     AppFooter: typeof import('./src/components/layout/AppFooter.vue')['default']

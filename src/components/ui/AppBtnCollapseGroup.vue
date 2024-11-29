@@ -67,9 +67,3 @@ export default class AppBtnCollapseGroup extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .handle {
-    cursor: pointer;
-  }
-</style>
