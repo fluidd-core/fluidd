@@ -26,47 +26,59 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
   pc: RTCPeerConnection | null = null
   remoteId: string | null = null
 
-  startPlayback () {
+  // adapted from https://github.com/ayufan/camera-streamer/blob/4203f89df1596cc349b0260f26bf24a3c446a56b/html/webrtc.html
+
+  async startPlayback () {
     const url = this.buildAbsoluteUrl(this.camera.stream_url || '')
 
     this.pc?.close()
 
-    fetch(url, {
-      body: JSON.stringify({
-        type: 'request'
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      method: 'POST'
-    })
-      .then(response => response.json())
-      .then((answer: RTCSessionDescriptionInit) => {
-        this.remoteId = 'id' in answer && typeof (answer.id) === 'string' ? answer.id : null
+    const iceServers = [
+      { urls: 'stun:stun.l.google.com:19302' }
+    ]
 
-        const config: RTCConfigurationWithSdpSemantics = {
-          sdpSemantics: 'unified-plan'
+    try {
+      const response = await fetch(url, {
+        body: JSON.stringify({
+          type: 'request',
+          iceServers,
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: 'POST'
+      })
+
+      const rtcSessionDescriptionInit = await response.json() as RTCSessionDescriptionInit
+
+      this.remoteId = ('id' in rtcSessionDescriptionInit && typeof rtcSessionDescriptionInit.id === 'string')
+        ? rtcSessionDescriptionInit.id
+        : null
+
+      const config: RTCConfigurationWithSdpSemantics = {
+        sdpSemantics: 'unified-plan'
+      }
+
+      if ('iceServers' in rtcSessionDescriptionInit && Array.isArray(rtcSessionDescriptionInit.iceServers)) {
+        config.iceServers = rtcSessionDescriptionInit.iceServers
+      }
+
+      const pc = this.pc = new RTCPeerConnection(config)
+
+      pc.addTransceiver('video', {
+        direction: 'recvonly'
+      })
+
+      pc.ontrack = (event: RTCTrackEvent) => {
+        if (event.track.kind === 'video') {
+          this.cameraVideo.srcObject = event.streams[0]
         }
+      }
 
-        if ('iceServers' in answer && Array.isArray(answer.iceServers)) {
-          config.iceServers = answer.iceServers
-        }
-
-        this.pc = new RTCPeerConnection(config)
-
-        this.pc.addTransceiver('video', {
-          direction: 'recvonly'
-        })
-
-        this.pc.ontrack = (event: RTCTrackEvent) => {
-          if (event.track.kind === 'video') {
-            this.cameraVideo.srcObject = event.streams[0]
-          }
-        }
-
-        this.pc.onicecandidate = (event: RTCPeerConnectionIceEvent) => {
-          if (event.candidate) {
-            return fetch(url, {
+      pc.onicecandidate = async (event: RTCPeerConnectionIceEvent) => {
+        if (event.candidate) {
+          try {
+            await fetch(url, {
               body: JSON.stringify({
                 type: 'remote_candidate',
                 id: this.remoteId,
@@ -77,31 +89,36 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
               },
               method: 'POST'
             })
-              .catch(e => consola.error('[WebrtcCamerastreamerCamera] onicecandidate', e))
+          } catch (e) {
+            consola.error('[WebrtcCamerastreamerCamera] onicecandidate', e)
           }
         }
+      }
 
-        return this.pc?.setRemoteDescription(answer)
-      })
-      .then(() => this.pc?.createAnswer())
-      .then(answer => this.pc?.setLocalDescription(answer))
-      .then(() => {
-        const offer = this.pc?.localDescription
+      await pc.setRemoteDescription(rtcSessionDescriptionInit)
 
-        return fetch(url, {
-          body: JSON.stringify({
-            type: offer?.type,
-            id: this.remoteId,
-            sdp: offer?.sdp
-          }),
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          method: 'POST'
-        })
+      const rtcLocalSessionDescriptionInit = await pc.createAnswer()
+
+      await pc.setLocalDescription(rtcLocalSessionDescriptionInit)
+
+      const offer = pc.localDescription
+
+      const response2 = await fetch(url, {
+        body: JSON.stringify({
+          type: offer?.type,
+          id: this.remoteId,
+          sdp: offer?.sdp
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: 'POST'
       })
-      .then(response => response.json())
-      .catch(e => consola.error('[WebrtcCamerastreamerCamera] setUrl', e))
+
+      await response2.json()
+    } catch (e) {
+      consola.error('[WebrtcCamerastreamerCamera] startPlayback', e)
+    }
   }
 
   stopPlayback () {
