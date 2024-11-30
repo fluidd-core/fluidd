@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { Component, Prop, Ref, Watch } from 'vue-property-decorator'
 import type { WebcamConfig } from '@/store/webcams/types'
+import consola from 'consola'
 
 @Component
 export default class CameraMixin extends Vue {
@@ -115,5 +116,9 @@ export default class CameraMixin extends Vue {
 
   stopPlayback () {
     // noop
+  }
+
+  menuItemClick (value: string) {
+    consola.debug('Menu item click', value)
   }
 }
