@@ -56,6 +56,9 @@
               class="mt-1"
               @click.stop="select(!isSelected)"
             />
+            <template v-else>
+              {{ '' }}
+            </template>
           </template>
 
           <template #[`item.data-table-icons`]>
