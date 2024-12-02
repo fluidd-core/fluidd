@@ -39,7 +39,9 @@
 <script lang="ts">
 import { Component, VModel, Vue } from 'vue-property-decorator'
 
-@Component({})
+@Component({
+  inheritAttrs: false
+})
 export default class AppTextFieldWithCopy extends Vue {
   @VModel()
   inputValue!: unknown

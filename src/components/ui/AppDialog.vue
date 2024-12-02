@@ -5,6 +5,7 @@
     v-bind="$attrs"
     :fullscreen="isMobileViewport"
     :transition="isMobileViewport ? 'dialog-bottom-transition' : undefined"
+    v-on="$listeners"
   >
     <v-form
       ref="form"
@@ -119,7 +120,9 @@ import BrowserMixin from '@/mixins/browser'
 import type { VForm } from '@/types'
 import { Component, Prop, VModel, Ref, PropSync, Mixins } from 'vue-property-decorator'
 
-@Component({})
+@Component({
+  inheritAttrs: false
+})
 export default class AppDialog extends Mixins(BrowserMixin) {
   @VModel({ type: Boolean })
   open?: boolean

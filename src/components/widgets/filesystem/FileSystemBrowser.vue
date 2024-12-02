@@ -33,10 +33,6 @@
           :headers="headers"
           :item="item"
           :is-selected="isSelected && item.name !== '..'"
-          :class="{
-            'is-disabled': disabled,
-            'px-1': true
-          }"
           :draggable="isItemDraggable(item)"
           @click.prevent="$emit('row-click', item, $event)"
           @contextmenu.prevent="$emit('row-click', item, $event)"
@@ -290,9 +286,6 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
   @PropSync('dragState', { type: Boolean, required: true })
   dragStateModel!: boolean
-
-  @Prop({ type: Boolean })
-  readonly disabled?: boolean
 
   @Prop({ type: Boolean })
   readonly bulkActions?: boolean

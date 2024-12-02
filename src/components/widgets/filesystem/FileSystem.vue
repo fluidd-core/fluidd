@@ -45,7 +45,6 @@
       :root="currentRoot"
       :dense="dense"
       :loading="filesLoading"
-      :disabled="disabled"
       :search="search"
       :files="files"
       :drag-state.sync="dragState.browserState"

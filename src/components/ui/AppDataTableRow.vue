@@ -34,7 +34,9 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { get } from 'lodash-es'
 import type { DataTableHeader } from 'vuetify'
 
-@Component({})
+@Component({
+  inheritAttrs: false
+})
 export default class AppDataTableRow extends Vue {
   @Prop({ type: Array<DataTableHeader> })
   readonly headers!: DataTableHeader[]

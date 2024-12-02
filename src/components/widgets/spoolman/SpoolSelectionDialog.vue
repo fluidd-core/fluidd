@@ -92,7 +92,7 @@
       />
     </v-toolbar>
 
-    <v-card-text class="fill-height pt-0">
+    <v-card-text class="pa-0">
       <v-data-table
         :items="availableSpools"
         :headers="headers"
@@ -114,11 +114,10 @@
             :headers="headers"
             :item="item"
             :is-selected="item.id === selectedSpool"
-            class="px-1"
             @click.prevent="selectedSpool = selectedSpool === item.id ? null : item.id"
           >
             <template #[`item.filament_name`]>
-              <div class="d-flex">
+              <div class="d-flex my-1">
                 <v-icon
                   :color="`#${item.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
                   size="42px"
@@ -579,10 +578,3 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .spool-table tr td {
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
-  }
-</style>
