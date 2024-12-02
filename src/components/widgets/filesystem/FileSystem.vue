@@ -919,7 +919,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (item.type === 'file') {
       const url = this.createFileUrl(item.name, this.currentPath)
 
-      dataTransfer.setData('text/html', `<A HREF="${encodeURI(url)}">${item.filename}</A>`)
+      dataTransfer.setData('text/html', `<A HREF="${url}">${item.filename}</A>`)
       dataTransfer.setData('text/plain', url)
       dataTransfer.setData('text/uri-list', url)
     }
