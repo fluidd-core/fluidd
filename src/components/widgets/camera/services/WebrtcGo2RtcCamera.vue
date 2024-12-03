@@ -35,8 +35,7 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
   ws: WebSocket | null = null
   abortController: AbortController | null = null
 
-  // webrtc player methods
-  // adapted from https://github.com/AlexxIT/go2rtc/blob/master/www/video-rtc.js
+  // adapted from https://github.com/AlexxIT/go2rtc/blob/d7cdc8b3b07f6fbff7daae2736377de98444b962/www/video-rtc.js
 
   startPlayback () {
     this.abortController?.abort()
@@ -59,13 +58,14 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
     this.ws.onmessage = this.onWebSocketMessage
     this.ws.onclose = this.onWebSocketClose
 
-    this.$emit('raw-camera-url', url)
+    this.$emit('update:raw-camera-url', url.toString())
   }
 
   async onWebSocketOpen () {
     consola.debug('[WebrtcGo2RtcCamera] socket opened')
 
     const config: RTCConfigurationWithSdpSemantics = {
+      bundlePolicy: 'max-bundle',
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' }
       ],
@@ -88,8 +88,9 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
     this.pc.onconnectionstatechange = () => {
       switch (this.pc?.connectionState) {
         case 'connected': {
-          const tracks = this.pc.getReceivers()
-            .map(receiver => receiver.track)
+          const tracks = this.pc.getTransceivers()
+            .filter(tr => tr.direction === 'recvonly')
+            .map(tr => tr.receiver.track)
 
           this.cameraVideo.srcObject = new MediaStream(tracks)
 

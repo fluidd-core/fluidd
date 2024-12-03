@@ -1,6 +1,10 @@
 <template>
   <v-row v-if="toolChangeCommands.length > 0">
-    <v-col>
+    <v-col
+      v-for="(toolChangeCommandsGroup, index2) in toolChangeCommandsGrouped"
+      :key="index2"
+      cols="12"
+    >
       <app-btn-group
         class="app-toolchanger-control d-flex"
         :class="{
@@ -8,7 +12,7 @@
         }"
       >
         <v-tooltip
-          v-for="(macro, index) of toolChangeCommands"
+          v-for="(macro, index) of toolChangeCommandsGroup"
           :key="index"
           top
         >
@@ -55,6 +59,7 @@ import StateMixin from '@/mixins/state'
 import type { GcodeCommands } from '@/store/printer/types'
 import type { TranslateResult } from 'vue-i18n'
 import type { Spool } from '@/store/spoolman/types'
+import { chunk } from 'lodash-es'
 
 type ToolChangeCommand = {
   name: string,
@@ -81,7 +86,7 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
           ? help
           : this.$t('app.tool.tooltip.select_tool', { tool: command.substring(1) })
 
-        const macro = this.$store.getters['macros/getMacroByName'](command.toLowerCase())
+        const macro = this.$store.getters['macros/getMacroByName'](command)
 
         return {
           name: command,
@@ -97,6 +102,14 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
 
         return numberA - numberB
       })
+  }
+
+  get toolChangeCommandsGrouped (): ToolChangeCommand[][] {
+    const toolChangeCommands = this.toolChangeCommands
+
+    const cols = Math.ceil(toolChangeCommands.length / Math.ceil(toolChangeCommands.length / 6))
+
+    return chunk(toolChangeCommands, cols)
   }
 
   getSpoolById (id: number): Spool | undefined {

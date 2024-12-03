@@ -16,20 +16,16 @@
     </app-btn>
 
     <!-- In layout -->
-    <v-layout>
+    <v-layout v-if="inLayout">
       <v-checkbox
-        v-if="inLayout"
         v-model="enabledModel"
         hide-details
         class="mt-0 pt-0"
       />
-      <v-icon
-        v-if="inLayout"
-        class="handle"
-        left
-      >
-        $drag
-      </v-icon>
+      <app-drag-icon
+        cursor="move"
+        class="ms-1"
+      />
     </v-layout>
   </div>
 </template>
@@ -49,9 +45,3 @@ export default class AppBtnCollapse extends Vue {
   readonly inLayout?: boolean
 }
 </script>
-
-<style lang="scss" scoped>
-  .handle {
-    cursor: pointer;
-  }
-</style>

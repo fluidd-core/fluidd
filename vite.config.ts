@@ -128,11 +128,12 @@ export default defineConfig({
 
   css: {
     preprocessorOptions: {
-      css: { charset: false },
       scss: {
+        api: 'legacy',
         additionalData: '@import "@/scss/variables";\n'
       },
       sass: {
+        api: 'legacy',
         additionalData: '@import "@/scss/variables.scss"\n'
       }
     }

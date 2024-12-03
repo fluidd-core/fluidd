@@ -52,7 +52,7 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
     if (!document.hidden) {
       const framesPerSecond = Math.round(1000 / this.time).toString().padStart(2, '0')
 
-      this.$emit('frames-per-second', framesPerSecond)
+      this.$emit('update:frames-per-second', framesPerSecond)
 
       this.$nextTick(() => this.updateCameraImageSource())
     } else {
@@ -81,7 +81,7 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
 
     rawUrl.searchParams.set('cacheBust', Date.now().toString())
 
-    this.$emit('raw-camera-url', rawUrl.toString())
+    this.$emit('update:raw-camera-url', rawUrl.toString())
   }
 
   stopPlayback () {

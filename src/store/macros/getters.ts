@@ -21,7 +21,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
     const macros = Object.keys(rootState.printer.printer)
       .filter(key => key.startsWith('gcode_macro '))
       .map(key => {
-        const lowerCaseKey = key.toLocaleLowerCase()
+        const lowerCaseKey = key.toLowerCase()
         const name = lowerCaseKey.split(' ', 2)[1]
         const config = rootState.printer.printer.configfile.settings[lowerCaseKey]
         const stored = state.stored.find(macro => macro.name === name)
@@ -56,7 +56,8 @@ export const getters: GetterTree<MacrosState, RootState> = {
     const macros = getters.getMacros as Macro[]
 
     for (const name of names) {
-      const macro = macros.find(macro => macro.name === name)
+      const lowerCaseName = name.toLowerCase()
+      const macro = macros.find(macro => macro.name === lowerCaseName)
 
       if (macro) {
         return macro
@@ -77,12 +78,6 @@ export const getters: GetterTree<MacrosState, RootState> = {
         macros: getters.getMacrosByCategory(id).filter((macro: Macro) => macro.visible) as Macro[]
       }))
       .filter(category => category.macros.length > 0)
-      .sort((a, b) => {
-        if (!a.name) return 1
-        if (!b.name) return -1
-
-        return a.name.localeCompare(b.name)
-      })
   },
 
   /**
@@ -134,7 +129,6 @@ export const getters: GetterTree<MacrosState, RootState> = {
           count
         }
       })
-      .sort((a, b) => a.name.localeCompare(b.name))
 
     return categories
   }

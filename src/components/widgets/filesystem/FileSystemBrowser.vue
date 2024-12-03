@@ -33,10 +33,6 @@
           :headers="headers"
           :item="item"
           :is-selected="isSelected && item.name !== '..'"
-          :class="{
-            'is-disabled': disabled,
-            'px-1': true
-          }"
           :draggable="isItemDraggable(item)"
           @click.prevent="$emit('row-click', item, $event)"
           @contextmenu.prevent="$emit('row-click', item, $event)"
@@ -56,6 +52,9 @@
               class="mt-1"
               @click.stop="select(!isSelected)"
             />
+            <template v-else>
+              {{ '' }}
+            </template>
           </template>
 
           <template #[`item.data-table-icons`]>
@@ -72,7 +71,10 @@
               </v-icon>
               <img
                 v-else
-                :style="{'max-width': `${thumbnailSize}px`, 'max-height': `${thumbnailSize}px`}"
+                :style="{
+                  'max-width': `${thumbnailSize}px`,
+                  'max-height': `${thumbnailSize}px`
+                }"
                 :src="getThumbUrl(item, root, item.path, thumbnailSize > 16, item.modified)"
               >
             </v-layout>
@@ -144,7 +146,7 @@
             {{
               value != null
                 ? $filters.getReadableLengthString(value)
-                :'--'
+                : '--'
             }}
           </template>
 
@@ -184,7 +186,7 @@
             {{
               value != null
                 ? $filters.formatCounterSeconds(value)
-                :'--'
+                : '--'
             }}
           </template>
 
@@ -219,7 +221,7 @@
             {{
               value != null
                 ? $filters.formatDateTime(value * 1000)
-                :'--'
+                : '--'
             }}
           </template>
 
@@ -284,9 +286,6 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
   @PropSync('dragState', { type: Boolean, required: true })
   dragStateModel!: boolean
-
-  @Prop({ type: Boolean })
-  readonly disabled?: boolean
 
   @Prop({ type: Boolean })
   readonly bulkActions?: boolean
@@ -384,7 +383,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
         return readonly ? '$fileZipLock' : '$fileZip'
       } else if (
         SupportedImageFormats.includes(`.${item.extension}`) ||
-            SupportedVideoFormats.includes(`.${item.extension}`)
+        SupportedVideoFormats.includes(`.${item.extension}`)
       ) {
         return readonly ? '$fileImageLock' : '$fileImage'
       } else {

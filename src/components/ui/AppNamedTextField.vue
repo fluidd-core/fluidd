@@ -49,7 +49,9 @@ import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { InputValidationRules } from 'vuetify'
 
-@Component({})
+@Component({
+  inheritAttrs: false
+})
 export default class AppNamedTextField extends Mixins(StateMixin) {
   @VModel({ })
   inputValue?: unknown

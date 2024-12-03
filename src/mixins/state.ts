@@ -105,7 +105,7 @@ export default class StateMixin extends Vue {
   }
 
   sendMoveGcode (movement: { X?: number, Y?: number, Z?: number }, rate: number, absolute = false, wait?: string) {
-    const macro = this.$store.getters['macros/getMacroByName']('_client_linear_move') as Macro | undefined
+    const macro = this.$store.getters['macros/getMacroByName']('_CLIENT_LINEAR_MOVE') as Macro | undefined
 
     const paramSeparator = macro
       ? '='
@@ -125,7 +125,7 @@ RESTORE_GCODE_STATE NAME=_ui_movement`
   }
 
   sendExtrudeGcode (amount: number, rate: number, wait?: string) {
-    const macro = this.$store.getters['macros/getMacroByName']('_client_linear_move') as Macro | undefined
+    const macro = this.$store.getters['macros/getMacroByName']('_CLIENT_LINEAR_MOVE') as Macro | undefined
 
     const gcode = macro
       ? `${macro.name.toUpperCase()} E=${amount} F=${rate * 60}`

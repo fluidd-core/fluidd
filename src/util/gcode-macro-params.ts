@@ -1,5 +1,5 @@
 const paramRegExp = /params\.(\w+)(.*)/gi
-const defaultValueRegExp = /\|\s*default\s*\(\s*((["'])(?:\\\2|.)*?\2|-?\d[^,)]*)/i
+const defaultValueRegExp = /\|\s*default\s*\(\s*((["'])(?:\\\2|(?!\2).)*\2|-?\d[^,)]*)/i
 
 export const gcodeMacroParamDefault = (param: string) => {
   const valueMatch = defaultValueRegExp.exec(param)
@@ -16,10 +16,11 @@ export const gcodeMacroParamDefault = (param: string) => {
 }
 
 const gcodeMacroParams = (gcode: string) => {
-  return [...gcode.matchAll(paramRegExp)].map(([, name, rest]) => ({
-    name,
-    value: gcodeMacroParamDefault(rest)
-  }))
+  return [...gcode.matchAll(paramRegExp)]
+    .map(([, name, rest]) => ({
+      name,
+      value: gcodeMacroParamDefault(rest)
+    }))
 }
 
 export default gcodeMacroParams

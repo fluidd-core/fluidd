@@ -35,7 +35,7 @@
         :options="{
           animation: '200',
           handle: '.handle',
-          group: 'jobQueue',
+          group: 'columnPicker',
           ghostClass: 'ghost',
         }"
       >
@@ -45,9 +45,7 @@
             @click="handleToggleHeader(header)"
           >
             <v-list-item-action class="my-0">
-              <v-icon class="handle">
-                $drag
-              </v-icon>
+              <app-drag-icon />
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>{{ header.text }}</v-list-item-title>

@@ -11,8 +11,10 @@
         :camera="camera"
         :crossorigin="crossorigin"
         class="camera-image"
-        @raw-camera-url="rawCameraUrl = $event"
-        @frames-per-second="framesPerSecond = $event"
+        @update:camera-name="cameraName = $event"
+        @update:camera-name-menu-items="cameraNameMenuItems = $event"
+        @update:raw-camera-url="rawCameraUrl = $event"
+        @update:frames-per-second="framesPerSecond = $event"
         @playback="setupFrameEvents()"
       />
     </template>
@@ -20,12 +22,57 @@
       Camera service not supported!
     </div>
 
-    <div
-      v-if="camera.name"
-      class="camera-name"
-    >
-      {{ camera.name }}
-    </div>
+    <template v-if="cameraName || camera.name">
+      <v-menu
+        v-if="cameraNameMenuItems.length > 0"
+        top
+        offset-y
+        transition="slide-y-reverse-transition"
+      >
+        <template #activator="{ on, attrs, value }">
+          <div
+            v-bind="attrs"
+            class="camera-name"
+            v-on="on"
+          >
+            {{ cameraName || camera.name }}
+            <v-icon
+              small
+              class="ml-1"
+              :class="{ 'rotate-180': value }"
+            >
+              $chevronDown
+            </v-icon>
+          </div>
+        </template>
+        <v-list dense>
+          <v-list-item
+            v-for="(item, index) in cameraNameMenuItems"
+            :key="index"
+            @click="cameraNameMenuItemClick(item.value)"
+          >
+            <v-list-item-icon>
+              <v-icon>
+                $camera
+              </v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ item.text }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      <div
+        v-else
+        class="camera-name"
+      >
+        {{ cameraName || camera.name }}
+      </div>
+    </template>
+
     <div
       v-if="framesPerSecond"
       class="camera-frames"
@@ -37,7 +84,7 @@
       v-if="!fullscreen && (fullscreenMode === 'embed' || !rawCameraUrl) && camera.service !== 'device'"
       class="camera-fullscreen"
     >
-      <a :href="`/#/camera/${encodeURI(camera.uid)}`">
+      <a :href="`/#/camera/${encodeURIComponent(camera.uid)}`">
         <v-icon>$fullScreen</v-icon>
       </a>
     </div>
@@ -78,6 +125,8 @@ export default class CameraItem extends Vue {
 
   rawCameraUrl: string | null = null
   framesPerSecond: string | null = null
+  cameraName: string | null = null
+  cameraNameMenuItems: { text: string, value: string }[] = []
 
   mounted () {
     this.setupFrameEvents()
@@ -100,14 +149,20 @@ export default class CameraItem extends Vue {
     }
 
     if (animate) {
-      requestAnimationFrame(() => this.handleFrame(this.componentInstance.animating))
+      requestAnimationFrame(() => this.handleFrame(this.componentInstance?.animating ?? false))
     }
+  }
+
+  cameraNameMenuItemClick (value: string) {
+    this.componentInstance.menuItemClick(value)
   }
 
   @Watch('camera')
   onCamera () {
     this.rawCameraUrl = ''
     this.framesPerSecond = ''
+    this.cameraName = ''
+    this.cameraNameMenuItems = []
   }
 
   get fullscreenMode (): CameraFullscreenAction {
@@ -135,6 +190,7 @@ export default class CameraItem extends Vue {
     white-space: nowrap;
     margin: auto;
     pointer-events: none;
+    user-select: none;
   }
 
   .camera-container {

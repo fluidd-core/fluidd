@@ -28,13 +28,17 @@
         @click:row="handleRowClick"
         @contextmenu:row.prevent="handleContextMenu"
       >
+        <template #[`item.data-table-select`]="{ isSelected, select }">
+          <v-simple-checkbox
+            v-ripple
+            :value="isSelected"
+            color=""
+            class="mt-1"
+            @click.stop="select(!isSelected)"
+          />
+        </template>
         <template #[`item.handle`]>
-          <v-icon
-            class="handle"
-            left
-          >
-            $drag
-          </v-icon>
+          <app-drag-icon />
         </template>
         <template #[`item.filename`]="{ value }">
           {{ value }}
@@ -119,9 +123,5 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
   // Lighten up dark mode checkboxes.
   .theme--dark :deep(.v-simple-checkbox .v-icon) {
     color: rgba(map-deep-get($material-dark, 'inputs', 'box'), 0.25);
-  }
-
-  .handle {
-    cursor: pointer;
   }
 </style>

@@ -75,13 +75,7 @@
             @click="handleSettingsDialog(macro)"
           >
             <template #title>
-              <v-icon
-                class="handle"
-                left
-              >
-                $drag
-              </v-icon>
-
+              <app-drag-icon class="me-1" />
               {{ macro.name.toUpperCase() }}
             </template>
 

@@ -92,7 +92,7 @@
       />
     </v-toolbar>
 
-    <v-card-text class="fill-height pt-0">
+    <v-card-text class="pa-0">
       <v-data-table
         :items="availableSpools"
         :headers="headers"
@@ -109,17 +109,15 @@
         @update:sort-by="handleSortOrderKeyChange"
         @update:sort-desc="handleSortOrderDescChange"
       >
-        <template #item="{ headers, item, index}">
+        <template #item="{ headers, item }">
           <app-data-table-row
             :headers="headers"
             :item="item"
-            :index="index"
             :is-selected="item.id === selectedSpool"
-            class="px-1"
             @click.prevent="selectedSpool = selectedSpool === item.id ? null : item.id"
           >
             <template #[`item.filament_name`]>
-              <div class="d-flex">
+              <div class="d-flex my-1">
                 <v-icon
                   :color="`#${item.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
                   size="42px"
@@ -184,7 +182,11 @@
         color="primary"
         @click="handleSelectSpool"
       >
-        {{ filename ? $t('app.general.btn.print') : $tc('app.spoolman.btn.select', targetMacro ? 2 : 1, { macro: targetMacro }) }}
+        {{
+          filename
+            ? $t('app.general.btn.print')
+            : $tc('app.spoolman.btn.select', targetMacro ? 2 : 1, { macro: targetMacro })
+        }}
       </app-btn>
     </template>
 
@@ -231,7 +233,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     if (this.open) {
       this.selectedSpoolId = this.$store.state.spoolman.activeSpool ?? null
       if (this.targetMacro) {
-        const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro.toLowerCase())
+        const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro)
         this.selectedSpoolId = macro?.variables.spool_id ?? null
       }
 
@@ -435,7 +437,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
       await SocketActions.printerGcodeScript(commands.join('\n'))
 
-      const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro.toLowerCase())
+      const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro)
       if (macro?.variables.active) {
         // selected tool is active, update active spool
         await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpool ?? undefined)
@@ -576,10 +578,3 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .spool-table tr td {
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
-  }
-</style>

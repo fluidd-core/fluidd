@@ -203,6 +203,9 @@ export const httpClientActions = {
   },
 
   serverFilesGet<T = unknown> (filepath: string, options?: AxiosRequestConfig) {
-    return this.get<T>(`/server/files/${encodeURI(filepath)}?date=${Date.now()}`, options)
+    const encodedFilepath = filepath
+      .replace(/[^/]+/g, match => encodeURIComponent(match))
+
+    return this.get<T>(`/server/files/${encodedFilepath}?date=${Date.now()}`, options)
   }
 }

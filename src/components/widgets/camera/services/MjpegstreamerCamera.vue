@@ -25,7 +25,7 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
 
     this.cameraImageSource = url.toString()
 
-    this.$emit('raw-camera-url', this.cameraImageSource)
+    this.$emit('update:raw-camera-url', this.cameraImageSource)
   }
 
   stopPlayback () {
