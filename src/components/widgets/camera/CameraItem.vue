@@ -190,6 +190,7 @@ export default class CameraItem extends Vue {
     white-space: nowrap;
     margin: auto;
     pointer-events: none;
+    user-select: none;
   }
 
   .camera-container {
