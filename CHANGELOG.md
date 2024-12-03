@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.31.1](https://github.com/fluidd-core/fluidd/compare/v1.31.0...v1.31.1) (2024-12-03)
+
+
+### Features
+
+* allow ordering of gcode macro categories ([0cc0e71](https://github.com/fluidd-core/fluidd/commit/0cc0e7106ade11c510a2ad4c9ee233a58a784e1f))
+* allow user selection of device camera ([#1542](https://github.com/fluidd-core/fluidd/issues/1542)) ([3e8a42d](https://github.com/fluidd-core/fluidd/commit/3e8a42d79840a8bce723fcc626c10430685ebb1d))
+* larger touch target for the drag icon ([729fe00](https://github.com/fluidd-core/fluidd/commit/729fe0067cd5a39ce8426494737454996bb11857))
+* macros card navigate to category settings ([d61d0f6](https://github.com/fluidd-core/fluidd/commit/d61d0f699042cf70979d91577b0b512bc1e4e360))
+
+
+### Bug Fixes
+
+* column picker dragging group ([4ae7d8b](https://github.com/fluidd-core/fluidd/commit/4ae7d8b1e4d3876b4a27ed37e3fe13380ea67906))
+* **FileSystem:** escape special characters ([99368cf](https://github.com/fluidd-core/fluidd/commit/99368cfcf93f2f13150ec217adc1ac313a223d60))
+* group and wrap tool change commands ([#1543](https://github.com/fluidd-core/fluidd/issues/1543)) ([ef8da05](https://github.com/fluidd-core/fluidd/commit/ef8da0540416bc7b0983646b961679e431bc45da))
+* include M23 as a rawparams macro ([8b51545](https://github.com/fluidd-core/fluidd/commit/8b5154596ab1a5cef534731d23270bb57b125d0b))
+
 ## [1.31.0](https://github.com/fluidd-core/fluidd/compare/v1.30.6...v1.31.0) (2024-11-24)
 
 
