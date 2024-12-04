@@ -237,7 +237,7 @@ export default class CollapsableCard extends Vue {
     return {
       ...classes,
       ...this.baseCardClasses,
-      collapsed: (this.isCollapsed || !this.hasDefaultSlot) && !this.hasCollapsedContentSlot
+      collapsed: (this.isCollapsed || !this.hasDefaultSlot || this.inLayout) && !this.hasCollapsedContentSlot
     }
   }
 
