@@ -2,17 +2,21 @@ const paramRegExp = /params\.(\w+)(.*)/gi
 const defaultValueRegExp = /\|\s*default\s*\(\s*((["'])(?:\\\2|(?!\2).)*\2|-?\d[^,)]*)/i
 
 export const gcodeMacroParamDefault = (param: string) => {
-  const valueMatch = defaultValueRegExp.exec(param)
+  const parsedValue = defaultValueRegExp.exec(param)
 
-  if (!valueMatch) {
+  if (!parsedValue) {
     return ''
   }
 
-  const value = (valueMatch[1] || '').trim()
+  const [, value, quoteChar] = parsedValue
 
-  return valueMatch[2]
-    ? value.substring(1, value.length - 1)
-    : value
+  if (quoteChar) {
+    return value.substring(1, value.length - 1)
+      .replace(new RegExp(`\\\\${quoteChar}`, 'g'), quoteChar)
+      .replace(/\\\\/g, '\\')
+  }
+
+  return (value || '').trim()
 }
 
 const gcodeMacroParams = (gcode: string) => {
