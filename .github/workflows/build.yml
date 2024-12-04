@@ -12,6 +12,12 @@ on:
       - develop
       - master
 
+permissions:
+  id-token: write
+  contents: read
+  attestations: write
+  packages: write
+
 jobs:
   build:
     name: Build
@@ -94,7 +100,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        id: docker_push
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
@@ -102,6 +109,13 @@ jobs:
           push: true
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
+
+      - name: Attest Docker image
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ghcr.io/${{ github.repository }}
+          subject-digest: ${{ steps.docker_push.outputs.digest }}
+          push-to-registry: true
 
   publish-web:
     name: Deploy to Host
