@@ -250,7 +250,7 @@ export const Globals = Object.freeze({
   KEYBOARD_SHORTCUTS: {
     home: 'h',
     console: 'c',
-    preview: 'p',
+    gcode_preview: 'p',
     jobs: 'j',
     history: 'i',
     timelapse: 'l',

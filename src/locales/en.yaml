@@ -451,6 +451,7 @@ app:
       jobs: Jobs
       job_queue: Job Queue
       limits: Printer Limits
+      login: Login
       macros: Macros
       metrics_explorer: Metrics Explorer
       not_found: 404 Not Found
@@ -460,6 +461,7 @@ app:
       rollover_logs: Rollover logs
       runout_sensors: Runout Sensors
       settings: Settings
+      macro_category_settings: Macro Category Settings
       stats: Printer Stats
       system: System
       system_overview: System Information

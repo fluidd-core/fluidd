@@ -48,7 +48,7 @@
 
           <app-nav-item
             icon="$cubeScan"
-            to="preview"
+            to="gcode_preview"
           >
             {{ $t('app.general.title.gcode_preview') }}
           </app-nav-item>

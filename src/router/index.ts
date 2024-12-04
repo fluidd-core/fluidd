@@ -113,7 +113,7 @@ const routes: Array<RouteConfig> = [
     children: [
       {
         path: 'macros/:categoryId',
-        name: 'settings_macro_category',
+        name: 'macro_category_settings',
         meta: {
           hasSubNavigation: true
         },
@@ -132,7 +132,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/preview',
-    name: 'preview',
+    name: 'gcode_preview',
     component: GcodePreview,
     ...defaultRouteConfig
   },

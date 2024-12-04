@@ -21,7 +21,7 @@
             </tr>
             <tr>
               <th>{{ $t('app.general.title.gcode_preview') }}</th>
-              <td><kbd>{{ keyboardShortcuts.preview }}</kbd></td>
+              <td><kbd>{{ keyboardShortcuts.gcode_preview }}</kbd></td>
             </tr>
             <tr>
               <th>{{ $t('app.general.title.jobs') }}</th>

@@ -24,7 +24,7 @@
           x-small
           text
           class="ms-1 my-1"
-          @click="$filters.routeTo({ name: 'preview' })"
+          @click="$filters.routeTo({ name: 'gcode_preview' })"
         >
           <v-icon>$fullScreen</v-icon>
         </app-btn>
