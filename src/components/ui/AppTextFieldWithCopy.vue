@@ -15,7 +15,6 @@
           <app-btn
             v-bind="attrs"
             icon
-            text
             class="btn-copy"
             @click="handleCopy"
             v-on="on"

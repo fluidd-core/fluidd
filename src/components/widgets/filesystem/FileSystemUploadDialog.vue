@@ -51,7 +51,6 @@
             <app-btn
               color="error"
               icon
-              text
               :disabled="file.complete || file.percent === 100 || file.cancelled"
               @click="$emit('cancel', file)"
             >
