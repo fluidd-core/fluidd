@@ -45,7 +45,11 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'home',
     component: Dashboard,
-    ...defaultRouteConfig
+    ...defaultRouteConfig,
+    meta: {
+      ...defaultRouteConfig.meta,
+      dashboard: true
+    }
   },
   {
     path: '/console',
@@ -69,7 +73,11 @@ const routes: Array<RouteConfig> = [
     path: '/diagnostics',
     name: 'diagnostics',
     component: Diagnostics,
-    ...defaultRouteConfig
+    ...defaultRouteConfig,
+    meta: {
+      ...defaultRouteConfig.meta,
+      dashboard: true
+    }
   },
   {
     path: '/timelapse',
@@ -181,6 +189,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   router.app?.$store.commit('config/setContainerColumnCount', 2)
+  router.app?.$store.commit('config/setLayoutMode', false)
   next()
 })
 

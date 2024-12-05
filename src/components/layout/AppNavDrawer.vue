@@ -112,6 +112,30 @@
             {{ $t('app.general.title.settings') }}
           </app-nav-item>
         </div>
+
+        <template
+          v-if="!isMobileViewport && canEditLayout"
+          #append
+        >
+          <v-tooltip right>
+            <template #activator="{ attrs, on }">
+              <app-btn
+                icon
+                large
+                :color="layoutMode ? 'primary' : undefined"
+                style="margin: 6px"
+                v-bind="attrs"
+                v-on="on"
+                @click="layoutMode = !layoutMode"
+              >
+                <v-icon>$apps</v-icon>
+              </app-btn>
+            </template>
+            <span>
+              {{ $t('app.general.btn.adjust_layout') }}
+            </span>
+          </v-tooltip>
+        </template>
       </v-navigation-drawer>
 
       <router-view
@@ -151,6 +175,18 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   get showSubNavigation () {
     return this.hasSubNavigation && this.socketConnected && this.authenticated
+  }
+
+  get canEditLayout () {
+    return this.$route.meta?.dashboard ?? false
+  }
+
+  get layoutMode (): boolean {
+    return this.$store.state.config.layoutMode
+  }
+
+  set layoutMode (val: boolean) {
+    this.$store.commit('config/setLayoutMode', val)
   }
 }
 </script>
