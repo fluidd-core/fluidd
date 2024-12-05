@@ -235,6 +235,9 @@ export const Globals = Object.freeze({
       klipper: {
         domain: 'https://www.klipper3d.org'
       },
+      kalico: {
+        domain: 'https://docs.kalico.gg'
+      },
       'danger-klipper': {
         domain: 'https://dangerklipper.io'
       }
