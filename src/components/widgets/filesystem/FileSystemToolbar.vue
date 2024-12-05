@@ -15,7 +15,7 @@
       bottom
     >
       <template #activator="{ on, attrs }">
-        <v-btn
+        <app-btn
           v-bind="attrs"
           fab
           text
@@ -26,7 +26,7 @@
           <v-icon color="warning">
             $error
           </v-icon>
-        </v-btn>
+        </app-btn>
       </template>
       <slot>
         <span>{{ $t('app.file_system.tooltip.low_on_space') }}</span>
@@ -38,7 +38,7 @@
       bottom
     >
       <template #activator="{ on, attrs }">
-        <v-btn
+        <app-btn
           v-bind="attrs"
           fab
           text
@@ -49,7 +49,7 @@
           <v-icon color="error">
             $warning
           </v-icon>
-        </v-btn>
+        </app-btn>
       </template>
       <slot>
         <span>{{ $t('app.file_system.tooltip.root_disabled', { root }) }}</span>

@@ -30,7 +30,6 @@
             v-if="resetValue !== undefined"
             :disabled="disabled"
             style="margin-top: -4px;"
-            color=""
             icon
             small
             @click="handleReset"

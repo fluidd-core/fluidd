@@ -8,7 +8,7 @@
     <template #activator="{ on: menu, attrs }">
       <v-tooltip bottom>
         <template #activator="{ on: tooltip }">
-          <v-btn
+          <app-btn
             v-bind="attrs"
             :disabled="disabled"
             fab
@@ -19,7 +19,7 @@
             <v-icon>
               $plus
             </v-icon>
-          </v-btn>
+          </app-btn>
         </template>
         <span>{{ $t('app.general.btn.add') }}</span>
       </v-tooltip>

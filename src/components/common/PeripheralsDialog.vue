@@ -31,21 +31,20 @@
 
       <v-tooltip bottom>
         <template #activator="{ on, attrs }">
-          <v-btn
+          <app-btn
             v-bind="attrs"
-            fab
-            text
-            small
+            icon
             :disabled="!currentPeripheralGroup || hasWaitFor(currentPeripheralGroup)"
             @click.prevent.stop="handleRefresh()"
             v-on="on"
           >
             <v-icon
+              dense
               :class="{ 'spin-alt': currentPeripheralGroup && hasWaitFor(currentPeripheralGroup) }"
             >
               $refresh
             </v-icon>
-          </v-btn>
+          </app-btn>
         </template>
         <span>{{ $t('app.general.btn.refresh') }}</span>
       </v-tooltip>

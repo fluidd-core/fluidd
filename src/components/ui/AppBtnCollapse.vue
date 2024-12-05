@@ -3,14 +3,13 @@
     <!-- Expand / Contract -->
     <app-btn
       v-if="!inLayout"
-      color=""
-      class="ml-1"
-      fab
-      x-small
-      text
+      icon
       @click="collapsedModel = !collapsedModel"
     >
-      <v-icon :class="{ 'rotate-180': collapsedModel }">
+      <v-icon
+        dense
+        :class="{ 'rotate-180': collapsedModel }"
+      >
         $chevronUp
       </v-icon>
     </app-btn>

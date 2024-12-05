@@ -15,37 +15,31 @@
     <template #menu>
       <app-btn
         v-if="scrollingPaused"
-        color=""
-        fab
-        x-small
-        text
-        class="ms-1 my-1"
+        icon
         @click="consoleElement.scrollToLatest(true)"
       >
-        <v-icon>{{ flipLayout ? '$up' : '$down' }}</v-icon>
+        <v-icon dense>
+          {{ flipLayout ? '$up' : '$down' }}
+        </v-icon>
       </app-btn>
 
       <app-btn
         v-if="!fullscreen"
-        color=""
-        fab
-        x-small
-        text
-        class="ms-1 my-1"
+        icon
         @click="$filters.routeTo({ name: 'console' })"
       >
-        <v-icon>$fullScreen</v-icon>
+        <v-icon dense>
+          $fullScreen
+        </v-icon>
       </app-btn>
 
       <app-btn
-        color=""
-        fab
-        x-small
-        text
-        class="ms-1 my-1"
+        icon
         @click="handleClear"
       >
-        <v-icon>$delete</v-icon>
+        <v-icon dense>
+          $delete
+        </v-icon>
       </app-btn>
 
       <v-menu
@@ -56,18 +50,15 @@
         :close-on-content-click="false"
       >
         <template #activator="{ on, attrs }">
-          <v-btn
-            fab
-            x-small
-            text
+          <app-btn
+            icon
             v-bind="attrs"
-            class="ms-1 my-1"
             v-on="on"
           >
-            <v-icon>
+            <v-icon dense>
               $cog
             </v-icon>
-          </v-btn>
+          </app-btn>
         </template>
 
         <v-list dense>

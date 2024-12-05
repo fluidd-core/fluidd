@@ -23,14 +23,14 @@
             </td>
             <td class="actions">
               <app-btn
-                color=""
-                x-small
-                fab
-                text
+                icon
                 :disabled="isPartExcluded(name)"
                 @click="cancelObject(name)"
               >
-                <v-icon color="error">
+                <v-icon
+                  dense
+                  color="error"
+                >
                   $cancelled
                 </v-icon>
               </app-btn>

@@ -19,9 +19,8 @@
         v-if="isMobileViewport"
         fab
         small
-        :elevation="0"
+        text
         class="mx-1"
-        color="transparent"
         @click="$emit('navdrawer')"
       >
         <v-icon>$menuAlt</v-icon>
@@ -88,9 +87,8 @@
             <app-btn
               fab
               small
-              :elevation="0"
-              class="mr-1 bg-transparent"
-              color="transparent"
+              text
+              class="mr-1"
               :disabled="topNavPowerDeviceDisabled"
               v-bind="attrs"
               v-on="on"
@@ -122,9 +120,8 @@
       <app-btn
         fab
         small
-        :elevation="0"
+        text
         class="mr-1"
-        color="transparent"
         @click="$emit('toolsdrawer')"
       >
         <v-icon>$menu</v-icon>

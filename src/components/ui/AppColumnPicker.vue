@@ -10,7 +10,7 @@
     <template #activator="{ on: menu, attrs }">
       <v-tooltip bottom>
         <template #activator="{ on: tooltip }">
-          <v-btn
+          <app-btn
             fab
             small
             text
@@ -20,7 +20,7 @@
             <v-icon>
               $tableColumn
             </v-icon>
-          </v-btn>
+          </app-btn>
         </template>
         <span>{{ $t('app.general.btn.select_columns') }}</span>
       </v-tooltip>

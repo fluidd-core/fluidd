@@ -10,7 +10,7 @@
     <template #activator="{ on: menu, attrs }">
       <v-tooltip bottom>
         <template #activator="{ on: tooltip }">
-          <v-btn
+          <app-btn
             :disabled="disabled"
             fab
             small
@@ -21,7 +21,7 @@
             <v-icon>
               $imageSizeSelectLarge
             </v-icon>
-          </v-btn>
+          </app-btn>
         </template>
         <span>{{ $t('app.general.btn.thumbnail_size') }}</span>
       </v-tooltip>

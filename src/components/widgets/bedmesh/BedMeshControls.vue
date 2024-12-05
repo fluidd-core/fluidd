@@ -10,7 +10,7 @@
           v-if="isManualProbeActive"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ms-1 my-1"
+          class="me-1 my-1"
           @click="manualProbeDialogOpen = true"
         >
           {{ $t('app.tool.tooltip.manual_probe') }}
@@ -62,14 +62,13 @@
                 <template #activator="{ on, attrs }">
                   <app-btn
                     v-bind="attrs"
-                    x-small
-                    color=""
-                    fab
-                    text
+                    icon
                     @click="loadProfile(item.name)"
                     v-on="on"
                   >
-                    <v-icon>$open</v-icon>
+                    <v-icon dense>
+                      $open
+                    </v-icon>
                   </app-btn>
                 </template>
                 <span>{{ $t('app.bedmesh.tooltip.load') }}</span>
@@ -79,16 +78,12 @@
                 <template #activator="{ on, attrs }">
                   <app-btn
                     v-bind="attrs"
-                    color=""
-                    class="ml-2"
-                    fab
-                    text
-                    x-small
+                    icon
                     :disabled="item.adaptive"
                     @click="removeProfile(item.name)"
                     v-on="on"
                   >
-                    <v-icon color="">
+                    <v-icon dense>
                       $delete
                     </v-icon>
                   </app-btn>

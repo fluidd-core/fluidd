@@ -11,7 +11,7 @@
       <app-btn
         v-if="!fullscreen"
         small
-        class="ms-1 my-1"
+        class="me-1 my-1"
         :loading="hasWait($waits.onMeshCalibrate)"
         :disabled="printerBusy || !allHomed"
         @click="calibrate()"
@@ -26,16 +26,14 @@
         <template #activator="{ on, attrs }">
           <app-btn
             v-bind="attrs"
-            color=""
-            fab
-            x-small
-            text
-            class="ms-1 my-1"
+            icon
             :disabled="!hasMeshLoaded"
             v-on="on"
             @click="copyImage()"
           >
-            <v-icon>$screenshot</v-icon>
+            <v-icon dense>
+              $screenshot
+            </v-icon>
           </app-btn>
         </template>
         <span>{{ $t('app.bedmesh.tooltip.copy_image') }}</span>
@@ -43,14 +41,12 @@
 
       <app-btn
         v-if="!fullscreen"
-        color=""
-        fab
-        x-small
-        text
-        class="ms-1 my-1"
+        icon
         @click="$filters.routeTo({ name: 'tune' })"
       >
-        <v-icon>$fullScreen</v-icon>
+        <v-icon dense>
+          $fullScreen
+        </v-icon>
       </app-btn>
     </template>
 

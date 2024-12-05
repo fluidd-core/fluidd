@@ -9,7 +9,7 @@
       <app-btn
         v-if="!targetableMacros.length"
         small
-        class="ms-1 my-1"
+        class="me-1 my-1"
         :disabled="!isConnected"
         @click="() => handleSelectSpool()"
       >
@@ -28,7 +28,7 @@
           <app-btn
             v-bind="attrs"
             small
-            class="ms-1 my-1"
+            class="me-1 my-1"
             :disabled="!isConnected"
             v-on="on"
           >

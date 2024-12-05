@@ -4,12 +4,10 @@
       <app-btn
         fab
         small
-        color=""
         class="mr-4"
-        exact
         @click="handleBack"
       >
-        <v-icon small>
+        <v-icon dense>
           $left
         </v-icon>
       </app-btn>

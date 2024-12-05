@@ -23,18 +23,15 @@
         :close-on-content-click="false"
       >
         <template #activator="{ on, attrs }">
-          <v-btn
-            fab
-            x-small
-            text
+          <app-btn
+            icon
             v-bind="attrs"
-            class="ms-1 my-1"
             v-on="on"
           >
-            <v-icon>
+            <v-icon dense>
               $cog
             </v-icon>
-          </v-btn>
+          </app-btn>
         </template>
 
         <v-list dense>

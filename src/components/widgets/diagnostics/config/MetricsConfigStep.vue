@@ -45,9 +45,8 @@
                 class="d-flex justify-center"
               >
                 <app-btn
-                  small
                   icon
-                  color=""
+                  small
                   @click.stop="removeMetric(i, j)"
                 >
                   <v-icon dense>

@@ -12,7 +12,7 @@
         bottom
       >
         <template #activator="{ on, attrs }">
-          <v-btn
+          <app-btn
             v-bind="attrs"
             icon
             text
@@ -23,12 +23,13 @@
             <v-fade-transition leave-absolute>
               <v-icon
                 :key="hasCopied"
+                dense
                 class="icon-copy"
               >
                 {{ hasCopied ? '$check' : '$contentCopy' }}
               </v-icon>
             </v-fade-transition>
-          </v-btn>
+          </app-btn>
         </template>
         <span>{{ hasCopied ? $t('app.general.btn.copied') : $t('app.general.btn.copy') }}</span>
       </v-tooltip>

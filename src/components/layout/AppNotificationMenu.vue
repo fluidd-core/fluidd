@@ -19,18 +19,18 @@
             overlap
             :color="badgeColor"
           >
-            <v-btn
+            <app-btn
               v-bind="attrs"
               fab
               small
+              text
               :color="color"
-              :elevation="0"
               v-on="{ ...tooltip, ...menu }"
             >
               <v-icon :class="{ 'wiggle': color === 'error'}">
                 $bell
               </v-icon>
-            </v-btn>
+            </app-btn>
           </v-badge>
         </template>
         <span>{{ $t('app.general.tooltip.notifications') }}</span>
@@ -58,11 +58,11 @@
             <v-list-item-content>
               <v-list-item-title>{{ $t('app.general.label.clear_all') }}</v-list-item-title>
             </v-list-item-content>
-            <v-list-item-action class="notification-clear-all">
-              <v-icon small>
+            <v-list-item-icon class="notification-clear-all">
+              <v-icon dense>
                 $close
               </v-icon>
-            </v-list-item-action>
+            </v-list-item-icon>
           </v-list-item>
 
           <v-divider />
@@ -130,14 +130,14 @@
               class="notification-clear"
               @click="handleClear(n)"
             >
-              <v-btn
+              <app-btn
                 icon
-                small
+                dense
               >
-                <v-icon small>
+                <v-icon dense>
                   $close
                 </v-icon>
-              </v-btn>
+              </app-btn>
             </v-list-item-action>
           </v-list-item>
 
@@ -191,8 +191,8 @@ export default class AppNotificationMenu extends Mixins(BrowserMixin) {
    * Color is determined by type. Pull the highest weighted type.
    */
   get color () {
-    if (this.notifications.length <= 0) return 'transparent'
-    let c = 'transparent'
+    if (this.notifications.length <= 0) return undefined
+    let c
     for (const n of this.notifications) {
       if (n.type === 'warning' && c !== 'error') c = 'warning'
       if (n.type === 'error' && c !== 'error') {

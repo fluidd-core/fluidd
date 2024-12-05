@@ -38,7 +38,9 @@
               <v-list-item-icon>
                 <v-icon>$enqueueJob</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>{{ $t("app.general.btn.add_to_queue") }}</v-list-item-title>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t("app.general.btn.add_to_queue") }}</v-list-item-title>
+              </v-list-item-content>
             </v-list-item>
 
             <v-list-item

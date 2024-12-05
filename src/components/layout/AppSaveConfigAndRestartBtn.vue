@@ -1,13 +1,12 @@
 <template>
   <app-btn
     v-if="isExpanded"
-    color=""
     :disabled="disabled"
     :loading="loading"
     @click="$emit('click')"
   >
     <v-icon
-      class="mr-1"
+      left
       color="warning"
     >
       $save
@@ -26,7 +25,6 @@
         small
         text
         color="warning"
-        :elevation="0"
         :disabled="disabled"
         :loading="loading"
         v-on="on"

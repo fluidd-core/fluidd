@@ -125,28 +125,24 @@
       </template>
 
       <template #[`item.actions`]="{ item }">
-        <v-btn
+        <app-btn
           icon
-          small
           @click="handleRemoveJob(item)"
         >
-          <v-icon
-            small
-            color=""
-          >
+          <v-icon dense>
             $delete
           </v-icon>
-        </v-btn>
-        <v-btn
+        </app-btn>
+        <app-btn
           class="v-data-table__expand-icon"
-          color=""
           :class="{ 'v-data-table__expand-icon--active': isExpanded(item) }"
           icon
-          small
           @click.prevent.stop="toggleRowExpand(item)"
         >
-          <v-icon>$chevronDown</v-icon>
-        </v-btn>
+          <v-icon dense>
+            $chevronDown
+          </v-icon>
+        </app-btn>
       </template>
     </v-data-table>
   </div>

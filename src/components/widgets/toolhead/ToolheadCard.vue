@@ -34,7 +34,7 @@
           v-if="isManualProbeActive"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ms-1 my-1"
+          class="me-1 my-1"
           @click="manualProbeDialogOpen = true"
         >
           {{ $t('app.tool.tooltip.manual_probe') }}
@@ -44,7 +44,7 @@
           v-if="isBedScrewsAdjustActive"
           :disabled="!klippyReady || printerPrinting || !allHomed"
           small
-          class="ms-1 my-1"
+          class="me-1 my-1"
           @click="bedScrewsAdjustDialogOpen = true"
         >
           BED_SCREWS_ADJUST
@@ -54,7 +54,7 @@
           v-if="printerSupportsForceMove"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ms-1 my-1"
+          class="me-1 my-1"
           :color="forceMove ? 'error' : undefined"
           @click="toggleForceMove"
         >
@@ -65,7 +65,7 @@
           v-if="hasSteppersEnabled"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ms-1 my-1"
+          class="me-1 my-1"
           @click="sendGcode('M84')"
         >
           {{ $t('app.tool.tooltip.motors_off') }}
@@ -81,7 +81,7 @@
             <app-btn
               v-bind="attrs"
               small
-              class="ms-1 my-1"
+              class="me-1 my-1"
               :disabled="!klippyReady || printerPrinting"
               v-on="on"
             >

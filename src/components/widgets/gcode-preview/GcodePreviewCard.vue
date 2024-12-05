@@ -11,7 +11,7 @@
         <app-btn
           :disabled="!printerFile || printerFileLoaded"
           small
-          class="ms-1 my-1"
+          class="me-1 my-1"
           @click="loadCurrent"
         >
           {{ $t('app.gcode.btn.load_current_file') }}
@@ -19,14 +19,12 @@
 
         <app-btn
           v-if="!fullscreen"
-          color=""
-          fab
-          x-small
-          text
-          class="ms-1 my-1"
+          icon
           @click="$filters.routeTo({ name: 'gcode_preview' })"
         >
-          <v-icon>$fullScreen</v-icon>
+          <v-icon dense>
+            $fullScreen
+          </v-icon>
         </app-btn>
       </app-btn-collapse-group>
     </template>

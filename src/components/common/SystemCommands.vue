@@ -15,7 +15,9 @@
         :disabled="printerPrinting"
         @click="handleHostReboot"
       >
-        <v-list-item-title>{{ $t('app.general.btn.reboot') }}</v-list-item-title>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('app.general.btn.reboot') }}</v-list-item-title>
+        </v-list-item-content>
         <v-list-item-icon>
           <v-icon color="error">
             $powerCycle
@@ -27,7 +29,9 @@
         :disabled="printerPrinting"
         @click="handleHostShutdown"
       >
-        <v-list-item-title>{{ $t('app.general.btn.shutdown') }}</v-list-item-title>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('app.general.btn.shutdown') }}</v-list-item-title>
+        </v-list-item-content>
         <v-list-item-icon>
           <v-icon color="error">
             $power
@@ -54,7 +58,9 @@
         :loading="hasWait(`${$waits.onDevicePowerToggle}${device.device}`)"
         @click="togglePowerDevice(device, `${$waits.onDevicePowerToggle}${device.device}`)"
       >
-        <v-list-item-title>{{ getPowerButtonText(device) }}</v-list-item-title>
+        <v-list-item-content>
+          <v-list-item-title>{{ getPowerButtonText(device) }}</v-list-item-title>
+        </v-list-item-content>
         <v-list-item-icon>
           <v-icon>{{ getPowerIcon(device) }}</v-icon>
         </v-list-item-icon>
@@ -90,14 +96,14 @@
             </v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn
+            <app-btn
               v-if="service.active_state === 'inactive'"
               icon
               @click="checkDialog(serviceStart, service, 'start')"
             >
               <v-icon>$play</v-icon>
-            </v-btn>
-            <v-btn
+            </app-btn>
+            <app-btn
               v-else
               icon
               @click="checkDialog(serviceRestart, service, 'restart')"
@@ -105,8 +111,8 @@
               <v-icon color="warning">
                 $restart
               </v-icon>
-            </v-btn>
-            <v-btn
+            </app-btn>
+            <app-btn
               icon
               :disabled="service.active_state === 'inactive'"
               :style="service.name === moonrakerServiceName ? 'visibility: hidden;' : ''"
@@ -115,7 +121,7 @@
               <v-icon color="error">
                 $stop
               </v-icon>
-            </v-btn>
+            </app-btn>
           </v-list-item-action>
         </v-list-item>
       </template>

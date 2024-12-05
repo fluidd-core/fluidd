@@ -7,7 +7,7 @@
     <template #activator="{ on: menu, attrs }">
       <v-tooltip bottom>
         <template #activator="{ on: tooltip }">
-          <v-btn
+          <app-btn
             v-bind="attrs"
             fab
             text
@@ -16,7 +16,7 @@
             @click="$emit('drawer')"
           >
             <v-icon>$account</v-icon>
-          </v-btn>
+          </app-btn>
         </template>
         <span>{{ currentUser }}</span>
       </v-tooltip>

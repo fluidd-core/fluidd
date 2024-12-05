@@ -9,14 +9,12 @@
     <template #menu>
       <app-btn
         v-if="!fullscreen"
-        color=""
-        fab
-        x-small
-        text
-        class="ms-1 my-1"
+        icon
         @click="$filters.routeTo({ name: 'tune' })"
       >
-        <v-icon>$fullScreen</v-icon>
+        <v-icon dense>
+          $fullScreen
+        </v-icon>
       </app-btn>
     </template>
 
@@ -57,14 +55,13 @@
                 <template #activator="{ on, attrs }">
                   <app-btn
                     v-bind="attrs"
-                    x-small
-                    color=""
-                    fab
-                    text
+                    icon
                     @click="loadModel(item.name)"
                     v-on="on"
                   >
-                    <v-icon>$open</v-icon>
+                    <v-icon dense>
+                      $open
+                    </v-icon>
                   </app-btn>
                 </template>
                 <span>{{ $t('app.beacon.tooltip.load') }}</span>
@@ -74,15 +71,11 @@
                 <template #activator="{ on, attrs }">
                   <app-btn
                     v-bind="attrs"
-                    color=""
-                    class="ml-2"
-                    fab
-                    text
-                    x-small
+                    icon
                     @click="removeModel(item.name)"
                     v-on="on"
                   >
-                    <v-icon color="">
+                    <v-icon dense>
                       $close
                     </v-icon>
                   </app-btn>

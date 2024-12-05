@@ -18,7 +18,7 @@
             :offset-y="15"
             :offset-x="15"
           >
-            <v-btn
+            <app-btn
               :disabled="disabled"
               fab
               small
@@ -29,7 +29,7 @@
               <v-icon>
                 $filter
               </v-icon>
-            </v-btn>
+            </app-btn>
           </v-badge>
         </template>
         <span>{{ $t('app.general.btn.filter') }}</span>

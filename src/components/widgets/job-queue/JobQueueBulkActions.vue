@@ -4,7 +4,7 @@
 
     <v-tooltip bottom>
       <template #activator="{ on, attrs }">
-        <v-btn
+        <app-btn
           v-bind="attrs"
           fab
           small
@@ -13,14 +13,14 @@
           v-on="on"
         >
           <v-icon>$duplicate</v-icon>
-        </v-btn>
+        </app-btn>
       </template>
       <span>{{ $t('app.general.btn.multiply') }}</span>
     </v-tooltip>
 
     <v-tooltip bottom>
       <template #activator="{ on, attrs }">
-        <v-btn
+        <app-btn
           v-bind="attrs"
           fab
           small
@@ -29,7 +29,7 @@
           v-on="on"
         >
           <v-icon>$delete</v-icon>
-        </v-btn>
+        </app-btn>
       </template>
       <span>{{ $t('app.general.btn.remove') }}</span>
     </v-tooltip>

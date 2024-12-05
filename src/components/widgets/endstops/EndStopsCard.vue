@@ -7,14 +7,12 @@
     <template #collapse-button>
       <app-btn
         :loading="hasWait($waits.onQueryEndstops) || hasWait($waits.onQueryProbe)"
-        color=""
-        fab
-        x-small
-        text
-        class="ms-1 my-1"
+        icon
         @click="queryEndstops"
       >
-        <v-icon>$refresh</v-icon>
+        <v-icon dense>
+          $refresh
+        </v-icon>
       </app-btn>
     </template>
     <v-simple-table v-if="hasEndstops">

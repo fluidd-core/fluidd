@@ -5,9 +5,7 @@
         <app-btn
           fab
           small
-          :elevation="0"
-          class="mr-1 bg-transparent"
-          color="transparent"
+          text
           :disabled="disabled"
           v-bind="attrs"
           v-on="on"
