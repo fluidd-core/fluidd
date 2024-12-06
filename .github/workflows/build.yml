@@ -12,12 +12,6 @@ on:
       - develop
       - master
 
-permissions:
-  id-token: write
-  contents: read
-  attestations: write
-  packages: write
-
 jobs:
   build:
     name: Build
@@ -63,6 +57,11 @@ jobs:
     needs: build
     if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      attestations: write
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -107,6 +106,10 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
           push: true
+          sbom: true
+          provenance: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
 
@@ -120,7 +123,7 @@ jobs:
   publish-web:
     name: Deploy to Host
     needs: build
-    if: ${{ github.ref == 'refs/heads/develop' }}
+    if: ${{ github.repository == 'fluidd-core/fluidd' && github.ref == 'refs/heads/develop' }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write

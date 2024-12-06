@@ -97,6 +97,7 @@ jobs:
   publish-web:
     name: Deploy to Host
     needs: build
+    if: ${{ github.repository == 'fluidd-core/fluidd' }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
