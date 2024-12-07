@@ -34,13 +34,15 @@ export const actions: ActionTree<ServerState, RootState> = {
       payload.components &&
       payload.components.length > 0
     ) {
-      const componentsToInit: { [index: string]: { name: string; dispatch: string } } = Globals.MOONRAKER_COMPONENTS
-      for (const key in componentsToInit) {
-        const component = componentsToInit[key]
-        if (payload.components.includes(component.name)) {
-          dispatch(component.dispatch, undefined, { root: true })
-        }
-      }
+      const promises = Object.values(Globals.MOONRAKER_COMPONENTS)
+        .map((component) => (
+          payload.components.includes(component.name)
+            ? dispatch(component.dispatch, undefined, { root: true })
+            : null
+        ))
+        .filter(promise => promise)
+
+      await Promise.all(promises)
     }
   },
 

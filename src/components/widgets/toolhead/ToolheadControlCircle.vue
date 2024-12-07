@@ -539,10 +539,6 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     return this.$store.state.config.uiSettings.general.toolheadCircleZMoveDistances
   }
 
-  get forceMove () {
-    return this.$store.state.config.uiSettings.toolhead.forceMove
-  }
-
   get hasSteppersEnabled (): boolean {
     return this.$store.getters['printer/getHasSteppersEnabled'] as boolean
   }
@@ -729,7 +725,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
       ? -distance
       : distance
 
-    if (this.forceMove) {
+    if (this.forceMoveEnabled) {
       const accel = axis === 'Z'
         ? this.$store.getters['printer/getPrinterSettings']('printer.max_z_accel')
         : this.$store.state.printer.printer.toolhead.max_accel

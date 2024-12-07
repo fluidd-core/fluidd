@@ -26,7 +26,6 @@ export interface UiSettings {
 }
 
 export interface ToolheadConfig {
-  forceMove: boolean;
   extrudeSpeed: number;
   extrudeLength: number;
 }

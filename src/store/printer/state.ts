@@ -10,6 +10,10 @@ export const defaultState = (): PrinterState => {
       state: '',
       state_message: ''
     },
+    manualProbeDialogOpen: false,
+    bedScrewsAdjustDialogOpen: false,
+    screwsTiltAdjustDialogOpen: false,
+    forceMoveEnabled: false,
     printer: {
       endstops: {},
       bed_mesh: {

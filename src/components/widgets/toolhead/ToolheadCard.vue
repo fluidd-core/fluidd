@@ -55,7 +55,7 @@
           :disabled="!klippyReady || printerPrinting"
           small
           class="me-1 my-1"
-          :color="forceMove ? 'error' : undefined"
+          :color="forceMoveEnabled ? 'error' : undefined"
           @click="toggleForceMove"
         >
           FORCE_MOVE
@@ -131,26 +131,11 @@
     </template>
 
     <toolhead />
-
-    <manual-probe-dialog
-      v-if="manualProbeDialogOpen"
-      v-model="manualProbeDialogOpen"
-    />
-
-    <bed-screws-adjust-dialog
-      v-if="bedScrewsAdjustDialogOpen"
-      v-model="bedScrewsAdjustDialogOpen"
-    />
-
-    <screws-tilt-adjust-dialog
-      v-if="screwsTiltAdjustDialogOpen"
-      v-model="screwsTiltAdjustDialogOpen"
-    />
   </collapsable-card>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import Toolhead from './Toolhead.vue'
@@ -170,10 +155,6 @@ type Tool = {
   }
 })
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
-  manualProbeDialogOpen = false
-  bedScrewsAdjustDialogOpen = false
-  screwsTiltAdjustDialogOpen = false
-
   @Prop({ type: Boolean })
   readonly menuCollapsed?: boolean
 
@@ -383,59 +364,9 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     return this.$store.getters['printer/getHasRoundBed'] as boolean
   }
 
-  get showManualProbeDialogAutomatically (): boolean {
-    return this.$store.state.config.uiSettings.general.showManualProbeDialogAutomatically
-  }
-
-  get showBedScrewsAdjustDialogAutomatically (): boolean {
-    return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
-  }
-
-  get showScrewsTiltAdjustDialogAutomatically (): boolean {
-    return this.$store.state.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
-  }
-
-  get forceMove (): boolean {
-    return this.$store.state.config.uiSettings.toolhead.forceMove
-  }
-
-  @Watch('isManualProbeActive')
-  onIsManualProbeActive (value: boolean) {
-    if (
-      value &&
-      this.showManualProbeDialogAutomatically &&
-      this.klippyReady &&
-      !this.printerPrinting
-    ) {
-      this.manualProbeDialogOpen = true
-    }
-  }
-
-  @Watch('isBedScrewsAdjustActive')
-  onIsBedScrewsAdjustActive (value: boolean) {
-    if (
-      value &&
-      this.showBedScrewsAdjustDialogAutomatically &&
-      this.klippyReady &&
-      !this.printerPrinting
-    ) {
-      this.bedScrewsAdjustDialogOpen = true
-    }
-  }
-
-  @Watch('hasScrewsTiltAdjustResults')
-  onHasScrewsTiltAdjustResults (value: boolean) {
-    this.screwsTiltAdjustDialogOpen = (
-      value &&
-      this.showScrewsTiltAdjustDialogAutomatically &&
-      this.klippyReady &&
-      !this.printerPrinting
-    )
-  }
-
   async toggleForceMove () {
     const result = (
-      this.forceMove ||
+      this.forceMoveEnabled ||
       !this.$store.state.config.uiSettings.general.forceMoveToggleWarning ||
       await this.$confirm(
         this.$tc('app.general.simple_form.msg.confirm_forcemove_toggle'),
@@ -444,11 +375,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     )
 
     if (result) {
-      this.$store.dispatch('config/saveByPath', {
-        path: 'uiSettings.toolhead.forceMove',
-        value: !this.forceMove,
-        server: false
-      })
+      this.$store.dispatch('printer/forceMoveEnabled', !this.forceMoveEnabled)
     }
   }
 }

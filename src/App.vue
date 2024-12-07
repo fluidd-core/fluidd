@@ -83,6 +83,9 @@
       <spool-selection-dialog />
       <action-command-prompt-dialog />
       <keyboard-shortcuts-dialog />
+      <manual-probe-dialog />
+      <bed-screws-adjust-dialog />
+      <screws-tilt-adjust-dialog />
     </v-main>
 
     <app-footer />

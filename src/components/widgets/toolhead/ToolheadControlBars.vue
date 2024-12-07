@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!forceMove">
+  <div v-if="!forceMoveEnabled">
     <toolhead-control-bars-axis axis="X" />
     <toolhead-control-bars-axis axis="Y" />
     <toolhead-control-bars-axis axis="Z" />
@@ -72,10 +72,6 @@ export default class ToolheadControlBars extends Mixins(StateMixin, ToolheadMixi
 
     return steppers
       .filter(stepper => stepper.key.startsWith('stepper_'))
-  }
-
-  get forceMove (): boolean {
-    return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 }
 </script>

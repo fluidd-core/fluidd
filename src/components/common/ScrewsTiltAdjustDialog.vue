@@ -1,6 +1,6 @@
 <template>
   <app-dialog
-    v-model="open"
+    v-model="screwsTiltAdjustDialogOpen"
     :title="$t('app.tool.title.screws_tilt_adjust')"
     max-width="500"
     @save="retry"
@@ -70,23 +70,34 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, VModel } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { ScrewsTiltAdjust } from '@/store/printer/types'
 
 @Component({})
 export default class ScrewsTiltAdjustDialog extends Mixins(StateMixin, ToolheadMixin) {
-  @VModel({ type: Boolean })
-  open?: boolean
-
   get screwsTiltAdjust (): ScrewsTiltAdjust {
     return this.$store.getters['printer/getScrewsTiltAdjust'] as ScrewsTiltAdjust
   }
 
+  get showScrewsTiltAdjustDialogAutomatically (): boolean {
+    return this.$store.state.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
+  }
+
+  @Watch('hasScrewsTiltAdjustResults')
+  onHasScrewsTiltAdjustResults (value: boolean) {
+    this.screwsTiltAdjustDialogOpen = (
+      value &&
+      this.showScrewsTiltAdjustDialogAutomatically &&
+      this.klippyReady &&
+      !this.printerPrinting
+    )
+  }
+
   retry () {
     this.sendGcode('SCREWS_TILT_CALCULATE', this.$waits.onBedScrewsCalculate)
-    this.open = false
+    this.screwsTiltAdjustDialogOpen = false
   }
 
   destroyed () {
