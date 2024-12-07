@@ -347,6 +347,9 @@ app:
       unknown: Ismeretlen
       compact: Kompakt
       stepper_driver: '%{name} Meghajtó'
+      device: Eszköz
+      environment_facing: Környezeti nézet
+      user_facing: Felhasználói nézet
     msg:
       password_changed: A jelszó megváltozott
       wrong_password: Hoppá! Valami rosszul sült el. Ez a jelszavad?
@@ -477,6 +480,8 @@ app:
       tool: Eszköz
       tune: Hangolás
       beacon: Jeladó
+      login: Belépés
+      macro_category_settings: Makró kategória beállításai
     tooltip:
       browse_metrics: A böngészőben elérhető mutatók
       estop: VészSTOP
