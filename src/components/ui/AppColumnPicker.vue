@@ -32,10 +32,7 @@
       <app-draggable
         v-model="configurableHeaders"
         :options="{
-          animation: '200',
-          handle: '.handle',
           group: 'columnPicker',
-          ghostClass: 'ghost',
         }"
       >
         <template v-for="header in configurableHeaders">

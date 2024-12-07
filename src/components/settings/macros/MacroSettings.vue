@@ -28,10 +28,7 @@
       <app-draggable
         v-model="categories"
         :options="{
-          animation: 200,
-          handle: '.handle',
           group: `macro-settings`,
-          ghostClass: 'ghost'
         }"
       >
         <section

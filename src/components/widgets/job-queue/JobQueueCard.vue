@@ -26,7 +26,10 @@
         <app-btn
           v-else-if="queueStatus === 'paused'"
           small
-          class="me-1 my-1"
+          class="my-1"
+          :class="{
+            'me-1': !fullscreen
+          }"
           @click="handleResume"
         >
           <v-icon

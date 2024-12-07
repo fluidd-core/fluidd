@@ -3,10 +3,7 @@
     <app-draggable
       v-model="jobs"
       :options="{
-        animation: '200',
-        handle: '.handle',
         group: 'jobQueue',
-        ghostClass: 'ghost',
       }"
       target="tbody"
     >

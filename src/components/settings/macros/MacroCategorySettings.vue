@@ -55,10 +55,7 @@
       <app-draggable
         v-model="macros"
         :options="{
-          animation: 200,
-          handle: '.handle',
           group: `macro-settings-${category.name}`,
-          ghostClass: 'ghost'
         }"
       >
         <section
