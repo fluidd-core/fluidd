@@ -3,8 +3,7 @@
     <v-tooltip bottom>
       <template #activator="{ on, attrs }">
         <app-btn
-          fab
-          small
+          icon
           text
           :disabled="disabled"
           v-bind="attrs"

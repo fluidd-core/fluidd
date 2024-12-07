@@ -17,8 +17,7 @@
       <template #activator="{ on, attrs }">
         <app-btn
           v-bind="attrs"
-          fab
-          small
+          icon
           text
           v-on="on"
           @click="$emit('enqueue')"
@@ -35,8 +34,7 @@
       <template #activator="{ on, attrs }">
         <app-btn
           v-bind="attrs"
-          fab
-          small
+          icon
           text
           v-on="on"
           @click="$emit('create-zip')"
@@ -53,8 +51,7 @@
       <template #activator="{ on, attrs }">
         <app-btn
           v-bind="attrs"
-          fab
-          small
+          icon
           text
           v-on="on"
           @click="$emit('remove')"

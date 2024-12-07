@@ -11,8 +11,7 @@
       <v-tooltip bottom>
         <template #activator="{ on: tooltip }">
           <app-btn
-            fab
-            small
+            icon
             text
             v-bind="attrs"
             v-on="{ ...tooltip, ...menu }"

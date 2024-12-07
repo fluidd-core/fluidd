@@ -17,9 +17,8 @@
       <template #activator="{ on, attrs }">
         <app-btn
           v-bind="attrs"
-          fab
+          icon
           text
-          small
           color="warning"
           v-on="on"
         >
@@ -40,9 +39,8 @@
       <template #activator="{ on, attrs }">
         <app-btn
           v-bind="attrs"
-          fab
+          icon
           text
-          small
           color="error"
           v-on="on"
         >
@@ -73,8 +71,7 @@
           <v-btn
             v-bind="attrs"
             :disabled="disabled"
-            fab
-            small
+            icon
             text
             @click="$emit('go-to-file')"
             v-on="on"
@@ -108,8 +105,7 @@
           <v-btn
             v-bind="attrs"
             :disabled="disabled"
-            fab
-            small
+            icon
             text
             @click="$emit('refresh')"
             v-on="on"

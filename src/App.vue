@@ -26,7 +26,7 @@
     />
 
     <v-btn
-      v-if="isMobileViewport && authenticated && socketConnected"
+      v-if="isMobileViewport && socketConnected && authenticated"
       x-small
       fab
       fixed

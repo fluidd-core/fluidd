@@ -17,10 +17,8 @@
     <div class="toolbar-title">
       <app-btn
         v-if="isMobileViewport"
-        fab
-        small
+        icon
         text
-        class="mx-1"
         @click="$emit('navdrawer')"
       >
         <v-icon>$menuAlt</v-icon>
@@ -37,10 +35,7 @@
     <!-- <v-spacer /> -->
 
     <div class="toolbar-supplemental">
-      <div
-        v-if="socketConnected && klippyReady && authenticated && showSaveConfigAndRestartForPendingChanges"
-        class="mr-1"
-      >
+      <div v-if="socketConnected && authenticated && klippyReady && showSaveConfigAndRestartForPendingChanges">
         <app-save-config-and-restart-btn
           :loading="hasWait($waits.onSaveConfig)"
           :disabled="printerPrinting || printerPaused"
@@ -48,7 +43,7 @@
         />
       </div>
 
-      <div v-if="socketConnected && !isMobileViewport && authenticated">
+      <div v-if="socketConnected && authenticated && !isMobileViewport">
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
@@ -74,21 +69,19 @@
         </v-tooltip>
       </div>
 
-      <div v-if="authenticated && socketConnected && showUploadAndPrint">
+      <div v-if="socketConnected && authenticated && showUploadAndPrint">
         <app-upload-and-print-btn
           :disabled="printerPrinting || printerPaused || !klippyReady"
           @upload="handleUploadAndPrint"
         />
       </div>
 
-      <div v-if="authenticated && socketConnected && topNavPowerToggle">
+      <div v-if="socketConnected && authenticated && topNavPowerToggle">
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
-              fab
-              small
+              icon
               text
-              class="mr-1"
               :disabled="topNavPowerDeviceDisabled"
               v-bind="attrs"
               v-on="on"
@@ -103,25 +96,17 @@
         </v-tooltip>
       </div>
 
-      <div
-        v-if="authenticated && socketConnected"
-        class="mr-1"
-      >
+      <div v-if="socketConnected && authenticated">
         <app-notification-menu />
       </div>
 
-      <div
-        v-if="supportsAuth && authenticated"
-        class="mr-1"
-      >
+      <div v-if="socketConnected && authenticated && supportsAuth">
         <app-user-menu @change-password="userPasswordDialogOpen = true" />
       </div>
 
       <app-btn
-        fab
-        small
+        icon
         text
-        class="mr-1"
         @click="$emit('toolsdrawer')"
       >
         <v-icon>$menu</v-icon>

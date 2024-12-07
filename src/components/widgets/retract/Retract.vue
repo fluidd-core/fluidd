@@ -1,12 +1,11 @@
 <template>
   <v-card-text>
-    <v-row class="my-0 mb-4">
+    <v-row>
       <v-col
         cols="12"
         sm="6"
         md="12"
         lg="6"
-        class="py-0"
       >
         <app-named-slider
           :label="$t('app.general.label.retract_length')"
@@ -28,7 +27,6 @@
         sm="6"
         md="12"
         lg="6"
-        class="py-0"
       >
         <app-named-slider
           :label="$t('app.general.label.unretract_extra_length')"
@@ -46,13 +44,13 @@
         />
       </v-col>
     </v-row>
-    <v-row class="my-0 mb-4">
+
+    <v-row>
       <v-col
         cols="12"
         sm="6"
         md="12"
         lg="6"
-        class="py-0"
       >
         <app-named-slider
           :label="$t('app.general.label.retract_speed')"
@@ -74,7 +72,6 @@
         sm="6"
         md="12"
         lg="6"
-        class="py-0"
       >
         <app-named-slider
           :label="$t('app.general.label.unretract_speed')"

@@ -12,8 +12,7 @@
         <template #activator="{ on: tooltip }">
           <app-btn
             :disabled="disabled"
-            fab
-            small
+            icon
             text
             v-bind="attrs"
             v-on="{ ...tooltip, ...menu }"

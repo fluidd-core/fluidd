@@ -21,10 +21,7 @@
         hide-details
         class="mt-0 pt-0"
       />
-      <app-drag-icon
-        cursor="move"
-        class="ms-1"
-      />
+      <app-drag-icon class="ms-1" />
     </v-layout>
   </div>
 </template>

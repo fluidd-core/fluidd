@@ -6,8 +6,7 @@
       <template #activator="{ on, attrs }">
         <app-btn
           v-bind="attrs"
-          fab
-          small
+          icon
           text
           @click="$emit('multiply')"
           v-on="on"
@@ -22,8 +21,7 @@
       <template #activator="{ on, attrs }">
         <app-btn
           v-bind="attrs"
-          fab
-          small
+          icon
           text
           @click="$emit('remove')"
           v-on="on"

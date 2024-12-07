@@ -21,8 +21,7 @@
           >
             <app-btn
               v-bind="attrs"
-              fab
-              small
+              icon
               text
               :color="color"
               v-on="{ ...tooltip, ...menu }"

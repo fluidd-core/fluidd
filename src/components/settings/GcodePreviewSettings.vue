@@ -12,7 +12,6 @@
         <v-switch
           v-model="showAnimations"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -23,7 +22,6 @@
         <v-switch
           v-model="drawOrigin"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -34,7 +32,6 @@
         <v-switch
           v-model="drawBackground"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -121,7 +118,6 @@
         <v-switch
           v-model="flipHorizontal"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -132,7 +128,6 @@
         <v-switch
           v-model="flipVertical"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -143,7 +138,6 @@
         <v-switch
           v-model="autoLoadOnPrintStart"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -155,7 +149,6 @@
           <v-switch
             v-model="autoLoadMobileOnPrintStart"
             hide-details
-            class="mb-5"
             @click.native.stop
           />
         </app-setting>
@@ -167,7 +160,6 @@
         <v-switch
           v-model="autoFollowOnFileLoad"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -178,7 +170,6 @@
         <v-switch
           v-model="hideSinglePartBoundingBox"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>

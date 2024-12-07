@@ -12,8 +12,7 @@
       <template #activator="{ on, attrs }">
         <app-btn
           v-bind="attrs"
-          fab
-          small
+          icon
           text
           @click="$emit('remove-all')"
           v-on="on"
@@ -28,8 +27,7 @@
       <template #activator="{ on, attrs }">
         <app-btn
           v-bind="attrs"
-          fab
-          small
+          icon
           text
           @click="$emit('refresh')"
           v-on="on"

@@ -9,9 +9,8 @@
         <template #activator="{ on: tooltip }">
           <app-btn
             v-bind="attrs"
-            fab
+            icon
             text
-            small
             v-on="{ ...tooltip, ...menu }"
             @click="$emit('drawer')"
           >

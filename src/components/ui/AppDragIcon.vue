@@ -1,7 +1,7 @@
 <template>
   <div class="handle-container">
     <v-icon>
-      $drag
+      {{ icon }}
     </v-icon>
     <div
       class="handle"
@@ -17,7 +17,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class AppDraggable extends Vue {
-  @Prop({ type: String, default: 'ns-resize' })
+  @Prop({ type: String, default: '$drag' })
+  readonly icon?: string
+
+  @Prop({ type: String, default: 'grab' })
   readonly cursor?: string
 }
 </script>

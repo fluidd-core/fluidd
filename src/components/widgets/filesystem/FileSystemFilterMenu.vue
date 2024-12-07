@@ -20,8 +20,7 @@
           >
             <app-btn
               :disabled="disabled"
-              fab
-              small
+              icon
               text
               v-bind="attrs"
               v-on="{... menu, ...tooltip}"

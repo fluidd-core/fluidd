@@ -87,14 +87,14 @@
             >
               <v-icon
                 small
-                class="mr-1"
+                class="me-1"
               >
                 $tools
               </v-icon>
               {{ $t('app.tool.tooltip.tools') }}
               <v-icon
                 small
-                class="ml-1"
+                class="ms-1"
                 :class="{ 'rotate-180': value }"
               >
                 $chevronDown

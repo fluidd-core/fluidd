@@ -11,7 +11,10 @@
         <app-btn
           :disabled="!printerFile || printerFileLoaded"
           small
-          class="me-1 my-1"
+          class="my-1"
+          :class="{
+            'me-1': !fullscreen
+          }"
           @click="loadCurrent"
         >
           {{ $t('app.gcode.btn.load_current_file') }}

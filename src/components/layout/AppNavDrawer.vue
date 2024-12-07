@@ -28,7 +28,7 @@
         </div>
 
         <div
-          v-show="authenticated && socketConnected"
+          v-if="socketConnected && authenticated"
           class="nav-items"
         >
           <app-nav-item
@@ -114,7 +114,7 @@
         </div>
 
         <template
-          v-if="!isMobileViewport && canEditLayout"
+          v-if="socketConnected && authenticated && !isMobileViewport && canEditLayout"
           #append
         >
           <v-tooltip right>

@@ -73,7 +73,6 @@
         <v-switch
           v-model="enableKeyboardShortcuts"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -84,7 +83,6 @@
         <v-switch
           v-model="confirmOnEstop"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -95,7 +93,6 @@
         <v-switch
           v-model="showUploadAndPrint"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -119,7 +116,6 @@
         <v-switch
           v-model="confirmOnPowerDeviceChange"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -130,7 +126,6 @@
         <v-switch
           v-model="showSaveConfigAndRestart"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -142,7 +137,6 @@
           <v-switch
             v-model="confirmOnSaveConfigAndRestart"
             hide-details
-            class="mb-5"
             @click.native.stop
           />
         </app-setting>

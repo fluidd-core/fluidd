@@ -16,14 +16,14 @@
       >
         <v-icon
           small
-          class="mr-1"
+          class="me-1"
         >
           $fire
         </v-icon>
         {{ $t('app.general.btn.presets') }}
         <v-icon
           small
-          class="ml-1"
+          class="ms-1"
           :class="{ 'rotate-180': value }"
         >
           $chevronDown
