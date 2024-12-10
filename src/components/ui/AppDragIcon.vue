@@ -3,22 +3,15 @@
     <v-icon>
       $drag
     </v-icon>
-    <div
-      class="handle"
-      :style="{
-        cursor: cursor
-      }"
-    />
+    <div class="handle" />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class AppDraggable extends Vue {
-  @Prop({ type: String, default: 'ns-resize' })
-  readonly cursor?: string
 }
 </script>
 
@@ -40,5 +33,10 @@ export default class AppDraggable extends Vue {
     top: calc(50% - 24px);
     margin: 7px;
     border-radius: 50%;
+    cursor: grab;
+  }
+
+  .app-draggable__chosen .handle {
+    cursor: grabbing;
   }
 </style>

@@ -4,7 +4,7 @@
     dense
     icon="$warning"
     type="warning"
-    class="mb-0"
+    class="ma-0"
   >
     <template v-if="printerWarnings.length > 0">
       <div class="mb-2">

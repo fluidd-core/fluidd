@@ -9,14 +9,12 @@
     <template #menu>
       <app-btn
         v-if="!fullscreen"
-        color=""
-        fab
-        x-small
-        text
-        class="ms-1 my-1"
+        icon
         @click="$filters.routeTo({ name: 'tune' })"
       >
-        <v-icon>$fullScreen</v-icon>
+        <v-icon dense>
+          $fullScreen
+        </v-icon>
       </app-btn>
     </template>
 
@@ -57,6 +55,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { RunoutSensor } from '@/store/printer/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class RunoutSensorsCard extends Mixins(StateMixin) {
@@ -68,7 +67,7 @@ export default class RunoutSensorsCard extends Mixins(StateMixin) {
   }
 
   changeSensor (item: RunoutSensor, value: boolean) {
-    this.sendGcode(`SET_FILAMENT_SENSOR SENSOR=${item.name} ENABLE=${+value}`)
+    this.sendGcode(`SET_FILAMENT_SENSOR SENSOR=${encodeGcodeParamValue(item.name)} ENABLE=${+value}`)
   }
 }
 </script>

@@ -15,18 +15,17 @@
       bottom
     >
       <template #activator="{ on, attrs }">
-        <v-btn
+        <app-btn
           v-bind="attrs"
-          fab
+          icon
           text
-          small
           color="warning"
           v-on="on"
         >
           <v-icon color="warning">
             $error
           </v-icon>
-        </v-btn>
+        </app-btn>
       </template>
       <slot>
         <span>{{ $t('app.file_system.tooltip.low_on_space') }}</span>
@@ -38,18 +37,17 @@
       bottom
     >
       <template #activator="{ on, attrs }">
-        <v-btn
+        <app-btn
           v-bind="attrs"
-          fab
+          icon
           text
-          small
           color="error"
           v-on="on"
         >
           <v-icon color="error">
             $warning
           </v-icon>
-        </v-btn>
+        </app-btn>
       </template>
       <slot>
         <span>{{ $t('app.file_system.tooltip.root_disabled', { root }) }}</span>
@@ -73,8 +71,7 @@
           <v-btn
             v-bind="attrs"
             :disabled="disabled"
-            fab
-            small
+            icon
             text
             @click="$emit('go-to-file')"
             v-on="on"
@@ -108,8 +105,7 @@
           <v-btn
             v-bind="attrs"
             :disabled="disabled"
-            fab
-            small
+            icon
             text
             @click="$emit('refresh')"
             v-on="on"

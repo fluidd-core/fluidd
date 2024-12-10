@@ -8,7 +8,6 @@
       <v-switch
         v-model="parkhead"
         hide-details
-        class="mb-5"
         :disabled="parkheadBlocked"
         @click.native.stop
       />
@@ -111,7 +110,6 @@
         <v-switch
           v-model="firmwareRetract"
           hide-details
-          class="mb-5"
           :disabled="firmwareRetractBlocked"
           @click.native.stop
         />

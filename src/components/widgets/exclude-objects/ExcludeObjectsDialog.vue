@@ -23,14 +23,14 @@
             </td>
             <td class="actions">
               <app-btn
-                color=""
-                x-small
-                fab
-                text
+                icon
                 :disabled="isPartExcluded(name)"
                 @click="cancelObject(name)"
               >
-                <v-icon color="error">
+                <v-icon
+                  dense
+                  color="error"
+                >
                   $cancelled
                 </v-icon>
               </app-btn>
@@ -45,6 +45,7 @@
 <script lang="ts">
 import { Component, Mixins, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class ExcludeObjectDialog extends Mixins(StateMixin) {
@@ -73,7 +74,7 @@ export default class ExcludeObjectDialog extends Mixins(StateMixin) {
     if (result) {
       const reqId = name.toUpperCase().replace(/\s/g, '_')
 
-      this.sendGcode(`EXCLUDE_OBJECT NAME=${reqId}`)
+      this.sendGcode(`EXCLUDE_OBJECT NAME=${encodeGcodeParamValue(reqId)}`)
     }
   }
 }

@@ -35,7 +35,7 @@
           @keyup.enter.exact="handleSubmit(+currentValue)"
         >
           <template #prepend>
-            <v-btn
+            <app-btn
               v-if="locked && isMobileViewport"
               icon
               small
@@ -55,13 +55,12 @@
               >
                 $lockReset
               </v-icon>
-            </v-btn>
+            </app-btn>
 
             <app-btn
               v-if="resetValue !== undefined"
               :disabled="disabled || loading"
               style="margin-top: -4px;"
-              color=""
               icon
               small
               @click="handleReset"

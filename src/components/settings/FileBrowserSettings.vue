@@ -26,7 +26,6 @@
         <v-switch
           v-model="filesAndFoldersDragAndDrop"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>

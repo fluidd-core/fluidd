@@ -4,12 +4,10 @@
       <app-btn
         fab
         small
-        color=""
         class="mr-4"
-        exact
         @click="handleBack"
       >
-        <v-icon small>
+        <v-icon dense>
           $left
         </v-icon>
       </app-btn>
@@ -57,10 +55,7 @@
       <app-draggable
         v-model="macros"
         :options="{
-          animation: 200,
-          handle: '.handle',
           group: `macro-settings-${category.name}`,
-          ghostClass: 'ghost'
         }"
       >
         <section

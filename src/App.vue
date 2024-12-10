@@ -26,7 +26,7 @@
     />
 
     <v-btn
-      v-if="isMobileViewport && authenticated && socketConnected"
+      v-if="isMobileViewport && socketConnected && authenticated"
       x-small
       fab
       fixed
@@ -83,6 +83,9 @@
       <spool-selection-dialog />
       <action-command-prompt-dialog />
       <keyboard-shortcuts-dialog />
+      <manual-probe-dialog />
+      <bed-screws-adjust-dialog />
+      <screws-tilt-adjust-dialog />
     </v-main>
 
     <app-footer />
@@ -183,7 +186,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
   get pageTitle () {
     const instanceName: string = this.$store.state.config.uiSettings.general.instanceName || ''
-    const pageName = this.$route.name
+    const pageName = this.$t(`app.general.title.${this.$route.name}`)
 
     if (this.printerPrinting) {
       return `[${this.progress}%] | ${instanceName} | ${pageName}`

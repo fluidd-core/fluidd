@@ -89,4 +89,32 @@ export default class ToolheadMixin extends Vue {
   get hasScrewsTiltAdjustResults (): boolean {
     return this.$store.getters['printer/getHasScrewsTiltAdjustResults'] as boolean
   }
+
+  get manualProbeDialogOpen (): boolean {
+    return this.$store.state.printer.manualProbeDialogOpen
+  }
+
+  set manualProbeDialogOpen (value: boolean) {
+    this.$store.dispatch('printer/manualProbeDialogOpen', value)
+  }
+
+  get bedScrewsAdjustDialogOpen (): boolean {
+    return this.$store.state.printer.bedScrewsAdjustDialogOpen
+  }
+
+  set bedScrewsAdjustDialogOpen (value: boolean) {
+    this.$store.dispatch('printer/bedScrewsAdjustDialogOpen', value)
+  }
+
+  get screwsTiltAdjustDialogOpen (): boolean {
+    return this.$store.state.printer.screwsTiltAdjustDialogOpen
+  }
+
+  set screwsTiltAdjustDialogOpen (value: boolean) {
+    this.$store.dispatch('printer/screwsTiltAdjustDialogOpen', value)
+  }
+
+  get forceMoveEnabled (): boolean {
+    return this.$store.state.printer.forceMoveEnabled
+  }
 }

@@ -3,10 +3,7 @@
     <app-draggable
       v-model="jobs"
       :options="{
-        animation: '200',
-        handle: '.handle',
         group: 'jobQueue',
-        ghostClass: 'ghost',
       }"
       target="tbody"
     >
@@ -30,9 +27,7 @@
       >
         <template #[`item.data-table-select`]="{ isSelected, select }">
           <v-simple-checkbox
-            v-ripple
             :value="isSelected"
-            color=""
             class="mt-1"
             @click.stop="select(!isSelected)"
           />

@@ -6,7 +6,7 @@
         :loading="hasWait($waits.onPrintCancel)"
         :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
-        class="ms-1 my-1"
+        class="me-1 my-1"
         @click="cancelPrint"
       >
         <v-icon
@@ -28,7 +28,7 @@
       <app-btn
         v-if="!printerPrinting && !printerPaused && filename"
         small
-        class="ms-1 my-1"
+        class="me-1 my-1"
         @click="resetFile()"
       >
         <v-icon
@@ -43,7 +43,7 @@
       <app-btn
         v-if="!supportsHistoryComponent && !printerPrinting && !printerPaused && filename"
         small
-        class="ms-1 my-1"
+        class="me-1 my-1"
         @click="$emit('print', filename)"
       >
         <v-icon
@@ -64,15 +64,13 @@
         <app-btn
           v-bind="attrs"
           :disabled="!hasParts"
-          color=""
-          fab
-          x-small
-          text
-          class="ms-1 my-1"
+          icon
           v-on="on"
           @click="showExcludeObjectDialog = true"
         >
-          <v-icon>$listStatus</v-icon>
+          <v-icon dense>
+            $listStatus
+          </v-icon>
         </app-btn>
       </template>
       <span>{{ $t('app.gcode.label.exclude_object') }}</span>

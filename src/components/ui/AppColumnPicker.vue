@@ -10,9 +10,8 @@
     <template #activator="{ on: menu, attrs }">
       <v-tooltip bottom>
         <template #activator="{ on: tooltip }">
-          <v-btn
-            fab
-            small
+          <app-btn
+            icon
             text
             v-bind="attrs"
             v-on="{ ...tooltip, ...menu }"
@@ -20,7 +19,7 @@
             <v-icon>
               $tableColumn
             </v-icon>
-          </v-btn>
+          </app-btn>
         </template>
         <span>{{ $t('app.general.btn.select_columns') }}</span>
       </v-tooltip>
@@ -33,10 +32,7 @@
       <app-draggable
         v-model="configurableHeaders"
         :options="{
-          animation: '200',
-          handle: '.handle',
           group: 'columnPicker',
-          ghostClass: 'ghost',
         }"
       >
         <template v-for="header in configurableHeaders">

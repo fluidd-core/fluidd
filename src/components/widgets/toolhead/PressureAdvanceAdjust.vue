@@ -46,6 +46,7 @@ import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import BrowserMixin from '@/mixins/browser'
 import type { ExtruderStepper } from '@/store/printer/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class PressureAdvanceAdjust extends Mixins(StateMixin, ToolheadMixin, BrowserMixin) {
@@ -67,7 +68,7 @@ export default class PressureAdvanceAdjust extends Mixins(StateMixin, ToolheadMi
   sendSetPressureAdvance (arg: string, val: number) {
     if (this.extruderStepper) {
       const { name } = this.extruderStepper
-      this.sendGcode(`SET_PRESSURE_ADVANCE ${arg}=${val} EXTRUDER=${name}`, `${this.$waits.onSetPressureAdvance}${name}`)
+      this.sendGcode(`SET_PRESSURE_ADVANCE ${arg}=${val} EXTRUDER=${encodeGcodeParamValue(name)}`, `${this.$waits.onSetPressureAdvance}${name}`)
     } else {
       this.sendGcode(`SET_PRESSURE_ADVANCE ${arg}=${val}`, this.$waits.onSetPressureAdvance)
     }

@@ -46,9 +46,7 @@
           <template #[`item.data-table-select`]>
             <v-simple-checkbox
               v-if="item.name !== '..'"
-              v-ripple
               :value="isSelected"
-              color=""
               class="mt-1"
               @click.stop="select(!isSelected)"
             />

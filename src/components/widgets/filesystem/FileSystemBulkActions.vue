@@ -15,10 +15,9 @@
       bottom
     >
       <template #activator="{ on, attrs }">
-        <v-btn
+        <app-btn
           v-bind="attrs"
-          fab
-          small
+          icon
           text
           v-on="on"
           @click="$emit('enqueue')"
@@ -26,17 +25,16 @@
           <v-icon>
             $enqueueJob
           </v-icon>
-        </v-btn>
+        </app-btn>
       </template>
       <span>{{ $t('app.general.btn.add_to_queue') }}</span>
     </v-tooltip>
 
     <v-tooltip bottom>
       <template #activator="{ on, attrs }">
-        <v-btn
+        <app-btn
           v-bind="attrs"
-          fab
-          small
+          icon
           text
           v-on="on"
           @click="$emit('create-zip')"
@@ -44,17 +42,16 @@
           <v-icon>
             $fileZipAdd
           </v-icon>
-        </v-btn>
+        </app-btn>
       </template>
       <span>{{ $t('app.general.btn.create_zip_archive') }}</span>
     </v-tooltip>
 
     <v-tooltip bottom>
       <template #activator="{ on, attrs }">
-        <v-btn
+        <app-btn
           v-bind="attrs"
-          fab
-          small
+          icon
           text
           v-on="on"
           @click="$emit('remove')"
@@ -62,7 +59,7 @@
           <v-icon>
             $delete
           </v-icon>
-        </v-btn>
+        </app-btn>
       </template>
       <span>{{ $t('app.general.btn.delete') }}</span>
     </v-tooltip>

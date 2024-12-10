@@ -56,7 +56,6 @@
         <v-switch
           v-model="isDark"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -67,7 +66,6 @@
         <v-switch
           v-model="backgroundLogo"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>

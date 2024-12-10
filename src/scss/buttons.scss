@@ -18,3 +18,8 @@ button .v-icon {
     border-right: 0 !important;
   }
 }
+
+.v-toolbar__content .v-btn.v-btn--icon.v-size--default {
+  width: 40px !important;
+  height: 40px !important;
+}

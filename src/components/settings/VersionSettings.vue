@@ -49,7 +49,6 @@
         <v-switch
           v-model="enableNotifications"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>

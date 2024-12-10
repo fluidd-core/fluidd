@@ -5,14 +5,12 @@
   >
     <template #menu>
       <app-btn
-        color=""
-        fab
-        x-small
-        text
-        class="ms-1 my-1"
+        icon
         @click="showMcuInformationDialog"
       >
-        <v-icon>$viewHeadline</v-icon>
+        <v-icon dense>
+          $viewHeadline
+        </v-icon>
       </app-btn>
     </template>
 

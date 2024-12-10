@@ -17,11 +17,8 @@
     <div class="toolbar-title">
       <app-btn
         v-if="isMobileViewport"
-        fab
-        small
-        :elevation="0"
-        class="mx-1"
-        color="transparent"
+        icon
+        text
         @click="$emit('navdrawer')"
       >
         <v-icon>$menuAlt</v-icon>
@@ -38,10 +35,7 @@
     <!-- <v-spacer /> -->
 
     <div class="toolbar-supplemental">
-      <div
-        v-if="socketConnected && klippyReady && authenticated && showSaveConfigAndRestartForPendingChanges"
-        class="mr-1"
-      >
+      <div v-if="socketConnected && authenticated && klippyReady && showSaveConfigAndRestartForPendingChanges">
         <app-save-config-and-restart-btn
           :loading="hasWait($waits.onSaveConfig)"
           :disabled="printerPrinting || printerPaused"
@@ -49,7 +43,7 @@
         />
       </div>
 
-      <div v-if="socketConnected && !isMobileViewport && authenticated">
+      <div v-if="socketConnected && authenticated && !isMobileViewport">
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
@@ -75,22 +69,19 @@
         </v-tooltip>
       </div>
 
-      <div v-if="authenticated && socketConnected && showUploadAndPrint">
+      <div v-if="socketConnected && authenticated && showUploadAndPrint">
         <app-upload-and-print-btn
           :disabled="printerPrinting || printerPaused || !klippyReady"
           @upload="handleUploadAndPrint"
         />
       </div>
 
-      <div v-if="authenticated && socketConnected && topNavPowerToggle">
+      <div v-if="socketConnected && authenticated && topNavPowerToggle">
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
-              fab
-              small
-              :elevation="0"
-              class="mr-1 bg-transparent"
-              color="transparent"
+              icon
+              text
               :disabled="topNavPowerDeviceDisabled"
               v-bind="attrs"
               v-on="on"
@@ -105,26 +96,17 @@
         </v-tooltip>
       </div>
 
-      <div
-        v-if="authenticated && socketConnected"
-        class="mr-1"
-      >
+      <div v-if="socketConnected && authenticated">
         <app-notification-menu />
       </div>
 
-      <div
-        v-if="supportsAuth && authenticated"
-        class="mr-1"
-      >
+      <div v-if="socketConnected && authenticated && supportsAuth">
         <app-user-menu @change-password="userPasswordDialogOpen = true" />
       </div>
 
       <app-btn
-        fab
-        small
-        :elevation="0"
-        class="mr-1"
-        color="transparent"
+        icon
+        text
         @click="$emit('toolsdrawer')"
       >
         <v-icon>$menu</v-icon>
@@ -202,6 +184,7 @@ import BrowserMixin from '@/mixins/browser'
 import { SocketActions } from '@/api/socketActions'
 import type { OutputPin } from '@/store/printer/types'
 import type { Device } from '@/store/power/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
   components: {
@@ -408,7 +391,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
         case 'klipper': {
           const value = (device.value !== 0) ? 0 : device.scale
-          this.sendGcode(`SET_PIN PIN=${device.name} VALUE=${value}`, `${this.$waits.onSetOutputPin}${device.name}`)
+          this.sendGcode(`SET_PIN PIN=${encodeGcodeParamValue(device.name)} VALUE=${value}`, `${this.$waits.onSetOutputPin}${device.name}`)
           break
         }
       }

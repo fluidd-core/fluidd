@@ -76,7 +76,6 @@
           </app-btn>
 
           <app-btn
-            color=""
             plain
             class="custom-transform-class text-none"
             :href="$globals.DOCS_AUTH_LOST_PASSWORD"
@@ -86,7 +85,6 @@
           </app-btn>
 
           <app-btn
-            color=""
             plain
             class="custom-transform-class text-none"
             :href="$globals.DOCS_AUTH"

@@ -122,6 +122,10 @@ export default class AppDraggable extends Vue {
     targetElement[instanceKey] = this
 
     const options: Sortable.Options = {
+      animation: 200,
+      handle: '.handle',
+      ghostClass: 'app-draggable__ghost',
+      chosenClass: 'app-draggable__chosen',
       ...this.options,
       onStart: this.handleStart,
       onAdd: this.handleAdd,

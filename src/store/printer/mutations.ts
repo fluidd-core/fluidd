@@ -13,6 +13,22 @@ export const mutations: MutationTree<PrinterState> = {
     Object.assign(state, defaultState())
   },
 
+  setManualProbeDialogOpen (state, payload: boolean) {
+    state.manualProbeDialogOpen = payload
+  },
+
+  setBedScrewsAdjustDialogOpen (state, payload: boolean) {
+    state.bedScrewsAdjustDialogOpen = payload
+  },
+
+  setScrewsTiltAdjustDialogOpen (state, payload: boolean) {
+    state.screwsTiltAdjustDialogOpen = payload
+  },
+
+  setForceMoveEnabled (state, payload: boolean) {
+    state.forceMoveEnabled = payload
+  },
+
   setPrinterInfo (state, payload) {
     state.info = payload
   },

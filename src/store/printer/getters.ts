@@ -816,26 +816,28 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const config = getters.getPrinterSettings('bed_screws')
     const screws: BedScrews[] = []
 
-    for (let index = 1; index <= 99; index++) {
-      const key = `screw${index}`
-      const coords = config[key]
+    if (config) {
+      for (let index = 1; index <= 99; index++) {
+        const key = `screw${index}`
+        const coords = config[key]
 
-      if (!coords) {
-        break
+        if (!coords) {
+          break
+        }
+
+        const fine = config[`screw${index}_fine_adjust`]
+        const name = config[`screw${index}_name`]
+        const prettyName = Vue.$filters.prettyCase(name || i18n.t('app.general.label.screw_number', { index: index + 1 }))
+
+        screws.push({
+          key,
+          name,
+          prettyName,
+          fine,
+          x: coords[0],
+          y: coords[1]
+        })
       }
-
-      const fine = config[`screw${index}_fine_adjust`]
-      const name = config[`screw${index}_name`]
-      const prettyName = Vue.$filters.prettyCase(name || i18n.t('app.general.label.screw_number', { index: index + 1 }))
-
-      screws.push({
-        key,
-        name,
-        prettyName,
-        fine,
-        x: coords[0],
-        y: coords[1]
-      })
     }
 
     return screws

@@ -11,7 +11,10 @@
         <app-btn
           :disabled="!printerFile || printerFileLoaded"
           small
-          class="ms-1 my-1"
+          class="my-1"
+          :class="{
+            'me-1': !fullscreen
+          }"
           @click="loadCurrent"
         >
           {{ $t('app.gcode.btn.load_current_file') }}
@@ -19,14 +22,12 @@
 
         <app-btn
           v-if="!fullscreen"
-          color=""
-          fab
-          x-small
-          text
-          class="ms-1 my-1"
-          @click="$filters.routeTo({ name: 'preview' })"
+          icon
+          @click="$filters.routeTo({ name: 'gcode_preview' })"
         >
-          <v-icon>$fullScreen</v-icon>
+          <v-icon dense>
+            $fullScreen
+          </v-icon>
         </app-btn>
       </app-btn-collapse-group>
     </template>
@@ -149,6 +150,7 @@ import type { AppFile } from '@/store/files/types'
 import type { MinMax } from '@/store/gcodePreview/types'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
 import consola from 'consola'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
   components: {
@@ -398,7 +400,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     if (result) {
       const reqId = id.toUpperCase().replace(/\s/g, '_')
 
-      this.sendGcode(`EXCLUDE_OBJECT NAME=${reqId}`)
+      this.sendGcode(`EXCLUDE_OBJECT NAME=${encodeGcodeParamValue(reqId)}`)
     }
   }
 

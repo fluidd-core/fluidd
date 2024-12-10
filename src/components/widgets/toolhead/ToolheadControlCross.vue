@@ -198,10 +198,6 @@ type Axis = 'X' | 'Y' | 'Z'
 export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMixin) {
   moveLength: number | null = null
 
-  get forceMove (): boolean {
-    return this.$store.state.config.uiSettings.toolhead.forceMove
-  }
-
   get hasRoundBed (): boolean {
     return this.$store.getters['printer/getHasRoundBed'] as boolean
   }
@@ -231,13 +227,13 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
   }
 
   axisButtonColor (axisHomed: boolean): string | undefined {
-    if (this.forceMove) return 'error'
+    if (this.forceMoveEnabled) return 'error'
 
     return axisHomed ? 'primary' : undefined
   }
 
   axisButtonDisabled (axisHomed: boolean, axisMultipleSteppers: boolean): boolean {
-    return !this.klippyReady || (!axisHomed && !(this.forceMove && !axisMultipleSteppers))
+    return !this.klippyReady || (!axisHomed && !(this.forceMoveEnabled && !axisMultipleSteppers))
   }
 
   /**
@@ -252,7 +248,7 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
       ? -distance
       : distance
 
-    if (this.forceMove) {
+    if (this.forceMoveEnabled) {
       const accel = axis === 'Z'
         ? this.$store.getters['printer/getPrinterSettings']('printer.max_z_accel')
         : this.$store.state.printer.printer.toolhead.max_accel

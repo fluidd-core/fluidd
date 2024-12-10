@@ -12,8 +12,8 @@
         <v-expansion-panel-header>
           <template #actions>
             <v-icon
-              small
-              class="mr-2"
+              dense
+              class="mr-1"
             >
               $expand
             </v-icon>
@@ -28,10 +28,7 @@
             </v-chip>
             <app-btn
               icon
-              text
-              small
-              color=""
-              class="ml-2"
+              class="ml-1"
               @click.prevent.stop="handleEditCategory(category)"
             >
               <v-icon small>
@@ -98,7 +95,7 @@ export default class Macros extends Mixins(StateMixin) {
   handleEditCategory (category: MacroCategory) {
     const categoryId = category.id ?? '0'
     this.$router.push({
-      name: 'settings_macro_category',
+      name: 'macro_category_settings',
       params: {
         categoryId
       }

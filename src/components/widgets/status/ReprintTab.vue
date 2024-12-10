@@ -72,11 +72,12 @@
           >
             <div>
               <app-btn
-                color=""
                 icon
                 @click="$emit('print', item.filename)"
               >
-                <v-icon>$printer</v-icon>
+                <v-icon dense>
+                  $printer
+                </v-icon>
               </app-btn>
             </div>
           </td>

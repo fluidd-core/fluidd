@@ -22,7 +22,6 @@
           v-if="!$vuetify.breakpoint.smAndDown"
           icon
           :disabled="!ready"
-          color=""
           @click="emitClose()"
         >
           <v-icon>$close</v-icon>

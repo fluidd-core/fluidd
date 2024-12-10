@@ -55,18 +55,15 @@
               cols="auto"
               align-self="center"
             >
-              <v-btn
-                fab
-                text
-                x-small
-                class="ml-1"
+              <app-btn
+                icon
                 :disabled="closeButtonDisabled"
                 @click="open = false"
               >
-                <v-icon>
+                <v-icon dense>
                   $close
                 </v-icon>
-              </v-btn>
+              </app-btn>
             </v-col>
           </v-row>
         </v-card-title>

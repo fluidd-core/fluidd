@@ -22,6 +22,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { Stepper } from '@/store/printer/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class ToolheadControlBarsStepper extends Mixins(StateMixin) {
@@ -49,7 +50,7 @@ export default class ToolheadControlBarsStepper extends Mixins(StateMixin) {
   }
 
   sendForceMoveGcode (distance: number) {
-    this.sendGcode(`FORCE_MOVE STEPPER="${this.stepper.key}" DISTANCE=${distance} VELOCITY=${this.rate} ACCEL=${this.accel}`)
+    this.sendGcode(`FORCE_MOVE STEPPER=${encodeGcodeParamValue(this.stepper.key)} DISTANCE=${distance} VELOCITY=${this.rate} ACCEL=${this.accel}`)
   }
 }
 </script>

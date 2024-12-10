@@ -235,6 +235,9 @@ export const Globals = Object.freeze({
       klipper: {
         domain: 'https://www.klipper3d.org'
       },
+      kalico: {
+        domain: 'https://docs.kalico.gg'
+      },
       'danger-klipper': {
         domain: 'https://dangerklipper.io'
       }
@@ -250,7 +253,7 @@ export const Globals = Object.freeze({
   KEYBOARD_SHORTCUTS: {
     home: 'h',
     console: 'c',
-    preview: 'p',
+    gcode_preview: 'p',
     jobs: 'j',
     history: 'i',
     timelapse: 'l',

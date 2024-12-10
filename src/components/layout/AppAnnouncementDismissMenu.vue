@@ -14,39 +14,36 @@
       >
         <v-icon
           x-small
-          class="mr-1"
+          class="me-1"
         >
           $snooze
         </v-icon>
         {{ $t('app.general.btn.snooze') }}
         <v-icon
           x-small
-          class="ml-1"
+          class="ms-1"
           :class="{ 'rotate-180': value }"
         >
           $chevronDown
         </v-icon>
       </app-btn>
     </template>
-    <v-list
-      dense
-    >
+    <v-list dense>
       <v-list-item
         v-for="(preset) of presets"
         :key="preset.delay"
-        link
-        dense
         @click="$emit('dismiss', preset.delay)"
       >
-        <v-list-item-title>
-          <v-icon
-            small
-            left
-          >
+        <v-list-item-icon>
+          <v-icon>
             $clock
           </v-icon>
-          {{ preset.label }}
-        </v-list-item-title>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ preset.label }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
     </v-list>
   </v-menu>

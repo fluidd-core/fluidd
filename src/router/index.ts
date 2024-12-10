@@ -45,7 +45,11 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'home',
     component: Dashboard,
-    ...defaultRouteConfig
+    ...defaultRouteConfig,
+    meta: {
+      ...defaultRouteConfig.meta,
+      dashboard: true
+    }
   },
   {
     path: '/console',
@@ -69,7 +73,11 @@ const routes: Array<RouteConfig> = [
     path: '/diagnostics',
     name: 'diagnostics',
     component: Diagnostics,
-    ...defaultRouteConfig
+    ...defaultRouteConfig,
+    meta: {
+      ...defaultRouteConfig.meta,
+      dashboard: true
+    }
   },
   {
     path: '/timelapse',
@@ -113,7 +121,7 @@ const routes: Array<RouteConfig> = [
     children: [
       {
         path: 'macros/:categoryId',
-        name: 'settings_macro_category',
+        name: 'macro_category_settings',
         meta: {
           hasSubNavigation: true
         },
@@ -132,7 +140,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/preview',
-    name: 'preview',
+    name: 'gcode_preview',
     component: GcodePreview,
     ...defaultRouteConfig
   },
@@ -181,6 +189,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   router.app?.$store.commit('config/setContainerColumnCount', 2)
+  router.app?.$store.commit('config/setLayoutMode', false)
   next()
 })
 

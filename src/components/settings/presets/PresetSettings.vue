@@ -45,27 +45,19 @@
           </template>
 
           <app-btn
-            fab
-            text
-            x-small
-            color=""
-            class="ms-1"
+            icon
             @click.stop="openEditDialog(preset)"
           >
-            <v-icon color="">
+            <v-icon dense>
               $edit
             </v-icon>
           </app-btn>
 
           <app-btn
-            fab
-            text
-            x-small
-            color=""
-            class="ms-1"
+            icon
             @click.stop="handleRemovePreset(preset)"
           >
-            <v-icon color="">
+            <v-icon dense>
               $delete
             </v-icon>
           </app-btn>

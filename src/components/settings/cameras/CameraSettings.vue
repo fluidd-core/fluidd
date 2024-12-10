@@ -45,28 +45,20 @@
           </template>
 
           <app-btn
-            fab
-            text
-            x-small
-            color=""
-            class="ms-1"
+            icon
             @click.stop="handleEditDialog(camera)"
           >
-            <v-icon color="">
+            <v-icon dense>
               $edit
             </v-icon>
           </app-btn>
 
           <app-btn
             :disabled="camera.source === 'config'"
-            fab
-            text
-            x-small
-            color=""
-            class="ms-1"
+            icon
             @click.stop="handleRemoveCamera(camera)"
           >
-            <v-icon color="">
+            <v-icon dense>
               $delete
             </v-icon>
           </app-btn>

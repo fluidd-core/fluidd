@@ -807,7 +807,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         this.$router.currentRoute.name !== 'home' ||
         !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')
       ) {
-        this.$router.push({ name: 'preview' })
+        this.$router.push({ name: 'gcode_preview' })
       }
 
       this.$store.dispatch('gcodePreview/loadGcode', {

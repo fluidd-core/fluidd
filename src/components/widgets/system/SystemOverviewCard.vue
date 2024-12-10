@@ -8,15 +8,13 @@
         <template #activator="{ on, attrs }">
           <app-btn
             v-bind="attrs"
-            color=""
-            fab
-            x-small
-            text
-            class="ms-1 my-1"
+            icon
             v-on="on"
             @click="peripheralsDialogOpen = true"
           >
-            <v-icon>$devices</v-icon>
+            <v-icon dense>
+              $devices
+            </v-icon>
           </app-btn>
         </template>
         <span>{{ $t('app.system_info.label.devices') }}</span>
@@ -29,16 +27,14 @@
         <template #activator="{ on, attrs }">
           <app-btn
             v-bind="attrs"
-            color=""
-            fab
-            x-small
-            text
-            class="ms-1 my-1"
+            icon
             :disabled="printerBusy"
             v-on="on"
             @click="rolloverLogsDialogOpen = true"
           >
-            <v-icon>$fileRefresh</v-icon>
+            <v-icon dense>
+              $fileRefresh
+            </v-icon>
           </app-btn>
         </template>
         <span>{{ $t('app.general.tooltip.rollover_logs') }}</span>

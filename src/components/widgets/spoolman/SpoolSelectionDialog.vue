@@ -17,7 +17,7 @@
           <app-btn
             v-bind="attrs"
             small
-            class="ms-1 my-1"
+            class="me-1 my-1"
             v-on="on"
           >
             <v-icon
@@ -59,7 +59,7 @@
       <app-btn
         v-else-if="availableCameras.length"
         small
-        class="ms-1 my-1"
+        class="me-1 my-1"
         @click="cameraScanSource = availableCameras[0].uid"
       >
         <v-icon

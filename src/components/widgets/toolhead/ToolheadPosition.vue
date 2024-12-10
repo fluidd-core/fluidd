@@ -10,7 +10,7 @@
         class="pr-1"
       >
         <app-text-field
-          :color="(forceMove) ? 'error' : 'primary'"
+          :color="forceMoveEnabled ? 'error' : 'primary'"
           :label="`X [ ${livePosition[0].toFixed(2)} ]`"
           :rules="[
             $rules.required,
@@ -33,7 +33,7 @@
         class="pr-1 pl-1"
       >
         <app-text-field
-          :color="(forceMove) ? 'error' : 'primary'"
+          :color="forceMoveEnabled ? 'error' : 'primary'"
           :label="`Y [ ${livePosition[1].toFixed(2)} ]`"
           :rules="[
             $rules.required,
@@ -56,7 +56,7 @@
         class="pr-1 pl-1"
       >
         <app-text-field
-          :color="(forceMove) ? 'error' : 'primary'"
+          :color="forceMoveEnabled ? 'error' : 'primary'"
           :label="`Z [ ${livePosition[2].toFixed(3)} ]`"
           :rules="[
             $rules.required,
@@ -151,20 +151,16 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
     return this.$store.state.config.uiSettings.general.useGcodeCoords
   }
 
-  get forceMove (): boolean {
-    return this.$store.state.config.uiSettings.toolhead.forceMove
-  }
-
   get xForceMove () {
-    return this.forceMove && !this.xHasMultipleSteppers
+    return this.forceMoveEnabled && !this.xHasMultipleSteppers
   }
 
   get yForceMove () {
-    return this.forceMove && !this.yHasMultipleSteppers
+    return this.forceMoveEnabled && !this.yHasMultipleSteppers
   }
 
   get zForceMove () {
-    return this.forceMove && !this.zHasMultipleSteppers
+    return this.forceMoveEnabled && !this.zHasMultipleSteppers
   }
 
   get usesAbsolutePositioning () {
@@ -190,7 +186,7 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
         ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
         : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
 
-      if (this.forceMove) {
+      if (this.forceMoveEnabled) {
         const accel = axis === 'Z'
           ? this.$store.getters['printer/getPrinterSettings']('printer.max_z_accel')
           : this.$store.state.printer.printer.toolhead.max_accel

@@ -1,7 +1,7 @@
 <template>
   <app-btn-group
     divided
-    class="ms-1 my-1"
+    class="me-1 my-1"
   >
     <app-btn
       v-if="!printerPaused"

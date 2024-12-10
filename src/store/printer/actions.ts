@@ -21,6 +21,22 @@ export const actions: ActionTree<PrinterState, RootState> = {
     commit('setReset')
   },
 
+  async manualProbeDialogOpen ({ commit }, payload: boolean) {
+    commit('setManualProbeDialogOpen', payload)
+  },
+
+  async bedScrewsAdjustDialogOpen ({ commit }, payload: boolean) {
+    commit('setBedScrewsAdjustDialogOpen', payload)
+  },
+
+  async screwsTiltAdjustDialogOpen ({ commit }, payload: boolean) {
+    commit('setScrewsTiltAdjustDialogOpen', payload)
+  },
+
+  async forceMoveEnabled ({ commit }, payload: boolean) {
+    commit('setForceMoveEnabled', payload)
+  },
+
   async checkKlipperMinVersion ({ state, dispatch }) {
     const klipperVersion = state.info.software_version ?? '?'
 

@@ -8,13 +8,12 @@
   >
     <template #menu>
       <app-btn
-        color=""
-        fab
-        x-small
-        text
+        icon
         @click="$filters.routeTo({ name: 'jobs' })"
       >
-        <v-icon>$fullScreen</v-icon>
+        <v-icon dense>
+          $fullScreen
+        </v-icon>
       </app-btn>
     </template>
 

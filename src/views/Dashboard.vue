@@ -13,11 +13,8 @@
           v-model="containers[containerIndex]"
           class="list-group"
           :options="{
-            animation: 200,
-            handle: '.handle',
             group: 'dashboard',
             disabled: !inLayout,
-            ghostClass: 'ghost'
           }"
           target=":first-child"
           @end="handleUpdateLayout"

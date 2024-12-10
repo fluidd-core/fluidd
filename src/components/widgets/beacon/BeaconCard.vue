@@ -9,14 +9,12 @@
     <template #menu>
       <app-btn
         v-if="!fullscreen"
-        color=""
-        fab
-        x-small
-        text
-        class="ms-1 my-1"
+        icon
         @click="$filters.routeTo({ name: 'tune' })"
       >
-        <v-icon>$fullScreen</v-icon>
+        <v-icon dense>
+          $fullScreen
+        </v-icon>
       </app-btn>
     </template>
 
@@ -57,14 +55,13 @@
                 <template #activator="{ on, attrs }">
                   <app-btn
                     v-bind="attrs"
-                    x-small
-                    color=""
-                    fab
-                    text
+                    icon
                     @click="loadModel(item.name)"
                     v-on="on"
                   >
-                    <v-icon>$open</v-icon>
+                    <v-icon dense>
+                      $open
+                    </v-icon>
                   </app-btn>
                 </template>
                 <span>{{ $t('app.beacon.tooltip.load') }}</span>
@@ -74,15 +71,11 @@
                 <template #activator="{ on, attrs }">
                   <app-btn
                     v-bind="attrs"
-                    color=""
-                    class="ml-2"
-                    fab
-                    text
-                    x-small
+                    icon
                     @click="removeModel(item.name)"
                     v-on="on"
                   >
-                    <v-icon color="">
+                    <v-icon dense>
                       $close
                     </v-icon>
                   </app-btn>
@@ -147,6 +140,7 @@ import SaveModelDialog from './SaveModelDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { BeaconModel, BeaconState } from '@/store/printer/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
   components: {
@@ -180,12 +174,12 @@ export default class BeaconCard extends Mixins(StateMixin, ToolheadMixin) {
     )
 
     if (result) {
-      this.sendGcode(`BEACON_MODEL_SELECT NAME="${name}"`)
+      this.sendGcode(`BEACON_MODEL_SELECT NAME=${encodeGcodeParamValue(name)}`)
     }
   }
 
   removeModel (name: string) {
-    this.sendGcode(`BEACON_MODEL_REMOVE NAME="${name}"`)
+    this.sendGcode(`BEACON_MODEL_REMOVE NAME=${encodeGcodeParamValue(name)}`)
   }
 
   calibrate () {
@@ -201,10 +195,10 @@ export default class BeaconCard extends Mixins(StateMixin, ToolheadMixin) {
 
   handleModelSave (config: { name: string; removeDefault: boolean }) {
     if (config.name !== this.beacon.model) {
-      this.sendGcode(`BEACON_MODEL_SAVE NAME="${config.name}"`)
+      this.sendGcode(`BEACON_MODEL_SAVE NAME=${encodeGcodeParamValue(config.name)}`)
     }
-    if (config.removeDefault) {
-      this.sendGcode(`BEACON_MODEL_REMOVE NAME="${this.beacon.model}"`)
+    if (config.removeDefault && this.beacon.model) {
+      this.sendGcode(`BEACON_MODEL_REMOVE NAME=${encodeGcodeParamValue(this.beacon.model)}`)
     }
   }
 }

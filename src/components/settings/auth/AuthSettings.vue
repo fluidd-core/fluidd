@@ -61,14 +61,10 @@
 
           <app-btn
             :disabled="user.username === currentUser || user.source !== 'moonraker'"
-            fab
-            text
-            x-small
-            color=""
-            class="ms-1"
+            icon
             @click.stop="handleRemoveUser(user)"
           >
-            <v-icon color="">
+            <v-icon dense>
               $delete
             </v-icon>
           </app-btn>

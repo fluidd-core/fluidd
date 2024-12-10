@@ -1,5 +1,9 @@
 export interface PrinterState {
   info: PrinterInfo;
+  manualProbeDialogOpen: boolean;
+  bedScrewsAdjustDialogOpen: boolean;
+  screwsTiltAdjustDialogOpen: boolean;
+  forceMoveEnabled: boolean;
   printer: Record<string, any>;
 }
 
