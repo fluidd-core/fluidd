@@ -55,6 +55,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { RunoutSensor } from '@/store/printer/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class RunoutSensorsCard extends Mixins(StateMixin) {
@@ -66,7 +67,7 @@ export default class RunoutSensorsCard extends Mixins(StateMixin) {
   }
 
   changeSensor (item: RunoutSensor, value: boolean) {
-    this.sendGcode(`SET_FILAMENT_SENSOR SENSOR=${item.name} ENABLE=${+value}`)
+    this.sendGcode(`SET_FILAMENT_SENSOR SENSOR=${encodeGcodeParamValue(item.name)} ENABLE=${+value}`)
   }
 }
 </script>

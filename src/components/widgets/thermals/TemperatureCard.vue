@@ -118,6 +118,7 @@ import TemperatureTargets from '@/components/widgets/thermals/TemperatureTargets
 import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
 import type { TemperaturePreset } from '@/store/config/types'
 import type { ChartSelectedLegends } from '@/store/charts/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
   components: {
@@ -214,10 +215,10 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
         for (const key in preset.values) {
           const item = preset.values[key]
           if (item.type === 'heater' && item.active && item.value > -1) {
-            this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${key} TARGET=${item.value}`)
+            this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${encodeGcodeParamValue(key)} TARGET=${item.value}`)
           }
           if (item.type === 'fan' && item.active && item.value > -1) {
-            this.sendGcode(`SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${key} TARGET=${item.value}`)
+            this.sendGcode(`SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${encodeGcodeParamValue(key)} TARGET=${item.value}`)
           }
         }
       }

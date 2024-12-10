@@ -140,6 +140,7 @@ import SaveModelDialog from './SaveModelDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { BeaconModel, BeaconState } from '@/store/printer/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
   components: {
@@ -173,12 +174,12 @@ export default class BeaconCard extends Mixins(StateMixin, ToolheadMixin) {
     )
 
     if (result) {
-      this.sendGcode(`BEACON_MODEL_SELECT NAME="${name}"`)
+      this.sendGcode(`BEACON_MODEL_SELECT NAME=${encodeGcodeParamValue(name)}`)
     }
   }
 
   removeModel (name: string) {
-    this.sendGcode(`BEACON_MODEL_REMOVE NAME="${name}"`)
+    this.sendGcode(`BEACON_MODEL_REMOVE NAME=${encodeGcodeParamValue(name)}`)
   }
 
   calibrate () {
@@ -194,10 +195,10 @@ export default class BeaconCard extends Mixins(StateMixin, ToolheadMixin) {
 
   handleModelSave (config: { name: string; removeDefault: boolean }) {
     if (config.name !== this.beacon.model) {
-      this.sendGcode(`BEACON_MODEL_SAVE NAME="${config.name}"`)
+      this.sendGcode(`BEACON_MODEL_SAVE NAME=${encodeGcodeParamValue(config.name)}`)
     }
-    if (config.removeDefault) {
-      this.sendGcode(`BEACON_MODEL_REMOVE NAME="${this.beacon.model}"`)
+    if (config.removeDefault && this.beacon.model) {
+      this.sendGcode(`BEACON_MODEL_REMOVE NAME=${encodeGcodeParamValue(this.beacon.model)}`)
     }
   }
 }

@@ -43,6 +43,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import type { Fan } from '@/store/printer/types'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class OutputFan extends Mixins(StateMixin, BrowserMixin) {
@@ -69,7 +70,7 @@ export default class OutputFan extends Mixins(StateMixin, BrowserMixin) {
     }
     if (this.fan.type === 'fan_generic') {
       target = target / 100
-      this.sendGcode(`SET_FAN_SPEED FAN=${this.fan.name} SPEED=${target}`, `${this.$waits.onSetFanSpeed}${this.fan.name}`)
+      this.sendGcode(`SET_FAN_SPEED FAN=${encodeGcodeParamValue(this.fan.name)} SPEED=${target}`, `${this.$waits.onSetFanSpeed}${this.fan.name}`)
     }
   }
 

@@ -184,6 +184,7 @@ import BrowserMixin from '@/mixins/browser'
 import { SocketActions } from '@/api/socketActions'
 import type { OutputPin } from '@/store/printer/types'
 import type { Device } from '@/store/power/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
   components: {
@@ -390,7 +391,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
         case 'klipper': {
           const value = (device.value !== 0) ? 0 : device.scale
-          this.sendGcode(`SET_PIN PIN=${device.name} VALUE=${value}`, `${this.$waits.onSetOutputPin}${device.name}`)
+          this.sendGcode(`SET_PIN PIN=${encodeGcodeParamValue(device.name)} VALUE=${value}`, `${this.$waits.onSetOutputPin}${device.name}`)
           break
         }
       }

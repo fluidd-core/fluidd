@@ -1,4 +1,4 @@
-import { gcodeCommandBuilder } from '../gcode-command-builder'
+import { gcodeCommandBuilder } from '../gcode-helpers'
 
 describe('gcodeCommandBuilder', () => {
   it.each([

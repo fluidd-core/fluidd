@@ -29,6 +29,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { IroColor } from '@irojs/iro-core'
 import StateMixin from '@/mixins/state'
 import type { Led } from '@/store/printer/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 type Rgbw = {
   r: number,
@@ -132,7 +133,7 @@ export default class OutputLed extends Mixins(StateMixin) {
       .map(channel => ` ${this.channelLookup[channel]}=${Math.round(color[channel] * 1000 / 255) / 1000}`)
       .join('')
 
-    this.sendGcode(`SET_LED LED=${this.led.name}${colorsString}`)
+    this.sendGcode(`SET_LED LED=${encodeGcodeParamValue(this.led.name)}${colorsString}`)
   }
 }
 </script>

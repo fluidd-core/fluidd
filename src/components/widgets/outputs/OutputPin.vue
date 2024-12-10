@@ -30,6 +30,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import type { OutputPin as IOutputPin } from '@/store/printer/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class OutputPin extends Mixins(StateMixin, BrowserMixin) {
@@ -67,7 +68,7 @@ export default class OutputPin extends Mixins(StateMixin, BrowserMixin) {
       target = Math.round(target * this.pin.scale) / 100
     }
 
-    this.sendGcode(`SET_PIN PIN=${this.pin.name} VALUE=${target}`, `${this.$waits.onSetOutputPin}${this.pin.name}`)
+    this.sendGcode(`SET_PIN PIN=${encodeGcodeParamValue(this.pin.name)} VALUE=${target}`, `${this.$waits.onSetOutputPin}${this.pin.name}`)
   }
 }
 </script>

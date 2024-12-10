@@ -303,6 +303,7 @@ import StateMixin from '@/mixins/state'
 import type { Fan, Heater, Sensor } from '@/store/printer/types'
 import { takeRightWhile } from 'lodash-es'
 import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
   components: {
@@ -351,11 +352,11 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   }
 
   setHeaterTargetTemp (heater: string, target: number) {
-    this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${heater} TARGET=${target}`)
+    this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${encodeGcodeParamValue(heater)} TARGET=${target}`)
   }
 
   setFanTargetTemp (fan: string, target: number) {
-    this.sendGcode(`SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${fan} TARGET=${target}`)
+    this.sendGcode(`SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${encodeGcodeParamValue(fan)} TARGET=${target}`)
   }
 
   getRateOfChange (item: Heater | Sensor) {

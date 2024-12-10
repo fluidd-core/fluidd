@@ -81,6 +81,7 @@
 <script lang="ts">
 import StateMixin from '@/mixins/state'
 import type { Macro } from '@/store/macros/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 import { Component, VModel, Mixins } from 'vue-property-decorator'
 
 type PauseNextLayer = {
@@ -144,7 +145,7 @@ export default class PauseAtLayerDialog extends Mixins(StateMixin) {
 
     if (this.setPauseNextLayerMacro) {
       if (this.pauseNextLayer.enable) {
-        gcodes.push(`SET_PAUSE_NEXT_LAYER ENABLE=1 MACRO="${this.pauseNextLayer.call}"`)
+        gcodes.push(`SET_PAUSE_NEXT_LAYER ENABLE=1 MACRO=${encodeGcodeParamValue(this.pauseNextLayer.call)}`)
       } else {
         gcodes.push('SET_PAUSE_NEXT_LAYER ENABLE=0')
       }
@@ -152,7 +153,7 @@ export default class PauseAtLayerDialog extends Mixins(StateMixin) {
 
     if (this.setPauseAtLayerMacro) {
       if (this.pauseAtLayer.enable) {
-        gcodes.push(`SET_PAUSE_AT_LAYER ENABLE=1 LAYER=${this.pauseAtLayer.layer} MACRO="${this.pauseAtLayer.call}"`)
+        gcodes.push(`SET_PAUSE_AT_LAYER ENABLE=1 LAYER=${this.pauseAtLayer.layer} MACRO=${encodeGcodeParamValue(this.pauseAtLayer.call)}`)
       } else {
         gcodes.push('SET_PAUSE_AT_LAYER ENABLE=0')
       }

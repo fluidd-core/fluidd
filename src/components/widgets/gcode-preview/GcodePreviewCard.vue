@@ -150,6 +150,7 @@ import type { AppFile } from '@/store/files/types'
 import type { MinMax } from '@/store/gcodePreview/types'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
 import consola from 'consola'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
   components: {
@@ -399,7 +400,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     if (result) {
       const reqId = id.toUpperCase().replace(/\s/g, '_')
 
-      this.sendGcode(`EXCLUDE_OBJECT NAME=${reqId}`)
+      this.sendGcode(`EXCLUDE_OBJECT NAME=${encodeGcodeParamValue(reqId)}`)
     }
   }
 

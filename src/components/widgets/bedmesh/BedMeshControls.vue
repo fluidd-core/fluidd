@@ -278,6 +278,7 @@ import type {
   MatrixType,
   BedMeshProfileListEntry
 } from '@/store/mesh/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
   components: {
@@ -386,20 +387,20 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
     )
 
     if (result) {
-      this.sendGcode(`BED_MESH_PROFILE LOAD="${name}"`)
+      this.sendGcode(`BED_MESH_PROFILE LOAD=${encodeGcodeParamValue(name)}`)
     }
   }
 
   removeProfile (name: string) {
-    this.sendGcode(`BED_MESH_PROFILE REMOVE="${name}"`)
+    this.sendGcode(`BED_MESH_PROFILE REMOVE=${encodeGcodeParamValue(name)}`)
   }
 
   handleMeshSave (config: { name: string; removeDefault: boolean }) {
     if (config.name !== this.currentMesh.profile_name) {
-      this.sendGcode(`BED_MESH_PROFILE SAVE="${config.name}"`)
+      this.sendGcode(`BED_MESH_PROFILE SAVE=${encodeGcodeParamValue(config.name)}`)
     }
     if (config.removeDefault) {
-      this.sendGcode(`BED_MESH_PROFILE REMOVE="${this.currentMesh.profile_name}"`)
+      this.sendGcode(`BED_MESH_PROFILE REMOVE=${encodeGcodeParamValue(this.currentMesh.profile_name)}`)
     }
   }
 
