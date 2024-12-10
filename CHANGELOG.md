@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.31.2](https://github.com/fluidd-core/fluidd/compare/v1.31.1...v1.31.2) (2024-12-10)
+
+
+### Features
+
+* adds Adjust Dashboard Layout sidebar button ([#1546](https://github.com/fluidd-core/fluidd/issues/1546)) ([2a67ad5](https://github.com/fluidd-core/fluidd/commit/2a67ad58ce2c2d55e6a8f2f13465150432323d3f))
+* adds Kalico config support ([#1548](https://github.com/fluidd-core/fluidd/issues/1548)) ([00b33dd](https://github.com/fluidd-core/fluidd/commit/00b33ddda5b5ba13c78de5bb92a6e3553dbe7b76))
+* decode quoted default macro params ([55d3802](https://github.com/fluidd-core/fluidd/commit/55d3802082f52668169c2f4cba706fb343f2ed4b))
+* encode Gcode parameter values where possible ([b153b64](https://github.com/fluidd-core/fluidd/commit/b153b64eaceb2fd5bfdce4b2a8aa74f81206afe0))
+* **i18n-hu:** Update Hungarian translations ([f6dbf4d](https://github.com/fluidd-core/fluidd/commit/f6dbf4dd4f211d9413a6f67555230dfd750a6d8e))
+* improves macro params quoting and encoding ([286ebcd](https://github.com/fluidd-core/fluidd/commit/286ebcd09f198c347b92e2d6dbe051ca5f30d1da))
+
+
+### Bug Fixes
+
+* component page title ([21a7864](https://github.com/fluidd-core/fluidd/commit/21a7864074dca644ca974c94c0a452d8a72b7471))
+* **Console:** Hide temp waits fallback value ([2b1389a](https://github.com/fluidd-core/fluidd/commit/2b1389a24ff11c7961dc097399bbdef2b063dae8))
+
 ## [1.31.1](https://github.com/fluidd-core/fluidd/compare/v1.31.0...v1.31.1) (2024-12-03)
 
 
