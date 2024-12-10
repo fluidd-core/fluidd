@@ -140,19 +140,36 @@ export default class MacroBtn extends Mixins(StateMixin) {
     return ''
   }
 
+  get klippyApp () {
+    return this.$store.getters['printer/getKlippyApp']
+  }
+
+  get supportsPythonGcodeMacros () {
+    return ['danger-klipper', 'kalico'].includes(this.klippyApp.name)
+  }
+
   handleClick () {
     this.$emit('click', this.macroName)
   }
 
   mounted () {
-    if (!this.macro.config || !this.macro.config.gcode) return
+    const gcode = this.macro.config?.gcode
+
+    if (!gcode) return
 
     const paramNameForRawGcodeCommand = this.paramNameForRawGcodeCommand
 
     if (paramNameForRawGcodeCommand) {
       this.$set(this.params, paramNameForRawGcodeCommand, { value: '', reset: '' })
     } else {
-      for (const { name, value } of gcodeMacroParams(this.macro.config.gcode)) {
+      if (
+        this.supportsPythonGcodeMacros &&
+        /^\s*!/.test(gcode)
+      ) {
+        return
+      }
+
+      for (const { name, value } of gcodeMacroParams(gcode)) {
         if (!name.startsWith('_') && !this.params[name]) {
           this.$set(this.params, name, { value, reset: value })
         }
