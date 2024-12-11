@@ -36,7 +36,14 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
     try {
       const response = await fetch(url, {
         body: JSON.stringify({
-          type: 'request'
+          type: 'request',
+          iceServers: [
+            {
+              urls: [
+                'stun:stun.l.google.com:19302'
+              ]
+            }
+          ]
         }),
         headers: {
           'Content-Type': 'application/json'
