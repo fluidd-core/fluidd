@@ -39,7 +39,7 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
         }
       }
     } catch (e) {
-      consola.error('[Device Camera] failed to stop and remove all tracks', e)
+      consola.error('[DeviceCamera] failed to stop and remove all tracks', e)
     }
 
     this.cameraVideo.srcObject = null
@@ -59,7 +59,7 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
         }
       })
     } catch (e) {
-      consola.error(`[Device Camera] failed to select device ${selectedDeviceCamera}`, e)
+      consola.error(`[DeviceCamera] failed to select device "${selectedDeviceCamera}"`, e)
 
       this.setSelectedDeviceCamera(null)
 
@@ -78,7 +78,7 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
       return devices
         .filter(device => device.kind === 'videoinput')
     } catch (e) {
-      consola.error('[Device Camera] failed to enumerate devices', e)
+      consola.error('[DeviceCamera] failed to enumerate devices', e)
 
       return []
     }

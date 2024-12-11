@@ -33,15 +33,10 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
 
     this.pc?.close()
 
-    const iceServers = [
-      { urls: 'stun:stun.l.google.com:19302' }
-    ]
-
     try {
       const response = await fetch(url, {
         body: JSON.stringify({
-          type: 'request',
-          iceServers,
+          type: 'request'
         }),
         headers: {
           'Content-Type': 'application/json'
@@ -75,22 +70,24 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
         }
       }
 
-      pc.onicecandidate = async (event: RTCPeerConnectionIceEvent) => {
-        if (event.candidate) {
-          try {
-            await fetch(url, {
-              body: JSON.stringify({
-                type: 'remote_candidate',
-                id: this.remoteId,
-                candidates: [event.candidate]
-              }),
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              method: 'POST'
-            })
-          } catch (e) {
-            consola.error('[WebrtcCamerastreamerCamera] onicecandidate', e)
+      if (config.iceServers) {
+        pc.onicecandidate = async (event: RTCPeerConnectionIceEvent) => {
+          if (event.candidate) {
+            try {
+              await fetch(url, {
+                body: JSON.stringify({
+                  type: 'remote_candidate',
+                  id: this.remoteId,
+                  candidates: [event.candidate]
+                }),
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                method: 'POST'
+              })
+            } catch (e) {
+              consola.error('[WebrtcCamerastreamerCamera] onicecandidate', e)
+            }
           }
         }
       }
@@ -117,7 +114,7 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
 
       await response2.json()
     } catch (e) {
-      consola.error('[WebrtcCamerastreamerCamera] startPlayback', e)
+      consola.error(`[WebrtcCamerastreamerCamera] failed to start playback "${this.camera.name}"`, e)
     }
   }
 
