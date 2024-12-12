@@ -368,8 +368,7 @@ export default class ManualProbeDialog extends Mixins(StateMixin) {
         type: 'can',
         count: this.canbusUuids
           ? Object.values(this.canbusUuids)
-            .filter(value => Array.isArray(value))
-            .reduce((a, b) => a + (b ? b.length : 0), 0)
+            .reduce((a, b) => a + b.length, 0)
           : undefined
       })
     }
@@ -415,9 +414,9 @@ export default class ManualProbeDialog extends Mixins(StateMixin) {
           break
 
         case 'can':
-          this.canbusInterfaces.forEach((canbusInterface) => {
+          for (const canbusInterface of this.canbusInterfaces) {
             SocketActions.machinePeripheralsCanbus(canbusInterface)
-          })
+          }
           break
       }
     }
