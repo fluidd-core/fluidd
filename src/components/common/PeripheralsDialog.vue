@@ -414,7 +414,7 @@ export default class ManualProbeDialog extends Mixins(StateMixin) {
           break
 
         case 'can':
-          for (const canbusInterface in this.canbusInterfaces) {
+          for (const canbusInterface of this.canbusInterfaces) {
             SocketActions.machinePeripheralsCanbus(canbusInterface)
           }
           break
