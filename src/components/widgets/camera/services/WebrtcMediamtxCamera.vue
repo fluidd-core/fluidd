@@ -289,9 +289,13 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
   }
 
   startPlayback () {
-    this.whepUrl = new URL('whep', this.baseUrl).toString()
+    try {
+      this.whepUrl = new URL('whep', this.baseUrl).toString()
 
-    this.loadStream()
+      this.loadStream()
+    } catch (e) {
+      consola.error(`[WebrtcMediamtxCamera] failed to start playback "${this.camera.name}"`, e)
+    }
   }
 
   stopPlayback () {

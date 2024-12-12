@@ -11,6 +11,7 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import CameraMixin from '@/mixins/camera'
+import consola from 'consola'
 
 @Component({})
 export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
@@ -73,15 +74,19 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
   }
 
   startPlayback () {
-    this.cameraImageSourceUrl = this.buildAbsoluteUrl(this.camera.snapshot_url || '')
+    try {
+      this.cameraImageSourceUrl = this.buildAbsoluteUrl(this.camera.snapshot_url || '')
 
-    this.updateCameraImageSource()
+      this.updateCameraImageSource()
 
-    const rawUrl = this.buildAbsoluteUrl(this.camera.stream_url || '')
+      const rawUrl = this.buildAbsoluteUrl(this.camera.stream_url || '')
 
-    rawUrl.searchParams.set('cacheBust', Date.now().toString())
+      rawUrl.searchParams.set('cacheBust', Date.now().toString())
 
-    this.$emit('update:raw-camera-url', rawUrl.toString())
+      this.$emit('update:raw-camera-url', rawUrl.toString())
+    } catch (e) {
+      consola.error(`[MjpegstreamerAdaptiveCamera] failed to start playback "${this.camera.name}"`, e)
+    }
   }
 
   stopPlayback () {

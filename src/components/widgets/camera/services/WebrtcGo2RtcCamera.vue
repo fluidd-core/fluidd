@@ -38,27 +38,31 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
   // adapted from https://github.com/AlexxIT/go2rtc/blob/d7cdc8b3b07f6fbff7daae2736377de98444b962/www/video-rtc.js
 
   startPlayback () {
-    this.abortController?.abort()
-    this.pc?.close()
-    this.ws?.close()
+    try {
+      this.abortController?.abort()
+      this.pc?.close()
+      this.ws?.close()
 
-    this.abortController = new AbortController()
+      this.abortController = new AbortController()
 
-    const url = this.buildAbsoluteUrl(this.camera.stream_url || '')
+      const url = this.buildAbsoluteUrl(this.camera.stream_url || '')
 
-    const socketUrl = new URL('api/ws' + url.search, url)
+      const socketUrl = new URL('api/ws' + url.search, url)
 
-    socketUrl.protocol = socketUrl.protocol === 'https:'
-      ? 'wss:'
-      : 'ws:'
+      socketUrl.protocol = socketUrl.protocol === 'https:'
+        ? 'wss:'
+        : 'ws:'
 
-    this.ws = new WebSocket(socketUrl)
-    this.ws.binaryType = 'arraybuffer'
-    this.ws.onopen = this.onWebSocketOpen
-    this.ws.onmessage = this.onWebSocketMessage
-    this.ws.onclose = this.onWebSocketClose
+      this.ws = new WebSocket(socketUrl)
+      this.ws.binaryType = 'arraybuffer'
+      this.ws.onopen = this.onWebSocketOpen
+      this.ws.onmessage = this.onWebSocketMessage
+      this.ws.onclose = this.onWebSocketClose
 
-    this.$emit('update:raw-camera-url', url.toString())
+      this.$emit('update:raw-camera-url', url.toString())
+    } catch (e) {
+      consola.error(`[WebrtcGo2RtcCamera] failed to start playback "${this.camera.name}"`, e)
+    }
   }
 
   async onWebSocketOpen () {
