@@ -3,6 +3,7 @@ import type { RootState } from './types'
 import { SocketActions } from '@/api/socketActions'
 import type { AppPushNotification } from './notifications/types'
 import i18n from '@/plugins/i18n'
+import type { KlippyApp } from './printer/types'
 
 export const handleTrinamicDriversChange = (payload: any, state: RootState, dispatch: Dispatch, getters: any) => {
   for (const item in payload) {
@@ -15,7 +16,7 @@ export const handleTrinamicDriversChange = (payload: any, state: RootState, disp
     ) {
       const name = nameFromSplit ?? item
 
-      const klippyApp = getters.getKlippyApp
+      const klippyApp = getters.getKlippyApp as KlippyApp
 
       const notification: AppPushNotification = {
         id: `${item}-otpw`,

@@ -90,6 +90,7 @@ import StateMixin from '@/mixins/state'
 import type { Macro } from '@/store/macros/types'
 import gcodeMacroParams from '@/util/gcode-macro-params'
 import { gcodeCommandBuilder, isBasicGcodeCommand, getParamNameForRawGcodeCommand } from '@/util/gcode-helpers'
+import type { KlippyApp } from '@/store/printer/types'
 
 type MacroParameter = {
   value: string | number
@@ -140,8 +141,8 @@ export default class MacroBtn extends Mixins(StateMixin) {
     return ''
   }
 
-  get klippyApp () {
-    return this.$store.getters['printer/getKlippyApp']
+  get klippyApp (): KlippyApp {
+    return this.$store.getters['printer/getKlippyApp'] as KlippyApp
   }
 
   get supportsPythonGcodeMacros () {

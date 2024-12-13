@@ -1,3 +1,5 @@
+import type { Globals } from '@/globals'
+
 export interface PrinterState {
   info: PrinterInfo;
   manualProbeDialogOpen: boolean;
@@ -295,4 +297,10 @@ export interface BeaconLastReceivedSample {
 export interface BeaconModel {
   name: string;
   active: boolean;
+}
+
+export interface KlippyApp {
+  name: keyof typeof Globals.SUPPORTED_SERVICES.klipper;
+  domain: string;
+  minVersion: string;
 }

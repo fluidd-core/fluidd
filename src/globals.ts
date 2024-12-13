@@ -186,7 +186,6 @@ export const Globals = Object.freeze({
   LOCAL_CARDSTATE_STORAGE_KEY: 'cardState', // collapsed or not
   LOCAL_CARDLAYOUT_STORAGE_KEY: 'cardLayout2', // Specific layout / enabled / disabled
   LOCAL_INSTANCES_STORAGE_KEY: 'appInstances',
-  KLIPPER_MIN_VERSION: 'v0.11.0-257',
   MOONRAKER_MIN_VERSION: 'v0.8.0-309',
   MOONRAKER_DB: {
     fluidd: {
@@ -233,13 +232,16 @@ export const Globals = Object.freeze({
   SUPPORTED_SERVICES: {
     klipper: {
       klipper: {
-        domain: 'https://www.klipper3d.org'
+        domain: 'https://www.klipper3d.org',
+        minVersion: 'v0.11.0-257'
       },
       kalico: {
-        domain: 'https://docs.kalico.gg'
+        domain: 'https://docs.kalico.gg',
+        minVersion: 'v0.11.0-257'
       },
       'danger-klipper': {
-        domain: 'https://dangerklipper.io'
+        domain: 'https://dangerklipper.io',
+        minVersion: 'v0.11.0-257'
       }
     }
   },

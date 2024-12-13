@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { PrinterState } from './types'
+import type { KlippyApp, PrinterState } from './types'
 import type { RootState } from '../types'
 import { handlePrintStateChange, handleCurrentFileChange, handleExcludeObjectChange, handleTrinamicDriversChange } from '../helpers'
 import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
@@ -37,22 +37,24 @@ export const actions: ActionTree<PrinterState, RootState> = {
     commit('setForceMoveEnabled', payload)
   },
 
-  async checkKlipperMinVersion ({ state, dispatch }) {
+  async checkKlipperMinVersion ({ state, rootGetters, dispatch }) {
     const klipperVersion = state.info.software_version ?? '?'
 
     const fullKlipperVersion = klipperVersion.includes('-')
       ? klipperVersion
       : `${klipperVersion}-0`
 
+    const klippyApp = rootGetters['printer/getKlippyApp'] as KlippyApp
+
     if (
       valid(klipperVersion) &&
-      valid(Globals.KLIPPER_MIN_VERSION) &&
-      !gte(fullKlipperVersion, Globals.KLIPPER_MIN_VERSION)
+      valid(klippyApp.minVersion) &&
+      !gte(fullKlipperVersion, klippyApp.minVersion)
     ) {
       dispatch('notifications/pushNotification', {
         id: `old-klipper-${klipperVersion}`,
         title: 'Klipper',
-        description: i18n.t('app.version.label.old_component_version', { name: 'Klipper', version: Globals.KLIPPER_MIN_VERSION }),
+        description: i18n.t('app.version.label.old_component_version', { name: 'Klipper', version: klippyApp.minVersion }),
         to: '/settings#versions',
         btnText: i18n.t('app.version.btn.view_versions'),
         type: 'warning',

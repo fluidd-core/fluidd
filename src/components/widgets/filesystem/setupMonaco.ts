@@ -10,6 +10,7 @@ import themeDark from '@/monaco/theme/editor.dark.theme.json'
 import themeLight from '@/monaco/theme/editor.light.theme.json'
 
 import { MonacoLanguageImports } from '@/dynamicImports'
+import type { KlippyApp } from '@/store/printer/types'
 
 type ReduceState<T> = {
   current?: T,
@@ -99,7 +100,7 @@ async function setupMonaco () {
 
   monaco.editor.registerCommand('fluidd_open_docs', (_, service: CodeLensSupportedService, hash: string) => {
     const serviceKey = service.replace(/-/g, '_')
-    const klippyApp = app.$store.getters['printer/getKlippyApp']
+    const klippyApp = app.$store.getters['printer/getKlippyApp'] as KlippyApp
 
     const url = app.$t(`app.file_system.url.${serviceKey}_config`, {
       hash,
