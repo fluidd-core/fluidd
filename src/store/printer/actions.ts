@@ -37,14 +37,14 @@ export const actions: ActionTree<PrinterState, RootState> = {
     commit('setForceMoveEnabled', payload)
   },
 
-  async checkKlipperMinVersion ({ state, rootGetters, dispatch }) {
+  async checkKlipperMinVersion ({ state, getters, dispatch }) {
     const klipperVersion = state.info.software_version ?? '?'
 
     const fullKlipperVersion = klipperVersion.includes('-')
       ? klipperVersion
       : `${klipperVersion}-0`
 
-    const klippyApp = rootGetters['printer/getKlippyApp'] as KlippyApp
+    const klippyApp = getters['getKlippyApp'] as KlippyApp
 
     if (
       valid(klipperVersion) &&
