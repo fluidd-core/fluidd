@@ -552,7 +552,10 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get printerSupportsZTiltAdjust (): boolean {
-    return 'z_tilt' in this.printerSettings
+    return (
+      'z_tilt' in this.printerSettings ||
+      'z_tilt_ng' in this.printerSettings
+    )
   }
 
   get printerSupportsLeveling (): boolean {
@@ -682,7 +685,10 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
         ]
       : this.printerSupportsZTiltAdjust
         ? [
-            !this.$store.state.printer.printer.z_tilt?.applied,
+            !(
+              this.$store.state.printer.printer.z_tilt?.applied ||
+              this.$store.state.printer.printer.z_tilt_ng?.applied
+            ),
             this.hasWait(this.$waits.onZTilt)
           ]
         : []

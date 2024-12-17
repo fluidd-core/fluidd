@@ -167,7 +167,10 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get printerSupportsZTiltAdjust (): boolean {
-    return 'z_tilt' in this.printerSettings
+    return (
+      'z_tilt' in this.printerSettings ||
+      'z_tilt_ng' in this.printerSettings
+    )
   }
 
   get printerSupportsBedScrewsAdjust (): boolean {
