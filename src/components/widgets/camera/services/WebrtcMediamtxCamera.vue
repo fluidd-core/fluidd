@@ -6,6 +6,8 @@
     muted
     :style="cameraStyle"
     :crossorigin="crossorigin"
+    @play="updateStatus('connected')"
+    @error="updateStatus('error')"
   />
 </template>
 
@@ -117,6 +119,8 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
 
   async loadStream () {
     try {
+      this.updateStatus('connecting')
+
       const res = await fetch(this.whepUrl, {
         method: 'OPTIONS'
       })
@@ -169,13 +173,15 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
 
       this.sendOffer(offer)
     } catch (err: unknown) {
-      consola.error('[WebrtcMediamtxCamera] error on loadStream', err)
+      consola.error(`[WebrtcMediamtxCamera] error on loadStream "${this.camera.name}"`, err)
 
       this.onError()
     }
   }
 
   onError () {
+    this.updateStatus('error')
+
     if (this.restartTimeout !== null) {
       return
     }
@@ -295,6 +301,7 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
   }
 
   stopPlayback () {
+    this.updateStatus('disconnected')
     this.sessionUrl = ''
     this.queuedCandidates = []
 

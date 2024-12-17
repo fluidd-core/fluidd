@@ -4,6 +4,7 @@ import type { FlashMessage, FlashMessageTypes } from './flashmessage'
 import type { MeshData } from './mesh'
 import type { AppTableHeader } from './tableheaders'
 import type { VForm, VInput, VTextArea, VSlider } from './vuetify'
+import type { CameraConnectionStatus, CameraNameMenuItem } from './cameras'
 
 export type {
   FileSystemDialogData,
@@ -16,5 +17,7 @@ export type {
   VInput,
   VTextArea,
   VSlider,
-  FileWithPath
+  FileWithPath,
+  CameraConnectionStatus,
+  CameraNameMenuItem
 }

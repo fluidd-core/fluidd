@@ -7,6 +7,8 @@
       'aspect-ratio': (camera.aspect_ratio || '16:9').replace(':', '/'),
       ...cameraStyle
     }"
+    @load="updateStatus('connected')"
+    @error="updateStatus('error')"
   />
 </template>
 
@@ -22,14 +24,17 @@ export default class IframeCamera extends Mixins(CameraMixin) {
   cameraIFrameSource = ''
 
   startPlayback () {
+    this.updateStatus('connecting')
+
     const url = this.buildAbsoluteUrl(this.camera.stream_url || '').toString()
 
     this.cameraIFrameSource = url
 
-    this.$emit('update:raw-camera-url', url)
+    this.updateRawCameraUrl(url)
   }
 
   stopPlayback () {
+    this.updateStatus('disconnected')
     this.cameraIFrameSource = ''
     this.cameraIframe.src = ''
   }

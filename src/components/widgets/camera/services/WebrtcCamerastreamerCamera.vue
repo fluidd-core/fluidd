@@ -6,6 +6,8 @@
     muted
     :style="cameraStyle"
     :crossorigin="crossorigin"
+    @play="updateStatus('connected')"
+    @error="updateStatus('error')"
   />
 </template>
 
@@ -13,6 +15,7 @@
 import { Component, Ref, Mixins } from 'vue-property-decorator'
 import consola from 'consola'
 import CameraMixin from '@/mixins/camera'
+import sleep from '@/util/sleep'
 
 type RTCConfigurationWithSdpSemantics = RTCConfiguration & {
   sdpSemantics: 'unified-plan'
@@ -25,28 +28,43 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
 
   pc: RTCPeerConnection | null = null
   remoteId: string | null = null
+  playbackAbortController: AbortController | null = null
+  sleepAbortController: AbortController | null = null
 
   // adapted from https://github.com/ayufan/camera-streamer/blob/4203f89df1596cc349b0260f26bf24a3c446a56b/html/webrtc.html
 
-  async startPlayback () {
-    const url = this.buildAbsoluteUrl(this.camera.stream_url || '')
-
+  async loadStream () {
     this.pc?.close()
 
-    const iceServers = [
-      { urls: 'stun:stun.l.google.com:19302' }
-    ]
+    const abortControllerSignal = this.playbackAbortController?.signal
+
+    if (!abortControllerSignal || abortControllerSignal.aborted) {
+      return
+    }
+
+    this.updateStatus('connecting')
+
+    const url = this.buildAbsoluteUrl(this.camera.stream_url || '')
+
+    this.updateRawCameraUrl(url.toString())
 
     try {
       const response = await fetch(url, {
         body: JSON.stringify({
           type: 'request',
-          iceServers,
+          iceServers: [
+            {
+              urls: [
+                'stun:stun.l.google.com:19302'
+              ]
+            }
+          ]
         }),
         headers: {
           'Content-Type': 'application/json'
         },
-        method: 'POST'
+        method: 'POST',
+        signal: abortControllerSignal
       })
 
       const rtcSessionDescriptionInit = await response.json() as RTCSessionDescriptionInit
@@ -75,22 +93,25 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
         }
       }
 
-      pc.onicecandidate = async (event: RTCPeerConnectionIceEvent) => {
-        if (event.candidate) {
-          try {
-            await fetch(url, {
-              body: JSON.stringify({
-                type: 'remote_candidate',
-                id: this.remoteId,
-                candidates: [event.candidate]
-              }),
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              method: 'POST'
-            })
-          } catch (e) {
-            consola.error('[WebrtcCamerastreamerCamera] onicecandidate', e)
+      if (config.iceServers) {
+        pc.onicecandidate = async (event: RTCPeerConnectionIceEvent) => {
+          if (event.candidate) {
+            try {
+              await fetch(url, {
+                body: JSON.stringify({
+                  type: 'remote_candidate',
+                  id: this.remoteId,
+                  candidates: [event.candidate]
+                }),
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                method: 'POST',
+                signal: abortControllerSignal
+              })
+            } catch (e) {
+              consola.error('[WebrtcCamerastreamerCamera] onicecandidate', e)
+            }
           }
         }
       }
@@ -112,16 +133,56 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
         headers: {
           'Content-Type': 'application/json'
         },
-        method: 'POST'
+        method: 'POST',
+        signal: abortControllerSignal
       })
 
       await response2.json()
     } catch (e) {
-      consola.error('[WebrtcCamerastreamerCamera] startPlayback', e)
+      consola.error(`[WebrtcCamerastreamerCamera] failed to start playback "${this.camera.name}"`, e)
+
+      this.onError()
     }
   }
 
+  async onError () {
+    this.updateStatus('error')
+    this.pc?.close()
+    this.pc = null
+
+    const playbackAbortSignal = this.playbackAbortController?.signal
+
+    if (!playbackAbortSignal || playbackAbortSignal.aborted) {
+      return
+    }
+
+    this.sleepAbortController?.abort()
+
+    const sleepAbortController = this.sleepAbortController = new AbortController()
+
+    try {
+      const signals = [
+        playbackAbortSignal,
+        sleepAbortController.signal,
+      ]
+
+      await sleep(2000, AbortSignal.any(signals))
+
+      this.loadStream()
+    } catch {}
+  }
+
+  async startPlayback () {
+    this.playbackAbortController = new AbortController()
+
+    await this.loadStream()
+  }
+
   stopPlayback () {
+    this.updateStatus('disconnected')
+    this.playbackAbortController?.abort()
+    this.playbackAbortController = null
+
     this.pc?.close()
     this.pc = null
     this.cameraVideo.src = ''
