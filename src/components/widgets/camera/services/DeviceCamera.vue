@@ -27,7 +27,6 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
       const stream = await this.getUserMedia()
 
       this.cameraVideo.srcObject = stream
-      this.$emit('playback')
 
       this.updateCameraName(await this.getDeviceLabel() ?? '')
     } catch (e) {
