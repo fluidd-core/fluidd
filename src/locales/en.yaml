@@ -701,11 +701,14 @@ app:
       no_connection: No moonraker connection. Please check moonraker status and / or refresh.
   system_info:
     label:
+      application: Application
       awake_time: awake time
       capacity: Capacity
+      connected: Connected
       constants: Constants
       cpu_desc: CPU Description
       devices: Devices
+      disconnected: Disconnected
       distribution_codename: Codename
       distribution_like: Distribution Like
       distribution_name: Distribution
@@ -726,6 +729,7 @@ app:
       moonraker_load: Moonraker Load
       last_stats: Last Stats
       network: Network
+      non_critical_connection: Non-critical connection
       processor_desc: Processor
       product_name: Product Name
       serial_number: Serial Number

@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    :title="$t('app.system_info.label.mcu_information', {mcu: mcu.name})"
+    :title="$t('app.system_info.label.mcu_information', {mcu: mcu.prettyName})"
     icon="$chip"
   >
     <template #menu>
@@ -27,6 +27,32 @@
         <tr>
           <th>{{ $t('app.system_info.label.version') }}</th>
           <td>{{ mcu.mcu_version }}</td>
+        </tr>
+        <tr v-if="mcu.app">
+          <th>{{ $t('app.system_info.label.application') }}</th>
+          <td>{{ mcu.app }}</td>
+        </tr>
+        <tr v-if="mcu.non_critical_disconnected != null">
+          <th>{{ $t('app.system_info.label.non_critical_connection') }}</th>
+          <td>
+            <v-chip
+              :color="mcu.non_critical_disconnected ? 'error' : 'success'"
+              small
+              label
+            >
+              <v-icon
+                small
+                left
+              >
+                {{ mcu.non_critical_disconnected ? '$blankCircle' : '$markedCircle' }}
+              </v-icon>
+              {{
+                mcu.non_critical_disconnected
+                  ? $t('app.system_info.label.disconnected')
+                  : $t('app.system_info.label.connected')
+              }}
+            </v-chip>
+          </td>
         </tr>
       </tbody>
     </v-simple-table>

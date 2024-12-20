@@ -286,17 +286,17 @@ export const getters: GetterTree<PrinterState, RootState> = {
   /**
    * Return MCU's and their state
    */
-  getMcus: (state) => {
-    const mcus: MCU[] = []
-    Object.keys(state.printer)
+  getMcus: (state, getters) => {
+    const mcus = Object.keys(state.printer)
       .filter(key => key.startsWith('mcu'))
       .sort()
-      .forEach(key => {
-        mcus.push({
-          name: key,
-          ...state.printer[key]
-        })
-      })
+      .map((key): MCU => ({
+        name: key,
+        prettyName: Vue.$filters.prettyCase(key),
+        ...state.printer[key],
+        config: getters.getPrinterSettings(key)
+      }))
+
     return mcus
   },
 
