@@ -253,6 +253,8 @@ import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemSta
 import { SupportedImageFormats, SupportedVideoFormats } from '@/globals'
 import type { TextSortOrder } from '@/store/config/types'
 import type { DataTableHeader } from 'vuetify'
+import versionStringCompare from '@/util/version-string-compare'
+import { get } from 'lodash-es'
 
 @Component({
   components: {
@@ -357,7 +359,60 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   customSort (items: FileBrowserEntry[], sortBy: string[], sortDesc: boolean[], locale: string) {
-    return this.$filters.fileSystemSort(items, sortBy, sortDesc, locale, this.textSortOrder)
+    if (sortBy === null || !sortBy.length) return items
+
+    const stringCollator = new Intl.Collator(locale, {
+      sensitivity: 'accent',
+      usage: 'sort'
+    })
+
+    return items.sort((a, b) => {
+      if (a.type === 'directory' && (a.dirname === '..' || b.type !== 'directory')) return -1
+      if (b.type === 'directory' && (b.dirname === '..' || a.type !== 'directory')) return 1
+
+      for (let i = 0; i < sortBy.length; i++) {
+        const sortKey = sortBy[i]
+
+        const sortValues = [
+          get(a, sortKey),
+          get(b, sortKey)
+        ]
+
+        // If values are equal, continue
+        if (sortValues[0] === sortValues[1]) {
+          continue
+        }
+
+        // If sorting descending, reverse values
+        if (sortDesc[i]) {
+          sortValues.reverse()
+        }
+
+        // If values are of type number, compare as number
+        if (sortValues.every(x => typeof (x) === 'number' && !isNaN(x))) {
+          return sortValues[0] - sortValues[1]
+        }
+
+        const sortValuesAsString = sortValues
+          .map(s => (s || '').toString() as string)
+
+        if (this.textSortOrder === 'numeric-prefix') {
+          const [sortA, sortB] = sortValuesAsString
+            .map(s => s.match(/^\d+/))
+
+          // If are number prefixed, compare prefixes as number
+          if (sortA && sortB && sortA[0] !== sortB[0]) {
+            return +sortA[0] - +sortB[0]
+          }
+        } else if (this.textSortOrder === 'version') {
+          return versionStringCompare(sortValuesAsString[0], sortValuesAsString[1])
+        }
+
+        return stringCollator.compare(sortValuesAsString[0], sortValuesAsString[1])
+      }
+
+      return 0
+    })
   }
 
   handleSelected (selected: FileBrowserEntry[]) {

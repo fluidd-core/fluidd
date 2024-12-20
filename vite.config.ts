@@ -1,5 +1,3 @@
-/// <reference types="vitest" />
-
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue2'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -146,17 +144,6 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
       path: 'path-browserify'
     }
-  },
-
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: [
-      './tests/unit/setup.ts'
-    ],
-    alias: [
-      { find: /^vue$/, replacement: 'vue/dist/vue.runtime.common.js' }
-    ]
   },
 
   base: './',

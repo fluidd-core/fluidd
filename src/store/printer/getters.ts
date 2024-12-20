@@ -2,7 +2,7 @@ import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
 import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, BeaconState, KlippyApp } from './types'
-import { get } from 'lodash-es'
+import { capitalize, get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
 import type { GcodeHelp } from '../console/types'
@@ -35,7 +35,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   getKlippyState: (state, getters, rootState, rootGetters): string => {
     const serverInfo = rootGetters['server/getInfo'] as ServerInfo
 
-    return Vue.$filters.capitalize(serverInfo.klippy_state || '')
+    return capitalize(serverInfo.klippy_state || '')
   },
 
   getKlippyStateMessage: (state, getters, rootState, rootGetters): string => {
