@@ -16,14 +16,11 @@
       >
         <template #activator="{ on, attrs }">
           <v-btn
-            fab
-            x-small
-            text
+            icon
             v-bind="attrs"
-            class="ms-1 my-1"
             v-on="on"
           >
-            <v-icon>
+            <v-icon dense>
               $cog
             </v-icon>
           </v-btn>
