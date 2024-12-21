@@ -250,7 +250,7 @@ import type { FileBrowserEntry, RootProperties } from '@/store/files/types'
 import FilesMixin from '@/mixins/files'
 
 import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
-import { SupportedImageFormats, SupportedVideoFormats } from '@/globals'
+import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
 import type { TextSortOrder } from '@/store/config/types'
 import type { DataTableHeader } from 'vuetify'
 import versionStringCompare from '@/util/version-string-compare'
@@ -439,6 +439,10 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
         SupportedVideoFormats.includes(`.${item.extension}`)
       ) {
         return readonly ? '$fileImageLock' : '$fileImage'
+      } else if (
+        SupportedMarkdownFormats.includes(`.${item.extension}`)
+      ) {
+        return readonly ? '$fileDocumentLock' : '$fileDocument'
       } else {
         return readonly ? '$fileLock' : '$file'
       }
