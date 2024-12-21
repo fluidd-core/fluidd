@@ -695,7 +695,7 @@ export const getters = {
 
       if (
         supportedTypes.includes(type) &&
-        ((!filterByPrefix.includes(type) || !name.startsWith('_')) || showHidden)
+        (showHidden || !filterByPrefix.includes(type) || !name.startsWith('_'))
       ) {
         const prettyName = name === 'fan'
           ? 'Part Fan' // If we know its the part fan.
