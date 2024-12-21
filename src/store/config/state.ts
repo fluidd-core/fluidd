@@ -70,7 +70,7 @@ export const defaultState = (): ConfigState => {
         enableDiagnostics: false,
         thumbnailSize: 32,
         colorPickerValueRange: 'absolute',
-        showHidden: false
+        showHiddenOutputs: false
       },
       theme: {
         isDark: true,

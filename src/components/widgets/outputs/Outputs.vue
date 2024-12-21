@@ -56,7 +56,7 @@ import type { Fan, Led, OutputPin } from '@/store/printer/types'
 })
 export default class Outputs extends Mixins(StateMixin) {
   get showHidden () {
-    return this.$store.state.config.uiSettings.general.showHidden
+    return this.$store.state.config.uiSettings.general.showHiddenOutputs
   }
 
   get all () {

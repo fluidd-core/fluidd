@@ -55,12 +55,12 @@ import Outputs from '@/components/widgets/outputs/Outputs.vue'
 })
 export default class OutputsCard extends Vue {
   get showHidden () {
-    return this.$store.state.config.uiSettings.general.showHidden
+    return this.$store.state.config.uiSettings.general.showHiddenOutputs
   }
 
   set showHidden (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.showHidden',
+      path: 'uiSettings.general.showHiddenOutputs',
       value,
       server: true
     })
