@@ -1,20 +1,55 @@
 import { DateFormats, TimeFormats, type DateTimeFormat } from '@/globals'
+import i18n from '@/plugins/i18n'
 
-type GetLocalesFunction = () => Intl.LocalesArgument
 type GetDefaultDateTimeFormatFunction = () => string
 
-const dateTimeFormatter = (getLocales: GetLocalesFunction, getDefaultDateFormat: GetDefaultDateTimeFormatFunction, getDefaultTimeFormat: GetDefaultDateTimeFormatFunction) => {
+export const getNavigatorLocales = () => {
+  return navigator.languages ?? [navigator.language]
+}
+
+export const getAllLocales = (): Intl.LocalesArgument => {
+  return [
+    i18n.locale,
+    ...getNavigatorLocales()
+  ]
+}
+
+export const isToday = (value: number | string | Date) => {
+  const date = new Date(value)
+  const today = new Date()
+
+  return date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+}
+
+export const isThisMonth = (value: number | string | Date) => {
+  const date = new Date(value)
+  const today = new Date()
+
+  return date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+}
+
+export const isThisYear = (value: number | string | Date) => {
+  const date = new Date(value)
+  const today = new Date()
+
+  return date.getFullYear() === today.getFullYear()
+}
+
+export const buildDateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFunction, getDefaultTimeFormat: GetDefaultDateTimeFormatFunction) => {
   const instance = {
     getDateFormat: (override?: string): DateTimeFormat => {
       return {
-        locales: getLocales(),
+        locales: getAllLocales(),
         ...DateFormats[override ?? getDefaultDateFormat()]
       }
     },
 
     getTimeFormat: (override?: string): DateTimeFormat => {
       return {
-        locales: getLocales(),
+        locales: getAllLocales(),
         ...TimeFormats[override ?? getDefaultTimeFormat()]
       }
     },
@@ -110,7 +145,7 @@ const dateTimeFormatter = (getLocales: GetLocalesFunction, getDefaultDateFormat:
     },
 
     formatRelativeTime (value: number, unit: Intl.RelativeTimeFormatUnit, options?: Intl.RelativeTimeFormatOptions) {
-      const rtf = new Intl.RelativeTimeFormat(getLocales(), {
+      const rtf = new Intl.RelativeTimeFormat(getAllLocales(), {
         numeric: 'auto',
         ...options
       })
@@ -119,11 +154,11 @@ const dateTimeFormatter = (getLocales: GetLocalesFunction, getDefaultDateFormat:
     },
 
     formatAbsoluteDateTime: (value: number | string | Date, options?: Intl.RelativeTimeFormatOptions) => {
-      if (instance.isToday(value)) {
+      if (isToday(value)) {
         return instance.formatTime(value, options)
       }
 
-      if (instance.isThisYear(value)) {
+      if (isThisYear(value)) {
         return instance.formatDateTime(value, {
           year: undefined,
           ...options
@@ -132,33 +167,7 @@ const dateTimeFormatter = (getLocales: GetLocalesFunction, getDefaultDateFormat:
 
       return instance.formatDateTime(value, options)
     },
-
-    isToday: (value: number | string | Date) => {
-      const date = new Date(value)
-      const today = new Date()
-
-      return date.getDate() === today.getDate() &&
-          date.getMonth() === today.getMonth() &&
-          date.getFullYear() === today.getFullYear()
-    },
-
-    isThisMonth: (value: number | string | Date) => {
-      const date = new Date(value)
-      const today = new Date()
-
-      return date.getMonth() === today.getMonth() &&
-          date.getFullYear() === today.getFullYear()
-    },
-
-    isThisYear: (value: number | string | Date) => {
-      const date = new Date(value)
-      const today = new Date()
-
-      return date.getFullYear() === today.getFullYear()
-    },
   }
 
   return instance
 }
-
-export default dateTimeFormatter

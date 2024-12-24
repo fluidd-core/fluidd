@@ -1,14 +1,13 @@
-import dateTimeFormatter from '../date-time-formatter'
+import { buildDateTimeFormatters } from '../date-time-formatters'
 import { timeTravel } from '@/../tests/unit/utils'
 
-const createDateTimeFormatter = (dateFormatName: string = '', timeFormatName: string = '') => dateTimeFormatter(
-  () => ['en'],
+const buildTestDateTimeFormatters = (dateFormatName: string = '', timeFormatName: string = '') => buildDateTimeFormatters(
   () => dateFormatName,
   () => timeFormatName
 )
 
 describe('formatCounterSeconds', () => {
-  const dtf = createDateTimeFormatter()
+  const dtf = buildTestDateTimeFormatters()
 
   it('Formats counters as expected', () => {
     expect(dtf.formatCounterSeconds(10)).toBe('0m 10s')
@@ -38,7 +37,7 @@ describe('formatCounterSeconds', () => {
 
 describe('formatDateTime', () => {
   it('Formats as human readable when in future', () => {
-    const dtf = createDateTimeFormatter()
+    const dtf = buildTestDateTimeFormatters()
 
     const fiveMins = Date.now() + (5 * 60 * 1000)
 
@@ -51,7 +50,7 @@ describe('formatDateTime', () => {
 
   it('Formats as human readable when in past', () => {
     timeTravel('2022-11-19 14:32', () => {
-      const dtf = createDateTimeFormatter()
+      const dtf = buildTestDateTimeFormatters()
 
       const fiveMins = Date.now() - (5 * 60 * 1000)
 
@@ -69,7 +68,7 @@ describe('formatDateTime', () => {
 
   it('Formats as ISO8601 correctly', () => {
     timeTravel('2022-11-19 14:32', () => {
-      const dtf = createDateTimeFormatter('iso', 'iso')
+      const dtf = buildTestDateTimeFormatters('iso', 'iso')
 
       const now = Date.now()
 
