@@ -61,13 +61,15 @@ export const getters: GetterTree<PrinterState, RootState> = {
   getKlippyApp: (state): KlippyApp => {
     const app = state.info.app?.toLowerCase()
 
-    const klippyApp = app && isKeyOf(app, Globals.SUPPORTED_SERVICES.klipper)
+    const name = app && isKeyOf(app, Globals.SUPPORTED_SERVICES.KLIPPER)
       ? app
       : 'klipper'
 
     return {
-      name: klippyApp,
-      ...Globals.SUPPORTED_SERVICES.klipper[klippyApp]
+      name,
+      isKalico: name === 'kalico',
+      isKalicoOrDangerKlipper: name === 'kalico' || name === 'danger-klipper',
+      ...Globals.SUPPORTED_SERVICES.KLIPPER[name]
     }
   },
 

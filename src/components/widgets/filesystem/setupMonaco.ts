@@ -10,8 +10,7 @@ import themeDark from '@/monaco/theme/editor.dark.theme.json'
 import themeLight from '@/monaco/theme/editor.light.theme.json'
 
 import { MonacoLanguageImports } from '@/dynamicImports'
-import type { KlippyApp } from '@/store/printer/types'
-import type { Globals } from '@/globals'
+import type { KlippyApp, SupportedKlipperServices } from '@/store/printer/types'
 
 type ReduceState<T> = {
   current?: T,
@@ -32,10 +31,7 @@ const isCodeLensSupportedService = (service: string): service is CodeLensSupport
   'crowsnest'
 ].includes(service)
 
-type DocsSectionService = (
-  CodeLensSupportedService |
-  keyof typeof Globals.SUPPORTED_SERVICES.klipper
-)
+type DocsSectionService = CodeLensSupportedService | SupportedKlipperServices
 
 const getDocsSectionHash = (service: DocsSectionService, sectionName: string) => {
   switch (service) {
@@ -51,6 +47,12 @@ const getDocsSectionHash = (service: DocsSectionService, sectionName: string) =>
       break
 
     case 'danger-klipper':
+      if (sectionName === 'danger_options') {
+        return 'danger-options'
+      }
+
+      return getDocsSectionHash('klipper', sectionName)
+
     case 'kalico':
       if (sectionName === 'danger_options') {
         return 'danger-options'

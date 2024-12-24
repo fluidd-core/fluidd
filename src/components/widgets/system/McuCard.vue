@@ -24,15 +24,15 @@
           <th>{{ $t('app.system_info.label.frequency') }}</th>
           <td>{{ $filters.getReadableFrequencyString(+mcuConstants.CLOCK_FREQ) }}</td>
         </tr>
+        <tr v-if="klippyApp.isKalico && mcu.app">
+          <th>{{ $t('app.system_info.label.application') }}</th>
+          <td>{{ mcu.app }}</td>
+        </tr>
         <tr>
           <th>{{ $t('app.system_info.label.version') }}</th>
           <td>{{ mcu.mcu_version }}</td>
         </tr>
-        <tr v-if="mcu.app">
-          <th>{{ $t('app.system_info.label.application') }}</th>
-          <td>{{ mcu.app }}</td>
-        </tr>
-        <tr v-if="mcu.non_critical_disconnected != null">
+        <tr v-if="klippyApp.isKalico && mcu.non_critical_disconnected != null">
           <th>{{ $t('app.system_info.label.non_critical_connection') }}</th>
           <td>
             <v-chip
@@ -67,7 +67,7 @@
 
 <script lang="ts">
 import McuInformationDialog from './McuInformationDialog.vue'
-import type { MCU } from '@/store/printer/types'
+import type { KlippyApp, MCU } from '@/store/printer/types'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
@@ -78,6 +78,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 export default class PrinterStatsCard extends Vue {
   @Prop({ type: Object, required: true })
   readonly mcu!: MCU
+
+  get klippyApp (): KlippyApp {
+    return this.$store.getters['printer/getKlippyApp'] as KlippyApp
+  }
 
   get mcuConstants () {
     return this.mcu.mcu_constants || {} as Record<string, string | number>

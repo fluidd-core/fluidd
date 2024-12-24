@@ -232,7 +232,7 @@ export const Globals = Object.freeze({
     { suffix: '.cfg', service: 'klipper', link: '{klipperDomain}/Config_Reference.html' }
   ],
   SUPPORTED_SERVICES: {
-    klipper: {
+    KLIPPER: {
       klipper: {
         domain: 'https://www.klipper3d.org',
         minVersion: 'v0.11.0-257'

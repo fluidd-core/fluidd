@@ -146,7 +146,7 @@ export default class MacroBtn extends Mixins(StateMixin) {
   }
 
   get supportsPythonGcodeMacros () {
-    return ['danger-klipper', 'kalico'].includes(this.klippyApp.name)
+    return this.klippyApp.isKalicoOrDangerKlipper
   }
 
   handleClick () {

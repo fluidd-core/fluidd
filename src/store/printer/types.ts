@@ -303,8 +303,12 @@ export interface BeaconModel {
   active: boolean;
 }
 
+export type SupportedKlipperServices = keyof typeof Globals.SUPPORTED_SERVICES.KLIPPER
+
 export interface KlippyApp {
-  name: keyof typeof Globals.SUPPORTED_SERVICES.klipper;
+  name: SupportedKlipperServices;
+  isKalico: boolean;
+  isKalicoOrDangerKlipper: boolean;
   domain: string;
   minVersion: string;
 }
