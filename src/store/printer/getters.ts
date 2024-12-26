@@ -501,8 +501,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
             color,
             prettyName,
             key: e,
-            minTemp: config?.min_temp,
-            maxTemp: config?.max_temp
+            minTemp: config?.min_temp ?? 0,
+            maxTemp: config?.max_temp ?? 500
           })
         }
       })

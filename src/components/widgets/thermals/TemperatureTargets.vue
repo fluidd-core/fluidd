@@ -28,6 +28,8 @@
         <tr
           v-for="item in heaters"
           :key="item.key"
+          @click="handleHeaterRowClick(item, $event)"
+          @contextmenu.prevent="handleHeaterRowClick(item, $event)"
         >
           <td>
             <v-icon
@@ -41,7 +43,7 @@
             <span
               :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click="legendClick(item)"
+              @click.stop="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
@@ -50,7 +52,7 @@
             <span
               :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click="legendClick(item, '#power')"
+              @click.stop="legendClick(item, '#power')"
             >
               <span v-if="item.power <= 0 && item.target <= 0">off</span>
               <span v-if="item.target > 0">
@@ -65,7 +67,7 @@
             <span
               :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click="legendClick(item, '#power')"
+              @click.stop="legendClick(item, '#power')"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -112,7 +114,7 @@
             <span
               :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click="legendClick(item)"
+              @click.stop="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
@@ -122,7 +124,7 @@
               v-if="item.speed"
               :class="{ 'active':isLegendSelected(item, '#speed') }"
               class="legend-item toggle"
-              @click="legendClick(item, '#speed')"
+              @click.stop="legendClick(item, '#speed')"
             >
               <span v-if="item.speed > 0 && (item.target > 0 || !item.target)">
                 {{ (item.speed * 100).toFixed(0) }}<small>%</small>
@@ -140,7 +142,7 @@
             <span
               :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click="legendClick(item, '#power')"
+              @click.stop="legendClick(item, '#power')"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -194,7 +196,7 @@
             <span
               :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click="legendClick(item)"
+              @click.stop="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
@@ -293,12 +295,30 @@
         </tr>
       </tbody>
     </v-simple-table>
+
+    <heater-context-menu
+      v-if="contextMenuState.open"
+      v-model="contextMenuState.open"
+      :heater="contextMenuState.heater"
+      :position-x="contextMenuState.x"
+      :position-y="contextMenuState.y"
+      @pid-calibrate="handlePidCalibrateDialog"
+    />
+
+    <heater-pid-calibrate-dialog
+      v-if="heaterPidCalibrateDialog.open"
+      v-model="heaterPidCalibrateDialog.open"
+      :heater="heaterPidCalibrateDialog.heater"
+      @save="handlePidCalibrate"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
+import HeaterContextMenu from './HeaterContextMenu.vue'
+import HeaterPidCalibrateDialog from './HeaterPidCalibrateDialog.vue'
 import StateMixin from '@/mixins/state'
 import type { Fan, Heater, Sensor } from '@/store/printer/types'
 import { takeRightWhile } from 'lodash-es'
@@ -307,12 +327,26 @@ import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
   components: {
-    TemperaturePresetsMenu
+    TemperaturePresetsMenu,
+    HeaterContextMenu,
+    HeaterPidCalibrateDialog
   }
 })
 export default class TemperatureTargets extends Mixins(StateMixin) {
-  get heaters () {
-    return this.$store.getters['printer/getHeaters']
+  contextMenuState: any = {
+    open: false,
+    x: 0,
+    y: 0,
+    heater: null
+  }
+
+  heaterPidCalibrateDialog: any = {
+    heater: null,
+    open: false
+  }
+
+  get heaters (): Heater[] {
+    return this.$store.getters['printer/getHeaters'] as Heater[]
   }
 
   get fans () {
@@ -463,6 +497,35 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
           )
         }
       })
+  }
+
+  handleHeaterRowClick (item: Heater, event: MouseEvent) {
+    if (this.contextMenuState.open) {
+      this.contextMenuState.open = false
+
+      if (event.type !== 'contextmenu') {
+        return
+      }
+    }
+
+    // Open the context menu
+    this.contextMenuState.x = event.clientX
+    this.contextMenuState.y = event.clientY
+    this.contextMenuState.heater = item
+    this.$nextTick(() => {
+      this.contextMenuState.open = true
+    })
+  }
+
+  handlePidCalibrateDialog (heater: Heater) {
+    this.heaterPidCalibrateDialog = {
+      heater,
+      open: true
+    }
+  }
+
+  handlePidCalibrate (heater: Heater, targetTemperature: number) {
+    this.sendGcode(`PID_CALIBRATE HEATER=${encodeGcodeParamValue(heater.name)} TARGET=${targetTemperature}`)
   }
 }
 </script>

@@ -97,8 +97,8 @@ export interface Heater extends OutputType {
   temperature: number;
   target: number;
   power: number;
-  minTemp?: number;
-  maxTemp?: number;
+  minTemp: number;
+  maxTemp: number;
 }
 
 export interface Fan extends OutputType<FanConfig> {

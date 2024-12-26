@@ -27,9 +27,13 @@ app:
     label:
       current: Actual
       item: Name
+      pid_calibration: PID Calibration
       power: Power
       target: Target
+      target_temperature: Target Temperature
       rate_of_change: Change
+    title:
+      pid_calibrate: PID Calibrate {name}
     tooltip:
       help: >-
         Hold <kbd>Shift</kbd> to zoom.<br />Click an item to toggle in the graph.<br
