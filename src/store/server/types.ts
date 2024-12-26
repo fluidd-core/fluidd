@@ -35,7 +35,7 @@ export type ServerFlags =
 export interface ServerInfo {
   failed_components: string[];
   klippy_connected: boolean;
-  klippy_state: string;
+  klippy_state: KlippyState;
   components: string[];
   registered_directories: string[];
   warnings: string[];
@@ -43,6 +43,13 @@ export interface ServerInfo {
   api_version?: number[]
   api_version_string?: string
 }
+
+export type KlippyState =
+  'disconnected' |
+  'startup' |
+  'ready' |
+  'error' |
+  'shutdown'
 
 export interface SystemInfo {
   available_services?: string[];

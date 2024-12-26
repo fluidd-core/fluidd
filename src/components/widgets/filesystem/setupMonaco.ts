@@ -10,6 +10,7 @@ import themeDark from '@/monaco/theme/editor.dark.theme.json'
 import themeLight from '@/monaco/theme/editor.light.theme.json'
 
 import { MonacoLanguageImports } from '@/dynamicImports'
+import type { KlippyApp, SupportedKlipperServices } from '@/store/printer/types'
 
 type ReduceState<T> = {
   current?: T,
@@ -30,7 +31,9 @@ const isCodeLensSupportedService = (service: string): service is CodeLensSupport
   'crowsnest'
 ].includes(service)
 
-const getDocsSection = (service: CodeLensSupportedService, sectionName: string) => {
+type DocsSectionService = CodeLensSupportedService | SupportedKlipperServices
+
+const getDocsSectionHash = (service: DocsSectionService, sectionName: string) => {
   switch (service) {
     case 'klipper':
       if (sectionName.startsWith('stepper_')) {
@@ -42,6 +45,24 @@ const getDocsSection = (service: CodeLensSupportedService, sectionName: string) 
       }
 
       break
+
+    case 'danger-klipper':
+      if (sectionName === 'danger_options') {
+        return 'danger-options'
+      }
+
+      return getDocsSectionHash('klipper', sectionName)
+
+    case 'kalico':
+      if (sectionName === 'danger_options') {
+        return 'danger-options'
+      }
+
+      if (sectionName === 'constants') {
+        return 'configuration-references'
+      }
+
+      return getDocsSectionHash('klipper', sectionName)
 
     case 'moonraker':
       if (sectionName.startsWith('include')) {
@@ -96,10 +117,10 @@ async function setupMonaco () {
   })
 
   const app = getVueApp()
+  const klippyApp = app.$store.getters['printer/getKlippyApp'] as KlippyApp
 
   monaco.editor.registerCommand('fluidd_open_docs', (_, service: CodeLensSupportedService, hash: string) => {
     const serviceKey = service.replace(/-/g, '_')
-    const klippyApp = app.$store.getters['printer/getKlippyApp']
 
     const url = app.$t(`app.file_system.url.${serviceKey}_config`, {
       hash,
@@ -117,6 +138,10 @@ async function setupMonaco () {
         return null
       }
 
+      const docsSectionService: DocsSectionService = service === 'klipper'
+        ? klippyApp.name
+        : service
+
       const linesContent = model.getLinesContent()
 
       const sectionBlocks = linesContent
@@ -126,10 +151,11 @@ async function setupMonaco () {
           if (section) {
             const [sectionName] = section[1].split(' ', 1)
 
-            const referenceSection = getDocsSection(service, sectionName)
+            const hash = getDocsSectionHash(docsSectionService, sectionName)
 
             state.result.push(state.current = {
-              referenceSection,
+              sectionName,
+              hash,
               range: {
                 startLineNumber: index + 1,
                 startColumn: model.getLineFirstNonWhitespaceColumn(index + 1),
@@ -150,7 +176,7 @@ async function setupMonaco () {
           }
 
           return state
-        }, { result: [] } as ReduceState<{ referenceSection: string, range: monaco.IRange }>)
+        }, { result: [] } as ReduceState<{ sectionName: string, hash: string, range: monaco.IRange }>)
         .result
 
       return {
@@ -160,8 +186,8 @@ async function setupMonaco () {
             id: `docs${index}`,
             command: {
               id: 'fluidd_open_docs',
-              title: app.$t('app.file_system.label.view_section_documentation', { section: section.referenceSection }).toString(),
-              arguments: [service, section.referenceSection]
+              title: app.$t('app.file_system.label.view_section_documentation', { section: section.sectionName }).toString(),
+              arguments: [service, section.hash]
             }
           })),
         dispose: () => undefined

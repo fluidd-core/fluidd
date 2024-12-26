@@ -521,7 +521,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import type { BedSize } from '@/store/printer/types'
+import type { BedSize, KlippyApp } from '@/store/printer/types'
 
 type Axis = 'X' | 'Y' | 'Z'
 
@@ -543,6 +543,10 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     return this.$store.getters['printer/getHasSteppersEnabled'] as boolean
   }
 
+  get klippyApp (): KlippyApp {
+    return this.$store.getters['printer/getKlippyApp'] as KlippyApp
+  }
+
   get printerSettings () {
     return this.$store.getters['printer/getPrinterSettings']()
   }
@@ -552,7 +556,13 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get printerSupportsZTiltAdjust (): boolean {
-    return 'z_tilt' in this.printerSettings
+    return (
+      'z_tilt' in this.printerSettings ||
+      (
+        this.klippyApp.isKalico &&
+        'z_tilt_ng' in this.printerSettings
+      )
+    )
   }
 
   get printerSupportsLeveling (): boolean {
@@ -682,7 +692,10 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
         ]
       : this.printerSupportsZTiltAdjust
         ? [
-            !this.$store.state.printer.printer.z_tilt?.applied,
+            !(
+              this.$store.state.printer.printer.z_tilt?.applied ||
+              this.$store.state.printer.printer.z_tilt_ng?.applied
+            ),
             this.hasWait(this.$waits.onZTilt)
           ]
         : []

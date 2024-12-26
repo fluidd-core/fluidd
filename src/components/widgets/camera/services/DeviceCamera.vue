@@ -4,6 +4,8 @@
     autoplay
     muted
     :style="cameraStyle"
+    @play="updateStatus('connected')"
+    @error="updateStatus('error')"
   />
 </template>
 
@@ -11,24 +13,32 @@
 import { Component, Ref, Mixins } from 'vue-property-decorator'
 import CameraMixin from '@/mixins/camera'
 import consola from 'consola'
+import type { CameraNameMenuItem } from '@/types'
 
 @Component({})
 export default class DeviceCamera extends Mixins(CameraMixin) {
   @Ref('streamingElement')
   readonly cameraVideo!: HTMLVideoElement
 
-  cameraNameMenuItems: { text: string, value: string }[] = []
-
   async startPlayback () {
-    const stream = await this.getUserMedia()
+    this.updateStatus('connecting')
 
-    this.cameraVideo.srcObject = stream
-    this.$emit('playback')
+    try {
+      const stream = await this.getUserMedia()
 
-    this.$emit('update:camera-name', await this.getDeviceLabel())
+      this.cameraVideo.srcObject = stream
+
+      this.updateCameraName(await this.getDeviceLabel() ?? '')
+    } catch (e) {
+      consola.error(`[DeviceCamera] failed to start playback "${this.getSelectedDeviceCamera()}"`, e)
+
+      this.updateStatus('error')
+    }
   }
 
   stopPlayback () {
+    this.updateStatus('disconnected')
+
     try {
       const stream = this.cameraVideo.srcObject as MediaStream
 
@@ -39,7 +49,7 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
         }
       }
     } catch (e) {
-      consola.error('[Device Camera] failed to stop and remove all tracks', e)
+      consola.error('[DeviceCamera] failed to stop and remove all tracks', e)
     }
 
     this.cameraVideo.srcObject = null
@@ -59,7 +69,7 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
         }
       })
     } catch (e) {
-      consola.error(`[Device Camera] failed to select device ${selectedDeviceCamera}`, e)
+      consola.error(`[DeviceCamera] failed to select device "${selectedDeviceCamera}"`, e)
 
       this.setSelectedDeviceCamera(null)
 
@@ -78,7 +88,7 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
       return devices
         .filter(device => device.kind === 'videoinput')
     } catch (e) {
-      consola.error('[Device Camera] failed to enumerate devices', e)
+      consola.error('[DeviceCamera] failed to enumerate devices', e)
 
       return []
     }
@@ -88,23 +98,26 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
     if (this.cameraNameMenuItems.length === 0) {
       const devices = await this.enumerateDevices()
 
-      this.cameraNameMenuItems = [
+      const cameraNameMenuItems = [
         {
+          icon: '$camera',
           text: this.$tc('app.general.label.environment_facing'),
           value: 'environment'
         },
         {
+          icon: '$camera',
           text: this.$tc('app.general.label.user_facing'),
           value: 'user'
         },
         ...devices
           .map(device => ({
+            icon: '$camera',
             text: device.label,
             value: device.deviceId
           }))
       ]
 
-      this.$emit('update:camera-name-menu-items', this.cameraNameMenuItems)
+      this.updateCameraNameMenuItems(cameraNameMenuItems)
     }
 
     const selectedDeviceCamera = this.getSelectedDeviceCamera()
@@ -125,11 +138,14 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
     }
   }
 
-  menuItemClick (value: string) {
-    if (this.getSelectedDeviceCamera() !== value) {
-      this.setSelectedDeviceCamera(value)
+  menuItemClick (item: CameraNameMenuItem) {
+    if (this.getSelectedDeviceCamera() !== item.value) {
+      this.setSelectedDeviceCamera(item.value)
 
       this.stopPlayback()
+
+      this.updateCameraName(item.text)
+
       this.startPlayback()
     }
   }

@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
-import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, BeaconState } from './types'
-import { get } from 'lodash-es'
+import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, BeaconState, KlippyApp } from './types'
+import { capitalize, get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
 import type { GcodeHelp } from '../console/types'
@@ -35,7 +35,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   getKlippyState: (state, getters, rootState, rootGetters): string => {
     const serverInfo = rootGetters['server/getInfo'] as ServerInfo
 
-    return Vue.$filters.capitalize(serverInfo.klippy_state || '')
+    return capitalize(serverInfo.klippy_state || '')
   },
 
   getKlippyStateMessage: (state, getters, rootState, rootGetters): string => {
@@ -58,16 +58,18 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return 'Unknown'
   },
 
-  getKlippyApp: (state) => {
+  getKlippyApp: (state): KlippyApp => {
     const app = state.info.app?.toLowerCase()
 
-    const klippyApp = app && isKeyOf(app, Globals.SUPPORTED_SERVICES.klipper)
+    const name = app && isKeyOf(app, Globals.SUPPORTED_SERVICES.KLIPPER)
       ? app
       : 'klipper'
 
     return {
-      name: klippyApp,
-      ...Globals.SUPPORTED_SERVICES.klipper[klippyApp]
+      name,
+      isKalico: name === 'kalico',
+      isKalicoOrDangerKlipper: name === 'kalico' || name === 'danger-klipper',
+      ...Globals.SUPPORTED_SERVICES.KLIPPER[name]
     }
   },
 
@@ -286,17 +288,17 @@ export const getters: GetterTree<PrinterState, RootState> = {
   /**
    * Return MCU's and their state
    */
-  getMcus: (state) => {
-    const mcus: MCU[] = []
-    Object.keys(state.printer)
+  getMcus: (state, getters) => {
+    const mcus = Object.keys(state.printer)
       .filter(key => key.startsWith('mcu'))
       .sort()
-      .forEach(key => {
-        mcus.push({
-          name: key,
-          ...state.printer[key]
-        })
-      })
+      .map((key): MCU => ({
+        name: key,
+        prettyName: Vue.$filters.prettyCase(key),
+        ...state.printer[key],
+        config: getters.getPrinterSettings(key)
+      }))
+
     return mcus
   },
 
@@ -499,8 +501,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
             color,
             prettyName,
             key: e,
-            minTemp: config?.min_temp,
-            maxTemp: config?.max_temp
+            minTemp: config?.min_temp ?? 0,
+            maxTemp: config?.max_temp ?? 500
           })
         }
       })

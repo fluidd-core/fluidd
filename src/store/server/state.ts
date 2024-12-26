@@ -6,7 +6,7 @@ export const defaultState = (): ServerState => {
     info: {
       failed_components: [],
       klippy_connected: false, // indicates if klippy is disconnected vs shutdown.
-      klippy_state: '',
+      klippy_state: 'disconnected',
       components: [],
       registered_directories: [],
       warnings: []

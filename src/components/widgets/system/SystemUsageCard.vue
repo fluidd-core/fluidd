@@ -14,7 +14,7 @@
         >
           <mcu-load-chart
             :key="i"
-            :mcu="mcu.name"
+            :mcu="mcu"
           />
         </template>
       </v-row>

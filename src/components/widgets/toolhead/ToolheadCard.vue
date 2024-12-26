@@ -140,6 +140,7 @@ import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import Toolhead from './Toolhead.vue'
 import type { Macro } from '@/store/macros/types'
+import type { KlippyApp } from '@/store/printer/types'
 
 type Tool = {
   name: string,
@@ -158,6 +159,10 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   @Prop({ type: Boolean })
   readonly menuCollapsed?: boolean
 
+  get klippyApp (): KlippyApp {
+    return this.$store.getters['printer/getKlippyApp'] as KlippyApp
+  }
+
   get printerSettings () {
     return this.$store.getters['printer/getPrinterSettings']()
   }
@@ -167,7 +172,13 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get printerSupportsZTiltAdjust (): boolean {
-    return 'z_tilt' in this.printerSettings
+    return (
+      'z_tilt' in this.printerSettings ||
+      (
+        this.klippyApp.isKalico &&
+        'z_tilt_ng' in this.printerSettings
+      )
+    )
   }
 
   get printerSupportsBedScrewsAdjust (): boolean {

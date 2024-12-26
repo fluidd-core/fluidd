@@ -37,10 +37,10 @@ export const mutations: MutationTree<ServerState> = {
     }
   },
 
-  setMachinePeripheralsCanbus (state, payload: { canbusInterface: string, canUuids: CanbusUuid[] }) {
+  setMachinePeripheralsCanbus (state, payload: { canbusInterface: string, can_uuids: CanbusUuid[] }) {
     state.can_uuids = {
       ...state.can_uuids,
-      [payload.canbusInterface]: payload.canUuids
+      [payload.canbusInterface]: payload.can_uuids
     }
   },
 

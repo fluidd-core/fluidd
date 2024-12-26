@@ -11,11 +11,11 @@
         :camera="camera"
         :crossorigin="crossorigin"
         class="camera-image"
+        @update:status="status = $event"
         @update:camera-name="cameraName = $event"
         @update:camera-name-menu-items="cameraNameMenuItems = $event"
         @update:raw-camera-url="rawCameraUrl = $event"
         @update:frames-per-second="framesPerSecond = $event"
-        @playback="setupFrameEvents()"
       />
     </template>
     <div v-else>
@@ -35,7 +35,7 @@
             class="camera-name"
             v-on="on"
           >
-            {{ cameraName || camera.name }}
+            {{ cameraNameAndStatus }}
             <v-icon
               small
               class="ml-1"
@@ -49,11 +49,11 @@
           <v-list-item
             v-for="(item, index) in cameraNameMenuItems"
             :key="index"
-            @click="cameraNameMenuItemClick(item.value)"
+            @click="cameraNameMenuItemClick(item)"
           >
             <v-list-item-icon>
               <v-icon>
-                $camera
+                {{ item.icon }}
               </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
@@ -69,7 +69,7 @@
         v-else
         class="camera-name"
       >
-        {{ cameraName || camera.name }}
+        {{ cameraNameAndStatus }}
       </div>
     </template>
 
@@ -108,6 +108,8 @@ import type { WebcamConfig } from '@/store/webcams/types'
 import type { CameraFullscreenAction } from '@/store/config/types'
 import { CameraComponents } from '@/dynamicImports'
 import CameraMixin from '@/mixins/camera'
+import type { CameraConnectionStatus, CameraNameMenuItem } from '@/types'
+import { startCase } from 'lodash-es'
 
 @Component({})
 export default class CameraItem extends Vue {
@@ -123,19 +125,17 @@ export default class CameraItem extends Vue {
   @Ref('component-instance')
   readonly componentInstance!: CameraMixin
 
-  rawCameraUrl: string | null = null
-  framesPerSecond: string | null = null
-  cameraName: string | null = null
-  cameraNameMenuItems: { text: string, value: string }[] = []
+  status: CameraConnectionStatus = 'disconnected'
+  rawCameraUrl = ''
+  framesPerSecond = ''
+  cameraName = ''
+  cameraNameMenuItems: CameraNameMenuItem[] = []
 
-  mounted () {
-    this.setupFrameEvents()
-  }
-
-  setupFrameEvents () {
-    if (this.$listeners?.frame && this.componentInstance) {
+  @Watch('status')
+  onStatus (value: CameraConnectionStatus) {
+    if (value === 'connected' && this.$listeners?.frame && this.componentInstance) {
       if (this.componentInstance.streamingElement instanceof HTMLImageElement) {
-        this.componentInstance.streamingElement.addEventListener('load', () => this.handleFrame())
+        this.handleFrame()
       } else if (this.componentInstance.streamingElement instanceof HTMLVideoElement) {
         this.handleFrame(true)
       }
@@ -153,12 +153,13 @@ export default class CameraItem extends Vue {
     }
   }
 
-  cameraNameMenuItemClick (value: string) {
-    this.componentInstance.menuItemClick(value)
+  cameraNameMenuItemClick (item: CameraNameMenuItem) {
+    this.componentInstance.menuItemClick(item)
   }
 
   @Watch('camera')
   onCamera () {
+    this.status = 'disconnected'
     this.rawCameraUrl = ''
     this.framesPerSecond = ''
     this.cameraName = ''
@@ -171,12 +172,22 @@ export default class CameraItem extends Vue {
 
   get cameraComponent () {
     if (this.camera.service) {
-      const componentName = `${this.$filters.startCase(this.camera.service).replace(/ /g, '')}Camera`
+      const componentName = `${startCase(this.camera.service).replace(/ /g, '')}Camera`
 
       if (componentName in CameraComponents) {
         return CameraComponents[componentName]
       }
     }
+  }
+
+  get cameraNameAndStatus () {
+    const cameraName = this.cameraName || this.camera.name
+
+    if (this.status !== 'connected') {
+      return `${cameraName} (${this.status})`
+    }
+
+    return cameraName
   }
 }
 </script>
@@ -196,6 +207,7 @@ export default class CameraItem extends Vue {
   .camera-container {
     position: relative;
     background: rgba(0, 0, 0, 1);
+    min-height: 70px;
   }
 
   .camera-name,

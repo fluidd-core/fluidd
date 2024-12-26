@@ -12,12 +12,12 @@
 
     <div class="chart-label-wrapper">
       <div class="chart-label">
-        <span>{{ $t('app.system_info.label.mcu_load', { mcu: mcu.toUpperCase() }) }}</span>
+        <span>{{ $t('app.system_info.label.mcu_load', { mcu: mcu.prettyName }) }}</span>
         <span v-if="chartData.length">{{ chartData[chartData.length - 1].load }}%</span>
       </div>
 
       <div class="chart-label">
-        <span>{{ $t('app.system_info.label.mcu_awake', { mcu: mcu.toUpperCase() }) }}</span>
+        <span>{{ $t('app.system_info.label.mcu_awake', { mcu: mcu.prettyName }) }}</span>
         <span v-if="chartData.length">{{ chartData[chartData.length - 1].awake }}%</span>
       </div>
 
@@ -31,16 +31,17 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import type { MCU } from '@/store/printer/types'
 
 @Component({})
 export default class McuLoadChart extends Vue {
   ready = false
 
-  @Prop({ type: String, required: true })
-  readonly mcu!: string
+  @Prop({ type: Object, required: true })
+  readonly mcu!: MCU
 
   get chartData () {
-    return this.$store.state.charts[this.mcu] || []
+    return this.$store.state.charts[this.mcu.name] || []
   }
 
   get options () {
