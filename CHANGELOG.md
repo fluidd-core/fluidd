@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.31.3](https://github.com/fluidd-core/fluidd/compare/v1.31.2...v1.31.3) (2024-12-26)
+
+
+### Features
+
+* adds Kalico non_critical_disconnected support ([8b6bd70](https://github.com/fluidd-core/fluidd/commit/8b6bd706e3f95c74c01601854ac73853e0f91e9a))
+* adds Kalico z_tilt_ng support ([aa12c3f](https://github.com/fluidd-core/fluidd/commit/aa12c3f58812d565b3543f825e43c91866e45168))
+* **Cameras:** adds status report ([26647e1](https://github.com/fluidd-core/fluidd/commit/26647e1bff95227850eac1e0408ccdfbe7a3145f))
+* **Heaters:** adds PID_CALIBRATE support ([9682b5b](https://github.com/fluidd-core/fluidd/commit/9682b5b3ab2ba6d053bb7b8ea5587ffe260b20ea))
+* improves Kalico config reference support ([832aef5](https://github.com/fluidd-core/fluidd/commit/832aef5d0e764683fab84c270e9ca361a952f005))
+
+
+### Bug Fixes
+
+* **McuCard:** hide empty fields ([7fd6a31](https://github.com/fluidd-core/fluidd/commit/7fd6a31404c0b3ab4902b001c04f7e6d69cb014f))
+* Moonraker canbus uuid parameter ([#1551](https://github.com/fluidd-core/fluidd/issues/1551)) ([2042e46](https://github.com/fluidd-core/fluidd/commit/2042e46039594c92b987686d43c46f33bde7e56d))
+* no parameters on python gcode macros ([c63b566](https://github.com/fluidd-core/fluidd/commit/c63b566ece15e9f8a412d3f4a0221fcda9f77d5c))
+
 ## [1.31.2](https://github.com/fluidd-core/fluidd/compare/v1.31.1...v1.31.2) (2024-12-10)
 
 
