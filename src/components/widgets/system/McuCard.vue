@@ -16,11 +16,11 @@
 
     <v-simple-table dense>
       <tbody>
-        <tr>
+        <tr v-if="mcuConstants.MCU">
           <th>{{ $t('app.system_info.label.micro_controller') }}</th>
           <td>{{ mcuConstants.MCU }}</td>
         </tr>
-        <tr>
+        <tr v-if="mcuConstants.CLOCK_FREQ">
           <th>{{ $t('app.system_info.label.frequency') }}</th>
           <td>{{ $filters.getReadableFrequencyString(+mcuConstants.CLOCK_FREQ) }}</td>
         </tr>
@@ -28,7 +28,7 @@
           <th>{{ $t('app.system_info.label.application') }}</th>
           <td>{{ mcu.app }}</td>
         </tr>
-        <tr>
+        <tr v-if="mcu.mcu_version">
           <th>{{ $t('app.system_info.label.version') }}</th>
           <td>{{ mcu.mcu_version }}</td>
         </tr>
