@@ -303,6 +303,7 @@
       :position-x="contextMenuState.x"
       :position-y="contextMenuState.y"
       @pid-calibrate="handlePidCalibrateDialog"
+      @turn-off="handleTurnOff"
     />
 
     <heater-pid-calibrate-dialog
@@ -515,6 +516,10 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     this.$nextTick(() => {
       this.contextMenuState.open = true
     })
+  }
+
+  handleTurnOff (heater: Heater) {
+    this.setHeaterTargetTemp(heater.name, 0)
   }
 
   handlePidCalibrateDialog (heater: Heater) {

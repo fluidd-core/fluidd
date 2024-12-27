@@ -2,22 +2,26 @@
   <app-dialog
     v-model="open"
     :title="$t('app.chart.title.pid_calibrate', { name: heater.prettyName })"
-    max-width="320"
+    max-width="480"
     @save="handleSave"
   >
-    <v-card-text>
-      <v-text-field
-        v-model.number="targetTemperature"
-        autofocus
-        outlined
-        :label="$t('app.chart.label.target_temperature')"
-        :rules="[
-          $rules.required,
-          $rules.numberValid,
-          $rules.numberGreaterThan(0)
-        ]"
-        required
-      />
+    <v-card-text class="pa-0">
+      <app-setting :title="$t('app.chart.label.target_temperature')">
+        <app-text-field
+          v-model.number="targetTemperature"
+          type="number"
+          autofocus
+          dense
+          filled
+          hide-details="auto"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThan(0)
+          ]"
+          suffix="°C"
+        />
+      </app-setting>
     </v-card-text>
   </app-dialog>
 </template>
