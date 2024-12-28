@@ -28,7 +28,6 @@
         <tr
           v-for="item in heaters"
           :key="item.key"
-          @click="handleHeaterRowClick(item, $event)"
           @contextmenu.prevent="handleHeaterRowClick(item, $event)"
         >
           <td>
@@ -43,7 +42,7 @@
             <span
               :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click.stop="legendClick(item)"
+              @click="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
@@ -52,7 +51,7 @@
             <span
               :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click.stop="legendClick(item, '#power')"
+              @click="legendClick(item, '#power')"
             >
               <span v-if="item.power <= 0 && item.target <= 0">off</span>
               <span v-if="item.target > 0">
@@ -67,7 +66,7 @@
             <span
               :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click.stop="legendClick(item, '#power')"
+              @click="legendClick(item, '#power')"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -76,7 +75,7 @@
             {{ (item.temperature) ? item.temperature.toFixed(1) : 0 }}<small>°C</small>
           </td>
           <td>/</td>
-          <td>
+          <td @contextmenu.stop>
             <app-text-field
               v-if="klippyReady"
               :value="item.target"
@@ -114,7 +113,7 @@
             <span
               :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click.stop="legendClick(item)"
+              @click="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
@@ -124,7 +123,7 @@
               v-if="item.speed"
               :class="{ 'active':isLegendSelected(item, '#speed') }"
               class="legend-item toggle"
-              @click.stop="legendClick(item, '#speed')"
+              @click="legendClick(item, '#speed')"
             >
               <span v-if="item.speed > 0 && (item.target > 0 || !item.target)">
                 {{ (item.speed * 100).toFixed(0) }}<small>%</small>
@@ -142,7 +141,7 @@
             <span
               :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click.stop="legendClick(item, '#power')"
+              @click="legendClick(item, '#power')"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -159,7 +158,7 @@
             </span>
           </td>
           <td>/</td>
-          <td>
+          <td @contextmenu.stop>
             <app-text-field
               v-if="klippyReady && item.type === 'temperature_fan'"
               :value="item.target"
@@ -196,7 +195,7 @@
             <span
               :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click.stop="legendClick(item)"
+              @click="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
