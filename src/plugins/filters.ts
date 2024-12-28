@@ -9,6 +9,7 @@ import store from '@/store'
 import router from '@/router'
 import * as dateTimeFormatters from '@/util/date-time-formatters'
 import * as stringFormatters from '@/util/string-formatters'
+import isNullOrEmpty, { type NullableOrEmpty } from '@/util/is-null-or-empty'
 import consola from 'consola'
 
 const Filters = {
@@ -85,19 +86,19 @@ const Filters = {
 
 export const Rules = {
   required (v: unknown) {
-    return ((v ?? '') !== '') || i18n.t('app.general.simple_form.error.required')
+    return !isNullOrEmpty(v) || i18n.t('app.general.simple_form.error.required')
   },
 
   numberValid (v: unknown) {
-    return !isNaN(+(v ?? NaN)) || i18n.t('app.general.simple_form.error.invalid_number')
+    return isNullOrEmpty(v) || !isNaN(+(v ?? NaN)) || i18n.t('app.general.simple_form.error.invalid_number')
   },
 
   numberGreaterThan (min: number) {
-    return (v: number) => v > min || i18n.t('app.general.simple_form.error.min', { min: `> ${min}` })
+    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || v > min || i18n.t('app.general.simple_form.error.min', { min: `> ${min}` })
   },
 
   numberGreaterThanOrEqual (min: number) {
-    return (v: number) => v >= min || i18n.t('app.general.simple_form.error.min', { min })
+    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || v >= min || i18n.t('app.general.simple_form.error.min', { v })
   },
 
   numberGreaterThanOrEqualOrZero (min: number) {
@@ -105,7 +106,7 @@ export const Rules = {
       return Rules.numberGreaterThanOrEqual(0)
     }
 
-    return (v: number) => +v === 0 || v >= min || i18n.t('app.general.simple_form.error.min_or_0', { min })
+    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || +v === 0 || v >= min || i18n.t('app.general.simple_form.error.min_or_0', { min })
   },
 
   numberGreaterThanOrZero (min: number) {
@@ -113,35 +114,35 @@ export const Rules = {
       return Rules.numberGreaterThan(0)
     }
 
-    return (v: number) => +v === 0 || v > min || i18n.t('app.general.simple_form.error.min_or_0', { min: `> ${min}` })
+    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || +v === 0 || v > min || i18n.t('app.general.simple_form.error.min_or_0', { min: `> ${min}` })
   },
 
   numberLessThan (max: number) {
-    return (v: number) => v < max || i18n.t('app.general.simple_form.error.max', { max: `< ${max}` })
+    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || v < max || i18n.t('app.general.simple_form.error.max', { max: `< ${max}` })
   },
 
   numberLessThanOrEqual (max: number) {
-    return (v: number) => v <= max || i18n.t('app.general.simple_form.error.max', { max })
+    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || v <= max || i18n.t('app.general.simple_form.error.max', { max })
   },
 
   numberLessThanOrEqualOrZero (max: number) {
-    return (v: number) => +v === 0 || v <= max || i18n.t('app.general.simple_form.error.max', { max })
+    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || +v === 0 || v <= max || i18n.t('app.general.simple_form.error.max', { max })
   },
 
   numberLessThanOrZero (max: number) {
-    return (v: number) => +v === 0 || v < max || i18n.t('app.general.simple_form.error.max', { max })
+    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || +v === 0 || v < max || i18n.t('app.general.simple_form.error.max', { max })
   },
 
   lengthGreaterThanOrEqual (min: number) {
-    return (v: string | unknown[]) => v.length >= min || i18n.t('app.general.simple_form.error.min', { min })
+    return (v: NullableOrEmpty<string | unknown[]>) => isNullOrEmpty(v) || v.length >= min || i18n.t('app.general.simple_form.error.min', { min })
   },
 
   lengthLessThanOrEqual (max: number) {
-    return (v: string | unknown[]) => v.length <= max || i18n.t('app.general.simple_form.error.max', { max })
+    return (v: NullableOrEmpty<string | unknown[]>) => isNullOrEmpty(v) || v.length <= max || i18n.t('app.general.simple_form.error.max', { max })
   },
 
-  numberArrayValid (v: unknown[]) {
-    return !v.some(i => i === '' || isNaN(+(i ?? NaN))) || i18n.t('app.general.simple_form.error.arrayofnums')
+  numberArrayValid (v: NullableOrEmpty<unknown[]>) {
+    return isNullOrEmpty(v) || !v.some(i => i === '' || isNaN(+(i ?? NaN))) || i18n.t('app.general.simple_form.error.arrayofnums')
   },
 
   passwordNotEqualUsername (username?: string | null) {

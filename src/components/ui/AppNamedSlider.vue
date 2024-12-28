@@ -190,6 +190,7 @@ export default class AppNamedSlider extends Mixins(BrowserMixin) {
     // Apply a min and max rule as per the slider.
     const rules = [
       ...this.rules || [],
+      this.$rules.required,
       this.$rules.numberValid,
       this.$rules.numberGreaterThanOrEqual(this.min)
     ]
