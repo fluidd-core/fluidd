@@ -502,7 +502,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
             prettyName,
             key: e,
             minTemp: config?.min_temp ?? 0,
-            maxTemp: config?.max_temp ?? 500
+            maxTemp: config?.max_temp ?? 500,
+            config: { ...config }
           })
         }
       })

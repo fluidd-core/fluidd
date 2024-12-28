@@ -26,6 +26,7 @@ app:
   chart:
     label:
       current: Actual
+      fan_breakpoints: Fan Breakpoints
       item: Name
       power: Power
       rate_of_change: Change
@@ -33,6 +34,7 @@ app:
       target: Target
       turn_off: Turn Off
     title:
+      mpc_calibrate: MPC Calibrate {name}
       pid_calibrate: PID Calibrate {name}
     tooltip:
       help: >-
