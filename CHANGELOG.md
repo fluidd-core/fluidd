@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.31.4](https://github.com/fluidd-core/fluidd/compare/v1.31.3...v1.31.4) (2024-12-29)
+
+
+### Features
+
+* **Heaters:** adds MPC_CALIBRATE support ([#1559](https://github.com/fluidd-core/fluidd/issues/1559)) ([fa254a7](https://github.com/fluidd-core/fluidd/commit/fa254a7825475561dc463a400ef47e2706f6277b))
+* **Heaters:** allow turn off individual heater ([8fa6dd7](https://github.com/fluidd-core/fluidd/commit/8fa6dd72ef3492bbb921fd43ff681cd59e980404))
+* **i18n-de:** Update German translations ([7b7fc92](https://github.com/fluidd-core/fluidd/commit/7b7fc92a8d9b9fdc678b899d9ce625b72ec95984))
+* **i18n-hu:** Update Hungarian translations ([e2e978c](https://github.com/fluidd-core/fluidd/commit/e2e978cfcc4868f9582adcd12c46cd1b50ac3c6b))
+* **i18n-ta:** New Tamil locale added ([e2cf2a5](https://github.com/fluidd-core/fluidd/commit/e2cf2a5ea97a091b2385c6e943329b3fcbdc4be9))
+* **i18n-ta:** Update Tamil translations ([29c51b4](https://github.com/fluidd-core/fluidd/commit/29c51b48117240d229a824a7e64731da5179e068))
+
+
+### Bug Fixes
+
+* clipboard copy on non-secure context ([#1560](https://github.com/fluidd-core/fluidd/issues/1560)) ([efe4771](https://github.com/fluidd-core/fluidd/commit/efe47711c18428d79226256e561e98ee3e7e16e5))
+* **Heaters:** no context menu on left click ([#1558](https://github.com/fluidd-core/fluidd/issues/1558)) ([4a473c8](https://github.com/fluidd-core/fluidd/commit/4a473c88f59fa31246db5c5cbf895ba2e19dd0a6))
+
 ## [1.31.3](https://github.com/fluidd-core/fluidd/compare/v1.31.2...v1.31.3) (2024-12-26)
 
 
