@@ -30,6 +30,8 @@ app:
       power: Leistung
       target: Ziel
       rate_of_change: Änderung
+      pid_calibration: PID-Kalibrierung
+      target_temperature: Zieltemperatur
     tooltip:
       help: >-
         Halten Sie <kbd>Umschalt</kbd> gedrückt, um zu zoomen. <br />Klicken Sie auf
@@ -355,6 +357,9 @@ app:
       compact: Kompakt
       unknown: Unbekannt
       stepper_driver: '%{name} Treiber'
+      device: Gerät
+      user_facing: Dem Benutzer zugewandt
+      environment_facing: Der Umgebung zugewandt
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -477,8 +482,8 @@ app:
       limits: Drucker-Limits
       macros: Makros
       other_files: Andere Dateien
-      retract: Firmware-Retraction
-      runout_sensors: Runout-Sensoren
+      retract: Firmware-Rückzug
+      runout_sensors: Auslaufsensoren
       settings: Einstellungen
       stats: Statistik
       system: System
@@ -486,18 +491,20 @@ app:
       temperature: Temperaturen
       timelapse: Zeitraffer
       tool: Druckkopf
-      tune: Kalibrieren
+      tune: Abstimmen
       pending_configuration_changes: Ausstehende Konfigurationsänderungen
       metrics_explorer: Metrik-Explorer
-      not_found: 404 Nicht Gefunden
+      not_found: 404 Nicht gefunden
       edit_chart: Diagramm bearbeiten
       add_chart: Diagramm hinzufügen
       job_queue: Job-Warteschlange
       rollover_logs: Protokolle erneuern
       beacon: Beacon
+      macro_category_settings: Makrokategorie-Einstellungen
+      login: Anmeldung
     tooltip:
       browse_metrics: Verfügbare Metriken durchsuchen
-      estop: NOT-AUS
+      estop: Notaus
       managed_by_moonraker: Verwaltet durch Ihre Moonraker-Konfiguration
       notifications: Benachrichtigungen
       reload_klipper: Lädt die Klipper-Konfiguration neu.
@@ -779,6 +786,10 @@ app:
       constants: Konstanten
       last_stats: Letzte Statistiken
       devices: Geräte
+      non_critical_connection: Nicht-kritische Verbindung
+      connected: Verbunden
+      application: Anwendung
+      disconnected: Getrennt
     msg:
       no_devices_found: Keine Geräte gefunden
       no_devices_searched: Nutzen Sie den Aktualisieren-Knopf, um nach Geräten zu
