@@ -533,7 +533,8 @@ export const SupportedLocales = Object.freeze([
   { name: 'Українська', code: 'uk' },
   { name: '한국어', code: 'ko' },
   { name: 'العربية', code: 'ar' },
-  { name: '日本語', code: 'ja' }
+  { name: '日本語', code: 'ja' },
+  { name: 'தமிழ்', code: 'ta' }
 ])
 
 export const SupportedImageFormats = Object.freeze([
