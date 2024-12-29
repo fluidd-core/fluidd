@@ -79,3 +79,11 @@ input[type=number] {
 .v-application kbd {
   background: #4A4A4F !important;
 }
+
+textarea.clipboard-copy {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  z-index: 100000;
+  opacity: 0;
+}

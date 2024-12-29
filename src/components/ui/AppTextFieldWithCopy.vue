@@ -38,6 +38,8 @@
 
 <script lang="ts">
 import { Component, VModel, Vue } from 'vue-property-decorator'
+import clipboardCopy from '@/util/clipboard-copy'
+import sleep from '@/util/sleep'
 
 @Component({
   inheritAttrs: false
@@ -47,19 +49,23 @@ export default class AppTextFieldWithCopy extends Vue {
   inputValue!: unknown
 
   hasCopied = false
+  abortController: AbortController | null = null
 
-  handleCopy () {
-    if (
-      this.inputValue &&
-      navigator.clipboard
-    ) {
-      navigator.clipboard.writeText(this.inputValue.toString())
+  async handleCopy () {
+    if (this.inputValue) {
+      if (await clipboardCopy(this.inputValue.toString(), this.$el)) {
+        this.abortController?.abort()
 
-      this.hasCopied = true
+        this.hasCopied = true
 
-      setTimeout(() => {
-        this.hasCopied = false
-      }, 2000)
+        try {
+          const abortController = this.abortController = new AbortController()
+
+          await sleep(2000, abortController.signal)
+
+          this.hasCopied = false
+        } catch {}
+      }
     }
   }
 }
