@@ -28,7 +28,6 @@
         <tr
           v-for="item in heaters"
           :key="item.key"
-          @click="handleHeaterRowClick(item, $event)"
           @contextmenu.prevent="handleHeaterRowClick(item, $event)"
         >
           <td>
@@ -43,7 +42,7 @@
             <span
               :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click.stop="legendClick(item)"
+              @click="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
@@ -52,7 +51,7 @@
             <span
               :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click.stop="legendClick(item, '#power')"
+              @click="legendClick(item, '#power')"
             >
               <span v-if="item.power <= 0 && item.target <= 0">off</span>
               <span v-if="item.target > 0">
@@ -67,7 +66,7 @@
             <span
               :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click.stop="legendClick(item, '#power')"
+              @click="legendClick(item, '#power')"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -76,7 +75,7 @@
             {{ (item.temperature) ? item.temperature.toFixed(1) : 0 }}<small>°C</small>
           </td>
           <td>/</td>
-          <td>
+          <td @contextmenu.stop>
             <app-text-field
               v-if="klippyReady"
               :value="item.target"
@@ -114,7 +113,7 @@
             <span
               :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click.stop="legendClick(item)"
+              @click="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
@@ -124,7 +123,7 @@
               v-if="item.speed"
               :class="{ 'active':isLegendSelected(item, '#speed') }"
               class="legend-item toggle"
-              @click.stop="legendClick(item, '#speed')"
+              @click="legendClick(item, '#speed')"
             >
               <span v-if="item.speed > 0 && (item.target > 0 || !item.target)">
                 {{ (item.speed * 100).toFixed(0) }}<small>%</small>
@@ -142,7 +141,7 @@
             <span
               :class="{ 'active': isLegendSelected(item, '#power') }"
               class="legend-item toggle"
-              @click.stop="legendClick(item, '#power')"
+              @click="legendClick(item, '#power')"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -159,7 +158,7 @@
             </span>
           </td>
           <td>/</td>
-          <td>
+          <td @contextmenu.stop>
             <app-text-field
               v-if="klippyReady && item.type === 'temperature_fan'"
               :value="item.target"
@@ -196,7 +195,7 @@
             <span
               :class="{ 'active': isLegendSelected(item) }"
               class="legend-item toggle"
-              @click.stop="legendClick(item)"
+              @click="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
@@ -303,6 +302,8 @@
       :position-x="contextMenuState.x"
       :position-y="contextMenuState.y"
       @pid-calibrate="handlePidCalibrateDialog"
+      @mpc-calibrate="handleMpcCalibrateDialog"
+      @turn-off="handleTurnOff"
     />
 
     <heater-pid-calibrate-dialog
@@ -310,6 +311,13 @@
       v-model="heaterPidCalibrateDialog.open"
       :heater="heaterPidCalibrateDialog.heater"
       @save="handlePidCalibrate"
+    />
+
+    <heater-mpc-calibrate-dialog
+      v-if="heaterMpcCalibrateDialog.open"
+      v-model="heaterMpcCalibrateDialog.open"
+      :heater="heaterMpcCalibrateDialog.heater"
+      @save="handleMpcCalibrate"
     />
   </div>
 </template>
@@ -319,17 +327,20 @@ import { Component, Mixins } from 'vue-property-decorator'
 import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
 import HeaterContextMenu from './HeaterContextMenu.vue'
 import HeaterPidCalibrateDialog from './HeaterPidCalibrateDialog.vue'
+import HeaterMpcCalibrateDialog from './HeaterMpcCalibrateDialog.vue'
 import StateMixin from '@/mixins/state'
 import type { Fan, Heater, Sensor } from '@/store/printer/types'
 import { takeRightWhile } from 'lodash-es'
 import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import isNullOrEmpty, { type NullableOrEmpty } from '@/util/is-null-or-empty'
 
 @Component({
   components: {
     TemperaturePresetsMenu,
     HeaterContextMenu,
-    HeaterPidCalibrateDialog
+    HeaterPidCalibrateDialog,
+    HeaterMpcCalibrateDialog
   }
 })
 export default class TemperatureTargets extends Mixins(StateMixin) {
@@ -341,6 +352,11 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   }
 
   heaterPidCalibrateDialog: any = {
+    heater: null,
+    open: false
+  }
+
+  heaterMpcCalibrateDialog: any = {
     heater: null,
     open: false
   }
@@ -517,6 +533,10 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     })
   }
 
+  handleTurnOff (heater: Heater) {
+    this.setHeaterTargetTemp(heater.name, 0)
+  }
+
   handlePidCalibrateDialog (heater: Heater) {
     this.heaterPidCalibrateDialog = {
       heater,
@@ -526,6 +546,17 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
 
   handlePidCalibrate (heater: Heater, targetTemperature: number) {
     this.sendGcode(`PID_CALIBRATE HEATER=${encodeGcodeParamValue(heater.name)} TARGET=${targetTemperature}`)
+  }
+
+  handleMpcCalibrateDialog (heater: Heater) {
+    this.heaterMpcCalibrateDialog = {
+      heater,
+      open: true
+    }
+  }
+
+  handleMpcCalibrate (heater: Heater, targetTemperature: number, fanBreakpoints: NullableOrEmpty<number>) {
+    this.sendGcode(`MPC_CALIBRATE HEATER=${encodeGcodeParamValue(heater.name)} TARGET=${targetTemperature}${!isNullOrEmpty(fanBreakpoints) ? ` FAN_BREAKPOINTS=${fanBreakpoints}` : ''}`)
   }
 }
 </script>

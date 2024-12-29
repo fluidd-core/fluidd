@@ -26,13 +26,15 @@ app:
   chart:
     label:
       current: Actual
+      fan_breakpoints: Fan Breakpoints
       item: Name
-      pid_calibration: PID Calibration
       power: Power
-      target: Target
-      target_temperature: Target Temperature
       rate_of_change: Change
+      target_temperature: Target Temperature
+      target: Target
+      turn_off: Turn Off
     title:
+      mpc_calibrate: MPC Calibrate {name}
       pid_calibrate: PID Calibrate {name}
     tooltip:
       help: >-

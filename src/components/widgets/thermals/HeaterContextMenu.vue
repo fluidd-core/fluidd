@@ -9,14 +9,49 @@
     right
   >
     <v-list dense>
-      <v-list-item @click="$emit('pid-calibrate', heater)">
+      <v-list-item
+        :disabled="!klippyReady || printerPrinting"
+        @click="$emit('turn-off', heater)"
+      >
         <v-list-item-icon>
           <v-icon>
-            $pidCalibrate
+            $snowflake
           </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('app.chart.label.pid_calibration') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('app.chart.label.turn_off') }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-divider v-if="supportsPidCalibrate || supportsMpcCalibrate" />
+
+      <v-list-item
+        v-if="supportsPidCalibrate"
+        :disabled="!klippyReady || printerPrinting"
+        @click="$emit('pid-calibrate', heater)"
+      >
+        <v-list-item-icon>
+          <v-icon>
+            $tools
+          </v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>PID_CALIBRATE</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item
+        v-if="supportsMpcCalibrate"
+        :disabled="!klippyReady || printerPrinting"
+        @click="$emit('mpc-calibrate', heater)"
+      >
+        <v-list-item-icon>
+          <v-icon>
+            $tools
+          </v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>MPC_CALIBRATE</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -24,11 +59,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import type { Heater } from '@/store/printer/types'
+import { Component, Prop, VModel, Mixins } from 'vue-property-decorator'
+import StateMixin from '@/mixins/state'
+import type { Heater, KlippyApp } from '@/store/printer/types'
 
 @Component({})
-export default class HeaterContextMenu extends Vue {
+export default class HeaterContextMenu extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
   open?: boolean
 
@@ -40,5 +76,20 @@ export default class HeaterContextMenu extends Vue {
 
   @Prop({ type: Object, required: true })
   readonly heater!: Heater
+
+  get klippyApp (): KlippyApp {
+    return this.$store.getters['printer/getKlippyApp'] as KlippyApp
+  }
+
+  get supportsPidCalibrate () {
+    return ['pid', 'pid_v'].includes(this.heater.config?.control)
+  }
+
+  get supportsMpcCalibrate () {
+    return (
+      this.klippyApp.isKalicoOrDangerKlipper &&
+      this.heater.config?.control === 'mpc'
+    )
+  }
 }
 </script>

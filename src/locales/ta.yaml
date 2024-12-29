@@ -1,0 +1,970 @@
+app:
+  general:
+    btn:
+      upload: பதிவேற்றும்
+      upload_files: கோப்புகளைப் பதிவேற்றவும்
+      abort: கருக்கலைப்பு
+      accept: ஏற்றுக்கொள்
+      add: கூட்டு
+      add_dir: கோப்பகத்தைச் சேர்க்கவும்
+      add_file: கோப்பைச் சேர்க்கவும்
+      add_printer: அச்சுப்பொறியைச் சேர்க்கவும்
+      add_to_queue: வரிசையில் சேர்க்கவும்
+      adjust_layout: டாச்போர்டு தளவமைப்பை சரிசெய்யவும்
+      adjusted: சருசெய்த
+      all: அனைத்தும்
+      auth_unsure: இதை நீங்கள் ஏன் பார்க்கிறீர்கள் என்று தெரியவில்லை?
+      calibrate: அளவீடு செய்யுங்கள்
+      cancel: ரத்துசெய்
+      clear_profile: சுயவிவரத்தை அழிக்கவும்
+      close: மூடு
+      config_reference: கட்டமைப்பு குறிப்பு
+      copied: நகலெடுக்கப்பட்டது
+      copy: நகலெடு
+      create_zip_archive: சிப் காப்பகத்தை உருவாக்கவும்
+      delete: நீக்கு
+      download: பதிவிறக்கம்
+      duplicate: நகல்
+      edit: தொகு
+      exit_layout: தளவமைப்பு பயன்முறையிலிருந்து வெளியேறவும்
+      extrude: எக்ச்ட்ரூட்
+      filter: வடிப்பி
+      forgot_password: உங்கள் கடவுச்சொல்லை மறந்துவிட்டீர்களா?
+      go_to_file: கோப்புக்குச் செல்லவும்
+      heaters_off: ஈட்டர்கள் ஆஃப்
+      job_queue: வேலை வரிசை
+      load_all: அனைத்தையும் ஏற்றவும்
+      login: புகுபதிவு
+      pause: இடைநிறுத்தம்
+      preheat: Preheat
+      presets: முன்னமைவுகள்
+      preview_gcode: GCODE ஐ முன்னோட்டம்
+      logout: வெளியேற்றம்
+      more_information: மேலும் செய்தி
+      multiply: பெருக்கவும்
+      print: அச்சிடுக
+      quad_gantry_level: Qgl
+      reboot: மறுதொடக்கம் செய்யுங்கள்
+      recover: மீட்க
+      refresh: புதுப்பிப்பு
+      refresh_metadata: மெட்டாடேட்டாவை புதுப்பிக்கவும்
+      reload: ஏற்றவும்
+      remove: அகற்று
+      remove_all: அனைத்தையும் அகற்று
+      rename: மறுபெயரிடுங்கள்
+      reprint: மறு அச்சு
+      reset_file: கோப்பை அழிக்கவும்
+      reset_layout: இயல்புநிலை தளவமைப்புக்கு மீட்டமைக்கவும்
+      reset_default_layout: இயல்புநிலை தளவமைப்பை மீட்டமைக்கவும்
+      restart_firmware: ஃபார்ம்வேர் மறுதொடக்கம்
+      restart_service: '%{service}'
+      restart_service_klipper: பாறைகளை மறுதொடக்கம் செய்யுங்கள்
+      restart_service_moonraker: மூன்ரேக்கரை மறுதொடக்கம் செய்யுங்கள்
+      resume: மீண்டும் தொடங்குங்கள்
+      retract: பின்வாங்கல்
+      retry: மீண்டும் முயற்சிக்கவும்
+      return_dashboard: டாச்போர்டுக்கு திரும்பவும்
+      save: சேமி
+      save_as: என சேமி
+      save_restart: சேமிக்கவும் மறுதொடக்கம் செய்யவும்
+      save_config_and_restart: கட்டமைப்பைச் சேமித்து மறுதொடக்கம் செய்யுங்கள்
+      select_columns: நெடுவரிசைகளைத் தேர்ந்தெடுக்கவும்
+      send: அனுப்பு
+      set_color: வண்ணத்தை அமைக்கவும்
+      set_default_layout: இயல்புநிலை தளவமைப்பாக அமைக்கவும்
+      shutdown: பணிநிறுத்தம்
+      snooze: உறக்கநிலை
+      socket_reconnect: மீண்டும் இணைக்கவும்
+      socket_refresh: கட்டாய புதுப்பிப்பு
+      thumbnail_size: சிறு அளவு
+      upload_folder: கோப்புறை பதிவேற்றவும்
+      upload_print: பதிவேற்ற & அச்சிடவும்
+      view: பார்வை
+      reset_stats: புள்ளிவிவரங்களை மீட்டமை
+    error:
+      app_setup_link: FlightD அமைவு தேவைகளை <a target = "_ வெற்று" href = "%{url}">
+        இங்கே காணலாம். </a>
+      app_warnings_found: '%{appName} எச்சரிக்கைகள் காணப்பட்டன.'
+      components_config: மூன்ராகேக்கர் செருகுநிரல் உள்ளமைவைக் காணலாம் <a target =
+        "_ வெற்று" href = "%{url}"> இங்கே. </a>
+      failed_components: மூன்ரேக்கர் தோல்வியுற்ற செருகுநிரல்களைக் கொண்டுள்ளது, தயவுசெய்து
+        உங்கள் பதிவுகளைச் சரிபார்த்து, உங்கள் உள்ளமைவைப் புதுப்பித்து மூன்ரேக்கரை
+        மறுதொடக்கம் செய்யுங்கள்.
+    label:
+      finish_time: முடிக்க
+      pause_at_next_layer: அடுத்த அடுக்கில் இடைநிறுத்தவும்
+      power: விசை
+      accel_to_decel: வீழ்ச்சிக்கு முடி
+      acceleration: முடுக்கம்
+      accepted_screws: ஏற்றுக்கொள்ளப்பட்ட திருகுகள்
+      actual_time: உண்மையான
+      add_camera: கேமராவைச் சேர்க்கவும்
+      add_filter: வடிகட்டியைச் சேர்க்கவும்
+      add_preset: முன்னமைவு சேர்க்கவும்
+      add_user: பயனரைச் சேர்க்கவும்
+      all: அனைத்தும்
+      api_key: பநிஇ விசை
+      api_url: பநிஇ முகவரி
+      auth_source: அங்கீகார சான்று
+      bars: பார்கள்
+      category: வகை
+      change_password: கடவுச்சொல்லை மாற்றவும்
+      clear_all: அனைத்தையும் அழிக்கவும்
+      color: நிறம்
+      command: கட்டளை
+      confirm: உறுதிப்படுத்தவும்
+      cross: குறுக்கு
+      circle: வட்டம்
+      compact: கச்சிதமான
+      current_password: தற்போதைய கடவுச்சொல்
+      current_user: தற்போதைய பயனர்
+      default: இயல்புநிலை
+      device: சாதனம்
+      disabled_while_printing: அச்சிடும் போது முடக்கப்பட்டது
+      edit_camera: கேமராவைத் திருத்து
+      edit_filter: வடிகட்டியைத் திருத்து
+      edit_preset: முன்னமைவைத் திருத்து
+      edit_user: பயனரைத் திருத்து
+      environment_facing: எதிர்கொள்ளும் சூழல்
+      extrude_length: எக்ச்ட்ரூட் நீளம்
+      extrude_speed: எக்ச்ட்ரூட் விரைவு
+      filament: தாள்
+      file: கோப்பு
+      flow: பாய்வு
+      free: இலவசம்
+      heaters_busy: அச்சுப்பொறி தற்போது பிசியாக உள்ளது. ஈட்டர்களை அணைப்பது தோல்வியுற்ற
+        அச்சுக்கு வழிவகுக்கும்.
+      high: உயர்ந்த
+      host: விருந்தோம்பி
+      layer: அடுக்கு
+      layout: மனையமைவு
+      ldap: LDAP
+      longest_job: மிக நீண்ட வேலை
+      low: குறைந்த
+      manage_accounts: கணக்குகளை நிர்வகிக்கவும்
+      minimum_cruise_ratio: குறைந்தபட்ச பயணக் கணக்கு
+      user_managed_source: பயனர் %{source} அங்கீகாரத்தால் நிர்வகிக்கப்படுகிறது
+      m117: எம் 117
+      moonraker: மூன்ராகேக்கர்
+      name: பெயர்
+      new_password: புதிய கடவுச்சொல்
+      no_notifications: அறிவிப்புகள் இல்லை
+      'on': ஆன்
+      'off': அணை
+      numeric_prefix_sort: எண் முன்னொட்டு வரிசை
+      password: கடவுச்சொல்
+      partial_of_total: '%{மொத்த {மொத்த {partial}'
+      pause_at_layer: அடுக்கில் இடைநிறுத்தம்
+      pause_at_layer_number: அடுக்கு எண்ணில் இடைநிறுத்தம்
+      pressure_advance: அழுத்தம் முன்கூட்டியே
+      printers: அச்சுப்பொறிகள்
+      progress: முன்னேற்றம்
+      range: வீச்சு
+      requested_speed: வேகம்
+      retract_length: பின்வாங்கல் நீளம்
+      retract_speed: பின்வாங்கல் விரைவு
+      save_as: என சேமி
+      screw_index: திருகு அட்டவணை
+      screw_name: திருகு பெயர்
+      screw_number: திருகு %{index}
+      services: சேவைகள்
+      slicer: ச்லீசர்
+      smooth_time: மென்மையான நேரம்
+      speed: வேகம்
+      sqv: சதுர மூலையில் விரைவு
+      stepper_enabled: ச்டெப்பர் இயக்கப்பட்டது
+      synced_extruder: ஒத்திசைக்கப்பட்ட எக்ச்ட்ரூடர்
+      thumbnail_size: சிறு அளவு
+      total: மொத்தம்
+      total_filament: பயன்படுத்தப்படும் மொத்த இழை
+      total_filament_avg: ஒரு அச்சுக்கு சராசரி
+      total_jobs: மொத்த அச்சு வேலைகள்
+      total_print_time: மொத்த அச்சு நேரம்
+      total_print_time_avg: ஒரு அச்சுக்கு சராசரி
+      total_time: மொத்த நேரம்
+      total_time_avg: ஒரு அச்சுக்கு சராசரி
+      uncategorized: வகைப்படுத்தப்படாதது
+      unknown: தெரியவில்லை
+      turn_device_on: '%{device} இயக்கவும்'
+      turn_device_off: '%{device} முடக்கவும்'
+      unretract_extra_length: கூடுதல் நீளம்
+      unretract_speed: கட்டுப்பாடற்ற விரைவு
+      upload_and_print: பதிவேற்றி அச்சிடவும்
+      used: பயன்படுத்தப்பட்டது
+      user_facing: பயனர் எதிர்கொள்ளும்
+      username: பயனர்பெயர்
+      velocity: திசை வேகம்
+      version_sort: பதிப்பு வரிசைப்படுத்துதல்
+      z_offset: ஈடுசெய்யும்
+      unsaved_changes: சேமிக்கப்படாத மாற்றங்கள்
+      alias: மாற்றுப்பெயர்
+      visible: தெரியும்
+      apply_z_offset: Z_offset ஐப் பயன்படுத்துங்கள்
+      edit_category: வகையைத் திருத்து
+      add_category: வகையைச் சேர்க்கவும்
+      file_time: கோப்பு
+      stepper_driver: '%{name} இயக்கி'
+    msg:
+      password_changed: கடவுச்சொல் மாற்றப்பட்டது
+      wrong_password: அச்சச்சோ, ஏதோ தவறு நடந்தது. உங்கள் கடவுச்சொல் சரியானதா?
+      bed_screws_adjust: தற்போதைய திருகு மீது குறிப்பிடத்தக்க சரிசெய்தல் தேவைப்பட்டால்
+        <b> சரிசெய்யப்பட்ட </b> என்பதைக் சொடுக்கு செய்க; இல்லையெனில், தொடர <b> ஏற்றுக்கொள்
+        </b> என்பதைக் சொடுக்கு செய்க.
+      welcome_back: மீண்டும் வருக. <br> உங்கள் அச்சுப்பொறியுடன் தொடர்பில் இருக்க கீழே
+        உள்நுழைக.
+      offline_ready: FILICD இப்போது ஆஃப்லைனில் வேலை செய்ய தயாராக உள்ளது.
+      needs_refresh: புதிய உள்ளடக்கம் கிடைக்கிறது, புதுப்பிக்க <b> மறுஏற்றம் </b>
+        பொத்தானைக் சொடுக்கு செய்க.
+      pending_configuration_sections_deleted: நீக்குவதற்கு பின்வரும் பிரிவுகள் குறிக்கப்பட்டுள்ளன
+      rolledover_logs: 'பின்வரும் பயன்பாட்டு பதிவுகள் உருட்டப்பட்டுள்ளன: %{applications}'
+      not_valid_fluidd_backup_file: செல்லுபடியாகும் திரவம் காப்புப்பிரதி கோப்பு அல்ல!
+      fluidd_settings_backup_failed: FlightD அமைப்புகளை காப்புப் பிரதி எடுக்கத் தவறிவிட்டது!
+      fluidd_settings_restore_failed: FILICD அமைப்புகளை மீட்டெடுப்பதில் தோல்வி!
+    simple_form:
+      error:
+        arrayofnums: எண்கள் மட்டுமே
+        credentials: தவறான நற்சான்றிதழ்கள்
+        exists: ஏற்கனவே உள்ளது
+        invalid_number: தவறான எண்
+        invalid_url: தவறான முகவரி
+        invalid_expression: தவறான வெளிப்பாடு
+        max: அதிகபட்சம் %{max}
+        min: எனது %{min}
+        min_or_0: எனது %{min} 0
+        password_username: பயனர்பெயரைப் பொருத்த முடியாது
+        required: தேவை
+        invalid_aspect: தவறான விகித விகிதம்
+      msg:
+        confirm: நீங்கள் உறுதியாக இருக்கிறீர்களா?
+        confirm_cancel_print: தற்போதைய அச்சை ரத்து செய்ய விரும்புகிறீர்களா?
+        confirm_emergency_stop: நீங்கள் நிச்சயமாக அவசரநிலை அச்சுப்பொறியை நிறுத்த விரும்புகிறீர்களா?
+        confirm_change_beacon_model: அச்சுப்பொறி தற்போது பிசியாக உள்ளது. நீங்கள் நிச்சயமாக
+          பெக்கான் மாதிரியை மாற்ற விரும்புகிறீர்களா?
+        confirm_clear_mesh: அச்சுப்பொறி தற்போது பிசியாக உள்ளது. நீங்கள் நிச்சயமாக
+          படுக்கை கண்ணி அழிக்க விரும்புகிறீர்களா?
+        confirm_delete: நீங்கள் உறுதியாக இருக்கிறீர்களா? இது தேர்ந்தெடுக்கப்பட்ட உருப்படியை
+          நீக்கும். | நீங்கள் உறுதியாக இருக்கிறீர்களா? இது {count} தேர்ந்தெடுக்கப்பட்ட
+          உருப்படிகளை நீக்கும்.
+        confirm_exclude_object: இந்த பொருளை அச்சிடுவதிலிருந்து விலக்க விரும்புகிறீர்களா?
+        confirm_forcemove_toggle: நீங்கள் உறுதியாக இருக்கிறீர்களா? இது அச்சுப்பொறியை
+          சேதப்படுத்தும்.
+        confirm_reboot_host: நீங்கள் உறுதியாக இருக்கிறீர்களா? இது உங்கள் புரவலன் அமைப்பை
+          மறுதொடக்கம் செய்யும்.
+        confirm_remove_camera: கேமரா %{name} ஐ அகற்ற விரும்புகிறீர்களா?
+        confirm_remove_console_filter: கன்சோல் வடிகட்டி %{name} ஐ அகற்ற விரும்புகிறீர்களா?
+        confirm_remove_macro_category: மேக்ரோ வகை %{name} ஐ அகற்ற விரும்புகிறீர்களா?
+        confirm_load_bedmesh_profile: அச்சுப்பொறி தற்போது பிசியாக உள்ளது. சுயவிவரத்தை
+          %{name} ஏற்ற விரும்புகிறீர்களா?
+        confirm_remove_printer: அச்சுப்பொறி %{name} ஐ அகற்ற விரும்புகிறீர்களா?
+        confirm_remove_thermal_preset: வெப்ப முன்னமைவு %{name} ஐ அகற்ற விரும்புகிறீர்களா?
+        confirm_remove_user: பயனர் %{username} ஐ அகற்ற விரும்புகிறீர்களா?
+        no_file_preview: '%{name} தற்போது முன்னோட்டமிட முடியாது.'
+        confirm_shutdown_host: நீங்கள் உறுதியாக இருக்கிறீர்களா? இது உங்கள் புரவலன்
+          அமைப்பை நிறுத்திவிடும்.
+        confirm_service_start: '%{name} சேவையைத் தொடங்க விரும்புகிறீர்களா?'
+        confirm_service_restart: '%{name} சேவையை மறுதொடக்கம் செய்ய விரும்புகிறீர்களா?'
+        confirm_service_stop: '%{name} சேவையை நிறுத்த விரும்புகிறீர்களா?'
+        confirm_power_device_toggle: நீங்கள் உறுதியாக இருக்கிறீர்களா? இது இந்த சாதனத்தின்
+          சக்தியை மாற்றும்.
+        unsaved_changes: நீங்கள் சேமிக்கப்படாத மாற்றங்கள் உள்ளன. இந்த கோப்பை மூட விரும்புகிறீர்களா?
+    table:
+      header:
+        actions: செயல்கள்
+        chamber_temp: அறை தற்காலிக
+        end_time: முடிந்தது
+        estimated_time: மதிப்பிடப்பட்ட நேரம்
+        filament: தாள்
+        filament_name: இழை பெயர்
+        filament_type: இழை வகை
+        filament_used: பயன்படுத்தப்பட்ட இழை
+        filament_weight_total: இழை எடை
+        first_layer_bed_temp: முதல் அடுக்கு படுக்கை தற்காலிக
+        height: உயரம்
+        last_printed: கடைசியாக அச்சிடப்பட்டது
+        first_layer_extr_temp: முதல் அடுக்கு எக்ச்ட்ரூடர் தற்காலிக
+        first_layer_height: முதல் அடுக்கு உயரம்
+        layer_height: அடுக்கு உயரம்
+        modified: மாற்றியமைக்கப்பட்ட
+        name: பெயர்
+        nozzle_diameter: முனை விட்டம்
+        print_duration: அச்சு காலம்
+        time_added: நேரம் சேர்க்கப்பட்டது
+        time_in_queue: வரிசையில் நேரம்
+        size: அளவு
+        slicer: ச்லீசர்
+        slicer_version: ச்லைசர் பதிப்பு
+        start_time: தொடங்கியது
+        status: நிலை
+        total_duration: மொத்த காலம்
+    title:
+      console: கன்சோல்
+      diagnostics: கண்டறிதல்
+      add_chart: விளக்கப்படத்தைச் சேர்க்கவும்
+      add_printer: அச்சுப்பொறியைச் சேர்க்கவும்
+      beacon: சுழலொளி
+      bedmesh: படுக்கை மெச்
+      bedmesh_controls: படுக்கை கண்ணி கட்டுப்பாடுகள்
+      camera: கேமரா | கேமராக்கள்
+      config_files: உள்ளமைவு கோப்புகள்
+      configure: உள்ளமைவு
+      edit_chart: விளக்கப்படத்தைத் திருத்து
+      endstops: எண்ட்ச்டாப்ச்
+      fans_outputs: ரசிகர்கள் & வெளியீடுகள்
+      gcode_preview: GCODE முன்னோட்டம்
+      history: வரலாறு
+      home: வீடு
+      jobs: வேலைகள்
+      job_queue: வேலை வரிசை
+      limits: அச்சுப்பொறி வரம்புகள்
+      login: புகுபதிவு
+      macros: பெரியவைகள்
+      metrics_explorer: அளவீட்டு எக்ச்ப்ளோரர்
+      not_found: 404 கண்டுபிடிக்கப்படவில்லை
+      other_files: பிற கோப்புகள்
+      pending_configuration_changes: உள்ளமைவு மாற்றங்கள் நிலுவையில் உள்ளன
+      retract: ஃபார்ம்வேர் பின்வாங்கல்
+      rollover_logs: ரோல்ஓவர் பதிவுகள்
+      runout_sensors: ரன்அவுட் சென்சார்கள்
+      settings: அமைப்புகள்
+      macro_category_settings: மேக்ரோ வகை அமைப்புகள்
+      stats: அச்சுப்பொறி புள்ளிவிவரங்கள்
+      system: மண்டலம்
+      system_overview: கணினி செய்தி
+      temperature: வெப்பம்
+      timelapse: TimeLapse
+      tool: கருவி
+      tune: டியூன்
+    tooltip:
+      browse_metrics: கிடைக்கக்கூடிய அளவீடுகளை உலாவுக
+      estop: அவசர நிறுத்தம்
+      managed_by_moonraker: உங்கள் மூன்ராகேக்கர் உள்ளமைவால் நிர்வகிக்கப்படுகிறது
+      notifications: அறிவிப்புகள்
+      reload_klipper: கிளிப்பர் உள்ளமைவை மீண்டும் ஏற்றுகிறது.
+      reload_restart_klipper: கிளிப்பர் உள்ளமைவை மீண்டும் ஏற்றுகிறது மற்றும் MCU ஐ
+        மறுதொடக்கம் செய்கிறது.
+      restart_klipper: கிளிப்பர் சிச்டம் சேவையை மறுதொடக்கம் செய்கிறது.
+      run_collector: சேகரிப்பாளரை இயக்கவும்
+      rollover_logs: ரோல்ஓவர் பதிவுகள்
+      file_browser_help: உலாவிக்கு வெளியே இருந்து கோப்புகள் அல்லது கோப்புறைகளை இங்கே
+        பதிவேற்ற இழுத்து விடுங்கள் <br> கோப்புகளையும் கோப்புறைகளையும் துணை கோப்புறைகளில்
+        இழுத்து விடுவதன் மூலம் அல்லது ".."
+      file_browser_configuration_help: கோப்புகள் மற்றும் கோப்புறைகளை உள்ளமைவு கோப்புகளுக்கு
+        இங்கிருந்து இழுத்து அவற்றை அங்கு கைவிடுவதன் மூலம் நகலெடுக்கவும்
+  setting:
+    label:
+      show_logo_on_background: பின்னணியில் லோகோவைக் காட்டு
+      show_rate_of_change: மாற்றத்தின் வெப்பநிலை வீதத்தைக் காட்டு
+      show_relative_humidity: உறவினர் ஈரப்பதத்தைக் காட்டு
+      solid: திடமான
+      starts_with: உடன் தொடங்குகிறது
+      theme_preset: சமூக முன்னமைவு
+      all_off: அனைத்தும் ஆஃப்
+      all_on: அனைத்தும்
+      aspect_ratio: அம்ச விகிதம்
+      aspect_ratio_format: '[அகலம்: உயரம்]'
+      auto_edit_extensions: திருத்து பயன்முறையில் தானாக திறக்க நீட்டிப்புகள்
+      auto_follow_on_file_load: கோப்பு சுமைகளில் முன்னேற்றத்தை தானாகவே பின்பற்றவும்
+      auto_load_on_print_start: அச்சு தொடக்கத்தில் கோப்பை தானாக ஏற்றவும்
+      auto_load_mobile_on_print_start: மொபைல் சாதனங்களில் தானாக கோப்பை ஏற்றவும்
+      axes: அச்சுகள்
+      camera_flip_x: கிடைமட்டமாக புரட்டவும்
+      camera_flip_y: செங்குத்தாக புரட்டவும்
+      camera_fullscreen_action:
+        title: முழுத்திரை நடவடிக்கை
+        embed: உட்பொதிக்கப்பட்டது
+        rawstream: மூல ச்ட்ரீம்
+      camera_rotate_by: மூலம் சுழற்றுங்கள்
+      confirm_dirty_editor_close: சேமிக்கப்படாத மாற்றங்களுடன் எடிட்டரை மூடும்போது
+        உறுதிப்படுத்த வேண்டும்
+      camera_stream_type: ச்ட்ரீம் வகை
+      camera_url_snapshot: கேமரா முகவரி ச்னாப்சாட்
+      camera_url_stream: கேமரா முகவரி ச்ட்ரீம்
+      card: அட்டை
+      collector: சேகரிப்பான்
+      confirm_on_estop: அவசர நிறுத்தத்தில் உறுதிப்படுத்த வேண்டும்
+      confirm_on_power_device_change: சாதன ஆற்றல் மாற்றங்களில் உறுதிப்படுத்த வேண்டும்
+      confirm_on_save_config_and_restart: சேமித்து மறுதொடக்கம் செய்வதற்கு முன் நிலுவையில்
+        உள்ள உள்ளமைவு மாற்றங்களை மதிப்பாய்வு செய்யவும்
+      contains: கொண்டுள்ளது
+      dark_mode: இருண்ட முறை
+      dashed: கோடு
+      default_extrude_length: இயல்புநிலை எக்ச்ட்ரூட் நீளம்
+      draw_background: பின்னணியை வரையவும்
+      draw_origin: தோற்றத்தை வரையவும்
+      default_extrude_speed: இயல்புநிலை எக்ச்ட்ரூட் விரைவு
+      default_min_layer_height: இயல்புநிலை குறைந்தபட்ச அடுக்கு உயரம்
+      default_toolhead_move_length: இயல்புநிலை கருவி நகரும் நீளம்
+      default_toolhead_xy_speed: இயல்புநிலை கருவி XY விரைவு
+      default_toolhead_z_speed: இயல்புநிலை கருவி சட் விரைவு
+      dotted: புள்ளியிடப்பட்ட
+      enable: இயக்கு
+      enable_diagnostics: நோயறிதலை இயக்கவும்
+      enable_notifications: அறிவிப்புகளை இயக்கவும்
+      enable_xy_homing: XY ஓமிங்கை இயக்கவும்
+      expression: கோவை
+      extrusion_line_width: வெளியேற்ற வரி அகலம்
+      flip_horizontal: கிடைமட்ட திருப்பம்
+      flip_vertical: செங்குத்து திருப்பு
+      fill_color: நிறத்தை நிரப்பவும்
+      fill_opacity: ஒளிபுகாநிலையை நிரப்பவும்
+      filter: வடிகட்டி | வடிப்பான்கள்
+      fluidd_settings_in_moonraker_db: மூன்ராகேக்கர் தரவுத்தளத்தில் FULITD அமைப்புகள்
+      fps_target: FPS இலக்கு
+      fps_idle_target: கவனம் செலுத்தாதபோது FPS இலக்கு
+      height: உயரம்
+      hide_single_part_bounding_box: ஒரு பகுதியை அச்சிடும்போது பகுதி எல்லை பெட்டியை
+        மறைக்கவும்
+      gcode_coords: GCODE ஆயத்தொகுதிகளைப் பயன்படுத்தவும்
+      icon: படவுரு
+      invert_x_control: தலைகீழ் ஃச் கட்டுப்பாடு
+      invert_y_control: தலைகீழ் மற்றும் கட்டுப்பாடு
+      invert_z_control: தலைகீழ் சட் கட்டுப்பாடு
+      keyboard_shortcuts: விசைப்பலகை குறுக்குவழிகள்
+      language: மொழியைக் காண்பி
+      last_result: கடைசி முடிவு
+      left_y: இடது y- அச்சு
+      line_color: வரி நிறம்
+      line_style: வரி நடை
+      min: சிறுமம்
+      max: பெருமம்
+      sections_to_ignore_pending_configuration_changes: நிலுவையில் உள்ள உள்ளமைவு மாற்றங்களை
+        புறக்கணிப்பதற்கான பிரிவுகள்
+      metrics: அளவீடுகள்
+      move_line_width: வரி அகலத்தை நகர்த்தவும்
+      name: பெயர்
+      never: ஒருபோதும்
+      none: எதுவுமில்லை
+      optional: விரும்பினால்
+      power_toggle_in_top_nav: மேல் வழிசெலுத்தலில் ஆற்றல் மாறுகிறது
+      primary_color: முதன்மை நிறம்
+      print_eta_calculation: ETA கணக்கீட்டை அச்சிடுக
+      print_in_progress_layout: முன்னேற்ற அமைப்பில் அச்சிடுக
+      print_progress_calculation: முன்னேற்ற கணக்கீட்டை அச்சிடுக
+      printer_name: அச்சுப்பொறி பெயர்
+      reset: அமைப்புகளை மீட்டமைக்கவும்
+      show_animations: அனிமேசன்களைக் காட்டு
+      retraction_icon_size: பின்வாங்கல் படவுரு அளவு
+      right_y: வலது y- அச்சு
+      save_and_restore_view_state: பார்வை நிலையைச் சேமித்து மீட்டமைக்கவும்
+      show_barometric_pressure: பாரோமெட்ரிக் அழுத்தத்தைக் காட்டு
+      show_chart: விளக்கப்படத்தைக் காட்டு
+      show_code_lens: கோடெலன்களைக் காட்டு
+      show_gas_resistance: காற்று எதிர்ப்பைக் காட்டு
+      show_legend: புராணக்கதை காட்டு
+      show_save_config_and_restart: மேல் வழிசெலுத்தலில் உள்ளமைவு மற்றும் மறுதொடக்கம்
+        பொத்தானை சேமிக்கவும்
+      show_upload_and_print: சிறந்த வழிசெலுத்தலில் பதிவேற்றம் மற்றும் அச்சு பொத்தானைக்
+        காட்டு
+      thermal_preset_gcode: Gcode
+      thermal_preset_name: முன்னமைக்கப்பட்ட பெயர்
+      title: தலைப்பு
+      to_browser_local_storage: உள்ளக சேமிப்பகத்தை உலாவ
+      to_browser_session_storage: உலாவி அமர்வு சேமிப்பகத்திற்கு
+      toolhead_control_style: கருவி கட்டுப்பாட்டு பாணி
+      toolhead_move_distances: கருவியின் தூர மதிப்புகள்
+      toolhead_xy_move_distances: கருவித்தொகை XY தூர மதிப்புகள்
+      toolhead_z_move_distances: கருவித்தளம் சட் தூர மதிப்புகள்
+      type: வகை
+      unit: அலகு
+      z_adjust_values: சட் மதிப்புகளை சரிசெய்யவும்
+      date_format: தேதி வடிவம்
+      time_format: நேர வடிவம்
+      text_sort_order: உரை வரிசை வரிசை
+      drag_and_drop_functionality_for_files_and_folders: கோப்புகள் மற்றும் கோப்புறைகளுக்கான
+        செயல்பாட்டை இழுத்துச் செல்லுங்கள்
+      force_move_toggle_warning: Force_Move ஐ செயல்படுத்தும்போது உறுதிப்படுத்த வேண்டும்
+      show_manual_probe_dialog_automatically: கையேடு ஆய்வு உரையாடலை தானாகவே காட்டு
+      show_bed_screws_adjust_dialog_automatically: படுக்கை திருகுகள் தானாகவே உரையாடலைக்
+        காட்டு
+      show_screws_tilt_adjust_dialog_automatically: திருகுகள் சாய் சரிசெய்தல் உரையாடலை
+        தானாகவே காட்டு
+    btn:
+      add_thermal_preset: முன்னமைவு சேர்க்கவும்
+      add_user: பயனரைச் சேர்க்கவும்
+      add_camera: கேமராவைச் சேர்க்கவும்
+      add_category: வகையைச் சேர்க்கவும்
+      add_filter: வடிகட்டியைச் சேர்க்கவும்
+      add_metric: மெட்ரிக் சேர்க்கவும்
+      backup: காப்புப்பிரதி
+      reset: மீட்டமை
+      restore: மீட்டமை
+      select_theme: கருப்பொருள் தேர்ந்தெடுக்கவும்
+    camera_type_options:
+      mjpegadaptive: MJPEG தகவமைப்பு
+      mjpegstream: MJPEG ச்ட்ரீம்
+      hlsstream: எச்.எல்.எச் ச்ட்ரீம்
+      webrtc_camera_streamer: WEBRTC (கேமரா-ச்ட்ரீமர்)
+      video: ஐபி கேமரா
+      iframe: Http பக்கம்
+      webrtc_go2rtc: Webrtc (Go2rtc)
+      webrtc_mediamtx: WEBRTC (மீடியாஎம்டிஎக்ச்)
+    camera_rotate_options:
+      '90': 90 °
+      '180': 180 °
+      '270': 270 °
+      none: எதுவுமில்லை
+    timer_options:
+      absolute_file_position: முழுமையான கோப்பு நிலை
+      duration: காலம் மட்டுமே
+      filament: தாள்
+      file: கோப்பு
+      relative_file_position: உறவினர் கோப்பு நிலை
+      slicer: ச்லீசர்
+      slicer_m73: ச்லைசர் (எம் 73)
+    title:
+      authentication: ஏற்பு
+      console: கன்சோல்
+      camera: கேமரா | கேமராக்கள்
+      file_browser: கோப்பு உலாவி
+      file_editor: கோப்பு ஆசிரியர்
+      gcode_preview: GCODE முன்னோட்டம்
+      general: பொது
+      macros: பெரியவைகள்
+      theme: கருப்பொருள்
+      thermal_presets: வெப்ப முன்னமைவுகள்
+      tool: கருவி
+    tooltip:
+      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST கருவியை இயக்கினால்
+        தானாகவே உதவி உரையாடலைக் காண்பிக்கும்
+      average_calculation: ஒன்றுக்கு மேற்பட்ட விருப்பங்கள் தேர்ந்தெடுக்கப்பட்டால்,
+        சராசரியாக கணக்கிடப்படும்
+      diagnostics_performance: '[பீட்டா] பதிவுசெய்தல் கண்டறியும் செய்தி செயல்திறனை
+        பாதிக்கலாம்'
+      gcode_coords: டாச்போர்டில் கருவி எட் நிலைக்கு பதிலாக GCODE நிலையைப் பயன்படுத்தவும்
+      keyboard_shortcuts: "[பீட்டா] '?' கிடைக்கக்கூடிய விசைப்பலகை குறுக்குவழிகளின்
+        பட்டியலைக் காண"
+      show_manual_probe_dialog_automatically: கையேடு ஆய்வு கருவியை இயக்கினால் தானாகவே
+        உதவி உரையாடலைக் காண்பிக்கும்
+      show_screws_tilt_adjust_dialog_automatically: திருகுகள்_பில்ட்_ல்குலேட் கருவியை
+        இயக்கினால் தானாகவே உதவி உரையாடலைக் காண்பிக்கும்
+      theme_disclaimer: இந்த கருப்பொருள்கள் அந்தந்த உரிமையாளர்களின் அறிவுசார் சொத்துக்களான
+        சூட்டுக்குறி பெயர்கள் மற்றும் சின்னங்களைக் கொண்டுள்ளன. <br> இந்த பெயர்கள்
+        மற்றும் லோகோக்களைச் சேர்ப்பது பிராண்டுகளின் அனுமதியுடன் செய்யப்படுகிறது. அந்தந்த
+        பிராண்டுகள். <br> கருப்பொருள்கள் தொடர்பான ஏதேனும் சிக்கல்கள் அல்லது விசாரணைகள்
+        திரவக் குழுவுக்கு அனுப்பப்பட வேண்டும். பிராண்டுகள் குறிக்கப்படுகின்றன.
+  socket:
+    msg:
+      connecting: மூன்ரேக்கருடன் இணைக்கிறது ...
+      no_connection: மூன்ராகேக்கர் இணைப்பு இல்லை. தயவுசெய்து மூன்ராகேக்கர் நிலை மற்றும்
+        / அல்லது புதுப்பிக்கவும்.
+  system_info:
+    label:
+      application: பயன்பாடு
+      capacity: திறன்
+      awake_time: விழித்திருக்கும் நேரம்
+      connected: இணைக்கப்பட்டுள்ளது
+      constants: மாறிலிகள்
+      cpu_desc: சிபியு விளக்கம்
+      devices: சாதனங்கள்
+      disconnected: துண்டிக்கப்பட்டது
+      distribution_codename: குறியீட்டு பெயர்
+      distribution_like: போன்ற வழங்கல்
+      distribution_name: பரவல்
+      frequency: மீடிறன், மீள்திறன், நிகழ்வெண், நிகழ்வு
+      hardware_desc: வன்பொருள் விளக்கம்
+      hostname: புரவலன்பெயர்
+      klipper_load: சுமை வெட்டுகிறது
+      load: சுமை
+      manufactured: தயாரிக்கப்பட்டது
+      manufacturer: உற்பத்தியாளர்
+      memory_used: பயன்படுத்தப்பட்ட நினைவகம்
+      mcu_awake: '{mcu} விழித்திருக்கும் நேரம்'
+      mcu_load: '{mcu} LOAD'
+      micro_controller: மைக்ரோ-கண்ட்ரோலர்
+      mcu_bandwidth: '{mcu} அலைவரிசை'
+      model: சிபியு மாதிரி
+      moonraker_load: மூன்ராகேக்கர் சுமை
+      mcu_information: '{mcu} செய்தி'
+      last_stats: கடைசி புள்ளிவிவரங்கள்
+      network: பிணையம்
+      non_critical_connection: விமர்சனமற்ற இணைப்பு
+      product_name: தயாரிப்பு பெயர்
+      processor_desc: செயலி
+      serial_number: வரிசை எண்
+      system_load: கணினி சுமை
+      system_memory: கணினி நினைவகம்
+      system_utilization: கணினி பயன்பாடு
+      total_memory: மொத்த நினைவகம்
+      operating_system: இயக்க முறைமை
+      version: பதிப்பு
+      virtualization: மெய்நிகராக்கம்
+    msg:
+      canbus_warning: ஒதுக்கப்படாத கேன் பச் முனைகளை மட்டுமே கண்டறிய முடியும். <br>
+        தகவல்தொடர்பு சிக்கல்களைத் தவிர்ப்பதற்காக கேன் பச் உடன் இணைக்கப்படாத ஒரே ஒரு
+        கையொப்பமிடப்படாத சாதனம் மட்டுமே இருக்க பரிந்துரைக்கப்படுகிறது. <br> கூடுதல்
+        தகவல்களைக் காணலாம் <ஒரு இலக்கு = "_ வெற்று" href = " 
+        ://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">here.</a>
+      no_devices_found: சாதனங்கள் எதுவும் கிடைக்கவில்லை
+      no_devices_searched: சாதனங்களைத் தேட புதுப்பிப்பு பொத்தானைப் பயன்படுத்தவும்
+  bedmesh:
+    tooltip:
+      save: அச்சுப்பொறிக்கு அளவீடு செய்யப்பட்ட சுயவிவரத்தை ccfg க்குச் செய்கிறது
+      calibrate: ஒரு புதிய அளவுத்திருத்தத்தைத் தொடங்குகிறது, சுயவிவரத்தை 'இயல்புநிலை'
+        என்று சேமிக்கிறது
+      delete: சுயவிவரத்தை நீக்கு
+      load: சுயவிவரத்தை ஏற்றவும்
+      copy_image: படுக்கை கண்ணி படத்தை நகலெடுக்கவும்
+    label:
+      active: செயலில்
+      base: காரம்
+      box_scale: பெட்டி அளவு
+      flat_surface: தட்டையான விமானத்தைக் காட்டு
+      mesh_matrix: மெச் மேட்ரிக்ச்
+      probed_matrix: ஆய்வு செய்யப்பட்ட மேட்ரிக்ச்
+      profile_name: சுயவிவர பெயர்
+      remove_profile: '%{name} சுயவிவரத்தை அகற்று'
+      scale: வண்ண அளவு
+      wireframe: வயர்ஃப்ரேம்
+    msg:
+      not_loaded: கண்ணி ஏற்றப்படவில்லை
+      hint: '%{பெயர் than தவிர வேறு ஏதாவது சேமித்தால், %{name} சுயவிவரத்தையும் அகற்றவும்
+        நீங்கள் தேர்வு செய்யலாம்'
+      not_found: தற்போதுள்ள படுக்கை மெச்கள் எதுவும் கிடைக்கவில்லை.
+  chart:
+    label:
+      item: பெயர்
+      current: உண்மையான
+      power: விசை
+      target: இலக்கு
+      rate_of_change: மாற்றம்
+    tooltip:
+      help: பெரிதாக்க <kbd> சிப்ட் < /kbd> ஐ வைத்திருங்கள்.
+  console:
+    label:
+      auto_scroll: ஆட்டோ ச்க்ரோல்
+      flip_layout: புரட்டும் தளவமைப்பு
+      hide_temp_waits: தற்காலிக காத்திருப்புகளை மறைக்கவும்
+    tooltip:
+      help: கட்டளைகளுக்கு "உதவி" <br/> ஐ உள்ளிடவும் <kbd> தாவல் </kbd> ஐப் பயன்படுத்தவும்
+        <br/> <kbd> & uarr;
+  endpoint:
+    error:
+      cant_connect: ஏதோ தவறு நடந்தது, மற்றும் திரவத்தை இலக்கை அடைய முடியாது. இது சரியான
+        முகவரி என்று நீங்கள் உறுதியாக நம்புகிறீர்களா?
+      cors_error: CORS கொள்கையால் தடுக்கப்பட்டது
+      cors_note: இது உங்கள் மூன்ரேக்கர் உள்ளமைவை மாற்ற வேண்டும் என்று பொருள். பல அச்சுப்பொறி
+        அமைப்புகளில் உள்ள ஆவணங்களைப் பார்க்கவும் <a href = "%{url}" இலக்கு = "_ வெற்று">
+        இங்கே </a>
+    tooltip:
+      endpoint_examples: உங்கள் பநிஇ முகவரி ஐ உள்ளிடவும். <br /> சில எடுத்துக்காட்டுகள்
+        இருக்கலாம்;
+    hint:
+      add_printer: 'எ.கா., http: //fluiddpi.local'
+    msg:
+      trouble: சிக்கல் உள்ளதா? <a href = "%{url}" இலக்கு = "_ வெற்று"> மேலும் தகவலுக்கு
+        இங்கே காண்க </a>.
+  endstop:
+    label:
+      open: திற
+      triggered: தூண்டப்பட்டது
+    msg:
+      subtitle: எண்ட்ச்டாப் நிலையைப் புதுப்பிக்க புதுப்பிப்பு பொத்தானைப் பயன்படுத்தவும்.
+  file_system:
+    filters:
+      label:
+        crowsnest_backup_files: COVERSNEST காப்பு கோப்புகளை வடிகட்டவும்
+        print_start_time: வடிகட்டி அச்சிடப்பட்டது
+        hidden_files_folders: மறைக்கப்பட்ட கோப்புகள் மற்றும் கோப்புறைகளை வடிகட்டவும்
+        klipper_backup_files: வெட்டப்பட்ட காப்பு கோப்புகளை வடிகட்டி
+        rolled_log_files: உருட்டப்பட்ட பதிவு கோப்புகளை வடிகட்டவும்
+        moonraker_backup_files: மூன்ராகேக்கர் காப்பு கோப்புகளை வடிகட்டவும்
+        moonraker_temporary_upload_files: மூன்ரேக்கர் தற்காலிக பதிவேற்ற கோப்புகளை
+          வடிகட்டவும்
+    label:
+      dir_name: அடைவு பெயர்
+      disk_usage: வட்டு பயன்பாடு
+      diskinfo: வட்டு செய்தி
+      downloaded: பதிவிறக்கம்
+      file_name: கோப்புப்பெயர்
+      transfer_rate: பரிமாற்ற வீதம்
+      uploaded: பதிவேற்றப்பட்டது
+      view_section_documentation: "'%{section}' ஆவணங்களைக் காண்க"
+    msg:
+      not_found: கோப்புகள் எதுவும் கிடைக்கவில்லை
+      processing: செயலாக்கம்
+    overlay:
+      drag_files_folders_upload: <strong> இழுத்து </strong> பதிவேற்ற கோப்புகள் மற்றும்
+        கோப்புறைகள் இங்கே
+      drag_files_enqueue: <strong> இழுத்து </strong> கோப்புகளை இங்கே enqueue க்கு
+    title:
+      add_dir: கோப்பகத்தைச் சேர்க்கவும்
+      add_file: கோப்பைச் சேர்க்கவும்
+      command_palette: கட்டளை தட்டு
+      devices: சாதனங்கள்
+      download_file: கோப்பை மீட்டெடுக்கும்
+      duplicate_dir: நகல் அடைவு
+      duplicate_file: நகல் கோப்பு
+      upload_file: பதிவேற்றும் கோப்பு | கோப்புகளை பதிவேற்றுகிறது
+      go_to_file: கோப்புக்குச் செல்லவும்
+      rename_dir: கோப்பகத்தை மறுபெயரிடுங்கள்
+      rename_file: கோப்பை மறுபெயரிடுங்கள்
+    tooltip:
+      low_on_space: வட்டு இடத்தில் குறைவாக
+      items_count: '{count} உருப்படி | {count} உருப்படிகள்'
+      root_disabled: '{root} ரூட் கிடைக்கவில்லை. உங்கள் பதிவுகளை சரிபார்க்கவும்.'
+    url:
+      klipper_config: '%{klipperDomain} /config_reference.html#%{hash}'
+      moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
+      moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
+      crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
+  gcode:
+    btn:
+      load_current_file: தற்போதைய கோப்பை ஏற்றவும்
+    label:
+      current_layer_height: தற்போதைய அடுக்கு உயரம்
+      exclude_object: பொருளை விலக்கு
+      follow_progress: முன்னேற்றத்தைப் பின்பற்றுங்கள்
+      layer: அடுக்கு
+      layers: அடுக்குகள்
+      parsed: பாகுபடுத்தப்பட்ட
+      show_current_layer: தற்போதைய அடுக்கைக் காட்டு
+      show_extrusions: எக்ச்ட்ரசன்களைக் காட்டு
+      show_moves: நகர்வுகளைக் காட்டு
+      show_next_layer: அடுத்த அடுக்கைக் காட்டு
+      show_parts: பகுதிகளைக் காட்டு
+      show_previous_layer: முந்தைய அடுக்கைக் காட்டு
+      show_retractions: பின்வாங்கல்களைக் காட்டு
+      parsing_file: பாகுபடுத்தும் கோப்பு
+    msg:
+      confirm: '" %{filename}" கோப்பு %{size}, இது உங்கள் கணினிக்கு வள தீவிரமாக இருக்கலாம்.
+        நீங்கள் உறுதியாக இருக்கிறீர்களா?'
+    overlay:
+      drag_file_load: <strong> இழுத்தல் </strong> ஏற்றுவதற்கு இங்கே ஒரு GCODE கோப்பு
+  history:
+    msg:
+      confirm: நீங்கள் உறுதியாக இருக்கிறீர்களா? இது எல்லா வரலாற்றையும், அச்சுப்பொறி
+        புள்ளிவிவரங்களையும் அழிக்கும்
+      confirm_jobs: நீங்கள் உறுதியாக இருக்கிறீர்களா? இது எல்லா வேலைகளையும் அழிக்கும்.
+      confirm_stats: நீங்கள் உறுதியாக இருக்கிறீர்களா? இது எல்லா புள்ளிவிவரங்களையும்
+        அழிக்கும்.
+  printer:
+    title:
+      stepper_driver_overheating: ச்டெப்பர் டிரைவர் '%{name}' அதிக வெப்பமடைகிறது
+      printer_status: அச்சுப்பொறி நிலை
+    state:
+      busy: பிசியாக
+      cancelled: ரத்து செய்யப்பட்டது
+      complete: முழுமையானது
+      idle: நிலையிக்கம்
+      loading: ஏற்றுகிறது
+      paused: இடைநிறுத்தப்பட்டது
+      printing: அச்சிடுதல்
+      ready: ஆயத்தம்
+      standby: காத்திருப்பு
+    msg:
+      possible_print_failure: இது தோல்வியுற்ற அச்சுக்கு வழிவகுக்கும்
+    url:
+      stepper_driver_overheating: '%{klipperDomain} /tmc_drivers.html#tmc-reports-error-ot1overtemberror'
+  job_queue:
+    msg:
+      confirm: நீங்கள் உறுதியாக இருக்கிறீர்களா? இது முழு அச்சுப்பொறி வரிசையையும் அழிக்கும்
+    label:
+      number_of_copies: பிரதிகளின் எண்ணிக்கை
+    title:
+      multiply_job: பெருக்கி வேலை | வேலைகளை பெருக்கவும்
+    tooltip:
+      help: வேலைகளிலிருந்து கோப்புகளை இழுத்து அவற்றை இங்கே கைவிடுவதன் மூலம் வரிசை
+        வேலைகள் <br> வரிசைப்படுத்தப்பட்ட வேலைகளின் வரிசையை மேலே அல்லது கீழ் இழுப்பதன்
+        மூலம் அவற்றை சரிசெய்யவும்
+  tool:
+    btn:
+      home_x: ஃச்
+      home_y: ஒய்
+      home_all: அனைத்தும்
+    title:
+      bed_screws_adjust: படுக்கை திருகுகள் சரிசெய்கின்றன
+      manual_probe: கையேடு ஆய்வு
+      screws_tilt_adjust: திருகுகள் சாய் சரிசெய்தல்
+    tooltip:
+      absolute_positioning: முழுமையான நிலைப்படுத்தல்
+      extruder_disabled: எக்ச்ட்ரூடர் முடக்கப்பட்டது, min_extrude_temp க்கு கீழே (%{min}
+        <mall> ° C </small>)
+      home_xy: முகப்பு xy
+      home_z: முகப்பு சட்
+      manual_probe: கையேடு ஆய்வு
+      motors_off: மோட்டார்ச் ஆஃப்
+      relative_positioning: உறவினர் பொருத்துதல்
+      select_tool: கருவி %{tool} என்பதைத் தேர்ந்தெடுக்கவும்
+      tools: கருவிகள்
+    label:
+      stats_active_extruder: <ச்பான் வகுப்பு = "இரண்டாம் நிலை-உரை"> செயலில் எக்ச்ட்ரூடர்
+        உள்ளமைவு </span> %{filamentDiameter} mm விட்டம் இழை <span வகுப்பு = "இரண்டாம்
+        நிலை-உரை"> மற்றும் </span> %{nozzleDiameter} mm க்கு அமைக்கப்பட்டுள்ளது முனை
+      stats_volumetric_flow: '%{extrudeSpeed} மிமீ/வி <ச்பான் கிளாச் = "இரண்டாம் நிலை-உரை">'
+      stats_extruded_length: '%{extrudeLength} மிமீ இழை %{extrudeFactor} %ஓட்டம் <ச்பான்
+        வகுப்பு = "இரண்டாம் நிலை-உரை">, ஒரு </ச்பான்> மதிப்பிடப்பட்ட வெளியீட்டு நீளத்தை
+        %{estimatedExtrudedLength} மிமீ வழங்கும்'
+      stats_max_speed: <span வகுப்பு = "இரண்டாம் நிலை-உரை"> ஒரு </span> %{layerHeight}
+        mm அடுக்கு உயரம் <span வகுப்பு = "இரண்டாம் நிலை-உரை">, </span> மதிப்பிடப்பட்ட
+        அதிகபட்ச அச்சு விரைவு %{estimatedMaxSpeed} மிமீ/எச்
+  version:
+    btn:
+      check_for_updates: புதுப்பிப்புகளை சரிபார்க்கவும்
+      finish: முடிக்க
+      update: புதுப்பிப்பு
+      update_all: அனைத்தையும் புதுப்பிக்கவும்
+      view_versions: பதிப்புகளைக் காண்க
+    label:
+      commit_history: வரலாற்றைச் செய்யுங்கள்
+      commits_on: கமிட்ச் ஆன்
+      committed: உறுதியானது
+      dirty: அழுக்கு
+      invalid: செல்லுபடியாகாத
+      os_packages: OS தொகுப்புகள்
+      package_list: தொகுப்பு பட்டியல்
+      up_to_date: புதுப்பித்த நிலையில்
+      updates_available: புதுப்பிப்புகள் கிடைக்கின்றன
+      old_component_version: ஃப்ளூய்ட்டின் அனைத்து அம்சங்களையும் ஆதரிக்காத %{பெயர்
+        of இன் பழைய பதிப்பைப் பயன்படுத்துகிறீர்கள்.
+    status:
+      finished: புதுப்பிப்புகள் முடிந்தது
+      updating: புதுப்பித்தல் ...
+    title: மென்பொருள் புதுப்பிப்புகள்
+    tooltip:
+      commit_history: வரலாற்றைச் செய்யுங்கள்
+      dirty: பிரிக்கப்பட்ட தலையைக் குறிக்கிறது, மாச்டர் அல்லது தவறான தோற்றத்தில் அல்ல
+      invalid: ரெப்போவில் உள்ளக மாற்றங்களைக் குறிக்கிறது
+      packages: தொகுப்பு
+      release_notes: வெளியீட்டு குறிப்புகள்
+  timelapse:
+    btn:
+      render: வழங்கவும்
+      save_frames: பிரேம்களை சேமிக்கவும்
+    error:
+      newframe: நேரத்தை எடுக்கும் பிழை
+    label:
+      frames: '%{frames} சட்டகம் | %{frames} பிரேம்கள்'
+      length: 'மதிப்பிடப்பட்ட நீளம்: %{length}'
+      frame: சட்டகம் | பிரேம்கள்
+    title:
+      timelapse_settings: நேர அமைப்புகள்
+      timelapse_status: TIMELAPSE நிலை
+      render_settings: அமைப்புகளை வழங்கவும்
+    setting:
+      gcode_verbose: Verbose gcode
+      enable: இயக்கப்பட்டது
+      auto_render: கார் வழங்கல்
+      crf: நிலையான வீத காரணி
+      duplicatelastframe: கடைசி பிரேம்களை நகல்
+      fw_retract: ஃபார்ம்வேர் பின்வாங்கலைப் பயன்படுத்தவும்
+      mode: பயன்முறை
+      mode_layermacro: அடுக்கு மேக்ரோ
+      mode_hyperlapse: ஐப்பர்லாப்ச்
+      hyperlapse_cycle: ஐப்பர்லாப்ச் சுழற்சி
+      output_framerate: வெளியீட்டு பிரேம்ரேட்
+      park_retract_distance: பூங்கா பின்வாங்கல் தூரம்
+      park_retract_speed: பூங்கா பின்வாங்கல் விரைவு
+      park_extrude_distance: பூங்கா எக்ச்ட்ரூட் தூரம்
+      park_extrude_speed: பூங்கா எக்ச்ட்ரூட் விரைவு
+      parkhead: பூங்கா தலை
+      park_time: பூங்கா நேரம்
+      park_travel_speed: பூங்கா பயண விரைவு
+      park_custom_pos_x: பூங்கா நிலை ஃச்
+      park_custom_pos_y: பூங்கா நிலை ஒய்
+      park_custom_pos_dz: பூங்கா நிலை இசட்-ஆப்
+      parkpos:
+        label: பூங்கா நிலை
+        custom: தனிப்பயன்
+        front_left: முன் இடது
+        front_right: முன் வலது
+        center: நடுவண்
+        back_left: பின் இடது
+        back_right: பின் வலது
+        x_only: ஃச் ஐ மட்டும் நகர்த்தவும்
+        y_only: ஒய் ஐ மட்டும் நகர்த்தவும்
+      previewimage: சிறு உருவத்தை உருவாக்குங்கள்
+      saveframes: பிரேம்களை சேமிக்கவும்
+      stream_delay_compensation: இழப்பீடு தாமத
+      targetlength: இலக்கு நீளம்
+      variable_fps: மாறி FPS
+      variable_fps_min: குறைந்தபட்ச பிரேம்ரேட்
+      variable_fps_max: அதிகபட்ச ஃப்ரேம்ரேட்
+  spoolman:
+    btn:
+      manage_spools: ச்பூல்களை நிர்வகிக்கவும்
+      scan_code: குறியீட்டை ச்கேன் செய்யுங்கள்
+      select: தேர்ந்தெடு | {மேக்ரோ க்கு க்கு தேர்ந்தெடுக்கவும்
+    title:
+      spoolman: ச்பூல்மேன்
+      spool_selection: ச்பூல் தேர்வு | மேக்ரோ {மேக்ரோ க்கு க்கான ச்பூல் தேர்வு
+      scan_spool: ச்கேன் ச்பூல்
+    label:
+      active_spool: செயலில் ச்பூல்
+      change_spool: ச்பூலை மாற்றவும்
+      comment: கருத்து
+      device_camera: சாதனம்
+      filament_name: தாள்
+      first_used: முதலில் பயன்படுத்தப்பட்டது
+      id: ஐடி
+      last_used: கடைசியாக பயன்படுத்தப்பட்டது
+      location: இடம்
+      lot_nr: நிறைய இல்லை
+      material: பொருள்
+      remaining_weight: மீதமுள்ள
+      vendor: விற்பனையாளர்
+      weight: எடை
+      length: நீளம்
+    msg:
+      no_required_length: தேர்ந்தெடுக்கப்பட்ட கோப்பை அச்சிடத் தேவையான இழைகளின் அளவு
+        தெரியவில்லை. நீங்கள் தொடர விரும்புகிறீர்களா?
+      no_spool: நீங்கள் ஒரு ச்பூலை தேர்வு செய்யவில்லை. இழை கண்காணிப்பு இல்லாமல் அச்சிட
+        விரும்புகிறீர்களா?
+      no_filament: நீங்கள் தேர்ந்தெடுத்த ச்பூல் அச்சு வேலையை வெற்றிகரமாக முடிக்க போதுமான
+        இழை இல்லை. நீங்கள் தொடர விரும்புகிறீர்களா?
+      tracking_inactive: இழை கண்காணிப்பு செயலற்றது. தொடங்க, தயவுசெய்து ஒரு ச்பூலைத்
+        தேர்ந்தெடுக்கவும்.
+      not_connected: ச்பூல்மேன் சேவையகம் கிடைக்கவில்லை.
+      mismatched_filament: தேர்ந்தெடுக்கப்பட்ட இழைகளின் பொருள் ச்லைசரில் தேர்ந்தெடுக்கப்பட்ட
+        பொருளுடன் பொருந்தவில்லை. நீங்கள் தொடர விரும்புகிறீர்களா?
+      error:
+        cors: கேமராக்கள் ஊட்டத்தை அணுகுவதில் பிழை ஏற்பட்டது. உங்கள் வெப்கேம் சேவையகம்
+          CORS ஐ அணுக அனுமதிக்கிறது என்பதை உறுதிப்படுத்தவும்.
+        spool_not_existant: நீங்கள் ச்கேன் செய்த ச்பூல் தரவுத்தளத்தில் இல்லை.
+        no_image_data: கேமராக்கள் ஊட்டத்தை அணுகுவதில் பிழை ஏற்பட்டது. உங்கள் கேமரா
+          உள்ளமைவைச் சரிபார்க்கவும் அல்லது மற்றொரு கேமரா மூலத்தை முயற்சிக்கவும்.
+      info:
+        howto: உங்கள் ச்பூலின் QR குறியீட்டை கேமராவுக்குக் காட்டுங்கள். ஒரு ச்பூல்
+          கண்டறியப்பட்டவுடன் இந்த சாளரம் மூடப்படும்.
+      warning:
+        code_not_recognized: இந்த குறியீடு இணக்கமான QR குறியீடு போல் தெரியவில்லை.
+        invalid_spool_id: இந்த QR குறியீட்டில் உள்ள ச்பூல் ஐடி தவறானது.
+    setting:
+      remaining_filament_unit: மீதமுள்ள இழைகளைக் காட்டு
+      auto_open_qr_camera: QR குறியீடு கண்டறிதலுக்கு தானாகத் திறந்திருக்கும் கேமரா
+      auto_select_spool_on_match: QR குறியீடு பொருத்தத்தில் தானாகவே ச்பூல் தேர்வை
+        செய்யுங்கள்
+      prefer_device_camera: கிடைத்தால் QR குறியீடு கண்டறிதலுக்கு சாதன கேமராவைப் பயன்படுத்தவும்
+      show_spool_selection_dialog_on_print_start: அச்சு தொடக்கத்தில் ச்பூல் தேர்வு
+        உரையாடலைக் காட்டு
+      warn_on_not_enough_filament: தேர்ந்தெடுக்கப்பட்ட ச்பூலில் அச்சிடலை முடிக்க போதுமான
+        இழை இல்லாதபோது ஒரு எச்சரிக்கையைக் காட்டுங்கள்
+      warn_on_filament_type_mismatch: ச்பூலின் இழை வகை மற்றும் ச்லைசரில் தேர்ந்தெடுக்கப்பட்டவை
+        பொருந்தாதபோது ஒரு எச்சரிக்கையைக் காட்டுங்கள்
+  sensors:
+    title:
+      sensors: சென்சார்கள்
+  keyboard_shortcuts:
+    title:
+      keyboard_shortcuts: விசைப்பலகை குறுக்குவழிகள்
+    label:
+      actions: செயல்கள்
+      cancel: ரத்துசெய்
+      pause: இடைநிறுத்தம்
+      printing: அச்சிடுதல்
+      emergency_stop: அவசர நிறுத்தம்
+      home_all: வீடு எல்லாம்
+      navigation: வானோடல்
+      open_keyboard_shortcut_help: விசைப்பலகை குறுக்குவழி உதவியைத் திறக்கவும்
+      tool: கருவி
+  beacon:
+    label:
+      active: செயலில்
+      model_name: மாதிரி பெயர்
+      remove_model: '%{name} மாதிரியை அகற்று'
+    msg:
+      hint: '%{name} தவிர வேறு ஏதாவது சேமித்தால், %{name} மாதிரியை அகற்றவும் நீங்கள்
+        தேர்வு செய்யலாம்'
+      not_found: தற்போதுள்ள பெக்கான் மாதிரிகள் எதுவும் கிடைக்கவில்லை.
+    tooltip:
+      delete: மாதிரியை நீக்கு
+      load: சுமை மாதிரி

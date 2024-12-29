@@ -56,6 +56,7 @@ import {
   mdiArrowHorizontalLock,
   mdiChartTimelineVariant,
   mdiFireAlert,
+  mdiSnowflake,
   mdiSnowflakeAlert,
   mdiUpload,
   mdiFolderUpload,
@@ -309,6 +310,7 @@ export const Icons = Object.freeze({
   thermometer: mdiThermometerLow,
   bell: mdiBellOutline,
   fireAlert: mdiFireAlert,
+  snowflake: mdiSnowflake,
   snowflakeAlert: mdiSnowflakeAlert,
   circle: mdiCircle,
   blankCircle: mdiCheckboxBlankCircleOutline,
@@ -531,7 +533,8 @@ export const SupportedLocales = Object.freeze([
   { name: 'Українська', code: 'uk' },
   { name: '한국어', code: 'ko' },
   { name: 'العربية', code: 'ar' },
-  { name: '日本語', code: 'ja' }
+  { name: '日本語', code: 'ja' },
+  { name: 'தமிழ்', code: 'ta' }
 ])
 
 export const SupportedImageFormats = Object.freeze([

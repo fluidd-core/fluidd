@@ -34,7 +34,7 @@
       <v-list-item @click="$emit('applyOff')">
         <v-list-item-icon>
           <v-icon color="info">
-            $snowflakeAlert
+            $snowflake
           </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
