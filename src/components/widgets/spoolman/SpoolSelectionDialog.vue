@@ -432,7 +432,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       const supportsSaveVariables = this.$store.getters['printer/getPrinterConfig']('save_variables')
       if (supportsSaveVariables) {
         // persist selected spool across restarts
-        commands.push(`SAVE_VARIABLE VARIABLE=${this.targetMacro.toUpperCase()}__SPOOL_ID VALUE=${this.selectedSpool ?? 'None'}`)
+        commands.push(`SAVE_VARIABLE VARIABLE=${this.targetMacro.toLowerCase()}__spool_id VALUE=${this.selectedSpool ?? 'None'}`)
       }
 
       await SocketActions.printerGcodeScript(commands.join('\n'))
