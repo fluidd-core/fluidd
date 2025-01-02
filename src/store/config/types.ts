@@ -105,6 +105,7 @@ export interface GeneralConfig {
   enableDiagnostics: boolean;
   thumbnailSize: number;
   colorPickerValueRange: ColorPickerValueRange;
+  showHiddenOutputs: boolean;
 }
 
 export type ToolheadControlStyle = 'cross' | 'bars' | 'circle'
