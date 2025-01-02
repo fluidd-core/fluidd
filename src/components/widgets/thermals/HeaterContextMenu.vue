@@ -10,7 +10,7 @@
   >
     <v-list dense>
       <v-list-item
-        :disabled="!klippyReady || printerPrinting"
+        :disabled="!klippyReady || printerPrinting || !heaterIsOn"
         @click="$emit('turn-off', heater)"
       >
         <v-list-item-icon>
@@ -23,10 +23,9 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-divider v-if="supportsPidCalibrate || supportsMpcCalibrate" />
+      <v-divider />
 
       <v-list-item
-        v-if="supportsPidCalibrate"
         :disabled="!klippyReady || printerPrinting"
         @click="$emit('pid-calibrate', heater)"
       >
@@ -41,8 +40,8 @@
       </v-list-item>
 
       <v-list-item
-        v-if="supportsMpcCalibrate"
-        :disabled="!klippyReady || printerPrinting"
+        v-if="klippyApp.isKalicoOrDangerKlipper"
+        :disabled="!klippyReady || printerPrinting || !heaterUsesMpcControl"
         @click="$emit('mpc-calibrate', heater)"
       >
         <v-list-item-icon>
@@ -81,15 +80,12 @@ export default class HeaterContextMenu extends Mixins(StateMixin) {
     return this.$store.getters['printer/getKlippyApp'] as KlippyApp
   }
 
-  get supportsPidCalibrate () {
-    return ['pid', 'pid_v'].includes(this.heater.config?.control)
+  get heaterIsOn () {
+    return this.heater.target > 0
   }
 
-  get supportsMpcCalibrate () {
-    return (
-      this.klippyApp.isKalicoOrDangerKlipper &&
-      this.heater.config?.control === 'mpc'
-    )
+  get heaterUsesMpcControl () {
+    return this.heater.config?.control === 'mpc'
   }
 }
 </script>
