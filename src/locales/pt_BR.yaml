@@ -51,7 +51,7 @@ app:
     title:
       add_dir: Adicionar diretório
       rename_dir: Renomear diretório
-      command_palette: Palete de comandos
+      command_palette: Paleta de Comandos
       devices: Dispositivos
       duplicate_dir: Duplicar diretório
       add_file: Adicionar arquivo
@@ -310,6 +310,7 @@ app:
       total_print_time: Tempo de impressão total
       smooth_time: Tempo de Suavização
       synced_extruder: Extrusora sincronizada
+      device: Dispositivo
     msg:
       password_changed: Senha trocada
       wrong_password: Oops, algo errado! Sua senha esta correta?
@@ -349,6 +350,8 @@ app:
         confirm_power_device_toggle: Tem certeza? Isso alternará a energia deste dispositivo.
         unsaved_changes: Você tem alterações não salvas. Tem certeza de que deseja
           fechar este arquivo?
+        confirm_remove_camera: Tem certeza que deseja remover a camera %{name}?
+        confirm_remove_printer: Tem certeza que deseja remover a impressora %{name}?
       error:
         arrayofnums: Apenas números
         exists: Já existe
@@ -451,6 +454,7 @@ app:
       add_user: Adicionar Usuário
       restore: Restaurar
       add_filter: Adicionar filtro
+      backup: Backup
     title:
       camera: Camera | Cameras
       general: Geral
@@ -483,7 +487,7 @@ app:
       invert_x_control: Inverter controlo X
       invert_y_control: Inverter controlo Y
       invert_z_control: Inverter controlo Z
-      language: Mostrar Linguagem
+      language: Linguagem de Exibição
       primary_color: Cor principal
       printer_name: Nome impressora
       reset: Redefinir as configurações
@@ -522,6 +526,15 @@ app:
       extrusion_line_width: Largura da linha de extrusão
       confirm_on_power_device_change: Exigir confirmação sobre alterações de energia
         do dispositivo
+      height: Altura
+      aspect_ratio_format: '[largura : altura]'
+      flip_horizontal: Espelhamento Horizontal
+      flip_vertical: Espelhamento Vertical
+      keyboard_shortcuts: Atalhos de Teclado
+      last_result: Último Resultado
+      left_y: Eixo-Y esquerdo
+      icon: Ícone
+      filter: Filtro | Filtros
     timer_options:
       file: Estimativa do ficheiro
       slicer: Slicer
@@ -531,6 +544,9 @@ app:
       gcode_coords: Usar a posição GCode em vez da posição da toolhead no painel
     camera_rotate_options:
       none: Nenhum
+      '270': 270°
+      '180': 180°
+      '90': 90°
   socket:
     msg:
       connecting: A conectar ao moonraker...
@@ -555,6 +571,7 @@ app:
       rate_of_change: Mudança
       current: Atual
       item: Nome
+      target_temperature: Temperatura Alvo
     tooltip:
       help: Mantenha a tecla <kbd>Shift</kbd> pressionada para aumentar o zoom. <br
         /> Clique num item para alternar no gráfico. <br /> Clique em Ligar para alternar
