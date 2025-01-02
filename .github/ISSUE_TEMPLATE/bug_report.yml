@@ -5,14 +5,22 @@ body:
   - type: markdown
     attributes:
       value: |
-        This issue form is for reporting bugs only!
-        If you have a feature request, please use [feature_request](new?template=feature_request.yml)
+        ## ✨ Thank you for using Fluidd and taking the time to report bugs! ✨
+
+        #### This form is ONLY for reporting bugs related to Fluidd!
+
+        - If you have a feature request, please use [feature_request](new?template=feature_request.yml)
+        - If you need any other help, please visit the [Fluidd Discord](https://discord.gg/GZ3D5tqfcF/)
+
+        ---
   - type: input
     id: version
     attributes:
       label: Fluidd Version
       description: >-
-        Fluidd version where the issue occurs
+        Fluidd version you were using when you experienced this issue (as shown in bottom right corner of the page, eg. v1.31.3-bc79728)
+      placeholder: >-
+        <your current Fluidd version>
     validations:
       required: true
   - type: dropdown
@@ -20,7 +28,7 @@ body:
     attributes:
       label: Browser
       description: >-
-        The browser you are using to access Fluidd
+        In which browser did you experience this issue (please select all that apply)?
       multiple: true
       options:
         - Chrome
@@ -35,7 +43,7 @@ body:
     attributes:
       label: Device
       description: >-
-        The type of device you are using
+        In what kind of device did you experience this issue (please select all that apply)?
       multiple: true
       options:
         - Desktop PC
@@ -49,7 +57,7 @@ body:
     attributes:
       label: Operating System
       description: >-
-        The operating system powering your device
+        What operating system runs on the device where you experienced this issue (please select all that apply)?
       multiple: true
       options:
         - Windows
