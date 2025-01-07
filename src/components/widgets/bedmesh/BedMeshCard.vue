@@ -173,7 +173,7 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
       z: 100,
       silent: true,
       style: {
-        text: `Range: ${range.toFixed(4)}`
+        text: `${this.$t('app.general.label.range')}: ${range.toFixed(4)}`
       }
     }]
   }
