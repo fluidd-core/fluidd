@@ -58,6 +58,7 @@ export const defaultState = (): ConfigState => {
         showUploadAndPrint: true,
         flipConsoleLayout: false,
         cameraFullscreenAction: 'embed',
+        printerPowerDevice: null,
         topNavPowerToggle: null,
         showManualProbeDialogAutomatically: true,
         showBedScrewsAdjustDialogAutomatically: true,
