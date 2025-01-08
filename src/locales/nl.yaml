@@ -31,11 +31,16 @@ app:
       power: Kracht
       target: Doelwit
       rate_of_change: Wijzig
+      target_temperature: Doeltemperatuur
+      turn_off: Zet Uit
     tooltip:
       help: >-
         Houd <kbd>shift</kbd> ingedrukt om te zoomen.<br />Klik op een item om deze
         aan of uit te schakelen in de grafiek.<br />Click a power to toggle in the
         graph.
+    title:
+      pid_calibrate: PID Kalibreer {name}
+      mpc_calibrate: MPC Kalibreer {name}
   console:
     label:
       auto_scroll: Automatisch scrollen
@@ -83,6 +88,7 @@ app:
         hidden_files_folders: Filter verborgen bestanden en mappen
         moonraker_backup_files: Filter Moonraker backup bestanden
         crowsnest_backup_files: Filter Crowsnest backup bestanden
+        moonraker_temporary_upload_files: Filtreer Moonraker tijdelijke upload bestanden
     label:
       dir_name: Mapnaam
       disk_usage: Schijfgebruik
@@ -343,6 +349,7 @@ app:
       screw_index: Schroef index
       screw_number: Schroef %{index}
       version_sort: Versie sorteer
+      device: Apparaat
     msg:
       password_changed: Wachtwoord aangepast
       wrong_password: Oeps! Er is iets fout gegaan, klopt je wachtwoord wel?
@@ -394,6 +401,16 @@ app:
           bed mesh wilt legen?
         confirm_load_bedmesh_profile: De printer is momenteel bezig. Weet je zeker
           dat je profiel %{name} wilt laden?
+        confirm_remove_console_filter: Weet je zeker dat je de console filter %{name}
+          wilt verwijderen?
+        confirm_remove_camera: Weet je zeker dat je de camera %{name} wilt verwijderen?
+        confirm_remove_macro_category: Weet je zeker dat je de macro categorie %{name}
+          wilt verwijderen?
+        confirm_remove_printer: Weet je zeker dat je de printer %{name} wilt verwijderen?
+        confirm_remove_thermal_preset: Weet je zeker dat je de thermal preset %{name}
+          wilt verwijderen?
+        confirm_change_beacon_model: De printer is momenteel bezig. Weet je zeker
+          dat je het beacon model wilt wijzigen?
     table:
       header:
         actions: Acties
@@ -456,6 +473,7 @@ app:
       edit_chart: Bewerk Grafiek
       job_queue: Opdrachten wachtrij
       diagnostics: Diagnostiek
+      macro_category_settings: Macro Categorie Instellingen
     tooltip:
       estop: Noodstop
       reload_klipper: Herlaad de klipper configuratie.
@@ -596,10 +614,18 @@ app:
       fluidd_settings_in_moonraker_db: Fluidd instellingen in Moonraker database
       print_progress_calculation: Print Voortgang calculatie
       axes: Assen
+      auto_follow_on_file_load: Voortgang automatisch volgen na laden bestand
+      aspect_ratio: Aspectverhouding
+      drag_and_drop_functionality_for_files_and_folders: Drag-and-drop functionaliteit
+        voor bestanden en mappen
+      show_save_config_and_restart: Configuratie Opslaan en Herstarten knop in top
+        navigatie
+      force_move_toggle_warning: Confirmatie vereist wanneer FORCE_MOVE wordt geactiveerd
+      print_eta_calculation: Print ETA berekening
     timer_options:
       duration: Alleen tijdsduur
-      filament: Filamentschatting
-      file: Bestandsschatting
+      filament: Filament
+      file: Bestand
       slicer: Slicer
     title:
       authentication: Authentificatie
@@ -655,6 +681,14 @@ app:
       network: Netwerk
       version: Versie
       virtualization: Virtualisatie
+      memory_used: geheugen gebruikt
+      devices: Apparaten
+      application: Applicatie
+      connected: Verbonden
+      constants: Constanten
+    msg:
+      no_devices_found: Geen apparaten gevonden
+      no_devices_searched: Gebruik de ververs knop om te zoeken naar apparaten
   tool:
     btn:
       home_x: X
@@ -793,3 +827,6 @@ app:
   keyboard_shortcuts:
     label:
       pause: Pauze
+  beacon:
+    tooltip:
+      load: Laad Model
