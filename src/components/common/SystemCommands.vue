@@ -241,7 +241,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
 
     if (result) {
       const state = (device.status === 'on') ? 'off' : 'on'
-      SocketActions.machineDevicePowerToggle(device.device, state, wait)
+      SocketActions.machineDevicePowerSetDevice(device.device, state, wait)
     }
   }
 

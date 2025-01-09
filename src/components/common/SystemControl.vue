@@ -120,7 +120,7 @@ export default class SystemControl extends Mixins(StateMixin, FilesMixin, Servic
   printerPowerOn () {
     const printerPowerDevice: string = this.$store.state.config.uiSettings.general.printerPowerDevice ?? 'printer'
 
-    SocketActions.machineDevicePowerToggle(printerPowerDevice, 'on')
+    SocketActions.machineDevicePowerSetDevice(printerPowerDevice, 'on')
   }
 }
 </script>

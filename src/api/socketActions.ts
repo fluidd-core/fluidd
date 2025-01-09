@@ -177,14 +177,14 @@ export const SocketActions = {
     )
   },
 
-  async machineDevicePowerToggle (device: string, state: string, wait?: string) {
-    const emit = (state === 'on')
-      ? 'machine.device_power.on'
-      : 'machine.device_power.off'
+  async machineDevicePowerSetDevice (device: string, action: 'on' | 'off' | 'toggle', wait?: string) {
     baseEmit(
-      emit, {
-        dispatch: 'power/onToggle',
-        params: { [device]: null },
+      'machine.device_power.post_device', {
+        dispatch: 'power/onStatus',
+        params: {
+          device,
+          action
+        },
         wait
       }
     )

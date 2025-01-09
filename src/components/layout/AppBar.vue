@@ -389,7 +389,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
       switch (type) {
         case 'moonraker': {
           const state = (device.status === 'on') ? 'off' : 'on'
-          SocketActions.machineDevicePowerToggle(device.device, state)
+          SocketActions.machineDevicePowerSetDevice(device.device, state)
           break
         }
 
