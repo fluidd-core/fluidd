@@ -5,21 +5,9 @@ import Components from 'unplugin-vue-components/vite'
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 import content from '@originjs/vite-plugin-content'
-import monacoEditorPluginModule from 'vite-plugin-monaco-editor'
+import monacoEditorEsmPlugin from 'vite-plugin-monaco-editor-esm'
 import checker from 'vite-plugin-checker'
 import version from './vite.config.inject-version'
-
-// Fix for incorrect typings on vite-plugin-monaco-editor
-const isObjectWithDefaultFunction = (module: unknown): module is { default: typeof monacoEditorPluginModule } => (
-  module != null &&
-  typeof module === 'object' &&
-  'default' in module &&
-  typeof module.default === 'function'
-)
-
-const monacoEditorPlugin = isObjectWithDefaultFunction(monacoEditorPluginModule)
-  ? monacoEditorPluginModule.default
-  : monacoEditorPluginModule
 
 export default defineConfig({
   plugins: [
@@ -103,7 +91,7 @@ export default defineConfig({
     vue(),
     version(),
     content(),
-    monacoEditorPlugin({
+    monacoEditorEsmPlugin({
       languageWorkers: ['editorWorkerService', 'json', 'css']
     }),
     checker({
