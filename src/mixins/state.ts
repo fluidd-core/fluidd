@@ -2,6 +2,7 @@ import Vue from 'vue'
 import { SocketActions } from '@/api/socketActions'
 import { Component } from 'vue-property-decorator'
 import type { Macro } from '@/store/macros/types'
+import type { Device } from '@/store/power/types'
 
 @Component
 export default class StateMixin extends Vue {
@@ -72,6 +73,18 @@ export default class StateMixin extends Vue {
    */
   get printerPrinting (): boolean {
     return this.printerState.toLowerCase() === 'printing'
+  }
+
+  get printerPoweredOff (): boolean {
+    if (this.klippyConnected) {
+      return false
+    }
+
+    const printerPowerDevice: string = this.$store.state.config.uiSettings.general.printerPowerDevice ?? 'printer'
+
+    const device = this.$store.getters['power/getDeviceByName'](printerPowerDevice) as Device | undefined
+
+    return device?.status === 'off'
   }
 
   /**
