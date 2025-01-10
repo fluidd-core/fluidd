@@ -78,7 +78,7 @@ app:
       label:
         crowsnest_backup_files: Скрыть файлы резервных копий Crowsnest
         print_start_time: Скрыть напечатанное
-        hidden_files_folders: Скрыть скрытые файлы и папки
+        hidden_files: Скрыть скрытые файлы и папки
         klipper_backup_files: Скрыть файлы резервных копий Klipper
         moonraker_backup_files: Скрыть файлы резервных копий Moonraker
         rolled_log_files: Скрыть старые файлы журналов

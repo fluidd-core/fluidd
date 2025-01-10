@@ -73,7 +73,7 @@ app:
       label:
         crowsnest_backup_files: Filtriraj Crownestove varnostne kopije
         print_start_time: Filtriraj natisnjeno
-        hidden_files_folders: Fitriraj skrite mape in datoteke
+        hidden_files: Fitriraj skrite mape in datoteke
         klipper_backup_files: Filtriraj Klipperjeve varnostne kopije
         moonraker_backup_files: Filtriraj Moonrakerjeve varnostne kopije
         rolled_log_files: Filtriraj zavite dnevniške datoteke

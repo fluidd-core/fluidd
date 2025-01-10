@@ -85,7 +85,7 @@ app:
         print_start_time: Filter geprint
         rolled_log_files: Filter roterende log bestanden
         klipper_backup_files: Filter Klipper backup bestanden
-        hidden_files_folders: Filter verborgen bestanden en mappen
+        hidden_files: Filter verborgen bestanden en mappen
         moonraker_backup_files: Filter Moonraker backup bestanden
         crowsnest_backup_files: Filter Crowsnest backup bestanden
         moonraker_temporary_upload_files: Filtreer Moonraker tijdelijke upload bestanden

@@ -69,7 +69,7 @@ app:
     filters:
       label:
         print_start_time: Ukryj wydrukowane
-        hidden_files_folders: Filtruj ukryte pliki i foldery
+        hidden_files: Filtruj ukryte pliki i foldery
         rolled_log_files: Ukryj zarchiwizowane logi
         klipper_backup_files: Ukryj kopie zapasowe Klippera
         moonraker_backup_files: Ukryj kopie zapasowe Moonrakera

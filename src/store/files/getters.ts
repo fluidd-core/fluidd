@@ -112,7 +112,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           accepts: ['.gcode', '.g', '.gc', '.gco', '.ufp', '.nc'],
           canView,
           canConfigure: true,
-          filterTypes: ['hidden_files', 'print_start_time', 'moonraker_temporary_upload_files']
+          filterTypes: ['print_start_time', 'hidden_files', 'moonraker_temporary_upload_files']
         }
       case 'config':
         return {

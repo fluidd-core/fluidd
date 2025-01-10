@@ -664,7 +664,7 @@ app:
       label:
         crowsnest_backup_files: COVERSNEST காப்பு கோப்புகளை வடிகட்டவும்
         print_start_time: வடிகட்டி அச்சிடப்பட்டது
-        hidden_files_folders: மறைக்கப்பட்ட கோப்புகள் மற்றும் கோப்புறைகளை வடிகட்டவும்
+        hidden_files: மறைக்கப்பட்ட கோப்புகள் மற்றும் கோப்புறைகளை வடிகட்டவும்
         klipper_backup_files: வெட்டப்பட்ட காப்பு கோப்புகளை வடிகட்டி
         rolled_log_files: உருட்டப்பட்ட பதிவு கோப்புகளை வடிகட்டவும்
         moonraker_backup_files: மூன்ராகேக்கர் காப்பு கோப்புகளை வடிகட்டவும்

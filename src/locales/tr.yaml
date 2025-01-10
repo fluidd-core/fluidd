@@ -76,7 +76,7 @@ app:
       label:
         crowsnest_backup_files: Crowsnest yedek dosyalarını filtrele
         print_start_time: Yazdırılanları filtrele
-        hidden_files_folders: Gizli dosya ve klasörleri filtrele
+        hidden_files: Gizli dosya ve klasörleri filtrele
         klipper_backup_files: Klipper yedek dosyalarını filtrele
         moonraker_backup_files: Moonraker yedekleme dosyalarını filtrele
         rolled_log_files: Sarılmış günlük dosyalarını filtrele

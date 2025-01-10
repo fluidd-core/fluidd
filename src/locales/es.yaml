@@ -77,7 +77,7 @@ app:
     filters:
       label:
         print_start_time: Filtrar ya impresos
-        hidden_files_folders: Filtrar archivos y carpetas ocultos
+        hidden_files: Filtrar archivos y carpetas ocultos
         klipper_backup_files: Filtar archivos de backup de Klipper
         rolled_log_files: Filtrar archivos de log rotados
         moonraker_backup_files: Filtrar archivos de backup de Moonraker

@@ -496,56 +496,41 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         return false
       }
 
-      for (const filter of this.filters) {
-        switch (filter) {
-          case 'hidden_files':
-            if (file.name.match(/^\.(?!\.$)/)) {
-              return false
-            }
-            break
+      return !this.filters
+        .some(filter => {
+          if (filter === 'hidden_files') {
+            return file.name.match(/^\.(?!\.$)/)
+          }
 
-          case 'moonraker_backup_files':
-            if (file.type === 'file' && file.filename === '.moonraker.conf.bkp') {
-              return false
-            }
-            break
+          if (file.type !== 'file') {
+            return false
+          }
 
-          case 'moonraker_temporary_upload_files':
-            if (file.name.endsWith('.mru')) {
-              return false
-            }
-            break
+          switch (filter) {
+            case 'moonraker_backup_files':
+              return file.filename === '.moonraker.conf.bkp'
 
-          case 'klipper_backup_files':
-            if (file.type === 'file' && file.filename.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
-              return false
-            }
-            break
+            case 'moonraker_temporary_upload_files':
+              return file.filename.endsWith('.mru')
 
-          case 'print_start_time':
-            if (file.type === 'file' && file.print_start_time !== null) {
-              return false
-            }
-            break
+            case 'klipper_backup_files':
+              return file.filename.match(/^printer-\d{8}_\d{6}\.cfg$/)
 
-          case 'rolled_log_files':
-            if (file.type === 'file' && (
-              file.filename.match(/\.\d{4}-\d{2}-\d{2}(_\d{2}-\d{2}-\d{2})?$/) ||
-              file.filename.match(/\.log\.\d+$/)
-            )) {
-              return false
-            }
-            break
+            case 'print_start_time':
+              return file.print_start_time !== null
 
-          case 'crowsnest_backup_files':
-            if (file.type === 'file' && file.filename.match(/^crowsnest\.conf\.\d{4}-\d{2}-\d{2}-\d{4}$/)) {
-              return false
-            }
-            break
-        }
-      }
+            case 'rolled_log_files':
+              return (
+                file.filename.match(/\.\d{4}-\d{2}-\d{2}(_\d{2}-\d{2}-\d{2})?$/) ||
+                file.filename.match(/\.log\.\d+$/)
+              )
 
-      return true
+            case 'crowsnest_backup_files':
+              return file.filename.match(/^crowsnest\.conf\.\d{4}-\d{2}-\d{2}-\d{4}$/)
+          }
+
+          return false
+        })
     })
 
     return filteredFiles

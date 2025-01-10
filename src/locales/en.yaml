@@ -79,7 +79,7 @@ app:
       label:
         crowsnest_backup_files: Filter Crowsnest backup files
         print_start_time: Filter printed
-        hidden_files_folders: Filter hidden files and folders
+        hidden_files: Filter hidden files and folders
         klipper_backup_files: Filter Klipper backup files
         moonraker_backup_files: Filter Moonraker backup files
         moonraker_temporary_upload_files: Filter Moonraker temporary upload files

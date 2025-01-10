@@ -86,7 +86,7 @@ app:
       label:
         print_start_time: Filtra per inizio di stampa
         klipper_backup_files: Filtra backup di Klipper
-        hidden_files_folders: Filtra cartelle e file nascosti
+        hidden_files: Filtra cartelle e file nascosti
     label:
       dir_name: Nome della directory
       disk_usage: Utilizzo del disco

@@ -60,7 +60,7 @@ app:
     filters:
       label:
         print_start_time: 隐藏已打印项目
-        hidden_files_folders: 筛选隐藏的文件和文件夹
+        hidden_files: 筛选隐藏的文件和文件夹
         klipper_backup_files: 隐藏Klipper备份文件
         rolled_log_files: 筛选滚动日志文件
     label:

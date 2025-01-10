@@ -70,7 +70,7 @@ app:
         moonraker_backup_files: Moonraker 백업 파일 필터링
         rolled_log_files: 롤링된 로그 파일 필터링
         klipper_backup_files: Klipper 백업 파일 필터링
-        hidden_files_folders: 숨겨진 파일 및 폴더 필터링
+        hidden_files: 숨겨진 파일 및 폴더 필터링
     label:
       dir_name: 폴더명
       disk_usage: 디스크 사용량

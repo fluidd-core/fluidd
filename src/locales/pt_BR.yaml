@@ -63,7 +63,7 @@ app:
     filters:
       label:
         klipper_backup_files: Filtrar cópias de segurança do Klipper
-        hidden_files_folders: Filtrar arquivos e pastas escondidas
+        hidden_files: Filtrar arquivos e pastas escondidas
         crowsnest_backup_files: Filtrar arquivos de cópia de segurança do Crowsnest
         print_start_time: Filtrar já impressos
         moonraker_backup_files: Filtrar arquivos de cópia de segurança do Moonraker
