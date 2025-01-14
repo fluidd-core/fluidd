@@ -32,11 +32,19 @@ const getHostConfig = async () => {
   }
 }
 
-const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | InstanceConfig> => {
+const getApiConfig = async (hostConfig: HostConfig, url?: string): Promise<ApiConfig | InstanceConfig> => {
   // Local storage load
   if (Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage) {
     const instances = JSON.parse(localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY]) as InstanceConfig[]
     if (instances && instances.length) {
+      if (url) {
+        for (const config of instances) {
+          if (config.apiUrl === url) {
+            consola.debug('API Config from Local Storage', config)
+            return config
+          }
+        }
+      }
       for (const config of instances) {
         if (config.active) {
           consola.debug('API Config from Local Storage', config)
@@ -158,9 +166,21 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     }
   }
 
+  // Check if we have an encoded printer url in search params
+  const search = new URLSearchParams(document.location.search)
+  let printerUrl = search.get('printer') || undefined
+  printerUrl = printerUrl ? atob(decodeURIComponent(printerUrl)) : printerUrl
+
   // Load the API Config
   if (!apiConfig) {
-    apiConfig = await getApiConfig(hostConfig)
+    apiConfig = await getApiConfig(hostConfig, printerUrl)
+  }
+
+  if (apiConfig.apiUrl) {
+    // Now set the printer url in the search params so that the url is bookmarkable
+    const search = new URLSearchParams(window.location.search)
+    search.set('printer', encodeURIComponent(btoa(apiConfig.apiUrl)))
+    window.location.search = search.toString()
   }
 
   // Setup axios
