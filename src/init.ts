@@ -10,6 +10,7 @@ import sanitizeEndpoint from './util/sanitize-endpoint'
 import webSocketWrapper from './util/web-socket-wrapper'
 import promiseAny from './util/promise-any'
 import sleep from './util/sleep'
+import md5 from 'md5'
 
 // Load API configuration
 /**
@@ -32,14 +33,14 @@ const getHostConfig = async () => {
   }
 }
 
-const getApiConfig = async (hostConfig: HostConfig, url?: string): Promise<ApiConfig | InstanceConfig> => {
+const getApiConfig = async (hostConfig: HostConfig, apiUrlHash?: string | null): Promise<ApiConfig | InstanceConfig> => {
   // Local storage load
   if (Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage) {
     const instances = JSON.parse(localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY]) as InstanceConfig[]
     if (instances && instances.length) {
-      if (url) {
+      if (apiUrlHash) {
         for (const config of instances) {
-          if (config.apiUrl === url) {
+          if (md5(config.apiUrl) === apiUrlHash) {
             consola.debug('API Config from Local Storage', config)
             return config
           }
@@ -166,21 +167,22 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     }
   }
 
-  // Check if we have an encoded printer url in search params
-  const search = new URLSearchParams(document.location.search)
-  let printerUrl = search.get('printer') || undefined
-  printerUrl = printerUrl ? atob(decodeURIComponent(printerUrl)) : printerUrl
+  const locationUrl = new URL(window.location.href)
+
+  // Check if we have a printer url hash in search params
+  const apiUrlHash = locationUrl.searchParams.get('printer')
 
   // Load the API Config
   if (!apiConfig) {
-    apiConfig = await getApiConfig(hostConfig, printerUrl)
+    apiConfig = await getApiConfig(hostConfig, apiUrlHash)
   }
 
   if (apiConfig.apiUrl) {
-    // Now set the printer url in the search params so that the url is bookmarkable
-    const search = new URLSearchParams(window.location.search)
-    search.set('printer', encodeURIComponent(btoa(apiConfig.apiUrl)))
-    window.location.search = search.toString()
+    // Set the printer url hash in the search params so that the url is bookmarkable
+
+    locationUrl.searchParams.set('printer', md5(apiConfig.apiUrl))
+
+    window.history.replaceState(window.history.state, '', locationUrl)
   }
 
   // Setup axios
