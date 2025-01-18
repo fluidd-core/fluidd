@@ -941,6 +941,7 @@ app:
     setting:
       auto_open_qr_camera: Automatically open camera for QR code detection
       auto_select_spool_on_match: Automatically commit spool selection on QR code match
+      card_fields: Fields to show in the Spoolman card
       prefer_device_camera: Use device camera for QR code detection if available
       show_spool_selection_dialog_on_print_start: Show spool selection dialog on print start
       warn_on_not_enough_filament: >-

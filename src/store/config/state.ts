@@ -141,7 +141,8 @@ export const defaultState = (): ConfigState => {
           key: 'last_used',
           desc: false
         },
-        remainingFilamentUnit: 'weight'
+        remainingFilamentUnit: 'weight',
+        selectedCardFields: ['vendor', 'filament_name', 'remaining_weight', 'location', 'material', 'lot_nr', 'first_used', 'comment']
       }
     }
   }

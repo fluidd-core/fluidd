@@ -100,66 +100,31 @@
     <v-card-text>
       <v-row>
         <template v-if="activeSpool">
-          <v-col align-self="center">
-            <status-label
-              :label="$t('app.spoolman.label.vendor')"
-              :label-width="labelWidth"
-            >
-              <span>{{ activeSpool.filament.vendor?.name || '-' }}</span>
-            </status-label>
-            <status-label
-              :label="$t('app.spoolman.label.filament_name')"
-              :label-width="labelWidth"
-            >
-              <span>{{ activeSpool.filament.name }}</span>
-            </status-label>
-            <status-label
-              :label="$t('app.spoolman.label.remaining_weight')"
-              :label-width="labelWidth"
-            >
-              <span v-if="remainingFilamentUnit === 'weight'">
-                {{ $filters.getReadableWeightString(activeSpool.remaining_weight) }}
-                <small>/ {{ $filters.getReadableWeightString(activeSpool.filament.weight) }}</small>
-              </span>
-              <span v-else-if="remainingFilamentUnit === 'length'">
-                {{ $filters.getReadableLengthString(activeSpool.remaining_length) }}
-                <small>/ {{ $filters.getReadableLengthString($filters.convertFilamentWeightToLength(activeSpool.filament.weight ?? 0, activeSpool.filament.density, activeSpool.filament.diameter)) }}</small>
-              </span>
-            </status-label>
-            <status-label
-              :label="$t('app.spoolman.label.location')"
-              :label-width="labelWidth"
-            >
-              <span>{{ activeSpool.location || '-' }}</span>
-            </status-label>
-          </v-col>
-          <v-col align-self="center">
-            <status-label
-              :label="$t('app.spoolman.label.material')"
-              :label-width="labelWidth"
-            >
-              <span>{{ activeSpool.filament.material || '-' }}</span>
-            </status-label>
-            <status-label
-              :label="$t('app.spoolman.label.lot_nr')"
-              :label-width="labelWidth"
-            >
-              <span>{{ activeSpool.lot_nr || '-' }}</span>
-            </status-label>
-            <status-label
-              :label="$t('app.spoolman.label.first_used')"
-              :label-width="labelWidth"
-            >
-              <span>{{
-                activeSpool.first_used ? $filters.formatRelativeTimeToNow(activeSpool.first_used) : $tc('app.setting.label.never')
-              }}</span>
-            </status-label>
-            <status-label
-              :label="$t('app.spoolman.label.comment')"
-              :label-width="labelWidth"
-            >
-              <span>{{ activeSpool.comment || '-' }}</span>
-            </status-label>
+          <v-col
+            v-for="(fields, i) in selectedCardFields"
+            :key="`spoolman-card-col-${i}`"
+            align-self="center"
+          >
+            <template v-for="field in fields">
+              <status-label
+                :key="`spoolman-card-${field}`"
+                :label="$t(`app.spoolman.label.${field}`)"
+                :label-width="labelWidth"
+              >
+                <template v-if="field === 'remaining_weight'">
+                  <span v-if="remainingFilamentUnit === 'weight'">
+                    {{ $filters.getReadableWeightString(activeSpool.remaining_weight) }}
+                    <small>/ {{ $filters.getReadableWeightString(activeSpool.filament.weight) }}</small>
+                  </span>
+                  <span v-else-if="remainingFilamentUnit === 'length'">
+                    {{ $filters.getReadableLengthString(activeSpool.remaining_length) }}
+                    <small>/ {{ $filters.getReadableLengthString($filters.convertFilamentWeightToLength(activeSpool.filament.weight ?? 0, activeSpool.filament.density, activeSpool.filament.diameter)) }}</small>
+                  </span>
+                </template>
+
+                <span v-else>{{ formatField(field) }}</span>
+              </status-label>
+            </template>
           </v-col>
         </template>
 
@@ -230,6 +195,13 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     })
   }
 
+  get selectedCardFields (): string[] {
+    const fields = this.$store.state.config.uiSettings.spoolman.selectedCardFields
+    const NUM_COLUMNS = fields.length > 1 ? 2 : 1
+    const elementsPerColumn = Math.ceil(fields.length / NUM_COLUMNS)
+    return new Array(NUM_COLUMNS).fill(undefined).map((_, i) => fields.slice(i * elementsPerColumn, (i + 1) * elementsPerColumn))
+  }
+
   get activeSpool (): Spool | null {
     if (!this.isConnected) return null
     return this.$store.getters['spoolman/getActiveSpool']
@@ -261,6 +233,23 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
 
   getSpoolColor (spool?: Spool) {
     return `#${spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? 'fff' : '000')}`
+  }
+
+  formatField (field: string) {
+    if (!this.activeSpool) return '-'
+
+    switch (field) {
+      case 'vendor': return this.activeSpool.filament.vendor?.name || '-'
+      case 'filament_name': return this.activeSpool.filament.name
+      case 'location': return this.activeSpool.location || '-'
+      case 'material': return this.activeSpool.filament.material || '-'
+      case 'lot_nr': return this.activeSpool.lot_nr || '-'
+      case 'first_used': return this.activeSpool.first_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.first_used) : this.$tc('app.setting.label.never')
+      case 'last_used': return this.activeSpool.last_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.last_used) : this.$tc('app.setting.label.never')
+      case 'comment': return this.activeSpool.comment || '-'
+      default:
+        return field
+    }
   }
 }
 </script>

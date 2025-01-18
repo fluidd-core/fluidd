@@ -94,6 +94,23 @@
       </app-setting>
 
       <v-divider />
+      <app-setting
+        :title="$t('app.spoolman.setting.card_fields')"
+      >
+        <v-select
+          v-model="fieldsToShowInSpoolmanCard"
+          multiple
+          filled
+          dense
+          hide-details="auto"
+          :rules="[
+            $rules.lengthGreaterThanOrEqual(1),
+          ]"
+          :items="availableFieldsToShowInSpoolmanCard"
+        />
+      </app-setting>
+
+      <v-divider />
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -216,6 +233,33 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   set remainingFilamentUnit (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.remainingFilamentUnit',
+      value,
+      server: true
+    })
+  }
+
+  get availableFieldsToShowInSpoolmanCard () {
+    return [
+      'id',
+      'vendor',
+      'filament_name',
+      'remaining_weight',
+      'location',
+      'material',
+      'lot_nr',
+      'first_used',
+      'last_used',
+      'comment'
+    ].map(field => ({ value: field, text: this.$t(`app.spoolman.label.${field}`) }))
+  }
+
+  get fieldsToShowInSpoolmanCard (): string[] {
+    return this.$store.state.config.uiSettings.spoolman.selectedCardFields
+  }
+
+  set fieldsToShowInSpoolmanCard (value: string[]) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.spoolman.selectedCardFields',
       value,
       server: true
     })
