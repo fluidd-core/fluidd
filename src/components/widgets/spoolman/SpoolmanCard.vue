@@ -122,6 +122,17 @@
                   </span>
                 </template>
 
+                <template v-else-if="field === 'used_weight'">
+                  <span v-if="remainingFilamentUnit === 'weight'">
+                    {{ $filters.getReadableWeightString(activeSpool.used_weight) }}
+                    <small>/ {{ $filters.getReadableWeightString(activeSpool.filament.weight) }}</small>
+                  </span>
+                  <span v-else-if="remainingFilamentUnit === 'length'">
+                    {{ $filters.getReadableLengthString(activeSpool.used_length) }}
+                    <small>/ {{ $filters.getReadableLengthString($filters.convertFilamentWeightToLength(activeSpool.filament.weight ?? 0, activeSpool.filament.density, activeSpool.filament.diameter)) }}</small>
+                  </span>
+                </template>
+
                 <span v-else>{{ formatField(field) }}</span>
               </status-label>
             </template>
@@ -197,9 +208,9 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
 
   get selectedCardFields (): string[] {
     const fields = this.$store.state.config.uiSettings.spoolman.selectedCardFields
-    const NUM_COLUMNS = fields.length > 1 ? 2 : 1
-    const elementsPerColumn = Math.ceil(fields.length / NUM_COLUMNS)
-    return new Array(NUM_COLUMNS).fill(undefined).map((_, i) => fields.slice(i * elementsPerColumn, (i + 1) * elementsPerColumn))
+    const columnCount = fields.length > 1 ? 2 : 1
+    const elementsPerColumn = Math.ceil(fields.length / columnCount)
+    return new Array(columnCount).fill(undefined).map((_, i) => fields.slice(i * elementsPerColumn, (i + 1) * elementsPerColumn))
   }
 
   get activeSpool (): Spool | null {
@@ -239,6 +250,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     if (!this.activeSpool) return '-'
 
     switch (field) {
+      case 'id': return this.activeSpool.id
       case 'vendor': return this.activeSpool.filament.vendor?.name || '-'
       case 'filament_name': return this.activeSpool.filament.name
       case 'location': return this.activeSpool.location || '-'
@@ -247,6 +259,11 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
       case 'first_used': return this.activeSpool.first_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.first_used) : this.$tc('app.setting.label.never')
       case 'last_used': return this.activeSpool.last_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.last_used) : this.$tc('app.setting.label.never')
       case 'comment': return this.activeSpool.comment || '-'
+      case 'price': return this.activeSpool.filament.price || '-'
+      case 'density': return this.activeSpool.filament.density || '-'
+      case 'extruder_temp': return this.activeSpool.filament.settings_extruder_temp || '-'
+      case 'bed_temp': return this.activeSpool.filament.settings_bed_temp || '-'
+
       default:
         return field
     }

@@ -932,16 +932,21 @@ app:
       spoolman: Spoolman
     label:
       active_spool: Aktive Spule
+      bed_temp: Betttemp.
       change_spool: Spule wechseln
       comment: Kommentar
+      density: Dichte
       device_camera: Gerät
+      extruder_temp: Extrudertemp.
       filament_name: Filament
       first_used: Zuerst genutzt
       last_used: Zuletzt genutzt
       location: Ort
       lot_nr: Charge
       material: Material
+      price: Preis
       remaining_weight: Verbleibend
+      used_weight: Verbraucht
       vendor: Hersteller
       id: ID
       weight: Gewicht

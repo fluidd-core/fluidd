@@ -891,9 +891,12 @@ app:
       scan_spool: Scan Spool
     label:
       active_spool: Active Spool
+      bed_temp: Bed Temp
       change_spool: Change Spool
       comment: Comment
+      density: Density
       device_camera: Device
+      extruder_temp: Extruder Temp
       filament_name: Filament
       first_used: First Used
       id: ID
@@ -901,7 +904,9 @@ app:
       location: Location
       lot_nr: Lot Nr
       material: Material
+      price: Price
       remaining_weight: Remaining
+      used_weight: Used
       vendor: Vendor
       weight: Weight
       length: Length
