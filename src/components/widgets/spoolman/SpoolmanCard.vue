@@ -133,7 +133,7 @@
                   </span>
                 </template>
 
-                <span v-else>{{ formatField(field) }}</span>
+                <span v-else>{{ getFormattedField(field) }}</span>
               </status-label>
             </template>
           </v-col>
@@ -246,26 +246,21 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     return `#${spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? 'fff' : '000')}`
   }
 
-  formatField (field: string) {
+  getFormattedField (field: string) {
     if (!this.activeSpool) return '-'
 
     switch (field) {
-      case 'id': return this.activeSpool.id
       case 'vendor': return this.activeSpool.filament.vendor?.name || '-'
       case 'filament_name': return this.activeSpool.filament.name
-      case 'location': return this.activeSpool.location || '-'
       case 'material': return this.activeSpool.filament.material || '-'
-      case 'lot_nr': return this.activeSpool.lot_nr || '-'
       case 'first_used': return this.activeSpool.first_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.first_used) : this.$tc('app.setting.label.never')
       case 'last_used': return this.activeSpool.last_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.last_used) : this.$tc('app.setting.label.never')
-      case 'comment': return this.activeSpool.comment || '-'
       case 'price': return this.activeSpool.filament.price || '-'
       case 'density': return this.activeSpool.filament.density || '-'
       case 'extruder_temp': return this.activeSpool.filament.settings_extruder_temp || '-'
       case 'bed_temp': return this.activeSpool.filament.settings_bed_temp || '-'
 
-      default:
-        return field
+      default: return this.activeSpool[field as keyof Spool] || '-'
     }
   }
 }
