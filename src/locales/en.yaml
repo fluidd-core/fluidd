@@ -350,6 +350,7 @@ app:
       version_sort: Version sort
       visible: Visible
       z_offset: Z Offset
+      z_hop_height: Z-Hop Height
       unsaved_changes: Unsaved Changes
       alias: Alias
       apply_z_offset: Apply and Save Z_Offset
