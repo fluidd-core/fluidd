@@ -503,10 +503,16 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.panning ? 'optimizeSpeed' : 'geometricPrecision'
   }
 
-  get showExcludeObjects () {
-    if (!this.klippyReady || !(this.printerPrinting || this.printerPaused)) return false
+  get hasParts (): boolean {
+    return this.$store.getters['parts/getHasParts'] as boolean
+  }
 
-    const file = this.$store.getters['gcodePreview/getFile'] as AppFile | undefined
+  get showExcludeObjects (): boolean {
+    if (!this.hasParts) {
+      return false
+    }
+
+    const file = this.file
 
     if (!file) {
       return true

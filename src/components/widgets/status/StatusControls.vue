@@ -113,11 +113,11 @@ export default class StatusControls extends Mixins(StateMixin) {
   }
 
   get supportsHistoryComponent (): boolean {
-    return this.$store.getters['server/componentSupport']('history')
+    return this.$store.getters['server/componentSupport']('history') as boolean
   }
 
-  get hasParts () {
-    return Object.keys(this.$store.getters['parts/getParts']).length > 0
+  get hasParts (): boolean {
+    return this.$store.getters['parts/getHasParts'] as boolean
   }
 
   resetFile () {

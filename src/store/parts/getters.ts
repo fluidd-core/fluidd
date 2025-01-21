@@ -7,6 +7,10 @@ export const getters: GetterTree<PartsState, RootState> = {
     return state.parts
   },
 
+  getHasParts: (state): boolean => {
+    return Object.keys(state.parts).length > 0
+  },
+
   getIsPartCurrent: (state) => (partName: string): boolean => {
     return state.currentPart === partName
   },
