@@ -9,23 +9,23 @@
       <v-simple-table>
         <tbody>
           <tr
-            v-for="name in parts"
-            :key="name"
+            v-for="part in parts"
+            :key="part.name"
           >
             <td
               :class="{
-                'text--disabled': isPartExcluded(name),
-                'info--text': isPartCurrent(name)
+                'text--disabled': part.isExcluded,
+                'info--text': part.isCurrent
               }"
               class="partName"
             >
-              {{ name }}
+              {{ part.name }}
             </td>
             <td class="actions">
               <app-btn
                 icon
-                :disabled="isPartExcluded(name)"
-                @click="cancelObject(name)"
+                :disabled="part.isExcluded"
+                @click="cancelObject(part.name)"
               >
                 <v-icon
                   dense
@@ -46,23 +46,15 @@
 import { Component, Mixins, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import type { ExcludeObjectPart } from '@/store/printer/types'
 
 @Component({})
 export default class ExcludeObjectDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
   open?: boolean
 
-  get parts () {
-    const parts = this.$store.getters['parts/getParts']
-    return Object.keys(parts)
-  }
-
-  isPartExcluded (name: string) {
-    return this.$store.getters['parts/getIsPartExcluded'](name)
-  }
-
-  isPartCurrent (name: string) {
-    return this.$store.getters['parts/getIsPartCurrent'](name)
+  get parts (): ExcludeObjectPart[] {
+    return this.$store.getters['printer/getExcludeObjectParts'] as ExcludeObjectPart[]
   }
 
   async cancelObject (name: string) {

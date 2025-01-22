@@ -404,10 +404,6 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     }
   }
 
-  get parts () {
-    return Object.values(this.$store.getters['parts/getParts'])
-  }
-
   handleDragOver (event: DragEvent) {
     if (
       event.dataTransfer &&

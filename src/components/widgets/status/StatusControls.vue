@@ -63,7 +63,7 @@
       <template #activator="{ on, attrs }">
         <app-btn
           v-bind="attrs"
-          :disabled="!hasParts"
+          :disabled="!hasExcludeObjectParts"
           icon
           v-on="on"
           @click="showExcludeObjectDialog = true"
@@ -116,8 +116,8 @@ export default class StatusControls extends Mixins(StateMixin) {
     return this.$store.getters['server/componentSupport']('history') as boolean
   }
 
-  get hasParts (): boolean {
-    return this.$store.getters['parts/getHasParts'] as boolean
+  get hasExcludeObjectParts (): boolean {
+    return this.$store.getters['printer/getHasExcludeObjectParts'] as boolean
   }
 
   resetFile () {

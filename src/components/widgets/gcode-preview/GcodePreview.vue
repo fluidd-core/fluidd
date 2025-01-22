@@ -503,12 +503,12 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.panning ? 'optimizeSpeed' : 'geometricPrecision'
   }
 
-  get hasParts (): boolean {
-    return this.$store.getters['parts/getHasParts'] as boolean
+  get hasExcludeObjectParts (): boolean {
+    return this.$store.getters['printer/getHasExcludeObjectParts'] as boolean
   }
 
   get showExcludeObjects (): boolean {
-    if (!this.hasParts) {
+    if (!this.klippyReady || !this.hasExcludeObjectParts) {
       return false
     }
 

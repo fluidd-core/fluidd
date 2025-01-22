@@ -35,22 +35,6 @@ export const handleTrinamicDriversChange = (payload: any, state: RootState, disp
   }
 }
 
-export const handleExcludeObjectChange = (payload: any, state: RootState, dispatch: Dispatch) => {
-  // For every notify - if print_stats.state changes from standby -> printing,
-  // then record an entry in our print history.
-  // If the state changes from printing -> complete, then record the finish time.
-  if ('exclude_object' in payload) {
-    dispatch('parts/onPartUpdate', payload.exclude_object, { root: true })
-  }
-
-  if (
-    'print_stats' in payload &&
-    ('state' in payload.print_stats || 'filename' in payload.print_stats)
-  ) {
-    dispatch('parts/onPrintStatsUpdate', payload.print_stats, { root: true })
-  }
-}
-
 export const handlePrintStateChange = (payload: any, state: RootState, dispatch: Dispatch) => {
   // For every notify - if print_stats.state changes from standby -> printing,
   // then record an entry in our print history.

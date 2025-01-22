@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
-import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, BeaconState, KlippyApp } from './types'
+import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, BeaconState, KlippyApp, ExcludeObjectPart, ExcludeObjectState } from './types'
 import { capitalize, get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
@@ -1069,5 +1069,20 @@ export const getters: GetterTree<PrinterState, RootState> = {
       })
 
     return models
+  },
+
+  getExcludeObjectParts: (state): ExcludeObjectPart[] => {
+    const { objects, current_object, excluded_objects } = state.printer.exclude_object as ExcludeObjectState
+
+    return objects
+      .map((obj): ExcludeObjectPart => ({
+        ...obj,
+        isExcluded: excluded_objects.includes(obj.name),
+        isCurrent: current_object === obj.name
+      }))
+  },
+
+  getHasExcludeObjectParts: (state): boolean => {
+    return state.printer.exclude_object.objects.length > 0
   }
 }
