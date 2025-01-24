@@ -20,10 +20,6 @@ export const getters: GetterTree<ConsoleState, RootState> = {
     return items
   },
 
-  getFilters: (state) => {
-    return state.consoleFilters
-  },
-
   getAllKnownCommands: (state): GcodeHelp => {
     const commands: GcodeHelp = {
       TESTZ: '',

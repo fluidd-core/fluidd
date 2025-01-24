@@ -326,7 +326,7 @@ import type { BBox, Layer, LayerNr, LayerPaths } from '@/store/gcodePreview/type
 import AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
 import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
 import GcodePreviewButton from './GcodePreviewButton.vue'
-import type { AppFile } from '@/store/files/types'
+import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 import type { BedSize } from '@/store/printer/types'
 
 @Component({
@@ -362,7 +362,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get filePosition (): number {
-    return this.$store.state.printer.printer.virtual_sdcard.file_position
+    return this.$store.state.printer.printer.virtual_sdcard?.file_position ?? 0
   }
 
   get extrusionLineWidth (): number {
@@ -504,7 +504,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get hasExcludeObjectParts (): boolean {
-    return this.$store.getters['printer/getHasExcludeObjectParts'] as boolean
+    return this.$store.getters['printer/getHasExcludeObjectParts']
+  }
+
+  get printerFile (): AppFileWithMeta | undefined {
+    return this.$store.getters['printer/getPrinterFile']
   }
 
   get showExcludeObjects (): boolean {
@@ -518,13 +522,13 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       return true
     }
 
-    const printerFile: AppFile = this.$store.state.printer.printer.current_file
+    const printerFile = this.printerFile
 
-    if (printerFile.filename) {
-      return `${file.path}/${file.filename}` === `${printerFile.path}/${printerFile.filename}`
-    }
-
-    return false
+    return (
+      printerFile != null &&
+      file.path === printerFile.path &&
+      file.filename === printerFile.filename
+    )
   }
 
   get flipX (): boolean {
@@ -552,11 +556,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get hasRoundBed (): boolean {
-    return this.$store.getters['printer/getHasRoundBed'] as boolean
+    return this.$store.getters['printer/getHasRoundBed']
   }
 
   get bedSize (): BedSize {
-    const bedSize = this.$store.getters['printer/getBedSize'] as BedSize | undefined
+    const bedSize: BedSize | undefined = this.$store.getters['printer/getBedSize']
 
     return bedSize ?? {
       minX: 0,
@@ -622,7 +626,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       return this.defaultLayerPaths
     }
 
-    const layer = this.$store.getters['gcodePreview/getLayers'][this.layer] as Layer | undefined
+    const layer: Layer | undefined = this.$store.getters['gcodePreview/getLayers'][this.layer]
 
     if (this.followProgress) {
       const end = this.$store.getters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
@@ -650,7 +654,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get svgPathNext (): LayerPaths {
-    const layers = this.$store.getters['gcodePreview/getLayers'] as Layer[]
+    const layers: Layer[] = this.$store.getters['gcodePreview/getLayers']
 
     if (this.disabled || this.layer >= layers.length) {
       return this.defaultLayerPaths
@@ -660,15 +664,15 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get svgPathParts (): string[] {
-    return this.$store.getters['gcodePreview/getPartPaths'] as string[]
+    return this.$store.getters['gcodePreview/getPartPaths']
   }
 
   get file (): AppFile | undefined {
-    return this.$store.getters['gcodePreview/getFile'] as AppFile | undefined
+    return this.$store.state.gcodePreview.file
   }
 
   get bounds (): BBox {
-    return this.$store.getters['gcodePreview/getBounds'] as BBox
+    return this.$store.getters['gcodePreview/getBounds']
   }
 
   @Watch('focused')

@@ -7,48 +7,48 @@ import type { Device } from '@/store/power/types'
 @Component
 export default class StateMixin extends Vue {
   get appReady (): boolean {
-    return this.$store.getters['config/getAppReady'] as boolean
+    return this.$store.state.config.appReady
   }
 
   get authenticated (): boolean {
-    return this.$store.getters['auth/getAuthenticated'] as boolean
+    return this.$store.state.auth.authenticated
   }
 
   get socketConnected (): boolean {
-    return this.$store.getters['socket/getConnectionState'] as boolean
+    return this.$store.getters['socket/getConnectionState']
   }
 
   get apiConnected (): boolean {
-    return this.$store.getters['socket/getApiConnected'] as boolean
+    return this.$store.getters['socket/getApiConnected']
   }
 
   get socketConnecting (): boolean {
-    return this.$store.getters['socket/getConnectingState'] as boolean
+    return this.$store.getters['socket/getConnectingState']
   }
 
   get klippyReady (): boolean {
-    return this.$store.getters['printer/getKlippyReady'] as boolean
+    return this.$store.getters['printer/getKlippyReady']
   }
 
   get klippyConnected (): boolean {
-    return this.$store.getters['printer/getKlippyConnected'] as boolean
+    return this.$store.getters['printer/getKlippyConnected']
   }
 
   get hasWarnings (): boolean {
-    return this.$store.getters['printer/getHasWarnings'] as boolean
+    return this.$store.getters['printer/getHasWarnings']
   }
 
   get klippyState (): string {
-    return this.$store.getters['printer/getKlippyState'] as string
+    return this.$store.getters['printer/getKlippyState']
   }
 
   get klippyStateMessage (): string {
-    return this.$store.getters['printer/getKlippyStateMessage'] as string
+    return this.$store.getters['printer/getKlippyStateMessage']
   }
 
   // Return the printer state
   get printerState (): string {
-    return this.$store.getters['printer/getPrinterState'] as string
+    return this.$store.getters['printer/getPrinterState']
   }
 
   // Returns a boolean indicating if the printer is busy.
@@ -82,7 +82,7 @@ export default class StateMixin extends Vue {
 
     const printerPowerDevice: string = this.$store.state.config.uiSettings.general.printerPowerDevice ?? 'printer'
 
-    const device = this.$store.getters['power/getDeviceByName'](printerPowerDevice) as Device | undefined
+    const device: Device | undefined = this.$store.getters['power/getDeviceByName'](printerPowerDevice)
 
     return device?.status === 'off'
   }
@@ -92,21 +92,21 @@ export default class StateMixin extends Vue {
    * Supports a single string or a list of.
    */
   hasWait (wait: string | string[]): boolean {
-    return this.$store.getters['wait/hasWait'](wait) as boolean
+    return this.$store.getters['wait/hasWait'](wait)
   }
 
   /**
    * Indicates if we have any waits.
    */
   get hasWaits (): boolean {
-    return this.$store.getters['wait/hasWaits'] as boolean
+    return this.$store.getters['wait/hasWaits']
   }
 
   /**
    * Indicates if we have any waits prefixed by.
    */
   hasWaitsBy (prefix: string): boolean {
-    return this.$store.getters['wait/hasWaitsBy'](prefix) as boolean
+    return this.$store.getters['wait/hasWaitsBy'](prefix)
   }
 
   /**
@@ -118,7 +118,7 @@ export default class StateMixin extends Vue {
   }
 
   sendMoveGcode (movement: { X?: number, Y?: number, Z?: number }, rate: number, absolute = false, wait?: string) {
-    const macro = this.$store.getters['macros/getMacroByName']('_CLIENT_LINEAR_MOVE') as Macro | undefined
+    const macro: Macro | undefined = this.$store.getters['macros/getMacroByName']('_CLIENT_LINEAR_MOVE')
 
     const paramSeparator = macro
       ? '='
@@ -138,7 +138,7 @@ RESTORE_GCODE_STATE NAME=_ui_movement`
   }
 
   sendExtrudeGcode (amount: number, rate: number, wait?: string) {
-    const macro = this.$store.getters['macros/getMacroByName']('_CLIENT_LINEAR_MOVE') as Macro | undefined
+    const macro: Macro | undefined = this.$store.getters['macros/getMacroByName']('_CLIENT_LINEAR_MOVE')
 
     const gcode = macro
       ? `${macro.name.toUpperCase()} E=${amount} F=${rate * 60}`

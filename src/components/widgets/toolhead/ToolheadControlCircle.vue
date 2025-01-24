@@ -521,7 +521,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import type { BedSize, KlippyApp } from '@/store/printer/types'
+import type { BedSize, KlipperPrinterSettings, KlippyApp } from '@/store/printer/types'
 
 type Axis = 'X' | 'Y' | 'Z'
 
@@ -540,15 +540,15 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get hasSteppersEnabled (): boolean {
-    return this.$store.getters['printer/getHasSteppersEnabled'] as boolean
+    return this.$store.getters['printer/getHasSteppersEnabled']
   }
 
   get klippyApp (): KlippyApp {
-    return this.$store.getters['printer/getKlippyApp'] as KlippyApp
+    return this.$store.getters['printer/getKlippyApp']
   }
 
-  get printerSettings () {
-    return this.$store.getters['printer/getPrinterSettings']()
+  get printerSettings (): KlipperPrinterSettings {
+    return this.$store.getters['printer/getPrinterSettings']
   }
 
   get printerSupportsQuadGantryLevel (): boolean {
@@ -740,7 +740,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
     if (this.forceMoveEnabled) {
       const accel = axis === 'Z'
-        ? this.$store.getters['printer/getPrinterSettings']('printer.max_z_accel')
+        ? this.printerSettings.printer?.max_z_accel ?? 100
         : this.$store.state.printer.printer.toolhead.max_accel
       this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
     } else {
@@ -753,7 +753,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get bedSize (): BedSize {
-    const bedSize = this.$store.getters['printer/getBedSize'] as BedSize | undefined
+    const bedSize: BedSize | undefined = this.$store.getters['printer/getBedSize']
 
     return bedSize ?? {
       minX: 0,

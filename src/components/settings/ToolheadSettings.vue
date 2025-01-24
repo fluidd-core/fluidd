@@ -386,6 +386,7 @@ import { defaultState } from '@/store/config/state'
 import type { VInput } from '@/types'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { ToolheadControlStyle } from '@/store/config/types'
+import type { KlipperPrinterSettings } from '@/store/printer/types'
 
 @Component({
   components: {}
@@ -662,7 +663,9 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get printerSupportsForceMove (): boolean {
-    return this.$store.getters['printer/getPrinterSettings']('force_move.enable_force_move') ?? false
+    const printerSettings: KlipperPrinterSettings = this.$store.getters['printer/getPrinterSettings']
+
+    return printerSettings.force_move?.enable_force_move ?? false
   }
 
   get showManualProbeDialogAutomatically (): boolean {

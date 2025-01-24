@@ -72,7 +72,7 @@ type ToolChangeCommand = {
 @Component({})
 export default class ToolChangeCommands extends Mixins(StateMixin) {
   get availableCommands (): GcodeCommands {
-    return this.$store.getters['printer/getAvailableCommands'] as GcodeCommands
+    return this.$store.getters['printer/getAvailableCommands']
   }
 
   get toolChangeCommands (): ToolChangeCommand[] {

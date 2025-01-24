@@ -302,7 +302,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.root)
   }
 
   get readonly () {

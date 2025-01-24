@@ -180,7 +180,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get progress (): number {
-    const progress = this.$store.getters['printer/getPrintProgress'] as number
+    const progress: number = this.$store.getters['printer/getPrintProgress']
     return Math.floor(progress * 100)
   }
 
@@ -229,35 +229,38 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
       const primaryColor = this.primaryColor
       const secondaryColor = 'rgba(255, 255, 255, 0.10)'
       const canvas = document.createElement('canvas')
-      const context = canvas.getContext('2d') as CanvasRenderingContext2D
-      canvas.width = favIconSize
-      canvas.height = favIconSize
-      const percent = this.progress
-      const centerX = canvas.width / 2
-      const centerY = canvas.height / 2
-      const lineWidth = 8
-      const radius = favIconSize / 2 - lineWidth / 2
-      const startAngle = 1.5 * Math.PI
-      const endAngle = startAngle + (percent * 2 * Math.PI / 100)
+      const context = canvas.getContext('2d')
 
-      /* Draw the initial gray circle */
-      context.moveTo(centerX, centerY)
-      context.beginPath()
-      context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false)
-      context.strokeStyle = secondaryColor
-      context.lineWidth = lineWidth
-      context.stroke()
-      context.closePath()
+      if (context) {
+        canvas.width = favIconSize
+        canvas.height = favIconSize
+        const percent = this.progress
+        const centerX = canvas.width / 2
+        const centerY = canvas.height / 2
+        const lineWidth = 8
+        const radius = favIconSize / 2 - lineWidth / 2
+        const startAngle = 1.5 * Math.PI
+        const endAngle = startAngle + (percent * 2 * Math.PI / 100)
 
-      /* Now draw the progress circle */
-      context.moveTo(centerX, centerY)
-      context.beginPath()
-      context.arc(centerX, centerY, radius, startAngle, endAngle, false)
-      context.strokeStyle = primaryColor
-      context.lineWidth = lineWidth
-      context.stroke()
+        /* Draw the initial gray circle */
+        context.moveTo(centerX, centerY)
+        context.beginPath()
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false)
+        context.strokeStyle = secondaryColor
+        context.lineWidth = lineWidth
+        context.stroke()
+        context.closePath()
 
-      return canvas.toDataURL('image/png')
+        /* Now draw the progress circle */
+        context.moveTo(centerX, centerY)
+        context.beginPath()
+        context.arc(centerX, centerY, radius, startAngle, endAngle, false)
+        context.strokeStyle = primaryColor
+        context.lineWidth = lineWidth
+        context.stroke()
+
+        return canvas.toDataURL('image/png')
+      }
     }
   }
 
@@ -408,7 +411,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
         const files = await getFilesFromDataTransfer(event.dataTransfer)
 
         if (files) {
-          const pathWithRoot = this.$store.getters['files/getCurrentPathByRoot'](root) as string || ''
+          const pathWithRoot: string = this.$store.getters['files/getCurrentPathByRoot'](root) ?? ''
           const path = pathWithRoot === root
             ? ''
             : pathWithRoot.substring(root.length + 1)

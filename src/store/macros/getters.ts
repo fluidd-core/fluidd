@@ -19,7 +19,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
    */
   getMacros: (state, getters, rootState) => {
     const macros = Object.keys(rootState.printer.printer)
-      .filter(key => key.startsWith('gcode_macro '))
+      .filter((key): key is `gcode_macro ${string}` => key.startsWith('gcode_macro '))
       .map(key => {
         const lowerCaseKey = key.toLowerCase()
         const name = lowerCaseKey.split(' ', 2)[1]
@@ -53,7 +53,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
   },
 
   getMacroByName: (state, getters) => (...names: string[]) => {
-    const macros = getters.getMacros as Macro[]
+    const macros: Macro[] = getters.getMacros
 
     for (const name of names) {
       const lowerCaseName = name.toLowerCase()
@@ -72,11 +72,16 @@ export const getters: GetterTree<MacrosState, RootState> = {
     const categories = [...state.categories, defaultCategory]
 
     return categories
-      .map(({ id, name }) => ({
-        id,
-        name,
-        macros: getters.getMacrosByCategory(id).filter((macro: Macro) => macro.visible) as Macro[]
-      }))
+      .map(({ id, name }) => {
+        const macros: Macro[] = getters.getMacrosByCategory(id)
+          .filter((macro: Macro) => macro.visible)
+
+        return ({
+          id,
+          name,
+          macros
+        })
+      })
       .filter(category => category.macros.length > 0)
   },
 
@@ -89,7 +94,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
       ? '0'
       : categoryId
 
-    const macros = getters.getMacros as Macro[]
+    const macros: Macro[] = getters.getMacros
 
     return macros
       .filter(macro => (
@@ -116,7 +121,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
       .map(category => {
         const { id, name } = category
 
-        const macros = getters.getMacrosByCategory(id) as Macro[]
+        const macros: Macro[] = getters.getMacrosByCategory(id)
         const count = macros.length
         const visible = macros
           .filter(macro => macro.visible)

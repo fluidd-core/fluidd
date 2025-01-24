@@ -134,7 +134,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
   }
 
   get categories (): MacroCategory[] {
-    return this.$store.getters['macros/getCategories'] as MacroCategory[]
+    return this.$store.getters['macros/getCategories']
   }
 
   set categories (value: MacroCategory[]) {

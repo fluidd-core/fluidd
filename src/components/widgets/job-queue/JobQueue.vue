@@ -114,7 +114,7 @@ export default class JobQueue extends Vue {
       }
     ]
 
-    const mergedTableHeaders = this.$store.getters['config/getMergedTableHeaders'](headers, 'job_queue') as AppTableHeader[]
+    const mergedTableHeaders: AppTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'job_queue')
 
     return mergedTableHeaders
   }

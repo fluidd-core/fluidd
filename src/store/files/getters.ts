@@ -91,8 +91,8 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Indicates if a root is available.
    */
-  isRootAvailable: (state, getters, rootState) => (r: string) => {
-    return rootState.server.info.registered_directories.includes(r)
+  isRootAvailable: (state, getters, rootState) => (root: string) => {
+    return rootState.server.info.registered_directories.includes(root)
   },
 
   /**
@@ -205,12 +205,5 @@ export const getters: GetterTree<FilesState, RootState> = {
   getLowOnSpace: (state) => {
     // 1073741824 = 1gb
     return state.disk_usage.free < 1073741824
-  },
-
-  /**
-   * Returns curent file system usage.
-   */
-  getUsage: (state) => {
-    return state.disk_usage
   }
 }

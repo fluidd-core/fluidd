@@ -10,14 +10,18 @@ export const defaultState = (): PrinterState => {
       state: '',
       state_message: ''
     },
+    endstops: {},
     manualProbeDialogOpen: false,
     bedScrewsAdjustDialogOpen: false,
     screwsTiltAdjustDialogOpen: false,
     forceMoveEnabled: false,
     printer: {
-      endstops: {},
       bed_mesh: {
-        profile_name: ''
+        profile_name: '',
+        mesh_min: [0, 0],
+        mesh_max: [0, 0],
+        mesh_matrix: [],
+        probed_matrix: [],
       },
       heaters: {
         available_heaters: [],
@@ -33,46 +37,31 @@ export const defaultState = (): PrinterState => {
           display_status: {},
           'gcode_macro CANCEL_PRINT': {}
         },
-        settings: {
-          bed_mesh: {},
-          fan: {},
-          printer: {
-            max_accel_to_decel: 500,
-            minimum_cruise_ratio: 0.5,
-            max_accel: 1000,
-            max_velocity: 100,
-            square_corner_velocity: 3,
-            kinematics: 'none'
-          },
-          virtual_sdcard: {},
-          pause_resume: {},
-          display_status: {},
-          'gcode_macro cancel_print': {},
-          extruder: {
-            max_extrude_only_velocity: 100,
-            max_extrude_only_distance: 100
-          }
-        }
+        settings: {}
       },
       objects: [],
       idle_timeout: {
-        state: ''
+        state: '',
+        printing_time: 0
       },
       print_stats: {
         state: '',
         print_duration: 0,
         total_duration: 0,
         filament_used: 0,
-        filename: ''
+        filename: '',
+        message: ''
       },
       display_status: {
         progress: 0,
         message: ''
       },
       virtual_sdcard: {
-        file_position: 0,
+        file_path: null,
+        progress: 0,
         is_active: false,
-        progress: 0
+        file_position: 0,
+        file_size: 0
       },
       toolhead: {
         estimated_print_time: 0,
@@ -82,11 +71,12 @@ export const defaultState = (): PrinterState => {
         minimum_cruise_ratio: null,
         max_velocity: 0,
         position: [0, 0, 0, 0],
-        axis_minimum: [],
-        axis_maximum: [],
+        axis_minimum: [0, 0, 0, 0],
+        axis_maximum: [0, 0, 0, 0],
         print_time: 0,
         square_corner_velocity: 0,
-        extruder: ''
+        extruder: '',
+        stalls: 0
       },
       motion_report: {
         live_position: [0, 0, 0, 0],
@@ -99,18 +89,15 @@ export const defaultState = (): PrinterState => {
         unretract_speed: 0,
         retract_speed: 0
       },
-      current_file: {
-        estimated_time: 0,
-        filament_total: 0,
-        thumbnails: []
-      },
-      gcode: {
-        commands: null
-      },
       gcode_move: {
         gcode_position: [0, 0, 0, 0],
-        homing_origin: [],
-        speed: 0
+        homing_origin: [0, 0, 0, 0],
+        speed: 0,
+        absolute_coordinates: false,
+        absolute_extrude: false,
+        extrude_factor: 1,
+        position: [0, 0, 0, 0],
+        speed_factor: 1
       },
       manual_probe: {
         is_active: false,
@@ -124,7 +111,6 @@ export const defaultState = (): PrinterState => {
         current_screw: 0,
         accepted_screws: 0
       },
-      screws_tilt_adjust: {},
       webhooks: {
         state: '',
         state_message: ''
@@ -133,6 +119,11 @@ export const defaultState = (): PrinterState => {
         objects: [],
         excluded_objects: [],
         current_object: null
+      },
+      system_stats: {
+        cputime: 0,
+        memavail: 0,
+        sysload: 0
       }
     }
   }

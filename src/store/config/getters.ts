@@ -9,7 +9,8 @@ import md5 from 'md5'
 
 export const getters: GetterTree<ConfigState, RootState> = {
   getCurrentInstance: (state) => {
-    return state.instances.find(instance => instance.active)
+    return state.instances
+      .find(instance => instance.active)
   },
 
   getInstances: (state) => {
@@ -21,14 +22,6 @@ export const getters: GetterTree<ConfigState, RootState> = {
         : (b.active ? 1 : a.name.localeCompare(b.name))
     )
     return instances
-  },
-
-  getHostConfig: (state) => {
-    return state.hostConfig
-  },
-
-  getAppReady: (state) => {
-    return state.appReady
   },
 
   /**
@@ -75,7 +68,7 @@ export const getters: GetterTree<ConfigState, RootState> = {
   },
 
   getCustomThemeFile: (state, getters, rootState, rootGetters) => (filename: string, extensions: string[]) => {
-    const files = rootGetters['files/getRootFiles']('config') as MoonrakerRootFile[] | undefined
+    const files: MoonrakerRootFile[] | undefined = rootGetters['files/getRootFiles']('config')
 
     if (files) {
       for (const extension of extensions) {

@@ -140,7 +140,7 @@ import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import Toolhead from './Toolhead.vue'
 import type { Macro } from '@/store/macros/types'
-import type { KlippyApp } from '@/store/printer/types'
+import type { KlipperPrinterSettings, KlippyApp } from '@/store/printer/types'
 
 type Tool = {
   name: string,
@@ -160,11 +160,11 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   readonly menuCollapsed?: boolean
 
   get klippyApp (): KlippyApp {
-    return this.$store.getters['printer/getKlippyApp'] as KlippyApp
+    return this.$store.getters['printer/getKlippyApp']
   }
 
-  get printerSettings () {
-    return this.$store.getters['printer/getPrinterSettings']()
+  get printerSettings (): KlipperPrinterSettings {
+    return this.$store.getters['printer/getPrinterSettings']
   }
 
   get printerSupportsQuadGantryLevel (): boolean {
@@ -216,7 +216,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
       'LOAD_FILAMENT',
       'FILAMENT_LOAD',
       'M701'
-    ) as Macro | undefined
+    )
   }
 
   get unloadFilamentMacro (): Macro | undefined {
@@ -224,7 +224,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
       'UNLOAD_FILAMENT',
       'FILAMENT_UNLOAD',
       'M702'
-    ) as Macro | undefined
+    )
   }
 
   get cleanNozzleMacro (): Macro | undefined {
@@ -234,7 +234,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
       'WIPE_NOZZLE',
       'NOZZLE_WIPE',
       'G12'
-    ) as Macro | undefined
+    )
   }
 
   get availableTools () {
@@ -368,11 +368,11 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get hasSteppersEnabled (): boolean {
-    return this.$store.getters['printer/getHasSteppersEnabled'] as boolean
+    return this.$store.getters['printer/getHasSteppersEnabled']
   }
 
   get hasRoundBed (): boolean {
-    return this.$store.getters['printer/getHasRoundBed'] as boolean
+    return this.$store.getters['printer/getHasRoundBed']
   }
 
   async toggleForceMove () {

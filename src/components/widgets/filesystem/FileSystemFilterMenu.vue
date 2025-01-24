@@ -83,7 +83,7 @@ export default class FileSystemFilterMenu extends Vue {
   readonly disabled?: boolean
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.root)
   }
 
   get filters (): FileFilter[] {

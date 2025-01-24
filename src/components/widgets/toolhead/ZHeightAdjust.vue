@@ -174,7 +174,7 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
   }
 
   get availableCommands (): GcodeCommands {
-    return this.$store.getters['printer/getAvailableCommands'] as GcodeCommands
+    return this.$store.getters['printer/getAvailableCommands']
   }
 
   get hasZOffsetApplyProbe (): boolean {

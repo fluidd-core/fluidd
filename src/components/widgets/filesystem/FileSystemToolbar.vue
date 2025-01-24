@@ -213,7 +213,7 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
 
   // Properties of the current root.
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.root)
   }
 
   get thumbnailSize (): number {

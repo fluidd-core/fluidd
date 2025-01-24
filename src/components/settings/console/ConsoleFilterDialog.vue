@@ -121,8 +121,8 @@ export default class ConsoleFilterDialog extends Vue {
     return this.types.find(f => f.value === this.filter?.type) || this.types[0]
   }
 
-  get filters () {
-    return this.$store.getters['console/getFilters']
+  get filters (): ConsoleFilter[] {
+    return this.$store.state.console.consoleFilters
   }
 
   handleSave () {

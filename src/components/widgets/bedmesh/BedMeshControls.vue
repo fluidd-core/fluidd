@@ -274,10 +274,10 @@ import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import type {
   MeshState,
-  KlipperBedMesh,
   MatrixType,
   BedMeshProfileListEntry
 } from '@/store/mesh/types'
+import type { KlipperPrinterBedMeshState, KlipperPrinterSettings } from '@/store/printer/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
@@ -345,18 +345,19 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   // The current mesh, unprocessed.
-  get currentMesh (): KlipperBedMesh {
+  get currentMesh (): KlipperPrinterBedMeshState | undefined {
     return this.$store.state.printer.printer.bed_mesh
   }
 
   // If we have a mesh loaded.
   get meshLoaded (): boolean {
-    return ('profile_name' in this.currentMesh && this.currentMesh.profile_name.length > 0)
+    return !!this.currentMesh?.profile_name
   }
 
   // If the printer supports QGL
   get printerSupportsQgl (): boolean {
-    const printerSettings = this.$store.getters['printer/getPrinterSettings']()
+    const printerSettings: KlipperPrinterSettings = this.$store.getters['printer/getPrinterSettings']
+
     return 'quad_gantry_level' in printerSettings
   }
 
@@ -396,19 +397,29 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   handleMeshSave (config: { name: string; removeDefault: boolean }) {
-    if (config.name !== this.currentMesh.profile_name) {
+    const profileName = this.currentMesh?.profile_name
+
+    if (config.name !== profileName) {
       this.sendGcode(`BED_MESH_PROFILE SAVE=${encodeGcodeParamValue(config.name)}`)
     }
-    if (config.removeDefault) {
-      this.sendGcode(`BED_MESH_PROFILE REMOVE=${encodeGcodeParamValue(this.currentMesh.profile_name)}`)
+
+    if (config.removeDefault && profileName) {
+      this.sendGcode(`BED_MESH_PROFILE REMOVE=${encodeGcodeParamValue(profileName)}`)
     }
   }
 
   handleOpenSaveDialog () {
-    const profile = this.bedMeshProfiles.find(mesh => mesh.name === this.currentMesh.profile_name)
+    const profileName = this.currentMesh?.profile_name
+
+    if (!profileName) {
+      return
+    }
+
+    const profile = this.bedMeshProfiles.find(mesh => mesh.name === profileName)
+
     this.saveDialogState = {
       open: true,
-      existingName: this.currentMesh.profile_name,
+      existingName: profileName,
       adaptive: profile?.adaptive ?? false
     }
   }
