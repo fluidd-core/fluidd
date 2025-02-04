@@ -448,8 +448,8 @@ app:
       home_y: 'Y'
     tooltip:
       extruder_disabled: >-
-        estrusore disabilitato, al di sotto di min_extrude_temp (% {min} <small>
-        ° C </small>)
+        estrusore disabilitato, al di sotto di min_extrude_temp (% {min} <small> °
+        C </small>)
       home_xy: Home XY
       home_z: Home Z
   version:
