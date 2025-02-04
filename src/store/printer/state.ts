@@ -128,6 +128,11 @@ export const defaultState = (): PrinterState => {
       webhooks: {
         state: '',
         state_message: ''
+      },
+      exclude_object: {
+        objects: [],
+        excluded_objects: [],
+        current_object: null
       }
     }
   }

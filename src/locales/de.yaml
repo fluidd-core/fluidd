@@ -800,7 +800,7 @@ app:
         suchen
       canbus_warning: Nur unzugewiesene CAN-Bus-Knoten werden erkannt.<br>Es ist empfohlen,
         nur ein unzugewiesenes Gerät an den CAN-Bus anzuschließen, um Kommunikationsprobleme
-        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank" 
+        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank"
         href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">hier.</a>
   tool:
     btn:
@@ -932,16 +932,21 @@ app:
       spoolman: Spoolman
     label:
       active_spool: Aktive Spule
+      bed_temp: Betttemp.
       change_spool: Spule wechseln
       comment: Kommentar
+      density: Dichte
       device_camera: Gerät
+      extruder_temp: Extrudertemp.
       filament_name: Filament
       first_used: Zuerst genutzt
       last_used: Zuletzt genutzt
       location: Ort
       lot_nr: Charge
       material: Material
+      price: Preis
       remaining_weight: Verbleibend
+      used_weight: Verbraucht
       vendor: Hersteller
       id: ID
       weight: Gewicht
@@ -984,6 +989,7 @@ app:
       auto_open_qr_camera: Kamera automatisch zur QR-Code-Erkennung öffnen
       auto_select_spool_on_match: Spulenauswahl bei QR-Code-Übereinstimmung automatisch
         übernehmen
+      card_fields: Felder, die in der Spoolman-Karte angezeigt werden
       prefer_device_camera: Gerätekamera, wenn verfügbar zur QR-Code-Erkennung verwenden
       show_spool_selection_dialog_on_print_start: Spulenauswahl-Dialog automatisch
         bei Druckstart anzeigen

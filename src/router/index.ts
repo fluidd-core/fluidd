@@ -166,7 +166,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '*',
-    name: '404',
+    name: 'not_found',
     component: NotFound
   }
 ]

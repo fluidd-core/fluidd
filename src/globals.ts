@@ -492,6 +492,7 @@ export const Waits = Object.freeze({
   onSetRetractSpeed: 'onSetRetractSpeed',
   onSetUnretractSpeed: 'onSetUnretractSpeed',
   onSetUnretractExtraLength: 'onSetUnretractExtraLength',
+  onSetZHopHeight: 'onSetZHopHeight',
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
   onFileSystem: 'onFileSystem',

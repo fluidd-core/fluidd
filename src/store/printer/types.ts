@@ -312,3 +312,20 @@ export interface KlippyApp {
   domain: string;
   minVersion: string;
 }
+
+export interface ExcludeObjectState {
+  objects: ExcludeObjectObject[];
+  current_object: string | null;
+  excluded_objects: string[];
+}
+
+export interface ExcludeObjectObject {
+  name: string;
+  polygon?: [number, number][];
+  center?: [number, number] | [number, number, number];
+}
+
+export interface ExcludeObjectPart extends ExcludeObjectObject {
+  isExcluded: boolean;
+  isCurrent: boolean;
+}

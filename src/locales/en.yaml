@@ -350,6 +350,7 @@ app:
       version_sort: Version sort
       visible: Visible
       z_offset: Z Offset
+      z_hop_height: Z-Hop Height
       unsaved_changes: Unsaved Changes
       alias: Alias
       apply_z_offset: Apply and Save Z_Offset
@@ -891,9 +892,12 @@ app:
       scan_spool: Scan Spool
     label:
       active_spool: Active Spool
+      bed_temp: Bed Temp
       change_spool: Change Spool
       comment: Comment
+      density: Density
       device_camera: Device
+      extruder_temp: Extruder Temp
       filament_name: Filament
       first_used: First Used
       id: ID
@@ -901,7 +905,9 @@ app:
       location: Location
       lot_nr: Lot Nr
       material: Material
+      price: Price
       remaining_weight: Remaining
+      used_weight: Used
       vendor: Vendor
       weight: Weight
       length: Length
@@ -941,6 +947,7 @@ app:
     setting:
       auto_open_qr_camera: Automatically open camera for QR code detection
       auto_select_spool_on_match: Automatically commit spool selection on QR code match
+      card_fields: Fields to show in the Spoolman card
       prefer_device_camera: Use device camera for QR code detection if available
       show_spool_selection_dialog_on_print_start: Show spool selection dialog on print start
       warn_on_not_enough_filament: >-

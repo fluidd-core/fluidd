@@ -1,7 +1,7 @@
 import type { ActionTree } from 'vuex'
 import type { KlippyApp, PrinterState } from './types'
 import type { RootState } from '../types'
-import { handlePrintStateChange, handleCurrentFileChange, handleExcludeObjectChange, handleTrinamicDriversChange } from '../helpers'
+import { handlePrintStateChange, handleCurrentFileChange, handleTrinamicDriversChange } from '../helpers'
 import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
@@ -193,7 +193,6 @@ export const actions: ActionTree<PrinterState, RootState> = {
       // compare the before and after.
       handleCurrentFileChange(payload, rootState, commit)
       handlePrintStateChange(payload, rootState, dispatch)
-      handleExcludeObjectChange(payload, rootState, dispatch)
       handleSystemStatsChange(payload, rootState, commit)
       handleMcuStatsChange(payload, rootState, commit)
       handleTrinamicDriversChange(payload, rootState, dispatch, getters)

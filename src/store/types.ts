@@ -10,7 +10,6 @@ import type { DevicePowerState } from './power/types'
 import type { HistoryState } from './history/types'
 import type { VersionState } from './version/types'
 import type { GcodePreviewState } from './gcodePreview/types'
-import type { PartsState } from './parts/types'
 import type { LayoutState } from './layout/types'
 import type { MeshState } from './mesh/types'
 import type { NotificationsState } from './notifications/types'
@@ -43,7 +42,6 @@ export interface RootState {
   wait: WaitState;
   gcodePreview: GcodePreviewState;
   timelapse: TimelapseState;
-  parts: PartsState;
   webcams: WebcamsState;
   jobQueue: JobQueueState;
   spoolman: SpoolmanState;
