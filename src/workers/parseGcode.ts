@@ -5,10 +5,10 @@ import { pick } from 'lodash-es'
 import shlex from 'shlex'
 
 const getArgsFromGcodeCommandArgs = (gcodeCommandArgs: string) => {
-  const args: Record<string, number> = {}
+  const args: Record<string, number | undefined> = {}
 
-  for (const [, key, value] of gcodeCommandArgs.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))/gi)) {
-    args[key.toLowerCase()] = +value
+  for (const [, key, value] of gcodeCommandArgs.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))?/gi)) {
+    args[key.toLowerCase()] = value ? +value : undefined
   }
 
   return args
@@ -131,7 +131,7 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
         case 'G1': {
           const params = [
             'x', 'y', 'z', 'e'
-          ]
+          ] satisfies (keyof LinearMove)[]
 
           if (params.some(param => param in args)) {
             move = {
@@ -146,7 +146,7 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
           const params = [
             'x', 'y', 'z', 'e',
             'i', 'j', 'k', 'r'
-          ]
+          ] satisfies (keyof ArcMove)[]
 
           if (params.some(param => param in args)) {
             move = {
@@ -179,6 +179,27 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
             move.z = decimalRound(toolhead.z - fwretraction.z)
           }
           break
+        case 'G28': {
+          const hasX = 'x' in args
+          const hasY = 'y' in args
+          const hasZ = 'z' in args
+          const noXYZ = !hasX && !hasY && !hasZ
+
+          move = {
+            filePosition: toolhead.filePosition
+          } satisfies LinearMove
+
+          if (hasX || noXYZ) {
+            move.x = 0
+          }
+          if (hasY || noXYZ) {
+            move.y = 0
+          }
+          if (hasZ || noXYZ) {
+            move.z = 0
+          }
+          break
+        }
         case 'G90':
           positioningMode = 'absolute'
         case 'M82':
