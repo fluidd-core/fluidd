@@ -31,11 +31,17 @@ app:
       power: Güç
       target: Hedef
       rate_of_change: Değişim
+      fan_breakpoints: Fan Kesme Noktaları
+      target_temperature: Hedef Sıcaklık
+      turn_off: Kapatın
     tooltip:
       help: >-
         Yakınlaştırmak için <kbd>Shift</kbd>'i basılı tutun.<br />Grafikte bir öğeyi
         değiştirmek için tıklayın.<br
         />Grafikte bir gücü değiştirmek için tıklayın.
+    title:
+      pid_calibrate: '{name} PID Kalibrasyonu'
+      mpc_calibrate: '{name} MPC Kalibre Et'
   console:
     label:
       auto_scroll: Otomatik kaydırma
@@ -226,6 +232,7 @@ app:
       upload_print: Yükle ve Yazdır
       view: Görüntüle
       reset_stats: İstatistikleri Sıfırla
+      power_on_printer: Yazıcıyı Açın
     error:
       app_setup_link: >-
         Fluidd kurulum gereksinimlerini <a target="_blank"
@@ -237,6 +244,8 @@ app:
       failed_components: >-
         Moonraker'da başarısız eklentiler var, lütfen günlüklerinizi kontrol edin,
         yapılandırmanızı güncelleyin ve moonraker'ı yeniden başlatın.
+      printer_powered_off: Yazıcı şu anda kapalıdır.<br/><br/> Yazıcıyı açmak için
+        lütfen soldaki düğmeye tıklayın.
     label:
       accel_to_decel: Hızlanmadan Yavaşlamaya
       acceleration: Hızlanma
@@ -351,6 +360,9 @@ app:
       add_category: Kategori Ekle
       file_time: Dosya
       stepper_driver: '%{name} Sürücü'
+      device: Cihaz
+      environment_facing: Çevreye Yönelik
+      user_facing: Kullanıcı Yüzü
     msg:
       password_changed: Şifre değiştirildi
       wrong_password: Ups, bir şeyler ters gitti. Şifreniz doğru mu?
@@ -486,7 +498,9 @@ app:
       timelapse: Zaman Atlama
       tool: Araç
       tune: Ayarla
-      beacon: Beacon
+      beacon: İşaret
+      login: Giriş Yap
+      macro_category_settings: Makro Kategori Ayarları
     tooltip:
       browse_metrics: Mevcut metrikleri göz atın
       estop: Acil Dur
@@ -505,6 +519,7 @@ app:
       file_browser_configuration_help: >-
         Dosyaları ve klasörleri buradan alıp Yapılandırma Dosyalarına sürükleyip bırakarak
         kopyalayın
+      power_on_printer: Yazıcıya giden gücü açar
   history:
     msg:
       confirm: Emin misiniz? Bu, tüm geçmişi ve yazıcı istatistiklerini silecek
@@ -693,6 +708,8 @@ app:
       fluidd_settings_in_moonraker_db: Moonraker veritabanındaki Fluidd ayarları
       drag_and_drop_functionality_for_files_and_folders: Dosya ve klasörler için sürükle-bırak
         işlevi
+      auto: Otomatik
+      printer_power_device: Yazıcı güç cihazı
     timer_options:
       duration: Süre sadece
       filament: Filament
@@ -776,6 +793,10 @@ app:
       operating_system: İşletim Sistemi
       version: Sürüm
       virtualization: Sanallaştırma
+      application: Uygulama
+      connected: Bağlandı
+      disconnected: Bağlantı kesildi
+      non_critical_connection: Kritik olmayan bağlantı
     msg:
       canbus_warning: >-
         Sadece atanmamış CAN bus düğümleri algılanabilir.<br>
