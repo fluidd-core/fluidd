@@ -184,7 +184,7 @@ app:
       save_restart: Salvar e Reiniciar
       upload_print: Envio e Impressão
       refresh_metadata: Atualizar Metadados
-      presets: Pre configuração
+      presets: Predefinições
       refresh: Atualizar
       preview_gcode: Pré-visualizar Gcode
       quad_gantry_level: QGL
@@ -572,6 +572,7 @@ app:
       current: Atual
       item: Nome
       target_temperature: Temperatura Alvo
+      turn_off: Desligar
     tooltip:
       help: Mantenha a tecla <kbd>Shift</kbd> pressionada para aumentar o zoom. <br
         /> Clique num item para alternar no gráfico. <br /> Clique em Ligar para alternar
