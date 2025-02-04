@@ -13,9 +13,8 @@ app:
       active: actief
     msg:
       hint: >-
-        Als je je bestand opslaat onder een andere naam dan %{name}, kun je er ook
-        voor
-        kiezen %{name} te verwijderen.
+        Als je het bestand opslaat onder een andere naam dan %{name}, kun je er ook
+        voor kiezen %{name} te verwijderen
       not_found: Geen bedmeshes gevonden.
       not_loaded: Geen meshes geladen
     tooltip:
@@ -45,7 +44,7 @@ app:
     label:
       auto_scroll: Automatisch scrollen
       hide_temp_waits: Verberg temperatuurwachten
-      flip_layout: Flip layout
+      flip_layout: Layout omdraaien
     placeholder:
       command: >-
         'tab' voor autocomplete, 'help' voor commandos 'pijltjes' voor
@@ -58,11 +57,10 @@ app:
       cant_connect: >-
         Er is iets mis, Fluidd kan niet met je doelwit communiceren. Ben je
         zeker dat dit het juiste adres is?
-      cors_error: blocked by CORS policy
+      cors_error: geblokkeerd door CORS-beleid
       cors_note: >-
-        Dit betekent dat er iets mis is met je moonraker instellingen.  Bekijk
-        alsjeblieft de documentatie omtrent multiprinter configuraties <a href="%{url}"
-        target="_blank">hier</a>
+        Dit betekent dat er iets mis is met je moonraker instellingen. Bekijk alsjeblieft
+        de documentatie omtrent multiprinter configuraties <a href="%{url}" target="_blank">hier</a>
     hint:
       add_printer: V.B, http://fluiddpi.local
     msg:
@@ -78,7 +76,7 @@ app:
       open: OPEN
       triggered: GERAAKT
     msg:
-      subtitle: Gebruik de verversknop om je endstopstatus te vernieuwen
+      subtitle: Gebruik de ververs knop om je endstopstatus bij te werken.
   file_system:
     filters:
       label:
@@ -88,7 +86,7 @@ app:
         hidden_files: Filter verborgen bestanden en mappen
         moonraker_backup_files: Filter Moonraker backup bestanden
         crowsnest_backup_files: Filter Crowsnest backup bestanden
-        moonraker_temporary_upload_files: Filtreer Moonraker tijdelijke upload bestanden
+        moonraker_temporary_upload_files: Filter tijdelijke uploadbestanden van Moonraker
     label:
       dir_name: Mapnaam
       disk_usage: Schijfgebruik
@@ -100,7 +98,7 @@ app:
       view_section_documentation: Bekijk '%{section}' documentatie
     msg:
       not_found: Geen bestanden gevonden
-      processing: Verwerken...
+      processing: Verwerken
     title:
       add_dir: Map toevoegen
       add_file: Bestand toevoegen
@@ -128,7 +126,7 @@ app:
       crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
   gcode:
     btn:
-      load_current_file: Laad huidig ​​bestand
+      load_current_file: Laad huidig bestand
     label:
       current_layer_height: Huidige laaghoogte
       follow_progress: Volg voortgang
@@ -146,10 +144,8 @@ app:
       show_parts: Toon onderdelen
     msg:
       confirm: >-
-        Het bestand "% {filename}" is% {size}, dit kan resource-intensief zijn
-        voor uw systeem.
-
-        Weet je het zeker?
+        Het bestand "%{filename}" is %{size}, dit kan resource-intensief zijn voor
+        uw systeem. Weet je het zeker?
     overlay:
       drag_file_load: <strong>Sleep</strong> hier een gcode bestand om te laden
   general:
@@ -168,7 +164,7 @@ app:
       download: Downloaden
       edit: Aanpassen
       exit_layout: Sluit layoutmanager
-      extrude: Extrude
+      extrude: Extruderen
       heaters_off: Verwarmingen uit
       load_all: Alles laden
       more_information: Meer informatie
@@ -212,7 +208,7 @@ app:
       upload_folder: Upload Map
       reset_stats: Reset Stats
       return_dashboard: Ga terug naar het dashboard
-      snooze: Snooze
+      snooze: Sluimeren
       go_to_file: Ga naar bestand
       set_default_layout: Gebruik als Standaard Indeling
       upload_files: Bestanden Uploaden
@@ -237,11 +233,11 @@ app:
     error:
       app_setup_link: >-
         Fluidd opstart vereisten kan je <a target="_blank" href="%{url}">hier</a>
-        vinden.
+        vinden
       app_warnings_found: '%{appName} waarschuwingen gevonden.'
       components_config: >-
-        Moonraker plugin configuratie kan je <a target="_blank"
-        href="%{url}">hier</a> vinden.
+        Moonraker plugin configuratie kan je <a target="_blank" href="%{url}">hier</a>
+        vinden
       failed_components: >-
         Moonraker heeft falende plugins, controleer je logs, update je
         configuratie en herstart moonraker.
@@ -372,7 +368,7 @@ app:
         max: Max %{max}
         min: Min %{min}
         min_or_0: Min %{min} or 0
-        password_username: Gebruikersnaam mag niet overeenkomen met je wachtwoord.
+        password_username: Gebruikersnaam en wachtwoord komen niet overeen
         required: Vereist
         invalid_number: Ongeldig Getal
         credentials: Ongeldige credentials
@@ -394,7 +390,7 @@ app:
           het apparaat aan of uit.
         confirm_delete: Weet je het zeker? Dit zal het geselecteerde item verwijderen.
           | Weet je het zeker? Dit zal de {count} geselecteerde items verwijderen.
-        no_file_preview: '%(name) kan momenteel geen voorvertoning laten zien.'
+        no_file_preview: '%{name} kan momenteel geen voorvertoning laten zien.'
         confirm_remove_user: Weet je zeker dat je gebruiker %{username} wilt verwijderen?
         confirm_cancel_print: Weet je zeker dat je de huidige print wilt annuleren?
         confirm_clear_mesh: De printer is momenteel bezig. Weet je zeker dat je de
@@ -433,7 +429,7 @@ app:
         slicer_version: Slicer versie
         start_time: Gestart
         status: Status
-        total_duration: Totale tijd
+        total_duration: Totale duur
         filament_type: Filament type
         filament_name: Filament naam
         time_in_queue: Tijd in Wachtrij
@@ -526,7 +522,7 @@ app:
       camera_flip_x: Flip horizontaal
       camera_flip_y: Flip vertikaal
       camera_stream_type: Stream type
-      confirm_on_estop: Weet je dit zeker?
+      confirm_on_estop: Bevestiging vereist bij noodstop
       dark_mode: Donker modus
       default_extrude_length: Standaard extrudelengte
       default_extrude_speed: Standaard extrudesnelheid
@@ -638,7 +634,7 @@ app:
       tool: Werktuig
       console: Console
     tooltip:
-      gcode_coords: Gebruik GCode positie in plaats van toolhead positie op het dashboard.
+      gcode_coords: Gebruik GCode positie in plaats van toolhead positie op het dashboard
     camera_rotate_options:
       none: Geen
       '90': 90°
@@ -663,7 +659,7 @@ app:
       manufactured: Gemaakt
       manufacturer: Maker
       mcu_awake: '{mcu} Awake Tijd'
-      mcu_bandwidth: MCU bandbreedte
+      mcu_bandwidth: '{mcu} bandbreedte'
       mcu_load: '{mcu} Load'
       model: CPU model
       moonraker_load: Moonraker Load
@@ -758,7 +754,7 @@ app:
     btn:
       scan_code: Scan Code
       manage_spools: Beheer Spoelen
-      select: Selecteer
+      select: Selecteer | Selecteer voor {macro}
     msg:
       no_filament: De spoel die je hebt geselecteerd heeft waarschijnlijk niet genoeg
         filament meer om de print job te voltooien. Weet je zeker dat je door wilt
@@ -782,7 +778,7 @@ app:
         te beginnen.
     title:
       scan_spool: Scan Spoel
-      spool_selection: Spoel Selectie
+      spool_selection: Spoel selectie | Spool selectie voor macro {macro}
   job_queue:
     tooltip:
       help: Zet opdrachten in de wachtrij door bestanden vanuit Jobs hiernaartoe te
