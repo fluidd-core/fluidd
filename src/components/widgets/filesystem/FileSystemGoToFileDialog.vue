@@ -66,7 +66,7 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
   loaded = false
 
   get rootFiles (): MoonrakerRootFile[] {
-    return this.$store.getters['files/getRootFiles'](this.root) as MoonrakerRootFile[]
+    return this.$store.getters['files/getRootFiles'](this.root)
   }
 
   get matchedFiles (): File[] {
@@ -96,7 +96,7 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
   }
 
   get loading (): boolean {
-    return this.hasWait(`${this.$waits.onFileSystem}/${this.root}/`) as boolean
+    return this.hasWait(`${this.$waits.onFileSystem}/${this.root}/`)
   }
 
   @Watch('loading')

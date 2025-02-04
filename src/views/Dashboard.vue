@@ -60,6 +60,7 @@ import SpoolmanCard from '@/components/widgets/spoolman/SpoolmanCard.vue'
 import SensorsCard from '@/components/widgets/sensors/SensorsCard.vue'
 import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
 import BeaconCard from '@/components/widgets/beacon/BeaconCard.vue'
+import type { KlipperPrinterSettings } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -115,6 +116,10 @@ export default class Dashboard extends Mixins(StateMixin) {
     return 12 / this.columnCount
   }
 
+  get printerSettings (): KlipperPrinterSettings {
+    return this.$store.getters['printer/getPrinterSettings']
+  }
+
   get hasCameras (): boolean {
     return this.$store.getters['webcams/getEnabledWebcams'].length > 0
   }
@@ -132,7 +137,7 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get firmwareRetractionEnabled (): boolean {
-    return 'firmware_retraction' in this.$store.getters['printer/getPrinterSettings']()
+    return 'firmware_retraction' in this.printerSettings
   }
 
   get supportsJobQueue (): boolean {

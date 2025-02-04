@@ -210,6 +210,7 @@ import QrScanner from 'qr-scanner'
 import type { AppTableHeader } from '@/types'
 import getFilePaths from '@/util/get-file-paths'
 import type { DataTableHeader } from 'vuetify'
+import type { KlipperPrinterConfig } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -318,7 +319,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       },
     ]
 
-    const mergedTableHeaders = this.$store.getters['config/getMergedTableHeaders'](headers, 'spoolman') as AppTableHeader[]
+    const mergedTableHeaders: AppTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'spoolman')
 
     return mergedTableHeaders
   }
@@ -355,7 +356,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get currentFileName () {
-    return this.filename || this.$store.state.printer.printer.print_stats.filename
+    return this.filename || this.$store.state.printer.printer.print_stats?.filename || ''
   }
 
   get currentFile () {
@@ -368,7 +369,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get enabledWebcams (): WebcamConfig[] {
-    return this.$store.getters['webcams/getEnabledWebcams'] as WebcamConfig[]
+    return this.$store.getters['webcams/getEnabledWebcams']
   }
 
   get availableCameras (): Pick<WebcamConfig, 'uid' | 'name'>[] {
@@ -429,7 +430,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         `SET_GCODE_VARIABLE MACRO=${this.targetMacro} VARIABLE=spool_id VALUE=${this.selectedSpool ?? 'None'}`
       ]
 
-      const supportsSaveVariables = this.$store.getters['printer/getPrinterConfig']('save_variables')
+      const printerConfig: KlipperPrinterConfig = this.$store.getters['printer/getPrinterConfig']
+      const supportsSaveVariables = printerConfig.save_variables
       if (supportsSaveVariables) {
         // persist selected spool across restarts
         commands.push(`SAVE_VARIABLE VARIABLE=${this.targetMacro.toLowerCase()}__spool_id VALUE=${this.selectedSpool ?? 'None'}`)

@@ -2,7 +2,6 @@ import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import type { PrinterState } from './types'
 import { defaultState } from './state'
-import { consola } from 'consola'
 import { get } from 'lodash-es'
 
 export const mutations: MutationTree<PrinterState> = {
@@ -34,7 +33,7 @@ export const mutations: MutationTree<PrinterState> = {
   },
 
   setQueryEndstops (state, payload) {
-    state.printer.endstops = payload
+    state.endstops = payload
   },
 
   setPrinterObjectList (state, payload) {
@@ -44,17 +43,15 @@ export const mutations: MutationTree<PrinterState> = {
   },
 
   setClearEndStops (state) {
-    state.printer.endstops = {}
+    state.endstops = {}
   },
 
   setClearScrewsTiltAdjust (state) {
-    state.printer.screws_tilt_adjust = {}
-  },
-
-  setResetCurrentFile (state) {
-    const newState = defaultState().printer.current_file
-    consola.debug('resetting current file', newState)
-    Vue.set(state.printer, 'current_file', newState)
+    state.printer.screws_tilt_adjust = {
+      error: false,
+      max_deviation: 0,
+      results: {}
+    }
   },
 
   setSocketNotify (state, payload) {

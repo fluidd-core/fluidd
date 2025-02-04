@@ -206,7 +206,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     })
   }
 
-  get selectedCardFields (): string[] {
+  get selectedCardFields (): string[][] {
     const fields = this.$store.state.config.uiSettings.spoolman.selectedCardFields
     const columnCount = fields.length > 1 ? 2 : 1
     const elementsPerColumn = Math.ceil(fields.length / columnCount)
@@ -219,11 +219,11 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
   }
 
   get isConnected (): boolean {
-    return this.$store.getters['spoolman/getConnected']
+    return this.$store.state.spoolman.connected
   }
 
   get targetableMacros (): MacroWithSpoolId[] {
-    const macros = this.$store.getters['macros/getMacros'] as Macro[]
+    const macros: Macro[] = this.$store.getters['macros/getMacros']
 
     return macros
       .filter((macro): macro is MacroWithSpoolId => macro.variables != null && 'spool_id' in macro.variables)

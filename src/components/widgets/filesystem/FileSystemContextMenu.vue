@@ -216,7 +216,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   readonly positionY!: number
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.root)
   }
 
   get canPrint () {

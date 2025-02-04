@@ -142,7 +142,7 @@ export default class MacroBtn extends Mixins(StateMixin) {
   }
 
   get klippyApp (): KlippyApp {
-    return this.$store.getters['printer/getKlippyApp'] as KlippyApp
+    return this.$store.getters['printer/getKlippyApp']
   }
 
   get supportsPythonGcodeMacros () {

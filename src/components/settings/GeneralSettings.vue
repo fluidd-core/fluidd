@@ -399,7 +399,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get printerPowerDevicesList () {
-    const devices = this.$store.getters['power/getDevices'] as Device[]
+    const devices: Device[] = this.$store.getters['power/getDevices']
 
     const deviceEntries = devices.map(device => ({
       text: `${this.$filters.prettyCase(device.device)} (${device.type})`,
@@ -432,7 +432,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get topNavPowerToggleDevicesList () {
-    const devices = this.$store.getters['power/getDevices'] as Device[]
+    const devices: Device[] = this.$store.getters['power/getDevices']
     const deviceEntries = devices.length
       ? [
           { header: 'Moonraker' },
@@ -443,7 +443,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
         ]
       : []
 
-    const pins = this.$store.getters['printer/getPins'] as OutputPin[]
+    const pins: OutputPin[] = this.$store.getters['printer/getPins']
     const pinEntries = pins.length
       ? [
           { header: 'Klipper' },

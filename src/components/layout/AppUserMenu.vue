@@ -86,11 +86,12 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { startCase, capitalize } from 'lodash-es'
+import type { AppUser } from '@/store/auth/types'
 
 @Component({})
 export default class AppNotificationMenu extends Vue {
-  get user () {
-    return this.$store.getters['auth/getCurrentUser']
+  get user (): AppUser | null {
+    return this.$store.state.auth.currentUser
   }
 
   get currentUser () {

@@ -44,7 +44,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
       ? klipperVersion
       : `${klipperVersion}-0`
 
-    const klippyApp = getters['getKlippyApp'] as KlippyApp
+    const klippyApp: KlippyApp = getters['getKlippyApp']
 
     if (
       valid(klipperVersion) &&
@@ -191,7 +191,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
       // Detect a printing state change.
       // We do this prior to commiting the notify so we can
       // compare the before and after.
-      handleCurrentFileChange(payload, rootState, commit)
+      handleCurrentFileChange(payload, rootState)
       handlePrintStateChange(payload, rootState, dispatch)
       handleSystemStatsChange(payload, rootState, commit)
       handleMcuStatsChange(payload, rootState, commit)

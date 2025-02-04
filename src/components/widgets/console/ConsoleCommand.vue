@@ -123,7 +123,7 @@ export default class ConsoleCommand extends Vue {
   }
 
   get availableCommands (): GcodeCommands {
-    return this.$store.getters['printer/getAvailableCommands'] as GcodeCommands
+    return this.$store.getters['printer/getAvailableCommands']
   }
 
   autoComplete () {

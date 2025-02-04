@@ -62,12 +62,15 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import type { SDInfo, SystemInfo } from '@/store/server/types'
+import type { DiskUsage } from '@/store/files/types'
 
 @Component({})
 export default class PrinterStatsCard extends Vue {
   get sdInfo () {
-    const info = this.$store.getters['server/getSystemInfo']
-    return info?.sd_info || {}
+    const info: SystemInfo | null = this.$store.state.server.system_info
+
+    return info?.sd_info || {} as SDInfo
   }
 
   get fileSystemUsedPercent () {
@@ -76,8 +79,8 @@ export default class PrinterStatsCard extends Vue {
     return Math.floor((used / total) * 100).toFixed()
   }
 
-  get fileSystemUsage () {
-    return this.$store.getters['files/getUsage']
+  get fileSystemUsage (): DiskUsage {
+    return this.$store.state.files.disk_usage
   }
 }
 </script>

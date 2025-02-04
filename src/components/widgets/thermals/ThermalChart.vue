@@ -22,7 +22,7 @@ import { Component, Watch, Prop, Ref, Mixins } from 'vue-property-decorator'
 import type { ECharts, EChartsOption } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
 import BrowserMixin from '@/mixins/browser'
-import type { ChartSelectedLegends } from '@/store/charts/types'
+import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
 
 @Component({})
 export default class ThermalChart extends Mixins(BrowserMixin) {
@@ -58,16 +58,16 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
   }
 
-  get chartData () {
-    return this.$store.getters['charts/getChartData']
+  get chartData (): ChartData[] {
+    return this.$store.state.charts.chart
   }
 
   get chartableSensors (): string[] {
-    return this.$store.getters['printer/getChartableSensors'] as string[]
+    return this.$store.getters['printer/getChartableSensors']
   }
 
   get chartSelectedLegends (): ChartSelectedLegends {
-    return this.$store.getters['charts/getSelectedLegends'] as ChartSelectedLegends
+    return this.$store.state.charts.selectedLegends
   }
 
   @Watch('chartData')

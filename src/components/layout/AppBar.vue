@@ -182,7 +182,7 @@ import ServicesMixin from '@/mixins/services'
 import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
 import { SocketActions } from '@/api/socketActions'
-import type { OutputPin } from '@/store/printer/types'
+import type { KlipperPrinterConfig, OutputPin } from '@/store/printer/types'
 import type { Device } from '@/store/power/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
@@ -212,11 +212,11 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   get saveConfigPending (): boolean {
-    return this.$store.getters['printer/getSaveConfigPending'] as boolean
+    return this.$store.getters['printer/getSaveConfigPending']
   }
 
-  get saveConfigPendingItems (): Record<string, Record<string, string>> {
-    return this.$store.getters['printer/getSaveConfigPendingItems'] as Record<string, Record<string, string>>
+  get saveConfigPendingItems (): KlipperPrinterConfig {
+    return this.$store.getters['printer/getSaveConfigPendingItems']
   }
 
   get showSaveConfigAndRestartForPendingChanges (): boolean {
@@ -263,7 +263,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
     switch (type) {
       case 'klipper': {
-        const device = this.$store.getters['printer/getPinByName'](name) as OutputPin | undefined
+        const device: OutputPin | undefined = this.$store.getters['printer/getPinByName'](name)
 
         if (!device) return null
 
@@ -275,7 +275,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
       }
 
       default: {
-        const device = this.$store.getters['power/getDeviceByName'](topNavPowerToggle) as Device | undefined
+        const device: Device | undefined = this.$store.getters['power/getDeviceByName'](topNavPowerToggle)
 
         if (!device) return null
 

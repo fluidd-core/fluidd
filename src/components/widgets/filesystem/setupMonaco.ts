@@ -117,7 +117,7 @@ async function setupMonaco () {
   })
 
   const app = getVueApp()
-  const klippyApp = app.$store.getters['printer/getKlippyApp'] as KlippyApp
+  const klippyApp: KlippyApp = app.$store.getters['printer/getKlippyApp']
 
   monaco.editor.registerCommand('fluidd_open_docs', (_, service: CodeLensSupportedService, hash: string) => {
     const serviceKey = service.replace(/-/g, '_')

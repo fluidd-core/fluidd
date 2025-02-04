@@ -148,20 +148,16 @@ export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin)
     ].sort((a, b) => b - a)
   }
 
-  get manualProbe () {
-    return this.$store.state.printer.printer.manual_probe
-  }
-
   get zPositionLower () {
-    return this.manualProbe.z_position_lower?.toFixed(3)
+    return this.$store.state.printer.printer.manual_probe?.z_position_lower?.toFixed(3)
   }
 
   get zPosition () {
-    return this.manualProbe.z_position?.toFixed(3)
+    return this.$store.state.printer.printer.manual_probe?.z_position?.toFixed(3)
   }
 
   get zPositionUpper () {
-    return this.manualProbe.z_position_upper?.toFixed(3)
+    return this.$store.state.printer.printer.manual_probe?.z_position_upper?.toFixed(3)
   }
 
   get showManualProbeDialogAutomatically (): boolean {

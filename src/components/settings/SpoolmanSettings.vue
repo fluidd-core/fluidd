@@ -148,7 +148,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   }
 
   get enabledWebcams (): WebcamConfig[] {
-    return this.$store.getters['webcams/getEnabledWebcams'] as WebcamConfig[]
+    return this.$store.getters['webcams/getEnabledWebcams']
   }
 
   get supportedCameras (): Array<{ text?: string, value: string | null, disabled?: boolean }> {

@@ -49,18 +49,22 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import type { Endstop, Probe } from '@/store/printer/types'
+import type { Endstop, KlipperPrinterProbeState } from '@/store/printer/types'
 
 @Component({
   components: {}
 })
 export default class EndStopsCard extends Mixins(StateMixin) {
   get endstops (): Endstop[] {
-    return this.$store.getters['printer/getEndstops'] as Endstop[]
+    return this.$store.getters['printer/getEndstops']
   }
 
-  get probe (): Probe | undefined {
-    return this.$store.getters['printer/getProbe'] as Probe | undefined
+  get hasSteppers () {
+    return this.$store.getters['printer/getSteppers'].length > 0
+  }
+
+  get probe (): KlipperPrinterProbeState | undefined {
+    return this.$store.getters['printer/getProbe']
   }
 
   get endstopsAndProbes () {
@@ -70,7 +74,7 @@ export default class EndStopsCard extends Mixins(StateMixin) {
     if (probe !== undefined) {
       endstopsAndProbes.push({
         name: 'Probe',
-        state: probe.last_query ? 'triggered' : 'open'
+        state: probe.last_query ? 'TRIGGERED' : 'open'
       })
     }
 
@@ -83,7 +87,9 @@ export default class EndStopsCard extends Mixins(StateMixin) {
   }
 
   queryEndstops () {
-    SocketActions.printerQueryEndstops()
+    if (this.hasSteppers) {
+      SocketActions.printerQueryEndstops()
+    }
 
     if (this.probe !== undefined) {
       this.sendGcode('QUERY_PROBE', this.$waits.onQueryProbe)

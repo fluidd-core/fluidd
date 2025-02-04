@@ -362,7 +362,7 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   }
 
   get heaters (): Heater[] {
-    return this.$store.getters['printer/getHeaters'] as Heater[]
+    return this.$store.getters['printer/getHeaters']
   }
 
   get fans () {
@@ -378,11 +378,11 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   }
 
   get chartSelectedLegends (): ChartSelectedLegends {
-    return this.$store.getters['charts/getSelectedLegends'] as ChartSelectedLegends
+    return this.$store.state.charts.selectedLegends
   }
 
   get chartData (): ChartData[] {
-    return this.$store.getters['charts/getChartData'] as ChartData[]
+    return this.$store.state.charts.chart
   }
 
   get showRateOfChange (): boolean {

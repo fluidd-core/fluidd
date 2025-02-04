@@ -94,20 +94,19 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
   }
 
   get collapsable () {
-    const filename = this.$store.state.printer.printer.print_stats.filename
     return (
       this.printerPrinting ||
       this.supportsHistoryComponent ||
-      filename !== ''
+      this.filename !== ''
     )
   }
 
   get filename (): string {
-    return this.$store.state.printer.printer.print_stats.filename
+    return this.$store.state.printer.printer.print_stats?.filename ?? ''
   }
 
   get estimates (): TimeEstimates {
-    return this.$store.getters['printer/getTimeEstimates'] as TimeEstimates
+    return this.$store.getters['printer/getTimeEstimates']
   }
 
   @Watch('filename')

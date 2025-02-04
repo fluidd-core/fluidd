@@ -287,7 +287,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Properties of the current root.
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.currentRoot) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.currentRoot)
   }
 
   // If this root is available or not.
@@ -440,7 +440,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     ]
 
     const key = `${this.currentRoot}_${this.name}`
-    const mergedTableHeaders = this.$store.getters['config/getMergedTableHeaders'](headers, key) as AppTableHeader[]
+    const mergedTableHeaders: AppTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, key)
 
     return mergedTableHeaders
   }
@@ -537,7 +537,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   getAllFiles () {
-    const items = this.$store.getters['files/getDirectory'](this.currentPath) as FileBrowserEntry[] | undefined
+    const items: FileBrowserEntry[] | undefined = this.$store.getters['files/getDirectory'](this.currentPath)
 
     return items ?? []
   }

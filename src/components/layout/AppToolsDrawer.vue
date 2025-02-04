@@ -45,7 +45,7 @@ export default class AppToolsDrawer extends Mixins(StateMixin) {
   }
 
   get serverInfo () {
-    return this.$store.getters['server/getInfo']
+    return this.$store.state.server.info
   }
 
   get hasUpdates (): boolean {

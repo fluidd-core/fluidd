@@ -124,6 +124,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
+import type { KlipperPrinterSettings } from '@/store/printer/types'
 
 type Axis = 'X' | 'Y' | 'Z'
 
@@ -144,7 +145,7 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
   }
 
   get livePosition () {
-    return this.$store.state.printer.printer.motion_report.live_position
+    return this.$store.state.printer.printer.motion_report?.live_position ?? [0, 0, 0, 0]
   }
 
   get useGcodeCoords (): boolean {
@@ -175,6 +176,10 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
     this.sendGcode(`G9${value}`)
   }
 
+  get printerSettings (): KlipperPrinterSettings {
+    return this.$store.getters['printer/getPrinterSettings']
+  }
+
   moveAxisTo (axis: Axis, pos: number) {
     const axisIndex = axisIndexMap[axis]
     const currentPos = this.useGcodeCoords
@@ -188,7 +193,7 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
 
       if (this.forceMoveEnabled) {
         const accel = axis === 'Z'
-          ? this.$store.getters['printer/getPrinterSettings']('printer.max_z_accel')
+          ? this.printerSettings.printer?.max_z_accel ?? 100
           : this.$store.state.printer.printer.toolhead.max_accel
         this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate} ACCEL=${accel}`)
       } else {
