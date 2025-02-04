@@ -33,6 +33,7 @@ app:
       pid_calibration: PID-Kalibrierung
       target_temperature: Zieltemperatur
       turn_off: Ausschalten
+      fan_breakpoints: Lüfter-Sollwerte
     tooltip:
       help: >-
         Halten Sie <kbd>Umschalt</kbd> gedrückt, um zu zoomen. <br />Klicken Sie auf
@@ -238,6 +239,7 @@ app:
       multiply: Vermehren
       copied: Kopiert
       copy: Kopieren
+      power_on_printer: Drucker einschalten
     error:
       app_setup_link: >-
         Die Anforderungen für die Einrichtung von Fluidd finden Sie <a
@@ -249,6 +251,8 @@ app:
       failed_components: >-
         Moonraker hat fehlerhafte Plugins, bitte überprüfen Sie Ihre Logs,
         aktualisieren Sie Ihre Konfiguration und starten Sie Moonraker neu.
+      printer_powered_off: Der Drucker ist zur Zeit ausgeschaltet.<br/><br/>Um den
+        Drucker einzuschalten, drücken Sie bitten den Knopf links.
     label:
       accel_to_decel: Beschleunigen zu Bremsen
       acceleration: Beschleunigung
@@ -364,6 +368,7 @@ app:
       device: Gerät
       user_facing: Dem Benutzer zugewandt
       environment_facing: Der Umgebung zugewandt
+      z_hop_height: Z-Hop Höhe
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -429,7 +434,7 @@ app:
           wollen?
         confirm_remove_macro_category: Sind Sie sicher, dass Sie die Makrokategorie
           %{name} entfernen möchten?
-        confirm_remove_printer: Sind Sie sicher, dass Sie den Drucker %{Name} entfernen
+        confirm_remove_printer: Sind Sie sicher, dass Sie den Drucker %{name} entfernen
           möchten?
         confirm_remove_camera: Sind Sie sicher, dass Sie die Kamera %{name} entfernen
           möchten?
@@ -522,6 +527,7 @@ app:
         sie in Unterordner oder ".." ziehen
       file_browser_configuration_help: Kopieren Sie Dateien und Ordner in die Konfigurationsdateien,
         indem Sie diese von hier nach dort ziehen
+      power_on_printer: Schaltet den Drucker ein
   history:
     msg:
       confirm_jobs: Sind Sie sicher? Dadurch werden alle Aufträge gelöscht.
@@ -623,7 +629,7 @@ app:
       language: Anzeigesprache
       move_line_width: Bewegungslinien-Dicke
       none: Keines | Keine
-      power_toggle_in_top_nav: Power-Schalter in Kopfleiste
+      power_toggle_in_top_nav: Stromversorgungs-Schalter in Kopfleiste
       primary_color: Primärfarbe
       printer_name: Druckername
       reset: Einstellungen zurücksetzen
@@ -702,6 +708,8 @@ app:
       fluidd_settings_in_moonraker_db: Fluidd-Einstellungen in Moonraker-Datenbank
       drag_and_drop_functionality_for_files_and_folders: Drag-and-Drop-Funktionalität
         für Dateien und Ordner
+      auto: Auto
+      printer_power_device: Drucker-Stromversorgungsgerät
     timer_options:
       duration: Nur Dauer
       filament: Filament
@@ -800,7 +808,7 @@ app:
         suchen
       canbus_warning: Nur unzugewiesene CAN-Bus-Knoten werden erkannt.<br>Es ist empfohlen,
         nur ein unzugewiesenes Gerät an den CAN-Bus anzuschließen, um Kommunikationsprobleme
-        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank"
+        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank" 
         href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">hier.</a>
   tool:
     btn:
@@ -932,12 +940,12 @@ app:
       spoolman: Spoolman
     label:
       active_spool: Aktive Spule
-      bed_temp: Betttemp.
+      bed_temp: Bett-Temp.
       change_spool: Spule wechseln
       comment: Kommentar
       density: Dichte
       device_camera: Gerät
-      extruder_temp: Extrudertemp.
+      extruder_temp: Extruder-Temp.
       filament_name: Filament
       first_used: Zuerst genutzt
       last_used: Zuletzt genutzt
