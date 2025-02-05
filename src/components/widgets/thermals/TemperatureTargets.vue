@@ -373,7 +373,7 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     return this.$store.getters['printer/getOutputs'](['nevermore'])
   }
 
-  get sensors () {
+  get sensors (): Sensor[] {
     return this.$store.getters['printer/getSensors']
   }
 
@@ -429,13 +429,13 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     return `${rateOfChange < 0 ? '' : '+'}${rateOfChange.toFixed(1)}`
   }
 
-  isLegendSelected (item: Heater | Fan, subKey?: string) {
+  isLegendSelected (item: Heater | Fan | Sensor, subKey?: string) {
     const key = `${item.key}${subKey ?? ''}`
 
     return this.chartSelectedLegends[key] ?? (subKey !== '#power' && subKey !== '#speed')
   }
 
-  legendClick (item: Heater | Fan, subKey?: string) {
+  legendClick (item: Heater | Fan | Sensor, subKey?: string) {
     const value = !this.isLegendSelected(item, subKey)
     const key = `${item.key}${subKey ?? ''}`
 

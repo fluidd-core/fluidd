@@ -43,7 +43,7 @@ export default class MacroCategoryDialog extends Vue {
 
   get customRules () {
     return {
-      uniqueName: (v: string) => this.categories.findIndex((c: MacroCategory) => c.name.toLowerCase() === v.toLowerCase()) < 0 || this.$t('app.general.simple_form.error.exists')
+      uniqueName: (v: string) => this.categories.findIndex(c => c.name.toLowerCase() === v.toLowerCase()) < 0 || this.$t('app.general.simple_form.error.exists')
     }
   }
 
@@ -51,7 +51,7 @@ export default class MacroCategoryDialog extends Vue {
     this.newName = this.name
   }
 
-  get categories () {
+  get categories (): MacroCategory[] {
     return this.$store.getters['macros/getCategories']
   }
 

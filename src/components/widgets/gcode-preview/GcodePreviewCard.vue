@@ -147,7 +147,7 @@ import BrowserMixin from '@/mixins/browser'
 import GcodePreview from './GcodePreview.vue'
 import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog.vue'
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
-import type { MinMax, Move } from '@/store/gcodePreview/types'
+import type { Layer, MinMax, Move } from '@/store/gcodePreview/types'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
 import consola from 'consola'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
@@ -221,7 +221,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   @Watch('moveProgress')
   onMoveProgressChanged () {
     if (this.followProgress) {
-      const fileMovePosition = this.$store.getters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
+      const fileMovePosition: number = this.$store.getters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
 
       // In some (yet unclear) cases, fileMovePosition can get out of sync with
       // the component's notion of moveProgress.  This seems to happen during
@@ -321,7 +321,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
       }
     }
 
-    const layers = this.$store.getters['gcodePreview/getLayers']
+    const layers: Layer[] = this.$store.getters['gcodePreview/getLayers']
 
     return {
       min: layers[this.currentLayer].move,

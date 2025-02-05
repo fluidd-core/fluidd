@@ -277,7 +277,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     )
   }
 
-  get canCreateZip () {
+  get canCreateZip (): boolean {
     return (
       (
         Array.isArray(this.file) ||
@@ -289,7 +289,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     )
   }
 
-  get canAddToQueue () {
+  get canAddToQueue (): boolean {
     const files = Array.isArray(this.file) ? this.file : [this.file]
 
     return (

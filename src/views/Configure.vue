@@ -73,7 +73,9 @@ export default class Configure extends Mixins(StateMixin) {
     const roots = ['logs', 'docs', 'config_examples']
     const excludeRoots = ['gcodes', 'config', 'timelapse', 'timelapse_frames']
 
-    for (const root of this.$store.state.server.info.registered_directories || []) {
+    const registeredDirectories: string[] = this.$store.state.server.info.registered_directories || []
+
+    for (const root of registeredDirectories) {
       if (!excludeRoots.includes(root) && !roots.includes(root)) {
         roots.push(root)
       }

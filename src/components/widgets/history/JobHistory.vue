@@ -237,7 +237,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
     ]
   }
 
-  get history () {
+  get history (): HistoryItem[] {
     return this.$store.getters['history/getHistory']
   }
 

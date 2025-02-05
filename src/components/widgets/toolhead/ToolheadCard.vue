@@ -360,7 +360,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     return tools
   }
 
-  get printerSupportsForceMove () {
+  get printerSupportsForceMove (): boolean {
     return (
       (this.printerSettings.force_move?.enable_force_move ?? false) &&
       !this.hasRoundBed

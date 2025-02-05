@@ -130,6 +130,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/state'
 import StateMixin from '@/mixins/state'
 import type { WebcamConfig } from '@/store/webcams/types'
+import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
 
 @Component({
   components: {}
@@ -226,11 +227,11 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get remainingFilamentUnit (): string {
+  get remainingFilamentUnit (): SpoolmanRemainingFilamentUnit {
     return this.$store.state.config.uiSettings.spoolman.remainingFilamentUnit
   }
 
-  set remainingFilamentUnit (value: string) {
+  set remainingFilamentUnit (value: SpoolmanRemainingFilamentUnit) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.remainingFilamentUnit',
       value,

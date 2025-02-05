@@ -216,7 +216,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
         boundaryGap: false,
         max: 'dataMax',
         min: (value: any) => {
-          const temperature_store_size = this.$store.getters['charts/getChartRetention']
+          const temperature_store_size: number = this.$store.getters['charts/getChartRetention']
           return value.max - (temperature_store_size * 1000)
         },
         axisTick: {

@@ -102,6 +102,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { appInit } from '@/init'
 import { consola } from 'consola'
+import type { InstanceConfig } from '@/store/config/types'
 
 @Component({})
 export default class Login extends Vue {
@@ -130,7 +131,7 @@ export default class Login extends Vue {
 
     // Re-init the app.
     if (!this.error) {
-      const instance = this.$store.getters['config/getCurrentInstance']
+      const instance: InstanceConfig = this.$store.getters['config/getCurrentInstance']
 
       const config = await appInit(instance, this.$store.state.config.hostConfig)
 

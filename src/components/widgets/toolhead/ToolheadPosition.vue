@@ -136,15 +136,15 @@ const axisIndexMap: Record<Axis, number> = {
 
 @Component({})
 export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) {
-  get gcodePosition () {
+  get gcodePosition (): [number, number, number, number] {
     return this.$store.state.printer.printer.gcode_move.gcode_position
   }
 
-  get toolheadPosition () {
+  get toolheadPosition (): [number, number, number, number] {
     return this.$store.state.printer.printer.toolhead.position
   }
 
-  get livePosition () {
+  get livePosition (): [number, number, number, number] {
     return this.$store.state.printer.printer.motion_report?.live_position ?? [0, 0, 0, 0]
   }
 
@@ -152,19 +152,19 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
     return this.$store.state.config.uiSettings.general.useGcodeCoords
   }
 
-  get xForceMove () {
+  get xForceMove (): boolean {
     return this.forceMoveEnabled && !this.xHasMultipleSteppers
   }
 
-  get yForceMove () {
+  get yForceMove (): boolean {
     return this.forceMoveEnabled && !this.yHasMultipleSteppers
   }
 
-  get zForceMove () {
+  get zForceMove (): boolean {
     return this.forceMoveEnabled && !this.zHasMultipleSteppers
   }
 
-  get usesAbsolutePositioning () {
+  get usesAbsolutePositioning (): boolean {
     return this.$store.state.printer.printer.gcode_move.absolute_coordinates
   }
 
@@ -192,7 +192,7 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
         : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
 
       if (this.forceMoveEnabled) {
-        const accel = axis === 'Z'
+        const accel: number = axis === 'Z'
           ? this.printerSettings.printer?.max_z_accel ?? 100
           : this.$store.state.printer.printer.toolhead.max_accel
         this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate} ACCEL=${accel}`)

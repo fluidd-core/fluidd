@@ -137,10 +137,11 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
+import type { KlipperPrinterManualProbeState } from '@/store/printer/types'
 
 @Component({})
 export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin) {
-  get offsets () {
+  get offsets (): number[] {
     return [
       1,
       0.1,
@@ -148,16 +149,20 @@ export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin)
     ].sort((a, b) => b - a)
   }
 
-  get zPositionLower () {
-    return this.$store.state.printer.printer.manual_probe?.z_position_lower?.toFixed(3)
+  get manualProbe (): KlipperPrinterManualProbeState | undefined {
+    return this.$store.state.printer.printer.manual_probe
   }
 
-  get zPosition () {
-    return this.$store.state.printer.printer.manual_probe?.z_position?.toFixed(3)
+  get zPositionLower (): string {
+    return this.manualProbe?.z_position_lower?.toFixed(3) ?? ''
   }
 
-  get zPositionUpper () {
-    return this.$store.state.printer.printer.manual_probe?.z_position_upper?.toFixed(3)
+  get zPosition (): string {
+    return this.manualProbe?.z_position?.toFixed(3) ?? ''
+  }
+
+  get zPositionUpper (): string {
+    return this.manualProbe?.z_position_upper?.toFixed(3) ?? ''
   }
 
   get showManualProbeDialogAutomatically (): boolean {

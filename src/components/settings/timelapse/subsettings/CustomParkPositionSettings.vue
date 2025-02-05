@@ -75,7 +75,7 @@ export default class CustomParkPositionSettings extends Mixins(StateMixin) {
   @Ref('parkPosYElement')
   readonly parkPosYElement?: VInput
 
-  getCustomParkPosBlocked (axis: 'x' | 'y') {
+  getCustomParkPosBlocked (axis: 'x' | 'y'): boolean {
     return this.$store.getters['timelapse/isBlockedSetting'](`park_custom_pos_${axis}`)
   }
 

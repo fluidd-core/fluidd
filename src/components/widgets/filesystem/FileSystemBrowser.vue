@@ -294,7 +294,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   ghost?: HTMLDivElement = undefined
 
   // Is the history component enabled
-  get showHistory () {
+  get showHistory (): boolean {
     return (
       this.$store.getters['server/componentSupport']('history') &&
       this.root === 'gcodes'

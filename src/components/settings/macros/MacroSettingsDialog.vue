@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import type { Macro } from '@/store/macros/types'
+import type { Macro, MacroCategory } from '@/store/macros/types'
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 
 @Component({})
@@ -120,8 +120,8 @@ export default class MacroMoveDialog extends Vue {
 
   get categories () {
     // Grabs all categories and filters by the currently defined one.
-    const categories = [...this.$store.getters['macros/getCategories']]
-    categories.unshift({ name: this.$t('app.general.label.uncategorized'), id: '0' })
+    const categories: MacroCategory[] = [...this.$store.getters['macros/getCategories']]
+    categories.unshift({ name: this.$t('app.general.label.uncategorized').toString(), id: '0' })
     return categories
   }
 

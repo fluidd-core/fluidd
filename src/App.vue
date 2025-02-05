@@ -270,12 +270,12 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     return `data:image/svg+xml;base64,${btoa(logoWithColor)}`
   }
 
-  get customStyleSheet () {
+  get customStyleSheet (): string | undefined {
     return this.$store.getters['config/getCustomThemeFile']('custom', ['.css'])
   }
 
   @Watch('customStyleSheet')
-  async onCustomStyleSheet (value: string) {
+  async onCustomStyleSheet (value: string | undefined) {
     if (!value) {
       return
     }
@@ -299,12 +299,12 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     document.head.appendChild(linkElement)
   }
 
-  get customBackgroundImage () {
+  get customBackgroundImage (): string | undefined {
     return this.$store.getters['config/getCustomThemeFile']('background', ['.png', '.jpg', '.jpeg', '.gif'])
   }
 
   @Watch('customBackgroundImage')
-  async onCustomBackgroundImage (value: string) {
+  async onCustomBackgroundImage (value: string | undefined) {
     if (!value) {
       return
     }
@@ -411,7 +411,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
         const files = await getFilesFromDataTransfer(event.dataTransfer)
 
         if (files) {
-          const pathWithRoot: string = this.$store.getters['files/getCurrentPathByRoot'](root) ?? ''
+          const pathWithRoot: string = this.$store.getters['files/getCurrentPathByRoot'](root)
           const path = pathWithRoot === root
             ? ''
             : pathWithRoot.substring(root.length + 1)

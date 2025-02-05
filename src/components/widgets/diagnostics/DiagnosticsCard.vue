@@ -143,7 +143,7 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
         boundaryGap: false,
         max: 'dataMax',
         min: (value: any) => {
-          const retention = this.$store.getters['charts/getChartRetention']
+          const retention: number = this.$store.getters['charts/getChartRetention']
           return value.max - (retention * 1000)
         },
         axisTick: {

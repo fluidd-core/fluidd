@@ -3,6 +3,7 @@ import type { ServerState, ServiceInfo, ServiceState } from './types'
 import type { RootState } from '../types'
 import { Globals } from '@/globals'
 import { gte, valid } from 'semver'
+import type { KlippyApp } from '../printer/types'
 
 export const getters: GetterTree<ServerState, RootState> = {
   getIsMinApiVersion: (state) => (minVersion: string) => {
@@ -58,7 +59,7 @@ export const getters: GetterTree<ServerState, RootState> = {
       item?.service === 'klipper' &&
       item.link
     ) {
-      const klippyApp = rootGetters['printer/getKlippyApp']
+      const klippyApp: KlippyApp = rootGetters['printer/getKlippyApp']
 
       item.link = item.link.replace('{klipperDomain}', klippyApp.domain)
     }

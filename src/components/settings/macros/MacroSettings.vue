@@ -148,9 +148,9 @@ export default class MacroSettings extends Mixins(StateMixin) {
   }
 
   get uncategorizedMacros () {
-    const uncategorized = this.$store.getters['macros/getMacrosByCategory']()
+    const uncategorized: Macro[] = this.$store.getters['macros/getMacrosByCategory']()
     const count = uncategorized.length
-    const visible = uncategorized.filter((macro: Macro) => macro.visible).length
+    const visible = uncategorized.filter(macro => macro.visible).length
     return {
       count,
       visible

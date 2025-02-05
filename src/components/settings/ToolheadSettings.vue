@@ -385,7 +385,7 @@ import { Component, Ref, Mixins } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/state'
 import type { VInput } from '@/types'
 import ToolheadMixin from '@/mixins/toolhead'
-import type { ToolheadControlStyle } from '@/store/config/types'
+import type { GeneralConfig, ToolheadControlStyle } from '@/store/config/types'
 import type { KlipperPrinterSettings } from '@/store/printer/types'
 
 @Component({
@@ -717,14 +717,15 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   handleReset () {
-    let value = defaultState().uiSettings.general
-    const current = this.$store.state.config.uiSettings.general
-    value = {
-      ...value,
-      instanceName: current.instanceName,
-      chartVisible: current.chartVisible,
-      hideTempWaits: current.hideTempWaits
+    const { instanceName, chartVisible, hideTempWaits }: GeneralConfig = this.$store.state.config.uiSettings.general
+
+    const value: GeneralConfig = {
+      ...defaultState().uiSettings.general,
+      instanceName,
+      chartVisible,
+      hideTempWaits
     }
+
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general',
       value,

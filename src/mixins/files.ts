@@ -293,7 +293,9 @@ export default class FilesMixin extends Vue {
     for (const fileUpload of fileUploads) {
       const [fullPath, fileObject] = this.getFullPathAndFile(path, fileUpload.file)
 
-      const fileState = this.$store.state.files.uploads.find((u: FileUpload) => u.uid === fileUpload.uid)
+      const currentUploads: FileUpload[] = this.$store.state.files.uploads
+
+      const fileState = currentUploads.find(u => u.uid === fileUpload.uid)
 
       if (fileState && !fileState?.cancelled) {
         try {

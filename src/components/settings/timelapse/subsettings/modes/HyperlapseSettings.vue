@@ -37,7 +37,7 @@ export default class HyperlapseSettings extends Mixins(StateMixin) {
   @Ref('hyperlapseCycleElement')
   readonly hyperlapseCycleElement!: VInput
 
-  get hyperlapseCycleBlocked () {
+  get hyperlapseCycleBlocked (): boolean {
     return this.$store.getters['timelapse/isBlockedSetting']('hyperlapse_cycle')
   }
 

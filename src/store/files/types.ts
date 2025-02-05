@@ -53,7 +53,7 @@ export interface AppFile extends KlipperFile {
 
 export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
   modified: number;
-  history: HistoryItem;
+  history?: HistoryItem;
 }
 
 export interface AppFileThumbnail extends KlipperFileMetaThumbnail {

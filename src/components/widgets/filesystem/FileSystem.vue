@@ -291,7 +291,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   // If this root is available or not.
-  get disabled () {
+  get disabled (): boolean {
     return !this.$store.getters['files/isRootAvailable'](this.currentRoot)
   }
 
@@ -465,7 +465,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // The current path for the given root.
   get currentPath () {
-    return this.$store.getters['files/getCurrentPathByRoot'](this.currentRoot) || this.currentRoot
+    const pathWithRoot: string = this.$store.getters['files/getCurrentPathByRoot'](this.currentRoot)
+
+    return pathWithRoot || this.currentRoot
   }
 
   set currentPath (path: string) {
@@ -476,7 +478,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   get visiblePath (): string {
     if (
       this.currentPath &&
-      this.currentPath.startsWith(`${this.currentRoot}`)
+      this.currentPath.startsWith(this.currentRoot)
     ) {
       const dirs = this.currentPath.split('/')
       dirs.shift()
@@ -834,7 +836,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     const filename = file.path ? `${file.path}/${file.filename}` : file.filename
 
-    const spoolmanSupported = this.$store.getters['spoolman/getAvailable']
+    const spoolmanSupported: boolean = this.$store.getters['spoolman/getAvailable']
     const autoSpoolSelectionDialog: boolean = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
     if (spoolmanSupported && autoSpoolSelectionDialog) {
       this.$store.commit('spoolman/setDialogState', {

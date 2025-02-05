@@ -107,7 +107,7 @@ export default class BedScrewsAdjustDialog extends Mixins(StateMixin, ToolheadMi
   }
 
   get currentScrewName () {
-    return this.bedScrews.screws[this.currentScrewIndex]?.prettyName
+    return this.bedScrews.screws[this.currentScrewIndex]?.prettyName ?? ''
   }
 
   get acceptedScrews () {
