@@ -59,7 +59,7 @@ import { SocketActions } from '@/api/socketActions'
 
 @Component({})
 export default class TimelapseSettingsCard extends Mixins(StateMixin) {
-  get enabledBlocked () {
+  get enabledBlocked (): boolean {
     return this.$store.getters['timelapse/isBlockedSetting']('enabled')
   }
 
@@ -71,7 +71,7 @@ export default class TimelapseSettingsCard extends Mixins(StateMixin) {
     SocketActions.machineTimelapseSetSettings({ enabled: value })
   }
 
-  get autoRenderBlocked () {
+  get autoRenderBlocked (): boolean {
     return this.$store.getters['timelapse/isBlockedSetting']('autorender')
   }
 

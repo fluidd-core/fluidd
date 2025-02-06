@@ -157,12 +157,14 @@ export interface KlipperPrinterState {
 export interface KlipperPrinterConfigFileState {
   config: KlipperPrinterConfig;
   settings: KlipperPrinterSettings;
-  warnings: {
-    type: string;
-    message: string;
-  }[];
+  warnings: KlipperPrinterConfigFileWarningState[];
   save_config_pending?: boolean;
   save_config_pending_items?: KlipperPrinterConfig | null;
+}
+
+export interface KlipperPrinterConfigFileWarningState {
+  type: string;
+  message: string;
 }
 
 export interface KlipperPrinterGcodeMoveState {
@@ -1124,27 +1126,21 @@ export interface OutputPinConfig {
   scale?: number;
 }
 
-export interface Sensor {
+export interface Sensor extends Partial<KlipperPrinterTemperatureSensorState>, Partial<KlipperPrinterTemperatureSensor2State>, Partial<KlipperPrinterZThermalAdjustState> {
   name: string;
   prettyName: string;
   key: string;
   color?: string;
   type: string;
   temperature: number;
-  pressure?: number;
-  humidity?: number;
-  gas?: number;
   target?: number;
-  measured_min_temp?: number;
-  measured_max_temp?: number;
   maxTemp?: number;
   minTemp?: number;
 }
 
-export interface RunoutSensor {
+export interface RunoutSensor extends Partial<KlipperPrinterFilamentSwitchSensorState>, Partial<KlipperPrinterFilamentMotionSensorState> {
   name: string;
-  enabled: boolean;
-  filament_detected: boolean;
+  prettyName: string;
 }
 
 export interface Endstop {

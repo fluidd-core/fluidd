@@ -114,8 +114,8 @@ import type { NavigationGuardNext, Route, Location } from 'vue-router'
 const routeGuard = (to: Route): Parameters<NavigationGuardNext>[0] => {
   // No need to translate here, these are just used for the route.
   const id = to.params.categoryId
-  const categories = store.getters['macros/getCategories']
-  const i = categories.findIndex((c: MacroCategory) => c.id === id)
+  const categories: MacroCategory[] = store.getters['macros/getCategories']
+  const i = categories.findIndex(c => c.id === id)
   if (id !== '0' && i === -1) {
     return { name: 'settings', hash: '#macros' } satisfies Location
   }
@@ -135,12 +135,15 @@ export default class MacroCategorySettings extends Vue {
     macro: null
   }
 
-  get macros () {
+  get macrosForCategory (): Macro[] {
     const id = this.categoryId
-    const macros = this.$store.getters['macros/getMacrosByCategory'](id)
-      .filter((macro: Macro) => !this.search ? true : macro.name.includes(this.search.toLowerCase()))
 
-    return macros
+    return this.$store.getters['macros/getMacrosByCategory'](id)
+  }
+
+  get macros () {
+    return this.macrosForCategory
+      .filter((macro: Macro) => !this.search ? true : macro.name.includes(this.search.toLowerCase()))
   }
 
   set macros (macros: Macro[]) {

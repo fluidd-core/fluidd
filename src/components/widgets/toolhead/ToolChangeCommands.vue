@@ -60,6 +60,7 @@ import type { GcodeCommands } from '@/store/printer/types'
 import type { TranslateResult } from 'vue-i18n'
 import type { Spool } from '@/store/spoolman/types'
 import { chunk } from 'lodash-es'
+import type { Macro } from '@/store/macros/types'
 
 type ToolChangeCommand = {
   name: string,
@@ -86,14 +87,14 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
           ? help
           : this.$t('app.tool.tooltip.select_tool', { tool: command.substring(1) })
 
-        const macro = this.$store.getters['macros/getMacroByName'](command)
+        const macro: Macro | undefined = this.$store.getters['macros/getMacroByName'](command)
 
         return {
           name: command,
           description,
           color: macro?.variables?.color ? `#${macro.variables.color}` : undefined,
-          active: macro?.variables?.active ?? false,
-          spoolId: macro?.variables?.spool_id
+          active: macro?.variables?.active === true,
+          spoolId: macro?.variables?.spool_id ? +macro.variables.spool_id : undefined
         } satisfies ToolChangeCommand
       })
       .sort((a, b) => {

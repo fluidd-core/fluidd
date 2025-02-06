@@ -66,19 +66,19 @@ import SpoolmanSettings from '@/components/settings/SpoolmanSettings.vue'
   }
 })
 export default class Settings extends Mixins(StateMixin) {
-  get supportsVersions () {
+  get supportsVersions (): boolean {
     return this.$store.getters['server/componentSupport']('update_manager')
   }
 
-  get supportsAuth () {
+  get supportsAuth (): boolean {
     return this.$store.getters['server/componentSupport']('authorization')
   }
 
-  get supportsTimelapse () {
+  get supportsTimelapse (): boolean {
     return this.$store.getters['server/componentSupport']('timelapse')
   }
 
-  get supportsSpoolman () {
+  get supportsSpoolman (): boolean {
     return this.$store.getters['server/componentSupport']('spoolman')
   }
 }

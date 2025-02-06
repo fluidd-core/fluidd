@@ -119,7 +119,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getFileRelativePrintProgress: (state, getters): number => {
-    const { gcode_start_byte, gcode_end_byte } = getters.getPrinterFile ?? {}
+    const printerFile: AppFileWithMeta | undefined = getters.getPrinterFile
+
+    const { gcode_start_byte, gcode_end_byte } = printerFile ?? {}
     const { file_position, progress } = state.printer.virtual_sdcard ?? {}
 
     if (
@@ -148,8 +150,10 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getFilamentPrintProgress: (state, getters) => {
+    const printerFile: AppFileWithMeta | undefined = getters.getPrinterFile
+
     const { filament_used } = state.printer.print_stats ?? {}
-    const { filament_total } = getters.getPrinterFile ?? {}
+    const { filament_total } = printerFile ?? {}
 
     if (
       filament_used != null &&
@@ -198,7 +202,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
       return layersFromPrintStats
     }
 
-    const { layer_count, first_layer_height, layer_height, object_height } = getters.getPrinterFile ?? {}
+    const printerFile: AppFileWithMeta | undefined = getters.getPrinterFile
+
+    const { layer_count, first_layer_height, layer_height, object_height } = printerFile ?? {}
 
     if (layer_count != null) {
       return layer_count
@@ -222,7 +228,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
       return layerFromPrintStats
     }
 
-    const { first_layer_height, layer_height } = getters.getPrinterFile ?? {}
+    const printerFile: AppFileWithMeta | undefined = getters.getPrinterFile
+
+    const { first_layer_height, layer_height } = printerFile ?? {}
     const duration = state.printer.print_stats?.print_duration ?? 0
     const pos = state.printer.gcode_move.gcode_position
 
@@ -253,7 +261,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
       ? printDuration / fileProgress - printDuration
       : 0
 
-    const printerFile: AppFileWithMeta | null = getters.getPrinterFile
+    const printerFile: AppFileWithMeta | undefined = getters.getPrinterFile
+
     const { history, estimated_time } = printerFile ?? {}
 
     const currentFileStatus = history?.status
@@ -940,26 +949,26 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
   getPrinterWarnings: (state) => {
     const config = state.printer.configfile.config
-    const warnings = []
+    const warnings: string[] = []
 
     if (config) {
       if (!('virtual_sdcard' in config)) {
-        warnings.push({ message: '[virtual_sdcard] not found in printer configuration.' })
+        warnings.push('[virtual_sdcard] not found in printer configuration.')
       }
 
       if (!('pause_resume' in config)) {
-        warnings.push({ message: '[pause_resume] not found in printer configuration.' })
+        warnings.push('[pause_resume] not found in printer configuration.')
       }
 
       if (
         !('display' in config) &&
         !('display_status' in config)
       ) {
-        warnings.push({ message: '[display_status] is required if you do not have a [display] defined.' })
+        warnings.push('[display_status] is required if you do not have a [display] defined.')
       }
 
       if (!('gcode_macro CANCEL_PRINT' in config)) {
-        warnings.push({ message: 'CANCEL_PRINT macro not found in configuration.' })
+        warnings.push('CANCEL_PRINT macro not found in configuration.')
       }
     }
 

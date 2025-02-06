@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { Macro, MacrosState } from './types'
+import type { Macro, MacroCategory, MacrosState } from './types'
 import type { RootState } from '../types'
 
 export const MACRO_DEFAULTS = {
@@ -117,7 +117,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
    * them.
    */
   getCategories: (state, getters) => {
-    const categories = state.categories
+    const categories: MacroCategory[] = state.categories
       .map(category => {
         const { id, name } = category
 

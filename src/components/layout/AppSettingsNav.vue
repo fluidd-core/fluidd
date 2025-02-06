@@ -51,15 +51,15 @@ export default class AppSettingsNav extends Vue {
     ]
   }
 
-  get supportsVersions () {
+  get supportsVersions (): boolean {
     return this.$store.getters['server/componentSupport']('update_manager')
   }
 
-  get supportsTimelapse () {
+  get supportsTimelapse (): boolean {
     return this.$store.getters['server/componentSupport']('timelapse')
   }
 
-  get supportsSpoolman () {
+  get supportsSpoolman (): boolean {
     return this.$store.getters['server/componentSupport']('spoolman')
   }
 }

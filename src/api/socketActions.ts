@@ -577,7 +577,9 @@ export const SocketActions = {
     baseEmit(
       'server.files.metadata', {
         dispatch: 'files/onFileMetaData',
-        params: { filename: filepath }
+        params: {
+          filename: filepath
+        }
       }
     )
   },
@@ -586,7 +588,9 @@ export const SocketActions = {
     baseEmit(
       'server.files.metascan', {
         dispatch: 'files/onFileMetaData',
-        params: { filename: filepath }
+        params: {
+          filename: filepath
+        }
       }
     )
   },
@@ -595,14 +599,17 @@ export const SocketActions = {
    * This only requires path, but we pass root along too
    * for brevity.
    */
-  async serverFilesGetDirectory (root: string, path: string) {
-    const wait = `${Waits.onFileSystem}/${root}/${path}/`
+  async serverFilesGetDirectory (path: string) {
+    const wait = `${Waits.onFileSystem}/${path}/`
     baseEmit(
       'server.files.get_directory',
       {
         dispatch: 'files/onServerFilesGetDirectory',
         wait,
-        params: { root, path, extended: true }
+        params: {
+          path,
+          extended: true
+        }
       }
     )
   },
@@ -614,7 +621,9 @@ export const SocketActions = {
       {
         dispatch: 'files/onServerFilesListRoot',
         wait,
-        params: { root }
+        params: {
+          root
+        }
       }
     )
   },

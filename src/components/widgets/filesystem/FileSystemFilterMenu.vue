@@ -116,7 +116,7 @@ export default class FileSystemFilterMenu extends Vue {
     this.$emit('change', value)
   }
 
-  get supportsHistoryComponent () {
+  get supportsHistoryComponent (): boolean {
     return this.$store.getters['server/componentSupport']('history')
   }
 }

@@ -63,7 +63,7 @@ export default class SystemPrinters extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.instanceName
   }
 
-  get instances () {
+  get instances (): InstanceConfig[] {
     return this.$store.getters['config/getInstances']
   }
 

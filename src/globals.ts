@@ -253,7 +253,7 @@ export const Globals = Object.freeze({
     files: 'x-fluidd-files',
     jobs: 'x-fluidd-jobs'
   },
-  FILTERED_FOLDER_NAMES: ['.git'],
+  FILTERED_FOLDER_NAMES: ['.git', '.thumbs'],
   FILTERED_FILES_PREFIX: ['.thumbs', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.ignoreme'],
   KEYBOARD_SHORTCUTS: {

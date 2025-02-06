@@ -160,7 +160,7 @@
           >
             <v-col>
               <status-label
-                v-if="printerFile.history.filament_used"
+                v-if="printerFile.history && printerFile.history.filament_used > 0"
                 :label="$t('app.general.label.filament')"
               >
                 <span>{{ $filters.getReadableLengthString(printerFile.history.filament_used) }}</span>
@@ -181,14 +181,14 @@
               </status-label>
 
               <status-label
-                v-if="printerFile.history.print_duration > 0"
+                v-if="printerFile.history && printerFile.history.print_duration > 0"
                 :label="$t('app.general.label.actual_time')"
               >
                 <span>{{ $filters.formatCounterSeconds(printerFile.history.print_duration) }}</span>
               </status-label>
 
               <status-label
-                v-if="printerFile.history.total_duration > 0"
+                v-if="printerFile.history && printerFile.history.total_duration > 0"
                 :label="$t('app.general.label.total')"
               >
                 <span>{{ $filters.formatCounterSeconds(printerFile.history.total_duration) }}</span>
@@ -271,7 +271,7 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
     )
   }
 
-  get progressVisible () {
+  get progressVisible (): boolean {
     // Progress is visible if;
     // We are printing or,
     // We have a current filename
@@ -281,7 +281,7 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
     )
   }
 
-  get overviewVisible () {
+  get overviewVisible (): boolean {
     // Overview is visible if;
     // We are not printing and,
     // We have a current filename
@@ -291,10 +291,10 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
     )
   }
 
-  get thumbVisible () {
+  get thumbVisible (): boolean {
     return (
       this.printerFile != null &&
-      this.thumbnail &&
+      this.thumbnail != null &&
       this.$vuetify.breakpoint.lgAndUp
     )
   }
@@ -310,15 +310,15 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
   /**
    * Active filename in print_stats
    */
-  get filename () {
+  get filename (): string {
     return this.$store.state.printer.printer.print_stats?.filename ?? ''
   }
 
   /**
    * M117 messaging
    */
-  get message () {
-    return this.$store.state.printer.printer.display_status?.message
+  get message (): string {
+    return this.$store.state.printer.printer.display_status?.message ?? ''
   }
 
   /**
@@ -349,20 +349,6 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
    */
   get estimates (): TimeEstimates {
     return this.$store.getters['printer/getTimeEstimates']
-  }
-
-  /**
-   * If the user has enabled the history component.
-   */
-  get supportsHistoryComponent (): boolean {
-    return this.$store.getters['server/componentSupport']('history')
-  }
-
-  /**
-   * The last 3 history items.
-   */
-  get history () {
-    return this.$store.getters['history/getUniqueHistory'](3)
   }
 
   /**

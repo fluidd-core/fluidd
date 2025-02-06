@@ -733,13 +733,13 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     const rate: number = axis === 'Z'
       ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
       : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
-    const inverted = this.$store.state.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
+    const inverted: boolean = this.$store.state.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
     distance = negative !== inverted
       ? -distance
       : distance
 
     if (this.forceMoveEnabled) {
-      const accel = axis === 'Z'
+      const accel: number = axis === 'Z'
         ? this.printerSettings.printer?.max_z_accel ?? 100
         : this.$store.state.printer.printer.toolhead.max_accel
       this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)

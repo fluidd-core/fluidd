@@ -237,7 +237,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
     ]
   }
 
-  get history () {
+  get history (): HistoryItem[] {
     return this.$store.getters['history/getHistory']
   }
 
@@ -248,10 +248,6 @@ export default class JobHistory extends Mixins(FilesMixin) {
 
   getFilePaths (filename: string) {
     return getFilePaths(filename, 'gcodes')
-  }
-
-  getFilename (filename: string) {
-    return filename.split('/').pop() || ''
   }
 
   async handleRemoveJob (job: HistoryItem) {

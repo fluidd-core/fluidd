@@ -199,7 +199,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   userPasswordDialogOpen = false
   pendingChangesDialogOpen = false
 
-  get supportsAuth () {
+  get supportsAuth (): boolean {
     return this.$store.getters['server/componentSupport']('authorization')
   }
 
@@ -207,7 +207,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     return this.$store.state.config.uiSettings.general.instanceName
   }
 
-  get hasUpdates () {
+  get hasUpdates (): boolean {
     return this.$store.getters['version/hasUpdates']
   }
 
@@ -234,7 +234,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     )
   }
 
-  get devicePowerComponentEnabled () {
+  get devicePowerComponentEnabled (): boolean {
     return this.$store.getters['server/componentSupport']('power')
   }
 

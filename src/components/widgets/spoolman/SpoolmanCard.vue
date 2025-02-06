@@ -192,6 +192,7 @@ import StateMixin from '@/mixins/state'
 import type { MacroWithSpoolId, Spool } from '@/store/spoolman/types'
 import StatusLabel from '@/components/widgets/status/StatusLabel.vue'
 import type { Macro } from '@/store/macros/types'
+import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
 
 @Component({
   components: { StatusLabel }
@@ -213,8 +214,8 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     return new Array(columnCount).fill(undefined).map((_, i) => fields.slice(i * elementsPerColumn, (i + 1) * elementsPerColumn))
   }
 
-  get activeSpool (): Spool | null {
-    if (!this.isConnected) return null
+  get activeSpool (): Spool | undefined {
+    if (!this.isConnected) return undefined
     return this.$store.getters['spoolman/getActiveSpool']
   }
 
@@ -234,7 +235,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
       .sort((a, b) => a.name.localeCompare(b.name))
   }
 
-  get remainingFilamentUnit () {
+  get remainingFilamentUnit (): SpoolmanRemainingFilamentUnit {
     return this.$store.state.config.uiSettings.spoolman.remainingFilamentUnit
   }
 

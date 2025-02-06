@@ -156,7 +156,7 @@ export default class PrinterStatsCard extends Vue {
     return this.$store.state.files.disk_usage
   }
 
-  get supportsHistoryComponent () {
+  get supportsHistoryComponent (): boolean {
     return this.$store.getters['server/componentSupport']('history')
   }
 

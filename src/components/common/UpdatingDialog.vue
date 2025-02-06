@@ -36,6 +36,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import Console from '@/components/widgets/console/Console.vue'
 import BrowserMixin from '@/mixins/browser'
+import type { UpdateResponse } from '@/store/version/types'
 
 @Component({
   components: {
@@ -66,7 +67,7 @@ export default class UpdatingDialog extends Mixins(StateMixin, BrowserMixin) {
     return this.$store.state.version.busy
   }
 
-  get responses () {
+  get responses (): UpdateResponse[] {
     return this.$store.getters['version/getResponses']
   }
 }
