@@ -10,6 +10,7 @@ import sanitizeEndpoint from './util/sanitize-endpoint'
 import webSocketWrapper from './util/web-socket-wrapper'
 import promiseAny from './util/promise-any'
 import sleep from './util/sleep'
+import { isFluiddContent } from '@/util/fluidd-content'
 
 // Load API configuration
 /**
@@ -176,6 +177,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   // Load any configuration we may have in moonrakers db
   let apiConnected = true
   let apiAuthenticated = true
+  let configLoaded = false
   for (const { NAMESPACE, ROOTS } of Object.values(Globals.MOONRAKER_DB)) {
     if (!apiConnected && !apiAuthenticated) {
       break
@@ -207,6 +209,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
         if (!value) {
           try {
             await httpClientActions.serverDatabaseItemPost(NAMESPACE, root.name, {})
+            configLoaded = true
           } catch (e) {
             consola.debug('Error creating database item', e)
           }
@@ -217,6 +220,36 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     })
 
     await Promise.all(promises)
+  }
+
+  // if no moonraker config has been loaded check for a default template inside .fluidd-theme folder
+  if (!configLoaded) {
+    try {
+      const defaultTemplateFile = apiConfig.apiUrl + '/server/files/config/.fluidd-theme/default.json'
+      if (defaultTemplateFile?.length > 0) {
+        const backupData = await (await fetch(defaultTemplateFile)).json()
+        if (backupData) {
+          if (isFluiddContent<Record<string, unknown>>('settings-backup', backupData)) {
+            for (const key in backupData.data) {
+              if (key !== 'webcams') {
+                await httpClientActions.serverDatabaseItemPost('fluidd', key, backupData.data[key])
+                if (key === 'charts') await store.dispatch(Globals.MOONRAKER_DB.fluidd.ROOTS.charts.dispatch, backupData.data[key] || {})
+                if (key === 'console') await store.dispatch(Globals.MOONRAKER_DB.fluidd.ROOTS.console.dispatch, backupData.data[key] || {})
+                if (key === 'layout') await store.dispatch(Globals.MOONRAKER_DB.fluidd.ROOTS.layout.dispatch, backupData.data[key] || {})
+                if (key === 'macros') await store.dispatch(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.dispatch, backupData.data[key] || {})
+                if (key === 'uiSettings') await store.dispatch(Globals.MOONRAKER_DB.fluidd.ROOTS.uiSettings.dispatch, backupData.data[key] || {})
+              }
+            }
+          } else {
+            console.error('Error loading default settings')
+          }
+        } else {
+          console.error('Error loading default settings')
+        }
+      }
+    } catch (e) {
+      console.error('Error loading default settings: ' + e)
+    }
   }
 
   // apiConfig could have empty strings, meaning we have no valid connection.
