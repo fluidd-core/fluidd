@@ -246,7 +246,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
           // if the file is in a subdirectory and isn't cached
           // we need to populate the cache
           const { rootPath } = getFilePaths(this.currentFileName, 'gcodes')
-          SocketActions.serverFilesGetDirectory('gcodes', rootPath)
+          SocketActions.serverFilesGetDirectory(rootPath)
         } else {
           // otherwise just refresh the corresponding file
           SocketActions.serverFilesMetadata(this.currentFileName)

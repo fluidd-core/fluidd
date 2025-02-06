@@ -250,10 +250,6 @@ export default class JobHistory extends Mixins(FilesMixin) {
     return getFilePaths(filename, 'gcodes')
   }
 
-  getFilename (filename: string) {
-    return filename.split('/').pop() || ''
-  }
-
   async handleRemoveJob (job: HistoryItem) {
     const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_delete', 1),

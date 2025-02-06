@@ -27,13 +27,12 @@ export interface KlipperFile {
   filename: string;
   modified: number | string;
   size: number;
-  uuid?: string;
   permissions?: '' | 'r' | 'rw';
-  print_start_time?: number | null;
-  job_id?: string | null;
 }
 
 export interface KlipperFileWithMeta extends KlipperFile, KlipperFileMeta {
+  print_start_time?: number | null;
+  job_id?: string | null;
 }
 
 export interface KlipperDir {
@@ -51,7 +50,7 @@ export interface AppFile extends KlipperFile {
   modified: number;
 }
 
-export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
+export interface AppFileWithMeta extends AppFile, KlipperFileWithMeta {
   modified: number;
   history?: HistoryItem;
 }
@@ -66,14 +65,13 @@ export interface AppDirectory extends KlipperDir {
   modified: number;
 }
 
-export interface FileMetaDataSocketResponse {
-  estimated_time: string;
-}
-
 export interface FileChangeSocketResponse {
-  action: string;
+  action: 'create_file' | 'create_dir' | 'delete_file' | 'delete_dir' | 'move_file' | 'move_dir' | 'modify_file' | 'root_update';
   item: FileChangeItem;
-  source_item?: FileChangeItem;
+  source_item?: {
+    root: string;
+    path: string;
+  };
 }
 
 export interface FileChangeItem {
@@ -81,19 +79,18 @@ export interface FileChangeItem {
   path: string;
   modified: number;
   size: number;
+  permissions?: '' | 'r' | 'rw';
 }
 
 export interface FilePaths {
-  filename: string;
-  path: string;
-  rootPath: string;
-  filtered: boolean;
-}
-
-export interface FileUpdate {
-  paths: FilePaths;
-  file: Partial<KlipperFile | KlipperFileWithMeta> & { filename: string; };
   root: string;
+  rootPath: string;
+  rootPathFilename: string;
+  path: string;
+  pathFilename: string;
+  filename: string;
+  extension: string;
+  filtered: boolean;
 }
 
 export interface FileDownload {

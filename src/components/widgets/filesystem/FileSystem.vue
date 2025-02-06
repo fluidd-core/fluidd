@@ -494,7 +494,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     const files = this.getAllFiles()
 
     const filteredFiles = files.filter(file => {
-      if (this.currentRoot === 'timelapse' && file.type === 'file' && file.extension === 'jpg') {
+      if (this.currentRoot === 'timelapse' && file.type === 'file' && file.extension === '.jpg') {
         return false
       }
 
@@ -513,13 +513,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
               return file.filename === '.moonraker.conf.bkp'
 
             case 'moonraker_temporary_upload_files':
-              return file.filename.endsWith('.mru')
+              return file.extension === '.mru'
 
             case 'klipper_backup_files':
               return file.filename.match(/^printer-\d{8}_\d{6}\.cfg$/)
 
             case 'print_start_time':
-              return file.print_start_time !== null
+              return 'print_start_time' in file && file.print_start_time !== null
 
             case 'rolled_log_files':
               return (
@@ -566,7 +566,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   includeTimelapseThumbnailFiles (items: FileBrowserEntry[]) {
     const thumbnailFilenames = new Set(items
-      .filter((item): item is AppFileWithMeta => item.type === 'file' && item.extension !== 'jpg' && 'thumbnails' in item)
+      .filter((item): item is AppFileWithMeta => item.type === 'file' && item.extension !== '.jpg' && 'thumbnails' in item)
       .flatMap(item => item.thumbnails
         ? item.thumbnails.map(thumbnail => thumbnail.relative_path)
         : []
@@ -598,7 +598,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Refreshes a path by loading the directory.
   refreshPath (path: string) {
-    if (path && !this.disabled) SocketActions.serverFilesGetDirectory(this.currentRoot, path)
+    if (path && !this.disabled) SocketActions.serverFilesGetDirectory(path)
   }
 
   // Handles a user filtering the data.
@@ -651,11 +651,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       item.type === 'file' &&
       event.type === 'click'
     ) {
-      if (this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`)) {
+      if (this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(item.extension)) {
         this.handleFileOpenDialog(item, 'edit')
 
         return
-      } else if (this.rootProperties.canView.includes(`.${item.extension}`)) {
+      } else if (this.rootProperties.canView.includes(item.extension)) {
         this.handleFileOpenDialog(item, 'view')
 
         return
@@ -741,7 +741,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     try {
       const viewOnly = mode
         ? mode === 'view'
-        : this.rootProperties.canView.includes(`.${file.extension}`)
+        : this.rootProperties.canView.includes(file.extension)
 
       // Grab the file. This should provide a dialog.
       const response = await this.getFile(
@@ -917,7 +917,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     if (this.currentRoot === 'gcodes') {
       const files = items
-        .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(`.${item.extension}`))
+        .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
 
       if (files.length > 0) {
         setFileDataTransferDataInDataTransfer(dataTransfer, 'jobs', {
@@ -1032,7 +1032,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     const items = Array.isArray(file) ? file : [file]
     const filenames = items
-      .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(`.${item.extension}`))
+      .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
       .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
 
     if (filenames.length > 0) {
