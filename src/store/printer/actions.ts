@@ -38,7 +38,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
   },
 
   async checkKlipperMinVersion ({ state, getters, dispatch }) {
-    const klipperVersion = state.info.software_version ?? '?'
+    const klipperVersion = state.info?.software_version ?? '?'
 
     const fullKlipperVersion = klipperVersion.includes('-')
       ? klipperVersion

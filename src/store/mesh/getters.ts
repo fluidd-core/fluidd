@@ -24,7 +24,7 @@ export const getters: GetterTree<MeshState, RootState> = {
 
     const config: KlipperPrinterConfig = rootGetters['printer/getPrinterConfig']
     const meshProfileKeys = Object.keys(config)
-      .filter((key): key is `bed_mesh ${string}` => key.startsWith('bed_mesh '))
+      .filter(key => key.startsWith('bed_mesh '))
 
     for (const key of meshProfileKeys) {
       const name = key.split(' ').splice(1).join(' ')

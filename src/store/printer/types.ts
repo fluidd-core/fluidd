@@ -1,7 +1,7 @@
 import type { Globals } from '@/globals'
 
 export interface PrinterState {
-  info: PrinterInfo;
+  info?: PrinterInfo;
   endstops: Record<string, 'TRIGGERED' | 'open'>
   manualProbeDialogOpen: boolean;
   bedScrewsAdjustDialogOpen: boolean;
@@ -11,7 +11,7 @@ export interface PrinterState {
 }
 
 export interface PrinterInfo {
-  state: string;
+  state: PrinterInfoState;
   state_message: string;
   hostname?: string;
   klipper_path?: string;
@@ -25,6 +25,8 @@ export interface PrinterInfo {
   cpu_info?: string
   app?: string;
 }
+
+export type PrinterInfoState = 'ready' | 'startup' | 'shutdown' | 'error'
 
 export interface KlipperPrinterState {
   [key: string]: any;
@@ -179,7 +181,7 @@ export interface KlipperPrinterGcodeMoveState {
 }
 
 export interface KlipperPrinterIdleTimeoutState {
-  state: string;
+  state: 'Idle' | 'Printing' | 'Ready';
   printing_time: number;
 }
 
@@ -207,7 +209,7 @@ export interface KlipperPrinterToolheadState {
 }
 
 export interface KlipperPrinterWebhookState {
-  state: string;
+  state: PrinterInfoState;
   state_message: string;
 }
 
@@ -401,7 +403,7 @@ export interface KlipperPrinterPrintStatsState {
   total_duration: number;
   print_duration: number;
   filament_used: number;
-  state: string;
+  state: 'printing' | 'paused' | 'standby' | 'complete' | 'cancelled' | 'error';
   message: string;
   info?: {
     total_layer: number | null;

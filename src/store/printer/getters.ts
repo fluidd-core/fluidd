@@ -50,7 +50,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     // If an external source fires an estop, or the client
     // is refreshed while klipper is down - the webhook data maybe invalid
     // but the printer info should be good.
-    if (state.info.state_message) {
+    if (state.info?.state_message) {
       return state.info.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
     }
     if (state.printer.webhooks.state_message) {
@@ -60,7 +60,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getKlippyApp: (state): KlippyApp => {
-    const app = state.info.app?.toLowerCase()
+    const app = state.info?.app?.toLowerCase()
 
     const name = app && isKeyOf(app, Globals.SUPPORTED_SERVICES.KLIPPER)
       ? app
@@ -89,7 +89,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   /**
    * Returns a string value indicating the state of the printer.
    */
-  getPrinterState: (state): string => {
+  getPrinterState: (state) => {
     const state1 = state.printer.idle_timeout.state // printing, ready, idle
     const state2 = state.printer.print_stats?.state // printing, paused, standby, complete, cancelled, error
     // If the idle state says we're printing, but the print_stats say otherwise - then
@@ -98,20 +98,22 @@ export const getters: GetterTree<PrinterState, RootState> = {
     // printing, busy, paused, cancelled, ready, idle, standby
     if (state1 && state2) {
       if (
-        state2.toLowerCase() === 'paused' ||
-        state2.toLowerCase() === 'cancelled'
+        state2 === 'paused' ||
+        state2 === 'cancelled'
       ) {
-        return state2.toLowerCase()
+        return state2
       }
+
       if (
-        state1.toLowerCase() === 'printing' &&
-        state2.toLowerCase() !== 'printing'
+        state1 === 'Printing' &&
+        state2 !== 'printing'
       ) {
         // The printers idle_timeout changes to printing when it's busy applying
         // some change - but not necessarily printing anything. This state hopefully
         // helps aleviate that confusion.
         return 'busy'
       }
+
       return state1.toLowerCase()
     } else {
       return 'loading'
@@ -318,7 +320,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
    */
   getMcus: (state) => {
     const mcus = Object.keys(state.printer)
-      .filter((key): key is `mcu ${string}` => key.startsWith('mcu'))
+      .filter(key => key.startsWith('mcu'))
       .sort()
       .map((key): MCU => ({
         name: key,
@@ -951,7 +953,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const config = state.printer.configfile.config
     const warnings: string[] = []
 
-    if (config) {
+    if (Object.keys(config).length > 0) {
       if (!('virtual_sdcard' in config)) {
         warnings.push('[virtual_sdcard] not found in printer configuration.')
       }
@@ -1079,7 +1081,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     }
 
     const models: BeaconModel[] = Object.keys(state.printer.configfile.settings)
-      .filter((key): key is `beacon model ${string}` => key.startsWith('beacon model '))
+      .filter(key => key.startsWith('beacon model '))
       .map(key => {
         const name = key.substring(13)
 
