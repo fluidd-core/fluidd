@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.32.0](https://github.com/fluidd-core/fluidd/compare/v1.31.4...v1.32.0) (2025-02-07)
+
+
+### Features
+
+* Bookmarkable URL for active printer ([#1574](https://github.com/fluidd-core/fluidd/issues/1574)) ([6af021d](https://github.com/fluidd-core/fluidd/commit/6af021d6a4113be152797fc7315764ec7535c771))
+* control printer power via Moonraker ([#1570](https://github.com/fluidd-core/fluidd/issues/1570)) ([48520e2](https://github.com/fluidd-core/fluidd/commit/48520e2844f59d28b8b699fccd4f0b9be76ba6d7))
+* **GcodePreview:** adds G28 support ([aff1f50](https://github.com/fluidd-core/fluidd/commit/aff1f50f21b311a27f64d10bcc2f24786491a479))
+* **i18n-de:** Update German translations ([5ff4714](https://github.com/fluidd-core/fluidd/commit/5ff4714935c83a1d9587c417acc208c595c7ac2c))
+* **i18n-de:** Update German translations ([eaa5eea](https://github.com/fluidd-core/fluidd/commit/eaa5eeaade219aa64489dbdf7d88a39f46316af9))
+* **i18n-hu:** Update Hungarian translations ([b2be571](https://github.com/fluidd-core/fluidd/commit/b2be57131379b512944191067d289305037bd9a6))
+* **i18n-hu:** Update Hungarian translations ([0c72b4c](https://github.com/fluidd-core/fluidd/commit/0c72b4c85f56ce814e66bb731d45758e54d41dc2))
+* **i18n-it:** Update Italian translations ([869ceb9](https://github.com/fluidd-core/fluidd/commit/869ceb98b62ebe4672c1902eee8d9bd2e9c4df78))
+* **i18n-nl:** Update Dutch translations ([7163859](https://github.com/fluidd-core/fluidd/commit/7163859662aa090f79eeec9f8740eb32a4b909b6))
+* **i18n-nl:** Update Dutch translations ([55f4d65](https://github.com/fluidd-core/fluidd/commit/55f4d6540390a4754517851c3dba0376df2fbd6d))
+* **i18n-pl:** Update Polish translations ([4601ff5](https://github.com/fluidd-core/fluidd/commit/4601ff587a2f8075f1e8617f12647c9d23e7f248))
+* **i18n-pt_BR:** Update Portuguese (Brazil) translations ([7d25c74](https://github.com/fluidd-core/fluidd/commit/7d25c74b9374944b98a043ec305981a7f2d70f06))
+* **i18n-pt_BR:** Update Portuguese (Brazil) translations ([95e35ef](https://github.com/fluidd-core/fluidd/commit/95e35ef256a0f0093166a69bfc21c55248e31d09))
+* **i18n-ru:** Update Russian translations ([ac9f88f](https://github.com/fluidd-core/fluidd/commit/ac9f88f22de3551574675c4ff98f00c273cd758f))
+* **i18n-RU:** update Russian translations ([#1580](https://github.com/fluidd-core/fluidd/issues/1580)) ([8b1beb4](https://github.com/fluidd-core/fluidd/commit/8b1beb4ef4b281a0902bfc15a4bac268e86b23a1))
+* **i18n-sl:** Update Slovenian translations ([6da0751](https://github.com/fluidd-core/fluidd/commit/6da07515a34476e8d297498300718c6176922fac))
+* **i18n-tr:** Update Turkish translations ([6f2097f](https://github.com/fluidd-core/fluidd/commit/6f2097fc7ada88d730fb203e4ad836d5ee738810))
+* Kalico firmware retraction z-hop support ([f446b32](https://github.com/fluidd-core/fluidd/commit/f446b32d3c8c1e6ec6ddda01c03e087d1fc672a7))
+* only disable Klipper log rollover if printing ([9fb8b32](https://github.com/fluidd-core/fluidd/commit/9fb8b325f1e5728f132cc1438d9b34d7a7dfef7f))
+* **spoolman:** allow selecting fields to show in dashboard card ([#1576](https://github.com/fluidd-core/fluidd/issues/1576)) ([ff205f8](https://github.com/fluidd-core/fluidd/commit/ff205f8072a812c0d72dc653c7216da58aaccd63))
+
+
+### Bug Fixes
+
+* **GcodePreview:** hide exclude objects if no parts ([d53e1d6](https://github.com/fluidd-core/fluidd/commit/d53e1d6ca264ac3d3f2524dc2c55853a649c948c))
+* **Heaters:** improves PID_CALIBRATE check ([b9e0b2c](https://github.com/fluidd-core/fluidd/commit/b9e0b2c56f2ef32a43872ebd945ca63392f973bc))
+* **i18n:** use translation key for bed range ([70e58da](https://github.com/fluidd-core/fluidd/commit/70e58dac7055d0580265af03829789a51f6cc8f0))
+* improve visibility of progress favicon ([268b966](https://github.com/fluidd-core/fluidd/commit/268b9664b110d1d8f31d2950e3f5c64fd75e7883))
+* lower case variable name for SAVE_VARIABLE ([#1563](https://github.com/fluidd-core/fluidd/issues/1563)) ([7b278d6](https://github.com/fluidd-core/fluidd/commit/7b278d6b169df9cb1ba464941f67775e4858794d))
+* **Router:** catch-all route name ([99a70bd](https://github.com/fluidd-core/fluidd/commit/99a70bdf13a0e04241e806ce1e64b12d0c53ee0b))
+* **spoolman:** QR code detection with MJPEG-adaptive camera sources ([#1579](https://github.com/fluidd-core/fluidd/issues/1579)) ([cf89d32](https://github.com/fluidd-core/fluidd/commit/cf89d321e7e42c5fea6c974570056dca81c43c8a))
+
 ## [1.31.4](https://github.com/fluidd-core/fluidd/compare/v1.31.3...v1.31.4) (2024-12-29)
 
 
