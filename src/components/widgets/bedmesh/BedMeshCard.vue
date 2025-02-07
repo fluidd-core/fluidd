@@ -173,7 +173,7 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
       z: 100,
       silent: true,
       style: {
-        text: `Range: ${range.toFixed(4)}`
+        text: `${this.$t('app.general.label.range')}: ${range.toFixed(4)}`
       }
     }]
   }
@@ -225,7 +225,7 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
 
   // The current processed mesh data, if any.
   get mesh (): AppMeshes {
-    return this.$store.getters['mesh/getCurrentMeshData'] as AppMeshes
+    return this.$store.getters['mesh/getCurrentMeshData']
   }
 
   get canCopyImage () {

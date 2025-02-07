@@ -32,11 +32,16 @@ app:
       rate_of_change: Änderung
       pid_calibration: PID-Kalibrierung
       target_temperature: Zieltemperatur
+      turn_off: Ausschalten
+      fan_breakpoints: Lüfter-Sollwerte
     tooltip:
       help: >-
         Halten Sie <kbd>Umschalt</kbd> gedrückt, um zu zoomen. <br />Klicken Sie auf
         ein Element, um es im Diagramm ein-/auszublenden. <br />Klicken Sie auf eine
         Leistung, um sie im Diagramm ein-/auszublenden.
+    title:
+      mpc_calibrate: MPC-Kalibrierung {name}
+      pid_calibrate: PID-Kalibrierung {name}
   console:
     label:
       auto_scroll: Automatisches Scrollen
@@ -84,7 +89,7 @@ app:
         print_start_time: Nur ungedruckte
         klipper_backup_files: Klipper-Backupdateien ausblenden
         rolled_log_files: Alte Logdateien ausblenden
-        hidden_files_folders: Versteckte Dateien und Ordner ausblenden
+        hidden_files: Versteckte Dateien und Ordner ausblenden
         moonraker_backup_files: Moonraker-Backupdateien ausblenden
         crowsnest_backup_files: Crowsnest-Backupdateien ausblenden
         moonraker_temporary_upload_files: Temporäre Moonraker-Uploaddateien ausblenden
@@ -234,6 +239,7 @@ app:
       multiply: Vermehren
       copied: Kopiert
       copy: Kopieren
+      power_on_printer: Drucker einschalten
     error:
       app_setup_link: >-
         Die Anforderungen für die Einrichtung von Fluidd finden Sie <a
@@ -245,6 +251,8 @@ app:
       failed_components: >-
         Moonraker hat fehlerhafte Plugins, bitte überprüfen Sie Ihre Logs,
         aktualisieren Sie Ihre Konfiguration und starten Sie Moonraker neu.
+      printer_powered_off: Der Drucker ist zur Zeit ausgeschaltet.<br/><br/>Um den
+        Drucker einzuschalten, drücken Sie bitten den Knopf links.
     label:
       accel_to_decel: Beschleunigen zu Bremsen
       acceleration: Beschleunigung
@@ -360,6 +368,7 @@ app:
       device: Gerät
       user_facing: Dem Benutzer zugewandt
       environment_facing: Der Umgebung zugewandt
+      z_hop_height: Z-Hop Höhe
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -425,7 +434,7 @@ app:
           wollen?
         confirm_remove_macro_category: Sind Sie sicher, dass Sie die Makrokategorie
           %{name} entfernen möchten?
-        confirm_remove_printer: Sind Sie sicher, dass Sie den Drucker %{Name} entfernen
+        confirm_remove_printer: Sind Sie sicher, dass Sie den Drucker %{name} entfernen
           möchten?
         confirm_remove_camera: Sind Sie sicher, dass Sie die Kamera %{name} entfernen
           möchten?
@@ -518,6 +527,7 @@ app:
         sie in Unterordner oder ".." ziehen
       file_browser_configuration_help: Kopieren Sie Dateien und Ordner in die Konfigurationsdateien,
         indem Sie diese von hier nach dort ziehen
+      power_on_printer: Schaltet den Drucker ein
   history:
     msg:
       confirm_jobs: Sind Sie sicher? Dadurch werden alle Aufträge gelöscht.
@@ -619,7 +629,7 @@ app:
       language: Anzeigesprache
       move_line_width: Bewegungslinien-Dicke
       none: Keines | Keine
-      power_toggle_in_top_nav: Power-Schalter in Kopfleiste
+      power_toggle_in_top_nav: Stromversorgungs-Schalter in Kopfleiste
       primary_color: Primärfarbe
       printer_name: Druckername
       reset: Einstellungen zurücksetzen
@@ -698,6 +708,8 @@ app:
       fluidd_settings_in_moonraker_db: Fluidd-Einstellungen in Moonraker-Datenbank
       drag_and_drop_functionality_for_files_and_folders: Drag-and-Drop-Funktionalität
         für Dateien und Ordner
+      auto: Auto
+      printer_power_device: Drucker-Stromversorgungsgerät
     timer_options:
       duration: Nur Dauer
       filament: Filament
@@ -928,16 +940,21 @@ app:
       spoolman: Spoolman
     label:
       active_spool: Aktive Spule
+      bed_temp: Bett-Temp.
       change_spool: Spule wechseln
       comment: Kommentar
+      density: Dichte
       device_camera: Gerät
+      extruder_temp: Extruder-Temp.
       filament_name: Filament
       first_used: Zuerst genutzt
       last_used: Zuletzt genutzt
       location: Ort
       lot_nr: Charge
       material: Material
+      price: Preis
       remaining_weight: Verbleibend
+      used_weight: Verbraucht
       vendor: Hersteller
       id: ID
       weight: Gewicht
@@ -980,6 +997,7 @@ app:
       auto_open_qr_camera: Kamera automatisch zur QR-Code-Erkennung öffnen
       auto_select_spool_on_match: Spulenauswahl bei QR-Code-Übereinstimmung automatisch
         übernehmen
+      card_fields: Felder, die in der Spoolman-Karte angezeigt werden
       prefer_device_camera: Gerätekamera, wenn verfügbar zur QR-Code-Erkennung verwenden
       show_spool_selection_dialog_on_print_start: Spulenauswahl-Dialog automatisch
         bei Druckstart anzeigen

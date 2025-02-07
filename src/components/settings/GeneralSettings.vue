@@ -99,6 +99,19 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.setting.label.printer_power_device')">
+        <v-select
+          v-model="printerPowerDevice"
+          filled
+          dense
+          single-line
+          hide-details="auto"
+          :items="printerPowerDevicesList"
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.power_toggle_in_top_nav')">
         <v-select
           v-model="topNavPowerToggle"
@@ -106,7 +119,7 @@
           dense
           single-line
           hide-details="auto"
-          :items="[{ text: $tc('app.setting.label.none'), value: null }, ...powerDevicesList]"
+          :items="topNavPowerToggleDevicesList"
         />
       </app-setting>
 
@@ -373,6 +386,39 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
+  get printerPowerDevice (): string | null {
+    return this.$store.state.config.uiSettings.general.printerPowerDevice
+  }
+
+  set printerPowerDevice (value: string | null) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.printerPowerDevice',
+      value,
+      server: true
+    })
+  }
+
+  get printerPowerDevicesList () {
+    const devices: Device[] = this.$store.getters['power/getDevices']
+
+    const deviceEntries = devices.map(device => ({
+      text: `${this.$filters.prettyCase(device.device)} (${device.type})`,
+      value: device.device
+    }))
+
+    const autoDeviceName = devices.some(device => device.device.toLowerCase() === 'printer')
+      ? 'Printer'
+      : this.$tc('app.setting.label.none')
+
+    return [
+      {
+        text: `${this.$tc('app.setting.label.auto')} (${autoDeviceName})`,
+        value: null
+      },
+      ...deviceEntries
+    ]
+  }
+
   get topNavPowerToggle (): string | null {
     return this.$store.state.config.uiSettings.general.topNavPowerToggle
   }
@@ -385,24 +431,34 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
-  get powerDevicesList () {
-    const devices = this.$store.getters['power/getDevices'] as Device[]
+  get topNavPowerToggleDevicesList () {
+    const devices: Device[] = this.$store.getters['power/getDevices']
     const deviceEntries = devices.length
       ? [
           { header: 'Moonraker' },
-          ...devices.map(device => ({ text: device.device, value: device.device }))
+          ...devices.map(device => ({
+            text: `${this.$filters.prettyCase(device.device)} (${device.type})`,
+            value: device.device
+          }))
         ]
       : []
 
-    const pins = this.$store.getters['printer/getPins'] as OutputPin[]
+    const pins: OutputPin[] = this.$store.getters['printer/getPins']
     const pinEntries = pins.length
       ? [
           { header: 'Klipper' },
-          ...pins.map(outputPin => ({ text: outputPin.prettyName, value: `${outputPin.name}:klipper` }))
+          ...pins.map(outputPin => ({
+            text: outputPin.prettyName,
+            value: `${outputPin.name}:klipper`
+          }))
         ]
       : []
 
     return [
+      {
+        text: this.$tc('app.setting.label.none'),
+        value: null
+      },
       ...deviceEntries,
       ...pinEntries
     ]

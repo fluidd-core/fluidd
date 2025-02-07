@@ -83,27 +83,25 @@ import type { Macro } from '@/store/macros/types'
 @Component({})
 export default class PauseResumeBtn extends Mixins(StateMixin) {
   get hasLayersFromPrintStats () {
-    const printStatsInfo = this.$store.state.printer.printer.print_stats.info
-    const layersFromPrintStats = printStatsInfo?.total_layer
-    const layerFromPrintStats = printStatsInfo?.current_layer
+    const { total_layer, current_layer } = this.$store.state.printer.printer.print_stats?.info ?? {}
 
     return (
-      typeof (layersFromPrintStats) === 'number' &&
-      typeof (layerFromPrintStats) === 'number'
+      typeof (total_layer) === 'number' &&
+      typeof (current_layer) === 'number'
     )
   }
 
   get hasPauseAtLayerMacros () {
-    const macro = this.$store.getters['macros/getMacroByName'](
+    const macro: Macro | undefined = this.$store.getters['macros/getMacroByName'](
       'SET_PAUSE_NEXT_LAYER',
       'SET_PAUSE_AT_LAYER'
-    ) as Macro | undefined
+    )
 
     return macro != null
   }
 
   get setPrintStatsInfoMacro (): Macro | undefined {
-    return this.$store.getters['macros/getMacroByName']('SET_PRINT_STATS_INFO') as Macro | undefined
+    return this.$store.getters['macros/getMacroByName']('SET_PRINT_STATS_INFO')
   }
 
   get hasPrintAtLayerMacros () {

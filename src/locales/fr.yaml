@@ -82,7 +82,7 @@ app:
         klipper_backup_files: Filtrer les fichiers de sauvegardes Klipper
         rolled_log_files: Filtrer les fichiers log rotatifs
         crowsnest_backup_files: Filtrer les fichiers de sauvegarde de Crowsnest
-        hidden_files_folders: Filtrer les fichiers et dossiers cachés
+        hidden_files: Filtrer les fichiers et dossiers cachés
     label:
       dir_name: Nom du dossier
       disk_usage: Utilisation du disque

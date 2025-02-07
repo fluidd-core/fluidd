@@ -1,7 +1,7 @@
 import type { ActionTree } from 'vuex'
 import type { KlippyApp, PrinterState } from './types'
 import type { RootState } from '../types'
-import { handlePrintStateChange, handleCurrentFileChange, handleExcludeObjectChange, handleTrinamicDriversChange } from '../helpers'
+import { handlePrintStateChange, handleCurrentFileChange, handleTrinamicDriversChange } from '../helpers'
 import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
@@ -38,13 +38,13 @@ export const actions: ActionTree<PrinterState, RootState> = {
   },
 
   async checkKlipperMinVersion ({ state, getters, dispatch }) {
-    const klipperVersion = state.info.software_version ?? '?'
+    const klipperVersion = state.info?.software_version ?? '?'
 
     const fullKlipperVersion = klipperVersion.includes('-')
       ? klipperVersion
       : `${klipperVersion}-0`
 
-    const klippyApp = getters['getKlippyApp'] as KlippyApp
+    const klippyApp: KlippyApp = getters['getKlippyApp']
 
     if (
       valid(klipperVersion) &&
@@ -191,9 +191,8 @@ export const actions: ActionTree<PrinterState, RootState> = {
       // Detect a printing state change.
       // We do this prior to commiting the notify so we can
       // compare the before and after.
-      handleCurrentFileChange(payload, rootState, commit)
+      handleCurrentFileChange(payload, rootState)
       handlePrintStateChange(payload, rootState, dispatch)
-      handleExcludeObjectChange(payload, rootState, dispatch)
       handleSystemStatsChange(payload, rootState, commit)
       handleMcuStatsChange(payload, rootState, commit)
       handleTrinamicDriversChange(payload, rootState, dispatch, getters)

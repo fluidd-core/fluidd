@@ -79,7 +79,7 @@ app:
       label:
         crowsnest_backup_files: Filter Crowsnest backup files
         print_start_time: Filter printed
-        hidden_files_folders: Filter hidden files and folders
+        hidden_files: Filter hidden files and folders
         klipper_backup_files: Filter Klipper backup files
         moonraker_backup_files: Filter Moonraker backup files
         moonraker_temporary_upload_files: Filter Moonraker temporary upload files
@@ -183,6 +183,7 @@ app:
       more_information: More information
       multiply: Multiply
       pause: Pause
+      power_on_printer: Power On Printer
       preheat: Preheat
       presets: Presets
       preview_gcode: Preview Gcode
@@ -238,6 +239,9 @@ app:
       failed_components: >-
         Moonraker has failed plugins, please check your logs, update your
         configuration and restart moonraker.
+      printer_powered_off: >-
+        The printer is currently powered off.<br/><br/>
+        To power on the printer, please click the button on the left.
     label:
       accel_to_decel: Accel to Decel
       acceleration: Acceleration
@@ -346,6 +350,7 @@ app:
       version_sort: Version sort
       visible: Visible
       z_offset: Z Offset
+      z_hop_height: Z-Hop Height
       unsaved_changes: Unsaved Changes
       alias: Alias
       apply_z_offset: Apply and Save Z_Offset
@@ -480,6 +485,7 @@ app:
       estop: Emergency Stop
       managed_by_moonraker: Managed by your moonraker configuration
       notifications: Notifications
+      power_on_printer: Turns on the power to the printer
       reload_klipper: Reloads klipper configuration.
       reload_restart_klipper: Reloads klipper configuration and restarts MCU's.
       restart_klipper: Restarts the klipper system service.
@@ -557,6 +563,7 @@ app:
       auto_follow_on_file_load: Automatically follow progress on file load
       auto_load_on_print_start: Automatically load file on print start
       auto_load_mobile_on_print_start: Automatically load file on mobile devices
+      auto: Auto
       axes: Axes
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
@@ -627,6 +634,7 @@ app:
       print_in_progress_layout: Print in Progress layout
       print_progress_calculation: Print Progress calculation
       printer_name: Printer Name
+      printer_power_device: Printer power device
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
       right_y: Right Y-Axis
@@ -884,9 +892,12 @@ app:
       scan_spool: Scan Spool
     label:
       active_spool: Active Spool
+      bed_temp: Bed Temp
       change_spool: Change Spool
       comment: Comment
+      density: Density
       device_camera: Device
+      extruder_temp: Extruder Temp
       filament_name: Filament
       first_used: First Used
       id: ID
@@ -894,7 +905,9 @@ app:
       location: Location
       lot_nr: Lot Nr
       material: Material
+      price: Price
       remaining_weight: Remaining
+      used_weight: Used
       vendor: Vendor
       weight: Weight
       length: Length
@@ -934,6 +947,7 @@ app:
     setting:
       auto_open_qr_camera: Automatically open camera for QR code detection
       auto_select_spool_on_match: Automatically commit spool selection on QR code match
+      card_fields: Fields to show in the Spoolman card
       prefer_device_camera: Use device camera for QR code detection if available
       show_spool_selection_dialog_on_print_start: Show spool selection dialog on print start
       warn_on_not_enough_filament: >-

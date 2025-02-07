@@ -31,6 +31,7 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
 
   handleImageLoad () {
     this.updateStatus('connected')
+    this.$emit('frame')
 
     const fpsTarget = (!document.hasFocus() && this.camera.target_fps_idle) || this.camera.target_fps || 10
     const endTime = performance.now()

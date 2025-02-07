@@ -139,7 +139,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import SaveModelDialog from './SaveModelDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import type { BeaconModel, BeaconState } from '@/store/printer/types'
+import type { BeaconModel } from '@/store/printer/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
@@ -155,10 +155,6 @@ export default class BeaconCard extends Mixins(StateMixin, ToolheadMixin) {
 
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean
-
-  get beacon (): BeaconState {
-    return this.$store.state.printer.printer.beacon
-  }
 
   get beaconModels (): BeaconModel[] {
     return this.$store.getters['printer/getBeaconModels']
@@ -187,18 +183,22 @@ export default class BeaconCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   handleOpenSaveDialog () {
+    const existingName: string = this.$store.state.printer.printer.beacon?.model ?? ''
+
     this.saveDialogState = {
       open: true,
-      existingName: this.beacon.model ?? ''
+      existingName
     }
   }
 
   handleModelSave (config: { name: string; removeDefault: boolean }) {
-    if (config.name !== this.beacon.model) {
+    const modelName: string | null | undefined = this.$store.state.printer.printer.beacon?.model
+
+    if (config.name !== modelName) {
       this.sendGcode(`BEACON_MODEL_SAVE NAME=${encodeGcodeParamValue(config.name)}`)
     }
-    if (config.removeDefault && this.beacon.model) {
-      this.sendGcode(`BEACON_MODEL_REMOVE NAME=${encodeGcodeParamValue(this.beacon.model)}`)
+    if (config.removeDefault && modelName) {
+      this.sendGcode(`BEACON_MODEL_REMOVE NAME=${encodeGcodeParamValue(modelName)}`)
     }
   }
 }

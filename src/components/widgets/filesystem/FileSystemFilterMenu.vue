@@ -83,64 +83,24 @@ export default class FileSystemFilterMenu extends Vue {
   readonly disabled?: boolean
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.root)
   }
 
-  get filters () {
-    const filters: FileFilter[] = []
+  get filters (): FileFilter[] {
+    return this.rootProperties.filterTypes
+      .filter(filterType => {
+        switch (filterType) {
+          case 'print_start_time':
+            return this.supportsHistoryComponent
 
-    const rootFilterTypes = this.rootProperties.filterTypes
-
-    if (rootFilterTypes.includes('print_start_time') && this.supportsHistoryComponent) {
-      filters.push({
-        type: 'print_start_time',
-        text: this.$tc('app.file_system.filters.label.print_start_time')
+          default:
+            return true
+        }
       })
-    }
-
-    if (rootFilterTypes.includes('hidden_files')) {
-      filters.push({
-        type: 'hidden_files',
-        text: this.$tc('app.file_system.filters.label.hidden_files_folders')
-      })
-    }
-
-    if (rootFilterTypes.includes('klipper_backup_files')) {
-      filters.push({
-        type: 'klipper_backup_files',
-        text: this.$tc('app.file_system.filters.label.klipper_backup_files')
-      })
-    }
-
-    if (rootFilterTypes.includes('moonraker_backup_files')) {
-      filters.push({
-        type: 'moonraker_backup_files',
-        text: this.$tc('app.file_system.filters.label.moonraker_backup_files')
-      })
-    }
-
-    if (rootFilterTypes.includes('moonraker_temporary_upload_files')) {
-      filters.push({
-        type: 'moonraker_temporary_upload_files',
-        text: this.$tc('app.file_system.filters.label.moonraker_temporary_upload_files')
-      })
-    }
-
-    if (rootFilterTypes.includes('rolled_log_files')) {
-      filters.push({
-        type: 'rolled_log_files',
-        text: this.$tc('app.file_system.filters.label.rolled_log_files')
-      })
-    }
-
-    if (rootFilterTypes.includes('crowsnest_backup_files')) {
-      filters.push({
-        type: 'crowsnest_backup_files',
-        text: this.$tc('app.file_system.filters.label.crowsnest_backup_files')
-      })
-    }
-
-    return filters
+      .map((filterType): FileFilter => ({
+        type: filterType,
+        text: this.$tc(`app.file_system.filters.label.${filterType}`)
+      }))
   }
 
   get selectedFilterTypes (): FileFilterType[] {
@@ -156,7 +116,7 @@ export default class FileSystemFilterMenu extends Vue {
     this.$emit('change', value)
   }
 
-  get supportsHistoryComponent () {
+  get supportsHistoryComponent (): boolean {
     return this.$store.getters['server/componentSupport']('history')
   }
 }

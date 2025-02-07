@@ -35,8 +35,8 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
     commit('setActiveSpool', payload.spool_id)
   },
 
-  async onSpoolChange ({ commit, getters }, { type, payload }: WebsocketSpoolPayload) {
-    const spools = [...getters.getAvailableSpools as Spool[]]
+  async onSpoolChange ({ commit, state }, { type, payload }: WebsocketSpoolPayload) {
+    const spools = [...state.availableSpools]
 
     switch (type) {
       case 'added': {
@@ -69,13 +69,13 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
     commit('setAvailableSpools', spools)
   },
 
-  async onFilamentChange ({ commit, getters }, { type, payload }: WebsocketFilamentPayload) {
+  async onFilamentChange ({ commit, state }, { type, payload }: WebsocketFilamentPayload) {
     if (type !== 'updated') {
       // we only care about updated filament types
       return
     }
 
-    const spools = [...getters.getAvailableSpools as Spool[]]
+    const spools = [...state.availableSpools]
     for (const spool of spools) {
       if (spool.filament.id === payload.id) {
         spools[spools.indexOf(spool)] = {
@@ -88,13 +88,13 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
     commit('setAvailableSpools', spools)
   },
 
-  async onVendorChange ({ commit, getters }, { type, payload }: WebsocketVendorPayload) {
+  async onVendorChange ({ commit, state }, { type, payload }: WebsocketVendorPayload) {
     if (type !== 'updated') {
       // we only care about updated vendors
       return
     }
 
-    const spools = [...getters.getAvailableSpools as Spool[]]
+    const spools = [...state.availableSpools]
     for (const spool of spools) {
       if (spool.filament.vendor?.id === payload.id) {
         spools[spools.indexOf(spool)] = {

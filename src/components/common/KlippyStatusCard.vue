@@ -18,7 +18,20 @@
         >
           <v-row>
             <v-col
-              v-if="klippyStateMessage !== 'Printer is ready'"
+              v-if="printerPoweredOff"
+              cols="12"
+            >
+              <v-alert
+                text
+                dense
+                type="error"
+                class="ma-0"
+              >
+                <span v-html="$t('app.general.error.printer_powered_off')" />
+              </v-alert>
+            </v-col>
+            <v-col
+              v-else-if="klippyStateMessage !== 'Printer is ready'"
               cols="12"
             >
               <v-alert

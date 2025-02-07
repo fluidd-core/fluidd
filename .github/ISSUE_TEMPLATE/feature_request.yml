@@ -5,8 +5,14 @@ body:
   - type: markdown
     attributes:
       value: |
-        This issue form is for feature requests only!
-        If you've found a bug, please use [bug_report](new?template=bug_report.yml)
+        ## ✨ Thank you for using Fluidd and taking the time to make feature requests! ✨
+
+        #### This form is ONLY for feature requests related to Fluidd!
+
+        - If you've found a bug, please use [bug_report](new?template=bug_report.yml)
+        - If you need any other help, please visit the [Fluidd Discord](https://discord.gg/GZ3D5tqfcF/)
+
+        ---
   - type: textarea
     id: problem-description
     attributes:

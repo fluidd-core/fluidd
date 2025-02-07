@@ -34,6 +34,24 @@
       </v-tooltip>
     </template>
 
+    <template v-else-if="printerPoweredOff">
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <app-btn
+            v-bind="attrs"
+            block
+            color="primary"
+            class="mb-2"
+            v-on="on"
+            @click="printerPowerOn"
+          >
+            {{ $t('app.general.btn.power_on_printer') }}
+          </app-btn>
+        </template>
+        <span>{{ $t('app.general.tooltip.power_on_printer') }}</span>
+      </v-tooltip>
+    </template>
+
     <template v-else>
       <v-tooltip bottom>
         <template #activator="{ on, attrs }">
@@ -87,6 +105,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({})
 export default class SystemControl extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
@@ -96,6 +115,12 @@ export default class SystemControl extends Mixins(StateMixin, FilesMixin, Servic
 
   getMoonrakerLog () {
     this.downloadFile('moonraker.log', '')
+  }
+
+  printerPowerOn () {
+    const printerPowerDevice: string = this.$store.state.config.uiSettings.general.printerPowerDevice ?? 'printer'
+
+    SocketActions.machineDevicePowerSetDevice(printerPowerDevice, 'on')
   }
 }
 </script>

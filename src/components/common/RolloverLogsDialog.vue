@@ -10,13 +10,18 @@
       <v-radio-group
         v-model="application"
         hide-details
+        mandatory
         class="mt-0"
       >
         <v-radio
           :label="$t('app.general.label.all')"
+          :disabled="printerPrinting || printerPaused"
           value=""
         />
-        <v-radio value="klipper">
+        <v-radio
+          :disabled="printerPrinting || printerPaused"
+          value="klipper"
+        >
           <template #label>
             <div>Klipper <span class="secondary--text">(klippy.log)</span></div>
           </template>
@@ -42,6 +47,15 @@ export default class RolloverLogsDialog extends Mixins(StateMixin) {
   open?: boolean
 
   application = ''
+
+  mounted () {
+    if (
+      this.printerPrinting ||
+      this.printerPaused
+    ) {
+      this.application = 'moonraker'
+    }
+  }
 
   sendAccept () {
     SocketActions.serverLogsRollover(this.application || undefined)

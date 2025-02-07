@@ -209,7 +209,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
       },
     ]
 
-    const mergedTableHeaders = this.$store.getters['config/getMergedTableHeaders'](headers, 'history') as AppTableHeader[]
+    const mergedTableHeaders: AppTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'history')
 
     return mergedTableHeaders
   }
@@ -237,7 +237,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
     ]
   }
 
-  get history () {
+  get history (): HistoryItem[] {
     return this.$store.getters['history/getHistory']
   }
 
@@ -248,10 +248,6 @@ export default class JobHistory extends Mixins(FilesMixin) {
 
   getFilePaths (filename: string) {
     return getFilePaths(filename, 'gcodes')
-  }
-
-  getFilename (filename: string) {
-    return filename.split('/').pop() || ''
   }
 
   async handleRemoveJob (job: HistoryItem) {
@@ -271,7 +267,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
 
   isExpanded (row: HistoryItem) {
     if (this.expanded.length <= 0) return false
-    const r = this.expanded[0] as HistoryItem
+    const r = this.expanded[0]
     return (row.job_id === r.job_id)
   }
 

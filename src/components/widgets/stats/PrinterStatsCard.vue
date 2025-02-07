@@ -134,6 +134,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
+import type { DiskUsage } from '@/store/files/types'
 
 @Component({})
 export default class PrinterStatsCard extends Vue {
@@ -151,11 +152,11 @@ export default class PrinterStatsCard extends Vue {
     return Math.floor((used / total) * 100).toFixed()
   }
 
-  get fileSystemUsage () {
-    return this.$store.getters['files/getUsage']
+  get fileSystemUsage (): DiskUsage {
+    return this.$store.state.files.disk_usage
   }
 
-  get supportsHistoryComponent () {
+  get supportsHistoryComponent (): boolean {
     return this.$store.getters['server/componentSupport']('history')
   }
 

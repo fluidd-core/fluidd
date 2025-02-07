@@ -191,6 +191,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
+import type { KlipperPrinterSettings } from '@/store/printer/types'
 
 type Axis = 'X' | 'Y' | 'Z'
 
@@ -198,8 +199,12 @@ type Axis = 'X' | 'Y' | 'Z'
 export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMixin) {
   moveLength: number | null = null
 
+  get printerSettings (): KlipperPrinterSettings {
+    return this.$store.getters['printer/getPrinterSettings']
+  }
+
   get hasRoundBed (): boolean {
-    return this.$store.getters['printer/getHasRoundBed'] as boolean
+    return this.$store.getters['printer/getHasRoundBed']
   }
 
   get canHomeXY (): boolean {
@@ -243,14 +248,14 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
     const rate: number = axis === 'Z'
       ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
       : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
-    const inverted = this.$store.state.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
+    const inverted: boolean = this.$store.state.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
     distance = negative !== inverted
       ? -distance
       : distance
 
     if (this.forceMoveEnabled) {
-      const accel = axis === 'Z'
-        ? this.$store.getters['printer/getPrinterSettings']('printer.max_z_accel')
+      const accel: number = axis === 'Z'
+        ? this.printerSettings.printer?.max_z_accel ?? 100
         : this.$store.state.printer.printer.toolhead.max_accel
       this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
     } else {

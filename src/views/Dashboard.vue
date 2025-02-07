@@ -52,7 +52,7 @@ import ConsoleCard from '@/components/widgets/console/ConsoleCard.vue'
 import OutputsCard from '@/components/widgets/outputs/OutputsCard.vue'
 import PrinterLimitsCard from '@/components/widgets/limits/PrinterLimitsCard.vue'
 import RetractCard from '@/components/widgets/retract/RetractCard.vue'
-import type { LayoutConfig } from '@/store/layout/types'
+import type { LayoutConfig, LayoutContainer } from '@/store/layout/types'
 import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
 import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
@@ -60,6 +60,7 @@ import SpoolmanCard from '@/components/widgets/spoolman/SpoolmanCard.vue'
 import SensorsCard from '@/components/widgets/sensors/SensorsCard.vue'
 import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
 import BeaconCard from '@/components/widgets/beacon/BeaconCard.vue'
+import type { KlipperPrinterSettings } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -115,6 +116,10 @@ export default class Dashboard extends Mixins(StateMixin) {
     return 12 / this.columnCount
   }
 
+  get printerSettings (): KlipperPrinterSettings {
+    return this.$store.getters['printer/getPrinterSettings']
+  }
+
   get hasCameras (): boolean {
     return this.$store.getters['webcams/getEnabledWebcams'].length > 0
   }
@@ -132,14 +137,14 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get firmwareRetractionEnabled (): boolean {
-    return 'firmware_retraction' in this.$store.getters['printer/getPrinterSettings']()
+    return 'firmware_retraction' in this.printerSettings
   }
 
   get supportsJobQueue (): boolean {
     return this.$store.getters['server/componentSupport']('job_queue')
   }
 
-  get supportsBedMesh () {
+  get supportsBedMesh (): boolean {
     return this.$store.getters['mesh/getSupportsBedMesh']
   }
 
@@ -151,7 +156,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.$store.getters['printer/getRunoutSensors'].length > 0
   }
 
-  get supportsSpoolman () {
+  get supportsSpoolman (): boolean {
     return this.$store.getters['server/componentSupport']('spoolman')
   }
 
@@ -171,8 +176,9 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.$store.state.config.layoutMode
   }
 
-  get layout () {
-    const layoutName = this.$store.getters['layout/getSpecificLayoutName']
+  get layout (): LayoutContainer | undefined {
+    const layoutName: string = this.$store.getters['layout/getSpecificLayoutName']
+
     return this.$store.getters['layout/getLayout'](layoutName)
   }
 
@@ -181,9 +187,9 @@ export default class Dashboard extends Mixins(StateMixin) {
     const containers: Array<LayoutConfig[]> = []
 
     for (let index = 1; index <= 4; index++) {
-      const container = this.layout[`container${index}`]
+      const container = this.layout?.[`container${index}`]
 
-      if (container?.length > 0) {
+      if (container && container.length > 0) {
         containers.push(container)
       }
     }
@@ -200,8 +206,10 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   handleUpdateLayout () {
+    const name: string = this.$store.getters['layout/getSpecificLayoutName']
+
     this.$store.dispatch('layout/onLayoutChange', {
-      name: this.$store.getters['layout/getSpecificLayoutName'],
+      name,
       value: {
         container1: this.containers[0],
         container2: this.containers[1],

@@ -24,7 +24,6 @@ import { announcements } from './announcements'
 import { wait } from './wait'
 import { gcodePreview } from './gcodePreview'
 import { timelapse } from './timelapse'
-import { parts } from './parts'
 import { webcams } from './webcams'
 import { jobQueue } from './jobQueue'
 import { spoolman } from './spoolman'
@@ -54,7 +53,6 @@ export default new Vuex.Store<RootState>({
     wait,
     gcodePreview,
     timelapse,
-    parts,
     webcams,
     jobQueue,
     spoolman,

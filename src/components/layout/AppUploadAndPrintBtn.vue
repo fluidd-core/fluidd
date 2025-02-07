@@ -41,7 +41,7 @@ export default class AppUploadAndPrintBtn extends Vue {
   readonly uploadFile!: HTMLInputElement
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties']('gcodes') as RootProperties
+    return this.$store.getters['files/getRootProperties']('gcodes')
   }
 
   get accepts () {

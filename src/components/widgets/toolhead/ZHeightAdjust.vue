@@ -143,7 +143,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { GcodeCommands } from '@/store/printer/types'
+import type { GcodeCommands, KlipperPrinterGcodeMoveState } from '@/store/printer/types'
 
 @Component({})
 export default class ZHeightAdjust extends Mixins(StateMixin) {
@@ -152,9 +152,9 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
   get zHomingOrigin (): number {
     // This is an array of 4 values, representing the homing origin.
     // It should be in the order of; X, Y, Z, E.
-    const { homing_origin } = this.$store.state.printer.printer.gcode_move
+    const { homing_origin }: KlipperPrinterGcodeMoveState = this.$store.state.printer.printer.gcode_move
 
-    const zHomingOrigin: number = homing_origin && homing_origin.length >= 4
+    const zHomingOrigin = homing_origin && homing_origin.length >= 4
       ? +homing_origin[2]
       : 0
 
@@ -174,7 +174,7 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
   }
 
   get availableCommands (): GcodeCommands {
-    return this.$store.getters['printer/getAvailableCommands'] as GcodeCommands
+    return this.$store.getters['printer/getAvailableCommands']
   }
 
   get hasZOffsetApplyProbe (): boolean {
@@ -189,7 +189,7 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
    * Send a Z adjust gcode script.
    */
   sendZAdjustGcode (direction: '+' | '-') {
-    const zHomed = this.$store.getters['printer/getHomedAxes']('z')
+    const zHomed: boolean = this.$store.getters['printer/getHomedAxes']('z')
     const gcode = `SET_GCODE_OFFSET Z_ADJUST=${direction}${this.moveDistance} MOVE=${+zHomed}`
     this.sendGcode(gcode, this.$waits.onZAdjust)
   }

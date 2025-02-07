@@ -32,7 +32,8 @@ app:
       rate_of_change: Sprememba
     tooltip:
       help: >-
-        Držite <kbd>shift</kbd> za približevanje.<br />Kliknite na objekt, da mu spremenite vidnost v grafu.<br
+        Držite <kbd>shift</kbd> za približevanje.<br />Kliknite na objekt, da mu spremenite
+        vidnost v grafu.<br
         />Kliknite na moč, da spremenite vidnost v grafu.
   console:
     label:
@@ -41,7 +42,8 @@ app:
       hide_temp_waits: Skrij čakanje temperature
     tooltip:
       help: >-
-        Vnesite "help" za nabor ukazov.<br />Uporabite <kbd>Tab</kbd> za samo domončanje.<br />Uporabite <kbd>&uarr;</kbd> in <kbd>&darr;</kbd> za zgodovino.
+        Vnesite "help" za nabor ukazov.<br />Uporabite <kbd>Tab</kbd> za samo domončanje.<br
+        />Uporabite <kbd>&uarr;</kbd> in <kbd>&darr;</kbd> za zgodovino.
   endpoint:
     error:
       cant_connect: >-
@@ -73,7 +75,7 @@ app:
       label:
         crowsnest_backup_files: Filtriraj Crownestove varnostne kopije
         print_start_time: Filtriraj natisnjeno
-        hidden_files_folders: Fitriraj skrite mape in datoteke
+        hidden_files: Fitriraj skrite mape in datoteke
         klipper_backup_files: Filtriraj Klipperjeve varnostne kopije
         moonraker_backup_files: Filtriraj Moonrakerjeve varnostne kopije
         rolled_log_files: Filtriraj zavite dnevniške datoteke
@@ -91,7 +93,8 @@ app:
       not_found: Ni najdenih datotek
       processing: Procesiram
     overlay:
-      drag_files_folders_upload: <strong>Povlecite</strong> mape in datoteke sem, da jih naložite.
+      drag_files_folders_upload: <strong>Povlecite</strong> mape in datoteke sem,
+        da jih naložite.
       drag_files_enqueue: <strong>Povlecite</strong> datoteke sem za dodajanje v vrsto.
     title:
       add_dir: Dodaj mapo
@@ -348,11 +351,13 @@ app:
       password_changed: Geslo spremenjeno
       wrong_password: Ups, nekaj se je zalomilo. Ali ste vnesi pravilno geslo?
       bed_screws_adjust: >-
-        Pritisnite <b>Prilagojeno</b>, če je potrebna velika prilagoditev. V nasprotnem primeru pritisnite <b>Sprejmi</b> za nadaljevanje.
+        Pritisnite <b>Prilagojeno</b>, če je potrebna velika prilagoditev. V nasprotnem
+        primeru pritisnite <b>Sprejmi</b> za nadaljevanje.
       welcome_back: >-
         Dobrodošli nazaj.<br>Vpišite se spodaj, da ostane v stiku s svojim tiskalnikom.
       offline_ready: Fluidd je pripravljen za delo brez povezave.
-      needs_refresh: Nova vsebina je na voljo. Prosimo, pritisnite na gumb <b>Ponovno naloži</b>, da ponovno naložite stran.
+      needs_refresh: Nova vsebina je na voljo. Prosimo, pritisnite na gumb <b>Ponovno
+        naloži</b>, da ponovno naložite stran.
       pending_configuration_sections_deleted: Sledeči odseki so izbrani za izbris
       rolledover_logs: >-
         Sledeči dnevniki aplikacij so bili zaviti: %{applications}
@@ -376,20 +381,27 @@ app:
       msg:
         confirm: Ste prepričani?
         confirm_cancel_print: Ste prepričani, da želite preklicati trenutni tisk?
-        confirm_clear_mesh: Tiskalnik je trenutno zaposlen. Ste prepričani, da želite počistiti mrežo mize?
-        confirm_delete: Ste prepričani? To dejanje bo izbrisalo izbrane elemente. | Ste prepričani? To dejanje bo izbrisalo {count} elementov.
+        confirm_clear_mesh: Tiskalnik je trenutno zaposlen. Ste prepričani, da želite
+          počistiti mrežo mize?
+        confirm_delete: Ste prepričani? To dejanje bo izbrisalo izbrane elemente.
+          | Ste prepričani? To dejanje bo izbrisalo {count} elementov.
         confirm_emergency_stop: Ste prepričani, da želi zasilno ustaviti tiskalnik?
-        confirm_exclude_object: Ste prepričani, da želite izključiti ta objekt iz tiskanja?
+        confirm_exclude_object: Ste prepričani, da želite izključiti ta objekt iz
+          tiskanja?
         confirm_forcemove_toggle: Ste prepričani? To dejanje lahko poškoduje tiskalnik.
-        confirm_load_bedmesh_profile: Tiskalnik je trenutno zaposlen. Ste prepričani, da želite naložiti profil %{name}?
+        confirm_load_bedmesh_profile: Tiskalnik je trenutno zaposlen. Ste prepričani,
+          da želite naložiti profil %{name}?
         confirm_reboot_host: Ste prepričani? To dejanje bo ponovno zagnalo gostitelja.
         confirm_remove_user: Ste prepričani, da želite odstraniti uporabnika %{username}?
         confirm_shutdown_host: Ste prepričani? To dejanje bo zaustavilo gostitelja.
         confirm_service_start: Ste prepričani, da želite zagnani storitev %{name}?
-        confirm_service_restart: Ste prepričani, da želite ponovno zagnati storitev %{name}?
+        confirm_service_restart: Ste prepričani, da želite ponovno zagnati storitev
+          %{name}?
         confirm_service_stop: Ste prepričani, da želite ustaviti storitev %{name}?
-        confirm_power_device_toggle: Ste prepričani? To dejanje bo ugasnilo napajanje naprave.
-        unsaved_changes: Imate ne shranjene spremembe. Ste prepričani, da želite zapreti datoteko?
+        confirm_power_device_toggle: Ste prepričani? To dejanje bo ugasnilo napajanje
+          naprave.
+        unsaved_changes: Imate ne shranjene spremembe. Ste prepričani, da želite zapreti
+          datoteko?
         no_file_preview: >-
           Predogled za %{name} ni možen.
     table:
@@ -462,14 +474,17 @@ app:
       managed_by_moonraker: Upravlja konfiguracija moonrakerja
       notifications: Obvestila
       reload_klipper: Ponovno naloži klipperjeve konfiguracije.
-      reload_restart_klipper: Ponovno naloži klipperjeve konfiguracije in ponovno zažene MKE.
+      reload_restart_klipper: Ponovno naloži klipperjeve konfiguracije in ponovno
+        zažene MKE.
       restart_klipper: Ponovno zažene sistemsko storitev klipper.
       run_collector: Zaženi zbiralnik
       rollover_logs: Zaviti dnevniki
       file_browser_help: >-
-        Povlecite in spustite mape ali datoteke v brskalink, da jih naložite.<br>Prestavite mape ali datoteke v pod mape tako, da jih povlečete vanje.
+        Povlecite in spustite mape ali datoteke v brskalink, da jih naložite.<br>Prestavite
+        mape ali datoteke v pod mape tako, da jih povlečete vanje.
       file_browser_configuration_help: >-
-        Kopirajte mape ali datoteke v Nastavitvene datoteke tako, da jih povlečete in spustite sem.
+        Kopirajte mape ali datoteke v Nastavitvene datoteke tako, da jih povlečete
+        in spustite sem.
   history:
     msg:
       confirm: Ste prepričani? To dejanje bo počistilo celotno zgodovino in statistiko.
@@ -484,7 +499,8 @@ app:
       multiply_job: Podvoji opravilo | Podvoji opravila
     tooltip:
       help: >-
-        Dodajte opravila v vrsto tako, da datoteke povlečete iz Opravil in spustitesem.<br>Nastavite vrstni red opravil v vrsti tako, da jih povlečete gor ali dol.
+        Dodajte opravila v vrsto tako, da datoteke povlečete iz Opravil in spustitesem.<br>Nastavite
+        vrstni red opravil v vrsti tako, da jih povlečete gor ali dol.
   printer:
     state:
       busy: Zaseden
@@ -548,8 +564,10 @@ app:
       collector: Krmilnik
       confirm_on_estop: Zahtevaj potrditev za zasilni izklop
       confirm_on_power_device_change: Zahtevaj potrditev za spremembe napajanja
-      confirm_on_save_config_and_restart: Preglej čakajoče spremembe pred shranjevanjem in ponovnim zagonom
-      confirm_dirty_editor_close: Zahtevaj potrditev ob zaprtju urejevalnika, če spremembe niso shranjene
+      confirm_on_save_config_and_restart: Preglej čakajoče spremembe pred shranjevanjem
+        in ponovnim zagonom
+      confirm_dirty_editor_close: Zahtevaj potrditev ob zaprtju urejevalnika, če spremembe
+        niso shranjene
       contains: Vsebuje
       dark_mode: Temen način
       dashed: Črtice
@@ -573,7 +591,8 @@ app:
       fill_color: Barva polnila
       fill_opacity: Prekrivnost
       filter: Filter | Filtri
-      fluidd_settings_in_moonraker_db: Fluiddove nastavitve v Moonrakerjevi podatkovni bazi
+      fluidd_settings_in_moonraker_db: Fluiddove nastavitve v Moonrakerjevi podatkovni
+        bazi
       fps_target: Želene slike na sekundo
       fps_idle_target: Želene slike na sekundo, kadar ni v fokusu
       height: Višina
@@ -607,7 +626,8 @@ app:
       retraction_icon_size: Velikost umikov
       right_y: Desna Y os
       save_and_restore_view_state: Shrani in obnovi stanje pogleda
-      sections_to_ignore_pending_configuration_changes: Prezri razdelke za konfiguracije na čakanju
+      sections_to_ignore_pending_configuration_changes: Prezri razdelke za konfiguracije
+        na čakanju
       show_animations: Prikaži animacije
       show_barometric_pressure: Prikaži barometrični tlak
       show_chart: Prikaži graf
@@ -617,7 +637,8 @@ app:
       show_logo_on_background: Prikaži logotip na ozadju
       show_rate_of_change: Prikaži hitrost temperature
       show_relative_humidity: Prikaži relativno vlažnost
-      show_save_config_and_restart: Shrani konfiguracijo in ponovno zaženi gumb v navigaciji zgoraj
+      show_save_config_and_restart: Shrani konfiguracijo in ponovno zaženi gumb v
+        navigaciji zgoraj
       show_upload_and_print: Pokaži naloži in tiskaj gumb v navigaciji zgoraj
       solid: Polno
       starts_with: Začne se s/z
@@ -639,8 +660,10 @@ app:
       text_sort_order: Vrstni red sortiranja
       force_move_toggle_warning: Zahtevaj potrditev za prisilen gib
       show_manual_probe_dialog_automatically: Samodejno prikaži dialog za ročno sondiranje
-      show_bed_screws_adjust_dialog_automatically: Samodejno prikaži dialog za nastavitev posteljnih vijakov
-      show_screws_tilt_adjust_dialog_automatically: Samodejno prikaži dialog za naklon vijakov
+      show_bed_screws_adjust_dialog_automatically: Samodejno prikaži dialog za nastavitev
+        posteljnih vijakov
+      show_screws_tilt_adjust_dialog_automatically: Samodejno prikaži dialog za naklon
+        vijakov
     timer_options:
       absolute_file_position: Absoluten položaj datoteke
       duration: Samo trajanje
@@ -663,23 +686,31 @@ app:
       tool: Orodje
     tooltip:
       average_calculation: Če je izbrana več kot ena opcija, bo izračunano povprečje
-      diagnostics_performance: '[BETA] Beleženje diagnostičnih podatkov lahko vpliva na zmogljivost'
+      diagnostics_performance: '[BETA] Beleženje diagnostičnih podatkov lahko vpliva
+        na zmogljivost'
       gcode_coords: Uporabi položaj g-kode, namesto orodja v armaturi
       keyboard_shortcuts: >-
         [BETA] Omogoči in pritisni '?' za prikaz vseh bližnjic, ki so na voljo
-      show_manual_probe_dialog_automatically: Samodejno prikaže dialog za pomoč, če ročno sondirate
-      show_bed_screws_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč, če nastavljate posteljne vijake
-      show_screws_tilt_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč, če nastavljate naklon vijakov
+      show_manual_probe_dialog_automatically: Samodejno prikaže dialog za pomoč, če
+        ročno sondirate
+      show_bed_screws_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč,
+        če nastavljate posteljne vijake
+      show_screws_tilt_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč,
+        če nastavljate naklon vijakov
       theme_disclaimer: >-
-        Te teme vsebujejo imena blagovnih znamk in logotipe, ki so intelektualna lastnina njihovih lastnikov.<br>
+        Te teme vsebujejo imena blagovnih znamk in logotipe, ki so intelektualna lastnina
+        njihovih lastnikov.<br>
         Ta imena in logotipi so vključeni z dovoljenjem lastnikov blagovnih znamk.<br>
         Vendar upoštevajte, da blagovne znamke teh tem uradno ne vzdržujejo.<br>
         Morebitna vprašanja ali poizvedbe v zvezi s temami naslovite na ekipo Fluidd.<br>
-        Uporaba imen in logotipov blagovnih znamk je zgolj v dekorativne in estetske namene in ne pomeni nobene uradne povezave z blagovnimi znamkami ali njihove podpore.
+        Uporaba imen in logotipov blagovnih znamk je zgolj v dekorativne in estetske
+        namene in ne pomeni nobene uradne povezave z blagovnimi znamkami ali njihove
+        podpore.
   socket:
     msg:
       connecting: Povezujem se na moonraker...
-      no_connection: Ni povezave z moonrakerjem. Prosimo, preverite status moonrakerja ali osvežite stran.
+      no_connection: Ni povezave z moonrakerjem. Prosimo, preverite status moonrakerja
+        ali osvežite stran.
   system_info:
     label:
       awake_time: čas budnosti
@@ -720,7 +751,8 @@ app:
       msg:
       canbus_warning: >-
         Odkrijejo se lahko samo nepodeljena vozlišča CAN vodila.<br>
-        Priporočljivo je, da je na CAN vodilo priključena samo ena nepripisana naprava, da se izognete težavam s komunikacijo.<br>
+        Priporočljivo je, da je na CAN vodilo priključena samo ena nepripisana naprava,
+        da se izognete težavam s komunikacijo.<br>
         Več informacij je na voljo <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">tukaj.</a>
       no_devices_found: Ni najdenih naprav
       no_devices_searched: Za iskanje naprav uporabite gumb za osvežitev
@@ -745,14 +777,16 @@ app:
       tools: Orodja
     label:
       stats_active_extruder: >-
-        <span class="secondary--text">Aktivna konfiguracija ekstruderja je nastavljena za </span>
+        <span class="secondary--text">Aktivna konfiguracija ekstruderja je nastavljena
+        za </span>
         filament premera %{filamentDiameter} mm
         <span class="secondary--text">in</span>
         premer šobe %{nozzleDiameter}.
       stats_volumetric_flow: >-
         <span class="secondary--text">Ekstruder bi moral biti sposoben zagotoviti</span>
         pretok %{estimatedVolumetricFlow} mm³/s
-        <span class="secondary--text">pri</span> hitrosti iztiskovanja %{extrudeSpeed} mm/s.
+        <span class="secondary--text">pri</span> hitrosti iztiskovanja %{extrudeSpeed}
+        mm/s.
       stats_extruded_length: >-
         Iztiskanje %{extrudeLength} mm filamenta pri
         %{extrudeFactor} % pretoku<span class="secondary--text">,
@@ -780,7 +814,8 @@ app:
       up_to_date: POSODOBLJENO
       updates_available: Posodobitve so na voljo
       old_component_version: >-
-        Uporabljate staro različico %{name}, ki ne podpira vseh funkcij programa Fluidd.<br>Posodobite %{name} na vsaj %{version}.
+        Uporabljate staro različico %{name}, ki ne podpira vseh funkcij programa Fluidd.<br>Posodobite
+        %{name} na vsaj %{version}.
     status:
       finished: Posodobitve končane
       updating: Posodabljam...
@@ -906,11 +941,13 @@ app:
       auto_open_qr_camera: Samodejno odpri kamero za zajem QR kode
       auto_select_spool_on_match: Samodejno potrdi izbiro koluta, če se QR koda ujema
       prefer_device_camera: Če je na voljo, uporabi kamero naprave za zajem QR kode
-      show_spool_selection_dialog_on_print_start: Prikaži okno za izbiro koluta ob začetku tiskanja
+      show_spool_selection_dialog_on_print_start: Prikaži okno za izbiro koluta ob
+        začetku tiskanja
       warn_on_not_enough_filament: >-
         Prikaži opozorilo, če izbran kolut nima dovolj filamenta za dokončanje tiska
       warn_on_filament_type_mismatch: >-
-        Prikaži opozorilo, če material na izbranem kolutu ne ustreza materialu navedenemu v rezalniku
+        Prikaži opozorilo, če material na izbranem kolutu ne ustreza materialu navedenemu
+        v rezalniku
       remaining_filament_unit: Prikaži preostanek filamenta kot
   sensors:
     title:

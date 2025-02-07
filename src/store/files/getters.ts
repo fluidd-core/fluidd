@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { AppDirectory, AppFileWithMeta, FileBrowserEntry, FilesState, RootProperties } from './types'
+import type { AppDirectory, AppFile, AppFileWithMeta, FileBrowserEntry, FilesState, RootProperties } from './types'
 import type { RootState } from '../types'
 import type { HistoryItem } from '../history/types'
 import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
@@ -49,20 +49,27 @@ export const getters: GetterTree<FilesState, RootState> = {
         : undefined
 
       for (const file of pathContent.files) {
-        const history = (file.job_id && rootState.history.jobs.find(job => job.job_id === file.job_id)) || {} as HistoryItem
+        const history: HistoryItem | undefined = (
+          'job_id' in file &&
+          file.job_id &&
+          rootState.history.jobs.find(job => job.job_id === file.job_id)
+        ) || undefined
 
-        const item: AppFileWithMeta = {
+        const extensionIndex = file.filename.lastIndexOf('.')
+        const extension = extensionIndex > -1 ? file.filename.substring(extensionIndex) : ''
+
+        const item: AppFile | AppFileWithMeta = {
           ...file,
           type: 'file',
           name: file.filename,
-          extension: file.filename.split('.').pop() || '',
+          extension,
           path: pathNoRoot,
           modified: new Date(file.modified).getTime(),
           history
         }
 
-        if (timelapseThumbnailFiles && item.extension !== 'jpg') {
-          const expectedThumbnailFile = `${item.filename.slice(0, -(item.extension.length + 1))}.jpg`
+        if (timelapseThumbnailFiles && item.extension !== '.jpg') {
+          const expectedThumbnailFile = `${item.filename.slice(0, -item.extension.length)}.jpg`
 
           if (timelapseThumbnailFiles.has(expectedThumbnailFile)) {
             item.thumbnails = [
@@ -91,8 +98,8 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Indicates if a root is available.
    */
-  isRootAvailable: (state, getters, rootState) => (r: string) => {
-    return rootState.server.info.registered_directories.includes(r)
+  isRootAvailable: (state, getters, rootState) => (root: string) => {
+    return rootState.server.info.registered_directories.includes(root)
   },
 
   /**
@@ -112,7 +119,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           accepts: ['.gcode', '.g', '.gc', '.gco', '.ufp', '.nc'],
           canView,
           canConfigure: true,
-          filterTypes: ['hidden_files', 'print_start_time', 'moonraker_temporary_upload_files']
+          filterTypes: ['print_start_time', 'hidden_files', 'moonraker_temporary_upload_files']
         }
       case 'config':
         return {
@@ -174,15 +181,23 @@ export const getters: GetterTree<FilesState, RootState> = {
     const file = pathContent?.files.find(file => file.filename === filename)
 
     if (file) {
-      const history = (file.job_id && rootState.history.jobs.find(job => job.job_id === file.job_id)) || {} as HistoryItem
+      const history: HistoryItem | undefined = (
+        'job_id' in file &&
+        file.job_id &&
+        rootState.history.jobs.find(job => job.job_id === file.job_id)
+      ) || undefined
+
       const [, ...restOfPath] = path.split('/')
       const pathNoRoot = restOfPath.join('/')
 
-      const item: AppFileWithMeta = {
+      const extensionIndex = filename.lastIndexOf('.')
+      const extension = extensionIndex > -1 ? filename.substring(extensionIndex) : ''
+
+      const item: AppFile | AppFileWithMeta = {
         ...file,
         type: 'file',
         name: file.filename,
-        extension: file.filename.split('.').pop() || '',
+        extension,
         path: pathNoRoot,
         modified: new Date(file.modified).getDate(),
         history
@@ -205,12 +220,5 @@ export const getters: GetterTree<FilesState, RootState> = {
   getLowOnSpace: (state) => {
     // 1073741824 = 1gb
     return state.disk_usage.free < 1073741824
-  },
-
-  /**
-   * Returns curent file system usage.
-   */
-  getUsage: (state) => {
-    return state.disk_usage
   }
 }

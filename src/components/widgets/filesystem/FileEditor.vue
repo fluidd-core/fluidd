@@ -54,7 +54,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   }
 
   get activeInstance (): InstanceConfig {
-    return this.$store.getters['config/getCurrentInstance'] as InstanceConfig
+    return this.$store.getters['config/getCurrentInstance']
   }
 
   get restoreViewStateStorage (): Storage | undefined {

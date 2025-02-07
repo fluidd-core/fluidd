@@ -294,7 +294,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   ghost?: HTMLDivElement = undefined
 
   // Is the history component enabled
-  get showHistory () {
+  get showHistory (): boolean {
     return (
       this.$store.getters['server/componentSupport']('history') &&
       this.root === 'gcodes'
@@ -302,7 +302,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.root)
   }
 
   get readonly () {
@@ -432,15 +432,15 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     const readonly = !this.isItemWriteable(item)
 
     if (item.type === 'file') {
-      if (item.extension === 'zip') {
+      if (item.extension === '.zip') {
         return readonly ? '$fileZipLock' : '$fileZip'
       } else if (
-        SupportedImageFormats.includes(`.${item.extension}`) ||
-        SupportedVideoFormats.includes(`.${item.extension}`)
+        SupportedImageFormats.includes(item.extension) ||
+        SupportedVideoFormats.includes(item.extension)
       ) {
         return readonly ? '$fileImageLock' : '$fileImage'
       } else if (
-        SupportedMarkdownFormats.includes(`.${item.extension}`)
+        SupportedMarkdownFormats.includes(item.extension)
       ) {
         return readonly ? '$fileDocumentLock' : '$fileDocument'
       } else {

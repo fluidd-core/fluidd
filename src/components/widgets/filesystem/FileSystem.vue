@@ -287,11 +287,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Properties of the current root.
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.currentRoot) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.currentRoot)
   }
 
   // If this root is available or not.
-  get disabled () {
+  get disabled (): boolean {
     return !this.$store.getters['files/isRootAvailable'](this.currentRoot)
   }
 
@@ -440,7 +440,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     ]
 
     const key = `${this.currentRoot}_${this.name}`
-    const mergedTableHeaders = this.$store.getters['config/getMergedTableHeaders'](headers, key) as AppTableHeader[]
+    const mergedTableHeaders: AppTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, key)
 
     return mergedTableHeaders
   }
@@ -465,7 +465,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // The current path for the given root.
   get currentPath () {
-    return this.$store.getters['files/getCurrentPathByRoot'](this.currentRoot) || this.currentRoot
+    const pathWithRoot: string = this.$store.getters['files/getCurrentPathByRoot'](this.currentRoot)
+
+    return pathWithRoot || this.currentRoot
   }
 
   set currentPath (path: string) {
@@ -476,7 +478,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   get visiblePath (): string {
     if (
       this.currentPath &&
-      this.currentPath.startsWith(`${this.currentRoot}`)
+      this.currentPath.startsWith(this.currentRoot)
     ) {
       const dirs = this.currentPath.split('/')
       dirs.shift()
@@ -492,67 +494,52 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     const files = this.getAllFiles()
 
     const filteredFiles = files.filter(file => {
-      if (this.currentRoot === 'timelapse' && file.type === 'file' && file.extension === 'jpg') {
+      if (this.currentRoot === 'timelapse' && file.type === 'file' && file.extension === '.jpg') {
         return false
       }
 
-      for (const filter of this.filters) {
-        switch (filter) {
-          case 'hidden_files':
-            if (file.name.match(/^\.(?!\.$)/)) {
-              return false
-            }
-            break
+      return !this.filters
+        .some(filter => {
+          if (filter === 'hidden_files') {
+            return file.name.match(/^\.(?!\.$)/)
+          }
 
-          case 'moonraker_backup_files':
-            if (file.type === 'file' && file.filename === '.moonraker.conf.bkp') {
-              return false
-            }
-            break
+          if (file.type !== 'file') {
+            return false
+          }
 
-          case 'moonraker_temporary_upload_files':
-            if (file.name.endsWith('.mru')) {
-              return false
-            }
-            break
+          switch (filter) {
+            case 'moonraker_backup_files':
+              return file.filename === '.moonraker.conf.bkp'
 
-          case 'klipper_backup_files':
-            if (file.type === 'file' && file.filename.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
-              return false
-            }
-            break
+            case 'moonraker_temporary_upload_files':
+              return file.extension === '.mru'
 
-          case 'print_start_time':
-            if (file.type === 'file' && file.print_start_time !== null) {
-              return false
-            }
-            break
+            case 'klipper_backup_files':
+              return file.filename.match(/^printer-\d{8}_\d{6}\.cfg$/)
 
-          case 'rolled_log_files':
-            if (file.type === 'file' && (
-              file.filename.match(/\.\d{4}-\d{2}-\d{2}(_\d{2}-\d{2}-\d{2})?$/) ||
-              file.filename.match(/\.log\.\d+$/)
-            )) {
-              return false
-            }
-            break
+            case 'print_start_time':
+              return 'print_start_time' in file && file.print_start_time !== null
 
-          case 'crowsnest_backup_files':
-            if (file.type === 'file' && file.filename.match(/^crowsnest\.conf\.\d{4}-\d{2}-\d{2}-\d{4}$/)) {
-              return false
-            }
-            break
-        }
-      }
+            case 'rolled_log_files':
+              return (
+                file.filename.match(/\.\d{4}-\d{2}-\d{2}(_\d{2}-\d{2}-\d{2})?$/) ||
+                file.filename.match(/\.log\.\d+$/)
+              )
 
-      return true
+            case 'crowsnest_backup_files':
+              return file.filename.match(/^crowsnest\.conf\.\d{4}-\d{2}-\d{2}-\d{4}$/)
+          }
+
+          return false
+        })
     })
 
     return filteredFiles
   }
 
   getAllFiles () {
-    const items = this.$store.getters['files/getDirectory'](this.currentPath) as FileBrowserEntry[] | undefined
+    const items: FileBrowserEntry[] | undefined = this.$store.getters['files/getDirectory'](this.currentPath)
 
     return items ?? []
   }
@@ -579,7 +566,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   includeTimelapseThumbnailFiles (items: FileBrowserEntry[]) {
     const thumbnailFilenames = new Set(items
-      .filter((item): item is AppFileWithMeta => item.type === 'file' && item.extension !== 'jpg' && 'thumbnails' in item)
+      .filter((item): item is AppFileWithMeta => item.type === 'file' && item.extension !== '.jpg' && 'thumbnails' in item)
       .flatMap(item => item.thumbnails
         ? item.thumbnails.map(thumbnail => thumbnail.relative_path)
         : []
@@ -611,7 +598,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Refreshes a path by loading the directory.
   refreshPath (path: string) {
-    if (path && !this.disabled) SocketActions.serverFilesGetDirectory(this.currentRoot, path)
+    if (path && !this.disabled) SocketActions.serverFilesGetDirectory(path)
   }
 
   // Handles a user filtering the data.
@@ -664,11 +651,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       item.type === 'file' &&
       event.type === 'click'
     ) {
-      if (this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`)) {
+      if (this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(item.extension)) {
         this.handleFileOpenDialog(item, 'edit')
 
         return
-      } else if (this.rootProperties.canView.includes(`.${item.extension}`)) {
+      } else if (this.rootProperties.canView.includes(item.extension)) {
         this.handleFileOpenDialog(item, 'view')
 
         return
@@ -754,7 +741,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     try {
       const viewOnly = mode
         ? mode === 'view'
-        : this.rootProperties.canView.includes(`.${file.extension}`)
+        : this.rootProperties.canView.includes(file.extension)
 
       // Grab the file. This should provide a dialog.
       const response = await this.getFile(
@@ -849,7 +836,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     const filename = file.path ? `${file.path}/${file.filename}` : file.filename
 
-    const spoolmanSupported = this.$store.getters['spoolman/getAvailable']
+    const spoolmanSupported: boolean = this.$store.getters['spoolman/getAvailable']
     const autoSpoolSelectionDialog: boolean = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
     if (spoolmanSupported && autoSpoolSelectionDialog) {
       this.$store.commit('spoolman/setDialogState', {
@@ -930,7 +917,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     if (this.currentRoot === 'gcodes') {
       const files = items
-        .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(`.${item.extension}`))
+        .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
 
       if (files.length > 0) {
         setFileDataTransferDataInDataTransfer(dataTransfer, 'jobs', {
@@ -1045,7 +1032,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     const items = Array.isArray(file) ? file : [file]
     const filenames = items
-      .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(`.${item.extension}`))
+      .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
       .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
 
     if (filenames.length > 0) {

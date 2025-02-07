@@ -28,7 +28,7 @@
             hide-details
             dense
             disabled
-            :value="$t('app.general.label.partial_of_total', {partial: currentScrewIndex + 1, total: bedScrews.length})"
+            :value="$t('app.general.label.partial_of_total', {partial: currentScrewIndex + 1, total: totalScrews})"
           />
         </v-col>
       </v-row>
@@ -41,7 +41,7 @@
             hide-details
             dense
             disabled
-            :value="$t('app.general.label.partial_of_total', {partial: acceptedScrews, total: bedScrews.length})"
+            :value="$t('app.general.label.partial_of_total', {partial: acceptedScrews, total: totalScrews})"
           />
         </v-col>
       </v-row>
@@ -52,7 +52,7 @@
       </v-row>
 
       <v-progress-linear
-        :value="acceptedScrews / bedScrews.length * 100"
+        :value="acceptedScrews / totalScrews * 100"
         class="mt-2"
       />
     </v-card-text>
@@ -98,28 +98,24 @@ import type { BedScrews } from '@/store/printer/types'
 
 @Component({})
 export default class BedScrewsAdjustDialog extends Mixins(StateMixin, ToolheadMixin) {
-  get bedScrews (): BedScrews[] {
-    return this.$store.getters['printer/getBedScrews'] as BedScrews[]
-  }
-
-  get bedScrewsAdjust () {
-    return this.$store.state.printer.printer.bed_screws ?? {}
-  }
-
-  get currentState () {
-    return this.bedScrewsAdjust.state
+  get bedScrews (): BedScrews {
+    return this.$store.getters['printer/getBedScrews']
   }
 
   get currentScrewIndex () {
-    return this.bedScrewsAdjust.current_screw
+    return this.bedScrews.current_screw ?? 0
   }
 
   get currentScrewName () {
-    return this.bedScrews[this.currentScrewIndex]?.prettyName
+    return this.bedScrews.screws[this.currentScrewIndex]?.prettyName ?? ''
   }
 
   get acceptedScrews () {
-    return this.bedScrewsAdjust.accepted_screws
+    return this.bedScrews.accepted_screws ?? 0
+  }
+
+  get totalScrews () {
+    return this.bedScrews.screws.length
   }
 
   get showBedScrewsAdjustDialogAutomatically (): boolean {

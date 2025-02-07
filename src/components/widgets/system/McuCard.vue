@@ -80,11 +80,11 @@ export default class PrinterStatsCard extends Vue {
   readonly mcu!: MCU
 
   get klippyApp (): KlippyApp {
-    return this.$store.getters['printer/getKlippyApp'] as KlippyApp
+    return this.$store.getters['printer/getKlippyApp']
   }
 
-  get mcuConstants () {
-    return this.mcu.mcu_constants || {} as Record<string, string | number>
+  get mcuConstants (): Record<string, string | number> {
+    return this.mcu.mcu_constants || {}
   }
 
   mcuInformationDialogOpen = false

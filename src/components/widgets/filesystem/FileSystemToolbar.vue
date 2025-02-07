@@ -206,14 +206,14 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
     return this.rootProperties.filterTypes.length > 0
   }
 
-  get lowOnSpace () {
+  get lowOnSpace (): boolean {
     if (!this.klippyReady) return false
     return this.$store.getters['files/getLowOnSpace']
   }
 
   // Properties of the current root.
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.root)
   }
 
   get thumbnailSize (): number {

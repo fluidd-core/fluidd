@@ -22,8 +22,8 @@ import Icons from '@/views/Icons.vue'
 
 Vue.use(VueRouter)
 
-const isAuthenticated = () => (
-  router.app.$store.getters['auth/getAuthenticated'] ||
+const isAuthenticated = (): boolean => (
+  router.app.$store.state.auth.authenticated ||
   !router.app.$store.state.socket.apiConnected
 )
 
@@ -166,7 +166,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '*',
-    name: '404',
+    name: 'not_found',
     component: NotFound
   }
 ]

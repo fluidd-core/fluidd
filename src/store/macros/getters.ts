@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { Macro, MacrosState } from './types'
+import type { Macro, MacroCategory, MacrosState } from './types'
 import type { RootState } from '../types'
 
 export const MACRO_DEFAULTS = {
@@ -53,7 +53,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
   },
 
   getMacroByName: (state, getters) => (...names: string[]) => {
-    const macros = getters.getMacros as Macro[]
+    const macros: Macro[] = getters.getMacros
 
     for (const name of names) {
       const lowerCaseName = name.toLowerCase()
@@ -72,11 +72,16 @@ export const getters: GetterTree<MacrosState, RootState> = {
     const categories = [...state.categories, defaultCategory]
 
     return categories
-      .map(({ id, name }) => ({
-        id,
-        name,
-        macros: getters.getMacrosByCategory(id).filter((macro: Macro) => macro.visible) as Macro[]
-      }))
+      .map(({ id, name }) => {
+        const macros: Macro[] = getters.getMacrosByCategory(id)
+          .filter((macro: Macro) => macro.visible)
+
+        return ({
+          id,
+          name,
+          macros
+        })
+      })
       .filter(category => category.macros.length > 0)
   },
 
@@ -89,7 +94,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
       ? '0'
       : categoryId
 
-    const macros = getters.getMacros as Macro[]
+    const macros: Macro[] = getters.getMacros
 
     return macros
       .filter(macro => (
@@ -112,11 +117,11 @@ export const getters: GetterTree<MacrosState, RootState> = {
    * them.
    */
   getCategories: (state, getters) => {
-    const categories = state.categories
+    const categories: MacroCategory[] = state.categories
       .map(category => {
         const { id, name } = category
 
-        const macros = getters.getMacrosByCategory(id) as Macro[]
+        const macros: Macro[] = getters.getMacrosByCategory(id)
         const count = macros.length
         const visible = macros
           .filter(macro => macro.visible)

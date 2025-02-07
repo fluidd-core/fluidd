@@ -9,7 +9,8 @@ import md5 from 'md5'
 
 export const getters: GetterTree<ConfigState, RootState> = {
   getCurrentInstance: (state) => {
-    return state.instances.find(instance => instance.active)
+    return state.instances
+      .find(instance => instance.active)
   },
 
   getInstances: (state) => {
@@ -23,14 +24,6 @@ export const getters: GetterTree<ConfigState, RootState> = {
     return instances
   },
 
-  getHostConfig: (state) => {
-    return state.hostConfig
-  },
-
-  getAppReady: (state) => {
-    return state.appReady
-  },
-
   /**
    * Return temp presets. Ensure we only return a preset
    * for a known heater or fan, incase things change
@@ -39,8 +32,8 @@ export const getters: GetterTree<ConfigState, RootState> = {
   getTempPresets: (state, getters, rootState, rootGetters) => {
     const originalPresets: TemperaturePreset[] = state.uiSettings.dashboard.tempPresets
     const presets: TemperaturePreset[] = []
-    const heaters = rootGetters['printer/getHeaters']
-    const fans = rootGetters['printer/getOutputs'](['temperature_fan'])
+    const heaters: Heater[] = rootGetters['printer/getHeaters']
+    const fans: Fan[] = rootGetters['printer/getOutputs'](['temperature_fan'])
 
     originalPresets.forEach((originalPreset: TemperaturePreset) => {
       const preset: TemperaturePreset = {
@@ -51,14 +44,14 @@ export const getters: GetterTree<ConfigState, RootState> = {
       // a) a given heater and fan exists and;
       // b) unknown heaters and fans are removed.
       // For items added to an existing preset, default them to disabled.
-      heaters.forEach((heater: Heater) => {
+      heaters.forEach(heater => {
         if (originalPreset.values[heater.name]) {
           preset.values[heater.name] = { ...originalPreset.values[heater.name] }
         } else {
           preset.values[heater.name] = { value: 0, type: 'heater', active: false }
         }
       })
-      fans.forEach((fan: Fan) => {
+      fans.forEach(fan => {
         if (originalPreset.values[fan.name]) {
           preset.values[fan.name] = { ...originalPreset.values[fan.name] }
         } else {
@@ -75,7 +68,7 @@ export const getters: GetterTree<ConfigState, RootState> = {
   },
 
   getCustomThemeFile: (state, getters, rootState, rootGetters) => (filename: string, extensions: string[]) => {
-    const files = rootGetters['files/getRootFiles']('config') as MoonrakerRootFile[] | undefined
+    const files: MoonrakerRootFile[] | undefined = rootGetters['files/getRootFiles']('config')
 
     if (files) {
       for (const extension of extensions) {

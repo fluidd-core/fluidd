@@ -59,7 +59,7 @@ import type { WebcamConfig } from '@/store/webcams/types'
 export default class CamerasMenu extends Mixins(StateMixin) {
   get activeCamera () {
     const activeWebcam: string = this.$store.state.webcams.activeWebcam
-    const camera = this.$store.getters['webcams/getWebcamById'](activeWebcam) as WebcamConfig | undefined
+    const camera: WebcamConfig | undefined = this.$store.getters['webcams/getWebcamById'](activeWebcam)
 
     return !camera
       ? this.$t('app.general.btn.all')
@@ -67,7 +67,7 @@ export default class CamerasMenu extends Mixins(StateMixin) {
   }
 
   get enabledWebcams (): WebcamConfig[] {
-    return this.$store.getters['webcams/getEnabledWebcams'] as WebcamConfig[]
+    return this.$store.getters['webcams/getEnabledWebcams']
   }
 
   get availableCameras (): Pick<WebcamConfig, 'uid' | 'name'>[] {

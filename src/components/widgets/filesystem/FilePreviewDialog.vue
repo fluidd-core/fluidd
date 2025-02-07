@@ -26,7 +26,7 @@
         >
 
         <div v-else>
-          {{ $t('app.general.simple_form.msg.no_file_preview', { name: (extension ? `.${extension} files` : filename) }) }}
+          {{ $t('app.general.simple_form.msg.no_file_preview', { name: (extension ? `${extension} files` : filename) }) }}
         </div>
       </v-layout>
 

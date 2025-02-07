@@ -28,7 +28,6 @@
           <app-btn
             v-bind="attrs"
             icon
-            :disabled="printerBusy"
             v-on="on"
             @click="rolloverLogsDialogOpen = true"
           >
@@ -117,18 +116,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import type { SystemInfo, CpuInfo, DistroInfo, Virtualization } from '@/store/server/types'
-import StateMixin from '@/mixins/state'
 import type { PrinterInfo } from '@/store/printer/types'
 
 @Component({})
-export default class PrinterStatsCard extends Mixins(StateMixin) {
+export default class PrinterStatsCard extends Vue {
   rolloverLogsDialogOpen = false
   peripheralsDialogOpen = false
 
   get systemInfo (): SystemInfo | null {
-    return this.$store.getters['server/getSystemInfo']
+    return this.$store.state.server.system_info
   }
 
   get cpuInfo () {
@@ -176,7 +174,7 @@ export default class PrinterStatsCard extends Mixins(StateMixin) {
   }
 
   get canRolloverLogs (): boolean {
-    return this.$store.getters['server/getIsMinApiVersion']('1.0.5') as boolean
+    return this.$store.getters['server/getIsMinApiVersion']('1.0.5')
   }
 }
 </script>

@@ -216,7 +216,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   readonly positionY!: number
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.root)
   }
 
   get canPrint () {
@@ -224,7 +224,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
       this.root === 'gcodes' &&
       !Array.isArray(this.file) &&
       this.file.type !== 'directory' &&
-      this.rootProperties.accepts.includes(`.${this.file.extension}`)
+      this.rootProperties.accepts.includes(this.file.extension)
     )
   }
 
@@ -243,7 +243,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     return (
       !Array.isArray(this.file) &&
       this.file.type !== 'directory' &&
-      this.rootProperties.canView.includes(`.${this.file.extension}`) &&
+      this.rootProperties.canView.includes(this.file.extension) &&
       (
         this.file.permissions === undefined ||
         this.file.permissions.includes('r')
@@ -273,30 +273,30 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
       this.root === 'gcodes' &&
       !Array.isArray(this.file) &&
       this.file.type === 'file' &&
-      this.file.extension === 'gcode'
+      this.file.extension === '.gcode'
     )
   }
 
-  get canCreateZip () {
+  get canCreateZip (): boolean {
     return (
       (
         Array.isArray(this.file) ||
         this.file.type !== 'file' ||
-        this.file.extension !== 'zip'
+        this.file.extension !== '.zip'
       ) &&
       !this.rootProperties.readonly &&
       this.$store.getters['server/getIsMinApiVersion']('1.1.0')
     )
   }
 
-  get canAddToQueue () {
+  get canAddToQueue (): boolean {
     const files = Array.isArray(this.file) ? this.file : [this.file]
 
     return (
       this.root === 'gcodes' &&
       files.some(x =>
         x.type !== 'directory' &&
-        this.rootProperties.accepts.includes('.' + x.extension)
+        this.rootProperties.accepts.includes(x.extension)
       ) &&
       this.$store.getters['server/componentSupport']('job_queue')
     )

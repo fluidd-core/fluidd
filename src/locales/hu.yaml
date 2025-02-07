@@ -32,6 +32,8 @@ app:
       rate_of_change: Változás
       pid_calibration: PID kalibrálás
       target_temperature: Cél hőmérséklet
+      turn_off: Kikapcsolás
+      fan_breakpoints: Ventilátor töréspontok
     tooltip:
       help: >-
         A nagyításhoz tartsd lenyomva a <kbd>Shift</kbd> billentyűt.<br />Kattints
@@ -79,7 +81,7 @@ app:
     filters:
       label:
         print_start_time: Nyomtatottak szűrése
-        hidden_files_folders: Rejtett fájlok és mappák szűrése
+        hidden_files: Rejtett fájlok és mappák szűrése
         klipper_backup_files: Klipper biztonsági fájlok szűrése
         moonraker_backup_files: Moonraker biztonsági fájlok szűrése
         rolled_log_files: A gördített naplófájlok szűrése
@@ -229,6 +231,7 @@ app:
       reset_stats: Statisztikák törlése
       copied: Másolva
       copy: Másolás
+      power_on_printer: Nyomtató bekapcsolása
     error:
       app_setup_link: >-
         A Fluidd telepítési követelményeit <a target="_blank" href="%{url}">itt
@@ -240,6 +243,8 @@ app:
       failed_components: >-
         A Moonraker moduljai hibásak. Kérlek, ellenőrizd a naplókat, frissítsd a
         konfigurációt és indítsd újra a Moonrakert.
+      printer_powered_off: A nyomtató jelenleg ki van kapcsolva.<br/><br/> A nyomtató
+        bekapcsolásához kattints a bal oldali gombra.
     label:
       accel_to_decel: Gyorsítás-Lassítás
       acceleration: Gyorsulás
@@ -355,6 +360,7 @@ app:
       device: Eszköz
       environment_facing: Környezeti nézet
       user_facing: Felhasználói nézet
+      z_hop_height: Z-ugrás magassága
     msg:
       password_changed: A jelszó megváltozott
       wrong_password: Hoppá! Valami rosszul sült el. Ez a jelszavad?
@@ -504,6 +510,7 @@ app:
       file_browser_configuration_help: >-
         Másold át a fájlokat és mappákat a konfigurációs fájlokba úgy, hogy innen
         húzd át őket, majd dobd oda
+      power_on_printer: Bekapcsolja a nyomtató áramellátását
   history:
     msg:
       confirm: Biztos vagy benne? Törlöd az összes előzményt és a nyomtatóstatisztikát
@@ -692,6 +699,8 @@ app:
       fluidd_settings_in_moonraker_db: Fluidd beállítások a Moonraker adatbázisban
       drag_and_drop_functionality_for_files_and_folders: Fájlok és mappák húzás és
         eldobás funkciója
+      auto: Automata
+      printer_power_device: Nyomtató tápegység
     timer_options:
       duration: Csak időtartam
       filament: Nyomtatószál
@@ -937,6 +946,11 @@ app:
       active_spool: Aktív tekercs
       length: Hossz
       weight: Súly
+      bed_temp: Ágy hőfoka
+      density: Sűrűség
+      extruder_temp: Fej hőfoka
+      price: Érték
+      used_weight: Használt
     msg:
       no_spool: >-
         Nem választottál ki orsót.
@@ -985,6 +999,7 @@ app:
         Figyelmeztetés megjelenítése, ha a tekercsen lévő szál típusa és a szeletelőben
         kiválasztott szál típusa nem egyezik
       remaining_filament_unit: Mutasd a maradék nyomtatószálat
+      card_fields: Az orsómester-kártyán megjelenítendő mezők
   sensors:
     title:
       sensors: Érzékelők

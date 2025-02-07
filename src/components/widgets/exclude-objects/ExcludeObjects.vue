@@ -1,33 +1,40 @@
 <template>
   <g id="parts">
-    <g
-      v-for="name in parts"
-      :key="name"
-      :class="iconClasses(name)"
-      class="layer"
-    >
-      <path
-        class="partOutline"
-        :d="partSVG(name)"
-        :shape-rendering="shapeRendering"
-      />
-      <svg
-        width="7"
-        height="7"
-        viewBox="0 0 24 24"
-        class="partIcon"
-        :x="partPos(name).x - 7/2"
-        :y="partPos(name).y - 7/2"
+    <template v-for="part in parts">
+      <g
+        v-if="(
+          part.polygon &&
+          part.polygon.length > 0 &&
+          part.center &&
+          part.center.length >= 2
+        )"
+        :key="part.name"
+        :class="iconClasses(part)"
+        class="layer"
       >
-        <path :d="iconCancelled" />
         <path
-          v-if="!isPartExcluded(name)"
-          v-touch:tap="() => $emit('cancel', name)"
-          :d="iconCircle"
-          class="hitarea"
+          class="partOutline"
+          :d="partSVG(part)"
+          :shape-rendering="shapeRendering"
         />
-      </svg>
-    </g>
+        <svg
+          width="7"
+          height="7"
+          viewBox="0 0 24 24"
+          class="partIcon"
+          :x="part.center[0] - 7/2"
+          :y="part.center[1] - 7/2"
+        >
+          <path :d="iconCancelled" />
+          <path
+            v-if="!part.isExcluded"
+            v-touch:tap="() => $emit('cancel', part.name)"
+            :d="iconCircle"
+            class="hitarea"
+          />
+        </svg>
+      </g>
+    </template>
   </g>
 </template>
 
@@ -35,23 +42,33 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { Icons } from '@/globals'
+import type { ExcludeObjectPart } from '@/store/printer/types'
 
 @Component({})
 export default class ExcludeObjects extends Mixins(StateMixin) {
   @Prop({ type: String })
   readonly shapeRendering?: string
 
-  get parts () {
-    const parts = this.$store.getters['parts/getParts']
-    return Object.keys(parts)
+  get parts (): ExcludeObjectPart[] {
+    return this.$store.getters['printer/getExcludeObjectParts']
   }
 
-  iconClasses (name: string) {
-    return this.isPartExcluded(name) ? 'partExcluded' : this.isPartCurrent(name) ? 'partCurrent' : 'partIncluded'
+  iconClasses (part: ExcludeObjectPart) {
+    if (part.isExcluded) {
+      return 'partExcluded'
+    } else if (part.isCurrent) {
+      return 'partCurrent'
+    } else {
+      return 'partIncluded'
+    }
   }
 
-  partSVG (name: string) {
-    return this.$store.getters['parts/getPartSVG'](name)
+  partSVG (part: ExcludeObjectPart) {
+    const polygonAsString = part.polygon!
+      .map(point => `${point[0]},${point[1]}`)
+      .join('L')
+
+    return `M${polygonAsString}z`
   }
 
   get iconCancelled () {
@@ -60,18 +77,6 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
 
   get iconCircle () {
     return Icons.circle
-  }
-
-  partPos (name: string) {
-    return this.$store.getters['parts/getPartPos'](name)
-  }
-
-  isPartCurrent (name: string) {
-    return this.$store.getters['parts/getIsPartCurrent'](name)
-  }
-
-  isPartExcluded (name: string) {
-    return this.$store.getters['parts/getIsPartExcluded'](name)
   }
 }
 </script>

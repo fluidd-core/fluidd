@@ -66,7 +66,7 @@ app:
     filters:
       label:
         crowsnest_backup_files: Crowsnest バックアップ ファイルのフィルタリング
-        hidden_files_folders: 隠しファイル・隠しフォルダの非表示
+        hidden_files: 隠しファイル・隠しフォルダの非表示
         klipper_backup_files: バックアップファイルを非表示
         moonraker_backup_files: Moonraker バックアップ ファイルをフィルタリングする
         print_start_time: 印刷済みを隠す

@@ -113,8 +113,8 @@
           <app-data-table-row
             :headers="headers"
             :item="item"
-            :is-selected="item.id === selectedSpool"
-            @click.prevent="selectedSpool = selectedSpool === item.id ? null : item.id"
+            :is-selected="item.id === selectedSpoolId"
+            @click.prevent="selectedSpoolId = selectedSpoolId === item.id ? null : item.id"
           >
             <template #[`item.filament_name`]>
               <div class="d-flex my-1">
@@ -123,7 +123,7 @@
                   size="42px"
                   class="mr-4 flex-column spool-icon"
                 >
-                  {{ item.id === selectedSpool ? '$markedCircle' : '$filament' }}
+                  {{ item.id === selectedSpoolId ? '$markedCircle' : '$filament' }}
                 </v-icon>
                 <div class="flex-column">
                   <div class="flex-row">
@@ -210,6 +210,9 @@ import QrScanner from 'qr-scanner'
 import type { AppTableHeader } from '@/types'
 import getFilePaths from '@/util/get-file-paths'
 import type { DataTableHeader } from 'vuetify'
+import type { KlipperPrinterConfig } from '@/store/printer/types'
+import type { AppFileWithMeta } from '@/store/files/types'
+import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
 
 @Component({
   components: {
@@ -243,7 +246,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
           // if the file is in a subdirectory and isn't cached
           // we need to populate the cache
           const { rootPath } = getFilePaths(this.currentFileName, 'gcodes')
-          SocketActions.serverFilesGetDirectory('gcodes', rootPath)
+          SocketActions.serverFilesGetDirectory(rootPath)
         } else {
           // otherwise just refresh the corresponding file
           SocketActions.serverFilesMetadata(this.currentFileName)
@@ -261,7 +264,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     }
   }
 
-  get open () {
+  get open (): boolean {
     return this.$store.state.spoolman.dialog.show
   }
 
@@ -272,17 +275,18 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     })
   }
 
-  get availableSpools (): Spool[] {
+  get availableSpools () {
     const spools = []
-    for (const spool of this.$store.state.spoolman.availableSpools) {
+    const availableSpools: Spool[] = this.$store.state.spoolman.availableSpools
+
+    for (const spool of availableSpools) {
       if (spool.archived) {
         continue
       }
 
-      let filamentName = spool.filament.name
-      if (spool.filament.vendor) {
-        filamentName = `${spool.filament.vendor.name} - ${filamentName}`
-      }
+      const filamentName = spool.filament.vendor
+        ? `${spool.filament.vendor.name} - ${spool.filament.name}`
+        : spool.filament.name
 
       spools.push({
         ...spool,
@@ -318,7 +322,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       },
     ]
 
-    const mergedTableHeaders = this.$store.getters['config/getMergedTableHeaders'](headers, 'spoolman') as AppTableHeader[]
+    const mergedTableHeaders: AppTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'spoolman')
 
     return mergedTableHeaders
   }
@@ -334,32 +338,23 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     ]
   }
 
-  get selectedSpool () {
-    return this.selectedSpoolId
-  }
+  get filename (): string | undefined {
+    const filename: string | undefined = this.$store.state.spoolman.dialog.filename
 
-  set selectedSpool (id: number | null) {
-    this.selectedSpoolId = id
-  }
-
-  get filename () {
-    let filename = this.$store.state.spoolman.dialog.filename
-
-    if (!filename) {
-      return
-    } else if (filename.startsWith('/')) {
-      filename = filename.slice(1)
+    if (filename && filename.startsWith('/')) {
+      return filename.slice(1)
     }
 
     return filename
   }
 
-  get currentFileName () {
-    return this.filename || this.$store.state.printer.printer.print_stats.filename
+  get currentFileName (): string {
+    return this.filename || this.$store.state.printer.printer.print_stats?.filename || ''
   }
 
-  get currentFile () {
+  get currentFile (): AppFileWithMeta | undefined {
     const { filename, rootPath } = getFilePaths(this.currentFileName, 'gcodes')
+
     return this.$store.getters['files/getFile'](rootPath, filename)
   }
 
@@ -368,7 +363,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get enabledWebcams (): WebcamConfig[] {
-    return this.$store.getters['webcams/getEnabledWebcams'] as WebcamConfig[]
+    return this.$store.getters['webcams/getEnabledWebcams']
   }
 
   get availableCameras (): Pick<WebcamConfig, 'uid' | 'name'>[] {
@@ -386,7 +381,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return cameras
   }
 
-  get remainingFilamentUnit () {
+  get remainingFilamentUnit (): SpoolmanRemainingFilamentUnit {
     return this.$store.state.config.uiSettings.spoolman.remainingFilamentUnit
   }
 
@@ -408,7 +403,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   async handleSelectSpool () {
-    if (!this.selectedSpool) {
+    if (!this.selectedSpoolId) {
       // no spool selected
 
       const confirmation = await this.$confirm(
@@ -426,13 +421,14 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
       // set spool_id via SET_GCODE_VARIABLE
       const commands = [
-        `SET_GCODE_VARIABLE MACRO=${this.targetMacro} VARIABLE=spool_id VALUE=${this.selectedSpool ?? 'None'}`
+        `SET_GCODE_VARIABLE MACRO=${this.targetMacro} VARIABLE=spool_id VALUE=${this.selectedSpoolId ?? 'None'}`
       ]
 
-      const supportsSaveVariables = this.$store.getters['printer/getPrinterConfig']('save_variables')
+      const printerConfig: KlipperPrinterConfig = this.$store.getters['printer/getPrinterConfig']
+      const supportsSaveVariables = printerConfig.save_variables
       if (supportsSaveVariables) {
         // persist selected spool across restarts
-        commands.push(`SAVE_VARIABLE VARIABLE=${this.targetMacro.toUpperCase()}__SPOOL_ID VALUE=${this.selectedSpool ?? 'None'}`)
+        commands.push(`SAVE_VARIABLE VARIABLE=${this.targetMacro.toLowerCase()}__spool_id VALUE=${this.selectedSpoolId ?? 'None'}`)
       }
 
       await SocketActions.printerGcodeScript(commands.join('\n'))
@@ -440,14 +436,14 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro)
       if (macro?.variables.active) {
         // selected tool is active, update active spool
-        await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpool ?? undefined)
+        await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
       }
 
       this.open = false
       return
     }
 
-    const spool = this.availableSpools.find(spool => spool.id === this.selectedSpool)
+    const spool = this.availableSpools.find(spool => spool.id === this.selectedSpoolId)
     if (spool && this.currentFileName && (this.warnOnFilamentTypeMismatch || this.warnOnNotEnoughFilament)) {
       // trigger sanity checks when we have an active file
       // (current print or new print) and sanity checks are enabled.
@@ -457,7 +453,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
         if (this.warnOnFilamentTypeMismatch) {
           const fileMaterials = this.currentFile.filament_type?.toLowerCase()
-            .split(';').map((x: string) => x.replace(/"/g, ''))
+            .split(';')
+            .map(x => x.replace(/"/g, ''))
           const spoolMaterial = spool.filament.material?.toLowerCase()
           if (spoolMaterial && fileMaterials && !fileMaterials.includes(spoolMaterial)) {
             // filament materials don't match
@@ -491,9 +488,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
           if (!confirmation) {
             return
           }
-        }
-
-        if (this.warnOnNotEnoughFilament) {
+        } else if (this.warnOnNotEnoughFilament) {
           let remainingLength = spool.remaining_length
           if (!remainingLength && spool.remaining_weight) {
             remainingLength = this.$filters.convertFilamentWeightToLength(spool.remaining_weight, spool.filament.density, spool.filament.diameter)
@@ -515,7 +510,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       }
     }
 
-    await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpool ?? undefined)
+    await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
 

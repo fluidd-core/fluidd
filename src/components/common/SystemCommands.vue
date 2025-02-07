@@ -142,7 +142,7 @@ import type { ServerInfo, ServiceInfo, SystemInfo } from '@/store/server/types'
 @Component({})
 export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   get serverInfo (): ServerInfo {
-    return this.$store.getters['server/getInfo'] as ServerInfo
+    return this.$store.state.server.info
   }
 
   get hosted (): boolean {
@@ -150,22 +150,22 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   }
 
   get powerDevices (): Device[] {
-    return this.$store.getters['power/getDevices'] as Device[]
+    return this.$store.getters['power/getDevices']
   }
 
   get devicePowerComponentEnabled (): boolean {
-    return this.$store.getters['server/componentSupport']('power') as boolean
+    return this.$store.getters['server/componentSupport']('power')
   }
 
   get services (): ServiceInfo[] {
-    const services = this.$store.getters['server/getServices'] as ServiceInfo[]
+    const services: ServiceInfo[] = this.$store.getters['server/getServices']
 
     return services
       .filter(service => service.name !== 'klipper_mcu')
   }
 
   get systemInfo (): SystemInfo | null {
-    return this.$store.getters['server/getSystemInfo'] as SystemInfo | null
+    return this.$store.state.server.system_info
   }
 
   get canControlHost (): boolean {
@@ -241,7 +241,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
 
     if (result) {
       const state = (device.status === 'on') ? 'off' : 'on'
-      SocketActions.machineDevicePowerToggle(device.device, state, wait)
+      SocketActions.machineDevicePowerSetDevice(device.device, state, wait)
     }
   }
 

@@ -139,7 +139,7 @@ export default class FileSystemAddMenu extends Mixins(StateMixin) {
   andPrint = false
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.root)
   }
 
   get accepts () {
