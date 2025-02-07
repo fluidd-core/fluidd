@@ -227,7 +227,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     if (this.printerPrinting) {
       const favIconSize = 64
       const primaryColor = this.primaryColor
-      const secondaryColor = 'rgba(255, 255, 255, 0.10)'
+      const secondaryColor = 'rgba(128, 128, 128, 0.3)'
       const canvas = document.createElement('canvas')
       const context = canvas.getContext('2d')
 
@@ -237,7 +237,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
         const percent = this.progress
         const centerX = canvas.width / 2
         const centerY = canvas.height / 2
-        const lineWidth = 8
+        const lineWidth = 10
         const radius = favIconSize / 2 - lineWidth / 2
         const startAngle = 1.5 * Math.PI
         const endAngle = startAngle + (percent * 2 * Math.PI / 100)
