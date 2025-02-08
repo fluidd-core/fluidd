@@ -32,6 +32,10 @@ export const mutations: MutationTree<SpoolmanState> = {
     state.dialog = payload
   },
 
+  setCurrency (state, payload: { value: string }) {
+    state.currency = payload.value.replace(/^"|"$/g, '')
+  },
+
   setConnected (state, payload) {
     state.connected = payload
   }

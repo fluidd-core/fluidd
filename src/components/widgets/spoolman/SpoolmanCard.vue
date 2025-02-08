@@ -219,6 +219,10 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     return this.$store.getters['spoolman/getActiveSpool']
   }
 
+  get currency (): string | undefined {
+    return this.$store.state.spoolman.currency
+  }
+
   get isConnected (): boolean {
     return this.$store.state.spoolman.connected
   }
@@ -251,17 +255,38 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     if (!this.activeSpool) return '-'
 
     switch (field) {
-      case 'vendor': return this.activeSpool.filament.vendor?.name || '-'
-      case 'filament_name': return this.activeSpool.filament.name
-      case 'material': return this.activeSpool.filament.material || '-'
-      case 'first_used': return this.activeSpool.first_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.first_used) : this.$tc('app.setting.label.never')
-      case 'last_used': return this.activeSpool.last_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.last_used) : this.$tc('app.setting.label.never')
-      case 'price': return this.activeSpool.filament.price || '-'
-      case 'density': return this.activeSpool.filament.density || '-'
-      case 'extruder_temp': return this.activeSpool.filament.settings_extruder_temp || '-'
-      case 'bed_temp': return this.activeSpool.filament.settings_bed_temp || '-'
+      case 'vendor':
+        return this.activeSpool.filament.vendor?.name || '-'
 
-      default: return this.activeSpool[field as keyof Spool] || '-'
+      case 'filament_name':
+        return this.activeSpool.filament.name
+
+      case 'material':
+        return this.activeSpool.filament.material || '-'
+
+      case 'first_used':
+        return this.activeSpool.first_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.first_used) : this.$tc('app.setting.label.never')
+
+      case 'last_used':
+        return this.activeSpool.last_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.last_used) : this.$tc('app.setting.label.never')
+
+      case 'price':
+        return [
+          this.activeSpool.filament.price?.toFixed(2),
+          this.currency
+        ].filter(x => x != null).join(' ') || '-'
+
+      case 'density':
+        return this.activeSpool.filament.density || '-'
+
+      case 'extruder_temp':
+        return this.activeSpool.filament.settings_extruder_temp || '-'
+
+      case 'bed_temp':
+        return this.activeSpool.filament.settings_bed_temp || '-'
+
+      default:
+        return this.activeSpool[field as keyof Spool] || '-'
     }
   }
 }
