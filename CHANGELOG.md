@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.32.1](https://github.com/fluidd-core/fluidd/compare/v1.32.0...v1.32.1) (2025-02-08)
+
+
+### Bug Fixes
+
+* printer settings must use lowercase key ([#1582](https://github.com/fluidd-core/fluidd/issues/1582)) ([79a39ed](https://github.com/fluidd-core/fluidd/commit/79a39edf939d7d575639e21988deaa73a614903e))
+
 ## [1.32.0](https://github.com/fluidd-core/fluidd/compare/v1.31.4...v1.32.0) (2025-02-07)
 
 
