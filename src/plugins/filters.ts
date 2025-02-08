@@ -98,7 +98,7 @@ export const Rules = {
   },
 
   numberGreaterThanOrEqual (min: number) {
-    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || v >= min || i18n.t('app.general.simple_form.error.min', { v })
+    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || v >= min || i18n.t('app.general.simple_form.error.min', { min })
   },
 
   numberGreaterThanOrEqualOrZero (min: number) {
