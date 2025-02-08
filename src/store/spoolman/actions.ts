@@ -29,6 +29,7 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
   async init () {
     SocketActions.serverSpoolmanGetSpoolId()
     SocketActions.serverSpoolmanProxyGetAvailableSpools()
+    SocketActions.serverSpoolmanProxyGetSettingCurrency()
   },
 
   async onActiveSpool ({ commit }, payload) {
@@ -130,6 +131,19 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       // refresh data, connected state will be set on data retrieval
       dispatch('init')
     } else commit('setConnected', payload)
+  },
+
+  async onSettingCurrency ({ commit }, payload: SpoolmanProxyResponse<{ value: string }>) {
+    if ('error' in payload && 'response' in payload) {
+      if (payload.error != null) {
+        EventBus.$emit(typeof payload.error === 'string' ? payload.error : payload.error.message, { type: 'error' })
+        return
+      }
+
+      payload = payload.response
+    }
+
+    commit('setCurrency', payload)
   },
 
   async initializeWebsocketConnection ({ state, rootState, dispatch }) {
