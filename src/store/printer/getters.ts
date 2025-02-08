@@ -326,7 +326,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
         name: key,
         prettyName: Vue.$filters.prettyCase(key),
         ...state.printer[key],
-        config: state.printer.configfile.settings[key]
+        config: state.printer.configfile.settings[key.toLowerCase()]
       }))
 
     return mcus
@@ -370,7 +370,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   // Returns an extruder by name.
   getExtruderByName: (state) => (name: 'extruder' | `extruder${number}`) => {
     const e = state.printer[name]
-    const c = state.printer.configfile.settings[name]
+    const c = state.printer.configfile.settings[name.toLowerCase()]
 
     // If we can't find what we need..
     if (!e || !c) return undefined
@@ -410,7 +410,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
         : item.split(' ', 2).pop() || ''
 
       const e = state.printer[item]
-      const c = state.printer.configfile.settings[item]
+      const c = state.printer.configfile.settings[item.toLowerCase()]
 
       steppers.push({
         name,
@@ -484,7 +484,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
         'bltouch',
         'smart_effector',
         'probe'
-      ]
+      ] as const
 
       for (const name of probeNames) {
         const probeSettings = state.printer.configfile.settings[name]
@@ -515,7 +515,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       heaters.forEach((e: string) => {
         const heater = state.printer[e]
         if (heater && Object.keys(heater).length > 0) {
-          const config = state.printer.configfile.settings[e]
+          const config = state.printer.configfile.settings[e.toLowerCase()]
           // Some heater items may have a prefix determining type.
           // Check for these and split as necessary.
           const keys = [
@@ -696,7 +696,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
           ? Vue.$colorset.next(getKlipperType(pin), pin)
           : undefined
 
-        const config = state.printer.configfile.settings[pin]
+        const config = state.printer.configfile.settings[pin.toLowerCase()]
 
         let output: Fan | Led | OutputPin = {
           ...state.printer[pin],
