@@ -59,7 +59,7 @@ app:
         see the documentation on multi printer setups <a href="%{url}"
         target="_blank">here</a>
     hint:
-      add_printer: E.g., http://fluiddpi.local
+      add_printer: E.g., http://fluidd.local
     msg:
       trouble: >-
         Having trouble? <a href="%{url}" target="_blank">See here</a> for more

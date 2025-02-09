@@ -47,15 +47,14 @@ app:
         pročtěte si dokumentaci ohledně multi printer nastavení  <a
         href="%{url}" target="_blank">zde</a>
     hint:
-      add_printer: Např. http://fluiddpi.local
+      add_printer: Např. http://fluidd.local
     msg:
       trouble: >-
         Nefunguje Vám něco? <a href="%{url}" target="_blank">Klikněte zde </a>
         pro více informací.
     tooltip:
       endpoint_examples: >-
-        Vložte URL Vašeho API.<br />Příklad URL;<br /><blockquote>fluidd.local,
-        https://192.168.1.150</blockquote>
+        Vložte URL Vašeho API.<br />Příklad URL;<br /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
     label:
       open: OTEVŘEN

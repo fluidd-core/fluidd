@@ -59,14 +59,14 @@ app:
         Veuillez consulter la documentation sur les configurations multi-imprimantes
         <a href="%{url}" target="_blank">ici</a>
     hint:
-      add_printer: 'Ex : http://fluiddpi.local'
+      add_printer: 'Ex : http://fluidd.local'
     msg:
       trouble: >-
         Un souci ? <a href="%{url}" target="_blank">Cliquez ici</a> pour plus d'informations.
     tooltip:
       endpoint_examples: >-
         Saissizez l'URL de l'API .<br />Par exemple;<br
-        /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+        /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
     label:
       open: OUVERT

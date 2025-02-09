@@ -63,7 +63,7 @@ app:
         <a
         href="%{url}" target="_blank">здесь</a>
     hint:
-      add_printer: Например, http://fluiddpi.local
+      add_printer: Например, http://fluidd.local
     msg:
       trouble: >-
         Столкнулись с проблемами?<br>
@@ -71,7 +71,7 @@ app:
     tooltip:
       endpoint_examples: >-
         Введите URL-адрес API.<br />В качестве примера, может быть что-то
-        подобное:<br /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+        подобное:<br /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
     label:
       open: Не сработал

@@ -53,15 +53,14 @@ app:
         Будь-ласка перегляньте документацію налаштування декількох принтерів <a
         href="%{url}" target="_blank">тут</a>
     hint:
-      add_printer: Наприклад, http://fluiddpi.local
+      add_printer: Наприклад, http://fluidd.local
     msg:
       trouble: >-
         Виникли проблеми? Перейдіть <a href="%{url}" target="_blank">сюди</a>
         для отримання додаткової інформації.
     tooltip:
       endpoint_examples: >-
-        Введіть API URL. <br />Наприклад:<br /><blockquote>http://fluidd.local,
-        http://192.168.1.150</blockquote>
+        Введіть API URL. <br />Наприклад:<br /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
     label:
       open: Немає контакту

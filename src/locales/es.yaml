@@ -58,7 +58,7 @@ app:
         Consulte la documentación sobre las configuraciones con varias
         impresoras <a href="%{url}" target="_blank">aquí</a>.
     hint:
-      add_printer: 'Ex., http://fluiddpi.local'
+      add_printer: 'Ex., http://fluidd.local'
     msg:
       trouble: >-
         ¿Tienes problemas? <a href="%{url}" target="_blank">Haga clic aquí</a>

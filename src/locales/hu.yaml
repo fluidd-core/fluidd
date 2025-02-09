@@ -62,7 +62,7 @@ app:
         Kérjük, tekintsd meg a több nyomtató beállításával kapcsolatos
         dokumentációt <a href="%{url}" target="_blank">itt</a>
     hint:
-      add_printer: 'Pl.: Http://fluiddpi.local'
+      add_printer: 'Pl.: Http://fluidd.local'
     msg:
       trouble: >-
         Problémád akadt? További információt <a href="%{url}"
@@ -70,7 +70,7 @@ app:
     tooltip:
       endpoint_examples: >-
         Add meg az API URL-címét.<br />Pár példa
-        látható;<br /><blockquote>fluidd.local, http://192.168.1.150</blockquote>
+        látható;<br /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
     label:
       open: NYITVA
@@ -798,7 +798,7 @@ app:
       canbus_warning: 'Csak a hozzá nem rendelt CAN-busz-csomópontok észlelhetők.<br>
         Javasoljuk, hogy a kommunikációs problémák elkerülése érdekében csak egy hozzá
         nem rendelt eszközt csatlakoztass a CAN-buszhoz.<br> További információk:
-        <a target="_blank" href="https ://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">itt.</a>'
+        <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">itt.</a>'
   tool:
     btn:
       home_x: X

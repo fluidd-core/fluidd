@@ -42,13 +42,12 @@ app:
       cors_note: >-
         這可能意味著您需要修改 Moonraker 配置。請參閱有關多打印機設置的<a href="%{url}" target="_blank">文檔</a>
     hint:
-      add_printer: '例如：http://fluiddpi.local'
+      add_printer: '例如：http://fluidd.local'
     msg:
       trouble: '遇到麻煩？<a href="%{url}" target="_blank">點擊此處</a> 查看更多信息。'
     tooltip:
       endpoint_examples: >-
-        輸入您的 Moonraker API 地址。<br />例如：<br/><blockquote>http://fluidd.local,
-        http://192.168.1.276</blockquote>
+        輸入您的 Moonraker API 地址。<br />例如：<br/><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
     label:
       open: 未觸發

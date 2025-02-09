@@ -55,7 +55,7 @@ app:
         Prosimo, preberite dokumentacijo o <a href="%{url}"
         target="_blank">nastavitvi</a> več tiskalnikov.
     hint:
-      add_printer: Npr., http://fluiddpi.local
+      add_printer: Npr., http://fluidd.local
     msg:
       trouble: >-
         Imate težave?<a href="%{url}" target="_blank">Poglejte tukaj</a>

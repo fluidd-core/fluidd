@@ -49,7 +49,7 @@ app:
         この場合、moonrakerの設定を変更する必要がある場合があります。マルチプリンター設定に関するドキュメントをご覧ください <a
         href="%{url}" target="_blank">こちら</a>。
     hint:
-      add_printer: '例）http://fluiddpi.local'
+      add_printer: '例）http://fluidd.local'
     msg:
       trouble: 'お困りですか？ <a href="%{url}" target="_blank">詳細はこちら</a> をご覧ください。'
     tooltip:

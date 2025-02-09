@@ -43,13 +43,12 @@ app:
         这可能意味着您需要修改 Moonraker 配置。请参阅有关多打印机设置的<a href=\"%{url}\"
         target=\"_blank\">文档</a>
     hint:
-      add_printer: 例如：http://fluiddpi.local
+      add_printer: 例如：http://fluidd.local
     msg:
       trouble: 遇到麻烦？<a href="%{url}" target="_blank">点击此处</a> 查看更多信息。
     tooltip:
       endpoint_examples: >-
-        输入您的 Moonraker API 地址。<br />例如：<br/><blockquote>http://fluidd.local,
-        http://192.168.1.150</blockquote>
+        输入您的 Moonraker API 地址。<br />例如：<br/><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
     label:
       open: 未触发
