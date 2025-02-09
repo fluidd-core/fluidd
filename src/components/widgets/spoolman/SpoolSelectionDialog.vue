@@ -86,9 +86,11 @@
         dense
         single-line
         hide-details
+        spellcheck="false"
         append-icon="$magnify"
         style="max-width: 360px"
         class="ml-1"
+        @focus="$event.target.select()"
       />
     </v-toolbar>
 
