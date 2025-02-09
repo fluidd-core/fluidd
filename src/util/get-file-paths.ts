@@ -10,8 +10,8 @@ const getFilePaths = (pathFilename: string, root = ''): FilePaths => {
   const rootPath = root && path ? `${root}/${path}` : root || path
   const rootPathFilename = rootPath ? `${rootPath}/${filename}` : filename
 
-  const extensionIndex = filename.lastIndexOf('.') + 1
-  const extension = extensionIndex > 0 ? filename.substring(extensionIndex) : ''
+  const extensionIndex = filename.lastIndexOf('.')
+  const extension = extensionIndex >= 0 ? filename.substring(extensionIndex) : ''
 
   return {
     root,
