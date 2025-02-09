@@ -9,7 +9,7 @@
       <slot />
     </app-btn>
     <v-menu
-      v-if="paramList.length > 0"
+      v-if="hasParams"
       left
       offset-y
       transition="slide-y-transition"
@@ -34,40 +34,28 @@
       <v-form @submit.prevent="$emit('click', runCommand)">
         <v-card>
           <v-card-text class="pb-3 px-3">
-            <v-layout
-              wrap
+            <v-row
+              v-for="(param, key) in params"
+              :key="key"
               style="max-width: 150px;"
             >
-              <v-text-field
-                v-for="(param, i) in paramList"
-                :key="param"
-                v-model="params[param].value"
-                :type="isBasicGcodeCommand && !paramNameForRawGcodeCommand ? 'number' : undefined"
-                :label="param"
-                persistent-placeholder
-                outlined
-                dense
-                hide-details="auto"
-                spellcheck="false"
-                class="console-command"
-                :class="{ 'mb-3': (i < paramList.length - 1) }"
-                @focus="$event.target.select()"
-              >
-                <template #append>
-                  <app-btn
-                    v-if="params[param].value !== params[param].reset"
-                    style="margin-top: -4px; margin-right: -6px;"
-                    icon
-                    small
-                    @click="params[param].value = params[param].reset"
-                  >
-                    <v-icon small>
-                      $reset
-                    </v-icon>
-                  </app-btn>
-                </template>
-              </v-text-field>
-            </v-layout>
+              <v-col>
+                <v-text-field
+                  v-model="param.value"
+                  :type="isBasicGcodeCommand && !paramNameForRawGcodeCommand ? 'number' : undefined"
+                  :label="key"
+                  persistent-placeholder
+                  outlined
+                  dense
+                  hide-details="auto"
+                  spellcheck="false"
+                  class="console-command"
+                  :append-icon="param.value !== param.reset ? '$reset' : undefined"
+                  @click:append="param.value = param.reset"
+                  @focus="$event.target.select()"
+                />
+              </v-col>
+            </v-row>
           </v-card-text>
           <v-divider />
           <v-card-actions class="px-3 py-3">
@@ -104,6 +92,10 @@ export default class MacroBtn extends Mixins(StateMixin) {
 
   params: Record<string, MacroParameter> = {}
 
+  get hasParams () {
+    return Object.keys(this.params).length > 0
+  }
+
   get macroName () {
     return this.macro.name.toUpperCase()
   }
@@ -121,10 +113,6 @@ export default class MacroBtn extends Mixins(StateMixin) {
     const { click, ...listeners } = this.$listeners
 
     return listeners
-  }
-
-  get paramList () {
-    return Object.keys(this.params)
   }
 
   /**
