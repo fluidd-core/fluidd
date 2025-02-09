@@ -802,7 +802,7 @@ app:
         Могут быть обнаружены только неназначенные узлы (устройства) на CAN-шины.<br>
         Во избежание проблем со связью рекомендуется подключать к CAN-шине только
         одно неназначенное устройство.<br>
-        Подробнее об этом написано <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">здесь</a>.
+        Подробнее об этом написано <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">здесь</a>.
       no_devices_found: Устройства не найдены.
       no_devices_searched: Используйте кнопку обновления для поиска устройств.
   tool:

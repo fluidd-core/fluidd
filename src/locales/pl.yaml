@@ -787,7 +787,7 @@ app:
         Zaleca się podłączenie tylko jednego nieprzypisanego urządzenia do magistrali
         CAN, aby uniknąć problemów z komunikacją.<br> Więcej informacji można znaleźć
         <a target="_blank" 
-        href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">tutaj.</a>
+        href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">tutaj.</a>
       no_devices_searched: Użyj przycisku odświeżania, aby wyszukać urządzenia
       no_devices_found: Nie znaleziono urządzeń
   history:

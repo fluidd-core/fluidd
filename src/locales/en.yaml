@@ -758,7 +758,7 @@ app:
       canbus_warning: >-
         Only unassigned CAN bus nodes can be detected.<br>
         It is recommended to have only one unassigned device connected to the CAN bus to avoid communication issues.<br>
-        More information can be found <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">here.</a>
+        More information can be found <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">here.</a>
       no_devices_found: No devices found
       no_devices_searched: Use the refresh button to search for devices
   tool:
