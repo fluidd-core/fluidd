@@ -809,7 +809,7 @@ app:
       canbus_warning: Nur unzugewiesene CAN-Bus-Knoten werden erkannt.<br>Es ist empfohlen,
         nur ein unzugewiesenes Gerät an den CAN-Bus anzuschließen, um Kommunikationsprobleme
         zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank" 
-        href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">hier.</a>
+        href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">hier.</a>
   tool:
     btn:
       home_x: X

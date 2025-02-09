@@ -756,7 +756,7 @@ app:
         Il est recommandé de n'avoir qu'un seul dispositif non assigné connecté au
         bus CAN pour éviter les problèmes de communication.<br> De plus amples informations
         peuvent être trouvées <a target="_blank" 
-        href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">ici.</a>
+        href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">ici.</a>
   tool:
     btn:
       home_x: X
