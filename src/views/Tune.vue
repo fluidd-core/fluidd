@@ -16,19 +16,24 @@
     >
       <bed-mesh-controls
         v-if="supportsBedMesh"
-        class="mb-2 mb-sm-4"
+        class="mb-2 mb-md-4"
       />
+
       <end-stops-card
         v-if="supportsEndStops"
-        class="mb-2 mb-sm-4"
+        class="mb-2 mb-md-4"
       />
+
       <runout-sensors-card
         v-if="supportsRunoutSensors"
         fullscreen
+        class="mb-2 mb-md-4"
       />
+
       <beacon-card
         v-if="supportsBeacon"
         fullscreen
+        class="mb-2 mb-md-4"
       />
     </v-col>
   </v-row>

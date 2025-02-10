@@ -751,8 +751,8 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
 
   :deep(.v-input__slot) {
     overflow: hidden;
-    max-height: calc(100vh - 380px);
-    max-height: calc(100svh - 380px);
+    max-height: calc(100vh - 398px);
+    max-height: calc(100svh - 398px);
     min-height: 250px !important;
     aspect-ratio: 1;
 

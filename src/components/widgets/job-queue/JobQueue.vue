@@ -1,6 +1,8 @@
 <template>
   <v-card
+    class="filesystem-wrapper"
     :class="{ 'no-pointer-events': overlay }"
+    flat
     @dragover="handleDragOver"
     @dragenter.self.prevent
     @dragleave.self.prevent="handleDragLeave"
@@ -240,3 +242,15 @@ export default class JobQueue extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .filesystem-wrapper,
+  .file-system,
+  .file-system :deep(.app-draggable),
+  .file-system :deep(.v-data-table) {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+  }
+</style>

@@ -1,8 +1,6 @@
 <template>
   <v-card
     class="filesystem-wrapper"
-    :height="height"
-    :max-height="maxHeight"
     :class="{ 'no-pointer-events': dragState.overlay }"
     flat
     @dragover="handleDragOver"
@@ -190,14 +188,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   // If dense, hide the meta and reduce the overall size.
   @Prop({ type: Boolean })
   readonly dense?: boolean
-
-  // Constrain height
-  @Prop({ type: [Number, String] })
-  readonly height!: number | string
-
-  // Constrain height
-  @Prop({ type: [Number, String] })
-  readonly maxHeight!: number | string
 
   // Allow bulk-actions
   @Prop({ type: Boolean })

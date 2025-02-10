@@ -56,6 +56,10 @@
     <job-queue
       :dense="!fullscreen"
       :bulk-actions="fullscreen"
+      :class="{
+        'full-screen': fullscreen,
+        'partial-screen': !fullscreen
+      }"
     />
   </collapsable-card>
 </template>
@@ -91,3 +95,14 @@ export default class JobQueueCard extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .full-screen {
+    height: calc(100vh - 190px);
+    height: calc(100svh - 190px);
+  }
+
+  .partial-screen {
+    height: 400px;
+  }
+</style>

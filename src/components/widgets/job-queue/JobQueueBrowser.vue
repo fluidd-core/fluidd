@@ -17,6 +17,7 @@
         :show-select="bulkActions"
         :no-data-text="$t('app.file_system.msg.not_found')"
         :no-results-text="$t('app.file_system.msg.not_found')"
+        height="100%"
         mobile-breakpoint="0"
         hide-default-footer
         disable-pagination

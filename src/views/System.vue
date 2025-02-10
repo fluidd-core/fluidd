@@ -4,7 +4,8 @@
       cols="12"
       md="6"
     >
-      <system-overview-card class="mb-2 mb-sm-4" />
+      <system-overview-card class="mb-2 mb-md-4" />
+
       <disk-usage-card />
     </v-col>
 
@@ -12,12 +13,13 @@
       cols="12"
       md="6"
     >
-      <system-usage-card class="mb-2 mb-sm-4" />
+      <system-usage-card class="mb-2 mb-md-4" />
+
       <template v-for="mcu in mcus">
         <mcu-card
           :key="mcu.name"
           :mcu="mcu"
-          class="mb-2 mb-sm-4"
+          class="mb-2 mb-md-4"
         />
       </template>
     </v-col>

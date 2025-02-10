@@ -1,42 +1,38 @@
 <template>
-  <v-container>
-    <v-row align="center">
-      <v-col>
-        <v-textarea
-          ref="input"
-          :rows="1"
-          :value="newValue"
-          :items="history"
-          :disabled="disabled"
-          :autofocus="autofocus"
-          auto-grow
-          clearable
-          outlined
-          single-line
-          dense
-          hide-details
-          spellcheck="false"
-          class="console-command"
-          @input="emitChange"
-          @keyup.enter.exact="emitSend(newValue)"
-          @keydown.enter.exact.prevent
-          @keydown.up.exact.prevent="historyUp()"
-          @keydown.down.exact.prevent="historyDown()"
-          @keydown.prevent.tab="autoComplete()"
-        />
-      </v-col>
-      <v-col cols="auto">
-        <app-btn
-          :disabled="disabled"
-          @click="emitSend(newValue)"
-        >
-          {{ $t('app.general.btn.send') }}
-        </app-btn>
-      </v-col>
-    </v-row>
-  </v-container>
-  <!-- <pre>{{ originalHistory }}</pre>
-    <pre>{{ history }}</pre> -->
+  <v-row class="ma-2">
+    <v-col>
+      <v-textarea
+        ref="input"
+        :rows="1"
+        :value="newValue"
+        :items="history"
+        :disabled="disabled"
+        :autofocus="autofocus"
+        auto-grow
+        clearable
+        outlined
+        single-line
+        dense
+        hide-details
+        spellcheck="false"
+        class="console-command"
+        @input="emitChange"
+        @keyup.enter.exact="emitSend(newValue)"
+        @keydown.enter.exact.prevent
+        @keydown.up.exact.prevent="historyUp()"
+        @keydown.down.exact.prevent="historyDown()"
+        @keydown.prevent.tab="autoComplete()"
+      />
+    </v-col>
+    <v-col cols="auto">
+      <app-btn
+        :disabled="disabled"
+        @click="emitSend(newValue)"
+      >
+        {{ $t('app.general.btn.send') }}
+      </app-btn>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
