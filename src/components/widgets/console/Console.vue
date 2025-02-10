@@ -188,11 +188,6 @@ export default class Console extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .console {
-    position: relative;
-    display: block;
-  }
-
   .console-item {
     white-space: pre-wrap;
   }
@@ -208,8 +203,8 @@ export default class Console extends Mixins(StateMixin) {
     height: 300px;
   }
   .console-scroller-fullscreen {
-    height: calc(100vh - 240px);
-    height: calc(100svh - 240px);
+    height: calc(100vh - 260px);
+    height: calc(100svh - 260px);
   }
 
   .v-input {

@@ -2,7 +2,6 @@
   <collapsable-card
     :title="$t('app.timelapse.title.timelapse_status')"
     icon="$info"
-    class="mb-2 sb-sm-4"
   >
     <v-card-text>
       <v-row>

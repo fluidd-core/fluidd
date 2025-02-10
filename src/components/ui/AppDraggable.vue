@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-draggable">
     <slot />
   </div>
 </template>
