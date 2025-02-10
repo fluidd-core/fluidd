@@ -69,7 +69,7 @@ export default class Timelapse extends Mixins(StateMixin) {
 
 <style lang="scss" scoped>
   .full-screen {
-    height: calc(100vh - 190px);
-    height: calc(100svh - 190px);
+    max-height: calc(100vh - 190px);
+    max-height: calc(100svh - 190px);
   }
 </style>

@@ -49,8 +49,8 @@ export default class JobsCard extends Vue {
 
 <style lang="scss" scoped>
   .full-screen {
-    height: calc(100vh - 190px);
-    height: calc(100svh - 190px);
+    max-height: calc(100vh - 190px);
+    max-height: calc(100svh - 190px);
   }
 
   .partial-screen {
