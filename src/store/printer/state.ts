@@ -6,6 +6,7 @@ import type { PrinterState } from './types'
  */
 export const defaultState = (): PrinterState => {
   return {
+    info: null,
     endstops: {},
     manualProbeDialogOpen: false,
     bedScrewsAdjustDialogOpen: false,
