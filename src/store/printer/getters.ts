@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
-import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, ExtruderStepper, Extruder, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, KlippyApp, ExcludeObjectPart, KlipperPrinterConfig, KlipperPrinterProbeState, BeaconModel, BedScrewsScrew } from './types'
+import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, ExtruderStepper, Extruder, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, KlippyApp, ExcludeObjectPart, KlipperPrinterConfig, KlipperPrinterProbeState, BeaconModel, BedScrewsScrew, ExtruderKey } from './types'
 import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
 import type { GcodeHelp } from '../console/types'
@@ -346,15 +346,16 @@ export const getters: GetterTree<PrinterState, RootState> = {
   /**
  * Return known extruders, giving them a friendly name.
  */
-  getExtruders: (state) => {
-    const extruderCount = Object.keys(state.printer)
-      .filter(key => /^extruder\d{0,2}$/.exec(key))
-      .length
+  getExtruders: (state): KnownExtruder[] => {
+    const extruderKeys = Object.keys(state.printer)
+      .filter((key): key is ExtruderKey => /^extruder\d{0,2}$/.test(key))
+      .sort((a, b) => +a.substring(8) - +b.substring(8))
+    const hasMultipleExtruders = extruderKeys.length > 1
 
-    return [...Array(extruderCount).keys()]
-      .map((index): KnownExtruder => ({
-        key: `extruder${index === 0 ? '' : index}`,
-        name: extruderCount === 1 ? 'Extruder' : `Extruder ${index}`
+    return extruderKeys
+      .map((key, index) => ({
+        key,
+        name: hasMultipleExtruders ? `Extruder ${index}` : 'Extruder'
       }))
   },
 
@@ -368,7 +369,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   // Returns an extruder by name.
-  getExtruderByName: (state) => (name: 'extruder' | `extruder${number}`) => {
+  getExtruderByName: (state) => (name: ExtruderKey) => {
     const e = state.printer[name]
     const c = state.printer.configfile.settings[name.toLowerCase()]
 

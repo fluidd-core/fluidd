@@ -28,7 +28,16 @@ export interface PrinterInfo {
 
 export type PrinterInfoState = 'ready' | 'startup' | 'shutdown' | 'error'
 
-export interface KlipperPrinterState {
+type NonZeroDigit = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+type Digit = '0' | NonZeroDigit
+
+export type ExtruderKey = 'extruder' | `extruder${NonZeroDigit}` | `extruder${NonZeroDigit}${Digit}`
+
+type KlipperPrinterStateBaseType = {
+  [key in ExtruderKey]?: KlipperPrinterExtruderState
+}
+
+export interface KlipperPrinterState extends KlipperPrinterStateBaseType {
   [key: string]: any;
 
   // These keys are always available
@@ -80,10 +89,6 @@ export interface KlipperPrinterState {
   [key: `gcode_macro ${string}`]: KlipperPrinterGcodeMacroState;
 
   hall_filament_width_sensor?: KlipperPrinterHallFilamentWidthSensorState;
-
-  extruder?: KlipperPrinterExtruderState;
-
-  [key: `extruder${number}`]: KlipperPrinterExtruderState;
 
   heater_bed?: KlipperPrinterHeaterBedState;
 
@@ -198,7 +203,7 @@ export interface KlipperPrinterToolheadState {
   print_time: number;
   stalls: number;
   estimated_print_time: number;
-  extruder: string;
+  extruder: '' | ExtruderKey;
   position: [number, number, number, number];
   max_velocity: number;
   max_accel: number;
@@ -564,26 +569,30 @@ export interface KlipperPrinterBeaconState {
 export interface KlipperPrinterConfig extends Record<string, Record<string, string>> {
 }
 
-export interface KlipperPrinterSettings {
+type KlipperPrinterSettingsBaseType = {
+  [key in ExtruderKey]?: KlipperPrinterExtruderSettings
+}
+
+export interface KlipperPrinterSettings extends KlipperPrinterSettingsBaseType {
   [key: string]: any;
 
   mcu?: KlipperPrinterMcuSettings;
 
-  [key: `mcu ${string}`]: KlipperPrinterMcuSettings;
+  [key: `mcu ${Lowercase<string>}`]: KlipperPrinterMcuSettings;
 
-  [key: `tmc${'2130' | '2208' | '2209' | '2660' | '2240' | '5160'} ${string}`]: KlipperPrinterTmcSettings;
+  [key: `tmc${'2130' | '2208' | '2209' | '2660' | '2240' | '5160'} ${Lowercase<string>}`]: KlipperPrinterTmcSettings;
 
   fan?: KlipperPrinterFanSettings;
 
-  [key: `${'heater_fan'} ${string}`]: KlipperPrinterHeaterFanSettings;
+  [key: `heater_fan ${Lowercase<string>}`]: KlipperPrinterHeaterFanSettings;
 
-  [key: `${'controller_fan'} ${string}`]: KlipperPrinterControllerFanSettings;
+  [key: `controller_fan ${Lowercase<string>}`]: KlipperPrinterControllerFanSettings;
 
-  [key: `output_pin ${string}`]: KlipperPrinterOutputPinSettings;
+  [key: `output_pin ${Lowercase<string>}`]: KlipperPrinterOutputPinSettings;
 
-  [key: `${'led' | 'neopixel' | 'dotstar' | 'pca9533' | 'pca9632'} ${string}`]: KlipperPrinterLedSettings;
+  [key: `${'led' | 'neopixel' | 'dotstar' | 'pca9533' | 'pca9632'} ${Lowercase<string>}`]: KlipperPrinterLedSettings;
 
-  [key: `temperature_sensor ${string}`]: KlipperPrinterTemperatureSensorSettings;
+  [key: `temperature_sensor ${Lowercase<string>}`]: KlipperPrinterTemperatureSensorSettings;
 
   safe_z_home?: KlipperPrinterSafeZHomeSettings;
 
@@ -593,7 +602,7 @@ export interface KlipperPrinterSettings {
 
   board_pins?: KlipperPrinterBoardPinsSettings;
 
-  [key: `bed_mesh ${string}`]: KlipperPrinterBedMeshModelSettings;
+  [key: `bed_mesh ${Lowercase<string>}`]: KlipperPrinterBedMeshModelSettings;
 
   bed_screws?: KlipperPrinterBedScrewsSettings;
 
@@ -613,11 +622,11 @@ export interface KlipperPrinterSettings {
 
   delta_calibrate?: KlipperPrinterDeltaCalibrateSettings;
 
-  [key: `gcode_macro ${string}`]: KlipperPrinterGcodeMacroSettings;
+  [key: `gcode_macro ${Lowercase<string>}`]: KlipperPrinterGcodeMacroSettings;
 
   heater_bed?: KlipperPrinterHeaterBedSettings;
 
-  [key: `verify_heater ${string}`]: KlipperPrinterVerifyHeaterSettings;
+  [key: `verify_heater ${Lowercase<string>}`]: KlipperPrinterVerifyHeaterSettings;
 
   probe?: KlipperPrinterProbeSettings;
 
@@ -627,27 +636,23 @@ export interface KlipperPrinterSettings {
 
   printer?: KlipperPrinterPrinterSettings;
 
-  [key: `stepper_${string}`]: KlipperPrinterStepperSettings;
+  [key: `stepper_${Lowercase<string>}`]: KlipperPrinterStepperSettings;
 
-  [key: `extruder_stepper ${string}`]: KlipperPrinterExtruderStepperSettings;
+  [key: `extruder_stepper ${Lowercase<string>}`]: KlipperPrinterExtruderStepperSettings;
 
   idle_timeout?: KlipperPrinterIdleTimeoutSettings;
 
-  extruder?: KlipperPrinterExtruderSettings;
-
-  [key: `extruder${number}`]: KlipperPrinterExtruderSettings;
-
   exclude_object?: KlipperPrinterExcludeObjectSettings;
 
-  [key: `endstop_phase ${string}`]: KlipperPrinterEndstopPhaseSettings;
+  [key: `endstop_phase ${Lowercase<string>}`]: KlipperPrinterEndstopPhaseSettings;
 
-  [key: `display_template ${string}`]: KlipperPrinterDisplayTemplateSettings;
+  [key: `display_template ${Lowercase<string>}`]: KlipperPrinterDisplayTemplateSettings;
 
   // These keys are for external modules
 
   beacon?: KlipperPrinterBeaconSettings;
 
-  [key: `beacon model ${string}`]: KlipperPrinterBeaconModelSettings;
+  [key: `beacon model ${Lowercase<string>}`]: KlipperPrinterBeaconModelSettings;
 }
 
 export interface KlipperPrinterMcuSettings {
@@ -1033,7 +1038,7 @@ export interface KlipperPrinterBeaconModelSettings extends Record<string, any> {
 
 export interface KnownExtruder {
   name: string;
-  key: 'extruder' | `extruder${number}`;
+  key: ExtruderKey;
 }
 
 export interface Extruder extends KlipperPrinterExtruderState {
@@ -1042,7 +1047,7 @@ export interface Extruder extends KlipperPrinterExtruderState {
 }
 
 export interface ExtruderStepper extends StepperType<ExtruderStepperConfig> {
-  motion_queue?: string | null;
+  motion_queue?: ExtruderKey | null;
   pressure_advance?: number;
   smooth_time?: number;
 }
