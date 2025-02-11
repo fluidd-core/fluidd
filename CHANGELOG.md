@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.32.2](https://github.com/fluidd-core/fluidd/compare/v1.32.1...v1.32.2) (2025-02-11)
+
+
+### Features
+
+* **Spoolman:** show currency for price field ([#1584](https://github.com/fluidd-core/fluidd/issues/1584)) ([32075dd](https://github.com/fluidd-core/fluidd/commit/32075ddd8c301fcfc713b0b80aa2e6d492dbaa48))
+
+
+### Bug Fixes
+
+* **Camera:** full-screen link ([#1586](https://github.com/fluidd-core/fluidd/issues/1586)) ([8e7afd8](https://github.com/fluidd-core/fluidd/commit/8e7afd86f74dfad1592c1c65b504fd8d2ddb6c2e))
+* ensure Kalico is correctly detected ([#1593](https://github.com/fluidd-core/fluidd/issues/1593)) ([1d18a6b](https://github.com/fluidd-core/fluidd/commit/1d18a6bcd60b03720c6428ede06a6e86573eacb3))
+* **FileSystem:** extension parsing ([#1590](https://github.com/fluidd-core/fluidd/issues/1590)) ([c47d6d6](https://github.com/fluidd-core/fluidd/commit/c47d6d6f7295776756ff2d5bd84754b2007b771b))
+* **i18n:** broken moonraker link ([#1588](https://github.com/fluidd-core/fluidd/issues/1588)) ([bf52fe1](https://github.com/fluidd-core/fluidd/commit/bf52fe1886bdc7dbae15a101c69058c0cbc48789))
+* **i18n:** replaces broken links ([18961ca](https://github.com/fluidd-core/fluidd/commit/18961ca5859df28f6f840288d9fed135b41b9b4f))
+
+
+### Code Refactorings
+
+* typing improvements and fixes ([e60cef1](https://github.com/fluidd-core/fluidd/commit/e60cef1e7f4e0d63afe8aea54fdad45be80828c0))
+
 ## [1.32.1](https://github.com/fluidd-core/fluidd/compare/v1.32.0...v1.32.1) (2025-02-08)
 
 
