@@ -55,7 +55,7 @@
                   v-if="c.enabled || inLayout"
                   :key="c.id"
                   :config="c"
-                  class="mb-2 mb-sm-4"
+                  class="mb-2 mb-md-4"
                   @edit="handleEditCard"
                 />
               </template>

@@ -2,7 +2,6 @@
   <collapsable-card
     :title="$t('app.timelapse.title.timelapse_settings')"
     icon="$cog"
-    class=""
   >
     <app-setting
       :title="$t('app.timelapse.setting.enable')"

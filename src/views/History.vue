@@ -1,8 +1,9 @@
 <template>
   <v-row :dense="$vuetify.breakpoint.smAndDown">
     <v-col cols="12">
-      <printer-stats-card class="mb-2 mb-sm-4" />
-      <printer-history-card />
+      <printer-stats-card class="mb-2 mb-md-4" />
+
+      <printer-history-card class="mb-2 mb-md-4" />
     </v-col>
   </v-row>
 </template>
