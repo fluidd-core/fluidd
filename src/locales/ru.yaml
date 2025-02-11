@@ -63,7 +63,7 @@ app:
         <a
         href="%{url}" target="_blank">здесь</a>
     hint:
-      add_printer: Например, http://fluiddpi.local
+      add_printer: Например, http://fluidd.local
     msg:
       trouble: >-
         Столкнулись с проблемами?<br>
@@ -71,7 +71,7 @@ app:
     tooltip:
       endpoint_examples: >-
         Введите URL-адрес API.<br />В качестве примера, может быть что-то
-        подобное:<br /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+        подобное:<br /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
     label:
       open: Не сработал
@@ -802,7 +802,7 @@ app:
         Могут быть обнаружены только неназначенные узлы (устройства) на CAN-шины.<br>
         Во избежание проблем со связью рекомендуется подключать к CAN-шине только
         одно неназначенное устройство.<br>
-        Подробнее об этом написано <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">здесь</a>.
+        Подробнее об этом написано <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">здесь</a>.
       no_devices_found: Устройства не найдены.
       no_devices_searched: Используйте кнопку обновления для поиска устройств.
   tool:

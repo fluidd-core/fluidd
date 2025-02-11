@@ -62,7 +62,7 @@ app:
         Consulta la documentazione sulle configurazioni di più stampanti
         contemporanee <a href="%{url}" target="_blank"> qui </a>
     hint:
-      add_printer: Ad esempio, http://fluiddpi.local
+      add_printer: Ad esempio, http://fluidd.local
     msg:
       trouble: >-
         Stai avendo problemi?
@@ -71,8 +71,7 @@ app:
         informazioni.
     tooltip:
       endpoint_examples: >-
-        Inserisci l'URL dell'API. <br /> Ad esempio: <br /> <blockquote> http:
-        //fluidd.local, http://192.168.1.150 </blockquote>
+        Inserisci l'URL dell'API. <br /> Ad esempio: <br /> <blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
     label:
       open: APERTO

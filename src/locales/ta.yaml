@@ -589,11 +589,6 @@ app:
       version: பதிப்பு
       virtualization: மெய்நிகராக்கம்
     msg:
-      canbus_warning: ஒதுக்கப்படாத கேன் பச் முனைகளை மட்டுமே கண்டறிய முடியும். <br>
-        தகவல்தொடர்பு சிக்கல்களைத் தவிர்ப்பதற்காக கேன் பச் உடன் இணைக்கப்படாத ஒரே ஒரு
-        கையொப்பமிடப்படாத சாதனம் மட்டுமே இருக்க பரிந்துரைக்கப்படுகிறது. <br> கூடுதல்
-        தகவல்களைக் காணலாம் <ஒரு இலக்கு = "_ வெற்று" href = " 
-        ://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">here.</a>
       no_devices_found: சாதனங்கள் எதுவும் கிடைக்கவில்லை
       no_devices_searched: சாதனங்களைத் தேட புதுப்பிப்பு பொத்தானைப் பயன்படுத்தவும்
   bedmesh:
@@ -649,7 +644,7 @@ app:
       endpoint_examples: உங்கள் பநிஇ முகவரி ஐ உள்ளிடவும். <br /> சில எடுத்துக்காட்டுகள்
         இருக்கலாம்;
     hint:
-      add_printer: 'எ.கா., http: //fluiddpi.local'
+      add_printer: 'எ.கா., http://fluidd.local'
     msg:
       trouble: சிக்கல் உள்ளதா? <a href = "%{url}" இலக்கு = "_ வெற்று"> மேலும் தகவலுக்கு
         இங்கே காண்க </a>.

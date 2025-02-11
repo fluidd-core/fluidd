@@ -62,7 +62,7 @@ app:
         Çoklu yazıcı kurulumları hakkında belgeleri görmek için lütfen <a href="%{url}"
         target="_blank">buraya</a> bakın
     hint:
-      add_printer: Örnek, http://fluiddpi.local
+      add_printer: Örnek, http://fluidd.local
     msg:
       trouble: >-
         Sorun mu yaşıyorsunuz? Daha fazla bilgi için <a href="%{url}" target="_blank">buraya</a>
@@ -802,7 +802,7 @@ app:
         Sadece atanmamış CAN bus düğümleri algılanabilir.<br>
         İletişim sorunlarını önlemek için CAN bus'a yalnızca bir atanmamış cihaz bağlı
         olması önerilir.<br>
-        Daha fazla bilgiye <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">buradan</a>
+        Daha fazla bilgiye <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">buradan</a>
         ulaşabilirsiniz.
       no_devices_found: Cihaz bulunamadı
       no_devices_searched: Cihazları aramak için yenileme düğmesini kullanın

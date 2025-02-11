@@ -29,7 +29,7 @@
                 v-if="inLayout || (c.enabled && !filtered(c))"
                 :key="c.id"
                 :menu-collapsed="menuCollapsed"
-                class="mb-2 mb-sm-4"
+                class="mb-2 mb-md-4"
               />
             </template>
           </transition-group>

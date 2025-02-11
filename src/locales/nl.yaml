@@ -62,7 +62,7 @@ app:
         Dit betekent dat er iets mis is met je moonraker instellingen. Bekijk alsjeblieft
         de documentatie omtrent multiprinter configuraties <a href="%{url}" target="_blank">hier</a>
     hint:
-      add_printer: V.B, http://fluiddpi.local
+      add_printer: V.B, http://fluidd.local
     msg:
       trouble: >-
         Is er een probleem? <a href="%{url}" target="_blank">Kijk hier</a> voor
@@ -70,7 +70,7 @@ app:
     tooltip:
       endpoint_examples: >-
         Geef je API URL in.<br />Een paar voorbeelden;<br
-        /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+        /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
     label:
       open: OPEN

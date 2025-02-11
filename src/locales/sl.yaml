@@ -55,7 +55,7 @@ app:
         Prosimo, preberite dokumentacijo o <a href="%{url}"
         target="_blank">nastavitvi</a> več tiskalnikov.
     hint:
-      add_printer: Npr., http://fluiddpi.local
+      add_printer: Npr., http://fluidd.local
     msg:
       trouble: >-
         Imate težave?<a href="%{url}" target="_blank">Poglejte tukaj</a>
@@ -753,7 +753,7 @@ app:
         Odkrijejo se lahko samo nepodeljena vozlišča CAN vodila.<br>
         Priporočljivo je, da je na CAN vodilo priključena samo ena nepripisana naprava,
         da se izognete težavam s komunikacijo.<br>
-        Več informacij je na voljo <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">tukaj.</a>
+        Več informacij je na voljo <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">tukaj.</a>
       no_devices_found: Ni najdenih naprav
       no_devices_searched: Za iskanje naprav uporabite gumb za osvežitev
   tool:

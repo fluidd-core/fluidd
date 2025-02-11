@@ -51,7 +51,7 @@ app:
         die dokumentasie vir multi-drukker opstellings <a href="%{url}"
         target="_blank">here</a>
     hint:
-      add_printer: Bv., http://fluiddpi.local
+      add_printer: Bv., http://fluidd.local
     msg:
       trouble: >-
         Sukkel jy? <a href="%{url}" target="_blank">Sien hier</a> vir meer

@@ -808,5 +808,18 @@ export const SocketActions = {
         dispatch: 'spoolman/onAvailableSpools'
       }
     )
+  },
+
+  async serverSpoolmanProxyGetSettingCurrency () {
+    baseEmit(
+      'server.spoolman.proxy', {
+        params: {
+          request_method: 'GET',
+          path: '/v1/setting/currency',
+          use_v2_response: true
+        },
+        dispatch: 'spoolman/onSettingCurrency'
+      }
+    )
   }
 }

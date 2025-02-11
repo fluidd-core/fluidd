@@ -21,7 +21,9 @@
           dense
           single-line
           hide-details
+          spellcheck="false"
           append-icon="$magnify"
+          @focus="$event.target.select()"
         />
       </div>
     </v-toolbar>
