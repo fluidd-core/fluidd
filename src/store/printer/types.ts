@@ -1,7 +1,7 @@
 import type { Globals } from '@/globals'
 
 export interface PrinterState {
-  info?: PrinterInfo;
+  info: PrinterInfo | null;
   endstops: Record<string, 'TRIGGERED' | 'open'>
   manualProbeDialogOpen: boolean;
   bedScrewsAdjustDialogOpen: boolean;
