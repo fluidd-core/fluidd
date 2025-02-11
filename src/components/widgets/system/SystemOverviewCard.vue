@@ -43,7 +43,7 @@
       <v-col>
         <v-simple-table dense>
           <tbody>
-            <tr v-if="printerInfo.hostname">
+            <tr v-if="printerInfo?.hostname">
               <th>{{ $t('app.system_info.label.hostname') }}</th>
               <td>{{ printerInfo.hostname }}</td>
             </tr>
@@ -169,7 +169,7 @@ export default class PrinterStatsCard extends Vue {
       .join(', ')
   }
 
-  get printerInfo (): PrinterInfo {
+  get printerInfo (): PrinterInfo | null {
     return this.$store.state.printer.info
   }
 
