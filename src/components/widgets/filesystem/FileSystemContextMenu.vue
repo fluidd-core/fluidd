@@ -96,7 +96,6 @@
 
             <v-list-item
               v-if="canPerformTimeAnalysys"
-              :disabled="!estimatorReady"
               @click="$emit('perform-time-analysis', file)"
             >
               <v-list-item-icon>
@@ -320,10 +319,6 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
       this.canPrint &&
       this.$store.getters['server/componentSupport']('analysis')
     )
-  }
-
-  get estimatorReady (): boolean {
-    return this.$store.state.analysis.status?.estimator_ready ?? false
   }
 }
 </script>

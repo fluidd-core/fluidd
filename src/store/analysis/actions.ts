@@ -9,10 +9,6 @@ export const actions: ActionTree<AnalysisState, RootState> = {
     commit('setReset')
   },
 
-  async init () {
-    SocketActions.serverAnalysisStatus()
-  },
-
   async onAnalysisStatus ({ commit }, payload: AnalysisStatus) {
     if (payload) {
       commit('setAnalysisStatus', payload)
