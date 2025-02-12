@@ -20,14 +20,19 @@
     </template>
 
     <file-system
+      v-if="fullscreen"
+      roots="gcodes"
+      name="jobs"
+      bulk-actions
+      class="full-screen"
+    />
+
+    <file-system
+      v-else
       roots="gcodes"
       name="dashboard"
-      :dense="!fullscreen"
-      :bulk-actions="fullscreen"
-      :class="{
-        'full-screen': fullscreen,
-        'partial-screen': !fullscreen
-      }"
+      dense
+      class="partial-screen"
     />
   </collapsable-card>
 </template>
