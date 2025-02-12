@@ -282,7 +282,7 @@ interface SocketPluginOptions {
 }
 
 export interface NotifyOptions {
-  params?: any;
+  params?: Record<string, any>;
   dispatch?: string;
   commit?: string;
   wait?: string;
@@ -292,15 +292,19 @@ interface Request {
   id: number;
   dispatch?: string;
   commit?: string;
-  params?: any;
+  params?: Record<string, any>;
   wait?: string;
+}
+
+export type ObjectWithRequest<T> = T & {
+  __request__: Request
 }
 
 interface SocketRequest {
   jsonrpc: string;
   id: number;
   method: string;
-  params?: any;
+  params?: Record<string, any>;
 }
 
 interface SocketResponse {
