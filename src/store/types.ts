@@ -21,6 +21,7 @@ import type { WebcamsState } from './webcams/types'
 import type { JobQueueState } from './jobQueue/types'
 import type { SpoolmanState } from './spoolman/types'
 import type { MoonrakerSensorsState } from './sensors/types'
+import type { AnalysisState } from './analysis/types'
 
 export interface RootState {
   socket: SocketState;
@@ -46,4 +47,5 @@ export interface RootState {
   jobQueue: JobQueueState;
   spoolman: SpoolmanState;
   sensors: MoonrakerSensorsState;
+  analysis: AnalysisState;
 }

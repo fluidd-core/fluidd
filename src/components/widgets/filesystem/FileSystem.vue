@@ -70,6 +70,7 @@
       @preheat="handlePreheat"
       @preview-gcode="handlePreviewGcode"
       @refresh-metadata="handleRefreshMetadata"
+      @perform-time-analysis="handlePerformTimeAnalysis"
       @view-thumbnail="handleViewThumbnail"
       @enqueue="handleEnqueue"
       @create-zip="handleCreateZip"
@@ -800,6 +801,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     const filename = file.path ? `${file.path}/${file.filename}` : file.filename
 
     SocketActions.serverFilesMetadata(filename)
+  }
+
+  handlePerformTimeAnalysis (file: AppFileWithMeta) {
+    const filename = file.path ? `${file.path}/${file.filename}` : file.filename
+
+    SocketActions.serverAnalysisEstimate(filename, undefined, true)
   }
 
   async handleViewThumbnail (file: AppFileWithMeta) {

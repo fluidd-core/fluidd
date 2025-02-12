@@ -145,6 +145,7 @@ import {
   mdiTableColumn,
   mdiShape,
   mdiSync,
+  mdiTimerOutline,
   mdiContentDuplicate,
   mdiArchiveLock,
   mdiFileImage,
@@ -219,7 +220,8 @@ export const Globals = Object.freeze({
     webcams: { name: 'webcam', dispatch: 'webcams/init' },
     jobQueue: { name: 'job_queue', dispatch: 'jobQueue/init' },
     spoolman: { name: 'spoolman', dispatch: 'spoolman/init' },
-    sensors: { name: 'sensor', dispatch: 'sensors/init' }
+    sensors: { name: 'sensor', dispatch: 'sensors/init' },
+    analysis: { name: 'analysis', dispatch: 'analysis/init' }
   },
   // Ordered by weight.
   CONFIG_SERVICE_MAP: [
@@ -374,6 +376,7 @@ export const Icons = Object.freeze({
   rename: mdiFormTextbox,
   duplicate: mdiContentDuplicate,
   sync: mdiSync,
+  stopwatch: mdiTimerOutline,
   delete: mdiDelete,
   camera: mdiCamera,
   fan: mdiFan,

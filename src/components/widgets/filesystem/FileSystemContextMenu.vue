@@ -95,6 +95,19 @@
             </v-list-item>
 
             <v-list-item
+              v-if="canPerformTimeAnalysys"
+              :disabled="!estimatorReady"
+              @click="$emit('perform-time-analysis', file)"
+            >
+              <v-list-item-icon>
+                <v-icon>$stopwatch</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.perform_time_analysis') }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item
               v-if="canPreviewGcode"
               @click="$emit('preview-gcode', file)"
             >
@@ -300,6 +313,17 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
       ) &&
       this.$store.getters['server/componentSupport']('job_queue')
     )
+  }
+
+  get canPerformTimeAnalysys (): boolean {
+    return (
+      this.canPrint &&
+      this.$store.getters['server/componentSupport']('analysis')
+    )
+  }
+
+  get estimatorReady (): boolean {
+    return this.$store.state.analysis.status?.estimator_ready ?? false
   }
 }
 </script>
