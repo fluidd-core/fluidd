@@ -36,20 +36,24 @@ const getHostConfig = async () => {
 const getApiConfig = async (hostConfig: HostConfig, apiUrlHash?: string | null): Promise<ApiConfig | InstanceConfig> => {
   // Local storage load
   if (Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage) {
-    const instances = JSON.parse(localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY]) as InstanceConfig[]
-    if (instances && instances.length) {
-      if (apiUrlHash) {
+    const instancesValue = localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY]
+
+    if (typeof instancesValue === 'string') {
+      const instances = JSON.parse(instancesValue) as InstanceConfig[]
+      if (instances && instances.length) {
+        if (apiUrlHash) {
+          for (const config of instances) {
+            if (md5(config.apiUrl) === apiUrlHash) {
+              consola.debug('API Config from Local Storage', config)
+              return config
+            }
+          }
+        }
         for (const config of instances) {
-          if (md5(config.apiUrl) === apiUrlHash) {
+          if (config.active) {
             consola.debug('API Config from Local Storage', config)
             return config
           }
-        }
-      }
-      for (const config of instances) {
-        if (config.active) {
-          consola.debug('API Config from Local Storage', config)
-          return config
         }
       }
     }

@@ -105,7 +105,7 @@ export class WebSocketClient {
 
       this.connection.onmessage = (m) => {
         // Parse the data packet.
-        const d: SocketResponse = JSON.parse(m.data)
+        const d = JSON.parse(m.data) as SocketResponse
 
         // Is this a socket notification, or an answer to a specific request?
         let request: Request | undefined

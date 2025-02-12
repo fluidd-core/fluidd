@@ -256,7 +256,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
     `, 'metrics')
 
       if (typeof data !== 'string') throw new Error('Metrics collector returned invalid data')
-      data = JSON.parse(data)
+      data = JSON.parse(data) as Record<string, unknown>
     } catch (err) {
       data = Object.fromEntries(collectors.map(collector => [collector, (err instanceof Error && err.message) ?? 'Unknown Error']))
     }

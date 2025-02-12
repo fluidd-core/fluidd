@@ -167,7 +167,7 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       state.socket.onmessage = event => {
         let data: WebsocketBasePayload
         try {
-          data = JSON.parse(event.data)
+          data = JSON.parse(event.data) as WebsocketBasePayload
         } catch (err) {
           consola.error(`${logPrefix} failed to decode websocket message`, err, event.data)
           return
