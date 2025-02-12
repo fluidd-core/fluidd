@@ -104,14 +104,14 @@ export default class Diagnostics extends Mixins(StateMixin) {
   }
 
   handleAddCard () {
-    const clonedDefaultCard = JSON.parse(JSON.stringify(defaultState().layouts.diagnostics.container1[0]))
+    const clonedDefaultCard = JSON.parse(JSON.stringify(defaultState().layouts.diagnostics.container1[0])) as DiagnosticsCardConfig
     clonedDefaultCard.id = ''
     this.dialogState.card = clonedDefaultCard
     this.dialogState.active = true
   }
 
   handleEditCard (card: DiagnosticsCardConfig) {
-    this.dialogState.card = JSON.parse(JSON.stringify(card))
+    this.dialogState.card = JSON.parse(JSON.stringify(card)) as DiagnosticsCardConfig
     this.dialogState.active = true
   }
 

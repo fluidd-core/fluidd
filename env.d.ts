@@ -3,6 +3,7 @@
 /// <reference types="vuetify" />
 /// <reference types="vue-meta" />
 /// <reference types="vite-plugin-pwa/client" />
+/// <reference types="./tsreset" />
 
 declare module '*.yaml' {
   const data: unknown
@@ -25,14 +26,4 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv
-}
-
-interface String {
-  toLowerCase<T extends string>(this: T): Lowercase<T>
-
-  toUpperCase<T extends string>(this: T): Uppercase<T>
-
-  startsWith<T extends string, T2 extends string>(this: T, searchString: T2, position?: number): this is `${T2}${string}`
-
-  endWith<T extends string, T2 extends string>(this: T, searchString: T2, position?: number): this is `${string}${T2}`
 }

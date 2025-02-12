@@ -101,7 +101,9 @@ export const actions: ActionTree<SocketState, RootState> = {
       // This is pretty bad, should get moonraker to fix this response.
       let message = ''
       try {
-        message = JSON.parse(payload.message.replace(/'/g, '"')).message
+        const messageAsObject = JSON.parse(payload.message.replace(/'/g, '"')) as { message: string }
+
+        message = messageAsObject.message
       } catch {
         message = payload.message
       }

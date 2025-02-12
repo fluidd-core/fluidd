@@ -91,7 +91,7 @@ export default class MetricsCollectorConfig extends Vue {
   browserOpen = false
 
   runCollector () {
-    let data
+    let data: string | number
     try {
       data = sandboxedEval(`
         const printer = ${JSON.stringify(this.$store.state.printer.printer)}
@@ -99,13 +99,17 @@ export default class MetricsCollectorConfig extends Vue {
       `)
 
       if (typeof data !== 'string') throw new Error('Metrics collector returned invalid data')
-      data = JSON.parse(data)
+
+      data = JSON.parse(data) as string | number
+
+      if (typeof data === 'number') {
+        data = Math.round(data * 1000) / 1000
+      }
     } catch (err) {
-      data = (err instanceof Error && err.message) ?? 'Unknown Error'
+      data = (err instanceof Error && err.message) || 'Unknown Error'
     }
 
-    if (typeof data === 'number') data = Math.round(data * 1000) / 1000
-    this.result = data
+    this.result = data.toString()
   }
 
   handleExplorerClick (path: string) {
