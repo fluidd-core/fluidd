@@ -76,9 +76,10 @@ app:
         Geben Sie Ihre API-URL ein.<br />Zum Beispiel:<br
         /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: Offen
-      triggered: Ausgelöst
+    states:
+      label:
+        open: Offen
+        triggered: Ausgelöst
     msg:
       subtitle: >-
         Verwenden Sie die Schaltfläche "Aktualisieren", um den
@@ -808,7 +809,7 @@ app:
         suchen
       canbus_warning: Nur unzugewiesene CAN-Bus-Knoten werden erkannt.<br>Es ist empfohlen,
         nur ein unzugewiesenes Gerät an den CAN-Bus anzuschließen, um Kommunikationsprobleme
-        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank" 
+        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank"
         href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">hier.</a>
   tool:
     btn:

@@ -72,9 +72,10 @@ app:
         API URL'nizi girin.<br />Bazı örnekler şunlar olabilir;<br
         /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: AÇIK
-      triggered: TETİKLENDİ
+    states:
+      label:
+        open: AÇIK
+        triggered: TETİKLENDİ
     msg:
       subtitle: Endstop durumunu güncellemek için yenile düğmesini kullanın.
   file_system:

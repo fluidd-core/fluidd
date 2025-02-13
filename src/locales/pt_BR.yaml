@@ -578,9 +578,10 @@ app:
         /> Clique num item para alternar no gráfico. <br /> Clique em Ligar para alternar
         no gráfico.
   endstop:
-    label:
-      triggered: ATIVADO
-      open: ABERTO
+    states:
+      label:
+        triggered: ATIVADO
+        open: ABERTO
     msg:
       subtitle: Use o botão de atualização para atualizar o status do fim de curso.
   printer:

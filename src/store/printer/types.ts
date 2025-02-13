@@ -2,7 +2,6 @@ import type { Globals } from '@/globals'
 
 export interface PrinterState {
   info: PrinterInfo | null;
-  endstops: Record<string, 'TRIGGERED' | 'open'>
   manualProbeDialogOpen: boolean;
   bedScrewsAdjustDialogOpen: boolean;
   screwsTiltAdjustDialogOpen: boolean;
@@ -420,7 +419,7 @@ export interface KlipperPrinterPrintStatsState {
 
 export interface KlipperPrinterProbeState {
   name?: string;
-  last_query: boolean;
+  last_query: number;
   last_z_result: number;
 }
 
@@ -433,7 +432,7 @@ export interface KlipperPrinterQuadGantryLevelState {
 }
 
 export interface KlipperPrinterQueryEndstopsState {
-  last_query: Record<string, boolean>;
+  last_query: Record<string, number>;
 }
 
 export interface KlipperPrinterScrewsTiltAdjustState {
@@ -1154,7 +1153,13 @@ export interface RunoutSensor extends Partial<KlipperPrinterFilamentSwitchSensor
 
 export interface Endstop {
   name: string;
-  state: 'TRIGGERED' | 'open';
+  prettyName: string;
+  state: number;
+}
+
+export interface Probe extends KlipperPrinterProbeState {
+  name: string;
+  prettyName: string;
 }
 
 export interface BedScrews extends Partial<KlipperPrinterBedScrewsState> {

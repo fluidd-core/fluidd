@@ -66,9 +66,10 @@ app:
       endpoint_examples: Wprowadź adres API.<br />Przykład:<br /><blockquote>fluidd.local,
         https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: OTWARTY
-      triggered: AKTYWOWANY
+    states:
+      label:
+        open: OTWARTY
+        triggered: AKTYWOWANY
     msg:
       subtitle: Użyj przycisku odświeżania, aby zaktualizować status krańcówek.
   file_system:
@@ -786,7 +787,7 @@ app:
       canbus_warning: Wykrywane mogą być tylko nieprzypisane węzły magistrali CAN.<br>
         Zaleca się podłączenie tylko jednego nieprzypisanego urządzenia do magistrali
         CAN, aby uniknąć problemów z komunikacją.<br> Więcej informacji można znaleźć
-        <a target="_blank" 
+        <a target="_blank"
         href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">tutaj.</a>
       no_devices_searched: Użyj przycisku odświeżania, aby wyszukać urządzenia
       no_devices_found: Nie znaleziono urządzeń

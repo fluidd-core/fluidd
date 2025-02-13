@@ -72,9 +72,10 @@ app:
         Geef je API URL in.<br />Een paar voorbeelden;<br
         /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: OPEN
-      triggered: GERAAKT
+    states:
+      label:
+        open: OPEN
+        triggered: GERAAKT
     msg:
       subtitle: Gebruik de ververs knop om je endstopstatus bij te werken.
   file_system:

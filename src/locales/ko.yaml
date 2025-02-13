@@ -58,9 +58,10 @@ app:
         API URL을 입력하십시오.<br />몇가지 예시는 다음과 같습니다;<br />
         <blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: 열림
-      triggered: 닫힘
+    states:
+      label:
+        open: 열림
+        triggered: 닫힘
     msg:
       subtitle: 새로고침 버튼을 사용해서 엔드스탑 상태를 업데이트 합니다.
   file_system:

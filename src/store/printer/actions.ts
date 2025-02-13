@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { KlipperPrinterState, KlippyApp, PrinterState } from './types'
+import type { KlipperPrinterQueryEndstopsState, KlipperPrinterState, KlippyApp, PrinterState } from './types'
 import type { RootState } from '../types'
 import { handlePrintStateChange, handleCurrentFileChange, handleTrinamicDriversChange } from '../helpers'
 import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
@@ -75,8 +75,18 @@ export const actions: ActionTree<PrinterState, RootState> = {
   /**
    * Query endstops
    */
-  async onQueryEndstops ({ commit }, payload) {
-    commit('setQueryEndstops', payload)
+  async onQueryEndstops ({ commit }, payload: Record<string, 'TRIGGERED' | 'open'>) {
+    // printer.query_endstops state is not updating, so we use the response here to do it manually
+
+    const queryEndstops: KlipperPrinterQueryEndstopsState = {
+      last_query: {}
+    }
+
+    for (const key in payload) {
+      queryEndstops.last_query[key] = +(payload[key] === 'TRIGGERED')
+    }
+
+    commit('setSocketNotify', { key: 'query_endstops', payload: queryEndstops })
   },
 
   /**
@@ -154,6 +164,13 @@ export const actions: ActionTree<PrinterState, RootState> = {
         error: false,
         max_deviation: null,
         results: {}
+      }
+    }
+
+    if (status.query_endstops != null) {
+      status.query_endstops = {
+        ...status.query_endstops,
+        last_query: {}
       }
     }
 
