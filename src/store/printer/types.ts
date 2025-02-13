@@ -33,6 +33,8 @@ type Digit = '0' | NonZeroDigit
 
 export type ExtruderKey = 'extruder' | `extruder${NonZeroDigit}` | `extruder${NonZeroDigit}${Digit}`
 
+export type TmcKey = `tmc${'2130' | '2208' | '2209' | '2660' | '2240' | '5160'} ${string}`
+
 type KlipperPrinterStateBaseType = {
   [key in ExtruderKey]?: KlipperPrinterExtruderState
 }
@@ -136,7 +138,7 @@ export interface KlipperPrinterState extends KlipperPrinterStateBaseType {
 
   [key: `temperature_sensor ${string}`]: KlipperPrinterTemperatureSensorState;
 
-  [key: `tmc${'2130' | '2208' | '2209' | '2660' | '2240' | '5160'} ${string}`]: KlipperPrinterTmcState;
+  [key: TmcKey]: KlipperPrinterTmcState;
 
   dual_carriage?: KlipperDualCarriageState;
 
@@ -382,7 +384,7 @@ export interface KlipperPrinterMcuState {
   mcu_version?: string;
   mcu_build_versions?: string;
   mcu_constants?: Record<string, string | number>;
-  last_stats?: Record<string, string | number>;
+  last_stats?: Record<string, number>;
   app?: string;
   non_critical_disconnected?: boolean;
 }
@@ -476,7 +478,7 @@ export interface KlipperPrinterTmcState {
   phase_offset_position: number;
   run_current: number;
   hold_current: number;
-  drv_status: number | null;
+  drv_status: Record<string, number | null>;
   temperature: number | null;
 }
 
@@ -580,7 +582,7 @@ export interface KlipperPrinterSettings extends KlipperPrinterSettingsBaseType {
 
   [key: `mcu ${Lowercase<string>}`]: KlipperPrinterMcuSettings;
 
-  [key: `tmc${'2130' | '2208' | '2209' | '2660' | '2240' | '5160'} ${Lowercase<string>}`]: KlipperPrinterTmcSettings;
+  [key: Lowercase<TmcKey>]: KlipperPrinterTmcSettings;
 
   fan?: KlipperPrinterFanSettings;
 

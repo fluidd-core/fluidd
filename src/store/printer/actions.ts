@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { KlippyApp, PrinterState } from './types'
+import type { KlipperPrinterState, KlippyApp, PrinterState } from './types'
 import type { RootState } from '../types'
 import { handlePrintStateChange, handleCurrentFileChange, handleTrinamicDriversChange } from '../helpers'
 import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
@@ -144,16 +144,21 @@ export const actions: ActionTree<PrinterState, RootState> = {
     SocketActions.printerObjectsSubscribe(intendedSubscriptions)
   },
 
-  async onPrinterObjectsSubscribe ({ commit, dispatch }, payload) {
+  async onPrinterObjectsSubscribe ({ commit, dispatch }, payload: { status: KlipperPrinterState }) {
     // Initial printer status
     const status = payload.status
 
-    if ('screws_tilt_adjust' in status) {
-      status.screws_tilt_adjust = {}
+    if (status.screws_tilt_adjust != null) {
+      status.screws_tilt_adjust = {
+        ...status.screws_tilt_adjust,
+        error: false,
+        max_deviation: null,
+        results: {}
+      }
     }
 
-    if ('toolhead' in status) {
-      if ('max_accel_to_decel' in status.toolhead) {
+    if (status.toolhead != null) {
+      if (status.toolhead.max_accel_to_decel != null) {
         status.toolhead.minimum_cruise_ratio = null
       } else {
         status.toolhead.max_accel_to_decel = null
@@ -178,7 +183,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
    */
 
   /** Automated notify events via socket */
-  async onNotifyStatusUpdate ({ rootState, commit, getters, dispatch }, payload) {
+  async onNotifyStatusUpdate ({ rootState, commit, getters, dispatch }, payload: KlipperPrinterState) {
     // TODO: We potentially get many updates here.
     // Consider caching the updates and sending them every <interval>.
     // We don't want to miss an update - but also don't need all of them

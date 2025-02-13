@@ -3,17 +3,18 @@ import type { RootState } from './types'
 import { SocketActions } from '@/api/socketActions'
 import type { AppPushNotification } from './notifications/types'
 import i18n from '@/plugins/i18n'
-import type { KlippyApp } from './printer/types'
+import type { KlipperPrinterState, KlippyApp, TmcKey } from './printer/types'
 
-export const handleTrinamicDriversChange = (payload: any, state: RootState, dispatch: Dispatch, getters: any) => {
+const isTmc = (item: string): item is TmcKey => /^tmc\d{4} /.test(item)
+
+export const handleTrinamicDriversChange = (payload: KlipperPrinterState, state: RootState, dispatch: Dispatch, getters: any) => {
   for (const item in payload) {
-    const [type, nameFromSplit] = item.split(' ', 2)
-
     if (
-      /^tmc\d{4}$/.test(type) &&
+      isTmc(item) &&
       payload[item]?.drv_status?.otpw != null &&
       state.printer.printer?.[item]?.drv_status?.otpw == null
     ) {
+      const [, nameFromSplit] = item.split(' ', 2)
       const name = nameFromSplit ?? item
 
       const klippyApp: KlippyApp = getters.getKlippyApp
@@ -35,14 +36,11 @@ export const handleTrinamicDriversChange = (payload: any, state: RootState, disp
   }
 }
 
-export const handlePrintStateChange = (payload: any, state: RootState, dispatch: Dispatch) => {
+export const handlePrintStateChange = (payload: KlipperPrinterState, state: RootState, dispatch: Dispatch) => {
   // For every notify - if print_stats.state changes from standby -> printing,
   // then record an entry in our print history.
   // If the state changes from printing -> complete, then record the finish time.
-  if (
-    'print_stats' in payload &&
-    'state' in payload.print_stats
-  ) {
+  if (payload.print_stats?.state != null) {
     const currentPrintState = state.printer.printer.print_stats?.state
 
     if (
@@ -67,11 +65,9 @@ export const handlePrintStateChange = (payload: any, state: RootState, dispatch:
   }
 }
 
-export const handleCurrentFileChange = (payload: any, state: RootState) => {
+export const handleCurrentFileChange = (payload: KlipperPrinterState, state: RootState) => {
   if (
-    'print_stats' in payload &&
-    'filename' in payload.print_stats &&
-    payload.print_stats.filename &&
+    payload.print_stats?.filename &&
     payload.print_stats.filename !== state.printer.printer.print_stats?.filename
   ) {
     // This refreshes the metadata for the current file, which also
