@@ -68,9 +68,10 @@ app:
         Saissizez l'URL de l'API .<br />Par exemple;<br
         /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: OUVERT
-      triggered: ACTIF
+    states:
+      label:
+        open: OUVERT
+        triggered: ACTIF
     msg:
       subtitle: 'Utilisez le bouton d''actualisation pour mettre à jour l''état de
         l''arrêt final.'
@@ -755,7 +756,7 @@ app:
       canbus_warning: Seuls les nœuds de bus CAN non assignés peuvent être détectés.<br>
         Il est recommandé de n'avoir qu'un seul dispositif non assigné connecté au
         bus CAN pour éviter les problèmes de communication.<br> De plus amples informations
-        peuvent être trouvées <a target="_blank" 
+        peuvent être trouvées <a target="_blank"
         href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">ici.</a>
   tool:
     btn:

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
-import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, ExtruderStepper, Extruder, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, KlippyApp, ExcludeObjectPart, KlipperPrinterConfig, KlipperPrinterProbeState, BeaconModel, BedScrewsScrew, ExtruderKey } from './types'
+import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, ExtruderStepper, Extruder, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, KlippyApp, ExcludeObjectPart, KlipperPrinterConfig, BeaconModel, BedScrewsScrew, ExtruderKey, Probe } from './types'
 import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
 import type { GcodeHelp } from '../console/types'
@@ -464,44 +464,46 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return sensors
   },
 
-  getEndstops: (state) => {
-    const endstops: Endstop[] = []
-    Object.keys(state.endstops)
-      .sort()
-      .forEach(key => {
-        endstops.push({
-          name: key,
-          state: state.endstops[key]
-        })
-      })
-    return endstops
-  },
+  getEndstops: (state): Endstop[] => {
+    const endstops = state.printer.query_endstops?.last_query
 
-  getProbe: (state): KlipperPrinterProbeState | undefined => {
-    const probe = state.printer.probe
-
-    if (probe && !probe.name) {
-      const probeNames = [
-        'bltouch',
-        'smart_effector',
-        'probe'
-      ] as const
-
-      for (const name of probeNames) {
-        const probeSettings = state.printer.configfile.settings[name]
-
-        if (probeSettings?.z_offset !== undefined) {
-          const probeWithName: KlipperPrinterProbeState = {
-            ...probe,
-            name
-          }
-
-          return probeWithName
-        }
-      }
+    if (endstops == null) {
+      return []
     }
 
-    return probe
+    return Object.keys(endstops)
+      .sort()
+      .map(name => ({
+        name,
+        prettyName: i18n.t('app.endstop.label.endstop', { name: name.toUpperCase() }).toString(),
+        state: endstops[name]
+      }))
+  },
+
+  getProbe: (state): Probe | undefined => {
+    const probe = state.printer.probe
+
+    if (probe == null) {
+      return undefined
+    }
+
+    const probeNames = [
+      'bltouch',
+      'smart_effector',
+      'probe'
+    ] as const
+
+    const name = probe.name || probeNames.find(name => {
+      const probeSettings = state.printer.configfile.settings[name]
+
+      return probeSettings?.z_offset !== undefined
+    }) || 'Probe'
+
+    return {
+      ...probe,
+      name,
+      prettyName: Vue.$filters.prettyCase(name)
+    }
   },
 
   /**
@@ -763,7 +765,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
                   name.startsWith('stepper_')
                     ? name.substring(8).toUpperCase()
                     : Vue.$filters.prettyCase(name)
-              })
+              }).toString()
             : Vue.$filters.prettyCase(name)
           const color = Vue.$colorset.next(getKlipperType(item), item)
           const config = state.printer.configfile.settings[item]

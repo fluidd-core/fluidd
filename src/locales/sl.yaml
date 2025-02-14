@@ -65,9 +65,10 @@ app:
         Vnesite API URL.<br />Nekaj primerov:<br
         /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: ODPRT
-      triggered: SPROŽEN
+    states:
+      label:
+        open: ODPRT
+        triggered: SPROŽEN
     msg:
       subtitle: Uporabite gumb za osveževanje, da osvežite status končnih stikal.
   file_system:

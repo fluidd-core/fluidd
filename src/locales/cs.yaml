@@ -56,9 +56,10 @@ app:
       endpoint_examples: >-
         Vložte URL Vašeho API.<br />Příklad URL;<br /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: OTEVŘEN
-      triggered: SEPNUT
+    states:
+      label:
+        open: OTEVŘEN
+        triggered: SEPNUT
     msg:
       subtitle: Použijte tlačítko pro obnovení stavu koncových spínačů.
   file_system:

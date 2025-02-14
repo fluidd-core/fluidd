@@ -72,9 +72,10 @@ app:
         Add meg az API URL-címét.<br />Pár példa
         látható;<br /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: NYITVA
-      triggered: AKTIVÁLVA
+    states:
+      label:
+        open: NYITVA
+        triggered: AKTIVÁLVA
     msg:
       subtitle: A frissítés gombbal frissítheted a végállás állapotát.
   file_system:

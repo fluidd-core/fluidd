@@ -73,9 +73,10 @@ app:
       endpoint_examples: >-
         Inserisci l'URL dell'API. <br /> Ad esempio: <br /> <blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: APERTO
-      triggered: ATTIVATO
+    states:
+      label:
+        open: APERTO
+        triggered: ATTIVATO
     msg:
       subtitle: >-
         Utilizza il pulsante di aggiornamento per aggiornare lo stato dei

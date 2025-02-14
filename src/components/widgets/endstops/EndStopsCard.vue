@@ -22,11 +22,11 @@
           :key="item.name"
         >
           <td>
-            <span class="focus--text">{{ item.name }}</span>
+            {{ item.prettyName }}
           </td>
           <td>
             <v-chip
-              :color="(item.state === 'open') ? 'secondary' : 'warning'"
+              :color="item.state ? 'warning' : 'secondary'"
               small
               label
             >
@@ -34,9 +34,14 @@
                 small
                 left
               >
-                {{ (item.state === 'open') ? '$blankCircle' : '$markedCircle' }}
+                {{ item.state ? '$markedCircle' : '$blankCircle' }}
               </v-icon>
-              {{ $t('app.endstop.label.' + item.state.toLowerCase()) }}
+              <template v-if="item.state">
+                {{ $t('app.endstop.states.label.triggered') }}
+              </template>
+              <template v-else>
+                {{ $t('app.endstop.states.label.open') }}
+              </template>
             </v-chip>
           </td>
         </tr>
@@ -49,7 +54,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import type { Endstop, KlipperPrinterProbeState } from '@/store/printer/types'
+import type { Endstop, Probe } from '@/store/printer/types'
 
 @Component({
   components: {}
@@ -63,25 +68,26 @@ export default class EndStopsCard extends Mixins(StateMixin) {
     return this.$store.getters['printer/getSteppers'].length > 0
   }
 
-  get probe (): KlipperPrinterProbeState | undefined {
+  get probe (): Probe | undefined {
     return this.$store.getters['printer/getProbe']
   }
 
   get endstopsAndProbes () {
     const endstopsAndProbes = [...this.endstops]
+
     const probe = this.probe
 
-    if (probe !== undefined) {
+    if (probe != null) {
       endstopsAndProbes.push({
-        name: 'Probe',
-        state: probe.last_query ? 'TRIGGERED' : 'open'
+        name: probe.name,
+        prettyName: probe.prettyName,
+        state: probe.last_query
       })
     }
 
     return endstopsAndProbes
   }
 
-  // Default state is an empty object.
   get hasEndstops () {
     return this.endstops.length > 0
   }

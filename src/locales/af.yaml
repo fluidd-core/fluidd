@@ -61,9 +61,10 @@ app:
         Voer jou API URL in.<br />Hier is voorbeelde;<br
         /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: OOP
-      triggered: GESNELLER
+    states:
+      label:
+        open: OOP
+        triggered: GESNELLER
     msg:
       subtitle: Gebruik die vervrisknop om die endstop status op te dateer.
   file_system:
