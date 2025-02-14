@@ -31,9 +31,12 @@
       v-if="selected.length > 0"
       :root="currentRoot"
       :path="visiblePath"
-      @remove="handleRemove(selected)"
-      @create-zip="handleCreateZip(selected)"
-      @enqueue="handleEnqueue(selected)"
+      :selected="selected"
+      @remove="handleRemove"
+      @create-zip="handleCreateZip"
+      @refresh-metadata="handleRefreshMetadata"
+      @perform-time-analysis="handlePerformTimeAnalysis"
+      @enqueue="handleEnqueue"
     />
 
     <file-system-browser
@@ -797,16 +800,32 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  handleRefreshMetadata (file: AppFileWithMeta) {
-    const filename = file.path ? `${file.path}/${file.filename}` : file.filename
+  handleRefreshMetadata (file: FileBrowserEntry | FileBrowserEntry[]) {
+    if (this.disabled) return
 
-    SocketActions.serverFilesMetadata(filename)
+    const files = Array.isArray(file)
+      ? file
+      : [file]
+    const filenames = files
+      .filter((item): item is AppFileWithMeta => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
+      .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
+
+    for (const filename of filenames) {
+      SocketActions.serverFilesMetascan(filename)
+    }
   }
 
-  handlePerformTimeAnalysis (file: AppFileWithMeta) {
-    const filename = file.path ? `${file.path}/${file.filename}` : file.filename
+  handlePerformTimeAnalysis (file: FileBrowserEntry | FileBrowserEntry[]) {
+    const items = Array.isArray(file)
+      ? file
+      : [file]
+    const filenames = items
+      .filter((item): item is AppFileWithMeta => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
+      .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
 
-    SocketActions.serverAnalysisEstimate(filename, undefined, true)
+    for (const filename of filenames) {
+      SocketActions.serverAnalysisEstimate(filename, undefined, true)
+    }
   }
 
   async handleViewThumbnail (file: AppFileWithMeta) {
@@ -887,13 +906,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       this.includeTimelapseThumbnailFiles(items)
     }
 
-    items.forEach((item) => {
+    for (const item of items) {
       const src = `${this.currentPath}/${item.name}`
       const dest = destinationPath
         ? `${destinationPath}/${item.name}`
         : `${item.name}`
       SocketActions.serverFilesMove(src, dest)
-    })
+    }
   }
 
   handleDragStart (item: FileBrowserEntry, items: FileBrowserEntry[], dataTransfer: DataTransfer) {
@@ -954,10 +973,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         this.includeTimelapseThumbnailFiles(items)
       }
 
-      items.forEach((item) => {
-        if (item.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${item.dirname}`, true)
-        if (item.type === 'file') SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.filename}`)
-      })
+      for (const item of items) {
+        if (item.type === 'file') {
+          SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.filename}`)
+        } else {
+          SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${item.dirname}`, true)
+        }
+      }
     }
   }
 

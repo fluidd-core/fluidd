@@ -83,7 +83,7 @@
             </v-list-item>
 
             <v-list-item
-              v-if="canPrint"
+              v-if="canRefreshMetadata"
               @click="$emit('refresh-metadata', file)"
             >
               <v-list-item-icon>
@@ -301,7 +301,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     )
   }
 
-  get canAddToQueue (): boolean {
+  get isGcodesRootWithAcceptedFiles () {
     const files = Array.isArray(this.file) ? this.file : [this.file]
 
     return (
@@ -309,14 +309,26 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
       files.some(x =>
         x.type !== 'directory' &&
         this.rootProperties.accepts.includes(x.extension)
-      ) &&
+      )
+    )
+  }
+
+  get canAddToQueue (): boolean {
+    return (
+      this.isGcodesRootWithAcceptedFiles &&
       this.$store.getters['server/componentSupport']('job_queue')
+    )
+  }
+
+  get canRefreshMetadata (): boolean {
+    return (
+      this.isGcodesRootWithAcceptedFiles
     )
   }
 
   get canPerformTimeAnalysys (): boolean {
     return (
-      this.canPrint &&
+      this.isGcodesRootWithAcceptedFiles &&
       this.$store.getters['server/componentSupport']('analysis')
     )
   }

@@ -573,23 +573,27 @@ export const SocketActions = {
    * Expects the full path including root.
    * Optionally pass the just the filename and path.
    */
-  async serverFilesMetadata (filepath: string) {
+  async serverFilesMetadata (filename: string) {
+    const wait = `${Waits.onFileSystem}/gcodes/${filename}`
     baseEmit(
       'server.files.metadata', {
         dispatch: 'files/onFileMetaData',
+        wait,
         params: {
-          filename: filepath
+          filename
         }
       }
     )
   },
 
-  async serverFilesMetascan (filepath: string) {
+  async serverFilesMetascan (filename: string) {
+    const wait = `${Waits.onFileSystem}/gcodes/${filename}`
     baseEmit(
       'server.files.metascan', {
         dispatch: 'files/onFileMetaData',
+        wait,
         params: {
-          filename: filepath
+          filename
         }
       }
     )
@@ -689,7 +693,7 @@ export const SocketActions = {
   },
 
   async serverFilesDeleteFile (path: string) {
-    const wait = `${Waits.onFileSystem}/${path}/`
+    const wait = `${Waits.onFileSystem}/${path}`
     baseEmit(
       'server.files.delete_file', {
         dispatch: 'void',
@@ -789,6 +793,7 @@ export const SocketActions = {
   },
 
   async serverAnalysisEstimate (filename: string, estimator_config?: string, update_metadata?: boolean) {
+    const wait = `${Waits.onFileSystem}/gcodes/${filename}`
     baseEmit(
       'server.analysis.estimate', {
         params: {
@@ -796,6 +801,7 @@ export const SocketActions = {
           estimator_config,
           update_metadata
         },
+        wait,
         dispatch: 'analysis/onAnalysisEstimate'
       }
     )
