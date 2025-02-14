@@ -56,7 +56,13 @@ export const actions: ActionTree<FilesState, RootState> = {
     const paths = getFilePaths(payload.filename, 'gcodes')
 
     if (!paths.filtered) {
-      commit('setFileUpdate', { paths, file: payload })
+      // We need to update filename here as it can contain a relative path
+      const file: MoonrakerFileWithMeta = {
+        ...payload,
+        filename: paths.filename
+      }
+
+      commit('setFileUpdate', { paths, file })
     }
   },
 
@@ -80,13 +86,13 @@ export const actions: ActionTree<FilesState, RootState> = {
 
   async notifyModifyFile ({ dispatch }, payload: FileChange) { dispatch('notifyCreateFile', payload) },
 
-  async notifyCreateFile ({ commit, dispatch, rootState }, payload: FileChange) {
+  async notifyCreateFile ({ commit, getters, dispatch, rootState }, payload: FileChange) {
     const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {
       if (
         paths.root === 'gcodes' &&
-        paths.extension === '.gcode'
+        getters.getRootProperties('gcodes').accepts.includes(paths.extension)
       ) {
         // If the file in the gcode preview is the same as the one being updated, then reset gcode preview
         const gcodePreviewFile = rootState.gcodePreview.file
