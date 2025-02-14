@@ -780,6 +780,27 @@ export const SocketActions = {
     )
   },
 
+  async serverAnalysisStatus () {
+    baseEmit(
+      'server.analysis.status', {
+        dispatch: 'analysis/onAnalysisStatus'
+      }
+    )
+  },
+
+  async serverAnalysisEstimate (filename: string, estimator_config?: string, update_metadata?: boolean) {
+    baseEmit(
+      'server.analysis.estimate', {
+        params: {
+          filename,
+          estimator_config,
+          update_metadata
+        },
+        dispatch: 'analysis/onAnalysisEstimate'
+      }
+    )
+  },
+
   async serverSpoolmanGetSpoolId () {
     baseEmit(
       'server.spoolman.get_spool_id', {

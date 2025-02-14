@@ -224,6 +224,7 @@ app:
       snooze: Snooze
       socket_reconnect: Re-Connect
       socket_refresh: Force refresh
+      perform_time_analysis: Perform Time Analysis
       thumbnail_size: Thumbnail size
       upload: Upload
       upload_files: Upload Files
