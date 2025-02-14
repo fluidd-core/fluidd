@@ -46,17 +46,12 @@
 <script lang="ts">
 import type { Heater } from '@/store/printer/types'
 import type { NullableOrEmpty } from '@/util/is-null-or-empty'
-import { Component, Vue, VModel, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, VModel, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class HeaterMpcCalibrateDialog extends Vue {
   targetTemperature = 100
   fanBreakpoints: NullableOrEmpty<number> = null
-
-  @Watch('fanBreakpoints')
-  onfanBreakpoints (value: string) {
-    console.log({ value })
-  }
 
   @VModel({ type: Boolean })
   open?: boolean
