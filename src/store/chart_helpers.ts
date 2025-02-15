@@ -4,7 +4,7 @@ import type { ChartData } from './charts/types'
 import type { KlipperPrinterMcuState, KlipperPrinterState, KlipperPrinterSystemStatsState } from './printer/types'
 
 export const handleMcuStatsChange = (payload: KlipperPrinterState, state: RootState, commit: Commit) => {
-  for (const key in Object.keys(payload)) {
+  for (const key in payload) {
     if (key.startsWith('mcu')) {
       // Combine existing with the update.
       const stats: KlipperPrinterMcuState = {
