@@ -1001,7 +1001,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getSaveConfigPendingItems: (state): KlipperPrinterConfig => {
-    return state.printer.configfile?.save_config_pending_items || {} as KlipperPrinterConfig
+    return state.printer.configfile?.save_config_pending_items || {}
   },
 
   getHasRoundBed: (state): boolean => {

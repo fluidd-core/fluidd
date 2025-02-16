@@ -596,7 +596,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   // Handles a user filtering the data.
-  handleFilter (filters: any) {
+  handleFilter (filters: FileFilterType[]) {
     this.filters = filters
   }
 

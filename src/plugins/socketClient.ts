@@ -11,6 +11,10 @@ import type { Store } from 'vuex'
 import type { RootState } from '@/store/types'
 import axios from 'axios'
 
+const fastNotifyStatusUpdateKeys = [
+  'motion_report'
+] as const
+
 export class WebSocketClient {
   url = ''
   connection: WebSocket | null = null
@@ -20,14 +24,14 @@ export class WebSocketClient {
   reconnectCount = 0
   logPrefix = '[WEBSOCKET]'
   requests: Array<Request> = []
-  store: any | null = null
+  store: Store<RootState>
   pingTimeout: any
   cache: CachedParams | null = null
 
   constructor (options: SocketPluginOptions) {
     this.reconnectEnabled = options.reconnectEnabled || false
     this.reconnectInterval = options.reconnectInterval || 1000
-    this.store = options.store ? options.store : null
+    this.store = options.store
   }
 
   pong () {
@@ -52,8 +56,8 @@ export class WebSocketClient {
         // In the event our socket stops responding, set the socket properties
         // appropriately.
         consola.debug(`${this.logPrefix} Connection timeout, pong failed`)
-        if (this.store) this.store.commit('socket/setSocketOpen', false)
-        if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
+        this.store.commit('socket/setSocketOpen', false)
+        this.store.dispatch('socket/onSocketConnecting', true)
       }
     }, Globals.SOCKET_PING_INTERVAL)
   }
@@ -76,23 +80,22 @@ export class WebSocketClient {
       const token = response.data.result
 
       // Good. Move on with setting up the socket.
-      if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
+      this.store.dispatch('socket/onSocketConnecting', true)
       this.connection = new WebSocket(`${this.url}?token=${token}`)
 
       this.connection.onopen = () => {
         if (this.reconnectEnabled) {
           this.reconnectCount = 1
         }
-        if (this.store) {
-          this.store.dispatch('socket/onSocketConnecting', false)
-          this.store.dispatch('socket/onSocketOpen', true)
-        }
+
+        this.store.dispatch('socket/onSocketConnecting', false)
+        this.store.dispatch('socket/onSocketOpen', true)
       }
 
       this.connection.onclose = (event) => {
         consola.debug(`${this.logPrefix} Connection closed:`, event)
         clearTimeout(this.pingTimeout)
-        if (this.store) this.store.dispatch('socket/onSocketClose', event)
+        this.store.dispatch('socket/onSocketClose', event)
         if (!event.wasClean) {
           this.reconnect()
         }
@@ -100,88 +103,96 @@ export class WebSocketClient {
 
       this.connection.onerror = (event) => {
         consola.error(`${this.logPrefix} Connection error:`, event)
-        if (this.store) this.store.dispatch('socket/onSocketError', event)
+        this.store.dispatch('socket/onSocketError', event)
       }
 
-      this.connection.onmessage = (m) => {
+      this.connection.onmessage = (message) => {
         // Parse the data packet.
-        const d = JSON.parse(m.data) as SocketResponse
+        const socketResponse = JSON.parse(message.data) as SocketResponse
 
-        // Is this a socket notification, or an answer to a specific request?
-        let request: Request | undefined
-        const requestIndex = this.requests.findIndex(request => request.id === d.id)
-        if (requestIndex > -1) {
-          request = this.requests[requestIndex]
-          this.requests.splice(requestIndex, 1)
-        }
+        if ('id' in socketResponse) {
+          const requestIndex = this.requests.findIndex(request => request.id === socketResponse.id)
 
-        // Remove a wait if defined.
-        if (this.store && request && request.wait && request.wait.length) {
-          this.store.commit('wait/setRemoveWait', request.wait)
-        }
+          const request = requestIndex > -1
+            ? this.requests.splice(requestIndex, 1)[0]
+            : undefined
 
-        if (d.error) { // Is it in error?
-          if (request) {
-            Object.defineProperty(d.error, '__request__', { enumerable: false, value: request })
+          // Remove a wait if defined.
+          if (request?.wait?.length) {
+            this.store.commit('wait/setRemoveWait', request.wait)
           }
-          consola.debug(`${this.logPrefix} Response error:`, d.error)
-          if (this.store) this.store.dispatch('socket/onSocketError', d.error)
+
+          if ('error' in socketResponse) { // Is it in error?
+            if (request) {
+              Object.defineProperty(socketResponse.error, '__request__', { enumerable: false, value: request })
+            }
+
+            consola.debug(`${this.logPrefix} Response error:`, socketResponse.error)
+
+            this.store.dispatch('socket/onSocketError', socketResponse.error)
+
+            return
+          }
+
+          // we're still alive.
+          this.pong()
+
+          if (request) {
+            // these are specific answers to a request we've made.
+            // Build the response, including a non-enumerable ref of the original request.
+            const result = typeof socketResponse.result === 'string'
+              ? { result: socketResponse.result }
+              : socketResponse.result
+
+            Object.defineProperty(result, '__request__', { enumerable: false, value: request })
+
+            consola.debug(`${this.logPrefix} Response:`, result)
+
+            if (request.dispatch) this.store.dispatch(request.dispatch, result)
+            if (request.commit) this.store.commit(request.commit, result)
+          }
+
           return
         }
 
         // we're still alive.
         this.pong()
 
-        if (request) {
-          // these are specific answers to a request we've made.
-          // Build the response, including a non-enumerable ref of the original request.
-          let result = (d.result) ? d.result : d.params
-          if (typeof result === 'string') {
-            result = { result }
-          }
+        // These are socket notifications (i.e., no specific request was made..)
+        // Dispatch with the name of the method, converted to camelCase.
+        if (socketResponse.params?.[0]) {
+          const [params, eventtime] = socketResponse.params
 
-          Object.defineProperty(result, '__request__', { enumerable: false, value: request })
-          consola.debug(`${this.logPrefix} Response:`, result)
-          if (request.dispatch && this.store) this.store?.dispatch(request.dispatch, result)
-          if (request.commit && this.store) this.store?.commit(request.commit, result)
-        } else {
-          // These are socket notifications (i.e., no specific request was made..)
-          // Dispatch with the name of the method, converted to camelCase.
+          if (socketResponse.method !== 'notify_status_update') {
+            // Normally, we let notifications through with no cache...
+            this.store.dispatch(`socket/${camelCase(socketResponse.method)}`, params)
+          } else {
+            // ...However, status notifications come through thick and fast,
+            // so we cache these and send them through every second.
 
-          if (d.params && d.params[0]) {
-            const [params, eventtime] = d.params
-
-            if (d.method !== 'notify_status_update') {
-              // Normally, we let notifications through with no cache...
-              if (this.store) this.store.dispatch('socket/' + camelCase(d.method), params)
-            } else {
-              // ...However, status notifications come through thick and fast,
-              // so we cache these and send them through every second.
-
-              // If any of these properties exist, bypass the cache and send immediately
-              for (const key of ['motion_report']) {
-                if (this.store && key in params) {
-                  this.store.dispatch('printer/onFastNotifyStatusUpdate', { key, payload: params[key] }, { root: true })
-                  delete params[key]
-                }
-              }
-
-              const timestamp = eventtime ? eventtime * 1000 : Date.now()
-
-              this.cache = (!this.cache)
-                ? { timestamp, params }
-                : { timestamp: this.cache.timestamp, params: mergeWith(this.cache.params, params, (dest, src) => Array.isArray(dest) ? src : undefined) }
-
-              // If there's a second or more difference, flush the cache.
-              if (timestamp - this.cache.timestamp >= 1000) {
-                if (this.store) this.store.dispatch('socket/' + camelCase(d.method), this.cache.params)
-                this.cache = { timestamp, params: {} }
+            // If any of these properties exist, bypass the cache and send immediately
+            for (const key of fastNotifyStatusUpdateKeys) {
+              if (key in params) {
+                this.store.dispatch('printer/onFastNotifyStatusUpdate', { key, payload: params[key] }, { root: true })
+                delete params[key]
               }
             }
-          } else {
-            // No params? Let it through.
-            if (this.store) this.store.dispatch('socket/' + camelCase(d.method))
+
+            const timestamp = eventtime ? eventtime * 1000 : Date.now()
+
+            this.cache = !this.cache
+              ? { timestamp, params }
+              : { timestamp: this.cache.timestamp, params: mergeWith(this.cache.params, params, (dest, src) => Array.isArray(dest) ? src : undefined) }
+
+            // If there's a second or more difference, flush the cache.
+            if (timestamp - this.cache.timestamp >= 1000) {
+              this.store.dispatch('socket/notifyStatusUpdate', this.cache.params)
+              this.cache = { timestamp, params: {} }
+            }
           }
+        } else {
+          // No params? Let it through.
+          this.store.dispatch(`socket/${camelCase(socketResponse.method)}`)
         }
       }
     } catch (error: unknown) {
@@ -204,7 +215,7 @@ export class WebSocketClient {
         this.connect()
       }, this.reconnectInterval)
     } else {
-      if (this.store) this.store.dispatch('socket/onSocketConnecting', false)
+      this.store.dispatch('socket/onSocketConnecting', false)
     }
   }
 
@@ -236,7 +247,7 @@ export class WebSocketClient {
       }
       if (options && options.wait) {
         request.wait = options.wait
-        if (this.store) this.store.dispatch('wait/addWait', options.wait)
+        this.store.dispatch('wait/addWait', options.wait)
       }
       if (options && options.params) {
         packet.params = options.params
@@ -307,14 +318,26 @@ interface SocketRequest {
   params?: Record<string, any>;
 }
 
-interface SocketResponse {
+interface SocketResponseBase {
   jsonrpc: string; // always available
-  method?: string; // generic responses
-  params?: [any, number?]; // generic responses
-  id?: number; // specific response
-  result?: any; // specific response
-  error?: string | SocketError; // specific response
 }
+
+interface SocketApiResponse extends SocketResponseBase {
+  id: number;
+  result: string | Record<string, any>;
+}
+
+interface SocketApiErrorResponse extends SocketResponseBase {
+  id: number;
+  error: string | SocketError;
+}
+
+interface SocketNotificationResponse extends SocketResponseBase {
+  method: string;
+  params?: [Record<string, any>, number];
+}
+
+type SocketResponse = SocketApiResponse | SocketApiErrorResponse | SocketNotificationResponse
 
 interface SocketError {
   code: number;
@@ -323,5 +346,5 @@ interface SocketError {
 
 interface CachedParams {
   timestamp: number;
-  params: any;
+  params: Record<string, any>;
 }
