@@ -54,7 +54,7 @@
             (socketConnected && apiConnected) &&
               (!klippyReady || hasWarnings) &&
               !inLayout &&
-              $route.path !== '/login'
+              $route.name !== 'login'
           "
         >
           <v-col>
