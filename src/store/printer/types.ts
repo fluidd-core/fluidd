@@ -119,6 +119,10 @@ export interface KlipperPrinterState extends KlipperPrinterStateBaseType {
 
   bltouch?: KlipperPrinterProbeState;
 
+  smart_effector?: KlipperPrinterProbeState;
+
+  [key: `probe_eddy_current ${string}`]: KlipperPrinterProbeState;
+
   [key: `pwm_cycle_time ${string}`]: KlipperPrinterPwmCycleTimeState;
 
   quad_gantry_level?: KlipperPrinterQuadGantryLevelState;
@@ -631,7 +635,11 @@ export interface KlipperPrinterSettings extends KlipperPrinterSettingsBaseType {
 
   probe?: KlipperPrinterProbeSettings;
 
-  bltouch?: KlipperPrinterProbeSettings;
+  bltouch?: KlipperPrinterBltouchSettings;
+
+  smart_effector?: KlipperPrinterSmartEffectorSettings;
+
+  [key: `probe_eddy_current ${Lowercase<string>}`]: KlipperPrinterProbeEddyCurrentSettings;
 
   input_shaper?: KlipperPrinterInputShaperSettings;
 
@@ -900,13 +908,70 @@ export interface KlipperPrinterVerifyHeaterSettings {
 }
 
 export interface KlipperPrinterProbeSettings {
-  z_offset: number;
   deactivate_on_each_sample: boolean;
   activate_gcode: string;
   deactivate_gcode: string;
   pin: string;
   x_offset: number;
   y_offset: number;
+  z_offset: number;
+  speed: number;
+  lift_speed: number;
+  samples: number;
+  sample_retract_dist: number;
+  samples_result: string;
+  samples_tolerance: number;
+  samples_tolerance_retries: number;
+}
+
+export interface KlipperPrinterBltouchSettings {
+  stow_on_each_sample: boolean;
+  probe_with_touch_mode: boolean;
+  control_pin: string;
+  sensor_pin: string;
+  pin_up_reports_not_triggered: boolean;
+  pin_up_touch_mode_reports_triggered: boolean;
+  pin_move_time: number;
+  x_offset: number;
+  y_offset: number;
+  z_offset: number;
+  speed: number;
+  lift_speed: number;
+  samples: number;
+  sample_retract_dist: number;
+  samples_result: string;
+  samples_tolerance: number;
+  samples_tolerance_retries: number;
+}
+
+export interface KlipperPrinterSmartEffectorSettings {
+  probe_accel: number;
+  recovery_time: number;
+  deactivate_on_each_sample: boolean;
+  activate_gcode: string;
+  deactivate_gcode: string;
+  pin: string;
+  x_offset: number;
+  y_offset: number;
+  z_offset: number;
+  speed: number;
+  lift_speed: number;
+  samples: number;
+  sample_retract_dist: number;
+  samples_result: string;
+  samples_tolerance: number;
+  samples_tolerance_retries: number;
+}
+
+export interface KlipperPrinterProbeEddyCurrentSettings {
+  sensor_type: string;
+  reg_drive_current: number;
+  i2c_mcu: string;
+  i2c_speed: number;
+  i2c_address: number;
+  x_offset: number;
+  y_offset: number;
+  z_offset: number;
   speed: number;
   lift_speed: number;
   samples: number;

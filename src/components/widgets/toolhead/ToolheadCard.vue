@@ -200,7 +200,10 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   get printerSupportsProbeCalibrate (): boolean {
     return (
       'probe' in this.printerSettings ||
-      'bltouch' in this.printerSettings
+      'bltouch' in this.printerSettings ||
+      'smart_effector' in this.printerSettings ||
+      Object.keys(this.printerSettings)
+        .some(x => x.startsWith('probe_eddy_current '))
     )
   }
 
