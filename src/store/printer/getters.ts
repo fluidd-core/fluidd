@@ -350,12 +350,11 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const extruderKeys = Object.keys(state.printer)
       .filter((key): key is ExtruderKey => /^extruder\d{0,2}$/.test(key))
       .sort((a, b) => +a.substring(8) - +b.substring(8))
-    const hasMultipleExtruders = extruderKeys.length > 1
 
     return extruderKeys
-      .map((key, index) => ({
+      .map(key => ({
         key,
-        name: hasMultipleExtruders ? `Extruder ${index}` : 'Extruder'
+        name: Vue.$filters.prettyCase(key),
       }))
   },
 
