@@ -84,6 +84,8 @@ app:
       subtitle: >-
         Verwenden Sie die Schaltfläche "Aktualisieren", um den
         Endschalter-Status zu aktualisieren.
+    label:
+      endstop: Endschalter %{name}
   file_system:
     filters:
       label:
@@ -241,6 +243,7 @@ app:
       copied: Kopiert
       copy: Kopieren
       power_on_printer: Drucker einschalten
+      perform_time_analysis: Zeitanalyse ausführen
     error:
       app_setup_link: >-
         Die Anforderungen für die Einrichtung von Fluidd finden Sie <a
@@ -809,7 +812,7 @@ app:
         suchen
       canbus_warning: Nur unzugewiesene CAN-Bus-Knoten werden erkannt.<br>Es ist empfohlen,
         nur ein unzugewiesenes Gerät an den CAN-Bus anzuschließen, um Kommunikationsprobleme
-        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank"
+        zu vermeiden.<br>Mehr Informationen finden Sie <a target="_blank" 
         href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">hier.</a>
   tool:
     btn:
