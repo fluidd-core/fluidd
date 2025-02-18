@@ -151,17 +151,21 @@ export interface KlipperPrinterState extends KlipperPrinterStateBaseType {
 
   z_tilt?: KlipperPrinterZTiltState;
 
+  // These keys are for kalico modules
+
+  [key: `belay ${string}`]: KalicoPrinterBelayState;
+
+  dockable_probe?: KalicoPrinterDockableProbeState;
+
+  mixing_extruder?: KalicoPrinterMixingExtruderState;
+
+  tools_calibrate?: KalicoPrinterToolsCalibrateState;
+
+  trad_rack?: KalicoPrinterTradRackState;
+
+  z_calibration?: KalicoPrinterZCalibrationState;
+
   // These keys are for external modules
-
-  [key: `belay ${string}`]: KlipperPrinterBelayState;
-
-  dockable_probe?: KlipperPrinterDockableProbeState;
-
-  mixing_extruder?: KlipperPrinterMixingExtruderState;
-
-  tools_calibrate?: KlipperPrinterToolsCalibrateState;
-
-  trad_rack?: KlipperPrinterTradRackState;
 
   beacon?: KlipperPrinterBeaconState;
 }
@@ -511,21 +515,21 @@ export interface KlipperPrinterZTiltState {
   applied: boolean;
 }
 
-export interface KlipperPrinterBelayState {
+export interface KalicoPrinterBelayState {
   last_state: boolean;
   enabled: boolean;
 }
 
-export interface KlipperPrinterDockableProbeState {
+export interface KalicoPrinterDockableProbeState {
   last_status: 'UNKNOWN' | 'ATTACHED' | 'DOCKED'
 }
 
-export interface KlipperPrinterMixingExtruderState {
+export interface KalicoPrinterMixingExtruderState {
   mixing: string;
   ticks: string;
 }
 
-export interface KlipperPrinterToolsCalibrateState {
+export interface KalicoPrinterToolsCalibrateState {
   sensor_location: {
     x: number;
     y: number;
@@ -539,13 +543,18 @@ export interface KlipperPrinterToolsCalibrateState {
   calibration_probe_inactive: boolean;
 }
 
-export interface KlipperPrinterTradRackState {
+export interface KalicoPrinterTradRackState {
   curr_lane: number | null;
   active_lane: number | null;
   next_lane: number | null;
   next_tool: number | null;
   tool_map: any[];
   selector_homed: boolean;
+}
+
+export interface KalicoPrinterZCalibrationState {
+  last_query: boolean;
+  last_z_offset: number;
 }
 
 export interface KlipperPrinterBeaconState {
@@ -657,6 +666,16 @@ export interface KlipperPrinterSettings extends KlipperPrinterSettingsBaseType {
 
   [key: `display_template ${Lowercase<string>}`]: KlipperPrinterDisplayTemplateSettings;
 
+  // These keys are for kalico modules
+
+  danger_options?: KalicoPrinterDangerOptionsSettings;
+
+  constants?: KalicoPrinterConstantsSettings;
+
+  z_calibration?: KalicoPrinterZCalibrationSettings;
+
+  z_tilt_ng?: KalicoPrinterZTiltNgSettings;
+
   // These keys are for external modules
 
   beacon?: KlipperPrinterBeaconSettings;
@@ -682,6 +701,8 @@ export interface KlipperPrinterTmcSettings {
   hold_current: number;
   interpolate: boolean;
   [key: `driver_${string}`]: number | boolean;
+  home_current?: number;
+  current_change_dwell_time?: number;
 }
 
 export interface KlipperPrinterFanSettings {
@@ -763,6 +784,7 @@ export interface KlipperPrinterSafeZHomeSettings {
   z_hop_speed: number;
   speed: number;
   move_to_previous: boolean;
+  home_y_before_x?: boolean;
 }
 
 export interface KlipperPrinterZTiltSettings {
@@ -772,6 +794,11 @@ export interface KlipperPrinterZTiltSettings {
   points: [number, number][];
   horizontal_move_z: number;
   speed: number;
+  increasing_threshold?: number;
+  adaptive_horizontal_move_z?: boolean;
+  min_horizontal_move_z?: number;
+  use_probe_xy_offsets?: boolean;
+  enforce_lift_speed?: boolean;
 }
 
 export interface KlipperPrinterBedMeshSettings {
@@ -922,6 +949,7 @@ export interface KlipperPrinterProbeSettings {
   samples_result: string;
   samples_tolerance: number;
   samples_tolerance_retries: number;
+  drop_first_result?: boolean;
 }
 
 export interface KlipperPrinterBltouchSettings {
@@ -1092,6 +1120,73 @@ export interface KlipperPrinterEndstopPhaseSettings {
 
 export interface KlipperPrinterDisplayTemplateSettings {
   text: string;
+}
+
+export interface KalicoPrinterDangerOptionsSettings {
+  minimal_logging: boolean;
+  log_statistics: boolean;
+  log_config_file_at_startup: boolean;
+  log_bed_mesh_at_startup: boolean;
+  log_velocity_limit_changes: boolean;
+  log_pressure_advance_changes: boolean;
+  log_shutdown_info: boolean;
+  log_serial_reader_warnings: boolean;
+  log_startup_info: boolean;
+  log_webhook_method_register_messages: boolean;
+  error_on_unused_config_options: boolean;
+  allow_plugin_override: boolean;
+  multi_mcu_trsync_timeout: number;
+  homing_elapsed_distance_tolerance: number;
+  temp_ignore_limits: boolean;
+  autosave_includes: boolean;
+  bgflush_extra_time: number;
+  homing_start_delay: number;
+  endstop_sample_time: number;
+  endstop_sample_count: number;
+}
+
+export interface KalicoPrinterConstantsSettings extends Record<string, string> {
+}
+
+export interface KalicoPrinterZCalibrationSettings {
+  nozzle_xy_position: string;
+  switch_xy_position: string;
+  bed_xy_position?: string;
+  switch_offset: number;
+  max_deviation?: number;
+  samples?: number;
+  samples_tolerance?: number;
+  samples_tolerance_retries?: number;
+  samples_result: string;
+  clearance?: number;
+  position_min?: number;
+  speed: number;
+  lift_speed?: number;
+  probing_speed?: number;
+  probing_second_speed?: number;
+  probing_retract_dist?: number;
+  probing_first_fast: boolean;
+  start_gcode: string;
+  before_switch_gcode: string;
+  end_gcode: string;
+}
+
+export interface KalicoPrinterZTiltNgSettings {
+  z_positions: [number, number][];
+  retries: number;
+  retry_tolerance: number;
+  increasing_threshold: number;
+  points: [number, number][];
+  horizontal_move_z: number;
+  adaptive_horizontal_move_z: boolean;
+  min_horizontal_move_z: number;
+  speed: number;
+  use_probe_xy_offsets: boolean;
+  enforce_lift_speed: boolean;
+  averaging_len: number;
+  autodetect_delta: number;
+  z_offsets?: string;
+  extra_points?: string;
 }
 
 export interface KlipperPrinterBeaconSettings extends Record<string, any> {
