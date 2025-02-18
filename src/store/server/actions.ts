@@ -8,6 +8,7 @@ import type { AppPushNotification } from '../notifications/types'
 import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
 import { gte, valid } from 'semver'
+import type { ObjectWithRequest } from '@/plugins/socketClient'
 
 let retryTimeout: number
 
@@ -171,8 +172,8 @@ export const actions: ActionTree<ServerState, RootState> = {
     commit('setMachinePeripherals', payload)
   },
 
-  async onMachinePeripheralsCanbus ({ commit }, payload: { can_uuids: CanbusUuid[], __request__: any }) {
-    const { interface: canbusInterface } = payload.__request__.params
+  async onMachinePeripheralsCanbus ({ commit }, payload: ObjectWithRequest<{ can_uuids: CanbusUuid[] }>) {
+    const { interface: canbusInterface } = payload.__request__.params ?? {}
 
     commit('setMachinePeripheralsCanbus', { canbusInterface, can_uuids: payload.can_uuids })
   },

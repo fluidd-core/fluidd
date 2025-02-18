@@ -72,11 +72,14 @@ app:
         Add meg az API URL-címét.<br />Pár példa
         látható;<br /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: NYITVA
-      triggered: AKTIVÁLVA
+    states:
+      label:
+        open: NYITVA
+        triggered: AKTIVÁLVA
     msg:
       subtitle: A frissítés gombbal frissítheted a végállás állapotát.
+    label:
+      endstop: Végállás %{name}
   file_system:
     filters:
       label:
@@ -232,6 +235,7 @@ app:
       copied: Másolva
       copy: Másolás
       power_on_printer: Nyomtató bekapcsolása
+      perform_time_analysis: Időelemzés
     error:
       app_setup_link: >-
         A Fluidd telepítési követelményeit <a target="_blank" href="%{url}">itt
@@ -455,6 +459,7 @@ app:
         start_time: Elindult
         status: Állapot
         total_duration: Teljes időtartam
+        file_processors: Fájl processzorok
     title:
       add_chart: Ábra hozzáadása
       add_printer: Nyomtató hozzáadása

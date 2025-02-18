@@ -99,8 +99,8 @@ export default class ConsoleCommand extends Vue {
   historyUp () {
     if (this.history.length >= 1) {
       if (!this.isFirst) {
-        const f = this.history.shift() as string
-        this.history.push(f)
+        const f = this.history.shift()
+        if (f != null) this.history.push(f)
       }
       this.emitChange(this.history[0])
       this.isFirst = false
@@ -110,8 +110,8 @@ export default class ConsoleCommand extends Vue {
   historyDown () {
     if (this.history.length >= 1) {
       if (!this.isFirst) {
-        const f = this.history.pop() as string
-        this.history.unshift(f)
+        const f = this.history.pop()
+        if (f != null) this.history.unshift(f)
       }
       this.emitChange(this.history[0])
       this.isFirst = false

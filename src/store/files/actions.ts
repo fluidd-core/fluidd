@@ -1,18 +1,19 @@
 import type { ActionTree } from 'vuex'
-import type { FilesState, KlipperFile, KlipperDir, FileChangeSocketResponse, KlipperFileWithMeta, DiskUsage, FileChangeItem, FilePaths } from './types'
+import type { FilesState, MoonrakerFile, MoonrakerDir, FileChange, MoonrakerFileWithMeta, FileChangeItem, FilePaths, DirectoryInformation } from './types'
 import type { RootState } from '../types'
 import getFilePaths from '@/util/get-file-paths'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
+import type { ObjectWithRequest } from '@/plugins/socketClient'
 
-const itemAsKlipperFile = (item: FileChangeItem, paths: FilePaths): KlipperFile => ({
+const itemAsMoonrakerFile = (item: FileChangeItem, paths: FilePaths): MoonrakerFile => ({
   filename: paths.filename,
   modified: item.modified,
   size: item.size,
   permissions: item.permissions
 })
 
-const itemAsKlipperDir = (item: FileChangeItem, paths: FilePaths): KlipperDir => ({
+const itemAsMoonrakerDir = (item: FileChangeItem, paths: FilePaths): MoonrakerDir => ({
   dirname: paths.filename,
   modified: item.modified,
   size: item.size,
@@ -27,9 +28,9 @@ export const actions: ActionTree<FilesState, RootState> = {
     commit('setReset')
   },
 
-  async onServerFilesGetDirectory ({ commit }, payload: { disk_usage: DiskUsage; files: (KlipperFile | KlipperFileWithMeta)[]; dirs: KlipperDir[]; __request__: any }) {
-    const { disk_usage, files, dirs, __request__: request } = payload
-    const { path } = request.params
+  async onServerFilesGetDirectory ({ commit }, payload: ObjectWithRequest<DirectoryInformation>) {
+    const { disk_usage, files, dirs } = payload
+    const { path } = payload.__request__.params ?? {}
 
     const filteredDirs = dirs
       .filter(file =>
@@ -42,8 +43,8 @@ export const actions: ActionTree<FilesState, RootState> = {
     commit('setServerFilesGetDirectory', { path, content: { files, dirs: filteredDirs } })
   },
 
-  async onServerFilesListRoot ({ commit }, payload) {
-    const { root } = payload.__request__.params
+  async onServerFilesListRoot ({ commit }, payload: ObjectWithRequest<[]>) {
+    const { root } = payload.__request__.params ?? {}
 
     commit('setServerFilesListRoot', { root, files: [...payload] })
   },
@@ -51,11 +52,17 @@ export const actions: ActionTree<FilesState, RootState> = {
   /**
    * If we request the metadata (a file..) then we load and update here.
    */
-  async onFileMetaData ({ commit }, payload: KlipperFileWithMeta) {
+  async onFileMetaData ({ commit }, payload: MoonrakerFileWithMeta) {
     const paths = getFilePaths(payload.filename, 'gcodes')
 
     if (!paths.filtered) {
-      commit('setFileUpdate', { paths, file: payload })
+      // We need to update filename here as it can contain a relative path
+      const file: MoonrakerFileWithMeta = {
+        ...payload,
+        filename: paths.filename
+      }
+
+      commit('setFileUpdate', { paths, file })
     }
   },
 
@@ -69,7 +76,7 @@ export const actions: ActionTree<FilesState, RootState> = {
   async notifyUploadFile ({ dispatch }, payload) { dispatch('notifyCreateFile', payload) },
 
   // New notifications
-  async notifyRootUpdate ({ commit }, payload: FileChangeSocketResponse) {
+  async notifyRootUpdate ({ commit }, payload: FileChange) {
     const root = payload.item.root
 
     commit('setResetRoot', root)
@@ -77,15 +84,15 @@ export const actions: ActionTree<FilesState, RootState> = {
     SocketActions.serverFilesGetDirectory(root)
   },
 
-  async notifyModifyFile ({ dispatch }, payload: FileChangeSocketResponse) { dispatch('notifyCreateFile', payload) },
+  async notifyModifyFile ({ dispatch }, payload: FileChange) { dispatch('notifyCreateFile', payload) },
 
-  async notifyCreateFile ({ commit, dispatch, rootState }, payload: FileChangeSocketResponse) {
+  async notifyCreateFile ({ commit, getters, dispatch, rootState }, payload: FileChange) {
     const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {
       if (
         paths.root === 'gcodes' &&
-        paths.extension === '.gcode'
+        getters.getRootProperties('gcodes').accepts.includes(paths.extension)
       ) {
         // If the file in the gcode preview is the same as the one being updated, then reset gcode preview
         const gcodePreviewFile = rootState.gcodePreview.file
@@ -101,66 +108,40 @@ export const actions: ActionTree<FilesState, RootState> = {
         // For gcode files, get the metadata and the meta update will take care of the rest.
         SocketActions.serverFilesMetadata(paths.pathFilename)
       } else {
-        const file = itemAsKlipperFile(payload.item, paths)
+        const file = itemAsMoonrakerFile(payload.item, paths)
 
         commit('setFileUpdate', { paths, file })
       }
     }
   },
 
-  async notifyCreateDir ({ commit }, payload: FileChangeSocketResponse) {
+  async notifyCreateDir ({ commit }, payload: FileChange) {
     const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {
-      const dir = itemAsKlipperDir(payload.item, paths)
+      const dir = itemAsMoonrakerDir(payload.item, paths)
 
       commit('setDirUpdate', { paths, dir })
     }
   },
 
-  async notifyMoveFile ({ commit }, payload: FileChangeSocketResponse) {
+  async notifyMoveFile ({ dispatch }, payload: FileChange) {
     const { item, source_item } = payload
 
-    const paths = getFilePaths(item.path, item.root)
+    dispatch('notifyCreateFile', { item })
 
-    if (!paths.filtered) {
-      const file = itemAsKlipperFile(payload.item, paths)
-
-      commit('setFileUpdate', { paths, file })
-    }
-
-    if (source_item) {
-      const sourcePaths = getFilePaths(source_item.path, source_item.root)
-
-      if (!sourcePaths.filtered) {
-        commit('setFileDelete', sourcePaths)
-      }
-    }
+    dispatch('notifyDeleteFile', { item: source_item })
   },
 
-  async notifyMoveDir ({ commit }, payload: FileChangeSocketResponse) {
+  async notifyMoveDir ({ dispatch }, payload: FileChange) {
     const { item, source_item } = payload
 
-    const paths = getFilePaths(item.path, item.root)
+    dispatch('notifyCreateDir', { item })
 
-    if (!paths.filtered) {
-      const dir = itemAsKlipperDir(payload.item, paths)
-
-      commit('setDirUpdate', { paths, dir })
-    }
-
-    if (source_item) {
-      const sourcePaths = getFilePaths(source_item.path, source_item.root)
-
-      if (!sourcePaths.filtered) {
-        commit('setDirDelete', sourcePaths)
-
-        commit('setPathDelete', sourcePaths.rootPathFilename)
-      }
-    }
+    dispatch('notifyDeleteDir', { item: source_item })
   },
 
-  async notifyDeleteFile ({ commit }, payload: FileChangeSocketResponse) {
+  async notifyDeleteFile ({ commit }, payload: FileChange) {
     const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {
@@ -168,7 +149,7 @@ export const actions: ActionTree<FilesState, RootState> = {
     }
   },
 
-  async notifyDeleteDir ({ commit }, payload: FileChangeSocketResponse) {
+  async notifyDeleteDir ({ commit }, payload: FileChange) {
     const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {

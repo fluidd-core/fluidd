@@ -74,11 +74,6 @@ export default class Tune extends Mixins(StateMixin) {
     return this.$store.getters['printer/getRunoutSensors'].length > 0
   }
 
-  get supportsEndstops () {
-    const endStops = this.$store.getters['printer/getEndstops']
-    return (Object.keys(endStops).length > 0)
-  }
-
   get supportsBeacon (): boolean {
     return this.$store.getters['printer/getSupportsBeacon']
   }

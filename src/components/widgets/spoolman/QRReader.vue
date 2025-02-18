@@ -43,7 +43,7 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
   statusMessage = 'info.howto'
   lastScanTimestamp = Date.now()
   processing = false
-  context!: CanvasRenderingContext2D
+  context: CanvasRenderingContext2D | null = null
 
   @VModel({ type: String, default: null })
   source!: null | string
@@ -74,7 +74,10 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
 
   async mounted () {
     this.processing = true
-    this.context = this.canvas.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D
+    this.context = this.canvas.getContext('2d', { willReadFrequently: true })
+    if (this.context === null) {
+      this.statusMessage = 'error.no_image_data'
+    }
     this.processing = false
   }
 
@@ -107,9 +110,11 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
     }
 
     try {
-      this.context.drawImage(image, 0, 0, this.canvas.width, this.canvas.height)
-      const result = await QrScanner.scanImage(this.canvas, { returnDetailedScanResult: true })
-      if (result.data) { this.handleCodeFound(result.data) }
+      if (this.context) {
+        this.context.drawImage(image, 0, 0, this.canvas.width, this.canvas.height)
+        const result = await QrScanner.scanImage(this.canvas, { returnDetailedScanResult: true })
+        if (result.data) { this.handleCodeFound(result.data) }
+      }
     } catch (err) {
       if (err instanceof DOMException) {
         if (err.name === 'SecurityError') {

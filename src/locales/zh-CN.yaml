@@ -50,9 +50,10 @@ app:
       endpoint_examples: >-
         输入您的 Moonraker API 地址。<br />例如：<br/><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: 未触发
-      triggered: 已触发
+    states:
+      label:
+        open: 未触发
+        triggered: 已触发
     msg:
       subtitle: 使用“刷新”按钮更新限位开关状态。
   file_system:

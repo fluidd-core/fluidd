@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { FilesState, MoonrakerRootFile, MoonrakerPathContent, KlipperFile, KlipperFileWithMeta, FilePaths, KlipperDir } from './types'
+import type { FilesState, MoonrakerRootFile, MoonrakerPathContent, MoonrakerFile, MoonrakerFileWithMeta, FilePaths, MoonrakerDir } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 
@@ -37,7 +37,7 @@ export const mutations: MutationTree<FilesState> = {
     Vue.set(state.rootFiles, root, files)
   },
 
-  setFileUpdate (state, payload: { paths: FilePaths, file: KlipperFile | KlipperFileWithMeta }) {
+  setFileUpdate (state, payload: { paths: FilePaths, file: MoonrakerFile | MoonrakerFileWithMeta }) {
     const { paths, file } = payload
 
     const isFiltered = (
@@ -61,7 +61,7 @@ export const mutations: MutationTree<FilesState> = {
     }
   },
 
-  setDirUpdate (state, payload: { paths: FilePaths, dir: KlipperDir }) {
+  setDirUpdate (state, payload: { paths: FilePaths, dir: MoonrakerDir }) {
     const { paths, dir } = payload
 
     const isFiltered = (

@@ -329,23 +329,20 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   get isDashboard () {
-    return this.$route.path === '/'
+    return this.$route.name === 'home'
   }
 
   handleResetLayout () {
-    const pathLayouts: Record<string, string> = {
-      '/diagnostics': 'diagnostics'
-    }
+    const pathLayouts = [
+      'diagnostics'
+    ]
 
-    const pathLayout = pathLayouts[this.$route.path]
-    let layoutDefaultState
-    if (pathLayout) {
-      // reset to default init state
-      layoutDefaultState = defaultState().layouts[pathLayout]
-    } else {
-      // reset dashboard to default layout
-      layoutDefaultState = this.$store.getters['layout/getLayout']('dashboard')
-    }
+    const pathLayout = pathLayouts.includes(this.$route.name ?? '')
+      ? this.$route.name
+      : undefined
+    const layoutDefaultState = pathLayout
+      ? defaultState().layouts[pathLayout]
+      : this.$store.getters['layout/getLayout']('dashboard')
 
     const toReset = pathLayout ?? this.$store.getters['layout/getSpecificLayoutName']
 

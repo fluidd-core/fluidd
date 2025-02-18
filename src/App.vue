@@ -54,7 +54,7 @@
             (socketConnected && apiConnected) &&
               (!klippyReady || hasWarnings) &&
               !inLayout &&
-              $route.path !== '/login'
+              $route.name !== 'login'
           "
         >
           <v-col>
@@ -374,6 +374,8 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
   handleDragOver (event: DragEvent) {
     if (
+      this.socketConnected &&
+      this.authenticated &&
       this.fileDropRoot &&
       event.dataTransfer &&
       hasFilesInDataTransfer(event.dataTransfer)

@@ -57,9 +57,10 @@ app:
         Enter your API URL.<br />Some examples might be;<br
         /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: مفتوح
-      triggered: مفعل
+    states:
+      label:
+        open: مفتوح
+        triggered: مفعل
     msg:
       subtitle: استخدم زر التحديث لتحديث حالة نقطة التوقف.
   file_system:

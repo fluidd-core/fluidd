@@ -516,7 +516,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
 
-      if (this.$router.currentRoute.name !== 'home') {
+      if (this.$route.name !== 'home') {
         this.$router.push({ name: 'home' })
       }
     }

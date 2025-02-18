@@ -1,4 +1,4 @@
-import type { KlipperFileMeta } from '@/store/files/types.metadata'
+import type { MoonrakerFileMeta } from '@/store/files/types.metadata'
 
 export interface HistoryState {
   count: number;
@@ -12,7 +12,7 @@ export interface HistoryItem {
   end_time: string | null;
   filament_used: number;
   filename: string;
-  metadata?: KlipperFileMeta;
+  metadata?: MoonrakerFileMeta;
   print_duration: number;
   status: HistoryItemStatus;
   start_time: number;

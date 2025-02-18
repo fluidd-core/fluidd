@@ -649,9 +649,10 @@ app:
       trouble: சிக்கல் உள்ளதா? <a href = "%{url}" இலக்கு = "_ வெற்று"> மேலும் தகவலுக்கு
         இங்கே காண்க </a>.
   endstop:
-    label:
-      open: திற
-      triggered: தூண்டப்பட்டது
+    states:
+      label:
+        open: திற
+        triggered: தூண்டப்பட்டது
     msg:
       subtitle: எண்ட்ச்டாப் நிலையைப் புதுப்பிக்க புதுப்பிப்பு பொத்தானைப் பயன்படுத்தவும்.
   file_system:

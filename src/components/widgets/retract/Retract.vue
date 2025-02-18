@@ -10,10 +10,10 @@
         <app-named-slider
           :label="$t('app.general.label.retract_length')"
           suffix="mm"
-          :value="retract_length"
-          :reset-value="defaults.retract_length"
+          :value="retractLength"
+          :reset-value="defaultRetractLength"
           :min="0"
-          :max="retract_length_max"
+          :max="maxRetractLength"
           :step="0.01"
           overridable
           :disabled="!klippyReady"
@@ -31,10 +31,10 @@
         <app-named-slider
           :label="$t('app.general.label.unretract_extra_length')"
           suffix="mm"
-          :value="unretract_extra_length"
-          :reset-value="defaults.unretract_extra_length"
+          :value="unretractExtraLength"
+          :reset-value="defaultUnretractExtraLength"
           :min="0"
-          :max="unretract_extra_length_max"
+          :max="maxUnretractExtraLength"
           :step="0.01"
           overridable
           :disabled="!klippyReady"
@@ -55,11 +55,11 @@
         <app-named-slider
           :label="$t('app.general.label.retract_speed')"
           suffix="mm/s"
-          :value="retract_speed"
-          :reset-value="defaults.retract_speed"
+          :value="retractSpeed"
+          :reset-value="defaultRetractSpeed"
           :min="0"
           :step="1"
-          :max="retract_speed_max"
+          :max="maxRetractSpeed"
           overridable
           :disabled="!klippyReady"
           :locked="isMobileViewport"
@@ -76,11 +76,11 @@
         <app-named-slider
           :label="$t('app.general.label.unretract_speed')"
           suffix="mm/s"
-          :value="unretract_speed"
-          :reset-value="defaults.unretract_speed"
+          :value="unretractSpeed"
+          :reset-value="defaultUnretractSpeed"
           :min="0"
           :step="1"
-          :max="unretract_speed_max"
+          :max="maxUnretractSpeed"
           overridable
           :disabled="!klippyReady"
           :locked="isMobileViewport"
@@ -100,11 +100,11 @@
         <app-named-slider
           :label="$t('app.general.label.z_hop_height')"
           suffix="mm"
-          :value="z_hop_height"
-          :reset-value="defaults.z_hop_height"
+          :value="zHopHeight"
+          :reset-value="defaultZHopHeight"
           :min="0"
           :step="0.1"
-          :max="z_hop_height_max"
+          :max="maxZHopHeight"
           overridable
           :disabled="!klippyReady"
           :locked="isMobileViewport"
@@ -124,55 +124,75 @@ import type { KlipperPrinterSettings, KlippyApp } from '@/store/printer/types'
 
 @Component({})
 export default class Retract extends Mixins(StateMixin, BrowserMixin) {
-  get retract_length (): number {
+  get firmwareRetraction () {
+    const printerSettings: KlipperPrinterSettings = this.$store.getters['printer/getPrinterSettings']
+
+    return printerSettings.firmware_retraction
+  }
+
+  get defaultRetractLength (): number {
+    return this.firmwareRetraction?.retract_length ?? 0
+  }
+
+  get retractLength (): number {
     return this.$store.state.printer.printer.firmware_retraction?.retract_length ?? 0
   }
 
-  get retract_length_max (): number {
-    if (this.defaults.retract_length <= 0) return 15
-    return Math.round(this.defaults.retract_length * 2 * 100) / 100
+  get maxRetractLength (): number {
+    if (this.defaultRetractLength <= 0) return 15
+    return Math.round(this.defaultRetractLength * 2 * 100) / 100
   }
 
-  get retract_speed (): number {
+  get defaultRetractSpeed (): number {
+    return this.firmwareRetraction?.retract_speed ?? 0
+  }
+
+  get retractSpeed (): number {
     return this.$store.state.printer.printer.firmware_retraction?.retract_speed ?? 0
   }
 
-  get retract_speed_max (): number {
-    if (this.defaults.retract_speed <= 0) return 100
-    return Math.round(this.defaults.retract_speed * 2)
+  get maxRetractSpeed (): number {
+    if (this.defaultRetractSpeed <= 0) return 100
+    return Math.round(this.defaultRetractSpeed * 2)
   }
 
-  get unretract_speed (): number {
+  get defaultUnretractSpeed (): number {
+    return this.firmwareRetraction?.unretract_speed ?? 0
+  }
+
+  get unretractSpeed (): number {
     return this.$store.state.printer.printer.firmware_retraction?.unretract_speed ?? 0
   }
 
-  get unretract_speed_max (): number {
-    if (this.defaults.unretract_speed <= 0) return 100
-    return Math.round(this.defaults.unretract_speed * 2)
+  get maxUnretractSpeed (): number {
+    if (this.defaultUnretractSpeed <= 0) return 100
+    return Math.round(this.defaultUnretractSpeed * 2)
   }
 
-  get unretract_extra_length (): number {
+  get defaultUnretractExtraLength (): number {
+    return this.firmwareRetraction?.unretract_extra_length ?? 0
+  }
+
+  get unretractExtraLength (): number {
     return this.$store.state.printer.printer.firmware_retraction?.unretract_extra_length ?? 0
   }
 
-  get unretract_extra_length_max (): number {
-    if (this.defaults.unretract_extra_length <= 0) return 15
-    return Math.round(this.defaults.unretract_extra_length * 2 * 100) / 100
+  get maxUnretractExtraLength (): number {
+    if (this.defaultUnretractExtraLength <= 0) return 15
+    return Math.round(this.defaultUnretractExtraLength * 2 * 100) / 100
   }
 
-  get z_hop_height (): number {
+  get defaultZHopHeight (): number {
+    return this.firmwareRetraction?.z_hop_height ?? 0
+  }
+
+  get zHopHeight (): number {
     return this.$store.state.printer.printer.firmware_retraction?.z_hop_height ?? 0
   }
 
-  get z_hop_height_max (): number {
-    if (this.defaults.z_hop_height == null || this.defaults.z_hop_height <= 0) return 2
-    return Math.round(this.defaults.z_hop_height * 2 * 100) / 100
-  }
-
-  get defaults () {
-    const printerSettings: KlipperPrinterSettings = this.$store.getters['printer/getPrinterSettings']
-
-    return printerSettings.firmware_retraction!
+  get maxZHopHeight (): number {
+    if (this.defaultZHopHeight <= 0) return 2
+    return Math.round(this.defaultZHopHeight * 2 * 100) / 100
   }
 
   get klippyApp (): KlippyApp {

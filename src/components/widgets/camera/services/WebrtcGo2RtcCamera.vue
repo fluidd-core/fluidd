@@ -129,7 +129,7 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
   }
 
   async onWebSocketMessage (ev: MessageEvent) {
-    const msg: Go2RtcMessage = JSON.parse(ev.data)
+    const msg = JSON.parse(ev.data) as Go2RtcMessage
 
     switch (msg.type) {
       case 'webrtc/candidate':

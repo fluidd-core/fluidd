@@ -84,7 +84,11 @@ export const mutations: MutationTree<ConfigState> = {
     // const uiSettings = payload.uiSettings
     const uiSettings = state.uiSettings
     if (Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage) {
-      instances = JSON.parse(localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY])
+      const instancesValue = localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY]
+
+      if (typeof instancesValue === 'string') {
+        instances = JSON.parse(instancesValue) as InstanceConfig[]
+      }
     }
 
     const i = instances.findIndex((instance: InstanceConfig) => instance.apiUrl === payload.apiConfig.apiUrl)

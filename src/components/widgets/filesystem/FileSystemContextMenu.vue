@@ -83,7 +83,7 @@
             </v-list-item>
 
             <v-list-item
-              v-if="canPrint"
+              v-if="canRefreshMetadata"
               @click="$emit('refresh-metadata', file)"
             >
               <v-list-item-icon>
@@ -91,6 +91,18 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{ $t('app.general.btn.refresh_metadata') }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item
+              v-if="canPerformTimeAnalysys"
+              @click="$emit('perform-time-analysis', file)"
+            >
+              <v-list-item-icon>
+                <v-icon>$stopwatch</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.perform_time_analysis') }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
@@ -289,7 +301,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     )
   }
 
-  get canAddToQueue (): boolean {
+  get isGcodesRootWithAcceptedFiles () {
     const files = Array.isArray(this.file) ? this.file : [this.file]
 
     return (
@@ -297,8 +309,27 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
       files.some(x =>
         x.type !== 'directory' &&
         this.rootProperties.accepts.includes(x.extension)
-      ) &&
+      )
+    )
+  }
+
+  get canAddToQueue (): boolean {
+    return (
+      this.isGcodesRootWithAcceptedFiles &&
       this.$store.getters['server/componentSupport']('job_queue')
+    )
+  }
+
+  get canRefreshMetadata (): boolean {
+    return (
+      this.isGcodesRootWithAcceptedFiles
+    )
+  }
+
+  get canPerformTimeAnalysys (): boolean {
+    return (
+      this.isGcodesRootWithAcceptedFiles &&
+      this.$store.getters['server/componentSupport']('analysis')
     )
   }
 }

@@ -19,7 +19,7 @@
       :loading="filesLoading"
       :headers="configurableHeaders"
       @root-change="handleRootChange"
-      @refresh="refreshPath(currentPath)"
+      @refresh="handleRefresh"
       @add-file="handleAddFileDialog"
       @add-dir="handleAddDirDialog"
       @upload="handleUpload"
@@ -31,9 +31,12 @@
       v-if="selected.length > 0"
       :root="currentRoot"
       :path="visiblePath"
-      @remove="handleRemove(selected)"
-      @create-zip="handleCreateZip(selected)"
-      @enqueue="handleEnqueue(selected)"
+      :selected="selected"
+      @remove="handleRemove"
+      @create-zip="handleCreateZip"
+      @refresh-metadata="handleRefreshMetadata"
+      @perform-time-analysis="handlePerformTimeAnalysis"
+      @enqueue="handleEnqueue"
     />
 
     <file-system-browser
@@ -70,6 +73,7 @@
       @preheat="handlePreheat"
       @preview-gcode="handlePreviewGcode"
       @refresh-metadata="handleRefreshMetadata"
+      @perform-time-analysis="handlePerformTimeAnalysis"
       @view-thumbnail="handleViewThumbnail"
       @enqueue="handleEnqueue"
       @create-zip="handleCreateZip"
@@ -409,6 +413,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
               cellClass: 'text-no-wrap'
             },
             {
+              text: this.$tc('app.general.table.header.file_processors'),
+              value: 'file_processors',
+              visible: false,
+              cellClass: 'text-no-wrap'
+            },
+            {
               text: this.$tc('app.general.table.header.last_printed'),
               value: 'print_start_time',
               cellClass: 'text-no-wrap'
@@ -580,19 +590,24 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   loadFiles (path: string) {
     if (!this.disabled) {
       this.currentPath = path
-      if (this.files.length <= 0) {
-        this.refreshPath(path)
+
+      const directoryLoaded = path in this.$store.state.files.pathFiles
+
+      if (!directoryLoaded) {
+        this.handleRefresh()
       }
     }
   }
 
   // Refreshes a path by loading the directory.
-  refreshPath (path: string) {
-    if (path && !this.disabled) SocketActions.serverFilesGetDirectory(path)
+  handleRefresh () {
+    if (!this.disabled) {
+      SocketActions.serverFilesGetDirectory(this.currentPath)
+    }
   }
 
   // Handles a user filtering the data.
-  handleFilter (filters: any) {
+  handleFilter (filters: FileFilterType[]) {
     this.filters = filters
   }
 
@@ -781,7 +796,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       if (!gcode) return
 
       if (
-        this.$router.currentRoute.name !== 'home' ||
+        this.$route.name !== 'home' ||
         !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')
       ) {
         this.$router.push({ name: 'gcode_preview' })
@@ -796,10 +811,32 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  handleRefreshMetadata (file: AppFileWithMeta) {
-    const filename = file.path ? `${file.path}/${file.filename}` : file.filename
+  handleRefreshMetadata (file: FileBrowserEntry | FileBrowserEntry[]) {
+    if (this.disabled) return
 
-    SocketActions.serverFilesMetadata(filename)
+    const files = Array.isArray(file)
+      ? file
+      : [file]
+    const filenames = files
+      .filter((item): item is AppFileWithMeta => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
+      .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
+
+    for (const filename of filenames) {
+      SocketActions.serverFilesMetascan(filename)
+    }
+  }
+
+  handlePerformTimeAnalysis (file: FileBrowserEntry | FileBrowserEntry[]) {
+    const items = Array.isArray(file)
+      ? file
+      : [file]
+    const filenames = items
+      .filter((item): item is AppFileWithMeta => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
+      .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
+
+    for (const filename of filenames) {
+      SocketActions.serverAnalysisProcess(filename, undefined, true)
+    }
   }
 
   async handleViewThumbnail (file: AppFileWithMeta) {
@@ -840,29 +877,27 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     SocketActions.printerPrintStart(filename)
 
     // If we aren't on the dashboard, push the user back there.
-    if (this.$router.currentRoute.name !== 'home') {
+    if (this.$route.name !== 'home') {
       this.$router.push({ name: 'home' })
     }
   }
 
   async handleSaveFileChanges (contents: string, restart: string) {
-    if (contents.length > 0) {
-      const file = new File([contents], this.fileEditorDialogState.filename)
-      if (!restart && this.fileEditorDialogState.open) this.fileEditorDialogState.loading = true
+    const file = new File([contents], this.fileEditorDialogState.filename)
+    if (!restart && this.fileEditorDialogState.open) this.fileEditorDialogState.loading = true
 
-      await this.uploadFile(file, this.visiblePath, this.currentRoot, false)
-      this.fileEditorDialogState.loading = false
-      if (restart) {
-        if (restart === 'moonraker') {
-          this.serviceRestartMoonraker()
-          return
-        }
-        if (restart === 'klipper') {
-          this.firmwareRestartKlippy()
-          return
-        }
-        this.serviceRestartByName(restart)
+    await this.uploadFile(file, this.visiblePath, this.currentRoot, false)
+    this.fileEditorDialogState.loading = false
+    if (restart) {
+      if (restart === 'moonraker') {
+        this.serviceRestartMoonraker()
+        return
       }
+      if (restart === 'klipper') {
+        this.firmwareRestartKlippy()
+        return
+      }
+      this.serviceRestartByName(restart)
     }
   }
 
@@ -882,13 +917,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       this.includeTimelapseThumbnailFiles(items)
     }
 
-    items.forEach((item) => {
+    for (const item of items) {
       const src = `${this.currentPath}/${item.name}`
       const dest = destinationPath
         ? `${destinationPath}/${item.name}`
         : `${item.name}`
       SocketActions.serverFilesMove(src, dest)
-    })
+    }
   }
 
   handleDragStart (item: FileBrowserEntry, items: FileBrowserEntry[], dataTransfer: DataTransfer) {
@@ -949,10 +984,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         this.includeTimelapseThumbnailFiles(items)
       }
 
-      items.forEach((item) => {
-        if (item.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${item.dirname}`, true)
-        if (item.type === 'file') SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.filename}`)
-      })
+      for (const item of items) {
+        if (item.type === 'file') {
+          SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.filename}`)
+        } else {
+          SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${item.dirname}`, true)
+        }
+      }
     }
   }
 

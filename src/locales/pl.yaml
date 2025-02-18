@@ -66,11 +66,14 @@ app:
       endpoint_examples: Wprowadź adres API.<br />Przykład:<br /><blockquote>fluidd.local,
         https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: OTWARTY
-      triggered: AKTYWOWANY
+    states:
+      label:
+        open: OTWARTY
+        triggered: AKTYWOWANY
     msg:
       subtitle: Użyj przycisku odświeżania, aby zaktualizować status krańcówek.
+    label:
+      endstop: Krańcówka %{name}
   file_system:
     filters:
       label:
@@ -317,6 +320,7 @@ app:
       copied: Skopiowano
       copy: Kopiuj
       power_on_printer: Włącz drukarkę
+      perform_time_analysis: Wykonaj analizę czasową
     title:
       home: Ekran główny
       camera: Kamera | Kamery
@@ -456,6 +460,7 @@ app:
         status: Status
         nozzle_diameter: Średnica dyszy
         total_duration: Łączny czas trwania
+        file_processors: Procesory plików
     tooltip:
       estop: Awaryjny stop
       managed_by_moonraker: Zarządzane przez konfigurację moonrakera

@@ -69,9 +69,12 @@ app:
         Enter your API URL.<br />Some examples might be;<br
         /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
+    states:
+      label:
+        open: OPEN
+        triggered: TRIGGERED
     label:
-      open: OPEN
-      triggered: TRIGGERED
+      endstop: Endstop %{name}
     msg:
       subtitle: Use the refresh button to update endstop status.
   file_system:
@@ -221,6 +224,7 @@ app:
       snooze: Snooze
       socket_reconnect: Re-Connect
       socket_refresh: Force refresh
+      perform_time_analysis: Perform Time Analysis
       thumbnail_size: Thumbnail size
       upload: Upload
       upload_files: Upload Files
@@ -424,6 +428,7 @@ app:
         filament_type: Filament type
         filament_used: Used filament
         filament_weight_total: Filament weight
+        file_processors: File processors
         first_layer_bed_temp: First layer bed temp
         first_layer_extr_temp: First layer extruder temp
         first_layer_height: First layer height

@@ -32,10 +32,6 @@ export const mutations: MutationTree<PrinterState> = {
     state.info = payload
   },
 
-  setQueryEndstops (state, payload) {
-    state.endstops = payload
-  },
-
   setPrinterObjectList (state, payload) {
     if (!state.printer.objects.includes(payload)) {
       state.printer.objects.push(payload)
@@ -43,11 +39,23 @@ export const mutations: MutationTree<PrinterState> = {
   },
 
   setClearEndStops (state) {
-    state.endstops = {}
+    if (state.printer.query_endstops == null) {
+      return
+    }
+
+    state.printer.query_endstops = {
+      ...state.printer.query_endstops,
+      last_query: {}
+    }
   },
 
   setClearScrewsTiltAdjust (state) {
+    if (state.printer.screws_tilt_adjust == null) {
+      return
+    }
+
     state.printer.screws_tilt_adjust = {
+      ...state.printer.screws_tilt_adjust,
       error: false,
       max_deviation: 0,
       results: {}

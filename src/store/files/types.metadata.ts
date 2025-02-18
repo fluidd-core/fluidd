@@ -1,4 +1,4 @@
-export interface KlipperFileMeta {
+export interface MoonrakerFileMeta {
   modified: number | string;
   size: number;
   uuid?: string;
@@ -19,10 +19,11 @@ export interface KlipperFileMeta {
   object_height?: number;
   slicer?: string;
   slicer_version?: string;
-  thumbnails?: KlipperFileMetaThumbnail[];
+  file_processors?: string[];
+  thumbnails?: MoonrakerFileMetaThumbnail[];
 }
 
-export interface KlipperFileMetaThumbnail {
+export interface MoonrakerFileMetaThumbnail {
   relative_path: string;
   height: number;
   width: number;
