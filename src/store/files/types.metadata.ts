@@ -19,6 +19,7 @@ export interface MoonrakerFileMeta {
   object_height?: number;
   slicer?: string;
   slicer_version?: string;
+  file_processors?: string[];
   thumbnails?: MoonrakerFileMetaThumbnail[];
 }
 

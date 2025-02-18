@@ -215,6 +215,14 @@
             </template>
           </template>
 
+          <template #[`item.file_processors`]="{ value }">
+            {{
+              value != null && value.length > 0
+                ? value.map($filters.prettyCase).join(', ')
+                : '--'
+            }}
+          </template>
+
           <template #[`item.print_start_time`]="{ value }">
             {{
               value != null

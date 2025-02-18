@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { AnalysisState, AnalysisStatus, AnalysisEstimate } from './types'
+import type { AnalysisState, AnalysisStatus, AnalysisProcess } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import type { ObjectWithRequest } from '@/plugins/socketClient'
@@ -15,11 +15,11 @@ export const actions: ActionTree<AnalysisState, RootState> = {
     }
   },
 
-  async onAnalysisEstimate (_, payload: ObjectWithRequest<AnalysisEstimate>) {
+  async onAnalysisProcess (_, payload: ObjectWithRequest<AnalysisProcess>) {
     if (payload) {
-      const { filename, update_metadata } = payload.__request__.params ?? {}
+      const { filename } = payload.__request__.params ?? {}
 
-      if (update_metadata) {
+      if (!payload.bypassed) {
         SocketActions.serverFilesMetadata(filename)
       }
     }

@@ -792,17 +792,31 @@ export const SocketActions = {
     )
   },
 
-  async serverAnalysisEstimate (filename: string, estimator_config?: string, update_metadata?: boolean) {
+  async serverAnalysisEstimate (filename: string, estimator_config?: string) {
     const wait = `${Waits.onFileSystem}/gcodes/${filename}`
     baseEmit(
       'server.analysis.estimate', {
         params: {
           filename,
-          estimator_config,
-          update_metadata
+          estimator_config
         },
         wait,
-        dispatch: 'analysis/onAnalysisEstimate'
+        dispatch: 'void'
+      }
+    )
+  },
+
+  async serverAnalysisProcess (filename: string, estimator_config?: string, force?: boolean) {
+    const wait = `${Waits.onFileSystem}/gcodes/${filename}`
+    baseEmit(
+      'server.analysis.process', {
+        params: {
+          filename,
+          estimator_config,
+          force
+        },
+        wait,
+        dispatch: 'analysis/onAnalysisProcess'
       }
     )
   },

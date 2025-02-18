@@ -29,3 +29,9 @@ export interface AnalysisEstimate {
   kind_times: Record<string, number>;
   layer_times: [number, number][]
 }
+
+export interface AnalysisProcess {
+  prev_processed: boolean;
+  version: string;
+  bypassed: boolean;
+}

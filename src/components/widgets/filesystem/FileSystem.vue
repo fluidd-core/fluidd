@@ -413,6 +413,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
               cellClass: 'text-no-wrap'
             },
             {
+              text: this.$tc('app.general.table.header.file_processors'),
+              value: 'file_processors',
+              visible: false,
+              cellClass: 'text-no-wrap'
+            },
+            {
               text: this.$tc('app.general.table.header.last_printed'),
               value: 'print_start_time',
               cellClass: 'text-no-wrap'
@@ -824,7 +830,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
 
     for (const filename of filenames) {
-      SocketActions.serverAnalysisEstimate(filename, undefined, true)
+      SocketActions.serverAnalysisProcess(filename, undefined, true)
     }
   }
 

@@ -428,6 +428,7 @@ app:
         filament_type: Filament type
         filament_used: Used filament
         filament_weight_total: Filament weight
+        file_processors: File processors
         first_layer_bed_temp: First layer bed temp
         first_layer_extr_temp: First layer extruder temp
         first_layer_height: First layer height
