@@ -4,6 +4,7 @@ import { SocketActions } from '@/api/socketActions'
 import type { AppPushNotification } from './notifications/types'
 import i18n from '@/plugins/i18n'
 import type { KlipperPrinterState, KlippyApp, TmcKey } from './printer/types'
+import getFilePaths from '@/util/get-file-paths'
 
 const isTmc = (item: string): item is TmcKey => /^tmc\d{4} /.test(item)
 
@@ -70,9 +71,13 @@ export const handleCurrentFileChange = (payload: KlipperPrinterState, state: Roo
     payload.print_stats?.filename &&
     payload.print_stats.filename !== state.printer.printer.print_stats?.filename
   ) {
-    // This refreshes the metadata for the current file, which also
-    // ensures we update the printer file with the latest data via
-    // the files/onFileUpdate action.
-    SocketActions.serverFilesMetadata(payload.print_stats.filename)
+    const paths = getFilePaths(payload.print_stats.filename, 'gcodes')
+
+    const directoryLoaded = paths.rootPath in state.files.pathFiles
+
+    // Load the folder containing the currently printing file if we haven't done that already
+    if (!directoryLoaded) {
+      SocketActions.serverFilesGetDirectory(paths.rootPath)
+    }
   }
 }
