@@ -125,40 +125,20 @@ export const actions: ActionTree<FilesState, RootState> = {
     }
   },
 
-  async notifyMoveFile ({ commit, dispatch }, payload: FileChange) {
-    const { source_item } = payload
-
-    dispatch('notifyCreateFile', payload)
-
-    if (source_item) {
-      const sourcePaths = getFilePaths(source_item.path, source_item.root)
-
-      if (!sourcePaths.filtered) {
-        commit('setFileDelete', sourcePaths)
-      }
-    }
-  },
-
-  async notifyMoveDir ({ commit }, payload: FileChange) {
+  async notifyMoveFile ({ dispatch }, payload: FileChange) {
     const { item, source_item } = payload
 
-    const paths = getFilePaths(item.path, item.root)
+    dispatch('notifyCreateFile', { item })
 
-    if (!paths.filtered) {
-      const dir = itemAsMoonrakerDir(payload.item, paths)
+    dispatch('notifyDeleteFile', { item: source_item })
+  },
 
-      commit('setDirUpdate', { paths, dir })
-    }
+  async notifyMoveDir ({ dispatch }, payload: FileChange) {
+    const { item, source_item } = payload
 
-    if (source_item) {
-      const sourcePaths = getFilePaths(source_item.path, source_item.root)
+    dispatch('notifyCreateDir', { item })
 
-      if (!sourcePaths.filtered) {
-        commit('setDirDelete', sourcePaths)
-
-        commit('setPathDelete', sourcePaths.rootPathFilename)
-      }
-    }
+    dispatch('notifyDeleteDir', { item: source_item })
   },
 
   async notifyDeleteFile ({ commit }, payload: FileChange) {
