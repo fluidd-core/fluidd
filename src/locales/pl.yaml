@@ -72,6 +72,8 @@ app:
         triggered: AKTYWOWANY
     msg:
       subtitle: Użyj przycisku odświeżania, aby zaktualizować status krańcówek.
+    label:
+      endstop: Krańcówka %{name}
   file_system:
     filters:
       label:
@@ -318,6 +320,7 @@ app:
       copied: Skopiowano
       copy: Kopiuj
       power_on_printer: Włącz drukarkę
+      perform_time_analysis: Wykonaj analizę czasową
     title:
       home: Ekran główny
       camera: Kamera | Kamery
@@ -457,6 +460,7 @@ app:
         status: Status
         nozzle_diameter: Średnica dyszy
         total_duration: Łączny czas trwania
+        file_processors: Procesory plików
     tooltip:
       estop: Awaryjny stop
       managed_by_moonraker: Zarządzane przez konfigurację moonrakera
@@ -787,7 +791,7 @@ app:
       canbus_warning: Wykrywane mogą być tylko nieprzypisane węzły magistrali CAN.<br>
         Zaleca się podłączenie tylko jednego nieprzypisanego urządzenia do magistrali
         CAN, aby uniknąć problemów z komunikacją.<br> Więcej informacji można znaleźć
-        <a target="_blank"
+        <a target="_blank" 
         href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">tutaj.</a>
       no_devices_searched: Użyj przycisku odświeżania, aby wyszukać urządzenia
       no_devices_found: Nie znaleziono urządzeń
