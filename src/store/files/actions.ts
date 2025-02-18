@@ -125,16 +125,10 @@ export const actions: ActionTree<FilesState, RootState> = {
     }
   },
 
-  async notifyMoveFile ({ commit }, payload: FileChange) {
-    const { item, source_item } = payload
+  async notifyMoveFile ({ commit, dispatch }, payload: FileChange) {
+    const { source_item } = payload
 
-    const paths = getFilePaths(item.path, item.root)
-
-    if (!paths.filtered) {
-      const file = itemAsMoonrakerFile(payload.item, paths)
-
-      commit('setFileUpdate', { paths, file })
-    }
+    dispatch('notifyCreateFile', payload)
 
     if (source_item) {
       const sourcePaths = getFilePaths(source_item.path, source_item.root)

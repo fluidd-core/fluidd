@@ -19,7 +19,7 @@
       :loading="filesLoading"
       :headers="configurableHeaders"
       @root-change="handleRootChange"
-      @refresh="refreshPath(currentPath)"
+      @refresh="handleRefresh"
       @add-file="handleAddFileDialog"
       @add-dir="handleAddDirDialog"
       @upload="handleUpload"
@@ -590,15 +590,20 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   loadFiles (path: string) {
     if (!this.disabled) {
       this.currentPath = path
-      if (this.files.length <= 0) {
-        this.refreshPath(path)
+
+      const directoryLoaded = path in this.$store.state.files.pathFiles
+
+      if (!directoryLoaded) {
+        this.handleRefresh()
       }
     }
   }
 
   // Refreshes a path by loading the directory.
-  refreshPath (path: string) {
-    if (path && !this.disabled) SocketActions.serverFilesGetDirectory(path)
+  handleRefresh () {
+    if (!this.disabled) {
+      SocketActions.serverFilesGetDirectory(this.currentPath)
+    }
   }
 
   // Handles a user filtering the data.
