@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.32.3](https://github.com/fluidd-core/fluidd/compare/v1.32.2...v1.32.3) (2025-02-18)
+
+
+### Features
+
+* adds basic support for smart_effector and probe_eddy_current ([#1605](https://github.com/fluidd-core/fluidd/issues/1605)) ([9cb9da4](https://github.com/fluidd-core/fluidd/commit/9cb9da4dfda4c9311a85191a3bdf69cd4ea7146c))
+* adds Moonraker analysis support ([#1596](https://github.com/fluidd-core/fluidd/issues/1596)) ([15f8305](https://github.com/fluidd-core/fluidd/commit/15f83057dead35a3a9fb9816616568617a9bd291))
+* **FileSystem:** bulk metadata or analysis refresh ([086d3fb](https://github.com/fluidd-core/fluidd/commit/086d3fbb24aa6676fa21526440771445fc658462))
+* **i18n-de:** Update German translations ([d5aceda](https://github.com/fluidd-core/fluidd/commit/d5aceda8b64c63ed2acbf29a1bae12a50c0da41a))
+* **i18n-hu:** Update Hungarian translations ([37edaf6](https://github.com/fluidd-core/fluidd/commit/37edaf62bf4a8c144eb5659b09b3891148660121))
+* **i18n-pl:** Update Polish translations ([b573fc7](https://github.com/fluidd-core/fluidd/commit/b573fc78231f91014b459c767fc93fc19f3fd5b0))
+* update Moonraker analysis support ([e181b3a](https://github.com/fluidd-core/fluidd/commit/e181b3ae0ed70830054783ae62c8fae5fcd2192d))
+
+
+### Bug Fixes
+
+* allow saving empty files ([fa6ecb8](https://github.com/fluidd-core/fluidd/commit/fa6ecb8ddd13fce1a1cb8007bb869f078c3b2fba))
+* file drop target only if connected and authenticated ([8a92068](https://github.com/fluidd-core/fluidd/commit/8a920682c6de5a26b89713b268d838c3510a7836))
+* **FileSystem:** filename on metadata response ([#1600](https://github.com/fluidd-core/fluidd/issues/1600)) ([35b6447](https://github.com/fluidd-core/fluidd/commit/35b6447dc5d08bdb2c70c752f26479b9dcc256d2))
+* **FileSystem:** show default metadata columns ([#1595](https://github.com/fluidd-core/fluidd/issues/1595)) ([e4db081](https://github.com/fluidd-core/fluidd/commit/e4db081a172eeec19b05bb45875744bf1002df0e))
+* get directory for current printing file ([#1607](https://github.com/fluidd-core/fluidd/issues/1607)) ([a2db732](https://github.com/fluidd-core/fluidd/commit/a2db73243ebcf5a25c3a27dd24e8b352dc7e0183))
+* incorrect object key iteration ([804995e](https://github.com/fluidd-core/fluidd/commit/804995ebbd90a85d5c2ec017ae5fd4c6c2d33276))
+
+
+### Code Refactorings
+
+* **FileSystem:** rename operations ([55a85ae](https://github.com/fluidd-core/fluidd/commit/55a85ae7ce07024ae32f61d084a5dd28027163f2))
+* **FirmwareRetraction:** type-check safety ([318a27b](https://github.com/fluidd-core/fluidd/commit/318a27bbe7af915ec16e0b9b4cd579cbf52fdd33))
+* introduce tsreset features ([6d5c754](https://github.com/fluidd-core/fluidd/commit/6d5c754bcf799a725c64cb753c8a3df701d62580))
+* Kalico related typing improvements ([d428b91](https://github.com/fluidd-core/fluidd/commit/d428b9125f858792ba06d53911ed7f88d751c75b))
+* pretty case format extruder names ([7a8a2e7](https://github.com/fluidd-core/fluidd/commit/7a8a2e7d9274e8f22fc50ca4436bfc835250ed4d))
+* printer.query_endstops state ([afb6275](https://github.com/fluidd-core/fluidd/commit/afb627552ff87fc0d71eaa6ab000eb4ff6278c97))
+* removes debug code ([44a2b46](https://github.com/fluidd-core/fluidd/commit/44a2b46cd133c9d6014dee4478524161430b030c))
+* replace route.path with route.name ([f71d4b0](https://github.com/fluidd-core/fluidd/commit/f71d4b09124c5a296c42e0e29e9a21ef63f55538))
+* typing improvements ([3edbeb7](https://github.com/fluidd-core/fluidd/commit/3edbeb7706a8adbc22791cfb117508dcc2868ddb))
+* typing improvements ([b0bc76d](https://github.com/fluidd-core/fluidd/commit/b0bc76d5192ae9da485c799a6eff3c7ef4bc3202))
+* typing improvements ([83ab04a](https://github.com/fluidd-core/fluidd/commit/83ab04a4477055162d9e95334ee2005821318564))
+
 ## [1.32.2](https://github.com/fluidd-core/fluidd/compare/v1.32.1...v1.32.2) (2025-02-11)
 
 
