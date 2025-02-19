@@ -165,11 +165,11 @@
       class="mb-2"
     >
       <v-col>
-        <v-btn-toggle
+        <app-btn-toggle
           v-model.number="toolheadMoveLength"
           mandatory
           dense
-          class="elevation-2"
+          :disabled="!klippyReady"
         >
           <app-btn
             v-for="(distance, index) of toolheadMoveDistances"
@@ -181,7 +181,7 @@
           >
             {{ distance }}
           </app-btn>
-        </v-btn-toggle>
+        </app-btn-toggle>
       </v-col>
     </v-row>
   </div>
