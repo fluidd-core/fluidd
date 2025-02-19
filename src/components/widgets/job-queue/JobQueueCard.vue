@@ -103,6 +103,6 @@ export default class JobQueueCard extends Vue {
   }
 
   .partial-screen {
-    height: 400px;
+    max-height: 400px;
   }
 </style>
