@@ -3,6 +3,7 @@
 /// <reference types="vuetify" />
 /// <reference types="vue-meta" />
 /// <reference types="vite-plugin-pwa/client" />
+/// <reference types="./tsreset" />
 
 declare module '*.yaml' {
   const data: unknown

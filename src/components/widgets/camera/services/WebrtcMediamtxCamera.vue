@@ -46,7 +46,7 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
   queuedCandidates: RTCIceCandidate[] = []
 
   unquoteCredential (v: string): string {
-    return JSON.parse(`"${v}"`)
+    return JSON.parse(`"${v}"`) as string
   }
 
   linkToIceServers (links: string | null): RTCIceServerWithCredentialType[] {

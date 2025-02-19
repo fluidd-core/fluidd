@@ -230,7 +230,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   get settings (): TimelapseSettings {
-    return this.$store.getters['timelapse/getSettings']
+    return this.$store.state.timelapse.settings ?? {} as TimelapseSettings
   }
 
   subtitleIfBlocked (blocked: boolean): string {

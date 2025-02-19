@@ -36,19 +36,19 @@ export const httpClientActions = {
       result: {
         username: string,
         token: string,
-        action: string,
+        action: 'user_jwt_refresh',
         source: string
       }
     }>('/access/refresh_jwt', { refresh_token }, options)
   },
 
-  accessLoginPost (username: string, password: string, source = 'moonraker', options?: AxiosRequestConfig) {
+  accessLoginPost (username: string, password: string, source: string = 'moonraker', options?: AxiosRequestConfig) {
     return this.post<{
       result: {
         username: string,
         token: string,
         refresh_token: string,
-        action: string,
+        action: 'user_logged_in',
         source: string
       }
     }>('/access/login', {
@@ -62,7 +62,7 @@ export const httpClientActions = {
     return this.post<{
       result: {
         username: string,
-        action: string
+        action: 'user_logged_out'
       }
     }>('access/logout', undefined, options)
   },
@@ -101,8 +101,8 @@ export const httpClientActions = {
         username: string,
         token: string,
         refresh_token: string,
-        action: string,
-        source: string
+        action: 'user_created',
+        source: 'moonraker'
       }
     }>('/access/user', {
       username,
@@ -114,7 +114,7 @@ export const httpClientActions = {
     return this.delete<{
       result: {
         username: string,
-        action: string
+        action: 'user_deleted'
       }
     }>('/access/user', {
       ...options,
@@ -126,7 +126,7 @@ export const httpClientActions = {
     return this.post<{
       result: {
         username: string,
-        action: string
+        action: 'user_password_reset'
       }
     }>('/access/user/password', {
       password,
@@ -193,11 +193,15 @@ export const httpClientActions = {
     return this.postForm<{
       result: {
         item: {
+          modified?: number,
+          size?: number,
+          permissions?: string,
           path: string,
           root: string
         }
         print_started?: boolean,
-        action: string
+        print_queued?: boolean,
+        action: 'create_file'
       }
     }>('/server/files/upload', formData, options)
   },

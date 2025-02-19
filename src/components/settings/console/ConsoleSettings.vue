@@ -83,8 +83,8 @@ export default class ConsoleSettings extends Mixins(StateMixin) {
     filter: null
   }
 
-  get filters () {
-    return this.$store.getters['console/getFilters']
+  get filters (): ConsoleFilter[] {
+    return this.$store.state.console.consoleFilters
   }
 
   handleEditFilterDialog (filter: ConsoleFilter | null) {

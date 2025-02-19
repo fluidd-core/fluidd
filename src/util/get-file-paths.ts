@@ -1,22 +1,26 @@
 import { Globals } from '@/globals'
 import type { FilePaths } from '@/store/files/types'
 
-/**
- * Takes a filename and root and provides;
- * - the filename, with no path.
- * - the path, with no root or filename.
- * - the path, including root.
- */
-const getFilePaths = (filePath: string, root: string): FilePaths => {
-  const pathParts = filePath.split('/')
+const getFilePaths = (pathFilename: string, root = ''): FilePaths => {
+  const pathParts = pathFilename.split('/')
   const filtered = Globals.FILTERED_FOLDER_NAMES.some(x => pathParts.includes(x))
   const filename = pathParts.pop() ?? ''
   const path = pathParts.join('/')
 
+  const rootPath = root && path ? `${root}/${path}` : root || path
+  const rootPathFilename = rootPath ? `${rootPath}/${filename}` : filename
+
+  const extensionIndex = filename.lastIndexOf('.')
+  const extension = extensionIndex >= 0 ? filename.substring(extensionIndex) : ''
+
   return {
-    filename,
+    root,
+    rootPath,
+    rootPathFilename,
     path,
-    rootPath: path ? `${root}/${path}` : root,
+    pathFilename,
+    filename,
+    extension,
     filtered
   }
 }

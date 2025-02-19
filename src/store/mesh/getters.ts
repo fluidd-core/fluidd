@@ -2,13 +2,11 @@ import type { GetterTree } from 'vuex'
 import type {
   MeshState,
   AppMeshes,
-  KlipperBedMesh,
-  KlipperBedMeshProfile,
-  LegacyKlipperBedMeshProfile,
   BedMeshProfileListEntry
 } from './types'
 import type { RootState } from '../types'
 import { transformMesh } from '@/util/transform-mesh'
+import type { KlipperPrinterBedMeshProfileState, KlipperPrinterConfig, KlipperPrinterSettings } from '../printer/types'
 
 export const getters: GetterTree<MeshState, RootState> = {
 
@@ -16,21 +14,23 @@ export const getters: GetterTree<MeshState, RootState> = {
    * Has this printer been configured for bed meshes?
    */
   getSupportsBedMesh: (state, getters, rootState, rootGetters) => {
-    return rootGetters['printer/getPrinterSettings']('bed_mesh') !== undefined
+    const printerSettings: KlipperPrinterSettings = rootGetters['printer/getPrinterSettings']
+
+    return printerSettings.bed_mesh != null
   },
 
   getLegacyBedMeshProfiles: (state, getters, rootState, rootGetters) => {
-    const klipperProfiles = {} as Record<string, KlipperBedMeshProfile>
+    const klipperProfiles: Record<string, KlipperPrinterBedMeshProfileState> = {}
 
-    const config = rootGetters['printer/getPrinterConfig']()
+    const config: KlipperPrinterConfig = rootGetters['printer/getPrinterConfig']
     const meshProfileKeys = Object.keys(config)
       .filter(key => key.startsWith('bed_mesh '))
 
     for (const key of meshProfileKeys) {
       const name = key.split(' ').splice(1).join(' ')
-      const legacyKlipperProfile = config[key] as LegacyKlipperBedMeshProfile
+      const legacyKlipperProfile = config[key]
 
-      const profile: KlipperBedMeshProfile = {
+      const profile: KlipperPrinterBedMeshProfileState = {
         points: legacyKlipperProfile.points.split('\n')
           .filter(x => x.length)
           .map(x => x.split(',').map(Number)),
@@ -56,9 +56,13 @@ export const getters: GetterTree<MeshState, RootState> = {
 
   getBedMeshProfiles: (state, getters, rootState): BedMeshProfileListEntry[] => {
     const profiles: BedMeshProfileListEntry[] = []
-    const bedMesh = rootState.printer.printer.bed_mesh as KlipperBedMesh
+    const bedMesh = rootState.printer.printer.bed_mesh
 
-    const klipperProfiles = bedMesh.profiles ?? getters.getLegacyBedMeshProfiles as Record<string, KlipperBedMeshProfile>
+    if (bedMesh == null) {
+      return []
+    }
+
+    const klipperProfiles: Record<string, KlipperPrinterBedMeshProfileState> = bedMesh.profiles ?? getters.getLegacyBedMeshProfiles
 
     for (const [name, profile] of Object.entries(klipperProfiles)) {
       const points = profile.points.flatMap(x => x)
@@ -100,7 +104,11 @@ export const getters: GetterTree<MeshState, RootState> = {
    * Returns the current mesh, in a usable format for echarts.
    */
   getCurrentMeshData: (state, getters, rootState): AppMeshes => {
-    const bedMesh = rootState.printer.printer.bed_mesh as KlipperBedMesh
+    const bedMesh = rootState.printer.printer.bed_mesh
+
+    if (bedMesh == null) {
+      return {}
+    }
 
     return {
       mesh_matrix: transformMesh(bedMesh, 'mesh_matrix'),

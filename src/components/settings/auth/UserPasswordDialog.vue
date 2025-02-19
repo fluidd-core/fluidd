@@ -61,6 +61,7 @@
 import { httpClientActions } from '@/api/httpClientActions'
 import { Component, Vue, VModel } from 'vue-property-decorator'
 import { EventBus } from '@/eventBus'
+import type { AppUser } from '@/store/auth/types'
 
 @Component({})
 export default class UserPasswordDialog extends Vue {
@@ -73,8 +74,9 @@ export default class UserPasswordDialog extends Vue {
   loading = false
 
   get currentUser () {
-    const currentUser = this.$store.getters['auth/getCurrentUser']
-    return (currentUser && currentUser.username) ? currentUser.username : ''
+    const currentUser: AppUser | null = this.$store.state.auth.currentUser
+
+    return currentUser?.username ?? ''
   }
 
   async handleSave () {

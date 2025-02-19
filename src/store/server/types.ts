@@ -8,6 +8,9 @@ export interface ServerState {
   moonraker_stats: ServerSystemStat[];
   throttled_state: ServerThrottledState | null;
   cpu_temp: number | null;
+  system_cpu_usage?: Record<string, number>;
+  system_uptime?: number;
+  websocket_connections?: number;
 }
 
 export interface ServerSystemStat {

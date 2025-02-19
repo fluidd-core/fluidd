@@ -8,12 +8,13 @@
         :title="$t('app.general.title.config_files')"
         icon="$codeJson"
         :help-tooltip="$t('app.general.tooltip.file_browser_help')"
+        class="mb-2 mb-md-4"
       >
         <file-system
           :roots="['config']"
-          max-height="816"
           name="configure"
           bulk-actions
+          class="full-screen"
         />
       </collapsable-card>
     </v-col>
@@ -25,11 +26,12 @@
         :title="$t('app.general.title.other_files')"
         icon="$files"
         :help-tooltip="$t('app.general.tooltip.file_browser_configuration_help')"
+        class="mb-2 mb-md-4"
       >
         <file-system
           :roots="roots"
-          max-height="816"
           name="configure"
+          class="full-screen"
         />
       </collapsable-card>
     </v-col>
@@ -62,18 +64,13 @@ export default class Configure extends Mixins(StateMixin) {
     )
   }
 
-  get breakpoint () {
-    if (this.$vuetify.breakpoint.mdAndDown) {
-      return 12
-    }
-    return 6
-  }
-
   get roots () {
     const roots = ['logs', 'docs', 'config_examples']
     const excludeRoots = ['gcodes', 'config', 'timelapse', 'timelapse_frames']
 
-    for (const root of this.$store.state.server.info.registered_directories || []) {
+    const registeredDirectories: string[] = this.$store.state.server.info.registered_directories || []
+
+    for (const root of registeredDirectories) {
       if (!excludeRoots.includes(root) && !roots.includes(root)) {
         roots.push(root)
       }
@@ -83,3 +80,10 @@ export default class Configure extends Mixins(StateMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .full-screen {
+    max-height: calc(100vh - 190px);
+    max-height: calc(100svh - 190px);
+  }
+</style>

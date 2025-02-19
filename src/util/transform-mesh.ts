@@ -1,6 +1,7 @@
-import type { KlipperBedMesh, ProcessedMesh } from '@/store/mesh/types'
+import type { KlipperPrinterBedMeshState } from '@/store/printer/types'
+import type { ProcessedMesh } from '@/store/mesh/types'
 
-export const transformMesh = (bedMesh: KlipperBedMesh, meshMatrix: 'probed_matrix' | 'mesh_matrix', makeFlat = false): ProcessedMesh => {
+export const transformMesh = (bedMesh: KlipperPrinterBedMeshState, meshMatrix: 'probed_matrix' | 'mesh_matrix', makeFlat = false): ProcessedMesh => {
   const matrix = bedMesh[meshMatrix]
   const coordinates = []
   let min = 0

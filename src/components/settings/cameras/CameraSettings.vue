@@ -113,7 +113,7 @@ export default class CameraSettings extends Vue {
   }
 
   get cameras (): WebcamConfig[] {
-    return this.$store.getters['webcams/getWebcams'] as WebcamConfig[]
+    return this.$store.getters['webcams/getWebcams']
   }
 
   handleEditDialog (camera: WebcamConfig) {

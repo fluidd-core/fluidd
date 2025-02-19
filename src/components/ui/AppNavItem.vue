@@ -77,7 +77,7 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
     if (
       shortcut === this.accelerator &&
       !eventTargetIsContentEditable(event) &&
-      this.$router.currentRoute.name !== this.to
+      this.$route.name !== this.to
     ) {
       event.preventDefault()
 

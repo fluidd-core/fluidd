@@ -16,16 +16,24 @@
     >
       <bed-mesh-controls
         v-if="supportsBedMesh"
-        class="mb-2 mb-sm-4"
+        class="mb-2 mb-md-4"
       />
-      <end-stops-card class="mb-2 mb-sm-4" />
+
+      <end-stops-card
+        v-if="supportsEndStops"
+        class="mb-2 mb-md-4"
+      />
+
       <runout-sensors-card
         v-if="supportsRunoutSensors"
         fullscreen
+        class="mb-2 mb-md-4"
       />
+
       <beacon-card
         v-if="supportsBeacon"
         fullscreen
+        class="mb-2 mb-md-4"
       />
     </v-col>
   </v-row>
@@ -51,20 +59,22 @@ import BeaconCard from '@/components/widgets/beacon/BeaconCard.vue'
   }
 })
 export default class Tune extends Mixins(StateMixin) {
-  get supportsBedMesh () {
+  get supportsBedMesh (): boolean {
     return this.$store.getters['mesh/getSupportsBedMesh']
   }
 
+  get supportsEndStops () {
+    return (
+      this.$store.getters['printer/getSteppers'].length > 0 ||
+      this.$store.getters['printer/getProbe'] != null
+    )
+  }
+
   get supportsRunoutSensors () {
-    return this.$store.getters['printer/getRunoutSensors'].length
+    return this.$store.getters['printer/getRunoutSensors'].length > 0
   }
 
-  get supportsEndstops () {
-    const endStops = this.$store.getters['printer/getEndstops']
-    return (Object.keys(endStops).length > 0)
-  }
-
-  get supportsBeacon () {
+  get supportsBeacon (): boolean {
     return this.$store.getters['printer/getSupportsBeacon']
   }
 }

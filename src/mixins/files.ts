@@ -1,4 +1,4 @@
-import type { AppFile, FileUpload, AppFileThumbnail, KlipperFileMeta, FileDownload } from '@/store/files/types'
+import type { AppFile, FileUpload, AppFileThumbnail, MoonrakerFileMeta, FileDownload } from '@/store/files/types'
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import type { AxiosRequestConfig, AxiosProgressEvent } from 'axios'
@@ -6,6 +6,7 @@ import { httpClientActions } from '@/api/httpClientActions'
 import type { FileWithPath } from '@/types'
 import consola from 'consola'
 import { v4 as uuidv4 } from 'uuid'
+import type { AppUser } from '@/store/auth/types'
 
 @Component
 export default class FilesMixin extends Vue {
@@ -14,16 +15,18 @@ export default class FilesMixin extends Vue {
   }
 
   get isTrustedUser (): boolean {
-    return this.$store.getters['auth/getCurrentUser']?.username === '_TRUSTED_USER_'
+    const currentUser: AppUser | null = this.$store.state.auth.currentUser
+
+    return currentUser?.username === '_TRUSTED_USER_'
   }
 
-  getThumbUrl (meta: KlipperFileMeta, root: string, path: string, large: boolean, date?: number) {
+  getThumbUrl (meta: MoonrakerFileMeta, root: string, path: string, large: boolean, date?: number) {
     const thumb = this.getThumb(meta, root, path, large, date)
 
     return thumb?.url ?? ''
   }
 
-  getThumb (meta: KlipperFileMeta, root: string, path: string, large = true, date?: number): AppFileThumbnail | undefined {
+  getThumb (meta: MoonrakerFileMeta, root: string, path: string, large = true, date?: number): AppFileThumbnail | undefined {
     if (meta.thumbnails?.length) {
       const thumb = meta.thumbnails.reduce((a, b) => (a.size > b.size) === large ? a : b)
 
@@ -290,7 +293,9 @@ export default class FilesMixin extends Vue {
     for (const fileUpload of fileUploads) {
       const [fullPath, fileObject] = this.getFullPathAndFile(path, fileUpload.file)
 
-      const fileState = this.$store.state.files.uploads.find((u: FileUpload) => u.uid === fileUpload.uid)
+      const currentUploads: FileUpload[] = this.$store.state.files.uploads
+
+      const fileState = currentUploads.find(u => u.uid === fileUpload.uid)
 
       if (fileState && !fileState?.cancelled) {
         try {

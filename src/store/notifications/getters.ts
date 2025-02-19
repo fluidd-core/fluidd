@@ -20,7 +20,7 @@ export const getters: GetterTree<NotificationsState, RootState> = {
   },
 
   getAnnouncementsAsNotifications: (state, getters, rootState, rootGetters) => {
-    const announcements = rootGetters['announcements/getAnnouncements']
+    const announcements: Announcement[] = rootGetters['announcements/getAnnouncements']
 
     return announcements.map((a: Announcement): AppNotification => ({
       id: a.entry_id,

@@ -34,10 +34,10 @@ app:
       cant_connect: Algo está errado! O Fluidd não é possível encontrar o destino.
         Tem a certeza de que este é o endereço correto?
     hint:
-      add_printer: Ex., http://fluiddpi.local
+      add_printer: Ex., http://fluidd.local
     tooltip:
       endpoint_examples: 'Insira o URL da API. <br /> Alguns exemplos podem ser; <br
-        /> <blockquote> http: //fluidd.local, http://192.168.1.150 </blockquote>'
+        /> <blockquote>fluidd.local, https://192.168.1.150</blockquote>'
   file_system:
     label:
       transfer_rate: Taxa de transferência
@@ -184,7 +184,7 @@ app:
       save_restart: Salvar e Reiniciar
       upload_print: Envio e Impressão
       refresh_metadata: Atualizar Metadados
-      presets: Pre configuração
+      presets: Predefinições
       refresh: Atualizar
       preview_gcode: Pré-visualizar Gcode
       quad_gantry_level: QGL
@@ -572,14 +572,16 @@ app:
       current: Atual
       item: Nome
       target_temperature: Temperatura Alvo
+      turn_off: Desligar
     tooltip:
       help: Mantenha a tecla <kbd>Shift</kbd> pressionada para aumentar o zoom. <br
         /> Clique num item para alternar no gráfico. <br /> Clique em Ligar para alternar
         no gráfico.
   endstop:
-    label:
-      triggered: ATIVADO
-      open: ABERTO
+    states:
+      label:
+        triggered: ATIVADO
+        open: ABERTO
     msg:
       subtitle: Use o botão de atualização para atualizar o status do fim de curso.
   printer:

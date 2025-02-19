@@ -29,7 +29,7 @@
 
       <template v-for="(preset, i) in presets">
         <app-setting
-          :key="preset.index"
+          :key="`preset${i}`"
           :title="preset.name"
           :r-cols="2"
         >
@@ -100,7 +100,7 @@ export default class TemperaturePresetSettings extends Mixins(StateMixin) {
     return this.$store.getters['printer/getOutputs'](['temperature_fan'])
   }
 
-  get presets () {
+  get presets (): TemperaturePreset[] {
     return this.$store.getters['config/getTempPresets']
   }
 

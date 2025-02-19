@@ -1,33 +1,17 @@
 import type { GetterTree } from 'vuex'
 import type { BBox, GcodePreviewState, Layer, LayerNr, LayerPaths, Move, Part, Point3D } from './types'
 import type { RootState } from '../types'
-import type { AppFile } from '@/store/files/types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
 import isKeyOf from '@/util/is-key-of'
 
 export const getters: GetterTree<GcodePreviewState, RootState> = {
-  /**
-   * Returns a collection of all the moves
-   */
-  getMoves: (state): Move[] => {
-    return state.moves
-  },
-
-  getFile: (state): AppFile | undefined => {
-    return state.file
-  },
-
-  getParserProgress: (state): number => {
-    return state.parserProgress
-  },
-
   getLayers: (state, getters, rootState): Layer[] => {
     if (state.layers.length) {
       return state.layers
     }
 
     const output = []
-    const moves = getters.getMoves as Move[]
+    const moves = state.moves
 
     let z = NaN
     let zStart = 0
@@ -74,8 +58,8 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
   },
 
   getBounds: (state, getters): BBox => {
-    let moves = getters.getMoves
-    const layers = getters.getLayers as Layer[]
+    let moves = state.moves
+    const layers: Layer[] = getters.getLayers
 
     // ignore first and last layer (priming and parking)
     const moveRangeStart = layers[layers.length > 1 ? 1 : 0]?.move
@@ -93,7 +77,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       }
     }
 
-    const isFinite = Number.isFinite
+    const isFinite = (x: unknown): x is number => Number.isFinite(x)
     let index = 0
 
     for (; index < moves.length && !Object.values(bounds).every(isFinite); index++) {
@@ -136,9 +120,9 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     }
   },
 
-  getToolHeadPosition: (state, getters) => (moveIndex: number): Point3D => {
-    const isFinite = Number.isFinite
-    const moves = getters.getMoves
+  getToolHeadPosition: (state) => (moveIndex: number): Point3D => {
+    const isFinite = (x: unknown): x is number => Number.isFinite(x)
+    const moves = state.moves
     const output = {
       x: NaN,
       y: NaN,
@@ -146,16 +130,18 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     }
 
     for (let i = moveIndex; i >= 0 && (!isFinite(output.x) || !isFinite(output.y) || !isFinite(output.z)); i--) {
-      if (!isFinite(output.x) && moves[i].x !== undefined) {
-        output.x = moves[i].x
+      const move = moves[i]
+
+      if (!isFinite(output.x) && move.x !== undefined) {
+        output.x = move.x
       }
 
-      if (!isFinite(output.y) && moves[i].y !== undefined) {
-        output.y = moves[i].y
+      if (!isFinite(output.y) && move.y !== undefined) {
+        output.y = move.y
       }
 
-      if (!isFinite(output.z) && moves[i].z !== undefined) {
-        output.z = moves[i].z
+      if (!isFinite(output.z) && move.z !== undefined) {
+        output.z = move.z
       }
     }
 
@@ -168,7 +154,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
 
   getPaths: (state, getters) => (startMove: number, endMove: number): LayerPaths => {
     const toolhead = getters.getToolHeadPosition(startMove)
-    const moves = getters.getMoves
+    const moves = state.moves
 
     const path: LayerPaths = {
       extrusions: '',
@@ -186,7 +172,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     for (let index = startMove; index <= endMove && index < moves.length; index++) {
       const move = moves[index]
 
-      if (move.e > 0) {
+      if (move.e != null && move.e > 0) {
         if (traveling) {
           path.extrusions += `M${toolhead.x},${toolhead.y}`
           path.extrusionStarts.push({
@@ -205,7 +191,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
           traveling = true
         }
 
-        if (move.e < 0) {
+        if (move.e != null && move.e < 0) {
           path.retractions.push({
             x: toolhead.x,
             y: toolhead.y
@@ -226,13 +212,13 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
   },
 
   getLayerPaths: (state, getters) => (layerNr: LayerNr): LayerPaths => {
-    const layers = getters.getLayers as Layer[]
+    const layers: Layer[] = getters.getLayers
 
     return getters.getPaths(layers[layerNr]?.move ?? 0, (layers[layerNr + 1]?.move ?? Infinity) - 1)
   },
 
   getPartPaths: (state, getters): string[] => {
-    const parts = getters.getParts as Part[]
+    const parts: Part[] = getters.getParts
 
     return parts
       .map(part => {
@@ -248,16 +234,16 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       })
   },
 
-  getMoveIndexByFilePosition: (state, getters) => (filePosition: number): number => {
+  getMoveIndexByFilePosition: (state) => (filePosition: number): number => {
     if (filePosition <= 0) {
       return 0
     }
 
-    return binarySearch(getters.getMoves, (val: Move) => filePosition - val.filePosition, true)
+    return binarySearch(state.moves, (val: Move) => filePosition - val.filePosition, true)
   },
 
   getLayerNrByFilePosition: (state, getters) => (filePosition: number): LayerNr => {
-    const layers = getters.getLayers as Layer[]
+    const layers: Layer[] = getters.getLayers
 
     for (let i = 0; i < layers.length - 1; i++) {
       if (filePosition < layers[i + 1].filePosition) {

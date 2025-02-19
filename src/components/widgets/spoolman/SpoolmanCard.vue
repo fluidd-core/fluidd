@@ -192,6 +192,7 @@ import StateMixin from '@/mixins/state'
 import type { MacroWithSpoolId, Spool } from '@/store/spoolman/types'
 import StatusLabel from '@/components/widgets/status/StatusLabel.vue'
 import type { Macro } from '@/store/macros/types'
+import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
 
 @Component({
   components: { StatusLabel }
@@ -206,24 +207,28 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     })
   }
 
-  get selectedCardFields (): string[] {
+  get selectedCardFields (): string[][] {
     const fields = this.$store.state.config.uiSettings.spoolman.selectedCardFields
     const columnCount = fields.length > 1 ? 2 : 1
     const elementsPerColumn = Math.ceil(fields.length / columnCount)
     return new Array(columnCount).fill(undefined).map((_, i) => fields.slice(i * elementsPerColumn, (i + 1) * elementsPerColumn))
   }
 
-  get activeSpool (): Spool | null {
-    if (!this.isConnected) return null
+  get activeSpool (): Spool | undefined {
+    if (!this.isConnected) return undefined
     return this.$store.getters['spoolman/getActiveSpool']
   }
 
+  get currency (): string | undefined {
+    return this.$store.state.spoolman.currency
+  }
+
   get isConnected (): boolean {
-    return this.$store.getters['spoolman/getConnected']
+    return this.$store.state.spoolman.connected
   }
 
   get targetableMacros (): MacroWithSpoolId[] {
-    const macros = this.$store.getters['macros/getMacros'] as Macro[]
+    const macros: Macro[] = this.$store.getters['macros/getMacros']
 
     return macros
       .filter((macro): macro is MacroWithSpoolId => macro.variables != null && 'spool_id' in macro.variables)
@@ -234,7 +239,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
       .sort((a, b) => a.name.localeCompare(b.name))
   }
 
-  get remainingFilamentUnit () {
+  get remainingFilamentUnit (): SpoolmanRemainingFilamentUnit {
     return this.$store.state.config.uiSettings.spoolman.remainingFilamentUnit
   }
 
@@ -250,17 +255,38 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     if (!this.activeSpool) return '-'
 
     switch (field) {
-      case 'vendor': return this.activeSpool.filament.vendor?.name || '-'
-      case 'filament_name': return this.activeSpool.filament.name
-      case 'material': return this.activeSpool.filament.material || '-'
-      case 'first_used': return this.activeSpool.first_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.first_used) : this.$tc('app.setting.label.never')
-      case 'last_used': return this.activeSpool.last_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.last_used) : this.$tc('app.setting.label.never')
-      case 'price': return this.activeSpool.filament.price || '-'
-      case 'density': return this.activeSpool.filament.density || '-'
-      case 'extruder_temp': return this.activeSpool.filament.settings_extruder_temp || '-'
-      case 'bed_temp': return this.activeSpool.filament.settings_bed_temp || '-'
+      case 'vendor':
+        return this.activeSpool.filament.vendor?.name || '-'
 
-      default: return this.activeSpool[field as keyof Spool] || '-'
+      case 'filament_name':
+        return this.activeSpool.filament.name
+
+      case 'material':
+        return this.activeSpool.filament.material || '-'
+
+      case 'first_used':
+        return this.activeSpool.first_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.first_used) : this.$tc('app.setting.label.never')
+
+      case 'last_used':
+        return this.activeSpool.last_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.last_used) : this.$tc('app.setting.label.never')
+
+      case 'price':
+        return [
+          this.activeSpool.filament.price?.toFixed(2),
+          this.currency
+        ].filter(x => x != null).join(' ') || '-'
+
+      case 'density':
+        return this.activeSpool.filament.density || '-'
+
+      case 'extruder_temp':
+        return this.activeSpool.filament.settings_extruder_temp || '-'
+
+      case 'bed_temp':
+        return this.activeSpool.filament.settings_bed_temp || '-'
+
+      default:
+        return this.activeSpool[field as keyof Spool] || '-'
     }
   }
 }

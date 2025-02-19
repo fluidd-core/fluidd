@@ -62,7 +62,7 @@ app:
         Kérjük, tekintsd meg a több nyomtató beállításával kapcsolatos
         dokumentációt <a href="%{url}" target="_blank">itt</a>
     hint:
-      add_printer: 'Pl.: Http://fluiddpi.local'
+      add_printer: 'Pl.: Http://fluidd.local'
     msg:
       trouble: >-
         Problémád akadt? További információt <a href="%{url}"
@@ -70,13 +70,16 @@ app:
     tooltip:
       endpoint_examples: >-
         Add meg az API URL-címét.<br />Pár példa
-        látható;<br /><blockquote>fluidd.local, http://192.168.1.150</blockquote>
+        látható;<br /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: NYITVA
-      triggered: AKTIVÁLVA
+    states:
+      label:
+        open: NYITVA
+        triggered: AKTIVÁLVA
     msg:
       subtitle: A frissítés gombbal frissítheted a végállás állapotát.
+    label:
+      endstop: Végállás %{name}
   file_system:
     filters:
       label:
@@ -231,6 +234,8 @@ app:
       reset_stats: Statisztikák törlése
       copied: Másolva
       copy: Másolás
+      power_on_printer: Nyomtató bekapcsolása
+      perform_time_analysis: Időelemzés
     error:
       app_setup_link: >-
         A Fluidd telepítési követelményeit <a target="_blank" href="%{url}">itt
@@ -242,6 +247,8 @@ app:
       failed_components: >-
         A Moonraker moduljai hibásak. Kérlek, ellenőrizd a naplókat, frissítsd a
         konfigurációt és indítsd újra a Moonrakert.
+      printer_powered_off: A nyomtató jelenleg ki van kapcsolva.<br/><br/> A nyomtató
+        bekapcsolásához kattints a bal oldali gombra.
     label:
       accel_to_decel: Gyorsítás-Lassítás
       acceleration: Gyorsulás
@@ -357,6 +364,7 @@ app:
       device: Eszköz
       environment_facing: Környezeti nézet
       user_facing: Felhasználói nézet
+      z_hop_height: Z-ugrás magassága
     msg:
       password_changed: A jelszó megváltozott
       wrong_password: Hoppá! Valami rosszul sült el. Ez a jelszavad?
@@ -451,6 +459,7 @@ app:
         start_time: Elindult
         status: Állapot
         total_duration: Teljes időtartam
+        file_processors: Fájl processzorok
     title:
       add_chart: Ábra hozzáadása
       add_printer: Nyomtató hozzáadása
@@ -506,6 +515,7 @@ app:
       file_browser_configuration_help: >-
         Másold át a fájlokat és mappákat a konfigurációs fájlokba úgy, hogy innen
         húzd át őket, majd dobd oda
+      power_on_printer: Bekapcsolja a nyomtató áramellátását
   history:
     msg:
       confirm: Biztos vagy benne? Törlöd az összes előzményt és a nyomtatóstatisztikát
@@ -694,6 +704,8 @@ app:
       fluidd_settings_in_moonraker_db: Fluidd beállítások a Moonraker adatbázisban
       drag_and_drop_functionality_for_files_and_folders: Fájlok és mappák húzás és
         eldobás funkciója
+      auto: Automata
+      printer_power_device: Nyomtató tápegység
     timer_options:
       duration: Csak időtartam
       filament: Nyomtatószál
@@ -791,7 +803,7 @@ app:
       canbus_warning: 'Csak a hozzá nem rendelt CAN-busz-csomópontok észlelhetők.<br>
         Javasoljuk, hogy a kommunikációs problémák elkerülése érdekében csak egy hozzá
         nem rendelt eszközt csatlakoztass a CAN-buszhoz.<br> További információk:
-        <a target="_blank" href="https ://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">itt.</a>'
+        <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">itt.</a>'
   tool:
     btn:
       home_x: X
@@ -939,6 +951,11 @@ app:
       active_spool: Aktív tekercs
       length: Hossz
       weight: Súly
+      bed_temp: Ágy hőfoka
+      density: Sűrűség
+      extruder_temp: Fej hőfoka
+      price: Érték
+      used_weight: Használt
     msg:
       no_spool: >-
         Nem választottál ki orsót.
@@ -987,6 +1004,7 @@ app:
         Figyelmeztetés megjelenítése, ha a tekercsen lévő szál típusa és a szeletelőben
         kiválasztott szál típusa nem egyezik
       remaining_filament_unit: Mutasd a maradék nyomtatószálat
+      card_fields: Az orsómester-kártyán megjelenítendő mezők
   sensors:
     title:
       sensors: Érzékelők

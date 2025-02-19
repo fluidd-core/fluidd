@@ -154,7 +154,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   get cameras (): Array<{ text?: string, value: string, disabled: boolean }> {
-    const cameras = this.$store.getters['webcams/getWebcams'] as WebcamConfig[]
+    const cameras: WebcamConfig[] = this.$store.getters['webcams/getWebcams']
 
     return cameras
       .map(camera => ({
@@ -215,7 +215,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   get settings (): TimelapseSettingsType {
-    return this.$store.getters['timelapse/getSettings']
+    return this.$store.state.timelapse.settings ?? {} as TimelapseSettingsType
   }
 
   subtitleIfBlocked (blocked: boolean): string {

@@ -1,42 +1,38 @@
 <template>
-  <v-container>
-    <v-row align="center">
-      <v-col>
-        <v-textarea
-          ref="input"
-          :rows="1"
-          :value="newValue"
-          :items="history"
-          :disabled="disabled"
-          :autofocus="autofocus"
-          auto-grow
-          clearable
-          outlined
-          single-line
-          dense
-          hide-details
-          spellcheck="false"
-          class="console-command"
-          @input="emitChange"
-          @keyup.enter.exact="emitSend(newValue)"
-          @keydown.enter.exact.prevent
-          @keydown.up.exact.prevent="historyUp()"
-          @keydown.down.exact.prevent="historyDown()"
-          @keydown.prevent.tab="autoComplete()"
-        />
-      </v-col>
-      <v-col cols="auto">
-        <app-btn
-          :disabled="disabled"
-          @click="emitSend(newValue)"
-        >
-          {{ $t('app.general.btn.send') }}
-        </app-btn>
-      </v-col>
-    </v-row>
-  </v-container>
-  <!-- <pre>{{ originalHistory }}</pre>
-    <pre>{{ history }}</pre> -->
+  <v-row class="ma-2">
+    <v-col>
+      <v-textarea
+        ref="input"
+        :rows="1"
+        :value="newValue"
+        :items="history"
+        :disabled="disabled"
+        :autofocus="autofocus"
+        auto-grow
+        clearable
+        outlined
+        single-line
+        dense
+        hide-details
+        spellcheck="false"
+        class="console-command"
+        @input="emitChange"
+        @keyup.enter.exact="emitSend(newValue)"
+        @keydown.enter.exact.prevent
+        @keydown.up.exact.prevent="historyUp()"
+        @keydown.down.exact.prevent="historyDown()"
+        @keydown.prevent.tab="autoComplete()"
+      />
+    </v-col>
+    <v-col cols="auto">
+      <app-btn
+        :disabled="disabled"
+        @click="emitSend(newValue)"
+      >
+        {{ $t('app.general.btn.send') }}
+      </app-btn>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
@@ -103,8 +99,8 @@ export default class ConsoleCommand extends Vue {
   historyUp () {
     if (this.history.length >= 1) {
       if (!this.isFirst) {
-        const f = this.history.shift() as string
-        this.history.push(f)
+        const f = this.history.shift()
+        if (f != null) this.history.push(f)
       }
       this.emitChange(this.history[0])
       this.isFirst = false
@@ -114,8 +110,8 @@ export default class ConsoleCommand extends Vue {
   historyDown () {
     if (this.history.length >= 1) {
       if (!this.isFirst) {
-        const f = this.history.pop() as string
-        this.history.unshift(f)
+        const f = this.history.pop()
+        if (f != null) this.history.unshift(f)
       }
       this.emitChange(this.history[0])
       this.isFirst = false
@@ -123,7 +119,7 @@ export default class ConsoleCommand extends Vue {
   }
 
   get availableCommands (): GcodeCommands {
-    return this.$store.getters['printer/getAvailableCommands'] as GcodeCommands
+    return this.$store.getters['printer/getAvailableCommands']
   }
 
   autoComplete () {

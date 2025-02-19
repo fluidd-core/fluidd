@@ -3,6 +3,7 @@ import type { LayoutState, LayoutContainer, LayoutConfig } from './types'
 import type { RootState } from '../types'
 import { cloneDeep } from 'lodash-es'
 import vuetify from '@/plugins/vuetify'
+import type { AppUser } from '../auth/types'
 
 export const getters: GetterTree<LayoutState, RootState> = {
   /**
@@ -64,8 +65,9 @@ export const getters: GetterTree<LayoutState, RootState> = {
     }
   },
 
-  getSpecificLayoutName: (state, getters, rootState, rootGetters): string => {
-    const user = rootGetters['auth/getCurrentUser']
+  getSpecificLayoutName: (state, getters, rootState): string => {
+    const user: AppUser | null = rootState.auth.currentUser
+
     if (!user) return 'dashboard'
 
     const size = vuetify.framework.breakpoint.name

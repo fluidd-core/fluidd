@@ -134,7 +134,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
   @Ref('thermalchart')
   readonly thermalChartElement!: ThermalChart
 
-  get chartReady () {
+  get chartReady (): boolean {
     return (
       this.$store.state.socket.acceptingNotifications &&
       this.$store.state.socket.ready &&
@@ -231,7 +231,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
 
   async handleApplyOff () {
     const result = (
-      !['printing', 'busy', 'paused'].includes(this.$store.getters['printer/getPrinterState']) ||
+      !['printing', 'busy', 'paused'].includes(this.printerState) ||
       await this.$confirm(
         this.$tc('app.general.label.heaters_busy'),
         { title: this.$tc('app.general.simple_form.msg.confirm'), color: 'card-heading', icon: '$error' }

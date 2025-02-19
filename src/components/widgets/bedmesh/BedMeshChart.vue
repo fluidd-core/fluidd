@@ -46,7 +46,7 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
   }
 
   get bedSize (): BedSize | undefined {
-    return this.$store.getters['printer/getBedSize'] as BedSize | undefined
+    return this.$store.getters['printer/getBedSize']
   }
 
   @Watch('flatSurface')

@@ -146,7 +146,7 @@ export default class ConsoleCard extends Vue {
   scrollingPaused = false
 
   get filters (): ConsoleFilter[] {
-    return this.$store.getters['console/getFilters'] as ConsoleFilter[]
+    return this.$store.state.console.consoleFilters
   }
 
   get hideTempWaits (): boolean {

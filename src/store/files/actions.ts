@@ -1,10 +1,24 @@
 import type { ActionTree } from 'vuex'
-import type { FilesState, KlipperFile, KlipperDir, FileChangeSocketResponse, FileUpdate, KlipperFileWithMeta, DiskUsage } from './types'
+import type { FilesState, MoonrakerFile, MoonrakerDir, FileChange, MoonrakerFileWithMeta, FileChangeItem, FilePaths, DirectoryInformation } from './types'
 import type { RootState } from '../types'
-import formatAsFile from '@/util/format-as-file'
 import getFilePaths from '@/util/get-file-paths'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
+import type { ObjectWithRequest } from '@/plugins/socketClient'
+
+const itemAsMoonrakerFile = (item: FileChangeItem, paths: FilePaths): MoonrakerFile => ({
+  filename: paths.filename,
+  modified: item.modified,
+  size: item.size,
+  permissions: item.permissions
+})
+
+const itemAsMoonrakerDir = (item: FileChangeItem, paths: FilePaths): MoonrakerDir => ({
+  dirname: paths.filename,
+  modified: item.modified,
+  size: item.size,
+  permissions: item.permissions
+})
 
 export const actions: ActionTree<FilesState, RootState> = {
   /**
@@ -14,9 +28,9 @@ export const actions: ActionTree<FilesState, RootState> = {
     commit('setReset')
   },
 
-  async onServerFilesGetDirectory ({ commit }, payload: { disk_usage: DiskUsage; files: (KlipperFile | KlipperFileWithMeta)[]; dirs: KlipperDir[]; __request__: any }) {
-    const { disk_usage, files, dirs, __request__: request } = payload
-    const { path } = request.params
+  async onServerFilesGetDirectory ({ commit }, payload: ObjectWithRequest<DirectoryInformation>) {
+    const { disk_usage, files, dirs } = payload
+    const { path } = payload.__request__.params ?? {}
 
     const filteredDirs = dirs
       .filter(file =>
@@ -29,8 +43,8 @@ export const actions: ActionTree<FilesState, RootState> = {
     commit('setServerFilesGetDirectory', { path, content: { files, dirs: filteredDirs } })
   },
 
-  async onServerFilesListRoot ({ commit }, payload) {
-    const { root } = payload.__request__.params
+  async onServerFilesListRoot ({ commit }, payload: ObjectWithRequest<[]>) {
+    const { root } = payload.__request__.params ?? {}
 
     commit('setServerFilesListRoot', { root, files: [...payload] })
   },
@@ -38,27 +52,17 @@ export const actions: ActionTree<FilesState, RootState> = {
   /**
    * If we request the metadata (a file..) then we load and update here.
    */
-  async onFileMetaData ({ commit, rootState }, payload: KlipperFile | KlipperFileWithMeta) {
-    const root = 'gcodes' // We'd only ever load metadata for gcode files.
-    const paths = getFilePaths(payload.filename, root)
+  async onFileMetaData ({ commit }, payload: MoonrakerFileWithMeta) {
+    const paths = getFilePaths(payload.filename, 'gcodes')
 
     if (!paths.filtered) {
-      const file = formatAsFile(root, payload)
-      const filepath = (file.path) ? `${file.path}/${file.filename}` : `${file.filename}`
-
-      // If this is an update to the currently printing file, then push it to
-      // current_file.
-      if (filepath === rootState.printer.printer.print_stats.filename) {
-        commit('printer/setSocketNotify', { key: 'current_file', payload: file }, { root: true })
+      // We need to update filename here as it can contain a relative path
+      const file: MoonrakerFileWithMeta = {
+        ...payload,
+        filename: paths.filename
       }
 
-      // Apply the metadata to our specific file.
-      const update: FileUpdate = {
-        paths,
-        root,
-        file
-      }
-      commit('setFileUpdate', update)
+      commit('setFileUpdate', { paths, file })
     }
   },
 
@@ -67,133 +71,91 @@ export const actions: ActionTree<FilesState, RootState> = {
    */
 
   // Old notifications for backwards compat
-  async notifyCopyItem ({ dispatch }, payload) { dispatch('notifyModifyFile', payload) },
+  async notifyCopyItem ({ dispatch }, payload) { dispatch('notifyCreateFile', payload) },
   async notifyMoveItem ({ dispatch }, payload) { dispatch('notifyMoveFile', payload) },
   async notifyUploadFile ({ dispatch }, payload) { dispatch('notifyCreateFile', payload) },
 
   // New notifications
-  async notifyRootUpdate ({ commit }, payload: FileChangeSocketResponse) {
+  async notifyRootUpdate ({ commit }, payload: FileChange) {
     const root = payload.item.root
+
     commit('setResetRoot', root)
-    SocketActions.serverFilesGetDirectory(root, root)
+
+    SocketActions.serverFilesGetDirectory(root)
   },
 
-  async notifyModifyFile (_, payload: FileChangeSocketResponse) {
-    const root = payload.item.root
-    const itemPaths = getFilePaths(payload.item.path, root)
+  async notifyModifyFile ({ dispatch }, payload: FileChange) { dispatch('notifyCreateFile', payload) },
 
-    if (!itemPaths.filtered) {
-      SocketActions.serverFilesGetDirectory(root, itemPaths.rootPath)
-    }
-
-    if (payload.source_item) {
-      const sourcePaths = getFilePaths(payload.source_item.path, root)
-
-      if (!sourcePaths.filtered && itemPaths.rootPath !== sourcePaths.rootPath) {
-        SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
-      }
-    }
-  },
-
-  async notifyCreateFile ({ commit, dispatch, rootState }, payload: FileChangeSocketResponse) {
-    const root = payload.item.root
-    const paths = getFilePaths(payload.item.path, root)
+  async notifyCreateFile ({ commit, getters, dispatch, rootState }, payload: FileChange) {
+    const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {
-      const file = formatAsFile(root, payload.item)
-      if (root === 'gcodes' && file.extension === 'gcode') {
+      if (
+        paths.root === 'gcodes' &&
+        getters.getRootProperties('gcodes').accepts.includes(paths.extension)
+      ) {
         // If the file in the gcode preview is the same as the one being updated, then reset gcode preview
         const gcodePreviewFile = rootState.gcodePreview.file
-        if (gcodePreviewFile && gcodePreviewFile.path === file.path && gcodePreviewFile.filename === file.filename) {
+
+        if (
+          gcodePreviewFile &&
+          gcodePreviewFile.path === paths.path &&
+          gcodePreviewFile.filename === paths.filename
+        ) {
           dispatch('gcodePreview/reset', undefined, { root: true })
         }
 
         // For gcode files, get the metadata and the meta update will take care of the rest.
-        SocketActions.serverFilesMetadata(payload.item.path)
+        SocketActions.serverFilesMetadata(paths.pathFilename)
       } else {
-        const update: FileUpdate = {
-          paths,
-          root,
-          file
-        }
-        commit('setFileUpdate', update)
+        const file = itemAsMoonrakerFile(payload.item, paths)
+
+        commit('setFileUpdate', { paths, file })
       }
     }
   },
 
-  async notifyCreateDir (_, payload: FileChangeSocketResponse) {
-    const root = payload.item.root
-    const paths = getFilePaths(payload.item.path, root)
+  async notifyCreateDir ({ commit }, payload: FileChange) {
+    const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {
-      SocketActions.serverFilesGetDirectory(root, paths.rootPath)
+      const dir = itemAsMoonrakerDir(payload.item, paths)
+
+      commit('setDirUpdate', { paths, dir })
     }
   },
 
-  async notifyMoveFile (_, payload: FileChangeSocketResponse) {
-    const root = payload.item.root
-    const itemPaths = getFilePaths(payload.item.path, root)
+  async notifyMoveFile ({ dispatch }, payload: FileChange) {
+    const { item, source_item } = payload
 
-    if (!itemPaths.filtered) {
-      SocketActions.serverFilesGetDirectory(root, itemPaths.rootPath)
-    }
+    dispatch('notifyCreateFile', { item })
 
-    if (payload.source_item) {
-      const sourcePaths = getFilePaths(payload.source_item.path, root)
-
-      if (!sourcePaths.filtered && itemPaths.rootPath !== sourcePaths.rootPath) {
-        SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
-      }
-    }
+    dispatch('notifyDeleteFile', { item: source_item })
   },
 
-  async notifyMoveDir ({ commit }, payload: FileChangeSocketResponse) {
-    const root = payload.item.root
-    const itemPaths = getFilePaths(payload.item.path, root)
+  async notifyMoveDir ({ dispatch }, payload: FileChange) {
+    const { item, source_item } = payload
 
-    if (!itemPaths.filtered) {
-      SocketActions.serverFilesGetDirectory(root, itemPaths.rootPath)
-    }
+    dispatch('notifyCreateDir', { item })
 
-    if (payload.source_item) {
-      const sourcePaths = getFilePaths(payload.source_item.path, root)
-
-      if (!sourcePaths.filtered && itemPaths.rootPath !== sourcePaths.rootPath) {
-        SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
-
-        commit('setPathDelete', { path: `${sourcePaths.rootPath}/${sourcePaths.filename}`, root })
-      }
-    }
+    dispatch('notifyDeleteDir', { item: source_item })
   },
 
-  async notifyDeleteFile ({ commit }, payload: FileChangeSocketResponse) {
-    const root = payload.item.root
-    const paths = getFilePaths(payload.item.path, root)
+  async notifyDeleteFile ({ commit }, payload: FileChange) {
+    const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {
-      const file = formatAsFile(root, payload.item)
-      const update: FileUpdate = {
-        paths,
-        root,
-        file
-      }
-      commit('setItemDelete', update)
+      commit('setFileDelete', paths)
     }
   },
 
-  async notifyDeleteDir ({ commit }, payload: FileChangeSocketResponse) {
-    const root = payload.item.root
-    const paths = getFilePaths(payload.item.path, root)
+  async notifyDeleteDir ({ commit }, payload: FileChange) {
+    const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {
-      const dir = formatAsFile(root, payload.item)
-      const update: FileUpdate = {
-        paths,
-        root,
-        file: dir
-      }
-      commit('setItemDelete', update)
-      commit('setPathDelete', { path: `${paths.rootPath}/${paths.filename}`, root })
+      commit('setDirDelete', paths)
+
+      commit('setPathDelete', paths.rootPathFilename)
     }
   },
 

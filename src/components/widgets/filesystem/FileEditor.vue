@@ -54,7 +54,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   }
 
   get activeInstance (): InstanceConfig {
-    return this.$store.getters['config/getCurrentInstance'] as InstanceConfig
+    return this.$store.getters['config/getCurrentInstance']
   }
 
   get restoreViewStateStorage (): Storage | undefined {
@@ -138,7 +138,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
       const viewState = restoreViewStateStorage.getItem(this.viewStateHash)
 
       if (viewState) {
-        this.editor.restoreViewState(JSON.parse(viewState))
+        this.editor.restoreViewState(JSON.parse(viewState) as Monaco.editor.ICodeEditorViewState | null)
       }
     }
 
@@ -171,20 +171,19 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   destroyed () {
     const restoreViewStateStorage = this.restoreViewStateStorage
 
-    if (restoreViewStateStorage && this.viewStateHash) {
-      const viewState = this.editor?.saveViewState()
+    if (this.editor && restoreViewStateStorage && this.viewStateHash) {
+      const viewState = this.editor.saveViewState()
 
-      if (viewState) {
-        try {
-          restoreViewStateStorage.setItem(this.viewStateHash, JSON.stringify(viewState))
-        } catch (e) {
-          consola.error('[Storage] setItem', e)
-        }
+      try {
+        restoreViewStateStorage.setItem(this.viewStateHash, JSON.stringify(viewState))
+      } catch (e) {
+        consola.error('[Storage] setItem', e)
       }
     }
 
-    if (monaco) monaco.editor.getModels().forEach(model => model.dispose())
-    if (this.editor) this.editor.dispose()
+    monaco?.editor.getModels().forEach(model => model.dispose())
+
+    this.editor?.dispose()
   }
 }
 </script>

@@ -101,7 +101,7 @@ import type { HistoryItem } from '@/store/history/types'
   }
 })
 export default class ReprintTab extends Mixins(StateMixin, FilesMixin) {
-  get history () {
+  get history (): HistoryItem[] {
     return this.$store.getters['history/getUniqueHistory'](3)
   }
 

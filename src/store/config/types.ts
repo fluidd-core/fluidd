@@ -41,9 +41,11 @@ export interface SpoolmanConfig {
     key: string | null;
     desc: boolean | null;
   },
-  remainingFilamentUnit: 'weight' | 'length';
+  remainingFilamentUnit: SpoolmanRemainingFilamentUnit;
   selectedCardFields: string[];
 }
+
+export type SpoolmanRemainingFilamentUnit = 'weight' | 'length'
 
 export interface HostConfig {
   endpoints: string[];

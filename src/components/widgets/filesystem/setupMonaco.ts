@@ -94,10 +94,11 @@ async function setupMonaco () {
   })
 
   // Load our grammars...
-  const grammars = new Map()
-  grammars.set('gcode', 'source.gcode')
-  grammars.set('klipper-config', 'source.klipper-config')
-  grammars.set('log', 'text.log')
+  const grammars = new Map([
+    ['gcode', 'source.gcode'],
+    ['klipper-config', 'source.klipper-config'],
+    ['log', 'text.log']
+  ])
 
   // ... and our languages
   monaco.languages.register({ id: 'gcode', extensions: ['gcode', 'g', 'gc', 'gco', 'ufp', 'nc'] })
@@ -117,7 +118,7 @@ async function setupMonaco () {
   })
 
   const app = getVueApp()
-  const klippyApp = app.$store.getters['printer/getKlippyApp'] as KlippyApp
+  const klippyApp: KlippyApp = app.$store.getters['printer/getKlippyApp']
 
   monaco.editor.registerCommand('fluidd_open_docs', (_, service: CodeLensSupportedService, hash: string) => {
     const serviceKey = service.replace(/-/g, '_')

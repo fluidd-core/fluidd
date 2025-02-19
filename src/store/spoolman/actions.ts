@@ -29,14 +29,15 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
   async init () {
     SocketActions.serverSpoolmanGetSpoolId()
     SocketActions.serverSpoolmanProxyGetAvailableSpools()
+    SocketActions.serverSpoolmanProxyGetSettingCurrency()
   },
 
   async onActiveSpool ({ commit }, payload) {
     commit('setActiveSpool', payload.spool_id)
   },
 
-  async onSpoolChange ({ commit, getters }, { type, payload }: WebsocketSpoolPayload) {
-    const spools = [...getters.getAvailableSpools as Spool[]]
+  async onSpoolChange ({ commit, state }, { type, payload }: WebsocketSpoolPayload) {
+    const spools = [...state.availableSpools]
 
     switch (type) {
       case 'added': {
@@ -69,13 +70,13 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
     commit('setAvailableSpools', spools)
   },
 
-  async onFilamentChange ({ commit, getters }, { type, payload }: WebsocketFilamentPayload) {
+  async onFilamentChange ({ commit, state }, { type, payload }: WebsocketFilamentPayload) {
     if (type !== 'updated') {
       // we only care about updated filament types
       return
     }
 
-    const spools = [...getters.getAvailableSpools as Spool[]]
+    const spools = [...state.availableSpools]
     for (const spool of spools) {
       if (spool.filament.id === payload.id) {
         spools[spools.indexOf(spool)] = {
@@ -88,13 +89,13 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
     commit('setAvailableSpools', spools)
   },
 
-  async onVendorChange ({ commit, getters }, { type, payload }: WebsocketVendorPayload) {
+  async onVendorChange ({ commit, state }, { type, payload }: WebsocketVendorPayload) {
     if (type !== 'updated') {
       // we only care about updated vendors
       return
     }
 
-    const spools = [...getters.getAvailableSpools as Spool[]]
+    const spools = [...state.availableSpools]
     for (const spool of spools) {
       if (spool.filament.vendor?.id === payload.id) {
         spools[spools.indexOf(spool)] = {
@@ -132,6 +133,19 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
     } else commit('setConnected', payload)
   },
 
+  async onSettingCurrency ({ commit }, payload: SpoolmanProxyResponse<{ value: string }>) {
+    if ('error' in payload && 'response' in payload) {
+      if (payload.error != null) {
+        EventBus.$emit(typeof payload.error === 'string' ? payload.error : payload.error.message, { type: 'error' })
+        return
+      }
+
+      payload = payload.response
+    }
+
+    commit('setCurrency', payload)
+  },
+
   async initializeWebsocketConnection ({ state, rootState, dispatch }) {
     if (rootState.server.config.spoolman?.server) {
       if (state.socket?.readyState === WebSocket.OPEN) {
@@ -153,7 +167,7 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       state.socket.onmessage = event => {
         let data: WebsocketBasePayload
         try {
-          data = JSON.parse(event.data)
+          data = JSON.parse(event.data) as WebsocketBasePayload
         } catch (err) {
           consola.error(`${logPrefix} failed to decode websocket message`, err, event.data)
           return

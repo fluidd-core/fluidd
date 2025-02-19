@@ -108,11 +108,16 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
+import type { KlipperPrinterSettings } from '@/store/printer/types'
 
 @Component({})
 export default class PrinterLimits extends Mixins(StateMixin, BrowserMixin) {
+  get printerSettings (): KlipperPrinterSettings {
+    return this.$store.getters['printer/getPrinterSettings']
+  }
+
   get defaultVelocity (): number {
-    return this.$store.getters['printer/getPrinterSettings']('printer.max_velocity') as number
+    return this.printerSettings.printer?.max_velocity ?? 100
   }
 
   get velocity (): number {
@@ -120,7 +125,7 @@ export default class PrinterLimits extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get defaultAccel (): number {
-    return this.$store.getters['printer/getPrinterSettings']('printer.max_accel')
+    return this.printerSettings.printer?.max_accel ?? 100
   }
 
   get accel (): number {
@@ -128,23 +133,23 @@ export default class PrinterLimits extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get defaultAccelToDecel (): number {
-    const defaultAccelToDecel = this.$store.getters['printer/getPrinterSettings']('printer.max_accel_to_decel') as number | undefined
+    const defaultAccelToDecel = this.printerSettings.printer?.max_accel_to_decel
 
     return defaultAccelToDecel ?? this.defaultAccel / 2
   }
 
-  get accelToDecel (): number | undefined {
+  get accelToDecel (): number | null | undefined {
     return this.$store.state.printer.printer.toolhead.max_accel_to_decel
   }
 
   get defaultMinimumCruiseRatio (): number {
-    const defaultMinimumCruiseRatio = this.$store.getters['printer/getPrinterSettings']('printer.minimum_cruise_ratio') as number | undefined
+    const defaultMinimumCruiseRatio = this.printerSettings.printer?.minimum_cruise_ratio
 
     return Math.round((defaultMinimumCruiseRatio ?? 0.5) * 100)
   }
 
   get minimumCruiseRatio (): number | undefined {
-    const minimumCruiseRatio: number | undefined = this.$store.state.printer.printer.toolhead.minimum_cruise_ratio
+    const minimumCruiseRatio: number | null | undefined = this.$store.state.printer.printer.toolhead.minimum_cruise_ratio
 
     return minimumCruiseRatio != null
       ? Math.round(minimumCruiseRatio * 100)
@@ -152,7 +157,7 @@ export default class PrinterLimits extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get defaultSquareCornerVelocity (): number {
-    return this.$store.getters['printer/getPrinterSettings']('printer.square_corner_velocity') as number || 5
+    return this.printerSettings.printer?.square_corner_velocity ?? 5
   }
 
   get squareCornerVelocity (): number {

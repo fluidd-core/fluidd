@@ -51,7 +51,7 @@ app:
         die dokumentasie vir multi-drukker opstellings <a href="%{url}"
         target="_blank">here</a>
     hint:
-      add_printer: Bv., http://fluiddpi.local
+      add_printer: Bv., http://fluidd.local
     msg:
       trouble: >-
         Sukkel jy? <a href="%{url}" target="_blank">Sien hier</a> vir meer
@@ -61,9 +61,10 @@ app:
         Voer jou API URL in.<br />Hier is voorbeelde;<br
         /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: OOP
-      triggered: GESNELLER
+    states:
+      label:
+        open: OOP
+        triggered: GESNELLER
     msg:
       subtitle: Gebruik die vervrisknop om die endstop status op te dateer.
   file_system:

@@ -83,7 +83,7 @@ export default class FileSystemFilterMenu extends Vue {
   readonly disabled?: boolean
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.root)
   }
 
   get filters (): FileFilter[] {
@@ -116,7 +116,7 @@ export default class FileSystemFilterMenu extends Vue {
     this.$emit('change', value)
   }
 
-  get supportsHistoryComponent () {
+  get supportsHistoryComponent (): boolean {
     return this.$store.getters['server/componentSupport']('history')
   }
 }

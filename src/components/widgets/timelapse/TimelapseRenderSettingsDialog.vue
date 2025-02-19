@@ -391,11 +391,11 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get settings (): TimelapseSettings {
-    return this.$store.getters['timelapse/getSettings']
+    return this.$store.state.timelapse.settings ?? {} as TimelapseSettings
   }
 
   get lastFrame (): TimelapseLastFrame | undefined {
-    return this.$store.getters['timelapse/getLastFrame']
+    return this.$store.state.timelapse.lastFrame
   }
 
   subtitleIfBlocked (blocked: boolean): string {

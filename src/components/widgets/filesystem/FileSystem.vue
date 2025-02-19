@@ -1,8 +1,6 @@
 <template>
   <v-card
     class="filesystem-wrapper"
-    :height="height"
-    :max-height="maxHeight"
     :class="{ 'no-pointer-events': dragState.overlay }"
     flat
     @dragover="handleDragOver"
@@ -21,7 +19,7 @@
       :loading="filesLoading"
       :headers="configurableHeaders"
       @root-change="handleRootChange"
-      @refresh="refreshPath(currentPath)"
+      @refresh="handleRefresh"
       @add-file="handleAddFileDialog"
       @add-dir="handleAddDirDialog"
       @upload="handleUpload"
@@ -33,9 +31,12 @@
       v-if="selected.length > 0"
       :root="currentRoot"
       :path="visiblePath"
-      @remove="handleRemove(selected)"
-      @create-zip="handleCreateZip(selected)"
-      @enqueue="handleEnqueue(selected)"
+      :selected="selected"
+      @remove="handleRemove"
+      @create-zip="handleCreateZip"
+      @refresh-metadata="handleRefreshMetadata"
+      @perform-time-analysis="handlePerformTimeAnalysis"
+      @enqueue="handleEnqueue"
     />
 
     <file-system-browser
@@ -72,6 +73,7 @@
       @preheat="handlePreheat"
       @preview-gcode="handlePreviewGcode"
       @refresh-metadata="handleRefreshMetadata"
+      @perform-time-analysis="handlePerformTimeAnalysis"
       @view-thumbnail="handleViewThumbnail"
       @enqueue="handleEnqueue"
       @create-zip="handleCreateZip"
@@ -191,14 +193,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   @Prop({ type: Boolean })
   readonly dense?: boolean
 
-  // Constrain height
-  @Prop({ type: [Number, String] })
-  readonly height!: number | string
-
-  // Constrain height
-  @Prop({ type: [Number, String] })
-  readonly maxHeight!: number | string
-
   // Allow bulk-actions
   @Prop({ type: Boolean })
   readonly bulkActions?: boolean
@@ -287,11 +281,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Properties of the current root.
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.currentRoot) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.currentRoot)
   }
 
   // If this root is available or not.
-  get disabled () {
+  get disabled (): boolean {
     return !this.$store.getters['files/isRootAvailable'](this.currentRoot)
   }
 
@@ -419,6 +413,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
               cellClass: 'text-no-wrap'
             },
             {
+              text: this.$tc('app.general.table.header.file_processors'),
+              value: 'file_processors',
+              visible: false,
+              cellClass: 'text-no-wrap'
+            },
+            {
               text: this.$tc('app.general.table.header.last_printed'),
               value: 'print_start_time',
               cellClass: 'text-no-wrap'
@@ -440,7 +440,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     ]
 
     const key = `${this.currentRoot}_${this.name}`
-    const mergedTableHeaders = this.$store.getters['config/getMergedTableHeaders'](headers, key) as AppTableHeader[]
+    const mergedTableHeaders: AppTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, key)
 
     return mergedTableHeaders
   }
@@ -465,7 +465,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // The current path for the given root.
   get currentPath () {
-    return this.$store.getters['files/getCurrentPathByRoot'](this.currentRoot) || this.currentRoot
+    const pathWithRoot: string = this.$store.getters['files/getCurrentPathByRoot'](this.currentRoot)
+
+    return pathWithRoot || this.currentRoot
   }
 
   set currentPath (path: string) {
@@ -476,7 +478,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   get visiblePath (): string {
     if (
       this.currentPath &&
-      this.currentPath.startsWith(`${this.currentRoot}`)
+      this.currentPath.startsWith(this.currentRoot)
     ) {
       const dirs = this.currentPath.split('/')
       dirs.shift()
@@ -492,7 +494,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     const files = this.getAllFiles()
 
     const filteredFiles = files.filter(file => {
-      if (this.currentRoot === 'timelapse' && file.type === 'file' && file.extension === 'jpg') {
+      if (this.currentRoot === 'timelapse' && file.type === 'file' && file.extension === '.jpg') {
         return false
       }
 
@@ -511,13 +513,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
               return file.filename === '.moonraker.conf.bkp'
 
             case 'moonraker_temporary_upload_files':
-              return file.filename.endsWith('.mru')
+              return file.extension === '.mru'
 
             case 'klipper_backup_files':
               return file.filename.match(/^printer-\d{8}_\d{6}\.cfg$/)
 
             case 'print_start_time':
-              return file.print_start_time !== null
+              return 'print_start_time' in file && file.print_start_time !== null
 
             case 'rolled_log_files':
               return (
@@ -537,7 +539,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   getAllFiles () {
-    const items = this.$store.getters['files/getDirectory'](this.currentPath) as FileBrowserEntry[] | undefined
+    const items: FileBrowserEntry[] | undefined = this.$store.getters['files/getDirectory'](this.currentPath)
 
     return items ?? []
   }
@@ -564,7 +566,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   includeTimelapseThumbnailFiles (items: FileBrowserEntry[]) {
     const thumbnailFilenames = new Set(items
-      .filter((item): item is AppFileWithMeta => item.type === 'file' && item.extension !== 'jpg' && 'thumbnails' in item)
+      .filter((item): item is AppFileWithMeta => item.type === 'file' && item.extension !== '.jpg' && 'thumbnails' in item)
       .flatMap(item => item.thumbnails
         ? item.thumbnails.map(thumbnail => thumbnail.relative_path)
         : []
@@ -588,19 +590,24 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   loadFiles (path: string) {
     if (!this.disabled) {
       this.currentPath = path
-      if (this.files.length <= 0) {
-        this.refreshPath(path)
+
+      const directoryLoaded = path in this.$store.state.files.pathFiles
+
+      if (!directoryLoaded) {
+        this.handleRefresh()
       }
     }
   }
 
   // Refreshes a path by loading the directory.
-  refreshPath (path: string) {
-    if (path && !this.disabled) SocketActions.serverFilesGetDirectory(this.currentRoot, path)
+  handleRefresh () {
+    if (!this.disabled) {
+      SocketActions.serverFilesGetDirectory(this.currentPath)
+    }
   }
 
   // Handles a user filtering the data.
-  handleFilter (filters: any) {
+  handleFilter (filters: FileFilterType[]) {
     this.filters = filters
   }
 
@@ -649,11 +656,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       item.type === 'file' &&
       event.type === 'click'
     ) {
-      if (this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`)) {
+      if (this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(item.extension)) {
         this.handleFileOpenDialog(item, 'edit')
 
         return
-      } else if (this.rootProperties.canView.includes(`.${item.extension}`)) {
+      } else if (this.rootProperties.canView.includes(item.extension)) {
         this.handleFileOpenDialog(item, 'view')
 
         return
@@ -739,7 +746,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     try {
       const viewOnly = mode
         ? mode === 'view'
-        : this.rootProperties.canView.includes(`.${file.extension}`)
+        : this.rootProperties.canView.includes(file.extension)
 
       // Grab the file. This should provide a dialog.
       const response = await this.getFile(
@@ -789,7 +796,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       if (!gcode) return
 
       if (
-        this.$router.currentRoute.name !== 'home' ||
+        this.$route.name !== 'home' ||
         !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')
       ) {
         this.$router.push({ name: 'gcode_preview' })
@@ -804,10 +811,32 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  handleRefreshMetadata (file: AppFileWithMeta) {
-    const filename = file.path ? `${file.path}/${file.filename}` : file.filename
+  handleRefreshMetadata (file: FileBrowserEntry | FileBrowserEntry[]) {
+    if (this.disabled) return
 
-    SocketActions.serverFilesMetadata(filename)
+    const files = Array.isArray(file)
+      ? file
+      : [file]
+    const filenames = files
+      .filter((item): item is AppFileWithMeta => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
+      .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
+
+    for (const filename of filenames) {
+      SocketActions.serverFilesMetascan(filename)
+    }
+  }
+
+  handlePerformTimeAnalysis (file: FileBrowserEntry | FileBrowserEntry[]) {
+    const items = Array.isArray(file)
+      ? file
+      : [file]
+    const filenames = items
+      .filter((item): item is AppFileWithMeta => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
+      .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
+
+    for (const filename of filenames) {
+      SocketActions.serverAnalysisProcess(filename, undefined, true)
+    }
   }
 
   async handleViewThumbnail (file: AppFileWithMeta) {
@@ -834,7 +863,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     const filename = file.path ? `${file.path}/${file.filename}` : file.filename
 
-    const spoolmanSupported = this.$store.getters['spoolman/getAvailable']
+    const spoolmanSupported: boolean = this.$store.getters['spoolman/getAvailable']
     const autoSpoolSelectionDialog: boolean = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
     if (spoolmanSupported && autoSpoolSelectionDialog) {
       this.$store.commit('spoolman/setDialogState', {
@@ -848,29 +877,27 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     SocketActions.printerPrintStart(filename)
 
     // If we aren't on the dashboard, push the user back there.
-    if (this.$router.currentRoute.name !== 'home') {
+    if (this.$route.name !== 'home') {
       this.$router.push({ name: 'home' })
     }
   }
 
   async handleSaveFileChanges (contents: string, restart: string) {
-    if (contents.length > 0) {
-      const file = new File([contents], this.fileEditorDialogState.filename)
-      if (!restart && this.fileEditorDialogState.open) this.fileEditorDialogState.loading = true
+    const file = new File([contents], this.fileEditorDialogState.filename)
+    if (!restart && this.fileEditorDialogState.open) this.fileEditorDialogState.loading = true
 
-      await this.uploadFile(file, this.visiblePath, this.currentRoot, false)
-      this.fileEditorDialogState.loading = false
-      if (restart) {
-        if (restart === 'moonraker') {
-          this.serviceRestartMoonraker()
-          return
-        }
-        if (restart === 'klipper') {
-          this.firmwareRestartKlippy()
-          return
-        }
-        this.serviceRestartByName(restart)
+    await this.uploadFile(file, this.visiblePath, this.currentRoot, false)
+    this.fileEditorDialogState.loading = false
+    if (restart) {
+      if (restart === 'moonraker') {
+        this.serviceRestartMoonraker()
+        return
       }
+      if (restart === 'klipper') {
+        this.firmwareRestartKlippy()
+        return
+      }
+      this.serviceRestartByName(restart)
     }
   }
 
@@ -890,13 +917,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       this.includeTimelapseThumbnailFiles(items)
     }
 
-    items.forEach((item) => {
+    for (const item of items) {
       const src = `${this.currentPath}/${item.name}`
       const dest = destinationPath
         ? `${destinationPath}/${item.name}`
         : `${item.name}`
       SocketActions.serverFilesMove(src, dest)
-    })
+    }
   }
 
   handleDragStart (item: FileBrowserEntry, items: FileBrowserEntry[], dataTransfer: DataTransfer) {
@@ -915,7 +942,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     if (this.currentRoot === 'gcodes') {
       const files = items
-        .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(`.${item.extension}`))
+        .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
 
       if (files.length > 0) {
         setFileDataTransferDataInDataTransfer(dataTransfer, 'jobs', {
@@ -957,10 +984,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         this.includeTimelapseThumbnailFiles(items)
       }
 
-      items.forEach((item) => {
-        if (item.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${item.dirname}`, true)
-        if (item.type === 'file') SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.filename}`)
-      })
+      for (const item of items) {
+        if (item.type === 'file') {
+          SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.filename}`)
+        } else {
+          SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${item.dirname}`, true)
+        }
+      }
     }
   }
 
@@ -1030,7 +1060,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     const items = Array.isArray(file) ? file : [file]
     const filenames = items
-      .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(`.${item.extension}`))
+      .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
       .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
 
     if (filenames.length > 0) {

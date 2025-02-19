@@ -16,7 +16,7 @@ export const setFileDataTransferDataInDataTransfer = (dataTransfer: DataTransfer
 export const getFileDataTransferDataFromDataTransfer = (dataTransfer: DataTransfer, type: keyof typeof Globals.FILE_DATA_TRANSFER_TYPES) => {
   const data = dataTransfer.getData(Globals.FILE_DATA_TRANSFER_TYPES[type])
 
-  const fileDataTransferData: FileDataTransferData = JSON.parse(data)
+  const fileDataTransferData = JSON.parse(data) as FileDataTransferData
 
   return fileDataTransferData
 }

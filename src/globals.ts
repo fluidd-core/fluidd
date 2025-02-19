@@ -145,6 +145,7 @@ import {
   mdiTableColumn,
   mdiShape,
   mdiSync,
+  mdiTimerOutline,
   mdiContentDuplicate,
   mdiArchiveLock,
   mdiFileImage,
@@ -253,7 +254,7 @@ export const Globals = Object.freeze({
     files: 'x-fluidd-files',
     jobs: 'x-fluidd-jobs'
   },
-  FILTERED_FOLDER_NAMES: ['.git'],
+  FILTERED_FOLDER_NAMES: ['.git', '.thumbs'],
   FILTERED_FILES_PREFIX: ['.thumbs', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.ignoreme'],
   KEYBOARD_SHORTCUTS: {
@@ -374,6 +375,7 @@ export const Icons = Object.freeze({
   rename: mdiFormTextbox,
   duplicate: mdiContentDuplicate,
   sync: mdiSync,
+  stopwatch: mdiTimerOutline,
   delete: mdiDelete,
   camera: mdiCamera,
   fan: mdiFan,

@@ -1,4 +1,4 @@
-const promiseAny = <T>(iterable: Iterable<T | PromiseLike<T>>): Promise<T> => {
+const promiseAny = <T>(iterable: Iterable<T | PromiseLike<T>>): Promise<Awaited<T>> => {
   if ('any' in Promise && typeof Promise.any === 'function') {
     return Promise.any(iterable)
   }
@@ -11,7 +11,7 @@ const promiseAny = <T>(iterable: Iterable<T | PromiseLike<T>>): Promise<T> => {
     })
   ).then(
     errors => Promise.reject(errors),
-    value => Promise.resolve<T>(value)
+    (value: Awaited<T>) => Promise.resolve(value)
   )
 }
 

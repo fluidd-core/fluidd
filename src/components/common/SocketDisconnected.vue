@@ -55,6 +55,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { appInit } from '@/init'
 import StateMixin from '@/mixins/state'
+import type { InstanceConfig } from '@/store/config/types'
 
 @Component({
   components: {}
@@ -64,7 +65,7 @@ export default class SocketDisconnected extends Mixins(StateMixin) {
     window.location.reload()
   }
 
-  get activeInstance () {
+  get activeInstance (): InstanceConfig | undefined {
     return this.$store.getters['config/getCurrentInstance']
   }
 

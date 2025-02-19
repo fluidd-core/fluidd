@@ -117,13 +117,14 @@ export default class AuthSettings extends Vue {
     open: false
   }
 
-  get users () {
-    return this.$store.getters['auth/getUsers']
+  get users (): AppUser[] {
+    return this.$store.state.auth.users
   }
 
   get currentUser () {
-    const currentUser = this.$store.getters['auth/getCurrentUser']
-    return (currentUser && currentUser.username) ? currentUser.username : ''
+    const currentUser: AppUser | null = this.$store.state.auth.currentUser
+
+    return currentUser?.username ?? ''
   }
 
   handleAddUserDialog () {
