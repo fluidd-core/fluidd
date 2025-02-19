@@ -452,7 +452,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         text: '',
         value: 'data-table-icons',
         sortable: false,
-        width: '24px'
+        width: this.dense ? '28px' : '56px'
       },
       {
         text: this.$tc('app.general.table.header.name'),
