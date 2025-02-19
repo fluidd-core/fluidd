@@ -257,6 +257,7 @@ import type { HistoryItem } from '@/store/history/types'
 import { SocketActions } from '@/api/socketActions'
 import type { AppTableHeader } from '@/types'
 import type { DataTableHeader } from 'vuetify'
+import type { MoonrakerSensor } from '@/store/sensors/types'
 
 @Component({
   components: {
@@ -277,6 +278,14 @@ export default class JobHistory extends Mixins(FilesMixin) {
 
         return headers
       }, {} as Record<string, string>)
+
+    for (const sensor of this.sensors) {
+      if (sensor.history_fields) {
+        for (const historyField of sensor.history_fields) {
+          auxiliaryDataHeaders[historyField.field] = historyField.description
+        }
+      }
+    }
 
     return Object.entries(auxiliaryDataHeaders)
       .map(([name, description]): AppTableHeader => ({
@@ -457,6 +466,10 @@ export default class JobHistory extends Mixins(FilesMixin) {
         align: 'end'
       }
     ]
+  }
+
+  get sensors (): MoonrakerSensor[] {
+    return this.$store.getters['sensors/getSensors']
   }
 
   get history (): HistoryItem[] {
