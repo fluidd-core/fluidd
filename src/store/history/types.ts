@@ -17,7 +17,8 @@ export interface HistoryItem {
   status: HistoryItemStatus;
   start_time: number;
   total_duration: number;
-  path?: string;
+  user?: string;
+  auxiliary_data?: HistoryItemAuxiliaryData[];
 }
 
 export interface HistoryRollUp {
@@ -30,3 +31,11 @@ export interface HistoryRollUp {
 }
 
 export type HistoryItemStatus = 'completed' | 'cancelled' | 'error' | 'printing' | 'in_progress' | 'server_exit' | 'klippy_shutdown' | 'klippy_disconnect' | 'interrupted'
+
+export interface HistoryItemAuxiliaryData {
+  provider: string;
+  name: string;
+  value: number;
+  description: string;
+  units: string;
+}

@@ -13,7 +13,7 @@
           small
           class="ml-2"
         >
-          {{ $filters.prettyCase(key.toString()) }}: {{ Math.round(value * 100) / 100 }}
+          {{ $filters.prettyCase(key.toString()) }}: {{ Math.round(value * 100) / 100 }} {{ sensor.parameter_info?.find(x => x.name === key)?.units ?? '' }}
         </v-chip>
       </v-col>
     </v-row>

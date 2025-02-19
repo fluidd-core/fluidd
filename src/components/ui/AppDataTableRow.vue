@@ -22,7 +22,13 @@
           :header="header"
           :value="getValue(header)"
         >
-          {{ getValue(header) ?? '--' }}
+          <slot
+            name="item.data-table-default"
+            :header="header"
+            :value="getValue(header)"
+          >
+            {{ formatValue(getValue(header)) }}
+          </slot>
         </slot>
       </td>
     </template>
@@ -49,6 +55,12 @@ export default class AppDataTableRow extends Vue {
 
   getValue (header: DataTableHeader) {
     return get(this.item, header.value)
+  }
+
+  formatValue (value: unknown) {
+    return value == null || value === ''
+      ? '--'
+      : value
   }
 }
 </script>
