@@ -8,11 +8,11 @@
       cols="6"
       class="text-right"
     >
-      <v-btn-toggle
+      <app-btn-toggle
         v-model="moveDistance"
         mandatory
         dense
-        class="elevation-2"
+        :disabled="!klippyReady"
       >
         <app-btn
           v-for="(value, i) in zAdjustValues"
@@ -25,7 +25,7 @@
         >
           {{ value }}
         </app-btn>
-      </v-btn-toggle>
+      </app-btn-toggle>
       <div
         class="mt-1"
         :class="{ 'text--disabled': !klippyReady }"

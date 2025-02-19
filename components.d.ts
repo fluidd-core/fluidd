@@ -16,6 +16,7 @@ declare module 'vue' {
     AppBtnCollapse: typeof import('./src/components/ui/AppBtnCollapse.vue')['default']
     AppBtnCollapseGroup: typeof import('./src/components/ui/AppBtnCollapseGroup.vue')['default']
     AppBtnGroup: typeof import('./src/components/ui/AppBtnGroup.vue')['default']
+    AppBtnToggle: typeof import('./src/components/ui/AppBtnToggle.vue')['default']
     AppBtnToolheadMove: typeof import('./src/components/ui/AppBtnToolheadMove.vue')['default']
     AppChart: typeof import('./src/components/ui/AppChart.vue')['default']
     AppColorPicker: typeof import('./src/components/ui/AppColorPicker.vue')['default']
