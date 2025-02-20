@@ -88,13 +88,7 @@ export const defaultState = (): ConfigState => {
       dashboard: {
         tempPresets: []
       },
-      tableHeaders: {
-        gcodes_dashboard: [],
-        gcodes_jobs: [],
-        history: [],
-        job_queue: [],
-        spoolman: []
-      },
+      tableHeaders: {},
       gcodePreview: {
         extrusionLineWidth: 0.3,
         moveLineWidth: 0.1,

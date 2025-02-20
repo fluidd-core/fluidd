@@ -1,4 +1,3 @@
-import type { AppTablePartialHeader } from '@/types/tableheaders'
 import type { FileFilterType } from '../files/types'
 
 export interface ConfigState {
@@ -18,7 +17,7 @@ export interface UiSettings {
   theme: ThemeConfig;
   editor: EditorConfig;
   dashboard: DashboardConfig;
-  tableHeaders: AppTableConfiguredHeaders;
+  tableHeaders: TableHeadersConfig;
   gcodePreview: GcodePreviewConfig;
   fileSystem: FileSystemConfig;
   toolhead: ToolheadConfig;
@@ -195,12 +194,8 @@ export interface InstanceConfig extends ApiConfig {
 export interface TemperaturePreset {
   id: number;
   name: string;
-  values: TemperaturePresetValues;
+  values: Record<string, TemperaturePresetValue>;
   gcode?: string;
-}
-
-export interface TemperaturePresetValues {
-  [key: string]: TemperaturePresetValue;
 }
 
 export interface TemperaturePresetValue {
@@ -209,8 +204,12 @@ export interface TemperaturePresetValue {
   active: boolean;
 }
 
-export interface AppTableConfiguredHeaders {
-  [root: string]: AppTablePartialHeader[];
+export interface TableHeadersConfig extends Record<string, ConfiguredTableHeader[]> {
+}
+
+export interface ConfiguredTableHeader {
+  value: string;
+  visible?: boolean;
 }
 
 export interface GcodePreviewConfig {

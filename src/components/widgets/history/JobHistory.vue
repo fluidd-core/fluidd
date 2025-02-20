@@ -255,7 +255,7 @@ import FilesMixin from '@/mixins/files'
 import getFilePaths from '@/util/get-file-paths'
 import type { HistoryItem } from '@/store/history/types'
 import { SocketActions } from '@/api/socketActions'
-import type { AppTableHeader } from '@/types'
+import type { AppDataTableHeader } from '@/types'
 import type { DataTableHeader } from 'vuetify'
 import type { MoonrakerSensor } from '@/store/sensors/types'
 
@@ -267,7 +267,7 @@ import type { MoonrakerSensor } from '@/store/sensors/types'
 export default class JobHistory extends Mixins(FilesMixin) {
   search = ''
 
-  get auxiliaryDataHeaders (): AppTableHeader[] {
+  get auxiliaryDataHeaders (): AppDataTableHeader[] {
     const auxiliaryDataHeaders = this.history
       .reduce((headers, item) => {
         if (item.auxiliary_data) {
@@ -288,15 +288,15 @@ export default class JobHistory extends Mixins(FilesMixin) {
     }
 
     return Object.entries(auxiliaryDataHeaders)
-      .map(([name, description]): AppTableHeader => ({
+      .map(([name, description]): AppDataTableHeader => ({
         text: this.$filters.prettyCase(description),
         value: `auxiliary_data.${name}`,
         cellClass: 'text-no-wrap'
       }))
   }
 
-  get configurableHeaders (): AppTableHeader[] {
-    const headers: AppTableHeader[] = [
+  get configurableHeaders (): AppDataTableHeader[] {
+    const headers: AppDataTableHeader[] = [
       {
         text: this.$tc('app.general.table.header.status'),
         value: 'status',
@@ -440,7 +440,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
       },
     ]
 
-    const mergedTableHeaders: AppTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'history')
+    const mergedTableHeaders: AppDataTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'history')
 
     return mergedTableHeaders
   }
@@ -495,7 +495,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
     this.$store.dispatch('history/clearHistoryThumbnails', job.job_id)
   }
 
-  getFormattedValue (item: HistoryItem, header: AppTableHeader, value: any) {
+  getFormattedValue (item: HistoryItem, header: AppDataTableHeader, value: any) {
     if (header.value.startsWith('auxiliary_data.') && item.auxiliary_data) {
       const name = header.value.substring(15)
       const auxiliaryDataItem = item.auxiliary_data
