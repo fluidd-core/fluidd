@@ -47,7 +47,7 @@
               <v-list-item-title>{{ header.text }}</v-list-item-title>
             </v-list-item-content>
             <v-list-item-action class="my-0">
-              <v-checkbox :input-value="header.visible" />
+              <v-checkbox :input-value="header.visible !== false" />
             </v-list-item-action>
           </v-list-item>
         </template>
@@ -58,24 +58,24 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import type { AppTableHeader } from '@/types'
-import type { AppTablePartialHeader } from '@/types/tableheaders'
+import type { AppDataTableHeader } from '@/types'
+import type { ConfiguredTableHeader } from '@/store/config/types'
 
 @Component({})
 export default class AppColumnPicker extends Vue {
   @Prop({ type: String, required: true })
   readonly keyName!: string
 
-  @Prop({ type: Array<AppTableHeader>, required: true })
-  readonly headers!: AppTableHeader[]
+  @Prop({ type: Array<AppDataTableHeader>, required: true })
+  readonly headers!: AppDataTableHeader[]
 
-  get configurableHeaders (): AppTableHeader[] {
+  get configurableHeaders (): AppDataTableHeader[] {
     return this.headers
   }
 
-  set configurableHeaders (value: AppTableHeader[]) {
+  set configurableHeaders (value: AppDataTableHeader[]) {
     const headers = value
-      .map(({ value, visible }): AppTablePartialHeader => ({
+      .map(({ value, visible }): ConfiguredTableHeader => ({
         value,
         visible
       }))
@@ -83,8 +83,12 @@ export default class AppColumnPicker extends Vue {
     this.$store.dispatch('config/updateHeaders', { name: this.keyName, headers })
   }
 
-  handleToggleHeader (header: AppTablePartialHeader) {
-    header.visible = !header.visible
+  handleToggleHeader (value: AppDataTableHeader) {
+    const header : ConfiguredTableHeader = {
+      value: value.value,
+      visible: !(value.visible !== false)
+    }
+
     this.$store.dispatch('config/updateHeader', { name: this.keyName, header })
   }
 }

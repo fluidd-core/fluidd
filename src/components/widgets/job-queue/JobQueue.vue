@@ -64,7 +64,7 @@ import JobQueueBulkActions from './JobQueueBulkActions.vue'
 import JobQueueBrowser from './JobQueueBrowser.vue'
 import JobQueueContextMenu from './JobQueueContextMenu.vue'
 import JobQueueMultiplyJobDialog from './JobQueueMultiplyJobDialog.vue'
-import type { AppTableHeader } from '@/types'
+import type { AppDataTableHeader } from '@/types'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
 import type { DataTableHeader } from 'vuetify'
 
@@ -99,8 +99,8 @@ export default class JobQueue extends Vue {
   @Prop({ type: Boolean })
   readonly bulkActions?: boolean
 
-  get configurableHeaders (): AppTableHeader[] {
-    const headers: AppTableHeader[] = [
+  get configurableHeaders (): AppDataTableHeader[] {
+    const headers: AppDataTableHeader[] = [
       {
         text: this.$tc('app.general.table.header.time_added'),
         value: 'time_added',
@@ -116,7 +116,7 @@ export default class JobQueue extends Vue {
       }
     ]
 
-    const mergedTableHeaders: AppTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'job_queue')
+    const mergedTableHeaders: AppDataTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'job_queue')
 
     return mergedTableHeaders
   }

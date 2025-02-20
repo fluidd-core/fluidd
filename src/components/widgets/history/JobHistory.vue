@@ -157,7 +157,7 @@ import FilesMixin from '@/mixins/files'
 import getFilePaths from '@/util/get-file-paths'
 import type { HistoryItem } from '@/store/history/types'
 import { SocketActions } from '@/api/socketActions'
-import type { AppTableHeader } from '@/types'
+import type { AppDataTableHeader } from '@/types'
 import type { DataTableHeader } from 'vuetify'
 
 @Component({
@@ -169,8 +169,8 @@ export default class JobHistory extends Mixins(FilesMixin) {
   expanded: HistoryItem[] = []
   search = ''
 
-  get configurableHeaders (): AppTableHeader[] {
-    const headers: AppTableHeader[] = [
+  get configurableHeaders (): AppDataTableHeader[] {
+    const headers: AppDataTableHeader[] = [
       {
         text: this.$tc('app.general.table.header.status'),
         value: 'status',
@@ -211,7 +211,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
       },
     ]
 
-    const mergedTableHeaders: AppTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'history')
+    const mergedTableHeaders: AppDataTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'history')
 
     return mergedTableHeaders
   }
