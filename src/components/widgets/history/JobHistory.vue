@@ -495,20 +495,32 @@ export default class JobHistory extends Mixins(FilesMixin) {
     this.$store.dispatch('history/clearHistoryThumbnails', job.job_id)
   }
 
-  getFormattedValue (item: HistoryItem, header: AppDataTableHeader, value: any) {
-    if (header.value.startsWith('auxiliary_data.') && item.auxiliary_data) {
-      const name = header.value.substring(15)
-      const auxiliaryDataItem = item.auxiliary_data
-        .find(auxiliaryDataItem => auxiliaryDataItem.name === name)
+  getFormattedValue (item: HistoryItem, header: AppDataTableHeader, value: unknown) {
+    const auxiliaryDataItemName = header.value.startsWith('auxiliary_data.')
+      ? header.value.substring(15)
+      : undefined
+    const auxiliaryDataItem = auxiliaryDataItemName && item.auxiliary_data
+      ? item.auxiliary_data
+        .find(x => x.name === auxiliaryDataItemName)
+      : undefined
 
-      if (auxiliaryDataItem) {
-        return `${Math.round(auxiliaryDataItem.value * 100) / 100} ${auxiliaryDataItem.units}`
-      }
+    value = auxiliaryDataItem
+      ? auxiliaryDataItem.value
+      : value
+
+    if (value == null || value === '') {
+      return '--'
     }
 
-    return value == null || value === ''
-      ? '--'
-      : value
+    const units = auxiliaryDataItem?.units
+      ? ` ${auxiliaryDataItem.units}`
+      : ''
+
+    if (typeof value === 'number') {
+      return `${Math.round(value * 100) / 100}${units}`
+    }
+
+    return `${value}${units}`
   }
 }
 </script>

@@ -13,7 +13,7 @@
           small
           class="ml-2"
         >
-          {{ $filters.prettyCase(key.toString()) }}: {{ Math.round(value * 100) / 100 }} {{ sensor.parameter_info?.find(x => x.name === key)?.units ?? '' }}
+          {{ $filters.prettyCase(key.toString()) }}: {{ getFormattedValue(sensor, key.toString(), value) }}
         </v-chip>
       </v-col>
     </v-row>
@@ -28,6 +28,23 @@ import { Component, Vue } from 'vue-property-decorator'
 export default class Sensors extends Vue {
   get sensors (): MoonrakerSensor[] {
     return this.$store.getters['sensors/getSensors']
+  }
+
+  getFormattedValue (sensor: MoonrakerSensor, key: string, value: unknown) {
+    if (value == null || value === '') {
+      return '--'
+    }
+
+    const parameterUnits = sensor.parameter_info?.find(x => x.name === key)?.units
+    const units = parameterUnits
+      ? ` ${parameterUnits}`
+      : ''
+
+    if (typeof value === 'number') {
+      return `${Math.round(value * 100) / 100}${units}`
+    }
+
+    return `${value}${units}`
   }
 }
 </script>

@@ -16,12 +16,11 @@ export interface MoonrakerSensor {
   history_fields?: MoonrakerSensorHistoryFields[];
 }
 
-export interface MoonrakerSensorValues extends Record<string, number> {
+export interface MoonrakerSensorValues extends Record<string, unknown> {
 }
 
-export interface MoonrakerSensorParameterInfo {
+export interface MoonrakerSensorParameterInfo extends Record<string, string> {
   name: string;
-  units: string;
 }
 
 export interface MoonrakerSensorHistoryFields {
@@ -29,7 +28,7 @@ export interface MoonrakerSensorHistoryFields {
   provider: string;
   description: string;
   strategy: string;
-  units: string;
+  units: string | null;
   init_tracker: boolean;
   exclude_paused: boolean;
   report_total: boolean;

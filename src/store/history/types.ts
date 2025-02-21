@@ -35,7 +35,7 @@ export type HistoryItemStatus = 'completed' | 'cancelled' | 'error' | 'printing'
 export interface HistoryItemAuxiliaryData {
   provider: string;
   name: string;
-  value: number;
+  value: unknown;
   description: string;
-  units: string;
+  units: string | null;
 }
