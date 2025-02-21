@@ -32,119 +32,217 @@
       :items="history"
       :headers="headers"
       :items-per-page="15"
-      :item-class="getRowClasses"
       single-expand
       :search="search"
-      :expanded="expanded"
       mobile-breakpoint="0"
       item-key="job_id"
       sort-by="start_time"
       sort-desc
       fixed-header
     >
-      <template #expanded-item="{ headers, item }">
-        <td
-          :colspan="headers.length"
-          class="pa-4"
+      <template #item="{ headers, item }">
+        <app-data-table-row
+          :headers="headers"
+          :item="item"
+          :class="{
+            'v-data-table__inactive': !item.exists
+          }"
         >
-          <div class="chip-group">
-            <template v-for="(key, i) in Object.keys(item.metadata)">
-              <v-chip
-                v-if="key !== 'thumbnails'"
-                :key="i"
-                small
-              >
-                {{ key }}: {{ item.metadata[key] }}
-              </v-chip>
+          <template #[`item.data-table-icons`]>
+            <!-- If the item no longer exists. -->
+            <v-icon
+              v-if="!item.exists"
+              class="mr-2"
+              color="secondary"
+            >
+              $fileCancel
+            </v-icon>
+
+            <!-- If the item exists, but has no thumbnail data. -->
+            <v-icon
+              v-else-if="!item.metadata.thumbnails?.length"
+              class="mr-2"
+              color="secondary"
+            >
+              $file
+            </v-icon>
+
+            <!-- If the item exists, and we have thumbnail data. -->
+            <img
+              v-else
+              class="mr-2 file-icon-thumb"
+              :src="getThumbUrl(item.metadata, 'gcodes', getFilePaths(item.filename).path, false, item.metadata.modified)"
+              :width="24"
+              @error="handleJobThumbnailError(item)"
+            >
+          </template>
+
+          <template #[`item.filename`]="{ value }">
+            {{ value }}
+          </template>
+
+          <template #[`item.status`]>
+            <job-history-item-status :job="item" />
+          </template>
+
+          <template #[`item.start_time`]="{ value }">
+            {{ $filters.formatDateTime(value * 1000) }}
+          </template>
+
+          <template #[`item.end_time`]="{ value }">
+            {{
+              item.status !== 'in_progress'
+                ? $filters.formatDateTime(value * 1000)
+                : '--'
+            }}
+          </template>
+
+          <template #[`item.print_duration`]="{ value }">
+            {{ $filters.formatCounterSeconds(value) }}
+          </template>
+
+          <template #[`item.total_duration`]="{ value }">
+            {{ $filters.formatCounterSeconds(value) }}
+          </template>
+
+          <template #[`item.filament_used`]="{ value }">
+            {{ $filters.getReadableLengthString(value) }}
+          </template>
+
+          <template #[`item.user`]="{ value }">
+            {{ value }}
+          </template>
+
+          <template #[`item.metadata.object_height`]="{ value }">
+            {{
+              value != null
+                ? $filters.getReadableLengthString(value)
+                : '-- '
+            }}
+          </template>
+
+          <template #[`item.metadata.first_layer_height`]="{ value }">
+            {{
+              value != null
+                ? `${value} mm`
+                : '--'
+            }}
+          </template>
+
+          <template #[`item.metadata.layer_height`]="{ value }">
+            {{
+              value != null
+                ? `${value} mm`
+                : '--'
+            }}
+          </template>
+
+          <template #[`item.metadata.filament_name`]="{ value }">
+            {{ value ?? '--' }}
+          </template>
+
+          <template #[`item.metadata.filament_type`]="{ value }">
+            {{ value ?? '--' }}
+          </template>
+
+          <template #[`item.metadata.filament_total`]="{ value }">
+            {{
+              value != null
+                ? $filters.getReadableLengthString(value)
+                : '--'
+            }}
+          </template>
+
+          <template #[`item.metadata.filament_weight_total`]="{ value }">
+            {{
+              value != null
+                ? $filters.getReadableWeightString(value)
+                : '--'
+            }}
+          </template>
+
+          <template #[`item.metadata.nozzle_diameter`]="{ value }">
+            {{
+              value != null
+                ? `${value} mm`
+                : '--'
+            }}
+          </template>
+
+          <template #[`item.metadata.slicer`]="{ value }">
+            {{ value ?? '--' }}
+          </template>
+
+          <template #[`item.metadata.slicer_version`]="{ value }">
+            {{ value ?? '--' }}
+          </template>
+
+          <template #[`item.metadata.estimated_time`]="{ value }">
+            {{
+              value != null
+                ? $filters.formatCounterSeconds(value)
+                : '--'
+            }}
+          </template>
+
+          <template #[`item.metadata.first_layer_bed_temp`]="{ value }">
+            <template v-if="value != null">
+              {{ value }}<small>°C</small>
             </template>
-          </div>
-        </td>
-      </template>
+            <template v-else>
+              --
+            </template>
+          </template>
 
-      <template #[`item.data-table-icons`]="{ item }">
-        <!-- If the item no longer exists. -->
-        <v-icon
-          v-if="!item.exists"
-          class="mr-2"
-          color="secondary"
-        >
-          $fileCancel
-        </v-icon>
+          <template #[`item.metadata.first_layer_extr_temp`]="{ value }">
+            <template v-if="value != null">
+              {{ value }}<small>°C</small>
+            </template>
+            <template v-else>
+              --
+            </template>
+          </template>
 
-        <!-- If the item exists, but has no thumbnail data. -->
-        <v-icon
-          v-else-if="!item.metadata.thumbnails?.length"
-          class="mr-2"
-          color="secondary"
-        >
-          $file
-        </v-icon>
+          <template #[`item.metadata.chamber_temp`]="{ value }">
+            <template v-if="value != null">
+              {{ value }}<small>°C</small>
+            </template>
+            <template v-else>
+              --
+            </template>
+          </template>
 
-        <!-- If the item exists, and we have thumbnail data. -->
-        <img
-          v-else
-          class="mr-2 file-icon-thumb"
-          :src="getThumbUrl(item.metadata, 'gcodes', getFilePaths(item.filename).path, false, item.metadata.modified)"
-          :width="24"
-          @error="handleJobThumbnailError(item)"
-        >
-      </template>
+          <template #[`item.metadata.file_processors`]="{ value }">
+            {{
+              value != null && value.length > 0
+                ? value.map($filters.prettyCase).join(', ')
+                : '--'
+            }}
+          </template>
 
-      <template #[`item.filename`]="{ value }">
-        {{ getFilePaths(value).filename }}
-      </template>
+          <template #[`item.metadata.modified`]="{ value }">
+            {{ $filters.formatDateTime(value * 1000) }}
+          </template>
 
-      <template #[`item.status`]="{ item }">
-        <job-history-item-status :job="item" />
-      </template>
+          <template #[`item.metadata.size`]="{ value }">
+            {{ $filters.getReadableFileSizeString(value) }}
+          </template>
 
-      <template #[`item.start_time`]="{ value }">
-        {{ $filters.formatDateTime(value * 1000) }}
-      </template>
+          <template #[`item.data-table-default`]="{ header, value }">
+            {{ getFormattedValue(item, header, value) }}
+          </template>
 
-      <template #[`item.end_time`]="{ item, value }">
-        {{
-          item.status !== 'in_progress'
-            ? $filters.formatDateTime(value * 1000)
-            : '--'
-        }}
-      </template>
-
-      <template #[`item.print_duration`]="{ value }">
-        {{ $filters.formatCounterSeconds(value) }}
-      </template>
-
-      <template #[`item.total_duration`]="{ value }">
-        {{ $filters.formatCounterSeconds(value) }}
-      </template>
-
-      <template #[`item.filament_used`]="{ value }">
-        {{ $filters.getReadableLengthString(value) }}
-      </template>
-
-      <template #[`item.metadata.size`]="{ value }">
-        {{ $filters.getReadableFileSizeString(value) }}
-      </template>
-
-      <template #[`item.actions`]="{ item }">
-        <app-btn
-          icon
-          @click="handleRemoveJob(item)"
-        >
-          <v-icon dense>
-            $delete
-          </v-icon>
-        </app-btn>
-        <app-btn
-          class="v-data-table__expand-icon"
-          :class="{ 'v-data-table__expand-icon--active': isExpanded(item) }"
-          icon
-          @click.prevent.stop="toggleRowExpand(item)"
-        >
-          <v-icon dense>
-            $chevronDown
-          </v-icon>
-        </app-btn>
+          <template #[`item.actions`]>
+            <app-btn
+              icon
+              @click="handleRemoveJob(item)"
+            >
+              <v-icon dense>
+                $delete
+              </v-icon>
+            </app-btn>
+          </template>
+        </app-data-table-row>
       </template>
     </v-data-table>
   </div>
@@ -159,6 +257,7 @@ import type { HistoryItem } from '@/store/history/types'
 import { SocketActions } from '@/api/socketActions'
 import type { AppDataTableHeader } from '@/types'
 import type { DataTableHeader } from 'vuetify'
+import type { MoonrakerSensor } from '@/store/sensors/types'
 
 @Component({
   components: {
@@ -166,8 +265,35 @@ import type { DataTableHeader } from 'vuetify'
   }
 })
 export default class JobHistory extends Mixins(FilesMixin) {
-  expanded: HistoryItem[] = []
   search = ''
+
+  get auxiliaryDataHeaders (): AppDataTableHeader[] {
+    const auxiliaryDataHeaders = this.history
+      .reduce((headers, item) => {
+        if (item.auxiliary_data) {
+          for (const auxiliaryDataItem of item.auxiliary_data) {
+            headers[auxiliaryDataItem.name] = auxiliaryDataItem.description
+          }
+        }
+
+        return headers
+      }, {} as Record<string, string>)
+
+    for (const sensor of this.sensors) {
+      if (sensor.history_fields) {
+        for (const historyField of sensor.history_fields) {
+          auxiliaryDataHeaders[historyField.field] = historyField.description
+        }
+      }
+    }
+
+    return Object.entries(auxiliaryDataHeaders)
+      .map(([name, description]): AppDataTableHeader => ({
+        text: this.$filters.prettyCase(description),
+        value: `auxiliary_data.${name}`,
+        cellClass: 'text-no-wrap'
+      }))
+  }
 
   get configurableHeaders (): AppDataTableHeader[] {
     const headers: AppDataTableHeader[] = [
@@ -202,6 +328,109 @@ export default class JobHistory extends Mixins(FilesMixin) {
         value: 'filament_used',
         visible: false,
         cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.user'),
+        value: 'user',
+        visible: false,
+        cellClass: 'text-no-wrap',
+      },
+      {
+        text: this.$tc('app.general.table.header.height'),
+        value: 'metadata.object_height',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.first_layer_height'),
+        value: 'metadata.first_layer_height',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.layer_height'),
+        value: 'metadata.layer_height',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.filament_name'),
+        value: 'metadata.filament_name',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.filament_type'),
+        value: 'metadata.filament_type',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.filament'),
+        value: 'metadata.filament_total',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.filament_weight_total'),
+        value: 'metadata.filament_weight_total',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.nozzle_diameter'),
+        value: 'metadata.nozzle_diameter',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.slicer'),
+        value: 'metadata.slicer',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.slicer_version'),
+        value: 'metadata.slicer_version',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.estimated_time'),
+        value: 'metadata.estimated_time',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.first_layer_bed_temp'),
+        value: 'metadata.first_layer_bed_temp',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.first_layer_extr_temp'),
+        value: 'metadata.first_layer_extr_temp',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.chamber_temp'),
+        value: 'metadata.chamber_temp',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.file_processors'),
+        value: 'metadata.file_processors',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      ...this.auxiliaryDataHeaders,
+      {
+        text: this.$tc('app.general.table.header.modified'),
+        value: 'metadata.modified',
+        cellClass: 'text-no-wrap',
+        width: '1%'
       },
       {
         text: this.$tc('app.general.table.header.size'),
@@ -239,13 +468,12 @@ export default class JobHistory extends Mixins(FilesMixin) {
     ]
   }
 
-  get history (): HistoryItem[] {
-    return this.$store.getters['history/getHistory']
+  get sensors (): MoonrakerSensor[] {
+    return this.$store.getters['sensors/getSensors']
   }
 
-  getRowClasses (item: HistoryItem) {
-    if (!item.exists) return 'v-data-table__inactive'
-    return ''
+  get history (): HistoryItem[] {
+    return this.$store.getters['history/getHistory']
   }
 
   getFilePaths (filename: string) {
@@ -267,18 +495,32 @@ export default class JobHistory extends Mixins(FilesMixin) {
     this.$store.dispatch('history/clearHistoryThumbnails', job.job_id)
   }
 
-  isExpanded (row: HistoryItem) {
-    if (this.expanded.length <= 0) return false
-    const r = this.expanded[0]
-    return (row.job_id === r.job_id)
-  }
+  getFormattedValue (item: HistoryItem, header: AppDataTableHeader, value: unknown) {
+    const auxiliaryDataItemName = header.value.startsWith('auxiliary_data.')
+      ? header.value.substring(15)
+      : undefined
+    const auxiliaryDataItem = auxiliaryDataItemName && item.auxiliary_data
+      ? item.auxiliary_data
+        .find(x => x.name === auxiliaryDataItemName)
+      : undefined
 
-  toggleRowExpand (row: HistoryItem) {
-    if (this.isExpanded(row)) {
-      this.expanded = []
-    } else {
-      this.expanded = [row]
+    value = auxiliaryDataItem
+      ? auxiliaryDataItem.value
+      : value
+
+    if (value == null || value === '') {
+      return '--'
     }
+
+    const units = auxiliaryDataItem?.units
+      ? ` ${auxiliaryDataItem.units}`
+      : ''
+
+    if (typeof value === 'number') {
+      return `${Math.round(value * 100) / 100}${units}`
+    }
+
+    return `${value}${units}`
   }
 }
 </script>
