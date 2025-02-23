@@ -156,7 +156,7 @@ import { Component, Prop, Mixins, PropSync } from 'vue-property-decorator'
 import StatesMixin from '@/mixins/state'
 import FileSystemAddMenu from './FileSystemAddMenu.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
-import type { AppTableHeader } from '@/types'
+import type { AppDataTableHeader } from '@/types'
 import type { RootProperties } from '@/store/files/types'
 
 @Component({
@@ -178,8 +178,8 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   readonly roots?: string[]
 
   // Currently defined list of headers.
-  @Prop({ type: Array<AppTableHeader> })
-  readonly headers?: AppTableHeader[]
+  @Prop({ type: Array<AppDataTableHeader> })
+  readonly headers?: AppDataTableHeader[]
 
   // The current path
   @Prop({ type: String })

@@ -447,6 +447,7 @@ app:
         start_time: Started
         status: Status
         total_duration: Total duration
+        user: User
     title:
       add_chart: Add Chart
       add_printer: Add Printer

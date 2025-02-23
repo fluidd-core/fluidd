@@ -78,11 +78,12 @@
         cols="3"
         class="pl-1"
       >
-        <v-btn-toggle
+        <app-btn-toggle
           v-model="positioning"
           mandatory
           dense
-          class="elevation-2 d-flex"
+          class="d-flex"
+          :disabled="!klippyReady || printerPrinting"
         >
           <v-tooltip top>
             <template #activator="{ on, attrs }">
@@ -114,7 +115,7 @@
             </template>
             <span>{{ $t('app.tool.tooltip.relative_positioning') }}</span>
           </v-tooltip>
-        </v-btn-toggle>
+        </app-btn-toggle>
       </v-col>
     </v-row>
   </div>

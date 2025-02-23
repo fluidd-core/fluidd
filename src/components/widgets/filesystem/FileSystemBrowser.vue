@@ -96,7 +96,7 @@
             {{
               value != null
                 ? $filters.getReadableLengthString(value)
-                : '-- '
+                : '--'
             }}
           </template>
 

@@ -42,11 +42,11 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import type { AppTableHeader } from '@/types'
+import type { AppDataTableHeader } from '@/types'
 
 @Component({})
 export default class JobQueueToolbar extends Vue {
-  @Prop({ type: Array<AppTableHeader> })
-  readonly headers?: AppTableHeader[]
+  @Prop({ type: Array<AppDataTableHeader> })
+  readonly headers?: AppDataTableHeader[]
 }
 </script>

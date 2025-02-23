@@ -1,3 +1,4 @@
+import type { ConfiguredTableHeader } from '@/store/config/types'
 import type { DataTableHeader } from 'vuetify'
 
 /**
@@ -5,9 +6,6 @@ import type { DataTableHeader } from 'vuetify'
  * and reference later.
  * configurable: if a user can toggle this header or not. Defaults to true if not defined.
  */
-export interface AppTablePartialHeader {
-  value: string;
-  visible?: boolean;
-}
 
-export interface AppTableHeader extends DataTableHeader, AppTablePartialHeader {}
+export interface AppDataTableHeader extends DataTableHeader, ConfiguredTableHeader {
+}

@@ -1,12 +1,10 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
+import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig, ConfiguredTableHeader } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 import { cloneDeep, mergeWith, set } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
-import type { AppTableHeader } from '@/types'
-import type { AppTablePartialHeader } from '@/types/tableheaders'
 import type { FileFilterType } from '../files/types'
 import consola from 'consola'
 
@@ -189,29 +187,23 @@ export const mutations: MutationTree<ConfigState> = {
   /**
    * Toggle a tables header state based on its name and key.
    */
-  setUpdateHeader (state, payload: { name: string; header: AppTablePartialHeader }) {
-    const { value, visible } = payload.header
-
-    const headers: AppTablePartialHeader[] = state.uiSettings.tableHeaders[payload.name]
+  setUpdateHeader (state, payload: { name: string; header: ConfiguredTableHeader }) {
+    const headers = state.uiSettings.tableHeaders[payload.name]
 
     if (headers) {
-      const i = headers.findIndex(item => item.value === value)
+      const i = headers.findIndex(item => item.value === payload.header.value)
 
       if (i >= 0) {
-        Vue.set(headers, i, {
-          ...headers[i],
-          visible
-        })
+        Vue.set(headers, i, payload.header)
       } else {
-        headers.push({
-          value,
-          visible
-        })
+        headers.push(payload.header)
       }
+    } else {
+      Vue.set(state.uiSettings.tableHeaders, payload.name, [payload.header])
     }
   },
 
-  setUpdateHeaders (state, payload: { name: string; headers: AppTableHeader[] }) {
-    state.uiSettings.tableHeaders[payload.name] = payload.headers
+  setUpdateHeaders (state, payload: { name: string; headers: ConfiguredTableHeader[] }) {
+    Vue.set(state.uiSettings.tableHeaders, payload.name, payload.headers)
   }
 }

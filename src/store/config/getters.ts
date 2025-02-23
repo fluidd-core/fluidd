@@ -2,8 +2,7 @@ import type { GetterTree } from 'vuex'
 import type { ConfigState, TemperaturePreset } from './types'
 import type { RootState } from '../types'
 import type { Heater, Fan } from '../printer/types'
-import type { AppTableHeader } from '@/types'
-import type { AppTablePartialHeader } from '@/types/tableheaders'
+import type { AppDataTableHeader } from '@/types'
 import type { MoonrakerRootFile } from '../files/types'
 import md5 from 'md5'
 
@@ -81,33 +80,27 @@ export const getters: GetterTree<ConfigState, RootState> = {
     }
   },
 
-  getMergedTableHeaders: (state, getters) => (headers: AppTableHeader[], key: string) => {
-    const configured: AppTablePartialHeader[] = getters.getConfiguredTableHeaders(key)
+  getMergedTableHeaders: (state) => (headers: AppDataTableHeader[], key: string) => {
+    const configuredHeaders = state.uiSettings.tableHeaders[key]
 
-    if (!configured) {
+    if (!configuredHeaders) {
       return headers
     }
 
     // if the number of configured headers is the same as the available headers,
     // then use configured headers to keep order
     // else go with available headers
-    return headers.length === configured.length
-      ? configured
-        .map(header => ({
-          visible: true,
-          ...headers.find(p => p.value === header.value),
-          ...header,
+    return headers.length === configuredHeaders.length
+      ? configuredHeaders
+        .map(configuredHeader => ({
+          ...headers.find(p => p.value === configuredHeader.value),
+          ...configuredHeader,
         }))
       : headers
         .map(header => ({
-          visible: true,
           ...header,
-          ...configured.find(p => p.value === header.value)
+          ...configuredHeaders.find(p => p.value === header.value)
         }))
-  },
-
-  getConfiguredTableHeaders: (state) => (key: string) => {
-    return state.uiSettings.tableHeaders[key]
   },
 
   getTokenKeys: (state) => {

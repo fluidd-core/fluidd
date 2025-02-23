@@ -78,7 +78,7 @@
         </v-layout>
 
         <div class="text-right mt-4 mr-1">
-          <v-btn-toggle
+          <app-btn-toggle
             v-model="valueRange"
             mandatory
           >
@@ -94,7 +94,7 @@
             >
               0..1
             </app-btn>
-          </v-btn-toggle>
+          </app-btn-toggle>
         </div>
 
         <v-layout

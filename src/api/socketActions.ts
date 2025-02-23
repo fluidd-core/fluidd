@@ -779,6 +779,9 @@ export const SocketActions = {
   async serverSensorsList () {
     baseEmit(
       'server.sensors.list', {
+        params: {
+          extended: true
+        },
         dispatch: 'sensors/onSensorsList'
       }
     )
