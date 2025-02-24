@@ -11,7 +11,7 @@
         {{ icon }}
       </v-icon>
     </template>
-    <span>{{ job.status }}</span>
+    <span>{{ $filters.prettyCase(job.status) }}</span>
   </v-tooltip>
 </template>
 
@@ -28,19 +28,21 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
   readonly job!: HistoryItem
 
   get icon () {
-    const iconMap: Record<string, string> = {
-      completed: '$checkedCircle',
-      printing: '$inProgress',
-      in_progress: '$inProgress',
-      standby: '$inProgress',
-      cancelled: '$cancelled',
-      interrupted: '$cancelled'
+    switch (this.job.status) {
+      case 'completed':
+        return '$checkedCircle'
+
+      case 'printing':
+      case 'in_progress':
+        return '$inProgress'
+
+      case 'cancelled':
+      case 'interrupted':
+        return '$cancelled'
+
+      default:
+        return '$warning'
     }
-
-    const icon = iconMap[this.job.status]
-
-    // Default to the warning symbol
-    return icon || '$warning'
   }
 
   get state (): JobHistoryItemState {
@@ -65,13 +67,6 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
       default:
         return 'success'
     }
-  }
-
-  get inError () {
-    return (
-      this.job.status !== 'completed' &&
-      this.job.status !== 'in_progress'
-    )
   }
 }
 </script>

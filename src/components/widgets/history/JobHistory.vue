@@ -110,7 +110,7 @@
           </template>
 
           <template #[`item.user`]="{ value }">
-            {{ value }}
+            {{ value || '--' }}
           </template>
 
           <template #[`item.metadata.object_height`]="{ value }">
@@ -138,11 +138,11 @@
           </template>
 
           <template #[`item.metadata.filament_name`]="{ value }">
-            {{ value ?? '--' }}
+            {{ value || '--' }}
           </template>
 
           <template #[`item.metadata.filament_type`]="{ value }">
-            {{ value ?? '--' }}
+            {{ value || '--' }}
           </template>
 
           <template #[`item.metadata.filament_total`]="{ value }">
@@ -170,11 +170,11 @@
           </template>
 
           <template #[`item.metadata.slicer`]="{ value }">
-            {{ value ?? '--' }}
+            {{ value || '--' }}
           </template>
 
           <template #[`item.metadata.slicer_version`]="{ value }">
-            {{ value ?? '--' }}
+            {{ value || '--' }}
           </template>
 
           <template #[`item.metadata.estimated_time`]="{ value }">

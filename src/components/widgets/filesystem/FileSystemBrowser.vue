@@ -117,11 +117,11 @@
           </template>
 
           <template #[`item.filament_name`]="{ value }">
-            {{ value ?? '--' }}
+            {{ value || '--' }}
           </template>
 
           <template #[`item.filament_type`]="{ value }">
-            {{ value ?? '--' }}
+            {{ value || '--' }}
           </template>
 
           <template #[`item.filament_total`]="{ value }">
@@ -157,11 +157,11 @@
           </template>
 
           <template #[`item.slicer`]="{ value }">
-            {{ value ?? '--' }}
+            {{ value || '--' }}
           </template>
 
           <template #[`item.slicer_version`]="{ value }">
-            {{ value ?? '--' }}
+            {{ value || '--' }}
           </template>
 
           <template #[`item.estimated_time`]="{ value }">
