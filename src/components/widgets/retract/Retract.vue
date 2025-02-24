@@ -17,7 +17,7 @@
           :step="0.01"
           overridable
           :disabled="!klippyReady"
-          :locked="isMobileViewport"
+          :locked="isMobileUserAgent"
           :loading="hasWait($waits.onSetRetractLength)"
           @submit="setRetractLength"
         />
@@ -38,7 +38,7 @@
           :step="0.01"
           overridable
           :disabled="!klippyReady"
-          :locked="isMobileViewport"
+          :locked="isMobileUserAgent"
           :loading="hasWait($waits.onSetUnretractExtraLength)"
           @submit="setUnRetractExtraLength"
         />
@@ -62,7 +62,7 @@
           :max="maxRetractSpeed"
           overridable
           :disabled="!klippyReady"
-          :locked="isMobileViewport"
+          :locked="isMobileUserAgent"
           :loading="hasWait($waits.onSetRetractSpeed)"
           @submit="setRetractSpeed"
         />
@@ -83,7 +83,7 @@
           :max="maxUnretractSpeed"
           overridable
           :disabled="!klippyReady"
-          :locked="isMobileViewport"
+          :locked="isMobileUserAgent"
           :loading="hasWait($waits.onSetUnretractSpeed)"
           @submit="setUnretractSpeed"
         />
@@ -107,7 +107,7 @@
           :max="maxZHopHeight"
           overridable
           :disabled="!klippyReady"
-          :locked="isMobileViewport"
+          :locked="isMobileUserAgent"
           :loading="hasWait($waits.onSetZHopHeight)"
           @submit="setZHopHeight"
         />

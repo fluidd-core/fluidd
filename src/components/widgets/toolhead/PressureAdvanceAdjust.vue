@@ -11,7 +11,7 @@
         overridable
         :reset-value="selectedExtruderStepper?.config?.pressure_advance || 0"
         :disabled="!klippyReady"
-        :locked="isMobileViewport"
+        :locked="isMobileUserAgent"
         :loading="hasWait(`${$waits.onSetPressureAdvance}${extruderStepper?.name ?? ''}`)"
         :min="0"
         :max="2"
@@ -29,7 +29,7 @@
         :value="selectedExtruderStepper?.smooth_time || 0"
         :reset-value="selectedExtruderStepper?.config?.pressure_advance_smooth_time || 0"
         :disabled="!klippyReady"
-        :locked="isMobileViewport"
+        :locked="isMobileUserAgent"
         :loading="hasWait(`${$waits.onSetPressureAdvance}${extruderStepper?.name ?? ''}`)"
         :min="0"
         :max="0.2"
