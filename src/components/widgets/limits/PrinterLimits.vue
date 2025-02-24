@@ -15,7 +15,7 @@
           :max="defaultVelocity"
           :disabled="!klippyReady"
           overridable
-          :locked="isMobileViewport"
+          :locked="isMobileUserAgent"
           :loading="hasWait($waits.onSetVelocity)"
           suffix="mm/s"
           @submit="setVelocity"
@@ -36,7 +36,7 @@
           :step="0.1"
           :disabled="!klippyReady"
           overridable
-          :locked="isMobileViewport"
+          :locked="isMobileUserAgent"
           :loading="hasWait($waits.onSetSquareCornerVelocity)"
           suffix="mm/s"
           @submit="setSquareCornerVelocity"
@@ -59,7 +59,7 @@
           :max="defaultAccel"
           :disabled="!klippyReady"
           overridable
-          :locked="isMobileViewport"
+          :locked="isMobileUserAgent"
           :loading="hasWait($waits.onSetAcceleration)"
           suffix="mm/s²"
           @submit="setAccel"
@@ -79,7 +79,7 @@
           :min="0"
           :max="99"
           :disabled="!klippyReady"
-          :locked="isMobileViewport"
+          :locked="isMobileUserAgent"
           :loading="hasWait($waits.onSetMinimumCruiseRatio)"
           suffix="%"
           @submit="setMinimumCruiseRatio"
@@ -94,7 +94,7 @@
           :max="defaultAccelToDecel"
           :disabled="!klippyReady"
           overridable
-          :locked="isMobileViewport"
+          :locked="isMobileUserAgent"
           :loading="hasWait($waits.onSetAccelToDecel)"
           suffix="mm/s²"
           @submit="setAccelToDecel"
