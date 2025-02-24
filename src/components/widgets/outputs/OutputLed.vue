@@ -6,12 +6,12 @@
     <v-col
       align-self="center"
       cols="5"
-      class="text-body-1 py-0"
+      class="text-body-1"
       :class="{ 'text--disabled': !klippyReady }"
     >
       {{ led.prettyName }}
     </v-col>
-    <v-col class="ml-auto py-0 text-right">
+    <v-col class="ml-auto text-right">
       <app-color-picker
         v-model="primaryColor"
         :white.sync="whiteValue"

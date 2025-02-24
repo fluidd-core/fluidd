@@ -10,19 +10,19 @@
         cols="12"
         sm="5"
         align-self="center"
-        class="text-body-1 py-0"
+        class="text-body-1"
         :class="{ 'text--disabled': disabled }"
         v-html="label"
       />
 
       <!-- Current value -->
-      <v-col class="py-0">
+      <v-col>
         <v-text-field
           v-model="currentValue"
           :prefix="prefix"
           :suffix="suffix"
           :rules="textRules"
-          :disabled="disabled || loading || internalLocked"
+          :disabled="disabled || loading"
           :step="step"
           class="v-input--text-right"
           type="number"

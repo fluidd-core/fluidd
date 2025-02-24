@@ -4,11 +4,11 @@
       cols="12"
       sm="5"
       align-self="center"
-      class="text-body-1 py-0"
+      class="text-body-1"
       :class="{ 'text--disabled': disabled }"
       v-html="label"
     />
-    <v-col class="py-0">
+    <v-col>
       <app-text-field
         v-model="inputValue"
         :type="type"
