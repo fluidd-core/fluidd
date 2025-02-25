@@ -243,15 +243,13 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       }
 
       if (this.currentFileName) {
-        // prefetch file metadata
-        if (!this.currentFile && this.currentFileName.includes('/')) {
-          // if the file is in a subdirectory and isn't cached
-          // we need to populate the cache
-          const { rootPath } = getFilePaths(this.currentFileName, 'gcodes')
+        const { rootPath } = getFilePaths(this.currentFileName, 'gcodes')
+
+        const directoryLoaded = rootPath in this.$store.state.files.pathFiles
+
+        // Load the containing the currently printing file if we haven't done that already
+        if (!directoryLoaded) {
           SocketActions.serverFilesGetDirectory(rootPath)
-        } else {
-          // otherwise just refresh the corresponding file
-          SocketActions.serverFilesMetadata(this.currentFileName)
         }
       }
 

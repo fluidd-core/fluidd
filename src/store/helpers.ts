@@ -71,13 +71,13 @@ export const handleCurrentFileChange = (payload: KlipperPrinterState, state: Roo
     payload.print_stats?.filename &&
     payload.print_stats.filename !== state.printer.printer.print_stats?.filename
   ) {
-    const paths = getFilePaths(payload.print_stats.filename, 'gcodes')
+    const { rootPath } = getFilePaths(payload.print_stats.filename, 'gcodes')
 
-    const directoryLoaded = paths.rootPath in state.files.pathFiles
+    const directoryLoaded = rootPath in state.files.pathFiles
 
     // Load the folder containing the currently printing file if we haven't done that already
     if (!directoryLoaded) {
-      SocketActions.serverFilesGetDirectory(paths.rootPath)
+      SocketActions.serverFilesGetDirectory(rootPath)
     }
   }
 }
