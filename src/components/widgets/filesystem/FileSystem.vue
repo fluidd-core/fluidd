@@ -109,13 +109,6 @@
       absolute
     />
 
-    <file-system-upload-dialog
-      v-if="currentUploads.length > 0"
-      :value="currentUploads.length > 0"
-      :files="currentUploads"
-      @cancel="handleCancelUpload"
-    />
-
     <file-preview-dialog
       v-if="filePreviewState.open"
       v-model="filePreviewState.open"
@@ -143,7 +136,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
-import type { AppDirectory, AppFile, AppFileWithMeta, FileUpload, FileFilterType, FileBrowserEntry, RootProperties } from '@/store/files/types'
+import type { AppDirectory, AppFile, AppFileWithMeta, FileFilterType, FileBrowserEntry, RootProperties } from '@/store/files/types'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import ServicesMixin from '@/mixins/services'
@@ -153,7 +146,6 @@ import FileSystemBrowser from './FileSystemBrowser.vue'
 import FileSystemContextMenu from './FileSystemContextMenu.vue'
 import FileEditorDialog from './FileEditorDialog.vue'
 import FileNameDialog from './FileNameDialog.vue'
-import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import FileSystemGoToFileDialog from './FileSystemGoToFileDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
 import type { AppDataTableHeader, FileWithPath } from '@/types'
@@ -176,7 +168,6 @@ import type { DataTableHeader } from 'vuetify'
     FileSystemContextMenu,
     FileEditorDialog,
     FileNameDialog,
-    FileSystemUploadDialog,
     FileSystemGoToFileDialog,
     FilePreviewDialog
   }
@@ -555,11 +546,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   // Determine if we're waiting for a directory load on our current path.
   get filesLoading () {
     return this.hasWaitsBy(`${this.$waits.onFileSystem}/${this.currentRoot}/`)
-  }
-
-  // Get a list of currently active uploads.
-  get currentUploads (): FileUpload[] {
-    return this.$store.state.files.uploads
   }
 
   get fileDropRoot () {
@@ -1004,23 +990,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     await this.uploadFiles(files, this.visiblePath, this.currentRoot, print)
 
     this.$store.dispatch('wait/removeWait', wait)
-  }
-
-  handleCancelUpload (file: FileUpload) {
-    if (!file.complete) {
-      // Hasn't started uploading...
-      if (file.loaded === 0) {
-        this.$store.dispatch('files/updateFileUpload', {
-          uid: file.uid,
-          cancelled: true
-        })
-      }
-
-      // Started uploading, but not complete.
-      if (file.loaded > 0 && file.loaded < file.size) {
-        file.abortController.abort()
-      }
-    }
   }
 
   handleAddDir (name: string) {

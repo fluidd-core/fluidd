@@ -79,6 +79,7 @@
       />
 
       <file-system-download-dialog />
+      <file-system-upload-dialog />
       <updating-dialog />
       <spool-selection-dialog />
       <action-command-prompt-dialog />
@@ -106,13 +107,14 @@ import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
 import type { LinkPropertyHref, MetaPropertyName } from 'vue-meta'
 import FileSystemDownloadDialog from '@/components/widgets/filesystem/FileSystemDownloadDialog.vue'
+import FileSystemUploadDialog from '@/components/widgets/filesystem/FileSystemUploadDialog.vue'
 import SpoolSelectionDialog from '@/components/widgets/spoolman/SpoolSelectionDialog.vue'
 import type { FlashMessage } from '@/types'
-import { getFilesFromDataTransfer, hasFilesInDataTransfer } from './util/file-system-entry'
+import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 import type { ThemeConfig } from '@/store/config/types'
-import ActionCommandPromptDialog from './components/common/ActionCommandPromptDialog.vue'
-import KeyboardShortcutsDialog from './components/common/KeyboardShortcutsDialog.vue'
-import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from './util/event-helpers'
+import ActionCommandPromptDialog from '@/components/common/ActionCommandPromptDialog.vue'
+import KeyboardShortcutsDialog from '@/components/common/KeyboardShortcutsDialog.vue'
+import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
 
 @Component<App>({
   metaInfo () {
@@ -125,6 +127,7 @@ import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '.
   components: {
     SpoolSelectionDialog,
     FileSystemDownloadDialog,
+    FileSystemUploadDialog,
     ActionCommandPromptDialog,
     KeyboardShortcutsDialog
   }
