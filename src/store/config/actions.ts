@@ -120,7 +120,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
     })
 
     // Now, find the instance in our instance list and update there.
-    let instance = getters.getCurrentInstance
+    let instance: InstanceConfig | undefined = getters.getCurrentInstance
     if (instance) {
       instance = {
         ...instance,

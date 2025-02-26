@@ -31,14 +31,14 @@ export const getters: GetterTree<LayoutState, RootState> = {
     }
   },
 
-  isEnabledInLayout: (state, getters) => (layout: string, id: string) => {
+  isEnabledInLayout: (state, getters) => (layout: string, id: string): boolean => {
     const configs = Object.values(getters.getLayout(layout) ?? {}).flat() as LayoutConfig[]
 
     return configs.find(configs => configs.id === id)?.enabled ?? false
   },
 
-  isEnabledInCurrentLayout: (state, getters) => (id: string) => {
-    const layout = getters.getSpecificLayoutName
+  isEnabledInCurrentLayout: (state, getters) => (id: string): boolean => {
+    const layout: string = getters.getSpecificLayoutName
 
     return getters.isEnabledInLayout(layout, id)
   },
@@ -57,6 +57,7 @@ export const getters: GetterTree<LayoutState, RootState> = {
    */
   getConfig: (state, getters) => (name: string, id: string): LayoutConfig | undefined => {
     const containers: LayoutContainer = getters.getLayout(name)
+
     if (containers) {
       for (const l in containers) {
         const config = containers[l].find(layout => layout.id === id)

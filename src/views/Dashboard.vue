@@ -124,7 +124,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.$store.getters['webcams/getEnabledWebcams'].length > 0
   }
 
-  get hasHeatersOrTemperatureSensors () {
+  get hasHeatersOrTemperatureSensors (): boolean {
     return (
       this.$store.getters['printer/getHeaters'].length > 0 ||
       this.$store.getters['printer/getOutputs'](['temperature_fan']).length > 0 ||
@@ -152,7 +152,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.$store.getters['printer/getSupportsBeacon']
   }
 
-  get supportsRunoutSensors () {
+  get supportsRunoutSensors (): boolean {
     return this.$store.getters['printer/getRunoutSensors'].length > 0
   }
 
@@ -160,11 +160,11 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.$store.getters['server/componentSupport']('spoolman')
   }
 
-  get hasMacros () {
+  get hasMacros (): boolean {
     return this.$store.getters['macros/getVisibleMacros'].length > 0
   }
 
-  get hasOutputs () {
+  get hasOutputs (): boolean {
     return (
       this.$store.getters['printer/getAllFans'].length > 0 ||
       this.$store.getters['printer/getPins'].length > 0 ||

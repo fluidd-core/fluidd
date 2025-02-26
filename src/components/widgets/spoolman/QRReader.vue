@@ -30,6 +30,7 @@ import QrScanner from 'qr-scanner'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
+import type { WebcamConfig } from '@/store/webcams/types'
 
 @Component({
   components: { CameraItem }
@@ -51,7 +52,7 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
   @Ref('canvas')
   canvas!: HTMLCanvasElement
 
-  get camera () {
+  get camera (): WebcamConfig | { name: string, service: 'device' } {
     if (this.source === 'device') {
       return {
         name: this.$t('app.spoolman.label.device_camera').toString(),

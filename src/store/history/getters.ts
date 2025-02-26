@@ -40,7 +40,7 @@ export const getters: GetterTree<HistoryState, RootState> = {
    */
   getUniqueHistory: (state, getters) => (limit = 3) => {
     const jobs: HistoryItem[] = []
-    const history = getters.getHistory
+    const history: HistoryItem[] = getters.getHistory
 
     // Go through each item and;
     // - Only show items that still exist

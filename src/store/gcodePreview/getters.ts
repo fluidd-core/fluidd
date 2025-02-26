@@ -153,7 +153,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
   },
 
   getPaths: (state, getters) => (startMove: number, endMove: number): LayerPaths => {
-    const toolhead = getters.getToolHeadPosition(startMove)
+    const toolhead: Point3D = getters.getToolHeadPosition(startMove)
     const moves = state.moves
 
     const path: LayerPaths = {
