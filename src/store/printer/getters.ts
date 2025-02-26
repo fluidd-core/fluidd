@@ -1020,15 +1020,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
     ].includes(kinematics)
   },
 
-  getBedSize: (state): BedSize | undefined => {
+  getBedSize: (state): BedSize => {
     const { axis_minimum, axis_maximum } = state.printer.toolhead
-
-    if (
-      axis_minimum.length < 2 ||
-      axis_maximum.length < 2
-    ) {
-      return undefined
-    }
 
     const [minX, minY] = axis_minimum
     const [maxX, maxY] = axis_maximum

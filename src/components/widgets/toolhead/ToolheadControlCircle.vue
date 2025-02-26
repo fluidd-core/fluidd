@@ -753,14 +753,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get bedSize (): BedSize {
-    const bedSize: BedSize | undefined = this.$store.getters['printer/getBedSize']
-
-    return bedSize ?? {
-      minX: 0,
-      minY: 0,
-      maxX: 0,
-      maxY: 0
-    }
+    return this.$store.getters['printer/getBedSize']
   }
 
   get bedCenter () {
