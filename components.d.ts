@@ -19,6 +19,7 @@ declare module 'vue' {
     AppBtnToggle: typeof import('./src/components/ui/AppBtnToggle.vue')['default']
     AppBtnToolheadMove: typeof import('./src/components/ui/AppBtnToolheadMove.vue')['default']
     AppChart: typeof import('./src/components/ui/AppChart.vue')['default']
+    AppChipColor: typeof import('./src/components/ui/AppChipColor.vue')['default']
     AppColorPicker: typeof import('./src/components/ui/AppColorPicker.vue')['default']
     AppColumnPicker: typeof import('./src/components/ui/AppColumnPicker.vue')['default']
     AppDataTableRow: typeof import('./src/components/ui/AppDataTableRow.vue')['default']

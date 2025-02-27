@@ -5,9 +5,16 @@ export interface MoonrakerFileMeta {
   chamber_temp?: number;
   estimated_time?: number;
   filament_name?: string;
+  filament_colors?: string[];
+  extruder_colors?: string[];
+  filament_temps?: number[];
   filament_total?: number;
+  filament_change_count?: number;
   filament_type?: string;
   filament_weight_total?: number;
+  filament_weights?: number[];
+  mmu_print?: number;
+  referenced_tools?: number[];
   first_layer_bed_temp?: number;
   first_layer_extr_temp?: number;
   first_layer_height?: number;

@@ -117,7 +117,7 @@
             {{
               value != null
                 ? $filters.getReadableLengthString(value)
-                : '-- '
+                : '--'
             }}
           </template>
 
@@ -141,6 +141,48 @@
             {{ value || '--' }}
           </template>
 
+          <template #[`item.metadata.filament_colors`]="{ value }">
+            <template v-if="value != null && value.length > 0">
+              <app-chip-color
+                v-for="(color, index) in value"
+                :key="index"
+                :color="color"
+              />
+            </template>
+            <template v-else>
+              --
+            </template>
+          </template>
+
+          <template #[`item.metadata.extruder_colors`]="{ value }">
+            <template v-if="value != null && value.length > 0">
+              <app-chip-color
+                v-for="(color, index) in value"
+                :key="index"
+                :color="color"
+              />
+            </template>
+            <template v-else>
+              --
+            </template>
+          </template>
+
+          <template #[`item.metadata.filament_temps`]="{ value }">
+            <template v-if="value != null && value.length > 0">
+              <v-chip
+                v-for="(temp, index) in value"
+                :key="index"
+                class="mr-1"
+                small
+              >
+                {{ temp }}<small>°C</small>
+              </v-chip>
+            </template>
+            <template v-else>
+              --
+            </template>
+          </template>
+
           <template #[`item.metadata.filament_type`]="{ value }">
             {{ value || '--' }}
           </template>
@@ -153,12 +195,52 @@
             }}
           </template>
 
+          <template #[`item.metadata.filament_change_count`]="{ value }">
+            {{ value?.toString() || '--' }}
+          </template>
+
           <template #[`item.metadata.filament_weight_total`]="{ value }">
             {{
               value != null
                 ? $filters.getReadableWeightString(value)
                 : '--'
             }}
+          </template>
+
+          <template #[`item.metadata.filament_weights`]="{ value }">
+            <template v-if="value != null && value.length > 0">
+              <v-chip
+                v-for="(weigth, index) in value"
+                :key="index"
+                class="mr-1"
+                small
+              >
+                {{ $filters.getReadableWeightString(weigth) }}
+              </v-chip>
+            </template>
+            <template v-else>
+              --
+            </template>
+          </template>
+
+          <template #[`item.metadata.mmu_print`]="{ value }">
+            {{ value?.toString() || '--' }}
+          </template>
+
+          <template #[`item.metadata.referenced_tools`]="{ value }">
+            <template v-if="value != null && value.length > 0">
+              <v-chip
+                v-for="(tool, index) in value"
+                :key="index"
+                class="mr-1"
+                small
+              >
+                {{ tool }}
+              </v-chip>
+            </template>
+            <template v-else>
+              --
+            </template>
           </template>
 
           <template #[`item.metadata.nozzle_diameter`]="{ value }">
@@ -213,11 +295,19 @@
           </template>
 
           <template #[`item.metadata.file_processors`]="{ value }">
-            {{
-              value != null && value.length > 0
-                ? value.map($filters.prettyCase).join(', ')
-                : '--'
-            }}
+            <template v-if="value != null && value.length > 0">
+              <v-chip
+                v-for="(processor, index) in value"
+                :key="index"
+                class="mr-1"
+                small
+              >
+                {{ $filters.prettyCase(processor) }}
+              </v-chip>
+            </template>
+            <template v-else>
+              --
+            </template>
           </template>
 
           <template #[`item.metadata.modified`]="{ value }">
@@ -360,6 +450,24 @@ export default class JobHistory extends Mixins(FilesMixin) {
         cellClass: 'text-no-wrap'
       },
       {
+        text: this.$tc('app.general.table.header.filament_colors'),
+        value: 'metadata.filament_colors',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.extruder_colors'),
+        value: 'metadata.extruder_colors',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.filament_temps'),
+        value: 'metadata.filament_temps',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
         text: this.$tc('app.general.table.header.filament_type'),
         value: 'metadata.filament_type',
         visible: false,
@@ -372,8 +480,32 @@ export default class JobHistory extends Mixins(FilesMixin) {
         cellClass: 'text-no-wrap'
       },
       {
+        text: this.$tc('app.general.table.header.filament_change_count'),
+        value: 'metadata.filament_change_count',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
         text: this.$tc('app.general.table.header.filament_weight_total'),
         value: 'metadata.filament_weight_total',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.filament_weights'),
+        value: 'metadata.filament_weights',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.mmu_print'),
+        value: 'metadata.mmu_print',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.referenced_tools'),
+        value: 'metadata.referenced_tools',
         visible: false,
         cellClass: 'text-no-wrap'
       },

@@ -120,6 +120,48 @@
             {{ value || '--' }}
           </template>
 
+          <template #[`item.filament_colors`]="{ value }">
+            <template v-if="value != null && value.length > 0">
+              <app-chip-color
+                v-for="(color, index) in value"
+                :key="index"
+                :color="color"
+              />
+            </template>
+            <template v-else>
+              --
+            </template>
+          </template>
+
+          <template #[`item.extruder_colors`]="{ value }">
+            <template v-if="value != null && value.length > 0">
+              <app-chip-color
+                v-for="(color, index) in value"
+                :key="index"
+                :color="color"
+              />
+            </template>
+            <template v-else>
+              --
+            </template>
+          </template>
+
+          <template #[`item.filament_temps`]="{ value }">
+            <template v-if="value != null && value.length > 0">
+              <v-chip
+                v-for="(temp, index) in value"
+                :key="index"
+                class="mr-1"
+                small
+              >
+                {{ temp }}<small>°C</small>
+              </v-chip>
+            </template>
+            <template v-else>
+              --
+            </template>
+          </template>
+
           <template #[`item.filament_type`]="{ value }">
             {{ value || '--' }}
           </template>
@@ -132,12 +174,52 @@
             }}
           </template>
 
+          <template #[`item.filament_change_count`]="{ value }">
+            {{ value?.toString() || '--' }}
+          </template>
+
           <template #[`item.filament_weight_total`]="{ value }">
             {{
               value != null
                 ? $filters.getReadableWeightString(value)
                 : '--'
             }}
+          </template>
+
+          <template #[`item.filament_weights`]="{ value }">
+            <template v-if="value != null && value.length > 0">
+              <v-chip
+                v-for="(weigth, index) in value"
+                :key="index"
+                class="mr-1"
+                small
+              >
+                {{ $filters.getReadableWeightString(weigth) }}
+              </v-chip>
+            </template>
+            <template v-else>
+              --
+            </template>
+          </template>
+
+          <template #[`item.mmu_print`]="{ value }">
+            {{ value?.toString() || '--' }}
+          </template>
+
+          <template #[`item.referenced_tools`]="{ value }">
+            <template v-if="value != null && value.length > 0">
+              <v-chip
+                v-for="(tool, index) in value"
+                :key="index"
+                class="mr-1"
+                small
+              >
+                {{ tool }}
+              </v-chip>
+            </template>
+            <template v-else>
+              --
+            </template>
           </template>
 
           <template #[`item.history.filament_used`]="{ value }">
@@ -216,11 +298,19 @@
           </template>
 
           <template #[`item.file_processors`]="{ value }">
-            {{
-              value != null && value.length > 0
-                ? value.map($filters.prettyCase).join(', ')
-                : '--'
-            }}
+            <template v-if="value != null && value.length > 0">
+              <v-chip
+                v-for="(processor, index) in value"
+                :key="index"
+                class="mr-1"
+                small
+              >
+                {{ $filters.prettyCase(processor) }}
+              </v-chip>
+            </template>
+            <template v-else>
+              --
+            </template>
           </template>
 
           <template #[`item.print_start_time`]="{ value }">
