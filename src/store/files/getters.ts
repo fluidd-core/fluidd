@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { AppDirectory, AppFile, AppFileWithMeta, FileBrowserEntry, FilesState, RootProperties } from './types'
+import type { AppDirectory, AppFile, AppFileWithMeta, FileBrowserEntry, FilesState, MoonrakerFileMeta, RootProperties } from './types'
 import type { RootState } from '../types'
 import type { HistoryItem } from '../history/types'
 import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
@@ -49,30 +49,22 @@ export const getters: GetterTree<FilesState, RootState> = {
         : undefined
 
       for (const file of pathContent.files) {
-        const history: HistoryItem | undefined = (
-          'job_id' in file &&
-          file.job_id &&
-          rootState.history.jobs.find(job => job.job_id === file.job_id)
-        ) || undefined
+        const metadata: Partial<MoonrakerFileMeta> & Pick<AppFileWithMeta, 'history'> = {}
+
+        if ('job_id' in file && file.job_id) {
+          const history: HistoryItem | undefined = rootState.history.jobs.find(job => job.job_id === file.job_id)
+
+          metadata.history = history
+        }
 
         const extensionIndex = file.filename.lastIndexOf('.')
         const extension = extensionIndex > -1 ? file.filename.substring(extensionIndex) : ''
 
-        const item: AppFile | AppFileWithMeta = {
-          ...file,
-          type: 'file',
-          name: file.filename,
-          extension,
-          path: pathNoRoot,
-          modified: new Date(file.modified).getTime(),
-          history
-        }
-
-        if (timelapseThumbnailFiles && item.extension !== '.jpg') {
-          const expectedThumbnailFile = `${item.filename.slice(0, -item.extension.length)}.jpg`
+        if (timelapseThumbnailFiles && extension !== '.jpg') {
+          const expectedThumbnailFile = `${file.filename.slice(0, -extension.length)}.jpg`
 
           if (timelapseThumbnailFiles.has(expectedThumbnailFile)) {
-            item.thumbnails = [
+            metadata.thumbnails = [
               {
                 // we have no data regarding the thumbnail other than it's URL, but setting it is mandatory...
                 height: 0,
@@ -82,6 +74,16 @@ export const getters: GetterTree<FilesState, RootState> = {
               }
             ]
           }
+        }
+
+        const item: AppFile | AppFileWithMeta = {
+          ...file,
+          ...metadata,
+          type: 'file',
+          name: file.filename,
+          extension,
+          path: pathNoRoot,
+          modified: new Date(file.modified).getTime()
         }
 
         items.push(item)
@@ -181,11 +183,13 @@ export const getters: GetterTree<FilesState, RootState> = {
     const file = pathContent?.files.find(file => file.filename === filename)
 
     if (file) {
-      const history: HistoryItem | undefined = (
-        'job_id' in file &&
-        file.job_id &&
-        rootState.history.jobs.find(job => job.job_id === file.job_id)
-      ) || undefined
+      const metadata: Partial<MoonrakerFileMeta> & Pick<AppFileWithMeta, 'history'> = {}
+
+      if ('job_id' in file && file.job_id) {
+        const history: HistoryItem | undefined = rootState.history.jobs.find(job => job.job_id === file.job_id)
+
+        metadata.history = history
+      }
 
       const [, ...restOfPath] = path.split('/')
       const pathNoRoot = restOfPath.join('/')
@@ -195,12 +199,12 @@ export const getters: GetterTree<FilesState, RootState> = {
 
       const item: AppFile | AppFileWithMeta = {
         ...file,
+        ...metadata,
         type: 'file',
         name: file.filename,
         extension,
         path: pathNoRoot,
-        modified: new Date(file.modified).getDate(),
-        history
+        modified: new Date(file.modified).getDate()
       }
 
       return item

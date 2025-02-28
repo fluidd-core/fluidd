@@ -51,7 +51,7 @@ export interface MoonrakerDir {
   permissions?: MoonrakerFilePermissions;
 }
 
-export interface AppFile extends MoonrakerFile {
+export interface AppFile extends MoonrakerFile, Pick<MoonrakerFileWithMeta, 'thumbnails'> {
   type: 'file';
   name: string;
   extension: string;
