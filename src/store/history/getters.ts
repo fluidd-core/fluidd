@@ -27,7 +27,7 @@ export const getters: GetterTree<HistoryState, RootState> = {
           }
 
           if (filament_type != null) {
-            item.metadata.filament_name = Vue.$filters.getStringArray(filament_type)
+            item.metadata.filament_type = Vue.$filters.getStringArray(filament_type)
           }
         }
 
