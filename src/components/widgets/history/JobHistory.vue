@@ -47,6 +47,7 @@
           :class="{
             'v-data-table__inactive': !item.exists
           }"
+          :custom-getter="getValueFromAuxiliaryData"
         >
           <template #[`item.data-table-icons`]>
             <!-- If the item no longer exists. -->
@@ -342,8 +343,20 @@
             {{ $filters.getReadableFileSizeString(value) }}
           </template>
 
-          <template #[`item.data-table-default`]="{ header, value }">
-            {{ getFormattedValue(item, header, value) }}
+          <template #[`item.data-table-default`]="{ value }">
+            <template v-if="Array.isArray(value) && value.length > 0">
+              <v-chip
+                v-for="(arrayItem, index) in value"
+                :key="index"
+                class="mr-1"
+                small
+              >
+                {{ arrayItem }}
+              </v-chip>
+            </template>
+            <template v-else>
+              {{ value }}
+            </template>
           </template>
 
           <template #[`item.actions`]>
@@ -372,6 +385,7 @@ import { SocketActions } from '@/api/socketActions'
 import type { AppDataTableHeader } from '@/types'
 import type { DataTableHeader } from 'vuetify'
 import type { MoonrakerSensor } from '@/store/sensors/types'
+import type { DefaultGetterFunction } from '@/components/ui/AppDataTableRow.vue'
 
 @Component({
   components: {
@@ -651,32 +665,47 @@ export default class JobHistory extends Mixins(FilesMixin) {
     this.$store.dispatch('history/clearHistoryThumbnails', job.job_id)
   }
 
-  getFormattedValue (item: HistoryItem, header: AppDataTableHeader, value: unknown) {
-    const auxiliaryDataItemName = header.value.startsWith('auxiliary_data.')
-      ? header.value.substring(15)
-      : undefined
-    const auxiliaryDataItem = auxiliaryDataItemName && item.auxiliary_data
-      ? item.auxiliary_data
-        .find(x => x.name === auxiliaryDataItemName)
-      : undefined
+  getValueFromAuxiliaryData (item: HistoryItem, header: AppDataTableHeader, defaultGetter: DefaultGetterFunction) {
+    if (header.value.startsWith('auxiliary_data.')) {
+      const auxiliaryDataItemName = header.value.substring(15)
 
-    value = auxiliaryDataItem
-      ? auxiliaryDataItem.value
-      : value
+      const { value, units } = item.auxiliary_data?.find(x => x.name === auxiliaryDataItemName) ?? {}
 
-    if (value == null || value === '') {
+      if (
+        Array.isArray(value) &&
+        value.length > 0
+      ) {
+        return value
+          .map(x => this.formatValueWithUnits(x, units))
+      }
+
+      return this.formatValueWithUnits(value, units)
+    }
+
+    return defaultGetter(item, header)
+  }
+
+  formatValueWithUnits (value: unknown, units?: string | null) {
+    if (
+      value == null ||
+      value === '' ||
+      (
+        Array.isArray(value) &&
+        value.length === 0
+      )
+    ) {
       return '--'
     }
 
-    const units = auxiliaryDataItem?.units
-      ? ` ${auxiliaryDataItem.units}`
+    const formattedUnits = units
+      ? ` ${units}`
       : ''
 
     if (typeof value === 'number') {
-      return `${Math.round(value * 100) / 100}${units}`
+      return `${Math.round(value * 100) / 100}${formattedUnits}`
     }
 
-    return `${value}${units}`
+    return `${value}${formattedUnits}`
   }
 }
 </script>
