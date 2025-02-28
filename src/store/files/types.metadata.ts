@@ -30,6 +30,12 @@ export interface MoonrakerFileMeta {
   thumbnails?: MoonrakerFileMetaThumbnail[];
 }
 
+export interface AppFileMeta extends Omit<MoonrakerFileMeta, 'filament_name' | 'filament_type'> {
+  modified: number;
+  filament_name?: string[];
+  filament_type?: string[];
+}
+
 export interface MoonrakerFileMetaThumbnail {
   relative_path: string;
   height: number;

@@ -1,7 +1,7 @@
-import type { MoonrakerFileMeta, MoonrakerFileMetaThumbnail } from './types.metadata'
+import type { AppFileMeta, MoonrakerFileMeta, MoonrakerFileMetaThumbnail } from './types.metadata'
 import type { HistoryItem } from '@/store/history/types'
 
-export type { MoonrakerFileMeta, MoonrakerFileMetaThumbnail }
+export type { AppFileMeta, MoonrakerFileMeta, MoonrakerFileMetaThumbnail }
 
 export interface FilesState {
   uploads: FileUpload[];
@@ -51,7 +51,7 @@ export interface MoonrakerDir {
   permissions?: MoonrakerFilePermissions;
 }
 
-export interface AppFile extends MoonrakerFile, Pick<MoonrakerFileWithMeta, 'thumbnails'> {
+export interface AppFile extends MoonrakerFile, Pick<MoonrakerFileMeta, 'thumbnails'> {
   type: 'file';
   name: string;
   extension: string;
@@ -59,8 +59,9 @@ export interface AppFile extends MoonrakerFile, Pick<MoonrakerFileWithMeta, 'thu
   modified: number;
 }
 
-export interface AppFileWithMeta extends AppFile, MoonrakerFileWithMeta {
-  modified: number;
+export interface AppFileWithMeta extends AppFile, AppFileMeta {
+  print_start_time?: number | null;
+  job_id?: string | null;
   history?: HistoryItem;
 }
 

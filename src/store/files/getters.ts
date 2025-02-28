@@ -1,5 +1,6 @@
+import Vue from 'vue'
 import type { GetterTree } from 'vuex'
-import type { AppDirectory, AppFile, AppFileWithMeta, FileBrowserEntry, FilesState, MoonrakerFileMeta, RootProperties } from './types'
+import type { AppDirectory, AppFile, AppFileMeta, AppFileWithMeta, FileBrowserEntry, FilesState, MoonrakerFileMeta, RootProperties } from './types'
 import type { RootState } from '../types'
 import type { HistoryItem } from '../history/types'
 import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
@@ -8,7 +9,7 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns a directory of files and sub-directories.
    */
-  getDirectory: (state, getters, rootState) => (path: string) => {
+  getDirectory: (state, getters, rootState, rootGetters) => (path: string) => {
     const pathContent = state.pathFiles[path]
 
     if (pathContent) {
@@ -49,12 +50,20 @@ export const getters: GetterTree<FilesState, RootState> = {
         : undefined
 
       for (const file of pathContent.files) {
-        const metadata: Partial<MoonrakerFileMeta> & Pick<AppFileWithMeta, 'history'> = {}
+        const metadata: Partial<AppFileMeta> & Pick<AppFileWithMeta, 'history'> = {}
 
         if ('job_id' in file && file.job_id) {
-          const history: HistoryItem | undefined = rootState.history.jobs.find(job => job.job_id === file.job_id)
+          const history: HistoryItem | undefined = rootGetters['history/getHistoryById'](file.job_id)
 
           metadata.history = history
+        }
+
+        if ('filament_name' in file && file.filament_name) {
+          metadata.filament_name = Vue.$filters.getStringArray(file.filament_name)
+        }
+
+        if ('filament_type' in file && file.filament_type) {
+          metadata.filament_type = Vue.$filters.getStringArray(file.filament_type)
         }
 
         const extensionIndex = file.filename.lastIndexOf('.')
@@ -177,7 +186,7 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns a specific file.
    */
-  getFile: (state, getters, rootState) => (path: string, filename: string) => {
+  getFile: (state, getters, rootState, rootGetters) => (path: string, filename: string) => {
     const pathContent = state.pathFiles[path]
 
     const file = pathContent?.files.find(file => file.filename === filename)
@@ -186,7 +195,7 @@ export const getters: GetterTree<FilesState, RootState> = {
       const metadata: Partial<MoonrakerFileMeta> & Pick<AppFileWithMeta, 'history'> = {}
 
       if ('job_id' in file && file.job_id) {
-        const history: HistoryItem | undefined = rootState.history.jobs.find(job => job.job_id === file.job_id)
+        const history: HistoryItem | undefined = rootGetters['history/getHistoryById'](file.job_id)
 
         metadata.history = history
       }

@@ -138,9 +138,9 @@
           </template>
 
           <template #[`item.metadata.filament_name`]="{ value }">
-            <template v-if="value">
+            <template v-if="value != null && value.length > 0">
               <v-chip
-                v-for="(name, index) in $filters.getStringArray(value)"
+                v-for="(name, index) in value"
                 :key="index"
                 class="mr-1"
                 small
@@ -196,9 +196,9 @@
           </template>
 
           <template #[`item.metadata.filament_type`]="{ value }">
-            <template v-if="value">
+            <template v-if="value != null && value.length > 0">
               <v-chip
-                v-for="(type, index) in $filters.getStringArray(value)"
+                v-for="(type, index) in value"
                 :key="index"
                 class="mr-1"
                 small
