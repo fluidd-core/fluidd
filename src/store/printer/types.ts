@@ -133,6 +133,8 @@ export interface KlipperPrinterState extends KlipperPrinterStateBaseType {
 
   [key: `servo ${string}`]: KlipperPrinterServoState;
 
+  skew_correction?: KlipperPrinterSkewCorrectionState;
+
   stepper_enable?: KlipperPrinterStepperEnableState;
 
   [key: `${'aht10' | 'bme280' | 'htu21d' | 'sht3x' | 'lm75' | 'temperature_host' | 'temperature_combined'} ${string}`]: KlipperPrinterTemperatureSensor2State;
@@ -456,6 +458,10 @@ export interface KlipperPrinterScrewsTiltAdjustState {
 
 export interface KlipperPrinterServoState {
   value: number;
+}
+
+export interface KlipperPrinterSkewCorrectionState {
+  current_profile_name: string;
 }
 
 export interface KlipperPrinterStepperEnableState {

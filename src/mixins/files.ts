@@ -1,4 +1,4 @@
-import type { AppFile, FileUpload, AppFileThumbnail, MoonrakerFileMeta, FileDownload } from '@/store/files/types'
+import type { AppFile, FileUpload, AppFileThumbnail, FileDownload } from '@/store/files/types'
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import type { AxiosRequestConfig, AxiosProgressEvent } from 'axios'
@@ -20,15 +20,15 @@ export default class FilesMixin extends Vue {
     return currentUser?.username === '_TRUSTED_USER_'
   }
 
-  getThumbUrl (meta: MoonrakerFileMeta, root: string, path: string, large: boolean, date?: number) {
-    const thumb = this.getThumb(meta, root, path, large, date)
+  getThumbUrl (file: AppFile, root: string, path: string, large: boolean, date?: number) {
+    const thumb = this.getThumb(file, root, path, large, date)
 
     return thumb?.url ?? ''
   }
 
-  getThumb (meta: MoonrakerFileMeta, root: string, path: string, large = true, date?: number): AppFileThumbnail | undefined {
-    if (meta.thumbnails?.length) {
-      const thumb = meta.thumbnails.reduce((a, b) => (a.size > b.size) === large ? a : b)
+  getThumb (file: AppFile, root: string, path: string, large = true, date?: number): AppFileThumbnail | undefined {
+    if (file.thumbnails?.length) {
+      const thumb = file.thumbnails.reduce((a, b) => (a.size > b.size) === large ? a : b)
 
       if (thumb.relative_path) {
         const filepath = path ? `${root}/${path}` : root

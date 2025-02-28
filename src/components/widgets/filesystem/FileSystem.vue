@@ -827,7 +827,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  async handleViewThumbnail (file: AppFileWithMeta) {
+  async handleViewThumbnail (file: AppFile) {
     const thumb = this.getThumb(file, this.currentRoot, file.path, true)
 
     if (thumb) {
