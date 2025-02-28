@@ -452,10 +452,11 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         // if we're tracking a file and starting a new print or the current one hasn't ended yet
 
         if (this.warnOnFilamentTypeMismatch) {
-          const fileMaterials = this.currentFile.filament_type?.toLowerCase()
-            .split(';')
-            .map(x => x.replace(/"/g, ''))
+          const fileMaterials = this.currentFile.filament_type != null
+            ? this.$filters.getStringArray(this.currentFile.filament_type.toLowerCase())
+            : undefined
           const spoolMaterial = spool.filament.material?.toLowerCase()
+
           if (spoolMaterial && fileMaterials && !fileMaterials.includes(spoolMaterial)) {
             // filament materials don't match
 

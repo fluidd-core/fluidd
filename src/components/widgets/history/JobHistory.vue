@@ -138,7 +138,19 @@
           </template>
 
           <template #[`item.metadata.filament_name`]="{ value }">
-            {{ value || '--' }}
+            <template v-if="value">
+              <v-chip
+                v-for="(name, index) in $filters.getStringArray(value)"
+                :key="index"
+                class="mr-1"
+                small
+              >
+                {{ name }}
+              </v-chip>
+            </template>
+            <template v-else>
+              --
+            </template>
           </template>
 
           <template #[`item.metadata.filament_colors`]="{ value }">
@@ -184,7 +196,19 @@
           </template>
 
           <template #[`item.metadata.filament_type`]="{ value }">
-            {{ value || '--' }}
+            <template v-if="value">
+              <v-chip
+                v-for="(type, index) in $filters.getStringArray(value)"
+                :key="index"
+                class="mr-1"
+                small
+              >
+                {{ type }}
+              </v-chip>
+            </template>
+            <template v-else>
+              --
+            </template>
           </template>
 
           <template #[`item.metadata.filament_total`]="{ value }">
