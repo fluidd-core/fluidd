@@ -47,7 +47,7 @@
           :class="{
             'v-data-table__inactive': !item.exists
           }"
-          :custom-getter="getValueFromAuxiliaryData"
+          :custom-getter="getItemValue"
         >
           <template #[`item.data-table-icons`]>
             <!-- If the item no longer exists. -->
@@ -78,285 +78,32 @@
             >
           </template>
 
-          <template #[`item.filename`]="{ value }">
-            {{ value }}
-          </template>
-
           <template #[`item.status`]>
             <job-history-item-status :job="item" />
           </template>
 
-          <template #[`item.start_time`]="{ value }">
-            {{ $filters.formatDateTime(value * 1000) }}
+          <template #[`item-value.metadata.filament_colors`]="{ value }">
+            <app-data-table-cell-colors :colors="value" />
           </template>
 
-          <template #[`item.end_time`]="{ value }">
-            {{
-              item.status !== 'in_progress'
-                ? $filters.formatDateTime(value * 1000)
-                : '--'
-            }}
+          <template #[`item-value.metadata.extruder_colors`]="{ value }">
+            <app-data-table-cell-colors :colors="value" />
           </template>
 
-          <template #[`item.print_duration`]="{ value }">
-            {{ $filters.formatCounterSeconds(value) }}
+          <template #[`item-value.metadata.filament_temps`]="{ value }">
+            <app-data-table-cell-temps :temps="value" />
           </template>
 
-          <template #[`item.total_duration`]="{ value }">
-            {{ $filters.formatCounterSeconds(value) }}
+          <template #[`item-value.metadata.first_layer_bed_temp`]="{ value }">
+            {{ value }}<small>°C</small>
           </template>
 
-          <template #[`item.filament_used`]="{ value }">
-            {{ $filters.getReadableLengthString(value) }}
+          <template #[`item-value.metadata.first_layer_extr_temp`]="{ value }">
+            {{ value }}<small>°C</small>
           </template>
 
-          <template #[`item.user`]="{ value }">
-            {{ value || '--' }}
-          </template>
-
-          <template #[`item.metadata.object_height`]="{ value }">
-            {{
-              value != null
-                ? $filters.getReadableLengthString(value)
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.metadata.first_layer_height`]="{ value }">
-            {{
-              value != null
-                ? `${value} mm`
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.metadata.layer_height`]="{ value }">
-            {{
-              value != null
-                ? `${value} mm`
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.metadata.filament_name`]="{ value }">
-            <template v-if="value != null && value.length > 0">
-              <v-chip
-                v-for="(name, index) in value"
-                :key="index"
-                class="mr-1"
-                small
-              >
-                {{ name }}
-              </v-chip>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </template>
-
-          <template #[`item.metadata.filament_colors`]="{ value }">
-            <template v-if="value != null && value.length > 0">
-              <app-chip-color
-                v-for="(color, index) in value"
-                :key="index"
-                :color="color"
-              />
-            </template>
-            <template v-else>
-              --
-            </template>
-          </template>
-
-          <template #[`item.metadata.extruder_colors`]="{ value }">
-            <template v-if="value != null && value.length > 0">
-              <app-chip-color
-                v-for="(color, index) in value"
-                :key="index"
-                :color="color"
-              />
-            </template>
-            <template v-else>
-              --
-            </template>
-          </template>
-
-          <template #[`item.metadata.filament_temps`]="{ value }">
-            <template v-if="value != null && value.length > 0">
-              <v-chip
-                v-for="(temp, index) in value"
-                :key="index"
-                class="mr-1"
-                small
-              >
-                {{ temp }}<small>°C</small>
-              </v-chip>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </template>
-
-          <template #[`item.metadata.filament_type`]="{ value }">
-            <template v-if="value != null && value.length > 0">
-              <v-chip
-                v-for="(type, index) in value"
-                :key="index"
-                class="mr-1"
-                small
-              >
-                {{ type }}
-              </v-chip>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </template>
-
-          <template #[`item.metadata.filament_total`]="{ value }">
-            {{
-              value != null
-                ? $filters.getReadableLengthString(value)
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.metadata.filament_change_count`]="{ value }">
-            {{ value?.toString() || '--' }}
-          </template>
-
-          <template #[`item.metadata.filament_weight_total`]="{ value }">
-            {{
-              value != null
-                ? $filters.getReadableWeightString(value)
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.metadata.filament_weights`]="{ value }">
-            <template v-if="value != null && value.length > 0">
-              <v-chip
-                v-for="(weigth, index) in value"
-                :key="index"
-                class="mr-1"
-                small
-              >
-                {{ $filters.getReadableWeightString(weigth) }}
-              </v-chip>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </template>
-
-          <template #[`item.metadata.mmu_print`]="{ value }">
-            {{ value?.toString() || '--' }}
-          </template>
-
-          <template #[`item.metadata.referenced_tools`]="{ value }">
-            <template v-if="value != null && value.length > 0">
-              <v-chip
-                v-for="(tool, index) in value"
-                :key="index"
-                class="mr-1"
-                small
-              >
-                {{ tool }}
-              </v-chip>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </template>
-
-          <template #[`item.metadata.nozzle_diameter`]="{ value }">
-            {{
-              value != null
-                ? `${value} mm`
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.metadata.slicer`]="{ value }">
-            {{ value || '--' }}
-          </template>
-
-          <template #[`item.metadata.slicer_version`]="{ value }">
-            {{ value || '--' }}
-          </template>
-
-          <template #[`item.metadata.estimated_time`]="{ value }">
-            {{
-              value != null
-                ? $filters.formatCounterSeconds(value)
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.metadata.first_layer_bed_temp`]="{ value }">
-            <template v-if="value != null">
-              {{ value }}<small>°C</small>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </template>
-
-          <template #[`item.metadata.first_layer_extr_temp`]="{ value }">
-            <template v-if="value != null">
-              {{ value }}<small>°C</small>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </template>
-
-          <template #[`item.metadata.chamber_temp`]="{ value }">
-            <template v-if="value != null">
-              {{ value }}<small>°C</small>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </template>
-
-          <template #[`item.metadata.file_processors`]="{ value }">
-            <template v-if="value != null && value.length > 0">
-              <v-chip
-                v-for="(processor, index) in value"
-                :key="index"
-                class="mr-1"
-                small
-              >
-                {{ $filters.prettyCase(processor) }}
-              </v-chip>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </template>
-
-          <template #[`item.metadata.modified`]="{ value }">
-            {{ $filters.formatDateTime(value * 1000) }}
-          </template>
-
-          <template #[`item.metadata.size`]="{ value }">
-            {{ $filters.getReadableFileSizeString(value) }}
-          </template>
-
-          <template #[`item.data-table-default`]="{ value }">
-            <template v-if="Array.isArray(value) && value.length > 0">
-              <v-chip
-                v-for="(arrayItem, index) in value"
-                :key="index"
-                class="mr-1"
-                small
-              >
-                {{ arrayItem }}
-              </v-chip>
-            </template>
-            <template v-else>
-              {{ value }}
-            </template>
+          <template #[`item-value.metadata.chamber_temp`]="{ value }">
+            {{ value }}<small>°C</small>
           </template>
 
           <template #[`item.actions`]>
@@ -665,7 +412,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
     this.$store.dispatch('history/clearHistoryThumbnails', job.job_id)
   }
 
-  getValueFromAuxiliaryData (item: HistoryItem, header: AppDataTableHeader, defaultGetter: DefaultGetterFunction) {
+  getItemValue (item: HistoryItem, header: DataTableHeader, defaultGetter: DefaultGetterFunction) {
     if (header.value.startsWith('auxiliary_data.')) {
       const auxiliaryDataItemName = header.value.substring(15)
 
@@ -682,30 +429,75 @@ export default class JobHistory extends Mixins(FilesMixin) {
       return this.formatValueWithUnits(value, units)
     }
 
-    return defaultGetter(item, header)
+    const value = defaultGetter(item, header)
+
+    if (typeof value === 'number') {
+      switch (header.value) {
+        case 'start_time':
+        case 'end_time':
+        case 'metadata.modified': {
+          return this.$filters.formatDateTime(value * 1000)
+        }
+
+        case 'metadata.size':
+          return this.$filters.getReadableFileSizeString(value)
+
+        case 'print_duration':
+        case 'total_duration':
+        case 'metadata.estimated_time':
+          return this.$filters.formatCounterSeconds(value)
+
+        case 'filament_used':
+        case 'metadata.filament_total':
+        case 'metadata.object_height':
+          return this.$filters.getReadableLengthString(value)
+
+        case 'metadata.filament_weight_total':
+          return this.$filters.getReadableWeightString(value)
+
+        case 'metadata.first_layer_height':
+        case 'metadata.layer_height':
+        case 'metadata.nozzle_diameter':
+          return `${value} mm`
+      }
+    }
+
+    if (Array.isArray(value) && value.length > 0) {
+      switch (header.value) {
+        case 'metadata.filament_weights':
+          return value
+            .map(x => typeof x === 'number'
+              ? this.$filters.getReadableWeightString(x)
+              : x
+            )
+
+        case 'metadata.file_processors':
+        case 'metadata.referenced_tools':
+          return value
+            .map(x => typeof x === 'string'
+              ? this.$filters.prettyCase(x)
+              : x
+            )
+      }
+    }
+
+    return value
   }
 
   formatValueWithUnits (value: unknown, units?: string | null) {
-    if (
-      value == null ||
-      value === '' ||
-      (
-        Array.isArray(value) &&
-        value.length === 0
-      )
-    ) {
-      return '--'
-    }
-
-    const formattedUnits = units
-      ? ` ${units}`
-      : ''
-
     if (typeof value === 'number') {
-      return `${Math.round(value * 100) / 100}${formattedUnits}`
+      const roundedValue = Math.round(value * 100) / 100
+
+      return units
+        ? `${roundedValue} ${units}`
+        : roundedValue.toString()
     }
 
-    return `${value}${formattedUnits}`
+    if (typeof value === 'string' && units) {
+      return `${value} ${units}`
+    }
+
+    return value
   }
 }
 </script>

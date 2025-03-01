@@ -1,20 +1,12 @@
 <template>
-  <v-tooltip top>
-    <template #activator="{ on, attrs }">
-      <v-chip
-        v-bind="{...$attrs, ...attrs}"
-        :style="{
-          background: color
-        }"
-        small
-        class="mr-1"
-        v-on="{...$listeners, ...on }"
-      >
-        <slot />
-      </v-chip>
-    </template>
-    <span>{{ color }}</span>
-  </v-tooltip>
+  <v-chip
+    :style="{
+      background: color
+    }"
+    small
+  >
+    <slot />
+  </v-chip>
 </template>
 
 <script lang="ts">

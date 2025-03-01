@@ -22,13 +22,36 @@
           :header="header"
           :value="value"
         >
-          <slot
-            name="item.data-table-default"
-            :header="header"
-            :value="value"
-          >
-            {{ formatValue(value) }}
-          </slot>
+          <template v-if="isEmpty(value)">
+            --
+          </template>
+          <template v-else-if="Array.isArray(value) && value.length > 0">
+            <slot
+              :name="`item-value.${header.value}`"
+              :header="header"
+              :value="value"
+            >
+              <v-chip
+                v-for="(arrayItem, index) in value"
+                :key="index"
+                :class="{
+                  'ms-1': index > 0
+                }"
+                small
+              >
+                {{ isEmpty(arrayItem) ? '--' : arrayItem }}
+              </v-chip>
+            </slot>
+          </template>
+          <template v-else>
+            <slot
+              :name="`item-value.${header.value}`"
+              :header="header"
+              :value="value"
+            >
+              {{ value }}
+            </slot>
+          </template>
         </slot>
       </td>
     </template>
@@ -62,6 +85,17 @@ export default class AppDataTableRow extends Vue {
   @Prop({ type: Function })
   readonly customGetter?: GetterFunction
 
+  isEmpty (value: unknown) {
+    return (
+      value == null ||
+      value === '' ||
+      (
+        Array.isArray(value) &&
+        value.length === 0
+      )
+    )
+  }
+
   get items () {
     const getter = this.customGetter ?? defaultGetter
 
@@ -69,12 +103,6 @@ export default class AppDataTableRow extends Vue {
       header,
       value: getter(this.item, header, defaultGetter)
     }))
-  }
-
-  formatValue (value: unknown) {
-    return value == null || value === ''
-      ? '--'
-      : value
   }
 }
 </script>
