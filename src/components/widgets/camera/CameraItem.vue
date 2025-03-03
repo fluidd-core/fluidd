@@ -16,6 +16,7 @@
         @update:camera-name-menu-items="cameraNameMenuItems = $event"
         @update:raw-camera-url="rawCameraUrl = $event"
         @update:frames-per-second="framesPerSecond = $event"
+        @frame="$emit('frame', $event)"
       />
     </template>
     <div v-else>
@@ -137,28 +138,6 @@ export default class CameraItem extends Vue {
   framesPerSecond = ''
   cameraName = ''
   cameraNameMenuItems: CameraNameMenuItem[] = []
-
-  @Watch('status')
-  onStatus (value: CameraConnectionStatus) {
-    if (value === 'connected' && this.$listeners?.frame && this.componentInstance) {
-      if (this.componentInstance.streamingElement instanceof HTMLImageElement) {
-        this.handleFrame()
-      } else if (this.componentInstance.streamingElement instanceof HTMLVideoElement) {
-        this.handleFrame(true)
-      }
-    }
-  }
-
-  handleFrame (animate = false) {
-    const element = this.componentInstance?.streamingElement as HTMLImageElement | HTMLVideoElement
-    if (element) {
-      this.$emit('frame', element)
-    }
-
-    if (animate) {
-      requestAnimationFrame(() => this.handleFrame(this.componentInstance?.animating ?? false))
-    }
-  }
 
   cameraNameMenuItemClick (item: CameraNameMenuItem) {
     this.componentInstance.menuItemClick(item)
