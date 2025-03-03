@@ -123,7 +123,7 @@ export default class MacroBtn extends Mixins(StateMixin) {
   }
 
   get borderStyle () {
-    if (this.macro && this.macro.color !== '') {
+    if (this.macro?.color) {
       return `border-color: ${this.macro.color} !important; border-left: solid 4px ${this.macro.color} !important;`
     }
     return ''

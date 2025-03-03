@@ -1,18 +1,15 @@
 <template>
   <app-dialog
-    v-if="newMacro"
     v-model="open"
-    :title="newMacro.name.toUpperCase()"
-    :sub-title="newMacro.config.description"
+    :title="macro.name.toUpperCase()"
+    :sub-title="macro.config.description"
     max-width="480"
     @save="handleSave"
   >
     <v-card-text class="pa-0">
-      <app-setting
-        :title="$t('app.general.label.alias')"
-      >
+      <app-setting :title="$t('app.general.label.alias')">
         <v-text-field
-          v-model="newMacro.alias"
+          v-model="macro.alias"
           dense
           filled
           hide-details
@@ -21,11 +18,9 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.general.label.category')"
-      >
+      <app-setting :title="$t('app.general.label.category')">
         <v-select
-          v-model="newMacro.categoryId"
+          v-model="macro.categoryId"
           :items="categories"
           hide-details
           dense
@@ -37,9 +32,7 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.general.label.color')"
-      >
+      <app-setting :title="$t('app.general.label.color')">
         <app-btn
           outlined
           small
@@ -57,26 +50,9 @@
 
       <v-divider />
 
-      <!-- <app-setting
-          title="Assign to"
-        >
-          <v-select
-            :items="['Console', 'Tool', 'Bed mesh controls']"
-            v-model="assign"
-            clearable
-            hide-details
-            dense
-            filled
-          ></v-select>
-        </app-setting>
-
-        <v-divider /> -->
-
-      <app-setting
-        :title="$t('app.general.label.disabled_while_printing')"
-      >
+      <app-setting :title="$t('app.general.label.disabled_while_printing')">
         <v-switch
-          v-model="newMacro.disabledWhilePrinting"
+          v-model="macro.disabledWhilePrinting"
           class="mt-0 pt-0"
           color="primary"
           hide-details
@@ -89,7 +65,7 @@
         :title="$t('app.general.label.visible')"
       >
         <v-switch
-          v-model="newMacro.visible"
+          v-model="macro.visible"
           class="mt-0 pt-0"
           color="primary"
           hide-details
@@ -111,13 +87,6 @@ export default class MacroMoveDialog extends Vue {
   @Prop({ type: Object, required: true })
   readonly macro!: Macro
 
-  assign = null
-  newMacro: Macro | null = null
-
-  mounted () {
-    this.newMacro = { ...this.macro }
-  }
-
   get categories () {
     // Grabs all categories and filters by the currently defined one.
     const categories: MacroCategory[] = [...this.$store.getters['macros/getCategories']]
@@ -125,23 +94,20 @@ export default class MacroMoveDialog extends Vue {
     return categories
   }
 
-  get color () {
-    if (this.newMacro && this.newMacro.color !== '') {
-      return this.newMacro.color
-    }
-    return this.$vuetify.theme.currentTheme.secondary?.toString()
+  get color (): string | undefined {
+    return this.macro.color || this.$vuetify.theme.currentTheme.secondary?.toString()
   }
 
   set color (value: string | undefined) {
-    if (this.newMacro) this.newMacro.color = value
+    this.macro.color = value
   }
 
   handleResetColor () {
-    if (this.newMacro) this.newMacro.color = ''
+    this.macro.color = undefined
   }
 
   handleSave () {
-    this.$store.dispatch('macros/saveMacro', this.newMacro)
+    this.$store.dispatch('macros/saveMacro', this.macro)
     this.open = false
   }
 }

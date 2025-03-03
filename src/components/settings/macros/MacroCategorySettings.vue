@@ -182,8 +182,10 @@ export default class MacroCategorySettings extends Vue {
   }
 
   handleSettingsDialog (macro: Macro) {
-    this.dialogState.macro = macro
-    this.dialogState.open = true
+    this.dialogState = {
+      open: true,
+      macro: { ...macro }
+    }
   }
 
   handleAllOn () {
