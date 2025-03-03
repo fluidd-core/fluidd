@@ -22,6 +22,8 @@ declare module 'vue' {
     AppChipColor: typeof import('./src/components/ui/AppChipColor.vue')['default']
     AppColorPicker: typeof import('./src/components/ui/AppColorPicker.vue')['default']
     AppColumnPicker: typeof import('./src/components/ui/AppColumnPicker.vue')['default']
+    AppDataTableCellColors: typeof import('./src/components/ui/AppDataTableCellColors.vue')['default']
+    AppDataTableCellTemps: typeof import('./src/components/ui/AppDataTableCellTemps.vue')['default']
     AppDataTableRow: typeof import('./src/components/ui/AppDataTableRow.vue')['default']
     AppDialog: typeof import('./src/components/ui/AppDialog.vue')['default']
     AppDraggable: typeof import('./src/components/ui/AppDraggable.vue')['default']
