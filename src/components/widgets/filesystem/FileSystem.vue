@@ -325,6 +325,24 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
             cellClass: 'text-no-wrap'
           },
           {
+            text: this.$tc('app.general.table.header.filament_colors'),
+            value: 'filament_colors',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.extruder_colors'),
+            value: 'extruder_colors',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.filament_temps'),
+            value: 'filament_temps',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
             text: this.$tc('app.general.table.header.filament_type'),
             value: 'filament_type',
             visible: isNotDashboard,
@@ -337,8 +355,32 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
             cellClass: 'text-no-wrap'
           },
           {
+            text: this.$tc('app.general.table.header.filament_change_count'),
+            value: 'filament_change_count',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
             text: this.$tc('app.general.table.header.filament_weight_total'),
             value: 'filament_weight_total',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.filament_weights'),
+            value: 'filament_weights',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.mmu_print'),
+            value: 'mmu_print',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.referenced_tools'),
+            value: 'referenced_tools',
             visible: isNotDashboard,
             cellClass: 'text-no-wrap'
           },

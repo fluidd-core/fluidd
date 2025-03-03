@@ -6,7 +6,7 @@
     }"
     v-on="$listeners"
   >
-    <template v-for="header in headers">
+    <template v-for="{ header, value } in items">
       <td
         :key="header.value"
         :class="[
@@ -20,15 +20,38 @@
         <slot
           :name="`item.${header.value}`"
           :header="header"
-          :value="getValue(header)"
+          :value="value"
         >
-          <slot
-            name="item.data-table-default"
-            :header="header"
-            :value="getValue(header)"
-          >
-            {{ formatValue(getValue(header)) }}
-          </slot>
+          <template v-if="isEmpty(value)">
+            --
+          </template>
+          <template v-else-if="Array.isArray(value) && value.length > 0">
+            <slot
+              :name="`item-value.${header.value}`"
+              :header="header"
+              :value="value"
+            >
+              <v-chip
+                v-for="(arrayItem, index) in value"
+                :key="index"
+                :class="{
+                  'ms-1': index > 0
+                }"
+                small
+              >
+                {{ isEmpty(arrayItem) ? '--' : arrayItem }}
+              </v-chip>
+            </slot>
+          </template>
+          <template v-else>
+            <slot
+              :name="`item-value.${header.value}`"
+              :header="header"
+              :value="value"
+            >
+              {{ value }}
+            </slot>
+          </template>
         </slot>
       </td>
     </template>
@@ -39,6 +62,12 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { get } from 'lodash-es'
 import type { DataTableHeader } from 'vuetify'
+
+export type GetterFunction = (item: unknown, header: DataTableHeader, defaultGetter: DefaultGetterFunction) => unknown
+
+const defaultGetter = (item: unknown, header: DataTableHeader): unknown => get(item, header.value)
+
+export type DefaultGetterFunction = typeof defaultGetter
 
 @Component({
   inheritAttrs: false
@@ -53,14 +82,27 @@ export default class AppDataTableRow extends Vue {
   @Prop({ type: Boolean })
   readonly isSelected!: boolean
 
-  getValue (header: DataTableHeader) {
-    return get(this.item, header.value)
+  @Prop({ type: Function })
+  readonly customGetter?: GetterFunction
+
+  isEmpty (value: unknown) {
+    return (
+      value == null ||
+      value === '' ||
+      (
+        Array.isArray(value) &&
+        value.length === 0
+      )
+    )
   }
 
-  formatValue (value: unknown) {
-    return value == null || value === ''
-      ? '--'
-      : value
+  get items () {
+    const getter = this.customGetter ?? defaultGetter
+
+    return this.headers.map(header => ({
+      header,
+      value: getter(this.item, header, defaultGetter)
+    }))
   }
 }
 </script>

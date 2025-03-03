@@ -34,6 +34,7 @@
           :item="item"
           :is-selected="isSelected && item.name !== '..'"
           :draggable="isItemDraggable(item)"
+          :custom-getter="getItemValue"
           @click.prevent="$emit('row-click', item, $event)"
           @contextmenu.prevent="$emit('row-click', item, $event)"
           @dragstart="handleDragStart(item, $event)"
@@ -78,173 +79,32 @@
             </v-layout>
           </template>
 
-          <template #[`item.name`]="{ value }">
-            {{ value }}
+          <template #[`item-value.history.status`]>
+            <job-history-item-status :job="item.history" />
           </template>
 
-          <template #[`item.history.status`]="{ value }">
-            <job-history-item-status
-              v-if="value != null"
-              :job="item.history"
-            />
-            <template v-else>
-              --
-            </template>
+          <template #[`item-value.filament_colors`]="{ value }">
+            <app-data-table-cell-colors :colors="value" />
           </template>
 
-          <template #[`item.object_height`]="{ value }">
-            {{
-              value != null
-                ? $filters.getReadableLengthString(value)
-                : '--'
-            }}
+          <template #[`item-value.extruder_colors`]="{ value }">
+            <app-data-table-cell-colors :colors="value" />
           </template>
 
-          <template #[`item.first_layer_height`]="{ value }">
-            {{
-              value != null
-                ? `${value} mm`
-                : '--'
-            }}
+          <template #[`item-value.filament_temps`]="{ value }">
+            <app-data-table-cell-temps :temps="value" />
           </template>
 
-          <template #[`item.layer_height`]="{ value }">
-            {{
-              value != null
-                ? `${value} mm`
-                : '--'
-            }}
+          <template #[`item-value.first_layer_bed_temp`]="{ value }">
+            {{ value }}<small>°C</small>
           </template>
 
-          <template #[`item.filament_name`]="{ value }">
-            {{ value || '--' }}
+          <template #[`item-value.first_layer_extr_temp`]="{ value }">
+            {{ value }}<small>°C</small>
           </template>
 
-          <template #[`item.filament_type`]="{ value }">
-            {{ value || '--' }}
-          </template>
-
-          <template #[`item.filament_total`]="{ value }">
-            {{
-              value != null
-                ? $filters.getReadableLengthString(value)
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.filament_weight_total`]="{ value }">
-            {{
-              value != null
-                ? $filters.getReadableWeightString(value)
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.history.filament_used`]="{ value }">
-            {{
-              value != null
-                ? $filters.getReadableLengthString(value)
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.nozzle_diameter`]="{ value }">
-            {{
-              value != null
-                ? `${value} mm`
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.slicer`]="{ value }">
-            {{ value || '--' }}
-          </template>
-
-          <template #[`item.slicer_version`]="{ value }">
-            {{ value || '--' }}
-          </template>
-
-          <template #[`item.estimated_time`]="{ value }">
-            {{
-              value != null
-                ? $filters.formatCounterSeconds(value)
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.history.print_duration`]="{ value }">
-            {{
-              value != null
-                ? $filters.formatCounterSeconds(value)
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.history.total_duration`]="{ value }">
-            {{
-              value != null
-                ? $filters.formatCounterSeconds(value)
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.first_layer_bed_temp`]="{ value }">
-            <template v-if="value != null">
-              {{ value }}<small>°C</small>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </template>
-
-          <template #[`item.first_layer_extr_temp`]="{ value }">
-            <template v-if="value != null">
-              {{ value }}<small>°C</small>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </template>
-
-          <template #[`item.chamber_temp`]="{ value }">
-            <template v-if="value != null">
-              {{ value }}<small>°C</small>
-            </template>
-            <template v-else>
-              --
-            </template>
-          </template>
-
-          <template #[`item.file_processors`]="{ value }">
-            {{
-              value != null && value.length > 0
-                ? value.map($filters.prettyCase).join(', ')
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.print_start_time`]="{ value }">
-            {{
-              value != null
-                ? $filters.formatDateTime(value * 1000)
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.modified`]="{ value }">
-            {{
-              value != null && item.name !== '..'
-                ? $filters.formatDateTime(value * 1000)
-                : '--'
-            }}
-          </template>
-
-          <template #[`item.size`]="{ value }">
-            {{
-              value != null && item.name !== '..'
-                ? $filters.getReadableFileSizeString(value)
-                : '--'
-            }}
+          <template #[`item-value.chamber_temp`]="{ value }">
+            {{ value }}<small>°C</small>
           </template>
         </app-data-table-row>
       </template>
@@ -263,6 +123,7 @@ import type { TextSortOrder } from '@/store/config/types'
 import type { DataTableHeader } from 'vuetify'
 import versionStringCompare from '@/util/version-string-compare'
 import { get } from 'lodash-es'
+import type { DefaultGetterFunction } from '@/components/ui/AppDataTableRow.vue'
 
 @Component({
   components: {
@@ -585,6 +446,59 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
     this.dragItem = null
     this.dragStateModel = false
+  }
+
+  getItemValue (item: FileBrowserEntry, header: DataTableHeader, defaultGetter: DefaultGetterFunction) {
+    const value = defaultGetter(item, header)
+
+    if (typeof value === 'number') {
+      switch (header.value) {
+        case 'object_height':
+        case 'filament_total':
+        case 'history.filament_used':
+          return this.$filters.getReadableLengthString(value)
+
+        case 'first_layer_height':
+        case 'layer_height':
+        case 'nozzle_diameter':
+          return `${value} mm`
+
+        case 'filament_weight_total':
+          return this.$filters.getReadableWeightString(value)
+
+        case 'estimated_time':
+        case 'history.print_duration':
+        case 'history.total_duration':
+          return this.$filters.formatCounterSeconds(value)
+
+        case 'print_start_time':
+        case 'modified':
+          return this.$filters.formatDateTime(value * 1000)
+
+        case 'size':
+          return this.$filters.getReadableFileSizeString(value)
+      }
+    }
+
+    if (Array.isArray(value) && value.length > 0) {
+      switch (header.value) {
+        case 'filament_weights':
+          return value
+            .map(x => typeof x === 'number'
+              ? this.$filters.getReadableWeightString(x)
+              : x
+            )
+
+        case 'file_processors':
+          return value
+            .map(x => typeof x === 'string'
+              ? this.$filters.prettyCase(x)
+              : x
+            )
+      }
+    }
+
+    return value
   }
 }
 </script>

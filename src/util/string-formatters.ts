@@ -9,6 +9,14 @@ export const prettyCase = (value: string) => {
 }
 
 /**
+ * Splits a string into an array of strings, removing quotes.
+ */
+export const getStringArray = (value: string, separator = ';') => {
+  return value.split(separator)
+    .map(x => x.replace(/^"|"$/, ''))
+}
+
+/**
  * Formats a number (in bytes) to a human readable file size.
  */
 export const getReadableFileSizeString = (fileSizeInBytes: number, fractionDigits = 1) => {

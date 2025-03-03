@@ -1,12 +1,12 @@
-import type { MoonrakerFileMeta } from '@/store/files/types.metadata'
+import type { AppFileMeta, MoonrakerFileMeta } from '@/store/files/types.metadata'
 
 export interface HistoryState {
   count: number;
-  jobs: HistoryItem[];
+  jobs: MoonrakerHistoryItem[];
   job_totals: HistoryRollUp;
 }
 
-export interface HistoryItem {
+export interface MoonrakerHistoryItem {
   job_id: string;
   exists: boolean;
   end_time: string | null;
@@ -19,6 +19,10 @@ export interface HistoryItem {
   total_duration: number;
   user?: string;
   auxiliary_data?: HistoryItemAuxiliaryData[];
+}
+
+export interface HistoryItem extends Omit<MoonrakerHistoryItem, 'metadata'> {
+  metadata?: AppFileMeta;
 }
 
 export interface HistoryRollUp {
