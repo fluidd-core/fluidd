@@ -39,6 +39,10 @@ export default class CameraMixin extends Vue {
     }
   }
 
+  get autoRaiseFrameEvent () {
+    return true
+  }
+
   createTransform (): string {
     const element = this.streamingElement
     const { rotation, flip_horizontal, flip_vertical } = this.camera
@@ -80,6 +84,10 @@ export default class CameraMixin extends Vue {
 
       if (this.streamingElement) {
         this.cameraTransformStyle = this.createTransform()
+
+        if (this.autoRaiseFrameEvent) {
+          this.$emit('frame', this.streamingElement)
+        }
       }
 
       this.updateCameraTransformStyle()
