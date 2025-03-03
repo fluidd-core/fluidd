@@ -461,6 +461,7 @@ app:
         nozzle_diameter: Średnica dyszy
         total_duration: Łączny czas trwania
         file_processors: Procesory plików
+        user: Użytkownik
     tooltip:
       estop: Awaryjny stop
       managed_by_moonraker: Zarządzane przez konfigurację moonrakera
