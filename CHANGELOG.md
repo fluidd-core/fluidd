@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.32.4](https://github.com/fluidd-core/fluidd/compare/v1.32.3...v1.32.4) (2025-03-04)
+
+
+### Features
+
+* **History:** show auxiliary data ([#1608](https://github.com/fluidd-core/fluidd/issues/1608)) ([cf8190d](https://github.com/fluidd-core/fluidd/commit/cf8190d71b8c4a90e8146714225996ac905ef3c7))
+* **i18n-hu:** Update Hungarian translations ([5ade567](https://github.com/fluidd-core/fluidd/commit/5ade567b7ff1f0e885fccf1aab56b46d0318e06e))
+* **i18n-pl:** Update Polish translations ([be5c3b0](https://github.com/fluidd-core/fluidd/commit/be5c3b0c43c17aa8c84b7142c8d38cd900af0e3a))
+* **i18n-uk:** Update Ukrainian translations ([fb45e78](https://github.com/fluidd-core/fluidd/commit/fb45e78a8a4f78c68f17103b2ba76516416ef217))
+* lock dashboard sliders on mobile devices ([#1614](https://github.com/fluidd-core/fluidd/issues/1614)) ([456a156](https://github.com/fluidd-core/fluidd/commit/456a1564db74ad5fe8da7d8182eca7b3e814d784))
+* new Moonraker metadata support ([#1617](https://github.com/fluidd-core/fluidd/issues/1617)) ([d8a9555](https://github.com/fluidd-core/fluidd/commit/d8a9555893ea22063fa1f2d4ce9878f72a37a2ba))
+
+
+### Bug Fixes
+
+* **Cameras:** always emit frame event ([#1621](https://github.com/fluidd-core/fluidd/issues/1621)) ([f58cb3f](https://github.com/fluidd-core/fluidd/commit/f58cb3fedc4a3a0b22d837ec1f1edc1b7c0fdc1a))
+* clear state on closing ScrewsTiltAdjustDialog ([#1620](https://github.com/fluidd-core/fluidd/issues/1620)) ([4ceef32](https://github.com/fluidd-core/fluidd/commit/4ceef323c0b894685a834ee0f294f8f325cab416))
+* **FileSystem:** metadata load improvements ([7e3442a](https://github.com/fluidd-core/fluidd/commit/7e3442a80de227d1b153efeb3528fc95f7f7c8d1))
+* **GcodePreview:** auto-loading condition ([#1613](https://github.com/fluidd-core/fluidd/issues/1613)) ([16e6f5c](https://github.com/fluidd-core/fluidd/commit/16e6f5c9e8f5e8f2d75405a39c4e72848243bca8))
+* **style:** button groups shadow ([15f79fa](https://github.com/fluidd-core/fluidd/commit/15f79fae0a8f2792d885e1caf0f0e817463972f7))
+* **System:** empty disk usage info on startup ([1a9274b](https://github.com/fluidd-core/fluidd/commit/1a9274b6b55adbe15df315859d07f5c0677a272b))
+
+
+### Code Refactorings
+
+* bed size is always defined ([907fdc1](https://github.com/fluidd-core/fluidd/commit/907fdc18fed157af7f528677b2de4652285a3d44))
+* column picker simplification ([9c47df8](https://github.com/fluidd-core/fluidd/commit/9c47df83a9c17d8eb1d52e3538fb26a210ac72a5))
+* **MacroSettings:** pass copy of macro ([085fc3b](https://github.com/fluidd-core/fluidd/commit/085fc3bf7b44333d8673e21093b69ca5dc550f5a))
+* minor typing improvements ([6b6eaf6](https://github.com/fluidd-core/fluidd/commit/6b6eaf6ce2350b1ac594279132c49ed7f1f3e79b))
+* move file uploads dialog to root ([abc0ba9](https://github.com/fluidd-core/fluidd/commit/abc0ba9a05b6cc8b3a74fd21f47889b065f42692))
+* typing improvements ([e0bb1c9](https://github.com/fluidd-core/fluidd/commit/e0bb1c916008eeabf66dfeacfb37bd5c69414869))
+* typing improvements ([f2b5b1a](https://github.com/fluidd-core/fluidd/commit/f2b5b1abc1fe5db8cf31efc6769c1dd3916bd086))
+
 ## [1.32.3](https://github.com/fluidd-core/fluidd/compare/v1.32.2...v1.32.3) (2025-02-18)
 
 
