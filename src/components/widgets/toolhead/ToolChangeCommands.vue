@@ -81,7 +81,7 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
 
     return Object.keys(availableCommands)
       .filter(command => /^t\d+$/i.test(command))
-      .map(command => {
+      .map((command): ToolChangeCommand => {
         const { help } = availableCommands[command]
         const description = help && help !== 'G-Code macro'
           ? help
@@ -95,7 +95,7 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
           color: macro?.variables?.color ? `#${macro.variables.color}` : undefined,
           active: macro?.variables?.active === true,
           spoolId: macro?.variables?.spool_id ? +macro.variables.spool_id : undefined
-        } satisfies ToolChangeCommand
+        }
       })
       .sort((a, b) => {
         const numberA = parseInt(a.name.substring(1))

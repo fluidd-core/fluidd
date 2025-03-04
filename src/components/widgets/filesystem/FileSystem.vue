@@ -109,13 +109,6 @@
       absolute
     />
 
-    <file-system-upload-dialog
-      v-if="currentUploads.length > 0"
-      :value="currentUploads.length > 0"
-      :files="currentUploads"
-      @cancel="handleCancelUpload"
-    />
-
     <file-preview-dialog
       v-if="filePreviewState.open"
       v-model="filePreviewState.open"
@@ -143,7 +136,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
-import type { AppDirectory, AppFile, AppFileWithMeta, FileUpload, FileFilterType, FileBrowserEntry, RootProperties } from '@/store/files/types'
+import type { AppDirectory, AppFile, AppFileWithMeta, FileFilterType, FileBrowserEntry, RootProperties } from '@/store/files/types'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import ServicesMixin from '@/mixins/services'
@@ -153,10 +146,9 @@ import FileSystemBrowser from './FileSystemBrowser.vue'
 import FileSystemContextMenu from './FileSystemContextMenu.vue'
 import FileEditorDialog from './FileEditorDialog.vue'
 import FileNameDialog from './FileNameDialog.vue'
-import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import FileSystemGoToFileDialog from './FileSystemGoToFileDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
-import type { AppTableHeader, FileWithPath } from '@/types'
+import type { AppDataTableHeader, FileWithPath } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer, setFileDataTransferDataInDataTransfer } from '@/util/file-data-transfer'
 import consola from 'consola'
@@ -176,7 +168,6 @@ import type { DataTableHeader } from 'vuetify'
     FileSystemContextMenu,
     FileEditorDialog,
     FileNameDialog,
-    FileSystemUploadDialog,
     FileSystemGoToFileDialog,
     FilePreviewDialog
   }
@@ -298,133 +289,177 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  get configurableHeaders (): AppTableHeader[] {
+  get configurableHeaders (): AppDataTableHeader[] {
     const isNotDashboard = this.name !== 'dashboard'
 
-    const headers: AppTableHeader[] = [
-      ...this.currentRoot === 'gcodes'
-        ? [
-            {
-              text: this.$tc('app.general.table.header.status'),
-              value: 'history.status',
-              visible: isNotDashboard,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.height'),
-              value: 'object_height',
-              visible: isNotDashboard,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.first_layer_height'),
-              value: 'first_layer_height',
-              visible: false,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.layer_height'),
-              value: 'layer_height',
-              visible: isNotDashboard,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.filament_name'),
-              value: 'filament_name',
-              visible: isNotDashboard,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.filament_type'),
-              value: 'filament_type',
-              visible: isNotDashboard,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.filament'),
-              value: 'filament_total',
-              visible: isNotDashboard,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.filament_weight_total'),
-              value: 'filament_weight_total',
-              visible: isNotDashboard,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.filament_used'),
-              value: 'history.filament_used',
-              visible: false,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.nozzle_diameter'),
-              value: 'nozzle_diameter',
-              visible: isNotDashboard,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.slicer'),
-              value: 'slicer',
-              visible: isNotDashboard,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.slicer_version'),
-              value: 'slicer_version',
-              visible: false,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.estimated_time'),
-              value: 'estimated_time',
-              visible: isNotDashboard,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.print_duration'),
-              value: 'history.print_duration',
-              visible: false,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.total_duration'),
-              value: 'history.total_duration',
-              visible: isNotDashboard,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.first_layer_bed_temp'),
-              value: 'first_layer_bed_temp',
-              visible: false,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.first_layer_extr_temp'),
-              value: 'first_layer_extr_temp',
-              visible: false,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.chamber_temp'),
-              value: 'chamber_temp',
-              visible: false,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.file_processors'),
-              value: 'file_processors',
-              visible: false,
-              cellClass: 'text-no-wrap'
-            },
-            {
-              text: this.$tc('app.general.table.header.last_printed'),
-              value: 'print_start_time',
-              cellClass: 'text-no-wrap'
-            }
-          ]
-        : [],
+    const gcodeHeaders: AppDataTableHeader[] = this.currentRoot === 'gcodes'
+      ? [
+          {
+            text: this.$tc('app.general.table.header.status'),
+            value: 'history.status',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.height'),
+            value: 'object_height',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.first_layer_height'),
+            value: 'first_layer_height',
+            visible: false,
+            cellClass: 'text-no-wrap',
+          },
+          {
+            text: this.$tc('app.general.table.header.layer_height'),
+            value: 'layer_height',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.filament_name'),
+            value: 'filament_name',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.filament_colors'),
+            value: 'filament_colors',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.extruder_colors'),
+            value: 'extruder_colors',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.filament_temps'),
+            value: 'filament_temps',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.filament_type'),
+            value: 'filament_type',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.filament'),
+            value: 'filament_total',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.filament_change_count'),
+            value: 'filament_change_count',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.filament_weight_total'),
+            value: 'filament_weight_total',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.filament_weights'),
+            value: 'filament_weights',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.mmu_print'),
+            value: 'mmu_print',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.referenced_tools'),
+            value: 'referenced_tools',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.filament_used'),
+            value: 'history.filament_used',
+            visible: false,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.nozzle_diameter'),
+            value: 'nozzle_diameter',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.slicer'),
+            value: 'slicer',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.slicer_version'),
+            value: 'slicer_version',
+            visible: false,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.estimated_time'),
+            value: 'estimated_time',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.print_duration'),
+            value: 'history.print_duration',
+            visible: false,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.total_duration'),
+            value: 'history.total_duration',
+            visible: isNotDashboard,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.first_layer_bed_temp'),
+            value: 'first_layer_bed_temp',
+            visible: false,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.first_layer_extr_temp'),
+            value: 'first_layer_extr_temp',
+            visible: false,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.chamber_temp'),
+            value: 'chamber_temp',
+            visible: false,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.file_processors'),
+            value: 'file_processors',
+            visible: false,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.last_printed'),
+            value: 'print_start_time',
+            cellClass: 'text-no-wrap'
+          }
+        ]
+      : []
+
+    const headers: AppDataTableHeader[] = [
+      ...gcodeHeaders,
       {
         text: this.$tc('app.general.table.header.modified'),
         value: 'modified',
@@ -440,7 +475,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     ]
 
     const key = `${this.currentRoot}_${this.name}`
-    const mergedTableHeaders: AppTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, key)
+    const mergedTableHeaders: AppDataTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, key)
 
     return mergedTableHeaders
   }
@@ -452,7 +487,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         text: '',
         value: 'data-table-icons',
         sortable: false,
-        width: '24px'
+        width: this.dense ? '28px' : '56px'
       },
       {
         text: this.$tc('app.general.table.header.name'),
@@ -553,11 +588,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   // Determine if we're waiting for a directory load on our current path.
   get filesLoading () {
     return this.hasWaitsBy(`${this.$waits.onFileSystem}/${this.currentRoot}/`)
-  }
-
-  // Get a list of currently active uploads.
-  get currentUploads (): FileUpload[] {
-    return this.$store.state.files.uploads
   }
 
   get fileDropRoot () {
@@ -839,7 +869,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  async handleViewThumbnail (file: AppFileWithMeta) {
+  async handleViewThumbnail (file: AppFile) {
     const thumb = this.getThumb(file, this.currentRoot, file.path, true)
 
     if (thumb) {
@@ -1002,23 +1032,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     await this.uploadFiles(files, this.visiblePath, this.currentRoot, print)
 
     this.$store.dispatch('wait/removeWait', wait)
-  }
-
-  handleCancelUpload (file: FileUpload) {
-    if (!file.complete) {
-      // Hasn't started uploading...
-      if (file.loaded === 0) {
-        this.$store.dispatch('files/updateFileUpload', {
-          uid: file.uid,
-          cancelled: true
-        })
-      }
-
-      // Started uploading, but not complete.
-      if (file.loaded > 0 && file.loaded < file.size) {
-        file.abortController.abort()
-      }
-    }
   }
 
   handleAddDir (name: string) {

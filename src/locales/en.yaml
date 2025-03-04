@@ -423,11 +423,16 @@ app:
         chamber_temp: Chamber temp
         end_time: Ended
         estimated_time: Estimated time
-        filament: Filament
+        extruder_colors: Extruder colors
+        filament_change_count: Filament changes
+        filament_colors: Filament colors
         filament_name: Filament name
+        filament_temps: Filament temps
         filament_type: Filament type
         filament_used: Used filament
         filament_weight_total: Filament weight
+        filament_weights: Filament weights
+        filament: Filament
         file_processors: File processors
         first_layer_bed_temp: First layer bed temp
         first_layer_extr_temp: First layer extruder temp
@@ -435,10 +440,12 @@ app:
         height: Height
         last_printed: Last printed
         layer_height: Layer height
+        mmu_print: MMU print
         modified: Modified
         name: Name
         nozzle_diameter: Nozzle diameter
         print_duration: Print duration
+        referenced_tools: Referenced tools
         time_added: Time Added
         time_in_queue: Time In Queue
         size: Size
@@ -447,6 +454,7 @@ app:
         start_time: Started
         status: Status
         total_duration: Total duration
+        user: User
     title:
       add_chart: Add Chart
       add_printer: Add Printer

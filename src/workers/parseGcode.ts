@@ -129,9 +129,9 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
       switch (command) {
         case 'G0':
         case 'G1': {
-          const params = [
+          const params: (keyof LinearMove)[] = [
             'x', 'y', 'z', 'e'
-          ] satisfies (keyof LinearMove)[]
+          ]
 
           if (params.some(param => param in args)) {
             move = {
@@ -143,10 +143,10 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
         }
         case 'G2':
         case 'G3': {
-          const params = [
+          const params: (keyof ArcMove)[] = [
             'x', 'y', 'z', 'e',
             'i', 'j', 'k', 'r'
-          ] satisfies (keyof ArcMove)[]
+          ]
 
           if (params.some(param => param in args)) {
             move = {

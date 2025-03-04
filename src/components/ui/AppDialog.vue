@@ -2,6 +2,7 @@
   <v-dialog
     v-model="open"
     :scrollable="scrollable"
+    :persistent="persistent"
     v-bind="$attrs"
     :fullscreen="isMobileViewport"
     :transition="isMobileViewport ? 'dialog-bottom-transition' : undefined"
@@ -52,6 +53,7 @@
             </v-col>
 
             <v-col
+              v-if="!persistent"
               cols="auto"
               align-self="center"
             >
@@ -156,6 +158,9 @@ export default class AppDialog extends Mixins(BrowserMixin) {
 
   @Prop({ type: Boolean, default: true })
   readonly scrollable?: boolean
+
+  @Prop({ type: Boolean })
+  readonly persistent?: boolean
 
   @Prop({ type: Boolean })
   readonly noActions?: boolean

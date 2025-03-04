@@ -1,15 +1,14 @@
 <template>
   <app-dialog
-    v-model="value"
-    :title="$tc('app.file_system.title.upload_file', files.length)"
+    :value="uploads.length > 0"
+    :title="$tc('app.file_system.title.upload_file', uploads.length)"
     max-width="500"
     persistent
     no-actions
   >
     <v-card-text>
-      <template v-for="(file, i) in files">
+      <template v-for="(file, i) in uploads">
         <v-row
-          v-if="(file.percent !== 100 || !file.complete) && !file.cancelled"
           :key="file.filepath"
           class="py-2"
         >
@@ -52,7 +51,7 @@
               color="error"
               icon
               :disabled="file.complete || file.percent === 100 || file.cancelled"
-              @click="$emit('cancel', file)"
+              @click="handleCancelUpload(file)"
             >
               <v-icon>$close</v-icon>
             </app-btn>
@@ -60,10 +59,7 @@
         </v-row>
 
         <v-divider
-          v-if="
-            (file.percent !== 100 || !file.complete) &&
-              i < files.length - 1
-          "
+          v-if="i < uploads.length - 1"
           :key="`divider-${file.filepath}`"
         />
       </template>
@@ -72,17 +68,35 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { FileUpload } from '@/store/files/types'
 
 @Component({})
 export default class FileSystemUploadDialog extends Mixins(StateMixin) {
-  @Prop({ type: Boolean })
-  readonly value?: boolean
+  get uploads (): FileUpload[] {
+    const uploads: FileUpload[] = this.$store.state.files.uploads
 
-  @Prop({ type: Array<FileUpload>, required: true })
-  readonly files!: FileUpload[]
+    return uploads
+      .filter(file => !file.cancelled && (file.percent !== 100 || !file.complete))
+  }
+
+  handleCancelUpload (file: FileUpload) {
+    if (!file.complete) {
+      // Hasn't started uploading...
+      if (file.loaded === 0) {
+        this.$store.dispatch('files/updateFileUpload', {
+          uid: file.uid,
+          cancelled: true
+        })
+      }
+
+      // Started uploading, but not complete.
+      if (file.loaded > 0 && file.loaded < file.size) {
+        file.abortController.abort()
+      }
+    }
+  }
 }
 </script>
 

@@ -23,7 +23,9 @@
 <script lang="ts">
 import { Component, Prop, Vue, VModel } from 'vue-property-decorator'
 
-@Component({})
+@Component({
+  inheritAttrs: false
+})
 export default class AppNamedSwitch extends Vue {
   @VModel({ type: Boolean })
   inputValue?: boolean

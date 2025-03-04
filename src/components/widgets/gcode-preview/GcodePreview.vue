@@ -560,14 +560,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get bedSize (): BedSize {
-    const bedSize: BedSize | undefined = this.$store.getters['printer/getBedSize']
-
-    return bedSize ?? {
-      minX: 0,
-      minY: 0,
-      maxX: 100,
-      maxY: 100
-    }
+    return this.$store.getters['printer/getBedSize']
   }
 
   get viewBox (): BBox {

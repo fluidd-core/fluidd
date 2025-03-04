@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { HistoryItem, HistoryState } from './types'
 import type { RootState } from '../types'
@@ -7,16 +8,42 @@ export const getters: GetterTree<HistoryState, RootState> = {
    * Returns all history, sorted by start time.
    */
   getHistory: (state) => {
-    return (state.jobs && state.jobs.length)
-      ? [...state.jobs].sort((a, b) => b.start_time - a.start_time)
-      : []
+    return state.jobs
+      .map((job): HistoryItem => {
+        const { metadata, ...restOfJob } = job
+
+        const item: HistoryItem = restOfJob
+
+        if (metadata != null) {
+          const { filament_name, filament_type, ...restOfMetadata } = metadata
+
+          item.metadata = {
+            ...restOfMetadata,
+            modified: new Date(metadata.modified).getTime()
+          }
+
+          if (filament_name != null) {
+            item.metadata.filament_name = Vue.$filters.getStringArray(filament_name)
+          }
+
+          if (filament_type != null) {
+            item.metadata.filament_type = Vue.$filters.getStringArray(filament_type)
+          }
+        }
+
+        return item
+      })
+      .sort((a, b) => b.start_time - a.start_time)
   },
 
   /**
    * Return a history item given a job id.
    */
-  getHistoryById: (state) => (jobId: string) => {
-    return state.jobs.find(job => job.job_id === jobId)
+  getHistoryById: (state, getters) => (jobId: string) => {
+    const history: HistoryItem[] = getters.getHistory
+
+    return history
+      .find(job => job.job_id === jobId)
   },
 
   /**
@@ -24,14 +51,14 @@ export const getters: GetterTree<HistoryState, RootState> = {
    * items that have a status of completed, and that still
    * exist.
    */
-  getHistoryByFilename: (state) => (filename: string) => {
-    return state.jobs.find(job => {
-      return (
-        job.filename === filename &&
-        job.status === 'completed' &&
-        job.exists === true
-      )
-    })
+  getHistoryByFilename: (state, getters) => (filename: string) => {
+    const history: HistoryItem[] = getters.getHistory
+
+    return history.find(job => (
+      job.filename === filename &&
+      job.status === 'completed' &&
+      job.exists === true
+    ))
   },
 
   /**
@@ -40,16 +67,14 @@ export const getters: GetterTree<HistoryState, RootState> = {
    */
   getUniqueHistory: (state, getters) => (limit = 3) => {
     const jobs: HistoryItem[] = []
-    const history = getters.getHistory
+    const history: HistoryItem[] = getters.getHistory
 
     // Go through each item and;
     // - Only show items that still exist
     // - Don't allow dupes
     // - Respect the limit
     for (const job of history) {
-      if (
-        job.exists
-      ) {
+      if (job.exists) {
         const dupe = jobs.some((j) => job.filename === j.filename)
         if (!dupe) {
           jobs.push(job)

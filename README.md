@@ -56,3 +56,7 @@ A big thank you to:
 - Eric Callahan for [Moonraker](https://github.com/Arksine/moonraker)
 - Dominik Willner for [KIAUH](https://github.com/dw-0/kiauh)
 - Ray for [MainsailOS](https://github.com/raymondh2/MainsailOS)
+
+## Misc
+
+This project is tested with BrowserStack

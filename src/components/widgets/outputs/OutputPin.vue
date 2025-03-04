@@ -9,7 +9,7 @@
       :value="value"
       :reset-value="resetValue"
       :disabled="!klippyReady"
-      :locked="isMobileViewport"
+      :locked="isMobileUserAgent"
       :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"
       @submit="handleChange"
     />

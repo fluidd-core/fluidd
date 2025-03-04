@@ -3,7 +3,7 @@
     :title="$t('app.file_system.label.diskinfo')"
     icon="$harddisk"
   >
-    <v-card-text>
+    <v-card-text v-if="diskUsage">
       <v-layout justify-space-between>
         <div>
           {{ $t('app.file_system.label.disk_usage') }}
@@ -21,13 +21,13 @@
       <v-layout justify-space-between>
         <div>
           <span class="focus--text">
-            {{ $filters.getReadableFileSizeString(fileSystemUsage.used) }}
+            {{ $filters.getReadableFileSizeString(diskUsage.used) }}
           </span>
           <span class="secondary--text">{{ $t('app.general.label.used') }}</span>
         </div>
         <div>
           <span class="focus--text">
-            {{ $filters.getReadableFileSizeString(fileSystemUsage.free) }}
+            {{ $filters.getReadableFileSizeString(diskUsage.free) }}
           </span>
           <span class="secondary--text">{{ $t('app.general.label.free') }}</span>
         </div>
@@ -68,6 +68,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import type { SystemInfo } from '@/store/server/types'
 import type { DiskUsage } from '@/store/files/types'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({})
 export default class PrinterStatsCard extends Vue {
@@ -78,13 +79,21 @@ export default class PrinterStatsCard extends Vue {
   }
 
   get fileSystemUsedPercent () {
-    const total = this.fileSystemUsage.total
-    const used = this.fileSystemUsage.used
-    return Math.floor((used / total) * 100).toFixed()
+    const diskUsage = this.diskUsage
+
+    return diskUsage == null
+      ? 0
+      : Math.floor((diskUsage.used / diskUsage.total) * 100)
   }
 
-  get fileSystemUsage (): DiskUsage {
-    return this.$store.state.files.disk_usage
+  get diskUsage (): DiskUsage | null {
+    const diskUsage: DiskUsage | null = this.$store.state.files.disk_usage
+
+    if (diskUsage == null) {
+      SocketActions.serverFilesGetDirectory('config')
+    }
+
+    return diskUsage
   }
 }
 </script>

@@ -95,13 +95,16 @@ export default class ScrewsTiltAdjustDialog extends Mixins(StateMixin, ToolheadM
     )
   }
 
+  @Watch('screwsTiltAdjustDialogOpen')
+  onScrewsTiltAdjustDialogOpen (value: boolean) {
+    if (!value) {
+      this.$store.commit('printer/setClearScrewsTiltAdjust')
+    }
+  }
+
   retry () {
     this.sendGcode('SCREWS_TILT_CALCULATE', this.$waits.onBedScrewsCalculate)
     this.screwsTiltAdjustDialogOpen = false
-  }
-
-  destroyed () {
-    this.$store.commit('printer/setClearScrewsTiltAdjust')
   }
 }
 </script>

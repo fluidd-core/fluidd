@@ -240,10 +240,8 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
       value != null &&
       (
         oldValue == null ||
-        (
-          value.path !== oldValue.path &&
-          value.filename !== oldValue.filename
-        )
+        value.path !== oldValue.path ||
+        value.filename !== oldValue.filename
       ) &&
       ['paused', 'printing'].includes(this.printerState) &&
       !this.printerFileLoaded

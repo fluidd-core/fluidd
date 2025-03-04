@@ -209,7 +209,7 @@ import BrowserMixin from '@/mixins/browser'
 import QRReader from '@/components/widgets/spoolman/QRReader.vue'
 import type { WebcamConfig } from '@/store/webcams/types'
 import QrScanner from 'qr-scanner'
-import type { AppTableHeader } from '@/types'
+import type { AppDataTableHeader } from '@/types'
 import getFilePaths from '@/util/get-file-paths'
 import type { DataTableHeader } from 'vuetify'
 import type { KlipperPrinterConfig } from '@/store/printer/types'
@@ -243,15 +243,13 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       }
 
       if (this.currentFileName) {
-        // prefetch file metadata
-        if (!this.currentFile && this.currentFileName.includes('/')) {
-          // if the file is in a subdirectory and isn't cached
-          // we need to populate the cache
-          const { rootPath } = getFilePaths(this.currentFileName, 'gcodes')
+        const { rootPath } = getFilePaths(this.currentFileName, 'gcodes')
+
+        const directoryLoaded = rootPath in this.$store.state.files.pathFiles
+
+        // Load the containing the currently printing file if we haven't done that already
+        if (!directoryLoaded) {
           SocketActions.serverFilesGetDirectory(rootPath)
-        } else {
-          // otherwise just refresh the corresponding file
-          SocketActions.serverFilesMetadata(this.currentFileName)
         }
       }
 
@@ -300,8 +298,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return spools
   }
 
-  get configurableHeaders (): AppTableHeader[] {
-    const headers: AppTableHeader[] = [
+  get configurableHeaders (): AppDataTableHeader[] {
+    const headers: AppDataTableHeader[] = [
       {
         text: this.$tc('app.spoolman.label.id'),
         value: 'id'
@@ -324,7 +322,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       },
     ]
 
-    const mergedTableHeaders: AppTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'spoolman')
+    const mergedTableHeaders: AppDataTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'spoolman')
 
     return mergedTableHeaders
   }
@@ -454,10 +452,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         // if we're tracking a file and starting a new print or the current one hasn't ended yet
 
         if (this.warnOnFilamentTypeMismatch) {
-          const fileMaterials = this.currentFile.filament_type?.toLowerCase()
-            .split(';')
-            .map(x => x.replace(/"/g, ''))
+          const fileMaterials = this.currentFile.filament_type?.map(x => x.toLowerCase())
           const spoolMaterial = spool.filament.material?.toLowerCase()
+
           if (spoolMaterial && fileMaterials && !fileMaterials.includes(spoolMaterial)) {
             // filament materials don't match
 

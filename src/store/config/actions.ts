@@ -1,13 +1,12 @@
 import vuetify from '@/plugins/vuetify'
 import type { ActionTree } from 'vuex'
-import type { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, ThemeConfig } from './types'
+import type { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, ThemeConfig, ConfiguredTableHeader } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'
 import { Waits } from '@/globals'
 import type { FileFilterType } from '../files/types'
 import { TinyColor } from '@ctrl/tinycolor'
-import type { AppTablePartialHeader } from '@/types/tableheaders'
 
 export const actions: ActionTree<ConfigState, RootState> = {
   /**
@@ -121,7 +120,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
     })
 
     // Now, find the instance in our instance list and update there.
-    let instance = getters.getCurrentInstance
+    let instance: InstanceConfig | undefined = getters.getCurrentInstance
     if (instance) {
       instance = {
         ...instance,
@@ -177,15 +176,17 @@ export const actions: ActionTree<ConfigState, RootState> = {
   /**
    * Toggle a tables header state based on its name and key.
    */
-  async updateHeader ({ commit, state }, payload: { name: string; header: AppTablePartialHeader }) {
+  async updateHeader ({ commit, state }, payload: { name: string; header: ConfiguredTableHeader }) {
     commit('setUpdateHeader', payload)
+
     if (state.uiSettings.tableHeaders[payload.name]) {
       SocketActions.serverWrite(`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
     }
   },
 
-  async updateHeaders ({ commit, state }, payload: { name: string; headers: AppTablePartialHeader[] }) {
+  async updateHeaders ({ commit, state }, payload: { name: string; headers: ConfiguredTableHeader[] }) {
     commit('setUpdateHeaders', payload)
+
     if (state.uiSettings.tableHeaders[payload.name]) {
       SocketActions.serverWrite(`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
     }

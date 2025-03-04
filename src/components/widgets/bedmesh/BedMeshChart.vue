@@ -45,7 +45,7 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
     return this.$store.state.mesh.flatSurface
   }
 
-  get bedSize (): BedSize | undefined {
+  get bedSize (): BedSize {
     return this.$store.getters['printer/getBedSize']
   }
 
@@ -205,14 +205,14 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
       },
       xAxis3D: {
         type: 'value',
-        min: this.bedSize?.minX,
-        max: this.bedSize?.maxX,
+        min: this.bedSize.minX,
+        max: this.bedSize.maxX,
         ...axisCommon
       },
       yAxis3D: {
         type: 'value',
-        min: this.bedSize?.minY,
-        max: this.bedSize?.maxY,
+        min: this.bedSize.minY,
+        max: this.bedSize.maxY,
         ...axisCommon
       },
       zAxis3D: {

@@ -57,7 +57,7 @@ export const mutations: MutationTree<PrinterState> = {
     state.printer.screws_tilt_adjust = {
       ...state.printer.screws_tilt_adjust,
       error: false,
-      max_deviation: 0,
+      max_deviation: null,
       results: {}
     }
   },

@@ -78,9 +78,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const printerFilename = state.printer.print_stats?.filename
 
     if (printerFilename) {
-      const paths = getFilePaths(printerFilename, 'gcodes')
+      const { rootPath, filename } = getFilePaths(printerFilename, 'gcodes')
 
-      const printerFile: AppFileWithMeta | undefined = rootGetters['files/getFile'](paths.rootPath, paths.filename)
+      const printerFile: AppFileWithMeta | undefined = rootGetters['files/getFile'](rootPath, filename)
 
       return printerFile
     }
@@ -168,10 +168,16 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getPrintProgress: (state, getters, rootState): number => {
+    const printerFile: AppFileWithMeta | undefined = getters.getPrinterFile
+
+    if (printerFile?.history?.status === 'completed') {
+      return 1
+    }
+
     const printProgressCalculation = rootState.config.uiSettings.general.printProgressCalculation
 
     const printProgressCalculationResults = printProgressCalculation
-      .map(type => {
+      .map((type): number => {
         switch (type) {
           case 'file':
             return getters.getFileRelativePrintProgress
@@ -1014,15 +1020,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
     ].includes(kinematics)
   },
 
-  getBedSize: (state): BedSize | undefined => {
+  getBedSize: (state): BedSize => {
     const { axis_minimum, axis_maximum } = state.printer.toolhead
-
-    if (
-      axis_minimum.length < 2 ||
-      axis_maximum.length < 2
-    ) {
-      return undefined
-    }
 
     const [minX, minY] = axis_minimum
     const [maxX, maxY] = axis_maximum

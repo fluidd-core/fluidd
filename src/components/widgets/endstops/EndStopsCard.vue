@@ -64,7 +64,7 @@ export default class EndStopsCard extends Mixins(StateMixin) {
     return this.$store.getters['printer/getEndstops']
   }
 
-  get hasSteppers () {
+  get hasSteppers (): boolean {
     return this.$store.getters['printer/getSteppers'].length > 0
   }
 

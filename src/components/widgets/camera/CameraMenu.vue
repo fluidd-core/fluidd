@@ -62,7 +62,7 @@ export default class CamerasMenu extends Mixins(StateMixin) {
     const camera: WebcamConfig | undefined = this.$store.getters['webcams/getWebcamById'](activeWebcam)
 
     return !camera
-      ? this.$t('app.general.btn.all')
+      ? this.$t('app.general.btn.all').toString()
       : camera.name
   }
 
