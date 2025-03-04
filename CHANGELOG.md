@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.32.5](https://github.com/fluidd-core/fluidd/compare/v1.32.4...v1.32.5) (2025-03-04)
+
+
+### Bug Fixes
+
+* **FileSystem:** metadata types on getFile ([#1623](https://github.com/fluidd-core/fluidd/issues/1623)) ([0d5055d](https://github.com/fluidd-core/fluidd/commit/0d5055ddf652d5e4c8c3aeafb0609e7fba7a499c))
+
 ## [1.32.4](https://github.com/fluidd-core/fluidd/compare/v1.32.3...v1.32.4) (2025-03-04)
 
 
