@@ -22,6 +22,7 @@ export interface UiSettings {
   fileSystem: FileSystemConfig;
   toolhead: ToolheadConfig;
   spoolman: SpoolmanConfig;
+  mmu: MmuConfig;
 }
 
 export interface ToolheadConfig {
@@ -45,6 +46,13 @@ export interface SpoolmanConfig {
 }
 
 export type SpoolmanRemainingFilamentUnit = 'weight' | 'length'
+
+export interface MmuConfig {
+  showClogDetection: boolean;
+  showTtgMap: boolean;
+  showDetails: boolean;
+  largeFilamentStatus: boolean;
+}
 
 export interface HostConfig {
   endpoints: string[];

@@ -137,6 +137,12 @@ export const defaultState = (): ConfigState => {
         },
         remainingFilamentUnit: 'weight',
         selectedCardFields: ['vendor', 'filament_name', 'remaining_weight', 'location', 'material', 'lot_nr', 'first_used', 'comment']
+      },
+      mmu: {
+        showClogDetection: true,
+        showTtgMap: true,
+        showDetails: true,
+        largeFilamentStatus: false
       }
     }
   }

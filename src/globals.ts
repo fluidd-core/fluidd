@@ -513,7 +513,17 @@ export const Waits = Object.freeze({
   onMachinePeripheralsSerial: 'onMachinePeripheralsSerial',
   onMachinePeripheralsVideo: 'onMachinePeripheralsVideo',
   onMachinePeripheralsCanbus: 'onMachinePeripheralsCanbus',
-  onBeaconCalibrate: 'onBeaconCalibrate'
+  onBeaconCalibrate: 'onBeaconCalibrate',
+  onMmuStats: 'onMmuStats',
+  onMmuSpoolman: 'onMmuSpoolman',
+  onMmuCheckGates: 'onMmuCheckGates',
+  onMmuPreload: 'onMmuPreload',
+  onMmuEject: 'onMmuEject',
+  onMmuCheckGate: 'onMmuCheckGate',
+  onMmuRecover: 'onMmuRecover',
+  onMmuUnlock: 'onMmuUnlock',
+  onMmuUnload: 'onMmuUnload',
+  onMmuLoad: 'onMmuLoad'
 })
 
 export const SupportedLocales = Object.freeze([

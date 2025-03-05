@@ -21,6 +21,7 @@
         <preset-settings />
         <gcode-preview-settings />
         <timelapse-settings v-if="supportsTimelapse" />
+        <mmu-settings v-if="supportsMmu" />
         <spoolman-settings v-if="supportsSpoolman" />
         <version-settings v-if="supportsVersions" />
       </div>
@@ -46,10 +47,12 @@ import FileBrowserSettings from '@/components/settings/FileBrowserSettings.vue'
 import FileEditorSettings from '@/components/settings/FileEditorSettings.vue'
 import TimelapseSettings from '@/components/settings/timelapse/TimelapseSettings.vue'
 import SpoolmanSettings from '@/components/settings/SpoolmanSettings.vue'
+import MmuSettings from '@/components/settings/MmuSettings.vue'
 
 @Component({
   components: {
     SpoolmanSettings,
+    MmuSettings,
     TimelapseSettings,
     MacroSettings,
     GeneralSettings,
@@ -80,6 +83,10 @@ export default class Settings extends Mixins(StateMixin) {
 
   get supportsSpoolman (): boolean {
     return this.$store.getters['server/componentSupport']('spoolman')
+  }
+
+  get supportsMmu (): boolean {
+    return !!this.$store.state.printer.printer.mmu
   }
 }
 </script>
