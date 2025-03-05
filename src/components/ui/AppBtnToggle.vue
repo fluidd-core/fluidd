@@ -1,5 +1,6 @@
 <template>
   <v-btn-toggle
+    v-model="inputValue"
     v-bind="$attrs"
     :class="{
       'elevation-2': !disabled
@@ -11,12 +12,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, VModel, Vue } from 'vue-property-decorator'
 
 @Component({
   inheritAttrs: false
 })
-export default class AppBtn extends Vue {
+export default class AppBtnToggle extends Vue {
+  @VModel()
+  inputValue?: unknown
+
   @Prop({ type: Boolean })
   disabled?: boolean
 }
