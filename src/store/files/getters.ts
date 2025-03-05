@@ -1,9 +1,29 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
-import type { AppDirectory, AppFile, AppFileMeta, AppFileWithMeta, FileBrowserEntry, FilesState, RootProperties } from './types'
+import type { AppDirectory, AppFile, AppFileMeta, AppFileWithMeta, FileBrowserEntry, FilesState, MoonrakerFile, MoonrakerFileWithMeta, RootProperties } from './types'
 import type { RootState } from '../types'
 import type { HistoryItem } from '../history/types'
 import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
+
+const toAppFileMetaWithHistory = (file: MoonrakerFile | MoonrakerFileWithMeta, rootGetters: any) => {
+  const metadata: Partial<AppFileMeta> & Pick<AppFileWithMeta, 'history'> = {}
+
+  if ('job_id' in file && file.job_id) {
+    const history: HistoryItem | undefined = rootGetters['history/getHistoryById'](file.job_id)
+
+    metadata.history = history
+  }
+
+  if ('filament_name' in file && file.filament_name) {
+    metadata.filament_name = Vue.$filters.getStringArray(file.filament_name)
+  }
+
+  if ('filament_type' in file && file.filament_type) {
+    metadata.filament_type = Vue.$filters.getStringArray(file.filament_type)
+  }
+
+  return metadata
+}
 
 export const getters: GetterTree<FilesState, RootState> = {
   /**
@@ -35,7 +55,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           ...dir,
           type: 'directory',
           name: dir.dirname,
-          modified: new Date(dir.modified).getTime()
+          modified: Vue.$filters.moonrakerDateAsUnixTime(dir.modified)
         }
 
         items.push(item)
@@ -50,21 +70,7 @@ export const getters: GetterTree<FilesState, RootState> = {
         : undefined
 
       for (const file of pathContent.files) {
-        const metadata: Partial<AppFileMeta> & Pick<AppFileWithMeta, 'history'> = {}
-
-        if ('job_id' in file && file.job_id) {
-          const history: HistoryItem | undefined = rootGetters['history/getHistoryById'](file.job_id)
-
-          metadata.history = history
-        }
-
-        if ('filament_name' in file && file.filament_name) {
-          metadata.filament_name = Vue.$filters.getStringArray(file.filament_name)
-        }
-
-        if ('filament_type' in file && file.filament_type) {
-          metadata.filament_type = Vue.$filters.getStringArray(file.filament_type)
-        }
+        const metadata = toAppFileMetaWithHistory(file, rootGetters)
 
         const extensionIndex = file.filename.lastIndexOf('.')
         const extension = extensionIndex > -1 ? file.filename.substring(extensionIndex) : ''
@@ -92,7 +98,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           name: file.filename,
           extension,
           path: pathFilename,
-          modified: new Date(file.modified).getTime()
+          modified: Vue.$filters.moonrakerDateAsUnixTime(file.modified)
         }
 
         items.push(item)
@@ -192,21 +198,7 @@ export const getters: GetterTree<FilesState, RootState> = {
     const file = pathContent?.files.find(file => file.filename === filename)
 
     if (file) {
-      const metadata: Partial<AppFileMeta> & Pick<AppFileWithMeta, 'history'> = {}
-
-      if ('job_id' in file && file.job_id) {
-        const history: HistoryItem | undefined = rootGetters['history/getHistoryById'](file.job_id)
-
-        metadata.history = history
-      }
-
-      if ('filament_name' in file && file.filament_name) {
-        metadata.filament_name = Vue.$filters.getStringArray(file.filament_name)
-      }
-
-      if ('filament_type' in file && file.filament_type) {
-        metadata.filament_type = Vue.$filters.getStringArray(file.filament_type)
-      }
+      const metadata = toAppFileMetaWithHistory(file, rootGetters)
 
       const [, ...restOfPath] = path.split('/')
       const pathFilename = restOfPath.join('/')
@@ -221,7 +213,7 @@ export const getters: GetterTree<FilesState, RootState> = {
         name: file.filename,
         extension,
         path: pathFilename,
-        modified: new Date(file.modified).getDate()
+        modified: Vue.$filters.moonrakerDateAsUnixTime(file.modified)
       }
 
       return item

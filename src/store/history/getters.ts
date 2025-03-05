@@ -19,7 +19,7 @@ export const getters: GetterTree<HistoryState, RootState> = {
 
           item.metadata = {
             ...restOfMetadata,
-            modified: new Date(metadata.modified).getTime()
+            modified: Vue.$filters.moonrakerDateAsUnixTime(metadata.modified)
           }
 
           if (filament_name != null) {

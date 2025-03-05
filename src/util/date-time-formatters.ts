@@ -38,6 +38,14 @@ export const isThisYear = (value: number | string | Date) => {
   return date.getFullYear() === today.getFullYear()
 }
 
+export const moonrakerDateAsUnixTime = (value: string | number) => {
+  if (typeof value === 'string') {
+    return new Date(value).getTime() / 1000
+  }
+
+  return value
+}
+
 export const buildDateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFunction, getDefaultTimeFormat: GetDefaultDateTimeFormatFunction) => {
   const instance = {
     getDateFormat: (override?: string): DateTimeFormat => {
