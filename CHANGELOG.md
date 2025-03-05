@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.32.6](https://github.com/fluidd-core/fluidd/compare/v1.32.5...v1.32.6) (2025-03-05)
+
+
+### Features
+
+* **i18n-de:** Update German translations ([0e8ce27](https://github.com/fluidd-core/fluidd/commit/0e8ce27b5cd242461fa3ccdc1b085bbe570897ba))
+* **i18n-pl:** Update Polish translations ([d5a1c57](https://github.com/fluidd-core/fluidd/commit/d5a1c578d798ec5d0e9f19ac825776de4c7d0a1e))
+
+
+### Bug Fixes
+
+* **AppBtnToggle:** specify v-model property ([#1627](https://github.com/fluidd-core/fluidd/issues/1627)) ([11db0ad](https://github.com/fluidd-core/fluidd/commit/11db0ad0876ac216a8b19d4edfc16cc6aa9e9cfb))
+
+
+### Code Refactorings
+
+* typing improvements and fixes ([9329344](https://github.com/fluidd-core/fluidd/commit/9329344f328e11ed1349c8ef26daff3fb533ec33))
+
 ## [1.32.5](https://github.com/fluidd-core/fluidd/compare/v1.32.4...v1.32.5) (2025-03-04)
 
 
