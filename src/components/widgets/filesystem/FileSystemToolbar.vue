@@ -174,11 +174,11 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   readonly name!: string
 
   // Can be a list of roots, or a single root.
-  @Prop({ type: Array<string> })
+  @Prop({ type: Array })
   readonly roots?: string[]
 
   // Currently defined list of headers.
-  @Prop({ type: Array<AppDataTableHeader> })
+  @Prop({ type: Array })
   readonly headers?: AppDataTableHeader[]
 
   // The current path

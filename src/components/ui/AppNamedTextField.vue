@@ -79,7 +79,7 @@ export default class AppNamedTextField extends Mixins(StateMixin) {
   @Prop({ type: String })
   readonly suffix!: string
 
-  @Prop({ type: Array<InputValidationRules> })
+  @Prop({ type: Array })
   readonly rules?: InputValidationRules[]
 
   handleReset () {

@@ -66,7 +66,7 @@ export default class AppColumnPicker extends Vue {
   @Prop({ type: String, required: true })
   readonly keyName!: string
 
-  @Prop({ type: Array<AppDataTableHeader>, required: true })
+  @Prop({ type: Array, required: true })
   readonly headers!: AppDataTableHeader[]
 
   get configurableHeaders (): AppDataTableHeader[] {
