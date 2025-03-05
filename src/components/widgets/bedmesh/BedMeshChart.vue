@@ -29,7 +29,7 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
   @Prop({ type: Array, required: true })
   readonly data!: []
 
-  @Prop({ type: Array<GraphicComponentOption>, default: () => [] })
+  @Prop({ type: Array, default: () => [] })
   readonly graphics!: GraphicComponentOption[]
 
   @Prop({ type: Object, default: () => {} })

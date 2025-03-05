@@ -46,7 +46,7 @@ import type { AppDataTableHeader } from '@/types'
 
 @Component({})
 export default class JobQueueToolbar extends Vue {
-  @Prop({ type: Array<AppDataTableHeader> })
+  @Prop({ type: Array })
   readonly headers?: AppDataTableHeader[]
 }
 </script>

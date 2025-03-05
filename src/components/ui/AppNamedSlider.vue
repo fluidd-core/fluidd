@@ -99,7 +99,7 @@ export default class AppNamedSlider extends Vue {
   @Prop({ type: String, required: true })
   readonly label!: string
 
-  @Prop({ type: Array<InputValidationRules> })
+  @Prop({ type: Array })
   readonly rules?: InputValidationRules[]
 
   @Prop({ type: Boolean })

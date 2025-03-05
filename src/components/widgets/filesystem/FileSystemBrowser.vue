@@ -131,13 +131,13 @@ import type { DefaultGetterFunction } from '@/components/ui/AppDataTableRow.vue'
   }
 })
 export default class FileSystemBrowser extends Mixins(FilesMixin) {
-  @VModel({ type: Array<FileBrowserEntry>, required: true })
+  @VModel({ type: Array, required: true })
   selected!: FileBrowserEntry[]
 
   @Prop({ type: String, required: true })
   readonly root!: string
 
-  @Prop({ type: Array<FileBrowserEntry>, required: true })
+  @Prop({ type: Array, required: true })
   readonly files!: FileBrowserEntry[]
 
   @Prop({ type: Boolean })
@@ -147,7 +147,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   readonly loading?: boolean
 
   // Currently defined list of headers.
-  @Prop({ type: Array<DataTableHeader>, required: true })
+  @Prop({ type: Array, required: true })
   readonly headers!: DataTableHeader[]
 
   @Prop({ type: String })
