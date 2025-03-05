@@ -462,6 +462,13 @@ app:
         total_duration: Łączny czas trwania
         file_processors: Procesory plików
         user: Użytkownik
+        filament_colors: Kolory filamentu
+        extruder_colors: Kolory ekstrudera
+        filament_change_count: Zmiany filamentu
+        filament_temps: Temperatury filamentu
+        filament_weights: Wagi filamentu
+        mmu_print: Wydruk MMU
+        referenced_tools: Referencyjne narzędzia
     tooltip:
       estop: Awaryjny stop
       managed_by_moonraker: Zarządzane przez konfigurację moonrakera
