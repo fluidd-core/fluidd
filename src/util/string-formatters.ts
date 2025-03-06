@@ -13,7 +13,7 @@ export const prettyCase = (value: string) => {
  */
 export const getStringArray = (value: string, separator = ';') => {
   return value.split(separator)
-    .map(x => x.replace(/^"|"$/, ''))
+    .map(x => x.replace(/^"|"$/g, ''))
 }
 
 /**
