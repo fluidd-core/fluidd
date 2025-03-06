@@ -752,10 +752,10 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'temperature_probe',
       'tmc2240',
       'z_thermal_adjust'
-    ]
+    ] as const
     const supportedDrivers = [
       'tmc2240'
-    ]
+    ] as const
 
     const sensors = Object.keys(state.printer)
       .reduce((groups, item) => {
@@ -773,7 +773,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
               }).toString()
             : Vue.$filters.prettyCase(name)
           const color = Vue.$colorset.next(getKlipperType(item), item)
-          const config = state.printer.configfile.settings[item]
+          const config = state.printer.configfile.settings[item.toLowerCase()]
 
           groups[name] = {
             ...state.printer[item],
@@ -802,7 +802,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'bme280',
       'htu21d',
       'sht3x'
-    ]
+    ] as const
 
     if (supportedSensors.includes(sensorType)) {
       const sensor = state.printer[`${sensorType} ${name}`]
