@@ -44,9 +44,10 @@ export interface Spool {
 }
 
 export interface SpoolmanState {
+  info: SpoolmanInfo | null;
   availableSpools: Spool[];
-  activeSpool?: number;
-  currency?: string;
+  activeSpool: number | null;
+  currency: string | null;
   connected: boolean;
   dialog: SpoolSelectionDialogState;
   socket?: WebSocket;
@@ -87,12 +88,30 @@ export interface MacroWithSpoolId extends Macro {
   }
 }
 
-export type SpoolmanProxyResponse<T> = T | {
-  response: T,
-  error: null
-} | {
-  response: null,
-  error: string | {
-    message: string
-  }
+export interface SpoolmanInfo {
+  version: string;
+  debug_mode: boolean;
+  automatic_backups: boolean;
+  data_dir: string;
+  logs_dir: string;
+  backups_dir: string;
+  db_type: string;
+  git_commit: string;
+  build_date: Date;
 }
+
+export interface SpoolmanProxyResponseV2Success<T> {
+  response: T;
+  error: null;
+}
+
+export interface SpoolmanProxyResponseV2Error {
+  response: null;
+  error: string | {
+    message: string;
+  };
+}
+
+export type SpoolmanProxyResponseV2<T> = SpoolmanProxyResponseV2Success<T> | SpoolmanProxyResponseV2Error
+
+export type SpoolmanProxyResponse<T> = T | SpoolmanProxyResponseV2<T>

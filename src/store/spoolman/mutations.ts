@@ -2,6 +2,7 @@ import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type {
   Spool,
+  SpoolmanInfo,
   SpoolmanState,
   SpoolSelectionDialogState
 } from '@/store/spoolman/types'
@@ -30,6 +31,10 @@ export const mutations: MutationTree<SpoolmanState> = {
 
   setDialogState (state, payload: SpoolSelectionDialogState) {
     state.dialog = payload
+  },
+
+  setInfo (state, payload: SpoolmanInfo) {
+    state.info = payload
   },
 
   setCurrency (state, payload: { value: string }) {
