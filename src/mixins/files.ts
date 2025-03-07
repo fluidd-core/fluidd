@@ -1,29 +1,34 @@
-import type { AppFile, FilesUpload, AppFileThumbnail, KlipperFileMeta } from '@/store/files/types'
+import type { AppFile, FileUpload, AppFileThumbnail, FileDownload } from '@/store/files/types'
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import type { AxiosRequestConfig, AxiosProgressEvent } from 'axios'
 import { httpClientActions } from '@/api/httpClientActions'
 import type { FileWithPath } from '@/types'
+import consola from 'consola'
+import { v4 as uuidv4 } from 'uuid'
+import type { AppUser } from '@/store/auth/types'
 
 @Component
 export default class FilesMixin extends Vue {
   get apiUrl (): string {
-    return this.$store.state.config.apiUrl as string
+    return this.$store.state.config.apiUrl
   }
 
   get isTrustedUser (): boolean {
-    return this.$store.getters['auth/getCurrentUser']?.username === '_TRUSTED_USER_'
+    const currentUser: AppUser | null = this.$store.state.auth.currentUser
+
+    return currentUser?.username === '_TRUSTED_USER_'
   }
 
-  getThumbUrl (meta: KlipperFileMeta, root: string, path: string, large: boolean, date?: number) {
-    const thumb = this.getThumb(meta, root, path, large, date)
+  getThumbUrl (file: AppFile, root: string, path: string, large: boolean, date?: number) {
+    const thumb = this.getThumb(file, root, path, large, date)
 
     return thumb?.url ?? ''
   }
 
-  getThumb (meta: KlipperFileMeta, root: string, path: string, large = true, date?: number): AppFileThumbnail | undefined {
-    if (meta.thumbnails?.length) {
-      const thumb = meta.thumbnails.reduce((a, b) => (a.size > b.size) === large ? a : b)
+  getThumb (file: AppFile, root: string, path: string, large = true, date?: number): AppFileThumbnail | undefined {
+    if (file.thumbnails?.length) {
+      const thumb = file.thumbnails.reduce((a, b) => (a.size > b.size) === large ? a : b)
 
       if (thumb.relative_path) {
         const filepath = path ? `${root}/${path}` : root
@@ -70,42 +75,69 @@ export default class FilesMixin extends Vue {
    * @param path The path to the file
    */
   async getFile<T = any> (filename: string, path: string, size = 0, options?: AxiosRequestConfig) {
-    // Sort out the filepath
-    const filepath = path ? `${path}/${filename}` : filename
+    const currentDownload: FileDownload | null = this.$store.state.files.download
 
-    const abortController = new AbortController()
+    if (currentDownload) {
+      currentDownload.abortController.abort()
 
-    // Add an entry to vuex indicating we're downloading a file.
-    this.$store.dispatch('files/updateFileDownload', {
-      filepath,
-      size,
-      loaded: 0,
-      percent: 0,
-      speed: 0,
-      abortController
-    })
-
-    // Append any additional options.
-    const o = {
-      ...options,
-      signal: abortController.signal,
-      onDownloadProgress: (event: AxiosProgressEvent) => {
-        const payload: any = {
-          filepath,
-          loaded: event.loaded,
-          percent: event.progress ? Math.round(event.progress * 100) : 0,
-          speed: event.rate ?? 0
-        }
-
-        if (event.total) {
-          size = payload.size = event.total
-        }
-
-        this.$store.dispatch('files/updateFileDownload', payload)
-      }
+      this.$store.dispatch('files/removeFileDownload', currentDownload.uid)
     }
 
-    return await httpClientActions.serverFilesGet<T>(filepath, o)
+    // Sort out the filepath
+    const filepath = path
+      ? `${path}/${filename}`
+      : filename
+    const uid = uuidv4()
+
+    try {
+      const abortController = new AbortController()
+
+      // Add an entry to vuex indicating we're downloading a file.
+      this.$store.dispatch('files/updateFileDownload', {
+        uid,
+        filepath,
+        size,
+        loaded: 0,
+        percent: 0,
+        speed: 0,
+        abortController
+      })
+
+      const response = await httpClientActions.serverFilesGet<T>(filepath, {
+        ...options,
+        signal: abortController.signal,
+        onDownloadProgress: (event: AxiosProgressEvent) => {
+          if (abortController.signal.aborted) {
+            return
+          }
+
+          const progress = event.progress ?? (
+            size > 0
+              ? event.loaded / size
+              : 0
+          )
+
+          const payload: any = {
+            uid,
+            loaded: event.loaded,
+            percent: Math.round(progress * 100),
+            speed: event.rate ?? 0
+          }
+
+          if (event.total) {
+            size = payload.size = event.total
+          }
+
+          this.$store.dispatch('files/updateFileDownload', payload)
+        }
+      })
+
+      abortController.abort()
+
+      return response
+    } finally {
+      this.$store.dispatch('files/removeFileDownload', uid)
+    }
   }
 
   /**
@@ -141,7 +173,10 @@ export default class FilesMixin extends Vue {
   createFileUrl (filename: string, path: string, date?: number) {
     const filepath = (path) ? `${path}/${filename}` : `${filename}`
 
-    return `${this.apiUrl}/server/files/${encodeURI(filepath)}?date=${date || Date.now()}`
+    const encodedFilepath = filepath
+      .replace(/[^/]+/g, match => encodeURIComponent(match))
+
+    return `${this.apiUrl}/server/files/${encodedFilepath}?date=${date || Date.now()}`
   }
 
   async createFileUrlWithToken (filename: string, path: string, date?: number) {
@@ -160,44 +195,50 @@ export default class FilesMixin extends Vue {
    * @param andPrint If we should attempt to print this file or not.
    * @param options Axios request options
    */
-  async uploadFile (file: File, path: string, root: string, andPrint: boolean, options?: AxiosRequestConfig) {
+  async uploadFile (file: File, path: string, root: string, andPrint: boolean, uid?: string, options?: AxiosRequestConfig) {
     const filepath = path
       ? `${path}/${file.name}`
       : file.name
+    uid = uid || uuidv4()
 
-    const abortController = new AbortController()
+    try {
+      const abortController = new AbortController()
 
-    this.$store.dispatch('files/updateFileUpload', {
-      filepath,
-      size: file.size,
-      loaded: 0,
-      percent: 0,
-      speed: 0,
-      cancelled: false,
-      abortController
-    })
+      this.$store.dispatch('files/updateFileUpload', {
+        uid,
+        filepath,
+        size: file.size,
+        loaded: 0,
+        percent: 0,
+        speed: 0,
+        cancelled: false,
+        complete: false,
+        abortController
+      } satisfies FileUpload)
 
-    return httpClientActions.serverFilesUploadPost(file, path, root, andPrint, {
-      ...options,
-      signal: abortController.signal,
-      onUploadProgress: (event: AxiosProgressEvent) => {
-        this.$store.dispatch('files/updateFileUpload', {
-          filepath,
-          loaded: event.loaded,
-          percent: event.progress ? Math.round(event.progress * 100) : 0,
-          speed: event.rate ?? 0
-        })
-      }
-    })
-      .then((response) => {
-        return response
+      const response = await httpClientActions.serverFilesUploadPost(file, path, root, andPrint, {
+        ...options,
+        signal: abortController.signal,
+        onUploadProgress: (event: AxiosProgressEvent) => {
+          if (abortController.signal.aborted) {
+            return
+          }
+
+          this.$store.dispatch('files/updateFileUpload', {
+            uid,
+            loaded: event.loaded,
+            percent: event.progress ? Math.round(event.progress * 100) : 0,
+            speed: event.rate ?? 0
+          })
+        }
       })
-      .catch(e => {
-        return e
-      })
-      .finally(() => {
-        this.$store.dispatch('files/removeFileUpload', filepath)
-      })
+
+      abortController.abort()
+
+      return response
+    } finally {
+      this.$store.dispatch('files/removeFileUpload', uid)
+    }
   }
 
   getFullPathAndFile (rootPath: string, file: File | FileWithPath): [string, File] {
@@ -219,45 +260,51 @@ export default class FilesMixin extends Vue {
   // Upload some files.
   async uploadFiles (files: FileList | File[] | FileWithPath[], path: string, root: string, andPrint: boolean) {
     // For each file, adds the associated state.
-    for (const file of files) {
-      const [fullPath, fileObject] = this.getFullPathAndFile(path, file)
+    const fileUploads = [...files]
+      .map(file => {
+        const uid = uuidv4()
+        const [fullPath, fileObject] = this.getFullPathAndFile(path, file)
 
-      const filepath = fullPath
-        ? `${fullPath}/${fileObject.name}`
-        : fileObject.name
+        const filepath = fullPath
+          ? `${fullPath}/${fileObject.name}`
+          : fileObject.name
 
-      this.$store.dispatch('files/updateFileUpload', {
-        filepath,
-        size: fileObject.size,
-        loaded: 0,
-        percent: 0,
-        speed: 0,
-        unit: 'kB',
-        cancelled: false
+        this.$store.dispatch('files/updateFileUpload', {
+          uid,
+          filepath,
+          size: fileObject.size,
+          loaded: 0,
+          percent: 0,
+          speed: 0,
+          cancelled: false,
+          complete: false
+        })
+
+        return {
+          uid,
+          file
+        }
       })
-    }
 
     // Async uploads cause issues in moonraker / klipper.
     // So instead, upload sequentially waiting for moonraker to finish
     // processing of each file.
-    if (files.length > 1) andPrint = false
-    for (const file of files) {
-      const [fullPath, fileObject] = this.getFullPathAndFile(path, file)
+    if (fileUploads.length > 1) andPrint = false
+    for (const fileUpload of fileUploads) {
+      const [fullPath, fileObject] = this.getFullPathAndFile(path, fileUpload.file)
 
-      const filepath = fullPath
-        ? `${fullPath}/${fileObject.name}`
-        : fileObject.name
+      const currentUploads: FileUpload[] = this.$store.state.files.uploads
 
-      const fileState = this.$store.state.files.uploads.find((u: FilesUpload) => u.filepath === filepath)
+      const fileState = currentUploads.find(u => u.uid === fileUpload.uid)
 
       if (fileState && !fileState?.cancelled) {
         try {
-          await this.uploadFile(fileObject, fullPath, root, andPrint)
-        } catch (e) {
-          return e
+          await this.uploadFile(fileObject, fullPath, root, andPrint, fileUpload.uid)
+        } catch (error: unknown) {
+          consola.error('[FileUpload] file', error)
         }
       } else {
-        this.$store.dispatch('files/removeFileUpload', filepath)
+        this.$store.dispatch('files/removeFileUpload', fileUpload.uid)
       }
     }
   }

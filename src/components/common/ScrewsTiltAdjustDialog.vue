@@ -1,11 +1,11 @@
 <template>
   <app-dialog
-    v-model="open"
+    v-model="screwsTiltAdjustDialogOpen"
     :title="$t('app.tool.title.screws_tilt_adjust')"
     max-width="500"
     @save="retry"
   >
-    <div class="overflow-y-auto">
+    <v-card-text class="pa-0">
       <v-simple-table>
         <thead>
           <tr>
@@ -54,7 +54,7 @@
           </tr>
         </tbody>
       </v-simple-table>
-    </div>
+    </v-card-text>
 
     <template #actions>
       <v-spacer />
@@ -70,27 +70,41 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, VModel } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { ScrewsTiltAdjust } from '@/store/printer/types'
 
 @Component({})
 export default class ScrewsTiltAdjustDialog extends Mixins(StateMixin, ToolheadMixin) {
-  @VModel({ type: Boolean })
-    open?: boolean
-
   get screwsTiltAdjust (): ScrewsTiltAdjust {
-    return this.$store.getters['printer/getScrewsTiltAdjust'] as ScrewsTiltAdjust
+    return this.$store.getters['printer/getScrewsTiltAdjust']
+  }
+
+  get showScrewsTiltAdjustDialogAutomatically (): boolean {
+    return this.$store.state.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
+  }
+
+  @Watch('hasScrewsTiltAdjustResults')
+  onHasScrewsTiltAdjustResults (value: boolean) {
+    this.screwsTiltAdjustDialogOpen = (
+      value &&
+      this.showScrewsTiltAdjustDialogAutomatically &&
+      this.klippyReady &&
+      !this.printerPrinting
+    )
+  }
+
+  @Watch('screwsTiltAdjustDialogOpen')
+  onScrewsTiltAdjustDialogOpen (value: boolean) {
+    if (!value) {
+      this.$store.commit('printer/setClearScrewsTiltAdjust')
+    }
   }
 
   retry () {
     this.sendGcode('SCREWS_TILT_CALCULATE', this.$waits.onBedScrewsCalculate)
-    this.open = false
-  }
-
-  destroyed () {
-    this.$store.commit('printer/setClearScrewsTiltAdjust')
+    this.screwsTiltAdjustDialogOpen = false
   }
 }
 </script>

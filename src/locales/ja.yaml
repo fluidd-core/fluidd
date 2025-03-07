@@ -2,6 +2,7 @@ app:
   bedmesh:
     label:
       active: アクティブ
+      base: ベース
       box_scale: ボックススケール
       flat_surface: 平面を表示する
       mesh_matrix: メッシュマトリックス
@@ -16,6 +17,7 @@ app:
       not_loaded: メッシュを読込しない
     tooltip:
       calibrate: 新しいキャリブレーションを開始し、プロファイル'default'として保存します
+      copy_image: ベッドメッシュ画像をコピー
       delete: プロファイルを削除します。
       load: プロファイルを読込み
       save: キャリブレーションされたプロファイルをprinter.cfgに書込みします。
@@ -35,8 +37,10 @@ app:
       auto_scroll: オートスクロール
       flip_layout: レイアウト上下変更
       hide_temp_waits: 待機中を隠す
-    placeholder:
-      command: タブでオートコンプリート、helpと入力でコマンド一覧表示 矢印で履歴ーを表示
+    tooltip:
+      help: >-
+        コマンドに「help」と入力します<br />オートコンプリートには <kbd>タブ</kbd> を使用します<br />履歴には
+        <kbd>&uarr;</kbd> と <kbd>&darr;</kbd> を使用します
   endpoint:
     error:
       cant_connect: 何か問題が発生し、fluiddがアドレスに接続できません。このアドレスで間違いないですか？
@@ -45,7 +49,7 @@ app:
         この場合、moonrakerの設定を変更する必要がある場合があります。マルチプリンター設定に関するドキュメントをご覧ください <a
         href="%{url}" target="_blank">こちら</a>。
     hint:
-      add_printer: '例）http://fluiddpi.local'
+      add_printer: '例）http://fluidd.local'
     msg:
       trouble: 'お困りですか？ <a href="%{url}" target="_blank">詳細はこちら</a> をご覧ください。'
     tooltip:
@@ -53,18 +57,20 @@ app:
         API URLを入力してください。<br />例としては、<br /><blockquote>fluidd.local,
         https://192.168.1.150 があります</blockquote>。
   endstop:
-    label:
-      open: オープン
-      triggered: トリガー
+    states:
+      label:
+        open: オープン
+        triggered: トリガー
     msg:
       subtitle: エンドストップの状態を更新する場合は、更新ボタンを押します。
   file_system:
     filters:
       label:
-        hidden_files_folders: 隠しファイル・隠しフォルダの非表示
+        crowsnest_backup_files: Crowsnest バックアップ ファイルのフィルタリング
+        hidden_files: 隠しファイル・隠しフォルダの非表示
         klipper_backup_files: バックアップファイルを非表示
+        moonraker_backup_files: Moonraker バックアップ ファイルをフィルタリングする
         print_start_time: 印刷済みを隠す
-        print_start_time_desc: すでに印刷したものをフィルタリングします。
         rolled_log_files: ロールされたログファイルを非表示
     label:
       dir_name: ディレクトリ名
@@ -93,10 +99,12 @@ app:
       rename_file: ファイル名変更
       upload_file: ファイルをアップロードする｜ファイルをアップロードする
     tooltip:
+      items_count: '{count} アイテム | {count} 個のアイテム'
       low_on_space: ディスク容量が少なくなりました。
       root_disabled: '{root} rootは使用できません。ログを確認してください。'
     url:
-      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: >-
         https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
@@ -120,6 +128,8 @@ app:
       show_retractions: リトラクションの表示
     msg:
       confirm: '"%{filename}"は %{size}です。これは、システムにとってリソースを大量に消費する可能性があります。よろしいですか？'
+    overlay:
+      drag_file_load: <strong>ここに gcode ファイルをドラッグ</strong> して読み込みます
   general:
     btn:
       abort: アボート
@@ -154,6 +164,7 @@ app:
       login: ログイン
       logout: ログアウト
       more_information: 詳細はこちら
+      multiply: 増やす
       pause: 一時停止
       preheat: プレヒート
       presets: プリセット
@@ -163,6 +174,7 @@ app:
       reboot: 再起動
       recover: 回復する
       refresh: リフレッシュ
+      refresh_metadata: メタデータを更新する
       reload: 再読み込み
       remove: 削除
       remove_all: すべて削除
@@ -178,6 +190,7 @@ app:
       restart_service_moonraker: Moonrakerを再起動する
       resume: 再始動
       retract: リトラクト
+      retry: リトライ
       return_dashboard: ダッシュボードに戻る
       save: 保存
       save_as: 名前を付けて保存
@@ -218,12 +231,16 @@ app:
       api_url: API URL
       apply_z_offset: Z_Offsetの適用と保存
       auth_source: 認証元
+      bars: バー
       category: カテゴリー
       change_password: パスワードの変更
+      circle: サークル
       clear_all: すべてクリア
       color: カラー
       command: コマンド
+      compact: コンパクト
       confirm: 確認
+      cross: クロス
       current_password: 現在のパスワード
       current_user: 現在の使用者
       default: デフォルト
@@ -251,6 +268,7 @@ app:
       low: 低い
       m117: M117
       manage_accounts: アカウントの管理
+      minimum_cruise_ratio: 最小巡航比
       moonraker: Moonraker
       name: 名前
       new_password: 新しいパスワード
@@ -267,6 +285,7 @@ app:
       pressure_advance: 圧力上昇
       printers: プリンター
       progress: 進捗
+      range: 範囲
       requested_speed: スピード
       retract_length: リトラクト長
       retract_speed: リトラクト速度
@@ -278,7 +297,7 @@ app:
       slicer: スライサー
       smooth_time: スムーズタイム
       speed: スピード
-      sqv: 正方形角速度
+      sqv: コーナー速度(SCV)
       stepper_enabled: ステッパーの停止
       synced_extruder: エクストルーダーの同期
       thumbnail_size: サムネイルのサイズ
@@ -331,11 +350,16 @@ app:
         required: 必須
       msg:
         confirm: よろしいですか？
+        confirm_cancel_print: 現在の印刷をキャンセルしてもよろしいですか?
+        confirm_clear_mesh: プリンターは現在稼働中です。ベッドのメッシュをクリアしてもよろしいですか?
         confirm_delete: 'いいですか？選択した項目が削除されます。| 本当によろしいですか？選択されている {count} 個の項目を削除します。'
+        confirm_emergency_stop: プリンターを緊急停止してもよろしいですか?
         confirm_exclude_object: このオブジェクトを印刷から除外してもよろしいですか?
         confirm_forcemove_toggle: これにより、プリンターが損傷する可能性があります。よろしいですか？
+        confirm_load_bedmesh_profile: 'プリンターは現在稼働中です。プロファイル %{name}をロードしてもよろしいですか?'
         confirm_power_device_toggle: このデバイスの電源が切り替わります。よろしいですか？
         confirm_reboot_host: ホストシステムが再起動されます。よろしいですか？
+        confirm_remove_user: 'ユーザー %{username}を削除してもよろしいですか?'
         confirm_service_restart: '%{name} サービスを再起動してよろしいですか？'
         confirm_service_start: ' %{name} サービスを開始しますか?'
         confirm_service_stop: ' %{name} サービスを停止してよろしいですか？'
@@ -409,6 +433,10 @@ app:
     tooltip:
       browse_metrics: 利用可能なメトリックを閲覧する
       estop: 緊急停止
+      file_browser_configuration_help: ファイルとフォルダーをここからドラッグ＆ドロップすることで、構成ファイルにコピーします。
+      file_browser_help: >-
+        ブラウザの外部からファイルやフォルダをドラッグ＆ドロップして、ここにアップロードします。<br>ファイルやフォルダをサブフォルダまたは「..」にドラッグ
+        ＆ドロップして移動します。
       managed_by_moonraker: Moonraker 構成によって管理されます
       notifications: 通知
       reload_klipper: klipper の設定を再読み込みする。
@@ -422,8 +450,15 @@ app:
       confirm_jobs: これですべてのジョブがクリアされます。よろしいですか？
       confirm_stats: これですべての統計情報がクリアされます。よろしいですか？
   job_queue:
+    label:
+      number_of_copies: 部数
     msg:
       confirm: これでプリンターキュー全体がクリアされます。よろしいですか？
+    title:
+      multiply_job: ジョブを乗算する |ジョブを増やす
+    tooltip:
+      help: >-
+        ジョブからファイルをドラッグしてここにドロップして、ジョブをキューに入れます。<br>キューに入れられたジョブの順序を上下にドラッグして調整します。
   printer:
     state:
       busy: 印刷中
@@ -435,6 +470,11 @@ app:
       printing: 印刷中
       ready: 準備完了
       standby: スタンバイ
+    title:
+      printer_status: プリンターのステータス
+  sensors:
+    title:
+      sensors: センサー
   setting:
     btn:
       add_camera: カメラを追加
@@ -456,6 +496,8 @@ app:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
       video: IP Camera
+      webrtc_camera_streamer: WebRTC (カメラストリーマー)
+      webrtc_go2rtc: WebRTC (go2rtc)
     label:
       all_off: すべてオフ
       all_on: すべてオン
@@ -474,6 +516,8 @@ app:
         title: フルスクリーンアクション
       camera_rotate_by: 回転させる
       camera_stream_type: ストリームタイプ
+      camera_url_snapshot: 'カメラのスナップショット URL '
+      camera_url_stream: カメラのストリームURL
       card: カード
       collector: コレクタ
       confirm_dirty_editor_close: 保存されていない変更内容でエディタを閉じる場合、確認を表示する。
@@ -492,9 +536,11 @@ app:
       default_toolhead_z_speed: デフォルトのツールヘッドZ速度
       dotted: 点在
       draw_background: 背景を描く
+      draw_origin: 描画原点
       enable: 有効化
       enable_diagnostics: 診断を有効にする
       enable_notifications: 通知を有効にする
+      enable_xy_homing: XY ホーミングを有効にする
       expression: 表現方法
       extrusion_line_width: 押し出し線幅
       fill_color: 塗りつぶしの色
@@ -507,6 +553,7 @@ app:
       fps_target: FPSターゲット
       gcode_coords: GCode座標を使用する
       height: 高さ
+      hide_single_part_bounding_box: 単一パーツを印刷するときにパーツの境界ボックスを非表示にする
       icon: アイコン
       invert_x_control: Xコントロールを反転
       invert_y_control: Yコントロールを反転
@@ -521,24 +568,31 @@ app:
       min: 最小
       move_line_width: 線幅の移動
       name: 名称
+      never: しない
       none: 無し
       optional: オプション
       power_toggle_in_top_nav: 上部ナビゲーションの電源切り替え
       primary_color: 現在の色
+      print_in_progress_layout: 印刷中のレイアウト
       printer_name: プリンター名
       reset: 設定をリセット
       retraction_icon_size: 引き込みアイコンのサイズ
       right_y: 右 Y 軸
+      save_and_restore_view_state: ビューステートの保存と復元
+      sections_to_ignore_pending_configuration_changes: 保留中のセクション構成変更を無視する
       show_animations: アニメーションを表示する
       show_barometric_pressure: 気圧を表示
       show_bed_screws_adjust_dialog_automatically: ベッドスクリュー調整ダイアログを自動的に表示
+      show_chart: チャートを表示
       show_code_lens: CodeLens を表示
       show_gas_resistance: 耐ガス性を示す
       show_legend: 凡例を表示
+      show_logo_on_background: 背景にロゴを表示
       show_manual_probe_dialog_automatically: 手動プローブ ダイアログを自動的に表示
       show_rate_of_change: 温度変化率を表示する
       show_relative_humidity: 相対湿度を表示
       show_save_config_and_restart: '上部ナビゲーションに [設定を保存して再起動] ボタン'
+      show_screws_tilt_adjust_dialog_automatically: ネジの傾き調整ダイアログを自動的に表示
       show_upload_and_print: '上部のナビゲーションに [アップロードと印刷] ボタンを表示する'
       solid: ソリッド
       starts_with: で始まる
@@ -548,7 +602,12 @@ app:
       thermal_preset_name: プリセット名
       time_format: 時間表示方法
       title: タイトル
+      to_browser_local_storage: ブラウザのローカルストレージへ
+      to_browser_session_storage: ブラウザセッションストレージへ
+      toolhead_control_style: ツールヘッドの制御スタイル
       toolhead_move_distances: ツールヘッド距離値
+      toolhead_xy_move_distances: ツールヘッドの XY 距離値
+      toolhead_z_move_distances: ツールヘッドの Z 距離の値
       type: タイプ
       unit: 単位
       z_adjust_values: Z値を調整します
@@ -561,6 +620,7 @@ app:
       authentication: 認証
       camera: カメラ｜カメラ
       console: コンソール
+      file_browser: ファイルブラウザ
       file_editor: ファイルエディタ
       gcode_preview: Gコードプレビュー
       general: 全般
@@ -571,15 +631,72 @@ app:
     tooltip:
       diagnostics_performance: '[ベータ] 診断情報をログに記録すると、パフォーマンスに影響を与える可能性があります'
       gcode_coords: ダッシュボードのツールヘッド位置の代わりにGCode位置を使用する
-      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST ツールを実行している場合、自動的にヘルパー ダイアログを表示します
+      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST ツールを実行している場合、自動的にヘルパー
+        ダイアログを表示します
       show_manual_probe_dialog_automatically: Manual Probe ツールを実行している場合、自動的にヘルパー ダイアログを表示します
+      show_screws_tilt_adjust_dialog_automatically: SCREWS_TILT_CALCULATE ツールを実行している場合、ヘルパー
+        ダイアログが自動的に表示されます
+      theme_disclaimer: >-
+        これらのテーマには、それぞれの所有者の知的財産であるブランド名とロゴが使用されています。<br>
+        これらの名前とロゴの掲載は、ブランドの許可を得て行われています。<br>
+        ただし、これらのテーマはそれぞれのブランドによって正式に管理されているわけではないことに注意してください。<br>
+        テーマに関連する問題や問い合わせは、Fluidd チームに送信してください。<br>
+        ブランド名とロゴの使用は、装飾と美観のみを目的としており、ブランドとの正式な関係やブランドによる承認を意味するものではありません。
   socket:
     msg:
       connecting: moonrakerに接続しています...
       no_connection: moonraker接続はありません。moonrakerのステータスを確認するか、更新してください。
+  spoolman:
+    btn:
+      manage_spools: スプールの管理
+      scan_code: コードをスキャン
+      select: '選択 | {macro}を選択してください'
+    label:
+      active_spool: アクティブスプール
+      change_spool: スプール変更
+      comment: コメント
+      device_camera: デバイス
+      filament_name: フィラメント
+      first_used: 最初の使用
+      id: ID
+      last_used: 最後に使用した
+      location: ロケーション
+      lot_nr: ロット番号
+      material: 素材
+      remaining_weight: 残り
+      vendor: ベンダー
+    msg:
+      error:
+        cors: カメラ フィードへのアクセス中にエラーが発生しました。 Web カメラサーバーが CORS アクセスを許可していることを確認してください。
+        no_image_data: カメラ フィードへのアクセス中にエラーが発生しました。カメラの構成を確認するか、別のカメラ ソースを試してください。
+        spool_not_existant: スキャンしたスプールはデータベースに存在しません。
+      info:
+        howto: スプールの QR コードをカメラに見せてください。このウィンドウは、スプールが検出されるとすぐに閉じます。
+      mismatched_filament: 選択したフィラメントの材質がスライサーで選択した材質と一致しません。続行してもよろしいですか?
+      no_filament: 選択したスプールには、印刷ジョブを正常に完了するのに十分なフィラメントが残っていない可能性があります。続行してもよろしいですか?
+      no_required_length: 選択したファイルを印刷するために必要なフィラメントの量は不明です。続行しますか?
+      no_spool: スプールが選択されていません。フィラメントトラッキングなしで印刷してもよろしいですか?
+      not_connected: Spoolman サーバーが利用できません。
+      tracking_inactive: フィラメント追跡は非アクティブです。まず、スプールを選択してください。
+      warning:
+        code_not_recognized: このコードは互換性のある QR コードではないようです。
+        invalid_spool_id: この QR コードに含まれるスプール ID は無効です。
+    setting:
+      auto_open_qr_camera: QRコード検出のためにカメラを自動的に開きます
+      auto_select_spool_on_match: QRコード一致時にスプール選択を自動的にコミット
+      prefer_device_camera: 可能な場合はデバイスのカメラを QR コード検出に使用します
+      show_spool_selection_dialog_on_print_start: 印刷開始時にスプール選択ダイアログを表示する
+      warn_on_filament_type_mismatch: スプールのフィラメント タイプとスライサーで選択したフィラメント タイプが一致しない場合に警告を表示します。
+      warn_on_not_enough_filament: 選択したスプールに印刷を完了するのに十分なフィラメントが残っていない場合に警告を表示します。
+    title:
+      scan_spool: スプールのスキャン
+      spool_selection: 'スプールの選択 |マクロ {macro}のスプール選択'
+      spoolman: Spoolman
   system_info:
     label:
+      awake_time: 起動時間
       capacity: 容量
+      constants: 定数
       cpu_desc: CPUの説明
       distribution_codename: コード名
       distribution_like: 参照ディストリビューション
@@ -588,12 +705,15 @@ app:
       hardware_desc: ハードウェアの説明
       hostname: ホスト名
       klipper_load: Klipper 稼働状況
+      last_stats: 最新の統計
+      load: 負荷
       manufactured: 製造日
       manufacturer: メーカー
       mcu_awake: '{mcu} アウェイクタイム'
       mcu_bandwidth: '{mcu} 帯域幅'
       mcu_information: '{mcu} 情報'
       mcu_load: '{mcu} 稼働状況'
+      memory_used: 使用メモリ
       micro_controller: マイクロコントローラー
       model: CPUモデル
       moonraker_load: Moonraker稼働状況
@@ -671,15 +791,19 @@ app:
         <span class="secondary--text">現在のエクストルーダー構成は、</span> %{filamentDiameter}
         mmフィラメント <span class="secondary--text">と</span> %{nozzleDiameter} mm
         ノズルに設定されています
-      stats_extruded_length: ' %{extrudeFactor} % の流量<span class="secondary--text">で %{extrudeLength} mm のフィラメントを押し出すと、</span> 推定長 %{estimatedExtrudedLength} mm となります。'
+      stats_extruded_length: ' %{extrudeFactor} % の流量<span class="secondary--text">で
+        %{extrudeLength} mm のフィラメントを押し出すと、</span> 推定長 %{estimatedExtrudedLength} mm
+        となります。'
       stats_max_speed: >-
         <span class="secondary--text">レイヤー高を</span> %{layerHeight} mm<span
         class="secondary--text">とすると、</span> の推定最大印刷速度は %{estimatedMaxSpeed}
         mm/s です
-      stats_volumetric_flow: ' %{extrudeSpeed} mm/s<span class="secondary--text">で押し出すと、</span>推定体積流量は  %{estimatedVolumetricFlow} mm3/s になります。'
+      stats_volumetric_flow: ' %{extrudeSpeed} mm/s<span class="secondary--text">で押し出すと、</span>推定体積流量は  %{estimatedVolumetricFlow}
+        mm3/s になります。'
     title:
       bed_screws_adjust: ベッドスクリューの調整
       manual_probe: マニュアルプローブ
+      screws_tilt_adjust: ネジ 傾き調整
     tooltip:
       absolute_positioning: 相対位置
       extruder_disabled: '最小温度未満（%{min}<small>°C</small>）のためホットエンドが無効です。'
@@ -688,6 +812,7 @@ app:
       manual_probe: マニュアルプローブ
       motors_off: モーターオフ
       relative_positioning: 相対位置
+      select_tool: 'ツール %{tool}を選択してください'
       tools: ツール
   version:
     btn:

@@ -1,11 +1,10 @@
 import vuetify from '@/plugins/vuetify'
 import type { ActionTree } from 'vuex'
-import type { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, ThemeConfig } from './types'
+import type { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, ThemeConfig, ConfiguredTableHeader } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'
 import { Waits } from '@/globals'
-import type { AppTableHeader } from '@/types'
 import type { FileFilterType } from '../files/types'
 import { TinyColor } from '@ctrl/tinycolor'
 
@@ -121,9 +120,12 @@ export const actions: ActionTree<ConfigState, RootState> = {
     })
 
     // Now, find the instance in our instance list and update there.
-    let instance = getters.getCurrentInstance
+    let instance: InstanceConfig | undefined = getters.getCurrentInstance
     if (instance) {
-      instance = { ...instance, ...{ name: state.uiSettings.general.instanceName } }
+      instance = {
+        ...instance,
+        name: state.uiSettings.general.instanceName
+      }
       // update the instance item...
       commit('setUpdateInstanceName', instance)
     }
@@ -161,11 +163,30 @@ export const actions: ActionTree<ConfigState, RootState> = {
     SocketActions.serverWrite(`uiSettings.fileSystem.activeFilters.${payload.root}`, state.uiSettings.fileSystem.activeFilters[payload.root])
   },
 
+  async updateFileSystemSortBy ({ commit, state }, payload: { root: string, value: string | null }) {
+    commit('setFileSystemSortBy', payload)
+    SocketActions.serverWrite(`uiSettings.fileSystem.sortBy.${payload.root}`, state.uiSettings.fileSystem.sortBy[payload.root])
+  },
+
+  async updateFileSystemSortDesc ({ commit, state }, payload: { root: string, value: boolean | null }) {
+    commit('setFileSystemSortDesc', payload)
+    SocketActions.serverWrite(`uiSettings.fileSystem.sortDesc.${payload.root}`, state.uiSettings.fileSystem.sortDesc[payload.root])
+  },
+
   /**
    * Toggle a tables header state based on its name and key.
    */
-  async updateHeader ({ commit, state }, payload: { name: string; header: AppTableHeader }) {
+  async updateHeader ({ commit, state }, payload: { name: string; header: ConfiguredTableHeader }) {
     commit('setUpdateHeader', payload)
+
+    if (state.uiSettings.tableHeaders[payload.name]) {
+      SocketActions.serverWrite(`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
+    }
+  },
+
+  async updateHeaders ({ commit, state }, payload: { name: string; headers: ConfiguredTableHeader[] }) {
+    commit('setUpdateHeaders', payload)
+
     if (state.uiSettings.tableHeaders[payload.name]) {
       SocketActions.serverWrite(`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
     }

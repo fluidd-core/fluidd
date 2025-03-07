@@ -22,6 +22,7 @@ app:
       delete: Elimina el perfil
       load: Cargar el perfil
       save: Guarda el perfil de calibracion en el archivo printer.cfg
+      copy_image: Copiar imagen de la malla de cama
   chart:
     label:
       current: Tª
@@ -31,8 +32,8 @@ app:
       target: Objetivo
     tooltip:
       help: >-
-        Mantenga presionada la tecla Mayús para hacer zoom. <br /> Haga clic en
-        un elemento para mostrarlo. <br /> Haga clic en una potencia para
+        Mantenga presionada la tecla <kbd>Mayús</kbd> para hacer zoom. <br /> Haga
+        clic en un elemento para mostrarlo. <br /> Haga clic en una potencia para
         mostrarla.
   console:
     label:
@@ -57,7 +58,7 @@ app:
         Consulte la documentación sobre las configuraciones con varias
         impresoras <a href="%{url}" target="_blank">aquí</a>.
     hint:
-      add_printer: 'Ex., http://fluiddpi.local'
+      add_printer: 'Ex., http://fluidd.local'
     msg:
       trouble: >-
         ¿Tienes problemas? <a href="%{url}" target="_blank">Haga clic aquí</a>
@@ -67,17 +68,21 @@ app:
         Ingrese la URL de la API. <br />Por ejemplo:<br
         /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: ABIERTO
-      triggered: ACTIVADO
+    states:
+      label:
+        open: ABIERTO
+        triggered: ACTIVADO
     msg:
       subtitle: Presione el botón 'Actualizar' para actualizar el estado.
   file_system:
     filters:
       label:
         print_start_time: Filtrar ya impresos
-        print_start_time_desc: Filtrar archivos que ya ha impreso anteriormente
-        hidden_files_folders: Filtrar archivos y carpetas ocultos
+        hidden_files: Filtrar archivos y carpetas ocultos
+        klipper_backup_files: Filtar archivos de backup de Klipper
+        rolled_log_files: Filtrar archivos de log rotados
+        moonraker_backup_files: Filtrar archivos de backup de Moonraker
+        crowsnest_backup_files: Filtrar archivos de backup de Crowsnest
     label:
       dir_name: Nombre de la carpeta
       disk_usage: Uso del disco
@@ -97,8 +102,24 @@ app:
       rename_dir: Cambiar el nombre de la carpeta
       rename_file: Cambiar el nombre del archivo
       upload_file: Subiendo archivo | Subiendo archivos
+      devices: Dispositivos
+      command_palette: Paleta de comandos
+      duplicate_dir: Directorio duplicado
+      go_to_file: Ir al archivo
+      duplicate_file: Archivo duplicado
     tooltip:
       low_on_space: Espacio en disco limitado
+      root_disabled: '{root} root no esta disponible. Por favor chequear los registros.'
+      items_count: '{count} elemento | {count} elementos'
+    url:
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
+      crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
+      moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
+      moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
+    overlay:
+      drag_files_enqueue: <strong>Arrastrar</strong> archivos aqui para encolar
+      drag_files_folders_upload: <strong>Arrastrar</strong> archivos y carpetas aqui
+        para subir
   gcode:
     btn:
       load_current_file: Cargar archivo actual
@@ -116,10 +137,13 @@ app:
       show_next_layer: Mostrar capa siguiente
       show_previous_layer: Mostrar capa anterior
       show_retractions: Mostrar retracciones
+      show_parts: Mostrar partes
     msg:
       confirm: >-
         El archivo "%{filename}" pesa %{size}. Esto podría usar muchos recursos
         de su sistema. ¿Está seguro?
+    overlay:
+      drag_file_load: <strong>Arrastra</strong> un archivo gcode aqui para cargar
   general:
     btn:
       abort: Abortar
@@ -178,6 +202,30 @@ app:
       upload: Subir
       upload_print: Subir e imprimir
       view: Ver
+      add_to_queue: Agregar a la cola
+      delete: Eliminar
+      create_zip_archive: Crear archivo ZIP
+      duplicate: Duplicado
+      go_to_file: Ir al archivo
+      multiply: Multiplicar
+      reload: Recargar
+      copied: Copiado
+      copy: Copiar
+      exit_layout: Salir del modo diseño
+      job_queue: Cola de trabajo
+      logout: Cerrar sesión
+      print: Imprimir
+      retry: Reintentar
+      filter: Filtro
+      recover: Recuperar
+      reset_default_layout: Restaurar diseño predeterminado
+      select_columns: Seleccionar columnas
+      set_default_layout: Seleccionar el diseño por defecto
+      thumbnail_size: Tamaño de vista previa
+      upload_folder: Subir carpeta
+      refresh_metadata: Actualizar metadatos
+      upload_files: Subir archivos
+      return_dashboard: Volver al panel de control
     error:
       app_setup_link: >-
         Las instrucciones de instalación de Fluidd están disponibles <a
@@ -274,6 +322,29 @@ app:
       visible: Visible
       z_offset: Z Offset
       range: Rango
+      synced_extruder: Extrusor sincronizado
+      upload_and_print: Subir e imprimir
+      stepper_enabled: Stepper habilitado
+      unknown: Desconocido
+      thumbnail_size: Tamaño de la miniatura
+      file_time: Archivo
+      pause_at_next_layer: Pausar en la siguiente capa
+      pause_at_layer_number: Pausar en el número siguiente
+      pressure_advance: Avance de Presión
+      circle: Círculo
+      numeric_prefix_sort: Ordenar Prefijo Numérico
+      auth_source: Fuente de autenticación
+      command: Comando
+      default: Defecto
+      pause_at_layer: Pausar en la Capa
+      compact: Compactar
+      all: Todo
+      manage_accounts: Gestionar Cuentas
+      moonraker: Moonraker
+      version_sort: Ordenar Versión
+      bars: Barras
+      ldap: LDAP
+      cross: Cruz
     msg:
       bed_screws_adjust: >-
         Haga click en <b>Ajustado</b> si fue necesario un ajuste significativo
@@ -281,6 +352,14 @@ app:
         continuar.
       password_changed: Contraseña cambiada
       wrong_password: Se ha producido un error. ¿Es su contraseña correcta?
+      fluidd_settings_restore_failed: Fallo al restaurar los Ajustes de Fluid!
+      offline_ready: Fluidd se encuentra listo para trabajar fuera de línea.
+      welcome_back: Bienvenido de nuevo. <br>A continuación, inicie sesión para mantenerse
+        conectado a su impresora.
+      needs_refresh: Nuevo contenido disponible. Haga clic en botón <b>Actualizar</b>
+        para ver los cambios.
+      pending_configuration_sections_deleted: Las siguientes secciones se encuentran
+        marcadas para ser eliminadas
     simple_form:
       error:
         arrayofnums: Solo números
@@ -430,6 +509,9 @@ app:
       unit: Unidad
       z_adjust_values: Valores de ajuste de Z
       show_logo_on_background: Mostrar logotipo en el fondo
+      drag_and_drop_functionality_for_files_and_folders: Función de arrastrar y soltar
+        archivos y carpetas
+      force_move_toggle_warning: Requerir confirmación al activar FORCE_MOVE
     timer_options:
       duration: Solo duración
       filament: Estimación por filamento

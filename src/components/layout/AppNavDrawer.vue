@@ -22,40 +22,40 @@
           :style="`height: ${$globals.HEADER_HEIGHT}px;`"
           class="app-icon"
         >
-          <router-link to="/">
+          <router-link :to="{ name: 'home' }">
             <app-icon />
           </router-link>
         </div>
 
         <div
-          v-show="authenticated && socketConnected"
+          v-if="socketConnected && authenticated"
           class="nav-items"
         >
           <app-nav-item
             icon="$dash"
             exact
-            to="/"
+            to="home"
           >
             {{ $t('app.general.title.home') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$console"
-            to="/console"
+            to="console"
           >
             {{ $t('app.general.title.console') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$cubeScan"
-            to="/preview"
+            to="gcode_preview"
           >
             {{ $t('app.general.title.gcode_preview') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$files"
-            to="/jobs"
+            to="jobs"
           >
             {{ $t('app.general.title.jobs') }}
           </app-nav-item>
@@ -63,7 +63,7 @@
           <app-nav-item
             v-if="supportsHistory"
             icon="$history"
-            to="/history"
+            to="history"
           >
             {{ $t('app.general.title.history') }}
           </app-nav-item>
@@ -71,14 +71,14 @@
           <app-nav-item
             v-if="supportsTimelapse"
             icon="$video"
-            to="/timelapse"
+            to="timelapse"
           >
             {{ $t('app.general.title.timelapse') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$tune"
-            to="/tune"
+            to="tune"
           >
             {{ $t('app.general.title.tune') }}
           </app-nav-item>
@@ -86,32 +86,56 @@
           <app-nav-item
             v-if="enableDiagnostics"
             icon="$chart"
-            to="/diagnostics"
+            to="diagnostics"
           >
             {{ $t('app.general.title.diagnostics') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$codeJson"
-            to="/configure"
+            to="configure"
           >
             {{ $t('app.general.title.configure') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$desktopTower"
-            to="/system"
+            to="system"
           >
             {{ $t('app.general.title.system') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$cog"
-            to="/settings"
+            to="settings"
           >
             {{ $t('app.general.title.settings') }}
           </app-nav-item>
         </div>
+
+        <template
+          v-if="socketConnected && authenticated && !isMobileViewport && canEditLayout"
+          #append
+        >
+          <v-tooltip right>
+            <template #activator="{ attrs, on }">
+              <app-btn
+                icon
+                large
+                :color="layoutMode ? 'primary' : undefined"
+                style="margin: 6px"
+                v-bind="attrs"
+                v-on="on"
+                @click="layoutMode = !layoutMode"
+              >
+                <v-icon>$apps</v-icon>
+              </app-btn>
+            </template>
+            <span>
+              {{ $t('app.general.btn.adjust_layout') }}
+            </span>
+          </v-tooltip>
+        </template>
       </v-navigation-drawer>
 
       <router-view
@@ -131,21 +155,17 @@ import BrowserMixin from '@/mixins/browser'
 @Component({})
 export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
-  get supportsHistory () {
+  get supportsHistory (): boolean {
     return this.$store.getters['server/componentSupport']('history')
   }
 
-  get supportsTimelapse () {
+  get supportsTimelapse (): boolean {
     return this.$store.getters['server/componentSupport']('timelapse')
   }
 
-  get supportsVersions () {
-    return this.$store.getters['server/componentSupport']('update_manager')
-  }
-
-  get enableDiagnostics () {
+  get enableDiagnostics (): boolean {
     return this.$store.state.config.uiSettings.general.enableDiagnostics
   }
 
@@ -155,6 +175,18 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   get showSubNavigation () {
     return this.hasSubNavigation && this.socketConnected && this.authenticated
+  }
+
+  get canEditLayout () {
+    return this.$route.meta?.dashboard ?? false
+  }
+
+  get layoutMode (): boolean {
+    return this.$store.state.config.layoutMode
+  }
+
+  set layoutMode (val: boolean) {
+    this.$store.commit('config/setLayoutMode', val)
   }
 }
 </script>

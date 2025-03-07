@@ -19,6 +19,7 @@ import vuetify from './plugins/vuetify'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import VueMeta from 'vue-meta'
 import VuetifyConfirm from 'vuetify-confirm'
+import Vue2TouchEvents from 'vue2-touch-events'
 import { InlineSvgPlugin } from 'vue-inline-svg'
 
 // Init.
@@ -52,36 +53,35 @@ Vue.use(VuetifyConfirm, {
   vuetify
 })
 Vue.use(InlineSvgPlugin)
+Vue.use(Vue2TouchEvents)
 
 Vue.use(HttpClientPlugin, {
   store
 })
 
+Vue.use(SocketPlugin, {
+  reconnectEnabled: true,
+  reconnectInterval: Globals.SOCKET_RETRY_DELAY,
+  store
+})
+
+Vue.config.productionTip = false
+
+new Vue({
+  i18n,
+  router,
+  store,
+  vuetify,
+  render: (h) => h(App)
+}).$mount('#app')
+
 appInit()
   .then((config: InitConfig) => {
     consola.debug('Loaded App Configuration', config)
 
-    // Init the socket plugin
-    Vue.use(SocketPlugin, {
-      url: config.apiConfig.socketUrl,
-      reconnectEnabled: true,
-      reconnectInterval: Globals.SOCKET_RETRY_DELAY,
-      store
-    })
-
     if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {
       Vue.$socket.connect(config.apiConfig.socketUrl)
     }
-
-    // Init Vue
-    Vue.config.productionTip = false
-    new Vue({
-      i18n,
-      router,
-      store,
-      vuetify,
-      render: (h) => h(App)
-    }).$mount('#app')
   })
   .catch((e) => {
     consola.debug('Error attempting to init App:', e)

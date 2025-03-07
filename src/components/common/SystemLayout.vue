@@ -1,5 +1,8 @@
 <template>
-  <v-list dense>
+  <v-list
+    v-if="canEditLayout"
+    dense
+  >
     <v-subheader>{{ $t('app.general.label.layout') }}</v-subheader>
 
     <v-list-item @click.prevent="layoutMode = !layoutMode">
@@ -22,7 +25,11 @@ import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class SystemLayout extends Mixins(StateMixin) {
-  get layoutMode () {
+  get canEditLayout () {
+    return this.$route.meta?.dashboard ?? false
+  }
+
+  get layoutMode (): boolean {
     return this.$store.state.config.layoutMode
   }
 

@@ -1,6 +1,10 @@
 <template>
   <v-row v-if="toolChangeCommands.length > 0">
-    <v-col>
+    <v-col
+      v-for="(toolChangeCommandsGroup, index2) in toolChangeCommandsGrouped"
+      :key="index2"
+      cols="12"
+    >
       <app-btn-group
         class="app-toolchanger-control d-flex"
         :class="{
@@ -8,7 +12,7 @@
         }"
       >
         <v-tooltip
-          v-for="(macro, index) of toolChangeCommands"
+          v-for="(macro, index) of toolChangeCommandsGroup"
           :key="index"
           top
         >
@@ -22,8 +26,15 @@
               v-on="on"
               @click="sendGcode(macro.name)"
             >
+              <v-icon
+                v-if="macro.spoolId && getSpoolById(macro.spoolId)"
+                class="mr-1 spool-icon"
+                :color="getSpoolColor(getSpoolById(macro.spoolId))"
+              >
+                $filament
+              </v-icon>
               <span
-                v-if="macro.color"
+                v-else-if="macro.color"
                 class="extruder-color mr-1"
                 :class="{
                   active: macro.active
@@ -47,18 +58,22 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { GcodeCommands } from '@/store/printer/types'
 import type { TranslateResult } from 'vue-i18n'
+import type { Spool } from '@/store/spoolman/types'
+import { chunk } from 'lodash-es'
+import type { Macro } from '@/store/macros/types'
 
 type ToolChangeCommand = {
   name: string,
   description: string | TranslateResult,
   color?: string,
-  active?: boolean
+  active?: boolean,
+  spoolId?: number
 }
 
 @Component({})
 export default class ToolChangeCommands extends Mixins(StateMixin) {
   get availableCommands (): GcodeCommands {
-    return this.$store.getters['printer/getAvailableCommands'] as GcodeCommands
+    return this.$store.getters['printer/getAvailableCommands']
   }
 
   get toolChangeCommands (): ToolChangeCommand[] {
@@ -66,20 +81,21 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
 
     return Object.keys(availableCommands)
       .filter(command => /^t\d+$/i.test(command))
-      .map(command => {
+      .map((command): ToolChangeCommand => {
         const { help } = availableCommands[command]
         const description = help && help !== 'G-Code macro'
           ? help
           : this.$t('app.tool.tooltip.select_tool', { tool: command.substring(1) })
 
-        const macro = this.$store.getters['macros/getMacroByName'](command.toLowerCase())
+        const macro: Macro | undefined = this.$store.getters['macros/getMacroByName'](command)
 
         return {
           name: command,
           description,
           color: macro?.variables?.color ? `#${macro.variables.color}` : undefined,
-          active: macro?.variables?.active ?? false
-        } satisfies ToolChangeCommand
+          active: macro?.variables?.active === true,
+          spoolId: macro?.variables?.spool_id ? +macro.variables.spool_id : undefined
+        }
       })
       .sort((a, b) => {
         const numberA = parseInt(a.name.substring(1))
@@ -87,6 +103,22 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
 
         return numberA - numberB
       })
+  }
+
+  get toolChangeCommandsGrouped (): ToolChangeCommand[][] {
+    const toolChangeCommands = this.toolChangeCommands
+
+    const cols = Math.ceil(toolChangeCommands.length / Math.ceil(toolChangeCommands.length / 6))
+
+    return chunk(toolChangeCommands, cols)
+  }
+
+  getSpoolById (id: number): Spool | undefined {
+    return this.$store.getters['spoolman/getSpoolById'](id)
+  }
+
+  getSpoolColor (spool: Spool | undefined) {
+    return `#${spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? 'fff' : '000')}`
   }
 }
 </script>

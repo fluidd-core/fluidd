@@ -82,7 +82,7 @@ export default class Toolhead extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get toolheadControlStyle (): ToolheadControlStyle {
-    return this.$store.state.config.uiSettings.general.toolheadControlStyle as ToolheadControlStyle
+    return this.$store.state.config.uiSettings.general.toolheadControlStyle
   }
 }
 </script>

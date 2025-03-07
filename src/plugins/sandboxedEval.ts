@@ -1,4 +1,4 @@
-const frames: {[feature: string]: any} = {}
+const frames: { [feature: string]: any } = {}
 
 export default function (code: string, feature?: string): any {
   let frame

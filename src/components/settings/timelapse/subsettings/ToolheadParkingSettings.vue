@@ -8,7 +8,6 @@
       <v-switch
         v-model="parkhead"
         hide-details
-        class="mb-5"
         :disabled="parkheadBlocked"
         @click.native.stop
       />
@@ -111,7 +110,6 @@
         <v-switch
           v-model="firmwareRetract"
           hide-details
-          class="mb-5"
           :disabled="firmwareRetractBlocked"
           @click.native.stop
         />
@@ -147,7 +145,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   @Ref('parkPosDZElement')
   readonly parkPosDZElement?: VInput
 
-  get parkPositions (): {text: string, value: ParkPosition}[] {
+  get parkPositions (): { text: string, value: ParkPosition }[] {
     const values: ParkPosition[] = ['front_left', 'front_right', 'center', 'back_left', 'back_right', 'x_only', 'y_only', 'custom']
 
     return values.map(value => ({ text: this.$tc(`app.timelapse.setting.parkpos.${value}`), value }))
@@ -232,7 +230,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   get settings (): TimelapseSettings {
-    return this.$store.getters['timelapse/getSettings']
+    return this.$store.state.timelapse.settings ?? {} as TimelapseSettings
   }
 
   subtitleIfBlocked (blocked: boolean): string {

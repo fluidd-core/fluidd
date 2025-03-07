@@ -1,12 +1,10 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
+import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig, ConfiguredTableHeader } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
-import { merge, set } from 'lodash-es'
+import { cloneDeep, mergeWith, set } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
-import type { AppTableHeader } from '@/types'
-import type { AppTablePartialHeader } from '@/types/tableheaders'
 import type { FileFilterType } from '../files/types'
 import consola from 'consola'
 
@@ -47,28 +45,18 @@ export const mutations: MutationTree<ConfigState> = {
         }
       }
 
-      // Most settings should be merged, so start there.
-      const processed = merge(state.uiSettings, payload)
+      const mergedSettings = mergeWith(
+        cloneDeep(state.uiSettings),
+        payload,
+        (dest, src) => Array.isArray(dest) ? src : undefined
+      )
 
-      // Apply overrides.
-      if (payload.general?.zAdjustDistances) {
-        Vue.set(processed.general, 'zAdjustDistances', payload.general.zAdjustDistances)
-      }
-
-      if (payload.general?.toolheadMoveDistances) {
-        Vue.set(processed.general, 'toolheadMoveDistances', payload.general.toolheadMoveDistances)
-      }
-
-      if (payload.editor?.autoEditExtensions) {
-        Vue.set(processed.editor, 'autoEditExtensions', payload.editor.autoEditExtensions)
-      }
-
-      if (payload.fileSystem?.activeFilters) {
-        Vue.set(processed.fileSystem, 'activeFilters', payload.fileSystem.activeFilters)
-      }
-
-      Vue.set(state, 'uiSettings', processed)
+      Vue.set(state, 'uiSettings', mergedSettings)
     }
+  },
+
+  setAppReady (state, payload: boolean) {
+    state.appReady = payload
   },
 
   /**
@@ -94,7 +82,11 @@ export const mutations: MutationTree<ConfigState> = {
     // const uiSettings = payload.uiSettings
     const uiSettings = state.uiSettings
     if (Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage) {
-      instances = JSON.parse(localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY])
+      const instancesValue = localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY]
+
+      if (typeof instancesValue === 'string') {
+        instances = JSON.parse(instancesValue) as InstanceConfig[]
+      }
     }
 
     const i = instances.findIndex((instance: InstanceConfig) => instance.apiUrl === payload.apiConfig.apiUrl)
@@ -173,6 +165,14 @@ export const mutations: MutationTree<ConfigState> = {
     Vue.set(state.uiSettings.fileSystem.activeFilters, payload.root, payload.value)
   },
 
+  setFileSystemSortBy (state, payload: { root: string, value: string | null }) {
+    Vue.set(state.uiSettings.fileSystem.sortBy, payload.root, payload.value)
+  },
+
+  setFileSystemSortDesc (state, payload: { root: string, value: boolean | null }) {
+    Vue.set(state.uiSettings.fileSystem.sortDesc, payload.root, payload.value)
+  },
+
   /**
    * Puts us into layout mode
    */
@@ -187,32 +187,23 @@ export const mutations: MutationTree<ConfigState> = {
   /**
    * Toggle a tables header state based on its name and key.
    */
-  setUpdateHeader (state, payload: { name: string; header: AppTableHeader }) {
-    const header = payload.header
-    const keyBy = (header.key)
-      ? 'key'
-      : 'value'
-
-    const key = header[keyBy]
-    const headers: AppTablePartialHeader[] = state.uiSettings.tableHeaders[payload.name]
+  setUpdateHeader (state, payload: { name: string; header: ConfiguredTableHeader }) {
+    const headers = state.uiSettings.tableHeaders[payload.name]
 
     if (headers) {
-      const i = headers.findIndex(item => {
-        return item[keyBy] === key
-      })
+      const i = headers.findIndex(item => item.value === payload.header.value)
+
       if (i >= 0) {
-        Vue.set(headers, i, {
-          ...headers[i],
-          visible: header.visible
-        })
+        Vue.set(headers, i, payload.header)
       } else {
-        const o: AppTablePartialHeader = {
-          value: header.value,
-          visible: header.visible
-        }
-        if (keyBy === 'key') o.key = header.key
-        headers.push(o)
+        headers.push(payload.header)
       }
+    } else {
+      Vue.set(state.uiSettings.tableHeaders, payload.name, [payload.header])
     }
+  },
+
+  setUpdateHeaders (state, payload: { name: string; headers: ConfiguredTableHeader[] }) {
+    Vue.set(state.uiSettings.tableHeaders, payload.name, payload.headers)
   }
 }

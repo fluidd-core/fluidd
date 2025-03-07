@@ -38,7 +38,9 @@
               <v-list-item-icon>
                 <v-icon>$enqueueJob</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>{{ $t("app.general.btn.add_to_queue") }}</v-list-item-title>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t("app.general.btn.add_to_queue") }}</v-list-item-title>
+              </v-list-item-content>
             </v-list-item>
 
             <v-list-item
@@ -81,7 +83,7 @@
             </v-list-item>
 
             <v-list-item
-              v-if="canPrint"
+              v-if="canRefreshMetadata"
               @click="$emit('refresh-metadata', file)"
             >
               <v-list-item-icon>
@@ -89,6 +91,18 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{ $t('app.general.btn.refresh_metadata') }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item
+              v-if="canPerformTimeAnalysys"
+              @click="$emit('perform-time-analysis', file)"
+            >
+              <v-list-item-icon>
+                <v-icon>$stopwatch</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.perform_time_analysis') }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
@@ -172,6 +186,7 @@
           <v-btn
             text
             height="100%"
+            class="no-pointer-events"
             @click="$emit('view-thumbnail', file)"
           >
             <img
@@ -198,7 +213,7 @@ import type { FileBrowserEntry, RootProperties } from '@/store/files/types'
 @Component({})
 export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: String, required: true })
   readonly root!: string
@@ -213,7 +228,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   readonly positionY!: number
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.root)
   }
 
   get canPrint () {
@@ -221,7 +236,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
       this.root === 'gcodes' &&
       !Array.isArray(this.file) &&
       this.file.type !== 'directory' &&
-      this.rootProperties.accepts.includes(`.${this.file.extension}`)
+      this.rootProperties.accepts.includes(this.file.extension)
     )
   }
 
@@ -240,7 +255,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     return (
       !Array.isArray(this.file) &&
       this.file.type !== 'directory' &&
-      this.rootProperties.canView.includes(`.${this.file.extension}`) &&
+      this.rootProperties.canView.includes(this.file.extension) &&
       (
         this.file.permissions === undefined ||
         this.file.permissions.includes('r')
@@ -270,32 +285,51 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
       this.root === 'gcodes' &&
       !Array.isArray(this.file) &&
       this.file.type === 'file' &&
-      this.file.extension === 'gcode'
+      this.file.extension === '.gcode'
     )
   }
 
-  get canCreateZip () {
+  get canCreateZip (): boolean {
     return (
       (
         Array.isArray(this.file) ||
         this.file.type !== 'file' ||
-        this.file.extension !== 'zip'
+        this.file.extension !== '.zip'
       ) &&
       !this.rootProperties.readonly &&
       this.$store.getters['server/getIsMinApiVersion']('1.1.0')
     )
   }
 
-  get canAddToQueue () {
+  get isGcodesRootWithAcceptedFiles () {
     const files = Array.isArray(this.file) ? this.file : [this.file]
 
     return (
       this.root === 'gcodes' &&
       files.some(x =>
         x.type !== 'directory' &&
-        this.rootProperties.accepts.includes('.' + x.extension)
-      ) &&
+        this.rootProperties.accepts.includes(x.extension)
+      )
+    )
+  }
+
+  get canAddToQueue (): boolean {
+    return (
+      this.isGcodesRootWithAcceptedFiles &&
       this.$store.getters['server/componentSupport']('job_queue')
+    )
+  }
+
+  get canRefreshMetadata (): boolean {
+    return (
+      this.isGcodesRootWithAcceptedFiles
+    )
+  }
+
+  get canPerformTimeAnalysys (): boolean {
+    return (
+      this.isGcodesRootWithAcceptedFiles &&
+      this.$store.getters['server/componentSupport']('analysis')
     )
   }
 }

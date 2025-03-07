@@ -45,9 +45,8 @@
 
         <app-color-picker
           v-if="theme"
-          :primary="themeColor"
+          v-model="themeColor"
           :title="$t('app.setting.btn.select_theme')"
-          @change="handleChangeThemeColor"
         />
       </app-setting>
 
@@ -57,7 +56,6 @@
         <v-switch
           v-model="isDark"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -68,7 +66,6 @@
         <v-switch
           v-model="backgroundLogo"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -79,7 +76,6 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { IroColor } from '@irojs/iro-core'
 import type { ThemePreset, ThemeConfig } from '@/store/config/types'
 import ThemePicker from '../ui/AppColorPicker.vue'
 
@@ -90,11 +86,11 @@ import ThemePicker from '../ui/AppColorPicker.vue'
 })
 export default class ThemeSettings extends Mixins(StateMixin) {
   get theme (): ThemeConfig {
-    return this.$store.state.config.uiSettings.theme as ThemeConfig
+    return this.$store.state.config.uiSettings.theme
   }
 
   get themePresets (): ThemePreset[] {
-    return this.$store.state.config.hostConfig.themePresets as ThemePreset[]
+    return this.$store.state.config.hostConfig.themePresets
   }
 
   get themePreset (): ThemePreset | undefined {
@@ -116,12 +112,10 @@ export default class ThemeSettings extends Mixins(StateMixin) {
     return this.theme.color
   }
 
-  handleChangeThemeColor (value: { channel: string; color: IroColor }) {
-    const color = value.color.hexString
-
-    if (this.theme.color.toLowerCase() !== color.toLowerCase()) {
+  set themeColor (value: string) {
+    if (this.theme.color.toLowerCase() !== value.toLowerCase()) {
       this.updateTheme({
-        color
+        color: value
       })
     }
   }

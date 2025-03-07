@@ -3,10 +3,7 @@
     <app-draggable
       v-model="jobs"
       :options="{
-        animation: '200',
-        handle: '.handle',
         group: 'jobQueue',
-        ghostClass: 'ghost',
       }"
       target="tbody"
     >
@@ -20,6 +17,7 @@
         :show-select="bulkActions"
         :no-data-text="$t('app.file_system.msg.not_found')"
         :no-results-text="$t('app.file_system.msg.not_found')"
+        height="100%"
         mobile-breakpoint="0"
         hide-default-footer
         disable-pagination
@@ -28,28 +26,24 @@
         @click:row="handleRowClick"
         @contextmenu:row.prevent="handleContextMenu"
       >
+        <template #[`item.data-table-select`]="{ isSelected, select }">
+          <v-simple-checkbox
+            :value="isSelected"
+            class="mt-1"
+            @click.stop="select(!isSelected)"
+          />
+        </template>
         <template #[`item.handle`]>
-          <v-icon
-            class="handle"
-            left
-          >
-            $drag
-          </v-icon>
+          <app-drag-icon />
         </template>
-        <template #[`item.filename`]="{ item }">
-          <span>
-            {{ item.filename }}
-          </span>
+        <template #[`item.filename`]="{ value }">
+          {{ value }}
         </template>
-        <template #[`item.time_added`]="{ item }">
-          <span class="text-no-wrap">
-            {{ $filters.formatAbsoluteDateTime(item.time_added * 1000) }}
-          </span>
+        <template #[`item.time_added`]="{ value }">
+          {{ $filters.formatAbsoluteDateTime(value * 1000) }}
         </template>
-        <template #[`item.time_in_queue`]="{ item }">
-          <span class="text-no-wrap">
-            {{ $filters.formatCounterSeconds(item.time_in_queue) }}
-          </span>
+        <template #[`item.time_in_queue`]="{ value }">
+          {{ $filters.formatCounterSeconds(value) }}
         </template>
       </v-data-table>
     </app-draggable>
@@ -60,9 +54,8 @@
 import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import type { QueuedJob } from '@/store/jobQueue/types'
 import { SocketActions } from '@/api/socketActions'
-import type { AppTableHeader } from '@/types'
 import StateMixin from '@/mixins/state'
-import type { DataTableItemProps } from 'vuetify'
+import type { DataTableHeader, DataTableItemProps } from 'vuetify'
 
 type QueueJobWithKey = QueuedJob & {
   key: string
@@ -70,8 +63,8 @@ type QueueJobWithKey = QueuedJob & {
 
 @Component({})
 export default class JobQueueBrowser extends Mixins(StateMixin) {
-  @VModel({ type: Array<QueuedJob>, default: () => [] })
-    selected!: QueuedJob[]
+  @VModel({ type: Array, default: () => [] })
+  selected!: QueuedJob[]
 
   @Prop({ type: Boolean })
   readonly dense?: boolean
@@ -79,13 +72,13 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
   @Prop({ type: Boolean })
   readonly bulkActions?: boolean
 
-  @Prop({ type: Array<AppTableHeader>, required: true })
-  readonly headers!: AppTableHeader[]
+  @Prop({ type: Array, required: true })
+  readonly headers!: DataTableHeader[]
 
-  get jobs () {
+  get jobs (): QueuedJob[] {
     this.selected = []
 
-    return this.$store.state.jobQueue.queued_jobs as QueuedJob[]
+    return this.$store.state.jobQueue.queued_jobs
   }
 
   set jobs (value: QueuedJob[]) {
@@ -126,9 +119,5 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
   // Lighten up dark mode checkboxes.
   .theme--dark :deep(.v-simple-checkbox .v-icon) {
     color: rgba(map-deep-get($material-dark, 'inputs', 'box'), 0.25);
-  }
-
-  .handle {
-    cursor: pointer;
   }
 </style>

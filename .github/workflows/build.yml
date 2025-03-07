@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
 
       - name: Install dependencies
@@ -40,7 +40,7 @@ jobs:
 
       - name: Run circular references check
         run: |
-          npm run circular-check -- --no-spinner
+          npm run circular-check
 
       - name: Build
         run: |
@@ -57,6 +57,11 @@ jobs:
     needs: build
     if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      attestations: write
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -94,20 +99,35 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        id: docker_push
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
           push: true
+          sbom: true
+          provenance: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
+
+      - name: Attest Docker image
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ghcr.io/${{ github.repository }}
+          subject-digest: ${{ steps.docker_push.outputs.digest }}
+          push-to-registry: true
 
   publish-web:
     name: Deploy to Host
     needs: build
-    if: ${{ github.ref == 'refs/heads/develop' }}
+    if: ${{ github.repository == 'fluidd-core/fluidd' && github.ref == 'refs/heads/develop' }}
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -122,9 +142,18 @@ jobs:
         run: |
           cp ./server/config.json ./dist/config.json
 
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+
       - name: Deploy to Host
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: |
-          npm run deploy:host:dev
+        uses: reggionick/s3-deploy@v4
+        with:
+          folder: dist
+          bucket: ${{ secrets.DEV_S3_BUCKET_NAME }}
+          bucket-region: us-east-1
+          dist-id: ${{ secrets.DEV_CF_DISTRIBUTION_ID }}
+          delete-removed: true
+          no-cache: true
+          private: true

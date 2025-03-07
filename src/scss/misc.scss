@@ -11,23 +11,26 @@
 }
 
 // Apply a common scrollbar application to all elements inside the app
-.v-application--wrap ::-webkit-scrollbar {
-  transition: all .5s;
-  width: 5px;
-  height: 8px;
-  z-index: 10;
-}
+.v-application--wrap,
+.v-dialog__content {
+  ::-webkit-scrollbar {
+    transition: all .5s;
+    width: 5px;
+    height: 8px;
+    z-index: 10;
+  }
 
-.v-application--wrap ::-webkit-scrollbar-track {
-  background: transparent;
-}
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
-.v-application--wrap ::-webkit-scrollbar-thumb {
-  background: #b3ada7;
-}
+  ::-webkit-scrollbar-thumb {
+    background: #b3ada7;
+  }
 
-.v-application--wrap ::-webkit-scrollbar-corner {
-  background: transparent;
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
 }
 
 // Ensure the number arrows don't appear on text inputs.
@@ -62,4 +65,25 @@ input[type=number] {
 
 .constrained-width.quad {
   max-width: map-get($container-max-widths, 'xl') * 2;
+}
+
+.spool-icon {
+  stroke: rgba(0,0,0, 0.25);
+  stroke-width: .025rem;
+}
+
+.theme--dark .spool-icon {
+  stroke: rgba(0,0,0, 0.5);
+}
+
+.v-application kbd {
+  background: #4A4A4F !important;
+}
+
+textarea.clipboard-copy {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  z-index: 100000;
+  opacity: 0;
 }

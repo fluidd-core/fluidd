@@ -47,10 +47,10 @@ import { Component, Vue, VModel } from 'vue-property-decorator'
 @Component({})
 export default class ApiKeyDialog extends Vue {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
-  get apiKey () {
-    return this.$store.getters['auth/getApiKey']
+  get apiKey (): string {
+    return this.$store.state.auth.apiKey
   }
 
   handleRefreshApiKey () {

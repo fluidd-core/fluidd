@@ -15,7 +15,9 @@
         :disabled="printerPrinting"
         @click="handleHostReboot"
       >
-        <v-list-item-title>{{ $t('app.general.btn.reboot') }}</v-list-item-title>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('app.general.btn.reboot') }}</v-list-item-title>
+        </v-list-item-content>
         <v-list-item-icon>
           <v-icon color="error">
             $powerCycle
@@ -27,7 +29,9 @@
         :disabled="printerPrinting"
         @click="handleHostShutdown"
       >
-        <v-list-item-title>{{ $t('app.general.btn.shutdown') }}</v-list-item-title>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('app.general.btn.shutdown') }}</v-list-item-title>
+        </v-list-item-content>
         <v-list-item-icon>
           <v-icon color="error">
             $power
@@ -54,7 +58,9 @@
         :loading="hasWait(`${$waits.onDevicePowerToggle}${device.device}`)"
         @click="togglePowerDevice(device, `${$waits.onDevicePowerToggle}${device.device}`)"
       >
-        <v-list-item-title>{{ getPowerButtonText(device) }}</v-list-item-title>
+        <v-list-item-content>
+          <v-list-item-title>{{ getPowerButtonText(device) }}</v-list-item-title>
+        </v-list-item-content>
         <v-list-item-icon>
           <v-icon>{{ getPowerIcon(device) }}</v-icon>
         </v-list-item-icon>
@@ -90,14 +96,14 @@
             </v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn
+            <app-btn
               v-if="service.active_state === 'inactive'"
               icon
               @click="checkDialog(serviceStart, service, 'start')"
             >
               <v-icon>$play</v-icon>
-            </v-btn>
-            <v-btn
+            </app-btn>
+            <app-btn
               v-else
               icon
               @click="checkDialog(serviceRestart, service, 'restart')"
@@ -105,8 +111,8 @@
               <v-icon color="warning">
                 $restart
               </v-icon>
-            </v-btn>
-            <v-btn
+            </app-btn>
+            <app-btn
               icon
               :disabled="service.active_state === 'inactive'"
               :style="service.name === moonrakerServiceName ? 'visibility: hidden;' : ''"
@@ -115,7 +121,7 @@
               <v-icon color="error">
                 $stop
               </v-icon>
-            </v-btn>
+            </app-btn>
           </v-list-item-action>
         </v-list-item>
       </template>
@@ -136,30 +142,30 @@ import type { ServerInfo, ServiceInfo, SystemInfo } from '@/store/server/types'
 @Component({})
 export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   get serverInfo (): ServerInfo {
-    return this.$store.getters['server/getInfo'] as ServerInfo
+    return this.$store.state.server.info
   }
 
   get hosted (): boolean {
-    return this.$store.state.config.hostConfig.hosted as boolean
+    return this.$store.state.config.hostConfig.hosted
   }
 
   get powerDevices (): Device[] {
-    return this.$store.getters['power/getDevices'] as Device[]
+    return this.$store.getters['power/getDevices']
   }
 
   get devicePowerComponentEnabled (): boolean {
-    return this.$store.getters['server/componentSupport']('power') as boolean
+    return this.$store.getters['server/componentSupport']('power')
   }
 
   get services (): ServiceInfo[] {
-    const services = this.$store.getters['server/getServices'] as ServiceInfo[]
+    const services: ServiceInfo[] = this.$store.getters['server/getServices']
 
     return services
       .filter(service => service.name !== 'klipper_mcu')
   }
 
   get systemInfo (): SystemInfo | null {
-    return this.$store.getters['server/getSystemInfo'] as SystemInfo | null
+    return this.$store.state.server.system_info
   }
 
   get canControlHost (): boolean {
@@ -223,7 +229,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   }
 
   async togglePowerDevice (device: Device, wait?: string) {
-    const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+    const confirmOnPowerDeviceChange: boolean = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
 
     const result = (
       !confirmOnPowerDeviceChange ||
@@ -235,7 +241,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
 
     if (result) {
       const state = (device.status === 'on') ? 'off' : 'on'
-      SocketActions.machineDevicePowerToggle(device.device, state, wait)
+      SocketActions.machineDevicePowerSetDevice(device.device, state, wait)
     }
   }
 

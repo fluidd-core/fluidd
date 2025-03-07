@@ -2,7 +2,11 @@
   <v-dialog
     v-model="open"
     :scrollable="scrollable"
+    :persistent="persistent"
     v-bind="$attrs"
+    :fullscreen="isMobileViewport"
+    :transition="isMobileViewport ? 'dialog-bottom-transition' : undefined"
+    v-on="$listeners"
   >
     <v-form
       ref="form"
@@ -10,11 +14,60 @@
       :disabled="disabled"
       @submit.prevent="handleSave"
     >
-      <v-card>
-        <v-card-title class="card-heading py-2">
-          <slot name="title">
-            <span class="focus--text">{{ title }}</span>
-          </slot>
+      <v-card
+        :loading="loading"
+        :class="{
+          'collapsable-card': titleShadow
+        }"
+      >
+        <v-card-title
+          class="card-heading py-2"
+          :class="{
+            'collapsable-card-title': titleShadow
+          }"
+        >
+          <v-row
+            no-gutters
+            class="flex-nowrap"
+          >
+            <v-col
+              align-self="center"
+              class="text-no-wrap"
+            >
+              <slot name="title">
+                <span class="focus--text">{{ title }}</span>
+                <app-inline-help
+                  v-if="helpTooltip"
+                  bottom
+                  small
+                  :tooltip="helpTooltip"
+                />
+              </slot>
+            </v-col>
+
+            <v-col
+              cols="auto"
+              align-self="center"
+            >
+              <slot name="menu" />
+            </v-col>
+
+            <v-col
+              v-if="!persistent"
+              cols="auto"
+              align-self="center"
+            >
+              <app-btn
+                icon
+                :disabled="closeButtonDisabled"
+                @click="open = false"
+              >
+                <v-icon dense>
+                  $close
+                </v-icon>
+              </app-btn>
+            </v-col>
+          </v-row>
         </v-card-title>
 
         <v-card-subtitle
@@ -62,13 +115,16 @@
 </template>
 
 <script lang="ts">
+import BrowserMixin from '@/mixins/browser'
 import type { VForm } from '@/types'
-import { Component, Vue, Prop, VModel, Ref, PropSync } from 'vue-property-decorator'
+import { Component, Prop, VModel, Ref, PropSync, Mixins } from 'vue-property-decorator'
 
-@Component({})
-export default class AppDialog extends Vue {
+@Component({
+  inheritAttrs: false
+})
+export default class AppDialog extends Mixins(BrowserMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: Boolean })
   readonly disabled?: boolean
@@ -77,7 +133,13 @@ export default class AppDialog extends Vue {
   readonly title?: string
 
   @Prop({ type: String })
+  readonly helpTooltip?: string
+
+  @Prop({ type: String })
   readonly subTitle?: string
+
+  @Prop({ type: Boolean })
+  readonly closeButtonDisabled?: boolean
 
   @Prop({ type: String })
   readonly cancelButtonText?: string
@@ -98,10 +160,19 @@ export default class AppDialog extends Vue {
   readonly scrollable?: boolean
 
   @Prop({ type: Boolean })
+  readonly persistent?: boolean
+
+  @Prop({ type: Boolean })
   readonly noActions?: boolean
 
+  @Prop({ type: [Boolean, String] })
+  readonly loading?: boolean | string
+
+  @Prop({ type: Boolean })
+  readonly titleShadow?: boolean
+
   @PropSync('valid', { type: Boolean })
-    validModel?: boolean
+  validModel?: boolean
 
   @Ref('form')
   readonly form!: VForm

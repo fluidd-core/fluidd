@@ -11,19 +11,19 @@
         :disabled="!klippyReady"
         v-bind="attrs"
         small
-        class="ms-1 my-1"
+        class="me-1 my-1"
         v-on="on"
       >
         <v-icon
           small
-          class="mr-1"
+          class="me-1"
         >
           $fire
         </v-icon>
         {{ $t('app.general.btn.presets') }}
         <v-icon
           small
-          class="ml-1"
+          class="ms-1"
           :class="{ 'rotate-180': value }"
         >
           $chevronDown
@@ -34,7 +34,7 @@
       <v-list-item @click="$emit('applyOff')">
         <v-list-item-icon>
           <v-icon color="info">
-            $snowflakeAlert
+            $snowflake
           </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
@@ -44,9 +44,9 @@
         </v-list-item-content>
       </v-list-item>
 
-      <template v-for="(preset) of presets">
+      <template v-for="(preset, i) of presets">
         <v-list-item
-          :key="preset.index"
+          :key="`preset${i}`"
           @click="$emit('applyPreset', preset)"
         >
           <v-list-item-icon>
@@ -68,10 +68,11 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import type { TemperaturePreset } from '@/store/config/types'
 
 @Component({})
 export default class TemperaturePresetsMenu extends Mixins(StateMixin) {
-  get presets () {
+  get presets (): TemperaturePreset[] {
     return this.$store.getters['config/getTempPresets']
   }
 }

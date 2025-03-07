@@ -39,6 +39,15 @@
       />
     </template>
 
+    <template #collapsed-content>
+      <v-progress-linear
+        v-if="printerPrinting || printerPaused || filename"
+        :height="6"
+        :value="estimates.progress"
+        color="primary"
+      />
+    </template>
+
     <v-tabs-items
       v-model="tab"
       touchless
@@ -66,6 +75,7 @@ import StateMixin from '@/mixins/state'
 import StatusControls from './StatusControls.vue'
 import StatusTab from './StatusTab.vue'
 import ReprintTab from './ReprintTab.vue'
+import type { TimeEstimates } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -79,21 +89,24 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
 
   // If the user has no history plugin, and there's no print running..
   // then hide the collapse control.
-  get supportsHistoryComponent () {
+  get supportsHistoryComponent (): boolean {
     return this.$store.getters['server/componentSupport']('history')
   }
 
   get collapsable () {
-    const filename = this.$store.state.printer.printer.print_stats.filename
     return (
       this.printerPrinting ||
       this.supportsHistoryComponent ||
-      filename !== ''
+      this.filename !== ''
     )
   }
 
-  get filename () {
-    return this.$store.state.printer.printer.print_stats.filename
+  get filename (): string {
+    return this.$store.state.printer.printer.print_stats?.filename ?? ''
+  }
+
+  get estimates (): TimeEstimates {
+    return this.$store.getters['printer/getTimeEstimates']
   }
 
   @Watch('filename')
@@ -101,7 +114,7 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
     this.init(val)
   }
 
-  mounted () {
+  created () {
     this.init(this.filename)
   }
 
@@ -114,8 +127,9 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
   }
 
   handlePrint (filename: string) {
-    const spoolmanSupported = this.$store.getters['spoolman/getAvailable']
-    const autoSpoolSelectionDialog = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
+    const spoolmanSupported: boolean = this.$store.getters['spoolman/getAvailable']
+    const autoSpoolSelectionDialog: boolean = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
+
     if (spoolmanSupported && autoSpoolSelectionDialog) {
       this.$store.commit('spoolman/setDialogState', {
         show: true,

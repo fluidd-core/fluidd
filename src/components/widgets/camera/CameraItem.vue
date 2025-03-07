@@ -11,21 +11,69 @@
         :camera="camera"
         :crossorigin="crossorigin"
         class="camera-image"
-        @raw-camera-url="rawCameraUrl = $event"
-        @frames-per-second="framesPerSecond = $event"
-        @playback="setupFrameEvents()"
+        @update:status="status = $event"
+        @update:camera-name="cameraName = $event"
+        @update:camera-name-menu-items="cameraNameMenuItems = $event"
+        @update:raw-camera-url="rawCameraUrl = $event"
+        @update:frames-per-second="framesPerSecond = $event"
+        @frame="$emit('frame', $event)"
       />
     </template>
     <div v-else>
       Camera service not supported!
     </div>
 
-    <div
-      v-if="camera.name"
-      class="camera-name"
-    >
-      {{ camera.name }}
-    </div>
+    <template v-if="cameraName || camera.name">
+      <v-menu
+        v-if="cameraNameMenuItems.length > 0"
+        top
+        offset-y
+        transition="slide-y-reverse-transition"
+      >
+        <template #activator="{ on, attrs, value }">
+          <div
+            v-bind="attrs"
+            class="camera-name"
+            v-on="on"
+          >
+            {{ cameraNameAndStatus }}
+            <v-icon
+              small
+              class="ml-1"
+              :class="{ 'rotate-180': value }"
+            >
+              $chevronDown
+            </v-icon>
+          </div>
+        </template>
+        <v-list dense>
+          <v-list-item
+            v-for="(item, index) in cameraNameMenuItems"
+            :key="index"
+            @click="cameraNameMenuItemClick(item)"
+          >
+            <v-list-item-icon>
+              <v-icon>
+                {{ item.icon }}
+              </v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ item.text }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      <div
+        v-else
+        class="camera-name"
+      >
+        {{ cameraNameAndStatus }}
+      </div>
+    </template>
+
     <div
       v-if="framesPerSecond"
       class="camera-frames"
@@ -37,9 +85,16 @@
       v-if="!fullscreen && (fullscreenMode === 'embed' || !rawCameraUrl) && camera.service !== 'device'"
       class="camera-fullscreen"
     >
-      <a :href="`/#/camera/${camera.id}`">
+      <router-link
+        :to="{
+          name: 'camera',
+          params: {
+            cameraId: camera.uid
+          }
+        }"
+      >
         <v-icon>$fullScreen</v-icon>
-      </a>
+      </router-link>
     </div>
     <div
       v-else-if="rawCameraUrl"
@@ -57,15 +112,17 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import type { CameraConfig } from '@/store/cameras/types'
+import type { WebcamConfig } from '@/store/webcams/types'
 import type { CameraFullscreenAction } from '@/store/config/types'
 import { CameraComponents } from '@/dynamicImports'
 import CameraMixin from '@/mixins/camera'
+import type { CameraConnectionStatus, CameraNameMenuItem } from '@/types'
+import { startCase } from 'lodash-es'
 
 @Component({})
 export default class CameraItem extends Vue {
   @Prop({ type: Object, required: true })
-  readonly camera!: CameraConfig
+  readonly camera!: WebcamConfig
 
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean
@@ -76,38 +133,23 @@ export default class CameraItem extends Vue {
   @Ref('component-instance')
   readonly componentInstance!: CameraMixin
 
-  rawCameraUrl: string | null = null
-  framesPerSecond : string | null = null
+  status: CameraConnectionStatus = 'disconnected'
+  rawCameraUrl = ''
+  framesPerSecond = ''
+  cameraName = ''
+  cameraNameMenuItems: CameraNameMenuItem[] = []
 
-  mounted () {
-    this.setupFrameEvents()
-  }
-
-  setupFrameEvents () {
-    if (this.$listeners?.frame && this.componentInstance) {
-      if (this.componentInstance.streamingElement instanceof HTMLImageElement) {
-        this.componentInstance.streamingElement.addEventListener('load', () => this.handleFrame())
-      } else if (this.componentInstance.streamingElement instanceof HTMLVideoElement) {
-        this.handleFrame(true)
-      }
-    }
-  }
-
-  handleFrame (animate = false) {
-    const element = this.componentInstance?.streamingElement as HTMLImageElement | HTMLVideoElement
-    if (element) {
-      this.$emit('frame', element)
-    }
-
-    if (animate) {
-      requestAnimationFrame(() => this.handleFrame(this.componentInstance.animating))
-    }
+  cameraNameMenuItemClick (item: CameraNameMenuItem) {
+    this.componentInstance.menuItemClick(item)
   }
 
   @Watch('camera')
   onCamera () {
+    this.status = 'disconnected'
     this.rawCameraUrl = ''
     this.framesPerSecond = ''
+    this.cameraName = ''
+    this.cameraNameMenuItems = []
   }
 
   get fullscreenMode (): CameraFullscreenAction {
@@ -116,12 +158,22 @@ export default class CameraItem extends Vue {
 
   get cameraComponent () {
     if (this.camera.service) {
-      const componentName = `${this.$filters.startCase(this.camera.service).replace(/ /g, '')}Camera`
+      const componentName = `${startCase(this.camera.service).replace(/ /g, '')}Camera`
 
       if (componentName in CameraComponents) {
         return CameraComponents[componentName]
       }
     }
+  }
+
+  get cameraNameAndStatus () {
+    const cameraName = this.cameraName || this.camera.name
+
+    if (this.status !== 'connected') {
+      return `${cameraName} (${this.status})`
+    }
+
+    return cameraName
   }
 }
 </script>
@@ -134,11 +186,14 @@ export default class CameraItem extends Vue {
     max-height: calc(100svh - 130px);
     white-space: nowrap;
     margin: auto;
+    pointer-events: none;
+    user-select: none;
   }
 
   .camera-container {
     position: relative;
     background: rgba(0, 0, 0, 1);
+    min-height: 70px;
   }
 
   .camera-name,

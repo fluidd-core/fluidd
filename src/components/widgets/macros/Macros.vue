@@ -12,8 +12,8 @@
         <v-expansion-panel-header>
           <template #actions>
             <v-icon
-              small
-              class="mr-2"
+              dense
+              class="mr-1"
             >
               $expand
             </v-icon>
@@ -28,11 +28,8 @@
             </v-chip>
             <app-btn
               icon
-              text
-              small
-              color=""
-              class="ml-2"
-              @click.prevent.stop="handleEditCategory"
+              class="ml-1"
+              @click.prevent.stop="handleEditCategory(category)"
             >
               <v-icon small>
                 $cog
@@ -46,6 +43,7 @@
             v-for="macro in category.macros"
             :key="`category-${macro.name}`"
             top
+            :disabled="!macro.config.description || macro.config.description === 'G-Code macro'"
           >
             <template #activator="{ on, attrs }">
               <macro-btn
@@ -71,6 +69,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import MacroBtn from './MacroBtn.vue'
+import type { MacroCategory } from '@/store/macros/types'
 
 @Component({
   components: {
@@ -93,8 +92,14 @@ export default class Macros extends Mixins(StateMixin) {
     this.$store.dispatch('macros/saveExpanded', val)
   }
 
-  handleEditCategory () {
-    this.$router.push('/settings/#macros')
+  handleEditCategory (category: MacroCategory) {
+    const categoryId = category.id ?? '0'
+    this.$router.push({
+      name: 'macro_category_settings',
+      params: {
+        categoryId
+      }
+    })
   }
 }
 </script>

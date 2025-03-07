@@ -1,11 +1,10 @@
 <template>
-  <div
-    class="console"
-  >
+  <div class="console">
     <console-command
       v-if="!readonly && flipLayout"
       v-model="currentCommand"
-      :disabled="!klippyReady"
+      :disabled="!klippyConnected"
+      :autofocus="fullscreen"
       @send="sendCommand"
     />
     <v-card
@@ -21,7 +20,7 @@
         :class="{
           'console-scroller-fullscreen': fullscreen
         }"
-        :key-field="keyField"
+        key-field="id"
         :buffer="600"
         @resize="scrollToLatest()"
       >
@@ -35,7 +34,7 @@
             :data-index="index"
           >
             <console-item
-              :key="item[keyField]"
+              :key="item.id"
               :value="item"
               class="console-item"
               @click="handleEntryClick"
@@ -47,7 +46,8 @@
     <console-command
       v-if="!readonly && !flipLayout"
       v-model="currentCommand"
-      :disabled="!klippyReady"
+      :disabled="!klippyConnected"
+      :autofocus="fullscreen"
       @send="sendCommand"
     />
   </div>
@@ -61,6 +61,7 @@ import ConsoleItem from './ConsoleItem.vue'
 import { SocketActions } from '@/api/socketActions'
 import type { DinamicScroller } from 'vue-virtual-scroller'
 import type { ConsoleEntry } from '@/store/console/types'
+import type { UpdateResponse } from '@/store/version/types'
 
 @Component({
   components: {
@@ -69,11 +70,8 @@ import type { ConsoleEntry } from '@/store/console/types'
   }
 })
 export default class Console extends Mixins(StateMixin) {
-  @Prop({ type: Array<ConsoleEntry>, default: () => [] })
-  readonly items!: ConsoleEntry[]
-
-  @Prop({ type: String, default: 'id' })
-  readonly keyField!: string
+  @Prop({ type: [Array<ConsoleEntry>, Array<UpdateResponse>], default: () => [] })
+  readonly items!: ConsoleEntry[] | UpdateResponse[]
 
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean
@@ -82,14 +80,14 @@ export default class Console extends Mixins(StateMixin) {
   readonly readonly?: boolean
 
   @PropSync('scrollingPaused', { type: Boolean })
-    scrollingPausedModel?: boolean
+  scrollingPausedModel?: boolean
 
   @Ref('scroller')
   readonly dynamicScroller!: DinamicScroller
 
   _pauseScroll = false
 
-  get currentCommand () {
+  get currentCommand (): string {
     return this.$store.state.console.consoleCommand
   }
 
@@ -190,9 +188,8 @@ export default class Console extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .console {
-    position: relative;
-    display: block;
+  .console-item {
+    white-space: pre-wrap;
   }
 
   .console-wrapper {
@@ -206,8 +203,8 @@ export default class Console extends Mixins(StateMixin) {
     height: 300px;
   }
   .console-scroller-fullscreen {
-    height: calc(100vh - 240px);
-    height: calc(100svh - 240px);
+    height: calc(100vh - 260px);
+    height: calc(100svh - 260px);
   }
 
   .v-input {

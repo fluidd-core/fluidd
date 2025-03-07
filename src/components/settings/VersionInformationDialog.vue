@@ -91,16 +91,16 @@
 </template>
 
 <script lang="ts">
-import type { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
+import type { UpdatePackage } from '@/store/version/types'
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 
 @Component({})
 export default class VersionInformationDialog extends Vue {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: Object })
-  readonly component!: HashVersion | ArtifactVersion | OSPackage
+  readonly component!: UpdatePackage
 
   // For HashVersions or ArtifacVersions, show the commit history.
   // For type system, show the packages available to update.
@@ -112,7 +112,7 @@ export default class VersionInformationDialog extends Vue {
 
   get baseUrl () {
     if ('owner' in this.component) {
-      return `https://github.com/${this.component.owner}/${this.component.key}`
+      return `https://github.com/${this.component.owner}/${this.component.repo_name || this.component.key}`
     }
     return ''
   }

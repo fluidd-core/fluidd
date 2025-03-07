@@ -10,19 +10,18 @@ import type { DevicePowerState } from './power/types'
 import type { HistoryState } from './history/types'
 import type { VersionState } from './version/types'
 import type { GcodePreviewState } from './gcodePreview/types'
-import type { PartsState } from './parts/types'
 import type { LayoutState } from './layout/types'
 import type { MeshState } from './mesh/types'
 import type { NotificationsState } from './notifications/types'
 import type { AnnouncementsState } from './announcements/types'
 import type { AuthState } from './auth/types'
 import type { TimelapseState } from '@/store/timelapse/types'
-import type { CamerasState } from './cameras/types'
 import type { WaitState } from './wait/types'
 import type { WebcamsState } from './webcams/types'
 import type { JobQueueState } from './jobQueue/types'
 import type { SpoolmanState } from './spoolman/types'
 import type { MoonrakerSensorsState } from './sensors/types'
+import type { AnalysisState } from './analysis/types'
 
 export interface RootState {
   socket: SocketState;
@@ -38,16 +37,15 @@ export interface RootState {
   power: DevicePowerState;
   history: HistoryState;
   version: VersionState;
-  cameras: CamerasState;
   mesh: MeshState;
   notifications: NotificationsState;
   announcements: AnnouncementsState;
   wait: WaitState;
   gcodePreview: GcodePreviewState;
   timelapse: TimelapseState;
-  parts: PartsState;
   webcams: WebcamsState;
   jobQueue: JobQueueState;
   spoolman: SpoolmanState;
   sensors: MoonrakerSensorsState;
+  analysis: AnalysisState;
 }

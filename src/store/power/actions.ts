@@ -36,12 +36,4 @@ export const actions: ActionTree<DevicePowerState, RootState> = {
   async onStatus ({ commit }, payload) {
     commit('setStatus', payload)
   },
-
-  /**
-   * On toggling a power device.
-   */
-  async onToggle ({ commit }, payload) {
-    commit('setStatus', payload)
-  }
-
 }

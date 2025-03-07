@@ -124,7 +124,7 @@ import StateMixin from '@/mixins/state'
 import type { TimelapseMode, TimelapseSettings as TimelapseSettingsType } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import HyperlapseSettings from '@/components/settings/timelapse/subsettings/modes/HyperlapseSettings.vue'
-import type { CameraConfig } from '@/store/cameras/types'
+import type { WebcamConfig } from '@/store/webcams/types'
 import ToolheadParkingSettings from '@/components/settings/timelapse/subsettings/ToolheadParkingSettings.vue'
 import { defaultWritableSettings } from '@/store/timelapse/state'
 import TimelapseRenderSettingsDialog from '@/components/widgets/timelapse/TimelapseRenderSettingsDialog.vue'
@@ -143,7 +143,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
 
   renderSettingsDialogOpen = false
 
-  get supportedModes (): {text: string, value: TimelapseMode}[] {
+  get supportedModes (): { text: string, value: TimelapseMode }[] {
     return [{
       text: this.$tc('app.timelapse.setting.mode_layermacro'),
       value: 'layermacro'
@@ -153,9 +153,15 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
     }]
   }
 
-  get cameras (): {text: string, value: string, disabled: boolean} {
-    return this.$store.getters['cameras/getCameras']
-      .map((camera: CameraConfig) => ({ text: camera.name, value: camera.id, disabled: !camera.enabled }))
+  get cameras (): Array<{ text?: string, value: string, disabled: boolean }> {
+    const cameras: WebcamConfig[] = this.$store.getters['webcams/getWebcams']
+
+    return cameras
+      .map(camera => ({
+        text: camera.name,
+        value: camera.uid,
+        disabled: !camera.enabled
+      }))
   }
 
   get cameraBlocked (): boolean {
@@ -209,7 +215,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   get settings (): TimelapseSettingsType {
-    return this.$store.getters['timelapse/getSettings']
+    return this.$store.state.timelapse.settings ?? {} as TimelapseSettingsType
   }
 
   subtitleIfBlocked (blocked: boolean): string {

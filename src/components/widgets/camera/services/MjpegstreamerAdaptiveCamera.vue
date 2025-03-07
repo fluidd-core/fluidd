@@ -1,16 +1,19 @@
 <template>
   <img
+    v-show="status === 'connected'"
     ref="streamingElement"
     :src="cameraImageSource"
     :style="cameraStyle"
     :crossorigin="crossorigin"
     @load="handleImageLoad"
+    @error="updateStatus('error')"
   >
 </template>
 
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import CameraMixin from '@/mixins/camera'
+import consola from 'consola'
 
 @Component({})
 export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
@@ -26,8 +29,15 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
   timeSmoothing = 0.6
   requestTimeSmoothing = 0.1
 
+  get autoRaiseFrameEvent () {
+    return false
+  }
+
   handleImageLoad () {
-    const fpsTarget = (!document.hasFocus() && this.camera.targetFpsIdle) || this.camera.targetFps || 10
+    this.updateStatus('connected')
+    this.$emit('frame', this.streamingElement)
+
+    const fpsTarget = (!document.hasFocus() && this.camera.target_fps_idle) || this.camera.target_fps || 10
     const endTime = performance.now()
     const currentTime = endTime - this.startTime
 
@@ -50,10 +60,11 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
 
   handleRefresh () {
     if (!document.hidden) {
-      const framesPerSecond = Math.round(1000 / this.time).toString().padStart(2, '0')
+      if (this.time !== 0) {
+        const framesPerSecond = Math.round(1000 / this.time).toString().padStart(2, '0')
 
-      this.$emit('frames-per-second', framesPerSecond)
-
+        this.updateFramesPerSecond(framesPerSecond)
+      }
       this.$nextTick(() => this.updateCameraImageSource())
     } else {
       this.stopPlayback()
@@ -73,18 +84,25 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
   }
 
   startPlayback () {
-    this.cameraImageSourceUrl = this.buildAbsoluteUrl(this.camera.urlSnapshot || '')
+    try {
+      this.updateStatus('connecting')
 
-    this.updateCameraImageSource()
+      this.cameraImageSourceUrl = this.buildAbsoluteUrl(this.camera.snapshot_url || '')
 
-    const rawUrl = this.buildAbsoluteUrl(this.camera.urlStream || '')
+      this.updateCameraImageSource()
 
-    rawUrl.searchParams.set('cacheBust', Date.now().toString())
+      const rawUrl = this.buildAbsoluteUrl(this.camera.stream_url || '')
 
-    this.$emit('raw-camera-url', rawUrl.toString())
+      rawUrl.searchParams.set('cacheBust', Date.now().toString())
+
+      this.updateRawCameraUrl(rawUrl.toString())
+    } catch (e) {
+      consola.error(`[MjpegstreamerAdaptiveCamera] failed to start playback "${this.camera.name}"`, e)
+    }
   }
 
   stopPlayback () {
+    this.updateStatus('disconnected')
     this.cameraImageSourceUrl = null
     this.cameraImageSource = ''
     this.cameraImage.src = ''

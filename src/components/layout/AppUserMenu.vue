@@ -7,16 +7,15 @@
     <template #activator="{ on: menu, attrs }">
       <v-tooltip bottom>
         <template #activator="{ on: tooltip }">
-          <v-btn
+          <app-btn
             v-bind="attrs"
-            fab
+            icon
             text
-            small
             v-on="{ ...tooltip, ...menu }"
             @click="$emit('drawer')"
           >
             <v-icon>$account</v-icon>
-          </v-btn>
+          </app-btn>
         </template>
         <span>{{ currentUser }}</span>
       </v-tooltip>
@@ -59,7 +58,7 @@
         dense
         class="py-0"
       >
-        <v-list-item @click="$filters.routeTo($router, '/settings#auth')">
+        <v-list-item @click="$filters.routeTo({ name: 'settings', hash: '#auth' })">
           <v-list-item-icon>
             <v-icon>$addAccount</v-icon>
           </v-list-item-icon>
@@ -87,11 +86,12 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { startCase, capitalize } from 'lodash-es'
+import type { AppUser } from '@/store/auth/types'
 
 @Component({})
 export default class AppNotificationMenu extends Vue {
-  get user () {
-    return this.$store.getters['auth/getCurrentUser']
+  get user (): AppUser | null {
+    return this.$store.state.auth.currentUser
   }
 
   get currentUser () {

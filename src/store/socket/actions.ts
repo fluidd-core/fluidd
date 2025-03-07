@@ -28,13 +28,13 @@ export const actions: ActionTree<SocketState, RootState> = {
   /**
     * Fired when the socket opens.
     */
-  async onSocketOpen ({ commit, rootState }, payload) {
+  async onSocketOpen ({ commit }, payload) {
     commit('setSocketOpen', payload)
     if (payload === true) {
       SocketActions.serverInfo()
       SocketActions.identify({
         client_name: Globals.APP_NAME,
-        version: `${rootState.version.fluidd.version || '0.0.0'}-${rootState.version.fluidd.hash || 'unknown'}`.trim(),
+        version: `${import.meta.env.VERSION || '0.0.0'}-${import.meta.env.HASH || 'unknown'}`.trim(),
         type: 'web',
         url: Globals.GITHUB_REPO
       })
@@ -47,11 +47,14 @@ export const actions: ActionTree<SocketState, RootState> = {
    */
   async onSocketClose ({ dispatch, commit, state }, event: CloseEvent) {
     const retry = state.disconnecting
-    const modules = ['server', 'power', 'webcams', 'jobQueue', 'charts', 'socket', 'wait', 'gcodePreview']
+    const modules = ['server', 'power', 'webcams', 'jobQueue', 'socket', 'wait', 'gcodePreview']
 
     if (event.wasClean && retry) {
       // This is most likely a moonraker restart, so only partially reset.
-      await dispatch('reset', modules, { root: true })
+      await Promise.all([
+        dispatch('charts/resetChartStore', undefined, { root: true }),
+        dispatch('reset', modules, { root: true })
+      ])
       commit('setSocketConnecting', true)
       Vue.$socket.connect()
     }
@@ -67,7 +70,10 @@ export const actions: ActionTree<SocketState, RootState> = {
     if (!event.wasClean) {
       // Not a clean disconnect. Service went down?
       // Socket should attempt to reconnect itself.
-      await dispatch('reset', modules, { root: true })
+      await Promise.all([
+        dispatch('charts/resetChartStore', undefined, { root: true }),
+        dispatch('reset', modules, { root: true })
+      ])
       commit('setSocketConnecting', true)
       commit('setSocketOpen', false)
     }
@@ -95,8 +101,10 @@ export const actions: ActionTree<SocketState, RootState> = {
       // This is pretty bad, should get moonraker to fix this response.
       let message = ''
       try {
-        message = JSON.parse(payload.message.replace(/'/g, '"')).message
-      } catch (e) {
+        const messageAsObject = JSON.parse(payload.message.replace(/'/g, '"')) as { message: string }
+
+        message = messageAsObject.message
+      } catch {
         message = payload.message
       }
 
@@ -124,7 +132,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     commit('setConnectionId', connection_id)
   },
 
-  async onServerRead ({ dispatch }, payload: {namespace: string, key?: string, value: unknown}) {
+  async onServerRead ({ dispatch }, payload: { namespace: string, key?: string, value: unknown }) {
     const { namespace, key, value } = payload
 
     if (isKeyOf(namespace, Globals.MOONRAKER_DB)) {
@@ -145,10 +153,9 @@ export const actions: ActionTree<SocketState, RootState> = {
    */
 
   async notifyStatusUpdate ({ state, commit, dispatch }, payload) {
-    dispatch('printer/onNotifyStatusUpdate', payload, { root: true })
-      .then(() => {
-        if (!state.ready) commit('setSocketReadyState', true)
-      })
+    await dispatch('printer/onNotifyStatusUpdate', payload, { root: true })
+
+    if (!state.ready) commit('setSocketReadyState', true)
   },
 
   async notifyGcodeResponse ({ dispatch }, payload) {
@@ -158,7 +165,9 @@ export const actions: ActionTree<SocketState, RootState> = {
   /**
    * This is fired when, for example - the service is stopped.
    */
-  async notifyKlippyDisconnected () {
+  async notifyKlippyDisconnected ({ dispatch }) {
+    await dispatch('resetKlippy', undefined, { root: true })
+
     SocketActions.serverInfo()
   },
 

@@ -61,14 +61,11 @@
 
           <app-btn
             :disabled="user.username === currentUser || user.source !== 'moonraker'"
-            fab
-            text
-            x-small
-            color=""
+            icon
             @click.stop="handleRemoveUser(user)"
           >
-            <v-icon color="">
-              $close
+            <v-icon dense>
+              $delete
             </v-icon>
           </app-btn>
         </app-setting>
@@ -120,13 +117,14 @@ export default class AuthSettings extends Vue {
     open: false
   }
 
-  get users () {
-    return this.$store.getters['auth/getUsers']
+  get users (): AppUser[] {
+    return this.$store.state.auth.users
   }
 
   get currentUser () {
-    const currentUser = this.$store.getters['auth/getCurrentUser']
-    return (currentUser && currentUser.username) ? currentUser.username : ''
+    const currentUser: AppUser | null = this.$store.state.auth.currentUser
+
+    return currentUser?.username ?? ''
   }
 
   handleAddUserDialog () {
@@ -151,7 +149,7 @@ export default class AuthSettings extends Vue {
 
   async handleRemoveUser (user: AppUser) {
     const result = await this.$confirm(
-      this.$tc('app.general.simple_form.msg.confirm'),
+      this.$t('app.general.simple_form.msg.confirm_remove_user', { username: user.username }).toString(),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 

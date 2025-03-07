@@ -1,8 +1,8 @@
-import type { AppTablePartialHeader } from '@/types/tableheaders'
 import type { FileFilterType } from '../files/types'
 
 export interface ConfigState {
   [key: string]: any;
+  appReady: boolean;
   apiUrl: string;
   socketUrl: string;
   layoutMode: boolean;
@@ -17,7 +17,7 @@ export interface UiSettings {
   theme: ThemeConfig;
   editor: EditorConfig;
   dashboard: DashboardConfig;
-  tableHeaders: AppTableConfiguredHeaders;
+  tableHeaders: TableHeadersConfig;
   gcodePreview: GcodePreviewConfig;
   fileSystem: FileSystemConfig;
   toolhead: ToolheadConfig;
@@ -25,7 +25,6 @@ export interface UiSettings {
 }
 
 export interface ToolheadConfig {
-  forceMove: boolean;
   extrudeSpeed: number;
   extrudeLength: number;
 }
@@ -40,8 +39,12 @@ export interface SpoolmanConfig {
   selectionDialogSortOrder: {
     key: string | null;
     desc: boolean | null;
-  }
+  },
+  remainingFilamentUnit: SpoolmanRemainingFilamentUnit;
+  selectedCardFields: string[];
 }
+
+export type SpoolmanRemainingFilamentUnit = 'weight' | 'length'
 
 export interface HostConfig {
   endpoints: string[];
@@ -82,7 +85,9 @@ export interface GeneralConfig {
   sectionsToIgnorePendingConfigurationChanges: string[];
   dateFormat: string;
   timeFormat: string;
+  enableKeyboardShortcuts: boolean;
   textSortOrder: TextSortOrder;
+  filesAndFoldersDragAndDrop: boolean;
   showRateOfChange: boolean;
   showRelativeHumidity: boolean;
   showBarometricPressure: boolean;
@@ -91,20 +96,33 @@ export interface GeneralConfig {
   showUploadAndPrint: boolean;
   flipConsoleLayout: boolean;
   cameraFullscreenAction: CameraFullscreenAction;
+  printerPowerDevice: null | string;
   topNavPowerToggle: null | string;
   showManualProbeDialogAutomatically: boolean;
   showBedScrewsAdjustDialogAutomatically: boolean;
   showScrewsTiltAdjustDialogAutomatically: boolean;
   forceMoveToggleWarning: boolean;
+  printInProgressLayout: PrintInProgressLayout;
+  printProgressCalculation: PrintProgressCalculation[];
+  printEtaCalculation: PrintEtaCalculation[];
   enableDiagnostics: boolean;
   thumbnailSize: number;
+  colorPickerValueRange: ColorPickerValueRange;
 }
 
 export type ToolheadControlStyle = 'cross' | 'bars' | 'circle'
 
 export type TextSortOrder = 'default' | 'numeric-prefix' | 'version'
 
-export type CameraFullscreenAction = 'embed' | 'rawstream';
+export type CameraFullscreenAction = 'embed' | 'rawstream'
+
+export type PrintInProgressLayout = 'default' | 'compact'
+
+export type ColorPickerValueRange = 'absolute' | 'percentage'
+
+export type PrintProgressCalculation = 'file' | 'fileAbsolute' | 'slicer' | 'filament'
+
+export type PrintEtaCalculation = 'file' | 'slicer'
 
 // Config stored in moonraker db
 export interface ThemeConfig {
@@ -176,12 +194,8 @@ export interface InstanceConfig extends ApiConfig {
 export interface TemperaturePreset {
   id: number;
   name: string;
-  values: TemperaturePresetValues;
+  values: Record<string, TemperaturePresetValue>;
   gcode?: string;
-}
-
-export interface TemperaturePresetValues {
-  [key: string]: TemperaturePresetValue;
 }
 
 export interface TemperaturePresetValue {
@@ -190,8 +204,12 @@ export interface TemperaturePresetValue {
   active: boolean;
 }
 
-export interface AppTableConfiguredHeaders {
-  [root: string]: AppTablePartialHeader[];
+export interface TableHeadersConfig extends Record<string, ConfiguredTableHeader[]> {
+}
+
+export interface ConfiguredTableHeader {
+  value: string;
+  visible?: boolean;
 }
 
 export interface GcodePreviewConfig {
@@ -211,8 +229,18 @@ export interface GcodePreviewConfig {
     horizontal: boolean;
     vertical: boolean;
   };
+  showCurrentLayer: boolean;
+  showNextLayer: boolean;
+  showPreviousLayer: boolean;
+  showMoves: boolean;
+  showExtrusions: boolean;
+  showRetractions: boolean;
+  showParts: boolean;
+  followProgress: boolean;
 }
 
 export interface FileSystemConfig {
-  activeFilters: Record<string, FileFilterType[]>
+  activeFilters: Record<string, FileFilterType[]>;
+  sortBy: Record<string, string | null>;
+  sortDesc: Record<string, boolean | null>;
 }

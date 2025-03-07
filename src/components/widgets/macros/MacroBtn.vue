@@ -9,7 +9,7 @@
       <slot />
     </app-btn>
     <v-menu
-      v-if="paramList.length > 0"
+      v-if="hasParams"
       left
       offset-y
       transition="slide-y-transition"
@@ -34,37 +34,28 @@
       <v-form @submit.prevent="$emit('click', runCommand)">
         <v-card>
           <v-card-text class="pb-3 px-3">
-            <v-layout
-              wrap
+            <v-row
+              v-for="(param, key) in params"
+              :key="key"
               style="max-width: 150px;"
             >
-              <v-text-field
-                v-for="(param, i) in paramList"
-                :key="param"
-                v-model="params[param].value"
-                :label="param"
-                outlined
-                dense
-                hide-details="auto"
-                spellcheck="false"
-                class="console-command"
-                :class="{ 'mb-3': (i < paramList.length - 1) }"
-              >
-                <template #append>
-                  <app-btn
-                    style="margin-top: -4px; margin-right: -6px;"
-                    color=""
-                    icon
-                    small
-                    @click="params[param].value = params[param].reset"
-                  >
-                    <v-icon small>
-                      $reset
-                    </v-icon>
-                  </app-btn>
-                </template>
-              </v-text-field>
-            </v-layout>
+              <v-col>
+                <v-text-field
+                  v-model="param.value"
+                  :type="isBasicGcodeCommand && !paramNameForRawGcodeCommand ? 'number' : undefined"
+                  :label="key"
+                  persistent-placeholder
+                  outlined
+                  dense
+                  hide-details="auto"
+                  spellcheck="false"
+                  class="console-command"
+                  :append-icon="param.value !== param.reset ? '$reset' : undefined"
+                  @click:append="param.value = param.reset"
+                  @focus="$event.target.select()"
+                />
+              </v-col>
+            </v-row>
           </v-card-text>
           <v-divider />
           <v-card-actions class="px-3 py-3">
@@ -86,16 +77,35 @@ import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { Macro } from '@/store/macros/types'
 import gcodeMacroParams from '@/util/gcode-macro-params'
+import { gcodeCommandBuilder, isBasicGcodeCommand, getParamNameForRawGcodeCommand } from '@/util/gcode-helpers'
+import type { KlippyApp } from '@/store/printer/types'
+
+type MacroParameter = {
+  value: string | number
+  reset: string | number
+}
 
 @Component({})
 export default class MacroBtn extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   readonly macro!: Macro
 
-  params: { [index: string]: { value: string | number; reset: string | number }} = {}
+  params: Record<string, MacroParameter> = {}
 
-  get isMacroWithRawParam () {
-    return ['m117', 'm118'].includes(this.macro.name)
+  get hasParams () {
+    return Object.keys(this.params).length > 0
+  }
+
+  get macroName () {
+    return this.macro.name.toUpperCase()
+  }
+
+  get isBasicGcodeCommand () {
+    return isBasicGcodeCommand(this.macroName)
+  }
+
+  get paramNameForRawGcodeCommand () {
+    return getParamNameForRawGcodeCommand(this.macroName)
   }
 
   get filteredListeners () {
@@ -105,50 +115,51 @@ export default class MacroBtn extends Mixins(StateMixin) {
     return listeners
   }
 
-  get paramList () {
-    return Object.keys(this.params)
-  }
-
   /**
    * The formatted run command for a macro.
    */
   get runCommand () {
-    const command = this.macro.name.toUpperCase()
-
-    if (this.params) {
-      const params = this.isMacroWithRawParam
-        ? this.params.message.value.toString()
-        : Object.entries(this.params)
-          .map(([key, param]) => `${key.toUpperCase()}=${param.value}`)
-          .join(' ')
-
-      if (params) {
-        return `${command} ${params}`
-      }
-    }
-
-    return command
+    return gcodeCommandBuilder(this.macroName, this.params)
   }
 
   get borderStyle () {
-    if (this.macro && this.macro.color !== '') {
+    if (this.macro?.color) {
       return `border-color: ${this.macro.color} !important; border-left: solid 4px ${this.macro.color} !important;`
     }
     return ''
   }
 
+  get klippyApp (): KlippyApp {
+    return this.$store.getters['printer/getKlippyApp']
+  }
+
+  get supportsPythonGcodeMacros () {
+    return this.klippyApp.isKalicoOrDangerKlipper
+  }
+
   handleClick () {
-    this.$emit('click', this.macro.name.toUpperCase())
+    this.$emit('click', this.macroName)
   }
 
   mounted () {
-    if (!this.macro.config || !this.macro.config.gcode) return []
+    const gcode = this.macro.config?.gcode
 
-    if (this.isMacroWithRawParam) {
-      this.$set(this.params, 'message', { value: '', reset: '' })
+    if (!gcode) return
+
+    const paramNameForRawGcodeCommand = this.paramNameForRawGcodeCommand
+
+    if (paramNameForRawGcodeCommand) {
+      this.$set(this.params, paramNameForRawGcodeCommand, { value: '', reset: '' })
     } else {
-      for (const { name, value } of gcodeMacroParams(this.macro.config.gcode)) {
-        if (!this.params[name]) {
+      if (
+        this.supportsPythonGcodeMacros &&
+        /^\s*!/.test(gcode)
+      ) {
+        return
+      }
+
+      for (const { name, value } of gcodeMacroParams(gcode)) {
+        if (!name.startsWith('_') && !this.params[name]) {
           this.$set(this.params, name, { value, reset: value })
         }
       }

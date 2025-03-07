@@ -50,28 +50,28 @@ app:
         이는 당신의 Moonraker 설정을 수정해야 함을 의미할 수 있습니다. <a href="%{url}" target="_blank">여기에서</a>
         다중 프린터 설정에 대한 문서를 참조하십시오
     hint:
-      add_printer: 예) http://fluiddpi.local
+      add_printer: 예) http://fluidd.local
     msg:
       trouble: '문제가 있습니까? 자세한 정보는 <a href="%{url}" target="_blank">여기를</a> 참조하십시오.'
     tooltip:
       endpoint_examples: >-
         API URL을 입력하십시오.<br />몇가지 예시는 다음과 같습니다;<br />
-        <blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+        <blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: 열림
-      triggered: 닫힘
+    states:
+      label:
+        open: 열림
+        triggered: 닫힘
     msg:
       subtitle: 새로고침 버튼을 사용해서 엔드스탑 상태를 업데이트 합니다.
   file_system:
     filters:
       label:
         print_start_time: 출력된 항목 숨기기
-        print_start_time_desc: 이미 출력된 항목을 숨깁니다.
         moonraker_backup_files: Moonraker 백업 파일 필터링
         rolled_log_files: 롤링된 로그 파일 필터링
         klipper_backup_files: Klipper 백업 파일 필터링
-        hidden_files_folders: 숨겨진 파일 및 폴더 필터링
+        hidden_files: 숨겨진 파일 및 폴더 필터링
     label:
       dir_name: 폴더명
       disk_usage: 디스크 사용량
@@ -105,7 +105,7 @@ app:
     url:
       moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
       moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
-      klipper_config: https://www.klipper3d.org/Config_Reference.html#%{hash}
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
       crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
   gcode:
     btn:
@@ -467,7 +467,7 @@ app:
       mjpegadaptive: MJPEG 적응형
       mjpegstream: MJPEG 스트림
       video: IP 카메라
-      webrtc_gortc: WebRTC (go2rtc)
+      webrtc_go2rtc: WebRTC (go2rtc)
       hlsstream: HLS 스트림
       iframe: HTTP 페이지
       webrtc_camera_streamer: WebRTC (카메라 스트리머)

@@ -8,24 +8,11 @@ import type { EChartsOption } from 'echarts'
 
 export const getters: GetterTree<ChartState, RootState> = {
   /**
-   * Returns our actual chart data
-   */
-  getChartData: (state) => {
-    return state.chart
-  },
-
-  /**
-   * Returns currently selected legends
-   */
-  getSelectedLegends: (state) => {
-    return state.selectedLegends
-  },
-
-  /**
    * Return the charts retention.
    */
-  getChartRetention: (state, getters, rootState, rootGetters) => {
-    const config = rootGetters['server/getConfig']
+  getChartRetention: (state, getters, rootState) => {
+    const config = rootState.server.config
+
     return config.data_store?.temperature_store_size ??
       config.server?.temperature_store_size ??
       Globals.CHART_HISTORY_RETENTION
@@ -77,6 +64,9 @@ export const getters: GetterTree<ChartState, RootState> = {
     return {
       color,
       grid,
+      textStyle: {
+        fontFamily: 'Roboto'
+      },
       tooltip: {
         ...tooltip,
         show: true,
@@ -107,7 +97,7 @@ export const getters: GetterTree<ChartState, RootState> = {
                   <div style="white-space: nowrap;">
                     ${param.marker}
                     <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
-                      ${param.seriesName}:
+                      ${Vue.$filters.prettyCase(param.seriesName)}:
                     </span>
                     <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
                       ${param.value[yDimension]}${ySuffix}

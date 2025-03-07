@@ -3,11 +3,8 @@
     <v-tooltip bottom>
       <template #activator="{ on, attrs }">
         <app-btn
-          fab
-          small
-          :elevation="0"
-          class="mr-1 bg-transparent"
-          color="transparent"
+          icon
+          text
           :disabled="disabled"
           v-bind="attrs"
           v-on="on"
@@ -44,7 +41,7 @@ export default class AppUploadAndPrintBtn extends Vue {
   readonly uploadFile!: HTMLInputElement
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties']('gcodes') as RootProperties
+    return this.$store.getters['files/getRootProperties']('gcodes')
   }
 
   get accepts () {

@@ -15,18 +15,17 @@
       bottom
     >
       <template #activator="{ on, attrs }">
-        <v-btn
+        <app-btn
           v-bind="attrs"
-          fab
+          icon
           text
-          small
           color="warning"
           v-on="on"
         >
           <v-icon color="warning">
             $error
           </v-icon>
-        </v-btn>
+        </app-btn>
       </template>
       <slot>
         <span>{{ $t('app.file_system.tooltip.low_on_space') }}</span>
@@ -38,18 +37,17 @@
       bottom
     >
       <template #activator="{ on, attrs }">
-        <v-btn
+        <app-btn
           v-bind="attrs"
-          fab
+          icon
           text
-          small
           color="error"
           v-on="on"
         >
           <v-icon color="error">
             $warning
           </v-icon>
-        </v-btn>
+        </app-btn>
       </template>
       <slot>
         <span>{{ $t('app.file_system.tooltip.root_disabled', { root }) }}</span>
@@ -73,8 +71,7 @@
           <v-btn
             v-bind="attrs"
             :disabled="disabled"
-            fab
-            small
+            icon
             text
             @click="$emit('go-to-file')"
             v-on="on"
@@ -108,8 +105,7 @@
           <v-btn
             v-bind="attrs"
             :disabled="disabled"
-            fab
-            small
+            icon
             text
             @click="$emit('refresh')"
             v-on="on"
@@ -132,7 +128,9 @@
         dense
         single-line
         hide-details
+        spellcheck="false"
         append-icon="$magnify"
+        @focus="$event.target.select()"
       />
     </div>
 
@@ -140,7 +138,7 @@
       v-if="roots && roots.length > 1"
       #extension
     >
-      <v-tabs>
+      <v-tabs show-arrows>
         <v-tab
           v-for="(root, index) in roots"
           :key="index"
@@ -158,7 +156,7 @@ import { Component, Prop, Mixins, PropSync } from 'vue-property-decorator'
 import StatesMixin from '@/mixins/state'
 import FileSystemAddMenu from './FileSystemAddMenu.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
-import type { AppTableHeader } from '@/types'
+import type { AppDataTableHeader } from '@/types'
 import type { RootProperties } from '@/store/files/types'
 
 @Component({
@@ -176,12 +174,12 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   readonly name!: string
 
   // Can be a list of roots, or a single root.
-  @Prop({ type: Array<string> })
+  @Prop({ type: Array })
   readonly roots?: string[]
 
   // Currently defined list of headers.
-  @Prop({ type: Array<AppTableHeader> })
-  readonly headers?: AppTableHeader[]
+  @Prop({ type: Array })
+  readonly headers?: AppDataTableHeader[]
 
   // The current path
   @Prop({ type: String })
@@ -196,7 +194,7 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   readonly loading?: boolean
 
   @PropSync('search', { type: String, default: '' })
-    searchModel!: string
+  searchModel!: string
 
   get readonly () {
     return this.rootProperties.readonly
@@ -210,17 +208,17 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
     return this.rootProperties.filterTypes.length > 0
   }
 
-  get lowOnSpace () {
+  get lowOnSpace (): boolean {
     if (!this.klippyReady) return false
     return this.$store.getters['files/getLowOnSpace']
   }
 
   // Properties of the current root.
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+    return this.$store.getters['files/getRootProperties'](this.root)
   }
 
-  get thumbnailSize () {
+  get thumbnailSize (): number {
     return this.$store.state.config.uiSettings.general.thumbnailSize
   }
 

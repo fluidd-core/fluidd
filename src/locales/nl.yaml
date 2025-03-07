@@ -9,13 +9,12 @@ app:
       remove_profile: Verwijder %{name} profiel
       scale: Kleurschaal
       wireframe: Draadframe
-      base: base
+      base: basis
       active: actief
     msg:
       hint: >-
-        Als je je bestand opslaat onder een andere naam dan %{name}, kun je er ook
-        voor
-        kiezen %{name} te verwijderen.
+        Als je het bestand opslaat onder een andere naam dan %{name}, kun je er ook
+        voor kiezen %{name} te verwijderen
       not_found: Geen bedmeshes gevonden.
       not_loaded: Geen meshes geladen
     tooltip:
@@ -31,16 +30,21 @@ app:
       power: Kracht
       target: Doelwit
       rate_of_change: Wijzig
+      target_temperature: Doeltemperatuur
+      turn_off: Zet Uit
     tooltip:
       help: >-
         Houd <kbd>shift</kbd> ingedrukt om te zoomen.<br />Klik op een item om deze
         aan of uit te schakelen in de grafiek.<br />Click a power to toggle in the
         graph.
+    title:
+      pid_calibrate: PID Kalibreer {name}
+      mpc_calibrate: MPC Kalibreer {name}
   console:
     label:
       auto_scroll: Automatisch scrollen
       hide_temp_waits: Verberg temperatuurwachten
-      flip_layout: Flip layout
+      flip_layout: Layout omdraaien
     placeholder:
       command: >-
         'tab' voor autocomplete, 'help' voor commandos 'pijltjes' voor
@@ -53,13 +57,12 @@ app:
       cant_connect: >-
         Er is iets mis, Fluidd kan niet met je doelwit communiceren. Ben je
         zeker dat dit het juiste adres is?
-      cors_error: blocked by CORS policy
+      cors_error: geblokkeerd door CORS-beleid
       cors_note: >-
-        Dit betekent dat er iets mis is met je moonraker instellingen.  Bekijk
-        alsjeblieft de documentatie omtrent multiprinter configuraties <a href="%{url}"
-        target="_blank">hier</a>
+        Dit betekent dat er iets mis is met je moonraker instellingen. Bekijk alsjeblieft
+        de documentatie omtrent multiprinter configuraties <a href="%{url}" target="_blank">hier</a>
     hint:
-      add_printer: V.B, http://fluiddpi.local
+      add_printer: V.B, http://fluidd.local
     msg:
       trouble: >-
         Is er een probleem? <a href="%{url}" target="_blank">Kijk hier</a> voor
@@ -67,22 +70,24 @@ app:
     tooltip:
       endpoint_examples: >-
         Geef je API URL in.<br />Een paar voorbeelden;<br
-        /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+        /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: OPEN
-      triggered: GERAAKT
+    states:
+      label:
+        open: OPEN
+        triggered: GERAAKT
     msg:
-      subtitle: Gebruik de verversknop om je endstopstatus te vernieuwen
+      subtitle: Gebruik de ververs knop om je endstopstatus bij te werken.
   file_system:
     filters:
       label:
         print_start_time: Filter geprint
-        print_start_time_desc: Filtert de items die je al geprint hebt weg
         rolled_log_files: Filter roterende log bestanden
         klipper_backup_files: Filter Klipper backup bestanden
-        hidden_files_folders: Filter verborgen bestanden en mappen
+        hidden_files: Filter verborgen bestanden en mappen
         moonraker_backup_files: Filter Moonraker backup bestanden
+        crowsnest_backup_files: Filter Crowsnest backup bestanden
+        moonraker_temporary_upload_files: Filter tijdelijke uploadbestanden van Moonraker
     label:
       dir_name: Mapnaam
       disk_usage: Schijfgebruik
@@ -94,7 +99,7 @@ app:
       view_section_documentation: Bekijk '%{section}' documentatie
     msg:
       not_found: Geen bestanden gevonden
-      processing: Verwerken...
+      processing: Verwerken
     title:
       add_dir: Map toevoegen
       add_file: Bestand toevoegen
@@ -106,6 +111,7 @@ app:
       command_palette: Command Palette
       duplicate_file: Dupliceer Bestand
       duplicate_dir: Dupliceer Directory
+      devices: Apparaten
     tooltip:
       low_on_space: Weinig geheugen over op de schijf
       root_disabled: '{root} is niet beschikbaar. Controleer je logs.'
@@ -117,11 +123,11 @@ app:
     url:
       moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
       moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
-      klipper_config: https://www.klipper3d.org/Config_Reference.html#%{hash}
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
       crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
   gcode:
     btn:
-      load_current_file: Laad huidig ​​bestand
+      load_current_file: Laad huidig bestand
     label:
       current_layer_height: Huidige laaghoogte
       follow_progress: Volg voortgang
@@ -139,10 +145,8 @@ app:
       show_parts: Toon onderdelen
     msg:
       confirm: >-
-        Het bestand "% {filename}" is% {size}, dit kan resource-intensief zijn
-        voor uw systeem.
-
-        Weet je het zeker?
+        Het bestand "%{filename}" is %{size}, dit kan resource-intensief zijn voor
+        uw systeem. Weet je het zeker?
     overlay:
       drag_file_load: <strong>Sleep</strong> hier een gcode bestand om te laden
   general:
@@ -161,7 +165,7 @@ app:
       download: Downloaden
       edit: Aanpassen
       exit_layout: Sluit layoutmanager
-      extrude: Extrude
+      extrude: Extruderen
       heaters_off: Verwarmingen uit
       load_all: Alles laden
       more_information: Meer informatie
@@ -205,7 +209,7 @@ app:
       upload_folder: Upload Map
       reset_stats: Reset Stats
       return_dashboard: Ga terug naar het dashboard
-      snooze: Snooze
+      snooze: Sluimeren
       go_to_file: Ga naar bestand
       set_default_layout: Gebruik als Standaard Indeling
       upload_files: Bestanden Uploaden
@@ -223,14 +227,18 @@ app:
       abort: Afbreken
       recover: Herstel
       multiply: Vermenigvuldig
+      job_queue: Job Wachtrij
+      socket_reconnect: Verbind opnieuw
+      copied: Gekopieerd
+      copy: Kopieer
     error:
       app_setup_link: >-
         Fluidd opstart vereisten kan je <a target="_blank" href="%{url}">hier</a>
-        vinden.
+        vinden
       app_warnings_found: '%{appName} waarschuwingen gevonden.'
       components_config: >-
-        Moonraker plugin configuratie kan je <a target="_blank"
-        href="%{url}">hier</a> vinden.
+        Moonraker plugin configuratie kan je <a target="_blank" href="%{url}">hier</a>
+        vinden
       failed_components: >-
         Moonraker heeft falende plugins, controleer je logs, update je
         configuratie en herstart moonraker.
@@ -285,7 +293,7 @@ app:
       total_time_avg: Gemiddelde tijd
       uncategorized: Zonder categorie
       unretract_speed: Terugduw lengte
-      used: Gebruikt
+      used: gebruikt
       velocity: Snelheid
       visible: Zichtbaar
       z_offset: Z-Offset
@@ -327,6 +335,18 @@ app:
         resulteren in een mislukte print.
       ldap: LDAP
       apply_z_offset: Toepassen en Opslaan Z_Offset
+      unsaved_changes: Niet Opgeslagen Wijzigingen
+      compact: Compact
+      user_managed_source: Gebruiker beheerd door %{source} authenticatie
+      range: Bereik
+      synced_extruder: Gesynchroniseerde Extruder
+      stepper_enabled: Stappenmotor ingeschakeld
+      screw_name: Schroef naam
+      unknown: Onbekend
+      screw_index: Schroef index
+      screw_number: Schroef %{index}
+      version_sort: Versie sorteer
+      device: Apparaat
     msg:
       password_changed: Wachtwoord aangepast
       wrong_password: Oeps! Er is iets fout gegaan, klopt je wachtwoord wel?
@@ -338,6 +358,9 @@ app:
         om te verwijderen
       needs_refresh: Nieuwe content beschikbaar, klik op de <b>Herladen</b> knop om
         te updaten.
+      not_valid_fluidd_backup_file: Niet een geldig Fluidd backup bestand!
+      fluidd_settings_backup_failed: Backup Fluidd instellingen mislukt!
+      fluidd_settings_restore_failed: Herstellen Fluidd instellingen mislukt!
     simple_form:
       error:
         arrayofnums: Alleen nummers
@@ -346,7 +369,7 @@ app:
         max: Max %{max}
         min: Min %{min}
         min_or_0: Min %{min} or 0
-        password_username: Gebruikersnaam mag niet overeenkomen met je wachtwoord.
+        password_username: Gebruikersnaam en wachtwoord komen niet overeen
         required: Vereist
         invalid_number: Ongeldig Getal
         credentials: Ongeldige credentials
@@ -368,7 +391,23 @@ app:
           het apparaat aan of uit.
         confirm_delete: Weet je het zeker? Dit zal het geselecteerde item verwijderen.
           | Weet je het zeker? Dit zal de {count} geselecteerde items verwijderen.
-        no_file_preview: '%(name) kan momenteel geen voorvertoning laten zien.'
+        no_file_preview: '%{name} kan momenteel geen voorvertoning laten zien.'
+        confirm_remove_user: Weet je zeker dat je gebruiker %{username} wilt verwijderen?
+        confirm_cancel_print: Weet je zeker dat je de huidige print wilt annuleren?
+        confirm_clear_mesh: De printer is momenteel bezig. Weet je zeker dat je de
+          bed mesh wilt legen?
+        confirm_load_bedmesh_profile: De printer is momenteel bezig. Weet je zeker
+          dat je profiel %{name} wilt laden?
+        confirm_remove_console_filter: Weet je zeker dat je de console filter %{name}
+          wilt verwijderen?
+        confirm_remove_camera: Weet je zeker dat je de camera %{name} wilt verwijderen?
+        confirm_remove_macro_category: Weet je zeker dat je de macro categorie %{name}
+          wilt verwijderen?
+        confirm_remove_printer: Weet je zeker dat je de printer %{name} wilt verwijderen?
+        confirm_remove_thermal_preset: Weet je zeker dat je de thermal preset %{name}
+          wilt verwijderen?
+        confirm_change_beacon_model: De printer is momenteel bezig. Weet je zeker
+          dat je het beacon model wilt wijzigen?
     table:
       header:
         actions: Acties
@@ -391,7 +430,7 @@ app:
         slicer_version: Slicer versie
         start_time: Gestart
         status: Status
-        total_duration: Totale tijd
+        total_duration: Totale duur
         filament_type: Filament type
         filament_name: Filament naam
         time_in_queue: Tijd in Wachtrij
@@ -429,6 +468,9 @@ app:
       add_chart: Voeg Grafiek Toe
       not_found: 404 Niet Gevonden
       edit_chart: Bewerk Grafiek
+      job_queue: Opdrachten wachtrij
+      diagnostics: Diagnostiek
+      macro_category_settings: Macro Categorie Instellingen
     tooltip:
       estop: Noodstop
       reload_klipper: Herlaad de klipper configuratie.
@@ -453,6 +495,10 @@ app:
       ready: Klaar
       standby: Standby
       cancelled: Geannuleerd
+    title:
+      printer_status: Printer Status
+    msg:
+      possible_print_failure: Dit kan een mislukte print veroorzaken
   setting:
     btn:
       add_camera: Camera toevoegen
@@ -462,19 +508,22 @@ app:
       select_theme: Selecteer Theme
       add_filter: Filter Toevoegen
       add_category: Categorie Toevoegen
+      backup: Backup
+      restore: Herstellen
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
       video: IP Camera
       hlsstream: HLS Stream
       iframe: HTTP pagina
+      webrtc_camera_streamer: WebRTC (camera-streamer)
     label:
       all_off: Alles uit
       all_on: Alles aan
       camera_flip_x: Flip horizontaal
       camera_flip_y: Flip vertikaal
       camera_stream_type: Stream type
-      confirm_on_estop: Weet je dit zeker?
+      confirm_on_estop: Bevestiging vereist bij noodstop
       dark_mode: Donker modus
       default_extrude_length: Standaard extrudelengte
       default_extrude_speed: Standaard extrudesnelheid
@@ -556,10 +605,24 @@ app:
       expression: Expressie
       toolhead_z_move_distances: Toolhead Z afstandswaarden
       show_gas_resistance: Toon gas druk
+      dashed: Gestreept
+      camera_fullscreen_action:
+        title: Volledig scherm actie
+      fluidd_settings_in_moonraker_db: Fluidd instellingen in Moonraker database
+      print_progress_calculation: Print Voortgang calculatie
+      axes: Assen
+      auto_follow_on_file_load: Voortgang automatisch volgen na laden bestand
+      aspect_ratio: Aspectverhouding
+      drag_and_drop_functionality_for_files_and_folders: Drag-and-drop functionaliteit
+        voor bestanden en mappen
+      show_save_config_and_restart: Configuratie Opslaan en Herstarten knop in top
+        navigatie
+      force_move_toggle_warning: Confirmatie vereist wanneer FORCE_MOVE wordt geactiveerd
+      print_eta_calculation: Print ETA berekening
     timer_options:
       duration: Alleen tijdsduur
-      filament: Filamentschatting
-      file: Bestandsschatting
+      filament: Filament
+      file: Bestand
       slicer: Slicer
     title:
       authentication: Authentificatie
@@ -572,9 +635,12 @@ app:
       tool: Werktuig
       console: Console
     tooltip:
-      gcode_coords: Gebruik GCode positie in plaats van toolhead positie op het dashboard.
+      gcode_coords: Gebruik GCode positie in plaats van toolhead positie op het dashboard
     camera_rotate_options:
       none: Geen
+      '90': 90°
+      '180': 180°
+      '270': 270°
   socket:
     msg:
       connecting: Verbinden met Moonraker...
@@ -594,7 +660,7 @@ app:
       manufactured: Gemaakt
       manufacturer: Maker
       mcu_awake: '{mcu} Awake Tijd'
-      mcu_bandwidth: MCU bandbreedte
+      mcu_bandwidth: '{mcu} bandbreedte'
       mcu_load: '{mcu} Load'
       model: CPU model
       moonraker_load: Moonraker Load
@@ -612,6 +678,14 @@ app:
       network: Netwerk
       version: Versie
       virtualization: Virtualisatie
+      memory_used: geheugen gebruikt
+      devices: Apparaten
+      application: Applicatie
+      connected: Verbonden
+      constants: Constanten
+    msg:
+      no_devices_found: Geen apparaten gevonden
+      no_devices_searched: Gebruik de ververs knop om te zoeken naar apparaten
   tool:
     btn:
       home_x: X
@@ -681,7 +755,7 @@ app:
     btn:
       scan_code: Scan Code
       manage_spools: Beheer Spoelen
-      select: Selecteer
+      select: Selecteer | Selecteer voor {macro}
     msg:
       no_filament: De spoel die je hebt geselecteerd heeft waarschijnlijk niet genoeg
         filament meer om de print job te voltooien. Weet je zeker dat je door wilt
@@ -705,7 +779,7 @@ app:
         te beginnen.
     title:
       scan_spool: Scan Spoel
-      spool_selection: Spoel Selectie
+      spool_selection: Spoel selectie | Spool selectie voor macro {macro}
   job_queue:
     tooltip:
       help: Zet opdrachten in de wachtrij door bestanden vanuit Jobs hiernaartoe te
@@ -747,3 +821,9 @@ app:
       confirm_stats: Weet je het zeker? Dit zal alle statistieken wissen.
       confirm: Weet je het zeker? Dit zal alle geschiedenis en printer statistieken
         wissen
+  keyboard_shortcuts:
+    label:
+      pause: Pauze
+  beacon:
+    tooltip:
+      load: Laad Model

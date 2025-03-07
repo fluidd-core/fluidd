@@ -24,14 +24,14 @@ export default class ConsoleItem extends Vue {
   @Prop({ type: Object, default: () => {} })
   readonly value!: ConsoleEntry
 
-  get knownCommands () {
-    return this.$store.getters['console/getAllKnownCommands'] as GcodeHelp
+  get knownCommands (): GcodeHelp {
+    return this.$store.getters['console/getAllKnownCommands']
   }
 
   get itemMessage () {
     let message = this.value.message
     if (this.value.type === 'response') {
-      message = this.value.message.replace(/([A-Z0-9_]{2,})/gm, (match, command) => {
+      message = this.value.message.replace(/([A-Z_][A-Z0-9_.]+)/g, (match, command) => {
         if (command in this.knownCommands) return `<a class="primary--text text--lighten-1">${command.toUpperCase()}</a>`
         return match
       })

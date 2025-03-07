@@ -2,18 +2,24 @@
   <v-row
     no-gutters
     v-bind="$attrs"
-    :class="classes"
-    class="setting"
+    :class="{
+      'sc-link': hasClick
+    }"
+    class="app-setting-control"
     v-on="$listeners"
   >
     <div
-      v-if="accentColor && accentColor !== ''"
-      :style="`background-color: ${accentColor};`"
-      class="setting__accent-color"
+      v-if="accentColor"
+      :style="{
+        'background-color': accentColor
+      }"
+      class="sc-color"
     />
+
     <v-col
-      :cols="cols[0]"
-      class="setting-title"
+      cols="12"
+      :sm="cols[0]"
+      class="sc-label text-body-1 pr-0 pr-sm-3 pb-0 pb-sm-3"
       align-self="center"
     >
       <slot name="title">
@@ -21,16 +27,18 @@
       </slot>
       <div
         v-if="hasSubTitle"
-        class="setting-sub-title secondary--text"
+        class="text-body-2 secondary--text"
       >
         <slot name="sub-title">
           {{ subTitle }}
         </slot>
       </div>
     </v-col>
+
     <v-col
-      :cols="cols[1]"
-      class="setting-controls"
+      cols="12"
+      :sm="cols[1]"
+      class="sc-content py-3"
       align-self="center"
     >
       <slot />
@@ -41,7 +49,9 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 
-@Component({})
+@Component({
+  inheritAttrs: false
+})
 export default class AppSetting extends Vue {
   @Prop({ type: String, default: '' })
   readonly title!: string
@@ -73,85 +83,62 @@ export default class AppSetting extends Vue {
       this.subTitle
     )
   }
-
-  get classes () {
-    return {
-      setting__link: this.hasClick
-    }
-  }
 }
 </script>
 
 <style lang="scss" scoped>
-  .setting {
-    // align-items: center;
+  .app-setting-control {
     display: flex;
     flex: 1 1 100%;
-    letter-spacing: normal;
     min-height: 48px;
     outline: none;
     padding: 0 16px;
     position: relative;
     text-decoration: none;
-  }
 
-  .setting > .col {
-    padding: 12px 0;
-  }
+    &.sc-link {
+      cursor: pointer;
+      user-select: none;
+    }
 
-  .col.setting-title {
-    // display: flex;
-    // flex: 0 1 auto;
-    // justify-content: space-between;
-    // align-items: center;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    padding-right: 12px;
-  }
+    &.sc-link:hover::before {
+      opacity: 0.08;
+    }
 
-  .col.setting-title > .setting-sub-title {
-    font-size: 0.875rem;
-  }
+    &.sc-link::before {
+      background-color: currentColor;
+      bottom: 0;
+      content: "";
+      left: 0;
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+    }
 
-  .setting__link {
-    cursor: pointer;
-    user-select: none;
-  }
+    .sc-accent {
+      display: block;
+      position: absolute;
+      left: 0;
+      width: 3px;
+      height: 100%;
+    }
 
-  .setting__link:hover::before {
-    opacity: 0.08;
-  }
+    .sc-label {
+      padding: 12px 0;
+    }
 
-  .setting__link::before {
-    background-color: currentColor;
-    bottom: 0;
-    content: "";
-    left: 0;
-    opacity: 0;
-    pointer-events: none;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-  }
+    .sc-content {
+      display: inline-flex;
+      align-self: center;
+      justify-content: flex-end;
+      align-items: center;
+    }
 
-  .setting__accent-color {
-    display: block;
-    position: absolute;
-    left: 0;
-    width: 3px;
-    height: 100%;
-    // border-radius: 6px 0 0 6px;
- }
-
-  .setting-controls {
-    display: inline-flex;
-    align-self: center;
-    justify-content: flex-end;
-    align-items: center;
-  }
-
-  .setting-controls .v-input {
-    margin: 0 !important;
+    .sc-content .v-input {
+      margin: 0 !important;
+    }
   }
 </style>

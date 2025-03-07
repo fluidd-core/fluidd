@@ -4,11 +4,11 @@
       cols="12"
       sm="5"
       align-self="center"
-      class="text-body-1 py-0"
+      class="text-body-1"
       :class="{ 'text--disabled': disabled }"
       v-html="label"
     />
-    <v-col class="py-0">
+    <v-col>
       <app-text-field
         v-model="inputValue"
         :type="type"
@@ -29,7 +29,6 @@
             v-if="resetValue !== undefined"
             :disabled="disabled"
             style="margin-top: -4px;"
-            color=""
             icon
             small
             @click="handleReset"
@@ -49,10 +48,12 @@ import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { InputValidationRules } from 'vuetify'
 
-@Component({})
+@Component({
+  inheritAttrs: false
+})
 export default class AppNamedTextField extends Mixins(StateMixin) {
   @VModel({ })
-    inputValue?: unknown
+  inputValue?: unknown
 
   @Prop({ type: String })
   readonly type?: string
@@ -78,7 +79,7 @@ export default class AppNamedTextField extends Mixins(StateMixin) {
   @Prop({ type: String })
   readonly suffix!: string
 
-  @Prop({ type: Array<InputValidationRules> })
+  @Prop({ type: Array })
   readonly rules?: InputValidationRules[]
 
   handleReset () {

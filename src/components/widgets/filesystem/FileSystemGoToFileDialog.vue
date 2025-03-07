@@ -5,7 +5,7 @@
     no-actions
     max-width="800"
   >
-    <v-card-actions>
+    <v-toolbar dense>
       <v-text-field
         v-model="search"
         :loading="loading"
@@ -13,18 +13,15 @@
         hide-details
         dense
         autofocus
-        class="mx-2"
       />
-    </v-card-actions>
-
-    <v-divider />
+    </v-toolbar>
 
     <v-virtual-scroll
       :items="matchedFiles"
       bench="30"
       item-height="40"
     >
-      <template #default="{ item }">
+      <template #default="{ index, item }">
         <v-list-item
           :key="item.path"
           dense
@@ -38,7 +35,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-divider />
+        <v-divider v-if="index !== matchedFiles.length - 1" />
       </template>
     </v-virtual-scroll>
   </app-dialog>
@@ -51,7 +48,7 @@ import type { MoonrakerRootFile } from '@/store/files/types'
 import getFilePaths from '@/util/get-file-paths'
 import StateMixin from '@/mixins/state'
 
-type File = MoonrakerRootFile &{
+type File = MoonrakerRootFile & {
   filename: string
   filepath: string
   rootPath: string
@@ -60,7 +57,7 @@ type File = MoonrakerRootFile &{
 @Component({})
 export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: String, required: true })
   readonly root!: string
@@ -69,7 +66,7 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
   loaded = false
 
   get rootFiles (): MoonrakerRootFile[] {
-    return this.$store.getters['files/getRootFiles'](this.root) as MoonrakerRootFile[]
+    return this.$store.getters['files/getRootFiles'](this.root)
   }
 
   get matchedFiles (): File[] {
@@ -99,7 +96,7 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
   }
 
   get loading (): boolean {
-    return this.hasWait(`${this.$waits.onFileSystem}/${this.root}/`) as boolean
+    return this.hasWait(`${this.$waits.onFileSystem}/${this.root}/`)
   }
 
   @Watch('loading')

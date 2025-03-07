@@ -1,18 +1,15 @@
 <template>
   <app-dialog
-    v-if="newMacro"
     v-model="open"
-    :title="newMacro.name.toUpperCase()"
-    :sub-title="newMacro.config.description"
+    :title="macro.name.toUpperCase()"
+    :sub-title="macro.config.description"
     max-width="480"
     @save="handleSave"
   >
-    <div class="overflow-y-auto">
-      <app-setting
-        :title="$t('app.general.label.alias')"
-      >
+    <v-card-text class="pa-0">
+      <app-setting :title="$t('app.general.label.alias')">
         <v-text-field
-          v-model="newMacro.alias"
+          v-model="macro.alias"
           dense
           filled
           hide-details
@@ -21,11 +18,9 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.general.label.category')"
-      >
+      <app-setting :title="$t('app.general.label.category')">
         <v-select
-          v-model="newMacro.categoryId"
+          v-model="macro.categoryId"
           :items="categories"
           hide-details
           dense
@@ -37,9 +32,7 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.general.label.color')"
-      >
+      <app-setting :title="$t('app.general.label.color')">
         <app-btn
           outlined
           small
@@ -50,34 +43,16 @@
           {{ $t('app.setting.btn.reset') }}
         </app-btn>
         <app-color-picker
+          v-model="color"
           :title="$t('app.general.btn.set_color')"
-          :primary="color"
-          @change="handleColorChange"
         />
       </app-setting>
 
       <v-divider />
 
-      <!-- <app-setting
-          title="Assign to"
-        >
-          <v-select
-            :items="['Console', 'Tool', 'Bed mesh controls']"
-            v-model="assign"
-            clearable
-            hide-details
-            dense
-            filled
-          ></v-select>
-        </app-setting>
-
-        <v-divider /> -->
-
-      <app-setting
-        :title="$t('app.general.label.disabled_while_printing')"
-      >
+      <app-setting :title="$t('app.general.label.disabled_while_printing')">
         <v-switch
-          v-model="newMacro.disabledWhilePrinting"
+          v-model="macro.disabledWhilePrinting"
           class="mt-0 pt-0"
           color="primary"
           hide-details
@@ -90,60 +65,49 @@
         :title="$t('app.general.label.visible')"
       >
         <v-switch
-          v-model="newMacro.visible"
+          v-model="macro.visible"
           class="mt-0 pt-0"
           color="primary"
           hide-details
         />
       </app-setting>
-    </div>
+    </v-card-text>
   </app-dialog>
 </template>
 
 <script lang="ts">
-import type { Macro } from '@/store/macros/types'
+import type { Macro, MacroCategory } from '@/store/macros/types'
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import type { IroColor } from '@irojs/iro-core'
 
 @Component({})
 export default class MacroMoveDialog extends Vue {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: Object, required: true })
   readonly macro!: Macro
 
-  assign = null
-  newMacro: Macro | null = null
-
-  mounted () {
-    this.newMacro = { ...this.macro }
-  }
-
   get categories () {
     // Grabs all categories and filters by the currently defined one.
-    const categories = [...this.$store.getters['macros/getCategories']]
-    categories.unshift({ name: this.$t('app.general.label.uncategorized'), id: '0' })
+    const categories: MacroCategory[] = [...this.$store.getters['macros/getCategories']]
+    categories.unshift({ name: this.$t('app.general.label.uncategorized').toString(), id: '0' })
     return categories
   }
 
-  get color () {
-    if (this.newMacro && this.newMacro.color !== '') {
-      return this.newMacro.color
-    }
-    return this.$vuetify.theme.currentTheme.secondary
+  get color (): string | undefined {
+    return this.macro.color || this.$vuetify.theme.currentTheme.secondary?.toString()
   }
 
-  handleColorChange (color: { channel: string, color: IroColor }) {
-    if (this.newMacro) this.newMacro.color = color.color.hexString
+  set color (value: string | undefined) {
+    this.macro.color = value
   }
 
   handleResetColor () {
-    if (this.newMacro) this.newMacro.color = ''
+    this.macro.color = undefined
   }
 
   handleSave () {
-    this.$store.dispatch('macros/saveMacro', this.newMacro)
+    this.$store.dispatch('macros/saveMacro', this.macro)
     this.open = false
   }
 }

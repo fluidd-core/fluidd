@@ -19,17 +19,19 @@
         :label="$t('app.bedmesh.label.profile_name')"
       />
 
-      <v-checkbox
-        v-model="removeDefault"
-        :label="$t('app.bedmesh.label.remove_profile', { name: existingName })"
-        hide-details="auto"
-        class="mb-4"
-        :disabled="name === existingName"
-      />
+      <template v-if="!adaptive">
+        <v-checkbox
+          v-model="removeDefault"
+          :label="$t('app.bedmesh.label.remove_profile', { name: existingName })"
+          hide-details="auto"
+          class="mb-4"
+          :disabled="name === existingName"
+        />
 
-      <span>
-        {{ $t('app.bedmesh.msg.hint', { name: existingName }) }}
-      </span>
+        <span>
+          {{ $t('app.bedmesh.msg.hint', { name: existingName }) }}
+        </span>
+      </template>
     </v-card-text>
   </app-dialog>
 </template>
@@ -42,10 +44,13 @@ import ToolheadMixin from '@/mixins/toolhead'
 @Component({})
 export default class SaveMeshDialog extends Mixins(StateMixin, ToolheadMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: String })
   readonly existingName!: string
+
+  @Prop({ type: Boolean })
+  readonly adaptive!: boolean
 
   mounted () {
     this.name = 'default'

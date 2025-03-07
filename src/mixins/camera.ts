@@ -1,11 +1,13 @@
 import Vue from 'vue'
-import { Component, Prop, Ref, Watch } from 'vue-property-decorator'
-import type { CameraConfig } from '@/store/cameras/types'
+import { Component, Emit, Prop, Ref, Watch } from 'vue-property-decorator'
+import type { WebcamConfig } from '@/store/webcams/types'
+import consola from 'consola'
+import type { CameraConnectionStatus, CameraNameMenuItem } from '@/types'
 
 @Component
 export default class CameraMixin extends Vue {
   @Prop({ type: Object, required: true })
-  readonly camera!: CameraConfig
+  readonly camera!: WebcamConfig
 
   @Prop({ type: String })
   readonly crossorigin?: 'anonymous' | 'use-credentials' | ''
@@ -15,6 +17,11 @@ export default class CameraMixin extends Vue {
 
   cameraTransformStyle = ''
   animating = false
+  status: CameraConnectionStatus = 'disconnected'
+  cameraName = ''
+  cameraNameMenuItems: CameraNameMenuItem[] = []
+  framesPerSecond = ''
+  rawCameraUrl = ''
 
   @Watch('camera')
   onCamera () {
@@ -23,7 +30,7 @@ export default class CameraMixin extends Vue {
   }
 
   get apiUrl (): string {
-    return this.$store.state.config.apiUrl as string
+    return this.$store.state.config.apiUrl
   }
 
   get cameraStyle () {
@@ -32,9 +39,13 @@ export default class CameraMixin extends Vue {
     }
   }
 
+  get autoRaiseFrameEvent () {
+    return true
+  }
+
   createTransform (): string {
     const element = this.streamingElement
-    const { rotation, flipX, flipY } = this.camera
+    const { rotation, flip_horizontal, flip_vertical } = this.camera
     const transformsArray: string[] = []
 
     const { clientWidth, clientHeight } = element
@@ -50,12 +61,12 @@ export default class CameraMixin extends Vue {
         ? clientHeight / clientWidth
         : clientWidth / clientHeight
 
-    if (scale !== 1 || flipX) {
-      transformsArray.push(`scaleX(${flipX ? -scale : scale})`)
+    if (scale !== 1 || flip_horizontal) {
+      transformsArray.push(`scaleX(${flip_horizontal ? -scale : scale})`)
     }
 
-    if (scale !== 1 || flipY) {
-      transformsArray.push(`scaleY(${flipY ? -scale : scale})`)
+    if (scale !== 1 || flip_vertical) {
+      transformsArray.push(`scaleY(${flip_vertical ? -scale : scale})`)
     }
 
     if (rotation !== 0) {
@@ -73,6 +84,10 @@ export default class CameraMixin extends Vue {
 
       if (this.streamingElement) {
         this.cameraTransformStyle = this.createTransform()
+
+        if (this.autoRaiseFrameEvent) {
+          this.$emit('frame', this.streamingElement)
+        }
       }
 
       this.updateCameraTransformStyle()
@@ -109,11 +124,40 @@ export default class CameraMixin extends Vue {
     return new URL(url, origin)
   }
 
+  @Emit('update:status')
+  updateStatus (status: CameraConnectionStatus) {
+    this.status = status
+  }
+
+  @Emit('update:camera-name')
+  updateCameraName (cameraName: string) {
+    this.cameraName = cameraName
+  }
+
+  @Emit('update:camera-name-menu-items')
+  updateCameraNameMenuItems (cameraNameMenuItems: CameraNameMenuItem[]) {
+    this.cameraNameMenuItems = cameraNameMenuItems
+  }
+
+  @Emit('update:frames-per-second')
+  updateFramesPerSecond (framesPerSecond: string) {
+    this.framesPerSecond = framesPerSecond
+  }
+
+  @Emit('update:raw-camera-url')
+  updateRawCameraUrl (rawCameraUrl: string) {
+    this.rawCameraUrl = rawCameraUrl
+  }
+
   startPlayback () {
     // noop
   }
 
   stopPlayback () {
     // noop
+  }
+
+  menuItemClick (item: CameraNameMenuItem) {
+    consola.debug('Menu item click', item)
   }
 }

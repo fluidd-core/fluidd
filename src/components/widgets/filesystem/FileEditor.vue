@@ -19,7 +19,7 @@
 import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
-import md5AsBase64 from '@/util/md5-as-base64'
+import md5 from 'md5'
 import type { InstanceConfig, RestoreViewState } from '@/store/config/types'
 import consola from 'consola'
 let monaco: typeof Monaco // dynamically imported
@@ -50,11 +50,11 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
 
   get restoreViewState (): RestoreViewState {
-    return this.$store.state.config.uiSettings.editor.restoreViewState as RestoreViewState
+    return this.$store.state.config.uiSettings.editor.restoreViewState
   }
 
   get activeInstance (): InstanceConfig {
-    return this.$store.getters['config/getCurrentInstance'] as InstanceConfig
+    return this.$store.getters['config/getCurrentInstance']
   }
 
   get restoreViewStateStorage (): Storage | undefined {
@@ -110,6 +110,15 @@ export default class FileEditor extends Mixins(BrowserMixin) {
       }
     })
 
+    this.editor.addAction({
+      id: 'action-emergency-stop',
+      label: this.$tc('app.general.tooltip.estop'),
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyE],
+      run: () => {
+        this.$emit('emergency-stop')
+      }
+    })
+
     const filename = this.path ? `${this.path}/${this.filename}` : this.filename
     const apiFileUrl = `${this.activeInstance.apiUrl}/server/files/${filename}`
 
@@ -124,12 +133,12 @@ export default class FileEditor extends Mixins(BrowserMixin) {
     const restoreViewStateStorage = this.restoreViewStateStorage
 
     if (restoreViewStateStorage) {
-      this.viewStateHash = 'monaco.' + md5AsBase64(apiFileUrl)
+      this.viewStateHash = 'monaco.' + md5(apiFileUrl)
 
       const viewState = restoreViewStateStorage.getItem(this.viewStateHash)
 
       if (viewState) {
-        this.editor.restoreViewState(JSON.parse(viewState))
+        this.editor.restoreViewState(JSON.parse(viewState) as Monaco.editor.ICodeEditorViewState | null)
       }
     }
 
@@ -162,20 +171,19 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   destroyed () {
     const restoreViewStateStorage = this.restoreViewStateStorage
 
-    if (restoreViewStateStorage && this.viewStateHash) {
-      const viewState = this.editor?.saveViewState()
+    if (this.editor && restoreViewStateStorage && this.viewStateHash) {
+      const viewState = this.editor.saveViewState()
 
-      if (viewState) {
-        try {
-          restoreViewStateStorage.setItem(this.viewStateHash, JSON.stringify(viewState))
-        } catch (e) {
-          consola.error('[Storage] setItem', e)
-        }
+      try {
+        restoreViewStateStorage.setItem(this.viewStateHash, JSON.stringify(viewState))
+      } catch (e) {
+        consola.error('[Storage] setItem', e)
       }
     }
 
-    if (monaco) monaco.editor.getModels().forEach(model => model.dispose())
-    if (this.editor) this.editor.dispose()
+    monaco?.editor.getModels().forEach(model => model.dispose())
+
+    this.editor?.dispose()
   }
 }
 </script>

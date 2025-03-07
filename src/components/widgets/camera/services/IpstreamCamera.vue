@@ -6,12 +6,15 @@
     muted
     :crossorigin="crossorigin"
     :style="cameraStyle"
+    @play="updateStatus('connected')"
+    @error="updateStatus('error')"
   />
 </template>
 
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import CameraMixin from '@/mixins/camera'
+import consola from 'consola'
 
 @Component({})
 export default class IpstreamCamera extends Mixins(CameraMixin) {
@@ -20,15 +23,26 @@ export default class IpstreamCamera extends Mixins(CameraMixin) {
 
   cameraVideoSource = ''
 
+  get autoRaiseFrameEvent () {
+    return false
+  }
+
   startPlayback () {
-    const url = this.buildAbsoluteUrl(this.camera.urlStream || '').toString()
+    try {
+      this.updateStatus('connecting')
 
-    this.cameraVideoSource = url
+      const url = this.buildAbsoluteUrl(this.camera.stream_url || '').toString()
 
-    this.$emit('raw-camera-url', url)
+      this.cameraVideoSource = url
+
+      this.updateRawCameraUrl(url)
+    } catch (e) {
+      consola.error(`[IpstreamCamera] failed to start playback "${this.camera.name}"`, e)
+    }
   }
 
   stopPlayback () {
+    this.updateStatus('disconnected')
     this.cameraVideoSource = ''
     this.cameraVideo.src = ''
   }

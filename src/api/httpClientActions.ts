@@ -36,19 +36,19 @@ export const httpClientActions = {
       result: {
         username: string,
         token: string,
-        action: string,
+        action: 'user_jwt_refresh',
         source: string
       }
     }>('/access/refresh_jwt', { refresh_token }, options)
   },
 
-  accessLoginPost (username: string, password: string, source = 'moonraker', options?: AxiosRequestConfig) {
+  accessLoginPost (username: string, password: string, source: string = 'moonraker', options?: AxiosRequestConfig) {
     return this.post<{
       result: {
         username: string,
         token: string,
         refresh_token: string,
-        action: string,
+        action: 'user_logged_in',
         source: string
       }
     }>('/access/login', {
@@ -62,7 +62,7 @@ export const httpClientActions = {
     return this.post<{
       result: {
         username: string,
-        action: string
+        action: 'user_logged_out'
       }
     }>('access/logout', undefined, options)
   },
@@ -101,8 +101,8 @@ export const httpClientActions = {
         username: string,
         token: string,
         refresh_token: string,
-        action: string,
-        source: string
+        action: 'user_created',
+        source: 'moonraker'
       }
     }>('/access/user', {
       username,
@@ -114,7 +114,7 @@ export const httpClientActions = {
     return this.delete<{
       result: {
         username: string,
-        action: string
+        action: 'user_deleted'
       }
     }>('/access/user', {
       ...options,
@@ -126,7 +126,7 @@ export const httpClientActions = {
     return this.post<{
       result: {
         username: string,
-        action: string
+        action: 'user_password_reset'
       }
     }>('/access/user/password', {
       password,
@@ -170,25 +170,46 @@ export const httpClientActions = {
     }, options)
   },
 
+  serverDatabaseItemDelete<T = unknown> (namespace: string, key: string, options?: AxiosRequestConfig) {
+    return this.delete<{
+      result: {
+        namespace: string,
+        key: string,
+        value: T
+      }
+    }>(`/server/database/item?namespace=${namespace}&key=${key}`, options)
+  },
+
   serverFilesUploadPost (file: File, path: string, root: string, print?: boolean, options?: AxiosRequestConfig) {
+    const formData = new FormData()
+
+    formData.append('file', file, file.name)
+    formData.append('path', path)
+    formData.append('root', root)
+    if (print) {
+      formData.append('print', 'true')
+    }
+
     return this.postForm<{
       result: {
         item: {
+          modified?: number,
+          size?: number,
+          permissions?: string,
           path: string,
           root: string
         }
         print_started?: boolean,
-        action: string
+        print_queued?: boolean,
+        action: 'create_file'
       }
-    }>('/server/files/upload', {
-      file,
-      path,
-      root,
-      print
-    }, options)
+    }>('/server/files/upload', formData, options)
   },
 
   serverFilesGet<T = unknown> (filepath: string, options?: AxiosRequestConfig) {
-    return this.get<T>(`/server/files/${encodeURI(filepath)}?date=${Date.now()}`, options)
+    const encodedFilepath = filepath
+      .replace(/[^/]+/g, match => encodeURIComponent(match))
+
+    return this.get<T>(`/server/files/${encodedFilepath}?date=${Date.now()}`, options)
   }
 }

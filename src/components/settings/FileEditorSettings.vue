@@ -14,7 +14,6 @@
         <v-switch
           v-model="confirmDirtyEditorClose"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -57,7 +56,6 @@
         <v-switch
           v-model="codeLens"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>

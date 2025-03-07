@@ -1,6 +1,6 @@
 <template>
   <app-dialog
-    v-model="open"
+    v-model="bedScrewsAdjustDialogOpen"
     :title="$t('app.tool.title.bed_screws_adjust')"
     max-width="450"
     @save="sendAccept"
@@ -11,6 +11,7 @@
           <v-text-field
             :label="$t('app.general.label.screw_name')"
             outlined
+            persistent-placeholder
             hide-details
             dense
             disabled
@@ -23,10 +24,11 @@
           <v-text-field
             :label="$t('app.general.label.screw_index')"
             outlined
+            persistent-placeholder
             hide-details
             dense
             disabled
-            :value="$t('app.general.label.partial_of_total', {partial: currentScrewIndex + 1, total: bedScrews.length})"
+            :value="$t('app.general.label.partial_of_total', {partial: currentScrewIndex + 1, total: totalScrews})"
           />
         </v-col>
       </v-row>
@@ -35,10 +37,11 @@
           <v-text-field
             :label="$t('app.general.label.accepted_screws')"
             outlined
+            persistent-placeholder
             hide-details
             dense
             disabled
-            :value="$t('app.general.label.partial_of_total', {partial: acceptedScrews, total: bedScrews.length})"
+            :value="$t('app.general.label.partial_of_total', {partial: acceptedScrews, total: totalScrews})"
           />
         </v-col>
       </v-row>
@@ -49,7 +52,7 @@
       </v-row>
 
       <v-progress-linear
-        :value="acceptedScrews / bedScrews.length * 100"
+        :value="acceptedScrews / totalScrews * 100"
         class="mt-2"
       />
     </v-card-text>
@@ -88,50 +91,54 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, VModel, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { BedScrews } from '@/store/printer/types'
 
 @Component({})
 export default class BedScrewsAdjustDialog extends Mixins(StateMixin, ToolheadMixin) {
-  @VModel({ type: Boolean })
-    open?: boolean
-
-  get bedScrews (): BedScrews[] {
-    return this.$store.getters['printer/getBedScrews'] as BedScrews[]
-  }
-
-  get bedScrewsAdjust () {
-    return this.$store.state.printer.printer.bed_screws
-  }
-
-  get currentState () {
-    return this.bedScrewsAdjust.state || ' '
+  get bedScrews (): BedScrews {
+    return this.$store.getters['printer/getBedScrews']
   }
 
   get currentScrewIndex () {
-    return this.bedScrewsAdjust.current_screw
+    return this.bedScrews.current_screw ?? 0
   }
 
   get currentScrewName () {
-    return this.bedScrews[this.currentScrewIndex].prettyName
+    return this.bedScrews.screws[this.currentScrewIndex]?.prettyName ?? ''
   }
 
   get acceptedScrews () {
-    return this.bedScrewsAdjust.accepted_screws
+    return this.bedScrews.accepted_screws ?? 0
+  }
+
+  get totalScrews () {
+    return this.bedScrews.screws.length
+  }
+
+  get showBedScrewsAdjustDialogAutomatically (): boolean {
+    return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
   }
 
   @Watch('isBedScrewsAdjustActive')
   onBedScrewsAdjustActive (value: boolean) {
-    if (!value) {
-      this.open = false
+    if (
+      !value ||
+      (
+        this.showBedScrewsAdjustDialogAutomatically &&
+        this.klippyReady &&
+        !this.printerPrinting
+      )
+    ) {
+      this.bedScrewsAdjustDialogOpen = value
     }
   }
 
   sendAbort () {
     this.sendGcode('ABORT', this.$waits.onBedScrewsAdjust)
-    this.open = false
+    this.bedScrewsAdjustDialogOpen = false
   }
 
   sendAdjusted () {

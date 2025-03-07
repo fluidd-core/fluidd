@@ -21,6 +21,7 @@
           type="number"
           hide-details
           outlined
+          persistent-placeholder
           dense
           :label="$t('app.general.label.extrude_length')"
           suffix="mm"
@@ -31,7 +32,7 @@
         <app-btn
           :disabled="!klippyReady || !extruderReady || !valid"
           block
-          @click="sendRetractGcode(extrudeLength, extrudeSpeed, $waits.onExtrude)"
+          @click="retract"
         >
           {{ $t('app.general.btn.retract') }}
           <v-icon>$chevronUp</v-icon>
@@ -58,6 +59,7 @@
           type="number"
           hide-details
           outlined
+          persistent-placeholder
           dense
           :label="$t('app.general.label.extrude_speed')"
           suffix="mm/s"
@@ -68,7 +70,7 @@
         <app-btn
           :disabled="!klippyReady || !extruderReady || !valid"
           block
-          @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, $waits.onExtrude)"
+          @click="extrude"
         >
           {{ $t('app.general.btn.extrude') }}
           <v-icon>$chevronDown</v-icon>
@@ -92,7 +94,7 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   valid = true
 
   get extrudeSpeed () {
-    const extrudeSpeed = this.$store.state.config.uiSettings.toolhead.extrudeSpeed
+    const extrudeSpeed: number = this.$store.state.config.uiSettings.toolhead.extrudeSpeed
 
     return extrudeSpeed === -1
       ? this.$store.state.config.uiSettings.general.defaultExtrudeSpeed
@@ -108,7 +110,7 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get extrudeLength () {
-    const extrudeLength = this.$store.state.config.uiSettings.toolhead.extrudeLength
+    const extrudeLength: number = this.$store.state.config.uiSettings.toolhead.extrudeLength
 
     return extrudeLength === -1
       ? this.$store.state.config.uiSettings.general.defaultExtrudeLength
@@ -136,19 +138,15 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
     return this.$rules.numberLessThanOrEqual(this.maxExtrudeSpeed)(value)
   }
 
-  sendRetractGcode (amount: number, rate: number, wait?: string) {
+  retract () {
     if (this.valid) {
-      const gcode = `M83
-        G1 E-${amount} F${rate * 60}`
-      this.sendGcode(gcode, wait)
+      this.sendExtrudeGcode(-this.extrudeLength, this.extrudeSpeed, this.$waits.onExtrude)
     }
   }
 
-  sendExtrudeGcode (amount: number, rate: number, wait?: string) {
+  extrude () {
     if (this.valid) {
-      const gcode = `M83
-        G1 E${amount} F${rate * 60}`
-      this.sendGcode(gcode, wait)
+      this.sendExtrudeGcode(this.extrudeLength, this.extrudeSpeed, this.$waits.onExtrude)
     }
   }
 

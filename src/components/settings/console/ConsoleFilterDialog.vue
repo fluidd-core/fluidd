@@ -5,7 +5,7 @@
     max-width="500"
     @save="handleSave"
   >
-    <div class="overflow-y-auto">
+    <v-card-text class="pa-0">
       <app-setting
         :title="$t('app.setting.label.enable')"
         :r-cols="8"
@@ -73,7 +73,7 @@
           ]"
         />
       </app-setting>
-    </div>
+    </v-card-text>
   </app-dialog>
 </template>
 
@@ -84,7 +84,7 @@ import type { ConsoleFilter } from '@/store/console/types'
 @Component({})
 export default class ConsoleFilterDialog extends Vue {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   @Prop({ type: Object, required: true })
   readonly filter!: ConsoleFilter
@@ -121,8 +121,8 @@ export default class ConsoleFilterDialog extends Vue {
     return this.types.find(f => f.value === this.filter?.type) || this.types[0]
   }
 
-  get filters () {
-    return this.$store.getters['console/getFilters']
+  get filters (): ConsoleFilter[] {
+    return this.$store.state.console.consoleFilters
   }
 
   handleSave () {

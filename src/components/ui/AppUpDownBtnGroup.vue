@@ -31,7 +31,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class AppUpDownBtnGroup extends Vue {
-  @Prop({ type: Array<number>, required: true })
+  @Prop({ type: Array, required: true })
   readonly values!: number[]
 
   @Prop({ type: String })

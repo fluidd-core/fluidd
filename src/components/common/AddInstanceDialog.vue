@@ -4,17 +4,10 @@
     max-width="320"
     :save-button-disabled="!verified"
     :valid.sync="valid"
-    persistent
+    :title="$t('app.general.title.add_printer')"
+    :help-tooltip="$t('app.endpoint.tooltip.endpoint_examples')"
     @save="addInstance"
   >
-    <template #title>
-      <span class="focus--text">{{ $t('app.general.title.add_printer') }}</span>
-      <v-spacer />
-      <app-inline-help bottom>
-        <span v-html="$t('app.endpoint.tooltip.endpoint_examples')" />
-      </app-inline-help>
-    </template>
-
     <v-card-text>
       <span v-html="helpTxt" />
 
@@ -86,7 +79,7 @@ import webSocketWrapper from '@/util/web-socket-wrapper'
 @Component({})
 export default class AddInstanceDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
   valid = true
   verifying = false
@@ -214,7 +207,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
     })
   }
 
-  get hosted () {
+  get hosted (): boolean {
     return this.$store.state.config.hostConfig.hosted
   }
 

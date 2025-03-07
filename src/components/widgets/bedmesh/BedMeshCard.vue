@@ -11,7 +11,7 @@
       <app-btn
         v-if="!fullscreen"
         small
-        class="ms-1 my-1"
+        class="me-1 my-1"
         :loading="hasWait($waits.onMeshCalibrate)"
         :disabled="printerBusy || !allHomed"
         @click="calibrate()"
@@ -26,16 +26,14 @@
         <template #activator="{ on, attrs }">
           <app-btn
             v-bind="attrs"
-            color=""
-            fab
-            x-small
-            text
-            class="ms-1 my-1"
+            icon
             :disabled="!hasMeshLoaded"
             v-on="on"
             @click="copyImage()"
           >
-            <v-icon>$screenshot</v-icon>
+            <v-icon dense>
+              $screenshot
+            </v-icon>
           </app-btn>
         </template>
         <span>{{ $t('app.bedmesh.tooltip.copy_image') }}</span>
@@ -43,14 +41,12 @@
 
       <app-btn
         v-if="!fullscreen"
-        color=""
-        fab
-        x-small
-        text
-        class="ms-1 my-1"
-        @click="$filters.routeTo($router, '/tune')"
+        icon
+        @click="$filters.routeTo({ name: 'tune' })"
       >
-        <v-icon>$fullScreen</v-icon>
+        <v-icon dense>
+          $fullScreen
+        </v-icon>
       </app-btn>
     </template>
 
@@ -75,7 +71,7 @@ import BedMeshChart from './BedMeshChart.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import BrowserMixin from '@/mixins/browser'
-import type { AppMeshes } from '@/store/mesh/types'
+import type { AppMeshes, MatrixType } from '@/store/mesh/types'
 
 @Component({
   components: {
@@ -177,7 +173,7 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
       z: 100,
       silent: true,
       style: {
-        text: `Range: ${range.toFixed(4)}`
+        text: `${this.$t('app.general.label.range')}: ${range.toFixed(4)}`
       }
     }]
   }
@@ -207,29 +203,29 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
     this.sendGcode('BED_MESH_CALIBRATE', this.$waits.onMeshCalibrate)
   }
 
-  get matrix () {
+  get matrix (): MatrixType {
     return this.$store.state.mesh.matrix
   }
 
-  get scale () {
+  get scale (): number {
     return this.$store.state.mesh.scale
   }
 
-  get boxScale () {
+  get boxScale (): number {
     return this.$store.state.mesh.boxScale
   }
 
-  get wireframe () {
+  get wireframe (): boolean {
     return this.$store.state.mesh.wireframe
   }
 
-  get flatSurface () {
+  get flatSurface (): boolean {
     return this.$store.state.mesh.flatSurface
   }
 
   // The current processed mesh data, if any.
   get mesh (): AppMeshes {
-    return this.$store.getters['mesh/getCurrentMeshData'] as AppMeshes
+    return this.$store.getters['mesh/getCurrentMeshData']
   }
 
   get canCopyImage () {

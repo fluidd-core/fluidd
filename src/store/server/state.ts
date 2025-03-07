@@ -6,12 +6,19 @@ export const defaultState = (): ServerState => {
     info: {
       failed_components: [],
       klippy_connected: false, // indicates if klippy is disconnected vs shutdown.
-      klippy_state: '',
+      klippy_state: 'disconnected',
       components: [],
       registered_directories: [],
       warnings: []
     },
     system_info: null,
+    peripherals: {
+      usb_devices: null,
+      serial_devices: null,
+      v4l2_devices: null,
+      libcamera_devices: null
+    },
+    can_uuids: null,
     config: {
       authorization: {
         enabled: true

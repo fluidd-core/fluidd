@@ -10,19 +10,19 @@
       <app-btn
         v-bind="attrs"
         small
-        class="ms-1 my-1"
+        class="me-1 my-1"
         v-on="on"
       >
         <v-icon
           small
-          class="mr-1"
+          class="me-1"
         >
           $camera
         </v-icon>
         {{ activeCamera }}
         <v-icon
           small
-          class="ml-1"
+          class="ms-1"
           :class="{ 'rotate-180': value }"
         >
           $chevronDown
@@ -30,7 +30,11 @@
       </app-btn>
     </template>
     <v-list dense>
-      <v-list-item @click="$emit('select', 'all')">
+      <v-list-item
+        v-for="camera of availableCameras"
+        :key="camera.uid"
+        @click="$emit('select', camera.uid)"
+      >
         <v-list-item-icon>
           <v-icon>
             $camera
@@ -38,28 +42,10 @@
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
-            {{ $t('app.general.btn.all') }}
+            {{ camera.name }}
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-
-      <template v-for="item of cameras">
-        <v-list-item
-          :key="item.id"
-          @click="$emit('select', item.id)"
-        >
-          <v-list-item-icon>
-            <v-icon>
-              $camera
-            </v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ item.name }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </template>
     </v-list>
   </v-menu>
 </template>
@@ -67,24 +53,31 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import type { WebcamConfig } from '@/store/webcams/types'
 
 @Component({})
 export default class CamerasMenu extends Mixins(StateMixin) {
   get activeCamera () {
-    let id = this.$store.getters['cameras/getActiveCamera']
-    const camera = this.$store.getters['cameras/getCameraById'](id)
+    const activeWebcam: string = this.$store.state.webcams.activeWebcam
+    const camera: WebcamConfig | undefined = this.$store.getters['webcams/getWebcamById'](activeWebcam)
 
-    // If no cam was found, the active id probably no longer exists - so
-    // we'll set it to all.
-    if (!camera) id = 'all'
-
-    return (id === 'all')
-      ? this.$t('app.general.btn.all')
+    return !camera
+      ? this.$t('app.general.btn.all').toString()
       : camera.name
   }
 
-  get cameras () {
-    return this.$store.getters['cameras/getEnabledCameras']
+  get enabledWebcams (): WebcamConfig[] {
+    return this.$store.getters['webcams/getEnabledWebcams']
+  }
+
+  get availableCameras (): Pick<WebcamConfig, 'uid' | 'name'>[] {
+    return [
+      {
+        uid: 'all',
+        name: this.$t('app.general.btn.all').toString()
+      },
+      ...this.enabledWebcams
+    ]
   }
 }
 </script>

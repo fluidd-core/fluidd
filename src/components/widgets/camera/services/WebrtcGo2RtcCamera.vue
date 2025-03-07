@@ -6,6 +6,8 @@
     muted
     :style="cameraStyle"
     :crossorigin="crossorigin"
+    @play="updateStatus('connected')"
+    @error="updateStatus('error')"
   />
 </template>
 
@@ -33,39 +35,49 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
 
   pc: RTCPeerConnection | null = null
   ws: WebSocket | null = null
-  abortController: AbortController | null = null
+  playbackAbortController: AbortController | null = null
+  sleepAbortController: AbortController | null = null
 
-  // webrtc player methods
-  // adapted from https://github.com/AlexxIT/go2rtc/blob/master/www/video-rtc.js
+  // adapted from https://github.com/AlexxIT/go2rtc/blob/d7cdc8b3b07f6fbff7daae2736377de98444b962/www/video-rtc.js
 
-  startPlayback () {
-    this.abortController?.abort()
-    this.pc?.close()
-    this.ws?.close()
+  loadStream () {
+    try {
+      this.pc?.close()
+      this.ws?.close()
 
-    this.abortController = new AbortController()
+      const abortControllerSignal = this.playbackAbortController?.signal
 
-    const url = this.buildAbsoluteUrl(this.camera.urlStream || '')
+      if (!abortControllerSignal || abortControllerSignal.aborted) {
+        return
+      }
 
-    const socketUrl = new URL('api/ws' + url.search, url)
+      this.updateStatus('connecting')
 
-    socketUrl.protocol = socketUrl.protocol === 'https:'
-      ? 'wss:'
-      : 'ws:'
+      const url = this.buildAbsoluteUrl(this.camera.stream_url || '')
 
-    this.ws = new WebSocket(socketUrl)
-    this.ws.binaryType = 'arraybuffer'
-    this.ws.onopen = this.onWebSocketOpen
-    this.ws.onmessage = this.onWebSocketMessage
-    this.ws.onclose = this.onWebSocketClose
+      const socketUrl = new URL('api/ws' + url.search, url)
 
-    this.$emit('raw-camera-url', url)
+      socketUrl.protocol = socketUrl.protocol === 'https:'
+        ? 'wss:'
+        : 'ws:'
+
+      this.ws = new WebSocket(socketUrl)
+      this.ws.binaryType = 'arraybuffer'
+      this.ws.onopen = this.onWebSocketOpen
+      this.ws.onmessage = this.onWebSocketMessage
+      this.ws.onclose = this.onWebSocketClose
+
+      this.updateRawCameraUrl(url.toString())
+    } catch (e) {
+      consola.error(`[WebrtcGo2RtcCamera] failed to start playback "${this.camera.name}"`, e)
+    }
   }
 
   async onWebSocketOpen () {
     consola.debug('[WebrtcGo2RtcCamera] socket opened')
 
     const config: RTCConfigurationWithSdpSemantics = {
+      bundlePolicy: 'max-bundle',
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' }
       ],
@@ -88,8 +100,9 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
     this.pc.onconnectionstatechange = () => {
       switch (this.pc?.connectionState) {
         case 'connected': {
-          const tracks = this.pc.getReceivers()
-            .map(receiver => receiver.track)
+          const tracks = this.pc.getTransceivers()
+            .filter(tr => tr.direction === 'recvonly')
+            .map(tr => tr.receiver.track)
 
           this.cameraVideo.srcObject = new MediaStream(tracks)
 
@@ -97,7 +110,7 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
         }
         case 'failed':
         case 'disconnected':
-          this.startPlayback()
+          this.loadStream()
       }
     }
 
@@ -116,7 +129,7 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
   }
 
   async onWebSocketMessage (ev: MessageEvent) {
-    const msg: Go2RtcMessage = JSON.parse(ev.data)
+    const msg = JSON.parse(ev.data) as Go2RtcMessage
 
     switch (msg.type) {
       case 'webrtc/candidate':
@@ -137,25 +150,50 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
 
       case 'error':
         consola.error(`[WebrtcGo2RtcCamera] ${msg.value}`)
+        this.updateStatus('error')
         this.pc?.close()
     }
   }
 
   async onWebSocketClose (ev: CloseEvent) {
     if (!ev.wasClean) {
+      this.updateStatus('error')
+
       consola.error('[WebrtcGo2RtcCamera] socket close was not clean', ev)
 
-      try {
-        await sleep(2000, this.abortController?.signal)
+      const playbackAbortSignal = this.playbackAbortController?.signal
 
-        this.startPlayback()
+      if (!playbackAbortSignal || playbackAbortSignal.aborted) {
+        return
+      }
+
+      this.sleepAbortController?.abort()
+
+      const sleepAbortController = this.sleepAbortController = new AbortController()
+
+      try {
+        const signals = [
+          playbackAbortSignal,
+          sleepAbortController.signal,
+        ]
+
+        await sleep(2000, AbortSignal.any(signals))
+
+        this.loadStream()
       } catch {}
     }
   }
 
+  startPlayback () {
+    this.playbackAbortController = new AbortController()
+
+    this.loadStream()
+  }
+
   stopPlayback () {
-    this.abortController?.abort()
-    this.abortController = null
+    this.playbackAbortController?.abort()
+    this.playbackAbortController = null
+    this.updateStatus('disconnected')
     if (this.pc) {
       this.pc.getSenders().forEach(sender => {
         sender.track?.stop()

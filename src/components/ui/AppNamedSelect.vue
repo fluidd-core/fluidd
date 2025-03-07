@@ -4,11 +4,11 @@
       cols="12"
       sm="5"
       align-self="center"
-      class="text-body-1 py-0"
+      class="text-body-1"
       :class="{ 'text--disabled': disabled }"
       v-html="label"
     />
-    <v-col class="py-0">
+    <v-col>
       <v-select
         v-model="inputValue"
         class="mt-0"
@@ -30,7 +30,6 @@
             v-if="resetValue !== undefined"
             :disabled="disabled"
             style="margin-top: -4px;"
-            color=""
             icon
             small
             @click="handleReset"
@@ -48,10 +47,12 @@
 <script lang="ts">
 import { Component, Prop, Vue, VModel } from 'vue-property-decorator'
 
-@Component({})
+@Component({
+  inheritAttrs: false
+})
 export default class AppNamedSelect extends Vue {
   @VModel({ })
-    inputValue?: unknown
+  inputValue?: unknown
 
   @Prop({ })
   readonly resetValue?: unknown

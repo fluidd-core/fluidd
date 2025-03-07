@@ -8,7 +8,7 @@
   >
     <router-link
       v-if="!isMobileViewport"
-      to="/"
+      :to="{ name: 'home' }"
       class="toolbar-logo"
     >
       <app-icon />
@@ -17,11 +17,8 @@
     <div class="toolbar-title">
       <app-btn
         v-if="isMobileViewport"
-        fab
-        small
-        :elevation="0"
-        class="mx-1"
-        color="transparent"
+        icon
+        text
         @click="$emit('navdrawer')"
       >
         <v-icon>$menuAlt</v-icon>
@@ -29,7 +26,7 @@
 
       <v-toolbar-title class="printer-title text--secondary">
         <router-link
-          to="/"
+          :to="{ name: 'home' }"
           v-html="instanceName"
         />
       </v-toolbar-title>
@@ -38,10 +35,7 @@
     <!-- <v-spacer /> -->
 
     <div class="toolbar-supplemental">
-      <div
-        v-if="socketConnected && klippyReady && authenticated && showSaveConfigAndRestartForPendingChanges"
-        class="mr-1"
-      >
+      <div v-if="socketConnected && authenticated && klippyReady && showSaveConfigAndRestartForPendingChanges">
         <app-save-config-and-restart-btn
           :loading="hasWait($waits.onSaveConfig)"
           :disabled="printerPrinting || printerPaused"
@@ -49,7 +43,7 @@
         />
       </div>
 
-      <div v-if="socketConnected && !isMobileViewport && authenticated">
+      <div v-if="socketConnected && authenticated && !isMobileViewport">
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
@@ -65,26 +59,29 @@
               </v-icon>
             </app-btn>
           </template>
-          <span>{{ $t('app.general.tooltip.estop') }}</span>
+          <span>
+            {{ $t('app.general.tooltip.estop') }}
+            <template v-if="enableKeyboardShortcuts">
+              <br>
+              <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>e</kbd>
+            </template>
+          </span>
         </v-tooltip>
       </div>
 
-      <div v-if="authenticated && socketConnected && showUploadAndPrint">
+      <div v-if="socketConnected && authenticated && showUploadAndPrint">
         <app-upload-and-print-btn
           :disabled="printerPrinting || printerPaused || !klippyReady"
           @upload="handleUploadAndPrint"
         />
       </div>
 
-      <div v-if="authenticated && socketConnected && topNavPowerToggle">
+      <div v-if="socketConnected && authenticated && topNavPowerToggle">
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
-              fab
-              small
-              :elevation="0"
-              class="mr-1 bg-transparent"
-              color="transparent"
+              icon
+              text
               :disabled="topNavPowerDeviceDisabled"
               v-bind="attrs"
               v-on="on"
@@ -99,26 +96,17 @@
         </v-tooltip>
       </div>
 
-      <div
-        v-if="authenticated && socketConnected"
-        class="mr-1"
-      >
+      <div v-if="socketConnected && authenticated">
         <app-notification-menu />
       </div>
 
-      <div
-        v-if="supportsAuth && authenticated"
-        class="mr-1"
-      >
+      <div v-if="socketConnected && authenticated && supportsAuth">
         <app-user-menu @change-password="userPasswordDialogOpen = true" />
       </div>
 
       <app-btn
-        fab
-        small
-        :elevation="0"
-        class="mr-1"
-        color="transparent"
+        icon
+        text
         @click="$emit('toolsdrawer')"
       >
         <v-icon>$menu</v-icon>
@@ -248,8 +236,9 @@ import ServicesMixin from '@/mixins/services'
 import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
 import { SocketActions } from '@/api/socketActions'
-import type { OutputPin } from '@/store/printer/types'
+import type { KlipperPrinterConfig, OutputPin } from '@/store/printer/types'
 import type { Device } from '@/store/power/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 import vuetify from '@/plugins/vuetify'
 
 @Component({
@@ -265,32 +254,24 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   userPasswordDialogOpen = false
   pendingChangesDialogOpen = false
 
-  get supportsAuth () {
+  get supportsAuth (): boolean {
     return this.$store.getters['server/componentSupport']('authorization')
   }
 
-  get instances () {
-    return this.$store.state.config.instances
-  }
-
-  get instanceName () {
+  get instanceName (): string {
     return this.$store.state.config.uiSettings.general.instanceName
   }
 
-  get currentFile () {
-    return this.$store.state.printer.printer.print_stats.filename
-  }
-
-  get hasUpdates () {
+  get hasUpdates (): boolean {
     return this.$store.getters['version/hasUpdates']
   }
 
   get saveConfigPending (): boolean {
-    return this.$store.getters['printer/getSaveConfigPending'] as boolean
+    return this.$store.getters['printer/getSaveConfigPending']
   }
 
-  get saveConfigPendingItems (): Record<string, Record<string, string>> {
-    return this.$store.getters['printer/getSaveConfigPendingItems'] as Record<string, Record<string, string>>
+  get saveConfigPendingItems (): KlipperPrinterConfig {
+    return this.$store.getters['printer/getSaveConfigPendingItems']
   }
 
   get showSaveConfigAndRestartForPendingChanges (): boolean {
@@ -308,7 +289,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     )
   }
 
-  get devicePowerComponentEnabled () {
+  get devicePowerComponentEnabled (): boolean {
     return this.$store.getters['server/componentSupport']('power')
   }
 
@@ -317,11 +298,11 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   get showSaveConfigAndRestart (): boolean {
-    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart as boolean
+    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart
   }
 
   get sectionsToIgnorePendingConfigurationChanges (): string[] {
-    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges as string[]
+    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges
   }
 
   get showUploadAndPrint (): boolean {
@@ -329,7 +310,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   get topNavPowerToggle () {
-    const topNavPowerToggle = this.$store.state.config.uiSettings.general.topNavPowerToggle as string | null
+    const topNavPowerToggle: string | null = this.$store.state.config.uiSettings.general.topNavPowerToggle
 
     if (!topNavPowerToggle) return null
 
@@ -337,7 +318,9 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
     switch (type) {
       case 'klipper': {
-        const device = this.$store.getters['printer/getPinByName'](name) as OutputPin | undefined
+        const device: OutputPin | undefined = this.$store.getters['printer/getPinByName'](name)
+
+        if (!device) return null
 
         return {
           type,
@@ -347,11 +330,13 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
       }
 
       default: {
-        const device = this.$store.getters['power/getDeviceByName'](topNavPowerToggle) as Device
+        const device: Device | undefined = this.$store.getters['power/getDeviceByName'](topNavPowerToggle)
+
+        if (!device) return null
 
         return {
           type: 'moonraker' as const,
-          name: topNavPowerToggle,
+          name: this.$filters.prettyCase(topNavPowerToggle),
           device
         }
       }
@@ -390,28 +375,29 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     return true
   }
 
+  get enableKeyboardShortcuts (): boolean {
+    return this.$store.state.config.uiSettings.general.enableKeyboardShortcuts
+  }
+
   handleExitLayout () {
     this.$store.commit('config/setLayoutMode', false)
   }
 
   get isDashboard () {
-    return this.$route.path === '/'
+    return this.$route.name === 'home'
   }
 
   handleResetLayout () {
-    const pathLayouts: Record<string, string> = {
-      '/diagnostics': 'diagnostics'
-    }
+    const pathLayouts = [
+      'diagnostics'
+    ]
 
-    const pathLayout = pathLayouts[this.$route.path]
-    let layoutDefaultState
-    if (pathLayout) {
-      // reset to default init state
-      layoutDefaultState = defaultState().layouts[pathLayout]
-    } else {
-      // reset dashboard to default layout
-      layoutDefaultState = this.$store.getters['layout/getLayout']('dashboard')
-    }
+    const pathLayout = pathLayouts.includes(this.$route.name ?? '')
+      ? this.$route.name
+      : undefined
+    const layoutDefaultState = pathLayout
+      ? defaultState().layouts[pathLayout]
+      : this.$store.getters['layout/getLayout']('dashboard')
 
     const toReset = pathLayout ?? this.$store.getters['layout/getSpecificLayoutName']
 
@@ -452,7 +438,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
     if (!device) return
 
-    const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+    const confirmOnPowerDeviceChange: boolean = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
 
     const result = (
       !confirmOnPowerDeviceChange ||
@@ -466,13 +452,13 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
       switch (type) {
         case 'moonraker': {
           const state = (device.status === 'on') ? 'off' : 'on'
-          SocketActions.machineDevicePowerToggle(device.device, state)
+          SocketActions.machineDevicePowerSetDevice(device.device, state)
           break
         }
 
         case 'klipper': {
           const value = (device.value !== 0) ? 0 : device.scale
-          this.sendGcode(`SET_PIN PIN=${device.name} VALUE=${value}`, `${this.$waits.onSetOutputPin}${device.name}`)
+          this.sendGcode(`SET_PIN PIN=${encodeGcodeParamValue(device.name)} VALUE=${value}`, `${this.$waits.onSetOutputPin}${device.name}`)
           break
         }
       }
@@ -485,7 +471,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
   saveConfigAndRestart (force = false) {
     if (!force) {
-      const confirmOnSaveConfigAndRestart = this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart
+      const confirmOnSaveConfigAndRestart: boolean = this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart
 
       if (confirmOnSaveConfigAndRestart) {
         this.pendingChangesDialogOpen = true

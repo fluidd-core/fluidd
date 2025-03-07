@@ -1,6 +1,6 @@
 <template>
   <app-dialog
-    v-model="open"
+    v-model="manualProbeDialogOpen"
     :title="$t('app.tool.title.manual_probe')"
     :cancel-button-text="$t('app.general.btn.abort')"
     :save-button-text="$t('app.general.btn.accept')"
@@ -15,6 +15,7 @@
           <v-text-field
             label="Z Min"
             outlined
+            persistent-placeholder
             hide-details
             dense
             disabled
@@ -25,6 +26,7 @@
           <v-text-field
             label="Z"
             outlined
+            persistent-placeholder
             hide-details
             dense
             disabled
@@ -35,6 +37,7 @@
           <v-text-field
             label="Z Max"
             outlined
+            persistent-placeholder
             hide-details
             dense
             disabled
@@ -131,16 +134,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, VModel, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
+import type { KlipperPrinterManualProbeState } from '@/store/printer/types'
 
 @Component({})
 export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin) {
-  @VModel({ type: Boolean })
-    open?: boolean
-
-  get offsets () {
+  get offsets (): number[] {
     return [
       1,
       0.1,
@@ -148,26 +149,37 @@ export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin)
     ].sort((a, b) => b - a)
   }
 
-  get manualProbe () {
+  get manualProbe (): KlipperPrinterManualProbeState | undefined {
     return this.$store.state.printer.printer.manual_probe
   }
 
-  get zPositionLower () {
-    return this.manualProbe.z_position_lower?.toFixed(3) || ' '
+  get zPositionLower (): string {
+    return this.manualProbe?.z_position_lower?.toFixed(3) ?? ''
   }
 
-  get zPosition () {
-    return this.manualProbe.z_position?.toFixed(3) || ' '
+  get zPosition (): string {
+    return this.manualProbe?.z_position?.toFixed(3) ?? ''
   }
 
-  get zPositionUpper () {
-    return this.manualProbe.z_position_upper?.toFixed(3) || ' '
+  get zPositionUpper (): string {
+    return this.manualProbe?.z_position_upper?.toFixed(3) ?? ''
+  }
+
+  get showManualProbeDialogAutomatically (): boolean {
+    return this.$store.state.config.uiSettings.general.showManualProbeDialogAutomatically
   }
 
   @Watch('isManualProbeActive')
   onIsManualProbeActive (value: boolean) {
-    if (!value) {
-      this.open = false
+    if (
+      !value ||
+      (
+        this.showManualProbeDialogAutomatically &&
+        this.klippyReady &&
+        !this.printerPrinting
+      )
+    ) {
+      this.manualProbeDialogOpen = value
     }
   }
 
@@ -177,7 +189,7 @@ export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin)
 
   sendAbort () {
     this.sendGcode('ABORT', this.$waits.onManualProbe)
-    this.open = false
+    this.manualProbeDialogOpen = false
   }
 
   sendAccept () {

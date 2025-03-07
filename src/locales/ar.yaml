@@ -47,7 +47,7 @@ app:
         see the documentation on multi printer setups <a href="%{url}"
         target="_blank">here</a>
     hint:
-      add_printer: مثلا http://fluiddpi.local
+      add_printer: مثلا http://fluidd.local
     msg:
       trouble: >-
         لديك مشكلة؟  <a href="%{url}" target="_blank">انظر هنا</a> لمزيد من
@@ -55,18 +55,18 @@ app:
     tooltip:
       endpoint_examples: >-
         Enter your API URL.<br />Some examples might be;<br
-        /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+        /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: مفتوح
-      triggered: مفعل
+    states:
+      label:
+        open: مفتوح
+        triggered: مفعل
     msg:
       subtitle: استخدم زر التحديث لتحديث حالة نقطة التوقف.
   file_system:
     filters:
       label:
         print_start_time: Filter printed
-        print_start_time_desc: Filters out items you've already printed.
     label:
       dir_name: اسم المجلد
       disk_usage: استخدام قرص التخزين
@@ -365,7 +365,8 @@ app:
   socket:
     msg:
       connecting: Connecting to moonraker...
-      no_connection: No moonraker connection. Please check moonraker status and / or refresh.
+      no_connection: No moonraker connection. Please check moonraker status and /
+        or refresh.
   system_info:
     label:
       capacity: السعة

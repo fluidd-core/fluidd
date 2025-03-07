@@ -4,12 +4,10 @@
       <app-btn
         fab
         small
-        color=""
         class="mr-4"
-        exact
         @click="handleBack"
       >
-        <v-icon small>
+        <v-icon dense>
           $left
         </v-icon>
       </app-btn>
@@ -25,7 +23,9 @@
         dense
         single-line
         hide-details
+        spellcheck="false"
         append-icon="$magnify"
+        @focus="$event.target.select()"
       />
     </v-subheader>
     <v-card
@@ -57,10 +57,7 @@
       <app-draggable
         v-model="macros"
         :options="{
-          animation: 200,
-          handle: '.handle',
           group: `macro-settings-${category.name}`,
-          ghostClass: 'ghost'
         }"
       >
         <section
@@ -75,13 +72,7 @@
             @click="handleSettingsDialog(macro)"
           >
             <template #title>
-              <v-icon
-                class="handle"
-                left
-              >
-                $drag
-              </v-icon>
-
+              <app-drag-icon class="me-1" />
               {{ macro.name.toUpperCase() }}
             </template>
 
@@ -125,10 +116,10 @@ import type { NavigationGuardNext, Route, Location } from 'vue-router'
 const routeGuard = (to: Route): Parameters<NavigationGuardNext>[0] => {
   // No need to translate here, these are just used for the route.
   const id = to.params.categoryId
-  const categories = store.getters['macros/getCategories']
-  const i = categories.findIndex((c: MacroCategory) => c.id === id)
+  const categories: MacroCategory[] = store.getters['macros/getCategories']
+  const i = categories.findIndex(c => c.id === id)
   if (id !== '0' && i === -1) {
-    return { path: '/settings', hash: 'macros' } satisfies Location
+    return { name: 'settings', hash: '#macros' } satisfies Location
   }
 }
 
@@ -146,12 +137,15 @@ export default class MacroCategorySettings extends Vue {
     macro: null
   }
 
-  get macros () {
+  get macrosForCategory (): Macro[] {
     const id = this.categoryId
-    const macros = this.$store.getters['macros/getMacrosByCategory'](id)
-      .filter((macro: Macro) => !this.search ? true : macro.name.includes(this.search.toLowerCase()))
 
-    return macros
+    return this.$store.getters['macros/getMacrosByCategory'](id)
+  }
+
+  get macros () {
+    return this.macrosForCategory
+      .filter((macro: Macro) => !this.search ? true : macro.name.includes(this.search.toLowerCase()))
   }
 
   set macros (macros: Macro[]) {
@@ -170,11 +164,11 @@ export default class MacroCategorySettings extends Vue {
     }
   }
 
-  beforeRouteEnter (to: Route, from: Route, next: NavigationGuardNext<Vue>) {
+  beforeRouteEnter (to: Route, from: Route, next: NavigationGuardNext) {
     next(routeGuard(to))
   }
 
-  beforeRouteUpdate (to: Route, from: Route, next: NavigationGuardNext<Vue>) {
+  beforeRouteUpdate (to: Route, from: Route, next: NavigationGuardNext) {
     next(routeGuard(to))
   }
 
@@ -188,8 +182,10 @@ export default class MacroCategorySettings extends Vue {
   }
 
   handleSettingsDialog (macro: Macro) {
-    this.dialogState.macro = macro
-    this.dialogState.open = true
+    this.dialogState = {
+      open: true,
+      macro: { ...macro }
+    }
   }
 
   handleAllOn () {

@@ -30,11 +30,18 @@ app:
       power: Kapacitás
       target: Cél
       rate_of_change: Változás
+      pid_calibration: PID kalibrálás
+      target_temperature: Cél hőmérséklet
+      turn_off: Kikapcsolás
+      fan_breakpoints: Ventilátor töréspontok
     tooltip:
       help: >-
-        Tartsd lenyomva a Shift-et a nagyításhoz.<br />Kattints egy
-        elemre a grafikonon való váltáshoz.<br />Kattints egy teljesítményre
-        a grafikonon való váltáshoz.
+        A nagyításhoz tartsd lenyomva a <kbd>Shift</kbd> billentyűt.<br />Kattints
+        egy elemre a grafikonon való váltáshoz.<br />Kattints egy teljesítményre a
+        grafikonon való váltáshoz.
+    title:
+      pid_calibrate: PID kalibrálás {name}
+      mpc_calibrate: MPC kalibrálás {name}
   console:
     label:
       auto_scroll: Automatikus görgetés
@@ -42,7 +49,8 @@ app:
       hide_temp_waits: Hőmérsékletek elrejtése
     tooltip:
       help: >-
-        Írd be a "help"-et a parancsokhoz<br />Használd <kbd>Tab</kbd> az automatikus kiegészítéshez<br />és <kbd>&uarr;</kbd> az <kbd>&darr;</kbd> előzményekhez
+        Írd be a "help"-et a parancsokhoz<br />Használd <kbd>Tab</kbd> az automatikus
+        kiegészítéshez<br />és <kbd>&uarr;</kbd> az <kbd>&darr;</kbd> előzményekhez
   endpoint:
     error:
       cant_connect: >-
@@ -54,7 +62,7 @@ app:
         Kérjük, tekintsd meg a több nyomtató beállításával kapcsolatos
         dokumentációt <a href="%{url}" target="_blank">itt</a>
     hint:
-      add_printer: 'Pl.: Http://fluiddpi.local'
+      add_printer: 'Pl.: Http://fluidd.local'
     msg:
       trouble: >-
         Problémád akadt? További információt <a href="%{url}"
@@ -62,22 +70,26 @@ app:
     tooltip:
       endpoint_examples: >-
         Add meg az API URL-címét.<br />Pár példa
-        látható;<br /><blockquote>fluidd.local, http://192.168.1.150</blockquote>
+        látható;<br /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: NYITVA
-      triggered: AKTIVÁLVA
+    states:
+      label:
+        open: NYITVA
+        triggered: AKTIVÁLVA
     msg:
       subtitle: A frissítés gombbal frissítheted a végállás állapotát.
+    label:
+      endstop: Végállás %{name}
   file_system:
     filters:
       label:
         print_start_time: Nyomtatottak szűrése
-        print_start_time_desc: Kiszűri a már kinyomtatott elemeket.
-        hidden_files_folders: Rejtett fájlok és mappák szűrése
+        hidden_files: Rejtett fájlok és mappák szűrése
         klipper_backup_files: Klipper biztonsági fájlok szűrése
         moonraker_backup_files: Moonraker biztonsági fájlok szűrése
         rolled_log_files: A gördített naplófájlok szűrése
+        crowsnest_backup_files: Crowsnest biztonsági mentési fájlok szűrése
+        moonraker_temporary_upload_files: Moonraker ideiglenes feltöltési fájlok szűrése
     label:
       dir_name: Könyvtár neve
       disk_usage: Lemezhasználat
@@ -92,7 +104,8 @@ app:
       not_found: Nincsenek fájlok
       processing: Feldolgozás
     overlay:
-      drag_files_folders_upload: Feltöltéshez <strong>húzd</strong> ide a fájlokat és mappákat
+      drag_files_folders_upload: Feltöltéshez <strong>húzd</strong> ide a fájlokat
+        és mappákat
       drag_files_enqueue: <strong>Húzd</strong> sorba a fájlokat
     title:
       add_dir: Könyvtár hozzáadása
@@ -105,12 +118,13 @@ app:
       rename_dir: Könyvtár átnevezése
       rename_file: Fájl átnevezése
       upload_file: Fájl feltöltése
+      devices: Eszközök
     tooltip:
       low_on_space: Kevés a lemezterület
       items_count: '{count} tétel | {count} tételeket'
       root_disabled: '{root} nem elérhető. Kérjük, ellenőrizd a naplókat.'
     url:
-      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
       crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
@@ -218,6 +232,10 @@ app:
       upload_print: Feltöltés & Nyomtatás
       view: Nézet
       reset_stats: Statisztikák törlése
+      copied: Másolva
+      copy: Másolás
+      power_on_printer: Nyomtató bekapcsolása
+      perform_time_analysis: Időelemzés
     error:
       app_setup_link: >-
         A Fluidd telepítési követelményeit <a target="_blank" href="%{url}">itt
@@ -229,6 +247,8 @@ app:
       failed_components: >-
         A Moonraker moduljai hibásak. Kérlek, ellenőrizd a naplókat, frissítsd a
         konfigurációt és indítsd újra a Moonrakert.
+      printer_powered_off: A nyomtató jelenleg ki van kapcsolva.<br/><br/> A nyomtató
+        bekapcsolásához kattints a bal oldali gombra.
     label:
       accel_to_decel: Gyorsítás-Lassítás
       acceleration: Gyorsulás
@@ -338,6 +358,13 @@ app:
       edit_category: Kategória szerkesztése
       add_category: Kategória hozzáadása
       file_time: Fájl
+      unknown: Ismeretlen
+      compact: Kompakt
+      stepper_driver: '%{name} Meghajtó'
+      device: Eszköz
+      environment_facing: Környezeti nézet
+      user_facing: Felhasználói nézet
+      z_hop_height: Z-ugrás magassága
     msg:
       password_changed: A jelszó megváltozott
       wrong_password: Hoppá! Valami rosszul sült el. Ez a jelszavad?
@@ -347,10 +374,15 @@ app:
       welcome_back: >-
         Üdv újra.<br>Jelentkezz be alább, hogy kapcsolatban maradj a nyomtatóddal.
       offline_ready: Fluidd készen áll az offline munkavégzésre.
-      needs_refresh: Új tartalom érhető el, frissítéshez kattints az <b>Újratöltés</b> gombra.
-      pending_configuration_sections_deleted: A következő szakaszok törlésre vannak jelölve
+      needs_refresh: Új tartalom érhető el, frissítéshez kattints az <b>Újratöltés</b>
+        gombra.
+      pending_configuration_sections_deleted: A következő szakaszok törlésre vannak
+        jelölve
       rolledover_logs: >-
         A következő alkalmazási naplók átkerültek: %{applications}
+      fluidd_settings_backup_failed: Nem sikerült a Fluidd beállítások mentése!
+      fluidd_settings_restore_failed: Nem sikerült visszaállítani a Fluidd beállításokat!
+      not_valid_fluidd_backup_file: Nem érvényes Fluidd visszaállító fájl!
     simple_form:
       error:
         arrayofnums: Csak számok
@@ -367,18 +399,37 @@ app:
         invalid_aspect: Érvénytelen képarány
       msg:
         confirm: Biztos vagy benne?
-        confirm_delete: Biztos vagy benne? Törlöd a kiválasztott elemet. | Biztos vagy benne? Törölsz {count} elemet.
+        confirm_delete: Biztos vagy benne? Törlöd a kiválasztott elemet. | Biztos
+          vagy benne? Törölsz {count} elemet.
         confirm_exclude_object: Biztosan kizárod ezt az objektumot a nyomtatásból?
         confirm_forcemove_toggle: Biztos vagy benne? Ez károsíthatja a nyomtatót.
-        confirm_reboot_host: Biztos, hogy újraindítod a gazdagépet?
-        confirm_shutdown_host: Biztos, hogy leállítod a gazdagépet?
+        confirm_reboot_host: Biztos vagy benne? Ez újraindítja a gazdagépet.
+        confirm_shutdown_host: Biztos vagy benne? Ez leállítja a gazdagépet.
         confirm_service_start: Biztos elindítod a %{name} szolgáltatást?
         confirm_service_restart: Biztos, hogy újraindítod a %{name} szolgáltatást?
         confirm_service_stop: Biztos, hogy leállítod a %{name} szolgáltatást?
-        confirm_power_device_toggle: Biztos, hogy átkapcsolod az eszköz teljesítményét?
+        confirm_power_device_toggle: Biztos vagy benne? Ez átkapcsolja az eszköz teljesítményét.
         unsaved_changes: Nem mentett módosításaid vannak. Biztosan bezárod ezt a fájlt?
         no_file_preview: >-
           %{name} jelenleg nem tekinthető meg.
+        confirm_remove_user: Biztosan eltávolítod a felhasználót %{username}?
+        confirm_cancel_print: Biztosan megszakítod az aktuális nyomtatást?
+        confirm_emergency_stop: Biztos, hogy a vészhelyzeti kapcsolóval állítod le
+          a nyomtatót?
+        confirm_clear_mesh: A nyomtató jelenleg foglalt. Biztos, hogy tisztázni akarod
+          az ágyhálót?
+        confirm_load_bedmesh_profile: A nyomtató jelenleg foglalt. Biztosan betöltöd
+          a %{name} profilt?
+        confirm_remove_camera: Biztosan szeretnéd eltávolítani a kamerát %{name}?
+        confirm_remove_macro_category: Biztos, hogy el szeretnéd távolítani a makró
+          kategóriát %{name}?
+        confirm_remove_console_filter: Biztos, hogy el szeretnéd távolítani a konzol
+          szűrőjét %{name}?
+        confirm_remove_printer: Biztos, hogy el szeretnéd távolítani a nyomtatót %{name}?
+        confirm_remove_thermal_preset: Biztos, hogy el szeretnéd távolítani a hőmérsékleti
+          előbeállításokat %{name}?
+        confirm_change_beacon_model: A nyomtató jelenleg foglalt. Biztos, hogy meg
+          akarod változtatni a jeladó modellt?
     table:
       header:
         actions: Tevékenységek
@@ -408,6 +459,8 @@ app:
         start_time: Elindult
         status: Állapot
         total_duration: Teljes időtartam
+        file_processors: Fájl processzorok
+        user: Felhasználó
     title:
       add_chart: Ábra hozzáadása
       add_printer: Nyomtató hozzáadása
@@ -423,7 +476,7 @@ app:
       fans_outputs: Ventilátorok & Kimenetek
       gcode_preview: G-Kód előnézet
       history: Történet
-      home: Otthon
+      home: Kezdőlap
       jobs: Feladatok
       job_queue: Feladatsor
       limits: Nyomtató határai
@@ -443,20 +496,27 @@ app:
       timelapse: Timelapse
       tool: Eszköz
       tune: Hangolás
+      beacon: Jeladó
+      login: Belépés
+      macro_category_settings: Makró kategória beállításai
     tooltip:
       browse_metrics: A böngészőben elérhető mutatók
       estop: VészSTOP
       managed_by_moonraker: A moonraker konfigurációja által kezelt
       notifications: Értesítések
       reload_klipper: Újratölti a klipper konfigurációját.
-      reload_restart_klipper: Újratölti a klipper konfigurációját és újraindítja az MCU-kat.
+      reload_restart_klipper: Újratölti a klipper konfigurációját és újraindítja az
+        MCU-kat.
       restart_klipper: Újraindítja a klipper rendszerszolgáltatást.
       run_collector: Gyűjtő futtatása
       rollover_logs: Forgó naplók
       file_browser_help: >-
-        Húzd át a fájlokat vagy mappákat a böngészőn kívülről, hogy ide töltsd fel őket<br>Fájlok és mappák áthelyezése almappákba vagy almappákba húzással ".."
+        Húzd át a fájlokat vagy mappákat a böngészőn kívülről, hogy ide töltsd fel
+        őket<br>Fájlok és mappák áthelyezése almappákba vagy almappákba húzással ".."
       file_browser_configuration_help: >-
-        Másold át a fájlokat és mappákat a konfigurációs fájlokba úgy, hogy innen húzd át őket, majd dobd oda
+        Másold át a fájlokat és mappákat a konfigurációs fájlokba úgy, hogy innen
+        húzd át őket, majd dobd oda
+      power_on_printer: Bekapcsolja a nyomtató áramellátását
   history:
     msg:
       confirm: Biztos vagy benne? Törlöd az összes előzményt és a nyomtatóstatisztikát
@@ -471,7 +531,9 @@ app:
       multiply_job: Munka szorzása | Munkák szorzása
     tooltip:
       help: >-
-        Állítsd sorba a munkákat a Munkák menüből ide húzott fájlokkal<br> Állítsd be a sorba állított munkák sorrendjét felfelé vagy lefelé húzással.
+        Feladatok sorba rendezése úgy, hogy áthúzod a fájlokat a Feladatok közül,
+        és ide dobod<br>Módosítsd a sorban álló feladatok sorrendjét felfelé vagy
+        lefelé húzással
   printer:
     state:
       busy: Elfoglalt
@@ -485,16 +547,23 @@ app:
       standby: Készenlét
     title:
       printer_status: Nyomtató állapota
+      stepper_driver_overheating: A '%{name}' léptetőmotor meghajtó túlmelegedett
+    msg:
+      possible_print_failure: Ez sikertelen nyomtatáshoz vezethet
+    url:
+      stepper_driver_overheating: '%{klipperDomain}/TMC_Drivers.html#tmc-reports-error-ot1overtemperror'
   setting:
     btn:
       add_camera: Kamera hozzáadása
-      add_category: Kategória hozzáadása
+      add_category: Kategória Hozzáadása
       add_filter: Szűrő hozzáadása
       add_metric: Metrika hozzáadása
       add_thermal_preset: Előbeállítás hozzáadása
       add_user: Felhasználó hozzáadása
       reset: Frissítés
       select_theme: Válassz témát
+      backup: Biztonsági mentés
+      restore: Visszaállítás
     camera_type_options:
       mjpegadaptive: MJPEG Adaptív
       mjpegstream: MJPEG Sugárzás
@@ -502,7 +571,8 @@ app:
       webrtc_camera_streamer: WebRTC (kamera-sugárzása)
       video: IP Kamera
       iframe: HTTP oldal
-      webrtc_gortc: WebRTC (go2rtc)
+      webrtc_go2rtc: WebRTC (go2rtc)
+      webrtc_mediamtx: WebRTC (MediaMTX)
     camera_rotate_options:
       '90': 90°
       '180': 180°
@@ -532,8 +602,10 @@ app:
       collector: Kollektor
       confirm_on_estop: Megerősítés kérése vészleállításkor
       confirm_on_power_device_change: Megerősítés kérése kikapcsoláskor
-      confirm_on_save_config_and_restart: Mentés és újraindítás előtt tekintsd át a függőben lévő konfigurációs módosításokat
-      confirm_dirty_editor_close: Megerősítés kérése, ha módosítások mentése nélkül zárod be a szerkesztőt
+      confirm_on_save_config_and_restart: Mentés és újraindítás előtt tekintsd át
+        a függőben lévő konfigurációs módosításokat
+      confirm_dirty_editor_close: Megerősítés kérése, ha módosítások mentése nélkül
+        zárod be a szerkesztőt
       contains: Tartalom
       dark_mode: Sötét mód
       dashed: Szaggatott
@@ -560,6 +632,8 @@ app:
       fps_target: FPS Cél
       fps_idle_target: FPS Cél, ha nincs fókuszban
       height: Magasság
+      hide_single_part_bounding_box: Alkatrészhatároló doboz elrejtése egyetlen tárgy
+        nyomtatásakor
       gcode_coords: G-Kód koordináták használata
       icon: Ikon
       invert_x_control: Fordított (X) vezérlés
@@ -585,7 +659,8 @@ app:
       retraction_icon_size: Visszahúzási ikon mérete
       right_y: Jobb Y-tengely
       save_and_restore_view_state: A nézet állapot mentése és visszaállítása
-      sections_to_ignore_pending_configuration_changes: Szakasz a függőben lévő konfigurációs változások figyelmen kívül hagyásához
+      sections_to_ignore_pending_configuration_changes: Szakasz a függőben lévő konfigurációs
+        változások figyelmen kívül hagyásához
       show_animations: Animációk megjelenítése
       show_barometric_pressure: Barometrikus nyomás mutatása
       show_chart: Diagram megjelenítése
@@ -595,7 +670,8 @@ app:
       show_logo_on_background: Logó megjelenítése a háttérben
       show_rate_of_change: A hőmérséklet változásának mértéke
       show_relative_humidity: Relatív páratartalom mutatása
-      show_save_config_and_restart: Konfiguráció mentése, újraindítás gomb a felső navigációban
+      show_save_config_and_restart: Konfiguráció mentése, újraindítás gomb a felső
+        navigációban
       show_upload_and_print: A Feltöltés és Nyomtatás gomb megjelenítése a felső navigációban
       solid: Szilárd
       starts_with: Ezzel kezdődik
@@ -616,14 +692,29 @@ app:
       time_format: Idő formátum
       text_sort_order: Szövegrendezési sorrend
       force_move_toggle_warning: A FORCE_MOVE aktiválásakor megerősítés szükséges
-      show_manual_probe_dialog_automatically: Kézi szonda párbeszédpanel automatikus megjelenítése
-      show_bed_screws_adjust_dialog_automatically: Ágycsavarok beállítása párbeszédpanel automatikus megjelenítése
-      show_screws_tilt_adjust_dialog_automatically: Ágycsavarok dőlésszögének beállítása párbeszédpanel automatikus megjelenítése
+      show_manual_probe_dialog_automatically: Kézi szonda párbeszédpanel automatikus
+        megjelenítése
+      show_bed_screws_adjust_dialog_automatically: Ágycsavarok beállítása párbeszédpanel
+        automatikus megjelenítése
+      show_screws_tilt_adjust_dialog_automatically: Ágycsavarok dőlésszögének beállítása
+        párbeszédpanel automatikus megjelenítése
+      print_progress_calculation: Nyomtatási folyamat számítás
+      print_eta_calculation: Nyomtatás ETA számítása
+      print_in_progress_layout: Nyomtatási folyamat elrendezés
+      keyboard_shortcuts: Billentyűparancsok
+      fluidd_settings_in_moonraker_db: Fluidd beállítások a Moonraker adatbázisban
+      drag_and_drop_functionality_for_files_and_folders: Fájlok és mappák húzás és
+        eldobás funkciója
+      auto: Automata
+      printer_power_device: Nyomtató tápegység
     timer_options:
       duration: Csak időtartam
-      filament: Nyomtatószál becslés
-      file: Fájlbecslés
+      filament: Nyomtatószál
+      file: Fájl
       slicer: Szeletelő
+      slicer_m73: Szeletelő (M73)
+      absolute_file_position: Abszolút fájlpozíció
+      relative_file_position: Relatív fájlpozíció
     title:
       authentication: Hitelesítés
       console: Konzol
@@ -637,23 +728,38 @@ app:
       thermal_presets: Hőmérsékleti előbeállítások
       tool: Eszköz
     tooltip:
-      diagnostics_performance: A diagnosztikai információk naplózása hatással lehet a teljesítményre
+      diagnostics_performance: A diagnosztikai információk naplózása hatással lehet
+        a teljesítményre
       gcode_coords: G-Kód pozíció használata a nyomtatófej pozíciója helyett a műszerfalon
-      show_manual_probe_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt, ha kézi szintezőeszközt futtatsz
-      show_bed_screws_adjust_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt, ha a BED_SCREWS_ADJUST eszközt futtatod
-      show_screws_tilt_adjust_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt, ha a SCREWS_TILT_CALCULATE eszközt futtatod
+      show_manual_probe_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt,
+        ha kézi szintezőeszközt futtatsz
+      show_bed_screws_adjust_dialog_automatically: Automatikusan megjeleníti a segítő
+        párbeszédpanelt, ha a BED_SCREWS_ADJUST eszközt futtatod
+      show_screws_tilt_adjust_dialog_automatically: Automatikusan megjeleníti a segítő
+        párbeszédpanelt, ha a SCREWS_TILT_CALCULATE eszközt futtatod
       theme_disclaimer: >-
-        Ezek a témák márkaneveket és logókat tartalmaznak, amelyek a megfelelő tulajdonosok szellemi tulajdonát képezik.<br>
+        Ezek a témák márkaneveket és logókat tartalmaznak, amelyek a megfelelő tulajdonosok
+        szellemi tulajdonát képezik.<br>
         Ezen nevek és logók feltüntetése a márkák engedélyével történik.<br>
-        Felhívjuk azonban figyelmed, hogy ezeket a témákat hivatalosan nem a megfelelő márkák tartják karban.<br>
-        A témákkal kapcsolatos bármilyen kérdéssel vagy kéréssel a Fluidd csapatához kell fordulni.<br>
-        A márkanevek és logók használata kizárólag dekoratív és esztétikai célokat szolgál, és nem jelenti azt, hogy a márkák hivatalos kapcsolatban állnak vagy támogatmak minket.
+        Felhívjuk azonban figyelmed, hogy ezeket a témákat hivatalosan nem a megfelelő
+        márkák tartják karban.<br>
+        A témákkal kapcsolatos bármilyen kérdéssel vagy kéréssel a Fluidd csapatához
+        kell fordulni.<br>
+        A márkanevek és logók használata kizárólag dekoratív és esztétikai célokat
+        szolgál, és nem jelenti azt, hogy a márkák hivatalos kapcsolatban állnak vagy
+        támogatmak minket.
+      average_calculation: Ha egynél több lehetőség van kiválasztva, a rendszer átlagot
+        számít ki
+      keyboard_shortcuts: "[BETA] Engedélyezd és nyomd meg a '?' gombot az elérhető
+        billentyűparancsok listájának megtekintéséhez"
   socket:
     msg:
       connecting: Csatlakozás a Moonraker-hez...
-      no_connection: Nincs Moonraker kapcsolat. Kérjük, ellenőrizd a Moonraker állapotát és/vagy frissítsd.
+      no_connection: Nincs Moonraker kapcsolat. Kérjük, ellenőrizd a Moonraker állapotát
+        és/vagy frissítsd.
   system_info:
     label:
+      awake_time: Ébrenléti idő
       capacity: Kapacitás
       cpu_desc: CPU leírása
       distribution_codename: Kódnév
@@ -663,8 +769,10 @@ app:
       hardware_desc: Hardver leírás
       hostname: Gazdanév
       klipper_load: Klipper Terheltsége
+      load: Töltés
       manufactured: Gyártva
       manufacturer: Gyártó
+      memory_used: Memóriahasználat
       mcu_awake: '{mcu} Ébredés ideje'
       mcu_bandwidth: '{mcu} Sávszélesség'
       mcu_information: '{mcu} Információ'
@@ -683,6 +791,20 @@ app:
       operating_system: Operációs rendszer
       version: Változat
       virtualization: Virtualizáció
+      constants: Állandók
+      devices: Eszközök
+      last_stats: Utolsó statisztika
+      non_critical_connection: Nem kritikus kapcsolat
+      application: Alkalmazás
+      disconnected: Leválasztva
+      connected: Kapcsolódva
+    msg:
+      no_devices_found: Nem találhatóak eszközök
+      no_devices_searched: Eszközök kereséséhez használd a frissítés gombot
+      canbus_warning: 'Csak a hozzá nem rendelt CAN-busz-csomópontok észlelhetők.<br>
+        Javasoljuk, hogy a kommunikációs problémák elkerülése érdekében csak egy hozzá
+        nem rendelt eszközt csatlakoztass a CAN-buszhoz.<br> További információk:
+        <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">itt.</a>'
   tool:
     btn:
       home_x: X
@@ -694,14 +816,15 @@ app:
       screws_tilt_adjust: Csavarok dőlésszög beállítása
     tooltip:
       absolute_positioning: Abszolút pozicionálás
-      extruder_disabled: extruder letiltva, min_extrude_temp (%{min}<small>°C</small>) alatt van
+      extruder_disabled: extruder letiltva, min_extrude_temp (%{min}<small>°C</small>)
+        alatt van
       home_xy: XY kezdőpont
       home_z: Z kezdőpont
       manual_probe: Kézi szonda
       motors_off: Motorok Ki
       relative_positioning: Relatív pozicionálás
       select_tool: Eszköz kiválasztása %{tool}
-      tools: Eszközök
+      tools: Szerszámok
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Az aktív extruder konfigurációja be van állítva</span>
@@ -738,6 +861,9 @@ app:
       package_list: Csomaglista
       up_to_date: NAPRAKÉSZ
       updates_available: Frissítések állnak rendelkezésre
+      old_component_version: A(z) %{name} régi verzióját használod, amely nem támogatja
+        a Fluidd összes funkcióját.<br>Frissítsd a(z) %{name} terméket legalább %{version}
+        értékre.
     status:
       finished: A frissítések befejeződtek
       updating: Frissítés...
@@ -805,10 +931,10 @@ app:
     btn:
       manage_spools: Orsók kezelése
       scan_code: Kód beolvasása
-      select: Kiválaszt
+      select: 'Válaszd | Válaszd ki: {macro}'
     title:
       spoolman: Orsómester
-      spool_selection: Orsó kiválasztása
+      spool_selection: Tekercs kiválasztása | Tekercs kiválasztása a makróhoz {macro}
       scan_spool: Orsó beolvasása
     label:
       change_spool: Orsó cseréje
@@ -823,6 +949,14 @@ app:
       material: Anyag
       remaining_weight: Maradék
       vendor: Forgalmazó
+      active_spool: Aktív tekercs
+      length: Hossz
+      weight: Súly
+      bed_temp: Ágy hőfoka
+      density: Sűrűség
+      extruder_temp: Fej hőfoka
+      price: Érték
+      used_weight: Használt
     msg:
       no_spool: >-
         Nem választottál ki orsót.
@@ -840,6 +974,7 @@ app:
       tracking_inactive: >-
         A szálkövetés inaktív.
         A kezdéshez kérjük, válassz egy orsót.
+      not_connected: Spoolman szerver nem elérhető.
       info:
         howto: >-
           Mutasd meg az orsó QR-kódját a kamerának.
@@ -857,13 +992,44 @@ app:
           Kérjük, ellenőrizd a kamera konfigurációját, vagy próbálkozz másik kameraforrással.
     setting:
       auto_open_qr_camera: Automatikusan megnyitja a kamerát a QR-kód beolvasásához
-      auto_select_spool_on_match: Automatikusan rögzíti az orsókiválasztást QR-kód egyezés esetén
-      prefer_device_camera: A készülék kamerájának használata a QR-kódok felismeréséhez, ha van ilyen
-      show_spool_selection_dialog_on_print_start: Orsókiválasztó párbeszédpanel megjelenítése nyomtatás indításakor
+      auto_select_spool_on_match: Automatikusan rögzíti az orsókiválasztást QR-kód
+        egyezés esetén
+      prefer_device_camera: A készülék kamerájának használata a QR-kódok felismeréséhez,
+        ha van ilyen
+      show_spool_selection_dialog_on_print_start: Orsókiválasztó párbeszédpanel megjelenítése
+        nyomtatás indításakor
       warn_on_not_enough_filament: >-
-        Figyelmeztetés megjelenítése, ha a kiválasztott orsón nem maradt elég szál a nyomtatás befejezéséhez.
+        Figyelmeztetés megjelenítése, ha a kiválasztott tekercsen nincs elég szál
+        a nyomtatás befejezéséhez
       warn_on_filament_type_mismatch: >-
-        Figyelmeztetés megjelenítése, ha az orsó szál típusa és a szeletelőben kiválasztott szál típusa nem egyezik meg.
+        Figyelmeztetés megjelenítése, ha a tekercsen lévő szál típusa és a szeletelőben
+        kiválasztott szál típusa nem egyezik
+      remaining_filament_unit: Mutasd a maradék nyomtatószálat
+      card_fields: Az orsómester-kártyán megjelenítendő mezők
   sensors:
     title:
       sensors: Érzékelők
+  keyboard_shortcuts:
+    title:
+      keyboard_shortcuts: Billentyűparancsok
+    label:
+      actions: Tevékenységek
+      cancel: Mégsem
+      emergency_stop: Vész STOP
+      home_all: Kezdőpont X-Y-Z
+      navigation: Navigáció
+      open_keyboard_shortcut_help: Billentyűparancsok súgójának megnyitása
+      pause: Szünet
+      printing: Nyomtatás
+      tool: Szerszám
+  beacon:
+    label:
+      active: aktív
+      model_name: Modell neve
+      remove_model: '%{name} modell eltávolítása'
+    msg:
+      hint: Ha nem %{name} néven mentesz, akkor a %{name} modellt is eltávolítod
+      not_found: Nem találtam létező jelzőfény-modellt.
+    tooltip:
+      delete: Modell törlése
+      load: Modell betöltése

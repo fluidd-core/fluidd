@@ -9,18 +9,6 @@ export interface GcodePreviewState {
   file?: AppFile;
   parserProgress: number;
   parserWorker: Worker | null;
-  viewer: ViewerOptions;
-}
-
-export interface ViewerOptions {
-  showCurrentLayer: boolean;
-  showNextLayer: boolean;
-  showPreviousLayer: boolean;
-  showMoves: boolean;
-  showExtrusions: boolean;
-  showRetractions: boolean;
-  showParts: boolean;
-  followProgress: boolean;
 }
 
 export interface LinearMove {
@@ -40,7 +28,7 @@ export interface ArcMove extends LinearMove {
   direction: Rotation;
 }
 
-export type Move = LinearMove | ArcMove;
+export type Move = LinearMove | ArcMove
 
 export type Rotation = 'clockwise' | 'counter-clockwise'
 

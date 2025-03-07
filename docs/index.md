@@ -44,14 +44,11 @@ firmware.
 
 ## Supporting Fluidd
 
-Fluidd was created by [Craig Bassett](https://github.com/cadriel) and is
-currently developed and maintained by the passionate volunteers of the
-[Fluidd team](https://github.com/orgs/fluidd-core/people) who dedicate their
-time to improving and expanding its capabilities.
+Fluidd development is driven by passionate volunteers who dedicate their time to improving and expanding its capabilities.
 
-In order to help us enhance Fluidd, introduce new features, and ensure it
-remains accessible to all Klipper users, we have now enabled [GitHub Sponsors](https://github.com/sponsors/fluidd-core)
-for Fluidd.
+Your sponsorship can help us enhance Fluidd, introduce new features, and ensure it remains accessible to all Klipper users.
+
+Your support can make a significant impact on the evolution of Fluidd. Please consider [sponsoring Fluidd](https://github.com/sponsors/fluidd-core).
 
 ## Docker
 
@@ -72,7 +69,7 @@ to edit this page. Any help is appreciated.
 
 ## Architecture
 
-Fluidd relies on [Moonraker](https://github.com/Arksine/moonraker/tree/master/docs) and
+Fluidd relies on [Moonraker](https://moonraker.readthedocs.io/) and
 [Klipper](https://www.klipper3d.org/) to function. To learn more about the
 architecture and how these components work together, visit the development
 resources [here](/development).

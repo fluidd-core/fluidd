@@ -23,18 +23,15 @@
         :close-on-content-click="false"
       >
         <template #activator="{ on, attrs }">
-          <v-btn
-            fab
-            x-small
-            text
+          <app-btn
+            icon
             v-bind="attrs"
-            class="ms-1 my-1"
             v-on="on"
           >
-            <v-icon>
+            <v-icon dense>
               $cog
             </v-icon>
-          </v-btn>
+          </app-btn>
         </template>
 
         <v-list dense>
@@ -97,8 +94,7 @@
     </template>
 
     <temperature-targets
-      @legendClick="legendToggleSelect"
-      @legendPowerClick="legendTogglePowerSelect"
+      @updateChartSelectedLegends="updateChartSelectedLegends"
     />
 
     <template v-if="chartReady && chartVisible">
@@ -116,12 +112,13 @@
 import { Component, Mixins, Prop, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
-import type { Fan, Heater } from '@/store/printer/types'
 
 import ThermalChart from '@/components/widgets/thermals/ThermalChart.vue'
 import TemperatureTargets from '@/components/widgets/thermals/TemperatureTargets.vue'
 import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
 import type { TemperaturePreset } from '@/store/config/types'
+import type { ChartSelectedLegends } from '@/store/charts/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
   components: {
@@ -137,7 +134,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
   @Ref('thermalchart')
   readonly thermalChartElement!: ThermalChart
 
-  get chartReady () {
+  get chartReady (): boolean {
     return (
       this.$store.state.socket.acceptingNotifications &&
       this.$store.state.socket.ready &&
@@ -146,26 +143,13 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     )
   }
 
-  legendToggleSelect (item: Heater | Fan) {
-    // If this has a target, toggle that too.
+  updateChartSelectedLegends (chartSelectedLegends: ChartSelectedLegends) {
     if (this.chartVisible) {
-      if ('target' in item) {
-        this.thermalChartElement.legendToggleSelect(item.key + 'Target')
-      }
-      this.thermalChartElement.legendToggleSelect(item.key)
+      this.thermalChartElement.updateChartSelectedLegends(chartSelectedLegends)
     }
   }
 
-  legendTogglePowerSelect (item: Heater | Fan) {
-    if (this.chartVisible) {
-      const name = ('speed' in item)
-        ? item.key + 'Speed'
-        : item.key + 'Power'
-      this.thermalChartElement.legendToggleSelect(name)
-    }
-  }
-
-  get chartVisible () {
+  get chartVisible (): boolean {
     return this.$store.state.config.uiSettings.general.chartVisible
   }
 
@@ -177,7 +161,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get showRateOfChange () {
+  get showRateOfChange (): boolean {
     return this.$store.state.config.uiSettings.general.showRateOfChange
   }
 
@@ -189,7 +173,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get showRelativeHumidity () {
+  get showRelativeHumidity (): boolean {
     return this.$store.state.config.uiSettings.general.showRelativeHumidity
   }
 
@@ -201,7 +185,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get showBarometricPressure () {
+  get showBarometricPressure (): boolean {
     return this.$store.state.config.uiSettings.general.showBarometricPressure
   }
 
@@ -213,7 +197,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get showGasResistance () {
+  get showGasResistance (): boolean {
     return this.$store.state.config.uiSettings.general.showGasResistance
   }
 
@@ -231,10 +215,10 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
         for (const key in preset.values) {
           const item = preset.values[key]
           if (item.type === 'heater' && item.active && item.value > -1) {
-            this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${key} TARGET=${item.value}`)
+            this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${encodeGcodeParamValue(key)} TARGET=${item.value}`)
           }
           if (item.type === 'fan' && item.active && item.value > -1) {
-            this.sendGcode(`SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${key} TARGET=${item.value}`)
+            this.sendGcode(`SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${encodeGcodeParamValue(key)} TARGET=${item.value}`)
           }
         }
       }
@@ -247,7 +231,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
 
   async handleApplyOff () {
     const result = (
-      !['printing', 'busy', 'paused'].includes(this.$store.getters['printer/getPrinterState']) ||
+      !['printing', 'busy', 'paused'].includes(this.printerState) ||
       await this.$confirm(
         this.$tc('app.general.label.heaters_busy'),
         { title: this.$tc('app.general.simple_form.msg.confirm'), color: 'card-heading', icon: '$error' }

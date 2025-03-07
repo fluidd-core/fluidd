@@ -11,7 +11,7 @@
       <v-list-item
         v-if="item.visible"
         :key="item.name"
-        :to="`/settings${item.hash}`"
+        :to="{ name: 'settings', hash: item.hash }"
         :exact="false"
         link
       >
@@ -44,22 +44,22 @@ export default class AppSettingsNav extends Vue {
       { name: this.$tc('app.setting.title.camera', 2), hash: '#camera', visible: true },
       { name: this.$t('app.setting.title.tool'), hash: '#toolhead', visible: true },
       { name: this.$t('app.setting.title.thermal_presets'), hash: '#presets', visible: true },
-      { name: this.$t('app.setting.title.gcode_preview'), icon: '$cubeScan', hash: '#gcodePreview', visible: true },
+      { name: this.$t('app.setting.title.gcode_preview'), hash: '#gcodePreview', visible: true },
       { name: this.$t('app.general.title.timelapse'), hash: '#timelapse', visible: this.supportsTimelapse },
       { name: this.$t('app.spoolman.title.spoolman'), hash: '#spoolman', visible: this.supportsSpoolman },
       { name: this.$t('app.version.title'), hash: '#versions', visible: this.supportsVersions }
     ]
   }
 
-  get supportsVersions () {
+  get supportsVersions (): boolean {
     return this.$store.getters['server/componentSupport']('update_manager')
   }
 
-  get supportsTimelapse () {
+  get supportsTimelapse (): boolean {
     return this.$store.getters['server/componentSupport']('timelapse')
   }
 
-  get supportsSpoolman () {
+  get supportsSpoolman (): boolean {
     return this.$store.getters['server/componentSupport']('spoolman')
   }
 }

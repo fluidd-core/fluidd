@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import VueRouter, { type NavigationGuardNext, type Route, type RouteConfig } from 'vue-router'
+import VueRouter, { type RouteConfig } from 'vue-router'
 
 // Views
 import Dashboard from '@/views/Dashboard.vue'
@@ -22,19 +22,19 @@ import Icons from '@/views/Icons.vue'
 
 Vue.use(VueRouter)
 
-const ifAuthenticated = (to: Route, from: Route, next: NavigationGuardNext<Vue>) => {
-  if (
-    router.app.$store.getters['auth/getAuthenticated'] ||
-    !router.app.$store.state.socket.apiConnected
-  ) {
-    next()
-  } else {
-    next('/login')
-  }
-}
+const isAuthenticated = (): boolean => (
+  router.app.$store.state.auth.authenticated ||
+  !router.app.$store.state.socket.apiConnected
+)
 
 const defaultRouteConfig: Partial<RouteConfig> = {
-  beforeEnter: ifAuthenticated,
+  beforeEnter: (to, from, next) => {
+    if (isAuthenticated()) {
+      next()
+    } else {
+      next({ name: 'login' })
+    }
+  },
   meta: {
     fileDropRoot: 'gcodes'
   }
@@ -43,37 +43,45 @@ const defaultRouteConfig: Partial<RouteConfig> = {
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    name: 'Dashboard',
+    name: 'home',
     component: Dashboard,
-    ...defaultRouteConfig
+    ...defaultRouteConfig,
+    meta: {
+      ...defaultRouteConfig.meta,
+      dashboard: true
+    }
   },
   {
     path: '/console',
-    name: 'Console',
+    name: 'console',
     component: Console,
     ...defaultRouteConfig
   },
   {
     path: '/jobs',
-    name: 'Jobs',
+    name: 'jobs',
     component: Jobs,
     ...defaultRouteConfig
   },
   {
     path: '/tune',
-    name: 'Tune',
+    name: 'tune',
     component: Tune,
     ...defaultRouteConfig
   },
   {
     path: '/diagnostics',
-    name: 'Diagnostics',
+    name: 'diagnostics',
     component: Diagnostics,
-    ...defaultRouteConfig
+    ...defaultRouteConfig,
+    meta: {
+      ...defaultRouteConfig.meta,
+      dashboard: true
+    }
   },
   {
     path: '/timelapse',
-    name: 'Timelapse',
+    name: 'timelapse',
     component: Timelapse,
     ...defaultRouteConfig,
     meta: {
@@ -82,26 +90,26 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/history',
-    name: 'History',
+    name: 'history',
     component: History,
     ...defaultRouteConfig
   },
   {
     path: '/system',
-    name: 'System',
+    name: 'system',
     component: System,
     ...defaultRouteConfig
   },
   {
     path: '/configure',
-    name: 'Configuration',
+    name: 'configure',
     component: Configure,
     ...defaultRouteConfig,
     meta: {}
   },
   {
     path: '/settings',
-    name: 'Settings',
+    name: 'settings',
     ...defaultRouteConfig,
     meta: {
       hasSubNavigation: true
@@ -112,8 +120,8 @@ const routes: Array<RouteConfig> = [
     },
     children: [
       {
-        path: '/settings/macros/:categoryId',
-        name: 'Macros',
+        path: 'macros/:categoryId',
+        name: 'macro_category_settings',
         meta: {
           hasSubNavigation: true
         },
@@ -126,32 +134,39 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/camera/:cameraId',
-    name: 'Camera',
+    name: 'camera',
     component: FullscreenCamera,
     ...defaultRouteConfig
   },
   {
     path: '/preview',
-    name: 'Gcode Preview',
+    name: 'gcode_preview',
     component: GcodePreview,
     ...defaultRouteConfig
   },
   {
     path: '/login',
-    name: 'Login',
+    name: 'login',
     component: Login,
+    beforeEnter: (to, from, next) => {
+      if (isAuthenticated()) {
+        next({ name: 'home' })
+      } else {
+        next()
+      }
+    },
     meta: {
       fillHeight: true
     }
   },
   {
     path: '/icons',
-    name: 'Icons',
+    name: 'icons',
     component: Icons
   },
   {
     path: '*',
-    name: '404',
+    name: 'not_found',
     component: NotFound
   }
 ]
@@ -174,6 +189,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   router.app?.$store.commit('config/setContainerColumnCount', 2)
+  router.app?.$store.commit('config/setLayoutMode', false)
   next()
 })
 

@@ -1,3 +1,5 @@
+import type { Macro } from '@/store/macros/types'
+
 export interface Vendor {
   id: number;
   registered: Date;
@@ -44,6 +46,7 @@ export interface Spool {
 export interface SpoolmanState {
   availableSpools: Spool[];
   activeSpool?: number;
+  currency?: string;
   connected: boolean;
   dialog: SpoolSelectionDialogState;
   socket?: WebSocket;
@@ -52,6 +55,7 @@ export interface SpoolmanState {
 export interface SpoolSelectionDialogState {
   show: boolean;
   filename?: string;
+  targetMacro?: string;
 }
 
 export interface WebsocketBasePayload {
@@ -74,4 +78,21 @@ export interface WebsocketFilamentPayload extends WebsocketBasePayload {
 export interface WebsocketVendorPayload extends WebsocketBasePayload {
   resource: 'vendor';
   payload: Vendor;
+}
+
+export interface MacroWithSpoolId extends Macro {
+  variables: {
+    spool_id: number | null;
+    [key: string]: unknown;
+  }
+}
+
+export type SpoolmanProxyResponse<T> = T | {
+  response: T,
+  error: null
+} | {
+  response: null,
+  error: string | {
+    message: string
+  }
 }

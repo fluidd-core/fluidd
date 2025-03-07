@@ -10,6 +10,7 @@ import sanitizeEndpoint from './util/sanitize-endpoint'
 import webSocketWrapper from './util/web-socket-wrapper'
 import promiseAny from './util/promise-any'
 import sleep from './util/sleep'
+import md5 from 'md5'
 
 // Load API configuration
 /**
@@ -32,15 +33,27 @@ const getHostConfig = async () => {
   }
 }
 
-const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | InstanceConfig> => {
+const getApiConfig = async (hostConfig: HostConfig, apiUrlHash?: string | null): Promise<ApiConfig | InstanceConfig> => {
   // Local storage load
   if (Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage) {
-    const instances = JSON.parse(localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY]) as InstanceConfig[]
-    if (instances && instances.length) {
-      for (const config of instances) {
-        if (config.active) {
-          consola.debug('API Config from Local Storage', config)
-          return config
+    const instancesValue = localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY]
+
+    if (typeof instancesValue === 'string') {
+      const instances = JSON.parse(instancesValue) as InstanceConfig[]
+      if (instances && instances.length) {
+        if (apiUrlHash) {
+          for (const config of instances) {
+            if (md5(config.apiUrl) === apiUrlHash) {
+              consola.debug('API Config from Local Storage', config)
+              return config
+            }
+          }
+        }
+        for (const config of instances) {
+          if (config.active) {
+            consola.debug('API Config from Local Storage', config)
+            return config
+          }
         }
       }
     }
@@ -158,9 +171,22 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     }
   }
 
+  const locationUrl = new URL(window.location.href)
+
+  // Check if we have a printer url hash in search params
+  const apiUrlHash = locationUrl.searchParams.get('printer')
+
   // Load the API Config
   if (!apiConfig) {
-    apiConfig = await getApiConfig(hostConfig)
+    apiConfig = await getApiConfig(hostConfig, apiUrlHash)
+  }
+
+  if (apiConfig.apiUrl) {
+    // Set the printer url hash in the search params so that the url is bookmarkable
+
+    locationUrl.searchParams.set('printer', md5(apiConfig.apiUrl))
+
+    window.history.replaceState(window.history.state, '', locationUrl)
   }
 
   // Setup axios
@@ -181,6 +207,10 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
       break
     }
 
+    if (Object.keys(ROOTS).length === 0) {
+      continue
+    }
+
     const result = await getMoorakerDatabase(apiConfig, NAMESPACE)
 
     apiAuthenticated = result.apiAuthenticated
@@ -198,7 +228,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
       const value = root.name ? data[root.name] : data
 
       if (root.migrate_only) {
-        if (value) store.dispatch(root.dispatch, value)
+        if (value) await store.dispatch(root.dispatch, value)
       } else {
         if (!value) {
           try {
@@ -218,8 +248,15 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   // apiConfig could have empty strings, meaning we have no valid connection.
   await store.dispatch('init', { apiConfig, hostConfig, apiConnected })
 
-  // Ensure users start on the dash.
-  if (router.currentRoute.path !== '/' && store.state.auth.authenticated) router.push('/')
+  if (store.state.auth.authenticated) {
+    if (router.currentRoute.name === 'login') {
+      await router.push({ name: 'home' })
+    }
+  } else {
+    if (router.currentRoute.name !== 'login') {
+      await router.push({ name: 'login' })
+    }
+  }
 
   return { apiConfig, hostConfig, apiConnected, apiAuthenticated }
 }

@@ -1,5 +1,3 @@
-/// <reference types="vitest" />
-
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue2'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -7,21 +5,9 @@ import Components from 'unplugin-vue-components/vite'
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 import content from '@originjs/vite-plugin-content'
-import monacoEditorPluginModule from 'vite-plugin-monaco-editor'
+import monacoEditorEsmPlugin from 'vite-plugin-monaco-editor-esm'
 import checker from 'vite-plugin-checker'
 import version from './vite.config.inject-version'
-
-// Fix for incorrect typings on vite-plugin-monaco-editor
-const isObjectWithDefaultFunction = (module: unknown): module is { default: typeof monacoEditorPluginModule } => (
-  module != null &&
-  typeof module === 'object' &&
-  'default' in module &&
-  typeof module.default === 'function'
-)
-
-const monacoEditorPlugin = isObjectWithDefaultFunction(monacoEditorPluginModule)
-  ? monacoEditorPluginModule.default
-  : monacoEditorPluginModule
 
 export default defineConfig({
   plugins: [
@@ -105,7 +91,7 @@ export default defineConfig({
     vue(),
     version(),
     content(),
-    monacoEditorPlugin({
+    monacoEditorEsmPlugin({
       languageWorkers: ['editorWorkerService', 'json', 'css']
     }),
     checker({
@@ -128,11 +114,12 @@ export default defineConfig({
 
   css: {
     preprocessorOptions: {
-      css: { charset: false },
       scss: {
+        api: 'legacy',
         additionalData: '@import "@/scss/variables";\n'
       },
       sass: {
+        api: 'legacy',
         additionalData: '@import "@/scss/variables.scss"\n'
       }
     }
@@ -142,19 +129,9 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
+      '@': path.resolve(__dirname, './src'),
+      path: 'path-browserify'
     }
-  },
-
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: [
-      './tests/unit/setup.ts'
-    ],
-    alias: [
-      { find: /^vue$/, replacement: 'vue/dist/vue.runtime.common.js' }
-    ]
   },
 
   base: './',

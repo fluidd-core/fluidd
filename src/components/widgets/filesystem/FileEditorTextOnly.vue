@@ -16,7 +16,7 @@ import { Vue, Component, Prop, VModel } from 'vue-property-decorator'
 @Component({})
 export default class FileEditorText extends Vue {
   @VModel({ type: String })
-    content?: string
+  content?: string
 
   @Prop({ type: Boolean })
   readonly readonly?: boolean

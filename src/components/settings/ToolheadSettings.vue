@@ -385,7 +385,8 @@ import { Component, Ref, Mixins } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/state'
 import type { VInput } from '@/types'
 import ToolheadMixin from '@/mixins/toolhead'
-import type { ToolheadControlStyle } from '@/store/config/types'
+import type { GeneralConfig, ToolheadControlStyle } from '@/store/config/types'
+import type { KlipperPrinterSettings } from '@/store/printer/types'
 
 @Component({
   components: {}
@@ -409,7 +410,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   @Ref('zAdjustValues')
   readonly zAdjustValuesElement!: VInput
 
-  get defaultExtrudeSpeed () {
+  get defaultExtrudeSpeed (): number {
     return this.$store.state.config.uiSettings.general.defaultExtrudeSpeed
   }
 
@@ -421,7 +422,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get defaultExtrudeLength () {
+  get defaultExtrudeLength (): number {
     return this.$store.state.config.uiSettings.general.defaultExtrudeLength
   }
 
@@ -433,7 +434,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get defaultToolheadMoveLength () {
+  get defaultToolheadMoveLength (): number {
     return this.$store.state.config.uiSettings.general.defaultToolheadMoveLength
   }
 
@@ -445,7 +446,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get defaultToolheadXYSpeed () {
+  get defaultToolheadXYSpeed (): number {
     return this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
   }
 
@@ -457,7 +458,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get defaultToolheadZSpeed () {
+  get defaultToolheadZSpeed (): number {
     return this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
   }
 
@@ -469,7 +470,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get zAdjustValues () {
+  get zAdjustValues (): number[] {
     return this.$store.state.config.uiSettings.general.zAdjustDistances
   }
 
@@ -485,7 +486,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get toolheadCircleXYHomingEnabled () {
+  get toolheadCircleXYHomingEnabled (): boolean {
     return this.$store.state.config.uiSettings.general.toolheadCircleXYHomingEnabled
   }
 
@@ -497,7 +498,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get toolheadControlStyle () {
+  get toolheadControlStyle (): ToolheadControlStyle {
     return this.$store.state.config.uiSettings.general.toolheadControlStyle
   }
 
@@ -526,7 +527,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     ]
   }
 
-  get toolheadMoveDistances () {
+  get toolheadMoveDistances (): number[] {
     return this.$store.state.config.uiSettings.general.toolheadMoveDistances
   }
 
@@ -549,7 +550,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     }
   }
 
-  get toolheadXYMoveDistances () {
+  get toolheadXYMoveDistances (): number[] {
     return this.$store.state.config.uiSettings.general.toolheadXYMoveDistances
   }
 
@@ -565,7 +566,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get toolheadCircleXYMoveDistances () {
+  get toolheadCircleXYMoveDistances (): number[] {
     return this.$store.state.config.uiSettings.general.toolheadCircleXYMoveDistances
   }
 
@@ -581,7 +582,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get toolheadZMoveDistances () {
+  get toolheadZMoveDistances (): number[] {
     return this.$store.state.config.uiSettings.general.toolheadZMoveDistances
   }
 
@@ -597,7 +598,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get toolheadCircleZMoveDistances () {
+  get toolheadCircleZMoveDistances (): number[] {
     return this.$store.state.config.uiSettings.general.toolheadCircleZMoveDistances
   }
 
@@ -613,7 +614,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get useGcodeCoords () {
+  get useGcodeCoords (): boolean {
     return this.$store.state.config.uiSettings.general.useGcodeCoords
   }
 
@@ -625,7 +626,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get invertX () {
+  get invertX (): boolean {
     return this.$store.state.config.uiSettings.general.axis.x.inverted
   }
 
@@ -637,7 +638,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get invertY () {
+  get invertY (): boolean {
     return this.$store.state.config.uiSettings.general.axis.y.inverted
   }
 
@@ -649,7 +650,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get invertZ () {
+  get invertZ (): boolean {
     return this.$store.state.config.uiSettings.general.axis.z.inverted
   }
 
@@ -661,11 +662,13 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get printerSupportsForceMove () {
-    return this.$store.getters['printer/getPrinterSettings']('force_move.enable_force_move') ?? false
+  get printerSupportsForceMove (): boolean {
+    const printerSettings: KlipperPrinterSettings = this.$store.getters['printer/getPrinterSettings']
+
+    return printerSettings.force_move?.enable_force_move ?? false
   }
 
-  get showManualProbeDialogAutomatically () {
+  get showManualProbeDialogAutomatically (): boolean {
     return this.$store.state.config.uiSettings.general.showManualProbeDialogAutomatically
   }
 
@@ -677,7 +680,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get showBedScrewsAdjustDialogAutomatically () {
+  get showBedScrewsAdjustDialogAutomatically (): boolean {
     return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
   }
 
@@ -689,7 +692,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get showScrewsTiltAdjustDialogAutomatically () {
+  get showScrewsTiltAdjustDialogAutomatically (): boolean {
     return this.$store.state.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
   }
 
@@ -701,7 +704,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get forceMoveToggleWarning () {
+  get forceMoveToggleWarning (): boolean {
     return this.$store.state.config.uiSettings.general.forceMoveToggleWarning
   }
 
@@ -714,14 +717,15 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   handleReset () {
-    let value = defaultState().uiSettings.general
-    const current = this.$store.state.config.uiSettings.general
-    value = {
-      ...value,
-      instanceName: current.instanceName,
-      chartVisible: current.chartVisible,
-      hideTempWaits: current.hideTempWaits
+    const { instanceName, chartVisible, hideTempWaits }: GeneralConfig = this.$store.state.config.uiSettings.general
+
+    const value: GeneralConfig = {
+      ...defaultState().uiSettings.general,
+      instanceName,
+      chartVisible,
+      hideTempWaits
     }
+
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general',
       value,

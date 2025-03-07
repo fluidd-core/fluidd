@@ -29,7 +29,7 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
   @Prop({ type: Array, required: true })
   readonly data!: []
 
-  @Prop({ type: Array<GraphicComponentOption>, default: () => [] })
+  @Prop({ type: Array, default: () => [] })
   readonly graphics!: GraphicComponentOption[]
 
   @Prop({ type: Object, default: () => {} })
@@ -41,12 +41,12 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
   @Ref('chart')
   readonly chart!: ECharts
 
-  get flatSurface () {
+  get flatSurface (): boolean {
     return this.$store.state.mesh.flatSurface
   }
 
-  get bedSize (): BedSize | undefined {
-    return this.$store.getters['printer/getBedSize'] as BedSize | undefined
+  get bedSize (): BedSize {
+    return this.$store.getters['printer/getBedSize']
   }
 
   @Watch('flatSurface')
@@ -70,20 +70,16 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
   get opts (): EChartsOption {
     // If options includes series data, rip it out so we can merge it with
     // the given series in our initial options.
-    const darkMode = this.$store.state.config.uiSettings.theme.isDark
+    const darkMode: boolean = this.$store.state.config.uiSettings.theme.isDark
+
+    const fontColor = (darkMode) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
     const fontSize = (this.isMobileViewport) ? 14 : 16
-    let labelBackground = 'rgba(10,10,10,0.90)'
+    const labelBackground = (darkMode) ? 'rgba(10,10,10,0.90)' : 'rgba(255,255,255,0.90)'
     const opacity = 0.10
-    let fontColor = 'rgba(255,255,255,0.25)'
-    let lineColor = '#ffffff'
+    const lineColor = (darkMode) ? '#ffffff' : '#000000'
     const visualMap = {
       itemWidth: (this.isMobileViewport) ? 15 : 25,
       itemHeight: (this.isMobileViewport) ? 140 : 280
-    }
-    if (!darkMode) {
-      labelBackground = 'rgba(255,255,255,0.90)'
-      fontColor = 'rgba(0,0,0,0.45)'
-      lineColor = '#000000'
     }
 
     const axisCommon = {
@@ -148,6 +144,9 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
       legend: {
         show: false
       },
+      textStyle: {
+        fontFamily: 'Roboto'
+      },
       darkMode,
       tooltip: {
         backgroundColor: labelBackground,
@@ -156,7 +155,33 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
           color: fontColor,
           fontSize: 18
         },
-        formatter: this.tooltipFormatter
+        formatter: (params: any) => {
+          let text = ''
+          if (params.value && Array.isArray(params.value)) {
+            text += `
+              <div>
+                <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${params.color};"></span>
+                <span style="font-size:16px;color:${fontColor};font-weight:400;margin-left:2px">
+                  ${this.$filters.prettyCase(params.seriesName)}
+                </span>
+                <div style="clear: both"></div>
+                <span style="font-size:16px;color:${fontColor};font-weight:400;margin-left:2px">
+                  x: ${params.value[0].toFixed(4)}
+                </span>
+                <div style="clear: both"></div>
+                <span style="font-size:16px;color:${fontColor};font-weight:400;margin-left:2px">
+                  y: ${params.value[1].toFixed(4)}
+                </span>
+                <div style="clear: both"></div>
+                <span style="font-size:16px;color:${fontColor};font-weight:400;margin-left:2px">
+                  z: ${params.value[2].toFixed(4)}
+                </span>
+                <div style="clear: both"></div>
+              </div>
+              `
+          }
+          return text
+        }
       },
       visualMap: {
         type: 'continuous',
@@ -180,14 +205,14 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
       },
       xAxis3D: {
         type: 'value',
-        min: this.bedSize?.minX,
-        max: this.bedSize?.maxX,
+        min: this.bedSize.minX,
+        max: this.bedSize.maxX,
         ...axisCommon
       },
       yAxis3D: {
         type: 'value',
-        min: this.bedSize?.minY,
-        max: this.bedSize?.maxY,
+        min: this.bedSize.minY,
+        max: this.bedSize.maxY,
         ...axisCommon
       },
       zAxis3D: {
@@ -212,34 +237,6 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
     // Merge the default options with the given prop.
     merge(opts, this.options)
     return opts
-  }
-
-  tooltipFormatter (params: any) {
-    let text = ''
-    if (params.value && Array.isArray(params.value)) {
-      text += `
-        <div>
-          <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${params.color};"></span>
-          <span style="font-size:16px;color:#666;font-weight:400;margin-left:2px">
-            ${params.seriesName}
-          </span>
-          <div style="clear: both"></div>
-          <span style="font-size:16px;color:#666;font-weight:400;margin-left:2px">
-            x: ${params.value[0].toFixed(4)}
-          </span>
-          <div style="clear: both"></div>
-          <span style="font-size:16px;color:#666;font-weight:400;margin-left:2px">
-            y: ${params.value[1].toFixed(4)}
-          </span>
-          <div style="clear: both"></div>
-          <span style="font-size:16px;color:#666;font-weight:400;margin-left:2px">
-            z: ${params.value[2].toFixed(4)}
-          </span>
-          <div style="clear: both"></div>
-        </div>
-        `
-    }
-    return text
   }
 
   async copyImage () {

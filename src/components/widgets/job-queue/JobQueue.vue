@@ -1,6 +1,8 @@
 <template>
   <v-card
+    class="filesystem-wrapper"
     :class="{ 'no-pointer-events': overlay }"
+    flat
     @dragover="handleDragOver"
     @dragenter.self.prevent
     @dragleave.self.prevent="handleDragLeave"
@@ -8,7 +10,7 @@
   >
     <job-queue-toolbar
       v-if="selected.length === 0"
-      :headers="headers"
+      :headers="configurableHeaders"
       @remove-all="handleRemoveAll"
       @refresh="handleRefresh"
     />
@@ -21,7 +23,7 @@
 
     <job-queue-browser
       v-model="selected"
-      :headers="visibleHeaders"
+      :headers="headers"
       :dense="dense"
       :bulk-actions="bulkActions"
       @row-click="handleRowClick"
@@ -62,8 +64,9 @@ import JobQueueBulkActions from './JobQueueBulkActions.vue'
 import JobQueueBrowser from './JobQueueBrowser.vue'
 import JobQueueContextMenu from './JobQueueContextMenu.vue'
 import JobQueueMultiplyJobDialog from './JobQueueMultiplyJobDialog.vue'
-import type { AppTableHeader } from '@/types'
+import type { AppDataTableHeader } from '@/types'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
+import type { DataTableHeader } from 'vuetify'
 
 @Component({
   components: {
@@ -96,19 +99,44 @@ export default class JobQueue extends Vue {
   @Prop({ type: Boolean })
   readonly bulkActions?: boolean
 
-  get headers (): AppTableHeader[] {
-    const headers = [
-      { text: '', value: 'handle', sortable: false, width: '24px' },
-      { text: this.$tc('app.general.table.header.name'), value: 'filename', sortable: false },
-      { text: this.$tc('app.general.table.header.time_added'), value: 'time_added', configurable: true, sortable: false },
-      { text: this.$tc('app.general.table.header.time_in_queue'), value: 'time_in_queue', configurable: true, sortable: false }
+  get configurableHeaders (): AppDataTableHeader[] {
+    const headers: AppDataTableHeader[] = [
+      {
+        text: this.$tc('app.general.table.header.time_added'),
+        value: 'time_added',
+        sortable: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.time_in_queue'),
+        value: 'time_in_queue',
+        visible: false,
+        sortable: false,
+        cellClass: 'text-no-wrap'
+      }
     ]
-    const key = 'job_queue'
-    return this.$store.getters['config/getMergedTableHeaders'](headers, key)
+
+    const mergedTableHeaders: AppDataTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'job_queue')
+
+    return mergedTableHeaders
   }
 
-  get visibleHeaders (): AppTableHeader[] {
-    return this.headers.filter(header => header.visible || header.visible === undefined)
+  get headers (): DataTableHeader[] {
+    return [
+      {
+        text: '',
+        value: 'handle',
+        sortable: false,
+        width: '24px'
+      },
+      {
+        text: this.$tc('app.general.table.header.name'),
+        value: 'filename',
+        sortable: false
+      },
+      ...this.configurableHeaders
+        .filter(header => header.visible !== false)
+    ]
   }
 
   handleRowClick (item: QueuedJob, event: MouseEvent) {
@@ -214,3 +242,15 @@ export default class JobQueue extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .filesystem-wrapper,
+  .file-system,
+  .file-system :deep(.app-draggable),
+  .file-system :deep(.v-data-table) {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+  }
+</style>

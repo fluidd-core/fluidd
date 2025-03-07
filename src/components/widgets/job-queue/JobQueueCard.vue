@@ -12,7 +12,7 @@
         <app-btn
           v-if="['ready','loading','starting'].includes(queueStatus)"
           small
-          class="ms-1 my-1"
+          class="me-1 my-1"
           @click="handlePause"
         >
           <v-icon
@@ -26,7 +26,10 @@
         <app-btn
           v-else-if="queueStatus === 'paused'"
           small
-          class="ms-1 my-1"
+          class="my-1"
+          :class="{
+            'me-1': !fullscreen
+          }"
           @click="handleResume"
         >
           <v-icon
@@ -41,20 +44,22 @@
 
       <app-btn
         v-if="!fullscreen"
-        color=""
-        fab
-        x-small
-        text
-        class="ms-1 my-1"
-        @click="$filters.routeTo($router, '/jobs')"
+        icon
+        @click="$filters.routeTo({ name: 'jobs' })"
       >
-        <v-icon>$fullScreen</v-icon>
+        <v-icon dense>
+          $fullScreen
+        </v-icon>
       </app-btn>
     </template>
 
     <job-queue
       :dense="!fullscreen"
       :bulk-actions="fullscreen"
+      :class="{
+        'full-screen': fullscreen,
+        'partial-screen': !fullscreen
+      }"
     />
   </collapsable-card>
 </template>
@@ -63,6 +68,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import JobQueue from '@/components/widgets/job-queue/JobQueue.vue'
 import { SocketActions } from '@/api/socketActions'
+import type { QueueState } from '@/store/jobQueue/types'
 
 @Component({
   components: {
@@ -76,7 +82,7 @@ export default class JobQueueCard extends Vue {
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean
 
-  get queueStatus () {
+  get queueStatus (): QueueState {
     return this.$store.state.jobQueue.queue_state
   }
 
@@ -89,3 +95,14 @@ export default class JobQueueCard extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .full-screen {
+    max-height: calc(100vh - 190px);
+    max-height: calc(100svh - 190px);
+  }
+
+  .partial-screen {
+    max-height: 400px;
+  }
+</style>

@@ -3,6 +3,7 @@ import { Globals, Waits } from '@/globals'
 import type { NotifyOptions } from '@/plugins/socketClient'
 import { consola } from 'consola'
 import type { TimelapseWritableSettings } from '@/store/timelapse/types'
+import type { WebcamConfig } from '@/store/webcams/types'
 
 const baseEmit = (method: string, options: NotifyOptions) => {
   if (!Vue.$socket) {
@@ -176,14 +177,54 @@ export const SocketActions = {
     )
   },
 
-  async machineDevicePowerToggle (device: string, state: string, wait?: string) {
-    const emit = (state === 'on')
-      ? 'machine.device_power.on'
-      : 'machine.device_power.off'
+  async machineDevicePowerSetDevice (device: string, action: 'on' | 'off' | 'toggle', wait?: string) {
     baseEmit(
-      emit, {
-        dispatch: 'power/onToggle',
-        params: { [device]: null },
+      'machine.device_power.post_device', {
+        dispatch: 'power/onStatus',
+        params: {
+          device,
+          action
+        },
+        wait
+      }
+    )
+  },
+
+  async machinePeripheralsUsb () {
+    baseEmit(
+      'machine.peripherals.usb', {
+        dispatch: 'server/onMachinePeripherals',
+        wait: Waits.onMachinePeripheralsUsb
+      }
+    )
+  },
+
+  async machinePeripheralsSerial () {
+    baseEmit(
+      'machine.peripherals.serial', {
+        dispatch: 'server/onMachinePeripherals',
+        wait: Waits.onMachinePeripheralsSerial
+      }
+    )
+  },
+
+  async machinePeripheralsVideo () {
+    baseEmit(
+      'machine.peripherals.video', {
+        dispatch: 'server/onMachinePeripherals',
+        wait: Waits.onMachinePeripheralsVideo
+      }
+    )
+  },
+
+  async machinePeripheralsCanbus (canbusInterface: string) {
+    const wait = `${Waits.onMachinePeripheralsCanbus}/${canbusInterface}`
+    baseEmit(
+      'machine.peripherals.canbus', {
+        dispatch: 'server/onMachinePeripheralsCanbus',
+        params: {
+          interface: canbusInterface
+        },
         wait
       }
     )
@@ -254,7 +295,7 @@ export const SocketActions = {
     )
   },
 
-  async printerObjectsSubscribe (objects: {[key: string]: null}) {
+  async printerObjectsSubscribe (objects: { [key: string]: null }) {
     baseEmit(
       'printer.objects.subscribe', {
         dispatch: 'printer/onPrinterObjectsSubscribe',
@@ -532,20 +573,28 @@ export const SocketActions = {
    * Expects the full path including root.
    * Optionally pass the just the filename and path.
    */
-  async serverFilesMetadata (filepath: string) {
+  async serverFilesMetadata (filename: string) {
+    const wait = `${Waits.onFileSystem}/gcodes/${filename}`
     baseEmit(
       'server.files.metadata', {
         dispatch: 'files/onFileMetaData',
-        params: { filename: filepath }
+        wait,
+        params: {
+          filename
+        }
       }
     )
   },
 
-  async serverFilesMetascan (filepath: string) {
+  async serverFilesMetascan (filename: string) {
+    const wait = `${Waits.onFileSystem}/gcodes/${filename}`
     baseEmit(
       'server.files.metascan', {
         dispatch: 'files/onFileMetaData',
-        params: { filename: filepath }
+        wait,
+        params: {
+          filename
+        }
       }
     )
   },
@@ -554,14 +603,17 @@ export const SocketActions = {
    * This only requires path, but we pass root along too
    * for brevity.
    */
-  async serverFilesGetDirectory (root: string, path: string) {
-    const wait = `${Waits.onFileSystem}/${root}/${path}/`
+  async serverFilesGetDirectory (path: string) {
+    const wait = `${Waits.onFileSystem}/${path}/`
     baseEmit(
       'server.files.get_directory',
       {
         dispatch: 'files/onServerFilesGetDirectory',
         wait,
-        params: { root, path, extended: true }
+        params: {
+          path,
+          extended: true
+        }
       }
     )
   },
@@ -573,7 +625,9 @@ export const SocketActions = {
       {
         dispatch: 'files/onServerFilesListRoot',
         wait,
-        params: { root }
+        params: {
+          root
+        }
       }
     )
   },
@@ -639,7 +693,7 @@ export const SocketActions = {
   },
 
   async serverFilesDeleteFile (path: string) {
-    const wait = `${Waits.onFileSystem}/${path}/`
+    const wait = `${Waits.onFileSystem}/${path}`
     baseEmit(
       'server.files.delete_file', {
         dispatch: 'void',
@@ -704,10 +758,68 @@ export const SocketActions = {
     )
   },
 
+  async serverWebcamsWrite (webcam: WebcamConfig) {
+    baseEmit(
+      'server.webcams.post_item', {
+        params: webcam
+      }
+    )
+  },
+
+  async serverWebcamsDelete (uid: string) {
+    baseEmit(
+      'server.webcams.delete_item', {
+        params: {
+          uid
+        }
+      }
+    )
+  },
+
   async serverSensorsList () {
     baseEmit(
       'server.sensors.list', {
+        params: {
+          extended: true
+        },
         dispatch: 'sensors/onSensorsList'
+      }
+    )
+  },
+
+  async serverAnalysisStatus () {
+    baseEmit(
+      'server.analysis.status', {
+        dispatch: 'analysis/onAnalysisStatus'
+      }
+    )
+  },
+
+  async serverAnalysisEstimate (filename: string, estimator_config?: string) {
+    const wait = `${Waits.onFileSystem}/gcodes/${filename}`
+    baseEmit(
+      'server.analysis.estimate', {
+        params: {
+          filename,
+          estimator_config
+        },
+        wait,
+        dispatch: 'void'
+      }
+    )
+  },
+
+  async serverAnalysisProcess (filename: string, estimator_config?: string, force?: boolean) {
+    const wait = `${Waits.onFileSystem}/gcodes/${filename}`
+    baseEmit(
+      'server.analysis.process', {
+        params: {
+          filename,
+          estimator_config,
+          force
+        },
+        wait,
+        dispatch: 'analysis/onAnalysisProcess'
       }
     )
   },
@@ -738,6 +850,19 @@ export const SocketActions = {
           use_v2_response: true
         },
         dispatch: 'spoolman/onAvailableSpools'
+      }
+    )
+  },
+
+  async serverSpoolmanProxyGetSettingCurrency () {
+    baseEmit(
+      'server.spoolman.proxy', {
+        params: {
+          request_method: 'GET',
+          path: '/v1/setting/currency',
+          use_v2_response: true
+        },
+        dispatch: 'spoolman/onSettingCurrency'
       }
     )
   }

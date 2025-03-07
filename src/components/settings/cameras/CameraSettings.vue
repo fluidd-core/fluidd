@@ -26,13 +26,12 @@
       </app-setting>
 
       <template v-for="camera in cameras">
-        <v-divider :key="camera.id + '_divider'" />
+        <v-divider :key="`divider-${camera.uid}`" />
 
         <app-setting
-          :key="camera.id"
+          :key="`camera-${camera.uid}`"
           :r-cols="2"
           :sub-title="camera.source === 'config' ? $t('app.general.tooltip.managed_by_moonraker') : undefined"
-          @click="handleEditDialog(camera)"
         >
           <template #title>
             {{ camera.name }} <v-icon
@@ -44,16 +43,23 @@
               $warning
             </v-icon>
           </template>
+
           <app-btn
-            v-if="camera.source !== 'config'"
-            fab
-            text
-            x-small
-            color=""
+            icon
+            @click.stop="handleEditDialog(camera)"
+          >
+            <v-icon dense>
+              $edit
+            </v-icon>
+          </app-btn>
+
+          <app-btn
+            :disabled="camera.source === 'config'"
+            icon
             @click.stop="handleRemoveCamera(camera)"
           >
-            <v-icon color="">
-              $close
+            <v-icon dense>
+              $delete
             </v-icon>
           </app-btn>
         </app-setting>
@@ -91,7 +97,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import type { CameraConfig } from '@/store/cameras/types'
+import type { WebcamConfig, NewWebcamConfig } from '@/store/webcams/types'
 import CameraConfigDialog from './CameraConfigDialog.vue'
 import { Globals } from '@/globals'
 
@@ -106,11 +112,11 @@ export default class CameraSettings extends Vue {
     camera: null
   }
 
-  get cameras (): CameraConfig[] {
-    return this.$store.getters['cameras/getCameras']
+  get cameras (): WebcamConfig[] {
+    return this.$store.getters['webcams/getWebcams']
   }
 
-  handleEditDialog (camera: CameraConfig) {
+  handleEditDialog (camera: WebcamConfig) {
     this.dialogState = {
       active: true,
       camera: { ...camera }
@@ -118,18 +124,17 @@ export default class CameraSettings extends Vue {
   }
 
   handleAddDialog () {
-    const camera: CameraConfig = {
-      id: '',
+    const camera: NewWebcamConfig = {
       enabled: true,
-      flipX: false,
-      flipY: false,
+      flip_horizontal: false,
+      flip_vertical: false,
       name: '',
       rotation: 0,
       service: 'mjpegstreamer-adaptive',
-      targetFps: 15,
-      targetFpsIdle: 5,
-      urlStream: Globals.DEFAULTS.CAMERA_URL_STREAM,
-      urlSnapshot: Globals.DEFAULTS.CAMERA_URL_SNAPSHOT
+      target_fps: 15,
+      target_fps_idle: 5,
+      stream_url: Globals.DEFAULTS.CAMERA_URL_STREAM,
+      snapshot_url: Globals.DEFAULTS.CAMERA_URL_SNAPSHOT
     }
 
     this.dialogState = {
@@ -138,12 +143,19 @@ export default class CameraSettings extends Vue {
     }
   }
 
-  handleSaveCamera (camera: CameraConfig) {
-    this.$store.dispatch('cameras/updateCamera', camera)
+  handleSaveCamera (camera: WebcamConfig) {
+    this.$store.dispatch('webcams/updateWebcam', camera)
   }
 
-  handleRemoveCamera (camera: CameraConfig) {
-    this.$store.dispatch('cameras/removeCamera', camera)
+  async handleRemoveCamera (camera: WebcamConfig) {
+    const result = await this.$confirm(
+      this.$t('app.general.simple_form.msg.confirm_remove_camera', { name: camera.name }).toString(),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+
+    if (result) {
+      this.$store.dispatch('webcams/removeWebcam', camera.uid)
+    }
   }
 
   get defaultFullscreenAction (): string {

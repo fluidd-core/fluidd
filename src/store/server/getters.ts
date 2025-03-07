@@ -1,41 +1,14 @@
 import type { GetterTree } from 'vuex'
-import type { ServerInfo, ServerConfig, ServerState, SystemInfo, ServerSystemStat, ServiceInfo, ServiceState } from './types'
+import type { ServerState, ServiceInfo, ServiceState } from './types'
 import type { RootState } from '../types'
 import { Globals } from '@/globals'
 import { gte, valid } from 'semver'
+import type { KlippyApp } from '../printer/types'
 
 export const getters: GetterTree<ServerState, RootState> = {
-  /**
-   * Get's the current server info
-   */
-  getInfo: (state): ServerInfo => {
-    return state.info
-  },
-
   getIsMinApiVersion: (state) => (minVersion: string) => {
     const apiVersion = state.info.api_version_string
     return apiVersion && valid(apiVersion) && valid(minVersion) && gte(apiVersion, minVersion)
-  },
-
-  /**
-   * Gets the current system info
-   */
-  getSystemInfo: (state): SystemInfo | null => {
-    return state.system_info
-  },
-
-  /**
-   * Return server config
-   */
-  getConfig: (state): ServerConfig => {
-    return state.config
-  },
-
-  /**
-   * Return server process stats
-   */
-  getProcessStats: (state): ServerSystemStat[] => {
-    return state.moonraker_stats
   },
 
   /**
@@ -66,7 +39,7 @@ export const getters: GetterTree<ServerState, RootState> = {
    * Maps configuration files to an object representing a config doc link,
    * along with a service name.
    */
-  getConfigMapByFilename: (state, getters, rootState) => (filename: string) => {
+  getConfigMapByFilename: (state, getters, rootState, rootGetters) => (filename: string) => {
     const configMap = Globals.CONFIG_SERVICE_MAP
 
     // First, see if can find an exact match.
@@ -80,6 +53,15 @@ export const getters: GetterTree<ServerState, RootState> = {
     // Finally, try suffixes.
     if (!item) {
       item = configMap.find(o => o.suffix && filename.endsWith(o.suffix.toLowerCase()))
+    }
+
+    if (
+      item?.service === 'klipper' &&
+      item.link
+    ) {
+      const klippyApp: KlippyApp = rootGetters['printer/getKlippyApp']
+
+      item.link = item.link.replace('{klipperDomain}', klippyApp.domain)
     }
 
     if (item) {

@@ -3,12 +3,13 @@
     :title="$t('app.file_system.label.diskinfo')"
     icon="$harddisk"
   >
-    <v-card-text>
+    <v-card-text v-if="diskUsage">
       <v-layout justify-space-between>
-        <div class="">
+        <div>
           {{ $t('app.file_system.label.disk_usage') }}
         </div>
       </v-layout>
+
       <v-progress-linear
         :size="90"
         :height="10"
@@ -18,22 +19,25 @@
       />
 
       <v-layout justify-space-between>
-        <div class="">
+        <div>
           <span class="focus--text">
-            {{ $filters.getReadableFileSizeString(fileSystemUsage.used) }}
+            {{ $filters.getReadableFileSizeString(diskUsage.used) }}
           </span>
           <span class="secondary--text">{{ $t('app.general.label.used') }}</span>
         </div>
-        <div class="">
+        <div>
           <span class="focus--text">
-            {{ $filters.getReadableFileSizeString(fileSystemUsage.free) }}
+            {{ $filters.getReadableFileSizeString(diskUsage.free) }}
           </span>
           <span class="secondary--text">{{ $t('app.general.label.free') }}</span>
         </div>
       </v-layout>
     </v-card-text>
 
-    <v-simple-table dense>
+    <v-simple-table
+      v-if="sdInfo"
+      dense
+    >
       <tbody>
         <tr v-if="sdInfo.manufacturer">
           <th>{{ $t('app.system_info.label.manufacturer') }}</th>
@@ -62,27 +66,34 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import JobHistory from '@/components/widgets/history/JobHistory.vue'
+import type { SystemInfo } from '@/store/server/types'
+import type { DiskUsage } from '@/store/files/types'
+import { SocketActions } from '@/api/socketActions'
 
-@Component({
-  components: {
-    JobHistory
-  }
-})
+@Component({})
 export default class PrinterStatsCard extends Vue {
   get sdInfo () {
-    const info = this.$store.getters['server/getSystemInfo']
-    return info?.sd_info || {}
+    const info: SystemInfo | null = this.$store.state.server.system_info
+
+    return info?.sd_info
   }
 
   get fileSystemUsedPercent () {
-    const total = this.fileSystemUsage.total
-    const used = this.fileSystemUsage.used
-    return Math.floor((used / total) * 100).toFixed()
+    const diskUsage = this.diskUsage
+
+    return diskUsage == null
+      ? 0
+      : Math.floor((diskUsage.used / diskUsage.total) * 100)
   }
 
-  get fileSystemUsage () {
-    return this.$store.getters['files/getUsage']
+  get diskUsage (): DiskUsage | null {
+    const diskUsage: DiskUsage | null = this.$store.state.files.disk_usage
+
+    if (diskUsage == null) {
+      SocketActions.serverFilesGetDirectory('config')
+    }
+
+    return diskUsage
   }
 }
 </script>

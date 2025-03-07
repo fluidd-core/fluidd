@@ -43,25 +43,24 @@ app:
         这可能意味着您需要修改 Moonraker 配置。请参阅有关多打印机设置的<a href=\"%{url}\"
         target=\"_blank\">文档</a>
     hint:
-      add_printer: 例如：http://fluiddpi.local
+      add_printer: 例如：http://fluidd.local
     msg:
       trouble: 遇到麻烦？<a href="%{url}" target="_blank">点击此处</a> 查看更多信息。
     tooltip:
       endpoint_examples: >-
-        输入您的 Moonraker API 地址。<br />例如：<br/><blockquote>http://fluidd.local,
-        http://192.168.1.150</blockquote>
+        输入您的 Moonraker API 地址。<br />例如：<br/><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
-    label:
-      open: 未触发
-      triggered: 已触发
+    states:
+      label:
+        open: 未触发
+        triggered: 已触发
     msg:
       subtitle: 使用“刷新”按钮更新限位开关状态。
   file_system:
     filters:
       label:
         print_start_time: 隐藏已打印项目
-        print_start_time_desc: 隐藏已经打印的项目文件
-        hidden_files_folders: 筛选隐藏的文件和文件夹
+        hidden_files: 筛选隐藏的文件和文件夹
         klipper_backup_files: 隐藏Klipper备份文件
         rolled_log_files: 筛选滚动日志文件
     label:
@@ -93,7 +92,7 @@ app:
       low_on_space: 磁盘空间不足
       root_disabled: '{root} G代码文件目录不可用，请首先连接打印机或者检查G代码存放目录的路径与读权限'
     url:
-      klipper_config: 'https://www.klipper3d.org/zh/Config_Reference.html#%{hash}'
+      klipper_config: '%{klipperDomain}/zh/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
   gcode:

@@ -10,10 +10,9 @@
     <template #activator="{ on: menu, attrs }">
       <v-tooltip bottom>
         <template #activator="{ on: tooltip }">
-          <v-btn
+          <app-btn
             :disabled="disabled"
-            fab
-            small
+            icon
             text
             v-bind="attrs"
             v-on="{ ...tooltip, ...menu }"
@@ -21,7 +20,7 @@
             <v-icon>
               $imageSizeSelectLarge
             </v-icon>
-          </v-btn>
+          </app-btn>
         </template>
         <span>{{ $t('app.general.btn.thumbnail_size') }}</span>
       </v-tooltip>
@@ -47,7 +46,7 @@ import { Component, Prop, VModel, Vue } from 'vue-property-decorator'
 @Component({})
 export default class FileSystemToolbar extends Vue {
   @VModel({ type: Number, required: true })
-    thumbnailSize!: number
+  thumbnailSize!: number
 
   @Prop({ type: Boolean })
   readonly disabled?: boolean

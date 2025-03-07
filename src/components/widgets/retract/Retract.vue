@@ -1,24 +1,23 @@
 <template>
   <v-card-text>
-    <v-row class="my-0 mb-4">
+    <v-row>
       <v-col
         cols="12"
         sm="6"
         md="12"
         lg="6"
-        class="py-0"
       >
         <app-named-slider
           :label="$t('app.general.label.retract_length')"
           suffix="mm"
-          :value="retract_length"
-          :reset-value="defaults.retract_length"
+          :value="retractLength"
+          :reset-value="defaultRetractLength"
           :min="0"
-          :max="retract_length_max"
+          :max="maxRetractLength"
           :step="0.01"
           overridable
           :disabled="!klippyReady"
-          :locked="isMobileViewport"
+          :locked="isMobileUserAgent"
           :loading="hasWait($waits.onSetRetractLength)"
           @submit="setRetractLength"
         />
@@ -28,43 +27,42 @@
         sm="6"
         md="12"
         lg="6"
-        class="py-0"
       >
         <app-named-slider
           :label="$t('app.general.label.unretract_extra_length')"
           suffix="mm"
-          :value="unretract_extra_length"
-          :reset-value="defaults.unretract_extra_length"
+          :value="unretractExtraLength"
+          :reset-value="defaultUnretractExtraLength"
           :min="0"
-          :max="unretract_extra_length_max"
+          :max="maxUnretractExtraLength"
           :step="0.01"
           overridable
           :disabled="!klippyReady"
-          :locked="isMobileViewport"
+          :locked="isMobileUserAgent"
           :loading="hasWait($waits.onSetUnretractExtraLength)"
           @submit="setUnRetractExtraLength"
         />
       </v-col>
     </v-row>
-    <v-row class="my-0 mb-4">
+
+    <v-row>
       <v-col
         cols="12"
         sm="6"
         md="12"
         lg="6"
-        class="py-0"
       >
         <app-named-slider
           :label="$t('app.general.label.retract_speed')"
           suffix="mm/s"
-          :value="retract_speed"
-          :reset-value="defaults.retract_speed"
+          :value="retractSpeed"
+          :reset-value="defaultRetractSpeed"
           :min="0"
           :step="1"
-          :max="retract_speed_max"
+          :max="maxRetractSpeed"
           overridable
           :disabled="!klippyReady"
-          :locked="isMobileViewport"
+          :locked="isMobileUserAgent"
           :loading="hasWait($waits.onSetRetractSpeed)"
           @submit="setRetractSpeed"
         />
@@ -74,21 +72,44 @@
         sm="6"
         md="12"
         lg="6"
-        class="py-0"
       >
         <app-named-slider
           :label="$t('app.general.label.unretract_speed')"
           suffix="mm/s"
-          :value="unretract_speed"
-          :reset-value="defaults.unretract_speed"
+          :value="unretractSpeed"
+          :reset-value="defaultUnretractSpeed"
           :min="0"
           :step="1"
-          :max="unretract_speed_max"
+          :max="maxUnretractSpeed"
           overridable
           :disabled="!klippyReady"
-          :locked="isMobileViewport"
+          :locked="isMobileUserAgent"
           :loading="hasWait($waits.onSetUnretractSpeed)"
           @submit="setUnretractSpeed"
+        />
+      </v-col>
+    </v-row>
+
+    <v-row v-if="supportsZHopHeight">
+      <v-col
+        cols="12"
+        sm="6"
+        md="12"
+        lg="6"
+      >
+        <app-named-slider
+          :label="$t('app.general.label.z_hop_height')"
+          suffix="mm"
+          :value="zHopHeight"
+          :reset-value="defaultZHopHeight"
+          :min="0"
+          :step="0.1"
+          :max="maxZHopHeight"
+          overridable
+          :disabled="!klippyReady"
+          :locked="isMobileUserAgent"
+          :loading="hasWait($waits.onSetZHopHeight)"
+          @submit="setZHopHeight"
         />
       </v-col>
     </v-row>
@@ -99,47 +120,87 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
+import type { KlipperPrinterSettings, KlippyApp } from '@/store/printer/types'
 
 @Component({})
 export default class Retract extends Mixins(StateMixin, BrowserMixin) {
-  get retract_length () {
-    return this.$store.state.printer.printer.firmware_retraction.retract_length
+  get firmwareRetraction () {
+    const printerSettings: KlipperPrinterSettings = this.$store.getters['printer/getPrinterSettings']
+
+    return printerSettings.firmware_retraction
   }
 
-  get retract_length_max () {
-    if (this.defaults.retract_length <= 0) return 15
-    return Math.round(this.defaults.retract_length * 2 * 100) / 100
+  get defaultRetractLength (): number {
+    return this.firmwareRetraction?.retract_length ?? 0
   }
 
-  get retract_speed () {
-    return this.$store.state.printer.printer.firmware_retraction.retract_speed
+  get retractLength (): number {
+    return this.$store.state.printer.printer.firmware_retraction?.retract_length ?? 0
   }
 
-  get retract_speed_max () {
-    if (this.defaults.retract_speed <= 0) return 100
-    return Math.round(this.defaults.retract_speed * 2)
+  get maxRetractLength (): number {
+    if (this.defaultRetractLength <= 0) return 15
+    return Math.round(this.defaultRetractLength * 2 * 100) / 100
   }
 
-  get unretract_speed () {
-    return this.$store.state.printer.printer.firmware_retraction.unretract_speed
+  get defaultRetractSpeed (): number {
+    return this.firmwareRetraction?.retract_speed ?? 0
   }
 
-  get unretract_speed_max () {
-    if (this.defaults.unretract_speed <= 0) return 100
-    return Math.round(this.defaults.unretract_speed * 2)
+  get retractSpeed (): number {
+    return this.$store.state.printer.printer.firmware_retraction?.retract_speed ?? 0
   }
 
-  get unretract_extra_length () {
-    return this.$store.state.printer.printer.firmware_retraction.unretract_extra_length
+  get maxRetractSpeed (): number {
+    if (this.defaultRetractSpeed <= 0) return 100
+    return Math.round(this.defaultRetractSpeed * 2)
   }
 
-  get unretract_extra_length_max () {
-    if (this.defaults.unretract_extra_length <= 0) return 15
-    return Math.round(this.defaults.unretract_extra_length * 2 * 100) / 100
+  get defaultUnretractSpeed (): number {
+    return this.firmwareRetraction?.unretract_speed ?? 0
   }
 
-  get defaults () {
-    return this.$store.getters['printer/getPrinterSettings']('firmware_retraction') || {}
+  get unretractSpeed (): number {
+    return this.$store.state.printer.printer.firmware_retraction?.unretract_speed ?? 0
+  }
+
+  get maxUnretractSpeed (): number {
+    if (this.defaultUnretractSpeed <= 0) return 100
+    return Math.round(this.defaultUnretractSpeed * 2)
+  }
+
+  get defaultUnretractExtraLength (): number {
+    return this.firmwareRetraction?.unretract_extra_length ?? 0
+  }
+
+  get unretractExtraLength (): number {
+    return this.$store.state.printer.printer.firmware_retraction?.unretract_extra_length ?? 0
+  }
+
+  get maxUnretractExtraLength (): number {
+    if (this.defaultUnretractExtraLength <= 0) return 15
+    return Math.round(this.defaultUnretractExtraLength * 2 * 100) / 100
+  }
+
+  get defaultZHopHeight (): number {
+    return this.firmwareRetraction?.z_hop_height ?? 0
+  }
+
+  get zHopHeight (): number {
+    return this.$store.state.printer.printer.firmware_retraction?.z_hop_height ?? 0
+  }
+
+  get maxZHopHeight (): number {
+    if (this.defaultZHopHeight <= 0) return 2
+    return Math.round(this.defaultZHopHeight * 2 * 100) / 100
+  }
+
+  get klippyApp (): KlippyApp {
+    return this.$store.getters['printer/getKlippyApp']
+  }
+
+  get supportsZHopHeight () {
+    return this.klippyApp.isKalicoOrDangerKlipper
   }
 
   setRetractLength (val: number) {
@@ -156,6 +217,10 @@ export default class Retract extends Mixins(StateMixin, BrowserMixin) {
 
   setUnRetractExtraLength (val: number) {
     this.sendGcode(`SET_RETRACTION UNRETRACT_EXTRA_LENGTH=${val}`, this.$waits.onSetUnretractExtraLength)
+  }
+
+  setZHopHeight (val: number) {
+    this.sendGcode(`SET_RETRACTION Z_HOP_HEIGHT=${val}`, this.$waits.onSetZHopHeight)
   }
 }
 </script>

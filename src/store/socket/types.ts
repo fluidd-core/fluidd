@@ -10,6 +10,6 @@ export interface SocketState {
 }
 
 export interface SocketError {
-    code: number;
-    message: string;
+  code: number;
+  message: string;
 }

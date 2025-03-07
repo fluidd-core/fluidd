@@ -2,7 +2,6 @@
   <collapsable-card
     :title="$t('app.timelapse.title.timelapse_status')"
     icon="$info"
-    class="mb-2 sb-sm-4"
   >
     <v-card-text>
       <v-row>
@@ -79,6 +78,7 @@ import type { RenderStatus, TimelapseLastFrame, TimelapseSettings } from '@/stor
 import { SocketActions } from '@/api/socketActions'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import FilesMixin from '@/mixins/files'
+import type { WebcamConfig } from '@/store/webcams/types'
 
 @Component({
   components: {
@@ -125,20 +125,20 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
     return this.lastFrame?.uniqueCount
   }
 
-  get camera () {
-    return this.$store.getters['cameras/getCameraById'](this.settings.camera)
+  get camera (): WebcamConfig | undefined {
+    return this.$store.getters['webcams/getWebcamById'](this.settings.camera)
   }
 
   get settings (): TimelapseSettings {
-    return this.$store.getters['timelapse/getSettings']
+    return this.$store.state.timelapse.settings ?? {} as TimelapseSettings
   }
 
   get lastFrame (): TimelapseLastFrame | undefined {
-    return this.$store.getters['timelapse/getLastFrame']
+    return this.$store.state.timelapse.lastFrame
   }
 
   get renderStatus (): RenderStatus | undefined {
-    return this.$store.getters['timelapse/getRenderStatus']
+    return this.$store.state.timelapse.renderStatus
   }
 
   get renderProgress () {
@@ -156,6 +156,7 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
 <style lang="scss" scoped>
 .thumbnail {
   width: 100%;
+  pointer-events: none;
 }
 
 .render-progress {

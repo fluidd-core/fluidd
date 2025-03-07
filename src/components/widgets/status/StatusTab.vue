@@ -13,36 +13,53 @@
 
     <v-card-text v-if="visible">
       <v-row>
-        <!-- Only show the circular progress for mdAndUp since its more compact now -->
-        <v-col
-          v-if="progressVisible && $vuetify.breakpoint.mdAndUp"
-          cols="auto"
-          align-self="center"
-        >
-          <v-row>
-            <v-btn
-              text
-              class="progress-button mx-2"
-              @click="handleViewThumbnail"
+        <template v-if="progressVisible">
+          <v-col
+            v-if="printInProgressLayout === 'default' && $vuetify.breakpoint.lgAndUp"
+            cols="auto"
+            align-self="center"
+          >
+            <v-progress-circular
+              :rotate="-90"
+              :size="90"
+              :width="7"
+              :value="estimates.progress"
+              color="primary"
             >
-              <v-progress-circular
-                :rotate="-90"
-                :size="90"
-                :width="7"
-                :value="estimates.progress"
-                color="primary"
+              <span class="percentComplete focus--text">{{ estimates.progress }}%</span>
+            </v-progress-circular>
+          </v-col>
+
+          <v-col
+            v-else-if="printInProgressLayout === 'compact' && $vuetify.breakpoint.mdAndUp"
+            cols="auto"
+            align-self="center"
+          >
+            <v-row>
+              <v-btn
+                text
+                class="progress-button mx-2"
+                @click="handleViewThumbnail"
               >
-                <img
-                  class="progress-button-image"
-                  :src="thumbnail"
+                <v-progress-circular
+                  :rotate="-90"
+                  :size="90"
+                  :width="7"
+                  :value="estimates.progress"
+                  color="primary"
                 >
-              </v-progress-circular>
-            </v-btn>
-          </v-row>
-          <v-row justify="center">
-            <span class="primary--text">{{ estimates.progress }}%</span>
-          </v-row>
-        </v-col>
+                  <img
+                    class="progress-button-image"
+                    :src="thumbnail"
+                  >
+                </v-progress-circular>
+              </v-btn>
+            </v-row>
+            <v-row justify="center">
+              <span class="primary--text">{{ estimates.progress }}%</span>
+            </v-row>
+          </v-col>
+        </template>
 
         <v-col align-self="center">
           <!-- Visible dependent on knowing the file, message or mdAndDown -->
@@ -138,46 +155,64 @@
 
           <!-- After a completed print, with file data and potentially history. -->
           <v-row
-            v-if="overviewVisible"
+            v-if="overviewVisible && printerFile"
             no-gutters
           >
             <v-col>
               <status-label
-                v-if="current_file.history && current_file.history.filament_used"
+                v-if="printerFile.history && printerFile.history.filament_used > 0"
                 :label="$t('app.general.label.filament')"
               >
-                <span>{{ $filters.getReadableLengthString(current_file.history.filament_used) }}</span>
+                <span>{{ $filters.getReadableLengthString(printerFile.history.filament_used) }}</span>
               </status-label>
 
               <status-label
-                v-else-if="current_file.filament_total"
+                v-else-if="printerFile.filament_total"
                 :label="$t('app.general.label.filament')"
               >
-                <span>{{ $filters.getReadableLengthString(current_file.filament_total) }}</span>
+                <span>{{ $filters.getReadableLengthString(printerFile.filament_total) }}</span>
               </status-label>
 
               <status-label
-                v-if="current_file.estimated_time"
+                v-if="printerFile.estimated_time"
                 :label="$t('app.general.label.slicer')"
               >
-                <span>{{ $filters.formatCounterSeconds(current_file.estimated_time) }}</span>
+                <span>{{ $filters.formatCounterSeconds(printerFile.estimated_time) }}</span>
               </status-label>
 
               <status-label
-                v-if="current_file.history && current_file.history.print_duration > 0"
+                v-if="printerFile.history && printerFile.history.print_duration > 0"
                 :label="$t('app.general.label.actual_time')"
               >
-                <span>{{ $filters.formatCounterSeconds(current_file.history.print_duration) }}</span>
+                <span>{{ $filters.formatCounterSeconds(printerFile.history.print_duration) }}</span>
               </status-label>
 
               <status-label
-                v-if="current_file.history && current_file.history.total_duration > 0"
+                v-if="printerFile.history && printerFile.history.total_duration > 0"
                 :label="$t('app.general.label.total')"
               >
-                <span>{{ $filters.formatCounterSeconds(current_file.history.total_duration) }}</span>
+                <span>{{ $filters.formatCounterSeconds(printerFile.history.total_duration) }}</span>
               </status-label>
             </v-col>
           </v-row>
+        </v-col>
+
+        <v-col
+          v-if="thumbVisible && printInProgressLayout === 'default'"
+          cols="auto"
+          align-self="center"
+          class="pa-0"
+        >
+          <v-btn
+            text
+            height="100%"
+            @click="handleViewThumbnail"
+          >
+            <img
+              class="print-thumb"
+              :src="thumbnail"
+            >
+          </v-btn>
         </v-col>
       </v-row>
     </v-card-text>
@@ -201,6 +236,8 @@ import FilesMixin from '@/mixins/files'
 import ToolheadMixin from '@/mixins/toolhead'
 import FilePreviewDialog from '../filesystem/FilePreviewDialog.vue'
 import type { TimeEstimates } from '@/store/printer/types'
+import type { PrintInProgressLayout } from '@/store/config/types'
+import type { AppFileWithMeta } from '@/store/files/types'
 
 @Component({
   components: {
@@ -225,13 +262,16 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
     return (
       this.printerPrinting ||
       this.message ||
-      (this.current_file && this.current_file.filename) ||
+      this.printerFile != null ||
       this.thumbVisible ||
-      (this.progressVisible && this.$vuetify.breakpoint.mdAndDown)
+      (
+        this.progressVisible &&
+        this.$vuetify.breakpoint.mdAndDown
+      )
     )
   }
 
-  get progressVisible () {
+  get progressVisible (): boolean {
     // Progress is visible if;
     // We are printing or,
     // We have a current filename
@@ -241,76 +281,63 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
     )
   }
 
-  get overviewVisible () {
+  get overviewVisible (): boolean {
     // Overview is visible if;
     // We are not printing and,
     // We have a current filename
     return (
       !this.printerPrinting &&
-      this.current_file &&
-      this.current_file.filename
+      this.printerFile != null
     )
   }
 
-  get thumbVisible () {
+  get thumbVisible (): boolean {
     return (
-      this.current_file &&
-      this.current_file.filename &&
-      this.thumbnail &&
+      this.printerFile != null &&
+      this.thumbnail != null &&
       this.$vuetify.breakpoint.lgAndUp
     )
   }
 
-  /**
-   * Current file with appended history data if it exists.
-   */
-  get current_file () {
-    let current_file = this.$store.state.printer.printer.current_file
-    if (current_file.job_id) {
-      const history = this.$store.getters['history/getHistoryById'](current_file.job_id)
-      if (history) {
-        current_file = {
-          ...current_file,
-          history
-        }
-      }
-    }
-    return current_file
+  get printInProgressLayout (): PrintInProgressLayout {
+    return this.$store.state.config.uiSettings.general.printInProgressLayout
+  }
+
+  get printerFile (): AppFileWithMeta | undefined {
+    return this.$store.getters['printer/getPrinterFile']
   }
 
   /**
    * Active filename in print_stats
    */
-  get filename () {
-    return this.$store.state.printer.printer.print_stats.filename || ''
+  get filename (): string {
+    return this.$store.state.printer.printer.print_stats?.filename ?? ''
   }
 
   /**
    * M117 messaging
    */
-  get message () {
-    return this.$store.state.printer.printer.display_status.message
+  get message (): string {
+    return this.$store.state.printer.printer.display_status?.message ?? ''
   }
 
   /**
    * Active thumbnail.
    */
   get thumbnail () {
-    if (
-      this.current_file &&
-      this.current_file.thumbnails
-    ) {
-      const url = this.getThumbUrl(this.current_file, 'gcodes', this.current_file.path, true, this.current_file.modified)
+    if (this.printerFile?.thumbnails) {
+      const url = this.getThumbUrl(this.printerFile, 'gcodes', this.printerFile.path, true, this.printerFile.modified)
+
       return url
     }
   }
 
   get liveVelocity (): number {
-    return this.$store.state.printer.printer.motion_report.live_velocity as number
+    return this.$store.state.printer.printer.motion_report?.live_velocity ?? 0
   }
 
   get liveExtruderVelocity (): number {
-    return this.$store.state.printer.printer.motion_report.live_extruder_velocity as number
+    return this.$store.state.printer.printer.motion_report?.live_extruder_velocity ?? 0
   }
 
   get liveFlow (): number {
@@ -321,63 +348,38 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
    * Actual estimates for during a print.
    */
   get estimates (): TimeEstimates {
-    return this.$store.getters['printer/getTimeEstimates'] as TimeEstimates
-  }
-
-  /**
-   * If the user has enabled the history component.
-   */
-  get supportsHistoryComponent (): boolean {
-    return this.$store.getters['server/componentSupport']('history') as boolean
-  }
-
-  /**
-   * The last 3 history items.
-   */
-  get history () {
-    return this.$store.getters['history/getUniqueHistory'](3)
+    return this.$store.getters['printer/getTimeEstimates']
   }
 
   /**
    * The total estimated layer count.
    */
   get layers (): number {
-    return this.$store.getters['printer/getPrintLayers'] as number
+    return this.$store.getters['printer/getPrintLayers']
   }
 
   /**
    * Current estimated layer based on current z pos.
    */
   get layer (): number {
-    return this.$store.getters['printer/getPrintLayer'] as number
+    return this.$store.getters['printer/getPrintLayer']
   }
 
   /**
    * Filament used according to print stats.
    */
   get filamentUsed (): number {
-    const filamentUsed = this.$store.state.printer.printer.print_stats.filament_used as number | undefined
-
-    return filamentUsed ?? 0
-  }
-
-  /**
-   * Total filament according to the current file / slicer.
-   */
-  get filamentTotal () {
-    const filamentTotal = this.$store.state.printer.printer.current_file.filament_total as number | undefined
-
-    return filamentTotal || 0
+    return this.$store.state.printer.printer.print_stats?.filament_used ?? 0
   }
 
   async handleViewThumbnail () {
-    const file = this.current_file
-    const thumb = this.getThumb(file, 'gcodes', file.path, true, file.modified)
+    const printerFile = this.printerFile
+    const thumb = printerFile && this.getThumb(printerFile, 'gcodes', printerFile.path, true, printerFile.modified)
 
     if (thumb) {
       this.filePreviewState = {
         open: true,
-        filename: file.filename,
+        filename: printerFile.filename,
         src: thumb.url,
         width: thumb.width
       }
@@ -387,6 +389,12 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
 </script>
 
 <style lang="scss" scoped>
+  .print-thumb {
+    display: block;
+    max-height: 110px;
+    pointer-events: none;
+  }
+
   .filename {
     white-space: nowrap;
     overflow: hidden;
@@ -408,5 +416,6 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
     max-height: 70px;
     border-radius: 50%;
     overflow: hidden;
+    pointer-events: none;
   }
 </style>

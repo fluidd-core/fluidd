@@ -40,11 +40,8 @@
             v-model="containers[containerIndex]"
             class="list-group"
             :options="{
-              animation: 200,
-              handle: '.handle',
               group: 'diagnostics',
               disabled: !inLayout,
-              ghostClass: 'ghost'
             }"
             target=":first-child"
             @end.stop="updateLayout"
@@ -58,7 +55,7 @@
                   v-if="c.enabled || inLayout"
                   :key="c.id"
                   :config="c"
-                  class="mb-2 mb-sm-4"
+                  class="mb-2 mb-md-4"
                   @edit="handleEditCard"
                 />
               </template>
@@ -107,14 +104,14 @@ export default class Diagnostics extends Mixins(StateMixin) {
   }
 
   handleAddCard () {
-    const clonedDefaultCard = JSON.parse(JSON.stringify(defaultState().layouts.diagnostics.container1[0]))
+    const clonedDefaultCard = JSON.parse(JSON.stringify(defaultState().layouts.diagnostics.container1[0])) as DiagnosticsCardConfig
     clonedDefaultCard.id = ''
     this.dialogState.card = clonedDefaultCard
     this.dialogState.active = true
   }
 
   handleEditCard (card: DiagnosticsCardConfig) {
-    this.dialogState.card = JSON.parse(JSON.stringify(card))
+    this.dialogState.card = JSON.parse(JSON.stringify(card)) as DiagnosticsCardConfig
     this.dialogState.active = true
   }
 
@@ -158,7 +155,7 @@ export default class Diagnostics extends Mixins(StateMixin) {
   }
 
   get inLayout (): boolean {
-    return (this.$store.state.config.layoutMode)
+    return this.$store.state.config.layoutMode
   }
 
   get layout (): DiagnosticsCardContainer {

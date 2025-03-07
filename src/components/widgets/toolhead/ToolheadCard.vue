@@ -34,7 +34,7 @@
           v-if="isManualProbeActive"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ms-1 my-1"
+          class="me-1 my-1"
           @click="manualProbeDialogOpen = true"
         >
           {{ $t('app.tool.tooltip.manual_probe') }}
@@ -44,7 +44,7 @@
           v-if="isBedScrewsAdjustActive"
           :disabled="!klippyReady || printerPrinting || !allHomed"
           small
-          class="ms-1 my-1"
+          class="me-1 my-1"
           @click="bedScrewsAdjustDialogOpen = true"
         >
           BED_SCREWS_ADJUST
@@ -54,8 +54,8 @@
           v-if="printerSupportsForceMove"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ms-1 my-1"
-          :color="forceMove ? 'error' : undefined"
+          class="me-1 my-1"
+          :color="forceMoveEnabled ? 'error' : undefined"
           @click="toggleForceMove"
         >
           FORCE_MOVE
@@ -65,7 +65,7 @@
           v-if="hasSteppersEnabled"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ms-1 my-1"
+          class="me-1 my-1"
           @click="sendGcode('M84')"
         >
           {{ $t('app.tool.tooltip.motors_off') }}
@@ -81,20 +81,20 @@
             <app-btn
               v-bind="attrs"
               small
-              class="ms-1 my-1"
+              class="me-1 my-1"
               :disabled="!klippyReady || printerPrinting"
               v-on="on"
             >
               <v-icon
                 small
-                class="mr-1"
+                class="me-1"
               >
                 $tools
               </v-icon>
               {{ $t('app.tool.tooltip.tools') }}
               <v-icon
                 small
-                class="ml-1"
+                class="ms-1"
                 :class="{ 'rotate-180': value }"
               >
                 $chevronDown
@@ -131,30 +131,16 @@
     </template>
 
     <toolhead />
-
-    <manual-probe-dialog
-      v-if="manualProbeDialogOpen"
-      v-model="manualProbeDialogOpen"
-    />
-
-    <bed-screws-adjust-dialog
-      v-if="bedScrewsAdjustDialogOpen"
-      v-model="bedScrewsAdjustDialogOpen"
-    />
-
-    <screws-tilt-adjust-dialog
-      v-if="screwsTiltAdjustDialogOpen"
-      v-model="screwsTiltAdjustDialogOpen"
-    />
   </collapsable-card>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import Toolhead from './Toolhead.vue'
 import type { Macro } from '@/store/macros/types'
+import type { KlipperPrinterSettings, KlippyApp } from '@/store/printer/types'
 
 type Tool = {
   name: string,
@@ -170,15 +156,15 @@ type Tool = {
   }
 })
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
-  manualProbeDialogOpen = false
-  bedScrewsAdjustDialogOpen = false
-  screwsTiltAdjustDialogOpen = false
-
   @Prop({ type: Boolean })
   readonly menuCollapsed?: boolean
 
-  get printerSettings () {
-    return this.$store.getters['printer/getPrinterSettings']()
+  get klippyApp (): KlippyApp {
+    return this.$store.getters['printer/getKlippyApp']
+  }
+
+  get printerSettings (): KlipperPrinterSettings {
+    return this.$store.getters['printer/getPrinterSettings']
   }
 
   get printerSupportsQuadGantryLevel (): boolean {
@@ -186,7 +172,13 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get printerSupportsZTiltAdjust (): boolean {
-    return 'z_tilt' in this.printerSettings
+    return (
+      'z_tilt' in this.printerSettings ||
+      (
+        this.klippyApp.isKalico &&
+        'z_tilt_ng' in this.printerSettings
+      )
+    )
   }
 
   get printerSupportsBedScrewsAdjust (): boolean {
@@ -206,7 +198,13 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get printerSupportsProbeCalibrate (): boolean {
-    return 'probe' in this.printerSettings || 'bltouch' in this.printerSettings
+    return (
+      'probe' in this.printerSettings ||
+      'bltouch' in this.printerSettings ||
+      'smart_effector' in this.printerSettings ||
+      Object.keys(this.printerSettings)
+        .some(x => x.startsWith('probe_eddy_current '))
+    )
   }
 
   get printerSupportsZEndstopCalibrate (): boolean {
@@ -218,28 +216,28 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get loadFilamentMacro (): Macro | undefined {
     return this.$store.getters['macros/getMacroByName'](
-      'load_filament',
-      'filament_load',
-      'm701'
-    ) as Macro | undefined
+      'LOAD_FILAMENT',
+      'FILAMENT_LOAD',
+      'M701'
+    )
   }
 
   get unloadFilamentMacro (): Macro | undefined {
     return this.$store.getters['macros/getMacroByName'](
-      'unload_filament',
-      'filament_unload',
-      'm702'
-    ) as Macro | undefined
+      'UNLOAD_FILAMENT',
+      'FILAMENT_UNLOAD',
+      'M702'
+    )
   }
 
   get cleanNozzleMacro (): Macro | undefined {
     return this.$store.getters['macros/getMacroByName'](
-      'clean_nozzle',
-      'nozzle_clean',
-      'wipe_nozzle',
-      'nozzle_wipe',
-      'g12'
-    ) as Macro | undefined
+      'CLEAN_NOZZLE',
+      'NOZZLE_CLEAN',
+      'WIPE_NOZZLE',
+      'NOZZLE_WIPE',
+      'G12'
+    )
   }
 
   get availableTools () {
@@ -319,17 +317,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
     if (this.printerSupportsProbeCalibrate) {
       tools.push({
+        name: 'PROBE_ACCURACY',
+        disabled: !this.allHomed,
+        wait: this.$waits.onProbeAccuracy
+      })
+      tools.push({
         name: 'PROBE_CALIBRATE',
         disabled: !this.allHomed,
         wait: this.$waits.onProbeCalibrate
-      })
-    }
-
-    if (this.printerSupportsBedScrewsCalculate) {
-      tools.push({
-        name: 'SCREWS_TILT_CALCULATE',
-        disabled: !this.allHomed || this.isManualProbeActive,
-        wait: this.$waits.onBedScrewsCalculate
       })
     }
 
@@ -338,6 +333,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
         name: 'QUAD_GANTRY_LEVEL',
         disabled: !this.allHomed || this.isManualProbeActive,
         wait: this.$waits.onQGL
+      })
+    }
+
+    if (this.printerSupportsBedScrewsCalculate) {
+      tools.push({
+        name: 'SCREWS_TILT_CALCULATE',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onBedScrewsCalculate
       })
     }
 
@@ -360,7 +363,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     return tools
   }
 
-  get printerSupportsForceMove () {
+  get printerSupportsForceMove (): boolean {
     return (
       (this.printerSettings.force_move?.enable_force_move ?? false) &&
       !this.hasRoundBed
@@ -368,66 +371,16 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get hasSteppersEnabled (): boolean {
-    return this.$store.getters['printer/getHasSteppersEnabled'] as boolean
+    return this.$store.getters['printer/getHasSteppersEnabled']
   }
 
   get hasRoundBed (): boolean {
-    return this.$store.getters['printer/getHasRoundBed'] as boolean
-  }
-
-  get showManualProbeDialogAutomatically () {
-    return this.$store.state.config.uiSettings.general.showManualProbeDialogAutomatically
-  }
-
-  get showBedScrewsAdjustDialogAutomatically () {
-    return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
-  }
-
-  get showScrewsTiltAdjustDialogAutomatically () {
-    return this.$store.state.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
-  }
-
-  get forceMove () {
-    return this.$store.state.config.uiSettings.toolhead.forceMove
-  }
-
-  @Watch('isManualProbeActive')
-  onIsManualProbeActive (value: boolean) {
-    if (
-      value &&
-      this.showManualProbeDialogAutomatically &&
-      this.klippyReady &&
-      !this.printerPrinting
-    ) {
-      this.manualProbeDialogOpen = true
-    }
-  }
-
-  @Watch('isBedScrewsAdjustActive')
-  onIsBedScrewsAdjustActive (value: boolean) {
-    if (
-      value &&
-      this.showBedScrewsAdjustDialogAutomatically &&
-      this.klippyReady &&
-      !this.printerPrinting
-    ) {
-      this.bedScrewsAdjustDialogOpen = true
-    }
-  }
-
-  @Watch('hasScrewsTiltAdjustResults')
-  onHasScrewsTiltAdjustResults (value: boolean) {
-    this.screwsTiltAdjustDialogOpen = (
-      value &&
-      this.showScrewsTiltAdjustDialogAutomatically &&
-      this.klippyReady &&
-      !this.printerPrinting
-    )
+    return this.$store.getters['printer/getHasRoundBed']
   }
 
   async toggleForceMove () {
     const result = (
-      this.forceMove ||
+      this.forceMoveEnabled ||
       !this.$store.state.config.uiSettings.general.forceMoveToggleWarning ||
       await this.$confirm(
         this.$tc('app.general.simple_form.msg.confirm_forcemove_toggle'),
@@ -436,11 +389,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     )
 
     if (result) {
-      this.$store.dispatch('config/saveByPath', {
-        path: 'uiSettings.toolhead.forceMove',
-        value: !this.forceMove,
-        server: false
-      })
+      this.$store.dispatch('printer/forceMoveEnabled', !this.forceMoveEnabled)
     }
   }
 }

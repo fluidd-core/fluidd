@@ -5,10 +5,10 @@ import { pick } from 'lodash-es'
 import shlex from 'shlex'
 
 const getArgsFromGcodeCommandArgs = (gcodeCommandArgs: string) => {
-  const args: Record<string, number> = {}
+  const args: Record<string, number | undefined> = {}
 
-  for (const [, key, value] of gcodeCommandArgs.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))/ig)) {
-    args[key.toLowerCase()] = +value
+  for (const [, key, value] of gcodeCommandArgs.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))?/gi)) {
+    args[key.toLowerCase()] = value ? +value : undefined
   }
 
   return args
@@ -33,7 +33,7 @@ const parseLine = (line: string) => {
     .split(';', 2)[0]
 
   const [, gcodeCommand, gcodeCommandArgs = ''] = clearedLine
-    .split(/^([gm][0-9]+)\s*/i)
+    .split(/^([gm]\d+)\s*/i)
 
   if (gcodeCommand) {
     return {
@@ -44,7 +44,7 @@ const parseLine = (line: string) => {
   }
 
   const [, macroCommand, macroCommandArgs = ''] = clearedLine
-    .split(/^(SET_PRINT_STATS_INFO|EXCLUDE_OBJECT_DEFINE)\s+/i)
+    .split(/^(SET_PRINT_STATS_INFO|EXCLUDE_OBJECT_DEFINE|SET_RETRACTION)\s+/i)
 
   if (macroCommand) {
     return {
@@ -116,35 +116,53 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
             parts.push(Object.freeze(part))
           }
           break
+        case 'SET_RETRACTION':
+          if ('retract_length' in args) {
+            fwretraction.length = +args.retract_length
+          }
+          if ('unretract_extra_length' in args) {
+            fwretraction.extrudeExtra = +args.unretract_extra_length
+          }
+          break
       }
     } else if (type === 'gcode') {
       switch (command) {
         case 'G0':
-        case 'G1':
-          move = {
-            ...pick(args, [
-              'x', 'y', 'z', 'e'
-            ]),
-            filePosition: toolhead.filePosition
-          } satisfies LinearMove
+        case 'G1': {
+          const params: (keyof LinearMove)[] = [
+            'x', 'y', 'z', 'e'
+          ]
+
+          if (params.some(param => param in args)) {
+            move = {
+              ...pick(args, params),
+              filePosition: toolhead.filePosition
+            } satisfies LinearMove
+          }
           break
+        }
         case 'G2':
-        case 'G3':
-          move = {
-            ...pick(args, [
-              'x', 'y', 'z', 'e',
-              'i', 'j', 'k', 'r'
-            ]),
-            direction: command === 'G2'
-              ? 'clockwise'
-              : 'counter-clockwise',
-            filePosition: toolhead.filePosition
-          } satisfies ArcMove
+        case 'G3': {
+          const params: (keyof ArcMove)[] = [
+            'x', 'y', 'z', 'e',
+            'i', 'j', 'k', 'r'
+          ]
+
+          if (params.some(param => param in args)) {
+            move = {
+              ...pick(args, params),
+              direction: command === 'G2'
+                ? 'clockwise'
+                : 'counter-clockwise',
+              filePosition: toolhead.filePosition
+            } satisfies ArcMove
+          }
           break
+        }
         case 'G10':
           move = {
             e: -fwretraction.length,
-            filePosition: 0
+            filePosition: toolhead.filePosition
           } satisfies LinearMove
 
           if (fwretraction.z !== 0) {
@@ -161,6 +179,27 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
             move.z = decimalRound(toolhead.z - fwretraction.z)
           }
           break
+        case 'G28': {
+          const hasX = 'x' in args
+          const hasY = 'y' in args
+          const hasZ = 'z' in args
+          const noXYZ = !hasX && !hasY && !hasZ
+
+          move = {
+            filePosition: toolhead.filePosition
+          } satisfies LinearMove
+
+          if (hasX || noXYZ) {
+            move.x = 0
+          }
+          if (hasY || noXYZ) {
+            move.y = 0
+          }
+          if (hasZ || noXYZ) {
+            move.z = 0
+          }
+          break
+        }
         case 'G90':
           positioningMode = 'absolute'
         case 'M82':
@@ -185,7 +224,6 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
           break
         case 'M207':
           fwretraction.length = args.s ?? fwretraction.length
-          fwretraction.extrudeExtra = args.s ?? fwretraction.extrudeExtra
           fwretraction.z = args.z ?? fwretraction.z
           break
       }

@@ -4,8 +4,8 @@ export interface TimelapseState {
   renderStatus?: RenderStatus;
 }
 
-export type TimelapseSettings = TimelapseReadonlySettings & TimelapseWritableSettings;
-export type RenderStatus = RenderStarted | RenderRunning | RenderSuccess;
+export type TimelapseSettings = TimelapseReadonlySettings & TimelapseWritableSettings
+export type RenderStatus = RenderStarted | RenderRunning | RenderSuccess
 
 export interface TimelapseLastFrame {
   count: number;
@@ -63,8 +63,8 @@ export interface TimelapseWritableSettings {
   extraoutputparams: string;
 }
 
-export type TimelapseMode = 'layermacro' | 'hyperlapse';
-export type ParkPosition = 'custom' | 'front_left' | 'front_right' | 'center' | 'back_left' | 'back_right' | 'x_only' | 'y_only';
+export type TimelapseMode = 'layermacro' | 'hyperlapse'
+export type ParkPosition = 'custom' | 'front_left' | 'front_right' | 'center' | 'back_left' | 'back_right' | 'x_only' | 'y_only'
 
 export interface RenderSettings {
   frameRate: number;

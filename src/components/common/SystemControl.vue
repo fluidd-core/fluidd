@@ -1,15 +1,13 @@
 <template>
   <div>
-    <div v-if="klippyConnected">
-      <v-tooltip
-        bottom
-      >
+    <template v-if="klippyConnected">
+      <v-tooltip bottom>
         <template #activator="{ on, attrs }">
           <app-btn
             v-bind="attrs"
             block
             color="primary"
-            class="me-2 mb-2"
+            class="mb-2"
             v-on="on"
             @click="restartKlippy"
           >
@@ -18,38 +16,14 @@
         </template>
         <span>{{ $t('app.general.tooltip.reload_klipper') }}</span>
       </v-tooltip>
-    </div>
 
-    <div v-else>
-      <v-tooltip
-        bottom
-      >
+      <v-tooltip bottom>
         <template #activator="{ on, attrs }">
           <app-btn
             v-bind="attrs"
             block
             color="primary"
-            class="me-2 mb-2"
-            v-on="on"
-            @click="serviceRestartKlipper"
-          >
-            {{ $t('app.general.btn.restart_service_klipper') }}
-          </app-btn>
-        </template>
-        <span>{{ $t('app.general.tooltip.restart_klipper') }}</span>
-      </v-tooltip>
-    </div>
-
-    <div v-if="klippyConnected">
-      <v-tooltip
-        bottom
-      >
-        <template #activator="{ on, attrs }">
-          <app-btn
-            v-bind="attrs"
-            block
-            color="primary"
-            class="me-2 mb-2"
+            class="mb-2"
             v-on="on"
             @click="firmwareRestartKlippy"
           >
@@ -58,7 +32,43 @@
         </template>
         <span>{{ $t('app.general.tooltip.reload_restart_klipper') }}</span>
       </v-tooltip>
-    </div>
+    </template>
+
+    <template v-else-if="printerPoweredOff">
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <app-btn
+            v-bind="attrs"
+            block
+            color="primary"
+            class="mb-2"
+            v-on="on"
+            @click="printerPowerOn"
+          >
+            {{ $t('app.general.btn.power_on_printer') }}
+          </app-btn>
+        </template>
+        <span>{{ $t('app.general.tooltip.power_on_printer') }}</span>
+      </v-tooltip>
+    </template>
+
+    <template v-else>
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <app-btn
+            v-bind="attrs"
+            block
+            color="primary"
+            class="mb-2"
+            v-on="on"
+            @click="serviceRestartKlipper"
+          >
+            {{ $t('app.general.btn.restart_service_klipper') }}
+          </app-btn>
+        </template>
+        <span>{{ $t('app.general.tooltip.restart_klipper') }}</span>
+      </v-tooltip>
+    </template>
 
     <app-btn
       block
@@ -76,7 +86,7 @@
 
     <app-btn
       block
-      class="me-2 mb-2"
+      class="me-2"
       @click="getMoonrakerLog()"
     >
       <v-icon
@@ -95,6 +105,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({})
 export default class SystemControl extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
@@ -104,6 +115,12 @@ export default class SystemControl extends Mixins(StateMixin, FilesMixin, Servic
 
   getMoonrakerLog () {
     this.downloadFile('moonraker.log', '')
+  }
+
+  printerPowerOn () {
+    const printerPowerDevice: string = this.$store.state.config.uiSettings.general.printerPowerDevice ?? 'printer'
+
+    SocketActions.machineDevicePowerSetDevice(printerPowerDevice, 'on')
   }
 }
 </script>

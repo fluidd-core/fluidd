@@ -12,7 +12,6 @@
         <v-switch
           v-model="showAnimations"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -23,7 +22,6 @@
         <v-switch
           v-model="drawOrigin"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -34,7 +32,6 @@
         <v-switch
           v-model="drawBackground"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -121,7 +118,6 @@
         <v-switch
           v-model="flipHorizontal"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -132,7 +128,6 @@
         <v-switch
           v-model="flipVertical"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -143,7 +138,6 @@
         <v-switch
           v-model="autoLoadOnPrintStart"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -155,7 +149,6 @@
           <v-switch
             v-model="autoLoadMobileOnPrintStart"
             hide-details
-            class="mb-5"
             @click.native.stop
           />
         </app-setting>
@@ -167,7 +160,6 @@
         <v-switch
           v-model="autoFollowOnFileLoad"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -178,7 +170,6 @@
         <v-switch
           v-model="hideSinglePartBoundingBox"
           hide-details
-          class="mb-5"
           @click.native.stop
         />
       </app-setting>
@@ -207,7 +198,7 @@ import { defaultState } from '@/store/config/state'
   components: {}
 })
 export default class GcodePreviewSettings extends Vue {
-  get extrusionLineWidth () {
+  get extrusionLineWidth (): number {
     return this.$store.state.config.uiSettings.gcodePreview.extrusionLineWidth
   }
 
@@ -219,7 +210,7 @@ export default class GcodePreviewSettings extends Vue {
     })
   }
 
-  get moveLineWidth () {
+  get moveLineWidth (): number {
     return this.$store.state.config.uiSettings.gcodePreview.moveLineWidth
   }
 
@@ -231,7 +222,7 @@ export default class GcodePreviewSettings extends Vue {
     })
   }
 
-  get retractionIconSize () {
+  get retractionIconSize (): number {
     return this.$store.state.config.uiSettings.gcodePreview.retractionIconSize
   }
 
@@ -243,7 +234,7 @@ export default class GcodePreviewSettings extends Vue {
     })
   }
 
-  get flipHorizontal () {
+  get flipHorizontal (): boolean {
     return this.$store.state.config.uiSettings.gcodePreview.flip.horizontal
   }
 
@@ -255,7 +246,7 @@ export default class GcodePreviewSettings extends Vue {
     })
   }
 
-  get flipVertical () {
+  get flipVertical (): boolean {
     return this.$store.state.config.uiSettings.gcodePreview.flip.vertical
   }
 
@@ -267,7 +258,7 @@ export default class GcodePreviewSettings extends Vue {
     })
   }
 
-  get drawOrigin () {
+  get drawOrigin (): boolean {
     return this.$store.state.config.uiSettings.gcodePreview.drawOrigin
   }
 
@@ -279,7 +270,7 @@ export default class GcodePreviewSettings extends Vue {
     })
   }
 
-  get drawBackground () {
+  get drawBackground (): boolean {
     return this.$store.state.config.uiSettings.gcodePreview.drawBackground
   }
 
@@ -291,7 +282,7 @@ export default class GcodePreviewSettings extends Vue {
     })
   }
 
-  get showAnimations () {
+  get showAnimations (): boolean {
     return this.$store.state.config.uiSettings.gcodePreview.showAnimations
   }
 
@@ -303,7 +294,7 @@ export default class GcodePreviewSettings extends Vue {
     })
   }
 
-  get minLayerHeight () {
+  get minLayerHeight (): number {
     return this.$store.state.config.uiSettings.gcodePreview.minLayerHeight
   }
 
@@ -315,7 +306,7 @@ export default class GcodePreviewSettings extends Vue {
     })
   }
 
-  get autoLoadOnPrintStart () {
+  get autoLoadOnPrintStart (): boolean {
     return this.$store.state.config.uiSettings.gcodePreview.autoLoadOnPrintStart
   }
 
@@ -331,7 +322,7 @@ export default class GcodePreviewSettings extends Vue {
     }
   }
 
-  get autoLoadMobileOnPrintStart () {
+  get autoLoadMobileOnPrintStart (): boolean {
     return this.$store.state.config.uiSettings.gcodePreview.autoLoadMobileOnPrintStart
   }
 
@@ -343,7 +334,7 @@ export default class GcodePreviewSettings extends Vue {
     })
   }
 
-  get autoFollowOnFileLoad () {
+  get autoFollowOnFileLoad (): boolean {
     return this.$store.state.config.uiSettings.gcodePreview.autoFollowOnFileLoad
   }
 
@@ -355,7 +346,7 @@ export default class GcodePreviewSettings extends Vue {
     })
   }
 
-  get hideSinglePartBoundingBox () {
+  get hideSinglePartBoundingBox (): boolean {
     return this.$store.state.config.uiSettings.gcodePreview.hideSinglePartBoundingBox
   }
 

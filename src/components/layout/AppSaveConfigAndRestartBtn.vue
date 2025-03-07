@@ -1,13 +1,14 @@
 <template>
   <app-btn
     v-if="isExpanded"
-    color=""
     :disabled="disabled"
     :loading="loading"
+    color=""
+    class="me-1"
     @click="$emit('click')"
   >
     <v-icon
-      class="mr-1"
+      left
       color="warning"
     >
       $save
@@ -22,11 +23,9 @@
     <template #activator="{ on, attrs }">
       <app-btn
         v-bind="attrs"
-        fab
-        small
+        icon
         text
         color="warning"
-        :elevation="0"
         :disabled="disabled"
         :loading="loading"
         v-on="on"

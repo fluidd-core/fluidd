@@ -17,19 +17,21 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import type { KnownExtruder } from '@/store/printer/types'
 
 @Component({})
 export default class ExtruderSelection extends Mixins(StateMixin) {
-  get extruders () {
+  get extruders (): KnownExtruder[] {
     return this.$store.getters['printer/getExtruders']
   }
 
-  get extruder () {
+  get extruder (): string {
     return this.$store.state.printer.printer.toolhead.extruder
   }
 
   set extruder (extruder: string) {
-    this.sendGcode(`ACTIVATE_EXTRUDER EXTRUDER=${extruder}`, this.$waits.onExtruderChange)
+    this.sendGcode(`ACTIVATE_EXTRUDER EXTRUDER=${encodeGcodeParamValue(extruder)}`, this.$waits.onExtruderChange)
   }
 }
 </script>

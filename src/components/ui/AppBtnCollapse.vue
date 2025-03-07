@@ -3,33 +3,25 @@
     <!-- Expand / Contract -->
     <app-btn
       v-if="!inLayout"
-      color=""
-      class="ml-1"
-      fab
-      x-small
-      text
+      icon
       @click="collapsedModel = !collapsedModel"
     >
-      <v-icon :class="{ 'rotate-180': collapsedModel }">
+      <v-icon
+        dense
+        :class="{ 'rotate-180': collapsedModel }"
+      >
         $chevronUp
       </v-icon>
     </app-btn>
 
     <!-- In layout -->
-    <v-layout>
+    <v-layout v-if="inLayout">
       <v-checkbox
-        v-if="inLayout"
         v-model="enabledModel"
         hide-details
         class="mt-0 pt-0"
       />
-      <v-icon
-        v-if="inLayout"
-        class="handle"
-        left
-      >
-        $drag
-      </v-icon>
+      <app-drag-icon class="ms-1" />
     </v-layout>
   </div>
 </template>
@@ -40,18 +32,12 @@ import { Component, Vue, Prop, PropSync } from 'vue-property-decorator'
 @Component({})
 export default class AppBtnCollapse extends Vue {
   @PropSync('collapsed', { type: Boolean })
-    collapsedModel?: boolean
+  collapsedModel?: boolean
 
   @PropSync('enabled', { type: Boolean, default: true })
-    enabledModel?: boolean
+  enabledModel?: boolean
 
   @Prop({ type: Boolean })
   readonly inLayout?: boolean
 }
 </script>
-
-<style lang="scss" scoped>
-  .handle {
-    cursor: pointer;
-  }
-</style>

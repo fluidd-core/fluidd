@@ -38,22 +38,23 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { KnownExtruder, ExtruderStepper } from '@/store/printer/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class ExtruderStepperSync extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   readonly extruderStepper!: ExtruderStepper
 
-  get availableExtruders () {
-    return this.$store.getters['printer/getExtruders'] as KnownExtruder[]
+  get availableExtruders (): KnownExtruder[] {
+    return this.$store.getters['printer/getExtruders']
   }
 
   sendSyncExtruderMotion (value: string | null) {
-    this.sendGcode(`SYNC_EXTRUDER_MOTION EXTRUDER=${this.extruderStepper.name} MOTION_QUEUE=${value ?? ''}`, `${this.$waits.onSyncExtruder}${this.extruderStepper.name}`)
+    this.sendGcode(`SYNC_EXTRUDER_MOTION EXTRUDER=${encodeGcodeParamValue(this.extruderStepper.name)} MOTION_QUEUE=${value ?? ''}`, `${this.$waits.onSyncExtruder}${this.extruderStepper.name}`)
   }
 
   sendSetStepperEnable (value: boolean) {
-    this.sendGcode(`SET_STEPPER_ENABLE STEPPER="${this.extruderStepper.key}" ENABLE=${+value}`, `${this.$waits.onStepperEnable}${this.extruderStepper.name}`)
+    this.sendGcode(`SET_STEPPER_ENABLE STEPPER=${encodeGcodeParamValue(this.extruderStepper.key)} ENABLE=${+value}`, `${this.$waits.onStepperEnable}${this.extruderStepper.name}`)
   }
 }
 </script>

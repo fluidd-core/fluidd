@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-draggable">
     <slot />
   </div>
 </template>
@@ -19,7 +19,7 @@ const isTargetHtmlElement = (element: HTMLElement): element is TargetHtmlElement
 @Component({})
 export default class AppDraggable extends Vue {
   @VModel({ type: Array, default: () => [] })
-    items!: unknown[]
+  items!: unknown[]
 
   @Prop({ type: Object })
   readonly options?: Sortable.Options
@@ -122,6 +122,10 @@ export default class AppDraggable extends Vue {
     targetElement[instanceKey] = this
 
     const options: Sortable.Options = {
+      animation: 200,
+      handle: '.handle',
+      ghostClass: 'app-draggable__ghost',
+      chosenClass: 'app-draggable__chosen',
       ...this.options,
       onStart: this.handleStart,
       onAdd: this.handleAdd,

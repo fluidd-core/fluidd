@@ -1,23 +1,28 @@
-import type { KlipperFileMeta } from '@/store/files/types.metadata'
+import type { AppFileMeta, MoonrakerFileMeta } from '@/store/files/types.metadata'
 
 export interface HistoryState {
   count: number;
-  jobs: HistoryItem[];
+  jobs: MoonrakerHistoryItem[];
   job_totals: HistoryRollUp;
 }
 
-export interface HistoryItem {
+export interface MoonrakerHistoryItem {
   job_id: string;
   exists: boolean;
   end_time: string | null;
   filament_used: number;
   filename: string;
-  metadata?: KlipperFileMeta;
+  metadata?: MoonrakerFileMeta;
   print_duration: number;
   status: HistoryItemStatus;
   start_time: number;
   total_duration: number;
-  path?: string;
+  user?: string;
+  auxiliary_data?: HistoryItemAuxiliaryData[];
+}
+
+export interface HistoryItem extends Omit<MoonrakerHistoryItem, 'metadata'> {
+  metadata?: AppFileMeta;
 }
 
 export interface HistoryRollUp {
@@ -30,3 +35,11 @@ export interface HistoryRollUp {
 }
 
 export type HistoryItemStatus = 'completed' | 'cancelled' | 'error' | 'printing' | 'in_progress' | 'server_exit' | 'klippy_shutdown' | 'klippy_disconnect' | 'interrupted'
+
+export interface HistoryItemAuxiliaryData {
+  provider: string;
+  name: string;
+  value: unknown;
+  description: string;
+  units: string | null;
+}

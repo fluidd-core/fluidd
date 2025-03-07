@@ -2,14 +2,14 @@ import type { GetterTree } from 'vuex'
 import type { ConfigState, TemperaturePreset } from './types'
 import type { RootState } from '../types'
 import type { Heater, Fan } from '../printer/types'
-import type { AppTableHeader } from '@/types'
-import type { AppTablePartialHeader } from '@/types/tableheaders'
+import type { AppDataTableHeader } from '@/types'
 import type { MoonrakerRootFile } from '../files/types'
 import md5 from 'md5'
 
 export const getters: GetterTree<ConfigState, RootState> = {
   getCurrentInstance: (state) => {
-    return state.instances.find(instance => instance.active)
+    return state.instances
+      .find(instance => instance.active)
   },
 
   getInstances: (state) => {
@@ -23,10 +23,6 @@ export const getters: GetterTree<ConfigState, RootState> = {
     return instances
   },
 
-  getHostConfig: (state) => {
-    return state.hostConfig
-  },
-
   /**
    * Return temp presets. Ensure we only return a preset
    * for a known heater or fan, incase things change
@@ -35,8 +31,8 @@ export const getters: GetterTree<ConfigState, RootState> = {
   getTempPresets: (state, getters, rootState, rootGetters) => {
     const originalPresets: TemperaturePreset[] = state.uiSettings.dashboard.tempPresets
     const presets: TemperaturePreset[] = []
-    const heaters = rootGetters['printer/getHeaters']
-    const fans = rootGetters['printer/getOutputs'](['temperature_fan'])
+    const heaters: Heater[] = rootGetters['printer/getHeaters']
+    const fans: Fan[] = rootGetters['printer/getOutputs'](['temperature_fan'])
 
     originalPresets.forEach((originalPreset: TemperaturePreset) => {
       const preset: TemperaturePreset = {
@@ -47,14 +43,14 @@ export const getters: GetterTree<ConfigState, RootState> = {
       // a) a given heater and fan exists and;
       // b) unknown heaters and fans are removed.
       // For items added to an existing preset, default them to disabled.
-      heaters.forEach((heater: Heater) => {
+      heaters.forEach(heater => {
         if (originalPreset.values[heater.name]) {
           preset.values[heater.name] = { ...originalPreset.values[heater.name] }
         } else {
           preset.values[heater.name] = { value: 0, type: 'heater', active: false }
         }
       })
-      fans.forEach((fan: Fan) => {
+      fans.forEach(fan => {
         if (originalPreset.values[fan.name]) {
           preset.values[fan.name] = { ...originalPreset.values[fan.name] }
         } else {
@@ -71,7 +67,7 @@ export const getters: GetterTree<ConfigState, RootState> = {
   },
 
   getCustomThemeFile: (state, getters, rootState, rootGetters) => (filename: string, extensions: string[]) => {
-    const files = rootGetters['files/getRootFiles']('config') as MoonrakerRootFile[] | undefined
+    const files: MoonrakerRootFile[] | undefined = rootGetters['files/getRootFiles']('config')
 
     if (files) {
       for (const extension of extensions) {
@@ -84,31 +80,27 @@ export const getters: GetterTree<ConfigState, RootState> = {
     }
   },
 
-  getMergedTableHeaders: (state, getters) => (headers: AppTableHeader[], key: string) => {
-    const configured: AppTablePartialHeader[] = getters.getConfiguredTableHeaders(key)
-    if (!configured) {
+  getMergedTableHeaders: (state) => (headers: AppDataTableHeader[], key: string) => {
+    const configuredHeaders = state.uiSettings.tableHeaders[key]
+
+    if (!configuredHeaders) {
       return headers
     }
-    const merged: AppTableHeader[] = []
-    headers.forEach(header => {
-      const keyBy = (header.key)
-        ? 'key'
-        : 'value'
 
-      const o = {
-        visible: true,
-        configurable: false,
-        ...header,
-        ...configured.find(p => p[keyBy] === header[keyBy])
-      }
-
-      merged.push(o)
-    })
-    return merged
-  },
-
-  getConfiguredTableHeaders: (state) => (key: string) => {
-    return state.uiSettings.tableHeaders[key]
+    // if the number of configured headers is the same as the available headers,
+    // then use configured headers to keep order
+    // else go with available headers
+    return headers.length === configuredHeaders.length
+      ? configuredHeaders
+        .map(configuredHeader => ({
+          ...headers.find(p => p.value === configuredHeader.value),
+          ...configuredHeader,
+        }))
+      : headers
+        .map(header => ({
+          ...header,
+          ...configuredHeaders.find(p => p.value === header.value)
+        }))
   },
 
   getTokenKeys: (state) => {

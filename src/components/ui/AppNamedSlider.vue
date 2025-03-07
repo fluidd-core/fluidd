@@ -10,19 +10,19 @@
         cols="12"
         sm="5"
         align-self="center"
-        class="text-body-1 py-0"
+        class="text-body-1"
         :class="{ 'text--disabled': disabled }"
         v-html="label"
       />
 
       <!-- Current value -->
-      <v-col class="py-0">
+      <v-col>
         <v-text-field
           v-model="currentValue"
           :prefix="prefix"
           :suffix="suffix"
           :rules="textRules"
-          :disabled="disabled || loading || internalLocked"
+          :disabled="disabled || loading"
           :step="step"
           class="v-input--text-right"
           type="number"
@@ -35,33 +35,10 @@
           @keyup.enter.exact="handleSubmit(+currentValue)"
         >
           <template #prepend>
-            <v-btn
-              v-if="locked && isMobileViewport"
-              icon
-              small
-              :disabled="disabled"
-              style="margin-top: -4px;"
-              @click="internalLocked = !internalLocked"
-            >
-              <v-icon
-                v-if="internalLocked"
-                small
-              >
-                $pencil
-              </v-icon>
-              <v-icon
-                v-else
-                small
-              >
-                $lockReset
-              </v-icon>
-            </v-btn>
-
             <app-btn
               v-if="resetValue !== undefined"
               :disabled="disabled || loading"
               style="margin-top: -4px;"
-              color=""
               icon
               small
               @click="handleReset"
@@ -86,20 +63,35 @@
       @start="handleStart"
       @end="handleEnd"
       @change="handleChange"
-    />
+    >
+      <template #prepend>
+        <app-btn
+          v-if="locked"
+          icon
+          small
+          :disabled="disabled || loading || overridden"
+          @click="internalLocked = !internalLocked"
+        >
+          <v-icon small>
+            {{ internalLocked ? '$lock' : '$lockReset' }}
+          </v-icon>
+        </app-btn>
+      </template>
+    </v-slider>
   </v-form>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Ref, VModel, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Watch, Ref, VModel, Vue } from 'vue-property-decorator'
 import type { InputValidationRules } from 'vuetify'
 import type { VForm } from '@/types'
-import BrowserMixin from '@/mixins/browser'
 
-@Component({})
-export default class AppNamedSlider extends Mixins(BrowserMixin) {
+@Component({
+  inheritAttrs: false
+})
+export default class AppNamedSlider extends Vue {
   @VModel({ type: Number, required: true })
-    inputValue!: number
+  inputValue!: number
 
   @Prop({ type: Number })
   readonly resetValue?: number
@@ -107,7 +99,7 @@ export default class AppNamedSlider extends Mixins(BrowserMixin) {
   @Prop({ type: String, required: true })
   readonly label!: string
 
-  @Prop({ type: Array<InputValidationRules> })
+  @Prop({ type: Array })
   readonly rules?: InputValidationRules[]
 
   @Prop({ type: Boolean })
@@ -189,6 +181,7 @@ export default class AppNamedSlider extends Mixins(BrowserMixin) {
     // Apply a min and max rule as per the slider.
     const rules = [
       ...this.rules || [],
+      this.$rules.required,
       this.$rules.numberValid,
       this.$rules.numberGreaterThanOrEqual(this.min)
     ]

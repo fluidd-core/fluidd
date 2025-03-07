@@ -4,6 +4,7 @@ import type { RootState } from '../types'
 
 export const getters: GetterTree<AnnouncementsState, RootState> = {
   getAnnouncements: (state) => {
-    return state.entries.filter(announcement => !announcement.dismissed)
+    return state.entries
+      .filter(announcement => !announcement.dismissed)
   }
 }

@@ -28,28 +28,15 @@
 
 <script lang="ts">
 import { Component, Mixins, VModel } from 'vue-property-decorator'
-
 import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class AppToolsDrawer extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
-    open?: boolean
+  open?: boolean
 
-  get supportsHistory () {
-    return this.$store.getters['server/componentSupport']('history')
-  }
-
-  get instanceName () {
+  get instanceName (): string {
     return this.$store.state.config.uiSettings.general.instanceName
-  }
-
-  get serverInfo () {
-    return this.$store.getters['server/getInfo']
-  }
-
-  get hasUpdates () {
-    return this.$store.getters['version/hasUpdates']
   }
 }
 </script>

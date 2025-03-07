@@ -5,7 +5,7 @@
   >
     <template #activator="{ attrs, on }">
       <v-list-item
-        :to="to"
+        :to="{ name: to }"
         :exact="exact"
         link
         color="secondary"
@@ -21,30 +21,14 @@
         </v-list-item-content>
       </v-list-item>
     </template>
-    <span><slot /></span>
+    <span>
+      <slot />
+      <kbd
+        v-if="accelerator && enableKeyboardShortcuts"
+        class="ml-2"
+      >{{ accelerator }}</kbd>
+    </span>
   </v-tooltip>
-
-  <!-- <v-tooltip right :disabled="isMobileViewport">
-    <template v-slot:activator="{ attrs, on }">
-      <router-link
-        :to="to"
-        :exact="exact"
-        custom
-        v-slot="{ navigate, isActive }"
-      >
-        <button
-          v-bind="attrs"
-          v-on="on"
-          v-ripple
-          @click="navigate"
-          :class="{ 'active': isActive }"
-        >
-          <v-icon>{{ icon }}</v-icon>
-        </button>
-      </router-link>
-    </template>
-    <slot></slot>
-  </v-tooltip> -->
 </template>
 
 <script lang="ts">
@@ -52,6 +36,9 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
+import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
+import { Globals } from '@/globals'
+import isKeyOf from '@/util/is-key-of'
 
 @Component({})
 export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
@@ -59,13 +46,52 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
   readonly title!: string
 
   @Prop({ type: String })
-  readonly to?: string
+  readonly to!: string
 
   @Prop({ type: Boolean })
   readonly exact?: boolean
 
   @Prop({ type: String })
   readonly icon?: string
+
+  get accelerator (): string | undefined {
+    return isKeyOf(this.to, Globals.KEYBOARD_SHORTCUTS)
+      ? Globals.KEYBOARD_SHORTCUTS[this.to]
+      : undefined
+  }
+
+  get enableKeyboardShortcuts (): boolean {
+    return this.$store.state.config.uiSettings.general.enableKeyboardShortcuts
+  }
+
+  handleKeyDown (event: KeyboardEvent) {
+    if (
+      !this.enableKeyboardShortcuts ||
+      !this.accelerator
+    ) {
+      return
+    }
+
+    const shortcut = keyboardEventToKeyboardShortcut(event)
+
+    if (
+      shortcut === this.accelerator &&
+      !eventTargetIsContentEditable(event) &&
+      this.$route.name !== this.to
+    ) {
+      event.preventDefault()
+
+      this.$router.push({ name: this.to })
+    }
+  }
+
+  mounted () {
+    window.addEventListener('keydown', this.handleKeyDown, false)
+  }
+
+  beforeDestroy () {
+    window.removeEventListener('keydown', this.handleKeyDown)
+  }
 }
 
 </script>

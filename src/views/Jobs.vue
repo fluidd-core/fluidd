@@ -4,20 +4,7 @@
       cols="12"
       :lg="hasQueuedJobs ? 8 : undefined"
     >
-      <collapsable-card
-        :title="$t('app.general.title.jobs')"
-        card-key="JobsPage"
-        icon="$files"
-        class="mb-2 mb-sm-4"
-        :help-tooltip="$t('app.general.tooltip.file_browser_help')"
-      >
-        <file-system
-          :roots="'gcodes'"
-          name="jobs"
-          bulk-actions
-          max-height="816"
-        />
-      </collapsable-card>
+      <jobs-card fullscreen />
     </v-col>
     <v-col
       v-if="hasQueuedJobs"
@@ -32,12 +19,12 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
+import JobsCard from '@/components/widgets/jobs/JobsCard.vue'
 import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
 
 @Component({
   components: {
-    FileSystem,
+    JobsCard,
     JobQueueCard
   }
 })
