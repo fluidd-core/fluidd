@@ -117,98 +117,108 @@
       v-if="inLayout"
       #extension
     >
-      <template v-if="currentUser">
-        <div>
-          <v-icon class="mr-2">
-            $account
-          </v-icon>
-          <code>{{ currentUser.username }}</code>
-
-          <v-icon class="ml-4 mr-2">
-            $screenshot
-          </v-icon>
-          <code>{{ currentBreakpoint.toUpperCase() }}</code>
+      <v-container>
+        <div class="d-flex justify-center ma-2">
+          <v-chip
+            v-if="currentUser"
+            class="mx-1"
+            label
+          >
+            <v-icon left>
+              $account
+            </v-icon>
+            {{ currentUser.username }}
+          </v-chip>
+          <v-chip
+            class="mx-1"
+            label
+          >
+            <v-icon left>
+              $screenshot
+            </v-icon>
+            {{ currentBreakpoint.toUpperCase() }}
+          </v-chip>
         </div>
+        <div class="d-flex justify-center ma-2">
+          <app-btn-group class="mx-1">
+            <v-tooltip bottom>
+              <template #activator="{ on, attrs }">
+                <app-btn
+                  small
+                  v-bind="attrs"
+                  color="primary"
+                  @click.stop="handleExitLayout"
+                  v-on="on"
+                >
+                  <v-icon left>
+                    $close
+                  </v-icon>
+                  {{ $t('app.general.btn.exit_layout') }}
+                </app-btn>
+              </template>
+              <span>{{ $t('app.general.tooltip.exit_layout') }}</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{ on, attrs }">
+                <app-btn
+                  small
+                  v-bind="attrs"
+                  color="primary"
+                  @click.stop="handleResetLayout"
+                  v-on="on"
+                >
+                  <v-icon left>
+                    $accountSettings
+                  </v-icon>
+                  {{ $t('app.general.btn.reset_layout') }}
+                </app-btn>
+              </template>
+              <span>{{ $t('app.general.tooltip.reset_layout') }}</span>
+            </v-tooltip>
+          </app-btn-group>
 
-        <div style="flex-basis: 100%; height: 0" />
-      </template>
+          <app-btn-group
+            v-if="isDashboard"
+            class="mx-1"
+          >
+            <v-tooltip bottom>
+              <template #activator="{ on, attrs }">
+                <app-btn
+                  small
+                  v-bind="attrs"
+                  color="primary"
+                  @click.stop="handleSetDefaultLayout"
+                  v-on="on"
+                >
+                  <v-icon left>
+                    $saveDefault
+                  </v-icon>
+                  {{ $t('app.general.btn.set_default_layout') }}
+                </app-btn>
+              </template>
+              <span>{{ $t('app.general.tooltip.set_default_layout') }}</span>
+            </v-tooltip>
 
-      <app-btn-group class="mx-2">
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <app-btn
-              small
-              v-bind="attrs"
-              color="primary"
-              @click.stop="handleExitLayout"
-              v-on="on"
-            >
-              <v-icon left>
-                $close
-              </v-icon>
-              {{ $t('app.general.btn.exit_layout') }}
-            </app-btn>
-          </template>
-          <span>{{ $t('app.general.tooltip.exit_layout') }}</span>
-        </v-tooltip>
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <app-btn
-              small
-              v-bind="attrs"
-              color="primary"
-              @click.stop="handleResetLayout"
-              v-on="on"
-            >
-              <v-icon left>
-                $accountSettings
-              </v-icon>
-              {{ $t('app.general.btn.reset_layout') }}
-            </app-btn>
-          </template>
-          <span>{{ $t('app.general.tooltip.reset_layout') }}</span>
-        </v-tooltip>
-      </app-btn-group>
-
-      <template v-if="isDashboard">
-        <app-btn-group class="mx-2">
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <app-btn
-                small
-                v-bind="attrs"
-                color="primary"
-                @click.stop="handleSetDefaultLayout"
-                v-on="on"
-              >
-                <v-icon left>
-                  $saveDefault
-                </v-icon>
-                {{ $t('app.general.btn.set_default_layout') }}
-              </app-btn>
-            </template>
-            <span>{{ $t('app.general.tooltip.set_default_layout') }}</span>
-          </v-tooltip>
-
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <app-btn
-                small
-                v-bind="attrs"
-                color="primary"
-                @click.stop="handleResetDefaultLayout"
-                v-on="on"
-              >
-                <v-icon left>
-                  $resetDefaults
-                </v-icon>
-                {{ $t('app.general.btn.reset_default_layout') }}
-              </app-btn>
-            </template>
-            <span>{{ $t('app.general.tooltip.reset_default_layout') }}</span>
-          </v-tooltip>
-        </app-btn-group>
-      </template>
+            <v-tooltip bottom>
+              <template #activator="{ on, attrs }">
+                <app-btn
+                  small
+                  v-bind="attrs"
+                  color="primary"
+                  @click.stop="handleResetDefaultLayout"
+                  v-on="on"
+                >
+                  <v-icon left>
+                    $resetDefaults
+                  </v-icon>
+                  {{ $t('app.general.btn.reset_default_layout') }}
+                </app-btn>
+              </template>
+              <span>{{ $t('app.general.tooltip.reset_default_layout') }}</span>
+            </v-tooltip>
+          </app-btn-group>
+        </div>
+      </v-container>
     </template>
 
     <user-password-dialog
@@ -240,6 +250,7 @@ import type { KlipperPrinterConfig, OutputPin } from '@/store/printer/types'
 import type { Device } from '@/store/power/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 import vuetify from '@/plugins/vuetify'
+import type { AppUser } from '@/store/auth/types'
 
 @Component({
   components: {
@@ -411,8 +422,8 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     return this.$store.getters['layout/getSpecificLayoutName']
   }
 
-  get currentUser () {
-    return this.$store.getters['auth/getCurrentUser']
+  get currentUser (): AppUser | null {
+    return this.$store.state.auth.currentUser
   }
 
   get currentBreakpoint () {
@@ -547,10 +558,9 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
   :deep(.v-toolbar__extension) {
     flex: 1 1 auto;
-    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    padding: 8px;
+    padding: 0;
   }
 
   :deep(.v-toolbar__content) {
