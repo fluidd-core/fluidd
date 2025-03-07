@@ -14,101 +14,122 @@ const baseEmit = (method: string, options: NotifyOptions) => {
 }
 
 export const SocketActions = {
-  async machineServicesRestart (service: string) {
-    const wait = Waits.onServiceRestart
+  async machineServicesRestart (service: string, options?: NotifyOptions) {
     baseEmit(
       'machine.services.restart', {
         dispatch: 'void',
-        params: { service },
-        wait
+        wait: Waits.onServiceRestart,
+        ...options,
+        params: {
+          service
+        }
       }
     )
   },
 
-  async machineServicesStart (service: string) {
-    const wait = Waits.onServiceStart
+  async machineServicesStart (service: string, options?: NotifyOptions) {
     baseEmit(
       'machine.services.start', {
         dispatch: 'void',
-        params: { service },
-        wait
+        wait: Waits.onServiceStart,
+        ...options,
+        params: {
+          service
+        },
       }
     )
   },
 
-  async machineServicesStop (service: string) {
-    const wait = Waits.onServiceStop
+  async machineServicesStop (service: string, options?: NotifyOptions) {
     baseEmit(
       'machine.services.stop', {
         dispatch: 'void',
-        params: { service },
-        wait
+        wait: Waits.onServiceStop,
+        ...options,
+        params: {
+          service
+        }
       }
     )
   },
 
-  async machineReboot () {
+  async machineReboot (options?: NotifyOptions) {
     baseEmit(
       'machine.reboot', {
-        dispatch: 'void'
+        dispatch: 'void',
+        ...options
       }
     )
   },
 
-  async machineShutdown () {
+  async machineShutdown (options?: NotifyOptions) {
     baseEmit(
       'machine.shutdown', {
-        dispatch: 'void'
+        dispatch: 'void',
+        ...options
       }
     )
   },
 
-  async machineUpdateStatus (refresh = false) {
+  async machineUpdateStatus (refresh = false, options?: NotifyOptions) {
     baseEmit(
       'machine.update.status', {
         dispatch: 'version/onUpdateStatus',
-        params: { refresh },
-        wait: Waits.onVersionRefresh
+        wait: Waits.onVersionRefresh,
+        ...options,
+        params: {
+          refresh
+        }
       }
     )
   },
 
-  async machineUpdateRefresh (name?: string) {
+  async machineUpdateRefresh (name?: string, options?: NotifyOptions) {
     baseEmit(
       'machine.update.refresh', {
         dispatch: 'version/onUpdateStatus',
-        params: { name },
-        wait: Waits.onVersionRefresh
+        wait: Waits.onVersionRefresh,
+        ...options,
+        params: {
+          name
+        }
       }
     )
   },
 
-  async machineUpdateRecover (name: string, hard = false) {
+  async machineUpdateRecover (name: string, hard = false, options?: NotifyOptions) {
     const dispatch = name === 'moonraker'
       ? 'version/onUpdatedMoonraker'
       : name === 'klipper'
         ? 'version/onUpdatedKlipper'
         : 'version/onUpdatedClient'
+
     baseEmit(
       'machine.update.recover', {
         dispatch,
-        params: { name, hard }
+        ...options,
+        params: {
+          name,
+          hard
+        }
       }
     )
   },
 
-  async machineUpdateMoonraker () {
+  async machineUpdateMoonraker (options?: NotifyOptions) {
     baseEmit(
       'machine.update.moonraker', {
-        dispatch: 'version/onUpdatedMoonraker'
+        dispatch: 'version/onUpdatedMoonraker',
+        ...options
       }
     )
   },
 
-  async machineUpdateKlipper () {
+  async machineUpdateKlipper (options?: NotifyOptions) {
     baseEmit(
       'machine.update.klipper', {
         dispatch: 'version/onUpdatedKlipper',
+        ...options,
         params: {
           include_deps: true
         }
@@ -116,189 +137,232 @@ export const SocketActions = {
     )
   },
 
-  async machineUpdateClient (name: string) {
+  async machineUpdateClient (name: string, options?: NotifyOptions) {
     const dispatch = name === 'fluidd'
       ? 'version/onUpdatedFluidd'
       : 'version/onUpdatedClient'
+
     baseEmit(
       'machine.update.client', {
         dispatch,
-        params: { name }
+        ...options,
+        params: {
+          name
+        }
       }
     )
   },
 
-  async machineUpdateSystem () {
+  async machineUpdateSystem (options?: NotifyOptions) {
     baseEmit(
       'machine.update.system', {
-        dispatch: 'version/onUpdatedSystem'
+        dispatch: 'version/onUpdatedSystem',
+        ...options
       }
     )
   },
 
-  async machineUpdateAll () {
+  async machineUpdateAll (options?: NotifyOptions) {
     baseEmit(
       'machine.update.full', {
-        dispatch: 'version/onUpdatedAll'
+        dispatch: 'version/onUpdatedAll',
+        ...options
       }
     )
   },
 
-  async machineProcStats () {
+  async machineProcStats (options?: NotifyOptions) {
     baseEmit(
       'machine.proc_stats', {
-        dispatch: 'server/onMachineProcStats'
+        dispatch: 'server/onMachineProcStats',
+        ...options
       }
     )
   },
 
-  async machineSystemInfo () {
+  async machineSystemInfo (options?: NotifyOptions) {
     baseEmit(
       'machine.system_info', {
-        dispatch: 'server/onMachineSystemInfo'
+        dispatch: 'server/onMachineSystemInfo',
+        ...options
       }
     )
   },
 
-  async machineDevicePowerDevices () {
+  async machineDevicePowerDevices (options?: NotifyOptions) {
     baseEmit(
       'machine.device_power.devices', {
-        dispatch: 'power/onInit'
+        dispatch: 'power/onInit',
+        ...options
       }
     )
   },
 
-  async machineDevicePowerStatus (device: string) {
+  async machineDevicePowerStatus (device: string, options?: NotifyOptions) {
     baseEmit(
       'machine.device_power.status', {
         dispatch: 'power/onStatus',
-        params: { [device]: null }
+        ...options,
+        params: {
+          [device]: null
+        }
       }
     )
   },
 
-  async machineDevicePowerSetDevice (device: string, action: 'on' | 'off' | 'toggle', wait?: string) {
+  async machineDevicePowerSetDevice (device: string, action: 'on' | 'off' | 'toggle', options?: NotifyOptions) {
     baseEmit(
       'machine.device_power.post_device', {
         dispatch: 'power/onStatus',
+        wait: `${Waits.onDevicePowerToggle}/${device}`,
+        ...options,
         params: {
           device,
           action
-        },
-        wait
+        }
       }
     )
   },
 
-  async machinePeripheralsUsb () {
+  async machinePeripheralsUsb (options?: NotifyOptions) {
     baseEmit(
       'machine.peripherals.usb', {
         dispatch: 'server/onMachinePeripherals',
-        wait: Waits.onMachinePeripheralsUsb
+        wait: Waits.onMachinePeripheralsUsb,
+        ...options
       }
     )
   },
 
-  async machinePeripheralsSerial () {
+  async machinePeripheralsSerial (options?: NotifyOptions) {
     baseEmit(
       'machine.peripherals.serial', {
         dispatch: 'server/onMachinePeripherals',
-        wait: Waits.onMachinePeripheralsSerial
+        wait: Waits.onMachinePeripheralsSerial,
+        ...options
       }
     )
   },
 
-  async machinePeripheralsVideo () {
+  async machinePeripheralsVideo (options?: NotifyOptions) {
     baseEmit(
       'machine.peripherals.video', {
         dispatch: 'server/onMachinePeripherals',
-        wait: Waits.onMachinePeripheralsVideo
+        wait: Waits.onMachinePeripheralsVideo,
+        ...options
       }
     )
   },
 
-  async machinePeripheralsCanbus (canbusInterface: string) {
-    const wait = `${Waits.onMachinePeripheralsCanbus}/${canbusInterface}`
+  async machinePeripheralsCanbus (canbusInterface: string, options?: NotifyOptions) {
     baseEmit(
       'machine.peripherals.canbus', {
         dispatch: 'server/onMachinePeripheralsCanbus',
+        wait: `${Waits.onMachinePeripheralsCanbus}/${canbusInterface}`,
+        ...options,
         params: {
           interface: canbusInterface
-        },
-        wait
+        }
       }
     )
   },
 
-  async machineTimelapseSetSettings (settings: Partial<TimelapseWritableSettings>, wait?: string) {
+  async machineTimelapseSetSettings (settings: Partial<TimelapseWritableSettings>, options?: NotifyOptions) {
     baseEmit(
       'machine.timelapse.post_settings', {
         dispatch: 'timelapse/onSettings',
-        params: settings,
-        wait
+        ...options,
+        params: settings
       }
     )
   },
 
-  async machineTimelapseSaveFrames (wait?: string) {
+  async machineTimelapseSaveFrames (options?: NotifyOptions) {
     baseEmit(
       'machine.timelapse.saveframes', {
-        wait
+        wait: Waits.onTimelapseSaveFrame,
+        ...options
       }
     )
   },
 
-  async machineTimelapseRender () {
-    baseEmit('machine.timelapse.render', {})
+  async machineTimelapseRender (options?: NotifyOptions) {
+    baseEmit('machine.timelapse.render', {
+      ...options
+    })
   },
 
-  async printerInfo () {
+  async machineTimelapseGetSettings (options?: NotifyOptions) {
+    baseEmit(
+      'machine.timelapse.get_settings', {
+        dispatch: 'timelapse/onSettings',
+        ...options
+      }
+    )
+  },
+
+  async machineTimelapseLastFrameInfo (options?: NotifyOptions) {
+    baseEmit(
+      'machine.timelapse.lastframeinfo', {
+        dispatch: 'timelapse/onLastFrame',
+        ...options
+      }
+    )
+  },
+
+  async printerInfo (options?: NotifyOptions) {
     baseEmit(
       'printer.info', {
-        dispatch: 'printer/onPrinterInfo'
+        dispatch: 'printer/onPrinterInfo',
+        ...options
       }
     )
   },
 
-  async printerRestart () {
+  async printerRestart (options?: NotifyOptions) {
     baseEmit(
       'printer.restart', {
         dispatch: 'void',
-        wait: Waits.onKlipperRestart
+        wait: Waits.onKlipperRestart,
+        ...options
       }
     )
   },
 
-  async printerFirmwareRestart () {
+  async printerFirmwareRestart (options?: NotifyOptions) {
     baseEmit(
       'printer.firmware_restart', {
         dispatch: 'void',
-        wait: Waits.onKlipperFirmwareRestart
+        wait: Waits.onKlipperFirmwareRestart,
+        ...options
       }
     )
   },
 
-  async printerQueryEndstops () {
+  async printerQueryEndstops (options?: NotifyOptions) {
     baseEmit(
       'printer.query_endstops.status', {
         dispatch: 'printer/onQueryEndstops',
-        wait: Waits.onQueryEndstops
+        wait: Waits.onQueryEndstops,
+        ...options
       }
     )
   },
 
-  async printerObjectsList () {
+  async printerObjectsList (options?: NotifyOptions) {
     baseEmit(
       'printer.objects.list', {
-        dispatch: 'printer/onPrinterObjectsList'
+        dispatch: 'printer/onPrinterObjectsList',
+        ...options
       }
     )
   },
 
-  async printerObjectsSubscribe (objects: { [key: string]: null }) {
+  async printerObjectsSubscribe (objects: Record<string, null>, options?: NotifyOptions) {
     baseEmit(
       'printer.objects.subscribe', {
         dispatch: 'printer/onPrinterObjectsSubscribe',
+        ...options,
         params: {
           objects
         }
@@ -306,10 +370,11 @@ export const SocketActions = {
     )
   },
 
-  async printerPrintStart (path: string) {
+  async printerPrintStart (path: string, options?: NotifyOptions) {
     baseEmit(
       'printer.print.start', {
         dispatch: 'void',
+        ...options,
         params: {
           filename: path
         }
@@ -317,104 +382,96 @@ export const SocketActions = {
     )
   },
 
-  async printerPrintCancel () {
+  async printerPrintCancel (options?: NotifyOptions) {
     baseEmit(
       'printer.print.cancel', {
         dispatch: 'printer/onPrintCancel',
-        wait: Waits.onPrintCancel
+        wait: Waits.onPrintCancel,
+        ...options
       }
     )
   },
 
-  async printerPrintPause () {
+  async printerPrintPause (options?: NotifyOptions) {
     baseEmit(
       'printer.print.pause', {
         dispatch: 'printer/onPrintPause',
-        wait: Waits.onPrintPause
+        wait: Waits.onPrintPause,
+        ...options
       }
     )
   },
 
-  async printerPrintResume () {
+  async printerPrintResume (options?: NotifyOptions) {
     baseEmit(
       'printer.print.resume', {
         dispatch: 'printer/onPrintResume',
-        wait: Waits.onPrintResume
+        wait: Waits.onPrintResume,
+        ...options
       }
     )
   },
 
-  async printerGcodeScript (gcode: string, wait?: string) {
+  async printerGcodeScript (gcode: string, options?: NotifyOptions) {
     baseEmit(
       'printer.gcode.script', {
         dispatch: 'console/onGcodeScript',
+        ...options,
         params: {
           script: gcode
-        },
-        wait
+        }
       }
     )
   },
 
-  async printerGcodeHelp () {
+  async printerGcodeHelp (options?: NotifyOptions) {
     baseEmit(
       'printer.gcode.help', {
-        dispatch: 'console/onGcodeHelp'
+        dispatch: 'console/onGcodeHelp',
+        ...options
       }
     )
   },
 
-  async printerEmergencyStop () {
+  async printerEmergencyStop (options?: NotifyOptions) {
     baseEmit(
       'printer.emergency_stop', {
-        dispatch: 'void'
+        dispatch: 'void',
+        ...options
       }
     )
   },
 
-  async serverInfo () {
+  async serverInfo (options?: NotifyOptions) {
     baseEmit(
       'server.info', {
-        dispatch: 'server/onServerInfo'
+        dispatch: 'server/onServerInfo',
+        ...options
       }
     )
   },
 
-  async identify (params?: { client_name: string, version: string, type: string, url: string }) {
+  async serverConnectionIdentify (params?: { client_name: string, version: string, type: string, url: string }, options?: NotifyOptions) {
     baseEmit('server.connection.identify', {
       dispatch: 'socket/onConnectionId',
+      ...options,
       params
     })
   },
 
-  async timelapseState () {
-    baseEmit(
-      'machine.timelapse.get_settings', {
-        dispatch: 'timelapse/onSettings'
-      }
-    )
-
-    baseEmit(
-      'machine.timelapse.lastframeinfo', {
-        dispatch: 'timelapse/onLastFrame'
-      }
-    )
-  },
-
-  async serverConfig () {
+  async serverConfig (options?: NotifyOptions) {
     baseEmit(
       'server.config', {
-        dispatch: 'server/onServerConfig'
+        dispatch: 'server/onServerConfig',
+        ...options
       }
     )
   },
 
-  /**
-   * Writes data to moonraker's DB.
-   */
-  async serverWrite (key: string, value: unknown, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+  async serverWrite (key: string, value: unknown, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
     baseEmit(
       'server.database.post_item', {
+        ...options,
         params: {
           namespace,
           key,
@@ -424,9 +481,10 @@ export const SocketActions = {
     )
   },
 
-  async serverDelete (key: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+  async serverDelete (key: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
     baseEmit(
       'server.database.delete_item', {
+        ...options,
         params: {
           namespace,
           key
@@ -435,10 +493,11 @@ export const SocketActions = {
     )
   },
 
-  async serverRead (key?: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+  async serverRead (key?: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
     baseEmit(
       'server.database.get_item', {
         dispatch: 'socket/onServerRead',
+        ...options,
         params: {
           namespace,
           key
@@ -447,18 +506,20 @@ export const SocketActions = {
     )
   },
 
-  async serverRestart () {
+  async serverRestart (options?: NotifyOptions) {
     baseEmit(
       'server.restart', {
-        dispatch: 'void'
+        dispatch: 'void',
+        ...options
       }
     )
   },
 
-  async serverTemperatureStore () {
+  async serverTemperatureStore (options?: NotifyOptions) {
     baseEmit(
       'server.temperature_store', {
         dispatch: 'charts/initTempStore',
+        ...options,
         params: {
           include_monitors: true
         }
@@ -466,77 +527,82 @@ export const SocketActions = {
     )
   },
 
-  async serverGcodeStore () {
+  async serverGcodeStore (options?: NotifyOptions) {
     baseEmit(
       'server.gcode_store', {
-        dispatch: 'console/onGcodeStore'
+        dispatch: 'console/onGcodeStore',
+        ...options
       }
     )
   },
 
-  async serverHistoryList (params?: { start?: number; limit?: number; before?: number; since?: number; order?: string }) {
+  async serverHistoryList (params?: { start?: number; limit?: number; before?: number; since?: number; order?: string }, options?: NotifyOptions) {
     baseEmit(
       'server.history.list', {
         dispatch: 'history/onHistoryList',
+        ...options,
         params
       }
     )
   },
 
-  async serverHistoryTotals () {
+  async serverHistoryTotals (options?: NotifyOptions) {
     baseEmit(
       'server.history.totals', {
-        dispatch: 'history/onHistoryTotals'
+        dispatch: 'history/onHistoryTotals',
+        ...options
       }
     )
   },
 
-  async serverHistoryDeleteJob (uid: string) {
+  async serverHistoryDeleteJob (uid: string, options?: NotifyOptions) {
     const params = uid === 'all'
-      ? {
-          all: true
-        }
+      ? { all: true }
       : { uid }
 
     baseEmit(
       'server.history.delete_job', {
         dispatch: 'history/onDelete',
+        ...options,
         params
       }
     )
   },
 
-  async serverHistoryResetTotals () {
+  async serverHistoryResetTotals (options?: NotifyOptions) {
     baseEmit(
       'server.history.reset_totals', {
-        dispatch: 'history/onHistoryChange'
+        dispatch: 'history/onHistoryChange',
+        ...options
       }
     )
   },
 
-  async serverJobQueueStatus () {
+  async serverJobQueueStatus (options?: NotifyOptions) {
     baseEmit(
       'server.job_queue.status', {
         dispatch: 'jobQueue/onJobQueueStatus',
-        wait: Waits.onJobQueue
+        wait: Waits.onJobQueue,
+        ...options
       }
     )
   },
 
-  async serverJobQueuePostJob (filenames: string[], reset?: boolean) {
+  async serverJobQueuePostJob (filenames: string[], reset?: boolean, options?: NotifyOptions) {
     baseEmit(
       'server.job_queue.post_job', {
         dispatch: 'jobQueue/onJobQueueStatus',
+        wait: Waits.onJobQueue,
+        ...options,
         params: {
           filenames,
           reset
-        },
-        wait: Waits.onJobQueue
+        }
       }
     )
   },
 
-  async serverJobQueueDeleteJobs (jobIds: string[]) {
+  async serverJobQueueDeleteJobs (jobIds: string[], options?: NotifyOptions) {
     const params = jobIds.length > 0 && jobIds[0] === 'all'
       ? { all: true }
       : { job_ids: jobIds }
@@ -544,26 +610,29 @@ export const SocketActions = {
     baseEmit(
       'server.job_queue.delete_job', {
         dispatch: 'jobQueue/onJobQueueStatus',
-        params,
-        wait: Waits.onJobQueue
+        wait: Waits.onJobQueue,
+        ...options,
+        params
       }
     )
   },
 
-  async serverJobQueuePause () {
+  async serverJobQueuePause (options?: NotifyOptions) {
     baseEmit(
       'server.job_queue.pause', {
         dispatch: 'jobQueue/onJobQueueStatus',
-        wait: Waits.onJobQueue
+        wait: Waits.onJobQueue,
+        ...options
       }
     )
   },
 
-  async serverJobQueueStart () {
+  async serverJobQueueStart (options?: NotifyOptions) {
     baseEmit(
       'server.job_queue.start', {
         dispatch: 'jobQueue/onJobQueueStatus',
-        wait: Waits.onJobQueue
+        wait: Waits.onJobQueue,
+        ...options
       }
     )
   },
@@ -573,12 +642,12 @@ export const SocketActions = {
    * Expects the full path including root.
    * Optionally pass the just the filename and path.
    */
-  async serverFilesMetadata (filename: string) {
-    const wait = `${Waits.onFileSystem}/gcodes/${filename}`
+  async serverFilesMetadata (filename: string, options?: NotifyOptions) {
     baseEmit(
       'server.files.metadata', {
         dispatch: 'files/onFileMetaData',
-        wait,
+        wait: `${Waits.onFileSystem}/gcodes/${filename}`,
+        ...options,
         params: {
           filename
         }
@@ -586,12 +655,12 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesMetascan (filename: string) {
-    const wait = `${Waits.onFileSystem}/gcodes/${filename}`
+  async serverFilesMetascan (filename: string, options?: NotifyOptions) {
     baseEmit(
       'server.files.metascan', {
         dispatch: 'files/onFileMetaData',
-        wait,
+        wait: `${Waits.onFileSystem}/gcodes/${filename}`,
+        ...options,
         params: {
           filename
         }
@@ -603,13 +672,13 @@ export const SocketActions = {
    * This only requires path, but we pass root along too
    * for brevity.
    */
-  async serverFilesGetDirectory (path: string) {
-    const wait = `${Waits.onFileSystem}/${path}/`
+  async serverFilesGetDirectory (path: string, options?: NotifyOptions) {
     baseEmit(
       'server.files.get_directory',
       {
         dispatch: 'files/onServerFilesGetDirectory',
-        wait,
+        wait: `${Waits.onFileSystem}/${path}/`,
+        ...options,
         params: {
           path,
           extended: true
@@ -618,13 +687,13 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesListRoot (root: string) {
-    const wait = `${Waits.onFileSystem}/${root}/`
+  async serverFilesListRoot (root: string, options?: NotifyOptions) {
     baseEmit(
       'server.files.list',
       {
         dispatch: 'files/onServerFilesListRoot',
-        wait,
+        wait: `${Waits.onFileSystem}/${root}/`,
+        ...options,
         params: {
           root
         }
@@ -632,12 +701,12 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesMove (source: string, dest: string) {
-    const wait = `${Waits.onFileSystem}/${source}/`
+  async serverFilesMove (source: string, dest: string, options?: NotifyOptions) {
     baseEmit(
       'server.files.move', {
         dispatch: 'void',
-        wait,
+        wait: `${Waits.onFileSystem}/${source}/`,
+        ...options,
         params: {
           source,
           dest
@@ -646,12 +715,12 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesCopy (source: string, dest: string) {
-    const wait = `${Waits.onFileSystem}/${source}/`
+  async serverFilesCopy (source: string, dest: string, options?: NotifyOptions) {
     baseEmit(
       'server.files.copy', {
         dispatch: 'void',
-        wait,
+        wait: `${Waits.onFileSystem}/${source}/`,
+        ...options,
         params: {
           source,
           dest
@@ -660,12 +729,12 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesZip (dest: string, items: string[], store_only?: boolean) {
-    const wait = `${Waits.onFileSystem}/${dest}/`
+  async serverFilesZip (dest: string, items: string[], store_only?: boolean, options?: NotifyOptions) {
     baseEmit(
       'server.files.zip', {
         dispatch: 'void',
-        wait,
+        wait: `${Waits.onFileSystem}/${dest}/`,
+        ...options,
         params: {
           dest,
           items,
@@ -679,12 +748,12 @@ export const SocketActions = {
    * Create a directory.
    * Root should be included in the path.
    */
-  async serverFilesPostDirectory (path: string) {
-    const wait = `${Waits.onFileSystem}/${path}/`
+  async serverFilesPostDirectory (path: string, options?: NotifyOptions) {
     baseEmit(
       'server.files.post_directory', {
         dispatch: 'void',
-        wait,
+        wait: `${Waits.onFileSystem}/${path}/`,
+        ...options,
         params: {
           path
         }
@@ -692,12 +761,12 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesDeleteFile (path: string) {
-    const wait = `${Waits.onFileSystem}/${path}`
+  async serverFilesDeleteFile (path: string, options?: NotifyOptions) {
     baseEmit(
       'server.files.delete_file', {
         dispatch: 'void',
-        wait,
+        wait: `${Waits.onFileSystem}/${path}`,
+        ...options,
         params: {
           path
         }
@@ -705,12 +774,12 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesDeleteDirectory (path: string, force = false) {
-    const wait = `${Waits.onFileSystem}/${path}/`
+  async serverFilesDeleteDirectory (path: string, force = false, options?: NotifyOptions) {
     baseEmit(
       'server.files.delete_directory', {
         dispatch: 'void',
-        wait,
+        wait: `${Waits.onFileSystem}/${path}/`,
+        ...options,
         params: {
           path,
           force
@@ -719,18 +788,20 @@ export const SocketActions = {
     )
   },
 
-  async serverAnnouncementsList () {
+  async serverAnnouncementsList (options?: NotifyOptions) {
     baseEmit(
       'server.announcements.list', {
-        dispatch: 'announcements/onAnnouncementsList'
+        dispatch: 'announcements/onAnnouncementsList',
+        ...options
       }
     )
   },
 
-  async serverAnnouncementsDismiss (entry_id: string, wake_time?: number) {
+  async serverAnnouncementsDismiss (entry_id: string, wake_time?: number, options?: NotifyOptions) {
     baseEmit(
       'server.announcements.dismiss', {
         dispatch: 'void',
+        ...options,
         params: {
           entry_id,
           wake_time
@@ -739,10 +810,11 @@ export const SocketActions = {
     )
   },
 
-  async serverLogsRollover (application?: string) {
+  async serverLogsRollover (application?: string, options?: NotifyOptions) {
     baseEmit(
       'server.logs.rollover', {
         dispatch: 'server/onLogsRollOver',
+        ...options,
         params: {
           application
         }
@@ -750,25 +822,28 @@ export const SocketActions = {
     )
   },
 
-  async serverWebcamsList () {
+  async serverWebcamsList (options?: NotifyOptions) {
     baseEmit(
       'server.webcams.list', {
-        dispatch: 'webcams/onWebcamsList'
+        dispatch: 'webcams/onWebcamsList',
+        ...options
       }
     )
   },
 
-  async serverWebcamsWrite (webcam: WebcamConfig) {
+  async serverWebcamsWrite (webcam: WebcamConfig, options?: NotifyOptions) {
     baseEmit(
       'server.webcams.post_item', {
+        ...options,
         params: webcam
       }
     )
   },
 
-  async serverWebcamsDelete (uid: string) {
+  async serverWebcamsDelete (uid: string, options?: NotifyOptions) {
     baseEmit(
       'server.webcams.delete_item', {
+        ...options,
         params: {
           uid
         }
@@ -776,106 +851,115 @@ export const SocketActions = {
     )
   },
 
-  async serverSensorsList () {
+  async serverSensorsList (options?: NotifyOptions) {
     baseEmit(
       'server.sensors.list', {
+        dispatch: 'sensors/onSensorsList',
+        ...options,
         params: {
           extended: true
-        },
-        dispatch: 'sensors/onSensorsList'
+        }
       }
     )
   },
 
-  async serverAnalysisStatus () {
+  async serverAnalysisStatus (options?: NotifyOptions) {
     baseEmit(
       'server.analysis.status', {
-        dispatch: 'analysis/onAnalysisStatus'
+        dispatch: 'analysis/onAnalysisStatus',
+        ...options
       }
     )
   },
 
-  async serverAnalysisEstimate (filename: string, estimator_config?: string) {
-    const wait = `${Waits.onFileSystem}/gcodes/${filename}`
+  async serverAnalysisEstimate (filename: string, estimator_config?: string, options?: NotifyOptions) {
     baseEmit(
       'server.analysis.estimate', {
+        wait: `${Waits.onFileSystem}/gcodes/${filename}`,
+        dispatch: 'void',
+        ...options,
         params: {
           filename,
           estimator_config
-        },
-        wait,
-        dispatch: 'void'
+        }
       }
     )
   },
 
-  async serverAnalysisProcess (filename: string, estimator_config?: string, force?: boolean) {
-    const wait = `${Waits.onFileSystem}/gcodes/${filename}`
+  async serverAnalysisProcess (filename: string, estimator_config?: string, force?: boolean, options?: NotifyOptions) {
     baseEmit(
       'server.analysis.process', {
+        wait: `${Waits.onFileSystem}/gcodes/${filename}`,
+        dispatch: 'analysis/onAnalysisProcess',
+        ...options,
         params: {
           filename,
           estimator_config,
           force
-        },
-        wait,
-        dispatch: 'analysis/onAnalysisProcess'
+        }
       }
     )
   },
 
-  async serverSpoolmanGetSpoolId () {
+  async serverSpoolmanGetSpoolId (options?: NotifyOptions) {
     baseEmit(
       'server.spoolman.get_spool_id', {
-        dispatch: 'spoolman/onActiveSpool'
+        dispatch: 'spoolman/onActiveSpool',
+        ...options
       }
     )
   },
 
-  async serverSpoolmanPostSpoolId (spoolId: number | undefined) {
+  async serverSpoolmanPostSpoolId (spoolId: number | undefined, options?: NotifyOptions) {
     baseEmit(
       'server.spoolman.post_spool_id', {
-        params: { spool_id: spoolId },
-        dispatch: 'spoolman/onActiveSpool'
+        dispatch: 'spoolman/onActiveSpool',
+        ...options,
+        params: {
+          spool_id: spoolId
+        }
       }
     )
   },
 
-  async serverSpoolmanProxyGetAvailableSpools () {
+  async serverSpoolmanProxyGetAvailableSpools (options?: NotifyOptions) {
     baseEmit(
       'server.spoolman.proxy', {
+        dispatch: 'spoolman/onAvailableSpools',
+        ...options,
         params: {
           request_method: 'GET',
           path: '/v1/spool',
           use_v2_response: true
-        },
-        dispatch: 'spoolman/onAvailableSpools'
+        }
       }
     )
   },
 
-  async serverSpoolmanProxyGetInfo () {
+  async serverSpoolmanProxyGetInfo (options?: NotifyOptions) {
     baseEmit(
       'server.spoolman.proxy', {
+        dispatch: 'spoolman/onInfo',
+        ...options,
         params: {
           request_method: 'GET',
           path: '/v1/info',
           use_v2_response: true
-        },
-        dispatch: 'spoolman/onInfo'
+        }
       }
     )
   },
 
-  async serverSpoolmanProxyGetSettingCurrency () {
+  async serverSpoolmanProxyGetSettingCurrency (options?: NotifyOptions) {
     baseEmit(
       'server.spoolman.proxy', {
+        dispatch: 'spoolman/onSettingCurrency',
+        ...options,
         params: {
           request_method: 'GET',
           path: '/v1/setting/currency',
           use_v2_response: true
-        },
-        dispatch: 'spoolman/onSettingCurrency'
+        }
       }
     )
   }
