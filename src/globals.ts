@@ -523,7 +523,8 @@ export const Waits = Object.freeze({
   onMmuRecover: 'onMmuRecover',
   onMmuUnlock: 'onMmuUnlock',
   onMmuUnload: 'onMmuUnload',
-  onMmuLoad: 'onMmuLoad'
+  onMmuLoad: 'onMmuLoad',
+  onMmuTtgMap: 'onMmuTtgMap'
 })
 
 export const SupportedLocales = Object.freeze([

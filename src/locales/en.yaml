@@ -1025,8 +1025,9 @@ app:
       unknown: Unknown
       all_tools: All Tools
       ok: Ok
+      cancel: Cancel
       gate: Gate
-      endless_spool: ES &infin;∞
+      endless_spool: ES ∞
       filament_info: Filament Information
       slicer_expects: Slicer Expects
     msg:

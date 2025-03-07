@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import type { Spool, Filament } from '@/store/spoolman/types'
-import type { MoonrakerFileMeta } from '@/store/files/types'
+import type { AppFileWithMeta } from '@/store/files/types'
 import { SocketActions } from '@/api/socketActions'
 
 export interface MmuGateDetails {
@@ -414,7 +414,6 @@ export default class MmuMixin extends Vue {
             speedOverride: 100,
             endlessSpoolGroup: null
         }
-        // PAULconst gd: Partial<MmuGateDetails> = {}
         if (gateIndex === this.TOOL_GATE_BYPASS) {
             gd.index = -2
             gd.status = -1
@@ -467,7 +466,7 @@ export default class MmuMixin extends Vue {
         return this.$store.state.printer.printer.mmu?.slicer_tool_map
     }
 
-    toolDetails(toolIndex: number, file?: MoonrakerFileMeta): SlicerToolDetails {
+    toolDetails(toolIndex: number, file?: AppFileWithMeta | null): SlicerToolDetails {
         const td: SlicerToolDetails = {
             color: '',
             material: 'Unknown',
@@ -475,7 +474,6 @@ export default class MmuMixin extends Vue {
             name: 'Unknown',
             inUse: false
         }
-        //PAUL const td: Partial<SlicerToolDetails> = {}
 
         // Have file so use metadata
         if (file) {
@@ -495,22 +493,12 @@ export default class MmuMixin extends Vue {
             }
             const colors = c1.length === 0 || c1.every((c: string) => c === '') ? c2 : c1
             td.color = colors.length > toolIndex ? this.formColorString(colors[toolIndex]) : this.formColorString('')
-
-            // This is just a string so split
-            const materials = file.filament_type ?? ''
-            const processedMaterials = materials ? materials.split(/[,;]/).map((element: string) => element.trim()) : []
-            td.material = processedMaterials[toolIndex] || 'Unknown'
-
+            const materials = file.filament_type ?? []
+            td.material = materials.length > toolIndex ? materials[toolIndex] : 'Unknown'
             const temps = file.filament_temps ?? []
             td.temp = temps.length > toolIndex ? temps[toolIndex] : -1
-
-            // This is just a string so split
-            const names = file.filament_name ?? ''
-            const processedNames = names
-                ? names.split(/[,;]/).map((element) => element.trim().replace(/^["']|["']$/g, ''))
-                : []
-            td.name = processedNames[toolIndex] || 'Unknown'
-
+            const names = file.filament_name ?? []
+            td.name = names.length > toolIndex ? names[toolIndex] : 'Unknown'
             const referencedTools = file.referenced_tools ?? []
             td.inUse = referencedTools?.includes(toolIndex) ?? false
         } else {

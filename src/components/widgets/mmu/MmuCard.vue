@@ -5,7 +5,7 @@
                       layout-path="dashboard.mmu-card">
 
         <template #menu>
-            <v-menu bottom left offset-y min-width="220" :close-on-content-click="false">
+            <v-menu bottom left offset-y transition="slide-y-transition" min-width="220" :close-on-content-click="false">
                 <template #activator="{ on, attrs, value }">
                     <app-btn small v-bind="attrs" v-on="on" class="me-1 my-1">
                         <v-icon small class="me-1">$tools</v-icon>
@@ -64,7 +64,7 @@
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-divider/>
+                    <v-divider class="my-2" />
                     <v-list-item :disabled="!enabled"
                                  :class="{ 'mmu-disabled': !enabled }"
                                  :loading="hasWait($waits.onMmuStats)"
@@ -106,11 +106,11 @@
                     </v-list-item>
                 </v-list>
             </v-menu>
-            <!-- PAUL TODO this moves elsewhere<mmu-panel-settings /> -->
+            <mmu-settings />
         </template>
 
         <div v-if="hasMmu" :class="{ 'mmu-disabled': !enabled }">
-            <v-container fluid>
+            <v-container fluid pa-2>
                 <v-row align="start">
                     <mmu-machine />
                 </v-row>
@@ -164,10 +164,24 @@
                 </v-row>
             </v-container>
         </div>
-    </collapsable-card>
-<!-- PAUL
         <mmu-recover-state-dialog :show-dialog="showRecoverStateDialog" @close="showRecoverStateDialog = false" />
         <mmu-edit-ttg-map-dialog :show-dialog="showEditTtgMapDialog" @close="showEditTtgMapDialog = false" />
+    </collapsable-card>
+<!-- PAUL
+    <file-preview-dialog
+      v-if="filePreviewState.open"
+      v-model="filePreviewState.open"
+      :file="filePreviewState.file"
+      :filename="filePreviewState.filename"
+      :extension="filePreviewState.extension"
+      :src="filePreviewState.src"
+      :type="filePreviewState.type"
+      :width="filePreviewState.width"
+      :readonly="filePreviewState.readonly"
+      :path="currentPath"
+      @remove="handleRemove"
+      @download="handleDownload"
+    />
         <mmu-edit-gate-map-dialog :show-dialog="showEditGateMapDialog" @close="showEditGateMapDialog = false" />
         <mmu-maintenance-dialog :show-dialog="showMaintenanceDialog" @close="showMaintenanceDialog = false" />
 -->
@@ -195,9 +209,9 @@ import MmuTtgMap from '@/components/widgets/mmu/MmuTtgMap.vue'
 import MmuControls from '@/components/widgets/mmu/MmuControls.vue'
 import MmuGateSummary from '@/components/widgets/mmu/MmuGateSummary.vue'
 import MmuClogMeter from '@/components/widgets/mmu/MmuClogMeter.vue'
-/* PAUL
-import mmuPanelSettings from '@/components/panels/Mmu/mmuPanelSettings.vue'
-*/
+import MmuSettings from '@/components/widgets/mmu/MmuSettings.vue'
+import MmuRecoverStateDialog from '@/components/widgets/mmu/MmuRecoverStateDialog.vue'
+import MmuEditTtgMapDialog from '@/components/widgets/mmu/MmuEditTtgMapDialog.vue'
 
 @Component({
     components: {
@@ -207,9 +221,9 @@ import mmuPanelSettings from '@/components/panels/Mmu/mmuPanelSettings.vue'
         MmuControls,
         MmuGateSummary,
         MmuClogMeter,
-/* PAUL
-        mmuPanelSettings,
-*/
+        MmuSettings,
+        MmuRecoverStateDialog,
+        MmuEditTtgMapDialog,
     },
 })
 export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
