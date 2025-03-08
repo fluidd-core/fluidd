@@ -854,6 +854,19 @@ export const SocketActions = {
     )
   },
 
+  async serverSpoolmanProxyGetInfo () {
+    baseEmit(
+      'server.spoolman.proxy', {
+        params: {
+          request_method: 'GET',
+          path: '/v1/info',
+          use_v2_response: true
+        },
+        dispatch: 'spoolman/onInfo'
+      }
+    )
+  },
+
   async serverSpoolmanProxyGetSettingCurrency () {
     baseEmit(
       'server.spoolman.proxy', {
