@@ -517,7 +517,10 @@ app:
     msg:
       confirm: Are you sure? This will clear the entire printer queue
     label:
+      eta: ETA
+      filament: Filament
       number_of_copies: Number of copies
+      print_time: Print time
     title:
       multiply_job: Multiply Job | Multiply Jobs
     tooltip:

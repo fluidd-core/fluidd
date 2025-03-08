@@ -30,6 +30,7 @@
     >
       <template #item="{ headers, item, isSelected, select }">
         <app-data-table-row
+          :key="item.name"
           :headers="headers"
           :item="item"
           :is-selected="isSelected && item.name !== '..'"
@@ -62,7 +63,7 @@
               class="no-pointer-events"
             >
               <v-icon
-                v-if="!item.thumbnails || !item.thumbnails.length"
+                v-if="!item.thumbnails?.length"
                 :small="dense"
                 :color="(item.type === 'file') ? 'grey' : 'primary'"
               >
