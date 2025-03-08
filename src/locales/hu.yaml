@@ -461,6 +461,13 @@ app:
         total_duration: Teljes időtartam
         file_processors: Fájl processzorok
         user: Felhasználó
+        extruder_colors: Extruder színek
+        filament_change_count: Nyomtatószál csere
+        filament_colors: Nyomtatószál színe
+        filament_temps: Nyomtatószál hőfokok
+        filament_weights: Nyomtatószál súlya
+        mmu_print: MMU nyomtatás
+        referenced_tools: Referencia eszközök
     title:
       add_chart: Ábra hozzáadása
       add_printer: Nyomtató hozzáadása
