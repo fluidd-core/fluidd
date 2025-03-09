@@ -242,7 +242,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
       for (let i = 0; i < sortBy.length; i++) {
         const sortKey = sortBy[i]
 
-        const sortValues = [
+        const sortValues: unknown[] = [
           get(a, sortKey),
           get(b, sortKey)
         ]
@@ -258,12 +258,17 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
         }
 
         // If values are of type number, compare as number
-        if (sortValues.every(x => typeof (x) === 'number' && !isNaN(x))) {
+        if (
+          typeof sortValues[0] === 'number' &&
+          typeof sortValues[1] === 'number' &&
+          !isNaN(sortValues[0]) &&
+          !isNaN(sortValues[1])
+        ) {
           return sortValues[0] - sortValues[1]
         }
 
         const sortValuesAsString = sortValues
-          .map(s => (s || '').toString() as string)
+          .map(s => s?.toString() ?? '')
 
         if (this.textSortOrder === 'numeric-prefix') {
           const [sortA, sortB] = sortValuesAsString
