@@ -15,7 +15,7 @@ export const actions: ActionTree<JobQueueState, RootState> = {
 
   async updateJobsMetadata ({ state, rootState }) {
     const pathFilenames = new Set(
-      state.queued_jobs
+      state.queuedJobs
         .map(job => job.filename)
     )
 

@@ -8,10 +8,10 @@ export const mutations: MutationTree<JobQueueState> = {
   },
 
   setQueueState (state, payload: QueueState) {
-    state.queue_state = payload
+    state.queueState = payload
   },
 
   setQueuedJobs (state, payload: QueuedJob[]) {
-    state.queued_jobs = payload || []
+    state.queuedJobs = payload || []
   }
 }

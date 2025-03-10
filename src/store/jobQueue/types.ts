@@ -1,8 +1,8 @@
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 
 export interface JobQueueState {
-  queue_state: QueueState;
-  queued_jobs: QueuedJob[];
+  queueState: QueueState;
+  queuedJobs: QueuedJob[];
 }
 
 export interface QueuedJob {
