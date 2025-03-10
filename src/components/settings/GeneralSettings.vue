@@ -443,7 +443,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
         ]
       : []
 
-    const pins: OutputPin[] = this.$store.getters['printer/getPins']
+    const pins: OutputPin[] = this.$store.getters['printer/getPins']()
     const pinEntries = pins.length
       ? [
           { header: 'Klipper' },
