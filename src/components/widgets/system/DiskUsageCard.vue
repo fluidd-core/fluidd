@@ -87,7 +87,7 @@ export default class PrinterStatsCard extends Vue {
   }
 
   get diskUsage (): DiskUsage | null {
-    const diskUsage: DiskUsage | null = this.$store.state.files.disk_usage
+    const diskUsage: DiskUsage | null = this.$store.state.files.diskUsage
 
     if (diskUsage == null) {
       SocketActions.serverFilesGetDirectory('config')
