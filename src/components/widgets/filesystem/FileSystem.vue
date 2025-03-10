@@ -136,7 +136,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
-import type { AppDirectory, AppFile, AppFileWithMeta, FileFilterType, FileBrowserEntry, RootProperties } from '@/store/files/types'
+import type { AppDirectory, AppFile, AppFileWithMeta, FileFilterType, FileBrowserEntry, RootProperties, MoonrakerPathContent } from '@/store/files/types'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import ServicesMixin from '@/mixins/services'
@@ -621,9 +621,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (!this.disabled) {
       this.currentPath = path
 
-      const directoryLoaded = path in this.$store.state.files.pathFiles
+      const pathContent: MoonrakerPathContent | undefined = this.$store.state.files.pathContent[path]
 
-      if (!directoryLoaded) {
+      if (pathContent == null || pathContent.partial === true) {
         this.handleRefresh()
       }
     }

@@ -7,7 +7,7 @@ export const defaultState = (): FilesState => {
     currentPaths: {},
     disk_usage: null,
     rootFiles: {},
-    pathFiles: {}
+    pathContent: {}
   }
 }
 
