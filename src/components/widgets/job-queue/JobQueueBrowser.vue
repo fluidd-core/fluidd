@@ -1,7 +1,7 @@
 <template>
   <div class="file-system">
     <app-draggable
-      v-model="jobs"
+      v-model="jobsWithKey"
       :options="{
         group: 'jobQueue',
       }"
@@ -23,27 +23,104 @@
         disable-pagination
         disable-sort
         fixed-header
-        @click:row="handleRowClick"
-        @contextmenu:row.prevent="handleContextMenu"
       >
-        <template #[`item.data-table-select`]="{ isSelected, select }">
-          <v-simple-checkbox
-            :value="isSelected"
-            class="mt-1"
-            @click.stop="select(!isSelected)"
-          />
+        <template #item="{ headers, item, isSelected, select }">
+          <app-data-table-row
+            :key="item.key"
+            :headers="headers"
+            :item="item"
+            :is-selected="isSelected"
+            :class="{
+              'v-data-table__inactive': item.file == null
+            }"
+            @click.prevent="$emit('row-click', item, $event)"
+            @contextmenu.prevent="$emit('row-click', item, $event)"
+          >
+            <template #[`item.data-table-select`]>
+              <v-simple-checkbox
+                :value="isSelected"
+                class="mt-1"
+                @click.stop="select(!isSelected)"
+              />
+            </template>
+
+            <template #[`item.handle`]>
+              <app-drag-icon :disabled="jobTotals.withoutFile > 0" />
+            </template>
+
+            <template #[`item.data-table-icons`]>
+              <v-layout
+                justify-center
+                class="no-pointer-events"
+              >
+                <v-icon
+                  v-if="item.file == null"
+                  :small="dense"
+                  color="grey"
+                >
+                  $fileCancel
+                </v-icon>
+                <v-icon
+                  v-else-if="!item.file.thumbnails?.length"
+                  :small="dense"
+                  color="grey"
+                >
+                  $file
+                </v-icon>
+                <img
+                  v-else
+                  class="file-icon-thumb"
+                  :src="getThumbUrl(item.file, 'gcodes', getFilePaths(item.filename).path, dense != true, item.file.modified)"
+                  :width="dense ? 16 : 32"
+                >
+              </v-layout>
+            </template>
+
+            <template #[`item.filename`]="{ value }">
+              {{ value }}
+            </template>
+
+            <template #[`item.time_added`]="{ value }">
+              {{ $filters.formatAbsoluteDateTime(value * 1000) }}
+            </template>
+
+            <template #[`item.time_in_queue`]="{ value }">
+              {{ $filters.formatCounterSeconds(value) }}
+            </template>
+          </app-data-table-row>
         </template>
-        <template #[`item.handle`]>
-          <app-drag-icon />
-        </template>
-        <template #[`item.filename`]="{ value }">
-          {{ value }}
-        </template>
-        <template #[`item.time_added`]="{ value }">
-          {{ $filters.formatAbsoluteDateTime(value * 1000) }}
-        </template>
-        <template #[`item.time_in_queue`]="{ value }">
-          {{ $filters.formatCounterSeconds(value) }}
+
+        <template #footer>
+          <div class="v-data-footer px-3 py-1">
+            <v-chip
+              v-if="jobTotals.withoutFile > 0"
+              small
+              class="ma-1"
+              color="warning"
+            >
+              {{ $t('app.job_queue.label.unknown_jobs') }}: {{ jobTotals.withoutFile }}
+            </v-chip>
+
+            <v-chip
+              small
+              class="ma-1"
+            >
+              {{ $t('app.job_queue.label.filament') }}: {{ $filters.getReadableLengthString(jobTotals.filamentLength) }} / {{ $filters.getReadableWeightString(jobTotals.filamentWeight) }}
+            </v-chip>
+            <v-chip
+              small
+              class="ma-1"
+            >
+              {{ $t('app.job_queue.label.print_time') }}: {{ $filters.formatCounterSeconds(jobTotals.time) }}
+            </v-chip>
+
+            <v-chip
+              small
+              class="ma-1"
+            >
+              {{ $t('app.job_queue.label.eta') }}: {{ $filters.formatDateTime(Date.now() + jobTotals.time * 1000) }}
+            </v-chip>
+          </div>
         </template>
       </v-data-table>
     </app-draggable>
@@ -52,19 +129,31 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
-import type { QueuedJob } from '@/store/jobQueue/types'
+import type { QueuedJobWithAppFile } from '@/store/jobQueue/types'
 import { SocketActions } from '@/api/socketActions'
 import StateMixin from '@/mixins/state'
-import type { DataTableHeader, DataTableItemProps } from 'vuetify'
+import type { DataTableHeader } from 'vuetify'
+import FilesMixin from '@/mixins/files'
+import getFilePaths from '@/util/get-file-paths'
 
-type QueueJobWithKey = QueuedJob & {
+type JobTotals = {
+  filamentLength: number,
+  filamentWeight: number,
+  time: number,
+  withoutFile: number
+}
+
+type QueueJobWithKey = QueuedJobWithAppFile & {
   key: string
 }
 
 @Component({})
-export default class JobQueueBrowser extends Mixins(StateMixin) {
+export default class JobQueueBrowser extends Mixins(StateMixin, FilesMixin) {
   @VModel({ type: Array, default: () => [] })
-  selected!: QueuedJob[]
+  selected!: QueuedJobWithAppFile[]
+
+  @Prop({ type: Array, required: true })
+  readonly jobs!: QueuedJobWithAppFile[]
 
   @Prop({ type: Boolean })
   readonly dense?: boolean
@@ -74,24 +163,6 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
 
   @Prop({ type: Array, required: true })
   readonly headers!: DataTableHeader[]
-
-  get jobs (): QueuedJob[] {
-    this.selected = []
-
-    return this.$store.state.jobQueue.queued_jobs
-  }
-
-  set jobs (value: QueuedJob[]) {
-    const filenames = value
-      .map(job => job.filename)
-
-    if (this.$store.getters['server/getIsMinApiVersion']('1.1.0')) {
-      SocketActions.serverJobQueuePostJob(filenames, true)
-    } else {
-      SocketActions.serverJobQueueDeleteJobs(['all'])
-      SocketActions.serverJobQueuePostJob(filenames)
-    }
-  }
 
   get jobsWithKey (): QueueJobWithKey[] {
     const refresh = Date.now()
@@ -103,12 +174,42 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
       }))
   }
 
-  handleRowClick (_data: unknown, props: DataTableItemProps, event: MouseEvent) {
-    this.$emit('row-click', props.item, event)
+  set jobsWithKey (value: QueueJobWithKey[]) {
+    const filenames = value
+      .map(job => job.filename)
+
+    if (this.$store.getters['server/getIsMinApiVersion']('1.1.0')) {
+      SocketActions.serverJobQueuePostJob(filenames, true)
+    } else {
+      SocketActions.serverJobQueueDeleteJobs(['all'])
+      SocketActions.serverJobQueuePostJob(filenames)
+    }
   }
 
-  handleContextMenu (event: MouseEvent, props: DataTableItemProps) {
-    this.$emit('row-click', props.item, event)
+  get jobTotals (): JobTotals {
+    return this.jobs.reduce<JobTotals>((totals, job) => {
+      if (job.file) {
+        if ('filament_total' in job.file) {
+          totals.filamentLength += job.file.filament_total ?? 0
+        }
+
+        if ('filament_weight_total' in job.file) {
+          totals.filamentWeight += job.file.filament_weight_total ?? 0
+        }
+
+        if ('estimated_time' in job.file) {
+          totals.time += job.file.estimated_time ?? 0
+        }
+      } else {
+        totals.withoutFile++
+      }
+
+      return totals
+    }, { filamentLength: 0, filamentWeight: 0, time: 0, withoutFile: 0 })
+  }
+
+  getFilePaths (filename: string) {
+    return getFilePaths(filename, 'gcodes')
   }
 }
 </script>

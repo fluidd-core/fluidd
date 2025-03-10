@@ -1,17 +1,22 @@
 <template>
   <div class="handle-container">
-    <v-icon>
+    <v-icon :disabled="disabled">
       $drag
     </v-icon>
-    <div class="handle" />
+    <div
+      v-if="!disabled"
+      class="handle"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class AppDraggable extends Vue {
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 }
 </script>
 
