@@ -82,7 +82,8 @@ export default class MmuGateSummary extends Mixins(StateMixin, MmuMixin) {
     get weightText() {
         const spoolmanSpool = this.spoolmanSpool(this.details.spoolId)
         const remaining = spoolmanSpool?.remaining_weight ?? null
-        // PAUL const total = spoolmanSpool?.initial_weight ?? spoolmanSpool?.filament?.weight ?? null
+        // Technically this is what spoolman implements but not available in Fluidd:
+        //   const total = spoolmanSpool?.initial_weight ?? spoolmanSpool?.filament?.weight ?? null
         const total = spoolmanSpool?.filament?.weight ?? null
         if (remaining === null || total === null) return null
 

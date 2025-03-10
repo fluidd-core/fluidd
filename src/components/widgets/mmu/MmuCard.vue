@@ -282,17 +282,8 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
     }
 
     handleSyncSpoolman() {
-// PAUL        this.refreshSpoolmanData()
         this.sendGcode('MMU_SPOOLMAN REFRESH=1 QUIET=1', this.$waits.onMmuSpoolman)
     }
-
-/* PAUL maybe not needed
-    mounted() {
-        if (this.$store.state.printer.printer.mmu?.spoolman_support ?? 'off' !== 'off') {
-            this.refreshSpoolmanData()
-        }
-    }
-*/
 }
 </script>
 
