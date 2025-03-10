@@ -83,7 +83,7 @@ import Component from 'vue-class-component'
 import { Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
-import type { MmuGateDetails } from '@/mixins/mmu'
+import type { MmuGateDetails } from '@/types'
 
 @Component({})
 export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
@@ -107,11 +107,12 @@ export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
         const spoolmanSpool = this.spoolmanSpool(this.details.spoolId)
         if (!spoolmanSpool) return -1
 
-        if (this.details.spoolId <= 0 || this.spoolmanSupport === 'off') return -1
+        if (!this.details.spoolId || this.details.spoolId <= 0 || this.spoolmanSupport === 'off') return -1
 
         // Pull live from spoolman and calculate percentage
         const remaining = spoolmanSpool?.remaining_weight ?? null
-        // PAULconst total = spoolmanSpool?.initial_weight ?? spoolmanSpool?.filament?.weight ?? null
+        // Technically this is what spoolman implements but not available in Fluidd:
+        //   const total = spoolmanSpool?.initial_weight ?? spoolmanSpool?.filament?.weight ?? null
         const total = spoolmanSpool?.filament?.weight ?? null
         if (remaining === null || total === null) return -1
         return Math.round(Math.max(0, Math.min(100, (remaining / total) * 100)))
@@ -130,7 +131,7 @@ export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
         return start + (end - start) * (this.filamentAmount / 100)
     }
 
-    computeContrastColor(): void {
+    computeContrastColor() {
         const filamentRef = this.$refs.filament as Element
         if (!filamentRef) {
             this.contrastColor = 'black'

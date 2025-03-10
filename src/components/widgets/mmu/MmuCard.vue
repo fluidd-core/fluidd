@@ -166,25 +166,9 @@
         </div>
         <mmu-recover-state-dialog :show-dialog="showRecoverStateDialog" @close="showRecoverStateDialog = false" />
         <mmu-edit-ttg-map-dialog :show-dialog="showEditTtgMapDialog" @close="showEditTtgMapDialog = false" />
-    </collapsable-card>
-<!-- PAUL
-    <file-preview-dialog
-      v-if="filePreviewState.open"
-      v-model="filePreviewState.open"
-      :file="filePreviewState.file"
-      :filename="filePreviewState.filename"
-      :extension="filePreviewState.extension"
-      :src="filePreviewState.src"
-      :type="filePreviewState.type"
-      :width="filePreviewState.width"
-      :readonly="filePreviewState.readonly"
-      :path="currentPath"
-      @remove="handleRemove"
-      @download="handleDownload"
-    />
-        <mmu-edit-gate-map-dialog :show-dialog="showEditGateMapDialog" @close="showEditGateMapDialog = false" />
         <mmu-maintenance-dialog :show-dialog="showMaintenanceDialog" @close="showMaintenanceDialog = false" />
--->
+        <mmu-edit-gate-map-dialog :show-dialog="showEditGateMapDialog" @close="showEditGateMapDialog = false" />
+    </collapsable-card>
 </template>
 
 <script lang="ts">
@@ -212,6 +196,8 @@ import MmuClogMeter from '@/components/widgets/mmu/MmuClogMeter.vue'
 import MmuSettings from '@/components/widgets/mmu/MmuSettings.vue'
 import MmuRecoverStateDialog from '@/components/widgets/mmu/MmuRecoverStateDialog.vue'
 import MmuEditTtgMapDialog from '@/components/widgets/mmu/MmuEditTtgMapDialog.vue'
+import MmuEditGateMapDialog from '@/components/widgets/mmu/MmuEditGateMapDialog.vue'
+import MmuMaintenanceDialog from '@/components/widgets/mmu/MmuMaintenanceDialog.vue'
 
 @Component({
     components: {
@@ -224,6 +210,8 @@ import MmuEditTtgMapDialog from '@/components/widgets/mmu/MmuEditTtgMapDialog.vu
         MmuSettings,
         MmuRecoverStateDialog,
         MmuEditTtgMapDialog,
+        MmuEditGateMapDialog,
+        MmuMaintenanceDialog,
     },
 })
 export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
@@ -294,15 +282,17 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
     }
 
     handleSyncSpoolman() {
-        this.refreshSpoolmanData()
+// PAUL        this.refreshSpoolmanData()
         this.sendGcode('MMU_SPOOLMAN REFRESH=1 QUIET=1', this.$waits.onMmuSpoolman)
     }
 
+/* PAUL maybe not needed
     mounted() {
-        if (this.$store.state.printer.mmu?.spoolman_support ?? 'off' !== 'off') {
+        if (this.$store.state.printer.printer.mmu?.spoolman_support ?? 'off' !== 'off') {
             this.refreshSpoolmanData()
         }
     }
+*/
 }
 </script>
 

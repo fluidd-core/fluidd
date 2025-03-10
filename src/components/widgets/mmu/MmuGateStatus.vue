@@ -38,7 +38,7 @@ import Component from 'vue-class-component'
 import { Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
-import type { MmuGateDetails } from '@/mixins/mmu'
+import type { MmuGateDetails } from '@/types'
 
 @Component({})
 export default class MmuGateStatus extends Mixins(StateMixin, MmuMixin) {

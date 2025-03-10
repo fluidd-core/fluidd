@@ -524,7 +524,17 @@ export const Waits = Object.freeze({
   onMmuUnlock: 'onMmuUnlock',
   onMmuUnload: 'onMmuUnload',
   onMmuLoad: 'onMmuLoad',
-  onMmuTtgMap: 'onMmuTtgMap'
+  onMmuTtgMap: 'onMmuTtgMap',
+  onMmuGateMap: 'onMmuGateMap',
+  onMmuSyncGearMotor: 'onMmuSyncGearMotor',
+  onMmuMotorsOn: 'onMmuMotorsOn',
+  onMmuMotorsOff: 'onMmuMotorsOff',
+  onMmuHome: 'onMmuHome',
+  onMmuGrip: 'onMmuGrip',
+  onMmuRelease: 'onMmuRelease',
+  onMmuServo: 'onMmuServo',
+  onMmuLed: 'onMmuLed',
+  onMmuTestConfig: 'onMmuTestConfig'
 })
 
 export const SupportedLocales = Object.freeze([

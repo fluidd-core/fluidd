@@ -1,8 +1,8 @@
 <template>
     <app-dialog v-model="showDialog"
-                width="800" persistent
+                width="800" persistent title-shadow
                 :fullscreen="isMobileViewport"
-                :title="$t('app.mmu.btn.edit_ttg_map')">
+                :title="$t('app.mmu.title.edit_ttg_map')">
 
             <!-- UPPER SECTION -->
             <v-card-subtitle>
@@ -216,7 +216,7 @@ import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
 import type { AppFileWithMeta } from '@/store/files/types'
-import type { SlicerToolDetails, MmuGateDetails } from '@/mixins/mmu'
+import type { SlicerToolDetails, MmuGateDetails } from '@/types'
 import Vue from 'vue'
 import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuTtgMap from '@/components/widgets/mmu/MmuTtgMap.vue'
@@ -480,7 +480,7 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
 
     executeResetTtgMap() {
         this.initialize()
-        this.doSend('MMU_TTG_MAP RESET=1')
+        this.sendGcode('MMU_TTG_MAP RESET=1')
     }
 
     close() {
@@ -493,9 +493,9 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
         let mapStr = this.localTtgMap.join(',')
         let esGrpStr = this.localEndlessSpoolGroups.join(',')
         let cmd = `MMU_TTG_MAP MAP="${mapStr}"`
-        this.doSend(cmd)
+        this.sendGcode(cmd)
         cmd = `MMU_ENDLESS_SPOOL GROUPS="${esGrpStr}"`
-        this.doSend(cmd)
+        this.sendGcode(cmd)
         this.close()
     }
 

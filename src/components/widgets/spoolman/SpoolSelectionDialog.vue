@@ -3,7 +3,7 @@
     v-model="open"
     scrollable
     :max-width="isMobileViewport ? '90vw' : '75vw'"
-    :title="$tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro })"
+    :title="title"
     title-shadow
   >
     <template #menu>
@@ -176,7 +176,7 @@
       <app-btn
         text
         color="warning"
-        @click="open = false"
+        @click="close()"
       >
         {{ $t('app.general.btn.cancel') }}
       </app-btn>
@@ -184,11 +184,7 @@
         color="primary"
         @click="handleSelectSpool"
       >
-        {{
-          filename
-            ? $t('app.general.btn.print')
-            : $tc('app.spoolman.btn.select', targetMacro ? 2 : 1, { macro: targetMacro })
-        }}
+        {{ selectBtnText }}
       </app-btn>
     </template>
 
@@ -236,11 +232,15 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   @Watch('open')
   onOpen () {
     if (this.open) {
+      if (this.mmuSelection) {
+        this.selectedSpoolId = null
+      } else {
       this.selectedSpoolId = this.$store.state.spoolman.activeSpool ?? null
       if (this.targetMacro) {
         const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro)
         this.selectedSpoolId = macro?.variables.spool_id ?? null
       }
+    }
 
       if (this.currentFileName) {
         const { rootPath } = getFilePaths(this.currentFileName, 'gcodes')
@@ -273,6 +273,23 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       ...this.$store.state.spoolman.dialog,
       show: val
     })
+  }
+
+  get title (): string {
+    const count = this.mmuSelection ? 1 : (this.targetMacro ? 2 : 1);
+    const params = this.mmuSelection ? {} : { macro: this.targetMacro };
+    return this.$tc('app.spoolman.title.spool_selection', count, params);
+  }
+
+  get selectBtnText (): string {
+    if (this.mmuSelection) {
+      return this.$tc('app.spoolman.btn.select', 1).toString();
+    }
+    if (this.filename) {
+      return this.$t('app.general.btn.print').toString();
+    }
+    const count = this.targetMacro ? 2 : 1;
+    return this.$tc('app.spoolman.btn.select', count, { macro: this.targetMacro }).toString();
   }
 
   get availableSpools () {
@@ -358,6 +375,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$store.getters['files/getFile'](rootPath, filename)
   }
 
+  get mmuSelection (): boolean {
+    return this.$store.state.spoolman.dialog.mmuSelection ?? false
+  }
+
   get targetMacro (): string | undefined {
     return this.$store.state.spoolman.dialog.targetMacro
   }
@@ -403,6 +424,16 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   async handleSelectSpool () {
+    if (this.mmuSelection) {
+      // save selection for parent dialog
+      this.$store.commit('spoolman/setDialogState', {
+        ...this.$store.state.spoolman.dialog,
+        selectedSpoolId: this.selectedSpoolId
+      })
+      this.close()
+      return
+    }
+
     if (!this.selectedSpoolId) {
       // no spool selected
 
@@ -439,7 +470,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
       }
 
-      this.open = false
+      this.close()
       return
     }
 
@@ -518,6 +549,14 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       }
     }
 
+    this.close()
+  }
+
+  close () {
+    this.$store.commit('spoolman/setDialogState', {
+      ...this.$store.state.spoolman.dialog,
+      mmuSelection: false
+    })
     this.open = false
   }
 

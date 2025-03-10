@@ -985,8 +985,8 @@ app:
       cancel: Cancel
       mmu_maintenance: MMU Maintenance
       recover_state: Fix MMU State
-      edit_gate_map: Edit Gate Info
-      edit_ttg_map: Map Tools
+      edit_gate_map: Edit Filaments
+      edit_ttg_map: Map Tools / Filaments
       sync: Sync
       unsync: Unsync
       off: Off
@@ -1001,6 +1001,9 @@ app:
     title:
       headline: Mmu
       mmu_maintenance: MMU Maintenance
+      recover_state: Fix MMU State (Error Recover)
+      edit_gate_map: Edit Filaments (Edit Gate Map)
+      edit_ttg_map: Map Tools / Filaments (Edit TTG Map)
     label:
       clog_detection: Clog Detection
       tool_mapping: Tool Mapping
@@ -1015,7 +1018,7 @@ app:
       motor_sync: Extruder Motor Sync
       extruder_only: Extruder Only
       mmu_motors: MMU Motors
-      extruder_tx: Extruder Tx
+      extruder_tx: Tools Tx
       selector: Selector
       leds: LEDs
       ui_visual: UI Visual
@@ -1030,6 +1033,11 @@ app:
       endless_spool: ES ∞
       filament_info: Filament Information
       slicer_expects: Slicer Expects
+      spoolman_last_used: Last Used
+      spoolman_never: Never
+      spoolman_today: Today
+      spoolman_yesterday: Yesterday
+      spoolman_days_ago: '%{days} days ago'
     msg:
       reset_gate_map_confirmation: This will reset the entire gate map back to the default defined in 'mmu_parameters.cfg' or empty map if no defaults are available
       reset_ttg_map_confirmation: This will reset the entire tool-to-gate mapping and endless spool groups back to the default defined in 'mmu_parameters.cfg' or default 1:1 mapping in no defaults are available

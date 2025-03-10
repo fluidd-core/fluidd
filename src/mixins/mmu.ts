@@ -2,8 +2,9 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import type { Spool, Filament } from '@/store/spoolman/types'
 import type { AppFileWithMeta } from '@/store/files/types'
-import { SocketActions } from '@/api/socketActions'
+import type { MmuGateDetails, SlicerToolDetails, MmuUnitDetails } from '@/types'
 
+/* PAUL
 export interface MmuGateDetails {
     index: number
     status: number
@@ -11,7 +12,7 @@ export interface MmuGateDetails {
     material: string
     color: string
     temperature: number
-    spoolId: number
+    spoolId: number | null
     speedOverride: number
     endlessSpoolGroup: number | null
 }
@@ -37,6 +38,7 @@ export interface MmuUnitDetails {
     hasBypass: boolean
     multiGear: boolean
 }
+*/
 
 export const W3C_COLORS: { name: string; hex: string }[] = [
     { name: 'aliceblue', hex: '#F0F8FF' },
@@ -367,7 +369,7 @@ export default class MmuMixin extends Vue {
     }
 
     get gateStatus(): number[] {
-        return this.$store.state.printer.printer.mmu?.gate_status
+        return this.$store.state.printer.printer.mmu?.gate_status ?? []
     }
     readonly GATE_UNKNOWN: number = -1
     readonly GATE_EMPTY: number = 0
@@ -375,27 +377,27 @@ export default class MmuMixin extends Vue {
     readonly GATE_AVAILABLE_FROM_BUFFER: number = 2
 
     get gateFilamentName(): string[] {
-        return this.$store.state.printer.printer.mmu?.gate_filament_name
+        return this.$store.state.printer.printer.mmu?.gate_filament_name ?? []
     }
 
     get gateMaterial(): string[] {
-        return this.$store.state.printer.printer.mmu?.gate_material
+        return this.$store.state.printer.printer.mmu?.gate_material ?? []
     }
 
     get gateColor(): string[] {
-        return this.$store.state.printer.printer.mmu?.gate_color
+        return this.$store.state.printer.printer.mmu?.gate_color ?? []
     }
 
     get gateTemperature(): number[] {
-        return this.$store.state.printer.printer.mmu?.gate_temperature
+        return this.$store.state.printer.printer.mmu?.gate_temperature ?? []
     }
 
     get gateSpoolId(): number[] {
-        return this.$store.state.printer.printer.mmu?.gate_spool_id
+        return this.$store.state.printer.printer.mmu?.gate_spool_id ?? []
     }
 
     get gateSpeedOverride(): number[] {
-        return this.$store.state.printer.printer.mmu?.gate_speed_override
+        return this.$store.state.printer.printer.mmu?.gate_speed_override ?? []
     }
 
     get gateMap(): MmuGateDetails[] {
@@ -448,7 +450,7 @@ export default class MmuMixin extends Vue {
         return gd
     }
 
-    spoolmanSpool(spoolId: number): Spool | null {
+    spoolmanSpool(spoolId: number | null): Spool | null {
         const activeSpool = this.$store.state.spoolman.activeSpool ?? null
         if (activeSpool?.id === spoolId) {
             return activeSpool
@@ -672,29 +674,9 @@ export default class MmuMixin extends Vue {
         return `Changing tool${fromText}${toText}`
     }
 
-    refreshSpoolmanData() {
-        this.$store.dispatch('server/spoolman/refreshSpools')
-    }
-
-    async doLoadingSend(gcode: string, loadingKey: string) {
-        await this.$store.dispatch('socket/addLoading', { name: loadingKey })
-        this.doSend(gcode)
-        await new Promise((resolve) => setTimeout(resolve, 500))
-        await this.$store.dispatch('socket/removeLoading', { name: loadingKey })
-    }
-
-    async doSend(gcode: string) {
-//PAUL        this.$store.dispatch('server/addEvent', { message: gcode, type: 'command' })
-//PAUL        this.$socket.emit('printer.gcode.script', { script: gcode })
-        await SocketActions.printerGcodeScript(gcode)
-    }
-
     get canSend(): boolean {
-        return true // PAUL temp
-//PAUL        const idleTimeout = this.$store.state.printer.printer.idle_timeout?.state
-//PAUL        return (
-//PAUL            !['printing'].includes(this.printer_state) && !['Printing'].includes(idleTimeout)
-//PAUL        )
+        const idleTimeout = this.$store.state.printer.printer.idle_timeout?.state
+        return !['Printing'].includes(idleTimeout)
     }
 
     /*

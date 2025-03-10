@@ -32,7 +32,7 @@ import Component from 'vue-class-component'
 import { Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
-import type { MmuGateDetails } from '@/mixins/mmu'
+import type { MmuGateDetails } from '@/types'
 import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuGateSummary from '@/components/widgets/mmu/MmuGateSummary.vue'
 

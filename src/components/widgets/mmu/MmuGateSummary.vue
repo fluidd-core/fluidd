@@ -19,7 +19,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
-import type { MmuGateDetails } from '@/mixins/mmu'
+import type { MmuGateDetails } from '@/types'
 
 @Component({})
 export default class MmuGateSummary extends Mixins(StateMixin, MmuMixin) {
@@ -68,7 +68,7 @@ export default class MmuGateSummary extends Mixins(StateMixin, MmuMixin) {
     }
 
     get spoolIdText(): string | null {
-        if (this.details.spoolId <= 0) return null
+        if (!this.details.spoolId || this.details.spoolId <= 0) return null
         return 'Spool ID: #' + this.details.spoolId
     }
 

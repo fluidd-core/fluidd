@@ -1,18 +1,8 @@
 <template>
     <app-dialog v-model="showDialog"
-                width="600" persistent
+                width="600" persistent title-shadow
                 :fullscreen="isMobileViewport"
-                :title="$t('app.mmu.btn.mmu_maintenance')">
-
-<!-- PAUL
-    <v-dialog v-model="showDialog" width="600" persistent :fullscreen="isMobileViewport">
-        <panel :title="$t('Panels.MmuPanel.MmuMaintenance')" :icon="mdiWrenchCog" card-class="mmu-edit-ttg-map-dialog">
-            <template #buttons>
-                <v-btn icon tile @click="close">
-                    <v-icon>{{ mdiCloseThick }}</v-icon>
-                </v-btn>
-            </template>
--->
+                :title="$t('app.mmu.title.mmu_maintenance')">
 
             <v-card-subtitle>
                 {{ $t('app.mmu.msg.maintenance_intro') }}
@@ -22,7 +12,7 @@
                 <v-row dense>
                     <v-col class="col-6 d-flex justify-center align-center">
                         <span class="settings-row-title">
-                            {{ $t('app.mmu.label.moto_sync') }}
+                            {{ $t('app.mmu.label.motor_sync') }}
                         </span>
                     </v-col>
                     <v-col class="col-3 d-flex justify-center">
@@ -32,7 +22,7 @@
                             :disabled="!canSend || syncDrive"
                             class="btn-small-text"
                             color="secondary"
-                            @click="doLoadingSend('MMU_SYNC_GEAR_MOTOR SYNC=1', 'mmu_sync_gear_motor')">
+                            @click="sendGcode('MMU_SYNC_GEAR_MOTOR SYNC=1', $waits.onMmuSyncGearMotor)">
                             <v-icon left>{{ mdiSync }}</v-icon>
                             {{ $t('app.mmu.btn.sync') }}
                         </v-btn>
@@ -44,7 +34,7 @@
                             :disabled="!canSend || !syncDrive"
                             class="btn-small-text"
                             color="secondary"
-                            @click="doLoadingSend('MMU_SYNC_GEAR_MOTOR SYNC=0', 'mmu_sync_gear_motor')">
+                            @click="sendGcode('MMU_SYNC_GEAR_MOTOR SYNC=0', $waits.onMmuSyncGearMotor)">
                             <v-icon left>{{ mdiSyncOff }}</v-icon>
                             {{ $t('app.mmu.btn.unsync') }}
                         </v-btn>
@@ -63,7 +53,7 @@
                             :disabled="!canSend"
                             class="btn-small-text"
                             color="secondary"
-                            @click="doLoadingSend('MMU_LOAD EXTRUDER_ONLY=1', 'mmu_load')">
+                            @click="sendGcode('MMU_LOAD EXTRUDER_ONLY=1', $waits.onMmuLoad)">
                             <v-icon left>{{ mdiDownloadOutline }}</v-icon>
                             {{ $t('app.mmu.btn.load') }}
                         </v-btn>
@@ -75,7 +65,7 @@
                             :disabled="!canSend"
                             class="btn-small-text"
                             color="secondary"
-                            @click="doLoadingSend('MMU_UNLOAD EXTRUDER_ONLY=1', 'mmu_unload')">
+                            @click="sendGcode('MMU_UNLOAD EXTRUDER_ONLY=1', $waits.onMmuUnload)">
                             <v-icon left>{{ mdiUploadOutline }}</v-icon>
                             {{ $t('app.mmu.btn.unload') }}
                         </v-btn>
@@ -95,7 +85,7 @@
                             :disabled="!canSend"
                             class="btn-small-text"
                             color="secondary"
-                            @click="doLoadingSend('MMU_MOTORS_ON', 'mmu_motors_on')">
+                            @click="sendGcode('MMU_MOTORS_ON', $waits.onMmuMotorsOn)">
                             <v-icon left>{{ mdiEngineOutline }}</v-icon>
                             {{ $t('app.mmu.btn.on') }}
                         </v-btn>
@@ -107,7 +97,7 @@
                             :disabled="!canSend"
                             class="btn-small-text"
                             color="secondary"
-                            @click="doLoadingSend('MMU_MOTORS_OFF', 'mmu_motors_off')">
+                            @click="sendGcode('MMU_MOTORS_OFF', $waits.onMmuMotorsOff)">
                             <v-icon left>{{ mdiEngineOffOutline }}</v-icon>
                             {{ $t('app.mmu.btn.off') }}
                         </v-btn>
@@ -138,7 +128,7 @@
                                         :disabled="!canSend"
                                         class="btn-small-text"
                                         color="secondary"
-                                        @click="doLoadingSend('MMU_HOME', 'mmu_home')">
+                                        @click="sendGcode('MMU_HOME', $waits.onMmuHome)">
                                         <v-icon left>{{ mdiHomeOutline }}</v-icon>
                                         {{ $t('app.mmu.btn.home') }}
                                     </v-btn>
@@ -152,7 +142,7 @@
                                         :disabled="!canSend || grip === 'Gripped'"
                                         class="btn-small-text"
                                         color="secondary"
-                                        @click="doLoadingSend('MMU_GRIP', 'mmu_grip')">
+                                        @click="sendGcode('MMU_GRIP', $waits.onMmuGrip)">
                                         <v-icon left>{{ mdiArrowCollapseHorizontal }}</v-icon>
                                         {{ $t('app.mmu.btn.grip') }}
                                     </v-btn>
@@ -164,7 +154,7 @@
                                         :disabled="!canSend || grip === 'Released'"
                                         class="btn-small-text"
                                         color="secondary"
-                                        @click="doLoadingSend('MMU_RELEASE', 'mmu_release')">
+                                        @click="sendGcode('MMU_RELEASE', $waits.onMmuRelease)">
                                         <v-icon left>{{ mdiArrowExpandHorizontal }}</v-icon>
                                         {{ $t('app.mmu.btn.release') }}
                                     </v-btn>
@@ -188,9 +178,9 @@
                                         :disabled="!canSend"
                                         class="btn-small-text"
                                         color="secondary"
-                                        @click="doLoadingSend('MMU_HOME', 'mmu_home')">
+                                        @click="sendGcode('MMU_HOME', $waits.onMmuHome)">
                                         <v-icon left>{{ mdiHomeOutline }}</v-icon>
-                                        {{ $t('Panels.MmuPanel.MmuMaintenanceDialog.Home') }}
+                                        {{ $t('app.mmu.btn.home') }}
                                     </v-btn>
                                 </v-col>
                             </v-row>
@@ -202,9 +192,9 @@
                                         :disabled="!canSend || servo === 'Up'"
                                         class="btn-small-text"
                                         color="secondary"
-                                        @click="doLoadingSend('MMU_SERVO POS=up', 'mmu_servo')">
+                                        @click="sendGcode('MMU_SERVO POS=up', $waits.onMmuServo)">
                                         <v-icon left>{{ mdiArrowUpThin }}</v-icon>
-                                        {{ $t('Panels.MmuPanel.MmuMaintenanceDialog.Up') }}
+                                        {{ $t('app.mmu.btn.up') }}
                                     </v-btn>
                                 </v-col>
                                 <v-col class="col-4 d-flex justify-center">
@@ -214,9 +204,9 @@
                                         :disabled="!canSend || servo === 'Down'"
                                         class="btn-small-text"
                                         color="secondary"
-                                        @click="doLoadingSend('MMU_SERVO POS=down', 'mmu_servo')">
+                                        @click="sendGcode('MMU_SERVO POS=down', $waits.onMmuServo)">
                                         <v-icon left>{{ mdiArrowDownThin }}</v-icon>
-                                        {{ $t('Panels.MmuPanel.MmuMaintenanceDialog.Down') }}
+                                        {{ $t('app.mmu.btn.down') }}
                                     </v-btn>
                                 </v-col>
                                 <v-col class="col-4 d-flex justify-center">
@@ -226,9 +216,9 @@
                                         :disabled="!canSend || servo === 'Move'"
                                         class="btn-small-text"
                                         color="secondary"
-                                        @click="doLoadingSend('MMU_SERVO POS=move', 'mmu_servo')">
+                                        @click="sendGcode('MMU_SERVO POS=move', $waits.onMmuServo)">
                                         <v-icon left>{{ mdiArrowLeftRight }}</v-icon>
-                                        {{ $t('Panels.MmuPanel.MmuMaintenanceDialog.Move') }}
+                                        {{ $t('app.mmu.btn.move') }}
                                     </v-btn>
                                 </v-col>
                             </v-row>
@@ -238,7 +228,7 @@
                     <v-row v-else dense>
                         <v-col cols="3" class="d-flex align-center">
                             <span class="settings-row-subtitle">
-                                {{ $t('Panels.MmuPanel.MmuMaintenanceDialog.NoCustomControls') }}
+                                {{ $t('app.mmu.msg.no_custom_controls') }}
                             </span>
                         </v-col>
                     </v-row>
@@ -247,7 +237,7 @@
                 <v-row dense>
                     <v-col cols="12" class="pt-10">
                         <span class="settings-row-subtitle">
-                            {{ $t('Panels.MmuPanel.MmuMaintenanceDialog.Config') }}
+                            {{ $t('app.mmu.label.config') }}
                         </span>
                         <v-divider class="mb-6 mt-1" />
                     </v-col>
@@ -257,18 +247,18 @@
                     <v-col cols="3" class="d-flex align-center">
                         <v-col class="d-flex flex-column pa-0 my-3">
                             <span class="settings-row-title">
-                                {{ $t('Panels.MmuPanel.MmuMaintenanceDialog.Leds') }}
+                                {{ $t('app.mmu.label.leds') }}
                             </span>
                             <v-switch
                                 v-model="localLedEnable"
                                 :disabled="!mmuLeds"
-                                :label="$t('Panels.MmuPanel.MmuMaintenanceDialog.Enable')"
+                                :label="$t('app.mmu.label.enable')"
                                 hide-details
                                 class="short-switch" />
                             <v-switch
                                 v-model="localLedAnimation"
                                 :disabled="!ledEffectModule"
-                                :label="$t('Panels.MmuPanel.MmuMaintenanceDialog.Animation')"
+                                :label="$t('app.mmu.label.animation')"
                                 hide-details
                                 class="short-switch" />
                         </v-col>
@@ -312,7 +302,10 @@
                         </v-row>
                     </v-col>
                     <v-col cols="2" class="d-flex align-center justify-center">
-                        <v-btn class="btn-no-text" color="secondary" :disabled="!canSend" @click="updateLeds">
+                        <v-btn class="btn-no-text" color="secondary"
+                               :disabled="!canSend"
+                               :loading="hasWait($waits.onMmuLed)"
+                               @click="updateLeds">
                             <v-icon>{{ mdiContentSaveSettingsOutline }}</v-icon>
                         </v-btn>
                     </v-col>
@@ -321,13 +314,13 @@
                 <v-row dense class="mt-4">
                     <v-col cols="3" class="d-flex align-center">
                         <span class="settings-row-title">
-                            {{ $t('Panels.MmuPanel.MmuMaintenanceDialog.UiVisual') }}
+                            {{ $t('app.mmu.label.ui_visual') }}
                         </span>
                     </v-col>
                     <v-col cols="7">
                         <v-row dense>
                             <v-col class="col-4 d-flex justify-end align-center pr-6">
-                                {{ $t('Panels.MmuPanel.MmuMaintenanceDialog.ExtruderTx') }}
+                                {{ $t('app.mmu.label.extruder_tx') }}
                             </v-col>
                             <v-col class="col-8 d-flex align-center">
                                 <v-select
@@ -342,15 +335,13 @@
                 </v-row>
             </v-card-text>
 
-            <v-card-actions>
+            <template #actions>
                 <v-spacer />
-                <v-btn color="primary" text @click="close">
-                    {{ $t('Panels.MmuPanel.Ok') }}
-                </v-btn>
-            </v-card-actions>
-<!-- PAUL
-        </panel>
--->
+                <app-btn color="primary" @click="close" >
+                    {{ $t('app.mmu.label.ok') }}
+                </app-btn>
+            </template>
+
     </app-dialog>
 </template>
 
@@ -362,7 +353,6 @@ import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
 import {
     mdiCloseThick,
-    mdiWrenchCog,
     mdiSync,
     mdiSyncOff,
     mdiDownloadOutline,
@@ -383,7 +373,6 @@ import {
 })
 export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
     mdiCloseThick = mdiCloseThick
-    mdiWrenchCog = mdiWrenchCog
     mdiSync = mdiSync
     mdiSyncOff = mdiSyncOff
     mdiDownloadOutline = mdiDownloadOutline
@@ -424,15 +413,15 @@ export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, Sta
     }
 
     get mmuLeds(): boolean {
-        return !!this.$store.state.printer.mmu_leds
+        return !!this.$store.state.printer.printer.mmu_leds
     }
 
     private hasLedsOfType(type: string): boolean {
-        return (this.$store.state.printer.mmu_leds?.[type] ?? 0) > 0
+        return (this.$store.state.printer.printer.mmu_leds?.[type] ?? 0) > 0
     }
 
     get ledEffectModule(): boolean {
-        return this.$store.state.printer.mmu_leds?.led_effect_module ?? false
+        return this.$store.state.printer.printer.mmu_leds?.led_effect_module ?? false
     }
 
     private unitDisplayName(unit: number): string {
@@ -451,14 +440,14 @@ export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, Sta
         `
             .replace(/\s+/g, ' ')
             .trim()
-        this.doLoadingSend(command, 'mmu_led')
+        this.sendGcode(command, this.$waits.onMmuLed)
 
         this.updateTMacroColor()
     }
 
     private updateTMacroColor() {
         const command: string = `MMU_TEST_CONFIG QUIET=1 t_macro_color=${this.localTMacroColor}`
-        this.doLoadingSend(command, 'mmu_test_config')
+        this.sendGcode(command, this.$waits.onMmuTestConfig)
     }
 
     close() {

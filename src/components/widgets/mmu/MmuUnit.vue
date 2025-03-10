@@ -35,7 +35,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
-import type { MmuGateDetails } from '@/mixins/mmu'
+import type { MmuGateDetails, MmuUnitDetails } from '@/types'
 import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuGateStatus from '@/components/widgets/mmu/MmuGateStatus.vue'
 
@@ -93,7 +93,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
         if (this.editGateMap) {
             this.$emit('select-gate', gate)
         } else if (!this.isPrinting) {
-            this.doSend('MMU_SELECT GATE=' + gate)
+            this.sendGcode('MMU_SELECT GATE=' + gate)
         }
     }
 
@@ -101,7 +101,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
         if (this.editGateMap) {
             this.$emit('select-gate', this.TOOL_GATE_BYPASS)
         } else if (!this.isPrinting) {
-            this.doSend('MMU_SELECT BYPASS=1')
+            this.sendGcode('MMU_SELECT BYPASS=1')
         }
     }
 }

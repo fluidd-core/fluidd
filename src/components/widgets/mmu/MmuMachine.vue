@@ -18,7 +18,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
-import type { MmuGateDetails } from '@/mixins/mmu'
+import type { MmuGateDetails } from '@/types'
 import MmuUnit from '@/components/widgets/mmu/MmuUnit.vue'
 
 @Component({

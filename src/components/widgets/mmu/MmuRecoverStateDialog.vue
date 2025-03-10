@@ -1,8 +1,8 @@
 <template>
     <app-dialog v-model="showDialog"
-                width="600" persistent
+                width="600" persistent title-shadow
                 :fullscreen="isMobileViewport"
-                :title="$t('app.mmu.btn.recover_state')">
+                :title="$t('app.mmu.title.recover_state')">
 
             <v-card-subtitle>
                 {{ $t('app.mmu.msg.recover_intro') }}
@@ -195,11 +195,11 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     }
 
     private gateIndexText(gateIndex: number): string {
-        const num_units = this.$store.state.printer?.mmu_machine?.num_units
+        const num_units = this.$store.state.printer.printer?.mmu_machine?.num_units
         if (num_units > 1) {
             for (let i = 0; i < num_units; i++) {
                 const unitRef = `unit_${i}`
-                const unit = this.$store.state.printer?.mmu_machine?.[unitRef]
+                const unit = this.$store.state.printer.printer?.mmu_machine?.[unitRef]
                 if (i > 0 && gateIndex >= unit.first_gate && gateIndex < unit.first_gate + unit.num_gates) {
                     return `${gateIndex} (unit #${i + 1})`
                 }
@@ -261,7 +261,7 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
         } else if (this.localFilamentPos === this.FILAMENT_POS_LOADED) {
             cmd += ' LOADED=1'
         }
-        this.doSend(cmd)
+        this.sendGcode(cmd)
         this.close()
     }
 

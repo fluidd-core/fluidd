@@ -9,12 +9,10 @@
                             block
                             small
                             :class="btnClass"
-                            :disabled="
-                                !canSend || [GATE_AVAILABLE, GATE_AVAILABLE_FROM_BUFFER].includes(currentGateStatus)
-                            "
+                            :disabled="!canSend || [GATE_AVAILABLE, GATE_AVAILABLE_FROM_BUFFER].includes(currentGateStatus)"
                             :loading="hasWait($waits.onMmuPreload)"
                             v-on="showTooltip ? on : {}"
-                            @click="doLoadingSend('MMU_PRELOAD', 'mmu_preload')">
+                            @click="sendGcode('MMU_PRELOAD', $waits.onMmuPreload)">
                             <v-icon left>{{ mdiDownloadOutline }}</v-icon>
                             {{ $t('app.mmu.btn.preload') }}
                         </v-btn>
@@ -32,7 +30,7 @@
                             :disabled="!canSend || [GATE_EMPTY].includes(currentGateStatus)"
                             :loading="hasWait($waits.onMmuEject)"
                             v-on="showTooltip ? on : {}"
-                            @click="doLoadingSend('MMU_EJECT', 'mmu_eject')">
+                            @click="sendGcode('MMU_EJECT', $waits.onMmuEject)">
                             <v-icon left>{{ mdiEject }}</v-icon>
                             {{ $t('app.mmu.btn.eject') }}
                         </v-btn>
@@ -52,7 +50,7 @@
                             :disabled="!canSend"
                             :loading="hasWait($waits.onMmuCheckGate)"
                             v-on="showTooltip ? on : {}"
-                            @click="doLoadingSend('MMU_CHECK_GATE', 'mmu_check_gate')">
+                            @click="sendGcode('MMU_CHECK_GATE', $waits.onMmuCheckGate)">
                             <v-icon left>{{ mdiCheck }}</v-icon>
                             {{ $t('app.mmu.btn.check_gate') }}
                         </v-btn>
@@ -70,7 +68,7 @@
                             :disabled="!canSend"
                             :loading="hasWait($waits.onMmuRecover)"
                             v-on="showTooltip ? on : {}"
-                            @click="doLoadingSend('MMU_RECOVER', 'mmu_recover')">
+                            @click="sendGcode('MMU_RECOVER', $waits.onMmuRecover)">
                             <v-icon left>{{ mdiAutoFix }}</v-icon>
                             {{ $t('app.mmu.btn.recover') }}
                         </v-btn>
@@ -89,9 +87,9 @@
                             small
                             :class="btnClass"
                             :disabled="!canSend || !isMmuPausedAndLocked"
-                            :loading="hasWait($waits.onMmuUnlock)"
+                            :loading="hasWait($waits.onMmuUnload)"
                             v-on="showTooltip ? on : {}"
-                            @click="doLoadingSend('MMU_UNLOCK', 'mmu_unlock')">
+                            @click="sendGcode('MMU_UNLOCK', $waits.onMmuUnload)">
                             <v-icon left>{{ mdiThermometerPlus }}</v-icon>
                             {{ $t('app.mmu.btn.unlock') }}
                         </v-btn>
@@ -113,7 +111,7 @@
                             :disabled="!canSend || filamentPos === FILAMENT_POS_UNLOADED"
                             :loading="hasWait($waits.onMmuUnload)"
                             v-on="showTooltip ? on : {}"
-                            @click="doLoadingSend('MMU_UNLOAD', 'mmu_unload')">
+                            @click="sendGcode('MMU_UNLOAD', $waits.onMmuUnload)">
                             <v-icon left>{{ mdiUpload }}</v-icon>
                             {{ unloadButtonText }}
                         </v-btn>
@@ -132,7 +130,7 @@
                             :disabled="!canSend || filamentPos !== FILAMENT_POS_UNLOADED"
                             :loading="hasWait($waits.onMmuLoad)"
                             v-on="showTooltip ? on : {}"
-                            @click="doLoadingSend('MMU_LOAD', 'mmu_load')">
+                            @click="sendGcode('MMU_LOAD', $waits.onMmuLoad)">
                             <v-icon left>{{ mdiDownload }}</v-icon>
                             {{ loadButtonText }}
                         </v-btn>
@@ -208,7 +206,7 @@ export default class MmuControls extends Mixins(StateMixin, MmuMixin) {
     }
 
     get currentGateStatus(): number {
-        return this.$store.state.printer.mmu?.gate_status?.[this.gate] ?? -1
+        return this.$store.state.printer.printer.mmu?.gate_status?.[this.gate] ?? -1
     }
 
     @Watch('$store.state.gui.view.mmu.largeFilamentStatus')
