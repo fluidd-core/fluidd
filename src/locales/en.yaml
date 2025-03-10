@@ -521,6 +521,7 @@ app:
       filament: Filament
       number_of_copies: Number of copies
       print_time: Print time
+      unknown_jobs: Unknown jobs
     title:
       multiply_job: Multiply Job | Multiply Jobs
     tooltip:

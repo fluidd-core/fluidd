@@ -45,7 +45,7 @@
             </template>
 
             <template #[`item.handle`]>
-              <app-drag-icon />
+              <app-drag-icon :disabled="jobTotals.withoutFile > 0" />
             </template>
 
             <template #[`item.data-table-icons`]>
@@ -93,10 +93,19 @@
         <template #footer>
           <div class="v-data-footer px-3 py-1">
             <v-chip
+              v-if="jobTotals.withoutFile > 0"
+              small
+              class="ma-1"
+              color="warning"
+            >
+              {{ $t('app.job_queue.label.unknown_jobs') }}: {{ jobTotals.withoutFile }}
+            </v-chip>
+
+            <v-chip
               small
               class="ma-1"
             >
-              {{ $t('app.job_queue.label.filament') }}: {{ $filters.getReadableLengthString(jobTotals.filament_length) }} / {{ $filters.getReadableWeightString(jobTotals.filament_weight) }}
+              {{ $t('app.job_queue.label.filament') }}: {{ $filters.getReadableLengthString(jobTotals.filamentLength) }} / {{ $filters.getReadableWeightString(jobTotals.filamentWeight) }}
             </v-chip>
             <v-chip
               small
@@ -128,9 +137,10 @@ import FilesMixin from '@/mixins/files'
 import getFilePaths from '@/util/get-file-paths'
 
 type JobTotals = {
-  filament_length: number,
-  filament_weight: number,
-  time: number
+  filamentLength: number,
+  filamentWeight: number,
+  time: number,
+  withoutFile: number
 }
 
 type QueueJobWithKey = QueuedJobWithAppFile & {
@@ -180,20 +190,22 @@ export default class JobQueueBrowser extends Mixins(StateMixin, FilesMixin) {
     return this.jobs.reduce<JobTotals>((totals, job) => {
       if (job.file) {
         if ('filament_total' in job.file) {
-          totals.filament_length += job.file.filament_total ?? 0
+          totals.filamentLength += job.file.filament_total ?? 0
         }
 
         if ('filament_weight_total' in job.file) {
-          totals.filament_weight += job.file.filament_weight_total ?? 0
+          totals.filamentWeight += job.file.filament_weight_total ?? 0
         }
 
         if ('estimated_time' in job.file) {
           totals.time += job.file.estimated_time ?? 0
         }
+      } else {
+        totals.withoutFile++
       }
 
       return totals
-    }, { filament_length: 0, filament_weight: 0, time: 0 })
+    }, { filamentLength: 0, filamentWeight: 0, time: 0, withoutFile: 0 })
   }
 
   getFilePaths (filename: string) {
