@@ -91,23 +91,23 @@
         </template>
 
         <template #footer>
-          <div class="v-data-footer py-2">
+          <div class="v-data-footer px-3 py-1">
             <v-chip
               small
-              class="mr-1"
+              class="ma-1"
             >
               {{ $t('app.job_queue.label.filament') }}: {{ $filters.getReadableLengthString(jobTotals.filament_length) }} / {{ $filters.getReadableWeightString(jobTotals.filament_weight) }}
             </v-chip>
             <v-chip
               small
-              class="mr-1"
+              class="ma-1"
             >
               {{ $t('app.job_queue.label.print_time') }}: {{ $filters.formatCounterSeconds(jobTotals.time) }}
             </v-chip>
 
             <v-chip
               small
-              class="mr-1"
+              class="ma-1"
             >
               {{ $t('app.job_queue.label.eta') }}: {{ $filters.formatDateTime(Date.now() + jobTotals.time * 1000) }}
             </v-chip>
