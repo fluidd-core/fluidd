@@ -146,7 +146,7 @@ async function setupMonaco () {
       const linesContent = model.getLinesContent()
 
       const sectionBlocks = linesContent
-        .reduce((state, lineContent, index) => {
+        .reduce<ReduceState<{ sectionName: string, hash: string, range: monaco.IRange }>>((state, lineContent, index) => {
           const section = /^\[([^\]]+)\]/.exec(lineContent)
 
           if (section) {
@@ -177,7 +177,7 @@ async function setupMonaco () {
           }
 
           return state
-        }, { result: [] } as ReduceState<{ sectionName: string, hash: string, range: monaco.IRange }>)
+        }, { result: [] })
         .result
 
       return {
@@ -202,7 +202,7 @@ async function setupMonaco () {
       const linesContent = model.getLinesContent()
 
       const sectionBlocks = linesContent
-        .reduce((state, lineContent, index) => {
+        .reduce<ReduceState<monaco.languages.FoldingRange>>((state, lineContent, index) => {
           const isSection = /^\[[^\]]+\]/.test(lineContent)
 
           if (isSection) {
@@ -220,11 +220,11 @@ async function setupMonaco () {
           }
 
           return state
-        }, { result: [] } as ReduceState<monaco.languages.FoldingRange>)
+        }, { result: [] })
         .result
 
       const regionBlocks = linesContent
-        .reduce((state, lineContent, index) => {
+        .reduce<StackReduceState<number, monaco.languages.FoldingRange>>((state, lineContent, index) => {
           lineContent = lineContent.trim()
 
           if (lineContent.length > 0) {
@@ -246,11 +246,11 @@ async function setupMonaco () {
           }
 
           return state
-        }, { stack: [], result: [] } as StackReduceState<number, monaco.languages.FoldingRange>)
+        }, { stack: [], result: [] })
         .result
 
       const commentBlocks = linesContent
-        .reduce((state, lineContent, index) => {
+        .reduce<ReduceState<monaco.languages.FoldingRange>>((state, lineContent, index) => {
           lineContent = lineContent.trim()
 
           if (lineContent.length > 0) {
@@ -272,7 +272,7 @@ async function setupMonaco () {
           }
 
           return state
-        }, { result: [] } as ReduceState<monaco.languages.FoldingRange>)
+        }, { result: [] })
         .result
 
       return [
@@ -288,7 +288,7 @@ async function setupMonaco () {
       const linesContent = model.getLinesContent()
 
       const layerBlocks = linesContent
-        .reduce((state, lineContent, index) => {
+        .reduce<ReduceState<monaco.languages.FoldingRange>>((state, lineContent, index) => {
           const isLayer = /^\s*SET_PRINT_STATS_INFO .*CURRENT_LAYER=/i.test(lineContent)
 
           if (isLayer) {
@@ -306,11 +306,11 @@ async function setupMonaco () {
           }
 
           return state
-        }, { result: [] } as ReduceState<monaco.languages.FoldingRange>)
+        }, { result: [] })
         .result
 
       const objectBlocks = linesContent
-        .reduce((state, lineContent, index) => {
+        .reduce<ReduceState<monaco.languages.FoldingRange>>((state, lineContent, index) => {
           lineContent = lineContent.trim()
 
           if (lineContent.length > 0) {
@@ -338,11 +338,11 @@ async function setupMonaco () {
           }
 
           return state
-        }, { result: [] } as ReduceState<monaco.languages.FoldingRange>)
+        }, { result: [] })
         .result
 
       const thumbnailBlocks = linesContent
-        .reduce((state, lineContent, index) => {
+        .reduce<ReduceState<monaco.languages.FoldingRange>>((state, lineContent, index) => {
           if (lineContent.startsWith('; thumbnail')) {
             const type = lineContent.substring(11).split(' ')[1]
 
@@ -364,11 +364,11 @@ async function setupMonaco () {
           }
 
           return state
-        }, { result: [] } as ReduceState<monaco.languages.FoldingRange>)
+        }, { result: [] })
         .result
 
       const commentBlocks = linesContent
-        .reduce((state, lineContent, index) => {
+        .reduce<ReduceState<monaco.languages.FoldingRange>>((state, lineContent, index) => {
           lineContent = lineContent.trim()
 
           if (lineContent.length > 0) {
@@ -390,7 +390,7 @@ async function setupMonaco () {
           }
 
           return state
-        }, { result: [] } as ReduceState<monaco.languages.FoldingRange>)
+        }, { result: [] })
         .result
 
       return [
