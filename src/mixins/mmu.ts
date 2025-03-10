@@ -387,7 +387,7 @@ export default class MmuMixin extends Vue {
                 gd.filamentName = this.$store.state.spoolman?.activeSpool?.filament?.name ?? 'No active spool'
                 gd.material = this.$store.state.spoolman?.activeSpool?.filament?.material ?? 'Unknown'
                 gd.color = this.formColorString(
-                    this.$store.state.spoolman?.activeSpool?.filament.color_hex ?? null
+                    this.$store.state.spoolman?.activeSpool?.filament?.color_hex ?? null
                 )
                 gd.temperature = this.$store.state.spoolman?.activeSpool?.filament?.settings_extruder_temp ?? -1
                 gd.spoolId = this.$store.state.spoolman?.activeSpool?.id ?? -1

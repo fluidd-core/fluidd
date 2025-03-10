@@ -130,6 +130,11 @@
       :root="currentRoot"
       @path-change="loadFiles"
     />
+
+    <mmu-edit-ttg-map-dialog
+      :show-dialog="showMmuEditTtgMapDialog"
+      :file="fileForMmuDialog"
+      @close="showMmuEditTtgMapDialog = false" />
   </v-card>
 </template>
 
@@ -148,6 +153,8 @@ import FileEditorDialog from './FileEditorDialog.vue'
 import FileNameDialog from './FileNameDialog.vue'
 import FileSystemGoToFileDialog from './FileSystemGoToFileDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
+import MmuEditTtgMapDialog from '@/components/widgets/mmu/MmuEditTtgMapDialog.vue'
+import getFilePaths from '@/util/get-file-paths'
 import type { AppDataTableHeader, FileWithPath } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer, setFileDataTransferDataInDataTransfer } from '@/util/file-data-transfer'
@@ -169,7 +176,8 @@ import type { DataTableHeader } from 'vuetify'
     FileEditorDialog,
     FileNameDialog,
     FileSystemGoToFileDialog,
-    FilePreviewDialog
+    FilePreviewDialog,
+    MmuEditTtgMapDialog
   }
 })
 export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
@@ -187,6 +195,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   // Allow bulk-actions
   @Prop({ type: Boolean })
   readonly bulkActions?: boolean
+
+  // Not perfect integration but allow tool-gate mapping for MMU prints
+  showMmuEditTtgMapDialog = false
+  fileForMmuDialog = null
 
   // Maintains the path and root.
   currentRoot = ''
@@ -893,6 +905,18 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     const filename = file.path ? `${file.path}/${file.filename}` : file.filename
 
+    const mmuAvailable = !!this.$store.state.printer.printer.mmu && this.$store.state.printer.printer.mmu.enabled
+    if (mmuAvailable) {
+      const { filename, rootPath } = getFilePaths(file.filename, 'gcodes')
+      const fileWithMeta = this.$store.getters['files/getFile'](rootPath, filename) ?? null
+      const mmuPrint = (fileWithMeta.referenced_tools?.length ?? 1) > 1 || this.$store.state.printer.printer.mmu?.gate !== -2
+      if (mmuPrint) {
+        this.fileForMmuDialog = fileWithMeta
+        this.showMmuEditTtgMapDialog = true
+        return
+      }
+    }
+
     const spoolmanSupported: boolean = this.$store.getters['spoolman/getAvailable']
     const autoSpoolSelectionDialog: boolean = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
     if (spoolmanSupported && autoSpoolSelectionDialog) {
@@ -900,7 +924,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         show: true,
         filename
       })
-
       return
     }
 

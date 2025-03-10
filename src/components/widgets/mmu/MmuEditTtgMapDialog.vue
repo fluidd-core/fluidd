@@ -202,7 +202,11 @@
                     {{ $t('app.mmu.label.cancel') }}
                 </app-btn>
                 <app-btn color="primary" @click="commit" >
-                    {{ $t('app.mmu.label.ok') }}
+                    {{
+                      file
+                        ? $t('app.general.btn.print')
+                        : $t('app.mmu.label.ok')
+                    }}
                 </app-btn>
             </template>
 
@@ -215,6 +219,7 @@ import { Mixins, Prop, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
+import { SocketActions } from '@/api/socketActions'
 import type { AppFileWithMeta } from '@/store/files/types'
 import type { SlicerToolDetails, MmuGateDetails } from '@/types'
 import Vue from 'vue'
@@ -489,13 +494,21 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
         this.$emit('close')
     }
 
-    commit() {
+    async commit() {
         let mapStr = this.localTtgMap.join(',')
         let esGrpStr = this.localEndlessSpoolGroups.join(',')
         let cmd = `MMU_TTG_MAP MAP="${mapStr}"`
         this.sendGcode(cmd)
         cmd = `MMU_ENDLESS_SPOOL GROUPS="${esGrpStr}"`
         this.sendGcode(cmd)
+
+        // Mimick Fluidd workflow: If called prior to print, start print now
+        if (this.file) {
+            await SocketActions.printerPrintStart(this.file.filename)
+            if (this.$route.name !== 'home') {
+              this.$router.push({ name: 'home' })
+            }
+        }
         this.close()
     }
 

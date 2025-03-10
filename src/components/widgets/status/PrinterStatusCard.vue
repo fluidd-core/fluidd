@@ -65,6 +65,11 @@
         />
       </v-tab-item>
     </v-tabs-items>
+
+    <mmu-edit-ttg-map-dialog
+      :show-dialog="showMmuEditTtgMapDialog"
+      :file="fileForMmuDialog"
+      @close="showMmuEditTtgMapDialog = false" />
   </collapsable-card>
 </template>
 
@@ -75,17 +80,24 @@ import StateMixin from '@/mixins/state'
 import StatusControls from './StatusControls.vue'
 import StatusTab from './StatusTab.vue'
 import ReprintTab from './ReprintTab.vue'
+import MmuEditTtgMapDialog from '@/components/widgets/mmu/MmuEditTtgMapDialog.vue'
+import getFilePaths from '@/util/get-file-paths'
 import type { TimeEstimates } from '@/store/printer/types'
 
 @Component({
   components: {
     StatusControls,
     StatusTab,
-    ReprintTab
+    ReprintTab,
+    MmuEditTtgMapDialog
   }
 })
 export default class PrinterStatusCard extends Mixins(StateMixin) {
   tab = 0
+
+  // Not perfect integration but allow tool-gate mapping for MMU prints
+  showMmuEditTtgMapDialog = false
+  fileForMmuDialog = null
 
   // If the user has no history plugin, and there's no print running..
   // then hide the collapse control.
@@ -127,15 +139,25 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
   }
 
   handlePrint (filename: string) {
+    const mmuAvailable = !!this.$store.state.printer.printer.mmu && this.$store.state.printer.printer.mmu.enabled
+    if (mmuAvailable) {
+      const { filename: fileName, rootPath } = getFilePaths(filename, 'gcodes')
+      const fileWithMeta = this.$store.getters['files/getFile'](rootPath, fileName) ?? null
+      const mmuPrint = (fileWithMeta.referenced_tools?.length ?? 1) > 1 || this.$store.state.printer.printer.mmu?.gate !== -2
+      if (mmuPrint) {
+        this.fileForMmuDialog = fileWithMeta
+        this.showMmuEditTtgMapDialog = true
+        return
+      }
+    }
+
     const spoolmanSupported: boolean = this.$store.getters['spoolman/getAvailable']
     const autoSpoolSelectionDialog: boolean = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
-
     if (spoolmanSupported && autoSpoolSelectionDialog) {
       this.$store.commit('spoolman/setDialogState', {
         show: true,
         filename
       })
-
       return
     }
 
