@@ -180,13 +180,14 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 
 .logo-row {
     display: flex;
-    /*  justify-content: space-between; */
+    /* justify-content: space-between; */
     height: 48px;
     width: 100%;
 }
 
 .mmu-logo {
     fill: currentColor;
+    stroke: currentColor;
     opacity: 0.7;
     padding-right: 8px;
     padding-bottom: 4px;
