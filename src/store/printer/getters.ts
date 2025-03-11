@@ -758,7 +758,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     ] as const
 
     const sensors = Object.keys(state.printer)
-      .reduce((groups, item) => {
+      .reduce<Record<string, Sensor>>((groups, item) => {
         const [type, nameFromSplit] = item.split(' ', 2)
         const name = nameFromSplit ?? item
 
@@ -790,7 +790,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
         }
 
         return groups
-      }, {} as Record<string, Sensor>)
+      }, {})
 
     return Object.values(sensors)
       .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name))
@@ -1044,11 +1044,11 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const knownCommands: GcodeHelp = rootGetters['console/getAllKnownCommands']
 
     return Object.entries(knownCommands)
-      .reduce((availableCommands, [key, help]) => {
+      .reduce<GcodeCommands>((availableCommands, [key, help]) => {
         availableCommands[key] = { help }
 
         return availableCommands
-      }, {} as GcodeCommands)
+      }, {})
   },
 
   getIsManualProbeActive: (state) => {

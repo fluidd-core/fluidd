@@ -219,7 +219,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     return this.$store.getters['spoolman/getActiveSpool']
   }
 
-  get currency (): string | undefined {
+  get currency (): string | null {
     return this.$store.state.spoolman.currency
   }
 

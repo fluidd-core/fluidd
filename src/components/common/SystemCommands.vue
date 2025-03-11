@@ -55,8 +55,8 @@
         v-for="(device, index) in powerDevices"
         :key="index"
         :disabled="(device.status === 'error' || device.status === 'init' || (printerPrinting && device.locked_while_printing))"
-        :loading="hasWait(`${$waits.onDevicePowerToggle}${device.device}`)"
-        @click="togglePowerDevice(device, `${$waits.onDevicePowerToggle}${device.device}`)"
+        :loading="hasWait(`${$waits.onDevicePowerToggle}/${device.device}`)"
+        @click="togglePowerDevice(device)"
       >
         <v-list-item-content>
           <v-list-item-title>{{ getPowerButtonText(device) }}</v-list-item-title>
@@ -228,7 +228,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     }
   }
 
-  async togglePowerDevice (device: Device, wait?: string) {
+  async togglePowerDevice (device: Device) {
     const confirmOnPowerDeviceChange: boolean = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
 
     const result = (
@@ -241,7 +241,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
 
     if (result) {
       const state = (device.status === 'on') ? 'off' : 'on'
-      SocketActions.machineDevicePowerSetDevice(device.device, state, wait)
+      SocketActions.machineDevicePowerSetDevice(device.device, state)
     }
   }
 

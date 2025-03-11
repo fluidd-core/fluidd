@@ -113,6 +113,7 @@
       >
         <template #item="{ headers, item }">
           <app-data-table-row
+            :key="item.id"
             :headers="headers"
             :item="item"
             :is-selected="item.id === selectedSpoolId"
@@ -242,15 +243,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         this.selectedSpoolId = macro?.variables.spool_id ?? null
       }
 
-      if (this.currentFileName) {
-        const { rootPath } = getFilePaths(this.currentFileName, 'gcodes')
-
-        const directoryLoaded = rootPath in this.$store.state.files.pathFiles
-
-        // Load the containing the currently printing file if we haven't done that already
-        if (!directoryLoaded) {
-          SocketActions.serverFilesGetDirectory(rootPath)
-        }
+      if (this.currentFileName && this.currentFile == null) {
+        SocketActions.serverFilesMetadata(this.currentFileName)
       }
 
       if (this.hasDeviceCamera && this.preferDeviceCamera) {
