@@ -30,9 +30,9 @@ export const getters: GetterTree<FilesState, RootState> = {
    * Returns a directory of files and sub-directories.
    */
   getDirectory: (state, getters, rootState, rootGetters) => (path: string) => {
-    const pathContent = state.pathFiles[path]
+    const pathContent = state.pathContent[path]
 
-    if (pathContent) {
+    if (pathContent && pathContent.partial !== true) {
       const items: FileBrowserEntry[] = []
 
       const [root, ...restOfPath] = path.split('/')
@@ -193,7 +193,7 @@ export const getters: GetterTree<FilesState, RootState> = {
    * Returns a specific file.
    */
   getFile: (state, getters, rootState, rootGetters) => (path: string, filename: string) => {
-    const pathContent = state.pathFiles[path]
+    const pathContent = state.pathContent[path]
 
     const file = pathContent?.files.find(file => file.filename === filename)
 
@@ -232,6 +232,6 @@ export const getters: GetterTree<FilesState, RootState> = {
    */
   getLowOnSpace: (state) => {
     // 1073741824 = 1gb
-    return state.disk_usage != null && state.disk_usage.free < 1073741824
+    return state.diskUsage != null && state.diskUsage.free < 1073741824
   }
 }

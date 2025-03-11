@@ -7,9 +7,9 @@ export interface FilesState {
   uploads: FileUpload[];
   download: FileDownload | null;
   currentPaths: Record<string, string>;
-  disk_usage: DiskUsage | null;
+  diskUsage: DiskUsage | null;
   rootFiles: Record<string, MoonrakerRootFile[] | undefined>;
-  pathFiles: Record<string, MoonrakerPathContent | undefined>;
+  pathContent: Record<string, MoonrakerPathContent | undefined>;
 }
 
 export interface DiskUsage {
@@ -26,8 +26,9 @@ export interface MoonrakerRootFile {
 }
 
 export interface MoonrakerPathContent {
-  files: (MoonrakerFile | MoonrakerFileWithMeta) []
-  dirs: MoonrakerDir[]
+  partial?: boolean;
+  files: (MoonrakerFile | MoonrakerFileWithMeta)[];
+  dirs: MoonrakerDir[];
 }
 
 type MoonrakerFilePermissions = '' | 'r' | 'rw'
