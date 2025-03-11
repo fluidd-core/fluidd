@@ -104,6 +104,7 @@
         :no-results-text="$t('app.file_system.msg.not_found')"
         :sort-by="sortOrder.key ?? undefined"
         :sort-desc="sortOrder.desc ?? undefined"
+        item-key="id"
         mobile-breakpoint="0"
         class="spool-table"
         hide-default-footer

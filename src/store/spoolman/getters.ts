@@ -3,9 +3,10 @@ import type { Filament, Spool, SpoolmanFilament, SpoolmanSpool, SpoolmanState, S
 import type { RootState } from '../types'
 
 const spoolmanSpoolAsSpool = (spool: SpoolmanSpool): Spool => {
-  const filament_name = spool.filament.vendor
-    ? `${spool.filament.vendor.name} - ${spool.filament.name}`
-    : spool.filament.name ?? spool.id.toString()
+  const filament_name = [
+    spool.filament.vendor?.name,
+    spool.filament.name
+  ].filter(x => x != null).join(' - ') || spool.id.toString()
 
   return ({
     ...spool,
