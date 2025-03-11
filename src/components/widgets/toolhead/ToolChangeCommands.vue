@@ -118,7 +118,7 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
   }
 
   getSpoolColor (spool: Spool | undefined) {
-    return `#${spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? 'fff' : '000')}`
+    return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
   }
 }
 </script>

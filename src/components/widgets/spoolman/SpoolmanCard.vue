@@ -94,7 +94,7 @@
       v-if="activeSpool && $vuetify.breakpoint.lgAndDown"
       value="100"
       :height="6"
-      :color="`#${activeSpool.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
+      :color="getSpoolColor(activeSpool)"
     />
 
     <v-card-text>
@@ -248,7 +248,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
   }
 
   getSpoolColor (spool?: Spool) {
-    return `#${spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? 'fff' : '000')}`
+    return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
   }
 
   getFormattedField (field: string) {
@@ -278,6 +278,9 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
 
       case 'density':
         return this.activeSpool.filament.density || '-'
+
+      case 'diameter':
+        return this.activeSpool.filament.diameter ? this.$filters.getReadableLengthString(this.activeSpool.filament.diameter) : '-'
 
       case 'extruder_temp':
         return this.activeSpool.filament.settings_extruder_temp || '-'

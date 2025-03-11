@@ -251,12 +251,16 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
       'lot_nr',
       'price',
       'density',
+      'diameter',
       'extruder_temp',
       'bed_temp',
       'first_used',
       'last_used',
       'comment'
-    ].map(field => ({ value: field, text: this.$t(`app.spoolman.label.${field}`) }))
+    ].map(field => ({
+      value: field,
+      text: this.$t(`app.spoolman.label.${field}`)
+    }))
   }
 
   get fieldsToShowInSpoolmanCard (): string[] {
