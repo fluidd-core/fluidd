@@ -34,6 +34,13 @@
                     hide-details
                     :label="$t('app.mmu.setting.large_filament_status')" />
             </v-list-item>
+            <v-list-item class="minHeight36">
+                <v-checkbox
+                    v-model="showLogos"
+                    class="mt-0"
+                    hide-details
+                    :label="$t('app.mmu.setting.show_logos')" />
+            </v-list-item>
         </v-list>
     </v-menu>
 </template>
@@ -89,6 +96,18 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
     set largeFilamentStatus(value: boolean) {
         this.$store.dispatch('config/saveByPath', {
             path: 'uiSettings.mmu.largeFilamentStatus',
+            value,
+            server: true
+        })
+    }
+
+    get showLogos(): boolean {
+        return this.$store.state.config.uiSettings.mmu.showLogos
+    }
+
+    set showLogos(value: boolean) {
+        this.$store.dispatch('config/saveByPath', {
+            path: 'uiSettings.mmu.showLogos',
             value,
             server: true
         })

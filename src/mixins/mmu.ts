@@ -202,6 +202,7 @@ export default class MmuMixin extends Vue {
         const unitRef = `unit_${unitIndex}`
         const ud: MmuUnitDetails = {
             name: this.$store.state.printer.printer.mmu_machine?.[unitRef]?.name ?? 'Unit',
+            vendor: this.$store.state.printer.printer.mmu_machine?.[unitRef]?.vendor ?? 'Other',
             version: this.$store.state.printer.printer.mmu_machine?.[unitRef]?.version ?? '1.0',
             numGates: this.$store.state.printer.printer.mmu_machine?.[unitRef]?.num_gates ?? 1,
             firstGate: this.$store.state.printer.printer.mmu_machine?.[unitRef]?.first_gate ?? 0,

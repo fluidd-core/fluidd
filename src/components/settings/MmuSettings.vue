@@ -39,6 +39,15 @@
           class="mt-0 mb-4" />
       </app-setting>
 
+      <v-divider />
+
+      <app-setting :title="$t('app.mmu.setting.show_logos')" >
+        <v-switch
+          v-model="showLogos"
+          hide-details
+          class="mt-0 mb-4" />
+      </app-setting>
+
     </v-card>
   </div>
 </template>
@@ -96,6 +105,18 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
     set largeFilamentStatus(value: boolean) {
         this.$store.dispatch('config/saveByPath', {
             path: 'uiSettings.mmu.largeFilamentStatus',
+            value,
+            server: true
+        })
+    }
+
+    get showLogos(): boolean {
+        return this.$store.state.config.uiSettings.mmu.showLogos
+    }
+
+    set showLogos(value: boolean) {
+        this.$store.dispatch('config/saveByPath', {
+            path: 'uiSettings.mmu.showLogos',
             value,
             server: true
         })

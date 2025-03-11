@@ -142,7 +142,8 @@ export const defaultState = (): ConfigState => {
         showClogDetection: true,
         showTtgMap: true,
         showDetails: true,
-        largeFilamentStatus: false
+        largeFilamentStatus: false,
+        showLogos: false
       }
     }
   }

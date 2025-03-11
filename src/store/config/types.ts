@@ -52,6 +52,7 @@ export interface MmuConfig {
   showTtgMap: boolean;
   showDetails: boolean;
   largeFilamentStatus: boolean;
+  showLogos: boolean;
 }
 
 export interface HostConfig {

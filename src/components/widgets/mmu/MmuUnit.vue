@@ -1,6 +1,13 @@
 <template>
     <v-container>
-        <div class="spool-row">{{ unitDisplayName }}</div>
+        <div v-if="showLogos && svgLogo" class="logo-row">
+            <div class="mmu-logo" v-html="svgLogo"></div>
+            <div class="spool-row">{{ unitDisplayName }}</div>
+        </div>
+        <div v-else class="spool-row">
+            {{ unitDisplayName }}
+        </div>
+
         <div class="spool-row">
             <div v-for="gate in unitGateRange" :key="'gate_' + gate" :class="gateClass(gate)" @click="selectGate(gate)">
                 <mmu-spool
@@ -47,6 +54,8 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     @Prop({ required: false, default: null }) readonly editGateMap!: MmuGateDetails[] | null
     @Prop({ required: false, default: -1 }) readonly editGateSelected!: number
 
+    private svgLogo: string | null = null
+
     get unitDisplayName(): string {
         const name = this.unitDetails(this.unit).name
         return `#${this.unit + 1} ${name}`
@@ -64,6 +73,10 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
             return '48px'
         }
         return '40px'
+    }
+
+    get showLogos(): boolean {
+        return this.$store.state.config.uiSettings.mmu.showLogos ?? false
     }
 
     gateClass(gate: number): string[] {
@@ -104,6 +117,44 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
             this.sendGcode('MMU_SELECT BYPASS=1')
         }
     }
+
+    mounted() {
+        const unitVendor = this.unitDetails(this.unit).vendor
+        const vendorLogoUrl = '/img/mmu/mmu_' + unitVendor + '.svg'
+        this.fetchSvg(vendorLogoUrl)
+    }
+
+    async fetchSvg(url: string) {
+        fetch(url)
+            .then((res) => {
+                console.log(res)
+                if (!res.ok) {
+                    throw new Error('Failed to fetch vendor specific MMU logo')
+                }
+                return res.text()
+            })
+            .then((svg) => {
+                if (!svg.includes("<svg"))
+                    throw new Error('Not an svg logo')
+                this.svgLogo = svg
+            })
+            .catch((error) => {
+                const defaultUrl = '/img/mmu/mmu_HappyHare.svg'
+                fetch(defaultUrl)
+                    .then((res) => {
+                        if (!res.ok) {
+                            throw new Error('Failed to fetch the default MMU logo')
+                        }
+                        return res.text()
+                    })
+                    .then((svg) => {
+                        this.svgLogo = svg
+                    })
+                    .catch((error) => {
+                        this.svgLogo = null
+                    })
+            })
+    }
 }
 </script>
 
@@ -125,6 +176,22 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 
 .selected-gate {
     background: #595959;
+}
+
+.logo-row {
+    display: flex;
+    /*  justify-content: space-between; */
+    height: 48px;
+    width: 100%;
+}
+
+.mmu-logo {
+    fill: currentColor;
+    opacity: 0.7;
+    padding-right: 8px;
+    padding-bottom: 4px;
+    height: 100%;
+    width: auto;
 }
 
 .hover-effect {

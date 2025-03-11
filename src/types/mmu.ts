@@ -20,6 +20,7 @@ export interface SlicerToolDetails {
 
 export interface MmuUnitDetails {
     name: string
+    vendor: string
     version: string
     numGates: number
     firstGate: number
