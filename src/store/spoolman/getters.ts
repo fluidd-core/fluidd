@@ -40,7 +40,7 @@ const spoolmanSpoolAsSpool = (spool: SpoolmanSpool): Spool => {
         ? filamentWeightToLength(spool.used_weight, filament)
         : undefined
     ),
-    initial_length: initial_weight
+    initial_length: initial_weight != null
       ? filamentWeightToLength(initial_weight, filament)
       : undefined,
     filament,
@@ -89,9 +89,9 @@ export const getters: GetterTree<SpoolmanState, RootState> = {
   },
 
   getActiveSpool: (state, getters): Spool | undefined => {
-    return state.activeSpool == null
-      ? undefined
-      : getters.getSpoolById(state.activeSpool)
+    return state.activeSpool != null
+      ? getters.getSpoolById(state.activeSpool)
+      : undefined
   },
 
   getSpoolById: (state, getters) => (id: number): Spool | undefined => {
