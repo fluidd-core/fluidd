@@ -66,14 +66,6 @@ const Filters = {
     }
   },
 
-  /**
-   * Converts a given weight (in grams) to its corresponding length (in mm)
-   */
-  convertFilamentWeightToLength (weight: number, density: number, diameter: number) {
-    // l[mm] = m[g]/D[g/cm³]/A[mm²]*(1000mm³/cm³)
-    return weight / density / (Math.PI * (diameter / 2) ** 2) * 1000
-  },
-
   ...stringFormatters(),
 
   ...dateTimeFormatters(

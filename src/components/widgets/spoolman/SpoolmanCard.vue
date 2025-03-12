@@ -116,22 +116,22 @@
                 <template v-if="field === 'remaining_weight'">
                   <span v-if="remainingFilamentUnit === 'weight'">
                     {{ $filters.getReadableWeightString(activeSpool.remaining_weight) }}
-                    <small>/ {{ $filters.getReadableWeightString(activeSpool.filament.weight) }}</small>
+                    <small>/ {{ $filters.getReadableWeightString(activeSpool.initial_weight) }}</small>
                   </span>
                   <span v-else-if="remainingFilamentUnit === 'length'">
                     {{ $filters.getReadableLengthString(activeSpool.remaining_length) }}
-                    <small>/ {{ $filters.getReadableLengthString($filters.convertFilamentWeightToLength(activeSpool.filament.weight ?? 0, activeSpool.filament.density, activeSpool.filament.diameter)) }}</small>
+                    <small>/ {{ $filters.getReadableLengthString(activeSpool.initial_length) }}</small>
                   </span>
                 </template>
 
                 <template v-else-if="field === 'used_weight'">
                   <span v-if="remainingFilamentUnit === 'weight'">
                     {{ $filters.getReadableWeightString(activeSpool.used_weight) }}
-                    <small>/ {{ $filters.getReadableWeightString(activeSpool.filament.weight) }}</small>
+                    <small>/ {{ $filters.getReadableWeightString(activeSpool.initial_weight) }}</small>
                   </span>
                   <span v-else-if="remainingFilamentUnit === 'length'">
                     {{ $filters.getReadableLengthString(activeSpool.used_length) }}
-                    <small>/ {{ $filters.getReadableLengthString($filters.convertFilamentWeightToLength(activeSpool.filament.weight ?? 0, activeSpool.filament.density, activeSpool.filament.diameter)) }}</small>
+                    <small>/ {{ $filters.getReadableLengthString(activeSpool.initial_length) }}</small>
                   </span>
                 </template>
 

@@ -2,6 +2,11 @@ import type { GetterTree } from 'vuex'
 import type { Filament, Spool, SpoolmanFilament, SpoolmanSpool, SpoolmanState, SpoolmanVendor, Vendor } from './types'
 import type { RootState } from '../types'
 
+const filamentWeightToLength = (weight: number, filament: SpoolmanFilament | Filament) => {
+  // l[mm] = m[g]/D[g/cm³]/A[mm²]*(1000mm³/cm³)
+  return weight / filament.density / (Math.PI / 4 * filament.diameter ** 2) * 1000
+}
+
 const spoolmanSpoolAsSpool = (spool: SpoolmanSpool): Spool => {
   const filament_name = [
     spool.filament.vendor?.name,
@@ -23,6 +28,19 @@ const spoolmanSpoolAsSpool = (spool: SpoolmanSpool): Spool => {
     price: spool.price ?? filament.price,
     initial_weight: spool.initial_weight ?? filament.weight,
     spool_weight: spool.spool_weight ?? filament.spool_weight,
+    remaining_length: spool.remaining_length ?? (
+      spool.remaining_weight != null
+        ? filamentWeightToLength(spool.remaining_weight, filament)
+        : undefined
+    ),
+    used_length: spool.used_length ?? (
+      spool.used_weight != null
+        ? filamentWeightToLength(spool.used_weight, filament)
+        : undefined
+    ),
+    initial_length: spool.initial_weight
+      ? filamentWeightToLength(spool.initial_weight, filament)
+      : undefined,
     filament,
   })
 }

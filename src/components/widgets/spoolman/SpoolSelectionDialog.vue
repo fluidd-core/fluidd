@@ -136,11 +136,11 @@
                   <div class="flex-row">
                     <small v-if="remainingFilamentUnit === 'weight'">
                       <b>{{ $filters.getReadableWeightString(item.remaining_weight) }}</b>
-                      / {{ $filters.getReadableWeightString(item.filament.weight) }}
+                      / {{ $filters.getReadableWeightString(item.initial_weight) }}
                     </small>
                     <small v-else-if="remainingFilamentUnit === 'length'">
                       <b>{{ $filters.getReadableLengthString(item.remaining_length) }}</b>
-                      / {{ $filters.getReadableLengthString($filters.convertFilamentWeightToLength(item.filament.weight ?? 0, item.filament.density, item.filament.diameter)) }}
+                      / {{ $filters.getReadableLengthString(item.initial_length) }}
                     </small>
                   </div>
                 </div>
@@ -555,12 +555,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
             return
           }
         } else if (this.warnOnNotEnoughFilament) {
-          let remainingLength = spool.remaining_length
-          if (!remainingLength && spool.remaining_weight) {
-            remainingLength = this.$filters.convertFilamentWeightToLength(spool.remaining_weight, spool.filament.density, spool.filament.diameter)
-          }
-
-          if (typeof remainingLength === 'number' && requiredLength >= remainingLength) {
+          if (spool.remaining_length != null && requiredLength >= spool.remaining_length) {
             // not enough filament
 
             const confirmation = await this.$confirm(

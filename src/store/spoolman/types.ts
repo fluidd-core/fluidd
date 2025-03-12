@@ -84,6 +84,7 @@ export interface Spool extends Omit<SpoolmanSpool, 'registered' | 'filament' | '
 
   first_used?: Date;
   last_used?: Date;
+  initial_length?: number;
 }
 
 export interface Filament extends Omit<SpoolmanFilament, 'registered' | 'vendor' | 'multi_color_hexes'> {

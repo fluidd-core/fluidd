@@ -113,7 +113,7 @@ const stringFormatters = () => {
         return value.toLocaleString(getAllLocales(), {
           style: 'currency',
           currency,
-          minimumFractionDigits: 2,
+          notation: 'standard',
           ...options
         })
       } catch {
