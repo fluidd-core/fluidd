@@ -11,7 +11,7 @@
         small
         class="me-1 my-1"
         :disabled="!isConnected"
-        @click="() => handleSelectSpool()"
+        @click="handleSelectSpool"
       >
         {{ $t('app.spoolman.label.change_spool') }}
       </app-btn>
@@ -43,7 +43,7 @@
           </app-btn>
         </template>
         <v-list dense>
-          <v-list-item @click="() => handleSelectSpool()">
+          <v-list-item @click="handleSelectSpool">
             <v-list-item-content>
               <v-list-item-title>
                 {{ $t('app.spoolman.label.active_spool') }}
@@ -65,8 +65,10 @@
           <template v-for="macro of targetableMacros">
             <v-list-item
               :key="macro.name"
-              :class="{primary: macro.variables?.active}"
-              @click="() => handleSelectSpool(macro)"
+              :class="{
+                primary: macro.variables?.active
+              }"
+              @click="handleSelectSpool(macro)"
             >
               <v-list-item-content>
                 <v-list-item-title>

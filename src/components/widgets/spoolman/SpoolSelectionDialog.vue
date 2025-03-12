@@ -94,7 +94,7 @@
       />
     </v-toolbar>
 
-    <v-card-text class="pa-0">
+    <v-card-text class="pa-0 file-system">
       <v-data-table
         :items="availableSpools"
         :headers="headers"
