@@ -8,6 +8,8 @@ const spoolmanSpoolAsSpool = (spool: SpoolmanSpool): Spool => {
     spool.filament.name
   ].filter(x => x != null).join(' - ') || spool.id.toString()
 
+  const filament = spoolmanFilamentAsFilament(spool.filament)
+
   return ({
     ...spool,
     filament_name,
@@ -18,7 +20,10 @@ const spoolmanSpoolAsSpool = (spool: SpoolmanSpool): Spool => {
     last_used: spool.last_used
       ? new Date(spool.last_used)
       : undefined,
-    filament: spoolmanFilamentAsFilament(spool.filament),
+    price: spool.price ?? filament.price,
+    initial_weight: spool.initial_weight ?? filament.weight,
+    spool_weight: spool.spool_weight ?? filament.spool_weight,
+    filament,
   })
 }
 
@@ -33,6 +38,10 @@ const spoolmanFilamentAsFilament = (filament: SpoolmanFilament): Filament => {
       .map(x => `#${x}`)
     : undefined
 
+  const vendor = filament.vendor != null
+    ? spoolmanVendorAsVendor(filament.vendor)
+    : undefined
+
   return ({
     ...filament,
     color_hex,
@@ -43,9 +52,8 @@ const spoolmanFilamentAsFilament = (filament: SpoolmanFilament): Filament => {
         ? [color_hex]
         : undefined,
     registered: new Date(filament.registered),
-    vendor: filament.vendor != null
-      ? spoolmanVendorAsVendor(filament.vendor)
-      : undefined
+    spool_weight: filament.spool_weight ?? vendor?.empty_spool_weight,
+    vendor
   })
 }
 

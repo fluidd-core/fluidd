@@ -273,10 +273,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
         return this.activeSpool.last_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.last_used) : this.$tc('app.setting.label.never')
 
       case 'price':
-        return [
-          this.activeSpool.filament.price?.toFixed(2),
-          this.currency
-        ].filter(x => x != null).join(' ') || '-'
+        return this.activeSpool.price != null ? this.$filters.getReadableCurrencyString(this.activeSpool.price, this.currency ?? '') : '-'
 
       case 'density':
         return this.activeSpool.filament.density || '-'

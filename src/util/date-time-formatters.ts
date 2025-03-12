@@ -1,52 +1,9 @@
 import { DateFormats, TimeFormats, type DateTimeFormat } from '@/globals'
-import i18n from '@/plugins/i18n'
+import { getAllLocales } from '@/plugins/i18n'
 
 type GetDefaultDateTimeFormatFunction = () => string
 
-export const getNavigatorLocales = () => {
-  return navigator.languages ?? [navigator.language]
-}
-
-export const getAllLocales = (): Intl.LocalesArgument => {
-  return [
-    i18n.locale,
-    ...getNavigatorLocales()
-  ]
-}
-
-export const isToday = (value: number | string | Date) => {
-  const date = new Date(value)
-  const today = new Date()
-
-  return date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-}
-
-export const isThisMonth = (value: number | string | Date) => {
-  const date = new Date(value)
-  const today = new Date()
-
-  return date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-}
-
-export const isThisYear = (value: number | string | Date) => {
-  const date = new Date(value)
-  const today = new Date()
-
-  return date.getFullYear() === today.getFullYear()
-}
-
-export const moonrakerDateAsUnixTime = (value: string | number) => {
-  if (typeof value === 'string') {
-    return new Date(value).getTime() / 1000
-  }
-
-  return value
-}
-
-export const buildDateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFunction, getDefaultTimeFormat: GetDefaultDateTimeFormatFunction) => {
+const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFunction, getDefaultTimeFormat: GetDefaultDateTimeFormatFunction) => {
   const instance = {
     getDateFormat: (override?: string): DateTimeFormat => {
       return {
@@ -60,6 +17,38 @@ export const buildDateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTime
         locales: getAllLocales(),
         ...TimeFormats[override ?? getDefaultTimeFormat()]
       }
+    },
+
+    isToday: (value: number | string | Date) => {
+      const date = new Date(value)
+      const today = new Date()
+
+      return date.getDate() === today.getDate() &&
+          date.getMonth() === today.getMonth() &&
+          date.getFullYear() === today.getFullYear()
+    },
+
+    isThisMonth: (value: number | string | Date) => {
+      const date = new Date(value)
+      const today = new Date()
+
+      return date.getMonth() === today.getMonth() &&
+          date.getFullYear() === today.getFullYear()
+    },
+
+    isThisYear: (value: number | string | Date) => {
+      const date = new Date(value)
+      const today = new Date()
+
+      return date.getFullYear() === today.getFullYear()
+    },
+
+    moonrakerDateAsUnixTime: (value: string | number) => {
+      if (typeof value === 'string') {
+        return new Date(value).getTime() / 1000
+      }
+
+      return value
     },
 
     formatCounterSeconds: (seconds: number | string) => {
@@ -162,11 +151,11 @@ export const buildDateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTime
     },
 
     formatAbsoluteDateTime: (value: number | string | Date, options?: Intl.RelativeTimeFormatOptions) => {
-      if (isToday(value)) {
+      if (instance.isToday(value)) {
         return instance.formatTime(value, options)
       }
 
-      if (isThisYear(value)) {
+      if (instance.isThisYear(value)) {
         return instance.formatDateTime(value, {
           year: undefined,
           ...options
@@ -179,3 +168,5 @@ export const buildDateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTime
 
   return instance
 }
+
+export default dateTimeFormatters

@@ -135,6 +135,7 @@ export interface MacroWithSpoolId extends Macro {
 
 export interface SpoolmanProxyResponseV2Success<T> {
   response: T;
+  response_headers?: Record<string, string>;
   error: null;
 }
 

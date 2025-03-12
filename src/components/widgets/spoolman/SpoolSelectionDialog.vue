@@ -147,8 +147,8 @@
               </div>
             </template>
 
-            <template #[`item-value.filament.price`]="{ value }">
-              {{ formatCurrency(value) }}
+            <template #[`item-value.price`]="{ value }">
+              {{ $filters.getReadableCurrencyString(value, currency ?? '') }}
             </template>
 
             <template #[`item-value.filament.density`]="{ value }">
@@ -327,7 +327,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       },
       {
         text: this.$tc('app.spoolman.label.price'),
-        value: 'filament.price',
+        value: 'price',
         visible: false,
         cellClass: 'text-no-wrap'
       },
@@ -640,13 +640,6 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   getSpoolColor (spool?: Spool) {
     return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
-  }
-
-  formatCurrency (value: number): string {
-    return [
-      value.toFixed(2),
-      this.currency
-    ].filter(x => x != null).join(' ')
   }
 }
 </script>
