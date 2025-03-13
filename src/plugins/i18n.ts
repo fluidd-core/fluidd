@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueI18n, { type Locale } from 'vue-i18n'
 import { SupportedLocales } from '@/globals'
-import getBrowserLocale from '@/util/get-browser-locale'
 import messages from '@/locales/en.yaml'
 import { I18nLocales } from '@/dynamicImports'
 
@@ -22,11 +21,14 @@ export const getAllLocales = (): Intl.LocalesArgument => {
  * Loads the starting locale for the user.
  */
 export const getStartingLocale = () => {
-  const browserLocale = getBrowserLocale({ countryCodeOnly: true })
+  const navigatorLocale = getNavigatorLocales()[0]
+  const countryCode = navigatorLocale.split(/-|_/)[0]
+
   if (
-    browserLocale &&
-    SupportedLocales.findIndex(locale => locale.code === browserLocale) >= 0) {
-    return browserLocale
+    countryCode &&
+    SupportedLocales.some(locale => locale.code === countryCode)
+  ) {
+    return countryCode
   } else {
     return import.meta.env.VUE_APP_I18N_LOCALE || 'en'
   }
