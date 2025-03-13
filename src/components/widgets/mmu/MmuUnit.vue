@@ -226,8 +226,6 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     stroke: currentColor;
     opacity: 0.7;
     padding: 8px 16px 8px 16px;
-    height: 100%;
-    width: auto;
 }
 
 .hover-effect {
