@@ -78,15 +78,17 @@
             (!socketConnected && authenticated)"
       />
 
-      <file-system-download-dialog />
-      <file-system-upload-dialog />
-      <updating-dialog />
-      <spool-selection-dialog />
-      <action-command-prompt-dialog />
-      <keyboard-shortcuts-dialog />
-      <manual-probe-dialog />
-      <bed-screws-adjust-dialog />
-      <screws-tilt-adjust-dialog />
+      <template v-if="socketConnected">
+        <file-system-download-dialog />
+        <file-system-upload-dialog />
+        <updating-dialog />
+        <spool-selection-dialog />
+        <action-command-prompt-dialog />
+        <keyboard-shortcuts-dialog />
+        <manual-probe-dialog />
+        <bed-screws-adjust-dialog />
+        <screws-tilt-adjust-dialog />
+      </template>
     </v-main>
 
     <app-footer />
