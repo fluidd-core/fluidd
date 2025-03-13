@@ -4,50 +4,61 @@
       {{ $t('app.mmu.title.headline') }}
     </v-subheader>
 
-    <v-card :elevation="5" dense class="mb-4" >
-      <app-setting v-if="hasEncoder" :title="$t('app.mmu.setting.show_clog_detection')" >
+    <v-card
+      :elevation="5"
+      dense
+      class="mb-4"
+    >
+      <app-setting
+        v-if="hasEncoder"
+        :title="$t('app.mmu.setting.show_clog_detection')"
+      >
         <v-switch
           v-model="showClogDetection"
           hide-details
-          class="mt-0 mb-4" />
+          class="mt-0 mb-4"
+        />
       </app-setting>
 
       <v-divider />
 
-      <app-setting :title="$t('app.mmu.setting.show_ttg_map')" >
+      <app-setting :title="$t('app.mmu.setting.show_ttg_map')">
         <v-switch
           v-model="showTtgMap"
           hide-details
-          class="mt-0 mb-4" />
+          class="mt-0 mb-4"
+        />
       </app-setting>
 
       <v-divider />
 
-      <app-setting :title="$t('app.mmu.setting.show_details')" >
+      <app-setting :title="$t('app.mmu.setting.show_details')">
         <v-switch
           v-model="showDetails"
           hide-details
-          class="mt-0 mb-4" />
+          class="mt-0 mb-4"
+        />
       </app-setting>
 
       <v-divider />
 
-      <app-setting :title="$t('app.mmu.setting.large_filament_status')" >
+      <app-setting :title="$t('app.mmu.setting.large_filament_status')">
         <v-switch
           v-model="largeFilamentStatus"
           hide-details
-          class="mt-0 mb-4" />
+          class="mt-0 mb-4"
+        />
       </app-setting>
 
       <v-divider />
 
-      <app-setting :title="$t('app.mmu.setting.show_logos')" >
+      <app-setting :title="$t('app.mmu.setting.show_logos')">
         <v-switch
           v-model="showLogos"
           hide-details
-          class="mt-0 mb-4" />
+          class="mt-0 mb-4"
+        />
       </app-setting>
-
     </v-card>
   </div>
 </template>
@@ -61,66 +72,65 @@ import MmuMixin from '@/mixins/mmu'
   components: {}
 })
 export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
+  get showClogDetection (): boolean {
+    return this.$store.state.config.uiSettings.mmu.showClogDetection
+  }
 
-    get showClogDetection(): boolean {
-        return this.$store.state.config.uiSettings.mmu.showClogDetection
-    }
+  set showClogDetection (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.mmu.showClogDetection',
+      value,
+      server: true
+    })
+  }
 
-    set showClogDetection(value: boolean) {
-        this.$store.dispatch('config/saveByPath', {
-            path: 'uiSettings.mmu.showClogDetection',
-            value,
-            server: true
-        })
-    }
+  get showTtgMap (): boolean {
+    return this.$store.state.config.uiSettings.mmu.showTtgMap
+  }
 
-    get showTtgMap(): boolean {
-        return this.$store.state.config.uiSettings.mmu.showTtgMap
-    }
+  set showTtgMap (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.mmu.showTtgMap',
+      value,
+      server: true
+    })
+  }
 
-    set showTtgMap(value: boolean) {
-        this.$store.dispatch('config/saveByPath', {
-            path: 'uiSettings.mmu.showTtgMap',
-            value,
-            server: true
-        })
-    }
+  get showDetails (): boolean {
+    return this.$store.state.config.uiSettings.mmu.showDetails
+  }
 
-    get showDetails(): boolean {
-        return this.$store.state.config.uiSettings.mmu.showDetails
-    }
+  set showDetails (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.mmu.showDetails',
+      value,
+      server: true
+    })
+  }
 
-    set showDetails(value: boolean) {
-        this.$store.dispatch('config/saveByPath', {
-            path: 'uiSettings.mmu.showDetails',
-            value,
-            server: true
-        })
-    }
+  get largeFilamentStatus (): boolean {
+    return this.$store.state.config.uiSettings.mmu.largeFilamentStatus
+  }
 
-    get largeFilamentStatus(): boolean {
-        return this.$store.state.config.uiSettings.mmu.largeFilamentStatus
-    }
+  set largeFilamentStatus (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.mmu.largeFilamentStatus',
+      value,
+      server: true
+    })
+  }
 
-    set largeFilamentStatus(value: boolean) {
-        this.$store.dispatch('config/saveByPath', {
-            path: 'uiSettings.mmu.largeFilamentStatus',
-            value,
-            server: true
-        })
-    }
+  get showLogos (): boolean {
+    return this.$store.state.config.uiSettings.mmu.showLogos
+  }
 
-    get showLogos(): boolean {
-        return this.$store.state.config.uiSettings.mmu.showLogos
-    }
-
-    set showLogos(value: boolean) {
-        this.$store.dispatch('config/saveByPath', {
-            path: 'uiSettings.mmu.showLogos',
-            value,
-            server: true
-        })
-    }
+  set showLogos (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.mmu.showLogos',
+      value,
+      server: true
+    })
+  }
 }
 </script>
 

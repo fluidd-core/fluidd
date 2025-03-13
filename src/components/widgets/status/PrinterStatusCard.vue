@@ -69,7 +69,8 @@
     <mmu-edit-ttg-map-dialog
       :show-dialog="showMmuEditTtgMapDialog"
       :file="fileForMmuDialog"
-      @close="showMmuEditTtgMapDialog = false" />
+      @close="showMmuEditTtgMapDialog = false"
+    />
   </collapsable-card>
 </template>
 

@@ -1,17 +1,22 @@
 <template>
-    <v-container>
-        <v-row dense>
-            <v-col v-for="index in unitArray" cols="auto" :key="'unit_' + index">
-                <div :class="$vuetify.theme.dark ? 'mmu-unit-dark-theme' : 'mmu-unit-light-theme'">
-                    <mmu-unit
-                        :unit="index"
-                        :editGateMap="editGateMap"
-                        :editGateSelected="editGateSelected"
-                        @select-gate="selectGate" />
-                </div>
-            </v-col>
-        </v-row>
-    </v-container>
+  <v-container>
+    <v-row dense>
+      <v-col
+        v-for="index in unitArray"
+        :key="'unit_' + index"
+        cols="auto"
+      >
+        <div :class="$vuetify.theme.dark ? 'mmu-unit-dark-theme' : 'mmu-unit-light-theme'">
+          <mmu-unit
+            :unit="index"
+            :edit-gate-map="editGateMap"
+            :edit-gate-selected="editGateSelected"
+            @select-gate="selectGate"
+          />
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -22,21 +27,21 @@ import type { MmuGateDetails } from '@/types'
 import MmuUnit from '@/components/widgets/mmu/MmuUnit.vue'
 
 @Component({
-    components: {
-        MmuUnit
-    },
+  components: {
+    MmuUnit
+  },
 })
 export default class MmuMachine extends Mixins(StateMixin, MmuMixin) {
-    @Prop({ required: false, default: null }) readonly editGateMap!: MmuGateDetails[] | null
-    @Prop({ required: false, default: -1 }) readonly editGateSelected!: number
+  @Prop({ required: false, default: null }) readonly editGateMap!: MmuGateDetails[] | null
+  @Prop({ required: false, default: -1 }) readonly editGateSelected!: number
 
-    get unitArray(): number[] {
-        return Array.from({ length: this.numUnits }, (_, k) => k)
-    }
+  get unitArray (): number[] {
+    return Array.from({ length: this.numUnits }, (_, k) => k)
+  }
 
-    private selectGate(gate: number) {
-        this.$emit('select-gate', gate)
-    }
+  private selectGate (gate: number) {
+    this.$emit('select-gate', gate)
+  }
 }
 </script>
 

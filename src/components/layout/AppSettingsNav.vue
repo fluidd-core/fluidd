@@ -65,7 +65,7 @@ export default class AppSettingsNav extends Vue {
   }
 
   get supportsMmu (): boolean {
-     return !!this.$store.state.printer.printer.mmu
+    return !!this.$store.state.printer.printer.mmu
   }
 }
 </script>

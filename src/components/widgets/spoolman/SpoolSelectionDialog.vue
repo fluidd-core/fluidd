@@ -235,12 +235,12 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       if (this.mmuSelection) {
         this.selectedSpoolId = null
       } else {
-      this.selectedSpoolId = this.$store.state.spoolman.activeSpool ?? null
-      if (this.targetMacro) {
-        const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro)
-        this.selectedSpoolId = macro?.variables.spool_id ?? null
+        this.selectedSpoolId = this.$store.state.spoolman.activeSpool ?? null
+        if (this.targetMacro) {
+          const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro)
+          this.selectedSpoolId = macro?.variables.spool_id ?? null
+        }
       }
-    }
 
       if (this.currentFileName) {
         const { rootPath } = getFilePaths(this.currentFileName, 'gcodes')
@@ -276,20 +276,20 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get title (): string {
-    const count = this.mmuSelection ? 1 : (this.targetMacro ? 2 : 1);
-    const params = this.mmuSelection ? {} : { macro: this.targetMacro };
-    return this.$tc('app.spoolman.title.spool_selection', count, params);
+    const count = this.mmuSelection ? 1 : (this.targetMacro ? 2 : 1)
+    const params = this.mmuSelection ? {} : { macro: this.targetMacro }
+    return this.$tc('app.spoolman.title.spool_selection', count, params)
   }
 
   get selectBtnText (): string {
     if (this.mmuSelection) {
-      return this.$tc('app.spoolman.btn.select', 1).toString();
+      return this.$tc('app.spoolman.btn.select', 1).toString()
     }
     if (this.filename) {
-      return this.$t('app.general.btn.print').toString();
+      return this.$t('app.general.btn.print').toString()
     }
-    const count = this.targetMacro ? 2 : 1;
-    return this.$tc('app.spoolman.btn.select', count, { macro: this.targetMacro }).toString();
+    const count = this.targetMacro ? 2 : 1
+    return this.$tc('app.spoolman.btn.select', count, { macro: this.targetMacro }).toString()
   }
 
   get availableSpools () {

@@ -1,48 +1,70 @@
 <template>
-    <v-container class="unit-container">
-        <div v-if="!showLogos" class="title-row unit-title">
-            {{ unitDisplayName }}
-        </div>
-    
-        <div class="spool-row">
-            <div v-for="gate in unitGateRange" :key="'gate_' + gate" :class="gateClass(gate)" @click="selectGate(gate)">
-                <mmu-spool
-                    :width="width"
-                    :class="spoolClass(gate)"
-                    :gate-index="gate"
-                    :edit-gate-map="editGateMap"
-                    :edit-gate-selected="editGateSelected" />
+  <v-container class="unit-container">
+    <div
+      v-if="!showLogos"
+      class="title-row unit-title"
+    >
+      {{ unitDisplayName }}
+    </div>
 
-                <mmu-gate-status
-                    :gate-index="gate"
-                    :edit-gate-map="editGateMap"
-                    :edit-gate-selected="editGateSelected" />
-            </div>
-    
-            <div v-if="!editGateMap && hasBypass" :class="gateClass(TOOL_GATE_BYPASS)" @click="selectBypass()">
-                <mmu-spool
-                    :width="width"
-                    :class="spoolClass(gate)"
-                    :gate-index="TOOL_GATE_BYPASS"
-                    :edit-gate-map="editGateMap"
-                    :edit-gate-selected="editGateSelected" />
+    <div class="spool-row">
+      <div
+        v-for="gate in unitGateRange"
+        :key="'gate_' + gate"
+        :class="gateClass(gate)"
+        @click="selectGate(gate)"
+      >
+        <mmu-spool
+          :width="width"
+          :class="spoolClass(gate)"
+          :gate-index="gate"
+          :edit-gate-map="editGateMap"
+          :edit-gate-selected="editGateSelected"
+        />
 
-                <mmu-gate-status
-                    :gate-index="TOOL_GATE_BYPASS"
-                    :edit-gate-map="editGateMap"
-                    :edit-gate-selected="editGateSelected" />
-            </div>
-        </div>
+        <mmu-gate-status
+          :gate-index="gate"
+          :edit-gate-map="editGateMap"
+          :edit-gate-selected="editGateSelected"
+        />
+      </div>
 
-        <div
-            v-if="showLogos && svgLogo"
-            :class="
-                $vuetify.theme.dark ? 'logo-row logo-background-dark-theme' : 'logo-row logo-background-light-theme'
-            ">
-            <div class="mmu-logo" v-html="svgLogo"></div>
-            <div class="unit-title">{{ unitDisplayName }}</div>
-        </div>
-    </v-container> 
+      <div
+        v-if="!editGateMap && hasBypass"
+        :class="gateClass(TOOL_GATE_BYPASS)"
+        @click="selectBypass()"
+      >
+        <mmu-spool
+          :width="width"
+          :class="spoolClass(gate)"
+          :gate-index="TOOL_GATE_BYPASS"
+          :edit-gate-map="editGateMap"
+          :edit-gate-selected="editGateSelected"
+        />
+
+        <mmu-gate-status
+          :gate-index="TOOL_GATE_BYPASS"
+          :edit-gate-map="editGateMap"
+          :edit-gate-selected="editGateSelected"
+        />
+      </div>
+    </div>
+
+    <div
+      v-if="showLogos && svgLogo"
+      :class="
+        $vuetify.theme.dark ? 'logo-row logo-background-dark-theme' : 'logo-row logo-background-light-theme'
+      "
+    >
+      <div
+        class="mmu-logo"
+        v-html="svgLogo"
+      />
+      <div class="unit-title">
+        {{ unitDisplayName }}
+      </div>
+    </div>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -50,119 +72,118 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
-import type { MmuGateDetails, MmuUnitDetails } from '@/types'
+import type { MmuGateDetails } from '@/types'
 import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuGateStatus from '@/components/widgets/mmu/MmuGateStatus.vue'
 
 @Component({
-    components: { MmuSpool, MmuGateStatus },
+  components: { MmuSpool, MmuGateStatus },
 })
 export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
-    @Prop({ required: false, default: 0 }) readonly unit!: number
-    @Prop({ required: false, default: null }) readonly editGateMap!: MmuGateDetails[] | null
-    @Prop({ required: false, default: -1 }) readonly editGateSelected!: number
+  @Prop({ required: false, default: 0 }) readonly unit!: number
+  @Prop({ required: false, default: null }) readonly editGateMap!: MmuGateDetails[] | null
+  @Prop({ required: false, default: -1 }) readonly editGateSelected!: number
 
-    private svgLogo: string | null = null
+  private svgLogo: string | null = null
 
-    get unitDisplayName(): string {
-        const name = this.unitDetails(this.unit).name
-        return `#${this.unit + 1} ${name}`
+  get unitDisplayName (): string {
+    const name = this.unitDetails(this.unit).name
+    return `#${this.unit + 1} ${name}`
+  }
+
+  get unitGateRange (): number[] {
+    const unitDetails = this.unitDetails(this.unit)
+    return Array.from({ length: unitDetails.numGates }, (v, k) => k + unitDetails.firstGate)
+  }
+
+  get width (): string {
+    if (this.numGates <= 9) {
+      return '56px'
+    } else if (this.numGates <= 12) {
+      return '48px'
     }
+    return '40px'
+  }
 
-    get unitGateRange(): number[] {
-        const unitDetails = this.unitDetails(this.unit)
-        return Array.from({ length: unitDetails.numGates }, (v, k) => k + unitDetails.firstGate)
+  get showLogos (): boolean {
+    return this.$store.state.config.uiSettings.mmu.showLogos ?? false
+  }
+
+  gateClass (gate: number): string[] {
+    const classes = ['gate-status', 'cursor-pointer']
+    if (this.editGateMap && this.editGateSelected === gate) {
+      classes.push('selected-gate')
     }
+    return classes
+  }
 
-    get width(): string {
-        if (this.numGates <= 9) {
-            return '56px'
-        } else if (this.numGates <= 12) {
-            return '48px'
+  spoolClass (gate: number): string[] {
+    const classes = []
+    if (this.editGateMap) {
+      if (this.editGateSelected !== gate) {
+        classes.push('shrink')
+        if (!this.isMobileViewport) {
+          classes.push('grow-effect')
         }
-        return '40px'
+      }
+    } else if (!this.isMobileViewport) {
+      classes.push('hover-effect')
     }
+    return classes
+  }
 
-    get showLogos(): boolean {
-        return this.$store.state.config.uiSettings.mmu.showLogos ?? false
+  selectGate (gate: number) {
+    if (this.editGateMap) {
+      this.$emit('select-gate', gate)
+    } else if (!this.isPrinting) {
+      this.sendGcode('MMU_SELECT GATE=' + gate)
     }
+  }
 
-    gateClass(gate: number): string[] {
-        let classes = ['gate-status', 'cursor-pointer']
-        if (this.editGateMap && this.editGateSelected === gate) {
-            classes.push('selected-gate')
+  selectBypass () {
+    if (this.editGateMap) {
+      this.$emit('select-gate', this.TOOL_GATE_BYPASS)
+    } else if (!this.isPrinting) {
+      this.sendGcode('MMU_SELECT BYPASS=1')
+    }
+  }
+
+  mounted () {
+    const unitVendor = this.unitDetails(this.unit).vendor
+    const vendorLogoUrl = '/img/mmu/mmu_' + unitVendor + '.svg'
+    this.fetchSvg(vendorLogoUrl)
+  }
+
+  async fetchSvg (url: string) {
+    fetch(url)
+      .then((res) => {
+        console.log(res)
+        if (!res.ok) {
+          throw new Error('Failed to fetch vendor specific MMU logo')
         }
-        return classes
-    }
-
-    spoolClass(gate: number): string[] {
-        let classes = []
-        if (this.editGateMap) {
-            if (this.editGateSelected !== gate) {
-                classes.push('shrink')
-                if (!this.isMobileViewport) {
-                    classes.push('grow-effect')
-                }
+        return res.text()
+      })
+      .then((svg) => {
+        if (!svg.includes('<svg')) { throw new Error('Not an svg logo') }
+        this.svgLogo = svg
+      })
+      .catch(() => {
+        const defaultUrl = '/img/mmu/mmu_HappyHare.svg'
+        fetch(defaultUrl)
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error('Failed to fetch the default MMU logo')
             }
-        } else if (!this.isMobileViewport) {
-            classes.push('hover-effect')
-        }
-        return classes
-    }
-
-    selectGate(gate: number) {
-        if (this.editGateMap) {
-            this.$emit('select-gate', gate)
-        } else if (!this.isPrinting) {
-            this.sendGcode('MMU_SELECT GATE=' + gate)
-        }
-    }
-
-    selectBypass() {
-        if (this.editGateMap) {
-            this.$emit('select-gate', this.TOOL_GATE_BYPASS)
-        } else if (!this.isPrinting) {
-            this.sendGcode('MMU_SELECT BYPASS=1')
-        }
-    }
-
-    mounted() {
-        const unitVendor = this.unitDetails(this.unit).vendor
-        const vendorLogoUrl = '/img/mmu/mmu_' + unitVendor + '.svg'
-        this.fetchSvg(vendorLogoUrl)
-    }
-
-    async fetchSvg(url: string) {
-        fetch(url)
-            .then((res) => {
-                console.log(res)
-                if (!res.ok) {
-                    throw new Error('Failed to fetch vendor specific MMU logo')
-                }
-                return res.text()
-            })
-            .then((svg) => {
-                if (!svg.includes("<svg"))
-                    throw new Error('Not an svg logo')
-                this.svgLogo = svg
-            })
-            .catch((error) => {
-                const defaultUrl = '/img/mmu/mmu_HappyHare.svg'
-                fetch(defaultUrl)
-                    .then((res) => {
-                        if (!res.ok) {
-                            throw new Error('Failed to fetch the default MMU logo')
-                        }
-                        return res.text()
-                    })
-                    .then((svg) => {
-                        this.svgLogo = svg
-                    })
-                    .catch((error) => {
-                        this.svgLogo = null
-                    })
-            })
-    }
+            return res.text()
+          })
+          .then((svg) => {
+            this.svgLogo = svg
+          })
+          .catch(() => {
+            this.svgLogo = null
+          })
+      })
+  }
 }
 </script>
 
