@@ -73,10 +73,10 @@ export type DefaultGetterFunction = typeof defaultGetter
   inheritAttrs: false
 })
 export default class AppDataTableRow extends Vue {
-  @Prop({ type: Array<DataTableHeader> })
+  @Prop({ type: Array, required: true })
   readonly headers!: DataTableHeader[]
 
-  @Prop({ type: Object })
+  @Prop({ type: Object, required: true })
   readonly item!: unknown
 
   @Prop({ type: Boolean })

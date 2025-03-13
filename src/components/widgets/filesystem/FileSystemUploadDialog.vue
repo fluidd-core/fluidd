@@ -1,6 +1,6 @@
 <template>
   <app-dialog
-    :value="uploads.length > 0"
+    :value="open"
     :title="$tc('app.file_system.title.upload_file', uploads.length)"
     max-width="500"
     persistent
@@ -74,6 +74,10 @@ import type { FileUpload } from '@/store/files/types'
 
 @Component({})
 export default class FileSystemUploadDialog extends Mixins(StateMixin) {
+  get open () {
+    return this.uploads.length > 0
+  }
+
   get uploads (): FileUpload[] {
     const uploads: FileUpload[] = this.$store.state.files.uploads
 

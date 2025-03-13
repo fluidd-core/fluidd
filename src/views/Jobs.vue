@@ -34,7 +34,7 @@ export default class Configuration extends Mixins(StateMixin) {
   }
 
   get hasQueuedJobs () {
-    return this.supportsJobQueue && this.$store.state.jobQueue.queued_jobs.length > 0
+    return this.supportsJobQueue && this.$store.state.jobQueue.queuedJobs.length > 0
   }
 }
 </script>

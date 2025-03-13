@@ -32,7 +32,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     commit('setSocketOpen', payload)
     if (payload === true) {
       SocketActions.serverInfo()
-      SocketActions.identify({
+      SocketActions.serverConnectionIdentify({
         client_name: Globals.APP_NAME,
         version: `${import.meta.env.VERSION || '0.0.0'}-${import.meta.env.HASH || 'unknown'}`.trim(),
         type: 'web',

@@ -307,7 +307,7 @@ app:
       power: Leistung
       printers: Drucker
       progress: Fortschritt
-      requested_speed: Geschw.
+      requested_speed: Geschwindigkeit
       retract_length: Retract-Länge
       retract_speed: Retract-Geschwindigkeit
       save_as: Speichern als
@@ -477,6 +477,15 @@ app:
         filament_type: Filament-Typ
         nozzle_diameter: Düsendurchmesser
         time_added: Hinzugefügt
+        filament_colors: Filament-Farben
+        extruder_colors: Extruder-Farben
+        filament_change_count: Filamentwechsel
+        filament_temps: Filament-Temperaturen
+        filament_weights: Filament-Gewichte
+        mmu_print: MMU-Druck
+        referenced_tools: Referenzierte Werkzeuge
+        file_processors: Dateiprozessoren
+        user: Benutzer
     title:
       add_printer: Drucker hinzufügen
       bedmesh: Bettnivellierung
@@ -858,7 +867,7 @@ app:
     label:
       commit_history: Commit-Verlauf
       commits_on: Commits am
-      committed: Committed
+      committed: Eingebracht
       dirty: VERUNREINIGT
       invalid: UNZULÄSSIG
       os_packages: Betriebssystem-Pakete
@@ -912,7 +921,7 @@ app:
       park_extrude_speed: Extrusionsgeschw. beim Parken
       parkhead: Druckkopf parken
       park_time: Parkdauer
-      park_travel_speed: Park-Bewegungsgeschw.
+      park_travel_speed: Park-Bewegungsgeschwindigkeit
       park_custom_pos_x: Parkposition X
       park_custom_pos_y: Parkposition Y
       park_custom_pos_dz: Parkposition Z-Hop
@@ -944,12 +953,12 @@ app:
       spoolman: Spoolman
     label:
       active_spool: Aktive Spule
-      bed_temp: Bett-Temp.
+      bed_temp: Bett-Temperatur
       change_spool: Spule wechseln
       comment: Kommentar
       density: Dichte
       device_camera: Gerät
-      extruder_temp: Extruder-Temp.
+      extruder_temp: Extruder-Temperatur
       filament_name: Filament
       first_used: Zuerst genutzt
       last_used: Zuletzt genutzt

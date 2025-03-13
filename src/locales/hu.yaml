@@ -460,6 +460,7 @@ app:
         status: Állapot
         total_duration: Teljes időtartam
         file_processors: Fájl processzorok
+        user: Felhasználó
     title:
       add_chart: Ábra hozzáadása
       add_printer: Nyomtató hozzáadása

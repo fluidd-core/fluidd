@@ -18,7 +18,8 @@ export const actions: ActionTree<TimelapseState, RootState> = {
    * Make a socket request to init the timelapse component.
    */
   async init () {
-    SocketActions.timelapseState()
+    SocketActions.machineTimelapseGetSettings()
+    SocketActions.machineTimelapseLastFrameInfo()
   },
 
   async onSettings ({ commit }, payload) {
