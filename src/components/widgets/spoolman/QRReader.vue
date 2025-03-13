@@ -131,7 +131,7 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get availableSpools (): Spool[] {
-    return this.$store.state.spoolman.availableSpools
+    return this.$store.getters['spoolman/getAvailableSpools']
   }
 
   handleCodeFound (code: string) {

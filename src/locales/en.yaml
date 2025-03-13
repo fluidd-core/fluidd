@@ -915,9 +915,11 @@ app:
       active_spool: Active Spool
       bed_temp: Bed Temp
       change_spool: Change Spool
+      colors: Colors
       comment: Comment
       density: Density
       device_camera: Device
+      diameter: Diameter
       extruder_temp: Extruder Temp
       filament_name: Filament
       first_used: First Used

@@ -7,8 +7,8 @@ import i18n from '@/plugins/i18n'
 import type { TranslateResult } from 'vue-i18n'
 import store from '@/store'
 import router from '@/router'
-import * as dateTimeFormatters from '@/util/date-time-formatters'
-import * as stringFormatters from '@/util/string-formatters'
+import dateTimeFormatters from '@/util/date-time-formatters'
+import stringFormatters from '@/util/string-formatters'
 import isNullOrEmpty, { type NullableOrEmpty } from '@/util/is-null-or-empty'
 import consola from 'consola'
 
@@ -66,19 +66,9 @@ const Filters = {
     }
   },
 
-  /**
-   * Converts a given weight (in grams) to its corresponding length (in mm)
-   */
-  convertFilamentWeightToLength (weight: number, density: number, diameter: number) {
-    // l[mm] = m[g]/D[g/cm³]/A[mm²]*(1000mm³/cm³)
-    return weight / density / (Math.PI * (diameter / 2) ** 2) * 1000
-  },
+  ...stringFormatters(),
 
-  ...stringFormatters,
-
-  ...dateTimeFormatters,
-
-  ...dateTimeFormatters.buildDateTimeFormatters(
+  ...dateTimeFormatters(
     () => store.state.config.uiSettings.general.dateFormat,
     () => store.state.config.uiSettings.general.timeFormat
   ),
