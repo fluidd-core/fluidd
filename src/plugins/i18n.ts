@@ -7,6 +7,17 @@ import { I18nLocales } from '@/dynamicImports'
 
 Vue.use(VueI18n)
 
+export const getNavigatorLocales = () => {
+  return navigator.languages ?? [navigator.language]
+}
+
+export const getAllLocales = (): Intl.LocalesArgument => {
+  return [
+    i18n.locale,
+    ...getNavigatorLocales()
+  ]
+}
+
 /**
  * Loads the starting locale for the user.
  */

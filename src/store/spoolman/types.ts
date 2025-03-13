@@ -1,20 +1,56 @@
 import type { Macro } from '@/store/macros/types'
 
-export interface Vendor {
-  id: number;
-  registered: Date;
-  name: string;
-  comment?: string;
+export interface SpoolmanState {
+  info: SpoolmanInfo | null;
+  spools: SpoolmanSpool[];
+  activeSpool: number | null;
+  currency: string | null;
+  connected: boolean;
+  dialog: SpoolSelectionDialogState;
+  socket?: WebSocket;
 }
 
-export interface Filament {
+export interface SpoolmanInfo {
+  version: string;
+  debug_mode: boolean;
+  automatic_backups: boolean;
+  data_dir: string;
+  logs_dir: string;
+  backups_dir: string;
+  db_type: string;
+  git_commit: string;
+  build_date: Date;
+}
+
+export interface SpoolmanSpool {
   id: number;
-  registered: Date;
+  registered: string;
+  filament: SpoolmanFilament;
+
+  first_used?: string;
+  last_used?: string;
+  price?: number;
+  remaining_weight?: number;
+  initial_weight?: number;
+  spool_weight?: number;
+  used_weight?: number;
+  remaining_length?: number;
+  used_length?: number;
+  location?: string;
+  lot_nr?: string;
+  comment?: string;
+  archived: boolean;
+  extra?: Record<string, unknown>;
+}
+
+export interface SpoolmanFilament {
+  id: number;
+  registered: string;
   density: number;
   diameter: number;
 
   name?: string;
-  vendor?: Vendor;
+  vendor?: SpoolmanVendor;
   material?: string;
   price?: number;
   weight?: number;
@@ -24,33 +60,43 @@ export interface Filament {
   settings_extruder_temp?: number;
   settings_bed_temp?: number;
   color_hex?: string;
+  multi_color_hexes?: string;
+  multi_color_direction?: string;
+  external_id?: string;
+  extra?: Record<string, unknown>;
 }
 
-export interface Spool {
+export interface SpoolmanVendor {
   id: number;
+  registered: string;
+  name: string;
+
+  comment?: string;
+  empty_spool_weight?: number;
+  external_id?: string;
+  extra?: Record<string, unknown>;
+}
+
+export interface Spool extends Omit<SpoolmanSpool, 'registered' | 'filament' | 'first_used' | 'last_used'> {
   registered: Date;
   filament: Filament;
-  used_weight: number;
-  used_length: number;
-  archived: boolean;
+  filament_name: string;
 
-  remaining_weight?: number;
-  remaining_length?: number;
-  location?: string;
-  lot_nr?: string;
-  comment?: string;
   first_used?: Date;
   last_used?: Date;
+  initial_length?: number;
 }
 
-export interface SpoolmanState {
-  info: SpoolmanInfo | null;
-  availableSpools: Spool[];
-  activeSpool: number | null;
-  currency: string | null;
-  connected: boolean;
-  dialog: SpoolSelectionDialogState;
-  socket?: WebSocket;
+export interface Filament extends Omit<SpoolmanFilament, 'registered' | 'vendor' | 'multi_color_hexes'> {
+  registered: Date;
+
+  vendor?: Vendor;
+  multi_color_hexes?: string[];
+  colors?: string[];
+}
+
+export interface Vendor extends Omit<SpoolmanVendor, 'registered'> {
+  registered: Date;
 }
 
 export interface SpoolSelectionDialogState {
@@ -68,17 +114,17 @@ export interface WebsocketBasePayload {
 
 export interface WebsocketSpoolPayload extends WebsocketBasePayload {
   resource: 'spool';
-  payload: Spool;
+  payload: SpoolmanSpool;
 }
 
 export interface WebsocketFilamentPayload extends WebsocketBasePayload {
   resource: 'filament';
-  payload: Filament;
+  payload: SpoolmanFilament;
 }
 
 export interface WebsocketVendorPayload extends WebsocketBasePayload {
   resource: 'vendor';
-  payload: Vendor;
+  payload: SpoolmanVendor;
 }
 
 export interface MacroWithSpoolId extends Macro {
@@ -88,20 +134,9 @@ export interface MacroWithSpoolId extends Macro {
   }
 }
 
-export interface SpoolmanInfo {
-  version: string;
-  debug_mode: boolean;
-  automatic_backups: boolean;
-  data_dir: string;
-  logs_dir: string;
-  backups_dir: string;
-  db_type: string;
-  git_commit: string;
-  build_date: Date;
-}
-
 export interface SpoolmanProxyResponseV2Success<T> {
   response: T;
+  response_headers?: Record<string, string>;
   error: null;
 }
 

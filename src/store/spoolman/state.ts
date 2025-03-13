@@ -3,7 +3,7 @@ import type { SpoolmanState } from '@/store/spoolman/types'
 export const defaultState = (): SpoolmanState => {
   return {
     info: null,
-    availableSpools: [],
+    spools: [],
     activeSpool: null,
     currency: null,
     connected: false,
