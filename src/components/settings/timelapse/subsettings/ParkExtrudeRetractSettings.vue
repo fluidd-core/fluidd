@@ -116,7 +116,7 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   readonly parkExtrudeSpeedElement!: VInput
 
   get parkRetractDistanceBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('park_retract_distance')
+    return this.$typedGetters['timelapse/isBlockedSetting']('park_retract_distance')
   }
 
   get parkRetractDistance (): number {
@@ -130,7 +130,7 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   get parkRetractSpeedBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('park_retract_speed')
+    return this.$typedGetters['timelapse/isBlockedSetting']('park_retract_speed')
   }
 
   get parkRetractSpeed (): number {
@@ -144,7 +144,7 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   get parkExtrudeDistanceBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('park_extrude_distance')
+    return this.$typedGetters['timelapse/isBlockedSetting']('park_extrude_distance')
   }
 
   get parkExtrudeDistance (): number {
@@ -158,7 +158,7 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   get parkExtrudeSpeedBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('park_extrude_speed')
+    return this.$typedGetters['timelapse/isBlockedSetting']('park_extrude_speed')
   }
 
   get parkExtrudeSpeed (): number {
@@ -172,7 +172,7 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   get settings (): TimelapseSettings {
-    return this.$store.state.timelapse.settings ?? {} as TimelapseSettings
+    return this.$typedState.timelapse.settings ?? {} as TimelapseSettings
   }
 
   subtitleIfBlocked (blocked: boolean): string {

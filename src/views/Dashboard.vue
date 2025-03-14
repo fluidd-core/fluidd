@@ -117,23 +117,23 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get printerSettings (): KlipperPrinterSettings {
-    return this.$store.getters['printer/getPrinterSettings']
+    return this.$typedGetters['printer/getPrinterSettings']
   }
 
   get hasCameras (): boolean {
-    return this.$store.getters['webcams/getEnabledWebcams'].length > 0
+    return this.$typedGetters['webcams/getEnabledWebcams'].length > 0
   }
 
   get hasHeatersOrTemperatureSensors (): boolean {
     return (
-      this.$store.getters['printer/getHeaters'].length > 0 ||
-      this.$store.getters['printer/getOutputs'](['temperature_fan']).length > 0 ||
-      this.$store.getters['printer/getSensors'].length > 0
+      this.$typedGetters['printer/getHeaters'].length > 0 ||
+      this.$typedGetters['printer/getOutputs'](['temperature_fan']).length > 0 ||
+      this.$typedGetters['printer/getSensors'].length > 0
     )
   }
 
   get hasSensors (): boolean {
-    return this.$store.getters['sensors/getSensors'].length > 0
+    return this.$typedGetters['sensors/getSensors'].length > 0
   }
 
   get firmwareRetractionEnabled (): boolean {
@@ -141,45 +141,45 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get supportsJobQueue (): boolean {
-    return this.$store.getters['server/componentSupport']('job_queue')
+    return this.$typedGetters['server/componentSupport']('job_queue')
   }
 
   get supportsBedMesh (): boolean {
-    return this.$store.getters['mesh/getSupportsBedMesh']
+    return this.$typedGetters['mesh/getSupportsBedMesh']
   }
 
   get supportsBeacon (): boolean {
-    return this.$store.getters['printer/getSupportsBeacon']
+    return this.$typedGetters['printer/getSupportsBeacon']
   }
 
   get supportsRunoutSensors (): boolean {
-    return this.$store.getters['printer/getRunoutSensors'].length > 0
+    return this.$typedGetters['printer/getRunoutSensors'].length > 0
   }
 
   get supportsSpoolman (): boolean {
-    return this.$store.getters['server/componentSupport']('spoolman')
+    return this.$typedGetters['server/componentSupport']('spoolman')
   }
 
   get hasMacros (): boolean {
-    return this.$store.getters['macros/getVisibleMacros'].length > 0
+    return this.$typedGetters['macros/getVisibleMacros'].length > 0
   }
 
   get hasOutputs (): boolean {
     return (
-      this.$store.getters['printer/getAllFans'].length > 0 ||
-      this.$store.getters['printer/getPins'].length > 0 ||
-      this.$store.getters['printer/getAllLeds'].length > 0
+      this.$typedGetters['printer/getAllFans'].length > 0 ||
+      this.$typedGetters['printer/getPins'].length > 0 ||
+      this.$typedGetters['printer/getAllLeds'].length > 0
     )
   }
 
   get inLayout (): boolean {
-    return this.$store.state.config.layoutMode
+    return this.$typedState.config.layoutMode
   }
 
   get layout (): LayoutContainer | undefined {
-    const layoutName: string = this.$store.getters['layout/getSpecificLayoutName']
+    const layoutName: string = this.$typedGetters['layout/getSpecificLayoutName']
 
-    return this.$store.getters['layout/getLayout'](layoutName)
+    return this.$typedGetters['layout/getLayout'](layoutName)
   }
 
   @Watch('layout')
@@ -206,7 +206,7 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   handleUpdateLayout () {
-    const name: string = this.$store.getters['layout/getSpecificLayoutName']
+    const name: string = this.$typedGetters['layout/getSpecificLayoutName']
 
     this.$store.dispatch('layout/onLayoutChange', {
       name,

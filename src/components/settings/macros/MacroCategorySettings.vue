@@ -140,7 +140,7 @@ export default class MacroCategorySettings extends Vue {
   get macrosForCategory (): Macro[] {
     const id = this.categoryId
 
-    return this.$store.getters['macros/getMacrosByCategory'](id)
+    return this.$typedGetters['macros/getMacrosByCategory'](id)
   }
 
   get macros () {
@@ -153,7 +153,7 @@ export default class MacroCategorySettings extends Vue {
   }
 
   get categories (): MacroCategory[] {
-    return this.$store.getters['macros/getCategories']
+    return this.$typedGetters['macros/getCategories']
   }
 
   get category () {

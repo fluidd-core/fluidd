@@ -26,7 +26,7 @@
     "test": "npm run test:unit",
     "test:unit": "vitest --environment jsdom --config ./vitest.config.ts",
     "type-check": "vue-tsc --build --noEmit",
-    "circular-check": "skott --displayMode=file-tree --showCircularDependencies --tsconfig=./tsconfig.app.json",
+    "circular-check": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --tsconfig=./tsconfig.app.json",
     "theme:convert": "cd tools; node convertTheme.mjs"
   },
   "main": "index.js",

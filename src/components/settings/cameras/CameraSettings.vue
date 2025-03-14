@@ -113,7 +113,7 @@ export default class CameraSettings extends Vue {
   }
 
   get cameras (): WebcamConfig[] {
-    return this.$store.getters['webcams/getWebcams']
+    return this.$typedGetters['webcams/getWebcams']
   }
 
   handleEditDialog (camera: WebcamConfig) {
@@ -159,7 +159,7 @@ export default class CameraSettings extends Vue {
   }
 
   get defaultFullscreenAction (): string {
-    return this.$store.state.config.uiSettings.general.cameraFullscreenAction
+    return this.$typedState.config.uiSettings.general.cameraFullscreenAction
   }
 
   set defaultFullscreenAction (value: string) {

@@ -275,7 +275,7 @@ export default class CollapsableCard extends Vue {
       if (this.layoutPath.includes('.')) {
         const split = this.layoutPath.split('.')
         let name = split[0]
-        if (name === 'dashboard') name = this.$store.getters['layout/getSpecificLayoutName']
+        if (name === 'dashboard') name = this.$typedGetters['layout/getSpecificLayoutName']
 
         return {
           name,
@@ -289,7 +289,7 @@ export default class CollapsableCard extends Vue {
 
   get layout (): LayoutConfig | undefined {
     if (this._layoutPath) {
-      return this.$store.getters['layout/getConfig'](this._layoutPath.name, this._layoutPath.id)
+      return this.$typedGetters['layout/getConfig'](this._layoutPath.name, this._layoutPath.id)
     }
   }
 
@@ -349,7 +349,7 @@ export default class CollapsableCard extends Vue {
 
   get inLayout (): boolean {
     return (
-      this.$store.state.config.layoutMode &&
+      this.$typedState.config.layoutMode &&
       !!this.draggable
     )
   }

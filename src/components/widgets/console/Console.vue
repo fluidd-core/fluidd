@@ -88,7 +88,7 @@ export default class Console extends Mixins(StateMixin) {
   _pauseScroll = false
 
   get currentCommand (): string {
-    return this.$store.state.console.consoleCommand
+    return this.$typedState.console.consoleCommand
   }
 
   set currentCommand (val: string) {
@@ -96,7 +96,7 @@ export default class Console extends Mixins(StateMixin) {
   }
 
   get flipLayout (): boolean {
-    return this.$store.state.config.uiSettings.general.flipConsoleLayout
+    return this.$typedState.config.uiSettings.general.flipConsoleLayout
   }
 
   set flipLayout (_) {
@@ -116,7 +116,7 @@ export default class Console extends Mixins(StateMixin) {
     if (this.dynamicScroller) {
       const el = this.dynamicScroller.$el
 
-      if (this.flipLayout && (this._pauseScroll || !this.$store.state.console.autoScroll)) {
+      if (this.flipLayout && (this._pauseScroll || !this.$typedState.console.autoScroll)) {
         const { scrollHeight, clientHeight } = el
 
         if (scrollHeight > clientHeight) {
@@ -152,7 +152,7 @@ export default class Console extends Mixins(StateMixin) {
 
     if (this.dynamicScroller) {
       if (
-        this.$store.state.console.autoScroll ||
+        this.$typedState.console.autoScroll ||
         this.readonly ||
         force
       ) {

@@ -65,12 +65,12 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
   search = ''
   loaded = false
 
-  get rootFiles (): MoonrakerRootFile[] {
-    return this.$store.getters['files/getRootFiles'](this.root)
+  get rootFiles (): MoonrakerRootFile[] | undefined {
+    return this.$typedGetters['files/getRootFiles'](this.root)
   }
 
   get matchedFiles (): File[] {
-    if (!this.loaded) {
+    if (!this.loaded || !this.rootFiles) {
       return []
     }
 

@@ -160,11 +160,11 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   readonly menuCollapsed?: boolean
 
   get klippyApp (): KlippyApp {
-    return this.$store.getters['printer/getKlippyApp']
+    return this.$typedGetters['printer/getKlippyApp']
   }
 
   get printerSettings (): KlipperPrinterSettings {
-    return this.$store.getters['printer/getPrinterSettings']
+    return this.$typedGetters['printer/getPrinterSettings']
   }
 
   get printerSupportsQuadGantryLevel (): boolean {
@@ -215,7 +215,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get loadFilamentMacro (): Macro | undefined {
-    return this.$store.getters['macros/getMacroByName'](
+    return this.$typedGetters['macros/getMacroByName'](
       'LOAD_FILAMENT',
       'FILAMENT_LOAD',
       'M701'
@@ -223,7 +223,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get unloadFilamentMacro (): Macro | undefined {
-    return this.$store.getters['macros/getMacroByName'](
+    return this.$typedGetters['macros/getMacroByName'](
       'UNLOAD_FILAMENT',
       'FILAMENT_UNLOAD',
       'M702'
@@ -231,7 +231,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get cleanNozzleMacro (): Macro | undefined {
-    return this.$store.getters['macros/getMacroByName'](
+    return this.$typedGetters['macros/getMacroByName'](
       'CLEAN_NOZZLE',
       'NOZZLE_CLEAN',
       'WIPE_NOZZLE',
@@ -371,17 +371,17 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get hasSteppersEnabled (): boolean {
-    return this.$store.getters['printer/getHasSteppersEnabled']
+    return this.$typedGetters['printer/getHasSteppersEnabled']
   }
 
   get hasRoundBed (): boolean {
-    return this.$store.getters['printer/getHasRoundBed']
+    return this.$typedGetters['printer/getHasRoundBed']
   }
 
   async toggleForceMove () {
     const result = (
       this.forceMoveEnabled ||
-      !this.$store.state.config.uiSettings.general.forceMoveToggleWarning ||
+      !this.$typedState.config.uiSettings.general.forceMoveToggleWarning ||
       await this.$confirm(
         this.$tc('app.general.simple_form.msg.confirm_forcemove_toggle'),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }

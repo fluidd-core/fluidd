@@ -93,7 +93,7 @@ import StateMixin from '@/mixins/state'
 })
 export default class TemperaturePresetSettings extends Mixins(StateMixin) {
   get heaters (): Heater[] {
-    return this.$store.getters['printer/getHeaters']
+    return this.$typedGetters['printer/getHeaters']
   }
 
   get fans (): Fan[] {
@@ -101,7 +101,7 @@ export default class TemperaturePresetSettings extends Mixins(StateMixin) {
   }
 
   get presets (): TemperaturePreset[] {
-    return this.$store.getters['config/getTempPresets']
+    return this.$typedGetters['config/getTempPresets']
   }
 
   dialogState: any = {

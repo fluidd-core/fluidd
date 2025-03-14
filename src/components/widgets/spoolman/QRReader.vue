@@ -52,7 +52,7 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
   @Ref('canvas')
   canvas!: HTMLCanvasElement
 
-  get camera (): WebcamConfig | { name: string, service: 'device' } {
+  get camera (): WebcamConfig | { name: string, service: 'device' } | undefined {
     if (this.source === 'device') {
       return {
         name: this.$t('app.spoolman.label.device_camera').toString(),
@@ -60,7 +60,9 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
       }
     }
 
-    return this.$store.getters['webcams/getWebcamById'](this.source)
+    if (this.source !== null) {
+      return this.$typedGetters['webcams/getWebcamById'](this.source)
+    }
   }
 
   get open () {
@@ -131,7 +133,7 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get availableSpools (): Spool[] {
-    return this.$store.getters['spoolman/getAvailableSpools']
+    return this.$typedGetters['spoolman/getAvailableSpools']
   }
 
   handleCodeFound (code: string) {

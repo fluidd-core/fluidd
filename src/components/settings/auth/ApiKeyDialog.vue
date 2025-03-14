@@ -50,7 +50,7 @@ export default class ApiKeyDialog extends Vue {
   open?: boolean
 
   get apiKey (): string {
-    return this.$store.state.auth.apiKey
+    return this.$typedState.auth.apiKey
   }
 
   handleRefreshApiKey () {

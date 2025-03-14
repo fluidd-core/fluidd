@@ -62,7 +62,7 @@ export default class CameraCard extends Mixins(StateMixin) {
   }
 
   get cameras (): WebcamConfig[] {
-    return this.$store.getters['webcams/getVisibleWebcams']
+    return this.$typedGetters['webcams/getVisibleWebcams']
   }
 
   handleCameraSelect (id: string) {

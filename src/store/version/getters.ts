@@ -3,7 +3,7 @@ import type { CommitItem, VersionState } from './types'
 import type { RootState } from '../types'
 import { valid, gt } from 'semver'
 
-export const getters: GetterTree<VersionState, RootState> = {
+export const getters = {
   /**
    * Returns an array list of available components
    */
@@ -90,4 +90,4 @@ export const getters: GetterTree<VersionState, RootState> = {
       }
     }
   }
-}
+} satisfies GetterTree<VersionState, RootState>

@@ -63,7 +63,7 @@ export default class RunoutSensorsCard extends Mixins(StateMixin) {
   readonly fullscreen?: boolean
 
   get sensors (): RunoutSensor[] {
-    return this.$store.getters['printer/getRunoutSensors']
+    return this.$typedGetters['printer/getRunoutSensors']
   }
 
   changeSensor (item: RunoutSensor, value: boolean) {

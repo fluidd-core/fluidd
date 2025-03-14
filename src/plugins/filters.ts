@@ -11,6 +11,7 @@ import dateTimeFormatters from '@/util/date-time-formatters'
 import stringFormatters from '@/util/string-formatters'
 import isNullOrEmpty, { type NullableOrEmpty } from '@/util/is-null-or-empty'
 import consola from 'consola'
+import type { RootGetters, RootState } from '@/store/types'
 
 const Filters = {
   /**
@@ -168,6 +169,20 @@ export const FiltersPlugin = {
     Vue.$rules = Rules
     Vue.$globals = Globals
     Vue.$waits = Waits
+
+    Object.defineProperty(Vue.prototype, '$typedState', {
+      get (): RootState {
+        return this.$store.state as RootState
+      },
+      enumerable: true
+    })
+
+    Object.defineProperty(Vue.prototype, '$typedGetters', {
+      get (): RootGetters {
+        return this.$store.getters as RootGetters
+      },
+      enumerable: true
+    })
   }
 }
 
@@ -177,6 +192,8 @@ declare module 'vue/types/vue' {
     $rules: typeof Rules;
     $globals: typeof Globals;
     $waits: typeof Waits;
+    $typedState: RootState;
+    $typedGetters: RootGetters;
   }
 
   interface VueConstructor {
@@ -184,5 +201,7 @@ declare module 'vue/types/vue' {
     $rules: typeof Rules;
     $globals: typeof Globals;
     $waits: typeof Waits;
+    $typedState: RootState;
+    $typedGetters: RootGetters;
   }
 }

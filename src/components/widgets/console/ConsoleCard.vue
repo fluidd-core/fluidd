@@ -146,11 +146,11 @@ export default class ConsoleCard extends Vue {
   scrollingPaused = false
 
   get filters (): ConsoleFilter[] {
-    return this.$store.state.console.consoleFilters
+    return this.$typedState.console.consoleFilters
   }
 
   get hideTempWaits (): boolean {
-    return this.$store.state.config.uiSettings.general.hideTempWaits
+    return this.$typedState.config.uiSettings.general.hideTempWaits
   }
 
   set hideTempWaits (value: boolean) {
@@ -162,7 +162,7 @@ export default class ConsoleCard extends Vue {
   }
 
   get flipLayout (): boolean {
-    return this.$store.state.config.uiSettings.general.flipConsoleLayout
+    return this.$typedState.config.uiSettings.general.flipConsoleLayout
   }
 
   set flipLayout (value: boolean) {
@@ -176,15 +176,15 @@ export default class ConsoleCard extends Vue {
   }
 
   get items (): ConsoleEntry[] {
-    return this.$store.getters['console/getConsoleEntries']
+    return this.$typedGetters['console/getConsoleEntries']
   }
 
   get inLayout (): boolean {
-    return (this.$store.state.config.layoutMode)
+    return (this.$typedState.config.layoutMode)
   }
 
   get autoScroll (): boolean {
-    return this.$store.state.console.autoScroll
+    return this.$typedState.console.autoScroll
   }
 
   set autoScroll (value: boolean) {

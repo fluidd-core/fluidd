@@ -358,7 +358,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
       },
     ]
 
-    const mergedTableHeaders: AppDataTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'history')
+    const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters['config/getMergedTableHeaders'](headers, 'history')
 
     return mergedTableHeaders
   }
@@ -387,11 +387,11 @@ export default class JobHistory extends Mixins(FilesMixin) {
   }
 
   get sensors (): MoonrakerSensor[] {
-    return this.$store.getters['sensors/getSensors']
+    return this.$typedGetters['sensors/getSensors']
   }
 
   get history (): HistoryItem[] {
-    return this.$store.getters['history/getHistory']
+    return this.$typedGetters['history/getHistory']
   }
 
   getFilePaths (filename: string) {

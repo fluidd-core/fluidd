@@ -55,7 +55,7 @@ export default class Configure extends Mixins(StateMixin) {
   }
 
   get mcus (): MCU[] {
-    return this.$store.getters['printer/getMcus']
+    return this.$typedGetters['printer/getMcus']
   }
 }
 </script>

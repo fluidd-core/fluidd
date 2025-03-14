@@ -134,7 +134,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
   }
 
   get categories (): MacroCategory[] {
-    return this.$store.getters['macros/getCategories']
+    return this.$typedGetters['macros/getCategories']
   }
 
   set categories (value: MacroCategory[]) {
@@ -148,7 +148,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
   }
 
   get uncategorizedMacros () {
-    const uncategorized: Macro[] = this.$store.getters['macros/getMacrosByCategory']()
+    const uncategorized: Macro[] = this.$typedGetters['macros/getMacrosByCategory']()
     const count = uncategorized.length
     const visible = uncategorized.filter(macro => macro.visible).length
     return {

@@ -127,7 +127,7 @@ export default class FileSystemBulkActions extends Mixins(StatesMixin) {
   readonly selected!: FileBrowserEntry[]
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root)
+    return this.$typedGetters['files/getRootProperties'](this.root)
   }
 
   get canCreateZip (): boolean {
@@ -138,7 +138,7 @@ export default class FileSystemBulkActions extends Mixins(StatesMixin) {
         this.selected[0].extension !== '.zip'
       ) &&
       !this.rootProperties.readonly &&
-      this.$store.getters['server/getIsMinApiVersion']('1.1.0')
+      this.$typedGetters['server/getIsMinApiVersion']('1.1.0')
     )
   }
 
@@ -155,7 +155,7 @@ export default class FileSystemBulkActions extends Mixins(StatesMixin) {
   get canAddToQueue (): boolean {
     return (
       this.isGcodesRootWithAcceptedFiles &&
-      this.$store.getters['server/componentSupport']('job_queue')
+      this.$typedGetters['server/componentSupport']('job_queue')
     )
   }
 
@@ -168,7 +168,7 @@ export default class FileSystemBulkActions extends Mixins(StatesMixin) {
   get canPerformTimeAnalysys (): boolean {
     return (
       this.isGcodesRootWithAcceptedFiles &&
-      this.$store.getters['server/componentSupport']('analysis')
+      this.$typedGetters['server/componentSupport']('analysis')
     )
   }
 }

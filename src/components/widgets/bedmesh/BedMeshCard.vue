@@ -204,28 +204,28 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
   }
 
   get matrix (): MatrixType {
-    return this.$store.state.mesh.matrix
+    return this.$typedState.mesh.matrix
   }
 
   get scale (): number {
-    return this.$store.state.mesh.scale
+    return this.$typedState.mesh.scale
   }
 
   get boxScale (): number {
-    return this.$store.state.mesh.boxScale
+    return this.$typedState.mesh.boxScale
   }
 
   get wireframe (): boolean {
-    return this.$store.state.mesh.wireframe
+    return this.$typedState.mesh.wireframe
   }
 
   get flatSurface (): boolean {
-    return this.$store.state.mesh.flatSurface
+    return this.$typedState.mesh.flatSurface
   }
 
   // The current processed mesh data, if any.
   get mesh (): AppMeshes {
-    return this.$store.getters['mesh/getCurrentMeshData']
+    return this.$typedGetters['mesh/getCurrentMeshData']
   }
 
   get canCopyImage () {

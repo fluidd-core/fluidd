@@ -71,7 +71,7 @@ import ToolheadMixin from '@/mixins/toolhead'
 @Component({})
 export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   get extrudeFactor (): number {
-    return this.$store.state.printer.printer.gcode_move.extrude_factor || 1
+    return this.$typedState.printer.printer.gcode_move.extrude_factor || 1
   }
 
   get layerHeight (): number {
@@ -79,22 +79,22 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get extrudeLength (): number {
-    const extrudeLength = this.$store.state.config.uiSettings.toolhead.extrudeLength
+    const extrudeLength = this.$typedState.config.uiSettings.toolhead.extrudeLength
 
     if (isNaN(+extrudeLength)) return 0
 
     return extrudeLength === -1
-      ? this.$store.state.config.uiSettings.general.defaultExtrudeLength
+      ? this.$typedState.config.uiSettings.general.defaultExtrudeLength
       : extrudeLength
   }
 
   get extrudeSpeed (): number {
-    const extrudeSpeed = this.$store.state.config.uiSettings.toolhead.extrudeSpeed
+    const extrudeSpeed = this.$typedState.config.uiSettings.toolhead.extrudeSpeed
 
     if (isNaN(+extrudeSpeed)) return 0
 
     return extrudeSpeed === -1
-      ? this.$store.state.config.uiSettings.general.defaultExtrudeSpeed
+      ? this.$typedState.config.uiSettings.general.defaultExtrudeSpeed
       : extrudeSpeed
   }
 

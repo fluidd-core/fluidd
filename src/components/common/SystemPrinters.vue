@@ -60,17 +60,17 @@ export default class SystemPrinters extends Mixins(StateMixin) {
   instanceDialogOpen = false
 
   get instanceName (): string {
-    return this.$store.state.config.uiSettings.general.instanceName
+    return this.$typedState.config.uiSettings.general.instanceName
   }
 
   get instances (): InstanceConfig[] {
-    return this.$store.getters['config/getInstances']
+    return this.$typedGetters['config/getInstances']
   }
 
   @Watch('appReady')
   onAppReady (value: boolean) {
     if (value) {
-      if (this.$store.state.config.apiUrl === '') {
+      if (this.$typedState.config.apiUrl === '') {
         this.instanceDialogOpen = true
       }
     }
@@ -99,7 +99,7 @@ export default class SystemPrinters extends Mixins(StateMixin) {
       this.$socket.close()
 
       // Re-init the app.
-      const config = await appInit(instance, this.$store.state.config.hostConfig)
+      const config = await appInit(instance, this.$typedState.config.hostConfig)
 
       // Reconnect the socket with the new instance url.
       if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {

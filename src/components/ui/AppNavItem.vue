@@ -61,7 +61,7 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get enableKeyboardShortcuts (): boolean {
-    return this.$store.state.config.uiSettings.general.enableKeyboardShortcuts
+    return this.$typedState.config.uiSettings.general.enableKeyboardShortcuts
   }
 
   handleKeyDown (event: KeyboardEvent) {

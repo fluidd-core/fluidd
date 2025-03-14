@@ -68,7 +68,7 @@ import type { Stepper } from '@/store/printer/types'
 })
 export default class ToolheadControlBars extends Mixins(StateMixin, ToolheadMixin) {
   get steppers (): Stepper[] {
-    const steppers: Stepper[] = this.$store.getters['printer/getSteppers']
+    const steppers: Stepper[] = this.$typedGetters['printer/getSteppers']
 
     return steppers
       .filter(stepper => stepper.key.startsWith('stepper_'))

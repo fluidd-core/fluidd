@@ -90,7 +90,7 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
   // If the user has no history plugin, and there's no print running..
   // then hide the collapse control.
   get supportsHistoryComponent (): boolean {
-    return this.$store.getters['server/componentSupport']('history')
+    return this.$typedGetters['server/componentSupport']('history')
   }
 
   get collapsable () {
@@ -102,11 +102,11 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
   }
 
   get filename (): string {
-    return this.$store.state.printer.printer.print_stats?.filename ?? ''
+    return this.$typedState.printer.printer.print_stats?.filename ?? ''
   }
 
   get estimates (): TimeEstimates {
-    return this.$store.getters['printer/getTimeEstimates']
+    return this.$typedGetters['printer/getTimeEstimates']
   }
 
   @Watch('filename')
@@ -127,8 +127,8 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
   }
 
   handlePrint (filename: string) {
-    const spoolmanSupported: boolean = this.$store.getters['spoolman/getAvailable']
-    const autoSpoolSelectionDialog: boolean = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
+    const spoolmanSupported: boolean = this.$typedGetters['spoolman/getAvailable']
+    const autoSpoolSelectionDialog: boolean = this.$typedState.config.uiSettings.spoolman.autoSpoolSelectionDialog
 
     if (spoolmanSupported && autoSpoolSelectionDialog) {
       this.$store.commit('spoolman/setDialogState', {

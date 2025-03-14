@@ -270,9 +270,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   @Watch('open')
   onOpen () {
     if (this.open) {
-      this.selectedSpoolId = this.$store.state.spoolman.activeSpool ?? null
+      this.selectedSpoolId = this.$typedState.spoolman.activeSpool ?? null
       if (this.targetMacro) {
-        const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro)
+        const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro) as MacroWithSpoolId | undefined
         this.selectedSpoolId = macro?.variables.spool_id ?? null
       }
 
@@ -284,7 +284,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         this.$nextTick(() => (this.cameraScanSource = 'device'))
       } else {
         const autoOpenCameraId = this.autoOpenQRDetectionCamera
-        if (this.$store.getters['webcams/getWebcamById'](autoOpenCameraId)) {
+        if (autoOpenCameraId && this.$typedGetters['webcams/getWebcamById'](autoOpenCameraId)) {
           this.$nextTick(() => (this.cameraScanSource = autoOpenCameraId))
         }
       }
@@ -292,25 +292,25 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get open (): boolean {
-    return this.$store.state.spoolman.dialog.show
+    return this.$typedState.spoolman.dialog.show
   }
 
   set open (val: boolean) {
     this.$store.commit('spoolman/setDialogState', {
-      ...this.$store.state.spoolman.dialog,
+      ...this.$typedState.spoolman.dialog,
       show: val
     })
   }
 
   get availableSpools () {
-    const availableSpools: Spool[] = this.$store.getters['spoolman/getAvailableSpools']
+    const availableSpools: Spool[] = this.$typedGetters['spoolman/getAvailableSpools']
 
     return availableSpools
       .filter(x => !x.archived)
   }
 
   get currency (): string | null {
-    return this.$store.state.spoolman.currency
+    return this.$typedState.spoolman.currency
   }
 
   get configurableHeaders (): AppDataTableHeader[] {
@@ -389,7 +389,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       },
     ]
 
-    const mergedTableHeaders: AppDataTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'spoolman')
+    const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters['config/getMergedTableHeaders'](headers, 'spoolman')
 
     return mergedTableHeaders
   }
@@ -406,7 +406,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get filename (): string | undefined {
-    const filename: string | undefined = this.$store.state.spoolman.dialog.filename
+    const filename: string | undefined = this.$typedState.spoolman.dialog.filename
 
     if (filename && filename.startsWith('/')) {
       return filename.slice(1)
@@ -416,21 +416,21 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get currentFileName (): string {
-    return this.filename || this.$store.state.printer.printer.print_stats?.filename || ''
+    return this.filename || this.$typedState.printer.printer.print_stats?.filename || ''
   }
 
   get currentFile (): AppFileWithMeta | undefined {
     const { filename, rootPath } = getFilePaths(this.currentFileName, 'gcodes')
 
-    return this.$store.getters['files/getFile'](rootPath, filename)
+    return this.$typedGetters['files/getFile'](rootPath, filename)
   }
 
   get targetMacro (): string | undefined {
-    return this.$store.state.spoolman.dialog.targetMacro
+    return this.$typedState.spoolman.dialog.targetMacro
   }
 
   get enabledWebcams (): WebcamConfig[] {
-    return this.$store.getters['webcams/getEnabledWebcams']
+    return this.$typedGetters['webcams/getEnabledWebcams']
   }
 
   get availableCameras (): Pick<WebcamConfig, 'uid' | 'name'>[] {
@@ -449,7 +449,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get remainingFilamentUnit (): SpoolmanRemainingFilamentUnit {
-    return this.$store.state.config.uiSettings.spoolman.remainingFilamentUnit
+    return this.$typedState.config.uiSettings.spoolman.remainingFilamentUnit
   }
 
   handleQRCodeDetected (id: number) {
@@ -491,7 +491,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         `SET_GCODE_VARIABLE MACRO=${this.targetMacro} VARIABLE=spool_id VALUE=${this.selectedSpoolId ?? 'None'}`
       ]
 
-      const printerConfig: KlipperPrinterConfig = this.$store.getters['printer/getPrinterConfig']
+      const printerConfig: KlipperPrinterConfig = this.$typedGetters['printer/getPrinterConfig']
       const supportsSaveVariables = printerConfig.save_variables
       if (supportsSaveVariables) {
         // persist selected spool across restarts
@@ -500,7 +500,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
       await SocketActions.printerGcodeScript(commands.join('\n'))
 
-      const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro)
+      const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro) as MacroWithSpoolId | undefined
       if (macro?.variables.active) {
         // selected tool is active, update active spool
         await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
@@ -539,7 +539,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         let requiredLength = this.currentFile?.filament_total
         if (requiredLength && ['printing', 'paused'].includes(this.printerState)) {
           // if we're currently running a print job, subtract the already printed amount from the required length
-          requiredLength -= this.$store.state.printer.printer.print_stats?.filament_used ?? 0
+          requiredLength -= this.$typedState.printer.printer.print_stats?.filament_used ?? 0
           requiredLength = Math.max(requiredLength, 0)
         }
 
@@ -590,31 +590,31 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get spoolmanURL (): string | undefined {
-    return this.$store.state.server.config.spoolman?.server
+    return this.$typedState.server.config.spoolman?.server
   }
 
   get preferDeviceCamera () {
-    return this.$store.state.config.uiSettings.spoolman.preferDeviceCamera
+    return this.$typedState.config.uiSettings.spoolman.preferDeviceCamera
   }
 
   get autoOpenQRDetectionCamera (): string | null {
-    return this.$store.state.config.uiSettings.spoolman.autoOpenQRDetectionCamera
+    return this.$typedState.config.uiSettings.spoolman.autoOpenQRDetectionCamera
   }
 
   get autoSelectSpoolOnMatch (): boolean {
-    return this.$store.state.config.uiSettings.spoolman.autoSelectSpoolOnMatch
+    return this.$typedState.config.uiSettings.spoolman.autoSelectSpoolOnMatch
   }
 
   get warnOnNotEnoughFilament (): boolean {
-    return this.$store.state.config.uiSettings.spoolman.warnOnNotEnoughFilament
+    return this.$typedState.config.uiSettings.spoolman.warnOnNotEnoughFilament
   }
 
   get warnOnFilamentTypeMismatch (): boolean {
-    return this.$store.state.config.uiSettings.spoolman.warnOnFilamentTypeMismatch
+    return this.$typedState.config.uiSettings.spoolman.warnOnFilamentTypeMismatch
   }
 
   get sortOrder () {
-    return this.$store.state.config.uiSettings.spoolman.selectionDialogSortOrder
+    return this.$typedState.config.uiSettings.spoolman.selectionDialogSortOrder
   }
 
   handleSortOrderKeyChange (value?: string) {

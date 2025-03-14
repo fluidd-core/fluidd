@@ -77,7 +77,7 @@ export default class HeaterContextMenu extends Mixins(StateMixin) {
   readonly heater!: Heater
 
   get klippyApp (): KlippyApp {
-    return this.$store.getters['printer/getKlippyApp']
+    return this.$typedGetters['printer/getKlippyApp']
   }
 
   get heaterIsOn () {

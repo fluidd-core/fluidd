@@ -83,7 +83,7 @@ export default class FileSystemFilterMenu extends Vue {
   readonly disabled?: boolean
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root)
+    return this.$typedGetters['files/getRootProperties'](this.root)
   }
 
   get filters (): FileFilter[] {
@@ -104,7 +104,7 @@ export default class FileSystemFilterMenu extends Vue {
   }
 
   get selectedFilterTypes (): FileFilterType[] {
-    const selectedFilters: FileFilterType[] = this.$store.state.config.uiSettings.fileSystem.activeFilters[this.root] ?? []
+    const selectedFilters: FileFilterType[] = this.$typedState.config.uiSettings.fileSystem.activeFilters[this.root] ?? []
     const filters = new Set(this.filters
       .map(filter => filter.type))
 
@@ -117,7 +117,7 @@ export default class FileSystemFilterMenu extends Vue {
   }
 
   get supportsHistoryComponent (): boolean {
-    return this.$store.getters['server/componentSupport']('history')
+    return this.$typedGetters['server/componentSupport']('history')
   }
 }
 </script>

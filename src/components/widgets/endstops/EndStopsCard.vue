@@ -61,15 +61,15 @@ import type { Endstop, Probe } from '@/store/printer/types'
 })
 export default class EndStopsCard extends Mixins(StateMixin) {
   get endstops (): Endstop[] {
-    return this.$store.getters['printer/getEndstops']
+    return this.$typedGetters['printer/getEndstops']
   }
 
   get hasSteppers (): boolean {
-    return this.$store.getters['printer/getSteppers'].length > 0
+    return this.$typedGetters['printer/getSteppers'].length > 0
   }
 
   get probe (): Probe | undefined {
-    return this.$store.getters['printer/getProbe']
+    return this.$typedGetters['printer/getProbe']
   }
 
   get endstopsAndProbes () {

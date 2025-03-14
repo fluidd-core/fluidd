@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { consola } from 'consola'
-import type { RootState } from './types'
+import type { RootModules, RootState } from './types'
 import type { InitConfig } from './config/types'
 
 // Modules
@@ -30,36 +30,38 @@ import { spoolman } from './spoolman'
 import { sensors } from './sensors'
 import { analysis } from './analysis'
 
+const modules: RootModules = {
+  socket,
+  auth,
+  server,
+  printer,
+  config,
+  files,
+  layout,
+  charts,
+  console,
+  macros,
+  power,
+  history,
+  version,
+  mesh,
+  notifications,
+  announcements,
+  wait,
+  gcodePreview,
+  timelapse,
+  webcams,
+  jobQueue,
+  spoolman,
+  sensors,
+  analysis
+}
+
 Vue.use(Vuex)
 
 export default new Vuex.Store<RootState>({
   strict: (import.meta.env.DEV),
-  modules: {
-    socket,
-    auth,
-    server,
-    printer,
-    config,
-    files,
-    layout,
-    charts,
-    console,
-    macros,
-    power,
-    history,
-    version,
-    mesh,
-    notifications,
-    announcements,
-    wait,
-    gcodePreview,
-    timelapse,
-    webcams,
-    jobQueue,
-    spoolman,
-    sensors,
-    analysis
-  },
+  modules,
   mutations: {},
   actions: {
     /**

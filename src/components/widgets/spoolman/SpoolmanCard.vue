@@ -210,7 +210,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
   }
 
   get selectedCardFields (): string[][] {
-    const fields = this.$store.state.config.uiSettings.spoolman.selectedCardFields
+    const fields = this.$typedState.config.uiSettings.spoolman.selectedCardFields
     const columnCount = fields.length > 1 ? 2 : 1
     const elementsPerColumn = Math.ceil(fields.length / columnCount)
     return new Array(columnCount).fill(undefined).map((_, i) => fields.slice(i * elementsPerColumn, (i + 1) * elementsPerColumn))
@@ -218,19 +218,19 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
 
   get activeSpool (): Spool | undefined {
     if (!this.isConnected) return undefined
-    return this.$store.getters['spoolman/getActiveSpool']
+    return this.$typedGetters['spoolman/getActiveSpool']
   }
 
   get currency (): string | null {
-    return this.$store.state.spoolman.currency
+    return this.$typedState.spoolman.currency
   }
 
   get isConnected (): boolean {
-    return this.$store.state.spoolman.connected
+    return this.$typedState.spoolman.connected
   }
 
   get targetableMacros (): MacroWithSpoolId[] {
-    const macros: Macro[] = this.$store.getters['macros/getMacros']
+    const macros: Macro[] = this.$typedGetters['macros/getMacros']
 
     return macros
       .filter((macro): macro is MacroWithSpoolId => macro.variables != null && 'spool_id' in macro.variables)
@@ -242,11 +242,11 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
   }
 
   get remainingFilamentUnit (): SpoolmanRemainingFilamentUnit {
-    return this.$store.state.config.uiSettings.spoolman.remainingFilamentUnit
+    return this.$typedState.config.uiSettings.spoolman.remainingFilamentUnit
   }
 
   getSpoolById (id: number): Spool | undefined {
-    return this.$store.getters['spoolman/getSpoolById'](id)
+    return this.$typedGetters['spoolman/getSpoolById'](id)
   }
 
   getSpoolColor (spool?: Spool) {

@@ -2,7 +2,7 @@ import type { GetterTree } from 'vuex'
 import type { WaitState } from './types'
 import type { RootState } from '../types'
 
-export const getters: GetterTree<WaitState, RootState> = {
+export const getters = {
   /**
    * Determine if we have a specific wait, or list of waits active or not.
    */
@@ -29,4 +29,4 @@ export const getters: GetterTree<WaitState, RootState> = {
     return state.waits
       .some(wait => wait.startsWith(prefix))
   }
-}
+} satisfies GetterTree<WaitState, RootState>

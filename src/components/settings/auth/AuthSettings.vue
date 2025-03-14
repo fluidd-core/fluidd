@@ -118,11 +118,11 @@ export default class AuthSettings extends Vue {
   }
 
   get users (): AppUser[] {
-    return this.$store.state.auth.users
+    return this.$typedState.auth.users
   }
 
   get currentUser () {
-    const currentUser: AppUser | null = this.$store.state.auth.currentUser
+    const currentUser: AppUser | null = this.$typedState.auth.currentUser
 
     return currentUser?.username ?? ''
   }

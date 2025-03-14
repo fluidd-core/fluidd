@@ -74,7 +74,7 @@ export default class UserPasswordDialog extends Vue {
   loading = false
 
   get currentUser () {
-    const currentUser: AppUser | null = this.$store.state.auth.currentUser
+    const currentUser: AppUser | null = this.$typedState.auth.currentUser
 
     return currentUser?.username ?? ''
   }

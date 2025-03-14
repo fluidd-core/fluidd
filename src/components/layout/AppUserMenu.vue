@@ -91,7 +91,7 @@ import type { AppUser } from '@/store/auth/types'
 @Component({})
 export default class AppNotificationMenu extends Vue {
   get user (): AppUser | null {
-    return this.$store.state.auth.currentUser
+    return this.$typedState.auth.currentUser
   }
 
   get currentUser () {

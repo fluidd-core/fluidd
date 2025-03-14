@@ -73,7 +73,7 @@ export default class ConsoleCommand extends Vue {
 
   mounted () {
     this.newValue = this.value
-    const savedHistory: string[] = this.$store.state.console.commandHistory
+    const savedHistory: string[] = this.$typedState.console.commandHistory
     this.history = [...savedHistory]
     this.originalHistory = [...savedHistory]
   }
@@ -119,7 +119,7 @@ export default class ConsoleCommand extends Vue {
   }
 
   get availableCommands (): GcodeCommands {
-    return this.$store.getters['printer/getAvailableCommands']
+    return this.$typedGetters['printer/getAvailableCommands']
   }
 
   autoComplete () {

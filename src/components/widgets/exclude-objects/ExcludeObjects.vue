@@ -50,7 +50,7 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
   readonly shapeRendering?: string
 
   get parts (): ExcludeObjectPart[] {
-    return this.$store.getters['printer/getExcludeObjectParts']
+    return this.$typedGetters['printer/getExcludeObjectParts']
   }
 
   iconClasses (part: ExcludeObjectPart) {

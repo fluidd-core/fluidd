@@ -131,9 +131,9 @@ export default class Login extends Vue {
 
     // Re-init the app.
     if (!this.error) {
-      const instance: InstanceConfig = this.$store.getters['config/getCurrentInstance']
+      const instance: InstanceConfig | undefined = this.$typedGetters['config/getCurrentInstance']
 
-      const config = await appInit(instance, this.$store.state.config.hostConfig)
+      const config = await appInit(instance, this.$typedState.config.hostConfig)
 
       // Reconnect the socket with the new instance url.
       if (config.apiConnected && config.apiAuthenticated) {

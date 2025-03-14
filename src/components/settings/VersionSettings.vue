@@ -56,7 +56,7 @@
       <v-divider />
 
       <template v-for="(component, i) in components">
-        <app-setting :key="`component-${component.key}-${component.name}`">
+        <app-setting :key="`component-${component.key}-${i}`">
           <template #title>
             {{ packageTitle(component) }}
             <v-tooltip
@@ -86,14 +86,14 @@
             <span v-if="component.key !== 'system' && 'full_version_string' in component">
               {{ component.full_version_string }}
             </span>
-            <span v-else>
+            <span v-else-if="'version' in component">
               {{ component.version }}
             </span>
 
             <span v-if="'remote_version' in component && hasUpdate(component.key)">
               -> {{ component.remote_version }}
             </span>
-            <span v-if="component.key === 'system' && component.package_count > 0">
+            <span v-if="component.key === 'system' && 'package_count' in component && component.package_count > 0">
               {{ component.package_count }} packages
             </span>
           </template>
@@ -160,7 +160,7 @@
 
         <v-divider
           v-if="i < components.length - 1 && components.length > 0"
-          :key="`component-${component.key}-${component.name}-_divider`"
+          :key="`component-${component.key}-${i}-_divider`"
         />
       </template>
     </v-card>
@@ -194,7 +194,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   get components () {
-    return this.$store.getters['version/getVisibleComponents']
+    return this.$typedGetters['version/getVisibleComponents']
   }
 
   get isRefreshing () {
@@ -202,7 +202,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   get hasUpdates () {
-    const d = this.$store.getters['version/hasUpdates']
+    const d = this.$typedGetters['version/hasUpdates']
     return d
   }
 
@@ -211,7 +211,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   get enableNotifications (): boolean {
-    return this.$store.state.config.uiSettings.general.enableVersionNotifications
+    return this.$typedState.config.uiSettings.general.enableVersionNotifications
   }
 
   set enableNotifications (value: boolean) {
@@ -231,7 +231,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   hasUpdate (component: string) {
-    return this.$store.getters['version/hasUpdate'](component)
+    return this.$typedGetters['version/hasUpdate'](component)
   }
 
   inError (component: UpdatePackage) {
@@ -278,7 +278,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   forceCheck () {
-    if (this.$store.getters['server/getIsMinApiVersion']('1.2.0')) {
+    if (this.$typedGetters['server/getIsMinApiVersion']('1.2.0')) {
       SocketActions.machineUpdateRefresh()
     } else {
       SocketActions.machineUpdateStatus(true)

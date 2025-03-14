@@ -79,7 +79,7 @@ export default class FileSystemUploadDialog extends Mixins(StateMixin) {
   }
 
   get uploads (): FileUpload[] {
-    const uploads: FileUpload[] = this.$store.state.files.uploads
+    const uploads: FileUpload[] = this.$typedState.files.uploads
 
     return uploads
       .filter(file => !file.cancelled && (file.percent !== 100 || !file.complete))

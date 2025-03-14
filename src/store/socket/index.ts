@@ -8,10 +8,10 @@ import type { RootState } from '../types'
 
 const namespaced = true
 
-export const socket: Module<SocketState, RootState> = {
+export const socket = {
   namespaced,
   state,
   getters,
   actions,
   mutations
-}
+} satisfies Module<SocketState, RootState>

@@ -87,7 +87,7 @@ import type { RestoreViewState } from '@/store/config/types'
 })
 export default class FileEditorSettings extends Mixins(StateMixin) {
   get confirmDirtyEditorClose (): boolean {
-    return this.$store.state.config.uiSettings.editor.confirmDirtyEditorClose
+    return this.$typedState.config.uiSettings.editor.confirmDirtyEditorClose
   }
 
   set confirmDirtyEditorClose (value: boolean) {
@@ -99,7 +99,7 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   }
 
   get autoEditExtensions (): string[] {
-    return this.$store.state.config.uiSettings.editor.autoEditExtensions
+    return this.$typedState.config.uiSettings.editor.autoEditExtensions
   }
 
   set autoEditExtensions (value: string[]) {
@@ -113,7 +113,7 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   }
 
   get restoreViewState (): RestoreViewState {
-    return this.$store.state.config.uiSettings.editor.restoreViewState
+    return this.$typedState.config.uiSettings.editor.restoreViewState
   }
 
   set restoreViewState (value: RestoreViewState) {
@@ -142,7 +142,7 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   }
 
   get codeLens (): boolean {
-    return this.$store.state.config.uiSettings.editor.codeLens
+    return this.$typedState.config.uiSettings.editor.codeLens
   }
 
   set codeLens (value: boolean) {

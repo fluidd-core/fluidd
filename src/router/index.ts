@@ -23,8 +23,8 @@ import Icons from '@/views/Icons.vue'
 Vue.use(VueRouter)
 
 const isAuthenticated = (): boolean => (
-  router.app.$store.state.auth.authenticated ||
-  !router.app.$store.state.socket.apiConnected
+  router.app.$typedState.auth.authenticated ||
+  !router.app.$typedState.socket.apiConnected
 )
 
 const defaultRouteConfig: Partial<RouteConfig> = {

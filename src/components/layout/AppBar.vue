@@ -266,23 +266,23 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   pendingChangesDialogOpen = false
 
   get supportsAuth (): boolean {
-    return this.$store.getters['server/componentSupport']('authorization')
+    return this.$typedGetters['server/componentSupport']('authorization')
   }
 
   get instanceName (): string {
-    return this.$store.state.config.uiSettings.general.instanceName
+    return this.$typedState.config.uiSettings.general.instanceName
   }
 
   get hasUpdates (): boolean {
-    return this.$store.getters['version/hasUpdates']
+    return this.$typedGetters['version/hasUpdates']
   }
 
   get saveConfigPending (): boolean {
-    return this.$store.getters['printer/getSaveConfigPending']
+    return this.$typedGetters['printer/getSaveConfigPending']
   }
 
   get saveConfigPendingItems (): KlipperPrinterConfig {
-    return this.$store.getters['printer/getSaveConfigPendingItems']
+    return this.$typedGetters['printer/getSaveConfigPendingItems']
   }
 
   get showSaveConfigAndRestartForPendingChanges (): boolean {
@@ -301,27 +301,27 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   get devicePowerComponentEnabled (): boolean {
-    return this.$store.getters['server/componentSupport']('power')
+    return this.$typedGetters['server/componentSupport']('power')
   }
 
   get inLayout (): boolean {
-    return (this.$store.state.config.layoutMode)
+    return (this.$typedState.config.layoutMode)
   }
 
   get showSaveConfigAndRestart (): boolean {
-    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart
+    return this.$typedState.config.uiSettings.general.showSaveConfigAndRestart
   }
 
   get sectionsToIgnorePendingConfigurationChanges (): string[] {
-    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges
+    return this.$typedState.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges
   }
 
   get showUploadAndPrint (): boolean {
-    return this.$store.state.config.uiSettings.general.showUploadAndPrint
+    return this.$typedState.config.uiSettings.general.showUploadAndPrint
   }
 
   get topNavPowerToggle () {
-    const topNavPowerToggle: string | null = this.$store.state.config.uiSettings.general.topNavPowerToggle
+    const topNavPowerToggle: string | null = this.$typedState.config.uiSettings.general.topNavPowerToggle
 
     if (!topNavPowerToggle) return null
 
@@ -329,7 +329,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
     switch (type) {
       case 'klipper': {
-        const device: OutputPin | undefined = this.$store.getters['printer/getPinByName'](name)
+        const device: OutputPin | undefined = this.$typedGetters['printer/getPinByName'](name)
 
         if (!device) return null
 
@@ -341,7 +341,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
       }
 
       default: {
-        const device: Device | undefined = this.$store.getters['power/getDeviceByName'](topNavPowerToggle)
+        const device: Device | undefined = this.$typedGetters['power/getDeviceByName'](topNavPowerToggle)
 
         if (!device) return null
 
@@ -387,7 +387,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   get enableKeyboardShortcuts (): boolean {
-    return this.$store.state.config.uiSettings.general.enableKeyboardShortcuts
+    return this.$typedState.config.uiSettings.general.enableKeyboardShortcuts
   }
 
   handleExitLayout () {
@@ -408,9 +408,9 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
       : undefined
     const layoutDefaultState = pathLayout
       ? defaultState().layouts[pathLayout]
-      : this.$store.getters['layout/getLayout']('dashboard')
+      : this.$typedGetters['layout/getLayout']('dashboard')
 
-    const toReset = pathLayout ?? this.$store.getters['layout/getSpecificLayoutName']
+    const toReset = pathLayout ?? this.$typedGetters['layout/getSpecificLayoutName']
 
     this.$store.dispatch('layout/onLayoutChange', {
       name: toReset,
@@ -419,11 +419,11 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   get currentLayoutName () {
-    return this.$store.getters['layout/getSpecificLayoutName']
+    return this.$typedGetters['layout/getSpecificLayoutName']
   }
 
   get currentUser (): AppUser | null {
-    return this.$store.state.auth.currentUser
+    return this.$typedState.auth.currentUser
   }
 
   get currentBreakpoint () {
@@ -433,7 +433,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   handleSetDefaultLayout () {
     this.$store.dispatch('layout/onLayoutChange', {
       name: 'dashboard',
-      value: this.$store.getters['layout/getLayout'](this.currentLayoutName)
+      value: this.$typedGetters['layout/getLayout'](this.currentLayoutName)
     })
   }
 
@@ -449,7 +449,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
     if (!device) return
 
-    const confirmOnPowerDeviceChange: boolean = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+    const confirmOnPowerDeviceChange: boolean = this.$typedState.config.uiSettings.general.confirmOnPowerDeviceChange
 
     const result = (
       !confirmOnPowerDeviceChange ||
@@ -482,7 +482,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
   saveConfigAndRestart (force = false) {
     if (!force) {
-      const confirmOnSaveConfigAndRestart: boolean = this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart
+      const confirmOnSaveConfigAndRestart: boolean = this.$typedState.config.uiSettings.general.confirmOnSaveConfigAndRestart
 
       if (confirmOnSaveConfigAndRestart) {
         this.pendingChangesDialogOpen = true

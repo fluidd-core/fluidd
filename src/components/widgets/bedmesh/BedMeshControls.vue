@@ -336,17 +336,17 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get mesh (): MeshState {
-    return this.$store.state.mesh
+    return this.$typedState.mesh
   }
 
   // The available meshes.
   get bedMeshProfiles (): BedMeshProfileListEntry[] {
-    return this.$store.getters['mesh/getBedMeshProfiles']
+    return this.$typedGetters['mesh/getBedMeshProfiles']
   }
 
   // The current mesh, unprocessed.
   get currentMesh (): KlipperPrinterBedMeshState | undefined {
-    return this.$store.state.printer.printer.bed_mesh
+    return this.$typedState.printer.printer.bed_mesh
   }
 
   // If we have a mesh loaded.
@@ -356,7 +356,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
 
   // If the printer supports QGL
   get printerSupportsQgl (): boolean {
-    const printerSettings: KlipperPrinterSettings = this.$store.getters['printer/getPrinterSettings']
+    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
 
     return 'quad_gantry_level' in printerSettings
   }

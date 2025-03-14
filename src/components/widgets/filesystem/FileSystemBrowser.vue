@@ -166,13 +166,13 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   // Is the history component enabled
   get showHistory (): boolean {
     return (
-      this.$store.getters['server/componentSupport']('history') &&
+      this.$typedGetters['server/componentSupport']('history') &&
       this.root === 'gcodes'
     )
   }
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root)
+    return this.$typedGetters['files/getRootProperties'](this.root)
   }
 
   get readonly () {
@@ -180,17 +180,17 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   get thumbnailSize () {
-    const thumbnailSize: number = this.$store.state.config.uiSettings.general.thumbnailSize
+    const thumbnailSize: number = this.$typedState.config.uiSettings.general.thumbnailSize
 
     return this.dense ? thumbnailSize / 2 : thumbnailSize
   }
 
   get textSortOrder (): TextSortOrder {
-    return this.$store.state.config.uiSettings.general.textSortOrder
+    return this.$typedState.config.uiSettings.general.textSortOrder
   }
 
   get filesAndFoldersDragAndDrop (): boolean {
-    return this.$store.state.config.uiSettings.general.filesAndFoldersDragAndDrop
+    return this.$typedState.config.uiSettings.general.filesAndFoldersDragAndDrop
   }
 
   get draggedItems () {
@@ -209,7 +209,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   get sortBy (): string {
-    const sortBy: string | null = this.$store.state.config.uiSettings.fileSystem.sortBy[this.root]
+    const sortBy: string | null = this.$typedState.config.uiSettings.fileSystem.sortBy[this.root]
 
     return sortBy ?? 'modified'
   }
@@ -219,7 +219,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   get sortDesc (): boolean {
-    const sortDesc: boolean | null = this.$store.state.config.uiSettings.fileSystem.sortDesc[this.root]
+    const sortDesc: boolean | null = this.$typedState.config.uiSettings.fileSystem.sortDesc[this.root]
 
     return sortDesc ?? true
   }

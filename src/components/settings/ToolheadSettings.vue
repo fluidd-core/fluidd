@@ -411,7 +411,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   readonly zAdjustValuesElement!: VInput
 
   get defaultExtrudeSpeed (): number {
-    return this.$store.state.config.uiSettings.general.defaultExtrudeSpeed
+    return this.$typedState.config.uiSettings.general.defaultExtrudeSpeed
   }
 
   setDefaultExtrudeSpeed (value: string) {
@@ -423,7 +423,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get defaultExtrudeLength (): number {
-    return this.$store.state.config.uiSettings.general.defaultExtrudeLength
+    return this.$typedState.config.uiSettings.general.defaultExtrudeLength
   }
 
   setDefaultExtrudeLength (value: number) {
@@ -435,7 +435,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get defaultToolheadMoveLength (): number {
-    return this.$store.state.config.uiSettings.general.defaultToolheadMoveLength
+    return this.$typedState.config.uiSettings.general.defaultToolheadMoveLength
   }
 
   setDefaultToolheadMoveLength (value: number) {
@@ -447,7 +447,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get defaultToolheadXYSpeed (): number {
-    return this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+    return this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
   }
 
   setDefaultToolheadYXSpeed (value: number) {
@@ -459,7 +459,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get defaultToolheadZSpeed (): number {
-    return this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
+    return this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
   }
 
   setDefaultToolheadZSpeed (value: number) {
@@ -471,7 +471,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get zAdjustValues (): number[] {
-    return this.$store.state.config.uiSettings.general.zAdjustDistances
+    return this.$typedState.config.uiSettings.general.zAdjustDistances
   }
 
   set zAdjustValues (value: (number | string)[]) {
@@ -487,7 +487,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get toolheadCircleXYHomingEnabled (): boolean {
-    return this.$store.state.config.uiSettings.general.toolheadCircleXYHomingEnabled
+    return this.$typedState.config.uiSettings.general.toolheadCircleXYHomingEnabled
   }
 
   set toolheadCircleXYHomingEnabled (value: boolean) {
@@ -499,7 +499,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get toolheadControlStyle (): ToolheadControlStyle {
-    return this.$store.state.config.uiSettings.general.toolheadControlStyle
+    return this.$typedState.config.uiSettings.general.toolheadControlStyle
   }
 
   set toolheadControlStyle (value: ToolheadControlStyle) {
@@ -528,7 +528,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get toolheadMoveDistances (): number[] {
-    return this.$store.state.config.uiSettings.general.toolheadMoveDistances
+    return this.$typedState.config.uiSettings.general.toolheadMoveDistances
   }
 
   set toolheadMoveDistances (value: (number | string)[]) {
@@ -551,7 +551,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get toolheadXYMoveDistances (): number[] {
-    return this.$store.state.config.uiSettings.general.toolheadXYMoveDistances
+    return this.$typedState.config.uiSettings.general.toolheadXYMoveDistances
   }
 
   set toolheadXYMoveDistances (value: (number | string)[]) {
@@ -567,7 +567,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get toolheadCircleXYMoveDistances (): number[] {
-    return this.$store.state.config.uiSettings.general.toolheadCircleXYMoveDistances
+    return this.$typedState.config.uiSettings.general.toolheadCircleXYMoveDistances
   }
 
   set toolheadCircleXYMoveDistances (value: (number | string)[]) {
@@ -583,7 +583,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get toolheadZMoveDistances (): number[] {
-    return this.$store.state.config.uiSettings.general.toolheadZMoveDistances
+    return this.$typedState.config.uiSettings.general.toolheadZMoveDistances
   }
 
   set toolheadZMoveDistances (value: (number | string)[]) {
@@ -599,7 +599,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get toolheadCircleZMoveDistances (): number[] {
-    return this.$store.state.config.uiSettings.general.toolheadCircleZMoveDistances
+    return this.$typedState.config.uiSettings.general.toolheadCircleZMoveDistances
   }
 
   set toolheadCircleZMoveDistances (value: (number | string)[]) {
@@ -615,7 +615,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get useGcodeCoords (): boolean {
-    return this.$store.state.config.uiSettings.general.useGcodeCoords
+    return this.$typedState.config.uiSettings.general.useGcodeCoords
   }
 
   set useGcodeCoords (value: boolean) {
@@ -627,7 +627,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get invertX (): boolean {
-    return this.$store.state.config.uiSettings.general.axis.x.inverted
+    return this.$typedState.config.uiSettings.general.axis.x.inverted
   }
 
   set invertX (value: boolean) {
@@ -639,7 +639,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get invertY (): boolean {
-    return this.$store.state.config.uiSettings.general.axis.y.inverted
+    return this.$typedState.config.uiSettings.general.axis.y.inverted
   }
 
   set invertY (value: boolean) {
@@ -651,7 +651,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get invertZ (): boolean {
-    return this.$store.state.config.uiSettings.general.axis.z.inverted
+    return this.$typedState.config.uiSettings.general.axis.z.inverted
   }
 
   set invertZ (value: boolean) {
@@ -663,13 +663,13 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get printerSupportsForceMove (): boolean {
-    const printerSettings: KlipperPrinterSettings = this.$store.getters['printer/getPrinterSettings']
+    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings.force_move?.enable_force_move ?? false
   }
 
   get showManualProbeDialogAutomatically (): boolean {
-    return this.$store.state.config.uiSettings.general.showManualProbeDialogAutomatically
+    return this.$typedState.config.uiSettings.general.showManualProbeDialogAutomatically
   }
 
   set showManualProbeDialogAutomatically (value: boolean) {
@@ -681,7 +681,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get showBedScrewsAdjustDialogAutomatically (): boolean {
-    return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
+    return this.$typedState.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
   }
 
   set showBedScrewsAdjustDialogAutomatically (value: boolean) {
@@ -693,7 +693,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get showScrewsTiltAdjustDialogAutomatically (): boolean {
-    return this.$store.state.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
+    return this.$typedState.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
   }
 
   set showScrewsTiltAdjustDialogAutomatically (value: boolean) {
@@ -705,7 +705,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get forceMoveToggleWarning (): boolean {
-    return this.$store.state.config.uiSettings.general.forceMoveToggleWarning
+    return this.$typedState.config.uiSettings.general.forceMoveToggleWarning
   }
 
   set forceMoveToggleWarning (value: boolean) {
@@ -717,7 +717,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   handleReset () {
-    const { instanceName, chartVisible, hideTempWaits }: GeneralConfig = this.$store.state.config.uiSettings.general
+    const { instanceName, chartVisible, hideTempWaits }: GeneralConfig = this.$typedState.config.uiSettings.general
 
     const value: GeneralConfig = {
       ...defaultState().uiSettings.general,

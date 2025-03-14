@@ -166,7 +166,7 @@ export default class AppNotificationMenu extends Mixins(BrowserMixin) {
   menu = false
 
   get notifications (): AppNotification[] {
-    return this.$store.getters['notifications/getNotifications']
+    return this.$typedGetters['notifications/getNotifications']
   }
 
   get notificationsCounter (): number {
@@ -182,7 +182,7 @@ export default class AppNotificationMenu extends Mixins(BrowserMixin) {
   }
 
   get clearableNotifications (): AppNotification[] {
-    const notifications: AppNotification[] = this.$store.getters['notifications/getNotifications']
+    const notifications: AppNotification[] = this.$typedGetters['notifications/getNotifications']
     return notifications.filter(n => n.clear)
   }
 

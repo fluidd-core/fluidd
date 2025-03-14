@@ -8,10 +8,10 @@ import type { RootState } from '../types'
 
 const namespaced = true
 
-export const wait: Module<WaitState, RootState> = {
+export const wait = {
   namespaced,
   state,
   getters,
   actions,
   mutations
-}
+} satisfies Module<WaitState, RootState>

@@ -99,7 +99,7 @@ import type { BedScrews } from '@/store/printer/types'
 @Component({})
 export default class BedScrewsAdjustDialog extends Mixins(StateMixin, ToolheadMixin) {
   get bedScrews (): BedScrews {
-    return this.$store.getters['printer/getBedScrews']
+    return this.$typedGetters['printer/getBedScrews']
   }
 
   get currentScrewIndex () {
@@ -119,7 +119,7 @@ export default class BedScrewsAdjustDialog extends Mixins(StateMixin, ToolheadMi
   }
 
   get showBedScrewsAdjustDialogAutomatically (): boolean {
-    return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
+    return this.$typedState.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
   }
 
   @Watch('isBedScrewsAdjustActive')

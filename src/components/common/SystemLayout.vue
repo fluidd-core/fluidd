@@ -30,7 +30,7 @@ export default class SystemLayout extends Mixins(StateMixin) {
   }
 
   get layoutMode (): boolean {
-    return this.$store.state.config.layoutMode
+    return this.$typedState.config.layoutMode
   }
 
   set layoutMode (val: boolean) {

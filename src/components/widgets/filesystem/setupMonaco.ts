@@ -118,7 +118,7 @@ async function setupMonaco () {
   })
 
   const app = getVueApp()
-  const klippyApp: KlippyApp = app.$store.getters['printer/getKlippyApp']
+  const klippyApp: KlippyApp = app.$typedGetters['printer/getKlippyApp']
 
   monaco.editor.registerCommand('fluidd_open_docs', (_, service: CodeLensSupportedService, hash: string) => {
     const serviceKey = service.replace(/-/g, '_')
@@ -133,9 +133,12 @@ async function setupMonaco () {
 
   monaco.languages.registerCodeLensProvider('klipper-config', {
     provideCodeLenses: (model) => {
-      const { service } = app.$store.getters['server/getConfigMapByFilename'](model.uri.path.split('/').pop())
+      const { service } = app.$typedGetters['server/getConfigMapByFilename'](model.uri.path.split('/').pop()!) ?? {}
 
-      if (!isCodeLensSupportedService(service)) {
+      if (
+        !service ||
+        !isCodeLensSupportedService(service)
+      ) {
         return null
       }
 

@@ -40,7 +40,7 @@ import type { TextSortOrder } from '@/store/config/types'
 @Component({})
 export default class FileEditorSettings extends Vue {
   get textSortOrder (): TextSortOrder {
-    return this.$store.state.config.uiSettings.general.textSortOrder
+    return this.$typedState.config.uiSettings.general.textSortOrder
   }
 
   set textSortOrder (value: TextSortOrder) {
@@ -69,7 +69,7 @@ export default class FileEditorSettings extends Vue {
   }
 
   get filesAndFoldersDragAndDrop (): boolean {
-    return this.$store.state.config.uiSettings.general.filesAndFoldersDragAndDrop
+    return this.$typedState.config.uiSettings.general.filesAndFoldersDragAndDrop
   }
 
   set filesAndFoldersDragAndDrop (value: boolean) {

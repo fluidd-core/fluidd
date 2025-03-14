@@ -3,7 +3,7 @@ import type { JobQueueState, QueuedJobWithAppFile } from './types'
 import type { RootState } from '../types'
 import getFilePaths from '@/util/get-file-paths'
 
-export const getters: GetterTree<JobQueueState, RootState> = {
+export const getters = {
   getQueuedJobsWithFiles: (state, getters, rootState, rootGetters) => {
     return state.queuedJobs.map((job): QueuedJobWithAppFile => {
       const { rootPath, filename } = getFilePaths(job.filename, 'gcodes')
@@ -14,4 +14,4 @@ export const getters: GetterTree<JobQueueState, RootState> = {
       }
     })
   },
-}
+} satisfies GetterTree<JobQueueState, RootState>
