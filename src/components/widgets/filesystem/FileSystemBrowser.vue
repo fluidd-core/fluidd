@@ -30,6 +30,7 @@
     >
       <template #item="{ headers, item, isSelected, select }">
         <app-data-table-row
+          :key="item.name"
           :headers="headers"
           :item="item"
           :is-selected="isSelected && item.name !== '..'"
@@ -62,7 +63,7 @@
               class="no-pointer-events"
             >
               <v-icon
-                v-if="!item.thumbnails || !item.thumbnails.length"
+                v-if="!item.thumbnails?.length"
                 :small="dense"
                 :color="(item.type === 'file') ? 'grey' : 'primary'"
               >
@@ -131,13 +132,13 @@ import type { DefaultGetterFunction } from '@/components/ui/AppDataTableRow.vue'
   }
 })
 export default class FileSystemBrowser extends Mixins(FilesMixin) {
-  @VModel({ type: Array<FileBrowserEntry>, required: true })
+  @VModel({ type: Array, required: true })
   selected!: FileBrowserEntry[]
 
   @Prop({ type: String, required: true })
   readonly root!: string
 
-  @Prop({ type: Array<FileBrowserEntry>, required: true })
+  @Prop({ type: Array, required: true })
   readonly files!: FileBrowserEntry[]
 
   @Prop({ type: Boolean })
@@ -147,7 +148,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   readonly loading?: boolean
 
   // Currently defined list of headers.
-  @Prop({ type: Array<DataTableHeader>, required: true })
+  @Prop({ type: Array, required: true })
   readonly headers!: DataTableHeader[]
 
   @Prop({ type: String })
@@ -242,7 +243,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
       for (let i = 0; i < sortBy.length; i++) {
         const sortKey = sortBy[i]
 
-        const sortValues = [
+        const sortValues: unknown[] = [
           get(a, sortKey),
           get(b, sortKey)
         ]
@@ -258,12 +259,17 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
         }
 
         // If values are of type number, compare as number
-        if (sortValues.every(x => typeof (x) === 'number' && !isNaN(x))) {
+        if (
+          typeof sortValues[0] === 'number' &&
+          typeof sortValues[1] === 'number' &&
+          !isNaN(sortValues[0]) &&
+          !isNaN(sortValues[1])
+        ) {
           return sortValues[0] - sortValues[1]
         }
 
         const sortValuesAsString = sortValues
-          .map(s => (s || '').toString() as string)
+          .map(s => s?.toString() ?? '')
 
         if (this.textSortOrder === 'numeric-prefix') {
           const [sortA, sortB] = sortValuesAsString

@@ -113,7 +113,9 @@ export default class StateMixin extends Vue {
    * Send a gcode script.
    */
   sendGcode (gcode: string, wait?: string) {
-    SocketActions.printerGcodeScript(gcode, wait)
+    SocketActions.printerGcodeScript(gcode, {
+      wait
+    })
     this.addConsoleEntry(gcode)
   }
 

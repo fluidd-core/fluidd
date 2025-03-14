@@ -13,11 +13,11 @@ export const mutations: MutationTree<FilesState> = {
   },
 
   setResetRoot (state, root) {
-    const keysToDelete = Object.keys(state.pathFiles)
+    const keysToDelete = Object.keys(state.pathContent)
       .filter(key => key === root || key.startsWith(`${root}/`))
 
     for (const key of keysToDelete) {
-      Vue.delete(state.pathFiles, key)
+      Vue.delete(state.pathContent, key)
     }
 
     if (state.currentPaths[root]) {
@@ -28,7 +28,7 @@ export const mutations: MutationTree<FilesState> = {
   setServerFilesGetDirectory (state, payload: { path: string, content: MoonrakerPathContent }) {
     const { path, content } = payload
 
-    Vue.set(state.pathFiles, path, content)
+    Vue.set(state.pathContent, path, content)
   },
 
   setServerFilesListRoot (state, payload: { root: string, files: MoonrakerRootFile[] }) {
@@ -47,7 +47,7 @@ export const mutations: MutationTree<FilesState> = {
 
     if (!isFiltered) {
       // Find relevant directory.
-      const directory = state.pathFiles[paths.rootPath]
+      const directory = state.pathContent[paths.rootPath]
 
       if (directory) {
         const fileIndex = directory.files.findIndex(file => file.filename === paths.filename)
@@ -57,6 +57,14 @@ export const mutations: MutationTree<FilesState> = {
         } else {
           directory.files.push(file)
         }
+      } else {
+        const directory: MoonrakerPathContent = {
+          partial: true,
+          files: [file],
+          dirs: []
+        }
+
+        Vue.set(state.pathContent, paths.rootPath, directory)
       }
     }
   },
@@ -71,7 +79,7 @@ export const mutations: MutationTree<FilesState> = {
 
     if (!isFiltered) {
       // Find relevant directory.
-      const directory = state.pathFiles[paths.rootPath]
+      const directory = state.pathContent[paths.rootPath]
 
       if (directory) {
         const dirIndex = directory.dirs.findIndex(dir => dir.dirname === paths.filename)
@@ -87,7 +95,7 @@ export const mutations: MutationTree<FilesState> = {
 
   setFileDelete (state, payload: FilePaths) {
     // Find relevant directory.
-    const directory = state.pathFiles[payload.rootPath]
+    const directory = state.pathContent[payload.rootPath]
 
     if (directory) {
       const fileIndex = directory.files.findIndex(file => file.filename === payload.filename)
@@ -100,7 +108,7 @@ export const mutations: MutationTree<FilesState> = {
 
   setDirDelete (state, payload: FilePaths) {
     // Find relevant directory.
-    const directory = state.pathFiles[payload.rootPath]
+    const directory = state.pathContent[payload.rootPath]
 
     if (directory) {
       const dirIndex = directory.dirs.findIndex(dir => dir.dirname === payload.filename)
@@ -113,11 +121,11 @@ export const mutations: MutationTree<FilesState> = {
 
   setPathDelete (state, payload: string) {
     // Find relevant directories.
-    const keysToDelete = Object.keys(state.pathFiles)
+    const keysToDelete = Object.keys(state.pathContent)
       .filter(key => key === payload || key.startsWith(`${payload}/`))
 
     for (const key of keysToDelete) {
-      Vue.delete(state.pathFiles, key)
+      Vue.delete(state.pathContent, key)
     }
   },
 
@@ -164,7 +172,7 @@ export const mutations: MutationTree<FilesState> = {
   },
 
   setDiskUsage (state, payload) {
-    Vue.set(state, 'disk_usage', payload)
+    Vue.set(state, 'diskUsage', payload)
   }
 
 }

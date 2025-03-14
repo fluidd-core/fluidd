@@ -2,7 +2,7 @@
   <app-dialog
     v-model="open"
     scrollable
-    :max-width="isMobileViewport ? '90vw' : '75vw'"
+    :max-width="$vuetify.breakpoint.mdAndDown ? '90vw' : '75vw'"
     :title="title"
     title-shadow
   >
@@ -94,7 +94,7 @@
       />
     </v-toolbar>
 
-    <v-card-text class="pa-0">
+    <v-card-text class="pa-0 file-system">
       <v-data-table
         :items="availableSpools"
         :headers="headers"
@@ -104,6 +104,7 @@
         :no-results-text="$t('app.file_system.msg.not_found')"
         :sort-by="sortOrder.key ?? undefined"
         :sort-desc="sortOrder.desc ?? undefined"
+        item-key="id"
         mobile-breakpoint="0"
         class="spool-table"
         hide-default-footer
@@ -113,6 +114,7 @@
       >
         <template #item="{ headers, item }">
           <app-data-table-row
+            :key="item.id"
             :headers="headers"
             :item="item"
             :is-selected="item.id === selectedSpoolId"
@@ -121,7 +123,7 @@
             <template #[`item.filament_name`]>
               <div class="d-flex my-1">
                 <v-icon
-                  :color="`#${item.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
+                  :color="getSpoolColor(item)"
                   size="42px"
                   class="mr-4 flex-column spool-icon"
                 >
@@ -134,15 +136,43 @@
                   <div class="flex-row">
                     <small v-if="remainingFilamentUnit === 'weight'">
                       <b>{{ $filters.getReadableWeightString(item.remaining_weight) }}</b>
-                      / {{ $filters.getReadableWeightString(item.filament.weight) }}
+                      / {{ $filters.getReadableWeightString(item.initial_weight) }}
                     </small>
                     <small v-else-if="remainingFilamentUnit === 'length'">
                       <b>{{ $filters.getReadableLengthString(item.remaining_length) }}</b>
-                      / {{ $filters.getReadableLengthString($filters.convertFilamentWeightToLength(item.filament.weight ?? 0, item.filament.density, item.filament.diameter)) }}
+                      / {{ $filters.getReadableLengthString(item.initial_length) }}
                     </small>
                   </div>
                 </div>
               </div>
+            </template>
+
+            <template #[`item-value.price`]="{ value }">
+              {{ $filters.getReadableCurrencyString(value, currency ?? '') }}
+            </template>
+
+            <template #[`item-value.filament.density`]="{ value }">
+              {{ value }} g/cm³
+            </template>
+
+            <template #[`item-value.filament.diameter`]="{ value }">
+              {{ value }} mm
+            </template>
+
+            <template #[`item-value.filament.settings_extruder_temp`]="{ value }">
+              {{ value }}<small>°C</small>
+            </template>
+
+            <template #[`item-value.filament.settings_bed_temp`]="{ value }">
+              {{ value }}<small>°C</small>
+            </template>
+
+            <template #[`item.first_used`]="{ value }">
+              {{
+                value
+                  ? $filters.formatRelativeTimeToNow(value)
+                  : $tc('app.setting.label.never')
+              }}
             </template>
 
             <template #[`item.last_used`]="{ value }">
@@ -151,6 +181,10 @@
                   ? $filters.formatRelativeTimeToNow(value)
                   : $tc('app.setting.label.never')
               }}
+            </template>
+
+            <template #[`item-value.filament.colors`]="{ value }">
+              <app-data-table-cell-colors :colors="value" />
             </template>
           </app-data-table-row>
         </template>
@@ -242,15 +276,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         }
       }
 
-      if (this.currentFileName) {
-        const { rootPath } = getFilePaths(this.currentFileName, 'gcodes')
-
-        const directoryLoaded = rootPath in this.$store.state.files.pathFiles
-
-        // Load the containing the currently printing file if we haven't done that already
-        if (!directoryLoaded) {
-          SocketActions.serverFilesGetDirectory(rootPath)
-        }
+      if (this.currentFileName && this.currentFile == null) {
+        SocketActions.serverFilesMetadata(this.currentFileName)
       }
 
       if (this.hasDeviceCamera && this.preferDeviceCamera) {
@@ -293,49 +320,89 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get availableSpools () {
-    const spools = []
-    const availableSpools: Spool[] = this.$store.state.spoolman.availableSpools
+    const availableSpools: Spool[] = this.$store.getters['spoolman/getAvailableSpools']
 
-    for (const spool of availableSpools) {
-      if (spool.archived) {
-        continue
-      }
+    return availableSpools
+      .filter(x => !x.archived)
+  }
 
-      const filamentName = spool.filament.vendor
-        ? `${spool.filament.vendor.name} - ${spool.filament.name}`
-        : spool.filament.name
-
-      spools.push({
-        ...spool,
-        filament_name: filamentName,
-        material: spool.filament.material
-      })
-    }
-
-    return spools
+  get currency (): string | null {
+    return this.$store.state.spoolman.currency
   }
 
   get configurableHeaders (): AppDataTableHeader[] {
     const headers: AppDataTableHeader[] = [
       {
         text: this.$tc('app.spoolman.label.id'),
-        value: 'id'
+        value: 'id',
+        cellClass: 'text-no-wrap'
       },
       {
         text: this.$tc('app.spoolman.label.material'),
-        value: 'material'
+        value: 'filament.material',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.price'),
+        value: 'price',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.lot_nr'),
+        value: 'lot_nr',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.density'),
+        value: 'filament.density',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.diameter'),
+        value: 'filament.diameter',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.extruder_temp'),
+        value: 'filament.settings_extruder_temp',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.bed_temp'),
+        value: 'filament.settings_bed_temp',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.colors'),
+        value: 'filament.colors',
+        cellClass: 'text-no-wrap'
       },
       {
         text: this.$tc('app.spoolman.label.location'),
-        value: 'location'
+        value: 'location',
+        cellClass: 'text-no-wrap'
       },
       {
         text: this.$tc('app.spoolman.label.comment'),
-        value: 'comment'
+        value: 'comment',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.first_used'),
+        value: 'first_used',
+        visible: false,
+        cellClass: 'text-no-wrap'
       },
       {
         text: this.$tc('app.spoolman.label.last_used'),
-        value: 'last_used'
+        value: 'last_used',
+        cellClass: 'text-no-wrap'
       },
     ]
 
@@ -519,12 +586,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
             return
           }
         } else if (this.warnOnNotEnoughFilament) {
-          let remainingLength = spool.remaining_length
-          if (!remainingLength && spool.remaining_weight) {
-            remainingLength = this.$filters.convertFilamentWeightToLength(spool.remaining_weight, spool.filament.density, spool.filament.diameter)
-          }
-
-          if (typeof remainingLength === 'number' && requiredLength >= remainingLength) {
+          if (spool.remaining_length != null && requiredLength >= spool.remaining_length) {
             // not enough filament
 
             const confirmation = await this.$confirm(
@@ -608,6 +670,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       value: value ?? null,
       server: true
     })
+  }
+
+  getSpoolColor (spool?: Spool) {
+    return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
   }
 }
 </script>

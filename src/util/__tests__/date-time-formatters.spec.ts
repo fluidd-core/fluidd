@@ -1,7 +1,7 @@
-import { buildDateTimeFormatters } from '../date-time-formatters'
+import dateTimeFormatters from '../date-time-formatters'
 import { timeTravel } from '@/../tests/unit/utils'
 
-const buildTestDateTimeFormatters = (dateFormatName: string = '', timeFormatName: string = '') => buildDateTimeFormatters(
+const buildTestDateTimeFormatters = (dateFormatName: string = '', timeFormatName: string = '') => dateTimeFormatters(
   () => dateFormatName,
   () => timeFormatName
 )

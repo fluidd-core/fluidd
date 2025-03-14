@@ -517,7 +517,11 @@ app:
     msg:
       confirm: Are you sure? This will clear the entire printer queue
     label:
+      eta: ETA
+      filament: Filament
       number_of_copies: Number of copies
+      print_time: Print time
+      unknown_jobs: Unknown jobs
     title:
       multiply_job: Multiply Job | Multiply Jobs
     tooltip:
@@ -907,9 +911,11 @@ app:
       active_spool: Active Spool
       bed_temp: Bed Temp
       change_spool: Change Spool
+      colors: Colors
       comment: Comment
       density: Density
       device_camera: Device
+      diameter: Diameter
       extruder_temp: Extruder Temp
       filament_name: Filament
       first_used: First Used

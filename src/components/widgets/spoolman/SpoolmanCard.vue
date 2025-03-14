@@ -11,7 +11,7 @@
         small
         class="me-1 my-1"
         :disabled="!isConnected"
-        @click="() => handleSelectSpool()"
+        @click="handleSelectSpool"
       >
         {{ $t('app.spoolman.label.change_spool') }}
       </app-btn>
@@ -43,7 +43,7 @@
           </app-btn>
         </template>
         <v-list dense>
-          <v-list-item @click="() => handleSelectSpool()">
+          <v-list-item @click="handleSelectSpool">
             <v-list-item-content>
               <v-list-item-title>
                 {{ $t('app.spoolman.label.active_spool') }}
@@ -65,8 +65,10 @@
           <template v-for="macro of targetableMacros">
             <v-list-item
               :key="macro.name"
-              :class="{primary: macro.variables?.active}"
-              @click="() => handleSelectSpool(macro)"
+              :class="{
+                primary: macro.variables?.active
+              }"
+              @click="handleSelectSpool(macro)"
             >
               <v-list-item-content>
                 <v-list-item-title>
@@ -94,7 +96,7 @@
       v-if="activeSpool && $vuetify.breakpoint.lgAndDown"
       value="100"
       :height="6"
-      :color="`#${activeSpool.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
+      :color="getSpoolColor(activeSpool)"
     />
 
     <v-card-text>
@@ -114,22 +116,22 @@
                 <template v-if="field === 'remaining_weight'">
                   <span v-if="remainingFilamentUnit === 'weight'">
                     {{ $filters.getReadableWeightString(activeSpool.remaining_weight) }}
-                    <small>/ {{ $filters.getReadableWeightString(activeSpool.filament.weight) }}</small>
+                    <small>/ {{ $filters.getReadableWeightString(activeSpool.initial_weight) }}</small>
                   </span>
                   <span v-else-if="remainingFilamentUnit === 'length'">
                     {{ $filters.getReadableLengthString(activeSpool.remaining_length) }}
-                    <small>/ {{ $filters.getReadableLengthString($filters.convertFilamentWeightToLength(activeSpool.filament.weight ?? 0, activeSpool.filament.density, activeSpool.filament.diameter)) }}</small>
+                    <small>/ {{ $filters.getReadableLengthString(activeSpool.initial_length) }}</small>
                   </span>
                 </template>
 
                 <template v-else-if="field === 'used_weight'">
                   <span v-if="remainingFilamentUnit === 'weight'">
                     {{ $filters.getReadableWeightString(activeSpool.used_weight) }}
-                    <small>/ {{ $filters.getReadableWeightString(activeSpool.filament.weight) }}</small>
+                    <small>/ {{ $filters.getReadableWeightString(activeSpool.initial_weight) }}</small>
                   </span>
                   <span v-else-if="remainingFilamentUnit === 'length'">
                     {{ $filters.getReadableLengthString(activeSpool.used_length) }}
-                    <small>/ {{ $filters.getReadableLengthString($filters.convertFilamentWeightToLength(activeSpool.filament.weight ?? 0, activeSpool.filament.density, activeSpool.filament.diameter)) }}</small>
+                    <small>/ {{ $filters.getReadableLengthString(activeSpool.initial_length) }}</small>
                   </span>
                 </template>
 
@@ -219,7 +221,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     return this.$store.getters['spoolman/getActiveSpool']
   }
 
-  get currency (): string | undefined {
+  get currency (): string | null {
     return this.$store.state.spoolman.currency
   }
 
@@ -248,7 +250,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
   }
 
   getSpoolColor (spool?: Spool) {
-    return `#${spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? 'fff' : '000')}`
+    return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
   }
 
   getFormattedField (field: string) {
@@ -271,13 +273,13 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
         return this.activeSpool.last_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.last_used) : this.$tc('app.setting.label.never')
 
       case 'price':
-        return [
-          this.activeSpool.filament.price?.toFixed(2),
-          this.currency
-        ].filter(x => x != null).join(' ') || '-'
+        return this.activeSpool.price != null ? this.$filters.getReadableCurrencyString(this.activeSpool.price, this.currency ?? '') : '-'
 
       case 'density':
         return this.activeSpool.filament.density || '-'
+
+      case 'diameter':
+        return this.activeSpool.filament.diameter ? this.$filters.getReadableLengthString(this.activeSpool.filament.diameter) : '-'
 
       case 'extruder_temp':
         return this.activeSpool.filament.settings_extruder_temp || '-'
