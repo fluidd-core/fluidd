@@ -115,23 +115,23 @@
               >
                 <template v-if="field === 'remaining_weight'">
                   <span v-if="remainingFilamentUnit === 'weight'">
-                    {{ $filters.getReadableWeightString(activeSpool.remaining_weight) }}
-                    <small>/ {{ $filters.getReadableWeightString(activeSpool.initial_weight) }}</small>
+                    {{ getFormattedField('remaining_weight') }}
+                    <small>/ {{ getFormattedField('initial_weight') }}</small>
                   </span>
                   <span v-else-if="remainingFilamentUnit === 'length'">
-                    {{ $filters.getReadableLengthString(activeSpool.remaining_length) }}
-                    <small>/ {{ $filters.getReadableLengthString(activeSpool.initial_length) }}</small>
+                    {{ getFormattedField('remaining_length') }}
+                    <small>/ {{ getFormattedField('initial_length') }}</small>
                   </span>
                 </template>
 
                 <template v-else-if="field === 'used_weight'">
                   <span v-if="remainingFilamentUnit === 'weight'">
-                    {{ $filters.getReadableWeightString(activeSpool.used_weight) }}
-                    <small>/ {{ $filters.getReadableWeightString(activeSpool.initial_weight) }}</small>
+                    {{ getFormattedField('used_weight') }}
+                    <small>/ {{ getFormattedField('initial_weight') }}</small>
                   </span>
                   <span v-else-if="remainingFilamentUnit === 'length'">
-                    {{ $filters.getReadableLengthString(activeSpool.used_length) }}
-                    <small>/ {{ $filters.getReadableLengthString(activeSpool.initial_length) }}</small>
+                    {{ getFormattedField('used_length') }}
+                    <small>/ {{ getFormattedField('initial_length') }}</small>
                   </span>
                 </template>
 
@@ -286,6 +286,24 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
 
       case 'bed_temp':
         return this.activeSpool.filament.settings_bed_temp || '-'
+
+      case 'remaining_weight':
+        return this.activeSpool.remaining_weight != null ? this.$filters.getReadableWeightString(this.activeSpool.remaining_weight) : '-'
+
+      case 'remaining_length':
+        return this.activeSpool.remaining_length != null ? this.$filters.getReadableLengthString(this.activeSpool.remaining_length) : '-'
+
+      case 'used_weight':
+        return this.activeSpool.used_weight != null ? this.$filters.getReadableWeightString(this.activeSpool.used_weight) : '-'
+
+      case 'used_length':
+        return this.activeSpool.used_length != null ? this.$filters.getReadableLengthString(this.activeSpool.used_length) : '-'
+
+      case 'initial_weight':
+        return this.activeSpool.initial_weight != null ? this.$filters.getReadableWeightString(this.activeSpool.initial_weight) : '-'
+
+      case 'initial_length':
+        return this.activeSpool.initial_length != null ? this.$filters.getReadableLengthString(this.activeSpool.initial_length) : '-'
 
       default:
         return this.activeSpool[field as keyof Spool] || '-'
