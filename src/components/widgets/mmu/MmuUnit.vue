@@ -15,6 +15,22 @@
             :edit-gate-map="editGateMap"
             :edit-gate-selected="editGateSelected"
           />
+
+          <div v-if="editGateMap && editGateSelected === gate" style="position: absolute; bottom: 0%; left: 0%; width: 100%; height: auto; background: none;">
+            <svg width="100%" height="100%" viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <clipPath id="clip-half">
+                  <rect x="0" y="0" width="80" height="60" />
+                </clipPath>
+                <radialGradient id="spotlight" cx="50%" cy="70%" r="50%" fx="50%" fy="100%">
+                  <stop offset="0%" style="stop-color:rgba(255, 255, 255, 0.9); stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:rgba(255, 255, 0, 0); stop-opacity:0" />
+                </radialGradient>
+              </defs>
+              <rect x="0" y="0" width="100%" height="100%" fill="url(#spotlight)" clip-path="url(#clip-half)" />
+            </svg>
+          </div>
+
         </div>
         <mmu-gate-status
           :class="gateStatusClass(index)"
@@ -22,7 +38,7 @@
           :edit-gate-map="editGateMap"
           :edit-gate-selected="editGateSelected"
         />
-      </div>
+    </div>
 
       <div
         v-if="showBypass"
@@ -107,13 +123,16 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     return '40px'
   }
 
-  get clipSpoolClass (): string {
+  get clipSpoolClass (): string[] {
+    const classes = ['clip-spool']
     if (this.numGates <= 8) {
-      return 'clip-large-spool'
+      classes.push('clip-large')
     } else if (this.numGates <= 16) {
-      return 'clip-medium-spool'
+      classes.push('clip-medium')
+    } else {
+      classes.push('clip-small')
     }
-    return 'clip-small-spool'
+    return classes
   }
 
   get logoHeight (): string {
@@ -270,18 +289,20 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     border-radius: 8px 8px 10px 10px;
 }
 
-.clip-small-spool {
+.clip-spool {
+    position: relative;
     margin-top: 8px;
+}
+
+.clip-small {
     max-height: 73px;
 }
 
-.clip-medium-spool {
-    margin-top: 8px;
+.clip-medium {
     max-height: 88px;
 }
 
-.clip-large-spool {
-    margin-top: 8px;
+.clip-large {
     max-height: 100px;
 }
 
@@ -295,7 +316,6 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 .highlight-spool {
     transform: translateY(-8px);
     opacity: 1;
-    box-shadow: inset 0px -8px 8px -6px #ffff00e0;
 }
 
 .unhighlight-spool {
