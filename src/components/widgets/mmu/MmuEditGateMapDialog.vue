@@ -459,7 +459,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   }
 
   private spoolIdRules () {
-    const spools: Spool[] = this.$store.state.spoolman?.availableSpools ?? []
+    const spools: Spool[] = this.$store.state.spoolman?.spools ?? []
     return [
       (v: number) => {
         if (!v || v <= 0) return true
@@ -475,7 +475,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   }
 
   get spoolIdExists (): boolean {
-    const spools: Spool[] = this.$store.state.spoolman?.availableSpools ?? []
+    const spools: Spool[] = this.$store.state.spoolman?.spools ?? []
     return spools.some((spool) => spool.id === this.spoolId)
   }
 
@@ -592,12 +592,13 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     let usedStr = '-'
 
     if (spool) {
-      const last_used = spool.last_used
-      if (!last_used) {
+      const lastUsed = spool.last_used
+      if (!lastUsed) {
         usedStr = this.$t('app.mmu.label.spoolman_never').toString()
       } else {
+        const date = new Date(lastUsed)
         const now = new Date()
-        const diff = now.getTime() - last_used.getTime()
+        const diff = now.getTime() - date.getTime()
 
         if (diff <= 1000 * 60 * 60 * 24) return this.$t('app.mmu.label.spoolman_today')
         if (diff <= 1000 * 60 * 60 * 24 * 2) return this.$t('app.mmu.label.spoolman_yesterday')
@@ -605,7 +606,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
           const days = Math.floor(diff / (1000 * 60 * 60 * 24))
           usedStr = this.$t('app.mmu.label.spoolman_days_ago', { days }).toString()
         }
-        usedStr = last_used.toLocaleDateString()
+        usedStr = date.toLocaleDateString()
       }
     }
     return `${this.$t('app.mmu.label.spoolman_last_used')}: ${usedStr}`

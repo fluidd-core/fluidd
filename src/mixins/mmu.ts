@@ -425,7 +425,7 @@ export default class MmuMixin extends Vue {
     if (activeSpool?.id === spoolId) {
       return activeSpool
     }
-    const spools = this.$store.state.spoolman?.availableSpools ?? []
+    const spools = this.$store.state.spoolman?.spools ?? []
     return spools.find((spool: Spool) => spool.id === spoolId) ?? null
   }
 
