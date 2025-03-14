@@ -176,7 +176,7 @@ app:
       delete: Löschen
       download: Herunterladen
       edit: Bearbeiten
-      exit_layout: Layout-Modus verlassen
+      exit_layout: Verlassen
       extrude: Extrudieren
       heaters_off: Heizelemente aus
       load_all: Alle laden
@@ -195,8 +195,8 @@ app:
       rename: Umbenennen
       reprint: Druck wiederholen
       reset_file: Datei zurücksetzen
-      reset_layout: Auf Standardlayout zurücksetzen
-      reset_default_layout: Standardlayout zurücksetzen
+      reset_layout: Zurücksetzen
+      reset_default_layout: Standard zurücksetzen
       restart_firmware: Firmware Neustarten
       restart_service: '%{service} neustarten'
       restart_service_klipper: Klipper neustarten
@@ -209,7 +209,7 @@ app:
       save_restart: Speichern & Neu starten
       send: Senden
       set_color: Farbe setzen
-      set_default_layout: Als Standardlayout setzen
+      set_default_layout: Als Standard speichern
       shutdown: Herunterfahren
       socket_reconnect: Neu verbinden
       socket_refresh: Aktualisieren erzwingen
@@ -527,14 +527,18 @@ app:
     tooltip:
       browse_metrics: Verfügbare Metriken durchsuchen
       estop: Notaus
+      exit_layout: Layout-Modus verlassen
       managed_by_moonraker: Verwaltet durch Ihre Moonraker-Konfiguration
       notifications: Benachrichtigungen
       reload_klipper: Lädt die Klipper-Konfiguration neu.
       reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die MCUs
         neu.
+      reset_layout: Aktuelles Layout zu serverweitem Standard-Layout zurücksetzen
+      reset_default_layout: Serverweites Standard-Layout auf Werkseinstellungen zurücksetzen
       restart_klipper: Starten den Klipper-Systemdienst neu.
       run_collector: Kollektor ausführen
       rollover_logs: Protokolle erneuern
+      set_default_layout: Aktuelles Layout als serverweites Standardlayout speichern
       file_browser_help: Ziehen Sie Dateien und Ordner von außerhalb des Browsers
         hierhin, um sie hochzuladen<br>Verschieben Sie Dateien und Ordner, indem Sie
         sie in Unterordner oder ".." ziehen
