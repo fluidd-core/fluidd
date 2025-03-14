@@ -6,7 +6,7 @@
         :key="'unit_' + index"
         cols="auto"
       >
-        <div :class="$vuetify.theme.dark ? 'mmu-unit-dark-theme' : 'mmu-unit-light-theme'">
+        <div :class="$vuetify.theme.dark ? 'mmu-unit mmu-unit-dark-theme' : 'mmu-unit mmu-unit-light-theme'">
           <mmu-unit
             :unit="index"
             :edit-gate-map="editGateMap"
@@ -46,13 +46,17 @@ export default class MmuMachine extends Mixins(StateMixin, MmuMixin) {
 </script>
 
 <style scoped>
+.mmu-unit {
+    padding-left: 16px;
+    padding-right: 16px;
+    border-radius: 10px 10px 10px 10px;
+}
+
 .mmu-unit-light-theme {
-    border-radius: 10px;
     background: #f0f0f0;
 }
 
 .mmu-unit-dark-theme {
-    border-radius: 10px;
     background: #2c2c2c;
 }
 </style>
