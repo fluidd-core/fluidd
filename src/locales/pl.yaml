@@ -258,7 +258,7 @@ app:
       download: Pobierz
       duplicate: Duplikuj
       edit: Edytuj
-      exit_layout: Wyjdź z trybu edycji
+      exit_layout: Wyjdź
       extrude: Wytłaczaj
       filter: Filtr
       clear_profile: Wyczyść profil
@@ -287,10 +287,10 @@ app:
       remove: Usuń
       print: Drukuj
       reload: Przeładuj
-      reset_layout: Przywróć na domyślny układ
+      reset_layout: Resetuj
       restart_firmware: Restart Firmware
       reset_file: Wyczyść plik
-      reset_default_layout: Resetuj domyślny układ
+      reset_default_layout: Przywróć domyślne
       restart_service: Restart %{service}
       restart_service_klipper: Restart Klippera
       resume: Wznów
@@ -300,7 +300,7 @@ app:
       restart_service_moonraker: Restartuj Moonraker
       send: Wyślij
       set_color: Ustaw kolor
-      set_default_layout: Ustaw jako domyślny układ
+      set_default_layout: Zapisz jako domyślny
       shutdown: Wyłącz
       snooze: Drzemka
       socket_reconnect: Połącz ponownie
@@ -473,18 +473,23 @@ app:
       estop: Awaryjny stop
       managed_by_moonraker: Zarządzane przez konfigurację moonrakera
       notifications: Powiadomienia
-      reload_klipper: Przeładuj konfigurację klippera.
+      reload_klipper: Przeładowuje konfigurację klippera.
       reload_restart_klipper: Przeładowuje konfigurację klippera i restartuje MCU.
       restart_klipper: Restartuje usługę systemową klipper.
       run_collector: Uruchom kolektor
       browse_metrics: Przeglądaj dostępne metryki
       rollover_logs: Resetuj logi
-      file_browser_configuration_help: Skopiuj pliki i foldery do Plików Konfiguracyjnych
+      file_browser_configuration_help: Skopiuj pliki i foldery do plików konfiguracyjnych
         przeciągając je stąd i upuszczając je tam
       file_browser_help: Przeciągnij i upuść pliki lub foldery z poza przeglądarki
         aby przesłać je tutaj<br>Przenieś pliki i foldery przeciągając je i upuszczając
         do podfolderów lub ".."
       power_on_printer: Włącza zasilanie drukarki
+      exit_layout: Wyjdź z trybu układu
+      reset_layout: Resetuj bieżący układ do domyślnego układu dla całego serwera
+      reset_default_layout: Resetuj domyślny układ całego serwera do domyślnych ustawień
+        fabrycznych
+      set_default_layout: Ustaw bieżący układ jako domyślny układ dla całego serwera
   gcode:
     label:
       current_layer_height: Aktualna wysokość warstwy
@@ -816,8 +821,12 @@ app:
       multiply_job: Powiel zadanie | Powiel zadania
     label:
       number_of_copies: Liczba kopii
+      print_time: Czas druku
+      unknown_jobs: Nieznane zadania
+      filament: Filament
+      eta: Koniec
     tooltip:
-      help: Dodaj zadania do kolejki przeciągając pliki z Zadań i upuszczając je tutaj<br>Dostosuj
+      help: Dodaj zadania do kolejki przeciągając pliki z zadań i upuszczając je tutaj<br>Dostosuj
         kolejność zadań w kolejce przeciągając je do góry lub w dół
   version:
     label:
@@ -936,6 +945,8 @@ app:
       price: Cena
       used_weight: Użyta waga
       weight: Waga
+      diameter: Średnica
+      colors: Kolory
     msg:
       no_spool: Nie wybrano szpuli. Czy na pewno chcesz drukować bez śledzenia filamentu?
       no_filament: Na wybranej szpuli może nie być wystarczającej ilości filamentu,
