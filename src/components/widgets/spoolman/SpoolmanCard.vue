@@ -50,9 +50,7 @@
               </v-list-item-title>
             </v-list-item-content>
 
-            <v-list-item-icon
-              v-if="activeSpool"
-            >
+            <v-list-item-icon v-if="activeSpool">
               <v-icon
                 :color="getSpoolColor(activeSpool)"
                 class="spool-icon"
@@ -61,6 +59,8 @@
               </v-icon>
             </v-list-item-icon>
           </v-list-item>
+
+          <v-divider />
 
           <template v-for="macro of targetableMacros">
             <v-list-item
@@ -72,13 +72,11 @@
             >
               <v-list-item-content>
                 <v-list-item-title>
-                  {{ macro.name }}
+                  {{ macro.name.toUpperCase() }}
                 </v-list-item-title>
               </v-list-item-content>
 
-              <v-list-item-icon
-                v-if="macro.variables.spool_id"
-              >
+              <v-list-item-icon v-if="macro.variables.spool_id">
                 <v-icon
                   :color="getSpoolColor(getSpoolById(macro.variables.spool_id))"
                   class="spool-icon"
@@ -191,10 +189,16 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { MacroWithSpoolId, Spool } from '@/store/spoolman/types'
+import type { Spool } from '@/store/spoolman/types'
 import StatusLabel from '@/components/widgets/status/StatusLabel.vue'
 import type { Macro } from '@/store/macros/types'
 import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
+
+type MacroWithSpoolId = Macro & {
+  variables: Record<string, unknown> & {
+    spool_id: number | null
+  }
+}
 
 @Component({
   components: { StatusLabel }
@@ -229,15 +233,11 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     return this.$typedState.spoolman.connected
   }
 
-  get targetableMacros (): MacroWithSpoolId[] {
+  get targetableMacros () {
     const macros: Macro[] = this.$typedGetters['macros/getMacros']
 
     return macros
       .filter((macro): macro is MacroWithSpoolId => macro.variables != null && 'spool_id' in macro.variables)
-      .map(macro => ({
-        ...macro,
-        name: macro.name.toUpperCase()
-      }))
       .sort((a, b) => a.name.localeCompare(b.name))
   }
 

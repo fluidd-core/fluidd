@@ -223,8 +223,8 @@ export const getters = {
   /**
    * Gets the currently stored path for any given root.
    */
-  getCurrentPathByRoot: (state) => (r: string) => {
-    return state.currentPaths[r] ?? ''
+  getCurrentPathByRoot: (state) => (root: string) => {
+    return state.currentPaths[root] ?? ''
   },
 
   /**

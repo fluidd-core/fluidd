@@ -30,21 +30,25 @@ export const getters = {
       const name = key.split(' ').splice(1).join(' ')
       const legacyKlipperProfile = config[key]
 
+      if (legacyKlipperProfile == null) {
+        continue
+      }
+
       const profile: KlipperPrinterBedMeshProfileState = {
-        points: legacyKlipperProfile.points.split('\n')
+        points: (legacyKlipperProfile.points ?? '').split('\n')
           .filter(x => x.length)
           .map(x => x.split(',').map(Number)),
         mesh_params: {
-          algo: legacyKlipperProfile.algo,
-          max_x: +legacyKlipperProfile.max_x,
-          max_y: +legacyKlipperProfile.max_y,
-          mesh_x_pps: +legacyKlipperProfile.mesh_x_pps,
-          mesh_y_pps: +legacyKlipperProfile.mesh_y_pps,
-          min_x: +legacyKlipperProfile.min_x,
-          min_y: +legacyKlipperProfile.min_y,
-          tension: +legacyKlipperProfile.tension,
-          x_count: +legacyKlipperProfile.x_count,
-          y_count: +legacyKlipperProfile.y_count
+          algo: legacyKlipperProfile.algo ?? '',
+          max_x: +(legacyKlipperProfile.max_x ?? 0),
+          max_y: +(legacyKlipperProfile.max_y ?? 0),
+          mesh_x_pps: +(legacyKlipperProfile.mesh_x_pps ?? 0),
+          mesh_y_pps: +(legacyKlipperProfile.mesh_y_pps ?? 0),
+          min_x: +(legacyKlipperProfile.min_x ?? 0),
+          min_y: +(legacyKlipperProfile.min_y ?? 0),
+          tension: +(legacyKlipperProfile.tension ?? 0),
+          x_count: +(legacyKlipperProfile.x_count ?? 0),
+          y_count: +(legacyKlipperProfile.y_count ?? 0)
         }
       }
 
