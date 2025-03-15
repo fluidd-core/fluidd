@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import type { NotificationsState, AppPushNotification, AppNotification } from './types'
 import type { RootState } from '../types'
 
-export const actions: ActionTree<NotificationsState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -71,4 +71,4 @@ export const actions: ActionTree<NotificationsState, RootState> = {
 
     dispatch('announcements/dismissAll', {}, { root: true })
   }
-}
+} satisfies ActionTree<NotificationsState, RootState>

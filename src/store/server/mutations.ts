@@ -3,7 +3,7 @@ import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type { CanbusUuid, Peripherals, ServerInfo, ServerState, ServiceState, SystemInfo } from './types'
 
-export const mutations: MutationTree<ServerState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -86,4 +86,4 @@ export const mutations: MutationTree<ServerState> = {
   setKlippyRetries (state, payload: number) {
     state.klippy_retries = payload
   }
-}
+} satisfies MutationTree<ServerState>

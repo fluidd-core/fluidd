@@ -107,7 +107,7 @@ export default class MacroMoveDialog extends Vue {
   }
 
   handleSave () {
-    this.$store.dispatch('macros/saveMacro', this.macro)
+    this.$typedDispatch('macros/saveMacro', this.macro)
     this.open = false
   }
 }

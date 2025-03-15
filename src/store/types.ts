@@ -1,3 +1,4 @@
+import type { DispatchOptions } from 'vuex'
 import type { socket } from './socket'
 import type { server } from './server'
 import type { printer } from './printer'
@@ -22,6 +23,7 @@ import type { jobQueue } from './jobQueue'
 import type { spoolman } from './spoolman'
 import type { sensors } from './sensors'
 import type { analysis } from './analysis'
+import type { storeOptions } from '.'
 
 type RootModulesType = {
   socket: typeof socket,
@@ -54,15 +56,41 @@ type RootStateType = {
   [K in keyof RootModulesType]: RootModulesType[K] extends { state: infer U } ? U : never
 }
 
-export type RootGettersType = UnionToIntersection<{
-  [K in keyof RootModulesType]: RootModulesType[K] extends { getters: infer S }
-    ? S extends Record<string, (...args: any) => any>
-      ? {
-          [U in keyof S as `${string & K}/${string & U}`]: ReturnType<S[U]>
-        }
-      : never
+type RootGettersType = UnionToIntersection<{
+  [K in keyof RootModulesType]: RootModulesType[K] extends { getters: infer G }
+    ? {
+        [U in keyof G as `${string & K}/${string & U}`]: G[U] extends (...args: any[]) => infer R ? R : never
+      }
     : never
 }[keyof RootModulesType]>
+
+type RootMutationsType = UnionToIntersection<{
+  [K in keyof RootModulesType]: RootModulesType[K] extends { mutations: infer M }
+    ? {
+        [U in keyof M]: M[U] extends (state: any, ...args: infer P) => void
+          ? (type: `${string & K}/${string & U}`, ...args: P) => void
+          : never
+      }[keyof M]
+    : never
+}[keyof RootModulesType]>
+
+type RootActionsType = UnionToIntersection<{
+  [K in keyof RootModulesType]: RootModulesType[K] extends { actions: infer M }
+    ? {
+        [U in keyof M]: M[U] extends (store: any, ...args: infer P) => infer R
+          ? (type: `${string & K}/${string & U}`, ...args: P extends [] ? [payload?: undefined, options?: DispatchOptions] : [payload: P[0], options?: DispatchOptions]) => R
+          : never
+      }[keyof M]
+    : never
+}[keyof RootModulesType] | (
+  typeof storeOptions extends { actions: infer M }
+    ? {
+        [U in keyof M]: M[U] extends (store: any, ...args: infer P) => infer R
+          ? (type: `${string & U}`, ...args: P extends [] ? [payload?: undefined, options?: DispatchOptions] : [payload: P[0], options?: DispatchOptions]) => R
+          : never
+      }[keyof M]
+    : never
+)>
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
 
@@ -73,4 +101,10 @@ export interface RootState extends RootStateType {
 }
 
 export interface RootGetters extends RootGettersType {
+}
+
+export interface RootMutations extends RootMutationsType {
+}
+
+export interface RootActions extends RootActionsType {
 }

@@ -169,7 +169,7 @@ export interface DashboardConfig {
 
 export interface SaveByPath {
   path: string;
-  value: string | boolean | number;
+  value: unknown;
   server?: boolean;
 }
 

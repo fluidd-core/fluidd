@@ -38,7 +38,7 @@ const payloadAsSpoolmanProxyResponseV2 = <T>(payload: SpoolmanProxyResponse<T>):
   }
 }
 
-export const actions: ActionTree<SpoolmanState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -236,4 +236,4 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       state.socket = undefined
     }
   }
-}
+} satisfies ActionTree<SpoolmanState, RootState>

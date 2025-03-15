@@ -66,7 +66,7 @@ export default class CameraCard extends Mixins(StateMixin) {
   }
 
   handleCameraSelect (id: string) {
-    this.$store.dispatch('webcams/updateActiveWebcam', id)
+    this.$typedDispatch('webcams/updateActiveWebcam', id)
   }
 }
 </script>

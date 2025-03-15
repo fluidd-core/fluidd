@@ -88,7 +88,7 @@ export default class Macros extends Mixins(StateMixin) {
   }
 
   set expanded (val: number[]) {
-    this.$store.dispatch('macros/saveExpanded', val)
+    this.$typedDispatch('macros/saveExpanded', val)
   }
 
   handleEditCategory (categoryId: string) {

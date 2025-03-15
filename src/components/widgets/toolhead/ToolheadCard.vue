@@ -389,7 +389,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     )
 
     if (result) {
-      this.$store.dispatch('printer/forceMoveEnabled', !this.forceMoveEnabled)
+      this.$typedDispatch('printer/forceMoveEnabled', !this.forceMoveEnabled)
     }
   }
 }

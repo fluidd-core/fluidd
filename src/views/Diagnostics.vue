@@ -174,7 +174,7 @@ export default class Diagnostics extends Mixins(StateMixin) {
   }
 
   updateLayout () {
-    this.$store.dispatch('layout/onLayoutChange', {
+    this.$typedDispatch('layout/onLayoutChange', {
       name: 'diagnostics',
       value: {
         container1: this.containers[0],

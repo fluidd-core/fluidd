@@ -59,7 +59,7 @@ export default class UpdatingDialog extends Mixins(StateMixin, BrowserMixin) {
   set open (value: boolean) {
     if (!value) {
       this.invokedDialog = false
-      this.$store.commit('version/setClearUpdateResponse')
+      this.$typedCommit('version/setClearUpdateResponse')
     }
   }
 

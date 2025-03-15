@@ -302,7 +302,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   set followProgress (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.followProgress',
       value,
       server: true
@@ -340,11 +340,11 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   abortParser () {
-    this.$store.dispatch('gcodePreview/terminateParserWorker')
+    this.$typedDispatch('gcodePreview/terminateParserWorker')
   }
 
   resetFile () {
-    this.$store.dispatch('gcodePreview/reset')
+    this.$typedDispatch('gcodePreview/reset')
   }
 
   async loadCurrent () {
@@ -363,7 +363,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
 
       if (!gcode) return
 
-      this.$store.dispatch('gcodePreview/loadGcode', {
+      this.$typedDispatch('gcodePreview/loadGcode', {
         file,
         gcode
       })

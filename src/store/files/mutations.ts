@@ -4,7 +4,7 @@ import type { FilesState, MoonrakerRootFile, MoonrakerPathContent, MoonrakerFile
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 
-export const mutations: MutationTree<FilesState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -174,5 +174,4 @@ export const mutations: MutationTree<FilesState> = {
   setDiskUsage (state, payload) {
     Vue.set(state, 'diskUsage', payload)
   }
-
-}
+} satisfies MutationTree<FilesState>

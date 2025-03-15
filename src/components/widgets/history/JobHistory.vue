@@ -410,7 +410,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
   }
 
   handleJobThumbnailError (job: HistoryItem) {
-    this.$store.dispatch('history/clearHistoryThumbnails', job.job_id)
+    this.$typedDispatch('history/clearHistoryThumbnails', job.job_id)
   }
 
   getItemValue (item: HistoryItem, header: DataTableHeader, defaultGetter: DefaultGetterFunction) {

@@ -7,7 +7,7 @@ import type {
   SpoolSelectionDialogState
 } from '@/store/spoolman/types'
 
-export const mutations: MutationTree<SpoolmanState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -38,4 +38,4 @@ export const mutations: MutationTree<SpoolmanState> = {
   setConnected (state, payload) {
     state.connected = payload
   }
-}
+} satisfies MutationTree<SpoolmanState>

@@ -4,7 +4,7 @@ import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 
-export const actions: ActionTree<MacrosState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -93,4 +93,4 @@ export const actions: ActionTree<MacrosState, RootState> = {
     // Save to moonraker.
     SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.expanded', state.expanded)
   }
-}
+} satisfies ActionTree<MacrosState, RootState>

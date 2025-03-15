@@ -11,7 +11,7 @@ import dateTimeFormatters from '@/util/date-time-formatters'
 import stringFormatters from '@/util/string-formatters'
 import isNullOrEmpty, { type NullableOrEmpty } from '@/util/is-null-or-empty'
 import consola from 'consola'
-import type { RootGetters, RootState } from '@/store/types'
+import type { RootActions, RootGetters, RootMutations, RootState } from '@/store/types'
 
 const Filters = {
   /**
@@ -170,6 +170,14 @@ export const FiltersPlugin = {
     Vue.$globals = Globals
     Vue.$waits = Waits
 
+    Vue.prototype.$typedCommit = function (...params: any[]) {
+      return this.$store.commit(...params)
+    }
+
+    Vue.prototype.$typedDispatch = function (...params: any[]) {
+      return this.$store.dispatch(...params)
+    }
+
     Object.defineProperty(Vue.prototype, '$typedState', {
       get (): RootState {
         return this.$store.state as RootState
@@ -194,6 +202,8 @@ declare module 'vue/types/vue' {
     $waits: typeof Waits;
     $typedState: RootState;
     $typedGetters: RootGetters;
+    $typedCommit: RootMutations;
+    $typedDispatch: RootActions;
   }
 
   interface VueConstructor {
@@ -203,5 +213,7 @@ declare module 'vue/types/vue' {
     $waits: typeof Waits;
     $typedState: RootState;
     $typedGetters: RootGetters;
+    $typedCommit: RootMutations;
+    $typedDispatch: RootActions;
   }
 }

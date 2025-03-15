@@ -5,7 +5,7 @@ import type { ChartData, ChartState } from './types'
 import type { RootState } from '../types'
 import { isEqual } from 'lodash-es'
 
-export const actions: ActionTree<ChartState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -104,4 +104,4 @@ export const actions: ActionTree<ChartState, RootState> = {
       SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.charts.name + '.selectedLegends', payload)
     }
   }
-}
+} satisfies ActionTree<ChartState, RootState>

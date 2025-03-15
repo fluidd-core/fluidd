@@ -415,7 +415,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   setDefaultExtrudeSpeed (value: string) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultExtrudeSpeed',
       value: +value,
       server: true
@@ -427,7 +427,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   setDefaultExtrudeLength (value: number) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultExtrudeLength',
       value: +value,
       server: true
@@ -439,7 +439,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   setDefaultToolheadMoveLength (value: number) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultToolheadMoveLength',
       value: +value,
       server: true
@@ -451,7 +451,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   setDefaultToolheadYXSpeed (value: number) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultToolheadXYSpeed',
       value: +value,
       server: true
@@ -463,7 +463,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   setDefaultToolheadZSpeed (value: number) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultToolheadZSpeed',
       value: +value,
       server: true
@@ -479,7 +479,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
       return
     }
 
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.zAdjustDistances',
       value: [...new Set(value.map(Number))].sort((a, b) => a - b),
       server: true
@@ -491,7 +491,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   set toolheadCircleXYHomingEnabled (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.toolheadCircleXYHomingEnabled',
       value,
       server: true
@@ -503,7 +503,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   set toolheadControlStyle (value: ToolheadControlStyle) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.toolheadControlStyle',
       value,
       server: true
@@ -539,7 +539,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     const toolheadMoveDistances = [...new Set(value.map(Number))]
       .sort((a, b) => a - b)
 
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.toolheadMoveDistances',
       value: toolheadMoveDistances,
       server: true
@@ -559,7 +559,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
       return
     }
 
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.toolheadXYMoveDistances',
       value: [...new Set(value.map(Number))].sort((a, b) => a - b),
       server: true
@@ -575,7 +575,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
       return
     }
 
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.toolheadCircleXYMoveDistances',
       value: [...new Set(value.map(Number))].sort((a, b) => a - b),
       server: true
@@ -591,7 +591,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
       return
     }
 
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.toolheadZMoveDistances',
       value: [...new Set(value.map(Number))].sort((a, b) => a - b),
       server: true
@@ -607,7 +607,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
       return
     }
 
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.toolheadCircleZMoveDistances',
       value: [...new Set(value.map(Number))].sort((a, b) => a - b),
       server: true
@@ -619,7 +619,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   set useGcodeCoords (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.useGcodeCoords',
       value,
       server: true
@@ -631,7 +631,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   set invertX (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.axis.x.inverted',
       value,
       server: true
@@ -643,7 +643,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   set invertY (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.axis.y.inverted',
       value,
       server: true
@@ -655,7 +655,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   set invertZ (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.axis.z.inverted',
       value,
       server: true
@@ -673,7 +673,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   set showManualProbeDialogAutomatically (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showManualProbeDialogAutomatically',
       value,
       server: true
@@ -685,7 +685,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   set showBedScrewsAdjustDialogAutomatically (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showBedScrewsAdjustDialogAutomatically',
       value,
       server: true
@@ -697,7 +697,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   set showScrewsTiltAdjustDialogAutomatically (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showScrewsTiltAdjustDialogAutomatically',
       value,
       server: true
@@ -709,7 +709,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   set forceMoveToggleWarning (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.forceMoveToggleWarning',
       value,
       server: true
@@ -726,7 +726,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
       hideTempWaits
     }
 
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general',
       value,
       server: true

@@ -83,7 +83,7 @@ export default class SystemPrinters extends Mixins(StateMixin) {
     )
 
     if (result) {
-      this.$store.dispatch('config/removeInstance', instance)
+      this.$typedDispatch('config/removeInstance', instance)
     }
   }
 

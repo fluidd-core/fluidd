@@ -114,7 +114,7 @@ export default class Login extends Vue {
   availableSources = [this.source]
 
   async mounted () {
-    const authInfo = await this.$store.dispatch('auth/getAuthInfo')
+    const authInfo = await this.$typedDispatch('auth/getAuthInfo')
     this.source = authInfo.defaultSource ?? this.source
     this.availableSources = authInfo.availableSources ?? this.availableSources
   }
@@ -123,7 +123,7 @@ export default class Login extends Vue {
     this.error = false
     this.loading = true
     try {
-      await this.$store.dispatch('auth/login', { username: this.username, password: this.password, source: this.source })
+      await this.$typedDispatch('auth/login', { username: this.username, password: this.password, source: this.source })
     } catch {
       this.error = true
     }

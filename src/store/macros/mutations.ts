@@ -15,7 +15,7 @@ const sanitizeMacroForStorage = (macro: Macro) => {
   return macro
 }
 
-export const mutations: MutationTree<MacrosState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -91,4 +91,4 @@ export const mutations: MutationTree<MacrosState> = {
   setExpanded (state, expanded: number[]) {
     Vue.set(state, 'expanded', expanded)
   }
-}
+} satisfies MutationTree<MacrosState>

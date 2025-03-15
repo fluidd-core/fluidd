@@ -300,7 +300,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   set matrix (val: MatrixType) {
-    this.$store.dispatch('mesh/onMatrix', val)
+    this.$typedDispatch('mesh/onMatrix', val)
   }
 
   get mapScale () {
@@ -308,7 +308,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   set mapScale (val: number) {
-    this.$store.dispatch('mesh/onScale', val)
+    this.$typedDispatch('mesh/onScale', val)
   }
 
   get boxScale () {
@@ -316,7 +316,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   set boxScale (val: number) {
-    this.$store.dispatch('mesh/onBoxScale', val)
+    this.$typedDispatch('mesh/onBoxScale', val)
   }
 
   get wireframe () {
@@ -324,7 +324,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   set wireframe (val: boolean) {
-    this.$store.dispatch('mesh/onWireframe', val)
+    this.$typedDispatch('mesh/onWireframe', val)
   }
 
   get flatSurface () {
@@ -332,7 +332,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   set flatSurface (val: boolean) {
-    this.$store.dispatch('mesh/onFlatSurface', val)
+    this.$typedDispatch('mesh/onFlatSurface', val)
   }
 
   get mesh (): MeshState {

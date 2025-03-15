@@ -135,7 +135,7 @@ export default class TemperaturePresetSettings extends Mixins(StateMixin) {
   }
 
   handleSavePreset (preset: TemperaturePreset) {
-    this.$store.dispatch('config/updatePreset', preset)
+    this.$typedDispatch('config/updatePreset', preset)
   }
 
   async handleRemovePreset (preset: TemperaturePreset) {
@@ -145,7 +145,7 @@ export default class TemperaturePresetSettings extends Mixins(StateMixin) {
     )
 
     if (result) {
-      this.$store.dispatch('config/removePreset', preset)
+      this.$typedDispatch('config/removePreset', preset)
     }
   }
 }

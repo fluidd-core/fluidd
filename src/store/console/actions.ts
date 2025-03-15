@@ -6,7 +6,7 @@ import { SocketActions } from '@/api/socketActions'
 import DOMPurify from 'dompurify'
 import { takeRightWhile } from 'lodash-es'
 
-export const actions: ActionTree<ConsoleState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -193,4 +193,4 @@ export const actions: ActionTree<ConsoleState, RootState> = {
     commit('setLastCleared')
     SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.lastCleared', state.lastCleared)
   }
-}
+} satisfies ActionTree<ConsoleState, RootState>

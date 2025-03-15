@@ -154,7 +154,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set chartVisible (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.chartVisible',
       value,
       server: true
@@ -166,7 +166,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set showRateOfChange (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showRateOfChange',
       value,
       server: true
@@ -178,7 +178,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set showRelativeHumidity (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showRelativeHumidity',
       value,
       server: true
@@ -190,7 +190,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set showBarometricPressure (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showBarometricPressure',
       value,
       server: true
@@ -202,7 +202,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set showGasResistance (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showGasResistance',
       value,
       server: true

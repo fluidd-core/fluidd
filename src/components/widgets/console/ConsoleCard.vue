@@ -154,7 +154,7 @@ export default class ConsoleCard extends Vue {
   }
 
   set hideTempWaits (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.hideTempWaits',
       value,
       server: true
@@ -166,7 +166,7 @@ export default class ConsoleCard extends Vue {
   }
 
   set flipLayout (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.flipConsoleLayout',
       value,
       server: true
@@ -188,7 +188,7 @@ export default class ConsoleCard extends Vue {
   }
 
   set autoScroll (value: boolean) {
-    this.$store.dispatch('console/onUpdateAutoScroll', value)
+    this.$typedDispatch('console/onUpdateAutoScroll', value)
     if (value) {
       this.consoleElement.scrollToLatest(true)
     }
@@ -208,11 +208,11 @@ export default class ConsoleCard extends Vue {
   }
 
   handleClear () {
-    this.$store.dispatch('console/onClear')
+    this.$typedDispatch('console/onClear')
   }
 
   handleToggleFilter (filter: ConsoleFilter) {
-    this.$store.dispatch('console/onSaveFilter', {
+    this.$typedDispatch('console/onSaveFilter', {
       ...filter,
       enabled: !filter.enabled
     })

@@ -223,7 +223,7 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   }
 
   set thumbnailSize (value: number) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.thumbnailSize',
       value,
       server: true

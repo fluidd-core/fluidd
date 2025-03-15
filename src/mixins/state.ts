@@ -153,7 +153,7 @@ RESTORE_GCODE_STATE NAME=_ui_retract`
   }
 
   addConsoleEntry (message: string) {
-    this.$store.dispatch('console/onAddConsoleEntry', { message, type: 'command' })
+    this.$typedDispatch('console/onAddConsoleEntry', { message, type: 'command' })
   }
 
   async emergencyStop () {

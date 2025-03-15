@@ -3,7 +3,7 @@ import type { DevicePowerState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 
-export const actions: ActionTree<DevicePowerState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -36,4 +36,4 @@ export const actions: ActionTree<DevicePowerState, RootState> = {
   async onStatus ({ commit }, payload) {
     commit('setStatus', payload)
   },
-}
+} satisfies ActionTree<DevicePowerState, RootState>

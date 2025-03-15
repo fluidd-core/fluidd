@@ -391,7 +391,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   handleExitLayout () {
-    this.$store.commit('config/setLayoutMode', false)
+    this.$typedCommit('config/setLayoutMode', false)
   }
 
   get isDashboard () {
@@ -408,11 +408,11 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
       : undefined
     const layoutDefaultState = pathLayout
       ? defaultState().layouts[pathLayout]
-      : this.$typedGetters['layout/getLayout']('dashboard')
+      : this.$typedGetters['layout/getLayout']('dashboard')!
 
     const toReset = pathLayout ?? this.$typedGetters['layout/getSpecificLayoutName']
 
-    this.$store.dispatch('layout/onLayoutChange', {
+    this.$typedDispatch('layout/onLayoutChange', {
       name: toReset,
       value: layoutDefaultState
     })
@@ -431,14 +431,14 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   handleSetDefaultLayout () {
-    this.$store.dispatch('layout/onLayoutChange', {
+    this.$typedDispatch('layout/onLayoutChange', {
       name: 'dashboard',
-      value: this.$typedGetters['layout/getLayout'](this.currentLayoutName)
+      value: this.$typedGetters['layout/getLayout'](this.currentLayoutName)!
     })
   }
 
   handleResetDefaultLayout () {
-    this.$store.dispatch('layout/onLayoutChange', {
+    this.$typedDispatch('layout/onLayoutChange', {
       name: 'dashboard',
       value: defaultState().layouts.dashboard
     })

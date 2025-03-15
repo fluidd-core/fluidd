@@ -98,7 +98,7 @@ export default class ScrewsTiltAdjustDialog extends Mixins(StateMixin, ToolheadM
   @Watch('screwsTiltAdjustDialogOpen')
   onScrewsTiltAdjustDialogOpen (value: boolean) {
     if (!value) {
-      this.$store.commit('printer/setClearScrewsTiltAdjust')
+      this.$typedCommit('printer/setClearScrewsTiltAdjust')
     }
   }
 

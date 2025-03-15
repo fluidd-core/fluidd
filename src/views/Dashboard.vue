@@ -107,7 +107,7 @@ export default class Dashboard extends Mixins(StateMixin) {
 
   @Watch('columnCount')
   onColumnCount (value: number) {
-    this.$store.commit('config/setContainerColumnCount', value)
+    this.$typedCommit('config/setContainerColumnCount', value)
 
     this.updateMenuCollapsed()
   }
@@ -208,7 +208,7 @@ export default class Dashboard extends Mixins(StateMixin) {
   handleUpdateLayout () {
     const name: string = this.$typedGetters['layout/getSpecificLayoutName']
 
-    this.$store.dispatch('layout/onLayoutChange', {
+    this.$typedDispatch('layout/onLayoutChange', {
       name,
       value: {
         container1: this.containers[0],

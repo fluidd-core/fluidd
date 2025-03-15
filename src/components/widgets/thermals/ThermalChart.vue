@@ -37,7 +37,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   initialSelected: Record<string, boolean> = {}
 
   handleLegendSelectChanged (event: { selected: Record<string, boolean> }) {
-    this.$store.dispatch('charts/saveSelectedLegends', event.selected)
+    this.$typedDispatch('charts/saveSelectedLegends', event.selected)
 
     let right = (this.isMobileViewport) ? 15 : 20
     if (this.showPowerAxis(event.selected)) {

@@ -1,10 +1,10 @@
 import type { ActionTree } from 'vuex'
-import type { LayoutConfig, LayoutState } from './types'
+import type { LayoutConfig, LayoutContainer, LayoutState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 
-export const actions: ActionTree<LayoutState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -16,7 +16,7 @@ export const actions: ActionTree<LayoutState, RootState> = {
     commit('setInitLayout', payload)
   },
 
-  async onLayoutChange ({ commit, state }, payload: { name: string; value: LayoutConfig }) {
+  async onLayoutChange ({ commit, state }, payload: { name: string; value: LayoutContainer }) {
     const layout = state.layouts[payload.name]
     if (layout || payload.name.startsWith('dashboard')) {
       commit('setLayoutChange', payload)
@@ -48,4 +48,4 @@ export const actions: ActionTree<LayoutState, RootState> = {
       }
     }
   }
-}
+} satisfies ActionTree<LayoutState, RootState>

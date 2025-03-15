@@ -141,7 +141,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   }
 
   set autoSpoolSelectionDialog (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.autoSpoolSelectionDialog',
       value,
       server: true
@@ -172,7 +172,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   }
 
   set autoOpenQRDetectionCameraId (value: string) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.autoOpenQRDetectionCamera',
       value,
       server: true
@@ -184,7 +184,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   }
 
   set preferDeviceCamera (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.preferDeviceCamera',
       value,
       server: true
@@ -196,7 +196,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   }
 
   set autoSelectSpoolOnMatch (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.autoSelectSpoolOnMatch',
       value,
       server: true
@@ -208,7 +208,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   }
 
   set warnOnNotEnoughFilament (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.warnOnNotEnoughFilament',
       value,
       server: true
@@ -220,7 +220,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   }
 
   set warnOnFilamentTypeMismatch (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.warnOnFilamentTypeMismatch',
       value,
       server: true
@@ -232,7 +232,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   }
 
   set remainingFilamentUnit (value: SpoolmanRemainingFilamentUnit) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.remainingFilamentUnit',
       value,
       server: true
@@ -268,7 +268,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   }
 
   set fieldsToShowInSpoolmanCard (value: string[]) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.selectedCardFields',
       value,
       server: true
@@ -276,7 +276,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   }
 
   handleReset () {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman',
       value: defaultState().uiSettings.spoolman,
       server: true

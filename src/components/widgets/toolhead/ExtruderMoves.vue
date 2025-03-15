@@ -102,7 +102,7 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   set extrudeSpeed (value: number) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.toolhead.extrudeSpeed',
       value,
       server: false
@@ -118,7 +118,7 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   set extrudeLength (value: number) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.toolhead.extrudeLength',
       value,
       server: false

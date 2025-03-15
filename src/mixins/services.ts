@@ -20,7 +20,7 @@ export default class ServicesMixin extends Vue {
    * Resets the UI when restarting/resetting Klipper
    */
   async _klipperReset () {
-    await this.$store.dispatch('resetKlippy', undefined, { root: true })
+    await this.$typedDispatch('resetKlippy')
   }
 
   /**
@@ -57,7 +57,7 @@ export default class ServicesMixin extends Vue {
   async serviceRestartByName (name: string) {
     if (name === this.moonrakerServiceName) {
       SocketActions.serverRestart()
-      this.$store.commit('socket/setSocketDisconnecting', true)
+      this.$typedCommit('socket/setSocketDisconnecting', true)
     } else {
       if (name === this.klipperServiceName) {
         await this._klipperReset()
