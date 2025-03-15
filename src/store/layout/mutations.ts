@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import { defaultState as getDefaultState } from './state'
-import type { LayoutConfig, LayoutState, Layouts } from './types'
+import type { LayoutConfig, LayoutState, LayoutContainer } from './types'
 import type { DiagnosticsCardContainer } from '../diagnostics/types'
 
-export const mutations: MutationTree<LayoutState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -75,7 +75,7 @@ export const mutations: MutationTree<LayoutState> = {
     }
   },
 
-  setLayoutChange (state, payload: { name: string; value: Layouts }) {
+  setLayoutChange (state, payload: { name: string; value: LayoutContainer }) {
     Vue.set(state.layouts, payload.name, payload.value)
   },
 
@@ -85,4 +85,4 @@ export const mutations: MutationTree<LayoutState> = {
   setUpdateConfig (state, payload: { name: string; container: string; i: number; value: LayoutConfig }) {
     Vue.set(state.layouts[payload.name][payload.container], payload.i, payload.value)
   }
-}
+} satisfies MutationTree<LayoutState>

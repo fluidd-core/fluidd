@@ -51,7 +51,7 @@
                     >
                       <strong>{{ commit.author }}</strong>
                     </a>
-                    {{ $t('app.version.label.committed') }} {{ $filters.formatRelativeTimeToNow(commit.date * 1000) }}
+                    {{ $t('app.version.label.committed') }} {{ $filters.formatRelativeTimeToNow(+commit.date * 1000) }}
                   </div>
                 </div>
                 <div>
@@ -107,7 +107,7 @@ export default class VersionInformationDialog extends Vue {
   // For type client, just show the release notes if we can.
 
   get commitHistory () {
-    return this.$store.getters['version/getCommitHistory'](this.component.key)
+    return this.$typedGetters['version/getCommitHistory'](this.component.key)
   }
 
   get baseUrl () {

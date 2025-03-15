@@ -60,22 +60,22 @@ import BeaconCard from '@/components/widgets/beacon/BeaconCard.vue'
 })
 export default class Tune extends Mixins(StateMixin) {
   get supportsBedMesh (): boolean {
-    return this.$store.getters['mesh/getSupportsBedMesh']
+    return this.$typedGetters['mesh/getSupportsBedMesh']
   }
 
   get supportsEndStops () {
     return (
-      this.$store.getters['printer/getSteppers'].length > 0 ||
-      this.$store.getters['printer/getProbe'] != null
+      this.$typedGetters['printer/getSteppers'].length > 0 ||
+      this.$typedGetters['printer/getProbe'] != null
     )
   }
 
   get supportsRunoutSensors () {
-    return this.$store.getters['printer/getRunoutSensors'].length > 0
+    return this.$typedGetters['printer/getRunoutSensors'].length > 0
   }
 
   get supportsBeacon (): boolean {
-    return this.$store.getters['printer/getSupportsBeacon']
+    return this.$typedGetters['printer/getSupportsBeacon']
   }
 }
 </script>

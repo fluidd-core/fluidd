@@ -27,12 +27,12 @@ export default class SystemMemoryChart extends Vue {
   ready = false
 
   get chartData () {
-    return this.$store.state.charts.memory || []
+    return this.$typedState.charts.memory || []
   }
 
   get options () {
     const o = {
-      ...this.$store.getters['charts/getBaseChartOptions']({
+      ...this.$typedGetters['charts/getBaseChartOptions']({
         memused: '%'
       }),
       series: this.series
@@ -41,7 +41,7 @@ export default class SystemMemoryChart extends Vue {
   }
 
   get series () {
-    return this.$store.getters['charts/getBaseSeries']({
+    return this.$typedGetters['charts/getBaseSeries']({
       name: this.$t('app.system_info.label.memory_used'),
       encode: { x: 'date', y: 'memused' }
     })

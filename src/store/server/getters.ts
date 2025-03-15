@@ -5,10 +5,16 @@ import { Globals } from '@/globals'
 import { gte, valid } from 'semver'
 import type { KlippyApp } from '../printer/types'
 
-export const getters: GetterTree<ServerState, RootState> = {
-  getIsMinApiVersion: (state) => (minVersion: string) => {
+export const getters = {
+  getIsMinApiVersion: (state) => (minVersion: string): boolean => {
     const apiVersion = state.info.api_version_string
-    return apiVersion && valid(apiVersion) && valid(minVersion) && gte(apiVersion, minVersion)
+
+    return !!(
+      apiVersion &&
+      valid(apiVersion) &&
+      valid(minVersion) &&
+      gte(apiVersion, minVersion)
+    )
   },
 
   /**
@@ -73,7 +79,5 @@ export const getters: GetterTree<ServerState, RootState> = {
         ...item
       }
     }
-
-    return {}
   }
-}
+} satisfies GetterTree<ServerState, RootState>

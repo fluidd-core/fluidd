@@ -36,7 +36,7 @@ export default class AppToolsDrawer extends Mixins(StateMixin) {
   open?: boolean
 
   get instanceName (): string {
-    return this.$store.state.config.uiSettings.general.instanceName
+    return this.$typedState.config.uiSettings.general.instanceName
   }
 }
 </script>

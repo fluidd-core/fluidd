@@ -119,26 +119,40 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
     },
 
     formatRelativeTimeToDate (value: number | string | Date, value2: number | string | Date, options?: Intl.RelativeTimeFormatOptions) {
-      let v = Math.floor(+new Date(value) / 1000)
-      let v2 = Math.floor(+new Date(value2) / 1000)
+      const seconds = (+new Date(value) - +new Date(value2)) / 1000
+      const absoluteSeconds = Math.abs(seconds)
 
-      const units: { unit: Intl.RelativeTimeFormatUnit, limit: number }[] = [
-        { unit: 'second', limit: 60 },
-        { unit: 'minute', limit: 60 },
-        { unit: 'hour', limit: 24 },
-        { unit: 'day', limit: 30 },
-        { unit: 'month', limit: 12 },
-        { unit: 'year', limit: -1 }
-      ]
+      const [unit, unitValue]: [Intl.RelativeTimeFormatUnit, number] = absoluteSeconds >= 60 * 60 * 24 * 365
+        ? [
+            'year',
+            Math.round(seconds / (60 * 60 * 24 * 365))
+          ]
+        : absoluteSeconds >= 60 * 60 * 24 * 30
+          ? [
+              'month',
+              Math.round(seconds / (60 * 60 * 24 * 30))
+            ]
+          : absoluteSeconds >= 60 * 60 * 24
+            ? [
+                'day',
+                Math.round(seconds / (60 * 60 * 24))
+              ]
+            : absoluteSeconds >= 60 * 60
+              ? [
+                  'hour',
+                  Math.round(seconds / (60 * 60))
+                ]
+              : absoluteSeconds >= 60
+                ? [
+                    'minute',
+                    Math.round(seconds / 60)
+                  ]
+                : [
+                    'second',
+                    seconds
+                  ]
 
-      for (const { unit, limit } of units) {
-        if (limit === -1 || Math.abs(v - v2) < limit) {
-          return instance.formatRelativeTime(v - v2, unit, options)
-        }
-
-        v = Math.floor(v / limit)
-        v2 = Math.floor(v2 / limit)
-      }
+      return instance.formatRelativeTime(unitValue, unit, options)
     },
 
     formatRelativeTime (value: number, unit: Intl.RelativeTimeFormatUnit, options?: Intl.RelativeTimeFormatOptions) {

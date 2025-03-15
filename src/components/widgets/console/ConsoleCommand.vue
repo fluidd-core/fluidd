@@ -73,7 +73,7 @@ export default class ConsoleCommand extends Vue {
 
   mounted () {
     this.newValue = this.value
-    const savedHistory: string[] = this.$store.state.console.commandHistory
+    const savedHistory: string[] = this.$typedState.console.commandHistory
     this.history = [...savedHistory]
     this.originalHistory = [...savedHistory]
   }
@@ -89,7 +89,7 @@ export default class ConsoleCommand extends Vue {
         this.originalHistory.pop()
       }
       this.originalHistory.unshift(val)
-      this.$store.dispatch('console/onUpdateCommandHistory', [...this.originalHistory])
+      this.$typedDispatch('console/onUpdateCommandHistory', [...this.originalHistory])
       this.history = [...this.originalHistory]
       this.isFirst = true
       this.$emit('send', val)
@@ -119,7 +119,7 @@ export default class ConsoleCommand extends Vue {
   }
 
   get availableCommands (): GcodeCommands {
-    return this.$store.getters['printer/getAvailableCommands']
+    return this.$typedGetters['printer/getAvailableCommands']
   }
 
   autoComplete () {
@@ -135,7 +135,7 @@ export default class ConsoleCommand extends Vue {
         const message = commands
           .map(command => `// ${command}: ${availableCommands[command].help ?? ''}`)
           .join('\n')
-        this.$store.dispatch('console/onAddConsoleEntry', { message, type: 'response' })
+        this.$typedDispatch('console/onAddConsoleEntry', { message, type: 'response' })
       }
     }
   }

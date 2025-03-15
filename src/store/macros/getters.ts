@@ -11,7 +11,7 @@ export const MACRO_DEFAULTS = {
   order: undefined
 }
 
-export const getters: GetterTree<MacrosState, RootState> = {
+export const getters = {
 
   /**
    * Returns all available macros, transformed.
@@ -137,4 +137,4 @@ export const getters: GetterTree<MacrosState, RootState> = {
 
     return categories
   }
-}
+} satisfies GetterTree<MacrosState, RootState>

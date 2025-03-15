@@ -103,7 +103,7 @@ export default class JobQueue extends Vue {
   get jobs (): QueuedJobWithAppFile[] {
     this.selected = []
 
-    return this.$store.getters['jobQueue/getQueuedJobsWithFiles']
+    return this.$typedGetters['jobQueue/getQueuedJobsWithFiles']
   }
 
   get configurableHeaders (): AppDataTableHeader[] {
@@ -123,7 +123,7 @@ export default class JobQueue extends Vue {
       }
     ]
 
-    const mergedTableHeaders: AppDataTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'job_queue')
+    const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters['config/getMergedTableHeaders'](headers, 'job_queue')
 
     return mergedTableHeaders
   }

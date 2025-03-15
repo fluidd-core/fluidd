@@ -8,10 +8,10 @@ import type { RootState } from '../types'
 
 const namespaced = true
 
-export const webcams: Module<WebcamsState, RootState> = {
+export const webcams = {
   namespaced,
   state,
   getters,
   actions,
   mutations
-}
+} satisfies Module<WebcamsState, RootState>

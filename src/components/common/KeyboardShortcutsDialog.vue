@@ -123,19 +123,19 @@ export default class KeyboardShortcutsDialog extends Vue {
   }
 
   get enableKeyboardShortcuts (): boolean {
-    return this.$store.state.config.uiSettings.general.enableKeyboardShortcuts
+    return this.$typedState.config.uiSettings.general.enableKeyboardShortcuts
   }
 
   get supportsHistory (): boolean {
-    return this.$store.getters['server/componentSupport']('history')
+    return this.$typedGetters['server/componentSupport']('history')
   }
 
   get supportsTimelapse (): boolean {
-    return this.$store.getters['server/componentSupport']('timelapse')
+    return this.$typedGetters['server/componentSupport']('timelapse')
   }
 
   get enableDiagnostics (): boolean {
-    return this.$store.state.config.uiSettings.general.enableDiagnostics
+    return this.$typedState.config.uiSettings.general.enableDiagnostics
   }
 
   handleKeyDown (event: KeyboardEvent) {

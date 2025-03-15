@@ -103,19 +103,19 @@ export default class AppWarnings extends Mixins(StateMixin) {
   }
 
   get printerWarnings (): string[] {
-    return this.$store.getters['printer/getPrinterWarnings']
+    return this.$typedGetters['printer/getPrinterWarnings']
   }
 
   get klipperWarnings (): KlipperPrinterConfigFileWarningState[] {
-    return this.$store.getters['printer/getKlipperWarnings']
+    return this.$typedGetters['printer/getKlipperWarnings']
   }
 
   get moonrakerFailedComponents (): string[] {
-    return this.$store.getters['printer/getMoonrakerFailedComponents']
+    return this.$typedGetters['printer/getMoonrakerFailedComponents']
   }
 
   get moonrakerWarnings (): string[] {
-    return this.$store.getters['printer/getMoonrakerWarnings']
+    return this.$typedGetters['printer/getMoonrakerWarnings']
   }
 
   linkExternalUrls = linkExternalUrls

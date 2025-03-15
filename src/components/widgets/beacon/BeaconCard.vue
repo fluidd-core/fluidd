@@ -157,7 +157,7 @@ export default class BeaconCard extends Mixins(StateMixin, ToolheadMixin) {
   readonly fullscreen?: boolean
 
   get beaconModels (): BeaconModel[] {
-    return this.$store.getters['printer/getBeaconModels']
+    return this.$typedGetters['printer/getBeaconModels']
   }
 
   async loadModel (name: string) {
@@ -183,7 +183,7 @@ export default class BeaconCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   handleOpenSaveDialog () {
-    const existingName: string = this.$store.state.printer.printer.beacon?.model ?? ''
+    const existingName: string = this.$typedState.printer.printer.beacon?.model ?? ''
 
     this.saveDialogState = {
       open: true,
@@ -192,7 +192,7 @@ export default class BeaconCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   handleModelSave (config: { name: string; removeDefault: boolean }) {
-    const modelName: string | null | undefined = this.$store.state.printer.printer.beacon?.model
+    const modelName: string | null | undefined = this.$typedState.printer.printer.beacon?.model
 
     if (config.name !== modelName) {
       this.sendGcode(`BEACON_MODEL_SAVE NAME=${encodeGcodeParamValue(config.name)}`)

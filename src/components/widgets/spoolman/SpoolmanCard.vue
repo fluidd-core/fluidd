@@ -115,23 +115,23 @@
               >
                 <template v-if="field === 'remaining_weight'">
                   <span v-if="remainingFilamentUnit === 'weight'">
-                    {{ $filters.getReadableWeightString(activeSpool.remaining_weight) }}
-                    <small>/ {{ $filters.getReadableWeightString(activeSpool.initial_weight) }}</small>
+                    {{ getFormattedField('remaining_weight') }}
+                    <small>/ {{ getFormattedField('initial_weight') }}</small>
                   </span>
                   <span v-else-if="remainingFilamentUnit === 'length'">
-                    {{ $filters.getReadableLengthString(activeSpool.remaining_length) }}
-                    <small>/ {{ $filters.getReadableLengthString(activeSpool.initial_length) }}</small>
+                    {{ getFormattedField('remaining_length') }}
+                    <small>/ {{ getFormattedField('initial_length') }}</small>
                   </span>
                 </template>
 
                 <template v-else-if="field === 'used_weight'">
                   <span v-if="remainingFilamentUnit === 'weight'">
-                    {{ $filters.getReadableWeightString(activeSpool.used_weight) }}
-                    <small>/ {{ $filters.getReadableWeightString(activeSpool.initial_weight) }}</small>
+                    {{ getFormattedField('used_weight') }}
+                    <small>/ {{ getFormattedField('initial_weight') }}</small>
                   </span>
                   <span v-else-if="remainingFilamentUnit === 'length'">
-                    {{ $filters.getReadableLengthString(activeSpool.used_length) }}
-                    <small>/ {{ $filters.getReadableLengthString(activeSpool.initial_length) }}</small>
+                    {{ getFormattedField('used_length') }}
+                    <small>/ {{ getFormattedField('initial_length') }}</small>
                   </span>
                 </template>
 
@@ -203,14 +203,14 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
   labelWidth = '86px'
 
   handleSelectSpool (targetMacro?: Macro) {
-    this.$store.commit('spoolman/setDialogState', {
+    this.$typedCommit('spoolman/setDialogState', {
       show: true,
       targetMacro: targetMacro?.name
     })
   }
 
   get selectedCardFields (): string[][] {
-    const fields = this.$store.state.config.uiSettings.spoolman.selectedCardFields
+    const fields = this.$typedState.config.uiSettings.spoolman.selectedCardFields
     const columnCount = fields.length > 1 ? 2 : 1
     const elementsPerColumn = Math.ceil(fields.length / columnCount)
     return new Array(columnCount).fill(undefined).map((_, i) => fields.slice(i * elementsPerColumn, (i + 1) * elementsPerColumn))
@@ -218,19 +218,19 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
 
   get activeSpool (): Spool | undefined {
     if (!this.isConnected) return undefined
-    return this.$store.getters['spoolman/getActiveSpool']
+    return this.$typedGetters['spoolman/getActiveSpool']
   }
 
   get currency (): string | null {
-    return this.$store.state.spoolman.currency
+    return this.$typedState.spoolman.currency
   }
 
   get isConnected (): boolean {
-    return this.$store.state.spoolman.connected
+    return this.$typedState.spoolman.connected
   }
 
   get targetableMacros (): MacroWithSpoolId[] {
-    const macros: Macro[] = this.$store.getters['macros/getMacros']
+    const macros: Macro[] = this.$typedGetters['macros/getMacros']
 
     return macros
       .filter((macro): macro is MacroWithSpoolId => macro.variables != null && 'spool_id' in macro.variables)
@@ -242,11 +242,11 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
   }
 
   get remainingFilamentUnit (): SpoolmanRemainingFilamentUnit {
-    return this.$store.state.config.uiSettings.spoolman.remainingFilamentUnit
+    return this.$typedState.config.uiSettings.spoolman.remainingFilamentUnit
   }
 
   getSpoolById (id: number): Spool | undefined {
-    return this.$store.getters['spoolman/getSpoolById'](id)
+    return this.$typedGetters['spoolman/getSpoolById'](id)
   }
 
   getSpoolColor (spool?: Spool) {
@@ -286,6 +286,24 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
 
       case 'bed_temp':
         return this.activeSpool.filament.settings_bed_temp || '-'
+
+      case 'remaining_weight':
+        return this.activeSpool.remaining_weight != null ? this.$filters.getReadableWeightString(this.activeSpool.remaining_weight) : '-'
+
+      case 'remaining_length':
+        return this.activeSpool.remaining_length != null ? this.$filters.getReadableLengthString(this.activeSpool.remaining_length) : '-'
+
+      case 'used_weight':
+        return this.activeSpool.used_weight != null ? this.$filters.getReadableWeightString(this.activeSpool.used_weight) : '-'
+
+      case 'used_length':
+        return this.activeSpool.used_length != null ? this.$filters.getReadableLengthString(this.activeSpool.used_length) : '-'
+
+      case 'initial_weight':
+        return this.activeSpool.initial_weight != null ? this.$filters.getReadableWeightString(this.activeSpool.initial_weight) : '-'
+
+      case 'initial_length':
+        return this.activeSpool.initial_length != null ? this.$filters.getReadableLengthString(this.activeSpool.initial_length) : '-'
 
       default:
         return this.activeSpool[field as keyof Spool] || '-'

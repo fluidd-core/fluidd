@@ -152,7 +152,7 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
   get zHomingOrigin (): number {
     // This is an array of 4 values, representing the homing origin.
     // It should be in the order of; X, Y, Z, E.
-    const { homing_origin }: KlipperPrinterGcodeMoveState = this.$store.state.printer.printer.gcode_move
+    const { homing_origin }: KlipperPrinterGcodeMoveState = this.$typedState.printer.printer.gcode_move
 
     const zHomingOrigin = homing_origin && homing_origin.length >= 4
       ? +homing_origin[2]
@@ -162,7 +162,7 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
   }
 
   get zAdjustValues (): number[] {
-    return this.$store.state.config.uiSettings.general.zAdjustDistances
+    return this.$typedState.config.uiSettings.general.zAdjustDistances
   }
 
   get moveDistance (): number {
@@ -174,7 +174,7 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
   }
 
   get availableCommands (): GcodeCommands {
-    return this.$store.getters['printer/getAvailableCommands']
+    return this.$typedGetters['printer/getAvailableCommands']
   }
 
   get hasZOffsetApplyProbe (): boolean {
@@ -189,7 +189,7 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
    * Send a Z adjust gcode script.
    */
   sendZAdjustGcode (direction: '+' | '-') {
-    const zHomed: boolean = this.$store.getters['printer/getHomedAxes']('z')
+    const zHomed: boolean = this.$typedGetters['printer/getHomedAxes']('z')
     const gcode = `SET_GCODE_OFFSET Z_ADJUST=${direction}${this.moveDistance} MOVE=${+zHomed}`
     this.sendGcode(gcode, this.$waits.onZAdjust)
   }

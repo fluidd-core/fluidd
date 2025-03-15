@@ -70,23 +70,23 @@ import MmuSettings from '@/components/settings/MmuSettings.vue'
 })
 export default class Settings extends Mixins(StateMixin) {
   get supportsVersions (): boolean {
-    return this.$store.getters['server/componentSupport']('update_manager')
+    return this.$typedGetters['server/componentSupport']('update_manager')
   }
 
   get supportsAuth (): boolean {
-    return this.$store.getters['server/componentSupport']('authorization')
+    return this.$typedGetters['server/componentSupport']('authorization')
   }
 
   get supportsTimelapse (): boolean {
-    return this.$store.getters['server/componentSupport']('timelapse')
+    return this.$typedGetters['server/componentSupport']('timelapse')
   }
 
   get supportsSpoolman (): boolean {
-    return this.$store.getters['server/componentSupport']('spoolman')
+    return this.$typedGetters['server/componentSupport']('spoolman')
   }
 
   get supportsMmu (): boolean {
-    return !!this.$store.state.printer.printer.mmu
+    return !!this.$typedState.printer.printer.mmu
   }
 }
 </script>

@@ -91,7 +91,7 @@ import type { AppUser } from '@/store/auth/types'
 @Component({})
 export default class AppNotificationMenu extends Vue {
   get user (): AppUser | null {
-    return this.$store.state.auth.currentUser
+    return this.$typedState.auth.currentUser
   }
 
   get currentUser () {
@@ -115,7 +115,7 @@ export default class AppNotificationMenu extends Vue {
   }
 
   async handleLogout () {
-    await this.$store.dispatch('auth/checkTrust')
+    await this.$typedDispatch('auth/checkTrust')
   }
 }
 </script>

@@ -8,7 +8,7 @@ import type { RootState } from '../types'
 import { transformMesh } from '@/util/transform-mesh'
 import type { KlipperPrinterBedMeshProfileState, KlipperPrinterConfig, KlipperPrinterSettings } from '../printer/types'
 
-export const getters: GetterTree<MeshState, RootState> = {
+export const getters = {
 
   /**
    * Has this printer been configured for bed meshes?
@@ -117,4 +117,4 @@ export const getters: GetterTree<MeshState, RootState> = {
       probed_matrix_flat: transformMesh(bedMesh, 'probed_matrix', true)
     }
   }
-}
+} satisfies GetterTree<MeshState, RootState>

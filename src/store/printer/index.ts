@@ -8,10 +8,10 @@ import type { RootState } from '../types'
 
 const namespaced = true
 
-export const printer: Module<PrinterState, RootState> = {
+export const printer = {
   namespaced,
   state,
   getters,
   actions,
   mutations
-}
+} satisfies Module<PrinterState, RootState>

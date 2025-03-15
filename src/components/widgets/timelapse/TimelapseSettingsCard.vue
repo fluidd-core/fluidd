@@ -59,7 +59,7 @@ import { SocketActions } from '@/api/socketActions'
 @Component({})
 export default class TimelapseSettingsCard extends Mixins(StateMixin) {
   get enabledBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('enabled')
+    return this.$typedGetters['timelapse/isBlockedSetting']('enabled')
   }
 
   get enabled () {
@@ -71,7 +71,7 @@ export default class TimelapseSettingsCard extends Mixins(StateMixin) {
   }
 
   get autoRenderBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('autorender')
+    return this.$typedGetters['timelapse/isBlockedSetting']('autorender')
   }
 
   get autoRender () {
@@ -83,13 +83,13 @@ export default class TimelapseSettingsCard extends Mixins(StateMixin) {
   }
 
   get frameCount () {
-    const lastFrame: TimelapseLastFrame | undefined = this.$store.state.timelapse.lastFrame
+    const lastFrame: TimelapseLastFrame | undefined = this.$typedState.timelapse.lastFrame
 
     return lastFrame?.count
   }
 
   get settings (): TimelapseSettings {
-    return this.$store.state.timelapse.settings ?? {} as TimelapseSettings
+    return this.$typedState.timelapse.settings ?? {} as TimelapseSettings
   }
 
   subtitleIfBlocked (blocked: boolean): string {

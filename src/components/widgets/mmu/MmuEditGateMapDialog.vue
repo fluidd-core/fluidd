@@ -459,7 +459,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   }
 
   private spoolIdRules () {
-    const spools: Spool[] = this.$store.state.spoolman?.spools ?? []
+    const spools: Spool[] = this.$typedGetters['spoolman/getAvailableSpools']
     return [
       (v: number) => {
         if (!v || v <= 0) return true
@@ -475,7 +475,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   }
 
   get spoolIdExists (): boolean {
-    const spools: Spool[] = this.$store.state.spoolman?.spools ?? []
+    const spools: Spool[] = this.$typedGetters['spoolman/getAvailableSpools']
     return spools.some((spool) => spool.id === this.spoolId)
   }
 
@@ -536,13 +536,13 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   }
 
   handleSelectSpool () {
-    this.$store.commit('spoolman/setDialogState', {
+    this.$typedCommit('spoolman/setDialogState', {
       show: true,
       mmuSelection: true
     })
   }
 
-  @Watch('$store.state.spoolman.dialog')
+  @Watch('$typedState.spoolman.dialog')
   onSpoolmanChanged (newDialog: SpoolSelectionDialogState) {
     if (newDialog.selectedSpoolId) {
       this.editGateMap[this.editGateSelected].spoolId = newDialog.selectedSpoolId

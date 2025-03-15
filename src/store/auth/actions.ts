@@ -6,7 +6,7 @@ import { httpClientActions } from '@/api/httpClientActions'
 import router from '@/router'
 import { consola } from 'consola'
 
-export const actions: ActionTree<AuthState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -254,4 +254,4 @@ export const actions: ActionTree<AuthState, RootState> = {
 
     commit('setApiKey', key)
   }
-}
+} satisfies ActionTree<AuthState, RootState>

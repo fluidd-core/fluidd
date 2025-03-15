@@ -526,15 +526,15 @@ export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, Sta
   }
 
   get mmuLeds (): boolean {
-    return !!this.$store.state.printer.printer.mmu_leds
+    return !!this.$typedState.printer.printer.mmu_leds
   }
 
   private hasLedsOfType (type: string): boolean {
-    return (this.$store.state.printer.printer.mmu_leds?.[type] ?? 0) > 0
+    return (this.$typedState.printer.printer.mmu_leds?.[type] ?? 0) > 0
   }
 
   get ledEffectModule (): boolean {
-    return this.$store.state.printer.printer.mmu_leds?.led_effect_module ?? false
+    return this.$typedState.printer.printer.mmu_leds?.led_effect_module ?? false
   }
 
   private unitDisplayName (unit: number): string {

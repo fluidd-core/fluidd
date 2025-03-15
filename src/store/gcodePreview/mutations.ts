@@ -4,7 +4,7 @@ import type { GcodePreviewState } from './types'
 import Vue from 'vue'
 import type { AppFile } from '@/store/files/types'
 
-export const mutations: MutationTree<GcodePreviewState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -39,4 +39,4 @@ export const mutations: MutationTree<GcodePreviewState> = {
   setParserWorker (state, payload: Worker) {
     state.parserWorker = payload
   }
-}
+} satisfies MutationTree<GcodePreviewState>

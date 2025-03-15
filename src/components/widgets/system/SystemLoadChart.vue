@@ -27,28 +27,35 @@ export default class SystemLoadChart extends Vue {
   ready = false
 
   get chartData () {
-    return this.$store.state.charts.klipper || []
+    return this.$typedState.charts.klipper || []
   }
 
   get cores (): number {
-    return this.$store.state.server.system_info?.cpu_info?.cpu_count || 1
+    return this.$typedState.server.system_info?.cpu_info?.cpu_count || 1
   }
 
   get options () {
     const o = {
-      ...this.$store.getters['charts/getBaseChartOptions'](),
+      ...this.$typedGetters['charts/getBaseChartOptions'](),
       series: this.series
     }
-    o.yAxis.max = (value: any) => {
-      return (value.max <= this.cores)
-        ? this.cores
-        : value.max
+
+    if (
+      o.yAxis &&
+      !Array.isArray(o.yAxis)
+    ) {
+      o.yAxis.max = (value) => {
+        return (value.max <= this.cores)
+          ? this.cores
+          : value.max
+      }
     }
+
     return o
   }
 
   get series () {
-    return this.$store.getters['charts/getBaseSeries']({
+    return this.$typedGetters['charts/getBaseSeries']({
       name: this.$t('app.system_info.label.load'),
       encode: { x: 'date', y: 'load' }
     })

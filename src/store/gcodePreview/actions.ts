@@ -6,7 +6,7 @@ import { consola } from 'consola'
 
 import ParseGcodeWorker from '../../workers/parseGcode.worker.ts?worker'
 
-export const actions: ActionTree<GcodePreviewState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -86,4 +86,4 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
 
     worker.postMessage(message)
   }
-}
+} satisfies ActionTree<GcodePreviewState, RootState>

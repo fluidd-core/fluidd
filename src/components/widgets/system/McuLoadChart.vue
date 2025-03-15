@@ -41,47 +41,53 @@ export default class McuLoadChart extends Vue {
   readonly mcu!: MCU
 
   get chartData () {
-    return this.$store.state.charts[this.mcu.name] || []
+    return this.$typedState.charts[this.mcu.name] || []
   }
 
   get options () {
     const o = {
-      ...this.$store.getters['charts/getBaseChartOptions']({
+      ...this.$typedGetters['charts/getBaseChartOptions']({
         load: '%',
         awake: '%',
         bw: 'b'
       }),
       series: this.series
     }
-    o.yAxis.max = (value: any) => {
-      // Grab the max, and add some buffer.
-      if (value.max <= 10) return 15
-      if (value.max <= 20) return 25
-      if (value.max <= 30) return 35
-      if (value.max <= 40) return 45
-      if (value.max <= 50) return 55
-      if (value.max <= 50) return 55
-      if (value.max <= 60) return 65
-      if (value.max <= 70) return 75
-      if (value.max <= 80) return 85
-      return value.max
+
+    if (
+      o.yAxis &&
+      !Array.isArray(o.yAxis)
+    ) {
+      o.yAxis.max = (value) => {
+        // Grab the max, and add some buffer.
+        if (value.max <= 10) return 15
+        if (value.max <= 20) return 25
+        if (value.max <= 30) return 35
+        if (value.max <= 40) return 45
+        if (value.max <= 50) return 55
+        if (value.max <= 50) return 55
+        if (value.max <= 60) return 65
+        if (value.max <= 70) return 75
+        if (value.max <= 80) return 85
+        return value.max
+      }
     }
-    // o.yAxis.max = 'dataMax'
+
     return o
   }
 
   get series () {
-    const load = this.$store.getters['charts/getBaseSeries']({
+    const load = this.$typedGetters['charts/getBaseSeries']({
       name: this.$t('app.system_info.label.load'),
       encode: { x: 'date', y: 'load' }
     })
 
-    const awake = this.$store.getters['charts/getBaseSeries']({
+    const awake = this.$typedGetters['charts/getBaseSeries']({
       name: this.$t('app.system_info.label.awake_time'),
       encode: { x: 'date', y: 'awake' }
     })
 
-    // const bw = this.$store.getters['charts/getBaseSeries']({
+    // const bw = this.$typedGetters['charts/getBaseSeries']({
     //   name: 'bandwidth',
     //   encode: { x: 'date', y: 'bw' }
     // })

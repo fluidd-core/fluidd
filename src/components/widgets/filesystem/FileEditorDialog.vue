@@ -72,7 +72,7 @@
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.file_system.title.command_palette') }}</span>
           </app-btn>
           <app-btn
-            v-if="!printerPrinting && configMap.link"
+            v-if="!printerPrinting && configMap?.link"
             :href="configMap.link"
             target="_blank"
           >
@@ -85,7 +85,7 @@
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.config_reference') }}</span>
           </app-btn>
           <app-btn
-            v-if="!readonly && !printerPrinting && configMap.serviceSupported"
+            v-if="!readonly && !printerPrinting && configMap?.serviceSupported"
             :disabled="!ready"
             @click="emitSave(true)"
           >
@@ -221,15 +221,15 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get isUploading (): boolean {
-    return this.$store.state.files.uploads.length > 0
+    return this.$typedState.files.uploads.length > 0
   }
 
   get configMap () {
-    return this.$store.getters['server/getConfigMapByFilename'](this.filename)
+    return this.$typedGetters['server/getConfigMapByFilename'](this.filename)
   }
 
   get codeLens (): boolean {
-    return this.$store.state.config.uiSettings.editor.codeLens
+    return this.$typedState.config.uiSettings.editor.codeLens
   }
 
   created () {
@@ -246,7 +246,7 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get showDirtyEditorWarning () {
-    const confirmDirtyEditorClose: boolean = this.$store.state.config.uiSettings.editor.confirmDirtyEditorClose
+    const confirmDirtyEditorClose: boolean = this.$typedState.config.uiSettings.editor.confirmDirtyEditorClose
 
     return (
       confirmDirtyEditorClose &&
@@ -277,7 +277,7 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
 
   emitSave (restart: boolean) {
     if (this.editorReady) {
-      if (this.configMap.serviceSupported && restart) {
+      if (this.configMap?.serviceSupported && restart) {
         this.$emit('save', this.updatedContent, this.configMap.service)
         this.open = false
       } else {

@@ -107,7 +107,7 @@ export default class TemperaturePresetDialog extends Vue {
   readonly preset!: TemperaturePreset
 
   get heaters (): Heater[] {
-    return this.$store.getters['printer/getHeaters']
+    return this.$typedGetters['printer/getHeaters']
   }
 
   get fans (): Fan[] {

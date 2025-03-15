@@ -73,11 +73,11 @@ import MmuMixin from '@/mixins/mmu'
 @Component({})
 export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
   get showClogDetection (): boolean {
-    return this.$store.state.config.uiSettings.mmu.showClogDetection
+    return this.$typedState.config.uiSettings.mmu.showClogDetection
   }
 
   set showClogDetection (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showClogDetection',
       value,
       server: true
@@ -85,11 +85,11 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
   }
 
   get showTtgMap (): boolean {
-    return this.$store.state.config.uiSettings.mmu.showTtgMap
+    return this.$typedState.config.uiSettings.mmu.showTtgMap
   }
 
   set showTtgMap (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showTtgMap',
       value,
       server: true
@@ -97,11 +97,11 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
   }
 
   get showDetails (): boolean {
-    return this.$store.state.config.uiSettings.mmu.showDetails
+    return this.$typedState.config.uiSettings.mmu.showDetails
   }
 
   set showDetails (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showDetails',
       value,
       server: true
@@ -109,11 +109,11 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
   }
 
   get largeFilamentStatus (): boolean {
-    return this.$store.state.config.uiSettings.mmu.largeFilamentStatus
+    return this.$typedState.config.uiSettings.mmu.largeFilamentStatus
   }
 
   set largeFilamentStatus (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.largeFilamentStatus',
       value,
       server: true
@@ -121,11 +121,11 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
   }
 
   get showLogos (): boolean {
-    return this.$store.state.config.uiSettings.mmu.showLogos
+    return this.$typedState.config.uiSettings.mmu.showLogos
   }
 
   set showLogos (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showLogos',
       value,
       server: true

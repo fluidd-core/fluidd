@@ -89,7 +89,7 @@ export default class MacroMoveDialog extends Vue {
 
   get categories () {
     // Grabs all categories and filters by the currently defined one.
-    const categories: MacroCategory[] = [...this.$store.getters['macros/getCategories']]
+    const categories: MacroCategory[] = [...this.$typedGetters['macros/getCategories']]
     categories.unshift({ name: this.$t('app.general.label.uncategorized').toString(), id: '0' })
     return categories
   }
@@ -107,7 +107,7 @@ export default class MacroMoveDialog extends Vue {
   }
 
   handleSave () {
-    this.$store.dispatch('macros/saveMacro', this.macro)
+    this.$typedDispatch('macros/saveMacro', this.macro)
     this.open = false
   }
 }

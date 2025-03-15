@@ -6,7 +6,7 @@ import type { AppDataTableHeader } from '@/types'
 import type { MoonrakerRootFile } from '../files/types'
 import md5 from 'md5'
 
-export const getters: GetterTree<ConfigState, RootState> = {
+export const getters = {
   getCurrentInstance: (state) => {
     return state.instances
       .find(instance => instance.active)
@@ -80,7 +80,7 @@ export const getters: GetterTree<ConfigState, RootState> = {
     }
   },
 
-  getMergedTableHeaders: (state) => (headers: AppDataTableHeader[], key: string) => {
+  getMergedTableHeaders: (state) => (headers: AppDataTableHeader[], key: string): AppDataTableHeader[] => {
     const configuredHeaders = state.uiSettings.tableHeaders[key]
 
     if (!configuredHeaders) {
@@ -92,12 +92,21 @@ export const getters: GetterTree<ConfigState, RootState> = {
     // else go with available headers
     return headers.length === configuredHeaders.length
       ? configuredHeaders
-        .map(configuredHeader => ({
-          ...headers.find(p => p.value === configuredHeader.value),
-          ...configuredHeader,
-        }))
+        .map((configuredHeader): AppDataTableHeader | null => {
+          const header = headers.find(p => p.value === configuredHeader.value)
+
+          if (!header) {
+            return null
+          }
+
+          return {
+            ...header,
+            ...configuredHeader,
+          }
+        })
+        .filter(header => header != null)
       : headers
-        .map(header => ({
+        .map((header): AppDataTableHeader => ({
           ...header,
           ...configuredHeaders.find(p => p.value === header.value)
         }))
@@ -111,4 +120,4 @@ export const getters: GetterTree<ConfigState, RootState> = {
       'refresh-token': `refresh-token-${hash}`
     }
   }
-}
+} satisfies GetterTree<ConfigState, RootState>

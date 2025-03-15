@@ -300,11 +300,11 @@ export default class AppColorPicker extends Vue {
   }
 
   get valueRange (): ColorPickerValueRange {
-    return this.$store.state.config.uiSettings.general.colorPickerValueRange
+    return this.$typedState.config.uiSettings.general.colorPickerValueRange
   }
 
   set valueRange (value: ColorPickerValueRange) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.colorPickerValueRange',
       value,
       server: true

@@ -147,7 +147,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get theme (): ThemeConfig {
-    return this.$store.state.config.uiSettings.theme
+    return this.$typedState.config.uiSettings.theme
   }
 
   get showBackgroundLogo () {
@@ -169,15 +169,15 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   // Our app is in a loading state when the socket isn't quite ready, or
   // our translations are loading.
   get updating (): boolean {
-    return this.$store.state.version.busy
+    return this.$typedState.version.busy
   }
 
   get inLayout (): boolean {
-    return (this.$store.state.config.layoutMode)
+    return (this.$typedState.config.layoutMode)
   }
 
   get columnCount (): number {
-    return this.$store.state.config.containerColumnCount
+    return this.$typedState.config.containerColumnCount
   }
 
   get fileDropRoot () {
@@ -185,12 +185,12 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get progress (): number {
-    const progress: number = this.$store.getters['printer/getPrintProgress']
+    const progress: number = this.$typedGetters['printer/getPrintProgress']
     return Math.floor(progress * 100)
   }
 
   get pageTitle () {
-    const instanceName: string = this.$store.state.config.uiSettings.general.instanceName || ''
+    const instanceName: string = this.$typedState.config.uiSettings.general.instanceName || ''
     const pageName = this.$t(`app.general.title.${this.$route.name}`)
 
     if (this.printerPrinting) {
@@ -276,7 +276,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get customStyleSheet (): string | undefined {
-    return this.$store.getters['config/getCustomThemeFile']('custom', ['.css'])
+    return this.$typedGetters['config/getCustomThemeFile']('custom', ['.css'])
   }
 
   @Watch('customStyleSheet')
@@ -305,7 +305,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get customBackgroundImage (): string | undefined {
-    return this.$store.getters['config/getCustomThemeFile']('background', ['.png', '.jpg', '.jpeg', '.gif'])
+    return this.$typedGetters['config/getCustomThemeFile']('background', ['.png', '.jpg', '.jpeg', '.gif'])
   }
 
   @Watch('customBackgroundImage')
@@ -325,7 +325,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get enableKeyboardShortcuts (): boolean {
-    return this.$store.state.config.uiSettings.general.enableKeyboardShortcuts
+    return this.$typedState.config.uiSettings.general.enableKeyboardShortcuts
   }
 
   mounted () {
@@ -418,18 +418,18 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
         const files = await getFilesFromDataTransfer(event.dataTransfer)
 
         if (files) {
-          const pathWithRoot: string = this.$store.getters['files/getCurrentPathByRoot'](root)
+          const pathWithRoot: string = this.$typedGetters['files/getCurrentPathByRoot'](root)
           const path = pathWithRoot === root
             ? ''
             : pathWithRoot.substring(root.length + 1)
 
           const wait = `${this.$waits.onFileSystem}/${pathWithRoot}/`
 
-          this.$store.dispatch('wait/addWait', wait)
+          this.$typedDispatch('wait/addWait', wait)
 
           await this.uploadFiles(files, path, root, false)
 
-          this.$store.dispatch('wait/removeWait', wait)
+          this.$typedDispatch('wait/removeWait', wait)
         }
       }
     }

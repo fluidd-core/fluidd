@@ -248,10 +248,10 @@ export default class MmuControls extends Mixins(StateMixin, MmuMixin) {
   }
 
   get currentGateStatus (): number {
-    return this.$store.state.printer.printer.mmu?.gate_status?.[this.gate] ?? -1
+    return this.$typedState.printer.printer.mmu?.gate_status?.[this.gate] ?? -1
   }
 
-  @Watch('$store.state.gui.view.mmu.largeFilamentStatus')
+  @Watch('$typedState.gui.view.mmu.largeFilamentStatus')
   onFilamentStatusSizeChange (): void {
     this.checkButtonWidth()
   }

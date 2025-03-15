@@ -1,7 +1,7 @@
 import Vue from 'vue'
-import Vuex from 'vuex'
+import Vuex, { type StoreOptions } from 'vuex'
 import { consola } from 'consola'
-import type { RootState } from './types'
+import type { RootModules, RootState } from './types'
 import type { InitConfig } from './config/types'
 
 // Modules
@@ -32,7 +32,7 @@ import { analysis } from './analysis'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store<RootState>({
+export const storeOptions = {
   strict: (import.meta.env.DEV),
   modules: {
     socket,
@@ -59,7 +59,7 @@ export default new Vuex.Store<RootState>({
     spoolman,
     sensors,
     analysis
-  },
+  } satisfies RootModules,
   mutations: {},
   actions: {
     /**
@@ -113,4 +113,6 @@ export default new Vuex.Store<RootState>({
       consola.debug('void action', payload)
     }
   }
-})
+} satisfies StoreOptions<RootState>
+
+export default new Vuex.Store<RootState>(storeOptions)

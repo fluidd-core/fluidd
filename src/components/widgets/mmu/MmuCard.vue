@@ -330,7 +330,7 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
   showMaintenanceDialog = false
 
   get col1Size (): number {
-    if (this.$store.state.config.uiSettings.mmu.largeFilamentStatus) return 6
+    if (this.$typedState.config.uiSettings.mmu.largeFilamentStatus) return 6
     return 5
   }
 
@@ -343,15 +343,15 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
   }
 
   get showClogDetection (): boolean {
-    return !this.hasEncoder || !!this.$store.state.config.uiSettings.mmu.showClogDetection
+    return !this.hasEncoder || !!this.$typedState.config.uiSettings.mmu.showClogDetection
   }
 
   get showTtgMap (): boolean {
-    return this.$store.state.config.uiSettings.mmu.showTtgMap
+    return this.$typedState.config.uiSettings.mmu.showTtgMap
   }
 
   get showDetails (): boolean {
-    return this.$store.state.config.uiSettings.mmu.showDetails
+    return this.$typedState.config.uiSettings.mmu.showDetails
   }
 
   get statusText (): string {

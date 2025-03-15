@@ -473,25 +473,25 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
 
   readonly BOWDEN_RANGE = 173 as const
 
-  @Watch('$store.state.printer.printer.mmu.bowden_progress')
+  @Watch('$typedState.printer.printer.mmu.bowden_progress')
   onBowdenProgress (): void {
     // Percentage movement in the bowden
     this.calcFilamentHeight(this.filamentPos)
   }
 
-  @Watch('$store.state.printer.printer.mmu.filament_pos')
+  @Watch('$typedState.printer.printer.mmu.filament_pos')
   onFilamentPosChanged (newPos: number): void {
     // Filament position state
     this.calcFilamentHeight(newPos)
   }
 
-  @Watch('$store.state.printer.printer.mmu.sensors')
+  @Watch('$typedState.printer.printer.mmu.sensors')
   onSensorsChanged (): void {
     // Update on sensor change
     this.calcFilamentHeight(this.filamentPos)
   }
 
-  @Watch('$store.state.printer.printer.mmu.action')
+  @Watch('$typedState.printer.printer.mmu.action')
   onActionChanged (action: string): void {
     // Action being performed
     if (action === this.ACTION_FORMING_TIP) {
@@ -655,13 +655,13 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
   }
 
   get temperatureClass (): string {
-    const canExtrude = this.$store.state.printer.printer.extruder?.can_extrude ?? false
+    const canExtrude = this.$typedState.printer.printer.extruder?.can_extrude ?? false
     if (canExtrude === false) return 'text-disabled'
     return ''
   }
 
   get temperatureText (): string {
-    const extTemp = this.$store.state.printer.printer.extruder?.temperature ?? null
+    const extTemp = this.$typedState.printer.printer.extruder?.temperature ?? null
     if (extTemp) return `${extTemp.toFixed(0)}°C`
     return ''
   }
@@ -758,10 +758,10 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
   }
 
   get currentGateColor (): string {
-    let color = this.$store.state.printer.printer.mmu?.gate_color[this.gate] ?? ''
+    let color = this.$typedState.printer.printer.mmu?.gate_color[this.gate] ?? ''
     if (this.gate === this.TOOL_GATE_BYPASS) {
       // Assume active spoolman spool if available
-      color = this.$store.state.server.spoolman?.active_spool?.filament.color_hex ?? null
+      color = this.$typedGetters['spoolman/getActiveSpool']?.filament.color_hex ?? null
     }
     return this.formColorString(color)
   }

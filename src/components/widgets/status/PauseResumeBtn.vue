@@ -83,7 +83,7 @@ import type { Macro } from '@/store/macros/types'
 @Component({})
 export default class PauseResumeBtn extends Mixins(StateMixin) {
   get hasLayersFromPrintStats () {
-    const { total_layer, current_layer } = this.$store.state.printer.printer.print_stats?.info ?? {}
+    const { total_layer, current_layer } = this.$typedState.printer.printer.print_stats?.info ?? {}
 
     return (
       typeof (total_layer) === 'number' &&
@@ -92,7 +92,7 @@ export default class PauseResumeBtn extends Mixins(StateMixin) {
   }
 
   get hasPauseAtLayerMacros () {
-    const macro: Macro | undefined = this.$store.getters['macros/getMacroByName'](
+    const macro: Macro | undefined = this.$typedGetters['macros/getMacroByName'](
       'SET_PAUSE_NEXT_LAYER',
       'SET_PAUSE_AT_LAYER'
     )
@@ -101,7 +101,7 @@ export default class PauseResumeBtn extends Mixins(StateMixin) {
   }
 
   get setPrintStatsInfoMacro (): Macro | undefined {
-    return this.$store.getters['macros/getMacroByName']('SET_PRINT_STATS_INFO')
+    return this.$typedGetters['macros/getMacroByName']('SET_PRINT_STATS_INFO')
   }
 
   get hasPrintAtLayerMacros () {

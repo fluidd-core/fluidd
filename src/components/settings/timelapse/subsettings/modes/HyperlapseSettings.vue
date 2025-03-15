@@ -38,7 +38,7 @@ export default class HyperlapseSettings extends Mixins(StateMixin) {
   readonly hyperlapseCycleElement!: VInput
 
   get hyperlapseCycleBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('hyperlapse_cycle')
+    return this.$typedGetters['timelapse/isBlockedSetting']('hyperlapse_cycle')
   }
 
   get hyperlapseCycle () {
@@ -52,7 +52,7 @@ export default class HyperlapseSettings extends Mixins(StateMixin) {
   }
 
   get settings (): TimelapseSettings {
-    return this.$store.state.timelapse.settings ?? {} as TimelapseSettings
+    return this.$typedState.timelapse.settings ?? {} as TimelapseSettings
   }
 
   subtitleIfBlocked (blocked: boolean): string {
