@@ -8,10 +8,10 @@ import type { RootState } from '../types'
 
 const namespaced = true
 
-export const power: Module<DevicePowerState, RootState> = {
+export const power = {
   namespaced,
   state,
   getters,
   actions,
   mutations
-}
+} satisfies Module<DevicePowerState, RootState>

@@ -86,11 +86,11 @@ import ThemePicker from '../ui/AppColorPicker.vue'
 })
 export default class ThemeSettings extends Mixins(StateMixin) {
   get theme (): ThemeConfig {
-    return this.$store.state.config.uiSettings.theme
+    return this.$typedState.config.uiSettings.theme
   }
 
   get themePresets (): ThemePreset[] {
-    return this.$store.state.config.hostConfig.themePresets
+    return this.$typedState.config.hostConfig.themePresets
   }
 
   get themePreset (): ThemePreset | undefined {
@@ -141,7 +141,7 @@ export default class ThemeSettings extends Mixins(StateMixin) {
   }
 
   updateTheme (updatedTheme: Partial<ThemeConfig>) {
-    this.$store.dispatch('config/updateTheme', updatedTheme)
+    this.$typedDispatch('config/updateTheme', updatedTheme)
   }
 
   handleReset () {

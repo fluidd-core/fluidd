@@ -66,16 +66,16 @@ export default class SocketDisconnected extends Mixins(StateMixin) {
   }
 
   get activeInstance (): InstanceConfig | undefined {
-    return this.$store.getters['config/getCurrentInstance']
+    return this.$typedGetters['config/getCurrentInstance']
   }
 
   get apiUrl (): string {
-    return this.$store.state.config.apiUrl
+    return this.$typedState.config.apiUrl
   }
 
   async reconnect () {
     // Re-init the app.
-    const config = await appInit(this.activeInstance, this.$store.state.config.hostConfig)
+    const config = await appInit(this.activeInstance, this.$typedState.config.hostConfig)
 
     // Reconnect the socket with the instance url.
     if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {

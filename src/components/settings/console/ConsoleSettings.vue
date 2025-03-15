@@ -84,7 +84,7 @@ export default class ConsoleSettings extends Mixins(StateMixin) {
   }
 
   get filters (): ConsoleFilter[] {
-    return this.$store.state.console.consoleFilters
+    return this.$typedState.console.consoleFilters
   }
 
   handleEditFilterDialog (filter: ConsoleFilter | null) {
@@ -111,12 +111,12 @@ export default class ConsoleSettings extends Mixins(StateMixin) {
     )
 
     if (result) {
-      this.$store.dispatch('console/onRemoveFilter', filter)
+      this.$typedDispatch('console/onRemoveFilter', filter)
     }
   }
 
   handleSaveFilter (filter: ConsoleFilter) {
-    this.$store.dispatch('console/onSaveFilter', filter)
+    this.$typedDispatch('console/onSaveFilter', filter)
   }
 }
 </script>

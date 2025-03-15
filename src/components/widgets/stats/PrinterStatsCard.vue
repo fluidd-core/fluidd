@@ -114,11 +114,11 @@ export default class PrinterStatsCard extends Vue {
   readonly menuCollapsed?: boolean
 
   get rollup () {
-    return this.$store.getters['history/getRollUp']
+    return this.$typedGetters['history/getRollUp']
   }
 
   get supportsHistoryComponent (): boolean {
-    return this.$store.getters['server/componentSupport']('history')
+    return this.$typedGetters['server/componentSupport']('history')
   }
 
   async handleResetStats () {

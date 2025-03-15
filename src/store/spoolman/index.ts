@@ -8,10 +8,10 @@ import type { RootState } from '../types'
 
 const namespaced = true
 
-export const spoolman: Module<SpoolmanState, RootState> = {
+export const spoolman = {
   namespaced,
   state,
   getters,
   actions,
   mutations
-}
+} satisfies Module<SpoolmanState, RootState>

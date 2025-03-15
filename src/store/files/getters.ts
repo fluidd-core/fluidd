@@ -25,7 +25,7 @@ const toAppFileMetaWithHistory = (file: MoonrakerFile | MoonrakerFileWithMeta, r
   return metadata
 }
 
-export const getters: GetterTree<FilesState, RootState> = {
+export const getters = {
   /**
    * Returns a directory of files and sub-directories.
    */
@@ -192,7 +192,7 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns a specific file.
    */
-  getFile: (state, getters, rootState, rootGetters) => (path: string, filename: string) => {
+  getFile: (state, getters, rootState, rootGetters) => (path: string, filename: string): AppFile | AppFileWithMeta | undefined => {
     const pathContent = state.pathContent[path]
 
     const file = pathContent?.files.find(file => file.filename === filename)
@@ -223,8 +223,8 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Gets the currently stored path for any given root.
    */
-  getCurrentPathByRoot: (state) => (r: string) => {
-    return state.currentPaths[r] || ''
+  getCurrentPathByRoot: (state) => (root: string) => {
+    return state.currentPaths[root] ?? ''
   },
 
   /**
@@ -234,4 +234,4 @@ export const getters: GetterTree<FilesState, RootState> = {
     // 1073741824 = 1gb
     return state.diskUsage != null && state.diskUsage.free < 1073741824
   }
-}
+} satisfies GetterTree<FilesState, RootState>

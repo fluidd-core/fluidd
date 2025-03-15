@@ -38,7 +38,7 @@ const payloadAsSpoolmanProxyResponseV2 = <T>(payload: SpoolmanProxyResponse<T>):
   }
 }
 
-export const actions: ActionTree<SpoolmanState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -60,7 +60,7 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
   },
 
   async onSpoolChange ({ commit, state }, { type, payload }: WebsocketSpoolPayload) {
-    const spools = [...state.availableSpools]
+    const spools = [...state.spools]
 
     switch (type) {
       case 'added': {
@@ -90,7 +90,7 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       }
     }
 
-    commit('setAvailableSpools', spools)
+    commit('setSpools', spools)
   },
 
   async onFilamentChange ({ commit, state }, { type, payload }: WebsocketFilamentPayload) {
@@ -99,17 +99,17 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       return
     }
 
-    const spools = [...state.availableSpools]
-    for (const spool of spools) {
-      if (spool.filament.id === payload.id) {
-        spools[spools.indexOf(spool)] = {
-          ...spool,
-          filament: payload
-        }
-      }
-    }
+    const spools = state.spools
+      .map(spool => (
+        spool.filament.id === payload.id
+          ? {
+              ...spool,
+              filament: payload
+            }
+          : spool
+      ))
 
-    commit('setAvailableSpools', spools)
+    commit('setSpools', spools)
   },
 
   async onVendorChange ({ commit, state }, { type, payload }: WebsocketVendorPayload) {
@@ -118,20 +118,20 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       return
     }
 
-    const spools = [...state.availableSpools]
-    for (const spool of spools) {
-      if (spool.filament.vendor?.id === payload.id) {
-        spools[spools.indexOf(spool)] = {
-          ...spool,
-          filament: {
-            ...spool.filament,
-            vendor: payload
-          }
-        }
-      }
-    }
+    const spools = state.spools
+      .map(spool => (
+        spool.filament.vendor?.id === payload.id
+          ? {
+              ...spool,
+              filament: {
+                ...spool.filament,
+                vendor: payload
+              }
+            }
+          : spool
+      ))
 
-    commit('setAvailableSpools', spools)
+    commit('setSpools', spools)
   },
 
   async onStatusChanged ({ commit, dispatch }, payload: boolean) {
@@ -150,7 +150,7 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       return
     }
 
-    commit('setAvailableSpools', [...payload.response])
+    commit('setSpools', payload.response)
 
     commit('setConnected', true)
 
@@ -205,6 +205,7 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       state.socket.onerror = err => consola.warn(`${logPrefix} received websocket error`, err)
       state.socket.onmessage = event => {
         let data: WebsocketBasePayload
+
         try {
           data = JSON.parse(event.data) as WebsocketBasePayload
         } catch (err) {
@@ -235,4 +236,4 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       state.socket = undefined
     }
   }
-}
+} satisfies ActionTree<SpoolmanState, RootState>

@@ -49,7 +49,7 @@ import type { PromptDialog, PromptDialogButton } from '@/store/console/types'
 @Component({})
 export default class ActionCommandPromptDialog extends Mixins(StateMixin) {
   get dialog (): PromptDialog {
-    return this.$store.state.console.promptDialog
+    return this.$typedState.console.promptDialog
   }
 
   get open (): boolean {

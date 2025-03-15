@@ -54,7 +54,7 @@ export default class ExcludeObjectDialog extends Mixins(StateMixin) {
   open?: boolean
 
   get parts (): ExcludeObjectPart[] {
-    return this.$store.getters['printer/getExcludeObjectParts']
+    return this.$typedGetters['printer/getExcludeObjectParts']
   }
 
   async cancelObject (name: string) {

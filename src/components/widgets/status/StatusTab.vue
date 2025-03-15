@@ -300,25 +300,25 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
   }
 
   get printInProgressLayout (): PrintInProgressLayout {
-    return this.$store.state.config.uiSettings.general.printInProgressLayout
+    return this.$typedState.config.uiSettings.general.printInProgressLayout
   }
 
   get printerFile (): AppFileWithMeta | undefined {
-    return this.$store.getters['printer/getPrinterFile']
+    return this.$typedGetters['printer/getPrinterFile']
   }
 
   /**
    * Active filename in print_stats
    */
   get filename (): string {
-    return this.$store.state.printer.printer.print_stats?.filename ?? ''
+    return this.$typedState.printer.printer.print_stats?.filename ?? ''
   }
 
   /**
    * M117 messaging
    */
   get message (): string {
-    return this.$store.state.printer.printer.display_status?.message ?? ''
+    return this.$typedState.printer.printer.display_status?.message ?? ''
   }
 
   /**
@@ -333,11 +333,11 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
   }
 
   get liveVelocity (): number {
-    return this.$store.state.printer.printer.motion_report?.live_velocity ?? 0
+    return this.$typedState.printer.printer.motion_report?.live_velocity ?? 0
   }
 
   get liveExtruderVelocity (): number {
-    return this.$store.state.printer.printer.motion_report?.live_extruder_velocity ?? 0
+    return this.$typedState.printer.printer.motion_report?.live_extruder_velocity ?? 0
   }
 
   get liveFlow (): number {
@@ -348,28 +348,28 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
    * Actual estimates for during a print.
    */
   get estimates (): TimeEstimates {
-    return this.$store.getters['printer/getTimeEstimates']
+    return this.$typedGetters['printer/getTimeEstimates']
   }
 
   /**
    * The total estimated layer count.
    */
   get layers (): number {
-    return this.$store.getters['printer/getPrintLayers']
+    return this.$typedGetters['printer/getPrintLayers']
   }
 
   /**
    * Current estimated layer based on current z pos.
    */
   get layer (): number {
-    return this.$store.getters['printer/getPrintLayer']
+    return this.$typedGetters['printer/getPrintLayer']
   }
 
   /**
    * Filament used according to print stats.
    */
   get filamentUsed (): number {
-    return this.$store.state.printer.printer.print_stats?.filament_used ?? 0
+    return this.$typedState.printer.printer.print_stats?.filament_used ?? 0
   }
 
   async handleViewThumbnail () {

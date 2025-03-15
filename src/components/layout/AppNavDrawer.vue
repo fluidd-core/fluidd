@@ -158,15 +158,15 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   open?: boolean
 
   get supportsHistory (): boolean {
-    return this.$store.getters['server/componentSupport']('history')
+    return this.$typedGetters['server/componentSupport']('history')
   }
 
   get supportsTimelapse (): boolean {
-    return this.$store.getters['server/componentSupport']('timelapse')
+    return this.$typedGetters['server/componentSupport']('timelapse')
   }
 
   get enableDiagnostics (): boolean {
-    return this.$store.state.config.uiSettings.general.enableDiagnostics
+    return this.$typedState.config.uiSettings.general.enableDiagnostics
   }
 
   get hasSubNavigation () {
@@ -182,11 +182,11 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get layoutMode (): boolean {
-    return this.$store.state.config.layoutMode
+    return this.$typedState.config.layoutMode
   }
 
   set layoutMode (val: boolean) {
-    this.$store.commit('config/setLayoutMode', val)
+    this.$typedCommit('config/setLayoutMode', val)
   }
 }
 </script>

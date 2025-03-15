@@ -78,11 +78,11 @@ import type { ScrewsTiltAdjust } from '@/store/printer/types'
 @Component({})
 export default class ScrewsTiltAdjustDialog extends Mixins(StateMixin, ToolheadMixin) {
   get screwsTiltAdjust (): ScrewsTiltAdjust {
-    return this.$store.getters['printer/getScrewsTiltAdjust']
+    return this.$typedGetters['printer/getScrewsTiltAdjust']
   }
 
   get showScrewsTiltAdjustDialogAutomatically (): boolean {
-    return this.$store.state.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
+    return this.$typedState.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
   }
 
   @Watch('hasScrewsTiltAdjustResults')
@@ -98,7 +98,7 @@ export default class ScrewsTiltAdjustDialog extends Mixins(StateMixin, ToolheadM
   @Watch('screwsTiltAdjustDialogOpen')
   onScrewsTiltAdjustDialogOpen (value: boolean) {
     if (!value) {
-      this.$store.commit('printer/setClearScrewsTiltAdjust')
+      this.$typedCommit('printer/setClearScrewsTiltAdjust')
     }
   }
 

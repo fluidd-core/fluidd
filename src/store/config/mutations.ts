@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import type { FileFilterType } from '../files/types'
 import consola from 'consola'
 
-export const mutations: MutationTree<ConfigState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -206,4 +206,4 @@ export const mutations: MutationTree<ConfigState> = {
   setUpdateHeaders (state, payload: { name: string; headers: ConfiguredTableHeader[] }) {
     Vue.set(state.uiSettings.tableHeaders, payload.name, payload.headers)
   }
-}
+} satisfies MutationTree<ConfigState>

@@ -155,11 +155,11 @@ export default class Diagnostics extends Mixins(StateMixin) {
   }
 
   get inLayout (): boolean {
-    return this.$store.state.config.layoutMode
+    return this.$typedState.config.layoutMode
   }
 
   get layout (): DiagnosticsCardContainer {
-    return this.$store.getters['layout/getLayout']('diagnostics')
+    return this.$typedGetters['layout/getLayout']('diagnostics') as DiagnosticsCardContainer
   }
 
   @Watch('layout', { deep: true })
@@ -174,7 +174,7 @@ export default class Diagnostics extends Mixins(StateMixin) {
   }
 
   updateLayout () {
-    this.$store.dispatch('layout/onLayoutChange', {
+    this.$typedDispatch('layout/onLayoutChange', {
       name: 'diagnostics',
       value: {
         container1: this.containers[0],

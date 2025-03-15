@@ -284,6 +284,7 @@ import consola from 'consola'
 import { readFileAsTextAsync } from '@/util/file-system-entry'
 import { EventBus } from '@/eventBus'
 import { isFluiddContent, toFluiddContent } from '@/util/fluidd-content'
+import { getAllLocales } from '@/plugins/i18n'
 
 @Component({
   components: {}
@@ -296,15 +297,15 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   readonly uploadSettingsFile!: HTMLInputElement
 
   get instanceName (): string {
-    return this.$store.state.config.uiSettings.general.instanceName
+    return this.$typedState.config.uiSettings.general.instanceName
   }
 
   setInstanceName (value: string) {
-    if (this.instanceNameElement.valid) this.$store.dispatch('config/updateInstance', value)
+    if (this.instanceNameElement.valid) this.$typedDispatch('config/updateInstance', value)
   }
 
   get locale (): string {
-    return this.$store.state.config.uiSettings.general.locale
+    return this.$typedState.config.uiSettings.general.locale
   }
 
   get supportedLocales () {
@@ -315,15 +316,15 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   setLocale (value: string) {
-    this.$store.dispatch('config/onLocaleChange', value)
+    this.$typedDispatch('config/onLocaleChange', value)
   }
 
   get dateFormat (): string {
-    return this.$store.state.config.uiSettings.general.dateFormat
+    return this.$typedState.config.uiSettings.general.dateFormat
   }
 
   set dateFormat (value: string) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.dateFormat',
       value,
       server: true
@@ -336,16 +337,16 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return Object.entries(DateFormats)
       .map(([key, entry]) => ({
         value: key,
-        text: `${date.toLocaleDateString(entry.locales ?? this.$filters.getAllLocales(), entry.options)}${entry.suffix ?? ''}`
+        text: `${date.toLocaleDateString(entry.locales ?? getAllLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
   }
 
   get timeFormat (): string {
-    return this.$store.state.config.uiSettings.general.timeFormat
+    return this.$typedState.config.uiSettings.general.timeFormat
   }
 
   set timeFormat (value: string) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.timeFormat',
       value,
       server: true
@@ -358,16 +359,16 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return Object.entries(TimeFormats)
       .map(([key, entry]) => ({
         value: key,
-        text: `${date.toLocaleTimeString(entry.locales ?? this.$filters.getAllLocales(), entry.options)}${entry.suffix ?? ''}`
+        text: `${date.toLocaleTimeString(entry.locales ?? getAllLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
   }
 
   get enableKeyboardShortcuts (): boolean {
-    return this.$store.state.config.uiSettings.general.enableKeyboardShortcuts
+    return this.$typedState.config.uiSettings.general.enableKeyboardShortcuts
   }
 
   set enableKeyboardShortcuts (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.enableKeyboardShortcuts',
       value,
       server: true
@@ -375,11 +376,11 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get confirmOnEstop (): boolean {
-    return this.$store.state.config.uiSettings.general.confirmOnEstop
+    return this.$typedState.config.uiSettings.general.confirmOnEstop
   }
 
   set confirmOnEstop (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnEstop',
       value,
       server: true
@@ -387,11 +388,11 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get printerPowerDevice (): string | null {
-    return this.$store.state.config.uiSettings.general.printerPowerDevice
+    return this.$typedState.config.uiSettings.general.printerPowerDevice
   }
 
   set printerPowerDevice (value: string | null) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.printerPowerDevice',
       value,
       server: true
@@ -399,7 +400,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get printerPowerDevicesList () {
-    const devices: Device[] = this.$store.getters['power/getDevices']
+    const devices: Device[] = this.$typedGetters['power/getDevices']
 
     const deviceEntries = devices.map(device => ({
       text: `${this.$filters.prettyCase(device.device)} (${device.type})`,
@@ -420,11 +421,11 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get topNavPowerToggle (): string | null {
-    return this.$store.state.config.uiSettings.general.topNavPowerToggle
+    return this.$typedState.config.uiSettings.general.topNavPowerToggle
   }
 
   set topNavPowerToggle (value: string | null) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.topNavPowerToggle',
       value,
       server: true
@@ -432,7 +433,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get topNavPowerToggleDevicesList () {
-    const devices: Device[] = this.$store.getters['power/getDevices']
+    const devices: Device[] = this.$typedGetters['power/getDevices']
     const deviceEntries = devices.length
       ? [
           { header: 'Moonraker' },
@@ -443,7 +444,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
         ]
       : []
 
-    const pins: OutputPin[] = this.$store.getters['printer/getPins']
+    const pins: OutputPin[] = this.$typedGetters['printer/getPins']
     const pinEntries = pins.length
       ? [
           { header: 'Klipper' },
@@ -465,11 +466,11 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get confirmOnPowerDeviceChange (): boolean {
-    return this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+    return this.$typedState.config.uiSettings.general.confirmOnPowerDeviceChange
   }
 
   set confirmOnPowerDeviceChange (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnPowerDeviceChange',
       value,
       server: true
@@ -477,11 +478,11 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get showSaveConfigAndRestart (): boolean {
-    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart
+    return this.$typedState.config.uiSettings.general.showSaveConfigAndRestart
   }
 
   set showSaveConfigAndRestart (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showSaveConfigAndRestart',
       value,
       server: true
@@ -489,11 +490,11 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get showUploadAndPrint (): boolean {
-    return this.$store.state.config.uiSettings.general.showUploadAndPrint
+    return this.$typedState.config.uiSettings.general.showUploadAndPrint
   }
 
   set showUploadAndPrint (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showUploadAndPrint',
       value,
       server: true
@@ -501,11 +502,11 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get confirmOnSaveConfigAndRestart (): boolean {
-    return this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart
+    return this.$typedState.config.uiSettings.general.confirmOnSaveConfigAndRestart
   }
 
   set confirmOnSaveConfigAndRestart (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnSaveConfigAndRestart',
       value,
       server: true
@@ -513,11 +514,11 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get sectionsToIgnorePendingConfigurationChanges (): string[] {
-    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges
+    return this.$typedState.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges
   }
 
   set sectionsToIgnorePendingConfigurationChanges (value: string[]) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.sectionsToIgnorePendingConfigurationChanges',
       value: [...new Set(value)].sort((a, b) => a.localeCompare(b)),
       server: true
@@ -525,11 +526,11 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get printInProgressLayout (): PrintInProgressLayout {
-    return this.$store.state.config.uiSettings.general.printInProgressLayout
+    return this.$typedState.config.uiSettings.general.printInProgressLayout
   }
 
   set printInProgressLayout (value: PrintInProgressLayout) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.printInProgressLayout',
       value,
       server: true
@@ -571,11 +572,11 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get printProgressCalculation (): PrintProgressCalculation[] {
-    return this.$store.state.config.uiSettings.general.printProgressCalculation
+    return this.$typedState.config.uiSettings.general.printProgressCalculation
   }
 
   set printProgressCalculation (value: PrintProgressCalculation[]) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.printProgressCalculation',
       value,
       server: true
@@ -596,11 +597,11 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get printEtaCalculation (): PrintEtaCalculation[] {
-    return this.$store.state.config.uiSettings.general.printEtaCalculation
+    return this.$typedState.config.uiSettings.general.printEtaCalculation
   }
 
   set printEtaCalculation (value: PrintEtaCalculation[]) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.printEtaCalculation',
       value,
       server: true
@@ -608,11 +609,11 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get enableDiagnostics (): boolean {
-    return this.$store.state.config.uiSettings.general.enableDiagnostics
+    return this.$typedState.config.uiSettings.general.enableDiagnostics
   }
 
   set enableDiagnostics (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.enableDiagnostics',
       value,
       server: true

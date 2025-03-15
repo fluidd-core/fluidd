@@ -3,7 +3,7 @@ import type { MutationTree } from 'vuex'
 import type { WebcamConfig, WebcamsState } from './types'
 import { defaultState } from './state'
 
-export const mutations: MutationTree<WebcamsState> = {
+export const mutations = {
   setReset (state) {
     Object.assign(state, defaultState())
   },
@@ -39,4 +39,4 @@ export const mutations: MutationTree<WebcamsState> = {
   setActiveWebcam (state, payload: string) {
     state.activeWebcam = payload
   }
-}
+} satisfies MutationTree<WebcamsState>

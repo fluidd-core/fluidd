@@ -58,9 +58,9 @@ import DiskUsageCard from '@/components/widgets/system/DiskUsageCard.vue'
 export default class Configure extends Mixins(StateMixin) {
   get hasGraphData () {
     return (
-      this.$store.state.charts.klipper !== undefined ||
-      this.$store.state.charts.moonraker !== undefined ||
-      this.$store.state.charts.memory !== undefined
+      this.$typedState.charts.klipper !== undefined ||
+      this.$typedState.charts.moonraker !== undefined ||
+      this.$typedState.charts.memory !== undefined
     )
   }
 
@@ -68,7 +68,7 @@ export default class Configure extends Mixins(StateMixin) {
     const roots = ['logs', 'docs', 'config_examples']
     const excludeRoots = ['gcodes', 'config', 'timelapse', 'timelapse_frames']
 
-    const registeredDirectories: string[] = this.$store.state.server.info.registered_directories || []
+    const registeredDirectories: string[] = this.$typedState.server.info.registered_directories || []
 
     for (const root of registeredDirectories) {
       if (!excludeRoots.includes(root) && !roots.includes(root)) {

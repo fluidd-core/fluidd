@@ -94,7 +94,7 @@ export default class MetricsCollectorConfig extends Vue {
     let data: string | number
     try {
       data = sandboxedEval(`
-        const printer = ${JSON.stringify(this.$store.state.printer.printer)}
+        const printer = ${JSON.stringify(this.$typedState.printer.printer)}
         return JSON.stringify(eval(${JSON.stringify(this.metric.collector)}))
       `)
 

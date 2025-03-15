@@ -55,7 +55,7 @@ export default class FileSystemDownloadDialog extends Mixins(StateMixin) {
   }
 
   get currentDownload (): FileDownload | null {
-    return this.$store.state.files.download
+    return this.$typedState.files.download
   }
 
   handleCancelDownload () {

@@ -2,7 +2,7 @@
   <app-dialog
     v-model="open"
     scrollable
-    :max-width="isMobileViewport ? '90vw' : '75vw'"
+    :max-width="$vuetify.breakpoint.mdAndDown ? '90vw' : '75vw'"
     :title="$tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro })"
     title-shadow
   >
@@ -94,7 +94,7 @@
       />
     </v-toolbar>
 
-    <v-card-text class="pa-0">
+    <v-card-text class="pa-0 file-system">
       <v-data-table
         :items="availableSpools"
         :headers="headers"
@@ -104,6 +104,7 @@
         :no-results-text="$t('app.file_system.msg.not_found')"
         :sort-by="sortOrder.key ?? undefined"
         :sort-desc="sortOrder.desc ?? undefined"
+        item-key="id"
         mobile-breakpoint="0"
         class="spool-table"
         hide-default-footer
@@ -122,7 +123,7 @@
             <template #[`item.filament_name`]>
               <div class="d-flex my-1">
                 <v-icon
-                  :color="`#${item.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
+                  :color="getSpoolColor(item)"
                   size="42px"
                   class="mr-4 flex-column spool-icon"
                 >
@@ -135,15 +136,43 @@
                   <div class="flex-row">
                     <small v-if="remainingFilamentUnit === 'weight'">
                       <b>{{ $filters.getReadableWeightString(item.remaining_weight) }}</b>
-                      / {{ $filters.getReadableWeightString(item.filament.weight) }}
+                      / {{ $filters.getReadableWeightString(item.initial_weight) }}
                     </small>
                     <small v-else-if="remainingFilamentUnit === 'length'">
                       <b>{{ $filters.getReadableLengthString(item.remaining_length) }}</b>
-                      / {{ $filters.getReadableLengthString($filters.convertFilamentWeightToLength(item.filament.weight ?? 0, item.filament.density, item.filament.diameter)) }}
+                      / {{ $filters.getReadableLengthString(item.initial_length) }}
                     </small>
                   </div>
                 </div>
               </div>
+            </template>
+
+            <template #[`item-value.price`]="{ value }">
+              {{ $filters.getReadableCurrencyString(value, currency ?? '') }}
+            </template>
+
+            <template #[`item-value.filament.density`]="{ value }">
+              {{ value }} g/cm³
+            </template>
+
+            <template #[`item-value.filament.diameter`]="{ value }">
+              {{ value }} mm
+            </template>
+
+            <template #[`item-value.filament.settings_extruder_temp`]="{ value }">
+              {{ value }}<small>°C</small>
+            </template>
+
+            <template #[`item-value.filament.settings_bed_temp`]="{ value }">
+              {{ value }}<small>°C</small>
+            </template>
+
+            <template #[`item.first_used`]="{ value }">
+              {{
+                value
+                  ? $filters.formatRelativeTimeToNow(value)
+                  : $tc('app.setting.label.never')
+              }}
             </template>
 
             <template #[`item.last_used`]="{ value }">
@@ -152,6 +181,10 @@
                   ? $filters.formatRelativeTimeToNow(value)
                   : $tc('app.setting.label.never')
               }}
+            </template>
+
+            <template #[`item-value.filament.colors`]="{ value }">
+              <app-data-table-cell-colors :colors="value" />
             </template>
           </app-data-table-row>
         </template>
@@ -205,7 +238,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import type { MacroWithSpoolId, Spool } from '@/store/spoolman/types'
+import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
 import QRReader from '@/components/widgets/spoolman/QRReader.vue'
 import type { WebcamConfig } from '@/store/webcams/types'
@@ -237,10 +270,14 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   @Watch('open')
   onOpen () {
     if (this.open) {
-      this.selectedSpoolId = this.$store.state.spoolman.activeSpool ?? null
       if (this.targetMacro) {
-        const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro)
-        this.selectedSpoolId = macro?.variables.spool_id ?? null
+        const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
+
+        this.selectedSpoolId = typeof macro?.variables?.spool_id === 'number'
+          ? macro.variables.spool_id
+          : null
+      } else {
+        this.selectedSpoolId = this.$typedState.spoolman.activeSpool
       }
 
       if (this.currentFileName && this.currentFile == null) {
@@ -251,7 +288,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         this.$nextTick(() => (this.cameraScanSource = 'device'))
       } else {
         const autoOpenCameraId = this.autoOpenQRDetectionCamera
-        if (this.$store.getters['webcams/getWebcamById'](autoOpenCameraId)) {
+        if (autoOpenCameraId && this.$typedGetters['webcams/getWebcamById'](autoOpenCameraId)) {
           this.$nextTick(() => (this.cameraScanSource = autoOpenCameraId))
         }
       }
@@ -259,64 +296,104 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get open (): boolean {
-    return this.$store.state.spoolman.dialog.show
+    return this.$typedState.spoolman.dialog.show
   }
 
   set open (val: boolean) {
-    this.$store.commit('spoolman/setDialogState', {
-      ...this.$store.state.spoolman.dialog,
+    this.$typedCommit('spoolman/setDialogState', {
+      ...this.$typedState.spoolman.dialog,
       show: val
     })
   }
 
   get availableSpools () {
-    const spools = []
-    const availableSpools: Spool[] = this.$store.state.spoolman.availableSpools
+    const availableSpools: Spool[] = this.$typedGetters['spoolman/getAvailableSpools']
 
-    for (const spool of availableSpools) {
-      if (spool.archived) {
-        continue
-      }
+    return availableSpools
+      .filter(x => !x.archived)
+  }
 
-      const filamentName = spool.filament.vendor
-        ? `${spool.filament.vendor.name} - ${spool.filament.name}`
-        : spool.filament.name
-
-      spools.push({
-        ...spool,
-        filament_name: filamentName,
-        material: spool.filament.material
-      })
-    }
-
-    return spools
+  get currency (): string | null {
+    return this.$typedState.spoolman.currency
   }
 
   get configurableHeaders (): AppDataTableHeader[] {
     const headers: AppDataTableHeader[] = [
       {
         text: this.$tc('app.spoolman.label.id'),
-        value: 'id'
+        value: 'id',
+        cellClass: 'text-no-wrap'
       },
       {
         text: this.$tc('app.spoolman.label.material'),
-        value: 'material'
+        value: 'filament.material',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.price'),
+        value: 'price',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.lot_nr'),
+        value: 'lot_nr',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.density'),
+        value: 'filament.density',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.diameter'),
+        value: 'filament.diameter',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.extruder_temp'),
+        value: 'filament.settings_extruder_temp',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.bed_temp'),
+        value: 'filament.settings_bed_temp',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.colors'),
+        value: 'filament.colors',
+        cellClass: 'text-no-wrap'
       },
       {
         text: this.$tc('app.spoolman.label.location'),
-        value: 'location'
+        value: 'location',
+        cellClass: 'text-no-wrap'
       },
       {
         text: this.$tc('app.spoolman.label.comment'),
-        value: 'comment'
+        value: 'comment',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.first_used'),
+        value: 'first_used',
+        visible: false,
+        cellClass: 'text-no-wrap'
       },
       {
         text: this.$tc('app.spoolman.label.last_used'),
-        value: 'last_used'
+        value: 'last_used',
+        cellClass: 'text-no-wrap'
       },
     ]
 
-    const mergedTableHeaders: AppDataTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'spoolman')
+    const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters['config/getMergedTableHeaders'](headers, 'spoolman')
 
     return mergedTableHeaders
   }
@@ -333,7 +410,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get filename (): string | undefined {
-    const filename: string | undefined = this.$store.state.spoolman.dialog.filename
+    const filename: string | undefined = this.$typedState.spoolman.dialog.filename
 
     if (filename && filename.startsWith('/')) {
       return filename.slice(1)
@@ -343,21 +420,21 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get currentFileName (): string {
-    return this.filename || this.$store.state.printer.printer.print_stats?.filename || ''
+    return this.filename || this.$typedState.printer.printer.print_stats?.filename || ''
   }
 
   get currentFile (): AppFileWithMeta | undefined {
     const { filename, rootPath } = getFilePaths(this.currentFileName, 'gcodes')
 
-    return this.$store.getters['files/getFile'](rootPath, filename)
+    return this.$typedGetters['files/getFile'](rootPath, filename)
   }
 
   get targetMacro (): string | undefined {
-    return this.$store.state.spoolman.dialog.targetMacro
+    return this.$typedState.spoolman.dialog.targetMacro
   }
 
   get enabledWebcams (): WebcamConfig[] {
-    return this.$store.getters['webcams/getEnabledWebcams']
+    return this.$typedGetters['webcams/getEnabledWebcams']
   }
 
   get availableCameras (): Pick<WebcamConfig, 'uid' | 'name'>[] {
@@ -376,7 +453,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get remainingFilamentUnit (): SpoolmanRemainingFilamentUnit {
-    return this.$store.state.config.uiSettings.spoolman.remainingFilamentUnit
+    return this.$typedState.config.uiSettings.spoolman.remainingFilamentUnit
   }
 
   handleQRCodeDetected (id: number) {
@@ -418,17 +495,17 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         `SET_GCODE_VARIABLE MACRO=${this.targetMacro} VARIABLE=spool_id VALUE=${this.selectedSpoolId ?? 'None'}`
       ]
 
-      const printerConfig: KlipperPrinterConfig = this.$store.getters['printer/getPrinterConfig']
+      const printerConfig: KlipperPrinterConfig = this.$typedGetters['printer/getPrinterConfig']
       const supportsSaveVariables = printerConfig.save_variables
       if (supportsSaveVariables) {
         // persist selected spool across restarts
         commands.push(`SAVE_VARIABLE VARIABLE=${this.targetMacro.toLowerCase()}__spool_id VALUE=${this.selectedSpoolId ?? 'None'}`)
       }
 
-      await SocketActions.printerGcodeScript(commands.join('\n'))
+      this.sendGcode(commands.join('\n'))
 
-      const macro: MacroWithSpoolId | undefined = this.$store.getters['macros/getMacroByName'](this.targetMacro)
-      if (macro?.variables.active) {
+      const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
+      if (macro?.variables?.active) {
         // selected tool is active, update active spool
         await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
       }
@@ -466,7 +543,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         let requiredLength = this.currentFile?.filament_total
         if (requiredLength && ['printing', 'paused'].includes(this.printerState)) {
           // if we're currently running a print job, subtract the already printed amount from the required length
-          requiredLength -= this.$store.state.printer.printer.print_stats?.filament_used ?? 0
+          requiredLength -= this.$typedState.printer.printer.print_stats?.filament_used ?? 0
           requiredLength = Math.max(requiredLength, 0)
         }
 
@@ -482,12 +559,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
             return
           }
         } else if (this.warnOnNotEnoughFilament) {
-          let remainingLength = spool.remaining_length
-          if (!remainingLength && spool.remaining_weight) {
-            remainingLength = this.$filters.convertFilamentWeightToLength(spool.remaining_weight, spool.filament.density, spool.filament.diameter)
-          }
-
-          if (typeof remainingLength === 'number' && requiredLength >= remainingLength) {
+          if (spool.remaining_length != null && requiredLength >= spool.remaining_length) {
             // not enough filament
 
             const confirmation = await this.$confirm(
@@ -522,35 +594,35 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get spoolmanURL (): string | undefined {
-    return this.$store.state.server.config.spoolman?.server
+    return this.$typedState.server.config.spoolman?.server
   }
 
   get preferDeviceCamera () {
-    return this.$store.state.config.uiSettings.spoolman.preferDeviceCamera
+    return this.$typedState.config.uiSettings.spoolman.preferDeviceCamera
   }
 
   get autoOpenQRDetectionCamera (): string | null {
-    return this.$store.state.config.uiSettings.spoolman.autoOpenQRDetectionCamera
+    return this.$typedState.config.uiSettings.spoolman.autoOpenQRDetectionCamera
   }
 
   get autoSelectSpoolOnMatch (): boolean {
-    return this.$store.state.config.uiSettings.spoolman.autoSelectSpoolOnMatch
+    return this.$typedState.config.uiSettings.spoolman.autoSelectSpoolOnMatch
   }
 
   get warnOnNotEnoughFilament (): boolean {
-    return this.$store.state.config.uiSettings.spoolman.warnOnNotEnoughFilament
+    return this.$typedState.config.uiSettings.spoolman.warnOnNotEnoughFilament
   }
 
   get warnOnFilamentTypeMismatch (): boolean {
-    return this.$store.state.config.uiSettings.spoolman.warnOnFilamentTypeMismatch
+    return this.$typedState.config.uiSettings.spoolman.warnOnFilamentTypeMismatch
   }
 
   get sortOrder () {
-    return this.$store.state.config.uiSettings.spoolman.selectionDialogSortOrder
+    return this.$typedState.config.uiSettings.spoolman.selectionDialogSortOrder
   }
 
   handleSortOrderKeyChange (value?: string) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.selectionDialogSortOrder.key',
       value: value ?? null,
       server: true
@@ -558,11 +630,15 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   handleSortOrderDescChange (value?: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.selectionDialogSortOrder.desc',
       value: value ?? null,
       server: true
     })
+  }
+
+  getSpoolColor (spool?: Spool) {
+    return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
   }
 }
 </script>

@@ -27,12 +27,12 @@ export default class MoonrakerLoadChart extends Vue {
   ready = false
 
   get chartData () {
-    return this.$store.state.charts.moonraker || []
+    return this.$typedState.charts.moonraker || []
   }
 
   get options () {
     const o = {
-      ...this.$store.getters['charts/getBaseChartOptions']({
+      ...this.$typedGetters['charts/getBaseChartOptions']({
         load: '%'
       }),
       series: this.series
@@ -41,7 +41,7 @@ export default class MoonrakerLoadChart extends Vue {
   }
 
   get series () {
-    return this.$store.getters['charts/getBaseSeries']({
+    return this.$typedGetters['charts/getBaseSeries']({
       name: this.$t('app.system_info.label.load'),
       encode: { x: 'date', y: 'load' }
     })

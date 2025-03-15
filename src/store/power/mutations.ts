@@ -3,7 +3,7 @@ import type { MutationTree } from 'vuex'
 import type { DevicePowerState } from './types'
 import { defaultState } from './state'
 
-export const mutations: MutationTree<DevicePowerState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -23,4 +23,4 @@ export const mutations: MutationTree<DevicePowerState> = {
       }
     }
   }
-}
+} satisfies MutationTree<DevicePowerState>

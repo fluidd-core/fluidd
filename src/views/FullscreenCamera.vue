@@ -25,7 +25,7 @@ export default class FullscreenCamera extends Vue {
 
   created () {
     const cameraId = this.$route.params.cameraId
-    const camera: WebcamConfig | undefined = this.$store.getters['webcams/getWebcamById'](cameraId)
+    const camera: WebcamConfig | undefined = this.$typedGetters['webcams/getWebcamById'](cameraId)
 
     this.camera = camera ?? null
   }

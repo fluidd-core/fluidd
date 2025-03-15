@@ -5,13 +5,13 @@ import { Component } from 'vue-property-decorator'
 @Component
 export default class ServicesMixin extends Vue {
   get moonrakerServiceName (): string {
-    const moonrakerServiceName: string | undefined = this.$store.state.server.system_info?.instance_ids?.moonraker
+    const moonrakerServiceName: string | undefined = this.$typedState.server.system_info?.instance_ids?.moonraker
 
     return moonrakerServiceName || 'moonraker'
   }
 
   get klipperServiceName (): string {
-    const klipperServiceName: string | undefined = this.$store.state.server.system_info?.instance_ids?.klipper
+    const klipperServiceName: string | undefined = this.$typedState.server.system_info?.instance_ids?.klipper
 
     return klipperServiceName || 'klipper'
   }
@@ -20,7 +20,7 @@ export default class ServicesMixin extends Vue {
    * Resets the UI when restarting/resetting Klipper
    */
   async _klipperReset () {
-    await this.$store.dispatch('resetKlippy', undefined, { root: true })
+    await this.$typedDispatch('resetKlippy')
   }
 
   /**
@@ -57,7 +57,7 @@ export default class ServicesMixin extends Vue {
   async serviceRestartByName (name: string) {
     if (name === this.moonrakerServiceName) {
       SocketActions.serverRestart()
-      this.$store.commit('socket/setSocketDisconnecting', true)
+      this.$typedCommit('socket/setSocketDisconnecting', true)
     } else {
       if (name === this.klipperServiceName) {
         await this._klipperReset()

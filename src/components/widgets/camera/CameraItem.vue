@@ -153,7 +153,7 @@ export default class CameraItem extends Vue {
   }
 
   get fullscreenMode (): CameraFullscreenAction {
-    return this.$store.state.config.uiSettings.general.cameraFullscreenAction
+    return this.$typedState.config.uiSettings.general.cameraFullscreenAction
   }
 
   get cameraComponent () {

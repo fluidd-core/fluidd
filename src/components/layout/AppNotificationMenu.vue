@@ -166,7 +166,7 @@ export default class AppNotificationMenu extends Mixins(BrowserMixin) {
   menu = false
 
   get notifications (): AppNotification[] {
-    return this.$store.getters['notifications/getNotifications']
+    return this.$typedGetters['notifications/getNotifications']
   }
 
   get notificationsCounter (): number {
@@ -182,7 +182,7 @@ export default class AppNotificationMenu extends Mixins(BrowserMixin) {
   }
 
   get clearableNotifications (): AppNotification[] {
-    const notifications: AppNotification[] = this.$store.getters['notifications/getNotifications']
+    const notifications: AppNotification[] = this.$typedGetters['notifications/getNotifications']
     return notifications.filter(n => n.clear)
   }
 
@@ -228,16 +228,16 @@ export default class AppNotificationMenu extends Mixins(BrowserMixin) {
   }
 
   handleClear (n: AppNotification) {
-    this.$store.dispatch('notifications/clearNotification', n)
+    this.$typedDispatch('notifications/clearNotification', n)
   }
 
   handleClearAll () {
-    this.$store.dispatch('notifications/clearAll')
+    this.$typedDispatch('notifications/clearAll')
   }
 
   handleAnnouncementDismiss (n: AppNotification, wake_time: number) {
     if (n && wake_time) {
-      this.$store.dispatch('announcements/dismiss', {
+      this.$typedDispatch('announcements/dismiss', {
         entry_id: n.id,
         wake_time
       })

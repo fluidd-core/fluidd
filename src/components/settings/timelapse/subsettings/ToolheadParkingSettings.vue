@@ -152,7 +152,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   get parkheadBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('parkhead')
+    return this.$typedGetters['timelapse/isBlockedSetting']('parkhead')
   }
 
   get parkhead (): boolean {
@@ -164,7 +164,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   get parkposBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('parkpos')
+    return this.$typedGetters['timelapse/isBlockedSetting']('parkpos')
   }
 
   get parkpos (): ParkPosition {
@@ -176,7 +176,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   get parkTimeBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('park_time')
+    return this.$typedGetters['timelapse/isBlockedSetting']('park_time')
   }
 
   get parkTime (): number {
@@ -190,7 +190,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   get parkTravelSpeedBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('park_travel_speed')
+    return this.$typedGetters['timelapse/isBlockedSetting']('park_travel_speed')
   }
 
   get parkTravelSpeed (): number {
@@ -204,7 +204,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   get parkPosZBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('park_custom_pos_dz')
+    return this.$typedGetters['timelapse/isBlockedSetting']('park_custom_pos_dz')
   }
 
   get parkPosZ (): number {
@@ -218,7 +218,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   get firmwareRetractBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('fw_retract')
+    return this.$typedGetters['timelapse/isBlockedSetting']('fw_retract')
   }
 
   get firmwareRetract (): boolean {
@@ -230,7 +230,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   get settings (): TimelapseSettings {
-    return this.$store.state.timelapse.settings ?? {} as TimelapseSettings
+    return this.$typedState.timelapse.settings ?? {} as TimelapseSettings
   }
 
   subtitleIfBlocked (blocked: boolean): string {
