@@ -238,7 +238,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import type { MacroWithSpoolId, Spool } from '@/store/spoolman/types'
+import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
 import QRReader from '@/components/widgets/spoolman/QRReader.vue'
 import type { WebcamConfig } from '@/store/webcams/types'
@@ -270,10 +270,14 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   @Watch('open')
   onOpen () {
     if (this.open) {
-      this.selectedSpoolId = this.$typedState.spoolman.activeSpool ?? null
       if (this.targetMacro) {
-        const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro) as MacroWithSpoolId | undefined
-        this.selectedSpoolId = macro?.variables.spool_id ?? null
+        const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
+
+        this.selectedSpoolId = typeof macro?.variables?.spool_id === 'number'
+          ? macro.variables.spool_id
+          : null
+      } else {
+        this.selectedSpoolId = this.$typedState.spoolman.activeSpool
       }
 
       if (this.currentFileName && this.currentFile == null) {
@@ -498,10 +502,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         commands.push(`SAVE_VARIABLE VARIABLE=${this.targetMacro.toLowerCase()}__spool_id VALUE=${this.selectedSpoolId ?? 'None'}`)
       }
 
-      await SocketActions.printerGcodeScript(commands.join('\n'))
+      this.sendGcode(commands.join('\n'))
 
-      const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro) as MacroWithSpoolId | undefined
-      if (macro?.variables.active) {
+      const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
+      if (macro?.variables?.active) {
         // selected tool is active, update active spool
         await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
       }

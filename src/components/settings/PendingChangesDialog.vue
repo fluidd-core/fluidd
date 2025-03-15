@@ -33,7 +33,7 @@ export default class PendingChangesDialog extends Vue {
 
     const { changed, deleted } = Object.entries(saveConfigPendingItems)
       .reduce<{ changed: string[], deleted: string[] }>((previous, [sectionName, sectionEntries]) => {
-        if (sectionEntries === null) {
+        if (sectionEntries == null) {
           previous.deleted.push(`# [${sectionName}]`)
         } else {
           const sectionEntryNameValues = Object.entries(sectionEntries)

@@ -30,6 +30,13 @@ const stringFormatters = () => {
      * Splits a string into an array of strings, removing quotes.
      */
     getStringArray: (value: string, separator = ';') => {
+      if (value.startsWith('["') && value.endsWith('"]')) {
+        try {
+          return JSON.parse(value) as string[]
+        } catch {
+        }
+      }
+
       return value.split(separator)
         .map(x => x.replace(/^"|"$/g, ''))
     },

@@ -192,7 +192,7 @@ export const getters = {
   /**
    * Returns a specific file.
    */
-  getFile: (state, getters, rootState, rootGetters) => (path: string, filename: string) => {
+  getFile: (state, getters, rootState, rootGetters) => (path: string, filename: string): AppFile | AppFileWithMeta | undefined => {
     const pathContent = state.pathContent[path]
 
     const file = pathContent?.files.find(file => file.filename === filename)
@@ -223,8 +223,8 @@ export const getters = {
   /**
    * Gets the currently stored path for any given root.
    */
-  getCurrentPathByRoot: (state) => (r: string) => {
-    return state.currentPaths[r] ?? ''
+  getCurrentPathByRoot: (state) => (root: string) => {
+    return state.currentPaths[root] ?? ''
   },
 
   /**

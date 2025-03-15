@@ -1,5 +1,3 @@
-import type { Macro } from '@/store/macros/types'
-
 export interface SpoolmanState {
   info: SpoolmanInfo | null;
   spools: SpoolmanSpool[];
@@ -125,13 +123,6 @@ export interface WebsocketFilamentPayload extends WebsocketBasePayload {
 export interface WebsocketVendorPayload extends WebsocketBasePayload {
   resource: 'vendor';
   payload: SpoolmanVendor;
-}
-
-export interface MacroWithSpoolId extends Macro {
-  variables: {
-    spool_id: number | null;
-    [key: string]: unknown;
-  }
 }
 
 export interface SpoolmanProxyResponseV2Success<T> {
