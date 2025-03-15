@@ -1036,8 +1036,10 @@ app:
       config: Config
       enable: Enable
       unknown: Unknown
+      skip_automap: Skip Automap
       all_tools: All Tools
       ok: Ok
+      save: Save
       cancel: Cancel
       gate: Gate
       endless_spool: ES ∞

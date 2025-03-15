@@ -348,7 +348,7 @@
           color="primary"
           @click="commit"
         >
-          {{ $t('app.mmu.label.ok') }}
+          {{ $t('app.mmu.label.save') }}
         </app-btn>
       </template>
     </app-dialog>

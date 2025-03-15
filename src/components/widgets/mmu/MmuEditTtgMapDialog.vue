@@ -24,15 +24,39 @@
           </v-col>
           <v-col
             cols="4"
-            class="d-flex justify-end align-center no-padding pr-10"
+            class="d-flex flex-column align-end no-padding"
           >
-            <v-switch
-              v-model="allTools"
-              :disabled="allToolsDisabled"
-              :label="$t('app.mmu.label.all_tools')"
-              hide-details
-              class="short-switch"
-            />
+            <v-container>
+              <v-row class="justify-end pa-0">
+                <v-col class="d-flex align-center justify-end no-padding pr-6">
+                  <div class="mr-4">
+                    {{ $t('app.mmu.label.all_tools') }}
+                  </div>
+                  <v-switch
+                    v-model="allTools"
+                    :disabled="allToolsDisabled"
+                    hide-details
+                    class="short-switch"
+                  />
+                </v-col>
+              </v-row>
+              <v-row
+                v-if="!allToolsDisabled && macroVarsAutomapStrategy !== 'none'"
+                class="justify-end pa-0"
+              >
+                <v-col class="d-flex align-center justify-end no-padding pr-6">
+                  <div class="mr-4">
+                    {{ $t('app.mmu.label.skip_automap') }}
+                  </div>
+                  <v-switch
+                    v-model="skipAutomap"
+                    :disabled="allToolsDisabled"
+                    hide-details
+                    class="short-switch"
+                  />
+                </v-col>
+              </v-row>
+            </v-container>
           </v-col>
         </v-row>
 
@@ -270,7 +294,7 @@
         {{
           file
             ? $t('app.general.btn.print')
-            : $t('app.mmu.label.ok')
+            : $t('app.mmu.label.save')
         }}
       </app-btn>
     </template>
@@ -309,6 +333,7 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
   private referencedTools: number[] = []
   private allTools: boolean = true
   private allToolsDisabled: boolean = false
+  private skipAutomap: boolean = false
 
   private selectedTool: number = -1
   private selectedGate: number = -1
@@ -354,6 +379,7 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
       this.selectedTool = -1
       this.selectedGate = -1
     }
+    this.skipAutomap = false
   }
 
   @Watch('allTools')
@@ -560,7 +586,9 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
   async commit () {
     const mapStr = this.localTtgMap.join(',')
     const esGrpStr = this.localEndlessSpoolGroups.join(',')
-    let cmd = `MMU_TTG_MAP MAP="${mapStr}"`
+    let cmd = 'MMU_SLICER_TOOL_MAP SKIP_AUTOMAP=' + (this.skipAutomap ? 1 : 0)
+    this.sendGcode(cmd)
+    cmd = `MMU_TTG_MAP MAP="${mapStr}"`
     this.sendGcode(cmd)
     cmd = `MMU_ENDLESS_SPOOL GROUPS="${esGrpStr}"`
     this.sendGcode(cmd)
