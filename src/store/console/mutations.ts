@@ -17,7 +17,7 @@ const compileExpression = (filter: ConsoleFilter): RegExp => {
   }
 }
 
-export const mutations: MutationTree<ConsoleState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -160,4 +160,4 @@ export const mutations: MutationTree<ConsoleState> = {
   setLastCleared (state) {
     Vue.set(state, 'lastCleared', Date.now())
   }
-}
+} satisfies MutationTree<ConsoleState>

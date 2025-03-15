@@ -20,7 +20,7 @@ const itemAsMoonrakerDir = (item: FileChangeItem, paths: FilePaths): MoonrakerDi
   permissions: item.permissions
 })
 
-export const actions: ActionTree<FilesState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -181,4 +181,4 @@ export const actions: ActionTree<FilesState, RootState> = {
   async updateCurrentPathByRoot ({ commit }, payload) {
     commit('setCurrentPath', payload)
   }
-}
+} satisfies ActionTree<FilesState, RootState>

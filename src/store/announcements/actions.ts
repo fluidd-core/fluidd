@@ -3,7 +3,7 @@ import type { AnnouncementsState, Announcement } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 
-export const actions: ActionTree<AnnouncementsState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -51,4 +51,4 @@ export const actions: ActionTree<AnnouncementsState, RootState> = {
 
     entries.forEach(async (entry: Announcement) => await SocketActions.serverAnnouncementsDismiss(entry.entry_id))
   }
-}
+} satisfies ActionTree<AnnouncementsState, RootState>

@@ -141,7 +141,7 @@ export default class ThemeSettings extends Mixins(StateMixin) {
   }
 
   updateTheme (updatedTheme: Partial<ThemeConfig>) {
-    this.$store.dispatch('config/updateTheme', updatedTheme)
+    this.$typedDispatch('config/updateTheme', updatedTheme)
   }
 
   handleReset () {

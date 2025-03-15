@@ -144,7 +144,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
         name
       }))
 
-    this.$store.dispatch('macros/updateCategories', categories)
+    this.$typedDispatch('macros/updateCategories', categories)
   }
 
   get uncategorizedMacros () {
@@ -186,12 +186,12 @@ export default class MacroSettings extends Mixins(StateMixin) {
     )
 
     if (result) {
-      this.$store.dispatch('macros/removeCategory', category)
+      this.$typedDispatch('macros/removeCategory', category)
     }
   }
 
   handleAddCategory (category: string) {
-    this.$store.dispatch('macros/addCategory', category)
+    this.$typedDispatch('macros/addCategory', category)
   }
 
   handleEditCategory (name: string) {
@@ -199,7 +199,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
       ...this.categoryDialogState.category,
       name
     }
-    this.$store.dispatch('macros/editCategory', category)
+    this.$typedDispatch('macros/editCategory', category)
   }
 
   handleCategoryClick (category?: MacroCategory) {

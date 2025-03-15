@@ -2,7 +2,7 @@ import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type { TimelapseState, TimelapseLastFrame, TimelapseSettings, RenderStatus } from './types'
 
-export const mutations: MutationTree<TimelapseState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -22,4 +22,4 @@ export const mutations: MutationTree<TimelapseState> = {
   setRenderStatus (state, payload: RenderStatus) {
     state.renderStatus = payload
   }
-}
+} satisfies MutationTree<TimelapseState>

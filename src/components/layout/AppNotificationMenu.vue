@@ -228,16 +228,16 @@ export default class AppNotificationMenu extends Mixins(BrowserMixin) {
   }
 
   handleClear (n: AppNotification) {
-    this.$store.dispatch('notifications/clearNotification', n)
+    this.$typedDispatch('notifications/clearNotification', n)
   }
 
   handleClearAll () {
-    this.$store.dispatch('notifications/clearAll')
+    this.$typedDispatch('notifications/clearAll')
   }
 
   handleAnnouncementDismiss (n: AppNotification, wake_time: number) {
     if (n && wake_time) {
-      this.$store.dispatch('announcements/dismiss', {
+      this.$typedDispatch('announcements/dismiss', {
         entry_id: n.id,
         wake_time
       })

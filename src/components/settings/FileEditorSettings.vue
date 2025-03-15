@@ -91,7 +91,7 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   }
 
   set confirmDirtyEditorClose (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor.confirmDirtyEditorClose',
       value,
       server: true
@@ -103,7 +103,7 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   }
 
   set autoEditExtensions (value: string[]) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor.autoEditExtensions',
       value: [
         ...new Set(value.map(ext => ext.startsWith('.') ? ext : `.${ext}`))
@@ -117,7 +117,7 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   }
 
   set restoreViewState (value: RestoreViewState) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor.restoreViewState',
       value,
       server: true
@@ -146,7 +146,7 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   }
 
   set codeLens (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor.codeLens',
       value,
       server: true
@@ -154,7 +154,7 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   }
 
   handleReset () {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor',
       value: defaultState().uiSettings.editor,
       server: true

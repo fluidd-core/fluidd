@@ -80,7 +80,7 @@ export default class FilesMixin extends Vue {
     if (currentDownload) {
       currentDownload.abortController.abort()
 
-      this.$store.dispatch('files/removeFileDownload', currentDownload.uid)
+      this.$typedDispatch('files/removeFileDownload', currentDownload.uid)
     }
 
     // Sort out the filepath
@@ -93,7 +93,7 @@ export default class FilesMixin extends Vue {
       const abortController = new AbortController()
 
       // Add an entry to vuex indicating we're downloading a file.
-      this.$store.dispatch('files/updateFileDownload', {
+      this.$typedDispatch('files/updateFileDownload', {
         uid,
         filepath,
         size,
@@ -128,7 +128,7 @@ export default class FilesMixin extends Vue {
             size = payload.size = event.total
           }
 
-          this.$store.dispatch('files/updateFileDownload', payload)
+          this.$typedDispatch('files/updateFileDownload', payload)
         }
       })
 
@@ -136,7 +136,7 @@ export default class FilesMixin extends Vue {
 
       return response
     } finally {
-      this.$store.dispatch('files/removeFileDownload', uid)
+      this.$typedDispatch('files/removeFileDownload', uid)
     }
   }
 
@@ -204,7 +204,7 @@ export default class FilesMixin extends Vue {
     try {
       const abortController = new AbortController()
 
-      this.$store.dispatch('files/updateFileUpload', {
+      this.$typedDispatch('files/updateFileUpload', {
         uid,
         filepath,
         size: file.size,
@@ -224,7 +224,7 @@ export default class FilesMixin extends Vue {
             return
           }
 
-          this.$store.dispatch('files/updateFileUpload', {
+          this.$typedDispatch('files/updateFileUpload', {
             uid,
             loaded: event.loaded,
             percent: event.progress ? Math.round(event.progress * 100) : 0,
@@ -237,7 +237,7 @@ export default class FilesMixin extends Vue {
 
       return response
     } finally {
-      this.$store.dispatch('files/removeFileUpload', uid)
+      this.$typedDispatch('files/removeFileUpload', uid)
     }
   }
 
@@ -269,7 +269,7 @@ export default class FilesMixin extends Vue {
           ? `${fullPath}/${fileObject.name}`
           : fileObject.name
 
-        this.$store.dispatch('files/updateFileUpload', {
+        this.$typedDispatch('files/updateFileUpload', {
           uid,
           filepath,
           size: fileObject.size,
@@ -304,7 +304,7 @@ export default class FilesMixin extends Vue {
           consola.error('[FileUpload] file', error)
         }
       } else {
-        this.$store.dispatch('files/removeFileUpload', fileUpload.uid)
+        this.$typedDispatch('files/removeFileUpload', fileUpload.uid)
       }
     }
   }

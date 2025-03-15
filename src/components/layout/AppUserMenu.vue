@@ -115,7 +115,7 @@ export default class AppNotificationMenu extends Vue {
   }
 
   async handleLogout () {
-    await this.$store.dispatch('auth/checkTrust')
+    await this.$typedDispatch('auth/checkTrust')
   }
 }
 </script>

@@ -122,7 +122,7 @@ export default class ReprintTab extends Mixins(StateMixin, FilesMixin) {
   }
 
   handleJobThumbnailError (job: HistoryItem) {
-    this.$store.dispatch('history/clearHistoryThumbnails', job.job_id)
+    this.$typedDispatch('history/clearHistoryThumbnails', job.job_id)
   }
 }
 </script>

@@ -89,7 +89,7 @@ export default class FileSystemUploadDialog extends Mixins(StateMixin) {
     if (!file.complete) {
       // Hasn't started uploading...
       if (file.loaded === 0) {
-        this.$store.dispatch('files/updateFileUpload', {
+        this.$typedDispatch('files/updateFileUpload', {
           uid: file.uid,
           cancelled: true
         })

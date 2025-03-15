@@ -149,7 +149,7 @@ export default class MacroCategorySettings extends Vue {
   }
 
   set macros (macros: Macro[]) {
-    this.$store.dispatch('macros/saveAllOrder', macros)
+    this.$typedDispatch('macros/saveAllOrder', macros)
   }
 
   get categories (): MacroCategory[] {
@@ -189,18 +189,18 @@ export default class MacroCategorySettings extends Vue {
   }
 
   handleAllOn () {
-    this.$store.dispatch('macros/saveAllOn', this.macros)
+    this.$typedDispatch('macros/saveAllOn', this.macros)
   }
 
   handleAllOff () {
-    this.$store.dispatch('macros/saveAllOff', this.macros)
+    this.$typedDispatch('macros/saveAllOff', this.macros)
   }
 
   handleMacroVisible (macro: Macro, value: boolean) {
     const newMacro = {
       ...macro, visible: value
     }
-    this.$store.dispatch('macros/saveMacro', newMacro)
+    this.$typedDispatch('macros/saveMacro', newMacro)
   }
 }
 </script>

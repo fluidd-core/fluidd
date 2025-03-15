@@ -2,7 +2,7 @@ import type { MutationTree } from 'vuex'
 import type { WaitState } from './types'
 import { defaultState } from './state'
 
-export const mutations: MutationTree<WaitState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -25,4 +25,4 @@ export const mutations: MutationTree<WaitState> = {
     const i = state.waits.indexOf(payload)
     if (i !== -1) state.waits.splice(i, 1)
   }
-}
+} satisfies MutationTree<WaitState>

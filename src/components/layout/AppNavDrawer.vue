@@ -186,7 +186,7 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set layoutMode (val: boolean) {
-    this.$store.commit('config/setLayoutMode', val)
+    this.$typedCommit('config/setLayoutMode', val)
   }
 }
 </script>

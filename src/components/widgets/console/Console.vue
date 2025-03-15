@@ -92,7 +92,7 @@ export default class Console extends Mixins(StateMixin) {
   }
 
   set currentCommand (val: string) {
-    this.$store.commit('console/setConsoleCommand', val)
+    this.$typedCommit('console/setConsoleCommand', val)
   }
 
   get flipLayout (): boolean {

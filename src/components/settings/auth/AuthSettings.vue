@@ -154,15 +154,15 @@ export default class AuthSettings extends Vue {
     )
 
     if (result) {
-      this.$store.dispatch('auth/removeUser', user)
+      this.$typedDispatch('auth/removeUser', user)
     }
   }
 
   async handleSaveUser (user: AppUser) {
-    await this.$store.dispatch('auth/addUser', user)
+    await this.$typedDispatch('auth/addUser', user)
 
     // We only want to check trust if this is the first user being added.
-    if (this.users.length === 0) this.$store.dispatch('auth/checkTrust')
+    if (this.users.length === 0) this.$typedDispatch('auth/checkTrust')
   }
 }
 </script>

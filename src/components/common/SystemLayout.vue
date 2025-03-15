@@ -34,7 +34,7 @@ export default class SystemLayout extends Mixins(StateMixin) {
   }
 
   set layoutMode (val: boolean) {
-    this.$store.commit('config/setLayoutMode', val)
+    this.$typedCommit('config/setLayoutMode', val)
     this.close()
   }
 

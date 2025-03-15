@@ -200,7 +200,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   set filters (value: FileFilterType[]) {
-    this.$store.dispatch('config/updateFileSystemActiveFilters', { root: this.currentRoot, value })
+    this.$typedDispatch('config/updateFileSystemActiveFilters', { root: this.currentRoot, value })
   }
 
   // Maintains content menu state.
@@ -506,7 +506,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   set currentPath (path: string) {
-    this.$store.dispatch('files/updateCurrentPathByRoot', { root: this.currentRoot, path })
+    this.$typedDispatch('files/updateCurrentPathByRoot', { root: this.currentRoot, path })
   }
 
   // Returns the current path with no root.
@@ -832,7 +832,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         this.$router.push({ name: 'gcode_preview' })
       }
 
-      this.$store.dispatch('gcodePreview/loadGcode', {
+      this.$typedDispatch('gcodePreview/loadGcode', {
         file,
         gcode
       })
@@ -896,7 +896,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     const spoolmanSupported: boolean = this.$typedGetters['spoolman/getAvailable']
     const autoSpoolSelectionDialog: boolean = this.$typedState.config.uiSettings.spoolman.autoSpoolSelectionDialog
     if (spoolmanSupported && autoSpoolSelectionDialog) {
-      this.$store.commit('spoolman/setDialogState', {
+      this.$typedCommit('spoolman/setDialogState', {
         show: true,
         filename
       })
@@ -1027,11 +1027,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   async handleUpload (files: FileList | File[] | FileWithPath[], print: boolean) {
     const wait = `${this.$waits.onFileSystem}/${this.currentPath}/`
 
-    this.$store.dispatch('wait/addWait', wait)
+    this.$typedDispatch('wait/addWait', wait)
 
     await this.uploadFiles(files, this.visiblePath, this.currentRoot, print)
 
-    this.$store.dispatch('wait/removeWait', wait)
+    this.$typedDispatch('wait/removeWait', wait)
   }
 
   handleAddDir (name: string) {

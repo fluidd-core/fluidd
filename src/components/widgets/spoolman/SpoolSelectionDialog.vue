@@ -296,7 +296,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   set open (val: boolean) {
-    this.$store.commit('spoolman/setDialogState', {
+    this.$typedCommit('spoolman/setDialogState', {
       ...this.$typedState.spoolman.dialog,
       show: val
     })
@@ -618,7 +618,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   handleSortOrderKeyChange (value?: string) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.selectionDialogSortOrder.key',
       value: value ?? null,
       server: true
@@ -626,7 +626,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   handleSortOrderDescChange (value?: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.selectionDialogSortOrder.desc',
       value: value ?? null,
       server: true

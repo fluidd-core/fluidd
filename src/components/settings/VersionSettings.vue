@@ -215,7 +215,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   set enableNotifications (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.enableVersionNotifications',
       value,
       server: true
@@ -242,7 +242,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
 
   // Will attempt to update the requirec component based on its type.
   handleUpdateComponent (key: string) {
-    this.$store.dispatch('version/onUpdateStatus', { busy: true })
+    this.$typedDispatch('version/onUpdateStatus', { busy: true })
     switch (key) {
       case 'klipper':
         SocketActions.machineUpdateKlipper()
@@ -266,7 +266,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
 
   // Will attempt to recover a component based on its type and current status.
   handleRecoverComponent (component: UpdatePackage) {
-    this.$store.dispatch('version/onUpdateStatus', { busy: true })
+    this.$typedDispatch('version/onUpdateStatus', { busy: true })
     const dirty = ('is_dirty' in component) ? component.is_dirty : false
     const valid = ('is_valid' in component) ? component.is_valid : true
     if (dirty) {

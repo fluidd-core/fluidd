@@ -2,7 +2,7 @@ import type { MutationTree } from 'vuex'
 import type { SocketState } from './types'
 import { defaultState } from './state'
 
-export const mutations: MutationTree<SocketState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -38,4 +38,4 @@ export const mutations: MutationTree<SocketState> = {
   setConnectionId (state, payload) {
     state.connectionId = payload
   }
-}
+} satisfies MutationTree<SocketState>

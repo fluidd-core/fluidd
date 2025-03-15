@@ -394,7 +394,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set autoZoom (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.autoZoom',
       value,
       server: true
@@ -408,7 +408,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set followProgress (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.followProgress',
       value,
       server: true
@@ -420,7 +420,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set showPreviousLayer (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showPreviousLayer',
       value,
       server: true
@@ -432,7 +432,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set showCurrentLayer (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showCurrentLayer',
       value,
       server: true
@@ -444,7 +444,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set showNextLayer (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showNextLayer',
       value,
       server: true
@@ -456,7 +456,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set showMoves (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showMoves',
       value,
       server: true
@@ -468,7 +468,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set showExtrusions (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showExtrusions',
       value,
       server: true
@@ -480,7 +480,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set showRetractions (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showRetractions',
       value,
       server: true
@@ -492,7 +492,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   set showParts (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showParts',
       value,
       server: true

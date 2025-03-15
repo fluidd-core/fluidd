@@ -18,7 +18,7 @@ const mjpegstreamerServices: WebcamService[] = [
   'mjpegstreamer-adaptive'
 ]
 
-export const actions: ActionTree<WebcamsState, RootState> = {
+export const actions = {
   async reset ({ commit }) {
     commit('setReset')
   },
@@ -90,4 +90,4 @@ export const actions: ActionTree<WebcamsState, RootState> = {
       commit('setWebcamsList', payload)
     }
   }
-}
+} satisfies ActionTree<WebcamsState, RootState>

@@ -215,7 +215,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   set sortBy (value: string | null | undefined) {
-    this.$store.dispatch('config/updateFileSystemSortBy', { root: this.root, value: value ?? null })
+    this.$typedDispatch('config/updateFileSystemSortBy', { root: this.root, value: value ?? null })
   }
 
   get sortDesc (): boolean {
@@ -225,7 +225,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   set sortDesc (value: boolean | null | undefined) {
-    this.$store.dispatch('config/updateFileSystemSortDesc', { root: this.root, value: value ?? null })
+    this.$typedDispatch('config/updateFileSystemSortDesc', { root: this.root, value: value ?? null })
   }
 
   customSort (items: FileBrowserEntry[], sortBy: string[], sortDesc: boolean[], locale: string) {

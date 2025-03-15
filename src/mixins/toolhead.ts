@@ -101,7 +101,7 @@ export default class ToolheadMixin extends Vue {
   }
 
   set manualProbeDialogOpen (value: boolean) {
-    this.$store.dispatch('printer/manualProbeDialogOpen', value)
+    this.$typedDispatch('printer/manualProbeDialogOpen', value)
   }
 
   get bedScrewsAdjustDialogOpen (): boolean {
@@ -109,7 +109,7 @@ export default class ToolheadMixin extends Vue {
   }
 
   set bedScrewsAdjustDialogOpen (value: boolean) {
-    this.$store.dispatch('printer/bedScrewsAdjustDialogOpen', value)
+    this.$typedDispatch('printer/bedScrewsAdjustDialogOpen', value)
   }
 
   get screwsTiltAdjustDialogOpen (): boolean {
@@ -117,7 +117,7 @@ export default class ToolheadMixin extends Vue {
   }
 
   set screwsTiltAdjustDialogOpen (value: boolean) {
-    this.$store.dispatch('printer/screwsTiltAdjustDialogOpen', value)
+    this.$typedDispatch('printer/screwsTiltAdjustDialogOpen', value)
   }
 
   get forceMoveEnabled (): boolean {

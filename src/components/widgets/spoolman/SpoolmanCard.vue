@@ -203,7 +203,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
   labelWidth = '86px'
 
   handleSelectSpool (targetMacro?: Macro) {
-    this.$store.commit('spoolman/setDialogState', {
+    this.$typedCommit('spoolman/setDialogState', {
       show: true,
       targetMacro: targetMacro?.name
     })

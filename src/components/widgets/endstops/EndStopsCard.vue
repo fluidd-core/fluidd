@@ -103,7 +103,7 @@ export default class EndStopsCard extends Mixins(StateMixin) {
   }
 
   destroyed () {
-    this.$store.commit('printer/setClearEndStops')
+    this.$typedCommit('printer/setClearEndStops')
   }
 }
 </script>

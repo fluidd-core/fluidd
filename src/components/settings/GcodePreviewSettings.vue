@@ -203,7 +203,7 @@ export default class GcodePreviewSettings extends Vue {
   }
 
   setExtrusionLineWidth (value: number) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.extrusionLineWidth',
       value: +value,
       server: true
@@ -215,7 +215,7 @@ export default class GcodePreviewSettings extends Vue {
   }
 
   setMoveLineWidth (value: number) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.moveLineWidth',
       value: +value,
       server: true
@@ -227,7 +227,7 @@ export default class GcodePreviewSettings extends Vue {
   }
 
   setRetractionIconSize (value: number) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.retractionIconSize',
       value: +value,
       server: true
@@ -239,7 +239,7 @@ export default class GcodePreviewSettings extends Vue {
   }
 
   set flipHorizontal (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.flip.horizontal',
       value,
       server: true
@@ -251,7 +251,7 @@ export default class GcodePreviewSettings extends Vue {
   }
 
   set flipVertical (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.flip.vertical',
       value,
       server: true
@@ -263,7 +263,7 @@ export default class GcodePreviewSettings extends Vue {
   }
 
   set drawOrigin (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.drawOrigin',
       value,
       server: true
@@ -275,7 +275,7 @@ export default class GcodePreviewSettings extends Vue {
   }
 
   set drawBackground (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.drawBackground',
       value,
       server: true
@@ -287,7 +287,7 @@ export default class GcodePreviewSettings extends Vue {
   }
 
   set showAnimations (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showAnimations',
       value,
       server: true
@@ -299,7 +299,7 @@ export default class GcodePreviewSettings extends Vue {
   }
 
   setMinLayerHeight (value: number) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.minLayerHeight',
       value: +value,
       server: true
@@ -311,7 +311,7 @@ export default class GcodePreviewSettings extends Vue {
   }
 
   set autoLoadOnPrintStart (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.autoLoadOnPrintStart',
       value,
       server: true
@@ -327,7 +327,7 @@ export default class GcodePreviewSettings extends Vue {
   }
 
   set autoLoadMobileOnPrintStart (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.autoLoadMobileOnPrintStart',
       value,
       server: true
@@ -339,7 +339,7 @@ export default class GcodePreviewSettings extends Vue {
   }
 
   set autoFollowOnFileLoad (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.autoFollowOnFileLoad',
       value,
       server: true
@@ -351,7 +351,7 @@ export default class GcodePreviewSettings extends Vue {
   }
 
   set hideSinglePartBoundingBox (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.hideSinglePartBoundingBox',
       value,
       server: true
@@ -359,7 +359,7 @@ export default class GcodePreviewSettings extends Vue {
   }
 
   handleReset () {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview',
       value: defaultState().uiSettings.gcodePreview,
       server: true

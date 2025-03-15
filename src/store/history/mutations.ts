@@ -3,7 +3,7 @@ import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type { HistoryState, MoonrakerHistoryItem } from './types'
 
-export const mutations: MutationTree<HistoryState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -72,4 +72,4 @@ export const mutations: MutationTree<HistoryState> = {
       })
     }
   }
-}
+} satisfies MutationTree<HistoryState>

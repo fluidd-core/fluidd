@@ -13,7 +13,7 @@ import i18n from '@/plugins/i18n'
 
 // let retryTimeout: number
 
-export const actions: ActionTree<PrinterState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -291,4 +291,4 @@ export const actions: ActionTree<PrinterState, RootState> = {
       data
     }, { root: true })
   }
-}
+} satisfies ActionTree<PrinterState, RootState>

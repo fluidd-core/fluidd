@@ -54,7 +54,7 @@ export default class ApiKeyDialog extends Vue {
   }
 
   handleRefreshApiKey () {
-    this.$store.dispatch('auth/refreshApiKey')
+    this.$typedDispatch('auth/refreshApiKey')
   }
 }
 </script>

@@ -2,7 +2,7 @@ import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type { MeshState } from './types'
 
-export const mutations: MutationTree<MeshState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -29,4 +29,4 @@ export const mutations: MutationTree<MeshState> = {
   setFlatSurface (state, payload) {
     state.flatSurface = payload
   }
-}
+} satisfies MutationTree<MeshState>
