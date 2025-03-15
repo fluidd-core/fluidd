@@ -77,7 +77,7 @@ app:
         open: Немає контакту
         triggered: Є контакт
     msg:
-      subtitle: Оновіть статус кінцевиків за допомого кнопки оновити
+      subtitle: Оновіть статус кінцевиків за допомого кнопки оновити.
     label:
       endstop: Кінцева зупинка %{name}
   file_system:
@@ -174,11 +174,11 @@ app:
       delete: Видалити
       download: Завантажити
       edit: Редагувати
-      exit_layout: Вийти з режиму редагування макету
+      exit_layout: Вихід
       extrude: Вичавити
       filter: Фільтр
       forgot_password: Забули ваш пароль?
-      heaters_off: Нагрівачі ВИМК.
+      heaters_off: Нагрівачі ВИМК
       job_queue: Черга завдань
       load_all: Завантажити все
       login: Вхід
@@ -199,8 +199,8 @@ app:
       rename: Перейменувати
       reprint: Друкувати ще раз
       reset_file: Скинути файл
-      reset_layout: Скинути макет панелі приладів
-      reset_default_layout: Скинути макет інтерфейсу
+      reset_layout: Скинути
+      reset_default_layout: Скинути за замовчуванням
       restart_firmware: Перезавантажити прошивку
       restart_service: Перезавантажити %{service}
       restart_service_klipper: Перезавантажити Klipper
@@ -214,7 +214,7 @@ app:
       save_config_and_restart: Зберегти налаштування і перезавантажити
       send: Відправити
       set_color: Встановити колір
-      set_default_layout: Встановити відображення за замовчуванням
+      set_default_layout: Зберегти як за замовчуванням
       shutdown: Вимкнути
       snooze: Відкласти
       socket_reconnect: Повторне підключення
@@ -294,7 +294,7 @@ app:
       manage_accounts: Управління акаунтами
       user_managed_source: Користувач аутентифікується за допомогою %{source}
       m117: M117
-      moonraker: Moonraker
+      moonraker: Мунрейкер
       name: Імʼя
       new_password: Новий пароль
       no_notifications: Немає сповіщень
@@ -304,7 +304,7 @@ app:
       password: Пароль
       partial_of_total: '%{partial} з %{total}'
       power: Живлення
-      pressure_advance: Pressure Advance
+      pressure_advance: Випередження тиску
       printers: Принтери
       progress: Прогрес
       requested_speed: Запит швидкості
@@ -509,12 +509,12 @@ app:
     tooltip:
       browse_metrics: Доступні показники
       estop: Аварійна зупинка
-      managed_by_moonraker: Managed by your moonraker configuration
+      managed_by_moonraker: Керується вашою конфігурацією moonraker
       notifications: Сповіщення
-      reload_klipper: Перезавантажує налаштування klipper
+      reload_klipper: Перезавантажує налаштування klipper.
       reload_restart_klipper: Перезавантажує налаштування klipper і перезавантажує
-        MCU
-      restart_klipper: Перезавантажує сервіс klipper
+        MCU.
+      restart_klipper: Перезавантажує сервіс klipper.
       run_collector: Запустити колектор
       rollover_logs: Перекидні колоди
       file_browser_configuration_help: Скопіюйте файли та папки до файлів конфігурації,
@@ -523,16 +523,25 @@ app:
       file_browser_help: Перетягніть файли чи папки за межами веб-переглядача, щоб
         завантажити їх сюди<br>Перемістіть файли та папки, перетягнувши їх у підпапки
         або ".."
+      exit_layout: Вийти з режиму макета
+      reset_layout: Скинути поточний макет до макета за замовчуванням для всього сервера
+      reset_default_layout: Скинути макет за замовчуванням для всього сервера до заводських
+      set_default_layout: Установити поточний макет як макет за замовчуванням для
+        всього сервера
   history:
     msg:
-      confirm: Ви впевнені? Це очистить всю історію та статистику принтера.
+      confirm: Ви впевнені? Це очистить всю історію та статистику принтера
       confirm_stats: Ви впевнені? Це очистить всю статистику.
       confirm_jobs: Ви впевнені? Це очистить усі завдання.
   job_queue:
     msg:
-      confirm: Ви впевнені? Це очистить всю чергу принтера.
+      confirm: Ви впевнені? Це очистить всю чергу принтера
     label:
       number_of_copies: Кількість примірників
+      print_time: Час друку
+      filament: Нитка розжарення
+      eta: ETA
+      unknown_jobs: Невідомі вакансії
     title:
       multiply_job: Помножити роботу | Розмножте робочі місця
     tooltip:
@@ -545,7 +554,7 @@ app:
       complete: Готово
       idle: Чекає завдання
       loading: Завантаження
-      paused: Пауза
+      paused: Паузи
       printing: Йде друк
       ready: Готовий
       standby: Режим очікування
@@ -586,7 +595,7 @@ app:
       all_off: Вимкнути все
       all_on: Увімкнути все
       aspect_ratio: Співвідношення сторін
-      aspect_ratio_format: '[width : height]'
+      aspect_ratio_format: '[ширина : висота]'
       auto_edit_extensions: Розширення файлів, які автоматично відкриваються в режимі
         редагування
       auto_follow_on_file_load: Автоматично стежити за прогресом завантаження файлу
@@ -598,7 +607,7 @@ app:
       camera_flip_y: Перевернути вертикально
       camera_fullscreen_action:
         title: Повноекранна дія
-        embed: Embed
+        embed: Вставити
         rawstream: Потік Raw
       camera_rotate_by: Обертати на
       camera_stream_type: Тип потоку
@@ -687,7 +696,7 @@ app:
       show_manual_probe_dialog_automatically: Показувати діалогове вікно "Manual Probe"
         автоматично
       show_bed_screws_adjust_dialog_automatically: Автоматично відображати діалогове
-        вікно "Налаштування гвинтів".
+        вікно "Налаштування гвинтів"
       print_in_progress_layout: Виконується макет друку
       to_browser_session_storage: У сховище сеансу браузера
       show_gas_resistance: Показати газовий опір
@@ -832,7 +841,7 @@ app:
         (%{min}<small>°C</small>)
       home_xy: Додому XY
       home_z: Додому Z
-      manual_probe: Manual Probe
+      manual_probe: Ручний зонд
       motors_off: Вимкнути мотори
       relative_positioning: Відносне позиціонування
       select_tool: Виберіть інструмент %{tool}
@@ -902,7 +911,7 @@ app:
     setting:
       enable: Увімкнути
       auto_render: Автоматичний рендер
-      crf: Constant Rate Factor
+      crf: Фактор постійної ставки
       duplicatelastframe: Дублювання останніх кадрів
       fw_retract: Використовувати ретракт з прошивки
       gcode_verbose: Детальний GCode
@@ -926,7 +935,7 @@ app:
         custom: Індивідуальний
         front_left: Передній лівий
         front_right: Передній правий
-        center: Center
+        center: центр
         back_left: Задній лівий
         back_right: Задній правий
         x_only: Перемістити лише X
@@ -964,6 +973,8 @@ app:
       price: Ціна
       used_weight: Використовується
       filament_name: Нитка розжарення
+      colors: Кольори
+      diameter: Діаметр
     msg:
       no_spool: Ви не вибрали котушку. Ви впевнені, що хочете друкувати без відстеження
         нитки?
