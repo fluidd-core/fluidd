@@ -358,43 +358,43 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   panning = false
 
   get themeIsDark (): boolean {
-    return this.$store.state.config.uiSettings.theme.isDark
+    return this.$typedState.config.uiSettings.theme.isDark
   }
 
   get filePosition (): number {
-    return this.$store.state.printer.printer.virtual_sdcard?.file_position ?? 0
+    return this.$typedState.printer.printer.virtual_sdcard?.file_position ?? 0
   }
 
   get extrusionLineWidth (): number {
-    return this.$store.state.config.uiSettings.gcodePreview.extrusionLineWidth
+    return this.$typedState.config.uiSettings.gcodePreview.extrusionLineWidth
   }
 
   get moveLineWidth (): number {
-    return this.$store.state.config.uiSettings.gcodePreview.moveLineWidth
+    return this.$typedState.config.uiSettings.gcodePreview.moveLineWidth
   }
 
   get retractionIconSize (): number {
-    return this.$store.state.config.uiSettings.gcodePreview.retractionIconSize
+    return this.$typedState.config.uiSettings.gcodePreview.retractionIconSize
   }
 
   get drawBackground (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.drawBackground
+    return this.$typedState.config.uiSettings.gcodePreview.drawBackground
   }
 
   get drawOrigin (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.drawOrigin
+    return this.$typedState.config.uiSettings.gcodePreview.drawOrigin
   }
 
   get showAnimations (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.showAnimations
+    return this.$typedState.config.uiSettings.gcodePreview.showAnimations
   }
 
   get autoZoom (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.autoZoom
+    return this.$typedState.config.uiSettings.gcodePreview.autoZoom
   }
 
   set autoZoom (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.autoZoom',
       value,
       server: true
@@ -404,11 +404,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get followProgress (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.followProgress
+    return this.$typedState.config.uiSettings.gcodePreview.followProgress
   }
 
   set followProgress (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.followProgress',
       value,
       server: true
@@ -416,11 +416,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get showPreviousLayer (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.showPreviousLayer
+    return this.$typedState.config.uiSettings.gcodePreview.showPreviousLayer
   }
 
   set showPreviousLayer (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showPreviousLayer',
       value,
       server: true
@@ -428,11 +428,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get showCurrentLayer (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.showCurrentLayer
+    return this.$typedState.config.uiSettings.gcodePreview.showCurrentLayer
   }
 
   set showCurrentLayer (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showCurrentLayer',
       value,
       server: true
@@ -440,11 +440,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get showNextLayer (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.showNextLayer
+    return this.$typedState.config.uiSettings.gcodePreview.showNextLayer
   }
 
   set showNextLayer (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showNextLayer',
       value,
       server: true
@@ -452,11 +452,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get showMoves (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.showMoves
+    return this.$typedState.config.uiSettings.gcodePreview.showMoves
   }
 
   set showMoves (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showMoves',
       value,
       server: true
@@ -464,11 +464,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get showExtrusions (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.showExtrusions
+    return this.$typedState.config.uiSettings.gcodePreview.showExtrusions
   }
 
   set showExtrusions (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showExtrusions',
       value,
       server: true
@@ -476,11 +476,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get showRetractions (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.showRetractions
+    return this.$typedState.config.uiSettings.gcodePreview.showRetractions
   }
 
   set showRetractions (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showRetractions',
       value,
       server: true
@@ -488,11 +488,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get showParts (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.showParts
+    return this.$typedState.config.uiSettings.gcodePreview.showParts
   }
 
   set showParts (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showParts',
       value,
       server: true
@@ -504,11 +504,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get hasExcludeObjectParts (): boolean {
-    return this.$store.getters['printer/getHasExcludeObjectParts']
+    return this.$typedGetters['printer/getHasExcludeObjectParts']
   }
 
   get printerFile (): AppFileWithMeta | undefined {
-    return this.$store.getters['printer/getPrinterFile']
+    return this.$typedGetters['printer/getPrinterFile']
   }
 
   get showExcludeObjects (): boolean {
@@ -532,11 +532,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get flipX (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.flip.horizontal
+    return this.$typedState.config.uiSettings.gcodePreview.flip.horizontal
   }
 
   get flipY (): boolean {
-    return this.$store.state.config.uiSettings.gcodePreview.flip.vertical
+    return this.$typedState.config.uiSettings.gcodePreview.flip.vertical
   }
 
   get flipTransform () {
@@ -556,11 +556,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get hasRoundBed (): boolean {
-    return this.$store.getters['printer/getHasRoundBed']
+    return this.$typedGetters['printer/getHasRoundBed']
   }
 
   get bedSize (): BedSize {
-    return this.$store.getters['printer/getBedSize']
+    return this.$typedGetters['printer/getBedSize']
   }
 
   get viewBox (): BBox {
@@ -619,15 +619,15 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       return this.defaultLayerPaths
     }
 
-    const layer: Layer | undefined = this.$store.getters['gcodePreview/getLayers'][this.layer]
+    const layer: Layer | undefined = this.$typedGetters['gcodePreview/getLayers'][this.layer]
 
     if (this.followProgress) {
-      const end: number = this.$store.getters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
+      const end: number = this.$typedGetters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
 
-      return this.$store.getters['gcodePreview/getPaths'](layer?.move ?? 0, end)
+      return this.$typedGetters['gcodePreview/getPaths'](layer?.move ?? 0, end)
     }
 
-    return this.$store.getters['gcodePreview/getPaths'](layer?.move ?? 0, this.progress)
+    return this.$typedGetters['gcodePreview/getPaths'](layer?.move ?? 0, this.progress)
   }
 
   get svgPathActive (): LayerPaths {
@@ -635,7 +635,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       return this.defaultLayerPaths
     }
 
-    return this.$store.getters['gcodePreview/getLayerPaths'](this.layer)
+    return this.$typedGetters['gcodePreview/getLayerPaths'](this.layer)
   }
 
   get svgPathPrevious (): LayerPaths {
@@ -643,29 +643,29 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       return this.defaultLayerPaths
     }
 
-    return this.$store.getters['gcodePreview/getLayerPaths'](this.layer - 1)
+    return this.$typedGetters['gcodePreview/getLayerPaths'](this.layer - 1)
   }
 
   get svgPathNext (): LayerPaths {
-    const layers: Layer[] = this.$store.getters['gcodePreview/getLayers']
+    const layers: Layer[] = this.$typedGetters['gcodePreview/getLayers']
 
     if (this.disabled || this.layer >= layers.length) {
       return this.defaultLayerPaths
     }
 
-    return this.$store.getters['gcodePreview/getLayerPaths'](this.layer + 1)
+    return this.$typedGetters['gcodePreview/getLayerPaths'](this.layer + 1)
   }
 
   get svgPathParts (): string[] {
-    return this.$store.getters['gcodePreview/getPartPaths']
+    return this.$typedGetters['gcodePreview/getPartPaths']
   }
 
   get file (): AppFile | undefined {
-    return this.$store.state.gcodePreview.file
+    return this.$typedState.gcodePreview.file
   }
 
   get bounds (): BBox {
-    return this.$store.getters['gcodePreview/getBounds']
+    return this.$typedGetters['gcodePreview/getBounds']
   }
 
   @Watch('focused')

@@ -146,7 +146,7 @@ export default class MmuClogMeter extends Mixins(StateMixin, MmuMixin) {
     return 420 - (this.encoderDesiredHeadroom / this.encoderDetectionLength) * 300
   }
 
-  @Watch('$store.state.printer.printer.mmu.encoder.headroom')
+  @Watch('$typedState.printer.printer.mmu.encoder.headroom')
   onHeadroomChanged (newHeadroom: number): void {
     const clogPercent =
             (Math.min(Math.max(0, this.encoderDetectionLength - newHeadroom), this.encoderDetectionLength) /
@@ -156,7 +156,7 @@ export default class MmuClogMeter extends Mixins(StateMixin, MmuMixin) {
     this.animateMeter(offset)
   }
 
-  @Watch('$store.state.printer.printer.mmu.encoder.min_headroom')
+  @Watch('$typedState.printer.printer.mmu.encoder.min_headroom')
   onMinHeadroomChanged (newMinHeadroom: number): void {
     const clogPercent =
             (Math.min(Math.max(0, this.encoderDetectionLength - newMinHeadroom), this.encoderDetectionLength) /

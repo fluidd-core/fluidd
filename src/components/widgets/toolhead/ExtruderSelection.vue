@@ -23,11 +23,11 @@ import type { KnownExtruder } from '@/store/printer/types'
 @Component({})
 export default class ExtruderSelection extends Mixins(StateMixin) {
   get extruders (): KnownExtruder[] {
-    return this.$store.getters['printer/getExtruders']
+    return this.$typedGetters['printer/getExtruders']
   }
 
   get extruder (): string {
-    return this.$store.state.printer.printer.toolhead.extruder
+    return this.$typedState.printer.printer.toolhead.extruder
   }
 
   set extruder (extruder: string) {

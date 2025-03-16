@@ -5,7 +5,7 @@ import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import i18n from '@/plugins/i18n'
 
-export const actions: ActionTree<VersionState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -81,4 +81,4 @@ export const actions: ActionTree<VersionState, RootState> = {
     consola.debug('Finished updating all services', payload)
     window.location.reload()
   }
-}
+} satisfies ActionTree<VersionState, RootState>

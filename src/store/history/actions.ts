@@ -5,7 +5,7 @@ import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import getFilePaths from '@/util/get-file-paths'
 
-export const actions: ActionTree<HistoryState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -87,4 +87,4 @@ export const actions: ActionTree<HistoryState, RootState> = {
   async onDelete ({ commit }, payload) {
     commit('setDeleteJob', payload.deleted_jobs)
   }
-}
+} satisfies ActionTree<HistoryState, RootState>

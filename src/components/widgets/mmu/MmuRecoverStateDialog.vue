@@ -207,11 +207,11 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
   }
 
   private gateIndexText (gateIndex: number): string {
-    const num_units = this.$store.state.printer.printer?.mmu_machine?.num_units
+    const num_units = this.$typedState.printer.printer?.mmu_machine?.num_units
     if (num_units > 1) {
       for (let i = 0; i < num_units; i++) {
         const unitRef = `unit_${i}`
-        const unit = this.$store.state.printer.printer?.mmu_machine?.[unitRef]
+        const unit = this.$typedState.printer.printer?.mmu_machine?.[unitRef]
         if (i > 0 && gateIndex >= unit.first_gate && gateIndex < unit.first_gate + unit.num_gates) {
           return `${gateIndex} (unit #${i + 1})`
         }
@@ -278,12 +278,12 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
   }
 
   get open (): boolean {
-    return this.$store.state.mmu.show_recover_state_dialog
+    return this.$typedState.mmu.show_recover_state_dialog
   }
 
   set open (val: boolean) {
-    this.$store.commit('mmu/setDialogState', {
-      ...this.$store.state.spoolman.dialog,
+    this.$typedCommit('mmu/setDialogState', {
+      ...this.$typedState.spoolman.dialog,
       show: val
     })
   }

@@ -10,7 +10,7 @@ import isKeyOf from '@/util/is-key-of'
 import getFilePaths from '@/util/get-file-paths'
 import type { AppFileWithMeta } from '../files/types'
 
-export const getters: GetterTree<PrinterState, RootState> = {
+export const getters = {
 
   /**
    * Indicates if klippy is connected or not.
@@ -1065,7 +1065,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return (
       !error &&
       max_deviation == null &&
-      results &&
+      results != null &&
       Object.keys(results).length > 0
     )
   },
@@ -1120,4 +1120,4 @@ export const getters: GetterTree<PrinterState, RootState> = {
       exclude_object.objects.length > 0
     )
   }
-}
+} satisfies GetterTree<PrinterState, RootState>

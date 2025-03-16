@@ -25,7 +25,7 @@ export default class ConsoleItem extends Vue {
   readonly value!: ConsoleEntry
 
   get knownCommands (): GcodeHelp {
-    return this.$store.getters['console/getAllKnownCommands']
+    return this.$typedGetters['console/getAllKnownCommands']
   }
 
   get itemMessage () {

@@ -40,11 +40,11 @@ import type { TextSortOrder } from '@/store/config/types'
 @Component({})
 export default class FileEditorSettings extends Vue {
   get textSortOrder (): TextSortOrder {
-    return this.$store.state.config.uiSettings.general.textSortOrder
+    return this.$typedState.config.uiSettings.general.textSortOrder
   }
 
   set textSortOrder (value: TextSortOrder) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.textSortOrder',
       value,
       server: true
@@ -69,11 +69,11 @@ export default class FileEditorSettings extends Vue {
   }
 
   get filesAndFoldersDragAndDrop (): boolean {
-    return this.$store.state.config.uiSettings.general.filesAndFoldersDragAndDrop
+    return this.$typedState.config.uiSettings.general.filesAndFoldersDragAndDrop
   }
 
   set filesAndFoldersDragAndDrop (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.filesAndFoldersDragAndDrop',
       value,
       server: true

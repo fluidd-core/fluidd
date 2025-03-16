@@ -3,7 +3,7 @@ import type { MutationTree } from 'vuex'
 import type { MoonrakerSensors, MoonrakerSensorsState } from './types'
 import { defaultState } from './state'
 
-export const mutations: MutationTree<MoonrakerSensorsState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -20,4 +20,4 @@ export const mutations: MutationTree<MoonrakerSensorsState> = {
       Vue.set(state.sensors[sensorKey], 'values', payload[sensorKey])
     }
   }
-}
+} satisfies MutationTree<MoonrakerSensorsState>

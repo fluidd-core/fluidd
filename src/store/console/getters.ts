@@ -4,7 +4,7 @@ import type { RootState } from '../types'
 
 const _tempWaitExpr = /^(?:ok\s+)?(?:b|t\d+):\d+\.\d+ \/\d+\.+\d+/i
 
-export const getters: GetterTree<ConsoleState, RootState> = {
+export const getters = {
   /**
    * Return a list of all available console entries, filtered appropriately.
    */
@@ -31,4 +31,4 @@ export const getters: GetterTree<ConsoleState, RootState> = {
 
     return commands
   }
-}
+} satisfies GetterTree<ConsoleState, RootState>

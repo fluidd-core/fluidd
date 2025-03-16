@@ -43,11 +43,11 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
   readonly config!: DiagnosticsCardConfig
 
   get chartData () {
-    return this.$store.state.charts.diagnostics || []
+    return this.$typedState.charts.diagnostics || []
   }
 
   get options () {
-    const isDark: boolean = this.$store.state.config.uiSettings.theme.isDark
+    const isDark: boolean = this.$typedState.config.uiSettings.theme.isDark
 
     const fontColor = (isDark) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
     const fontSize = (this.isMobileViewport) ? 13 : 14
@@ -143,7 +143,7 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
         boundaryGap: false,
         max: 'dataMax',
         min: (value: any) => {
-          const retention: number = this.$store.getters['charts/getChartRetention']
+          const retention: number = this.$typedGetters['charts/getChartRetention']
           return value.max - (retention * 1000)
         },
         axisTick: {

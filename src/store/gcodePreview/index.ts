@@ -8,10 +8,10 @@ import type { RootState } from '../types'
 
 const namespaced = true
 
-export const gcodePreview: Module<GcodePreviewState, RootState> = {
+export const gcodePreview = {
   namespaced,
   state,
   getters,
   actions,
   mutations
-}
+} satisfies Module<GcodePreviewState, RootState>

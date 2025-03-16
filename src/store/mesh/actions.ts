@@ -2,7 +2,7 @@ import type { ActionTree } from 'vuex'
 import type { MeshState } from './types'
 import type { RootState } from '../types'
 
-export const actions: ActionTree<MeshState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -29,4 +29,4 @@ export const actions: ActionTree<MeshState, RootState> = {
   async onFlatSurface ({ commit }, payload) {
     commit('setFlatSurface', payload)
   }
-}
+} satisfies ActionTree<MeshState, RootState>

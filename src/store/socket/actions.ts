@@ -11,7 +11,7 @@ import isKeyOf from '@/util/is-key-of'
 
 let retryTimeout: number
 
-export const actions: ActionTree<SocketState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -262,4 +262,4 @@ export const actions: ActionTree<SocketState, RootState> = {
   async notifySpoolmanStatusChanged ({ dispatch }, payload) {
     dispatch('spoolman/onStatusChanged', payload.spoolman_connected, { root: true })
   }
-}
+} satisfies ActionTree<SocketState, RootState>

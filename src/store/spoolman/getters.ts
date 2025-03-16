@@ -82,7 +82,7 @@ const spoolmanVendorAsVendor = (vendor: SpoolmanVendor): Vendor => ({
   registered: new Date(vendor.registered)
 })
 
-export const getters: GetterTree<SpoolmanState, RootState> = {
+export const getters = {
   getAvailableSpools: (state) => {
     return state.spools
       .map(spoolmanSpoolAsSpool)
@@ -106,4 +106,4 @@ export const getters: GetterTree<SpoolmanState, RootState> = {
       state.spools.length > 0
     )
   }
-}
+} satisfies GetterTree<SpoolmanState, RootState>

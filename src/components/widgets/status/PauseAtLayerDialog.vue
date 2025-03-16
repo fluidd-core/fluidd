@@ -115,15 +115,15 @@ export default class PauseAtLayerDialog extends Mixins(StateMixin) {
   }
 
   get setPauseNextLayerMacro () : Macro | undefined {
-    return this.$store.getters['macros/getMacroByName']('SET_PAUSE_NEXT_LAYER')
+    return this.$typedGetters['macros/getMacroByName']('SET_PAUSE_NEXT_LAYER')
   }
 
   get setPauseAtLayerMacro () : Macro | undefined {
-    return this.$store.getters['macros/getMacroByName']('SET_PAUSE_AT_LAYER')
+    return this.$typedGetters['macros/getMacroByName']('SET_PAUSE_AT_LAYER')
   }
 
   get setPrintStatsInfoMacro () : Macro | undefined {
-    return this.$store.getters['macros/getMacroByName']('SET_PRINT_STATS_INFO')
+    return this.$typedGetters['macros/getMacroByName']('SET_PRINT_STATS_INFO')
   }
 
   get printStatsMacroVariables () {
@@ -133,11 +133,11 @@ export default class PauseAtLayerDialog extends Mixins(StateMixin) {
   }
 
   get currentLayer (): number {
-    return this.$store.state.printer.printer.print_stats?.info?.current_layer ?? 0
+    return this.$typedState.printer.printer.print_stats?.info?.current_layer ?? 0
   }
 
   get totalLayers (): number {
-    return this.$store.state.printer.printer.print_stats?.info?.total_layer ?? 0
+    return this.$typedState.printer.printer.print_stats?.info?.total_layer ?? 0
   }
 
   sendAccept () {

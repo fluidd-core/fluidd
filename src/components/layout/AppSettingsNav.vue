@@ -53,19 +53,19 @@ export default class AppSettingsNav extends Vue {
   }
 
   get supportsVersions (): boolean {
-    return this.$store.getters['server/componentSupport']('update_manager')
+    return this.$typedGetters['server/componentSupport']('update_manager')
   }
 
   get supportsTimelapse (): boolean {
-    return this.$store.getters['server/componentSupport']('timelapse')
+    return this.$typedGetters['server/componentSupport']('timelapse')
   }
 
   get supportsSpoolman (): boolean {
-    return this.$store.getters['server/componentSupport']('spoolman')
+    return this.$typedGetters['server/componentSupport']('spoolman')
   }
 
   get supportsMmu (): boolean {
-    return !!this.$store.state.printer.printer.mmu
+    return !!this.$typedState.printer.printer.mmu
   }
 }
 </script>

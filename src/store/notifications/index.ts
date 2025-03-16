@@ -8,10 +8,10 @@ import type { RootState } from '../types'
 
 const namespaced = true
 
-export const notifications: Module<NotificationsState, RootState> = {
+export const notifications = {
   namespaced,
   state,
   getters,
   actions,
   mutations
-}
+} satisfies Module<NotificationsState, RootState>

@@ -4,7 +4,7 @@ import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import type { ObjectWithRequest } from '@/plugins/socketClient'
 
-export const actions: ActionTree<AnalysisState, RootState> = {
+export const actions = {
   async reset ({ commit }) {
     commit('setReset')
   },
@@ -24,4 +24,4 @@ export const actions: ActionTree<AnalysisState, RootState> = {
       }
     }
   }
-}
+} satisfies ActionTree<AnalysisState, RootState>

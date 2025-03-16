@@ -76,7 +76,7 @@ export default class CustomParkPositionSettings extends Mixins(StateMixin) {
   readonly parkPosYElement?: VInput
 
   getCustomParkPosBlocked (axis: 'x' | 'y'): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting'](`park_custom_pos_${axis}`)
+    return this.$typedGetters['timelapse/isBlockedSetting'](`park_custom_pos_${axis}`)
   }
 
   get parkpos (): ParkPosition {
@@ -108,11 +108,11 @@ export default class CustomParkPositionSettings extends Mixins(StateMixin) {
   }
 
   get bedSize (): BedSize {
-    return this.$store.getters['printer/getBedSize']
+    return this.$typedGetters['printer/getBedSize']
   }
 
   get settings (): TimelapseSettings {
-    return this.$store.state.timelapse.settings ?? {} as TimelapseSettings
+    return this.$typedState.timelapse.settings ?? {} as TimelapseSettings
   }
 
   subtitleIfBlocked (blocked: boolean): string {

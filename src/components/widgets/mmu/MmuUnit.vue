@@ -171,7 +171,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   }
 
   get showLogos (): boolean {
-    return this.$store.state.config.uiSettings.mmu.showLogos
+    return this.$typedState.config.uiSettings.mmu.showLogos
   }
 
   get showBypass (): boolean {

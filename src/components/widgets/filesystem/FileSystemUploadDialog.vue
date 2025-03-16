@@ -79,7 +79,7 @@ export default class FileSystemUploadDialog extends Mixins(StateMixin) {
   }
 
   get uploads (): FileUpload[] {
-    const uploads: FileUpload[] = this.$store.state.files.uploads
+    const uploads: FileUpload[] = this.$typedState.files.uploads
 
     return uploads
       .filter(file => !file.cancelled && (file.percent !== 100 || !file.complete))
@@ -89,7 +89,7 @@ export default class FileSystemUploadDialog extends Mixins(StateMixin) {
     if (!file.complete) {
       // Hasn't started uploading...
       if (file.loaded === 0) {
-        this.$store.dispatch('files/updateFileUpload', {
+        this.$typedDispatch('files/updateFileUpload', {
           uid: file.uid,
           cancelled: true
         })

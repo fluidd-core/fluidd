@@ -528,27 +528,27 @@ type Axis = 'X' | 'Y' | 'Z'
 @Component({})
 export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMixin) {
   get enableXYHoming (): boolean {
-    return this.$store.state.config.uiSettings.general.toolheadCircleXYHomingEnabled
+    return this.$typedState.config.uiSettings.general.toolheadCircleXYHomingEnabled
   }
 
   get stepsXY (): number[] {
-    return this.$store.state.config.uiSettings.general.toolheadCircleXYMoveDistances
+    return this.$typedState.config.uiSettings.general.toolheadCircleXYMoveDistances
   }
 
   get stepsZ (): number[] {
-    return this.$store.state.config.uiSettings.general.toolheadCircleZMoveDistances
+    return this.$typedState.config.uiSettings.general.toolheadCircleZMoveDistances
   }
 
   get hasSteppersEnabled (): boolean {
-    return this.$store.getters['printer/getHasSteppersEnabled']
+    return this.$typedGetters['printer/getHasSteppersEnabled']
   }
 
   get klippyApp (): KlippyApp {
-    return this.$store.getters['printer/getKlippyApp']
+    return this.$typedGetters['printer/getKlippyApp']
   }
 
   get printerSettings (): KlipperPrinterSettings {
-    return this.$store.getters['printer/getPrinterSettings']
+    return this.$typedGetters['printer/getPrinterSettings']
   }
 
   get printerSupportsQuadGantryLevel (): boolean {
@@ -668,7 +668,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get centerToolheadClasses () {
-    const tool_pos = this.$store.state.printer.printer.toolhead.position
+    const tool_pos = this.$typedState.printer.printer.toolhead.position
     const bedCenter = this.bedCenter
 
     return {
@@ -687,14 +687,14 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   get levelingClasses () {
     const [primary, disabled] = this.printerSupportsQuadGantryLevel
       ? [
-          !this.$store.state.printer.printer.quad_gantry_level?.applied,
+          !this.$typedState.printer.printer.quad_gantry_level?.applied,
           this.hasWait(this.$waits.onQGL)
         ]
       : this.printerSupportsZTiltAdjust
         ? [
             !(
-              this.$store.state.printer.printer.z_tilt?.applied ||
-              this.$store.state.printer.printer.z_tilt_ng?.applied
+              this.$typedState.printer.printer.z_tilt?.applied ||
+              this.$typedState.printer.printer.z_tilt_ng?.applied
             ),
             this.hasWait(this.$waits.onZTilt)
           ]
@@ -731,9 +731,9 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   moveAxisBy (axis: Axis, distance: number, negative = false) {
     const rate: number = axis === 'Z'
-      ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
-      : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
-    const inverted: boolean = this.$store.state.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
+      ? this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
+      : this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
+    const inverted: boolean = this.$typedState.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
     distance = negative !== inverted
       ? -distance
       : distance
@@ -741,7 +741,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     if (this.forceMoveEnabled) {
       const accel: number = axis === 'Z'
         ? this.printerSettings.printer?.max_z_accel ?? 100
-        : this.$store.state.printer.printer.toolhead.max_accel
+        : this.$typedState.printer.printer.toolhead.max_accel
       this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
     } else {
       this.sendMoveGcode(
@@ -753,7 +753,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get bedSize (): BedSize {
-    return this.$store.getters['printer/getBedSize']
+    return this.$typedGetters['printer/getBedSize']
   }
 
   get bedCenter () {
@@ -767,7 +767,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   sendMoveCenterGcode () {
     const bedCenter = this.bedCenter
-    const rate: number = this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+    const rate: number = this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
 
     this.sendMoveGcode(
       {

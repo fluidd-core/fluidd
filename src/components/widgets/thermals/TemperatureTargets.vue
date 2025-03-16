@@ -362,7 +362,7 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   }
 
   get heaters (): Heater[] {
-    return this.$store.getters['printer/getHeaters']
+    return this.$typedGetters['printer/getHeaters']
   }
 
   get fans () {
@@ -374,31 +374,31 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   }
 
   get sensors (): Sensor[] {
-    return this.$store.getters['printer/getSensors']
+    return this.$typedGetters['printer/getSensors']
   }
 
   get chartSelectedLegends (): ChartSelectedLegends {
-    return this.$store.state.charts.selectedLegends
+    return this.$typedState.charts.selectedLegends
   }
 
   get chartData (): ChartData[] {
-    return this.$store.state.charts.chart
+    return this.$typedState.charts.chart
   }
 
   get showRateOfChange (): boolean {
-    return this.$store.state.config.uiSettings.general.showRateOfChange
+    return this.$typedState.config.uiSettings.general.showRateOfChange
   }
 
   get showRelativeHumidity (): boolean {
-    return this.$store.state.config.uiSettings.general.showRelativeHumidity
+    return this.$typedState.config.uiSettings.general.showRelativeHumidity
   }
 
   get showBarometricPressure (): boolean {
-    return this.$store.state.config.uiSettings.general.showBarometricPressure
+    return this.$typedState.config.uiSettings.general.showBarometricPressure
   }
 
   get showGasResistance (): boolean {
-    return this.$store.state.config.uiSettings.general.showGasResistance
+    return this.$typedState.config.uiSettings.general.showGasResistance
   }
 
   setHeaterTargetTemp (heater: string, target: number) {

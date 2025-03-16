@@ -113,7 +113,7 @@ export default class CameraSettings extends Vue {
   }
 
   get cameras (): WebcamConfig[] {
-    return this.$store.getters['webcams/getWebcams']
+    return this.$typedGetters['webcams/getWebcams']
   }
 
   handleEditDialog (camera: WebcamConfig) {
@@ -144,7 +144,7 @@ export default class CameraSettings extends Vue {
   }
 
   handleSaveCamera (camera: WebcamConfig) {
-    this.$store.dispatch('webcams/updateWebcam', camera)
+    this.$typedDispatch('webcams/updateWebcam', camera)
   }
 
   async handleRemoveCamera (camera: WebcamConfig) {
@@ -154,16 +154,16 @@ export default class CameraSettings extends Vue {
     )
 
     if (result) {
-      this.$store.dispatch('webcams/removeWebcam', camera.uid)
+      this.$typedDispatch('webcams/removeWebcam', camera.uid)
     }
   }
 
   get defaultFullscreenAction (): string {
-    return this.$store.state.config.uiSettings.general.cameraFullscreenAction
+    return this.$typedState.config.uiSettings.general.cameraFullscreenAction
   }
 
   set defaultFullscreenAction (value: string) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.cameraFullscreenAction',
       value,
       server: true

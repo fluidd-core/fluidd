@@ -5,7 +5,7 @@ import { cloneDeep } from 'lodash-es'
 import vuetify from '@/plugins/vuetify'
 import type { AppUser } from '../auth/types'
 
-export const getters: GetterTree<LayoutState, RootState> = {
+export const getters = {
   /**
    * Return the state / config of a layout item given its page and id.
    */
@@ -74,4 +74,4 @@ export const getters: GetterTree<LayoutState, RootState> = {
     const size = vuetify.framework.breakpoint.name
     return `dashboard-${size}-${user.username}`
   }
-}
+} satisfies GetterTree<LayoutState, RootState>

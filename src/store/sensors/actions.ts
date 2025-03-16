@@ -3,7 +3,7 @@ import type { MoonrakerSensors, MoonrakerSensorsState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 
-export const actions: ActionTree<MoonrakerSensorsState, RootState> = {
+export const actions = {
   async reset ({ commit }) {
     commit('setReset')
   },
@@ -23,4 +23,4 @@ export const actions: ActionTree<MoonrakerSensorsState, RootState> = {
       commit('setSensorUpdate', payload)
     }
   }
-}
+} satisfies ActionTree<MoonrakerSensorsState, RootState>

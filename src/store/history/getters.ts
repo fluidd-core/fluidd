@@ -3,7 +3,7 @@ import type { GetterTree } from 'vuex'
 import type { HistoryItem, HistoryState } from './types'
 import type { RootState } from '../types'
 
-export const getters: GetterTree<HistoryState, RootState> = {
+export const getters = {
   /**
    * Returns all history, sorted by start time.
    */
@@ -97,4 +97,4 @@ export const getters: GetterTree<HistoryState, RootState> = {
       total_avg: (totals.total_time) ? totals.total_time / totals.total_jobs : 0
     }
   }
-}
+} satisfies GetterTree<HistoryState, RootState>

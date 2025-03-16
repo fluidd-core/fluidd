@@ -4,7 +4,7 @@ import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import getFilePaths from '@/util/get-file-paths'
 
-export const actions: ActionTree<JobQueueState, RootState> = {
+export const actions = {
   async reset ({ commit }) {
     commit('setReset')
   },
@@ -54,4 +54,4 @@ export const actions: ActionTree<JobQueueState, RootState> = {
       }
     }
   }
-}
+} satisfies ActionTree<JobQueueState, RootState>

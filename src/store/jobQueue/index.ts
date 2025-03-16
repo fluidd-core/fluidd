@@ -8,10 +8,10 @@ import type { RootState } from '../types'
 
 const namespaced = true
 
-export const jobQueue: Module<JobQueueState, RootState> = {
+export const jobQueue = {
   namespaced,
   state,
   getters,
   actions,
   mutations
-}
+} satisfies Module<JobQueueState, RootState>

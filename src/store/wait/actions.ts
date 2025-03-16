@@ -2,7 +2,7 @@ import type { ActionTree } from 'vuex'
 import type { WaitState } from './types'
 import type { RootState } from '../types'
 
-export const actions: ActionTree<WaitState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -23,4 +23,4 @@ export const actions: ActionTree<WaitState, RootState> = {
   async removeWait ({ commit }, wait) {
     commit('setRemoveWait', wait)
   }
-}
+} satisfies ActionTree<WaitState, RootState>

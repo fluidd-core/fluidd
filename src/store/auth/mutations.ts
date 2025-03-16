@@ -3,7 +3,7 @@ import { defaultState } from './state'
 import type { AuthState } from './types'
 import { jwtDecode } from 'jwt-decode'
 
-export const mutations: MutationTree<AuthState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -43,4 +43,4 @@ export const mutations: MutationTree<AuthState> = {
   setApiKey (state, key) {
     state.apiKey = key
   }
-}
+} satisfies MutationTree<AuthState>

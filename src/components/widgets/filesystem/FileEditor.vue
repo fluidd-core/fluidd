@@ -50,11 +50,11 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
 
   get restoreViewState (): RestoreViewState {
-    return this.$store.state.config.uiSettings.editor.restoreViewState
+    return this.$typedState.config.uiSettings.editor.restoreViewState
   }
 
-  get activeInstance (): InstanceConfig {
-    return this.$store.getters['config/getCurrentInstance']
+  get activeInstance (): InstanceConfig | undefined {
+    return this.$typedGetters['config/getCurrentInstance']
   }
 
   get restoreViewStateStorage (): Storage | undefined {
@@ -120,7 +120,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
     })
 
     const filename = this.path ? `${this.path}/${this.filename}` : this.filename
-    const apiFileUrl = `${this.activeInstance.apiUrl}/server/files/${filename}`
+    const apiFileUrl = `${this.activeInstance?.apiUrl}/server/files/${filename}`
 
     // Define the model. The filename will map to the supported languages.
     const model = monaco.editor.createModel(

@@ -8,10 +8,10 @@ import type { RootState } from '../types'
 
 const namespaced = true
 
-export const sensors: Module<MoonrakerSensorsState, RootState> = {
+export const sensors = {
   namespaced,
   state,
   getters,
   actions,
   mutations
-}
+} satisfies Module<MoonrakerSensorsState, RootState>

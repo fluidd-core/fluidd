@@ -134,7 +134,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
   }
 
   get categories (): MacroCategory[] {
-    return this.$store.getters['macros/getCategories']
+    return this.$typedGetters['macros/getCategories']
   }
 
   set categories (value: MacroCategory[]) {
@@ -144,11 +144,11 @@ export default class MacroSettings extends Mixins(StateMixin) {
         name
       }))
 
-    this.$store.dispatch('macros/updateCategories', categories)
+    this.$typedDispatch('macros/updateCategories', categories)
   }
 
   get uncategorizedMacros () {
-    const uncategorized: Macro[] = this.$store.getters['macros/getMacrosByCategory']()
+    const uncategorized: Macro[] = this.$typedGetters['macros/getMacrosByCategory']()
     const count = uncategorized.length
     const visible = uncategorized.filter(macro => macro.visible).length
     return {
@@ -186,12 +186,12 @@ export default class MacroSettings extends Mixins(StateMixin) {
     )
 
     if (result) {
-      this.$store.dispatch('macros/removeCategory', category)
+      this.$typedDispatch('macros/removeCategory', category)
     }
   }
 
   handleAddCategory (category: string) {
-    this.$store.dispatch('macros/addCategory', category)
+    this.$typedDispatch('macros/addCategory', category)
   }
 
   handleEditCategory (name: string) {
@@ -199,7 +199,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
       ...this.categoryDialogState.category,
       name
     }
-    this.$store.dispatch('macros/editCategory', category)
+    this.$typedDispatch('macros/editCategory', category)
   }
 
   handleCategoryClick (category?: MacroCategory) {

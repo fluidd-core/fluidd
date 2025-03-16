@@ -29,11 +29,11 @@ export default class PendingChangesDialog extends Vue {
   open?: boolean
 
   get saveConfigPendingItems () {
-    const saveConfigPendingItems: KlipperPrinterConfig = this.$store.getters['printer/getSaveConfigPendingItems']
+    const saveConfigPendingItems: KlipperPrinterConfig = this.$typedGetters['printer/getSaveConfigPendingItems']
 
     const { changed, deleted } = Object.entries(saveConfigPendingItems)
       .reduce<{ changed: string[], deleted: string[] }>((previous, [sectionName, sectionEntries]) => {
-        if (sectionEntries === null) {
+        if (sectionEntries == null) {
           previous.deleted.push(`# [${sectionName}]`)
         } else {
           const sectionEntryNameValues = Object.entries(sectionEntries)

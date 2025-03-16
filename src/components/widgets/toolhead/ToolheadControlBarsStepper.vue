@@ -35,18 +35,18 @@ export default class ToolheadControlBarsStepper extends Mixins(StateMixin) {
 
   get rate (): number {
     return this.isStepperZ
-      ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
-      : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+      ? this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
+      : this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
   }
 
   get printerSettings (): KlipperPrinterSettings {
-    return this.$store.getters['printer/getPrinterSettings']
+    return this.$typedGetters['printer/getPrinterSettings']
   }
 
   get accel (): number {
     return this.isStepperZ
       ? this.printerSettings.printer?.max_z_accel ?? 100
-      : this.$store.state.printer.printer.toolhead.max_accel
+      : this.$typedState.printer.printer.toolhead.max_accel
   }
 
   get isStepperZ (): boolean {

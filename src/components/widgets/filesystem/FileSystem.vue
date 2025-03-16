@@ -199,7 +199,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Not perfect integration but allow tool-gate mapping for MMU prints
   showMmuEditTtgMapDialog = false
-  fileForMmuDialog = null
+  fileForMmuDialog: AppFileWithMeta | null = null
 
   // Maintains the path and root.
   currentRoot = ''
@@ -209,11 +209,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Maintains filter state.
   get filters (): FileFilterType[] {
-    return this.$store.state.config.uiSettings.fileSystem.activeFilters[this.currentRoot] ?? []
+    return this.$typedState.config.uiSettings.fileSystem.activeFilters[this.currentRoot] ?? []
   }
 
   set filters (value: FileFilterType[]) {
-    this.$store.dispatch('config/updateFileSystemActiveFilters', { root: this.currentRoot, value })
+    this.$typedDispatch('config/updateFileSystemActiveFilters', { root: this.currentRoot, value })
   }
 
   // Maintains content menu state.
@@ -285,12 +285,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Properties of the current root.
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.currentRoot)
+    return this.$typedGetters['files/getRootProperties'](this.currentRoot)
   }
 
   // If this root is available or not.
   get disabled (): boolean {
-    return !this.$store.getters['files/isRootAvailable'](this.currentRoot)
+    return !this.$typedGetters['files/isRootAvailable'](this.currentRoot)
   }
 
   @Watch('disabled')
@@ -488,7 +488,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     ]
 
     const key = `${this.currentRoot}_${this.name}`
-    const mergedTableHeaders: AppDataTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, key)
+    const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters['config/getMergedTableHeaders'](headers, key)
 
     return mergedTableHeaders
   }
@@ -513,13 +513,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // The current path for the given root.
   get currentPath () {
-    const pathWithRoot: string = this.$store.getters['files/getCurrentPathByRoot'](this.currentRoot)
+    const pathWithRoot: string = this.$typedGetters['files/getCurrentPathByRoot'](this.currentRoot)
 
     return pathWithRoot || this.currentRoot
   }
 
   set currentPath (path: string) {
-    this.$store.dispatch('files/updateCurrentPathByRoot', { root: this.currentRoot, path })
+    this.$typedDispatch('files/updateCurrentPathByRoot', { root: this.currentRoot, path })
   }
 
   // Returns the current path with no root.
@@ -587,7 +587,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   getAllFiles () {
-    const items: FileBrowserEntry[] | undefined = this.$store.getters['files/getDirectory'](this.currentPath)
+    const items: FileBrowserEntry[] | undefined = this.$typedGetters['files/getDirectory'](this.currentPath)
 
     return items ?? []
   }
@@ -634,7 +634,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (!this.disabled) {
       this.currentPath = path
 
-      const pathContent: MoonrakerPathContent | undefined = this.$store.state.files.pathContent[path]
+      const pathContent: MoonrakerPathContent | undefined = this.$typedState.files.pathContent[path]
 
       if (pathContent == null || pathContent.partial === true) {
         this.handleRefresh()
@@ -699,7 +699,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       item.type === 'file' &&
       event.type === 'click'
     ) {
-      if (this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(item.extension)) {
+      if (this.$typedState.config.uiSettings.editor.autoEditExtensions.includes(item.extension)) {
         this.handleFileOpenDialog(item, 'edit')
 
         return
@@ -840,12 +840,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
       if (
         this.$route.name !== 'home' ||
-        !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')
+        !this.$typedGetters['layout/isEnabledInCurrentLayout']('gcode-preview-card')
       ) {
         this.$router.push({ name: 'gcode_preview' })
       }
 
-      this.$store.dispatch('gcodePreview/loadGcode', {
+      this.$typedDispatch('gcodePreview/loadGcode', {
         file,
         gcode
       })
@@ -906,22 +906,25 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     const filename = file.path ? `${file.path}/${file.filename}` : file.filename
 
-    const mmuAvailable = !!this.$store.state.printer.printer.mmu && this.$store.state.printer.printer.mmu.enabled
+    const mmuAvailable = !!this.$typedState.printer.printer.mmu && this.$typedState.printer.printer.mmu.enabled
     if (mmuAvailable) {
       const { filename, rootPath } = getFilePaths(file.filename, 'gcodes')
-      const fileWithMeta = this.$store.getters['files/getFile'](rootPath, filename) ?? null
-      const mmuPrint = (fileWithMeta.referenced_tools?.length ?? 1) > 1 || this.$store.state.printer.printer.mmu?.gate !== -2
-      if (mmuPrint) {
-        this.fileForMmuDialog = fileWithMeta
-        this.showMmuEditTtgMapDialog = true
-        return
+      const fileWithMeta = this.$typedGetters['files/getFile'](rootPath, filename)
+
+      if (fileWithMeta != null && 'referenced_tools' in fileWithMeta) {
+        const mmuPrint = (fileWithMeta.referenced_tools?.length ?? 1) > 1 || this.$typedState.printer.printer.mmu?.gate !== -2
+        if (mmuPrint) {
+          this.fileForMmuDialog = fileWithMeta
+          this.showMmuEditTtgMapDialog = true
+          return
+        }
       }
     }
 
-    const spoolmanSupported: boolean = this.$store.getters['spoolman/getAvailable']
-    const autoSpoolSelectionDialog: boolean = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
+    const spoolmanSupported: boolean = this.$typedGetters['spoolman/getAvailable']
+    const autoSpoolSelectionDialog: boolean = this.$typedState.config.uiSettings.spoolman.autoSpoolSelectionDialog
     if (spoolmanSupported && autoSpoolSelectionDialog) {
-      this.$store.commit('spoolman/setDialogState', {
+      this.$typedCommit('spoolman/setDialogState', {
         show: true,
         filename
       })
@@ -1051,11 +1054,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   async handleUpload (files: FileList | File[] | FileWithPath[], print: boolean) {
     const wait = `${this.$waits.onFileSystem}/${this.currentPath}/`
 
-    this.$store.dispatch('wait/addWait', wait)
+    this.$typedDispatch('wait/addWait', wait)
 
     await this.uploadFiles(files, this.visiblePath, this.currentRoot, print)
 
-    this.$store.dispatch('wait/removeWait', wait)
+    this.$typedDispatch('wait/removeWait', wait)
   }
 
   handleAddDir (name: string) {

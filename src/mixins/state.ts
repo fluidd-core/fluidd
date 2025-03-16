@@ -7,48 +7,48 @@ import type { Device } from '@/store/power/types'
 @Component
 export default class StateMixin extends Vue {
   get appReady (): boolean {
-    return this.$store.state.config.appReady
+    return this.$typedState.config.appReady
   }
 
   get authenticated (): boolean {
-    return this.$store.state.auth.authenticated
+    return this.$typedState.auth.authenticated
   }
 
   get socketConnected (): boolean {
-    return this.$store.getters['socket/getConnectionState']
+    return this.$typedGetters['socket/getConnectionState']
   }
 
   get apiConnected (): boolean {
-    return this.$store.getters['socket/getApiConnected']
+    return this.$typedGetters['socket/getApiConnected']
   }
 
   get socketConnecting (): boolean {
-    return this.$store.getters['socket/getConnectingState']
+    return this.$typedGetters['socket/getConnectingState']
   }
 
   get klippyReady (): boolean {
-    return this.$store.getters['printer/getKlippyReady']
+    return this.$typedGetters['printer/getKlippyReady']
   }
 
   get klippyConnected (): boolean {
-    return this.$store.getters['printer/getKlippyConnected']
+    return this.$typedGetters['printer/getKlippyConnected']
   }
 
   get hasWarnings (): boolean {
-    return this.$store.getters['printer/getHasWarnings']
+    return this.$typedGetters['printer/getHasWarnings']
   }
 
   get klippyState (): string {
-    return this.$store.getters['printer/getKlippyState']
+    return this.$typedGetters['printer/getKlippyState']
   }
 
   get klippyStateMessage (): string {
-    return this.$store.getters['printer/getKlippyStateMessage']
+    return this.$typedGetters['printer/getKlippyStateMessage']
   }
 
   // Return the printer state
   get printerState (): 'printing' | 'paused' | 'cancelled' | 'ready' | 'busy' | 'idle' | 'loading' {
-    return this.$store.getters['printer/getPrinterState']
+    return this.$typedGetters['printer/getPrinterState']
   }
 
   // Returns a boolean indicating if the printer is busy.
@@ -80,9 +80,9 @@ export default class StateMixin extends Vue {
       return false
     }
 
-    const printerPowerDevice: string = this.$store.state.config.uiSettings.general.printerPowerDevice ?? 'printer'
+    const printerPowerDevice: string = this.$typedState.config.uiSettings.general.printerPowerDevice ?? 'printer'
 
-    const device: Device | undefined = this.$store.getters['power/getDeviceByName'](printerPowerDevice)
+    const device: Device | undefined = this.$typedGetters['power/getDeviceByName'](printerPowerDevice)
 
     return device?.status === 'off'
   }
@@ -92,21 +92,21 @@ export default class StateMixin extends Vue {
    * Supports a single string or a list of.
    */
   hasWait (wait: string | string[]): boolean {
-    return this.$store.getters['wait/hasWait'](wait)
+    return this.$typedGetters['wait/hasWait'](wait)
   }
 
   /**
    * Indicates if we have any waits.
    */
   get hasWaits (): boolean {
-    return this.$store.getters['wait/hasWaits']
+    return this.$typedGetters['wait/hasWaits']
   }
 
   /**
    * Indicates if we have any waits prefixed by.
    */
   hasWaitsBy (prefix: string): boolean {
-    return this.$store.getters['wait/hasWaitsBy'](prefix)
+    return this.$typedGetters['wait/hasWaitsBy'](prefix)
   }
 
   /**
@@ -120,7 +120,7 @@ export default class StateMixin extends Vue {
   }
 
   sendMoveGcode (movement: { X?: number, Y?: number, Z?: number }, rate: number, absolute = false, wait?: string) {
-    const macro: Macro | undefined = this.$store.getters['macros/getMacroByName']('_CLIENT_LINEAR_MOVE')
+    const macro: Macro | undefined = this.$typedGetters['macros/getMacroByName']('_CLIENT_LINEAR_MOVE')
 
     const paramSeparator = macro
       ? '='
@@ -140,7 +140,7 @@ RESTORE_GCODE_STATE NAME=_ui_movement`
   }
 
   sendExtrudeGcode (amount: number, rate: number, wait?: string) {
-    const macro: Macro | undefined = this.$store.getters['macros/getMacroByName']('_CLIENT_LINEAR_MOVE')
+    const macro: Macro | undefined = this.$typedGetters['macros/getMacroByName']('_CLIENT_LINEAR_MOVE')
 
     const gcode = macro
       ? `${macro.name.toUpperCase()} E=${amount} F=${rate * 60}`
@@ -153,11 +153,11 @@ RESTORE_GCODE_STATE NAME=_ui_retract`
   }
 
   addConsoleEntry (message: string) {
-    this.$store.dispatch('console/onAddConsoleEntry', { message, type: 'command' })
+    this.$typedDispatch('console/onAddConsoleEntry', { message, type: 'command' })
   }
 
   async emergencyStop () {
-    const confirmOnEstop: boolean = this.$store.state.config.uiSettings.general.confirmOnEstop
+    const confirmOnEstop: boolean = this.$typedState.config.uiSettings.general.confirmOnEstop
 
     const result = (
       !confirmOnEstop ||

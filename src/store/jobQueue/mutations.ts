@@ -2,7 +2,7 @@ import type { MutationTree } from 'vuex'
 import type { JobQueueState, QueuedJob, QueueState } from './types'
 import { defaultState } from './state'
 
-export const mutations: MutationTree<JobQueueState> = {
+export const mutations = {
   setReset (state) {
     Object.assign(state, defaultState())
   },
@@ -14,4 +14,4 @@ export const mutations: MutationTree<JobQueueState> = {
   setQueuedJobs (state, payload: QueuedJob[]) {
     state.queuedJobs = payload || []
   }
-}
+} satisfies MutationTree<JobQueueState>

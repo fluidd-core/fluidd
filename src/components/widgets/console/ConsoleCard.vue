@@ -146,15 +146,15 @@ export default class ConsoleCard extends Vue {
   scrollingPaused = false
 
   get filters (): ConsoleFilter[] {
-    return this.$store.state.console.consoleFilters
+    return this.$typedState.console.consoleFilters
   }
 
   get hideTempWaits (): boolean {
-    return this.$store.state.config.uiSettings.general.hideTempWaits
+    return this.$typedState.config.uiSettings.general.hideTempWaits
   }
 
   set hideTempWaits (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.hideTempWaits',
       value,
       server: true
@@ -162,11 +162,11 @@ export default class ConsoleCard extends Vue {
   }
 
   get flipLayout (): boolean {
-    return this.$store.state.config.uiSettings.general.flipConsoleLayout
+    return this.$typedState.config.uiSettings.general.flipConsoleLayout
   }
 
   set flipLayout (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.flipConsoleLayout',
       value,
       server: true
@@ -176,19 +176,19 @@ export default class ConsoleCard extends Vue {
   }
 
   get items (): ConsoleEntry[] {
-    return this.$store.getters['console/getConsoleEntries']
+    return this.$typedGetters['console/getConsoleEntries']
   }
 
   get inLayout (): boolean {
-    return (this.$store.state.config.layoutMode)
+    return (this.$typedState.config.layoutMode)
   }
 
   get autoScroll (): boolean {
-    return this.$store.state.console.autoScroll
+    return this.$typedState.console.autoScroll
   }
 
   set autoScroll (value: boolean) {
-    this.$store.dispatch('console/onUpdateAutoScroll', value)
+    this.$typedDispatch('console/onUpdateAutoScroll', value)
     if (value) {
       this.consoleElement.scrollToLatest(true)
     }
@@ -208,11 +208,11 @@ export default class ConsoleCard extends Vue {
   }
 
   handleClear () {
-    this.$store.dispatch('console/onClear')
+    this.$typedDispatch('console/onClear')
   }
 
   handleToggleFilter (filter: ConsoleFilter) {
-    this.$store.dispatch('console/onSaveFilter', {
+    this.$typedDispatch('console/onSaveFilter', {
       ...filter,
       enabled: !filter.enabled
     })

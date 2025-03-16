@@ -3,7 +3,7 @@ import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type { AnnouncementsState } from './types'
 
-export const mutations: MutationTree<AnnouncementsState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -33,4 +33,4 @@ export const mutations: MutationTree<AnnouncementsState> = {
 
     Vue.set(state, 'entries', entries)
   }
-}
+} satisfies MutationTree<AnnouncementsState>

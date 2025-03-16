@@ -83,7 +83,7 @@ export default class JobQueueCard extends Vue {
   readonly fullscreen?: boolean
 
   get queueState (): QueueState {
-    return this.$store.state.jobQueue.queueState
+    return this.$typedState.jobQueue.queueState
   }
 
   handlePause () {

@@ -27,12 +27,12 @@ export default class KlipperLoadChart extends Vue {
   ready = false
 
   get chartData () {
-    return this.$store.state.charts.klipper || []
+    return this.$typedState.charts.klipper || []
   }
 
   get options () {
     const o = {
-      ...this.$store.getters['charts/getBaseChartOptions']({
+      ...this.$typedGetters['charts/getBaseChartOptions']({
         cputime_change: '%'
       }),
       series: this.series
@@ -41,7 +41,7 @@ export default class KlipperLoadChart extends Vue {
   }
 
   get series () {
-    return this.$store.getters['charts/getBaseSeries']({
+    return this.$typedGetters['charts/getBaseSeries']({
       name: this.$t('app.system_info.label.load'),
       encode: { x: 'date', y: 'cputime_change' }
     })

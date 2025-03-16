@@ -130,7 +130,7 @@ export default class PrinterStatsCard extends Vue {
   peripheralsDialogOpen = false
 
   get systemInfo (): SystemInfo | null {
-    return this.$store.state.server.system_info
+    return this.$typedState.server.system_info
   }
 
   get cpuInfo () {
@@ -178,11 +178,11 @@ export default class PrinterStatsCard extends Vue {
   }
 
   get printerInfo (): PrinterInfo | null {
-    return this.$store.state.printer.info
+    return this.$typedState.printer.info
   }
 
   get canRolloverLogs (): boolean {
-    return this.$store.getters['server/getIsMinApiVersion']('1.0.5')
+    return this.$typedGetters['server/getIsMinApiVersion']('1.0.5')
   }
 }
 </script>

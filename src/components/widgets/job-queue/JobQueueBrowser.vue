@@ -178,7 +178,7 @@ export default class JobQueueBrowser extends Mixins(StateMixin, FilesMixin) {
     const filenames = value
       .map(job => job.filename)
 
-    if (this.$store.getters['server/getIsMinApiVersion']('1.1.0')) {
+    if (this.$typedGetters['server/getIsMinApiVersion']('1.1.0')) {
       SocketActions.serverJobQueuePostJob(filenames, true)
     } else {
       SocketActions.serverJobQueueDeleteJobs(['all'])
