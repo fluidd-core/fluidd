@@ -47,6 +47,8 @@ export default class MmuMachine extends Mixins(StateMixin, MmuMixin) {
 
 <style scoped>
 .mmu-unit {
+    margin-left: 4px;
+    margin-right: 4px;
     padding-left: 16px;
     padding-right: 16px;
     border-radius: 10px 10px 10px 10px;
