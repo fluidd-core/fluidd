@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.33.0](https://github.com/fluidd-core/fluidd/compare/v1.32.6...v1.33.0) (2025-03-16)
+
+
+### Features
+
+* **i18n-fr:** Update French translations ([b486daa](https://github.com/fluidd-core/fluidd/commit/b486daab2b7d73ce0c9c45837a9363920c1c7818))
+* **i18n-hu:** Update Hungarian translations ([43a7972](https://github.com/fluidd-core/fluidd/commit/43a7972e682f7d436b4791d0042eb91b214f9a37))
+* **i18n-it:** Update Italian translations ([7f22240](https://github.com/fluidd-core/fluidd/commit/7f22240841b6634b6c53a7401c3ea42b0a4ba5f4))
+* **i18n-JA:** update Japanese language ([#1640](https://github.com/fluidd-core/fluidd/issues/1640)) ([9b1720f](https://github.com/fluidd-core/fluidd/commit/9b1720f3bafe1f835b32e9b47f4d941db462cee9))
+* **i18n-pl:** Update Polish translations ([0356fc6](https://github.com/fluidd-core/fluidd/commit/0356fc6d5ebc04b216311eff13e7b461581f6c47))
+* **i18n-uk:** Update Ukrainian translations ([594cbc6](https://github.com/fluidd-core/fluidd/commit/594cbc6e449b6b5cf9886af298d00f68a859aa36))
+* report target layout in layout edit mode ([#1331](https://github.com/fluidd-core/fluidd/issues/1331)) ([19cb71f](https://github.com/fluidd-core/fluidd/commit/19cb71fbab162f28c4108053727a65479b2bab5f))
+* show job queue totals ([#1637](https://github.com/fluidd-core/fluidd/issues/1637)) ([32abac0](https://github.com/fluidd-core/fluidd/commit/32abac001c56025defdf77627fd2156704c61f18))
+* **Spoolman:** adds new metadata ([#1638](https://github.com/fluidd-core/fluidd/issues/1638)) ([9c10597](https://github.com/fluidd-core/fluidd/commit/9c10597b15a006864c58f5ef122b5f28244d4dce))
+
+
+### Bug Fixes
+
+* **FileSystem:** file modified date ([7b9c143](https://github.com/fluidd-core/fluidd/commit/7b9c143474063a0c720e07b0b77625924f877b51))
+* **FileSystem:** missing tooltips on color chips ([cb7b92b](https://github.com/fluidd-core/fluidd/commit/cb7b92b45787eeef8b27f614f0162eb2ffcc7824))
+* hide root dialogs if socket disconnected ([8d3e18c](https://github.com/fluidd-core/fluidd/commit/8d3e18c606d402da84c615bcaafe14f9ed8cb2de))
+* **Spoolman:** add version check ([#1634](https://github.com/fluidd-core/fluidd/issues/1634)) ([9acf6ba](https://github.com/fluidd-core/fluidd/commit/9acf6bad0e310eac3e0aea798ea927572cd9e609))
+* **Thermals:** show extra sensor data ([#1631](https://github.com/fluidd-core/fluidd/issues/1631)) ([5566cfb](https://github.com/fluidd-core/fluidd/commit/5566cfb0c14e30e33a595f2a33f3ad0dc2d9c975))
+* truncate both start and end double-quotes ([99e8cf1](https://github.com/fluidd-core/fluidd/commit/99e8cf19526d878edc252532b48aac9fdd40dff4))
+
+
+### Code Refactorings
+
+* adds options param to socketActions ([c799808](https://github.com/fluidd-core/fluidd/commit/c799808a131fa2c0c3a68d2d729931472d1434d6))
+* **FileSystem:** rename state property ([25c60ad](https://github.com/fluidd-core/fluidd/commit/25c60adad482fde2087934c56468666eedb3b2d2))
+* force null checks on printer objects ([5551007](https://github.com/fluidd-core/fluidd/commit/55510070d51ae0c08b1ab52621741b5219542280))
+* inlined getBrowserLocale functionality ([affcede](https://github.com/fluidd-core/fluidd/commit/affcede8b67a13281f2e1e74f7b8e0afcecc24bc))
+* introduces $typedCommit and $typedDispatch ([3892e6d](https://github.com/fluidd-core/fluidd/commit/3892e6dee7c229ddb6f41773ae5da5dca0cad105))
+* introduces $typedState and $typedGetters ([0b58cce](https://github.com/fluidd-core/fluidd/commit/0b58cceba61192e34864256c097776e54cf38fe1))
+* minor code simplification ([7d81e2b](https://github.com/fluidd-core/fluidd/commit/7d81e2b25b8755640c5fcaaf398ebbea189b4f39))
+* string and datetime formatters ([951e025](https://github.com/fluidd-core/fluidd/commit/951e0254e18680ff3db5d6c97d45acc4237a7e1e))
+* typing improvements ([712e89a](https://github.com/fluidd-core/fluidd/commit/712e89a2e1d18582f7a937783a36c42722ee0efc))
+
 ## [1.32.6](https://github.com/fluidd-core/fluidd/compare/v1.32.5...v1.32.6) (2025-03-05)
 
 
