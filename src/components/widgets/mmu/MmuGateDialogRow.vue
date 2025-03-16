@@ -51,9 +51,14 @@ import MmuGateSummary from '@/components/widgets/mmu/MmuGateSummary.vue'
   components: { MmuSpool, MmuGateSummary },
 })
 export default class MmuGateDialogRow extends Mixins(StateMixin, MmuMixin) {
-  @Prop({ required: true }) declare readonly details: MmuGateDetails
-  @Prop({ required: true }) declare readonly selectedGate: number | null
-  @Prop({ required: true }) declare readonly selectedEsGroup: number | null
+  @Prop({ required: true })
+  readonly details!: MmuGateDetails
+
+  @Prop({ required: true })
+  readonly selectedGate!: number | null
+
+  @Prop({ required: true })
+  readonly selectedEsGroup!: number | null
 
   get rowClass (): string[] {
     const classes = ['cursor-pointer']

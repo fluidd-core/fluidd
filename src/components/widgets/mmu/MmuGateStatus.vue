@@ -50,9 +50,14 @@ import type { MmuGateDetails } from '@/types'
 
 @Component({})
 export default class MmuGateStatus extends Mixins(StateMixin, MmuMixin) {
-  @Prop({ required: true }) readonly gateIndex!: number
-  @Prop({ required: false, default: null }) readonly editGateMap!: MmuGateDetails[] | null
-  @Prop({ required: false, default: -1 }) readonly editGateSelected!: number
+  @Prop({ required: true })
+  readonly gateIndex!: number
+
+  @Prop({ required: false, default: null })
+  readonly editGateMap!: MmuGateDetails[] | null
+
+  @Prop({ required: false, default: -1 })
+  readonly editGateSelected!: number
 
   get statusColor (): string {
     if (this.gateIndex < 0) return 'none'

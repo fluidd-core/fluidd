@@ -159,10 +159,7 @@
       <mmu-settings />
     </template>
 
-    <div
-      v-if="hasMmu"
-      :class="{ 'mmu-disabled': !enabled }"
-    >
+    <div :class="{ 'mmu-disabled': !enabled }">
       <v-container
         fluid
         pa-2
@@ -335,7 +332,7 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
   }
 
   get title (): string {
-    const headline = this.$t('app.mmu.title.headline') as string
+    const headline = this.$tc('app.mmu.title.headline')
     if (!this.enabled) {
       return `${headline} (disabled)`
     }

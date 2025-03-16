@@ -29,11 +29,14 @@ import MmuUnit from '@/components/widgets/mmu/MmuUnit.vue'
 @Component({
   components: {
     MmuUnit
-  },
+  }
 })
 export default class MmuMachine extends Mixins(StateMixin, MmuMixin) {
-  @Prop({ required: false, default: null }) readonly editGateMap!: MmuGateDetails[] | null
-  @Prop({ required: false, default: -1 }) readonly editGateSelected!: number
+  @Prop({ required: false, default: null })
+  readonly editGateMap!: MmuGateDetails[] | null
+
+  @Prop({ required: false, default: -1 })
+  readonly editGateSelected!: number
 
   get unitArray (): number[] {
     return Array.from({ length: this.numUnits }, (_, k) => k)

@@ -107,16 +107,15 @@ import { Mixins, Prop, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
-import { mdiCloseThick, mdiCogRefresh } from '@mdi/js'
+import type { MmuUnitKey } from '@/store/printer/types'
+import isKeyOf from '@/util/is-key-of'
 
 @Component({
   components: { },
 })
 export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
-  mdiCloseThick = mdiCloseThick
-  mdiCogRefresh = mdiCogRefresh
-
-  @Prop({ required: true }) declare showDialog: boolean
+  @Prop({ required: true })
+  showDialog!: boolean
 
   private localGate: number = -1
   private localTool: number = -1
@@ -207,16 +206,27 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
   }
 
   private gateIndexText (gateIndex: number): string {
-    const num_units = this.$typedState.printer.printer?.mmu_machine?.num_units
-    if (num_units > 1) {
-      for (let i = 0; i < num_units; i++) {
-        const unitRef = `unit_${i}`
-        const unit = this.$typedState.printer.printer?.mmu_machine?.[unitRef]
-        if (i > 0 && gateIndex >= unit.first_gate && gateIndex < unit.first_gate + unit.num_gates) {
-          return `${gateIndex} (unit #${i + 1})`
+    const mmuMachine = this.$typedState.printer.printer?.mmu_machine
+
+    if (mmuMachine != null && mmuMachine.num_units > 1) {
+      for (let i = 0; i < mmuMachine.num_units; i++) {
+        const unitRef = `unit_${i}` as MmuUnitKey
+
+        if (isKeyOf(unitRef, mmuMachine)) {
+          const unit = mmuMachine[unitRef]
+
+          if (
+            i > 0 &&
+            unit != null &&
+            gateIndex >= unit.first_gate &&
+            gateIndex < unit.first_gate + unit.num_gates
+          ) {
+            return `${gateIndex} (unit #${i + 1})`
+          }
         }
       }
     }
+
     return `${gateIndex}`
   }
 

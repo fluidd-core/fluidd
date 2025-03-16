@@ -758,12 +758,11 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
   }
 
   get currentGateColor (): string {
-    let color = this.$typedState.printer.printer.mmu?.gate_color[this.gate] ?? ''
-    if (this.gate === this.TOOL_GATE_BYPASS) {
-      // Assume active spoolman spool if available
-      color = this.$typedGetters['spoolman/getActiveSpool']?.filament.color_hex ?? null
-    }
-    return this.formColorString(color)
+    const color = this.gate === this.TOOL_GATE_BYPASS
+      ? this.$typedGetters['spoolman/getActiveSpool']?.filament.color_hex ?? null
+      : this.$typedState.printer.printer.mmu?.gate_color[this.gate] ?? ''
+
+    return this.fromColorString(color)
   }
 
   mounted () {

@@ -86,7 +86,7 @@ export default class Settings extends Mixins(StateMixin) {
   }
 
   get supportsMmu (): boolean {
-    return !!this.$typedState.printer.printer.mmu
+    return this.$typedState.printer.printer.mmu != null
   }
 }
 </script>

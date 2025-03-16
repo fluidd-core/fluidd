@@ -34,6 +34,8 @@ export type ExtruderKey = 'extruder' | `extruder${NonZeroDigit}` | `extruder${No
 
 export type TmcKey = `tmc${'2130' | '2208' | '2209' | '2660' | '2240' | '5160'} ${string}`
 
+export type MmuUnitKey = `unit_${Digit}` | `unit_${NonZeroDigit}${Digit}`
+
 type KlipperPrinterStateBaseType = {
   [key in ExtruderKey]?: KlipperPrinterExtruderState
 }
@@ -170,6 +172,12 @@ export interface KlipperPrinterState extends KlipperPrinterStateBaseType {
   // These keys are for external modules
 
   beacon?: KlipperPrinterBeaconState;
+
+  mmu?: KlipperPrinterMmuState;
+
+  mmu_leds?: KlipperPrinterMmuLedsState;
+
+  mmu_machine?: KlipperPrinterMmuMachineState;
 }
 
 export interface KlipperPrinterConfigFileState {
@@ -584,6 +592,117 @@ export interface KlipperPrinterBeaconState {
   last_offset_result?: number | null,
   last_poke_result?: number | null
   model?: string | null;
+}
+
+export interface KlipperPrinterMmuState {
+  enabled: boolean;
+  num_gates: number;
+  is_homed: boolean;
+  is_locked: boolean;
+  is_paused: boolean;
+  is_in_print: boolean;
+  print_state: string;
+  unit: number;
+  tool: number;
+  gate: number;
+  active_filament: unknown;
+  num_toolchanges: number;
+  last_tool: number;
+  next_tool: number;
+  toolchange_purge_volume: number;
+  last_toolchange: string;
+  runout: boolean;
+  operation: string;
+  filament: string;
+  filament_position: number;
+  filament_pos: number;
+  filament_direction: number;
+  ttg_map: number[];
+  endless_spool_groups: number[];
+  gate_status: number[];
+  gate_filament_name: string[];
+  gate_material: string[];
+  gate_color: string[];
+  gate_temperature: number[];
+  gate_spool_id: number[];
+  gate_speed_override: number[];
+  gate_color_rgb: number[][];
+  slicer_color_rgb: number[][];
+  tool_extrusion_multipliers: number[];
+  tool_speed_multipliers: number[];
+  slicer_tool_map: {
+    tools?: {
+      color?: string;
+      material?: string;
+      temp?: number;
+      name?: string;
+      in_use?: boolean;
+    }[];
+    referenced_tools: number[];
+    initial_tool: null;
+    purge_volumes: unknown[];
+    total_toolchanges: null;
+    skip_automap: boolean;
+  };
+  action: string;
+  has_bypass: boolean;
+  sync_drive: boolean;
+  sync_feedback_state: string;
+  sync_feedback_enabled: boolean;
+  clog_detection: number;
+  clog_detection_enabled: number;
+  endless_spool: number;
+  endless_spool_enabled: number;
+  print_start_detection: number;
+  reason_for_pause: string;
+  extruder_filament_remaining: number;
+  spoolman_support: string;
+  enable_spoolman: number;
+  bowden_progress: number;
+  espooler_active: string;
+  servo: string;
+  sensors: Record<string, boolean | null>;
+  encoder?: {
+    encoder_pos: number;
+    detection_length: number;
+    min_headroom: number;
+    headroom: number;
+    desired_headroom: number;
+    detection_mode: number;
+    enabled: boolean;
+    flow_rate: number;
+  };
+}
+
+export interface KlipperPrinterMmuLedsState {
+  exit: number;
+  entry: number;
+  status: number;
+  logo: number;
+  led_effect_module: boolean;
+  num_gates: number;
+  default_frame_rate: number;
+}
+
+type KlipperPrinterMmuMachineStateBaseType = {
+  [key in MmuUnitKey]?: {
+    name: string;
+    vendor: string;
+    version: string;
+    num_gates: number;
+    first_gate: number;
+    selector_type: string;
+    variable_rotation_distances: boolean;
+    variable_bowden_lengths: boolean;
+    require_bowden_move: boolean;
+    filament_always_gripped: boolean;
+    has_bypass: boolean;
+    multi_gear: boolean;
+  };
+}
+
+export interface KlipperPrinterMmuMachineState extends KlipperPrinterMmuMachineStateBaseType {
+  num_units: number;
 }
 
 export interface KlipperPrinterConfig extends Record<string, Record<string, string | undefined> | undefined> {

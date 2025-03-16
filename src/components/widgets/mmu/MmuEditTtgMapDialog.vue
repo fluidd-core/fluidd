@@ -322,9 +322,11 @@ import { mdiCloseThick, mdiStateMachine } from '@mdi/js'
 export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
   mdiCloseThick = mdiCloseThick
   mdiStateMachine = mdiStateMachine
+  @Prop({ required: true })
+  readonly showDialog!: boolean
 
-  @Prop({ required: true }) declare readonly showDialog: boolean
-  @Prop({ required: false, default: null }) declare readonly file: AppFileWithMeta | null
+  @Prop({ required: false, default: null })
+  readonly file!: AppFileWithMeta | null
 
   private localTtgMap: number[] = []
   private localEndlessSpoolGroups: number[] = []
@@ -532,8 +534,8 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
       alerts.push('\u2022 ' + this.$t('app.mmu.msg.temperature'))
     }
 
-    const rgb1 = this.hexToRgb(this.formColorString(this.toolMetaData[this.selectedTool].color))
-    const rgb2 = this.hexToRgb(this.formColorString(this.gateDetails(this.selectedGate).color))
+    const rgb1 = this.hexToRgb(this.fromColorString(this.toolMetaData[this.selectedTool].color))
+    const rgb2 = this.hexToRgb(this.fromColorString(this.gateDetails(this.selectedGate).color))
     const colorDifference = this.weightedEuclideanDistance(rgb1, rgb2)
     if (colorDifference > maxColorDiff) {
       alerts.push('\u2022 ' + this.$t('app.mmu.msg.color'))

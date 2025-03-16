@@ -163,7 +163,7 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get supportsMmu (): boolean {
-    return !!this.$typedState.printer.printer.mmu
+    return this.$typedState.printer.printer.mmu != null
   }
 
   get hasMacros (): boolean {

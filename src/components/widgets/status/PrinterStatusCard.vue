@@ -141,12 +141,12 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
   }
 
   handlePrint (filename: string) {
-    const mmuAvailable = !!this.$typedState.printer.printer.mmu && this.$typedState.printer.printer.mmu.enabled
-    if (mmuAvailable) {
+    if (this.$typedState.printer.printer.mmu?.enabled === true) {
       const { filename: fileName, rootPath } = getFilePaths(filename, 'gcodes')
       const fileWithMeta = this.$typedGetters['files/getFile'](rootPath, fileName)
+
       if (fileWithMeta != null && 'referenced_tools' in fileWithMeta) {
-        const mmuPrint = (fileWithMeta.referenced_tools?.length ?? 1) > 1 || this.$typedState.printer.printer.mmu?.gate !== -2
+        const mmuPrint = (fileWithMeta.referenced_tools?.length ?? 1) > 1 || this.$typedState.printer.printer.mmu.gate !== -2
         if (mmuPrint) {
           this.fileForMmuDialog = fileWithMeta
           this.showMmuEditTtgMapDialog = true
@@ -157,6 +157,7 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
 
     const spoolmanSupported: boolean = this.$typedGetters['spoolman/getAvailable']
     const autoSpoolSelectionDialog: boolean = this.$typedState.config.uiSettings.spoolman.autoSpoolSelectionDialog
+
     if (spoolmanSupported && autoSpoolSelectionDialog) {
       this.$typedCommit('spoolman/setDialogState', {
         show: true,

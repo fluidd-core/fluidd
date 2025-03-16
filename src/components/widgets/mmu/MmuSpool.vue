@@ -137,11 +137,20 @@ import type { MmuGateDetails } from '@/types'
 
 @Component({})
 export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
-  @Prop({ required: true, default: -1 }) declare readonly gateIndex: number
-  @Prop({ required: false, default: '#AD8762' }) declare readonly spoolWheelColor: string
-  @Prop({ required: false, default: true }) declare readonly showPercent: boolean
-  @Prop({ required: false, default: null }) readonly editGateMap!: MmuGateDetails[] | null
-  @Prop({ required: false, default: -1 }) declare readonly editGateSelected: number
+  @Prop({ required: true, default: -1 })
+  readonly gateIndex!: number
+
+  @Prop({ required: false, default: '#AD8762' })
+  readonly spoolWheelColor!: string
+
+  @Prop({ required: false, default: true })
+  readonly showPercent!: boolean
+
+  @Prop({ required: false, default: null })
+  readonly editGateMap!: MmuGateDetails[] | null
+
+  @Prop({ required: false, default: -1 })
+  readonly editGateSelected!: number
 
   contrastColor: string = 'black'
 

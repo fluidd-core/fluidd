@@ -125,9 +125,14 @@ import MmuGateStatus from '@/components/widgets/mmu/MmuGateStatus.vue'
   components: { MmuSpool, MmuGateStatus },
 })
 export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
-  @Prop({ required: false, default: 0 }) readonly unit!: number
-  @Prop({ required: false, default: null }) readonly editGateMap!: MmuGateDetails[] | null
-  @Prop({ required: false, default: -1 }) readonly editGateSelected!: number
+  @Prop({ required: false, default: 0 })
+  readonly unit!: number
+
+  @Prop({ required: false, default: null })
+  readonly editGateMap!: MmuGateDetails[] | null
+
+  @Prop({ required: false, default: -1 })
+  readonly editGateSelected!: number
 
   private svgLogo: string | null = null
 

@@ -480,10 +480,9 @@ import {
   mdiArrowExpandHorizontal,
   mdiContentSaveSettingsOutline,
 } from '@mdi/js'
+import isKeyOf from '@/util/is-key-of'
 
-@Component({
-  components: { },
-})
+@Component({})
 export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
   mdiCloseThick = mdiCloseThick
   mdiSync = mdiSync
@@ -500,7 +499,8 @@ export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, Sta
   mdiArrowExpandHorizontal = mdiArrowExpandHorizontal
   mdiContentSaveSettingsOutline = mdiContentSaveSettingsOutline
 
-  @Prop({ required: true }) readonly showDialog!: boolean
+  @Prop({ required: true })
+  readonly showDialog!: boolean
 
   private localLedEnable: boolean = true
   private localLedAnimation: boolean = true
@@ -526,11 +526,18 @@ export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, Sta
   }
 
   get mmuLeds (): boolean {
-    return !!this.$typedState.printer.printer.mmu_leds
+    return this.$typedState.printer.printer.mmu_leds != null
   }
 
   private hasLedsOfType (type: string): boolean {
-    return (this.$typedState.printer.printer.mmu_leds?.[type] ?? 0) > 0
+    const mmuLeds = this.$typedState.printer.printer.mmu_leds
+
+    return (
+      mmuLeds != null &&
+      isKeyOf(type, mmuLeds) &&
+      typeof mmuLeds[type] === 'number' &&
+      mmuLeds[type] > 0
+    )
   }
 
   get ledEffectModule (): boolean {

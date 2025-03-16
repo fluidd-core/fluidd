@@ -906,8 +906,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     const filename = file.path ? `${file.path}/${file.filename}` : file.filename
 
-    const mmuAvailable = !!this.$typedState.printer.printer.mmu && this.$typedState.printer.printer.mmu.enabled
-    if (mmuAvailable) {
+    if (this.$typedState.printer.printer.mmu?.enabled === true) {
       const { filename, rootPath } = getFilePaths(file.filename, 'gcodes')
       const fileWithMeta = this.$typedGetters['files/getFile'](rootPath, filename)
 

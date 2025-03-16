@@ -188,18 +188,38 @@ import MmuMixin from '@/mixins/mmu'
   components: {},
 })
 export default class MmuTtgMap extends Mixins(StateMixin, MmuMixin) {
-  @Prop({ required: false, default: 10 }) readonly startX!: number
-  @Prop({ required: false, default: 8 }) readonly startY!: number
-  @Prop({ required: false, default: 12 }) readonly verticalSpacing!: number
-  @Prop({ required: false, default: 12 }) readonly groupSpacing!: number
-  @Prop({ required: false, default: 80 }) readonly mapSpace!: number
-  @Prop({ required: false, default: 10 }) readonly leader!: number
-  @Prop({ required: false, default: true }) readonly showEsGroups!: boolean
+  @Prop({ required: false, default: 10 })
+  readonly startX!: number
 
-  @Prop({ required: true }) declare readonly map: number[]
-  @Prop({ required: true }) declare readonly groups: number[]
-  @Prop({ required: false, default: -1 }) declare readonly selectedTool: number
-  @Prop({ required: false, default: -1 }) declare readonly selectedGate: number
+  @Prop({ required: false, default: 8 })
+  readonly startY!: number
+
+  @Prop({ required: false, default: 12 })
+  readonly verticalSpacing!: number
+
+  @Prop({ required: false, default: 12 })
+  readonly groupSpacing!: number
+
+  @Prop({ required: false, default: 80 })
+  readonly mapSpace!: number
+
+  @Prop({ required: false, default: 10 })
+  readonly leader!: number
+
+  @Prop({ required: false, default: true })
+  readonly showEsGroups!: boolean
+
+  @Prop({ required: true })
+  readonly map!: number[]
+
+  @Prop({ required: true })
+  readonly groups!: number[]
+
+  @Prop({ required: false, default: -1 })
+  readonly selectedTool!: number
+
+  @Prop({ required: false, default: -1 })
+  readonly selectedGate!: number
 
   get toolX (): number {
     return this.startX + 14

@@ -31,10 +31,17 @@ import type { MmuGateDetails } from '@/types'
 
 @Component({})
 export default class MmuGateSummary extends Mixins(StateMixin, MmuMixin) {
-  @Prop({ required: true, default: -1 }) declare readonly gateIndex: number
-  @Prop({ required: false, default: false }) readonly compact!: boolean
-  @Prop({ required: false, default: true }) readonly showDetails!: boolean
-  @Prop({ required: false, default: true }) readonly showGate!: boolean
+  @Prop({ required: true, default: -1 })
+  readonly gateIndex!: number
+
+  @Prop({ required: false, default: false })
+  readonly compact!: boolean
+
+  @Prop({ required: false, default: true })
+  readonly showDetails!: boolean
+
+  @Prop({ required: false, default: true })
+  readonly showGate!: boolean
 
   get details (): MmuGateDetails {
     return this.gateDetails(this.gateIndex)

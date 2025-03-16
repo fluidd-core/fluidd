@@ -367,7 +367,7 @@ import MmuMachine from '@/components/widgets/mmu/MmuMachine.vue'
 import { mdiCloseThick, mdiDatabaseEdit, mdiSpeedometer, mdiRestart, mdiMinus, mdiPlus, mdiAdjust } from '@mdi/js'
 
 @Component({
-  components: { MmuMachine },
+  components: { MmuMachine }
 })
 export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
   mdiCloseThick = mdiCloseThick
@@ -452,7 +452,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
                 spool?.filament?.name ?? this.$t('app.mmu.label.unknown').toString()
       this.editGateMap[this.editGateSelected].material =
                 spool?.filament?.material ?? this.$t('app.mmu.label.unknown').toString()
-      const color = this.formColorString(spool?.filament?.color_hex ?? '')
+      const color = this.fromColorString(spool?.filament?.color_hex ?? '')
       this.editGateMap[this.editGateSelected].color = color
       this.editGateMap[this.editGateSelected].temperature = spool?.filament?.settings_extruder_temp ?? -1
     }
