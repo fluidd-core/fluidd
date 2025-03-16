@@ -6,7 +6,7 @@ import { consola } from 'consola'
 import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
 
-export const actions: ActionTree<TimelapseState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -18,7 +18,8 @@ export const actions: ActionTree<TimelapseState, RootState> = {
    * Make a socket request to init the timelapse component.
    */
   async init () {
-    SocketActions.timelapseState()
+    SocketActions.machineTimelapseGetSettings()
+    SocketActions.machineTimelapseLastFrameInfo()
   },
 
   async onSettings ({ commit }, payload) {
@@ -102,4 +103,4 @@ export const actions: ActionTree<TimelapseState, RootState> = {
       }
     }
   }
-}
+} satisfies ActionTree<TimelapseState, RootState>

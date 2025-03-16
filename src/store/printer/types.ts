@@ -239,7 +239,7 @@ export interface KlipperPrinterBedMeshState {
   mesh_max: [number, number];
   probed_matrix: number[][];
   mesh_matrix: number[][];
-  profiles?: Record<string, KlipperPrinterBedMeshProfileState>;
+  profiles?: Record<string, KlipperPrinterBedMeshProfileState | undefined>;
 }
 
 export interface KlipperPrinterBedMeshProfileState {
@@ -586,7 +586,7 @@ export interface KlipperPrinterBeaconState {
   model?: string | null;
 }
 
-export interface KlipperPrinterConfig extends Record<string, Record<string, string>> {
+export interface KlipperPrinterConfig extends Record<string, Record<string, string | undefined> | undefined> {
 }
 
 type KlipperPrinterSettingsBaseType = {
@@ -1151,7 +1151,7 @@ export interface KalicoPrinterDangerOptionsSettings {
   endstop_sample_count: number;
 }
 
-export interface KalicoPrinterConstantsSettings extends Record<string, string> {
+export interface KalicoPrinterConstantsSettings extends Record<string, string | undefined> {
 }
 
 export interface KalicoPrinterZCalibrationSettings {
@@ -1195,10 +1195,10 @@ export interface KalicoPrinterZTiltNgSettings {
   extra_points?: string;
 }
 
-export interface KlipperPrinterBeaconSettings extends Record<string, any> {
+export interface KlipperPrinterBeaconSettings extends Record<string, unknown> {
 }
 
-export interface KlipperPrinterBeaconModelSettings extends Record<string, any> {
+export interface KlipperPrinterBeaconModelSettings extends Record<string, unknown> {
 }
 
 // Custom classes start here

@@ -42,6 +42,7 @@
     >
       <template #item="{ headers, item }">
         <app-data-table-row
+          :key="item.job_id"
           :headers="headers"
           :item="item"
           :class="{
@@ -54,7 +55,7 @@
             <v-icon
               v-if="!item.exists"
               class="mr-2"
-              color="secondary"
+              color="grey"
             >
               $fileCancel
             </v-icon>
@@ -63,7 +64,7 @@
             <v-icon
               v-else-if="!item.metadata.thumbnails?.length"
               class="mr-2"
-              color="secondary"
+              color="grey"
             >
               $file
             </v-icon>
@@ -144,7 +145,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
 
   get auxiliaryDataHeaders (): AppDataTableHeader[] {
     const auxiliaryDataHeaders = this.history
-      .reduce((headers, item) => {
+      .reduce<Record<string, string>>((headers, item) => {
         if (item.auxiliary_data) {
           for (const auxiliaryDataItem of item.auxiliary_data) {
             headers[auxiliaryDataItem.name] = auxiliaryDataItem.description
@@ -152,7 +153,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
         }
 
         return headers
-      }, {} as Record<string, string>)
+      }, {})
 
     for (const sensor of this.sensors) {
       if (sensor.history_fields) {
@@ -357,7 +358,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
       },
     ]
 
-    const mergedTableHeaders: AppDataTableHeader[] = this.$store.getters['config/getMergedTableHeaders'](headers, 'history')
+    const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters['config/getMergedTableHeaders'](headers, 'history')
 
     return mergedTableHeaders
   }
@@ -386,11 +387,11 @@ export default class JobHistory extends Mixins(FilesMixin) {
   }
 
   get sensors (): MoonrakerSensor[] {
-    return this.$store.getters['sensors/getSensors']
+    return this.$typedGetters['sensors/getSensors']
   }
 
   get history (): HistoryItem[] {
-    return this.$store.getters['history/getHistory']
+    return this.$typedGetters['history/getHistory']
   }
 
   getFilePaths (filename: string) {
@@ -409,7 +410,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
   }
 
   handleJobThumbnailError (job: HistoryItem) {
-    this.$store.dispatch('history/clearHistoryThumbnails', job.job_id)
+    this.$typedDispatch('history/clearHistoryThumbnails', job.job_id)
   }
 
   getItemValue (item: HistoryItem, header: DataTableHeader, defaultGetter: DefaultGetterFunction) {

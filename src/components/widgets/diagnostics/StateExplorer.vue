@@ -19,7 +19,7 @@ import JsonViewer from 'vue-json-viewer'
 export default class StateExplorer extends Mixins(StateMixin) {
   get state () {
     return {
-      printer: this.$store.state.printer.printer
+      printer: this.$typedState.printer.printer
     }
   }
 

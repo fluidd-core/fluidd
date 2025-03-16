@@ -175,7 +175,7 @@ app:
       download: Letöltés
       duplicate: Duplikált
       edit: Szerkesztés
-      exit_layout: Elrendezési mód bezárása
+      exit_layout: Kilépés
       extrude: Extrudálás
       filter: Szűrő
       forgot_password: Elfelejtetted a jelszavad?
@@ -203,8 +203,8 @@ app:
       rename: Átnevezés
       reprint: Újranyomtatás
       reset_file: Fájl törlése
-      reset_layout: Elrendezés visszaállítása
-      reset_default_layout: Alapértelmezett elrendezés visszaállítása
+      reset_layout: Frissítés
+      reset_default_layout: Alapértelmezés visszaállítása
       restart_firmware: Firmware újraindítása
       restart_service: Újraindítás %{service}
       restart_service_klipper: Klipper újraindítása
@@ -220,7 +220,7 @@ app:
       select_columns: Oszlopok kijelölése
       send: Küldés
       set_color: Szín beállítása
-      set_default_layout: Beállítás alapértelmezett elrendezésként
+      set_default_layout: Beállítás alapértelmezettként
       shutdown: Leállítás
       snooze: Szundi
       socket_reconnect: Újracsatlakozás
@@ -461,6 +461,13 @@ app:
         total_duration: Teljes időtartam
         file_processors: Fájl processzorok
         user: Felhasználó
+        extruder_colors: Extruder színek
+        filament_change_count: Nyomtatószál csere
+        filament_colors: Nyomtatószál színe
+        filament_temps: Nyomtatószál hőfokok
+        filament_weights: Nyomtatószál súlya
+        mmu_print: MMU nyomtatás
+        referenced_tools: Referencia eszközök
     title:
       add_chart: Ábra hozzáadása
       add_printer: Nyomtató hozzáadása
@@ -517,6 +524,13 @@ app:
         Másold át a fájlokat és mappákat a konfigurációs fájlokba úgy, hogy innen
         húzd át őket, majd dobd oda
       power_on_printer: Bekapcsolja a nyomtató áramellátását
+      exit_layout: Elrendezési mód bezárása
+      reset_layout: Visszaállítja a jelenlegi elrendezést a szerver-szintű alapértelmezett
+        elrendezéshez
+      reset_default_layout: Visszaállítja a szerver-szintű alapértelmezett elrendezést
+        a gyári értékre
+      set_default_layout: Beállítja a jelenlegi elrendezést szerver-szintű alapértelmezett
+        elrendezésként
   history:
     msg:
       confirm: Biztos vagy benne? Törlöd az összes előzményt és a nyomtatóstatisztikát
@@ -527,6 +541,10 @@ app:
       confirm: Biztos vagy benne? Törlöd a teljes nyomtatósort
     label:
       number_of_copies: Másolatok száma
+      eta: BVI
+      filament: Nyomtatószál
+      unknown_jobs: Ismeretlen munka
+      print_time: Nyomtatási idő
     title:
       multiply_job: Munka szorzása | Munkák szorzása
     tooltip:
@@ -957,6 +975,8 @@ app:
       extruder_temp: Fej hőfoka
       price: Érték
       used_weight: Használt
+      colors: Színek
+      diameter: Átmérő
     msg:
       no_spool: >-
         Nem választottál ki orsót.

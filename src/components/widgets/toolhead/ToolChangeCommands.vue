@@ -73,7 +73,7 @@ type ToolChangeCommand = {
 @Component({})
 export default class ToolChangeCommands extends Mixins(StateMixin) {
   get availableCommands (): GcodeCommands {
-    return this.$store.getters['printer/getAvailableCommands']
+    return this.$typedGetters['printer/getAvailableCommands']
   }
 
   get toolChangeCommands (): ToolChangeCommand[] {
@@ -87,7 +87,7 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
           ? help
           : this.$t('app.tool.tooltip.select_tool', { tool: command.substring(1) })
 
-        const macro: Macro | undefined = this.$store.getters['macros/getMacroByName'](command)
+        const macro: Macro | undefined = this.$typedGetters['macros/getMacroByName'](command)
 
         return {
           name: command,
@@ -114,11 +114,11 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
   }
 
   getSpoolById (id: number): Spool | undefined {
-    return this.$store.getters['spoolman/getSpoolById'](id)
+    return this.$typedGetters['spoolman/getSpoolById'](id)
   }
 
   getSpoolColor (spool: Spool | undefined) {
-    return `#${spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? 'fff' : '000')}`
+    return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
   }
 }
 </script>

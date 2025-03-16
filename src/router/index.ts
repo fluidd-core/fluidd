@@ -23,8 +23,8 @@ import Icons from '@/views/Icons.vue'
 Vue.use(VueRouter)
 
 const isAuthenticated = (): boolean => (
-  router.app.$store.state.auth.authenticated ||
-  !router.app.$store.state.socket.apiConnected
+  router.app.$typedState.auth.authenticated ||
+  !router.app.$typedState.socket.apiConnected
 )
 
 const defaultRouteConfig: Partial<RouteConfig> = {
@@ -188,8 +188,8 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  router.app?.$store.commit('config/setContainerColumnCount', 2)
-  router.app?.$store.commit('config/setLayoutMode', false)
+  router.app?.$typedCommit('config/setContainerColumnCount', 2)
+  router.app?.$typedCommit('config/setLayoutMode', false)
   next()
 })
 

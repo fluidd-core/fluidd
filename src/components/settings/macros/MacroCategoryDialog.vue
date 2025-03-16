@@ -52,7 +52,7 @@ export default class MacroCategoryDialog extends Vue {
   }
 
   get categories (): MacroCategory[] {
-    return this.$store.getters['macros/getCategories']
+    return this.$typedGetters['macros/getCategories']
   }
 
   handleSave () {

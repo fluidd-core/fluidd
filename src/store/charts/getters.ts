@@ -6,7 +6,7 @@ import type { RootState } from '../types'
 import { Globals } from '@/globals'
 import type { EChartsOption } from 'echarts'
 
-export const getters: GetterTree<ChartState, RootState> = {
+export const getters = {
   /**
    * Return the charts retention.
    */
@@ -159,4 +159,4 @@ export const getters: GetterTree<ChartState, RootState> = {
     }
     return o
   }
-}
+} satisfies GetterTree<ChartState, RootState>

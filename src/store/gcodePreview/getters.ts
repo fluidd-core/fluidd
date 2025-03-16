@@ -4,7 +4,7 @@ import type { RootState } from '../types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
 import isKeyOf from '@/util/is-key-of'
 
-export const getters: GetterTree<GcodePreviewState, RootState> = {
+export const getters = {
   getLayers: (state, getters, rootState): Layer[] => {
     if (state.layers.length) {
       return state.layers
@@ -253,4 +253,4 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
 
     return layers.length - 1
   }
-}
+} satisfies GetterTree<GcodePreviewState, RootState>

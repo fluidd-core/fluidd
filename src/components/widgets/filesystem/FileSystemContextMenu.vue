@@ -228,7 +228,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   readonly positionY!: number
 
   get rootProperties (): RootProperties {
-    return this.$store.getters['files/getRootProperties'](this.root)
+    return this.$typedGetters['files/getRootProperties'](this.root)
   }
 
   get canPrint () {
@@ -297,7 +297,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
         this.file.extension !== '.zip'
       ) &&
       !this.rootProperties.readonly &&
-      this.$store.getters['server/getIsMinApiVersion']('1.1.0')
+      this.$typedGetters['server/getIsMinApiVersion']('1.1.0')
     )
   }
 
@@ -316,7 +316,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   get canAddToQueue (): boolean {
     return (
       this.isGcodesRootWithAcceptedFiles &&
-      this.$store.getters['server/componentSupport']('job_queue')
+      this.$typedGetters['server/componentSupport']('job_queue')
     )
   }
 
@@ -329,7 +329,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   get canPerformTimeAnalysys (): boolean {
     return (
       this.isGcodesRootWithAcceptedFiles &&
-      this.$store.getters['server/componentSupport']('analysis')
+      this.$typedGetters['server/componentSupport']('analysis')
     )
   }
 }

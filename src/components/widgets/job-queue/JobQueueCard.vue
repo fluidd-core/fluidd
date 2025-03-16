@@ -10,7 +10,7 @@
     <template #menu>
       <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
-          v-if="['ready','loading','starting'].includes(queueStatus)"
+          v-if="['ready','loading','starting'].includes(queueState)"
           small
           class="me-1 my-1"
           @click="handlePause"
@@ -24,7 +24,7 @@
           <span>{{ $t('app.general.btn.pause') }}</span>
         </app-btn>
         <app-btn
-          v-else-if="queueStatus === 'paused'"
+          v-else-if="queueState === 'paused'"
           small
           class="my-1"
           :class="{
@@ -82,8 +82,8 @@ export default class JobQueueCard extends Vue {
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean
 
-  get queueStatus (): QueueState {
-    return this.$store.state.jobQueue.queue_state
+  get queueState (): QueueState {
+    return this.$typedState.jobQueue.queueState
   }
 
   handlePause () {

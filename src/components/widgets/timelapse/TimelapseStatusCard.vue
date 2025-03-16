@@ -90,7 +90,7 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   selectedFrameNumber = 0
 
   saveFrames () {
-    SocketActions.machineTimelapseSaveFrames(this.$waits.onTimelapseSaveFrame)
+    SocketActions.machineTimelapseSaveFrames()
   }
 
   get savingFrames () {
@@ -126,19 +126,19 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   get camera (): WebcamConfig | undefined {
-    return this.$store.getters['webcams/getWebcamById'](this.settings.camera)
+    return this.$typedGetters['webcams/getWebcamById'](this.settings.camera)
   }
 
   get settings (): TimelapseSettings {
-    return this.$store.state.timelapse.settings ?? {} as TimelapseSettings
+    return this.$typedState.timelapse.settings ?? {} as TimelapseSettings
   }
 
   get lastFrame (): TimelapseLastFrame | undefined {
-    return this.$store.state.timelapse.lastFrame
+    return this.$typedState.timelapse.lastFrame
   }
 
   get renderStatus (): RenderStatus | undefined {
-    return this.$store.state.timelapse.renderStatus
+    return this.$typedState.timelapse.renderStatus
   }
 
   get renderProgress () {

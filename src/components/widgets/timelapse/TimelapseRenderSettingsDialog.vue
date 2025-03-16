@@ -256,7 +256,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get outputFramerateBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('output_framerate')
+    return this.$typedGetters['timelapse/isBlockedSetting']('output_framerate')
   }
 
   get outputFramerate (): number {
@@ -270,7 +270,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get variableFpsBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('variable_fps')
+    return this.$typedGetters['timelapse/isBlockedSetting']('variable_fps')
   }
 
   get variableFps (): boolean {
@@ -282,7 +282,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get targetLengthBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('targetlength')
+    return this.$typedGetters['timelapse/isBlockedSetting']('targetlength')
   }
 
   get targetLength (): number {
@@ -296,7 +296,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get minFpsBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('variable_fps_min')
+    return this.$typedGetters['timelapse/isBlockedSetting']('variable_fps_min')
   }
 
   get minFps (): number {
@@ -310,7 +310,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get maxFpsBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('variable_fps_max')
+    return this.$typedGetters['timelapse/isBlockedSetting']('variable_fps_max')
   }
 
   get maxFps (): number {
@@ -324,7 +324,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get duplicateFramesBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('duplicatelastframe')
+    return this.$typedGetters['timelapse/isBlockedSetting']('duplicatelastframe')
   }
 
   get duplicateFrames (): number {
@@ -338,7 +338,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get saveFramesBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('saveframes')
+    return this.$typedGetters['timelapse/isBlockedSetting']('saveframes')
   }
 
   get saveFrames (): boolean {
@@ -350,7 +350,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get previewImageBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('previewimage')
+    return this.$typedGetters['timelapse/isBlockedSetting']('previewimage')
   }
 
   get previewImage (): boolean {
@@ -375,7 +375,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get crfBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('constant_rate_factor')
+    return this.$typedGetters['timelapse/isBlockedSetting']('constant_rate_factor')
   }
 
   get crf (): number {
@@ -391,11 +391,11 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get settings (): TimelapseSettings {
-    return this.$store.state.timelapse.settings ?? {} as TimelapseSettings
+    return this.$typedState.timelapse.settings ?? {} as TimelapseSettings
   }
 
   get lastFrame (): TimelapseLastFrame | undefined {
-    return this.$store.state.timelapse.lastFrame
+    return this.$typedState.timelapse.lastFrame
   }
 
   subtitleIfBlocked (blocked: boolean): string {

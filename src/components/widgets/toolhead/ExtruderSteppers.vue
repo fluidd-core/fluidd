@@ -63,8 +63,8 @@ import type { KnownExtruder, ExtruderStepper } from '@/store/printer/types'
 })
 export default class ExtruderSteppers extends Vue {
   get extruderSteppers () {
-    const extruders: KnownExtruder[] = this.$store.getters['printer/getExtruders']
-    const extruderSteppers: ExtruderStepper[] = this.$store.getters['printer/getExtruderSteppers']
+    const extruders: KnownExtruder[] = this.$typedGetters['printer/getExtruders']
+    const extruderSteppers: ExtruderStepper[] = this.$typedGetters['printer/getExtruderSteppers']
 
     return extruderSteppers
       .map(x => {

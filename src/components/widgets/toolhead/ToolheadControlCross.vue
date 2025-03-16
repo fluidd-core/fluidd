@@ -200,11 +200,11 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
   moveLength: number | null = null
 
   get printerSettings (): KlipperPrinterSettings {
-    return this.$store.getters['printer/getPrinterSettings']
+    return this.$typedGetters['printer/getPrinterSettings']
   }
 
   get hasRoundBed (): boolean {
-    return this.$store.getters['printer/getHasRoundBed']
+    return this.$typedGetters['printer/getHasRoundBed']
   }
 
   get canHomeXY (): boolean {
@@ -212,12 +212,12 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
   }
 
   get toolheadMoveDistances (): number[] {
-    return this.$store.state.config.uiSettings.general.toolheadMoveDistances
+    return this.$typedState.config.uiSettings.general.toolheadMoveDistances
   }
 
   get toolheadMoveLength (): number {
     if (this.moveLength == null) {
-      const defaultToolheadMoveLength: number = this.$store.state.config.uiSettings.general.defaultToolheadMoveLength
+      const defaultToolheadMoveLength: number = this.$typedState.config.uiSettings.general.defaultToolheadMoveLength
 
       this.moveLength = this.toolheadMoveDistances.includes(defaultToolheadMoveLength)
         ? defaultToolheadMoveLength
@@ -246,9 +246,9 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
    */
   moveAxisBy (axis: Axis, distance: number, negative = false) {
     const rate: number = axis === 'Z'
-      ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
-      : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
-    const inverted: boolean = this.$store.state.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
+      ? this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
+      : this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
+    const inverted: boolean = this.$typedState.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
     distance = negative !== inverted
       ? -distance
       : distance
@@ -256,7 +256,7 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
     if (this.forceMoveEnabled) {
       const accel: number = axis === 'Z'
         ? this.printerSettings.printer?.max_z_accel ?? 100
-        : this.$store.state.printer.printer.toolhead.max_accel
+        : this.$typedState.printer.printer.toolhead.max_accel
       this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
     } else {
       this.sendMoveGcode(

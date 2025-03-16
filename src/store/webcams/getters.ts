@@ -2,7 +2,7 @@ import type { GetterTree } from 'vuex'
 import type { WebcamConfig, WebcamsState } from './types'
 import type { RootState } from '../types'
 
-export const getters: GetterTree<WebcamsState, RootState> = {
+export const getters = {
   getWebcams: (state) => {
     return [...state.webcams]
       .sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))
@@ -27,4 +27,4 @@ export const getters: GetterTree<WebcamsState, RootState> = {
   getWebcamById: (state) => (id: string) => {
     return state.webcams.find(webcam => webcam.uid === id)
   }
-}
+} satisfies GetterTree<WebcamsState, RootState>

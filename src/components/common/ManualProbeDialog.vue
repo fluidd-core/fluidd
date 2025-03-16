@@ -145,12 +145,12 @@ export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin)
     return [
       1,
       0.1,
-      ...this.$store.state.config.uiSettings.general.zAdjustDistances
+      ...this.$typedState.config.uiSettings.general.zAdjustDistances
     ].sort((a, b) => b - a)
   }
 
   get manualProbe (): KlipperPrinterManualProbeState | undefined {
-    return this.$store.state.printer.printer.manual_probe
+    return this.$typedState.printer.printer.manual_probe
   }
 
   get zPositionLower (): string {
@@ -166,7 +166,7 @@ export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin)
   }
 
   get showManualProbeDialogAutomatically (): boolean {
-    return this.$store.state.config.uiSettings.general.showManualProbeDialogAutomatically
+    return this.$typedState.config.uiSettings.general.showManualProbeDialogAutomatically
   }
 
   @Watch('isManualProbeActive')

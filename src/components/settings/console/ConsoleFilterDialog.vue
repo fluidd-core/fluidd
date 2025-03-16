@@ -122,7 +122,7 @@ export default class ConsoleFilterDialog extends Vue {
   }
 
   get filters (): ConsoleFilter[] {
-    return this.$store.state.console.consoleFilters
+    return this.$typedState.console.consoleFilters
   }
 
   handleSave () {

@@ -73,7 +73,7 @@ import { SocketActions } from '@/api/socketActions'
 @Component({})
 export default class PrinterStatsCard extends Vue {
   get sdInfo () {
-    const info: SystemInfo | null = this.$store.state.server.system_info
+    const info: SystemInfo | null = this.$typedState.server.system_info
 
     return info?.sd_info
   }
@@ -87,7 +87,7 @@ export default class PrinterStatsCard extends Vue {
   }
 
   get diskUsage (): DiskUsage | null {
-    const diskUsage: DiskUsage | null = this.$store.state.files.disk_usage
+    const diskUsage: DiskUsage | null = this.$typedState.files.diskUsage
 
     if (diskUsage == null) {
       SocketActions.serverFilesGetDirectory('config')

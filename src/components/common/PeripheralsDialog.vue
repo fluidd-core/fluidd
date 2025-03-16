@@ -328,15 +328,15 @@ export default class ManualProbeDialog extends Mixins(StateMixin) {
   tab: number | null = null
 
   get peripherals (): Peripherals {
-    return this.$store.state.server.peripherals
+    return this.$typedState.server.peripherals
   }
 
   get canbusUuids (): Record<string, CanbusUuid[]> | null {
-    return this.$store.state.server.can_uuids
+    return this.$typedState.server.can_uuids
   }
 
   get systemInfo (): SystemInfo | null {
-    return this.$store.state.server.system_info
+    return this.$typedState.server.system_info
   }
 
   get canbusInterfaces (): string[] {

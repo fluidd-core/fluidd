@@ -138,19 +138,19 @@ const axisIndexMap: Record<Axis, number> = {
 @Component({})
 export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) {
   get gcodePosition (): [number, number, number, number] {
-    return this.$store.state.printer.printer.gcode_move.gcode_position
+    return this.$typedState.printer.printer.gcode_move.gcode_position
   }
 
   get toolheadPosition (): [number, number, number, number] {
-    return this.$store.state.printer.printer.toolhead.position
+    return this.$typedState.printer.printer.toolhead.position
   }
 
   get livePosition (): [number, number, number, number] {
-    return this.$store.state.printer.printer.motion_report?.live_position ?? [0, 0, 0, 0]
+    return this.$typedState.printer.printer.motion_report?.live_position ?? [0, 0, 0, 0]
   }
 
   get useGcodeCoords (): boolean {
-    return this.$store.state.config.uiSettings.general.useGcodeCoords
+    return this.$typedState.config.uiSettings.general.useGcodeCoords
   }
 
   get xForceMove (): boolean {
@@ -166,7 +166,7 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
   }
 
   get usesAbsolutePositioning (): boolean {
-    return this.$store.state.printer.printer.gcode_move.absolute_coordinates
+    return this.$typedState.printer.printer.gcode_move.absolute_coordinates
   }
 
   get positioning () {
@@ -178,7 +178,7 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
   }
 
   get printerSettings (): KlipperPrinterSettings {
-    return this.$store.getters['printer/getPrinterSettings']
+    return this.$typedGetters['printer/getPrinterSettings']
   }
 
   moveAxisTo (axis: Axis, pos: number) {
@@ -189,13 +189,13 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
 
     if (currentPos !== pos) {
       const rate: number = axis === 'Z'
-        ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
-        : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+        ? this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
+        : this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
 
       if (this.forceMoveEnabled) {
         const accel: number = axis === 'Z'
           ? this.printerSettings.printer?.max_z_accel ?? 100
-          : this.$store.state.printer.printer.toolhead.max_accel
+          : this.$typedState.printer.printer.toolhead.max_accel
         this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate} ACCEL=${accel}`)
       } else {
         this.sendMoveGcode(

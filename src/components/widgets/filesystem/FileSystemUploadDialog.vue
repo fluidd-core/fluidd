@@ -1,6 +1,6 @@
 <template>
   <app-dialog
-    :value="uploads.length > 0"
+    :value="open"
     :title="$tc('app.file_system.title.upload_file', uploads.length)"
     max-width="500"
     persistent
@@ -74,8 +74,12 @@ import type { FileUpload } from '@/store/files/types'
 
 @Component({})
 export default class FileSystemUploadDialog extends Mixins(StateMixin) {
+  get open () {
+    return this.uploads.length > 0
+  }
+
   get uploads (): FileUpload[] {
-    const uploads: FileUpload[] = this.$store.state.files.uploads
+    const uploads: FileUpload[] = this.$typedState.files.uploads
 
     return uploads
       .filter(file => !file.cancelled && (file.percent !== 100 || !file.complete))
@@ -85,7 +89,7 @@ export default class FileSystemUploadDialog extends Mixins(StateMixin) {
     if (!file.complete) {
       // Hasn't started uploading...
       if (file.loaded === 0) {
-        this.$store.dispatch('files/updateFileUpload', {
+        this.$typedDispatch('files/updateFileUpload', {
           uid: file.uid,
           cancelled: true
         })

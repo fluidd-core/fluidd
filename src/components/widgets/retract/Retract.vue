@@ -125,7 +125,7 @@ import type { KlipperPrinterSettings, KlippyApp } from '@/store/printer/types'
 @Component({})
 export default class Retract extends Mixins(StateMixin, BrowserMixin) {
   get firmwareRetraction () {
-    const printerSettings: KlipperPrinterSettings = this.$store.getters['printer/getPrinterSettings']
+    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings.firmware_retraction
   }
@@ -135,7 +135,7 @@ export default class Retract extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get retractLength (): number {
-    return this.$store.state.printer.printer.firmware_retraction?.retract_length ?? 0
+    return this.$typedState.printer.printer.firmware_retraction?.retract_length ?? 0
   }
 
   get maxRetractLength (): number {
@@ -148,7 +148,7 @@ export default class Retract extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get retractSpeed (): number {
-    return this.$store.state.printer.printer.firmware_retraction?.retract_speed ?? 0
+    return this.$typedState.printer.printer.firmware_retraction?.retract_speed ?? 0
   }
 
   get maxRetractSpeed (): number {
@@ -161,7 +161,7 @@ export default class Retract extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get unretractSpeed (): number {
-    return this.$store.state.printer.printer.firmware_retraction?.unretract_speed ?? 0
+    return this.$typedState.printer.printer.firmware_retraction?.unretract_speed ?? 0
   }
 
   get maxUnretractSpeed (): number {
@@ -174,7 +174,7 @@ export default class Retract extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get unretractExtraLength (): number {
-    return this.$store.state.printer.printer.firmware_retraction?.unretract_extra_length ?? 0
+    return this.$typedState.printer.printer.firmware_retraction?.unretract_extra_length ?? 0
   }
 
   get maxUnretractExtraLength (): number {
@@ -187,7 +187,7 @@ export default class Retract extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get zHopHeight (): number {
-    return this.$store.state.printer.printer.firmware_retraction?.z_hop_height ?? 0
+    return this.$typedState.printer.printer.firmware_retraction?.z_hop_height ?? 0
   }
 
   get maxZHopHeight (): number {
@@ -196,7 +196,7 @@ export default class Retract extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get klippyApp (): KlippyApp {
-    return this.$store.getters['printer/getKlippyApp']
+    return this.$typedGetters['printer/getKlippyApp']
   }
 
   get supportsZHopHeight () {

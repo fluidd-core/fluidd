@@ -87,11 +87,11 @@ import type { RestoreViewState } from '@/store/config/types'
 })
 export default class FileEditorSettings extends Mixins(StateMixin) {
   get confirmDirtyEditorClose (): boolean {
-    return this.$store.state.config.uiSettings.editor.confirmDirtyEditorClose
+    return this.$typedState.config.uiSettings.editor.confirmDirtyEditorClose
   }
 
   set confirmDirtyEditorClose (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor.confirmDirtyEditorClose',
       value,
       server: true
@@ -99,11 +99,11 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   }
 
   get autoEditExtensions (): string[] {
-    return this.$store.state.config.uiSettings.editor.autoEditExtensions
+    return this.$typedState.config.uiSettings.editor.autoEditExtensions
   }
 
   set autoEditExtensions (value: string[]) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor.autoEditExtensions',
       value: [
         ...new Set(value.map(ext => ext.startsWith('.') ? ext : `.${ext}`))
@@ -113,11 +113,11 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   }
 
   get restoreViewState (): RestoreViewState {
-    return this.$store.state.config.uiSettings.editor.restoreViewState
+    return this.$typedState.config.uiSettings.editor.restoreViewState
   }
 
   set restoreViewState (value: RestoreViewState) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor.restoreViewState',
       value,
       server: true
@@ -142,11 +142,11 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   }
 
   get codeLens (): boolean {
-    return this.$store.state.config.uiSettings.editor.codeLens
+    return this.$typedState.config.uiSettings.editor.codeLens
   }
 
   set codeLens (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor.codeLens',
       value,
       server: true
@@ -154,7 +154,7 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   }
 
   handleReset () {
-    this.$store.dispatch('config/saveByPath', {
+    this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor',
       value: defaultState().uiSettings.editor,
       server: true

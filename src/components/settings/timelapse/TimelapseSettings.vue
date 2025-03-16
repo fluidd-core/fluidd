@@ -154,7 +154,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   get cameras (): Array<{ text?: string, value: string, disabled: boolean }> {
-    const cameras: WebcamConfig[] = this.$store.getters['webcams/getWebcams']
+    const cameras: WebcamConfig[] = this.$typedGetters['webcams/getWebcams']
 
     return cameras
       .map(camera => ({
@@ -165,7 +165,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   get cameraBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('camera')
+    return this.$typedGetters['timelapse/isBlockedSetting']('camera')
   }
 
   get camera (): string {
@@ -177,7 +177,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   get modeBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('mode')
+    return this.$typedGetters['timelapse/isBlockedSetting']('mode')
   }
 
   get mode (): TimelapseMode {
@@ -189,7 +189,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   get delayCompBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('stream_delay_compensation')
+    return this.$typedGetters['timelapse/isBlockedSetting']('stream_delay_compensation')
   }
 
   get delayComp (): number {
@@ -203,7 +203,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   get verboseGcodeBlocked (): boolean {
-    return this.$store.getters['timelapse/isBlockedSetting']('gcode_verbose')
+    return this.$typedGetters['timelapse/isBlockedSetting']('gcode_verbose')
   }
 
   get verboseGcode (): boolean {
@@ -215,7 +215,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   get settings (): TimelapseSettingsType {
-    return this.$store.state.timelapse.settings ?? {} as TimelapseSettingsType
+    return this.$typedState.timelapse.settings ?? {} as TimelapseSettingsType
   }
 
   subtitleIfBlocked (blocked: boolean): string {
@@ -224,7 +224,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
 
   handleReset () {
     const nonBlockedEntries = Object.entries(defaultWritableSettings())
-      .filter(([key]) => !this.$store.getters['timelapse/isBlockedSetting'](key))
+      .filter(([key]) => !this.$typedGetters['timelapse/isBlockedSetting'](key))
     SocketActions.machineTimelapseSetSettings(Object.fromEntries(nonBlockedEntries))
   }
 }

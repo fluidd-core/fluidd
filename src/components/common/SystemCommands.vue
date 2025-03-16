@@ -55,8 +55,8 @@
         v-for="(device, index) in powerDevices"
         :key="index"
         :disabled="(device.status === 'error' || device.status === 'init' || (printerPrinting && device.locked_while_printing))"
-        :loading="hasWait(`${$waits.onDevicePowerToggle}${device.device}`)"
-        @click="togglePowerDevice(device, `${$waits.onDevicePowerToggle}${device.device}`)"
+        :loading="hasWait(`${$waits.onDevicePowerToggle}/${device.device}`)"
+        @click="togglePowerDevice(device)"
       >
         <v-list-item-content>
           <v-list-item-title>{{ getPowerButtonText(device) }}</v-list-item-title>
@@ -142,30 +142,30 @@ import type { ServerInfo, ServiceInfo, SystemInfo } from '@/store/server/types'
 @Component({})
 export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   get serverInfo (): ServerInfo {
-    return this.$store.state.server.info
+    return this.$typedState.server.info
   }
 
   get hosted (): boolean {
-    return this.$store.state.config.hostConfig.hosted
+    return this.$typedState.config.hostConfig.hosted
   }
 
   get powerDevices (): Device[] {
-    return this.$store.getters['power/getDevices']
+    return this.$typedGetters['power/getDevices']
   }
 
   get devicePowerComponentEnabled (): boolean {
-    return this.$store.getters['server/componentSupport']('power')
+    return this.$typedGetters['server/componentSupport']('power')
   }
 
   get services (): ServiceInfo[] {
-    const services: ServiceInfo[] = this.$store.getters['server/getServices']
+    const services: ServiceInfo[] = this.$typedGetters['server/getServices']
 
     return services
       .filter(service => service.name !== 'klipper_mcu')
   }
 
   get systemInfo (): SystemInfo | null {
-    return this.$store.state.server.system_info
+    return this.$typedState.server.system_info
   }
 
   get canControlHost (): boolean {
@@ -228,8 +228,8 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     }
   }
 
-  async togglePowerDevice (device: Device, wait?: string) {
-    const confirmOnPowerDeviceChange: boolean = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+  async togglePowerDevice (device: Device) {
+    const confirmOnPowerDeviceChange: boolean = this.$typedState.config.uiSettings.general.confirmOnPowerDeviceChange
 
     const result = (
       !confirmOnPowerDeviceChange ||
@@ -241,7 +241,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
 
     if (result) {
       const state = (device.status === 'on') ? 'off' : 'on'
-      SocketActions.machineDevicePowerSetDevice(device.device, state, wait)
+      SocketActions.machineDevicePowerSetDevice(device.device, state)
     }
   }
 

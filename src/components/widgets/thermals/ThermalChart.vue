@@ -37,7 +37,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   initialSelected: Record<string, boolean> = {}
 
   handleLegendSelectChanged (event: { selected: Record<string, boolean> }) {
-    this.$store.dispatch('charts/saveSelectedLegends', event.selected)
+    this.$typedDispatch('charts/saveSelectedLegends', event.selected)
 
     let right = (this.isMobileViewport) ? 15 : 20
     if (this.showPowerAxis(event.selected)) {
@@ -59,15 +59,15 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   }
 
   get chartData (): ChartData[] {
-    return this.$store.state.charts.chart
+    return this.$typedState.charts.chart
   }
 
   get chartableSensors (): string[] {
-    return this.$store.getters['printer/getChartableSensors']
+    return this.$typedGetters['printer/getChartableSensors']
   }
 
   get chartSelectedLegends (): ChartSelectedLegends {
-    return this.$store.state.charts.selectedLegends
+    return this.$typedState.charts.selectedLegends
   }
 
   @Watch('chartData')
@@ -107,7 +107,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   }
 
   get options () {
-    const isDark: boolean = this.$store.state.config.uiSettings.theme.isDark
+    const isDark: boolean = this.$typedState.config.uiSettings.theme.isDark
 
     const fontColor = (isDark) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
     const fontSize = (this.isMobileViewport) ? 13 : 14
@@ -216,7 +216,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
         boundaryGap: false,
         max: 'dataMax',
         min: (value: any) => {
-          const temperature_store_size: number = this.$store.getters['charts/getChartRetention']
+          const temperature_store_size: number = this.$typedGetters['charts/getChartRetention']
           return value.max - (temperature_store_size * 1000)
         },
         axisTick: {

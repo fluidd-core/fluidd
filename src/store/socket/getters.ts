@@ -2,7 +2,7 @@ import type { GetterTree } from 'vuex'
 import type { SocketState } from './types'
 import type { RootState } from '../types'
 
-export const getters: GetterTree<SocketState, RootState> = {
+export const getters = {
   /**
    * Indicates if our socket is connected / open.
    */
@@ -20,4 +20,4 @@ export const getters: GetterTree<SocketState, RootState> = {
   getApiConnected: (state) => {
     return state.apiConnected
   }
-}
+} satisfies GetterTree<SocketState, RootState>

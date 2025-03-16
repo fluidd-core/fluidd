@@ -102,7 +102,7 @@ import type { HistoryItem } from '@/store/history/types'
 })
 export default class ReprintTab extends Mixins(StateMixin, FilesMixin) {
   get history (): HistoryItem[] {
-    return this.$store.getters['history/getUniqueHistory'](3)
+    return this.$typedGetters['history/getUniqueHistory'](3)
   }
 
   getFilePaths (filename: string) {
@@ -122,7 +122,7 @@ export default class ReprintTab extends Mixins(StateMixin, FilesMixin) {
   }
 
   handleJobThumbnailError (job: HistoryItem) {
-    this.$store.dispatch('history/clearHistoryThumbnails', job.job_id)
+    this.$typedDispatch('history/clearHistoryThumbnails', job.job_id)
   }
 }
 </script>

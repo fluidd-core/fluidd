@@ -8,10 +8,10 @@ import type { RootState } from '../types'
 
 const namespaced = true
 
-export const version: Module<VersionState, RootState> = {
+export const version = {
   namespaced,
   state,
   getters,
   actions,
   mutations
-}
+} satisfies Module<VersionState, RootState>

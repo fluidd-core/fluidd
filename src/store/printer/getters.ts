@@ -10,7 +10,7 @@ import isKeyOf from '@/util/is-key-of'
 import getFilePaths from '@/util/get-file-paths'
 import type { AppFileWithMeta } from '../files/types'
 
-export const getters: GetterTree<PrinterState, RootState> = {
+export const getters = {
 
   /**
    * Indicates if klippy is connected or not.
@@ -752,13 +752,13 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'temperature_probe',
       'tmc2240',
       'z_thermal_adjust'
-    ]
+    ] as const
     const supportedDrivers = [
       'tmc2240'
-    ]
+    ] as const
 
     const sensors = Object.keys(state.printer)
-      .reduce((groups, item) => {
+      .reduce<Record<string, Sensor>>((groups, item) => {
         const [type, nameFromSplit] = item.split(' ', 2)
         const name = nameFromSplit ?? item
 
@@ -773,7 +773,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
               }).toString()
             : Vue.$filters.prettyCase(name)
           const color = Vue.$colorset.next(getKlipperType(item), item)
-          const config = state.printer.configfile.settings[item]
+          const config = state.printer.configfile.settings[item.toLowerCase()]
 
           groups[name] = {
             ...state.printer[item],
@@ -790,7 +790,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
         }
 
         return groups
-      }, {} as Record<string, Sensor>)
+      }, {})
 
     return Object.values(sensors)
       .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name))
@@ -802,7 +802,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'bme280',
       'htu21d',
       'sht3x'
-    ]
+    ] as const
 
     if (supportedSensors.includes(sensorType)) {
       const sensor = state.printer[`${sensorType} ${name}`]
@@ -1044,11 +1044,11 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const knownCommands: GcodeHelp = rootGetters['console/getAllKnownCommands']
 
     return Object.entries(knownCommands)
-      .reduce((availableCommands, [key, help]) => {
+      .reduce<GcodeCommands>((availableCommands, [key, help]) => {
         availableCommands[key] = { help }
 
         return availableCommands
-      }, {} as GcodeCommands)
+      }, {})
   },
 
   getIsManualProbeActive: (state) => {
@@ -1065,7 +1065,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return (
       !error &&
       max_deviation == null &&
-      results &&
+      results != null &&
       Object.keys(results).length > 0
     )
   },
@@ -1120,4 +1120,4 @@ export const getters: GetterTree<PrinterState, RootState> = {
       exclude_object.objects.length > 0
     )
   }
-}
+} satisfies GetterTree<PrinterState, RootState>

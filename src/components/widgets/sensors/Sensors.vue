@@ -27,7 +27,7 @@ import { Component, Vue } from 'vue-property-decorator'
 @Component({})
 export default class Sensors extends Vue {
   get sensors (): MoonrakerSensor[] {
-    return this.$store.getters['sensors/getSensors']
+    return this.$typedGetters['sensors/getSensors']
   }
 
   getFormattedValue (sensor: MoonrakerSensor, key: string, value: unknown) {

@@ -2,7 +2,7 @@ import type { GetterTree } from 'vuex'
 import type { DevicePowerState } from './types'
 import type { RootState } from '../types'
 
-export const getters: GetterTree<DevicePowerState, RootState> = {
+export const getters = {
   getDevices: (state) => {
     return state.devices
       .filter(device => !device.device.startsWith('_'))
@@ -12,4 +12,4 @@ export const getters: GetterTree<DevicePowerState, RootState> = {
     return state.devices
       .find(device => device.device === name)
   }
-}
+} satisfies GetterTree<DevicePowerState, RootState>

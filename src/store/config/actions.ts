@@ -8,7 +8,7 @@ import { Waits } from '@/globals'
 import type { FileFilterType } from '../files/types'
 import { TinyColor } from '@ctrl/tinycolor'
 
-export const actions: ActionTree<ConfigState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -111,7 +111,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
   /**
    * Updates a known instance
    */
-  async updateInstance ({ commit, dispatch, state, getters }, value: InstanceConfig) {
+  async updateInstance ({ commit, dispatch, state, getters }, value: string) {
     // First, update the name in ui settings.
     dispatch('saveByPath', {
       path: 'uiSettings.general.instanceName',
@@ -206,4 +206,4 @@ export const actions: ActionTree<ConfigState, RootState> = {
       server: true
     })
   }
-}
+} satisfies ActionTree<ConfigState, RootState>

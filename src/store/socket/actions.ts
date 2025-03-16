@@ -11,7 +11,7 @@ import isKeyOf from '@/util/is-key-of'
 
 let retryTimeout: number
 
-export const actions: ActionTree<SocketState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -32,7 +32,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     commit('setSocketOpen', payload)
     if (payload === true) {
       SocketActions.serverInfo()
-      SocketActions.identify({
+      SocketActions.serverConnectionIdentify({
         client_name: Globals.APP_NAME,
         version: `${import.meta.env.VERSION || '0.0.0'}-${import.meta.env.HASH || 'unknown'}`.trim(),
         type: 'web',
@@ -262,4 +262,4 @@ export const actions: ActionTree<SocketState, RootState> = {
   async notifySpoolmanStatusChanged ({ dispatch }, payload) {
     dispatch('spoolman/onStatusChanged', payload.spoolman_connected, { root: true })
   }
-}
+} satisfies ActionTree<SocketState, RootState>

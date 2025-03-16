@@ -3,7 +3,7 @@ import type { MutationTree } from 'vuex'
 import type { VersionState } from './types'
 import { defaultState } from './state'
 
-export const mutations: MutationTree<VersionState> = {
+export const mutations = {
   /**
    * Reset state
    */
@@ -44,4 +44,4 @@ export const mutations: MutationTree<VersionState> = {
   setClearUpdateResponse (state) {
     state.responses = []
   }
-}
+} satisfies MutationTree<VersionState>

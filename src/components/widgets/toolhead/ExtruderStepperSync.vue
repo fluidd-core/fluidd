@@ -46,7 +46,7 @@ export default class ExtruderStepperSync extends Mixins(StateMixin) {
   readonly extruderStepper!: ExtruderStepper
 
   get availableExtruders (): KnownExtruder[] {
-    return this.$store.getters['printer/getExtruders']
+    return this.$typedGetters['printer/getExtruders']
   }
 
   sendSyncExtruderMotion (value: string | null) {

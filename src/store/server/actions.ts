@@ -12,7 +12,7 @@ import type { ObjectWithRequest } from '@/plugins/socketClient'
 
 let retryTimeout: number
 
-export const actions: ActionTree<ServerState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -231,4 +231,4 @@ export const actions: ActionTree<ServerState, RootState> = {
       commit('setMoonrakerStats', { throttled_state: payload })
     }
   }
-}
+} satisfies ActionTree<ServerState, RootState>

@@ -1,7 +1,9 @@
 import type { ActionTree } from 'vuex'
 import type {
   Spool,
+  SpoolmanInfo,
   SpoolmanProxyResponse,
+  SpoolmanProxyResponseV2,
   SpoolmanState,
   WebsocketBasePayload,
   WebsocketFilamentPayload,
@@ -12,10 +14,31 @@ import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { consola } from 'consola'
 import { EventBus } from '@/eventBus'
+import { gte, valid } from 'semver'
 
 const logPrefix = '[SPOOLMAN]'
 
-export const actions: ActionTree<SpoolmanState, RootState> = {
+const payloadAsSpoolmanProxyResponseV2 = <T>(payload: SpoolmanProxyResponse<T>): SpoolmanProxyResponseV2<T> => {
+  if (
+    payload != null &&
+    typeof payload === 'object' &&
+    'error' in payload &&
+    'response' in payload
+  ) {
+    if (payload.error != null) {
+      EventBus.$emit(typeof payload.error === 'string' ? payload.error : payload.error.message, { type: 'error' })
+    }
+
+    return payload
+  }
+
+  return {
+    error: null,
+    response: payload
+  }
+}
+
+export const actions = {
   /**
    * Reset our store
    */
@@ -29,7 +52,7 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
   async init () {
     SocketActions.serverSpoolmanGetSpoolId()
     SocketActions.serverSpoolmanProxyGetAvailableSpools()
-    SocketActions.serverSpoolmanProxyGetSettingCurrency()
+    SocketActions.serverSpoolmanProxyGetInfo()
   },
 
   async onActiveSpool ({ commit }, payload) {
@@ -37,7 +60,7 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
   },
 
   async onSpoolChange ({ commit, state }, { type, payload }: WebsocketSpoolPayload) {
-    const spools = [...state.availableSpools]
+    const spools = [...state.spools]
 
     switch (type) {
       case 'added': {
@@ -67,7 +90,7 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       }
     }
 
-    commit('setAvailableSpools', spools)
+    commit('setSpools', spools)
   },
 
   async onFilamentChange ({ commit, state }, { type, payload }: WebsocketFilamentPayload) {
@@ -76,17 +99,17 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       return
     }
 
-    const spools = [...state.availableSpools]
-    for (const spool of spools) {
-      if (spool.filament.id === payload.id) {
-        spools[spools.indexOf(spool)] = {
-          ...spool,
-          filament: payload
-        }
-      }
-    }
+    const spools = state.spools
+      .map(spool => (
+        spool.filament.id === payload.id
+          ? {
+              ...spool,
+              filament: payload
+            }
+          : spool
+      ))
 
-    commit('setAvailableSpools', spools)
+    commit('setSpools', spools)
   },
 
   async onVendorChange ({ commit, state }, { type, payload }: WebsocketVendorPayload) {
@@ -95,55 +118,71 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       return
     }
 
-    const spools = [...state.availableSpools]
-    for (const spool of spools) {
-      if (spool.filament.vendor?.id === payload.id) {
-        spools[spools.indexOf(spool)] = {
-          ...spool,
-          filament: {
-            ...spool.filament,
-            vendor: payload
-          }
-        }
-      }
-    }
+    const spools = state.spools
+      .map(spool => (
+        spool.filament.vendor?.id === payload.id
+          ? {
+              ...spool,
+              filament: {
+                ...spool.filament,
+                vendor: payload
+              }
+            }
+          : spool
+      ))
 
-    commit('setAvailableSpools', spools)
+    commit('setSpools', spools)
   },
 
-  async onAvailableSpools ({ commit, dispatch }, payload: SpoolmanProxyResponse<Spool[]>) {
-    if ('error' in payload && 'response' in payload) {
-      if (payload.error != null) {
-        EventBus.$emit(typeof payload.error === 'string' ? payload.error : payload.error.message, { type: 'error' })
-        return
-      }
-
-      payload = payload.response
-    }
-
-    commit('setAvailableSpools', [...payload])
-    commit('setConnected', true)
-    dispatch('initializeWebsocketConnection')
-  },
-
-  async onStatusChanged ({ commit, dispatch }, payload) {
+  async onStatusChanged ({ commit, dispatch }, payload: boolean) {
     if (payload) {
       // refresh data, connected state will be set on data retrieval
       dispatch('init')
-    } else commit('setConnected', payload)
+    } else {
+      commit('setConnected', payload)
+    }
+  },
+
+  async onAvailableSpools ({ commit, dispatch }, payload: SpoolmanProxyResponse<Spool[]>) {
+    payload = payloadAsSpoolmanProxyResponseV2(payload)
+
+    if (payload.error != null) {
+      return
+    }
+
+    commit('setSpools', payload.response)
+
+    commit('setConnected', true)
+
+    dispatch('initializeWebsocketConnection')
+  },
+
+  async onInfo ({ state, commit }, payload: SpoolmanProxyResponse<SpoolmanInfo>) {
+    payload = payloadAsSpoolmanProxyResponseV2(payload)
+
+    if (payload.error != null) {
+      return
+    }
+
+    commit('setInfo', payload.response)
+
+    if (
+      state.info &&
+      valid(state.info.version) &&
+      gte(state.info.version, '0.16.0')
+    ) {
+      SocketActions.serverSpoolmanProxyGetSettingCurrency()
+    }
   },
 
   async onSettingCurrency ({ commit }, payload: SpoolmanProxyResponse<{ value: string }>) {
-    if ('error' in payload && 'response' in payload) {
-      if (payload.error != null) {
-        EventBus.$emit(typeof payload.error === 'string' ? payload.error : payload.error.message, { type: 'error' })
-        return
-      }
+    payload = payloadAsSpoolmanProxyResponseV2(payload)
 
-      payload = payload.response
+    if (payload.error != null) {
+      return
     }
 
-    commit('setCurrency', payload)
+    commit('setCurrency', payload.response)
   },
 
   async initializeWebsocketConnection ({ state, rootState, dispatch }) {
@@ -166,6 +205,7 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       state.socket.onerror = err => consola.warn(`${logPrefix} received websocket error`, err)
       state.socket.onmessage = event => {
         let data: WebsocketBasePayload
+
         try {
           data = JSON.parse(event.data) as WebsocketBasePayload
         } catch (err) {
@@ -196,4 +236,4 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
       state.socket = undefined
     }
   }
-}
+} satisfies ActionTree<SpoolmanState, RootState>

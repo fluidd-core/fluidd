@@ -8,10 +8,10 @@ import type { RootState } from '../types'
 
 const namespaced = true
 
-export const timelapse: Module<TimelapseState, RootState> = {
+export const timelapse = {
   namespaced,
   state,
   getters,
   actions,
   mutations
-}
+} satisfies Module<TimelapseState, RootState>

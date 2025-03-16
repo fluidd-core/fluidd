@@ -3,7 +3,7 @@ import type { CommitItem, VersionState } from './types'
 import type { RootState } from '../types'
 import { valid, gt } from 'semver'
 
-export const getters: GetterTree<VersionState, RootState> = {
+export const getters = {
   /**
    * Returns an array list of available components
    */
@@ -68,7 +68,7 @@ export const getters: GetterTree<VersionState, RootState> = {
     const componentVersionInfo = state.version_info[component]
     if (componentVersionInfo && 'git_messages' in componentVersionInfo) {
       const result = [...componentVersionInfo.commits_behind]
-        .reduce((groups, commitItem) => {
+        .reduce<Record<number, CommitItem[]>>((groups, commitItem) => {
           const dateAndTime = new Date(+commitItem.date * 1000)
           const dateOnly = +(new Date(dateAndTime.getFullYear(), dateAndTime.getMonth(), dateAndTime.getDate()))
 
@@ -79,7 +79,7 @@ export const getters: GetterTree<VersionState, RootState> = {
           }
 
           return groups
-        }, {} as Record<number, CommitItem[]>)
+        }, {})
       return {
         keys: Object
           .keys(result)
@@ -90,4 +90,4 @@ export const getters: GetterTree<VersionState, RootState> = {
       }
     }
   }
-}
+} satisfies GetterTree<VersionState, RootState>

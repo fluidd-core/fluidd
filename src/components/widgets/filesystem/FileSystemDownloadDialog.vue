@@ -1,6 +1,6 @@
 <template>
   <v-snackbar
-    v-model="open"
+    :value="open"
     timeout="-1"
     multi-line
     elevation="24"
@@ -44,21 +44,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { FileDownload } from '@/store/files/types'
 
 @Component({})
 export default class FileSystemDownloadDialog extends Mixins(StateMixin) {
-  open = !!this.currentDownload
-
-  @Watch('currentDownload')
-  onCurrentDownloadChange (val: FileDownload | null) {
-    this.open = !!val
+  get open () {
+    return this.currentDownload != null
   }
 
   get currentDownload (): FileDownload | null {
-    return this.$store.state.files.download
+    return this.$typedState.files.download
   }
 
   handleCancelDownload () {

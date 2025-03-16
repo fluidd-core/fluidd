@@ -45,8 +45,8 @@ export default class ToolheadControlBarsAxis extends Mixins(StateMixin, Toolhead
 
   get values (): number[] {
     return this.axis === 'Z'
-      ? this.$store.state.config.uiSettings.general.toolheadZMoveDistances
-      : this.$store.state.config.uiSettings.general.toolheadXYMoveDistances
+      ? this.$typedState.config.uiSettings.general.toolheadZMoveDistances
+      : this.$typedState.config.uiSettings.general.toolheadXYMoveDistances
   }
 
   get homed (): boolean {
@@ -73,8 +73,8 @@ export default class ToolheadControlBarsAxis extends Mixins(StateMixin, Toolhead
 
   get rate (): number {
     return this.axis === 'Z'
-      ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
-      : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+      ? this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
+      : this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
   }
 
   moveBy (distance: number) {

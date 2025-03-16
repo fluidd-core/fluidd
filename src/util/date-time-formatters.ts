@@ -1,44 +1,9 @@
 import { DateFormats, TimeFormats, type DateTimeFormat } from '@/globals'
-import i18n from '@/plugins/i18n'
+import { getAllLocales } from '@/plugins/i18n'
 
 type GetDefaultDateTimeFormatFunction = () => string
 
-export const getNavigatorLocales = () => {
-  return navigator.languages ?? [navigator.language]
-}
-
-export const getAllLocales = (): Intl.LocalesArgument => {
-  return [
-    i18n.locale,
-    ...getNavigatorLocales()
-  ]
-}
-
-export const isToday = (value: number | string | Date) => {
-  const date = new Date(value)
-  const today = new Date()
-
-  return date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-}
-
-export const isThisMonth = (value: number | string | Date) => {
-  const date = new Date(value)
-  const today = new Date()
-
-  return date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-}
-
-export const isThisYear = (value: number | string | Date) => {
-  const date = new Date(value)
-  const today = new Date()
-
-  return date.getFullYear() === today.getFullYear()
-}
-
-export const buildDateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFunction, getDefaultTimeFormat: GetDefaultDateTimeFormatFunction) => {
+const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFunction, getDefaultTimeFormat: GetDefaultDateTimeFormatFunction) => {
   const instance = {
     getDateFormat: (override?: string): DateTimeFormat => {
       return {
@@ -52,6 +17,38 @@ export const buildDateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTime
         locales: getAllLocales(),
         ...TimeFormats[override ?? getDefaultTimeFormat()]
       }
+    },
+
+    isToday: (value: number | string | Date) => {
+      const date = new Date(value)
+      const today = new Date()
+
+      return date.getDate() === today.getDate() &&
+          date.getMonth() === today.getMonth() &&
+          date.getFullYear() === today.getFullYear()
+    },
+
+    isThisMonth: (value: number | string | Date) => {
+      const date = new Date(value)
+      const today = new Date()
+
+      return date.getMonth() === today.getMonth() &&
+          date.getFullYear() === today.getFullYear()
+    },
+
+    isThisYear: (value: number | string | Date) => {
+      const date = new Date(value)
+      const today = new Date()
+
+      return date.getFullYear() === today.getFullYear()
+    },
+
+    moonrakerDateAsUnixTime: (value: string | number) => {
+      if (typeof value === 'string') {
+        return new Date(value).getTime() / 1000
+      }
+
+      return value
     },
 
     formatCounterSeconds: (seconds: number | string) => {
@@ -122,26 +119,40 @@ export const buildDateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTime
     },
 
     formatRelativeTimeToDate (value: number | string | Date, value2: number | string | Date, options?: Intl.RelativeTimeFormatOptions) {
-      let v = Math.floor(+new Date(value) / 1000)
-      let v2 = Math.floor(+new Date(value2) / 1000)
+      const seconds = (+new Date(value) - +new Date(value2)) / 1000
+      const absoluteSeconds = Math.abs(seconds)
 
-      const units: { unit: Intl.RelativeTimeFormatUnit, limit: number }[] = [
-        { unit: 'second', limit: 60 },
-        { unit: 'minute', limit: 60 },
-        { unit: 'hour', limit: 24 },
-        { unit: 'day', limit: 30 },
-        { unit: 'month', limit: 12 },
-        { unit: 'year', limit: -1 }
-      ]
+      const [unit, unitValue]: [Intl.RelativeTimeFormatUnit, number] = absoluteSeconds >= 60 * 60 * 24 * 365
+        ? [
+            'year',
+            Math.round(seconds / (60 * 60 * 24 * 365))
+          ]
+        : absoluteSeconds >= 60 * 60 * 24 * 30
+          ? [
+              'month',
+              Math.round(seconds / (60 * 60 * 24 * 30))
+            ]
+          : absoluteSeconds >= 60 * 60 * 24
+            ? [
+                'day',
+                Math.round(seconds / (60 * 60 * 24))
+              ]
+            : absoluteSeconds >= 60 * 60
+              ? [
+                  'hour',
+                  Math.round(seconds / (60 * 60))
+                ]
+              : absoluteSeconds >= 60
+                ? [
+                    'minute',
+                    Math.round(seconds / 60)
+                  ]
+                : [
+                    'second',
+                    seconds
+                  ]
 
-      for (const { unit, limit } of units) {
-        if (limit === -1 || Math.abs(v - v2) < limit) {
-          return instance.formatRelativeTime(v - v2, unit, options)
-        }
-
-        v = Math.floor(v / limit)
-        v2 = Math.floor(v2 / limit)
-      }
+      return instance.formatRelativeTime(unitValue, unit, options)
     },
 
     formatRelativeTime (value: number, unit: Intl.RelativeTimeFormatUnit, options?: Intl.RelativeTimeFormatOptions) {
@@ -154,11 +165,11 @@ export const buildDateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTime
     },
 
     formatAbsoluteDateTime: (value: number | string | Date, options?: Intl.RelativeTimeFormatOptions) => {
-      if (isToday(value)) {
+      if (instance.isToday(value)) {
         return instance.formatTime(value, options)
       }
 
-      if (isThisYear(value)) {
+      if (instance.isThisYear(value)) {
         return instance.formatDateTime(value, {
           year: undefined,
           ...options
@@ -171,3 +182,5 @@ export const buildDateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTime
 
   return instance
 }
+
+export default dateTimeFormatters

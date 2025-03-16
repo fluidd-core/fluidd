@@ -73,7 +73,7 @@ import type { TemperaturePreset } from '@/store/config/types'
 @Component({})
 export default class TemperaturePresetsMenu extends Mixins(StateMixin) {
   get presets (): TemperaturePreset[] {
-    return this.$store.getters['config/getTempPresets']
+    return this.$typedGetters['config/getTempPresets']
   }
 }
 </script>

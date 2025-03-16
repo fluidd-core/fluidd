@@ -8,10 +8,10 @@ import type { RootState } from '../types'
 
 const namespaced = true
 
-export const mesh: Module<MeshState, RootState> = {
+export const mesh = {
   namespaced,
   state,
   getters,
   actions,
   mutations
-}
+} satisfies Module<MeshState, RootState>

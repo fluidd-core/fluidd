@@ -5,7 +5,7 @@ import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import getFilePaths from '@/util/get-file-paths'
 
-export const actions: ActionTree<HistoryState, RootState> = {
+export const actions = {
   /**
    * Reset our store
    */
@@ -65,12 +65,12 @@ export const actions: ActionTree<HistoryState, RootState> = {
         case 'added': {
           commit('setAddHistory', payload.job)
 
-          const { rootPath } = getFilePaths(payload.job.filename, 'gcodes')
+          const { rootPath, filename } = getFilePaths(payload.job.filename, 'gcodes')
 
-          const directoryLoaded = rootPath in rootState.files.pathFiles
+          const pathContent = rootState.files.pathContent[rootPath]
 
-          // If the folder containing the file has been loaded, update the file metadata
-          if (directoryLoaded) {
+          // If the file is known, then update the file metadata
+          if (pathContent != null && pathContent.files.some(file => file.filename === filename)) {
             SocketActions.serverFilesMetadata(payload.job.filename)
           }
 
@@ -87,4 +87,4 @@ export const actions: ActionTree<HistoryState, RootState> = {
   async onDelete ({ commit }, payload) {
     commit('setDeleteJob', payload.deleted_jobs)
   }
-}
+} satisfies ActionTree<HistoryState, RootState>

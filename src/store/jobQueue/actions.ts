@@ -2,8 +2,9 @@ import type { ActionTree } from 'vuex'
 import type { JobQueueState, QueuedJob, QueueState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
+import getFilePaths from '@/util/get-file-paths'
 
-export const actions: ActionTree<JobQueueState, RootState> = {
+export const actions = {
   async reset ({ commit }) {
     commit('setReset')
   },
@@ -12,14 +13,33 @@ export const actions: ActionTree<JobQueueState, RootState> = {
     SocketActions.serverJobQueueStatus()
   },
 
-  async onJobQueueStatus ({ commit }, payload : { queue_state: QueueState, queued_jobs: QueuedJob[] }) {
-    if (payload) {
-      commit('setQueueState', payload.queue_state)
-      commit('setQueuedJobs', payload.queued_jobs)
+  async updateJobsMetadata ({ state, rootState }) {
+    const pathFilenames = new Set(
+      state.queuedJobs
+        .map(job => job.filename)
+    )
+
+    for (const pathFilename of pathFilenames) {
+      const { rootPath, filename } = getFilePaths(pathFilename, 'gcodes')
+
+      const pathContent = rootState.files.pathContent[rootPath]
+
+      if (pathContent == null || !pathContent.files.some(file => file.filename === filename)) {
+        SocketActions.serverFilesMetadata(pathFilename)
+      }
     }
   },
 
-  async onJobQueueChanged ({ commit }, payload : { action: string, queue_state?: QueueState, updated_queue?: QueuedJob[] | null }) {
+  async onJobQueueStatus ({ commit, dispatch }, payload : { queue_state: QueueState, queued_jobs: QueuedJob[] }) {
+    if (payload) {
+      commit('setQueueState', payload.queue_state)
+      commit('setQueuedJobs', payload.queued_jobs)
+
+      dispatch('updateJobsMetadata')
+    }
+  },
+
+  async onJobQueueChanged ({ commit, dispatch }, payload : { action: string, queue_state?: QueueState, updated_queue?: QueuedJob[] | null }) {
     if (payload) {
       const { queue_state, updated_queue } = payload
 
@@ -27,9 +47,11 @@ export const actions: ActionTree<JobQueueState, RootState> = {
         commit('setQueueState', queue_state)
       }
 
-      if (updated_queue !== undefined && updated_queue !== null) {
+      if (updated_queue != null) {
         commit('setQueuedJobs', updated_queue)
+
+        dispatch('updateJobsMetadata')
       }
     }
   }
-}
+} satisfies ActionTree<JobQueueState, RootState>
