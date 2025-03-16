@@ -17,49 +17,64 @@
         </v-icon>
       </app-btn>
     </template>
-    <v-list>
+
+    <v-list dense>
       <v-list-item
         v-if="hasEncoder"
-        class="minHeight36"
+        @click="showClogDetection = !showClogDetection"
       >
-        <v-checkbox
-          v-model="showClogDetection"
-          class="mt-0"
-          hide-details
-          :label="$t('app.mmu.setting.show_clog_detection')"
-        />
+        <v-list-item-action class="my-0">
+          <v-checkbox :input-value="showClogDetection" />
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.mmu.setting.show_clog_detection') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
-      <v-list-item class="minHeight36">
-        <v-checkbox
-          v-model="showTtgMap"
-          class="mt-0"
-          hide-details
-          :label="$t('app.mmu.setting.show_ttg_map')"
-        />
+
+      <v-list-item @click="showTtgMap = !showTtgMap">
+        <v-list-item-action class="my-0">
+          <v-checkbox :input-value="showTtgMap" />
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.mmu.setting.show_ttg_map') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
-      <v-list-item class="minHeight36">
-        <v-checkbox
-          v-model="showDetails"
-          class="mt-0"
-          hide-details
-          :label="$t('app.mmu.setting.show_details')"
-        />
+
+      <v-list-item @click="showDetails = !showDetails">
+        <v-list-item-action class="my-0">
+          <v-checkbox :input-value="showDetails" />
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.mmu.setting.show_details') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
-      <v-list-item class="minHeight36">
-        <v-checkbox
-          v-model="largeFilamentStatus"
-          class="mt-0"
-          hide-details
-          :label="$t('app.mmu.setting.large_filament_status')"
-        />
+
+      <v-list-item @click="largeFilamentStatus = !largeFilamentStatus">
+        <v-list-item-action class="my-0">
+          <v-checkbox :input-value="largeFilamentStatus" />
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.mmu.setting.large_filament_status') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
-      <v-list-item class="minHeight36">
-        <v-checkbox
-          v-model="showLogos"
-          class="mt-0"
-          hide-details
-          :label="$t('app.mmu.setting.show_logos')"
-        />
+
+      <v-list-item @click="showLogos = !showLogos">
+        <v-list-item-action class="my-0">
+          <v-checkbox :input-value="showLogos" />
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.mmu.setting.show_logos') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
     </v-list>
   </v-menu>
@@ -133,5 +148,3 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
   }
 }
 </script>
-
-<style scoped></style>
