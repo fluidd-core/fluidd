@@ -569,12 +569,12 @@ export default class MmuMixin extends Vue {
 
   get configGateHomingEndstop (): string {
     // TODO ideally make dynamic because of MMU_TEST_CONFIG
-    return this.$typedState.printer.printer.configfile.config.mmu?.gate_homing_endstop
+    return this.$typedState.printer.printer.configfile.config.mmu?.gate_homing_endstop ?? 'encoder'
   }
 
   get configExtruderHomingEndstop (): string {
     // TODO ideally make dynamic because of MMU_TEST_CONFIG
-    return this.$typedState.printer.printer.configfile.config.mmu?.extruder_homing_endstop
+    return this.$typedState.printer.printer.configfile.config.mmu?.extruder_homing_endstop ?? 'none'
   }
 
   get configExtruderForceHoming (): boolean {

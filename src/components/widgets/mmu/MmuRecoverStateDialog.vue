@@ -276,17 +276,6 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     this.sendGcode(cmd)
     this.close()
   }
-
-  get open (): boolean {
-    return this.$typedState.mmu.show_recover_state_dialog
-  }
-
-  set open (val: boolean) {
-    this.$typedCommit('mmu/setDialogState', {
-      ...this.$typedState.spoolman.dialog,
-      show: val
-    })
-  }
 }
 </script>
 
