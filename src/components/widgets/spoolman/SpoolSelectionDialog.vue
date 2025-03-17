@@ -94,7 +94,7 @@
       />
     </v-toolbar>
 
-    <v-card-text class="pa-0 file-system">
+    <div class="file-system">
       <v-data-table
         :items="availableSpools"
         :headers="headers"
@@ -109,6 +109,7 @@
         class="spool-table"
         hide-default-footer
         disable-pagination
+        fixed-header
         @update:sort-by="handleSortOrderKeyChange"
         @update:sort-desc="handleSortOrderDescChange"
       >
@@ -189,7 +190,7 @@
           </app-data-table-row>
         </template>
       </v-data-table>
-    </v-card-text>
+    </div>
 
     <template #actions>
       <v-spacer v-if="isMobileViewport" />
@@ -642,3 +643,13 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .file-system,
+  .file-system :deep(.v-data-table) {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    height: 100%;
+  }
+</style>
