@@ -226,7 +226,7 @@
                           small
                           class="mr-2"
                         >
-                          {{ mdiSpeedometer }}
+                          $mmuLoadSpeed
                         </v-icon>
                         <span>{{ $t('app.mmu.label.load_speed') }}</span>
                         <v-spacer />
@@ -246,7 +246,7 @@
                               small
                               @click="resetSpeed()"
                             >
-                              {{ mdiRestart }}
+                              $mmuResetSpeed
                             </v-icon>
                           </template>
                         </v-text-field>
@@ -261,12 +261,12 @@
                         >
                           <template #prepend>
                             <v-icon @click="decrementSpeed">
-                              {{ mdiMinus }}
+                              $mmuDecrementSpeed
                             </v-icon>
                           </template>
                           <template #append>
                             <v-icon @click="incrementSpeed">
-                              {{ mdiPlus }}
+                              $mmuIncrementSpeed
                             </v-icon>
                           </template>
                         </v-slider>
@@ -323,7 +323,9 @@
                         class="spoolman-btn"
                         @click="handleSelectSpool()"
                       >
-                        <v-icon>{{ mdiAdjust }}</v-icon>
+                        <v-icon>
+                          $mmuChooseSpool
+                        </v-icon>
                         {{ $t('app.mmu.label.choose_spool') }}
                       </v-btn>
                     </div>
@@ -364,20 +366,11 @@ import MmuMixin from '@/mixins/mmu'
 import type { MmuGateDetails } from '@/types'
 import type { Spool, SpoolSelectionDialogState } from '@/store/spoolman/types'
 import MmuMachine from '@/components/widgets/mmu/MmuMachine.vue'
-import { mdiCloseThick, mdiDatabaseEdit, mdiSpeedometer, mdiRestart, mdiMinus, mdiPlus, mdiAdjust } from '@mdi/js'
 
 @Component({
   components: { MmuMachine }
 })
 export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
-  mdiCloseThick = mdiCloseThick
-  mdiDatabaseEdit = mdiDatabaseEdit
-  mdiSpeedometer = mdiSpeedometer
-  mdiRestart = mdiRestart
-  mdiMinus = mdiMinus
-  mdiPlus = mdiPlus
-  mdiAdjust = mdiAdjust
-
   @Prop({ required: true }) declare readonly showDialog: boolean
 
   private editGateMap: MmuGateDetails[] = []

@@ -1,7 +1,7 @@
 <template>
   <collapsable-card
     :title="title"
-    :icon="mdiMulticast"
+    icon="$mmu "
     draggable
     layout-path="dashboard.mmu-card"
   >
@@ -11,13 +11,12 @@
         left
         offset-y
         transition="slide-y-transition"
-        min-width="220"
-        :close-on-content-click="false"
       >
         <template #activator="{ on, attrs, value }">
           <app-btn
-            small
+            :disabled="!enabled"
             v-bind="attrs"
+            small
             class="me-1 my-1"
             v-on="on"
           >
@@ -37,15 +36,12 @@
             </v-icon>
           </app-btn>
         </template>
+
         <v-list dense>
-          <v-list-item
-            :disabled="!enabled"
-            :class="{ 'mmu-disabled': !enabled }"
-            @click="showEditTtgMapDialog = true"
-          >
+          <v-list-item @click="showEditTtgMapDialog = true">
             <v-list-item-icon>
               <v-icon left>
-                {{ mdiStateMachine }}
+                $mmuEditTtgMap
               </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
@@ -54,14 +50,11 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item
-            :disabled="!enabled"
-            :class="{ 'mmu-disabled': !enabled }"
-            @click="showEditGateMapDialog = true"
-          >
+
+          <v-list-item @click="showEditGateMapDialog = true">
             <v-list-item-icon>
               <v-icon left>
-                {{ mdiDatabaseEdit }}
+                $mmuEditGateMap
               </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
@@ -70,14 +63,14 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+
           <v-list-item
-            :disabled="!enabled || !canSend"
-            :class="{ 'mmu-disabled': !enabled }"
+            :disabled="!canSend"
             @click="showRecoverStateDialog = true"
           >
             <v-list-item-icon>
               <v-icon left>
-                {{ mdiCogRefresh }}
+                $mmuRecoverState
               </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
@@ -86,14 +79,14 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+
           <v-list-item
-            :disabled="!enabled || !canSend"
-            :class="{ 'mmu-disabled': !enabled }"
+            :disabled="!canSend"
             @click="showMaintenanceDialog = true"
           >
             <v-list-item-icon>
               <v-icon left>
-                {{ mdiWrenchCog }}
+                $mmuMaintenance
               </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
@@ -102,16 +95,16 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-divider class="my-2" />
+
+          <v-divider />
+
           <v-list-item
-            :disabled="!enabled"
-            :class="{ 'mmu-disabled': !enabled }"
             :loading="hasWait($waits.onMmuStats)"
             @click="sendGcode('MMU_STATS SHOWCOUNTS=1', $waits.onMmuStats)"
           >
             <v-list-item-icon>
               <v-icon left>
-                {{ mdiNoteText }}
+                $mmuPrintStats
               </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
@@ -120,15 +113,15 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+
           <v-list-item
-            :disabled="!enabled || spoolmanSupport === 'off'"
-            :class="{ 'mmu-disabled': !enabled || spoolmanSupport === 'off' }"
+            :disabled="spoolmanSupport === 'off'"
             :loading="hasWait($waits.onMmuSpoolman)"
             @click="handleSyncSpoolman()"
           >
             <v-list-item-icon>
               <v-icon left>
-                {{ mdiRefresh }}
+                $mmuSyncSpoolman
               </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
@@ -137,15 +130,15 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+
           <v-list-item
-            :disabled="!enabled || !canSend"
-            :class="{ 'mmu-disabled': !enabled }"
+            :disabled="!canSend"
             :loading="hasWait($waits.onMmuCheckGates)"
             @click="sendGcode('MMU_CHECK_GATES', $waits.onMmuCheckGates)"
           >
             <v-list-item-icon>
               <v-icon left>
-                {{ mdiCheckAll }}
+                $mmuCheckAllGates
               </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
@@ -156,6 +149,7 @@
           </v-list-item>
         </v-list>
       </v-menu>
+
       <mmu-settings />
     </template>
 
@@ -231,7 +225,7 @@
             class="d-flex align-center justify-center"
           >
             <v-icon class="error-icon">
-              {{ mdiInformationOutline }}
+              $mmuError
             </v-icon>
           </v-col>
           <v-col class="d-flex align-center">
@@ -247,18 +241,22 @@
         </v-row>
       </v-container>
     </div>
+
     <mmu-recover-state-dialog
       :show-dialog="showRecoverStateDialog"
       @close="showRecoverStateDialog = false"
     />
+
     <mmu-edit-ttg-map-dialog
       :show-dialog="showEditTtgMapDialog"
       @close="showEditTtgMapDialog = false"
     />
+
     <mmu-maintenance-dialog
       :show-dialog="showMaintenanceDialog"
       @close="showMaintenanceDialog = false"
     />
+
     <mmu-edit-gate-map-dialog
       :show-dialog="showEditGateMapDialog"
       @close="showEditGateMapDialog = false"
@@ -270,18 +268,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
-import {
-  mdiMulticast,
-  mdiAutoFix,
-  mdiCheckAll,
-  mdiWrenchCog,
-  mdiCogRefresh,
-  mdiDatabaseEdit,
-  mdiStateMachine,
-  mdiNoteText,
-  mdiInformationOutline,
-  mdiRefresh,
-} from '@mdi/js'
 import MmuMachine from '@/components/widgets/mmu/MmuMachine.vue'
 import MmuFilamentStatus from '@/components/widgets/mmu/MmuFilamentStatus.vue'
 import MmuTtgMap from '@/components/widgets/mmu/MmuTtgMap.vue'
@@ -310,17 +296,6 @@ import MmuMaintenanceDialog from '@/components/widgets/mmu/MmuMaintenanceDialog.
   },
 })
 export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
-  mdiMulticast = mdiMulticast
-  mdiAutoFix = mdiAutoFix
-  mdiCheckAll = mdiCheckAll
-  mdiWrenchCog = mdiWrenchCog
-  mdiCogRefresh = mdiCogRefresh
-  mdiDatabaseEdit = mdiDatabaseEdit
-  mdiStateMachine = mdiStateMachine
-  mdiNoteText = mdiNoteText
-  mdiInformationOutline = mdiInformationOutline
-  mdiRefresh = mdiRefresh
-
   showRecoverStateDialog = false
   showEditTtgMapDialog = false
   showEditGateMapDialog = false
@@ -366,7 +341,7 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
     } else if (this.action === 'Loading' || this.action === 'Unloading') {
       posStr = `${this.action}: ${this.filamentPosition}mm`
     } else {
-      posStr = this.action
+      posStr = this.action ?? ''
     }
     return posStr
   }

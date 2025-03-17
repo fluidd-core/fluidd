@@ -671,7 +671,7 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
   }
 
   private isSensorEnabled (sensorName: string): boolean {
-    return this.sensors[sensorName] !== null
+    return this.sensors[sensorName] != null
   }
 
   private isSensorTriggered (sensorName: string): boolean {

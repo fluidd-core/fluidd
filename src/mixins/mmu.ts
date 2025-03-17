@@ -391,7 +391,7 @@ export default class MmuMixin extends Vue {
   readonly SPOOLMAN_PUSH: string = 'push' // Local gatemap is the source or truth
   readonly SPOOLMAN_PULL: string = 'pull' // Spoolman db is the source of truth
 
-  get sensors (): { [key: string]: boolean | null } {
+  get sensors (): Record<string, boolean | null> {
     return this.mmuState.sensors ?? {}
   }
 

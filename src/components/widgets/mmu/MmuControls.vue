@@ -18,7 +18,7 @@
               @click="sendGcode('MMU_PRELOAD', $waits.onMmuPreload)"
             >
               <v-icon left>
-                {{ mdiDownloadOutline }}
+                $mmuPreload
               </v-icon>
               {{ $t('app.mmu.btn.preload') }}
             </v-btn>
@@ -42,7 +42,7 @@
               @click="sendGcode('MMU_EJECT', $waits.onMmuEject)"
             >
               <v-icon left>
-                {{ mdiEject }}
+                $mmuEject
               </v-icon>
               {{ $t('app.mmu.btn.eject') }}
             </v-btn>
@@ -68,7 +68,7 @@
               @click="sendGcode('MMU_CHECK_GATE', $waits.onMmuCheckGate)"
             >
               <v-icon left>
-                {{ mdiCheck }}
+                $mmuCheckGate
               </v-icon>
               {{ $t('app.mmu.btn.check_gate') }}
             </v-btn>
@@ -92,7 +92,7 @@
               @click="sendGcode('MMU_RECOVER', $waits.onMmuRecover)"
             >
               <v-icon left>
-                {{ mdiAutoFix }}
+                $mmuRecover
               </v-icon>
               {{ $t('app.mmu.btn.recover') }}
             </v-btn>
@@ -119,7 +119,7 @@
               @click="sendGcode('MMU_UNLOCK', $waits.onMmuUnload)"
             >
               <v-icon left>
-                {{ mdiThermometerPlus }}
+                $mmuUnlock
               </v-icon>
               {{ $t('app.mmu.btn.unlock') }}
             </v-btn>
@@ -147,7 +147,7 @@
               @click="sendGcode('MMU_UNLOAD', $waits.onMmuUnload)"
             >
               <v-icon left>
-                {{ mdiUpload }}
+                $mmuUnload
               </v-icon>
               {{ unloadButtonText }}
             </v-btn>
@@ -172,7 +172,7 @@
               @click="sendGcode('MMU_LOAD', $waits.onMmuLoad)"
             >
               <v-icon left>
-                {{ mdiDownload }}
+                $mmuLoad
               </v-icon>
               {{ loadButtonText }}
             </v-btn>
@@ -190,18 +190,9 @@ import { Debounce } from 'vue-debounce-decorator'
 import { VBtn } from 'vuetify/lib'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
-import { mdiDownloadOutline, mdiEject, mdiCheck, mdiAutoFix, mdiThermometerPlus, mdiDownload, mdiUpload } from '@mdi/js'
 
 @Component({})
 export default class MmuControls extends Mixins(StateMixin, MmuMixin) {
-  mdiDownloadOutline = mdiDownloadOutline
-  mdiEject = mdiEject
-  mdiCheck = mdiCheck
-  mdiAutoFix = mdiAutoFix
-  mdiThermometerPlus = mdiThermometerPlus
-  mdiUpload = mdiUpload
-  mdiDownload = mdiDownload
-
   private btnSize: number = 2
 
   get unloadButtonText () {

@@ -28,7 +28,7 @@
             @click="sendGcode('MMU_SYNC_GEAR_MOTOR SYNC=1', $waits.onMmuSyncGearMotor)"
           >
             <v-icon left>
-              {{ mdiSync }}
+              $mmuSync
             </v-icon>
             {{ $t('app.mmu.btn.sync') }}
           </v-btn>
@@ -43,7 +43,7 @@
             @click="sendGcode('MMU_SYNC_GEAR_MOTOR SYNC=0', $waits.onMmuSyncGearMotor)"
           >
             <v-icon left>
-              {{ mdiSyncOff }}
+              $mmuUnsync
             </v-icon>
             {{ $t('app.mmu.btn.unsync') }}
           </v-btn>
@@ -65,7 +65,7 @@
             @click="sendGcode('MMU_LOAD EXTRUDER_ONLY=1', $waits.onMmuLoad)"
           >
             <v-icon left>
-              {{ mdiDownloadOutline }}
+              $mmuLoad2
             </v-icon>
             {{ $t('app.mmu.btn.load') }}
           </v-btn>
@@ -80,7 +80,7 @@
             @click="sendGcode('MMU_UNLOAD EXTRUDER_ONLY=1', $waits.onMmuUnload)"
           >
             <v-icon left>
-              {{ mdiUploadOutline }}
+              $mmuUnload2
             </v-icon>
             {{ $t('app.mmu.btn.unload') }}
           </v-btn>
@@ -103,7 +103,7 @@
             @click="sendGcode('MMU_MOTORS_ON', $waits.onMmuMotorsOn)"
           >
             <v-icon left>
-              {{ mdiEngineOutline }}
+              $mmuOn
             </v-icon>
             {{ $t('app.mmu.btn.on') }}
           </v-btn>
@@ -118,7 +118,7 @@
             @click="sendGcode('MMU_MOTORS_OFF', $waits.onMmuMotorsOff)"
           >
             <v-icon left>
-              {{ mdiEngineOffOutline }}
+              $mmuOff
             </v-icon>
             {{ $t('app.mmu.btn.off') }}
           </v-btn>
@@ -167,7 +167,7 @@
                   @click="sendGcode('MMU_HOME', $waits.onMmuHome)"
                 >
                   <v-icon left>
-                    {{ mdiHomeOutline }}
+                    $mmuHome
                   </v-icon>
                   {{ $t('app.mmu.btn.home') }}
                 </v-btn>
@@ -184,7 +184,7 @@
                   @click="sendGcode('MMU_GRIP', $waits.onMmuGrip)"
                 >
                   <v-icon left>
-                    {{ mdiArrowCollapseHorizontal }}
+                    $mmuGrip
                   </v-icon>
                   {{ $t('app.mmu.btn.grip') }}
                 </v-btn>
@@ -199,7 +199,7 @@
                   @click="sendGcode('MMU_RELEASE', $waits.onMmuRelease)"
                 >
                   <v-icon left>
-                    {{ mdiArrowExpandHorizontal }}
+                    $mmuRelease
                   </v-icon>
                   {{ $t('app.mmu.btn.release') }}
                 </v-btn>
@@ -235,7 +235,7 @@
                   @click="sendGcode('MMU_HOME', $waits.onMmuHome)"
                 >
                   <v-icon left>
-                    {{ mdiHomeOutline }}
+                    $mmuHome2
                   </v-icon>
                   {{ $t('app.mmu.btn.home') }}
                 </v-btn>
@@ -252,7 +252,7 @@
                   @click="sendGcode('MMU_SERVO POS=up', $waits.onMmuServo)"
                 >
                   <v-icon left>
-                    {{ mdiArrowUpThin }}
+                    $mmuUp
                   </v-icon>
                   {{ $t('app.mmu.btn.up') }}
                 </v-btn>
@@ -267,7 +267,7 @@
                   @click="sendGcode('MMU_SERVO POS=down', $waits.onMmuServo)"
                 >
                   <v-icon left>
-                    {{ mdiArrowDownThin }}
+                    $mmuDown
                   </v-icon>
                   {{ $t('app.mmu.btn.down') }}
                 </v-btn>
@@ -282,7 +282,7 @@
                   @click="sendGcode('MMU_SERVO POS=move', $waits.onMmuServo)"
                 >
                   <v-icon left>
-                    {{ mdiArrowLeftRight }}
+                    $mmuMove
                   </v-icon>
                   {{ $t('app.mmu.btn.move') }}
                 </v-btn>
@@ -410,7 +410,9 @@
             :loading="hasWait($waits.onMmuLed)"
             @click="updateLeds"
           >
-            <v-icon>{{ mdiContentSaveSettingsOutline }}</v-icon>
+            <v-icon>
+              $mmuUpdateLeds
+            </v-icon>
           </v-btn>
         </v-col>
       </v-row>
@@ -464,41 +466,10 @@ import { Mixins, Prop, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
-import {
-  mdiCloseThick,
-  mdiSync,
-  mdiSyncOff,
-  mdiDownloadOutline,
-  mdiUploadOutline,
-  mdiEngineOutline,
-  mdiEngineOffOutline,
-  mdiHomeOutline,
-  mdiArrowDownThin,
-  mdiArrowUpThin,
-  mdiArrowLeftRight,
-  mdiArrowCollapseHorizontal,
-  mdiArrowExpandHorizontal,
-  mdiContentSaveSettingsOutline,
-} from '@mdi/js'
 import isKeyOf from '@/util/is-key-of'
 
 @Component({})
 export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
-  mdiCloseThick = mdiCloseThick
-  mdiSync = mdiSync
-  mdiSyncOff = mdiSyncOff
-  mdiDownloadOutline = mdiDownloadOutline
-  mdiUploadOutline = mdiUploadOutline
-  mdiEngineOutline = mdiEngineOutline
-  mdiEngineOffOutline = mdiEngineOffOutline
-  mdiHomeOutline = mdiHomeOutline
-  mdiArrowDownThin = mdiArrowDownThin
-  mdiArrowUpThin = mdiArrowUpThin
-  mdiArrowLeftRight = mdiArrowLeftRight
-  mdiArrowCollapseHorizontal = mdiArrowCollapseHorizontal
-  mdiArrowExpandHorizontal = mdiArrowExpandHorizontal
-  mdiContentSaveSettingsOutline = mdiContentSaveSettingsOutline
-
   @Prop({ required: true })
   readonly showDialog!: boolean
 

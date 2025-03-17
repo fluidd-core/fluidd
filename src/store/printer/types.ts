@@ -631,12 +631,12 @@ export interface KlipperPrinterMmuState {
   tool_extrusion_multipliers: number[];
   tool_speed_multipliers: number[];
   slicer_tool_map: {
-    tools?: {
-      color?: string;
-      material?: string;
-      temp?: number;
-      name?: string;
-      in_use?: boolean;
+    tools: {
+      color: string;
+      material: string;
+      temp: number;
+      name: string;
+      in_use: boolean;
     }[];
     referenced_tools: number[];
     initial_tool: null;

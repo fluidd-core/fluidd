@@ -314,14 +314,11 @@ import Vue from 'vue'
 import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuTtgMap from '@/components/widgets/mmu/MmuTtgMap.vue'
 import MmuGateDialogRow from '@/components/widgets/mmu/MmuGateDialogRow.vue'
-import { mdiCloseThick, mdiStateMachine } from '@mdi/js'
 
 @Component({
   components: { MmuSpool, MmuTtgMap, MmuGateDialogRow },
 })
 export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
-  mdiCloseThick = mdiCloseThick
-  mdiStateMachine = mdiStateMachine
   @Prop({ required: true })
   readonly showDialog!: boolean
 
