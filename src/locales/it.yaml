@@ -71,7 +71,8 @@ app:
         informazioni.
     tooltip:
       endpoint_examples: >-
-        Inserisci l'URL dell'API. <br /> Ad esempio: <br /> <blockquote>fluidd.local, https://192.168.1.150</blockquote>
+        Inserisci l'URL dell'API. <br /> Ad esempio: <br /> <blockquote>fluidd.local,
+        https://192.168.1.150</blockquote>
   endstop:
     states:
       label:
