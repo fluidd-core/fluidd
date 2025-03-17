@@ -3,7 +3,7 @@
     <div class="spool-row">
       <div
         v-for="(gate, index) in unitGateRange"
-        :key="'gate_' + gate"
+        :key="`gate_${gate}`"
         class="gate"
         @click="selectGate(gate)"
       >
@@ -97,14 +97,22 @@
 
     <div
       class="logo-row"
-      :style="'max-width: ' + logoRowWidth + 'px;'"
+      :style="{
+        'max-width': `${logoRowWidth}px`
+      }"
     >
       <div
-        v-if="showLogos && svgLogo"
+        v-if="showLogos && vendorLogo"
         class="mmu-logo"
-        :style="'height: ' + logoHeight + 'px;'"
-        v-html="svgLogo"
-      />
+        :style="{
+          height: `${logoHeight}px`
+        }"
+      >
+        <inline-svg
+          :src="vendorLogoUrl"
+          @error="vendorLogo = 'HappyHare'"
+        />
+      </div>
       <div class="unit-name">
         {{ unitDisplayName }}
       </div>
@@ -113,7 +121,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
@@ -134,7 +142,20 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   @Prop({ required: false, default: -1 })
   readonly editGateSelected!: number
 
-  private svgLogo: string | null = null
+  vendorLogo = ''
+
+  @Watch('unit', { immediate: true })
+  onUnit (value: number) {
+    this.vendorLogo = this.unitDetails(value).vendor
+  }
+
+  get vendorLogoUrl (): string | null {
+    return `${import.meta.env.BASE_URL}img/mmu/mmu_${this.vendorLogo}.svg`
+  }
+
+  mounted () {
+    console.log(' came here!! ', { ud: this.unitDetails(this.unit) })
+  }
 
   get unitDisplayName (): string {
     const name = this.unitDetails(this.unit).name
@@ -222,43 +243,6 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     } else if (!this.isPrinting) {
       this.sendGcode('MMU_SELECT BYPASS=1')
     }
-  }
-
-  mounted () {
-    const unitVendor = this.unitDetails(this.unit).vendor
-    const vendorLogoUrl = '/img/mmu/mmu_' + unitVendor + '.svg'
-    this.fetchSvg(vendorLogoUrl)
-  }
-
-  async fetchSvg (url: string) {
-    fetch(url)
-      .then((res) => {
-        console.log(res)
-        if (!res.ok) {
-          throw new Error('Failed to fetch vendor specific MMU logo')
-        }
-        return res.text()
-      })
-      .then((svg) => {
-        if (!svg.includes('<svg')) { throw new Error('Not an svg logo') }
-        this.svgLogo = svg
-      })
-      .catch(() => {
-        const defaultUrl = '/img/mmu/mmu_HappyHare.svg'
-        fetch(defaultUrl)
-          .then((res) => {
-            if (!res.ok) {
-              throw new Error('Failed to fetch the default MMU logo')
-            }
-            return res.text()
-          })
-          .then((svg) => {
-            this.svgLogo = svg
-          })
-          .catch(() => {
-            this.svgLogo = null
-          })
-      })
   }
 }
 </script>
