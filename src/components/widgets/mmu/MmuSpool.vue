@@ -130,7 +130,7 @@
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import { Mixins, Prop } from 'vue-property-decorator'
+import { Mixins, Prop, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
 import type { MmuGateDetails } from '@/types'
@@ -151,6 +151,9 @@ export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
 
   @Prop({ required: false, default: -1 })
   readonly editGateSelected!: number
+
+  @Ref('filament')
+  readonly filamentRef!: Element
 
   contrastColor: string = 'black'
 
@@ -191,7 +194,7 @@ export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
   }
 
   computeContrastColor () {
-    const filamentRef = this.$refs.filament as Element
+    const filamentRef = this.filamentRef
     if (!filamentRef) {
       this.contrastColor = 'black'
       return

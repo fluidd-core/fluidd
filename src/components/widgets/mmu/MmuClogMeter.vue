@@ -117,13 +117,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
 
 @Component({})
 export default class MmuClogMeter extends Mixins(StateMixin, MmuMixin) {
-  @Prop({ default: 1 }) readonly rotationTime!: number
+  @Prop({ default: 1 })
+  readonly rotationTime!: number
+
+  @Ref('dialCircle')
+  readonly dialCircle!: SVGElement
 
   private circumference: number = 2 * Math.PI * 50
   private dialArc: number = this.circumference * (60 / 360)
@@ -169,12 +173,11 @@ export default class MmuClogMeter extends Mixins(StateMixin, MmuMixin) {
   }
 
   private animateMeter (newOffset: number) {
-    const circle = this.$refs.dialCircle as SVGElement
-    const currentOffset = parseFloat(getComputedStyle(circle).strokeDashoffset) ?? this.circumference
+    const currentOffset = parseFloat(getComputedStyle(this.dialCircle).strokeDashoffset) ?? this.circumference
     const difference = Math.abs(currentOffset - newOffset)
     const duration = (difference / this.circumference) * this.rotationTime
     // const duration = this.rotationTime
-    circle.style.transition = `stroke-dashoffset ${duration}s ease-out`
+    this.dialCircle.style.transition = `stroke-dashoffset ${duration}s ease-out`
     this.dashOffset = newOffset
   }
 }

@@ -3,6 +3,7 @@
     <v-row dense>
       <v-col cols="6">
         <v-tooltip
+          :disabled="!showTooltip"
           top
           color="secondary"
         >
@@ -14,7 +15,7 @@
               :class="btnClass"
               :disabled="!canSend || [GATE_AVAILABLE, GATE_AVAILABLE_FROM_BUFFER].includes(currentGateStatus)"
               :loading="hasWait($waits.onMmuPreload)"
-              v-on="showTooltip ? on : {}"
+              v-on="on"
               @click="sendGcode('MMU_PRELOAD', $waits.onMmuPreload)"
             >
               <v-icon left>
@@ -28,6 +29,7 @@
       </v-col>
       <v-col cols="6">
         <v-tooltip
+          :disabled="!showTooltip"
           top
           color="secondary"
         >
@@ -38,7 +40,7 @@
               :class="btnClass"
               :disabled="!canSend || [GATE_EMPTY].includes(currentGateStatus)"
               :loading="hasWait($waits.onMmuEject)"
-              v-on="showTooltip ? on : {}"
+              v-on="on"
               @click="sendGcode('MMU_EJECT', $waits.onMmuEject)"
             >
               <v-icon left>
@@ -54,6 +56,7 @@
     <v-row dense>
       <v-col cols="6">
         <v-tooltip
+          :disabled="!showTooltip"
           top
           color="secondary"
         >
@@ -64,7 +67,7 @@
               :class="btnClass"
               :disabled="!canSend"
               :loading="hasWait($waits.onMmuCheckGate)"
-              v-on="showTooltip ? on : {}"
+              v-on="on"
               @click="sendGcode('MMU_CHECK_GATE', $waits.onMmuCheckGate)"
             >
               <v-icon left>
@@ -78,6 +81,7 @@
       </v-col>
       <v-col cols="6">
         <v-tooltip
+          :disabled="!showTooltip"
           top
           color="secondary"
         >
@@ -88,7 +92,7 @@
               :class="btnClass"
               :disabled="!canSend"
               :loading="hasWait($waits.onMmuRecover)"
-              v-on="showTooltip ? on : {}"
+              v-on="on"
               @click="sendGcode('MMU_RECOVER', $waits.onMmuRecover)"
             >
               <v-icon left>
@@ -105,6 +109,7 @@
       <v-col cols="2" />
       <v-col cols="8">
         <v-tooltip
+          :disabled="!showTooltip"
           top
           color="secondary"
         >
@@ -115,7 +120,7 @@
               :class="btnClass"
               :disabled="!canSend || !isMmuPausedAndLocked"
               :loading="hasWait($waits.onMmuUnload)"
-              v-on="showTooltip ? on : {}"
+              v-on="on"
               @click="sendGcode('MMU_UNLOCK', $waits.onMmuUnload)"
             >
               <v-icon left>
@@ -132,6 +137,7 @@
     <v-row>
       <v-col cols="6">
         <v-tooltip
+          :disabled="!showTooltip"
           top
           color="secondary"
         >
@@ -143,7 +149,7 @@
               :class="btnClass"
               :disabled="!canSend || filamentPos === FILAMENT_POS_UNLOADED"
               :loading="hasWait($waits.onMmuUnload)"
-              v-on="showTooltip ? on : {}"
+              v-on="on"
               @click="sendGcode('MMU_UNLOAD', $waits.onMmuUnload)"
             >
               <v-icon left>
@@ -157,6 +163,7 @@
       </v-col>
       <v-col cols="6">
         <v-tooltip
+          :disabled="!showTooltip"
           top
           color="secondary"
         >
@@ -168,7 +175,7 @@
               :class="btnClass"
               :disabled="!canSend || filamentPos !== FILAMENT_POS_UNLOADED"
               :loading="hasWait($waits.onMmuLoad)"
-              v-on="showTooltip ? on : {}"
+              v-on="on"
               @click="sendGcode('MMU_LOAD', $waits.onMmuLoad)"
             >
               <v-icon left>
@@ -185,7 +192,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Ref, Watch } from 'vue-property-decorator'
 import { Debounce } from 'vue-debounce-decorator'
 import { VBtn } from 'vuetify/lib'
 import StateMixin from '@/mixins/state'
@@ -194,6 +201,9 @@ import MmuMixin from '@/mixins/mmu'
 @Component({})
 export default class MmuControls extends Mixins(StateMixin, MmuMixin) {
   private btnSize: number = 2
+
+  @Ref('refBtn')
+  readonly refBtn?: InstanceType<typeof VBtn>
 
   get unloadButtonText () {
     if (this.gate === this.TOOL_GATE_BYPASS) return this.$t('app.mmu.btn.unload_ext')
@@ -208,9 +218,8 @@ export default class MmuControls extends Mixins(StateMixin, MmuMixin) {
   @Debounce(500)
   checkButtonWidth () {
     this.$nextTick(() => {
-      const btn = this.$refs.refBtn as InstanceType<typeof VBtn>
-      if (btn) {
-        const width = (btn.$el as HTMLElement).offsetWidth ?? 0
+      if (this.refBtn) {
+        const width = (this.refBtn.$el as HTMLElement).offsetWidth ?? 0
         if (width === 0) {
           this.btnSize = 2
         } else if (width < 95) {

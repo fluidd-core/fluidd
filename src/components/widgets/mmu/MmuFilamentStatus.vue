@@ -437,13 +437,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
 
 @Component({})
 export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
-  @Prop({ default: 0.7 }) readonly animationTime!: number
+  @Prop({ default: 0.7 })
+  readonly animationTime!: number
+
+  @Ref('filamentRect')
+  readonly filamentRect?: SVGElement
 
   private filamentRectHeight: number = 0
   private tipFormingClass: string = ''
@@ -635,7 +639,7 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
   }
 
   private animateFilament (newHeight: number, animationTime: number = this.animationTime) {
-    const rect = this.$refs.filamentRect as SVGElement
+    const rect = this.filamentRect
     if (rect) {
       if (animationTime > 0) {
         const currentHeight = parseFloat(getComputedStyle(rect).height) ?? this.POSITIONS['end-bowden']
