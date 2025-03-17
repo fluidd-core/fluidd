@@ -588,9 +588,9 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
     const esGrpStr = this.localEndlessSpoolGroups.join(',')
     let cmd = 'MMU_SLICER_TOOL_MAP SKIP_AUTOMAP=' + (this.skipAutomap ? 1 : 0)
     this.sendGcode(cmd)
-    cmd = `MMU_TTG_MAP MAP="${mapStr}"`
+    cmd = `MMU_TTG_MAP MAP="${mapStr}" QUIET=1`
     this.sendGcode(cmd)
-    cmd = `MMU_ENDLESS_SPOOL GROUPS="${esGrpStr}"`
+    cmd = `MMU_ENDLESS_SPOOL GROUPS="${esGrpStr}" QUIET=1`
     this.sendGcode(cmd)
 
     // Mimick Fluidd workflow: If called prior to print, start print now
