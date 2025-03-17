@@ -2,7 +2,10 @@
   <v-layout align-center>
     <span
       class="label body-2 secondary--text"
-      :style="`width: ${labelWidth}; min-width: ${labelWidth};`"
+      :style="{
+        width: $filters.getPixelsString(labelWidth),
+        'min-width': $filters.getPixelsString(labelWidth)
+      }"
       v-html="label"
     />
     <span class="value"><slot /></span>
@@ -22,7 +25,7 @@ export default class AppSwitch extends Mixins(StateMixin) {
   @Prop({ type: String, required: true })
   readonly label!: string
 
-  @Prop({ type: [String, Number], default: '70px' })
+  @Prop({ type: [String, Number], default: 70 })
   readonly labelWidth!: string | number
 }
 </script>

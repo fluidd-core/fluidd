@@ -7,7 +7,7 @@
   >
     <template #menu>
       <app-btn
-        v-if="!targetableMacros.length"
+        v-if="!klippyReady || !targetableMacros.length"
         small
         class="me-1 my-1"
         :disabled="!isConnected"
@@ -42,6 +42,7 @@
             </v-icon>
           </app-btn>
         </template>
+
         <v-list dense>
           <v-list-item @click="handleSelectSpool">
             <v-list-item-content>
@@ -109,7 +110,7 @@
               <status-label
                 :key="`spoolman-card-${field}`"
                 :label="$t(`app.spoolman.label.${field}`)"
-                :label-width="labelWidth"
+                :label-width="86"
               >
                 <template v-if="field === 'remaining_weight'">
                   <span v-if="remainingFilamentUnit === 'weight'">
@@ -162,21 +163,21 @@
           <v-icon
             v-if="activeSpool"
             :color="getSpoolColor(activeSpool)"
-            size="110px"
+            size="110"
             class="spool-icon"
           >
             $filament
           </v-icon>
           <v-icon
             v-else-if="isConnected"
-            size="55px"
+            size="55"
           >
             $progressQuestion
           </v-icon>
           <v-icon
             v-else
             color="warning"
-            size="55px"
+            size="55"
           >
             $warning
           </v-icon>
@@ -204,8 +205,6 @@ type MacroWithSpoolId = Macro & {
   components: { StatusLabel }
 })
 export default class SpoolmanCard extends Mixins(StateMixin) {
-  labelWidth = '86px'
-
   handleSelectSpool (targetMacro?: Macro) {
     this.$typedCommit('spoolman/setDialogState', {
       show: true,

@@ -17,6 +17,20 @@ const stringFormatters = () => {
         .join(' ')
     },
 
+    getPixelsString: (value: number | string | undefined | null) => {
+      if (value == null || value === '') {
+        return undefined
+      }
+
+      const valueAsNumber = +value
+
+      if (isNaN(valueAsNumber)) {
+        return value.toString()
+      }
+
+      return `${valueAsNumber}px`
+    },
+
     getStringValueWithUnit: (value: number, fractionDigits: number, unit: string) => {
       if (value === 0) {
         return `0${unit}`
