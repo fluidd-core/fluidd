@@ -1,4 +1,4 @@
-import consola from 'consola'
+import { consola } from 'consola'
 
 const clipboardCopy = async (text: string, parentElement?: Element): Promise<boolean> => {
   if (navigator.clipboard) {

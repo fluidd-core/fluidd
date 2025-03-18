@@ -151,7 +151,7 @@ import FilePreviewDialog from './FilePreviewDialog.vue'
 import type { AppDataTableHeader, FileWithPath } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer, setFileDataTransferDataInDataTransfer } from '@/util/file-data-transfer'
-import consola from 'consola'
+import { consola } from 'consola'
 import type { DataTableHeader } from 'vuetify'
 
 /**
