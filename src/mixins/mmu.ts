@@ -8,39 +8,39 @@ import type { KlipperPrinterMmuState, MmuUnitKey } from '@/store/printer/types'
 
 @Component({})
 export default class MmuMixin extends Vue {
-  get mmuState (): KlipperPrinterMmuState {
-    return this.$typedState.printer.printer.mmu!
+  get mmuState (): KlipperPrinterMmuState | undefined {
+    return this.$typedState.printer.printer.mmu
   }
 
   get hasEncoder (): boolean {
-    return this.mmuState.encoder != null
+    return this.mmuState?.encoder != null
   }
 
   /*
      * Select encoder properties
      */
   get encoderPos (): number {
-    return Math.round(this.mmuState.encoder?.encoder_pos ?? 0)
+    return Math.round(this.mmuState?.encoder?.encoder_pos ?? 0)
   }
 
   get encoderEnabled (): boolean {
-    return this.mmuState.encoder?.enabled ?? false
+    return this.mmuState?.encoder?.enabled ?? false
   }
 
   get encoderDesiredHeadroom (): number {
-    return this.mmuState.encoder?.desired_headroom ?? 0
+    return this.mmuState?.encoder?.desired_headroom ?? 0
   }
 
   get encoderDetectionLength (): number {
-    return this.mmuState.encoder?.detection_length ?? 0
+    return this.mmuState?.encoder?.detection_length ?? 0
   }
 
   get encoderDetectionMode (): number {
-    return this.mmuState.encoder?.detection_mode ?? 0
+    return this.mmuState?.encoder?.detection_mode ?? 0
   }
 
   get encoderFlowRate (): number {
-    return this.mmuState.encoder?.flow_rate ?? 0
+    return this.mmuState?.encoder?.flow_rate ?? 0
   }
 
   /*
@@ -75,15 +75,15 @@ export default class MmuMixin extends Vue {
      * All Happy Hare mmu printer variables
      */
   get enabled (): boolean {
-    return this.mmuState.enabled ?? false
+    return this.mmuState?.enabled ?? false
   }
 
   get numGates (): number {
-    return this.mmuState.num_gates ?? 0
+    return this.mmuState?.num_gates ?? 0
   }
 
   get printState (): string {
-    return this.mmuState.print_state
+    return this.mmuState?.print_state ?? 'unknown'
   }
 
   get isPrinting (): boolean {
@@ -95,7 +95,7 @@ export default class MmuMixin extends Vue {
   }
 
   get isMmuPaused (): boolean {
-    return this.mmuState.is_paused ?? false
+    return this.mmuState?.is_paused ?? false
     return ['pause_locked', 'paused'].includes(this.printState)
   }
 
@@ -104,54 +104,54 @@ export default class MmuMixin extends Vue {
   }
 
   get isHomed (): boolean {
-    return this.mmuState.is_homed ?? false
+    return this.mmuState?.is_homed ?? false
   }
 
   get gate (): number {
-    return this.mmuState.gate
+    return this.mmuState?.gate ?? 0
   }
 
   get tool (): number {
-    return this.mmuState.tool
+    return this.mmuState?.tool ?? 0
   }
 
   readonly TOOL_GATE_UNKNOWN: number = -1
   readonly TOOL_GATE_BYPASS: number = -2
 
   get numToolchanges (): number {
-    return this.mmuState.num_toolchanges
+    return this.mmuState?.num_toolchanges ?? 0
   }
 
   get lastTool (): number {
-    return this.mmuState.last_tool
+    return this.mmuState?.last_tool ?? 0
   }
 
   get nextTool (): number {
-    return this.mmuState.next_tool
+    return this.mmuState?.next_tool ?? 0
   }
 
   get toolchangePurgeVolue (): number {
-    return this.mmuState.toolchange_purge_volume
+    return this.mmuState?.toolchange_purge_volume ?? 0
   }
 
   get lastToolchange (): string {
-    return this.mmuState.last_toolchange ?? ''
+    return this.mmuState?.last_toolchange ?? ''
   }
 
   get operation (): string {
-    return this.mmuState.operation
+    return this.mmuState?.operation ?? ''
   }
 
   get filament (): string {
-    return this.mmuState.filament
+    return this.mmuState?.filament ?? ''
   }
 
   get filamentPosition (): string {
-    return (this.mmuState.filament_position ?? 0).toFixed(1)
+    return (this.mmuState?.filament_position ?? 0).toFixed(1)
   }
 
   get filamentPos (): number {
-    return this.mmuState.filament_pos ?? this.FILAMENT_POS_UNKNOWN
+    return this.mmuState?.filament_pos ?? this.FILAMENT_POS_UNKNOWN
   }
 
   readonly FILAMENT_POS_UNKNOWN: number = -1
@@ -168,7 +168,7 @@ export default class MmuMixin extends Vue {
   readonly FILAMENT_POS_LOADED: number = 10 // Homed to nozzle
 
   get filamentDirection (): number {
-    return this.mmuState.filament_direction
+    return this.mmuState?.filament_direction ?? 0
   }
 
   readonly DIRECTION_LOAD: number = 1
@@ -176,19 +176,19 @@ export default class MmuMixin extends Vue {
   readonly DIRECTION_UNLOAD: number = -1
 
   get bowdenProgress (): number {
-    return this.mmuState.bowden_progress ?? -1
+    return this.mmuState?.bowden_progress ?? -1
   }
 
   get ttgMap (): number[] {
-    return this.mmuState.ttg_map
+    return this.mmuState?.ttg_map ?? []
   }
 
   get endlessSpoolGroups (): number[] {
-    return this.mmuState.endless_spool_groups
+    return this.mmuState?.endless_spool_groups ?? []
   }
 
   get gateStatus (): number[] {
-    return this.mmuState.gate_status ?? []
+    return this.mmuState?.gate_status ?? []
   }
 
   readonly GATE_UNKNOWN: number = -1
@@ -197,27 +197,27 @@ export default class MmuMixin extends Vue {
   readonly GATE_AVAILABLE_FROM_BUFFER: number = 2
 
   get gateFilamentName (): string[] {
-    return this.mmuState.gate_filament_name ?? []
+    return this.mmuState?.gate_filament_name ?? []
   }
 
   get gateMaterial (): string[] {
-    return this.mmuState.gate_material ?? []
+    return this.mmuState?.gate_material ?? []
   }
 
   get gateColor (): string[] {
-    return this.mmuState.gate_color ?? []
+    return this.mmuState?.gate_color ?? []
   }
 
   get gateTemperature (): number[] {
-    return this.mmuState.gate_temperature ?? []
+    return this.mmuState?.gate_temperature ?? []
   }
 
   get gateSpoolId (): number[] {
-    return this.mmuState.gate_spool_id ?? []
+    return this.mmuState?.gate_spool_id ?? []
   }
 
   get gateSpeedOverride (): number[] {
-    return this.mmuState.gate_speed_override ?? []
+    return this.mmuState?.gate_speed_override ?? []
   }
 
   get gateMap (): MmuGateDetails[] {
@@ -259,14 +259,14 @@ export default class MmuMixin extends Vue {
       gd.endlessSpoolGroup = null
     } else {
       gd.index = gateIndex
-      gd.status = this.mmuState.gate_status?.[gateIndex] ?? -1
-      gd.filamentName = this.mmuState.gate_filament_name?.[gateIndex] || 'Unknown'
-      gd.material = this.mmuState.gate_material?.[gateIndex] || 'Unknown'
-      gd.color = this.fromColorString(this.mmuState.gate_color[gateIndex] ?? '')
-      gd.temperature = this.mmuState.gate_temperature?.[gateIndex] ?? -1
-      gd.spoolId = this.mmuState.gate_spool_id?.[gateIndex] ?? -1
-      gd.speedOverride = this.mmuState.gate_speed_override?.[gateIndex] ?? 100
-      gd.endlessSpoolGroup = this.mmuState.endless_spool_groups?.[gateIndex] ?? gateIndex
+      gd.status = this.mmuState?.gate_status?.[gateIndex] ?? -1
+      gd.filamentName = this.mmuState?.gate_filament_name?.[gateIndex] || 'Unknown'
+      gd.material = this.mmuState?.gate_material?.[gateIndex] || 'Unknown'
+      gd.color = this.fromColorString(this.mmuState?.gate_color[gateIndex] ?? '')
+      gd.temperature = this.mmuState?.gate_temperature?.[gateIndex] ?? -1
+      gd.spoolId = this.mmuState?.gate_spool_id?.[gateIndex] ?? -1
+      gd.speedOverride = this.mmuState?.gate_speed_override?.[gateIndex] ?? 100
+      gd.endlessSpoolGroup = this.mmuState?.endless_spool_groups?.[gateIndex] ?? gateIndex
     }
     return gd
   }
@@ -283,7 +283,7 @@ export default class MmuMixin extends Vue {
   // return this.mmuState.tool_speed_multipliers
 
   get slicerToolMap () {
-    return this.mmuState.slicer_tool_map
+    return this.mmuState?.slicer_tool_map
   }
 
   toolDetails (toolIndex: number, file?: AppFileWithMeta | null): SlicerToolDetails {
@@ -324,18 +324,18 @@ export default class MmuMixin extends Vue {
     } else {
       // Use Happy Hare's slicer_tool_map
       td.color = this.fromColorString(
-        this.mmuState.slicer_tool_map?.tools?.[toolIndex]?.color ?? ''
+        this.mmuState?.slicer_tool_map?.tools?.[toolIndex]?.color ?? ''
       )
-      td.material = this.mmuState.slicer_tool_map?.tools?.[toolIndex]?.material || 'Unknown'
-      td.temp = this.mmuState.slicer_tool_map?.tools?.[toolIndex]?.temp ?? -1
-      td.name = this.mmuState.slicer_tool_map?.tools?.[toolIndex]?.name || 'Unknown'
-      td.inUse = this.mmuState.slicer_tool_map?.tools?.[toolIndex]?.in_use || false
+      td.material = this.mmuState?.slicer_tool_map?.tools?.[toolIndex]?.material || 'Unknown'
+      td.temp = this.mmuState?.slicer_tool_map?.tools?.[toolIndex]?.temp ?? -1
+      td.name = this.mmuState?.slicer_tool_map?.tools?.[toolIndex]?.name || 'Unknown'
+      td.inUse = this.mmuState?.slicer_tool_map?.tools?.[toolIndex]?.in_use || false
     }
     return td
   }
 
   get action (): string | undefined {
-    return this.mmuState.action
+    return this.mmuState?.action
   }
 
   readonly ACTION_IDLE: string = 'Idle'
@@ -353,37 +353,37 @@ export default class MmuMixin extends Vue {
   readonly ACTION_PURGING: string = 'Purging'
 
   get hasBypass (): boolean {
-    return this.mmuState.has_bypass ?? false
+    return this.mmuState?.has_bypass ?? false
   }
 
   get syncDrive (): boolean {
-    return this.mmuState.sync_drive
+    return this.mmuState?.sync_drive ?? false
   }
 
-  // return this.mmuState.sync_feedback_state
+  // return this.mmuState?.sync_feedback_state
 
   get syncFeedbackEnabled (): boolean {
-    return this.mmuState.sync_feedback_enabled
+    return this.mmuState?.sync_feedback_enabled ?? false
   }
 
   get clogDetectionEnabled (): boolean {
-    return this.mmuState.clog_detection_enabled !== 0
+    return this.mmuState?.clog_detection_enabled !== 0
   }
 
   get endlessSpoolEnabled (): boolean {
-    return this.mmuState.endless_spool_enabled !== 0
+    return this.mmuState?.endless_spool_enabled !== 0
   }
 
   get reasonForPause (): string {
-    return this.mmuState.reason_for_pause ?? ''
+    return this.mmuState?.reason_for_pause ?? ''
   }
 
   get extruderFilamentRemaining (): number {
-    return this.mmuState.extruder_filament_remaining
+    return this.mmuState?.extruder_filament_remaining ?? 0
   }
 
   get spoolmanSupport (): string {
-    return this.mmuState.spoolman_support ?? 'off'
+    return this.mmuState?.spoolman_support ?? 'off'
   }
 
   readonly SPOOLMAN_OFF: string = 'off' // Spoolman disabled
@@ -392,11 +392,11 @@ export default class MmuMixin extends Vue {
   readonly SPOOLMAN_PULL: string = 'pull' // Spoolman db is the source of truth
 
   get sensors (): Record<string, boolean | null> {
-    return this.mmuState.sensors ?? {}
+    return this.mmuState?.sensors ?? {}
   }
 
   get espoolerActive (): string {
-    return this.mmuState.espooler_active ?? ''
+    return this.mmuState?.espooler_active ?? ''
   }
 
   readonly ESPOOLER_REWIND: string = 'rewind'
@@ -406,11 +406,11 @@ export default class MmuMixin extends Vue {
      * Optional printer variables based on selector type
      */
   get servo (): string {
-    return this.mmuState.servo ?? 'Unknown'
+    return this.mmuState?.servo ?? 'Unknown'
   }
 
   get grip (): string {
-    return this.mmuState.grip ?? 'Unknown'
+    return this.mmuState?.grip ?? 'Unknown'
   }
 
   /*

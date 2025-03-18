@@ -661,7 +661,7 @@ export interface KlipperPrinterMmuState {
   bowden_progress: number;
   espooler_active: string;
   servo: string;
-  grip: string;
+  grip?: string;
   sensors: Record<string, boolean | null>;
   encoder?: {
     encoder_pos: number;

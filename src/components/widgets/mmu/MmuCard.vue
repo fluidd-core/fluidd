@@ -333,7 +333,7 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
     } else if (this.action === 'Idle') {
       if (this.printState === 'printing') {
         posStr = `Printing (${this.numToolchanges}`
-        if (this.slicerToolMap.total_toolchanges) posStr += `/${this.slicerToolMap.total_toolchanges}`
+        if (this.slicerToolMap?.total_toolchanges) posStr += `/${this.slicerToolMap.total_toolchanges}`
         posStr += ' swaps)'
       } else {
         posStr = this.filament !== 'Unloaded' ? `Filament: ${this.filamentPosition}mm` : 'Filament: Unloaded'
