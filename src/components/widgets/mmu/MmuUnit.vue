@@ -153,10 +153,6 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     return `${import.meta.env.BASE_URL}img/mmu/mmu_${this.vendorLogo}.svg`
   }
 
-  mounted () {
-    console.log(' came here!! ', { ud: this.unitDetails(this.unit) })
-  }
-
   get unitDisplayName (): string {
     const name = this.unitDetails(this.unit).name
     return `#${this.unit + 1} ${name}`

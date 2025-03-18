@@ -12,6 +12,10 @@ export default class MmuMixin extends Vue {
     return this.$typedState.printer.printer.mmu
   }
 
+  get hasMmu (): boolean {
+    return this.mmuState != null
+  }
+
   get hasEncoder (): boolean {
     return this.mmuState?.encoder != null
   }
