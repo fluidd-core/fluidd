@@ -620,6 +620,7 @@ app:
       enable_xy_homing: Enable XY Homing
       expression: Expression
       extrusion_line_width: Extrusion Line Width
+      firmware_restart: Firmware Restart
       flip_horizontal: Horizontal Flip
       flip_vertical: Vertical Flip
       fill_color: Fill color
@@ -631,11 +632,13 @@ app:
       height: Height
       hide_single_part_bounding_box: Hide part bounding box when printing a single part
       gcode_coords: Use GCode Coordinates
+      host_restart: Host Restart
       icon: Icon
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
       keyboard_shortcuts: Keyboard shortcuts
+      klipper_save_and_restart_action: Klipper Save & Restart action
       language: Display Language
       last_result: Last result
       left_y: Left Y-Axis
@@ -661,6 +664,7 @@ app:
       right_y: Right Y-Axis
       save_and_restore_view_state: Save and restore view state
       sections_to_ignore_pending_configuration_changes: Sections to ignore Pending Configuration Changes
+      service_restart: Service Restart
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
       show_chart: Show chart

@@ -75,7 +75,7 @@ export const getters = {
       const instanceIds = rootState.server.system_info?.instance_ids
 
       return {
-        serviceSupported: (instanceIds && itemService in instanceIds) || getters.getServices.some((i: ServiceInfo) => i.name === itemService),
+        serviceSupported: (instanceIds && itemService in instanceIds) || (getters.getServices as ServiceInfo[]).some(i => i.name === itemService),
         ...item
       }
     }
