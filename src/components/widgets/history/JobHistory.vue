@@ -369,7 +369,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
         text: '',
         value: 'data-table-icons',
         sortable: false,
-        width: '24px'
+        width: 24
       },
       {
         text: this.$tc('app.general.table.header.name'),

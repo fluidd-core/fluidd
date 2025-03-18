@@ -111,7 +111,7 @@ export default class ReprintTab extends Mixins(StateMixin, FilesMixin) {
 
   get headers () {
     const headers = [
-      { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
+      { text: '', value: 'data-table-icons', sortable: false, width: 24 },
       { text: this.$tc('app.general.table.header.name'), value: 'filename', sortable: false },
       { text: this.$tc('app.general.table.header.status'), value: 'status', sortable: false },
       { text: this.$tc('app.general.table.header.print_duration'), value: 'print_duration', sortable: false }

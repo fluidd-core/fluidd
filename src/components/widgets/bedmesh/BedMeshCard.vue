@@ -57,7 +57,7 @@
         :options="options"
         :data="series"
         :graphics="graphics"
-        :height="(isMobileViewport) ? '225px' : '525px'"
+        :height="(isMobileViewport) ? 225 : 525"
       />
 
       <span v-else>{{ $t('app.bedmesh.msg.not_loaded') }}</span>

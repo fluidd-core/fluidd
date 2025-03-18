@@ -102,7 +102,7 @@
 
       <thermal-chart
         ref="thermalchart"
-        :height="(isMobileViewport) ? '180px' : '260px'"
+        :height="(isMobileViewport) ? 180 : 260"
       />
     </template>
   </collapsable-card>

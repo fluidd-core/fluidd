@@ -1,7 +1,9 @@
 <template>
   <div
     class="chart"
-    :style="{ 'height': height }"
+    :style="{
+      height: $filters.getPixelsString(height)
+    }"
   >
     <e-chart
       ref="chart"
@@ -26,8 +28,8 @@ import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
 
 @Component({})
 export default class ThermalChart extends Mixins(BrowserMixin) {
-  @Prop({ type: String, default: '100%' })
-  readonly height!: string
+  @Prop({ type: [String, Number], default: '100%' })
+  readonly height!: string | number
 
   @Ref('chart')
   readonly chart!: ECharts

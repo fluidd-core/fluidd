@@ -1,7 +1,9 @@
 <template>
   <div
     class="chart"
-    :style="{ 'height': height }"
+    :style="{
+      height: $filters.getPixelsString(height)
+    }"
   >
     <e-chart
       ref="chart"
@@ -35,8 +37,8 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
   @Prop({ type: Object, default: () => {} })
   readonly options!: Record<string, unknown>
 
-  @Prop({ type: String, default: '100%' })
-  readonly height!: string
+  @Prop({ type: [String, Number], default: '100%' })
+  readonly height!: string | number
 
   @Ref('chart')
   readonly chart!: ECharts
