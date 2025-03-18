@@ -21,7 +21,7 @@ import BrowserMixin from '@/mixins/browser'
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import md5 from 'md5'
 import type { InstanceConfig, RestoreViewState } from '@/store/config/types'
-import consola from 'consola'
+import { consola } from 'consola'
 let monaco: typeof Monaco // dynamically imported
 
 @Component({})

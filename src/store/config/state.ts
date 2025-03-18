@@ -83,7 +83,8 @@ export const defaultState = (): ConfigState => {
         confirmDirtyEditorClose: true,
         autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.sh', '.txt'],
         restoreViewState: 'session',
-        codeLens: true
+        codeLens: true,
+        klipperSaveAndRestartAction: 'firmware-restart'
       },
       dashboard: {
         tempPresets: []
