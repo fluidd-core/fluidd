@@ -87,7 +87,7 @@ export default class MmuMixin extends Vue {
   }
 
   get printState (): string {
-    return this.mmuState?.print_state ?? 'unknown'
+    return this.mmuState?.print_state ?? 'ready'
   }
 
   get isPrinting (): boolean {
@@ -112,11 +112,11 @@ export default class MmuMixin extends Vue {
   }
 
   get gate (): number {
-    return this.mmuState?.gate ?? 0
+    return this.mmuState?.gate ?? this.TOOL_GATE_UNKNOWN
   }
 
   get tool (): number {
-    return this.mmuState?.tool ?? 0
+    return this.mmuState?.tool ?? this.TOOL_GATE_UNKNOWN
   }
 
   readonly TOOL_GATE_UNKNOWN: number = -1
@@ -127,11 +127,11 @@ export default class MmuMixin extends Vue {
   }
 
   get lastTool (): number {
-    return this.mmuState?.last_tool ?? 0
+    return this.mmuState?.last_tool ?? this.TOOL_GATE_UNKNOWN
   }
 
   get nextTool (): number {
-    return this.mmuState?.next_tool ?? 0
+    return this.mmuState?.next_tool ?? this.TOOL_GATE_UNKNOWN
   }
 
   get toolchangePurgeVolue (): number {
@@ -172,7 +172,7 @@ export default class MmuMixin extends Vue {
   readonly FILAMENT_POS_LOADED: number = 10 // Homed to nozzle
 
   get filamentDirection (): number {
-    return this.mmuState?.filament_direction ?? 0
+    return this.mmuState?.filament_direction ?? this.DIRECTION_UNKNOWN
   }
 
   readonly DIRECTION_LOAD: number = 1
