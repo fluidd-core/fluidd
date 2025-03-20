@@ -7,11 +7,11 @@
     >
       <template #activator="{ on, attrs }">
         <app-chip-color
-          v-bind="{...$attrs, ...attrs}"
           :color="color"
           :class="{
             'ms-1': index > 0
           }"
+          v-bind="{...$attrs, ...attrs}"
           v-on="{...$listeners, ...on }"
         />
       </template>

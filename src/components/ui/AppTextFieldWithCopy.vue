@@ -1,8 +1,8 @@
 <template>
   <v-text-field
     v-model="inputValue"
-    v-bind="$attrs"
     class="app-text-field"
+    v-bind="$attrs"
     v-on="$listeners"
   >
     <template #append-outer>

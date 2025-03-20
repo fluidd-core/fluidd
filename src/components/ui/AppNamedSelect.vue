@@ -12,17 +12,12 @@
       <v-select
         v-model="inputValue"
         class="mt-0"
-        :items="items"
         :disabled="disabled || loading"
-        :prefix="prefix"
-        :suffix="suffix"
-        :item-value="itemValue"
-        :item-text="itemText"
-        :return-object="returnObject"
         dense
         single-line
         outlined
         hide-details
+        v-bind="$attrs"
         v-on="$listeners"
       >
         <template #prepend>
@@ -57,9 +52,6 @@ export default class AppNamedSelect extends Vue {
   @Prop({ })
   readonly resetValue?: unknown
 
-  @Prop({ type: Array })
-  readonly items?: unknown[]
-
   @Prop({ type: String, required: true })
   readonly label!: string
 
@@ -68,21 +60,6 @@ export default class AppNamedSelect extends Vue {
 
   @Prop({ type: Boolean })
   readonly loading?: boolean
-
-  @Prop({ type: String })
-  readonly prefix?: string
-
-  @Prop({ type: String })
-  readonly suffix?: string
-
-  @Prop({ type: String })
-  readonly itemValue?: string
-
-  @Prop({ type: String })
-  readonly itemText?: string
-
-  @Prop({ type: Boolean })
-  readonly returnObject?: boolean
 
   handleReset () {
     if (this.resetValue !== undefined) {
