@@ -84,7 +84,11 @@ const stringFormatters = () => {
     /**
      * Formats a number representing mm to human readable distance.
      */
-    getReadableLengthString: (lengthInMm: number, showMicrons = false, fractionDigits: number | undefined = undefined) => {
+    getReadableLengthString: (lengthInMm: number, options?: { showMicrons?: boolean, showKilometers?: boolean }, fractionDigits: number | undefined = undefined) => {
+      if (lengthInMm >= 1000000 && options?.showKilometers) {
+        return (lengthInMm / 1000000).toFixed(fractionDigits ?? 2) + ' km'
+      }
+
       if (lengthInMm >= 1000) {
         return (lengthInMm / 1000).toFixed(fractionDigits ?? 2) + ' m'
       }
@@ -93,7 +97,7 @@ const stringFormatters = () => {
         return (lengthInMm / 10).toFixed(fractionDigits ?? 1) + ' cm'
       }
 
-      if (lengthInMm < 0.1 && showMicrons) {
+      if (lengthInMm < 0.1 && options?.showMicrons) {
         return instance.getStringValueWithUnit(lengthInMm * 1000, fractionDigits ?? 0, ' μm')
       }
 
