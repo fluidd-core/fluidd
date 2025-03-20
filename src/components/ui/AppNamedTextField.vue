@@ -11,17 +11,13 @@
     <v-col>
       <app-text-field
         v-model="inputValue"
-        :type="type"
         :disabled="disabled || loading"
-        :readonly="readonly"
-        :prefix="prefix"
-        :suffix="suffix"
-        :rules="rules"
         class="v-input--text-right"
         dense
         single-line
         hide-details
         outlined
+        v-bind="$attrs"
         v-on="$listeners"
       >
         <template #prepend>
@@ -46,7 +42,6 @@
 <script lang="ts">
 import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { InputValidationRules } from 'vuetify'
 
 @Component({
   inheritAttrs: false
@@ -55,9 +50,6 @@ export default class AppNamedTextField extends Mixins(StateMixin) {
   @VModel({ })
   inputValue?: unknown
 
-  @Prop({ type: String })
-  readonly type?: string
-
   @Prop({ type: String, required: true })
   readonly label!: string
 
@@ -65,22 +57,10 @@ export default class AppNamedTextField extends Mixins(StateMixin) {
   readonly resetValue?: unknown
 
   @Prop({ type: Boolean })
-  readonly readonly?: boolean
-
-  @Prop({ type: Boolean })
   readonly disabled?: boolean
 
   @Prop({ type: Boolean })
   readonly loading?: boolean
-
-  @Prop({ type: String })
-  readonly prefix!: string
-
-  @Prop({ type: String })
-  readonly suffix!: string
-
-  @Prop({ type: Array })
-  readonly rules?: InputValidationRules[]
 
   handleReset () {
     if (this.resetValue !== undefined) {

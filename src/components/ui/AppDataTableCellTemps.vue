@@ -7,6 +7,8 @@
         'ms-1': index > 0
       }"
       small
+      v-bind="$attrs"
+      v-on="$listeners"
     >
       {{ temp }}<small>°C</small>
     </v-chip>

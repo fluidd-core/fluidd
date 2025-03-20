@@ -7,11 +7,10 @@
   >
     <template #activator="{ on, attrs }">
       <v-icon
-        v-bind="attrs"
         :color="type"
-        :small="small"
         class="ml-2"
-        v-on="on"
+        v-bind="{...$attrs, attrs}"
+        v-on="{...$listeners, ...on}"
       >
         {{ (type === 'error' || type === 'warning') ? '$warning' : '$help' }}
       </v-icon>
@@ -44,8 +43,5 @@ export default class AppInlineHelp extends Vue {
 
   @Prop({ type: Boolean })
   readonly right?: boolean
-
-  @Prop({ type: Boolean })
-  readonly small?: boolean
 }
 </script>

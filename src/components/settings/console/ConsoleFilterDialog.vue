@@ -49,8 +49,6 @@
           single-line
           hide-details="auto"
           :items="types"
-          item-value="value"
-          item-text="text"
         />
       </app-setting>
 

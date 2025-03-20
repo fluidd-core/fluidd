@@ -59,15 +59,12 @@
           filled
           dense
           hide-details="auto"
-          initial-value="false"
           :items="[
             { text: $t('app.setting.camera_rotate_options.none'), value: 0 },
             { text: $t('app.setting.camera_rotate_options.90'), value: 90 },
             { text: $t('app.setting.camera_rotate_options.180'), value: 180 },
             { text: $t('app.setting.camera_rotate_options.270'), value: 270 }
           ]"
-          item-value="value"
-          item-text="text"
         />
       </app-setting>
 
@@ -89,18 +86,13 @@
             { text: $t('app.setting.camera_type_options.video'), value: 'ipstream' },
             { text: $t('app.setting.camera_type_options.iframe'), value: 'iframe' }
           ]"
-          item-value="value"
-          item-text="text"
         />
       </app-setting>
 
       <v-divider />
 
       <template v-if="camera.service === 'mjpegstreamer-adaptive'">
-        <app-setting
-
-          :title="$t('app.setting.label.fps_target')"
-        >
+        <app-setting :title="$t('app.setting.label.fps_target')">
           <v-text-field
             v-model.number="camera.target_fps"
             class="mt-5"
@@ -116,9 +108,7 @@
 
         <v-divider />
 
-        <app-setting
-          :title="$t('app.setting.label.fps_idle_target')"
-        >
+        <app-setting :title="$t('app.setting.label.fps_idle_target')">
           <v-text-field
             v-model.number="camera.target_fps_idle"
             class="mt-5"
