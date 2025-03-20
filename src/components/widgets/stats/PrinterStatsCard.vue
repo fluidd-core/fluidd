@@ -40,9 +40,9 @@
         </template>
 
         <v-list dense>
-          <v-list-item @click="includeDays = !includeDays">
+          <v-list-item @click="timeInDays = !timeInDays">
             <v-list-item-action class="my-0">
-              <v-checkbox :input-value="includeDays" />
+              <v-checkbox :input-value="timeInDays" />
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>
@@ -51,9 +51,9 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item @click="showKilometers = !showKilometers">
+          <v-list-item @click="lengthInKilometers = !lengthInKilometers">
             <v-list-item-action class="my-0">
-              <v-checkbox :input-value="showKilometers" />
+              <v-checkbox :input-value="lengthInKilometers" />
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>
@@ -82,7 +82,7 @@
               {{ $t('app.general.label.longest_job') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterSeconds(rollup.longest_job, { includeDays }) }}
+              {{ $filters.formatCounterSeconds(rollup.longest_job, { includeDays: timeInDays }) }}
             </div>
           </v-card>
         </v-col>
@@ -95,13 +95,13 @@
               {{ $t('app.general.label.total_time') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterSeconds(rollup.total_time, { includeDays }) }}
+              {{ $filters.formatCounterSeconds(rollup.total_time, { includeDays: timeInDays }) }}
             </div>
             <div class="secondary--text">
               {{ $t('app.general.label.total_time_avg') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterSeconds(rollup.total_avg, { includeDays }) }}
+              {{ $filters.formatCounterSeconds(rollup.total_avg, { includeDays: timeInDays }) }}
             </div>
           </v-card>
         </v-col>
@@ -114,13 +114,13 @@
               {{ $t('app.general.label.total_print_time') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterSeconds(rollup.total_print_time , { includeDays }) }}
+              {{ $filters.formatCounterSeconds(rollup.total_print_time , { includeDays: timeInDays }) }}
             </div>
             <div class="secondary--text">
               {{ $t('app.general.label.total_print_time_avg') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterSeconds(rollup.print_avg, { includeDays }) }}
+              {{ $filters.formatCounterSeconds(rollup.print_avg, { includeDays: timeInDays }) }}
             </div>
           </v-card>
         </v-col>
@@ -133,13 +133,13 @@
               {{ $t('app.general.label.total_filament') }}
             </div>
             <div class="focus--text">
-              {{ $filters.getReadableLengthString(rollup.total_filament_used, { showKilometers }) }}
+              {{ $filters.getReadableLengthString(rollup.total_filament_used, { showKilometers: lengthInKilometers }) }}
             </div>
             <div class="secondary--text">
               {{ $t('app.general.label.total_filament_avg') }}
             </div>
             <div class="focus--text">
-              {{ $filters.getReadableLengthString(rollup.filament_avg, { showKilometers }) }}
+              {{ $filters.getReadableLengthString(rollup.filament_avg, { showKilometers: lengthInKilometers }) }}
             </div>
           </v-card>
         </v-col>
@@ -157,8 +157,29 @@ export default class PrinterStatsCard extends Vue {
   @Prop({ type: Boolean })
   readonly menuCollapsed?: boolean
 
-  includeDays = false
-  showKilometers = false
+  get lengthInKilometers (): boolean {
+    return this.$typedState.config.uiSettings.history.lengthInKilometers
+  }
+
+  set lengthInKilometers (value: boolean) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.history.lengthInKilometers',
+      value,
+      server: true
+    })
+  }
+
+  get timeInDays (): boolean {
+    return this.$typedState.config.uiSettings.history.timeInDays
+  }
+
+  set timeInDays (value: boolean) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.history.timeInDays',
+      value,
+      server: true
+    })
+  }
 
   get rollup () {
     return this.$typedGetters['history/getRollUp']
