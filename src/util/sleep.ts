@@ -1,4 +1,4 @@
-import consola from 'consola'
+import { consola } from 'consola'
 
 const sleep = (ms: number, signal?: AbortSignal) => {
   const debug = (message: string, ...args: unknown[]) => consola.debug(`[sleep] ${message}`, ...args)

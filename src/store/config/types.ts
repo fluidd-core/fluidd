@@ -148,11 +148,14 @@ export interface ThemeLogo {
 
 export type RestoreViewState = 'never' | 'session' | 'local'
 
+export type KlipperSaveAndRestartAction = 'firmware-restart' | 'host-restart' | 'service-restart'
+
 export interface EditorConfig {
   confirmDirtyEditorClose: boolean;
   autoEditExtensions: string[];
   restoreViewState: RestoreViewState,
   codeLens: boolean;
+  klipperSaveAndRestartAction: KlipperSaveAndRestartAction;
 }
 
 export interface Axis {

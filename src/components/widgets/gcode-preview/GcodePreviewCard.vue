@@ -149,7 +149,7 @@ import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 import type { Layer, MinMax, Move } from '@/store/gcodePreview/types'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
-import consola from 'consola'
+import { consola } from 'consola'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({

@@ -151,8 +151,9 @@ import FilePreviewDialog from './FilePreviewDialog.vue'
 import type { AppDataTableHeader, FileWithPath } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer, setFileDataTransferDataInDataTransfer } from '@/util/file-data-transfer'
-import consola from 'consola'
+import { consola } from 'consola'
 import type { DataTableHeader } from 'vuetify'
+import type { KlipperSaveAndRestartAction } from '@/store/config/types'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
@@ -912,22 +913,44 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  async handleSaveFileChanges (contents: string, restart: string) {
+  async handleSaveFileChanges (contents: string, serviceToRestart?: string) {
     const file = new File([contents], this.fileEditorDialogState.filename)
-    if (!restart && this.fileEditorDialogState.open) this.fileEditorDialogState.loading = true
+
+    if (this.fileEditorDialogState.open) {
+      this.fileEditorDialogState.loading = true
+    }
 
     await this.uploadFile(file, this.visiblePath, this.currentRoot, false)
+
     this.fileEditorDialogState.loading = false
-    if (restart) {
-      if (restart === 'moonraker') {
+
+    switch (serviceToRestart) {
+      case 'moonraker':
         this.serviceRestartMoonraker()
-        return
+        break
+
+      case 'klipper': {
+        const klipperSaveAndRestartAction: KlipperSaveAndRestartAction = this.$typedState.config.uiSettings.editor.klipperSaveAndRestartAction
+
+        switch (klipperSaveAndRestartAction) {
+          case 'host-restart':
+            this.restartKlippy()
+            break
+
+          case 'service-restart':
+            this.serviceRestartKlipper()
+            break
+
+          default:
+            this.firmwareRestartKlippy()
+        }
+        break
       }
-      if (restart === 'klipper') {
-        this.firmwareRestartKlippy()
-        return
-      }
-      this.serviceRestartByName(restart)
+
+      default:
+        if (serviceToRestart) {
+          this.serviceRestartByName(serviceToRestart)
+        }
     }
   }
 

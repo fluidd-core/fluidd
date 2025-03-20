@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { Component, Ref, Mixins } from 'vue-property-decorator'
-import consola from 'consola'
+import { consola } from 'consola'
 import CameraMixin from '@/mixins/camera'
 import sleep from '@/util/sleep'
 

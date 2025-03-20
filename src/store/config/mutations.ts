@@ -6,7 +6,7 @@ import { Globals } from '@/globals'
 import { cloneDeep, mergeWith, set } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
 import type { FileFilterType } from '../files/types'
-import consola from 'consola'
+import { consola } from 'consola'
 
 export const mutations = {
   /**

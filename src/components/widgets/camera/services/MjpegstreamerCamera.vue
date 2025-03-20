@@ -13,7 +13,7 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import CameraMixin from '@/mixins/camera'
-import consola from 'consola'
+import { consola } from 'consola'
 
 @Component({})
 export default class MjpegstreamerCamera extends Mixins(CameraMixin) {

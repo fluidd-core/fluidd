@@ -4,7 +4,7 @@ import { Component } from 'vue-property-decorator'
 import type { AxiosRequestConfig, AxiosProgressEvent } from 'axios'
 import { httpClientActions } from '@/api/httpClientActions'
 import type { FileWithPath } from '@/types'
-import consola from 'consola'
+import { consola } from 'consola'
 import { v4 as uuidv4 } from 'uuid'
 import type { AppUser } from '@/store/auth/types'
 
