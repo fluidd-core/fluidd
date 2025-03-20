@@ -138,6 +138,10 @@ export const defaultState = (): ConfigState => {
         },
         remainingFilamentUnit: 'weight',
         selectedCardFields: ['vendor', 'filament_name', 'remaining_weight', 'location', 'material', 'lot_nr', 'first_used', 'comment']
+      },
+      history: {
+        timeInDays: false,
+        lengthInKilometers: false
       }
     }
   }
