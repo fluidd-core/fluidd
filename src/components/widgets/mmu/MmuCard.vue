@@ -14,7 +14,7 @@
       >
         <template #activator="{ on, attrs, value }">
           <app-btn
-            :disabled="!enabled"
+            :disabled="!klippyReady || !enabled"
             v-bind="attrs"
             small
             class="me-1 my-1"
@@ -155,7 +155,7 @@
 
     <div
       v-if="hasMmu"
-      :class="{ 'mmu-disabled': !enabled }"
+      :class="{ 'mmu-disabled': !klippyReady || !enabled }"
     >
       <v-container
         fluid
