@@ -1,11 +1,11 @@
 <template>
   <v-row
     no-gutters
-    v-bind="$attrs"
     :class="{
       'sc-link': hasClick
     }"
     class="app-setting-control"
+    v-bind="$attrs"
     v-on="$listeners"
   >
     <div

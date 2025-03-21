@@ -22,6 +22,12 @@ export interface UiSettings {
   fileSystem: FileSystemConfig;
   toolhead: ToolheadConfig;
   spoolman: SpoolmanConfig;
+  history: HistoryConfig;
+}
+
+export interface HistoryConfig {
+  timeInDays: boolean;
+  lengthInKilometers: boolean;
 }
 
 export interface ToolheadConfig {
