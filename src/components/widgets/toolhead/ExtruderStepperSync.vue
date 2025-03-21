@@ -13,7 +13,7 @@
         ]"
         :disabled="!klippyReady || printerPrinting"
         :loading="hasWait(`${$waits.onSyncExtruder}${extruderStepper.name}`)"
-        :reset-value="extruderStepper.config.extruder"
+        :reset-value="extruderStepper.config?.extruder"
         item-value="key"
         item-text="name"
         @change="sendSyncExtruderMotion"

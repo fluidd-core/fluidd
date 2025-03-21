@@ -15,7 +15,7 @@ export interface Macro {
   assignTo?: string;
   disabledWhilePrinting?: boolean;
   color?: string;
-  config: KlipperPrinterGcodeMacroSettings;
+  config?: KlipperPrinterGcodeMacroSettings;
   order?: number;
   variables?: Record<string, unknown>
 }
