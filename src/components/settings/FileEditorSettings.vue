@@ -172,6 +172,10 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   get availableKlipperSaveAndRestartActions (): { value: KlipperSaveAndRestartAction, text: string }[] {
     return [
       {
+        value: 'auto',
+        text: `${this.$tc('app.setting.label.auto')} (${this.$tc('app.setting.label.firmware_restart')})`,
+      },
+      {
         value: 'firmware-restart',
         text: this.$tc('app.setting.label.firmware_restart')
       },

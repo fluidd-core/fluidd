@@ -154,7 +154,7 @@ export interface ThemeLogo {
 
 export type RestoreViewState = 'never' | 'session' | 'local'
 
-export type KlipperSaveAndRestartAction = 'firmware-restart' | 'host-restart' | 'service-restart'
+export type KlipperSaveAndRestartAction = 'auto' | 'firmware-restart' | 'host-restart' | 'service-restart'
 
 export interface EditorConfig {
   confirmDirtyEditorClose: boolean;

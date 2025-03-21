@@ -84,7 +84,7 @@ export const defaultState = (): ConfigState => {
         autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.sh', '.txt'],
         restoreViewState: 'session',
         codeLens: true,
-        klipperSaveAndRestartAction: 'firmware-restart'
+        klipperSaveAndRestartAction: 'auto'
       },
       dashboard: {
         tempPresets: []
