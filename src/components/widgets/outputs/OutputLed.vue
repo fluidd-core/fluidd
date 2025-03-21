@@ -53,29 +53,31 @@ export default class OutputLed extends Mixins(StateMixin) {
   get supportedChannels (): string {
     const { type, config } = this.led
 
-    if ('color_order' in config) {
-      const colorOrder = Array.isArray(config.color_order)
-        ? config.color_order[0]
-        : config.color_order
+    if (config) {
+      if ('color_order' in config) {
+        const colorOrder = Array.isArray(config.color_order)
+          ? config.color_order[0]
+          : config.color_order
 
-      if (typeof colorOrder === 'string') {
-        return colorOrder
+        if (typeof colorOrder === 'string') {
+          return colorOrder
+        }
       }
-    }
 
-    switch (type) {
-      case 'dotstar':
-        return 'RGB'
+      switch (type) {
+        case 'dotstar':
+          return 'RGB'
 
-      case 'led': {
-        const channels = []
+        case 'led': {
+          const channels = []
 
-        if ('red_pin' in config) channels.push('R')
-        if ('green_pin' in config) channels.push('G')
-        if ('blue_pin' in config) channels.push('B')
-        if ('white_pin' in config) channels.push('W')
+          if ('red_pin' in config) channels.push('R')
+          if ('green_pin' in config) channels.push('G')
+          if ('blue_pin' in config) channels.push('B')
+          if ('white_pin' in config) channels.push('W')
 
-        return channels.join('')
+          return channels.join('')
+        }
       }
     }
 

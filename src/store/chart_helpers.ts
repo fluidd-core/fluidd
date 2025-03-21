@@ -119,25 +119,28 @@ export const handleSystemStatsChange = (payload: KlipperPrinterState, state: Roo
  */
 export const handleAddChartEntry = (retention: number, state: RootState, commit: Commit, getters: any) => {
   const configureChartEntry = () => {
-    const date = new Date()
-    const r: ChartData = {
-      date
+    const chartData: ChartData = {
+      date: new Date()
     }
 
     const keys: string[] = getters.getChartableSensors
 
     keys.forEach((key) => {
-      const temp = state.printer.printer[key].temperature
-      const target = state.printer.printer[key].target
-      const power = state.printer.printer[key].power
-      const speed = state.printer.printer[key].speed
-      r[key] = temp
-      if (target != null) r[`${key}#target`] = target
-      if (power != null) r[`${key}#power`] = power
-      if (speed != null) r[`${key}#speed`] = speed
+      const sensor = state.printer.printer[key]
+
+      if (sensor != null) {
+        const temp = sensor.temperature
+        const target = sensor.target
+        const power = sensor.power
+        const speed = sensor.speed
+        chartData[key] = temp
+        if (target != null) chartData[`${key}#target`] = target
+        if (power != null) chartData[`${key}#power`] = power
+        if (speed != null) chartData[`${key}#speed`] = speed
+      }
     })
 
-    return r
+    return chartData
   }
 
   if (state.charts.ready) {

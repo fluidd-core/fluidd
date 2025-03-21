@@ -168,40 +168,40 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get printerSupportsQuadGantryLevel (): boolean {
-    return 'quad_gantry_level' in this.printerSettings
+    return this.printerSettings.quad_gantry_level != null
   }
 
   get printerSupportsZTiltAdjust (): boolean {
     return (
-      'z_tilt' in this.printerSettings ||
+      this.printerSettings.z_tilt != null ||
       (
         this.klippyApp.isKalico &&
-        'z_tilt_ng' in this.printerSettings
+        this.printerSettings.z_tilt_ng != null
       )
     )
   }
 
   get printerSupportsBedScrewsAdjust (): boolean {
-    return 'bed_screws' in this.printerSettings
+    return this.printerSettings.bed_screws != null
   }
 
   get printerSupportsBedScrewsCalculate (): boolean {
-    return 'screws_tilt_adjust' in this.printerSettings
+    return this.printerSettings.screws_tilt_adjust != null
   }
 
   get printerSupportsBedTiltCalibrate (): boolean {
-    return 'bed_tilt' in this.printerSettings
+    return this.printerSettings.bed_tilt != null
   }
 
   get printerSupportsDeltaCalibrate (): boolean {
-    return 'delta_calibrate' in this.printerSettings
+    return this.printerSettings.delta_calibrate != null
   }
 
   get printerSupportsProbeCalibrate (): boolean {
     return (
-      'probe' in this.printerSettings ||
-      'bltouch' in this.printerSettings ||
-      'smart_effector' in this.printerSettings ||
+      this.printerSettings.probe != null ||
+      this.printerSettings.bltouch != null ||
+      this.printerSettings.smart_effector != null ||
       Object.keys(this.printerSettings)
         .some(x => x.startsWith('probe_eddy_current '))
     )
@@ -209,8 +209,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get printerSupportsZEndstopCalibrate (): boolean {
     return (
-      'stepper_z' in this.printerSettings &&
-      'z_position_endstop' in this.printerSettings.stepper_z
+      this.printerSettings.stepper_z?.position_endstop != null
     )
   }
 

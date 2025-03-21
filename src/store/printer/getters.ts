@@ -325,15 +325,22 @@ export const getters = {
    * Return MCU's and their state
    */
   getMcus: (state) => {
-    const mcus = Object.keys(state.printer)
-      .filter(key => key.startsWith('mcu'))
+    const mcus: MCU[] = []
+
+    const mcuKeys = Object.keys(state.printer)
+      .filter(key => key === 'mcu' || key.startsWith('mcu '))
       .sort()
-      .map((key): MCU => ({
+
+    for (const key of mcuKeys) {
+      const config = state.printer.configfile.settings[key.toLowerCase()]
+
+      mcus.push({
         name: key,
         prettyName: Vue.$filters.prettyCase(key),
         ...state.printer[key],
-        config: state.printer.configfile.settings[key.toLowerCase()]
-      }))
+        config,
+      })
+    }
 
     return mcus
   },
@@ -408,7 +415,7 @@ export const getters = {
   getSteppers: (state): Stepper[] => {
     const steppers: Stepper[] = []
 
-    const stepperKeys: string[] = state.printer.motion_report?.steppers ?? []
+    const stepperKeys = state.printer.motion_report?.steppers ?? []
 
     for (const item of stepperKeys) {
       const name = item.startsWith('stepper_')
@@ -416,7 +423,7 @@ export const getters = {
         : item.split(' ', 2).pop() || ''
 
       const e = state.printer[item]
-      const c = state.printer.configfile.settings[item.toLowerCase()]
+      const config = state.printer.configfile.settings[item.toLowerCase()]
 
       steppers.push({
         name,
@@ -424,7 +431,7 @@ export const getters = {
         key: item,
         enabled: state.printer.stepper_enable?.steppers[item],
         ...e,
-        config: { ...c }
+        config
       })
     }
 
@@ -515,45 +522,46 @@ export const getters = {
    * Return available heaters
    */
   getHeaters: (state): Heater[] => {
-    const heaters = state.printer.heaters?.available_heaters ?? []
-    if (
-      heaters.length
-    ) {
-      const r: Heater[] = []
-      heaters.forEach((e: string) => {
-        const heater = state.printer[e]
-        if (heater && Object.keys(heater).length > 0) {
-          const config = state.printer.configfile.settings[e.toLowerCase()]
-          // Some heater items may have a prefix determining type.
-          // Check for these and split as necessary.
-          const keys = [
-            'heater_generic'
-          ]
+    const heaters: Heater[] = []
 
-          const [type, nameFromSplit] = e.split(' ', 2)
-          const name = nameFromSplit && keys.includes(type)
-            ? nameFromSplit
-            : e
+    const heaterKeys = state.printer.heaters?.available_heaters ?? []
 
-          const color = Vue.$colorset.next(getKlipperType(e), e)
-          const prettyName = Vue.$filters.prettyCase(name)
+    for (const key of heaterKeys) {
+      const heater = state.printer[key]
 
-          r.push({
-            ...heater,
-            name,
-            color,
-            prettyName,
-            key: e,
-            minTemp: config?.min_temp ?? 0,
-            maxTemp: config?.max_temp ?? 500,
-            config: { ...config }
-          })
-        }
-      })
+      if (heater && Object.keys(heater).length > 0) {
+        const config = state.printer.configfile.settings[key.toLowerCase()]
 
-      return r.sort((a, b) => a.name.localeCompare(b.name))
+        // Some heater items may have a prefix determining type.
+        // Check for these and split as necessary.
+        const prefixedTypes = [
+          'heater_generic'
+        ]
+
+        const [type, nameFromSplit] = key.split(' ', 2)
+        const name = nameFromSplit && prefixedTypes.includes(type)
+          ? nameFromSplit
+          : key
+
+        const color = Vue.$colorset.next(getKlipperType(key), key)
+        const prettyName = Vue.$filters.prettyCase(name)
+
+        heaters.push({
+          ...heater,
+          name,
+          type,
+          color,
+          prettyName,
+          key,
+          minTemp: config?.min_temp ?? 0,
+          maxTemp: config?.max_temp ?? 500,
+          config
+        })
+      }
     }
-    return []
+
+    return heaters
+      .sort((a, b) => a.name.localeCompare(b.name))
   },
 
   getAllLeds: (_, getters) => {
@@ -871,7 +879,7 @@ export const getters = {
           break
         }
 
-        const name = config[`screw${index}_name`]
+        const name = config[`screw${index}_name`] ?? ''
         const prettyName = name
           ? Vue.$filters.prettyCase(name)
           : i18n.t('app.general.label.screw_number', { index: index + 1 }).toString()
@@ -907,8 +915,8 @@ export const getters = {
           break
         }
 
-        const coords = config[key]
-        const name = config[`${key}_name`]
+        const coords = config[key] ?? [0, 0]
+        const name = config[`${key}_name`] ?? ''
         const prettyName = name
           ? Vue.$filters.prettyCase(name)
           : i18n.t('app.general.label.screw_number', { index: index + 1 }).toString()
