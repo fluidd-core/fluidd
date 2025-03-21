@@ -72,8 +72,6 @@
           hide-details="auto"
           :items="parkPositions"
           :disabled="parkposBlocked"
-          item-value="value"
-          item-text="text"
         />
       </app-setting>
 

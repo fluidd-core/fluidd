@@ -1,10 +1,10 @@
 <template>
   <v-btn-toggle
     v-model="inputValue"
-    v-bind="$attrs"
     :class="{
       'elevation-2': !disabled
     }"
+    v-bind="$attrs"
     v-on="$listeners"
   >
     <slot />

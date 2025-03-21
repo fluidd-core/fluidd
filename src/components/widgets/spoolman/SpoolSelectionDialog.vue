@@ -123,13 +123,23 @@
           >
             <template #[`item.filament_name`]>
               <div class="d-flex my-1">
-                <v-icon
-                  :color="getSpoolColor(item)"
-                  size="42px"
-                  class="mr-4 flex-column spool-icon"
+                <v-progress-circular
+                  :rotate="-90"
+                  :size="44"
+                  :width="3"
+                  :value="item.remaining_weight / item.initial_weight * 100"
+                  color="primary"
+                  class="mr-4 flex-column"
                 >
-                  {{ item.id === selectedSpoolId ? '$markedCircle' : '$filament' }}
-                </v-icon>
+                  <v-icon
+                    :color="getSpoolColor(item)"
+                    size="42"
+                    class="spool-icon"
+                  >
+                    {{ item.id === selectedSpoolId ? '$markedCircle' : '$filament' }}
+                  </v-icon>
+                </v-progress-circular>
+
                 <div class="flex-column">
                   <div class="flex-row">
                     {{ item.filament_name }}

@@ -84,7 +84,7 @@ export const defaultState = (): ConfigState => {
         autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.sh', '.txt'],
         restoreViewState: 'session',
         codeLens: true,
-        klipperSaveAndRestartAction: 'firmware-restart'
+        klipperSaveAndRestartAction: 'auto'
       },
       dashboard: {
         tempPresets: []
@@ -138,6 +138,10 @@ export const defaultState = (): ConfigState => {
         },
         remainingFilamentUnit: 'weight',
         selectedCardFields: ['vendor', 'filament_name', 'remaining_weight', 'location', 'material', 'lot_nr', 'first_used', 'comment']
+      },
+      history: {
+        timeInDays: false,
+        lengthInKilometers: false
       },
       mmu: {
         showClogDetection: true,

@@ -155,6 +155,10 @@ export interface KlipperPrinterState extends KlipperPrinterStateBaseType {
 
   z_tilt?: KlipperPrinterZTiltState;
 
+  load_cell?: KlipperPrinterLoadCellState;
+
+  [key: `load_cell ${string}`]: KlipperPrinterLoadCellState;
+
   // These keys are for kalico modules
 
   [key: `belay ${string}`]: KalicoPrinterBelayState;
@@ -529,6 +533,16 @@ export interface KlipperPrinterZTiltState {
   applied: boolean;
 }
 
+export interface KlipperPrinterLoadCellState {
+  is_calibrated: boolean;
+  counts_per_gram: null | number;
+  reference_tare_counts: null | number;
+  tare_counts: null | number;
+  force_g?: number;
+  min_force_g?: number;
+  max_force_g?: number;
+}
+
 export interface KalicoPrinterBelayState {
   last_state: boolean;
   enabled: boolean;
@@ -728,6 +742,8 @@ export interface KlipperPrinterSettings extends KlipperPrinterSettingsBaseType {
 
   [key: `controller_fan ${Lowercase<string>}`]: KlipperPrinterControllerFanSettings;
 
+  [key: `gcode_button ${string}`]: KlipperPrinterGcodeButtonSettings;
+
   [key: `output_pin ${Lowercase<string>}`]: KlipperPrinterOutputPinSettings;
 
   [key: `${'led' | 'neopixel' | 'dotstar' | 'pca9533' | 'pca9632'} ${Lowercase<string>}`]: KlipperPrinterLedSettings;
@@ -791,6 +807,10 @@ export interface KlipperPrinterSettings extends KlipperPrinterSettingsBaseType {
   [key: `endstop_phase ${Lowercase<string>}`]: KlipperPrinterEndstopPhaseSettings;
 
   [key: `display_template ${Lowercase<string>}`]: KlipperPrinterDisplayTemplateSettings;
+
+  load_cell?: KlipperPrinterLoadCellSettings;
+
+  [key: `load_cell ${Lowercase<string>}`]: KlipperPrinterLoadCellSettings;
 
   // These keys are for kalico modules
 
@@ -866,6 +886,15 @@ export interface KlipperPrinterControllerFanSettings {
   idle_speed: number;
   idle_timeout: number;
   stepper?: string;
+}
+
+export interface KlipperPrinterGcodeButtonSettings {
+  pin: string;
+  press_gcode: string;
+  release_gcode: string;
+  analog_range?: [number, number];
+  analog_pullup_resistor?: number;
+  debounce_delay?: number;
 }
 
 export interface KlipperPrinterOutputPinSettings {
@@ -1246,6 +1275,27 @@ export interface KlipperPrinterEndstopPhaseSettings {
 
 export interface KlipperPrinterDisplayTemplateSettings {
   text: string;
+}
+
+export interface KlipperPrinterLoadCellSettings {
+  sensor_type: string;
+  counts_per_gram?: number;
+  reference_tare_counts?: number;
+  sensor_orientation: 'normal' | 'inverted';
+  dout_pin?: string;
+  sclk_pin?: string;
+  cs_pin?: string;
+  spi_speed?: number;
+  spi_bus?: string;
+  spi_software_sclk_pin?: string;
+  spi_software_mosi_pin?: string;
+  spi_software_miso_pin?: string;
+  data_ready_pin?: string;
+  sample_rate?: number;
+  gain?: string;
+  pga_bypass?: boolean;
+  input_mux?: string;
+  vref?: string;
 }
 
 export interface KalicoPrinterDangerOptionsSettings {

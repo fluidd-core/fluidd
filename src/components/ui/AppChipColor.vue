@@ -1,10 +1,10 @@
 <template>
   <v-chip
-    v-bind="$attrs"
     :style="{
       background: color
     }"
     small
+    v-bind="$attrs"
     v-on="$listeners"
   >
     <slot />

@@ -22,7 +22,13 @@ export interface UiSettings {
   fileSystem: FileSystemConfig;
   toolhead: ToolheadConfig;
   spoolman: SpoolmanConfig;
+  history: HistoryConfig;
   mmu: MmuConfig;
+}
+
+export interface HistoryConfig {
+  timeInDays: boolean;
+  lengthInKilometers: boolean;
 }
 
 export interface ToolheadConfig {
@@ -157,7 +163,7 @@ export interface ThemeLogo {
 
 export type RestoreViewState = 'never' | 'session' | 'local'
 
-export type KlipperSaveAndRestartAction = 'firmware-restart' | 'host-restart' | 'service-restart'
+export type KlipperSaveAndRestartAction = 'auto' | 'firmware-restart' | 'host-restart' | 'service-restart'
 
 export interface EditorConfig {
   confirmDirtyEditorClose: boolean;

@@ -3,9 +3,9 @@
     v-model="open"
     :scrollable="scrollable"
     :persistent="persistent"
-    v-bind="$attrs"
     :fullscreen="isMobileViewport"
     :transition="isMobileViewport ? 'dialog-bottom-transition' : undefined"
+    v-bind="$attrs"
     v-on="$listeners"
   >
     <v-form
