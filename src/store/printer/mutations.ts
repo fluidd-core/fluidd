@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { PrinterState } from './types'
+import type { KlipperPrinterState, PrinterState } from './types'
 import { defaultState } from './state'
-import { get } from 'lodash-es'
 
 export const mutations = {
   /**
@@ -62,28 +61,22 @@ export const mutations = {
     }
   },
 
-  setSocketNotify (state, payload) {
-    if (typeof payload.payload === 'object') {
-      const o = get(state.printer, payload.key)
-      if (o === undefined) {
-        // Object is not set yet, so create it.
-        Vue.set(state.printer, payload.key, payload.payload)
-      } else {
-        Object.keys(payload.payload).forEach((p) => {
-          // Leaving the if here, although it should
-          // always evaluate true since we never
-          // get an update unless something has changed.
-          if (
-            o[p] !== payload.payload[p]
-          ) {
-            Vue.set(state.printer[payload.key], p, payload.payload[p])
-          }
-        })
-      }
+  setSocketNotify<T extends keyof KlipperPrinterState> (state: PrinterState, payload: { key: T, payload: KlipperPrinterState[T] }) {
+    const { key: payloadKey, payload: payloadValue } = payload
+
+    const stateObject = state.printer[payloadKey]
+
+    if (stateObject == null) {
+      // Object is not set yet, so create it.
+      Vue.set(state.printer, payloadKey, payloadValue)
     } else {
-      // I don't think this'd get called.
-      if (get(state.printer, payload.key) !== payload.payload) {
-        Vue.set(state.printer, payload.key, payload.payload)
+      for (const key in payloadValue) {
+        // Leaving the if here, although it should
+        // always evaluate true since we never
+        // get an update unless something has changed.
+        if (stateObject[key] !== payloadValue[key]) {
+          Vue.set(stateObject, key, payloadValue[key])
+        }
       }
     }
   }

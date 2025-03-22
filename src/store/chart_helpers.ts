@@ -3,7 +3,7 @@ import type { RootState } from './types'
 import type { ChartData } from './charts/types'
 import type { KlipperPrinterMcuState, KlipperPrinterState, KlipperPrinterSystemStatsState } from './printer/types'
 
-export const handleMcuStatsChange = (payload: KlipperPrinterState, state: RootState, commit: Commit) => {
+export const handleMcuStatsChange = (payload: Partial<KlipperPrinterState>, state: RootState, commit: Commit) => {
   for (const key in payload) {
     if (key.startsWith('mcu')) {
       // Combine existing with the update.
@@ -60,7 +60,7 @@ export const handleMcuStatsChange = (payload: KlipperPrinterState, state: RootSt
   }
 }
 
-export const handleSystemStatsChange = (payload: KlipperPrinterState, state: RootState, commit: Commit) => {
+export const handleSystemStatsChange = (payload: Partial<KlipperPrinterState>, state: RootState, commit: Commit) => {
   if (payload.system_stats != null) {
     // Combine existing with the update.
     const stats: KlipperPrinterSystemStatsState = {
