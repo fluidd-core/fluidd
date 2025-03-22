@@ -65,6 +65,12 @@
         />
       </v-tab-item>
     </v-tabs-items>
+
+    <mmu-edit-ttg-map-dialog
+      :show-dialog="showMmuEditTtgMapDialog"
+      :file="fileForMmuDialog"
+      @close="showMmuEditTtgMapDialog = false"
+    />
   </collapsable-card>
 </template>
 
@@ -75,17 +81,25 @@ import StateMixin from '@/mixins/state'
 import StatusControls from './StatusControls.vue'
 import StatusTab from './StatusTab.vue'
 import ReprintTab from './ReprintTab.vue'
+import MmuEditTtgMapDialog from '@/components/widgets/mmu/MmuEditTtgMapDialog.vue'
+import getFilePaths from '@/util/get-file-paths'
 import type { TimeEstimates } from '@/store/printer/types'
+import type { AppFileWithMeta } from '@/store/files/types'
 
 @Component({
   components: {
     StatusControls,
     StatusTab,
-    ReprintTab
+    ReprintTab,
+    MmuEditTtgMapDialog
   }
 })
 export default class PrinterStatusCard extends Mixins(StateMixin) {
   tab = 0
+
+  // Not perfect integration but allow tool-gate mapping for MMU prints
+  showMmuEditTtgMapDialog = false
+  fileForMmuDialog: AppFileWithMeta | null = null
 
   // If the user has no history plugin, and there's no print running..
   // then hide the collapse control.
@@ -127,6 +141,20 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
   }
 
   handlePrint (filename: string) {
+    if (this.$typedState.printer.printer.mmu?.enabled === true) {
+      const { filename: fileName, rootPath } = getFilePaths(filename, 'gcodes')
+      const fileWithMeta = this.$typedGetters['files/getFile'](rootPath, fileName)
+
+      if (fileWithMeta != null && 'referenced_tools' in fileWithMeta) {
+        const mmuPrint = (fileWithMeta.referenced_tools?.length ?? 1) > 1 || this.$typedState.printer.printer.mmu.gate !== -2
+        if (mmuPrint) {
+          this.fileForMmuDialog = fileWithMeta
+          this.showMmuEditTtgMapDialog = true
+          return
+        }
+      }
+    }
+
     const spoolmanSupported: boolean = this.$typedGetters['spoolman/getAvailable']
     const autoSpoolSelectionDialog: boolean = this.$typedState.config.uiSettings.spoolman.autoSpoolSelectionDialog
 
@@ -135,7 +163,6 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
         show: true,
         filename
       })
-
       return
     }
 

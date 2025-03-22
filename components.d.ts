@@ -86,6 +86,7 @@ declare module 'vue' {
     VCheckbox: typeof import('vuetify/lib')['VCheckbox']
     VChip: typeof import('vuetify/lib')['VChip']
     VCol: typeof import('vuetify/lib')['VCol']
+    VColorPicker: typeof import('vuetify/lib')['VColorPicker']
     VCombobox: typeof import('vuetify/lib')['VCombobox']
     VContainer: typeof import('vuetify/lib')['VContainer']
     VDataTable: typeof import('vuetify/lib')['VDataTable']
