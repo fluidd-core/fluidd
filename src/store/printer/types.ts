@@ -723,110 +723,111 @@ export interface KlipperPrinterMmuMachineState extends KlipperPrinterMmuMachineS
 export interface KlipperPrinterConfig extends Record<string, Record<string, string | undefined> | undefined> {
 }
 
-type KlipperPrinterSettingsBaseType = {
-  [key in ExtruderKey]?: KlipperPrinterExtruderSettings
-}
+type KlipperPrinterSettingsBaseType =
+  Partial<{
+    [key in ExtruderKey]: KlipperPrinterExtruderSettings;
+  } & {
+    mcu: KlipperPrinterMcuSettings;
+
+    [key: `mcu ${Lowercase<string>}`]: KlipperPrinterMcuSettings;
+
+    [key: Lowercase<TmcKey>]: KlipperPrinterTmcSettings;
+
+    fan: KlipperPrinterFanSettings;
+
+    [key: `heater_fan ${Lowercase<string>}`]: KlipperPrinterHeaterFanSettings;
+
+    [key: `controller_fan ${Lowercase<string>}`]: KlipperPrinterControllerFanSettings;
+
+    [key: `gcode_button ${string}`]: KlipperPrinterGcodeButtonSettings;
+
+    [key: `output_pin ${Lowercase<string>}`]: KlipperPrinterOutputPinSettings;
+
+    [key: `${'led' | 'neopixel' | 'dotstar' | 'pca9533' | 'pca9632'} ${Lowercase<string>}`]: KlipperPrinterLedSettings;
+
+    [key: `temperature_sensor ${Lowercase<string>}`]: KlipperPrinterTemperatureSensorSettings;
+
+    safe_z_home: KlipperPrinterSafeZHomeSettings;
+
+    z_tilt: KlipperPrinterZTiltSettings;
+
+    bed_mesh: KlipperPrinterBedMeshSettings;
+
+    board_pins: KlipperPrinterBoardPinsSettings;
+
+    [key: `bed_mesh ${Lowercase<string>}`]: KlipperPrinterBedMeshModelSettings;
+
+    bed_screws: KlipperPrinterBedScrewsSettings;
+
+    screws_tilt_adjust: KlipperPrinterScrewsTiltAdjustSettings;
+
+    firmware_retraction: KlipperPrinterFirmwareRetractionSettings;
+
+    force_move: KlipperPrinterForceMoveSettings;
+
+    gcode_arcs: KlipperPrinterGcodeArcsSettings;
+
+    respond: KlipperPrinterRespondSettings;
+
+    virtual_sdcard: KlipperPrinterVirtualSdcardSettings;
+
+    pause_resume: KlipperPrinterPauseResumeSettings;
+
+    delta_calibrate: KlipperPrinterDeltaCalibrateSettings;
+
+    [key: `gcode_macro ${Lowercase<string>}`]: KlipperPrinterGcodeMacroSettings;
+
+    heater_bed: KlipperPrinterHeaterBedSettings;
+
+    [key: `verify_heater ${Lowercase<string>}`]: KlipperPrinterVerifyHeaterSettings;
+
+    probe: KlipperPrinterProbeSettings;
+
+    bltouch: KlipperPrinterBltouchSettings;
+
+    smart_effector: KlipperPrinterSmartEffectorSettings;
+
+    [key: `probe_eddy_current ${Lowercase<string>}`]: KlipperPrinterProbeEddyCurrentSettings;
+
+    input_shaper: KlipperPrinterInputShaperSettings;
+
+    printer: KlipperPrinterPrinterSettings;
+
+    [key: `stepper_${Lowercase<string>}`]: KlipperPrinterStepperSettings;
+
+    [key: `extruder_stepper ${Lowercase<string>}`]: KlipperPrinterExtruderStepperSettings;
+
+    idle_timeout: KlipperPrinterIdleTimeoutSettings;
+
+    exclude_object: KlipperPrinterExcludeObjectSettings;
+
+    [key: `endstop_phase ${Lowercase<string>}`]: KlipperPrinterEndstopPhaseSettings;
+
+    [key: `display_template ${Lowercase<string>}`]: KlipperPrinterDisplayTemplateSettings;
+
+    load_cell: KlipperPrinterLoadCellSettings;
+
+    [key: `load_cell ${Lowercase<string>}`]: KlipperPrinterLoadCellSettings;
+
+    // These keys are for kalico modules
+
+    danger_options: KalicoPrinterDangerOptionsSettings;
+
+    constants: KalicoPrinterConstantsSettings;
+
+    z_calibration: KalicoPrinterZCalibrationSettings;
+
+    z_tilt_ng: KalicoPrinterZTiltNgSettings;
+
+    // These keys are for external modules
+
+    beacon: KlipperPrinterBeaconSettings;
+
+    [key: `beacon model ${Lowercase<string>}`]: KlipperPrinterBeaconModelSettings;
+  }>
 
 export interface KlipperPrinterSettings extends KlipperPrinterSettingsBaseType {
   [key: string]: Record<string, any> | undefined;
-
-  mcu?: KlipperPrinterMcuSettings;
-
-  [key: `mcu ${Lowercase<string>}`]: KlipperPrinterMcuSettings | undefined;
-
-  [key: Lowercase<TmcKey>]: KlipperPrinterTmcSettings;
-
-  fan?: KlipperPrinterFanSettings;
-
-  [key: `heater_fan ${Lowercase<string>}`]: KlipperPrinterHeaterFanSettings | undefined;
-
-  [key: `controller_fan ${Lowercase<string>}`]: KlipperPrinterControllerFanSettings | undefined;
-
-  [key: `gcode_button ${string}`]: KlipperPrinterGcodeButtonSettings | undefined;
-
-  [key: `output_pin ${Lowercase<string>}`]: KlipperPrinterOutputPinSettings | undefined;
-
-  [key: `${'led' | 'neopixel' | 'dotstar' | 'pca9533' | 'pca9632'} ${Lowercase<string>}`]: KlipperPrinterLedSettings | undefined;
-
-  [key: `temperature_sensor ${Lowercase<string>}`]: KlipperPrinterTemperatureSensorSettings | undefined;
-
-  safe_z_home?: KlipperPrinterSafeZHomeSettings;
-
-  z_tilt?: KlipperPrinterZTiltSettings;
-
-  bed_mesh?: KlipperPrinterBedMeshSettings;
-
-  board_pins?: KlipperPrinterBoardPinsSettings;
-
-  [key: `bed_mesh ${Lowercase<string>}`]: KlipperPrinterBedMeshModelSettings | undefined;
-
-  bed_screws?: KlipperPrinterBedScrewsSettings;
-
-  screws_tilt_adjust?: KlipperPrinterScrewsTiltAdjustSettings;
-
-  firmware_retraction?: KlipperPrinterFirmwareRetractionSettings;
-
-  force_move?: KlipperPrinterForceMoveSettings;
-
-  gcode_arcs?: KlipperPrinterGcodeArcsSettings;
-
-  respond?: KlipperPrinterRespondSettings;
-
-  virtual_sdcard?: KlipperPrinterVirtualSdcardSettings;
-
-  pause_resume?: KlipperPrinterPauseResumeSettings;
-
-  delta_calibrate?: KlipperPrinterDeltaCalibrateSettings;
-
-  [key: `gcode_macro ${Lowercase<string>}`]: KlipperPrinterGcodeMacroSettings | undefined;
-
-  heater_bed?: KlipperPrinterHeaterBedSettings;
-
-  [key: `verify_heater ${Lowercase<string>}`]: KlipperPrinterVerifyHeaterSettings | undefined;
-
-  probe?: KlipperPrinterProbeSettings;
-
-  bltouch?: KlipperPrinterBltouchSettings;
-
-  smart_effector?: KlipperPrinterSmartEffectorSettings;
-
-  [key: `probe_eddy_current ${Lowercase<string>}`]: KlipperPrinterProbeEddyCurrentSettings | undefined;
-
-  input_shaper?: KlipperPrinterInputShaperSettings;
-
-  printer?: KlipperPrinterPrinterSettings;
-
-  [key: `stepper_${Lowercase<string>}`]: KlipperPrinterStepperSettings | undefined;
-
-  [key: `extruder_stepper ${Lowercase<string>}`]: KlipperPrinterExtruderStepperSettings | undefined;
-
-  idle_timeout?: KlipperPrinterIdleTimeoutSettings;
-
-  exclude_object?: KlipperPrinterExcludeObjectSettings;
-
-  [key: `endstop_phase ${Lowercase<string>}`]: KlipperPrinterEndstopPhaseSettings | undefined;
-
-  [key: `display_template ${Lowercase<string>}`]: KlipperPrinterDisplayTemplateSettings | undefined;
-
-  load_cell?: KlipperPrinterLoadCellSettings;
-
-  [key: `load_cell ${Lowercase<string>}`]: KlipperPrinterLoadCellSettings | undefined;
-
-  // These keys are for kalico modules
-
-  danger_options?: KalicoPrinterDangerOptionsSettings;
-
-  constants?: KalicoPrinterConstantsSettings;
-
-  z_calibration?: KalicoPrinterZCalibrationSettings;
-
-  z_tilt_ng?: KalicoPrinterZTiltNgSettings;
-
-  // These keys are for external modules
-
-  beacon?: KlipperPrinterBeaconSettings;
-
-  [key: `beacon model ${Lowercase<string>}`]: KlipperPrinterBeaconModelSettings | undefined;
 }
 
 export interface KlipperPrinterMcuSettings {

@@ -8,7 +8,7 @@ import getFilePaths from '@/util/get-file-paths'
 
 const isTmc = (item: string): item is TmcKey => /^tmc\d{4} /.test(item)
 
-export const handleTrinamicDriversChange = (payload: KlipperPrinterState, state: RootState, dispatch: Dispatch, getters: any) => {
+export const handleTrinamicDriversChange = (payload: Partial<KlipperPrinterState>, state: RootState, dispatch: Dispatch, getters: any) => {
   for (const item in payload) {
     if (
       isTmc(item) &&
@@ -37,7 +37,7 @@ export const handleTrinamicDriversChange = (payload: KlipperPrinterState, state:
   }
 }
 
-export const handlePrintStateChange = (payload: KlipperPrinterState, state: RootState, dispatch: Dispatch) => {
+export const handlePrintStateChange = (payload: Partial<KlipperPrinterState>, state: RootState, dispatch: Dispatch) => {
   // For every notify - if print_stats.state changes from standby -> printing,
   // then record an entry in our print history.
   // If the state changes from printing -> complete, then record the finish time.
@@ -66,7 +66,7 @@ export const handlePrintStateChange = (payload: KlipperPrinterState, state: Root
   }
 }
 
-export const handleCurrentFileChange = (payload: KlipperPrinterState, state: RootState) => {
+export const handleCurrentFileChange = (payload: Partial<KlipperPrinterState>, state: RootState) => {
   if (
     payload.print_stats?.filename &&
     payload.print_stats.filename !== state.printer.printer.print_stats?.filename

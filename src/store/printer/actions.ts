@@ -200,7 +200,7 @@ export const actions = {
    */
 
   /** Automated notify events via socket */
-  async onNotifyStatusUpdate ({ rootState, commit, getters, dispatch }, payload: KlipperPrinterState) {
+  async onNotifyStatusUpdate ({ rootState, commit, getters, dispatch }, payload: Partial<KlipperPrinterState>) {
     // TODO: We potentially get many updates here.
     // Consider caching the updates and sending them every <interval>.
     // We don't want to miss an update - but also don't need all of them
