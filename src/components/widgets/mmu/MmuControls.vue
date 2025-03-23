@@ -13,7 +13,7 @@
               block
               small
               :class="btnClass"
-              :disabled="!canSend || [GATE_AVAILABLE, GATE_AVAILABLE_FROM_BUFFER].includes(currentGateStatus)"
+              :disabled="!klippyReady || !canSend || [GATE_AVAILABLE, GATE_AVAILABLE_FROM_BUFFER].includes(currentGateStatus)"
               :loading="hasWait($waits.onMmuPreload)"
               v-on="on"
               @click="sendGcode('MMU_PRELOAD', $waits.onMmuPreload)"
@@ -38,7 +38,7 @@
               block
               small
               :class="btnClass"
-              :disabled="!canSend || [GATE_EMPTY].includes(currentGateStatus)"
+              :disabled="!klippyReady || !canSend || [GATE_EMPTY].includes(currentGateStatus)"
               :loading="hasWait($waits.onMmuEject)"
               v-on="on"
               @click="sendGcode('MMU_EJECT', $waits.onMmuEject)"
@@ -65,7 +65,7 @@
               block
               small
               :class="btnClass"
-              :disabled="!canSend"
+              :disabled="!klippyReady || !canSend"
               :loading="hasWait($waits.onMmuCheckGate)"
               v-on="on"
               @click="sendGcode('MMU_CHECK_GATE', $waits.onMmuCheckGate)"
@@ -90,7 +90,7 @@
               block
               small
               :class="btnClass"
-              :disabled="!canSend"
+              :disabled="!klippyReady || !canSend"
               :loading="hasWait($waits.onMmuRecover)"
               v-on="on"
               @click="sendGcode('MMU_RECOVER', $waits.onMmuRecover)"
@@ -118,7 +118,7 @@
               block
               small
               :class="btnClass"
-              :disabled="!canSend || !isMmuPausedAndLocked"
+              :disabled="!klippyReady || !canSend || !isMmuPausedAndLocked"
               :loading="hasWait($waits.onMmuUnload)"
               v-on="on"
               @click="sendGcode('MMU_UNLOCK', $waits.onMmuUnload)"
@@ -147,7 +147,7 @@
               block
               class="wrap-text-btn"
               :class="btnClass"
-              :disabled="!canSend || filamentPos === FILAMENT_POS_UNLOADED"
+              :disabled="!klippyReady || !canSend || filamentPos === FILAMENT_POS_UNLOADED"
               :loading="hasWait($waits.onMmuUnload)"
               v-on="on"
               @click="sendGcode('MMU_UNLOAD', $waits.onMmuUnload)"
@@ -173,7 +173,7 @@
               block
               class="wrap-text-btn"
               :class="btnClass"
-              :disabled="!canSend || filamentPos !== FILAMENT_POS_UNLOADED"
+              :disabled="!klippyReady || !canSend || filamentPos !== FILAMENT_POS_UNLOADED"
               :loading="hasWait($waits.onMmuLoad)"
               v-on="on"
               @click="sendGcode('MMU_LOAD', $waits.onMmuLoad)"
