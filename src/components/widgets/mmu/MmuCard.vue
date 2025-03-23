@@ -211,7 +211,7 @@
                 :groups="endlessSpoolGroups"
                 :selected-tool="tool"
                 :selected-gate="gate"
-                @click="showEditTtgMapDialog = true"
+                @click="handleOpenEditTtgMapDialog"
               />
               <div class="text--disabled">
                 {{ $t('app.mmu.label.tool_mapping') }}
@@ -250,11 +250,6 @@
       @close="showRecoverStateDialog = false"
     />
 
-    <mmu-edit-ttg-map-dialog
-      :show-dialog="showEditTtgMapDialog"
-      @close="showEditTtgMapDialog = false"
-    />
-
     <mmu-maintenance-dialog
       :show-dialog="showMaintenanceDialog"
       @close="showMaintenanceDialog = false"
@@ -279,7 +274,6 @@ import MmuGateSummary from '@/components/widgets/mmu/MmuGateSummary.vue'
 import MmuClogMeter from '@/components/widgets/mmu/MmuClogMeter.vue'
 import MmuSettings from '@/components/widgets/mmu/MmuSettings.vue'
 import MmuRecoverStateDialog from '@/components/widgets/mmu/MmuRecoverStateDialog.vue'
-import MmuEditTtgMapDialog from '@/components/widgets/mmu/MmuEditTtgMapDialog.vue'
 import MmuEditGateMapDialog from '@/components/widgets/mmu/MmuEditGateMapDialog.vue'
 import MmuMaintenanceDialog from '@/components/widgets/mmu/MmuMaintenanceDialog.vue'
 
@@ -293,14 +287,12 @@ import MmuMaintenanceDialog from '@/components/widgets/mmu/MmuMaintenanceDialog.
     MmuClogMeter,
     MmuSettings,
     MmuRecoverStateDialog,
-    MmuEditTtgMapDialog,
     MmuEditGateMapDialog,
     MmuMaintenanceDialog,
   },
 })
 export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
   showRecoverStateDialog = false
-  showEditTtgMapDialog = false
   showEditGateMapDialog = false
   showMaintenanceDialog = false
 
@@ -356,6 +348,12 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
 
   handleSyncSpoolman () {
     this.sendGcode('MMU_SPOOLMAN REFRESH=1 QUIET=1', this.$waits.onMmuSpoolman)
+  }
+
+  handleOpenEditTtgMapDialog () {
+    this.$typedCommit('mmu/setDialogState', {
+      show: true,
+    })
   }
 }
 </script>

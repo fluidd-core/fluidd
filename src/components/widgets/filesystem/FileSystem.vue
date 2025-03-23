@@ -130,12 +130,6 @@
       :root="currentRoot"
       @path-change="loadFiles"
     />
-
-    <mmu-edit-ttg-map-dialog
-      :show-dialog="showMmuEditTtgMapDialog"
-      :file="fileForMmuDialog"
-      @close="showMmuEditTtgMapDialog = false"
-    />
   </v-card>
 </template>
 
@@ -154,8 +148,6 @@ import FileEditorDialog from './FileEditorDialog.vue'
 import FileNameDialog from './FileNameDialog.vue'
 import FileSystemGoToFileDialog from './FileSystemGoToFileDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
-import MmuEditTtgMapDialog from '@/components/widgets/mmu/MmuEditTtgMapDialog.vue'
-import getFilePaths from '@/util/get-file-paths'
 import type { AppDataTableHeader, FileWithPath } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer, setFileDataTransferDataInDataTransfer } from '@/util/file-data-transfer'
@@ -178,8 +170,7 @@ import type { KlipperSaveAndRestartAction } from '@/store/config/types'
     FileEditorDialog,
     FileNameDialog,
     FileSystemGoToFileDialog,
-    FilePreviewDialog,
-    MmuEditTtgMapDialog
+    FilePreviewDialog
   }
 })
 export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
@@ -197,10 +188,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   // Allow bulk-actions
   @Prop({ type: Boolean })
   readonly bulkActions?: boolean
-
-  // Not perfect integration but allow tool-gate mapping for MMU prints
-  showMmuEditTtgMapDialog = false
-  fileForMmuDialog: AppFileWithMeta | null = null
 
   // Maintains the path and root.
   currentRoot = ''
@@ -902,20 +889,20 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * Core file handling.
    * ===========================================================================
   */
-  handlePrint (file: AppFile) {
+  handlePrint (file: AppFile | AppFileWithMeta) {
     if (this.disabled) return
 
     const filename = file.path ? `${file.path}/${file.filename}` : file.filename
 
     if (this.$typedState.printer.printer.mmu?.enabled === true) {
-      const { filename, rootPath } = getFilePaths(file.filename, 'gcodes')
-      const fileWithMeta = this.$typedGetters['files/getFile'](rootPath, filename)
-
-      if (fileWithMeta != null && 'referenced_tools' in fileWithMeta) {
-        const mmuPrint = (fileWithMeta.referenced_tools?.length ?? 1) > 1 || this.$typedState.printer.printer.mmu?.gate !== -2
+      if ('referenced_tools' in file) {
+        const mmuPrint = (file.referenced_tools?.length ?? 1) > 1 || this.$typedState.printer.printer.mmu?.gate !== -2
         if (mmuPrint) {
-          this.fileForMmuDialog = fileWithMeta
-          this.showMmuEditTtgMapDialog = true
+          this.$typedCommit('mmu/setDialogState', {
+            show: true,
+            filename
+          })
+
           return
         }
       }
@@ -928,6 +915,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         show: true,
         filename
       })
+
       return
     }
 

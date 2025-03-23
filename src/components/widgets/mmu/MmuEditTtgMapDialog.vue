@@ -303,7 +303,7 @@
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import { Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Mixins, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
@@ -319,12 +319,6 @@ import MmuGateDialogRow from '@/components/widgets/mmu/MmuGateDialogRow.vue'
   components: { MmuSpool, MmuTtgMap, MmuGateDialogRow },
 })
 export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
-  @Prop({ required: true })
-  readonly showDialog!: boolean
-
-  @Prop({ required: false, default: null })
-  readonly file!: AppFileWithMeta | null
-
   private localTtgMap: number[] = []
   private localEndlessSpoolGroups: number[] = []
   private localGateMap: MmuGateDetails[] = []
@@ -337,6 +331,28 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
   private selectedTool: number = -1
   private selectedGate: number = -1
 
+  get open (): boolean {
+    return this.$typedState.mmu.dialog.show
+  }
+
+  set open (val: boolean) {
+    this.$typedCommit('mmu/setDialogState', {
+      ...this.$typedState.spoolman.dialog,
+      show: val
+    })
+  }
+
+  get filename (): string | undefined {
+    return this.$typedState.mmu.dialog.filename
+  }
+
+  get file (): AppFileWithMeta | null {
+    return (
+      this.filename != null &&
+      this.$typedGetters['files/getFile']('gcodes', this.filename)
+    ) || null
+  }
+
   @Watch('ttgMap')
   onTtgMapChanged (): void {
     this.initialize()
@@ -347,13 +363,13 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
     this.initialize()
   }
 
-  @Watch('showDialog')
-  onShowDialogChanged (): void {
+  @Watch('open')
+  onOpenChanged (): void {
     this.initialize()
   }
 
   private initialize () {
-    if (this.showDialog) {
+    if (this.open) {
       this.localTtgMap = Array.from(this.ttgMap)
       this.localEndlessSpoolGroups = Array.from(this.endlessSpoolGroups)
       this.localGateMap = Array.from(this.gateMap)
