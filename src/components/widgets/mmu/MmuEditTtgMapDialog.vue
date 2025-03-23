@@ -257,7 +257,7 @@
                 >
                   <template #no-data>
                     <div class="text-center">
-                      {{ $t('app.mmu.msg.no_gate_gate') }}
+                      {{ $t('app.mmu.msg.no_gate') }}
                     </div>
                   </template>
 
@@ -295,6 +295,7 @@ import Vue from 'vue'
 import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuTtgMap from '@/components/widgets/mmu/MmuTtgMap.vue'
 import MmuGateDialogRow from '@/components/widgets/mmu/MmuGateDialogRow.vue'
+import getFilePaths from '@/util/get-file-paths'
 
 @Component({
   components: { MmuSpool, MmuTtgMap, MmuGateDialogRow },
@@ -327,11 +328,12 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
     return this.$typedState.mmu.dialog.filename
   }
 
-  get file (): AppFileWithMeta | null {
-    return (
-      this.filename != null &&
-      this.$typedGetters['files/getFile']('gcodes', this.filename)
-    ) || null
+  get file (): AppFileWithMeta | undefined {
+    if (this.filename != null) {
+      const { rootPath, filename } = getFilePaths(this.filename, 'gcodes')
+
+      return this.$typedGetters['files/getFile'](rootPath, filename)
+    }
   }
 
   @Watch('ttgMap')
