@@ -3,7 +3,7 @@
     v-model="open"
     scrollable
     :max-width="$vuetify.breakpoint.mdAndDown ? '90vw' : '75vw'"
-    :title="title"
+    :title="$tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro })"
     title-shadow
   >
     <template #menu>
@@ -221,7 +221,7 @@
       <app-btn
         text
         color="warning"
-        @click="close()"
+        @click="open = false"
       >
         {{ $t('app.general.btn.cancel') }}
       </app-btn>
@@ -229,7 +229,11 @@
         color="primary"
         @click="handleSelectSpool"
       >
-        {{ selectBtnText }}
+        {{
+          filename
+            ? $t('app.general.btn.print')
+            : $tc('app.spoolman.btn.select', targetMacro ? 2 : 1, { macro: targetMacro })
+        }}
       </app-btn>
     </template>
 
@@ -277,8 +281,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   @Watch('open')
   onOpen () {
     if (this.open) {
-      if (this.mmuSelection) {
-        this.selectedSpoolId = null
+      if (this.spoolSelectionOnly) {
+        this.selectedSpoolId = this.$typedState.spoolman.dialog.selectedSpoolId ?? null
       } else if (this.targetMacro) {
         const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
 
@@ -313,23 +317,6 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       ...this.$typedState.spoolman.dialog,
       show: val
     })
-  }
-
-  get title (): string {
-    const count = this.mmuSelection ? 1 : (this.targetMacro ? 2 : 1)
-    const params = this.mmuSelection ? {} : { macro: this.targetMacro }
-    return this.$tc('app.spoolman.title.spool_selection', count, params)
-  }
-
-  get selectBtnText (): string {
-    if (this.mmuSelection) {
-      return this.$tc('app.spoolman.btn.select', 1).toString()
-    }
-    if (this.filename) {
-      return this.$t('app.general.btn.print').toString()
-    }
-    const count = this.targetMacro ? 2 : 1
-    return this.$tc('app.spoolman.btn.select', count, { macro: this.targetMacro }).toString()
   }
 
   get availableSpools () {
@@ -455,8 +442,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$typedGetters['files/getFile'](rootPath, filename)
   }
 
-  get mmuSelection (): boolean {
-    return this.$typedState.spoolman.dialog.mmuSelection ?? false
+  get spoolSelectionOnly (): boolean {
+    return this.$typedState.spoolman.dialog.spoolSelectionOnly ?? false
   }
 
   get targetMacro (): string | undefined {
@@ -504,13 +491,12 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   async handleSelectSpool () {
-    if (this.mmuSelection) {
+    if (this.spoolSelectionOnly) {
       // save selection for parent dialog
       this.$typedCommit('spoolman/setDialogState', {
-        ...this.$typedState.spoolman.dialog,
+        show: false,
         selectedSpoolId: this.selectedSpoolId ?? undefined
       })
-      this.close()
       return
     }
 
@@ -550,7 +536,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
       }
 
-      this.close()
+      this.open = false
       return
     }
 
@@ -616,6 +602,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     }
 
     await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
+
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
 
@@ -624,14 +611,6 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       }
     }
 
-    this.close()
-  }
-
-  close () {
-    this.$typedCommit('spoolman/setDialogState', {
-      ...this.$typedState.spoolman.dialog,
-      mmuSelection: false
-    })
     this.open = false
   }
 

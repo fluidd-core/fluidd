@@ -101,7 +101,7 @@ export interface SpoolSelectionDialogState {
   show: boolean;
   filename?: string;
   targetMacro?: string;
-  mmuSelection?: boolean;
+  spoolSelectionOnly?: boolean;
   selectedSpoolId?: number;
 }
 

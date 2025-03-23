@@ -531,7 +531,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   handleSelectSpool () {
     this.$typedCommit('spoolman/setDialogState', {
       show: true,
-      mmuSelection: true
+      spoolSelectionOnly: true
     })
   }
 
