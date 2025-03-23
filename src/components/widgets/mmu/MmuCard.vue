@@ -38,7 +38,7 @@
         </template>
 
         <v-list dense>
-          <v-list-item @click="showEditTtgMapDialog = true">
+          <v-list-item @click="handleOpenEditTtgMapDialog">
             <v-list-item-icon>
               <v-icon left>
                 $mmuEditTtgMap
@@ -245,20 +245,9 @@
       </v-container>
     </div>
 
-    <mmu-recover-state-dialog
-      :show-dialog="showRecoverStateDialog"
-      @close="showRecoverStateDialog = false"
-    />
-
-    <mmu-maintenance-dialog
-      :show-dialog="showMaintenanceDialog"
-      @close="showMaintenanceDialog = false"
-    />
-
-    <mmu-edit-gate-map-dialog
-      :show-dialog="showEditGateMapDialog"
-      @close="showEditGateMapDialog = false"
-    />
+    <mmu-recover-state-dialog v-model="showRecoverStateDialog" />
+    <mmu-maintenance-dialog v-model="showMaintenanceDialog" />
+    <mmu-edit-gate-map-dialog v-model="showEditGateMapDialog" />
   </collapsable-card>
 </template>
 

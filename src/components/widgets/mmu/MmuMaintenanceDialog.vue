@@ -1,8 +1,7 @@
 <template>
   <app-dialog
-    v-model="showDialog"
+    v-model="open"
     width="600"
-    persistent
     title-shadow
     :fullscreen="isMobileViewport"
     :title="$t('app.mmu.title.mmu_maintenance')"
@@ -452,7 +451,7 @@
       <v-spacer />
       <app-btn
         color="primary"
-        @click="close"
+        @click="open = false"
       >
         {{ $t('app.mmu.label.ok') }}
       </app-btn>
@@ -462,7 +461,7 @@
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import { Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Mixins, VModel, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
@@ -470,8 +469,8 @@ import isKeyOf from '@/util/is-key-of'
 
 @Component({})
 export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
-  @Prop({ required: true })
-  readonly showDialog!: boolean
+  @VModel({ required: true })
+  open!: boolean
 
   private localLedEnable: boolean = true
   private localLedAnimation: boolean = true
@@ -480,8 +479,8 @@ export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, Sta
   private localStatusEffect: string = 'off'
   private localTMacroColor: string = 'slicer'
 
-  @Watch('showDialog')
-  onShowDialogChanged (newValue: boolean): void {
+  @Watch('open')
+  onOpenChanged (newValue: boolean): void {
     if (newValue) {
       this.localLedEnable = this.macroVarsLedEnable
       this.localLedAnimation = this.macroVarsLedAnimation
@@ -539,10 +538,6 @@ export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, Sta
   private updateTMacroColor () {
     const command: string = `MMU_TEST_CONFIG QUIET=1 t_macro_color=${this.localTMacroColor}`
     this.sendGcode(command, this.$waits.onMmuTestConfig)
-  }
-
-  close () {
-    this.$emit('close')
   }
 }
 </script>

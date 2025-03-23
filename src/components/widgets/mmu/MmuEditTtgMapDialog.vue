@@ -1,11 +1,13 @@
 <template>
   <app-dialog
-    v-model="showDialog"
+    v-model="open"
     width="800"
-    persistent
     title-shadow
     :fullscreen="isMobileViewport"
     :title="$t('app.mmu.title.edit_ttg_map')"
+    :save-button-text="file ? $t('app.general.btn.print') : $t('app.mmu.label.save')"
+    @save="commit"
+    @cancel="close"
   >
     <!-- UPPER SECTION -->
     <v-card-subtitle>
@@ -277,27 +279,6 @@
         </transition>
       </div>
     </v-card-text>
-
-    <template #actions>
-      <v-spacer />
-      <app-btn
-        text
-        color="warning"
-        @click="close"
-      >
-        {{ $t('app.mmu.label.cancel') }}
-      </app-btn>
-      <app-btn
-        color="primary"
-        @click="commit"
-      >
-        {{
-          file
-            ? $t('app.general.btn.print')
-            : $t('app.mmu.label.save')
-        }}
-      </app-btn>
-    </template>
   </app-dialog>
 </template>
 
@@ -595,7 +576,7 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
   close () {
     this.selectedTool = -1
     this.selectedGate = -1
-    this.$emit('close')
+    this.open = false
   }
 
   async commit () {

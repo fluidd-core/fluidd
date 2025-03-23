@@ -1,12 +1,13 @@
 <template>
   <div>
     <app-dialog
-      v-model="showDialog"
+      v-model="open"
       width="800"
-      persistent
       title-shadow
       :fullscreen="isMobileViewport"
       :title="$t('app.mmu.title.edit_gate_map')"
+      @save="commit"
+      @cancel="close"
     >
       <!-- UPPER SECTION -->
       <v-card-subtitle v-if="editGateMap.length > 0">
@@ -336,30 +337,13 @@
           </transition>
         </div>
       </v-card-text>
-
-      <template #actions>
-        <v-spacer />
-        <app-btn
-          text
-          color="warning"
-          @click="close"
-        >
-          {{ $t('app.mmu.label.cancel') }}
-        </app-btn>
-        <app-btn
-          color="primary"
-          @click="commit"
-        >
-          {{ $t('app.mmu.label.save') }}
-        </app-btn>
-      </template>
     </app-dialog>
   </div>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import { Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Mixins, VModel, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
@@ -371,13 +355,14 @@ import MmuMachine from '@/components/widgets/mmu/MmuMachine.vue'
   components: { MmuMachine }
 })
 export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
-  @Prop({ required: true }) declare readonly showDialog: boolean
+  @VModel({ required: true })
+  open!: boolean
 
   private editGateMap: MmuGateDetails[] = []
   private editGateSelected: number = -1
 
-  @Watch('showDialog')
-  onShowDialogChanged () {
+  @Watch('open')
+  onOpenChanged () {
     this.initialize()
   }
 
@@ -387,7 +372,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   }
 
   private initialize () {
-    if (this.showDialog) {
+    if (this.open) {
       this.editGateMap = Array.from(this.gateMap)
     } else {
       this.editGateMap = []
@@ -640,7 +625,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   close () {
     this.editGateMap = []
     this.editGateSelected = -1
-    this.$emit('close')
+    this.open = false
   }
 
   commit () {

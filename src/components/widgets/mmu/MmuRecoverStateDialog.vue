@@ -1,11 +1,12 @@
 <template>
   <app-dialog
-    v-model="showDialog"
+    v-model="open"
     width="600"
-    persistent
     title-shadow
     :fullscreen="isMobileViewport"
     :title="$t('app.mmu.title.recover_state')"
+    :save-button-text="$t('app.mmu.label.ok')"
+    @save="commit"
   >
     <v-card-subtitle>
       {{ $t('app.mmu.msg.recover_intro') }}
@@ -81,47 +82,28 @@
         </v-col>
       </v-row>
     </v-card-text>
-
-    <template #actions>
-      <v-spacer />
-      <app-btn
-        text
-        color="warning"
-        @click="close"
-      >
-        {{ $t('app.mmu.label.cancel') }}
-      </app-btn>
-      <app-btn
-        color="primary"
-        @click="commit"
-      >
-        {{ $t('app.mmu.label.ok') }}
-      </app-btn>
-    </template>
   </app-dialog>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import { Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Mixins, VModel, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
 import type { MmuUnitKey } from '@/store/printer/types'
 import isKeyOf from '@/util/is-key-of'
 
-@Component({
-  components: { },
-})
+@Component({})
 export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
-  @Prop({ required: true })
-  showDialog!: boolean
+  @VModel({ required: true })
+  open!: boolean
 
   private localGate: number = -1
   private localTool: number = -1
   private localFilamentPos: number = -1
 
-  @Watch('showDialog')
+  @Watch('open')
   onShowDialogChanged (newValue: boolean): void {
     if (newValue) {
       this.localGate = this.gate
@@ -272,10 +254,6 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     return tError || gError || pError
   }
 
-  close () {
-    this.$emit('close')
-  }
-
   commit () {
     let cmd = `MMU_RECOVER TOOL=${this.localTool} GATE=${this.localGate}`
     if (this.localFilamentPos === this.FILAMENT_POS_UNLOADED) {
@@ -284,7 +262,7 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
       cmd += ' LOADED=1'
     }
     this.sendGcode(cmd)
-    this.close()
+    this.open = false
   }
 }
 </script>
