@@ -11,12 +11,13 @@
           <v-tooltip
             top
             :open-delay="500"
+            :disabled="editGateMap"
             content-class="spool-tooltip"
           >
             <template #activator="{ on, attrs }">
               <div
                 v-bind="attrs"
-                v-on="!editGateMap ? on : {}"
+                v-on="on"
               >
                 <mmu-spool
                   :width="spoolWidth + 'px'"
