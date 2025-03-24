@@ -1056,6 +1056,10 @@ app:
       spoolman_today: Today
       spoolman_yesterday: Yesterday
       spoolman_days_ago: '%{days} days ago'
+    tooltip:
+      empty: Empty
+      color: Color
+      spoolid: Spool ID
     msg:
       reset_gate_map_confirmation: This will reset the entire gate map back to the default defined in 'mmu_parameters.cfg' or empty map if no defaults are available
       reset_ttg_map_confirmation: This will reset the entire tool-to-gate mapping and endless spool groups back to the default defined in 'mmu_parameters.cfg' or default 1:1 mapping in no defaults are available

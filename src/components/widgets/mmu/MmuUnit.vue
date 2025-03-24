@@ -8,14 +8,34 @@
         @click="selectGate(gate)"
       >
         <div :class="clipSpoolClass">
-          <mmu-spool
-            :width="spoolWidth + 'px'"
-            :class="spoolClass(gate)"
-            :gate-index="gate"
-            :edit-gate-map="editGateMap"
-            :edit-gate-selected="editGateSelected"
-          />
-
+          <v-tooltip
+            top
+            :open-delay="500"
+            content-class="spool-tooltip"
+          >
+            <template #activator="{ on, attrs }">
+              <div
+                v-bind="attrs"
+                v-on="!editGateMap ? on : {}"
+              >
+                <mmu-spool
+                  :width="spoolWidth + 'px'"
+                  :class="spoolClass(gate)"
+                  :gate-index="gate"
+                  :edit-gate-map="editGateMap"
+                  :edit-gate-selected="editGateSelected"
+                />
+              </div>
+            </template>
+            <div
+              v-for="(line, idx) in gateTooltip(gate)"
+              :key="idx"
+              class="spool-tooltip-line"
+              :class="idx === 0 ? 'spool-tooltip-title' : ''"
+            >
+              {{ line }}
+            </div>
+          </v-tooltip>
           <div
             v-if="editGateMap && editGateSelected === gate"
             style="position: absolute; bottom: 0%; left: 0%; width: 100%; height: auto; background: none;"
@@ -200,6 +220,32 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     return !this.editGateMap && this.unitDetails(this.unit).hasBypass && this.hasBypass
   }
 
+  gateTooltip (gate: number): string[] {
+    const details = this.gateDetails(gate)
+    if (details.status === this.GATE_EMPTY) {
+      return [this.$t('app.mmu.tooltip.empty').toString()]
+    }
+    const ret = []
+    ret.push(details.filamentName)
+
+    const tempStr = details.temperature > 0 ? ' | ' + details.temperature + '°C' : ''
+    ret.push(details.material + tempStr)
+
+    if (details.color && details.color !== '#808182E3') {
+      const color = details.color
+      ret.push(
+        this.$t('app.mmu.tooltip.color').toString() +
+                    ': ' +
+                    color.substring(0, 7) +
+                    (color.length > 7 && color.substring(7, 9) !== 'FF' ? color.substring(7, 9) : '')
+      )
+    }
+    if (details.spoolId && details.spoolId > 0) {
+      ret.push(this.$t('app.mmu.tooltip.spoolid').toString() + ': ' + details.spoolId)
+    }
+    return ret
+  }
+
   gateStatusClass (gate: number): string[] {
     const firstGate = gate === 0
     const lastGate = (gate === this.unitGateRange.length - 1 && !this.showBypass) || gate === this.TOOL_GATE_BYPASS
@@ -246,6 +292,23 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 <style scoped>
 .unit-container {
     padding: 0;
+}
+
+.spool-tooltip {
+    max-width: 180px;
+    font-size: 12px;
+    line-height: 1.2em;
+    padding: 4px 8px;
+}
+
+.spool-tooltip-title {
+    font-weight: bold;
+}
+
+.spool-tooltip-line {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .spool-row {
