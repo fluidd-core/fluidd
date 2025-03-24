@@ -458,18 +458,23 @@ export const getters = {
   },
 
   getRunoutSensors: (state): RunoutSensor[] => {
-    const supportedSensors = ['filament_switch_sensor', 'filament_motion_sensor']
+    const supportedSensors = [
+      'filament_switch_sensor',
+      'filament_motion_sensor'
+    ] as const
+
     const sensors: RunoutSensor[] = []
+
     for (const item in state.printer) {
       const [type, nameFromSplit] = item.split(' ', 2)
 
       if (supportedSensors.includes(type)) {
         const name = nameFromSplit ?? item
-        const sensor = state.printer[item]
+
         sensors.push({
+          ...state.printer[item],
           name,
           prettyName: Vue.$filters.prettyCase(name),
-          ...sensor
         })
       }
     }
