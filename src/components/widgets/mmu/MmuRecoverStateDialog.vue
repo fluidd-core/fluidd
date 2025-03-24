@@ -227,7 +227,7 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     } else if (newPos === 'LOADED') {
       this.localFilamentPos = this.FILAMENT_POS_LOADED
     } else {
-        this.localFilamentPos = this.FILAMENT_POS_UNKNOWN
+      this.localFilamentPos = this.FILAMENT_POS_UNKNOWN
     }
   }
 
