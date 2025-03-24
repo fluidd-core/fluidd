@@ -11,7 +11,7 @@
           <v-tooltip
             top
             :open-delay="500"
-            :disabled="editGateMap"
+            :disabled="editGateMap != null && editGateMap.length > 0 "
             content-class="spool-tooltip"
           >
             <template #activator="{ on, attrs }">
