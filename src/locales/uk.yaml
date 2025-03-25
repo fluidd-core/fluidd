@@ -364,6 +364,8 @@ app:
       environment_facing: Навколишнє середовище
       pause_at_layer_number: Зробіть паузу на номері шару
       circle: Коло
+      time_in_days: Час у днях
+      length_in_kilometers: Довжина в кілометрах
     msg:
       password_changed: Пароль змінено
       wrong_password: У-упс, щось пішло не так. Чи правильний ваш пароль?
@@ -725,6 +727,10 @@ app:
       printer_power_device: Пристрій живлення принтера
       drag_and_drop_functionality_for_files_and_folders: Функція перетягування файлів
         і папок
+      service_restart: Перезапуск служби
+      host_restart: Перезапуск хоста
+      firmware_restart: Перезапуск прошивки
+      klipper_save_and_restart_action: Відрізає дію «Зберегти та перезапустити»
     timer_options:
       duration: Тільки тривалість
       filament: Нитка розжарення
