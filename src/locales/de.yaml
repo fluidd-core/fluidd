@@ -372,6 +372,8 @@ app:
       user_facing: Dem Benutzer zugewandt
       environment_facing: Der Umgebung zugewandt
       z_hop_height: Z-Hop Höhe
+      length_in_kilometers: Länge in Kilometern
+      time_in_days: Zeit in Tagen
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -726,6 +728,10 @@ app:
         für Dateien und Ordner
       auto: Auto
       printer_power_device: Drucker-Stromversorgungsgerät
+      firmware_restart: Firmware-Neustart
+      host_restart: Host-Neustart
+      klipper_save_and_restart_action: Klipper "Speichern & Neu starten"-Aktion
+      service_restart: Dienst-Neustart
     timer_options:
       duration: Nur Dauer
       filament: Filament
@@ -975,6 +981,8 @@ app:
       id: ID
       weight: Gewicht
       length: Länge
+      colors: Farben
+      diameter: Durchmesser
     msg:
       no_spool: >-
         Sie haben keine Spule ausgewählt.
@@ -1031,6 +1039,9 @@ app:
       multiply_job: Auftrag vermehren | Aufträge vermehren
     label:
       number_of_copies: Anzahl der Kopien
+      filament: Filament
+      print_time: Druckzeit
+      unknown_jobs: Unbekannte Aufträge
     tooltip:
       help: Fügen Sie Jobs der Warteschlange hinzu, indem Sie diese hierhin ziehen<br>Passen
         Sie die Reihenfolge der Warteschlange an, indem Sie die Jobs nach oben oder
