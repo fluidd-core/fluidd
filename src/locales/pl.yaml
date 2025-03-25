@@ -237,6 +237,8 @@ app:
       unknown: Nieznane
       environment_facing: Związane ze środowiskiem systemu
       z_hop_height: Wysokość Z-Hop
+      length_in_kilometers: Długość w kilometrach
+      time_in_days: Czas w dniach
     btn:
       abort: Przerwij
       add: Dodaj
@@ -685,6 +687,10 @@ app:
       drag_and_drop_functionality_for_files_and_folders: Funkcja przeciągnij i upuść
         dla plików i folderów
       auto: Auto
+      firmware_restart: Restartuj Firmware
+      host_restart: Restartuj Host
+      klipper_save_and_restart_action: Zapisanie Klippera i akcja restartu
+      service_restart: Restart usługi
     camera_type_options:
       mjpegstream: Strumień MJPEG
       mjpegadaptive: Adaptacyjny MJPEG
