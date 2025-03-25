@@ -26,8 +26,9 @@ app:
       power: 功率
       target: 目标值
       rate_of_change: 变化值
+      target_temperature: 目标温度
     tooltip:
-      help: 按住 Shift 键可缩放图表。<br />单击一个项目名称或功率可在图表中切换显示。
+      help: 按住 <kbd>Shift</kbd> 键可缩放图表。<br />单击一个项目名称或功率可在图表中切换显示。
   console:
     label:
       auto_scroll: 自动滚动
@@ -60,9 +61,12 @@ app:
     filters:
       label:
         print_start_time: 隐藏已打印项目
-        hidden_files: 筛选隐藏的文件和文件夹
+        hidden_files: 过滤隐藏的文件和文件夹
         klipper_backup_files: 隐藏Klipper备份文件
-        rolled_log_files: 筛选滚动日志文件
+        rolled_log_files: 过滤滚动日志文件
+        moonraker_backup_files: 隐藏Moonraker备份文件
+        crowsnest_backup_files: 隐藏Crowsnest备份文件
+        moonraker_temporary_upload_files: 隐藏Moonraker临时上传文件
     label:
       dir_name: 目录名称
       disk_usage: 磁盘使用率
@@ -90,7 +94,7 @@ app:
       upload_file: 上传文件
     tooltip:
       low_on_space: 磁盘空间不足
-      root_disabled: '{root} G代码文件目录不可用，请首先连接打印机或者检查G代码存放目录的路径与读权限'
+      root_disabled: '{root} G代码文件目录不可用，请首先连接打印机或者检查G代码存放目录的路径与读权限。'
     url:
       klipper_config: '%{klipperDomain}/zh/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
@@ -115,6 +119,8 @@ app:
       parsing_file: 解析文件
     msg:
       confirm: '文件 "%{filename}" 大小为 %{size}，这可能会导致系统短暂失去响应，是否确认？'
+    overlay:
+      drag_file_load: <strong>拖拽</strong>一个gcode文件到此处加载
   general:
     btn:
       abort: 中止
@@ -138,7 +144,7 @@ app:
       download: 下载
       duplicate: 复制
       edit: 编辑
-      exit_layout: 退出修改模式
+      exit_layout: 退出
       extrude: 挤出
       filter: 过滤
       forgot_password: 忘记密码？
@@ -192,6 +198,8 @@ app:
       upload_print: 上传并打印
       view: 查看
       reset_stats: 重置统计信息
+      retry: 重试
+      refresh_metadata: 刷新元数据
     error:
       app_setup_link: '如需查看 Fluidd 详细配置规则，请点击<a target="_blank" href="%{url}">此处</a>。'
       app_warnings_found: '%{appName} 出现警告'
@@ -242,7 +250,7 @@ app:
       manage_accounts: 账户管理
       user_managed_source: 由 %{source} 身份验证管理的用户
       m117: M117
-      moonraker: Moonraker
+      moonraker: ''
       name: 名称
       new_password: 新密码
       no_notifications: 暂无通知
@@ -299,6 +307,10 @@ app:
       edit_category: 编辑分类
       add_category: 添加分类
       file_time: 预计剩余
+      range: 差值范围
+      compact: 紧凑
+      stepper_driver: '%{name} 驱动'
+      device: 设备
     msg:
       password_changed: 密码已更改
       wrong_password: 密码错误
@@ -307,7 +319,10 @@ app:
       offline_ready: Fluidd 现在可以离线工作了。
       needs_refresh: 有新内容可用，请单击 <b>重新加载</b> 按钮进行更新。
       pending_configuration_sections_deleted: 以下部分标记为删除
-      rolledover_logs: 以下应用程序日志已被回滚：%｛applications｝
+      rolledover_logs: 以下应用程序日志已被回滚：%{applications}
+      fluidd_settings_backup_failed: 备份Fluidd设置失败！
+      not_valid_fluidd_backup_file: 不是有效的 Fluidd 备份文件！
+      fluidd_settings_restore_failed: 恢复Fluidd设置失败！
     simple_form:
       error:
         arrayofnums: 仅允许输入数字
@@ -324,7 +339,7 @@ app:
         invalid_aspect: 宽高比无效
       msg:
         confirm: 是否确认？
-        confirm_delete: 你确定吗？这将删除所选项目。|你确定吗？这将删除｛count｝个所选项目。
+        confirm_delete: 你确定吗？这将删除所选项目。|你确定吗？这将删除{count}个所选项目。
         confirm_exclude_object: 您确定要从打印中排除该对象吗？
         confirm_forcemove_toggle: 这可能会损坏打印机！是否确认？
         confirm_reboot_host: 这会重启您的系统！是否确认？
@@ -334,7 +349,12 @@ app:
         confirm_service_stop: '你确定要停止 %{name} 服务吗?'
         confirm_power_device_toggle: 这会切换设备开关状态！是否确认？
         unsaved_changes: 这会丢失未保存的更改！是否确认？
-        no_file_preview: ' 当前无法预览%{name} 。'
+        no_file_preview: '当前无法预览%{name} 。'
+        confirm_cancel_print: 确定要取消当前打印吗？
+        confirm_remove_camera: 确定移除摄像头 %{name}？
+        confirm_remove_user: 确定要移除用户 %{username} 吗？
+        confirm_remove_printer: 确定移除打印机 %{name}？
+        confirm_emergency_stop: 确定要紧急停止打印机吗？
     table:
       header:
         actions: 展开
@@ -409,14 +429,19 @@ app:
       restart_klipper: 重启 Klipper 服务
       run_collector: 运行收集器
       rollover_logs: 滚动日志
+      power_on_printer: 打开打印机电源
   history:
     msg:
       confirm: 这将清除所有历史记录和打印机统计数据！是否确认？
-      confirm_jobs: 这将清除所有工作！是否确认？
-      confirm_stats: 这将清除所有统计资料！是否确认？
+      confirm_jobs: 这将清除所有任务！是否确认？
+      confirm_stats: 这将清除所有统计数据！是否确认？
   job_queue:
     msg:
-      confirm: 这将清除整个打印机队列！是否确认？
+      confirm: 这将清除整个打印机任务队列！是否确认？
+    label:
+      number_of_copies: 副本数量
+      print_time: 打印时长
+      unknown_jobs: 未知任务
   printer:
     state:
       busy: 处理中
@@ -428,6 +453,11 @@ app:
       printing: 打印中
       ready: 就绪
       standby: 待机
+    title:
+      stepper_driver_overheating: 步进驱动器 %{name} 过热
+      printer_status: 打印机状态
+    msg:
+      possible_print_failure: 这可能导致打印失败
   setting:
     btn:
       add_camera: 添加摄像头
@@ -438,6 +468,8 @@ app:
       add_user: 添加用户
       reset: 重置
       select_theme: 选择颜色
+      backup: 备份
+      restore: 恢复
     camera_type_options:
       mjpegadaptive: MJPEG 自适应
       mjpegstream: MJPEG 视频流
@@ -549,6 +581,13 @@ app:
       force_move_toggle_warning: 强制移动时是否需要确认
       show_manual_probe_dialog_automatically: 自动显示手动探测对话框
       show_bed_screws_adjust_dialog_automatically: 自动显示“调整床螺钉”对话框
+      show_logo_on_background: 背景显示logo
+      print_in_progress_layout: 打印进度布局
+      show_chart: 显示图表
+      toolhead_control_style: 打印头控制方式
+      print_progress_calculation: 打印进度计算
+      fluidd_settings_in_moonraker_db: Moonraker数据库中的Fluidd设置
+      keyboard_shortcuts: 键盘快捷键
     timer_options:
       duration: 仅显示已用时间
       filament: 通过耗材用量估算
@@ -565,11 +604,14 @@ app:
       theme: 主题
       thermal_presets: 温度预设
       tool: 移动控制
+      file_browser: 文件浏览器
     tooltip:
       diagnostics_performance: '[BETA] 记录诊断信息可能会影响性能'
       gcode_coords: 使用 GCode 坐标位置而不是仪表板上的打印头坐标位置
       show_manual_probe_dialog_automatically: 运行手动探测工具时自动显示帮助对话框
       show_bed_screws_adjust_dialog_automatically: 如果运行BED_SCREWS_ADJUST工具，自动显示帮助对话框
+      average_calculation: 如果选择多个选项，则将计算平均值
+      keyboard_shortcuts: '[BETA] 启用功能：按“?”查看可用键盘快捷键列表'
   socket:
     msg:
       connecting: 正在连接至 Moonraker ...
@@ -605,6 +647,11 @@ app:
       operating_system: 操作系统
       version: 版本
       virtualization: 虚拟化
+      load: 负载
+      awake_time: 唤醒时间
+      memory_used: 已用内存
+    msg:
+      no_devices_found: 未发现设备
   tool:
     btn:
       home_x: 归位 X
@@ -623,7 +670,8 @@ app:
       relative_positioning: 相对位置
       tools: 工具
     label:
-      stats_active_extruder: '挤出机配置为耗材直径 %{filamentDiameter}mm，喷嘴直径 %{nozzleDiameter}mm'
+      stats_active_extruder: '<span class="secondary--text">挤出机配置为</span>耗材直径 %{filamentDiameter}mm<span
+        class="secondary--text">，</span>喷嘴直径 %{nozzleDiameter}mm'
       stats_volumetric_flow: '以 %{extrudeSpeed}mm/s 的速度，预估挤出耗材体积为 %{estimatedVolumetricFlow}mm³/s'
       stats_extruded_length: >-
         以 %{extrudeFactor}% 流量挤出 %{extrudeLength}mm 耗材，预估输出长度为
@@ -646,6 +694,8 @@ app:
       package_list: 软件包列表
       up_to_date: 最新
       updates_available: 有可用更新
+      old_component_version: 您正在使用 %{name} 的旧版本，该版本不支持 Fluidd 的所有功能。<br>至少将 %{name}
+        更新至 %{version}。
     status:
       finished: 更新已完成
       updating: 正在更新...
@@ -709,3 +759,50 @@ app:
       variable_fps: 可变帧率
       variable_fps_min: 最小帧率
       variable_fps_max: 最大帧率
+  spoolman:
+    label:
+      last_used: 最后使用
+      location: 位置
+      material: 材料
+      device_camera: 设备
+      first_used: 首次使用
+      vendor: 制造商
+      filament_name: 耗材
+      remaining_weight: 剩余重量
+      lot_nr: 批号
+      weight: 重量
+      length: 长度
+      comment: 备注
+      diameter: 直径
+      extruder_temp: 挤出头温度
+      price: 价格
+    msg:
+      not_connected: Spoolman服务不可用
+      no_required_length: 打印所选文件所需的耗材量未知。是否继续？
+    title:
+      spoolman: Spoolman
+      scan_spool: 扫描Spool二维码
+    setting:
+      prefer_device_camera: 如果可用，使用设备摄像头检测二维码
+      remaining_filament_unit: 剩余耗材显示方式
+      auto_open_qr_camera: 自动打开摄像头检测二维码
+      warn_on_not_enough_filament: 当选定料盘剩余耗材不足时显示警告
+      warn_on_filament_type_mismatch: 当料盘的耗材材料类型与切片不同时显示警告
+    btn:
+      manage_spools: 管理Spools
+      scan_code: 扫描二维码
+  sensors:
+    title:
+      sensors: 传感器
+  keyboard_shortcuts:
+    label:
+      home_all: 全部归位
+      actions: 动作
+      emergency_stop: 紧急停止
+      navigation: 导航
+      printing: 打印过程中
+      cancel: 取消
+      open_keyboard_shortcut_help: 打开键盘快捷键帮助
+      pause: 暂停
+    title:
+      keyboard_shortcuts: 键盘快捷键
