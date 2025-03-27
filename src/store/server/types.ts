@@ -43,16 +43,12 @@ export interface ServerInfo {
   registered_directories: string[];
   warnings: string[];
   moonraker_version?: string;
-  api_version?: number[]
-  api_version_string?: string
+  api_version?: number[];
+  api_version_string?: string;
+  websocket_count?: number;
 }
 
-export type KlippyState =
-  'disconnected' |
-  'startup' |
-  'ready' |
-  'error' |
-  'shutdown'
+export type KlippyState = 'disconnected' | 'startup' | 'ready' | 'error' | 'shutdown'
 
 export interface SystemInfo {
   available_services?: string[];
