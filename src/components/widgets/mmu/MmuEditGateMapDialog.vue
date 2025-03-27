@@ -522,7 +522,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
 
   @Watch('$typedState.spoolman.dialog')
   onSpoolmanChanged (newDialog: SpoolSelectionDialogState) {
-    if (newDialog.selectedSpoolId) {
+    if (newDialog.selectedSpoolId != null) {
       this.editGateMap[this.editGateSelected].spoolId = newDialog.selectedSpoolId
     }
   }
