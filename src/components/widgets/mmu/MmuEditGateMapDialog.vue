@@ -530,8 +530,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   get spoolmanColor (): string {
     const spoolId = this.editGateMap[this.editGateSelected].spoolId ?? -1
     const spool = this.spoolmanSpool(spoolId)
-    const color = spool?.filament.color_hex ?? '000'
-    return `#${color}`
+    return spool?.filament.color_hex ?? '#000'
   }
 
   get spoolmanRemainingWeight () {
