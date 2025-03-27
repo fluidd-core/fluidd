@@ -22,7 +22,6 @@ app:
       delete: Elimina profilo
       load: Carica profilo
       save: Salva il profilo calibrato in printer.cfg
-      copy_image: Copia immagine mesh
   chart:
     label:
       current: Effettivo

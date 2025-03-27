@@ -21,7 +21,6 @@ app:
       delete: Usuń profil
       load: Wczytaj profil
       save: Zapisuje skalibrowany profil do pliku printer.cfg
-      copy_image: Skopiuj obraz siatki stołu
   chart:
     label:
       current: Aktualnie

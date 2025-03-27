@@ -285,10 +285,9 @@ import { readFileAsTextAsync } from '@/util/file-system-entry'
 import { EventBus } from '@/eventBus'
 import { isFluiddContent, toFluiddContent } from '@/util/fluidd-content'
 import { getAllLocales } from '@/plugins/i18n'
+import downloadUrl from '@/util/download-url'
 
-@Component({
-  components: {}
-})
+@Component({})
 export default class GeneralSettings extends Mixins(StateMixin) {
   @Ref('instanceName')
   readonly instanceNameElement!: VInput
@@ -630,17 +629,10 @@ export default class GeneralSettings extends Mixins(StateMixin) {
         const backupData = toFluiddContent('settings-backup', data)
         const backupDataAsString = JSON.stringify(backupData)
 
-        const link = document.createElement('a')
+        const filename = `backup-fluidd-v${import.meta.env.VERSION}-${this.instanceName}.json`
+        const url = `data:text/plain;charset=utf-8,${encodeURIComponent(backupDataAsString)}`
 
-        link.href = `data:text/plain;charset=utf-8,${encodeURIComponent(backupDataAsString)}`
-        link.download = `backup-fluidd-v${import.meta.env.VERSION}-${this.instanceName}.json`
-        link.target = '_blank'
-
-        document.body.appendChild(link)
-
-        link.click()
-
-        document.body.removeChild(link)
+        downloadUrl(filename, url)
       }
     } catch (e) {
       consola.error('[Settings] backup failed', e)

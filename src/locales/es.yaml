@@ -22,7 +22,6 @@ app:
       delete: Elimina el perfil
       load: Cargar el perfil
       save: Guarda el perfil de calibracion en el archivo printer.cfg
-      copy_image: Copiar imagen de la malla de cama
   chart:
     label:
       current: Tª

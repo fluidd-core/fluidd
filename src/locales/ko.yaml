@@ -20,7 +20,6 @@ app:
       delete: 프로파일을 삭제합니다
       load: 프로파일 불러오기
       save: 캘리브레이션이 된 프로파일을 printer.cfg에 적용합니다
-      copy_image: 베드 메쉬 이미지 복사
   chart:
     label:
       current: 현재 온도

@@ -22,7 +22,6 @@ app:
       delete: Zbriši profil
       load: Naloži profil
       save: Shrani kalibriran profil v printer.cfg.
-      copy_image: Kopiraj sliko posteljne mreže
   chart:
     label:
       current: Dejansko

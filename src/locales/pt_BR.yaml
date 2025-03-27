@@ -18,7 +18,6 @@ app:
       not_loaded: Nenhuma malha carregada
     tooltip:
       load: Carregar perfil
-      copy_image: Copiar imagem da malha da cama
       calibrate: Começa uma nova calibração, salvando o perfil como 'default'
       delete: Apagar perfil
       save: Salva perfil calibrado no arquivo printer.cfg

@@ -23,7 +23,6 @@ app:
       delete: Profili Sil
       load: Profil Yükle
       save: Kalibre edilmiş profili printer.cfg'ye kaydeder
-      copy_image: Yatak örgüsü görüntüsünü kopyala
   chart:
     label:
       current: Gerçek
