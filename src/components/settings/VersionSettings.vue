@@ -116,7 +116,7 @@
                 </v-icon>
               </app-btn>
             </template>
-            <span v-if="'name' in component">{{ $t('app.version.tooltip.release_notes') }}</span>
+            <span v-if="'name' in component && component.name !== 'system'">{{ $t('app.version.tooltip.release_notes') }}</span>
             <span v-else-if="'commits_behind' in component">{{ $t('app.version.tooltip.commit_history') }}</span>
             <span v-else-if="'package_list' in component">{{ $t('app.version.tooltip.packages') }}</span>
           </v-tooltip>

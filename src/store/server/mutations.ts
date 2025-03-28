@@ -14,10 +14,9 @@ export const mutations = {
   setResetKlippy (state) {
     const { klippy_retries, info } = defaultState()
 
-    Object.assign(state, {
-      klippy_retries,
-      info
-    })
+    state.klippy_retries = klippy_retries
+    state.info.klippy_connected = info.klippy_connected
+    state.info.klippy_state = info.klippy_state
   },
 
   setServerInfo (state, payload: ServerInfo) {
