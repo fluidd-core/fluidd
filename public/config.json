@@ -32,6 +32,14 @@
       }
     },
     {
+      "name": "Cocoa Press",
+      "color": "#F27121",
+      "isDark": true,
+      "logo": {
+        "src": "logo_cocoapress.svg"
+      }
+    },
+    {
       "name": "EVA",
       "color": "#76FB00",
       "isDark": true,
