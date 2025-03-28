@@ -29,7 +29,6 @@ app:
       power: Leistung
       target: Ziel
       rate_of_change: Änderung
-      pid_calibration: PID-Kalibrierung
       target_temperature: Zieltemperatur
       turn_off: Ausschalten
       fan_breakpoints: Lüfter-Sollwerte
@@ -46,10 +45,6 @@ app:
       auto_scroll: Automatisches Scrollen
       flip_layout: Layout umkehren
       hide_temp_waits: Temperaturbenachrichtigungen ausblenden
-    placeholder:
-      command: >-
-        Tab für Autovervollständigung, 'help' für Befehle, Pfeiltasten für
-        Verlauf
     tooltip:
       help: Geben Sie "help" für eine Befehlsliste ein<br />Benutzen Sie <kbd>Tab</kbd>
         für Autovervollständigung<br />Benutzen Sie <kbd>&uarr;</kbd> und <kbd>&darr;</kbd>

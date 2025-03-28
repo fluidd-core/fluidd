@@ -29,7 +29,6 @@ app:
       power: Kapacitás
       target: Cél
       rate_of_change: Változás
-      pid_calibration: PID kalibrálás
       target_temperature: Cél hőmérséklet
       turn_off: Kikapcsolás
       fan_breakpoints: Ventilátor töréspontok

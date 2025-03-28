@@ -748,7 +748,7 @@ app:
       operating_system: Operacijski sistem
       version: Verzija
       virtualization: Virtualizacija
-      msg:
+    msg:
       canbus_warning: >-
         Odkrijejo se lahko samo nepodeljena vozlišča CAN vodila.<br>
         Priporočljivo je, da je na CAN vodilo priključena samo ena nepripisana naprava,

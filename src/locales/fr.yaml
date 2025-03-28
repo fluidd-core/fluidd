@@ -40,10 +40,6 @@ app:
       auto_scroll: Scroll auto
       hide_temp_waits: Cacher les messages de température
       flip_layout: Inverser disposition
-    placeholder:
-      command: >-
-        'tab' pour l'autocomplete, 'help' pour les commandes, les flêches pour
-        l'historique
     tooltip:
       help: Saisir "help" pour les commandes<br />Utiliser <kbd>Tab</kbd> pour l'autocomplétion<br
         />Utiliser <kbd>&uarr;</kbd> et <kbd>&darr;</kbd> pour l'historique

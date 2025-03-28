@@ -34,8 +34,6 @@ app:
     label:
       auto_scroll: التفاف تلقائي
       hide_temp_waits: Hide temp waits
-    placeholder:
-      command: '''tab'' للاكمال التلقائي، ''help'' للاوامر ''الاسهم'' للاوامر السابقة'
   endpoint:
     error:
       cant_connect: >-

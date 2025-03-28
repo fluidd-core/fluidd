@@ -42,9 +42,6 @@ app:
       auto_scroll: Auto. przewijanie
       hide_temp_waits: Ukryj oczekiwania temp.
       flip_layout: Odwrócony układ
-    placeholder:
-      command: "Przycisk TAB do autouzupełniania; wpisz „help” dla komend; użyj strzałek
-        dla historii"
     tooltip:
       help: Wprowadź "help", aby uzyskać komendy<br />Użyj <kbd>Tab</kbd> dla autouzupełniania<br
         />Używaj <kbd>&uarr;</kbd> i <kbd>&darr;</kbd> dla historii poleceń

@@ -75,8 +75,6 @@ app:
   endstop:
     label:
       endstop: 'エンドストップ %{name}'
-      open: ''
-      triggered: ''
     msg:
       subtitle: エンドストップの状態を更新する場合は、更新ボタンを押します。
     states:
@@ -88,7 +86,6 @@ app:
       label:
         crowsnest_backup_files: Crowsnest バックアップ ファイルのフィルタリング
         hidden_files: 隠しファイルとフォルダをフィルタリングする
-        hidden_files_folders: ''
         klipper_backup_files: バックアップファイルを非表示
         moonraker_backup_files: Moonraker バックアップ ファイルをフィルタリングする
         moonraker_temporary_upload_files: Moonraker 一時アップロード ファイルをフィルタリングする

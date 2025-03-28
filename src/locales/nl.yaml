@@ -44,10 +44,6 @@ app:
       auto_scroll: Automatisch scrollen
       hide_temp_waits: Verberg temperatuurwachten
       flip_layout: Layout omdraaien
-    placeholder:
-      command: >-
-        'tab' voor autocomplete, 'help' voor commandos 'pijltjes' voor
-        geschiedenis
     tooltip:
       help: Typ "help" voor commando's<br />Gebruik <kbd>Tab</kbd>voor automatisch
         aanvullen<br />Gebruik <kbd>&uarr;</kbd> en<kbd>&darr;</kbd> voor geschiedenis
