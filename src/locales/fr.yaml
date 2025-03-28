@@ -24,7 +24,6 @@ app:
       delete: Supprime le profil
       load: Charger le profil
       save: Enregistrer le profil calibré dans 'printer.cfg'
-      copy_image: Copier l'image du bed mesh
   chart:
     label:
       current: Courant

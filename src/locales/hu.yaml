@@ -22,7 +22,6 @@ app:
       delete: Profil törlése
       load: Profil betöltése
       save: A kalibrált profil a printer.cfg fájlba íródik
-      copy_image: Ágyhálós kép másolása
   chart:
     label:
       current: Aktuális

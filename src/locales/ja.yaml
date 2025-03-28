@@ -28,7 +28,6 @@ app:
       not_loaded: メッシュを読込しない
     tooltip:
       calibrate: 新しいキャリブレーションを開始し、プロファイル'default'として保存します
-      copy_image: ベッドメッシュ画像をコピー
       delete: プロファイルを削除します。
       load: プロファイルを読込み
       save: キャリブレーションされたプロファイルをprinter.cfgに書込みします。

@@ -22,7 +22,6 @@ app:
       delete: Profil löschen
       load: Profil laden
       save: Fügt das Mesh Profil der printer.cfg hinzu
-      copy_image: Bett-Mesh-Abbildung kopieren
   chart:
     label:
       current: Aktuell

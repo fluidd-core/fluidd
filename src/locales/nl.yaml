@@ -22,7 +22,6 @@ app:
       delete: Verwijder profiel
       load: Laad profiel
       save: Slaat afgesteld profiel op naar printer.cfg
-      copy_image: Kopieer bed mesh afbeelding
   chart:
     label:
       current: Huidig

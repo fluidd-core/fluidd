@@ -22,7 +22,6 @@ app:
       delete: Eliminar perfil
       load: Carregar perfil
       save: Guard perfil calibrado no ficheiro printer.cfg
-      copy_image: Copiar imagem da malha da cama
   chart:
     label:
       current: Corrente
