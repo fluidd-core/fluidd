@@ -16,23 +16,17 @@
             group: 'dashboard',
             disabled: !inLayout,
           }"
-          target=":first-child"
           @end="handleUpdateLayout"
         >
-          <transition-group
-            type="transition"
-            :name="!inLayout ? 'flip-list' : undefined"
-          >
-            <template v-for="c in container">
-              <component
-                :is="c.id"
-                v-if="inLayout || (c.enabled && !filtered(c))"
-                :key="c.id"
-                :menu-collapsed="menuCollapsed"
-                class="mb-2 mb-md-4"
-              />
-            </template>
-          </transition-group>
+          <template v-for="c in container">
+            <component
+              :is="c.id"
+              v-if="inLayout || (c.enabled && !filtered(c))"
+              :key="c.id"
+              :menu-collapsed="menuCollapsed"
+              class="mb-2 mb-md-4"
+            />
+          </template>
         </app-draggable>
       </v-col>
     </template>
