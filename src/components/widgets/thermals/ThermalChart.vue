@@ -2,7 +2,7 @@
   <div
     class="chart"
     :style="{
-      height: $filters.getPixelsString(height)
+      height: $filters.getPixelsString(isMobileViewport ? 180 : 260)
     }"
   >
     <e-chart
@@ -28,8 +28,8 @@ import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
 
 @Component({})
 export default class ThermalChart extends Mixins(BrowserMixin) {
-  @Prop({ type: [String, Number], default: '100%' })
-  readonly height!: string | number
+  @Prop({ type: Boolean })
+  readonly narrow?: boolean
 
   @Ref('chart')
   readonly chart!: ECharts
@@ -41,9 +41,9 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   handleLegendSelectChanged (event: { selected: Record<string, boolean> }) {
     this.$typedDispatch('charts/saveSelectedLegends', event.selected)
 
-    let right = (this.isMobileViewport) ? 15 : 20
+    let right = (this.isMobileViewport || this.narrow) ? 15 : 20
     if (this.showPowerAxis(event.selected)) {
-      right = (this.isMobileViewport) ? 25 : 45
+      right = (this.isMobileViewport || this.narrow) ? 25 : 45
     }
 
     if (
@@ -112,7 +112,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     const isDark: boolean = this.$typedState.config.uiSettings.theme.isDark
 
     const fontColor = (isDark) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
-    const fontSize = (this.isMobileViewport) ? 13 : 14
+    const fontSize = (this.isMobileViewport || this.narrow) ? 13 : 14
 
     const lineStyle = {
       color: (isDark) ? '#ffffff' : '#000000',
@@ -124,15 +124,15 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
       opacity: 0.5
     }
 
-    let right = (this.isMobileViewport) ? 15 : 20
+    let right = (this.isMobileViewport || this.narrow) ? 15 : 20
     if (this.showPowerAxis(this.initialSelected)) {
-      right = (this.isMobileViewport) ? 35 : 45
+      right = (this.isMobileViewport || this.narrow) ? 35 : 45
     }
     const grid = {
       top: 20,
-      left: (this.isMobileViewport) ? 35 : 45,
+      left: (this.isMobileViewport || this.narrow) ? 35 : 45,
       right,
-      bottom: (this.isMobileViewport) ? 52 : 38
+      bottom: (this.isMobileViewport || this.narrow) ? 52 : 38
     }
 
     const tooltip = {
@@ -234,7 +234,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
           color: tooltip.textStyle.color,
           fontSize,
           formatter: '{H}:{mm}',
-          rotate: (this.isMobileViewport) ? 45 : 0
+          rotate: (this.isMobileViewport || this.narrow) ? 45 : 0
         },
         axisPointer: {
           label: {
@@ -433,6 +433,5 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   .chart {
     margin-top: 16px;
     width: 100%;
-    // height: 325px;
   }
 </style>

@@ -4,7 +4,7 @@
     icon="$chart"
   >
     <template #menu>
-      <app-btn-collapse-group :collapsed="menuCollapsed">
+      <app-btn-collapse-group :collapsed="narrow">
         <app-btn
           small
           class="me-1 my-1"
@@ -155,7 +155,7 @@ import { SocketActions } from '@/api/socketActions'
 @Component({})
 export default class PrinterStatsCard extends Vue {
   @Prop({ type: Boolean })
-  readonly menuCollapsed?: boolean
+  readonly narrow?: boolean
 
   get lengthInKilometers (): boolean {
     return this.$typedState.config.uiSettings.history.lengthInKilometers
