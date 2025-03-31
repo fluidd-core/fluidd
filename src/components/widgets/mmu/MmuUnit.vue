@@ -2,10 +2,10 @@
   <v-container class="unit-container">
     <div class="spool-row">
       <div
-        v-for="(gate, index) in unitGateRange"
-        :key="`gate_${gate}`"
+        v-for="(g, index) in unitGateRange"
+        :key="`gate_${g}`"
         class="gate"
-        @click="selectGate(gate)"
+        @click="selectGate(g)"
       >
         <div :class="clipSpoolClass">
           <v-tooltip
@@ -21,15 +21,15 @@
               >
                 <mmu-spool
                   :width="spoolWidth + 'px'"
-                  :class="spoolClass(gate)"
-                  :gate-index="gate"
+                  :class="spoolClass(g)"
+                  :gate-index="g"
                   :edit-gate-map="editGateMap"
                   :edit-gate-selected="editGateSelected"
                 />
               </div>
             </template>
             <div
-              v-for="(line, idx) in gateTooltip(gate)"
+              v-for="(line, idx) in gateTooltip(g)"
               :key="idx"
               class="spool-tooltip-line"
               :class="idx === 0 ? 'spool-tooltip-title' : ''"
@@ -38,14 +38,13 @@
             </div>
           </v-tooltip>
           <div
-            v-if="editGateMap && editGateSelected === gate"
+            v-if="(editGateMap && editGateSelected === g) || (!editGateMap && gate === g)"
             style="position: absolute; bottom: 0%; left: 0%; width: 100%; height: auto; background: none;"
           >
             <svg
               width="100%"
               height="100%"
               viewBox="0 0 80 60"
-              xmlns="http://www.w3.org/2000/svg"
             >
               <defs>
                 <clipPath id="clip-half">
@@ -87,12 +86,11 @@
         </div>
         <mmu-gate-status
           :class="gateStatusClass(index)"
-          :gate-index="gate"
+          :gate-index="g"
           :edit-gate-map="editGateMap"
           :edit-gate-selected="editGateSelected"
         />
       </div>
-
       <div
         v-if="showBypass"
         class="gate"
@@ -101,11 +99,57 @@
         <div :class="clipSpoolClass">
           <mmu-spool
             :width="spoolWidth + 'px'"
-            :class="spoolClass(gate)"
+            :class="spoolClass(TOOL_GATE_BYPASS)"
             :gate-index="TOOL_GATE_BYPASS"
             :edit-gate-map="editGateMap"
             :edit-gate-selected="editGateSelected"
           />
+          <div
+            v-if="gate === TOOL_GATE_BYPASS"
+            style="position: absolute; bottom: 0%; left: 0%; width: 100%; height: auto; background: none;"
+          >
+            <svg
+              width="100%"
+              height="100%"
+              viewBox="0 0 80 60"
+            >
+              <defs>
+                <clipPath id="clip-half">
+                  <rect
+                    x="0"
+                    y="0"
+                    width="80"
+                    height="60"
+                  />
+                </clipPath>
+                <radialGradient
+                  id="spotlight"
+                  cx="50%"
+                  cy="70%"
+                  r="50%"
+                  fx="50%"
+                  fy="100%"
+                >
+                  <stop
+                    offset="0%"
+                    style="stop-color:rgba(255, 255, 255, 0.9); stop-opacity:1"
+                  />
+                  <stop
+                    offset="100%"
+                    style="stop-color:rgba(255, 255, 0, 0); stop-opacity:0"
+                  />
+                </radialGradient>
+              </defs>
+              <rect
+                x="0"
+                y="0"
+                width="100%"
+                height="100%"
+                fill="url(#spotlight)"
+                clip-path="url(#clip-half)"
+              />
+            </svg>
+          </div>
         </div>
         <mmu-gate-status
           :class="gateStatusClass(TOOL_GATE_BYPASS)"
@@ -251,23 +295,25 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     const firstGate = gate === 0
     const lastGate = (gate === this.unitGateRange.length - 1 && !this.showBypass) || gate === this.TOOL_GATE_BYPASS
     const classes = ['gate-status-row']
-    if (firstGate) classes.push('first-gate')
-    if (lastGate) classes.push('last-gate')
+    if (firstGate) classes.push('first-gate' + (this.isFirefox() ? '-firefox' : ''))
+    if (lastGate) classes.push('last-gate' + (this.isFirefox() ? '-firefox' : ''))
     classes.push(this.$vuetify.theme.dark ? 'gate-status-row-dark-theme' : 'gate-status-row-light-theme')
     return classes
   }
 
+  isFirefox (): boolean {
+    return navigator.userAgent.indexOf('Firefox') !== -1
+  }
+
   spoolClass (gate: number): string[] {
     const classes = []
-    if (this.editGateMap) {
-      if (this.editGateSelected === gate) {
-        classes.push('highlight-spool')
-      } else {
-        if (!this.isMobileViewport) classes.push('hover-effect')
+    if ((this.editGateMap && this.editGateSelected === gate) || (!this.editGateMap && this.gate === gate)) {
+      classes.push('highlight-spool')
+    } else {
+      if (!this.isMobileViewport) classes.push('hover-effect')
+      if (this.editGateMap) {
         classes.push('unhighlight-spool')
       }
-    } else if (!this.isMobileViewport) {
-      classes.push('hover-effect')
     }
     return classes
   }
