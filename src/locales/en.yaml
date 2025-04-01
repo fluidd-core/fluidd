@@ -91,6 +91,7 @@ app:
       dir_name: Directory name
       disk_usage: Disk Usage
       diskinfo: Disk Information
+      sd_card_info: SD Card Information
       downloaded: Downloaded
       file_name: Filename
       transfer_rate: Transfer rate
