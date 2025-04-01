@@ -59,6 +59,19 @@
           class="mt-0 mb-4"
         />
       </app-setting>
+
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.reset')">
+        <app-btn
+          outlined
+          small
+          color="primary"
+          @click="handleReset"
+        >
+          {{ $t('app.setting.btn.reset') }}
+        </app-btn>
+      </app-setting>
     </v-card>
   </div>
 </template>
@@ -67,6 +80,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
+import { defaultState } from '@/store/config/state'
 
 @Component({
   components: {}
@@ -128,6 +142,14 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showLogos',
       value,
+      server: true
+    })
+  }
+
+  handleReset () {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.mmu',
+      value: defaultState().uiSettings.mmu,
       server: true
     })
   }
