@@ -155,5 +155,3 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
   }
 }
 </script>
-
-<style scoped></style>
