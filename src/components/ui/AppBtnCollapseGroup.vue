@@ -1,7 +1,7 @@
 <template v-if="hasDefaultSlot">
   <!-- not collapsed -->
   <div
-    v-if="!isCollapsed"
+    v-if="!collapsed"
     class="d-inline-block"
   >
     <slot />
@@ -52,11 +52,6 @@ export default class AppBtnCollapseGroup extends Vue {
 
   @Prop({ type: Boolean })
   readonly disabled?: boolean
-
-  get isCollapsed () {
-    if (this.collapsed) return true
-    return this.$vuetify.breakpoint.mdAndDown
-  }
 
   get hasDefaultSlot () {
     return !!this.$slots.default

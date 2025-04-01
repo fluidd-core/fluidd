@@ -22,7 +22,7 @@ app:
       delete: Delete Profile
       load: Load Profile
       save: Commits calibrated profile to printer.cfg
-      copy_image: Copy bed mesh image
+      download_image: Download bed mesh image
   chart:
     label:
       current: Actual
@@ -91,6 +91,7 @@ app:
       dir_name: Directory name
       disk_usage: Disk Usage
       diskinfo: Disk Information
+      sd_card_info: SD Card Information
       downloaded: Downloaded
       file_name: Filename
       transfer_rate: Transfer rate

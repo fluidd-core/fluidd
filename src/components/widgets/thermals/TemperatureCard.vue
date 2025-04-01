@@ -8,7 +8,7 @@
     layout-path="dashboard.temperature-card"
   >
     <template #menu>
-      <app-btn-collapse-group :collapsed="menuCollapsed">
+      <app-btn-collapse-group :collapsed="narrow">
         <temperature-presets-menu
           @applyOff="handleApplyOff"
           @applyPreset="handleApplyPreset"
@@ -102,7 +102,7 @@
 
       <thermal-chart
         ref="thermalchart"
-        :height="(isMobileViewport) ? 180 : 260"
+        :narrow="narrow"
       />
     </template>
   </collapsable-card>
@@ -129,7 +129,7 @@ import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 })
 export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: Boolean })
-  readonly menuCollapsed?: boolean
+  readonly narrow?: boolean
 
   @Ref('thermalchart')
   readonly thermalChartElement!: ThermalChart

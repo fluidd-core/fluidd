@@ -334,13 +334,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           {
             text: this.$tc('app.general.table.header.extruder_colors'),
             value: 'extruder_colors',
-            visible: isNotDashboard,
+            visible: false,
             cellClass: 'text-no-wrap'
           },
           {
             text: this.$tc('app.general.table.header.filament_temps'),
             value: 'filament_temps',
-            visible: isNotDashboard,
+            visible: false,
             cellClass: 'text-no-wrap'
           },
           {
@@ -358,7 +358,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           {
             text: this.$tc('app.general.table.header.filament_change_count'),
             value: 'filament_change_count',
-            visible: isNotDashboard,
+            visible: false,
             cellClass: 'text-no-wrap'
           },
           {
@@ -376,13 +376,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           {
             text: this.$tc('app.general.table.header.mmu_print'),
             value: 'mmu_print',
-            visible: isNotDashboard,
+            visible: false,
             cellClass: 'text-no-wrap'
           },
           {
             text: this.$tc('app.general.table.header.referenced_tools'),
             value: 'referenced_tools',
-            visible: isNotDashboard,
+            visible: false,
             cellClass: 'text-no-wrap'
           },
           {
@@ -448,7 +448,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           {
             text: this.$tc('app.general.table.header.file_processors'),
             value: 'file_processors',
-            visible: false,
+            visible: isNotDashboard,
             cellClass: 'text-no-wrap'
           },
           {

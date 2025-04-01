@@ -43,23 +43,17 @@
               group: 'diagnostics',
               disabled: !inLayout,
             }"
-            target=":first-child"
             @end.stop="updateLayout"
           >
-            <transition-group
-              type="transition"
-              :name="!inLayout ? 'flip-list' : undefined"
-            >
-              <template v-for="c in container">
-                <diagnostics-card
-                  v-if="c.enabled || inLayout"
-                  :key="c.id"
-                  :config="c"
-                  class="mb-2 mb-md-4"
-                  @edit="handleEditCard"
-                />
-              </template>
-            </transition-group>
+            <template v-for="c in container">
+              <diagnostics-card
+                v-if="c.enabled || inLayout"
+                :key="c.id"
+                :config="c"
+                class="mb-2 mb-md-4"
+                @edit="handleEditCard"
+              />
+            </template>
           </app-draggable>
         </v-col>
       </template>

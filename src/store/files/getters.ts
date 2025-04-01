@@ -230,8 +230,9 @@ export const getters = {
   /**
    * Returns a boolean indicating if we're low on disk space.
    */
-  getLowOnSpace: (state) => {
+  getLowOnSpace: (state) => (root: string) => {
+    const diskUsage = state.diskUsage[root]
     // 1073741824 = 1gb
-    return state.diskUsage != null && state.diskUsage.free < 1073741824
+    return diskUsage != null && diskUsage.free < 1073741824
   }
 } satisfies GetterTree<FilesState, RootState>
