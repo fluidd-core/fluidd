@@ -1,9 +1,46 @@
 <template>
   <collapsable-card
+    v-if="roots.length > 0"
     :title="$t('app.file_system.label.diskinfo')"
     icon="$harddisk"
   >
-    <v-card-text v-if="diskUsage">
+    <v-toolbar dense>
+      <v-tabs
+        v-model="tab"
+        show-arrows
+      >
+        <v-tab
+          v-for="(root, index) in roots"
+          :key="index"
+        >
+          {{ root }}
+        </v-tab>
+      </v-tabs>
+
+      <v-spacer />
+
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <app-btn
+            v-bind="attrs"
+            icon
+            :disabled="!diskUsage || loading"
+            @click.prevent.stop="handleRefresh()"
+            v-on="on"
+          >
+            <v-icon
+              dense
+              :class="{ 'spin-alt': loading }"
+            >
+              $refresh
+            </v-icon>
+          </app-btn>
+        </template>
+        <span>{{ $t('app.general.btn.refresh') }}</span>
+      </v-tooltip>
+    </v-toolbar>
+
+    <v-card-text>
       <v-layout justify-space-between>
         <div>
           {{ $t('app.file_system.label.disk_usage') }}
@@ -21,79 +58,75 @@
       <v-layout justify-space-between>
         <div>
           <span class="focus--text">
-            {{ $filters.getReadableFileSizeString(diskUsage.used) }}
+            {{
+              diskUsage != null
+                ? $filters.getReadableFileSizeString(diskUsage.used)
+                : '?'
+            }}
           </span>
           <span class="secondary--text">{{ $t('app.general.label.used') }}</span>
         </div>
         <div>
           <span class="focus--text">
-            {{ $filters.getReadableFileSizeString(diskUsage.free) }}
+            {{
+              diskUsage != null
+                ? $filters.getReadableFileSizeString(diskUsage.free)
+                : '?'
+            }}
           </span>
           <span class="secondary--text">{{ $t('app.general.label.free') }}</span>
         </div>
       </v-layout>
     </v-card-text>
-
-    <v-simple-table
-      v-if="sdInfo"
-      dense
-    >
-      <tbody>
-        <tr v-if="sdInfo.manufacturer">
-          <th>{{ $t('app.system_info.label.manufacturer') }}</th>
-          <td>{{ sdInfo.manufacturer }}</td>
-        </tr>
-        <tr v-if="sdInfo.manufacturer_date">
-          <th>{{ $t('app.system_info.label.manufactured') }}</th>
-          <td>{{ sdInfo.manufacturer_date }}</td>
-        </tr>
-        <tr v-if="sdInfo.product_name">
-          <th>{{ $t('app.system_info.label.product_name') }}</th>
-          <td>{{ sdInfo.product_name }} {{ sdInfo.product_revision }}</td>
-        </tr>
-        <tr v-if="sdInfo.capacity">
-          <th>{{ $t('app.system_info.label.capacity') }}</th>
-          <td>{{ sdInfo.capacity }}</td>
-        </tr>
-        <tr v-if="sdInfo.serial_number">
-          <th>{{ $t('app.system_info.label.serial_number') }}</th>
-          <td>{{ sdInfo.serial_number }}</td>
-        </tr>
-      </tbody>
-    </v-simple-table>
   </collapsable-card>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import type { SystemInfo } from '@/store/server/types'
+import { Component, Mixins } from 'vue-property-decorator'
 import type { DiskUsage } from '@/store/files/types'
 import { SocketActions } from '@/api/socketActions'
+import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class PrinterStatsCard extends Vue {
-  get sdInfo () {
-    const info: SystemInfo | null = this.$typedState.server.system_info
+export default class DiskUsageCard extends Mixins(StateMixin) {
+  tab: number | null = null
 
-    return info?.sd_info
+  get roots (): string[] {
+    return this.$typedState.server.info.registered_directories
   }
 
-  get fileSystemUsedPercent () {
-    const diskUsage = this.diskUsage
-
-    return diskUsage == null
-      ? 0
-      : Math.floor((diskUsage.used / diskUsage.total) * 100)
+  get currentRoot (): string | null {
+    return this.tab != null
+      ? this.roots[this.tab] ?? null
+      : null
   }
 
-  get diskUsage (): DiskUsage | null {
-    const diskUsage: DiskUsage | null = this.$typedState.files.diskUsage
+  get loading (): boolean {
+    return this.hasWait(`${this.$waits.onFileSystem}/${this.currentRoot}/`)
+  }
 
-    if (diskUsage == null) {
-      SocketActions.serverFilesGetDirectory('config')
+  get diskUsage (): DiskUsage | undefined {
+    if (this.currentRoot != null) {
+      const diskUsage: DiskUsage | undefined = this.$typedState.files.diskUsage[this.currentRoot]
+
+      if (diskUsage == null) {
+        SocketActions.serverFilesGetDirectory(this.currentRoot)
+      }
+
+      return diskUsage
     }
+  }
 
-    return diskUsage
+  get fileSystemUsedPercent (): number {
+    return this.diskUsage == null
+      ? 0
+      : Math.floor((this.diskUsage.used / this.diskUsage.total) * 100)
+  }
+
+  handleRefresh () {
+    if (this.currentRoot != null) {
+      SocketActions.serverFilesGetDirectory(this.currentRoot)
+    }
   }
 }
 </script>

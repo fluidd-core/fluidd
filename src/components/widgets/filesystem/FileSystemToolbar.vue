@@ -11,7 +11,7 @@
     <v-spacer />
 
     <v-tooltip
-      v-if="lowOnSpace && !loading"
+      v-if="klippyReady && !loading && lowOnSpace"
       bottom
     >
       <template #activator="{ on, attrs }">
@@ -209,8 +209,7 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   }
 
   get lowOnSpace (): boolean {
-    if (!this.klippyReady) return false
-    return this.$typedGetters['files/getLowOnSpace']
+    return this.$typedGetters['files/getLowOnSpace'](this.root)
   }
 
   // Properties of the current root.

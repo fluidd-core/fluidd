@@ -7,7 +7,7 @@ export interface FilesState {
   uploads: FileUpload[];
   download: FileDownload | null;
   currentPaths: Record<string, string>;
-  diskUsage: DiskUsage | null;
+  diskUsage: Record<string, DiskUsage | undefined>;
   rootFiles: Record<string, MoonrakerRootFile[] | undefined>;
   pathContent: Record<string, MoonrakerPathContent | undefined>;
 }
