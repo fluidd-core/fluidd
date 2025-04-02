@@ -101,6 +101,8 @@ export interface SpoolSelectionDialogState {
   show: boolean;
   filename?: string;
   targetMacro?: string;
+  spoolSelectionOnly?: boolean;
+  selectedSpoolId?: number;
 }
 
 export interface WebsocketBasePayload {

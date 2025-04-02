@@ -281,7 +281,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   @Watch('open')
   onOpen () {
     if (this.open) {
-      if (this.targetMacro) {
+      if (this.spoolSelectionOnly) {
+        this.selectedSpoolId = this.$typedState.spoolman.dialog.selectedSpoolId ?? null
+      } else if (this.targetMacro) {
         const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
 
         this.selectedSpoolId = typeof macro?.variables?.spool_id === 'number'
@@ -440,6 +442,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$typedGetters['files/getFile'](rootPath, filename)
   }
 
+  get spoolSelectionOnly (): boolean {
+    return this.$typedState.spoolman.dialog.spoolSelectionOnly ?? false
+  }
+
   get targetMacro (): string | undefined {
     return this.$typedState.spoolman.dialog.targetMacro
   }
@@ -485,6 +491,15 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   async handleSelectSpool () {
+    if (this.spoolSelectionOnly) {
+      // save selection for parent dialog
+      this.$typedCommit('spoolman/setDialogState', {
+        show: false,
+        selectedSpoolId: this.selectedSpoolId ?? undefined
+      })
+      return
+    }
+
     if (!this.selectedSpoolId) {
       // no spool selected
 
@@ -587,6 +602,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     }
 
     await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
+
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
 

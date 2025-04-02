@@ -142,6 +142,13 @@ export const defaultState = (): ConfigState => {
       history: {
         timeInDays: false,
         lengthInKilometers: false
+      },
+      mmu: {
+        showClogDetection: true,
+        showTtgMap: true,
+        showDetails: true,
+        largeFilamentStatus: false,
+        showLogos: false
       }
     }
   }

@@ -53,6 +53,7 @@ import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
 import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
 import SpoolmanCard from '@/components/widgets/spoolman/SpoolmanCard.vue'
+import MmuCard from '@/components/widgets/mmu/MmuCard.vue'
 import SensorsCard from '@/components/widgets/sensors/SensorsCard.vue'
 import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
 import BeaconCard from '@/components/widgets/beacon/BeaconCard.vue'
@@ -74,6 +75,7 @@ import type { KlipperPrinterSettings } from '@/store/printer/types'
     GcodePreviewCard,
     JobQueueCard,
     SpoolmanCard,
+    MmuCard,
     SensorsCard,
     RunoutSensorsCard,
     BeaconCard
@@ -143,6 +145,10 @@ export default class Dashboard extends Mixins(StateMixin) {
 
   get supportsSpoolman (): boolean {
     return this.$typedGetters['server/componentSupport']('spoolman')
+  }
+
+  get supportsMmu (): boolean {
+    return this.$typedState.printer.printer.mmu != null
   }
 
   get hasMacros (): boolean {
@@ -217,6 +223,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'beacon-card' && !this.supportsBeacon) return true
     if (item.id === 'runout-sensors-card' && !this.supportsRunoutSensors) return true
     if (item.id === 'spoolman-card' && !this.supportsSpoolman) return true
+    if (item.id === 'mmu-card' && !this.supportsMmu) return true
     if (item.id === 'sensors-card' && !this.hasSensors) return true
     if (item.id === 'temperature-card' && !this.hasHeatersOrTemperatureSensors) return true
 
