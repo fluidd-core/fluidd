@@ -158,6 +158,30 @@
               </div>
             </template>
 
+            <template #[`item-value.initial_weight`]="{ value }">
+              {{ $filters.getReadableWeightString(value) }}
+            </template>
+
+            <template #[`item-value.used_weight`]="{ value }">
+              {{ $filters.getReadableWeightString(value) }}
+            </template>
+
+            <template #[`item-value.remaining_weight`]="{ value }">
+              {{ $filters.getReadableWeightString(value) }}
+            </template>
+
+            <template #[`item-value.initial_length`]="{ value }">
+              {{ $filters.getReadableLengthString(value) }}
+            </template>
+
+            <template #[`item-value.used_length`]="{ value }">
+              {{ $filters.getReadableLengthString(value) }}
+            </template>
+
+            <template #[`item-value.remaining_length`]="{ value }">
+              {{ $filters.getReadableLengthString(value) }}
+            </template>
+
             <template #[`item-value.price`]="{ value }">
               {{ $filters.getReadableCurrencyString(value, currency ?? '') }}
             </template>
@@ -340,6 +364,42 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       {
         text: this.$tc('app.spoolman.label.material'),
         value: 'filament.material',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.initial_weight'),
+        value: 'initial_weight',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.used_weight'),
+        value: 'used_weight',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.remaining_weight'),
+        value: 'remaining_weight',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.initial_length'),
+        value: 'initial_length',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.used_length'),
+        value: 'used_length',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.remaining_length'),
+        value: 'remaining_length',
+        visible: false,
         cellClass: 'text-no-wrap'
       },
       {

@@ -931,16 +931,22 @@ app:
       filament_name: Filament
       first_used: First Used
       id: ID
+      initial_length: Initial Length
+      initial_weight: Initial Weight
       last_used: Last Used
+      length: Length
       location: Location
       lot_nr: Lot Nr
       material: Material
       price: Price
-      remaining_weight: Remaining
-      used_weight: Used
+      remaining_length: Remaining Length
+      remaining_weight: Remaining Weight
+      remaining: Remaining
+      used_length: Used Length
+      used_weight: Used Weight
+      used: Used
       vendor: Vendor
       weight: Weight
-      length: Length
     msg:
       no_spool: >-
         You haven't selected a spool.

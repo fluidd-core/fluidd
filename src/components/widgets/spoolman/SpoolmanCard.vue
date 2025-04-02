@@ -109,7 +109,7 @@
             <template v-for="field in fields">
               <status-label
                 :key="`spoolman-card-${field}`"
-                :label="$t(`app.spoolman.label.${field}`)"
+                :label="getFieldLabel(field)"
                 :label-width="86"
               >
                 <template v-if="field === 'remaining_weight'">
@@ -250,6 +250,19 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
 
   getSpoolColor (spool?: Spool) {
     return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
+  }
+
+  getFieldLabel (field: string) {
+    switch (field) {
+      case 'remaining_weight':
+        return this.$t('app.spoolman.label.remaining')
+
+      case 'used_weight':
+        return this.$t('app.spoolman.label.used')
+
+      default:
+        return this.$t(`app.spoolman.label.${field}`)
+    }
   }
 
   getFormattedField (field: string) {
