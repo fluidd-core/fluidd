@@ -93,7 +93,7 @@
 
     <v-progress-linear
       v-if="activeSpool && $vuetify.breakpoint.lgAndDown"
-      value="100"
+      :value="activeSpool.progress"
       :height="6"
       :color="getSpoolColor(activeSpool)"
     />
@@ -160,14 +160,23 @@
           align-self="center"
           class="pa-0"
         >
-          <v-icon
+          <v-progress-circular
             v-if="activeSpool"
-            :color="getSpoolColor(activeSpool)"
-            size="110"
-            class="spool-icon"
+            :rotate="-90"
+            :size="102"
+            :width="7"
+            :value="activeSpool.progress"
+            color="primary"
+            class="mr-4 flex-column"
           >
-            $filament
-          </v-icon>
+            <v-icon
+              :color="getSpoolColor(activeSpool)"
+              size="100"
+              class="spool-icon"
+            >
+              $filament
+            </v-icon>
+          </v-progress-circular>
           <v-icon
             v-else-if="isConnected"
             size="55"
@@ -184,6 +193,15 @@
         </v-col>
       </v-row>
     </v-card-text>
+
+    <template #collapsed-content>
+      <v-progress-linear
+        v-if="activeSpool"
+        :value="activeSpool.progress"
+        :height="6"
+        :color="getSpoolColor(activeSpool)"
+      />
+    </template>
   </collapsable-card>
 </template>
 
