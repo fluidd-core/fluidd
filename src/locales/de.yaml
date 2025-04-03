@@ -22,6 +22,7 @@ app:
       delete: Profil löschen
       load: Profil laden
       save: Fügt das Mesh Profil der printer.cfg hinzu
+      download_image: Bett-Mesh-Abbildung herunterladen
   chart:
     label:
       current: Aktuell
@@ -100,6 +101,7 @@ app:
       uploaded: Hochgeladen
       view_section_documentation: >-
         Dokumentation für '%{section}' anzeigen
+      sd_card_info: SD-Karten-Informationen
     msg:
       not_found: Keine Dateien gefunden
       processing: Verarbeiten
@@ -970,14 +972,20 @@ app:
       lot_nr: Charge
       material: Material
       price: Preis
-      remaining_weight: Verbleibend
-      used_weight: Verbraucht
+      remaining_weight: Verbleibendes Gewicht
+      used_weight: Verbrauchtes Gewicht
       vendor: Hersteller
       id: ID
       weight: Gewicht
       length: Länge
       colors: Farben
       diameter: Durchmesser
+      used_length: Verbrauchte Länge
+      used: Verbraucht
+      initial_length: Ursprüngliche Länge
+      remaining: Verbleibend
+      initial_weight: Ursprüngliches Gewicht
+      remaining_length: Verbleibende Länge
     msg:
       no_spool: >-
         Sie haben keine Spule ausgewählt.
@@ -1069,3 +1077,142 @@ app:
       active: aktiv
       model_name: Modell-Name
       remove_model: Modell %{name} entfernen
+  mmu:
+    msg:
+      select_gate: Wählen Sie Gates/Spuleninformationen aus, die Sie bearbeiten möchten
+      no_matching_spool: Keine übereinstimmende Spule gefunden
+      spoolman_off: Spoolman-Unterstützung ist "%{mode}" in Happy Hare. Die Zuordnung
+        einer Spulen-ID zu einem Gate ist deaktiviert
+      spoolman_other: Spoolman-Unterstützung ist "%{mode}". Sie können optional eine
+        Spulen-ID zuweisen oder die Attribute des Gates direkt bearbeiten
+      are_you_sure: Sind Sie sicher?
+      maintenance_intro: Verwalten Sie spezifische MMU-Funktionen und ausgewählte
+        Konfigurationen.
+      reset_ttg_map_confirmation: Dies setzt die gesamte Werkzeug-zu-Gate- Zuordnung
+        und Endlosspulengruppen zurück auf die Standardwerte, welche in 'mmu_parameters.cfg'
+        definiert sind, oder eine 1:1-Zuordnung, wenn keine Standardwerte verfügbar
+        sind
+      spoolman_pull: Spoolman-Unterstützung ist im "%{mode}"-Modus. Lokales bearbeiten
+        der meisten Gate-Eigenschaften ist deaktiviert. Weisen Sie eine Spulen/Gate-Zuordnung
+        in der Spoolman-Datenbank zu oder nutzen Sie direkt den MMU_SPOOLMAN-Befehl
+      reset_gate_map_confirmation: Dies setzt die gesamte Gate-Zuordnung zurück auf
+        die in 'mmu_parameters.cfg' definierten werte oder eine leere Zuordnung, wenn
+        keine Standardwerte verfügbar sind
+      filament_available: Filament im Gate verfügbar
+      color: Farbe
+      no_tool: Ein Werkzeug muss ausgewählt werden
+      temperature: Temperatur
+      bad_temperature: Temperatur außerhalb des Bereichs
+      warning_prefix: Warnung-
+      material: Werkstoff
+      no_gate_data: Keine Gate-Daten
+      no_custom_controls: Keine benutzerdefinierten Steuerungen
+      filament_loaded: Ist das Filament vollständig geladen oder vollständig entladen?
+      gate_bypass: Gate ist auf Bypass gesetzt!
+      no_gate: Ein Gate muss ausgewählt sein
+      remap: Dies wird das Gate zu %{tool} neu zuordnen
+      set_tool: Auf aktuelles Werkzeug setzen
+      tool_bypass: Werkzeug ist auf Bypass gesetzt!
+      no_active_spool: Keine aktive Spule
+      single_color: Dies sieht nach einem einfarbigem Druck aus, aber Sie haben keinen
+        Bypass für Ihre MMU ausgewählt. Sie sollten eventuell ihr ausgewähltes Werkzeug
+        überprüfen
+      map_slicer_tools: Slicer-Werkzeuge zu MMU-Gates für den Druck zuordnen
+      map_tools: Werkzeuge zu MMU-Gates zuordnen
+      mismatch: Mögliche fehlerhafte Filamentübereinstimmung
+      select_tool: Wählen Sie ein Werkzeug zur Zuordnung aus und danach ein Gate aus
+        der Liste
+      set_gate: Auf aktuelles Gate setzen
+      no_spool_id: Keine Spulen-ID
+      no_position: Positionswiederherstellung versuchen
+      recover_filament_position: Filamentposition wiederherstellen
+      multi_color: Dies sieht nach einem Mehrmaterial-Druck mit nur einem Extruder
+        und %{numTools} Werkzeugen aus. Sie sollten wahrscheinlich die Werkzeugzuordnung
+        überprüfen
+      recover_intro: Dies ist eine low-level-Wiederherstellung für den Fall, dass
+        Happy Hare die Synchronisierung zu Ihrer MMU verliert. Es wird empfohlen,
+        zunächst eine automatische Wiederherstellung auszuprobieren. Jene wird jedoch
+        benötigt, um das aktuelle Werkzeug oder Gate zu korrigieren (alternativ können
+        auf Typ-A-MMUs die Selektoren entladen und gehomed werden).
+      tool_not_used: Werkzeug %{tool} wird in diesem Druck nicht genutzt, wählen Sie
+        eine Standardzuordnung aus
+      no_slicer_info: Keine Slicer-Informationen, wählen Sie eine Standardzuordnung
+        für %{tool} aus
+    btn:
+      check_all_gates: Alle Gates prüfen
+      check_gate: Gate prüfen
+      preload: Vorladen
+      print_stats: Druckstatistik
+      sync_spoolman: Spoolman synchronisieren
+      mmu_maintenance: MMU-Wartung
+      edit_gate_map: Filamente bearbeiten
+      edit_ttg_map: Werkzeuge / Filamente zuordnen
+      sync: Synchronisieren
+      unsync: Entsynchronisieren
+      recover_state: MMU-Status beheben
+      off: Aus
+      on: Ein
+      move: Verschieben
+      reset: Zurücksetzen
+      load: Laden
+      eject: Auswerfen
+      unload: Entladen
+      recover: Wiederherstellen
+      unlock: Entsperren
+      cancel: Abbrechen
+      load_ext: Ext Laden
+      unload_ext: Ext Entladen
+      up: Hoch
+      down: Runter
+      grip: Halten
+      release: Loslassen
+    title:
+      headline: MMU
+      recover_state: MMU-Status beheben (Fehlerbehebung)
+      edit_ttg_map: Werkzeuge / Filamente zuordnen (TTG-Map bearbeiten)
+      edit_gate_map: Filamente bearbeiten (Gate-Map bearbeiten)
+      mmu_maintenance: MMU-Wartung
+    label:
+      tool_mapping: Werkeugzuordnung
+      spoolman_id: Spoolman ID
+      choose_spool: Spule auswählen
+      filament_name: Filamentname
+      motor_sync: Extrudermotor-Synchronisierung
+      config: Konfiguration
+      skip_automap: Autozuordnung überspringen
+      filament_info: Filamentinformation
+      spoolman_last_used: Letzte Nutzung
+      spoolman: Spoolman
+      temperature: Temperatur
+      extruder_only: Nur Extruder
+      mmu_motors: MMU-Motoren
+      selector: Selektor
+      animation: Animation
+      enable: Aktivieren
+      unknown: Unbekannt
+      ok: OK
+      save: Speichern
+      cancel: Abbrechen
+      spoolman_never: Nie
+      spoolman_today: Heute
+      spoolman_yesterday: Gestern
+      spoolman_days_ago: vor %{days} Tagen
+      clog_detection: Verstopfungserkennung
+      leds: LEDs
+      all_tools: Alle Werkzeuge
+      material: Werkstoff
+      reset: Zurücksetzen
+      load_speed: Ladegeschwindigkeit
+      gate: Gate
+      endless_spool: ES ∞
+      slicer_expects: Slicer erwartet
+    tooltip:
+      empty: Leer
+      spoolid: Spulen-ID
+      color: Farbe
+    setting:
+      show_logos: Logos anzeigen
+      show_clog_detection: Verstopfungserkennung anzeigen
+      show_details: Filamentdetails anzeigen
+      large_filament_status: Großer Filamentstatus
+      show_ttg_map: TTG-Zuordnung anzeigen
