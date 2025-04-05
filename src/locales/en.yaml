@@ -22,7 +22,7 @@ app:
       delete: Delete Profile
       load: Load Profile
       save: Commits calibrated profile to printer.cfg
-      copy_image: Copy bed mesh image
+      download_image: Download bed mesh image
   chart:
     label:
       current: Actual
@@ -91,6 +91,7 @@ app:
       dir_name: Directory name
       disk_usage: Disk Usage
       diskinfo: Disk Information
+      sd_card_info: SD Card Information
       downloaded: Downloaded
       file_name: Filename
       transfer_rate: Transfer rate
@@ -294,6 +295,7 @@ app:
       layer: Layer
       layout: Layout
       ldap: LDAP
+      length_in_kilometers: Length in kilometers
       longest_job: Longest job
       low: Low
       manage_accounts: Manage Accounts
@@ -332,6 +334,7 @@ app:
       stepper_enabled: Stepper Enabled
       synced_extruder: Synced Extruder
       thumbnail_size: Thumbnail Size
+      time_in_days: Time in days
       total: Total
       total_filament: Total filament used
       total_filament_avg: Avg per print
@@ -620,6 +623,7 @@ app:
       enable_xy_homing: Enable XY Homing
       expression: Expression
       extrusion_line_width: Extrusion Line Width
+      firmware_restart: Firmware Restart
       flip_horizontal: Horizontal Flip
       flip_vertical: Vertical Flip
       fill_color: Fill color
@@ -631,11 +635,13 @@ app:
       height: Height
       hide_single_part_bounding_box: Hide part bounding box when printing a single part
       gcode_coords: Use GCode Coordinates
+      host_restart: Host Restart
       icon: Icon
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
       keyboard_shortcuts: Keyboard shortcuts
+      klipper_save_and_restart_action: Klipper Save & Restart action
       language: Display Language
       last_result: Last result
       left_y: Left Y-Axis
@@ -661,6 +667,7 @@ app:
       right_y: Right Y-Axis
       save_and_restore_view_state: Save and restore view state
       sections_to_ignore_pending_configuration_changes: Sections to ignore Pending Configuration Changes
+      service_restart: Service Restart
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
       show_chart: Show chart
@@ -924,16 +931,22 @@ app:
       filament_name: Filament
       first_used: First Used
       id: ID
+      initial_length: Initial Length
+      initial_weight: Initial Weight
       last_used: Last Used
+      length: Length
       location: Location
       lot_nr: Lot Nr
       material: Material
       price: Price
-      remaining_weight: Remaining
-      used_weight: Used
+      remaining_length: Remaining Length
+      remaining_weight: Remaining Weight
+      remaining: Remaining
+      used_length: Used Length
+      used_weight: Used Weight
+      used: Used
       vendor: Vendor
       weight: Weight
-      length: Length
     msg:
       no_spool: >-
         You haven't selected a spool.
@@ -978,6 +991,127 @@ app:
       warn_on_filament_type_mismatch: >-
         Show a warning when the spool's filament type and the one selected in the slicer don't match
       remaining_filament_unit: Show remaining filament as
+  mmu:
+    btn:
+      check_all_gates: Check All Gates
+      check_gate: Check Gate
+      eject: Eject
+      load: Load
+      load_ext: Load Ext
+      unload: Unload
+      unload_ext: Unload Ext
+      preload: Preload
+      print_stats: Print Stats
+      recover: Recover
+      sync_spoolman: Sync Spoolman
+      unlock: Unlock
+      cancel: Cancel
+      mmu_maintenance: MMU Maintenance
+      recover_state: Fix MMU State
+      edit_gate_map: Edit Filaments
+      edit_ttg_map: Map Tools / Filaments
+      sync: Sync
+      unsync: Unsync
+      off: Off
+      on: On
+      home: Home
+      up: Up
+      down: Down
+      move: Move
+      grip: Grip
+      release: Release
+      reset: Reset
+    title:
+      headline: Mmu
+      mmu_maintenance: MMU Maintenance
+      recover_state: Fix MMU State (Error Recover)
+      edit_gate_map: Edit Filaments (Edit Gate Map)
+      edit_ttg_map: Map Tools / Filaments (Edit TTG Map)
+    label:
+      clog_detection: Clog Detection
+      tool_mapping: Tool Mapping
+      spoolman: Spoolman
+      spoolman_id: Spoolman ID
+      choose_spool: Choose Spool
+      filament_name: Filament Name
+      load_speed: Load speed override
+      material: Material
+      reset: Reset
+      temperature: Temperature
+      motor_sync: Extruder Motor Sync
+      extruder_only: Extruder Only
+      mmu_motors: MMU Motors
+      extruder_tx: Tools Tx
+      selector: Selector
+      leds: LEDs
+      ui_visual: UI Visual
+      animation: Animation
+      config: Config
+      enable: Enable
+      unknown: Unknown
+      skip_automap: Skip Automap
+      all_tools: All Tools
+      ok: Ok
+      save: Save
+      cancel: Cancel
+      gate: Gate
+      endless_spool: ES ∞
+      filament_info: Filament Information
+      slicer_expects: Slicer Expects
+      spoolman_last_used: Last Used
+      spoolman_never: Never
+      spoolman_today: Today
+      spoolman_yesterday: Yesterday
+      spoolman_days_ago: '%{days} days ago'
+    tooltip:
+      empty: Empty
+      color: Color
+      spoolid: Spool ID
+    msg:
+      reset_gate_map_confirmation: This will reset the entire gate map back to the default defined in 'mmu_parameters.cfg' or empty map if no defaults are available
+      reset_ttg_map_confirmation: This will reset the entire tool-to-gate mapping and endless spool groups back to the default defined in 'mmu_parameters.cfg' or default 1:1 mapping in no defaults are available
+      select_gate: Select gate/spool info you would like to edit
+      spoolman_off: Spoolman support is "%{mode}" in Happy Hare. Assigning spool id to a gate is disabled
+      spoolman_other: Spoolman support is "%{mode}". You can optionally assign a spool id or edit gate attributes directly
+      spoolman_pull: Spoolman support is in "%{mode}" mode. Local editing of most gate properties is disabled. Assign spool/gate mapping in spoolman DB directly or use the MMU_SPOOLMAN command
+      no_matching_spool: No matching spool found
+      are_you_sure: Are you sure?
+      bad_temperature: Temperature out of range
+      filament_available: Filament available in gate
+      maintenance_intro: Directly manage specific MMU functions and selective configuration.
+      recover_intro: This is a low level recovery for use when Happy Hare is out of sync with your MMU. It is recommended to try automatic recovery first however this will be required to correct the current tool or gate (Alternatively on Type-A MMU's you can unload and home the selector).
+      no_custom_controls: No Custom Controls
+      filament_loaded: Is the filament completely loaded to the extruder or completely unloaded?
+      gate_bypass: Gate is set to Bypass!
+      no_gate: A gate must be selected
+      no_position: Attempt to recover position
+      no_tool: A tool must be selected
+      remap: This will remap gate to %{tool}
+      set_gate: Set to the current gate
+      set_tool: Set to the current tool
+      tool_bypass: Tool is set to Bypass!
+      warning_prefix: Warning-
+      no_active_spool: No active spool
+      no_spool_id: No spool ID
+      recover_filament_position: Recover Filament Position
+      multi_color: This looks like a Multi Material Single Extruder print using %{numTools} tools. You should probably review tool mapping
+      single_color: This looks like a single color print but you don't have the bypass selected on your MMU. You may want to check the chosen tool
+      map_slicer_tools: Map slicer tools to MMU gates for print
+      map_tools: Map tools to MMU gates
+      tool_not_used: Tool %{tool} not used in this print, choose default mapping
+      mismatch: Possible filament mismatch
+      color: Color
+      material: Material
+      temperature: Temperature
+      no_gate_data: No gate data
+      no_slicer_info: No slicer information, choose default mapping for %{tool}
+      select_tool: Select Tool to map then choose gate from list
+    setting:
+      large_filament_status: Large Filament Status
+      show_clog_detection: Show Clog Detection
+      show_details: Show Filament Details
+      show_ttg_map: Show TTG Map
+      show_logos: Show Logos
   sensors:
     title:
       sensors: Sensors

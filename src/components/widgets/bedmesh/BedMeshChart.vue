@@ -1,7 +1,9 @@
 <template>
   <div
     class="chart"
-    :style="{ 'height': height }"
+    :style="{
+      height: $filters.getPixelsString(height)
+    }"
   >
     <e-chart
       ref="chart"
@@ -23,6 +25,7 @@ import type { ECharts, EChartsOption, GraphicComponentOption } from 'echarts'
 import { merge, cloneDeepWith } from 'lodash-es'
 import BrowserMixin from '@/mixins/browser'
 import type { BedSize } from '@/store/printer/types'
+import downloadUrl from '@/util/download-url'
 
 @Component({})
 export default class BedMeshChart extends Mixins(BrowserMixin) {
@@ -35,8 +38,8 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
   @Prop({ type: Object, default: () => {} })
   readonly options!: Record<string, unknown>
 
-  @Prop({ type: String, default: '100%' })
-  readonly height!: string
+  @Prop({ type: [String, Number], default: '100%' })
+  readonly height!: string | number
 
   @Ref('chart')
   readonly chart!: ECharts
@@ -239,16 +242,18 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
     return opts
   }
 
-  async copyImage () {
-    const image = await fetch(this.chart.getDataURL({ type: 'png', backgroundColor: '#262629' }))
+  async downloadImage () {
+    const url = this.chart.getDataURL({
+      type: 'png',
+      backgroundColor: '#262629'
+    })
 
-    const blob = await image.blob()
+    const filename = [
+      'bedmesh',
+      this.$typedState.printer.printer.bed_mesh?.profile_name
+    ].filter(x => x).join('-')
 
-    const data = [
-      new ClipboardItem({ 'image/png': blob })
-    ]
-
-    await navigator.clipboard.write(data)
+    downloadUrl(filename, url)
   }
 }
 </script>

@@ -39,7 +39,7 @@ export const getters = {
   hasUpdate: (state) => (component: string): boolean => {
     const componentVersionInfo = state.version_info[component]
 
-    if ('name' in componentVersionInfo) {
+    if ('name' in componentVersionInfo && componentVersionInfo.name !== 'system') {
       const version = valid(componentVersionInfo.version)
       const remoteVersion = valid(componentVersionInfo.remote_version)
       if (version && remoteVersion) {

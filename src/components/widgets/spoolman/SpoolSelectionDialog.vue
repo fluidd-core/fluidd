@@ -94,7 +94,7 @@
       />
     </v-toolbar>
 
-    <v-card-text class="pa-0 file-system">
+    <div class="file-system">
       <v-data-table
         :items="availableSpools"
         :headers="headers"
@@ -109,6 +109,7 @@
         class="spool-table"
         hide-default-footer
         disable-pagination
+        fixed-header
         @update:sort-by="handleSortOrderKeyChange"
         @update:sort-desc="handleSortOrderDescChange"
       >
@@ -122,13 +123,23 @@
           >
             <template #[`item.filament_name`]>
               <div class="d-flex my-1">
-                <v-icon
-                  :color="getSpoolColor(item)"
-                  size="42px"
-                  class="mr-4 flex-column spool-icon"
+                <v-progress-circular
+                  :rotate="-90"
+                  :size="44"
+                  :width="3"
+                  :value="item.remaining_weight / item.initial_weight * 100"
+                  color="primary"
+                  class="mr-4 flex-column"
                 >
-                  {{ item.id === selectedSpoolId ? '$markedCircle' : '$filament' }}
-                </v-icon>
+                  <v-icon
+                    :color="getSpoolColor(item)"
+                    size="42"
+                    class="spool-icon"
+                  >
+                    {{ item.id === selectedSpoolId ? '$markedCircle' : '$filament' }}
+                  </v-icon>
+                </v-progress-circular>
+
                 <div class="flex-column">
                   <div class="flex-row">
                     {{ item.filament_name }}
@@ -145,6 +156,30 @@
                   </div>
                 </div>
               </div>
+            </template>
+
+            <template #[`item-value.initial_weight`]="{ value }">
+              {{ $filters.getReadableWeightString(value) }}
+            </template>
+
+            <template #[`item-value.used_weight`]="{ value }">
+              {{ $filters.getReadableWeightString(value) }}
+            </template>
+
+            <template #[`item-value.remaining_weight`]="{ value }">
+              {{ $filters.getReadableWeightString(value) }}
+            </template>
+
+            <template #[`item-value.initial_length`]="{ value }">
+              {{ $filters.getReadableLengthString(value) }}
+            </template>
+
+            <template #[`item-value.used_length`]="{ value }">
+              {{ $filters.getReadableLengthString(value) }}
+            </template>
+
+            <template #[`item-value.remaining_length`]="{ value }">
+              {{ $filters.getReadableLengthString(value) }}
             </template>
 
             <template #[`item-value.price`]="{ value }">
@@ -189,7 +224,7 @@
           </app-data-table-row>
         </template>
       </v-data-table>
-    </v-card-text>
+    </div>
 
     <template #actions>
       <v-spacer v-if="isMobileViewport" />
@@ -270,7 +305,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   @Watch('open')
   onOpen () {
     if (this.open) {
-      if (this.targetMacro) {
+      if (this.spoolSelectionOnly) {
+        this.selectedSpoolId = this.$typedState.spoolman.dialog.selectedSpoolId ?? null
+      } else if (this.targetMacro) {
         const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
 
         this.selectedSpoolId = typeof macro?.variables?.spool_id === 'number'
@@ -327,6 +364,42 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       {
         text: this.$tc('app.spoolman.label.material'),
         value: 'filament.material',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.initial_weight'),
+        value: 'initial_weight',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.used_weight'),
+        value: 'used_weight',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.remaining_weight'),
+        value: 'remaining_weight',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.initial_length'),
+        value: 'initial_length',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.used_length'),
+        value: 'used_length',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.remaining_length'),
+        value: 'remaining_length',
+        visible: false,
         cellClass: 'text-no-wrap'
       },
       {
@@ -429,6 +502,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$typedGetters['files/getFile'](rootPath, filename)
   }
 
+  get spoolSelectionOnly (): boolean {
+    return this.$typedState.spoolman.dialog.spoolSelectionOnly ?? false
+  }
+
   get targetMacro (): string | undefined {
     return this.$typedState.spoolman.dialog.targetMacro
   }
@@ -474,6 +551,15 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   async handleSelectSpool () {
+    if (this.spoolSelectionOnly) {
+      // save selection for parent dialog
+      this.$typedCommit('spoolman/setDialogState', {
+        show: false,
+        selectedSpoolId: this.selectedSpoolId ?? undefined
+      })
+      return
+    }
+
     if (!this.selectedSpoolId) {
       // no spool selected
 
@@ -576,6 +662,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     }
 
     await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
+
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
 
@@ -642,3 +729,13 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .file-system,
+  .file-system :deep(.v-data-table) {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    height: 100%;
+  }
+</style>

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { Component, Emit, Prop, Ref, Watch } from 'vue-property-decorator'
 import type { WebcamConfig } from '@/store/webcams/types'
-import consola from 'consola'
+import { consola } from 'consola'
 import type { CameraConnectionStatus, CameraNameMenuItem } from '@/types'
 
 @Component

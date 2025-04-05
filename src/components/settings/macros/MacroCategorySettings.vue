@@ -77,7 +77,7 @@
             </template>
 
             <template
-              v-if="macro.config.description && macro.config.description !== 'G-Code macro'"
+              v-if="macro.config?.description && macro.config.description !== 'G-Code macro'"
               #sub-title
             >
               <span class="ml-1 mr-2">

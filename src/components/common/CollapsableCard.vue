@@ -71,7 +71,6 @@
         id="card-content"
         :class="_contentClasses"
         :style="_contentStyles"
-        @transitionend="transitionEvent"
       >
         <template v-if="subTitle || hasSubTitleSlot">
           <v-card-subtitle class="py-2">
@@ -83,7 +82,6 @@
           <v-divider />
         </template>
 
-        <!-- Primary Content slot -->
         <slot />
       </div>
     </v-expand-transition>
@@ -94,13 +92,10 @@
         id="card-content"
         :class="_contentClasses"
         :style="_contentStyles"
-        @transitionend="transitionEvent"
       >
-        <template
-          v-if="subTitle || hasSubTitleSlot"
-        >
+        <template v-if="subTitle || hasSubTitleSlot">
           <v-card-subtitle class="py-2">
-            <slot name="subTitle">
+            <slot name="sub-title">
               <span v-html="subTitle" />
             </slot>
           </v-card-subtitle>
@@ -108,7 +103,6 @@
           <v-divider />
         </template>
 
-        <!-- Primary Content slot -->
         <slot />
       </div>
     </v-expand-transition>
@@ -392,26 +386,6 @@ export default class CollapsableCard extends Vue {
 
   mounted () {
     this.$emit('collapsed', this.isCollapsed)
-    if (this.hasCollapseButtonSlot) {
-      // this.collapsable = false
-    }
-  }
-
-  onCollapseChange (isCollapsed: boolean) {
-    this.isCollapsed = isCollapsed
-  }
-
-  onLayoutEnabled (event: Event) {
-    this.$emit('enabled', event)
-  }
-
-  transitionEvent (event: TransitionEvent) {
-    if (
-      event.target instanceof HTMLElement &&
-      event.target.id === 'card-content'
-    ) {
-      this.$emit('transition-end')
-    }
   }
 }
 </script>

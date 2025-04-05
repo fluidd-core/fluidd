@@ -22,7 +22,7 @@ app:
       delete: Видалити профіль
       load: Завантажити профіль
       save: Зберегти калібрований профіль в printer.cfg
-      copy_image: Скопіюйте сітчасте зображення ліжка
+      download_image: Завантажте зображення сітки для ліжка
   chart:
     label:
       current: Поточне значення
@@ -45,10 +45,6 @@ app:
       auto_scroll: Автопрокрутка
       flip_layout: Перевернути відображення
       hide_temp_waits: Приховати тимчасові очікування
-    placeholder:
-      command: >-
-        'tab' для автозаповнення, 'help' для списку команд 'стрілки↑ і ↓'
-        історія команд
     tooltip:
       help: Введіть "help" для команд<br />Використовуйте <kbd>Tab</kbd> для автозаповнення<br
         />Використовуйте <kbd>&uarr;</kbd> і <kbd>&darr;</kbd> для історії
@@ -99,6 +95,7 @@ app:
       transfer_rate: Швидкість передачі даних
       uploaded: Завантажено
       view_section_documentation: Перегляд '%{section}' документації
+      sd_card_info: Інформація про SD-карту
     msg:
       not_found: Файли не знайдені
       processing: Обробка
@@ -365,6 +362,8 @@ app:
       environment_facing: Навколишнє середовище
       pause_at_layer_number: Зробіть паузу на номері шару
       circle: Коло
+      time_in_days: Час у днях
+      length_in_kilometers: Довжина в кілометрах
     msg:
       password_changed: Пароль змінено
       wrong_password: У-упс, щось пішло не так. Чи правильний ваш пароль?
@@ -726,6 +725,10 @@ app:
       printer_power_device: Пристрій живлення принтера
       drag_and_drop_functionality_for_files_and_folders: Функція перетягування файлів
         і папок
+      service_restart: Перезапуск служби
+      host_restart: Перезапуск хоста
+      firmware_restart: Перезапуск прошивки
+      klipper_save_and_restart_action: Відрізає дію «Зберегти та перезапустити»
     timer_options:
       duration: Тільки тривалість
       filament: Нитка розжарення
@@ -953,7 +956,7 @@ app:
       scan_spool: Катушка сканування
       spool_selection: Вибір спула | Вибір спулу для макросу {macro}
     label:
-      remaining_weight: Залишилося
+      remaining_weight: Вага, що залишилася
       id: ID
       vendor: Продавець
       location: Розташування
@@ -971,10 +974,16 @@ app:
       extruder_temp: Температура екструдера
       lot_nr: Лот №
       price: Ціна
-      used_weight: Використовується
+      used_weight: Використана вага
       filament_name: Нитка розжарення
       colors: Кольори
       diameter: Діаметр
+      initial_weight: Початкова вага
+      remaining: Залишилося
+      used_length: Використовувана довжина
+      used: Використовується
+      remaining_length: Довжина, що залишилася
+      initial_length: Початкова довжина
     msg:
       no_spool: Ви не вибрали котушку. Ви впевнені, що хочете друкувати без відстеження
         нитки?
@@ -1044,3 +1053,144 @@ app:
   sensors:
     title:
       sensors: Датчики
+  mmu:
+    btn:
+      cancel: Скасувати
+      mmu_maintenance: Обслуговування MMU
+      off: Вимкнено
+      eject: Витягнути
+      load_ext: Завантажити додатково
+      unload: Розвантажити
+      preload: Попереднє навантаження
+      recover: Відновити
+      unlock: Розблокувати
+      recover_state: Виправити стан MMU
+      edit_gate_map: Редагувати нитки
+      on: Увімкнено
+      home: Додому
+      up: Вгору
+      down: Внизу
+      grip: Хватка
+      release: Звільнення
+      move: Вперед
+      edit_ttg_map: Інструменти карти / нитки
+      unsync: Скасувати синхронізацію
+      check_gate: Перевірити ворота
+      print_stats: Друк статистики
+      check_all_gates: Перевірте всі ворота
+      load: Навантаження
+      reset: Скинути
+      unload_ext: Розвантажити додатково
+      sync_spoolman: Синхронізувати з Spoolman
+      sync: Синхронізувати
+    label:
+      spoolman_never: Ніколи
+      clog_detection: Виявлення засмічень
+      tool_mapping: Відображення інструментів
+      spoolman: Спулман
+      spoolman_id: ID Спулмана
+      filament_name: Назва нитки
+      temperature: Температура
+      motor_sync: Синхронізація двигуна екструдера
+      mmu_motors: Мотори ММУ
+      extruder_tx: Інструменти Tx
+      selector: Селектор
+      leds: Світлодіоди
+      animation: Анімація
+      unknown: Невідомий
+      skip_automap: Пропустити автокарту
+      ok: Гаразд
+      save: Зберегти
+      gate: Ворота
+      spoolman_today: Сьогодні
+      reset: Скинути
+      material: Матеріал
+      load_speed: Перевизначення швидкості навантаження
+      config: Конфігурація
+      enable: Увімкнути
+      cancel: Скасувати
+      slicer_expects: Слайсер очікує
+      spoolman_yesterday: Вчора
+      all_tools: Всі інструменти
+      spoolman_last_used: Останнє використання
+      choose_spool: Виберіть Spool
+      extruder_only: Тільки екструдер
+      ui_visual: Візуальний інтерфейс
+      endless_spool: ES ∞
+      filament_info: Інформація про нитки
+      spoolman_days_ago: '%{days} днів тому'
+    msg:
+      color: Колір
+      select_gate: Виберіть інформацію про ворота/спул, яку ви бажаєте змінити
+      spoolman_other: Підтримка Spoolman — "%{mode}". Ви можете додатково призначити
+        ідентифікатор спулу або безпосередньо редагувати атрибути шлюзу
+      are_you_sure: Ви впевнені?
+      bad_temperature: Температура поза діапазоном
+      filament_available: Нитка доступна в воротах
+      no_custom_controls: Немає спеціальних елементів керування
+      gate_bypass: Ворота налаштовані на обхід!
+      no_tool: Необхідно вибрати інструмент
+      remap: Це переназначить ворота на %{tool}
+      set_tool: Встановити поточний інструмент
+      tool_bypass: Інструмент налаштовано на обхід!
+      no_spool_id: Немає ідентифікатора спула
+      map_slicer_tools: Зіставте інструменти зрізу на ворота MMU для друку
+      map_tools: Інструменти зіставлення з воротами MMU
+      tool_not_used: Інструмент %{tool} не використовується в цьому відбитку, виберіть
+        відображення за замовчуванням
+      mismatch: Можлива невідповідність ниток
+      material: Матеріал
+      temperature: Температура
+      no_gate_data: Немає даних про ворота
+      no_slicer_info: Немає інформації про зріз, виберіть зіставлення за замовчуванням
+        для %{tool}
+      set_gate: Встановити поточний гейт
+      reset_gate_map_confirmation: Це призведе до скидання всієї карти воріт до значень
+        за замовчуванням, визначених у 'mmu_parameters.cfg', або порожньої карти,
+        якщо немає доступних значень за замовчуванням
+      spoolman_off: Підтримка Spoolman є "%{mode}" у Happy Hare. Призначення ідентифікатора
+        спулу шлюзу вимкнено
+      single_color: Це виглядає як однокольоровий друк, але на вашому MMU не вибрано
+        обхід. Ви можете перевірити обраний інструмент
+      select_tool: Виберіть Інструмент для відображення, а потім виберіть ворота зі
+        списку
+      no_active_spool: Немає активної котушки
+      reset_ttg_map_confirmation: Це призведе до скидання всього відображення інструментів
+        до шлюзу та нескінченних груп спулу до значень за замовчуванням, визначених
+        у 'mmu_parameters.cfg', або відображення за замовчуванням 1:1, якщо параметри
+        за замовчуванням недоступні
+      spoolman_pull: Підтримка Spoolman здійснюється в режимі "%{mode}". Локальне
+        редагування більшості властивостей воріт вимкнено. Призначте відображення
+        спулу/шлюзу безпосередньо в базі даних spoolman або скористайтеся командою
+        MMU_SPOOLMAN
+      no_matching_spool: Не знайдено відповідного спулу
+      maintenance_intro: Безпосереднє керування певними функціями MMU та вибірковою
+        конфігурацією.
+      recover_intro: Це низькорівневе відновлення для використання, коли Happy Hare
+        не синхронізується з вашим MMU. Рекомендується спочатку спробувати автоматичне
+        відновлення, однак це буде потрібно для виправлення поточного інструмента
+        або воріт (альтернативно на MMU типу A ви можете вивантажити і повернути селектор
+        до початкового положення).
+      filament_loaded: Нитка повністю завантажена в екструдер чи повністю розвантажена?
+      no_position: Спроба відновити позицію
+      no_gate: Необхідно вибрати ворота
+      warning_prefix: УВАГА-
+      recover_filament_position: Відновити положення нитки
+      multi_color: Це виглядає як багатоматеріальний друк одним екструдером за допомогою
+        %{numTools} інструментів. Ймовірно, вам слід переглянути відображення інструментів
+    title:
+      headline: Мму
+      recover_state: Виправлення стану MMU (відновлення помилок)
+      edit_gate_map: Редагувати нитки (редагувати карту воріт)
+      mmu_maintenance: Обслуговування MMU
+      edit_ttg_map: Інструменти карти / нитки (Редагувати карту TTG)
+    tooltip:
+      empty: Порожній
+      color: Колір
+      spoolid: Ідентифікатор спулу
+    setting:
+      show_details: Показати деталі нитки
+      show_ttg_map: Показати карту ТТГ
+      show_clog_detection: Показати виявлення засмічення
+      show_logos: Показати логотипи
+      large_filament_status: Статус великої нитки

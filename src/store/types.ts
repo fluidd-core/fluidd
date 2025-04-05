@@ -21,6 +21,7 @@ import type { wait } from './wait'
 import type { webcams } from './webcams'
 import type { jobQueue } from './jobQueue'
 import type { spoolman } from './spoolman'
+import type { mmu } from './mmu'
 import type { sensors } from './sensors'
 import type { analysis } from './analysis'
 import type { storeOptions } from '.'
@@ -48,6 +49,7 @@ type RootModulesType = {
   webcams: typeof webcams,
   jobQueue: typeof jobQueue,
   spoolman: typeof spoolman,
+  mmu: typeof mmu,
   sensors: typeof sensors,
   analysis: typeof analysis
 }

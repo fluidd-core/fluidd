@@ -412,8 +412,9 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
   }
 
   .progress-button-image {
-    max-width: 70px;
-    max-height: 70px;
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
     border-radius: 50%;
     overflow: hidden;
     pointer-events: none;

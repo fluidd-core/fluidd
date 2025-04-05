@@ -259,7 +259,11 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
       'comment'
     ].map(field => ({
       value: field,
-      text: this.$t(`app.spoolman.label.${field}`)
+      text: field === 'remaining_weight'
+        ? this.$t('app.spoolman.label.remaining')
+        : field === 'used_weight'
+          ? this.$t('app.spoolman.label.used')
+          : this.$t(`app.spoolman.label.${field}`)
     }))
   }
 

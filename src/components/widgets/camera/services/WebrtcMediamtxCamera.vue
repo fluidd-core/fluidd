@@ -14,7 +14,7 @@
 <script lang="ts">
 import { Component, Ref, Mixins } from 'vue-property-decorator'
 import CameraMixin from '@/mixins/camera'
-import consola from 'consola'
+import { consola } from 'consola'
 
 type RTCConfigurationWithSdpSemantics = RTCConfiguration & {
   sdpSemantics: 'unified-plan'

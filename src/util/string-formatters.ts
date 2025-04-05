@@ -17,6 +17,20 @@ const stringFormatters = () => {
         .join(' ')
     },
 
+    getPixelsString: (value: number | string | undefined | null) => {
+      if (value == null || value === '') {
+        return undefined
+      }
+
+      const valueAsNumber = +value
+
+      if (isNaN(valueAsNumber)) {
+        return value.toString()
+      }
+
+      return `${valueAsNumber}px`
+    },
+
     getStringValueWithUnit: (value: number, fractionDigits: number, unit: string) => {
       if (value === 0) {
         return `0${unit}`
@@ -70,7 +84,11 @@ const stringFormatters = () => {
     /**
      * Formats a number representing mm to human readable distance.
      */
-    getReadableLengthString: (lengthInMm: number, showMicrons = false, fractionDigits: number | undefined = undefined) => {
+    getReadableLengthString: (lengthInMm: number, options?: { showMicrons?: boolean, showKilometers?: boolean }, fractionDigits: number | undefined = undefined) => {
+      if (lengthInMm >= 1000000 && options?.showKilometers) {
+        return (lengthInMm / 1000000).toFixed(fractionDigits ?? 2) + ' km'
+      }
+
       if (lengthInMm >= 1000) {
         return (lengthInMm / 1000).toFixed(fractionDigits ?? 2) + ' m'
       }
@@ -79,7 +97,7 @@ const stringFormatters = () => {
         return (lengthInMm / 10).toFixed(fractionDigits ?? 1) + ' cm'
       }
 
-      if (lengthInMm < 0.1 && showMicrons) {
+      if (lengthInMm < 0.1 && options?.showMicrons) {
         return instance.getStringValueWithUnit(lengthInMm * 1000, fractionDigits ?? 0, ' μm')
       }
 

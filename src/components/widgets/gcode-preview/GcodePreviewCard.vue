@@ -7,7 +7,7 @@
     layout-path="dashboard.gcode-preview-card"
   >
     <template #menu>
-      <app-btn-collapse-group :collapsed="menuCollapsed">
+      <app-btn-collapse-group :collapsed="narrow">
         <app-btn
           :disabled="!printerFile || printerFileLoaded"
           small
@@ -149,7 +149,7 @@ import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 import type { Layer, MinMax, Move } from '@/store/gcodePreview/types'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
-import consola from 'consola'
+import { consola } from 'consola'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
@@ -160,7 +160,7 @@ import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 })
 export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   @Prop({ type: Boolean })
-  readonly menuCollapsed?: boolean
+  readonly narrow?: boolean
 
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean

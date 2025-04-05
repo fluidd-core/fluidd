@@ -38,8 +38,6 @@ app:
       auto_scroll: Rol outomaties aan
       flip_layout: Keer uitleg om
       hide_temp_waits: Versteek temp. wagtye
-    placeholder:
-      command: '''tab'' vir outo-voltooi, ''help'' vir opdragte ''pyltjies'' vir geskiedenis'
   endpoint:
     error:
       cant_connect: >-

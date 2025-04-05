@@ -7,7 +7,7 @@
   >
     <template #menu>
       <app-btn
-        v-if="!targetableMacros.length"
+        v-if="!klippyReady || !targetableMacros.length"
         small
         class="me-1 my-1"
         :disabled="!isConnected"
@@ -42,6 +42,7 @@
             </v-icon>
           </app-btn>
         </template>
+
         <v-list dense>
           <v-list-item @click="handleSelectSpool">
             <v-list-item-content>
@@ -92,7 +93,7 @@
 
     <v-progress-linear
       v-if="activeSpool && $vuetify.breakpoint.lgAndDown"
-      value="100"
+      :value="activeSpool.progress"
       :height="6"
       :color="getSpoolColor(activeSpool)"
     />
@@ -108,8 +109,8 @@
             <template v-for="field in fields">
               <status-label
                 :key="`spoolman-card-${field}`"
-                :label="$t(`app.spoolman.label.${field}`)"
-                :label-width="labelWidth"
+                :label="getFieldLabel(field)"
+                :label-width="86"
               >
                 <template v-if="field === 'remaining_weight'">
                   <span v-if="remainingFilamentUnit === 'weight'">
@@ -159,30 +160,48 @@
           align-self="center"
           class="pa-0"
         >
-          <v-icon
+          <v-progress-circular
             v-if="activeSpool"
-            :color="getSpoolColor(activeSpool)"
-            size="110px"
-            class="spool-icon"
+            :rotate="-90"
+            :size="102"
+            :width="7"
+            :value="activeSpool.progress"
+            color="primary"
+            class="mr-4 flex-column"
           >
-            $filament
-          </v-icon>
+            <v-icon
+              :color="getSpoolColor(activeSpool)"
+              size="100"
+              class="spool-icon"
+            >
+              $filament
+            </v-icon>
+          </v-progress-circular>
           <v-icon
             v-else-if="isConnected"
-            size="55px"
+            size="55"
           >
             $progressQuestion
           </v-icon>
           <v-icon
             v-else
             color="warning"
-            size="55px"
+            size="55"
           >
             $warning
           </v-icon>
         </v-col>
       </v-row>
     </v-card-text>
+
+    <template #collapsed-content>
+      <v-progress-linear
+        v-if="activeSpool"
+        :value="activeSpool.progress"
+        :height="6"
+        :color="getSpoolColor(activeSpool)"
+      />
+    </template>
   </collapsable-card>
 </template>
 
@@ -204,8 +223,6 @@ type MacroWithSpoolId = Macro & {
   components: { StatusLabel }
 })
 export default class SpoolmanCard extends Mixins(StateMixin) {
-  labelWidth = '86px'
-
   handleSelectSpool (targetMacro?: Macro) {
     this.$typedCommit('spoolman/setDialogState', {
       show: true,
@@ -251,6 +268,19 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
 
   getSpoolColor (spool?: Spool) {
     return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
+  }
+
+  getFieldLabel (field: string) {
+    switch (field) {
+      case 'remaining_weight':
+        return this.$t('app.spoolman.label.remaining')
+
+      case 'used_weight':
+        return this.$t('app.spoolman.label.used')
+
+      default:
+        return this.$t(`app.spoolman.label.${field}`)
+    }
   }
 
   getFormattedField (field: string) {

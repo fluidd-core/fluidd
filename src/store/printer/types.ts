@@ -34,142 +34,156 @@ export type ExtruderKey = 'extruder' | `extruder${NonZeroDigit}` | `extruder${No
 
 export type TmcKey = `tmc${'2130' | '2208' | '2209' | '2660' | '2240' | '5160'} ${string}`
 
-type KlipperPrinterStateBaseType = {
-  [key in ExtruderKey]?: KlipperPrinterExtruderState
-}
+export type MmuUnitKey = `unit_${Digit}` | `unit_${NonZeroDigit}${Digit}`
+
+type KlipperPrinterStateBaseType =
+  {
+    // These keys are always available
+
+    objects: string[];
+
+    configfile: KlipperPrinterConfigFileState;
+
+    gcode_move: KlipperPrinterGcodeMoveState;
+
+    idle_timeout: KlipperPrinterIdleTimeoutState;
+
+    system_stats: KlipperPrinterSystemStatsState;
+
+    toolhead: KlipperPrinterToolheadState;
+
+    webhooks: KlipperPrinterWebhookState;
+
+  } & Partial<{
+    [key in ExtruderKey]: KlipperPrinterExtruderState
+  } & {
+    // These keys might not be available
+
+    [key: `angle ${string}`]: KlipperPrinterAngleState;
+
+    bed_mesh: KlipperPrinterBedMeshState;
+
+    bed_screws: KlipperPrinterBedScrewsState;
+
+    display_status: KlipperPrinterDisplayStatusState;
+
+    endstop_phase: KlipperPrinterEndstopPhaseState;
+
+    exclude_object: KlipperPrinterExcludeObjectState;
+
+    [key: `extruder_stepper ${string}`]: KlipperPrinterExtruderStepperState;
+
+    fan: KlipperPrinterFanState;
+
+    [key: `${'heater_fan' | 'controller_fan'} ${string}`]: KlipperPrinterFanState;
+
+    [key: `filament_switch_sensor ${string}`]: KlipperPrinterFilamentSwitchSensorState;
+
+    [key: `filament_motion_sensor ${string}`]: KlipperPrinterFilamentMotionSensorState;
+
+    firmware_retraction: KlipperPrinterFirmwareRetractionState;
+
+    gcode: KlipperPrinterGcodeState;
+
+    [key: `gcode_button ${string}`]: KlipperPrinterGcodeButtonState;
+
+    [key: `gcode_macro ${string}`]: KlipperPrinterGcodeMacroState;
+
+    hall_filament_width_sensor: KlipperPrinterHallFilamentWidthSensorState;
+
+    heater_bed: KlipperPrinterHeaterBedState;
+
+    [key: `heater_generic ${string}`]: KlipperPrinterHeaterGenericState;
+
+    heaters: KlipperPrinterHeatersState;
+
+    [key: `${'led' | 'neopixel' | 'dotstar' | 'pca9533' | 'pca9632'} ${string}`]: KlipperPrinterLedState;
+
+    manual_probe: KlipperPrinterManualProbeState;
+
+    menu: KlipperPrinterMenuState;
+
+    mcu: KlipperPrinterMcuState;
+
+    [key: `mcu ${string}`]: KlipperPrinterMcuState;
+
+    motion_report: KlipperPrinterMotionReportState;
+
+    [key: `${'output_pin' | 'pwm_tool'} ${string}`]: KlipperPrinterOutputPinState;
+
+    pause_resume: KlipperPrinterPauseResumeState;
+
+    print_stats: KlipperPrinterPrintStatsState;
+
+    probe: KlipperPrinterProbeState;
+
+    bltouch: KlipperPrinterProbeState;
+
+    smart_effector: KlipperPrinterProbeState;
+
+    [key: `probe_eddy_current ${string}`]: KlipperPrinterProbeState;
+
+    [key: `pwm_cycle_time ${string}`]: KlipperPrinterPwmCycleTimeState;
+
+    quad_gantry_level: KlipperPrinterQuadGantryLevelState;
+
+    query_endstops: KlipperPrinterQueryEndstopsState;
+
+    screws_tilt_adjust: KlipperPrinterScrewsTiltAdjustState;
+
+    [key: `servo ${string}`]: KlipperPrinterServoState;
+
+    skew_correction: KlipperPrinterSkewCorrectionState;
+
+    stepper_enable: KlipperPrinterStepperEnableState;
+
+    [key: `${'aht10' | 'bme280' | 'htu21d' | 'sht3x' | 'lm75' | 'temperature_host' | 'temperature_combined'} ${string}`]: KlipperPrinterTemperatureSensor2State;
+
+    [key: `temperature_fan ${string}`]: KlipperPrinterTemperatureFanState;
+
+    [key: `temperature_sensor ${string}`]: KlipperPrinterTemperatureSensorState;
+
+    [key: TmcKey]: KlipperPrinterTmcState;
+
+    dual_carriage: KlipperDualCarriageState;
+
+    virtual_sdcard: KlipperPrinterVirtualSdcardState;
+
+    z_thermal_adjust: KlipperPrinterZThermalAdjustState;
+
+    z_tilt: KlipperPrinterZTiltState;
+
+    load_cell: KlipperPrinterLoadCellState;
+
+    [key: `load_cell ${string}`]: KlipperPrinterLoadCellState;
+
+    // These keys are for kalico modules
+
+    [key: `belay ${string}`]: KalicoPrinterBelayState;
+
+    dockable_probe: KalicoPrinterDockableProbeState;
+
+    mixing_extruder: KalicoPrinterMixingExtruderState;
+
+    tools_calibrate: KalicoPrinterToolsCalibrateState;
+
+    trad_rack: KalicoPrinterTradRackState;
+
+    z_calibration: KalicoPrinterZCalibrationState;
+
+    // These keys are for external modules
+
+    beacon: KlipperPrinterBeaconState;
+
+    mmu: KlipperPrinterMmuState;
+
+    mmu_leds: KlipperPrinterMmuLedsState;
+
+    mmu_machine: KlipperPrinterMmuMachineState;
+  }>
 
 export interface KlipperPrinterState extends KlipperPrinterStateBaseType {
-  [key: string]: any;
-
-  // These keys are always available
-
-  objects: string[];
-
-  configfile: KlipperPrinterConfigFileState;
-
-  gcode_move: KlipperPrinterGcodeMoveState;
-
-  idle_timeout: KlipperPrinterIdleTimeoutState;
-
-  system_stats: KlipperPrinterSystemStatsState;
-
-  toolhead: KlipperPrinterToolheadState;
-
-  webhooks: KlipperPrinterWebhookState;
-
-  // These keys might not be available (hence the ?)
-
-  [key: `angle ${string}`]: KlipperPrinterAngleState;
-
-  bed_mesh?: KlipperPrinterBedMeshState;
-
-  bed_screws?: KlipperPrinterBedScrewsState;
-
-  display_status?: KlipperPrinterDisplayStatusState;
-
-  endstop_phase?: KlipperPrinterEndstopPhaseState;
-
-  exclude_object?: KlipperPrinterExcludeObjectState;
-
-  [key: `extruder_stepper ${string}`]: KlipperPrinterExtruderStepperState;
-
-  fan?: KlipperPrinterFanState;
-
-  [key: `${'heater_fan' | 'controller_fan'} ${string}`]: KlipperPrinterFanState;
-
-  [key: `filament_switch_sensor ${string}`]: KlipperPrinterFilamentSwitchSensorState;
-
-  [key: `filament_motion_sensor ${string}`]: KlipperPrinterFilamentMotionSensorState;
-
-  firmware_retraction?: KlipperPrinterFirmwareRetractionState;
-
-  gcode?: KlipperPrinterGcodeState;
-
-  [key: `gcode_button ${string}`]: KlipperPrinterGcodeButtonState;
-
-  [key: `gcode_macro ${string}`]: KlipperPrinterGcodeMacroState;
-
-  hall_filament_width_sensor?: KlipperPrinterHallFilamentWidthSensorState;
-
-  heater_bed?: KlipperPrinterHeaterBedState;
-
-  [key: `heater_generic ${string}`]: KlipperPrinterHeaterGenericState;
-
-  heaters?: KlipperPrinterHeatersState;
-
-  [key: `${'led' | 'neopixel' | 'dotstar' | 'pca9533' | 'pca9632'} ${string}`]: KlipperPrinterLedState;
-
-  manual_probe?: KlipperPrinterManualProbeState;
-
-  menu?: KlipperPrinterMenuState;
-
-  mcu?: KlipperPrinterMcuState;
-
-  [key: `mcu ${string}`]: KlipperPrinterMcuState;
-
-  motion_report?: KlipperPrinterMotionReportState;
-
-  [key: `${'output_pin' | 'pwm_tool'} ${string}`]: KlipperPrinterOutputPinState;
-
-  pause_resume?: KlipperPrinterPauseResumeState;
-
-  print_stats?: KlipperPrinterPrintStatsState;
-
-  probe?: KlipperPrinterProbeState;
-
-  bltouch?: KlipperPrinterProbeState;
-
-  smart_effector?: KlipperPrinterProbeState;
-
-  [key: `probe_eddy_current ${string}`]: KlipperPrinterProbeState;
-
-  [key: `pwm_cycle_time ${string}`]: KlipperPrinterPwmCycleTimeState;
-
-  quad_gantry_level?: KlipperPrinterQuadGantryLevelState;
-
-  query_endstops?: KlipperPrinterQueryEndstopsState;
-
-  screws_tilt_adjust?: KlipperPrinterScrewsTiltAdjustState;
-
-  [key: `servo ${string}`]: KlipperPrinterServoState;
-
-  skew_correction?: KlipperPrinterSkewCorrectionState;
-
-  stepper_enable?: KlipperPrinterStepperEnableState;
-
-  [key: `${'aht10' | 'bme280' | 'htu21d' | 'sht3x' | 'lm75' | 'temperature_host' | 'temperature_combined'} ${string}`]: KlipperPrinterTemperatureSensor2State;
-
-  [key: `temperature_fan ${string}`]: KlipperPrinterTemperatureFanState;
-
-  [key: `temperature_sensor ${string}`]: KlipperPrinterTemperatureSensorState;
-
-  [key: TmcKey]: KlipperPrinterTmcState;
-
-  dual_carriage?: KlipperDualCarriageState;
-
-  virtual_sdcard?: KlipperPrinterVirtualSdcardState;
-
-  z_thermal_adjust?: KlipperPrinterZThermalAdjustState;
-
-  z_tilt?: KlipperPrinterZTiltState;
-
-  // These keys are for kalico modules
-
-  [key: `belay ${string}`]: KalicoPrinterBelayState;
-
-  dockable_probe?: KalicoPrinterDockableProbeState;
-
-  mixing_extruder?: KalicoPrinterMixingExtruderState;
-
-  tools_calibrate?: KalicoPrinterToolsCalibrateState;
-
-  trad_rack?: KalicoPrinterTradRackState;
-
-  z_calibration?: KalicoPrinterZCalibrationState;
-
-  // These keys are for external modules
-
-  beacon?: KlipperPrinterBeaconState;
+  [key: string]: Record<string, any> | undefined;
 }
 
 export interface KlipperPrinterConfigFileState {
@@ -366,7 +380,7 @@ export interface KlipperPrinterHeaterGenericState {
 }
 
 export interface KlipperPrinterHeatersState {
-  available_heaters: string[];
+  available_heaters: ('heater_bed' | `heater_generic ${string}` | ExtruderKey)[];
   available_sensors: string[];
   available_monitors?: string[];
 }
@@ -402,7 +416,7 @@ export interface KlipperPrinterMotionReportState {
   live_position: [number, number, number, number];
   live_velocity: number;
   live_extruder_velocity: number;
-  steppers?: string[];
+  steppers?: (`extruder_stepper ${string}` | `stepper_${string}` | ExtruderKey)[];
   trapq?: string[];
 }
 
@@ -521,6 +535,16 @@ export interface KlipperPrinterZTiltState {
   applied: boolean;
 }
 
+export interface KlipperPrinterLoadCellState {
+  is_calibrated: boolean;
+  counts_per_gram: null | number;
+  reference_tare_counts: null | number;
+  tare_counts: null | number;
+  force_g?: number;
+  min_force_g?: number;
+  max_force_g?: number;
+}
+
 export interface KalicoPrinterBelayState {
   last_state: boolean;
   enabled: boolean;
@@ -586,107 +610,228 @@ export interface KlipperPrinterBeaconState {
   model?: string | null;
 }
 
+export interface KlipperPrinterMmuState {
+  enabled: boolean;
+  num_gates: number;
+  is_homed: boolean;
+  is_locked: boolean;
+  is_paused: boolean;
+  is_in_print: boolean;
+  print_state: string;
+  unit: number;
+  tool: number;
+  gate: number;
+  active_filament: unknown;
+  num_toolchanges: number;
+  last_tool: number;
+  next_tool: number;
+  toolchange_purge_volume: number;
+  last_toolchange: string;
+  runout: boolean;
+  operation: string;
+  filament: string;
+  filament_position: number;
+  filament_pos: number;
+  filament_direction: number;
+  ttg_map: number[];
+  endless_spool_groups: number[];
+  gate_status: number[];
+  gate_filament_name: string[];
+  gate_material: string[];
+  gate_color: string[];
+  gate_temperature: number[];
+  gate_spool_id: number[];
+  gate_speed_override: number[];
+  gate_color_rgb: number[][];
+  slicer_color_rgb: number[][];
+  tool_extrusion_multipliers: number[];
+  tool_speed_multipliers: number[];
+  slicer_tool_map: {
+    tools: {
+      color: string;
+      material: string;
+      temp: number;
+      name: string;
+      in_use: boolean;
+    }[];
+    referenced_tools: number[];
+    initial_tool: null;
+    purge_volumes: unknown[];
+    total_toolchanges: null;
+    skip_automap: boolean;
+  };
+  action: string;
+  has_bypass: boolean;
+  sync_drive: boolean;
+  sync_feedback_state: string;
+  sync_feedback_enabled: boolean;
+  clog_detection: number;
+  clog_detection_enabled: number;
+  endless_spool: number;
+  endless_spool_enabled: number;
+  print_start_detection: number;
+  reason_for_pause: string;
+  extruder_filament_remaining: number;
+  spoolman_support: string;
+  enable_spoolman: number;
+  bowden_progress: number;
+  espooler_active: string;
+  servo: string;
+  grip?: string;
+  sensors: Record<string, boolean | null>;
+  encoder?: {
+    encoder_pos: number;
+    detection_length: number;
+    min_headroom: number;
+    headroom: number;
+    desired_headroom: number;
+    detection_mode: number;
+    enabled: boolean;
+    flow_rate: number;
+  };
+}
+
+export interface KlipperPrinterMmuLedsState {
+  exit: number;
+  entry: number;
+  status: number;
+  logo: number;
+  led_effect_module: boolean;
+  num_gates: number;
+  default_frame_rate: number;
+}
+
+type KlipperPrinterMmuMachineStateBaseType = {
+  [key in MmuUnitKey]?: {
+    name: string;
+    vendor: string;
+    version: string;
+    num_gates: number;
+    first_gate: number;
+    selector_type: string;
+    variable_rotation_distances: boolean;
+    variable_bowden_lengths: boolean;
+    require_bowden_move: boolean;
+    filament_always_gripped: boolean;
+    has_bypass: boolean;
+    multi_gear: boolean;
+  };
+}
+
+export interface KlipperPrinterMmuMachineState extends KlipperPrinterMmuMachineStateBaseType {
+  num_units: number;
+}
+
 export interface KlipperPrinterConfig extends Record<string, Record<string, string | undefined> | undefined> {
 }
 
-type KlipperPrinterSettingsBaseType = {
-  [key in ExtruderKey]?: KlipperPrinterExtruderSettings
-}
+type KlipperPrinterSettingsBaseType =
+  Partial<{
+    [key in ExtruderKey]: KlipperPrinterExtruderSettings;
+  } & {
+    mcu: KlipperPrinterMcuSettings;
+
+    [key: `mcu ${Lowercase<string>}`]: KlipperPrinterMcuSettings;
+
+    [key: Lowercase<TmcKey>]: KlipperPrinterTmcSettings;
+
+    fan: KlipperPrinterFanSettings;
+
+    [key: `heater_fan ${Lowercase<string>}`]: KlipperPrinterHeaterFanSettings;
+
+    [key: `controller_fan ${Lowercase<string>}`]: KlipperPrinterControllerFanSettings;
+
+    [key: `gcode_button ${string}`]: KlipperPrinterGcodeButtonSettings;
+
+    [key: `output_pin ${Lowercase<string>}`]: KlipperPrinterOutputPinSettings;
+
+    [key: `${'led' | 'neopixel' | 'dotstar' | 'pca9533' | 'pca9632'} ${Lowercase<string>}`]: KlipperPrinterLedSettings;
+
+    [key: `temperature_sensor ${Lowercase<string>}`]: KlipperPrinterTemperatureSensorSettings;
+
+    safe_z_home: KlipperPrinterSafeZHomeSettings;
+
+    z_tilt: KlipperPrinterZTiltSettings;
+
+    bed_mesh: KlipperPrinterBedMeshSettings;
+
+    board_pins: KlipperPrinterBoardPinsSettings;
+
+    [key: `bed_mesh ${Lowercase<string>}`]: KlipperPrinterBedMeshModelSettings;
+
+    bed_screws: KlipperPrinterBedScrewsSettings;
+
+    screws_tilt_adjust: KlipperPrinterScrewsTiltAdjustSettings;
+
+    firmware_retraction: KlipperPrinterFirmwareRetractionSettings;
+
+    force_move: KlipperPrinterForceMoveSettings;
+
+    gcode_arcs: KlipperPrinterGcodeArcsSettings;
+
+    respond: KlipperPrinterRespondSettings;
+
+    virtual_sdcard: KlipperPrinterVirtualSdcardSettings;
+
+    pause_resume: KlipperPrinterPauseResumeSettings;
+
+    delta_calibrate: KlipperPrinterDeltaCalibrateSettings;
+
+    [key: `gcode_macro ${Lowercase<string>}`]: KlipperPrinterGcodeMacroSettings;
+
+    heater_bed: KlipperPrinterHeaterBedSettings;
+
+    [key: `heater_generic ${string}`]: KlipperPrinterHeaterGenericSettings;
+
+    [key: `verify_heater ${Lowercase<string>}`]: KlipperPrinterVerifyHeaterSettings;
+
+    probe: KlipperPrinterProbeSettings;
+
+    bltouch: KlipperPrinterBltouchSettings;
+
+    smart_effector: KlipperPrinterSmartEffectorSettings;
+
+    [key: `probe_eddy_current ${Lowercase<string>}`]: KlipperPrinterProbeEddyCurrentSettings;
+
+    input_shaper: KlipperPrinterInputShaperSettings;
+
+    printer: KlipperPrinterPrinterSettings;
+
+    [key: `stepper_${Lowercase<string>}`]: KlipperPrinterStepperSettings;
+
+    [key: `extruder_stepper ${Lowercase<string>}`]: KlipperPrinterExtruderStepperSettings;
+
+    idle_timeout: KlipperPrinterIdleTimeoutSettings;
+
+    exclude_object: KlipperPrinterExcludeObjectSettings;
+
+    [key: `endstop_phase ${Lowercase<string>}`]: KlipperPrinterEndstopPhaseSettings;
+
+    [key: `display_template ${Lowercase<string>}`]: KlipperPrinterDisplayTemplateSettings;
+
+    load_cell: KlipperPrinterLoadCellSettings;
+
+    [key: `load_cell ${Lowercase<string>}`]: KlipperPrinterLoadCellSettings;
+
+    // These keys are for kalico modules
+
+    danger_options: KalicoPrinterDangerOptionsSettings;
+
+    constants: KalicoPrinterConstantsSettings;
+
+    z_calibration: KalicoPrinterZCalibrationSettings;
+
+    z_tilt_ng: KalicoPrinterZTiltNgSettings;
+
+    // These keys are for external modules
+
+    beacon: KlipperPrinterBeaconSettings;
+
+    [key: `beacon model ${Lowercase<string>}`]: KlipperPrinterBeaconModelSettings;
+  }>
 
 export interface KlipperPrinterSettings extends KlipperPrinterSettingsBaseType {
-  [key: string]: any;
-
-  mcu?: KlipperPrinterMcuSettings;
-
-  [key: `mcu ${Lowercase<string>}`]: KlipperPrinterMcuSettings;
-
-  [key: Lowercase<TmcKey>]: KlipperPrinterTmcSettings;
-
-  fan?: KlipperPrinterFanSettings;
-
-  [key: `heater_fan ${Lowercase<string>}`]: KlipperPrinterHeaterFanSettings;
-
-  [key: `controller_fan ${Lowercase<string>}`]: KlipperPrinterControllerFanSettings;
-
-  [key: `output_pin ${Lowercase<string>}`]: KlipperPrinterOutputPinSettings;
-
-  [key: `${'led' | 'neopixel' | 'dotstar' | 'pca9533' | 'pca9632'} ${Lowercase<string>}`]: KlipperPrinterLedSettings;
-
-  [key: `temperature_sensor ${Lowercase<string>}`]: KlipperPrinterTemperatureSensorSettings;
-
-  safe_z_home?: KlipperPrinterSafeZHomeSettings;
-
-  z_tilt?: KlipperPrinterZTiltSettings;
-
-  bed_mesh?: KlipperPrinterBedMeshSettings;
-
-  board_pins?: KlipperPrinterBoardPinsSettings;
-
-  [key: `bed_mesh ${Lowercase<string>}`]: KlipperPrinterBedMeshModelSettings;
-
-  bed_screws?: KlipperPrinterBedScrewsSettings;
-
-  screws_tilt_adjust?: KlipperPrinterScrewsTiltAdjustSettings;
-
-  firmware_retraction?: KlipperPrinterFirmwareRetractionSettings;
-
-  force_move?: KlipperPrinterForceMoveSettings;
-
-  gcode_arcs?: KlipperPrinterGcodeArcsSettings;
-
-  respond?: KlipperPrinterRespondSettings;
-
-  virtual_sdcard?: KlipperPrinterVirtualSdcardSettings;
-
-  pause_resume?: KlipperPrinterPauseResumeSettings;
-
-  delta_calibrate?: KlipperPrinterDeltaCalibrateSettings;
-
-  [key: `gcode_macro ${Lowercase<string>}`]: KlipperPrinterGcodeMacroSettings;
-
-  heater_bed?: KlipperPrinterHeaterBedSettings;
-
-  [key: `verify_heater ${Lowercase<string>}`]: KlipperPrinterVerifyHeaterSettings;
-
-  probe?: KlipperPrinterProbeSettings;
-
-  bltouch?: KlipperPrinterBltouchSettings;
-
-  smart_effector?: KlipperPrinterSmartEffectorSettings;
-
-  [key: `probe_eddy_current ${Lowercase<string>}`]: KlipperPrinterProbeEddyCurrentSettings;
-
-  input_shaper?: KlipperPrinterInputShaperSettings;
-
-  printer?: KlipperPrinterPrinterSettings;
-
-  [key: `stepper_${Lowercase<string>}`]: KlipperPrinterStepperSettings;
-
-  [key: `extruder_stepper ${Lowercase<string>}`]: KlipperPrinterExtruderStepperSettings;
-
-  idle_timeout?: KlipperPrinterIdleTimeoutSettings;
-
-  exclude_object?: KlipperPrinterExcludeObjectSettings;
-
-  [key: `endstop_phase ${Lowercase<string>}`]: KlipperPrinterEndstopPhaseSettings;
-
-  [key: `display_template ${Lowercase<string>}`]: KlipperPrinterDisplayTemplateSettings;
-
-  // These keys are for kalico modules
-
-  danger_options?: KalicoPrinterDangerOptionsSettings;
-
-  constants?: KalicoPrinterConstantsSettings;
-
-  z_calibration?: KalicoPrinterZCalibrationSettings;
-
-  z_tilt_ng?: KalicoPrinterZTiltNgSettings;
-
-  // These keys are for external modules
-
-  beacon?: KlipperPrinterBeaconSettings;
-
-  [key: `beacon model ${Lowercase<string>}`]: KlipperPrinterBeaconModelSettings;
+  [key: string]: Record<string, any> | undefined;
 }
 
 export interface KlipperPrinterMcuSettings {
@@ -706,7 +851,7 @@ export interface KlipperPrinterTmcSettings {
   run_current: number;
   hold_current: number;
   interpolate: boolean;
-  [key: `driver_${string}`]: number | boolean;
+  [key: `driver_${string}`]: number | boolean | undefined;
   home_current?: number;
   current_change_dwell_time?: number;
 }
@@ -746,6 +891,15 @@ export interface KlipperPrinterControllerFanSettings {
   idle_speed: number;
   idle_timeout: number;
   stepper?: string;
+}
+
+export interface KlipperPrinterGcodeButtonSettings {
+  pin: string;
+  press_gcode: string;
+  release_gcode: string;
+  analog_range?: [number, number];
+  analog_pullup_resistor?: number;
+  debounce_delay?: number;
 }
 
 export interface KlipperPrinterOutputPinSettings {
@@ -847,9 +1001,9 @@ export interface KlipperPrinterBedMeshModelSettings {
 }
 
 export interface KlipperPrinterBedScrewsSettings {
-  [key: `screw${number}`]: [number, number];
-  [key: `screw${number}_name`]: string;
-  [key: `screw${number}_fine_adjust`]: [number, number];
+  [key: `screw${number}`]: [number, number] | undefined;
+  [key: `screw${number}_name`]: string | undefined;
+  [key: `screw${number}_fine_adjust`]: [number, number] | undefined;
   speed: number;
   probe_speed: number;
   horizontal_move_z: number;
@@ -857,8 +1011,8 @@ export interface KlipperPrinterBedScrewsSettings {
 }
 
 export interface KlipperPrinterScrewsTiltAdjustSettings {
-  [key: `screw${number}`]: [number, number];
-  [key: `screw${number}_name`]: string;
+  [key: `screw${number}`]: [number, number] | undefined;
+  [key: `screw${number}_name`]: string | undefined;
   screw_thread: string;
   horizontal_move_z: number;
   speed: number;
@@ -910,7 +1064,7 @@ export interface KlipperPrinterGcodeMacroSettings {
   gcode: string;
   rename_existing?: string;
   description: string;
-  [key: `variable_${string}`]: string;
+  [key: `variable_${string}`]: string | undefined;
 }
 
 export interface KlipperPrinterHeaterBedSettings {
@@ -928,6 +1082,23 @@ export interface KlipperPrinterHeaterBedSettings {
   pid_kp: number;
   pid_ki: number;
   pid_kd: number;
+  heater_pin: string;
+  pwm_cycle_time: number;
+  pid_version?: number;
+}
+
+export interface KlipperPrinterHeaterGenericSettings {
+  sensor_type: string;
+  pullup_resistor: number;
+  inline_resistor: number;
+  sensor_pin: string;
+  min_temp: number;
+  max_temp: number;
+  min_extrude_temp: number;
+  max_power: number;
+  smooth_time: number;
+  control: string;
+  max_delta?: number;
   heater_pin: string;
   pwm_cycle_time: number;
   pid_version?: number;
@@ -1128,6 +1299,27 @@ export interface KlipperPrinterDisplayTemplateSettings {
   text: string;
 }
 
+export interface KlipperPrinterLoadCellSettings {
+  sensor_type: string;
+  counts_per_gram?: number;
+  reference_tare_counts?: number;
+  sensor_orientation: 'normal' | 'inverted';
+  dout_pin?: string;
+  sclk_pin?: string;
+  cs_pin?: string;
+  spi_speed?: number;
+  spi_bus?: string;
+  spi_software_sclk_pin?: string;
+  spi_software_mosi_pin?: string;
+  spi_software_miso_pin?: string;
+  data_ready_pin?: string;
+  sample_rate?: number;
+  gain?: string;
+  pga_bypass?: boolean;
+  input_mux?: string;
+  vref?: string;
+}
+
 export interface KalicoPrinterDangerOptionsSettings {
   minimal_logging: boolean;
   log_statistics: boolean;
@@ -1213,44 +1405,39 @@ export interface Extruder extends KlipperPrinterExtruderState {
   min_extrude_temp: number;
 }
 
-export interface ExtruderStepper extends StepperType<ExtruderStepperConfig> {
-  motion_queue?: ExtruderKey | null;
-  pressure_advance?: number;
-  smooth_time?: number;
-}
-
-export interface ExtruderStepperConfig {
-  extruder?: string;
-  pressure_advance?: number;
-  pressure_advance_smooth_time?: number;
-}
-
-export interface Stepper extends StepperType {
-}
-
-export type StepperType<T = Record<string, any>> = {
-  config: T;
+type StepperType<T> = {
+  config?: T;
   name: string;
   prettyName: string;
   key: string;
   enabled?: boolean;
 }
 
+export interface ExtruderStepper extends StepperType<KlipperPrinterExtruderStepperSettings> {
+  motion_queue?: ExtruderKey | null;
+  pressure_advance?: number;
+  smooth_time?: number;
+}
+
+export interface Stepper extends StepperType<KlipperPrinterExtruderSettings | KlipperPrinterExtruderStepperSettings | KlipperPrinterStepperSettings> {
+}
+
 export interface MCU extends KlipperPrinterMcuState {
   name: string;
   prettyName: string;
-  config: KlipperPrinterMcuSettings;
+  config?: KlipperPrinterMcuSettings;
 }
 
-export type OutputType<T = Record<string, any>> = {
-  config: T
+type OutputType<T> = {
+  config?: T
   name: string;
   prettyName: string;
   key: string;
   color?: string;
   type: string;
 }
-export interface Heater extends OutputType {
+
+export interface Heater extends OutputType<KlipperPrinterHeaterGenericSettings | KlipperPrinterHeaterBedSettings | KlipperPrinterExtruderSettings> {
   temperature: number;
   target: number;
   power: number;
@@ -1258,7 +1445,7 @@ export interface Heater extends OutputType {
   maxTemp: number;
 }
 
-export interface Fan extends OutputType<FanConfig> {
+export interface Fan extends OutputType<KlipperPrinterFanSettings | KlipperPrinterControllerFanSettings | KlipperPrinterHeaterFanSettings> {
   controllable: boolean;
   speed?: number;
   rpm?: number | null;
@@ -1268,19 +1455,12 @@ export interface Fan extends OutputType<FanConfig> {
   maxTemp?: number;
 }
 
-export interface FanConfig {
-  [key: string]: string | number | undefined;
-  pin: string;
-  max_power: number;
-  off_below: number;
-}
-
-export interface Led extends OutputType {
+export interface Led extends OutputType<KlipperPrinterLedSettings> {
   color?: string;
   color_data: number[][]
 }
 
-export interface OutputPin extends OutputType<OutputPinConfig> {
+export interface OutputPin extends OutputType<KlipperPrinterOutputPinSettings> {
   controllable: boolean;
   pwm: boolean;
   scale: number;
@@ -1289,25 +1469,12 @@ export interface OutputPin extends OutputType<OutputPinConfig> {
   resetValue: number;
 }
 
-export interface OutputPinConfig {
-  [index: string]: string | number | boolean | undefined;
-  pwm?: boolean;
-  static_value?: number;
-  value?: number;
-  shutdown_value?: number;
-  cycle_time?: number;
-  hardware_pwm?: boolean;
-  scale?: number;
-}
-
 export interface Sensor extends Partial<KlipperPrinterTemperatureSensorState>, Partial<KlipperPrinterTemperatureSensor2State>, Partial<KlipperPrinterZThermalAdjustState> {
   name: string;
   prettyName: string;
   key: string;
   color?: string;
   type: string;
-  temperature: number;
-  target?: number;
   maxTemp?: number;
   minTemp?: number;
 }

@@ -151,8 +151,9 @@ import FilePreviewDialog from './FilePreviewDialog.vue'
 import type { AppDataTableHeader, FileWithPath } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer, setFileDataTransferDataInDataTransfer } from '@/util/file-data-transfer'
-import consola from 'consola'
+import { consola } from 'consola'
 import type { DataTableHeader } from 'vuetify'
+import type { KlipperSaveAndRestartAction } from '@/store/config/types'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
@@ -333,13 +334,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           {
             text: this.$tc('app.general.table.header.extruder_colors'),
             value: 'extruder_colors',
-            visible: isNotDashboard,
+            visible: false,
             cellClass: 'text-no-wrap'
           },
           {
             text: this.$tc('app.general.table.header.filament_temps'),
             value: 'filament_temps',
-            visible: isNotDashboard,
+            visible: false,
             cellClass: 'text-no-wrap'
           },
           {
@@ -357,7 +358,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           {
             text: this.$tc('app.general.table.header.filament_change_count'),
             value: 'filament_change_count',
-            visible: isNotDashboard,
+            visible: false,
             cellClass: 'text-no-wrap'
           },
           {
@@ -375,13 +376,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           {
             text: this.$tc('app.general.table.header.mmu_print'),
             value: 'mmu_print',
-            visible: isNotDashboard,
+            visible: false,
             cellClass: 'text-no-wrap'
           },
           {
             text: this.$tc('app.general.table.header.referenced_tools'),
             value: 'referenced_tools',
-            visible: isNotDashboard,
+            visible: false,
             cellClass: 'text-no-wrap'
           },
           {
@@ -447,7 +448,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           {
             text: this.$tc('app.general.table.header.file_processors'),
             value: 'file_processors',
-            visible: false,
+            visible: isNotDashboard,
             cellClass: 'text-no-wrap'
           },
           {
@@ -487,7 +488,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         text: '',
         value: 'data-table-icons',
         sortable: false,
-        width: this.dense ? '28px' : '56px'
+        width: this.dense ? 28 : 56
       },
       {
         text: this.$tc('app.general.table.header.name'),
@@ -888,10 +889,24 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * Core file handling.
    * ===========================================================================
   */
-  handlePrint (file: AppFile) {
+  handlePrint (file: AppFile | AppFileWithMeta) {
     if (this.disabled) return
 
     const filename = file.path ? `${file.path}/${file.filename}` : file.filename
+
+    if (this.$typedState.printer.printer.mmu?.enabled === true) {
+      if ('referenced_tools' in file) {
+        const mmuPrint = (file.referenced_tools?.length ?? 1) > 1 || this.$typedState.printer.printer.mmu?.gate !== -2
+        if (mmuPrint) {
+          this.$typedCommit('mmu/setDialogState', {
+            show: true,
+            filename
+          })
+
+          return
+        }
+      }
+    }
 
     const spoolmanSupported: boolean = this.$typedGetters['spoolman/getAvailable']
     const autoSpoolSelectionDialog: boolean = this.$typedState.config.uiSettings.spoolman.autoSpoolSelectionDialog
@@ -912,22 +927,44 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  async handleSaveFileChanges (contents: string, restart: string) {
+  async handleSaveFileChanges (contents: string, serviceToRestart?: string) {
     const file = new File([contents], this.fileEditorDialogState.filename)
-    if (!restart && this.fileEditorDialogState.open) this.fileEditorDialogState.loading = true
+
+    if (this.fileEditorDialogState.open) {
+      this.fileEditorDialogState.loading = true
+    }
 
     await this.uploadFile(file, this.visiblePath, this.currentRoot, false)
+
     this.fileEditorDialogState.loading = false
-    if (restart) {
-      if (restart === 'moonraker') {
+
+    switch (serviceToRestart) {
+      case 'moonraker':
         this.serviceRestartMoonraker()
-        return
+        break
+
+      case 'klipper': {
+        const klipperSaveAndRestartAction: KlipperSaveAndRestartAction = this.$typedState.config.uiSettings.editor.klipperSaveAndRestartAction
+
+        switch (klipperSaveAndRestartAction) {
+          case 'host-restart':
+            this.restartKlippy()
+            break
+
+          case 'service-restart':
+            this.serviceRestartKlipper()
+            break
+
+          default:
+            this.firmwareRestartKlippy()
+        }
+        break
       }
-      if (restart === 'klipper') {
-        this.firmwareRestartKlippy()
-        return
-      }
-      this.serviceRestartByName(restart)
+
+      default:
+        if (serviceToRestart) {
+          this.serviceRestartByName(serviceToRestart)
+        }
     }
   }
 

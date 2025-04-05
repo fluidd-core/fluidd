@@ -51,23 +51,50 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
       return value
     },
 
-    formatCounterSeconds: (seconds: number | string) => {
+    secondsAsRange: (seconds: number | string) => {
       seconds = +seconds
-      if (isNaN(seconds) || !isFinite(seconds)) seconds = 0
-      let isNeg = false
-      if (seconds < 0) {
-        seconds = Math.abs(seconds)
-        isNeg = true
+
+      if (isNaN(seconds) || !isFinite(seconds)) {
+        seconds = 0
       }
-      const h = Math.floor(seconds / 3600)
-      const m = Math.floor(seconds % 3600 / 60)
-      const s = Math.floor(seconds % 3600 % 60)
 
-      let r = s + 's' // always show seconds
-      r = m + 'm ' + r // always show minutes
-      if (h > 0) r = h + 'h ' + r // only show hours if relevent
+      const isNegative = seconds < 0
 
-      return (isNeg) ? '-' + r : r
+      seconds = Math.abs(seconds)
+
+      return {
+        isNegative,
+        days: Math.floor(seconds / 86400),
+        hours: Math.floor(seconds % 86400 / 3600),
+        minutes: Math.floor(seconds % 3600 / 60),
+        seconds: Math.floor(seconds % 3600 % 60)
+      }
+    },
+
+    formatCounterSeconds: (seconds: number | string, options?: { includeDays: boolean }) => {
+      const range = instance.secondsAsRange(seconds)
+
+      const parts = []
+
+      if (range.days > 0) {
+        if (options?.includeDays) {
+          parts.push(`${range.days}d`)
+
+          if (range.hours > 0) {
+            parts.push(`${range.hours}h`)
+          }
+        } else {
+          parts.push(`${range.days * 24 + range.hours}h`)
+        }
+      } else if (range.hours > 0) {
+        parts.push(`${range.hours}h`)
+      }
+
+      parts.push(`${range.minutes}m`)
+
+      parts.push(`${range.seconds}s`)
+
+      return `${range.isNegative ? '-' : ''}${parts.join(' ')}`
     },
 
     formatDate: (value: number | string | Date, options?: Intl.DateTimeFormatOptions) => {
@@ -149,7 +176,7 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
                   ]
                 : [
                     'second',
-                    seconds
+                    Math.round(seconds)
                   ]
 
       return instance.formatRelativeTime(unitValue, unit, options)

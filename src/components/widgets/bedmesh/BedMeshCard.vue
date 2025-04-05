@@ -19,24 +19,21 @@
         {{ $t('app.general.btn.calibrate') }}
       </app-btn>
 
-      <v-tooltip
-        v-if="canCopyImage"
-        bottom
-      >
+      <v-tooltip bottom>
         <template #activator="{ on, attrs }">
           <app-btn
             v-bind="attrs"
             icon
             :disabled="!hasMeshLoaded"
             v-on="on"
-            @click="copyImage()"
+            @click="downloadImage()"
           >
             <v-icon dense>
               $screenshot
             </v-icon>
           </app-btn>
         </template>
-        <span>{{ $t('app.bedmesh.tooltip.copy_image') }}</span>
+        <span>{{ $t('app.bedmesh.tooltip.download_image') }}</span>
       </v-tooltip>
 
       <app-btn
@@ -57,7 +54,7 @@
         :options="options"
         :data="series"
         :graphics="graphics"
-        :height="(isMobileViewport) ? '225px' : '525px'"
+        :height="(isMobileViewport) ? 225 : 525"
       />
 
       <span v-else>{{ $t('app.bedmesh.msg.not_loaded') }}</span>
@@ -228,16 +225,8 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
     return this.$typedGetters['mesh/getCurrentMeshData']
   }
 
-  get canCopyImage () {
-    return (
-      typeof navigator.clipboard === 'object' &&
-      typeof navigator.clipboard.write === 'function' &&
-      typeof ClipboardItem === 'function'
-    )
-  }
-
-  copyImage () {
-    this.bedMeshChart.copyImage()
+  downloadImage () {
+    this.bedMeshChart.downloadImage()
   }
 }
 </script>

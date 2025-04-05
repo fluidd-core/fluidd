@@ -10,7 +10,7 @@ import router from '@/router'
 import dateTimeFormatters from '@/util/date-time-formatters'
 import stringFormatters from '@/util/string-formatters'
 import isNullOrEmpty, { type NullableOrEmpty } from '@/util/is-null-or-empty'
-import consola from 'consola'
+import { consola } from 'consola'
 import type { RootActions, RootGetters, RootMutations, RootState } from '@/store/types'
 
 const Filters = {

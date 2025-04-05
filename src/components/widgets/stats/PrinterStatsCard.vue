@@ -4,10 +4,10 @@
     icon="$chart"
   >
     <template #menu>
-      <app-btn-collapse-group :collapsed="menuCollapsed">
+      <app-btn-collapse-group :collapsed="narrow">
         <app-btn
           small
-          class="ms-1 my-1"
+          class="me-1 my-1"
           @click="handleResetStats"
         >
           <v-icon
@@ -19,6 +19,50 @@
           <span>{{ $t('app.general.btn.reset_stats') }}</span>
         </app-btn>
       </app-btn-collapse-group>
+
+      <v-menu
+        bottom
+        left
+        offset-y
+        transition="slide-y-transition"
+        :close-on-content-click="false"
+      >
+        <template #activator="{ on, attrs }">
+          <app-btn
+            icon
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon dense>
+              $cog
+            </v-icon>
+          </app-btn>
+        </template>
+
+        <v-list dense>
+          <v-list-item @click="timeInDays = !timeInDays">
+            <v-list-item-action class="my-0">
+              <v-checkbox :input-value="timeInDays" />
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ $t('app.general.label.time_in_days') }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item @click="lengthInKilometers = !lengthInKilometers">
+            <v-list-item-action class="my-0">
+              <v-checkbox :input-value="lengthInKilometers" />
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ $t('app.general.label.length_in_kilometers') }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </template>
 
     <v-card-text>
@@ -38,7 +82,7 @@
               {{ $t('app.general.label.longest_job') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterSeconds(rollup.longest_job) }}
+              {{ $filters.formatCounterSeconds(rollup.longest_job, { includeDays: timeInDays }) }}
             </div>
           </v-card>
         </v-col>
@@ -51,13 +95,13 @@
               {{ $t('app.general.label.total_time') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterSeconds(rollup.total_time) }}
+              {{ $filters.formatCounterSeconds(rollup.total_time, { includeDays: timeInDays }) }}
             </div>
             <div class="secondary--text">
               {{ $t('app.general.label.total_time_avg') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterSeconds(rollup.total_avg) }}
+              {{ $filters.formatCounterSeconds(rollup.total_avg, { includeDays: timeInDays }) }}
             </div>
           </v-card>
         </v-col>
@@ -70,13 +114,13 @@
               {{ $t('app.general.label.total_print_time') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterSeconds(rollup.total_print_time) }}
+              {{ $filters.formatCounterSeconds(rollup.total_print_time , { includeDays: timeInDays }) }}
             </div>
             <div class="secondary--text">
               {{ $t('app.general.label.total_print_time_avg') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterSeconds(rollup.print_avg) }}
+              {{ $filters.formatCounterSeconds(rollup.print_avg, { includeDays: timeInDays }) }}
             </div>
           </v-card>
         </v-col>
@@ -89,13 +133,13 @@
               {{ $t('app.general.label.total_filament') }}
             </div>
             <div class="focus--text">
-              {{ $filters.getReadableLengthString(rollup.total_filament_used) }}
+              {{ $filters.getReadableLengthString(rollup.total_filament_used, { showKilometers: lengthInKilometers }) }}
             </div>
             <div class="secondary--text">
               {{ $t('app.general.label.total_filament_avg') }}
             </div>
             <div class="focus--text">
-              {{ $filters.getReadableLengthString(rollup.filament_avg) }}
+              {{ $filters.getReadableLengthString(rollup.filament_avg, { showKilometers: lengthInKilometers }) }}
             </div>
           </v-card>
         </v-col>
@@ -111,7 +155,31 @@ import { SocketActions } from '@/api/socketActions'
 @Component({})
 export default class PrinterStatsCard extends Vue {
   @Prop({ type: Boolean })
-  readonly menuCollapsed?: boolean
+  readonly narrow?: boolean
+
+  get lengthInKilometers (): boolean {
+    return this.$typedState.config.uiSettings.history.lengthInKilometers
+  }
+
+  set lengthInKilometers (value: boolean) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.history.lengthInKilometers',
+      value,
+      server: true
+    })
+  }
+
+  get timeInDays (): boolean {
+    return this.$typedState.config.uiSettings.history.timeInDays
+  }
+
+  set timeInDays (value: boolean) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.history.timeInDays',
+      value,
+      server: true
+    })
+  }
 
   get rollup () {
     return this.$typedGetters['history/getRollUp']

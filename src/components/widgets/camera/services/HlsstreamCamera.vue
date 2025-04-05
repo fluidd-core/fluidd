@@ -14,7 +14,7 @@
 import { Component, Ref, Mixins } from 'vue-property-decorator'
 import CameraMixin from '@/mixins/camera'
 import Hls from 'hls.js'
-import consola from 'consola'
+import { consola } from 'consola'
 
 @Component({})
 export default class HlsstreamCamera extends Mixins(CameraMixin) {

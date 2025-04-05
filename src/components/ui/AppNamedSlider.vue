@@ -19,8 +19,6 @@
       <v-col>
         <v-text-field
           v-model="currentValue"
-          :prefix="prefix"
-          :suffix="suffix"
           :rules="textRules"
           :disabled="disabled || loading"
           :step="step"
@@ -30,6 +28,7 @@
           single-line
           outlined
           hide-details
+          v-bind="$attrs"
           @focus="handleFocus"
           @blur="handleBlur"
           @keyup.enter.exact="handleSubmit(+currentValue)"
@@ -122,12 +121,6 @@ export default class AppNamedSlider extends Vue {
 
   @Prop({ type: Number, default: 1 })
   readonly step!: number
-
-  @Prop({ type: String })
-  readonly prefix?: string
-
-  @Prop({ type: String })
-  readonly suffix?: string
 
   @Prop({ type: Boolean })
   readonly fullWidth?: boolean
