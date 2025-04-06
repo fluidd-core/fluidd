@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.34.1](https://github.com/fluidd-core/fluidd/compare/v1.34.0...v1.34.1) (2025-04-06)
+
+
+### Bug Fixes
+
+* raise click event only once ([#1664](https://github.com/fluidd-core/fluidd/issues/1664)) ([1d8c420](https://github.com/fluidd-core/fluidd/commit/1d8c42000b113b20fd3f29665cb281751d737649))
+
 ## [1.34.0](https://github.com/fluidd-core/fluidd/compare/v1.33.0...v1.34.0) (2025-04-05)
 
 
