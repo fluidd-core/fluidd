@@ -5,7 +5,7 @@ export const defaultState = (): FilesState => {
     uploads: [],
     download: null,
     currentPaths: {},
-    diskUsage: null,
+    diskUsage: {},
     rootFiles: {},
     pathContent: {}
   }

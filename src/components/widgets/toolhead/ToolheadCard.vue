@@ -29,7 +29,7 @@
     </template>
 
     <template #menu>
-      <app-btn-collapse-group :collapsed="menuCollapsed">
+      <app-btn-collapse-group :collapsed="narrow">
         <app-btn
           v-if="isManualProbeActive"
           :disabled="!klippyReady || printerPrinting"
@@ -157,7 +157,7 @@ type Tool = {
 })
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   @Prop({ type: Boolean })
-  readonly menuCollapsed?: boolean
+  readonly narrow?: boolean
 
   get klippyApp (): KlippyApp {
     return this.$typedGetters['printer/getKlippyApp']

@@ -134,6 +134,7 @@ import { Mixins, Prop, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
 import type { MmuGateDetails } from '@/types'
+import { TinyColor } from '@ctrl/tinycolor'
 
 @Component({})
 export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
@@ -151,8 +152,6 @@ export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
 
   @Ref('filament')
   readonly filamentRef!: Element
-
-  contrastColor: string = 'black'
 
   get details (): MmuGateDetails {
     if (this.editGateMap) return this.editGateMap[this.gateIndex]
@@ -178,10 +177,6 @@ export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
   }
 
   get filamentColor (): string {
-    // Need spool to be rendered first
-    this.$nextTick(() => {
-      this.computeContrastColor()
-    })
     return this.details.color
   }
 
@@ -190,29 +185,8 @@ export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
     return start + (end - start) * (this.filamentAmount / 100)
   }
 
-  computeContrastColor () {
-    const filamentRef = this.filamentRef
-    if (!filamentRef) {
-      this.contrastColor = 'black'
-      return
-    }
-
-    const fillColor = window.getComputedStyle(filamentRef).fill
-    const rgbaMatch = fillColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
-
-    if (rgbaMatch) {
-      const [r, g, b] = rgbaMatch.slice(1, 4).map(Number)
-      const luminance = this.getLuminance({ r, g, b })
-      this.contrastColor = luminance > 0.5 ? 'black' : 'white'
-    } else {
-      this.contrastColor = 'black'
-    }
-  }
-
-  mounted () {
-    this.computeContrastColor()
+  get contrastColor (): string {
+    return new TinyColor(this.filamentColor).getLuminance() > 0.5 ? 'black' : 'white'
   }
 }
 </script>
-
-<style scoped></style>

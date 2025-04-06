@@ -176,7 +176,7 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
                   ]
                 : [
                     'second',
-                    seconds
+                    Math.round(seconds)
                   ]
 
       return instance.formatRelativeTime(unitValue, unit, options)

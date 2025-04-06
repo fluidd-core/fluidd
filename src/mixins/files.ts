@@ -7,6 +7,7 @@ import type { FileWithPath } from '@/types'
 import { consola } from 'consola'
 import { v4 as uuidv4 } from 'uuid'
 import type { AppUser } from '@/store/auth/types'
+import downloadUrl from '@/util/download-url'
 
 @Component
 export default class FilesMixin extends Vue {
@@ -147,20 +148,9 @@ export default class FilesMixin extends Vue {
    */
   async downloadFile (filename: string, path: string) {
     // Grab a oneshot.
-    try {
-      const url = await this.createFileUrlWithToken(filename, path)
+    const url = await this.createFileUrlWithToken(filename, path)
 
-      // Create a link, handle its click - and finally remove it again.
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', filename)
-      link.setAttribute('target', '_blank')
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    } catch {
-      // Likely a 401.
-    }
+    downloadUrl(filename, url)
   }
 
   /**

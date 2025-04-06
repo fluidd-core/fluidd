@@ -22,7 +22,6 @@ app:
       delete: Eliminar perfil
       load: Carregar perfil
       save: Guard perfil calibrado no ficheiro printer.cfg
-      copy_image: Copiar imagem da malha da cama
   chart:
     label:
       current: Corrente
@@ -40,9 +39,6 @@ app:
       auto_scroll: Auto scroll
       hide_temp_waits: Ocultar temperaturas
       flip_layout: Inverter layout
-    placeholder:
-      command: '''tab'' para autocompletar, ''help'' para comandos  ''setas'' para
-        histórico'
     tooltip:
       help: Introduza "help" para comandos<br />Carregue em <kbd>Tab</kbd> para autocomplemento<br
         />Carregue em <kbd>&uarr;</kbd> e <kbd>&darr;</kbd> para o historico

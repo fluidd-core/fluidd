@@ -22,7 +22,6 @@ app:
       delete: Elimina profilo
       load: Carica profilo
       save: Salva il profilo calibrato in printer.cfg
-      copy_image: Copia immagine mesh
   chart:
     label:
       current: Effettivo
@@ -40,10 +39,6 @@ app:
       auto_scroll: Scorrimento automatico
       hide_temp_waits: Nascondi i wait di temperatura
       flip_layout: Specchia layout
-    placeholder:
-      command: >-
-        "scheda" per il completamento automatico, "aiuto" per i comandi "frecce"
-        per la cronologia
     tooltip:
       help: Scrivi "help" per l'elenco comandi<br />Usa<kbd>Tab</kbd> per l'autocompletamento<br
         />Usa<kbd>&uarr;</kbd> e <kbd>&darr;</kbd> per la cronologia dei comandi

@@ -22,7 +22,6 @@ app:
       delete: Profil törlése
       load: Profil betöltése
       save: A kalibrált profil a printer.cfg fájlba íródik
-      copy_image: Ágyhálós kép másolása
   chart:
     label:
       current: Aktuális
@@ -30,7 +29,6 @@ app:
       power: Kapacitás
       target: Cél
       rate_of_change: Változás
-      pid_calibration: PID kalibrálás
       target_temperature: Cél hőmérséklet
       turn_off: Kikapcsolás
       fan_breakpoints: Ventilátor töréspontok
@@ -365,6 +363,8 @@ app:
       environment_facing: Környezeti nézet
       user_facing: Felhasználói nézet
       z_hop_height: Z-ugrás magassága
+      length_in_kilometers: Hossz a kilométerekben
+      time_in_days: Idő napokban
     msg:
       password_changed: A jelszó megváltozott
       wrong_password: Hoppá! Valami rosszul sült el. Ez a jelszavad?
@@ -725,6 +725,10 @@ app:
         eldobás funkciója
       auto: Automata
       printer_power_device: Nyomtató tápegység
+      klipper_save_and_restart_action: Klipper mentés és újraindítási művelet
+      firmware_restart: Firmware újraindítása
+      host_restart: Gazdagép újraindítása
+      service_restart: Szolgáltatás újraindítása
     timer_options:
       duration: Csak időtartam
       filament: Nyomtatószál

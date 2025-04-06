@@ -7,7 +7,7 @@
     layout-path="dashboard.gcode-preview-card"
   >
     <template #menu>
-      <app-btn-collapse-group :collapsed="menuCollapsed">
+      <app-btn-collapse-group :collapsed="narrow">
         <app-btn
           :disabled="!printerFile || printerFileLoaded"
           small
@@ -160,7 +160,7 @@ import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 })
 export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   @Prop({ type: Boolean })
-  readonly menuCollapsed?: boolean
+  readonly narrow?: boolean
 
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean

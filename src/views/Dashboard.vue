@@ -1,7 +1,7 @@
 <template>
   <v-row :dense="$vuetify.breakpoint.smAndDown">
     <template v-for="(container, containerIndex) in containers">
-      <v-col
+      <app-observed-column
         v-if="inLayout || hasCards(container)"
         :key="`container${containerIndex}`"
         cols="12"
@@ -9,32 +9,28 @@
         :lg="columnSpan"
         :class="{ 'drag': inLayout }"
       >
-        <app-draggable
-          v-model="containers[containerIndex]"
-          class="list-group"
-          :options="{
-            group: 'dashboard',
-            disabled: !inLayout,
-          }"
-          target=":first-child"
-          @end="handleUpdateLayout"
-        >
-          <transition-group
-            type="transition"
-            :name="!inLayout ? 'flip-list' : undefined"
+        <template #default="{ narrow }">
+          <app-draggable
+            v-model="containers[containerIndex]"
+            class="list-group"
+            :options="{
+              group: 'dashboard',
+              disabled: !inLayout,
+            }"
+            @end="handleUpdateLayout"
           >
             <template v-for="c in container">
               <component
                 :is="c.id"
                 v-if="inLayout || (c.enabled && !filtered(c))"
                 :key="c.id"
-                :menu-collapsed="menuCollapsed"
+                :narrow="narrow"
                 class="mb-2 mb-md-4"
               />
             </template>
-          </transition-group>
-        </app-draggable>
-      </v-col>
+          </app-draggable>
+        </template>
+      </app-observed-column>
     </template>
   </v-row>
 </template>
@@ -86,19 +82,10 @@ import type { KlipperPrinterSettings } from '@/store/printer/types'
   }
 })
 export default class Dashboard extends Mixins(StateMixin) {
-  menuCollapsed = false
   containers: Array<LayoutConfig[]> = []
 
   mounted () {
     this.onLayoutChange()
-
-    window.addEventListener('resize', this.updateMenuCollapsed)
-
-    this.updateMenuCollapsed()
-  }
-
-  unmounted () {
-    window.removeEventListener('resize', this.updateMenuCollapsed)
   }
 
   get columnCount () {
@@ -110,8 +97,6 @@ export default class Dashboard extends Mixins(StateMixin) {
   @Watch('columnCount')
   onColumnCount (value: number) {
     this.$typedCommit('config/setContainerColumnCount', value)
-
-    this.updateMenuCollapsed()
   }
 
   get columnSpan () {
@@ -205,10 +190,6 @@ export default class Dashboard extends Mixins(StateMixin) {
     }
 
     this.containers = containers.slice(0, 4)
-  }
-
-  updateMenuCollapsed () {
-    this.menuCollapsed = (this.$el.clientWidth / this.columnCount) < 560
   }
 
   handleUpdateLayout () {
