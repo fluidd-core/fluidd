@@ -59,6 +59,7 @@ export interface MmuConfig {
   showDetails: boolean;
   largeFilamentStatus: boolean;
   showLogos: boolean;
+  showUnavailableSpoolColor: boolean;
 }
 
 export interface HostConfig {

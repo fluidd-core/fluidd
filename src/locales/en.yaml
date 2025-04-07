@@ -1106,6 +1106,7 @@ app:
       show_details: Show Filament Details
       show_ttg_map: Show TTG Map
       show_logos: Show Logos
+      show_unavailable_spool_color: Show Unavailable Spools
   sensors:
     title:
       sensors: Sensors
