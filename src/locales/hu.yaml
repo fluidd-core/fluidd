@@ -99,6 +99,7 @@ app:
       uploaded: Feltöltve
       view_section_documentation: >-
         Nézd '%{section}' dokumentáció
+      sd_card_info: SD-Kártya információk
     msg:
       not_found: Nincsenek fájlok
       processing: Feldolgozás
@@ -982,6 +983,8 @@ app:
       used_weight: Használt
       colors: Színek
       diameter: Átmérő
+      initial_length: Kezdeti hossz
+      initial_weight: Kezdeti súly
     msg:
       no_spool: >-
         Nem választottál ki orsót.
