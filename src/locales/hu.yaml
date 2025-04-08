@@ -22,6 +22,7 @@ app:
       delete: Profil törlése
       load: Profil betöltése
       save: A kalibrált profil a printer.cfg fájlba íródik
+      download_image: Ágyháló kép letöltése
   chart:
     label:
       current: Aktuális
