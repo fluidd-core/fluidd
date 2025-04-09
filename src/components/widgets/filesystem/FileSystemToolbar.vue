@@ -218,15 +218,11 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   }
 
   get thumbnailSize (): number {
-    return this.$typedState.config.uiSettings.general.thumbnailSize
+    return this.$typedState.config.uiSettings.thumbnailSizes[this.root] ?? 32
   }
 
   set thumbnailSize (value: number) {
-    this.$typedDispatch('config/saveByPath', {
-      path: 'uiSettings.general.thumbnailSize',
-      value,
-      server: true
-    })
+    this.$typedDispatch('config/updateThumbnailSizes', { name: this.root, size: value })
   }
 
   handleUpload (files: FileList | File[], print: boolean) {
