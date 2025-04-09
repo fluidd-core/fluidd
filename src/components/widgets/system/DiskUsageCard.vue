@@ -50,8 +50,8 @@
       <v-progress-linear
         :size="90"
         :height="10"
-        :value="fileSystemUsedPercent"
-        color="primary"
+        :value="diskUsage?.usedPercent"
+        :color="diskUsage?.lowOnSpace ? 'error': 'primary'"
         class="my-1"
       />
 
@@ -83,7 +83,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import type { DiskUsage } from '@/store/files/types'
+import type { AppDiskUsage } from '@/store/files/types'
 import { SocketActions } from '@/api/socketActions'
 import StateMixin from '@/mixins/state'
 
@@ -105,9 +105,9 @@ export default class DiskUsageCard extends Mixins(StateMixin) {
     return this.hasWait(`${this.$waits.onFileSystem}/${this.currentRoot}/`)
   }
 
-  get diskUsage (): DiskUsage | undefined {
+  get diskUsage (): AppDiskUsage | undefined {
     if (this.currentRoot != null) {
-      const diskUsage: DiskUsage | undefined = this.$typedState.files.diskUsage[this.currentRoot]
+      const diskUsage: AppDiskUsage | undefined = this.$typedGetters['files/getDiskUsage'](this.currentRoot)
 
       if (diskUsage == null) {
         SocketActions.serverFilesGetDirectory(this.currentRoot)
@@ -115,12 +115,6 @@ export default class DiskUsageCard extends Mixins(StateMixin) {
 
       return diskUsage
     }
-  }
-
-  get fileSystemUsedPercent (): number {
-    return this.diskUsage == null
-      ? 0
-      : Math.floor((this.diskUsage.used / this.diskUsage.total) * 100)
   }
 
   handleRefresh () {

@@ -209,7 +209,7 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   }
 
   get lowOnSpace (): boolean {
-    return this.$typedGetters['files/getLowOnSpace'](this.root)
+    return this.$typedGetters['files/getDiskUsage'](this.root)?.lowOnSpace ?? false
   }
 
   // Properties of the current root.
