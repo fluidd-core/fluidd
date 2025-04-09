@@ -18,6 +18,7 @@ export interface UiSettings {
   editor: EditorConfig;
   dashboard: DashboardConfig;
   tableHeaders: TableHeadersConfig;
+  thumbnailSizes: ThumbnailSizesConfig;
   gcodePreview: GcodePreviewConfig;
   fileSystem: FileSystemConfig;
   toolhead: ToolheadConfig;
@@ -121,7 +122,6 @@ export interface GeneralConfig {
   printProgressCalculation: PrintProgressCalculation[];
   printEtaCalculation: PrintEtaCalculation[];
   enableDiagnostics: boolean;
-  thumbnailSize: number;
   colorPickerValueRange: ColorPickerValueRange;
 }
 
@@ -222,7 +222,10 @@ export interface TemperaturePresetValue {
   active: boolean;
 }
 
-export interface TableHeadersConfig extends Record<string, ConfiguredTableHeader[]> {
+export interface TableHeadersConfig extends Record<string, ConfiguredTableHeader[] | undefined> {
+}
+
+export interface ThumbnailSizesConfig extends Record<string, number | undefined> {
 }
 
 export interface ConfiguredTableHeader {
