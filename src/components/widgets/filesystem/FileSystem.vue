@@ -889,10 +889,24 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * Core file handling.
    * ===========================================================================
   */
-  handlePrint (file: AppFile) {
+  handlePrint (file: AppFile | AppFileWithMeta) {
     if (this.disabled) return
 
     const filename = file.path ? `${file.path}/${file.filename}` : file.filename
+
+    if (this.$typedState.printer.printer.mmu?.enabled === true) {
+      if ('referenced_tools' in file) {
+        const mmuPrint = (file.referenced_tools?.length ?? 1) > 1 || this.$typedState.printer.printer.mmu?.gate !== -2
+        if (mmuPrint) {
+          this.$typedCommit('mmu/setDialogState', {
+            show: true,
+            filename
+          })
+
+          return
+        }
+      }
+    }
 
     const spoolmanSupported: boolean = this.$typedGetters['spoolman/getAvailable']
     const autoSpoolSelectionDialog: boolean = this.$typedState.config.uiSettings.spoolman.autoSpoolSelectionDialog

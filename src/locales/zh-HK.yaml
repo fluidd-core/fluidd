@@ -33,8 +33,6 @@ app:
       auto_scroll: 自動滾動
       flip_layout: 翻轉布局
       hide_temp_waits: 隱藏溫度信息
-    placeholder:
-      command: 按 'tab' 自動補全命令，按 '↑↓' 鍵獲取歷史命令，輸入 'help' 獲取命令幫助
   endpoint:
     error:
       cant_connect: 出了點問題，Fluidd 無法連接目標。你確定這是正確的設備地址？

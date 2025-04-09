@@ -27,6 +27,7 @@ import { timelapse } from './timelapse'
 import { webcams } from './webcams'
 import { jobQueue } from './jobQueue'
 import { spoolman } from './spoolman'
+import { mmu } from './mmu'
 import { sensors } from './sensors'
 import { analysis } from './analysis'
 
@@ -57,6 +58,7 @@ export const storeOptions = {
     webcams,
     jobQueue,
     spoolman,
+    mmu,
     sensors,
     analysis
   } satisfies RootModules,

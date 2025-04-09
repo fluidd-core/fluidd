@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { FilesState, MoonrakerRootFile, MoonrakerPathContent, MoonrakerFile, MoonrakerFileWithMeta, FilePaths, MoonrakerDir } from './types'
+import type { FilesState, MoonrakerRootFile, MoonrakerPathContent, MoonrakerFile, MoonrakerFileWithMeta, FilePaths, MoonrakerDir, DiskUsage } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 
@@ -171,7 +171,7 @@ export const mutations = {
     Vue.set(state.currentPaths, payload.root, payload.path)
   },
 
-  setDiskUsage (state, payload) {
-    Vue.set(state, 'diskUsage', payload)
+  setDiskUsage (state, payload: { root: string, disk_usage: DiskUsage }) {
+    Vue.set(state.diskUsage, payload.root, payload.disk_usage)
   }
 } satisfies MutationTree<FilesState>

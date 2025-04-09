@@ -1,4 +1,4 @@
-import type { SpoolmanState } from '@/store/spoolman/types'
+import type { SpoolmanState } from './types'
 
 export const defaultState = (): SpoolmanState => {
   return {

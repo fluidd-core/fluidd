@@ -6,7 +6,7 @@
     <job-history />
 
     <template #menu>
-      <app-btn-collapse-group :collapsed="menuCollapsed">
+      <app-btn-collapse-group :collapsed="narrow">
         <app-btn
           small
           class="ms-1 my-1"
@@ -50,7 +50,7 @@ import { SocketActions } from '@/api/socketActions'
 })
 export default class PrinterHistoryCard extends Vue {
   @Prop({ type: Boolean })
-  readonly menuCollapsed?: boolean
+  readonly narrow?: boolean
 
   async handleRemoveAll () {
     const result = await this.$confirm(

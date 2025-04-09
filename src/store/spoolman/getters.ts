@@ -43,6 +43,9 @@ const spoolmanSpoolAsSpool = (spool: SpoolmanSpool): Spool => {
     initial_length: initial_weight != null
       ? filamentWeightToLength(initial_weight, filament)
       : undefined,
+    progress: !!initial_weight && spool.used_weight != null
+      ? (initial_weight - spool.used_weight) / initial_weight * 100
+      : undefined,
     filament,
   })
 }

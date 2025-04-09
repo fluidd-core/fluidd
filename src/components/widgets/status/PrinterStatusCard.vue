@@ -76,6 +76,7 @@ import StatusControls from './StatusControls.vue'
 import StatusTab from './StatusTab.vue'
 import ReprintTab from './ReprintTab.vue'
 import type { TimeEstimates } from '@/store/printer/types'
+import getFilePaths from '@/util/get-file-paths'
 
 @Component({
   components: {
@@ -127,6 +128,24 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
   }
 
   handlePrint (filename: string) {
+    if (this.$typedState.printer.printer.mmu?.enabled === true) {
+      const { rootPath, filename: filenameOnly } = getFilePaths(filename, 'gcodes')
+      const fileWithMeta = this.$typedGetters['files/getFile'](rootPath, filenameOnly)
+
+      if (fileWithMeta != null && 'referenced_tools' in fileWithMeta) {
+        const mmuPrint = (fileWithMeta.referenced_tools?.length ?? 1) > 1 || this.$typedState.printer.printer.mmu.gate !== -2
+
+        if (mmuPrint) {
+          this.$typedCommit('mmu/setDialogState', {
+            show: true,
+            filename
+          })
+
+          return
+        }
+      }
+    }
+
     const spoolmanSupported: boolean = this.$typedGetters['spoolman/getAvailable']
     const autoSpoolSelectionDialog: boolean = this.$typedState.config.uiSettings.spoolman.autoSpoolSelectionDialog
 

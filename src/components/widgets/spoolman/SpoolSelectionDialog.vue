@@ -158,6 +158,30 @@
               </div>
             </template>
 
+            <template #[`item-value.initial_weight`]="{ value }">
+              {{ $filters.getReadableWeightString(value) }}
+            </template>
+
+            <template #[`item-value.used_weight`]="{ value }">
+              {{ $filters.getReadableWeightString(value) }}
+            </template>
+
+            <template #[`item-value.remaining_weight`]="{ value }">
+              {{ $filters.getReadableWeightString(value) }}
+            </template>
+
+            <template #[`item-value.initial_length`]="{ value }">
+              {{ $filters.getReadableLengthString(value) }}
+            </template>
+
+            <template #[`item-value.used_length`]="{ value }">
+              {{ $filters.getReadableLengthString(value) }}
+            </template>
+
+            <template #[`item-value.remaining_length`]="{ value }">
+              {{ $filters.getReadableLengthString(value) }}
+            </template>
+
             <template #[`item-value.price`]="{ value }">
               {{ $filters.getReadableCurrencyString(value, currency ?? '') }}
             </template>
@@ -281,7 +305,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   @Watch('open')
   onOpen () {
     if (this.open) {
-      if (this.targetMacro) {
+      if (this.spoolSelectionOnly) {
+        this.selectedSpoolId = this.$typedState.spoolman.dialog.selectedSpoolId ?? null
+      } else if (this.targetMacro) {
         const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
 
         this.selectedSpoolId = typeof macro?.variables?.spool_id === 'number'
@@ -338,6 +364,42 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       {
         text: this.$tc('app.spoolman.label.material'),
         value: 'filament.material',
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.initial_weight'),
+        value: 'initial_weight',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.used_weight'),
+        value: 'used_weight',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.remaining_weight'),
+        value: 'remaining_weight',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.initial_length'),
+        value: 'initial_length',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.used_length'),
+        value: 'used_length',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.spoolman.label.remaining_length'),
+        value: 'remaining_length',
+        visible: false,
         cellClass: 'text-no-wrap'
       },
       {
@@ -440,6 +502,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$typedGetters['files/getFile'](rootPath, filename)
   }
 
+  get spoolSelectionOnly (): boolean {
+    return this.$typedState.spoolman.dialog.spoolSelectionOnly ?? false
+  }
+
   get targetMacro (): string | undefined {
     return this.$typedState.spoolman.dialog.targetMacro
   }
@@ -485,6 +551,15 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   async handleSelectSpool () {
+    if (this.spoolSelectionOnly) {
+      // save selection for parent dialog
+      this.$typedCommit('spoolman/setDialogState', {
+        show: false,
+        selectedSpoolId: this.selectedSpoolId ?? undefined
+      })
+      return
+    }
+
     if (!this.selectedSpoolId) {
       // no spool selected
 
@@ -587,6 +662,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     }
 
     await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
+
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
 

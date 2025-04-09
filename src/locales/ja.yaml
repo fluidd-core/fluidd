@@ -28,7 +28,6 @@ app:
       not_loaded: メッシュを読込しない
     tooltip:
       calibrate: 新しいキャリブレーションを開始し、プロファイル'default'として保存します
-      copy_image: ベッドメッシュ画像をコピー
       delete: プロファイルを削除します。
       load: プロファイルを読込み
       save: キャリブレーションされたプロファイルをprinter.cfgに書込みします。
@@ -76,8 +75,6 @@ app:
   endstop:
     label:
       endstop: 'エンドストップ %{name}'
-      open: ''
-      triggered: ''
     msg:
       subtitle: エンドストップの状態を更新する場合は、更新ボタンを押します。
     states:
@@ -89,7 +86,6 @@ app:
       label:
         crowsnest_backup_files: Crowsnest バックアップ ファイルのフィルタリング
         hidden_files: 隠しファイルとフォルダをフィルタリングする
-        hidden_files_folders: ''
         klipper_backup_files: バックアップファイルを非表示
         moonraker_backup_files: Moonraker バックアップ ファイルをフィルタリングする
         moonraker_temporary_upload_files: Moonraker 一時アップロード ファイルをフィルタリングする
@@ -725,9 +721,11 @@ app:
       diagnostics_performance: '[ベータ] 診断情報をログに記録すると、パフォーマンスに影響を与える可能性があります'
       gcode_coords: ダッシュボードのツールヘッド位置の代わりにGCode位置を使用する
       keyboard_shortcuts: '[ベータ版] 「?」を押すと、使用可能なキーボードショートカットのリストが表示されます'
-      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST ツールを実行している場合、自動的にヘルパー ダイアログを表示します
+      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST ツールを実行している場合、自動的にヘルパー
+        ダイアログを表示します
       show_manual_probe_dialog_automatically: Manual Probe ツールを実行している場合、自動的にヘルパー ダイアログを表示します
-      show_screws_tilt_adjust_dialog_automatically: SCREWS_TILT_CALCULATE ツールを実行している場合、ヘルパー ダイアログが自動的に表示されます
+      show_screws_tilt_adjust_dialog_automatically: SCREWS_TILT_CALCULATE ツールを実行している場合、ヘルパー
+        ダイアログが自動的に表示されます
       theme_disclaimer: >-
         これらのテーマには、それぞれの所有者の知的財産であるブランド名とロゴが使用されています。<br>
         これらの名前とロゴの掲載は、ブランドの許可を得て行われています。<br>
@@ -905,12 +903,15 @@ app:
         <span class="secondary--text">現在のエクストルーダー構成は、</span> %{filamentDiameter}
         mmフィラメント <span class="secondary--text">と</span> %{nozzleDiameter} mm
         ノズルに設定されています
-      stats_extruded_length: ' %{extrudeFactor} % の流量<span class="secondary--text">で %{extrudeLength} mm のフィラメントを押し出すと、</span> 推定長 %{estimatedExtrudedLength} mm となります。'
+      stats_extruded_length: ' %{extrudeFactor} % の流量<span class="secondary--text">で
+        %{extrudeLength} mm のフィラメントを押し出すと、</span> 推定長 %{estimatedExtrudedLength} mm
+        となります。'
       stats_max_speed: >-
         <span class="secondary--text">レイヤー高を</span> %{layerHeight} mm<span
         class="secondary--text">とすると、</span> の推定最大印刷速度は %{estimatedMaxSpeed}
         mm/s です
-      stats_volumetric_flow: ' %{extrudeSpeed} mm/s<span class="secondary--text">で押し出すと、</span>推定体積流量は  %{estimatedVolumetricFlow} mm3/s になります。'
+      stats_volumetric_flow: ' %{extrudeSpeed} mm/s<span class="secondary--text">で押し出すと、</span>推定体積流量は  %{estimatedVolumetricFlow}
+        mm3/s になります。'
     title:
       bed_screws_adjust: ベッドスクリューの調整
       manual_probe: マニュアルプローブ

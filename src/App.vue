@@ -88,6 +88,7 @@
         <manual-probe-dialog />
         <bed-screws-adjust-dialog />
         <screws-tilt-adjust-dialog />
+        <mmu-edit-ttg-map-dialog />
       </template>
     </v-main>
 
@@ -117,6 +118,7 @@ import type { ThemeConfig } from '@/store/config/types'
 import ActionCommandPromptDialog from '@/components/common/ActionCommandPromptDialog.vue'
 import KeyboardShortcutsDialog from '@/components/common/KeyboardShortcutsDialog.vue'
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
+import MmuEditTtgMapDialog from './components/widgets/mmu/MmuEditTtgMapDialog.vue'
 
 @Component<App>({
   metaInfo () {
@@ -131,7 +133,8 @@ import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@
     FileSystemDownloadDialog,
     FileSystemUploadDialog,
     ActionCommandPromptDialog,
-    KeyboardShortcutsDialog
+    KeyboardShortcutsDialog,
+    MmuEditTtgMapDialog
   }
 })
 export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {

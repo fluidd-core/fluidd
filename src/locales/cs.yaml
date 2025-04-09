@@ -34,8 +34,6 @@ app:
     label:
       auto_scroll: Automatický posun
       hide_temp_waits: Skrýt čekání na teplotu
-    placeholder:
-      command: '''tab'' pro autodoplňování, ''help'' pro příkazy ''šipky'' pro historii'
   endpoint:
     error:
       cant_connect: >-

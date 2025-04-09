@@ -31,6 +31,7 @@ export const actions = {
   async onServerFilesGetDirectory ({ commit }, payload: ObjectWithRequest<DirectoryInformation>) {
     const { disk_usage, files, dirs } = payload
     const { path } = payload.__request__.params ?? {}
+    const [root] = path.split('/', 1)
 
     const filteredDirs = dirs
       .filter(file =>
@@ -39,7 +40,7 @@ export const actions = {
         !Globals.FILTERED_FILES_EXTENSION.some(e => file.dirname.endsWith(e))
       )
 
-    commit('setDiskUsage', disk_usage)
+    commit('setDiskUsage', { root, disk_usage })
     commit('setServerFilesGetDirectory', { path, content: { files, dirs: filteredDirs } })
   },
 

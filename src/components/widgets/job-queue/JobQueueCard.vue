@@ -8,7 +8,7 @@
     :help-tooltip="$t('app.job_queue.tooltip.help')"
   >
     <template #menu>
-      <app-btn-collapse-group :collapsed="menuCollapsed">
+      <app-btn-collapse-group :collapsed="narrow">
         <app-btn
           v-if="['ready','loading','starting'].includes(queueState)"
           small
@@ -77,7 +77,7 @@ import type { QueueState } from '@/store/jobQueue/types'
 })
 export default class JobQueueCard extends Vue {
   @Prop({ type: Boolean })
-  readonly menuCollapsed?: boolean
+  readonly narrow?: boolean
 
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean

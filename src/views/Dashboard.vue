@@ -1,7 +1,7 @@
 <template>
   <v-row :dense="$vuetify.breakpoint.smAndDown">
     <template v-for="(container, containerIndex) in containers">
-      <v-col
+      <app-observed-column
         v-if="inLayout || hasCards(container)"
         :key="`container${containerIndex}`"
         cols="12"
@@ -9,32 +9,28 @@
         :lg="columnSpan"
         :class="{ 'drag': inLayout }"
       >
-        <app-draggable
-          v-model="containers[containerIndex]"
-          class="list-group"
-          :options="{
-            group: 'dashboard',
-            disabled: !inLayout,
-          }"
-          target=":first-child"
-          @end="handleUpdateLayout"
-        >
-          <transition-group
-            type="transition"
-            :name="!inLayout ? 'flip-list' : undefined"
+        <template #default="{ narrow }">
+          <app-draggable
+            v-model="containers[containerIndex]"
+            class="list-group"
+            :options="{
+              group: 'dashboard',
+              disabled: !inLayout,
+            }"
+            @end="handleUpdateLayout"
           >
             <template v-for="c in container">
               <component
                 :is="c.id"
                 v-if="inLayout || (c.enabled && !filtered(c))"
                 :key="c.id"
-                :menu-collapsed="menuCollapsed"
+                :narrow="narrow"
                 class="mb-2 mb-md-4"
               />
             </template>
-          </transition-group>
-        </app-draggable>
-      </v-col>
+          </app-draggable>
+        </template>
+      </app-observed-column>
     </template>
   </v-row>
 </template>
@@ -57,6 +53,7 @@ import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
 import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
 import SpoolmanCard from '@/components/widgets/spoolman/SpoolmanCard.vue'
+import MmuCard from '@/components/widgets/mmu/MmuCard.vue'
 import SensorsCard from '@/components/widgets/sensors/SensorsCard.vue'
 import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
 import BeaconCard from '@/components/widgets/beacon/BeaconCard.vue'
@@ -78,25 +75,17 @@ import type { KlipperPrinterSettings } from '@/store/printer/types'
     GcodePreviewCard,
     JobQueueCard,
     SpoolmanCard,
+    MmuCard,
     SensorsCard,
     RunoutSensorsCard,
     BeaconCard
   }
 })
 export default class Dashboard extends Mixins(StateMixin) {
-  menuCollapsed = false
   containers: Array<LayoutConfig[]> = []
 
   mounted () {
     this.onLayoutChange()
-
-    window.addEventListener('resize', this.updateMenuCollapsed)
-
-    this.updateMenuCollapsed()
-  }
-
-  unmounted () {
-    window.removeEventListener('resize', this.updateMenuCollapsed)
   }
 
   get columnCount () {
@@ -108,8 +97,6 @@ export default class Dashboard extends Mixins(StateMixin) {
   @Watch('columnCount')
   onColumnCount (value: number) {
     this.$typedCommit('config/setContainerColumnCount', value)
-
-    this.updateMenuCollapsed()
   }
 
   get columnSpan () {
@@ -160,6 +147,10 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.$typedGetters['server/componentSupport']('spoolman')
   }
 
+  get supportsMmu (): boolean {
+    return this.$typedState.printer.printer.mmu != null
+  }
+
   get hasMacros (): boolean {
     return this.$typedGetters['macros/getVisibleMacros'].length > 0
   }
@@ -201,10 +192,6 @@ export default class Dashboard extends Mixins(StateMixin) {
     this.containers = containers.slice(0, 4)
   }
 
-  updateMenuCollapsed () {
-    this.menuCollapsed = (this.$el.clientWidth / this.columnCount) < 560
-  }
-
   handleUpdateLayout () {
     const name: string = this.$typedGetters['layout/getSpecificLayoutName']
 
@@ -236,6 +223,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'beacon-card' && !this.supportsBeacon) return true
     if (item.id === 'runout-sensors-card' && !this.supportsRunoutSensors) return true
     if (item.id === 'spoolman-card' && !this.supportsSpoolman) return true
+    if (item.id === 'mmu-card' && !this.supportsMmu) return true
     if (item.id === 'sensors-card' && !this.hasSensors) return true
     if (item.id === 'temperature-card' && !this.hasHeatersOrTemperatureSensors) return true
 

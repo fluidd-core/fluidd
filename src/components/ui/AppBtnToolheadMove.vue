@@ -11,7 +11,6 @@
         class="px-2"
         v-bind="{...$attrs, ...attrs}"
         v-on="{...$listeners, ...on}"
-        @click="$emit('click')"
       >
         <v-icon
           v-if="icon"

@@ -6,6 +6,8 @@
     >
       <system-overview-card class="mb-2 mb-md-4" />
 
+      <sd-info-card class="mb-2 mb-md-4" />
+
       <disk-usage-card />
     </v-col>
 
@@ -35,6 +37,7 @@ import SystemOverviewCard from '@/components/widgets/system/SystemOverviewCard.v
 import McuCard from '@/components/widgets/system/McuCard.vue'
 import SystemUsageCard from '@/components/widgets/system/SystemUsageCard.vue'
 import DiskUsageCard from '@/components/widgets/system/DiskUsageCard.vue'
+import SdInfoCard from '@/components/widgets/system/SdInfoCard.vue'
 import type { MCU } from '@/store/printer/types'
 
 @Component({
@@ -43,7 +46,8 @@ import type { MCU } from '@/store/printer/types'
     SystemOverviewCard,
     McuCard,
     SystemUsageCard,
-    DiskUsageCard
+    DiskUsageCard,
+    SdInfoCard
   }
 })
 export default class Configure extends Mixins(StateMixin) {
