@@ -1078,6 +1078,8 @@ app:
       are_you_sure: Are you sure?
       bad_temperature: Temperature out of range
       filament_available: Filament available in gate
+      filament_unknown: Unknown filament state (please set)
+      filament_empty: Filament not available
       maintenance_intro: Directly manage specific MMU functions and selective configuration.
       recover_intro: This is a low level recovery for use when Happy Hare is out of sync with your MMU. It is recommended to try automatic recovery first however this will be required to correct the current tool or gate (Alternatively on Type-A MMU's you can unload and home the selector).
       no_custom_controls: No Custom Controls
@@ -1112,6 +1114,7 @@ app:
       show_details: Show Filament Details
       show_ttg_map: Show TTG Map
       show_logos: Show Logos
+      show_unavailable_spool_color: Show Unavailable Spools
   sensors:
     title:
       sensors: Sensors

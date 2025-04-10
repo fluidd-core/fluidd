@@ -514,9 +514,9 @@ export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, Sta
     return this.$typedState.printer.printer.mmu_leds?.led_effect_module ?? false
   }
 
-  private unitDisplayName (unit: number): string {
-    const name = this.unitDetails(unit).name
-    return `MMU #${unit + 1} - ${name}`
+  private unitDisplayName (unitIndex: number): string {
+    const name = this.unitDetails(unitIndex).name
+    return `MMU #${unitIndex + 1} - ${name}`
   }
 
   private updateLeds () {
