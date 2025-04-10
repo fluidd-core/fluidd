@@ -213,7 +213,7 @@
                     >
                       <v-switch
                         v-model="selectedGateStatus"
-                        :label="$t('app.mmu.msg.filament_available')"
+                        :label="selectedGateStatusLabel"
                         hide-details
                         class="short-switch"
                       />
@@ -506,11 +506,17 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   }
 
   set selectedGateStatus (value: boolean) {
-    if (value) {
-      this.editGateMap[this.editGateSelected].status = this.GATE_AVAILABLE
-    } else {
-      this.editGateMap[this.editGateSelected].status = this.GATE_EMPTY
+    this.editGateMap[this.editGateSelected].status = value ? this.GATE_AVAILABLE : this.GATE_EMPTY
+  }
+
+  get selectedGateStatusLabel (): string {
+    const status = this.editGateMap[this.editGateSelected].status
+    if (status === this.GATE_UNKNOWN) {
+      return this.$t('app.mmu.msg.filament_unknown').toString()
+    } else if (status === this.GATE_EMPTY) {
+      return this.$t('app.mmu.msg.filament_empty').toString()
     }
+    return this.$t('app.mmu.msg.filament_available').toString()
   }
 
   handleSelectSpool () {
