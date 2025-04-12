@@ -40,10 +40,10 @@ export const getters = {
     const componentVersionInfo = state.version_info[component]
 
     if ('name' in componentVersionInfo && componentVersionInfo.name !== 'system') {
-      const version = valid(componentVersionInfo.version)
-      const remoteVersion = valid(componentVersionInfo.remote_version)
+      const version = valid(componentVersionInfo.version, { loose: true })
+      const remoteVersion = valid(componentVersionInfo.remote_version, { loose: true })
       if (version && remoteVersion) {
-        return gt(remoteVersion, version)
+        return gt(remoteVersion, version, { loose: true })
       }
     } else if ('package_count' in componentVersionInfo) {
       return componentVersionInfo.package_count > 0
