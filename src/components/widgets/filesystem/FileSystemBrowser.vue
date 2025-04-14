@@ -179,8 +179,8 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     return this.rootProperties.readonly
   }
 
-  get thumbnailSize () {
-    const thumbnailSize: number = this.$typedState.config.uiSettings.general.thumbnailSize
+  get thumbnailSize (): number {
+    const thumbnailSize: number = this.$typedState.config.uiSettings.thumbnailSizes[this.root] ?? 32
 
     return this.dense ? thumbnailSize / 2 : thumbnailSize
   }

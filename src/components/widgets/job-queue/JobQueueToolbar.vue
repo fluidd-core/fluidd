@@ -2,6 +2,8 @@
   <v-toolbar dense>
     <v-spacer />
 
+    <app-thumbnail-size v-model="thumbnailSize" />
+
     <app-column-picker
       v-if="headers"
       key-name="job_queue"
@@ -48,5 +50,13 @@ import type { AppDataTableHeader } from '@/types'
 export default class JobQueueToolbar extends Vue {
   @Prop({ type: Array })
   readonly headers?: AppDataTableHeader[]
+
+  get thumbnailSize (): number {
+    return this.$typedState.config.uiSettings.thumbnailSizes.jobQueue ?? 32
+  }
+
+  set thumbnailSize (value: number) {
+    this.$typedDispatch('config/updateThumbnailSizes', { name: 'jobQueue', size: value })
+  }
 }
 </script>

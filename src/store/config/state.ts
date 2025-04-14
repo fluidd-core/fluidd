@@ -68,7 +68,6 @@ export const defaultState = (): ConfigState => {
         printProgressCalculation: ['file'],
         printEtaCalculation: ['file'],
         enableDiagnostics: false,
-        thumbnailSize: 32,
         colorPickerValueRange: 'absolute',
         showHiddenOutputs: false
       },
@@ -91,6 +90,7 @@ export const defaultState = (): ConfigState => {
         tempPresets: []
       },
       tableHeaders: {},
+      thumbnailSizes: {},
       gcodePreview: {
         extrusionLineWidth: 0.3,
         moveLineWidth: 0.1,

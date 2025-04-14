@@ -70,8 +70,11 @@
                 <img
                   v-else
                   class="file-icon-thumb"
-                  :src="getThumbUrl(item.file, 'gcodes', getFilePaths(item.filename).path, dense != true, item.file.modified)"
-                  :width="dense ? 16 : 32"
+                  :style="{
+                    'max-width': `${thumbnailSize}px`,
+                    'max-height': `${thumbnailSize}px`
+                  }"
+                  :src="getThumbUrl(item.file, 'gcodes', getFilePaths(item.filename).path, thumbnailSize > 16, item.file.modified)"
                 >
               </v-layout>
             </template>
@@ -118,7 +121,7 @@
               small
               class="ma-1"
             >
-              {{ $t('app.job_queue.label.eta') }}: {{ $filters.formatDateTime(Date.now() + jobTotals.time * 1000) }}
+              {{ $t('app.job_queue.label.eta') }}: {{ $filters.formatAbsoluteDateTime(eta) }}
             </v-chip>
           </div>
         </template>
@@ -135,6 +138,7 @@ import StateMixin from '@/mixins/state'
 import type { DataTableHeader } from 'vuetify'
 import FilesMixin from '@/mixins/files'
 import getFilePaths from '@/util/get-file-paths'
+import type { TimeEstimates } from '@/store/printer/types'
 
 type JobTotals = {
   filamentLength: number,
@@ -206,6 +210,24 @@ export default class JobQueueBrowser extends Mixins(StateMixin, FilesMixin) {
 
       return totals
     }, { filamentLength: 0, filamentWeight: 0, time: 0, withoutFile: 0 })
+  }
+
+  get thumbnailSize () {
+    const thumbnailSize: number = this.$typedState.config.uiSettings.thumbnailSizes.jobQueue ?? 32
+
+    return this.dense ? thumbnailSize / 2 : thumbnailSize
+  }
+
+  get estimates (): TimeEstimates {
+    return this.$typedGetters['printer/getTimeEstimates']
+  }
+
+  get eta () {
+    const base = this.printerPrinting || this.printerPaused
+      ? this.estimates.eta
+      : Date.now()
+
+    return base + this.jobTotals.time * 1000
   }
 
   getFilePaths (filename: string) {

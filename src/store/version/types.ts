@@ -81,7 +81,14 @@ export interface ZipUpdatePackage extends VersionedPackage {
   last_error?: string;
 }
 
-export type VersionedUpdatePackage = GitUpdatePackage | WebUpdatePackage | ZipUpdatePackage
+export interface PythonUpdatePackage extends VersionedPackage {
+  configured_type?: 'python';
+  changelog_url?: string;
+  current_hash?: string;
+  remote_hash?: string;
+}
+
+export type VersionedUpdatePackage = GitUpdatePackage | WebUpdatePackage | ZipUpdatePackage | PythonUpdatePackage
 export type UpdatePackage = VersionedUpdatePackage | OSPackage
 
 export interface CommitItem {
