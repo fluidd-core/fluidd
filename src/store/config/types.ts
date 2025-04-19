@@ -123,6 +123,7 @@ export interface GeneralConfig {
   printEtaCalculation: PrintEtaCalculation[];
   enableDiagnostics: boolean;
   colorPickerValueRange: ColorPickerValueRange;
+  showHiddenOutputs: boolean;
 }
 
 export type ToolheadControlStyle = 'cross' | 'bars' | 'circle'
