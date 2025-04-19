@@ -148,7 +148,8 @@ export const defaultState = (): ConfigState => {
         showTtgMap: true,
         showDetails: true,
         largeFilamentStatus: false,
-        showLogos: false
+        showLogos: false,
+        showUnavailableSpoolColor: false
       }
     }
   }

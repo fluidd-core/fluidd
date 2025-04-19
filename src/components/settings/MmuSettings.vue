@@ -52,6 +52,16 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.mmu.setting.show_unavailable_spool_color')">
+        <v-switch
+          v-model="showUnavailableSpoolColor"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.mmu.setting.show_logos')">
         <v-switch
           v-model="showLogos"
@@ -129,6 +139,18 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
   set largeFilamentStatus (value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.largeFilamentStatus',
+      value,
+      server: true
+    })
+  }
+
+  get showUnavailableSpoolColor (): boolean {
+    return this.$typedState.config.uiSettings.mmu.showUnavailableSpoolColor
+  }
+
+  set showUnavailableSpoolColor (value: boolean) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.mmu.showUnavailableSpoolColor',
       value,
       server: true
     })

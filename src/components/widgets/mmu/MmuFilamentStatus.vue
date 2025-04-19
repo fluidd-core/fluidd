@@ -229,7 +229,7 @@
           x="278"
           y="115"
           :class="{ 'text-disabled': !isSensorEnabled('mmu_gate') }"
-        >Gate</text>
+        >{{ gateSensorName }}</text>
         <transition name="fade">
           <text
             v-if="homedToGate"
@@ -526,6 +526,13 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
 
         case this.FILAMENT_POS_IN_EXTRUDER:
           pos = this.POSITIONS['cooling-tube']
+          if (
+            this.hasSensor('toolhead') &&
+            this.isSensorEnabled('toolhead') &&
+            !this.isSensorTriggered('toolhead')
+          ) {
+            pos = this.POSITIONS['before-toolhead'] // Don't show beyond toolhead sensor if not triggered
+          }
           break
 
         case this.FILAMENT_POS_LOADED:
@@ -656,6 +663,13 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
   get encoderPosText (): string {
     if (this.encoderPos < 10000) return `${this.encoderPos} mm`
     return `${this.encoderPos}`
+  }
+
+  get gateSensorName (): string {
+    if (this.unitDetails(this.unit).multiGear) {
+      return 'Hub (Gate)'
+    }
+    return 'Gate'
   }
 
   get temperatureClass (): string {

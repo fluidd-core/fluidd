@@ -199,7 +199,7 @@ import MmuGateStatus from '@/components/widgets/mmu/MmuGateStatus.vue'
 })
 export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
   @Prop({ required: false, default: 0 })
-  readonly unit!: number
+  readonly unitIndex!: number
 
   @Prop({ required: false, default: null })
   readonly editGateMap!: MmuGateDetails[] | null
@@ -219,12 +219,12 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   }
 
   get unitDisplayName (): string {
-    const name = this.unitDetails(this.unit).name
-    return `#${this.unit + 1} ${name}`
+    const name = this.unitDetails(this.unitIndex).name
+    return `#${this.unitIndex + 1} ${name}`
   }
 
   get unitGateRange (): number[] {
-    const unitDetails = this.unitDetails(this.unit)
+    const unitDetails = this.unitDetails(this.unitIndex)
     return Array.from({ length: unitDetails.numGates }, (v, k) => k + unitDetails.firstGate)
   }
 
@@ -262,7 +262,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   }
 
   get showBypass (): boolean {
-    return !this.editGateMap && this.unitDetails(this.unit).hasBypass && this.hasBypass
+    return !this.editGateMap && this.unitDetails(this.unitIndex).hasBypass && this.hasBypass
   }
 
   gateTooltip (gate: number): string[] {
