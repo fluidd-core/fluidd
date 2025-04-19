@@ -29,6 +29,8 @@ app:
       power: Energia
       target: Alvo
       rate_of_change: Mudança
+      target_temperature: Temperatura Alvo
+      turn_off: Desligar
     tooltip:
       help: >-
         Mantenha a tecla <kbd>Shift</kbd> pressionada para aumentar o zoom. <br />
@@ -308,6 +310,18 @@ app:
       username: Utilizador
       version_sort: Ordenar por versão
       visible: Visível
+      unretract_speed: Velocidade de DesRetração
+      edit_category: Editar Categoria
+      synced_extruder: Extrusora sincronizada
+      unsaved_changes: Mudanças não gravadas
+      alias: Apelido
+      apply_z_offset: Aplicar e atualizar Z_Offset
+      file_time: Ficheiro
+      device: Dispositivo
+      smooth_time: Tempo de Suavização
+      minimum_cruise_ratio: Taxa mínima de deslocamento
+      unknown: Desconhecido
+      add_category: Adicionar categoria
     simple_form:
       error:
         arrayofnums: Apenas números
@@ -317,12 +331,35 @@ app:
         min: Min. %{min}
         min_or_0: Min %{min} ou 0
         required: Obrigatório
+        password_username: Não é possível encontrar o utilizador
+        invalid_aspect: Proporção de Aspeto Inválida
+        credentials: Credenciais inválidas
+        invalid_number: Número Inválido
+        invalid_expression: Expressão inválida
       msg:
         confirm: Tem a certeza?
         confirm_delete: Tem a certeza? Vai excluir o item selecionado. | Tem a certeza?
           Vai excluir os {count} itens selecionados.
         confirm_reboot_host: Tem certeza? O sistema vai reiniciar.
         confirm_shutdown_host: Tem certeza? O sistema vai desligar.
+        confirm_exclude_object: Tem certeza que deseja apagar este objeto da impressão?
+        confirm_clear_mesh: A impressora está ocupada no momento. Tem certeza de que
+          deseja limpar a malha da cama?
+        confirm_remove_camera: Tem certeza que deseja remover a camera %{name}?
+        confirm_service_restart: Tem certeza de que deseja reiniciar o serviço %{name}?
+        confirm_load_bedmesh_profile: A impressora está ocupada no momento. Tem certeza
+          de que deseja carregar o perfil %{name}?
+        confirm_remove_user: Tem certeza de que deseja remover o utilizador %{username}?
+        confirm_service_start: Tem certeza de que deseja iniciar o serviço %{name}?
+        confirm_service_stop: Tem certeza de que deseja interromper o serviço %{name}?
+        confirm_power_device_toggle: Tem certeza? Isto alternará a energia deste dispositivo.
+        confirm_forcemove_toggle: Tem certeza? Isto pode danificar a impressora.
+        unsaved_changes: Tem alterações não gravadas. Tem certeza que deseja fechar
+          este ficheiro?
+        no_file_preview: '%{name} não pode ser visualizado no momento.'
+        confirm_emergency_stop: Tem certeza de que deseja parar a impressora em emergência?
+        confirm_remove_printer: Tem certeza que deseja remover a impressora %{name}?
+        confirm_cancel_print: Tem certeza de que deseja cancelar a impressão atual?
     table:
       header:
         actions: Ações
@@ -345,6 +382,13 @@ app:
         start_time: Iniciado
         status: Estado
         total_duration: Duração total
+        filament_type: Tipo de filamento
+        time_added: Tempo adicionado
+        time_in_queue: Tempo na fila
+        filament_name: Nome do filamento
+        nozzle_diameter: Diâmetro do bico
+        filament_weight_total: Peso do filamento
+        chamber_temp: Temperatura da câmara
     title:
       add_printer: Adicionar impressora
       bedmesh: Nivelamento cama
@@ -366,11 +410,50 @@ app:
       temperature: Temperatura
       tool: Ferramentas
       tune: Afinação
+      not_found: 404 Não Encontrado
+      system: Sistema
+      add_chart: Adicionar gráfico
+      system_overview: Informações do Sistema
+      other_files: Outros ficheiros
+      pending_configuration_changes: Alterações de configuração pendentes
+      rollover_logs: Limpar logs
+      gcode_preview: Prévia do Gcode
+      metrics_explorer: Explorador de Métricas
+      login: Login
+      diagnostics: Diagnósticos
+      job_queue: Fila de Trabalhos
+      retract: Retração pelo Firmware
+      edit_chart: Editar gráfico
     tooltip:
       estop: Paragem emergência
       reload_klipper: Recarrega a configuração do klipper.
       reload_restart_klipper: Recarrega a configuração do klipper e reinicia os MCUs.
       restart_klipper: Reinicia o serviço do sistema klipper.
+      managed_by_moonraker: Gerenciado pela sua configuração do moonraker
+      notifications: Notificações
+      file_browser_configuration_help: Copie ficheiros e pastas para os Ficheiros
+        de Configuração arrastando-os daqui e soltando-os ali
+      run_collector: Executar coletor
+      rollover_logs: Limpar Logs
+      browse_metrics: Navegue pelas métricas disponíveis
+      file_browser_help: Arraste e solte ficheiros ou pastas de fora do navegador
+        para carregá-los aqui<br>Mova ficheiros e pastas arrastando e soltando-os
+        em subpastas ou ".."
+    msg:
+      password_changed: Palavra-passe trocada
+      fluidd_settings_backup_failed: Falha ao fazer backup das configurações do Fluidd!
+      offline_ready: Fluidd está pronto para trabalhar offline.
+      not_valid_fluidd_backup_file: Não é um ficheiro de backup válido do Fluidd!
+      bed_screws_adjust: Clique em <b>Ajustado</b> se for necessário um ajuste significativo
+        no parafuso atual; caso contrário, clique em <b>Aceitar</b> para continuar.
+      needs_refresh: Novo conteúdo disponível, clique no botão <b>Recarregar</b> para
+        atualizar.
+      pending_configuration_sections_deleted: As seguintes secções estão marcadas
+        para apagar
+      wrong_password: Possa, algo errado! A sua palavra-passe está correta?
+      welcome_back: Bem-vindo de volta.<br>Faça login abaixo para manter contato com
+        a sua impressora.
+      fluidd_settings_restore_failed: Falha ao restaurar as configurações do Fluidd!
   printer:
     state:
       busy: Ocupada
@@ -381,16 +464,29 @@ app:
       printing: A imprimir
       ready: Preparada
       standby: Standby
+      cancelled: Cancelado
+    title:
+      printer_status: Estado da impressora
+      stepper_driver_overheating: O driver do motor de passo '%{name}' está superaquecendo
+    msg:
+      possible_print_failure: Isto pode levar a uma impressão com falha
   setting:
     btn:
       add_camera: Adicionar Camera
       add_thermal_preset: Adicionar predefinição
       reset: Reset
       select_theme: Selecionar tema
+      restore: Restaurar
+      add_category: Adicionar categoria
+      add_filter: Adicionar filtro
+      add_metric: Adicionar métrica
+      add_user: Adicionar Utilizador
+      backup: Backup
     camera_type_options:
       mjpegadaptive: MJPEG Adaptativo
       mjpegstream: MJPEG Stream
       video: IP Camera
+      iframe: Página HTTP
     label:
       all_off: Tudo Off
       all_on: Tudo On
@@ -416,6 +512,50 @@ app:
       reset: Redefinir as configurações
       thermal_preset_name: Nome predefinição
       z_adjust_values: Ajustar valores Z
+      contains: Contém
+      aspect_ratio_format: '[largura : altura]'
+      left_y: Eixo-Y esquerdo
+      confirm_dirty_editor_close: Exigir confirmação ao fechar o editor com alterações
+        não gravadas
+      dashed: Tracejado
+      firmware_restart: Reiniciar firmware
+      keyboard_shortcuts: Atalhos de Teclado
+      auto_follow_on_file_load: Acompanhar automaticamente o progresso no carregamento
+        do ficheiro
+      camera_url_snapshot: URL para foto instantânea da câmara
+      draw_origin: Desenhar origem
+      extrusion_line_width: Largura da linha de extrusão
+      enable_xy_homing: Ativar XY Homing
+      dotted: Pontilhado
+      camera_fullscreen_action:
+        embed: Incorporado
+        title: Ação em ecrã cheio
+      card: Cartão
+      confirm_on_power_device_change: Exigir confirmação sobre alterações de energia
+        do dispositivo
+      camera_url_stream: URL para Stream da câmara
+      collector: Coletor
+      confirm_on_save_config_and_restart: Revise as alterações de configuração pendentes
+        antes de gravar e reiniciar
+      flip_vertical: Espelhamento Vertical
+      draw_background: Desenhar fundo
+      filter: Filtro | Filtros
+      icon: Ícone
+      last_result: Último Resultado
+      aspect_ratio: proporções de aspeto
+      camera_rotate_by: Girar por
+      confirm_on_estop: Exigir confirmação na Paragem de Emergência
+      default_min_layer_height: Altura mínima padrão da camada
+      expression: Expressão
+      height: Altura
+      name: Nome
+      axes: Eixos
+      auto_load_mobile_on_print_start: Carregar ficheiro automaticamente em dispositivos
+        móveis
+      auto_edit_extensions: Extensões para abrir automaticamente no modo de edição
+      auto_load_on_print_start: Carregar ficheiro automaticamente no início da impressão
+      flip_horizontal: Espelhamento Horizontal
+      enable_diagnostics: Ativar diagnósticos
     timer_options:
       duration: Só duração
       filament: Estimativas filamento
@@ -428,8 +568,14 @@ app:
       theme: Tema
       thermal_presets: Pré-ajustes térmicos
       tool: Ferramentas
+      console: Console
     tooltip:
       gcode_coords: Usar a posição GCode em vez da posição da toolhead no painel
+    camera_rotate_options:
+      none: Nenhum
+      '180': 180°
+      '90': 90°
+      '270': 270°
   socket:
     msg:
       connecting: A conectar ao moonraker...
@@ -440,6 +586,7 @@ app:
     btn:
       home_x: X
       home_y: 'Y'
+      home_all: Tudo
     tooltip:
       extruder_disabled: extruder disabilitado, abaixo min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Origem XY
@@ -480,6 +627,7 @@ app:
       show_current_layer: Apresentar camada actual
       show_next_layer: Mostrar camada seguinte
       show_parts: Mostrar partes
+      parsed: Analisado
     btn:
       load_current_file: Carregar ficheiro actual
     overlay:
@@ -491,3 +639,55 @@ app:
   sensors:
     title:
       sensors: Sensores
+  history:
+    msg:
+      confirm_stats: Tem certeza? Isto limpará todas as estatísticas.
+      confirm: Tem certeza? Isto limpará todo o histórico e as estatísticas da impressora
+      confirm_jobs: Tem certeza? Isto limpará todos os trabalhos.
+  spoolman:
+    label:
+      filament_name: Filamento
+  mmu:
+    btn:
+      off: Desligado
+      on: Ligado
+      home: Painel
+      recover: Recuperar
+      reset: Repor
+    label:
+      unknown: Desconhecido
+      ok: OK
+      material: Material
+      reset: Repor
+      temperature: Temperatura
+      enable: Ativar
+      save: Gravar
+      cancel: Cancelar
+    msg:
+      are_you_sure: Tem certeza?
+      color: Cor
+  keyboard_shortcuts:
+    label:
+      cancel: Cancelar
+      pause: Pausa
+      printing: A imprimir
+      tool: Ferramenta
+      actions: Ações
+      navigation: Navegação
+  job_queue:
+    msg:
+      confirm: Tem certeza? Isto limpará toda a fila da impressora
+    title:
+      multiply_job: Multiplicar Trabalho | Multiplicar Trabalhos
+    tooltip:
+      help: Enfileirar trabalhos arrastando ficheiros dos trabalhos e soltando-os
+        aqui<br>Ajuste a ordem dos trabalhos enfileirados arrastando-os para cima
+        ou para baixo
+    label:
+      number_of_copies: Número de cópias
+  system_info:
+    label:
+      devices: Dispositivos
+  beacon:
+    label:
+      active: ativo
