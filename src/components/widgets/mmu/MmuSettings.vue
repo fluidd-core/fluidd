@@ -66,6 +66,17 @@
         </v-list-item-content>
       </v-list-item>
 
+      <v-list-item @click="showUnavailableSpoolColor = !showUnavailableSpoolColor">
+        <v-list-item-action class="my-0">
+          <v-checkbox :input-value="showUnavailableSpoolColor" />
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.mmu.setting.show_unavailable_spool_color') }}
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
       <v-list-item @click="showLogos = !showLogos">
         <v-list-item-action class="my-0">
           <v-checkbox :input-value="showLogos" />
@@ -130,6 +141,18 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
   set largeFilamentStatus (value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.largeFilamentStatus',
+      value,
+      server: true
+    })
+  }
+
+  get showUnavailableSpoolColor (): boolean {
+    return this.$typedState.config.uiSettings.mmu.showUnavailableSpoolColor
+  }
+
+  set showUnavailableSpoolColor (value: boolean) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.mmu.showUnavailableSpoolColor',
       value,
       server: true
     })
