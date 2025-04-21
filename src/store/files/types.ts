@@ -7,15 +7,20 @@ export interface FilesState {
   uploads: FileUpload[];
   download: FileDownload | null;
   currentPaths: Record<string, string>;
-  diskUsage: Record<string, DiskUsage | undefined>;
+  diskUsage: Record<string, MoonrakerDiskUsage | undefined>;
   rootFiles: Record<string, MoonrakerRootFile[] | undefined>;
   pathContent: Record<string, MoonrakerPathContent | undefined>;
 }
 
-export interface DiskUsage {
+export interface MoonrakerDiskUsage {
   total: number;
   used: number;
   free: number;
+}
+
+export interface AppDiskUsage extends MoonrakerDiskUsage {
+  usedPercent: number;
+  lowOnSpace: boolean;
 }
 
 export interface MoonrakerRootFile {
@@ -79,7 +84,7 @@ export interface AppDirectory extends MoonrakerDir {
 export interface DirectoryInformation {
   dirs: MoonrakerDir[];
   files: (MoonrakerFile | MoonrakerFileWithMeta)[];
-  disk_usage: DiskUsage;
+  disk_usage: MoonrakerDiskUsage;
   root_info: RootInfo;
 }
 
