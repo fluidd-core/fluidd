@@ -111,6 +111,12 @@ export default class MmuMixin extends Vue {
     return this.mmuState?.is_homed ?? false
   }
 
+  get unit (): number {
+    return this.mmuState?.unit ?? this.UNIT_UNKNOWN
+  }
+
+  readonly UNIT_UNKNOWN: number = -1
+
   get gate (): number {
     return this.mmuState?.gate ?? this.TOOL_GATE_UNKNOWN
   }

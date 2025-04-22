@@ -169,7 +169,7 @@
             :cols="col1Size"
             class="pt-0 d-flex flex-column align-center justify-center"
           >
-            <div class="text--disabled smaller-font min-height-text">
+            <div class="text--disabled smaller-font">
               {{ toolchangeText }}
             </div>
             <div class="min-height-text">
@@ -359,10 +359,12 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
 
 .smaller-font {
     font-size: 0.8em;
+    min-height: 1.0em;
+    line-height: 1.0em;
 }
 
 .min-height-text {
-    min-height: 1.2em;
-    line-height: 1.2em;
+    min-height: 1.1em;
+    line-height: 1.1em;
 }
 </style>
