@@ -374,7 +374,11 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     if (this.editGateMap) {
       this.$emit('select-gate', gate)
     } else if (!this.isPrinting) {
-      if (![this.FILAMENT_POS_UNLOADED, this.FILAMENT_POS_UNKNOWN].includes(this.filamentPos)) {
+      if (
+        this.unitDetails(this.unitIndex).multiGear &&
+                gate !== this.gate &&
+                ![this.FILAMENT_POS_UNLOADED, this.FILAMENT_POS_UNKNOWN].includes(this.filamentPos)
+      ) {
         if (this.gateMenuTimer) clearTimeout(this.gateMenuTimer)
         this.gateMenuTimer = setTimeout(() => {
           Object.keys(this.gateMenuVisible).forEach(key => {
