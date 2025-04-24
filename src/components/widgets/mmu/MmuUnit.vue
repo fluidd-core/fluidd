@@ -61,7 +61,7 @@
                   @click="sendGcode('MMU_SELECT GATE=' + g, $waits.onMmuSelect)"
                 >
                   <v-icon left>
-                    {{ mdiSwapHorizontal = mdiSwapHorizontal }}
+                    $mmuSelectGate
                   </v-icon>
                   {{ $t('app.mmu.btn.select') }}
                 </v-btn>
@@ -75,7 +75,7 @@
                   @click="sendGcode('MMU_PRELOAD GATE=' + g, $waits.onMmuPreload)"
                 >
                   <v-icon left>
-                    {{ mdiDownloadOutline }}
+                    $mmuPreload
                   </v-icon>
                   {{ $t('app.mmu.btn.preload') }}
                 </v-btn>
@@ -89,7 +89,7 @@
                   @click="sendGcode('MMU_EJECT GATE=' + g, $waits.onMmuEject)"
                 >
                   <v-icon left>
-                    {{ mdiEject }}
+                    $mmuEject
                   </v-icon>
                   {{ $t('app.mmu.btn.eject') }}
                 </v-btn>
@@ -252,7 +252,6 @@ import MmuMixin from '@/mixins/mmu'
 import type { MmuGateDetails } from '@/types'
 import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuGateStatus from '@/components/widgets/mmu/MmuGateStatus.vue'
-import { mdiSwapHorizontal, mdiDownloadOutline, mdiEject } from '@mdi/js'
 
 @Component({
   components: { MmuSpool, MmuGateStatus },
@@ -266,10 +265,6 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 
   @Prop({ required: false, default: -1 })
   readonly editGateSelected!: number
-
-  mdiSwapHorizontal = mdiSwapHorizontal
-  mdiDownloadOutline = mdiDownloadOutline
-  mdiEject = mdiEject
 
   gateMenuVisible: Record<number, boolean> = {}
   gateMenuTimer: ReturnType<typeof setTimeout> | null = null
