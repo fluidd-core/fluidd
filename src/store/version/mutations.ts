@@ -12,26 +12,19 @@ export const mutations = {
   },
 
   setUpdateStatus (state, payload) {
-    if (payload) {
-      if ('busy' in payload) state.busy = payload.busy
-      if ('github_limit_reset_time' in payload) state.github_limit_reset_time = payload.github_limit_reset_time
-      if ('github_rate_limit' in payload) state.github_rate_limit = payload.github_rate_limit
-      if ('github_requests_remaining' in payload) state.github_requests_remaining = payload.github_requests_remaining
-
-      const o = Object.assign(
-        {},
-        state.version_info,
-        payload.version_info
-      )
-      Vue.set(state, 'version_info', o)
-    }
+    Vue.set(state, 'status', {
+      ...state.status,
+      ...payload
+    })
   },
 
   setUpdateResponse (state, payload) {
     // If we get a complete === true, then assume the update is complete
     // and set busy to false also.
     if (payload.complete) {
-      state.busy = false
+      if (state.status?.busy === true) {
+        state.status.busy = false
+      }
     } else {
       const id = state.responses.length
       state.responses.push({
