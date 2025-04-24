@@ -19,7 +19,7 @@
               <v-tooltip
                 top
                 :open-delay="500"
-                :disabled="editGateMap != null && editGateMap.length > 0 "
+                :disabled="editGateMap != null && editGateMap.length > 0"
                 content-class="spool-tooltip"
               >
                 <template #activator="{ on: tooltipOn, attrs: tooltipAttrs }">
@@ -28,7 +28,7 @@
                     v-on="{ ...tooltipOn }"
                   >
                     <mmu-spool
-                      :width="spoolWidth + 'px'"
+                      :width="$filters.getPixelsString(spoolWidth)"
                       :class="spoolClass(g)"
                       :gate-index="g"
                       :edit-gate-map="editGateMap"
@@ -40,7 +40,9 @@
                   v-for="(line, idx) in gateTooltip(g)"
                   :key="idx"
                   class="spool-tooltip-line"
-                  :class="idx === 0 ? 'spool-tooltip-title' : ''"
+                  :class="{
+                    'spool-tooltip-title': idx === 0
+                  }"
                 >
                   {{ line }}
                 </div>
@@ -58,7 +60,7 @@
                   style="width: 100%"
                   :disabled="!klippyReady || !canSend"
                   :loading="hasWait($waits.onMmuSelect)"
-                  @click="sendGcode('MMU_SELECT GATE=' + g, $waits.onMmuSelect)"
+                  @click="sendGcode(`MMU_SELECT GATE=${g}`, $waits.onMmuSelect)"
                 >
                   <v-icon left>
                     $mmuSelectGate
@@ -72,7 +74,7 @@
                   style="width: 100%"
                   :disabled="!klippyReady || !canSend || ![GATE_UNKNOWN, GATE_EMPTY].includes(gateDetails(g).status)"
                   :loading="hasWait($waits.onMmuPreload)"
-                  @click="sendGcode('MMU_PRELOAD GATE=' + g, $waits.onMmuPreload)"
+                  @click="sendGcode(`MMU_PRELOAD GATE=${g}`, $waits.onMmuPreload)"
                 >
                   <v-icon left>
                     $mmuPreload
@@ -86,7 +88,7 @@
                   style="width: 100%"
                   :disabled="!klippyReady || !canSend"
                   :loading="hasWait($waits.onMmuEject)"
-                  @click="sendGcode('MMU_EJECT GATE=' + g, $waits.onMmuEject)"
+                  @click="sendGcode(`MMU_EJECT GATE=${g}`, $waits.onMmuEject)"
                 >
                   <v-icon left>
                     $mmuEject
@@ -157,7 +159,7 @@
       >
         <div :class="clipSpoolClass">
           <mmu-spool
-            :width="spoolWidth + 'px'"
+            :width="$filters.getPixelsString(spoolWidth)"
             :class="spoolClass(TOOL_GATE_BYPASS)"
             :gate-index="TOOL_GATE_BYPASS"
             :edit-gate-map="editGateMap"
@@ -333,9 +335,12 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
       return [this.$t('app.mmu.tooltip.empty').toString()]
     }
     const ret = []
+
     ret.push(details.filamentName)
 
-    const tempStr = details.temperature > 0 ? ' | ' + details.temperature + '°C' : ''
+    const tempStr = details.temperature > 0
+      ? ` | ${details.temperature}°C`
+      : ''
     ret.push(details.material + tempStr)
 
     if (details.color && details.color !== '#808182E3') {
@@ -347,9 +352,11 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
                     (color.length > 7 && color.substring(7, 9) !== 'FF' ? color.substring(7, 9) : '')
       )
     }
+
     if (details.spoolId && details.spoolId > 0) {
       ret.push(this.$t('app.mmu.tooltip.spoolid').toString() + ': ' + details.spoolId)
     }
+
     return ret
   }
 
