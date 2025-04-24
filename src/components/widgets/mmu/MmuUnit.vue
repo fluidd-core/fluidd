@@ -25,7 +25,7 @@
                 <template #activator="{ on: tooltipOn, attrs: tooltipAttrs }">
                   <div
                     v-bind="{ ...menuAttrs, ...tooltipAttrs }"
-                    v-on="{ ...menuOn, ...tooltipOn }"
+                    v-on="{ ...tooltipOn }"
                   >
                     <mmu-spool
                       :width="spoolWidth + 'px'"
