@@ -15,7 +15,7 @@
             transition="slide-y-transition"
             offset-y
           >
-            <template #activator="{ on: menuOn, attrs: menuAttrs }">
+            <template #activator="{ attrs: menuAttrs }">
               <v-tooltip
                 top
                 :open-delay="500"
@@ -52,6 +52,20 @@
                 Gate {{ g }}
               </v-subheader>
               <v-divider />
+              <v-list-item>
+                <v-btn
+                  small
+                  style="width: 100%"
+                  :disabled="!klippyReady || !canSend"
+                  :loading="hasWait($waits.onMmuSelect)"
+                  @click="sendGcode('MMU_SELECT GATE=' + g, $waits.onMmuSelect)"
+                >
+                  <v-icon left>
+                    {{ mdiSwapHorizontal = mdiSwapHorizontal }}
+                  </v-icon>
+                  {{ $t('app.mmu.btn.select') }}
+                </v-btn>
+              </v-list-item>
               <v-list-item>
                 <v-btn
                   small
@@ -238,7 +252,7 @@ import MmuMixin from '@/mixins/mmu'
 import type { MmuGateDetails } from '@/types'
 import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuGateStatus from '@/components/widgets/mmu/MmuGateStatus.vue'
-import { mdiDownloadOutline, mdiEject } from '@mdi/js'
+import { mdiSwapHorizontal, mdiDownloadOutline, mdiEject } from '@mdi/js'
 
 @Component({
   components: { MmuSpool, MmuGateStatus },
@@ -253,6 +267,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   @Prop({ required: false, default: -1 })
   readonly editGateSelected!: number
 
+  mdiSwapHorizontal = mdiSwapHorizontal
   mdiDownloadOutline = mdiDownloadOutline
   mdiEject = mdiEject
 

@@ -585,6 +585,7 @@ export const Waits = Object.freeze({
   onMmuSpoolman: 'onMmuSpoolman',
   onMmuCheckGates: 'onMmuCheckGates',
   onMmuPreload: 'onMmuPreload',
+  onMmuSelect: 'onMmuSelect',
   onMmuEject: 'onMmuEject',
   onMmuCheckGate: 'onMmuCheckGate',
   onMmuRecover: 'onMmuRecover',
