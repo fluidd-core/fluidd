@@ -172,7 +172,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   // Our app is in a loading state when the socket isn't quite ready, or
   // our translations are loading.
   get updating (): boolean {
-    return this.$typedState.version.busy
+    return this.$typedState.version.status?.busy ?? false
   }
 
   get inLayout (): boolean {

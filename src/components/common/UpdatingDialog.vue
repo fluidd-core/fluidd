@@ -64,7 +64,7 @@ export default class UpdatingDialog extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get updating (): boolean {
-    return this.$typedState.version.busy
+    return this.$typedState.version.status?.busy ?? false
   }
 
   get responses (): UpdateResponse[] {
