@@ -995,6 +995,7 @@ app:
     btn:
       check_all_gates: Check All Gates
       check_gate: Check Gate
+      select: Select
       eject: Eject
       load: Load
       load_ext: Load Ext
