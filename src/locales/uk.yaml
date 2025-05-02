@@ -1083,6 +1083,7 @@ app:
       unload_ext: Розвантажити додатково
       sync_spoolman: Синхронізувати з Spoolman
       sync: Синхронізувати
+      select: Виберіть
     label:
       spoolman_never: Ніколи
       clog_detection: Виявлення засмічень
@@ -1178,6 +1179,8 @@ app:
       recover_filament_position: Відновити положення нитки
       multi_color: Це виглядає як багатоматеріальний друк одним екструдером за допомогою
         %{numTools} інструментів. Ймовірно, вам слід переглянути відображення інструментів
+      filament_empty: Нитка розжарення недоступна
+      filament_unknown: Невідомий стан нитки (будь ласка, встановіть)
     title:
       headline: Мму
       recover_state: Виправлення стану MMU (відновлення помилок)
@@ -1194,3 +1197,4 @@ app:
       show_clog_detection: Показати виявлення засмічення
       show_logos: Показати логотипи
       large_filament_status: Статус великої нитки
+      show_unavailable_spool_color: Показати недоступні спули
