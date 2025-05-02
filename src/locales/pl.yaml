@@ -1052,6 +1052,7 @@ app:
       check_all_gates: Sprawdź wszystkie bramki
       load_ext: Załaduj zewnętrznie
       up: W górę
+      select: Wybierz
     title:
       mmu_maintenance: Konserwacja MMU
       edit_gate_map: Edytuj filamenty (edytuj mapę bramki)
@@ -1151,6 +1152,8 @@ app:
         w pozycji początkowej).
       no_tool: Należy wybrać narzędzie
       material: Materiał
+      filament_unknown: Nieznany stan filamentu (proszę ustawić)
+      filament_empty: Filament niedostępny
     tooltip:
       spoolid: ID szpuli
       empty: Pusto
@@ -1161,3 +1164,4 @@ app:
       show_details: Pokaż szczegóły dotyczące filamentu
       show_logos: Pokaż loga
       show_ttg_map: Pokaż mapę TTG
+      show_unavailable_spool_color: Pokaż niedostępne szpule
