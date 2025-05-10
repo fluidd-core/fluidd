@@ -8,35 +8,96 @@
         @click="selectGate(g)"
       >
         <div :class="clipSpoolClass">
-          <v-tooltip
-            top
-            :open-delay="500"
-            :disabled="editGateMap != null && editGateMap.length > 0 "
-            content-class="spool-tooltip"
+          <v-menu
+            v-model="gateMenuVisible[g]"
+            :disabled="g === gate || !unitDetails(unitIndex).multiGear"
+            :close-on-content-click="false"
+            transition="slide-y-transition"
+            offset-y
           >
-            <template #activator="{ on, attrs }">
-              <div
-                v-bind="attrs"
-                v-on="on"
+            <template #activator="{ attrs: menuAttrs }">
+              <v-tooltip
+                top
+                :open-delay="500"
+                :disabled="editGateMap != null && editGateMap.length > 0"
+                content-class="spool-tooltip"
               >
-                <mmu-spool
-                  :width="spoolWidth + 'px'"
-                  :class="spoolClass(g)"
-                  :gate-index="g"
-                  :edit-gate-map="editGateMap"
-                  :edit-gate-selected="editGateSelected"
-                />
-              </div>
+                <template #activator="{ on: tooltipOn, attrs: tooltipAttrs }">
+                  <div
+                    v-bind="{ ...menuAttrs, ...tooltipAttrs }"
+                    v-on="{ ...tooltipOn }"
+                  >
+                    <mmu-spool
+                      :width="$filters.getPixelsString(spoolWidth)"
+                      :class="spoolClass(g)"
+                      :gate-index="g"
+                      :edit-gate-map="editGateMap"
+                      :edit-gate-selected="editGateSelected"
+                    />
+                  </div>
+                </template>
+                <div
+                  v-for="(line, idx) in gateTooltip(g)"
+                  :key="idx"
+                  class="spool-tooltip-line"
+                  :class="{
+                    'spool-tooltip-title': idx === 0
+                  }"
+                >
+                  {{ line }}
+                </div>
+              </v-tooltip>
             </template>
-            <div
-              v-for="(line, idx) in gateTooltip(g)"
-              :key="idx"
-              class="spool-tooltip-line"
-              :class="idx === 0 ? 'spool-tooltip-title' : ''"
-            >
-              {{ line }}
-            </div>
-          </v-tooltip>
+
+            <v-list dense>
+              <v-subheader class="compact-subheader">
+                Gate {{ g }}
+              </v-subheader>
+              <v-divider />
+              <v-list-item>
+                <v-btn
+                  small
+                  style="width: 100%"
+                  :disabled="!klippyReady || !canSend"
+                  :loading="hasWait($waits.onMmuSelect)"
+                  @click="sendGcode(`MMU_SELECT GATE=${g}`, $waits.onMmuSelect)"
+                >
+                  <v-icon left>
+                    $mmuSelectGate
+                  </v-icon>
+                  {{ $t('app.mmu.btn.select') }}
+                </v-btn>
+              </v-list-item>
+              <v-list-item>
+                <v-btn
+                  small
+                  style="width: 100%"
+                  :disabled="!klippyReady || !canSend || ![GATE_UNKNOWN, GATE_EMPTY].includes(gateDetails(g).status)"
+                  :loading="hasWait($waits.onMmuPreload)"
+                  @click="sendGcode(`MMU_PRELOAD GATE=${g}`, $waits.onMmuPreload)"
+                >
+                  <v-icon left>
+                    $mmuPreload
+                  </v-icon>
+                  {{ $t('app.mmu.btn.preload') }}
+                </v-btn>
+              </v-list-item>
+              <v-list-item>
+                <v-btn
+                  small
+                  style="width: 100%"
+                  :disabled="!klippyReady || !canSend"
+                  :loading="hasWait($waits.onMmuEject)"
+                  @click="sendGcode(`MMU_EJECT GATE=${g}`, $waits.onMmuEject)"
+                >
+                  <v-icon left>
+                    $mmuEject
+                  </v-icon>
+                  {{ $t('app.mmu.btn.eject') }}
+                </v-btn>
+              </v-list-item>
+            </v-list>
+          </v-menu>
           <div
             v-if="(editGateMap && editGateSelected === g) || (!editGateMap && gate === g)"
             style="position: absolute; bottom: 0%; left: 0%; width: 100%; height: auto; background: none;"
@@ -98,7 +159,7 @@
       >
         <div :class="clipSpoolClass">
           <mmu-spool
-            :width="spoolWidth + 'px'"
+            :width="$filters.getPixelsString(spoolWidth)"
             :class="spoolClass(TOOL_GATE_BYPASS)"
             :gate-index="TOOL_GATE_BYPASS"
             :edit-gate-map="editGateMap"
@@ -199,13 +260,16 @@ import MmuGateStatus from '@/components/widgets/mmu/MmuGateStatus.vue'
 })
 export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
   @Prop({ required: false, default: 0 })
-  readonly unit!: number
+  readonly unitIndex!: number
 
   @Prop({ required: false, default: null })
   readonly editGateMap!: MmuGateDetails[] | null
 
   @Prop({ required: false, default: -1 })
   readonly editGateSelected!: number
+
+  gateMenuVisible: Record<number, boolean> = {}
+  gateMenuTimer: ReturnType<typeof setTimeout> | null = null
 
   vendorLogo = ''
 
@@ -219,12 +283,12 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   }
 
   get unitDisplayName (): string {
-    const name = this.unitDetails(this.unit).name
-    return `#${this.unit + 1} ${name}`
+    const name = this.unitDetails(this.unitIndex).name
+    return `#${this.unitIndex + 1} ${name}`
   }
 
   get unitGateRange (): number[] {
-    const unitDetails = this.unitDetails(this.unit)
+    const unitDetails = this.unitDetails(this.unitIndex)
     return Array.from({ length: unitDetails.numGates }, (v, k) => k + unitDetails.firstGate)
   }
 
@@ -262,7 +326,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   }
 
   get showBypass (): boolean {
-    return !this.editGateMap && this.unitDetails(this.unit).hasBypass && this.hasBypass
+    return !this.editGateMap && this.unitDetails(this.unitIndex).hasBypass && this.hasBypass
   }
 
   gateTooltip (gate: number): string[] {
@@ -271,9 +335,12 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
       return [this.$t('app.mmu.tooltip.empty').toString()]
     }
     const ret = []
+
     ret.push(details.filamentName)
 
-    const tempStr = details.temperature > 0 ? ' | ' + details.temperature + '°C' : ''
+    const tempStr = details.temperature > 0
+      ? ` | ${details.temperature}°C`
+      : ''
     ret.push(details.material + tempStr)
 
     if (details.color && details.color !== '#808182E3') {
@@ -285,9 +352,11 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
                     (color.length > 7 && color.substring(7, 9) !== 'FF' ? color.substring(7, 9) : '')
       )
     }
+
     if (details.spoolId && details.spoolId > 0) {
       ret.push(this.$t('app.mmu.tooltip.spoolid').toString() + ': ' + details.spoolId)
     }
+
     return ret
   }
 
@@ -322,7 +391,22 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     if (this.editGateMap) {
       this.$emit('select-gate', gate)
     } else if (!this.isPrinting) {
-      this.sendGcode('MMU_SELECT GATE=' + gate)
+      if (
+        this.unitDetails(this.unitIndex).multiGear &&
+                gate !== this.gate &&
+                ![this.FILAMENT_POS_UNLOADED, this.FILAMENT_POS_UNKNOWN].includes(this.filamentPos)
+      ) {
+        if (this.gateMenuTimer) clearTimeout(this.gateMenuTimer)
+        this.gateMenuTimer = setTimeout(() => {
+          Object.keys(this.gateMenuVisible).forEach(key => {
+            this.$set(this.gateMenuVisible, Number(key), false)
+          })
+        }, 3000)
+        this.$set(this.gateMenuVisible, gate, true)
+      } else {
+        if (this.gateMenuTimer) clearTimeout(this.gateMenuTimer)
+        this.sendGcode('MMU_SELECT GATE=' + gate)
+      }
     }
   }
 
@@ -477,5 +561,12 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 .hover-effect:hover {
     transform: translateY(-5px);
     opacity: 1;
+}
+
+.v-list--dense .compact-subheader {
+    height: auto;
+    padding-bottom: 4px;
+    display: block;
+    text-align: center;
 }
 </style>

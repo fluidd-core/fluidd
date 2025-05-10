@@ -1,9 +1,9 @@
 <template>
   <div class="file-system">
-    <v-toolbar
-      dense
-    >
+    <v-toolbar dense>
       <v-spacer />
+
+      <app-thumbnail-size v-model="thumbnailSize" />
 
       <app-column-picker
         v-if="headers"
@@ -32,7 +32,6 @@
       :items="history"
       :headers="headers"
       :items-per-page="15"
-      single-expand
       :search="search"
       mobile-breakpoint="0"
       item-key="job_id"
@@ -51,32 +50,38 @@
           :custom-getter="getItemValue"
         >
           <template #[`item.data-table-icons`]>
-            <!-- If the item no longer exists. -->
-            <v-icon
-              v-if="!item.exists"
-              class="mr-2"
-              color="grey"
+            <v-layout
+              justify-center
+              class="no-pointer-events"
             >
-              $fileCancel
-            </v-icon>
+              <!-- If the item no longer exists. -->
+              <v-icon
+                v-if="!item.exists"
+                color="grey"
+              >
+                $fileCancel
+              </v-icon>
 
-            <!-- If the item exists, but has no thumbnail data. -->
-            <v-icon
-              v-else-if="!item.metadata.thumbnails?.length"
-              class="mr-2"
-              color="grey"
-            >
-              $file
-            </v-icon>
+              <!-- If the item exists, but has no thumbnail data. -->
+              <v-icon
+                v-else-if="!item.metadata.thumbnails?.length"
+                color="grey"
+              >
+                $file
+              </v-icon>
 
-            <!-- If the item exists, and we have thumbnail data. -->
-            <img
-              v-else
-              class="mr-2 file-icon-thumb"
-              :src="getThumbUrl(item.metadata, 'gcodes', getFilePaths(item.filename).path, false, item.metadata.modified)"
-              :width="24"
-              @error="handleJobThumbnailError(item)"
-            >
+              <!-- If the item exists, and we have thumbnail data. -->
+              <img
+                v-else
+                class="file-icon-thumb"
+                :style="{
+                  'max-width': `${thumbnailSize}px`,
+                  'max-height': `${thumbnailSize}px`
+                }"
+                :src="getThumbUrl(item.metadata, 'gcodes', getFilePaths(item.filename).path, thumbnailSize > 16, item.metadata.modified)"
+                @error="handleJobThumbnailError(item)"
+              >
+            </v-layout>
           </template>
 
           <template #[`item.status`]>
@@ -384,6 +389,14 @@ export default class JobHistory extends Mixins(FilesMixin) {
         align: 'end'
       }
     ]
+  }
+
+  get thumbnailSize (): number {
+    return this.$typedState.config.uiSettings.thumbnailSizes.history ?? 32
+  }
+
+  set thumbnailSize (value: number) {
+    this.$typedDispatch('config/updateThumbnailSizes', { name: 'history', size: value })
   }
 
   get sensors (): MoonrakerSensor[] {

@@ -205,5 +205,9 @@ export const mutations = {
 
   setUpdateHeaders (state, payload: { name: string; headers: ConfiguredTableHeader[] }) {
     Vue.set(state.uiSettings.tableHeaders, payload.name, payload.headers)
+  },
+
+  setUpdateThumbnailSizes (state, payload: { name: string; size: number }) {
+    Vue.set(state.uiSettings.thumbnailSizes, payload.name, payload.size)
   }
 } satisfies MutationTree<ConfigState>

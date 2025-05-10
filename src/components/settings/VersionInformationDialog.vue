@@ -91,7 +91,7 @@
 </template>
 
 <script lang="ts">
-import type { UpdatePackage } from '@/store/version/types'
+import type { VersionInfo } from '@/store/version/types'
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 
 @Component({})
@@ -100,19 +100,19 @@ export default class VersionInformationDialog extends Vue {
   open?: boolean
 
   @Prop({ type: Object })
-  readonly component!: UpdatePackage
+  readonly component!: VersionInfo
 
   // For HashVersions or ArtifacVersions, show the commit history.
   // For type system, show the packages available to update.
   // For type client, just show the release notes if we can.
 
   get commitHistory () {
-    return this.$typedGetters['version/getCommitHistory'](this.component.key)
+    return this.$typedGetters['version/getCommitHistory'](this.component.name)
   }
 
   get baseUrl () {
     if ('owner' in this.component) {
-      return `https://github.com/${this.component.owner}/${this.component.repo_name || this.component.key}`
+      return `https://github.com/${this.component.owner}/${this.component.repo_name || this.component.name}`
     }
     return ''
   }

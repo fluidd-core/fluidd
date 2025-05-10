@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { CommitItem, VersionState } from './types'
+import type { MoonrakerGitRepoCommit, VersionInfo, VersionState } from './types'
 import type { RootState } from '../types'
 import { valid, gt } from 'semver'
 
@@ -7,16 +7,33 @@ export const getters = {
   /**
    * Returns an array list of available components
    */
-  getVisibleComponents: (state) => {
-    const o = Object.keys(state.version_info)
-      .map(k => {
-        const r = state.version_info[k]
-        r.key = k
-        return r
-      })
-      .sort((a, b) => a.key.localeCompare(b.key))
+  getVisibleComponents: (state): VersionInfo[] => {
+    const versionInfo = state.status?.version_info
 
-    return o
+    if (versionInfo != null) {
+      return Object.entries(versionInfo)
+        .map(([name, entry]): VersionInfo => {
+          switch (entry.configured_type) {
+            case null:
+            case undefined:
+            case 'system':
+              return {
+                ...entry,
+                configured_type: 'system',
+                name: entry.name || name
+              }
+
+            default:
+              return {
+                ...entry,
+                name: entry.name || name
+              }
+          }
+        })
+        .sort((a, b) => a.name.localeCompare(b.name))
+    }
+
+    return []
   },
 
   /**
@@ -27,8 +44,9 @@ export const getters = {
 
     return (
       enableNotifications &&
-      Object.keys(state.version_info)
-        .filter(component => component !== 'system')
+      state.status?.version_info != null &&
+      Object.keys(state.status.version_info)
+        .filter(name => name !== 'system')
         .some(getters.hasUpdate)
     )
   },
@@ -36,21 +54,26 @@ export const getters = {
   /**
    * Returns a boolean indicating if a given component has an update.
    */
-  hasUpdate: (state) => (component: string): boolean => {
-    const componentVersionInfo = state.version_info[component]
+  hasUpdate: (state) => (name: string): boolean => {
+    const versionInfo = state.status?.version_info[name]
 
-    if ('name' in componentVersionInfo && componentVersionInfo.name !== 'system') {
-      const version = valid(componentVersionInfo.version)
-      const remoteVersion = valid(componentVersionInfo.remote_version)
-      if (version && remoteVersion) {
-        return gt(remoteVersion, version)
+    if (versionInfo != null) {
+      if ('package_count' in versionInfo) {
+        return versionInfo.package_count > 0
       }
-    } else if ('package_count' in componentVersionInfo) {
-      return componentVersionInfo.package_count > 0
-    }
 
-    if ('current_hash' in componentVersionInfo && 'remote_hash' in componentVersionInfo) {
-      return componentVersionInfo.current_hash !== componentVersionInfo.remote_hash
+      if ('version' in versionInfo && 'remote_version' in versionInfo) {
+        const version = valid(versionInfo.version, { loose: true })
+        const remoteVersion = valid(versionInfo.remote_version, { loose: true })
+
+        if (version && remoteVersion) {
+          return gt(remoteVersion, version, { loose: true })
+        }
+      }
+
+      if ('current_hash' in versionInfo && 'remote_hash' in versionInfo) {
+        return versionInfo.current_hash !== versionInfo.remote_hash
+      }
     }
 
     return false
@@ -65,10 +88,11 @@ export const getters = {
    */
   getCommitHistory: (state) => (component: string) => {
     // This is only relevant for certain types.
-    const componentVersionInfo = state.version_info[component]
-    if (componentVersionInfo && 'git_messages' in componentVersionInfo) {
-      const result = [...componentVersionInfo.commits_behind]
-        .reduce<Record<number, CommitItem[]>>((groups, commitItem) => {
+    const versionInfo = state.status?.version_info[component]
+
+    if (versionInfo && 'git_messages' in versionInfo) {
+      const result = versionInfo.commits_behind
+        .reduce<Record<number, MoonrakerGitRepoCommit[]>>((groups, commitItem) => {
           const dateAndTime = new Date(+commitItem.date * 1000)
           const dateOnly = +(new Date(dateAndTime.getFullYear(), dateAndTime.getMonth(), dateAndTime.getDate()))
 

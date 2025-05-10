@@ -68,7 +68,6 @@ export const defaultState = (): ConfigState => {
         printProgressCalculation: ['file'],
         printEtaCalculation: ['file'],
         enableDiagnostics: false,
-        thumbnailSize: 32,
         colorPickerValueRange: 'absolute'
       },
       theme: {
@@ -90,6 +89,7 @@ export const defaultState = (): ConfigState => {
         tempPresets: []
       },
       tableHeaders: {},
+      thumbnailSizes: {},
       gcodePreview: {
         extrusionLineWidth: 0.3,
         moveLineWidth: 0.1,
@@ -148,7 +148,8 @@ export const defaultState = (): ConfigState => {
         showTtgMap: true,
         showDetails: true,
         largeFilamentStatus: false,
-        showLogos: false
+        showLogos: false,
+        showUnavailableSpoolColor: false
       }
     }
   }

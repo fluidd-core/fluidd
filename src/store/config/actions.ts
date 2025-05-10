@@ -192,6 +192,14 @@ export const actions = {
     }
   },
 
+  async updateThumbnailSizes ({ commit, state }, payload: { name: string; size: number }) {
+    commit('setUpdateThumbnailSizes', payload)
+
+    if (state.uiSettings.thumbnailSizes[payload.name]) {
+      SocketActions.serverWrite(`uiSettings.thumbnailSizes.${payload.name}`, state.uiSettings.thumbnailSizes[payload.name])
+    }
+  },
+
   async updateTheme ({ state, dispatch }, payload: Partial<ThemeConfig>) {
     const updatedTheme: ThemeConfig = {
       ...state.uiSettings.theme,
