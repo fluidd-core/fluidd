@@ -1138,6 +1138,8 @@ app:
         eine Standardzuordnung aus
       no_slicer_info: Keine Slicer-Informationen, wählen Sie eine Standardzuordnung
         für %{tool} aus
+      filament_empty: Filament nicht verfügbar
+      filament_unknown: Unbekannter Filamentstatus (bitte einstellen)
     btn:
       check_all_gates: Alle Gates prüfen
       check_gate: Gate prüfen
@@ -1166,6 +1168,7 @@ app:
       down: Runter
       grip: Halten
       release: Loslassen
+      select: Auswählen
     title:
       headline: MMU
       recover_state: MMU-Status beheben (Fehlerbehebung)
@@ -1216,3 +1219,4 @@ app:
       show_details: Filamentdetails anzeigen
       large_filament_status: Großer Filamentstatus
       show_ttg_map: TTG-Zuordnung anzeigen
+      show_unavailable_spool_color: Nicht verfügbare Spulen anzeigen

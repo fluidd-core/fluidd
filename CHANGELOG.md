@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.34.2](https://github.com/fluidd-core/fluidd/compare/v1.34.1...v1.34.2) (2025-05-10)
+
+
+### Features
+
+* adjustable thumbnail size on Job Queue and History ([#1668](https://github.com/fluidd-core/fluidd/issues/1668)) ([0b7cbfd](https://github.com/fluidd-core/fluidd/commit/0b7cbfd0d029b0f8b490d80714dd77b57d069e4a))
+* Enhancements to Happy Hare MMU support ([#1666](https://github.com/fluidd-core/fluidd/issues/1666)) ([7471c36](https://github.com/fluidd-core/fluidd/commit/7471c36fa5597b3cabbee35d35e03fa7d061a6f7))
+* **FileSystem:** disk space alert below 20% or 1Gb ([285278f](https://github.com/fluidd-core/fluidd/commit/285278f8f59a22ab9d999409339a8e03384ff7be))
+* **i18n-de:** Update German translations ([3d13c65](https://github.com/fluidd-core/fluidd/commit/3d13c6529b756d663cb0d97d795a30dc2ef51ca3))
+* **i18n-hu:** Update Hungarian translations ([07d5930](https://github.com/fluidd-core/fluidd/commit/07d5930bef60af3125b7631d4234cf08e28448ea))
+* **i18n-pl:** Update Polish translations ([1802c4b](https://github.com/fluidd-core/fluidd/commit/1802c4b4e2b5d80ec5f29eccd2ab37b2bb26a6af))
+* **i18n-pt:** Update Portuguese translations ([4850507](https://github.com/fluidd-core/fluidd/commit/4850507cb74d6bc566e4cfd260b816d15389d4a9))
+* **i18n-sv:** Update Swedish translations ([766540c](https://github.com/fluidd-core/fluidd/commit/766540cd07a35f0a72395da50f62752ac76b27fa))
+* **i18n-tr:** Update Turkish translations ([98d7892](https://github.com/fluidd-core/fluidd/commit/98d7892841864b8ec914989b90678b9e9c489ae2))
+* **i18n-uk:** Update Ukrainian translations ([ab599b3](https://github.com/fluidd-core/fluidd/commit/ab599b3320621f44f51fec3737385f9a4f5dd1fd))
+* **JobQueue:** use current print ETA in queue ETA ([#1669](https://github.com/fluidd-core/fluidd/issues/1669)) ([770899b](https://github.com/fluidd-core/fluidd/commit/770899b8a5fc1a2c1292ac0ec56b9db6961aa025))
+* sub menu to non-selected MMU gate ([#1679](https://github.com/fluidd-core/fluidd/issues/1679)) ([ab0c9c6](https://github.com/fluidd-core/fluidd/commit/ab0c9c67541b40ba47dfdf53ee5c88d8d42d49d8))
+* **Updates:** adds python packages support ([#1672](https://github.com/fluidd-core/fluidd/issues/1672)) ([87879d5](https://github.com/fluidd-core/fluidd/commit/87879d57e831269cdcbf527022cec899766692d0))
+
+
+### Bug Fixes
+
+* use path & filename in MmuEditTtgMapDialog ([#1676](https://github.com/fluidd-core/fluidd/issues/1676)) ([4e3da1b](https://github.com/fluidd-core/fluidd/commit/4e3da1b39ac325178945f6fd3634cc92e971db64))
+
+
+### Code Refactorings
+
+* fixes minor code typo ([4a5cbc5](https://github.com/fluidd-core/fluidd/commit/4a5cbc567142d887b72decda4e800be8dd84d70a))
+* update status ([d2f5f1f](https://github.com/fluidd-core/fluidd/commit/d2f5f1f84d94b16382b45addef4909bdd3e75d6c))
+
 ## [1.34.1](https://github.com/fluidd-core/fluidd/compare/v1.34.0...v1.34.1) (2025-04-06)
 
 
