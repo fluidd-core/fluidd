@@ -157,9 +157,9 @@ export default class Dashboard extends Mixins(StateMixin) {
 
   get hasOutputs (): boolean {
     return (
-      this.$typedGetters['printer/getAllFans'].length > 0 ||
-      this.$typedGetters['printer/getPins'].length > 0 ||
-      this.$typedGetters['printer/getAllLeds'].length > 0
+      this.$typedGetters['printer/getAllFans']().length > 0 ||
+      this.$typedGetters['printer/getPins']().length > 0 ||
+      this.$typedGetters['printer/getAllLeds']().length > 0
     )
   }
 
