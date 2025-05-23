@@ -33,18 +33,22 @@ export const mutations = {
 
   // Updates a singular macro
   setUpdateMacro (state, macro: Macro) {
-    const m = sanitizeMacroForStorage({ ...macro })
-    const i = state.stored.findIndex(m => m.name === macro.name)
+    const lowerCaseName = macro.name.toLowerCase()
+    const i = state.stored.findIndex(m => m.name.toLowerCase() === lowerCaseName)
+    const processed = sanitizeMacroForStorage({
+      ...macro
+    })
     if (i < 0) {
-      state.stored.push(m)
+      state.stored.push(processed)
     } else {
-      Vue.set(state.stored, i, m)
+      Vue.set(state.stored, i, processed)
     }
   },
 
   setUpdateAllVisible (state, payload: { macros: Macro[]; visible: boolean }) {
     payload.macros.forEach((macro: Macro) => {
-      const i = state.stored.findIndex(m => m.name === macro.name)
+      const lowerCaseName = macro.name.toLowerCase()
+      const i = state.stored.findIndex(m => m.name.toLowerCase() === lowerCaseName)
       const processed = sanitizeMacroForStorage({
         ...macro,
         visible: payload.visible

@@ -3,7 +3,7 @@
     v-model="open"
     scrollable
     :max-width="$vuetify.breakpoint.mdAndDown ? '90vw' : '75vw'"
-    :title="$tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro })"
+    :title="$tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro?.toUpperCase() })"
     title-shadow
   >
     <template #menu>
