@@ -27,13 +27,16 @@
         </template>
 
         <v-list dense>
-          <v-list-item @click="showHidden = !showHidden">
+          <v-list-item
+            :title="$t('app.setting.label.show_hidden')"
+            @click="showHidden = !showHidden"
+          >
             <v-list-item-action class="my-0">
               <v-checkbox :input-value="showHidden" />
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>
-                Show Hidden
+                {{ $t('app.setting.label.show_hidden') }}
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
