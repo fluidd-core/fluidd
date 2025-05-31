@@ -937,7 +937,7 @@ app:
       location: Lokalizacja
       material: Materiał
       remaining_weight: Pozostała waga
-      vendor: Producent
+      vendor: Sprzedawca
       lot_nr: Nr. partii
       device_camera: Urządzenie
       id: ID
