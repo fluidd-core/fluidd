@@ -22,6 +22,7 @@ app:
       delete: Verwijder profiel
       load: Laad profiel
       save: Slaat afgesteld profiel op naar printer.cfg
+      download_image: Download bed mesh afbeelding
   chart:
     label:
       current: Huidig
@@ -92,6 +93,7 @@ app:
       transfer_rate: Snelheid
       uploaded: Geüpload
       view_section_documentation: Bekijk '%{section}' documentatie
+      sd_card_info: SD Kaart Informatie
     msg:
       not_found: Geen bestanden gevonden
       processing: Verwerken
@@ -159,7 +161,7 @@ app:
       config_reference: Configuratieverwijzing
       download: Downloaden
       edit: Aanpassen
-      exit_layout: Sluit layoutmanager
+      exit_layout: Sluit
       extrude: Extruderen
       heaters_off: Verwarmingen uit
       load_all: Alles laden
@@ -176,7 +178,7 @@ app:
       rename: Hernoemen
       reprint: Herprinten
       reset_file: Reset bestand
-      reset_layout: Reset Layout
+      reset_layout: Reset
       restart_firmware: Firmware herstart
       restart_service: Start %{service} opnieuw
       restart_service_klipper: Klipper herstart
@@ -200,13 +202,13 @@ app:
       print: Print
       delete: Verwijder
       logout: Uitloggen
-      reset_default_layout: Reset Standaard Indeling
+      reset_default_layout: Reset Standaard
       upload_folder: Upload Map
       reset_stats: Reset Stats
       return_dashboard: Ga terug naar het dashboard
       snooze: Sluimeren
       go_to_file: Ga naar bestand
-      set_default_layout: Gebruik als Standaard Indeling
+      set_default_layout: Gebruik als Standaard
       upload_files: Bestanden Uploaden
       adjusted: Bijgesteld
       forgot_password: Wachtwoord vergeten?
@@ -226,6 +228,7 @@ app:
       socket_reconnect: Verbind opnieuw
       copied: Gekopieerd
       copy: Kopieer
+      power_on_printer: Zet Printer Aan
     error:
       app_setup_link: >-
         Fluidd opstart vereisten kan je <a target="_blank" href="%{url}">hier</a>
@@ -237,6 +240,8 @@ app:
       failed_components: >-
         Moonraker heeft falende plugins, controleer je logs, update je
         configuratie en herstart moonraker.
+      printer_powered_off: De printer is momenteel uitgeschakeld.<br/><br/> Om de
+        printer in te schakelen, klik A.U.B. op de knop aan de linkerzijde.
     label:
       accel_to_decel: Vertragingssnelheid
       acceleration: Versnelling
@@ -342,6 +347,9 @@ app:
       screw_number: Schroef %{index}
       version_sort: Versie sorteer
       device: Apparaat
+      length_in_kilometers: Lengte in kilometers
+      time_in_days: Tijd in dagen
+      z_hop_height: Z-Hop Hoogte
     msg:
       password_changed: Wachtwoord aangepast
       wrong_password: Oeps! Er is iets fout gegaan, klopt je wachtwoord wel?
@@ -432,6 +440,12 @@ app:
         chamber_temp: Ruimte temp
         time_added: Tijd Toegevoegd
         nozzle_diameter: Nozzle diameter
+        extruder_colors: Extruder kleuren
+        filament_weights: Filament gewichten
+        filament_temps: Filament temps
+        filament_change_count: Filament wijzigingen
+        filament_colors: Filament kleuren
+        user: Gebruiker
     title:
       add_printer: Printer toevoegen
       bedmesh: Bed Mesh
@@ -466,6 +480,7 @@ app:
       job_queue: Opdrachten wachtrij
       diagnostics: Diagnostiek
       macro_category_settings: Macro Categorie Instellingen
+      login: Inloggen
     tooltip:
       estop: Noodstop
       reload_klipper: Herlaad de klipper configuratie.
@@ -479,6 +494,7 @@ app:
       file_browser_help: Sleep bestanden of mappen hier in de browser om deze up te
         loaden<br>Verplaats bestanden en mappen door ze op submappen of ".." te slepen
       browse_metrics: Bekijk beschikbare statistieken
+      exit_layout: Sluit layout modus
   printer:
     state:
       busy: Bezig
@@ -614,6 +630,12 @@ app:
         navigatie
       force_move_toggle_warning: Confirmatie vereist wanneer FORCE_MOVE wordt geactiveerd
       print_eta_calculation: Print ETA berekening
+      firmware_restart: Firmware Herstart
+      host_restart: Host Herstart
+      klipper_save_and_restart_action: Klipper Opslaan & Herstarten actie
+      service_restart: Service Herstarten
+      keyboard_shortcuts: Toetsenbord sneltoetsen
+      metrics: Statistieken
     timer_options:
       duration: Alleen tijdsduur
       filament: Filament
@@ -678,6 +700,8 @@ app:
       application: Applicatie
       connected: Verbonden
       constants: Constanten
+      non_critical_connection: Niet-kritieke verbinding
+      last_stats: Laatste Statistieken
     msg:
       no_devices_found: Geen apparaten gevonden
       no_devices_searched: Gebruik de ververs knop om te zoeken naar apparaten
@@ -730,7 +754,7 @@ app:
   spoolman:
     label:
       first_used: Eerst Gebruikt
-      remaining_weight: Resterend
+      remaining_weight: Resterende Gewicht
       last_used: Laatst Gebruikt
       filament_name: Filament
       material: Materiaal
@@ -739,6 +763,21 @@ app:
       location: Lokatie
       vendor: Leverancier
       change_spool: Wijzig Spoel
+      initial_length: Initiële Lengte
+      initial_weight: Initiële Gewicht
+      remaining_length: Resterende Lengte
+      remaining: Resterende
+      used_length: Gebruikte Lengte
+      used: Gebruikt
+      comment: Opmerking
+      diameter: Diameter
+      colors: Kleuren
+      length: Lengte
+      weight: Gewicht
+      density: Dikte
+      used_weight: Gebruikte Gewicht
+      price: Prijs
+      active_spool: Actieve Spool
     setting:
       auto_open_qr_camera: Open camera automatisch voor QR code detectie
       warn_on_not_enough_filament: Toon een waarschuwing als de geselecteerde spoel
@@ -747,6 +786,8 @@ app:
         starten print
       warn_on_filament_type_mismatch: Toon een waarschuwing als het type filament
         van de spoel en slicer niet overeenkomen
+      card_fields: Velden om te tonen in de Spoolman kaart
+      remaining_filament_unit: Toon resterende filament als
     btn:
       scan_code: Scan Code
       manage_spools: Beheer Spoelen
@@ -772,6 +813,7 @@ app:
         wilt gaan?
       tracking_inactive: Filament tracking is niet actief. Selecteer een spoel om
         te beginnen.
+      not_connected: Spoolman server niet beschikbaar.
     title:
       scan_spool: Scan Spoel
       spool_selection: Spoel selectie | Spool selectie voor macro {macro}
@@ -786,6 +828,9 @@ app:
       multiply_job: Vermenigvuldig Opdracht | Vermenigvuldig Opdrachten
     label:
       number_of_copies: Aantal kopieën
+      filament: Filament
+      print_time: Print tijd
+      unknown_jobs: Onbekende jobs
   timelapse:
     setting:
       parkpos:
@@ -803,6 +848,7 @@ app:
       duplicatelastframe: Dupliceer laatste frames
       enable: Ingeschakeld
       saveframes: Frames Opslaan
+      stream_delay_compensation: Vertraging Compensatie
     label:
       frames: '%{frames} frame | %{frames} frames'
       length: 'Geschatte lengte: %{length}'
@@ -819,6 +865,62 @@ app:
   keyboard_shortcuts:
     label:
       pause: Pauze
+      actions: Acties
+      open_keyboard_shortcut_help: Open toetsenbord sneltoets help
+      cancel: Annuleren
+      navigation: Navigatie
+    title:
+      keyboard_shortcuts: Toetsenbord Sneltoetsen
   beacon:
     tooltip:
       load: Laad Model
+      delete: Verwijder Model
+    label:
+      model_name: Model Naam
+      remove_model: Verwijder %{name} model
+      active: actief
+  mmu:
+    btn:
+      eject: Uitwerpen
+      load: Laad
+      unload: Uitladen
+      on: Aan
+      up: Boven
+      select: Selecteer
+      cancel: Annuleer
+      off: Uit
+      down: Beneden
+      move: Beweeg
+    label:
+      animation: Animatie
+      unknown: Onbekend
+      choose_spool: Kies Spoel
+      filament_name: Filament Naam
+      material: Materiaal
+      temperature: Temperatuur
+      mmu_motors: MMU Motoren
+      save: Opslaan
+      cancel: Annuleren
+      filament_info: Filament Informatie
+      slicer_expects: Slicer Verwacht
+      spoolman_last_used: Laatst Gebruikt
+      spoolman_never: Nooit
+      spoolman_today: Vandaag
+      spoolman_yesterday: Gisteren
+      spoolman_days_ago: '%{days} dagen geleden'
+    tooltip:
+      empty: Leeg
+      color: Kleur
+    msg:
+      no_spool_id: Geen spoel ID
+      warning_prefix: Waarschuwing-
+      no_active_spool: Geen actieve spoel
+      are_you_sure: Weet je het zeker?
+      filament_empty: Filament niet beschikbaar
+      color: Kleur
+      material: Materiaal
+      temperature: Temperatuur
+    setting:
+      show_details: Toon Filament Details
+      show_logos: Toon Logos
+      show_unavailable_spool_color: Toon Onbeschikbare Spoelen
