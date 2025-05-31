@@ -594,7 +594,6 @@ MMU_ENDLESS_SPOOL GROUPS="${esGrpStr}" QUIET=1`
     // Mimick Fluidd workflow: If called prior to print, start print now
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
-
       if (this.$route.name !== 'home') {
         this.$router.push({ name: 'home' })
       }

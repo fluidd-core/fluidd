@@ -99,6 +99,7 @@ app:
       uploaded: Feltöltve
       view_section_documentation: >-
         Nézd '%{section}' dokumentáció
+      sd_card_info: SD-Kártya információk
     msg:
       not_found: Nincsenek fájlok
       processing: Feldolgozás
@@ -970,7 +971,7 @@ app:
       location: Helyszín
       lot_nr: Lot Nr
       material: Anyag
-      remaining_weight: Maradék
+      remaining_weight: Maradék súly
       vendor: Forgalmazó
       active_spool: Aktív tekercs
       length: Hossz
@@ -979,9 +980,15 @@ app:
       density: Sűrűség
       extruder_temp: Fej hőfoka
       price: Érték
-      used_weight: Használt
+      used_weight: Használt súly
       colors: Színek
       diameter: Átmérő
+      initial_length: Kezdeti hossz
+      initial_weight: Kezdeti súly
+      remaining_length: Maradék hossz
+      remaining: Maradék
+      used_length: Használt hossz
+      used: Használt
     msg:
       no_spool: >-
         Nem választottál ki orsót.
@@ -1058,3 +1065,21 @@ app:
     tooltip:
       delete: Modell törlése
       load: Modell betöltése
+  mmu:
+    btn:
+      check_all_gates: Ellenőrizze az összes kaput
+      check_gate: Ellenőrizze a kaput
+      eject: Kiadás
+      load: Töltés
+      load_ext: Ext betöltése
+      unload: Kiadás
+      unload_ext: Ext kiadás
+      preload: Előtöltés
+      print_stats: Nyomtatási statisztika
+      recover: Visszaállítás
+      sync_spoolman: Orsómester szink.
+      unlock: Felold
+      cancel: Mégse
+      mmu_maintenance: MMU Karbantartás
+      recover_state: MMU állapot javítása
+      edit_gate_map: Filamentek szerkesztése
