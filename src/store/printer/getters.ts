@@ -815,7 +815,11 @@ export const getters = {
       'aht10',
       'bme280',
       'htu21d',
-      'sht3x'
+      'sht21',
+      'sht3x',
+      'si7013',
+      'si7020',
+      'si7021',
     ] as const
 
     if (supportedSensors.includes(sensorType)) {

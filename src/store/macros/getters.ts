@@ -25,7 +25,7 @@ export const getters = {
         const lowerCaseKey = key.toLowerCase()
         const lowerCaseName = name.toLowerCase()
         const config = rootState.printer.printer.configfile.settings[lowerCaseKey]
-        const stored = state.stored.find(macro => macro.name.toLowerCase() === lowerCaseName)
+        const stored = state.stored.find(macro => macro.name?.toLowerCase() === lowerCaseName)
         const variables = rootState.printer.printer[key]
 
         const macro: Macro = {
