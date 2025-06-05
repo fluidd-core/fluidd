@@ -36,7 +36,9 @@ const stringFormatters = () => {
         return `0${unit}`
       }
 
-      return Math.max(value, Math.pow(10, -fractionDigits))
+      const op = value < 0 ? Math.min : Math.max
+
+      return op(value, Math.pow(10, -fractionDigits))
         .toFixed(fractionDigits) + unit
     },
 
@@ -85,19 +87,21 @@ const stringFormatters = () => {
      * Formats a number representing mm to human readable distance.
      */
     getReadableLengthString: (lengthInMm: number, options?: { showMicrons?: boolean, showKilometers?: boolean }, fractionDigits: number | undefined = undefined) => {
-      if (lengthInMm >= 1000000 && options?.showKilometers) {
+      const absLengthInMm = Math.abs(lengthInMm)
+
+      if (absLengthInMm >= 1000000 && options?.showKilometers) {
         return (lengthInMm / 1000000).toFixed(fractionDigits ?? 2) + ' km'
       }
 
-      if (lengthInMm >= 1000) {
+      if (absLengthInMm >= 1000) {
         return (lengthInMm / 1000).toFixed(fractionDigits ?? 2) + ' m'
       }
 
-      if (lengthInMm > 100) {
+      if (absLengthInMm > 100) {
         return (lengthInMm / 10).toFixed(fractionDigits ?? 1) + ' cm'
       }
 
-      if (lengthInMm < 0.1 && options?.showMicrons) {
+      if (absLengthInMm < 0.1 && options?.showMicrons) {
         return instance.getStringValueWithUnit(lengthInMm * 1000, fractionDigits ?? 0, ' μm')
       }
 
@@ -108,7 +112,9 @@ const stringFormatters = () => {
      * Formats a number representing g to human readable weight.
      */
     getReadableWeightString: (weightInG: number, fractionDigits = 2) => {
-      if (weightInG >= 1000) {
+      const absWeightInG = Math.abs(weightInG)
+
+      if (absWeightInG >= 1000) {
         return (weightInG / 1000).toFixed(fractionDigits) + ' kg'
       }
 
@@ -120,7 +126,7 @@ const stringFormatters = () => {
      */
     getReadableFrequencyString: (frequencyInHz: number, fractionDigits = 0) => {
       let i = 0
-      while (frequencyInHz >= 1000) {
+      while (Math.abs(frequencyInHz) >= 1000) {
         frequencyInHz = frequencyInHz / 1000
         i++
       }
@@ -133,7 +139,7 @@ const stringFormatters = () => {
      */
     getReadableResistanceString: (resistanceInOhms: number, fractionDigits = 1) => {
       let i = 0
-      while (resistanceInOhms >= 1000) {
+      while (Math.abs(resistanceInOhms) >= 1000) {
         resistanceInOhms = resistanceInOhms / 1000
         i++
       }
