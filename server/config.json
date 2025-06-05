@@ -116,6 +116,16 @@
       }
     },
     {
+      "name": "Recore",
+      "color": "#04A3E5",
+      "isDark": true,
+      "logo": {
+        "src": "logo_recore.svg",
+        "dark": "#4D4D4D",
+        "light": "#F1F1F1"
+      }
+    },
+    {
       "name": "Siboor",
       "color": "#32E0DF",
       "isDark": true,
