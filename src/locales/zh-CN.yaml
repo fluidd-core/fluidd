@@ -19,6 +19,7 @@ app:
       delete: 删除配置
       load: 加载配置
       save: 将校准的配置文件应用于 printer.cfg
+      download_image: 下载热床网格图片
   chart:
     label:
       current: 当前值
@@ -27,6 +28,7 @@ app:
       target: 目标值
       rate_of_change: 变化值
       target_temperature: 目标温度
+      turn_off: 关闭
     tooltip:
       help: 按住 <kbd>Shift</kbd> 键可缩放图表。<br />单击一个项目名称或功率可在图表中切换显示。
   console:
@@ -55,6 +57,8 @@ app:
         triggered: 已触发
     msg:
       subtitle: 使用“刷新”按钮更新限位开关状态。
+    label:
+      endstop: '%{name}限位'
   file_system:
     filters:
       label:
@@ -74,11 +78,13 @@ app:
       transfer_rate: 传输速率
       uploaded: 上传完成
       view_section_documentation: '%{section} 查看文档'
+      sd_card_info: SD卡信息
     msg:
       not_found: 文件未找到
       processing: 处理中...
     overlay:
       drag_files_enqueue: 将文件拖到<strong>此处</strong>进行入队
+      drag_files_folders_upload: 把文件和文件夹<strong>拖拽</strong>到此处上传
     title:
       add_dir: 新建目录
       add_file: 新建文件
@@ -90,6 +96,7 @@ app:
       rename_dir: 重命名目录
       rename_file: 重命名文件
       upload_file: 上传文件
+      devices: 设备列表
     tooltip:
       low_on_space: 磁盘空间不足
       root_disabled: '{root} G代码文件目录不可用，请首先连接打印机或者检查G代码存放目录的路径与读权限。'
@@ -198,6 +205,7 @@ app:
       reset_stats: 重置统计信息
       retry: 重试
       refresh_metadata: 刷新元数据
+      power_on_printer: 打开打印机电源
     error:
       app_setup_link: '如需查看 Fluidd 详细配置规则，请点击<a target="_blank" href="%{url}">此处</a>。'
       app_warnings_found: '%{appName} 出现警告'
@@ -248,7 +256,7 @@ app:
       manage_accounts: 账户管理
       user_managed_source: 由 %{source} 身份验证管理的用户
       m117: M117
-      moonraker: ''
+      moonraker: 'Moonraker'
       name: 名称
       new_password: 新密码
       no_notifications: 暂无通知
@@ -309,6 +317,9 @@ app:
       compact: 紧凑
       stepper_driver: '%{name} 驱动'
       device: 设备
+      length_in_kilometers: 长度使用千米
+      time_in_days: 时间使用天
+      unknown: 未知
     msg:
       password_changed: 密码已更改
       wrong_password: 密码错误
@@ -353,6 +364,11 @@ app:
         confirm_remove_user: 确定要移除用户 %{username} 吗？
         confirm_remove_printer: 确定移除打印机 %{name}？
         confirm_emergency_stop: 确定要紧急停止打印机吗？
+        confirm_clear_mesh: 打印机当前正忙。您确定要清除热床网格吗？
+        confirm_remove_thermal_preset: 确定要移除温度预设%{name}吗？
+        confirm_remove_console_filter: 确定要移除控制台过滤器%{name}吗？
+        confirm_load_bedmesh_profile: 打印机当前正忙。您确定要加载配置%{name}吗？
+        confirm_remove_macro_category: 确定要移除宏分类%{name}吗？
     table:
       header:
         actions: 展开
@@ -363,7 +379,7 @@ app:
         filament_name: 耗材名称
         filament_type: 耗材类型
         filament_used: 实际使用耗材
-        filament_weight_total: 耗材重量
+        filament_weight_total: 耗材总重量
         first_layer_bed_temp: 起始层热床温度
         first_layer_extr_temp: 起始层挤出温度
         first_layer_height: 起始层高
@@ -382,6 +398,11 @@ app:
         start_time: 开始时间
         status: 状态
         total_duration: 总耗时
+        filament_change_count: 换料次数
+        filament_temps: 挤出温度
+        filament_colors: 耗材颜色
+        user: 用户
+        filament_weights: 耗材重量
     title:
       add_chart: 添加图表
       add_printer: 添加打印机
@@ -417,6 +438,8 @@ app:
       timelapse: 延时
       tool: 移动控制
       tune: 调整
+      login: 登录
+      macro_category_settings: 宏类别设置
     tooltip:
       browse_metrics: 浏览可用指标
       estop: 紧急停止
@@ -428,6 +451,7 @@ app:
       run_collector: 运行收集器
       rollover_logs: 滚动日志
       power_on_printer: 打开打印机电源
+      exit_layout: 退出布局修改模式
   history:
     msg:
       confirm: 这将清除所有历史记录和打印机统计数据！是否确认？
@@ -456,6 +480,8 @@ app:
       printer_status: 打印机状态
     msg:
       possible_print_failure: 这可能导致打印失败
+    url:
+      stepper_driver_overheating: '%{klipperDomain}/TMC_Drivers.html#tmc-reports-error-ot1overtemperror'
   setting:
     btn:
       add_camera: 添加摄像头
@@ -474,6 +500,9 @@ app:
       hlsstream: HLS流
       video: IP 摄像头
       iframe: HTTP 页面
+      webrtc_mediamtx: WebRTC (MediaMTX)
+      webrtc_camera_streamer: WebRTC (camera-streamer)
+      webrtc_go2rtc: WebRTC (go2rtc)
     camera_rotate_options:
       '90': 90度
       '180': 180度
@@ -586,6 +615,9 @@ app:
       print_progress_calculation: 打印进度计算
       fluidd_settings_in_moonraker_db: Moonraker数据库中的Fluidd设置
       keyboard_shortcuts: 键盘快捷键
+      hide_single_part_bounding_box: 打印单个部件时隐藏部件边界框
+      klipper_save_and_restart_action: Klipper保存、重启操作
+      draw_origin: 显示原点
     timer_options:
       duration: 仅显示已用时间
       filament: 通过耗材用量估算
@@ -774,9 +806,34 @@ app:
       diameter: 直径
       extruder_temp: 挤出头温度
       price: 价格
+      initial_length: 初始长度
+      initial_weight: 初始重量
+      remaining: 剩余
+      remaining_length: 剩余长度
+      used_length: 已用长度
+      used: 已使用
+      colors: 颜色
+      id: ID
+      change_spool: 更换耗材
+      bed_temp: 热床温度
+      density: 密度
+      used_weight: 已用重量
     msg:
       not_connected: Spoolman服务不可用
       no_required_length: 打印所选文件所需的耗材量未知。是否继续？
+      no_spool: 你还没有选择料盘，确定要继续打印吗？
+      warning:
+        invalid_spool_id: 二维码中的料盘ID无效。
+        code_not_recognized: 这个二维码不像是兼容的二维码。
+      error:
+        spool_not_existant: 数据库中不存在扫描出的料盘。
+        no_image_data: 访问摄像头失败。请检查摄像头配置或者尝试其他摄像头。
+        cors: 访问摄像头视频流时出错，请确保您的网络摄像头服务器允许 CORS 访问。
+      info:
+        howto: 请将料盘的二维码对准摄像头。检测到料盘后，此窗口将自动关闭。
+      mismatched_filament: 当前选择的耗材材质与切片软件中设置的材质不匹配，确定要继续吗？
+      no_filament: 你选择的料盘可能没有足够的剩余耗材来完成打印任务，你确定要继续吗？
+      tracking_inactive: 耗材追踪功能未启用。请先选择料盘以开始使用。
     title:
       spoolman: Spoolman
       scan_spool: 扫描Spool二维码
@@ -786,6 +843,9 @@ app:
       auto_open_qr_camera: 自动打开摄像头检测二维码
       warn_on_not_enough_filament: 当选定料盘剩余耗材不足时显示警告
       warn_on_filament_type_mismatch: 当料盘的耗材材料类型与切片不同时显示警告
+      card_fields: 显示在Spoolman卡片中的字段
+      show_spool_selection_dialog_on_print_start: 在打印开始时显示料盘选择弹窗
+      auto_select_spool_on_match: 自动使用二维码匹配的料盘
     btn:
       manage_spools: 管理Spools
       scan_code: 扫描二维码
@@ -804,3 +864,90 @@ app:
       pause: 暂停
     title:
       keyboard_shortcuts: 键盘快捷键
+  mmu:
+    tooltip:
+      spoolid: 料盘ID
+      empty: 空
+      color: 颜色
+    msg:
+      no_spool_id: 无spool ID
+      reset_ttg_map_confirmation: 这会将整个工具到通道映射和自动续料组重置为“mmu_parameters.cfg”中定义的默认值，或在没有默认值的情况下重置为默认的
+        1:1 映射
+      select_gate: 选择您想要编辑的通道/料盘信息
+      spoolman_off: Happy Hare 中Spoolman support 设定为 "%{mode}" . 分配spool id至通道已禁用
+      no_tool: 必须先选择一个工具
+      spoolman_pull: Spoolman support设定为"%{mode}"模式. 大多数通道属性的本地编辑已禁用. 请直接在 Spoolman
+        DB 中分配 料盘/通道映射，或使用 MMU_SPOOLMAN 命令
+      no_matching_spool: 找不到匹配的料盘
+      are_you_sure: 你确定？
+      bad_temperature: 温度超出范围
+      filament_available: 耗材已装入通道
+      filament_unknown: 未知耗材信息(请设定)
+      filament_empty: 耗材不可用
+      maintenance_intro: 直接管理特定的 MMU 功能和选择性配置.
+      no_custom_controls: 无自定义控件
+      filament_loaded: 耗材是否已完全装入挤出机或已完全卸载？
+      no_gate: 必须先选择一个通道
+      no_position: 尝试恢复位置
+      remap: 这将映射通道至 %{tool}
+      tool_bypass: 工具已设定至旁通!
+      warning_prefix: 警告-
+      no_active_spool: 无激活料盘
+      reset_gate_map_confirmation: 这会将所有通道映射重置为“mmu_parameters.cfg”中定义的默认值，如果没有可用的默认值，则重置为空映射
+      spoolman_other: Spoolman support设定为"%{mode}". 您可以选择分配 Spool ID 或直接编辑通道属性
+      gate_bypass: 通道已设定至旁通!
+      set_gate: 设定至当前通道
+      set_tool: 设定至当前工具
+    btn:
+      check_gate: 检测通道
+      check_all_gates: 检测所有通道
+      unload_ext: 挤出机卸载
+      cancel: 取消
+      mmu_maintenance: MMU维护
+      preload: 预加载
+      print_stats: 于控制台列出状态信息
+      recover: 修复
+      sync_spoolman: 同步Spoolman数据
+      load: 加载
+      load_ext: 挤出机加载
+      select: 选择器
+      edit_gate_map: 编辑耗材
+      unload: 卸载
+      sync: 同步
+      unsync: 解除同步
+      home: 归位
+      edit_ttg_map: 映射工具/耗材
+      eject: 退料
+    title:
+      mmu_maintenance: MMU维护
+      edit_ttg_map: 映射工具/耗材 (编辑TTG映射)
+      edit_gate_map: 编辑耗材(编辑通道映射)
+    label:
+      clog_detection: 堵转检测
+      spoolman: Spoolman
+      filament_name: 耗材名
+      choose_spool: 选择料盘
+      extruder_tx: 工具 Tx
+      ui_visual: UI视觉
+      mmu_motors: MMU电机
+      selector: 选择器
+      animation: 动画
+      unknown: 未知
+      skip_automap: 跳过自动映射
+      config: 设定
+      enable: 启用
+      gate: 通道
+      endless_spool: 自动续料
+      spoolman_id: Spoolman ID
+      material: 材质
+      temperature: 温度
+      motor_sync: 挤出电机同步
+      extruder_only: 仅挤出机
+      slicer_expects: 切片预期
+      spoolman_last_used: 上次使用
+      spoolman_never: 未曾
+      spoolman_yesterday: 昨日
+      tool_mapping: 工具映射
+      spoolman_days_ago: '%{days} 天前'
+      spoolman_today: 今日
+      filament_info: 耗材信息
