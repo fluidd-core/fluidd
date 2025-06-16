@@ -21,16 +21,17 @@ export const getters = {
     const macros = Object.keys(rootState.printer.printer)
       .filter(key => key.startsWith('gcode_macro '))
       .map(key => {
+        const name = key.split(' ', 2)[1]
         const lowerCaseKey = key.toLowerCase()
-        const name = lowerCaseKey.split(' ', 2)[1]
+        const lowerCaseName = name.toLowerCase()
         const config = rootState.printer.printer.configfile.settings[lowerCaseKey]
-        const stored = state.stored.find(macro => macro.name === name)
+        const stored = state.stored.find(macro => macro.name?.toLowerCase() === lowerCaseName)
         const variables = rootState.printer.printer[key]
 
         const macro: Macro = {
           ...MACRO_DEFAULTS,
-          name,
           ...stored,
+          name,
           variables,
           config
         }
@@ -57,7 +58,7 @@ export const getters = {
 
     for (const name of names) {
       const lowerCaseName = name.toLowerCase()
-      const macro = macros.find(macro => macro.name === lowerCaseName)
+      const macro = macros.find(macro => macro.name.toLowerCase() === lowerCaseName)
 
       if (macro) {
         return macro
@@ -108,7 +109,7 @@ export const getters = {
           return a.order - b.order
         }
 
-        return a.name.localeCompare(b.name)
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
       })
   },
 

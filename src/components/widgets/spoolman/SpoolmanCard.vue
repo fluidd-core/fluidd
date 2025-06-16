@@ -255,7 +255,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
 
     return macros
       .filter((macro): macro is MacroWithSpoolId => macro.variables != null && 'spool_id' in macro.variables)
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
   }
 
   get remainingFilamentUnit (): SpoolmanRemainingFilamentUnit {

@@ -144,8 +144,14 @@ export default class MacroCategorySettings extends Vue {
   }
 
   get macros () {
+    if (!this.search) {
+      return this.macrosForCategory
+    }
+
+    const search = this.search.toLowerCase()
+
     return this.macrosForCategory
-      .filter((macro: Macro) => !this.search ? true : macro.name.includes(this.search.toLowerCase()))
+      .filter(macro => macro.name.toLowerCase().includes(search))
   }
 
   set macros (macros: Macro[]) {

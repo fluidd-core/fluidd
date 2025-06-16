@@ -148,6 +148,16 @@
       }
     },
     {
+      "name": "Z-Bolt",
+      "color": "#2196F3",
+      "isDark": true,
+      "logo": {
+        "src": "logo_z-bolt.svg",
+        "dark": "#232323",
+        "light": "#ffffff"
+      }
+    },
+    {
       "name": "ZeroG",
       "color": "#e34234",
       "isDark": true,
