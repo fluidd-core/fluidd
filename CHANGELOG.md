@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.34.3](https://github.com/fluidd-core/fluidd/compare/v1.34.2...v1.34.3) (2025-06-16)
+
+
+### Features
+
+* adds missing HTU21D sensor family support ([df34956](https://github.com/fluidd-core/fluidd/commit/df349564265817a8dbf2cc00f7d9ca33e7248c05))
+* **i18n-nl:** Update Dutch translations ([01c7404](https://github.com/fluidd-core/fluidd/commit/01c7404e0feb7c51a418a17b4ffc7870d1c56997))
+* **i18n-pl:** Update Polish translations ([ec3576b](https://github.com/fluidd-core/fluidd/commit/ec3576b15c09cdedd1fd74a22b0aa79c74fd5a5e))
+* **i18n-uk:** Update Ukrainian translations ([a3ff90c](https://github.com/fluidd-core/fluidd/commit/a3ff90ca279bbbb77ceda749d16fc8cc7a507b87))
+* **i18n-zh-CN:** Update Chinese (Simplified Han script) translations ([8d64261](https://github.com/fluidd-core/fluidd/commit/8d64261fef4700e840e9fbf387b38154c1fee68a))
+* Z-Bolt theme ([#1677](https://github.com/fluidd-core/fluidd/issues/1677)) ([9caaf94](https://github.com/fluidd-core/fluidd/commit/9caaf944b0b086e543b89c5d1440996588237d08))
+
+
+### Bug Fixes
+
+* negative values formatting ([#1687](https://github.com/fluidd-core/fluidd/issues/1687)) ([3499936](https://github.com/fluidd-core/fluidd/commit/34999367b9f33abd667474f9cc0551d135550fc0))
+* store macro names casing as-is ([#1683](https://github.com/fluidd-core/fluidd/issues/1683)) ([ed6bd18](https://github.com/fluidd-core/fluidd/commit/ed6bd1805d90416b554704f5bccf1ab1ae374022))
+* undefined property access in case of deleted macro lookup ([#1685](https://github.com/fluidd-core/fluidd/issues/1685)) ([d2335a9](https://github.com/fluidd-core/fluidd/commit/d2335a956ccd6a75650745804fc655b8d0a173e2))
+
 ## [1.34.2](https://github.com/fluidd-core/fluidd/compare/v1.34.1...v1.34.2) (2025-05-10)
 
 
