@@ -55,11 +55,15 @@ import type { Fan, Led, OutputPin } from '@/store/printer/types'
   }
 })
 export default class Outputs extends Mixins(StateMixin) {
+  get showHidden () {
+    return this.$store.state.config.uiSettings.general.showHiddenOutputs
+  }
+
   get all () {
     const items: Array<Fan | Led | OutputPin> = [
-      ...this.$typedGetters['printer/getAllFans'],
-      ...this.$typedGetters['printer/getPins'],
-      ...this.$typedGetters['printer/getAllLeds']
+      ...this.$typedGetters['printer/getAllFans'](this.showHidden),
+      ...this.$typedGetters['printer/getPins'](this.showHidden),
+      ...this.$typedGetters['printer/getAllLeds'](this.showHidden)
     ]
     let col1: Array<Fan | Led | OutputPin> = []
     let col2: Array<Fan | Led | OutputPin> = []
