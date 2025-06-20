@@ -15,8 +15,17 @@ Fluidd can be hosted with Docker. This is considered an advanced install, but
 gives you the benefit of hosting a single instance of Fluidd, and having it
 connect to multiple printers.
 
-The docker image is updated automatically with each release of Fluidd, and
-on each commit to the "master" or "develop" branches.
+We have an [official docker image](https://github.com/fluidd-core/fluidd/pkgs/container/fluidd),
+serving Fluidd by default on port 80.
+
+For those who have specific security requirements and need/want to run an
+unpriviledged container, we also have an [unprivileged docker image](https://github.com/fluidd-core/fluidd/pkgs/container/fluidd-unprivileged)
+available, serving Fluidd by default on port 8080.
+
+You can override the default port where Fluidd will be served by setting the
+`PORT` environment variable when starting the docker container.
+
+Both of these docker images are updated for each release and on each commit.
 
 This is a list of the available docker image tags:
 
