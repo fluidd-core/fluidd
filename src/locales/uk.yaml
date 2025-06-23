@@ -391,9 +391,9 @@ app:
         invalid_number: Недійсний номер
         invalid_url: Недійсна URL-адреса
         invalid_expression: Недійсний вираз
-        max: Max %{max}
-        min: Min %{min}
-        min_or_0: Min %{min} або 0
+        max: Макс %{max}
+        min: Мін %{min}
+        min_or_0: Мін %{min} або 0
         password_username: Імʼя користувача не збігається з паролем
         required: Вимагається
         invalid_aspect: Недійсне співвідношення сторін
@@ -938,7 +938,7 @@ app:
         custom: Індивідуальний
         front_left: Передній лівий
         front_right: Передній правий
-        center: центр
+        center: Центр
         back_left: Задній лівий
         back_right: Задній правий
         x_only: Перемістити лише X
@@ -1175,7 +1175,7 @@ app:
       filament_loaded: Нитка повністю завантажена в екструдер чи повністю розвантажена?
       no_position: Спроба відновити позицію
       no_gate: Необхідно вибрати ворота
-      warning_prefix: УВАГА-
+      warning_prefix: Увага-
       recover_filament_position: Відновити положення нитки
       multi_color: Це виглядає як багатоматеріальний друк одним екструдером за допомогою
         %{numTools} інструментів. Ймовірно, вам слід переглянути відображення інструментів
