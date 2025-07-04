@@ -87,8 +87,10 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
       pc.ondatachannel = (event: RTCDataChannelEvent) => {
         const dc = event.channel
 
-        dc.onmessage = () => {
-          dc.send('pong')
+        if (dc.label === 'keepalive') {
+          dc.onmessage = () => {
+            dc.send('pong')
+          }
         }
       }
 
