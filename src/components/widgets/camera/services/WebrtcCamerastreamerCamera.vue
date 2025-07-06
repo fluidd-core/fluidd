@@ -31,7 +31,7 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
   playbackAbortController: AbortController | null = null
   sleepAbortController: AbortController | null = null
 
-  // adapted from https://github.com/ayufan/camera-streamer/blob/4203f89df1596cc349b0260f26bf24a3c446a56b/html/webrtc.html
+  // adapted from https://github.com/ayufan/camera-streamer/blob/2d3a4884378f384346680a55196bf9244b99b6b6/html/webrtc.html
 
   async loadStream () {
     this.pc?.close()
@@ -58,7 +58,8 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
                 'stun:stun.l.google.com:19302'
               ]
             }
-          ]
+          ],
+          keepAlive: true
         }),
         headers: {
           'Content-Type': 'application/json'
@@ -82,6 +83,16 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
       }
 
       const pc = this.pc = new RTCPeerConnection(config)
+
+      pc.ondatachannel = (event: RTCDataChannelEvent) => {
+        const dc = event.channel
+
+        if (dc.label === 'keepalive') {
+          dc.onmessage = () => {
+            dc.send('pong')
+          }
+        }
+      }
 
       pc.addTransceiver('video', {
         direction: 'recvonly'
