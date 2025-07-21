@@ -94,7 +94,7 @@
               -> {{ component.remote_version }}
             </span>
             <span v-if="'package_count' in component && component.package_count > 0">
-              {{ component.package_count }} packages
+              {{ $tc('app.version.label.packages', component.package_count) }}
             </span>
           </template>
 
