@@ -843,6 +843,8 @@ app:
       invalid: INVALID
       os_packages: OS Packages
       package_list: Package List
+      packages: >-
+        {count} package | {count} packages
       up_to_date: UP TO DATE
       updates_available: Updates are available
       old_component_version: >-
