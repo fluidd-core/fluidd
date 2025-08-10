@@ -131,6 +131,81 @@ async function setupMonaco () {
     window.open(url)
   })
 
+  monaco.languages.registerDocumentSymbolProvider('klipper-config', {
+    provideDocumentSymbols: (model) => {
+      const linesContent = model.getLinesContent()
+
+      const sectionBlocks = linesContent
+        .reduce<ReduceState<{ name: string, children: ReduceState<{ name: string, range: monaco.IRange }>, range: monaco.IRange }>>((state, lineContent, index) => {
+          const section = /^\[[^\]]+\]/.exec(lineContent)
+
+          if (section) {
+            state.result.push(state.current = {
+              name: section[0],
+              children: { result: [] },
+              range: {
+                startLineNumber: index + 1,
+                startColumn: model.getLineFirstNonWhitespaceColumn(index + 1),
+                endLineNumber: index + 1,
+                endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
+              }
+            })
+          } else {
+            const isNotComment = /^\s*[^#;]/.test(lineContent)
+
+            if (isNotComment && state.current) {
+              const property = /^(\S+)\s*[:=]/.exec(lineContent)
+
+              if (property) {
+                state.current.children.result.push(state.current.children.current = {
+                  name: property[1],
+                  range: {
+                    startLineNumber: index + 1,
+                    startColumn: model.getLineFirstNonWhitespaceColumn(index + 1),
+                    endLineNumber: index + 1,
+                    endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
+                  }
+                })
+              } else if (state.current.children.current) {
+                state.current.children.current.range = {
+                  ...state.current.children.current.range,
+                  endLineNumber: index + 1,
+                  endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
+                }
+              }
+
+              state.current.range = {
+                ...state.current.range,
+                endLineNumber: index + 1,
+                endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
+              }
+            }
+          }
+
+          return state
+        }, { result: [] })
+        .result
+
+      return sectionBlocks
+        .map(section => ({
+          name: section.name,
+          detail: section.name,
+          kind: monaco.languages.SymbolKind.Namespace,
+          range: section.range,
+          selectionRange: section.range,
+          tags: [],
+          children: section.children.result.map(child => ({
+            name: child.name,
+            detail: child.name,
+            kind: monaco.languages.SymbolKind.Property,
+            range: child.range,
+            selectionRange: child.range,
+            tags: []
+          }))
+        }))
+    }
+  })
+
   monaco.languages.registerCodeLensProvider('klipper-config', {
     provideCodeLenses: (model) => {
       const { service } = app.$typedGetters['server/getConfigMapByFilename'](model.uri.path.split('/').pop()!) ?? {}
