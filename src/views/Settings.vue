@@ -10,6 +10,7 @@
       <router-view v-if="authenticated && socketConnected" />
       <div v-if="$route.matched.length === 1">
         <general-settings />
+        <warnings-settings />
         <theme-settings />
         <auth-settings v-if="supportsAuth" />
         <console-settings />
@@ -48,6 +49,7 @@ import FileEditorSettings from '@/components/settings/FileEditorSettings.vue'
 import TimelapseSettings from '@/components/settings/timelapse/TimelapseSettings.vue'
 import SpoolmanSettings from '@/components/settings/SpoolmanSettings.vue'
 import MmuSettings from '@/components/settings/MmuSettings.vue'
+import WarningsSettings from '@/components/settings/WarningsSettings.vue'
 
 @Component({
   components: {
@@ -65,7 +67,8 @@ import MmuSettings from '@/components/settings/MmuSettings.vue'
     AuthSettings,
     ConsoleSettings,
     FileBrowserSettings,
-    FileEditorSettings
+    FileEditorSettings,
+    WarningsSettings
   }
 })
 export default class Settings extends Mixins(StateMixin) {
