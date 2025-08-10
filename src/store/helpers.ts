@@ -13,7 +13,8 @@ export const handleTrinamicDriversChange = (payload: Partial<KlipperPrinterState
     if (
       isTmc(item) &&
       payload[item]?.drv_status?.otpw != null &&
-      state.printer.printer?.[item]?.drv_status?.otpw == null
+      state.printer.printer?.[item]?.drv_status?.otpw == null &&
+      state.config.uiSettings.warnings.warnOnStepperDriverOverheating
     ) {
       const [, nameFromSplit] = item.split(' ', 2)
       const name = nameFromSplit ?? item
