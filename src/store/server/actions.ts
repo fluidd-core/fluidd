@@ -182,10 +182,10 @@ export const actions = {
     commit('setServiceState', payload)
   },
 
-  async onMachineThrottledState ({ commit, dispatch, state }, payload: ServerThrottledState) {
+  async onMachineThrottledState ({ commit, dispatch, state, rootState }, payload: ServerThrottledState) {
     if (payload) {
       // If we have a throttled condition.
-      if (payload && payload.flags.length > 0) {
+      if (rootState.config.uiSettings.warnings.warnOnCpuThrottled) {
         // Fire notifications.
         payload.flags.forEach((flag) => {
           // Only apply a notification if the flag changed state.
