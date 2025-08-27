@@ -741,7 +741,7 @@ type KlipperPrinterSettingsBaseType =
 
     [key: `controller_fan ${Lowercase<string>}`]: KlipperPrinterControllerFanSettings;
 
-    [key: `gcode_button ${string}`]: KlipperPrinterGcodeButtonSettings;
+    [key: `gcode_button ${Lowercase<string>}`]: KlipperPrinterGcodeButtonSettings;
 
     [key: `output_pin ${Lowercase<string>}`]: KlipperPrinterOutputPinSettings;
 
@@ -781,7 +781,7 @@ type KlipperPrinterSettingsBaseType =
 
     heater_bed: KlipperPrinterHeaterBedSettings;
 
-    [key: `heater_generic ${string}`]: KlipperPrinterHeaterGenericSettings;
+    [key: `heater_generic ${Lowercase<string>}`]: KlipperPrinterHeaterGenericSettings;
 
     [key: `verify_heater ${Lowercase<string>}`]: KlipperPrinterVerifyHeaterSettings;
 
