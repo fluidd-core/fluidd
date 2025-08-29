@@ -143,6 +143,8 @@ type KlipperPrinterStateBaseType =
 
     [key: `temperature_sensor ${string}`]: KlipperPrinterTemperatureSensorState;
 
+    [key: `temperature_probe ${string}`]: KlipperPrinterTemperatureProbeState;
+
     [key: TmcKey]: KlipperPrinterTmcState;
 
     dual_carriage: KlipperDualCarriageState;
@@ -500,6 +502,15 @@ export interface KlipperPrinterTemperatureSensorState {
   measured_max_temp: number;
 }
 
+export interface KlipperPrinterTemperatureProbeState {
+  temperature: number;
+  measured_min_temp: number;
+  measured_max_temp: number;
+  in_calibration: boolean;
+  estimated_expansion: number;
+  compensation_enabled: boolean;
+}
+
 export interface KlipperPrinterTmcState {
   mcu_phase_offset: number;
   phase_offset_position: number;
@@ -749,6 +760,8 @@ type KlipperPrinterSettingsBaseType =
 
     [key: `temperature_sensor ${Lowercase<string>}`]: KlipperPrinterTemperatureSensorSettings;
 
+    [key: `temperature_probe ${Lowercase<string>}`]: KlipperPrinterTemperatureProbeSettings;
+
     safe_z_home: KlipperPrinterSafeZHomeSettings;
 
     z_tilt: KlipperPrinterZTiltSettings;
@@ -772,6 +785,8 @@ type KlipperPrinterSettingsBaseType =
     respond: KlipperPrinterRespondSettings;
 
     virtual_sdcard: KlipperPrinterVirtualSdcardSettings;
+
+    z_thermal_adjust: KlipperPrinterZThermalAdjustSettings;
 
     pause_resume: KlipperPrinterPauseResumeSettings;
 
@@ -935,6 +950,25 @@ export interface KlipperPrinterTemperatureSensorSettings {
   i2c_bus?: string;
   min_temp: number;
   max_temp: number;
+  sensor_pin?: string;
+  gcode_id?: string;
+}
+
+export interface KlipperPrinterTemperatureProbeSettings {
+  speed?: number;
+  horizontal_move_z: number;
+  resting_z: number;
+  calibration_position?: [number, number, number];
+  calibration_bed_temp?: number;
+  calibration_extruder_temp?: number;
+  extruder_heating_z: number;
+  smooth_time: number;
+  min_temp: number;
+  max_temp: number;
+  sensor_type: string;
+  pullup_resistor?: number;
+  inline_resistor?: number;
+  sensor_pin?: string;
   gcode_id?: string;
 }
 
@@ -1048,6 +1082,19 @@ export interface KlipperPrinterVirtualSdcardSettings {
   path: string;
   on_error_gcode: string;
   with_subdirs?: boolean;
+}
+
+export interface KlipperPrinterZThermalAdjustSettings {
+  temp_coeff: number;
+  z_adjust_off_above: number;
+  max_z_adjustment: number;
+  smooth_time: number;
+  min_temp: number;
+  max_temp: number;
+  sensor_type: string;
+  pullup_resistor?: number;
+  inline_resistor?: number;
+  sensor_pin?: string;
 }
 
 export interface KlipperPrinterPauseResumeSettings {
