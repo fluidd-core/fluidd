@@ -810,19 +810,19 @@ export const getters = {
   },
 
   getExtraSensorData: (state) => (sensorType: string, name: string) => {
-    const supportedSensors = [
-      'aht10',
-      'bme280',
-      'htu21d',
-      'sht21',
-      'sht3x',
-      'si7013',
-      'si7020',
-      'si7021',
-    ] as const
+    const supportedSensors = {
+      aht10: 'aht10',
+      bme280: 'bme280',
+      htu21d: 'htu21d',
+      sht21: 'htu21d',
+      sht3x: 'sht3x',
+      si7013: 'htu21d',
+      si7020: 'htu21d',
+      si7021: 'htu21d',
+    } as const
 
-    if (supportedSensors.includes(sensorType)) {
-      const sensor = state.printer[`${sensorType} ${name}`]
+    if (isKeyOf(sensorType, supportedSensors)) {
+      const sensor = state.printer[`${supportedSensors[sensorType]} ${name}`]
 
       if (sensor) {
         const { pressure, humidity, gas } = sensor
