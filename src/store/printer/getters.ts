@@ -771,8 +771,35 @@ export const getters = {
           const color = Vue.$colorset.next(getKlipperType(key), key)
           const config = state.printer.configfile.settings[key.toLowerCase()]
 
+          const mcu = (
+            klippyApp.isKalico &&
+            config != null &&
+            (
+              (
+                'i2c_mcu' in config &&
+                config.i2c_mcu
+              ) ||
+              (
+                'sensor_mcu' in config &&
+                config.sensor_mcu
+              ) ||
+              (
+                'sensor_pin' in config &&
+                config.sensor_pin?.includes(':') &&
+                config.sensor_pin.split(':')[0]
+              )
+            )
+          )
+
+          const kalicoTemperatureOverride = mcu && mcu !== 'mcu' && state.printer[`mcu ${mcu}`]?.non_critical_disconnected
+            ? {
+                temperature: null
+              }
+            : null
+
           groups[name] = {
             ...state.printer[key],
+            ...kalicoTemperatureOverride,
             ...getters.getExtraSensorData(config && 'sensor_type' in config && config.sensor_type?.toLowerCase(), name),
             config: { ...config },
             minTemp: config && 'min_temp' in config ? config.min_temp ?? null : null,
