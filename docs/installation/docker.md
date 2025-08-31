@@ -19,7 +19,7 @@ We have an [official docker image](https://github.com/fluidd-core/fluidd/pkgs/co
 serving Fluidd by default on port 80.
 
 For those who have specific security requirements and need/want to run an
-unpriviledged container, we also have an [unprivileged docker image](https://github.com/fluidd-core/fluidd/pkgs/container/fluidd-unprivileged)
+unprivileged container, we also have an [unprivileged docker image](https://github.com/fluidd-core/fluidd/pkgs/container/fluidd-unprivileged)
 available, serving Fluidd by default on port 8080.
 
 You can override the default port where Fluidd will be served by setting the
