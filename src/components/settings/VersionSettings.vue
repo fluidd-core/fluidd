@@ -99,7 +99,7 @@
           </template>
 
           <v-tooltip
-            v-if="hasUpdate(component.name) && !inError(component)"
+            v-if="hasUpdate(component.name)"
             left
           >
             <template #activator="{ attrs, on }">
@@ -125,8 +125,8 @@
             :has-update="hasUpdate(component.name)"
             :disabled="isRefreshing || printerPrinting"
             :loading="isRefreshing"
-            :dirty="('is_dirty' in component) ? component.is_dirty : false"
-            :valid="('is_valid' in component) ? component.is_valid : true"
+            :dirty="isDirty(component)"
+            :valid="isValid(component)"
             @on-update="handleUpdateComponent(component.name)"
             @on-recover="handleRecoverComponent(component)"
           />
@@ -208,7 +208,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
 
   get hasInvalidComponent () {
     return this.components
-      .some(component => 'is_valid' in component && !component.is_valid)
+      .some(component => !this.isValid(component))
   }
 
   get enableNotifications (): boolean {
@@ -235,16 +235,17 @@ export default class VersionSettings extends Mixins(StateMixin) {
     return this.$typedGetters['version/hasUpdate'](component)
   }
 
-  inError (component: VersionInfo) {
+  isDirty (component: VersionInfo) {
     return (
-      (
-        'is_dirty' in component &&
-        component.is_dirty
-      ) ||
-      (
-        'is_valid' in component &&
-        !component.is_valid
-      )
+      'is_dirty' in component &&
+      component.is_dirty
+    )
+  }
+
+  isValid (component: VersionInfo) {
+    return (
+      !('is_valid' in component) ||
+      component.is_valid
     )
   }
 
@@ -275,15 +276,9 @@ export default class VersionSettings extends Mixins(StateMixin) {
   handleRecoverComponent (component: VersionInfo) {
     this.$typedDispatch('version/onUpdateStatus', { busy: true })
 
-    if (
-      'is_dirty' in component &&
-      component.is_dirty
-    ) {
+    if (this.isDirty(component)) {
       SocketActions.machineUpdateRecover(component.name, false)
-    } else if (
-      'is_valid' in component &&
-      !component.is_valid
-    ) {
+    } else if (!this.isValid(component)) {
       SocketActions.machineUpdateRecover(component.name, true)
     }
   }
