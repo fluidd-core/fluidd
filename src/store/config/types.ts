@@ -59,6 +59,7 @@ export interface MmuConfig {
   showTtgMap: boolean;
   showDetails: boolean;
   largeFilamentStatus: boolean;
+  showName: boolean;
   showLogos: boolean;
   showUnavailableSpoolColor: boolean;
 }

@@ -1114,6 +1114,7 @@ app:
       show_clog_detection: Show Clog Detection
       show_details: Show Filament Details
       show_ttg_map: Show TTG Map
+      show_name: Show Unit Name
       show_logos: Show Logos
       show_unavailable_spool_color: Show Unavailable Spools
   sensors:

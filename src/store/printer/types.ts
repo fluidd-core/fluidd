@@ -715,6 +715,7 @@ type KlipperPrinterMmuMachineStateBaseType = {
     filament_always_gripped: boolean;
     has_bypass: boolean;
     multi_gear: boolean;
+    environment_sensor: string;
   };
 }
 
