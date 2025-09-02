@@ -299,7 +299,7 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
   }
 
   get showClogDetection (): boolean {
-    return !this.hasEncoder || !!this.$typedState.config.uiSettings.mmu.showClogDetection
+    return this.hasEncoder && this.$typedState.config.uiSettings.mmu.showClogDetection
   }
 
   get showTtgMap (): boolean {
