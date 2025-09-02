@@ -316,7 +316,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
       parts.push(`${sensor.temperature.toFixed(0)}°C`)
     }
 
-    if (sensor.humidity) {
+    if (sensor.humidity != null) {
       parts.push(`${sensor.humidity.toFixed(0)}%`)
     }
 
