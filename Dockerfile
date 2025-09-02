@@ -1,6 +1,11 @@
-FROM nginx:alpine
+ARG BASE_IMAGE=nginx:alpine
+ARG PORT=80
 
-ENV PORT=80
+FROM $BASE_IMAGE
+
+ARG PORT
+
+ENV PORT=$PORT
 
 COPY /dist /usr/share/nginx/html
 COPY /server/nginx /etc/nginx/templates
