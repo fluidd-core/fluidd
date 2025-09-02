@@ -312,7 +312,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 
     const parts: string[] = []
 
-    if (sensor.temperature) {
+    if (sensor.temperature != null) {
       parts.push(`${sensor.temperature.toFixed(0)}°C`)
     }
 
