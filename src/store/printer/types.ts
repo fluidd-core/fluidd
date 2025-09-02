@@ -143,6 +143,8 @@ type KlipperPrinterStateBaseType =
 
     [key: `temperature_sensor ${string}`]: KlipperPrinterTemperatureSensorState;
 
+    [key: `temperature_probe ${string}`]: KlipperPrinterTemperatureProbeState;
+
     [key: TmcKey]: KlipperPrinterTmcState;
 
     dual_carriage: KlipperDualCarriageState;
@@ -500,6 +502,15 @@ export interface KlipperPrinterTemperatureSensorState {
   measured_max_temp: number;
 }
 
+export interface KlipperPrinterTemperatureProbeState {
+  temperature: number;
+  measured_min_temp: number;
+  measured_max_temp: number;
+  in_calibration: boolean;
+  estimated_expansion: number;
+  compensation_enabled: boolean;
+}
+
 export interface KlipperPrinterTmcState {
   mcu_phase_offset: number;
   phase_offset_position: number;
@@ -749,6 +760,8 @@ type KlipperPrinterSettingsBaseType =
 
     [key: `temperature_sensor ${Lowercase<string>}`]: KlipperPrinterTemperatureSensorSettings;
 
+    [key: `temperature_probe ${Lowercase<string>}`]: KlipperPrinterTemperatureProbeSettings;
+
     safe_z_home: KlipperPrinterSafeZHomeSettings;
 
     z_tilt: KlipperPrinterZTiltSettings;
@@ -772,6 +785,8 @@ type KlipperPrinterSettingsBaseType =
     respond: KlipperPrinterRespondSettings;
 
     virtual_sdcard: KlipperPrinterVirtualSdcardSettings;
+
+    z_thermal_adjust: KlipperPrinterZThermalAdjustSettings;
 
     pause_resume: KlipperPrinterPauseResumeSettings;
 
@@ -834,19 +849,85 @@ export interface KlipperPrinterSettings extends KlipperPrinterSettingsBaseType {
   [key: string]: Record<string, any> | undefined;
 }
 
+interface KlipperPrinterCommonSpiSettingsBase {
+  spi_speed?: number;
+  spi_bus?: string;
+  spi_software_sclk_pin?: string;
+  spi_software_mosi_pin?: string;
+  spi_software_miso_pin?: string;
+}
+
+interface KlipperPrinterCommonI2cSettingsBase {
+  i2c_mcu?: string;
+  i2c_speed?: number;
+  i2c_address?: number;
+  i2c_bus?: string;
+  i2c_software_scl_pin?: string;
+  i2c_software_sda_pin?: string;
+}
+
+type KlipperPrinterSensorTypesType = {
+  common_thermistors: 'EPCOS 100K B57560G104F' | 'ATC Semitec 104GT-2' | 'ATC Semitec 104NT-4-R025H42G' | 'Generic 3950' | 'Honeywell 100K 135-104LAG-J01' | 'NTC 100K MGB18-104F39050L32' | 'SliceEngineering 450' | 'TDK NTCG104LH104JT1',
+  common_temperature_amplifiers: 'PT100 INA826' | 'AD595' | 'AD597' | 'AD8494' | 'AD8495' | 'AD8496' | 'AD8497'
+  pt100: 'PT1000',
+  maxxxxxx: 'MAX6675' | 'MAX31855' | 'MAX31856' | 'MAX31865',
+  bme280: 'BME280',
+  aht10: 'AHT10',
+  htu21d: 'HTU21D' | 'SI7013' | 'SI7020' | 'SI7021' | 'SHT21',
+  sht3x: 'SHT3X',
+  lm75: 'LM75',
+  temperature_mcu: 'temperature_mcu',
+  temperature_host: 'temperature_host',
+  ds18b20: 'DS18B20',
+  temperature_combined: 'temperature_combined',
+}
+
+export type KlipperPrinterSensorType = KlipperPrinterSensorTypesType[keyof KlipperPrinterSensorTypesType]
+
+interface KlipperPrinterTemperatureSensorSettingsBase extends KlipperPrinterCommonSpiSettingsBase, KlipperPrinterCommonI2cSettingsBase {
+  sensor_type: KlipperPrinterSensorType;
+  sensor_pin?: string;
+  sensor_mcu?: string;
+  min_temp: number;
+  max_temp: number;
+  gcode_id?: string;
+}
+
+interface KlipperPrinterHeaterSettingsBase extends KlipperPrinterTemperatureSensorSettingsBase {
+  min_extrude_temp: number;
+  max_power: number;
+  smooth_time: number;
+  heater_pin: string;
+  pwm_cycle_time: number;
+  control: 'watermark' | 'pid' | 'pid-v' | 'mpc';
+  max_delta?: number;
+  pid_kp?: number;
+  pid_ki?: number;
+  pid_kd?: number;
+  pid_version?: number;
+}
+
+interface KlipperPrinterStepperSettingsBase {
+  step_pin: string;
+  dir_pin: string;
+  rotation_distance: number;
+  microsteps: number;
+  full_steps_per_rotation: number;
+  gear_ratio: [number, number][];
+  enable_pin: string;
+}
+
 export interface KlipperPrinterMcuSettings {
   serial: string;
   baud?: number;
-  restart_method?: string;
+  restart_method?: 'arduino' | 'cheetah' | 'rpi_usb' | 'command';
   max_stepper_error: number;
   is_non_critical?: boolean;
   reconnect_interval?: number;
 }
 
-export interface KlipperPrinterTmcSettings {
+export interface KlipperPrinterTmcSettings extends KlipperPrinterCommonSpiSettingsBase {
   cs_pin: string;
-  spi_speed: number;
-  spi_bus: string;
   rref: number;
   run_current: number;
   hold_current: number;
@@ -924,18 +1005,18 @@ export interface KlipperPrinterLedSettings {
   initial_white: number;
 }
 
-export interface KlipperPrinterTemperatureSensorSettings {
-  sensor_type: string;
-  pullup_resistor?: number;
-  inline_resistor?: number;
-  sensor_mcu?: string;
-  i2c_mcu?: string;
-  i2c_speed?: number;
-  i2c_address?: number;
-  i2c_bus?: string;
-  min_temp: number;
-  max_temp: number;
-  gcode_id?: string;
+export interface KlipperPrinterTemperatureSensorSettings extends KlipperPrinterTemperatureSensorSettingsBase {
+}
+
+export interface KlipperPrinterTemperatureProbeSettings extends KlipperPrinterTemperatureSensorSettingsBase {
+  speed?: number;
+  horizontal_move_z: number;
+  resting_z: number;
+  calibration_position?: [number, number, number];
+  calibration_bed_temp?: number;
+  calibration_extruder_temp?: number;
+  extruder_heating_z: number;
+  smooth_time: number;
 }
 
 export interface KlipperPrinterSafeZHomeSettings {
@@ -967,7 +1048,7 @@ export interface KlipperPrinterBedMeshSettings {
   mesh_min: [number, number];
   mesh_max: [number, number];
   mesh_pps: [number, number];
-  algorithm: string;
+  algorithm: 'lagrange' | 'bicubic';
   bicubic_tension?: number;
   scan_overshoot?: 0;
   zero_reference_position: [number, number];
@@ -1013,7 +1094,7 @@ export interface KlipperPrinterBedScrewsSettings {
 export interface KlipperPrinterScrewsTiltAdjustSettings {
   [key: `screw${number}`]: [number, number] | undefined;
   [key: `screw${number}_name`]: string | undefined;
-  screw_thread: string;
+  screw_thread: 'CW-M3' | 'CCW-M3' | 'CW-M4' | 'CCW-M4' | 'CW-M5' | 'CCW-M5' | 'CW-M8' | 'CCW-M8';
   horizontal_move_z: number;
   speed: number;
   adaptive_horizontal_move_z?: boolean;
@@ -1050,6 +1131,13 @@ export interface KlipperPrinterVirtualSdcardSettings {
   with_subdirs?: boolean;
 }
 
+export interface KlipperPrinterZThermalAdjustSettings extends KlipperPrinterTemperatureSensorSettingsBase {
+  temp_coeff: number;
+  z_adjust_off_above: number;
+  max_z_adjustment: number;
+  smooth_time: number;
+}
+
 export interface KlipperPrinterPauseResumeSettings {
   recover_velocity: number;
 }
@@ -1067,41 +1155,10 @@ export interface KlipperPrinterGcodeMacroSettings {
   [key: `variable_${string}`]: string | undefined;
 }
 
-export interface KlipperPrinterHeaterBedSettings {
-  sensor_type: string;
-  pullup_resistor: number;
-  inline_resistor: number;
-  sensor_pin: string;
-  min_temp: number;
-  max_temp: number;
-  min_extrude_temp: number;
-  max_power: number;
-  smooth_time: number;
-  control: string;
-  max_delta?: number;
-  pid_kp: number;
-  pid_ki: number;
-  pid_kd: number;
-  heater_pin: string;
-  pwm_cycle_time: number;
-  pid_version?: number;
+export interface KlipperPrinterHeaterBedSettings extends KlipperPrinterHeaterSettingsBase {
 }
 
-export interface KlipperPrinterHeaterGenericSettings {
-  sensor_type: string;
-  pullup_resistor: number;
-  inline_resistor: number;
-  sensor_pin: string;
-  min_temp: number;
-  max_temp: number;
-  min_extrude_temp: number;
-  max_power: number;
-  smooth_time: number;
-  control: string;
-  max_delta?: number;
-  heater_pin: string;
-  pwm_cycle_time: number;
-  pid_version?: number;
+export interface KlipperPrinterHeaterGenericSettings extends KlipperPrinterHeaterSettingsBase {
 }
 
 export interface KlipperPrinterVerifyHeaterSettings {
@@ -1168,12 +1225,9 @@ export interface KlipperPrinterSmartEffectorSettings {
   samples_tolerance_retries: number;
 }
 
-export interface KlipperPrinterProbeEddyCurrentSettings {
-  sensor_type: string;
+export interface KlipperPrinterProbeEddyCurrentSettings extends KlipperPrinterCommonI2cSettingsBase {
+  sensor_type: 'ldc1612';
   reg_drive_current: number;
-  i2c_mcu: string;
-  i2c_speed: number;
-  i2c_address: number;
   x_offset: number;
   y_offset: number;
   z_offset: number;
@@ -1186,18 +1240,22 @@ export interface KlipperPrinterProbeEddyCurrentSettings {
   samples_tolerance_retries: number;
 }
 
+export type KlipperPrinterInputShaperType = 'zv' | 'mzv' | 'zvd' | 'ei' | '2hump_ei' | '3hump_ei'
+
 export interface KlipperPrinterInputShaperSettings {
-  shaper_type: string;
-  shaper_type_x: string;
+  shaper_type: KlipperPrinterInputShaperType;
+  shaper_type_x: KlipperPrinterInputShaperType;
   damping_ratio_x: number;
   shaper_freq_x: number;
-  shaper_type_y: string;
+  shaper_type_y: KlipperPrinterInputShaperType;
   damping_ratio_y: number;
   shaper_freq_y: number;
 }
 
+export type KlipperPrinterPrinterKinematicsType = 'cartesian' | 'delta' | 'deltesian' | 'corexy' | 'corexz' | 'hybrid_corexy' | 'hybrid_corexz' | 'polar' | 'rotary_delta' | 'winch' | 'none' | 'limited_cartesian' | 'limited_corexy' | 'limited_corexz'
+
 export interface KlipperPrinterPrinterSettings {
-  kinematics: string;
+  kinematics: KlipperPrinterPrinterKinematicsType;
   max_velocity: number;
   max_accel: number;
   minimum_cruise_ratio?: number;
@@ -1208,14 +1266,7 @@ export interface KlipperPrinterPrinterSettings {
   max_accel_to_decel?: number;
 }
 
-export interface KlipperPrinterStepperSettings {
-  step_pin: string;
-  dir_pin: string;
-  rotation_distance: number;
-  microsteps: number;
-  full_steps_per_rotation: number;
-  gear_ratio: [number, number][];
-  enable_pin: string;
+export interface KlipperPrinterStepperSettings extends KlipperPrinterStepperSettingsBase {
   endstop_pin: string;
   position_endstop: number;
   position_min?: number;
@@ -1231,17 +1282,10 @@ export interface KlipperPrinterStepperSettings {
   min_home_dist?: number;
 }
 
-export interface KlipperPrinterExtruderStepperSettings {
+export interface KlipperPrinterExtruderStepperSettings extends KlipperPrinterStepperSettingsBase {
   pressure_advance: number;
   pressure_advance_smooth_time: number;
-  step_pin: string;
-  dir_pin: string;
-  rotation_distance: number;
-  microsteps: number;
-  full_steps_per_rotation: number;
-  gear_ratio: [number, number][];
-  enable_pin: string;
-  extruder?: string | null;
+  extruder?: ExtruderKey | null;
 }
 
 export interface KlipperPrinterIdleTimeoutSettings {
@@ -1249,23 +1293,7 @@ export interface KlipperPrinterIdleTimeoutSettings {
   gcode: string;
 }
 
-export interface KlipperPrinterExtruderSettings {
-  sensor_type: string;
-  pullup_resistor: number;
-  inline_resistor: number;
-  sensor_pin: string;
-  min_temp: number;
-  max_temp: number;
-  min_extrude_temp: number;
-  max_power: number;
-  smooth_time: number;
-  control: string;
-  max_delta?: number;
-  pid_kp?: number;
-  pid_ki?: number;
-  pid_kd?: number;
-  heater_pin: string;
-  pwm_cycle_time: number;
+export interface KlipperPrinterExtruderSettings extends KlipperPrinterHeaterSettingsBase, KlipperPrinterStepperSettingsBase {
   nozzle_diameter: number;
   filament_diameter: number;
   max_extrude_cross_section: number;
@@ -1273,16 +1301,8 @@ export interface KlipperPrinterExtruderSettings {
   max_extrude_only_accel: number;
   max_extrude_only_distance: number;
   instantaneous_corner_velocity: number;
-  step_pin: string;
   pressure_advance: number;
   pressure_advance_smooth_time: number;
-  dir_pin: string;
-  rotation_distance: number;
-  microsteps: number;
-  full_steps_per_rotation: number;
-  gear_ratio: [number, number][];
-  enable_pin: string;
-  pid_version?: number;
   per_move_pressure_advance?: boolean;
 }
 
@@ -1299,19 +1319,14 @@ export interface KlipperPrinterDisplayTemplateSettings {
   text: string;
 }
 
-export interface KlipperPrinterLoadCellSettings {
-  sensor_type: string;
+export interface KlipperPrinterLoadCellSettings extends KlipperPrinterCommonSpiSettingsBase {
+  sensor_type: 'hx711' | 'hx717' | 'ads1220';
   counts_per_gram?: number;
   reference_tare_counts?: number;
   sensor_orientation: 'normal' | 'inverted';
   dout_pin?: string;
   sclk_pin?: string;
   cs_pin?: string;
-  spi_speed?: number;
-  spi_bus?: string;
-  spi_software_sclk_pin?: string;
-  spi_software_mosi_pin?: string;
-  spi_software_miso_pin?: string;
   data_ready_pin?: string;
   sample_rate?: number;
   gain?: string;

@@ -417,19 +417,19 @@ export const getters = {
 
     const stepperKeys = state.printer.motion_report?.steppers ?? []
 
-    for (const item of stepperKeys) {
-      const name = item.startsWith('stepper_')
-        ? item.substring(8)
-        : item.split(' ', 2).pop() || ''
+    for (const key of stepperKeys) {
+      const name = key.startsWith('stepper_')
+        ? key.substring(8)
+        : key.split(' ', 2).pop() || ''
 
-      const e = state.printer[item]
-      const config = state.printer.configfile.settings[item.toLowerCase()]
+      const e = state.printer[key]
+      const config = state.printer.configfile.settings[key.toLowerCase()]
 
       steppers.push({
         name,
         prettyName: Vue.$filters.prettyCase(name),
-        key: item,
-        enabled: state.printer.stepper_enable?.steppers[item],
+        key,
+        enabled: state.printer.stepper_enable?.steppers[key],
         ...e,
         config
       })
@@ -458,27 +458,20 @@ export const getters = {
   },
 
   getRunoutSensors: (state): RunoutSensor[] => {
-    const supportedSensors = [
-      'filament_switch_sensor',
-      'filament_motion_sensor'
-    ] as const
+    return Object.keys(state.printer)
+      .filter(key => (
+        key.startsWith('filament_switch_sensor ') ||
+        key.startsWith('filament_motion_sensor ')
+      ))
+      .map(key => {
+        const name = key.split(' ', 2).pop() || ''
 
-    const sensors: RunoutSensor[] = []
-
-    for (const item in state.printer) {
-      const [type, nameFromSplit] = item.split(' ', 2)
-
-      if (supportedSensors.includes(type)) {
-        const name = nameFromSplit ?? item
-
-        sensors.push({
-          ...state.printer[item],
+        return {
+          ...state.printer[key],
           name,
           prettyName: Vue.$filters.prettyCase(name),
-        })
-      }
-    }
-    return sensors
+        }
+      })
   },
 
   getEndstops: (state): Endstop[] => {
@@ -537,16 +530,8 @@ export const getters = {
       if (heater && Object.keys(heater).length > 0) {
         const config = state.printer.configfile.settings[key.toLowerCase()]
 
-        // Some heater items may have a prefix determining type.
-        // Check for these and split as necessary.
-        const prefixedTypes = [
-          'heater_generic'
-        ]
-
         const [type, nameFromSplit] = key.split(' ', 2)
-        const name = nameFromSplit && prefixedTypes.includes(type)
-          ? nameFromSplit
-          : key
+        const name = nameFromSplit ?? key
 
         const color = Vue.$colorset.next(getKlipperType(key), key)
         const prettyName = Vue.$filters.prettyCase(name)
@@ -701,9 +686,9 @@ export const getters = {
 
     const pins: Array<Fan | Led | OutputPin> = []
 
-    for (const pin in state.printer) {
-      const [type, nameFromSplit] = pin.split(' ', 2)
-      const name = nameFromSplit ?? pin
+    for (const key in state.printer) {
+      const [type, nameFromSplit] = key.split(' ', 2)
+      const name = nameFromSplit ?? key
 
       if (
         supportedTypes.includes(type) &&
@@ -714,18 +699,18 @@ export const getters = {
           : Vue.$filters.prettyCase(name)
 
         const color = (applyColor.includes(type))
-          ? Vue.$colorset.next(getKlipperType(pin), pin)
+          ? Vue.$colorset.next(getKlipperType(key), key)
           : undefined
 
-        const config = state.printer.configfile.settings[pin.toLowerCase()]
+        const config = state.printer.configfile.settings[key.toLowerCase()]
 
         let output: Fan | Led | OutputPin = {
-          ...state.printer[pin],
+          ...state.printer[key],
           ...getters.getExtraSensorData(config?.sensor_type?.toLowerCase(), name),
           config: { ...config },
           name,
           prettyName,
-          key: pin,
+          key,
           color,
           type,
           controllable: (controllable.includes(type))
@@ -760,23 +745,21 @@ export const getters = {
    * Return available temperature probes / sensors.
    */
   getSensors: (state, getters): Sensor[] => {
-    const supportedSensors = [
-      'temperature_sensor',
-      'temperature_probe',
-      'tmc2240',
-      'z_thermal_adjust'
-    ] as const
-    const supportedDrivers = [
-      'tmc2240'
-    ] as const
+    const klippyApp: KlippyApp = getters.getKlippyApp
 
     const sensors = Object.keys(state.printer)
-      .reduce<Record<string, Sensor>>((groups, item) => {
-        const [type, nameFromSplit] = item.split(' ', 2)
-        const name = nameFromSplit ?? item
+      .filter(key => (
+        key.startsWith('temperature_sensor ') ||
+        key.startsWith('temperature_probe ') ||
+        key.startsWith('tmc2240 ') ||
+        key === 'z_thermal_adjust'
+      ))
+      .reduce<Record<string, Sensor>>((groups, key) => {
+        const [type, nameFromSplit] = key.split(' ', 2)
+        const name = nameFromSplit ?? key
 
-        if (supportedSensors.includes(type) && !name.startsWith('_')) {
-          const prettyName = supportedDrivers.includes(type)
+        if (!name.startsWith('_')) {
+          const prettyName = type === 'tmc2240'
             ? i18n.t('app.general.label.stepper_driver',
               {
                 name:
@@ -785,17 +768,44 @@ export const getters = {
                     : Vue.$filters.prettyCase(name)
               }).toString()
             : Vue.$filters.prettyCase(name)
-          const color = Vue.$colorset.next(getKlipperType(item), item)
-          const config = state.printer.configfile.settings[item.toLowerCase()]
+          const color = Vue.$colorset.next(getKlipperType(key), key)
+          const config = state.printer.configfile.settings[key.toLowerCase()]
+
+          const mcu = (
+            klippyApp.isKalico &&
+            config != null &&
+            (
+              (
+                'i2c_mcu' in config &&
+                config.i2c_mcu
+              ) ||
+              (
+                'sensor_mcu' in config &&
+                config.sensor_mcu
+              ) ||
+              (
+                'sensor_pin' in config &&
+                config.sensor_pin?.includes(':') &&
+                config.sensor_pin.split(':')[0]
+              )
+            )
+          )
+
+          const kalicoTemperatureOverride = mcu && mcu !== 'mcu' && state.printer[`mcu ${mcu}`]?.non_critical_disconnected
+            ? {
+                temperature: null
+              }
+            : null
 
           groups[name] = {
-            ...state.printer[item],
-            ...getters.getExtraSensorData(config?.sensor_type?.toLowerCase(), name),
+            ...state.printer[key],
+            ...kalicoTemperatureOverride,
+            ...getters.getExtraSensorData(config && 'sensor_type' in config && config.sensor_type?.toLowerCase(), name),
             config: { ...config },
-            minTemp: config?.min_temp ?? null,
-            maxTemp: config?.max_temp ?? null,
+            minTemp: config && 'min_temp' in config ? config.min_temp ?? null : null,
+            maxTemp: config && 'max_temp' in config ? config.max_temp ?? null : null,
             name,
-            key: item,
+            key,
             prettyName,
             color,
             type
@@ -810,19 +820,19 @@ export const getters = {
   },
 
   getExtraSensorData: (state) => (sensorType: string, name: string) => {
-    const supportedSensors = [
-      'aht10',
-      'bme280',
-      'htu21d',
-      'sht21',
-      'sht3x',
-      'si7013',
-      'si7020',
-      'si7021',
-    ] as const
+    const supportedSensors = {
+      aht10: 'aht10',
+      bme280: 'bme280',
+      htu21d: 'htu21d',
+      sht21: 'htu21d',
+      sht3x: 'sht3x',
+      si7013: 'htu21d',
+      si7020: 'htu21d',
+      si7021: 'htu21d',
+    } as const
 
-    if (supportedSensors.includes(sensorType)) {
-      const sensor = state.printer[`${sensorType} ${name}`]
+    if (isKeyOf(sensorType, supportedSensors)) {
+      const sensor = state.printer[`${supportedSensors[sensorType]} ${name}`]
 
       if (sensor) {
         const { pressure, humidity, gas } = sensor
@@ -857,16 +867,17 @@ export const getters = {
 
     const printerKeys = Object.keys(state.printer)
 
-    const sensors = keyGroups.flatMap(keyGroup => {
-      const keyGroupRegExpArray = keyGroup
-        .map(x => new RegExp(`^${x}(?! _)`))
+    const sensors = keyGroups
+      .flatMap(keyGroup => {
+        const keyGroupRegExpArray = keyGroup
+          .map(x => new RegExp(`^${x}(?! _)`))
 
-      return printerKeys
-        .filter(key => keyGroupRegExpArray.some(x => x.test(key)))
-        .sort((a, b) => a.localeCompare(b))
-    })
+        return printerKeys
+          .filter(key => keyGroupRegExpArray.some(x => x.test(key)))
+          .sort((a, b) => a.localeCompare(b))
+      })
 
-    const heaters: string[] = [...state.printer.heaters?.available_heaters ?? []]
+    const heaters = [...state.printer.heaters?.available_heaters ?? []]
       .sort((a, b) => a.localeCompare(b))
 
     return [
