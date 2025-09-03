@@ -29,7 +29,7 @@
               <small
                 v-if="screw.relativeZ"
                 class="secondary--text"
-              >({{ screw.relativeZ.toFixed(4) }})</small>
+              >({{ `${screw.relativeZ < 0 ? '' : '+'}${screw.relativeZ.toFixed(4)}` }})</small>
               {{ screw.z.toFixed(4) }}
             </td>
             <td class="text-right">
