@@ -99,6 +99,7 @@
     "sass": "~1.32.13",
     "skott": "^0.35.4",
     "standard-version": "^9.5.0",
+    "svgo": "^4.0.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.41.0",
     "unplugin-vue-components": "^29.0.0",
