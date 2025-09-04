@@ -1532,6 +1532,7 @@ export interface ScrewsTiltAdjustScrew {
   name: string;
   prettyName: string;
   adjustMinutes: number;
+  relativeZ?: number;
   x: number;
   y: number;
   z: number;
