@@ -1,5 +1,13 @@
-FILES_TO_LINT=$(git diff --cached --name-only --diff-filter=ACM | grep -iE "\.(js|jsx|mjs|ts|tsx|vue)$" || true)
+FILES_TO_LINT=$(git diff --cached --name-only --diff-filter=ACMR | grep -iE "\.(js|jsx|mjs|ts|tsx|vue)$" || true)
 
 if [ -n "$FILES_TO_LINT" ]; then
   npx --no eslint -- --max-warnings 0 $FILES_TO_LINT
+fi
+
+SVG_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -iE "\.(svg)$" || true)
+
+if [ -n "$SVG_FILES" ]; then
+  npx --no svgo -- -q $SVG_FILES
+
+  git update-index --again
 fi

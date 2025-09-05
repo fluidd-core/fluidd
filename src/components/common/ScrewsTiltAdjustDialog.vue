@@ -26,6 +26,10 @@
               <small class="secondary--text">{{ `X = ${screw.x}, Y = ${screw.y}` }}</small>
             </td>
             <td class="focus--text text-right">
+              <small
+                v-if="screw.relativeZ"
+                class="secondary--text"
+              >({{ `${screw.relativeZ < 0 ? '' : '+'}${screw.relativeZ.toFixed(4)}` }})</small>
               {{ screw.z.toFixed(4) }}
             </td>
             <td class="text-right">

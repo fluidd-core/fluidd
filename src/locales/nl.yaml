@@ -46,8 +46,9 @@ app:
       hide_temp_waits: Verberg temperatuurwachten
       flip_layout: Layout omdraaien
     tooltip:
-      help: Typ "help" voor commando's<br />Gebruik <kbd>Tab</kbd>voor automatisch
-        aanvullen<br />Gebruik <kbd>&uarr;</kbd> en<kbd>&darr;</kbd> voor geschiedenis
+      help: Typ "help" voor commando's<br />Gebruik <kbd>Tab</kbd>voor 
+        automatisch aanvullen<br />Gebruik <kbd>&uarr;</kbd> en<kbd>&darr;</kbd>
+        voor geschiedenis
   endpoint:
     error:
       cant_connect: >-
@@ -83,7 +84,8 @@ app:
         hidden_files: Filter verborgen bestanden en mappen
         moonraker_backup_files: Filter Moonraker backup bestanden
         crowsnest_backup_files: Filter Crowsnest backup bestanden
-        moonraker_temporary_upload_files: Filter tijdelijke uploadbestanden van Moonraker
+        moonraker_temporary_upload_files: Filter tijdelijke uploadbestanden van 
+          Moonraker
     label:
       dir_name: Mapnaam
       disk_usage: Schijfgebruik
@@ -114,14 +116,18 @@ app:
       root_disabled: '{root} is niet beschikbaar. Controleer je logs.'
       items_count: '{count} item | {count} items'
     overlay:
-      drag_files_enqueue: <strong>Sleep</strong> bestanden hier om in rij te zetten
-      drag_files_folders_upload: <strong>Sleep</strong> bestanden en mappen hierheen
-        voor upload
+      drag_files_enqueue: <strong>Sleep</strong> bestanden hier om in rij te 
+        zetten
+      drag_files_folders_upload: <strong>Sleep</strong> bestanden en mappen 
+        hierheen voor upload
     url:
-      moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
-      moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
+      moonraker_telegram_bot_config: 
+        https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
+      moonraker_config: 
+        https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
       klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
-      crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
+      crowsnest_config: 
+        https://crowsnest.mainsail.xyz/configuration/%{hash}-section
   gcode:
     btn:
       load_current_file: Laad huidig bestand
@@ -240,8 +246,8 @@ app:
       failed_components: >-
         Moonraker heeft falende plugins, controleer je logs, update je
         configuratie en herstart moonraker.
-      printer_powered_off: De printer is momenteel uitgeschakeld.<br/><br/> Om de
-        printer in te schakelen, klik A.U.B. op de knop aan de linkerzijde.
+      printer_powered_off: De printer is momenteel uitgeschakeld.<br/><br/> Om 
+        de printer in te schakelen, klik A.U.B. op de knop aan de linkerzijde.
     label:
       accel_to_decel: Vertragingssnelheid
       acceleration: Versnelling
@@ -331,8 +337,8 @@ app:
       partial_of_total: '%{partial} van %{total}'
       manage_accounts: Beheer Accounts
       moonraker: Moonraker
-      heaters_busy: De printer is momenteel bezig. Uitschakelen van de heaters kan
-        resulteren in een mislukte print.
+      heaters_busy: De printer is momenteel bezig. Uitschakelen van de heaters 
+        kan resulteren in een mislukte print.
       ldap: LDAP
       apply_z_offset: Toepassen en Opslaan Z_Offset
       unsaved_changes: Niet Opgeslagen Wijzigingen
@@ -354,13 +360,14 @@ app:
       password_changed: Wachtwoord aangepast
       wrong_password: Oeps! Er is iets fout gegaan, klopt je wachtwoord wel?
       offline_ready: Fluidd is nu klaar om offline te werken.
-      bed_screws_adjust: Klik <b>Aangepast</b> als een significante aanpassing nodig
-        is voor de huidige schroef; anders, klik <b>Accepteer</b> om door te gaan.
+      bed_screws_adjust: Klik <b>Aangepast</b> als een significante aanpassing 
+        nodig is voor de huidige schroef; anders, klik <b>Accepteer</b> om door 
+        te gaan.
       welcome_back: Welkom terug.<br>Log hieronder in om je printer te beheren.
-      pending_configuration_sections_deleted: De volgende secties zijn gemarkeerd
-        om te verwijderen
-      needs_refresh: Nieuwe content beschikbaar, klik op de <b>Herladen</b> knop om
-        te updaten.
+      pending_configuration_sections_deleted: De volgende secties zijn 
+        gemarkeerd om te verwijderen
+      needs_refresh: Nieuwe content beschikbaar, klik op de <b>Herladen</b> knop
+        om te updaten.
       not_valid_fluidd_backup_file: Niet een geldig Fluidd backup bestand!
       fluidd_settings_backup_failed: Backup Fluidd instellingen mislukt!
       fluidd_settings_restore_failed: Herstellen Fluidd instellingen mislukt!
@@ -380,37 +387,48 @@ app:
         invalid_aspect: Incorrect Aspect Ratio
       msg:
         confirm: Weet je dit zeker?
-        confirm_reboot_host: Weet je dit zeker? Hierdoor zal je host systeem herstarten.
-        confirm_shutdown_host: Weet je dit zeker? Hierdoor zal je host systeem afsluiten.
-        unsaved_changes: Er zijn niet opgeslagen wijzigingen. Weet je zeker dat je
-          dit bestand wilt sluiten?
-        confirm_forcemove_toggle: Weet je het zeker? Dit kan de printer beschadigen.
-        confirm_service_stop: Weet je zeker dat je de %{name} service wilt stoppen?
-        confirm_service_start: Weet je zeker dat je de %{name} service wilt starten?
-        confirm_service_restart: Weet je zeker dat je de %{name} service wilt herstarten?
-        confirm_exclude_object: Weet je zeker dat je dit object wilt uitsluiten voor
-          printen?
-        confirm_power_device_toggle: Weet je het zeker? Dit schakelt de stroom van
-          het apparaat aan of uit.
-        confirm_delete: Weet je het zeker? Dit zal het geselecteerde item verwijderen.
-          | Weet je het zeker? Dit zal de {count} geselecteerde items verwijderen.
+        confirm_reboot_host: Weet je dit zeker? Hierdoor zal je host systeem 
+          herstarten.
+        confirm_shutdown_host: Weet je dit zeker? Hierdoor zal je host systeem 
+          afsluiten.
+        unsaved_changes: Er zijn niet opgeslagen wijzigingen. Weet je zeker dat 
+          je dit bestand wilt sluiten?
+        confirm_forcemove_toggle: Weet je het zeker? Dit kan de printer 
+          beschadigen.
+        confirm_service_stop: Weet je zeker dat je de %{name} service wilt 
+          stoppen?
+        confirm_service_start: Weet je zeker dat je de %{name} service wilt 
+          starten?
+        confirm_service_restart: Weet je zeker dat je de %{name} service wilt 
+          herstarten?
+        confirm_exclude_object: Weet je zeker dat je dit object wilt uitsluiten 
+          voor printen?
+        confirm_power_device_toggle: Weet je het zeker? Dit schakelt de stroom 
+          van het apparaat aan of uit.
+        confirm_delete: Weet je het zeker? Dit zal het geselecteerde item 
+          verwijderen. | Weet je het zeker? Dit zal de {count} geselecteerde 
+          items verwijderen.
         no_file_preview: '%{name} kan momenteel geen voorvertoning laten zien.'
-        confirm_remove_user: Weet je zeker dat je gebruiker %{username} wilt verwijderen?
-        confirm_cancel_print: Weet je zeker dat je de huidige print wilt annuleren?
-        confirm_clear_mesh: De printer is momenteel bezig. Weet je zeker dat je de
-          bed mesh wilt legen?
-        confirm_load_bedmesh_profile: De printer is momenteel bezig. Weet je zeker
-          dat je profiel %{name} wilt laden?
-        confirm_remove_console_filter: Weet je zeker dat je de console filter %{name}
-          wilt verwijderen?
-        confirm_remove_camera: Weet je zeker dat je de camera %{name} wilt verwijderen?
-        confirm_remove_macro_category: Weet je zeker dat je de macro categorie %{name}
-          wilt verwijderen?
-        confirm_remove_printer: Weet je zeker dat je de printer %{name} wilt verwijderen?
-        confirm_remove_thermal_preset: Weet je zeker dat je de thermal preset %{name}
-          wilt verwijderen?
-        confirm_change_beacon_model: De printer is momenteel bezig. Weet je zeker
-          dat je het beacon model wilt wijzigen?
+        confirm_remove_user: Weet je zeker dat je gebruiker %{username} wilt 
+          verwijderen?
+        confirm_cancel_print: Weet je zeker dat je de huidige print wilt 
+          annuleren?
+        confirm_clear_mesh: De printer is momenteel bezig. Weet je zeker dat je 
+          de bed mesh wilt legen?
+        confirm_load_bedmesh_profile: De printer is momenteel bezig. Weet je 
+          zeker dat je profiel %{name} wilt laden?
+        confirm_remove_console_filter: Weet je zeker dat je de console filter 
+          %{name} wilt verwijderen?
+        confirm_remove_camera: Weet je zeker dat je de camera %{name} wilt 
+          verwijderen?
+        confirm_remove_macro_category: Weet je zeker dat je de macro categorie 
+          %{name} wilt verwijderen?
+        confirm_remove_printer: Weet je zeker dat je de printer %{name} wilt 
+          verwijderen?
+        confirm_remove_thermal_preset: Weet je zeker dat je de thermal preset 
+          %{name} wilt verwijderen?
+        confirm_change_beacon_model: De printer is momenteel bezig. Weet je 
+          zeker dat je het beacon model wilt wijzigen?
     table:
       header:
         actions: Acties
@@ -484,15 +502,17 @@ app:
     tooltip:
       estop: Noodstop
       reload_klipper: Herlaad de klipper configuratie.
-      reload_restart_klipper: Herlaad de klipper configuratie en herstart de MCUs.
+      reload_restart_klipper: Herlaad de klipper configuratie en herstart de 
+        MCUs.
       restart_klipper: Start klipper opnieuw op.
       notifications: Notificaties
-      file_browser_configuration_help: Kopieer bestanden en mappen naar de Configuratie
-        Bestanden door ze vanaf hier daar naartoe te slepen
+      file_browser_configuration_help: Kopieer bestanden en mappen naar de 
+        Configuratie Bestanden door ze vanaf hier daar naartoe te slepen
       managed_by_moonraker: Beheerd door je moonraker configuratie
       run_collector: Uitvoeren collector
-      file_browser_help: Sleep bestanden of mappen hier in de browser om deze up te
-        loaden<br>Verplaats bestanden en mappen door ze op submappen of ".." te slepen
+      file_browser_help: Sleep bestanden of mappen hier in de browser om deze up
+        te loaden<br>Verplaats bestanden en mappen door ze op submappen of ".." 
+        te slepen
       browse_metrics: Bekijk beschikbare statistieken
       exit_layout: Sluit layout modus
   printer:
@@ -568,13 +588,15 @@ app:
       show_chart: Toon grafiek
       auto_load_on_print_start: Laad bestand automatisch bij start printen
       none: Geen
-      show_bed_screws_adjust_dialog_automatically: Toon Bed Screws Aanpassen venster
-        automatisch
-      auto_edit_extensions: Extensies die automatisch worden geopend in edit mode
+      show_bed_screws_adjust_dialog_automatically: Toon Bed Screws Aanpassen 
+        venster automatisch
+      auto_edit_extensions: Extensies die automatisch worden geopend in edit 
+        mode
       height: Hoogte
-      confirm_dirty_editor_close: Vraag om bevestiging als de editor word gesloten
-        met niet opgeslagen wijzigingen
-      confirm_on_power_device_change: Vraag voor bevestiging als Device Power wijzigt
+      confirm_dirty_editor_close: Vraag om bevestiging als de editor word 
+        gesloten met niet opgeslagen wijzigingen
+      confirm_on_power_device_change: Vraag voor bevestiging als Device Power 
+        wijzigt
       show_barometric_pressure: Toon barometrische druk
       line_color: Lijn kleur
       optional: Optioneel
@@ -600,9 +622,11 @@ app:
       default_min_layer_height: Standaard minimum laag hoogte
       to_browser_session_storage: Naar browser sessie storage
       fill_color: Vul kleur
-      auto_load_mobile_on_print_start: Laad bestand automatisch op mobiele apparaten
+      auto_load_mobile_on_print_start: Laad bestand automatisch op mobiele 
+        apparaten
       date_format: Datum formaat
-      show_manual_probe_dialog_automatically: Toon Manual Probe venster automatisch
+      show_manual_probe_dialog_automatically: Toon Manual Probe venster 
+        automatisch
       toolhead_xy_move_distances: Toolhead XY afstandswaarden
       show_logo_on_background: Toon logo op achtergrond
       camera_rotate_by: Roteer met
@@ -624,11 +648,12 @@ app:
       axes: Assen
       auto_follow_on_file_load: Voortgang automatisch volgen na laden bestand
       aspect_ratio: Aspectverhouding
-      drag_and_drop_functionality_for_files_and_folders: Drag-and-drop functionaliteit
-        voor bestanden en mappen
-      show_save_config_and_restart: Configuratie Opslaan en Herstarten knop in top
-        navigatie
-      force_move_toggle_warning: Confirmatie vereist wanneer FORCE_MOVE wordt geactiveerd
+      drag_and_drop_functionality_for_files_and_folders: Drag-and-drop 
+        functionaliteit voor bestanden en mappen
+      show_save_config_and_restart: Configuratie Opslaan en Herstarten knop in 
+        top navigatie
+      force_move_toggle_warning: Confirmatie vereist wanneer FORCE_MOVE wordt 
+        geactiveerd
       print_eta_calculation: Print ETA berekening
       firmware_restart: Firmware Herstart
       host_restart: Host Herstart
@@ -652,7 +677,8 @@ app:
       tool: Werktuig
       console: Console
     tooltip:
-      gcode_coords: Gebruik GCode positie in plaats van toolhead positie op het dashboard
+      gcode_coords: Gebruik GCode positie in plaats van toolhead positie op het 
+        dashboard
     camera_rotate_options:
       none: Geen
       '90': 90°
@@ -738,13 +764,15 @@ app:
       package_list: Pakketlijst
       up_to_date: UP TO DATE
       updates_available: Updates zijn beschikbaar
+      packages: '{count} pakket | {count} pakketten'
     status:
       finished: Updates klaar
       updating: Updaten...
     title: Software Updates
     tooltip:
       commit_history: Commit geschiedenis
-      dirty: Of je head is detached, niet op de master of ergens een invalide origine
+      dirty: Of je head is detached, niet op de master of ergens een invalide 
+        origine
       invalid: duidt op lokale veranderingen in je repo
       packages: Pakketten
       release_notes: Release notities
@@ -780,12 +808,12 @@ app:
       active_spool: Actieve Spool
     setting:
       auto_open_qr_camera: Open camera automatisch voor QR code detectie
-      warn_on_not_enough_filament: Toon een waarschuwing als de geselecteerde spoel
-        niet genoeg filament bevat om de print te kunnen voltooien
-      show_spool_selection_dialog_on_print_start: Toon spoel selectie venster bij
-        starten print
-      warn_on_filament_type_mismatch: Toon een waarschuwing als het type filament
-        van de spoel en slicer niet overeenkomen
+      warn_on_not_enough_filament: Toon een waarschuwing als de geselecteerde 
+        spoel niet genoeg filament bevat om de print te kunnen voltooien
+      show_spool_selection_dialog_on_print_start: Toon spoel selectie venster 
+        bij starten print
+      warn_on_filament_type_mismatch: Toon een waarschuwing als het type 
+        filament van de spoel en slicer niet overeenkomen
       card_fields: Velden om te tonen in de Spoolman kaart
       remaining_filament_unit: Toon resterende filament als
     btn:
@@ -793,35 +821,36 @@ app:
       manage_spools: Beheer Spoelen
       select: Selecteer | Selecteer voor {macro}
     msg:
-      no_filament: De spoel die je hebt geselecteerd heeft waarschijnlijk niet genoeg
-        filament meer om de print job te voltooien. Weet je zeker dat je door wilt
-        gaan?
+      no_filament: De spoel die je hebt geselecteerd heeft waarschijnlijk niet 
+        genoeg filament meer om de print job te voltooien. Weet je zeker dat je 
+        door wilt gaan?
       warning:
         invalid_spool_id: De spoel ID in deze QR code is incorrect.
         code_not_recognized: Deze code lijkt niet op een ondersteunde QR code.
-      no_required_length: De benodigde hoeveelheid filament om het geselecteerde bestand
-        te printen is onbekend. Weet je zeker dat je verder wilt gaan?
+      no_required_length: De benodigde hoeveelheid filament om het geselecteerde
+        bestand te printen is onbekend. Weet je zeker dat je verder wilt gaan?
       info:
-        howto: Toon de QR code van je spoel aan de camera. Het venster zal sluiten
-          zodra een spoel is gedetecteerd.
+        howto: Toon de QR code van je spoel aan de camera. Het venster zal 
+          sluiten zodra een spoel is gedetecteerd.
       error:
-        spool_not_existant: De spoel die je hebt gescand komt niet voor in de database.
-      no_spool: Je hebt geen spoel geselecteerd. Weet je zeker dat je wilt printen
-        zonder filament tracking?
-      mismatched_filament: Het materiaal van het geselecteerde filament past niet
-        bij het geselecteerde materiaal in de slicer. Weet je zeker dat je verder
-        wilt gaan?
-      tracking_inactive: Filament tracking is niet actief. Selecteer een spoel om
-        te beginnen.
+        spool_not_existant: De spoel die je hebt gescand komt niet voor in de 
+          database.
+      no_spool: Je hebt geen spoel geselecteerd. Weet je zeker dat je wilt 
+        printen zonder filament tracking?
+      mismatched_filament: Het materiaal van het geselecteerde filament past 
+        niet bij het geselecteerde materiaal in de slicer. Weet je zeker dat je 
+        verder wilt gaan?
+      tracking_inactive: Filament tracking is niet actief. Selecteer een spoel 
+        om te beginnen.
       not_connected: Spoolman server niet beschikbaar.
     title:
       scan_spool: Scan Spoel
       spool_selection: Spoel selectie | Spool selectie voor macro {macro}
   job_queue:
     tooltip:
-      help: Zet opdrachten in de wachtrij door bestanden vanuit Jobs hiernaartoe te
-        slepen<br>Pas de volgorde van de opdrachten in de wachtrij aan door ze naar
-        boven of beneden te slepen
+      help: Zet opdrachten in de wachtrij door bestanden vanuit Jobs hiernaartoe
+        te slepen<br>Pas de volgorde van de opdrachten in de wachtrij aan door 
+        ze naar boven of beneden te slepen
     msg:
       confirm: Weet je het zeker? Dit zal de gehele printer wachtrij wissen
     title:
@@ -860,8 +889,8 @@ app:
     msg:
       confirm_jobs: Weet je het zeker? Dit zal alle opdrachten verwijderen.
       confirm_stats: Weet je het zeker? Dit zal alle statistieken wissen.
-      confirm: Weet je het zeker? Dit zal alle geschiedenis en printer statistieken
-        wissen
+      confirm: Weet je het zeker? Dit zal alle geschiedenis en printer 
+        statistieken wissen
   keyboard_shortcuts:
     label:
       pause: Pauze

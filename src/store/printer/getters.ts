@@ -957,6 +957,14 @@ export const getters = {
       }
     }
 
+    const baseZ = screws.find(screw => screw.is_base)?.z
+
+    if (baseZ != null) {
+      for (const screw of screws) {
+        screw.relativeZ = screw.z - baseZ
+      }
+    }
+
     return {
       ...rest,
       screws

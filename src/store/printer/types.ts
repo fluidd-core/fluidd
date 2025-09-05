@@ -726,6 +726,7 @@ type KlipperPrinterMmuMachineStateBaseType = {
     filament_always_gripped: boolean;
     has_bypass: boolean;
     multi_gear: boolean;
+    environment_sensor?: string;
   };
 }
 
@@ -1531,6 +1532,7 @@ export interface ScrewsTiltAdjustScrew {
   name: string;
   prettyName: string;
   adjustMinutes: number;
+  relativeZ?: number;
   x: number;
   y: number;
   z: number;
