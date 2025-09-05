@@ -30,10 +30,11 @@
 
 <script lang="ts">
 import type { RootProperties } from '@/store/files/types'
-import { Component, Vue, Ref, Prop } from 'vue-property-decorator'
+import { Component, Ref, Prop, Mixins } from 'vue-property-decorator'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class AppUploadAndPrintBtn extends Vue {
+export default class AppUploadAndPrintBtn extends Mixins(BrowserMixin) {
   @Prop({ type: Boolean })
   readonly disabled?: boolean
 
@@ -45,7 +46,9 @@ export default class AppUploadAndPrintBtn extends Vue {
   }
 
   get accepts () {
-    return this.rootProperties.accepts.join(',')
+    return this.isIOS
+      ? undefined
+      : this.rootProperties.accepts.join(',')
   }
 
   fileChanged (event: Event) {
