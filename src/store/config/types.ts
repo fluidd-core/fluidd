@@ -15,6 +15,7 @@ export interface ConfigState {
 export interface UiSettings {
   general: GeneralConfig;
   theme: ThemeConfig;
+  warnings: WarningsConfig;
   editor: EditorConfig;
   dashboard: DashboardConfig;
   tableHeaders: TableHeadersConfig;
@@ -25,6 +26,11 @@ export interface UiSettings {
   spoolman: SpoolmanConfig;
   history: HistoryConfig;
   mmu: MmuConfig;
+}
+
+export interface WarningsConfig {
+  warnOnCpuThrottled: boolean;
+  warnOnStepperDriverOverheating: boolean;
 }
 
 export interface HistoryConfig {
@@ -59,6 +65,7 @@ export interface MmuConfig {
   showTtgMap: boolean;
   showDetails: boolean;
   largeFilamentStatus: boolean;
+  showName: boolean;
   showLogos: boolean;
   showUnavailableSpoolColor: boolean;
 }

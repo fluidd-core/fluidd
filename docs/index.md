@@ -30,7 +30,8 @@ firmware.
 - [Notifications](/features/notifications) on Pi throttling + more
 - [Macro organization](/features/macros)
 - Full [localization](/development/localization) (i18n) support
-- View and Edit your Klipper config in app with code folding and Codelens support
+- View and Edit your Klipper config in app with code folding and Codelens
+support
 - View and Edit your Gcode files in app
 - [Bed Mesh](/features/bed_mesh) levelling
 - [Multiple extruder](/features/multiple_extruders) configurations
@@ -44,16 +45,20 @@ firmware.
 
 ## Supporting Fluidd
 
-Fluidd development is driven by passionate volunteers who dedicate their time to improving and expanding its capabilities.
+Fluidd development is driven by passionate volunteers who dedicate their time to
+improving and expanding its capabilities.
 
-Your sponsorship can help us enhance Fluidd, introduce new features, and ensure it remains accessible to all Klipper users.
+Your sponsorship can help us enhance Fluidd, introduce new features, and ensure
+it remains accessible to all Klipper users.
 
-Your support can make a significant impact on the evolution of Fluidd. Please consider [sponsoring Fluidd](https://github.com/sponsors/fluidd-core).
+Your support can make a significant impact on the evolution of Fluidd. Please
+consider [sponsoring Fluidd](https://github.com/sponsors/fluidd-core).
 
 ## Docker
 
-Fluidd ships with Docker support built in. The official docker can be found
-[here](https://github.com/fluidd-core/fluidd/pkgs/container/fluidd), and further information can be found [here](/installation/docker).
+Fluidd ships with Docker support built in. The official docker image can be
+found [here](https://github.com/fluidd-core/fluidd/pkgs/container/fluidd), and
+further information can be found [here](/installation/docker).
 
 ## Need help?
 

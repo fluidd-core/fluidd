@@ -693,6 +693,8 @@ app:
       toolhead_z_move_distances: Toolhead Z distance values
       type: Type
       unit: Unit
+      warn_on_cpu_throttled: Warn if CPU throttling is detected
+      warn_on_stepper_driver_overheating: Warn if stepper driver is over-heating
       z_adjust_values: Z Adjust values
       date_format: Date format
       time_format: Time format
@@ -722,6 +724,7 @@ app:
       theme: Theme
       thermal_presets: Thermal Presets
       tool: Tool
+      warnings: Warnings
     tooltip:
       average_calculation: If more than one option is select, an average will be calculated
       diagnostics_performance: '[BETA] Logging diagnostics info may impact performance'
@@ -737,6 +740,8 @@ app:
         However, please note that these themes are not officially maintained by the respective brands.<br>
         Any issues or inquiries related to the themes should be directed to the Fluidd team.<br>
         The use of brand names and logos is for decorative and aesthetic purposes only, and no official association with or endorsement by the brands is implied.
+      warn_on_cpu_throttled: CPU throttling can cause prints to fail
+      warn_on_stepper_driver_overheating: Trinamic drivers only
   socket:
     msg:
       connecting: Connecting to moonraker...
@@ -842,6 +847,8 @@ app:
       invalid: INVALID
       os_packages: OS Packages
       package_list: Package List
+      packages: >-
+        {count} package | {count} packages
       up_to_date: UP TO DATE
       updates_available: Updates are available
       old_component_version: >-
@@ -1114,6 +1121,7 @@ app:
       show_clog_detection: Show Clog Detection
       show_details: Show Filament Details
       show_ttg_map: Show TTG Map
+      show_name: Show Unit Name
       show_logos: Show Logos
       show_unavailable_spool_color: Show Unavailable Spools
   sensors:

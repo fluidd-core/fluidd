@@ -5,6 +5,7 @@
       small
       outlined
       :color="(disabled) ? 'grey darken-2' : 'success'"
+      class="ml-1"
     >
       {{ $t('app.version.label.up_to_date') }}
     </v-chip>
@@ -19,6 +20,7 @@
           outlined
           :disabled="disabled"
           :color="(disabled) ? 'grey darken-2' : 'error'"
+          class="ml-1"
           v-on="on"
         >
           {{ $t('app.version.label.dirty') }}
@@ -37,6 +39,7 @@
           small
           outlined
           :color="(disabled) ? 'grey darken-2' : 'error'"
+          class="ml-1"
           v-on="on"
         >
           {{ $t('app.version.label.invalid') }}

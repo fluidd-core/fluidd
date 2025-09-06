@@ -231,29 +231,23 @@ export default class FilesMixin extends Vue {
     }
   }
 
-  getFullPathAndFile (rootPath: string, file: File | FileWithPath): [string, File] {
-    if ('path' in file) {
-      return [
-        [rootPath, file.path]
-          .filter(path => !!path)
-          .join('/'),
-        file.file
-      ]
-    } else {
-      return [
-        rootPath,
-        file
-      ]
-    }
-  }
-
   // Upload some files.
   async uploadFiles (files: FileList | File[] | FileWithPath[], path: string, root: string, andPrint: boolean) {
     // For each file, adds the associated state.
     const fileUploads = [...files]
       .map(file => {
         const uid = uuidv4()
-        const [fullPath, fileObject] = this.getFullPathAndFile(path, file)
+        const [fullPath, fileObject] = 'path' in file
+          ? [
+              [path, file.path]
+                .filter(path => !!path)
+                .join('/'),
+              file.file
+            ]
+          : [
+              path,
+              file
+            ]
 
         const filepath = fullPath
           ? `${fullPath}/${fileObject.name}`
@@ -272,24 +266,26 @@ export default class FilesMixin extends Vue {
 
         return {
           uid,
-          file
+          fullPath,
+          fileObject
         }
       })
+
+    if (fileUploads.length > 1) {
+      andPrint = false
+    }
 
     // Async uploads cause issues in moonraker / klipper.
     // So instead, upload sequentially waiting for moonraker to finish
     // processing of each file.
-    if (fileUploads.length > 1) andPrint = false
     for (const fileUpload of fileUploads) {
-      const [fullPath, fileObject] = this.getFullPathAndFile(path, fileUpload.file)
-
       const currentUploads: FileUpload[] = this.$typedState.files.uploads
 
       const fileState = currentUploads.find(u => u.uid === fileUpload.uid)
 
       if (fileState && !fileState?.cancelled) {
         try {
-          await this.uploadFile(fileObject, fullPath, root, andPrint, fileUpload.uid)
+          await this.uploadFile(fileUpload.fileObject, fileUpload.fullPath, root, andPrint, fileUpload.uid)
         } catch (error: unknown) {
           consola.error('[FileUpload] file', error)
         }

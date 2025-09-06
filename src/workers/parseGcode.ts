@@ -2,7 +2,7 @@
 import type { ArcMove, Layer, LinearMove, Move, Part, Point, PositioningMode } from '@/store/gcodePreview/types'
 import isKeyOf from '@/util/is-key-of'
 import { pick } from 'lodash-es'
-import shlex from 'shlex'
+import { split } from 'shlex'
 
 const getArgsFromGcodeCommandArgs = (gcodeCommandArgs: string) => {
   const args: Record<string, number | undefined> = {}
@@ -17,7 +17,7 @@ const getArgsFromGcodeCommandArgs = (gcodeCommandArgs: string) => {
 const getArgsFromMacroCommandArgs = (macroCommandArgs: string) => {
   const args: Record<string, string> = {}
 
-  for (const entry of shlex.split(macroCommandArgs)) {
+  for (const entry of split(macroCommandArgs)) {
     const eqIndex = entry.indexOf('=')
     const key = entry.substring(0, eqIndex)
     const value = entry.substring(eqIndex + 1)

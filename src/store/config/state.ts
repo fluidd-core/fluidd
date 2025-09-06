@@ -78,6 +78,10 @@ export const defaultState = (): ConfigState => {
         color: '#2196F3',
         backgroundLogo: true
       },
+      warnings: {
+        warnOnCpuThrottled: true,
+        warnOnStepperDriverOverheating: true,
+      },
       editor: {
         confirmDirtyEditorClose: true,
         autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.sh', '.txt'],
@@ -148,6 +152,7 @@ export const defaultState = (): ConfigState => {
         showTtgMap: true,
         showDetails: true,
         largeFilamentStatus: false,
+        showName: true,
         showLogos: false,
         showUnavailableSpoolColor: false
       }
