@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.34.4](https://github.com/fluidd-core/fluidd/compare/v1.34.3...v1.34.4) (2025-09-06)
+
+
+### Features
+
+* Added MMU enclosure temp/humidity to UI; New EMU MMU logo ([#1707](https://github.com/fluidd-core/fluidd/issues/1707)) ([290bca4](https://github.com/fluidd-core/fluidd/commit/290bca4dc212af5753a57fd5bd9fae25f68e585e))
+* adds config editor symbol support ([#1701](https://github.com/fluidd-core/fluidd/issues/1701)) ([f731cf2](https://github.com/fluidd-core/fluidd/commit/f731cf2e4787c0748d958855cefddaa4ef10a647))
+* configurable warnings settings ([#1700](https://github.com/fluidd-core/fluidd/issues/1700)) ([9915a70](https://github.com/fluidd-core/fluidd/commit/9915a7032028d3955fa6d64cf9b8cf0b8681051f))
+* **i18n-de:** Update German translations ([77b48cc](https://github.com/fluidd-core/fluidd/commit/77b48cc471a59279f0df473cbddd6c67cef3b39d))
+* **i18n-ja:** Update Japanese translations ([9f934be](https://github.com/fluidd-core/fluidd/commit/9f934bede26755dfcc4e32a6d63d2ce11a472d78))
+* **i18n-nl:** Update Dutch translations ([5c8e6e8](https://github.com/fluidd-core/fluidd/commit/5c8e6e80ab7457493a32e3fc14543a87efebac18))
+* **i18n-ta:** Update Tamil translations ([e1d5933](https://github.com/fluidd-core/fluidd/commit/e1d593399aa9cf03141858424a905c7c197716d2))
+* **i18n-uk:** Update Ukrainian translations ([468bf7b](https://github.com/fluidd-core/fluidd/commit/468bf7bef4d7569b15ccec5bf16d96319056e57b))
+* **i18n-zh-CN:** Update Chinese (Simplified Han script) translations ([9b6b64f](https://github.com/fluidd-core/fluidd/commit/9b6b64f1bd60c5b24a58c300881e1f6bcc58bcdf))
+* Improvements to Happy Hare MMU functionality ([#1691](https://github.com/fluidd-core/fluidd/issues/1691)) ([33130d0](https://github.com/fluidd-core/fluidd/commit/33130d0196aa5c5f6aa09702969010db23a8f41a))
+* Kalico temperature override when mcu disconnected ([55bcf69](https://github.com/fluidd-core/fluidd/commit/55bcf69ac6aa1c78ac89f87aa19e7fb2b0c16bc7))
+* show relative Z in Screws Tilt Adjust dialog ([#1704](https://github.com/fluidd-core/fluidd/issues/1704)) ([7268e3b](https://github.com/fluidd-core/fluidd/commit/7268e3b40454cdcdfa6c02870eb6632cf99f9198))
+* **WebrtcCamerastreamer:** adds ping/pong support ([#1693](https://github.com/fluidd-core/fluidd/issues/1693)) ([3131916](https://github.com/fluidd-core/fluidd/commit/3131916516367e0cec3354eef54e0395541c2fdc))
+
+
+### Bug Fixes
+
+* always show update status indicator ([#1705](https://github.com/fluidd-core/fluidd/issues/1705)) ([72ad442](https://github.com/fluidd-core/fluidd/commit/72ad442e88a264be20a08bfffd7abd89d0201e14))
+* **i18n:** OS packages label ([#1696](https://github.com/fluidd-core/fluidd/issues/1696)) ([69c720e](https://github.com/fluidd-core/fluidd/commit/69c720edfdcce3cc5c6517b9eeeda47e232a0d24))
+* iOS device upload ([#1712](https://github.com/fluidd-core/fluidd/issues/1712)) ([8ffa351](https://github.com/fluidd-core/fluidd/commit/8ffa3510b440e44cf29513be5a31e96c0bcf98c6))
+* use correct temperature sensor state key ([6c95120](https://github.com/fluidd-core/fluidd/commit/6c951205957a1ff35b881f567c04d8218284503a))
+
+
+### Code Refactorings
+
+* simplify upload files ([4494cc7](https://github.com/fluidd-core/fluidd/commit/4494cc7e4f09541e2aeba4168a0ea4a899f2a941))
+* typing improvements ([a720aa2](https://github.com/fluidd-core/fluidd/commit/a720aa2104771aa2140ddf7391ad5dbdf6a8651b))
+* typing improvements ([446c1fc](https://github.com/fluidd-core/fluidd/commit/446c1fc7da938016d6301648c5ecf0a2987a9e8b))
+* typing improvements ([1377667](https://github.com/fluidd-core/fluidd/commit/1377667546a7e4999d9c982c04bc83df25e044ab))
+
 ## [1.34.3](https://github.com/fluidd-core/fluidd/compare/v1.34.2...v1.34.3) (2025-06-16)
 
 
