@@ -22,17 +22,23 @@ app:
       delete: Zbriši profil
       load: Naloži profil
       save: Shrani kalibriran profil v printer.cfg.
+      download_image: Prenesi sliko mreže mize
   chart:
     label:
       current: Dejansko
+      fan_breakpoints: Prekinitvene točke ventilatorja
       item: Ime
       power: Moč
-      target: Cilj
       rate_of_change: Sprememba
+      target_temperature: Ciljna temperatura
+      target: Cilj
+      turn_off: Izklopi
+    title:
+      mpc_calibrate: MPC kalibracija - {name}
+      pid_calibrate: PID kalibracija - {name}
     tooltip:
       help: >-
-        Držite <kbd>shift</kbd> za približevanje.<br />Kliknite na objekt, da mu spremenite
-        vidnost v grafu.<br
+        Držite <kbd>shift</kbd> za približevanje.<br />Kliknite na objekt, da mu spremenite vidnost v grafu.<br
         />Kliknite na moč, da spremenite vidnost v grafu.
   console:
     label:
@@ -41,8 +47,7 @@ app:
       hide_temp_waits: Skrij čakanje temperature
     tooltip:
       help: >-
-        Vnesite "help" za nabor ukazov.<br />Uporabite <kbd>Tab</kbd> za samo domončanje.<br
-        />Uporabite <kbd>&uarr;</kbd> in <kbd>&darr;</kbd> za zgodovino.
+        Vnesite "help" za nabor ukazov.<br />Uporabite <kbd>Tab</kbd> za samo domončanje.<br />Uporabite <kbd>&uarr;</kbd> in <kbd>&darr;</kbd> za zgodovino.
   endpoint:
     error:
       cant_connect: >-
@@ -68,6 +73,8 @@ app:
       label:
         open: ODPRT
         triggered: SPROŽEN
+    label:
+      endstop: Končno stikalo - %{name}
     msg:
       subtitle: Uporabite gumb za osveževanje, da osvežite status končnih stikal.
   file_system:
@@ -78,11 +85,13 @@ app:
         hidden_files: Fitriraj skrite mape in datoteke
         klipper_backup_files: Filtriraj Klipperjeve varnostne kopije
         moonraker_backup_files: Filtriraj Moonrakerjeve varnostne kopije
+        moonraker_temporary_upload_files: Filtriraj Moonrakerjeve začasno naložene datoteke
         rolled_log_files: Filtriraj zavite dnevniške datoteke
     label:
       dir_name: Ime mape
       disk_usage: Poraba diska
       diskinfo: Informacije o disku
+      sd_card_info: Informacije o SD kartici
       downloaded: Prenešeno
       file_name: Ime datoteke
       transfer_rate: Hitrost prenosa
@@ -93,8 +102,7 @@ app:
       not_found: Ni najdenih datotek
       processing: Procesiram
     overlay:
-      drag_files_folders_upload: <strong>Povlecite</strong> mape in datoteke sem,
-        da jih naložite.
+      drag_files_folders_upload: <strong>Povlecite</strong> mape in datoteke sem, da jih naložite.
       drag_files_enqueue: <strong>Povlecite</strong> datoteke sem za dodajanje v vrsto.
     title:
       add_dir: Dodaj mapo
@@ -166,7 +174,7 @@ app:
       download: Prenesi
       duplicate: Podvoji
       edit: Uredi
-      exit_layout: Izhod iz načina postavitve
+      exit_layout: Izhod
       extrude: Iztisni
       filter: Filter
       forgot_password: Ste pozabili geslo?
@@ -179,6 +187,7 @@ app:
       more_information: Več informacij
       multiply: Podvoji
       pause: Premor
+      power_on_printer: Vklopi tiskalnik
       preheat: Predgrej
       presets: Prednastavitve
       preview_gcode: Predogled g-kode
@@ -194,8 +203,8 @@ app:
       rename: Preimenuj
       reprint: Ponovno natisni
       reset_file: Počisti datoteko
-      reset_layout: Ponastavi na privzeto postavitev
-      reset_default_layout: Ponastavi privzeto postavitev
+      reset_layout: Ponastavi
+      reset_default_layout: Ponastavi privzeto
       restart_firmware: Ponovno zaženi MKE
       restart_service: Ponovno zaženi %{service}
       restart_service_klipper: Ponovno zaženi Klipper
@@ -211,11 +220,12 @@ app:
       select_columns: Izberi stolpce
       send: Pošlji
       set_color: Nastavi barvo
-      set_default_layout: Nastavi kot privzeto postavitev
+      set_default_layout: Nastavi kot privzeto
       shutdown: Ugasni
       snooze: Dremež
       socket_reconnect: Ponovno poveži
       socket_refresh: Prisilna osvežitev
+      perform_time_analysis: Izvedi časovno analizo
       thumbnail_size: Velikost sličice
       upload: Naloži
       upload_files: Naloži datoteke
@@ -234,6 +244,9 @@ app:
       failed_components: >-
         Vtičniki za Moonraker so spodleteli. Prosimo, preverite dnevnike,
         posodobite konfiguracijo in ponovno zaženite Moonraker.
+      printer_powered_off: >-
+        Tiskalnik je trenutno izklopljen.<br/><br/>
+        Za vklop tiskalnika, pritisnite gumb na levi.
     label:
       accel_to_decel: Pojemek
       acceleration: Pospešek
@@ -260,11 +273,13 @@ app:
       current_password: Trenutno geslo
       current_user: Trenutni uporabnik
       default: Privzeto
+      device: Naprava
       disabled_while_printing: Onemogočeno med tiskanjem
       edit_camera: Uredi kamero
       edit_filter: Uredi filter
       edit_preset: Uredi prednastavitev
       edit_user: Uredi uporabnika
+      environment_facing: Pogled proti okolju
       extrude_length: Dožina iztiskovanja
       extrude_speed: Hitrost iztiskovanja
       filament: Filament
@@ -280,6 +295,7 @@ app:
       layer: Plast
       layout: Postavitev
       ldap: LDAP
+      length_in_kilometers: Dolžina v kilometrih
       longest_job: Najdaljše opravilo
       low: Nizko
       manage_accounts: Urejaj račune
@@ -318,6 +334,7 @@ app:
       stepper_enabled: Motor omogočen
       synced_extruder: Sinhroniziran ekstruder
       thumbnail_size: Velikost sličice
+      time_in_days: Čas v dnevih
       total: Skupno
       total_filament: Skupno porabljenega filamenta
       total_filament_avg: Povp. dolžina na tisk
@@ -334,11 +351,13 @@ app:
       unretract_speed: Hitrost pred iztiskom
       upload_and_print: Naloži in tiskaj
       used: porabljeno
+      user_facing: Pogled proti uporabniku
       username: Uporabniško ime
       velocity: Hitrost
       version_sort: Sortiraj po verziji
       visible: Vidno
       z_offset: Z odmik
+      z_hop_height: Višina Z-Hopa
       unsaved_changes: Ne shranjene spremembe
       alias: Vzdevek
       apply_z_offset: Uporabi in shrani Z odmik
@@ -351,13 +370,11 @@ app:
       password_changed: Geslo spremenjeno
       wrong_password: Ups, nekaj se je zalomilo. Ali ste vnesi pravilno geslo?
       bed_screws_adjust: >-
-        Pritisnite <b>Prilagojeno</b>, če je potrebna velika prilagoditev. V nasprotnem
-        primeru pritisnite <b>Sprejmi</b> za nadaljevanje.
+        Pritisnite <b>Prilagojeno</b>, če je potrebna velika prilagoditev na trenutnem vijaku. V nasprotnem primeru pritisnite <b>Sprejmi</b> za nadaljevanje.
       welcome_back: >-
         Dobrodošli nazaj.<br>Vpišite se spodaj, da ostane v stiku s svojim tiskalnikom.
       offline_ready: Fluidd je pripravljen za delo brez povezave.
-      needs_refresh: Nova vsebina je na voljo. Prosimo, pritisnite na gumb <b>Ponovno
-        naloži</b>, da ponovno naložite stran.
+      needs_refresh: Nova vsebina je na voljo. Prosimo, pritisnite na gumb <b>Ponovno naloži</b>, da ponovno naložite stran.
       pending_configuration_sections_deleted: Sledeči odseki so izbrani za izbris
       rolledover_logs: >-
         Sledeči dnevniki aplikacij so bili zaviti: %{applications}
@@ -381,50 +398,57 @@ app:
       msg:
         confirm: Ste prepričani?
         confirm_cancel_print: Ste prepričani, da želite preklicati trenutni tisk?
-        confirm_clear_mesh: Tiskalnik je trenutno zaposlen. Ste prepričani, da želite
-          počistiti mrežo mize?
-        confirm_delete: Ste prepričani? To dejanje bo izbrisalo izbrane elemente.
-          | Ste prepričani? To dejanje bo izbrisalo {count} elementov.
+        confirm_change_beacon_model: Tiskalnik je trenutno zaposlen. Ste prepričani, da želite spremeniti beacon model?
+        confirm_clear_mesh: Tiskalnik je trenutno zaposlen. Ste prepričani, da želite počistiti mrežo mize?
+        confirm_delete: Ste prepričani? To dejanje bo izbrisalo izbran element. | Ste prepričani? To dejanje bo izbrisalo {count} elementov.
         confirm_emergency_stop: Ste prepričani, da želi zasilno ustaviti tiskalnik?
-        confirm_exclude_object: Ste prepričani, da želite izključiti ta objekt iz
-          tiskanja?
+        confirm_exclude_object: Ste prepričani, da želite izključiti ta objekt iz tiskanja?
         confirm_forcemove_toggle: Ste prepričani? To dejanje lahko poškoduje tiskalnik.
-        confirm_load_bedmesh_profile: Tiskalnik je trenutno zaposlen. Ste prepričani,
-          da želite naložiti profil %{name}?
+        confirm_load_bedmesh_profile: Tiskalnik je trenutno zaposlen. Ste prepričani, da želite naložiti profil %{name}?
         confirm_reboot_host: Ste prepričani? To dejanje bo ponovno zagnalo gostitelja.
+        confirm_remove_camera: Ste prepričani, da želite odstraniti kamero %{name}?
+        confirm_remove_console_filter: Ste prepričani, da želite odstraniti filter konzole %{name}?
+        confirm_remove_macro_category: Ste prepričani, da želite odstraniti makro kategorijo %{name}?
+        confirm_remove_printer: Ste prepričani, da želite odstraniti tiskalnik %{name}?
+        confirm_remove_thermal_preset: Ste prepričani, da želite odstraniti termalno prednastavitev %{name}?
         confirm_remove_user: Ste prepričani, da želite odstraniti uporabnika %{username}?
         confirm_shutdown_host: Ste prepričani? To dejanje bo zaustavilo gostitelja.
         confirm_service_start: Ste prepričani, da želite zagnani storitev %{name}?
-        confirm_service_restart: Ste prepričani, da želite ponovno zagnati storitev
-          %{name}?
+        confirm_service_restart: Ste prepričani, da želite ponovno zagnati storitev %{name}?
         confirm_service_stop: Ste prepričani, da želite ustaviti storitev %{name}?
-        confirm_power_device_toggle: Ste prepričani? To dejanje bo ugasnilo napajanje
-          naprave.
-        unsaved_changes: Imate ne shranjene spremembe. Ste prepričani, da želite zapreti
-          datoteko?
+        confirm_power_device_toggle: Ste prepričani? To dejanje bo ugasnilo napajanje naprave.
+        unsaved_changes: Imate ne shranjene spremembe. Ste prepričani, da želite zapreti to datoteko?
         no_file_preview: >-
-          Predogled za %{name} ni možen.
+          Predogled za %{name} trenutno ni na voljo.
     table:
       header:
         actions: Dejanja
         chamber_temp: Temperatura komore
         end_time: Končano
         estimated_time: Ocenjen čas
-        filament: Filament
+        extruder_colors: Barva ekstruderja
+        filament_change_count: Sprememb filamenta
+        filament_colors: Barva filamenta
         filament_name: Ime filamenta
+        filament_temps: Temperature filamenta
         filament_type: Tip filamenta
         filament_used: Porabljenega filamenta
         filament_weight_total: Masa filamenta
+        filament_weights: Mase filamenta
+        filament: Filament
+        file_processors: Procesorji datotek
         first_layer_bed_temp: Temperatura postelje za prvo plast
         first_layer_extr_temp: Temperatura ekstruderja za prvo plast
         first_layer_height: Višina prve plasti
         height: Višina
         last_printed: Nazadnje natisnjeno
         layer_height: Višina plasti
+        mmu_print: VME tisk
         modified: Spremenjeno
         name: Ime
         nozzle_diameter: Premer šobe
         print_duration: Trajanje tiska
+        referenced_tools: Referenčna orodja
         time_added: Čas ob dodaji
         time_in_queue: Čas v vrsti
         size: Velikost
@@ -433,9 +457,11 @@ app:
         start_time: Pričetek
         status: Status
         total_duration: Skupno trajanje
+        user: Uporabnik
     title:
       add_chart: Dodaj graf
       add_printer: Dodaj tiskalnik
+      beacon: Beacon
       bedmesh: Mreža mize
       bedmesh_controls: Nastavitve mreže mize
       camera: Kamera | Kamere
@@ -452,6 +478,7 @@ app:
       jobs: Opravila
       job_queue: Opravila v vrsti
       limits: Omejitve tiskalnika
+      login: Prijava
       macros: Makroji
       metrics_explorer: Raziskovalec meritev
       not_found: 404 Ni najdeno
@@ -461,6 +488,7 @@ app:
       rollover_logs: Zaviti dnevniki
       runout_sensors: Senzorji za iztek filamenta
       settings: Nastavitve
+      macro_category_settings: Nastavitve makro kategorij
       stats: Statistika tiskalnika
       system: Sistem
       system_overview: O sistemu
@@ -471,20 +499,22 @@ app:
     tooltip:
       browse_metrics: Brskaj meritve, ki so na voljo
       estop: Zasilna ustavitev
+      exit_layout: Izhod iz načina postavitve
       managed_by_moonraker: Upravlja konfiguracija moonrakerja
       notifications: Obvestila
+      power_on_printer: Vklopi napajanje tiskalnika
       reload_klipper: Ponovno naloži klipperjeve konfiguracije.
-      reload_restart_klipper: Ponovno naloži klipperjeve konfiguracije in ponovno
-        zažene MKE.
+      reload_restart_klipper: Ponovno naloži klipperjeve konfiguracije in ponovno zažene MKE.
+      reset_layout: Ponastavi trenutno postavitev kot privzeto postavitev celotnega strežnika
+      reset_default_layout: Ponastavi privzeto postavitev celotnega strežnika na tovarniške nastavitve
       restart_klipper: Ponovno zažene sistemsko storitev klipper.
       run_collector: Zaženi zbiralnik
       rollover_logs: Zaviti dnevniki
+      set_default_layout: Nastavi trenutno postavitev kot privzeto postavitev celotnega strežnika
       file_browser_help: >-
-        Povlecite in spustite mape ali datoteke v brskalink, da jih naložite.<br>Prestavite
-        mape ali datoteke v pod mape tako, da jih povlečete vanje.
+        Povlecite in spustite mape ali datoteke v brskalink, da jih naložite sem.<br>Prestavite mape ali datoteke v pod mape tako, da jih povlečete vanje ali "..".
       file_browser_configuration_help: >-
-        Kopirajte mape ali datoteke v Nastavitvene datoteke tako, da jih povlečete
-        in spustite sem.
+        Kopirajte mape ali datoteke v Nastavitvene datoteke tako, da jih povlečete od tukaj in spustite tam.
   history:
     msg:
       confirm: Ste prepričani? To dejanje bo počistilo celotno zgodovino in statistiko.
@@ -494,13 +524,16 @@ app:
     msg:
       confirm: Ste prepričani? To dejanje bo počistilo vrsto za tiskanje.
     label:
+      eta: Do konca
+      filament: Filament
       number_of_copies: Število kopij
+      print_time: Čas tiska
+      unknown_jobs: Neznana opravila
     title:
       multiply_job: Podvoji opravilo | Podvoji opravila
     tooltip:
       help: >-
-        Dodajte opravila v vrsto tako, da datoteke povlečete iz Opravil in spustitesem.<br>Nastavite
-        vrstni red opravil v vrsti tako, da jih povlečete gor ali dol.
+        Dodajte opravila v vrsto tako, da datoteke povlečete iz Opravil in spustite sem.<br>Nastavite vrstni red opravil v vrsti tako, da jih povlečete gor ali dol.
   printer:
     state:
       busy: Zaseden
@@ -514,6 +547,11 @@ app:
       standby: V pripravljenosti
     title:
       printer_status: Status tiskalnika
+      stepper_driver_overheating: Gonilnik koračnega motorja '%{name}' se pregreva
+    msg:
+      possible_print_failure: To lahko vodi do neuspešnih tiskov
+    url:
+      stepper_driver_overheating: '%{klipperDomain}/TMC_Drivers.html#tmc-reports-error-ot1overtemperror'
   setting:
     btn:
       add_camera: Dodaj kamero
@@ -549,6 +587,7 @@ app:
       auto_follow_on_file_load: Samodejno spremljaj napredek na naloženih datotekah
       auto_load_on_print_start: Samodejno naloži datoteko ob začetku tiska
       auto_load_mobile_on_print_start: Samodejno naloži datoteko na mobilnih napravah
+      auto: Samodejno
       axes: Osi
       camera_flip_x: Zrcali vodoravno
       camera_flip_y: Zrcali navpično
@@ -564,10 +603,8 @@ app:
       collector: Krmilnik
       confirm_on_estop: Zahtevaj potrditev za zasilni izklop
       confirm_on_power_device_change: Zahtevaj potrditev za spremembe napajanja
-      confirm_on_save_config_and_restart: Preglej čakajoče spremembe pred shranjevanjem
-        in ponovnim zagonom
-      confirm_dirty_editor_close: Zahtevaj potrditev ob zaprtju urejevalnika, če spremembe
-        niso shranjene
+      confirm_on_save_config_and_restart: Preglej čakajoče spremembe pred shranjevanjem in ponovnim zagonom
+      confirm_dirty_editor_close: Zahtevaj potrditev ob zaprtju urejevalnika, če spremembe niso shranjene
       contains: Vsebuje
       dark_mode: Temen način
       dashed: Črtice
@@ -586,24 +623,26 @@ app:
       enable_xy_homing: Omogoči XY nuliranje
       expression: Izraz
       extrusion_line_width: Širina iztiska
+      firmware_restart: Ponovno zaženi MKE
       flip_horizontal: Zrcali vodoravno
       flip_vertical: Zrcali navpično
       fill_color: Barva polnila
       fill_opacity: Prekrivnost
       filter: Filter | Filtri
-      fluidd_settings_in_moonraker_db: Fluiddove nastavitve v Moonrakerjevi podatkovni
-        bazi
+      fluidd_settings_in_moonraker_db: Fluiddove nastavitve v Moonrakerjevi podatkovni bazi
       fps_target: Želene slike na sekundo
       fps_idle_target: Želene slike na sekundo, kadar ni v fokusu
       height: Višina
       hide_single_part_bounding_box: Skrij mejni okvir pri tiskanju enega objekta
       gcode_coords: Uporabi koordinate iz g-kode
+      host_restart: Ponovno zaženi gostitelja
       icon: Ikona
       invert_x_control: Zrcali X pomike
       invert_y_control: Zrcali Y pomike
       invert_z_control: Zrcali Z pomike
       keyboard_shortcuts: Bližnjice tipkovnice
-      language: Jezik
+      klipper_save_and_restart_action: Klipperjeva akcija shrani in ponovno zaženi
+      language: Jezik prikaza
       last_result: Zadnji rezultat
       left_y: Leva Y os
       line_color: Barva črte
@@ -622,6 +661,7 @@ app:
       print_in_progress_layout: Postavitev tiska v teku
       print_progress_calculation: Izračun napredka tiska
       printer_name: Ime tiskalnika
+      printer_power_device: Napajanje tiskalnika
       reset: Ponastavitev nastavitev
       retraction_icon_size: Velikost umikov
       right_y: Desna Y os
@@ -637,8 +677,7 @@ app:
       show_logo_on_background: Prikaži logotip na ozadju
       show_rate_of_change: Prikaži hitrost temperature
       show_relative_humidity: Prikaži relativno vlažnost
-      show_save_config_and_restart: Shrani konfiguracijo in ponovno zaženi gumb v
-        navigaciji zgoraj
+      show_save_config_and_restart: Shrani konfiguracijo in Ponovno zaženi gumb v navigaciji zgoraj
       show_upload_and_print: Pokaži naloži in tiskaj gumb v navigaciji zgoraj
       solid: Polno
       starts_with: Začne se s/z
@@ -654,16 +693,17 @@ app:
       toolhead_z_move_distances: Vrednosti Z pomika orodne glave
       type: Tip
       unit: Enota
+      warn_on_cpu_throttled: Opozori, če je zaznano omejevanje CPE
+      warn_on_stepper_driver_overheating: Opozori, če se gonilnik motorja pregreva
       z_adjust_values: Vrednosti Z nastavitve
       date_format: Format časa
       time_format: Format datuma
       text_sort_order: Vrstni red sortiranja
+      drag_and_drop_functionality_for_files_and_folders: Potegni in spusti funkcija za datoteke in mape
       force_move_toggle_warning: Zahtevaj potrditev za prisilen gib
       show_manual_probe_dialog_automatically: Samodejno prikaži dialog za ročno sondiranje
-      show_bed_screws_adjust_dialog_automatically: Samodejno prikaži dialog za nastavitev
-        posteljnih vijakov
-      show_screws_tilt_adjust_dialog_automatically: Samodejno prikaži dialog za naklon
-        vijakov
+      show_bed_screws_adjust_dialog_automatically: Samodejno prikaži dialog za nastavitev posteljnih vijakov
+      show_screws_tilt_adjust_dialog_automatically: Samodejno prikaži dialog za nastavitev naklona vijakov
     timer_options:
       absolute_file_position: Absoluten položaj datoteke
       duration: Samo trajanje
@@ -684,40 +724,38 @@ app:
       theme: Teme
       thermal_presets: Prednastavitve grelcev
       tool: Orodje
+      warnings: Opozorila
     tooltip:
       average_calculation: Če je izbrana več kot ena opcija, bo izračunano povprečje
-      diagnostics_performance: '[BETA] Beleženje diagnostičnih podatkov lahko vpliva
-        na zmogljivost'
+      diagnostics_performance: '[BETA] Beleženje diagnostičnih podatkov lahko vpliva na zmogljivost'
       gcode_coords: Uporabi položaj g-kode, namesto orodja v armaturi
       keyboard_shortcuts: >-
         [BETA] Omogoči in pritisni '?' za prikaz vseh bližnjic, ki so na voljo
-      show_manual_probe_dialog_automatically: Samodejno prikaže dialog za pomoč, če
-        ročno sondirate
-      show_bed_screws_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč,
-        če nastavljate posteljne vijake
-      show_screws_tilt_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč,
-        če nastavljate naklon vijakov
+      show_manual_probe_dialog_automatically: Samodejno prikaže dialog za pomoč, pri ročnem sondiranju
+      show_bed_screws_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč, pri poganjanju orodja BED_SCREWS_ADJUST
+      show_screws_tilt_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč, pri poganjanju orodja SCREWS_TILT_CALCULATE
       theme_disclaimer: >-
-        Te teme vsebujejo imena blagovnih znamk in logotipe, ki so intelektualna lastnina
-        njihovih lastnikov.<br>
+        Te teme vsebujejo imena blagovnih znamk in logotipe, ki so intelektualna lastnina njihovih lastnikov.<br>
         Ta imena in logotipi so vključeni z dovoljenjem lastnikov blagovnih znamk.<br>
         Vendar upoštevajte, da blagovne znamke teh tem uradno ne vzdržujejo.<br>
         Morebitna vprašanja ali poizvedbe v zvezi s temami naslovite na ekipo Fluidd.<br>
-        Uporaba imen in logotipov blagovnih znamk je zgolj v dekorativne in estetske
-        namene in ne pomeni nobene uradne povezave z blagovnimi znamkami ali njihove
-        podpore.
+        Uporaba imen in logotipov blagovnih znamk je zgolj v dekorativne in estetske namene in ne pomeni nobene uradne povezave z blagovnimi znamkami ali njihove podpore.
+      warn_on_cpu_throttled: Opejevanje CPE lahko povzroči neuspele tiske
+      warn_on_stepper_driver_overheating: Samo za gonilnike Trinamic
   socket:
     msg:
       connecting: Povezujem se na moonraker...
-      no_connection: Ni povezave z moonrakerjem. Prosimo, preverite status moonrakerja
-        ali osvežite stran.
+      no_connection: Ni povezave z moonrakerjem. Prosimo, preverite status moonrakerja ali osvežite stran.
   system_info:
     label:
+      application: Aplikacija
       awake_time: čas budnosti
       capacity: Kapaciteta
+      connected: Povezano
       constants: Konstante
       cpu_desc: Opis CPE
       devices: Naprave
+      disconnected: Ni povezano
       distribution_codename: Šifra
       distribution_like: Podobna distribucija
       distribution_name: Distribucija
@@ -738,6 +776,7 @@ app:
       moonraker_load: Obremenitev Moonrakerja
       last_stats: Zadnja statistika
       network: Omrežje
+      non_critical_connection: Ne kritična povezava
       processor_desc: Procesor
       product_name: Ime izdelka
       serial_number: Serijska številka
@@ -750,9 +789,8 @@ app:
       virtualization: Virtualizacija
     msg:
       canbus_warning: >-
-        Odkrijejo se lahko samo nepodeljena vozlišča CAN vodila.<br>
-        Priporočljivo je, da je na CAN vodilo priključena samo ena nepripisana naprava,
-        da se izognete težavam s komunikacijo.<br>
+        Samo nedodeljena vozlišča CAN vodila so lahko odkrita.<br>
+        Priporočljivo je, da je na CAN vodilo priključena samo ena nedodeljena naprava, da se izognete težavam s komunikacijo.<br>
         Več informacij je na voljo <a target="_blank" href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">tukaj.</a>
       no_devices_found: Ni najdenih naprav
       no_devices_searched: Za iskanje naprav uporabite gumb za osvežitev
@@ -777,16 +815,14 @@ app:
       tools: Orodja
     label:
       stats_active_extruder: >-
-        <span class="secondary--text">Aktivna konfiguracija ekstruderja je nastavljena
-        za </span>
+        <span class="secondary--text">Aktivna konfiguracija ekstruderja je nastavljena za </span>
         filament premera %{filamentDiameter} mm
         <span class="secondary--text">in</span>
-        premer šobe %{nozzleDiameter}.
+        premer šobe %{nozzleDiameter} mm.
       stats_volumetric_flow: >-
         <span class="secondary--text">Ekstruder bi moral biti sposoben zagotoviti</span>
         pretok %{estimatedVolumetricFlow} mm³/s
-        <span class="secondary--text">pri</span> hitrosti iztiskovanja %{extrudeSpeed}
-        mm/s.
+        <span class="secondary--text">pri</span> hitrosti iztiskovanja %{extrudeSpeed} mm/s.
       stats_extruded_length: >-
         Iztiskanje %{extrudeLength} mm filamenta pri
         %{extrudeFactor} % pretoku<span class="secondary--text">,
@@ -811,11 +847,12 @@ app:
       invalid: NEPRAVILNO
       os_packages: OS Paketi
       package_list: Seznam paketov
+      packages: >-
+        {count} paket | {count} paketov
       up_to_date: POSODOBLJENO
       updates_available: Posodobitve so na voljo
       old_component_version: >-
-        Uporabljate staro različico %{name}, ki ne podpira vseh funkcij programa Fluidd.<br>Posodobite
-        %{name} na vsaj %{version}.
+        Uporabljate staro različico %{name}, ki ne podpira vseh funkcij programa Fluidd.<br>Posodobite %{name} na vsaj %{version}.
     status:
       finished: Posodobitve končane
       updating: Posodabljam...
@@ -841,7 +878,7 @@ app:
       timelapse_status: Status časovnega zamika
       render_settings: Nastavitve uprizarjanja
     setting:
-      enable: Omogočeno
+      enable: Omogoči
       auto_render: Samodejno uprizori
       crf: Konstantno razmerje
       duplicatelastframe: Podvoji zadnjo sličico
@@ -890,20 +927,33 @@ app:
       scan_spool: Skeniraj kolut
     label:
       active_spool: Aktiven kolut
+      bed_temp: Temperatura mize
       change_spool: Spremeni kolut
+      colors: Barve
       comment: Komentar
+      density: Gostota
       device_camera: Naprava
+      diameter: Premer
+      extruder_temp: Temperatura ekstruderja
       filament_name: Filament
       first_used: Prvič uporabljeno
       id: ID
+      initial_length: Začetna dolžina
+      initial_weight: Začetna masa
       last_used: Zadnjič uporabljeno
+      length: Dolžina
       location: Lokacija
       lot_nr: Serija
       material: Material
-      remaining_weight: Preostanek
+      price: Cena
+      remaining_length: Preostanek dolžine
+      remaining_weight: Preostanek mase
+      remaining: Preostanek
+      used_length: Porabljena dolžina
+      used_weight: Porabljena masa
+      used: Porabljeno
       vendor: Proizvajalec
       weight: Masa
-      length: Dolžina
     msg:
       no_spool: >-
         Niste izbrali koluta.
@@ -940,15 +990,139 @@ app:
     setting:
       auto_open_qr_camera: Samodejno odpri kamero za zajem QR kode
       auto_select_spool_on_match: Samodejno potrdi izbiro koluta, če se QR koda ujema
+      card_fields: Polja za prikaz v kartici Spoolman
       prefer_device_camera: Če je na voljo, uporabi kamero naprave za zajem QR kode
-      show_spool_selection_dialog_on_print_start: Prikaži okno za izbiro koluta ob
-        začetku tiskanja
+      show_spool_selection_dialog_on_print_start: Prikaži okno za izbiro koluta ob začetku tiskanja
       warn_on_not_enough_filament: >-
         Prikaži opozorilo, če izbran kolut nima dovolj filamenta za dokončanje tiska
       warn_on_filament_type_mismatch: >-
-        Prikaži opozorilo, če material na izbranem kolutu ne ustreza materialu navedenemu
-        v rezalniku
+        Prikaži opozorilo, če material na izbranem kolutu ne ustreza materialu navedenemu v rezalniku
       remaining_filament_unit: Prikaži preostanek filamenta kot
+  mmu:
+    btn:
+      check_all_gates: Preveri vsa vrata
+      check_gate: Preveri vrata
+      select: Izberi
+      eject: Izvrzi
+      load: Naloži
+      load_ext: Naloži ekstruder
+      unload: Izprazni
+      unload_ext: Izprazni ekstruder
+      preload: Predobremenitev
+      print_stats: Statistika tiska
+      recover: Okrevanje
+      sync_spoolman: Sinhroniziraj Spoolman
+      unlock: Odkleni
+      cancel: Prekliči
+      mmu_maintenance: MMU vzdrževanje
+      recover_state: Popravi MMU stanje
+      edit_gate_map: Uredi filamente
+      edit_ttg_map: Mapa orodij / filametov
+      sync: Sinhroniziraj
+      unsync: Prekini sinhronizacijo
+      off: Izklop
+      on: Vklop
+      home: Domov
+      up: Gor
+      down: Dol
+      move: Premakni
+      grip: Primi
+      release: Spusti
+      reset: Ponastavi
+    title:
+      headline: VME
+      mmu_maintenance: VME vzdrževanje
+      recover_state: Popravi VME stanje (okrevanje po napaki)
+      edit_gate_map: Uredi filamente (uredi mape vrat)
+      edit_ttg_map: Mapa orodij / filametov (uredi TTG mapo)
+    label:
+      clog_detection: Zaznavanje zamaška
+      tool_mapping: Mapiranje orodij
+      spoolman: Spoolman
+      spoolman_id: Spoolman ID
+      choose_spool: Izberi kolut
+      filament_name: Ime filamenta
+      load_speed: Naloži prekoračitev hitrosti
+      material: Material
+      reset: Ponastavi
+      temperature: Temperatura
+      motor_sync: Sinhronizacija motorja ektstruderja
+      extruder_only: Samo ekstruder
+      mmu_motors: VME Motorji
+      extruder_tx: Orodja Tx
+      selector: Izbirnik
+      leds: Ledice
+      ui_visual: Uporabniški vmesnik
+      animation: Animacija
+      config: Konfiguracija
+      enable: Omogoči
+      unknown: Neznano
+      skip_automap: Preskoči samodejno mapiranje
+      all_tools: Vsa orodja
+      ok: Ok
+      save: Shrani
+      cancel: Prekliči
+      gate: Vrata
+      endless_spool: Neskončno ∞
+      filament_info: Informacije o filamentu
+      slicer_expects: Rezalnik pričakuje
+      spoolman_last_used: Nazadnje uporabljeno
+      spoolman_never: Nikoli
+      spoolman_today: Danes
+      spoolman_yesterday: Včeraj
+      spoolman_days_ago: 'Pred toliko dnevi: %{days}'
+    tooltip:
+      empty: Prazno
+      color: Barva
+      spoolid: ID koluta
+    msg:
+      reset_gate_map_confirmation: S tem se bo celotna mapa vrat ponastavila na privzeto vrednost, določeno v datoteki 'mmu_parameters.cfg', ali na prazno mapo, če privzete vrednosti niso na voljo
+      reset_ttg_map_confirmation: S tem se bo celotna preslikava orodja na vrata in skupine neskončnih kolutov ponastavile na privzeto vrednost, določeno v datoteki 'mmu_parameters.cfg', ali na privzeto preslikavanje 1:1, če privzete vrednosti niso na voljo
+      select_gate: Izberite informacije o vratih/kolutu, ki jih želite urediti
+      spoolman_off: Podpora za Spoolman je v Happy Hare "%{mode}". Dodeljevanje ID koluta vratom je onemogočeno
+      spoolman_other: Podpora za Spoolman je "%{mode}". Po želji lahko dodelite ID koluta ali neposredno uredite atribute vrat
+      spoolman_pull: Podpora za Spoolman je v nečinu "%{mode}". Lokalno urejanje večine lastnosti vrat je onemogočeno. Dodelite mapiranje kolut/vrata neposredno v Spoolmanovi bazi ali uporabite ukaz MMU_SPOOLMAN
+      no_matching_spool: Ni najdenih ustraznih kolutov
+      are_you_sure: Ste prepričani?
+      bad_temperature: Temperatura je izven območja
+      filament_available: Filament na voljo v vratih
+      filament_unknown: Neznano stanje filamenta (prosimo, nastavite)
+      filament_empty: Filament ni na voljo
+      maintenance_intro: Neposredno upravljajte izbrane funkcije VME in izbirno konfiguracijo.
+      recover_intro: To je nizko-nivojska obnovitev, ki se uporablja, ko Happy Hare ni sinhroniziran z vašim VME. Priporočljivo je najprej poskusiti s samodejno obnovitvijo, vendar bo to potrebno za popravek trenutnega orodja ali vrat (na VME tipa A lahko izpraznite in vrnete izbirnik v izhodiščno lego).
+      no_custom_controls: Brez kontrol po meri
+      filament_loaded: Je filament popolnoma naložen v ekstruder ali popolnoma izpraznjen?
+      gate_bypass: Vrata so nastavljena na obvod!
+      no_gate: Vrata morajo biti izbrana
+      no_position: Poskus obnovitve položaja
+      no_tool: Orodje mora biti izbrano
+      remap: To bo premapiralo vrata na %{tool}
+      set_gate: Nastavi na trenutna vrata
+      set_tool: Nastavi na trenutno orodje
+      tool_bypass: Orodje je nastavljeno na obvod!
+      warning_prefix: Opozorilo-
+      no_active_spool: Ni aktivnega koluta
+      no_spool_id: Ni ID koluta
+      recover_filament_position: Obnovi položaj filamenta
+      multi_color: To izgleda kot večmaterialni tisk z enim ekstruderjem, pri katerem se uporablja %{numTools} orodij. Verjetno bi morali pregledati mapiranje orodij.
+      single_color: To izgleda kot enobarvni tisk, vendar nimate izbrane možnosti obvoda na vašem VME. Preverite izbrano orodje.
+      map_slicer_tools: Mapiraj orodja rezalnika na VME vraza za tisk
+      map_tools: Mapiraj orodja na VME vrata
+      tool_not_used: Orodje %{tool} ni uporabljeno v tem tisku. Izberite privzeto mapo
+      mismatch: Morebitno neujemanje filamenta
+      color: Barva
+      material: Material
+      temperature: Temperatura
+      no_gate_data: Ni podatkov o vratih
+      no_slicer_info: Ni informacij o rezalniku, izberite privzeto kamaporto za %{tool}
+      select_tool: Izberite orodje za mapiranje in nato izberite vrata s seznama
+    setting:
+      large_filament_status: Velik status filamenta
+      show_clog_detection: Prikaži zaznavanje zamaška
+      show_details: Prikaži podrobnosti o filamentu
+      show_ttg_map: Prikaži TTG mape
+      show_logos: Prikaži logotipe
+      show_unavailable_spool_color: Prikaži kolute, ki niso na voljo
   sensors:
     title:
       sensors: Senzorji
@@ -965,3 +1139,16 @@ app:
       pause: Premor
       printing: Tiskanje
       tool: Orodje
+  beacon:
+    label:
+      active: aktivno
+      model_name: Ime modela
+      remove_model: Odstrani %{name} model
+    msg:
+      hint: >-
+        Če shranjujete drugače kot %{name}, lahko tudi izberete, do odstranite
+        %{name} model
+      not_found: Obstoječih beacon modelov ni mogoče najti.
+    tooltip:
+      delete: Zbriši model
+      load: Naloži model
