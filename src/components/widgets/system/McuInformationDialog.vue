@@ -1,7 +1,7 @@
 <template>
   <app-dialog
     v-model="open"
-    :title="$t('app.system_info.label.mcu_information', { mcu: mcu.name })"
+    :title="$t('app.system_info.label.mcu_information', { mcu: mcu.prettyName })"
     max-width="500"
     no-actions
   >

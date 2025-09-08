@@ -2,6 +2,7 @@ import type { Commit } from 'vuex'
 import type { RootState } from './types'
 import type { ChartData } from './charts/types'
 import type { KlipperPrinterMcuState, KlipperPrinterState, KlipperPrinterSystemStatsState } from './printer/types'
+import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
 
 export const handleMcuStatsChange = (payload: Partial<KlipperPrinterState>, state: RootState, commit: Commit) => {
   for (const key in payload) {
@@ -118,6 +119,9 @@ export const handleSystemStatsChange = (payload: Partial<KlipperPrinterState>, s
  * Every packet should contain an entry for all known sensors we want to track.
  */
 export const handleAddChartEntry = (retention: number, state: RootState, commit: Commit, getters: any) => {
+  const nonCriticalDisconnectedMcuNames = new Set(
+    getters.getNonCriticalDisconnectedMcuNames as string[])
+
   const configureChartEntry = () => {
     const chartData: ChartData = {
       date: new Date()
@@ -125,10 +129,21 @@ export const handleAddChartEntry = (retention: number, state: RootState, commit:
 
     const keys: string[] = getters.getChartableSensors
 
-    keys.forEach((key) => {
+    for (const key of keys) {
       const sensor = state.printer.printer[key]
 
       if (sensor != null) {
+        if (nonCriticalDisconnectedMcuNames.size > 0) {
+          const config = state.printer.printer.configfile?.settings[key.toLowerCase()]
+
+          if (
+            config != null &&
+            getMcusFromConfig(config)?.some(mcu => nonCriticalDisconnectedMcuNames.has(mcu))
+          ) {
+            continue
+          }
+        }
+
         const temp = sensor.temperature
         const target = sensor.target
         const power = sensor.power
@@ -138,7 +153,7 @@ export const handleAddChartEntry = (retention: number, state: RootState, commit:
         if (power != null) chartData[`${key}#power`] = power
         if (speed != null) chartData[`${key}#speed`] = speed
       }
-    })
+    }
 
     return chartData
   }

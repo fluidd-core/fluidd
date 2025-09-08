@@ -19,7 +19,7 @@
 
       <template v-for="mcu in mcus">
         <mcu-card
-          :key="mcu.name"
+          :key="mcu.key"
           :mcu="mcu"
           class="mb-2 mb-md-4"
         />

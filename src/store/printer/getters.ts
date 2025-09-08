@@ -3,6 +3,7 @@ import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
 import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, ExtruderStepper, Extruder, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, KlippyApp, ExcludeObjectPart, KlipperPrinterConfig, BeaconModel, BedScrewsScrew, ExtruderKey, Probe } from './types'
 import getKlipperType from '@/util/get-klipper-type'
+import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
 import i18n from '@/plugins/i18n'
 import type { GcodeHelp } from '../console/types'
 import { Globals } from '@/globals'
@@ -334,15 +335,32 @@ export const getters = {
     for (const key of mcuKeys) {
       const config = state.printer.configfile.settings[key.toLowerCase()]
 
+      const name = key.split(' ', 2).pop() || ''
+
       mcus.push({
-        name: key,
+        name,
         prettyName: Vue.$filters.prettyCase(key),
+        key,
         ...state.printer[key],
         config,
       })
     }
 
     return mcus
+  },
+
+  getNonCriticalDisconnectedMcuNames: (state, getters): string[] => {
+    const klippyApp: KlippyApp = getters.getKlippyApp
+
+    if (!klippyApp.isKalico) {
+      return []
+    }
+
+    const mcus: MCU[] = getters.getMcus
+
+    return mcus
+      .filter(mcu => mcu.non_critical_disconnected)
+      .map(mcu => mcu.name)
   },
 
   getHasExtruder: (state) => {
@@ -745,7 +763,8 @@ export const getters = {
    * Return available temperature probes / sensors.
    */
   getSensors: (state, getters): Sensor[] => {
-    const klippyApp: KlippyApp = getters.getKlippyApp
+    const nonCriticalDisconnectedMcuNames = new Set(
+      getters.getNonCriticalDisconnectedMcuNames as string[])
 
     const sensors = Object.keys(state.printer)
       .filter(key => (
@@ -771,27 +790,13 @@ export const getters = {
           const color = Vue.$colorset.next(getKlipperType(key), key)
           const config = state.printer.configfile.settings[key.toLowerCase()]
 
-          const mcu = (
-            klippyApp.isKalico &&
+          const mcus = (
+            nonCriticalDisconnectedMcuNames.size > 0 &&
             config != null &&
-            (
-              (
-                'i2c_mcu' in config &&
-                config.i2c_mcu
-              ) ||
-              (
-                'sensor_mcu' in config &&
-                config.sensor_mcu
-              ) ||
-              (
-                'sensor_pin' in config &&
-                config.sensor_pin?.includes(':') &&
-                config.sensor_pin.split(':')[0]
-              )
-            )
+            getMcusFromConfig(config)
           )
 
-          const kalicoTemperatureOverride = mcu && mcu !== 'mcu' && state.printer[`mcu ${mcu}`]?.non_critical_disconnected
+          const kalicoTemperatureOverride = mcus && mcus.some(mcu => nonCriticalDisconnectedMcuNames.has(mcu))
             ? {
                 temperature: null
               }

@@ -1441,6 +1441,7 @@ export interface Stepper extends StepperType<KlipperPrinterExtruderSettings | Kl
 export interface MCU extends KlipperPrinterMcuState {
   name: string;
   prettyName: string;
+  key: string;
   config?: KlipperPrinterMcuSettings;
 }
 
