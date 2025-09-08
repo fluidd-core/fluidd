@@ -428,7 +428,7 @@ app:
         estimated_time: Ocenjen čas
         extruder_colors: Barva ekstruderja
         filament_change_count: Sprememb filamenta
-        filament_colors: Barva filamenta         
+        filament_colors: Barva filamenta
         filament_name: Ime filamenta
         filament_temps: Temperature filamenta
         filament_type: Tip filamenta
