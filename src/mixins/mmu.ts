@@ -71,7 +71,8 @@ export default class MmuMixin extends Vue {
       requireBowdenMove: mmuMachine?.[unitRef]?.require_bowden_move ?? true,
       filamentAlwaysGripped: mmuMachine?.[unitRef]?.filament_always_gripped ?? false,
       hasBypass: mmuMachine?.[unitRef]?.has_bypass ?? false,
-      multiGear: mmuMachine?.[unitRef]?.multi_gear ?? false
+      multiGear: mmuMachine?.[unitRef]?.multi_gear ?? false,
+      environmentSensor: mmuMachine?.[unitRef]?.environment_sensor ?? ''
     }
   }
 

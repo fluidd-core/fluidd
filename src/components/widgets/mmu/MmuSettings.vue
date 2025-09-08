@@ -77,6 +77,17 @@
         </v-list-item-content>
       </v-list-item>
 
+      <v-list-item @click="showName = !showName">
+        <v-list-item-action class="my-0">
+          <v-checkbox :input-value="showName" />
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.mmu.setting.show_name') }}
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
       <v-list-item @click="showLogos = !showLogos">
         <v-list-item-action class="my-0">
           <v-checkbox :input-value="showLogos" />
@@ -153,6 +164,18 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
   set showUnavailableSpoolColor (value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showUnavailableSpoolColor',
+      value,
+      server: true
+    })
+  }
+
+  get showName (): boolean {
+    return this.$typedState.config.uiSettings.mmu.showName
+  }
+
+  set showName (value: boolean) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.mmu.showName',
       value,
       server: true
     })
