@@ -34,7 +34,7 @@ const getMcusFromPinKeyInConfig = (config: Record<string, any>): string[] | unde
       typeof value === 'string' &&
       value.includes(':')
     ) {
-      const mcu = value.split(':')[0]
+      const mcu = value.split(':')[0]?.replace(/^[!~^]+/, '')
 
       if (mcu) {
         mcus.add(mcu)

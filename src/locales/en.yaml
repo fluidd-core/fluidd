@@ -270,6 +270,7 @@ app:
       cross: Cross
       circle: Circle
       compact: Compact
+      connected: Connected
       current_password: Current password
       current_user: Current user
       default: Default
@@ -302,6 +303,7 @@ app:
       minimum_cruise_ratio: Minimum Cruise Ratio
       user_managed_source: User managed by %{source} authentication
       m117: M117
+      disconnected: Disconnected
       moonraker: Moonraker
       name: Name
       new_password: New password
@@ -751,11 +753,9 @@ app:
       application: Application
       awake_time: awake time
       capacity: Capacity
-      connected: Connected
       constants: Constants
       cpu_desc: CPU Description
       devices: Devices
-      disconnected: Disconnected
       distribution_codename: Codename
       distribution_like: Distribution Like
       distribution_name: Distribution

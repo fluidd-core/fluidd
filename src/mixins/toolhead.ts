@@ -30,6 +30,10 @@ export default class ToolheadMixin extends Vue {
     )
   }
 
+  get extruderDisconnected (): boolean {
+    return this.activeExtruder?.disconnected ?? false
+  }
+
   get filamentDiameter (): number {
     return this.activeExtruder?.config?.filament_diameter || 1.75
   }

@@ -1417,8 +1417,10 @@ export interface KnownExtruder {
 }
 
 export interface Extruder extends KlipperPrinterExtruderState {
+  key: string;
   config: KlipperPrinterExtruderSettings;
   min_extrude_temp: number;
+  disconnected: boolean;
 }
 
 type StepperType<T> = {
@@ -1427,6 +1429,7 @@ type StepperType<T> = {
   prettyName: string;
   key: string;
   enabled?: boolean;
+  disconnected: boolean;
 }
 
 export interface ExtruderStepper extends StepperType<KlipperPrinterExtruderStepperSettings> {
@@ -1452,6 +1455,7 @@ type OutputType<T> = {
   key: string;
   color?: string;
   type: string;
+  disconnected: boolean;
 }
 
 export interface Heater extends OutputType<KlipperPrinterHeaterGenericSettings | KlipperPrinterHeaterBedSettings | KlipperPrinterExtruderSettings> {
@@ -1494,6 +1498,7 @@ export interface Sensor extends Partial<KlipperPrinterTemperatureSensorState>, P
   type: string;
   maxTemp?: number;
   minTemp?: number;
+  disconnected: boolean;
 }
 
 export interface RunoutSensor extends Partial<KlipperPrinterFilamentSwitchSensorState>, Partial<KlipperPrinterFilamentMotionSensorState> {

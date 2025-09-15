@@ -7,7 +7,7 @@
       align-self="center"
       cols="5"
       class="text-body-1"
-      :class="{ 'text--disabled': !klippyReady }"
+      :class="{ 'text--disabled': !klippyReady || led.disconnected }"
     >
       {{ led.prettyName }}
     </v-col>
@@ -17,7 +17,7 @@
         :white.sync="whiteValue"
         :title="led.prettyName"
         :supported-channels="supportedChannels"
-        :disabled="!klippyReady"
+        :disabled="!klippyReady || led.disconnected"
         dot
       />
     </v-col>
