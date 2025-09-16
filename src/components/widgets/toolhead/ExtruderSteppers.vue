@@ -68,9 +68,19 @@ export default class ExtruderSteppers extends Vue {
 
     return extruderSteppers
       .map(x => {
-        const motionQueueName = (x.motion_queue && extruders.find(y => y.key === x.motion_queue)?.name) ?? this.$t('app.setting.label.none')
-        const enabledDesc = x.enabled !== undefined && this.$t(`app.general.label.${x.enabled ? 'on' : 'off'}`)
-        const description = enabledDesc ? `${motionQueueName}, ${enabledDesc}` : motionQueueName
+        const labels = [
+          (x.motion_queue && extruders.find(y => y.key === x.motion_queue)?.name) || this.$t('app.setting.label.none')
+        ]
+
+        if (x.enabled !== undefined) {
+          labels.push(this.$t(`app.general.label.${x.enabled ? 'on' : 'off'}`).toString())
+        }
+
+        if (x.disconnected) {
+          labels.push(this.$t('app.general.label.disconnected').toString())
+        }
+
+        const description = labels.join(', ')
 
         return {
           ...x,

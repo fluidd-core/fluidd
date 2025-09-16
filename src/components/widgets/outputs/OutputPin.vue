@@ -8,7 +8,7 @@
       :max="100"
       :value="value"
       :reset-value="resetValue"
-      :disabled="!klippyReady"
+      :disabled="!klippyReady || pin.disconnected"
       :locked="isMobileUserAgent"
       :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"
       @submit="handleChange"
@@ -16,7 +16,7 @@
 
     <app-named-switch
       v-else
-      :disabled="!klippyReady"
+      :disabled="!klippyReady || pin.disconnected"
       :label="pin.prettyName"
       :value="pin.value > 0"
       :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"

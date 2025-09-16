@@ -119,8 +119,7 @@ export const handleSystemStatsChange = (payload: Partial<KlipperPrinterState>, s
  * Every packet should contain an entry for all known sensors we want to track.
  */
 export const handleAddChartEntry = (retention: number, state: RootState, commit: Commit, getters: any) => {
-  const nonCriticalDisconnectedMcuNames = new Set(
-    getters.getNonCriticalDisconnectedMcuNames as string[])
+  const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
 
   const configureChartEntry = () => {
     const chartData: ChartData = {
@@ -133,12 +132,12 @@ export const handleAddChartEntry = (retention: number, state: RootState, commit:
       const sensor = state.printer.printer[key]
 
       if (sensor != null) {
-        if (nonCriticalDisconnectedMcuNames.size > 0) {
+        if (nonCriticalDisconnectedMcusSet.size > 0) {
           const config = state.printer.printer.configfile?.settings[key.toLowerCase()]
 
           if (
             config != null &&
-            getMcusFromConfig(config)?.some(mcu => nonCriticalDisconnectedMcuNames.has(mcu))
+            getMcusFromConfig(config)?.some(mcu => nonCriticalDisconnectedMcusSet.has(mcu))
           ) {
             continue
           }

@@ -30,7 +30,7 @@
       </v-col>
       <v-col cols="6">
         <app-btn
-          :disabled="!klippyReady || !extruderReady || !valid"
+          :disabled="!klippyReady || !extruderReady || extruderDisconnected || !valid"
           block
           @click="retract"
         >
@@ -68,7 +68,7 @@
       </v-col>
       <v-col cols="6">
         <app-btn
-          :disabled="!klippyReady || !extruderReady || !valid"
+          :disabled="!klippyReady || !extruderReady || extruderDisconnected || !valid"
           block
           @click="extrude"
         >

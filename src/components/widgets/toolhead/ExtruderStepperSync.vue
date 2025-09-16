@@ -26,7 +26,7 @@
       <app-named-switch
         :value="extruderStepper.enabled"
         :label="$t('app.general.label.stepper_enabled')"
-        :disabled="!klippyReady || printerPrinting"
+        :disabled="!klippyReady || printerPrinting || extruderStepper.disconnected"
         :loading="hasWait(`${$waits.onStepperEnable}${extruderStepper.name}`)"
         @change="sendSetStepperEnable"
       />
