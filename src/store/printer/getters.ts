@@ -622,42 +622,18 @@ export const getters = {
   },
 
   /**
-   * Return toolhead fans
-   */
-  getToolHeadFans: (_, getters) => {
-    return getters.getOutputs([
-      // 'temperature_fan',
-      // 'controller_fan',
-      'heater_fan',
-      // 'fan_generic',
-      'fan'
-    ])
-  },
-
-  getOtherFans: (_, getters) => {
-    return getters.getOutputs([
-      'temperature_fan',
-      'controller_fan',
-      // 'heater_fan',
-      'fan_generic'
-      // 'fan'
-    ])
-  },
-
-  /**
    * Return output pins
    */
-  getPins: (_, getters) => {
-    const outputs = getters.getOutputs([
+  getAllPins: (_, getters) => {
+    return getters.getOutputs([
       'output_pin',
       'pwm_tool',
       'pwm_cycle_time'
     ])
-    return outputs.sort((output: OutputPin) => output.pwm ? 1 : -1)
   },
 
   getPinByName: (state, getters) => (name: string) => {
-    const pins: OutputPin[] = getters.getPins
+    const pins: OutputPin[] = getters.getAllPins
 
     return pins.find(pin => pin.name === name)
   },

@@ -58,18 +58,14 @@ export default class Outputs extends Mixins(StateMixin) {
   get all () {
     const items: Array<Fan | Led | OutputPin> = [
       ...this.$typedGetters['printer/getAllFans'],
-      ...this.$typedGetters['printer/getPins'],
+      ...this.$typedGetters['printer/getAllPins'].sort((pin: OutputPin) => pin.pwm ? 1 : -1),
       ...this.$typedGetters['printer/getAllLeds']
     ]
-    let col1: Array<Fan | Led | OutputPin> = []
-    let col2: Array<Fan | Led | OutputPin> = []
-    if (items.length > 1) {
-      const half = Math.ceil(items.length / 2)
-      col1 = items.splice(0, half)
-      col2 = items
-    } else {
-      col1 = items
-    }
+
+    const [col1, col2] = items.length > 1
+      ? [items.splice(0, Math.ceil(items.length / 2)), items]
+      : [items, []]
+
     return {
       col1,
       col2
