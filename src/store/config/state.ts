@@ -68,7 +68,8 @@ export const defaultState = (): ConfigState => {
         printProgressCalculation: ['file'],
         printEtaCalculation: ['file'],
         enableDiagnostics: false,
-        colorPickerValueRange: 'absolute'
+        colorPickerValueRange: 'absolute',
+        showHiddenOutputs: false
       },
       theme: {
         isDark: true,

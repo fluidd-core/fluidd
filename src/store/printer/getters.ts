@@ -601,63 +601,64 @@ export const getters = {
       .sort((a, b) => a.name.localeCompare(b.name))
   },
 
-  getAllLeds: (_, getters) => {
+  getAllLeds: (_, getters) => (showHidden = false) => {
     return getters.getOutputs([
       'led',
       'neopixel',
       'dotstar',
       'pca9533',
       'pca9632'
-    ])
+    ], showHidden)
   },
 
-  getAllFans: (_, getters) => {
+  getAllFans: (_, getters) => (showHidden = false) => {
     return getters.getOutputs([
       'temperature_fan',
       'controller_fan',
       'heater_fan',
       'fan_generic',
       'fan'
-    ])
+    ], showHidden)
   },
 
   /**
    * Return toolhead fans
    */
-  getToolHeadFans: (_, getters) => {
+  getToolHeadFans: (_, getters) => (showHidden = false) => {
     return getters.getOutputs([
       // 'temperature_fan',
       // 'controller_fan',
       'heater_fan',
       // 'fan_generic',
       'fan'
-    ])
+    ], showHidden)
   },
 
-  getOtherFans: (_, getters) => {
+  getOtherFans: (_, getters) => (showHidden = false) => {
     return getters.getOutputs([
       'temperature_fan',
       'controller_fan',
       // 'heater_fan',
       'fan_generic'
       // 'fan'
-    ])
+    ], showHidden)
   },
 
   /**
    * Return output pins
    */
-  getPins: (_, getters) => {
+  getPins: (_, getters) => (showHidden = false) => {
     const outputs = getters.getOutputs([
       'output_pin',
       'pwm_tool',
       'pwm_cycle_time'
-    ])
+    ], showHidden)
     return outputs.sort((output: OutputPin) => output.pwm ? 1 : -1)
   },
 
   getPinByName: (state, getters) => (name: string) => {
     const pins: OutputPin[] = getters.getPins
+    // const pins = getters.getPins() as OutputPin[]
 
     return pins.find(pin => pin.name === name)
   },
@@ -665,7 +666,7 @@ export const getters = {
   /**
   * Return available fans and output pins
   */
-  getOutputs: (state, getters) => (filter?: string[]): Array<Fan | Led | OutputPin> => {
+  getOutputs: (state, getters) => (filter?: string[], showHidden = false): Array<Fan | Led | OutputPin> => {
     // Fans..
     const fans = [
       'temperature_fan',
@@ -741,7 +742,7 @@ export const getters = {
 
       if (
         supportedTypes.includes(type) &&
-        (!filterByPrefix.includes(type) || !name.startsWith('_'))
+        (showHidden || !filterByPrefix.includes(type) || !name.startsWith('_'))
       ) {
         const prettyName = name === 'fan'
           ? 'Part Fan' // If we know its the part fan.
