@@ -42,6 +42,7 @@
       </v-list-item>
 
       <v-list-item
+        v-if="!isIOS"
         :disabled="disabled"
         @click="emulateClick(false, true)"
       >
@@ -120,12 +121,13 @@
 
 <script lang="ts">
 import StateMixin from '@/mixins/state'
+import BrowserMixin from '@/mixins/browser'
 import type { RootProperties } from '@/store/files/types'
 import { getFilesWithPathFromHTMLInputElement } from '@/util/file-system-entry'
 import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
 
 @Component({})
-export default class FileSystemAddMenu extends Mixins(StateMixin) {
+export default class FileSystemAddMenu extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: String, required: true })
   readonly root!: string
 
@@ -143,7 +145,9 @@ export default class FileSystemAddMenu extends Mixins(StateMixin) {
   }
 
   get accepts () {
-    return this.rootProperties.accepts.join(',')
+    return this.isIOS
+      ? undefined
+      : this.rootProperties.accepts.join(',')
   }
 
   get printerReady () {

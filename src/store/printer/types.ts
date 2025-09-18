@@ -726,6 +726,7 @@ type KlipperPrinterMmuMachineStateBaseType = {
     filament_always_gripped: boolean;
     has_bypass: boolean;
     multi_gear: boolean;
+    environment_sensor?: string;
   };
 }
 
@@ -1416,8 +1417,10 @@ export interface KnownExtruder {
 }
 
 export interface Extruder extends KlipperPrinterExtruderState {
+  key: string;
   config: KlipperPrinterExtruderSettings;
   min_extrude_temp: number;
+  disconnected: boolean;
 }
 
 type StepperType<T> = {
@@ -1426,6 +1429,7 @@ type StepperType<T> = {
   prettyName: string;
   key: string;
   enabled?: boolean;
+  disconnected: boolean;
 }
 
 export interface ExtruderStepper extends StepperType<KlipperPrinterExtruderStepperSettings> {
@@ -1440,6 +1444,7 @@ export interface Stepper extends StepperType<KlipperPrinterExtruderSettings | Kl
 export interface MCU extends KlipperPrinterMcuState {
   name: string;
   prettyName: string;
+  key: string;
   config?: KlipperPrinterMcuSettings;
 }
 
@@ -1450,6 +1455,7 @@ type OutputType<T> = {
   key: string;
   color?: string;
   type: string;
+  disconnected: boolean;
 }
 
 export interface Heater extends OutputType<KlipperPrinterHeaterGenericSettings | KlipperPrinterHeaterBedSettings | KlipperPrinterExtruderSettings> {
@@ -1492,6 +1498,7 @@ export interface Sensor extends Partial<KlipperPrinterTemperatureSensorState>, P
   type: string;
   maxTemp?: number;
   minTemp?: number;
+  disconnected: boolean;
 }
 
 export interface RunoutSensor extends Partial<KlipperPrinterFilamentSwitchSensorState>, Partial<KlipperPrinterFilamentMotionSensorState> {
@@ -1531,6 +1538,7 @@ export interface ScrewsTiltAdjustScrew {
   name: string;
   prettyName: string;
   adjustMinutes: number;
+  relativeZ?: number;
   x: number;
   y: number;
   z: number;

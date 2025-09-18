@@ -264,7 +264,7 @@
     <input
       ref="uploadSettingsFile"
       type="file"
-      accept=".json"
+      :accept="isIOS ? undefined : '.json'"
       style="display: none"
       @change="handleRestoreSettings"
     >
@@ -274,6 +274,7 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import BrowserMixin from '@/mixins/browser'
 import type { VInput } from '@/types'
 import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
 import type { OutputPin } from '@/store/printer/types'
@@ -288,7 +289,7 @@ import { getAllLocales } from '@/plugins/i18n'
 import downloadUrl from '@/util/download-url'
 
 @Component({})
-export default class GeneralSettings extends Mixins(StateMixin) {
+export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
   @Ref('instanceName')
   readonly instanceNameElement!: VInput
 

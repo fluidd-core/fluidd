@@ -3,12 +3,22 @@ import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
 import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, ExtruderStepper, Extruder, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, KlippyApp, ExcludeObjectPart, KlipperPrinterConfig, BeaconModel, BedScrewsScrew, ExtruderKey, Probe } from './types'
 import getKlipperType from '@/util/get-klipper-type'
+import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
 import i18n from '@/plugins/i18n'
 import type { GcodeHelp } from '../console/types'
 import { Globals } from '@/globals'
 import isKeyOf from '@/util/is-key-of'
 import getFilePaths from '@/util/get-file-paths'
 import type { AppFileWithMeta } from '../files/types'
+
+const configHasDisconnectedMcu = (config: Record<string, any> | undefined, disconnectedMcuNames: Set<string>): boolean => (
+  (
+    disconnectedMcuNames.size > 0 &&
+    config != null &&
+    getMcusFromConfig(config)?.some(mcu => disconnectedMcuNames.has(mcu))
+  ) ||
+  false
+)
 
 export const getters = {
 
@@ -334,15 +344,32 @@ export const getters = {
     for (const key of mcuKeys) {
       const config = state.printer.configfile.settings[key.toLowerCase()]
 
+      const name = key.split(' ', 2).pop() || ''
+
       mcus.push({
-        name: key,
+        name,
         prettyName: Vue.$filters.prettyCase(key),
+        key,
         ...state.printer[key],
         config,
       })
     }
 
     return mcus
+  },
+
+  getNonCriticalDisconnectedMcusSet: (state, getters): Set<string> => {
+    const klippyApp: KlippyApp = getters.getKlippyApp
+
+    if (!klippyApp.isKalico) {
+      return new Set()
+    }
+
+    const mcus: MCU[] = getters.getMcus
+
+    return new Set(mcus
+      .filter(mcu => mcu.non_critical_disconnected)
+      .map(mcu => mcu.name))
   },
 
   getHasExtruder: (state) => {
@@ -381,12 +408,20 @@ export const getters = {
   },
 
   // Returns an extruder by name.
-  getExtruderByName: (state) => (name: ExtruderKey) => {
-    const e = state.printer[name]
-    const c = state.printer.configfile.settings[name.toLowerCase()]
+  getExtruderByName: (state, getters) => (key: ExtruderKey) => {
+    const e = state.printer[key]
+    const c = state.printer.configfile.settings[key.toLowerCase()]
 
     // If we can't find what we need..
     if (!e || !c) return undefined
+
+    const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
+
+    const disconnected = (
+      configHasDisconnectedMcu(c, nonCriticalDisconnectedMcusSet) ||
+      (getters.getExtruderSteppers as ExtruderStepper[])
+        .some(stepper => stepper.motion_queue === key && stepper.disconnected)
+    )
 
     // If we have other extruders, they may inherit some properties
     // from the first depending how they're defined.
@@ -397,9 +432,11 @@ export const getters = {
     )
 
     const extruder: Extruder = {
+      key,
       min_extrude_temp,
       config: { ...c },
-      ...e
+      ...e,
+      disconnected
     }
 
     return extruder
@@ -412,7 +449,9 @@ export const getters = {
       .filter((stepper): stepper is ExtruderStepper => stepper.key.startsWith('extruder_stepper '))
   },
 
-  getSteppers: (state): Stepper[] => {
+  getSteppers: (state, getters): Stepper[] => {
+    const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
+
     const steppers: Stepper[] = []
 
     const stepperKeys = state.printer.motion_report?.steppers ?? []
@@ -425,13 +464,16 @@ export const getters = {
       const e = state.printer[key]
       const config = state.printer.configfile.settings[key.toLowerCase()]
 
+      const disconnected = configHasDisconnectedMcu(config, nonCriticalDisconnectedMcusSet)
+
       steppers.push({
         name,
         prettyName: Vue.$filters.prettyCase(name),
         key,
         enabled: state.printer.stepper_enable?.steppers[key],
         ...e,
-        config
+        config,
+        disconnected
       })
     }
 
@@ -519,7 +561,9 @@ export const getters = {
   /**
    * Return available heaters
    */
-  getHeaters: (state): Heater[] => {
+  getHeaters: (state, getters): Heater[] => {
+    const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
+
     const heaters: Heater[] = []
 
     const heaterKeys = state.printer.heaters?.available_heaters ?? []
@@ -536,6 +580,8 @@ export const getters = {
         const color = Vue.$colorset.next(getKlipperType(key), key)
         const prettyName = Vue.$filters.prettyCase(name)
 
+        const disconnected = configHasDisconnectedMcu(config, nonCriticalDisconnectedMcusSet)
+
         heaters.push({
           ...heater,
           name,
@@ -545,7 +591,8 @@ export const getters = {
           key,
           minTemp: config?.min_temp ?? 0,
           maxTemp: config?.max_temp ?? 500,
-          config
+          config,
+          disconnected
         })
       }
     }
@@ -685,6 +732,8 @@ export const getters = {
       ? filter
       : [...fans, ...outputPins, ...leds]
 
+    const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
+
     const pins: Array<Fan | Led | OutputPin> = []
 
     for (const key in state.printer) {
@@ -705,6 +754,8 @@ export const getters = {
 
         const config = state.printer.configfile.settings[key.toLowerCase()]
 
+        const disconnected = configHasDisconnectedMcu(config, nonCriticalDisconnectedMcusSet)
+
         let output: Fan | Led | OutputPin = {
           ...state.printer[key],
           ...getters.getExtraSensorData(config?.sensor_type?.toLowerCase(), name),
@@ -714,7 +765,8 @@ export const getters = {
           key,
           color,
           type,
-          controllable: (controllable.includes(type))
+          controllable: (controllable.includes(type)),
+          disconnected
         }
 
         if (fans.includes(type)) {
@@ -746,7 +798,7 @@ export const getters = {
    * Return available temperature probes / sensors.
    */
   getSensors: (state, getters): Sensor[] => {
-    const klippyApp: KlippyApp = getters.getKlippyApp
+    const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
 
     const sensors = Object.keys(state.printer)
       .filter(key => (
@@ -772,35 +824,10 @@ export const getters = {
           const color = Vue.$colorset.next(getKlipperType(key), key)
           const config = state.printer.configfile.settings[key.toLowerCase()]
 
-          const mcu = (
-            klippyApp.isKalico &&
-            config != null &&
-            (
-              (
-                'i2c_mcu' in config &&
-                config.i2c_mcu
-              ) ||
-              (
-                'sensor_mcu' in config &&
-                config.sensor_mcu
-              ) ||
-              (
-                'sensor_pin' in config &&
-                config.sensor_pin?.includes(':') &&
-                config.sensor_pin.split(':')[0]
-              )
-            )
-          )
-
-          const kalicoTemperatureOverride = mcu && mcu !== 'mcu' && state.printer[`mcu ${mcu}`]?.non_critical_disconnected
-            ? {
-                temperature: null
-              }
-            : null
+          const disconnected = configHasDisconnectedMcu(config, nonCriticalDisconnectedMcusSet)
 
           groups[name] = {
             ...state.printer[key],
-            ...kalicoTemperatureOverride,
             ...getters.getExtraSensorData(config && 'sensor_type' in config && config.sensor_type?.toLowerCase(), name),
             config: { ...config },
             minTemp: config && 'min_temp' in config ? config.min_temp ?? null : null,
@@ -809,7 +836,8 @@ export const getters = {
             key,
             prettyName,
             color,
-            type
+            type,
+            disconnected
           }
         }
 
@@ -955,6 +983,14 @@ export const getters = {
           x: coords[0],
           y: coords[1]
         })
+      }
+    }
+
+    const baseZ = screws.find(screw => screw.is_base)?.z
+
+    if (baseZ != null) {
+      for (const screw of screws) {
+        screw.relativeZ = screw.z - baseZ
       }
     }
 

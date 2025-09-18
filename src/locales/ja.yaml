@@ -31,6 +31,7 @@ app:
       delete: プロファイルを削除します。
       load: プロファイルを読込み
       save: キャリブレーションされたプロファイルをprinter.cfgに書込みします。
+      download_image: ベッドメッシュイメージのダウンロード
   chart:
     label:
       current: 温度
@@ -46,8 +47,7 @@ app:
       pid_calibrate: 'PID キャリブレーション {name}'
     tooltip:
       help: >-
-        シフトを押したままズームします。<br />項目をクリックするとグラフが切り替わります。<br
-        />電源をクリックすると、グラフが切り替わります。
+        <kbd>シフト</kbd>を押したままズームします。<br />項目をクリックするとグラフが切り替わります。<br />電源をクリックすると、グラフが切り替わります。
   console:
     label:
       auto_scroll: オートスクロール
@@ -100,6 +100,7 @@ app:
       transfer_rate: 転送速度
       uploaded: アップロード
       view_section_documentation: '''%{section}'' ドキュメントを表示'
+      sd_card_info: SDカード情報
     msg:
       not_found: ファイルが見つかりません
       processing: プロセッシング
@@ -175,7 +176,7 @@ app:
       download: ダウンロード
       duplicate: 複製
       edit: 編集
-      exit_layout: レイアウトモードを終了する
+      exit_layout: 終了する
       extrude: 押し出し
       filter: フィルタ
       forgot_password: パスワードをお忘れですか？
@@ -204,9 +205,9 @@ app:
       remove_all: すべて削除
       rename: 名前の変更
       reprint: 再印刷
-      reset_default_layout: デフォルトのレイアウトをリセット
+      reset_default_layout: デフォルトにリセット
       reset_file: クリアファイル
-      reset_layout: レイアウトをリセット
+      reset_layout: リセット
       reset_stats: 統計情報をリセット
       restart_firmware: ファームウェアの再起動
       restart_service: ' %{service}の再スタート'
@@ -223,7 +224,7 @@ app:
       select_columns: カラムを選択
       send: 送信
       set_color: セットカラー
-      set_default_layout: デフォルトのレイアウトとして設定
+      set_default_layout: デフォルトとして保存
       shutdown: シャットダウン
       snooze: スヌーズ
       socket_reconnect: 再接続
@@ -238,8 +239,10 @@ app:
       app_setup_link: 'Fluiddのセットアップ要件はこちら <a target="_blank" href="%{url}">をご覧ください。</a>'
       app_warnings_found: '%{appName} の警告が見つかりました。'
       components_config: 'Moonrakerのプラグイン設定は、こちら <a target="_blank" href="%{url}">です。</a>'
-      failed_components: Moonrakerはプラグインに失敗しています。ログを確認し、設定を更新して、moonrakerを再起動してください。
-      printer_powered_off: 現在、プリンターの電源はオフになっています。<br/><br/> プリンターの電源をオンにするには、左側のボタンをクリックしてください。
+      failed_components: 
+        Moonrakerはプラグインに失敗しています。ログを確認し、設定を更新して、moonrakerを再起動してください。
+      printer_powered_off: 現在、プリンターの電源はオフになっています。<br/><br/> 
+        プリンターの電源をオンにするには、左側のボタンをクリックしてください。
     label:
       accel_to_decel: 加減速
       acceleration: 加速度
@@ -354,6 +357,8 @@ app:
       visible: 見える
       z_hop_height: Zホップの高さ
       z_offset: Zオフセット
+      length_in_kilometers: 長さ（キロメートル）
+      time_in_days: 時間（日数）
     msg:
       bed_screws_adjust: >-
         現在のネジで大幅な調整が必要な場合は、 <b>調整済み</b> をクリックします。そうでない場合は、 <b>同意する</b>
@@ -485,7 +490,8 @@ app:
     tooltip:
       browse_metrics: 利用可能なメトリックを閲覧する
       estop: 緊急停止
-      file_browser_configuration_help: ファイルとフォルダーをここからドラッグ＆ドロップすることで、構成ファイルにコピーします。
+      file_browser_configuration_help: 
+        ファイルとフォルダーをここからドラッグ＆ドロップすることで、構成ファイルにコピーします。
       file_browser_help: >-
         ブラウザの外部からファイルやフォルダをドラッグ＆ドロップして、ここにアップロードします。<br>ファイルやフォルダをサブフォルダまたは「..」にドラッグ
         ＆ドロップして移動します。
@@ -497,6 +503,10 @@ app:
       restart_klipper: klipperのシステムサービスを再起動します。
       rollover_logs: ロールオーバーログ
       run_collector: 実行コレクター
+      exit_layout: レイアウトモードの終了
+      reset_layout: 現在のレイアウトをサーバー全体のデフォルトレイアウトにリセットします
+      reset_default_layout: サーバー全体のデフォルトレイアウトを工場出荷時のデフォルトにリセットします
+      set_default_layout: 現在のレイアウトをサーバー全体のデフォルトレイアウトとして設定する
   history:
     msg:
       confirm: 履歴とプリンター統計がすべて消去されます。よろしいですか？
@@ -614,7 +624,8 @@ app:
       default_toolhead_xy_speed: デフォルトのツールヘッドXY速度
       default_toolhead_z_speed: デフォルトのツールヘッドZ速度
       dotted: 点在
-      drag_and_drop_functionality_for_files_and_folders: ファイルとフォルダのドラッグアンドドロップの有効
+      drag_and_drop_functionality_for_files_and_folders: 
+        ファイルとフォルダのドラッグアンドドロップの有効
       draw_background: 背景を描く
       draw_origin: 描画原点
       enable: 有効化
@@ -696,11 +707,15 @@ app:
       type: タイプ
       unit: 単位
       z_adjust_values: Z値を調整します
+      firmware_restart: ファームウェアの再起動
+      host_restart: ホストの再起動
+      klipper_save_and_restart_action: Klipper の保存と再起動
+      service_restart: サービスの再起動
     timer_options:
       absolute_file_position: 絶対ファイル位置
       duration: 期間のみ
-      filament: フィラメント推定
-      file: ファイル推定
+      filament: フィラメント
+      file: ファイル
       relative_file_position: 相対ファイル位置
       slicer: スライサー
       slicer_m73: スライサー（M73）
@@ -721,11 +736,12 @@ app:
       diagnostics_performance: '[ベータ] 診断情報をログに記録すると、パフォーマンスに影響を与える可能性があります'
       gcode_coords: ダッシュボードのツールヘッド位置の代わりにGCode位置を使用する
       keyboard_shortcuts: '[ベータ版] 「?」を押すと、使用可能なキーボードショートカットのリストが表示されます'
-      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST ツールを実行している場合、自動的にヘルパー
+      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST 
+        ツールを実行している場合、自動的にヘルパー ダイアログを表示します
+      show_manual_probe_dialog_automatically: Manual Probe ツールを実行している場合、自動的にヘルパー
         ダイアログを表示します
-      show_manual_probe_dialog_automatically: Manual Probe ツールを実行している場合、自動的にヘルパー ダイアログを表示します
-      show_screws_tilt_adjust_dialog_automatically: SCREWS_TILT_CALCULATE ツールを実行している場合、ヘルパー
-        ダイアログが自動的に表示されます
+      show_screws_tilt_adjust_dialog_automatically: SCREWS_TILT_CALCULATE 
+        ツールを実行している場合、ヘルパー ダイアログが自動的に表示されます
       theme_disclaimer: >-
         これらのテーマには、それぞれの所有者の知的財産であるブランド名とロゴが使用されています。<br>
         これらの名前とロゴの掲載は、ブランドの許可を得て行われています。<br>
@@ -758,19 +774,30 @@ app:
       lot_nr: ロット番号
       material: 素材
       price: 価格
-      remaining_weight: 残り
-      used_weight: 使用済み
+      remaining_weight: 残りの重さ
+      used_weight: 使用の重さ
       vendor: ベンダー
       weight: 重さ
+      colors: 色
+      diameter: 直径
+      initial_length: 初期長さ
+      initial_weight: 初期の重さ
+      remaining_length: 残りの長さ
+      remaining: 残り
+      used_length: 使用長さ
+      used: 使用
     msg:
       error:
-        cors: カメラ フィードへのアクセス中にエラーが発生しました。 Web カメラサーバーが CORS アクセスを許可していることを確認してください。
-        no_image_data: カメラ フィードへのアクセス中にエラーが発生しました。カメラの構成を確認するか、別のカメラ ソースを試してください。
+        cors: カメラ フィードへのアクセス中にエラーが発生しました。 Web カメラサーバーが CORS 
+          アクセスを許可していることを確認してください。
+        no_image_data: カメラ フィードへのアクセス中にエラーが発生しました。カメラの構成を確認するか、別のカメラ 
+          ソースを試してください。
         spool_not_existant: スキャンしたスプールはデータベースに存在しません。
       info:
         howto: スプールの QR コードをカメラに見せてください。このウィンドウは、スプールが検出されるとすぐに閉じます。
       mismatched_filament: 選択したフィラメントの材質がスライサーで選択した材質と一致しません。続行してもよろしいですか?
-      no_filament: 選択したスプールには、印刷ジョブを正常に完了するのに十分なフィラメントが残っていない可能性があります。続行してもよろしいですか?
+      no_filament: 
+        選択したスプールには、印刷ジョブを正常に完了するのに十分なフィラメントが残っていない可能性があります。続行してもよろしいですか?
       no_required_length: 選択したファイルを印刷するために必要なフィラメントの量は不明です。続行しますか?
       no_spool: スプールが選択されていません。フィラメントトラッキングなしで印刷してもよろしいですか?
       not_connected: Spoolman サーバーが利用できません。
@@ -785,8 +812,10 @@ app:
       prefer_device_camera: 可能な場合はデバイスのカメラを QR コード検出に使用します
       remaining_filament_unit: 残りのフィラメントを
       show_spool_selection_dialog_on_print_start: 印刷開始時にスプール選択ダイアログを表示する
-      warn_on_filament_type_mismatch: スプールのフィラメント タイプとスライサーで選択したフィラメント タイプが一致しない場合に警告を表示します。
-      warn_on_not_enough_filament: 選択したスプールに印刷を完了するのに十分なフィラメントが残っていない場合に警告を表示します。
+      warn_on_filament_type_mismatch: スプールのフィラメント タイプとスライサーで選択したフィラメント 
+        タイプが一致しない場合に警告を表示します。
+      warn_on_not_enough_filament: 
+        選択したスプールに印刷を完了するのに十分なフィラメントが残っていない場合に警告を表示します。
     title:
       scan_spool: スプールのスキャン
       spool_selection: 'スプールの選択 |マクロ {macro}のスプール選択'
@@ -956,3 +985,13 @@ app:
       invalid: リポジトリへのローカル変更を示します
       packages: パッケージ
       release_notes: リリースノート
+  mmu:
+    btn:
+      check_all_gates: すべてのゲートをチェック
+      check_gate: ゲートをチェック
+      select: 選択
+      eject: 排出
+      load: 負荷
+      load_ext: その他の負荷
+      unload: 無負荷
+      unload_ext: その他の無負荷

@@ -9,7 +9,7 @@
       :rules="[
         customRules.minFan
       ]"
-      :disabled="!klippyReady"
+      :disabled="!klippyReady || fan.disconnected"
       :locked="isMobileUserAgent"
       :loading="hasWait(`${$waits.onSetFanSpeed}${fan.name}`)"
       @submit="handleChange"
@@ -19,7 +19,7 @@
       v-else
       align-center
       justify-space-between
-      :class="{ 'text--disabled': !klippyReady }"
+      :class="{ 'text--disabled': !klippyReady || fan.disconnected }"
     >
       <div class="text-body-1">
         {{ fan.prettyName }}

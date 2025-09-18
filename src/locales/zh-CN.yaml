@@ -639,7 +639,8 @@ app:
       diagnostics_performance: '[BETA] 记录诊断信息可能会影响性能'
       gcode_coords: 使用 GCode 坐标位置而不是仪表板上的打印头坐标位置
       show_manual_probe_dialog_automatically: 运行手动探测工具时自动显示帮助对话框
-      show_bed_screws_adjust_dialog_automatically: 如果运行BED_SCREWS_ADJUST工具，自动显示帮助对话框
+      show_bed_screws_adjust_dialog_automatically: 
+        如果运行BED_SCREWS_ADJUST工具，自动显示帮助对话框
       average_calculation: 如果选择多个选项，则将计算平均值
       keyboard_shortcuts: '[BETA] 启用功能：按“?”查看可用键盘快捷键列表'
   socket:
@@ -702,11 +703,13 @@ app:
     label:
       stats_active_extruder: '<span class="secondary--text">挤出机配置为</span>耗材直径 %{filamentDiameter}mm<span
         class="secondary--text">，</span>喷嘴直径 %{nozzleDiameter}mm'
-      stats_volumetric_flow: '以 %{extrudeSpeed}mm/s 的速度，预估挤出耗材体积为 %{estimatedVolumetricFlow}mm³/s'
+      stats_volumetric_flow: '以 %{extrudeSpeed}mm/s 的速度挤出<span class="secondary--text">，预估耗材挤出体积流量为
+        </span> %{estimatedVolumetricFlow}mm³/s'
       stats_extruded_length: >-
-        以 %{extrudeFactor}% 流量挤出 %{extrudeLength}mm 耗材，预估输出长度为
+        以 %{extrudeFactor}% 流量挤出 %{extrudeLength}mm 耗材<span class="secondary--text">，预估输出长度为</span>
         %{estimatedExtrudedLength}mm
-      stats_max_speed: '假设层高为 %{layerHeight} mm，预估的最大打印速度为 %{estimatedMaxSpeed} mm/s'
+      stats_max_speed: '<span class="secondary--text">假定</span>层高为 %{layerHeight}
+        mm，<span class="secondary--text">预估</span> 最大打印速度为 %{estimatedMaxSpeed} mm/s'
   version:
     btn:
       check_for_updates: 检查更新
@@ -724,8 +727,8 @@ app:
       package_list: 软件包列表
       up_to_date: 最新
       updates_available: 有可用更新
-      old_component_version: 您正在使用 %{name} 的旧版本，该版本不支持 Fluidd 的所有功能。<br>至少将 %{name}
-        更新至 %{version}。
+      old_component_version: 您正在使用 %{name} 的旧版本，该版本不支持 Fluidd 的所有功能。<br>至少将 
+        %{name} 更新至 %{version}。
     status:
       finished: 更新已完成
       updating: 正在更新...
@@ -862,6 +865,7 @@ app:
       cancel: 取消
       open_keyboard_shortcut_help: 打开键盘快捷键帮助
       pause: 暂停
+      tool: 工具
     title:
       keyboard_shortcuts: 键盘快捷键
   mmu:
@@ -871,13 +875,15 @@ app:
       color: 颜色
     msg:
       no_spool_id: 无spool ID
-      reset_ttg_map_confirmation: 这会将整个工具到通道映射和自动续料组重置为“mmu_parameters.cfg”中定义的默认值，或在没有默认值的情况下重置为默认的
-        1:1 映射
+      reset_ttg_map_confirmation: 
+        这会将整个工具到通道映射和自动续料组重置为“mmu_parameters.cfg”中定义的默认值，或在没有默认值的情况下重置为默认的 1:1 
+        映射
       select_gate: 选择您想要编辑的通道/料盘信息
-      spoolman_off: Happy Hare 中Spoolman support 设定为 "%{mode}" . 分配spool id至通道已禁用
+      spoolman_off: Happy Hare 中Spoolman support 设定为 "%{mode}" . 分配spool 
+        id至通道已禁用
       no_tool: 必须先选择一个工具
-      spoolman_pull: Spoolman support设定为"%{mode}"模式. 大多数通道属性的本地编辑已禁用. 请直接在 Spoolman
-        DB 中分配 料盘/通道映射，或使用 MMU_SPOOLMAN 命令
+      spoolman_pull: Spoolman support设定为"%{mode}"模式. 大多数通道属性的本地编辑已禁用. 请直接在 
+        Spoolman DB 中分配 料盘/通道映射，或使用 MMU_SPOOLMAN 命令
       no_matching_spool: 找不到匹配的料盘
       are_you_sure: 你确定？
       bad_temperature: 温度超出范围
@@ -893,11 +899,27 @@ app:
       tool_bypass: 工具已设定至旁通!
       warning_prefix: 警告-
       no_active_spool: 无激活料盘
-      reset_gate_map_confirmation: 这会将所有通道映射重置为“mmu_parameters.cfg”中定义的默认值，如果没有可用的默认值，则重置为空映射
+      reset_gate_map_confirmation: 
+        这会将所有通道映射重置为“mmu_parameters.cfg”中定义的默认值，如果没有可用的默认值，则重置为空映射
       spoolman_other: Spoolman support设定为"%{mode}". 您可以选择分配 Spool ID 或直接编辑通道属性
       gate_bypass: 通道已设定至旁通!
       set_gate: 设定至当前通道
       set_tool: 设定至当前工具
+      no_gate_data: 无通道数据
+      tool_not_used: 工具 %{tool} 未用于此打印，选择默认映射
+      mismatch: 耗材可能不匹配
+      color: 颜色
+      map_slicer_tools: 将切片工具映射到 MMU 通道以进行打印
+      single_color: 这看起来像是单色打印，但你没有在 MMU 上选择旁路。你可能需要检查所选工具
+      map_tools: 将工具映射到MMU通道
+      material: 材质
+      temperature: 温度
+      no_slicer_info: 无切片信息，选择 %{tool} 的默认映射
+      select_tool: 选择要映射的工具，然后从列表中选择通道
+      multi_color: 这看起来像是使用 %{numTools} 个工具进行的多材料单挤出机打印。你或许应该查看一下工具映射
+      recover_intro: 这是一个低级修复，用于当Happy 
+        Hare与您的MMU不一致时使用。建议首先尝试自动恢复，但可能需要此操作来纠正当前工具或通道（也许在Type-A 
+        MMU上，您应卸载并归位选择器）。
     btn:
       check_gate: 检测通道
       check_all_gates: 检测所有通道
@@ -917,7 +939,10 @@ app:
       unsync: 解除同步
       home: 归位
       edit_ttg_map: 映射工具/耗材
-      eject: 退料
+      eject: 弹出
+      recover_state: 修复MMU状态
+      off: 关闭
+      on: 开启
     title:
       mmu_maintenance: MMU维护
       edit_ttg_map: 映射工具/耗材 (编辑TTG映射)
@@ -951,3 +976,13 @@ app:
       spoolman_days_ago: '%{days} 天前'
       spoolman_today: 今日
       filament_info: 耗材信息
+      load_speed: 加载速度覆写
+    setting:
+      show_logos: 显示logo
+      show_clog_detection: 显示堵塞检测
+      show_details: 显示耗材详细信息
+      show_ttg_map: 显示工具至通道的映射表
+      show_unavailable_spool_color: 显示不可用的料盘
+  beacon:
+    label:
+      active: ''

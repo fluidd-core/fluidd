@@ -72,12 +72,18 @@
             </span>
           </td>
           <td class="temp-actual">
-            {{ (item.temperature) ? item.temperature.toFixed(1) : 0 }}<small>°C</small>
+            <span v-if="item.temperature != null && !item.disconnected">
+              {{ item.temperature.toFixed(1) }}<small>°C</small>
+            </span>
+            <span v-else>
+              -
+            </span>
           </td>
           <td>/</td>
           <td @contextmenu.stop>
             <app-text-field
               v-if="klippyReady"
+              :disabled="item.disconnected"
               :value="item.target"
               :rules="[
                 $rules.required,
@@ -147,7 +153,7 @@
             </span>
           </td>
           <td class="temp-actual">
-            <span v-if="item.temperature">
+            <span v-if="item.temperature != null && !item.disconnected">
               {{ item.temperature.toFixed(1) }}<small>°C</small>
               <small v-if="item.humidity != null && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }} %</small>
               <small v-if="item.pressure != null && showBarometricPressure"><br>{{ $filters.getReadableAtmosphericPressureString(item.pressure) }}</small>
@@ -161,6 +167,7 @@
           <td @contextmenu.stop>
             <app-text-field
               v-if="klippyReady && item.type === 'temperature_fan'"
+              :disabled="item.disconnected"
               :value="item.target"
               :rules="[
                 $rules.required,
@@ -221,7 +228,7 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                  <span v-if="item.temperature != null">
+                  <span v-if="item.temperature != null && !item.disconnected">
                     {{ item.temperature.toFixed(1) }}<small>°C</small>
                     <small v-if="item.humidity != null && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }} %</small>
                     <small v-if="item.pressure != null && showBarometricPressure"><br>{{ $filters.getReadableAtmosphericPressureString(item.pressure) }}</small>
