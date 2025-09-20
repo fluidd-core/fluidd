@@ -143,22 +143,14 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { GcodeCommands, KlipperPrinterGcodeMoveState } from '@/store/printer/types'
+import type { GcodeCommands } from '@/store/printer/types'
 
 @Component({})
 export default class ZHeightAdjust extends Mixins(StateMixin) {
   moveDistanceValue: number | null = null
 
   get zHomingOrigin (): number {
-    // This is an array of 4 values, representing the homing origin.
-    // It should be in the order of; X, Y, Z, E.
-    const { homing_origin }: KlipperPrinterGcodeMoveState = this.$typedState.printer.printer.gcode_move
-
-    const zHomingOrigin = homing_origin && homing_origin.length >= 4
-      ? +homing_origin[2]
-      : 0
-
-    return zHomingOrigin
+    return this.$typedState.printer.printer.gcode_move.homing_origin[2]
   }
 
   get zAdjustValues (): number[] {
