@@ -2,6 +2,7 @@
   <video
     ref="streamingElement"
     autoplay
+    disablePictureInPicture
     playsinline
     muted
     :style="cameraStyle"

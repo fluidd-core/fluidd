@@ -1,11 +1,13 @@
 <template>
   <video
     ref="streamingElement"
-    :src="cameraVideoSource"
     autoplay
+    disablePictureInPicture
+    playsinline
     muted
-    :crossorigin="crossorigin"
     :style="cameraStyle"
+    :crossorigin="crossorigin"
+    :src="cameraVideoSource"
     @play="updateStatus('connected')"
     @error="updateStatus('error')"
   />
