@@ -200,6 +200,50 @@
                   <v-card-title>{{ device.camera_name }}</v-card-title>
                   <v-card-subtitle>{{ device.hardware_bus }}</v-card-subtitle>
 
+                  <v-card-text>
+                    <v-row>
+                      <v-col>
+                        <app-text-field-with-copy
+                          :value="device.device_path"
+                          label="device_path"
+                          outlined
+                          persistent-placeholder
+                          dense
+                          readonly
+                          hide-details
+                        />
+                      </v-col>
+                    </v-row>
+
+                    <v-row v-if="device.path_by_id">
+                      <v-col>
+                        <app-text-field-with-copy
+                          :value="device.path_by_id"
+                          label="path_by_id"
+                          outlined
+                          persistent-placeholder
+                          dense
+                          readonly
+                          hide-details
+                        />
+                      </v-col>
+                    </v-row>
+
+                    <v-row v-if="device.path_by_hardware">
+                      <v-col>
+                        <app-text-field-with-copy
+                          :value="device.path_by_hardware"
+                          label="path_by_hardware"
+                          outlined
+                          persistent-placeholder
+                          dense
+                          readonly
+                          hide-details
+                        />
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+
                   <v-divider />
 
                   <v-simple-table dense>
@@ -207,18 +251,6 @@
                       <tr>
                         <th>device_name</th>
                         <td>{{ device.device_name }}</td>
-                      </tr>
-                      <tr>
-                        <th>device_path</th>
-                        <td>{{ device.device_path }}</td>
-                      </tr>
-                      <tr v-if="device.path_by_id">
-                        <th>path_by_id</th>
-                        <td>{{ device.path_by_id }}</td>
-                      </tr>
-                      <tr v-if="device.path_by_hardware">
-                        <th>path_by_hardware</th>
-                        <td>{{ device.path_by_hardware }}</td>
                       </tr>
                       <tr v-if="device.usb_location">
                         <th>usb_location</th>
@@ -228,7 +260,7 @@
                         v-for="mode in device.modes"
                         :key="mode.format"
                       >
-                        <th>{{ mode.format }} resoulutions</th>
+                        <th>{{ mode.format }} resolutions</th>
                         <td>{{ mode.resolutions.join(", ") }}</td>
                       </tr>
                     </tbody>
@@ -246,19 +278,31 @@
                   <v-card-title>{{ device.model }}</v-card-title>
                   <v-card-subtitle>Libcamera</v-card-subtitle>
 
+                  <v-card-text>
+                    <v-row>
+                      <v-col>
+                        <app-text-field-with-copy
+                          :value="device.libcamera_id"
+                          label="libcamera_id"
+                          outlined
+                          persistent-placeholder
+                          dense
+                          readonly
+                          hide-details
+                        />
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+
                   <v-divider />
 
                   <v-simple-table dense>
                     <tbody>
-                      <tr>
-                        <th>libcamera_id</th>
-                        <td>{{ device.libcamera_id }}</td>
-                      </tr>
                       <tr
                         v-for="mode in device.modes"
                         :key="mode.format"
                       >
-                        <th>{{ mode.format }} resoulutions</th>
+                        <th>{{ mode.format }} resolutions</th>
                         <td>{{ mode.resolutions.join(", ") }}</td>
                       </tr>
                     </tbody>
