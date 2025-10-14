@@ -223,6 +223,11 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
       this.printerSettings.probe != null ||
       this.printerSettings.bltouch != null ||
       this.printerSettings.smart_effector != null ||
+      (
+        this.printerSettings.scanner != null &&
+        'sensor' in this.printerSettings.scanner &&
+        this.printerSettings.scanner.sensor === 'cartographer'
+      ) ||
       Object.keys(this.printerSettings)
         .some(x => x.startsWith('probe_eddy_current '))
     )
