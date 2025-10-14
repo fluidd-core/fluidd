@@ -843,6 +843,8 @@ type KlipperPrinterSettingsBaseType =
 
     beacon: KlipperPrinterBeaconSettings;
 
+    scanner: KlipperPrinterCartographerScannerSettings;
+
     [key: `beacon model ${Lowercase<string>}`]: KlipperPrinterBeaconModelSettings;
   }>
 
@@ -1404,6 +1406,9 @@ export interface KalicoPrinterZTiltNgSettings {
 }
 
 export interface KlipperPrinterBeaconSettings extends Record<string, unknown> {
+}
+
+export interface KlipperPrinterCartographerScannerSettings extends Record<string, unknown> {
 }
 
 export interface KlipperPrinterBeaconModelSettings extends Record<string, unknown> {
