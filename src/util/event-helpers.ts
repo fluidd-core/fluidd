@@ -1,6 +1,6 @@
 export const eventTargetIsContentEditable = (event: Event): boolean => {
   if (event.target) {
-    const { isContentEditable, tagName, type, readOnly } = event.target as HTMLInputElement
+    const { isContentEditable, tagName, type, readOnly, role, ariaRoleDescription } = event.target as HTMLInputElement
 
     if (isContentEditable) {
       return true
@@ -14,6 +14,10 @@ export const eventTargetIsContentEditable = (event: Event): boolean => {
         (
           tagName === 'INPUT' &&
           !['checkbox', 'radio', 'range', 'button', 'file', 'reset', 'submit', 'color'].includes(type)
+        ) ||
+        (
+          role === 'textbox' &&
+          ariaRoleDescription === 'editor'
         )
       )
     )
