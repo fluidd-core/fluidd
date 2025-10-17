@@ -1,26 +1,20 @@
-FROM alpine:3.18
+FROM node:20-alpine
 
 RUN \
   apk update \
   && apk add \
     git \
     git-zsh-completion \
-    nodejs \
-    npm \
-    openssh \
     sudo \
     shadow \
     zsh \
     zsh-completions \
-  && rm -f /etc/apk/cache/* /root/.cache \
-  && groupadd vscode \
-  && useradd -s /bin/zsh --gid vscode -m vscode \
-  && echo vscode ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/vscode \
-  && chmod 0440 /etc/sudoers.d/vscode \
-  && mkdir -p "/home/vscode" \
-  && chown vscode:vscode "/home/vscode"
+  && echo node ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/node \
+  && chmod 0440 /etc/sudoers.d/node \
+  && chsh -s /bin/zsh node \
+  && rm -f /etc/apk/cache/* /root/.cache
 
-USER vscode
+USER node
 
 RUN \
   sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
