@@ -26,14 +26,8 @@
             'collapsable-card-title': titleShadow
           }"
         >
-          <v-row
-            no-gutters
-            class="flex-nowrap"
-          >
-            <v-col
-              align-self="center"
-              class="text-no-wrap"
-            >
+          <v-row no-gutters>
+            <v-col align-self="center">
               <slot name="title">
                 <span class="focus--text">{{ title }}</span>
                 <app-inline-help
