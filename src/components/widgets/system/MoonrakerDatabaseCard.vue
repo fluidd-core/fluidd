@@ -102,10 +102,6 @@ export default class MoonrakerDatabaseCard extends Mixins(StateMixin) {
     return this.$typedGetters['database/getBackups']
   }
 
-  databaseRefresh () {
-    SocketActions.serverDatabaseList()
-  }
-
   async handleRestoreBackup (filename: string) {
     const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_restore_backup'),
