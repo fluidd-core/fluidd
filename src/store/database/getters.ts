@@ -5,8 +5,8 @@ import type { RootState } from '../types'
 export const getters = {
   getBackups: (state): string[] => {
     const backups = [...state.info?.backups ?? []]
-      .sort((a, b) => a.localeCompare(b))
 
     return backups
+      .sort((a, b) => a.localeCompare(b))
   }
 } satisfies GetterTree<DatabaseState, RootState>
