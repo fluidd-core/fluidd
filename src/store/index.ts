@@ -29,6 +29,7 @@ import { jobQueue } from './jobQueue'
 import { spoolman } from './spoolman'
 import { mmu } from './mmu'
 import { sensors } from './sensors'
+import { database } from './database'
 import { analysis } from './analysis'
 
 Vue.use(Vuex)
@@ -60,6 +61,7 @@ export const storeOptions = {
     spoolman,
     mmu,
     sensors,
+    database,
     analysis
   } satisfies RootModules,
   mutations: {},

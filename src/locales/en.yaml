@@ -414,6 +414,7 @@ app:
         confirm_remove_printer: Are you sure you want to remove the printer %{name}?
         confirm_remove_thermal_preset: Are you sure you want to remove the thermal preset %{name}?
         confirm_remove_user: Are you sure you want to remove user %{username}?
+        confirm_restore_backup: Are you sure you want to restore this backup? Moonraker will restart immediately after this request is processed.
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
         confirm_service_start: Are you sure you want to start the %{name} service?
         confirm_service_restart: Are you sure you want to restart the %{name} service?
@@ -1153,3 +1154,12 @@ app:
     tooltip:
       delete: Delete Model
       load: Load Model
+  database:
+    btn:
+      compact_database: Compact Database
+      create_backup: Create Backup
+    label:
+      moonraker_database: Moonraker Database
+    tooltip:
+      restore_backup: Restore Backup
+      delete_backup: Delete Backup

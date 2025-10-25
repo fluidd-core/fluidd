@@ -71,6 +71,18 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
       }
     },
 
+    formatTimestamp: (value: number | string | Date) => {
+      const date = new Date(value)
+      const year = date.getFullYear().toString()
+      const month = (date.getMonth() + 1).toString().padStart(2, '0')
+      const day = date.getDate().toString().padStart(2, '0')
+      const hours = date.getHours().toString().padStart(2, '0')
+      const minutes = date.getMinutes().toString().padStart(2, '0')
+      const seconds = date.getSeconds().toString().padStart(2, '0')
+
+      return `${year}${month}${day}-${hours}${minutes}${seconds}`
+    },
+
     formatCounterSeconds: (seconds: number | string, options?: { includeDays: boolean }) => {
       const range = instance.secondsAsRange(seconds)
 
