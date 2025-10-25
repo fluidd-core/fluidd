@@ -110,6 +110,7 @@ export default class MoonrakerDatabaseCard extends Mixins(StateMixin) {
 
     if (result) {
       SocketActions.serverDatabaseRestore(filename)
+      this.$typedCommit('socket/setSocketDisconnecting', true)
     }
   }
 
