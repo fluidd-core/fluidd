@@ -265,6 +265,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     )
   }
 
+  get parkToolheadMacro (): Macro | undefined {
+    return this.$typedGetters['macros/getMacroByName'](
+      'PARK_TOOLHEAD',
+      'TOOLHEAD_PARK',
+      'G27'
+    )
+  }
+
   get availableTools () {
     const tools: Tool[] = []
 
@@ -301,6 +309,17 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
         name: cleanNozzleMacro.name.toUpperCase(),
         label: cleanNozzleMacro.name.toLowerCase() === 'g12' ? 'G12 (Clean the Nozzle)' : undefined,
         icon: '$cleanNozzle'
+      })
+    }
+
+    const parkToolheadMacro = this.parkToolheadMacro
+
+    if (parkToolheadMacro) {
+      tools.push({
+        name: parkToolheadMacro.name.toUpperCase(),
+        label: parkToolheadMacro.name.toLowerCase() === 'g27' ? 'G27 (Park Toolhead)' : undefined,
+        icon: '$parkToolhead',
+        disabled: !this.allHomed
       })
     }
 
