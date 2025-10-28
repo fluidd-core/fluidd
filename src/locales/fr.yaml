@@ -6,7 +6,7 @@ app:
       mesh_matrix: Matrice interpolée
       probed_matrix: Matrice réelle
       profile_name: Nom du profil
-      remove_profile: Supprimer le profile %{name}
+      remove_profile: Supprimer le profil %{name}
       scale: Échelle au min / max
       wireframe: Armature
       active: actif
@@ -33,8 +33,8 @@ app:
       rate_of_change: Changement
     tooltip:
       help: >-
-        Maintenez <kbd>Shift</kbd> pour zoomer.<br />Cliquez sur un élément pour l'afficher
-        .<br />Cliquez sur une puissance pour l'afficher .
+        Maintenez <kbd>Shift</kbd> pour zoomer.<br />Cliquez sur un élément pour l'afficher. 
+        <br />Cliquez sur une puissance pour l'afficher.
   console:
     label:
       auto_scroll: Scroll auto
@@ -46,9 +46,9 @@ app:
   endpoint:
     error:
       cant_connect: >-
-        Une erreur s'est produite et fluidd ne peut pas communiquer . Êtes-vous
+        Une erreur s'est produite et fluidd ne peut pas communiquer. Êtes-vous
         sûr(e) qu'il s'agisse de la bonne adresse ?
-      cors_error: blocké par la configuration CORS
+      cors_error: Bloqué par la configuration CORS
       cors_note: >-
         Cela peut signifier que vous devez modifier la configuration de votre moonraker.
         Veuillez consulter la documentation sur les configurations multi-imprimantes
@@ -60,7 +60,7 @@ app:
         Un souci ? <a href="%{url}" target="_blank">Cliquez ici</a> pour plus d'informations.
     tooltip:
       endpoint_examples: >-
-        Saissizez l'URL de l'API .<br />Par exemple;<br
+        Saisissez l'URL de l'API.<br />Par exemple:<br
         /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
     states:
@@ -131,7 +131,7 @@ app:
       show_moves: Afficher les déplacements
       show_next_layer: Afficher la couche suivante
       show_previous_layer: Afficher la couche précédente
-      show_retractions: Aficher les rétractations
+      show_retractions: Afficher les rétractations
       exclude_object: Exclure un objet
       parsing_file: Analyse du fichier
       show_current_layer: Afficher la couche actuelle
@@ -152,7 +152,7 @@ app:
       all: Tout
       calibrate: Calibrer
       cancel: Annuler
-      clear_profile: Effacer le profile
+      clear_profil: Effacer le profil
       close: Fermer
       config_reference: Référence de configuration
       download: Télécharger
@@ -163,7 +163,7 @@ app:
       load_all: Tout charger
       more_information: Plus d'informations
       pause: Pause
-      preheat: Préchauffe
+      preheat: Préchauffer
       presets: Préréglage
       preview_gcode: Prévisualiser le Gcode
       quad_gantry_level: QGL
@@ -183,13 +183,13 @@ app:
       retract: Rétracter
       save: Enregistrer
       save_as: Sauvegarder sous
-      save_restart: Enregister et redémarrer
+      save_restart: Enregistrer et redémarrer
       send: Envoyer
       set_color: Définir la couleur
       shutdown: Éteindre
-      socket_refresh: Forcer le rafraichissement
-      upload: Uploaded
-      upload_print: Uploaded & imprimer
+      socket_refresh: Forcer le rafraîchissement
+      upload: Téléversé
+      upload_print: Téléversé & imprimer
       view: Voir
       socket_reconnect: Se reconnecter
       add_to_queue: Ajouter à la file d'attente
@@ -201,7 +201,7 @@ app:
       auth_unsure: Vous ne savez pas pourquoi vous voyez cela ?
       reset_stats: Réinitialiser les statistiques
       copied: Copié
-      copy: Copie
+      copy: Copier
       create_zip_archive: Créer une archive ZIP
       delete: Supprimer
       filter: Filtre
@@ -228,12 +228,12 @@ app:
       app_setup_link: >-
         Les instructions d'installation de Fluidd sont disponibles <a target="_blank"
         href="%{url}">ici</a>
-      app_warnings_found: '%{appName} avertissements .'
+      app_warnings_found: '%{appName} avertissements.'
       components_config: >-
         La configuration du plugin moonraker est disponible <a target="_blank" href="%{url}">ici.</a>
       failed_components: >-
         Moonraker a des plugins en échec, veuillez vérifier les logs, mettre à
-        jour la configuration et redémarrer moonraker .
+        jour la configuration et redémarrer moonraker.
     label:
       accel_to_decel: Accel. à Décel
       acceleration: Accélération
@@ -286,7 +286,7 @@ app:
       uncategorized: Non catégorisé
       unretract_speed: Vitesse de dérétractation
       used: occupé
-      velocity: Velocité
+      velocity: Vélocité
       visible: Visible
       z_offset: Z Offset
       finish_time: Fin
@@ -377,10 +377,8 @@ app:
         invalid_aspect: Ratio d'aspect invalide
       msg:
         confirm: Êtes-vous sûr(e) ?
-        confirm_reboot_host: Êtes-vous sûr(e) ? Ceci va redémarrer le système hôte
-          .
-        confirm_shutdown_host: Êtes-vous sûr(e) ? Ceci va éteindre le système hôte
-          .
+        confirm_reboot_host: Êtes-vous sûr(e) ? Ceci va redémarrer le système hôte.
+        confirm_shutdown_host: Êtes-vous sûr(e) ? Ceci va éteindre le système hôte.
         confirm_forcemove_toggle: En êtes-vous sûr ? Cela peut endommager l'imprimante.
         confirm_power_device_toggle: Êtes-vous sûr ? Cela va basculer l'état de cet
           appareil.
@@ -431,7 +429,7 @@ app:
         time_added: Temps ajouté
     title:
       add_printer: Ajouter une imprimante
-      bedmesh: Maille du lit
+      bedmesh: Maillage du lit
       bedmesh_controls: Options du Bed Mesh
       camera: Webcam
       config_files: Fichiers de configuration
@@ -475,7 +473,7 @@ app:
       managed_by_moonraker: Géré par la configuration de votre Moonraker
       notifications: Notifications
       run_collector: Exécuter le collecteur
-      file_browser_configuration_help: Copiez les fichiers et les dossiers dans les
+      file_browser_configuration_help: Copier les fichiers et les dossiers dans les
         fichiers de configuration en les faisant glisser d'ici et en les déposant
         là
       file_browser_help: Glisser-déposer des fichiers ou des dossiers depuis l'extérieur
@@ -585,7 +583,7 @@ app:
       icon: Icône
       keyboard_shortcuts: Raccourcis clavier
       show_chart: Afficher le graphique
-      show_code_lens: Montrer CodeLens
+      show_code_lens: Afficher CodeLens
       show_legend: Afficher la légende
       show_upload_and_print: Afficher le bouton de téléversement et d'impression dans
         la barre de navigation supérieure
@@ -705,8 +703,8 @@ app:
     msg:
       connecting: Connexion à Moonraker ...
       no_connection: >-
-        Pas de connection à Moonraker . Vérifiez l'état de Moonraker et / ou
-        rafraichissez .
+        Pas de connection à Moonraker. Vérifiez l'état de Moonraker et / ou
+        rafraîchissez.
   system_info:
     label:
       capacity: Capacité
@@ -910,14 +908,14 @@ app:
         front_left: Avant Gauche
         back_right: Arrière Droit
       mode_hyperlapse: Hyperlapse
-      park_travel_speed: Vitesse pour ce mettre en mode Park
-      targetlength: Longeur cible
-      variable_fps_min: Fréquence de rafraichissement minimale
+      park_travel_speed: Vitesse pour se mettre en mode Park
+      targetlength: Longueur cible
+      variable_fps_min: Fréquence de rafraîchissement minimale
       park_custom_pos_x: Position du mode Park en X
       park_custom_pos_dz: Position du Z-Hop pour le mode Park
       fw_retract: Utiliser la rétractation du micrologiciel
       previewimage: Générer une miniature
-      saveframes: Sauvegardes les images
+      saveframes: Sauvegarde les images
       enable: Activé
       crf: Facteur de taux constant
       duplicatelastframe: Duplication des dernières images
@@ -933,7 +931,7 @@ app:
       park_custom_pos_y: Position du mode Park en Y
       stream_delay_compensation: Délai de la compensation
       variable_fps: FPS variable
-      variable_fps_max: Fréquence de rafraichissement maximale
+      variable_fps_max: Fréquence de rafraîchissement maximale
     title:
       timelapse_status: Statut du timelapse
       timelapse_settings: Réglages Timelapse
