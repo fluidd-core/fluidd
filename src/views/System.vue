@@ -8,7 +8,9 @@
 
       <sd-info-card class="mb-2 mb-md-4" />
 
-      <disk-usage-card />
+      <disk-usage-card class="mb-2 mb-md-4" />
+
+      <moonraker-database-card />
     </v-col>
 
     <v-col
@@ -38,6 +40,7 @@ import McuCard from '@/components/widgets/system/McuCard.vue'
 import SystemUsageCard from '@/components/widgets/system/SystemUsageCard.vue'
 import DiskUsageCard from '@/components/widgets/system/DiskUsageCard.vue'
 import SdInfoCard from '@/components/widgets/system/SdInfoCard.vue'
+import MoonrakerDatabaseCard from '@/components/widgets/system/MoonrakerDatabaseCard.vue'
 import type { MCU } from '@/store/printer/types'
 
 @Component({
@@ -47,7 +50,8 @@ import type { MCU } from '@/store/printer/types'
     McuCard,
     SystemUsageCard,
     DiskUsageCard,
-    SdInfoCard
+    SdInfoCard,
+    MoonrakerDatabaseCard
   }
 })
 export default class Configure extends Mixins(StateMixin) {
