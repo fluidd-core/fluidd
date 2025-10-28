@@ -77,11 +77,11 @@
             </template>
 
             <template
-              v-if="macro.config?.description && macro.config.description !== 'G-Code macro'"
+              v-if="macro.description"
               #sub-title
             >
               <span class="ml-1 mr-2">
-                {{ macro.config.description }}
+                {{ macro.description }}
               </span>
             </template>
 

@@ -2,7 +2,7 @@
   <app-dialog
     v-model="open"
     :title="macro.name.toUpperCase()"
-    :sub-title="macro.config?.description"
+    :sub-title="macro.description"
     max-width="480"
     @save="handleSave"
   >

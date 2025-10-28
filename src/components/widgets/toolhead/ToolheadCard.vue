@@ -283,7 +283,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
       tools.push({
         name: loadFilamentMacro.name.toUpperCase(),
-        label: loadFilamentMacro.name.toLowerCase() === 'm701' ? 'M701 (Load Filament)' : undefined,
+        label: loadFilamentMacro.name.toLowerCase() === 'm701' ? `M701 (${loadFilamentMacro.description || this.$t('app.general.label.load_filament')})` : undefined,
         icon: '$loadFilament',
         disabled: !(ignoreMinExtrudeTemp || this.extruderReady) || this.extruderDisconnected
       })
@@ -296,7 +296,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
       tools.push({
         name: unloadFilamentMacro.name.toUpperCase(),
-        label: unloadFilamentMacro.name.toLowerCase() === 'm702' ? 'M702 (Unload Filament)' : undefined,
+        label: unloadFilamentMacro.name.toLowerCase() === 'm702' ? `M702 (${unloadFilamentMacro.description || this.$t('app.general.label.unload_filament')})` : undefined,
         icon: '$unloadFilament',
         disabled: !(ignoreMinExtrudeTemp || this.extruderReady) || this.extruderDisconnected
       })
@@ -307,7 +307,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     if (cleanNozzleMacro) {
       tools.push({
         name: cleanNozzleMacro.name.toUpperCase(),
-        label: cleanNozzleMacro.name.toLowerCase() === 'g12' ? 'G12 (Clean the Nozzle)' : undefined,
+        label: cleanNozzleMacro.name.toLowerCase() === 'g12' ? `G12 (${cleanNozzleMacro.description || this.$t('app.general.label.clean_nozzle')})` : undefined,
         icon: '$cleanNozzle'
       })
     }
@@ -317,7 +317,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     if (parkToolheadMacro) {
       tools.push({
         name: parkToolheadMacro.name.toUpperCase(),
-        label: parkToolheadMacro.name.toLowerCase() === 'g27' ? 'G27 (Park Toolhead)' : undefined,
+        label: parkToolheadMacro.name.toLowerCase() === 'g27' ? `G27 (${parkToolheadMacro.description || this.$t('app.general.label.park_toolhead')})` : undefined,
         icon: '$parkToolhead',
         disabled: !this.allHomed
       })
