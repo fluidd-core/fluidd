@@ -4,7 +4,7 @@ import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 import type { ConsoleEntry, ConsoleFilter, ConsoleState, PromptDialogItemButton, PromptDialogItem } from './types'
-import escapeRegExp from '@/util/escape-regexp'
+import { escapeRegExp } from 'lodash-es'
 
 const compileExpression = (filter: ConsoleFilter): RegExp => {
   switch (filter.type) {

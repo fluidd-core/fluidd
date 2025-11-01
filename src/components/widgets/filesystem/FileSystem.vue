@@ -537,7 +537,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       return !this.filters
         .some(filter => {
           if (filter === 'hidden_files') {
-            return file.name.match(/^\.(?!\.$)/)
+            return /^\.(?!\.$)/.test(file.name)
           }
 
           if (file.type !== 'file') {
@@ -552,19 +552,19 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
               return file.extension === '.mru'
 
             case 'klipper_backup_files':
-              return file.filename.match(/^printer-\d{8}_\d{6}\.cfg$/)
+              return /^printer-\d{8}_\d{6}\.cfg$/.test(file.filename)
 
             case 'print_start_time':
               return 'print_start_time' in file && file.print_start_time !== null
 
             case 'rolled_log_files':
               return (
-                file.filename.match(/\.\d{4}-\d{2}-\d{2}(_\d{2}-\d{2}-\d{2})?$/) ||
-                file.filename.match(/\.log\.\d+$/)
+                /\.\d{4}-\d{2}-\d{2}(?:_\d{2}-\d{2}-\d{2})?$/.test(file.filename) ||
+                /\.log\.\d+$/.test(file.filename)
               )
 
             case 'crowsnest_backup_files':
-              return file.filename.match(/^crowsnest\.conf\.\d{4}-\d{2}-\d{2}-\d{4}$/)
+              return /^crowsnest\.conf\.\d{4}-\d{2}-\d{2}-\d{4}$/.test(file.filename)
           }
 
           return false
