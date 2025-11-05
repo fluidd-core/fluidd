@@ -1164,6 +1164,8 @@ app:
       create_backup: Create Backup
     label:
       moonraker_database: Moonraker Database
+    msg:
+      not_found: No existing database backups found.
     tooltip:
       restore_backup: Restore Backup
       delete_backup: Delete Backup
