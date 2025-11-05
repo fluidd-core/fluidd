@@ -11,10 +11,9 @@ const stringFormatters = () => {
   const instance = {
     prettyCase: (value: string) => {
       return value
-        .split(/[ _]/g)
-        .filter(x => x)
-        .map(upperFirst)
-        .join(' ')
+        .replace(/[_ ]+/g, ' ')
+        .trim()
+        .replace(/\w+/g, upperFirst)
     },
 
     getPixelsString: (value: number | string | undefined | null) => {
