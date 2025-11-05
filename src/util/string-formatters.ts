@@ -13,7 +13,7 @@ const stringFormatters = () => {
       return value
         .replace(/[_ ]+/g, ' ')
         .trim()
-        .replace(/\w+/g, upperFirst)
+        .replace(/\w+/g, match => upperFirst(match))
     },
 
     getPixelsString: (value: number | string | undefined | null) => {
