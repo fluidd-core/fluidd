@@ -79,6 +79,7 @@
           :items="[
             { text: $t('app.setting.camera_type_options.mjpegadaptive'), value: 'mjpegstreamer-adaptive' },
             { text: $t('app.setting.camera_type_options.mjpegstream'), value: 'mjpegstreamer' },
+            { text: $t('app.setting.camera_type_options.uv4l_mjpeg_stream'), value: 'uv4l-mjpeg' },
             { text: $t('app.setting.camera_type_options.hlsstream'), value: 'hlsstream' },
             { text: $t('app.setting.camera_type_options.webrtc_camera_streamer'), value: 'webrtc-camerastreamer' },
             { text: $t('app.setting.camera_type_options.webrtc_go2rtc'), value: 'webrtc-go2rtc' },

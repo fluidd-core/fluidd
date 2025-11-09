@@ -112,7 +112,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import type { WebcamConfig } from '@/store/webcams/types'
+import type { WebcamConfig, WebcamService } from '@/store/webcams/types'
 import type { CameraFullscreenAction } from '@/store/config/types'
 import { CameraComponents } from '@/dynamicImports'
 import CameraMixin from '@/mixins/camera'
@@ -157,8 +157,14 @@ export default class CameraItem extends Vue {
   }
 
   get cameraComponent () {
-    if (this.camera.service) {
-      const componentName = `${startCase(this.camera.service).replace(/ /g, '')}Camera`
+    const cameraService: Exclude<WebcamService, 'uv4l-mjpeg'> | undefined = (
+      this.camera.service === 'uv4l-mjpeg'
+        ? 'mjpegstreamer'
+        : this.camera.service
+    )
+
+    if (cameraService) {
+      const componentName = `${startCase(cameraService).replace(/ /g, '')}Camera`
 
       if (componentName in CameraComponents) {
         return CameraComponents[componentName]
