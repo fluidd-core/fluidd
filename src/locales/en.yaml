@@ -578,6 +578,7 @@ app:
       webrtc_camera_streamer: WebRTC (camera-streamer)
       video: IP Camera
       iframe: HTTP page
+      uv4l_mjpeg_stream: UV4L-MJPEG Stream
       webrtc_go2rtc: WebRTC (go2rtc)
       webrtc_mediamtx: WebRTC (MediaMTX)
     camera_rotate_options:
