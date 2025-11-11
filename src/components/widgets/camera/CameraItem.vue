@@ -15,7 +15,7 @@
         @update:camera-name="cameraName = $event"
         @update:camera-name-menu-items="cameraNameMenuItems = $event"
         @update:raw-camera-url="rawCameraUrl = $event"
-        @update:frames-per-second="framesPerSecond = $event"
+        @update:frames-per-second="handleFramesPerSecond"
         @frame="$emit('frame', $event)"
       />
     </template>
@@ -112,7 +112,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import type { WebcamConfig, WebcamService } from '@/store/webcams/types'
+import type { WebcamConfig } from '@/store/webcams/types'
 import type { CameraFullscreenAction } from '@/store/config/types'
 import { CameraComponents } from '@/dynamicImports'
 import CameraMixin from '@/mixins/camera'
@@ -157,11 +157,7 @@ export default class CameraItem extends Vue {
   }
 
   get cameraComponent () {
-    const cameraService: Exclude<WebcamService, 'uv4l-mjpeg'> | undefined = (
-      this.camera.service === 'uv4l-mjpeg'
-        ? 'mjpegstreamer'
-        : this.camera.service
-    )
+    const cameraService = this.camera.service
 
     if (cameraService) {
       const componentName = `${startCase(cameraService).replace(/ /g, '')}Camera`
@@ -180,6 +176,12 @@ export default class CameraItem extends Vue {
     }
 
     return cameraName
+  }
+
+  handleFramesPerSecond (framesPerSecond : number) {
+    this.framesPerSecond = framesPerSecond >= 0
+      ? framesPerSecond.toString().padStart(2, '0')
+      : ''
   }
 }
 </script>

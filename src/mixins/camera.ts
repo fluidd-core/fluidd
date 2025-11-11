@@ -20,7 +20,7 @@ export default class CameraMixin extends Vue {
   status: CameraConnectionStatus = 'disconnected'
   cameraName = ''
   cameraNameMenuItems: CameraNameMenuItem[] = []
-  framesPerSecond = ''
+  framesPerSecond = -1
   rawCameraUrl = ''
 
   @Watch('camera')
@@ -140,7 +140,7 @@ export default class CameraMixin extends Vue {
   }
 
   @Emit('update:frames-per-second')
-  updateFramesPerSecond (framesPerSecond: string) {
+  updateFramesPerSecond (framesPerSecond: number) {
     this.framesPerSecond = framesPerSecond
   }
 

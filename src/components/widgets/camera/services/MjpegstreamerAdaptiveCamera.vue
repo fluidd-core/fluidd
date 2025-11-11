@@ -22,8 +22,8 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
 
   cameraImageSource = ''
   cameraImageSourceUrl: URL | null = null
-  requestStartTime = performance.now()
-  startTime = performance.now()
+  requestStartTime = 0
+  startTime = 0
   time = 0
   requestTime = 0
   timeSmoothing = 0.6
@@ -61,9 +61,7 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
   handleRefresh () {
     if (!document.hidden) {
       if (this.time !== 0) {
-        const framesPerSecond = Math.round(1000 / this.time).toString().padStart(2, '0')
-
-        this.updateFramesPerSecond(framesPerSecond)
+        this.updateFramesPerSecond(Math.round(1000 / this.time))
       }
       this.$nextTick(() => this.updateCameraImageSource())
     } else {
@@ -88,6 +86,9 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
       this.updateStatus('connecting')
 
       this.cameraImageSourceUrl = this.buildAbsoluteUrl(this.camera.snapshot_url || '')
+
+      this.time = 0
+      this.startTime = performance.now()
 
       this.updateCameraImageSource()
 
