@@ -170,10 +170,12 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   }
 
   get availableKlipperSaveAndRestartActions (): { value: KlipperSaveAndRestartAction, text: string }[] {
+    const isSimulavrMcu: boolean = this.$typedGetters['printer/getIsSimulavrMcu']
+
     return [
       {
         value: 'auto',
-        text: `${this.$tc('app.setting.label.auto')} (${this.$tc('app.setting.label.firmware_restart')})`,
+        text: `${this.$tc('app.setting.label.auto')} (${isSimulavrMcu ? this.$tc('app.setting.label.service_restart') : this.$tc('app.setting.label.firmware_restart')})`,
       },
       {
         value: 'firmware-restart',

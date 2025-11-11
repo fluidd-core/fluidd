@@ -331,6 +331,19 @@ export const getters = {
     }
   },
 
+  getIsSimulavrMcu: (state): boolean => {
+    if (state.printer.configfile.settings.mcu?.serial !== '/tmp/pseudoserial') {
+      return false
+    }
+
+    const mcu = state.printer.mcu?.mcu_constants?.MCU
+
+    return (
+      typeof mcu === 'string' &&
+      /^atmega\d+/i.test(mcu)
+    )
+  },
+
   /**
    * Return MCU's and their state
    */

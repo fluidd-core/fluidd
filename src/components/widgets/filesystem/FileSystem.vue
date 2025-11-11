@@ -947,6 +947,17 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         const klipperSaveAndRestartAction: KlipperSaveAndRestartAction = this.$typedState.config.uiSettings.editor.klipperSaveAndRestartAction
 
         switch (klipperSaveAndRestartAction) {
+          case 'auto': {
+            const isSimulavrMcu: boolean = this.$typedGetters['printer/getIsSimulavrMcu']
+
+            if (isSimulavrMcu) {
+              this.serviceRestartKlipper()
+            } else {
+              this.firmwareRestartKlippy()
+            }
+            break
+          }
+
           case 'host-restart':
             this.restartKlippy()
             break
