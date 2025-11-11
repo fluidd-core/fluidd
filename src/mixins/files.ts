@@ -63,10 +63,14 @@ export default class FilesMixin extends Vue {
 
     if (result) {
       const path = file.path ? `gcodes/${file.path}` : 'gcodes'
-      return await this.getFile<string>(file.filename, path, file.size, {
-        responseType: 'text',
-        transformResponse: [v => v]
-      })
+
+      return await this.getFile<ArrayBuffer>(
+        file.filename,
+        path,
+        file.size,
+        {
+          responseType: 'arraybuffer',
+        })
     }
   }
 

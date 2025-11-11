@@ -387,6 +387,7 @@ app:
       not_valid_fluidd_backup_file: Not a valid Fluidd backup file!
       fluidd_settings_backup_failed: Failed to backup Fluidd settings!
       fluidd_settings_restore_failed: Failed to restore Fluidd settings!
+      gcode_preview_failed: Failed to preview G-code file!
     simple_form:
       error:
         arrayofnums: Only numbers

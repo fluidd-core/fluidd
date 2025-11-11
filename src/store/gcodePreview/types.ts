@@ -70,18 +70,3 @@ export interface BBox {
   x: MinMax;
   y: MinMax;
 }
-
-export type ParseGcodeWorkerClientMessage = {
-  action: 'progress',
-  filePosition: number
-} | {
-  action: 'result',
-  moves: Move[],
-  layers: Layer[],
-  parts: Part[]
-}
-
-export type ParseGcodeWorkerServerMessage = {
-  action: 'parse',
-  gcode: string
-}
