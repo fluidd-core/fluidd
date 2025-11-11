@@ -34,6 +34,11 @@ The current supported types are:
     frame rate.
   - A more reliable approach in certain scenarios.
 
+- **UV4L-MJPEG Stream**
+  - Similiar to regular MJPEG Stream, however it has lower impact on the browser
+    as it doesn't use a worker to read the stream and thus has no FPS
+    indication.
+
 - **HLS Stream**  
   - Loads an HLS (HTTP Live Streaming) video stream via [HLS.js](https://hlsjs.video-dev.org/).
   - Utilizes HTML5 video and MediaSource Extensions for playback, requiring a
