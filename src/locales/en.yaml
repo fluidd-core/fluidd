@@ -263,6 +263,7 @@ app:
       bars: Bars
       category: Category
       change_password: Change password
+      clean_nozzle: Clean Nozzle
       clear_all: Clear all
       color: Color
       command: Command
@@ -270,6 +271,7 @@ app:
       cross: Cross
       circle: Circle
       compact: Compact
+      connected: Connected
       current_password: Current password
       current_user: Current user
       default: Default
@@ -296,12 +298,14 @@ app:
       layout: Layout
       ldap: LDAP
       length_in_kilometers: Length in kilometers
+      load_filament: Load Filament
       longest_job: Longest job
       low: Low
       manage_accounts: Manage Accounts
       minimum_cruise_ratio: Minimum Cruise Ratio
       user_managed_source: User managed by %{source} authentication
       m117: M117
+      disconnected: Disconnected
       moonraker: Moonraker
       name: Name
       new_password: New password
@@ -309,6 +313,7 @@ app:
       'on': 'On'
       'off': 'Off'
       numeric_prefix_sort: Numeric Prefix sort
+      park_toolhead: Park Toolhead
       password: Password
       partial_of_total: '%{partial} of %{total}'
       pause_at_layer: Pause at Layer
@@ -347,6 +352,7 @@ app:
       turn_device_off: Turn %{device} off
       uncategorized: Uncategorized
       unknown: Unknown
+      unload_filament: Unload Filament
       unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
       upload_and_print: Upload and Print
@@ -381,6 +387,7 @@ app:
       not_valid_fluidd_backup_file: Not a valid Fluidd backup file!
       fluidd_settings_backup_failed: Failed to backup Fluidd settings!
       fluidd_settings_restore_failed: Failed to restore Fluidd settings!
+      gcode_preview_failed: Failed to preview G-code file!
     simple_form:
       error:
         arrayofnums: Only numbers
@@ -412,6 +419,7 @@ app:
         confirm_remove_printer: Are you sure you want to remove the printer %{name}?
         confirm_remove_thermal_preset: Are you sure you want to remove the thermal preset %{name}?
         confirm_remove_user: Are you sure you want to remove user %{username}?
+        confirm_restore_backup: Are you sure you want to restore this backup? Moonraker will restart immediately after this request is processed.
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
         confirm_service_start: Are you sure you want to start the %{name} service?
         confirm_service_restart: Are you sure you want to restart the %{name} service?
@@ -571,6 +579,7 @@ app:
       webrtc_camera_streamer: WebRTC (camera-streamer)
       video: IP Camera
       iframe: HTTP page
+      uv4l_mjpeg_stream: UV4L-MJPEG Stream
       webrtc_go2rtc: WebRTC (go2rtc)
       webrtc_mediamtx: WebRTC (MediaMTX)
     camera_rotate_options:
@@ -751,11 +760,9 @@ app:
       application: Application
       awake_time: awake time
       capacity: Capacity
-      connected: Connected
       constants: Constants
       cpu_desc: CPU Description
       devices: Devices
-      disconnected: Disconnected
       distribution_codename: Codename
       distribution_like: Distribution Like
       distribution_name: Distribution
@@ -1153,3 +1160,14 @@ app:
     tooltip:
       delete: Delete Model
       load: Load Model
+  database:
+    btn:
+      compact_database: Compact Database
+      create_backup: Create Backup
+    label:
+      moonraker_database: Moonraker Database
+    msg:
+      not_found: No existing database backups found.
+    tooltip:
+      restore_backup: Restore Backup
+      delete_backup: Delete Backup

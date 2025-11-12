@@ -25,6 +25,10 @@ interface JSON {
   ): unknown;
 }
 
+interface Body {
+  json(): Promise<unknown>;
+}
+
 interface ReadonlyArray<T> {
   filter<S extends T>(
     predicate: BooleanConstructor,

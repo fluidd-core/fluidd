@@ -374,6 +374,8 @@ app:
       z_hop_height: Z-Hop Höhe
       length_in_kilometers: Länge in Kilometern
       time_in_days: Zeit in Tagen
+      connected: Verbunden
+      disconnected: Nicht verbunden
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?

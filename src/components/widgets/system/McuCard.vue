@@ -48,8 +48,8 @@
               </v-icon>
               {{
                 mcu.non_critical_disconnected
-                  ? $t('app.system_info.label.disconnected')
-                  : $t('app.system_info.label.connected')
+                  ? $t('app.general.label.disconnected')
+                  : $t('app.general.label.connected')
               }}
             </v-chip>
           </td>

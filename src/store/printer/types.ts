@@ -309,7 +309,7 @@ export interface KlipperPrinterExcludeObjectObjectState {
 export interface KlipperPrinterExtruderStepperState {
   pressure_advance: number;
   smooth_time: number;
-  motion_queue?: string | null;
+  motion_queue?: ExtruderKey | null;
 }
 
 export interface KlipperPrinterFanState {
@@ -491,7 +491,7 @@ export interface KlipperPrinterTemperatureSensor2State {
   gas?: number;
 }
 
-export interface KlipperPrinterTemperatureFanState {
+export interface KlipperPrinterTemperatureFanState extends KlipperPrinterFanState {
   temperature: number;
   target: number;
 }
@@ -842,6 +842,8 @@ type KlipperPrinterSettingsBaseType =
     // These keys are for external modules
 
     beacon: KlipperPrinterBeaconSettings;
+
+    scanner: KlipperPrinterCartographerScannerSettings;
 
     [key: `beacon model ${Lowercase<string>}`]: KlipperPrinterBeaconModelSettings;
   }>
@@ -1406,6 +1408,9 @@ export interface KalicoPrinterZTiltNgSettings {
 export interface KlipperPrinterBeaconSettings extends Record<string, unknown> {
 }
 
+export interface KlipperPrinterCartographerScannerSettings extends Record<string, unknown> {
+}
+
 export interface KlipperPrinterBeaconModelSettings extends Record<string, unknown> {
 }
 
@@ -1417,8 +1422,10 @@ export interface KnownExtruder {
 }
 
 export interface Extruder extends KlipperPrinterExtruderState {
+  key: string;
   config: KlipperPrinterExtruderSettings;
   min_extrude_temp: number;
+  disconnected: boolean;
 }
 
 type StepperType<T> = {
@@ -1427,6 +1434,7 @@ type StepperType<T> = {
   prettyName: string;
   key: string;
   enabled?: boolean;
+  disconnected: boolean;
 }
 
 export interface ExtruderStepper extends StepperType<KlipperPrinterExtruderStepperSettings> {
@@ -1441,47 +1449,48 @@ export interface Stepper extends StepperType<KlipperPrinterExtruderSettings | Kl
 export interface MCU extends KlipperPrinterMcuState {
   name: string;
   prettyName: string;
+  key: string;
   config?: KlipperPrinterMcuSettings;
 }
 
-type OutputType<T> = {
-  config?: T
+type OutputType<TConfig extends TSHelpers.ValueTypesOf<KlipperPrinterSettingsBaseType>, TState extends TSHelpers.ValueTypesOf<KlipperPrinterStateBaseType>> = TState & {
+  config?: TConfig;
   name: string;
   prettyName: string;
   key: string;
   color?: string;
   type: string;
+  disconnected: boolean;
 }
 
-export interface Heater extends OutputType<KlipperPrinterHeaterGenericSettings | KlipperPrinterHeaterBedSettings | KlipperPrinterExtruderSettings> {
-  temperature: number;
-  target: number;
-  power: number;
+export type Heater = (
+  OutputType<KlipperPrinterHeaterGenericSettings, KlipperPrinterHeaterGenericState> |
+  OutputType<KlipperPrinterHeaterBedSettings, KlipperPrinterHeaterBedState> |
+  OutputType<KlipperPrinterExtruderSettings, KlipperPrinterExtruderState>
+) & {
   minTemp: number;
   maxTemp: number;
 }
 
-export interface Fan extends OutputType<KlipperPrinterFanSettings | KlipperPrinterControllerFanSettings | KlipperPrinterHeaterFanSettings> {
+export type Fan = (
+  OutputType<KlipperPrinterFanSettings, KlipperPrinterFanState> |
+  OutputType<KlipperPrinterControllerFanSettings, KlipperPrinterFanState> |
+  OutputType<KlipperPrinterHeaterFanSettings, KlipperPrinterFanState> |
+  OutputType<KlipperPrinterFanSettings, KlipperPrinterTemperatureFanState>
+) & {
   controllable: boolean;
-  speed?: number;
-  rpm?: number | null;
-  temperature?: number;
-  target?: number;
   minTemp?: number;
   maxTemp?: number;
 }
 
-export interface Led extends OutputType<KlipperPrinterLedSettings> {
-  color?: string;
-  color_data: number[][]
+export type Led = OutputType<KlipperPrinterLedSettings, KlipperPrinterLedState> & {
+  controllable: boolean;
 }
 
-export interface OutputPin extends OutputType<KlipperPrinterOutputPinSettings> {
+export type OutputPin = OutputType<KlipperPrinterOutputPinSettings, KlipperPrinterOutputPinState> & {
   controllable: boolean;
   pwm: boolean;
   scale: number;
-  static: number;
-  value: number;
   resetValue: number;
 }
 
@@ -1493,6 +1502,7 @@ export interface Sensor extends Partial<KlipperPrinterTemperatureSensorState>, P
   type: string;
   maxTemp?: number;
   minTemp?: number;
+  disconnected: boolean;
 }
 
 export interface RunoutSensor extends Partial<KlipperPrinterFilamentSwitchSensorState>, Partial<KlipperPrinterFilamentMotionSensorState> {

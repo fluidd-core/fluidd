@@ -29,13 +29,20 @@ app:
       rate_of_change: 变化值
       target_temperature: 目标温度
       turn_off: 关闭
+      fan_breakpoints: 风扇启转点
     tooltip:
       help: 按住 <kbd>Shift</kbd> 键可缩放图表。<br />单击一个项目名称或功率可在图表中切换显示。
+    title:
+      pid_calibrate: PID校准 {name}
+      mpc_calibrate: MPC校准 {name}
   console:
     label:
       auto_scroll: 自动滚动
       flip_layout: 翻转布局
       hide_temp_waits: 隐藏温度信息
+    tooltip:
+      help: 输入"help"获取可用命令<br />使用 <kbd>Tab键</kbd> 自动补全<br 
+        />使用<kbd>&uarr;键</kbd> 和 <kbd>&darr;键</kbd>输入历史命令
   endpoint:
     error:
       cant_connect: 出了点问题，Fluidd 无法连接目标。你确定这是正确的设备地址？
@@ -83,7 +90,7 @@ app:
       not_found: 文件未找到
       processing: 处理中...
     overlay:
-      drag_files_enqueue: 将文件拖到<strong>此处</strong>进行入队
+      drag_files_enqueue: 将文件拖到<strong>此处</strong>添加到队列
       drag_files_folders_upload: 把文件和文件夹<strong>拖拽</strong>到此处上传
     title:
       add_dir: 新建目录
@@ -104,6 +111,8 @@ app:
       klipper_config: '%{klipperDomain}/zh/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
+      crowsnest_config: 
+        https://crowsnest.mainsail.xyz/configuration/%{hash}-section
   gcode:
     btn:
       load_current_file: 载入当前文件
@@ -206,11 +215,15 @@ app:
       retry: 重试
       refresh_metadata: 刷新元数据
       power_on_printer: 打开打印机电源
+      copied: 已拷贝至粘贴板
+      copy: 拷贝
+      perform_time_analysis: 预计打印时间
     error:
       app_setup_link: '如需查看 Fluidd 详细配置规则，请点击<a target="_blank" href="%{url}">此处</a>。'
       app_warnings_found: '%{appName} 出现警告'
       components_config: '如需查看 Moonraker 详细配置规则，请点击<a target="_blank" href="%{url}">此处</a>。'
       failed_components: Moonraker 插件启用失败，请检查您的日志，更新您的配置并重新启动 Moonraker。
+      printer_powered_off: 此打印机当前已关机<br/><br/> 要开启该打印机, 请点击左侧按钮.
     label:
       accel_to_decel: 加速到减速度
       acceleration: 加速度
@@ -320,6 +333,16 @@ app:
       length_in_kilometers: 长度使用千米
       time_in_days: 时间使用天
       unknown: 未知
+      cross: 正交
+      circle: 环形
+      connected: 已连接
+      disconnected: 未连接
+      user_facing: 用户视图
+      z_hop_height: Z探测高度
+      bars: 条形
+      unload_filament: 卸载耗材
+      load_filament: 加载耗材
+      clean_nozzle: 清理喷嘴
     msg:
       password_changed: 密码已更改
       wrong_password: 密码错误
@@ -369,6 +392,8 @@ app:
         confirm_remove_console_filter: 确定要移除控制台过滤器%{name}吗？
         confirm_load_bedmesh_profile: 打印机当前正忙。您确定要加载配置%{name}吗？
         confirm_remove_macro_category: 确定要移除宏分类%{name}吗？
+        confirm_change_beacon_model: 此打印机当前正忙，你确定要变更beacom模式？
+        confirm_restore_backup: 您确定要恢复此备份吗？Moonraker 将在处理完此请求后立即重启。
     table:
       header:
         actions: 展开
@@ -403,6 +428,10 @@ app:
         filament_colors: 耗材颜色
         user: 用户
         filament_weights: 耗材重量
+        extruder_colors: 挤出机颜色
+        file_processors: 文件进度
+        mmu_print: 多耗材单元(MMU)打印
+        referenced_tools: 参考工具
     title:
       add_chart: 添加图表
       add_printer: 添加打印机
@@ -440,6 +469,7 @@ app:
       tune: 调整
       login: 登录
       macro_category_settings: 宏类别设置
+      beacon: Beacon探针
     tooltip:
       browse_metrics: 浏览可用指标
       estop: 紧急停止
@@ -452,6 +482,11 @@ app:
       rollover_logs: 滚动日志
       power_on_printer: 打开打印机电源
       exit_layout: 退出布局修改模式
+      reset_layout: 重置当前布局至全局默认布局
+      reset_default_layout: 重置全局默认布局至出厂默认值
+      set_default_layout: 将当前布局设置为全局默认布局
+      file_browser_help: 从浏览器外部拖放文件或文件夹到此处上传<br>通过将文件和文件夹拖放到子文件夹或“..”来移动它们
+      file_browser_configuration_help: 拖放文件和文件夹从而复制到配置文件
   history:
     msg:
       confirm: 这将清除所有历史记录和打印机统计数据！是否确认？
@@ -464,6 +499,8 @@ app:
       number_of_copies: 副本数量
       print_time: 打印时长
       unknown_jobs: 未知任务
+      eta: 剩余时间
+      filament: 耗材
   printer:
     state:
       busy: 处理中
@@ -604,7 +641,7 @@ app:
       z_adjust_values: Z轴偏移量
       date_format: 日期格式
       time_format: 时间格式
-      text_sort_order: 文本排序
+      text_sort_order: 按文本排序
       force_move_toggle_warning: 强制移动时是否需要确认
       show_manual_probe_dialog_automatically: 自动显示手动探测对话框
       show_bed_screws_adjust_dialog_automatically: 自动显示“调整床螺钉”对话框
@@ -618,11 +655,30 @@ app:
       hide_single_part_bounding_box: 打印单个部件时隐藏部件边界框
       klipper_save_and_restart_action: Klipper保存、重启操作
       draw_origin: 显示原点
+      auto: 自动
+      camera_url_snapshot: 摄像头快照URL
+      camera_url_stream: 摄像头串流URL
+      enable_xy_homing: 启用XY归位
+      firmware_restart: 固件重启
+      host_restart: 重启上位机
+      print_eta_calculation: 剩余打印时间计算
+      printer_power_device: 打印机供电装置
+      sections_to_ignore_pending_configuration_changes: 忽略待处理的配置变更
+      service_restart: 重启服务
+      toolhead_xy_move_distances: 打印头XY距离值
+      toolhead_z_move_distances: 打印头Z距离值
+      warn_on_cpu_throttled: 若检测到CPU降频 发出警告
+      warn_on_stepper_driver_overheating: 若电机驱动过热 发出警告
+      drag_and_drop_functionality_for_files_and_folders: 文件及文件夹拖放
+      show_screws_tilt_adjust_dialog_automatically: 自动显示手动调平对话框
     timer_options:
       duration: 仅显示已用时间
-      filament: 通过耗材用量估算
-      file: 通过文件进度估算
+      filament: 按耗材估算
+      file: 按文件进度估算
       slicer: 使用切片文件的时间
+      absolute_file_position: 绝对文件坐标
+      relative_file_position: 相对文件坐标
+      slicer_m73: 切片 (M73)
     title:
       authentication: 安全认证
       console: 控制台
@@ -635,6 +691,7 @@ app:
       thermal_presets: 温度预设
       tool: 移动控制
       file_browser: 文件浏览器
+      warnings: 警告
     tooltip:
       diagnostics_performance: '[BETA] 记录诊断信息可能会影响性能'
       gcode_coords: 使用 GCode 坐标位置而不是仪表板上的打印头坐标位置
@@ -643,6 +700,10 @@ app:
         如果运行BED_SCREWS_ADJUST工具，自动显示帮助对话框
       average_calculation: 如果选择多个选项，则将计算平均值
       keyboard_shortcuts: '[BETA] 启用功能：按“?”查看可用键盘快捷键列表'
+      warn_on_stepper_driver_overheating: 仅限TMC驱动
+      warn_on_cpu_throttled: CPU降频会导致打印失败
+      show_screws_tilt_adjust_dialog_automatically: 运行 SCREWS_TILT_CALCULATE 
+        工具时，会自动显示辅助对话框
   socket:
     msg:
       connecting: 正在连接至 Moonraker ...
@@ -683,6 +744,10 @@ app:
       memory_used: 已用内存
     msg:
       no_devices_found: 未发现设备
+      no_devices_searched: 使用刷新按钮搜索设备
+      canbus_warning: 只能检测到未分配的 CAN 总线节点。<br>建议 CAN 
+        总线上只连接一个未分配的设备，以避免通信问题。<br>更多信息请访问<a target="_blank" 
+        href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">。</a>
   tool:
     btn:
       home_x: 归位 X
@@ -977,6 +1042,8 @@ app:
       spoolman_today: 今日
       filament_info: 耗材信息
       load_speed: 加载速度覆写
+      cancel: 取消
+      save: 保存
     setting:
       show_logos: 显示logo
       show_clog_detection: 显示堵塞检测
@@ -986,3 +1053,12 @@ app:
   beacon:
     label:
       active: ''
+  database:
+    label:
+      moonraker_database: Moonraker数据库
+    btn:
+      compact_database: 压缩数据库
+      create_backup: 创建备份
+    tooltip:
+      restore_backup: 恢复备份
+      delete_backup: 删除备份

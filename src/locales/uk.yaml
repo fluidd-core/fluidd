@@ -368,6 +368,12 @@ app:
       circle: Коло
       time_in_days: Час у днях
       length_in_kilometers: Довжина в кілометрах
+      connected: Підключено
+      disconnected: Відключено
+      clean_nozzle: Очистіть Nozzle
+      load_filament: Завантаження нитки
+      park_toolhead: Парк Тулхед
+      unload_filament: Вивантаження нитки
     msg:
       password_changed: Пароль змінено
       wrong_password: У-упс, щось пішло не так. Чи правильний ваш пароль?
@@ -388,6 +394,7 @@ app:
       fluidd_settings_restore_failed: Не вдалося відновити налаштування Fluidd!
       pending_configuration_sections_deleted: Наступні розділи позначені для 
         видалення
+      gcode_preview_failed: Не вдалося переглянути файл G-коду!
     simple_form:
       error:
         arrayofnums: Тільки цифри
@@ -439,6 +446,8 @@ app:
           впевнені? Це призведе до видалення {count} вибраних елементів.
         confirm_remove_user: Ви впевнені, що бажаєте видалити користувача 
           %{username}?
+        confirm_restore_backup: Ви впевнені, що хочете відновити цю резервну 
+          копію? Moonraker перезавантажиться негайно після обробки цього запиту.
     table:
       header:
         actions: Дії
@@ -598,6 +607,7 @@ app:
       webrtc_camera_streamer: WebRTC (камера-стример)
       webrtc_go2rtc: WebRTC (go2rtc)
       webrtc_mediamtx: WebRTC (MediaMTX)
+      uv4l_mjpeg_stream: Потік UV4L-MJPEG
     camera_rotate_options:
       '90': 90°
       '180': 180°
@@ -1234,3 +1244,14 @@ app:
       large_filament_status: Статус великої нитки
       show_unavailable_spool_color: Показати недоступні спули
       show_name: Показати назву одиниці
+  database:
+    btn:
+      compact_database: Компактна база даних
+      create_backup: Створити резервну копію
+    label:
+      moonraker_database: База даних Moonraker
+    tooltip:
+      restore_backup: Відновлення резервної копії
+      delete_backup: Видалити резервну копію
+    msg:
+      not_found: Не знайдено жодних існуючих резервних копій бази даних.

@@ -5,7 +5,7 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "fluidd",
   "workspaceFolder": "/workspaces/fluidd",
-  "forwardPorts": [5000, 8080, 7125, 8110],
+  "forwardPorts": [7125, 8080],
   "features": {
   },
   "postCreateCommand": "npm ci && npm run bootstrap",
@@ -33,5 +33,5 @@
       }
     }
   },
-  "remoteUser": "vscode"
+  "remoteUser": "node"
 }

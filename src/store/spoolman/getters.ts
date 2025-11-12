@@ -1,6 +1,7 @@
 import type { GetterTree } from 'vuex'
 import type { Filament, Spool, SpoolmanFilament, SpoolmanSpool, SpoolmanState, SpoolmanVendor, Vendor } from './types'
 import type { RootState } from '../types'
+import isLoopback from '@/util/is-loopback'
 
 const filamentWeightToLength = (weight: number, filament: SpoolmanFilament | Filament) => {
   // l[mm] = m[g]/D[g/cm³]/A[mm²]*(1000mm³/cm³)
@@ -101,6 +102,25 @@ export const getters = {
     const spools: Spool[] = getters.getAvailableSpools
 
     return spools.find(spool => spool.id === id)
+  },
+
+  getSpoolmanUrl: (state, getter, rootState) => {
+    const server = rootState.server.config.spoolman?.server
+
+    if (server) {
+      const serverUrl = new URL(server)
+
+      if (isLoopback(serverUrl.hostname)) {
+        const apiHostname = new URL(rootState.config.apiUrl).hostname
+
+        if (!isLoopback(apiHostname)) {
+          // replace loopback host with api server host
+          serverUrl.hostname = apiHostname
+        }
+      }
+
+      return serverUrl.toString()
+    }
   },
 
   getAvailable: (state) => {

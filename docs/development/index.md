@@ -41,17 +41,17 @@ printer.
 
 ## Running Fluidd locally
 
-### Install Node v20
+### Install Node v24
 
-Follow the instructions from [Node.js](https://nodejs.org) to install Node.js, v20.x.
+Follow the instructions from [Node.js](https://nodejs.org) to install Node.js, v24.x.
 
 Check that Node.js was installed properly:
 
 ```bash
 $ node --version
-v20.9.0
+v24.11.0
 $ npm --version
-10.1.0
+11.6.2
 ```
 
 ### Install dependencies

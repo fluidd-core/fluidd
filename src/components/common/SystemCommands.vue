@@ -87,11 +87,10 @@
                   <span
                     v-bind="attrs"
                     class="text-wrap"
-                    style="text-transform: capitalize;"
                     v-on="on"
-                  >{{ service.name }}</span>
+                  >{{ $filters.prettyCase(service.name) }}</span>
                 </template>
-                <span style="text-transform: capitalize;">{{ service.active_state }} ({{ service.sub_state }})</span>
+                <span>{{ $filters.prettyCase(`${service.active_state} (${service.sub_state})`) }}</span>
               </v-tooltip>
             </v-list-item-title>
           </v-list-item-content>

@@ -15,7 +15,7 @@
         @update:camera-name="cameraName = $event"
         @update:camera-name-menu-items="cameraNameMenuItems = $event"
         @update:raw-camera-url="rawCameraUrl = $event"
-        @update:frames-per-second="framesPerSecond = $event"
+        @update:frames-per-second="handleFramesPerSecond"
         @frame="$emit('frame', $event)"
       />
     </template>
@@ -157,8 +157,10 @@ export default class CameraItem extends Vue {
   }
 
   get cameraComponent () {
-    if (this.camera.service) {
-      const componentName = `${startCase(this.camera.service).replace(/ /g, '')}Camera`
+    const cameraService = this.camera.service
+
+    if (cameraService) {
+      const componentName = `${startCase(cameraService).replace(/ /g, '')}Camera`
 
       if (componentName in CameraComponents) {
         return CameraComponents[componentName]
@@ -174,6 +176,12 @@ export default class CameraItem extends Vue {
     }
 
     return cameraName
+  }
+
+  handleFramesPerSecond (framesPerSecond : number) {
+    this.framesPerSecond = framesPerSecond >= 0
+      ? framesPerSecond.toString().padStart(2, '0')
+      : ''
   }
 }
 </script>

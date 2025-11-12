@@ -43,7 +43,7 @@
             v-for="macro in category.macros"
             :key="`category-${macro.name}`"
             top
-            :disabled="!macro.config?.description || macro.config.description === 'G-Code macro'"
+            :disabled="!macro.description"
           >
             <template #activator="{ on, attrs }">
               <macro-btn
@@ -57,7 +57,7 @@
                 {{ macro.alias || macro.name }}
               </macro-btn>
             </template>
-            <span>{{ macro.config?.description }}</span>
+            <span>{{ macro.description }}</span>
           </v-tooltip>
         </v-expansion-panel-content>
       </v-expansion-panel>

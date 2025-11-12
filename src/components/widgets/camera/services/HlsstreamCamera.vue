@@ -2,9 +2,11 @@
   <video
     ref="streamingElement"
     autoplay
+    disablePictureInPicture
+    playsinline
     muted
-    :crossorigin="crossorigin"
     :style="cameraStyle"
+    :crossorigin="crossorigin"
     @play="updateStatus('connected')"
     @error="updateStatus('error')"
   />
@@ -45,8 +47,10 @@ export default class HlsstreamCamera extends Mixins(CameraMixin) {
         this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
           this.cameraVideo.play()
         })
-        this.hls.on(Hls.Events.ERROR, () => {
-          this.updateStatus('error')
+        this.hls.on(Hls.Events.ERROR, (_, data) => {
+          if (data.fatal) {
+            this.updateStatus('error')
+          }
         })
       } else if (this.cameraVideo.canPlayType('application/vnd.apple.mpegurl')) {
         this.cameraVideo.src = url

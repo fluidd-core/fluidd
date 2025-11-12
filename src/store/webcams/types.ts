@@ -25,7 +25,7 @@ export interface WebcamConfig extends NewWebcamConfig {
   source: WebcamSource;
 }
 
-export type WebcamService = 'mjpegstreamer' | 'mjpegstreamer-adaptive' | 'ipstream' | 'iframe' | 'hlsstream' | 'webrtc-camerastreamer' | 'webrtc-go2rtc' | 'webrtc-mediamtx' | 'device'
+export type WebcamService = 'mjpegstreamer' | 'mjpegstreamer-adaptive' | 'ipstream' | 'iframe' | 'hlsstream' | 'webrtc-camerastreamer' | 'webrtc-go2rtc' | 'webrtc-mediamtx' | 'uv4l-mjpeg' | 'device'
 
 export type WebcamRotation = 0 | 90 | 180 | 270
 

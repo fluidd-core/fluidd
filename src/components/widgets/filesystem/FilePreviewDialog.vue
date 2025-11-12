@@ -13,6 +13,8 @@
         <video
           v-if="isVideo"
           controls
+          disablePictureInPicture
+          playsinline
         >
           <source
             :src="src"

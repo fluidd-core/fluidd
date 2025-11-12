@@ -1,20 +1,32 @@
 import Vue from 'vue'
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 
+export type AxiosRequestConfigForReturnType<T = unknown, D = unknown> = AxiosRequestConfig<D> & (
+  T extends string
+    ? { responseType?: 'text' | 'json' }
+    : T extends ArrayBuffer
+      ? { responseType: 'arraybuffer' }
+      : T extends Blob
+        ? { responseType: 'blob' }
+        : T extends FormData
+          ? { responseType: 'formdata' }
+          : {}
+        )
+
 export const httpClientActions = {
-  get<T = unknown, R = AxiosResponse<T>, D = unknown> (url: string, options?: AxiosRequestConfig) {
+  get<T = unknown, R = AxiosResponse<T>, D = unknown> (url: string, options?: AxiosRequestConfigForReturnType<T, D>) {
     return Vue.$httpClient.get<T, R, D>(url, options)
   },
 
-  post<T = unknown, R = AxiosResponse<T>, D = unknown> (url: string, data: D, options?: AxiosRequestConfig) {
+  post<T = unknown, R = AxiosResponse<T>, D = unknown> (url: string, data: D, options?: AxiosRequestConfigForReturnType<T, D>) {
     return Vue.$httpClient.post<T, R, D>(url, data, options)
   },
 
-  postForm<T = unknown, R = AxiosResponse<T>, D = unknown> (url: string, data: D, options?: AxiosRequestConfig) {
+  postForm<T = unknown, R = AxiosResponse<T>, D = unknown> (url: string, data: D, options?: AxiosRequestConfigForReturnType<T, D>) {
     return Vue.$httpClient.postForm<T, R, D>(url, data, options)
   },
 
-  delete<T = unknown, R = AxiosResponse<T>, D = unknown> (url: string, options?: AxiosRequestConfig) {
+  delete<T = unknown, R = AxiosResponse<T>, D = unknown> (url: string, options?: AxiosRequestConfigForReturnType<T, D>) {
     return Vue.$httpClient.delete<T, R, D>(url, options)
   },
 
@@ -206,7 +218,7 @@ export const httpClientActions = {
     }>('/server/files/upload', formData, options)
   },
 
-  serverFilesGet<T = unknown> (filepath: string, options?: AxiosRequestConfig) {
+  serverFilesGet<T = unknown> (filepath: string, options?: AxiosRequestConfigForReturnType<T>) {
     const encodedFilepath = filepath
       .replace(/[^/]+/g, match => encodeURIComponent(match))
 

@@ -7,21 +7,8 @@ services:
     volumes:
       - ..:/workspaces/fluidd/:cached
     command: sleep infinity
-    networks:
-      - fluidd-dev
-    ports:
-      - "5000:5000"
-      - "8080:8080"
+    network_mode: service:klipper-simulavr
 
   klipper-simulavr:
     image: ei99070/docker-klipper-simulavr:latest
     restart: unless-stopped
-    networks:
-      - fluidd-dev
-    ports:
-      - "7125:7125"
-      - "8110:8080"
-
-networks:
-  fluidd-dev:
-    driver: bridge

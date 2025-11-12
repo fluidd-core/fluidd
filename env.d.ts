@@ -4,6 +4,7 @@
 /// <reference types="vue-meta" />
 /// <reference types="vite-plugin-pwa/client" />
 /// <reference types="./tsreset" />
+/// <reference types="./tshelpers" />
 
 declare module '*.yaml' {
   const data: unknown

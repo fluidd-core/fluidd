@@ -32,15 +32,15 @@ import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
 import type { WebcamConfig } from '@/store/webcams/types'
 
+const spoomanDataPatterns = [
+  /web\+spoolman:s-(\d+)/,
+  /\/spool\/show\/(\d+)\/?/
+]
+
 @Component({
   components: { CameraItem }
 })
 export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
-  dataPatterns = [
-    /web\+spoolman:s-(\d+)/,
-    /\/spool\/show\/(\d+)\/?/
-  ]
-
   statusMessage = 'info.howto'
   lastScanTimestamp = Date.now()
   processing = false
@@ -137,28 +137,32 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
   }
 
   handleCodeFound (code: string) {
-    // valid QR code found
-    const pattern = this.dataPatterns.find(pattern => pattern.test(code))
-    if (pattern) {
-      // code matches one of known patterns
-      const spoolId = code.match(pattern)?.[1]
-      if (spoolId && !isNaN(Number(spoolId))) {
-        // valid spool ID
-        const id = parseInt(spoolId)
+    for (const pattern of spoomanDataPatterns) {
+      const match = pattern.exec(code)
 
-        if (this.availableSpools.some((spool: Spool) => spool.id === id)) {
-          // spool exists in spoolman
-          this.$emit('detected', id)
+      if (match) {
+        // code matches one of known patterns
+        const spoolId = match[1]
+        if (spoolId && !isNaN(Number(spoolId))) {
+          // valid spool ID
+          const id = parseInt(spoolId)
+
+          if (this.availableSpools.some(spool => spool.id === id)) {
+            // spool exists in spoolman
+            this.$emit('detected', id)
+          } else {
+            // spool doesn't exist
+            this.statusMessage = 'error.spool_not_existant'
+          }
         } else {
-          // spool doesn't exist
-          this.statusMessage = 'error.spool_not_existant'
+          this.statusMessage = 'warning.invalid_spool_id'
         }
-      } else {
-        this.statusMessage = 'warning.invalid_spool_id'
+
+        return
       }
-    } else {
-      this.statusMessage = 'warning.code_not_recognized'
     }
+
+    this.statusMessage = 'warning.code_not_recognized'
   }
 }
 </script>

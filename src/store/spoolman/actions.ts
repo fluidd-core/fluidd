@@ -185,7 +185,7 @@ export const actions = {
     commit('setCurrency', payload.response)
   },
 
-  async initializeWebsocketConnection ({ state, rootState, dispatch }) {
+  async initializeWebsocketConnection ({ state, getters, rootState, dispatch }) {
     if (rootState.server.config.spoolman?.server) {
       if (state.socket?.readyState === WebSocket.OPEN) {
         // we already have a working WS conn
@@ -193,15 +193,15 @@ export const actions = {
       }
 
       // init websocket to listen for updates
-      const spoolmanUrl = new URL(rootState.server.config.spoolman.server)
-      spoolmanUrl.pathname += `${spoolmanUrl.pathname.endsWith('/') ? '' : '/'}api/v1/`
-      if (spoolmanUrl.protocol === 'https:') {
-        spoolmanUrl.protocol = 'wss:'
-      } else {
-        spoolmanUrl.protocol = 'ws:'
-      }
+      const spoolmanUrl: string = getters.getSpoolmanUrl
+      const socketUrl = new URL(spoolmanUrl)
 
-      state.socket = new WebSocket(spoolmanUrl)
+      socketUrl.pathname += `${socketUrl.pathname.endsWith('/') ? '' : '/'}api/v1/`
+      socketUrl.protocol = socketUrl.protocol === 'https:'
+        ? 'wss:'
+        : 'ws:'
+
+      state.socket = new WebSocket(socketUrl)
       state.socket.onerror = err => consola.warn(`${logPrefix} received websocket error`, err)
       state.socket.onmessage = event => {
         let data: WebsocketBasePayload

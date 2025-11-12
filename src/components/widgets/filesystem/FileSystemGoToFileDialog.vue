@@ -47,6 +47,7 @@ import { SocketActions } from '@/api/socketActions'
 import type { MoonrakerRootFile } from '@/store/files/types'
 import getFilePaths from '@/util/get-file-paths'
 import StateMixin from '@/mixins/state'
+import { escapeRegExp } from 'lodash-es'
 
 type File = MoonrakerRootFile & {
   filename: string
@@ -76,7 +77,8 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
 
     const search = this.search
       .split('')
-      .join('.*')
+      .map(x => escapeRegExp(x))
+      .join('.*?')
     const searchRegExp = new RegExp(search, 'i')
 
     return this.rootFiles

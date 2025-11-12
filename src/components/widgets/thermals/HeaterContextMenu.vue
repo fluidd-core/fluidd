@@ -10,7 +10,7 @@
   >
     <v-list dense>
       <v-list-item
-        :disabled="!klippyReady || printerPrinting || !heaterIsOn"
+        :disabled="!klippyReady || printerPrinting || !heaterIsOn || heater.disconnected"
         @click="$emit('turn-off', heater)"
       >
         <v-list-item-icon>
@@ -26,7 +26,7 @@
       <v-divider />
 
       <v-list-item
-        :disabled="!klippyReady || printerPrinting"
+        :disabled="!klippyReady || printerPrinting || heater.disconnected"
         @click="$emit('pid-calibrate', heater)"
       >
         <v-list-item-icon>
@@ -41,7 +41,7 @@
 
       <v-list-item
         v-if="klippyApp.isKalicoOrDangerKlipper"
-        :disabled="!klippyReady || printerPrinting || !heaterUsesMpcControl"
+        :disabled="!klippyReady || printerPrinting || !heaterUsesMpcControl || heater.disconnected"
         @click="$emit('mpc-calibrate', heater)"
       >
         <v-list-item-icon>

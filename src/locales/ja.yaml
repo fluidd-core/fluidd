@@ -3,9 +3,9 @@ app:
     label:
       active: アクティブ
       model_name: モデル名
-      remove_model: ' %{name} モデルを削除'
+      remove_model: '%{name} モデルを削除'
     msg:
-      hint: ' %{name}以外の名前で保存する場合は、 %{name} モデルも削除できます。'
+      hint: '%{name}以外の名前で保存する場合は、 %{name} モデルも削除できます。'
       not_found: 既存のビーコン モデルが見つかりません。
     tooltip:
       delete: モデルを削除
@@ -23,14 +23,14 @@ app:
       scale: カラースケール
       wireframe: ワイヤーフレーム
     msg:
-      hint: ' %{name}以外のものとして保存する場合は、 %{name} プロファイルも削除することを選択できます.'
+      hint: '%{name}以外のものとして保存する場合は、 %{name} プロファイルも削除することを選択できます'
       not_found: 既存のベッドメッシュは見つかりませんでした。
       not_loaded: メッシュを読込しない
     tooltip:
       calibrate: 新しいキャリブレーションを開始し、プロファイル'default'として保存します
-      delete: プロファイルを削除します。
+      delete: プロファイルを削除します
       load: プロファイルを読込み
-      save: キャリブレーションされたプロファイルをprinter.cfgに書込みします。
+      save: キャリブレーションされたプロファイルをprinter.cfgに書込みします
       download_image: ベッドメッシュイメージのダウンロード
   chart:
     label:
@@ -60,18 +60,18 @@ app:
   endpoint:
     error:
       cant_connect: 何か問題が発生し、fluiddがアドレスに接続できません。このアドレスで間違いないですか？
-      cors_error: CORSポリシーでブロックされました。
+      cors_error: CORSポリシーでブロックされました
       cors_note: >-
-        この場合、moonrakerの設定を変更する必要がある場合があります。マルチプリンター設定に関するドキュメントをご覧ください <a
-        href="%{url}" target="_blank">こちら</a>。
+        この場合、moonrakerの設定を変更する必要がある場合があります。マルチプリンター設定に関するドキュメントをご覧ください <a href="%{url}"
+        target="_blank">こちら</a>
     hint:
       add_printer: '例）http://fluiddpi.local'
     msg:
       trouble: 'お困りですか？ <a href="%{url}" target="_blank">詳細はこちら</a> をご覧ください。'
     tooltip:
       endpoint_examples: >-
-        API URLを入力してください。<br />例としては、<br /><blockquote>fluidd.local,
-        https://192.168.1.150 があります</blockquote>。
+        API URLを入力してください。<br />例としては、<br /><blockquote>fluidd.local, https://192.168.1.150
+        があります</blockquote>
   endstop:
     label:
       endstop: 'エンドストップ %{name}'
@@ -105,8 +105,8 @@ app:
       not_found: ファイルが見つかりません
       processing: プロセッシング
     overlay:
-      drag_files_enqueue: ファイルをここに<strong>ドラッグ</strong> してキューに入れる。
-      drag_files_folders_upload: ファイルとフォルダをここに<strong>ドラッグして</strong> アップロードします。
+      drag_files_enqueue: ファイルをここに<strong>ドラッグ</strong> してキューに入れる
+      drag_files_folders_upload: ファイルとフォルダをここに<strong>ドラッグして</strong> アップロードします
     title:
       add_dir: ディレクトリの追加
       add_file: ファイルの追加
@@ -121,7 +121,7 @@ app:
       upload_file: ファイルをアップロードする｜ファイルをアップロードする
     tooltip:
       items_count: '{count} アイテム | {count} 個のアイテム'
-      low_on_space: ディスク容量が少なくなりました。
+      low_on_space: ディスク容量が少なくなりました
       root_disabled: '{root} rootは使用できません。ログを確認してください。'
     url:
       crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
@@ -210,7 +210,7 @@ app:
       reset_layout: リセット
       reset_stats: 統計情報をリセット
       restart_firmware: ファームウェアの再起動
-      restart_service: ' %{service}の再スタート'
+      restart_service: '%{service}の再スタート'
       restart_service_klipper: Klipperを再起動する
       restart_service_moonraker: Moonrakerを再起動する
       resume: 再始動
@@ -306,7 +306,7 @@ app:
       numeric_prefix_sort: 数値によるソート
       'off': オフ
       'on': オン
-      partial_of_total: '%{total}の%{partial} '
+      partial_of_total: '%{total}の%{partial}'
       password: パスワード
       pause_at_layer: レイヤーで一時停止
       pause_at_layer_number: レイヤー番号で一時停止
@@ -340,8 +340,8 @@ app:
       total_print_time_avg: プリントあたりの平均値
       total_time: 合計時間
       total_time_avg: プリントあたりの平均値
-      turn_device_off: ' %{device} をオフにする'
-      turn_device_on: ' %{device} をオンにする'
+      turn_device_off: '%{device} をオフにする'
+      turn_device_on: '%{device} をオンにする'
       uncategorized: 未分類
       unknown: 不明
       unretract_extra_length: アンリトラクト長さ
@@ -350,7 +350,7 @@ app:
       upload_and_print: アップロードして印刷する
       used: 使用済み
       user_facing: ユーザー向き
-      user_managed_source: ' %{source} 認証によって管理されるユーザー'
+      user_managed_source: '%{source} 認証によって管理されるユーザー'
       username: ユーザー名
       velocity: 速度
       version_sort: バージョンによるソート
@@ -359,6 +359,12 @@ app:
       z_offset: Zオフセット
       length_in_kilometers: 長さ（キロメートル）
       time_in_days: 時間（日数）
+      clean_nozzle: ノズル清掃
+      connected: 接続済み
+      load_filament: フィラメントを送る
+      disconnected: 切断済み
+      park_toolhead: ノズル退避
+      unload_filament: フィラメントを戻す
     msg:
       bed_screws_adjust: >-
         現在のネジで大幅な調整が必要な場合は、 <b>調整済み</b> をクリックします。そうでない場合は、 <b>同意する</b>
@@ -369,7 +375,7 @@ app:
       not_valid_fluidd_backup_file: 有効な Fluidd バックアップファイルではありません！
       offline_ready: Fluiddは、これでオフラインで動作するようになりました。
       password_changed: パスワードの変更
-      pending_configuration_sections_deleted: 次のセクションは削除の対象です。
+      pending_configuration_sections_deleted: 次のセクションは削除の対象です
       rolledover_logs: '以下のアプリケーションログがロールオーバーされました： %{applications}'
       welcome_back: お帰りなさい。<br>以下でログインして、プリンタと接続してください。
       wrong_password: おっと、何か問題が発生したようですよ。パスワードは正しいですか？
@@ -395,10 +401,10 @@ app:
         confirm_delete: 'いいですか？選択した項目が削除されます。| 本当によろしいですか？選択されている {count} 個の項目を削除します。'
         confirm_emergency_stop: プリンターを緊急停止してもよろしいですか?
         confirm_exclude_object: このオブジェクトを印刷から除外してもよろしいですか?
-        confirm_forcemove_toggle: これにより、プリンターが損傷する可能性があります。よろしいですか？
+        confirm_forcemove_toggle: よろしいですか？これにより、プリンターが損傷する可能性があります。
         confirm_load_bedmesh_profile: 'プリンターは現在稼働中です。プロファイル %{name}をロードしてもよろしいですか?'
-        confirm_power_device_toggle: このデバイスの電源が切り替わります。よろしいですか？
-        confirm_reboot_host: ホストシステムが再起動されます。よろしいですか？
+        confirm_power_device_toggle: よろしいですか？このデバイスの電源が切り替わります。
+        confirm_reboot_host: よろしいですか？ホストシステムが再起動されます。
         confirm_remove_camera: '本当にカメラ %{name}を外しますか？'
         confirm_remove_console_filter: 'コンソール フィルター %{name}を削除してもよろしいですか?'
         confirm_remove_macro_category: 'マクロ カテゴリ %{name}を削除してもよろしいですか?'
@@ -406,11 +412,12 @@ app:
         confirm_remove_thermal_preset: 'サーマルプリセット %{name}を削除してもよろしいですか?'
         confirm_remove_user: 'ユーザー %{username}を削除してもよろしいですか?'
         confirm_service_restart: '%{name} サービスを再起動してよろしいですか？'
-        confirm_service_start: ' %{name} サービスを開始しますか?'
-        confirm_service_stop: ' %{name} サービスを停止してよろしいですか？'
-        confirm_shutdown_host: ホストシステムをシャットダウンしてよろしいですか？
+        confirm_service_start: '%{name} サービスを開始しますか?'
+        confirm_service_stop: '%{name} サービスを停止してよろしいですか？'
+        confirm_shutdown_host: よろしいですか？ホストシステムをシャットダウンします。
         no_file_preview: '%{name} は現在プレビューできません。'
         unsaved_changes: 未保存の変更があります。本当にこのファイルを閉じますか？
+        confirm_restore_backup: このバックアップを復元しますか？この操作が完了すると、Moonraker はすぐに再起動します。
     table:
       header:
         actions: アクション
@@ -491,10 +498,10 @@ app:
       browse_metrics: 利用可能なメトリックを閲覧する
       estop: 緊急停止
       file_browser_configuration_help: 
-        ファイルとフォルダーをここからドラッグ＆ドロップすることで、構成ファイルにコピーします。
+        ファイルとフォルダーをここからドラッグ＆ドロップすることで、構成ファイルにコピーします
       file_browser_help: >-
         ブラウザの外部からファイルやフォルダをドラッグ＆ドロップして、ここにアップロードします。<br>ファイルやフォルダをサブフォルダまたは「..」にドラッグ
-        ＆ドロップして移動します。
+        ＆ドロップして移動します
       managed_by_moonraker: Moonraker 構成によって管理されます
       notifications: 通知
       power_on_printer: プリンタの電源をオンにします
@@ -510,8 +517,8 @@ app:
   history:
     msg:
       confirm: 履歴とプリンター統計がすべて消去されます。よろしいですか？
-      confirm_jobs: これですべてのジョブがクリアされます。よろしいですか？
-      confirm_stats: これですべての統計情報がクリアされます。よろしいですか？
+      confirm_jobs: よろしいですか？これですべてのジョブがクリアされます。
+      confirm_stats: よろしいですか？これですべての統計情報がクリアされます。
   job_queue:
     label:
       eta: 終了予定時刻
@@ -525,7 +532,7 @@ app:
       multiply_job: ジョブを乗算する |ジョブを増やす
     tooltip:
       help: >-
-        ジョブからファイルをドラッグしてここにドロップして、ジョブをキューに入れます。<br>キューに入れられたジョブの順序を上下にドラッグして調整します。
+        ジョブからファイルをドラッグしてここにドロップして、ジョブをキューに入れます。<br>キューに入れられたジョブの順序を上下にドラッグして調整します
   keyboard_shortcuts:
     label:
       actions: アクション
@@ -586,6 +593,7 @@ app:
       webrtc_camera_streamer: WebRTC (カメラストリーマー)
       webrtc_go2rtc: WebRTC (go2rtc)
       webrtc_mediamtx: WebRTC (メディアMTX)
+      uv4l_mjpeg_stream: UV4L-MJPEGストリーム
     label:
       all_off: すべてオフ
       all_on: すべてオン
@@ -605,13 +613,13 @@ app:
         title: フルスクリーンアクション
       camera_rotate_by: 回転させる
       camera_stream_type: ストリームタイプ
-      camera_url_snapshot: 'カメラのスナップショット URL '
+      camera_url_snapshot: 'カメラのスナップショット URL'
       camera_url_stream: カメラのストリームURL
       card: カード
       collector: コレクタ
-      confirm_dirty_editor_close: 保存されていない変更内容でエディタを閉じる場合、確認を表示する。
-      confirm_on_estop: 緊急停止時の確認を表示する。
-      confirm_on_power_device_change: デバイスの電源変更時に確認を表示する。
+      confirm_dirty_editor_close: 保存されていない変更内容でエディタを閉じる場合、確認を表示する
+      confirm_on_estop: 緊急停止時の確認を表示する
+      confirm_on_power_device_change: デバイスの電源変更時に確認を表示する
       confirm_on_save_config_and_restart: 保存して再起動する前に保留中の構成変更を確認する
       contains: 内容
       dark_mode: ダークモード
@@ -641,7 +649,7 @@ app:
       flip_vertical: 縦型フリップ
       fluidd_settings_in_moonraker_db: Moonraker データベースの Fluidd 設定
       force_move_toggle_warning: 強制移動 をアクティブにするときに確認が必要
-      fps_idle_target: '非フォーカス時のターゲットFPS '
+      fps_idle_target: '非フォーカス時のターゲットFPS'
       fps_target: FPSターゲット
       gcode_coords: GCode座標を使用する
       height: 高さ
@@ -711,6 +719,8 @@ app:
       host_restart: ホストの再起動
       klipper_save_and_restart_action: Klipper の保存と再起動
       service_restart: サービスの再起動
+      warn_on_cpu_throttled: CPUスロットリングを検出したら警告する
+      warn_on_stepper_driver_overheating: ステッパードライバの過熱を検出したら警告する
     timer_options:
       absolute_file_position: 絶対ファイル位置
       duration: 期間のみ
@@ -731,6 +741,7 @@ app:
       theme: テーマ
       thermal_presets: サーマルプリセット
       tool: Tool
+      warnings: 注意
     tooltip:
       average_calculation: 複数のオプションを選択した場合は平均が計算されます
       diagnostics_performance: '[ベータ] 診断情報をログに記録すると、パフォーマンスに影響を与える可能性があります'
@@ -748,6 +759,8 @@ app:
         ただし、これらのテーマはそれぞれのブランドによって正式に管理されているわけではないことに注意してください。<br>
         テーマに関連する問題や問い合わせは、Fluidd チームに送信してください。<br>
         ブランド名とロゴの使用は、装飾と美観のみを目的としており、ブランドとの正式な関係やブランドによる承認を意味するものではありません。
+      warn_on_cpu_throttled: CPU のスロットリング（性能低下）が発生すると、プリント失敗することがあります
+      warn_on_stepper_driver_overheating: Trinamic ドライバのみ
   socket:
     msg:
       connecting: moonrakerに接続しています...
@@ -813,9 +826,8 @@ app:
       remaining_filament_unit: 残りのフィラメントを
       show_spool_selection_dialog_on_print_start: 印刷開始時にスプール選択ダイアログを表示する
       warn_on_filament_type_mismatch: スプールのフィラメント タイプとスライサーで選択したフィラメント 
-        タイプが一致しない場合に警告を表示します。
-      warn_on_not_enough_filament: 
-        選択したスプールに印刷を完了するのに十分なフィラメントが残っていない場合に警告を表示します。
+        タイプが一致しない場合に警告を表示します
+      warn_on_not_enough_filament: 選択したスプールに印刷を完了するのに十分なフィラメントが残っていない場合に警告を表示します
     title:
       scan_spool: スプールのスキャン
       spool_selection: 'スプールの選択 |マクロ {macro}のスプール選択'
@@ -867,8 +879,8 @@ app:
         通信の問題を避けるため、未割り当てのデバイスを1つだけCANバスに接続することを推奨します。<br> 詳細はこちら <a
         target="_blank"
         href="https://moonraker.readthedocs.io/en/latest/web_api/#query-unassigned-canbus-uuids">を参照してください。</a>
-      no_devices_found: ファイルが見つかりません。
-      no_devices_searched: 更新ボタンを使用してデバイスを検索します。
+      no_devices_found: ファイルが見つかりません
+      no_devices_searched: 更新ボタンを使用してデバイスを検索します
   timelapse:
     btn:
       render: レンダリング
@@ -932,22 +944,22 @@ app:
         <span class="secondary--text">現在のエクストルーダー構成は、</span> %{filamentDiameter}
         mmフィラメント <span class="secondary--text">と</span> %{nozzleDiameter} mm
         ノズルに設定されています
-      stats_extruded_length: ' %{extrudeFactor} % の流量<span class="secondary--text">で
+      stats_extruded_length: '%{extrudeFactor} % の流量<span class="secondary--text">で
         %{extrudeLength} mm のフィラメントを押し出すと、</span> 推定長 %{estimatedExtrudedLength} mm
-        となります。'
+        となります'
       stats_max_speed: >-
         <span class="secondary--text">レイヤー高を</span> %{layerHeight} mm<span
         class="secondary--text">とすると、</span> の推定最大印刷速度は %{estimatedMaxSpeed}
         mm/s です
-      stats_volumetric_flow: ' %{extrudeSpeed} mm/s<span class="secondary--text">で押し出すと、</span>推定体積流量は  %{estimatedVolumetricFlow}
-        mm3/s になります。'
+      stats_volumetric_flow: '%{extrudeSpeed} mm/s<span class="secondary--text">で押し出すと、</span>推定体積流量は
+        %{estimatedVolumetricFlow} mm3/s になります'
     title:
       bed_screws_adjust: ベッドスクリューの調整
       manual_probe: マニュアルプローブ
       screws_tilt_adjust: ネジ 傾き調整
     tooltip:
       absolute_positioning: 相対位置
-      extruder_disabled: '最小温度未満（%{min}<small>°C</small>）のためホットエンドが無効です。'
+      extruder_disabled: '最小温度未満（%{min}<small>°C</small>）のためホットエンドが無効です'
       home_xy: Home XY
       home_z: Home Z
       manual_probe: マニュアルプローブ
@@ -975,6 +987,7 @@ app:
       package_list: パッケージリスト
       up_to_date: 最新の状態
       updates_available: アップデートが利用可能です
+      packages: '{count} 個のパッケージ|{count} 個のパッケージ'
     status:
       finished: アップデートが終了しました
       updating: アップデート中...
@@ -995,3 +1008,140 @@ app:
       load_ext: その他の負荷
       unload: 無負荷
       unload_ext: その他の無負荷
+      preload: プリロード
+      print_stats: 印刷状態
+      recover: リカバー
+      sync_spoolman: Spoolman と同期
+      unlock: 解除
+      cancel: キャンセル
+      mmu_maintenance: MMUメンテナンス
+      recover_state: MMU状態を修正
+      edit_gate_map: フィラメント編集
+      edit_ttg_map: マップツール/フィラメント
+      sync: 同期
+      unsync: 同期しない
+      off: オフ
+      on: オン
+      home: ホーム
+      up: 上
+      down: 下
+      move: 移動
+      grip: グリップ
+      release: リリース
+      reset: リセット
+    title:
+      headline: Mmu
+      mmu_maintenance: MMUメンテナンス
+      recover_state: MMU状態(エラー修正)
+      edit_gate_map: フィラメント編集(ゲートマップ編集)
+      edit_ttg_map: マップツール/フィラメント(TTGマップ編集)
+    label:
+      clog_detection: 詰まり検出
+      tool_mapping: ツールマッピング
+      spoolman: Spoolman
+      spoolman_id: Spoolman ID
+      choose_spool: スプールの選択
+      filament_name: フィラメント名
+      load_speed: ロード速度の上書き
+      material: 素材
+      reset: リセット
+      temperature: 温度
+      motor_sync: エクストルーダーの同期
+      extruder_only: エクストルーダーのみ
+      mmu_motors: MMUモーター
+      extruder_tx: ツールTx
+      selector: セレクター
+      leds: LED
+      ui_visual: UIビジュアル
+      animation: アニメーション
+      config: コンフィグ
+      enable: 有効化
+      unknown: 不明
+      skip_automap: オートマップをスキップ
+      all_tools: すべてのツール
+      ok: Ok
+      save: 保存
+      cancel: キャンセル
+      gate: ゲート
+      endless_spool: ES ∞
+      filament_info: フィラメント情報
+      slicer_expects: スライサー側の想定設定
+      spoolman_last_used: 前回使用の
+      spoolman_never: ない
+      spoolman_today: 本日
+      spoolman_yesterday: 昨日
+      spoolman_days_ago: '%{days} 日前'
+    tooltip:
+      empty: 空の
+      color: カラー
+      spoolid: スプール ID
+    msg:
+      reset_gate_map_confirmation: 「これによりゲートマップは、`mmu_parameters.cfg` 
+        に定義されたデフォルト設定（デフォルトがない場合は空のマップ）に完全にリセットされます。」
+      reset_ttg_map_confirmation: 
+        これにより、ツール-ゲートマッピングとエンドレススプールのグループ設定はすべて、`mmu_parameters.cfg` 
+        に定義されたデフォルト設定にリセットされます。デフォルト設定がない場合は、1:1 の標準マッピングに戻ります
+      select_gate: 編集したいゲート/スプール情報を選択してください
+      spoolman_off: Happy Hare での Spoolman 
+        サポートは「%{mode}」です。ゲートへのスプールID割り当ては無効になっています
+      spoolman_other: Spoolman 
+        サポートは「%{mode}」です。必要に応じてスプールIDを割り当てるか、ゲート属性を直接編集できます
+      spoolman_pull: Spoolman 
+        は「%{mode}」モードで動作しています。ほとんどのゲート設定のローカル編集は無効です。Spoolman 
+        のデータベースでスプール／ゲートのマッピングを設定するか、MMU_SPOOLMAN コマンドを使用してください
+      no_matching_spool: 一致するスプールが見つかりません
+      are_you_sure: 適用してよろしいですか？
+      bad_temperature: 温度が範囲外です
+      filament_available: ゲートにフィラメントがあります
+      filament_unknown: フィラメント状態が不明です（設定してください）
+      filament_empty: フィラメントがありません
+      maintenance_intro: 特定の MMU 機能と選択的な設定を直接管理します。
+      recover_intro: これは、Happy Hare が MMU 
+        と同期していない場合に使用する低レベルの回復処理です。まず自動回復を試すことが推奨されますが、現在のツールまたはゲートを修正するにはこの処理が必要となります（Type-A
+        MMU の場合は、代わりにアンロードしてセレクタをホームさせることもできます）。
+      no_custom_controls: カスタムコントロールなし
+      filament_loaded: フィラメントは完全にエクストルーダーまで装填されていますか？それとも完全にアンロードされていますか？
+      gate_bypass: このゲートはバイパス設定です！
+      no_gate: ゲートを選択する必要があります
+      no_position: 位置の回復を試行
+      no_tool: ツールを選択する必要があります
+      remap: この操作により、ゲートが %{tool} に再割り当てされます
+      set_gate: 現在のゲートに設定
+      set_tool: 現在のツールに設定
+      tool_bypass: このツールはバイパス設定です！
+      warning_prefix: 警告
+      no_active_spool: アクティブなスプールがありません
+      no_spool_id: スプールIDがありません
+      recover_filament_position: フィラメント位置を回復
+      multi_color: これは %{numTools} 
+        個のツールを使用したマルチマテリアル・シングルエクストルーダー印刷のようです。ツールマッピングを確認することをお勧めします
+      single_color: これは単色プリントのようですが、MMU でバイパスが選択されていません。選択中のツールを確認することをお勧めします
+      map_slicer_tools: プリント用に、スライサーのツールを MMU のゲートにマッピングします
+      map_tools: ツールを MMU のゲートにマッピング
+      tool_not_used: ツール %{tool} はこのプリントでは使用されません。デフォルトのマッピングを選択してください
+      mismatch: フィラメントが一致しない可能性があります
+      color: カラー
+      material: 素材
+      temperature: 温度
+      no_gate_data: ゲートデータがありません
+      no_slicer_info: スライサー情報がありません。%{tool} のデフォルトマッピングを選択してください
+      select_tool: マッピングするツールを選択し、リストからゲートを選んでください
+    setting:
+      large_filament_status: 拡張フィラメントステータス
+      show_clog_detection: 詰まり検知を表示
+      show_details: フィラメント詳細を表示
+      show_ttg_map: TTGマップを表示
+      show_name: ユニット名の表示
+      show_logos: ロゴの表示
+      show_unavailable_spool_color: 利用不可のスプールを表示
+  database:
+    btn:
+      compact_database: データベースを圧縮
+      create_backup: バックアップを作成
+    label:
+      moonraker_database: Moonraker データベース
+    tooltip:
+      restore_backup: バックアップを復元
+      delete_backup: バックアップを削除
+    msg:
+      not_found: データベースの既存のバックアップが見つかりません。

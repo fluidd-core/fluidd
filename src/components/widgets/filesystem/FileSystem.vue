@@ -537,7 +537,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       return !this.filters
         .some(filter => {
           if (filter === 'hidden_files') {
-            return file.name.match(/^\.(?!\.$)/)
+            return /^\.(?!\.$)/.test(file.name)
           }
 
           if (file.type !== 'file') {
@@ -552,19 +552,19 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
               return file.extension === '.mru'
 
             case 'klipper_backup_files':
-              return file.filename.match(/^printer-\d{8}_\d{6}\.cfg$/)
+              return /^printer-\d{8}_\d{6}\.cfg$/.test(file.filename)
 
             case 'print_start_time':
               return 'print_start_time' in file && file.print_start_time !== null
 
             case 'rolled_log_files':
               return (
-                file.filename.match(/\.\d{4}-\d{2}-\d{2}(_\d{2}-\d{2}-\d{2})?$/) ||
-                file.filename.match(/\.log\.\d+$/)
+                /\.\d{4}-\d{2}-\d{2}(?:_\d{2}-\d{2}-\d{2})?$/.test(file.filename) ||
+                /\.log\.\d+$/.test(file.filename)
               )
 
             case 'crowsnest_backup_files':
-              return file.filename.match(/^crowsnest\.conf\.\d{4}-\d{2}-\d{2}-\d{4}$/)
+              return /^crowsnest\.conf\.\d{4}-\d{2}-\d{2}-\d{4}$/.test(file.filename)
           }
 
           return false
@@ -779,32 +779,35 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         ? mode === 'view'
         : this.rootProperties.canView.includes(file.extension)
 
-      // Grab the file. This should provide a dialog.
-      const response = await this.getFile(
-        file.filename,
-        this.currentPath,
-        file.size,
-        {
-          responseType: viewOnly ? 'arraybuffer' : 'text',
-          transformResponse: [v => v]
-        }
-      )
-
       if (viewOnly) {
-        // Open the file preview dialog.
-        const type = response.headers['content-type']
-        const blob = new Blob([response.data], { type })
+        const response = await this.getFile<Blob>(
+          file.filename,
+          this.currentPath,
+          file.size,
+          {
+            responseType: 'blob'
+          }
+        )
+
         this.filePreviewState = {
           open: true,
           file,
           filename: file.filename,
           extension: file.extension,
-          src: URL.createObjectURL(blob),
-          type,
+          src: URL.createObjectURL(response.data),
+          type: response.data.type,
           readonly: file.permissions === 'r' || this.rootProperties.readonly
         }
       } else {
-        // Open the edit dialog.
+        const response = await this.getFile<string>(
+          file.filename,
+          this.currentPath,
+          file.size,
+          {
+            responseType: 'text'
+          }
+        )
+
         this.fileEditorDialogState = {
           open: true,
           contents: response.data,
@@ -947,6 +950,17 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         const klipperSaveAndRestartAction: KlipperSaveAndRestartAction = this.$typedState.config.uiSettings.editor.klipperSaveAndRestartAction
 
         switch (klipperSaveAndRestartAction) {
+          case 'auto': {
+            const isSimulavrMcu: boolean = this.$typedGetters['printer/getIsSimulavrMcu']
+
+            if (isSimulavrMcu) {
+              this.serviceRestartKlipper()
+            } else {
+              this.firmwareRestartKlippy()
+            }
+            break
+          }
+
           case 'host-restart':
             this.restartKlippy()
             break
@@ -1119,14 +1133,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleCreateZip (file: FileBrowserEntry | FileBrowserEntry[]) {
-    const date = new Date()
-    const year = date.getFullYear().toString()
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const day = date.getDate().toString().padStart(2, '0')
-    const hours = date.getHours().toString().padStart(2, '0')
-    const minutes = date.getMinutes().toString().padStart(2, '0')
-    const seconds = date.getSeconds().toString().padStart(2, '0')
-    const timestamp = `${year}${month}${day}-${hours}${minutes}${seconds}`
+    const timestamp = this.$filters.formatTimestamp(Date.now())
 
     const dest = Array.isArray(file)
       ? `${this.currentPath}/${timestamp}.zip`

@@ -8,6 +8,7 @@ export interface MacrosState {
 
 export interface Macro {
   name: string;
+  description?: string;
   alias?: string;
   visible: boolean;
   categoryId?: string;

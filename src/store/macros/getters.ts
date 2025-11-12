@@ -27,11 +27,15 @@ export const getters = {
         const config = rootState.printer.printer.configfile.settings[lowerCaseKey]
         const stored = state.stored.find(macro => macro.name?.toLowerCase() === lowerCaseName)
         const variables = rootState.printer.printer[key]
+        const description = config && config.description !== 'G-Code macro'
+          ? config.description
+          : undefined
 
         const macro: Macro = {
           ...MACRO_DEFAULTS,
           ...stored,
           name,
+          description,
           variables,
           config
         }

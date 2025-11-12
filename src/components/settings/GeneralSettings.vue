@@ -444,7 +444,7 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
         ]
       : []
 
-    const pins: OutputPin[] = this.$typedGetters['printer/getPins']
+    const pins: OutputPin[] = this.$typedGetters['printer/getAllPins']
     const pinEntries = pins.length
       ? [
           { header: 'Klipper' },

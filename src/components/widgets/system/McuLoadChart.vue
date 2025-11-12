@@ -41,7 +41,7 @@ export default class McuLoadChart extends Vue {
   readonly mcu!: MCU
 
   get chartData () {
-    return this.$typedState.charts[this.mcu.name] || []
+    return this.$typedState.charts[this.mcu.key] || []
   }
 
   get options () {

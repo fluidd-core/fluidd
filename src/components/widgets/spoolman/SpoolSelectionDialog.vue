@@ -681,7 +681,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get spoolmanURL (): string | undefined {
-    return this.$typedState.server.config.spoolman?.server
+    return this.$typedGetters['spoolman/getSpoolmanUrl']
   }
 
   get preferDeviceCamera () {

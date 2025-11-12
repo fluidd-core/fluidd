@@ -468,6 +468,63 @@ export const SocketActions = {
     )
   },
 
+  async serverDatabaseList (options?: NotifyOptions) {
+    baseEmit(
+      'server.database.list', {
+        dispatch: 'database/onServerDatabaseList',
+        wait: Waits.onDatabaseList,
+        ...options
+      }
+    )
+  },
+
+  async serverDatabaseCompact (options?: NotifyOptions) {
+    baseEmit(
+      'server.database.compact', {
+        wait: Waits.onDatabaseCompact,
+        ...options
+      }
+    )
+  },
+
+  async serverDatabasePostBackup (filename: string, options?: NotifyOptions) {
+    baseEmit(
+      'server.database.post_backup', {
+        dispatch: 'database/onServerDatabasePostBackup',
+        wait: `${Waits.onDatabasePostBackup}/${filename}`,
+        ...options,
+        params: {
+          filename
+        }
+      }
+    )
+  },
+
+  async serverDatabaseRestore (filename: string, options?: NotifyOptions) {
+    baseEmit(
+      'server.database.restore', {
+        wait: `${Waits.onDatabaseRestore}/${filename}`,
+        ...options,
+        params: {
+          filename
+        }
+      }
+    )
+  },
+
+  async serverDatabaseDeleteBackup (filename: string, options?: NotifyOptions) {
+    baseEmit(
+      'server.database.delete_backup', {
+        dispatch: 'database/onServerDatabaseDeleteBackup',
+        wait: `${Waits.onDatabaseDeleteBackup}/${filename}`,
+        ...options,
+        params: {
+          filename
+        }
+      }
+    )
+  },
+
   async serverWrite (key: string, value: unknown, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
     baseEmit(
       'server.database.post_item', {
