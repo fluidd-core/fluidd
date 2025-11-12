@@ -12,8 +12,8 @@ app:
       remove_profile: Remover perfil %{name}
       probed_matrix: Matriz sondada
     msg:
-      hint: Se salvar como algo diferente de % {name}, pode escolher remover também
-        o perfil % {name}
+      hint: Se salvar como algo diferente de %{name}, você pode escolher também 
+        remover o perfil %{name}
       not_found: Não existe uma malha de nivelamentos da mesa.
       not_loaded: Nenhuma malha carregada
     tooltip:
@@ -21,17 +21,18 @@ app:
       calibrate: Começa uma nova calibração, salvando o perfil como 'default'
       delete: Apagar perfil
       save: Salva perfil calibrado no arquivo printer.cfg
+      download_image: Baixar imagem da malha da mesa
   endpoint:
     msg:
-      trouble: Está com problemas? <a href="%{url}" target="_blank"> Veja aqui </a>
-        para mais informações.
+      trouble: Está com problemas? <a href="%{url}" target="_blank"> Veja aqui 
+        </a> para mais informações.
     error:
       cors_error: bloqueado pela política CORS
-      cors_note: Isso pode significar que você precisa modificar a configuração do
-        moonraker. Consulte a documentação sobre configurações de várias impressoras
-        <a href="%{url}" target="_blank"> aqui </a>
-      cant_connect: Algo está errado! O Fluidd não é possível encontrar o destino.
-        Tem a certeza de que este é o endereço correto?
+      cors_note: Isso pode significar que você precisa modificar a configuração 
+        do moonraker. Consulte a documentação sobre configurações de várias 
+        impressoras <a href="%{url}" target="_blank"> aqui </a>
+      cant_connect: Algo está errado e o Fluidd não consegue encontrar o 
+        destino. Tem a certeza de que este é o endereço correto?
     hint:
       add_printer: Ex., http://fluidd.local
     tooltip:
@@ -47,6 +48,7 @@ app:
       diskinfo: Informações sobre o Disco
       downloaded: Descarregado
       file_name: Nome arquivo
+      sd_card_info: Informações do cartão SD
     title:
       add_dir: Adicionar diretório
       rename_dir: Renomear diretório
@@ -63,28 +65,35 @@ app:
       label:
         klipper_backup_files: Filtrar cópias de segurança do Klipper
         hidden_files: Filtrar arquivos e pastas escondidas
-        crowsnest_backup_files: Filtrar arquivos de cópia de segurança do Crowsnest
+        crowsnest_backup_files: Filtrar arquivos de cópia de segurança do 
+          Crowsnest
         print_start_time: Filtrar já impressos
-        moonraker_backup_files: Filtrar arquivos de cópia de segurança do Moonraker
+        moonraker_backup_files: Filtrar arquivos de cópia de segurança do 
+          Moonraker
         rolled_log_files: Filtrar arquivos de registo antigos
+        moonraker_temporary_upload_files: Filtrar arquivos de upload temporários
+          do Moonraker
     tooltip:
       low_on_space: Pouco espaço em disco
       items_count: '{count} item | {count} itens'
-      root_disabled: A raiz {root} não está disponível. Por favor verifique os seus
-        arquivos de log.
+      root_disabled: A raiz {root} não está disponível. Por favor verifique os 
+        seus arquivos de log.
     url:
       klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
-      moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
-      moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
-      crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
+      moonraker_config: 
+        https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
+      moonraker_telegram_bot_config: 
+        https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
+      crowsnest_config: 
+        https://crowsnest.mainsail.xyz/configuration/%{hash}-section
     msg:
       not_found: Não foram encontrados arquivos
       processing: Processando
     overlay:
-      drag_files_folders_upload: <strong>Arrastar</strong> aqui, arquivos e pastas
-        para carregar
-      drag_files_enqueue: <strong>Arrastar</strong> para aqui, arquivos para juntar
-        à fila
+      drag_files_folders_upload: <strong>Arrastar</strong> aqui, arquivos e 
+        pastas para carregar
+      drag_files_enqueue: <strong>Arrastar</strong> para aqui, arquivos para 
+        juntar à fila
   gcode:
     btn:
       load_current_file: Carregar arquivo atual
@@ -104,11 +113,11 @@ app:
       show_moves: Mostrar movimentos
       show_previous_layer: Mostrar camada anterior
     msg:
-      confirm: O arquivo "%{filename}" tem %{size}, o que pode consumir bastante recurso
-        para o seu sistema. Tem a certeza?
+      confirm: O arquivo "%{filename}" tem %{size}, o que pode consumir bastante
+        recurso para o seu sistema. Tem a certeza?
     overlay:
-      drag_file_load: <strong>Arraste</strong> um arquivo de gcode para aqui afim
-        de carregar
+      drag_file_load: <strong>Arraste</strong> um arquivo de gcode para aqui 
+        afim de carregar
   general:
     btn:
       abort: Abortar
@@ -127,7 +136,7 @@ app:
       download: Download
       duplicate: Duplicar
       edit: Editar
-      exit_layout: Sair do modo de layout
+      exit_layout: Sair
       filter: Filtrar
       extrude: Extrudar
       heaters_off: Heaters desligados
@@ -138,7 +147,7 @@ app:
       rename: Renomear
       reprint: Reimprimir
       reset_file: Limpar arquivo
-      reset_layout: Reiniciar layout
+      reset_layout: Reiniciar
       restart_service_moonraker: Reiniciar Moonraker
       resume: Retomar
       retract: Retração
@@ -146,7 +155,7 @@ app:
       save: Salvar
       return_dashboard: Voltar ao painel
       shutdown: Desligar
-      set_default_layout: Escolher como Layout Padrão
+      set_default_layout: Salvar como Padrão
       upload_files: Carregar Arquivos
       add_printer: Adicionar impressora
       adjusted: Ajustado
@@ -176,7 +185,7 @@ app:
       upload: Envio
       upload_folder: Carregar Pasta
       view: Ver
-      reset_default_layout: Voltar para o Layout Padrão
+      reset_default_layout: Redefinir Padrão
       save_config_and_restart: Salvar a configuração e reiniciar
       select_columns: Selecionar colunas
       reset_stats: Reiniciar estatísticas
@@ -193,12 +202,12 @@ app:
       recover: Recuperar
     error:
       app_warnings_found: '%{appName} avisos encontrados.'
-      app_setup_link: Os requisitos de configuração do Fluidd podem ser encontrados
+      app_setup_link: Os requisitos de configuração do Fluidd podem ser 
+        encontrados <a target="_blank" href="%{url}"> aqui. </a>
+      components_config: A configuração do plugin Moonraker pode ser encontrada 
         <a target="_blank" href="%{url}"> aqui. </a>
-      components_config: A configuração do plugin Moonraker pode ser encontrada <a
-        target="_blank" href="%{url}"> aqui. </a>
-      failed_components: O Moonraker tem falhas nos plug-ins, verifique os logs, atualize
-        a sua configuração e reinicie o moonraker.
+      failed_components: O Moonraker tem falhas nos plug-ins, verifique os logs,
+        atualize a sua configuração e reinicie o moonraker.
     label:
       add_filter: Adicionar Filtro
       add_preset: Adicionar predefinição
@@ -236,8 +245,8 @@ app:
       finish_time: Terminar
       flow: Fluxo
       free: livre
-      heaters_busy: A impressora está ocupada no momento. Desligar os aquecedores
-        pode resultar em falha na impressão.
+      heaters_busy: A impressora está ocupada no momento. Desligar os 
+        aquecedores pode resultar em falha na impressão.
       high: Alto
       low: Baixo
       m117: M117
@@ -313,44 +322,56 @@ app:
     msg:
       password_changed: Senha trocada
       wrong_password: Oops, algo errado! Sua senha esta correta?
-      welcome_back: Bem-vindo de volta.<br>Faça login abaixo para manter contato com
-        sua impressora.
+      welcome_back: Bem-vindo de volta.<br>Faça login abaixo para manter contato
+        com sua impressora.
       offline_ready: Fluidd está pronto para trabalhar offline.
-      needs_refresh: Novo conteúdo disponível, clique no botão <b>Recarregar</b> para
-        atualizar.
-      pending_configuration_sections_deleted: As seguintes seções estão marcadas para
-        exclusão
+      needs_refresh: Novo conteúdo disponível, clique no botão <b>Recarregar</b>
+        para atualizar.
+      pending_configuration_sections_deleted: As seguintes seções estão marcadas
+        para exclusão
       rolledover_logs: 'Os seguintes logs de aplicativos foram transferidos: %{applications}'
       not_valid_fluidd_backup_file: Não é um arquivo de backup válido do Fluidd!
-      fluidd_settings_backup_failed: Falha ao fazer backup das configurações do Fluidd!
-      fluidd_settings_restore_failed: Falha ao restaurar as configurações do Fluidd!
-      bed_screws_adjust: Clique em <b>Ajustado</b> se for necessário um ajuste significativo
-        no parafuso atual; caso contrário, clique em <b>Aceitar</b> para continuar.
+      fluidd_settings_backup_failed: Falha ao fazer backup das configurações do 
+        Fluidd!
+      fluidd_settings_restore_failed: Falha ao restaurar as configurações do 
+        Fluidd!
+      bed_screws_adjust: Clique em <b>Ajustado</b> se for necessário um ajuste 
+        significativo no parafuso atual; caso contrário, clique em 
+        <b>Aceitar</b> para continuar.
     simple_form:
       msg:
         confirm_reboot_host: Tem certeza? O sistema vai reiniciar.
         confirm_shutdown_host: Tem certeza? O sistema vai desligar.
         confirm: Tem certeza?
-        confirm_delete: Tem a certeza? Vai excluir o item selecionado. | Tem certeza?
-          Vai excluir os {count} itens selecionados.
-        confirm_clear_mesh: A impressora está ocupada no momento. Tem certeza de que
-          deseja limpar a malha da cama?
+        confirm_delete: Tem a certeza? Vai excluir o item selecionado. | Tem 
+          certeza? Vai excluir os {count} itens selecionados.
+        confirm_clear_mesh: A impressora está ocupada no momento. Tem certeza de
+          que deseja limpar a malha da cama?
         confirm_forcemove_toggle: Tem certeza? Isso pode danificar a impressora.
-        confirm_load_bedmesh_profile: A impressora está ocupada no momento. Tem certeza
-          de que deseja carregar o perfil %{name}?
-        confirm_remove_user: Tem certeza de que deseja remover o usuário %{username}?
-        confirm_service_start: Tem certeza de que deseja iniciar o serviço %{name}?
-        confirm_service_restart: Tem certeza de que deseja reiniciar o serviço %{name}?
-        confirm_service_stop: Tem certeza de que deseja interromper o serviço %{name}?
+        confirm_load_bedmesh_profile: A impressora está ocupada no momento. Tem 
+          certeza de que deseja carregar o perfil %{name}?
+        confirm_remove_user: Tem certeza de que deseja remover o usuário 
+          %{username}?
+        confirm_service_start: Tem certeza de que deseja iniciar o serviço 
+          %{name}?
+        confirm_service_restart: Tem certeza de que deseja reiniciar o serviço 
+          %{name}?
+        confirm_service_stop: Tem certeza de que deseja interromper o serviço 
+          %{name}?
         no_file_preview: '%{name} não pode ser visualizado no momento.'
-        confirm_cancel_print: Tem certeza de que deseja cancelar a impressão atual?
-        confirm_emergency_stop: Tem certeza de que deseja parar a impressora em emergência?
-        confirm_exclude_object: Tem certeza de que deseja excluir este objeto da impressão?
-        confirm_power_device_toggle: Tem certeza? Isso alternará a energia deste dispositivo.
-        unsaved_changes: Você tem alterações não salvas. Tem certeza de que deseja
-          fechar este arquivo?
+        confirm_cancel_print: Tem certeza de que deseja cancelar a impressão 
+          atual?
+        confirm_emergency_stop: Tem certeza de que deseja parar a impressora em 
+          emergência?
+        confirm_exclude_object: Tem certeza de que deseja excluir este objeto da
+          impressão?
+        confirm_power_device_toggle: Tem certeza? Isso alternará a energia deste
+          dispositivo.
+        unsaved_changes: Você tem alterações não salvas. Tem certeza de que 
+          deseja fechar este arquivo?
         confirm_remove_camera: Tem certeza que deseja remover a camera %{name}?
-        confirm_remove_printer: Tem certeza que deseja remover a impressora %{name}?
+        confirm_remove_printer: Tem certeza que deseja remover a impressora 
+          %{name}?
       error:
         arrayofnums: Apenas números
         exists: Já existe
@@ -393,6 +414,8 @@ app:
         nozzle_diameter: Diâmetro do bico
         time_added: Tempo adicionado
         time_in_queue: Tempo na fila
+        user: Usuário
+        referenced_tools: Ferramentas referenciadas
     title:
       config_files: Arquivos de Configuração
       add_printer: Adicionar impressora
@@ -409,7 +432,7 @@ app:
       macros: Macros
       runout_sensors: Sensores filamento
       settings: Definições
-      stats: Estatísticas da impressora
+      stats: Estatísticas da Impressora
       temperature: Temperatura
       tool: Ferramenta
       tune: Afinação
@@ -427,25 +450,36 @@ app:
       rollover_logs: Limpar logs
       system_overview: Informações do Sistema
       system: Sistema
+      login: Login
+      macro_category_settings: Configurações de Categoria de Macro
     tooltip:
       estop: Parada de Emergência
       reload_klipper: Recarrega a configuração do klipper.
-      reload_restart_klipper: Recarrega a configuração do klipper e reinicia os MCUs.
+      reload_restart_klipper: Recarrega a configuração do klipper e reinicia os 
+        MCUs.
       restart_klipper: Reinicia o serviço do sistema klipper.
       browse_metrics: Navegue pelas métricas disponíveis
       managed_by_moonraker: Gerenciado pela sua configuração do moonraker
       notifications: Notificações
-      file_browser_help: Arraste e solte arquivos ou pastas de fora do navegador para
-        carregá-los aqui<br>Mova arquivos e pastas arrastando e soltando-os em subpastas
-        ou ".."
-      file_browser_configuration_help: Copie arquivos e pastas para os Arquivos de
-        Configuração arrastando-os daqui e soltando-os ali
+      file_browser_help: Arraste e solte arquivos ou pastas de fora do navegador
+        para carregá-los aqui<br>Mova arquivos e pastas arrastando e soltando-os
+        em subpastas ou ".."
+      file_browser_configuration_help: Copie arquivos e pastas para os Arquivos 
+        de Configuração arrastando-os daqui e soltando-os ali
       run_collector: Executar coletor
       rollover_logs: Limpar Logs
+      exit_layout: Sair do modo layout
+      power_on_printer: Liga a impressora
+      reset_layout: Redefinir o layout atual para o layout padrão de todo o 
+        servidor
+      reset_default_layout: Redefinir o layout padrão de todo o servidor para os
+        padrões de fábrica
+      set_default_layout: Definir o layout atual como layout padrão para todo o 
+        servidor
   setting:
     btn:
       add_thermal_preset: Adicionar Predefinição
-      reset: Reset
+      reset: Reiniciar
       select_theme: Selecionar tema
       add_camera: Adicionar Câmera
       add_category: Adicionar categoria
@@ -459,13 +493,17 @@ app:
       general: Geral
       macros: Macros
       theme: Tema
-      thermal_presets: Pré-ajustes térmicos
-      tool: Ferramentas
+      thermal_presets: Predefinições Térmicas
+      tool: Ferramenta
     camera_type_options:
       mjpegadaptive: MJPEG Adaptativo
       mjpegstream: MJPEG Stream
       video: IP Câmera
       iframe: Página HTTP
+      hlsstream: HLS Stream
+      webrtc_camera_streamer: WebRTC (camera-streamer)
+      webrtc_go2rtc: WebRTC (go2rtc)
+      webrtc_mediamtx: WebRTC (MediaMTX)
     label:
       all_off: Tudo Desligado
       all_on: Tudo Ligado
@@ -475,30 +513,32 @@ app:
       dark_mode: Modo escuro
       default_extrude_length: Comprimento de extrusão padrão
       default_extrude_speed: Velocidade de extrusão padrão
-      default_toolhead_move_length: Comprimento de movimento da Cabeça de Impressão
-        padrão
+      default_toolhead_move_length: Comprimento de movimento da Cabeça de 
+        Impressão padrão
       default_toolhead_xy_speed: Velocidade XY da Cabeça de Impressão padrão
       default_toolhead_z_speed: Velocidade Z da Cabeça de Impressão padrão
       enable: Habilitar
       enable_notifications: Ativar notificações
-      fps_target: Frames por segundo
+      fps_target: Meta de FPS
       gcode_coords: Usar Coordenadas GCode
-      invert_x_control: Inverter controlo X
-      invert_y_control: Inverter controlo Y
-      invert_z_control: Inverter controlo Z
+      invert_x_control: Inverter controle X
+      invert_y_control: Inverter controle Y
+      invert_z_control: Inverter controle Z
       language: Linguagem de Exibição
-      primary_color: Cor principal
-      printer_name: Nome impressora
-      reset: Redefinir as configurações
-      thermal_preset_name: Nome predefinição
+      primary_color: Cor primária
+      printer_name: Nome da Impressora
+      reset: Redefinir configurações
+      thermal_preset_name: Nome da Predefinição
       z_adjust_values: Ajustar valores Z
       aspect_ratio: proporções de aspecto
-      auto_edit_extensions: Extensões para abrir automaticamente no modo de edição
-      auto_follow_on_file_load: Acompanhar automaticamente o progresso no carregamento
-        do arquivo
-      auto_load_on_print_start: Carregar arquivo automaticamente no início da impressão
-      auto_load_mobile_on_print_start: Carregar arquivo automaticamente em dispositivos
-        móveis
+      auto_edit_extensions: Extensões para abrir automaticamente no modo de 
+        edição
+      auto_follow_on_file_load: Acompanhar automaticamente o progresso no 
+        carregamento do arquivo
+      auto_load_on_print_start: Carregar arquivo automaticamente no início da 
+        impressão
+      auto_load_mobile_on_print_start: Carregar arquivo automaticamente em 
+        dispositivos móveis
       axes: Eixos
       camera_fullscreen_action:
         embed: Incorporado
@@ -509,10 +549,10 @@ app:
       card: Cartão
       collector: Coletor
       confirm_on_estop: Exigir confirmação na Parada de Emergência
-      confirm_on_save_config_and_restart: Revise as alterações de configuração pendentes
-        antes de salvar e reiniciar
-      confirm_dirty_editor_close: Exigir confirmação ao fechar o editor com alterações
-        não salvas
+      confirm_on_save_config_and_restart: Revise as alterações de configuração 
+        pendentes antes de salvar e reiniciar
+      confirm_dirty_editor_close: Exigir confirmação ao fechar o editor com 
+        alterações não salvas
       contains: Contém
       dashed: Tracejado
       default_min_layer_height: Altura mínima padrão da camada
@@ -523,8 +563,8 @@ app:
       enable_xy_homing: Habilitar XY Homing
       expression: Expressão
       extrusion_line_width: Largura da linha de extrusão
-      confirm_on_power_device_change: Exigir confirmação sobre alterações de energia
-        do dispositivo
+      confirm_on_power_device_change: Exigir confirmação sobre alterações de 
+        energia do dispositivo
       height: Altura
       aspect_ratio_format: '[largura : altura]'
       flip_horizontal: Espelhamento Horizontal
@@ -534,13 +574,68 @@ app:
       left_y: Eixo-Y esquerdo
       icon: Ícone
       filter: Filtro | Filtros
+      fill_color: Preencher cor
+      fill_opacity: Preencher opacidade
+      auto: Automático
+      firmware_restart: Reiniciar Firmware
+      fluidd_settings_in_moonraker_db: Configurações do Fluidd no banco de dados
+        Moonraker
+      fps_idle_target: Meta de FPS quando não estiver em foco
+      hide_single_part_bounding_box: Ocultar caixa delimitadora ao imprimir uma 
+        única parte
+      host_restart: Reiniciar Host
+      klipper_save_and_restart_action: Ação Salvar & Reiniciar do Klipper
+      line_color: Cor da linha
+      line_style: Estilo da linha
+      min: Mínimo
+      max: Máximo
+      metrics: Métricas
+      move_line_width: Mover Largura da Linha
+      name: Nome
+      never: Nunca
+      none: Nenhum
+      optional: Opcional
+      power_toggle_in_top_nav: Botão liga/desliga na navegação superior
+      print_in_progress_layout: Layout de Impressão em Andamento
+      print_progress_calculation: Cálculo do Progresso da Impressão
+      printer_power_device: Dispositivo de energia da impressora
+      retraction_icon_size: Tamanho do Ícone de Retração
+      right_y: Eixo Y Direito
+      save_and_restore_view_state: Salvar e restaurar o estado de exibição
+      sections_to_ignore_pending_configuration_changes: Seções para ignorar 
+        Alterações de Configuração Pendentes
+      service_restart: Reiniciar Serviço
+      show_animations: Mostrar animações
+      show_barometric_pressure: Mostrar pressão barométrica
+      show_chart: Mostrar gráfico
+      show_code_lens: Mostrar CodeLens
+      show_gas_resistance: Mostrar resistência ao gás
+      show_legend: Mostrar legenda
+      show_logo_on_background: Mostrar logo no fundo
+      show_rate_of_change: Mostrar taxa de variação da temperatura
+      show_relative_humidity: Mostrar umidade relativa
+      title: Título
+      type: Tipo
+      unit: Unidade
+      warn_on_cpu_throttled: Avisar se for detectada limitação da CPU
+      warn_on_stepper_driver_overheating: Avisar se o driver do stepper estiver 
+        superaquecendo
+      date_format: Formato de data
+      time_format: Formato de hora
+      text_sort_order: Ordem de classificação do texto
+      drag_and_drop_functionality_for_files_and_folders: Funcionalidade de 
+        arrastar e soltar para arquivos e pastas
+      force_move_toggle_warning: Exigir confirmação ao ativar FORCE_MOVE
     timer_options:
-      file: Estimativa do ficheiro
-      slicer: Slicer
-      duration: Só duração
-      filament: Estimativas filamento
+      file: Arquivo
+      slicer: Fatiador
+      duration: Apenas duração
+      filament: Filamento
+      absolute_file_position: Posição absoluta do arquivo
+      relative_file_position: Posição relativa do arquivo
     tooltip:
-      gcode_coords: Usar a posição GCode em vez da posição da toolhead no painel
+      gcode_coords: Usar a posição do GCode em vez da posição da toolhead no 
+        painel
     camera_rotate_options:
       none: Nenhum
       '270': 270°
@@ -548,9 +643,9 @@ app:
       '90': 90°
   socket:
     msg:
-      connecting: A conectar ao moonraker...
-      no_connection: Sem coneção ao moonraker. Por favor verifique o estado do moonraker
-        e / ou faça atualizar.
+      connecting: Conectando ao moonraker...
+      no_connection: Sem coneção ao moonraker. Verifique o status do moonraker 
+        e/ou atualize.
   sensors:
     title:
       sensors: Sensores
@@ -560,9 +655,9 @@ app:
       auto_scroll: Auto rolagem
       hide_temp_waits: Ocultar espera de temperaturas
     tooltip:
-      help: Introduza "help" para comandos<br />Carregue em <kbd>Tab</kbd> para auto
-        complemento<br />Carregue em <kbd>&uarr;</kbd> e <kbd>&darr;</kbd> para o
-        histórico
+      help: Introduza "help" para comandos<br />Carregue em <kbd>Tab</kbd> para 
+        auto complemento<br />Carregue em <kbd>&uarr;</kbd> e <kbd>&darr;</kbd> 
+        para o histórico
   chart:
     label:
       power: Energia
@@ -572,17 +667,22 @@ app:
       item: Nome
       target_temperature: Temperatura Alvo
       turn_off: Desligar
+      fan_breakpoints: Pontos de ativação da ventoinha
     tooltip:
-      help: Mantenha a tecla <kbd>Shift</kbd> pressionada para aumentar o zoom. <br
-        /> Clique num item para alternar no gráfico. <br /> Clique em Ligar para alternar
-        no gráfico.
+      help: Mantenha a tecla <kbd>Shift</kbd> pressionada para aumentar o zoom. 
+        <br /> Clique num item para alternar no gráfico. <br /> Clique em Ligar 
+        para alternar no gráfico.
+    title:
+      mpc_calibrate: Calibração de Controle Preditivo de Modelo {name}
+      pid_calibrate: Calibração PID {name}
   endstop:
     states:
       label:
         triggered: ATIVADO
         open: ABERTO
     msg:
-      subtitle: Use o botão de atualização para atualizar o status do fim de curso.
+      subtitle: Use o botão de atualização para atualizar o status do fim de 
+        curso.
   printer:
     state:
       busy: Ocupado
@@ -596,17 +696,21 @@ app:
       cancelled: Cancelado
     title:
       printer_status: Status da impressora
-      stepper_driver_overheating: O driver do motor de passo '%{name}' está superaquecendo
+      stepper_driver_overheating: O driver do motor de passo '%{name}' está 
+        superaquecendo
     msg:
       possible_print_failure: Isso pode levar a uma impressão com falha
+    url:
+      stepper_driver_overheating: '%{klipperDomain}/TMC_Drivers.html#tmc-reports-error-ot1overtemperror'
   tool:
     btn:
       home_x: X
       home_y: Y
     tooltip:
-      extruder_disabled: extruder disabilitado, abaixo min_extrude_temp (%{min}<small>°C</small>)
-      home_xy: Origem XY
-      home_z: Origem Z
+      extruder_disabled: extrusora desabilitada, abaixo de min_extrude_temp 
+        (%{min}<small>°C</small>)
+      home_xy: Início XY
+      home_z: Início Z
   version:
     btn:
       check_for_updates: Verificar atualizações
@@ -615,21 +719,22 @@ app:
     label:
       dirty: DIRTY
       invalid: INVÁLIDO
-      os_packages: Pacotes de SO
+      os_packages: Pacotes de OS
       package_list: Lista de Pacotes
       up_to_date: ATUALIZADO
     status:
-      finished: Atualizações terminadas
-      updating: A atualizar...
-    title: Atualizações de software
+      finished: Atualizações concluídas
+      updating: Atualizando...
+    title: Atualizações de Software
     tooltip:
-      dirty: indicação de erro no cabeçalho, não existente na fonte ou fonte inválida
+      dirty: indica uma cabeça destacada, não no mestre ou uma origem inválida
       invalid: indicação de alteração do local da repo
       packages: Pacotes
       release_notes: Notas de lançamento
   history:
     msg:
-      confirm: Tem certeza? Isso limpará todo o histórico e as estatísticas da impressora
+      confirm: Tem certeza? Isso limpará todo o histórico e as estatísticas da 
+        impressora
       confirm_jobs: Tem certeza? Isso limpará todos os trabalhos.
       confirm_stats: Tem certeza? Isso limpará todas as estatísticas.
   job_queue:
@@ -637,8 +742,11 @@ app:
       confirm: Tem certeza? Isso limpará toda a fila da impressora
     label:
       number_of_copies: Número de cópias
+      filament: Filamento
+      print_time: Tempo de impressão
     title:
       multiply_job: Multiplicar Trabalho | Multiplicar Trabalhos
     tooltip:
-      help: Enfileirar trabalhos arrastando arquivos dos trabalhos e soltando-os aqui<br>Ajuste
-        a ordem dos trabalhos enfileirados arrastando-os para cima ou para baixo
+      help: Enfileirar trabalhos arrastando arquivos dos trabalhos e soltando-os
+        aqui<br>Ajuste a ordem dos trabalhos enfileirados arrastando-os para 
+        cima ou para baixo
