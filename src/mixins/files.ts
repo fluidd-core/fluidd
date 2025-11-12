@@ -2,7 +2,7 @@ import type { AppFile, FileUpload, AppFileThumbnail, FileDownload } from '@/stor
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import type { AxiosRequestConfig, AxiosProgressEvent } from 'axios'
-import { httpClientActions } from '@/api/httpClientActions'
+import { httpClientActions, type AxiosRequestConfigForReturnType } from '@/api/httpClientActions'
 import type { FileWithPath } from '@/types'
 import { consola } from 'consola'
 import { v4 as uuidv4 } from 'uuid'
@@ -79,7 +79,7 @@ export default class FilesMixin extends Vue {
    * @param filename The filename to retrieve
    * @param path The path to the file
    */
-  async getFile<T = any> (filename: string, path: string, size = 0, options?: AxiosRequestConfig) {
+  async getFile<T = unknown> (filename: string, path: string, size = 0, options?: AxiosRequestConfigForReturnType<T>) {
     const currentDownload: FileDownload | null = this.$typedState.files.download
 
     if (currentDownload) {
@@ -108,34 +108,38 @@ export default class FilesMixin extends Vue {
         abortController
       })
 
-      const response = await httpClientActions.serverFilesGet<T>(filepath, {
-        ...options,
-        signal: abortController.signal,
-        onDownloadProgress: (event: AxiosProgressEvent) => {
-          if (abortController.signal.aborted) {
-            return
+      if (options) {
+        options = {
+          ...options,
+          signal: abortController.signal,
+          onDownloadProgress: (event: AxiosProgressEvent) => {
+            if (abortController.signal.aborted) {
+              return
+            }
+
+            const progress = event.progress ?? (
+              size > 0
+                ? event.loaded / size
+                : 0
+            )
+
+            const payload: any = {
+              uid,
+              loaded: event.loaded,
+              percent: Math.round(progress * 100),
+              speed: event.rate ?? 0
+            }
+
+            if (event.total) {
+              size = payload.size = event.total
+            }
+
+            this.$typedDispatch('files/updateFileDownload', payload)
           }
-
-          const progress = event.progress ?? (
-            size > 0
-              ? event.loaded / size
-              : 0
-          )
-
-          const payload: any = {
-            uid,
-            loaded: event.loaded,
-            percent: Math.round(progress * 100),
-            speed: event.rate ?? 0
-          }
-
-          if (event.total) {
-            size = payload.size = event.total
-          }
-
-          this.$typedDispatch('files/updateFileDownload', payload)
         }
-      })
+      }
+
+      const response = await httpClientActions.serverFilesGet<T>(filepath, options)
 
       abortController.abort()
 
