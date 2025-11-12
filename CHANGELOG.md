@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.35.0](https://github.com/fluidd-core/fluidd/compare/v1.34.4...v1.35.0) (2025-11-12)
+
+
+### Features
+
+* adds basic support for cartographer ([#1722](https://github.com/fluidd-core/fluidd/issues/1722)) ([5b92b98](https://github.com/fluidd-core/fluidd/commit/5b92b98e86b42d3a7c45097b5cde0cfcd83d0b1a))
+* adds Moonraker database management support ([#1725](https://github.com/fluidd-core/fluidd/issues/1725)) ([5caca3a](https://github.com/fluidd-core/fluidd/commit/5caca3a5e83022f2a92fa892abd08dc91da29282))
+* adds park toolhead support ([#1727](https://github.com/fluidd-core/fluidd/issues/1727)) ([066ca88](https://github.com/fluidd-core/fluidd/commit/066ca881f94159574a8a4980c9dcbd342c7aae93))
+* adds UV4L-MJPEG camera support ([#1734](https://github.com/fluidd-core/fluidd/issues/1734)) ([f5a880a](https://github.com/fluidd-core/fluidd/commit/f5a880a3f05881fbdff5d09e6dd2466321ddd887))
+* allow path copy in video peripherals ([ec87bb4](https://github.com/fluidd-core/fluidd/commit/ec87bb4674ef2c82b84bc47fe2242ef86bf567f3))
+* **Cameras:** MJPEG Stream worker ([098826c](https://github.com/fluidd-core/fluidd/commit/098826c865d7ddb5d5128c19816da07c9ab3a172))
+* Detect if Klipper running on Simulavr ([660f2b3](https://github.com/fluidd-core/fluidd/commit/660f2b381bd611ddcf74ae602c2db40f9c2340ea))
+* disable controls for disconnected Kalico MCU ([#1716](https://github.com/fluidd-core/fluidd/issues/1716)) ([faafad5](https://github.com/fluidd-core/fluidd/commit/faafad5eb141167e25ebedf73d1a848bf527626c))
+* **i18n-de:** Update German translations ([a0c1cca](https://github.com/fluidd-core/fluidd/commit/a0c1cca9f25645c00a5bb69dc05f7822a440e65e))
+* **i18n-fr:** Update French translations ([#1726](https://github.com/fluidd-core/fluidd/issues/1726)) ([454070f](https://github.com/fluidd-core/fluidd/commit/454070ff8ed43c5c8e44e0f53f5f105d231f5cdb))
+* **i18n-ja:** Update Japanese translations ([2b89f61](https://github.com/fluidd-core/fluidd/commit/2b89f61f495459207f8887239a7d925583f5e714))
+* **i18n-pl:** Update Polish translations ([5c4a190](https://github.com/fluidd-core/fluidd/commit/5c4a190ca4bbbfe8e9bf91bd55c95aec9aad0420))
+* **i18n-pt_BR:** Update Portuguese (Brazil) translations ([fc07823](https://github.com/fluidd-core/fluidd/commit/fc078236ab60a1fbfeaeb7670048c1594ba8c306))
+* **i18n-uk:** Update Ukrainian translations ([e02420e](https://github.com/fluidd-core/fluidd/commit/e02420e2cf83cac03b1e19b03055ca0f0fc5257c))
+* **i18n-zh-CN:** Update Chinese (Simplified Han script) translations ([84afae7](https://github.com/fluidd-core/fluidd/commit/84afae7a343d6efed94a331d9b9652ba11234d13))
+* Kalico temperature chart override when mcu disconnected ([c9b94ea](https://github.com/fluidd-core/fluidd/commit/c9b94ea56a9b1646ddf814ccb8c158e6db0bed47))
+* show no database backups found message ([2540baf](https://github.com/fluidd-core/fluidd/commit/2540baf25eae2761828edbbf1f9e6e7148221190))
+* **WebrtcCamerastreamer:** logging and recovery ([#1731](https://github.com/fluidd-core/fluidd/issues/1731)) ([978ef60](https://github.com/fluidd-core/fluidd/commit/978ef6029d18ce194cbe69245e0863791e997595))
+
+
+### Bug Fixes
+
+* allow dialog title to wrap ([#1724](https://github.com/fluidd-core/fluidd/issues/1724)) ([47fad8d](https://github.com/fluidd-core/fluidd/commit/47fad8d6e83ad4e5d7da9be721082507efb4a631))
+* **Cameras:** disable picture in picture ([6bcbea0](https://github.com/fluidd-core/fluidd/commit/6bcbea0c0cc675ea8fc3cbe98f8d979c6442be20))
+* file permissions ([#1715](https://github.com/fluidd-core/fluidd/issues/1715)) ([9577216](https://github.com/fluidd-core/fluidd/commit/9577216685cf053e03960f9d3bf5a91586ea3211))
+* **Spoolman:** Replace loopback host with api hostname ([fbe835c](https://github.com/fluidd-core/fluidd/commit/fbe835cf60b95e7feb5b05abbdfa9e21c5393f15))
+
+
+### Code Refactorings
+
+* add description field to macro ([664340a](https://github.com/fluidd-core/fluidd/commit/664340a0f5c369a999de1d4d1a61133c125d2fdf))
+* **GcodePreview:** performance improvements ([1464fe8](https://github.com/fluidd-core/fluidd/commit/1464fe8e8c378ef0496b7fee358035d59e199c69))
+* item name capitalization improvements ([#1730](https://github.com/fluidd-core/fluidd/issues/1730)) ([d4e32cf](https://github.com/fluidd-core/fluidd/commit/d4e32cf9f94de406298d14f96873ebd6fb0fa899))
+* regexp optimization ([f56af20](https://github.com/fluidd-core/fluidd/commit/f56af2020f796d2b9562c855ee355b696f62fae5))
+* simplify homing origin handling ([8a3f961](https://github.com/fluidd-core/fluidd/commit/8a3f9616cac722be2abe917bf583e8bc11b4dbef))
+* tsreset improvements ([947fd29](https://github.com/fluidd-core/fluidd/commit/947fd29310639405f6bc0b0958ba08e3b03e1026))
+* typing improvements ([a88f34e](https://github.com/fluidd-core/fluidd/commit/a88f34e34519e19f93e272a6c35fcb6508ecf8cd))
+* typing improvements ([c1d24c3](https://github.com/fluidd-core/fluidd/commit/c1d24c319f08104a8cab33f4369172875022bf54))
+
 ## [1.34.4](https://github.com/fluidd-core/fluidd/compare/v1.34.3...v1.34.4) (2025-09-06)
 
 
