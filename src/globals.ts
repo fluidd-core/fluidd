@@ -546,6 +546,8 @@ export const Waits = Object.freeze({
   onDatabaseDeleteBackup: 'onDatabaseDeleteBackup',
   onBedScrewsCalculate: 'onBedScrewsCalculate',
   onBedTiltCalibrate: 'onBedTiltCalibrate',
+  onCartographerScanCalibrate: 'onCartographerScanCalibrate',
+  onCartographerTouchCalibrate: 'onCartographerTouchCalibrate',
   onDeltaCalibrate: 'onDeltaCalibrate',
   onPrintPause: 'onPrintPause',
   onPrintCancel: 'onPrintCancel',

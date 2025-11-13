@@ -843,6 +843,8 @@ type KlipperPrinterSettingsBaseType =
 
     beacon: KlipperPrinterBeaconSettings;
 
+    cartographer: KlipperPrinterCartographerScannerSettings;
+
     scanner: KlipperPrinterCartographerScannerSettings;
 
     [key: `beacon model ${Lowercase<string>}`]: KlipperPrinterBeaconModelSettings;
