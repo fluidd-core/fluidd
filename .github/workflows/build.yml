@@ -127,6 +127,7 @@ jobs:
           cache-to: type=gha,mode=max
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
+          annotations: ${{ steps.docker_meta.outputs.annotations }}
 
       - name: Attest Docker image
         uses: actions/attest-build-provenance@v2
