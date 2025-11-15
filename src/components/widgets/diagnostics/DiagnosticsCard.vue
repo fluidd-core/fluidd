@@ -25,7 +25,7 @@
     <app-chart
       class="mt-2"
       :data="chartData"
-      :dimensions="chartDimentions"
+      :dimensions="chartDimensions"
       :height="`${config.height}px`"
       :options="options"
     />
@@ -47,7 +47,7 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
     return this.$typedState.charts.diagnostics || []
   }
 
-  get chartDimentions () {
+  get chartDimensions () {
     return [
       'date',
       ...this.config.axes.flatMap(axis => axis.metrics.map(metric => metric.collector))
