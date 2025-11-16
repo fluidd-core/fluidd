@@ -6,7 +6,8 @@ describe('gcodeMacroParams', () => {
     ['{% set ENABLE = params.ENABLE | default(1) %}', [{ name: 'ENABLE', value: '1' }]],
     ['{% set ENABLE = params._ENABLE %}', [{ name: '_ENABLE', value: '' }]],
     ['{% set ENABLE = params._ENABLE | default(1) %}', [{ name: '_ENABLE', value: '1' }]],
-    ['{% for p, v in params.items()', []]
+    ['{% for p, v in params.items()', []],
+    ['{% for p, v in params.items () %}', []]
   ])('Expects params of "%s", to be %p', (param, expected) => {
     expect(gcodeMacroParams(param)).toStrictEqual(expected)
   })
