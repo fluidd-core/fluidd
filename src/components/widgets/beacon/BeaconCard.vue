@@ -121,8 +121,6 @@
           </app-btn>
         </v-col>
       </v-row>
-
-      <!-- <div>{{ beacon }}</div> -->
     </v-card-text>
 
     <save-model-dialog

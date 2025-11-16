@@ -234,6 +234,10 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     )
   }
 
+  get printerSupportsBeaconCalibrate (): boolean {
+    return this.printerSettings.beacon != null
+  }
+
   get printerSupportsCartographerCalibrate (): boolean {
     return this.printerSettings.cartographer != null
   }
@@ -331,6 +335,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     if (tools.length > 0) {
       tools.push({
         name: '-'
+      })
+    }
+
+    if (this.printerSupportsBeaconCalibrate) {
+      tools.push({
+        name: 'BEACON_AUTO_CALIBRATE',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onBeaconCalibrate
       })
     }
 
