@@ -4,7 +4,7 @@ import type { GetterTree } from 'vuex'
 import type { ChartState } from './types'
 import type { RootState } from '../types'
 import { Globals } from '@/globals'
-import type { EChartsOption } from 'echarts'
+import type { EChartsOption, LineSeriesOption } from 'echarts'
 
 export const getters = {
   /**
@@ -21,7 +21,7 @@ export const getters = {
   /**
    * Return base chart options given a chart type.
    */
-  getBaseChartOptions: (state, getters, rootState) => (tooltipSuffix: { [index: string]: string } = {}) => {
+  getBaseChartOptions: (state, getters, rootState) => (tooltipSuffix: Record<string, string> = {}): EChartsOption => {
     // Common properties across all chart types.
     const isDark = rootState.config.uiSettings.theme.isDark
     const isMobile = vuetify.framework.breakpoint.mobile
@@ -34,18 +34,13 @@ export const getters = {
       opacity: 0.05
     }
 
-    const pointerStyle = {
-      color: (isDark) ? '#ffffff' : '#000000',
-      opacity: 0.5
-    }
-
-    const grid = {
+    const grid: EChartsOption['grid'] = {
       show: true,
       borderWidth: 1,
       borderColor: (isDark) ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.15)'
     }
 
-    const tooltip = {
+    const tooltip: EChartsOption['tooltip'] = {
       backgroundColor: (isDark) ? 'rgba(15,15,15,0.75)' : 'rgba(255,255,255,0.75)',
       borderColor: (isDark) ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.85)',
       textStyle: {
@@ -55,10 +50,10 @@ export const getters = {
     }
 
     const theme = vuetify.framework.theme.currentTheme
-    const color = [
-      theme.primary,
-      theme.accent,
-      theme.info
+    const color: EChartsOption['color'] = [
+      theme.primary?.toString() ?? '',
+      theme.accent?.toString() ?? '',
+      theme.info?.toString() ?? '',
     ]
 
     return {
@@ -72,13 +67,27 @@ export const getters = {
         show: true,
         trigger: 'axis',
         position: ['-8px', '-8px'],
-        formatter: (params: any) => {
+        formatter: (params) => {
+          if (!Array.isArray(params)) {
+            return ''
+          }
+
           let title = false
           let text = '<div>'
           params
-            .forEach((param: any) => {
-              const xDimension = param.dimensionNames[param.encode.x]
-              const yDimension = param.dimensionNames[param.encode.y]
+            .forEach(param => {
+              if (
+                param == null ||
+                param.value == null ||
+                param.dimensionNames == null ||
+                param.encode == null
+              ) {
+                return
+              }
+
+              const xDimension = param.dimensionNames[param.encode.x[0]]
+              const yDimension = param.dimensionNames[param.encode.y[0]]
+
               const ySuffix = tooltipSuffix[yDimension] || ''
               if (
                 xDimension &&
@@ -88,7 +97,7 @@ export const getters = {
                 if (!title) {
                   text += `
                   <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
-                    ${Vue.$filters.formatTimeWithSeconds(param.value[xDimension])}
+                    ${Vue.$filters.formatTimeWithSeconds(param.value[xDimension as keyof typeof param.value])}
                   </span>
                   `
                   title = true
@@ -100,7 +109,7 @@ export const getters = {
                       ${Vue.$filters.prettyCase(param.seriesName)}:
                     </span>
                     <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
-                      ${param.value[yDimension]}${ySuffix}
+                      ${param.value[yDimension as keyof typeof param.value]}${ySuffix}
                     </span>
                     <div style="clear: both"></div>
                   </div>
@@ -114,49 +123,69 @@ export const getters = {
       },
       xAxis: {
         type: 'time',
-        boundaryGap: false,
-        min: (value: any) => {
-          return value.max - (600 * 1000)
-        },
+        min: (value) => value.max - (600 * 1000),
         // min: 'dataMin',
         max: 'dataMax',
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: { show: false, formatter: '{value}%' },
-        splitLine: { show: true, lineStyle },
-        axisPointer: { lineStyle: pointerStyle }
+        axisLine: {
+          show: false
+        },
+        axisTick: {
+          show: false
+        },
+        axisLabel: {
+          show: false,
+          formatter: '{value}%'
+        },
+        splitLine: {
+          show: true,
+          lineStyle
+        },
+        axisPointer: {
+          lineStyle
+        }
       },
       yAxis: {
         type: 'value',
         min: 0,
-        max: (value: any) => {
-          return (value.max <= 100)
-            ? 100
-            : value.max
+        max: (value) => (value.max <= 100
+          ? 100
+          : value.max
+        ),
+        axisLabel: {
+          show: false,
+          formatter: '{value}%'
         },
-        axisLabel: { show: false, formatter: '{value}%' },
-        splitLine: { show: true, lineStyle }
+        splitLine: {
+          show: true,
+          lineStyle
+        }
       }
-    } as EChartsOption
+    }
   },
 
   /**
-   * Returb base chart series configuration based on a type
+   * Return base chart series configuration based on a type
    */
-  getBaseSeries: () => (options: any) => {
-    const o = {
+  getBaseSeries: (): LineSeriesOption => {
+    return {
       type: 'line',
       smooth: true,
       animation: false,
       showSymbol: false,
       symbol: 'emptyCircle',
-      areaStyle: { type: 'solid', opacity: 0.3 },
-      lineStyle: { type: 'solid', width: 1.5, opacity: 1 },
-      emphasis: {
-        lineStyle: { width: 1.5 }
+      areaStyle: {
+        opacity: 0.3
       },
-      ...options
+      lineStyle: {
+        type: 'solid',
+        width: 1.5,
+        opacity: 1
+      },
+      emphasis: {
+        lineStyle: {
+          width: 1.5
+        }
+      }
     }
-    return o
   }
 } satisfies GetterTree<ChartState, RootState>

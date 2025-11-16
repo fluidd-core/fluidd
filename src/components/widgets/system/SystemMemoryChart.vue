@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
+import type { EChartsOption, LineSeriesOption } from 'echarts'
 
 @Component({})
 export default class SystemMemoryChart extends Vue {
@@ -30,21 +31,24 @@ export default class SystemMemoryChart extends Vue {
     return this.$typedState.charts.memory || []
   }
 
-  get options () {
-    const o = {
+  get options (): EChartsOption {
+    return {
       ...this.$typedGetters['charts/getBaseChartOptions']({
         memused: '%'
       }),
       series: this.series
     }
-    return o
   }
 
-  get series () {
-    return this.$typedGetters['charts/getBaseSeries']({
-      name: this.$t('app.system_info.label.memory_used'),
-      encode: { x: 'date', y: 'memused' }
-    })
+  get series (): LineSeriesOption {
+    return {
+      ...this.$typedGetters['charts/getBaseSeries'],
+      name: this.$t('app.system_info.label.memory_used').toString(),
+      encode: {
+        x: 'date',
+        y: 'memused'
+      }
+    }
   }
 
   @Watch('chartData', { immediate: true })

@@ -35,8 +35,13 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator'
 import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
-import type { EChartsOption } from 'echarts'
+import type { EChartsOption, LineSeriesOption } from 'echarts'
 import BrowserMixin from '@/mixins/browser'
+
+type LineSeriesOptionExtended = LineSeriesOption & {
+  unit?: string
+  displayLegend?: boolean
+}
 
 @Component({})
 export default class DiagnosticsCard extends Mixins(BrowserMixin) {
@@ -54,7 +59,7 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
     ]
   }
 
-  get options () {
+  get options (): EChartsOption {
     const isDark: boolean = this.$typedState.config.uiSettings.theme.isDark
 
     const fontColor = (isDark) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
@@ -65,22 +70,7 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
       opacity: 0.05
     }
 
-    const pointerStyle = {
-      color: (isDark) ? '#ffffff' : '#000000',
-      opacity: 0.5
-    }
-
-    let right = (this.isMobileViewport) ? 15 : 20
-    if (this.config.axes.length > 1) right = (this.isMobileViewport) ? 35 : 45
-
-    const grid = {
-      top: 20,
-      left: (this.isMobileViewport) ? 35 : 45,
-      right,
-      bottom: (this.isMobileViewport) ? 52 : 38
-    }
-
-    const tooltip = {
+    const tooltip: EChartsOption['tooltip'] = {
       backgroundColor: (isDark) ? 'rgba(15,15,15,0.75)' : 'rgba(255,255,255,0.75)',
       borderColor: (isDark) ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.85)',
       textStyle: {
@@ -90,15 +80,21 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
     }
 
     const theme = this.$vuetify.theme.currentTheme
-    const color = [
-      theme.primary,
-      theme.secondary
+    const color: EChartsOption['color'] = [
+      theme.primary?.toString() ?? '',
+      theme.secondary?.toString() ?? ''
     ]
 
     const series = this.series
 
-    const options = {
-      grid,
+    const options: EChartsOption = {
+      grid: {
+        top: 32,
+        left: 16,
+        right: 16,
+        bottom: 16,
+        containLabel: true
+      },
       color,
       textStyle: {
         fontFamily: 'Roboto'
@@ -112,21 +108,39 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
         confine: false,
         axisPointer: {
           type: 'line',
-          lineStyle: pointerStyle,
+          lineStyle,
           label: {
             color: fontColor,
             fontSize,
             backgroundColor: tooltip.backgroundColor
           }
         },
-        formatter: (params: any) => {
+        formatter: (params) => {
+          if (!Array.isArray(params)) {
+            return ''
+          }
+
           let text = ''
           params
-            .forEach((param: any) => {
-              const metric = series[param.seriesIndex]
-              if (!metric.displayLegend) return
+            .forEach(param => {
+              if (
+                param == null ||
+                param.data == null ||
+                param.seriesIndex == null
+              ) {
+                return
+              }
 
-              let value = param.data[metric.encode.y]
+              const metric = series[param.seriesIndex]
+
+              if (
+                !metric.displayLegend ||
+                metric.encode?.y == null
+              ) {
+                return
+              }
+
+              let value: unknown = param.data[metric.encode.y as keyof typeof param.data]
               if (typeof value === 'number') value = Math.round(value * 1000) / 1000
               else if (!value) value = '-'
 
@@ -148,7 +162,6 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
       },
       xAxis: {
         type: 'time',
-        boundaryGap: false,
         max: 'dataMax',
         min: (value: any) => {
           const retention: number = this.$typedGetters['charts/getChartRetention']
@@ -162,49 +175,49 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
           lineStyle
         },
         axisLabel: {
-          interval: 0,
           margin: 14,
-          color: tooltip.textStyle.color,
+          color: tooltip.textStyle!.color,
           fontSize,
           formatter: '{H}:{mm}',
-          rotate: (this.isMobileViewport) ? 45 : 0
+          rotate: this.isMobileViewport ? 45 : 0
         },
         axisPointer: {
           label: {
             show: true,
             margin: 9,
-            formatter: this.xAxisPointerFormatter
+            formatter: (params) => this.$filters.formatTimeWithSeconds(params.value)
           }
         }
       },
-      yAxis: this.config.axes.map((axis, index) => ({
-        name: (axis.enabled && axis.showLegend) ? axis.unit : undefined,
-        nameTextStyle: {
-          fontSize,
-          color: fontColor,
-          align: ['left', 'right'][index]
-        },
-        nameGap: 8,
-        show: true,
-        type: 'value',
-        position: ['left', 'right'][index],
-        splitLine: { show: true, lineStyle },
-        min: [undefined, ''].includes(axis.min as any) ? undefined : axis.min,
-        max: [undefined, ''].includes(axis.max as any) ? undefined : axis.max,
-        axisLabel: axis.showLegend
-          ? {
-              color: fontColor,
-              fontSize,
-              formatter: '{value}'
-            }
-          : undefined
-      })),
+      yAxis: this.config.axes
+        .map((axis, index) => ({
+          name: (axis.enabled && axis.showLegend) ? axis.unit : undefined,
+          nameTextStyle: {
+            fontSize,
+            color: fontColor,
+            align: index === 0 ? 'left' : 'right'
+          },
+          nameGap: 8,
+          show: true,
+          type: 'value',
+          position: index === 0 ? 'left' : 'right',
+          splitLine: { show: true, lineStyle },
+          min: [undefined, ''].includes(axis.min as any) ? undefined : axis.min,
+          max: [undefined, ''].includes(axis.max as any) ? undefined : axis.max,
+          axisLabel: axis.showLegend
+            ? {
+                color: fontColor,
+                fontSize,
+                formatter: '{value}'
+              }
+            : undefined
+        })),
       dataZoom: [{
         type: 'inside',
         zoomOnMouseWheel: 'shift'
       }],
       series
-    } as EChartsOption
+    }
 
     return options
   }
@@ -215,10 +228,14 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
       .replace(/[^a-z0-9]/gi, (char: string) => `&#${char.charCodeAt(0)};`)
   }
 
-  get series () {
-    const series = []
+  get series (): LineSeriesOptionExtended[] {
+    const series: LineSeriesOptionExtended[] = []
+
     for (const [yAxisIndex, yAxis] of Object.entries(this.config.axes)) {
-      if (!yAxis.enabled) continue
+      if (!yAxis.enabled) {
+        continue
+      }
+
       for (const metric of yAxis.metrics) {
         series.push({
           name: metric.name,
@@ -244,16 +261,15 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
             opacity: metric.style.fillOpacity / 100,
             color: metric.style.fillColor ?? metric.style.lineColor
           },
-          encode: { x: 'date', y: metric.collector }
+          encode: {
+            x: 'date',
+            y: metric.collector
+          }
         })
       }
     }
 
     return series
-  }
-
-  xAxisPointerFormatter (params: any) {
-    return this.$filters.formatTimeWithSeconds(params.value)
   }
 }
 </script>

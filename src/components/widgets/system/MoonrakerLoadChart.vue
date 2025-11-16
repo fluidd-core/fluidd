@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
+import type { EChartsOption, LineSeriesOption } from 'echarts'
 
 @Component({})
 export default class MoonrakerLoadChart extends Vue {
@@ -30,21 +31,24 @@ export default class MoonrakerLoadChart extends Vue {
     return this.$typedState.charts.moonraker || []
   }
 
-  get options () {
-    const o = {
+  get options (): EChartsOption {
+    return {
       ...this.$typedGetters['charts/getBaseChartOptions']({
         load: '%'
       }),
       series: this.series
     }
-    return o
   }
 
-  get series () {
-    return this.$typedGetters['charts/getBaseSeries']({
-      name: this.$t('app.system_info.label.load'),
-      encode: { x: 'date', y: 'load' }
-    })
+  get series (): LineSeriesOption {
+    return {
+      ...this.$typedGetters['charts/getBaseSeries'],
+      name: this.$t('app.system_info.label.load').toString(),
+      encode: {
+        x: 'date',
+        y: 'load'
+      }
+    }
   }
 
   @Watch('chartData', { immediate: true })
