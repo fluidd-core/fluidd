@@ -63,7 +63,9 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
       const worker = this.worker = new MjpegWorker()
 
       worker.addEventListener('message', (event: MessageEvent<MjpegWorkerClientMessage>) => {
-        switch (event.data.action) {
+        const message = event.data
+
+        switch (message.action) {
           case 'frame': {
             const endTime = performance.now()
             const currentTime = endTime - this.startTime
@@ -78,7 +80,7 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
 
             this.revokeImageObjectURL()
 
-            const blob = new Blob([event.data.data.buffer], { type: 'image/jpeg' })
+            const blob = new Blob([message.data.buffer], { type: 'image/jpeg' })
 
             this.cameraImage.src = this.imageObjectUrl = URL.createObjectURL(blob)
 

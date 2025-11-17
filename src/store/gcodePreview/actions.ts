@@ -36,22 +36,22 @@ export const actions = {
     commit('setParserWorker', worker)
 
     worker.addEventListener('message', (event: MessageEvent<ParseGcodeWorkerClientMessage>) => {
-      const data = event.data
+      const message = event.data
 
-      switch (data.action) {
+      switch (message.action) {
         case 'progress': {
-          commit('setParserProgress', data.filePosition)
+          commit('setParserProgress', message.filePosition)
           break
         }
 
         case 'result': {
           try {
-            commit('setMoves', data.moves)
-            commit('setLayers', data.layers)
-            commit('setParts', data.parts)
+            commit('setMoves', message.moves)
+            commit('setLayers', message.layers)
+            commit('setParts', message.parts)
             commit('setParserProgress', payload.file.size ?? payload.gcode.byteLength)
 
-            if (rootState.config.uiSettings.gcodePreview.hideSinglePartBoundingBox && data.parts.length <= 1) {
+            if (rootState.config.uiSettings.gcodePreview.hideSinglePartBoundingBox && message.parts.length <= 1) {
               dispatch('config/saveByPath', {
                 path: 'uiSettings.gcodePreview.showParts',
                 value: false,

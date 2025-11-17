@@ -8,7 +8,7 @@ export type MjpegWorkerClientMessage = {
   action: 'done'
 } | {
   action: 'error',
-  error?: string
+  error?: unknown
 }
 
 export type MjpegWorkerServerMessage = {
@@ -33,7 +33,7 @@ const sendDone = () => {
   self.postMessage(message)
 }
 
-const sendError = (error?: string) => {
+const sendError = (error?: unknown) => {
   const message: MjpegWorkerClientMessage = {
     action: 'error',
     error
@@ -42,13 +42,13 @@ const sendError = (error?: string) => {
   self.postMessage(message)
 }
 
-self.onmessage = async (event) => {
-  try {
-    const data: MjpegWorkerServerMessage = event.data
+self.onmessage = async (event: MessageEvent<MjpegWorkerServerMessage>) => {
+  const message = event.data
 
-    switch (data.action) {
+  try {
+    switch (message.action) {
       case 'start': {
-        await mjpegStream(data.url, sendFrame)
+        await mjpegStream(message.url, sendFrame)
 
         sendDone()
 
@@ -58,12 +58,6 @@ self.onmessage = async (event) => {
   } catch (e) {
     consola.error('[MjpegStream] error in worker', e)
 
-    const error = e != null
-      ? e instanceof Error
-        ? e.message
-        : e.toString()
-      : undefined
-
-    sendError(error)
+    sendError(e)
   }
 }

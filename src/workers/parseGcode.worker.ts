@@ -12,7 +12,7 @@ export type ParseGcodeWorkerClientMessage = {
   parts: Part[]
 } | {
   action: 'error',
-  error?: string
+  error?: unknown
 }
 
 export type ParseGcodeWorkerServerMessage = {
@@ -40,7 +40,7 @@ const sendResult = (moves: Move[], layers: Layer[], parts: Part[]) => {
   self.postMessage(message)
 }
 
-const sendError = (error?: string) => {
+const sendError = (error?: unknown) => {
   const message: ParseGcodeWorkerClientMessage = {
     action: 'error',
     error
@@ -50,12 +50,12 @@ const sendError = (error?: string) => {
 }
 
 self.onmessage = (event: MessageEvent<ParseGcodeWorkerServerMessage>) => {
-  try {
-    const data = event.data
+  const message = event.data
 
-    switch (data.action) {
+  try {
+    switch (message.action) {
       case 'parse': {
-        const gcode = new TextDecoder().decode(data.gcode)
+        const gcode = new TextDecoder().decode(message.gcode)
 
         const { moves, layers, parts } = parseGcode(gcode, sendProgress)
 
@@ -67,12 +67,6 @@ self.onmessage = (event: MessageEvent<ParseGcodeWorkerServerMessage>) => {
   } catch (e) {
     consola.error('[ParseGcode] error in worker', e)
 
-    const error = e != null
-      ? e instanceof Error
-        ? e.message
-        : e.toString()
-      : undefined
-
-    sendError(error)
+    sendError(e)
   }
 }
