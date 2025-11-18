@@ -1,6 +1,6 @@
 import type { SandboxedEvalWorkerClientMessage, SandboxedEvalWorkerServerMessage } from '@/workers/sandboxedEval.worker'
 
-import SandboxedEvalWorker from '@/workers/eval.worker?ts?worker'
+import SandboxedEvalWorker from '@/workers/sandboxedEval.worker?ts?worker'
 
 const workers: Record<string, Worker> = {}
 
