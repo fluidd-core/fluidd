@@ -90,26 +90,21 @@ export default class MetricsCollectorConfig extends Vue {
   result = '-'
   browserOpen = false
 
-  runCollector () {
-    let data: string | number
+  async runCollector () {
     try {
-      data = sandboxedEval(`
+      const data = await sandboxedEval(`
         const printer = ${JSON.stringify(this.$typedState.printer.printer)}
-        return JSON.stringify(eval(${JSON.stringify(this.metric.collector)}))
+        return eval(${JSON.stringify(this.metric.collector)})
       `)
 
-      if (typeof data !== 'string') throw new Error('Metrics collector returned invalid data')
-
-      data = JSON.parse(data) as string | number
-
-      if (typeof data === 'number') {
-        data = Math.round(data * 1000) / 1000
-      }
-    } catch (err) {
-      data = (err instanceof Error && err.message) || 'Unknown Error'
+      this.result = String(
+        typeof data === 'number'
+          ? Math.round(data * 1000) / 1000
+          : data
+      )
+    } catch (e) {
+      this.result = String(e || 'Unknown Error')
     }
-
-    this.result = data.toString()
   }
 
   handleExplorerClick (path: string) {
