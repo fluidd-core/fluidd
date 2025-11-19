@@ -164,6 +164,30 @@
       "logo": {
         "src": "logo_snakeoil.svg"
       }
+    },
+    {
+      "name": "Printers for Ants",
+      "color": "#42d62c",
+      "isDark": true,
+      "logo": {
+        "src": "logo_pfa.svg"
+      }
+    },
+    {
+      "name": "Micron",
+      "color": "#42d62c",
+      "isDark": true,
+      "logo": {
+        "src": "logo_micron.svg"
+      }
+    },
+    {
+      "name": "Salad Fork",
+      "color": "#0cff28",
+      "isDark": true,
+      "logo": {
+        "src": "logo_salad_fork.svg"
+      }
     }
   ]
 }
