@@ -799,8 +799,9 @@ export const getters = {
         key === 'z_thermal_adjust'
       ))
       .reduce<Record<string, Sensor>>((groups, key) => {
-        const [type, nameFromSplit] = key.split(' ', 2)
-        const name = nameFromSplit ?? key
+        const [type, ...restSplit] = key.trim().split(/\s+/)
+        const nameFromSplit = restSplit.pop()
+        const name = nameFromSplit || key
 
         if (!name.startsWith('_')) {
           const prettyName = type === 'tmc2240'
