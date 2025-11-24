@@ -193,7 +193,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
                 !param.seriesName.endsWith('#speed') &&
                 param.value[param.seriesName] != null
               ) {
-                const name = param.seriesName.split(' ', 2).pop()
+                const name = param.seriesName.trim().split(/\s+/).pop() || ''
                 text += `
                   <div>
                     ${param.marker}

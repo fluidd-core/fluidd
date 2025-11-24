@@ -27,7 +27,7 @@ export const getters = {
       .filter(key => key.startsWith('bed_mesh '))
 
     for (const key of meshProfileKeys) {
-      const name = key.split(' ').splice(1).join(' ')
+      const name = key.substring(9)
       const legacyKlipperProfile = config[key]
 
       if (legacyKlipperProfile == null) {
