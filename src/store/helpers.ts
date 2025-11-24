@@ -16,7 +16,7 @@ export const handleTrinamicDriversChange = (payload: Partial<KlipperPrinterState
       state.printer.printer?.[item]?.drv_status?.otpw == null &&
       state.config.uiSettings.warnings.warnOnStepperDriverOverheating
     ) {
-      const name = item.split(' ', 2).pop() || ''
+      const name = item.trim().split(/\s+/).pop() || ''
 
       const klippyApp: KlippyApp = getters.getKlippyApp
 

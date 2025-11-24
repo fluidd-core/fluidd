@@ -357,7 +357,9 @@ export const getters = {
     for (const key of mcuKeys) {
       const config = state.printer.configfile.settings[key.toLowerCase()]
 
-      const name = key.split(' ', 2).pop() || ''
+      const name = key.length > 4
+        ? key.substring(4)
+        : 'mcu'
 
       mcus.push({
         name,
@@ -472,7 +474,7 @@ export const getters = {
     for (const key of stepperKeys) {
       const name = key.startsWith('stepper_')
         ? key.substring(8)
-        : key.split(' ', 2).pop() || ''
+        : key.trim().split(/\s+/).pop() || ''
 
       const e = state.printer[key]
       const config = state.printer.configfile.settings[key.toLowerCase()]
@@ -519,7 +521,7 @@ export const getters = {
         key.startsWith('filament_motion_sensor ')
       ))
       .map(key => {
-        const name = key.split(' ', 2).pop() || ''
+        const name = key.trim().split(/\s+/).pop() || ''
 
         return {
           ...state.printer[key],
@@ -587,8 +589,9 @@ export const getters = {
       if (heater && Object.keys(heater).length > 0) {
         const config = state.printer.configfile.settings[key.toLowerCase()]
 
-        const [type, nameFromSplit] = key.split(' ', 2)
-        const name = nameFromSplit ?? key
+        const [type, ...restSplit] = key.trim().split(/\s+/)
+        const nameFromSplit = restSplit.pop()
+        const name = nameFromSplit || key
 
         const color = Vue.$colorset.next(getKlipperType(key), key)
         const prettyName = Vue.$filters.prettyCase(name)
@@ -725,7 +728,7 @@ export const getters = {
     const pins: Array<Fan | Led | OutputPin> = []
 
     for (const key in state.printer) {
-      const [type, nameFromSplit] = key.split(' ', 2)
+      const [type, nameFromSplit] = key.trim().split(/\s+/, 2)
       const name = nameFromSplit ?? key
 
       if (
