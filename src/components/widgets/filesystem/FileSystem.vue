@@ -89,6 +89,7 @@
       :path="currentPath"
       :root="currentRoot"
       @save="handleSaveFileChanges"
+      @save-as="handleSaveAsFileChanges"
     />
 
     <!-- A generic dialog to define the name of a file, or folder.
@@ -927,6 +928,22 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     // If we aren't on the dashboard, push the user back there.
     if (this.$route.name !== 'home') {
       this.$router.push({ name: 'home' })
+    }
+  }
+
+  async handleSaveAsFileChanges (contents: string, serviceToRestart?: string) {
+    this.fileNameDialogState = {
+      open: true,
+      title: this.$t('app.file_system.title.save_as'),
+      label: this.$t('app.file_system.label.file_name'),
+      value: this.fileEditorDialogState.filename,
+      handler: (name: string) => {
+        if (name != null) {
+          this.fileEditorDialogState.filename = name
+        }
+
+        this.handleSaveFileChanges(contents, serviceToRestart)
+      }
     }
   }
 

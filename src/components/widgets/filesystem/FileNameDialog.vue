@@ -14,6 +14,7 @@
         :rules="[
           $rules.required
         ]"
+        spellcheck="false"
         required
       />
     </v-card-text>
