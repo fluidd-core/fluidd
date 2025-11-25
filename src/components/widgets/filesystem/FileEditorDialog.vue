@@ -48,7 +48,7 @@
 
         <v-toolbar-items>
           <app-btn
-            v-if="!$vuetify.breakpoint.smAndDown"
+            v-if="canShowPeripheralsDialog && !$vuetify.breakpoint.smAndDown"
             @click="peripheralsDialogOpen = true"
           >
             <v-icon
@@ -85,7 +85,7 @@
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.config_reference') }}</span>
           </app-btn>
           <app-btn
-            v-if="!readonly && !printerPrinting && configMap?.serviceSupported"
+            v-if="canSaveAndRestart"
             :disabled="!ready"
             @click="emitSave(true)"
           >
@@ -131,9 +131,11 @@
         :path="path"
         :filename="filename"
         :readonly="readonly"
+        :can-save-and-restart="canSaveAndRestart"
         :code-lens="codeLens"
         @ready="editorReady = true"
         @save="emitSave(false)"
+        @save-and-restart="emitSave(true)"
         @emergency-stop="emergencyStop"
       />
 
@@ -226,6 +228,21 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
 
   get configMap () {
     return this.$typedGetters['server/getConfigMapByFilename'](this.filename)
+  }
+
+  get canSaveAndRestart (): boolean {
+    return (
+      !this.readonly &&
+      !this.printerPrinting &&
+      this.configMap?.serviceSupported === true
+    )
+  }
+
+  get canShowPeripheralsDialog (): boolean {
+    return (
+      !this.readonly &&
+      this.configMap?.serviceSupported === true
+    )
   }
 
   get codeLens (): boolean {

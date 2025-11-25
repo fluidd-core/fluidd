@@ -35,6 +35,9 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   @Prop({ type: Boolean })
   readonly readonly?: boolean
 
+  @Prop({ type: Boolean })
+  readonly canSaveAndRestart?: boolean
+
   @Prop({ type: Boolean, default: true })
   readonly codeLens?: boolean
 
@@ -101,14 +104,27 @@ export default class FileEditor extends Mixins(BrowserMixin) {
       rulers: (this.isMobileViewport) ? [80, 120] : []
     })
 
-    this.editor.addAction({
-      id: 'action-save-file',
-      label: this.$tc('app.general.btn.save'),
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
-      run: () => {
-        this.$emit('save')
-      }
-    })
+    if (!this.readonly) {
+      this.editor.addAction({
+        id: 'action-save-file',
+        label: this.$tc('app.general.btn.save'),
+        keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+        run: () => {
+          this.$emit('save')
+        }
+      })
+    }
+
+    if (this.canSaveAndRestart) {
+      this.editor.addAction({
+        id: 'action-save-file-restart',
+        label: this.$tc('app.general.btn.save_restart'),
+        keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyS],
+        run: () => {
+          this.$emit('save-and-restart')
+        }
+      })
+    }
 
     this.editor.addAction({
       id: 'action-emergency-stop',
