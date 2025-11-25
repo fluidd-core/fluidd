@@ -87,6 +87,7 @@ npm run test         # Vitest unit tests
 ## Code Style
 - Vue class-style components with `vue-property-decorator`
 - ESLint enforced: neostandard + Vue 2 rules and further rules defined in 'eslint.config.mjs'
+- .editorconfig rules must be enforced (2 spaces, LF line endings, UTF-8, trim trailing whitespace)
 - camelCase for variables/methods, PascalCase for components
 - Use `consola` for logging, not `console.log`
 - Type imports: `import type { ... }` for types only
@@ -96,3 +97,8 @@ npm run test         # Vitest unit tests
 - WebSocket reconnection handled automatically by `socketClient.ts`
 - File uploads use FormData with progress tracking in store
 - Dynamic imports for code splitting (see `vue-echarts-chunk.ts`)
+
+## Communication Style
+- Be extremely concise in responses
+- Sacrifice grammar for brevity
+- Focus on essential info only
