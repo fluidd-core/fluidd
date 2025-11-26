@@ -16,6 +16,7 @@
         ]"
         spellcheck="false"
         required
+        @focus="handleFocus"
       />
     </v-card-text>
   </app-dialog>
@@ -39,10 +40,27 @@ export default class FileNameDialog extends Mixins(StateMixin) {
   @Prop({ type: String, required: true })
   readonly name!: string
 
+  @Prop({ type: Boolean })
+  readonly isFile?: boolean
+
   newName = ''
 
   mounted () {
     this.newName = this.name
+  }
+
+  handleFocus (event: FocusEvent) {
+    if (event.target instanceof HTMLInputElement) {
+      const index = this.isFile
+        ? event.target.value.lastIndexOf('.')
+        : -1
+
+      if (index > 0) {
+        event.target.setSelectionRange(0, index)
+      } else {
+        event.target.select()
+      }
+    }
   }
 
   handleSave () {
