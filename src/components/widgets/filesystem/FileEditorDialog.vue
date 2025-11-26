@@ -107,14 +107,14 @@
                 v-bind="attrs"
                 :disabled="!ready"
                 v-on="on"
-                @click="emitSave(false)"
+                @click="emitSave({ saveAs: true })"
               >
                 <v-icon>
-                  $save
+                  $saveAs
                 </v-icon>
               </app-btn>
             </template>
-            <span>{{ $t('app.general.btn.save') }}</span>
+            <span>{{ $t('app.general.btn.save_as') }}</span>
           </v-tooltip>
           <v-tooltip
             v-if="!readonly"
@@ -125,14 +125,14 @@
                 v-bind="attrs"
                 :disabled="!ready"
                 v-on="on"
-                @click="emitSave({ saveAs: true })"
+                @click="emitSave(false)"
               >
                 <v-icon>
-                  $saveAs
+                  $save
                 </v-icon>
               </app-btn>
             </template>
-            <span>{{ $t('app.general.btn.save_as') }}</span>
+            <span>{{ $t('app.general.btn.save') }}</span>
           </v-tooltip>
           <app-btn
             @click="emitClose()"
