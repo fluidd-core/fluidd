@@ -54,7 +54,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
 
   @Watch('filename')
   onFilenameChange () {
-    if (this.restoreViewStateStorage) {
+    if (this.saveViewState()) {
       this.viewStateHash = 'monaco.' + md5(this.apiFileUrl)
     }
   }
@@ -204,8 +204,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
     }
   }
 
-  // Ensure we dispose of our models and editor.
-  destroyed () {
+  saveViewState (): boolean {
     const restoreViewStateStorage = this.restoreViewStateStorage
 
     if (this.editor && restoreViewStateStorage && this.viewStateHash) {
@@ -213,10 +212,19 @@ export default class FileEditor extends Mixins(BrowserMixin) {
 
       try {
         restoreViewStateStorage.setItem(this.viewStateHash, JSON.stringify(viewState))
+
+        return true
       } catch (e) {
         consola.error('[Storage] setItem', e)
       }
     }
+
+    return false
+  }
+
+  // Ensure we dispose of our models and editor.
+  destroyed () {
+    this.saveViewState()
 
     monaco?.editor.getModels().forEach(model => model.dispose())
 
