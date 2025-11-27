@@ -3,6 +3,9 @@
     <app-btn
       :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
       :style="borderStyle"
+      :color="color"
+      :small="small"
+      class="flex-grow-1"
       v-on="filteredListeners"
       @click="handleClick"
     >
@@ -21,6 +24,8 @@
           min-width="24"
           class="px-0"
           :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
+          :small="small"
+          :color="color"
           v-on="on"
         >
           <v-icon
@@ -89,6 +94,12 @@ type MacroParameter = {
 export default class MacroBtn extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   readonly macro!: Macro
+
+  @Prop({ default: false })
+  readonly small!: boolean
+
+  @Prop({ type: String })
+  readonly color?: string
 
   params: Record<string, MacroParameter> = {}
 
