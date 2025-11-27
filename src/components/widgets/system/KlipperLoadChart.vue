@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
+import type { EChartsOption, LineSeriesOption } from 'echarts'
 
 @Component({})
 export default class KlipperLoadChart extends Vue {
@@ -30,21 +31,24 @@ export default class KlipperLoadChart extends Vue {
     return this.$typedState.charts.klipper || []
   }
 
-  get options () {
-    const o = {
+  get options (): EChartsOption {
+    return {
       ...this.$typedGetters['charts/getBaseChartOptions']({
         cputime_change: '%'
       }),
       series: this.series
     }
-    return o
   }
 
-  get series () {
-    return this.$typedGetters['charts/getBaseSeries']({
-      name: this.$t('app.system_info.label.load'),
-      encode: { x: 'date', y: 'cputime_change' }
-    })
+  get series (): LineSeriesOption {
+    return {
+      ...this.$typedGetters['charts/getBaseSeries'],
+      name: this.$t('app.system_info.label.load').toString(),
+      encode: {
+        x: 'date',
+        y: 'cputime_change'
+      }
+    }
   }
 
   @Watch('chartData', { immediate: true })

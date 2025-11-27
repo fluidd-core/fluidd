@@ -21,7 +21,7 @@
 
 <script lang='ts'>
 import { Component, Watch, Prop, Ref, Mixins } from 'vue-property-decorator'
-import type { ECharts, EChartsOption } from 'echarts'
+import type { ECharts, EChartsOption, LineSeriesOption } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
 import BrowserMixin from '@/mixins/browser'
 import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
@@ -35,26 +35,25 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   readonly chart!: ECharts
 
   loading = false
-  series: any[] = []
+  series: LineSeriesOption[] = []
   initialSelected: Record<string, boolean> = {}
 
   handleLegendSelectChanged (event: { selected: Record<string, boolean> }) {
     this.$typedDispatch('charts/saveSelectedLegends', event.selected)
 
-    let right = (this.isMobileViewport || this.narrow) ? 15 : 20
-    if (this.showPowerAxis(event.selected)) {
-      right = (this.isMobileViewport || this.narrow) ? 25 : 45
-    }
-
     if (
       this.chart &&
       !this.loading
     ) {
+      const show = this.showPowerAxis(event.selected)
+
       this.chart.setOption({
-        grid: { right },
         yAxis: [
           {},
-          { show: this.showPowerAxis(event.selected) }
+          {
+            show,
+            axisLabel: { show }
+          }
         ]
       })
     }
@@ -108,7 +107,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     })
   }
 
-  get options () {
+  get options (): EChartsOption {
     const isDark: boolean = this.$typedState.config.uiSettings.theme.isDark
 
     const fontColor = (isDark) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
@@ -124,18 +123,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
       opacity: 0.5
     }
 
-    let right = (this.isMobileViewport || this.narrow) ? 15 : 20
-    if (this.showPowerAxis(this.initialSelected)) {
-      right = (this.isMobileViewport || this.narrow) ? 35 : 45
-    }
-    const grid = {
-      top: 20,
-      left: (this.isMobileViewport || this.narrow) ? 35 : 45,
-      right,
-      bottom: (this.isMobileViewport || this.narrow) ? 52 : 38
-    }
-
-    const tooltip = {
+    const tooltip: EChartsOption['tooltip'] = {
       backgroundColor: (isDark) ? 'rgba(15,15,15,0.75)' : 'rgba(255,255,255,0.75)',
       borderColor: (isDark) ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.85)',
       textStyle: {
@@ -145,13 +133,25 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
 
     const theme = this.$vuetify.theme.currentTheme
-    const color = [
-      theme.primary,
-      theme.secondary
+    const color: EChartsOption['color'] = [
+      theme.primary?.toString() ?? '',
+      theme.secondary?.toString() ?? ''
     ]
+    const margin = (
+      this.isMobileViewport ||
+      this.narrow
+    )
+      ? 12
+      : 16
 
-    const options = {
-      grid,
+    const options: EChartsOption = {
+      grid: {
+        top: margin * 1.5,
+        left: margin,
+        right: margin,
+        bottom: margin,
+        containLabel: true
+      },
       textStyle: {
         fontFamily: 'Roboto'
       },
@@ -173,8 +173,16 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
             backgroundColor: tooltip.backgroundColor
           }
         },
-        position: this.tooltipPosition,
-        formatter: (params: any) => {
+        position: (pos, params, el, elRect, size) => {
+          const obj: Record<string, any> = { top: -10 }
+          obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 10
+          return obj
+        },
+        formatter: (params) => {
+          if (!Array.isArray(params)) {
+            return ''
+          }
+
           let text = ''
           params
             .forEach((param: any) => {
@@ -185,7 +193,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
                 !param.seriesName.endsWith('#speed') &&
                 param.value[param.seriesName] != null
               ) {
-                const name = param.seriesName.split(' ', 2).pop()
+                const name = param.seriesName.trim().split(/\s+/).pop() || ''
                 text += `
                   <div>
                     ${param.marker}
@@ -215,7 +223,6 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
       },
       xAxis: {
         type: 'time',
-        boundaryGap: false,
         max: 'dataMax',
         min: (value: any) => {
           const temperature_store_size: number = this.$typedGetters['charts/getChartRetention']
@@ -229,9 +236,8 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
           lineStyle
         },
         axisLabel: {
-          interval: 0,
           margin: 14,
-          color: tooltip.textStyle.color,
+          color: tooltip.textStyle?.color,
           fontSize,
           formatter: '{H}:{mm}',
           rotate: (this.isMobileViewport || this.narrow) ? 45 : 0
@@ -240,7 +246,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
           label: {
             show: true,
             margin: 9,
-            formatter: this.xAxisPointerFormatter
+            formatter: (params) => this.$filters.formatTimeWithSeconds(params.value)
           }
         }
       },
@@ -259,10 +265,21 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
           splitLine: { show: true, lineStyle },
           minInterval: 20,
           maxInterval: 60,
-          min: this.yAxisTempMin,
-          max: this.yAxisTempMax,
+          min: (extent) => {
+            const min = Math.floor(extent.min / 10) * 10
+
+            return min === extent.min && (min - 10) >= 0
+              ? min - 10
+              : min
+          },
+          max: (extent) => {
+            const max = Math.ceil(extent.max / 10) * 10
+
+            return max === extent.max
+              ? max + 10
+              : max
+          },
           axisLabel: {
-            interval: 0,
             margin: 8,
             color: fontColor,
             fontSize,
@@ -285,11 +302,11 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
           min: 0,
           max: 1,
           axisLabel: {
-            interval: 0,
+            show: this.showPowerAxis(this.initialSelected),
             margin: 8,
             color: fontColor,
             fontSize,
-            formatter: this.yAxisPowerFormatter
+            formatter: (value) => `${value * 100}`
           },
           boundaryGap: [0, '100%']
         }
@@ -299,18 +316,18 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
         zoomOnMouseWheel: 'shift'
       }],
       series: this.series
-    } as EChartsOption
+    }
 
     return options
   }
 
-  createSeries (baseKey: string, subKey?: string) {
+  createSeries (baseKey: string, subKey?: '#target' | '#power' | '#speed'): LineSeriesOption {
     // Grab the color
     const key = `${baseKey}${subKey ?? ''}`
     const color = this.$colorset.next(getKlipperType(baseKey), baseKey)
 
     // Base properties
-    const series: any = {
+    const series: LineSeriesOption = {
       name: key,
       // id,
       type: 'line',
@@ -329,28 +346,33 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
         width: 1.5,
         opacity: 1
       },
-      areaStyle: { opacity: 0.05 },
-      encode: { x: 'date', y: key }
+      areaStyle: {
+        opacity: 0.05
+      },
+      encode: {
+        x: 'date',
+        y: key
+      }
     }
 
     // If this is a target, adjust its display.
     if (subKey === '#target') {
       series.yAxisIndex = 0
-      series.emphasis.lineStyle.width = 1
-      series.lineStyle.width = 1
-      series.lineStyle.type = 'dashed'
-      series.lineStyle.opacity = 0.8
-      series.areaStyle.opacity = 0
+      series.emphasis!.lineStyle!.width = 1
+      series.lineStyle!.width = 1
+      series.lineStyle!.type = 'dashed'
+      series.lineStyle!.opacity = 0.8
+      series.areaStyle!.opacity = 0
     }
 
     // If this is a power or speed, adjust its display.
     if (subKey === '#power' || subKey === '#speed') {
       series.yAxisIndex = 1
-      series.emphasis.lineStyle.width = 1
-      series.lineStyle.width = 1
-      series.lineStyle.type = 'dotted'
-      series.lineStyle.opacity = 1
-      series.areaStyle.opacity = 0
+      series.emphasis!.lineStyle!.width = 1
+      series.lineStyle!.width = 1
+      series.lineStyle!.type = 'dotted'
+      series.lineStyle!.opacity = 1
+      series.areaStyle!.opacity = 0
     }
 
     // Set the initial legend state (power and speed default off)
@@ -390,40 +412,6 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
         })
       }
     }
-  }
-
-  tooltipPosition (pos: any, params: any, el: HTMLElement, elRect: any, size: any) {
-    const obj: { [index: string]: any } = { top: -10 }
-    obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 10
-    return obj
-  }
-
-  xAxisPointerFormatter (params: any) {
-    return this.$filters.formatTimeWithSeconds(params.value)
-  }
-
-  yAxisPointerFormatter (params: any) {
-    return params.value.toFixed() + '°C'
-  }
-
-  yAxisPowerFormatter (value: any) {
-    return `${value * 100}`
-  }
-
-  yAxisTempMin (value: any) {
-    let num1 = Math.floor(value.min / 10) * 10
-    num1 = (num1 === value.min && (num1 - 10) >= 0)
-      ? num1 - 10
-      : num1
-    return num1
-  }
-
-  yAxisTempMax (value: any) {
-    let num1 = Math.ceil(value.max / 10) * 10
-    num1 = (num1 === value.max)
-      ? num1 + 10
-      : num1
-    return num1
   }
 }
 

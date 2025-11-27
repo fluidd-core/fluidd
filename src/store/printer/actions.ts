@@ -11,7 +11,34 @@ import sandboxedEval from '@/plugins/sandboxedEval'
 import { gte, valid } from 'semver'
 import i18n from '@/plugins/i18n'
 
-// let retryTimeout: number
+const evalCollectors = async (printer: KlipperPrinterState, collectors: string[]): Promise<Record<string, unknown>> => {
+  try {
+    const data = await sandboxedEval<Record<string, unknown>>(`
+    const printer = ${JSON.stringify(printer)}
+    const collectors = ${JSON.stringify(collectors)}
+    const result = {}
+
+    for (const collector of collectors) {
+      try {
+        result[collector] = eval(collector)
+      } catch (e) {
+        result[collector] = String(e || 'Unknown Error')
+      }
+    }
+
+    return result
+  `, 'metrics')
+
+    return data
+  } catch (e) {
+    const error = String(e || 'Unknown Error')
+
+    return Object.fromEntries(
+      collectors
+        .map(collector => [collector, error])
+    )
+  }
+}
 
 export const actions = {
   /**
@@ -246,42 +273,22 @@ export const actions = {
     }
   },
 
-  async onDiagnosticsMetricsUpdate ({ rootState, commit, rootGetters }) {
-    if (!rootState.config.uiSettings.general.enableDiagnostics) return
+  async onDiagnosticsMetricsUpdate ({ state, rootState, commit, rootGetters }) {
+    if (!rootState.config.uiSettings.general.enableDiagnostics) {
+      return
+    }
+
     const layout = rootState.layout.layouts.diagnostics as DiagnosticsCardContainer
+
     const metrics = Object.values(layout)
       .flat()
-      .map(card => card.axes)
-      .flat()
+      .flatMap(card => card.axes)
       .filter(axis => axis.enabled)
-      .map(axis => axis.metrics)
-      .flat()
+      .flatMap(axis => axis.metrics)
 
-    const collectors = Array.from(new Set(metrics.map(metric => metric.collector)))
-    let data
+    const collectors = [...new Set(metrics.map(metric => metric.collector))]
 
-    try {
-      data = sandboxedEval(`
-      const printer = ${JSON.stringify(rootState.printer.printer)}
-      const collectors = ${JSON.stringify(collectors)}
-      const result = { }
-
-      for (const collector of collectors) {
-        try {
-          result[collector] = eval(collector)
-        } catch (err) {
-          result[collector] = err.message
-        }
-      }
-
-      return JSON.stringify(result) // in order to only return serializable data
-    `, 'metrics')
-
-      if (typeof data !== 'string') throw new Error('Metrics collector returned invalid data')
-      data = JSON.parse(data) as Record<string, unknown>
-    } catch (err) {
-      data = Object.fromEntries(collectors.map(collector => [collector, (err instanceof Error && err.message) ?? 'Unknown Error']))
-    }
+    const data = await evalCollectors(state.printer, collectors)
 
     data.date = new Date()
 

@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Ref, Mixins, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import md5 from 'md5'
@@ -35,6 +35,9 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   @Prop({ type: Boolean })
   readonly readonly?: boolean
 
+  @Prop({ type: Boolean })
+  readonly canSaveAndRestart?: boolean
+
   @Prop({ type: Boolean, default: true })
   readonly codeLens?: boolean
 
@@ -48,6 +51,21 @@ export default class FileEditor extends Mixins(BrowserMixin) {
 
   // Our editor, once init'd.
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
+
+  @Watch('filename')
+  onFilenameChange () {
+    if (this.saveViewState()) {
+      this.viewStateHash = 'monaco.' + md5(this.apiFileUrl)
+    }
+  }
+
+  get pathFilename (): string {
+    return this.path ? `${this.path}/${this.filename}` : this.filename
+  }
+
+  get apiFileUrl (): string {
+    return `${this.activeInstance?.apiUrl}/server/files/${this.pathFilename}`
+  }
 
   get restoreViewState (): RestoreViewState {
     return this.$typedState.config.uiSettings.editor.restoreViewState
@@ -101,14 +119,36 @@ export default class FileEditor extends Mixins(BrowserMixin) {
       rulers: (this.isMobileViewport) ? [80, 120] : []
     })
 
-    this.editor.addAction({
-      id: 'action-save-file',
-      label: this.$tc('app.general.btn.save'),
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
-      run: () => {
-        this.$emit('save')
-      }
-    })
+    if (!this.readonly) {
+      this.editor.addAction({
+        id: 'action-save-file',
+        label: this.$tc('app.general.btn.save'),
+        keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+        run: () => {
+          this.$emit('save')
+        }
+      })
+
+      this.editor.addAction({
+        id: 'action-save-file-as',
+        label: this.$tc('app.general.btn.save_as'),
+        keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyS],
+        run: () => {
+          this.$emit('save-as')
+        }
+      })
+    }
+
+    if (this.canSaveAndRestart) {
+      this.editor.addAction({
+        id: 'action-save-file-restart',
+        label: this.$tc('app.general.btn.save_restart'),
+        keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyS],
+        run: () => {
+          this.$emit('save-and-restart')
+        }
+      })
+    }
 
     this.editor.addAction({
       id: 'action-emergency-stop',
@@ -119,21 +159,18 @@ export default class FileEditor extends Mixins(BrowserMixin) {
       }
     })
 
-    const filename = this.path ? `${this.path}/${this.filename}` : this.filename
-    const apiFileUrl = `${this.activeInstance?.apiUrl}/server/files/${filename}`
-
     // Define the model. The filename will map to the supported languages.
     const model = monaco.editor.createModel(
       this.value,
       undefined,
-      monaco.Uri.file(filename)
+      monaco.Uri.file(this.pathFilename)
     )
     this.editor.setModel(model)
 
     const restoreViewStateStorage = this.restoreViewStateStorage
 
     if (restoreViewStateStorage) {
-      this.viewStateHash = 'monaco.' + md5(apiFileUrl)
+      this.viewStateHash = 'monaco.' + md5(this.apiFileUrl)
 
       const viewState = restoreViewStateStorage.getItem(this.viewStateHash)
 
@@ -167,8 +204,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
     }
   }
 
-  // Ensure we dispose of our models and editor.
-  destroyed () {
+  saveViewState (): boolean {
     const restoreViewStateStorage = this.restoreViewStateStorage
 
     if (this.editor && restoreViewStateStorage && this.viewStateHash) {
@@ -176,10 +212,19 @@ export default class FileEditor extends Mixins(BrowserMixin) {
 
       try {
         restoreViewStateStorage.setItem(this.viewStateHash, JSON.stringify(viewState))
+
+        return true
       } catch (e) {
         consola.error('[Storage] setItem', e)
       }
     }
+
+    return false
+  }
+
+  // Ensure we dispose of our models and editor.
+  destroyed () {
+    this.saveViewState()
 
     monaco?.editor.getModels().forEach(model => model.dispose())
 

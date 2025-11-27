@@ -47,14 +47,14 @@
         >
           <path
             v-if="flipY"
-            d="M 0,0 L 5,10 L 10,0 Z"
+            d="m0 0 5 10 5-10Z"
             fill="red"
             fill-opacity="0.9"
             :shape-rendering="shapeRendering"
           />
           <path
             v-else
-            d="M 10,10 L 5,0 L 0,10 Z"
+            d="M10 10 5 0 0 10Z"
             fill="red"
             fill-opacity="0.9"
             :shape-rendering="shapeRendering"
@@ -68,14 +68,14 @@
         >
           <path
             v-if="flipY"
-            d="M 10,10 L 5,0 L 0,10 Z"
+            d="M10 10 5 0 0 10Z"
             fill="green"
             fill-opacity="0.9"
             :shape-rendering="shapeRendering"
           />
           <path
             v-else
-            d="M 0,0 L 5,10 L 10,0 Z"
+            d="m0 0 5 10 5-10Z"
             fill="green"
             fill-opacity="0.9"
             :shape-rendering="shapeRendering"
@@ -90,13 +90,13 @@
           <path
             fill="#ff0000"
             fill-opacity="0.4"
-            d="M 8.5859375 -1.4140625 L 8.2324219 -1.0605469 L 9.0429688 -0.25 L 0.96875 -0.25 A 1 1 0 0 1 1 0 A 1 1 0 0 1 0.96679688 0.25 L 9.0429688 0.25 L 8.2324219 1.0605469 L 8.5859375 1.4140625 L 10 0 L 8.5859375 -1.4140625 z "
+            d="m8.586-1.414-.354.353.811.811H.969A1 1 0 0 1 1 0a1 1 0 0 1-.033.25h8.076l-.81.81.353.354L10 0z"
             :shape-rendering="shapeRendering"
           />
           <path
             fill="#00ff00"
             fill-opacity="0.4"
-            d="M -0.25 0.96679688 L -0.25 9.0429688 L -1.0605469 8.2324219 L -1.4140625 8.5859375 L 0 10 L 1.4140625 8.5859375 L 1.0605469 8.2324219 L 0.25 9.0429688 L 0.25 0.96679688 A 1 1 0 0 1 0 1 A 1 1 0 0 1 -0.25 0.96679688 z "
+            d="M-.25.967v8.076l-.81-.81-.354.353L0 10l1.414-1.414-.353-.354-.811.811V.967A1 1 0 0 1 0 1 1 1 0 0 1-.25.967"
             :shape-rendering="shapeRendering"
           />
           <circle

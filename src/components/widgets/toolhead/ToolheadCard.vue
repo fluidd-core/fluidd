@@ -223,6 +223,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
       this.printerSettings.probe != null ||
       this.printerSettings.bltouch != null ||
       this.printerSettings.smart_effector != null ||
+      this.printerSettings.cartographer != null ||
       (
         this.printerSettings.scanner != null &&
         'sensor' in this.printerSettings.scanner &&
@@ -231,6 +232,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
       Object.keys(this.printerSettings)
         .some(x => x.startsWith('probe_eddy_current '))
     )
+  }
+
+  get printerSupportsBeaconCalibrate (): boolean {
+    return this.printerSettings.beacon != null
+  }
+
+  get printerSupportsCartographerCalibrate (): boolean {
+    return this.printerSettings.cartographer != null
   }
 
   get printerSupportsZEndstopCalibrate (): boolean {
@@ -329,6 +338,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
       })
     }
 
+    if (this.printerSupportsBeaconCalibrate) {
+      tools.push({
+        name: 'BEACON_AUTO_CALIBRATE',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onBeaconCalibrate
+      })
+    }
+
     if (this.printerSupportsBedScrewsAdjust) {
       tools.push({
         name: 'BED_SCREWS_ADJUST',
@@ -342,6 +359,20 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
         name: 'BED_TILT_CALIBRATE',
         disabled: !this.allHomed || this.isManualProbeActive,
         wait: this.$waits.onBedTiltCalibrate
+      })
+    }
+
+    if (this.printerSupportsCartographerCalibrate) {
+      tools.push({
+        name: 'CARTOGRAPHER_SCAN_CALIBRATE',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onCartographerScanCalibrate
+      })
+
+      tools.push({
+        name: 'CARTOGRAPHER_TOUCH_CALIBRATE',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onCartographerTouchCalibrate
       })
     }
 

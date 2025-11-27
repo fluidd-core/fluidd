@@ -115,6 +115,7 @@ app:
       go_to_file: Go to file
       rename_dir: Rename Directory
       rename_file: Rename File
+      save_as: Save As
       upload_file: Uploading file | Uploading files
     tooltip:
       low_on_space: Low on disk space

@@ -48,7 +48,7 @@
 
         <v-toolbar-items>
           <app-btn
-            v-if="!$vuetify.breakpoint.smAndDown"
+            v-if="canShowPeripheralsDialog && !$vuetify.breakpoint.smAndDown"
             @click="peripheralsDialogOpen = true"
           >
             <v-icon
@@ -61,6 +61,7 @@
           </app-btn>
           <app-btn
             v-if="!useTextOnlyEditor"
+            :disabled="!ready"
             @click="handleCommandPalette"
           >
             <v-icon
@@ -85,7 +86,7 @@
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.config_reference') }}</span>
           </app-btn>
           <app-btn
-            v-if="!readonly && !printerPrinting && configMap?.serviceSupported"
+            v-if="canSaveAndRestart"
             :disabled="!ready"
             @click="emitSave(true)"
           >
@@ -97,29 +98,48 @@
             </v-icon>
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.save_restart') }}</span>
           </app-btn>
-          <app-btn
+          <v-tooltip
             v-if="!readonly"
-            :disabled="!ready"
-            @click="emitSave(false)"
+            bottom
           >
-            <v-icon
-              small
-              :left="!$vuetify.breakpoint.smAndDown"
-            >
-              $save
-            </v-icon>
-            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.save') }}</span>
-          </app-btn>
+            <template #activator="{ on, attrs }">
+              <app-btn
+                v-bind="attrs"
+                :disabled="!ready"
+                v-on="on"
+                @click="emitSave({ saveAs: true })"
+              >
+                <v-icon>
+                  $saveAs
+                </v-icon>
+              </app-btn>
+            </template>
+            <span>{{ $t('app.general.btn.save_as') }}</span>
+          </v-tooltip>
+          <v-tooltip
+            v-if="!readonly"
+            bottom
+          >
+            <template #activator="{ on, attrs }">
+              <app-btn
+                v-bind="attrs"
+                :disabled="!ready"
+                v-on="on"
+                @click="emitSave(false)"
+              >
+                <v-icon>
+                  $save
+                </v-icon>
+              </app-btn>
+            </template>
+            <span>{{ $t('app.general.btn.save') }}</span>
+          </v-tooltip>
           <app-btn
             @click="emitClose()"
           >
-            <v-icon
-              small
-              :left="!$vuetify.breakpoint.smAndDown"
-            >
+            <v-icon>
               $close
             </v-icon>
-            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.close') }}</span>
           </app-btn>
         </v-toolbar-items>
       </v-toolbar>
@@ -131,9 +151,12 @@
         :path="path"
         :filename="filename"
         :readonly="readonly"
+        :can-save-and-restart="canSaveAndRestart"
         :code-lens="codeLens"
         @ready="editorReady = true"
-        @save="emitSave(false)"
+        @save="emitSave()"
+        @save-as="emitSave({ saveAs: true })"
+        @save-and-restart="emitSave({ restart: true })"
         @emergency-stop="emergencyStop"
       />
 
@@ -228,6 +251,21 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedGetters['server/getConfigMapByFilename'](this.filename)
   }
 
+  get canSaveAndRestart (): boolean {
+    return (
+      !this.readonly &&
+      !this.printerPrinting &&
+      this.configMap?.serviceSupported === true
+    )
+  }
+
+  get canShowPeripheralsDialog (): boolean {
+    return (
+      !this.readonly &&
+      this.configMap?.serviceSupported === true
+    )
+  }
+
   get codeLens (): boolean {
     return this.$typedState.config.uiSettings.editor.codeLens
   }
@@ -275,13 +313,17 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
     }
   }
 
-  emitSave (restart: boolean) {
+  emitSave (options?: boolean | { restart?: boolean, saveAs?: boolean }) {
     if (this.editorReady) {
+      const [restart, saveAs] = typeof options === 'object' && options != null
+        ? [options.restart === true, options.saveAs === true]
+        : [options === true, false]
+
       if (this.configMap?.serviceSupported && restart) {
         this.$emit('save', this.updatedContent, this.configMap.service)
         this.open = false
       } else {
-        this.$emit('save', this.updatedContent)
+        this.$emit(saveAs ? 'save-as' : 'save', this.updatedContent)
       }
 
       this.lastSavedContent = this.updatedContent

@@ -27,6 +27,9 @@ export default class AppChart extends Vue {
   @Prop({ type: Array, required: true })
   readonly data!: unknown[]
 
+  @Prop({ type: Array })
+  readonly dimensions?: unknown[]
+
   @Prop({ type: Object, default: () => {} })
   readonly options!: Record<string, unknown>
 
@@ -43,6 +46,7 @@ export default class AppChart extends Vue {
     if (this.chart && data && data.length) {
       this.chart.setOption({
         dataset: {
+          dimensions: this.dimensions,
           source: data
         }
       })

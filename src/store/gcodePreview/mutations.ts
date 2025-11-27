@@ -36,7 +36,7 @@ export const mutations = {
     state.parserProgress = payload
   },
 
-  setParserWorker (state, payload: Worker) {
+  setParserWorker (state, payload: Worker | null) {
     state.parserWorker = payload
   }
 } satisfies MutationTree<GcodePreviewState>

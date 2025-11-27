@@ -27,6 +27,7 @@
                     v-bind="attrs"
                     icon
                     :loading="hasWait(`${$waits.onDatabaseRestore}/${item}`)"
+                    :disabled="printerPrinting"
                     @click="handleRestoreBackup(item)"
                     v-on="on"
                   >
@@ -77,6 +78,7 @@
             class="mb-2"
             color="primary"
             :loading="hasWait($waits.onDatabaseCompact)"
+            :disabled="printerPrinting"
             @click="handleCompactDatabase"
           >
             {{ $t('app.database.btn.compact_database') }}
@@ -89,6 +91,7 @@
             class="mb-2"
             color="primary"
             :loading="hasWaitsBy(`${$waits.onDatabasePostBackup}/`)"
+            :disabled="printerPrinting"
             @click="handleCreateBackup"
           >
             {{ $t('app.database.btn.create_backup') }}

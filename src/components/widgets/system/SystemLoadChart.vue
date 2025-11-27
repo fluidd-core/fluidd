@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
+import type { EChartsOption, LineSeriesOption } from 'echarts'
 
 @Component({})
 export default class SystemLoadChart extends Vue {
@@ -34,31 +35,35 @@ export default class SystemLoadChart extends Vue {
     return this.$typedState.server.system_info?.cpu_info?.cpu_count || 1
   }
 
-  get options () {
-    const o = {
+  get options (): EChartsOption {
+    const options: EChartsOption = {
       ...this.$typedGetters['charts/getBaseChartOptions'](),
       series: this.series
     }
 
     if (
-      o.yAxis &&
-      !Array.isArray(o.yAxis)
+      options.yAxis &&
+      !Array.isArray(options.yAxis)
     ) {
-      o.yAxis.max = (value) => {
-        return (value.max <= this.cores)
+      options.yAxis.max = (value) => (
+        value.max <= this.cores
           ? this.cores
           : value.max
-      }
+      )
     }
 
-    return o
+    return options
   }
 
-  get series () {
-    return this.$typedGetters['charts/getBaseSeries']({
-      name: this.$t('app.system_info.label.load'),
-      encode: { x: 'date', y: 'load' }
-    })
+  get series (): LineSeriesOption {
+    return {
+      ...this.$typedGetters['charts/getBaseSeries'],
+      name: this.$t('app.system_info.label.load').toString(),
+      encode: {
+        x: 'date',
+        y: 'load'
+      }
+    }
   }
 
   @Watch('chartData', { immediate: true })
