@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.35.1](https://github.com/fluidd-core/fluidd/compare/v1.35.0...v1.35.1) (2025-11-27)
+
+
+### Features
+
+* add Beacon commands to Toolhead card ([ae0079e](https://github.com/fluidd-core/fluidd/commit/ae0079e8d9058ee02e89b90bb2cc5349a2039513))
+* Add logos for PFA, Micron and Salad Fork. ([#1746](https://github.com/fluidd-core/fluidd/issues/1746)) ([25d8b99](https://github.com/fluidd-core/fluidd/commit/25d8b99a60ca8aa42f95176afbd1e9313094cc90))
+* adds Sandboxed Eval worker ([ee01981](https://github.com/fluidd-core/fluidd/commit/ee01981334297f4b5ad76e62ef169bf3145e778d))
+* adds Sandboxed Eval worker (cont.) ([aee6d68](https://github.com/fluidd-core/fluidd/commit/aee6d6845ba6cdfb437d1a4d4cc71ff74e654a02))
+* adds Save As support to the file editor ([#1750](https://github.com/fluidd-core/fluidd/issues/1750)) ([bf66a85](https://github.com/fluidd-core/fluidd/commit/bf66a8547142a394df70ee698c379ef8bd812833))
+* save file editor content and restart with Ctrl+Alt+S ([579fe01](https://github.com/fluidd-core/fluidd/commit/579fe014702b5c73e9e7005808fb63832545f0e4))
+
+
+### Bug Fixes
+
+* Cartographer simple integration ([#1736](https://github.com/fluidd-core/fluidd/issues/1736)) ([c6852dc](https://github.com/fluidd-core/fluidd/commit/c6852dcd9b4659809a49afbf93d0ff363e8b201a))
+* **Diagnostics:** specify chart dimensions in use ([#1739](https://github.com/fluidd-core/fluidd/issues/1739)) ([1487021](https://github.com/fluidd-core/fluidd/commit/148702172e7b10fa2efad0c38bba322c5f31fc93))
+* disable Moonraker database management while printing ([#1741](https://github.com/fluidd-core/fluidd/issues/1741)) ([b7bbef3](https://github.com/fluidd-core/fluidd/commit/b7bbef343de96aeb2097de21d2c78779fa6739f7))
+* ensure names match Klipper format ([#1749](https://github.com/fluidd-core/fluidd/issues/1749)) ([d2f8c95](https://github.com/fluidd-core/fluidd/commit/d2f8c9516cc0235488b15e4e30b2ed4eece87660))
+* ignore methods in macro params parsing ([#1743](https://github.com/fluidd-core/fluidd/issues/1743)) ([77cc65a](https://github.com/fluidd-core/fluidd/commit/77cc65ad8048622ec523e2eae4cc631e34572e9d))
+* **Outputs:** static sort order ([#1745](https://github.com/fluidd-core/fluidd/issues/1745)) ([3e14ce7](https://github.com/fluidd-core/fluidd/commit/3e14ce79876ed5ba4f19c82cf31977365b104ea7))
+
+
+### Code Refactorings
+
+* improved echarts typings ([d021fec](https://github.com/fluidd-core/fluidd/commit/d021fecec40f2ca29dccc1dbf63de3eb1016a033))
+* minor improvements on web workers ([0dff286](https://github.com/fluidd-core/fluidd/commit/0dff286be9fdcf19612726f4ead4c5449d24cf89))
+
 ## [1.35.0](https://github.com/fluidd-core/fluidd/compare/v1.34.4...v1.35.0) (2025-11-12)
 
 
