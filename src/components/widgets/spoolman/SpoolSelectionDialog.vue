@@ -139,7 +139,6 @@
                     {{ item.id === selectedSpoolId ? '$markedCircle' : '$filament' }}
                   </v-icon>
                 </v-progress-circular>
-
                 <div class="flex-column">
                   <div class="flex-row">
                     {{ item.filament_name }}
@@ -156,6 +155,17 @@
                   </div>
                 </div>
               </div>
+            </template>
+
+            <template #[`item-value.loaded`]>
+              <v-chip
+                v-if="spoolLoaded(item)"
+                color="primary"
+                small
+                style="text-transform: capitalize"
+              >
+                {{ getLaneLoadedName(item) }}
+              </v-chip>
             </template>
 
             <template #[`item-value.initial_weight`]="{ value }">
@@ -272,6 +282,7 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import AfcMixin from '@/mixins/afc'
 import { SocketActions } from '@/api/socketActions'
 import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
@@ -290,7 +301,7 @@ import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
     QRReader
   }
 })
-export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixin) {
+export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixin, AfcMixin) {
   search = ''
   selectedSpoolId: number | null = null
 
@@ -345,6 +356,12 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   get availableSpools () {
     const availableSpools: Spool[] = this.$typedGetters['spoolman/getAvailableSpools']
+
+    if (this.$typedGetters['printer/getSupportsAfc']) {
+      for (const spool in availableSpools) {
+        availableSpools[spool].loaded = this.getLaneLoadedName(availableSpools[spool])
+      }
+    }
 
     return availableSpools
       .filter(x => !x.archived)
@@ -463,8 +480,16 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         text: this.$tc('app.spoolman.label.last_used'),
         value: 'last_used',
         cellClass: 'text-no-wrap'
-      },
+      }
     ]
+
+    if (this.$typedGetters['printer/getSupportsAfc']) {
+      headers.push({
+        text: this.$tc('app.afc.LaneLoaded'),
+        value: 'loaded',
+        cellClass: 'text-no-wrap'
+      })
+    }
 
     const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters['config/getMergedTableHeaders'](headers, 'spoolman')
 
@@ -726,6 +751,23 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   getSpoolColor (spool?: Spool) {
     return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
+  }
+
+  spoolLoaded (item: Spool) {
+    if (this.afc === null) return undefined
+
+    const spools = this.afcLoadedSpools ?? undefined
+    if (!spools.length) return undefined
+    return spools.find((s) => s.spoolId === item.id)
+  }
+
+  getLaneLoadedName (item: Spool):string {
+    const spool = this.spoolLoaded(item)
+    if (spool !== undefined) {
+      return spool?.lane
+    } else {
+      return '--'
+    }
   }
 }
 </script>
