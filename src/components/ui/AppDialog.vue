@@ -28,6 +28,12 @@
         >
           <v-row no-gutters>
             <v-col align-self="center">
+              <v-icon
+                v-if="icon"
+                left
+              >
+                {{ icon }}
+              </v-icon>
               <slot name="title">
                 <span class="focus--text">{{ title }}</span>
                 <app-inline-help
@@ -51,6 +57,19 @@
               cols="auto"
               align-self="center"
             >
+              <v-btn
+                v-if="helpIcon != null && helpText != null && helpHref != null"
+                text
+                tile
+                :href="helpHref"
+                target="_blank"
+              >
+                <v-icon left>
+                  {{ helpIcon }}
+                </v-icon>
+                {{ helpText }}
+              </v-btn>
+
               <app-btn
                 icon
                 :disabled="closeButtonDisabled"
@@ -127,7 +146,19 @@ export default class AppDialog extends Mixins(BrowserMixin) {
   readonly title?: string
 
   @Prop({ type: String })
+  readonly icon?: string
+
+  @Prop({ type: String })
   readonly helpTooltip?: string
+
+  @Prop({ type: String })
+  readonly helpIcon?: string
+
+  @Prop({ type: String })
+  readonly helpText?: string
+
+  @Prop({ type: String })
+  readonly helpHref?: string
 
   @Prop({ type: String })
   readonly subTitle?: string
