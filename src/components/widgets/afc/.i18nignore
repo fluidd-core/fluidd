@@ -1,0 +1,8 @@
+$t('app.afc.Initialized')
+$t('app.afc.Idle')
+$t('app.afc.Error')
+$t('app.afc.Loading')
+$t('app.afc.Unloading')
+$t('app.afc.Ejecting')
+$t('app.afc.Moving')
+$t('app.afc.Restoring')
