@@ -1,5 +1,6 @@
 <template>
   <collapsable-card
+    v-if="supportsMmu"
     :title="title"
     icon="$mmu "
     draggable
@@ -328,6 +329,10 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
       posStr = this.action ?? ''
     }
     return posStr
+  }
+
+  get supportsMmu (): boolean {
+    return this.$typedState.printer.printer.mmu != null
   }
 
   private capitalize (str: string): string {
