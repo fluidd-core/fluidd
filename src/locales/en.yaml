@@ -1,4 +1,82 @@
 app:
+  afc:
+    AfcSettings: "AFC-Settings"
+    BrushNozzle: "Brush Nozzle"
+    BufferDisabled: "Buffer Not Active"
+    BypassActive: "Filament loaded in bypass tool changes are deactivated!"
+    Calibrate: "Calibrate"
+    Cancel: "Cancel"
+    DebugJson: "Debug JSON"
+    Detected: "Detected"
+    EjectFilament: "Eject Filament"
+    Ejecting: "Ejecting"
+    Empty: "Empty"
+    Error: "Error"
+    FilamentForLane: "Filament for {name}"
+    Functions: "Functions"
+    Headline: "AFC"
+    Hub: "Hub"
+    HubLoad: "Hub Load"
+    Idle: "Idle"
+    InfiniteSpoolDescription: "Next lane to load if {name} runs out"
+    InfiniteSpoolHeadline: "Infinite Spool"
+    LaneControls: "Lane Controls"
+    LaneLoaded: "Lane Loaded"
+    LaneLoadedNone: "NONE"
+    LaneMapping: "Lane Mapping"
+    LaneMappingToCommand: "Remap {name} to tool command"
+    LedOff: "LEDs Off"
+    LedOn: "LEDs On"
+    LoadedInLane: "Loaded in {lane}"
+    Loading: "Loading"
+    LoadLane: "Load Lane"
+    Material: "Material"
+    MaterialSubtitle: "For example ABS PETG PLA etc."
+    Moving: "Moving"
+    ParkNozzle: "Park Nozzle"
+    PostExtruderSensor: "Post-Extruder Sensor"
+    PreExtruderSensor: "Pre-Extruder Sensor"
+    PrepDetected: "Filament detected but not loaded"
+    Printing: "Printing"
+    RammingSensor: "Ramming Sensor"
+    Restoring: "Restoring"
+    SetSpool: "Set Spool"
+    Settings: "Settings"
+    SettingsDialog:
+      BowdenLength: "Bowden Length"
+      BowdenLengthDescription: "This is the Length of the Bowden tube between the Hub and the Toolhead."
+      DistHub: "Distance to Hub"
+      DistHubDescription: "Distance from the lane extruder gears to the hub in mm."
+      Help: "Help"
+      Length: "Length"
+      LoadUnloadLane: "Load / Unload Lane"
+      LoadUnloadLaneDescription: "Click on the buttons to load or unload the filament from the lane to the extruder."
+      SaveExtruderValues: "Save Extruder Values"
+      SaveExtruderValuesDescription: "This will write the current extruder values to the configuration file of the current extruder."
+      SaveHubDist: "Save Lane Values"
+      SaveHubDistDescription: "Save the values from the specific lane to the configuration file."
+      SensorAfterExtruder: "Sensor after Extruder"
+      SettingsForTitle: "Settings for {name}"
+      ToolSensorAfterExtruder: "Tool Sensor after Extruder"
+      ToolSensorAfterExtruderDescription: "Distance from the extruder gears to the tool_end sensor in mm. This is used to unload the filament from the extruder gears after the tool_end sensor isn't triggered anymore."
+      ToolStn: "Tool load length"
+      ToolStnDescriptionWithEndSensor: "Distance from the tool_end sensor to the begin of the melt zone in mm."
+      ToolStnDescriptionWithoutEndSensor: "Distance from the tool_start sensor to the begin of the melt zone in mm."
+      ToolStnDescriptionWithRamming: "Distance from the extruder gears to the begin of the melt zone in mm."
+      ToolStnUnload: "Tool unload length"
+      ToolStnUnloadDescription: "Distance to retract the filament to unload the filament from the tool in mm."
+      WriteToFile: "Write to File"
+    SettingsForLane: "Settings for {lane}"
+    ShowFilamentName: "Show Filament Name"
+    ShowLaneInfinite: "Show Infinite Button"
+    ShowTool: "Show Tool \"{name}\""
+    ShowUnit: "Show Unit \"{name}\""
+    ShowUnitIcons: "Show Unit Icons"
+    ShowTd1Color: "Show TD-1 Color"
+    Unloading: "Unloading"
+    UnloadLane: "Unload Lane"
+    Weight: "Weight"
+    WeightSubtitle: "The weight of the filament in grams (without spool)."
   bedmesh:
     label:
       active: active
@@ -13,12 +91,12 @@ app:
       wireframe: Wireframe
     msg:
       hint: >-
-        If saving as something other than %{name}, you can choose to also remove
+        If saving as something other than %{name} you can choose to also remove
         the %{name} profile
       not_found: No existing bed meshes found.
       not_loaded: No mesh loaded
     tooltip:
-      calibrate: Begins a new calibration, saving as profile 'default'
+      calibrate: Begins a new calibration saving as profile 'default'
       delete: Delete Profile
       load: Load Profile
       save: Commits calibrated profile to printer.cfg
@@ -51,7 +129,7 @@ app:
   endpoint:
     error:
       cant_connect: >-
-        Something went wrong, and fluidd can't reach the destination. Are you
+        Something went wrong and fluidd can't reach the destination. Are you
         sure this is the correct address?
       cors_error: blocked by CORS policy
       cors_note: >-
@@ -59,7 +137,7 @@ app:
         see the documentation on multi printer setups <a href="%{url}"
         target="_blank">here</a>
     hint:
-      add_printer: E.g., http://fluidd.local
+      add_printer: E.g. http://fluidd.local
     msg:
       trouble: >-
         Having trouble? <a href="%{url}" target="_blank">See here</a> for more
@@ -67,7 +145,7 @@ app:
     tooltip:
       endpoint_examples: >-
         Enter your API URL.<br />Some examples might be;<br
-        /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
+        /><blockquote>fluidd.local https://192.168.1.150</blockquote>
   endstop:
     states:
       label:
@@ -146,7 +224,7 @@ app:
       parsing_file: Parsing file
     msg:
       confirm: >-
-        The file "%{filename}" is %{size}, this might be resource intensive for
+        The file "%{filename}" is %{size} this might be resource intensive for
         your system. Are you sure?
     overlay:
       drag_file_load: <strong>Drag</strong> a gcode file here to load
@@ -243,11 +321,11 @@ app:
         Moonraker plugin configuration can be found <a target="_blank"
         href="%{url}">here.</a>
       failed_components: >-
-        Moonraker has failed plugins, please check your logs, update your
+        Moonraker has failed plugins please check your logs update your
         configuration and restart moonraker.
       printer_powered_off: >-
         The printer is currently powered off.<br/><br/>
-        To power on the printer, please click the button on the left.
+        To power on the printer please click the button on the left.
     label:
       accel_to_decel: Accel to Decel
       acceleration: Acceleration
@@ -341,6 +419,7 @@ app:
       synced_extruder: Synced Extruder
       thumbnail_size: Thumbnail Size
       time_in_days: Time in days
+      toolchange: Toolchange
       total: Total
       total_filament: Total filament used
       total_filament_avg: Avg per print
@@ -375,13 +454,13 @@ app:
         %{name} Driver
     msg:
       password_changed: Password changed
-      wrong_password: Oops, something went wrong. Is your password correct?
+      wrong_password: Oops something went wrong. Is your password correct?
       bed_screws_adjust: >-
-        Click <b>Adjusted</b> if a significant adjustment is necessary on the current screw; otherwise, click <b>Accept</b> to continue.
+        Click <b>Adjusted</b> if a significant adjustment is necessary on the current screw; otherwise click <b>Accept</b> to continue.
       welcome_back: >-
         Welcome back.<br>Sign in below to stay in touch with your printer.
       offline_ready: Fluidd is now ready to work offline.
-      needs_refresh: New content available, please click the <b>Reload</b> button to update.
+      needs_refresh: New content available please click the <b>Reload</b> button to update.
       pending_configuration_sections_deleted: The following sections are marked for deletion
       rolledover_logs: >-
         The following application logs have been rolled over: %{applications}
@@ -526,7 +605,7 @@ app:
         Copy files and folders to the Configuration Files by dragging them from here and dropping them there
   history:
     msg:
-      confirm: Are you sure? This will clear all history, and printer statistics
+      confirm: Are you sure? This will clear all history and printer statistics
       confirm_jobs: Are you sure? This will clear all jobs.
       confirm_stats: Are you sure? This will clear all stats.
   job_queue:
@@ -736,7 +815,7 @@ app:
       tool: Tool
       warnings: Warnings
     tooltip:
-      average_calculation: If more than one option is select, an average will be calculated
+      average_calculation: If more than one option is select an average will be calculated
       diagnostics_performance: '[BETA] Logging diagnostics info may impact performance'
       gcode_coords: Use GCode position instead of toolhead position on dashboard
       keyboard_shortcuts: >-
@@ -747,9 +826,9 @@ app:
       theme_disclaimer: >-
         These themes feature brand names and logos that are the intellectual property of their respective owners.<br>
         The inclusion of these names and logos is done with permission from the brands.<br>
-        However, please note that these themes are not officially maintained by the respective brands.<br>
+        However please note that these themes are not officially maintained by the respective brands.<br>
         Any issues or inquiries related to the themes should be directed to the Fluidd team.<br>
-        The use of brand names and logos is for decorative and aesthetic purposes only, and no official association with or endorsement by the brands is implied.
+        The use of brand names and logos is for decorative and aesthetic purposes only and no official association with or endorsement by the brands is implied.
       warn_on_cpu_throttled: CPU throttling can cause prints to fail
       warn_on_stepper_driver_overheating: Trinamic drivers only
   socket:
@@ -813,7 +892,7 @@ app:
       screws_tilt_adjust: Screws Tilt Adjust
     tooltip:
       absolute_positioning: Absolute Positioning
-      extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
+      extruder_disabled: extruder disabled below min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
       manual_probe: Manual Probe
@@ -828,17 +907,17 @@ app:
         <span class="secondary--text">and</span>
         %{nozzleDiameter} mm nozzle
       stats_volumetric_flow: >-
-        Extruding at %{extrudeSpeed} mm/s<span class="secondary--text">,
+        Extruding at %{extrudeSpeed} mm/s<span class="secondary--text">
         the extruder should be able to provide an</span>
         estimated volumetric flow of %{estimatedVolumetricFlow} mm³/s
       stats_extruded_length: >-
         Extruding %{extrudeLength} mm of filament at
-        %{extrudeFactor} % flow<span class="secondary--text">,
+        %{extrudeFactor} % flow<span class="secondary--text">
         will provide an</span>
         estimated output length of %{estimatedExtrudedLength} mm
       stats_max_speed: >-
         <span class="secondary--text">Assuming a</span>
-        %{layerHeight} mm layer height<span class="secondary--text">,
+        %{layerHeight} mm layer height<span class="secondary--text">
         the</span> estimated maximum print speed is %{estimatedMaxSpeed} mm/s
   version:
     btn:
@@ -867,7 +946,7 @@ app:
     title: Software Updates
     tooltip:
       commit_history: Commit history
-      dirty: indicates a detached head, not on master or an invalid origin
+      dirty: indicates a detached head not on master or an invalid origin
       invalid: indicates local changes to the repo
       packages: Packages
       release_notes: Release notes
@@ -978,7 +1057,7 @@ app:
         Are you sure you want to continue?
       tracking_inactive: >-
         Filament tracking is inactive.
-        To get started, please select a spool.
+        To get started please select a spool.
       not_connected: Spoolman server not available.
       info:
         howto: >-
@@ -1116,13 +1195,13 @@ app:
       single_color: This looks like a single color print but you don't have the bypass selected on your MMU. You may want to check the chosen tool
       map_slicer_tools: Map slicer tools to MMU gates for print
       map_tools: Map tools to MMU gates
-      tool_not_used: Tool %{tool} not used in this print, choose default mapping
+      tool_not_used: Tool %{tool} not used in this print choose default mapping
       mismatch: Possible filament mismatch
       color: Color
       material: Material
       temperature: Temperature
       no_gate_data: No gate data
-      no_slicer_info: No slicer information, choose default mapping for %{tool}
+      no_slicer_info: No slicer information choose default mapping for %{tool}
       select_tool: Select Tool to map then choose gate from list
     setting:
       large_filament_status: Large Filament Status
@@ -1155,7 +1234,7 @@ app:
       remove_model: Remove %{name} model
     msg:
       hint: >-
-        If saving as something other than %{name}, you can choose to also remove
+        If saving as something other than %{name} you can choose to also remove
         the %{name} model
       not_found: No existing beacon models found.
     tooltip:
