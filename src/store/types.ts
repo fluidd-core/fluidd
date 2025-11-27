@@ -25,6 +25,7 @@ import type { mmu } from './mmu'
 import type { sensors } from './sensors'
 import type { database } from './database'
 import type { analysis } from './analysis'
+import type { afc } from './afc'
 import type { storeOptions } from '.'
 
 type RootModulesType = {
@@ -53,7 +54,8 @@ type RootModulesType = {
   mmu: typeof mmu,
   sensors: typeof sensors,
   database: typeof database,
-  analysis: typeof analysis
+  analysis: typeof analysis,
+  afc: typeof afc
 }
 
 type RootStateType = {

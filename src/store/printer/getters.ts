@@ -1176,5 +1176,10 @@ export const getters = {
       exclude_object != null &&
       exclude_object.objects.length > 0
     )
+  },
+
+  getSupportsAfc: (state): boolean => {
+    return state.printer.AFC != null
   }
+
 } satisfies GetterTree<PrinterState, RootState>
