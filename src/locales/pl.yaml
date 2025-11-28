@@ -109,6 +109,7 @@ app:
       rename_dir: Zmień nazwę katalogu
       upload_file: Wgrywanie pliku | Wgrywanie plików
       devices: Urządzenia
+      save_as: Zapisz jako
     overlay:
       drag_files_enqueue: <strong>Przeciągnij</strong> pliki tutaj, aby umieścić
         je w kolejce
