@@ -33,7 +33,7 @@ const parseLine = (line: string) => {
     .split(';', 2)[0]
 
   const [, gcodeCommand, gcodeCommandArgs = ''] = clearedLine
-    .split(/^([gm]\d+)\s*/i)
+    .split(/^([gmt]\d+)\s*/i)
 
   if (gcodeCommand) {
     return {
@@ -67,6 +67,7 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
   const moves: Move[] = []
   const layers: Layer[] = []
   const parts: Part[] = []
+  const tools = new Set([0])
   const lines = gcode.split('\n')
 
   let newLayerForNextMove = false
@@ -77,6 +78,7 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
     y: 0,
     z: 0,
     e: 0,
+    tool: 0,
     filePosition: 0
   }
 
@@ -136,7 +138,8 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
           if (params.some(param => param in args)) {
             move = {
               ...pick(args, params),
-              filePosition: toolhead.filePosition
+              t: toolhead.tool,
+              p: toolhead.filePosition
             } satisfies LinearMove
           }
           break
@@ -151,10 +154,11 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
           if (params.some(param => param in args)) {
             move = {
               ...pick(args, params),
-              direction: command === 'G2'
+              d: command === 'G2'
                 ? 'clockwise'
                 : 'counter-clockwise',
-              filePosition: toolhead.filePosition
+              t: toolhead.tool,
+              p: toolhead.filePosition
             } satisfies ArcMove
           }
           break
@@ -162,7 +166,8 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
         case 'G10':
           move = {
             e: -fwretraction.length,
-            filePosition: toolhead.filePosition
+            t: toolhead.tool,
+            p: toolhead.filePosition
           } satisfies LinearMove
 
           if (fwretraction.z !== 0) {
@@ -172,7 +177,8 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
         case 'G11':
           move = {
             e: decimalRound(fwretraction.length + fwretraction.extrudeExtra),
-            filePosition: toolhead.filePosition
+            t: toolhead.tool,
+            p: toolhead.filePosition
           } satisfies LinearMove
 
           if (fwretraction.z !== 0) {
@@ -186,7 +192,8 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
           const noXYZ = !hasX && !hasY && !hasZ
 
           move = {
-            filePosition: toolhead.filePosition
+            t: toolhead.tool,
+            p: toolhead.filePosition
           } satisfies LinearMove
 
           if (hasX || noXYZ) {
@@ -225,6 +232,16 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
         case 'M207':
           fwretraction.length = args.s ?? fwretraction.length
           fwretraction.z = args.z ?? fwretraction.z
+          break
+        case 'M600':
+          toolhead.tool = (toolhead.tool + 1) % 10
+          tools.add(toolhead.tool)
+          break
+        default:
+          if (command.startsWith('T')) {
+            toolhead.tool = +command.substring(1)
+            tools.add(toolhead.tool)
+          }
           break
       }
 
@@ -282,7 +299,12 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
 
   sendProgress(toolhead.filePosition)
 
-  return { moves, layers, parts }
+  return {
+    moves,
+    layers,
+    parts,
+    tools: [...tools].sort()
+  }
 }
 
 export default parseGcode

@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { BBox, GcodePreviewState, Layer, LayerNr, LayerPaths, Move, Part, Point3D } from './types'
+import type { BBox, GcodePreviewState, Layer, LayerNr, LayerPaths, Move, Part, Point3D, Tool } from './types'
 import type { RootState } from '../types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
 import isKeyOf from '@/util/is-key-of'
@@ -34,7 +34,7 @@ export const getters = {
           output.push({
             z,
             move: zStart,
-            filePosition: move.filePosition
+            filePosition: move.p
           })
         }
       }
@@ -46,7 +46,7 @@ export const getters = {
       output.push({
         z: 0,
         move: 0,
-        filePosition: moves[0].filePosition
+        filePosition: moves[0].p
       })
     }
 
@@ -152,19 +152,66 @@ export const getters = {
     }
   },
 
-  getPaths: (state, getters) => (startMove: number, endMove: number): LayerPaths => {
+  getColorsFromFileMetadata: (state): string[] => {
+    const file = state.file
+
+    if (file) {
+      if (
+        'filament_colors' in file &&
+        Array.isArray(file.filament_colors)
+      ) {
+        return file.filament_colors
+      }
+
+      if (
+        'extruder_colors' in file &&
+        Array.isArray(file.extruder_colors)
+      ) {
+        return file.extruder_colors
+      }
+    }
+
+    return []
+  },
+
+  getTools: (state, getters, rootState): Record<Tool, string> => {
+    const colorsFromFileMetadata: string[] = getters.getColorsFromFileMetadata
+
+    const toolIndexes = state.tools.length === 0
+      ? [0]
+      : state.tools
+
+    const defaultColor = rootState.config.uiSettings.theme.isDark
+      ? '#FFF'
+      : '#000'
+    const colors = ['#607D8B', '#795548', '#E38819', '#E06573', '#B366F2', '#830EE3', '#D67600', '#ff5252', '#1fb0ff', defaultColor]
+
+    const tools = toolIndexes.reduce((tools, toolIndex, index) => {
+      const tool: Tool = `T${toolIndex}`
+      const color = colorsFromFileMetadata[index] || colors.pop() || defaultColor
+
+      tools[tool] = color
+
+      return tools
+    }, {} as Record<Tool, string>)
+
+    return tools
+  },
+
+  getPaths: (state, getters) => (startMove: number, endMove: number, perTool = true): LayerPaths => {
     const toolhead: Point3D = getters.getToolHeadPosition(startMove)
     const moves = state.moves
 
     const path: LayerPaths = {
-      extrusions: '',
+      extrusions: {},
       moves: `M${toolhead.x},${toolhead.y}`,
       retractions: [],
-      extrusionStarts: [],
+      unretractions: [],
       toolhead: {
         x: 0,
         y: 0
-      }
+      },
+      tool: 'T0'
     }
 
     let traveling = true
@@ -172,10 +219,14 @@ export const getters = {
     for (let index = startMove; index <= endMove && index < moves.length; index++) {
       const move = moves[index]
 
+      if (perTool) {
+        path.tool = `T${move.t}`
+      }
+
       if (move.e != null && move.e > 0) {
         if (traveling) {
-          path.extrusions += `M${toolhead.x},${toolhead.y}`
-          path.extrusionStarts.push({
+          path.extrusions[path.tool] = `${path.extrusions[path.tool] || ''}M${toolhead.x},${toolhead.y}`
+          path.unretractions.push({
             x: toolhead.x,
             y: toolhead.y
           })
@@ -183,7 +234,7 @@ export const getters = {
           traveling = false
         }
 
-        path.extrusions += moveToSVGPath(toolhead, move)
+        path.extrusions[path.tool] += moveToSVGPath(toolhead, move)
         Object.assign(toolhead, move)
       } else {
         if (!traveling) {
@@ -214,7 +265,7 @@ export const getters = {
   getLayerPaths: (state, getters) => (layerNr: LayerNr): LayerPaths => {
     const layers: Layer[] = getters.getLayers
 
-    return getters.getPaths(layers[layerNr]?.move ?? 0, (layers[layerNr + 1]?.move ?? Infinity) - 1)
+    return getters.getPaths(layers[layerNr]?.move ?? 0, (layers[layerNr + 1]?.move ?? Infinity) - 1, false)
   },
 
   getPartPaths: (state, getters): string[] => {
@@ -239,7 +290,7 @@ export const getters = {
       return 0
     }
 
-    return binarySearch(state.moves, (val: Move) => filePosition - val.filePosition, true)
+    return binarySearch(state.moves, (val: Move) => filePosition - val.p, true)
   },
 
   getLayerNrByFilePosition: (state, getters) => (filePosition: number): LayerNr => {

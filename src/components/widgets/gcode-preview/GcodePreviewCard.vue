@@ -212,7 +212,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
         max
       } = this.currentLayerMoveRange
 
-      if (this.filePosition < moves[min].filePosition || this.filePosition > moves[max].filePosition) {
+      if (this.filePosition < moves[min].p || this.filePosition > moves[max].p) {
         this.currentLayer = this.fileProgressLayerNr
       }
     }
@@ -355,7 +355,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     }
   }
 
-  async loadFile (file: AppFile) {
+  async loadFile (file: AppFile | AppFileWithMeta) {
     try {
       const response = await this.getGcode(file)
 

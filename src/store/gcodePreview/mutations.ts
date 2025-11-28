@@ -2,7 +2,7 @@ import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type { GcodePreviewState } from './types'
 import Vue from 'vue'
-import type { AppFile } from '@/store/files/types'
+import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 
 export const mutations = {
   /**
@@ -24,7 +24,11 @@ export const mutations = {
     Vue.set(state, 'parts', Object.freeze(payload.map(Object.freeze)))
   },
 
-  setFile (state, file: AppFile) {
+  setTools (state, payload) {
+    Vue.set(state, 'tools', Object.freeze(payload))
+  },
+
+  setFile (state, file: AppFile | AppFileWithMeta) {
     state.file = file
   },
 
