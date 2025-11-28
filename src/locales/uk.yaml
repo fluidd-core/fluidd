@@ -118,6 +118,7 @@ app:
       duplicate_file: Дублікат файлу
       devices: Пристрої
       go_to_file: Перейти до файлу
+      save_as: Зберегти як
     tooltip:
       low_on_space: Мало місця на диску
       root_disabled: '{root} root недоступний. Будь ласка, перевірте свої журнали.'
