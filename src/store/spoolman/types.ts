@@ -39,7 +39,7 @@ export interface SpoolmanSpool {
   comment?: string;
   archived: boolean;
   extra?: Record<string, unknown>;
-  
+
   loaded?: string;
 }
 
@@ -64,7 +64,7 @@ export interface SpoolmanFilament {
   multi_color_direction?: string;
   external_id?: string;
   extra?: Record<string, unknown>;
-  
+
   loaded?: string;
 }
 

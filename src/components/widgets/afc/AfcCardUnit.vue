@@ -66,7 +66,7 @@ export default class AfcCardUnit extends Mixins(StateMixin, AfcMixin) {
   }
 
   get hubs () {
-    const hubs =  this.unit.hubs ?? []
+    const hubs = this.unit.hubs ?? []
     return hubs
   }
 

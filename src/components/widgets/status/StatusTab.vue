@@ -120,10 +120,12 @@
                 <span v-if="layers > 0">{{ layer }} / {{ layers }}</span>
               </status-label>
 
-              <status-label v-if="totalToolChangeCount > 0" :label="$t('app.general.label.toolchange')">
+              <status-label
+                v-if="totalToolChangeCount > 0"
+                :label="$t('app.general.label.toolchange')"
+              >
                 <span v-if="totalToolChangeCount > 0">{{ currentToolChange }} / {{ totalToolChangeCount }}</span>
               </status-label>
-              
             </v-col>
 
             <v-col

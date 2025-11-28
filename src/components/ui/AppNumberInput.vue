@@ -1,5 +1,6 @@
-<!-- Credit goes to meteyou(mainsail dev) for this work, as this was pulled from mainsail so that AFC integration would look the same between fluidd and mainsail
-Code based off this file: https://github.com/mainsail-crew/mainsail/blob/develop/src/components/inputs/NumberInput.vue 
+<!--
+Credit goes to meteyou(mainsail dev) for this work, as this was pulled from mainsail so that AFC integration would look the same between fluidd and mainsail
+Code based off this file: https://github.com/mainsail-crew/mainsail/blob/develop/src/components/inputs/NumberInput.vue
 -->
 <template>
   <form @submit.prevent="submit">
