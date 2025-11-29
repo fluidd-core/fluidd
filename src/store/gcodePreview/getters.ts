@@ -174,21 +174,30 @@ export const getters = {
     return []
   },
 
-  getTools: (state, getters, rootState): Record<Tool, string> => {
+  getDefaultColors: (state, getters, rootState) => {
+    const defaultColor = rootState.config.uiSettings.theme.isDark
+      ? '#FFF'
+      : '#000'
+
+    return [defaultColor, '#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B']
+  },
+
+  getTools: (state, getters): Record<Tool, string> => {
     const colorsFromFileMetadata: string[] = getters.getColorsFromFileMetadata
 
     const toolIndexes = state.tools.length === 0
       ? [0]
       : state.tools
 
-    const defaultColor = rootState.config.uiSettings.theme.isDark
-      ? '#FFF'
-      : '#000'
-    const colors = ['#607D8B', '#795548', '#E38819', '#E06573', '#B366F2', '#830EE3', '#D67600', '#ff5252', '#1fb0ff', defaultColor]
+    const defaultColors = getters.getDefaultColors
 
     const tools = toolIndexes.reduce((tools, toolIndex, index) => {
       const tool: Tool = `T${toolIndex}`
-      const color = colorsFromFileMetadata[index] || colors.pop() || defaultColor
+      const color = (
+        colorsFromFileMetadata[index] ||
+        defaultColors[index - colorsFromFileMetadata.length] ||
+        defaultColors[0]
+      )
 
       tools[tool] = color
 
