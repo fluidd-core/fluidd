@@ -10,7 +10,7 @@ export const getters = {
       return state.layers
     }
 
-    const output = []
+    const output: Layer[] = []
     const moves = state.moves
 
     let z = NaN
@@ -34,7 +34,7 @@ export const getters = {
           output.push({
             z,
             move: zStart,
-            filePosition: move.p
+            filePosition: move.filePosition
           })
         }
       }
@@ -46,7 +46,7 @@ export const getters = {
       output.push({
         z: 0,
         move: 0,
-        filePosition: moves[0].p
+        filePosition: moves[0].filePosition
       })
     }
 
@@ -220,7 +220,7 @@ export const getters = {
       const move = moves[index]
 
       if (perTool) {
-        path.tool = `T${move.t}`
+        path.tool = `T${move.tool}`
       }
 
       if (move.e != null && move.e > 0) {
@@ -290,7 +290,7 @@ export const getters = {
       return 0
     }
 
-    return binarySearch(state.moves, (val: Move) => filePosition - val.p, true)
+    return binarySearch(state.moves, (val: Move) => filePosition - val.filePosition, true)
   },
 
   getLayerNrByFilePosition: (state, getters) => (filePosition: number): LayerNr => {

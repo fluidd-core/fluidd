@@ -26,7 +26,7 @@ export const actions = {
 
       worker.terminate()
 
-      commit('clearFile')
+      commit('setFile', null)
     }
   },
 
@@ -72,7 +72,7 @@ export const actions = {
           }
 
           if (state.moves.length === 0) {
-            commit('clearFile')
+            commit('setFile', null)
           }
 
           break

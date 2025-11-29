@@ -212,7 +212,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
         max
       } = this.currentLayerMoveRange
 
-      if (this.filePosition < moves[min].p || this.filePosition > moves[max].p) {
+      if (this.filePosition < moves[min].filePosition || this.filePosition > moves[max].filePosition) {
         this.currentLayer = this.fileProgressLayerNr
       }
     }
@@ -261,7 +261,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     }
   }
 
-  get file (): AppFile | undefined {
+  get file (): AppFile | AppFileWithMeta | null {
     return this.$typedState.gcodePreview.file
   }
 
@@ -278,7 +278,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   get showParserProgressDialog (): boolean {
-    return this.file !== undefined && this.parserProgress !== this.file.size
+    return this.file != null && this.parserProgress !== this.file.size
   }
 
   get filePosition (): number {

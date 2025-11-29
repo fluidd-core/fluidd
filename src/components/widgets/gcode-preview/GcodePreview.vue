@@ -683,7 +683,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedGetters['gcodePreview/getPartPaths']
   }
 
-  get file (): AppFile | AppFileWithMeta | undefined {
+  get file (): AppFile | AppFileWithMeta | null {
     return this.$typedState.gcodePreview.file
   }
 

@@ -7,7 +7,7 @@ export interface GcodePreviewState {
   layers: Layer[];
   parts: Part[];
   tools: number[];
-  file?: AppFile | AppFileWithMeta;
+  file: AppFile | AppFileWithMeta | null;
   parserProgress: number;
   parserWorker: Worker | null;
 }
@@ -17,8 +17,8 @@ export interface LinearMove {
   y?: number;
   z?: number;
   e?: number;
-  t: number;
-  p: number;
+  tool: number;
+  filePosition: number;
 }
 
 export interface ArcMove extends LinearMove {
