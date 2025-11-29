@@ -303,7 +303,8 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
     moves,
     layers,
     parts,
-    tools: [...tools].sort()
+    tools: [...tools]
+      .sort((a, b) => a - b)
   }
 }
 
