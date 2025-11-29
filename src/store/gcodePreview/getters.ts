@@ -207,7 +207,7 @@ export const getters = {
     return tools
   },
 
-  getPaths: (state, getters) => (startMove: number, endMove: number, perTool = true): LayerPaths => {
+  getPaths: (state, getters) => (startMove: number, endMove: number, ignoreTools = false): LayerPaths => {
     const toolhead: Point3D = getters.getToolHeadPosition(startMove)
     const moves = state.moves
 
@@ -228,7 +228,7 @@ export const getters = {
     for (let index = startMove; index <= endMove && index < moves.length; index++) {
       const move = moves[index]
 
-      if (perTool) {
+      if (!ignoreTools) {
         path.tool = `T${move.tool}`
       }
 
@@ -274,7 +274,7 @@ export const getters = {
   getLayerPaths: (state, getters) => (layerNr: LayerNr): LayerPaths => {
     const layers: Layer[] = getters.getLayers
 
-    return getters.getPaths(layers[layerNr]?.move ?? 0, (layers[layerNr + 1]?.move ?? Infinity) - 1, false)
+    return getters.getPaths(layers[layerNr]?.move ?? 0, (layers[layerNr + 1]?.move ?? Infinity) - 1, true)
   },
 
   getPartPaths: (state, getters): string[] => {
