@@ -181,7 +181,7 @@
               v-for="(extrusion, tool) in svgPathCurrent.extrusions"
               :key="tool"
               :d="extrusion"
-              :stroke="tools[tool]"
+              :stroke="toolColors[tool]"
               :stroke-width="extrusionLineWidth"
               :shape-rendering="shapeRendering"
             />
@@ -318,9 +318,9 @@
           <v-icon>{{ autoZoom ? '$magnifyMinus' : '$magnifyPlus' }}</v-icon>
         </v-btn>
       </div>
-      <div>
+      <div v-if="tools.length > 0">
         <gcode-preview-tool
-          v-for="(color, tool) in tools"
+          v-for="(color, tool) in toolColors"
           :key="tool"
           :tool="tool"
           :color="color"
@@ -687,8 +687,12 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedState.gcodePreview.file
   }
 
-  get tools (): Record<string, string> {
-    return this.$typedGetters['gcodePreview/getTools']
+  get tools (): number[] {
+    return this.$typedState.gcodePreview.tools
+  }
+
+  get toolColors (): Record<string, string> {
+    return this.$typedGetters['gcodePreview/getToolColors']
   }
 
   get bounds (): BBox {

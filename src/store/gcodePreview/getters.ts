@@ -152,22 +152,22 @@ export const getters = {
     }
   },
 
-  getColorsFromFileMetadata: (state): string[] => {
+  getFileFilamentColors: (state): string[] => {
     const file = state.file
 
     if (file) {
-      if (
-        'filament_colors' in file &&
-        Array.isArray(file.filament_colors)
-      ) {
-        return file.filament_colors
-      }
-
       if (
         'extruder_colors' in file &&
         Array.isArray(file.extruder_colors)
       ) {
         return file.extruder_colors
+      }
+
+      if (
+        'filament_colors' in file &&
+        Array.isArray(file.filament_colors)
+      ) {
+        return file.filament_colors
       }
     }
 
@@ -182,18 +182,18 @@ export const getters = {
     return [defaultColor, '#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B']
   },
 
-  getTools: (state, getters): Record<Tool, string> => {
-    const colorsFromFileMetadata: string[] = getters.getColorsFromFileMetadata
+  getToolColors: (state, getters): Record<Tool, string> => {
+    const colorsFromFileMetadata: string[] = getters.getFileFilamentColors
 
     const toolIndexes = state.tools.length === 0
       ? [0]
       : state.tools
 
-    const defaultColors = getters.getDefaultColors
+    const defaultColors: string[] = getters.getDefaultColors
 
     const tools = toolIndexes.reduce((tools, toolIndex, index) => {
       const tool: Tool = `T${toolIndex}`
-      const color = (
+      const color: string = (
         colorsFromFileMetadata[index] ||
         defaultColors[index - colorsFromFileMetadata.length] ||
         defaultColors[0]

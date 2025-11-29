@@ -234,6 +234,7 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
           fwretraction.z = args.z ?? fwretraction.z
           break
         case 'M600':
+          tools.add(0)
           tool = (tool + 1) % 10
           tools.add(tool)
           break
