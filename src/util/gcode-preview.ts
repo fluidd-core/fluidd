@@ -59,7 +59,7 @@ function arcIJMoveToSVGPath (toolhead: Point, move: ArcMove): string {
     angle += 360
   }
 
-  switch (move.direction) {
+  switch (move.d) {
     case 'clockwise':
       return 'A' + [
         radius, radius, 0, +(angle < 0), 0, destination.x, destination.y
@@ -129,7 +129,7 @@ export function arcMoveToSvgPath (toolhead: Point, move: ArcMove): string {
 
 // Assumes the path is pr
 export function moveToSVGPath (toolhead: Point, move: Move) {
-  if ('direction' in move) {
+  if ('d' in move) {
     return arcMoveToSvgPath(toolhead, move)
   } else {
     return `L${move.x ?? toolhead.x},${move.y ?? toolhead.y}`

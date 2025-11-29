@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { BBox, GcodePreviewState, Layer, LayerNr, LayerPaths, Move, Part, Point3D } from './types'
+import type { BBox, GcodePreviewState, Layer, LayerNr, LayerPaths, Move, Part, Point3D, Tool } from './types'
 import type { RootState } from '../types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
 import isKeyOf from '@/util/is-key-of'
@@ -10,7 +10,7 @@ export const getters = {
       return state.layers
     }
 
-    const output = []
+    const output: Layer[] = []
     const moves = state.moves
 
     let z = NaN
@@ -152,19 +152,75 @@ export const getters = {
     }
   },
 
-  getPaths: (state, getters) => (startMove: number, endMove: number): LayerPaths => {
+  getFileFilamentColors: (state): string[] => {
+    const file = state.file
+
+    if (file) {
+      if (
+        'extruder_colors' in file &&
+        Array.isArray(file.extruder_colors)
+      ) {
+        return file.extruder_colors
+      }
+
+      if (
+        'filament_colors' in file &&
+        Array.isArray(file.filament_colors)
+      ) {
+        return file.filament_colors
+      }
+    }
+
+    return []
+  },
+
+  getDefaultColors: (state, getters, rootState) => {
+    const defaultColor = rootState.config.uiSettings.theme.isDark
+      ? '#FFF'
+      : '#000'
+
+    return [defaultColor, '#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B']
+  },
+
+  getToolColors: (state, getters): Record<Tool, string> => {
+    const colorsFromFileMetadata: string[] = getters.getFileFilamentColors
+
+    const toolIndexes = state.tools.length === 0
+      ? [0]
+      : state.tools
+
+    const defaultColors: string[] = getters.getDefaultColors
+
+    const tools = toolIndexes.reduce((tools, toolIndex, index) => {
+      const tool: Tool = `T${toolIndex}`
+      const color: string = (
+        colorsFromFileMetadata[index] ||
+        defaultColors[index - colorsFromFileMetadata.length] ||
+        defaultColors[0]
+      )
+
+      tools[tool] = color
+
+      return tools
+    }, {} as Record<Tool, string>)
+
+    return tools
+  },
+
+  getPaths: (state, getters) => (startMove: number, endMove: number, ignoreTools = false): LayerPaths => {
     const toolhead: Point3D = getters.getToolHeadPosition(startMove)
     const moves = state.moves
 
     const path: LayerPaths = {
-      extrusions: '',
+      extrusions: {},
       moves: `M${toolhead.x},${toolhead.y}`,
       retractions: [],
-      extrusionStarts: [],
+      unretractions: [],
       toolhead: {
         x: 0,
         y: 0
-      }
+      },
+      tool: 'T0'
     }
 
     let traveling = true
@@ -172,10 +228,14 @@ export const getters = {
     for (let index = startMove; index <= endMove && index < moves.length; index++) {
       const move = moves[index]
 
+      if (!ignoreTools) {
+        path.tool = `T${move.tool}`
+      }
+
       if (move.e != null && move.e > 0) {
         if (traveling) {
-          path.extrusions += `M${toolhead.x},${toolhead.y}`
-          path.extrusionStarts.push({
+          path.extrusions[path.tool] = `${path.extrusions[path.tool] || ''}M${toolhead.x},${toolhead.y}`
+          path.unretractions.push({
             x: toolhead.x,
             y: toolhead.y
           })
@@ -183,7 +243,7 @@ export const getters = {
           traveling = false
         }
 
-        path.extrusions += moveToSVGPath(toolhead, move)
+        path.extrusions[path.tool] += moveToSVGPath(toolhead, move)
         Object.assign(toolhead, move)
       } else {
         if (!traveling) {
@@ -214,7 +274,7 @@ export const getters = {
   getLayerPaths: (state, getters) => (layerNr: LayerNr): LayerPaths => {
     const layers: Layer[] = getters.getLayers
 
-    return getters.getPaths(layers[layerNr]?.move ?? 0, (layers[layerNr + 1]?.move ?? Infinity) - 1)
+    return getters.getPaths(layers[layerNr]?.move ?? 0, (layers[layerNr + 1]?.move ?? Infinity) - 1, true)
   },
 
   getPartPaths: (state, getters): string[] => {
