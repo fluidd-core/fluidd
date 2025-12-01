@@ -115,7 +115,7 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
                 }))
             }
 
-            parts.push(Object.freeze(part))
+            parts.push(part)
           }
           break
         case 'SET_RETRACTION':
@@ -277,7 +277,7 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
               filePosition
             }
 
-            layers.push(Object.freeze(layer))
+            layers.push(layer)
 
             newLayerForNextMove = false
           }
@@ -287,7 +287,7 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
         toolhead.y = move.y ?? toolhead.y
         toolhead.z = move.z ?? toolhead.z
 
-        moves.push(Object.freeze(move))
+        moves.push(move)
       }
     }
 

@@ -318,7 +318,10 @@
           <v-icon>{{ autoZoom ? '$magnifyMinus' : '$magnifyPlus' }}</v-icon>
         </v-btn>
       </div>
-      <div v-if="tools.length > 0">
+      <div
+        v-if="tools.length > 0"
+        class="mt-1"
+      >
         <gcode-preview-tool
           v-for="(color, tool) in toolColors"
           :key="tool"
@@ -342,7 +345,7 @@ import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import panzoom, { type PanZoom } from 'panzoom'
-import type { BBox, Layer, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
+import type { BBox, Layer, LayerPaths } from '@/store/gcodePreview/types'
 import AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
 import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
 import GcodePreviewButton from './GcodePreviewButton.vue'
@@ -365,7 +368,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   readonly progress!: number
 
   @Prop({ type: Number, default: 0 })
-  readonly layer!: LayerNr
+  readonly layer!: number
 
   @Ref('container')
   readonly container!: AppFocusableContainer

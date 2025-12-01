@@ -1,8 +1,12 @@
 import type { GetterTree } from 'vuex'
-import type { BBox, GcodePreviewState, Layer, LayerNr, LayerPaths, Move, Part, Point3D, Tool } from './types'
+import type { BBox, GcodePreviewState, Layer, LayerPaths, Move, Part, Point3D, Tool } from './types'
 import type { RootState } from '../types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
 import isKeyOf from '@/util/is-key-of'
+
+const defaultColors = ['#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B']
+const lightDefaultColors = ['#000', ...defaultColors]
+const darkDefaultColors = ['#FFF', ...defaultColors]
 
 export const getters = {
   getLayers: (state, getters, rootState): Layer[] => {
@@ -175,11 +179,11 @@ export const getters = {
   },
 
   getDefaultColors: (state, getters, rootState) => {
-    const defaultColor = rootState.config.uiSettings.theme.isDark
-      ? '#FFF'
-      : '#000'
-
-    return [defaultColor, '#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B']
+    return (
+      rootState.config.uiSettings.theme.isDark
+        ? darkDefaultColors
+        : lightDefaultColors
+    )
   },
 
   getToolColors: (state, getters): Record<Tool, string> => {
@@ -271,10 +275,10 @@ export const getters = {
     return path
   },
 
-  getLayerPaths: (state, getters) => (layerNr: LayerNr): LayerPaths => {
+  getLayerPaths: (state, getters) => (layer: number): LayerPaths => {
     const layers: Layer[] = getters.getLayers
 
-    return getters.getPaths(layers[layerNr]?.move ?? 0, (layers[layerNr + 1]?.move ?? Infinity) - 1, true)
+    return getters.getPaths(layers[layer]?.move ?? 0, (layers[layer + 1]?.move ?? Infinity) - 1, true)
   },
 
   getPartPaths: (state, getters): string[] => {
@@ -282,15 +286,11 @@ export const getters = {
 
     return parts
       .map(part => {
-        const svgData: string[] = []
+        const polygonAsString = part.polygon
+          .map(point => `${point.x},${point.y}`)
+          .join('L')
 
-        part.polygon.forEach((point, index) => {
-          svgData.push(`${index === 0 ? 'M' : 'L'}${point.x},${point.y}`)
-        })
-
-        svgData.push('z')
-
-        return svgData.join()
+        return `M${polygonAsString}z`
       })
   },
 
@@ -299,18 +299,24 @@ export const getters = {
       return 0
     }
 
-    return binarySearch(state.moves, (val: Move) => filePosition - val.filePosition, true)
+    const moves: Move[] = state.moves
+
+    return binarySearch(moves, move => filePosition - move.filePosition)
   },
 
-  getLayerNrByFilePosition: (state, getters) => (filePosition: number): LayerNr => {
-    const layers: Layer[] = getters.getLayers
-
-    for (let i = 0; i < layers.length - 1; i++) {
-      if (filePosition < layers[i + 1].filePosition) {
-        return i
-      }
+  getLayerNrByFilePosition: (state, getters) => (filePosition: number): number => {
+    if (filePosition <= 0) {
+      return 0
     }
 
-    return layers.length - 1
+    const layers: Layer[] = getters.getLayers
+
+    const layer = binarySearch(layers, layer => filePosition - layer.filePosition, true)
+
+    return (
+      layer >= 0
+        ? layer
+        : 0
+    )
   }
 } satisfies GetterTree<GcodePreviewState, RootState>
