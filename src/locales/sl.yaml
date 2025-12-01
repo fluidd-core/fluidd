@@ -115,7 +115,7 @@ app:
       go_to_file: Pojdi v datoteko
       rename_dir: Preimenuj mapo
       rename_file: Preimenuj datoteko
-      save_as; Shrani kot
+      save_as: Shrani kot
       upload_file: Nalaganje datoteke | Nalaganje datotek
     tooltip:
       low_on_space: Na disku primanjkuje prostora
