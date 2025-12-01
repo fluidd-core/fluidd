@@ -61,7 +61,7 @@
           />
         </svg>
         <svg
-          id="extrusionStart"
+          id="unretraction"
           :width="retractionIconSize"
           :height="retractionIconSize"
           viewBox="0 0 10 10"
@@ -148,10 +148,12 @@
           class="layer"
         >
           <path
+            v-for="(extrusion, tool) in svgPathPrevious.extrusions"
+            :key="tool"
             :stroke="themeIsDark ? 'lightgrey' : '#555'"
             :stroke-width="extrusionLineWidth"
             stroke-opacity="0.6"
-            :d="svgPathPrevious.extrusions"
+            :d="extrusion"
             :shape-rendering="shapeRendering"
           />
         </g>
@@ -161,10 +163,12 @@
           class="layer"
         >
           <path
+            v-for="(extrusion, tool) in svgPathActive.extrusions"
+            :key="tool"
             :stroke="themeIsDark ? 'lightgrey' : '#555'"
             :stroke-width="extrusionLineWidth"
             stroke-opacity="0.6"
-            :d="svgPathActive.extrusions"
+            :d="extrusion"
             :shape-rendering="shapeRendering"
           />
         </g>
@@ -172,13 +176,16 @@
           id="currentLayer"
           class="layer"
         >
-          <path
-            v-if="showExtrusions"
-            :d="svgPathCurrent.extrusions"
-            :stroke="themeIsDark ? 'white' : 'black'"
-            :stroke-width="extrusionLineWidth"
-            :shape-rendering="shapeRendering"
-          />
+          <template v-if="showExtrusions">
+            <path
+              v-for="(extrusion, tool) in svgPathCurrent.extrusions"
+              :key="tool"
+              :d="extrusion"
+              :stroke="toolColors[tool]"
+              :stroke-width="extrusionLineWidth"
+              :shape-rendering="shapeRendering"
+            />
+          </template>
           <path
             v-if="showMoves"
             :d="svgPathCurrent.moves"
@@ -210,13 +217,13 @@
           </g>
 
           <g
-            v-if="showRetractions && svgPathCurrent.extrusionStarts.length > 0"
-            id="extrusionStarts"
+            v-if="showRetractions && svgPathCurrent.unretractions.length > 0"
+            id="unretractions"
           >
             <use
-              v-for="({x, y}, index) of svgPathCurrent.extrusionStarts"
-              :key="`extrusion-start-${index + 1}`"
-              xlink:href="#extrusionStart"
+              v-for="({x, y}, index) of svgPathCurrent.unretractions"
+              :key="`unretraction-${index + 1}`"
+              xlink:href="#unretraction"
               :x="x - (retractionIconSize / 2)"
               :y="flipY ? y : y - retractionIconSize"
             />
@@ -229,9 +236,11 @@
           class="layer"
         >
           <path
+            v-for="(extrusion, key) in svgPathNext.extrusions"
+            :key="key"
             stroke="lightgrey"
             stroke-opacity="0.6"
-            :d="svgPathNext.extrusions"
+            :d="extrusion"
             :stroke-width="extrusionLineWidth"
             :shape-rendering="shapeRendering"
           />
@@ -252,61 +261,75 @@
       @touchstart="panzoom?.pause()"
       @touchend="panzoom?.resume()"
     >
-      <gcode-preview-button
-        v-model="followProgress"
-        icon="$play"
-        :tooltip="$t('app.gcode.label.follow_progress')"
-      />
+      <div>
+        <gcode-preview-button
+          v-model="followProgress"
+          icon="$play"
+          :tooltip="$t('app.gcode.label.follow_progress')"
+        />
 
-      <gcode-preview-button
-        v-model="showPreviousLayer"
-        icon="$previousLayer"
-        :tooltip="$t('app.gcode.label.show_previous_layer')"
-      />
+        <gcode-preview-button
+          v-model="showPreviousLayer"
+          icon="$previousLayer"
+          :tooltip="$t('app.gcode.label.show_previous_layer')"
+        />
 
-      <gcode-preview-button
-        v-model="showCurrentLayer"
-        icon="$currentLayer"
-        :tooltip="$t('app.gcode.label.show_current_layer')"
-      />
+        <gcode-preview-button
+          v-model="showCurrentLayer"
+          icon="$currentLayer"
+          :tooltip="$t('app.gcode.label.show_current_layer')"
+        />
 
-      <gcode-preview-button
-        v-model="showNextLayer"
-        icon="$nextLayer"
-        :tooltip="$t('app.gcode.label.show_next_layer')"
-      />
+        <gcode-preview-button
+          v-model="showNextLayer"
+          icon="$nextLayer"
+          :tooltip="$t('app.gcode.label.show_next_layer')"
+        />
 
-      <gcode-preview-button
-        v-model="showMoves"
-        icon="$moves"
-        :tooltip="$t('app.gcode.label.show_moves')"
-      />
+        <gcode-preview-button
+          v-model="showMoves"
+          icon="$moves"
+          :tooltip="$t('app.gcode.label.show_moves')"
+        />
 
-      <gcode-preview-button
-        v-model="showExtrusions"
-        icon="$extrusions"
-        :tooltip="$t('app.gcode.label.show_extrusions')"
-      />
+        <gcode-preview-button
+          v-model="showExtrusions"
+          icon="$extrusions"
+          :tooltip="$t('app.gcode.label.show_extrusions')"
+        />
 
-      <gcode-preview-button
-        v-model="showRetractions"
-        icon="$retractions"
-        :tooltip="$t('app.gcode.label.show_retractions')"
-      />
+        <gcode-preview-button
+          v-model="showRetractions"
+          icon="$retractions"
+          :tooltip="$t('app.gcode.label.show_retractions')"
+        />
 
-      <gcode-preview-button
-        v-model="showParts"
-        icon="$parts"
-        :tooltip="$t('app.gcode.label.show_parts')"
-      />
+        <gcode-preview-button
+          v-model="showParts"
+          icon="$parts"
+          :tooltip="$t('app.gcode.label.show_parts')"
+        />
 
-      <v-btn
-        icon
-        small
-        @click="autoZoom = !autoZoom"
+        <v-btn
+          icon
+          small
+          @click="autoZoom = !autoZoom"
+        >
+          <v-icon>{{ autoZoom ? '$magnifyMinus' : '$magnifyPlus' }}</v-icon>
+        </v-btn>
+      </div>
+      <div
+        v-if="tools.length > 0"
+        class="mt-1"
       >
-        <v-icon>{{ autoZoom ? '$magnifyMinus' : '$magnifyPlus' }}</v-icon>
-      </v-btn>
+        <gcode-preview-tool
+          v-for="(color, tool) in toolColors"
+          :key="tool"
+          :tool="tool"
+          :color="color"
+          :active="svgPathCurrent.tool === tool"
+        />
+      </div>
     </div>
     <div
       v-if="file"
@@ -322,17 +345,19 @@ import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import panzoom, { type PanZoom } from 'panzoom'
-import type { BBox, Layer, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
+import type { BBox, Layer, LayerPaths } from '@/store/gcodePreview/types'
 import AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
 import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
 import GcodePreviewButton from './GcodePreviewButton.vue'
+import GcodePreviewTool from './GcodePreviewTool.vue'
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 import type { BedSize } from '@/store/printer/types'
 
 @Component({
   components: {
     ExcludeObjects,
-    GcodePreviewButton
+    GcodePreviewButton,
+    GcodePreviewTool
   }
 })
 export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
@@ -343,7 +368,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   readonly progress!: number
 
   @Prop({ type: Number, default: 0 })
-  readonly layer!: LayerNr
+  readonly layer!: number
 
   @Ref('container')
   readonly container!: AppFocusableContainer
@@ -603,14 +628,15 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
 
   get defaultLayerPaths (): LayerPaths {
     return {
-      extrusions: '',
+      extrusions: {},
       moves: '',
       retractions: [],
-      extrusionStarts: [],
+      unretractions: [],
       toolhead: {
         x: 0,
         y: 0
-      }
+      },
+      tool: 'T0'
     }
   }
 
@@ -660,8 +686,16 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedGetters['gcodePreview/getPartPaths']
   }
 
-  get file (): AppFile | undefined {
+  get file (): AppFile | AppFileWithMeta | null {
     return this.$typedState.gcodePreview.file
+  }
+
+  get tools (): number[] {
+    return this.$typedState.gcodePreview.tools
+  }
+
+  get toolColors (): Record<string, string> {
+    return this.$typedGetters['gcodePreview/getToolColors']
   }
 
   get bounds (): BBox {

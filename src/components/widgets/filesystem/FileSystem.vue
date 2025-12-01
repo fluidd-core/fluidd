@@ -337,7 +337,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           {
             text: this.$tc('app.general.table.header.extruder_colors'),
             value: 'extruder_colors',
-            visible: false,
+            visible: isNotDashboard,
             cellClass: 'text-no-wrap'
           },
           {

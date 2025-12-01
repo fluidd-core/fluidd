@@ -1,12 +1,11 @@
-import type { AppFile } from '@/store/files/types'
-
-export type LayerNr = number
+import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 
 export interface GcodePreviewState {
   moves: Move[];
-  layers: Layer[],
-  parts: Part[],
-  file?: AppFile;
+  layers: Layer[];
+  parts: Part[];
+  tools: number[];
+  file: AppFile | AppFileWithMeta | null;
   parserProgress: number;
   parserWorker: Worker | null;
 }
@@ -16,7 +15,7 @@ export interface LinearMove {
   y?: number;
   z?: number;
   e?: number;
-
+  tool: number;
   filePosition: number;
 }
 
@@ -25,19 +24,22 @@ export interface ArcMove extends LinearMove {
   j?: number;
   k?: number;
   r?: number;
-  direction: Rotation;
+  d: Rotation;
 }
 
 export type Move = LinearMove | ArcMove
 
 export type Rotation = 'clockwise' | 'counter-clockwise'
 
+export type Tool = `T${number}`
+
 export interface LayerPaths {
   moves: string;
-  extrusions: string;
+  extrusions: Record<Tool, string>;
   retractions: Point[];
-  extrusionStarts: Point[];
+  unretractions: Point[];
   toolhead: Point;
+  tool: Tool;
 }
 
 export interface Point {
