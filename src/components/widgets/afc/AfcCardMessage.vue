@@ -28,6 +28,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
+import { consola } from 'consola'
 
 @Component
 export default class AfcCardMessage extends Mixins(StateMixin, AfcMixin) {
@@ -36,7 +37,7 @@ export default class AfcCardMessage extends Mixins(StateMixin, AfcMixin) {
     const possibleTypes = ['info', 'warning', 'success', 'error']
 
     if (!possibleTypes.includes(type)) {
-      window.console.warn(`AfcCardMessage: Invalid message type "${type}" detected. Defaulting to "error".`)
+      consola.warn(`AfcCardMessage: Invalid message type "${type}" detected. Defaulting to "error".`)
       return 'error'
     }
 
