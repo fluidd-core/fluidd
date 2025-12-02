@@ -29,7 +29,7 @@ Code based off this file: https://github.com/mainsail-crew/mainsail/blob/develop
         #append
       >
         <v-icon @click="resetToDefault">
-          {{ value !== defaultValue.toString() ? mdiRestart : '' }}
+          {{ value !== defaultValue.toString() ? '$reset' : '' }}
         </v-icon>
       </template>
       <template
@@ -46,7 +46,7 @@ Code based off this file: https://github.com/mainsail-crew/mainsail/blob/develop
             @click="incrementValue"
           >
             <v-icon>
-              {{ mdiChevronUp }}
+              $chevronUp
             </v-icon>
           </v-btn>
           <v-btn
@@ -58,7 +58,7 @@ Code based off this file: https://github.com/mainsail-crew/mainsail/blob/develop
             @click="decrementValue"
           >
             <v-icon>
-              {{ mdiChevronDown }}
+              $chevronDown
             </v-icon>
           </v-btn>
         </div>
@@ -71,15 +71,10 @@ Code based off this file: https://github.com/mainsail-crew/mainsail/blob/develop
 import Component from 'vue-class-component'
 import { Mixins, Prop, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { mdiChevronDown, mdiChevronUp, mdiRestart } from '@mdi/js'
 import type { TranslateResult } from 'vue-i18n'
 
 @Component
 export default class AppNumberInput extends Mixins(StateMixin) {
-  mdiRestart = mdiRestart
-  mdiChevronUp = mdiChevronUp
-  mdiChevronDown = mdiChevronDown
-
   private value: string = '0'
   private error: boolean = false
   private invalidChars: string[] = ['e', 'E', '+']

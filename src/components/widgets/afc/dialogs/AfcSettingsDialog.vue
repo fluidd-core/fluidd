@@ -5,7 +5,7 @@
     card-class="afc-settings-dialog"
     :title="$t('app.afc.AfcSettings')"
     icon="$afcIcon"
-    :help-icon="mdiLifebuoy"
+    help-icon="$afcHelp"
     :help-text="$t('app.afc.SettingsDialog.Help')"
     :help-href="helpLink"
     scrollable
@@ -34,7 +34,6 @@
 <script lang="ts">
 import { Component, Mixins, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { mdiCloseThick, mdiLifebuoy } from '@mdi/js'
 import AfcMixin from '@/mixins/afc'
 import AfcSettingsDialogHub from './AfcSettingsDialogHub.vue'
 import AfcSettingsDialogExtruder from './AfcSettingsDialogExtruder.vue'
@@ -48,8 +47,6 @@ import AfcSettingsDialogLane from './AfcSettingsDialogLane.vue'
   }
 })
 export default class AfcSettingsDialog extends Mixins(StateMixin, AfcMixin) {
-  mdiCloseThick = mdiCloseThick
-  mdiLifebuoy = mdiLifebuoy
   helpLink = 'https://www.armoredturtle.xyz/docs/afc-klipper-add-on/toolhead/calculation.html'
 
   @VModel({ type: Boolean }) open?: boolean

@@ -70,14 +70,11 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Watch, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { mdiCloseThick } from '@mdi/js'
 import AfcMixin from '@/mixins/afc'
 import { Debounce } from 'vue-debounce-decorator'
 
 @Component({})
 export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMixin) {
-  mdiCloseThick = mdiCloseThick
-
   @VModel({ type: Boolean })
   show!: boolean
 

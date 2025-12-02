@@ -189,7 +189,14 @@ import {
   mdiContentSaveSettingsOutline,
   mdiMulticast,
   mdiInformationOutline,
-  mdiSwapHorizontal
+  mdiSwapHorizontal,
+  mdiLifebuoy,
+  mdiLightbulbOnOutline,
+  mdiLightbulbOutline,
+  mdiWrench,
+  mdiVariable,
+  mdiArrowDownBold,
+  mdiArrowUpBold
 } from '@mdi/js'
 
 import { afcIconLogo } from '@/plugins/afcIcons'
@@ -527,7 +534,16 @@ export const Icons = Object.freeze({
   mmuUpdateLeds: mdiContentSaveSettingsOutline,
   mmuError: mdiInformationOutline,
   mmuSelectGate: mdiSwapHorizontal,
-  afcIcon: afcIconLogo
+  afcIcon: afcIconLogo,
+  afcHelp: mdiLifebuoy,
+  afcTurnOffLed: mdiLightbulbOnOutline,
+  afcTurnOnLed: mdiLightbulbOutline,
+  afcCalibration: mdiWrench,
+  afcSettings: mdiVariable,
+  afcDebugJson: mdiArrowDownBold,
+  afcUnloadLane: mdiArrowUpBold,
+  afcLoadLane: mdiArrowDownBold,
+  afcEjectFilament: mdiEject,
 })
 
 export const Waits = Object.freeze({

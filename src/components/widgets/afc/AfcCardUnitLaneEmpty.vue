@@ -24,7 +24,7 @@
               @click="ejectLane"
             >
               <v-icon small>
-                {{ mdiEject }}
+                $afcEjectFilament
               </v-icon>
             </v-btn>
           </template>
@@ -40,12 +40,9 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
-import { mdiEject } from '@mdi/js'
 
 @Component
 export default class AfcCardUnitLaneEmpty extends Mixins(StateMixin, AfcMixin) {
-  mdiEject = mdiEject
-
   @Prop({ type: String, required: true }) readonly name!: string
 
   get lane () {

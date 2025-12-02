@@ -28,13 +28,9 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
-import { mdiAlert, mdiClose } from '@mdi/js'
 
 @Component
 export default class AfcCardMessage extends Mixins(StateMixin, AfcMixin) {
-  mdiAlert = mdiAlert
-  mdiClose = mdiClose
-
   get type () {
     const type = this.afc.message?.type ?? 'error'
     const possibleTypes = ['info', 'warning', 'success', 'error']

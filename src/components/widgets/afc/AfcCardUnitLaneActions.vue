@@ -16,7 +16,7 @@
               @click="unloadLane"
             >
               <v-icon small>
-                {{ mdiArrowUpBold }}
+                $afcUnloadLane
               </v-icon>
             </v-btn>
           </template>
@@ -38,7 +38,7 @@
               @click="loadLane"
             >
               <v-icon small>
-                {{ mdiArrowDownBold }}
+                $afcLoadLane
               </v-icon>
             </v-btn>
           </template>
@@ -57,7 +57,7 @@
               @click="ejectLane"
             >
               <v-icon small>
-                {{ mdiEject }}
+                $afcEjectFilament
               </v-icon>
             </v-btn>
           </template>
@@ -74,14 +74,9 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import ToolheadMixIn from '@/mixins/toolhead'
-import { mdiArrowDownBold, mdiArrowUpBold, mdiEject } from '@mdi/js'
 
 @Component({})
 export default class AfcCardUnitLaneActions extends Mixins(StateMixin, AfcMixin, ToolheadMixIn) {
-  mdiArrowUpBold = mdiArrowUpBold
-  mdiArrowDownBold = mdiArrowDownBold
-  mdiEject = mdiEject
-
   @Prop({ type: String, required: true }) readonly name!: string
 
   get lane () {

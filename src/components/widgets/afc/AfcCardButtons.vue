@@ -86,7 +86,7 @@
             small
             left
           >
-            {{ mdiVariable }}
+            $afcSettings
           </v-icon>
           {{ $t('app.afc.AfcSettings') }}
         </v-btn>
@@ -105,7 +105,7 @@
             small
             left
           >
-            {{ mdiArrowDownBold }}
+            $afcDebugJson
           </v-icon>
           {{ $t('app.afc.DebugJson') }}
         </v-btn>
@@ -120,13 +120,6 @@ import AfcMixin from '@/mixins/afc'
 import type { Macro } from '@/store/macros/types'
 import MacroBtn from '@/components/widgets/macros/MacroBtn.vue'
 import AfcSettingsDialog from '@/components/widgets/afc/dialogs/AfcSettingsDialog.vue'
-import {
-  mdiArrowDownBold,
-  mdiLightbulbOnOutline,
-  mdiLightbulbOutline,
-  mdiVariable,
-  mdiWrench,
-} from '@mdi/js'
 
 @Component({
   components: {
@@ -135,9 +128,6 @@ import {
   }
 })
 export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
-  mdiArrowDownBold = mdiArrowDownBold
-  mdiVariable = mdiVariable
-
   showAfcSettings = false
 
   get commands () {
@@ -146,7 +136,7 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
 
     const buttons = [
       {
-        icon: mdiWrench,
+        icon: '$afcCalibration',
         text: this.$t('app.afc.Calibrate'),
         command: 'AFC_CALIBRATION',
         disabled: false,
@@ -158,7 +148,7 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
     const ledState = this.afc.led_state ?? false
     if (ledState) {
       buttons.push({
-        icon: mdiLightbulbOnOutline,
+        icon: '$afcTurnOffLed',
         text: this.$t('app.afc.LedOff'),
         command: 'TURN_OFF_AFC_LED',
         disabled: false,
@@ -167,7 +157,7 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
       })
     } else {
       buttons.push({
-        icon: mdiLightbulbOutline,
+        icon: '$afcTurnOnLed',
         text: this.$t('app.afc.LedOn'),
         command: 'TURN_ON_AFC_LED',
         disabled: false,
