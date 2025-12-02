@@ -2,8 +2,6 @@
   <app-dialog
     v-model="open"
     :title="$t('app.afc.LaneMapping')"
-    card-class="afc-unit-lane-mapping-tool-dialog"
-    :margin-bottom="false"
     width="400"
     no-actions
   >

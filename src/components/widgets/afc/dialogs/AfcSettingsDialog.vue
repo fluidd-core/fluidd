@@ -2,7 +2,6 @@
   <app-dialog
     v-model="open"
     width="700"
-    card-class="afc-settings-dialog"
     :title="$t('app.afc.AfcSettings')"
     scrollable
     no-actions
