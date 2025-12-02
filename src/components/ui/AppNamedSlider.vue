@@ -83,7 +83,7 @@
 <script lang="ts">
 import { Component, Prop, Watch, Ref, VModel, Vue } from 'vue-property-decorator'
 import type { InputValidationRules } from 'vuetify'
-import type { VForm } from '@/types'
+import type { VForm } from 'vuetify/lib'
 
 @Component({
   inheritAttrs: false

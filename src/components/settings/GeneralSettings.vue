@@ -275,7 +275,7 @@
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
-import type { VInput } from '@/types'
+import type { VTextField } from 'vuetify/lib'
 import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
 import type { OutputPin } from '@/store/printer/types'
 import type { Device } from '@/store/power/types'
@@ -291,7 +291,7 @@ import downloadUrl from '@/util/download-url'
 @Component({})
 export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
   @Ref('instanceName')
-  readonly instanceNameElement!: VInput
+  readonly instanceNameElement!: VTextField
 
   @Ref('uploadSettingsFile')
   readonly uploadSettingsFile!: HTMLInputElement

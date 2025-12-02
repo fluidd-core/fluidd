@@ -30,12 +30,12 @@ import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
-import type { VInput } from '@/types'
+import type { VTextField } from 'vuetify/lib'
 
 @Component({})
 export default class HyperlapseSettings extends Mixins(StateMixin) {
   @Ref('hyperlapseCycleElement')
-  readonly hyperlapseCycleElement!: VInput
+  readonly hyperlapseCycleElement!: VTextField
 
   get hyperlapseCycleBlocked (): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('hyperlapse_cycle')

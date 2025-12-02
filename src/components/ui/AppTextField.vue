@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import type { VForm } from '@/types'
+import type { VForm } from 'vuetify/lib'
 import { Component, Vue, VModel, Watch, Ref, Prop } from 'vue-property-decorator'
 
 @Component({

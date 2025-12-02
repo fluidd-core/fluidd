@@ -115,7 +115,7 @@ import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import type { WebcamConfig } from '@/store/webcams/types'
 import type { CameraFullscreenAction } from '@/store/config/types'
 import { CameraComponents } from '@/dynamicImports'
-import CameraMixin from '@/mixins/camera'
+import type CameraMixin from '@/mixins/camera'
 import type { CameraConnectionStatus, CameraNameMenuItem } from '@/types'
 import { startCase } from 'lodash-es'
 

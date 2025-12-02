@@ -209,7 +209,7 @@ import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
 import type { TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
 import { defaultWritableSettings } from '@/store/timelapse/state'
-import type { VInput } from '@/types'
+import type { VTextField } from 'vuetify/lib'
 
 @Component({})
 export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
@@ -220,19 +220,19 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   readonly renderable!: boolean
 
   @Ref('outputFramerateElement')
-  readonly outputFramerateElement!: VInput
+  readonly outputFramerateElement!: VTextField
 
   @Ref('targetLengthElement')
-  readonly targetLengthElement!: VInput
+  readonly targetLengthElement!: VTextField
 
   @Ref('minFpsElement')
-  readonly minFpsElement!: VInput
+  readonly minFpsElement!: VTextField
 
   @Ref('maxFpsElement')
-  readonly maxFpsElement!: VInput
+  readonly maxFpsElement!: VTextField
 
   @Ref('duplicateFramesElement')
-  readonly duplicateFramesElement!: VInput
+  readonly duplicateFramesElement!: VTextField
 
   get lengthEstimate () {
     const totalFrames = this.frameCount + this.duplicateLastFrameCount

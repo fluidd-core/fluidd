@@ -215,8 +215,7 @@ export default class JobQueue extends Vue {
       : [jobs.filename]
 
     const multipliedFilenames = Array.from({ length: copies })
-      .map(() => filenames)
-      .flat()
+      .flatMap(() => filenames)
 
     SocketActions.serverJobQueuePostJob(multipliedFilenames)
   }

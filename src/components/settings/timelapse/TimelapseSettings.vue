@@ -128,7 +128,7 @@ import type { WebcamConfig } from '@/store/webcams/types'
 import ToolheadParkingSettings from '@/components/settings/timelapse/subsettings/ToolheadParkingSettings.vue'
 import { defaultWritableSettings } from '@/store/timelapse/state'
 import TimelapseRenderSettingsDialog from '@/components/widgets/timelapse/TimelapseRenderSettingsDialog.vue'
-import type { VInput } from '@/types'
+import type { VTextField } from 'vuetify/lib'
 
 @Component({
   components: {
@@ -139,7 +139,7 @@ import type { VInput } from '@/types'
 })
 export default class TimelapseSettings extends Mixins(StateMixin) {
   @Ref('delayCompElement')
-  readonly delayCompElement!: VInput
+  readonly delayCompElement!: VTextField
 
   renderSettingsDialogOpen = false
 

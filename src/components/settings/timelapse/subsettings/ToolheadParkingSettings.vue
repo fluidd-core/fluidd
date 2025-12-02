@@ -125,7 +125,7 @@ import type { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
 import CustomParkPositionSettings from './CustomParkPositionSettings.vue'
-import type { VInput } from '@/types'
+import type { VTextField } from 'vuetify/lib'
 
 @Component({
   components: {
@@ -135,13 +135,13 @@ import type { VInput } from '@/types'
 })
 export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   @Ref('parkTimeElement')
-  readonly parkTimeElement?: VInput
+  readonly parkTimeElement?: VTextField
 
   @Ref('parkTravelSpeedElement')
-  readonly parkTravelSpeedElement?: VInput
+  readonly parkTravelSpeedElement?: VTextField
 
   @Ref('parkPosDZElement')
-  readonly parkPosDZElement?: VInput
+  readonly parkPosDZElement?: VTextField
 
   get parkPositions (): { text: string, value: ParkPosition }[] {
     const values: ParkPosition[] = ['front_left', 'front_right', 'center', 'back_left', 'back_right', 'x_only', 'y_only', 'custom']
