@@ -2,7 +2,6 @@
   <app-dialog
     v-model="show"
     :title="$t('app.afc.FilamentForLane', { name })"
-    icon="$afcIcon"
     card-class="afc-unit-lane-filament-dialog"
     :margin-bottom="false"
     width="400"

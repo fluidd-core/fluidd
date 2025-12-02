@@ -4,13 +4,24 @@
     width="700"
     card-class="afc-settings-dialog"
     :title="$t('app.afc.AfcSettings')"
-    icon="$afcIcon"
-    help-icon="$afcHelp"
-    :help-text="$t('app.afc.SettingsDialog.Help')"
-    :help-href="helpLink"
     scrollable
     no-actions
   >
+    <template #menu>
+      <v-btn
+        text
+        tile
+        :href="helpLink"
+        target="_blank"
+        class="me-1"
+      >
+        <v-icon left>
+          $afcHelp
+        </v-icon>
+        {{ $t('app.afc.SettingsDialog.Help') }}
+      </v-btn>
+    </template>
+
     <v-card-text class="d-flex flex-column gap-3">
       <afc-settings-dialog-hub
         v-for="hub in afcHubs"

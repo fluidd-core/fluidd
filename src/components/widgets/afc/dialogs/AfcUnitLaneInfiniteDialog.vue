@@ -2,7 +2,6 @@
   <app-dialog
     v-model="open"
     :title="$t('app.afc.InfiniteSpoolHeadline')"
-    icon="$afcIcon"
     card-class="afc-unit-lane-infinite-spool-dialog"
     :margin-bottom="false"
     width="400"
