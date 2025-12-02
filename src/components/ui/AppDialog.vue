@@ -83,6 +83,72 @@
           </v-row>
         </v-card-title>
 
+        <!-- <v-card-title
+          class="card-heading py-2"
+          :class="{
+            'collapsable-card-title': titleShadow
+          }"
+        >
+          <div style="display: flex; width: 100%; align-items: center;">
+            <slot name="title">
+              <span class="focus--text">{{ title }}</span>
+              <app-inline-help
+                v-if="helpTooltip"
+                bottom
+                small
+                :tooltip="helpTooltip"
+              />
+            </slot>
+
+            <v-spacer />
+
+            <slot name="menu" />
+
+            <app-btn
+              v-if="!persistent"
+              icon
+              :disabled="closeButtonDisabled"
+              @click="open = false"
+            >
+              <v-icon dense>
+                $close
+              </v-icon>
+            </app-btn>
+          </div>
+        </v-card-title> -->
+
+        <!-- <v-toolbar
+          dense
+          flat
+        >
+          <v-toolbar-title>
+            <slot name="title">
+              <span class="focus--text">{{ title }}</span>
+              <app-inline-help
+                v-if="helpTooltip"
+                bottom
+                small
+                :tooltip="helpTooltip"
+              />
+            </slot>
+          </v-toolbar-title>
+
+          <v-spacer />
+
+          <slot name="menu" />
+
+          <app-btn
+            v-if="!persistent"
+            icon
+            :disabled="closeButtonDisabled"
+            @click="open = false"
+          >
+            <v-icon dense>
+              $close
+            </v-icon>
+          </app-btn>
+        </v-toolbar> -->
+
         <v-card-subtitle
           v-if="subTitle || hasSubTitleSlot"
           class="card-heading pb-2 secondary--text"
@@ -129,7 +195,7 @@
 
 <script lang="ts">
 import BrowserMixin from '@/mixins/browser'
-import type { VForm } from '@/types'
+import type { VForm } from 'vuetify/lib'
 import { Component, Prop, VModel, Ref, PropSync, Mixins } from 'vue-property-decorator'
 
 @Component({
