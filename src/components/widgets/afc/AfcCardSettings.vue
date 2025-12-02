@@ -118,7 +118,7 @@ export default class AfcCardSettings extends Mixins(StateMixin, AfcMixin) {
   }
 
   get td1Present (): boolean {
-    return this.afc?.td1_present
+    return this.afc?.td1_present === true
   }
 
   get showTd1Color (): boolean {

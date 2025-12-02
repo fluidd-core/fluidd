@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
+import type { KlipperPrinterAfcState } from '@/store/printer/types'
 
 @Component
 export default class AfcMixin extends Vue {
-  get afc () {
+  get afc (): KlipperPrinterAfcState {
     return this.$typedState.printer.printer.AFC ?? {}
   }
 
@@ -85,27 +86,27 @@ export default class AfcMixin extends Vue {
   }
 
   get afcShowFilamentName (): boolean {
-    return this.$typedState.config.uiSettings.afc?.showFilamentName ?? false
+    return this.$typedState.config.uiSettings.afc.showFilamentName
   }
 
   get afcShowLaneInfinite (): boolean {
-    return this.$typedState.config.uiSettings.afc?.showLaneInfinite ?? true
+    return this.$typedState.config.uiSettings.afc.showLaneInfinite
   }
 
   get afcShowUnitIcons (): boolean {
-    return this.$typedState.config.uiSettings.afc?.showUnitIcons ?? true
+    return this.$typedState.config.uiSettings.afc.showUnitIcons
   }
 
   get afcShowTd1Color (): boolean {
-    return this.$typedState.config.uiSettings.afc?.showTd1Color ?? true
+    return this.$typedState.config.uiSettings.afc.showTd1Color
   }
 
   get afcHiddenExtruders (): string[] {
-    return this.$typedState.config.uiSettings.afc?.hiddenExtruders ?? []
+    return this.$typedState.config.uiSettings.afc.hiddenExtruders
   }
 
   get afcHiddenUnits (): string[] {
-    return this.$typedState.config.uiSettings.afc?.hiddenUnits ?? []
+    return this.$typedState.config.uiSettings.afc.hiddenUnits
   }
 
   getPrinterObject (key: string) {
@@ -120,34 +121,34 @@ export default class AfcMixin extends Vue {
   }
 
   getAfcLaneObject (lane: string) {
-    const key_stepper = `AFC_stepper ${lane}`
-    const key_lane = `AFC_lane ${lane}`
+    const key_stepper = `AFC_stepper ${lane}` as const
+    const key_lane = `AFC_lane ${lane}` as const
     return this.getPrinterObject(key_stepper) ?? this.getPrinterObject(key_lane) ?? {}
   }
 
   getAfcLaneSettings (lane: string) {
-    const key_stepper = `AFC_stepper ${lane}`
-    const key_lane = `AFC_lane ${lane}`
+    const key_stepper = `AFC_stepper ${lane}` as const
+    const key_lane = `AFC_lane ${lane}` as const
     return this.getPrinterSettings(key_stepper) ?? this.getPrinterSettings(key_lane) ?? {}
   }
 
   getAfcExtruderObject (extruder: string) {
-    const key_extruder = `AFC_extruder ${extruder}`
+    const key_extruder = `AFC_extruder ${extruder}` as const
     return this.getPrinterObject(key_extruder) ?? {}
   }
 
   getAfcExtruderSettings (extruder: string) {
-    const key = `AFC_extruder ${extruder}`
+    const key = `AFC_extruder ${extruder}` as const
     return this.getPrinterSettings(key) ?? {}
   }
 
   getAfcBufferObject (buffer: string) {
-    const key_buffer = `AFC_buffer ${buffer}`
+    const key_buffer = `AFC_buffer ${buffer}` as const
     return this.getPrinterObject(key_buffer)
   }
 
   getAfcHubObject (hub: string) {
-    const key = `AFC_hub ${hub}`
+    const key = `AFC_hub ${hub}` as const
     return this.getPrinterObject(key) ?? {}
   }
 }

@@ -182,6 +182,8 @@ type KlipperPrinterStateBaseType =
     mmu_leds: KlipperPrinterMmuLedsState;
 
     mmu_machine: KlipperPrinterMmuMachineState;
+
+    AFC: KlipperPrinterAfcState;
   }>
 
 export interface KlipperPrinterState extends KlipperPrinterStateBaseType {
@@ -732,6 +734,33 @@ type KlipperPrinterMmuMachineStateBaseType = {
 
 export interface KlipperPrinterMmuMachineState extends KlipperPrinterMmuMachineStateBaseType {
   num_units: number;
+}
+
+export interface KlipperPrinterAfcState {
+  current_load?: string;
+  current_lane?: string;
+  next_lane?: string;
+  current_state?: 'Initialized' | 'Idle' | 'Error' | 'Loading' | 'Unloading' | 'Ejecting' | 'Moving' | 'Restoring';
+  current_toolchange?: number;
+  number_of_toolchanges?: number;
+  spoolman?: string;
+  td1_present?: boolean;
+  lane_data_enabled?: boolean;
+  error_state?: boolean;
+  bypass_state?: boolean;
+  quiet_mode?: boolean;
+  position_saved?: boolean;
+
+  extruders?: string[];
+  hubs?: string[];
+  units?: string[];
+  lanes?: string[];
+  buffers?: string[];
+  message?: {
+    message: string;
+    type: string;
+  }
+  led_state?: boolean;
 }
 
 export interface KlipperPrinterConfig extends Record<string, Record<string, string | undefined> | undefined> {
