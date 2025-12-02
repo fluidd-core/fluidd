@@ -3,9 +3,14 @@ import { readFile, writeFile, glob } from 'node:fs/promises'
 import { optimize as svgoOptimize } from 'svgo'
 import svgoConfig from '../svgo.config.mjs'
 
-const filesWithMdiSvgs = new Set([
-  'src/globals.ts'
-])
+const filesWithSvgs = {
+  'src/globals.ts': [
+    /(const mdi\S+ = ')([^']*)'/g
+  ],
+  'src/plugins/afcIcons.ts': [
+    /(const afc\S+ =\s+')([^']*)'/g
+  ]
+}
 
 const writeFileIfContentChanged = async (path, before, after) => {
   if (before === after) {
@@ -51,14 +56,18 @@ const optimizeVueFile = async (file) => {
   await writeFileIfContentChanged(file, contentBefore, contentAfter)
 }
 
-const optimizeGlobalsTsFile = async (file) => {
+const optimizeFileWithSvgs = async (file) => {
   const contentBefore = await readFile(file, { encoding: 'utf8' })
 
-  const contentAfter = contentBefore.replaceAll(/(const mdi\S+ = ')([^']*)'/g, (match, head, inputSvgPath) => {
-    const outputSvgPath = optimizeSvgPath(inputSvgPath)
+  let contentAfter = contentBefore
 
-    return `${head}${outputSvgPath}'`
-  })
+  for (const regexp of filesWithSvgs[file]) {
+    contentAfter = contentAfter.replaceAll(regexp, (match, head, inputSvgPath) => {
+      const outputSvgPath = optimizeSvgPath(inputSvgPath)
+
+      return `${head}${outputSvgPath}'`
+    })
+  }
 
   await writeFileIfContentChanged(file, contentBefore, contentAfter)
 }
@@ -74,8 +83,8 @@ const optimizeGlobalsTsFile = async (file) => {
       await optimizeSvgFile(filename)
     } else if (filename.endsWith('.vue')) {
       await optimizeVueFile(filename)
-    } else if (filesWithMdiSvgs.has(filename)) {
-      await optimizeGlobalsTsFile(filename)
+    } else if (filename in filesWithSvgs) {
+      await optimizeFileWithSvgs(filename)
     }
   }
 })()
