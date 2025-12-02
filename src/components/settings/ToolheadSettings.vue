@@ -383,7 +383,7 @@
 <script lang="ts">
 import { Component, Ref, Mixins } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/state'
-import type { VInput } from '@/types'
+import type { VTextField } from 'vuetify/lib'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { GeneralConfig, ToolheadControlStyle } from '@/store/config/types'
 import type { KlipperPrinterSettings } from '@/store/printer/types'
@@ -393,22 +393,22 @@ import type { KlipperPrinterSettings } from '@/store/printer/types'
 })
 export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   @Ref('toolheadMoveDistances')
-  readonly toolheadMoveDistancesElement!: VInput
+  readonly toolheadMoveDistancesElement!: VTextField
 
   @Ref('toolheadXYMoveDistances')
-  readonly toolheadXYMoveDistancesElement!: VInput
+  readonly toolheadXYMoveDistancesElement!: VTextField
 
   @Ref('toolheadZMoveDistances')
-  readonly toolheadZMoveDistancesElement!: VInput
+  readonly toolheadZMoveDistancesElement!: VTextField
 
   @Ref('toolheadCircleXYMoveDistances')
-  readonly toolheadCircleXYMoveDistancesElement!: VInput
+  readonly toolheadCircleXYMoveDistancesElement!: VTextField
 
   @Ref('toolheadCircleZMoveDistances')
-  readonly toolheadCircleZMoveDistancesElement!: VInput
+  readonly toolheadCircleZMoveDistancesElement!: VTextField
 
   @Ref('zAdjustValues')
-  readonly zAdjustValuesElement!: VInput
+  readonly zAdjustValuesElement!: VTextField
 
   get defaultExtrudeSpeed (): number {
     return this.$typedState.config.uiSettings.general.defaultExtrudeSpeed

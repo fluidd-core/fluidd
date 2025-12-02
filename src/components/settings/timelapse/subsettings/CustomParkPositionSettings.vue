@@ -60,7 +60,7 @@ import StateMixin from '@/mixins/state'
 import type { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
-import type { VInput } from '@/types'
+import type { VTextField } from 'vuetify/lib'
 import type { BedSize } from '@/store/printer/types'
 
 @Component({
@@ -70,10 +70,10 @@ import type { BedSize } from '@/store/printer/types'
 })
 export default class CustomParkPositionSettings extends Mixins(StateMixin) {
   @Ref('parkPosXElement')
-  readonly parkPosXElement?: VInput
+  readonly parkPosXElement?: VTextField
 
   @Ref('parkPosYElement')
-  readonly parkPosYElement?: VInput
+  readonly parkPosYElement?: VTextField
 
   getCustomParkPosBlocked (axis: 'x' | 'y'): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting'](`park_custom_pos_${axis}`)

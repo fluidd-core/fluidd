@@ -99,21 +99,21 @@ import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
-import type { VInput } from '@/types'
+import type { VTextField } from 'vuetify/lib'
 
 @Component({})
 export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   @Ref('parkRetractDistanceElement')
-  readonly parkRetractDistanceElement!: VInput
+  readonly parkRetractDistanceElement!: VTextField
 
   @Ref('parkRetractSpeedElement')
-  readonly parkRetractSpeedElement!: VInput
+  readonly parkRetractSpeedElement!: VTextField
 
   @Ref('parkExtrudeDistanceElement')
-  readonly parkExtrudeDistanceElement!: VInput
+  readonly parkExtrudeDistanceElement!: VTextField
 
   @Ref('parkExtrudeSpeedElement')
-  readonly parkExtrudeSpeedElement!: VInput
+  readonly parkExtrudeSpeedElement!: VTextField
 
   get parkRetractDistanceBlocked (): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('park_retract_distance')

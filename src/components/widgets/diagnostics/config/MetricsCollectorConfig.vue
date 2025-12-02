@@ -70,7 +70,7 @@ import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
 import type { Metric } from '@/store/diagnostics/types'
 import sandboxedEval from '@/plugins/sandboxedEval'
 import StateExplorer from '@/components/widgets/diagnostics/StateExplorer.vue'
-import type { VTextArea } from '@/types'
+import type { VTextarea } from 'vuetify/lib'
 
 @Component({
   components: {
@@ -85,7 +85,7 @@ export default class MetricsCollectorConfig extends Vue {
   readonly unit!: string
 
   @Ref('textarea')
-  readonly textArea!: VTextArea
+  readonly textArea!: VTextarea
 
   result = '-'
   browserOpen = false
@@ -109,15 +109,16 @@ export default class MetricsCollectorConfig extends Vue {
 
   handleExplorerClick (path: string) {
     this.browserOpen = false
-    const element = this.textArea.$el.querySelector('textarea')
+    const element = this.textArea.$refs.input
     if (element) {
       const selectionStart = element.selectionStart
       const selectionEnd = element.selectionEnd
 
-      this.metric.collector =
-      this.metric.collector.substring(0, selectionStart) +
-      path +
-      this.metric.collector.substring(selectionEnd)
+      this.metric.collector = (
+        this.metric.collector.substring(0, selectionStart) +
+        path +
+        this.metric.collector.substring(selectionEnd)
+      )
     }
   }
 }

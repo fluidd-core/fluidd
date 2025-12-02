@@ -137,7 +137,7 @@ type KlipperPrinterStateBaseType =
 
     stepper_enable: KlipperPrinterStepperEnableState;
 
-    [key: `${'aht10' | 'bme280' | 'htu21d' | 'sht3x' | 'lm75' | 'temperature_host' | 'temperature_combined'} ${string}`]: KlipperPrinterTemperatureSensor2State;
+    [key: `${'aht10' | 'aht1x' | 'aht2x' | 'aht3x' | 'bme280' | 'htu21d' | 'sht3x' | 'lm75' | 'temperature_host' | 'temperature_combined'} ${string}`]: KlipperPrinterTemperatureSensor2State;
 
     [key: `temperature_fan ${string}`]: KlipperPrinterTemperatureFanState;
 
@@ -906,7 +906,7 @@ type KlipperPrinterSensorTypesType = {
   pt100: 'PT1000',
   maxxxxxx: 'MAX6675' | 'MAX31855' | 'MAX31856' | 'MAX31865',
   bme280: 'BME280',
-  aht10: 'AHT10',
+  aht10: 'AHT10' | 'AHT1X' | 'AHT2X' | 'AHT3X',
   htu21d: 'HTU21D' | 'SI7013' | 'SI7020' | 'SI7021' | 'SHT21',
   sht3x: 'SHT3X',
   lm75: 'LM75',

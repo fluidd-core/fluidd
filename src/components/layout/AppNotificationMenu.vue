@@ -191,7 +191,7 @@ export default class AppNotificationMenu extends Mixins(BrowserMixin) {
    */
   get color () {
     if (this.notifications.length <= 0) return undefined
-    let c
+    let c: string | undefined
     for (const n of this.notifications) {
       if (n.type === 'warning' && c !== 'error') c = 'warning'
       if (n.type === 'error' && c !== 'error') {
