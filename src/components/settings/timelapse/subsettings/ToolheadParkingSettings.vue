@@ -19,8 +19,7 @@
         :title="$t('app.timelapse.setting.park_time')"
         :sub-title="subtitleIfBlocked(parkTimeBlocked)"
       >
-        <v-text-field
-          ref="parkTimeElement"
+        <app-text-field
           :value="parkTime"
           :rules="[
             $rules.required,
@@ -42,8 +41,7 @@
         :title="$t('app.timelapse.setting.park_travel_speed')"
         :sub-title="subtitleIfBlocked(parkTravelSpeedBlocked)"
       >
-        <v-text-field
-          ref="parkTravelSpeedElement"
+        <app-text-field
           :value="parkTravelSpeed"
           :rules="[
             $rules.required,
@@ -82,8 +80,7 @@
         :title="$t('app.timelapse.setting.park_custom_pos_dz')"
         :sub-title="subtitleIfBlocked(parkPosZBlocked)"
       >
-        <v-text-field
-          ref="parkPosDZElement"
+        <app-text-field
           :value="parkPosZ"
           :rules="[
             $rules.required,
@@ -119,13 +116,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Ref } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
 import CustomParkPositionSettings from './CustomParkPositionSettings.vue'
-import type { VTextField } from 'vuetify/lib'
 
 @Component({
   components: {
@@ -134,15 +130,6 @@ import type { VTextField } from 'vuetify/lib'
   }
 })
 export default class ToolheadParkingSettings extends Mixins(StateMixin) {
-  @Ref('parkTimeElement')
-  readonly parkTimeElement?: VTextField
-
-  @Ref('parkTravelSpeedElement')
-  readonly parkTravelSpeedElement?: VTextField
-
-  @Ref('parkPosDZElement')
-  readonly parkPosDZElement?: VTextField
-
   get parkPositions (): { text: string, value: ParkPosition }[] {
     const values: ParkPosition[] = ['front_left', 'front_right', 'center', 'back_left', 'back_right', 'x_only', 'y_only', 'custom']
 
@@ -182,9 +169,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   setParkTime (value: number) {
-    if (this.parkTimeElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ park_time: value / 1000 })
-    }
+    SocketActions.machineTimelapseSetSettings({ park_time: value / 1000 })
   }
 
   get parkTravelSpeedBlocked (): boolean {
@@ -196,9 +181,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   setParkTravelSpeed (value: number) {
-    if (this.parkTravelSpeedElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ park_travel_speed: value })
-    }
+    SocketActions.machineTimelapseSetSettings({ park_travel_speed: value })
   }
 
   get parkPosZBlocked (): boolean {
@@ -210,9 +193,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   setParkPosZ (value: number) {
-    if (this.parkPosDZElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ park_custom_pos_dz: value })
-    }
+    SocketActions.machineTimelapseSetSettings({ park_custom_pos_dz: value })
   }
 
   get firmwareRetractBlocked (): boolean {

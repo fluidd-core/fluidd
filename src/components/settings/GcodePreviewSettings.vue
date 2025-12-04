@@ -39,7 +39,7 @@
       <v-divider />
 
       <app-setting :title="$t('app.setting.label.default_min_layer_height')">
-        <v-text-field
+        <app-text-field
           :value="minLayerHeight"
           :rules="[
             $rules.required,
@@ -58,7 +58,7 @@
       <v-divider />
 
       <app-setting :title="$t('app.setting.label.extrusion_line_width')">
-        <v-text-field
+        <app-text-field
           :value="extrusionLineWidth"
           :rules="[
             $rules.required,
@@ -77,7 +77,7 @@
       <v-divider />
 
       <app-setting :title="$t('app.setting.label.move_line_width')">
-        <v-text-field
+        <app-text-field
           :value="moveLineWidth"
           :rules="[
             $rules.required,
@@ -96,7 +96,7 @@
       <v-divider />
 
       <app-setting :title="$t('app.setting.label.retraction_icon_size')">
-        <v-text-field
+        <app-text-field
           :value="retractionIconSize"
           :rules="[
             $rules.required,

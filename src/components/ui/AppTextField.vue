@@ -1,6 +1,7 @@
 <template>
   <v-form
     ref="form"
+    class="flex"
     @submit.prevent="handleSubmit"
   >
     <v-text-field
@@ -11,6 +12,7 @@
         'v-input--width-x-small': xSmall
       }"
       v-on="filteredListeners"
+      @change="handleChange"
       @focus="handleFocus"
       @blur="handleBlur"
     >
@@ -55,7 +57,7 @@ export default class AppTextField extends Vue {
 
   get filteredListeners () {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { focus, blur, ...listeners } = this.$listeners
+    const { focus, blur, change, ...listeners } = this.$listeners
 
     return listeners
   }
@@ -63,6 +65,12 @@ export default class AppTextField extends Vue {
   handleSubmit () {
     if (this.form.validate()) {
       this.$emit('submit', this.currentValue)
+    }
+  }
+
+  handleChange () {
+    if (this.form.validate()) {
+      this.$emit('change', this.currentValue)
     }
   }
 

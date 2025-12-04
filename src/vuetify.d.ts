@@ -62,9 +62,24 @@ declare module 'vuetify/lib/components' {
     value: number
   }
 
-  export interface VTextarea extends VTextField, _Validatable {
+  export interface VTextarea extends VTextField {
     readonly $refs: VTextField['$refs'] & {
       readonly input: HTMLTextAreaElement
     }
+  }
+
+  export interface VSelect extends VTextField {
+    readonly $refs: VTextField['$refs'] & {
+      readonly content: HTMLElement
+      readonly label: HTMLElement
+      readonly input: HTMLInputElement
+      readonly 'prepend-inner': HTMLElement
+      readonly 'append-inner': HTMLElement
+      readonly prefix: HTMLElement
+      readonly suffix: HTMLElement
+    }
+  }
+
+  export interface VCombobox extends VSelect {
   }
 }

@@ -217,7 +217,7 @@
       </template>
 
       <app-setting :title="$t('app.setting.label.default_toolhead_xy_speed')">
-        <v-text-field
+        <app-text-field
           :value="defaultToolheadXYSpeed"
           :rules="[
             $rules.required,
@@ -229,14 +229,14 @@
           single-line
           hide-details="auto"
           suffix="mm/s"
-          @change="setDefaultToolheadYXSpeed"
+          @change="setDefaultToolheadXYSpeed"
         />
       </app-setting>
 
       <v-divider />
 
       <app-setting :title="$t('app.setting.label.default_toolhead_z_speed')">
-        <v-text-field
+        <app-text-field
           :value="defaultToolheadZSpeed"
           :rules="[
             $rules.required,
@@ -278,7 +278,7 @@
       <v-divider />
 
       <app-setting :title="$t('app.setting.label.default_extrude_length')">
-        <v-text-field
+        <app-text-field
           :value="defaultExtrudeLength"
           :rules="[
             $rules.required,
@@ -297,7 +297,7 @@
       <v-divider />
 
       <app-setting :title="$t('app.setting.label.default_extrude_speed')">
-        <v-text-field
+        <app-text-field
           :value="defaultExtrudeSpeed"
           :rules="[
             $rules.required,
@@ -383,7 +383,7 @@
 <script lang="ts">
 import { Component, Ref, Mixins } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/state'
-import type { VTextField } from 'vuetify/lib'
+import type { VCombobox } from 'vuetify/lib'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { GeneralConfig, ToolheadControlStyle } from '@/store/config/types'
 import type { KlipperPrinterSettings } from '@/store/printer/types'
@@ -393,22 +393,22 @@ import type { KlipperPrinterSettings } from '@/store/printer/types'
 })
 export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   @Ref('toolheadMoveDistances')
-  readonly toolheadMoveDistancesElement!: VTextField
+  readonly toolheadMoveDistancesElement!: VCombobox
 
   @Ref('toolheadXYMoveDistances')
-  readonly toolheadXYMoveDistancesElement!: VTextField
+  readonly toolheadXYMoveDistancesElement!: VCombobox
 
   @Ref('toolheadZMoveDistances')
-  readonly toolheadZMoveDistancesElement!: VTextField
+  readonly toolheadZMoveDistancesElement!: VCombobox
 
   @Ref('toolheadCircleXYMoveDistances')
-  readonly toolheadCircleXYMoveDistancesElement!: VTextField
+  readonly toolheadCircleXYMoveDistancesElement!: VCombobox
 
   @Ref('toolheadCircleZMoveDistances')
-  readonly toolheadCircleZMoveDistancesElement!: VTextField
+  readonly toolheadCircleZMoveDistancesElement!: VCombobox
 
   @Ref('zAdjustValues')
-  readonly zAdjustValuesElement!: VTextField
+  readonly zAdjustValuesElement!: VCombobox
 
   get defaultExtrudeSpeed (): number {
     return this.$typedState.config.uiSettings.general.defaultExtrudeSpeed
@@ -450,7 +450,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     return this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
   }
 
-  setDefaultToolheadYXSpeed (value: number) {
+  setDefaultToolheadXYSpeed (value: number) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultToolheadXYSpeed',
       value: +value,
