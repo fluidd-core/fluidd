@@ -78,23 +78,25 @@ import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class AfcCardUnitLaneActions extends Mixins(StateMixin, AfcMixin, ToolheadMixIn) {
-  @Prop({ type: String, required: true }) readonly name!: string
+  @Prop({ type: String, required: true })
+  readonly name!: string
 
   get lane () {
     return this.getAfcLaneObject(this.name)
   }
 
-  get laneActive () {
-    const activeLaneName = this.afcCurrentLane?.name ?? ''
-
-    return this.name === activeLaneName
+  get laneActive (): boolean {
+    return this.name === this.afcCurrentLane?.name
   }
 
-  get laneRunout () {
-    return this.laneActive && !this.lane?.prep
+  get laneRunout (): boolean {
+    return (
+      this.laneActive &&
+      !this.lane?.prep
+    )
   }
 
-  get toolLoaded () {
+  get toolLoaded (): boolean {
     return this.lane?.tool_loaded ?? false
   }
 

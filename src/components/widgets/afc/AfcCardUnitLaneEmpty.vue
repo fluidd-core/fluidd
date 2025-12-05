@@ -44,20 +44,21 @@ import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component
 export default class AfcCardUnitLaneEmpty extends Mixins(StateMixin, AfcMixin) {
-  @Prop({ type: String, required: true }) readonly name!: string
+  @Prop({ type: String, required: true })
+  readonly name!: string
 
   get lane () {
     return this.getAfcLaneObject(this.name)
   }
 
-  get prep () {
+  get prep (): boolean {
     return this.lane?.prep ?? false
   }
 
-  get text () {
-    if (this.prep) return this.$t('app.afc.PrepDetected')
+  get text (): string {
+    if (this.prep) return this.$t('app.afc.PrepDetected').toString()
 
-    return this.$t('app.afc.Empty')
+    return this.$t('app.afc.Empty').toString()
   }
 
   ejectLane () {

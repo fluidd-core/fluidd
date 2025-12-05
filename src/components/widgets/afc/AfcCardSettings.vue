@@ -6,16 +6,15 @@
     left
   >
     <template #activator="{ on, attrs }">
-      <v-btn
+      <app-btn
         icon
-        tile
         v-bind="attrs"
         v-on="on"
       >
-        <v-icon small>
+        <v-icon dense>
           $cog
         </v-icon>
-      </v-btn>
+      </app-btn>
     </template>
     <v-list>
       <v-list-item class="minHeight36">

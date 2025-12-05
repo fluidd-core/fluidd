@@ -37,14 +37,17 @@ import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class AfcUnitLaneMappingToolDialog extends Mixins(StateMixin, AfcMixin) {
-  @VModel({ type: Boolean }) open?: boolean
-  @Prop({ type: String, required: true }) readonly name!: string
+  @VModel({ type: Boolean })
+  open?: boolean
+
+  @Prop({ type: String, required: true })
+  readonly name!: string
 
   get lane () {
     return this.getAfcLaneObject(this.name)
   }
 
-  get mappedTool () {
+  get mappedTool (): string {
     return this.lane?.map ?? '--'
   }
 

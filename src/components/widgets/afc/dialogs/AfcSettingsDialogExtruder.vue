@@ -94,61 +94,63 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import type { KlipperPrinterAfcExtruderSettings, KlipperPrinterAfcExtruderState } from '@/store/printer/types'
 
 @Component({})
 export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMixin) {
-  @Prop({ type: String, required: true }) readonly name!: string
+  @Prop({ type: String, required: true })
+  readonly name!: string
 
   changedValue = false
 
-  get title () {
+  get title (): string {
     const name = Vue.$filters.prettyCase(this.name)
 
-    return this.$t('app.afc.SettingsDialog.SettingsForTitle', { name })
+    return this.$t('app.afc.SettingsDialog.SettingsForTitle', { name }).toString()
   }
 
-  get afcSettingsExtruder () {
+  get afcSettingsExtruder (): KlipperPrinterAfcExtruderSettings | undefined {
     return this.getAfcExtruderSettings(this.name)
   }
 
-  get settingsToolStn () {
+  get settingsToolStn (): number {
     return this.afcSettingsExtruder?.tool_stn || 0
   }
 
-  get settingsToolStnUnload () {
+  get settingsToolStnUnload (): number {
     return this.afcSettingsExtruder?.tool_stn_unload || 0
   }
 
-  get settingsToolSensorAfterExtruder () {
+  get settingsToolSensorAfterExtruder (): number {
     return this.afcSettingsExtruder?.tool_sensor_after_extruder || 0
   }
 
-  get printerObject () {
+  get printerObject (): KlipperPrinterAfcExtruderState | undefined {
     return this.getAfcExtruderObject(this.name)
   }
 
-  get currentToolStn () {
+  get currentToolStn (): number {
     return this.printerObject?.tool_stn || 0
   }
 
-  get currentToolStnUnload () {
+  get currentToolStnUnload (): number {
     return this.printerObject?.tool_stn_unload || 0
   }
 
-  get currentToolSensorAfterExtruder () {
+  get currentToolSensorAfterExtruder (): number {
     return this.printerObject?.tool_sensor_after_extruder || 0
   }
 
-  get lanes () {
+  get lanes (): string[] {
     return this.printerObject?.lanes ?? []
   }
 
-  get lane_loaded () {
+  get lane_loaded (): string {
     return this.printerObject?.lane_loaded ?? ''
   }
 
-  get filledLanes () {
-    const filledLanes = []
+  get filledLanes (): string[] {
+    const filledLanes: string[] = []
 
     for (const lane of this.lanes) {
       const laneObject = this.getAfcLaneObject(lane)
@@ -161,32 +163,32 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
     return filledLanes
   }
 
-  get existsToolEndSensor () {
+  get existsToolEndSensor (): boolean {
     return (
       this.afcSettingsExtruder != null &&
       'pin_tool_end' in this.afcSettingsExtruder
     )
   }
 
-  get toolStnSubTitle () {
+  get toolStnSubTitle (): string {
     if (this.existsToolEndSensor) {
-      return this.$t('app.afc.SettingsDialog.ToolStnDescriptionWithEndSensor')
+      return this.$t('app.afc.SettingsDialog.ToolStnDescriptionWithEndSensor').toString()
     }
 
     if (this.afcSettingsExtruder?.pin_tool_start === 'buffer') {
-      return this.$t('app.afc.SettingsDialog.ToolStnDescriptionWithRamming')
+      return this.$t('app.afc.SettingsDialog.ToolStnDescriptionWithRamming').toString()
     }
 
-    return this.$t('app.afc.SettingsDialog.ToolStnDescriptionWithoutEndSensor')
+    return this.$t('app.afc.SettingsDialog.ToolStnDescriptionWithoutEndSensor').toString()
   }
 
-  get enableSaveButton () {
-    if (!this.changedValue) return false
-
+  get enableSaveButton (): boolean {
     return (
-      this.currentToolStn !== this.settingsToolStn ||
-      this.currentToolStnUnload !== this.settingsToolStnUnload ||
-      this.currentToolSensorAfterExtruder !== this.settingsToolSensorAfterExtruder
+      this.changedValue && (
+        this.currentToolStn !== this.settingsToolStn ||
+        this.currentToolStnUnload !== this.settingsToolStnUnload ||
+        this.currentToolSensorAfterExtruder !== this.settingsToolSensorAfterExtruder
+      )
     )
   }
 

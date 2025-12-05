@@ -25,17 +25,18 @@ import AfcMixin from '@/mixins/afc'
 
 @Component
 export default class AfcCardUnitHub extends Mixins(StateMixin, AfcMixin) {
-  @Prop({ type: String, required: true }) readonly name!: string
+  @Prop({ type: String, required: true })
+  readonly name!: string
 
   get hub () {
     return this.getAfcHubObject(this.name)
   }
 
-  get sensorStatus () {
+  get sensorStatus (): boolean {
     return this.hub?.state ?? false
   }
 
-  get sensorOutput () {
+  get sensorOutput (): string {
     const status = this.sensorStatus ? this.$t('app.afc.Detected') : this.$t('app.afc.Empty')
 
     return `${this.name} ${this.$t('app.afc.HubLoad')} - ${status}`

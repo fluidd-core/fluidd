@@ -10,7 +10,7 @@
       <v-btn
         text
         tile
-        :href="helpLink"
+        href="https://www.armoredturtle.xyz/docs/afc-klipper-add-on/toolhead/calculation.html"
         target="_blank"
         class="me-1"
       >
@@ -57,9 +57,8 @@ import AfcSettingsDialogLane from './AfcSettingsDialogLane.vue'
   }
 })
 export default class AfcSettingsDialog extends Mixins(StateMixin, AfcMixin) {
-  helpLink = 'https://www.armoredturtle.xyz/docs/afc-klipper-add-on/toolhead/calculation.html'
-
-  @VModel({ type: Boolean }) open?: boolean
+  @VModel({ type: Boolean })
+  open?: boolean
 
   closeDialog () {
     this.$emit('close')

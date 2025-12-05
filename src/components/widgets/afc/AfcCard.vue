@@ -53,17 +53,17 @@ export default class AfcCard extends Mixins(StateMixin, AfcMixin) {
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean
 
-  get filteredExtruders () {
+  get filteredExtruders (): string[] {
     return this.afcExtruders
       .filter(extruder => !this.afcHiddenExtruders.includes(extruder))
   }
 
-  get filteredUnits () {
+  get filteredUnits (): string[] {
     return this.afcUnits
       .filter(unit => !this.afcHiddenUnits.includes(unit))
   }
 
-  get afcEnabled () {
+  get afcEnabled (): boolean {
     return this.$typedGetters['printer/getSupportsAfc']
   }
 }

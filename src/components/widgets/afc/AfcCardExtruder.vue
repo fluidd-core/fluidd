@@ -70,13 +70,11 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     return this.getAfcExtruderSettings(this.name)
   }
 
-  get useRamming () {
-    const toolStart = this.afcExtruder?.tool_start ?? ''
-
-    return toolStart === 'buffer'
+  get useRamming (): boolean {
+    return this.afcExtruder?.tool_start === 'buffer'
   }
 
-  get hasActiveLane () {
+  get hasActiveLane (): boolean {
     if (this.afcCurrentLane == null) return false
 
     const lanes = this.afcExtruder?.lanes ?? []
@@ -92,20 +90,23 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     }
   }
 
-  get rammingState () {
+  get rammingState (): boolean {
     if (!this.useRamming) return false
 
     const extruder = this.afcCurrentLane?.extruder ?? ''
     const bufferState = (this.afcCurrentBuffer?.state ?? '').toLowerCase()
 
-    return extruder === this.name && bufferState === 'trailing'
+    return (
+      extruder === this.name &&
+      bufferState === 'trailing'
+    )
   }
 
-  get laneLoaded () {
+  get laneLoaded (): string {
     return this.afcExtruder?.lane_loaded ?? ''
   }
 
-  get preSensorStatus () {
+  get preSensorStatus (): boolean {
     return this.afcExtruder?.tool_start_status ?? false
   }
 
@@ -124,7 +125,7 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     }
   }
 
-  get preSensorOutput () {
+  get preSensorOutput (): string {
     if (this.useRamming) {
       if (this.laneLoaded) return `${this.$t('app.afc.RammingSensor')}`
 
@@ -137,14 +138,14 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     return `${this.$t('app.afc.PreExtruderSensor')} - ${status}`
   }
 
-  get hasPostSensor () {
+  get hasPostSensor (): boolean {
     return (
       this.settings != null &&
       'pin_tool_end' in this.settings
     )
   }
 
-  get postSensorStatus () {
+  get postSensorStatus (): boolean {
     return this.afcExtruder?.tool_end_status ?? false
   }
 
@@ -155,35 +156,35 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     }
   }
 
-  get postSensorOutput () {
+  get postSensorOutput (): string {
     const status = this.postSensorStatus ? this.$t('app.afc.Detected') : this.$t('app.afc.Empty')
 
     return `${this.$t('app.afc.PostExtruderSensor')} - ${status}`
   }
 
-  get bufferOutput () {
+  get bufferOutput (): string {
     const extruder = this.afcCurrentLane?.extruder ?? ''
-    if (extruder !== this.name) return this.$t('app.afc.BufferDisabled')
+    if (extruder !== this.name) return this.$t('app.afc.BufferDisabled').toString()
 
     return `${this.afcCurrentLane?.buffer ?? '--'}: ${this.afcCurrentBuffer?.state ?? '--'}`
   }
 
-  get state () {
+  get state (): string {
     const extruder = this.afcCurrentLane?.extruder ?? ''
     if (extruder === this.name) {
-      if (this.printerPrinting) return this.$t('app.afc.Printing')
+      if (this.printerPrinting) return this.$t('app.afc.Printing').toString()
 
-      return this.$t(`app.afc.${this.afcCurrentState}`)
+      return this.$t(`app.afc.${this.afcCurrentState}`).toString()
     }
 
-    return this.$t('app.afc.Idle')
+    return this.$t('app.afc.Idle').toString()
   }
 
-  get stateLane () {
+  get stateLane (): string {
     if (this.afcExtruder?.lane_loaded) return this.afcExtruder.lane_loaded
     if (this.afcCurrentLane) return this.afcCurrentLane.name
 
-    return this.$t('app.afc.LaneLoadedNone')
+    return this.$t('app.afc.LaneLoadedNone').toString()
   }
 
   get stateLaneClasses () {

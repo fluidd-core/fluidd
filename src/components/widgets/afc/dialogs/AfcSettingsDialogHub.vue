@@ -25,22 +25,24 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import type { KlipperPrinterAfcHubSettings } from '@/store/printer/types'
 
 @Component({})
 export default class AfcSettingsDialogHub extends Mixins(StateMixin, AfcMixin) {
-  @Prop({ type: String, required: true }) readonly name!: string
+  @Prop({ type: String, required: true })
+  readonly name!: string
 
-  get title () {
+  get title (): string {
     const name = Vue.$filters.prettyCase(`Hub ${this.name}`)
 
-    return this.$t('app.afc.SettingsDialog.SettingsForTitle', { name })
+    return this.$t('app.afc.SettingsDialog.SettingsForTitle', { name }).toString()
   }
 
-  get afcSettingsHub () {
+  get afcSettingsHub (): KlipperPrinterAfcHubSettings | undefined {
     return this.getAfcHubSettings(this.name)
   }
 
-  get settingsLength () {
+  get settingsLength (): number {
     return this.afcSettingsHub?.afc_bowden_length || 0
   }
 
@@ -48,7 +50,7 @@ export default class AfcSettingsDialogHub extends Mixins(StateMixin, AfcMixin) {
     return this.$typedState.printer.printer[(`AFC_hub ${this.name}`)]
   }
 
-  get currentLength () {
+  get currentLength (): number {
     return this.printerObject?.afc_bowden_length || 0
   }
 

@@ -87,20 +87,24 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
     return this.getAfcLaneObject(this.name)
   }
 
-  get currentColor () {
+  get currentColor (): string {
     return this.lane?.color ?? '#000000'
   }
 
-  get currentMaterial () {
+  get currentMaterial (): string {
     return this.lane?.material ?? ''
   }
 
-  get currentWeight () {
+  get currentWeight (): number {
     return Math.round(this.lane?.weight ?? 0)
   }
 
-  get disableSetBtn () {
-    return !this.material || !this.weight || !this.color
+  get disableSetBtn (): boolean {
+    return (
+      !this.material ||
+      !this.weight ||
+      !this.color
+    )
   }
 
   @Debounce(500)
@@ -115,9 +119,11 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
       const cleanedColor = this.color.replace('#', '')
       gcode.push(`SET_COLOR LANE=${encodeGcodeParamValue(this.name)} COLOR=${encodeGcodeParamValue(cleanedColor)}`)
     }
+
     if (this.material !== this.currentMaterial) {
       gcode.push(`SET_MATERIAL LANE=${encodeGcodeParamValue(this.name)} MATERIAL=${encodeGcodeParamValue(this.material)}`)
     }
+
     if (this.weight !== this.currentWeight) {
       gcode.push(`SET_WEIGHT LANE=${encodeGcodeParamValue(this.name)} WEIGHT=${this.weight}`)
     }

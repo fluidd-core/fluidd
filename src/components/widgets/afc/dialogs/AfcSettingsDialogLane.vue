@@ -41,6 +41,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import type { KlipperPrinterAfcLaneSettings, KlipperPrinterAfcStepperSettings } from '@/store/printer/types'
 
 @Component({})
 export default class AfcSettingsDialogLane extends Mixins(StateMixin, AfcMixin) {
@@ -54,7 +55,7 @@ export default class AfcSettingsDialogLane extends Mixins(StateMixin, AfcMixin) 
     return this.$t('app.afc.SettingsDialog.SettingsForTitle', { name })
   }
 
-  get afcSettingsLane () {
+  get afcSettingsLane (): KlipperPrinterAfcLaneSettings | KlipperPrinterAfcStepperSettings | undefined {
     return this.getAfcLaneSettings(this.name)
   }
 
@@ -62,7 +63,7 @@ export default class AfcSettingsDialogLane extends Mixins(StateMixin, AfcMixin) 
     return this.getAfcLaneObject(this.name)
   }
 
-  get settingsDistHub () {
+  get settingsDistHub (): number {
     return (
       this.afcSettingsLane != null &&
       'dist_hub' in this.afcSettingsLane &&
@@ -70,7 +71,7 @@ export default class AfcSettingsDialogLane extends Mixins(StateMixin, AfcMixin) 
     ) || 0
   }
 
-  get currentDistHub () {
+  get currentDistHub (): number {
     return (
       this.afcLane != null &&
       'dist_hub' in this.afcLane &&
@@ -78,10 +79,11 @@ export default class AfcSettingsDialogLane extends Mixins(StateMixin, AfcMixin) 
     ) || 0
   }
 
-  get enableSaveButton () {
-    if (!this.changedValue) return false
-
-    return this.currentDistHub !== this.settingsDistHub
+  get enableSaveButton (): boolean {
+    return (
+      this.changedValue &&
+      this.currentDistHub !== this.settingsDistHub
+    )
   }
 
   setHubDist (value: number) {

@@ -48,11 +48,11 @@ import { afcIconBoxTurtle, afcIconHtlf, afcIconNightOwl, afcIconQuattroBox } fro
 export default class AfcCardUnit extends Mixins(StateMixin, AfcMixin) {
   @Prop({ type: String, required: true }) readonly name!: string
 
-  get unitName () {
+  get unitName (): string {
     return this.name.substring(this.name.indexOf(' ') + 1)
   }
 
-  get unitNameOutput () {
+  get unitNameOutput (): string {
     return Vue.$filters.prettyCase(this.unitName)
   }
 
@@ -65,22 +65,22 @@ export default class AfcCardUnit extends Mixins(StateMixin, AfcMixin) {
     return printer[objectName] ?? {}
   }
 
-  get hubs () {
+  get hubs (): string[] {
     const hubs = this.unit.hubs ?? []
     return hubs
   }
 
-  get lanes () {
+  get lanes (): string[] {
     return this.unit.lanes ?? []
   }
 
-  get type () {
+  get type (): string {
     const moduleName = this.name.substring(0, this.name.indexOf(' ')).replace('_', '')
 
     return moduleName.toLowerCase()
   }
 
-  get modulIcon () {
+  get modulIcon (): string | null {
     if (!this.afcShowUnitIcons) return null
 
     switch (this.type) {

@@ -32,7 +32,7 @@ import { consola } from 'consola'
 
 @Component
 export default class AfcCardMessage extends Mixins(StateMixin, AfcMixin) {
-  get type () {
+  get type (): string {
     const type = this.afc.message?.type ?? 'error'
     const possibleTypes = ['info', 'warning', 'success', 'error']
 
@@ -44,7 +44,7 @@ export default class AfcCardMessage extends Mixins(StateMixin, AfcMixin) {
     return type
   }
 
-  get message () {
+  get message (): string {
     return this.afc.message?.message ?? ''
   }
 

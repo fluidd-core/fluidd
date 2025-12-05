@@ -22,10 +22,10 @@ export default class AfcCardSettingsUnit extends Mixins(StateMixin, AfcMixin) {
 
   value = true
 
-  get label () {
+  get label (): string {
     const unitName = this.name.substring(this.name.indexOf(' ') + 1)
 
-    return this.$t('app.afc.ShowUnit', { name: Vue.$filters.prettyCase(unitName) }) as string
+    return this.$t('app.afc.ShowUnit', { name: Vue.$filters.prettyCase(unitName) }).toString()
   }
 
   mounted () {

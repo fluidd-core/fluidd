@@ -61,8 +61,11 @@ import StateMixin from '@/mixins/state'
 
 @Component
 export default class AfcFilamentReel extends Mixins(StateMixin) {
-  @Prop({ type: String, default: '#ff0' }) readonly color!: string
-  @Prop({ type: Number, default: 100 }) readonly percent!: number
+  @Prop({ type: String, default: '#ff0' })
+  readonly color!: string
+
+  @Prop({ type: Number, default: 100 })
+  readonly percent!: number
 
   spoolColor = '#c08f4f'
   spoolHoleColor = '#231a0f'

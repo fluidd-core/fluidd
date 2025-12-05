@@ -37,20 +37,23 @@ import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class AfcUnitLaneInfiniteDialog extends Mixins(StateMixin, AfcMixin) {
-  @VModel({ type: Boolean }) open?: boolean
-  @Prop({ type: String, required: true }) readonly name!: string
+  @VModel({ type: Boolean })
+  open?: boolean
+
+  @Prop({ type: String, required: true })
+  readonly name!: string
 
   get lane () {
     return this.getAfcLaneObject(this.name)
   }
 
-  get runoutLane () {
+  get runoutLane (): string {
     return this.lane?.runout_lane ?? 'NONE'
   }
 
-  get laneList () {
+  get laneList (): string[] {
     const allLanes = this.afc.lanes ?? []
-    let output = []
+    let output: string[] = []
 
     for (const laneName of allLanes) {
       if (laneName === this.name) continue

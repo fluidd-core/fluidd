@@ -100,7 +100,7 @@
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
-import type { SpoolmanSpool, SpoolSelectionDialogState } from '@/store/spoolman/types'
+import type { Spool, SpoolSelectionDialogState } from '@/store/spoolman/types'
 import { afcIconInfintiy } from '@/plugins/afcIcons'
 import AfcUnitLaneInfiniteDialog from '@/components/widgets/afc/dialogs/AfcUnitLaneInfiniteDialog.vue'
 import AfcUnitLaneFilamentDialog from '@/components/widgets/afc/dialogs/AfcUnitLaneFilamentDialog.vue'
@@ -127,7 +127,7 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
     return this.getAfcLaneObject(this.name)
   }
 
-  get runoutLane () {
+  get runoutLane (): string {
     return this.lane?.runout_lane ?? 'NONE'
   }
 
@@ -135,48 +135,46 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
     return Number(this.lane?.spool_id || '0')
   }
 
-  get spool (): SpoolmanSpool | null {
+  get spool (): Spool | null {
     if (this.spoolId === 0) return null
 
-    const spools = this.$typedState.spoolman?.spools || []
-
-    return spools.find((spool: SpoolmanSpool) => spool.id === this.spoolId) || null
+    return this.$typedGetters['spoolman/getSpoolById'](this.spoolId) ?? null
   }
 
-  get spoolColor () {
+  get spoolColor (): string {
     if (this.afc?.td1_present && this.afcShowTd1Color) {
       return `#${this.lane?.td1_color}`
     }
     return this.lane?.color || '#000000'
   }
 
-  get spoolRemainingWeight () {
+  get spoolRemainingWeight (): number {
     return Math.round(this.lane?.weight ?? 0)
   }
 
-  get spoolRemainingWeightOutput () {
+  get spoolRemainingWeightOutput (): string {
     return `${this.spoolRemainingWeight} g`
   }
 
-  get spoolFullWeight () {
-    return this.spool?.filament?.weight ?? 1000
+  get spoolFullWeight (): number {
+    return this.spool?.initial_weight ?? 1000
   }
 
-  get spoolPercent () {
+  get spoolPercent (): number {
     if (this.spoolFullWeight === 0) return 100
 
     return Math.round((this.spoolRemainingWeight / this.spoolFullWeight) * 100)
   }
 
-  get spoolMaterial () {
+  get spoolMaterial (): string {
     return this.lane?.material || '--'
   }
 
-  get spoolVendor () {
+  get spoolVendor (): string {
     return this.spool?.filament?.vendor?.name ?? 'Unknown'
   }
 
-  get spoolFilamentName () {
+  get spoolFilamentName (): string {
     if (this.afcExistsSpoolman) {
       return this.spool?.filament?.name ?? 'Unknown'
     } else {
@@ -184,18 +182,18 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
     }
   }
 
-  get tdPresent () {
-    if (this.lane?.td1_td == null || this.lane.td1_td.length === 0) {
-      return false
-    }
-    return true
+  get tdPresent (): boolean {
+    return (
+      this.lane?.td1_td != null &&
+      this.lane.td1_td.length > 0
+    )
   }
 
-  get td () {
+  get td (): string {
     return this.lane?.td1_td || ''
   }
 
-  get tdColor () {
+  get tdColor (): string {
     return this.lane?.td1_color || ''
   }
 

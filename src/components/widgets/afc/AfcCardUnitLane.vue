@@ -38,10 +38,8 @@ export default class AfcCardUnitLane extends Mixins(StateMixin, AfcMixin) {
     return this.getAfcLaneObject(this.name)
   }
 
-  get laneActive () {
-    const activeLaneName = this.afcCurrentLane?.name ?? ''
-
-    return this.name === activeLaneName
+  get laneActive (): boolean {
+    return this.name === this.afcCurrentLane?.name
   }
 
   get laneStatusClass () {
@@ -53,7 +51,7 @@ export default class AfcCardUnitLane extends Mixins(StateMixin, AfcMixin) {
     }
   }
 
-  get laneReady () {
+  get laneReady (): boolean {
     return (
       this.lane?.load &&
       this.lane?.prep
