@@ -1,30 +1,21 @@
 <template>
-  <div>
-    <h3 class="text-h5 mb-3">
-      {{ title }}
-    </h3>
+  <v-card outlined>
+    <v-card-title>{{ title }}</v-card-title>
     <app-setting
       :title="$t('app.afc.SettingsDialog.BowdenLength')"
       :sub-title="$t('app.afc.SettingsDialog.BowdenLengthDescription')"
     >
-      <app-number-input
+      <app-named-text-field
         label="afc_bowden_length"
-        param="LENGTH"
-        :target="currentLength"
-        :default-value="settingsLength"
-        :output-error-msg="true"
-        :has-spinner="true"
-        :spinner-factor="1"
-        :step="1"
-        :min="0"
-        :max="null"
-        :dec="0"
-        unit="mm"
-        class="w-100"
-        @submit="setBowdenLength"
+        :value="currentLength"
+        :reset-value="settingsLength"
+        type="number"
+        suffix="mm"
+        @change="setBowdenLength"
       />
     </app-setting>
-  </div>
+    <v-card-text />
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -32,6 +23,7 @@ import Vue from 'vue'
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class AfcSettingsDialogHub extends Mixins(StateMixin, AfcMixin) {
@@ -45,7 +37,7 @@ export default class AfcSettingsDialogHub extends Mixins(StateMixin, AfcMixin) {
 
   get afcSettingsHub () {
     const settings = this.$typedState.printer.printer.configfile?.settings ?? {}
-    const name = `AFC_hub ${this.name}`.toLowerCase()
+    const name = `afc_hub ${this.name.toLowerCase()}` as const
     return settings[name] || {}
   }
 
@@ -55,7 +47,7 @@ export default class AfcSettingsDialogHub extends Mixins(StateMixin, AfcMixin) {
 
   get printerObject () {
     const printer = this.$typedState.printer.printer ?? {}
-    const key = `AFC_hub ${this.name}`
+    const key = `AFC_hub ${this.name}` as const
 
     return printer[key] ?? {}
   }
@@ -64,9 +56,8 @@ export default class AfcSettingsDialogHub extends Mixins(StateMixin, AfcMixin) {
     return this.printerObject.afc_bowden_length || 0
   }
 
-  setBowdenLength (args: { name: string; value: number }) {
-    const gcode = `SET_BOWDEN_LENGTH HUB=${this.name} ${args.name}=${args.value}`
-    this.sendGcode(gcode)
+  setBowdenLength (value: number) {
+    this.sendGcode(`SET_BOWDEN_LENGTH HUB=${encodeGcodeParamValue(this.name)} LENGTH=${value}`)
   }
 }
 </script>

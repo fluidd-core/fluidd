@@ -33,6 +33,7 @@
 import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class AfcUnitLaneMappingToolDialog extends Mixins(StateMixin, AfcMixin) {
@@ -48,7 +49,7 @@ export default class AfcUnitLaneMappingToolDialog extends Mixins(StateMixin, Afc
   }
 
   mapTool (newTool: string) {
-    this.sendGcode(`SET_MAP LANE=${this.name} MAP=${newTool}`)
+    this.sendGcode(`SET_MAP LANE=${encodeGcodeParamValue(this.name)} MAP=${encodeGcodeParamValue(newTool)}`)
 
     this.closeDialog()
   }

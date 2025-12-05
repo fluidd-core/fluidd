@@ -69,6 +69,7 @@ import { Component, Mixins, Prop, Watch, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import { Debounce } from 'vue-debounce-decorator'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMixin) {
@@ -112,21 +113,17 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
 
     if (this.color !== this.currentColor) {
       const cleanedColor = this.color.replace('#', '')
-      gcode.push(`SET_COLOR LANE=${this.name} COLOR=${cleanedColor}`)
+      gcode.push(`SET_COLOR LANE=${encodeGcodeParamValue(this.name)} COLOR=${encodeGcodeParamValue(cleanedColor)}`)
     }
     if (this.material !== this.currentMaterial) {
-      gcode.push(`SET_MATERIAL LANE=${this.name} MATERIAL=${this.material}`)
+      gcode.push(`SET_MATERIAL LANE=${encodeGcodeParamValue(this.name)} MATERIAL=${encodeGcodeParamValue(this.material)}`)
     }
     if (this.weight !== this.currentWeight) {
-      gcode.push(`SET_WEIGHT LANE=${this.name} WEIGHT=${this.weight}`)
+      gcode.push(`SET_WEIGHT LANE=${encodeGcodeParamValue(this.name)} WEIGHT=${this.weight}`)
     }
 
     this.sendGcode(gcode.join('\n'))
     this.closeDialog()
-  }
-
-  doSend (gcode: string) {
-    this.sendGcode(gcode)
   }
 
   closeDialog () {

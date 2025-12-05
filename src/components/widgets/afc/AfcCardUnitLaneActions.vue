@@ -74,6 +74,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import ToolheadMixIn from '@/mixins/toolhead'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class AfcCardUnitLaneActions extends Mixins(StateMixin, AfcMixin, ToolheadMixIn) {
@@ -98,15 +99,15 @@ export default class AfcCardUnitLaneActions extends Mixins(StateMixin, AfcMixin,
   }
 
   loadLane () {
-    this.sendGcode(`CHANGE_TOOL LANE=${this.name}`)
+    this.sendGcode(`CHANGE_TOOL LANE=${encodeGcodeParamValue(this.name)}`)
   }
 
   unloadLane () {
-    this.sendGcode(`TOOL_UNLOAD LANE=${this.name}`)
+    this.sendGcode(`TOOL_UNLOAD LANE=${encodeGcodeParamValue(this.name)}`)
   }
 
   ejectLane () {
-    this.sendGcode(`LANE_UNLOAD LANE=${this.name}`)
+    this.sendGcode(`LANE_UNLOAD LANE=${encodeGcodeParamValue(this.name)}`)
   }
 }
 </script>

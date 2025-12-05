@@ -1,108 +1,91 @@
 <template>
-  <div>
-    <h3 class="text-h5 mb-3 mt-5">
-      {{ title }}
-    </h3>
-    <app-setting
-      :title="$t('app.afc.SettingsDialog.LoadUnloadLane')"
-      :sub-title="$t('app.afc.SettingsDialog.LoadUnloadLaneDescription')"
-    >
-      <div class="d-flex flex-wrap">
-        <v-btn
-          v-for="lane in lanes"
-          :key="lane"
-          :disabled="!filledLanes.includes(lane)"
-          small
-          class="ma-1"
-          :color="lane_loaded === lane ? 'primary' : ''"
-          @click="toggleLane(lane)"
-        >
-          {{ lane }}
-        </v-btn>
-      </div>
-    </app-setting>
-    <v-divider class="my-3" />
-    <app-setting
-      :title="$t('app.afc.SettingsDialog.ToolStn')"
-      :sub-title="toolStnSubTitle"
-    >
-      <app-number-input
-        label="tool_stn"
-        param="TOOL_STN"
-        :target="currentToolStn"
-        :default-value="settingsToolStn"
-        :output-error-msg="true"
-        :has-spinner="true"
-        :spinner-factor="1"
-        :step="1"
-        :min="0"
-        :max="null"
-        :dec="0"
-        unit="mm"
-        class="w-100"
-        @submit="updateToolheadSensors"
-      />
-    </app-setting>
-    <v-divider class="my-3" />
-    <app-setting
-      :title="$t('app.afc.SettingsDialog.ToolStnUnload')"
-      :sub-title="$t('app.afc.SettingsDialog.ToolStnUnloadDescription')"
-    >
-      <app-number-input
-        label="tool_stn_unload"
-        param="TOOL_STN_UNLOAD"
-        :target="currentToolStnUnload"
-        :default-value="settingsToolStnUnload"
-        :output-error-msg="true"
-        :has-spinner="true"
-        :spinner-factor="1"
-        :step="1"
-        :min="0"
-        :max="null"
-        :dec="0"
-        unit="mm"
-        class="w-100"
-        @submit="updateToolheadSensors"
-      />
-    </app-setting>
-    <template v-if="existsToolEndSensor">
-      <v-divider class="my-3" />
+  <v-card outlined>
+    <v-card-title>{{ title }}</v-card-title>
+
+    <v-card-text>
       <app-setting
-        :title="$t('app.afc.SettingsDialog.ToolSensorAfterExtruder')"
-        :sub-title="$t('app.afc.SettingsDialog.ToolSensorAfterExtruderDescription')"
+        :title="$t('app.afc.SettingsDialog.LoadUnloadLane')"
+        :sub-title="$t('app.afc.SettingsDialog.LoadUnloadLaneDescription')"
       >
-        <app-number-input
-          label="tool_sensor_after_extruder"
-          param="TOOL_AFTER_EXTRUDER"
-          :target="currentToolSensorAfterExtruder"
-          :default-value="settingsToolSensorAfterExtruder"
-          :output-error-msg="true"
-          :has-spinner="true"
-          :spinner-factor="1"
-          :step="1"
-          :min="0"
-          :max="null"
-          :dec="0"
-          unit="mm"
-          class="w-100"
-          @submit="updateToolheadSensors"
+        <div class="d-flex flex-wrap">
+          <v-btn
+            v-for="lane in lanes"
+            :key="lane"
+            :disabled="!filledLanes.includes(lane)"
+            small
+            class="ma-1"
+            :color="lane_loaded === lane ? 'primary' : ''"
+            @click="toggleLane(lane)"
+          >
+            {{ lane }}
+          </v-btn>
+        </div>
+      </app-setting>
+      <v-divider />
+      <app-setting
+        :title="$t('app.afc.SettingsDialog.ToolStn')"
+        :sub-title="toolStnSubTitle"
+      >
+        <app-named-text-field
+          label="tool_stn"
+          :value="currentToolStn"
+          :reset-value="settingsToolStn"
+          suffix="mm"
+          submit-on-blur
+          @submit="updateToolheadSensors('TOOL_STN', $event)"
         />
       </app-setting>
-    </template>
-    <v-divider class="my-3" />
-    <app-setting
-      :title="$t('app.afc.SettingsDialog.SaveExtruderValues')"
-      :sub-title="$t('app.afc.SettingsDialog.SaveExtruderValuesDescription')"
-    >
-      <v-btn
-        :disabled="!enableSaveButton"
-        color="primary"
-        @click="saveExtruderValues"
+
+      <v-divider />
+
+      <app-setting
+        :title="$t('app.afc.SettingsDialog.ToolStnUnload')"
+        :sub-title="$t('app.afc.SettingsDialog.ToolStnUnloadDescription')"
       >
-        {{ $t('app.afc.SettingsDialog.WriteToFile') }}
-      </v-btn>
-    </app-setting>
-  </div>
+        <app-named-text-field
+          label="tool_stn_unload"
+          :value="currentToolStnUnload"
+          :reset-value="settingsToolStnUnload"
+          suffix="mm"
+          submit-on-blur
+          @submit="updateToolheadSensors('TOOL_STN_UNLOAD', $event)"
+        />
+      </app-setting>
+
+      <template v-if="existsToolEndSensor">
+        <v-divider />
+
+        <app-setting
+          :title="$t('app.afc.SettingsDialog.ToolSensorAfterExtruder')"
+          :sub-title="$t('app.afc.SettingsDialog.ToolSensorAfterExtruderDescription')"
+        >
+          <app-named-text-field
+            label="tool_sensor_after_extruder"
+            :value="currentToolSensorAfterExtruder"
+            :reset-value="settingsToolSensorAfterExtruder"
+            suffix="mm"
+            submit-on-blur
+            @submit="updateToolheadSensors('TOOL_AFTER_EXTRUDER', $event)"
+          />
+        </app-setting>
+      </template>
+
+      <v-divider />
+
+      <app-setting
+        :title="$t('app.afc.SettingsDialog.SaveExtruderValues')"
+        :sub-title="$t('app.afc.SettingsDialog.SaveExtruderValuesDescription')"
+      >
+        <v-btn
+          :disabled="!enableSaveButton"
+          color="primary"
+          @click="saveExtruderValues"
+        >
+          {{ $t('app.afc.SettingsDialog.WriteToFile') }}
+        </v-btn>
+      </app-setting>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -110,6 +93,7 @@ import Vue from 'vue'
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMixin) {
@@ -205,27 +189,22 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
 
   toggleLane (lane: string) {
     if (this.lane_loaded === lane) {
-      this.sendGcode(`TOOL_UNLOAD LANE=${lane}`)
+      this.sendGcode(`TOOL_UNLOAD LANE=${encodeGcodeParamValue(lane)}`)
 
       return
     }
 
-    this.sendGcode(`CHANGE_TOOL LANE=${lane}`)
+    this.sendGcode(`CHANGE_TOOL LANE=${encodeGcodeParamValue(lane)}`)
   }
 
-  updateToolheadSensors (args: { name: string; value: number }) {
+  updateToolheadSensors (name: string, value: number) {
     this.changedValue = true
-    this.sendGcode(`UPDATE_TOOLHEAD_SENSORS EXTRUDER=${this.name} ${args.name}=${args.value}`)
+    this.sendGcode(`UPDATE_TOOLHEAD_SENSORS EXTRUDER=${encodeGcodeParamValue(this.name)} ${name}=${value}`)
   }
 
   saveExtruderValues () {
     this.changedValue = false
-    const gcode = `SAVE_EXTRUDER_VALUES EXTRUDER=${this.name}`
-    this.sendGcode(gcode)
-  }
-
-  doSend (gcode: string) {
-    this.sendGcode(gcode)
+    this.sendGcode(`SAVE_EXTRUDER_VALUES EXTRUDER=${encodeGcodeParamValue(this.name)}`)
   }
 }
 </script>

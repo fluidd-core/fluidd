@@ -33,6 +33,7 @@
 import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class AfcUnitLaneInfiniteDialog extends Mixins(StateMixin, AfcMixin) {
@@ -68,7 +69,7 @@ export default class AfcUnitLaneInfiniteDialog extends Mixins(StateMixin, AfcMix
   }
 
   setRunout (newLane: string) {
-    this.sendGcode(`SET_RUNOUT LANE=${this.name} RUNOUT=${newLane}`)
+    this.sendGcode(`SET_RUNOUT LANE=${encodeGcodeParamValue(this.name)} RUNOUT=${encodeGcodeParamValue(newLane)}`)
 
     this.closeDialog()
   }

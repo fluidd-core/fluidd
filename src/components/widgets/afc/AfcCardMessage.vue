@@ -49,9 +49,7 @@ export default class AfcCardMessage extends Mixins(StateMixin, AfcMixin) {
   }
 
   clearMessage () {
-    const gcode = 'AFC_CLEAR_MESSAGE'
-
-    this.sendGcode(gcode)
+    this.sendGcode('AFC_CLEAR_MESSAGE')
   }
 }
 </script>
