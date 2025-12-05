@@ -21,12 +21,12 @@
       "hidden": true
     },
     {
-      "type": "refactor",
-      "section": "Code Refactorings"
+      "type": "perf",
+      "section": "Performance Improvements"
     },
     {
-      "type": "perf",
-      "hidden": true
+      "type": "refactor",
+      "section": "Code Refactorings"
     },
     {
       "type": "test",

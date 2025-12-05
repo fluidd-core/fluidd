@@ -60,18 +60,21 @@ export const mutations = {
    * On initial init, we get the server (moonraker) process stats and any throttled state flags.
    */
   setMoonrakerStats (state, payload) {
-    if (payload.cpu_temp) Vue.set(state, 'cpu_temp', payload.cpu_temp)
-    if (payload.throttled_state) state.throttled_state = { ...state.throttled_state, ...payload.throttled_state }
-    if (
-      payload.moonraker_stats &&
-      Array.isArray(payload.moonraker_stats)
-    ) {
-      // Update with array.
-      Vue.set(state, 'moonraker_stats', payload.moonraker_stats)
-    } else {
-      // Append to array.
-      if (state.moonraker_stats) {
-        state.moonraker_stats.push(payload.moonraker_stats)
+    if (payload.cpu_temp) {
+      Vue.set(state, 'cpu_temp', payload.cpu_temp)
+    }
+
+    if (payload.throttled_state) {
+      state.throttled_state = { ...state.throttled_state, ...payload.throttled_state }
+    }
+
+    if (payload.moonraker_stats) {
+      if (Array.isArray(payload.moonraker_stats)) {
+        // Update with array.
+        Vue.set(state, 'moonraker_stats', payload.moonraker_stats.map(Object.freeze))
+      } else {
+        // Append to array.
+        state.moonraker_stats.push(Object.freeze(payload.moonraker_stats))
         while (state.moonraker_stats.length > 30) {
           state.moonraker_stats.splice(0, 1)
         }
