@@ -115,6 +115,7 @@ app:
       go_to_file: Pojdi v datoteko
       rename_dir: Preimenuj mapo
       rename_file: Preimenuj datoteko
+      save_as: Shrani kot
       upload_file: Nalaganje datoteke | Nalaganje datotek
     tooltip:
       low_on_space: Na disku primanjkuje prostora
@@ -263,6 +264,7 @@ app:
       bars: Vrstični
       category: Kategorija
       change_password: Spremeni geslo
+      clean_nozzle: Očisti šobo
       clear_all: Počisti vse
       color: Barva
       command: Ukaz
@@ -270,6 +272,7 @@ app:
       cross: Križni
       circle: Krožni
       compact: Kompakten
+      connected: Povezano
       current_password: Trenutno geslo
       current_user: Trenutni uporabnik
       default: Privzeto
@@ -296,12 +299,14 @@ app:
       layout: Postavitev
       ldap: LDAP
       length_in_kilometers: Dolžina v kilometrih
+      load_filament: Naloži filament
       longest_job: Najdaljše opravilo
       low: Nizko
       manage_accounts: Urejaj račune
       minimum_cruise_ratio: Najnižje potovalno razmerje
       user_managed_source: "Uporabnika nadzoruje pristnost: %{source}"
       m117: M117
+      disconnected: Ni povezano
       moonraker: Moonraker
       name: Ime
       new_password: Novo geslo
@@ -309,6 +314,7 @@ app:
       'on': 'Vklopi'
       'off': 'Izklopi'
       numeric_prefix_sort: Sortiraj po številski predponi
+      park_toolhead: Parkiraj orodno glavo
       password: Geslo
       partial_of_total: '%{partial} od %{total}'
       pause_at_layer: Zaustavi na plasti
@@ -347,6 +353,7 @@ app:
       turn_device_off: Ugasni %{device}
       uncategorized: Nekategorizirano
       unknown: Neznano
+      unload_filament: Odstrani filament
       unretract_extra_length: Dolžina pred iztiskom
       unretract_speed: Hitrost pred iztiskom
       upload_and_print: Naloži in tiskaj
@@ -381,6 +388,7 @@ app:
       not_valid_fluidd_backup_file: Neveljavna datoteka varnostne kopije Fluidd!
       fluidd_settings_backup_failed: Varnostno kopiranje nastavitev Fluidd ni uspelo!
       fluidd_settings_restore_failed: Obnovitev nastavitev Fluidd ni uspela!
+      gcode_preview_failed: Predogled g-kode ni uspel!
     simple_form:
       error:
         arrayofnums: Samo številke
@@ -412,6 +420,7 @@ app:
         confirm_remove_printer: Ste prepričani, da želite odstraniti tiskalnik %{name}?
         confirm_remove_thermal_preset: Ste prepričani, da želite odstraniti termalno prednastavitev %{name}?
         confirm_remove_user: Ste prepričani, da želite odstraniti uporabnika %{username}?
+        confirm_restore_backup: Ste prepričani, da želite obnoviti varnostno kopijo?
         confirm_shutdown_host: Ste prepričani? To dejanje bo zaustavilo gostitelja.
         confirm_service_start: Ste prepričani, da želite zagnani storitev %{name}?
         confirm_service_restart: Ste prepričani, da želite ponovno zagnati storitev %{name}?
@@ -571,6 +580,7 @@ app:
       webrtc_camera_streamer: WebRTC (pretočnik kamere)
       video: IP Kamera
       iframe: HTTP stran
+      uv4l_mjpeg_stream: UV4L MJPEG pretok
       webrtc_go2rtc: WebRTC (go2rtc)
       webrtc_mediamtx: WebRTC (MediaMTX)
     camera_rotate_options:
@@ -666,8 +676,8 @@ app:
       retraction_icon_size: Velikost umikov
       right_y: Desna Y os
       save_and_restore_view_state: Shrani in obnovi stanje pogleda
-      sections_to_ignore_pending_configuration_changes: Prezri razdelke za konfiguracije
-        na čakanju
+      sections_to_ignore_pending_configuration_changes: Prezri razdelke za konfiguracije na čakanju
+      service_restart: Ponovni zagon storitve
       show_animations: Prikaži animacije
       show_barometric_pressure: Prikaži barometrični tlak
       show_chart: Prikaži graf
@@ -751,11 +761,9 @@ app:
       application: Aplikacija
       awake_time: čas budnosti
       capacity: Kapaciteta
-      connected: Povezano
       constants: Konstante
       cpu_desc: Opis CPE
       devices: Naprave
-      disconnected: Ni povezano
       distribution_codename: Šifra
       distribution_like: Podobna distribucija
       distribution_name: Distribucija
@@ -1121,6 +1129,7 @@ app:
       show_clog_detection: Prikaži zaznavanje zamaška
       show_details: Prikaži podrobnosti o filamentu
       show_ttg_map: Prikaži TTG mape
+      show_name: Prikaži ime enote
       show_logos: Prikaži logotipe
       show_unavailable_spool_color: Prikaži kolute, ki niso na voljo
   sensors:
@@ -1152,3 +1161,14 @@ app:
     tooltip:
       delete: Zbriši model
       load: Naloži model
+  database:
+    btn:
+      compact_database: Stisni bazo podatkov
+      create_backup: Ustvari varnostno kopijo
+    label:
+      moonraker_database: Moonrakerjeva podatkovna baza
+    msg:
+      not_found: Obstoječa baza podatkov ni bila najdena.
+    tooltip:
+      restore_backup: Obnovi varnostno kopijo
+      delete_backup: Izbriši varnostno kopijo
