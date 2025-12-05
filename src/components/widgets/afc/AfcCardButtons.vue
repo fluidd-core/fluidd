@@ -63,7 +63,6 @@
               v-bind="attrs"
               :macro="macro.macro"
               small
-              color=" "
               class="w-100"
               v-on="on"
               @click="sendGcode($event)"
