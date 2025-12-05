@@ -7,15 +7,12 @@
         :title="$t('app.afc.SettingsDialog.DistHub')"
         :sub-title="$t('app.afc.SettingsDialog.DistHubDescription')"
       >
-        <app-named-slider
+        <app-named-text-field
           label="dist_hub"
           :value="currentDistHub"
           :reset-value="settingsDistHub"
-          :min="0"
-          :max="100"
-          :step="1"
-          overridable
           suffix="mm"
+          submit-on-change
           @submit="setHubDist"
         />
       </app-setting>

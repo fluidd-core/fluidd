@@ -31,7 +31,7 @@
           :value="currentToolStn"
           :reset-value="settingsToolStn"
           suffix="mm"
-          submit-on-blur
+          submit-on-change
           @submit="updateToolheadSensors('TOOL_STN', $event)"
         />
       </app-setting>
@@ -47,7 +47,7 @@
           :value="currentToolStnUnload"
           :reset-value="settingsToolStnUnload"
           suffix="mm"
-          submit-on-blur
+          submit-on-change
           @submit="updateToolheadSensors('TOOL_STN_UNLOAD', $event)"
         />
       </app-setting>
@@ -64,7 +64,7 @@
             :value="currentToolSensorAfterExtruder"
             :reset-value="settingsToolSensorAfterExtruder"
             suffix="mm"
-            submit-on-blur
+            submit-on-change
             @submit="updateToolheadSensors('TOOL_AFTER_EXTRUDER', $event)"
           />
         </app-setting>

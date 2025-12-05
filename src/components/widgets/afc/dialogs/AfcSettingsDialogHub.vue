@@ -11,7 +11,8 @@
         :reset-value="settingsLength"
         type="number"
         suffix="mm"
-        @change="setBowdenLength"
+        submit-on-change
+        @submit="setBowdenLength"
       />
     </app-setting>
     <v-card-text />
