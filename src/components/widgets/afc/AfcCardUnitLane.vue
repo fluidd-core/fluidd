@@ -54,7 +54,10 @@ export default class AfcCardUnitLane extends Mixins(StateMixin, AfcMixin) {
   }
 
   get laneReady () {
-    return this.lane.load && this.lane.prep
+    return (
+      this.lane?.load &&
+      this.lane?.prep
+    )
   }
 }
 </script>

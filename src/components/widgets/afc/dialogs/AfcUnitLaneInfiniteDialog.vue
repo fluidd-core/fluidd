@@ -45,7 +45,7 @@ export default class AfcUnitLaneInfiniteDialog extends Mixins(StateMixin, AfcMix
   }
 
   get runoutLane () {
-    return this.lane.runout_lane ?? 'NONE'
+    return this.lane?.runout_lane ?? 'NONE'
   }
 
   get laneList () {
@@ -56,10 +56,10 @@ export default class AfcUnitLaneInfiniteDialog extends Mixins(StateMixin, AfcMix
       if (laneName === this.name) continue
 
       const lane = this.getAfcLaneObject(laneName)
-      const prep = lane.prep ?? false
-      const load = lane.load ?? false
+      const prep = lane?.prep ?? false
+      const load = lane?.load ?? false
 
-      if (prep && load) output.push(lane.name)
+      if (prep && load) output.push(lane?.name)
     }
 
     output = output.sort((a, b) => a.localeCompare(b))

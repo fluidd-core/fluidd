@@ -50,16 +50,18 @@ import AfcCardSettings from '@/components/widgets/afc/AfcCardSettings.vue'
   }
 })
 export default class AfcCard extends Mixins(StateMixin, AfcMixin) {
+  @Prop({ type: Boolean })
+  readonly fullscreen?: boolean
+
   get filteredExtruders () {
-    return this.afcExtruders.filter((extruder) => !this.afcHiddenExtruders.includes(extruder))
+    return this.afcExtruders
+      .filter(extruder => !this.afcHiddenExtruders.includes(extruder))
   }
 
   get filteredUnits () {
-    return this.afcUnits.filter((unit) => !this.afcHiddenUnits.includes(unit))
+    return this.afcUnits
+      .filter(unit => !this.afcHiddenUnits.includes(unit))
   }
-
-  @Prop({ type: Boolean })
-  readonly fullscreen?: boolean
 
   get afcEnabled () {
     return this.$typedGetters['printer/getSupportsAfc']

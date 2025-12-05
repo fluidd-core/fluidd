@@ -37,24 +37,19 @@ export default class AfcSettingsDialogHub extends Mixins(StateMixin, AfcMixin) {
   }
 
   get afcSettingsHub () {
-    const settings = this.$typedState.printer.printer.configfile?.settings ?? {}
-    const name = `afc_hub ${this.name.toLowerCase()}` as const
-    return settings[name] || {}
+    return this.getAfcHubSettings(this.name)
   }
 
   get settingsLength () {
-    return this.afcSettingsHub.afc_bowden_length || 0
+    return this.afcSettingsHub?.afc_bowden_length || 0
   }
 
   get printerObject () {
-    const printer = this.$typedState.printer.printer ?? {}
-    const key = `AFC_hub ${this.name}` as const
-
-    return printer[key] ?? {}
+    return this.$typedState.printer.printer[(`AFC_hub ${this.name}`)]
   }
 
   get currentLength () {
-    return this.printerObject.afc_bowden_length || 0
+    return this.printerObject?.afc_bowden_length || 0
   }
 
   setBowdenLength (value: number) {

@@ -184,6 +184,12 @@ type KlipperPrinterStateBaseType =
     mmu_machine: KlipperPrinterMmuMachineState;
 
     AFC: KlipperPrinterAfcState;
+
+    [key: `AFC_extruder ${string}`]: KlipperPrinterAfcExtruderState;
+
+    [key: `AFC_buffer ${string}`]: KlipperPrinterAfcBufferState;
+
+    [key: `AFC_led ${string}`]: KlipperPrinterLedState;
   }>
 
 export interface KlipperPrinterState extends KlipperPrinterStateBaseType {
@@ -763,6 +769,27 @@ export interface KlipperPrinterAfcState {
   led_state?: boolean;
 }
 
+export interface KlipperPrinterAfcExtruderState {
+  tool_stn?: number;
+  tool_stn_unload?: number;
+  tool_sensor_after_extruder?: number;
+  tool_unload_speed?: number;
+  tool_load_speed?: number;
+  buffer?: string | null;
+  lane_loaded?: string | null;
+  tool_start?: string | null;
+  tool_start_status?: boolean;
+  tool_end?: string | null;
+  tool_end_status?: boolean;
+  lanes?: string[];
+}
+
+export interface KlipperPrinterAfcBufferState {
+  state: string;
+  lanes: string[];
+  enabled: boolean;
+}
+
 export interface KlipperPrinterConfig extends Record<string, Record<string, string | undefined> | undefined> {
 }
 
@@ -877,6 +904,26 @@ type KlipperPrinterSettingsBaseType =
     scanner: KlipperPrinterCartographerScannerSettings;
 
     [key: `beacon model ${Lowercase<string>}`]: KlipperPrinterBeaconModelSettings;
+
+    afc: KlipperPrinterAfcSettings;
+
+    afc_prep: KlipperPrinterAfcPrepSettings;
+
+    afc_form_tip: KlipperPrinterAfcFormTipSettings;
+
+    [key: `afc_extruder ${Lowercase<string>}`]: KlipperPrinterAfcExtruderSettings;
+
+    [key: `afc_buffer ${Lowercase<string>}`]: KlipperPrinterAfcBufferSettings;
+
+    [key: `afc_led ${Lowercase<string>}`]: KlipperPrinterAfcLedSettings;
+
+    [key: `afc_lane ${Lowercase<string>}`]: KlipperPrinterAfcLaneSettings;
+
+    [key: `afc_stepper ${Lowercase<string>}`]: KlipperPrinterAfcStepperSettings;
+
+    [key: `afc_hub ${Lowercase<string>}`]: KlipperPrinterAfcHubSettings;
+
+    [key: `afc_button ${Lowercase<string>}`]: KlipperPrinterAfcButtonSettings;
   }>
 
 export interface KlipperPrinterSettings extends KlipperPrinterSettingsBaseType {
@@ -1443,6 +1490,230 @@ export interface KlipperPrinterCartographerScannerSettings extends Record<string
 }
 
 export interface KlipperPrinterBeaconModelSettings extends Record<string, unknown> {
+}
+
+export interface KlipperPrinterAfcSettings {
+  VarFile: string;
+  long_moves_speed: number;
+  rev_long_moves_speed_factor: number;
+  long_moves_accel: number;
+  short_moves_speed: number;
+  quiet_moves_speed: number;
+  short_moves_accel: number;
+  short_move_dis: number;
+  max_move_dis: number;
+  show_quiet_mode: boolean;
+  global_print_current: number;
+  enable_sensors_in_gui: boolean;
+  default_material_temps: string[];
+  default_material_type: string;
+  common_density_values: string[];
+  load_to_hub: boolean;
+  moonraker_port: number;
+  moonraker_host: string;
+  moonraker_timeout: number;
+  assisted_unload: boolean;
+  pause_when_bypass_active: boolean;
+  debug: boolean;
+  trsync_update: boolean;
+  trsync_timeout: number;
+  trsync_single_timeout: number;
+  z_hop: number;
+  resume_speed: number;
+  resume_z_speed: number;
+  led_name: string;
+  led_fault: string;
+  led_ready: string;
+  led_not_ready: string;
+  led_loading: string;
+  led_tool_loaded: string;
+  led_buffer_advancing: string;
+  led_buffer_trailing: string;
+  led_buffer_disable: string;
+  led_spool_illuminate: string;
+  n20_break_delay_time: number;
+  tool_max_unload_attempts: number;
+  tool_homing_distance: number;
+  tool_max_load_checks: number;
+  unload_on_runout: boolean;
+  print_short_stats: boolean;
+  show_macros: boolean;
+  error_timeout: number;
+  auto_home: boolean;
+  auto_level_macro?: string;
+  enable_assist: boolean;
+  enable_assist_weight: boolean;
+  debounce_delay: number;
+  test_extrude_amt: number;
+  capture_td1_when_loaded: boolean;
+  disable_weight_check: boolean;
+  tool_cut: boolean;
+  tool_cut_cmd: string;
+  tool_cut_threshold: number;
+  park: boolean;
+  park_cmd: string;
+  poop: boolean;
+  poop_cmd: string;
+  kick: boolean;
+  kick_cmd: string;
+  wipe: boolean;
+  wipe_cmd: string;
+  form_tip: boolean;
+  form_tip_cmd: string;
+}
+
+export interface KlipperPrinterAfcPrepSettings {
+  enable: boolean;
+  delay_time: number;
+  disable_unload_filament_remapping: boolean;
+  capture_td1_data: boolean;
+}
+
+export interface KlipperPrinterAfcFormTipSettings {
+  ramming_volume: number;
+  toolchange_temp: number;
+  unloading_speed_start: number;
+  unloading_speed: number;
+  cooling_tube_position: number;
+  cooling_tube_length: number;
+  initial_cooling_speed: number;
+  final_cooling_speed: number;
+  cooling_moves: number;
+  use_skinnydip: boolean;
+  skinnydip_distance: number;
+  dip_insertion_speed: number;
+  dip_extraction_speed: number;
+  melt_zone_pause: number;
+  cool_zone_pause: number;
+}
+
+export interface KlipperPrinterAfcExtruderSettings {
+  pin_tool_start: string;
+  pin_tool_end: string;
+  tool_stn: number;
+  tool_stn_unload: number;
+  tool_sensor_after_extruder: number;
+  tool_unload_speed: number;
+  tool_load_speed?: number;
+  buffer: string;
+  enable_sensors_in_gui: boolean;
+  debounce_delay: number;
+}
+
+export interface KlipperPrinterAfcBufferSettings {
+  advance_pin: string;
+  trailing_pin: string;
+  multiplier_high: number;
+  multiplier_low: number;
+  led_index: string;
+  accel: number;
+}
+
+export interface KlipperPrinterAfcLedSettings {
+  pin: string;
+  chain_count: number;
+  color_order: string;
+  initial_RED: number;
+  initial_GREEN: number;
+  initial_BLUE: number;
+  initial_WHITE: number;
+}
+
+export interface KlipperPrinterAfcLaneSettings {
+  unit: string;
+  step_pin: string;
+  dir_pin: string;
+  enable_pin: string;
+  microsteps: number;
+  rotation_distance: number;
+  gear_ratio?: string;
+  map?: string;
+  dist_hub: number;
+  park_dist: number;
+  led_index: string;
+  afc_motor_rwd: string;
+  afc_motor_fwd: string;
+  afc_motor_enb: string;
+  rwd_speed_multiplier: number;
+  fwd_speed_multiplier: number;
+  pwm: boolean;
+  prep: string;
+  load: string;
+  led_fault: string;
+  led_ready: string;
+  led_not_ready: string;
+  led_loading: string;
+  led_unloading: string;
+  led_tool_loaded: string;
+  led_spool_index: string;
+  led_spool_illuminate: string;
+  long_moves_speed: number;
+  rev_long_moves_speed_factor: number;
+  long_moves_accel: number;
+  quiet_moves_speed: number;
+  short_moves_speed: number;
+  short_moves_accel: number;
+  short_move_dis: number;
+  max_move_dis: number;
+  n20_break_delay_time: number;
+  enable_assist: boolean;
+  enable_assist_weight: number;
+  timer_delay: number;
+  enable_kick_start: boolean;
+  kick_start_time: number;
+  delta_movement: number;
+  mm_movement: number;
+  cycles_per_rotation: number;
+  pwm_value: number;
+  spoolrate: number;
+  load_to_hub: boolean;
+  enable_sensors_in_gui: boolean;
+  sensor_to_show?: string;
+  assisted_unload: boolean;
+  filament_diameter: number;
+  filament_density: number;
+  spool_inner_diameter: number;
+  spool_outer_diameter: number;
+  empty_spool_weight: number;
+  spool_weight: number;
+  assist_max_motor_rpm: number;
+  hub?: string;
+  buffer?: string;
+  extruder?: string;
+  debounce_delay: number;
+  capture_td1_when_loaded: boolean;
+  td1_device_id?: string;
+}
+
+export interface KlipperPrinterAfcStepperSettings {
+  print_current: number;
+}
+
+export interface KlipperPrinterAfcHubSettings {
+  switch_pin: string;
+  hub_clear_move_dis: number;
+  afc_bowden_length: number;
+  afc_unload_bowden_length: number;
+  td1_bowden_length: number;
+  assisted_retract: boolean;
+  move_dis: number;
+  cut: boolean;
+  cut_cmd: string;
+  cut_servo_name: string;
+  cut_dist: number;
+  cut_clear: number;
+  cut_min_length: number;
+  cut_servo_pass_angle: number;
+  cut_servo_clip_angle: number;
+  cut_servo_prep_angle: number;
+  cut_confirm: boolean;
+  enable_sensors_in_gui: boolean;
+  debounce_delay: number;
+}
+
+export interface KlipperPrinterAfcButtonSettings {
+  pin: string;
+  long_press_duration: number;
 }
 
 // Custom classes start here

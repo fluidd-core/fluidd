@@ -32,7 +32,7 @@ export default class AfcCardUnitHub extends Mixins(StateMixin, AfcMixin) {
   }
 
   get sensorStatus () {
-    return this.hub.state ?? false
+    return this.hub?.state ?? false
   }
 
   get sensorOutput () {

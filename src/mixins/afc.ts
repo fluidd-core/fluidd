@@ -8,7 +8,7 @@ export default class AfcMixin extends Vue {
     return this.$typedState.printer.printer.AFC ?? {}
   }
 
-  get afcEnabled () {
+  get afcEnabled (): boolean {
     return this.$typedGetters['server/componentSupport']('afc')
   }
 
@@ -73,7 +73,7 @@ export default class AfcMixin extends Vue {
     const mapList = []
     for (const laneName of lanes) {
       const lane = this.getAfcLaneObject(laneName)
-      if (lane === null) continue
+      if (lane == null) continue
 
       mapList.push(lane.map)
     }
@@ -109,46 +109,51 @@ export default class AfcMixin extends Vue {
     return this.$typedState.config.uiSettings.afc.hiddenUnits
   }
 
-  getPrinterObject (key: string) {
-    const printer = this.$typedState.printer.printer ?? {}
-    return printer[key] ?? null
-  }
-
-  getPrinterSettings (key: string) {
-    const settings = this.$typedState.printer.printer.configfile?.settings ?? {}
-
-    return settings[key.toLowerCase()] ?? null
-  }
-
   getAfcLaneObject (lane: string) {
-    const key_stepper = `AFC_stepper ${lane}` as const
-    const key_lane = `AFC_lane ${lane}` as const
-    return this.getPrinterObject(key_stepper) ?? this.getPrinterObject(key_lane) ?? {}
+    const printerState = this.$typedState.printer.printer
+
+    return (
+      printerState[(`AFC_stepper ${lane}`)] ??
+      printerState[(`AFC_lane ${lane}`)]
+    )
   }
 
   getAfcLaneSettings (lane: string) {
-    const key_stepper = `AFC_stepper ${lane}` as const
-    const key_lane = `AFC_lane ${lane}` as const
-    return this.getPrinterSettings(key_stepper) ?? this.getPrinterSettings(key_lane) ?? {}
+    const printerSettings = this.$typedGetters['printer/getPrinterSettings']
+
+    return (
+      printerSettings[`afc_stepper ${lane.toLowerCase()}`] ??
+      printerSettings[`afc_lane ${lane.toLowerCase()}`]
+    )
   }
 
   getAfcExtruderObject (extruder: string) {
-    const key_extruder = `AFC_extruder ${extruder}` as const
-    return this.getPrinterObject(key_extruder) ?? {}
+    return this.$typedState.printer.printer[(`AFC_extruder ${extruder}`)]
   }
 
   getAfcExtruderSettings (extruder: string) {
-    const key = `AFC_extruder ${extruder}` as const
-    return this.getPrinterSettings(key) ?? {}
+    const printerSettings = this.$typedGetters['printer/getPrinterSettings']
+
+    return printerSettings[`afc_extruder ${extruder.toLowerCase()}`]
   }
 
   getAfcBufferObject (buffer: string) {
-    const key_buffer = `AFC_buffer ${buffer}` as const
-    return this.getPrinterObject(key_buffer)
+    return this.$typedState.printer.printer[`AFC_buffer ${buffer}`]
+  }
+
+  getAfcBufferSettings (buffer: string) {
+    const printerSettings = this.$typedGetters['printer/getPrinterSettings']
+
+    return printerSettings[`afc_buffer ${buffer.toLowerCase()}`]
   }
 
   getAfcHubObject (hub: string) {
-    const key = `AFC_hub ${hub}` as const
-    return this.getPrinterObject(key) ?? {}
+    return this.$typedState.printer.printer[`AFC_hub ${hub}`]
+  }
+
+  getAfcHubSettings (hub: string) {
+    const printerSettings = this.$typedGetters['printer/getPrinterSettings']
+
+    return printerSettings[`afc_hub ${hub.toLowerCase()}`]
   }
 }

@@ -91,11 +91,11 @@ export default class AfcCardUnitLaneActions extends Mixins(StateMixin, AfcMixin,
   }
 
   get laneRunout () {
-    return this.laneActive && !this.lane.prep
+    return this.laneActive && !this.lane?.prep
   }
 
   get toolLoaded () {
-    return this.lane.tool_loaded ?? false
+    return this.lane?.tool_loaded ?? false
   }
 
   loadLane () {

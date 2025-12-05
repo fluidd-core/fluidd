@@ -45,7 +45,7 @@ export default class AfcUnitLaneMappingToolDialog extends Mixins(StateMixin, Afc
   }
 
   get mappedTool () {
-    return this.lane.map ?? '--'
+    return this.lane?.map ?? '--'
   }
 
   mapTool (newTool: string) {

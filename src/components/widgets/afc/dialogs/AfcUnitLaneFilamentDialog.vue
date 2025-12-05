@@ -88,15 +88,15 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
   }
 
   get currentColor () {
-    return this.lane.color ?? '#000000'
+    return this.lane?.color ?? '#000000'
   }
 
   get currentMaterial () {
-    return this.lane.material ?? ''
+    return this.lane?.material ?? ''
   }
 
   get currentWeight () {
-    return Math.round(this.lane.weight ?? 0)
+    return Math.round(this.lane?.weight ?? 0)
   }
 
   get disableSetBtn () {

@@ -59,7 +59,8 @@ import AfcMixin from '@/mixins/afc'
 
 @Component({})
 export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
-  @Prop({ type: String, required: true }) readonly name!: string
+  @Prop({ type: String, required: true })
+  readonly name!: string
 
   get afcExtruder () {
     return this.getAfcExtruderObject(this.name)
@@ -70,16 +71,16 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   }
 
   get useRamming () {
-    const toolStart = this.afcExtruder.tool_start ?? ''
+    const toolStart = this.afcExtruder?.tool_start ?? ''
 
     return toolStart === 'buffer'
   }
 
   get hasActiveLane () {
-    if (this.afcCurrentLane === null) return false
+    if (this.afcCurrentLane == null) return false
 
-    const lanes = this.afcExtruder.lanes ?? []
-    return lanes.includes(this.afcCurrentLane?.name)
+    const lanes = this.afcExtruder?.lanes ?? []
+    return lanes.includes(this.afcCurrentLane.name)
   }
 
   get containerClasses () {
@@ -101,11 +102,11 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   }
 
   get laneLoaded () {
-    return this.afcExtruder.lane_loaded ?? ''
+    return this.afcExtruder?.lane_loaded ?? ''
   }
 
   get preSensorStatus () {
-    return this.afcExtruder.tool_start_status ?? false
+    return this.afcExtruder?.tool_start_status ?? false
   }
 
   get preSensorClasses () {
@@ -137,11 +138,14 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   }
 
   get hasPostSensor () {
-    return 'pin_tool_end' in this.settings
+    return (
+      this.settings != null &&
+      'pin_tool_end' in this.settings
+    )
   }
 
   get postSensorStatus () {
-    return this.afcExtruder.tool_end_status ?? false
+    return this.afcExtruder?.tool_end_status ?? false
   }
 
   get postSensorClasses () {
@@ -176,7 +180,7 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   }
 
   get stateLane () {
-    if (this.afcExtruder.lane_loaded) return this.afcExtruder.lane_loaded
+    if (this.afcExtruder?.lane_loaded) return this.afcExtruder.lane_loaded
     if (this.afcCurrentLane) return this.afcCurrentLane.name
 
     return this.$t('app.afc.LaneLoadedNone')

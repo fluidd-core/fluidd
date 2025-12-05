@@ -63,11 +63,19 @@ export default class AfcSettingsDialogLane extends Mixins(StateMixin, AfcMixin) 
   }
 
   get settingsDistHub () {
-    return this.afcSettingsLane.dist_hub || 0
+    return (
+      this.afcSettingsLane != null &&
+      'dist_hub' in this.afcSettingsLane &&
+      this.afcSettingsLane.dist_hub
+    ) || 0
   }
 
   get currentDistHub () {
-    return this.afcLane.dist_hub || 0
+    return (
+      this.afcLane != null &&
+      'dist_hub' in this.afcLane &&
+      this.afcLane.dist_hub
+    ) || 0
   }
 
   get enableSaveButton () {

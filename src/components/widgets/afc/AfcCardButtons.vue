@@ -117,9 +117,10 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
-import type { Macro } from '@/store/macros/types'
 import MacroBtn from '@/components/widgets/macros/MacroBtn.vue'
 import AfcSettingsDialog from '@/components/widgets/afc/dialogs/AfcSettingsDialog.vue'
+import type { KlipperPrinterAfcSettings } from '@/store/printer/types'
+import downloadUrl from '@/util/download-url'
 
 @Component({
   components: {
@@ -140,7 +141,7 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
         text: this.$t('app.afc.Calibrate'),
         command: 'AFC_CALIBRATION',
         disabled: false,
-        toolTipDisabled: this.macroDisabled('AFC_CALIBRATION'),
+        toolTipDisabled: this.macroTooltipDisabled('AFC_CALIBRATION'),
         disabledWhilePrinting: true,
       },
     ]
@@ -152,7 +153,7 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
         text: this.$t('app.afc.LedOff'),
         command: 'TURN_OFF_AFC_LED',
         disabled: false,
-        toolTipDisabled: this.macroDisabled('TURN_OFF_AFC_LED'),
+        toolTipDisabled: this.macroTooltipDisabled('TURN_OFF_AFC_LED'),
         disabledWhilePrinting: false,
       })
     } else {
@@ -161,7 +162,7 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
         text: this.$t('app.afc.LedOn'),
         command: 'TURN_ON_AFC_LED',
         disabled: false,
-        toolTipDisabled: this.macroDisabled('TURN_ON_AFC_LED'),
+        toolTipDisabled: this.macroTooltipDisabled('TURN_ON_AFC_LED'),
         disabledWhilePrinting: false,
       })
     }
@@ -172,122 +173,79 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
         text: 'Capture TD',
         command: 'AFC_GET_TD_ONE_DATA',
         disabled: false,
-        toolTipDisabled: this.macroDisabled('AFC_GET_TD_ONE_DATA'),
+        toolTipDisabled: this.macroTooltipDisabled('AFC_GET_TD_ONE_DATA'),
         disabledWhilePrinting: true,
       })
     }
 
-    return buttons.filter((button) => {
-      return commandsList.includes(button.command.toUpperCase())
-    })
+    return buttons.filter(button => commandsList.includes(button.command.toUpperCase()))
   }
 
-  macroDisabled (macroName: string): boolean {
-    const macro = this.$typedGetters['macros/getMacroByName'](macroName)
-    if (macro) {
-      return !macro.config?.description || macro.config.description === 'G-Code macro'
-    } else {
-      return true
-    }
+  macroTooltipDisabled (macroName: string): boolean {
+    return !this.macroDescription(macroName)
   }
 
   macroDescription (macroName: string) {
     const macro = this.$typedGetters['macros/getMacroByName'](macroName)
-    if (macro) {
-      return macro?.config?.description
-    } else {
-      return ''
-    }
+
+    return macro?.description || ''
   }
 
   get macros () {
-    const macros = this.$typedGetters['macros/getMacros']
-    const settings = this.$typedState.printer.printer.configfile?.settings.afc ?? {}
+    const settings: KlipperPrinterAfcSettings | undefined = this.$typedState.printer.printer.configfile.settings.afc
 
     const afcMacros = []
-    if (settings.wipe) {
-      const wipe_name:string = settings?.wipe_cmd || 'AFC_BRUSH'
+
+    if (settings?.wipe) {
+      const wipe_name: string = settings.wipe_cmd || 'AFC_BRUSH'
+
       afcMacros.push({
         text: this.$t('app.afc.BrushNozzle'),
         macroName: wipe_name,
         disabled: this.printerPrinting,
-        toolTipDisabled: this.macroDisabled(wipe_name),
+        toolTipDisabled: this.macroTooltipDisabled(wipe_name),
       })
     }
 
-    if (settings.park) {
-      const park_name:string = settings?.park_cmd || 'AFC_PARK'
+    if (settings?.park) {
+      const park_name: string = settings.park_cmd || 'AFC_PARK'
+
       afcMacros.push({
         text: this.$t('app.afc.ParkNozzle'),
         macroName: park_name,
         disabled: this.printerPrinting,
-        toolTipDisabled: this.macroDisabled(park_name),
+        toolTipDisabled: this.macroTooltipDisabled(park_name),
       })
     }
 
     return afcMacros
-      .map((button) => {
-        return {
-          ...button,
-          macro:
-            macros.find(
-              (macro: Macro) => macro.name.toLowerCase() === button.macroName.toLowerCase()
-            ) ?? null,
-        }
-      })
-      .filter((button) => button.macro !== null)
+      .map(button => ({
+        ...button,
+        macro: this.$typedGetters['macros/getMacroByName'](button.macroName),
+      }))
+      .filter((button) => button.macro != null)
   }
 
   downloadDebugJson () {
-    const AFC_DEBUG_FILENAME = 'afc_debug.json'
-    const output: {
-      config: { [key: string]: any }
-      settings: { [key: string]: any }
-      printer: { [key: string]: any }
-    } = {
-      config: {},
-      settings: {},
-      printer: {},
+    const output = {
+      config: Object.fromEntries(
+        Object.entries(this.$typedState.printer.printer.configfile.config)
+          .filter(([key]) => /^afc(?:$|_)/.test(key))
+      ),
+      settings: Object.fromEntries(
+        Object.entries(this.$typedState.printer.printer.configfile.settings)
+          .filter(([key]) => /^afc(?:$|_)/.test(key))
+      ),
+      printer: Object.fromEntries(
+        Object.entries(this.$typedState.printer.printer)
+          .filter(([key]) => /^afc(?:$|_)/.test(key))
+      ),
     }
-    const printer = this.$typedState.printer.printer ?? {}
-    const config = printer.configfile?.config ?? {}
-    const settings = printer.configfile?.settings ?? {}
 
-    Object.keys(config)
-      .filter((key) => key.toLowerCase().startsWith('afc'))
-      .forEach((name) => {
-        output.config[name] = { ...config[name] }
-      })
+    const jsonString = JSON.stringify(output)
+    const url = `data:text/plain;charset=utf-8,${encodeURIComponent(jsonString)}`
 
-    Object.keys(settings)
-      .filter((key) => key.toLowerCase().startsWith('afc'))
-      .forEach((name) => {
-        output.settings[name] = { ...settings[name] }
-      })
-
-    Object.keys(printer)
-      .filter((key) => key.toLowerCase().startsWith('afc'))
-      .forEach((name) => {
-        output.printer[name] = { ...printer[name] }
-      })
-
-    // Convert the output object to a JSON string and create a Blob for download
-    const jsonString = JSON.stringify(output, null, 2)
-    const blob = new Blob([jsonString], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-
-    // Create a link element to trigger the download
-    const link = document.createElement('a')
-    link.href = url
-    link.download = AFC_DEBUG_FILENAME
-
-    // Append the link to the body, click it to trigger download, then remove it
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-
-    // Clean up the URL object
-    URL.revokeObjectURL(url)
+    downloadUrl('afc_debug.json', url)
   }
 }
 </script>

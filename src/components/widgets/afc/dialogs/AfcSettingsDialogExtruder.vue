@@ -112,15 +112,15 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
   }
 
   get settingsToolStn () {
-    return this.afcSettingsExtruder.tool_stn || 0
+    return this.afcSettingsExtruder?.tool_stn || 0
   }
 
   get settingsToolStnUnload () {
-    return this.afcSettingsExtruder.tool_stn_unload || 0
+    return this.afcSettingsExtruder?.tool_stn_unload || 0
   }
 
   get settingsToolSensorAfterExtruder () {
-    return this.afcSettingsExtruder.tool_sensor_after_extruder || 0
+    return this.afcSettingsExtruder?.tool_sensor_after_extruder || 0
   }
 
   get printerObject () {
@@ -128,23 +128,23 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
   }
 
   get currentToolStn () {
-    return this.printerObject.tool_stn || 0
+    return this.printerObject?.tool_stn || 0
   }
 
   get currentToolStnUnload () {
-    return this.printerObject.tool_stn_unload || 0
+    return this.printerObject?.tool_stn_unload || 0
   }
 
   get currentToolSensorAfterExtruder () {
-    return this.printerObject.tool_sensor_after_extruder || 0
+    return this.printerObject?.tool_sensor_after_extruder || 0
   }
 
   get lanes () {
-    return this.printerObject.lanes ?? []
+    return this.printerObject?.lanes ?? []
   }
 
   get lane_loaded () {
-    return this.printerObject.lane_loaded ?? ''
+    return this.printerObject?.lane_loaded ?? ''
   }
 
   get filledLanes () {
@@ -153,7 +153,7 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
     for (const lane of this.lanes) {
       const laneObject = this.getAfcLaneObject(lane)
 
-      if (laneObject?.load && laneObject?.prep) {
+      if (laneObject?.load && laneObject.prep) {
         filledLanes.push(lane)
       }
     }
@@ -162,7 +162,10 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
   }
 
   get existsToolEndSensor () {
-    return 'pin_tool_end' in this.afcSettingsExtruder
+    return (
+      this.afcSettingsExtruder != null &&
+      'pin_tool_end' in this.afcSettingsExtruder
+    )
   }
 
   get toolStnSubTitle () {
@@ -170,7 +173,7 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
       return this.$t('app.afc.SettingsDialog.ToolStnDescriptionWithEndSensor')
     }
 
-    if (this.afcSettingsExtruder.pin_tool_start === 'buffer') {
+    if (this.afcSettingsExtruder?.pin_tool_start === 'buffer') {
       return this.$t('app.afc.SettingsDialog.ToolStnDescriptionWithRamming')
     }
 

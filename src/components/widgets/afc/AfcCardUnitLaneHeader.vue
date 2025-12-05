@@ -40,7 +40,7 @@ export default class AfcCardUnitLaneHeader extends Mixins(StateMixin, AfcMixin) 
   }
 
   get mappedTool () {
-    return this.lane.map ?? '--'
+    return this.lane?.map ?? '--'
   }
 }
 </script>

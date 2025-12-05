@@ -128,11 +128,11 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   }
 
   get runoutLane () {
-    return this.lane.runout_lane ?? 'NONE'
+    return this.lane?.runout_lane ?? 'NONE'
   }
 
   get spoolId (): number {
-    return Number(this.lane.spool_id || '0')
+    return Number(this.lane?.spool_id || '0')
   }
 
   get spool (): SpoolmanSpool | null {
@@ -147,11 +147,11 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
     if (this.afc?.td1_present && this.afcShowTd1Color) {
       return `#${this.lane?.td1_color}`
     }
-    return this.lane.color || '#000000'
+    return this.lane?.color || '#000000'
   }
 
   get spoolRemainingWeight () {
-    return Math.round(this.lane.weight ?? 0)
+    return Math.round(this.lane?.weight ?? 0)
   }
 
   get spoolRemainingWeightOutput () {
@@ -169,7 +169,7 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   }
 
   get spoolMaterial () {
-    return this.lane.material || '--'
+    return this.lane?.material || '--'
   }
 
   get spoolVendor () {
@@ -185,7 +185,7 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   }
 
   get tdPresent () {
-    if (this.lane.td1_td === undefined || this.lane?.td1_td?.length === 0) {
+    if (this.lane?.td1_td == null || this.lane.td1_td.length === 0) {
       return false
     }
     return true
