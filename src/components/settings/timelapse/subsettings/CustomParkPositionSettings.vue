@@ -20,7 +20,8 @@
           dense
           single-line
           suffix="mm"
-          @change="setParkPosX"
+          submit-on-change
+          @submit="setParkPosX"
         />
       </app-setting>
     </template>
@@ -45,7 +46,8 @@
           dense
           single-line
           suffix="mm"
-          @change="setParkPosY"
+          submit-on-change
+          @submit="setParkPosY"
         />
       </app-setting>
     </template>

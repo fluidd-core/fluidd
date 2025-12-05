@@ -32,7 +32,8 @@
           dense
           single-line
           suffix="ms"
-          @change="setParkTime"
+          submit-on-change
+          @submit="setParkTime"
         />
       </app-setting>
 
@@ -54,7 +55,8 @@
           dense
           single-line
           suffix="mm/s"
-          @change="setParkTravelSpeed"
+          submit-on-change
+          @submit="setParkTravelSpeed"
         />
       </app-setting>
 
@@ -93,7 +95,8 @@
           dense
           single-line
           suffix="mm"
-          @change="setParkPosZ"
+          submit-on-change
+          @submit="setParkPosZ"
         />
       </app-setting>
 

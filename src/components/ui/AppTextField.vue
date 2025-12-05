@@ -42,6 +42,12 @@ export default class AppTextField extends Vue {
   @Prop({ type: Boolean })
   readonly xSmall?: boolean
 
+  @Prop({ type: Boolean, default: true })
+  readonly submitOnEnter?: boolean
+
+  @Prop({ type: Boolean })
+  readonly submitOnChange?: boolean
+
   @Ref('form')
   readonly form!: VForm
 
@@ -63,14 +69,23 @@ export default class AppTextField extends Vue {
   }
 
   handleSubmit () {
-    if (this.form.validate()) {
+    if (
+      this.submitOnEnter &&
+      !this.submitOnChange &&
+      this.form.validate()
+    ) {
       this.$emit('submit', this.currentValue)
     }
   }
 
   handleChange () {
-    if (this.form.validate()) {
-      this.$emit('change', this.currentValue)
+    this.$emit('change', this.currentValue)
+
+    if (
+      this.submitOnChange &&
+      this.form.validate()
+    ) {
+      this.$emit('submit', this.currentValue)
     }
   }
 

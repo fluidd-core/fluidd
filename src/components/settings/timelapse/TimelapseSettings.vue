@@ -61,7 +61,8 @@
           dense
           single-line
           suffix="ms"
-          @change="setDelayComp"
+          submit-on-change
+          @submit="setDelayComp"
         />
       </app-setting>
 

@@ -19,7 +19,8 @@
           ]"
           :value="instanceName"
           :default-value="$globals.APP_NAME"
-          @change="setInstanceName"
+          submit-on-change
+          @submit="setInstanceName"
         />
       </app-setting>
 

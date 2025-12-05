@@ -18,7 +18,8 @@
         dense
         single-line
         suffix="mm"
-        @change="setParkRetractDistance"
+        submit-on-change
+        @submit="setParkRetractDistance"
       />
     </app-setting>
 
@@ -40,7 +41,8 @@
         dense
         single-line
         suffix="mm/s"
-        @change="setParkRetractSpeed"
+        submit-on-change
+        @submit="setParkRetractSpeed"
       />
     </app-setting>
 
@@ -62,7 +64,8 @@
         dense
         single-line
         suffix="mm"
-        @change="setParkExtrudeDistance"
+        submit-on-change
+        @submit="setParkExtrudeDistance"
       />
     </app-setting>
 
@@ -84,7 +87,8 @@
         dense
         single-line
         suffix="mm/s"
-        @change="setParkExtrudeSpeed"
+        submit-on-change
+        @submit="setParkExtrudeSpeed"
       />
     </app-setting>
   </div>

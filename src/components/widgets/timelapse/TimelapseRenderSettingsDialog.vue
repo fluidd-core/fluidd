@@ -38,7 +38,8 @@
           dense
           single-line
           suffix="fps"
-          @change="setOutputFramerate"
+          submit-on-change
+          @submit="setOutputFramerate"
         />
       </app-setting>
 
@@ -60,7 +61,8 @@
             dense
             single-line
             suffix="s"
-            @change="setTargetLength"
+            submit-on-change
+            @submit="setTargetLength"
           />
         </app-setting>
 
@@ -83,7 +85,8 @@
             dense
             single-line
             suffix="fps"
-            @change="setMinFps"
+            submit-on-change
+            @submit="setMinFps"
           />
         </app-setting>
 
@@ -106,7 +109,8 @@
             dense
             single-line
             suffix="fps"
-            @change="setMaxFps"
+            submit-on-change
+            @submit="setMaxFps"
           />
         </app-setting>
       </template>
@@ -144,7 +148,8 @@
           dense
           single-line
           :suffix="$tc('app.timelapse.label.frame', duplicateFrames)"
-          @change="setDuplicateFrames"
+          submit-on-change
+          @submit="setDuplicateFrames"
         />
       </app-setting>
 

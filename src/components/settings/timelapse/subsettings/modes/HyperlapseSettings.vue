@@ -18,7 +18,8 @@
         dense
         single-line
         suffix="s"
-        @change="setHyperlapseCycle"
+        submit-on-change
+        @submit="setHyperlapseCycle"
       />
     </app-setting>
   </div>

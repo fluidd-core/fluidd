@@ -229,7 +229,8 @@
           single-line
           hide-details="auto"
           suffix="mm/s"
-          @change="setDefaultToolheadXYSpeed"
+          submit-on-change
+          @submit="setDefaultToolheadXYSpeed"
         />
       </app-setting>
 
@@ -248,7 +249,8 @@
           single-line
           hide-details="auto"
           suffix="mm/s"
-          @change="setDefaultToolheadZSpeed"
+          submit-on-change
+          @submit="setDefaultToolheadZSpeed"
         />
       </app-setting>
 
@@ -290,7 +292,8 @@
           single-line
           hide-details="auto"
           suffix="mm"
-          @change="setDefaultExtrudeLength"
+          submit-on-change
+          @submit="setDefaultExtrudeLength"
         />
       </app-setting>
 
@@ -309,7 +312,8 @@
           single-line
           hide-details="auto"
           suffix="mm/s"
-          @change="setDefaultExtrudeSpeed"
+          submit-on-change
+          @submit="setDefaultExtrudeSpeed"
         />
       </app-setting>
 

@@ -51,7 +51,8 @@
           single-line
           hide-details="auto"
           suffix="mm"
-          @change="setMinLayerHeight"
+          submit-on-change
+          @submit="setMinLayerHeight"
         />
       </app-setting>
 
@@ -70,7 +71,8 @@
           single-line
           hide-details="auto"
           suffix="mm"
-          @change="setExtrusionLineWidth"
+          submit-on-change
+          @submit="setExtrusionLineWidth"
         />
       </app-setting>
 
@@ -89,7 +91,8 @@
           single-line
           hide-details="auto"
           suffix="mm"
-          @change="setMoveLineWidth"
+          submit-on-change
+          @submit="setMoveLineWidth"
         />
       </app-setting>
 
@@ -108,7 +111,8 @@
           single-line
           hide-details="auto"
           suffix="mm"
-          @change="setRetractionIconSize"
+          submit-on-change
+          @submit="setRetractionIconSize"
         />
       </app-setting>
 
