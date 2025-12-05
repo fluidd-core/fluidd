@@ -33,7 +33,6 @@
           <v-layout justify-center>
             <app-named-slider
               v-model="selectedFrame"
-              full-width
               :label="$tc('app.timelapse.label.frame')"
               :min="1"
               :max="frameCount"

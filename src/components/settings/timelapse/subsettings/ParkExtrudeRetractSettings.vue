@@ -5,8 +5,7 @@
       :title="$t('app.timelapse.setting.park_retract_distance')"
       :sub-title="subtitleIfBlocked(parkRetractDistanceBlocked)"
     >
-      <v-text-field
-        ref="parkRetractDistanceElement"
+      <app-text-field
         :value="parkRetractDistance"
         :rules="[
           $rules.required,
@@ -19,7 +18,8 @@
         dense
         single-line
         suffix="mm"
-        @change="setParkRetractDistance"
+        submit-on-change
+        @submit="setParkRetractDistance"
       />
     </app-setting>
 
@@ -28,8 +28,7 @@
       :title="$t('app.timelapse.setting.park_retract_speed')"
       :sub-title="subtitleIfBlocked(parkRetractSpeedBlocked)"
     >
-      <v-text-field
-        ref="parkRetractSpeedElement"
+      <app-text-field
         :value="parkRetractSpeed"
         :rules="[
           $rules.required,
@@ -42,7 +41,8 @@
         dense
         single-line
         suffix="mm/s"
-        @change="setParkRetractSpeed"
+        submit-on-change
+        @submit="setParkRetractSpeed"
       />
     </app-setting>
 
@@ -51,8 +51,7 @@
       :title="$t('app.timelapse.setting.park_extrude_distance')"
       :sub-title="subtitleIfBlocked(parkExtrudeDistanceBlocked)"
     >
-      <v-text-field
-        ref="parkExtrudeDistanceElement"
+      <app-text-field
         :value="parkExtrudeDistance"
         :rules="[
           $rules.required,
@@ -65,7 +64,8 @@
         dense
         single-line
         suffix="mm"
-        @change="setParkExtrudeDistance"
+        submit-on-change
+        @submit="setParkExtrudeDistance"
       />
     </app-setting>
 
@@ -74,8 +74,7 @@
       :title="$t('app.timelapse.setting.park_extrude_speed')"
       :sub-title="subtitleIfBlocked(parkExtrudeSpeedBlocked)"
     >
-      <v-text-field
-        ref="parkExtrudeSpeedElement"
+      <app-text-field
         :value="parkExtrudeSpeed"
         :rules="[
           $rules.required,
@@ -88,33 +87,21 @@
         dense
         single-line
         suffix="mm/s"
-        @change="setParkExtrudeSpeed"
+        submit-on-change
+        @submit="setParkExtrudeSpeed"
       />
     </app-setting>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Ref } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
-import type { VTextField } from 'vuetify/lib'
 
 @Component({})
 export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
-  @Ref('parkRetractDistanceElement')
-  readonly parkRetractDistanceElement!: VTextField
-
-  @Ref('parkRetractSpeedElement')
-  readonly parkRetractSpeedElement!: VTextField
-
-  @Ref('parkExtrudeDistanceElement')
-  readonly parkExtrudeDistanceElement!: VTextField
-
-  @Ref('parkExtrudeSpeedElement')
-  readonly parkExtrudeSpeedElement!: VTextField
-
   get parkRetractDistanceBlocked (): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('park_retract_distance')
   }
@@ -124,9 +111,7 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   setParkRetractDistance (value: number) {
-    if (this.parkRetractDistanceElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ park_retract_distance: value })
-    }
+    SocketActions.machineTimelapseSetSettings({ park_retract_distance: value })
   }
 
   get parkRetractSpeedBlocked (): boolean {
@@ -138,9 +123,7 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   setParkRetractSpeed (value: number) {
-    if (this.parkRetractDistanceElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ park_retract_speed: value })
-    }
+    SocketActions.machineTimelapseSetSettings({ park_retract_speed: value })
   }
 
   get parkExtrudeDistanceBlocked (): boolean {
@@ -152,9 +135,7 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   setParkExtrudeDistance (value: number) {
-    if (this.parkExtrudeDistanceElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ park_extrude_distance: value })
-    }
+    SocketActions.machineTimelapseSetSettings({ park_extrude_distance: value })
   }
 
   get parkExtrudeSpeedBlocked (): boolean {
@@ -166,9 +147,7 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   setParkExtrudeSpeed (value: number) {
-    if (this.parkRetractDistanceElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ park_extrude_speed: value })
-    }
+    SocketActions.machineTimelapseSetSettings({ park_extrude_speed: value })
   }
 
   get settings (): TimelapseSettings {

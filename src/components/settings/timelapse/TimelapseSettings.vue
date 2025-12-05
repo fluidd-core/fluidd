@@ -48,8 +48,7 @@
         :title="$t('app.timelapse.setting.stream_delay_compensation')"
         :sub-title="subtitleIfBlocked(delayCompBlocked)"
       >
-        <v-text-field
-          ref="delayCompElement"
+        <app-text-field
           :value="delayComp"
           :rules="[
             $rules.required,
@@ -62,7 +61,8 @@
           dense
           single-line
           suffix="ms"
-          @change="setDelayComp"
+          submit-on-change
+          @submit="setDelayComp"
         />
       </app-setting>
 
@@ -119,7 +119,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Ref } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { TimelapseMode, TimelapseSettings as TimelapseSettingsType } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
@@ -128,7 +128,6 @@ import type { WebcamConfig } from '@/store/webcams/types'
 import ToolheadParkingSettings from '@/components/settings/timelapse/subsettings/ToolheadParkingSettings.vue'
 import { defaultWritableSettings } from '@/store/timelapse/state'
 import TimelapseRenderSettingsDialog from '@/components/widgets/timelapse/TimelapseRenderSettingsDialog.vue'
-import type { VTextField } from 'vuetify/lib'
 
 @Component({
   components: {
@@ -138,9 +137,6 @@ import type { VTextField } from 'vuetify/lib'
   }
 })
 export default class TimelapseSettings extends Mixins(StateMixin) {
-  @Ref('delayCompElement')
-  readonly delayCompElement!: VTextField
-
   renderSettingsDialogOpen = false
 
   get supportedModes (): { text: string, value: TimelapseMode }[] {
@@ -197,9 +193,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   setDelayComp (value: number) {
-    if (this.delayCompElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ stream_delay_compensation: value / 1000 })
-    }
+    SocketActions.machineTimelapseSetSettings({ stream_delay_compensation: value / 1000 })
   }
 
   get verboseGcodeBlocked (): boolean {

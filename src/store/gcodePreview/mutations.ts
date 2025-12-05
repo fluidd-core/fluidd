@@ -13,19 +13,19 @@ export const mutations = {
   },
 
   setMoves (state, payload: Move[]) {
-    Vue.set(state, 'moves', payload)
+    Vue.set(state, 'moves', Object.freeze(payload.map(Object.freeze)))
   },
 
   setLayers (state, payload: Layer[]) {
-    Vue.set(state, 'layers', payload)
+    Vue.set(state, 'layers', Object.freeze(payload.map(Object.freeze)))
   },
 
   setParts (state, payload: Part[]) {
-    Vue.set(state, 'parts', payload)
+    Vue.set(state, 'parts', Object.freeze(payload.map(Object.freeze)))
   },
 
   setTools (state, payload: Tool[]) {
-    Vue.set(state, 'tools', payload)
+    Vue.set(state, 'tools', Object.freeze(payload))
   },
 
   setFile (state, file: AppFile | AppFileWithMeta | null) {

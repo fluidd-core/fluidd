@@ -39,7 +39,7 @@
       <v-divider />
 
       <app-setting :title="$t('app.setting.label.default_min_layer_height')">
-        <v-text-field
+        <app-text-field
           :value="minLayerHeight"
           :rules="[
             $rules.required,
@@ -51,14 +51,15 @@
           single-line
           hide-details="auto"
           suffix="mm"
-          @change="setMinLayerHeight"
+          submit-on-change
+          @submit="setMinLayerHeight"
         />
       </app-setting>
 
       <v-divider />
 
       <app-setting :title="$t('app.setting.label.extrusion_line_width')">
-        <v-text-field
+        <app-text-field
           :value="extrusionLineWidth"
           :rules="[
             $rules.required,
@@ -70,14 +71,15 @@
           single-line
           hide-details="auto"
           suffix="mm"
-          @change="setExtrusionLineWidth"
+          submit-on-change
+          @submit="setExtrusionLineWidth"
         />
       </app-setting>
 
       <v-divider />
 
       <app-setting :title="$t('app.setting.label.move_line_width')">
-        <v-text-field
+        <app-text-field
           :value="moveLineWidth"
           :rules="[
             $rules.required,
@@ -89,14 +91,15 @@
           single-line
           hide-details="auto"
           suffix="mm"
-          @change="setMoveLineWidth"
+          submit-on-change
+          @submit="setMoveLineWidth"
         />
       </app-setting>
 
       <v-divider />
 
       <app-setting :title="$t('app.setting.label.retraction_icon_size')">
-        <v-text-field
+        <app-text-field
           :value="retractionIconSize"
           :rules="[
             $rules.required,
@@ -108,7 +111,8 @@
           single-line
           hide-details="auto"
           suffix="mm"
-          @change="setRetractionIconSize"
+          submit-on-change
+          @submit="setRetractionIconSize"
         />
       </app-setting>
 
