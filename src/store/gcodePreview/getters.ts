@@ -187,11 +187,15 @@ export const getters = {
   },
 
   getToolColors: (state, getters): Record<Tool, string> => {
-    const colorsFromFileMetadata: string[] = getters.getFileFilamentColors
-
-    const toolIndexes = state.tools.length === 0
-      ? [0]
-      : state.tools
+    const [toolIndexes, colorsFromFileMetadata]: [number[], string[]] = state.tools.length === 0
+      ? [
+          [0],
+          []
+        ]
+      : [
+          state.tools,
+          getters.getFileFilamentColors
+        ]
 
     const defaultColors: string[] = getters.getDefaultColors
 
