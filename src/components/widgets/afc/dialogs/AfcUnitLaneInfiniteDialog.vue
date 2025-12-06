@@ -52,23 +52,27 @@ export default class AfcUnitLaneInfiniteDialog extends Mixins(StateMixin, AfcMix
   }
 
   get laneList (): string[] {
-    const allLanes = this.afc.lanes ?? []
-    let output: string[] = []
+    const laneList: string[] = []
 
-    for (const laneName of allLanes) {
-      if (laneName === this.name) continue
+    for (const laneName of this.afcLanes) {
+      if (laneName === this.name) {
+        continue
+      }
 
       const lane = this.getAfcLaneObject(laneName)
-      const prep = lane?.prep ?? false
-      const load = lane?.load ?? false
 
-      if (prep && load) output.push(lane?.name)
+      if (
+        lane?.prep === true &&
+        lane?.load === true
+      ) {
+        laneList.push(lane.name)
+      }
     }
 
-    output = output.sort((a, b) => a.localeCompare(b))
-    output.unshift('NONE')
-
-    return output
+    return [
+      'NONE',
+      ...laneList.sort((a, b) => a.localeCompare(b))
+    ]
   }
 
   setRunout (newLane: string) {

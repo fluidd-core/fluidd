@@ -17,7 +17,7 @@ import AfcMixin from '@/mixins/afc'
 @Component
 export default class AfcCardBypass extends Mixins(StateMixin, AfcMixin) {
   get bypassState (): boolean {
-    return this.afc.bypass_state ?? false
+    return this.afc?.bypass_state ?? false
   }
 }
 </script>

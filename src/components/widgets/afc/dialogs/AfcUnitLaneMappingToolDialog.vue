@@ -14,7 +14,7 @@
       <v-row>
         <v-col class="pt-0 text-center">
           <v-btn
-            v-for="tool in afcMapList"
+            v-for="tool in mapList"
             :key="tool"
             :disabled="tool.toLowerCase() === mappedTool.toLowerCase()"
             color="primary"
@@ -49,6 +49,21 @@ export default class AfcUnitLaneMappingToolDialog extends Mixins(StateMixin, Afc
 
   get mappedTool (): string {
     return this.lane?.map ?? '--'
+  }
+
+  get mapList (): string[] {
+    const mapList: string[] = []
+
+    for (const laneName of this.afcLanes) {
+      const lane = this.getAfcLaneObject(laneName)
+
+      if (lane != null) {
+        mapList.push(lane.map)
+      }
+    }
+
+    return mapList
+      .sort((a, b) => a.localeCompare(b))
   }
 
   mapTool (newTool: string) {

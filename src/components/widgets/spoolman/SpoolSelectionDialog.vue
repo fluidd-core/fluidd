@@ -139,6 +139,7 @@
                     {{ item.id === selectedSpoolId ? '$markedCircle' : '$filament' }}
                   </v-icon>
                 </v-progress-circular>
+
                 <div class="flex-column">
                   <div class="flex-row">
                     {{ item.filament_name }}
@@ -157,14 +158,13 @@
               </div>
             </template>
 
-            <template #[`item-value.loaded`]>
+            <template #[`item.loaded`]>
               <v-chip
-                v-if="spoolLoaded(item)"
+                v-if="getSpoolLoadedLane(item) != null"
                 color="primary"
                 small
-                style="text-transform: capitalize"
               >
-                {{ getLaneLoadedName(item) }}
+                {{ $filters.prettyCase(getSpoolLoadedLane(item) ?? '') }}
               </v-chip>
             </template>
 
@@ -357,12 +357,6 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   get availableSpools () {
     const availableSpools: Spool[] = this.$typedGetters['spoolman/getAvailableSpools']
 
-    if (this.$typedGetters['printer/getSupportsAfc']) {
-      for (const spool in availableSpools) {
-        availableSpools[spool].loaded = this.getLaneLoadedName(availableSpools[spool])
-      }
-    }
-
     return availableSpools
       .filter(x => !x.archived)
   }
@@ -372,12 +366,23 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get configurableHeaders (): AppDataTableHeader[] {
+    const afcHeaders: AppDataTableHeader[] = this.afc != null
+      ? [
+          {
+            text: this.$tc('app.afc.LaneLoaded'),
+            value: 'loaded',
+            cellClass: 'text-no-wrap'
+          }
+        ]
+      : []
+
     const headers: AppDataTableHeader[] = [
       {
         text: this.$tc('app.spoolman.label.id'),
         value: 'id',
         cellClass: 'text-no-wrap'
       },
+      ...afcHeaders,
       {
         text: this.$tc('app.spoolman.label.material'),
         value: 'filament.material',
@@ -482,14 +487,6 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         cellClass: 'text-no-wrap'
       }
     ]
-
-    if (this.$typedGetters['printer/getSupportsAfc']) {
-      headers.push({
-        text: this.$tc('app.afc.LaneLoaded'),
-        value: 'loaded',
-        cellClass: 'text-no-wrap'
-      })
-    }
 
     const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters['config/getMergedTableHeaders'](headers, 'spoolman')
 
@@ -753,21 +750,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
   }
 
-  spoolLoaded (item: Spool) {
-    if (this.afc === null) return undefined
-
-    const spools = this.afcLoadedSpools ?? undefined
-    if (!spools.length) return undefined
-    return spools.find((s) => s.spoolId === item.id)
-  }
-
-  getLaneLoadedName (item: Spool):string {
-    const spool = this.spoolLoaded(item)
-    if (spool !== undefined) {
-      return spool?.lane
-    } else {
-      return '--'
-    }
+  getSpoolLoadedLane (spool: Spool): string | undefined {
+    return this.afcLoadedSpools[spool.id]
   }
 }
 </script>

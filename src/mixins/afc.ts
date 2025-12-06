@@ -1,84 +1,66 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import type { KlipperPrinterAfcState } from '@/store/printer/types'
+import type { KlipperPrinterAfcStateState, KlipperPrinterAfcState } from '@/store/printer/types'
 
 @Component
 export default class AfcMixin extends Vue {
-  get afc (): KlipperPrinterAfcState {
-    return this.$typedState.printer.printer.AFC ?? {}
-  }
-
-  get afcEnabled (): boolean {
-    return this.$typedGetters['server/componentSupport']('afc')
+  get afc (): KlipperPrinterAfcState | undefined {
+    return this.$typedState.printer.printer.AFC
   }
 
   get afcExtruders (): string[] {
-    return this.afc.extruders ?? []
+    return this.afc?.extruders ?? []
   }
 
   get afcHubs (): string[] {
-    return this.afc.hubs ?? []
+    return this.afc?.hubs ?? []
   }
 
   get afcUnits (): string[] {
-    return this.afc.units ?? []
+    return this.afc?.units ?? []
   }
 
   get afcLanes (): string[] {
-    return this.afc.lanes ?? []
+    return this.afc?.lanes ?? []
   }
 
-  get afcLoadedSpools () {
-    if (this.afcLanes.length === 0) return []
+  get afcLoadedSpools (): Record<number, string> {
+    const loadedSpools = this.afcLanes
+      .reduce((loadedSpools, laneName) => {
+        const lane = this.getAfcLaneObject(laneName)
 
-    const spoolIds: { lane: string; spoolId: number }[] = []
-    this.afcLanes.forEach((name) => {
-      const lane = this.getAfcLaneObject(name)
-      if (!lane || !lane.spool_id) return
+        if (lane?.spool_id) {
+          loadedSpools[lane.spool_id] = lane.name
+        }
 
-      spoolIds.push({
-        lane: name,
-        spoolId: lane.spool_id,
-      })
-    })
+        return loadedSpools
+      }, {} as Record<number, string>)
 
-    return spoolIds
+    return loadedSpools
   }
 
-  get afcErrorState () {
-    return this.afc.error_state ?? false
+  get afcErrorState (): boolean {
+    return this.afc?.error_state ?? false
   }
 
   get afcCurrentLane () {
-    const current = this.afc.current_load ?? this.afc.current_lane ?? null
-    if (current === null) return null
+    const laneName = this.afc?.current_load ?? this.afc?.current_lane
 
-    return this.getAfcLaneObject(current)
+    if (laneName != null) {
+      return this.getAfcLaneObject(laneName)
+    }
   }
 
   get afcCurrentBuffer () {
-    const name = this.afcCurrentLane?.buffer ?? null
-    if (name === null) return null
+    const bufferName = this.afcCurrentLane?.buffer
 
-    return this.getAfcBufferObject(name)
-  }
-
-  get afcCurrentState () {
-    return this.afc.current_state ?? ''
-  }
-
-  get afcMapList (): string[] {
-    const lanes = this.afc.lanes ?? []
-
-    const mapList = []
-    for (const laneName of lanes) {
-      const lane = this.getAfcLaneObject(laneName)
-      if (lane == null) continue
-
-      mapList.push(lane.map)
+    if (bufferName != null) {
+      return this.getAfcBufferObject(bufferName)
     }
+  }
 
-    return mapList.sort()
+  get afcCurrentState (): KlipperPrinterAfcStateState {
+    return this.afc?.current_state ?? 'Idle'
   }
 
   get afcExistsSpoolman () {

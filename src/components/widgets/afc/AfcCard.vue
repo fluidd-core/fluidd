@@ -1,6 +1,5 @@
 <template>
   <collapsable-card
-    v-if="afcEnabled"
     :title="$t('app.afc.Headline')"
     icon="$afcIcon"
     draggable
@@ -61,10 +60,6 @@ export default class AfcCard extends Mixins(StateMixin, AfcMixin) {
   get filteredUnits (): string[] {
     return this.afcUnits
       .filter(unit => !this.afcHiddenUnits.includes(unit))
-  }
-
-  get afcEnabled (): boolean {
-    return this.$typedGetters['printer/getSupportsAfc']
   }
 }
 </script>

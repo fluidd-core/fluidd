@@ -742,11 +742,13 @@ export interface KlipperPrinterMmuMachineState extends KlipperPrinterMmuMachineS
   num_units: number;
 }
 
+export type KlipperPrinterAfcStateState = 'Initialized' | 'Idle' | 'Error' | 'Loading' | 'Unloading' | 'Ejecting' | 'Moving' | 'Restoring'
+
 export interface KlipperPrinterAfcState {
   current_load?: string;
   current_lane?: string;
   next_lane?: string;
-  current_state?: 'Initialized' | 'Idle' | 'Error' | 'Loading' | 'Unloading' | 'Ejecting' | 'Moving' | 'Restoring';
+  current_state?: KlipperPrinterAfcStateState;
   current_toolchange?: number;
   number_of_toolchanges?: number;
   spoolman?: string;
@@ -785,9 +787,9 @@ export interface KlipperPrinterAfcExtruderState {
 }
 
 export interface KlipperPrinterAfcBufferState {
-  state: string;
-  lanes: string[];
-  enabled: boolean;
+  state?: string;
+  lanes?: string[];
+  enabled?: boolean;
 }
 
 export interface KlipperPrinterConfig extends Record<string, Record<string, string | undefined> | undefined> {

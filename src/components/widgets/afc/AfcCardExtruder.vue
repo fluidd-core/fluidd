@@ -75,10 +75,15 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   }
 
   get hasActiveLane (): boolean {
-    if (this.afcCurrentLane == null) return false
+    const currentLane = this.afcCurrentLane
+
+    if (currentLane == null) {
+      return false
+    }
 
     const lanes = this.afcExtruder?.lanes ?? []
-    return lanes.includes(this.afcCurrentLane.name)
+
+    return lanes.includes(currentLane.name)
   }
 
   get containerClasses () {
@@ -163,16 +168,22 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   }
 
   get bufferOutput (): string {
-    const extruder = this.afcCurrentLane?.extruder ?? ''
-    if (extruder !== this.name) return this.$t('app.afc.BufferDisabled').toString()
+    const extruder = this.afcCurrentLane?.extruder
+
+    if (extruder !== this.name) {
+      return this.$t('app.afc.BufferDisabled').toString()
+    }
 
     return `${this.afcCurrentLane?.buffer ?? '--'}: ${this.afcCurrentBuffer?.state ?? '--'}`
   }
 
   get state (): string {
-    const extruder = this.afcCurrentLane?.extruder ?? ''
+    const extruder = this.afcCurrentLane?.extruder
+
     if (extruder === this.name) {
-      if (this.printerPrinting) return this.$t('app.afc.Printing').toString()
+      if (this.printerPrinting) {
+        return this.$t('app.afc.Printing').toString()
+      }
 
       return this.$t(`app.afc.${this.afcCurrentState}`).toString()
     }
@@ -181,8 +192,13 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   }
 
   get stateLane (): string {
-    if (this.afcExtruder?.lane_loaded) return this.afcExtruder.lane_loaded
-    if (this.afcCurrentLane) return this.afcCurrentLane.name
+    if (this.afcExtruder?.lane_loaded) {
+      return this.afcExtruder.lane_loaded
+    }
+
+    if (this.afcCurrentLane) {
+      return this.afcCurrentLane.name
+    }
 
     return this.$t('app.afc.LaneLoadedNone').toString()
   }

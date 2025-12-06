@@ -144,8 +144,7 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
       },
     ]
 
-    const ledState = this.afc.led_state ?? false
-    if (ledState) {
+    if (this.afc?.led_state === true) {
       buttons.push({
         icon: '$afcTurnOffLed',
         text: this.$t('app.afc.LedOff'),
@@ -165,7 +164,7 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
       })
     }
 
-    if (this.afc?.td1_present) {
+    if (this.afc?.td1_present === true) {
       buttons.push({
         icon: '',
         text: 'Capture TD',
