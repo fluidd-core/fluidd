@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import type { KlipperPrinterAfcStateState, KlipperPrinterAfcState } from '@/store/printer/types'
+import type { KlipperPrinterAfcStateState, KlipperPrinterAfcState, KlipperPrinterAfcLaneSettings, KlipperPrinterAfcStepperSettings, KlipperPrinterAfcExtruderState, KlipperPrinterAfcExtruderSettings, KlipperPrinterAfcBufferState, KlipperPrinterAfcBufferSettings, KlipperPrinterAfcHubState, KlipperPrinterAfcHubSettings, KlipperPrinterAfcLaneState, KlipperPrinterSettings } from '@/store/printer/types'
 
 @Component
 export default class AfcMixin extends Vue {
@@ -43,7 +43,7 @@ export default class AfcMixin extends Vue {
     return this.afc?.error_state ?? false
   }
 
-  get afcCurrentLane () {
+  get afcCurrentLane (): KlipperPrinterAfcLaneState | undefined {
     const laneName = this.afc?.current_load ?? this.afc?.current_lane
 
     if (laneName != null) {
@@ -51,7 +51,7 @@ export default class AfcMixin extends Vue {
     }
   }
 
-  get afcCurrentBuffer () {
+  get afcCurrentBuffer (): KlipperPrinterAfcBufferState | undefined {
     const bufferName = this.afcCurrentLane?.buffer
 
     if (bufferName != null) {
@@ -63,7 +63,7 @@ export default class AfcMixin extends Vue {
     return this.afc?.current_state ?? 'Idle'
   }
 
-  get afcExistsSpoolman () {
+  get afcExistsSpoolman (): boolean {
     return this.$typedGetters['server/componentSupport']('spoolman')
   }
 
@@ -91,7 +91,7 @@ export default class AfcMixin extends Vue {
     return this.$typedState.config.uiSettings.afc.hiddenUnits
   }
 
-  getAfcLaneObject (lane: string) {
+  getAfcLaneObject (lane: string): KlipperPrinterAfcLaneState | undefined {
     const printerState = this.$typedState.printer.printer
 
     return (
@@ -100,8 +100,8 @@ export default class AfcMixin extends Vue {
     )
   }
 
-  getAfcLaneSettings (lane: string) {
-    const printerSettings = this.$typedGetters['printer/getPrinterSettings']
+  getAfcLaneSettings (lane: string): KlipperPrinterAfcLaneSettings | KlipperPrinterAfcStepperSettings | undefined {
+    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
 
     return (
       printerSettings[`afc_stepper ${lane.toLowerCase()}`] ??
@@ -109,32 +109,32 @@ export default class AfcMixin extends Vue {
     )
   }
 
-  getAfcExtruderObject (extruder: string) {
+  getAfcExtruderObject (extruder: string): KlipperPrinterAfcExtruderState | undefined {
     return this.$typedState.printer.printer[(`AFC_extruder ${extruder}`)]
   }
 
-  getAfcExtruderSettings (extruder: string) {
-    const printerSettings = this.$typedGetters['printer/getPrinterSettings']
+  getAfcExtruderSettings (extruder: string): KlipperPrinterAfcExtruderSettings | undefined {
+    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings[`afc_extruder ${extruder.toLowerCase()}`]
   }
 
-  getAfcBufferObject (buffer: string) {
+  getAfcBufferObject (buffer: string): KlipperPrinterAfcBufferState | undefined {
     return this.$typedState.printer.printer[`AFC_buffer ${buffer}`]
   }
 
-  getAfcBufferSettings (buffer: string) {
-    const printerSettings = this.$typedGetters['printer/getPrinterSettings']
+  getAfcBufferSettings (buffer: string): KlipperPrinterAfcBufferSettings | undefined {
+    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings[`afc_buffer ${buffer.toLowerCase()}`]
   }
 
-  getAfcHubObject (hub: string) {
+  getAfcHubObject (hub: string): KlipperPrinterAfcHubState | undefined {
     return this.$typedState.printer.printer[`AFC_hub ${hub}`]
   }
 
-  getAfcHubSettings (hub: string) {
-    const printerSettings = this.$typedGetters['printer/getPrinterSettings']
+  getAfcHubSettings (hub: string): KlipperPrinterAfcHubSettings | undefined {
+    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings[`afc_hub ${hub.toLowerCase()}`]
   }

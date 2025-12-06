@@ -189,7 +189,15 @@ type KlipperPrinterStateBaseType =
 
     [key: `AFC_buffer ${string}`]: KlipperPrinterAfcBufferState;
 
+    [key: `AFC_lane ${string}`]: KlipperPrinterAfcLaneState;
+
+    [key: `AFC_stepper ${string}`]: KlipperPrinterAfcLaneState;
+
+    [key: `AFC_hub ${string}`]: KlipperPrinterAfcHubState;
+
     [key: `AFC_led ${string}`]: KlipperPrinterLedState;
+
+    [key: `AFC_BoxTurtle ${string}`]: KlipperPrinterAfcBoxTurtleState;
   }>
 
 export interface KlipperPrinterState extends KlipperPrinterStateBaseType {
@@ -745,13 +753,13 @@ export interface KlipperPrinterMmuMachineState extends KlipperPrinterMmuMachineS
 export type KlipperPrinterAfcStateState = 'Initialized' | 'Idle' | 'Error' | 'Loading' | 'Unloading' | 'Ejecting' | 'Moving' | 'Restoring'
 
 export interface KlipperPrinterAfcState {
-  current_load?: string;
-  current_lane?: string;
-  next_lane?: string;
-  current_state?: KlipperPrinterAfcStateState;
+  current_load?: string | null;
+  current_lane?: string | null;
+  next_lane?: string | null;
+  current_state: KlipperPrinterAfcStateState;
   current_toolchange?: number;
   number_of_toolchanges?: number;
-  spoolman?: string;
+  spoolman?: string | null;
   td1_present?: boolean;
   lane_data_enabled?: boolean;
   error_state?: boolean;
@@ -765,8 +773,8 @@ export interface KlipperPrinterAfcState {
   lanes?: string[];
   buffers?: string[];
   message?: {
-    message: string;
-    type: string;
+    message: string | null;
+    type: string | null;
   }
   led_state?: boolean;
 }
@@ -786,10 +794,67 @@ export interface KlipperPrinterAfcExtruderState {
   lanes?: string[];
 }
 
+export type KlipperPrinterAfcBufferStatus = 'Unknown' | 'Advancing' | 'Trailing'
+
 export interface KlipperPrinterAfcBufferState {
-  state?: string;
+  state?: KlipperPrinterAfcBufferStatus;
   lanes?: string[];
   enabled?: boolean;
+}
+
+export type KlipperPrinterAfcLaneStatus = 'None' | 'Error' | 'Loaded' | 'Tooled' | 'Tool Loaded' | 'Tool Loading' | 'Tool Unloading' | 'HUB Loading' | 'Ejecting' | 'Calibrating'
+
+export interface KlipperPrinterAfcLaneState {
+  name: string;
+  unit: string;
+  hub?: string | null;
+  extruder?: string | null;
+  buffer?: string | null;
+  buffer_status?: KlipperPrinterAfcBufferStatus | null;
+  lane?: number;
+  map?: string | null;
+  load?: boolean;
+  prep?: boolean;
+  tool_loaded?: boolean;
+  loaded_to_hub?: boolean;
+  material?: string | null;
+  density?: number;
+  diameter?: number;
+  empty_spool_weight?: number;
+  spool_id?: number | null;
+  color?: string | null;
+  weight?: number;
+  extruder_temp?: number | null;
+  runout_lane?: string | null;
+  filament_status?: 'In Tool' | 'Ready' | 'Prep' | 'Not Ready';
+  filament_status_led?: string;
+  status?: KlipperPrinterAfcLaneStatus;
+  dist_hub?: number;
+  td1_data?: Record<string, unknown>;
+  td1_td?: string;
+  td1_color?: string;
+  td1_scan_time?: string;
+}
+
+export interface KlipperPrinterAfcHubState {
+  state?: boolean;
+  cut?: boolean;
+  cut_cmd?: string;
+  cut_dist?: number;
+  cut_clear?: number;
+  cut_min_length?: number;
+  cut_servo_pass_angle?: number;
+  cut_servo_clip_angle?: number;
+  cut_servo_prep_angle?: number;
+  lanes?: string[];
+  afc_bowden_length?: number;
+}
+
+export interface KlipperPrinterAfcBoxTurtleState {
+  lanes?: string[];
+  extruders?: string[];
+  hubs?: string[];
+  buffers?: string[];
 }
 
 export interface KlipperPrinterConfig extends Record<string, Record<string, string | undefined> | undefined> {
@@ -1590,14 +1655,14 @@ export interface KlipperPrinterAfcFormTipSettings {
 }
 
 export interface KlipperPrinterAfcExtruderSettings {
-  pin_tool_start: string;
-  pin_tool_end: string;
+  pin_tool_start: string | null;
+  pin_tool_end: string | null;
   tool_stn: number;
   tool_stn_unload: number;
   tool_sensor_after_extruder: number;
   tool_unload_speed: number;
   tool_load_speed?: number;
-  buffer: string;
+  buffer: string | null;
   enable_sensors_in_gui: boolean;
   debounce_delay: number;
 }
@@ -1629,7 +1694,7 @@ export interface KlipperPrinterAfcLaneSettings {
   microsteps: number;
   rotation_distance: number;
   gear_ratio?: string;
-  map?: string;
+  map?: string | null;
   dist_hub: number;
   park_dist: number;
   led_index: string;
@@ -1681,7 +1746,7 @@ export interface KlipperPrinterAfcLaneSettings {
   assist_max_motor_rpm: number;
   hub?: string;
   buffer?: string;
-  extruder?: string;
+  extruder?: string | null;
   debounce_delay: number;
   capture_td1_when_loaded: boolean;
   td1_device_id?: string;

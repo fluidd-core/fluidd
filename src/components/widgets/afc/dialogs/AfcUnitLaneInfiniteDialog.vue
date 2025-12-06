@@ -63,7 +63,7 @@ export default class AfcUnitLaneInfiniteDialog extends Mixins(StateMixin, AfcMix
 
       if (
         lane?.prep === true &&
-        lane?.load === true
+        lane.load === true
       ) {
         laneList.push(lane.name)
       }

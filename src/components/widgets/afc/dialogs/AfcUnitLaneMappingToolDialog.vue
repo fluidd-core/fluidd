@@ -57,7 +57,7 @@ export default class AfcUnitLaneMappingToolDialog extends Mixins(StateMixin, Afc
     for (const laneName of this.afcLanes) {
       const lane = this.getAfcLaneObject(laneName)
 
-      if (lane != null) {
+      if (lane?.map != null) {
         mapList.push(lane.map)
       }
     }

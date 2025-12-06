@@ -183,10 +183,7 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   }
 
   get tdPresent (): boolean {
-    return (
-      this.lane?.td1_td != null &&
-      this.lane.td1_td.length > 0
-    )
+    return !!this.lane?.td1_td
   }
 
   get td (): string {
