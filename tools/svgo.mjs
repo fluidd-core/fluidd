@@ -6,6 +6,9 @@ import svgoConfig from '../svgo.config.mjs'
 const filesWithSvgs = {
   'src/globals.ts': [
     /(const mdi\S+ = ')([^']*)'/g
+  ],
+  'src/plugins/afcIcons.ts': [
+    /(const afc\S+ =\s+')([^']*)'/g
   ]
 }
 

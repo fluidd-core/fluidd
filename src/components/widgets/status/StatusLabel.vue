@@ -25,7 +25,7 @@ export default class AppSwitch extends Mixins(StateMixin) {
   @Prop({ type: String, required: true })
   readonly label!: string
 
-  @Prop({ type: [String, Number], default: 70 })
+  @Prop({ type: [String, Number], default: 80 })
   readonly labelWidth!: string | number
 }
 </script>

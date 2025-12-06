@@ -158,6 +158,16 @@
               </div>
             </template>
 
+            <template #[`item.loaded`]>
+              <v-chip
+                v-if="getSpoolLoadedLane(item) != null"
+                color="primary"
+                small
+              >
+                {{ $filters.prettyCase(getSpoolLoadedLane(item) ?? '') }}
+              </v-chip>
+            </template>
+
             <template #[`item-value.initial_weight`]="{ value }">
               {{ $filters.getReadableWeightString(value) }}
             </template>
@@ -272,6 +282,7 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import AfcMixin from '@/mixins/afc'
 import { SocketActions } from '@/api/socketActions'
 import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
@@ -290,7 +301,7 @@ import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
     QRReader
   }
 })
-export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixin) {
+export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixin, AfcMixin) {
   search = ''
   selectedSpoolId: number | null = null
 
@@ -355,12 +366,23 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get configurableHeaders (): AppDataTableHeader[] {
+    const afcHeaders: AppDataTableHeader[] = this.afc != null
+      ? [
+          {
+            text: this.$tc('app.afc.LaneLoaded'),
+            value: 'loaded',
+            cellClass: 'text-no-wrap'
+          }
+        ]
+      : []
+
     const headers: AppDataTableHeader[] = [
       {
         text: this.$tc('app.spoolman.label.id'),
         value: 'id',
         cellClass: 'text-no-wrap'
       },
+      ...afcHeaders,
       {
         text: this.$tc('app.spoolman.label.material'),
         value: 'filament.material',
@@ -463,7 +485,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         text: this.$tc('app.spoolman.label.last_used'),
         value: 'last_used',
         cellClass: 'text-no-wrap'
-      },
+      }
     ]
 
     const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters['config/getMergedTableHeaders'](headers, 'spoolman')
@@ -726,6 +748,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   getSpoolColor (spool?: Spool) {
     return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
+  }
+
+  getSpoolLoadedLane (spool: Spool): string | undefined {
+    return this.afcLoadedSpools[spool.id]
   }
 }
 </script>

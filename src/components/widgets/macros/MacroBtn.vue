@@ -1,8 +1,10 @@
 <template>
   <app-btn-group divided>
     <app-btn
+      v-bind="$attrs"
       :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
       :style="borderStyle"
+      class="flex-grow-1"
       v-on="filteredListeners"
       @click="handleClick"
     >
@@ -17,7 +19,7 @@
     >
       <template #activator="{ on, attrs, value }">
         <app-btn
-          v-bind="attrs"
+          v-bind="{...$attrs, ...attrs}"
           min-width="24"
           class="px-0"
           :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
@@ -85,7 +87,9 @@ type MacroParameter = {
   reset: string | number
 }
 
-@Component({})
+@Component({
+  inheritAttrs: false
+})
 export default class MacroBtn extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   readonly macro!: Macro

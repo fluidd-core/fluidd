@@ -155,6 +155,14 @@ export const defaultState = (): ConfigState => {
         showName: true,
         showLogos: false,
         showUnavailableSpoolColor: false
+      },
+      afc: {
+        hiddenExtruders: [],
+        hiddenUnits: [],
+        showFilamentName: false,
+        showLaneInfinite: true,
+        showUnitIcons: true,
+        showTd1Color: true,
       }
     }
   }
