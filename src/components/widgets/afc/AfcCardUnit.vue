@@ -65,6 +65,7 @@ export default class AfcCardUnit extends Mixins(StateMixin, AfcMixin) {
 
   get unit (): KlipperPrinterAfcUnitState | undefined {
     const printer: KlipperPrinterState = this.$typedState.printer.printer
+
     const unitObjectName = `AFC_${this.unitType} ${this.unitName}`
       .toLowerCase()
 

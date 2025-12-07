@@ -117,7 +117,7 @@ import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import MacroBtn from '@/components/widgets/macros/MacroBtn.vue'
 import AfcSettingsDialog from '@/components/widgets/afc/dialogs/AfcSettingsDialog.vue'
-import type { KlipperPrinterAfcSettings } from '@/store/printer/types'
+import type { GcodeCommands, KlipperPrinterAfcSettings, KlipperPrinterConfig, KlipperPrinterSettings, KlipperPrinterState } from '@/store/printer/types'
 import downloadUrl from '@/util/download-url'
 
 @Component({
@@ -129,8 +129,20 @@ import downloadUrl from '@/util/download-url'
 export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
   showAfcSettings = false
 
+  get printerSettings (): KlipperPrinterSettings {
+    return this.$typedGetters['printer/getPrinterSettings']
+  }
+
+  get printerConfig (): KlipperPrinterConfig {
+    return this.$typedGetters['printer/getPrinterConfig']
+  }
+
+  get availableCommands (): GcodeCommands {
+    return this.$typedGetters['printer/getAvailableCommands']
+  }
+
   get commands () {
-    const availableCommands = this.$typedGetters['printer/getAvailableCommands']
+    const availableCommands = this.availableCommands
 
     const buttons = [
       {
@@ -189,7 +201,7 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
   }
 
   get macros () {
-    const settings: KlipperPrinterAfcSettings | undefined = this.$typedState.printer.printer.configfile.settings.afc
+    const settings: KlipperPrinterAfcSettings | undefined = this.printerSettings.afc
 
     const afcMacros = []
 
@@ -224,17 +236,19 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
   }
 
   downloadDebugJson () {
+    const printer: KlipperPrinterState = this.$typedState.printer.printer
+
     const output = {
       config: Object.fromEntries(
-        Object.entries(this.$typedState.printer.printer.configfile.config)
+        Object.entries(this.printerConfig)
           .filter(([key]) => /^afc(?:$|_)/.test(key))
       ),
       settings: Object.fromEntries(
-        Object.entries(this.$typedState.printer.printer.configfile.settings)
+        Object.entries(this.printerSettings)
           .filter(([key]) => /^afc(?:$|_)/.test(key))
       ),
       printer: Object.fromEntries(
-        Object.entries(this.$typedState.printer.printer)
+        Object.entries(printer)
           .filter(([key]) => /^afc(?:$|_)/.test(key))
       ),
     }

@@ -24,7 +24,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
-import type { KlipperPrinterAfcHubSettings } from '@/store/printer/types'
+import type { KlipperPrinterAfcHubSettings, KlipperPrinterAfcHubState } from '@/store/printer/types'
 
 @Component({})
 export default class AfcSettingsDialogHub extends Mixins(StateMixin, AfcMixin) {
@@ -45,12 +45,12 @@ export default class AfcSettingsDialogHub extends Mixins(StateMixin, AfcMixin) {
     return this.afcSettingsHub?.afc_bowden_length || 0
   }
 
-  get printerObject () {
-    return this.$typedState.printer.printer[(`AFC_hub ${this.name}`)]
+  get hubObject (): KlipperPrinterAfcHubState | undefined {
+    return this.$typedState.printer.printer[`AFC_hub ${this.name}`]
   }
 
   get currentLength (): number {
-    return this.printerObject?.afc_bowden_length || 0
+    return this.hubObject?.afc_bowden_length || 0
   }
 
   setBowdenLength (value: number) {
