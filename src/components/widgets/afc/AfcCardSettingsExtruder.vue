@@ -22,7 +22,7 @@ export default class AfcCardSettingsExtruder extends Mixins(StateMixin, AfcMixin
   readonly name!: string
 
   get label (): string {
-    return this.$t('app.afc.ShowTool', { name: this.name }).toString()
+    return this.$t('app.afc.ShowTool', { name: this.$filters.prettyCase(this.name) }).toString()
   }
 
   get showExtruder () {

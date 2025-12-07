@@ -21,7 +21,7 @@
           </span>
         </v-tooltip>
         <span>
-          {{ name }}
+          {{ $filters.prettyCase(name) }}
         </span>
         <v-tooltip
           v-if="hasPostSensor"
