@@ -4,7 +4,7 @@
       <v-col class="pl-6 pr-0 pt-0 pb-0 d-flex flex-column">
         <v-tooltip
           top
-          :disabled="spoolId === 0"
+          :disabled="!spoolId"
         >
           <template #activator="{ on, attr }">
             <span
@@ -129,12 +129,12 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
     return this.lane?.runout_lane ?? 'NONE'
   }
 
-  get spoolId (): number {
-    return Number(this.lane?.spool_id || '0')
+  get spoolId (): number | undefined {
+    return this.lane?.spool_id ?? undefined
   }
 
   get spool (): Spool | null {
-    if (this.spoolId === 0) return null
+    if (!this.spoolId) return null
 
     return this.$typedGetters['spoolman/getSpoolById'](this.spoolId) ?? null
   }
@@ -174,15 +174,13 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   }
 
   get spoolVendor (): string {
-    return this.spool?.filament?.vendor?.name ?? 'Unknown'
+    return this.spool?.filament?.vendor?.name ?? this.$t('app.afc.Unknown').toString()
   }
 
   get spoolFilamentName (): string {
-    if (this.afcExistsSpoolman) {
-      return this.spool?.filament?.name ?? 'Unknown'
-    } else {
-      return ''
-    }
+    return this.afcExistsSpoolman
+      ? this.spool?.filament?.name ?? this.$t('app.afc.Unknown').toString()
+      : ''
   }
 
   get tdPresent (): boolean {
@@ -210,9 +208,13 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   onSpoolmanChanged (dialog: SpoolSelectionDialogState) {
     if (
       !dialog.show &&
-      dialog.selectedSpoolId !== this.spoolId
+      this.spoolmanSelection
     ) {
-      this.sendGcode(`SET_SPOOL_ID LANE=${this.name} SPOOL_ID=${dialog.selectedSpoolId}`)
+      this.spoolmanSelection = false
+
+      if (dialog.selectedSpoolId !== this.spoolId) {
+        this.sendGcode(`SET_SPOOL_ID LANE=${this.name} SPOOL_ID=${dialog.selectedSpoolId ?? ''}`)
+      }
     }
   }
 
