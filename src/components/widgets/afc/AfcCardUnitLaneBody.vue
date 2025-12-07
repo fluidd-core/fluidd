@@ -44,7 +44,7 @@
             color="error"
             small
           >
-            {{ afcIconInfintiy }}
+            $afcIconInfinity
           </v-icon>
           <template v-else>
             {{ runoutLane }}
@@ -101,7 +101,6 @@ import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import type { Spool, SpoolSelectionDialogState } from '@/store/spoolman/types'
-import { afcIconInfintiy } from '@/plugins/afcIcons'
 import AfcUnitLaneInfiniteDialog from '@/components/widgets/afc/dialogs/AfcUnitLaneInfiniteDialog.vue'
 import AfcUnitLaneFilamentDialog from '@/components/widgets/afc/dialogs/AfcUnitLaneFilamentDialog.vue'
 import AfcFilamentReel from './AfcFilamentReel.vue'
@@ -114,8 +113,6 @@ import AfcFilamentReel from './AfcFilamentReel.vue'
   },
 })
 export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
-  afcIconInfintiy = afcIconInfintiy
-
   @Prop({ type: String, required: true })
   readonly name!: string
 

@@ -37,7 +37,6 @@ import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import AfcCardUnitHub from '@/components/widgets/afc/AfcCardUnitHub.vue'
 import AfcCardUnitLane from '@/components/widgets/afc/AfcCardUnitLane.vue'
-import { afcIconBoxTurtle, afcIconHtlf, afcIconNightOwl, afcIconQuattroBox } from '@/plugins/afcIcons'
 import type { AfcUnitKey, KlipperPrinterAfcUnitState, KlipperPrinterState } from '@/store/printer/types'
 
 @Component({
@@ -92,13 +91,13 @@ export default class AfcCardUnit extends Mixins(StateMixin, AfcMixin) {
 
     switch (this.unitType.toLowerCase()) {
       case 'boxturtle':
-        return afcIconBoxTurtle
+        return '$afcIconBoxTurtle'
       case 'htlf':
-        return afcIconHtlf
+        return '$afcIconHtlf'
       case 'nightowl':
-        return afcIconNightOwl
+        return '$afcIconNightOwl'
       case 'quattrobox':
-        return afcIconQuattroBox
+        return '$afcIconQuattroBox'
       default:
         return null
     }
