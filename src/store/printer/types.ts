@@ -1562,7 +1562,7 @@ export interface KlipperPrinterBeaconModelSettings extends Record<string, unknow
 }
 
 export interface KlipperPrinterAfcSettings {
-  VarFile: string;
+  varfile: string;
   long_moves_speed: number;
   rev_long_moves_speed_factor: number;
   long_moves_accel: number;
@@ -1611,7 +1611,7 @@ export interface KlipperPrinterAfcSettings {
   auto_home: boolean;
   auto_level_macro?: string;
   enable_assist: boolean;
-  enable_assist_weight: boolean;
+  enable_assist_weight: number;
   debounce_delay: number;
   test_extrude_amt: number;
   capture_td1_when_loaded: boolean;
@@ -1653,7 +1653,7 @@ export interface KlipperPrinterAfcFormTipSettings {
   dip_insertion_speed: number;
   dip_extraction_speed: number;
   melt_zone_pause: number;
-  cool_zone_pause: number;
+  cooling_zone_pause: number;
 }
 
 export interface KlipperPrinterAfcExtruderSettings {
@@ -1681,11 +1681,11 @@ export interface KlipperPrinterAfcBufferSettings {
 export interface KlipperPrinterAfcLedSettings {
   pin: string;
   chain_count: number;
-  color_order: string;
-  initial_RED: number;
-  initial_GREEN: number;
-  initial_BLUE: number;
-  initial_WHITE: number;
+  color_order: string[];
+  initial_red: number;
+  initial_green: number;
+  initial_blue: number;
+  initial_white: number;
 }
 
 export interface KlipperPrinterAfcLaneSettings {
@@ -1695,7 +1695,7 @@ export interface KlipperPrinterAfcLaneSettings {
   enable_pin: string;
   microsteps: number;
   rotation_distance: number;
-  gear_ratio?: string;
+  gear_ratio?: [number, number][];
   map?: string | null;
   dist_hub: number;
   park_dist: number;
@@ -1754,7 +1754,7 @@ export interface KlipperPrinterAfcLaneSettings {
   td1_device_id?: string;
 }
 
-export interface KlipperPrinterAfcStepperSettings {
+export interface KlipperPrinterAfcStepperSettings extends KlipperPrinterAfcLaneSettings {
   print_current: number;
 }
 
