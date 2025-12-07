@@ -92,7 +92,7 @@ export default class AfcCardUnitLaneActions extends Mixins(StateMixin, AfcMixin,
   get laneRunout (): boolean {
     return (
       this.laneActive &&
-      !this.lane?.prep === true
+      this.lane?.prep !== true
     )
   }
 
