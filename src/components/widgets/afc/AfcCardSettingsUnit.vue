@@ -10,22 +10,23 @@
     />
   </v-list-item>
 </template>
+
 <script lang="ts">
-import Vue from 'vue'
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 
 @Component
 export default class AfcCardSettingsUnit extends Mixins(StateMixin, AfcMixin) {
-  @Prop({ type: String, required: true }) readonly name!: string
+  @Prop({ type: String, required: true })
+  readonly name!: string
 
   value = true
 
   get label (): string {
     const unitName = this.name.substring(this.name.indexOf(' ') + 1)
 
-    return this.$t('app.afc.ShowUnit', { name: Vue.$filters.prettyCase(unitName) }).toString()
+    return this.$t('app.afc.ShowUnit', { name: this.$filters.prettyCase(unitName) }).toString()
   }
 
   mounted () {

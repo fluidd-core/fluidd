@@ -112,7 +112,7 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   }
 
   get preSensorStatus (): boolean {
-    return this.afcExtruder?.tool_start_status ?? false
+    return this.afcExtruder?.tool_start_status === true
   }
 
   get preSensorClasses () {
@@ -151,7 +151,7 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   }
 
   get postSensorStatus (): boolean {
-    return this.afcExtruder?.tool_end_status ?? false
+    return this.afcExtruder?.tool_end_status === true
   }
 
   get postSensorClasses () {

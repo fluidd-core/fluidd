@@ -32,7 +32,8 @@ import AfcCardUnitLaneActions from '@/components/widgets/afc/AfcCardUnitLaneActi
   }
 })
 export default class AfcCardUnitLane extends Mixins(StateMixin, AfcMixin) {
-  @Prop({ type: String, required: true }) readonly name!: string
+  @Prop({ type: String, required: true })
+  readonly name!: string
 
   get lane () {
     return this.getAfcLaneObject(this.name)

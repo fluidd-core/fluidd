@@ -44,8 +44,8 @@ export default class AfcCardMessage extends Mixins(StateMixin, AfcMixin) {
     return type
   }
 
-  get message (): string {
-    return this.afc?.message?.message ?? ''
+  get message (): string | undefined | null {
+    return this.afc?.message?.message
   }
 
   clearMessage () {

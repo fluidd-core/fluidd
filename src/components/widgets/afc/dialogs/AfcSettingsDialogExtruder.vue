@@ -89,7 +89,6 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
@@ -104,7 +103,7 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
   changedValue = false
 
   get title (): string {
-    const name = Vue.$filters.prettyCase(this.name)
+    const name = this.$filters.prettyCase(this.name)
 
     return this.$t('app.afc.SettingsDialog.SettingsForTitle', { name }).toString()
   }

@@ -52,7 +52,7 @@ export default class AfcCardUnitLaneEmpty extends Mixins(StateMixin, AfcMixin) {
   }
 
   get prep (): boolean {
-    return this.lane?.prep ?? false
+    return this.lane?.prep === true
   }
 
   get text (): string {

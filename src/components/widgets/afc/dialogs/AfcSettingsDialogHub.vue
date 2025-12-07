@@ -20,7 +20,6 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
@@ -33,7 +32,7 @@ export default class AfcSettingsDialogHub extends Mixins(StateMixin, AfcMixin) {
   readonly name!: string
 
   get title (): string {
-    const name = Vue.$filters.prettyCase(`Hub ${this.name}`)
+    const name = this.$filters.prettyCase(`Hub ${this.name}`)
 
     return this.$t('app.afc.SettingsDialog.SettingsForTitle', { name }).toString()
   }

@@ -17,7 +17,8 @@ import AfcMixin from '@/mixins/afc'
 
 @Component
 export default class AfcCardSettingsExtruder extends Mixins(StateMixin, AfcMixin) {
-  @Prop({ type: String, required: true }) readonly name!: string
+  @Prop({ type: String, required: true })
+  readonly name!: string
 
   value = true
 

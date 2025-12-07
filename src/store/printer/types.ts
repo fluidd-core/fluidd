@@ -36,6 +36,8 @@ export type TmcKey = `tmc${'2130' | '2208' | '2209' | '2660' | '2240' | '5160'} 
 
 export type MmuUnitKey = `unit_${Digit}` | `unit_${NonZeroDigit}${Digit}`
 
+export type AfcUnitKey = `${'AFC_BoxTurtle' | 'AFC_NightOwl' | 'AFC_QuattroBox' | 'AFC_HTLF'} ${string}`
+
 type KlipperPrinterStateBaseType =
   {
     // These keys are always available
@@ -197,7 +199,7 @@ type KlipperPrinterStateBaseType =
 
     [key: `AFC_led ${string}`]: KlipperPrinterLedState;
 
-    [key: `AFC_BoxTurtle ${string}`]: KlipperPrinterAfcBoxTurtleState;
+    [key: AfcUnitKey]: KlipperPrinterAfcUnitState;
   }>
 
 export interface KlipperPrinterState extends KlipperPrinterStateBaseType {
@@ -753,53 +755,53 @@ export interface KlipperPrinterMmuMachineState extends KlipperPrinterMmuMachineS
 export type KlipperPrinterAfcStateState = 'Initialized' | 'Idle' | 'Error' | 'Loading' | 'Unloading' | 'Ejecting' | 'Moving' | 'Restoring'
 
 export interface KlipperPrinterAfcState {
-  current_load?: string | null;
-  current_lane?: string | null;
-  next_lane?: string | null;
+  current_load: string | null;
+  current_lane: string | null;
+  next_lane: string | null;
   current_state: KlipperPrinterAfcStateState;
-  current_toolchange?: number;
-  number_of_toolchanges?: number;
-  spoolman?: string | null;
-  td1_present?: boolean;
-  lane_data_enabled?: boolean;
-  error_state?: boolean;
-  bypass_state?: boolean;
-  quiet_mode?: boolean;
-  position_saved?: boolean;
+  current_toolchange: number;
+  number_of_toolchanges: number;
+  spoolman: string | null;
+  td1_present: boolean;
+  lane_data_enabled: boolean;
+  error_state: boolean;
+  bypass_state: boolean;
+  quiet_mode: boolean;
+  position_saved: boolean;
 
-  extruders?: string[];
-  hubs?: string[];
-  units?: string[];
-  lanes?: string[];
-  buffers?: string[];
-  message?: {
+  extruders: string[];
+  hubs: string[];
+  units: string[];
+  lanes: string[];
+  buffers: string[];
+  message: {
     message: string | null;
     type: string | null;
   }
-  led_state?: boolean;
+  led_state: boolean;
 }
 
 export interface KlipperPrinterAfcExtruderState {
-  tool_stn?: number;
-  tool_stn_unload?: number;
-  tool_sensor_after_extruder?: number;
-  tool_unload_speed?: number;
-  tool_load_speed?: number;
-  buffer?: string | null;
-  lane_loaded?: string | null;
-  tool_start?: string | null;
-  tool_start_status?: boolean;
-  tool_end?: string | null;
-  tool_end_status?: boolean;
-  lanes?: string[];
+  tool_stn: number;
+  tool_stn_unload: number;
+  tool_sensor_after_extruder: number;
+  tool_unload_speed: number;
+  tool_load_speed: number;
+  buffer: string | null;
+  lane_loaded: string | null;
+  tool_start: string | null;
+  tool_start_status: boolean;
+  tool_end: string | null;
+  tool_end_status: boolean;
+  lanes: string[];
 }
 
 export type KlipperPrinterAfcBufferStatus = 'Unknown' | 'Advancing' | 'Trailing'
 
 export interface KlipperPrinterAfcBufferState {
-  state?: KlipperPrinterAfcBufferStatus;
-  lanes?: string[];
-  enabled?: boolean;
+  state: KlipperPrinterAfcBufferStatus;
+  lanes: string[];
+  enabled: boolean;
 }
 
 export type KlipperPrinterAfcLaneStatus = 'None' | 'Error' | 'Loaded' | 'Tooled' | 'Tool Loaded' | 'Tool Loading' | 'Tool Unloading' | 'HUB Loading' | 'Ejecting' | 'Calibrating'
@@ -807,29 +809,29 @@ export type KlipperPrinterAfcLaneStatus = 'None' | 'Error' | 'Loaded' | 'Tooled'
 export interface KlipperPrinterAfcLaneState {
   name: string;
   unit: string;
-  hub?: string | null;
-  extruder?: string | null;
-  buffer?: string | null;
-  buffer_status?: KlipperPrinterAfcBufferStatus | null;
-  lane?: number;
-  map?: string | null;
-  load?: boolean;
-  prep?: boolean;
-  tool_loaded?: boolean;
-  loaded_to_hub?: boolean;
-  material?: string | null;
+  hub: string | null;
+  extruder: string | null;
+  buffer: string | null;
+  buffer_status: KlipperPrinterAfcBufferStatus | null;
+  lane: number;
+  map: string | null;
+  load: boolean;
+  prep: boolean;
+  tool_loaded: boolean;
+  loaded_to_hub: boolean;
+  material: string | null;
   density?: number;
   diameter?: number;
   empty_spool_weight?: number;
-  spool_id?: number | null;
-  color?: string | null;
-  weight?: number;
-  extruder_temp?: number | null;
-  runout_lane?: string | null;
-  filament_status?: 'In Tool' | 'Ready' | 'Prep' | 'Not Ready';
-  filament_status_led?: string;
-  status?: KlipperPrinterAfcLaneStatus;
-  dist_hub?: number;
+  spool_id: number | null;
+  color: string | null;
+  weight: number;
+  extruder_temp: number | null;
+  runout_lane: string | null;
+  filament_status: 'In Tool' | 'Ready' | 'Prep' | 'Not Ready';
+  filament_status_led: string;
+  status: KlipperPrinterAfcLaneStatus;
+  dist_hub: number;
   td1_data?: Record<string, unknown>;
   td1_td?: string;
   td1_color?: string;
@@ -837,24 +839,24 @@ export interface KlipperPrinterAfcLaneState {
 }
 
 export interface KlipperPrinterAfcHubState {
-  state?: boolean;
-  cut?: boolean;
-  cut_cmd?: string;
-  cut_dist?: number;
-  cut_clear?: number;
-  cut_min_length?: number;
-  cut_servo_pass_angle?: number;
-  cut_servo_clip_angle?: number;
-  cut_servo_prep_angle?: number;
-  lanes?: string[];
-  afc_bowden_length?: number;
+  state: boolean;
+  cut: boolean;
+  cut_cmd: string | null;
+  cut_dist: number;
+  cut_clear: number;
+  cut_min_length: number;
+  cut_servo_pass_angle: number;
+  cut_servo_clip_angle: number;
+  cut_servo_prep_angle: number;
+  lanes: string[];
+  afc_bowden_length: number;
 }
 
-export interface KlipperPrinterAfcBoxTurtleState {
-  lanes?: string[];
-  extruders?: string[];
-  hubs?: string[];
-  buffers?: string[];
+export interface KlipperPrinterAfcUnitState {
+  lanes: string[];
+  extruders: string[];
+  hubs: string[];
+  buffers: string[];
 }
 
 export interface KlipperPrinterConfig extends Record<string, Record<string, string | undefined> | undefined> {

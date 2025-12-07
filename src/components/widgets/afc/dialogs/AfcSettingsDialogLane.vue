@@ -36,7 +36,6 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
@@ -45,12 +44,13 @@ import type { KlipperPrinterAfcLaneSettings, KlipperPrinterAfcStepperSettings } 
 
 @Component({})
 export default class AfcSettingsDialogLane extends Mixins(StateMixin, AfcMixin) {
-  @Prop({ type: String, required: true }) readonly name!: string
+  @Prop({ type: String, required: true })
+  readonly name!: string
 
   changedValue = false
 
   get title () {
-    const name = Vue.$filters.prettyCase(this.name)
+    const name = this.$filters.prettyCase(this.name)
 
     return this.$t('app.afc.SettingsDialog.SettingsForTitle', { name })
   }

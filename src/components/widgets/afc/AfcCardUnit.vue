@@ -4,10 +4,10 @@
       <v-col class="pb-0 d-flex flex-row justify-space-between align-center">
         <h3 class="text-h6">
           <v-icon
-            v-if="modulIcon"
+            v-if="unitIcon"
             left
           >
-            {{ modulIcon }}
+            {{ unitIcon }}
           </v-icon>
           {{ unitNameOutput }}
         </h3>
@@ -30,14 +30,15 @@
     </v-row>
   </div>
 </template>
+
 <script lang="ts">
-import Vue from 'vue'
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import AfcCardUnitHub from '@/components/widgets/afc/AfcCardUnitHub.vue'
 import AfcCardUnitLane from '@/components/widgets/afc/AfcCardUnitLane.vue'
 import { afcIconBoxTurtle, afcIconHtlf, afcIconNightOwl, afcIconQuattroBox } from '@/plugins/afcIcons'
+import type { AfcUnitKey, KlipperPrinterAfcUnitState } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -46,44 +47,42 @@ import { afcIconBoxTurtle, afcIconHtlf, afcIconNightOwl, afcIconQuattroBox } fro
   }
 })
 export default class AfcCardUnit extends Mixins(StateMixin, AfcMixin) {
-  @Prop({ type: String, required: true }) readonly name!: string
+  @Prop({ type: String, required: true })
+  readonly name!: string
+
+  get unitType (): string {
+    return this.name.substring(0, this.name.indexOf(' '))
+      .replace(/_/g, '')
+  }
 
   get unitName (): string {
     return this.name.substring(this.name.indexOf(' ') + 1)
   }
 
   get unitNameOutput (): string {
-    return Vue.$filters.prettyCase(this.unitName)
+    return this.$filters.prettyCase(this.unitName)
   }
 
-  get unit () {
-    const printer = this.$typedState.printer.printer ?? {}
-    const moduleName = this.name.substring(0, this.name.indexOf(' ')).replace('_', '')
-    const unitObjectName = `AFC_${moduleName} ${this.unitName}`.toLowerCase()
-    const objectName = Object.keys(printer).find((key) => key.toLowerCase() === unitObjectName) ?? ''
+  get unit (): KlipperPrinterAfcUnitState | undefined {
+    const unitObjectName = `AFC_${this.unitType} ${this.unitName}` as AfcUnitKey
 
-    return printer[objectName] ?? {}
+    return this.$typedState.printer.printer[unitObjectName]
   }
 
   get hubs (): string[] {
-    const hubs = this.unit.hubs ?? []
-    return hubs
+    return this.unit?.hubs ?? []
   }
 
   get lanes (): string[] {
-    return this.unit.lanes ?? []
+    return this.unit?.lanes ?? []
   }
 
-  get type (): string {
-    const moduleName = this.name.substring(0, this.name.indexOf(' ')).replace('_', '')
+  get unitIcon (): string | null {
+    if (!this.afcShowUnitIcons) {
+      return null
+    }
 
-    return moduleName.toLowerCase()
-  }
-
-  get modulIcon (): string | null {
-    if (!this.afcShowUnitIcons) return null
-
-    switch (this.type) {
+    switch (this.unitType.toLowerCase()) {
       case 'boxturtle':
         return afcIconBoxTurtle
       case 'htlf':

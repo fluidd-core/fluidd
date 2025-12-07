@@ -116,7 +116,8 @@ import AfcFilamentReel from './AfcFilamentReel.vue'
 export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   afcIconInfintiy = afcIconInfintiy
 
-  @Prop({ type: String, required: true }) readonly name!: string
+  @Prop({ type: String, required: true })
+  readonly name!: string
 
   showInfintiyDialog = false
   showSpoolmanDialog = false

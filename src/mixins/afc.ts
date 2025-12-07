@@ -40,7 +40,7 @@ export default class AfcMixin extends Vue {
   }
 
   get afcErrorState (): boolean {
-    return this.afc?.error_state ?? false
+    return this.afc?.error_state === true
   }
 
   get afcCurrentLane (): KlipperPrinterAfcLaneState | undefined {
