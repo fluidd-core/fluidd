@@ -130,8 +130,7 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
   showAfcSettings = false
 
   get commands () {
-    const commands = this.$typedState.printer.printer.gcode?.commands ?? {}
-    const commandsList = Object.keys(commands)
+    const availableCommands = this.$typedGetters['printer/getAvailableCommands']
 
     const buttons = [
       {
@@ -175,7 +174,8 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
       })
     }
 
-    return buttons.filter(button => commandsList.includes(button.command.toUpperCase()))
+    return buttons
+      .filter(button => button.command.toUpperCase() in availableCommands)
   }
 
   macroTooltipDisabled (macroName: string): boolean {

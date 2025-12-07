@@ -158,13 +158,13 @@
               </div>
             </template>
 
-            <template #[`item.loaded`]>
+            <template #[`item-value.afc_loaded_lane`]="{ value }">
               <v-chip
-                v-if="getSpoolLoadedLane(item) != null"
+                v-if="value != null"
                 color="primary"
                 small
               >
-                {{ $filters.prettyCase(getSpoolLoadedLane(item) ?? '') }}
+                {{ $filters.prettyCase(value ?? '') }}
               </v-chip>
             </template>
 
@@ -296,6 +296,10 @@ import type { KlipperPrinterConfig } from '@/store/printer/types'
 import type { AppFileWithMeta } from '@/store/files/types'
 import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
 
+type SpoolWithAfcLoadedLane = Spool & {
+  afc_loaded_lane?: string
+}
+
 @Component({
   components: {
     QRReader
@@ -354,11 +358,19 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     })
   }
 
-  get availableSpools () {
+  get availableSpools (): SpoolWithAfcLoadedLane[] {
     const availableSpools: Spool[] = this.$typedGetters['spoolman/getAvailableSpools']
+
+    const afcLoadedSpools = this.afc != null
+      ? this.afcLoadedSpools
+      : {}
 
     return availableSpools
       .filter(x => !x.archived)
+      .map(spool => ({
+        ...spool,
+        afc_loaded_lane: afcLoadedSpools[spool.id]
+      } satisfies SpoolWithAfcLoadedLane))
   }
 
   get currency (): string | null {
@@ -370,7 +382,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       ? [
           {
             text: this.$tc('app.afc.LaneLoaded'),
-            value: 'loaded',
+            value: 'afc_loaded_lane',
             cellClass: 'text-no-wrap'
           }
         ]
@@ -748,10 +760,6 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   getSpoolColor (spool?: Spool) {
     return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
-  }
-
-  getSpoolLoadedLane (spool: Spool): string | undefined {
-    return this.afcLoadedSpools[spool.id]
   }
 }
 </script>
