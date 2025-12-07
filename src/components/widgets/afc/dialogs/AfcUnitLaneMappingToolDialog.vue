@@ -69,11 +69,7 @@ export default class AfcUnitLaneMappingToolDialog extends Mixins(StateMixin, Afc
   mapTool (newTool: string) {
     this.sendGcode(`SET_MAP LANE=${encodeGcodeParamValue(this.name)} MAP=${encodeGcodeParamValue(newTool)}`)
 
-    this.closeDialog()
-  }
-
-  closeDialog () {
-    this.$emit('close')
+    this.open = false
   }
 }
 </script>

@@ -12,8 +12,6 @@
       <afc-unit-lane-mapping-tool-dialog
         v-model="showDialog"
         :name="name"
-        @cancel="showDialog = false"
-        @close="showDialog = false"
       />
     </v-col>
   </v-row>

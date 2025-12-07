@@ -59,10 +59,6 @@ import AfcSettingsDialogLane from './AfcSettingsDialogLane.vue'
 export default class AfcSettingsDialog extends Mixins(StateMixin, AfcMixin) {
   @VModel({ type: Boolean })
   open?: boolean
-
-  closeDialog () {
-    this.$emit('close')
-  }
 }
 </script>
 

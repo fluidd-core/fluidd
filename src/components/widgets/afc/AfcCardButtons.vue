@@ -88,10 +88,7 @@
           </v-icon>
           {{ $t('app.afc.AfcSettings') }}
         </app-btn>
-        <afc-settings-dialog
-          v-model="showAfcSettings"
-          @cancel="showAfcSettings = false"
-        />
+        <afc-settings-dialog v-model="showAfcSettings" />
       </v-list-item>
       <v-list-item>
         <app-btn

@@ -3,7 +3,9 @@
     v-model="show"
     :title="$t('app.afc.FilamentForLane', { name })"
     width="400"
-    no-actions
+    :save-button-text="$t('app.afc.SetSpool')"
+    :save-button-disabled="disableSetBtn"
+    @save="setSpool"
   >
     <v-card-text class="pb-0">
       <app-setting
@@ -43,24 +45,6 @@
         @update:color="setColor"
       />
     </v-card-text>
-    <v-card-actions>
-      <v-spacer />
-      <v-btn
-        text
-        color="disabled"
-        @click="closeDialog"
-      >
-        {{ $t('app.afc.Cancel') }}
-      </v-btn>
-      <v-btn
-        :disabled="disableSetBtn"
-        color="primary"
-        text
-        @click="setSpool"
-      >
-        {{ $t('app.afc.SetSpool') }}
-      </v-btn>
-    </v-card-actions>
   </app-dialog>
 </template>
 
@@ -129,11 +113,8 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
     }
 
     this.sendGcode(gcode.join('\n'))
-    this.closeDialog()
-  }
 
-  closeDialog () {
-    this.$emit('close')
+    this.show = false
   }
 
   @Watch('show')

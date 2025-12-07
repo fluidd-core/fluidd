@@ -78,11 +78,7 @@ export default class AfcUnitLaneInfiniteDialog extends Mixins(StateMixin, AfcMix
   setRunout (newLane: string) {
     this.sendGcode(`SET_RUNOUT LANE=${encodeGcodeParamValue(this.name)} RUNOUT=${encodeGcodeParamValue(newLane)}`)
 
-    this.closeDialog()
-  }
-
-  closeDialog () {
-    this.$emit('close')
+    this.open = false
   }
 }
 </script>

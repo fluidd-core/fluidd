@@ -29,8 +29,6 @@
         <afc-unit-lane-filament-dialog
           v-model="showFilamentDialog"
           :name="name"
-          @close="showFilamentDialog = false"
-          @cancel="showFilamentDialog = false"
         />
       </v-col>
       <v-col class="pr-6 pl-2 pt-0 pb-0 d-flex flex-column justify-space-between align-end">
@@ -53,8 +51,6 @@
         <afc-unit-lane-infinite-dialog
           v-model="showInfintiyDialog"
           :name="name"
-          @cancel="showInfintiyDialog = false"
-          @close="showInfintiyDialog = false"
         />
         <span class="font-weight-bold">
           {{ spoolMaterial }}
