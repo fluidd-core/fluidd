@@ -1184,5 +1184,4 @@ export const getters = {
   getSupportsAfc: (state): boolean => {
     return state.printer.AFC != null
   }
-
 } satisfies GetterTree<PrinterState, RootState>

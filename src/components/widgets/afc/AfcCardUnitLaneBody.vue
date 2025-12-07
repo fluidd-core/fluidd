@@ -140,9 +140,14 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   }
 
   get spoolColor (): string {
-    if (this.afc?.td1_present && this.afcShowTd1Color) {
-      return `#${this.lane?.td1_color}`
+    if (
+      this.afc?.td1_present &&
+      this.lane?.td1_color &&
+      this.afcShowTd1Color
+    ) {
+      return `#${this.lane.td1_color}`
     }
+
     return this.lane?.color || '#000000'
   }
 
