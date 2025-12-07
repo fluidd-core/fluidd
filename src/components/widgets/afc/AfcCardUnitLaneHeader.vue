@@ -4,7 +4,7 @@
       <v-btn
         dense
         small
-        class="w-100 elevation-0"
+        class="flex elevation-0"
         @click="showDialog = true"
       >
         {{ name }} > {{ mappedTool }}

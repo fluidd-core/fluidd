@@ -15,7 +15,7 @@
               <afc-filament-reel
                 :percent="spoolPercent"
                 :color="spoolColor"
-                class="filamentSpool cursor-pointer"
+                class="filamentSpool"
                 @click-spool="onFilamentClick"
               />
             </span>
@@ -225,6 +225,7 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
 <style scoped>
 .filamentSpool {
   max-width: 38px;
+  cursor: pointer;
 }
 
 .text-truncate-element {

@@ -27,7 +27,7 @@
         >
           <template #activator="{ on, attrs }">
             <v-btn
-              class="w-100"
+              class="flex"
               :disabled="(command.disabledWhilePrinting && printerPrinting) || !klippyReady"
               small
               v-bind="attrs"
@@ -62,7 +62,7 @@
               v-bind="attrs"
               :macro="macro.macro"
               small
-              class="w-100"
+              class="flex"
               v-on="on"
               @click="sendGcode($event)"
             >
@@ -76,7 +76,7 @@
       </v-list-item>
       <v-list-item>
         <v-btn
-          class="w-100"
+          class="flex"
           small
           @click="showAfcSettings = true"
         >
@@ -95,7 +95,7 @@
       </v-list-item>
       <v-list-item>
         <v-btn
-          class="w-100"
+          class="flex"
           small
           @click="downloadDebugJson"
         >

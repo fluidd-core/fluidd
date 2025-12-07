@@ -18,7 +18,7 @@
             <v-btn
               dense
               small
-              class="w-100 elevation-0"
+              class="flex elevation-0"
               v-bind="attrs"
               v-on="on"
               @click="ejectLane"

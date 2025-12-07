@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col class="px-6 pt-3 pb-6 d-flex flex-row justify-space-between">
-      <v-item-group class="_btn-group d-flex flex-nowrap w-100 py-0">
+      <v-item-group class="_btn-group d-flex flex-nowrap py-0">
         <v-tooltip
           v-if="toolLoaded"
           top
@@ -117,6 +117,7 @@ export default class AfcCardUnitLaneActions extends Mixins(StateMixin, AfcMixin,
 <style scoped>
 ._btn-group {
   border-radius: 4px;
+  width: 100%;
 
   .v-btn {
     border-radius: 0;
