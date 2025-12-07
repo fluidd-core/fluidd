@@ -202,18 +202,12 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   }
 
   @Watch('$typedState.spoolman.dialog')
-  onSpoolmanChanged (newDialog: SpoolSelectionDialogState) {
-    let gcode = `SET_SPOOL_ID LANE=${this.name} SPOOL_ID=`
-    if (this.spoolmanSelection) {
-      if (newDialog.selectedSpoolId != null) {
-        gcode = gcode + newDialog.selectedSpoolId
-      }
-
-      // Only send gcode once selection is closed
-      if (!newDialog.show && newDialog.selectedSpoolId !== this.spoolId) {
-        this.sendGcode(gcode)
-        this.spoolmanSelection = false
-      }
+  onSpoolmanChanged (dialog: SpoolSelectionDialogState) {
+    if (
+      !dialog.show &&
+      dialog.selectedSpoolId !== this.spoolId
+    ) {
+      this.sendGcode(`SET_SPOOL_ID LANE=${this.name} SPOOL_ID=${dialog.selectedSpoolId}`)
     }
   }
 
