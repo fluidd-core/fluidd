@@ -373,11 +373,11 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
   }
 
   get currentToolChange (): number {
-    return 5 // this.$typedState.printer.printer?.AFC?.current_toolchange ?? 0
+    return this.$typedState.printer.printer?.AFC?.current_toolchange ?? 0
   }
 
   get totalToolChangeCount (): number {
-    return 7 // this.$typedState.printer.printer?.AFC?.number_of_toolchanges ?? 0
+    return this.$typedState.printer.printer?.AFC?.number_of_toolchanges ?? 0
   }
 
   /**
