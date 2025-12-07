@@ -1,9 +1,10 @@
 <template>
   <v-menu
-    :offset-y="true"
-    :close-on-content-click="false"
-    :title="$t('app.afc.Settings')"
+    bottom
     left
+    offset-y
+    transition="slide-y-transition"
+    :close-on-content-click="false"
   >
     <template #activator="{ on, attrs }">
       <app-btn
@@ -16,48 +17,63 @@
         </v-icon>
       </app-btn>
     </template>
-    <v-list>
-      <v-list-item class="minHeight36">
-        <v-checkbox
-          v-model="showFilamentName"
-          class="mt-0"
-          hide-details
-          :label="$t('app.afc.ShowFilamentName')"
-        />
+
+    <v-list dense>
+      <v-list-item @click="showFilamentName = !showFilamentName">
+        <v-list-item-action class="my-0">
+          <v-checkbox :input-value="showFilamentName" />
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.afc.ShowFilamentName') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
-      <v-list-item class="minHeight36">
-        <v-checkbox
-          v-model="showLaneInfinite"
-          class="mt-0"
-          hide-details
-          :label="$t('app.afc.ShowLaneInfinite')"
-        />
+
+      <v-list-item @click="showLaneInfinite = !showLaneInfinite">
+        <v-list-item-action class="my-0">
+          <v-checkbox :input-value="showLaneInfinite" />
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.afc.ShowLaneInfinite') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
-      <v-list-item class="minHeight36">
-        <v-checkbox
-          v-model="showUnitIcons"
-          class="mt-0"
-          hide-details
-          :label="$t('app.afc.ShowUnitIcons')"
-        />
+
+      <v-list-item @click="showUnitIcons = !showUnitIcons">
+        <v-list-item-action class="my-0">
+          <v-checkbox :input-value="showUnitIcons" />
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.afc.ShowUnitIcons') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
+
       <v-list-item
         v-if="td1Present"
-        class="minHeight36"
+        @click="showTd1Color = !showTd1Color"
       >
-        <v-checkbox
-          v-model="showTd1Color"
-          class="mt-0"
-          hide-details
-          :label="$t('app.afc.ShowTd1Color')"
-        />
+        <v-list-item-action class="my-0">
+          <v-checkbox :input-value="showTd1Color" />
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.afc.ShowTd1Color') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
+
       <v-divider />
+
       <afc-card-settings-extruder
         v-for="extruder in afcExtruders"
         :key="extruder"
         :name="extruder"
       />
+
       <afc-card-settings-unit
         v-for="unit in afcUnits"
         :key="unit"
@@ -133,9 +149,3 @@ export default class AfcCardSettings extends Mixins(StateMixin, AfcMixin) {
   }
 }
 </script>
-
-<style scoped>
-.minHeight36 {
-    min-height: 36px;
-}
-</style>
