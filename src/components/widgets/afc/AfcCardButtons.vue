@@ -26,7 +26,7 @@
           :disabled="command.toolTipDisabled"
         >
           <template #activator="{ on, attrs }">
-            <v-btn
+            <app-btn
               class="fill-width"
               :disabled="(command.disabledWhilePrinting && printerPrinting) || !klippyReady"
               small
@@ -42,7 +42,7 @@
                 {{ command.icon }}
               </v-icon>
               {{ command.text }}
-            </v-btn>
+            </app-btn>
           </template>
           <span>
             {{ macroDescription(command.command) }}
@@ -75,7 +75,7 @@
         </v-tooltip>
       </v-list-item>
       <v-list-item>
-        <v-btn
+        <app-btn
           class="fill-width"
           small
           @click="showAfcSettings = true"
@@ -87,14 +87,14 @@
             $afcSettings
           </v-icon>
           {{ $t('app.afc.AfcSettings') }}
-        </v-btn>
+        </app-btn>
         <afc-settings-dialog
           v-model="showAfcSettings"
           @cancel="showAfcSettings = false"
         />
       </v-list-item>
       <v-list-item>
-        <v-btn
+        <app-btn
           class="fill-width"
           small
           @click="downloadDebugJson"
@@ -106,7 +106,7 @@
             $afcDebugJson
           </v-icon>
           {{ $t('app.afc.DebugJson') }}
-        </v-btn>
+        </app-btn>
       </v-list-item>
     </v-list>
   </v-menu>
