@@ -116,7 +116,7 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
     const gcode = []
 
     if (this.color !== this.currentColor) {
-      const cleanedColor = this.color.replace('#', '')
+      const cleanedColor = this.color.substring(1)
       gcode.push(`SET_COLOR LANE=${encodeGcodeParamValue(this.name)} COLOR=${encodeGcodeParamValue(cleanedColor)}`)
     }
 
