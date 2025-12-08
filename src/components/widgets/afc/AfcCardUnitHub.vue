@@ -39,7 +39,7 @@ export default class AfcCardUnitHub extends Mixins(StateMixin, AfcMixin) {
   get sensorOutput (): string {
     const status = this.sensorStatus ? this.$t('app.afc.Detected') : this.$t('app.afc.Empty')
 
-    return `${this.name} ${this.$t('app.afc.HubLoad')} - ${status}`
+    return `${this.$filters.prettyCase(this.name)} ${this.$t('app.afc.HubLoad')} - ${status}`
   }
 
   get sensorClass () {

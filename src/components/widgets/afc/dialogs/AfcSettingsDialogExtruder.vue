@@ -1,6 +1,6 @@
 <template>
   <v-card outlined>
-    <v-card-title>{{ title }}</v-card-title>
+    <v-card-title>{{ $t('app.afc.SettingsDialog.SettingsForTitle', { name: $filters.prettyCase(name) }) }}</v-card-title>
 
     <v-card-text>
       <app-setting
@@ -101,12 +101,6 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
   readonly name!: string
 
   changedValue = false
-
-  get title (): string {
-    const name = this.$filters.prettyCase(this.name)
-
-    return this.$t('app.afc.SettingsDialog.SettingsForTitle', { name }).toString()
-  }
 
   get afcSettingsExtruder (): KlipperPrinterAfcExtruderSettings | undefined {
     return this.getAfcExtruderSettings(this.name)

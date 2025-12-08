@@ -8,7 +8,7 @@
     <v-card-text>
       <v-row>
         <v-col class="pb-0">
-          <p>{{ $t('app.afc.LaneMappingToCommand', { name }) }}</p>
+          <p>{{ $t('app.afc.LaneMappingToCommand', { name: $filters.prettyCase(name) }) }}</p>
         </v-col>
       </v-row>
       <v-row>

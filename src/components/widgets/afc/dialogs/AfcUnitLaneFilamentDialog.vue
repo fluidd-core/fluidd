@@ -1,7 +1,7 @@
 <template>
   <app-dialog
     v-model="show"
-    :title="$t('app.afc.FilamentForLane', { name })"
+    :title="$t('app.afc.FilamentForLane', { name: $filters.prettyCase(name) })"
     width="400"
     :save-button-text="$t('app.afc.SetSpool')"
     :save-button-disabled="disableSetBtn"

@@ -1,6 +1,6 @@
 <template>
   <v-card outlined>
-    <v-card-title>{{ title }}</v-card-title>
+    <v-card-title>{{ $t('app.afc.SettingsDialog.SettingsForTitle', { name: $filters.prettyCase(name) }) }}</v-card-title>
 
     <v-card-text>
       <app-setting
@@ -40,7 +40,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
-import type { KlipperPrinterAfcLaneSettings, KlipperPrinterAfcStepperSettings } from '@/store/printer/types'
+import type { KlipperPrinterAfcLaneSettings, KlipperPrinterAfcLaneState, KlipperPrinterAfcStepperSettings } from '@/store/printer/types'
 
 @Component({})
 export default class AfcSettingsDialogLane extends Mixins(StateMixin, AfcMixin) {
@@ -49,17 +49,11 @@ export default class AfcSettingsDialogLane extends Mixins(StateMixin, AfcMixin) 
 
   changedValue = false
 
-  get title () {
-    const name = this.$filters.prettyCase(this.name)
-
-    return this.$t('app.afc.SettingsDialog.SettingsForTitle', { name })
-  }
-
   get afcSettingsLane (): KlipperPrinterAfcLaneSettings | KlipperPrinterAfcStepperSettings | undefined {
     return this.getAfcLaneSettings(this.name)
   }
 
-  get afcLane () {
+  get afcLane (): KlipperPrinterAfcLaneState | undefined {
     return this.getAfcLaneObject(this.name)
   }
 

@@ -5,7 +5,7 @@
     </v-list-item-action>
     <v-list-item-content>
       <v-list-item-title>
-        {{ label }}
+        {{ $t('app.afc.ShowTool', { name: $filters.prettyCase(name) }) }}
       </v-list-item-title>
     </v-list-item-content>
   </v-list-item>
@@ -20,10 +20,6 @@ import AfcMixin from '@/mixins/afc'
 export default class AfcCardSettingsExtruder extends Mixins(StateMixin, AfcMixin) {
   @Prop({ type: String, required: true })
   readonly name!: string
-
-  get label (): string {
-    return this.$t('app.afc.ShowTool', { name: this.$filters.prettyCase(this.name) }).toString()
-  }
 
   get showExtruder () {
     return !this.afcHiddenExtruders

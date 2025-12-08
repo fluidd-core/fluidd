@@ -7,7 +7,7 @@
         class="fill-width elevation-0"
         @click="showDialog = true"
       >
-        {{ name }} > {{ mappedTool }}
+        {{ $filters.prettyCase(name) }} > {{ mappedTool }}
       </v-btn>
       <afc-unit-lane-mapping-tool-dialog
         v-model="showDialog"
@@ -21,6 +21,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import AfcUnitLaneMappingToolDialog from '@/components/widgets/afc/dialogs/AfcUnitLaneMappingToolDialog.vue'
+import type { KlipperPrinterAfcLaneState } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -33,7 +34,7 @@ export default class AfcCardUnitLaneHeader extends Mixins(StateMixin, AfcMixin) 
 
   showDialog = false
 
-  get lane () {
+  get lane (): KlipperPrinterAfcLaneState | undefined {
     return this.getAfcLaneObject(this.name)
   }
 

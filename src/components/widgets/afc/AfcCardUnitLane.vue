@@ -22,6 +22,7 @@ import AfcCardUnitLaneEmpty from '@/components/widgets/afc/AfcCardUnitLaneEmpty.
 import AfcCardUnitLaneHeader from '@/components/widgets/afc/AfcCardUnitLaneHeader.vue'
 import AfcCardUnitLaneBody from '@/components/widgets/afc/AfcCardUnitLaneBody.vue'
 import AfcCardUnitLaneActions from '@/components/widgets/afc/AfcCardUnitLaneActions.vue'
+import type { KlipperPrinterAfcLaneState } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -35,7 +36,7 @@ export default class AfcCardUnitLane extends Mixins(StateMixin, AfcMixin) {
   @Prop({ type: String, required: true })
   readonly name!: string
 
-  get lane () {
+  get lane (): KlipperPrinterAfcLaneState | undefined {
     return this.getAfcLaneObject(this.name)
   }
 

@@ -1,6 +1,6 @@
 <template>
   <v-card outlined>
-    <v-card-title>{{ title }}</v-card-title>
+    <v-card-title>{{ $t('app.afc.SettingsDialog.SettingsForTitle', { name: `Hub ${$filters.prettyCase(name)}` }) }}</v-card-title>
     <app-setting
       :title="$t('app.afc.SettingsDialog.BowdenLength')"
       :sub-title="$t('app.afc.SettingsDialog.BowdenLengthDescription')"
@@ -30,12 +30,6 @@ import type { KlipperPrinterAfcHubSettings, KlipperPrinterAfcHubState } from '@/
 export default class AfcSettingsDialogHub extends Mixins(StateMixin, AfcMixin) {
   @Prop({ type: String, required: true })
   readonly name!: string
-
-  get title (): string {
-    const name = this.$filters.prettyCase(`Hub ${this.name}`)
-
-    return this.$t('app.afc.SettingsDialog.SettingsForTitle', { name }).toString()
-  }
 
   get afcSettingsHub (): KlipperPrinterAfcHubSettings | undefined {
     return this.getAfcHubSettings(this.name)

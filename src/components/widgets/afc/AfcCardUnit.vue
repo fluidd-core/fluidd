@@ -9,7 +9,7 @@
           >
             {{ unitIcon }}
           </v-icon>
-          {{ unitNameOutput }}
+          {{ $filters.prettyCase(unitName) }}
         </h3>
         <v-spacer />
         <afc-card-unit-hub
@@ -56,10 +56,6 @@ export default class AfcCardUnit extends Mixins(StateMixin, AfcMixin) {
 
   get unitName (): string {
     return this.name.substring(this.name.indexOf(' ') + 1)
-  }
-
-  get unitNameOutput (): string {
-    return this.$filters.prettyCase(this.unitName)
   }
 
   get unit (): KlipperPrinterAfcUnitState | undefined {

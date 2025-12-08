@@ -100,6 +100,7 @@ import type { Spool, SpoolSelectionDialogState } from '@/store/spoolman/types'
 import AfcUnitLaneInfiniteDialog from '@/components/widgets/afc/dialogs/AfcUnitLaneInfiniteDialog.vue'
 import AfcUnitLaneFilamentDialog from '@/components/widgets/afc/dialogs/AfcUnitLaneFilamentDialog.vue'
 import AfcFilamentReel from './AfcFilamentReel.vue'
+import type { KlipperPrinterAfcLaneState } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -117,7 +118,7 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   showFilamentDialog = false
   spoolmanSelection = false
 
-  get lane () {
+  get lane (): KlipperPrinterAfcLaneState | undefined {
     return this.getAfcLaneObject(this.name)
   }
 

@@ -41,13 +41,14 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import type { KlipperPrinterAfcLaneState } from '@/store/printer/types'
 
 @Component
 export default class AfcCardUnitLaneEmpty extends Mixins(StateMixin, AfcMixin) {
   @Prop({ type: String, required: true })
   readonly name!: string
 
-  get lane () {
+  get lane (): KlipperPrinterAfcLaneState | undefined {
     return this.getAfcLaneObject(this.name)
   }
 

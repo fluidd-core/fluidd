@@ -75,13 +75,14 @@ import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import ToolheadMixIn from '@/mixins/toolhead'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import type { KlipperPrinterAfcLaneState } from '@/store/printer/types'
 
 @Component({})
 export default class AfcCardUnitLaneActions extends Mixins(StateMixin, AfcMixin, ToolheadMixIn) {
   @Prop({ type: String, required: true })
   readonly name!: string
 
-  get lane () {
+  get lane (): KlipperPrinterAfcLaneState | undefined {
     return this.getAfcLaneObject(this.name)
   }
 

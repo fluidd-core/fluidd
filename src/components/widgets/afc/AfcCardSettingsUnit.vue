@@ -5,7 +5,7 @@
     </v-list-item-action>
     <v-list-item-content>
       <v-list-item-title>
-        {{ label }}
+        {{ $t('app.afc.ShowUnit', { name: $filters.prettyCase(unitName) }) }}
       </v-list-item-title>
     </v-list-item-content>
   </v-list-item>
@@ -21,10 +21,8 @@ export default class AfcCardSettingsUnit extends Mixins(StateMixin, AfcMixin) {
   @Prop({ type: String, required: true })
   readonly name!: string
 
-  get label (): string {
-    const unitName = this.name.substring(this.name.indexOf(' ') + 1)
-
-    return this.$t('app.afc.ShowUnit', { name: this.$filters.prettyCase(unitName) }).toString()
+  get unitName (): string {
+    return this.name.substring(this.name.indexOf(' ') + 1)
   }
 
   get showUnit () {
