@@ -23,12 +23,12 @@
       >
         <v-tooltip
           top
-          :disabled="command.toolTipDisabled"
+          :disabled="!command.description"
         >
           <template #activator="{ on, attrs }">
             <app-btn
               class="fill-width"
-              :disabled="(command.disabledWhilePrinting && printerPrinting) || !klippyReady"
+              :disabled="!klippyReady || command.disabled"
               small
               v-bind="attrs"
               v-on="on"
@@ -45,7 +45,7 @@
             </app-btn>
           </template>
           <span>
-            {{ macroDescription(command.command) }}
+            {{ command.description }}
           </span>
         </v-tooltip>
       </v-list-item>
@@ -55,7 +55,7 @@
       >
         <v-tooltip
           top
-          :disabled="macro.toolTipDisabled"
+          :disabled="!macro.macro.description"
         >
           <template #activator="{ on, attrs }">
             <macro-btn
@@ -70,7 +70,7 @@
             </macro-btn>
           </template>
           <span>
-            {{ macroDescription(macro.macroName) }}
+            {{ macro.macro.description }}
           </span>
         </v-tooltip>
       </v-list-item>
@@ -116,6 +116,22 @@ import MacroBtn from '@/components/widgets/macros/MacroBtn.vue'
 import AfcSettingsDialog from '@/components/widgets/afc/dialogs/AfcSettingsDialog.vue'
 import type { GcodeCommands, KlipperPrinterAfcSettings, KlipperPrinterConfig, KlipperPrinterSettings, KlipperPrinterState } from '@/store/printer/types'
 import downloadUrl from '@/util/download-url'
+import type { Macro } from '@/store/macros/types'
+
+type AfcCommand = {
+  icon: string,
+  text: string,
+  command: string,
+  description?: string,
+  disabled?: boolean
+}
+
+type AfcMacro = {
+  text: string,
+  macroName: string,
+  macro: Macro,
+  disabled?: boolean
+}
 
 @Component({
   components: {
@@ -141,95 +157,88 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
   get commands () {
     const availableCommands = this.availableCommands
 
-    const buttons = [
-      {
+    const commands: AfcCommand[] = []
+
+    if ('AFC_CALIBRATION' in availableCommands) {
+      commands.push({
         icon: '$afcCalibration',
-        text: this.$t('app.afc.Calibrate'),
+        text: this.$t('app.afc.Calibrate').toString(),
         command: 'AFC_CALIBRATION',
-        disabled: false,
-        toolTipDisabled: this.macroTooltipDisabled('AFC_CALIBRATION'),
-        disabledWhilePrinting: true,
-      },
-    ]
+        description: availableCommands['AFC_CALIBRATION'].help,
+        disabled: this.printerPrinting
+      })
+    }
 
     if (this.afc?.led_state === true) {
-      buttons.push({
-        icon: '$afcTurnOffLed',
-        text: this.$t('app.afc.LedOff'),
-        command: 'TURN_OFF_AFC_LED',
-        disabled: false,
-        toolTipDisabled: this.macroTooltipDisabled('TURN_OFF_AFC_LED'),
-        disabledWhilePrinting: false,
-      })
+      if ('TURN_OFF_AFC_LED' in availableCommands) {
+        commands.push({
+          icon: '$afcTurnOffLed',
+          text: this.$t('app.afc.LedOff').toString(),
+          command: 'TURN_OFF_AFC_LED',
+          description: availableCommands['TURN_OFF_AFC_LED'].help
+        })
+      }
     } else {
-      buttons.push({
-        icon: '$afcTurnOnLed',
-        text: this.$t('app.afc.LedOn'),
-        command: 'TURN_ON_AFC_LED',
-        disabled: false,
-        toolTipDisabled: this.macroTooltipDisabled('TURN_ON_AFC_LED'),
-        disabledWhilePrinting: false,
-      })
+      if ('TURN_ON_AFC_LED' in availableCommands) {
+        commands.push({
+          icon: '$afcTurnOnLed',
+          text: this.$t('app.afc.LedOn').toString(),
+          command: 'TURN_ON_AFC_LED',
+          description: availableCommands['TURN_ON_AFC_LED'].help
+        })
+      }
     }
 
-    if (this.afc?.td1_present === true) {
-      buttons.push({
+    if (
+      this.afc?.td1_present === true &&
+      'AFC_GET_TD_ONE_DATA' in availableCommands
+    ) {
+      commands.push({
         icon: '',
-        text: 'Capture TD',
+        text: this.$t('app.afc.CaptureTd').toString(),
         command: 'AFC_GET_TD_ONE_DATA',
-        disabled: false,
-        toolTipDisabled: this.macroTooltipDisabled('AFC_GET_TD_ONE_DATA'),
-        disabledWhilePrinting: true,
+        description: availableCommands['AFC_GET_TD_ONE_DATA'].help,
+        disabled: this.printerPrinting
       })
     }
 
-    return buttons
-      .filter(button => button.command.toUpperCase() in availableCommands)
-  }
-
-  macroTooltipDisabled (macroName: string): boolean {
-    return !this.macroDescription(macroName)
-  }
-
-  macroDescription (macroName: string) {
-    const macro = this.$typedGetters['macros/getMacroByName'](macroName)
-
-    return macro?.description || ''
+    return commands
   }
 
   get macros () {
     const settings: KlipperPrinterAfcSettings | undefined = this.printerSettings.afc
 
-    const afcMacros = []
+    const afcMacros: AfcMacro[] = []
 
     if (settings?.wipe) {
-      const wipe_name: string = settings.wipe_cmd || 'AFC_BRUSH'
+      const macroName: string = settings.wipe_cmd || 'AFC_BRUSH'
+      const macro: Macro | undefined = this.$typedGetters['macros/getMacroByName'](macroName)
 
-      afcMacros.push({
-        text: this.$t('app.afc.BrushNozzle'),
-        macroName: wipe_name,
-        disabled: this.printerPrinting,
-        toolTipDisabled: this.macroTooltipDisabled(wipe_name),
-      })
+      if (macro != null) {
+        afcMacros.push({
+          text: this.$t('app.afc.BrushNozzle').toString(),
+          macroName,
+          macro,
+          disabled: this.printerPrinting
+        })
+      }
     }
 
     if (settings?.park) {
-      const park_name: string = settings.park_cmd || 'AFC_PARK'
+      const macroName: string = settings.park_cmd || 'AFC_PARK'
+      const macro: Macro | undefined = this.$typedGetters['macros/getMacroByName'](macroName)
 
-      afcMacros.push({
-        text: this.$t('app.afc.ParkNozzle'),
-        macroName: park_name,
-        disabled: this.printerPrinting,
-        toolTipDisabled: this.macroTooltipDisabled(park_name),
-      })
+      if (macro != null) {
+        afcMacros.push({
+          text: this.$t('app.afc.ParkNozzle').toString(),
+          macroName,
+          macro,
+          disabled: this.printerPrinting
+        })
+      }
     }
 
     return afcMacros
-      .map(button => ({
-        ...button,
-        macro: this.$typedGetters['macros/getMacroByName'](button.macroName),
-      }))
-      .filter((button) => button.macro != null)
   }
 
   downloadDebugJson () {

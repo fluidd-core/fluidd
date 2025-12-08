@@ -26,7 +26,7 @@ export default class AfcMixin extends Vue {
 
   get afcLoadedSpools (): Record<number, string> {
     const loadedSpools = this.afcLanes
-      .reduce((loadedSpools, laneName) => {
+      .reduce<Record<number, string>>((loadedSpools, laneName) => {
         const lane = this.getAfcLaneObject(laneName)
 
         if (lane?.spool_id) {
@@ -34,7 +34,7 @@ export default class AfcMixin extends Vue {
         }
 
         return loadedSpools
-      }, {} as Record<number, string>)
+      }, {})
 
     return loadedSpools
   }

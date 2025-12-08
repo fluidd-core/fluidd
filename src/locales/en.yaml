@@ -6,6 +6,7 @@ app:
     BypassActive: "Filament loaded in bypass tool changes are deactivated!"
     Calibrate: "Calibrate"
     Cancel: "Cancel"
+    CaptureTd: "Capture TD"
     DebugJson: "Debug JSON"
     Detected: "Detected"
     EjectFilament: "Eject Filament"
