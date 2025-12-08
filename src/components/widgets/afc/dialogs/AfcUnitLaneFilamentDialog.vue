@@ -92,12 +92,12 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
   }
 
   @Debounce(500)
-  setColor (newColor: any) {
+  setColor (newColor: { hex: string }) {
     this.color = newColor.hex
   }
 
   setSpool () {
-    const gcode = []
+    const gcode: string[] = []
 
     if (this.color !== this.currentColor) {
       const cleanedColor = this.color.substring(1)
