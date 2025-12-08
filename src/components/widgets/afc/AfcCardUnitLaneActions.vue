@@ -1,0 +1,151 @@
+<template>
+  <v-row>
+    <v-col class="px-6 pt-3 pb-6 d-flex flex-row justify-space-between">
+      <v-item-group class="_btn-group d-flex flex-nowrap fill-width py-0">
+        <v-tooltip
+          v-if="toolLoaded"
+          top
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn
+              :disabled="!klippyReady || printerPrinting"
+              dense
+              class="flex-grow-1 px-0 first-btn"
+              v-bind="attrs"
+              v-on="on"
+              @click="unloadLane"
+            >
+              <v-icon small>
+                $afcUnloadLane
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>
+            {{ $t('app.afc.UnloadLane') }}
+          </span>
+        </v-tooltip>
+        <v-tooltip
+          v-else
+          top
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn
+              :disabled="!klippyReady || printerPrinting"
+              dense
+              class="flex-grow-1 px-0 first-btn"
+              v-bind="attrs"
+              v-on="on"
+              @click="loadLane"
+            >
+              <v-icon small>
+                $afcLoadLane
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>
+            {{ $t('app.afc.LoadLane') }}
+          </span>
+        </v-tooltip>
+        <v-tooltip top>
+          <template #activator="{ on, attrs }">
+            <v-btn
+              :disabled="toolLoaded || (!laneRunout && toolLoaded)"
+              dense
+              class="flex-grow-1 px-0 last-btn"
+              v-bind="attrs"
+              v-on="on"
+              @click="ejectLane"
+            >
+              <v-icon small>
+                $afcEjectFilament
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>
+            {{ $t('app.afc.EjectFilament') }}
+          </span>
+        </v-tooltip>
+      </v-item-group>
+    </v-col>
+  </v-row>
+</template>
+<script lang="ts">
+import { Component, Mixins, Prop } from 'vue-property-decorator'
+import StateMixin from '@/mixins/state'
+import AfcMixin from '@/mixins/afc'
+import ToolheadMixIn from '@/mixins/toolhead'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import type { KlipperPrinterAfcLaneState } from '@/store/printer/types'
+
+@Component({})
+export default class AfcCardUnitLaneActions extends Mixins(StateMixin, AfcMixin, ToolheadMixIn) {
+  @Prop({ type: String, required: true })
+  readonly name!: string
+
+  get lane (): KlipperPrinterAfcLaneState | undefined {
+    return this.getAfcLaneObject(this.name)
+  }
+
+  get laneActive (): boolean {
+    return this.name === this.afcCurrentLane?.name
+  }
+
+  get laneRunout (): boolean {
+    return (
+      this.laneActive &&
+      this.lane?.prep !== true
+    )
+  }
+
+  get toolLoaded (): boolean {
+    return this.lane?.tool_loaded === true
+  }
+
+  loadLane () {
+    this.sendGcode(`CHANGE_TOOL LANE=${encodeGcodeParamValue(this.name)}`)
+  }
+
+  unloadLane () {
+    this.sendGcode(`TOOL_UNLOAD LANE=${encodeGcodeParamValue(this.name)}`)
+  }
+
+  ejectLane () {
+    this.sendGcode(`LANE_UNLOAD LANE=${encodeGcodeParamValue(this.name)}`)
+  }
+}
+</script>
+
+<style scoped>
+._btn-group {
+  border-radius: 4px;
+
+  .v-btn {
+    border-radius: 0;
+    border-color: rgba(255, 255, 255, 0.12);
+    border-style: solid;
+    border-width: thin;
+    box-shadow: none;
+    height: 28px;
+    opacity: 0.8;
+    min-width: auto !important;
+  }
+
+  .v-btn.first-btn {
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+  }
+
+  .v-btn.last-btn {
+    border-top-right-radius: inherit;
+    border-bottom-right-radius: inherit;
+  }
+
+  .v-btn:not(.first-btn) {
+    border-left-width: 0;
+  }
+}
+
+html.theme--light ._btn-group .v-btn {
+  border-color: rgba(0, 0, 0, 0.12);
+}
+</style>

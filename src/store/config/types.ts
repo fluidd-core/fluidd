@@ -26,6 +26,7 @@ export interface UiSettings {
   spoolman: SpoolmanConfig;
   history: HistoryConfig;
   mmu: MmuConfig;
+  afc: AfcConfig;
 }
 
 export interface WarningsConfig {
@@ -68,6 +69,15 @@ export interface MmuConfig {
   showName: boolean;
   showLogos: boolean;
   showUnavailableSpoolColor: boolean;
+}
+
+export interface AfcConfig {
+  hiddenExtruders: string[];
+  hiddenUnits: string[];
+  showFilamentName: boolean;
+  showLaneInfinite: boolean;
+  showUnitIcons: boolean;
+  showTd1Color: boolean;
 }
 
 export interface HostConfig {
