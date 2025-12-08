@@ -28,8 +28,7 @@
   </collapsable-card>
 </template>
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import { Component, Mixins } from 'vue-property-decorator'
 import AfcMixin from '@/mixins/afc'
 import AfcCardMessage from '@/components/widgets/afc/AfcCardMessage.vue'
 import AfcCardBypass from '@/components/widgets/afc/AfcCardBypass.vue'
@@ -48,10 +47,7 @@ import AfcCardSettings from '@/components/widgets/afc/AfcCardSettings.vue'
     AfcCardSettings
   }
 })
-export default class AfcCard extends Mixins(StateMixin, AfcMixin) {
-  @Prop({ type: Boolean })
-  readonly fullscreen?: boolean
-
+export default class AfcCard extends Mixins(AfcMixin) {
   get filteredExtruders (): string[] {
     return this.afcExtruders
       .filter(extruder => !this.afcHiddenExtruders.includes(extruder))
