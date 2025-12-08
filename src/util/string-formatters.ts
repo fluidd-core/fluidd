@@ -37,7 +37,7 @@ const stringFormatters = () => {
 
       const op = value < 0 ? Math.min : Math.max
 
-      return op(value, Math.pow(10, -fractionDigits))
+      return op(value, 10 ** -fractionDigits)
         .toFixed(fractionDigits) + unit
     },
 

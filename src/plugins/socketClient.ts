@@ -2,7 +2,7 @@
  * Taken from https://github.com/DimanVorosh/vue-json-rpc-websocket/blob/master/src/wsClient.js
  * and refactored.
  */
-import _Vue from 'vue'
+import type _Vue from 'vue'
 import { Globals } from '@/globals'
 import { consola } from 'consola'
 import { camelCase, mergeWith } from 'lodash-es'

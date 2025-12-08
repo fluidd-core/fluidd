@@ -110,7 +110,7 @@
 
 <script lang="ts">
 import BrowserMixin from '@/mixins/browser'
-import type { VForm } from '@/types'
+import type { VForm } from 'vuetify/lib'
 import { Component, Prop, VModel, Ref, PropSync, Mixins } from 'vue-property-decorator'
 
 @Component({

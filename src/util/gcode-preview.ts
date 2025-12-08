@@ -61,14 +61,11 @@ function arcIJMoveToSVGPath (toolhead: Point, move: ArcMove): string {
 
   switch (move.d) {
     case 'clockwise':
-      return 'A' + [
-        radius, radius, 0, +(angle < 0), 0, destination.x, destination.y
-      ].join(',')
+      return `A${radius},${radius},0,${+(angle < 0)},0,${destination.x},${destination.y}`
     case 'counter-clockwise':
-      return '' +
-        'M' + [destination.x, destination.y].join(',') +
-        'A' + [radius, radius, 0, +(angle > 0), 0, toolhead.x, toolhead.y].join(',') +
-        'M' + [destination.x, destination.y].join(',')
+      return `M${destination.x},${destination.y}` +
+        `A${radius},${radius},0,${+(angle > 0)},0,${toolhead.x},${toolhead.y}` +
+        `M${destination.x},${destination.y}`
     default:
       throw new TypeError('move has no direction')
   }
@@ -127,11 +124,10 @@ export function arcMoveToSvgPath (toolhead: Point, move: ArcMove): string {
   throw new TypeError('Move is not a valid arc')
 }
 
-// Assumes the path is pr
 export function moveToSVGPath (toolhead: Point, move: Move) {
-  if ('d' in move) {
-    return arcMoveToSvgPath(toolhead, move)
-  } else {
-    return `L${move.x ?? toolhead.x},${move.y ?? toolhead.y}`
-  }
+  return (
+    'd' in move
+      ? arcMoveToSvgPath(toolhead, move)
+      : `L${move.x ?? toolhead.x},${move.y ?? toolhead.y}`
+  )
 }

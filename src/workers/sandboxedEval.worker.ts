@@ -32,7 +32,7 @@ const networkError = () => {
   throw new Error('network disabled in this worker')
 }
 
-const XHRStub = function () {
+const XHRStub = () => {
   networkError()
 }
 

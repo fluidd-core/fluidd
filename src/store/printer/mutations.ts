@@ -75,7 +75,7 @@ export const mutations = {
         // always evaluate true since we never
         // get an update unless something has changed.
         if (stateObject[key] !== payloadValue[key]) {
-          Vue.set(stateObject, key, payloadValue[key])
+          Vue.set(stateObject, key, Object.freeze(payloadValue[key]))
         }
       }
     }

@@ -194,7 +194,7 @@
 <script lang="ts">
 import { Component, Mixins, Ref, Watch } from 'vue-property-decorator'
 import { Debounce } from 'vue-debounce-decorator'
-import { VBtn } from 'vuetify/lib'
+import type { VBtn } from 'vuetify/lib'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
 
@@ -203,7 +203,7 @@ export default class MmuControls extends Mixins(StateMixin, MmuMixin) {
   private btnSize: number = 2
 
   @Ref('refBtn')
-  readonly refBtn?: InstanceType<typeof VBtn>
+  readonly refBtn?: VBtn
 
   get unloadButtonText () {
     if (this.gate === this.TOOL_GATE_BYPASS) return this.$t('app.mmu.btn.unload_ext')
@@ -219,7 +219,7 @@ export default class MmuControls extends Mixins(StateMixin, MmuMixin) {
   checkButtonWidth () {
     this.$nextTick(() => {
       if (this.refBtn) {
-        const width = (this.refBtn.$el as HTMLElement).offsetWidth ?? 0
+        const width = this.refBtn.$el.offsetWidth ?? 0
         if (width === 0) {
           this.btnSize = 2
         } else if (width < 95) {

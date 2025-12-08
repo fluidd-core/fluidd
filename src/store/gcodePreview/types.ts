@@ -1,7 +1,5 @@
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 
-export type LayerNr = number
-
 export interface GcodePreviewState {
   moves: Move[];
   layers: Layer[];

@@ -25,8 +25,7 @@
         :title="$t('app.timelapse.setting.output_framerate')"
         :sub-title="subtitleIfBlocked(outputFramerateBlocked)"
       >
-        <v-text-field
-          ref="outputFramerateElement"
+        <app-text-field
           :value="outputFramerate"
           :rules="[
             $rules.required,
@@ -39,7 +38,8 @@
           dense
           single-line
           suffix="fps"
-          @change="setOutputFramerate"
+          submit-on-change
+          @submit="setOutputFramerate"
         />
       </app-setting>
 
@@ -48,8 +48,7 @@
           :title="$t('app.timelapse.setting.targetlength')"
           :sub-title="subtitleIfBlocked(targetLengthBlocked)"
         >
-          <v-text-field
-            ref="targetLengthElement"
+          <app-text-field
             :value="targetLength"
             :rules="[
               $rules.required,
@@ -62,7 +61,8 @@
             dense
             single-line
             suffix="s"
-            @change="setTargetLength"
+            submit-on-change
+            @submit="setTargetLength"
           />
         </app-setting>
 
@@ -72,8 +72,7 @@
           :title="$t('app.timelapse.setting.variable_fps_min')"
           :sub-title="subtitleIfBlocked(minFpsBlocked)"
         >
-          <v-text-field
-            ref="minFpsElement"
+          <app-text-field
             :value="minFps"
             :rules="[
               $rules.required,
@@ -86,7 +85,8 @@
             dense
             single-line
             suffix="fps"
-            @change="setMinFps"
+            submit-on-change
+            @submit="setMinFps"
           />
         </app-setting>
 
@@ -96,8 +96,7 @@
           :title="$t('app.timelapse.setting.variable_fps_max')"
           :sub-title="subtitleIfBlocked(maxFpsBlocked)"
         >
-          <v-text-field
-            ref="maxFpsElement"
+          <app-text-field
             :value="maxFps"
             :rules="[
               $rules.required,
@@ -110,7 +109,8 @@
             dense
             single-line
             suffix="fps"
-            @change="setMaxFps"
+            submit-on-change
+            @submit="setMaxFps"
           />
         </app-setting>
       </template>
@@ -135,8 +135,7 @@
         :title="$t('app.timelapse.setting.duplicatelastframe')"
         :sub-title="subtitleIfBlocked(duplicateFramesBlocked)"
       >
-        <v-text-field
-          ref="duplicateFramesElement"
+        <app-text-field
           :value="duplicateFrames"
           :rules="[
             $rules.required,
@@ -149,7 +148,8 @@
           dense
           single-line
           :suffix="$tc('app.timelapse.label.frame', duplicateFrames)"
-          @change="setDuplicateFrames"
+          submit-on-change
+          @submit="setDuplicateFrames"
         />
       </app-setting>
 
@@ -204,12 +204,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, Ref, VModel } from 'vue-property-decorator'
+import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
 import type { TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
 import { defaultWritableSettings } from '@/store/timelapse/state'
-import type { VInput } from '@/types'
 
 @Component({})
 export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
@@ -218,21 +217,6 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
 
   @Prop({ type: Boolean, required: true })
   readonly renderable!: boolean
-
-  @Ref('outputFramerateElement')
-  readonly outputFramerateElement!: VInput
-
-  @Ref('targetLengthElement')
-  readonly targetLengthElement!: VInput
-
-  @Ref('minFpsElement')
-  readonly minFpsElement!: VInput
-
-  @Ref('maxFpsElement')
-  readonly maxFpsElement!: VInput
-
-  @Ref('duplicateFramesElement')
-  readonly duplicateFramesElement!: VInput
 
   get lengthEstimate () {
     const totalFrames = this.frameCount + this.duplicateLastFrameCount
@@ -264,9 +248,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   setOutputFramerate (value: number) {
-    if (this.outputFramerateElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ output_framerate: value })
-    }
+    SocketActions.machineTimelapseSetSettings({ output_framerate: value })
   }
 
   get variableFpsBlocked (): boolean {
@@ -290,9 +272,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   setTargetLength (value: number) {
-    if (this.targetLengthElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ targetlength: value })
-    }
+    SocketActions.machineTimelapseSetSettings({ targetlength: value })
   }
 
   get minFpsBlocked (): boolean {
@@ -304,9 +284,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   setMinFps (value: number) {
-    if (this.minFpsElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ variable_fps_min: value })
-    }
+    SocketActions.machineTimelapseSetSettings({ variable_fps_min: value })
   }
 
   get maxFpsBlocked (): boolean {
@@ -318,9 +296,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   setMaxFps (value: number) {
-    if (this.maxFpsElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ variable_fps_max: value })
-    }
+    SocketActions.machineTimelapseSetSettings({ variable_fps_max: value })
   }
 
   get duplicateFramesBlocked (): boolean {
@@ -332,9 +308,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   setDuplicateFrames (value: number) {
-    if (this.duplicateFramesElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ duplicatelastframe: value })
-    }
+    SocketActions.machineTimelapseSetSettings({ duplicatelastframe: value })
   }
 
   get saveFramesBlocked (): boolean {

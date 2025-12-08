@@ -6,8 +6,7 @@
         :title="$t('app.timelapse.setting.park_custom_pos_x')"
         :sub-title="subtitleIfBlocked(getCustomParkPosBlocked('x'))"
       >
-        <v-text-field
-          ref="parkPosXElement"
+        <app-text-field
           :value="parkPosX"
           :rules="[
             $rules.required,
@@ -21,7 +20,8 @@
           dense
           single-line
           suffix="mm"
-          @change="setParkPosX"
+          submit-on-change
+          @submit="setParkPosX"
         />
       </app-setting>
     </template>
@@ -32,8 +32,7 @@
         :title="$t('app.timelapse.setting.park_custom_pos_y')"
         :sub-title="subtitleIfBlocked(getCustomParkPosBlocked('y'))"
       >
-        <v-text-field
-          ref="parkPosYElement"
+        <app-text-field
           :value="parkPosY"
           :rules="[
             $rules.required,
@@ -47,7 +46,8 @@
           dense
           single-line
           suffix="mm"
-          @change="setParkPosY"
+          submit-on-change
+          @submit="setParkPosY"
         />
       </app-setting>
     </template>
@@ -55,12 +55,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Ref } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
-import type { VInput } from '@/types'
 import type { BedSize } from '@/store/printer/types'
 
 @Component({
@@ -69,12 +68,6 @@ import type { BedSize } from '@/store/printer/types'
   }
 })
 export default class CustomParkPositionSettings extends Mixins(StateMixin) {
-  @Ref('parkPosXElement')
-  readonly parkPosXElement?: VInput
-
-  @Ref('parkPosYElement')
-  readonly parkPosYElement?: VInput
-
   getCustomParkPosBlocked (axis: 'x' | 'y'): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting'](`park_custom_pos_${axis}`)
   }
@@ -92,9 +85,7 @@ export default class CustomParkPositionSettings extends Mixins(StateMixin) {
   }
 
   setParkPosX (value: number) {
-    if (this.parkPosXElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ park_custom_pos_x: value })
-    }
+    SocketActions.machineTimelapseSetSettings({ park_custom_pos_x: value })
   }
 
   get parkPosY (): number {
@@ -102,9 +93,7 @@ export default class CustomParkPositionSettings extends Mixins(StateMixin) {
   }
 
   setParkPosY (value: number) {
-    if (this.parkPosYElement?.validate()) {
-      SocketActions.machineTimelapseSetSettings({ park_custom_pos_y: value })
-    }
+    SocketActions.machineTimelapseSetSettings({ park_custom_pos_y: value })
   }
 
   get bedSize (): BedSize {

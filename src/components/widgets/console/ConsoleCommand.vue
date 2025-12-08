@@ -38,7 +38,7 @@
 <script lang="ts">
 import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
 import { Globals } from '@/globals'
-import type { VInput } from '@/types'
+import type { VTextField } from 'vuetify/lib'
 import type { GcodeCommands } from '@/store/printer/types'
 
 @Component({})
@@ -47,7 +47,7 @@ export default class ConsoleCommand extends Vue {
   readonly value!: string
 
   @Ref('input')
-  readonly input!: VInput
+  readonly input!: VTextField
 
   @Prop({ type: Boolean })
   readonly disabled?: boolean
