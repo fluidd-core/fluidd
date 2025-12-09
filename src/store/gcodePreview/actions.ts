@@ -1,7 +1,7 @@
 import type { ActionTree } from 'vuex'
 import type { GcodePreviewState } from './types'
 import type { RootState } from '../types'
-import type { AppFile } from '@/store/files/types'
+import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
 import { consola } from 'consola'
@@ -26,11 +26,11 @@ export const actions = {
 
       worker.terminate()
 
-      commit('clearFile')
+      commit('setFile', null)
     }
   },
 
-  async loadGcode ({ commit, state, rootState, dispatch }, payload: { file: AppFile; gcode: ArrayBuffer }) {
+  async loadGcode ({ commit, state, rootState, dispatch }, payload: { file: AppFile | AppFileWithMeta; gcode: ArrayBuffer }) {
     const worker = new ParseGcodeWorker()
 
     commit('setParserWorker', worker)
@@ -49,6 +49,7 @@ export const actions = {
             commit('setMoves', message.moves)
             commit('setLayers', message.layers)
             commit('setParts', message.parts)
+            commit('setTools', message.tools)
             commit('setParserProgress', payload.file.size ?? payload.gcode.byteLength)
 
             if (rootState.config.uiSettings.gcodePreview.hideSinglePartBoundingBox && message.parts.length <= 1) {
@@ -71,7 +72,7 @@ export const actions = {
           }
 
           if (state.moves.length === 0) {
-            commit('clearFile')
+            commit('setFile', null)
           }
 
           break
@@ -90,6 +91,8 @@ export const actions = {
     commit('setParserProgress', 0)
     commit('setMoves', [])
     commit('setLayers', [])
+    commit('setParts', [])
+    commit('setTools', [])
 
     commit('setFile', payload.file)
 

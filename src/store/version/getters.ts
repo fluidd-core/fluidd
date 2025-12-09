@@ -107,9 +107,8 @@ export const getters = {
       return {
         keys: Object
           .keys(result)
-          .map(key => parseInt(key))
-          .sort()
-          .reverse(),
+          .map(key => +key)
+          .sort((a, b) => b - a),
         result
       }
     }

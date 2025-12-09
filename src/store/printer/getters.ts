@@ -843,6 +843,9 @@ export const getters = {
   getExtraSensorData: (state) => (sensorType: string, name: string) => {
     const supportedSensors = {
       aht10: 'aht10',
+      aht1x: 'aht10',
+      aht2x: 'aht10',
+      aht3x: 'aht10',
       bme280: 'bme280',
       htu21d: 'htu21d',
       sht21: 'htu21d',
@@ -1176,5 +1179,9 @@ export const getters = {
       exclude_object != null &&
       exclude_object.objects.length > 0
     )
+  },
+
+  getSupportsAfc: (state): boolean => {
+    return state.printer.AFC != null
   }
 } satisfies GetterTree<PrinterState, RootState>

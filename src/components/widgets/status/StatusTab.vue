@@ -119,6 +119,13 @@
               <status-label :label="$t('app.general.label.layer')">
                 <span v-if="layers > 0">{{ layer }} / {{ layers }}</span>
               </status-label>
+
+              <status-label
+                v-if="totalToolChangeCount > 0"
+                :label="$t('app.general.label.toolchange')"
+              >
+                <span>{{ currentToolChange }} / {{ totalToolChangeCount }}</span>
+              </status-label>
             </v-col>
 
             <v-col
@@ -363,6 +370,14 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin, ToolheadMi
    */
   get layer (): number {
     return this.$typedGetters['printer/getPrintLayer']
+  }
+
+  get currentToolChange (): number {
+    return this.$typedState.printer.printer?.AFC?.current_toolchange ?? 0
+  }
+
+  get totalToolChangeCount (): number {
+    return this.$typedState.printer.printer?.AFC?.number_of_toolchanges ?? 0
   }
 
   /**

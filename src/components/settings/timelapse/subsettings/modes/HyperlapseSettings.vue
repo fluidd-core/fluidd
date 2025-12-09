@@ -5,8 +5,7 @@
       :title="$t('app.timelapse.setting.hyperlapse_cycle')"
       :sub-title="subtitleIfBlocked(hyperlapseCycleBlocked)"
     >
-      <v-text-field
-        ref="hyperlapseCycleElement"
+      <app-text-field
         :value="hyperlapseCycle"
         :rules="[
           $rules.required,
@@ -19,24 +18,21 @@
         dense
         single-line
         suffix="s"
-        @change="setHyperlapseCycle"
+        submit-on-change
+        @submit="setHyperlapseCycle"
       />
     </app-setting>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Ref } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
-import type { VInput } from '@/types'
 
 @Component({})
 export default class HyperlapseSettings extends Mixins(StateMixin) {
-  @Ref('hyperlapseCycleElement')
-  readonly hyperlapseCycleElement!: VInput
-
   get hyperlapseCycleBlocked (): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('hyperlapse_cycle')
   }
@@ -46,9 +42,7 @@ export default class HyperlapseSettings extends Mixins(StateMixin) {
   }
 
   setHyperlapseCycle (value: number) {
-    if (this.hyperlapseCycleElement.valid) {
-      SocketActions.machineTimelapseSetSettings({ hyperlapse_cycle: value })
-    }
+    SocketActions.machineTimelapseSetSettings({ hyperlapse_cycle: value })
   }
 
   get settings (): TimelapseSettings {

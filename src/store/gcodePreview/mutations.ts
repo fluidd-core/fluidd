@@ -1,8 +1,8 @@
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import type { GcodePreviewState } from './types'
+import type { GcodePreviewState, Layer, Move, Part, Tool } from './types'
 import Vue from 'vue'
-import type { AppFile } from '@/store/files/types'
+import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 
 export const mutations = {
   /**
@@ -12,24 +12,24 @@ export const mutations = {
     Object.assign(state, defaultState())
   },
 
-  setMoves (state, payload) {
+  setMoves (state, payload: Move[]) {
     Vue.set(state, 'moves', Object.freeze(payload.map(Object.freeze)))
   },
 
-  setLayers (state, payload) {
+  setLayers (state, payload: Layer[]) {
     Vue.set(state, 'layers', Object.freeze(payload.map(Object.freeze)))
   },
 
-  setParts (state, payload) {
+  setParts (state, payload: Part[]) {
     Vue.set(state, 'parts', Object.freeze(payload.map(Object.freeze)))
   },
 
-  setFile (state, file: AppFile) {
-    state.file = file
+  setTools (state, payload: Tool[]) {
+    Vue.set(state, 'tools', Object.freeze(payload))
   },
 
-  clearFile (state) {
-    state.file = undefined
+  setFile (state, file: AppFile | AppFileWithMeta | null) {
+    state.file = file
   },
 
   setParserProgress (state, payload: number) {

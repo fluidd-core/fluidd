@@ -145,21 +145,22 @@ export const actions = {
     commit('setMoonrakerStats', payload)
 
     // Add a chart entry
-    if (
-      payload.moonraker_stats &&
-      'cpu_usage' in payload.moonraker_stats &&
-      !Array.isArray(payload.moonraker_stats)
-    ) {
-      const d = payload.moonraker_stats
-      if (d.cpu_usage <= 100) {
-        commit('charts/setChartEntry', {
-          type: 'moonraker',
-          retention: 600,
-          data: {
-            date: new Date(d.time * 1000),
-            load: d.cpu_usage.toFixed(2)
-          }
-        }, { root: true })
+    if (payload.moonraker_stats) {
+      const stats = Array.isArray(payload.moonraker_stats)
+        ? payload.moonraker_stats
+        : [payload.moonraker_stats]
+
+      for (const d of stats) {
+        if (d.cpu_usage <= 100) {
+          commit('charts/setChartEntry', {
+            type: 'moonraker',
+            retention: 600,
+            data: {
+              date: new Date(d.time * 1000),
+              load: d.cpu_usage.toFixed(2)
+            }
+          }, { root: true })
+        }
       }
     }
   },

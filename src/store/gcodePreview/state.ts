@@ -5,7 +5,8 @@ export const defaultState = (): GcodePreviewState => {
     moves: [],
     layers: [],
     parts: [],
-    file: undefined,
+    tools: [],
+    file: null,
     parserProgress: 0,
     parserWorker: null
   }

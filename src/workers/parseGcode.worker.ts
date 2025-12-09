@@ -9,7 +9,8 @@ export type ParseGcodeWorkerClientMessage = {
   action: 'result',
   moves: Move[],
   layers: Layer[],
-  parts: Part[]
+  parts: Part[],
+  tools: number[]
 } | {
   action: 'error',
   error?: unknown
@@ -29,12 +30,13 @@ const sendProgress = (filePosition: number) => {
   self.postMessage(message)
 }
 
-const sendResult = (moves: Move[], layers: Layer[], parts: Part[]) => {
+const sendResult = (moves: Move[], layers: Layer[], parts: Part[], tools: number[]) => {
   const message : ParseGcodeWorkerClientMessage = {
     action: 'result',
     moves,
     layers,
-    parts
+    parts,
+    tools
   }
 
   self.postMessage(message)
@@ -57,9 +59,9 @@ self.onmessage = (event: MessageEvent<ParseGcodeWorkerServerMessage>) => {
       case 'parse': {
         const gcode = new TextDecoder().decode(message.gcode)
 
-        const { moves, layers, parts } = parseGcode(gcode, sendProgress)
+        const { moves, layers, parts, tools } = parseGcode(gcode, sendProgress)
 
-        sendResult(moves, layers, parts)
+        sendResult(moves, layers, parts, tools)
 
         break
       }

@@ -1,6 +1,7 @@
 <template>
   <v-form
     ref="form"
+    class="flex"
     @submit.prevent="handleSubmit"
   >
     <v-text-field
@@ -11,6 +12,7 @@
         'v-input--width-x-small': xSmall
       }"
       v-on="filteredListeners"
+      @change="handleChange"
       @focus="handleFocus"
       @blur="handleBlur"
     >
@@ -24,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import type { VForm } from '@/types'
+import type { VForm } from 'vuetify/lib'
 import { Component, Vue, VModel, Watch, Ref, Prop } from 'vue-property-decorator'
 
 @Component({
@@ -39,6 +41,12 @@ export default class AppTextField extends Vue {
 
   @Prop({ type: Boolean })
   readonly xSmall?: boolean
+
+  @Prop({ type: Boolean, default: true })
+  readonly submitOnEnter?: boolean
+
+  @Prop({ type: Boolean })
+  readonly submitOnChange?: boolean
 
   @Ref('form')
   readonly form!: VForm
@@ -55,13 +63,28 @@ export default class AppTextField extends Vue {
 
   get filteredListeners () {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { focus, blur, ...listeners } = this.$listeners
+    const { focus, blur, change, ...listeners } = this.$listeners
 
     return listeners
   }
 
   handleSubmit () {
-    if (this.form.validate()) {
+    if (
+      this.submitOnEnter &&
+      !this.submitOnChange &&
+      this.form.validate()
+    ) {
+      this.$emit('submit', this.currentValue)
+    }
+  }
+
+  handleChange () {
+    this.$emit('change', this.currentValue)
+
+    if (
+      this.submitOnChange &&
+      this.form.validate()
+    ) {
       this.$emit('submit', this.currentValue)
     }
   }

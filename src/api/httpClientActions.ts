@@ -10,7 +10,7 @@ export type AxiosRequestConfigForReturnType<T = unknown, D = unknown> = AxiosReq
         ? { responseType: 'blob' }
         : T extends FormData
           ? { responseType: 'formdata' }
-          : {}
+          : unknown
         )
 
 export const httpClientActions = {

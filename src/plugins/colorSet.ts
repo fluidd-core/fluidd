@@ -1,7 +1,7 @@
 /**
  * A basic class to manage color steps for our graphs.
  */
-import _Vue from 'vue'
+import type _Vue from 'vue'
 import { TinyColor } from '@ctrl/tinycolor'
 
 export class ColorSet {

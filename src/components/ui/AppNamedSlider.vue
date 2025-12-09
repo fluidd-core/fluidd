@@ -1,7 +1,7 @@
 <template>
   <v-form
     ref="form"
-    :class="{'full-width-slider': fullWidth}"
+    class="flex"
     @submit.prevent
   >
     <v-row no-gutters>
@@ -83,7 +83,7 @@
 <script lang="ts">
 import { Component, Prop, Watch, Ref, VModel, Vue } from 'vue-property-decorator'
 import type { InputValidationRules } from 'vuetify'
-import type { VForm } from '@/types'
+import type { VForm } from 'vuetify/lib'
 
 @Component({
   inheritAttrs: false
@@ -121,9 +121,6 @@ export default class AppNamedSlider extends Vue {
 
   @Prop({ type: Number, default: 1 })
   readonly step!: number
-
-  @Prop({ type: Boolean })
-  readonly fullWidth?: boolean
 
   @Ref('form')
   readonly form!: VForm
@@ -263,9 +260,3 @@ export default class AppNamedSlider extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.full-width-slider {
-  width: 100%;
-}
-</style>
