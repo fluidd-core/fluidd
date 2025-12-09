@@ -375,6 +375,7 @@ app:
       load_filament: Завантаження нитки
       park_toolhead: Парк Тулхед
       unload_filament: Вивантаження нитки
+      toolchange: Зміна інструменту
     msg:
       password_changed: Пароль змінено
       wrong_password: У-упс, щось пішло не так. Чи правильний ваш пароль?
@@ -1256,3 +1257,97 @@ app:
       delete_backup: Видалити резервну копію
     msg:
       not_found: Не знайдено жодних існуючих резервних копій бази даних.
+  afc:
+    AfcSettings: Налаштування AFC
+    BrushNozzle: Щітка-насадка
+    BufferDisabled: Буфер неактивний
+    BypassActive: Зміни інструменту байпасу, завантаженого з нитки, 
+      деактивовано!
+    Calibrate: Калібрування
+    Cancel: Скасувати
+    CaptureTd: Захоплення ТД
+    DebugJson: Налагодження JSON
+    Detected: Виявлено
+    EjectFilament: Викинути нитку
+    Ejecting: Викидання
+    Empty: Порожній
+    Error: Помилка
+    FilamentForLane: Нитка для {name}
+    Functions: Функції
+    Headline: AFC
+    Hub: Хаб
+    HubLoad: Навантаження на маточину
+    Idle: Холостий хід
+    InfiniteSpoolDescription: Наступна смуга для завантаження, якщо {name} 
+      закінчиться
+    InfiniteSpoolHeadline: Нескінченна котушка
+    LaneControls: Контроль смуги руху
+    LaneLoaded: Завантажена лінія
+    LaneLoadedNone: НІЧОГО
+    LaneMapping: Картографування смуг руху
+    LaneMappingToCommand: Перепризначення {name} команді інструмента
+    LedOff: Світлодіоди вимкнено
+    LedOn: Світлодіоди увімкнено
+    LoadedInLane: Завантажено {lane}
+    Loading: Завантаження
+    LoadLane: Завантажувальна смуга
+    Material: Матеріал
+    MaterialSubtitle: Наприклад, ABS, PETG, PLA тощо.
+    Moving: Переїзд
+    ParkNozzle: Паркувальна насадка
+    PostExtruderSensor: Датчик після Екструдера
+    PreExtruderSensor: Датчик передекструдера
+    PrepDetected: Нитка виявлена, але не завантажена
+    Printing: Друк
+    RammingSensor: Датчик набивання
+    Restoring: Відновлення
+    SetSpool: Встановити котушку
+    Settings: Налаштування
+    SettingsDialog:
+      BowdenLength: Довжина Боудена
+      BowdenLengthDescription: Це довжина трубки Боудена між маточиною та 
+        головкою інструменту.
+      DistHub: Відстань до хабу
+      DistHubDescription: Відстань від шестерень екструдера смуги до маточини в 
+        мм.
+      Help: Допомога
+      Length: Довжина
+      LoadUnloadLane: Завантажувальна/розвантажувальна лінія
+      LoadUnloadLaneDescription: Натисніть на кнопки, щоб завантажити або 
+        вивантажити філамент з доріжки в екструдер.
+      SaveExtruderValues: Зберегти значення екструдера
+      SaveExtruderValuesDescription: Це запише поточні значення екструдера до 
+        файлу конфігурації поточного екструдера.
+      SaveHubDist: Зберегти значення смуг
+      SaveHubDistDescription: Збережіть значення з певної смуги у файлі 
+        конфігурації.
+      SensorAfterExtruder: Датчик після екструдера
+      SettingsForTitle: Налаштування для {name}
+      ToolSensorAfterExtruder: Датчик інструменту після екструдера
+      ToolSensorAfterExtruderDescription: Відстань від шестерень екструдера до 
+        датчика кінця інструмента в мм. Використовується для вивантаження 
+        філаменту з шестерень екструдера після того, як датчик кінця інструмента
+        більше не спрацьовує.
+      ToolStn: Довжина навантаження інструменту
+      ToolStnDescriptionWithEndSensor: Відстань від датчика кінця інструменту до
+        початку зони плавлення в мм.
+      ToolStnDescriptionWithoutEndSensor: Відстань від датчика tool_start до 
+        початку зони плавлення в мм.
+      ToolStnDescriptionWithRamming: Відстань від шестерень екструдера до 
+        початку зони розплаву в мм.
+      ToolStnUnload: Довжина розвантаження інструменту
+      ToolStnUnloadDescription: Відстань, на яку потрібно відвести нитку для 
+        вивантаження нитки з інструмента, у мм.
+      WriteToFile: Записати у файл
+    SettingsForLane: Налаштування для {lane}
+    ShowFilamentName: Показати назву нитки
+    ShowLaneInfinite: Показати кнопку «Безкінечність»
+    ShowTool: Показати інструмент "{name}"
+    ShowUnit: Показати одиницю "{name}"
+    ShowUnitIcons: Показати значки одиниць
+    ShowTd1Color: Показати колір TD-1
+    Unloading: Розвантаження
+    UnloadLane: Розвантажувальна смуга
+    Unknown: Невідомо
+    Weight: Вага
+    WeightSubtitle: Вага нитки в грамах (без котушки).
