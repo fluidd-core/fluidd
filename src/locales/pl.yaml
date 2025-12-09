@@ -1240,3 +1240,5 @@ app:
       delete_backup: Usuń kopię zapasową
     msg:
       not_found: Nie znaleziono istniejących kopii zapasowych bazy danych.
+  afc:
+    AfcSettings: Ustawienia AFC
