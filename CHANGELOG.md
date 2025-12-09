@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.36.0](https://github.com/fluidd-core/fluidd/compare/v1.35.1...v1.36.0) (2025-12-09)
+
+
+### Features
+
+* Adding AFC-Klipper-Add-On Card ([#1751](https://github.com/fluidd-core/fluidd/issues/1751)) ([be6c219](https://github.com/fluidd-core/fluidd/commit/be6c2199e813d7cc7529f945d529b551e6daa93a))
+* adds AHT1X, AHT2X, AHT3X sensor support ([794a86d](https://github.com/fluidd-core/fluidd/commit/794a86d39420a3c890cb92beeba6617dd5756e0b))
+* **GcodePreview:** adds multi-tool support ([#1753](https://github.com/fluidd-core/fluidd/issues/1753)) ([53190fa](https://github.com/fluidd-core/fluidd/commit/53190face32e28da28db48a00be6c801a9fac9b3))
+* **GcodePreview:** ignore colors when no tools ([8d2e3dc](https://github.com/fluidd-core/fluidd/commit/8d2e3dc9f03dbb4e3aad7559128d3c208ffdcd75))
+* **i18n-pl:** Update Polish translations ([fda559a](https://github.com/fluidd-core/fluidd/commit/fda559a334f1c6515d9b12c9b49f6e719ff3cfa8))
+* **i18n-pl:** Update Polish translations ([9614de8](https://github.com/fluidd-core/fluidd/commit/9614de8a2a1c8f76bde16e0dd640b608e9a32a9f))
+* **i18n-si:** Update Slovenian translation ([#1754](https://github.com/fluidd-core/fluidd/issues/1754)) ([d3d37a3](https://github.com/fluidd-core/fluidd/commit/d3d37a3b3232ca42b55250c816387db3e971275e))
+* **i18n-uk:** Update Ukrainian translations ([84f982a](https://github.com/fluidd-core/fluidd/commit/84f982a52d40113f3122eb567eb6ca0d71179f4e))
+* **i18n-uk:** Update Ukrainian translations ([24bca1c](https://github.com/fluidd-core/fluidd/commit/24bca1cab649d01ccd1fcbb7444e012d09d6dd09))
+
+
+### Bug Fixes
+
+* **GcodePreview:** partial revert of previous change ([762d4ff](https://github.com/fluidd-core/fluidd/commit/762d4ffb9c2e16e9c6ed04761911696f2012685b))
+* sort changelog by dates as number ([ef7ba90](https://github.com/fluidd-core/fluidd/commit/ef7ba90469e0cc46cb059412b0dcae7f2393f40c))
+
+
+### Performance Improvements
+
+* avoid reactivity on immutable objects ([1633c47](https://github.com/fluidd-core/fluidd/commit/1633c477080ef9721fee04d8d8e164ae4321a2aa))
+
+
+### Code Refactorings
+
+* allow AppTextField to submit on change ([bdaec85](https://github.com/fluidd-core/fluidd/commit/bdaec851146c1ed131fee7bdebbefaad3715530e))
+* **GcodePreview:** performance improvements ([ce219df](https://github.com/fluidd-core/fluidd/commit/ce219dfb2adb1f5c137ca8ad75991b0621a6dd5b))
+* only emit change if valid ([3e63385](https://github.com/fluidd-core/fluidd/commit/3e63385522ea5445e73b72f94aa82d4f3f3ecfa1))
+* typing improvements ([5e8667b](https://github.com/fluidd-core/fluidd/commit/5e8667b1a586fb8ba09db637fdb754350e155c0b))
+* typing improvements (cont.) ([345d64d](https://github.com/fluidd-core/fluidd/commit/345d64d5e66f22fd5156a1b4e3cdd4f9c1c581ce))
+
 ## [1.35.1](https://github.com/fluidd-core/fluidd/compare/v1.35.0...v1.35.1) (2025-11-27)
 
 
