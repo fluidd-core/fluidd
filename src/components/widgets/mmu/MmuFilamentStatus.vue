@@ -773,6 +773,7 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
   }
 
   get lowerNozzleFull (): boolean {
+    return true
     return (
       this.filamentPos === this.FILAMENT_POS_LOADED ||
             !!this.varsFilamentRemaining ||

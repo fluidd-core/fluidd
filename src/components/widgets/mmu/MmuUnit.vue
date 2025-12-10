@@ -236,6 +236,7 @@
       >
         <inline-svg
           :src="vendorLogoUrl"
+          height="100%"
           @error="vendorLogo = 'HappyHare'"
         />
       </div>
@@ -488,8 +489,8 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 }
 
 .gate-status-row {
-    padding-top: 4px;
-    padding-bottom: 8px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     position: relative;
     z-index: 1;
 }
@@ -518,7 +519,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     font-size: 12px;
     white-space: nowrap;
     overflow: hidden;
-    padding: 4px 0 0 0;
+    padding: 8px 0 0 0;
 }
 
 .unit-climate {
