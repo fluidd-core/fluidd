@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { ActionTree } from 'vuex'
-import type { CanbusUuid, Peripherals, ServerInfo, ServerState, ServerThrottledState, ServiceState, SystemInfo } from './types'
+import type { Peripherals, ServerState, ServerThrottledState, ServiceState, SystemInfo } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
@@ -74,7 +74,7 @@ export const actions = {
   /**
    * On server info
    */
-  async onServerInfo ({ commit, dispatch, state }, payload: ServerInfo) {
+  async onServerInfo ({ commit, dispatch, state }, payload: Moonraker.Server.InfoResponse) {
     // This payload should return a list of enabled components
     // and root directories that are available.
     SocketActions.printerInfo()
@@ -116,19 +116,19 @@ export const actions = {
   /**
    * Gives us moonrakers configuration./
    */
-  async onServerConfig ({ commit }, payload) {
+  async onServerConfig ({ commit }, payload: Moonraker.Server.ConfigResponse) {
     if (payload.config) {
       commit('setServerConfig', payload.config)
     }
   },
 
-  async onLogsRollOver (_, payload?: { rolled_over?: string[], failed?: Record<string, string> }) {
-    if (payload?.failed && Object.keys(payload.failed).length > 0) {
+  async onLogsRollOver (_, payload: Moonraker.Server.LogsRolloverResponse) {
+    if (payload.failed && Object.keys(payload.failed).length > 0) {
       const message = Object.values(payload.failed)
         .join('\n')
 
       EventBus.$emit(message, { type: 'error' })
-    } else if (payload?.rolled_over && payload.rolled_over.length) {
+    } else if (payload.rolled_over && payload.rolled_over.length) {
       const applications = payload.rolled_over
         .map(Vue.$filters.prettyCase)
         .join(', ')
@@ -173,7 +173,7 @@ export const actions = {
     commit('setMachinePeripherals', payload)
   },
 
-  async onMachinePeripheralsCanbus ({ commit }, payload: ObjectWithRequest<{ can_uuids: CanbusUuid[] }>) {
+  async onMachinePeripheralsCanbus ({ commit }, payload: ObjectWithRequest<Moonraker.Peripherals.CanbusResponse>) {
     const { interface: canbusInterface } = payload.__request__.params ?? {}
 
     commit('setMachinePeripheralsCanbus', { canbusInterface, can_uuids: payload.can_uuids })

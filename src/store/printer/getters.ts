@@ -1,11 +1,10 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
-import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, ExtruderStepper, Extruder, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, KlippyApp, ExcludeObjectPart, KlipperPrinterConfig, BeaconModel, BedScrewsScrew, ExtruderKey, Probe } from './types'
+import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, ExtruderStepper, Extruder, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, KlippyApp, ExcludeObjectPart, BeaconModel, BedScrewsScrew, Probe } from './types'
 import getKlipperType from '@/util/get-klipper-type'
 import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
 import i18n from '@/plugins/i18n'
-import type { GcodeHelp } from '../console/types'
 import { Globals } from '@/globals'
 import isKeyOf from '@/util/is-key-of'
 import getFilePaths from '@/util/get-file-paths'
@@ -403,7 +402,7 @@ export const getters = {
  */
   getExtruders: (state): KnownExtruder[] => {
     const extruderKeys = Object.keys(state.printer)
-      .filter((key): key is ExtruderKey => /^extruder\d{0,2}$/.test(key))
+      .filter((key): key is Klipper.ExtruderKey => /^extruder\d{0,2}$/.test(key))
       .sort((a, b) => +a.substring(8) - +b.substring(8))
 
     return extruderKeys
@@ -423,7 +422,7 @@ export const getters = {
   },
 
   // Returns an extruder by name.
-  getExtruderByName: (state, getters) => (key: ExtruderKey) => {
+  getExtruderByName: (state, getters) => (key: Klipper.ExtruderKey) => {
     const e = state.printer[key]
     const c = state.printer.configfile.settings[key.toLowerCase()]
 
@@ -1065,7 +1064,7 @@ export const getters = {
     return state.printer.configfile?.save_config_pending || false
   },
 
-  getSaveConfigPendingItems: (state): KlipperPrinterConfig => {
+  getSaveConfigPendingItems: (state): Klipper.ConfigState => {
     return state.printer.configfile?.save_config_pending_items || {}
   },
 
@@ -1101,7 +1100,7 @@ export const getters = {
       return availableCommands
     }
 
-    const knownCommands: GcodeHelp = rootGetters['console/getAllKnownCommands']
+    const knownCommands: Moonraker.Printer.GcodeHelpResponse = rootGetters['console/getAllKnownCommands']
 
     return Object.entries(knownCommands)
       .reduce<GcodeCommands>((availableCommands, [key, help]) => {

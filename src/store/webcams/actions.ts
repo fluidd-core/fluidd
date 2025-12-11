@@ -76,7 +76,7 @@ export const actions = {
   async updateActiveWebcam ({ commit, state }, payload: string) {
     commit('setActiveWebcam', payload)
 
-    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.webcams.name + '.activeWebcam', state.activeWebcam)
+    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.webcams.name + '.activeWebcam', state.activeWebcam)
   },
 
   async onWebcamsList ({ commit }, payload: { webcams: WebcamConfig[] }) {

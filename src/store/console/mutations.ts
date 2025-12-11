@@ -73,8 +73,8 @@ export const mutations = {
   /**
    * Defines the list of available commands
    */
-  setGcodeHelp (state, payload) {
-    Vue.set(state, 'gcodeHelp', payload)
+  setGcodeHelp (state, payload: Moonraker.Printer.GcodeHelpResponse) {
+    state.gcodeHelp = payload
   },
 
   /**

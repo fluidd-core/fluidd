@@ -82,7 +82,10 @@
         >
           <v-list-item-content>
             <v-list-item-title>
-              <v-tooltip left>
+              <v-tooltip
+                :disabled="!service.active_state"
+                left
+              >
                 <template #activator="{ on, attrs }">
                   <span
                     v-bind="attrs"
@@ -132,15 +135,14 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import type { Device } from '@/store/power/types'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/api/socketActions'
-import type { ServerInfo, ServiceInfo, SystemInfo } from '@/store/server/types'
+import type { ServiceInfo, SystemInfo } from '@/store/server/types'
 
 @Component({})
 export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
-  get serverInfo (): ServerInfo {
+  get serverInfo (): Moonraker.Server.InfoResponse {
     return this.$typedState.server.info
   }
 
@@ -148,7 +150,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     return this.$typedState.config.hostConfig.hosted
   }
 
-  get powerDevices (): Device[] {
+  get powerDevices (): Moonraker.Power.Device[] {
     return this.$typedGetters['power/getDevices']
   }
 
@@ -160,7 +162,6 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     const services: ServiceInfo[] = this.$typedGetters['server/getServices']
 
     return services
-      .filter(service => service.name !== 'klipper_mcu')
   }
 
   get systemInfo (): SystemInfo | null {
@@ -227,7 +228,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     }
   }
 
-  async togglePowerDevice (device: Device) {
+  async togglePowerDevice (device: Moonraker.Power.Device) {
     const confirmOnPowerDeviceChange: boolean = this.$typedState.config.uiSettings.general.confirmOnPowerDeviceChange
 
     const result = (
@@ -244,7 +245,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     }
   }
 
-  getPowerIcon (device: Device) {
+  getPowerIcon (device: Moonraker.Power.Device) {
     switch (device.status) {
       case 'error': {
         return '$error'
@@ -261,7 +262,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     }
   }
 
-  getPowerButtonText (device: Device): string {
+  getPowerButtonText (device: Moonraker.Power.Device): string {
     switch (device.status) {
       case 'error': {
         return `${device.device} [error]`

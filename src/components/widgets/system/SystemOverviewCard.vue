@@ -122,7 +122,6 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import type { SystemInfo } from '@/store/server/types'
-import type { PrinterInfo } from '@/store/printer/types'
 
 @Component({})
 export default class PrinterStatsCard extends Vue {
@@ -177,7 +176,7 @@ export default class PrinterStatsCard extends Vue {
       .join(', ')
   }
 
-  get printerInfo (): PrinterInfo | null {
+  get printerInfo (): Moonraker.Printer.Info | null {
     return this.$typedState.printer.info
   }
 

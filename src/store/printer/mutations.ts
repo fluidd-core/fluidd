@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { KlipperPrinterState, PrinterState } from './types'
+import type { PrinterState } from './types'
 import { defaultState } from './state'
 
 export const mutations = {
@@ -27,7 +27,7 @@ export const mutations = {
     state.forceMoveEnabled = payload
   },
 
-  setPrinterInfo (state, payload) {
+  setPrinterInfo (state, payload: Moonraker.Printer.Info) {
     state.info = payload
   },
 
@@ -61,22 +61,22 @@ export const mutations = {
     }
   },
 
-  setSocketNotify<T extends keyof KlipperPrinterState> (state: PrinterState, payload: { key: T, payload: KlipperPrinterState[T] }) {
+  setSocketNotify<T extends keyof Klipper.PrinterState> (state: PrinterState, payload: { key: T, payload: Klipper.PrinterState[T] }) {
     const { key: payloadKey, payload: payloadValue } = payload
 
-    const stateObject = state.printer[payloadKey]
+    let stateObject = state.printer[payloadKey]
 
     if (stateObject == null) {
       // Object is not set yet, so create it.
-      Vue.set(state.printer, payloadKey, payloadValue)
-    } else {
-      for (const key in payloadValue) {
-        // Leaving the if here, although it should
-        // always evaluate true since we never
-        // get an update unless something has changed.
-        if (stateObject[key] !== payloadValue[key]) {
-          Vue.set(stateObject, key, Object.freeze(payloadValue[key]))
-        }
+      stateObject = {}
+      Vue.set(state.printer, payloadKey, stateObject)
+    }
+    for (const key in payloadValue) {
+      // Leaving the if here, although it should
+      // always evaluate true since we never
+      // get an update unless something has changed.
+      if (stateObject[key] !== payloadValue[key]) {
+        Vue.set(stateObject, key, Object.freeze(payloadValue[key]))
       }
     }
   }

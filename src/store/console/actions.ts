@@ -26,7 +26,7 @@ export const actions = {
    */
   async onUpdateCommandHistory ({ state, commit }, payload) {
     commit('setUpdateCommandHistory', payload)
-    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.commandHistory', state.commandHistory)
+    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.commandHistory', state.commandHistory)
   },
 
   /**
@@ -42,7 +42,7 @@ export const actions = {
   /**
    * Add a console entry
    */
-  async onAddConsoleEntry ({ commit, dispatch }, payload: ConsoleEntry) {
+  async onAddConsoleEntry ({ commit, dispatch }, payload: Omit<ConsoleEntry, 'id'>) {
     payload.message = DOMPurify.sanitize(payload.message).replace(/\r\n|\r|\n/g, '<br />')
     if (!payload.time || payload.time <= 0) {
       payload.time = Date.now() / 1000 | 0
@@ -62,24 +62,27 @@ export const actions = {
   /**
    * On a fresh load of the UI, we load prior gcode / console history
    */
-  async onGcodeStore ({ commit, dispatch }, payload: { gcode_store?: ConsoleEntry[] }) {
+  async onGcodeStore ({ commit, dispatch }, payload: Moonraker.Server.GcodeStoreResponse) {
     if (payload && payload.gcode_store) {
       const entries = payload.gcode_store
-        .map((entry, index: number) => {
-          entry.message = Globals.CONSOLE_RECEIVE_PREFIX + entry.message
+        .map((entry, index): ConsoleEntry => {
+          const rawMessage = Globals.CONSOLE_RECEIVE_PREFIX + entry.message
+          const message = DOMPurify.sanitize(rawMessage)
+            .replace(/\r\n|\r|\n/g, '<br />')
 
-          entry.message = DOMPurify.sanitize(entry.message).replace(/\r\n|\r|\n/g, '<br />')
-
-          entry.id = index
-
-          if (
+          const type = (
             entry.type === 'response' &&
             entry.message.startsWith('// action:')
-          ) {
-            entry.type = 'action'
-          }
+          )
+            ? 'action'
+            : entry.type
 
-          return entry
+          return {
+            ...entry,
+            id: index,
+            message,
+            type
+          }
         })
 
       commit('setAllEntries', entries)
@@ -161,7 +164,7 @@ export const actions = {
    * Klipper provides us with a list of available gcode commands
    * based on the current configuration.
    */
-  async onGcodeHelp ({ commit }, payload) {
+  async onGcodeHelp ({ commit }, payload: Moonraker.Printer.GcodeHelpResponse) {
     commit('setGcodeHelp', payload)
   },
 
@@ -170,7 +173,7 @@ export const actions = {
    */
   async onUpdateAutoScroll ({ commit }, payload) {
     commit('setAutoScroll', payload)
-    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.autoScroll', payload)
+    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.autoScroll', payload)
   },
 
   /**
@@ -178,7 +181,7 @@ export const actions = {
    */
   async onRemoveFilter ({ commit, state }, filter: ConsoleFilter) {
     commit('setRemoveFilter', filter)
-    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
+    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
   },
 
   /**
@@ -186,11 +189,11 @@ export const actions = {
     */
   async onSaveFilter ({ commit, state }, filter: ConsoleFilter) {
     commit('setFilter', filter)
-    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
+    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
   },
 
   async onClear ({ commit, state }) {
     commit('setLastCleared')
-    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.lastCleared', state.lastCleared)
+    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.lastCleared', state.lastCleared)
   }
 } satisfies ActionTree<ConsoleState, RootState>

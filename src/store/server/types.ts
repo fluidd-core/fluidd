@@ -1,10 +1,10 @@
 export interface ServerState {
   klippy_retries: number;
-  info: ServerInfo;
+  info: Moonraker.Server.InfoResponse;
   system_info: SystemInfo | null;
   peripherals: Peripherals;
-  can_uuids: Record<string, CanbusUuid[]> | null;
-  config: ServerConfig;
+  can_uuids: Record<string, Moonraker.Peripherals.CanbusUuid[]> | null;
+  config: Moonraker.Server.Config;
   moonraker_stats: ServerSystemStat[];
   throttled_state: ServerThrottledState | null;
   cpu_temp: number | null;
@@ -34,21 +34,6 @@ export type ServerFlags =
   'Previously Frequency Capped' |
   'Previously Throttled' |
   'Previously Temperature Limited'
-
-export interface ServerInfo {
-  failed_components: string[];
-  klippy_connected: boolean;
-  klippy_state: KlippyState;
-  components: string[];
-  registered_directories: string[];
-  warnings: string[];
-  moonraker_version?: string;
-  api_version?: number[];
-  api_version_string?: string;
-  websocket_count?: number;
-}
-
-export type KlippyState = 'disconnected' | 'startup' | 'ready' | 'error' | 'shutdown'
 
 export interface SystemInfo {
   available_services?: string[];
@@ -158,96 +143,8 @@ export interface InstanceIds {
 }
 
 export interface Peripherals {
-  usb_devices: UsbDevice[] | null;
-  serial_devices: SerialDevice[] | null;
-  v4l2_devices: V4l2Device[] | null;
-  libcamera_devices: LibcameraDevice[] | null;
-}
-
-export interface UsbDevice {
-  bus_num: number;
-  device_num: number;
-  usb_location: string;
-  vendor_id: string;
-  product_id: string;
-  manufacturer?: string | null;
-  product?: string | null;
-  class?: string | null;
-  subclass?: string | null;
-  protocol?: string | null;
-  description?: string | null;
-  serial?: string | null;
-}
-
-export interface SerialDevice {
-  device_type: string;
-  device_path: string;
-  device_name: string;
-  driver_name: string;
-  path_by_hardware?: string | null;
-  path_by_id?: string | null;
-  usb_location?: string | null;
-}
-
-export interface V4l2Device {
-  device_name: string;
-  device_path: string;
-  camera_name: string;
-  driver_name: string;
-  alt_name?: string | null;
-  hardware_bus: string;
-  capabilities: string[];
-  version: string;
-  path_by_hardware?: string | null;
-  path_by_id?: string | null;
-  usb_location?: string | null;
-  modes: V4l2DeviceMode[];
-}
-
-export interface V4l2DeviceMode {
-  format: string;
-  description?: string | null;
-  flags: string[];
-  resolutions: string[];
-}
-
-export interface LibcameraDevice {
-  libcamera_id: string;
-  model: string;
-  modes: LibcameraDeviceMode[];
-}
-
-export interface LibcameraDeviceMode {
-  format: string;
-  resolutions: string[];
-}
-
-export interface CanbusUuid {
-  uuid: string;
-  application: string;
-}
-
-export interface ServerConfig {
-  authorization: ServerAuthorization;
-  server: ServerConfiguration;
-  data_store?: DataStoreConfiguration;
-  spoolman?: SpoolmanConfiguration;
-}
-
-export interface ServerAuthorization {
-  enabled: boolean;
-}
-
-export interface ServerConfiguration {
-  gcode_store_size?: number;
-  temperature_store_size?: number;
-}
-
-export interface DataStoreConfiguration {
-  gcode_store_size?: number;
-  temperature_store_size?: number;
-}
-
-export interface SpoolmanConfiguration {
-  server?: string;
+  usb_devices: Moonraker.Peripherals.UsbDevice[] | null;
+  serial_devices: Moonraker.Peripherals.SerialDevice[] | null;
+  v4l2_devices: Moonraker.Peripherals.V4l2Device[] | null;
+  libcamera_devices: Moonraker.Peripherals.LibcameraDevice[] | null;
 }

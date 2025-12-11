@@ -390,7 +390,6 @@ import { defaultState } from '@/store/config/state'
 import type { VCombobox } from 'vuetify/lib'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { GeneralConfig, ToolheadControlStyle } from '@/store/config/types'
-import type { KlipperPrinterSettings } from '@/store/printer/types'
 
 @Component({
   components: {}
@@ -667,7 +666,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   get printerSupportsForceMove (): boolean {
-    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
+    const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings.force_move?.enable_force_move ?? false
   }

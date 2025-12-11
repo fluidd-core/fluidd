@@ -246,8 +246,7 @@ import ServicesMixin from '@/mixins/services'
 import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
 import { SocketActions } from '@/api/socketActions'
-import type { KlipperPrinterConfig, OutputPin } from '@/store/printer/types'
-import type { Device } from '@/store/power/types'
+import type { OutputPin } from '@/store/printer/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 import vuetify from '@/plugins/vuetify'
 import type { AppUser } from '@/store/auth/types'
@@ -281,7 +280,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     return this.$typedGetters['printer/getSaveConfigPending']
   }
 
-  get saveConfigPendingItems (): KlipperPrinterConfig {
+  get saveConfigPendingItems (): Klipper.ConfigState {
     return this.$typedGetters['printer/getSaveConfigPendingItems']
   }
 
@@ -341,7 +340,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
       }
 
       default: {
-        const device: Device | undefined = this.$typedGetters['power/getDeviceByName'](topNavPowerToggle)
+        const device: Moonraker.Power.Device | undefined = this.$typedGetters['power/getDeviceByName'](topNavPowerToggle)
 
         if (!device) return null
 

@@ -292,7 +292,6 @@ import QrScanner from 'qr-scanner'
 import type { AppDataTableHeader } from '@/types'
 import getFilePaths from '@/util/get-file-paths'
 import type { DataTableHeader } from 'vuetify'
-import type { KlipperPrinterConfig } from '@/store/printer/types'
 import type { AppFileWithMeta } from '@/store/files/types'
 import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
 
@@ -615,7 +614,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         `SET_GCODE_VARIABLE MACRO=${this.targetMacro} VARIABLE=spool_id VALUE=${this.selectedSpoolId ?? 'None'}`
       ]
 
-      const printerConfig: KlipperPrinterConfig = this.$typedGetters['printer/getPrinterConfig']
+      const printerConfig: Klipper.ConfigState = this.$typedGetters['printer/getPrinterConfig']
       const supportsSaveVariables = printerConfig.save_variables
       if (supportsSaveVariables) {
         // persist selected spool across restarts

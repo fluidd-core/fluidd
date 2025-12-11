@@ -32,7 +32,7 @@ import KlipperLoadChart from './KlipperLoadChart.vue'
 import MoonrakerLoadChart from './MoonrakerLoadChart.vue'
 import McuLoadChart from './McuLoadChart.vue'
 import type { ServerSystemStat } from '@/store/server/types'
-import type { KlipperPrinterSystemStatsState, MCU } from '@/store/printer/types'
+import type { MCU } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -48,7 +48,7 @@ export default class PrinterStatsCard extends Vue {
     return this.$typedState.server.moonraker_stats
   }
 
-  get systemStats (): KlipperPrinterSystemStatsState {
+  get systemStats (): Klipper.SystemStatsState {
     return this.$typedState.printer.printer.system_stats
   }
 

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import type { CanbusUuid, Peripherals, ServerInfo, ServerState, ServiceState, SystemInfo } from './types'
+import type { Peripherals, ServerState, ServiceState, SystemInfo } from './types'
 
 export const mutations = {
   /**
@@ -19,7 +19,7 @@ export const mutations = {
     state.info.klippy_state = info.klippy_state
   },
 
-  setServerInfo (state, payload: ServerInfo) {
+  setServerInfo (state, payload: Moonraker.Server.InfoResponse) {
     Vue.set(state, 'info', payload)
   },
 
@@ -36,7 +36,7 @@ export const mutations = {
     }
   },
 
-  setMachinePeripheralsCanbus (state, payload: { canbusInterface: string, can_uuids: CanbusUuid[] }) {
+  setMachinePeripheralsCanbus (state, payload: { canbusInterface: string, can_uuids: Moonraker.Peripherals.CanbusUuid[] }) {
     state.can_uuids = {
       ...state.can_uuids,
       [payload.canbusInterface]: payload.can_uuids
@@ -52,7 +52,7 @@ export const mutations = {
   /**
    * On initial init we get the server (moonraker) configuration.
    */
-  setServerConfig (state, payload) {
+  setServerConfig (state, payload: Moonraker.Server.Config) {
     state.config = { ...state.config, ...payload }
   },
 
