@@ -192,5 +192,25 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
       server: true
     })
   }
+
+  get hasSyncFeedback(): boolean {
+    return this.hasFilamentCompressionSensor || this.hasFilamentTensionSensor || this.hasFilamentProportionalSensor
+  }
+
+  get hasFilamentProportionalSensor() {
+    return this.hasSensor('filament_proportional')
+  }
+
+  get hasFilamentCompressionSensor() {
+    return this.hasSensor('filament_compression')
+  }
+
+  get hasFilamentTensionSensor() {
+    return this.hasSensor('filament_tension')
+  }
+
+  private hasSensor (sensorName: string): boolean {
+    return sensorName in this.sensors
+  }
 }
 </script>

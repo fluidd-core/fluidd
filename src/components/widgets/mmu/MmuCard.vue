@@ -181,6 +181,10 @@
                 v-if="hasEncoder"
                 width="40%"
               />
+              <mmu-flowguard-meter
+                v-if="hasSyncFeedback"
+                width="40%"
+              />
               <div class="text--disabled">
                 {{ $t('app.mmu.label.clog_detection') }}
               </div>
@@ -261,6 +265,7 @@ import MmuTtgMap from '@/components/widgets/mmu/MmuTtgMap.vue'
 import MmuControls from '@/components/widgets/mmu/MmuControls.vue'
 import MmuGateSummary from '@/components/widgets/mmu/MmuGateSummary.vue'
 import MmuClogMeter from '@/components/widgets/mmu/MmuClogMeter.vue'
+import MmuFlowguardMeter from '@/components/widgets/mmu/MmuFlowguardMeter.vue'
 import MmuSettings from '@/components/widgets/mmu/MmuSettings.vue'
 import MmuRecoverStateDialog from '@/components/widgets/mmu/MmuRecoverStateDialog.vue'
 import MmuEditGateMapDialog from '@/components/widgets/mmu/MmuEditGateMapDialog.vue'
@@ -343,6 +348,26 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
     this.$typedCommit('mmu/setDialogState', {
       show: true,
     })
+  }
+
+  get hasSyncFeedback(): boolean {
+    return this.hasFilamentCompressionSensor || this.hasFilamentTensionSensor || this.hasFilamentProportionalSensor
+  }
+
+  get hasFilamentProportionalSensor() {
+    return this.hasSensor('filament_proportional')
+  }
+
+  get hasFilamentCompressionSensor() {
+    return this.hasSensor('filament_compression')
+  }
+
+  get hasFilamentTensionSensor() {
+    return this.hasSensor('filament_tension')
+  }
+
+  private hasSensor (sensorName: string): boolean {
+    return sensorName in this.sensors
   }
 }
 </script>
