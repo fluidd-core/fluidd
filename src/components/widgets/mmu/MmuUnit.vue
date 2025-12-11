@@ -5,13 +5,15 @@
         v-for="(g, index) in unitGateRange"
         :key="`gate_${g}`"
         class="gate"
+        @contextmenu.prevent="openContextMenu(g, $event)"
         @click="selectGate(g)"
       >
         <div :class="clipSpoolClass">
           <v-menu
             v-model="gateMenuVisible[g]"
-            :disabled="g === gate || !unitDetails(unitIndex).multiGear"
+            :disabled="g === gate"
             :close-on-content-click="false"
+            :open-on-click="false"
             transition="slide-y-transition"
             offset-y
           >
@@ -54,46 +56,21 @@
                 Gate {{ g }}
               </v-subheader>
               <v-divider />
-              <v-list-item>
+              <v-list-item
+                v-for="(item, i) in contextMenuItems"
+                :key="i"
+              >
                 <v-btn
                   small
-                  style="width: 100%"
+                  class="width: 100%"
                   :disabled="!klippyReady || !canSend"
-                  :loading="hasWait($waits.onMmuSelect)"
-                  @click="sendGcode(`MMU_SELECT GATE=${g}`, $waits.onMmuSelect)"
+                  :loading="hasWait(item.loading)"
+                  @click="contextMenuCommand(item.command, item.loading, g)"
                 >
                   <v-icon left>
-                    $mmuSelectGate
+                    {{ item.icon }}
                   </v-icon>
-                  {{ $t('app.mmu.btn.select') }}
-                </v-btn>
-              </v-list-item>
-              <v-list-item>
-                <v-btn
-                  small
-                  style="width: 100%"
-                  :disabled="!klippyReady || !canSend || ![GATE_UNKNOWN, GATE_EMPTY].includes(gateDetails(g).status)"
-                  :loading="hasWait($waits.onMmuPreload)"
-                  @click="sendGcode(`MMU_PRELOAD GATE=${g}`, $waits.onMmuPreload)"
-                >
-                  <v-icon left>
-                    $mmuPreload
-                  </v-icon>
-                  {{ $t('app.mmu.btn.preload') }}
-                </v-btn>
-              </v-list-item>
-              <v-list-item>
-                <v-btn
-                  small
-                  style="width: 100%"
-                  :disabled="!klippyReady || !canSend"
-                  :loading="hasWait($waits.onMmuEject)"
-                  @click="sendGcode(`MMU_EJECT GATE=${g}`, $waits.onMmuEject)"
-                >
-                  <v-icon left>
-                    $mmuEject
-                  </v-icon>
-                  {{ $t('app.mmu.btn.eject') }}
+                  {{ item.label }}
                 </v-btn>
               </v-list-item>
             </v-list>
@@ -155,6 +132,7 @@
       <div
         v-if="showBypass"
         class="gate"
+        @contextmenu.prevent="openContextMenu(-2, $event)"
         @click="selectBypass()"
       >
         <div :class="clipSpoolClass">
@@ -277,10 +255,14 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   @Prop({ required: false, default: -1 })
   readonly editGateSelected!: number
 
+  @Prop({ required: false, default: true })
+  readonly showContextMenu!: boolean
+
   gateMenuVisible: Record<number, boolean> = {}
   gateMenuTimer: ReturnType<typeof setTimeout> | null = null
 
   vendorLogo = ''
+  closeTimeout: number | null = null
 
   @Watch('unit', { immediate: true })
   onUnit (value: number) {
@@ -427,22 +409,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     if (this.editGateMap) {
       this.$emit('select-gate', gate)
     } else if (!this.isPrinting) {
-      if (
-        this.unitDetails(this.unitIndex).multiGear &&
-                gate !== this.gate &&
-                ![this.FILAMENT_POS_UNLOADED, this.FILAMENT_POS_UNKNOWN].includes(this.filamentPos)
-      ) {
-        if (this.gateMenuTimer) clearTimeout(this.gateMenuTimer)
-        this.gateMenuTimer = setTimeout(() => {
-          Object.keys(this.gateMenuVisible).forEach(key => {
-            this.$set(this.gateMenuVisible, Number(key), false)
-          })
-        }, 3000)
-        this.$set(this.gateMenuVisible, gate, true)
-      } else {
-        if (this.gateMenuTimer) clearTimeout(this.gateMenuTimer)
-        this.sendGcode('MMU_SELECT GATE=' + gate)
-      }
+      this.sendGcode('MMU_SELECT GATE=' + gate)
     }
   }
 
@@ -452,6 +419,55 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     } else if (!this.isPrinting) {
       this.sendGcode('MMU_SELECT BYPASS=1')
     }
+  }
+
+  // Gate context menu handling...
+
+  get contextMenuItems () {
+    return [
+      { icon: '$mmuSelectGate', command: 'MMU_SELECT', label: this.$t('app.mmu.btn.select'), loading: '$waits.onMmuSelect`' },
+      { icon: '$mmuPreload', command: 'MMU_PRELOAD', label: this.$t('app.mmu.btn.preload'), loading: '$waits.onMmuPreload' },
+      { icon: '$mmuEject', command: 'MMU_EJECT', label: this.$t('app.mmu.btn.eject'), loading: '$waits.onMmuEject' },
+    ]
+  }
+
+  contextMenuCommand (command: string, loading: string, gate: number) {
+    this.sendGcode(`${command} GATE=${gate}`, loading)
+  }
+
+  openContextMenu (gate: number, e: MouseEvent) {
+    e.preventDefault()
+    if (gate < 0 || gate === this.gate || !this.showContextMenu) {
+      this.closeContextMenu()
+      return
+    }
+    this.closeContextMenu()
+    this.$set(this.gateMenuVisible, gate, true)
+    this.closeTimeout = window.setTimeout(() => {
+      this.closeContextMenu()
+    }, 6000)
+  }
+
+  closeContextMenu () {
+    this.clearCloseTimeout()
+    Object.keys(this.gateMenuVisible).forEach(key => {
+      this.$set(this.gateMenuVisible, Number(key), false)
+    })
+  }
+
+  clearCloseTimeout () {
+    if (this.closeTimeout === null) return
+    clearTimeout(this.closeTimeout)
+    this.closeTimeout = null
+  }
+
+  mounted () {
+    addEventListener('mmu-close-gate-context-menus', this.closeContextMenu)
+  }
+
+  beforeDestroy () {
+    removeEventListener('mmu-close-gate-context-menus', this.closeContextMenu)
+    this.clearCloseTimeout()
   }
 }
 </script>
