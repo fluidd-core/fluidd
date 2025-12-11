@@ -1125,7 +1125,7 @@ app:
       edit_gate_map: Edit Filaments (Edit Gate Map)
       edit_ttg_map: Map Tools / Filaments (Edit TTG Map)
     label:
-      clog_detection: Clog Detection
+      clog_detection: Clog/Tangle Detection
       tool_mapping: Tool Mapping
       spoolman: Spoolman
       spoolman_id: Spoolman ID
@@ -1207,7 +1207,7 @@ app:
       select_tool: Select Tool to map then choose gate from list
     setting:
       large_filament_status: Large Filament Status
-      show_clog_detection: Show Clog Detection
+      show_clog_detection: Show Clog/Tangle Detection
       show_details: Show Filament Details
       show_ttg_map: Show TTG Map
       show_name: Show Unit Name
