@@ -25,18 +25,35 @@
         fill="none"
         stroke-linecap="round"
         stroke-linejoin="round"
-        style="stroke: var(--color-outline); fill: var(--color-outline)">
-        <rect x="3" y="0" width="30" height="40" rx="3" ry="3" fill="none" stroke-width="1.5" />
-        <path d="M-15 -4 L-6 0 L-15 4 Z" stroke-width="1" fill-opacity="0.6" />
-        <path d="M8 40 L 28 40" stroke-width="4" />
+        style="stroke: var(--color-outline); fill: var(--color-outline)"
+      >
+        <rect
+          x="3"
+          y="0"
+          width="30"
+          height="40"
+          rx="3"
+          ry="3"
+          fill="none"
+          stroke-width="1.5"
+        />
+        <path
+          d="M-15 -4 L-6 0 L-15 4 Z"
+          stroke-width="1"
+          fill-opacity="0.6"
+        />
+        <path
+          d="M8 40 L 28 40"
+          stroke-width="4"
+        />
         <text
           x="-22"
           y="4"
           font-size="11px"
           text-anchor="end"
         >
-         {{ syncFeedbackPistonText }}
-       </text>
+          {{ syncFeedbackPistonText }}
+        </text>
       </g>
 
       <g
@@ -44,7 +61,8 @@
         fill="none"
         stroke-linecap="round"
         stroke-linejoin="round"
-        style="stroke: var(--color-outline)">
+        style="stroke: var(--color-outline)"
+      >
         <rect
           x="0"
           y="0"
@@ -54,9 +72,17 @@
           ry="3"
           class="fil-background"
           stroke-width="2"
-          fill-opacity="0.6" />
-        <path d="M-3 10 0 10 M-3 22 0.5 22 M-3 34.5 0 34.5" stroke-width="2" stroke-opacity="0.6" />
-        <path d="M8 0 L 28 0" stroke-width="4" />
+          fill-opacity="0.6"
+        />
+        <path
+          d="M-3 10 0 10 M-3 22 0.5 22 M-3 34.5 0 34.5"
+          stroke-width="2"
+          stroke-opacity="0.6"
+        />
+        <path
+          d="M8 0 L 28 0"
+          stroke-width="4"
+        />
       </g>
 
       <g
@@ -132,19 +158,19 @@
         <g transform="matrix(23.2058 0 0 23.2058 329.7195 325.9517)">
           <path
             style="
-                            stroke: rgb(0, 0, 0);
-                            stroke-width: 0;
-                            stroke-dasharray: none;
-                            stroke-linecap: butt;
-                            stroke-dashoffset: 0;
-                            stroke-linejoin: miter;
-                            stroke-miterlimit: 4;
-                            is-custom-font: none;
-                            font-file-url: none;
-                            fill: rgb(254, 162, 54);
-                            fill-rule: nonzero;
-                            opacity: 1;
-                        "
+              stroke: rgb(0, 0, 0);
+              stroke-width: 0;
+              stroke-dasharray: none;
+              stroke-linecap: butt;
+              stroke-dashoffset: 0;
+              stroke-linejoin: miter;
+              stroke-miterlimit: 4;
+              is-custom-font: none;
+              font-file-url: none;
+              fill: rgb(254, 162, 54);
+              fill-rule: nonzero;
+              opacity: 1;
+            "
             vector-effect="non-scaling-stroke"
             transform=" translate(-15.4288, -16.4198)"
             stroke-linecap="round"
@@ -396,26 +422,66 @@
           :style="{
             transform: `translate(232px, ${syncFeedbackPistonPos}px)`,
             transition: 'transform 250ms ease',
-          }" />
-        <use xlink:href="#sync-feedback-buffer-box" transform="translate(232, 212)" />
+          }"
+        />
+        <use
+          xlink:href="#sync-feedback-buffer-box"
+          transform="translate(232, 212)"
+        />
         <g v-if="syncFeedbackActive">
           <transition name="fade">
-            <g v-if="isSensorTriggered('filament_tension') && isSensorTriggered('filament_compression')"
-              key="neutral">
-              <text x="298" y="240">Neutral</text>
-              <use xlink:href="#sync-feedback" transform="translate(296, 247.5) scale(1.0,-1.0) rotate(90)" />
+            <g
+              v-if="isSensorTriggered('filament_tension') && isSensorTriggered('filament_compression')"
+              key="neutral"
+            >
+              <text
+                x="298"
+                y="240"
+              >
+                Neutral
+              </text>
+              <use
+                xlink:href="#sync-feedback"
+                transform="translate(296, 247.5) scale(1.0,-1.0) rotate(90)"
+              />
             </g>
-            <g v-else-if="isSensorTriggered('filament_tension')"
-              key="tension">
-              <text x="298" y="240">Tension</text>
-              <use xlink:href="#sync-feedback" transform="translate(272, 199) scale(1.2)" />
-              <use xlink:href="#sync-feedback" transform="translate(272, 271) scale(1.2,-1.2)" />
+            <g
+              v-else-if="isSensorTriggered('filament_tension')"
+              key="tension"
+            >
+              <text
+                x="298"
+                y="240"
+              >
+                Tension
+              </text>
+              <use
+                xlink:href="#sync-feedback"
+                transform="translate(272, 199) scale(1.2)"
+              />
+              <use
+                xlink:href="#sync-feedback"
+                transform="translate(272, 271) scale(1.2,-1.2)"
+              />
             </g>
-            <g v-else-if="isSensorTriggered('filament_compression')"
-              key="compression">
-              <text x="298" y="240">Compression</text>
-              <use xlink:href="#sync-feedback" transform="translate(272, 235) scale(1.2)" />
-              <use xlink:href="#sync-feedback" transform="translate(272, 235) scale(1.2,-1.2)" />
+            <g
+              v-else-if="isSensorTriggered('filament_compression')"
+              key="compression"
+            >
+              <text
+                x="298"
+                y="240"
+              >
+                Compression
+              </text>
+              <use
+                xlink:href="#sync-feedback"
+                transform="translate(272, 235) scale(1.2)"
+              />
+              <use
+                xlink:href="#sync-feedback"
+                transform="translate(272, 235) scale(1.2,-1.2)"
+              />
             </g>
           </transition>
         </g>
@@ -694,7 +760,9 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
   }
 
   get encoderPosText (): string {
-    if (this.encoderPos < 10000) return `${this.encoderPos} mm`
+    if (this.encoderPos < 10000) {
+      return `${this.encoderPos} mm`
+    }
     return `${this.encoderPos}`
   }
 
@@ -752,21 +820,21 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
     return this.$vuetify.theme.dark ? eClass + '-dark-theme' : eClass + '-light-theme'
   }
 
-  get hasSyncFeedback(): boolean {
+  get hasSyncFeedback (): boolean {
     return this.hasFilamentCompressionSensor || this.hasFilamentTensionSensor || this.hasFilamentProportionalSensor
   }
 
-  get syncFeedbackActive(): boolean {
+  get syncFeedbackActive (): boolean {
     return this.hasSyncFeedback && this.filamentPos >= this.FILAMENT_POS_END_BOWDEN
   }
 
-  get syncFeedbackPistonPos(): number {
+  get syncFeedbackPistonPos (): number {
     const bias = this.syncFeedbackBiasModelled
     const yPos = bias * 12 + 234
     return yPos
   }
 
-  get syncFeedbackPistonText(): string {
+  get syncFeedbackPistonText (): string {
     if (this.hasFilamentProportionalSensor) {
       const bias = this.syncFeedbackBiasModelled
       return bias.toFixed(2)
@@ -774,15 +842,15 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
     return ''
   }
 
-  get hasFilamentProportionalSensor() {
+  get hasFilamentProportionalSensor () {
     return this.hasSensor('filament_proportional')
   }
 
-  get hasFilamentCompressionSensor() {
+  get hasFilamentCompressionSensor () {
     return this.hasSensor('filament_compression')
   }
 
-  get hasFilamentTensionSensor() {
+  get hasFilamentTensionSensor () {
     return this.hasSensor('filament_tension')
   }
 
