@@ -708,6 +708,15 @@ export interface KlipperPrinterMmuState {
   servo: string;
   grip?: string;
   sensors: Record<string, boolean | null>;
+  flowguard?: {
+    trigger: string;
+    reason: string;
+    level: number;
+    max_clog: number;
+    max_tangle: number;
+    active: boolean;
+    enabled: boolean;
+  };
   encoder?: {
     encoder_pos: number;
     detection_length: number;

@@ -20,7 +20,7 @@
 
     <v-list dense>
       <v-list-item
-        v-if="hasEncoder"
+        v-if="hasEncoder || hasSyncFeedback"
         @click="showClogDetection = !showClogDetection"
       >
         <v-list-item-action class="my-0">

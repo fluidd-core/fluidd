@@ -36,7 +36,7 @@
         class="warning-color"
         fill="transparent"
         stroke-width="18"
-        opacity="0.4"
+        opacity="0.3"
         :stroke-dasharray="circumference"
         :stroke-dashoffset="headroomArc"
       />
@@ -51,7 +51,7 @@
       :class="{ 'warning-color': headroomWarning, 'primary-color': !headroomWarning }"
       stroke-width="4"
       stroke-dashoffset="0"
-      stroke-dasharray="25,65"
+      stroke-dasharray="23,63"
     />
     <line
       :x1="x1Start"
@@ -61,7 +61,7 @@
       stroke="white"
       stroke-width="2"
       stroke-dashoffset="0"
-      stroke-dasharray="24,65"
+      stroke-dasharray="22,63"
     />
     <line
       :x1="x1End"
@@ -71,7 +71,7 @@
       class="warning-color"
       stroke-width="2"
       stroke-dashoffset="0"
-      stroke-dasharray="24,65"
+      stroke-dasharray="22,63"
     />
 
     <text
@@ -91,7 +91,7 @@
     <text
       v-if="encoderDetectionMode === 2"
       x="70"
-      y="124"
+      y="122"
       text-anchor="middle"
       class="small-text-color"
       font-size="12px"
@@ -99,8 +99,8 @@
       Auto
     </text>
     <text
-      x="30"
-      y="136"
+      x="32"
+      y="139"
       text-anchor="end"
       class="small-text-color"
       font-size="12px"
@@ -108,8 +108,8 @@
       {{ encoderDetectionLength }}
     </text>
     <text
-      x="108"
-      y="136"
+      x="106"
+      y="139"
       class="small-text-color"
       font-size="12px"
     >0</text>
@@ -133,13 +133,13 @@ export default class MmuClogMeter extends Mixins(StateMixin, MmuMixin) {
   private dialArc: number = this.circumference * (60 / 360)
   private dashOffset: number = this.circumference
 
-  private x1Start: number = 70 + 65 * Math.cos((120 * Math.PI) / 180)
-  private y1Start: number = 70 + 65 * Math.sin((120 * Math.PI) / 180)
-  private x1End: number = 70 + 65 * Math.cos((60 * Math.PI) / 180)
-  private y1End: number = 70 + 65 * Math.sin((60 * Math.PI) / 180)
+  private x1Start: number = 70 + 63 * Math.cos((120 * Math.PI) / 180)
+  private y1Start: number = 70 + 63 * Math.sin((120 * Math.PI) / 180)
+  private x1End: number = 70 + 63 * Math.cos((60 * Math.PI) / 180)
+  private y1End: number = 70 + 63 * Math.sin((60 * Math.PI) / 180)
 
-  x1MinHeadroom: number = 70 + 66 * Math.cos(((120 + 0) * Math.PI) / 180)
-  y1MinHeadroom: number = 70 + 66 * Math.sin(((120 + 0) * Math.PI) / 180)
+  x1MinHeadroom: number = 70 + 64 * Math.cos(((120 + 0) * Math.PI) / 180)
+  y1MinHeadroom: number = 70 + 64 * Math.sin(((120 + 0) * Math.PI) / 180)
   headroomWarning: boolean = false
 
   get headroomArc (): number {
