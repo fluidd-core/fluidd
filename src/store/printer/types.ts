@@ -694,6 +694,7 @@ export interface KlipperPrinterMmuState {
   sync_drive: boolean;
   sync_feedback_state: string;
   sync_feedback_enabled: boolean;
+  sync_feedback_bias_modelled: number;
   clog_detection: number;
   clog_detection_enabled: number;
   endless_spool: number;

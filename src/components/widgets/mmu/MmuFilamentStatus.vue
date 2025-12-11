@@ -21,6 +21,45 @@
       </g>
 
       <g
+        id="sync-feedback-buffer-piston"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        style="stroke: var(--color-outline); fill: var(--color-outline)">
+        <rect x="3" y="0" width="30" height="40" rx="3" ry="3" fill="none" stroke-width="1.5" />
+        <path d="M-15 -4 L-6 0 L-15 4 Z" stroke-width="1" fill-opacity="0.6" />
+        <path d="M8 40 L 28 40" stroke-width="4" />
+        <text
+          x="-22"
+          y="4"
+          font-size="11px"
+          text-anchor="end"
+        >
+         {{ syncFeedbackPistonText }}
+       </text>
+      </g>
+
+      <g
+        id="sync-feedback-buffer-box"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        style="stroke: var(--color-outline)">
+        <rect
+          x="0"
+          y="0"
+          width="36"
+          height="45"
+          rx="3"
+          ry="3"
+          class="fil-background"
+          stroke-width="2"
+          fill-opacity="0.6" />
+        <path d="M-3 10 0 10 M-3 22 0.5 22 M-3 34.5 0 34.5" stroke-width="2" stroke-opacity="0.6" />
+        <path d="M8 0 L 28 0" stroke-width="4" />
+      </g>
+
+      <g
         id="sissors"
         style="stroke: var(--color-outline); fill: none; stroke-linecap: round; stroke-linejoin: round;"
       >
@@ -351,56 +390,35 @@
         {{ temperatureText }}
       </text>
 
-      <g v-if="hasSyncFeedback && filamentPos >= FILAMENT_POS_END_BOWDEN">
-        <transition name="fade">
-          <g
-            v-if="isSensorTriggered('filament_tension') && isSensorTriggered('filament_compression')"
-            key="neutral"
-          >
-            <text
-              x="288"
-              y="240"
-            >Neutral</text>
-            <use
-              xlink:href="#sync-feedback"
-              transform="translate(286, 247.5) scale(1.0,-1.0) rotate(90)"
-            />
-          </g>
-          <g
-            v-else-if="isSensorTriggered('filament_tension')"
-            key="tension"
-          >
-            <text
-              x="288"
-              y="240"
-            >Tension</text>
-            <use
-              xlink:href="#sync-feedback"
-              transform="translate(258, 199) scale(1.2)"
-            />
-            <use
-              xlink:href="#sync-feedback"
-              transform="translate(258, 271) scale(1.2,-1.2)"
-            />
-          </g>
-          <g
-            v-else-if="isSensorTriggered('filament_compression')"
-            key="compression"
-          >
-            <text
-              x="288"
-              y="240"
-            >Compression</text>
-            <use
-              xlink:href="#sync-feedback"
-              transform="translate(258, 235) scale(1.2)"
-            />
-            <use
-              xlink:href="#sync-feedback"
-              transform="translate(258, 235) scale(1.2,-1.2)"
-            />
-          </g>
-        </transition>
+      <g v-if="hasSyncFeedback">
+        <use
+          xlink:href="#sync-feedback-buffer-piston"
+          :style="{
+            transform: `translate(232px, ${syncFeedbackPistonPos}px)`,
+            transition: 'transform 250ms ease',
+          }" />
+        <use xlink:href="#sync-feedback-buffer-box" transform="translate(232, 212)" />
+        <g v-if="syncFeedbackActive">
+          <transition name="fade">
+            <g v-if="isSensorTriggered('filament_tension') && isSensorTriggered('filament_compression')"
+              key="neutral">
+              <text x="298" y="240">Neutral</text>
+              <use xlink:href="#sync-feedback" transform="translate(296, 247.5) scale(1.0,-1.0) rotate(90)" />
+            </g>
+            <g v-else-if="isSensorTriggered('filament_tension')"
+              key="tension">
+              <text x="298" y="240">Tension</text>
+              <use xlink:href="#sync-feedback" transform="translate(272, 199) scale(1.2)" />
+              <use xlink:href="#sync-feedback" transform="translate(272, 271) scale(1.2,-1.2)" />
+            </g>
+            <g v-else-if="isSensorTriggered('filament_compression')"
+              key="compression">
+              <text x="298" y="240">Compression</text>
+              <use xlink:href="#sync-feedback" transform="translate(272, 235) scale(1.2)" />
+              <use xlink:href="#sync-feedback" transform="translate(272, 235) scale(1.2,-1.2)" />
+            </g>
+          </transition>
+        </g>
       </g>
       <text
         x="160"
@@ -734,10 +752,38 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
     return this.$vuetify.theme.dark ? eClass + '-dark-theme' : eClass + '-light-theme'
   }
 
-  get hasSyncFeedback (): boolean {
-    return (
-      this.syncFeedbackEnabled && (this.hasSensor('filament_compression') || this.hasSensor('filament_tension'))
-    )
+  get hasSyncFeedback(): boolean {
+    return this.hasFilamentCompressionSensor || this.hasFilamentTensionSensor || this.hasFilamentProportionalSensor
+  }
+
+  get syncFeedbackActive(): boolean {
+    return this.hasSyncFeedback && this.filamentPos >= this.FILAMENT_POS_END_BOWDEN
+  }
+
+  get syncFeedbackPistonPos(): number {
+    const bias = this.syncFeedbackBiasModelled
+    const yPos = bias * 12 + 234
+    return yPos
+  }
+
+  get syncFeedbackPistonText(): string {
+    if (this.hasFilamentProportionalSensor) {
+      const bias = this.syncFeedbackBiasModelled
+      return bias.toFixed(2)
+    }
+    return ''
+  }
+
+  get hasFilamentProportionalSensor() {
+    return this.hasSensor('filament_proportional')
+  }
+
+  get hasFilamentCompressionSensor() {
+    return this.hasSensor('filament_compression')
+  }
+
+  get hasFilamentTensionSensor() {
+    return this.hasSensor('filament_tension')
   }
 
   get homedToEncoder (): boolean {
