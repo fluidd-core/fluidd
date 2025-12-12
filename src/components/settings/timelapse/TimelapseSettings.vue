@@ -124,7 +124,6 @@ import StateMixin from '@/mixins/state'
 import type { TimelapseMode, TimelapseSettings as TimelapseSettingsType } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import HyperlapseSettings from '@/components/settings/timelapse/subsettings/modes/HyperlapseSettings.vue'
-import type { WebcamConfig } from '@/store/webcams/types'
 import ToolheadParkingSettings from '@/components/settings/timelapse/subsettings/ToolheadParkingSettings.vue'
 import { defaultWritableSettings } from '@/store/timelapse/state'
 import TimelapseRenderSettingsDialog from '@/components/widgets/timelapse/TimelapseRenderSettingsDialog.vue'
@@ -150,7 +149,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   get cameras (): Array<{ text?: string, value: string, disabled: boolean }> {
-    const cameras: WebcamConfig[] = this.$typedGetters['webcams/getWebcams']
+    const cameras: Moonraker.Webcam.Entry[] = this.$typedGetters['webcams/getWebcams']
 
     return cameras
       .map(camera => ({

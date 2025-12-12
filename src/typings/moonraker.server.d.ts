@@ -1,8 +1,4 @@
 declare namespace Moonraker.Server {
-  export interface ConnectionIdentifyResponse {
-    connection_id: number;
-  }
-
   export interface InfoResponse {
     klippy_connected: boolean;
     klippy_state: KlippyState;
@@ -14,14 +10,6 @@ declare namespace Moonraker.Server {
     moonraker_version?: string;
     api_version?: number[];
     api_version_string?: string;
-  }
-
-  export interface TemperatureStoreResponse {
-    [key: string]: TemperatureStoreEntry;
-  }
-
-  export interface GcodeStoreResponse {
-    gcode_store: GcodeStoreEntry[];
   }
 
   export interface LogsRolloverResponse {
@@ -74,18 +62,5 @@ declare namespace Moonraker.Server {
 
   export interface ConfigSpoolman {
     server?: string;
-  }
-
-  export interface TemperatureStoreEntry {
-    temperatures: number[];
-    targets?: number[];
-    powers?: number[];
-    speeds?: number[];
-  }
-
-  export interface GcodeStoreEntry {
-    message: string;
-    time?: number;
-    type: 'command' | 'response';
   }
 }

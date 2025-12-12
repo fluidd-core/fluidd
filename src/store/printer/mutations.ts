@@ -27,7 +27,7 @@ export const mutations = {
     state.forceMoveEnabled = payload
   },
 
-  setPrinterInfo (state, payload: Moonraker.Printer.Info) {
+  setPrinterInfo (state, payload: Moonraker.KlippyApis.Info) {
     state.info = payload
   },
 

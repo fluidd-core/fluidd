@@ -138,7 +138,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/api/socketActions'
-import type { ServiceInfo, SystemInfo } from '@/store/server/types'
+import type { ServiceInfo } from '@/store/server/types'
 
 @Component({})
 export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
@@ -164,7 +164,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     return services
   }
 
-  get systemInfo (): SystemInfo | null {
+  get systemInfo (): Moonraker.Machine.SystemInfo | null {
     return this.$typedState.server.system_info
   }
 

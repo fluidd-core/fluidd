@@ -20,8 +20,8 @@ export const getters = {
     return items
   },
 
-  getAllKnownCommands: (state): Moonraker.Printer.GcodeHelpResponse => {
-    const commands: Moonraker.Printer.GcodeHelpResponse = {
+  getAllKnownCommands: (state): Moonraker.KlippyApis.GcodeHelpResponse => {
+    const commands: Moonraker.KlippyApis.GcodeHelpResponse = {
       TESTZ: '',
       ABORT: '',
       ACCEPT: '',

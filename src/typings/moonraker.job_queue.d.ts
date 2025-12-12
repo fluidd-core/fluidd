@@ -1,5 +1,5 @@
 declare namespace Moonraker.JobQueue {
-  export type StatusResponse = {
+  export interface StatusResponse {
     queued_jobs: QueuedJob[];
     queue_state: QueueState;
   }

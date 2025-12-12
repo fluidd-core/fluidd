@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import type { Peripherals, ServerState, ServiceState, SystemInfo } from './types'
+import type { Peripherals, ServerState } from './types'
 
 export const mutations = {
   /**
@@ -23,7 +23,7 @@ export const mutations = {
     Vue.set(state, 'info', payload)
   },
 
-  setSystemInfo (state, payload: { system_info?: SystemInfo }) {
+  setSystemInfo (state, payload: Moonraker.Machine.SystemInfoResponse) {
     if (payload.system_info) {
       Vue.set(state, 'system_info', payload.system_info)
     }
@@ -43,7 +43,7 @@ export const mutations = {
     }
   },
 
-  setServiceState (state, payload: ServiceState) {
+  setServiceState (state, payload: Moonraker.Machine.ServiceState) {
     if (payload && state.system_info?.service_state) {
       Object.assign(state.system_info.service_state, payload)
     }
@@ -53,22 +53,28 @@ export const mutations = {
    * On initial init we get the server (moonraker) configuration.
    */
   setServerConfig (state, payload: Moonraker.Server.Config) {
-    state.config = { ...state.config, ...payload }
+    state.config = {
+      ...state.config,
+      ...payload
+    }
   },
 
   /**
    * On initial init, we get the server (moonraker) process stats and any throttled state flags.
    */
-  setMoonrakerStats (state, payload) {
-    if (payload.cpu_temp) {
-      Vue.set(state, 'cpu_temp', payload.cpu_temp)
+  setMoonrakerStats (state, payload: Moonraker.ProcStats.Response) {
+    if (payload.cpu_temp != null) {
+      state.cpu_temp = payload.cpu_temp
     }
 
-    if (payload.throttled_state) {
-      state.throttled_state = { ...state.throttled_state, ...payload.throttled_state }
+    if (payload.throttled_state != null) {
+      state.throttled_state = {
+        ...state.throttled_state,
+        ...payload.throttled_state
+      }
     }
 
-    if (payload.moonraker_stats) {
+    if (payload.moonraker_stats != null) {
       if (Array.isArray(payload.moonraker_stats)) {
         // Update with array.
         Vue.set(state, 'moonraker_stats', payload.moonraker_stats.map(Object.freeze))

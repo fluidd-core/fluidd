@@ -1,7 +1,9 @@
 declare namespace Moonraker.Files {
-  export type ListRootResponse = RootFile[]
+  export interface ListRootResponse extends Array<RootFile> {
+  }
 
-  export type FileWithMetaResponse = FileWithMeta
+  export interface FileWithMetaResponse extends FileWithMeta {
+  }
 
   export interface ChangeResponse {
     action: 'create_file' | 'create_dir' | 'delete_file' | 'delete_dir' | 'move_file' | 'move_dir' | 'modify_file' | 'root_update';

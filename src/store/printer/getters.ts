@@ -1100,7 +1100,7 @@ export const getters = {
       return availableCommands
     }
 
-    const knownCommands: Moonraker.Printer.GcodeHelpResponse = rootGetters['console/getAllKnownCommands']
+    const knownCommands: Moonraker.KlippyApis.GcodeHelpResponse = rootGetters['console/getAllKnownCommands']
 
     return Object.entries(knownCommands)
       .reduce<GcodeCommands>((availableCommands, [key, help]) => {

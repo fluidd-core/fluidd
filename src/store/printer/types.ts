@@ -1,7 +1,7 @@
 import type { Globals } from '@/globals'
 
 export interface PrinterState {
-  info: Moonraker.Printer.Info | null;
+  info: Moonraker.KlippyApis.Info | null;
   manualProbeDialogOpen: boolean;
   bedScrewsAdjustDialogOpen: boolean;
   screwsTiltAdjustDialogOpen: boolean;

@@ -30,7 +30,6 @@ import QrScanner from 'qr-scanner'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
-import type { WebcamConfig } from '@/store/webcams/types'
 
 const spoomanDataPatterns = [
   /web\+spoolman:s-(\d+)/,
@@ -52,7 +51,7 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
   @Ref('canvas')
   canvas!: HTMLCanvasElement
 
-  get camera (): WebcamConfig | { name: string, service: 'device' } | undefined {
+  get camera (): Moonraker.Webcam.Entry | { name: string, service: 'device' } | undefined {
     if (this.source === 'device') {
       return {
         name: this.$t('app.spoolman.label.device_camera').toString(),

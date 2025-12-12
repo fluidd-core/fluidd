@@ -128,7 +128,7 @@ export const actions = {
    * Fired when the socket [identifies](https://moonraker.readthedocs.io/en/latest/web_api/#identify-connection).
    * Required for [HTTP-based subscriptions](https://moonraker.readthedocs.io/en/latest/web_api/#subscribe-to-printer-object-status).
    */
-  async onConnectionId ({ commit }, payload: Moonraker.Server.ConnectionIdentifyResponse) {
+  async onConnectionId ({ commit }, payload: Moonraker.Websocket.ConnectionIdentifyResponse) {
     commit('setConnectionId', payload.connection_id)
   },
 

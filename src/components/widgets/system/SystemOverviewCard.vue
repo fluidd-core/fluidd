@@ -121,14 +121,13 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import type { SystemInfo } from '@/store/server/types'
 
 @Component({})
 export default class PrinterStatsCard extends Vue {
   rolloverLogsDialogOpen = false
   peripheralsDialogOpen = false
 
-  get systemInfo (): SystemInfo | null {
+  get systemInfo (): Moonraker.Machine.SystemInfo | null {
     return this.$typedState.server.system_info
   }
 
@@ -176,7 +175,7 @@ export default class PrinterStatsCard extends Vue {
       .join(', ')
   }
 
-  get printerInfo (): Moonraker.Printer.Info | null {
+  get printerInfo (): Moonraker.KlippyApis.Info | null {
     return this.$typedState.printer.info
   }
 

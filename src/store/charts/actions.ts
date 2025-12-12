@@ -20,7 +20,7 @@ export const actions = {
   /**
    * Loads stored server data for the past 20 minutes.
    */
-  async initTempStore ({ commit, rootGetters, rootState }, payload: Moonraker.Server.TemperatureStoreResponse) {
+  async initTempStore ({ commit, rootGetters, rootState }, payload: Moonraker.DataStore.TemperatureStoreResponse) {
     const now = new Date() // Set a base time to work out the temp data from.
     // On a fresh boot of the host system, moonraker should give us enough data;
     // however, it seems sometimes it does not. So - we should pad this out when
@@ -54,7 +54,7 @@ export const actions = {
         delete payload[originalKey].targets
       }
 
-      const keys: (keyof Moonraker.Server.TemperatureStoreEntry)[] = [
+      const keys: (keyof Moonraker.DataStore.TemperatureStoreEntry)[] = [
         'temperatures', 'targets', 'powers', 'speeds'
       ]
 

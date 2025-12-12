@@ -1,11 +1,14 @@
-declare namespace Moonraker.Printer {
+declare namespace Moonraker.KlippyApis {
+  export interface InfoResponse extends Info {
+  }
+
   export interface Info {
     state: InfoState;
     state_message: string;
     hostname?: string;
     klipper_path?: string;
     python_path?: string;
-    process_id?: 275124,
+    process_id?: number;
     user_id?: number;
     group_id?: number;
     log_file?: string;
@@ -18,15 +21,17 @@ declare namespace Moonraker.Printer {
   export type InfoState = 'ready' | 'startup' | 'shutdown' | 'error'
 
   export interface ObjectsListResponse {
-    objects: string[]
+    objects: string[];
   }
 
-  export interface GcodeHelpResponse {
-    [key: string]: string;
+  export interface ObjectsSubscribeResponse {
+    status: Klipper.PrinterState;
   }
 
-  export interface QueryEndstopsStatusResponse {
-    [key: string]: QueryEndstopsStatus
+  export interface GcodeHelpResponse extends Record<string, string> {
+  }
+
+  export interface QueryEndstopsStatusResponse extends Record<string, QueryEndstopsStatus> {
   }
 
   export type QueryEndstopsStatus = 'TRIGGERED' | 'open'

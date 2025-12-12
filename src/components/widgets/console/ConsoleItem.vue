@@ -24,7 +24,7 @@ export default class ConsoleItem extends Vue {
   @Prop({ type: Object, default: () => {} })
   readonly value!: ConsoleEntry
 
-  get knownCommands (): Moonraker.Printer.GcodeHelpResponse {
+  get knownCommands (): Moonraker.KlippyApis.GcodeHelpResponse {
     return this.$typedGetters['console/getAllKnownCommands']
   }
 

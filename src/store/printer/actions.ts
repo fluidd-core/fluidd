@@ -93,7 +93,7 @@ export const actions = {
   /**
    * Printer Info
    */
-  async onPrinterInfo ({ commit, dispatch }, payload: Moonraker.Printer.Info) {
+  async onPrinterInfo ({ commit, dispatch }, payload: Moonraker.KlippyApis.Info) {
     commit('setPrinterInfo', payload)
 
     dispatch('checkKlipperMinVersion')
@@ -102,7 +102,7 @@ export const actions = {
   /**
    * Query endstops
    */
-  async onQueryEndstops ({ commit }, payload: Moonraker.Printer.QueryEndstopsStatusResponse) {
+  async onQueryEndstops ({ commit }, payload: Moonraker.KlippyApis.QueryEndstopsStatusResponse) {
     // printer.query_endstops state is not updating, so we use the response here to do it manually
 
     const queryEndstops: Klipper.QueryEndstopsState = {
@@ -165,20 +165,20 @@ export const actions = {
   /**
    * Stores the printers object list.
    */
-  async onPrinterObjectsList ({ commit }, payload: Moonraker.Printer.ObjectsListResponse) {
+  async onPrinterObjectsList ({ commit }, payload: Moonraker.KlippyApis.ObjectsListResponse) {
     // Given our object list, subscribe to any data we'd want constant updates for
     // and prepopulate our store.
-    let intendedSubscriptions: Record<string, null> = {}
-    payload.objects.forEach(k => {
-      if (!k.includes('menu')) {
-        intendedSubscriptions = { ...intendedSubscriptions, [k]: null }
-      }
-      let key = k
-      if (k.includes(' ')) key = key.replace(' ', '.')
-      commit('setPrinterObjectList', key)
-    })
+    const subscriptions: Record<string, null> = {}
 
-    SocketActions.printerObjectsSubscribe(intendedSubscriptions)
+    for (const key in payload.objects) {
+      if (!key.includes('menu')) {
+        subscriptions[key] = null
+      }
+
+      commit('setPrinterObjectList', key.replace(' ', '.'))
+    }
+
+    SocketActions.printerObjectsSubscribe(subscriptions)
   },
 
   async onPrinterObjectsSubscribe ({ commit, dispatch }, payload: { status: Klipper.PrinterState }) {

@@ -3,7 +3,6 @@ import { Globals, Waits } from '@/globals'
 import type { NotifyOptions } from '@/plugins/socketClient'
 import { consola } from 'consola'
 import type { TimelapseWritableSettings } from '@/store/timelapse/types'
-import type { WebcamConfig } from '@/store/webcams/types'
 
 const baseEmit = async <T = unknown>(method: string, options: NotifyOptions): Promise<T> => {
   if (!Vue.$socket) {
@@ -176,7 +175,7 @@ export const SocketActions = {
   },
 
   machineProcStats (options?: NotifyOptions) {
-    return baseEmit(
+    return baseEmit<Moonraker.ProcStats.Response>(
       'machine.proc_stats', {
         dispatch: 'server/onMachineProcStats',
         ...options
@@ -185,7 +184,7 @@ export const SocketActions = {
   },
 
   machineSystemInfo (options?: NotifyOptions) {
-    return baseEmit(
+    return baseEmit<Moonraker.Machine.SystemInfoResponse>(
       'machine.system_info', {
         dispatch: 'server/onMachineSystemInfo',
         ...options
@@ -317,7 +316,7 @@ export const SocketActions = {
   },
 
   printerInfo (options?: NotifyOptions) {
-    return baseEmit<Moonraker.Printer.Info>(
+    return baseEmit<Moonraker.KlippyApis.InfoResponse>(
       'printer.info', {
         dispatch: 'printer/onPrinterInfo',
         ...options
@@ -346,7 +345,7 @@ export const SocketActions = {
   },
 
   printerQueryEndstops (options?: NotifyOptions) {
-    return baseEmit<Moonraker.Printer.QueryEndstopsStatusResponse>(
+    return baseEmit<Moonraker.KlippyApis.QueryEndstopsStatusResponse>(
       'printer.query_endstops.status', {
         dispatch: 'printer/onQueryEndstops',
         wait: Waits.onQueryEndstops,
@@ -356,7 +355,7 @@ export const SocketActions = {
   },
 
   printerObjectsList (options?: NotifyOptions) {
-    return baseEmit<Moonraker.Printer.ObjectsListResponse>(
+    return baseEmit<Moonraker.KlippyApis.ObjectsListResponse>(
       'printer.objects.list', {
         dispatch: 'printer/onPrinterObjectsList',
         ...options
@@ -365,7 +364,7 @@ export const SocketActions = {
   },
 
   printerObjectsSubscribe (objects: Record<string, null>, options?: NotifyOptions) {
-    return baseEmit(
+    return baseEmit<Moonraker.KlippyApis.ObjectsSubscribeResponse>(
       'printer.objects.subscribe', {
         dispatch: 'printer/onPrinterObjectsSubscribe',
         ...options,
@@ -431,7 +430,7 @@ export const SocketActions = {
   },
 
   printerGcodeHelp (options?: NotifyOptions) {
-    return baseEmit<Moonraker.Printer.GcodeHelpResponse>(
+    return baseEmit<Moonraker.KlippyApis.GcodeHelpResponse>(
       'printer.gcode.help', {
         dispatch: 'console/onGcodeHelp',
         ...options
@@ -458,7 +457,7 @@ export const SocketActions = {
   },
 
   serverConnectionIdentify (params?: { client_name: string, version: string, type: string, url: string }, options?: NotifyOptions) {
-    return baseEmit<Moonraker.Server.ConnectionIdentifyResponse>(
+    return baseEmit<Moonraker.Websocket.ConnectionIdentifyResponse>(
       'server.connection.identify', {
         dispatch: 'socket/onConnectionId',
         ...options,
@@ -580,7 +579,7 @@ export const SocketActions = {
   },
 
   serverTemperatureStore (options?: NotifyOptions) {
-    return baseEmit<Moonraker.Server.TemperatureStoreResponse>(
+    return baseEmit<Moonraker.DataStore.TemperatureStoreResponse>(
       'server.temperature_store', {
         dispatch: 'charts/initTempStore',
         ...options,
@@ -592,7 +591,7 @@ export const SocketActions = {
   },
 
   serverGcodeStore (options?: NotifyOptions) {
-    return baseEmit<Moonraker.Server.GcodeStoreResponse>(
+    return baseEmit<Moonraker.DataStore.GcodeStoreResponse>(
       'server.gcode_store', {
         dispatch: 'console/onGcodeStore',
         ...options
@@ -887,7 +886,7 @@ export const SocketActions = {
   },
 
   serverWebcamsList (options?: NotifyOptions) {
-    return baseEmit(
+    return baseEmit<Moonraker.Webcam.ListResponse>(
       'server.webcams.list', {
         dispatch: 'webcams/onWebcamsList',
         ...options
@@ -895,8 +894,8 @@ export const SocketActions = {
     )
   },
 
-  serverWebcamsWrite (webcam: WebcamConfig, options?: NotifyOptions) {
-    return baseEmit(
+  serverWebcamsWrite (webcam: Moonraker.Webcam.Entry, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Webcam.PostItemResponse>(
       'server.webcams.post_item', {
         ...options,
         params: webcam
@@ -905,7 +904,7 @@ export const SocketActions = {
   },
 
   serverWebcamsDelete (uid: string, options?: NotifyOptions) {
-    return baseEmit(
+    return baseEmit<Moonraker.Webcam.DeleteItemResponse>(
       'server.webcams.delete_item', {
         ...options,
         params: {

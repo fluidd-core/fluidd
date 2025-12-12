@@ -77,7 +77,6 @@ import type { RenderStatus, TimelapseLastFrame, TimelapseSettings } from '@/stor
 import { SocketActions } from '@/api/socketActions'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import FilesMixin from '@/mixins/files'
-import type { WebcamConfig } from '@/store/webcams/types'
 
 @Component({
   components: {
@@ -124,7 +123,7 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
     return this.lastFrame?.uniqueCount
   }
 
-  get camera (): WebcamConfig | undefined {
+  get camera (): Moonraker.Webcam.Entry | undefined {
     return this.$typedGetters['webcams/getWebcamById'](this.settings.camera)
   }
 

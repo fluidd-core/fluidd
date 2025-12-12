@@ -287,7 +287,6 @@ import { SocketActions } from '@/api/socketActions'
 import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
 import QRReader from '@/components/widgets/spoolman/QRReader.vue'
-import type { WebcamConfig } from '@/store/webcams/types'
 import QrScanner from 'qr-scanner'
 import type { AppDataTableHeader } from '@/types'
 import getFilePaths from '@/util/get-file-paths'
@@ -543,12 +542,12 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$typedState.spoolman.dialog.targetMacro
   }
 
-  get enabledWebcams (): WebcamConfig[] {
+  get enabledWebcams (): Moonraker.Webcam.Entry[] {
     return this.$typedGetters['webcams/getEnabledWebcams']
   }
 
-  get availableCameras (): Pick<WebcamConfig, 'uid' | 'name'>[] {
-    const cameras: Pick<WebcamConfig, 'uid' | 'name'>[] = this.enabledWebcams
+  get availableCameras (): Pick<Moonraker.Webcam.Entry, 'uid' | 'name'>[] {
+    const cameras: Pick<Moonraker.Webcam.Entry, 'uid' | 'name'>[] = this.enabledWebcams
       .filter(camera => camera.service !== 'iframe')
 
     if (this.hasDeviceCamera) {

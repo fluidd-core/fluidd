@@ -2,7 +2,7 @@ export interface ConsoleState {
   // [key: string]: string;
   consoleCommand: string;
   console: ConsoleEntry[]; // console stream
-  gcodeHelp: Moonraker.Printer.GcodeHelpResponse; // known commands
+  gcodeHelp: Moonraker.KlippyApis.GcodeHelpResponse; // known commands
   consoleEntryCount: number; // give each console entry a unique id.
   commandHistory: string[];
   autoScroll: boolean;

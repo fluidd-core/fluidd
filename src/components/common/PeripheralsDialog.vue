@@ -355,7 +355,7 @@
 import { Component, VModel, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import type { Peripherals, SystemInfo } from '@/store/server/types'
+import type { Peripherals } from '@/store/server/types'
 
 type PeripheralType = 'serial' | 'usb' | 'video' | 'can'
 
@@ -379,7 +379,7 @@ export default class ManualProbeDialog extends Mixins(StateMixin) {
     return this.$typedState.server.can_uuids
   }
 
-  get systemInfo (): SystemInfo | null {
+  get systemInfo (): Moonraker.Machine.SystemInfo | null {
     return this.$typedState.server.system_info
   }
 

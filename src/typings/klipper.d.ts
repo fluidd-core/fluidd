@@ -231,7 +231,7 @@ declare namespace Klipper {
   }
 
   export interface WebhookState {
-    state: Moonraker.Printer.InfoState;
+    state: Moonraker.KlippyApis.InfoState;
     state_message: string;
   }
 
@@ -603,10 +603,10 @@ declare namespace Klipper {
       data_smooth: number;
       freq: number;
     } | null;
-    last_z_result?: number | null,
-    last_probe_position?: [number, number] | null,
-    last_probe_result?: number | null,
-    last_offset_result?: number | null,
+    last_z_result?: number | null;
+    last_probe_position?: [number, number] | null;
+    last_probe_result?: number | null;
+    last_offset_result?: number | null;
     last_poke_result?: number | null
     model?: string | null;
   }
@@ -990,7 +990,7 @@ declare namespace Klipper {
 
   type SensorTypesType = {
     common_thermistors: 'EPCOS 100K B57560G104F' | 'ATC Semitec 104GT-2' | 'ATC Semitec 104NT-4-R025H42G' | 'Generic 3950' | 'Honeywell 100K 135-104LAG-J01' | 'NTC 100K MGB18-104F39050L32' | 'SliceEngineering 450' | 'TDK NTCG104LH104JT1',
-    common_temperature_amplifiers: 'PT100 INA826' | 'AD595' | 'AD597' | 'AD8494' | 'AD8495' | 'AD8496' | 'AD8497'
+    common_temperature_amplifiers: 'PT100 INA826' | 'AD595' | 'AD597' | 'AD8494' | 'AD8495' | 'AD8496' | 'AD8497',
     pt100: 'PT1000',
     maxxxxxx: 'MAX6675' | 'MAX31855' | 'MAX31856' | 'MAX31865',
     bme280: 'BME280',

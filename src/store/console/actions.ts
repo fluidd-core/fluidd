@@ -62,7 +62,7 @@ export const actions = {
   /**
    * On a fresh load of the UI, we load prior gcode / console history
    */
-  async onGcodeStore ({ commit, dispatch }, payload: Moonraker.Server.GcodeStoreResponse) {
+  async onGcodeStore ({ commit, dispatch }, payload: Moonraker.DataStore.GcodeStoreResponse) {
     if (payload && payload.gcode_store) {
       const entries = payload.gcode_store
         .map((entry, index): ConsoleEntry => {
@@ -164,7 +164,7 @@ export const actions = {
    * Klipper provides us with a list of available gcode commands
    * based on the current configuration.
    */
-  async onGcodeHelp ({ commit }, payload: Moonraker.Printer.GcodeHelpResponse) {
+  async onGcodeHelp ({ commit }, payload: Moonraker.KlippyApis.GcodeHelpResponse) {
     commit('setGcodeHelp', payload)
   },
 
