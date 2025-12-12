@@ -244,7 +244,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get outputFramerate (): number {
-    return this.settings?.output_framerate
+    return this.settings.output_framerate
   }
 
   setOutputFramerate (value: number) {
@@ -256,7 +256,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get variableFps (): boolean {
-    return this.settings?.variable_fps
+    return this.settings.variable_fps
   }
 
   set variableFps (value: boolean) {
@@ -268,7 +268,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get targetLength (): number {
-    return this.settings?.targetlength
+    return this.settings.targetlength
   }
 
   setTargetLength (value: number) {
@@ -280,7 +280,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get minFps (): number {
-    return this.settings?.variable_fps_min
+    return this.settings.variable_fps_min
   }
 
   setMinFps (value: number) {
@@ -292,7 +292,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get maxFps (): number {
-    return this.settings?.variable_fps_max
+    return this.settings.variable_fps_max
   }
 
   setMaxFps (value: number) {
@@ -304,7 +304,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get duplicateFrames (): number {
-    return this.settings?.duplicatelastframe
+    return this.settings.duplicatelastframe
   }
 
   setDuplicateFrames (value: number) {
@@ -316,7 +316,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get saveFrames (): boolean {
-    return this.settings?.saveframes
+    return this.settings.saveframes
   }
 
   set saveFrames (value: boolean) {
@@ -328,7 +328,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get previewImage (): boolean {
-    return this.settings?.previewimage
+    return this.settings.previewimage
   }
 
   set previewImage (value: boolean) {
@@ -345,7 +345,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get duplicateLastFrameCount () {
-    return this.settings?.duplicatelastframe ?? 0
+    return this.settings.duplicatelastframe ?? 0
   }
 
   get crfBlocked (): boolean {
@@ -353,7 +353,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get crf (): number {
-    return this.settings?.constant_rate_factor
+    return this.settings.constant_rate_factor
   }
 
   setCRF (value: number) {
@@ -361,11 +361,11 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get defaultCRF (): number {
-    return defaultWritableSettings().constant_rate_factor
+    return defaultWritableSettings.constant_rate_factor
   }
 
-  get settings (): Moonraker.Timelapse.SettingsResponse {
-    return this.$typedState.timelapse.settings ?? {} as Moonraker.Timelapse.SettingsResponse
+  get settings (): Moonraker.Timelapse.WriteableSettings {
+    return this.$typedState.timelapse.settings ?? defaultWritableSettings
   }
 
   get lastFrame (): TimelapseLastFrame | null {

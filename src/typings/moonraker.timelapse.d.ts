@@ -55,4 +55,8 @@ declare namespace Moonraker.Timelapse {
     readonly flip_y: boolean;
     readonly blockedsettings: string[];
   }
+
+  export type TimelapseMode = 'layermacro' | 'hyperlapse'
+
+  export type ParkPosition = 'custom' | 'front_left' | 'front_right' | 'center' | 'back_left' | 'back_right' | 'x_only' | 'y_only'
 }

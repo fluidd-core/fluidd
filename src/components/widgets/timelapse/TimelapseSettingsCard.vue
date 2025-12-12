@@ -55,6 +55,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { TimelapseLastFrame } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
+import { defaultWritableSettings } from '@/store/timelapse/state'
 
 @Component({})
 export default class TimelapseSettingsCard extends Mixins(StateMixin) {
@@ -63,7 +64,7 @@ export default class TimelapseSettingsCard extends Mixins(StateMixin) {
   }
 
   get enabled () {
-    return this.settings?.enabled
+    return this.settings.enabled
   }
 
   set enabled (value: boolean) {
@@ -75,7 +76,7 @@ export default class TimelapseSettingsCard extends Mixins(StateMixin) {
   }
 
   get autoRender () {
-    return this.settings?.autorender
+    return this.settings.autorender
   }
 
   set autoRender (value: boolean) {
@@ -88,8 +89,8 @@ export default class TimelapseSettingsCard extends Mixins(StateMixin) {
     return lastFrame?.count
   }
 
-  get settings (): Moonraker.Timelapse.SettingsResponse {
-    return this.$typedState.timelapse.settings ?? {} as Moonraker.Timelapse.SettingsResponse
+  get settings (): Moonraker.Timelapse.WriteableSettings {
+    return this.$typedState.timelapse.settings ?? defaultWritableSettings
   }
 
   subtitleIfBlocked (blocked: boolean): string {

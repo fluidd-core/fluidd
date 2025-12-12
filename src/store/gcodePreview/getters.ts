@@ -199,18 +199,19 @@ export const getters = {
 
     const defaultColors: string[] = getters.getDefaultColors
 
-    const tools = toolIndexes.reduce((tools, toolIndex, index) => {
-      const tool: Tool = `T${toolIndex}`
-      const color: string = (
-        colorsFromFileMetadata[index] ||
-        defaultColors[index - colorsFromFileMetadata.length] ||
-        defaultColors[0]
-      )
+    const tools = toolIndexes
+      .reduce<Record<Tool, string>>((tools, toolIndex, index) => {
+        const tool: Tool = `T${toolIndex}`
+        const color: string = (
+          colorsFromFileMetadata[index] ||
+          defaultColors[index - colorsFromFileMetadata.length] ||
+          defaultColors[0]
+        )
 
-      tools[tool] = color
+        tools[tool] = color
 
-      return tools
-    }, {} as Record<Tool, string>)
+        return tools
+      }, {})
 
     return tools
   },

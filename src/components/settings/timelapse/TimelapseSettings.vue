@@ -121,7 +121,6 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { TimelapseMode } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import HyperlapseSettings from '@/components/settings/timelapse/subsettings/modes/HyperlapseSettings.vue'
 import ToolheadParkingSettings from '@/components/settings/timelapse/subsettings/ToolheadParkingSettings.vue'
@@ -138,7 +137,7 @@ import TimelapseRenderSettingsDialog from '@/components/widgets/timelapse/Timela
 export default class TimelapseSettings extends Mixins(StateMixin) {
   renderSettingsDialogOpen = false
 
-  get supportedModes (): { text: string, value: TimelapseMode }[] {
+  get supportedModes (): { text: string, value: Moonraker.Timelapse.TimelapseMode }[] {
     return [{
       text: this.$tc('app.timelapse.setting.mode_layermacro'),
       value: 'layermacro'
@@ -164,7 +163,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   get camera (): string {
-    return this.settings?.camera
+    return this.settings.camera
   }
 
   set camera (value: string) {
@@ -175,11 +174,11 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
     return this.$typedGetters['timelapse/isBlockedSetting']('mode')
   }
 
-  get mode (): TimelapseMode {
-    return this.settings?.mode
+  get mode (): Moonraker.Timelapse.TimelapseMode {
+    return this.settings.mode
   }
 
-  set mode (value: TimelapseMode) {
+  set mode (value: Moonraker.Timelapse.TimelapseMode) {
     SocketActions.machineTimelapsePostSettings({ mode: value })
   }
 
@@ -188,7 +187,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   get delayComp (): number {
-    return this.settings?.stream_delay_compensation * 1000
+    return this.settings.stream_delay_compensation * 1000
   }
 
   setDelayComp (value: number) {
@@ -200,15 +199,15 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   get verboseGcode (): boolean {
-    return this.settings?.gcode_verbose
+    return this.settings.gcode_verbose
   }
 
   set verboseGcode (value: boolean) {
     SocketActions.machineTimelapsePostSettings({ gcode_verbose: value })
   }
 
-  get settings (): Moonraker.Timelapse.SettingsResponse {
-    return this.$typedState.timelapse.settings ?? {} as Moonraker.Timelapse.SettingsResponse
+  get settings (): Moonraker.Timelapse.WriteableSettings {
+    return this.$typedState.timelapse.settings ?? defaultWritableSettings
   }
 
   subtitleIfBlocked (blocked: boolean): string {
@@ -216,8 +215,9 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   handleReset () {
-    const nonBlockedEntries = Object.entries(defaultWritableSettings())
+    const nonBlockedEntries = Object.entries(defaultWritableSettings)
       .filter(([key]) => !this.$typedGetters['timelapse/isBlockedSetting'](key))
+
     SocketActions.machineTimelapsePostSettings(Object.fromEntries(nonBlockedEntries))
   }
 }

@@ -57,10 +57,10 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { ParkPosition } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
 import type { BedSize } from '@/store/printer/types'
+import { defaultWritableSettings } from '@/store/timelapse/state'
 
 @Component({
   components: {
@@ -72,16 +72,16 @@ export default class CustomParkPositionSettings extends Mixins(StateMixin) {
     return this.$typedGetters['timelapse/isBlockedSetting'](`park_custom_pos_${axis}`)
   }
 
-  get parkpos (): ParkPosition {
-    return this.settings?.parkpos
+  get parkpos (): Moonraker.Timelapse.ParkPosition {
+    return this.settings.parkpos ?? defaultWritableSettings.parkpos
   }
 
-  set parkpos (value: ParkPosition) {
+  set parkpos (value: Moonraker.Timelapse.ParkPosition) {
     SocketActions.machineTimelapsePostSettings({ parkpos: value })
   }
 
   get parkPosX (): number {
-    return this.settings?.park_custom_pos_x
+    return this.settings.park_custom_pos_x ?? defaultWritableSettings.park_custom_pos_x
   }
 
   setParkPosX (value: number) {
@@ -89,7 +89,7 @@ export default class CustomParkPositionSettings extends Mixins(StateMixin) {
   }
 
   get parkPosY (): number {
-    return this.settings?.park_custom_pos_y
+    return this.settings.park_custom_pos_y ?? defaultWritableSettings.park_custom_pos_y
   }
 
   setParkPosY (value: number) {
@@ -100,8 +100,8 @@ export default class CustomParkPositionSettings extends Mixins(StateMixin) {
     return this.$typedGetters['printer/getBedSize']
   }
 
-  get settings (): Moonraker.Timelapse.SettingsResponse {
-    return this.$typedState.timelapse.settings ?? {} as Moonraker.Timelapse.SettingsResponse
+  get settings (): Moonraker.Timelapse.WriteableSettings {
+    return this.$typedState.timelapse.settings ?? defaultWritableSettings
   }
 
   subtitleIfBlocked (blocked: boolean): string {
