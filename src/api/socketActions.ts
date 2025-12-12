@@ -2,7 +2,6 @@ import Vue from 'vue'
 import { Globals, Waits } from '@/globals'
 import type { NotifyOptions } from '@/plugins/socketClient'
 import { consola } from 'consola'
-import type { TimelapseWritableSettings } from '@/store/timelapse/types'
 
 const baseEmit = async <T = unknown>(method: string, options: NotifyOptions): Promise<T> => {
   if (!Vue.$socket) {
@@ -75,7 +74,7 @@ export const SocketActions = {
   },
 
   machineUpdateStatus (refresh = false, options?: NotifyOptions) {
-    return baseEmit(
+    return baseEmit<Moonraker.UpdateManager.StatusResponse>(
       'machine.update.status', {
         dispatch: 'version/onUpdateStatus',
         wait: Waits.onVersionRefresh,
@@ -88,7 +87,7 @@ export const SocketActions = {
   },
 
   machineUpdateRefresh (name?: string, options?: NotifyOptions) {
-    return baseEmit(
+    return baseEmit<Moonraker.UpdateManager.StatusResponse>(
       'machine.update.refresh', {
         dispatch: 'version/onUpdateStatus',
         wait: Waits.onVersionRefresh,
@@ -270,8 +269,8 @@ export const SocketActions = {
     )
   },
 
-  machineTimelapseSetSettings (settings: Partial<TimelapseWritableSettings>, options?: NotifyOptions) {
-    return baseEmit(
+  machineTimelapsePostSettings (settings: Partial<Moonraker.Timelapse.WriteableSettings>, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Timelapse.SettingsResponse>(
       'machine.timelapse.post_settings', {
         dispatch: 'timelapse/onSettings',
         ...options,
@@ -298,7 +297,7 @@ export const SocketActions = {
   },
 
   machineTimelapseGetSettings (options?: NotifyOptions) {
-    return baseEmit(
+    return baseEmit<Moonraker.Timelapse.SettingsResponse>(
       'machine.timelapse.get_settings', {
         dispatch: 'timelapse/onSettings',
         ...options
@@ -307,7 +306,7 @@ export const SocketActions = {
   },
 
   machineTimelapseLastFrameInfo (options?: NotifyOptions) {
-    return baseEmit(
+    return baseEmit<Moonraker.Timelapse.LastFrameInfoResponse>(
       'machine.timelapse.lastframeinfo', {
         dispatch: 'timelapse/onLastFrame',
         ...options

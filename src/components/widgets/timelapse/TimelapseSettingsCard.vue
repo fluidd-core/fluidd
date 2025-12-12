@@ -53,7 +53,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
+import type { TimelapseLastFrame } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 
 @Component({})
@@ -67,7 +67,7 @@ export default class TimelapseSettingsCard extends Mixins(StateMixin) {
   }
 
   set enabled (value: boolean) {
-    SocketActions.machineTimelapseSetSettings({ enabled: value })
+    SocketActions.machineTimelapsePostSettings({ enabled: value })
   }
 
   get autoRenderBlocked (): boolean {
@@ -79,17 +79,17 @@ export default class TimelapseSettingsCard extends Mixins(StateMixin) {
   }
 
   set autoRender (value: boolean) {
-    SocketActions.machineTimelapseSetSettings({ autorender: value })
+    SocketActions.machineTimelapsePostSettings({ autorender: value })
   }
 
   get frameCount () {
-    const lastFrame: TimelapseLastFrame | undefined = this.$typedState.timelapse.lastFrame
+    const lastFrame: TimelapseLastFrame | null = this.$typedState.timelapse.lastFrame
 
     return lastFrame?.count
   }
 
-  get settings (): TimelapseSettings {
-    return this.$typedState.timelapse.settings ?? {} as TimelapseSettings
+  get settings (): Moonraker.Timelapse.SettingsResponse {
+    return this.$typedState.timelapse.settings ?? {} as Moonraker.Timelapse.SettingsResponse
   }
 
   subtitleIfBlocked (blocked: boolean): string {

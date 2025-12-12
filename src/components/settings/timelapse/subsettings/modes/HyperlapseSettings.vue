@@ -28,7 +28,6 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 
 @Component({})
@@ -42,11 +41,11 @@ export default class HyperlapseSettings extends Mixins(StateMixin) {
   }
 
   setHyperlapseCycle (value: number) {
-    SocketActions.machineTimelapseSetSettings({ hyperlapse_cycle: value })
+    SocketActions.machineTimelapsePostSettings({ hyperlapse_cycle: value })
   }
 
-  get settings (): TimelapseSettings {
-    return this.$typedState.timelapse.settings ?? {} as TimelapseSettings
+  get settings (): Moonraker.Timelapse.SettingsResponse {
+    return this.$typedState.timelapse.settings ?? {} as Moonraker.Timelapse.SettingsResponse
   }
 
   subtitleIfBlocked (blocked: boolean): string {

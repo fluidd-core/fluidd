@@ -57,7 +57,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
+import type { ParkPosition } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
 import type { BedSize } from '@/store/printer/types'
@@ -77,7 +77,7 @@ export default class CustomParkPositionSettings extends Mixins(StateMixin) {
   }
 
   set parkpos (value: ParkPosition) {
-    SocketActions.machineTimelapseSetSettings({ parkpos: value })
+    SocketActions.machineTimelapsePostSettings({ parkpos: value })
   }
 
   get parkPosX (): number {
@@ -85,7 +85,7 @@ export default class CustomParkPositionSettings extends Mixins(StateMixin) {
   }
 
   setParkPosX (value: number) {
-    SocketActions.machineTimelapseSetSettings({ park_custom_pos_x: value })
+    SocketActions.machineTimelapsePostSettings({ park_custom_pos_x: value })
   }
 
   get parkPosY (): number {
@@ -93,15 +93,15 @@ export default class CustomParkPositionSettings extends Mixins(StateMixin) {
   }
 
   setParkPosY (value: number) {
-    SocketActions.machineTimelapseSetSettings({ park_custom_pos_y: value })
+    SocketActions.machineTimelapsePostSettings({ park_custom_pos_y: value })
   }
 
   get bedSize (): BedSize {
     return this.$typedGetters['printer/getBedSize']
   }
 
-  get settings (): TimelapseSettings {
-    return this.$typedState.timelapse.settings ?? {} as TimelapseSettings
+  get settings (): Moonraker.Timelapse.SettingsResponse {
+    return this.$typedState.timelapse.settings ?? {} as Moonraker.Timelapse.SettingsResponse
   }
 
   subtitleIfBlocked (blocked: boolean): string {

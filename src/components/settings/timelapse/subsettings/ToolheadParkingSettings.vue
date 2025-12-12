@@ -121,7 +121,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
+import type { ParkPosition } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
 import CustomParkPositionSettings from './CustomParkPositionSettings.vue'
@@ -148,7 +148,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   set parkhead (value: boolean) {
-    SocketActions.machineTimelapseSetSettings({ parkhead: value })
+    SocketActions.machineTimelapsePostSettings({ parkhead: value })
   }
 
   get parkposBlocked (): boolean {
@@ -160,7 +160,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   set parkpos (value: ParkPosition) {
-    SocketActions.machineTimelapseSetSettings({ parkpos: value })
+    SocketActions.machineTimelapsePostSettings({ parkpos: value })
   }
 
   get parkTimeBlocked (): boolean {
@@ -172,7 +172,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   setParkTime (value: number) {
-    SocketActions.machineTimelapseSetSettings({ park_time: value / 1000 })
+    SocketActions.machineTimelapsePostSettings({ park_time: value / 1000 })
   }
 
   get parkTravelSpeedBlocked (): boolean {
@@ -184,7 +184,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   setParkTravelSpeed (value: number) {
-    SocketActions.machineTimelapseSetSettings({ park_travel_speed: value })
+    SocketActions.machineTimelapsePostSettings({ park_travel_speed: value })
   }
 
   get parkPosZBlocked (): boolean {
@@ -196,7 +196,7 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   setParkPosZ (value: number) {
-    SocketActions.machineTimelapseSetSettings({ park_custom_pos_dz: value })
+    SocketActions.machineTimelapsePostSettings({ park_custom_pos_dz: value })
   }
 
   get firmwareRetractBlocked (): boolean {
@@ -208,11 +208,11 @@ export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   }
 
   set firmwareRetract (value: boolean) {
-    SocketActions.machineTimelapseSetSettings({ fw_retract: value })
+    SocketActions.machineTimelapsePostSettings({ fw_retract: value })
   }
 
-  get settings (): TimelapseSettings {
-    return this.$typedState.timelapse.settings ?? {} as TimelapseSettings
+  get settings (): Moonraker.Timelapse.SettingsResponse {
+    return this.$typedState.timelapse.settings ?? {} as Moonraker.Timelapse.SettingsResponse
   }
 
   subtitleIfBlocked (blocked: boolean): string {

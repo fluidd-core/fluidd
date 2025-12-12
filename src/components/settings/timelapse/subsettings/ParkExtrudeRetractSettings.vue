@@ -97,7 +97,6 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 
 @Component({})
@@ -111,7 +110,7 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   setParkRetractDistance (value: number) {
-    SocketActions.machineTimelapseSetSettings({ park_retract_distance: value })
+    SocketActions.machineTimelapsePostSettings({ park_retract_distance: value })
   }
 
   get parkRetractSpeedBlocked (): boolean {
@@ -123,7 +122,7 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   setParkRetractSpeed (value: number) {
-    SocketActions.machineTimelapseSetSettings({ park_retract_speed: value })
+    SocketActions.machineTimelapsePostSettings({ park_retract_speed: value })
   }
 
   get parkExtrudeDistanceBlocked (): boolean {
@@ -135,7 +134,7 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   setParkExtrudeDistance (value: number) {
-    SocketActions.machineTimelapseSetSettings({ park_extrude_distance: value })
+    SocketActions.machineTimelapsePostSettings({ park_extrude_distance: value })
   }
 
   get parkExtrudeSpeedBlocked (): boolean {
@@ -147,11 +146,11 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   setParkExtrudeSpeed (value: number) {
-    SocketActions.machineTimelapseSetSettings({ park_extrude_speed: value })
+    SocketActions.machineTimelapsePostSettings({ park_extrude_speed: value })
   }
 
-  get settings (): TimelapseSettings {
-    return this.$typedState.timelapse.settings ?? {} as TimelapseSettings
+  get settings (): Moonraker.Timelapse.SettingsResponse {
+    return this.$typedState.timelapse.settings ?? {} as Moonraker.Timelapse.SettingsResponse
   }
 
   subtitleIfBlocked (blocked: boolean): string {

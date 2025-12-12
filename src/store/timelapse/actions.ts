@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { TimelapseState } from './types'
+import type { RenderStatus, TimelapseState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { consola } from 'consola'
@@ -22,11 +22,11 @@ export const actions = {
     SocketActions.machineTimelapseLastFrameInfo()
   },
 
-  async onSettings ({ commit }, payload) {
+  async onSettings ({ commit }, payload: Moonraker.Timelapse.SettingsResponse) {
     commit('setSettings', payload)
   },
 
-  async onLastFrame ({ commit }, payload) {
+  async onLastFrame ({ commit }, payload: Moonraker.Timelapse.LastFrameInfoResponse) {
     const uniqueCount = +(payload.lastframefile?.match(/\d+/)?.[0] ?? 0)
     commit('setLastFrame', {
       count: payload.framecount,
@@ -54,13 +54,13 @@ export const actions = {
       }
 
       case 'render': {
-        let status
+        let status: RenderStatus
 
         switch (payload.status) {
           case 'started': {
             status = {
               status: 'started',
-              count: payload.framecount,
+              frameCount: payload.framecount,
               settings: {
                 frameRate: payload.framerate,
                 crf: payload.crf,
@@ -71,7 +71,10 @@ export const actions = {
           }
 
           case 'running': {
-            status = { status: 'running', progress: payload.progress }
+            status = {
+              status: 'running',
+              progress: payload.progress
+            }
             break
           }
 

@@ -1,6 +1,6 @@
-import type { TimelapseState, TimelapseWritableSettings } from './types'
+import type { TimelapseState } from './types'
 
-export const defaultWritableSettings = (): TimelapseWritableSettings => {
+export const defaultWritableSettings = (): Moonraker.Timelapse.WriteableSettings => {
   return {
     enabled: true,
     mode: 'layermacro',
@@ -38,16 +38,9 @@ export const defaultWritableSettings = (): TimelapseWritableSettings => {
 
 export const defaultState = (): TimelapseState => {
   return {
-    lastFrame: undefined,
-    settings: {
-      ...defaultWritableSettings(),
-      snapshoturl: 'http://localhost:8080/?action=snapshot',
-      rotation: 0,
-      flip_x: false,
-      flip_y: false,
-      blockedsettings: []
-    },
-    renderStatus: undefined
+    lastFrame: null,
+    settings: null,
+    renderStatus: null
   }
 }
 
