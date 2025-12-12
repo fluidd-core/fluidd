@@ -170,7 +170,7 @@ export const actions = {
     // and prepopulate our store.
     const subscriptions: Record<string, null> = {}
 
-    for (const key in payload.objects) {
+    for (const key of payload.objects) {
       if (!key.includes('menu')) {
         subscriptions[key] = null
       }
