@@ -369,7 +369,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get lastFrame (): TimelapseLastFrame | null {
-    return this.$typedState.timelapse.lastFrame
+    return this.$typedGetters['timelapse/getLastFrame']
   }
 
   subtitleIfBlocked (blocked: boolean): string {

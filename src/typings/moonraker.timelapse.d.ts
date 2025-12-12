@@ -4,6 +4,14 @@ declare namespace Moonraker.Timelapse {
     lastframefile: string;
   }
 
+  export interface SaveFramesResponse {
+    action: 'saveframes';
+    status?: 'skipped' | 'running' | 'finished';
+    zipfile?: string;
+  }
+
+  export type RenderResponse = RenderStarted | RenderRunning | RenderSuccess | RenderError
+
   export interface SettingsResponse extends WriteableSettings, ReadonlySettings {
   }
 
@@ -59,4 +67,39 @@ declare namespace Moonraker.Timelapse {
   export type TimelapseMode = 'layermacro' | 'hyperlapse'
 
   export type ParkPosition = 'custom' | 'front_left' | 'front_right' | 'center' | 'back_left' | 'back_right' | 'x_only' | 'y_only'
+
+  export interface RenderStarted {
+    action: 'render';
+    status: 'started';
+    msg: string;
+    framecount: number;
+    settings: Moonraker.Timelapse.RenderSettings;
+  }
+
+  export interface RenderRunning {
+    action: 'render';
+    status: 'running';
+    progress: number;
+  }
+
+  export interface RenderSuccess extends Omit<RenderStarted, 'settings'> {
+    status: 'success';
+    filename: string;
+    printfile: string;
+    previewimage: string;
+  }
+
+  export interface RenderError {
+    action: 'render';
+    status: 'error';
+    msg: string;
+    cmd?: string;
+    cmdresponse?: string;
+  }
+
+  export interface RenderSettings {
+    framerate: number;
+    crf: number;
+    pixelformat: string;
+  }
 }

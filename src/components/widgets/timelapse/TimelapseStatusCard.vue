@@ -73,7 +73,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import type { RenderStatus, TimelapseLastFrame } from '@/store/timelapse/types'
+import type { TimelapseLastFrame } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import FilesMixin from '@/mixins/files'
@@ -133,10 +133,10 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   get lastFrame (): TimelapseLastFrame | null {
-    return this.$typedState.timelapse.lastFrame
+    return this.$typedGetters['timelapse/getLastFrame']
   }
 
-  get renderStatus (): RenderStatus | null {
+  get renderStatus (): Moonraker.Timelapse.RenderResponse | null {
     return this.$typedState.timelapse.renderStatus
   }
 

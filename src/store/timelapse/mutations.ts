@@ -1,6 +1,6 @@
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import type { TimelapseState, TimelapseLastFrame, RenderStatus } from './types'
+import type { TimelapseState } from './types'
 
 export const mutations = {
   /**
@@ -14,12 +14,12 @@ export const mutations = {
     state.settings = payload
   },
 
-  setLastFrame (state, payload: TimelapseLastFrame) {
+  setLastFrame (state, payload: Moonraker.Timelapse.LastFrameInfoResponse) {
     state.lastFrame = payload
     state.renderStatus = null
   },
 
-  setRenderStatus (state, payload: RenderStatus) {
+  setRenderStatus (state, payload: Moonraker.Timelapse.RenderResponse) {
     state.renderStatus = payload
   }
 } satisfies MutationTree<TimelapseState>

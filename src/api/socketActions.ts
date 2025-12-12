@@ -280,7 +280,7 @@ export const SocketActions = {
   },
 
   machineTimelapseSaveFrames (options?: NotifyOptions) {
-    return baseEmit(
+    return baseEmit<Moonraker.Timelapse.SaveFramesResponse>(
       'machine.timelapse.saveframes', {
         wait: Waits.onTimelapseSaveFrame,
         ...options
@@ -289,7 +289,7 @@ export const SocketActions = {
   },
 
   machineTimelapseRender (options?: NotifyOptions) {
-    return baseEmit(
+    return baseEmit<Moonraker.Timelapse.RenderResponse>(
       'machine.timelapse.render', {
         ...options
       }

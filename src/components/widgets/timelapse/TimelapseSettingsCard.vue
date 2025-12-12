@@ -84,7 +84,7 @@ export default class TimelapseSettingsCard extends Mixins(StateMixin) {
   }
 
   get frameCount () {
-    const lastFrame: TimelapseLastFrame | null = this.$typedState.timelapse.lastFrame
+    const lastFrame: TimelapseLastFrame | null = this.$typedGetters['timelapse/getLastFrame']
 
     return lastFrame?.count
   }

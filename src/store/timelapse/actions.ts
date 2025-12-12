@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { RenderStatus, TimelapseState } from './types'
+import type { TimelapseState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { consola } from 'consola'
@@ -27,12 +27,7 @@ export const actions = {
   },
 
   async onLastFrame ({ commit }, payload: Moonraker.Timelapse.LastFrameInfoResponse) {
-    const uniqueCount = +(payload.lastframefile?.match(/\d+/)?.[0] ?? 0)
-    commit('setLastFrame', {
-      count: payload.framecount,
-      uniqueCount,
-      file: payload.lastframefile
-    })
+    commit('setLastFrame', payload)
   },
 
   async onEvent ({ commit }, payload) {
@@ -54,49 +49,12 @@ export const actions = {
       }
 
       case 'render': {
-        let status: RenderStatus
-
-        switch (payload.status) {
-          case 'started': {
-            status = {
-              status: 'started',
-              frameCount: payload.framecount,
-              settings: {
-                frameRate: payload.framerate,
-                crf: payload.crf,
-                pixelFormat: payload.pixelformat
-              }
-            }
-            break
-          }
-
-          case 'running': {
-            status = {
-              status: 'running',
-              progress: payload.progress
-            }
-            break
-          }
-
-          case 'success': {
-            status = {
-              status: 'success',
-              frameCount: payload.framecount,
-              fileName: payload.filename,
-              printFile: payload.printfile,
-              previewImage: payload.previewimage,
-              message: payload.msg
-            }
-            break
-          }
-
-          default: {
-            consola.warn('unhandled timelapse render status', payload)
-            return
-          }
+        if (!['started', 'running', 'success'].includes(payload.status)) {
+          consola.warn('unhandled timelapse render status', payload)
+          return
         }
 
-        commit('setRenderStatus', status)
+        commit('setRenderStatus', payload)
         break
       }
 
