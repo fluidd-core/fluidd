@@ -112,7 +112,7 @@
     />
     <text
       x="70"
-      y="58"
+      y="56"
       text-anchor="middle"
       class="small-text-color"
       font-size="12px"
@@ -121,7 +121,7 @@
     </text>
     <text
       x="70"
-      y="72"
+      y="69"
       text-anchor="middle"
       class="small-text-color"
       font-size="12px"
@@ -134,10 +134,10 @@
       y="90"
       text-anchor="middle"
       class="small-text-color"
-      font-size="12px"
+      :font-size="flowrateTextSize"
       font-weight="bold"
     >
-      ACTIVE
+      {{ flowrateText }}
     </text>
     <text
       v-if="flowguardTrigger"
@@ -199,6 +199,21 @@ export default class MmuFlowguardMeter extends Mixins(StateMixin, MmuMixin) {
 
   get flowguardTrigger () {
     return (this.mmuState?.flowguard?.trigger ?? '').toUpperCase()
+  }
+
+  get flowrateText () {
+    if ('filament_proportional' in this.sensors) {
+      const flow_rate = this.mmuState?.sync_feedback_flow_rate ?? 100.0
+      return `${Math.round(flow_rate)}%`
+    }
+    return 'ACTIVE'
+  }
+
+  get flowrateTextSize () {
+    if ('filament_proportional' in this.sensors) {
+      return '18px'
+    }
+    return '14px'
   }
 
   get maxClog () {
