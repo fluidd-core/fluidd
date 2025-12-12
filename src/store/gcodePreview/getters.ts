@@ -8,6 +8,18 @@ const defaultColors = ['#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#
 const lightDefaultColors = ['#000', ...defaultColors]
 const darkDefaultColors = ['#FFF', ...defaultColors]
 
+const updateMinMax = (previous: { min: number, max: number }, value?: number) => {
+  if (value != null) {
+    previous.min = Number.isFinite(previous.min)
+      ? Math.min(previous.min, value)
+      : value
+
+    previous.max = Number.isFinite(previous.max)
+      ? Math.max(previous.max, value)
+      : value
+  }
+}
+
 export const getters = {
   getLayers: (state, getters, rootState): readonly Layer[] => {
     if (state.layers.length) {
@@ -82,45 +94,21 @@ export const getters = {
       }
     }
 
-    const isFinite = (x: unknown): x is number => Number.isFinite(x)
-    let index = 0
-
-    for (; index < moves.length && !Object.values(bounds).every(isFinite); index++) {
+    for (let index = 0; index < moves.length; index++) {
       const move = moves[index]
 
-      if (isFinite(move.x)) {
-        bounds.x.min = isFinite(bounds.x.min) ? Math.min(bounds.x.min, move.x) : move.x
-        bounds.x.max = isFinite(bounds.x.max) ? Math.max(bounds.x.max, move.x) : move.x
-      }
-
-      if (isFinite(move.y)) {
-        bounds.y.min = isFinite(bounds.y.min) ? Math.min(bounds.y.min, move.y) : move.y
-        bounds.y.max = isFinite(bounds.y.max) ? Math.max(bounds.y.max, move.y) : move.y
-      }
-    }
-
-    for (; index < moves.length; index++) {
-      const move = moves[index]
-
-      if (isFinite(move.x)) {
-        bounds.x.min = Math.min(bounds.x.min, move.x)
-        bounds.x.max = Math.max(bounds.x.max, move.x)
-      }
-
-      if (isFinite(move.y)) {
-        bounds.y.min = Math.min(bounds.y.min, move.y)
-        bounds.y.max = Math.max(bounds.y.max, move.y)
-      }
+      updateMinMax(bounds.x, move.x)
+      updateMinMax(bounds.y, move.y)
     }
 
     return {
       x: {
-        min: isFinite(bounds.x.min) ? bounds.x.min : 0,
-        max: isFinite(bounds.x.max) ? bounds.x.max : 0
+        min: bounds.x.min || 0,
+        max: bounds.x.max || 0
       },
       y: {
-        min: isFinite(bounds.y.min) ? bounds.y.min : 0,
-        max: isFinite(bounds.y.max) ? bounds.y.max : 0
+        min: bounds.y.min || 0,
+        max: bounds.y.max || 0
       }
     }
   },
@@ -136,23 +124,23 @@ export const getters = {
     for (let i = moveIndex; i >= 0 && (!Number.isFinite(output.x) || !Number.isFinite(output.y) || !Number.isFinite(output.z)); i--) {
       const move = moves[i]
 
-      if (!Number.isFinite(output.x) && move.x !== undefined) {
+      if (!Number.isFinite(output.x) && move.x != null) {
         output.x = move.x
       }
 
-      if (!Number.isFinite(output.y) && move.y !== undefined) {
+      if (!Number.isFinite(output.y) && move.y != null) {
         output.y = move.y
       }
 
-      if (!Number.isFinite(output.z) && move.z !== undefined) {
+      if (!Number.isFinite(output.z) && move.z != null) {
         output.z = move.z
       }
     }
 
     return {
-      x: Number.isFinite(output.x) ? output.x : 0,
-      y: Number.isFinite(output.y) ? output.y : 0,
-      z: Number.isFinite(output.z) ? output.z : 0
+      x: output.x || 0,
+      y: output.y || 0,
+      z: output.z || 0
     }
   },
 
