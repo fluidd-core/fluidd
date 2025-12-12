@@ -5,12 +5,12 @@ export interface ServerState {
   peripherals: Peripherals;
   can_uuids: Record<string, Moonraker.Peripherals.CanbusUuid[]> | null;
   config: Moonraker.Server.Config;
-  moonraker_stats: Moonraker.ProcStats.MoonrakerStats[];
+  moonraker_stats: Readonly<Moonraker.ProcStats.MoonrakerStats>[];
   throttled_state: Moonraker.ProcStats.ThrottledState | null;
   cpu_temp: number | null;
-  system_cpu_usage?: Record<string, number>;
-  system_uptime?: number;
-  websocket_connections?: number;
+  system_cpu_usage: Record<string, number> | null;
+  system_uptime: number | null;
+  websocket_connections: number | null;
 }
 
 export interface ServiceInfo {

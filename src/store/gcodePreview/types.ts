@@ -1,10 +1,10 @@
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 
 export interface GcodePreviewState {
-  moves: Move[];
-  layers: Layer[];
-  parts: Part[];
-  tools: number[];
+  moves: readonly Move[];
+  layers: readonly Layer[];
+  parts: readonly Part[];
+  tools: readonly number[];
   file: AppFile | AppFileWithMeta | null;
   parserProgress: number;
   parserWorker: Worker | null;

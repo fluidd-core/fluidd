@@ -345,7 +345,7 @@ import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import panzoom, { type PanZoom } from 'panzoom'
-import type { BBox, Layer, LayerPaths } from '@/store/gcodePreview/types'
+import type { BBox, Layer, LayerPaths, Tool } from '@/store/gcodePreview/types'
 import type AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
 import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
 import GcodePreviewButton from './GcodePreviewButton.vue'
@@ -645,7 +645,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       return this.defaultLayerPaths
     }
 
-    const layer: Layer | undefined = this.$typedGetters['gcodePreview/getLayers'][this.layer]
+    const layer: readonly Layer | undefined = this.$typedGetters['gcodePreview/getLayers'][this.layer]
 
     if (this.followProgress) {
       const end: number = this.$typedGetters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
@@ -673,7 +673,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get svgPathNext (): LayerPaths {
-    const layers: Layer[] = this.$typedGetters['gcodePreview/getLayers']
+    const layers: readonly Layer[] = this.$typedGetters['gcodePreview/getLayers']
 
     if (this.disabled || this.layer >= layers.length) {
       return this.defaultLayerPaths
@@ -690,11 +690,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedState.gcodePreview.file
   }
 
-  get tools (): number[] {
+  get tools (): readonly number[] {
     return this.$typedState.gcodePreview.tools
   }
 
-  get toolColors (): Record<string, string> {
+  get toolColors (): Record<Tool, string> {
     return this.$typedGetters['gcodePreview/getToolColors']
   }
 

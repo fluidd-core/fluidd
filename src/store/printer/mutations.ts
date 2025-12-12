@@ -71,10 +71,8 @@ export const mutations = {
       stateObject = {}
       Vue.set(state.printer, payloadKey, stateObject)
     }
+
     for (const key in payloadValue) {
-      // Leaving the if here, although it should
-      // always evaluate true since we never
-      // get an update unless something has changed.
       if (stateObject[key] !== payloadValue[key]) {
         Vue.set(stateObject, key, Object.freeze(payloadValue[key]))
       }

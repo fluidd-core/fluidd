@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type { Peripherals, ServerState } from './types'
@@ -20,12 +19,12 @@ export const mutations = {
   },
 
   setServerInfo (state, payload: Moonraker.Server.InfoResponse) {
-    Vue.set(state, 'info', payload)
+    state.info = payload
   },
 
   setSystemInfo (state, payload: Moonraker.Machine.SystemInfoResponse) {
     if (payload.system_info) {
-      Vue.set(state, 'system_info', payload.system_info)
+      state.system_info = payload.system_info
     }
   },
 
@@ -77,7 +76,8 @@ export const mutations = {
     if (payload.moonraker_stats != null) {
       if (Array.isArray(payload.moonraker_stats)) {
         // Update with array.
-        Vue.set(state, 'moonraker_stats', payload.moonraker_stats.map(Object.freeze))
+        state.moonraker_stats = payload.moonraker_stats
+          .map(stat => Object.freeze(stat))
       } else {
         // Append to array.
         state.moonraker_stats.push(Object.freeze(payload.moonraker_stats))

@@ -9,13 +9,13 @@ const lightDefaultColors = ['#000', ...defaultColors]
 const darkDefaultColors = ['#FFF', ...defaultColors]
 
 export const getters = {
-  getLayers: (state, getters, rootState): Layer[] => {
+  getLayers: (state, getters, rootState): readonly Layer[] => {
     if (state.layers.length) {
       return state.layers
     }
 
     const output: Layer[] = []
-    const moves = state.moves
+    const moves: readonly Move[] = state.moves
 
     let z = NaN
     let zStart = 0
@@ -54,21 +54,22 @@ export const getters = {
       })
     }
 
-    return output
+    return Object.freeze(output)
   },
 
-  getParts: (state): Part[] => {
+  getParts: (state): readonly Part[] => {
     return state.parts
   },
 
   getBounds: (state, getters): BBox => {
-    let moves = state.moves
-    const layers: Layer[] = getters.getLayers
+    const layers: readonly Layer[] = getters.getLayers
 
     // ignore first and last layer (priming and parking)
     const moveRangeStart = layers[layers.length > 1 ? 1 : 0]?.move
     const moveRangeEnd = layers[layers.length - 1]?.move
-    if (moveRangeStart && moveRangeEnd) moves = moves.slice(moveRangeStart, moveRangeEnd)
+    const moves: readonly Move[] = (moveRangeStart && moveRangeEnd)
+      ? Object.freeze(state.moves.slice(moveRangeStart, moveRangeEnd))
+      : state.moves
 
     const bounds = {
       x: {
@@ -125,34 +126,33 @@ export const getters = {
   },
 
   getToolHeadPosition: (state) => (moveIndex: number): Point3D => {
-    const isFinite = (x: unknown): x is number => Number.isFinite(x)
-    const moves = state.moves
+    const moves: readonly Move[] = state.moves
     const output = {
       x: NaN,
       y: NaN,
       z: NaN
     }
 
-    for (let i = moveIndex; i >= 0 && (!isFinite(output.x) || !isFinite(output.y) || !isFinite(output.z)); i--) {
+    for (let i = moveIndex; i >= 0 && (!Number.isFinite(output.x) || !Number.isFinite(output.y) || !Number.isFinite(output.z)); i--) {
       const move = moves[i]
 
-      if (!isFinite(output.x) && move.x !== undefined) {
+      if (!Number.isFinite(output.x) && move.x !== undefined) {
         output.x = move.x
       }
 
-      if (!isFinite(output.y) && move.y !== undefined) {
+      if (!Number.isFinite(output.y) && move.y !== undefined) {
         output.y = move.y
       }
 
-      if (!isFinite(output.z) && move.z !== undefined) {
+      if (!Number.isFinite(output.z) && move.z !== undefined) {
         output.z = move.z
       }
     }
 
     return {
-      x: isFinite(output.x) ? output.x : 0,
-      y: isFinite(output.y) ? output.y : 0,
-      z: isFinite(output.z) ? output.z : 0
+      x: Number.isFinite(output.x) ? output.x : 0,
+      y: Number.isFinite(output.y) ? output.y : 0,
+      z: Number.isFinite(output.z) ? output.z : 0
     }
   },
 
@@ -187,7 +187,7 @@ export const getters = {
   },
 
   getToolColors: (state, getters): Record<Tool, string> => {
-    const [toolIndexes, colorsFromFileMetadata]: [number[], string[]] = state.tools.length === 0
+    const [toolIndexes, colorsFromFileMetadata]: [readonly number[], string[]] = state.tools.length === 0
       ? [
           [0],
           []
@@ -218,7 +218,7 @@ export const getters = {
 
   getPaths: (state, getters) => (startMove: number, endMove: number, ignoreTools = false): LayerPaths => {
     const toolhead: Point3D = getters.getToolHeadPosition(startMove)
-    const moves = state.moves
+    const moves: readonly Move[] = state.moves
 
     const path: LayerPaths = {
       extrusions: {},
@@ -281,13 +281,13 @@ export const getters = {
   },
 
   getLayerPaths: (state, getters) => (layer: number): LayerPaths => {
-    const layers: Layer[] = getters.getLayers
+    const layers: readonly Layer[] = getters.getLayers
 
     return getters.getPaths(layers[layer]?.move ?? 0, (layers[layer + 1]?.move ?? Infinity) - 1, true)
   },
 
   getPartPaths: (state, getters): string[] => {
-    const parts: Part[] = getters.getParts
+    const parts: readonly Part[] = getters.getParts
 
     return parts
       .map(part => {
@@ -304,7 +304,7 @@ export const getters = {
       return 0
     }
 
-    const moves: Move[] = state.moves
+    const moves: readonly Move[] = state.moves
 
     return binarySearch(moves, move => filePosition - move.filePosition)
   },

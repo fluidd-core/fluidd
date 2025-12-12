@@ -27,7 +27,10 @@ export const defaultState = (): ServerState => {
       bits: 0,
       flags: []
     },
-    cpu_temp: null
+    cpu_temp: null,
+    system_cpu_usage: null,
+    system_uptime: null,
+    websocket_connections: null
   }
 }
 
