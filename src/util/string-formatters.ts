@@ -23,7 +23,7 @@ const stringFormatters = () => {
 
       const valueAsNumber = +value
 
-      if (isNaN(valueAsNumber)) {
+      if (Number.isNaN(valueAsNumber)) {
         return value.toString()
       }
 

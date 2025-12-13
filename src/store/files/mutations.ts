@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { FilesState, MoonrakerRootFile, MoonrakerPathContent, MoonrakerFile, MoonrakerFileWithMeta, FilePaths, MoonrakerDir, MoonrakerDiskUsage } from './types'
+import type { FilesState, MoonrakerPathContent, FilePaths } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 
@@ -31,13 +31,13 @@ export const mutations = {
     Vue.set(state.pathContent, path, content)
   },
 
-  setServerFilesListRoot (state, payload: { root: string, files: MoonrakerRootFile[] }) {
+  setServerFilesListRoot (state, payload: { root: string, files: Moonraker.Files.RootFile[] }) {
     const { root, files } = payload
 
     Vue.set(state.rootFiles, root, files)
   },
 
-  setFileUpdate (state, payload: { paths: FilePaths, file: MoonrakerFile | MoonrakerFileWithMeta }) {
+  setFileUpdate (state, payload: { paths: FilePaths, file: Moonraker.Files.File | Moonraker.Files.FileWithMeta }) {
     const { paths, file } = payload
 
     const isFiltered = (
@@ -69,7 +69,7 @@ export const mutations = {
     }
   },
 
-  setDirUpdate (state, payload: { paths: FilePaths, dir: MoonrakerDir }) {
+  setDirUpdate (state, payload: { paths: FilePaths, dir: Moonraker.Files.Dir }) {
     const { paths, dir } = payload
 
     const isFiltered = (
@@ -171,7 +171,7 @@ export const mutations = {
     Vue.set(state.currentPaths, payload.root, payload.path)
   },
 
-  setDiskUsage (state, payload: { root: string, disk_usage: MoonrakerDiskUsage }) {
+  setDiskUsage (state, payload: { root: string, disk_usage: Moonraker.Files.DiskUsage }) {
     Vue.set(state.diskUsage, payload.root, payload.disk_usage)
   }
 } satisfies MutationTree<FilesState>

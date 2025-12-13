@@ -420,7 +420,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
 
   set spoolId (newSpoolIdStr: string | null) {
     const newSpoolId = newSpoolIdStr ? parseInt(newSpoolIdStr) : null
-    this.editGateMap[this.editGateSelected].spoolId = newSpoolId !== null && !isNaN(newSpoolId) ? newSpoolId : null
+    this.editGateMap[this.editGateSelected].spoolId = newSpoolId !== null && !Number.isNaN(newSpoolId) ? newSpoolId : null
   }
 
   @Watch('spoolId')
@@ -464,14 +464,14 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
 
   set temperature (newTemperatureStr: string) {
     const newTemperature = newTemperatureStr ? parseInt(newTemperatureStr) : -1
-    this.editGateMap[this.editGateSelected].temperature = isNaN(newTemperature) ? -1 : newTemperature
+    this.editGateMap[this.editGateSelected].temperature = Number.isNaN(newTemperature) ? -1 : newTemperature
   }
 
   private temperatureRules () {
     return [
       (v: string | number) => {
         const num = parseFloat(String(v))
-        return !isNaN(num) && num >= 100 && num <= 290
+        return !Number.isNaN(num) && num >= 100 && num <= 290
           ? true
           : this.$t('app.mmu.msg.bad_temperature')
       }

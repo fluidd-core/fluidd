@@ -2,20 +2,22 @@ import Vue from 'vue'
 import { Globals, Waits } from '@/globals'
 import type { NotifyOptions } from '@/plugins/socketClient'
 import { consola } from 'consola'
-import type { TimelapseWritableSettings } from '@/store/timelapse/types'
-import type { WebcamConfig } from '@/store/webcams/types'
 
-const baseEmit = (method: string, options: NotifyOptions) => {
+const baseEmit = async <T = unknown>(method: string, options: NotifyOptions): Promise<T> => {
   if (!Vue.$socket) {
     consola.warn('Socket emit denied, socket not ready.', method, options)
-    return
+
+    throw new Error('Socket not ready')
+  } else {
+    const result = await Vue.$socket.emit(method, options)
+
+    return result as T
   }
-  Vue.$socket.emit(method, options)
 }
 
 export const SocketActions = {
-  async machineServicesRestart (service: string, options?: NotifyOptions) {
-    baseEmit(
+  machineServicesRestart (service: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'machine.services.restart', {
         dispatch: 'void',
         wait: Waits.onServiceRestart,
@@ -27,8 +29,8 @@ export const SocketActions = {
     )
   },
 
-  async machineServicesStart (service: string, options?: NotifyOptions) {
-    baseEmit(
+  machineServicesStart (service: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'machine.services.start', {
         dispatch: 'void',
         wait: Waits.onServiceStart,
@@ -40,8 +42,8 @@ export const SocketActions = {
     )
   },
 
-  async machineServicesStop (service: string, options?: NotifyOptions) {
-    baseEmit(
+  machineServicesStop (service: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'machine.services.stop', {
         dispatch: 'void',
         wait: Waits.onServiceStop,
@@ -53,8 +55,8 @@ export const SocketActions = {
     )
   },
 
-  async machineReboot (options?: NotifyOptions) {
-    baseEmit(
+  machineReboot (options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'machine.reboot', {
         dispatch: 'void',
         ...options
@@ -62,8 +64,8 @@ export const SocketActions = {
     )
   },
 
-  async machineShutdown (options?: NotifyOptions) {
-    baseEmit(
+  machineShutdown (options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'machine.shutdown', {
         dispatch: 'void',
         ...options
@@ -71,8 +73,8 @@ export const SocketActions = {
     )
   },
 
-  async machineUpdateStatus (refresh = false, options?: NotifyOptions) {
-    baseEmit(
+  machineUpdateStatus (refresh = false, options?: NotifyOptions) {
+    return baseEmit<Moonraker.UpdateManager.StatusResponse>(
       'machine.update.status', {
         dispatch: 'version/onUpdateStatus',
         wait: Waits.onVersionRefresh,
@@ -84,8 +86,8 @@ export const SocketActions = {
     )
   },
 
-  async machineUpdateRefresh (name?: string, options?: NotifyOptions) {
-    baseEmit(
+  machineUpdateRefresh (name?: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.UpdateManager.StatusResponse>(
       'machine.update.refresh', {
         dispatch: 'version/onUpdateStatus',
         wait: Waits.onVersionRefresh,
@@ -97,14 +99,14 @@ export const SocketActions = {
     )
   },
 
-  async machineUpdateRecover (name: string, hard = false, options?: NotifyOptions) {
+  machineUpdateRecover (name: string, hard = false, options?: NotifyOptions) {
     const dispatch = name === 'moonraker'
       ? 'version/onUpdatedMoonraker'
       : name === 'klipper'
         ? 'version/onUpdatedKlipper'
         : 'version/onUpdatedClient'
 
-    baseEmit(
+    return baseEmit<Moonraker.OkResponse>(
       'machine.update.recover', {
         dispatch,
         ...options,
@@ -116,8 +118,8 @@ export const SocketActions = {
     )
   },
 
-  async machineUpdateMoonraker (options?: NotifyOptions) {
-    baseEmit(
+  machineUpdateMoonraker (options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'machine.update.moonraker', {
         dispatch: 'version/onUpdatedMoonraker',
         ...options
@@ -125,8 +127,8 @@ export const SocketActions = {
     )
   },
 
-  async machineUpdateKlipper (options?: NotifyOptions) {
-    baseEmit(
+  machineUpdateKlipper (options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'machine.update.klipper', {
         dispatch: 'version/onUpdatedKlipper',
         ...options,
@@ -137,12 +139,12 @@ export const SocketActions = {
     )
   },
 
-  async machineUpdateClient (name: string, options?: NotifyOptions) {
+  machineUpdateClient (name: string, options?: NotifyOptions) {
     const dispatch = name === 'fluidd'
       ? 'version/onUpdatedFluidd'
       : 'version/onUpdatedClient'
 
-    baseEmit(
+    return baseEmit<Moonraker.OkResponse>(
       'machine.update.client', {
         dispatch,
         ...options,
@@ -153,8 +155,8 @@ export const SocketActions = {
     )
   },
 
-  async machineUpdateSystem (options?: NotifyOptions) {
-    baseEmit(
+  machineUpdateSystem (options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'machine.update.system', {
         dispatch: 'version/onUpdatedSystem',
         ...options
@@ -162,8 +164,8 @@ export const SocketActions = {
     )
   },
 
-  async machineUpdateAll (options?: NotifyOptions) {
-    baseEmit(
+  machineUpdateAll (options?: NotifyOptions) {
+    baseEmit<Moonraker.OkResponse>(
       'machine.update.full', {
         dispatch: 'version/onUpdatedAll',
         ...options
@@ -171,8 +173,8 @@ export const SocketActions = {
     )
   },
 
-  async machineProcStats (options?: NotifyOptions) {
-    baseEmit(
+  machineProcStats (options?: NotifyOptions) {
+    return baseEmit<Moonraker.ProcStats.Response>(
       'machine.proc_stats', {
         dispatch: 'server/onMachineProcStats',
         ...options
@@ -180,8 +182,8 @@ export const SocketActions = {
     )
   },
 
-  async machineSystemInfo (options?: NotifyOptions) {
-    baseEmit(
+  machineSystemInfo (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Machine.SystemInfoResponse>(
       'machine.system_info', {
         dispatch: 'server/onMachineSystemInfo',
         ...options
@@ -189,8 +191,8 @@ export const SocketActions = {
     )
   },
 
-  async machineDevicePowerDevices (options?: NotifyOptions) {
-    baseEmit(
+  machineDevicePowerDevices (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Power.DevicesResponse>(
       'machine.device_power.devices', {
         dispatch: 'power/onInit',
         ...options
@@ -198,8 +200,8 @@ export const SocketActions = {
     )
   },
 
-  async machineDevicePowerStatus (device: string, options?: NotifyOptions) {
-    baseEmit(
+  machineDevicePowerStatus (device: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Power.StatusResponse>(
       'machine.device_power.status', {
         dispatch: 'power/onStatus',
         ...options,
@@ -210,8 +212,8 @@ export const SocketActions = {
     )
   },
 
-  async machineDevicePowerSetDevice (device: string, action: 'on' | 'off' | 'toggle', options?: NotifyOptions) {
-    baseEmit(
+  machineDevicePowerSetDevice (device: string, action: 'on' | 'off' | 'toggle', options?: NotifyOptions) {
+    return baseEmit<Moonraker.Power.StatusResponse>(
       'machine.device_power.post_device', {
         dispatch: 'power/onStatus',
         wait: `${Waits.onDevicePowerToggle}/${device}`,
@@ -224,8 +226,8 @@ export const SocketActions = {
     )
   },
 
-  async machinePeripheralsUsb (options?: NotifyOptions) {
-    baseEmit(
+  machinePeripheralsUsb (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Peripherals.UsbResponse>(
       'machine.peripherals.usb', {
         dispatch: 'server/onMachinePeripherals',
         wait: Waits.onMachinePeripheralsUsb,
@@ -234,8 +236,8 @@ export const SocketActions = {
     )
   },
 
-  async machinePeripheralsSerial (options?: NotifyOptions) {
-    baseEmit(
+  machinePeripheralsSerial (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Peripherals.SerialResponse>(
       'machine.peripherals.serial', {
         dispatch: 'server/onMachinePeripherals',
         wait: Waits.onMachinePeripheralsSerial,
@@ -244,8 +246,8 @@ export const SocketActions = {
     )
   },
 
-  async machinePeripheralsVideo (options?: NotifyOptions) {
-    baseEmit(
+  machinePeripheralsVideo (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Peripherals.VideoResponse>(
       'machine.peripherals.video', {
         dispatch: 'server/onMachinePeripherals',
         wait: Waits.onMachinePeripheralsVideo,
@@ -254,8 +256,8 @@ export const SocketActions = {
     )
   },
 
-  async machinePeripheralsCanbus (canbusInterface: string, options?: NotifyOptions) {
-    baseEmit(
+  machinePeripheralsCanbus (canbusInterface: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Peripherals.CanbusResponse>(
       'machine.peripherals.canbus', {
         dispatch: 'server/onMachinePeripheralsCanbus',
         wait: `${Waits.onMachinePeripheralsCanbus}/${canbusInterface}`,
@@ -267,8 +269,8 @@ export const SocketActions = {
     )
   },
 
-  async machineTimelapseSetSettings (settings: Partial<TimelapseWritableSettings>, options?: NotifyOptions) {
-    baseEmit(
+  machineTimelapsePostSettings (settings: Partial<Moonraker.Timelapse.WriteableSettings>, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Timelapse.SettingsResponse>(
       'machine.timelapse.post_settings', {
         dispatch: 'timelapse/onSettings',
         ...options,
@@ -277,8 +279,8 @@ export const SocketActions = {
     )
   },
 
-  async machineTimelapseSaveFrames (options?: NotifyOptions) {
-    baseEmit(
+  machineTimelapseSaveFrames (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Timelapse.SaveFramesResponse>(
       'machine.timelapse.saveframes', {
         wait: Waits.onTimelapseSaveFrame,
         ...options
@@ -286,14 +288,16 @@ export const SocketActions = {
     )
   },
 
-  async machineTimelapseRender (options?: NotifyOptions) {
-    baseEmit('machine.timelapse.render', {
-      ...options
-    })
+  machineTimelapseRender (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Timelapse.RenderResponse>(
+      'machine.timelapse.render', {
+        ...options
+      }
+    )
   },
 
-  async machineTimelapseGetSettings (options?: NotifyOptions) {
-    baseEmit(
+  machineTimelapseGetSettings (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Timelapse.SettingsResponse>(
       'machine.timelapse.get_settings', {
         dispatch: 'timelapse/onSettings',
         ...options
@@ -301,8 +305,8 @@ export const SocketActions = {
     )
   },
 
-  async machineTimelapseLastFrameInfo (options?: NotifyOptions) {
-    baseEmit(
+  machineTimelapseLastFrameInfo (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Timelapse.LastFrameInfoResponse>(
       'machine.timelapse.lastframeinfo', {
         dispatch: 'timelapse/onLastFrame',
         ...options
@@ -310,8 +314,8 @@ export const SocketActions = {
     )
   },
 
-  async printerInfo (options?: NotifyOptions) {
-    baseEmit(
+  printerInfo (options?: NotifyOptions) {
+    return baseEmit<Moonraker.KlippyApis.InfoResponse>(
       'printer.info', {
         dispatch: 'printer/onPrinterInfo',
         ...options
@@ -319,8 +323,8 @@ export const SocketActions = {
     )
   },
 
-  async printerRestart (options?: NotifyOptions) {
-    baseEmit(
+  printerRestart (options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'printer.restart', {
         dispatch: 'void',
         wait: Waits.onKlipperRestart,
@@ -329,8 +333,8 @@ export const SocketActions = {
     )
   },
 
-  async printerFirmwareRestart (options?: NotifyOptions) {
-    baseEmit(
+  printerFirmwareRestart (options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'printer.firmware_restart', {
         dispatch: 'void',
         wait: Waits.onKlipperFirmwareRestart,
@@ -339,8 +343,8 @@ export const SocketActions = {
     )
   },
 
-  async printerQueryEndstops (options?: NotifyOptions) {
-    baseEmit(
+  printerQueryEndstops (options?: NotifyOptions) {
+    return baseEmit<Moonraker.KlippyApis.QueryEndstopsStatusResponse>(
       'printer.query_endstops.status', {
         dispatch: 'printer/onQueryEndstops',
         wait: Waits.onQueryEndstops,
@@ -349,8 +353,8 @@ export const SocketActions = {
     )
   },
 
-  async printerObjectsList (options?: NotifyOptions) {
-    baseEmit(
+  printerObjectsList (options?: NotifyOptions) {
+    return baseEmit<Moonraker.KlippyApis.ObjectsListResponse>(
       'printer.objects.list', {
         dispatch: 'printer/onPrinterObjectsList',
         ...options
@@ -358,8 +362,8 @@ export const SocketActions = {
     )
   },
 
-  async printerObjectsSubscribe (objects: Record<string, null>, options?: NotifyOptions) {
-    baseEmit(
+  printerObjectsSubscribe (objects: Record<string, null>, options?: NotifyOptions) {
+    return baseEmit<Moonraker.KlippyApis.ObjectsSubscribeResponse>(
       'printer.objects.subscribe', {
         dispatch: 'printer/onPrinterObjectsSubscribe',
         ...options,
@@ -370,8 +374,8 @@ export const SocketActions = {
     )
   },
 
-  async printerPrintStart (path: string, options?: NotifyOptions) {
-    baseEmit(
+  printerPrintStart (path: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'printer.print.start', {
         dispatch: 'void',
         ...options,
@@ -382,8 +386,8 @@ export const SocketActions = {
     )
   },
 
-  async printerPrintCancel (options?: NotifyOptions) {
-    baseEmit(
+  printerPrintCancel (options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'printer.print.cancel', {
         dispatch: 'printer/onPrintCancel',
         wait: Waits.onPrintCancel,
@@ -392,8 +396,8 @@ export const SocketActions = {
     )
   },
 
-  async printerPrintPause (options?: NotifyOptions) {
-    baseEmit(
+  printerPrintPause (options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'printer.print.pause', {
         dispatch: 'printer/onPrintPause',
         wait: Waits.onPrintPause,
@@ -402,8 +406,8 @@ export const SocketActions = {
     )
   },
 
-  async printerPrintResume (options?: NotifyOptions) {
-    baseEmit(
+  printerPrintResume (options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'printer.print.resume', {
         dispatch: 'printer/onPrintResume',
         wait: Waits.onPrintResume,
@@ -412,8 +416,8 @@ export const SocketActions = {
     )
   },
 
-  async printerGcodeScript (gcode: string, options?: NotifyOptions) {
-    baseEmit(
+  printerGcodeScript (gcode: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'printer.gcode.script', {
         dispatch: 'console/onGcodeScript',
         ...options,
@@ -424,8 +428,8 @@ export const SocketActions = {
     )
   },
 
-  async printerGcodeHelp (options?: NotifyOptions) {
-    baseEmit(
+  printerGcodeHelp (options?: NotifyOptions) {
+    return baseEmit<Moonraker.KlippyApis.GcodeHelpResponse>(
       'printer.gcode.help', {
         dispatch: 'console/onGcodeHelp',
         ...options
@@ -433,8 +437,8 @@ export const SocketActions = {
     )
   },
 
-  async printerEmergencyStop (options?: NotifyOptions) {
-    baseEmit(
+  printerEmergencyStop (options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'printer.emergency_stop', {
         dispatch: 'void',
         ...options
@@ -442,8 +446,8 @@ export const SocketActions = {
     )
   },
 
-  async serverInfo (options?: NotifyOptions) {
-    baseEmit(
+  serverInfo (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Server.InfoResponse>(
       'server.info', {
         dispatch: 'server/onServerInfo',
         ...options
@@ -451,16 +455,17 @@ export const SocketActions = {
     )
   },
 
-  async serverConnectionIdentify (params?: { client_name: string, version: string, type: string, url: string }, options?: NotifyOptions) {
-    baseEmit('server.connection.identify', {
-      dispatch: 'socket/onConnectionId',
-      ...options,
-      params
-    })
+  serverConnectionIdentify (params?: { client_name: string, version: string, type: string, url: string }, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Websocket.ConnectionIdentifyResponse>(
+      'server.connection.identify', {
+        dispatch: 'socket/onConnectionId',
+        ...options,
+        params
+      })
   },
 
-  async serverConfig (options?: NotifyOptions) {
-    baseEmit(
+  serverConfig (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Server.ConfigResponse>(
       'server.config', {
         dispatch: 'server/onServerConfig',
         ...options
@@ -468,8 +473,8 @@ export const SocketActions = {
     )
   },
 
-  async serverDatabaseList (options?: NotifyOptions) {
-    baseEmit(
+  serverDatabaseList (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Database.ListResponse>(
       'server.database.list', {
         dispatch: 'database/onServerDatabaseList',
         wait: Waits.onDatabaseList,
@@ -478,8 +483,8 @@ export const SocketActions = {
     )
   },
 
-  async serverDatabaseCompact (options?: NotifyOptions) {
-    baseEmit(
+  serverDatabaseCompact (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Database.CompactResponse>(
       'server.database.compact', {
         wait: Waits.onDatabaseCompact,
         ...options
@@ -487,8 +492,8 @@ export const SocketActions = {
     )
   },
 
-  async serverDatabasePostBackup (filename: string, options?: NotifyOptions) {
-    baseEmit(
+  serverDatabasePostBackup (filename: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Database.PostBackupResponse>(
       'server.database.post_backup', {
         dispatch: 'database/onServerDatabasePostBackup',
         wait: `${Waits.onDatabasePostBackup}/${filename}`,
@@ -500,8 +505,8 @@ export const SocketActions = {
     )
   },
 
-  async serverDatabaseRestore (filename: string, options?: NotifyOptions) {
-    baseEmit(
+  serverDatabaseRestore (filename: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Database.RestoreResponse>(
       'server.database.restore', {
         wait: `${Waits.onDatabaseRestore}/${filename}`,
         ...options,
@@ -512,8 +517,8 @@ export const SocketActions = {
     )
   },
 
-  async serverDatabaseDeleteBackup (filename: string, options?: NotifyOptions) {
-    baseEmit(
+  serverDatabaseDeleteBackup (filename: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Database.DeleteBackupResponse>(
       'server.database.delete_backup', {
         dispatch: 'database/onServerDatabaseDeleteBackup',
         wait: `${Waits.onDatabaseDeleteBackup}/${filename}`,
@@ -525,8 +530,8 @@ export const SocketActions = {
     )
   },
 
-  async serverWrite (key: string, value: unknown, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
-    baseEmit(
+  serverDatabasePostItem<T = unknown> (key: string, value: T, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Database.PostItemResponse<T>>(
       'server.database.post_item', {
         ...options,
         params: {
@@ -538,8 +543,8 @@ export const SocketActions = {
     )
   },
 
-  async serverDelete (key: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
-    baseEmit(
+  serverDatabaseDeleteItem<T = unknown> (key: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Database.DeleteItemResponse<T>>(
       'server.database.delete_item', {
         ...options,
         params: {
@@ -550,8 +555,8 @@ export const SocketActions = {
     )
   },
 
-  async serverRead (key?: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
-    baseEmit(
+  serverDatabaseGetItem<T = unknown> (key?: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Database.GetItemResponse<T>>(
       'server.database.get_item', {
         dispatch: 'socket/onServerRead',
         ...options,
@@ -563,8 +568,8 @@ export const SocketActions = {
     )
   },
 
-  async serverRestart (options?: NotifyOptions) {
-    baseEmit(
+  serverRestart (options?: NotifyOptions) {
+    return baseEmit<Moonraker.OkResponse>(
       'server.restart', {
         dispatch: 'void',
         ...options
@@ -572,8 +577,8 @@ export const SocketActions = {
     )
   },
 
-  async serverTemperatureStore (options?: NotifyOptions) {
-    baseEmit(
+  serverTemperatureStore (options?: NotifyOptions) {
+    return baseEmit<Moonraker.DataStore.TemperatureStoreResponse>(
       'server.temperature_store', {
         dispatch: 'charts/initTempStore',
         ...options,
@@ -584,8 +589,8 @@ export const SocketActions = {
     )
   },
 
-  async serverGcodeStore (options?: NotifyOptions) {
-    baseEmit(
+  serverGcodeStore (options?: NotifyOptions) {
+    return baseEmit<Moonraker.DataStore.GcodeStoreResponse>(
       'server.gcode_store', {
         dispatch: 'console/onGcodeStore',
         ...options
@@ -593,8 +598,8 @@ export const SocketActions = {
     )
   },
 
-  async serverHistoryList (params?: { start?: number; limit?: number; before?: number; since?: number; order?: string }, options?: NotifyOptions) {
-    baseEmit(
+  serverHistoryList (params?: { start?: number; limit?: number; before?: number; since?: number; order?: string }, options?: NotifyOptions) {
+    return baseEmit<Moonraker.History.ListResponse>(
       'server.history.list', {
         dispatch: 'history/onHistoryList',
         ...options,
@@ -603,8 +608,8 @@ export const SocketActions = {
     )
   },
 
-  async serverHistoryTotals (options?: NotifyOptions) {
-    baseEmit(
+  serverHistoryTotals (options?: NotifyOptions) {
+    return baseEmit<Moonraker.History.TotalsResponse>(
       'server.history.totals', {
         dispatch: 'history/onHistoryTotals',
         ...options
@@ -612,12 +617,12 @@ export const SocketActions = {
     )
   },
 
-  async serverHistoryDeleteJob (uid: string, options?: NotifyOptions) {
+  serverHistoryDeleteJob (uid: string, options?: NotifyOptions) {
     const params = uid === 'all'
       ? { all: true }
       : { uid }
 
-    baseEmit(
+    return baseEmit<Moonraker.History.DeleteJobResponse>(
       'server.history.delete_job', {
         dispatch: 'history/onDelete',
         ...options,
@@ -626,17 +631,17 @@ export const SocketActions = {
     )
   },
 
-  async serverHistoryResetTotals (options?: NotifyOptions) {
-    baseEmit(
+  serverHistoryResetTotals (options?: NotifyOptions) {
+    return baseEmit<Moonraker.History.TotalsResponse>(
       'server.history.reset_totals', {
-        dispatch: 'history/onHistoryChange',
+        dispatch: 'history/onHistoryTotals',
         ...options
       }
     )
   },
 
-  async serverJobQueueStatus (options?: NotifyOptions) {
-    baseEmit(
+  serverJobQueueStatus (options?: NotifyOptions) {
+    return baseEmit<Moonraker.JobQueue.StatusResponse>(
       'server.job_queue.status', {
         dispatch: 'jobQueue/onJobQueueStatus',
         wait: Waits.onJobQueue,
@@ -645,8 +650,8 @@ export const SocketActions = {
     )
   },
 
-  async serverJobQueuePostJob (filenames: string[], reset?: boolean, options?: NotifyOptions) {
-    baseEmit(
+  serverJobQueuePostJob (filenames: string[], reset?: boolean, options?: NotifyOptions) {
+    return baseEmit<Moonraker.JobQueue.StatusResponse>(
       'server.job_queue.post_job', {
         dispatch: 'jobQueue/onJobQueueStatus',
         wait: Waits.onJobQueue,
@@ -659,12 +664,12 @@ export const SocketActions = {
     )
   },
 
-  async serverJobQueueDeleteJobs (jobIds: string[], options?: NotifyOptions) {
+  serverJobQueueDeleteJobs (jobIds: string[], options?: NotifyOptions) {
     const params = jobIds.length > 0 && jobIds[0] === 'all'
       ? { all: true }
       : { job_ids: jobIds }
 
-    baseEmit(
+    return baseEmit<Moonraker.JobQueue.StatusResponse>(
       'server.job_queue.delete_job', {
         dispatch: 'jobQueue/onJobQueueStatus',
         wait: Waits.onJobQueue,
@@ -674,8 +679,8 @@ export const SocketActions = {
     )
   },
 
-  async serverJobQueuePause (options?: NotifyOptions) {
-    baseEmit(
+  serverJobQueuePause (options?: NotifyOptions) {
+    return baseEmit<Moonraker.JobQueue.StatusResponse>(
       'server.job_queue.pause', {
         dispatch: 'jobQueue/onJobQueueStatus',
         wait: Waits.onJobQueue,
@@ -684,8 +689,8 @@ export const SocketActions = {
     )
   },
 
-  async serverJobQueueStart (options?: NotifyOptions) {
-    baseEmit(
+  serverJobQueueStart (options?: NotifyOptions) {
+    return baseEmit<Moonraker.JobQueue.StatusResponse>(
       'server.job_queue.start', {
         dispatch: 'jobQueue/onJobQueueStatus',
         wait: Waits.onJobQueue,
@@ -699,8 +704,8 @@ export const SocketActions = {
    * Expects the full path including root.
    * Optionally pass the just the filename and path.
    */
-  async serverFilesMetadata (filename: string, options?: NotifyOptions) {
-    baseEmit(
+  serverFilesMetadata (filename: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Files.FileWithMetaResponse>(
       'server.files.metadata', {
         dispatch: 'files/onFileMetaData',
         wait: `${Waits.onFileSystem}/gcodes/${filename}`,
@@ -712,8 +717,8 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesMetascan (filename: string, options?: NotifyOptions) {
-    baseEmit(
+  serverFilesMetascan (filename: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Files.FileWithMetaResponse>(
       'server.files.metascan', {
         dispatch: 'files/onFileMetaData',
         wait: `${Waits.onFileSystem}/gcodes/${filename}`,
@@ -729,8 +734,8 @@ export const SocketActions = {
    * This only requires path, but we pass root along too
    * for brevity.
    */
-  async serverFilesGetDirectory (path: string, options?: NotifyOptions) {
-    baseEmit(
+  serverFilesGetDirectory (path: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Files.GetDirectoryResponse>(
       'server.files.get_directory',
       {
         dispatch: 'files/onServerFilesGetDirectory',
@@ -744,8 +749,8 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesListRoot (root: string, options?: NotifyOptions) {
-    baseEmit(
+  serverFilesList (root: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Files.ListRootResponse>(
       'server.files.list',
       {
         dispatch: 'files/onServerFilesListRoot',
@@ -758,8 +763,8 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesMove (source: string, dest: string, options?: NotifyOptions) {
-    baseEmit(
+  serverFilesMove (source: string, dest: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Files.ChangeResponse>(
       'server.files.move', {
         dispatch: 'void',
         wait: `${Waits.onFileSystem}/${source}/`,
@@ -772,8 +777,8 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesCopy (source: string, dest: string, options?: NotifyOptions) {
-    baseEmit(
+  serverFilesCopy (source: string, dest: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Files.ChangeResponse>(
       'server.files.copy', {
         dispatch: 'void',
         wait: `${Waits.onFileSystem}/${source}/`,
@@ -786,8 +791,8 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesZip (dest: string, items: string[], store_only?: boolean, options?: NotifyOptions) {
-    baseEmit(
+  serverFilesZip (dest: string, items: string[], store_only?: boolean, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Files.ZipResponse>(
       'server.files.zip', {
         dispatch: 'void',
         wait: `${Waits.onFileSystem}/${dest}/`,
@@ -805,8 +810,8 @@ export const SocketActions = {
    * Create a directory.
    * Root should be included in the path.
    */
-  async serverFilesPostDirectory (path: string, options?: NotifyOptions) {
-    baseEmit(
+  serverFilesPostDirectory (path: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Files.ChangeResponse>(
       'server.files.post_directory', {
         dispatch: 'void',
         wait: `${Waits.onFileSystem}/${path}/`,
@@ -818,8 +823,8 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesDeleteFile (path: string, options?: NotifyOptions) {
-    baseEmit(
+  serverFilesDeleteFile (path: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Files.ChangeResponse>(
       'server.files.delete_file', {
         dispatch: 'void',
         wait: `${Waits.onFileSystem}/${path}`,
@@ -831,8 +836,8 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesDeleteDirectory (path: string, force = false, options?: NotifyOptions) {
-    baseEmit(
+  serverFilesDeleteDirectory (path: string, force = false, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Files.ChangeResponse>(
       'server.files.delete_directory', {
         dispatch: 'void',
         wait: `${Waits.onFileSystem}/${path}/`,
@@ -845,8 +850,8 @@ export const SocketActions = {
     )
   },
 
-  async serverAnnouncementsList (options?: NotifyOptions) {
-    baseEmit(
+  serverAnnouncementsList (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Announcements.ListResponse>(
       'server.announcements.list', {
         dispatch: 'announcements/onAnnouncementsList',
         ...options
@@ -854,8 +859,8 @@ export const SocketActions = {
     )
   },
 
-  async serverAnnouncementsDismiss (entry_id: string, wake_time?: number, options?: NotifyOptions) {
-    baseEmit(
+  serverAnnouncementsDismiss (entry_id: string, wake_time?: number, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Announcements.DismissResponse>(
       'server.announcements.dismiss', {
         dispatch: 'void',
         ...options,
@@ -867,8 +872,8 @@ export const SocketActions = {
     )
   },
 
-  async serverLogsRollover (application?: string, options?: NotifyOptions) {
-    baseEmit(
+  serverLogsRollover (application?: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Server.LogsRolloverResponse>(
       'server.logs.rollover', {
         dispatch: 'server/onLogsRollOver',
         ...options,
@@ -879,8 +884,8 @@ export const SocketActions = {
     )
   },
 
-  async serverWebcamsList (options?: NotifyOptions) {
-    baseEmit(
+  serverWebcamsList (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Webcam.ListResponse>(
       'server.webcams.list', {
         dispatch: 'webcams/onWebcamsList',
         ...options
@@ -888,8 +893,8 @@ export const SocketActions = {
     )
   },
 
-  async serverWebcamsWrite (webcam: WebcamConfig, options?: NotifyOptions) {
-    baseEmit(
+  serverWebcamsWrite (webcam: Moonraker.Webcam.Entry, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Webcam.PostItemResponse>(
       'server.webcams.post_item', {
         ...options,
         params: webcam
@@ -897,8 +902,8 @@ export const SocketActions = {
     )
   },
 
-  async serverWebcamsDelete (uid: string, options?: NotifyOptions) {
-    baseEmit(
+  serverWebcamsDelete (uid: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Webcam.DeleteItemResponse>(
       'server.webcams.delete_item', {
         ...options,
         params: {
@@ -908,8 +913,8 @@ export const SocketActions = {
     )
   },
 
-  async serverSensorsList (options?: NotifyOptions) {
-    baseEmit(
+  serverSensorsList (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Sensor.ListResponse>(
       'server.sensors.list', {
         dispatch: 'sensors/onSensorsList',
         ...options,
@@ -920,8 +925,8 @@ export const SocketActions = {
     )
   },
 
-  async serverAnalysisStatus (options?: NotifyOptions) {
-    baseEmit(
+  serverAnalysisStatus (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Analysis.StatusResponse>(
       'server.analysis.status', {
         dispatch: 'analysis/onAnalysisStatus',
         ...options
@@ -929,8 +934,8 @@ export const SocketActions = {
     )
   },
 
-  async serverAnalysisEstimate (filename: string, estimator_config?: string, options?: NotifyOptions) {
-    baseEmit(
+  serverAnalysisEstimate (filename: string, estimator_config?: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Analysis.EstimateResponse>(
       'server.analysis.estimate', {
         wait: `${Waits.onFileSystem}/gcodes/${filename}`,
         dispatch: 'void',
@@ -943,8 +948,8 @@ export const SocketActions = {
     )
   },
 
-  async serverAnalysisProcess (filename: string, estimator_config?: string, force?: boolean, options?: NotifyOptions) {
-    baseEmit(
+  serverAnalysisProcess (filename: string, estimator_config?: string, force?: boolean, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Analysis.ProcessResponse>(
       'server.analysis.process', {
         wait: `${Waits.onFileSystem}/gcodes/${filename}`,
         dispatch: 'analysis/onAnalysisProcess',
@@ -958,8 +963,123 @@ export const SocketActions = {
     )
   },
 
-  async serverSpoolmanGetSpoolId (options?: NotifyOptions) {
-    baseEmit(
+  accessInfo (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Authorization.InfoResponse>(
+      'access.info', {
+        ...options
+      }
+    )
+  },
+
+  accessRefreshJwt (refresh_token: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Authorization.RefreshJwtResponse>(
+      'access.refresh_jwt', {
+        ...options,
+        params: {
+          refresh_token
+        }
+      }
+    )
+  },
+
+  accessLogin (username: string, password: string, source: string = 'moonraker', options?: NotifyOptions) {
+    return baseEmit<Moonraker.Authorization.LoginResponse>(
+      'access.login', {
+        ...options,
+        params: {
+          username,
+          password,
+          source
+        }
+      }
+    )
+  },
+
+  accessLogout (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Authorization.LogoutResponse>(
+      'access.logout', {
+        ...options
+      }
+    )
+  },
+
+  accessOneshotToken (options?: NotifyOptions) {
+    return baseEmit<Moonraker.StringResponse>(
+      'access.oneshot_token', {
+        ...options
+      }
+    )
+  },
+
+  accessGetUser (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Authorization.GetUserResponse>(
+      'access.get_user', {
+        ...options
+      }
+    )
+  },
+
+  accessUsersList (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Authorization.UsersListResponse>(
+      'access.users.list', {
+        ...options
+      }
+    )
+  },
+
+  accessPostUser (username: string, password: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Authorization.PostUserResponse>(
+      'access.post_user', {
+        ...options,
+        params: {
+          username,
+          password
+        }
+      }
+    )
+  },
+
+  accessDeleteUser (username: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Authorization.DeleteUserResponse>(
+      'access.delete_user', {
+        ...options,
+        params: {
+          username
+        }
+      }
+    )
+  },
+
+  accessUserPassword (password: string, new_password: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Authorization.UserPasswordResponse>(
+      'access.user.password', {
+        ...options,
+        params: {
+          password,
+          new_password
+        }
+      }
+    )
+  },
+
+  accessGetApiKey (options?: NotifyOptions) {
+    return baseEmit<Moonraker.StringResponse>(
+      'access.get_api_key', {
+        ...options
+      }
+    )
+  },
+
+  accessPostApiKey (options?: NotifyOptions) {
+    return baseEmit<Moonraker.StringResponse>(
+      'access.post_api_key', {
+        ...options
+      }
+    )
+  },
+
+  serverSpoolmanGetSpoolId (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Spoolman.SpoolIdResponse>(
       'server.spoolman.get_spool_id', {
         dispatch: 'spoolman/onActiveSpool',
         ...options
@@ -967,8 +1087,8 @@ export const SocketActions = {
     )
   },
 
-  async serverSpoolmanPostSpoolId (spoolId: number | undefined, options?: NotifyOptions) {
-    baseEmit(
+  serverSpoolmanPostSpoolId (spoolId: number | undefined, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Spoolman.SpoolIdResponse>(
       'server.spoolman.post_spool_id', {
         dispatch: 'spoolman/onActiveSpool',
         ...options,
@@ -979,8 +1099,8 @@ export const SocketActions = {
     )
   },
 
-  async serverSpoolmanProxyGetAvailableSpools (options?: NotifyOptions) {
-    baseEmit(
+  serverSpoolmanProxyGetAvailableSpools (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Spool[]>>(
       'server.spoolman.proxy', {
         dispatch: 'spoolman/onAvailableSpools',
         ...options,
@@ -993,8 +1113,8 @@ export const SocketActions = {
     )
   },
 
-  async serverSpoolmanProxyGetInfo (options?: NotifyOptions) {
-    baseEmit(
+  serverSpoolmanProxyGetInfo (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Info>>(
       'server.spoolman.proxy', {
         dispatch: 'spoolman/onInfo',
         ...options,
@@ -1007,8 +1127,8 @@ export const SocketActions = {
     )
   },
 
-  async serverSpoolmanProxyGetSettingCurrency (options?: NotifyOptions) {
-    baseEmit(
+  serverSpoolmanProxyGetSettingCurrency (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Currency>>(
       'server.spoolman.proxy', {
         dispatch: 'spoolman/onSettingCurrency',
         ...options,

@@ -1,8 +1,6 @@
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type {
-  SpoolmanInfo,
-  SpoolmanSpool,
   SpoolmanState,
   SpoolSelectionDialogState
 } from '@/store/spoolman/types'
@@ -19,7 +17,7 @@ export const mutations = {
     state.activeSpool = payload
   },
 
-  setSpools (state, payload: SpoolmanSpool[]) {
+  setSpools (state, payload: Moonraker.Spoolman.Spool[]) {
     state.spools = payload
   },
 
@@ -27,11 +25,11 @@ export const mutations = {
     state.dialog = payload
   },
 
-  setInfo (state, payload: SpoolmanInfo) {
+  setInfo (state, payload: Moonraker.Spoolman.Info) {
     state.info = payload
   },
 
-  setCurrency (state, payload: { value: string }) {
+  setCurrency (state, payload: Moonraker.Spoolman.Currency) {
     state.currency = payload.value.replace(/^"|"$/g, '')
   },
 

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { WebcamConfig, WebcamsState } from './types'
+import type { WebcamsState } from './types'
 import { defaultState } from './state'
 
 export const mutations = {
@@ -12,11 +12,11 @@ export const mutations = {
     state.activeWebcam = payload.activeWebcam || 'all'
   },
 
-  setWebcamsList (state, payload: { webcams: WebcamConfig[] }) {
+  setWebcamsList (state, payload: Moonraker.Webcam.ListResponse) {
     state.webcams = payload.webcams || []
   },
 
-  setUpdateWebcam (state, payload: WebcamConfig) {
+  setUpdateWebcam (state, payload: Moonraker.Webcam.Entry) {
     const index = state.webcams.findIndex(webcam => webcam.uid === payload.uid)
 
     if (index >= 0) {

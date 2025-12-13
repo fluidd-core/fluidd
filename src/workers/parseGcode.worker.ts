@@ -1,4 +1,4 @@
-import type { Layer, Move, Part } from '@/store/gcodePreview/types'
+import type { BBox, Layer, Move, Part } from '@/store/gcodePreview/types'
 import parseGcode from './parseGcode'
 import { consola } from 'consola'
 
@@ -10,7 +10,8 @@ export type ParseGcodeWorkerClientMessage = {
   moves: Move[],
   layers: Layer[],
   parts: Part[],
-  tools: number[]
+  tools: number[],
+  bounds: BBox | null
 } | {
   action: 'error',
   error?: unknown
@@ -30,13 +31,14 @@ const sendProgress = (filePosition: number) => {
   self.postMessage(message)
 }
 
-const sendResult = (moves: Move[], layers: Layer[], parts: Part[], tools: number[]) => {
+const sendResult = (moves: Move[], layers: Layer[], parts: Part[], tools: number[], bounds: BBox | null) => {
   const message : ParseGcodeWorkerClientMessage = {
     action: 'result',
     moves,
     layers,
     parts,
-    tools
+    tools,
+    bounds
   }
 
   self.postMessage(message)
@@ -59,9 +61,9 @@ self.onmessage = (event: MessageEvent<ParseGcodeWorkerServerMessage>) => {
       case 'parse': {
         const gcode = new TextDecoder().decode(message.gcode)
 
-        const { moves, layers, parts, tools } = parseGcode(gcode, sendProgress)
+        const { moves, layers, parts, tools, bounds } = parseGcode(gcode, sendProgress)
 
-        sendResult(moves, layers, parts, tools)
+        sendResult(moves, layers, parts, tools, bounds)
 
         break
       }

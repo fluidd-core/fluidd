@@ -20,7 +20,7 @@ export const actions = {
     const layout = state.layouts[payload.name]
     if (layout || payload.name.startsWith('dashboard')) {
       commit('setLayoutChange', payload)
-      await SocketActions.serverWrite(
+      await SocketActions.serverDatabasePostItem(
         Globals.MOONRAKER_DB.fluidd.ROOTS.layout.name + '.layouts',
         state.layouts
       )
@@ -40,7 +40,7 @@ export const actions = {
         const i = containers[container].findIndex(layout => layout.id === payload.value.id)
         if (i >= 0) {
           commit('setUpdateConfig', { name: payload.name, container, i, value: payload.value })
-          await SocketActions.serverWrite(
+          await SocketActions.serverDatabasePostItem(
             Globals.MOONRAKER_DB.fluidd.ROOTS.layout.name + `.layouts.${payload.name}.${container}`,
             state.layouts[payload.name][container]
           )

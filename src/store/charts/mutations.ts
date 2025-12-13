@@ -37,7 +37,8 @@ export const mutations = {
    * Inits the chart store from moonraker.
    */
   setChartStore (state, payload: ChartData[]) {
-    state.chart = payload.map<ChartData>(Object.freeze)
+    state.chart = payload
+      .map(entry => Object.freeze(entry))
     state.ready = true
   },
 

@@ -2,7 +2,6 @@ import Vue from 'vue'
 import { SocketActions } from '@/api/socketActions'
 import { Component } from 'vue-property-decorator'
 import type { Macro } from '@/store/macros/types'
-import type { Device } from '@/store/power/types'
 
 @Component
 export default class StateMixin extends Vue {
@@ -82,7 +81,7 @@ export default class StateMixin extends Vue {
 
     const printerPowerDevice: string = this.$typedState.config.uiSettings.general.printerPowerDevice ?? 'printer'
 
-    const device: Device | undefined = this.$typedGetters['power/getDeviceByName'](printerPowerDevice)
+    const device: Moonraker.Power.Device | undefined = this.$typedGetters['power/getDeviceByName'](printerPowerDevice)
 
     return device?.status === 'off'
   }
