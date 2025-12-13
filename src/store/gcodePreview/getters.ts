@@ -8,18 +8,6 @@ const defaultColors = ['#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#
 const lightDefaultColors = ['#000', ...defaultColors]
 const darkDefaultColors = ['#FFF', ...defaultColors]
 
-const updateMinMax = (previous: { min: number, max: number }, value?: number) => {
-  if (value != null) {
-    previous.min = Number.isFinite(previous.min)
-      ? Math.min(previous.min, value)
-      : value
-
-    previous.max = Number.isFinite(previous.max)
-      ? Math.max(previous.max, value)
-      : value
-  }
-}
-
 export const getters = {
   getLayers: (state, getters, rootState): readonly Layer[] => {
     if (state.layers.length) {
@@ -73,7 +61,11 @@ export const getters = {
     return state.parts
   },
 
-  getBounds: (state, getters): BBox => {
+  getBounds: (state, getters): Readonly<BBox> => {
+    if (state.bounds != null) {
+      return state.bounds
+    }
+
     const layers: readonly Layer[] = getters.getLayers
 
     // ignore first and last layer (priming and parking)
@@ -83,34 +75,41 @@ export const getters = {
       ? Object.freeze(state.moves.slice(moveRangeStart, moveRangeEnd))
       : state.moves
 
-    const bounds = {
+    const bounds: BBox = {
       x: {
-        min: NaN,
-        max: NaN
+        min: Number.POSITIVE_INFINITY,
+        max: Number.NEGATIVE_INFINITY
       },
       y: {
-        min: NaN,
-        max: NaN
+        min: Number.POSITIVE_INFINITY,
+        max: Number.NEGATIVE_INFINITY
       }
     }
 
     for (let index = 0; index < moves.length; index++) {
       const move = moves[index]
 
-      updateMinMax(bounds.x, move.x)
-      updateMinMax(bounds.y, move.y)
-    }
+      if (move.x != null) {
+        bounds.x.min = Math.min(bounds.x.min, move.x)
+        bounds.x.max = Math.max(bounds.x.max, move.x)
+      }
 
-    return {
-      x: {
-        min: bounds.x.min || 0,
-        max: bounds.x.max || 0
-      },
-      y: {
-        min: bounds.y.min || 0,
-        max: bounds.y.max || 0
+      if (move.y != null) {
+        bounds.y.min = Math.min(bounds.y.min, move.y)
+        bounds.y.max = Math.max(bounds.y.max, move.y)
       }
     }
+
+    return Object.freeze({
+      x: {
+        min: Number.isFinite(bounds.x.min) ? bounds.x.min : 0,
+        max: Number.isFinite(bounds.x.max) ? bounds.x.max : 0
+      },
+      y: {
+        min: Number.isFinite(bounds.y.min) ? bounds.y.min : 0,
+        max: Number.isFinite(bounds.y.max) ? bounds.y.max : 0
+      }
+    })
   },
 
   getToolHeadPosition: (state) => (moveIndex: number): Point3D => {
@@ -121,20 +120,10 @@ export const getters = {
       z: NaN
     }
 
-    for (let i = moveIndex; i >= 0 && (!Number.isFinite(output.x) || !Number.isFinite(output.y) || !Number.isFinite(output.z)); i--) {
+    for (let i = moveIndex; i >= 0 && (Number.isNaN(output.x) || Number.isNaN(output.y) || Number.isNaN(output.y)); i--) {
       const move = moves[i]
 
-      if (!Number.isFinite(output.x) && move.x != null) {
-        output.x = move.x
-      }
-
-      if (!Number.isFinite(output.y) && move.y != null) {
-        output.y = move.y
-      }
-
-      if (!Number.isFinite(output.z) && move.z != null) {
-        output.z = move.z
-      }
+      Object.assign(output, move)
     }
 
     return {
@@ -204,7 +193,7 @@ export const getters = {
     return tools
   },
 
-  getPaths: (state, getters) => (startMove: number, endMove: number, ignoreTools = false): LayerPaths => {
+  getPaths: (state, getters) => (startMove: number, endMove: number, ignoreTools = false): Readonly<LayerPaths> => {
     const toolhead: Point3D = getters.getToolHeadPosition(startMove)
     const moves: readonly Move[] = state.moves
 
@@ -265,19 +254,19 @@ export const getters = {
       y: toolhead.y
     }
 
-    return path
+    return Object.freeze(path)
   },
 
-  getLayerPaths: (state, getters) => (layer: number): LayerPaths => {
+  getLayerPaths: (state, getters) => (layer: number): Readonly<LayerPaths> => {
     const layers: readonly Layer[] = getters.getLayers
 
-    return getters.getPaths(layers[layer]?.move ?? 0, (layers[layer + 1]?.move ?? Infinity) - 1, true)
+    return getters.getPaths(layers[layer]?.move ?? 0, (layers[layer + 1]?.move ?? Number.POSITIVE_INFINITY) - 1, true)
   },
 
-  getPartPaths: (state, getters): string[] => {
+  getPartPaths: (state, getters): readonly string[] => {
     const parts: readonly Part[] = getters.getParts
 
-    return parts
+    const partPaths = parts
       .map(part => {
         const polygonAsString = part.polygon
           .map(point => `${point.x},${point.y}`)
@@ -285,6 +274,8 @@ export const getters = {
 
         return `M${polygonAsString}z`
       })
+
+    return Object.freeze(partPaths)
   },
 
   getMoveIndexByFilePosition: (state) => (filePosition: number): number => {

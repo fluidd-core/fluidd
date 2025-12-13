@@ -1,6 +1,6 @@
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import type { GcodePreviewState, Layer, Move, Part } from './types'
+import type { BBox, GcodePreviewState, Layer, Move, Part } from './types'
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 
 export const mutations = {
@@ -25,6 +25,10 @@ export const mutations = {
 
   setTools (state, payload: number[]) {
     state.tools = Object.freeze(payload)
+  },
+
+  setBounds (state, payload: BBox) {
+    state.bounds = Object.freeze(payload)
   },
 
   setFile (state, file: AppFile | AppFileWithMeta | null) {

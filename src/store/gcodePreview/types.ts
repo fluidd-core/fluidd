@@ -5,6 +5,7 @@ export interface GcodePreviewState {
   layers: readonly Layer[];
   parts: readonly Part[];
   tools: readonly number[];
+  bounds: Readonly<BBox> | null;
   file: AppFile | AppFileWithMeta | null;
   parserProgress: number;
   parserWorker: Worker | null;

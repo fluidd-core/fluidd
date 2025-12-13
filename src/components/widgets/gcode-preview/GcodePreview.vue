@@ -364,7 +364,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: Boolean })
   readonly disabled?: boolean
 
-  @Prop({ type: Number, default: Infinity })
+  @Prop({ type: Number, default: Number.POSITIVE_INFINITY })
   readonly progress!: number
 
   @Prop({ type: Number, default: 0 })
@@ -626,8 +626,8 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return `${x.min} ${y.min} ${x.max - x.min} ${y.max - y.min}`
   }
 
-  get defaultLayerPaths (): LayerPaths {
-    return {
+  get defaultLayerPaths (): Readonly<LayerPaths> {
+    return Object.freeze({
       extrusions: {},
       moves: '',
       retractions: [],
@@ -637,10 +637,10 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
         y: 0
       },
       tool: 'T0'
-    }
+    })
   }
 
-  get svgPathCurrent (): LayerPaths {
+  get svgPathCurrent (): Readonly<LayerPaths> {
     if (this.disabled) {
       return this.defaultLayerPaths
     }
@@ -656,7 +656,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedGetters['gcodePreview/getPaths'](layer?.move ?? 0, this.progress)
   }
 
-  get svgPathActive (): LayerPaths {
+  get svgPathActive (): Readonly<LayerPaths> {
     if (this.disabled) {
       return this.defaultLayerPaths
     }
@@ -664,7 +664,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedGetters['gcodePreview/getLayerPaths'](this.layer)
   }
 
-  get svgPathPrevious (): LayerPaths {
+  get svgPathPrevious (): Readonly<LayerPaths> {
     if (this.disabled || this.layer <= 0) {
       return this.defaultLayerPaths
     }
@@ -672,7 +672,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedGetters['gcodePreview/getLayerPaths'](this.layer - 1)
   }
 
-  get svgPathNext (): LayerPaths {
+  get svgPathNext (): Readonly<LayerPaths> {
     const layers: readonly Layer[] = this.$typedGetters['gcodePreview/getLayers']
 
     if (this.disabled || this.layer >= layers.length) {
@@ -682,7 +682,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedGetters['gcodePreview/getLayerPaths'](this.layer + 1)
   }
 
-  get svgPathParts (): string[] {
+  get svgPathParts (): readonly string[] {
     return this.$typedGetters['gcodePreview/getPartPaths']
   }
 
