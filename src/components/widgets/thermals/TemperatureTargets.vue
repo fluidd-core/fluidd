@@ -388,7 +388,7 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     return this.$typedState.charts.selectedLegends
   }
 
-  get chartData (): ChartData[] {
+  get chartData (): Readonly<ChartData>[] {
     return this.$typedState.charts.chart
   }
 

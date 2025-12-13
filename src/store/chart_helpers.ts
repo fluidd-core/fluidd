@@ -1,14 +1,13 @@
 import type { Commit } from 'vuex'
 import type { RootState } from './types'
 import type { ChartData } from './charts/types'
-import type { KlipperPrinterMcuState, KlipperPrinterState, KlipperPrinterSystemStatsState } from './printer/types'
 import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
 
-export const handleMcuStatsChange = (payload: Partial<KlipperPrinterState>, state: RootState, commit: Commit) => {
+export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, state: RootState, commit: Commit) => {
   for (const key in payload) {
     if (key.startsWith('mcu')) {
       // Combine existing with the update.
-      const stats: KlipperPrinterMcuState = {
+      const stats: Klipper.McuState = {
         ...state.printer.printer[key],
         ...payload[key]
       }
@@ -61,10 +60,10 @@ export const handleMcuStatsChange = (payload: Partial<KlipperPrinterState>, stat
   }
 }
 
-export const handleSystemStatsChange = (payload: Partial<KlipperPrinterState>, state: RootState, commit: Commit) => {
+export const handleSystemStatsChange = (payload: Partial<Klipper.PrinterState>, state: RootState, commit: Commit) => {
   if (payload.system_stats != null) {
     // Combine existing with the update.
-    const stats: KlipperPrinterSystemStatsState = {
+    const stats: Klipper.SystemStatsState = {
       ...state.printer.printer.system_stats,
       ...payload.system_stats
     }

@@ -265,7 +265,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     return this.$typedState.gcodePreview.file
   }
 
-  get moves (): Move[] {
+  get moves (): readonly Move[] {
     return this.$typedState.gcodePreview.moves
   }
 
@@ -319,7 +319,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
       }
     }
 
-    const layers: Layer[] = this.$typedGetters['gcodePreview/getLayers']
+    const layers: readonly Layer[] = this.$typedGetters['gcodePreview/getLayers']
 
     return {
       min: layers[this.currentLayer].move,

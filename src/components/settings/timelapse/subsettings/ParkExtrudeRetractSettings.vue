@@ -97,8 +97,8 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
+import { defaultWritableSettings } from '@/store/timelapse/state'
 
 @Component({})
 export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
@@ -107,11 +107,11 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   get parkRetractDistance (): number {
-    return this.settings?.park_retract_distance
+    return this.settings.park_retract_distance
   }
 
   setParkRetractDistance (value: number) {
-    SocketActions.machineTimelapseSetSettings({ park_retract_distance: value })
+    SocketActions.machineTimelapsePostSettings({ park_retract_distance: value })
   }
 
   get parkRetractSpeedBlocked (): boolean {
@@ -119,11 +119,11 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   get parkRetractSpeed (): number {
-    return this.settings?.park_retract_speed
+    return this.settings.park_retract_speed
   }
 
   setParkRetractSpeed (value: number) {
-    SocketActions.machineTimelapseSetSettings({ park_retract_speed: value })
+    SocketActions.machineTimelapsePostSettings({ park_retract_speed: value })
   }
 
   get parkExtrudeDistanceBlocked (): boolean {
@@ -131,11 +131,11 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   get parkExtrudeDistance (): number {
-    return this.settings?.park_extrude_distance
+    return this.settings.park_extrude_distance
   }
 
   setParkExtrudeDistance (value: number) {
-    SocketActions.machineTimelapseSetSettings({ park_extrude_distance: value })
+    SocketActions.machineTimelapsePostSettings({ park_extrude_distance: value })
   }
 
   get parkExtrudeSpeedBlocked (): boolean {
@@ -143,15 +143,15 @@ export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   }
 
   get parkExtrudeSpeed (): number {
-    return this.settings?.park_extrude_speed
+    return this.settings.park_extrude_speed
   }
 
   setParkExtrudeSpeed (value: number) {
-    SocketActions.machineTimelapseSetSettings({ park_extrude_speed: value })
+    SocketActions.machineTimelapsePostSettings({ park_extrude_speed: value })
   }
 
-  get settings (): TimelapseSettings {
-    return this.$typedState.timelapse.settings ?? {} as TimelapseSettings
+  get settings (): Moonraker.Timelapse.WriteableSettings {
+    return this.$typedState.timelapse.settings ?? defaultWritableSettings
   }
 
   subtitleIfBlocked (blocked: boolean): string {

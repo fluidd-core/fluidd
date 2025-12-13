@@ -3,12 +3,12 @@ import type { RootState } from './types'
 import { SocketActions } from '@/api/socketActions'
 import type { AppPushNotification } from './notifications/types'
 import i18n from '@/plugins/i18n'
-import type { KlipperPrinterState, KlippyApp, TmcKey } from './printer/types'
+import type { KlippyApp } from './printer/types'
 import getFilePaths from '@/util/get-file-paths'
 
-const isTmc = (item: string): item is TmcKey => /^tmc\d{4} /.test(item)
+const isTmc = (item: string): item is Klipper.TmcKey => /^tmc\d{4} /.test(item)
 
-export const handleTrinamicDriversChange = (payload: Partial<KlipperPrinterState>, state: RootState, dispatch: Dispatch, getters: any) => {
+export const handleTrinamicDriversChange = (payload: Partial<Klipper.PrinterState>, state: RootState, dispatch: Dispatch, getters: any) => {
   for (const item in payload) {
     if (
       isTmc(item) &&
@@ -37,7 +37,7 @@ export const handleTrinamicDriversChange = (payload: Partial<KlipperPrinterState
   }
 }
 
-export const handlePrintStateChange = (payload: Partial<KlipperPrinterState>, state: RootState, dispatch: Dispatch) => {
+export const handlePrintStateChange = (payload: Partial<Klipper.PrinterState>, state: RootState, dispatch: Dispatch) => {
   // For every notify - if print_stats.state changes from standby -> printing,
   // then record an entry in our print history.
   // If the state changes from printing -> complete, then record the finish time.
@@ -66,7 +66,7 @@ export const handlePrintStateChange = (payload: Partial<KlipperPrinterState>, st
   }
 }
 
-export const handleCurrentFileChange = (payload: Partial<KlipperPrinterState>, state: RootState) => {
+export const handleCurrentFileChange = (payload: Partial<Klipper.PrinterState>, state: RootState) => {
   if (
     payload.print_stats?.filename &&
     payload.print_stats.filename !== state.printer.printer.print_stats?.filename

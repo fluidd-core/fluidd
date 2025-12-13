@@ -185,7 +185,6 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import type { WebcamConfig } from '@/store/webcams/types'
 
 @Component({})
 export default class CameraConfigDialog extends Vue {
@@ -193,7 +192,7 @@ export default class CameraConfigDialog extends Vue {
   open?: boolean
 
   @Prop({ type: Object, required: true })
-  readonly camera!: WebcamConfig
+  readonly camera!: Moonraker.Webcam.Entry
 
   handleSave () {
     this.$emit('save', this.camera)

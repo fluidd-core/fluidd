@@ -277,7 +277,6 @@ import type {
   MatrixType,
   BedMeshProfileListEntry
 } from '@/store/mesh/types'
-import type { KlipperPrinterBedMeshState, KlipperPrinterSettings } from '@/store/printer/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
@@ -345,7 +344,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   // The current mesh, unprocessed.
-  get currentMesh (): KlipperPrinterBedMeshState | undefined {
+  get currentMesh (): Klipper.BedMeshState | undefined {
     return this.$typedState.printer.printer.bed_mesh
   }
 
@@ -356,7 +355,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
 
   // If the printer supports QGL
   get printerSupportsQgl (): boolean {
-    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
+    const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return 'quad_gantry_level' in printerSettings
   }

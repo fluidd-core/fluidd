@@ -1,13 +1,12 @@
 import Vue from 'vue'
 import { Component, Emit, Prop, Ref, Watch } from 'vue-property-decorator'
-import type { WebcamConfig } from '@/store/webcams/types'
 import { consola } from 'consola'
 import type { CameraConnectionStatus, CameraNameMenuItem } from '@/types'
 
 @Component
 export default class CameraMixin extends Vue {
   @Prop({ type: Object, required: true })
-  readonly camera!: WebcamConfig
+  readonly camera!: Moonraker.Webcam.Entry
 
   @Prop({ type: String })
   readonly crossorigin?: 'anonymous' | 'use-credentials' | ''

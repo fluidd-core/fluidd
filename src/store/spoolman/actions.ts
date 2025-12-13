@@ -1,9 +1,5 @@
 import type { ActionTree } from 'vuex'
 import type {
-  Spool,
-  SpoolmanInfo,
-  SpoolmanProxyResponse,
-  SpoolmanProxyResponseV2,
   SpoolmanState,
   WebsocketBasePayload,
   WebsocketFilamentPayload,
@@ -18,7 +14,7 @@ import { gte, valid } from 'semver'
 
 const logPrefix = '[SPOOLMAN]'
 
-const payloadAsSpoolmanProxyResponseV2 = <T>(payload: SpoolmanProxyResponse<T>): SpoolmanProxyResponseV2<T> => {
+const payloadAsSpoolmanProxyResponseV2 = <T>(payload: Moonraker.Spoolman.ProxyResponse<T>): Moonraker.Spoolman.ProxyResponseV2<T> => {
   if (
     payload != null &&
     typeof payload === 'object' &&
@@ -143,7 +139,7 @@ export const actions = {
     }
   },
 
-  async onAvailableSpools ({ commit, dispatch }, payload: SpoolmanProxyResponse<Spool[]>) {
+  async onAvailableSpools ({ commit, dispatch }, payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Spool[]>) {
     payload = payloadAsSpoolmanProxyResponseV2(payload)
 
     if (payload.error != null) {
@@ -157,7 +153,7 @@ export const actions = {
     dispatch('initializeWebsocketConnection')
   },
 
-  async onInfo ({ state, commit }, payload: SpoolmanProxyResponse<SpoolmanInfo>) {
+  async onInfo ({ state, commit }, payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Info>) {
     payload = payloadAsSpoolmanProxyResponseV2(payload)
 
     if (payload.error != null) {
@@ -175,7 +171,7 @@ export const actions = {
     }
   },
 
-  async onSettingCurrency ({ commit }, payload: SpoolmanProxyResponse<{ value: string }>) {
+  async onSettingCurrency ({ commit }, payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Currency>) {
     payload = payloadAsSpoolmanProxyResponseV2(payload)
 
     if (payload.error != null) {
