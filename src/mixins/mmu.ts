@@ -376,6 +376,10 @@ export default class MmuMixin extends Vue {
     return this.mmuState?.sync_feedback_enabled ?? false
   }
 
+  get syncFeedbackBiasModelled (): number {
+    return this.mmuState?.sync_feedback_bias_modelled ?? 0
+  }
+
   get clogDetectionEnabled (): boolean {
     return this.mmuState?.clog_detection_enabled !== 0
   }
