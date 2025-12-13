@@ -83,7 +83,8 @@
             :rules="[
               $rules.lengthGreaterThanOrEqual(1),
               $rules.lengthLessThanOrEqual(6),
-              $rules.numberArrayValid
+              $rules.numberArrayValid,
+              $rules.numberArrayGreaterThan(0)
             ]"
           />
         </app-setting>
@@ -127,7 +128,8 @@
             :rules="[
               $rules.lengthGreaterThanOrEqual(1),
               $rules.lengthLessThanOrEqual(3),
-              $rules.numberArrayValid
+              $rules.numberArrayValid,
+              $rules.numberArrayGreaterThan(0)
             ]"
           />
         </app-setting>
@@ -150,7 +152,8 @@
             :rules="[
               $rules.lengthGreaterThanOrEqual(1),
               $rules.lengthLessThanOrEqual(3),
-              $rules.numberArrayValid
+              $rules.numberArrayValid,
+              $rules.numberArrayGreaterThan(0)
             ]"
           />
         </app-setting>
@@ -175,7 +178,8 @@
             :rules="[
               $rules.lengthGreaterThanOrEqual(4),
               $rules.lengthLessThanOrEqual(4),
-              $rules.numberArrayValid
+              $rules.numberArrayValid,
+              $rules.numberArrayGreaterThan(0)
             ]"
           />
         </app-setting>
@@ -198,7 +202,8 @@
             :rules="[
               $rules.lengthGreaterThanOrEqual(4),
               $rules.lengthLessThanOrEqual(4),
-              $rules.numberArrayValid
+              $rules.numberArrayValid,
+              $rules.numberArrayGreaterThan(0)
             ]"
           />
         </app-setting>
@@ -272,7 +277,8 @@
           :rules="[
             $rules.lengthGreaterThanOrEqual(1),
             $rules.lengthLessThanOrEqual(4),
-            $rules.numberArrayValid
+            $rules.numberArrayValid,
+            $rules.numberArrayGreaterThan(0)
           ]"
         />
       </app-setting>
