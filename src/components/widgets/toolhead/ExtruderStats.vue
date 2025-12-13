@@ -81,7 +81,7 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   get extrudeLength (): number {
     const extrudeLength = this.$typedState.config.uiSettings.toolhead.extrudeLength
 
-    if (isNaN(+extrudeLength)) return 0
+    if (Number.isNaN(+extrudeLength)) return 0
 
     return extrudeLength === -1
       ? this.$typedState.config.uiSettings.general.defaultExtrudeLength
@@ -91,7 +91,7 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   get extrudeSpeed (): number {
     const extrudeSpeed = this.$typedState.config.uiSettings.toolhead.extrudeSpeed
 
-    if (isNaN(+extrudeSpeed)) return 0
+    if (Number.isNaN(+extrudeSpeed)) return 0
 
     return extrudeSpeed === -1
       ? this.$typedState.config.uiSettings.general.defaultExtrudeSpeed

@@ -114,7 +114,7 @@ import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import MacroBtn from '@/components/widgets/macros/MacroBtn.vue'
 import AfcSettingsDialog from '@/components/widgets/afc/dialogs/AfcSettingsDialog.vue'
-import type { GcodeCommands, KlipperPrinterAfcSettings, KlipperPrinterConfig, KlipperPrinterSettings, KlipperPrinterState } from '@/store/printer/types'
+import type { GcodeCommands } from '@/store/printer/types'
 import downloadUrl from '@/util/download-url'
 import type { Macro } from '@/store/macros/types'
 
@@ -142,11 +142,11 @@ type AfcMacro = {
 export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
   showAfcSettings = false
 
-  get printerSettings (): KlipperPrinterSettings {
+  get printerSettings (): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
   }
 
-  get printerConfig (): KlipperPrinterConfig {
+  get printerConfig (): Klipper.ConfigState {
     return this.$typedGetters['printer/getPrinterConfig']
   }
 
@@ -206,7 +206,7 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
   }
 
   get macros () {
-    const settings: KlipperPrinterAfcSettings | undefined = this.printerSettings.afc
+    const settings: Klipper.AfcSettings | undefined = this.printerSettings.afc
 
     const afcMacros: AfcMacro[] = []
 
@@ -242,7 +242,7 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
   }
 
   downloadDebugJson () {
-    const printer: KlipperPrinterState = this.$typedState.printer.printer
+    const printer: Klipper.PrinterState = this.$typedState.printer.printer
 
     const output = {
       config: Object.fromEntries(

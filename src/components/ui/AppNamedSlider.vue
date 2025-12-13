@@ -136,7 +136,7 @@ export default class AppNamedSlider extends Vue {
   onCurrentValue (value: string) {
     const valueAsNumber = +value
 
-    if (!isNaN(valueAsNumber)) {
+    if (!Number.isNaN(valueAsNumber)) {
       this.checkOverride(valueAsNumber)
       this.sliderValue = valueAsNumber
     }

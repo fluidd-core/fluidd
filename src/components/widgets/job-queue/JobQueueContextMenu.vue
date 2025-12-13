@@ -36,7 +36,6 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import type { QueuedJob } from '@/store/jobQueue/types'
 
 @Component({})
 export default class JobQueueContextMenu extends Vue {
@@ -50,6 +49,6 @@ export default class JobQueueContextMenu extends Vue {
   readonly positionY!: number
 
   @Prop({ type: [Object, Array], required: true })
-  readonly job!: QueuedJob | QueuedJob[]
+  readonly job!: Moonraker.JobQueue.QueuedJob | Moonraker.JobQueue.QueuedJob[]
 }
 </script>

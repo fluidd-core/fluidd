@@ -1,14 +1,14 @@
 import type { GetterTree } from 'vuex'
-import type { Filament, Spool, SpoolmanFilament, SpoolmanSpool, SpoolmanState, SpoolmanVendor, Vendor } from './types'
+import type { Filament, Spool, SpoolmanState, Vendor } from './types'
 import type { RootState } from '../types'
 import isLoopback from '@/util/is-loopback'
 
-const filamentWeightToLength = (weight: number, filament: SpoolmanFilament | Filament) => {
+const filamentWeightToLength = (weight: number, filament: Moonraker.Spoolman.Filament | Filament) => {
   // l[mm] = m[g]/D[g/cm³]/A[mm²]*(1000mm³/cm³)
   return weight / filament.density / (Math.PI / 4 * filament.diameter ** 2) * 1000
 }
 
-const spoolmanSpoolAsSpool = (spool: SpoolmanSpool): Spool => {
+const spoolmanSpoolAsSpool = (spool: Moonraker.Spoolman.Spool): Spool => {
   const filament = spoolmanFilamentAsFilament(spool.filament)
 
   const filament_name = [
@@ -51,7 +51,7 @@ const spoolmanSpoolAsSpool = (spool: SpoolmanSpool): Spool => {
   })
 }
 
-const spoolmanFilamentAsFilament = (filament: SpoolmanFilament): Filament => {
+const spoolmanFilamentAsFilament = (filament: Moonraker.Spoolman.Filament): Filament => {
   const vendor = filament.vendor != null
     ? spoolmanVendorAsVendor(filament.vendor)
     : undefined
@@ -81,7 +81,7 @@ const spoolmanFilamentAsFilament = (filament: SpoolmanFilament): Filament => {
   })
 }
 
-const spoolmanVendorAsVendor = (vendor: SpoolmanVendor): Vendor => ({
+const spoolmanVendorAsVendor = (vendor: Moonraker.Spoolman.Vendor): Vendor => ({
   ...vendor,
   registered: new Date(vendor.registered)
 })

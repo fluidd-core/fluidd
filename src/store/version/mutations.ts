@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import type { VersionState } from './types'
 import { defaultState } from './state'
@@ -11,11 +10,11 @@ export const mutations = {
     Object.assign(state, defaultState())
   },
 
-  setUpdateStatus (state, payload) {
-    Vue.set(state, 'status', {
+  setUpdateStatus (state, payload: Partial<Moonraker.UpdateManager.StatusResponse>) {
+    state.status = {
       ...state.status,
       ...payload
-    })
+    }
   },
 
   setUpdateResponse (state, payload) {

@@ -5,6 +5,7 @@ import type { RootState } from '../types'
 import { httpClientActions } from '@/api/httpClientActions'
 import router from '@/router'
 import { consola } from 'consola'
+import { SocketActions } from '@/api/socketActions'
 
 export const actions = {
   /**
@@ -18,20 +19,19 @@ export const actions = {
    * Inits moonraker component
    */
   async init ({ commit }) {
-    // Load current user.
-    await httpClientActions.accessCurrentUserGet()
-      .then(response => response.data.result)
-      .then((user) => commit('setCurrentUser', user))
+    await Promise.all([
+      // Load current user.
+      SocketActions.accessGetUser()
+        .then(response => commit('setCurrentUser', response)),
 
-    // Load user list.
-    await httpClientActions.accessUsersListGet()
-      .then(response => response.data.result.users)
-      .then((users) => commit('setUsers', users))
+      // Load user list.
+      SocketActions.accessUsersList()
+        .then(response => commit('setUsers', response.users)),
 
-    // Load our current API key.
-    await httpClientActions.accessApiKeyGet()
-      .then(response => response.data.result)
-      .then((key) => commit('setApiKey', key))
+      // Load our current API key.
+      SocketActions.accessGetApiKey()
+        .then(response => commit('setApiKey', response)),
+    ])
   },
 
   /**
@@ -88,21 +88,14 @@ export const actions = {
     const refresh_token = localStorage.getItem(keys['refresh-token'])
 
     try {
-      const response = await httpClientActions.accessRefreshJwtPost(refresh_token || '', {
-        withAuth: false,
-        headers: {
-          Authorization: undefined
-        }
-      })
-
-      const user = response.data.result
+      const response = await SocketActions.accessRefreshJwt(refresh_token || '')
 
       // We've successfully retrieved a token. Set the new header and
       // store data, and move on.
-      localStorage.setItem(keys['user-token'], user.token)
-      commit('setToken', user.token)
-      httpClientActions.defaults.headers.common.Authorization = `Bearer ${user.token}`
-      return user.token
+      localStorage.setItem(keys['user-token'], response.token)
+      commit('setToken', response.token)
+      httpClientActions.defaults.headers.common.Authorization = `Bearer ${response.token}`
+      return response.token
     } catch {
       // Error on refresh, we resolve and move on because our request will
       // invoke a 401, which will then send the user to the login page.
@@ -228,13 +221,13 @@ export const actions = {
   },
 
   async addUser (_, user) {
-    await httpClientActions.accessUserPost(user.username, user.password)
+    await SocketActions.accessPostUser(user.username, user.password)
 
     return user
   },
 
   async removeUser (_, user) {
-    await httpClientActions.accessUserDelete(user.username)
+    await SocketActions.accessDeleteUser(user.username)
 
     return user
   },
@@ -248,9 +241,7 @@ export const actions = {
   },
 
   async refreshApiKey ({ commit }) {
-    const response = await httpClientActions.accessApiKeyPost()
-
-    const key = response.data.result
+    const key = await SocketActions.accessPostApiKey()
 
     commit('setApiKey', key)
   }

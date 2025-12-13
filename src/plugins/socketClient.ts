@@ -23,9 +23,10 @@ export class WebSocketClient {
   allowedReconnectAttempts = 3
   reconnectCount = 0
   logPrefix = '[WEBSOCKET]'
-  requests: Array<Request> = []
+  requests: Request[] = []
+  requestId = 0
   store: Store<RootState>
-  pingTimeout: any
+  pingTimeout: number | null = null
   cache: CachedParams | null = null
 
   constructor (options: SocketPluginOptions) {
@@ -36,7 +37,10 @@ export class WebSocketClient {
 
   pong () {
     // Valid response from the socket.
-    clearTimeout(this.pingTimeout)
+    if (this.pingTimeout != null) {
+      clearTimeout(this.pingTimeout)
+      this.pingTimeout = null
+    }
 
     // We have a connection again, so set the socket properties
     // appropriately.
@@ -48,7 +52,7 @@ export class WebSocketClient {
       this.store.dispatch('socket/onSocketConnecting', false)
     }
 
-    this.pingTimeout = setTimeout(() => {
+    this.pingTimeout = window.setTimeout(() => {
       if (
         !this.store.state.socket.disconnecting && // We arent about to disonnect and..
         !this.store.state.files.download // We're not in the middle of a download.
@@ -65,6 +69,7 @@ export class WebSocketClient {
   close () {
     if (this.connection) {
       this.cache = null
+      this.clearRequests()
       this.connection.close()
       this.reconnectCount = 0
     }
@@ -73,6 +78,7 @@ export class WebSocketClient {
   async connect (url?: string) {
     if (url) this.url = url
     this.cache = null
+    this.clearRequests()
 
     try {
       const response = await httpClientActions.accessOneshotTokenGet()
@@ -94,7 +100,10 @@ export class WebSocketClient {
 
       this.connection.onclose = (event) => {
         consola.debug(`${this.logPrefix} Connection closed:`, event)
-        clearTimeout(this.pingTimeout)
+        if (this.pingTimeout != null) {
+          clearTimeout(this.pingTimeout)
+          this.pingTimeout = null
+        }
         this.store.dispatch('socket/onSocketClose', event)
         if (!event.wasClean) {
           this.reconnect()
@@ -111,7 +120,8 @@ export class WebSocketClient {
         const socketResponse = JSON.parse(message.data) as SocketResponse
 
         if ('id' in socketResponse) {
-          const requestIndex = this.requests.findIndex(request => request.id === socketResponse.id)
+          const requestIndex = this.requests
+            .findIndex(request => request.id === socketResponse.id)
 
           const request = requestIndex > -1
             ? this.requests.splice(requestIndex, 1)[0]
@@ -125,6 +135,10 @@ export class WebSocketClient {
           if ('error' in socketResponse) { // Is it in error?
             if (request) {
               Object.defineProperty(socketResponse.error, '__request__', { enumerable: false, value: request })
+
+              if (request.onRejected) {
+                request.onRejected(socketResponse.error)
+              }
             }
 
             consola.debug(`${this.logPrefix} Response error:`, socketResponse.error)
@@ -148,8 +162,17 @@ export class WebSocketClient {
 
             consola.debug(`${this.logPrefix} Response:`, result)
 
-            if (request.dispatch) this.store.dispatch(request.dispatch, result)
-            if (request.commit) this.store.commit(request.commit, result)
+            if (request.dispatch) {
+              this.store.dispatch(request.dispatch, result)
+            }
+
+            if (request.commit) {
+              this.store.commit(request.commit, result)
+            }
+
+            if (request.onFulfilled) {
+              request.onFulfilled(socketResponse.result)
+            }
           }
 
           return
@@ -225,41 +248,64 @@ export class WebSocketClient {
    * @param params
    */
   emit (method: string, options?: NotifyOptions) {
-    if (this.store.state.socket.disconnecting || this.store.state.socket.connecting) {
-      consola.debug(`${this.logPrefix} Socket emit denied, in disconnecting state:`, method, options)
+    return new Promise((resolve, reject) => {
+      try {
+        if (this.store.state.socket.disconnecting || this.store.state.socket.connecting) {
+          consola.debug(`${this.logPrefix} Socket emit denied, in disconnecting state:`, method, options)
 
-      return
+          throw new Error('Socket is disconnecting')
+        }
+
+        if (this.connection?.readyState === WebSocket.OPEN) {
+          this.requestId = (this.requestId + 1) % 90_000
+
+          const id = this.requestId + 10_000
+
+          const packet: SocketRequest = {
+            id,
+            method,
+            jsonrpc: '2.0'
+          }
+
+          const request: Request = {
+            id,
+            onFulfilled: resolve,
+            onRejected: reject
+          }
+
+          if (options) {
+            if (options.wait) {
+              request.wait = options.wait
+              this.store.dispatch('wait/addWait', options.wait)
+            }
+            if (options.params) {
+              packet.params = options.params
+              request.params = options.params
+            }
+            request.dispatch = options.dispatch
+            request.commit = options.commit
+          }
+          this.requests.push(request)
+          this.connection.send(JSON.stringify(packet))
+        } else {
+          consola.debug(`${this.logPrefix} Not ready, or closed.`, method, options, this.connection?.readyState)
+
+          throw new Error('Socket is not ready or closed')
+        }
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
+
+  clearRequests () {
+    for (const request of this.requests) {
+      if (request.onRejected) {
+        request.onRejected(new Error('Socket disconnected'))
+      }
     }
 
-    if (this.connection?.readyState === WebSocket.OPEN) {
-      // moonraker expects a unique id for us to reference back to when data is returned.
-      const getRandomNumber = (min: number, max: number) => {
-        return Math.floor(Math.random() * (max - min + 1)) + min
-      }
-      const id = getRandomNumber(10000, 99999)
-      const packet: SocketRequest = {
-        id,
-        method,
-        jsonrpc: '2.0'
-      }
-      const request: Request = {
-        id
-      }
-      if (options && options.wait) {
-        request.wait = options.wait
-        this.store.dispatch('wait/addWait', options.wait)
-      }
-      if (options && options.params) {
-        packet.params = options.params
-        request.params = options.params
-      }
-      if (options && options.dispatch) request.dispatch = options.dispatch
-      if (options && options.commit) request.commit = options.commit
-      this.requests.push(request)
-      this.connection.send(JSON.stringify(packet))
-    } else {
-      consola.debug(`${this.logPrefix} Not ready, or closed.`, method, options, this.connection?.readyState)
-    }
+    this.requests = []
   }
 }
 
@@ -305,6 +351,8 @@ interface Request {
   commit?: string;
   params?: Record<string, any>;
   wait?: string;
+  onFulfilled: (value: unknown) => void;
+  onRejected: (reason?: unknown) => void;
 }
 
 export type ObjectWithRequest<T> = T & {

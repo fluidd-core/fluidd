@@ -54,7 +54,7 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
     secondsAsRange: (seconds: number | string) => {
       seconds = +seconds
 
-      if (isNaN(seconds) || !isFinite(seconds)) {
+      if (Number.isNaN(seconds) || !Number.isFinite(seconds)) {
         seconds = 0
       }
 

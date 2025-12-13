@@ -21,7 +21,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { KlipperPrinterSettings, Stepper } from '@/store/printer/types'
+import type { Stepper } from '@/store/printer/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
@@ -39,7 +39,7 @@ export default class ToolheadControlBarsStepper extends Mixins(StateMixin) {
       : this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
   }
 
-  get printerSettings (): KlipperPrinterSettings {
+  get printerSettings (): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
   }
 
