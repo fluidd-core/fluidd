@@ -73,11 +73,11 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import type { RenderStatus, TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
+import type { TimelapseLastFrame } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import FilesMixin from '@/mixins/files'
-import type { WebcamConfig } from '@/store/webcams/types'
+import { defaultWritableSettings } from '@/store/timelapse/state'
 
 @Component({
   components: {
@@ -124,19 +124,19 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
     return this.lastFrame?.uniqueCount
   }
 
-  get camera (): WebcamConfig | undefined {
+  get camera (): Moonraker.Webcam.Entry | undefined {
     return this.$typedGetters['webcams/getWebcamById'](this.settings.camera)
   }
 
-  get settings (): TimelapseSettings {
-    return this.$typedState.timelapse.settings ?? {} as TimelapseSettings
+  get settings (): Moonraker.Timelapse.WriteableSettings {
+    return this.$typedState.timelapse.settings ?? defaultWritableSettings
   }
 
-  get lastFrame (): TimelapseLastFrame | undefined {
-    return this.$typedState.timelapse.lastFrame
+  get lastFrame (): TimelapseLastFrame | null {
+    return this.$typedGetters['timelapse/getLastFrame']
   }
 
-  get renderStatus (): RenderStatus | undefined {
+  get renderStatus (): Moonraker.Timelapse.RenderResponse | null {
     return this.$typedState.timelapse.renderStatus
   }
 

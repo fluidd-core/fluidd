@@ -16,10 +16,6 @@
           />
         </template>
       </v-row>
-
-      <!-- <pre>{{ procStats[0] }}</pre>
-      <pre>{{ systemStats }}</pre>
-      <pre>{{ mcus }}</pre> -->
     </v-card-text>
   </collapsable-card>
 </template>
@@ -31,8 +27,7 @@ import SystemMemoryChart from './SystemMemoryChart.vue'
 import KlipperLoadChart from './KlipperLoadChart.vue'
 import MoonrakerLoadChart from './MoonrakerLoadChart.vue'
 import McuLoadChart from './McuLoadChart.vue'
-import type { ServerSystemStat } from '@/store/server/types'
-import type { KlipperPrinterSystemStatsState, MCU } from '@/store/printer/types'
+import type { MCU } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -44,11 +39,11 @@ import type { KlipperPrinterSystemStatsState, MCU } from '@/store/printer/types'
   }
 })
 export default class PrinterStatsCard extends Vue {
-  get procStats (): ServerSystemStat[] {
+  get procStats (): Moonraker.ProcStats.MoonrakerStats[] {
     return this.$typedState.server.moonraker_stats
   }
 
-  get systemStats (): KlipperPrinterSystemStatsState {
+  get systemStats (): Klipper.SystemStatsState {
     return this.$typedState.printer.printer.system_stats
   }
 

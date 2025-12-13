@@ -36,33 +36,13 @@ export const httpClientActions = {
 
   accessInfoGet (options?: AxiosRequestConfig) {
     return this.get<{
-      result: {
-        default_source: string,
-        available_sources: string[]
-      }
+      result: Moonraker.Authorization.InfoResponse
     }>('/access/info', options)
-  },
-
-  accessRefreshJwtPost (refresh_token: string, options?: AxiosRequestConfig) {
-    return this.post<{
-      result: {
-        username: string,
-        token: string,
-        action: 'user_jwt_refresh',
-        source: string
-      }
-    }>('/access/refresh_jwt', { refresh_token }, options)
   },
 
   accessLoginPost (username: string, password: string, source: string = 'moonraker', options?: AxiosRequestConfig) {
     return this.post<{
-      result: {
-        username: string,
-        token: string,
-        refresh_token: string,
-        action: 'user_logged_in',
-        source: string
-      }
+      result: Moonraker.Authorization.LoginResponse
     }>('/access/login', {
       username,
       password,
@@ -72,109 +52,31 @@ export const httpClientActions = {
 
   accessLogoutPost (options?: AxiosRequestConfig) {
     return this.post<{
-      result: {
-        username: string,
-        action: 'user_logged_out'
-      }
+      result: Moonraker.Authorization.LogoutResponse
     }>('access/logout', undefined, options)
   },
 
   accessOneshotTokenGet (options?: AxiosRequestConfig) {
     return this.get<{
-      result: string
+      result: Moonraker.StringResponse
     }>('/access/oneshot_token', options)
   },
 
   accessCurrentUserGet (options?: AxiosRequestConfig) {
     return this.get<{
-      result: {
-        username: string,
-        source: string,
-        created_on: number
-      }
+      result: Moonraker.Authorization.GetUserResponse
     }>('/access/user', options)
   },
 
-  accessUsersListGet (options?: AxiosRequestConfig) {
+  serverDatabaseItemGet<T = unknown> (namespace: string, key?: string, options?: AxiosRequestConfig) {
     return this.get<{
-      result: {
-        users: Array<{
-          username: string,
-          source: string,
-          created_on: number
-        }>
-      }
-    }>('/access/users/list', options)
-  },
-
-  accessUserPost (username: string, password: string, options?: AxiosRequestConfig) {
-    return this.post<{
-      result: {
-        username: string,
-        token: string,
-        refresh_token: string,
-        action: 'user_created',
-        source: 'moonraker'
-      }
-    }>('/access/user', {
-      username,
-      password
-    }, options)
-  },
-
-  accessUserDelete (username: string, options?: AxiosRequestConfig) {
-    return this.delete<{
-      result: {
-        username: string,
-        action: 'user_deleted'
-      }
-    }>('/access/user', {
-      ...options,
-      params: { username }
-    })
-  },
-
-  accessUserPasswordPost (password: string, new_password: string, options?: AxiosRequestConfig) {
-    return this.post<{
-      result: {
-        username: string,
-        action: 'user_password_reset'
-      }
-    }>('/access/user/password', {
-      password,
-      new_password
-    }, options)
-  },
-
-  accessApiKeyGet (options?: AxiosRequestConfig) {
-    return this.get<{
-      result: string
-    }>('/access/api_key', options)
-  },
-
-  accessApiKeyPost (options?: AxiosRequestConfig) {
-    return this.post<{
-      result: string
-    }>('/access/api_key', undefined, options)
-  },
-
-  serverDatabaseItemGet<T = unknown> (namespace: string, options?: AxiosRequestConfig) {
-    return this.get<{
-      result: {
-        namespace: string,
-        key: string,
-        value: T
-      }
-    }>(`/server/database/item?namespace=${namespace}`, options)
+      result: Moonraker.Database.GetItemResponse<T>
+    }>(`/server/database/item?namespace=${namespace}&key=${key}`, options)
   },
 
   serverDatabaseItemPost<T = unknown> (namespace: string, key: string, value: T, options?: AxiosRequestConfig) {
     return this.post<{
-      result: {
-        namespace: string,
-        key: string,
-        value: T
-      }
+      result: Moonraker.Database.PostItemResponse<T>
     }>('/server/database/item', {
       namespace,
       key,
@@ -184,11 +86,7 @@ export const httpClientActions = {
 
   serverDatabaseItemDelete<T = unknown> (namespace: string, key: string, options?: AxiosRequestConfig) {
     return this.delete<{
-      result: {
-        namespace: string,
-        key: string,
-        value: T
-      }
+      result: Moonraker.Database.DeleteItemResponse<T>
     }>(`/server/database/item?namespace=${namespace}&key=${key}`, options)
   },
 

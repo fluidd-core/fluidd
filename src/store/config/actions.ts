@@ -138,7 +138,7 @@ export const actions = {
   async saveByPath ({ commit }, config: SaveByPath) {
     commit('setSaveByPath', config)
     if (config.server) {
-      SocketActions.serverWrite(config.path, config.value)
+      SocketActions.serverDatabasePostItem(config.path, config.value)
     }
   },
 
@@ -147,7 +147,7 @@ export const actions = {
    */
   async updatePreset ({ commit, state }, payload) {
     commit('setPreset', payload)
-    SocketActions.serverWrite('uiSettings.dashboard.tempPresets', state.uiSettings.dashboard.tempPresets)
+    SocketActions.serverDatabasePostItem('uiSettings.dashboard.tempPresets', state.uiSettings.dashboard.tempPresets)
   },
 
   /**
@@ -155,22 +155,22 @@ export const actions = {
    */
   async removePreset ({ commit, state }, payload) {
     commit('setRemovePreset', payload)
-    SocketActions.serverWrite('uiSettings.dashboard.tempPresets', state.uiSettings.dashboard.tempPresets)
+    SocketActions.serverDatabasePostItem('uiSettings.dashboard.tempPresets', state.uiSettings.dashboard.tempPresets)
   },
 
   async updateFileSystemActiveFilters ({ commit, state }, payload: { root: string, value: FileFilterType[] }) {
     commit('setFileSystemActiveFilters', payload)
-    SocketActions.serverWrite(`uiSettings.fileSystem.activeFilters.${payload.root}`, state.uiSettings.fileSystem.activeFilters[payload.root])
+    SocketActions.serverDatabasePostItem(`uiSettings.fileSystem.activeFilters.${payload.root}`, state.uiSettings.fileSystem.activeFilters[payload.root])
   },
 
   async updateFileSystemSortBy ({ commit, state }, payload: { root: string, value: string | null }) {
     commit('setFileSystemSortBy', payload)
-    SocketActions.serverWrite(`uiSettings.fileSystem.sortBy.${payload.root}`, state.uiSettings.fileSystem.sortBy[payload.root])
+    SocketActions.serverDatabasePostItem(`uiSettings.fileSystem.sortBy.${payload.root}`, state.uiSettings.fileSystem.sortBy[payload.root])
   },
 
   async updateFileSystemSortDesc ({ commit, state }, payload: { root: string, value: boolean | null }) {
     commit('setFileSystemSortDesc', payload)
-    SocketActions.serverWrite(`uiSettings.fileSystem.sortDesc.${payload.root}`, state.uiSettings.fileSystem.sortDesc[payload.root])
+    SocketActions.serverDatabasePostItem(`uiSettings.fileSystem.sortDesc.${payload.root}`, state.uiSettings.fileSystem.sortDesc[payload.root])
   },
 
   /**
@@ -180,7 +180,7 @@ export const actions = {
     commit('setUpdateHeader', payload)
 
     if (state.uiSettings.tableHeaders[payload.name]) {
-      SocketActions.serverWrite(`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
+      SocketActions.serverDatabasePostItem(`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
     }
   },
 
@@ -188,7 +188,7 @@ export const actions = {
     commit('setUpdateHeaders', payload)
 
     if (state.uiSettings.tableHeaders[payload.name]) {
-      SocketActions.serverWrite(`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
+      SocketActions.serverDatabasePostItem(`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
     }
   },
 
@@ -196,7 +196,7 @@ export const actions = {
     commit('setUpdateThumbnailSizes', payload)
 
     if (state.uiSettings.thumbnailSizes[payload.name]) {
-      SocketActions.serverWrite(`uiSettings.thumbnailSizes.${payload.name}`, state.uiSettings.thumbnailSizes[payload.name])
+      SocketActions.serverDatabasePostItem(`uiSettings.thumbnailSizes.${payload.name}`, state.uiSettings.thumbnailSizes[payload.name])
     }
   },
 

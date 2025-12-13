@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { AnalysisState, AnalysisStatus, AnalysisProcess } from './types'
+import type { AnalysisState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import type { ObjectWithRequest } from '@/plugins/socketClient'
@@ -9,13 +9,13 @@ export const actions = {
     commit('setReset')
   },
 
-  async onAnalysisStatus ({ commit }, payload: AnalysisStatus) {
+  async onAnalysisStatus ({ commit }, payload: Moonraker.Analysis.StatusResponse) {
     if (payload) {
       commit('setAnalysisStatus', payload)
     }
   },
 
-  async onAnalysisProcess (_, payload: ObjectWithRequest<AnalysisProcess>) {
+  async onAnalysisProcess (_, payload: ObjectWithRequest<Moonraker.Analysis.ProcessResponse>) {
     if (payload) {
       const { filename } = payload.__request__.params ?? {}
 

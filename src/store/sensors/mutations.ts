@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { MoonrakerSensors, MoonrakerSensorsState } from './types'
+import type { MoonrakerSensorsState } from './types'
 import { defaultState } from './state'
 
 export const mutations = {
@@ -11,11 +11,11 @@ export const mutations = {
     Object.assign(state, defaultState())
   },
 
-  setSensorsList (state, payload: { sensors: MoonrakerSensors }) {
+  setSensorsList (state, payload: Moonraker.Sensor.ListResponse) {
     state.sensors = payload.sensors
   },
 
-  setSensorUpdate (state, payload: MoonrakerSensors) {
+  setSensorUpdate (state, payload: Record<string, Moonraker.Sensor.Entry>) {
     for (const sensorKey in payload) {
       Vue.set(state.sensors[sensorKey], 'values', payload[sensorKey])
     }

@@ -23,7 +23,7 @@ export const actions = {
   /**
    * Inits any file config we may have.
    */
-  async onUpdateStatus ({ commit, dispatch, getters }, payload) {
+  async onUpdateStatus ({ commit, dispatch, getters }, payload: Partial<Moonraker.UpdateManager.StatusResponse>) {
     commit('setUpdateStatus', payload)
 
     if (getters.hasUpdates) {
