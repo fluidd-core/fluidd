@@ -43,6 +43,7 @@
           <v-row align="start">
             <v-col class="d-flex justify-start align-center no-padding">
               <mmu-machine
+                :show-context-menu="false"
                 :edit-gate-map="editGateMap"
                 :edit-gate-selected="editGateSelected"
                 @select-gate="selectGate"
