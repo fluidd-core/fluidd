@@ -1,5 +1,5 @@
 /* eslint-disable no-fallthrough */
-import type { ArcMove, Layer, LinearMove, Move, Part, Point, PositioningMode } from '@/store/gcodePreview/types'
+import type { ArcMove, BBox, Layer, LinearMove, Move, Part, Point, PositioningMode } from '@/store/gcodePreview/types'
 import isKeyOf from '@/util/is-key-of'
 import { pick } from 'lodash-es'
 import { split } from 'shlex'
@@ -81,6 +81,16 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
   }
   let tool = 0
   let filePosition = 0
+  const bounds: BBox = {
+    x: {
+      min: Number.POSITIVE_INFINITY,
+      max: Number.NEGATIVE_INFINITY
+    },
+    y: {
+      min: Number.POSITIVE_INFINITY,
+      max: Number.NEGATIVE_INFINITY
+    }
+  }
 
   // todo get from firmware
   // store path: printer.printer.configFile.settings.firmware_retraction
@@ -288,6 +298,13 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
         toolhead.z = move.z ?? toolhead.z
 
         moves.push(move)
+
+        if (layers.length > 0) {
+          bounds.x.min = Math.min(bounds.x.min, toolhead.x)
+          bounds.x.max = Math.max(bounds.x.max, toolhead.x)
+          bounds.y.min = Math.min(bounds.y.min, toolhead.y)
+          bounds.y.max = Math.max(bounds.y.max, toolhead.y)
+        }
       }
     }
 
@@ -304,6 +321,9 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
     moves,
     layers,
     parts,
+    bounds: layers.length > 0
+      ? bounds
+      : null,
     tools: [...tools]
       .sort((a, b) => a - b)
   }

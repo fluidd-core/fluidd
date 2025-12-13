@@ -37,7 +37,6 @@ import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import AfcCardUnitHub from '@/components/widgets/afc/AfcCardUnitHub.vue'
 import AfcCardUnitLane from '@/components/widgets/afc/AfcCardUnitLane.vue'
-import type { AfcUnitKey, KlipperPrinterAfcUnitState, KlipperPrinterState } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -58,14 +57,14 @@ export default class AfcCardUnit extends Mixins(StateMixin, AfcMixin) {
     return this.name.substring(this.name.indexOf(' ') + 1)
   }
 
-  get unit (): KlipperPrinterAfcUnitState | undefined {
-    const printer: KlipperPrinterState = this.$typedState.printer.printer
+  get unit (): Klipper.AfcUnitState | undefined {
+    const printer: Klipper.PrinterState = this.$typedState.printer.printer
 
     const unitObjectName = `AFC_${this.unitType} ${this.unitName}`
       .toLowerCase()
 
     const unitObjectKey = Object.keys(printer)
-      .find((key): key is AfcUnitKey => key.toLowerCase() === unitObjectName)
+      .find((key): key is Klipper.AfcUnitKey => key.toLowerCase() === unitObjectName)
 
     if (unitObjectKey != null) {
       return printer[unitObjectKey]

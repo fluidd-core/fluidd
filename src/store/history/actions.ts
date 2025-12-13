@@ -39,7 +39,7 @@ export const actions = {
   /**
    * Update the store with history totals data
    */
-  async onHistoryTotals ({ commit }, payload) {
+  async onHistoryTotals ({ commit }, payload: Moonraker.History.TotalsResponse) {
     if (payload) {
       commit('setHistoryTotals', payload)
     }
@@ -48,7 +48,7 @@ export const actions = {
   /**
    * Update the store with history
    */
-  async onHistoryList ({ commit }, payload) {
+  async onHistoryList ({ commit }, payload: Moonraker.History.ListResponse) {
     if (payload) {
       commit('setHistoryList', payload)
     }
@@ -84,7 +84,7 @@ export const actions = {
     }
   },
 
-  async onDelete ({ commit }, payload) {
+  async onDelete ({ commit }, payload: Moonraker.History.DeleteJobResponse) {
     commit('setDeleteJob', payload.deleted_jobs)
   }
 } satisfies ActionTree<HistoryState, RootState>

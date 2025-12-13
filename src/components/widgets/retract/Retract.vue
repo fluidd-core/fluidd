@@ -120,12 +120,12 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
-import type { KlipperPrinterSettings, KlippyApp } from '@/store/printer/types'
+import type { KlippyApp } from '@/store/printer/types'
 
 @Component({})
 export default class Retract extends Mixins(StateMixin, BrowserMixin) {
   get firmwareRetraction () {
-    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
+    const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings.firmware_retraction
   }

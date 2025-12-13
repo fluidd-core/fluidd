@@ -3,7 +3,6 @@ import type { ConfigState, TemperaturePreset } from './types'
 import type { RootState } from '../types'
 import type { Heater, Fan } from '../printer/types'
 import type { AppDataTableHeader } from '@/types'
-import type { MoonrakerRootFile } from '../files/types'
 import md5 from 'md5'
 
 export const getters = {
@@ -67,7 +66,7 @@ export const getters = {
   },
 
   getCustomThemeFile: (state, getters, rootState, rootGetters) => (filename: string, extensions: string[]) => {
-    const files: MoonrakerRootFile[] | undefined = rootGetters['files/getRootFiles']('config')
+    const files: Moonraker.Files.RootFile[] | undefined = rootGetters['files/getRootFiles']('config')
 
     if (files) {
       for (const extension of extensions) {

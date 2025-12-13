@@ -58,7 +58,6 @@ import SensorsCard from '@/components/widgets/sensors/SensorsCard.vue'
 import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
 import BeaconCard from '@/components/widgets/beacon/BeaconCard.vue'
 import AfcCard from '@/components/widgets/afc/AfcCard.vue'
-import type { KlipperPrinterSettings } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -105,7 +104,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     return 12 / this.columnCount
   }
 
-  get printerSettings (): KlipperPrinterSettings {
+  get printerSettings (): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
   }
 

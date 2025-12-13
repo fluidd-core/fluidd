@@ -262,8 +262,8 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
         if (
           typeof sortValues[0] === 'number' &&
           typeof sortValues[1] === 'number' &&
-          !isNaN(sortValues[0]) &&
-          !isNaN(sortValues[1])
+          !Number.isNaN(sortValues[0]) &&
+          !Number.isNaN(sortValues[1])
         ) {
           return sortValues[0] - sortValues[1]
         }

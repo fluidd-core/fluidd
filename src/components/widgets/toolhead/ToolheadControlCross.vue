@@ -191,7 +191,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import type { KlipperPrinterSettings } from '@/store/printer/types'
 
 type Axis = 'X' | 'Y' | 'Z'
 
@@ -199,7 +198,7 @@ type Axis = 'X' | 'Y' | 'Z'
 export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMixin) {
   moveLength: number | null = null
 
-  get printerSettings (): KlipperPrinterSettings {
+  get printerSettings (): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
   }
 
