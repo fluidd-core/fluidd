@@ -30,7 +30,7 @@ export const getters = {
         zStart = index
       }
 
-      if (move.e && move.e > 0 && (Number.isNaN(zLast) || z < zLast || z >= zNext)) {
+      if (move.e != null && move.e > 0 && (Number.isNaN(zLast) || z < zLast || z >= zNext)) {
         if (['x', 'y', 'i', 'j'].some(x => isKeyOf(x, move) && move[x] !== 0)) {
           zLast = z
           zNext = Math.round((z + minLayerHeight) * 10000) / 10000
@@ -120,7 +120,7 @@ export const getters = {
       z: NaN
     }
 
-    for (let i = moveIndex; i >= 0 && (Number.isNaN(output.x) || Number.isNaN(output.y) || Number.isNaN(output.y)); i--) {
+    for (let i = moveIndex; i >= 0 && (Number.isNaN(output.x) || Number.isNaN(output.y) || Number.isNaN(output.z)); i--) {
       const move = moves[i]
 
       Object.assign(output, move)
@@ -230,7 +230,6 @@ export const getters = {
         }
 
         path.extrusions[path.tool] += moveToSVGPath(toolhead, move)
-        Object.assign(toolhead, move)
       } else {
         if (!traveling) {
           path.moves += `M${toolhead.x},${toolhead.y}`
@@ -245,8 +244,9 @@ export const getters = {
         }
 
         path.moves += moveToSVGPath(toolhead, move)
-        Object.assign(toolhead, move)
       }
+
+      Object.assign(toolhead, move)
     }
 
     path.toolhead = {
