@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { JobQueueState, QueuedJob, QueueState } from './types'
+import type { JobQueueState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import getFilePaths from '@/util/get-file-paths'
@@ -30,7 +30,7 @@ export const actions = {
     }
   },
 
-  async onJobQueueStatus ({ commit, dispatch }, payload : { queue_state: QueueState, queued_jobs: QueuedJob[] }) {
+  async onJobQueueStatus ({ commit, dispatch }, payload : Moonraker.JobQueue.StatusResponse) {
     if (payload) {
       commit('setQueueState', payload.queue_state)
       commit('setQueuedJobs', payload.queued_jobs)
@@ -39,7 +39,7 @@ export const actions = {
     }
   },
 
-  async onJobQueueChanged ({ commit, dispatch }, payload : { action: string, queue_state?: QueueState, updated_queue?: QueuedJob[] | null }) {
+  async onJobQueueChanged ({ commit, dispatch }, payload : { action: string, queue_state?: Moonraker.JobQueue.QueueState, updated_queue?: Moonraker.JobQueue.QueuedJob[] | null }) {
     if (payload) {
       const { queue_state, updated_queue } = payload
 

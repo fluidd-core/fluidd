@@ -8,6 +8,7 @@ import { consola } from 'consola'
 import { v4 as uuidv4 } from 'uuid'
 import type { AppUser } from '@/store/auth/types'
 import downloadUrl from '@/util/download-url'
+import { SocketActions } from '@/api/socketActions'
 
 @Component
 export default class FilesMixin extends Vue {
@@ -182,7 +183,7 @@ export default class FilesMixin extends Vue {
 
     return this.isTrustedUser
       ? url
-      : `${url}&token=${(await httpClientActions.accessOneshotTokenGet()).data.result}`
+      : `${url}&token=${await SocketActions.accessOneshotToken()}`
   }
 
   /**

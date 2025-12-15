@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import type { Extruder, KlipperPrinterSettings } from '@/store/printer/types'
+import type { Extruder } from '@/store/printer/types'
 
 @Component
 export default class ToolheadMixin extends Vue {
@@ -71,19 +71,19 @@ export default class ToolheadMixin extends Vue {
   }
 
   get xHasMultipleSteppers (): boolean {
-    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
+    const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings.stepper_x1 != null
   }
 
   get yHasMultipleSteppers (): boolean {
-    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
+    const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings.stepper_y1 != null
   }
 
   get zHasMultipleSteppers (): boolean {
-    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
+    const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings.stepper_z1 != null
   }

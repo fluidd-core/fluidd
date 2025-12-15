@@ -521,7 +521,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import type { BedSize, KlipperPrinterSettings, KlippyApp } from '@/store/printer/types'
+import type { BedSize, KlippyApp } from '@/store/printer/types'
 
 type Axis = 'X' | 'Y' | 'Z'
 
@@ -547,7 +547,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     return this.$typedGetters['printer/getKlippyApp']
   }
 
-  get printerSettings (): KlipperPrinterSettings {
+  get printerSettings (): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
   }
 

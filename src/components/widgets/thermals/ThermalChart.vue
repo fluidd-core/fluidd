@@ -59,7 +59,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
   }
 
-  get chartData (): ChartData[] {
+  get chartData (): Readonly<ChartData>[] {
     return this.$typedState.charts.chart
   }
 

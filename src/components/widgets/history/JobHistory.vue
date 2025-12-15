@@ -137,7 +137,6 @@ import type { HistoryItem } from '@/store/history/types'
 import { SocketActions } from '@/api/socketActions'
 import type { AppDataTableHeader } from '@/types'
 import type { DataTableHeader } from 'vuetify'
-import type { MoonrakerSensor } from '@/store/sensors/types'
 import type { DefaultGetterFunction } from '@/components/ui/AppDataTableRow.vue'
 
 @Component({
@@ -399,7 +398,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
     this.$typedDispatch('config/updateThumbnailSizes', { name: 'history', size: value })
   }
 
-  get sensors (): MoonrakerSensor[] {
+  get sensors (): Moonraker.Sensor.Entry[] {
     return this.$typedGetters['sensors/getSensors']
   }
 

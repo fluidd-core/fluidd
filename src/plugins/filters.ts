@@ -81,7 +81,7 @@ export const Rules = {
   },
 
   numberValid (v: unknown) {
-    return isNullOrEmpty(v) || !isNaN(+(v ?? NaN)) || i18n.t('app.general.simple_form.error.invalid_number')
+    return isNullOrEmpty(v) || Number.isFinite(+v) || i18n.t('app.general.simple_form.error.invalid_number')
   },
 
   numberGreaterThan (min: number) {
@@ -133,7 +133,11 @@ export const Rules = {
   },
 
   numberArrayValid (v: NullableOrEmpty<unknown[]>) {
-    return isNullOrEmpty(v) || !v.some(i => i === '' || isNaN(+(i ?? NaN))) || i18n.t('app.general.simple_form.error.arrayofnums')
+    return isNullOrEmpty(v) || v.every(i => !isNullOrEmpty(i) && Number.isFinite(+i)) || i18n.t('app.general.simple_form.error.arrayofnums')
+  },
+
+  numberArrayGreaterThan (min: number) {
+    return (v: NullableOrEmpty<number[]>) => isNullOrEmpty(v) || v.every(i => !isNullOrEmpty(i) && i > min) || i18n.t('app.general.simple_form.error.min', { min: `> ${min}` })
   },
 
   passwordNotEqualUsername (username?: string | null) {

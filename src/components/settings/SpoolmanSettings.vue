@@ -129,7 +129,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/state'
 import StateMixin from '@/mixins/state'
-import type { WebcamConfig } from '@/store/webcams/types'
 import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
 
 @Component({
@@ -148,7 +147,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get enabledWebcams (): WebcamConfig[] {
+  get enabledWebcams (): Moonraker.Webcam.Entry[] {
     return this.$typedGetters['webcams/getEnabledWebcams']
   }
 

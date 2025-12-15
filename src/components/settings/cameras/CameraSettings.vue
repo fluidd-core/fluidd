@@ -97,7 +97,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import type { WebcamConfig, NewWebcamConfig } from '@/store/webcams/types'
 import CameraConfigDialog from './CameraConfigDialog.vue'
 import { Globals } from '@/globals'
 
@@ -112,11 +111,11 @@ export default class CameraSettings extends Vue {
     camera: null
   }
 
-  get cameras (): WebcamConfig[] {
+  get cameras (): Moonraker.Webcam.Entry[] {
     return this.$typedGetters['webcams/getWebcams']
   }
 
-  handleEditDialog (camera: WebcamConfig) {
+  handleEditDialog (camera: Moonraker.Webcam.Entry) {
     this.dialogState = {
       active: true,
       camera: { ...camera }
@@ -124,7 +123,7 @@ export default class CameraSettings extends Vue {
   }
 
   handleAddDialog () {
-    const camera: NewWebcamConfig = {
+    const camera: Omit<Moonraker.Webcam.Entry, 'uid' | 'source'> = {
       enabled: true,
       flip_horizontal: false,
       flip_vertical: false,
@@ -143,11 +142,11 @@ export default class CameraSettings extends Vue {
     }
   }
 
-  handleSaveCamera (camera: WebcamConfig) {
+  handleSaveCamera (camera: Moonraker.Webcam.Entry) {
     this.$typedDispatch('webcams/updateWebcam', camera)
   }
 
-  async handleRemoveCamera (camera: WebcamConfig) {
+  async handleRemoveCamera (camera: Moonraker.Webcam.Entry) {
     const result = await this.$confirm(
       this.$t('app.general.simple_form.msg.confirm_remove_camera', { name: camera.name }).toString(),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }

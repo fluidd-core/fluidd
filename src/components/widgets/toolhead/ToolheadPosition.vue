@@ -125,7 +125,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import type { KlipperPrinterSettings } from '@/store/printer/types'
 
 type Axis = 'X' | 'Y' | 'Z'
 
@@ -177,7 +176,7 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
     this.sendGcode(`G9${value}`)
   }
 
-  get printerSettings (): KlipperPrinterSettings {
+  get printerSettings (): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
   }
 

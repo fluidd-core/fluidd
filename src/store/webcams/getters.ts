@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { WebcamConfig, WebcamsState } from './types'
+import type { WebcamsState } from './types'
 import type { RootState } from '../types'
 
 export const getters = {
@@ -9,14 +9,14 @@ export const getters = {
   },
 
   getEnabledWebcams: (state, getters) => {
-    const webcams: WebcamConfig[] = getters.getWebcams
+    const webcams: Moonraker.Webcam.Entry[] = getters.getWebcams
 
     return webcams
       .filter(webcam => webcam.enabled)
   },
 
   getVisibleWebcams: (state, getters) => {
-    const enabledWebcams: WebcamConfig[] = getters.getEnabledWebcams
+    const enabledWebcams: Moonraker.Webcam.Entry[] = getters.getEnabledWebcams
 
     return state.activeWebcam === 'all'
       ? enabledWebcams

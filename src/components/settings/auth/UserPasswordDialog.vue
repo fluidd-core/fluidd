@@ -58,10 +58,10 @@
 </template>
 
 <script lang="ts">
-import { httpClientActions } from '@/api/httpClientActions'
 import { Component, Vue, VModel } from 'vue-property-decorator'
 import { EventBus } from '@/eventBus'
 import type { AppUser } from '@/store/auth/types'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({})
 export default class UserPasswordDialog extends Vue {
@@ -83,7 +83,7 @@ export default class UserPasswordDialog extends Vue {
     try {
       this.loading = true
 
-      await httpClientActions.accessUserPasswordPost(this.currentPassword, this.password)
+      await SocketActions.accessUserPassword(this.currentPassword, this.password)
 
       EventBus.$emit(this.$tc('app.general.msg.password_changed'), { timeout: 2000 })
 

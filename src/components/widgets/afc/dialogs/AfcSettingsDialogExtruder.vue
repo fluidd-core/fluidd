@@ -93,7 +93,6 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
-import type { KlipperPrinterAfcExtruderSettings, KlipperPrinterAfcExtruderState } from '@/store/printer/types'
 
 @Component({})
 export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMixin) {
@@ -102,7 +101,7 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
 
   changedValue = false
 
-  get afcSettingsExtruder (): KlipperPrinterAfcExtruderSettings | undefined {
+  get afcSettingsExtruder (): Klipper.AfcExtruderSettings | undefined {
     return this.getAfcExtruderSettings(this.name)
   }
 
@@ -118,7 +117,7 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
     return this.afcSettingsExtruder?.tool_sensor_after_extruder || 0
   }
 
-  get printerObject (): KlipperPrinterAfcExtruderState | undefined {
+  get printerObject (): Klipper.AfcExtruderState | undefined {
     return this.getAfcExtruderObject(this.name)
   }
 

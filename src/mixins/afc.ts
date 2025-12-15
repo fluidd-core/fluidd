@@ -1,10 +1,9 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import type { KlipperPrinterAfcStateState, KlipperPrinterAfcState, KlipperPrinterAfcLaneSettings, KlipperPrinterAfcStepperSettings, KlipperPrinterAfcExtruderState, KlipperPrinterAfcExtruderSettings, KlipperPrinterAfcBufferState, KlipperPrinterAfcBufferSettings, KlipperPrinterAfcHubState, KlipperPrinterAfcHubSettings, KlipperPrinterAfcLaneState, KlipperPrinterSettings } from '@/store/printer/types'
 
 @Component
 export default class AfcMixin extends Vue {
-  get afc (): KlipperPrinterAfcState | undefined {
+  get afc (): Klipper.AfcState | undefined {
     return this.$typedState.printer.printer.AFC
   }
 
@@ -43,7 +42,7 @@ export default class AfcMixin extends Vue {
     return this.afc?.error_state === true
   }
 
-  get afcCurrentLane (): KlipperPrinterAfcLaneState | undefined {
+  get afcCurrentLane (): Klipper.AfcLaneState | undefined {
     const laneName = this.afc?.current_load ?? this.afc?.current_lane
 
     if (laneName != null) {
@@ -51,7 +50,7 @@ export default class AfcMixin extends Vue {
     }
   }
 
-  get afcCurrentBuffer (): KlipperPrinterAfcBufferState | undefined {
+  get afcCurrentBuffer (): Klipper.AfcBufferState | undefined {
     const bufferName = this.afcCurrentLane?.buffer
 
     if (bufferName != null) {
@@ -59,7 +58,7 @@ export default class AfcMixin extends Vue {
     }
   }
 
-  get afcCurrentState (): KlipperPrinterAfcStateState {
+  get afcCurrentState (): Klipper.AfcStateState {
     return this.afc?.current_state ?? 'Idle'
   }
 
@@ -91,7 +90,7 @@ export default class AfcMixin extends Vue {
     return this.$typedState.config.uiSettings.afc.hiddenUnits
   }
 
-  getAfcLaneObject (lane: string): KlipperPrinterAfcLaneState | undefined {
+  getAfcLaneObject (lane: string): Klipper.AfcLaneState | undefined {
     const printerState = this.$typedState.printer.printer
 
     return (
@@ -100,8 +99,8 @@ export default class AfcMixin extends Vue {
     )
   }
 
-  getAfcLaneSettings (lane: string): KlipperPrinterAfcLaneSettings | KlipperPrinterAfcStepperSettings | undefined {
-    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
+  getAfcLaneSettings (lane: string): Klipper.AfcLaneSettings | Klipper.AfcStepperSettings | undefined {
+    const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return (
       printerSettings[`afc_stepper ${lane.toLowerCase()}`] ??
@@ -109,32 +108,32 @@ export default class AfcMixin extends Vue {
     )
   }
 
-  getAfcExtruderObject (extruder: string): KlipperPrinterAfcExtruderState | undefined {
+  getAfcExtruderObject (extruder: string): Klipper.AfcExtruderState | undefined {
     return this.$typedState.printer.printer[(`AFC_extruder ${extruder}`)]
   }
 
-  getAfcExtruderSettings (extruder: string): KlipperPrinterAfcExtruderSettings | undefined {
-    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
+  getAfcExtruderSettings (extruder: string): Klipper.AfcExtruderSettings | undefined {
+    const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings[`afc_extruder ${extruder.toLowerCase()}`]
   }
 
-  getAfcBufferObject (buffer: string): KlipperPrinterAfcBufferState | undefined {
+  getAfcBufferObject (buffer: string): Klipper.AfcBufferState | undefined {
     return this.$typedState.printer.printer[`AFC_buffer ${buffer}`]
   }
 
-  getAfcBufferSettings (buffer: string): KlipperPrinterAfcBufferSettings | undefined {
-    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
+  getAfcBufferSettings (buffer: string): Klipper.AfcBufferSettings | undefined {
+    const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings[`afc_buffer ${buffer.toLowerCase()}`]
   }
 
-  getAfcHubObject (hub: string): KlipperPrinterAfcHubState | undefined {
+  getAfcHubObject (hub: string): Klipper.AfcHubState | undefined {
     return this.$typedState.printer.printer[`AFC_hub ${hub}`]
   }
 
-  getAfcHubSettings (hub: string): KlipperPrinterAfcHubSettings | undefined {
-    const printerSettings: KlipperPrinterSettings = this.$typedGetters['printer/getPrinterSettings']
+  getAfcHubSettings (hub: string): Klipper.AfcHubSettings | undefined {
+    const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings[`afc_hub ${hub.toLowerCase()}`]
   }
