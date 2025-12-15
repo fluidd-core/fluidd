@@ -150,13 +150,22 @@ export const actions = {
     }
   },
 
-  async notifyDeleteDir ({ commit }, payload: Moonraker.Files.ChangeResponse) {
+  async notifyDeleteDir ({ commit, getters }, payload: Moonraker.Files.ChangeResponse) {
     const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {
       commit('setDirDelete', paths)
 
       commit('setPathDelete', paths.rootPathFilename)
+
+      const currentPath: string = getters.getCurrentPathByRoot(paths.root)
+
+      if (
+        currentPath === paths.rootPathFilename ||
+        currentPath.startsWith(`${paths.rootPathFilename}/`)
+      ) {
+        commit('setCurrentPath', { root: paths.root, path: paths.rootPath })
+      }
     }
   },
 
@@ -179,7 +188,7 @@ export const actions = {
     commit('setRemoveFileDownload', payload)
   },
 
-  async updateCurrentPathByRoot ({ commit }, payload) {
+  async updateCurrentPathByRoot ({ commit }, payload: { root: string, path: string }) {
     commit('setCurrentPath', payload)
   }
 } satisfies ActionTree<FilesState, RootState>
