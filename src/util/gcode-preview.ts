@@ -1,8 +1,8 @@
 import type { ArcMove, Move, Point } from '@/store/gcodePreview/types'
 
-type BinarySearchComparer<T> = (item: T, index: number, array: T[]) => number
+type BinarySearchComparer<T> = (item: T, index: number, array: Array<T> | ReadonlyArray<T>) => number
 
-export const binarySearch = <T>(arr: T[], comp: BinarySearchComparer<T>, approx = false): number => {
+export const binarySearch = <T>(arr: Array<T> | ReadonlyArray<T>, comp: BinarySearchComparer<T>, approx = false): number => {
   if (arr.length <= 1) {
     return 0
   }

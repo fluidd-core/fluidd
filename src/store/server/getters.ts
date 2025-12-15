@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { ServerState, ServiceInfo, ServiceState } from './types'
+import type { ServerState, ServiceInfo } from './types'
 import type { RootState } from '../types'
 import { Globals } from '@/globals'
 import { gte, valid } from 'semver'
@@ -30,7 +30,7 @@ export const getters = {
    */
   getServices: (state): ServiceInfo[] => {
     const available_services: string[] = state.system_info?.available_services || []
-    const service_states: ServiceState = state.system_info?.service_state || {}
+    const service_states: Moonraker.Machine.ServiceState = state.system_info?.service_state || {}
 
     const services: ServiceInfo[] = [...available_services].sort().map((name: string) => {
       return name in service_states

@@ -2,7 +2,7 @@ export interface ConsoleState {
   // [key: string]: string;
   consoleCommand: string;
   console: ConsoleEntry[]; // console stream
-  gcodeHelp: GcodeHelp; // known commands
+  gcodeHelp: Moonraker.KlippyApis.GcodeHelpResponse; // known commands
   consoleEntryCount: number; // give each console entry a unique id.
   commandHistory: string[];
   autoScroll: boolean;
@@ -13,14 +13,10 @@ export interface ConsoleState {
 }
 
 export interface ConsoleEntry {
-  id?: number;
+  id: number;
   message: string;
-  type: 'command' | 'response' | 'action';
   time?: number;
-}
-
-export interface GcodeHelp {
-  [key: string]: string;
+  type: 'command' | 'response' | 'action';
 }
 
 export type ConsoleFilterType = 'contains' | 'starts-with' | 'expression'

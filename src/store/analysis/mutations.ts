@@ -1,5 +1,5 @@
 import type { MutationTree } from 'vuex'
-import type { AnalysisState, AnalysisStatus } from './types'
+import type { AnalysisState } from './types'
 import { defaultState } from './state'
 
 export const mutations = {
@@ -10,7 +10,7 @@ export const mutations = {
     Object.assign(state, defaultState())
   },
 
-  setAnalysisStatus (state, payload: AnalysisStatus) {
+  setAnalysisStatus (state, payload: Moonraker.Analysis.StatusResponse) {
     state.status = payload
   }
 } satisfies MutationTree<AnalysisState>

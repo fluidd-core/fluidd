@@ -32,12 +32,11 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import type { SystemInfo } from '@/store/server/types'
 
 @Component({})
 export default class SdInfoCard extends Vue {
   get sdInfo () {
-    const info: SystemInfo | null = this.$typedState.server.system_info
+    const info: Moonraker.Machine.SystemInfo | null = this.$typedState.server.system_info
 
     return info?.sd_info
   }

@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import type { WebcamConfig } from '@/store/webcams/types'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 
 @Component({
@@ -21,11 +20,11 @@ import CameraItem from '@/components/widgets/camera/CameraItem.vue'
   }
 })
 export default class FullscreenCamera extends Vue {
-  camera: WebcamConfig | null = null
+  camera: Moonraker.Webcam.Entry | null = null
 
   created () {
     const cameraId = this.$route.params.cameraId
-    const camera: WebcamConfig | undefined = this.$typedGetters['webcams/getWebcamById'](cameraId)
+    const camera: Moonraker.Webcam.Entry | undefined = this.$typedGetters['webcams/getWebcamById'](cameraId)
 
     this.camera = camera ?? null
   }

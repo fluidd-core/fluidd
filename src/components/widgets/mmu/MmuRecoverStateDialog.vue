@@ -91,7 +91,6 @@ import { Mixins, VModel, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
-import type { MmuUnitKey } from '@/store/printer/types'
 import isKeyOf from '@/util/is-key-of'
 
 @Component({})
@@ -192,7 +191,7 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
 
     if (mmuMachine != null && mmuMachine.num_units > 1) {
       for (let i = 0; i < mmuMachine.num_units; i++) {
-        const unitRef = `unit_${i}` as MmuUnitKey
+        const unitRef = `unit_${i}` as Klipper.MmuUnitKey
 
         if (isKeyOf(unitRef, mmuMachine)) {
           const unit = mmuMachine[unitRef]

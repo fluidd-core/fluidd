@@ -277,7 +277,6 @@ import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
 import type { OutputPin } from '@/store/printer/types'
-import type { Device } from '@/store/power/types'
 import type { PrintEtaCalculation, PrintInProgressLayout, PrintProgressCalculation } from '@/store/config/types'
 import { httpClientActions } from '@/api/httpClientActions'
 import { consola } from 'consola'
@@ -396,7 +395,7 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get printerPowerDevicesList () {
-    const devices: Device[] = this.$typedGetters['power/getDevices']
+    const devices: Moonraker.Power.Device[] = this.$typedGetters['power/getDevices']
 
     const deviceEntries = devices.map(device => ({
       text: `${this.$filters.prettyCase(device.device)} (${device.type})`,
@@ -429,7 +428,7 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get topNavPowerToggleDevicesList () {
-    const devices: Device[] = this.$typedGetters['power/getDevices']
+    const devices: Moonraker.Power.Device[] = this.$typedGetters['power/getDevices']
     const deviceEntries = devices.length
       ? [
           { header: 'Moonraker' },

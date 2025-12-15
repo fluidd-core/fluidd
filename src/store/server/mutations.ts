@@ -1,7 +1,6 @@
-import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import type { CanbusUuid, Peripherals, ServerInfo, ServerState, ServiceState, SystemInfo } from './types'
+import type { Peripherals, ServerState } from './types'
 
 export const mutations = {
   /**
@@ -19,13 +18,13 @@ export const mutations = {
     state.info.klippy_state = info.klippy_state
   },
 
-  setServerInfo (state, payload: ServerInfo) {
-    Vue.set(state, 'info', payload)
+  setServerInfo (state, payload: Moonraker.Server.InfoResponse) {
+    state.info = payload
   },
 
-  setSystemInfo (state, payload: { system_info?: SystemInfo }) {
+  setSystemInfo (state, payload: Moonraker.Machine.SystemInfoResponse) {
     if (payload.system_info) {
-      Vue.set(state, 'system_info', payload.system_info)
+      state.system_info = payload.system_info
     }
   },
 
@@ -36,14 +35,14 @@ export const mutations = {
     }
   },
 
-  setMachinePeripheralsCanbus (state, payload: { canbusInterface: string, can_uuids: CanbusUuid[] }) {
+  setMachinePeripheralsCanbus (state, payload: { canbusInterface: string, can_uuids: Moonraker.Peripherals.CanbusUuid[] }) {
     state.can_uuids = {
       ...state.can_uuids,
       [payload.canbusInterface]: payload.can_uuids
     }
   },
 
-  setServiceState (state, payload: ServiceState) {
+  setServiceState (state, payload: Moonraker.Machine.ServiceState) {
     if (payload && state.system_info?.service_state) {
       Object.assign(state.system_info.service_state, payload)
     }
@@ -52,26 +51,33 @@ export const mutations = {
   /**
    * On initial init we get the server (moonraker) configuration.
    */
-  setServerConfig (state, payload) {
-    state.config = { ...state.config, ...payload }
+  setServerConfig (state, payload: Moonraker.Server.Config) {
+    state.config = {
+      ...state.config,
+      ...payload
+    }
   },
 
   /**
    * On initial init, we get the server (moonraker) process stats and any throttled state flags.
    */
-  setMoonrakerStats (state, payload) {
-    if (payload.cpu_temp) {
-      Vue.set(state, 'cpu_temp', payload.cpu_temp)
+  setMoonrakerStats (state, payload: Moonraker.ProcStats.Response) {
+    if (payload.cpu_temp != null) {
+      state.cpu_temp = payload.cpu_temp
     }
 
-    if (payload.throttled_state) {
-      state.throttled_state = { ...state.throttled_state, ...payload.throttled_state }
+    if (payload.throttled_state != null) {
+      state.throttled_state = {
+        ...state.throttled_state,
+        ...payload.throttled_state
+      }
     }
 
-    if (payload.moonraker_stats) {
+    if (payload.moonraker_stats != null) {
       if (Array.isArray(payload.moonraker_stats)) {
         // Update with array.
-        Vue.set(state, 'moonraker_stats', payload.moonraker_stats.map(Object.freeze))
+        state.moonraker_stats = payload.moonraker_stats
+          .map(stat => Object.freeze(stat))
       } else {
         // Append to array.
         state.moonraker_stats.push(Object.freeze(payload.moonraker_stats))

@@ -24,7 +24,6 @@
 
 <script lang="ts">
 import { Component, Vue, VModel, Prop } from 'vue-property-decorator'
-import type { QueuedJob } from '@/store/jobQueue/types'
 
 @Component({})
 export default class JobQueueMultiplyJobDialog extends Vue {
@@ -34,7 +33,7 @@ export default class JobQueueMultiplyJobDialog extends Vue {
   open?: boolean
 
   @Prop({ type: [Object, Array], required: true })
-  readonly job!: QueuedJob | QueuedJob[]
+  readonly job!: Moonraker.JobQueue.QueuedJob | Moonraker.JobQueue.QueuedJob[]
 
   get jobCount () {
     return Array.isArray(this.job)

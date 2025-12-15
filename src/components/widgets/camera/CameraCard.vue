@@ -44,7 +44,6 @@ import { Component, Mixins } from 'vue-property-decorator'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import CameraMenu from './CameraMenu.vue'
 import StateMixin from '@/mixins/state'
-import type { WebcamConfig } from '@/store/webcams/types'
 
 @Component({
   components: {
@@ -61,7 +60,7 @@ export default class CameraCard extends Mixins(StateMixin) {
     if (this.cameras.length > 2) return 4
   }
 
-  get cameras (): WebcamConfig[] {
+  get cameras (): Moonraker.Webcam.Entry[] {
     return this.$typedGetters['webcams/getVisibleWebcams']
   }
 

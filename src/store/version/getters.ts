@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { MoonrakerGitRepoCommit, VersionInfo, VersionState } from './types'
+import type { VersionInfo, VersionState } from './types'
 import type { RootState } from '../types'
 import { valid, gt } from 'semver'
 
@@ -55,7 +55,7 @@ export const getters = {
    * Returns a boolean indicating if a given component has an update.
    */
   hasUpdate: (state) => (name: string): boolean => {
-    const versionInfo = state.status?.version_info[name]
+    const versionInfo = state.status?.version_info?.[name]
 
     if (versionInfo != null) {
       if ('package_count' in versionInfo) {
@@ -88,13 +88,13 @@ export const getters = {
    */
   getCommitHistory: (state) => (component: string) => {
     // This is only relevant for certain types.
-    const versionInfo = state.status?.version_info[component]
+    const versionInfo = state.status?.version_info?.[component]
 
-    if (versionInfo && 'git_messages' in versionInfo) {
+    if (versionInfo && 'commits_behind' in versionInfo) {
       const result = versionInfo.commits_behind
-        .reduce<Record<number, MoonrakerGitRepoCommit[]>>((groups, commitItem) => {
-          const dateAndTime = new Date(+commitItem.date * 1000)
-          const dateOnly = +(new Date(dateAndTime.getFullYear(), dateAndTime.getMonth(), dateAndTime.getDate()))
+        .reduce<Record<number, Moonraker.UpdateManager.GitRepoCommit[]>>((groups, commitItem) => {
+          const dayInSeconds = 24 * 60 * 60
+          const dateOnly = Math.floor(+commitItem.date / dayInSeconds) * dayInSeconds * 1000
 
           if (dateOnly in groups) {
             groups[dateOnly].push(commitItem)

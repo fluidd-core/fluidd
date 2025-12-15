@@ -53,24 +53,23 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { WebcamConfig } from '@/store/webcams/types'
 
 @Component({})
 export default class CamerasMenu extends Mixins(StateMixin) {
   get activeCamera () {
     const activeWebcam: string = this.$typedState.webcams.activeWebcam
-    const camera: WebcamConfig | undefined = this.$typedGetters['webcams/getWebcamById'](activeWebcam)
+    const camera: Moonraker.Webcam.Entry | undefined = this.$typedGetters['webcams/getWebcamById'](activeWebcam)
 
     return !camera
       ? this.$t('app.general.btn.all').toString()
       : camera.name
   }
 
-  get enabledWebcams (): WebcamConfig[] {
+  get enabledWebcams (): Moonraker.Webcam.Entry[] {
     return this.$typedGetters['webcams/getEnabledWebcams']
   }
 
-  get availableCameras (): Pick<WebcamConfig, 'uid' | 'name'>[] {
+  get availableCameras (): Pick<Moonraker.Webcam.Entry, 'uid' | 'name'>[] {
     return [
       {
         uid: 'all',

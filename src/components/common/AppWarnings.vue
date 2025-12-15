@@ -72,7 +72,6 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { Globals } from '@/globals'
 import linkExternalUrls from '@/util/link-external-urls'
-import type { KlipperPrinterConfigFileWarningState } from '@/store/printer/types'
 
 @Component({
   components: {}
@@ -106,7 +105,7 @@ export default class AppWarnings extends Mixins(StateMixin) {
     return this.$typedGetters['printer/getPrinterWarnings']
   }
 
-  get klipperWarnings (): KlipperPrinterConfigFileWarningState[] {
+  get klipperWarnings (): Klipper.ConfigFileWarningState[] {
     return this.$typedGetters['printer/getKlipperWarnings']
   }
 
