@@ -21,7 +21,7 @@ export const actions = {
   /**
    * Inits the list of available devices. Notified by init action.
    */
-  async onInit ({ commit }, payload) {
+  async onInit ({ commit }, payload: Moonraker.Power.DevicesResponse) {
     if (
       payload.devices &&
       payload.devices.length > 0
@@ -33,7 +33,7 @@ export const actions = {
   /**
    * Fires when we receive a notification of power changing
    */
-  async onStatus ({ commit }, payload) {
+  async onStatus ({ commit }, payload: Moonraker.Power.StatusResponse) {
     commit('setStatus', payload)
   },
 } satisfies ActionTree<DevicePowerState, RootState>

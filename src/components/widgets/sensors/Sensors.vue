@@ -21,16 +21,15 @@
 </template>
 
 <script lang="ts">
-import type { MoonrakerSensor } from '@/store/sensors/types'
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class Sensors extends Vue {
-  get sensors (): MoonrakerSensor[] {
+  get sensors (): Moonraker.Sensor.Entry[] {
     return this.$typedGetters['sensors/getSensors']
   }
 
-  getFormattedValue (sensor: MoonrakerSensor, key: string, value: unknown) {
+  getFormattedValue (sensor: Moonraker.Sensor.Entry, key: string, value: unknown) {
     if (value == null || value === '') {
       return '--'
     }

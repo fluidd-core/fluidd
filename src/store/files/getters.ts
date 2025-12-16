@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
-import type { AppDirectory, AppDiskUsage, AppFile, AppFileMeta, AppFileWithMeta, FileBrowserEntry, FilesState, MoonrakerFile, MoonrakerFileWithMeta, RootProperties } from './types'
+import type { AppDirectory, AppDiskUsage, AppFile, AppFileMeta, AppFileWithMeta, FileBrowserEntry, FilesState, RootProperties } from './types'
 import type { RootState } from '../types'
 import type { HistoryItem } from '../history/types'
 import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
 
-const toAppFileMetaWithHistory = (file: MoonrakerFile | MoonrakerFileWithMeta, rootGetters: any) => {
+const toAppFileMetaWithHistory = (file: Moonraker.Files.File | Moonraker.Files.FileWithMeta, rootGetters: any) => {
   const metadata: Partial<AppFileMeta> & Pick<AppFileWithMeta, 'history'> = {}
 
   if ('job_id' in file && file.job_id) {

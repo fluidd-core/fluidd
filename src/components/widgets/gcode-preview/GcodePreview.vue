@@ -345,7 +345,7 @@ import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import panzoom, { type PanZoom } from 'panzoom'
-import type { BBox, Layer, LayerPaths } from '@/store/gcodePreview/types'
+import type { BBox, Layer, LayerPaths, Tool } from '@/store/gcodePreview/types'
 import type AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
 import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
 import GcodePreviewButton from './GcodePreviewButton.vue'
@@ -364,7 +364,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: Boolean })
   readonly disabled?: boolean
 
-  @Prop({ type: Number, default: Infinity })
+  @Prop({ type: Number, default: Number.POSITIVE_INFINITY })
   readonly progress!: number
 
   @Prop({ type: Number, default: 0 })
@@ -626,8 +626,8 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return `${x.min} ${y.min} ${x.max - x.min} ${y.max - y.min}`
   }
 
-  get defaultLayerPaths (): LayerPaths {
-    return {
+  get defaultLayerPaths (): Readonly<LayerPaths> {
+    return Object.freeze({
       extrusions: {},
       moves: '',
       retractions: [],
@@ -637,15 +637,15 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
         y: 0
       },
       tool: 'T0'
-    }
+    })
   }
 
-  get svgPathCurrent (): LayerPaths {
+  get svgPathCurrent (): Readonly<LayerPaths> {
     if (this.disabled) {
       return this.defaultLayerPaths
     }
 
-    const layer: Layer | undefined = this.$typedGetters['gcodePreview/getLayers'][this.layer]
+    const layer: readonly Layer | undefined = this.$typedGetters['gcodePreview/getLayers'][this.layer]
 
     if (this.followProgress) {
       const end: number = this.$typedGetters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
@@ -656,7 +656,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedGetters['gcodePreview/getPaths'](layer?.move ?? 0, this.progress)
   }
 
-  get svgPathActive (): LayerPaths {
+  get svgPathActive (): Readonly<LayerPaths> {
     if (this.disabled) {
       return this.defaultLayerPaths
     }
@@ -664,7 +664,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedGetters['gcodePreview/getLayerPaths'](this.layer)
   }
 
-  get svgPathPrevious (): LayerPaths {
+  get svgPathPrevious (): Readonly<LayerPaths> {
     if (this.disabled || this.layer <= 0) {
       return this.defaultLayerPaths
     }
@@ -672,8 +672,8 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedGetters['gcodePreview/getLayerPaths'](this.layer - 1)
   }
 
-  get svgPathNext (): LayerPaths {
-    const layers: Layer[] = this.$typedGetters['gcodePreview/getLayers']
+  get svgPathNext (): Readonly<LayerPaths> {
+    const layers: readonly Layer[] = this.$typedGetters['gcodePreview/getLayers']
 
     if (this.disabled || this.layer >= layers.length) {
       return this.defaultLayerPaths
@@ -682,7 +682,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedGetters['gcodePreview/getLayerPaths'](this.layer + 1)
   }
 
-  get svgPathParts (): string[] {
+  get svgPathParts (): readonly string[] {
     return this.$typedGetters['gcodePreview/getPartPaths']
   }
 
@@ -690,11 +690,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedState.gcodePreview.file
   }
 
-  get tools (): number[] {
+  get tools (): readonly number[] {
     return this.$typedState.gcodePreview.tools
   }
 
-  get toolColors (): Record<string, string> {
+  get toolColors (): Record<Tool, string> {
     return this.$typedGetters['gcodePreview/getToolColors']
   }
 

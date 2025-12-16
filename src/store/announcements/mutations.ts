@@ -11,9 +11,14 @@ export const mutations = {
     Object.assign(state, defaultState())
   },
 
-  setAnnouncementsList (state, payload: AnnouncementsState) {
-    if (payload.entries) Vue.set(state, 'entries', payload.entries)
-    if (payload.feeds) Vue.set(state, 'feeds', payload.feeds)
+  setAnnouncementsList (state, payload: Moonraker.Announcements.ListResponse) {
+    if (payload.entries) {
+      state.entries = payload.entries
+    }
+
+    if (payload.feeds) {
+      state.feeds = payload.feeds
+    }
   },
 
   setAnnouncementDismissed (state, payload: { entry_id: string, dismissed: boolean }) {

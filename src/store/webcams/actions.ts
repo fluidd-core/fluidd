@@ -1,19 +1,19 @@
 import type { ActionTree } from 'vuex'
-import type { WebcamsState, WebcamConfig, WebcamService, WebcamRotation, LegacyCamerasState, LegacyCameraType, DatabaseWebcamConfig } from './types'
+import type { WebcamsState, LegacyCamerasState, LegacyCameraType, DatabaseWebcamConfig } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import setUrlQueryParam from '@/util/set-url-query-param'
 import { httpClientActions } from '@/api/httpClientActions'
 import { Globals } from '@/globals'
 
-const legacyCameraTypeToWebcamService: Record<LegacyCameraType, WebcamService> = {
+const legacyCameraTypeToWebcamService: Record<LegacyCameraType, Moonraker.Webcam.Service> = {
   mjpgstream: 'mjpegstreamer',
   mjpgadaptive: 'mjpegstreamer-adaptive',
   iframe: 'iframe',
   ipstream: 'ipstream'
 }
 
-const mjpegstreamerServices: WebcamService[] = [
+const mjpegstreamerServices: Moonraker.Webcam.Service[] = [
   'mjpegstreamer',
   'mjpegstreamer-adaptive'
 ]
@@ -49,7 +49,7 @@ export const actions = {
           urlSnapshot: isMjpegStreamer && legacyCamera.url ? setUrlQueryParam(legacyCamera.url, 'action', 'snapshot') : legacyCamera.url,
           flipX: legacyCamera.flipX ?? false,
           flipY: legacyCamera.flipY ?? false,
-          rotation: legacyCamera.rotate ? +legacyCamera.rotate as WebcamRotation : 0,
+          rotation: legacyCamera.rotate ? +legacyCamera.rotate as Moonraker.Webcam.Rotation : 0,
           aspectRatio: '4:3',
           extraData: {}
         }
@@ -61,7 +61,7 @@ export const actions = {
     }
   },
 
-  async updateWebcam ({ commit }, payload: WebcamConfig) {
+  async updateWebcam ({ commit }, payload: Moonraker.Webcam.Entry) {
     commit('setUpdateWebcam', payload)
 
     SocketActions.serverWebcamsWrite(payload)
@@ -76,16 +76,16 @@ export const actions = {
   async updateActiveWebcam ({ commit, state }, payload: string) {
     commit('setActiveWebcam', payload)
 
-    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.webcams.name + '.activeWebcam', state.activeWebcam)
+    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.webcams.name + '.activeWebcam', state.activeWebcam)
   },
 
-  async onWebcamsList ({ commit }, payload: { webcams: WebcamConfig[] }) {
+  async onWebcamsList ({ commit }, payload: Moonraker.Webcam.ListResponse) {
     if (payload) {
       commit('setWebcamsList', payload)
     }
   },
 
-  async onWebcamsChanged ({ commit }, payload: { webcams: WebcamConfig[] }) {
+  async onWebcamsChanged ({ commit }, payload: Moonraker.Webcam.ListResponse) {
     if (payload) {
       commit('setWebcamsList', payload)
     }

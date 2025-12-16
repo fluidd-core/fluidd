@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { AnnouncementsState, Announcement } from './types'
+import type { AnnouncementsState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 
@@ -18,13 +18,13 @@ export const actions = {
     SocketActions.serverAnnouncementsList()
   },
 
-  async onAnnouncementsList ({ commit }, payload) {
+  async onAnnouncementsList ({ commit }, payload: Moonraker.Announcements.ListResponse) {
     if (payload) {
       commit('setAnnouncementsList', payload)
     }
   },
 
-  async onAnnouncementUpdate ({ commit }, payload) {
+  async onAnnouncementUpdate ({ commit }, payload: Moonraker.Announcements.ListResponse) {
     if (payload) {
       commit('setAnnouncementsList', payload)
     }
@@ -49,6 +49,6 @@ export const actions = {
   async dismissAll ({ state }) {
     const entries = [...state.entries]
 
-    entries.forEach(async (entry: Announcement) => await SocketActions.serverAnnouncementsDismiss(entry.entry_id))
+    entries.forEach(async (entry) => await SocketActions.serverAnnouncementsDismiss(entry.entry_id))
   }
 } satisfies ActionTree<AnnouncementsState, RootState>

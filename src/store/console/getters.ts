@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { ConsoleState, GcodeHelp } from './types'
+import type { ConsoleState } from './types'
 import type { RootState } from '../types'
 
 const _tempWaitExpr = /^(?:ok\s+)?(?:b|t\d+):\d+\.\d+ \/\d+\.+\d+/i
@@ -20,8 +20,8 @@ export const getters = {
     return items
   },
 
-  getAllKnownCommands: (state): GcodeHelp => {
-    const commands: GcodeHelp = {
+  getAllKnownCommands: (state): Moonraker.KlippyApis.GcodeHelpResponse => {
+    const commands: Moonraker.KlippyApis.GcodeHelpResponse = {
       TESTZ: '',
       ABORT: '',
       ACCEPT: '',

@@ -4,11 +4,10 @@ import type { Spool } from '@/store/spoolman/types'
 import type { AppFileWithMeta } from '@/store/files/types'
 import type { MmuGateDetails, SlicerToolDetails, MmuUnitDetails } from '@/types'
 import { TinyColor } from '@ctrl/tinycolor'
-import type { KlipperPrinterMmuState, MmuUnitKey } from '@/store/printer/types'
 
 @Component({})
 export default class MmuMixin extends Vue {
-  get mmuState (): KlipperPrinterMmuState | undefined {
+  get mmuState (): Klipper.MmuState | undefined {
     return this.$typedState.printer.printer.mmu
   }
 
@@ -55,7 +54,7 @@ export default class MmuMixin extends Vue {
   }
 
   unitDetails (unitIndex: number): MmuUnitDetails {
-    const unitRef = `unit_${unitIndex}` as MmuUnitKey
+    const unitRef = `unit_${unitIndex}` as Klipper.MmuUnitKey
 
     const mmuMachine = this.$typedState.printer.printer.mmu_machine
 

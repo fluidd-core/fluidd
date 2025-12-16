@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import type { HistoryState, MoonrakerHistoryItem } from './types'
+import type { HistoryState } from './types'
 
 export const mutations = {
   /**
@@ -14,22 +14,26 @@ export const mutations = {
   /**
    * Applies currently known history totals
    */
-  setHistoryTotals (state, payload: HistoryState) {
-    if (payload) Vue.set(state, 'job_totals', payload.job_totals)
+  setHistoryTotals (state, payload: Moonraker.History.TotalsResponse) {
+    state.job_totals = payload.job_totals
   },
 
   /**
    * Applies history list
    */
-  setHistoryList (state, payload: HistoryState) {
-    if (payload.jobs !== undefined) Vue.set(state, 'jobs', payload.jobs)
-    if (payload.count !== undefined) Vue.set(state, 'count', payload.count)
+  setHistoryList (state, payload: Moonraker.History.ListResponse) {
+    if (payload.jobs != null) {
+      state.jobs = payload.jobs
+    }
+    if (payload.count != null) {
+      state.count = payload.count
+    }
   },
 
   /**
    * Adds a history item.
    */
-  setAddHistory (state, payload: MoonrakerHistoryItem) {
+  setAddHistory (state, payload: Moonraker.History.Job) {
     if (payload) {
       state.jobs.push(payload)
       state.count++
@@ -39,7 +43,7 @@ export const mutations = {
   /**
    * Updates a history item.
    */
-  setUpdateHistory (state, payload: MoonrakerHistoryItem) {
+  setUpdateHistory (state, payload: Moonraker.History.Job) {
     if (payload) {
       const i = state.jobs.findIndex(job => job.job_id === payload.job_id)
       if (i >= 0) {

@@ -40,7 +40,6 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
-import type { KlipperPrinterAfcLaneSettings, KlipperPrinterAfcLaneState, KlipperPrinterAfcStepperSettings } from '@/store/printer/types'
 
 @Component({})
 export default class AfcSettingsDialogLane extends Mixins(StateMixin, AfcMixin) {
@@ -49,11 +48,11 @@ export default class AfcSettingsDialogLane extends Mixins(StateMixin, AfcMixin) 
 
   changedValue = false
 
-  get afcSettingsLane (): KlipperPrinterAfcLaneSettings | KlipperPrinterAfcStepperSettings | undefined {
+  get afcSettingsLane (): Klipper.AfcLaneSettings | Klipper.AfcStepperSettings | undefined {
     return this.getAfcLaneSettings(this.name)
   }
 
-  get afcLane (): KlipperPrinterAfcLaneState | undefined {
+  get afcLane (): Klipper.AfcLaneState | undefined {
     return this.getAfcLaneObject(this.name)
   }
 

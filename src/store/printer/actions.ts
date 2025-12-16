@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { KlipperPrinterQueryEndstopsState, KlipperPrinterState, KlippyApp, PrinterState } from './types'
+import type { KlippyApp, PrinterState } from './types'
 import type { RootState } from '../types'
 import { handlePrintStateChange, handleCurrentFileChange, handleTrinamicDriversChange } from '../helpers'
 import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
@@ -11,7 +11,7 @@ import sandboxedEval from '@/plugins/sandboxedEval'
 import { gte, valid } from 'semver'
 import i18n from '@/plugins/i18n'
 
-const evalCollectors = async (printer: KlipperPrinterState, collectors: string[]): Promise<Record<string, unknown>> => {
+const evalCollectors = async (printer: Klipper.PrinterState, collectors: string[]): Promise<Record<string, unknown>> => {
   try {
     const data = await sandboxedEval<Record<string, unknown>>(`
     const printer = ${JSON.stringify(printer)}
@@ -93,7 +93,7 @@ export const actions = {
   /**
    * Printer Info
    */
-  async onPrinterInfo ({ commit, dispatch }, payload) {
+  async onPrinterInfo ({ commit, dispatch }, payload: Moonraker.KlippyApis.Info) {
     commit('setPrinterInfo', payload)
 
     dispatch('checkKlipperMinVersion')
@@ -102,10 +102,10 @@ export const actions = {
   /**
    * Query endstops
    */
-  async onQueryEndstops ({ commit }, payload: Record<string, 'TRIGGERED' | 'open'>) {
+  async onQueryEndstops ({ commit }, payload: Moonraker.KlippyApis.QueryEndstopsStatusResponse) {
     // printer.query_endstops state is not updating, so we use the response here to do it manually
 
-    const queryEndstops: KlipperPrinterQueryEndstopsState = {
+    const queryEndstops: Klipper.QueryEndstopsState = {
       last_query: {}
     }
 
@@ -165,23 +165,23 @@ export const actions = {
   /**
    * Stores the printers object list.
    */
-  async onPrinterObjectsList ({ commit }, payload) {
+  async onPrinterObjectsList ({ commit }, payload: Moonraker.KlippyApis.ObjectsListResponse) {
     // Given our object list, subscribe to any data we'd want constant updates for
     // and prepopulate our store.
-    let intendedSubscriptions = {}
-    payload.objects.forEach((k: string) => {
-      if (!k.includes('menu')) {
-        intendedSubscriptions = { ...intendedSubscriptions, [k]: null }
-      }
-      let key = k
-      if (k.includes(' ')) key = key.replace(' ', '.')
-      commit('setPrinterObjectList', key)
-    })
+    const subscriptions: Record<string, null> = {}
 
-    SocketActions.printerObjectsSubscribe(intendedSubscriptions)
+    for (const key of payload.objects) {
+      if (!key.includes('menu')) {
+        subscriptions[key] = null
+      }
+
+      commit('setPrinterObjectList', key.replace(' ', '.'))
+    }
+
+    SocketActions.printerObjectsSubscribe(subscriptions)
   },
 
-  async onPrinterObjectsSubscribe ({ commit, dispatch }, payload: { status: KlipperPrinterState }) {
+  async onPrinterObjectsSubscribe ({ commit, dispatch }, payload: { status: Klipper.PrinterState }) {
     // Initial printer status
     const status = payload.status
 
@@ -227,7 +227,7 @@ export const actions = {
    */
 
   /** Automated notify events via socket */
-  async onNotifyStatusUpdate ({ rootState, commit, getters, dispatch }, payload: Partial<KlipperPrinterState>) {
+  async onNotifyStatusUpdate ({ rootState, commit, getters, dispatch }, payload: Partial<Klipper.PrinterState>) {
     // TODO: We potentially get many updates here.
     // Consider caching the updates and sending them every <interval>.
     // We don't want to miss an update - but also don't need all of them

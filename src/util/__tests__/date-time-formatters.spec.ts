@@ -30,8 +30,8 @@ describe('formatCounterSeconds', () => {
 
   it('Treats invalid input as 0', () => {
     expect(dtf.formatCounterSeconds(NaN)).toBe('0m 0s')
-    expect(dtf.formatCounterSeconds(Infinity)).toBe('0m 0s')
-    expect(dtf.formatCounterSeconds(-Infinity)).toBe('0m 0s')
+    expect(dtf.formatCounterSeconds(Number.POSITIVE_INFINITY)).toBe('0m 0s')
+    expect(dtf.formatCounterSeconds(Number.NEGATIVE_INFINITY)).toBe('0m 0s')
   })
 })
 

@@ -1,5 +1,3 @@
-import type { KlipperPrinterGcodeMacroSettings } from '../printer/types'
-
 export interface MacrosState {
   stored: Macro[];
   categories: MacroCategory[];
@@ -16,7 +14,7 @@ export interface Macro {
   assignTo?: string;
   disabledWhilePrinting?: boolean;
   color?: string;
-  config?: KlipperPrinterGcodeMacroSettings;
+  config?: Klipper.GcodeMacroSettings;
   order?: number;
   variables?: Record<string, unknown>
 }

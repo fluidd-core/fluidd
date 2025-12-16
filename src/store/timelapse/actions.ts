@@ -22,17 +22,12 @@ export const actions = {
     SocketActions.machineTimelapseLastFrameInfo()
   },
 
-  async onSettings ({ commit }, payload) {
+  async onSettings ({ commit }, payload: Moonraker.Timelapse.SettingsResponse) {
     commit('setSettings', payload)
   },
 
-  async onLastFrame ({ commit }, payload) {
-    const uniqueCount = +(payload.lastframefile?.match(/\d+/)?.[0] ?? 0)
-    commit('setLastFrame', {
-      count: payload.framecount,
-      uniqueCount,
-      file: payload.lastframefile
-    })
+  async onLastFrame ({ commit }, payload: Moonraker.Timelapse.LastFrameInfoResponse) {
+    commit('setLastFrame', payload)
   },
 
   async onEvent ({ commit }, payload) {
@@ -54,46 +49,12 @@ export const actions = {
       }
 
       case 'render': {
-        let status
-
-        switch (payload.status) {
-          case 'started': {
-            status = {
-              status: 'started',
-              count: payload.framecount,
-              settings: {
-                frameRate: payload.framerate,
-                crf: payload.crf,
-                pixelFormat: payload.pixelformat
-              }
-            }
-            break
-          }
-
-          case 'running': {
-            status = { status: 'running', progress: payload.progress }
-            break
-          }
-
-          case 'success': {
-            status = {
-              status: 'success',
-              frameCount: payload.framecount,
-              fileName: payload.filename,
-              printFile: payload.printfile,
-              previewImage: payload.previewimage,
-              message: payload.msg
-            }
-            break
-          }
-
-          default: {
-            consola.warn('unhandled timelapse render status', payload)
-            return
-          }
+        if (!['started', 'running', 'success'].includes(payload.status)) {
+          consola.warn('unhandled timelapse render status', payload)
+          return
         }
 
-        commit('setRenderStatus', status)
+        commit('setRenderStatus', payload)
         break
       }
 
