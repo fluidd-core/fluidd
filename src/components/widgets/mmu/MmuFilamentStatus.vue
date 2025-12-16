@@ -21,6 +21,71 @@
       </g>
 
       <g
+        id="sync-feedback-buffer-piston"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        style="stroke: var(--color-outline); fill: var(--color-outline)"
+      >
+        <rect
+          x="3"
+          y="0"
+          width="30"
+          height="40"
+          rx="3"
+          ry="3"
+          fill="none"
+          stroke-width="1.5"
+        />
+        <path
+          d="M-15 -4 L-6 0 L-15 4 Z"
+          stroke-width="1"
+          fill-opacity="0.6"
+        />
+        <path
+          d="M8 40 L 28 40"
+          stroke-width="4"
+        />
+        <text
+          x="-22"
+          y="4"
+          font-size="11px"
+          text-anchor="end"
+        >
+          {{ syncFeedbackPistonText }}
+        </text>
+      </g>
+
+      <g
+        id="sync-feedback-buffer-box"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        style="stroke: var(--color-outline)"
+      >
+        <rect
+          x="0"
+          y="0"
+          width="36"
+          height="45"
+          rx="3"
+          ry="3"
+          class="fil-background"
+          stroke-width="2"
+          fill-opacity="0.6"
+        />
+        <path
+          d="M-3 10 0 10 M-3 22 0.5 22 M-3 34.5 0 34.5"
+          stroke-width="2"
+          stroke-opacity="0.6"
+        />
+        <path
+          d="M8 0 L 28 0"
+          stroke-width="4"
+        />
+      </g>
+
+      <g
         id="sissors"
         style="stroke: var(--color-outline); fill: none; stroke-linecap: round; stroke-linejoin: round;"
       >
@@ -93,19 +158,19 @@
         <g transform="matrix(23.2058 0 0 23.2058 329.7195 325.9517)">
           <path
             style="
-                            stroke: rgb(0, 0, 0);
-                            stroke-width: 0;
-                            stroke-dasharray: none;
-                            stroke-linecap: butt;
-                            stroke-dashoffset: 0;
-                            stroke-linejoin: miter;
-                            stroke-miterlimit: 4;
-                            is-custom-font: none;
-                            font-file-url: none;
-                            fill: rgb(254, 162, 54);
-                            fill-rule: nonzero;
-                            opacity: 1;
-                        "
+              stroke: rgb(0, 0, 0);
+              stroke-width: 0;
+              stroke-dasharray: none;
+              stroke-linecap: butt;
+              stroke-dashoffset: 0;
+              stroke-linejoin: miter;
+              stroke-miterlimit: 4;
+              is-custom-font: none;
+              font-file-url: none;
+              fill: rgb(254, 162, 54);
+              fill-rule: nonzero;
+              opacity: 1;
+            "
             vector-effect="non-scaling-stroke"
             transform=" translate(-15.4288, -16.4198)"
             stroke-linecap="round"
@@ -178,6 +243,7 @@
       width="14"
       :height="filamentRectHeight"
       :fill="currentGateColor"
+      class="filament-animation"
       :class="tipFormingClass"
     />
     <polygon
@@ -351,56 +417,75 @@
         {{ temperatureText }}
       </text>
 
-      <g v-if="hasSyncFeedback && filamentPos >= FILAMENT_POS_END_BOWDEN">
-        <transition name="fade">
-          <g
-            v-if="isSensorTriggered('filament_tension') && isSensorTriggered('filament_compression')"
-            key="neutral"
-          >
-            <text
-              x="288"
-              y="240"
-            >Neutral</text>
-            <use
-              xlink:href="#sync-feedback"
-              transform="translate(286, 247.5) scale(1.0,-1.0) rotate(90)"
-            />
-          </g>
-          <g
-            v-else-if="isSensorTriggered('filament_tension')"
-            key="tension"
-          >
-            <text
-              x="288"
-              y="240"
-            >Tension</text>
-            <use
-              xlink:href="#sync-feedback"
-              transform="translate(258, 199) scale(1.2)"
-            />
-            <use
-              xlink:href="#sync-feedback"
-              transform="translate(258, 271) scale(1.2,-1.2)"
-            />
-          </g>
-          <g
-            v-else-if="isSensorTriggered('filament_compression')"
-            key="compression"
-          >
-            <text
-              x="288"
-              y="240"
-            >Compression</text>
-            <use
-              xlink:href="#sync-feedback"
-              transform="translate(258, 235) scale(1.2)"
-            />
-            <use
-              xlink:href="#sync-feedback"
-              transform="translate(258, 235) scale(1.2,-1.2)"
-            />
-          </g>
-        </transition>
+      <g v-if="hasSyncFeedback">
+        <use
+          xlink:href="#sync-feedback-buffer-piston"
+          :style="{
+            transform: `translate(232px, ${syncFeedbackPistonPos}px)`,
+            transition: 'transform 250ms ease',
+          }"
+        />
+        <use
+          xlink:href="#sync-feedback-buffer-box"
+          transform="translate(232, 212)"
+        />
+        <g v-if="syncFeedbackActive">
+          <transition name="fade">
+            <g
+              v-if="isSensorTriggered('filament_tension') && isSensorTriggered('filament_compression')"
+              key="neutral"
+            >
+              <text
+                x="298"
+                y="240"
+              >
+                Neutral
+              </text>
+              <use
+                xlink:href="#sync-feedback"
+                transform="translate(296, 247.5) scale(1.0,-1.0) rotate(90)"
+              />
+            </g>
+            <g
+              v-else-if="isSensorTriggered('filament_tension')"
+              key="tension"
+            >
+              <text
+                x="298"
+                y="240"
+              >
+                Tension
+              </text>
+              <use
+                xlink:href="#sync-feedback"
+                transform="translate(272, 199) scale(1.2)"
+              />
+              <use
+                xlink:href="#sync-feedback"
+                transform="translate(272, 271) scale(1.2,-1.2)"
+              />
+            </g>
+            <g
+              v-else-if="isSensorTriggered('filament_compression')"
+              key="compression"
+            >
+              <text
+                x="298"
+                y="240"
+              >
+                Compression
+              </text>
+              <use
+                xlink:href="#sync-feedback"
+                transform="translate(272, 235) scale(1.2)"
+              />
+              <use
+                xlink:href="#sync-feedback"
+                transform="translate(272, 235) scale(1.2,-1.2)"
+              />
+            </g>
+          </transition>
+        </g>
       </g>
       <text
         x="160"
@@ -452,231 +537,121 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
 
+const POSITIONS = {
+  UNKNOWN: 8,
+  BEFORE_PRE_GATE: 20,
+  PRE_GATE: 25,
+  AFTER_PRE_GATE: 40,
+  BEFORE_GEAR: 50,
+  GEAR: 55,
+  AFTER_GEAR: 70,
+  GATE: 85,
+  AFTER_GATE: 100,
+  ENCODER: 115,
+  START_BOWDEN: 135,
+  MID_BOWDEN: 221,
+  END_BOWDEN: 290,
+  EXTRUDER: 295,
+  EXTRUDER_ENTRANCE: 308,
+  BEFORE_TOOLHEAD: 315,
+  TOOLHEAD: 325,
+  COOLING_TUBE: 338,
+  CUT_POINT: 355,
+  NOZZLE_START: 371,
+} as const
+
 @Component({})
 export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
-  @Prop({ default: 0.7 })
-  readonly animationTime!: number
-
-  @Ref('filamentRect')
-  readonly filamentRect?: SVGElement
-
-  private filamentRectHeight: number = 0
-  private tipFormingClass: string = ''
-
-  readonly POSITIONS = {
-    unknown: 8,
-    'before-pre-gate': 20,
-    'pre-gate': 25,
-    'after-pre-gate': 40,
-    'before-gear': 50,
-    gear: 55,
-    'after-gear': 70,
-    gate: 85,
-    'after-gate': 100,
-    encoder: 115,
-    'start-bowden': 135,
-    'mid-bowden': 221,
-    'end-bowden': 290,
-    extruder: 295,
-    'extruder-entrance': 308,
-    'before-toolhead': 315,
-    toolhead: 325,
-    'cooling-tube': 338,
-    'cut-point': 355,
-    'nozzle-start': 371,
-  } as const
-
-  readonly BOWDEN_RANGE = 173 as const
-
-  @Watch('$typedState.printer.printer.mmu.bowden_progress')
-  onBowdenProgress (): void {
-    // Percentage movement in the bowden
-    this.calcFilamentHeight(this.filamentPos)
+  get tipFormingClass () {
+    return this.action === this.ACTION_FORMING_TIP ? 'form-tip-effect' : ''
   }
 
-  @Watch('$typedState.printer.printer.mmu.filament_pos')
-  onFilamentPosChanged (newPos: number): void {
-    // Filament position state
-    this.calcFilamentHeight(newPos)
-  }
-
-  @Watch('$typedState.printer.printer.mmu.sensors')
-  onSensorsChanged (): void {
-    // Update on sensor change
-    this.calcFilamentHeight(this.filamentPos)
-  }
-
-  @Watch('$typedState.printer.printer.mmu.action')
-  onActionChanged (action: string): void {
-    // Action being performed
-    if (action === this.ACTION_FORMING_TIP) {
-      this.tipFormingClass = 'form-tip-effect'
-    } else {
-      if (this.tipFormingClass) {
-        this.$nextTick(() => {
-          this.animateFilament(this.POSITIONS['cooling-tube'], 1)
-        })
-      }
-      this.tipFormingClass = ''
-    }
-  }
-
-  private calcFilamentHeight (filamentPos: number): void {
-    let pos = 0
-
+  get filamentRectHeight () {
     if (this.gate === this.TOOL_GATE_BYPASS) {
-      // Bypass use case places more emphasis on sensors
-      switch (filamentPos) {
-        case this.FILAMENT_POS_EXTRUDER_ENTRY:
-          pos = this.POSITIONS['before-toolhead']
-          break
+      if (this.filamentPos === this.FILAMENT_POS_EXTRUDER_ENTRY) return POSITIONS.BEFORE_TOOLHEAD
+      if (this.filamentPos === this.FILAMENT_POS_HOMED_TS) return POSITIONS.TOOLHEAD
+      if (this.filamentPos === this.FILAMENT_POS_IN_EXTRUDER) return POSITIONS.COOLING_TUBE
+      if (this.filamentPos === this.FILAMENT_POS_LOADED) return POSITIONS.NOZZLE_START
 
-        case this.FILAMENT_POS_HOMED_TS:
-          pos = this.POSITIONS['toolhead']
-          break
+      if (this.isSensorTriggered('toolhead')) return POSITIONS.TOOLHEAD
+      if (this.isSensorTriggered('extruder')) return POSITIONS.EXTRUDER
+      if (this.isSensorTriggered('mmu_gear')) return POSITIONS.AFTER_GEAR
+      if (this.isSensorTriggered('mmu_pre_gate')) return POSITIONS.AFTER_PRE_GATE
 
-        case this.FILAMENT_POS_IN_EXTRUDER:
-          pos = this.POSITIONS['cooling-tube']
-          if (
-            this.hasSensor('toolhead') &&
-            this.isSensorEnabled('toolhead') &&
-            !this.isSensorTriggered('toolhead')
-          ) {
-            pos = this.POSITIONS['before-toolhead'] // Don't show beyond toolhead sensor if not triggered
-          }
-          break
-
-        case this.FILAMENT_POS_LOADED:
-          pos = this.POSITIONS['nozzle-start']
-          break
-
-        default:
-          // For everything else, rely on sensors
-          if (this.isSensorTriggered('toolhead')) {
-            pos = this.POSITIONS['toolhead']
-          } else if (this.isSensorTriggered('extruder')) {
-            pos = this.POSITIONS['extruder']
-          } else if (this.isSensorTriggered('mmu_gear')) {
-            pos = this.POSITIONS['after-gear']
-          } else if (this.isSensorTriggered('mmu_pre_gate')) {
-            pos = this.POSITIONS['after-pre-gate']
-          } else {
-            pos = this.POSITIONS['before-pre-gate']
-          }
-          break
-      }
-    } else {
-      // Normal MMU use case leveraging state machine
-      switch (filamentPos) {
-        case this.FILAMENT_POS_UNLOADED:
-          if (this.isSensorTriggered('mmu_gear')) {
-            pos = this.POSITIONS['after-gear']
-          } else if (this.isSensorTriggered('mmu_pre_gate')) {
-            pos = this.POSITIONS['after-pre-gate']
-          } else {
-            pos = this.POSITIONS['before-pre-gate']
-          }
-          break
-
-        case this.FILAMENT_POS_HOMED_GATE:
-          if (this.configGateHomingEndstop === 'mmu_gear') {
-            pos = this.POSITIONS['gear']
-          } else if (this.configGateHomingEndstop === 'mmu_gate') {
-            pos = this.POSITIONS['gate']
-          } else if (this.configGateHomingEndstop === 'extruder') {
-            pos = this.POSITIONS['extruder'] // Special no-bowden case
-          } else {
-            pos = this.POSITIONS['after-gate']
-          }
-          break
-
-          // TODO: State not yet implmented in Happy Hare
-          // case this.FILAMENT_POS_HOMED_ENCODER:
-          //    pos = this.POSITIONS['encoder']
-          //    break
-
-        case this.FILAMENT_POS_START_BOWDEN:
-          if (this.bowdenProgress >= 0) {
-            pos = this.POSITIONS['start-bowden'] + (this.BOWDEN_RANGE * this.bowdenProgress) / 100
-          } else {
-            pos = this.POSITIONS['start-bowden']
-          }
-          break
-
-        case this.FILAMENT_POS_IN_BOWDEN:
-          if (this.bowdenProgress >= 0) {
-            pos = this.POSITIONS['start-bowden'] + (this.BOWDEN_RANGE * this.bowdenProgress) / 100
-          } else {
-            pos = this.POSITIONS['mid-bowden']
-          }
-          break
-
-        case this.FILAMENT_POS_END_BOWDEN:
-          if (
-            this.configGateHomingEndstop === 'none' ||
-                        (this.hasSensor('toolhead') &&
-                            this.isSensorEnabled('toolhead') &&
-                            !this.configExtruderForceHoming)
-          ) {
-            // No extruder homing will be performed so indicate at the extruder now
-            pos = this.POSITIONS['extruder-entrance']
-          } else {
-            pos = this.POSITIONS['end-bowden']
-          }
-          break
-
-        case this.FILAMENT_POS_HOMED_ENTRY:
-          pos = this.POSITIONS['extruder']
-          break
-
-        case this.FILAMENT_POS_HOMED_EXTRUDER:
-          pos = this.POSITIONS['extruder-entrance']
-          break
-
-        case this.FILAMENT_POS_EXTRUDER_ENTRY:
-          pos = this.POSITIONS['before-toolhead']
-          break
-
-        case this.FILAMENT_POS_HOMED_TS:
-          pos = this.POSITIONS['toolhead']
-          break
-
-        case this.FILAMENT_POS_IN_EXTRUDER:
-          pos = this.POSITIONS['cooling-tube']
-          break
-
-        case this.FILAMENT_POS_LOADED:
-          pos = this.POSITIONS['nozzle-start']
-          break
-
-        default: // this.FILAMENT_POS_UNKNOWN
-          pos = this.POSITIONS['unknown']
-      }
+      return POSITIONS.BEFORE_PRE_GATE
     }
-    this.animateFilament(pos)
+
+    if (this.filamentPos === this.FILAMENT_POS_UNLOADED) {
+      if (this.isSensorTriggered('mmu_gear')) return POSITIONS.AFTER_GEAR
+      if (this.isSensorTriggered('mmu_pre_gate')) return POSITIONS.AFTER_PRE_GATE
+
+      return POSITIONS.BEFORE_PRE_GATE
+    }
+
+    if (this.filamentPos === this.FILAMENT_POS_HOMED_GATE) {
+      if (this.configGateHomingEndstop === 'mmu_gear') return POSITIONS.GEAR
+      if (this.configGateHomingEndstop === 'mmu_gate') return POSITIONS.GATE
+      if (this.configGateHomingEndstop === 'extruder') return POSITIONS.EXTRUDER
+
+      return POSITIONS.AFTER_GATE
+    }
+
+    if (
+      [this.FILAMENT_POS_START_BOWDEN, this.FILAMENT_POS_IN_BOWDEN].includes(this.filamentPos) &&
+      this.bowdenProgress >= 0
+    ) {
+      const bowdenRange = this.endOfBowdenPos - POSITIONS.START_BOWDEN
+      return POSITIONS.START_BOWDEN + (bowdenRange * this.bowdenProgress) / 100
+    }
+
+    if (this.filamentPos === this.FILAMENT_POS_START_BOWDEN) return POSITIONS.START_BOWDEN
+    if (this.filamentPos === this.FILAMENT_POS_IN_BOWDEN) return POSITIONS.MID_BOWDEN
+    if (this.filamentPos === this.FILAMENT_POS_END_BOWDEN) return this.endOfBowdenPos
+    if (this.filamentPos === this.FILAMENT_POS_HOMED_ENTRY) return POSITIONS.EXTRUDER
+    if (this.filamentPos === this.FILAMENT_POS_HOMED_EXTRUDER) return POSITIONS.EXTRUDER_ENTRANCE
+    if (this.filamentPos === this.FILAMENT_POS_EXTRUDER_ENTRY) return POSITIONS.BEFORE_TOOLHEAD
+    if (this.filamentPos === this.FILAMENT_POS_HOMED_TS) return POSITIONS.TOOLHEAD
+    if (this.filamentPos === this.FILAMENT_POS_IN_EXTRUDER) {
+      if (this.toolheadSensor === false) return POSITIONS.BEFORE_TOOLHEAD
+
+      return POSITIONS.COOLING_TUBE
+    }
+
+    if (this.filamentPos === this.FILAMENT_POS_LOADED) return POSITIONS.NOZZLE_START
+
+    return POSITIONS.UNKNOWN
   }
 
-  private animateFilament (newHeight: number, animationTime: number = this.animationTime) {
-    const rect = this.filamentRect
-    if (rect) {
-      if (animationTime > 0) {
-        const currentHeight = parseFloat(getComputedStyle(rect).height) ?? this.POSITIONS['end-bowden']
-        const difference = Math.abs(currentHeight - newHeight)
-        const duration = Math.min((difference / this.BOWDEN_RANGE) * animationTime + 0.1, animationTime)
-        rect.style.transition = `height ${duration}s ease-in`
-      } else {
-        rect.style.transition = 'none'
-      }
-    }
-    this.filamentRectHeight = newHeight
+  get endOfBowdenPos () {
+    if (
+      typeof this.toolheadSensor === 'boolean' &&
+      !this.configExtruderForceHoming
+    ) return POSITIONS.END_BOWDEN
+
+    if (
+      this.configExtruderHomingEndstop === 'none' ||
+      this.configExtruderHomingEndstop === 'collision' ||
+      this.configExtruderHomingEndstop === 'mmu_gear_touch' ||
+      this.configExtruderHomingEndstop === 'filament_compression'
+    ) return POSITIONS.EXTRUDER_ENTRANCE
+
+    if (this.configExtruderHomingEndstop === 'extruder') return POSITIONS.EXTRUDER
+
+    return POSITIONS.END_BOWDEN
+  }
+
+  get toolheadSensor () {
+    return this.sensors['toolhead']
   }
 
   get encoderPosText (): string {
-    if (this.encoderPos < 10000) return `${this.encoderPos} mm`
+    if (this.encoderPos < 10000) {
+      return `${this.encoderPos} mm`
+    }
     return `${this.encoderPos}`
   }
 
@@ -735,9 +710,37 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
   }
 
   get hasSyncFeedback (): boolean {
-    return (
-      this.syncFeedbackEnabled && (this.hasSensor('filament_compression') || this.hasSensor('filament_tension'))
-    )
+    return this.hasFilamentCompressionSensor || this.hasFilamentTensionSensor || this.hasFilamentProportionalSensor
+  }
+
+  get syncFeedbackActive (): boolean {
+    return this.hasSyncFeedback && this.filamentPos >= this.FILAMENT_POS_END_BOWDEN
+  }
+
+  get syncFeedbackPistonPos (): number {
+    const bias = this.syncFeedbackBiasModelled
+    const yPos = bias * 12 + 234
+    return yPos
+  }
+
+  get syncFeedbackPistonText (): string {
+    if (this.hasFilamentProportionalSensor) {
+      const bias = this.syncFeedbackBiasModelled
+      return bias.toFixed(2)
+    }
+    return ''
+  }
+
+  get hasFilamentProportionalSensor () {
+    return this.hasSensor('filament_proportional')
+  }
+
+  get hasFilamentCompressionSensor () {
+    return this.hasSensor('filament_compression')
+  }
+
+  get hasFilamentTensionSensor () {
+    return this.hasSensor('filament_tension')
   }
 
   get homedToEncoder (): boolean {
@@ -800,10 +803,6 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
 
   get isGripped (): boolean {
     return (this.grip === 'Gripped' || this.servo === 'Down')
-  }
-
-  mounted () {
-    this.calcFilamentHeight(this.filamentPos)
   }
 }
 </script>
@@ -892,16 +891,6 @@ svg text {
     font-weight: normal;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.8s ease;
-}
-
-.fade-enter,
-.fade-leave-to {
-    opacity: 0;
-}
-
 @keyframes fadeInOut {
     0%,
     100% {
@@ -960,5 +949,9 @@ svg text {
 }
 .form-tip-effect {
     animation: form-tip 1s infinite;
+}
+
+.filament-animation {
+    transition: height 0.5s ease-in;
 }
 </style>
