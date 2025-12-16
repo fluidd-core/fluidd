@@ -260,7 +260,6 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   readonly showContextMenu!: boolean
 
   gateMenuVisible: Record<number, boolean> = {}
-  gateMenuTimer: ReturnType<typeof setTimeout> | null = null
 
   vendorLogo = ''
   closeTimeout: number | null = null
