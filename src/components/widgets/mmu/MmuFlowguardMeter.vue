@@ -176,7 +176,8 @@ import MmuMixin from '@/mixins/mmu'
 
 @Component
 export default class MmuFlowguardMeter extends Mixins(StateMixin, MmuMixin) {
-  @Ref('dialCircle') dialCircle!: SVGCircleElement
+  @Ref('dialCircle')
+  dialCircle!: SVGCircleElement
 
   ROTATION_TIME = 1
   CIRCUMFERENCE = 2 * Math.PI * 50
@@ -189,19 +190,19 @@ export default class MmuFlowguardMeter extends Mixins(StateMixin, MmuMixin) {
   Y1_ZERO = 70 + 59 * Math.sin((270 * Math.PI) / 180)
   DANGER = 0.8
 
-  get flowguardEnabled () {
+  get flowguardEnabled (): boolean {
     return this.mmuState?.flowguard?.enabled ?? false
   }
 
-  get flowguardActive () {
+  get flowguardActive (): boolean {
     return this.mmuState?.flowguard?.active ?? false
   }
 
-  get flowguardTrigger () {
+  get flowguardTrigger (): string {
     return (this.mmuState?.flowguard?.trigger ?? '').toUpperCase()
   }
 
-  get flowrateText () {
+  get flowrateText (): string {
     if ('filament_proportional' in this.sensors) {
       const flow_rate = this.mmuState?.sync_feedback_flow_rate ?? 100.0
       return `${Math.round(flow_rate)}%`
@@ -209,96 +210,98 @@ export default class MmuFlowguardMeter extends Mixins(StateMixin, MmuMixin) {
     return 'ACTIVE'
   }
 
-  get flowrateTextSize () {
+  get flowrateTextSize (): string {
     if ('filament_proportional' in this.sensors) {
       return '18px'
     }
     return '14px'
   }
 
-  get maxClog () {
+  get maxClog (): number {
     return Math.abs(this.mmuState?.flowguard?.max_clog ?? 0.0)
   }
 
-  get maxTangle () {
+  get maxTangle (): number {
     return -Math.abs(this.mmuState?.flowguard?.max_tangle ?? 0.0)
   }
 
-  get flowguardLevel () {
+  get flowguardLevel (): number {
     return this.mmuState?.flowguard?.level ?? 0.0
   }
 
-  get svgClasses () {
-    return { 'disabled-flowguard': !this.flowguardEnabled }
+  get svgClasses (): Record<string, boolean> {
+    return {
+      'disabled-flowguard': !this.flowguardEnabled
+    }
   }
 
-  get clogWarning () {
+  get clogWarning (): boolean {
     return Math.abs(this.maxClog) > this.DANGER
   }
 
-  get maxClogLineClasses () {
+  get maxClogLineClasses (): Record<string, boolean> {
     return {
       'warning-color': this.clogWarning,
       'primary-color': !this.clogWarning,
     }
   }
 
-  get clogHeadroomDashOffset () {
+  get clogHeadroomDashOffset (): number {
     return this.CIRCUMFERENCE * (1 + (1 - this.DANGER) * (150 / 360))
   }
 
-  get tangleWarning () {
+  get tangleWarning (): boolean {
     return Math.abs(this.maxTangle) > this.DANGER
   }
 
-  get maxTangleLineClasses () {
+  get maxTangleLineClasses (): Record<string, boolean> {
     return {
       'warning-color': this.tangleWarning,
       'primary-color': !this.tangleWarning,
     }
   }
 
-  get tangleHeadroomDashOffset () {
+  get tangleHeadroomDashOffset (): number {
     return this.CIRCUMFERENCE * (1 - (1 - this.DANGER) * (150 / 360))
   }
 
-  get flowguardPercent () {
+  get flowguardPercent (): number {
     return Math.max(Math.min(1, this.flowguardLevel), -1) * 100
   }
 
-  get meterDashOffset () {
+  get meterDashOffset (): number {
     return this.CIRCUMFERENCE * ((100 - (this.flowguardPercent * 150) / 360) / 100)
   }
 
-  get maxClogAngle () {
+  get maxClogAngle (): number {
     return this.maxClog * 150 + 150
   }
 
-  get x1MaxClog () {
+  get x1MaxClog (): number {
     return this.calcX1(this.maxClogAngle)
   }
 
-  get y1MaxClog () {
+  get y1MaxClog (): number {
     return this.calcY1(this.maxClogAngle)
   }
 
-  get maxTangleAngle () {
+  get maxTangleAngle (): number {
     return this.maxTangle * 150 + 150
   }
 
-  get x1MaxTangle () {
+  get x1MaxTangle (): number {
     return this.calcX1(this.maxTangleAngle)
   }
 
-  get y1MaxTangle () {
+  get y1MaxTangle (): number {
     return this.calcY1(this.maxTangleAngle)
   }
 
-  private calcX1 (angle: number) {
+  private calcX1 (angle: number): number {
     return 70 + 59 * Math.cos(((120 + angle) * Math.PI) / 180)
   }
 
-  private calcY1 (angle: number) {
+  private calcY1 (angle: number): number {
     return 70 + 59 * Math.sin(((120 + angle) * Math.PI) / 180)
   }
 

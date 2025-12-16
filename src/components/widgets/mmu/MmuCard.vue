@@ -357,15 +357,15 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
     return this.hasFilamentCompressionSensor || this.hasFilamentTensionSensor || this.hasFilamentProportionalSensor
   }
 
-  get hasFilamentProportionalSensor () {
+  get hasFilamentProportionalSensor (): boolean {
     return this.hasSensor('filament_proportional')
   }
 
-  get hasFilamentCompressionSensor () {
+  get hasFilamentCompressionSensor (): boolean {
     return this.hasSensor('filament_compression')
   }
 
-  get hasFilamentTensionSensor () {
+  get hasFilamentTensionSensor (): boolean {
     return this.hasSensor('filament_tension')
   }
 
