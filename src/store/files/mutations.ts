@@ -167,7 +167,7 @@ export const mutations = {
     }
   },
 
-  setCurrentPath (state, payload) {
+  setCurrentPath (state, payload: { root: string, path: string }) {
     Vue.set(state.currentPaths, payload.root, payload.path)
   },
 
