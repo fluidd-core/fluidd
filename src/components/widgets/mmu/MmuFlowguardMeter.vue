@@ -204,8 +204,8 @@ export default class MmuFlowguardMeter extends Mixins(StateMixin, MmuMixin) {
 
   get flowrateText (): string {
     if ('filament_proportional' in this.sensors) {
-      const flow_rate = this.mmuState?.sync_feedback_flow_rate ?? 100.0
-      return `${Math.round(flow_rate)}%`
+      const flowRate = this.mmuState?.sync_feedback_flow_rate ?? 100.0
+      return `${Math.round(flowRate)}%`
     }
     return 'ACTIVE'
   }
