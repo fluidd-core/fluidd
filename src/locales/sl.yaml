@@ -1044,7 +1044,6 @@ app:
       edit_gate_map: Uredi filamente (uredi mape vrat)
       edit_ttg_map: Mapa orodij / filametov (uredi TTG mapo)
     label:
-      clog_detection: Zaznavanje zamaška
       tool_mapping: Mapiranje orodij
       spoolman: Spoolman
       spoolman_id: Spoolman ID

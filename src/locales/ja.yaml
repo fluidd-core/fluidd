@@ -1036,7 +1036,6 @@ app:
       edit_gate_map: フィラメント編集(ゲートマップ編集)
       edit_ttg_map: マップツール/フィラメント(TTGマップ編集)
     label:
-      clog_detection: 詰まり検出
       tool_mapping: ツールマッピング
       spoolman: Spoolman
       spoolman_id: Spoolman ID

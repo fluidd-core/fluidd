@@ -1013,7 +1013,6 @@ app:
       edit_ttg_map: 映射工具/耗材 (编辑TTG映射)
       edit_gate_map: 编辑耗材(编辑通道映射)
     label:
-      clog_detection: 堵转检测
       spoolman: Spoolman
       filament_name: 耗材名
       choose_spool: 选择料盘

@@ -1125,7 +1125,6 @@ app:
       extruder_only: Tylko ekstruder
       choose_spool: Wybierz szpulę
       material: Materiał
-      clog_detection: Wykrywanie zatorów
       tool_mapping: Mapowanie narzędzia
       spoolman: Spoolman
       temperature: Temperatura

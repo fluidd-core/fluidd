@@ -187,7 +187,7 @@
                   width="40%"
                 />
                 <div class="text--disabled body-1">
-                  {{ $t('app.mmu.label.clog_detection') }}
+                  {{ $t('app.mmu.label.clog_tangle_detection') }}
                 </div>
               </div>
             </template>

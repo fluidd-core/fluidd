@@ -1130,7 +1130,6 @@ app:
       select: Виберіть
     label:
       spoolman_never: Ніколи
-      clog_detection: Виявлення засмічень
       tool_mapping: Відображення інструментів
       spoolman: Спулман
       spoolman_id: ID Спулмана

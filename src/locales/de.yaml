@@ -1241,7 +1241,6 @@ app:
       spoolman_today: Heute
       spoolman_yesterday: Gestern
       spoolman_days_ago: vor %{days} Tagen
-      clog_detection: Verstopfungserkennung
       leds: LEDs
       all_tools: Alle Werkzeuge
       material: Werkstoff

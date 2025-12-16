@@ -1110,7 +1110,6 @@ app:
       all_tools: Tüm Araçlar
       save: Kaydet
       cancel: İptal Et
-      clog_detection: Tıkanıklık Tespiti
       tool_mapping: Takım Eşleme
       choose_spool: Makarayı Seçin
       filament_name: Filament Adı
