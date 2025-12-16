@@ -426,9 +426,24 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 
   get contextMenuItems () {
     return [
-      { icon: '$mmuSelectGate', command: 'MMU_SELECT', label: this.$t('app.mmu.btn.select'), loading: '$waits.onMmuSelect`' },
-      { icon: '$mmuPreload', command: 'MMU_PRELOAD', label: this.$t('app.mmu.btn.preload'), loading: '$waits.onMmuPreload' },
-      { icon: '$mmuEject', command: 'MMU_EJECT', label: this.$t('app.mmu.btn.eject'), loading: '$waits.onMmuEject' },
+      {
+        icon: '$mmuSelectGate',
+        command: 'MMU_SELECT',
+        label: this.$t('app.mmu.btn.select').toString(),
+        loading: this.$waits.onMmuSelect
+      },
+      {
+        icon: '$mmuPreload',
+        command: 'MMU_PRELOAD',
+        label: this.$t('app.mmu.btn.preload').toString(),
+        loading: this.$waits.onMmuPreload
+      },
+      {
+        icon: '$mmuEject',
+        command: 'MMU_EJECT',
+        label: this.$t('app.mmu.btn.eject').toString(),
+        loading: this.$waits.onMmuEject
+      }
     ]
   }
 
