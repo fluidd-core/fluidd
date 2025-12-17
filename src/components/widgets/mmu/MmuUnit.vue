@@ -269,8 +269,8 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 
   vendorLogo = ''
   closeTimeout: number | null = null
-  menuX: number = 0
-  menuY: number = 0
+  menuX = 0
+  menuY = 0
 
   @Watch('unit', { immediate: true })
   onUnit (value: number) {
@@ -459,7 +459,6 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   }
 
   openContextMenu (gate: number, e: MouseEvent) {
-    e.preventDefault()
     if (gate < 0 || gate === this.gate || !this.showContextMenu) {
       this.closeContextMenu()
       return
@@ -484,6 +483,10 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     if (this.closeTimeout === null) return
     clearTimeout(this.closeTimeout)
     this.closeTimeout = null
+  }
+
+  beforeDestroy () {
+    this.clearCloseTimeout()
   }
 }
 </script>
