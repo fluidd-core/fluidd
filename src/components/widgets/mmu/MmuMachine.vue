@@ -11,6 +11,7 @@
             :unit-index="index"
             :edit-gate-map="editGateMap"
             :edit-gate-selected="editGateSelected"
+            :show-context-menu="showContextMenu"
             @select-gate="selectGate"
           />
         </div>
@@ -37,6 +38,9 @@ export default class MmuMachine extends Mixins(StateMixin, MmuMixin) {
 
   @Prop({ required: false, default: -1 })
   readonly editGateSelected!: number
+
+  @Prop({ required: false, default: true })
+  readonly showContextMenu!: boolean
 
   get unitArray (): number[] {
     return Array.from({ length: this.numUnits }, (_, k) => k)
