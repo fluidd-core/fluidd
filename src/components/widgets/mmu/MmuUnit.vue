@@ -12,9 +12,12 @@
           <v-menu
             v-model="gateMenuVisible[g]"
             :disabled="g === gate"
+            :position-x="menuX"
+            :position-y="menuY"
             :close-on-content-click="false"
             :open-on-click="false"
             transition="slide-y-transition"
+            absolute
             offset-y
           >
             <template #activator="{ attrs: menuAttrs }">
@@ -51,7 +54,10 @@
               </v-tooltip>
             </template>
 
-            <v-list dense>
+            <v-list
+              dense
+              @mouseleave="closeContextMenu"
+            >
               <v-subheader class="compact-subheader">
                 Gate {{ g }}
               </v-subheader>
@@ -62,7 +68,7 @@
               >
                 <v-btn
                   small
-                  class="width: 100%"
+                  style="width: 100%"
                   :disabled="!klippyReady || !canSend"
                   :loading="hasWait(item.loading)"
                   @click="contextMenuCommand(item.command, item.loading, g)"
@@ -263,6 +269,8 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 
   vendorLogo = ''
   closeTimeout: number | null = null
+  menuX: number = 0
+  menuY: number = 0
 
   @Watch('unit', { immediate: true })
   onUnit (value: number) {
@@ -456,6 +464,8 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
       this.closeContextMenu()
       return
     }
+    this.menuX = e.clientX - 20
+    this.menuY = e.clientY - 20
     this.closeContextMenu()
     this.$set(this.gateMenuVisible, gate, true)
     this.closeTimeout = window.setTimeout(() => {
@@ -476,6 +486,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     this.closeTimeout = null
   }
 
+/*
   mounted () {
     addEventListener('mmu-close-gate-context-menus', this.closeContextMenu)
   }
@@ -484,6 +495,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     removeEventListener('mmu-close-gate-context-menus', this.closeContextMenu)
     this.clearCloseTimeout()
   }
+*/
 }
 </script>
 
