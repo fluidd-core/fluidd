@@ -485,17 +485,6 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     clearTimeout(this.closeTimeout)
     this.closeTimeout = null
   }
-
-/*
-  mounted () {
-    addEventListener('mmu-close-gate-context-menus', this.closeContextMenu)
-  }
-
-  beforeDestroy () {
-    removeEventListener('mmu-close-gate-context-menus', this.closeContextMenu)
-    this.clearCloseTimeout()
-  }
-*/
 }
 </script>
 
