@@ -82,9 +82,18 @@
                 v-safe-html="n.description"
                 class="notification-description"
               />
-              <v-list-item-subtitle class="notification-timestamp">
-                {{ $filters.formatRelativeTimeToNow(n.timestamp * 1000) }}
-              </v-list-item-subtitle>
+              <v-tooltip bottom>
+                <template #activator="{ on, attrs }">
+                  <v-list-item-subtitle
+                    v-bind="attrs"
+                    class="notification-timestamp"
+                    v-on="on"
+                  >
+                    {{ $filters.formatRelativeTimeToNow(n.timestamp * 1000) }}
+                  </v-list-item-subtitle>
+                </template>
+                <span>{{ $filters.formatDateTime(n.timestamp * 1000) }}</span>
+              </v-tooltip>
               <v-list-item-subtitle v-if="n.to">
                 <app-btn
                   v-if="!n.to.startsWith('http')"

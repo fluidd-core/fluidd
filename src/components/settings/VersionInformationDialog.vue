@@ -51,7 +51,17 @@
                     >
                       <strong>{{ commit.author }}</strong>
                     </a>
-                    {{ $t('app.version.label.committed') }} {{ $filters.formatRelativeTimeToNow(+commit.date * 1000) }}
+                    <v-tooltip bottom>
+                      <template #activator="{ on, attrs }">
+                        <span
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          {{ $t('app.version.label.committed') }} {{ $filters.formatRelativeTimeToNow(+commit.date * 1000) }}
+                        </span>
+                      </template>
+                      <span>{{ $filters.formatDateTime(+commit.date * 1000) }}</span>
+                    </v-tooltip>
                   </div>
                 </div>
                 <div>
