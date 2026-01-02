@@ -298,7 +298,7 @@ export const getters = {
 
     const moves: readonly Move[] = state.moves
 
-    return binarySearch(moves, move => filePosition - move.filePosition)
+    return binarySearch(moves, move => filePosition - move.filePosition, true)
   },
 
   getLayerNrByFilePosition: (state, getters) => (filePosition: number): number => {
