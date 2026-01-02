@@ -120,10 +120,23 @@ export const getters = {
       z: NaN
     }
 
-    for (let i = moveIndex; i >= 0 && (Number.isNaN(output.x) || Number.isNaN(output.y) || Number.isNaN(output.z)); i--) {
+    for (let i = moveIndex, count = 0; i >= 0 && count < 3; i--) {
       const move = moves[i]
 
-      Object.assign(output, move)
+      if (Number.isNaN(output.x) && move.x != null) {
+        output.x = move.x
+        count++
+      }
+
+      if (Number.isNaN(output.y) && move.y != null) {
+        output.y = move.y
+        count++
+      }
+
+      if (Number.isNaN(output.z) && move.z != null) {
+        output.z = move.z
+        count++
+      }
     }
 
     return {
