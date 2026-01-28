@@ -19,6 +19,10 @@ export interface CustomNavLink {
 export interface NavigationConfig {
   customLinks: CustomNavLink[]
   hiddenThemeLinks: string[]
+  collapsedSystemLinks: string[]
+  systemLinkOrder: string[]
+  collapsedCustomLinks: string[]
+  openNavLinksInNewTab: boolean
   confirmOnNavLink: boolean
 }
 

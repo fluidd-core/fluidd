@@ -261,6 +261,7 @@ app:
       forgot_password: Forgotten your password?
       go_to_file: Go to file
       heaters_off: Heaters off
+      hide: Hide
       job_queue: Job Queue
       load_all: Load all
       login: Login
@@ -347,6 +348,8 @@ app:
       change_password: Change password
       clean_nozzle: Clean Nozzle
       clear_all: Clear all
+      collapse_to_bookmarks: Collapse to bookmarks
+      collapse_to_more_menu: Collapse to More menu
       color: Color
       command: Command
       confirm: Confirm
@@ -415,6 +418,7 @@ app:
       screw_name: Screw name
       screw_number: Screw %{index}
       services: Services
+      show_in_sidebar: Show in sidebar
       slicer: Slicer
       smooth_time: Smooth Time
       speed: Speed
@@ -593,6 +597,8 @@ app:
       timelapse: Timelapse
       tool: Tool
       tune: Tune
+      bookmarks: Bookmarks
+      more: More
     tooltip:
       browse_metrics: Browse available metrics
       estop: Emergency Stop
@@ -811,6 +817,7 @@ app:
       time_format: Time format
       text_sort_order: Text sort order
       confirm_on_nav_link: Confirm Before Opening Links
+      open_nav_links_in_new_tab: Open Links in New Tab
       link_icon_color: Link Icon Color
       use_theme_color: Use theme color
       theme_nav_link: Theme Link

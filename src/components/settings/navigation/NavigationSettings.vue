@@ -34,6 +34,18 @@
         </app-btn>
       </app-setting>
 
+      <app-setting>
+        <template #title>
+          <v-switch
+            v-model="openNavLinksInNewTab"
+            :label="$t('app.setting.label.open_nav_links_in_new_tab')"
+            hide-details
+            class="mt-0 pt-0"
+            @click.native.stop
+          />
+        </template>
+      </app-setting>
+
       <template v-if="themeLinks.length > 0">
         <v-divider />
 
@@ -180,6 +192,18 @@ export default class NavigationSettings extends Vue {
   set confirmOnNavLink (value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.navigation.confirmOnNavLink',
+      value,
+      server: true
+    })
+  }
+
+  get openNavLinksInNewTab (): boolean {
+    return this.$typedState.config.uiSettings.navigation.openNavLinksInNewTab
+  }
+
+  set openNavLinksInNewTab (value: boolean) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.navigation.openNavLinksInNewTab',
       value,
       server: true
     })

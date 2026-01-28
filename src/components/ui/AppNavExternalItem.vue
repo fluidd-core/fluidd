@@ -6,12 +6,13 @@
     <template #activator="{ attrs, on }">
       <v-list-item
         :href="resolvedUrl"
-        target="_self"
+        :target="newTab ? '_blank' : '_self'"
         link
         color="secondary"
         v-bind="attrs"
         v-on="on"
         @click="confirm ? handleConfirmClick($event) : undefined"
+        @contextmenu.prevent="$emit('contextmenu', $event)"
       >
         <v-list-item-icon>
           <app-nav-link-icon
@@ -59,6 +60,9 @@ export default class AppNavExternalItem extends Mixins(BrowserMixin) {
   @Prop({ type: Boolean, default: false })
   readonly confirm!: boolean
 
+  @Prop({ type: Boolean, default: false })
+  readonly newTab!: boolean
+
   get resolvedUrl (): string {
     if (this.url.startsWith('/')) {
       return `${window.location.origin}${this.url}`
@@ -79,7 +83,7 @@ export default class AppNavExternalItem extends Mixins(BrowserMixin) {
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
     )
     if (result) {
-      window.open(this.resolvedUrl, '_self')
+      window.open(this.resolvedUrl, this.newTab ? '_blank' : '_self')
     }
   }
 }
