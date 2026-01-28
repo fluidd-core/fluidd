@@ -5,7 +5,7 @@
   >
     <template #activator="{ attrs, on }">
       <v-list-item
-        :href="url"
+        :href="resolvedUrl"
         target="_self"
         link
         color="secondary"
@@ -17,6 +17,7 @@
           <app-nav-link-icon
             :icon="icon"
             :custom-icon="customIcon"
+            :custom-image="customImage"
             :color="resolvedColor"
           />
         </v-list-item-icon>
@@ -50,10 +51,20 @@ export default class AppNavExternalItem extends Mixins(BrowserMixin) {
   readonly customIcon?: string | SvgIconPath[]
 
   @Prop({ type: String })
+  readonly customImage?: string
+
+  @Prop({ type: String })
   readonly color?: string
 
   @Prop({ type: Boolean, default: false })
   readonly confirm!: boolean
+
+  get resolvedUrl (): string {
+    if (this.url.startsWith('/')) {
+      return `${window.location.origin}${this.url}`
+    }
+    return this.url
+  }
 
   get resolvedColor (): string | undefined {
     return this.color === 'theme'
@@ -64,11 +75,11 @@ export default class AppNavExternalItem extends Mixins(BrowserMixin) {
   async handleConfirmClick (e: Event) {
     e.preventDefault()
     const result = await this.$confirm(
-      this.$t('app.general.simple_form.msg.confirm_open_nav_link', { url: this.url }).toString(),
+      this.$t('app.general.simple_form.msg.confirm_open_nav_link', { url: this.resolvedUrl }).toString(),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
     )
     if (result) {
-      window.open(this.url, '_self')
+      window.open(this.resolvedUrl, '_self')
     }
   }
 }

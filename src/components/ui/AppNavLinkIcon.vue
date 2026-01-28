@@ -1,6 +1,12 @@
 <template>
+  <img
+    v-if="customImage"
+    :src="customImage"
+    :class="svgClass"
+    :style="svgStyle"
+  >
   <svg
-    v-if="Array.isArray(customIcon)"
+    v-else-if="Array.isArray(customIcon)"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 56 56"
     :class="svgClass"
@@ -13,6 +19,12 @@
       :d="p.d"
     />
   </svg>
+  <img
+    v-else-if="isCustomIconDataUrl"
+    :src="customIcon"
+    :class="svgClass"
+    :style="svgStyle"
+  >
   <svg
     v-else-if="customIcon"
     xmlns="http://www.w3.org/2000/svg"
@@ -48,10 +60,17 @@ export default class AppNavLinkIcon extends Vue {
   readonly customIcon?: string | SvgIconPath[]
 
   @Prop({ type: String })
+  readonly customImage?: string
+
+  @Prop({ type: String })
   readonly color?: string
 
   @Prop({ type: Boolean, default: false })
   readonly small!: boolean
+
+  get isCustomIconDataUrl (): boolean {
+    return typeof this.customIcon === 'string' && this.customIcon.startsWith('data:')
+  }
 
   get svgClass (): string {
     return this.small ? 'v-icon v-icon--dense' : 'v-icon__svg'

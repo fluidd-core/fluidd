@@ -479,6 +479,7 @@ app:
         exists: Already exists
         invalid_number: Invalid Number
         invalid_url: Invalid URL
+        file_too_large: "File exceeds maximum size of %{size}"
         invalid_expression: Invalid Expression
         max: Max %{max}
         min: Min %{min}
@@ -687,6 +688,7 @@ app:
       auto_load_mobile_on_print_start: Automatically load file on mobile devices
       auto: Auto
       axes: Axes
+      built_in_icon: Built In Icon
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
       camera_fullscreen_action:
@@ -699,8 +701,13 @@ app:
       camera_url_stream: Camera Url Stream
       card: Card
       collector: Collector
+      custom_color: Custom Color
       custom_icon: Custom Icon (SVG)
       custom_icon_hint: SVG path data (overrides icon)
+      custom_image: Custom Image
+      custom_svg_icon: Custom SVG Icon
+      upload_image: Upload Image
+      upload_svg: Upload SVG
       confirm_on_estop: Require confirm on Emergency Stop
       confirm_on_power_device_change: Require confirm on Device Power changes
       confirm_on_save_config_and_restart: Review Pending Configuration Changes before Save and Restart
@@ -737,6 +744,7 @@ app:
       gcode_coords: Use GCode Coordinates
       host_restart: Host Restart
       icon: Icon
+      icon_type: Icon Type
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
@@ -782,6 +790,7 @@ app:
       show_upload_and_print: Show Upload and Print button in top navigation
       solid: Solid
       starts_with: Starts with
+      svg_path_data: SVG Path Data
       theme_preset: Community preset
       thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
@@ -847,13 +856,22 @@ app:
         However, please note that these themes are not officially maintained by the respective brands.<br>
         Any issues or inquiries related to the themes should be directed to the Fluidd team.<br>
         The use of brand names and logos is for decorative and aesthetic purposes only, and no official association with or endorsement by the brands is implied.
+      nav_link_url_warning: 'See the tooltip for details.'
       nav_link_url: >-
-        A full URL (e.g. https://example.com) opens directly.<br>
-        A path without a protocol (e.g. /my-page) is appended to the current host.
+        Include the protocol (e.g. https://example.com) for external links.<br>
+        URLs without a protocol will be treated as relative paths by the browser.
       nav_link_custom_icon: >-
+        Upload an SVG file (max 64 KB) to use as the link icon.<br>
+        Uploaded SVGs are rendered as images, so the theme color and custom
+        color settings do not apply.<br>
+        Set colors directly in the SVG using <code>fill</code> or
+        <code>style</code> attributes.
+      nav_link_custom_image: >-
+        Upload a PNG or JPEG image (max 64 KB) to use as the link icon.
+      nav_link_svg_path_data: >-
         Paste the <code>d</code> attribute from an SVG <code>&lt;path&gt;</code> element.<br>
         The viewBox is assumed to be 0 0 24 24.<br>
-        Overrides the selected icon when set.
+        Custom paths support the theme color and custom color options.
       nav_link_position: >-
         Controls the sort order among custom and theme links.<br>
         Lower numbers appear higher in the sidebar.<br>

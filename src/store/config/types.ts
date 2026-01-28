@@ -11,6 +11,7 @@ export interface CustomNavLink {
   url: string
   icon: string
   customIcon?: string | SvgIconPath[]
+  customImage?: string          // base64 data URI (e.g. "data:image/png;base64,...")
   color?: string
   position: number
 }
