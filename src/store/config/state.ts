@@ -163,6 +163,11 @@ export const defaultState = (): ConfigState => {
         showLaneInfinite: true,
         showUnitIcons: true,
         showTd1Color: true,
+      },
+      navigation: {
+        customLinks: [],
+        hiddenThemeLinks: [],
+        confirmOnNavLink: true
       }
     }
   }

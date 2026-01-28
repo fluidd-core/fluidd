@@ -196,7 +196,9 @@ import {
   mdiWrench,
   mdiVariable,
   mdiArrowDownBold,
-  mdiArrowUpBold
+  mdiArrowUpBold,
+  mdiEye,
+  mdiEyeOff
 } from '@mdi/js'
 
 import {
@@ -556,6 +558,8 @@ export const Icons = Object.freeze({
   afcUnloadLane: mdiArrowUpBold,
   afcLoadLane: mdiArrowDownBold,
   afcEjectFilament: mdiEject,
+  eye: mdiEye,
+  eyeOff: mdiEyeOff,
 })
 
 export const Waits = Object.freeze({

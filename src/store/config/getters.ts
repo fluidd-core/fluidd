@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { ConfigState, TemperaturePreset } from './types'
+import type { ConfigState, CustomNavLink, TemperaturePreset } from './types'
 import type { RootState } from '../types'
 import type { Heater, Fan } from '../printer/types'
 import type { AppDataTableHeader } from '@/types'
@@ -105,6 +105,36 @@ export const getters = {
           ...header,
           ...configuredHeaders.find(p => p.value === header.value)
         }))
+  },
+
+  getThemeNavLinks: (state): CustomNavLink[] => {
+    const activePreset = state.hostConfig.themePresets.find(
+      p => p.logo.src === state.uiSettings.theme.logo.src
+    )
+    if (activePreset?.url) {
+      return [{
+        id: `preset-${activePreset.logo.src}`,
+        title: activePreset.name,
+        url: activePreset.url,
+        icon: 'openInNew',
+        customIcon: activePreset.icon,
+        position: 0
+      }]
+    }
+    return []
+  },
+
+  getDbNavLinks: (state): CustomNavLink[] => {
+    return [...(state.uiSettings.navigation?.customLinks || [])]
+      .sort((a, b) => a.position - b.position)
+  },
+
+  getCustomNavLinks: (state, getters): CustomNavLink[] => {
+    const dbLinks = state.uiSettings.navigation?.customLinks || []
+    const hidden = state.uiSettings.navigation?.hiddenThemeLinks || []
+    const themeLinks = (getters.getThemeNavLinks as CustomNavLink[])
+      .filter(l => !hidden.includes(l.id))
+    return [...dbLinks, ...themeLinks].sort((a, b) => a.position - b.position)
   },
 
   getTokenKeys: (state) => {
