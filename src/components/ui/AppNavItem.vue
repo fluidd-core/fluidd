@@ -11,6 +11,7 @@
         color="secondary"
         v-bind="attrs"
         v-on="on"
+        @contextmenu.prevent="$emit('contextmenu', $event)"
       >
         <v-list-item-icon>
           <v-icon>{{ icon }}</v-icon>

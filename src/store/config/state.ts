@@ -167,6 +167,10 @@ export const defaultState = (): ConfigState => {
       navigation: {
         customLinks: [],
         hiddenThemeLinks: [],
+        collapsedSystemLinks: [],
+        systemLinkOrder: [],
+        collapsedCustomLinks: [],
+        openNavLinksInNewTab: false,
         confirmOnNavLink: true
       }
     }
