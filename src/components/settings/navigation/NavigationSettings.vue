@@ -40,12 +40,13 @@
         <template v-for="(link, i) in themeLinks">
           <app-setting
             :key="`theme-link${link.id}`"
-            :r-cols="2"
+            :r-cols="3"
           >
             <template #title>
               <app-nav-link-icon
                 :icon="`$${link.icon}`"
                 :custom-icon="link.customIcon"
+                :custom-image="link.customImage"
                 :color="resolveColor(link.color)"
                 small
                 class="mr-2"
@@ -60,6 +61,7 @@
             <v-chip
               small
               class="mr-2"
+              style="flex-shrink: 0"
             >
               {{ $t('app.setting.label.theme_nav_link') }}
             </v-chip>
@@ -93,6 +95,7 @@
               <app-nav-link-icon
                 :icon="`$${link.icon}`"
                 :custom-icon="link.customIcon"
+                :custom-image="link.customImage"
                 :color="resolveColor(link.color)"
                 small
                 class="mr-2"

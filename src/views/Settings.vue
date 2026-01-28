@@ -5,6 +5,7 @@
   >
     <v-col
       cols="12"
+      md="10"
       lg="8"
     >
       <router-view v-if="authenticated && socketConnected" />
@@ -12,13 +13,13 @@
         <general-settings />
         <warnings-settings />
         <theme-settings />
+        <navigation-settings />
         <auth-settings v-if="supportsAuth" />
         <console-settings />
         <file-browser-settings />
         <file-editor-settings />
         <macro-settings />
         <camera-settings />
-        <navigation-settings />
         <toolhead-settings />
         <preset-settings />
         <gcode-preview-settings />

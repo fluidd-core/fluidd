@@ -110,6 +110,7 @@
             :key="link.id"
             :icon="`$${link.icon}`"
             :custom-icon="link.customIcon"
+            :custom-image="link.customImage"
             :color="link.color"
             :url="link.url"
             :confirm="confirmOnNavLink"
