@@ -18,6 +18,7 @@
         <file-editor-settings />
         <macro-settings />
         <camera-settings />
+        <navigation-settings />
         <toolhead-settings />
         <preset-settings />
         <gcode-preview-settings />
@@ -38,6 +39,7 @@ import MacroSettings from '@/components/settings/macros/MacroSettings.vue'
 import GeneralSettings from '@/components/settings/GeneralSettings.vue'
 import PresetSettings from '@/components/settings/presets/PresetSettings.vue'
 import CameraSettings from '@/components/settings/cameras/CameraSettings.vue'
+import NavigationSettings from '@/components/settings/navigation/NavigationSettings.vue'
 import ToolheadSettings from '@/components/settings/ToolheadSettings.vue'
 import ThemeSettings from '@/components/settings/ThemeSettings.vue'
 import VersionSettings from '@/components/settings/VersionSettings.vue'
@@ -60,6 +62,7 @@ import WarningsSettings from '@/components/settings/WarningsSettings.vue'
     GeneralSettings,
     PresetSettings,
     CameraSettings,
+    NavigationSettings,
     ToolheadSettings,
     ThemeSettings,
     VersionSettings,

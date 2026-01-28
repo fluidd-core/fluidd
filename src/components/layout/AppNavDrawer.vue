@@ -105,6 +105,18 @@
             {{ $t('app.general.title.system') }}
           </app-nav-item>
 
+          <app-nav-external-item
+            v-for="link in customNavLinks"
+            :key="link.id"
+            :icon="`$${link.icon}`"
+            :custom-icon="link.customIcon"
+            :color="link.color"
+            :url="link.url"
+            :confirm="confirmOnNavLink"
+          >
+            {{ link.title }}
+          </app-nav-external-item>
+
           <app-nav-item
             icon="$cog"
             to="settings"
@@ -151,6 +163,7 @@ import { Component, Mixins, VModel } from 'vue-property-decorator'
 
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
+import type { CustomNavLink } from '@/store/config/types'
 
 @Component({})
 export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
@@ -163,6 +176,14 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   get supportsTimelapse (): boolean {
     return this.$typedGetters['server/componentSupport']('timelapse')
+  }
+
+  get customNavLinks (): CustomNavLink[] {
+    return this.$typedGetters['config/getCustomNavLinks']
+  }
+
+  get confirmOnNavLink (): boolean {
+    return this.$typedState.config.uiSettings.navigation?.confirmOnNavLink ?? false
   }
 
   get enableDiagnostics (): boolean {

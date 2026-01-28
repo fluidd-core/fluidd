@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig, ConfiguredTableHeader } from './types'
+import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig, ConfiguredTableHeader, CustomNavLink } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 import { cloneDeep, mergeWith, set } from 'lodash-es'
@@ -209,5 +209,26 @@ export const mutations = {
 
   setUpdateThumbnailSizes (state, payload: { name: string; size: number }) {
     Vue.set(state.uiSettings.thumbnailSizes, payload.name, payload.size)
+  },
+
+  setCustomNavLink (state, payload: CustomNavLink) {
+    if (payload.id === '') {
+      payload.id = uuidv4()
+      state.uiSettings.navigation.customLinks.push(payload)
+    } else {
+      const links = state.uiSettings.navigation.customLinks
+      const i = links.findIndex(link => link.id === payload.id)
+      if (i >= 0) {
+        Vue.set(links, i, payload)
+      }
+    }
+  },
+
+  setRemoveCustomNavLink (state, payload: { id: string }) {
+    const links = state.uiSettings.navigation.customLinks
+    const i = links.findIndex(link => link.id === payload.id)
+    if (i >= 0) {
+      links.splice(i, 1)
+    }
   }
 } satisfies MutationTree<ConfigState>

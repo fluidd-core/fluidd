@@ -335,6 +335,7 @@ app:
       actual_time: Actual
       add_camera: Add Camera
       add_filter: Add Filter
+      add_nav_link: Add Navigation Link
       add_preset: Add Preset
       add_user: Add user
       all: All
@@ -360,6 +361,7 @@ app:
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_filter: Edit Filter
+      edit_nav_link: Edit Navigation Link
       edit_preset: Edit Preset
       edit_user: Edit user
       environment_facing: Environment Facing
@@ -499,6 +501,10 @@ app:
         confirm_remove_console_filter: Are you sure you want to remove the console filter %{name}?
         confirm_remove_macro_category: Are you sure you want to remove the macro category %{name}?
         confirm_remove_printer: Are you sure you want to remove the printer %{name}?
+        confirm_open_nav_link: >-
+          Open external link?
+          %{url}
+        confirm_remove_nav_link: Are you sure you want to remove the navigation link %{name}?
         confirm_remove_thermal_preset: Are you sure you want to remove the thermal preset %{name}?
         confirm_remove_user: Are you sure you want to remove user %{username}?
         confirm_restore_backup: Are you sure you want to restore this backup? Moonraker will restart immediately after this request is processed.
@@ -647,6 +653,7 @@ app:
       add_camera: Add Camera
       add_category: Add Category
       add_filter: Add Filter
+      add_nav_link: Add Link
       add_metric: Add Metric
       add_thermal_preset: Add Preset
       add_user: Add user
@@ -692,6 +699,8 @@ app:
       camera_url_stream: Camera Url Stream
       card: Card
       collector: Collector
+      custom_icon: Custom Icon (SVG)
+      custom_icon_hint: SVG path data (overrides icon)
       confirm_on_estop: Require confirm on Emergency Stop
       confirm_on_power_device_change: Require confirm on Device Power changes
       confirm_on_save_config_and_restart: Review Pending Configuration Changes before Save and Restart
@@ -746,6 +755,7 @@ app:
       never: Never
       none: None
       optional: Optional
+      position: Position
       power_toggle_in_top_nav: Power toggle in top navigation
       primary_color: Primary color
       print_eta_calculation: Print ETA calculation
@@ -784,12 +794,17 @@ app:
       toolhead_z_move_distances: Toolhead Z distance values
       type: Type
       unit: Unit
+      url: URL
       warn_on_cpu_throttled: Warn if CPU throttling is detected
       warn_on_stepper_driver_overheating: Warn if stepper driver is over-heating
       z_adjust_values: Z Adjust values
       date_format: Date format
       time_format: Time format
       text_sort_order: Text sort order
+      confirm_on_nav_link: Confirm Before Opening Links
+      link_icon_color: Link Icon Color
+      use_theme_color: Use theme color
+      theme_nav_link: Theme Link
       drag_and_drop_functionality_for_files_and_folders: Drag-and-drop functionality for files and folders
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
@@ -812,6 +827,7 @@ app:
       gcode_preview: Gcode Preview
       general: General
       macros: Macros
+      navigation: Navigation Links
       theme: Theme
       thermal_presets: Thermal Presets
       tool: Tool
@@ -831,6 +847,17 @@ app:
         However, please note that these themes are not officially maintained by the respective brands.<br>
         Any issues or inquiries related to the themes should be directed to the Fluidd team.<br>
         The use of brand names and logos is for decorative and aesthetic purposes only, and no official association with or endorsement by the brands is implied.
+      nav_link_url: >-
+        A full URL (e.g. https://example.com) opens directly.<br>
+        A path without a protocol (e.g. /my-page) is appended to the current host.
+      nav_link_custom_icon: >-
+        Paste the <code>d</code> attribute from an SVG <code>&lt;path&gt;</code> element.<br>
+        The viewBox is assumed to be 0 0 24 24.<br>
+        Overrides the selected icon when set.
+      nav_link_position: >-
+        Controls the sort order among custom and theme links.<br>
+        Lower numbers appear higher in the sidebar.<br>
+        Links are inserted directly above the Settings icon.
       warn_on_cpu_throttled: CPU throttling can cause prints to fail
       warn_on_stepper_driver_overheating: Trinamic drivers only
   socket:

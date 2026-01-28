@@ -1,6 +1,6 @@
 import vuetify from '@/plugins/vuetify'
 import type { ActionTree } from 'vuex'
-import type { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, ThemeConfig, ConfiguredTableHeader } from './types'
+import type { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, ThemeConfig, ConfiguredTableHeader, CustomNavLink } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'
@@ -213,5 +213,15 @@ export const actions = {
       value: updatedTheme,
       server: true
     })
+  },
+
+  async updateCustomNavLink ({ commit, state }, payload: CustomNavLink) {
+    commit('setCustomNavLink', payload)
+    SocketActions.serverDatabasePostItem('uiSettings.navigation.customLinks', state.uiSettings.navigation.customLinks)
+  },
+
+  async removeCustomNavLink ({ commit, state }, payload: { id: string }) {
+    commit('setRemoveCustomNavLink', payload)
+    SocketActions.serverDatabasePostItem('uiSettings.navigation.customLinks', state.uiSettings.navigation.customLinks)
   }
 } satisfies ActionTree<ConfigState, RootState>

@@ -1,5 +1,26 @@
 import type { FileFilterType } from '../files/types'
 
+export interface SvgIconPath {
+  d: string
+  fill?: string
+}
+
+export interface CustomNavLink {
+  id: string
+  title: string
+  url: string
+  icon: string
+  customIcon?: string | SvgIconPath[]
+  color?: string
+  position: number
+}
+
+export interface NavigationConfig {
+  customLinks: CustomNavLink[]
+  hiddenThemeLinks: string[]
+  confirmOnNavLink: boolean
+}
+
 export interface ConfigState {
   [key: string]: any;
   appReady: boolean;
@@ -27,6 +48,7 @@ export interface UiSettings {
   history: HistoryConfig;
   mmu: MmuConfig;
   afc: AfcConfig;
+  navigation: NavigationConfig;
 }
 
 export interface WarningsConfig {
@@ -171,6 +193,8 @@ export interface ThemePreset {
   color: string;
   isDark: boolean;
   logo: ThemeLogo;
+  url?: string;
+  icon?: SvgIconPath[];
 }
 
 export interface ThemeLogo {
