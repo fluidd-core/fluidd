@@ -53,7 +53,10 @@
 
       <v-divider />
 
-      <app-setting :title="$t('app.setting.label.icon_type')">
+      <app-setting
+        :title="$t('app.setting.label.icon_type')"
+        :sub-title="iconModeHint"
+      >
         <v-select
           v-model="selectedIconMode"
           :items="iconModeItems"
@@ -348,25 +351,30 @@ export default class NavLinkDialog extends Vue {
   handleIconModeChange (mode: string) {
     switch (mode) {
       case 'icon':
-        this.link.customIcon = undefined
-        this.link.customImage = undefined
+        this.$set(this.link, 'customIcon', undefined)
+        this.$set(this.link, 'customImage', undefined)
         this.imageError = ''
         break
       case 'svg':
-        this.link.customIcon = undefined
-        this.link.customImage = undefined
+        this.$set(this.link, 'customIcon', undefined)
+        this.$set(this.link, 'customImage', undefined)
         this.imageError = ''
         break
       case 'path':
-        this.link.customIcon = undefined
-        this.link.customImage = undefined
+        this.$set(this.link, 'customIcon', undefined)
+        this.$set(this.link, 'customImage', undefined)
         this.imageError = ''
         break
       case 'image':
-        this.link.customIcon = undefined
+        this.$set(this.link, 'customIcon', undefined)
         this.imageError = ''
         break
     }
+  }
+
+  get iconModeHint (): string {
+    const key = `app.setting.label.icon_type_hint_${this.selectedIconMode}`
+    return this.$t(key).toString()
   }
 
   get iconModeItems () {
@@ -410,8 +418,8 @@ export default class NavLinkDialog extends Vue {
 
   get urlWarning (): string {
     const url = this.link.url?.trim() || ''
-    if (/^www\./i.test(url) || /\.(com|org|net|io|dev|xyz|edu|gov)/i.test(url)) {
-      if (!/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(url)) {
+    if (/^www\./i.test(url) || /\.(?:com|org|net|io|dev|xyz|edu|gov)/i.test(url)) {
+      if (!/^[a-z][a-z\d+\-.]*:\/\//i.test(url)) {
         return this.$t('app.setting.tooltip.nav_link_url_warning').toString()
       }
     }
@@ -421,7 +429,7 @@ export default class NavLinkDialog extends Vue {
   get urlSafe () {
     return (v: string) => {
       const trimmed = v.trim().toLowerCase()
-      if (/^(javascript|data|vbscript):/i.test(trimmed)) {
+      if (/^(?:javascript|data|vbscript):/i.test(trimmed)) {
         return this.$t('app.general.simple_form.error.invalid_url')
       }
       return true
@@ -446,14 +454,14 @@ export default class NavLinkDialog extends Vue {
     this.imageError = ''
     const reader = new FileReader()
     reader.onload = () => {
-      this.link.customIcon = reader.result as string
+      this.$set(this.link, 'customIcon', reader.result as string)
     }
     reader.readAsDataURL(file)
     input.value = ''
   }
 
   clearCustomIcon () {
-    this.link.customIcon = undefined
+    this.$set(this.link, 'customIcon', undefined)
     this.imageError = ''
   }
 
@@ -475,14 +483,14 @@ export default class NavLinkDialog extends Vue {
     this.imageError = ''
     const reader = new FileReader()
     reader.onload = () => {
-      this.link.customImage = reader.result as string
+      this.$set(this.link, 'customImage', reader.result as string)
     }
     reader.readAsDataURL(file)
     input.value = ''
   }
 
   clearCustomImage () {
-    this.link.customImage = undefined
+    this.$set(this.link, 'customImage', undefined)
     this.imageError = ''
   }
 

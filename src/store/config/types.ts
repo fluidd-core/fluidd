@@ -24,6 +24,7 @@ export interface NavigationConfig {
   collapsedCustomLinks: string[]
   openNavLinksInNewTab: boolean
   confirmOnNavLink: boolean
+  sidebarExpanded: boolean
 }
 
 export interface ConfigState {

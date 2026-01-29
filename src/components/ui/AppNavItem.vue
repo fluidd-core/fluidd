@@ -1,7 +1,7 @@
 <template>
   <v-tooltip
     right
-    :disabled="isMobileViewport"
+    :disabled="isMobileViewport || hideTooltip"
   >
     <template #activator="{ attrs, on }">
       <v-list-item
@@ -37,7 +37,6 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
-import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
 import { Globals } from '@/globals'
 import isKeyOf from '@/util/is-key-of'
 
@@ -55,6 +54,9 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: String })
   readonly icon?: string
 
+  @Prop({ type: Boolean, default: false })
+  readonly hideTooltip!: boolean
+
   get accelerator (): string | undefined {
     return isKeyOf(this.to, Globals.KEYBOARD_SHORTCUTS)
       ? Globals.KEYBOARD_SHORTCUTS[this.to]
@@ -63,35 +65,6 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
 
   get enableKeyboardShortcuts (): boolean {
     return this.$typedState.config.uiSettings.general.enableKeyboardShortcuts
-  }
-
-  handleKeyDown (event: KeyboardEvent) {
-    if (
-      !this.enableKeyboardShortcuts ||
-      !this.accelerator
-    ) {
-      return
-    }
-
-    const shortcut = keyboardEventToKeyboardShortcut(event)
-
-    if (
-      shortcut === this.accelerator &&
-      !eventTargetIsContentEditable(event) &&
-      this.$route.name !== this.to
-    ) {
-      event.preventDefault()
-
-      this.$router.push({ name: this.to })
-    }
-  }
-
-  mounted () {
-    window.addEventListener('keydown', this.handleKeyDown, false)
-  }
-
-  beforeDestroy () {
-    window.removeEventListener('keydown', this.handleKeyDown)
   }
 }
 

@@ -239,7 +239,7 @@ app:
       add_file: Add File
       add_printer: Add printer
       add_to_queue: Add to Queue
-      adjust_layout: Adjust dashboard layout
+      adjust_layout: Dashboard Layout
       adjusted: Adjusted
       all: All
       auth_unsure: Unsure why you're seeing this?
@@ -348,7 +348,7 @@ app:
       change_password: Change password
       clean_nozzle: Clean Nozzle
       clear_all: Clear all
-      collapse_to_bookmarks: Collapse to bookmarks
+      collapse_to_bookmarks: Collapse to links
       collapse_to_more_menu: Collapse to More menu
       color: Color
       command: Command
@@ -418,6 +418,7 @@ app:
       screw_name: Screw name
       screw_number: Screw %{index}
       services: Services
+      show_all_in_sidebar: Show all in sidebar
       show_in_sidebar: Show in sidebar
       slicer: Slicer
       smooth_time: Smooth Time
@@ -597,7 +598,7 @@ app:
       timelapse: Timelapse
       tool: Tool
       tune: Tune
-      bookmarks: Bookmarks
+      bookmarks: Links
       more: More
     tooltip:
       browse_metrics: Browse available metrics
@@ -751,6 +752,10 @@ app:
       host_restart: Host Restart
       icon: Icon
       icon_type: Icon Type
+      icon_type_hint_icon: Choose from Material Design icons. Supports theme color.
+      icon_type_hint_svg: Upload an SVG file. Rendered as image, so theme color does not apply.
+      icon_type_hint_path: Paste SVG path data. Supports theme color and custom colors.
+      icon_type_hint_image: Upload a PNG or JPEG. Rendered as image, so theme color does not apply.
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control

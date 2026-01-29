@@ -11,8 +11,8 @@
       <app-setting>
         <template #title>
           <v-switch
-            v-model="confirmOnNavLink"
-            :label="$t('app.setting.label.confirm_on_nav_link')"
+            v-model="openNavLinksInNewTab"
+            :label="$t('app.setting.label.open_nav_links_in_new_tab')"
             hide-details
             class="mt-0 pt-0"
             @click.native.stop
@@ -34,11 +34,11 @@
         </app-btn>
       </app-setting>
 
-      <app-setting>
+      <app-setting v-if="!openNavLinksInNewTab">
         <template #title>
           <v-switch
-            v-model="openNavLinksInNewTab"
-            :label="$t('app.setting.label.open_nav_links_in_new_tab')"
+            v-model="confirmOnNavLink"
+            :label="$t('app.setting.label.confirm_on_nav_link')"
             hide-details
             class="mt-0 pt-0"
             @click.native.stop

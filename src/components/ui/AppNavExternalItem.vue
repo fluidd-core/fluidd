@@ -1,7 +1,7 @@
 <template>
   <v-tooltip
     right
-    :disabled="isMobileViewport"
+    :disabled="isMobileViewport || hideTooltip"
   >
     <template #activator="{ attrs, on }">
       <v-list-item
@@ -11,7 +11,7 @@
         color="secondary"
         v-bind="attrs"
         v-on="on"
-        @click="confirm ? handleConfirmClick($event) : undefined"
+        @click="confirm && !newTab ? handleConfirmClick($event) : undefined"
         @contextmenu.prevent="$emit('contextmenu', $event)"
       >
         <v-list-item-icon>
@@ -62,6 +62,9 @@ export default class AppNavExternalItem extends Mixins(BrowserMixin) {
 
   @Prop({ type: Boolean, default: false })
   readonly newTab!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  readonly hideTooltip!: boolean
 
   get resolvedUrl (): string {
     if (this.url.startsWith('/')) {

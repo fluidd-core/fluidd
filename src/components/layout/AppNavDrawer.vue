@@ -2,8 +2,10 @@
   <v-navigation-drawer
     v-model="open"
     :color="$vuetify.theme.currentTheme.drawer"
-    :mini-variant="!showSubNavigation"
-    :floating="!showSubNavigation"
+    :mini-variant="isOuterMini"
+    :floating="isOuterFloating"
+    :width="outerDrawerWidth"
+    disable-resize-watcher
     clipped
     app
   >
@@ -13,9 +15,11 @@
     >
       <v-navigation-drawer
         :color="$vuetify.theme.currentTheme.drawer"
-        mini-variant
+        :mini-variant="isInnerMini"
         :value="open"
+        disable-resize-watcher
         class="pb-16 pb-sm-0"
+        @mouseleave.native="hoverExpanded = false"
       >
         <div
           v-if="isMobileViewport"
@@ -31,7 +35,18 @@
           v-if="socketConnected && authenticated"
           class="nav-items"
         >
-          <!-- Draggable system links -->
+          <!-- Home link (pinned at top, not draggable) -->
+          <app-nav-item
+            v-if="homeLink"
+            :icon="homeLink.icon"
+            :exact="homeLink.exact"
+            :to="homeLink.to"
+            :hide-tooltip="isSidebarExpanded"
+          >
+            {{ $t(homeLink.title) }}
+          </app-nav-item>
+
+          <!-- Draggable system links (excluding Home) -->
           <app-draggable
             v-model="systemLinksLocal"
             :options="{ handle: '' }"
@@ -43,6 +58,7 @@
               :icon="item.icon"
               :exact="item.exact"
               :to="item.to"
+              :hide-tooltip="isSidebarExpanded"
               @contextmenu="openContextMenu(item, 'system', $event)"
             >
               {{ $t(item.title) }}
@@ -52,39 +68,34 @@
           <!-- Hamburger menu for collapsed system links -->
           <v-menu
             v-if="collapsedSystemLinkItems.length > 0"
+            v-model="moreMenuOpen"
             right
             offset-x
             :close-on-content-click="true"
           >
             <template #activator="{ on, attrs }">
-              <v-tooltip
-                right
-                :disabled="isMobileViewport"
+              <v-list-item
+                link
+                color="secondary"
+                v-bind="attrs"
+                v-on="on"
+                @click="bookmarksMenuOpen = false"
+                @contextmenu.prevent="openActivatorContextMenu('more', $event)"
               >
-                <template #activator="{ attrs: tooltipAttrs, on: tooltipOn }">
-                  <v-list-item
-                    link
-                    color="secondary"
-                    v-bind="{ ...attrs, ...tooltipAttrs }"
-                    v-on="{ ...on, ...tooltipOn }"
-                  >
-                    <v-list-item-icon>
-                      <v-icon>$menuAlt</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                      <v-list-item-title>{{ $t('app.general.title.more') }}</v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </template>
-                <span>{{ $t('app.general.title.more') }}</span>
-              </v-tooltip>
+                <v-list-item-icon>
+                  <v-icon>$menuAlt</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>{{ $t('app.general.title.more') }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
             </template>
             <v-list dense>
               <v-list-item
                 v-for="item in collapsedSystemLinkItems"
                 :key="item.id"
                 :to="{ name: item.to }"
-                @contextmenu.prevent="openContextMenu(item, 'system', $event)"
+                @contextmenu.prevent="openContextMenu(item, 'system', $event, 'more-menu')"
               >
                 <v-list-item-icon>
                   <v-icon>{{ item.icon }}</v-icon>
@@ -96,35 +107,36 @@
             </v-list>
           </v-menu>
 
+          <v-divider
+            v-if="collapsedSystemLinkItems.length > 0 && (collapsedCustomLinkItems.length > 0 || customLinksLocal.length > 0)"
+            class="my-1"
+            :style="{ borderColor: $vuetify.theme.currentTheme.primary }"
+          />
+
           <!-- Bookmarks popup for collapsed custom links -->
           <v-menu
             v-if="collapsedCustomLinkItems.length > 0"
+            v-model="bookmarksMenuOpen"
             right
             offset-x
             :close-on-content-click="true"
           >
             <template #activator="{ on, attrs }">
-              <v-tooltip
-                right
-                :disabled="isMobileViewport"
+              <v-list-item
+                link
+                color="secondary"
+                v-bind="attrs"
+                v-on="on"
+                @click="moreMenuOpen = false"
+                @contextmenu.prevent="openActivatorContextMenu('bookmarks', $event)"
               >
-                <template #activator="{ attrs: tooltipAttrs, on: tooltipOn }">
-                  <v-list-item
-                    link
-                    color="secondary"
-                    v-bind="{ ...attrs, ...tooltipAttrs }"
-                    v-on="{ ...on, ...tooltipOn }"
-                  >
-                    <v-list-item-icon>
-                      <v-icon>$bookmarkMultiple</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                      <v-list-item-title>{{ $t('app.general.title.bookmarks') }}</v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </template>
-                <span>{{ $t('app.general.title.bookmarks') }}</span>
-              </v-tooltip>
+                <v-list-item-icon>
+                  <v-icon>$bookmarkMultiple</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>{{ $t('app.general.title.bookmarks') }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
             </template>
             <v-list dense>
               <v-list-item
@@ -132,7 +144,8 @@
                 :key="link.id"
                 :href="resolveCustomLinkUrl(link.url)"
                 :target="openNavLinksInNewTab ? '_blank' : '_self'"
-                @contextmenu.prevent="openContextMenu(link, 'custom', $event)"
+                @click="collapseSidebar"
+                @contextmenu.prevent="openContextMenu(link, 'custom', $event, 'bookmarks-menu')"
               >
                 <v-list-item-icon>
                   <app-nav-link-icon
@@ -165,6 +178,8 @@
               :url="link.url"
               :confirm="confirmOnNavLink"
               :new-tab="openNavLinksInNewTab"
+              :hide-tooltip="isSidebarExpanded"
+              @click.native="collapseSidebar"
               @contextmenu="openContextMenu(link, 'custom', $event)"
             >
               {{ link.title }}
@@ -249,32 +264,81 @@
             </v-list>
           </v-menu>
 
+          <!-- Activator context menu (for More / Bookmarks icons) -->
+          <v-menu
+            v-model="activatorContextMenu.open"
+            transition="slide-y-transition"
+            :position-x="activatorContextMenu.x"
+            :position-y="activatorContextMenu.y"
+            min-width="180"
+            absolute
+            right
+            :z-index="10"
+          >
+            <v-list dense>
+              <v-list-item @click="showAllInSidebar">
+                <v-list-item-icon>
+                  <v-icon>$eye</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>{{ $t('app.general.label.show_all_in_sidebar') }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item
+                v-if="activatorContextMenu.source === 'bookmarks'"
+                @click="openAddLinkDialog"
+              >
+                <v-list-item-icon>
+                  <v-icon>$plus</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>{{ $t('app.setting.btn.add_nav_link') }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+
+          <v-divider
+            class="my-1"
+            :style="{ borderColor: $vuetify.theme.currentTheme.primary }"
+          />
+
           <!-- Settings link (always last, not draggable) -->
           <app-nav-item
             icon="$cog"
             to="settings"
+            :hide-tooltip="isSidebarExpanded"
           >
             {{ $t('app.general.title.settings') }}
           </app-nav-item>
         </div>
 
         <template
-          v-if="socketConnected && authenticated && !isMobileViewport && canEditLayout"
+          v-if="socketConnected && authenticated && !isMobileViewport"
           #append
         >
-          <v-tooltip right>
+          <v-tooltip
+            right
+            :disabled="isSidebarExpanded"
+          >
             <template #activator="{ attrs, on }">
-              <app-btn
-                icon
-                large
-                :color="layoutMode ? 'primary' : undefined"
-                style="margin: 6px"
+              <v-list-item
+                link
+                :color="layoutMode ? 'primary' : 'secondary'"
                 v-bind="attrs"
                 v-on="on"
-                @click="layoutMode = !layoutMode"
+                @click="handleLayoutButtonClick"
+                @mouseenter="hoverExpanded = true; closePopupMenus()"
               >
-                <v-icon>$apps</v-icon>
-              </app-btn>
+                <v-list-item-icon>
+                  <v-icon :color="layoutMode ? 'primary' : undefined">
+                    $apps
+                  </v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>{{ $t('app.general.btn.adjust_layout') }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
             </template>
             <span>
               {{ $t('app.general.btn.adjust_layout') }}
@@ -299,12 +363,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, VModel, Watch } from 'vue-property-decorator'
+import { Component, Mixins, VModel, Watch, PropSync } from 'vue-property-decorator'
 
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import type { CustomNavLink } from '@/store/config/types'
 import NavLinkDialog from '@/components/settings/navigation/NavLinkDialog.vue'
+import { Globals } from '@/globals'
+import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
+import isKeyOf from '@/util/is-key-of'
 
 interface SystemNavItem {
   id: string
@@ -322,12 +389,16 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   @VModel({ type: Boolean })
   open?: boolean
 
+  @PropSync('sidebarExpanded', { type: Boolean, default: false })
+  syncedSidebarExpanded!: boolean
+
   contextMenuState = {
     open: false,
     x: 0,
     y: 0,
     item: null as (SystemNavItem | CustomNavLink) | null,
-    type: '' as 'system' | 'custom' | ''
+    type: '' as 'system' | 'custom' | '',
+    source: '' as 'sidebar' | 'more-menu' | 'bookmarks-menu' | ''
   }
 
   editDialogState: any = {
@@ -335,17 +406,124 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
     link: null
   }
 
+  moreMenuOpen = false
+  bookmarksMenuOpen = false
+  hoverExpanded = false
+  activatorContextMenu = {
+    open: false,
+    x: 0,
+    y: 0,
+    source: '' as 'more' | 'bookmarks' | ''
+  }
+
   systemLinksLocal: SystemNavItem[] = []
   customLinksLocal: CustomNavLink[] = []
 
-  @Watch('visibleSystemLinks', { immediate: true, deep: true })
+  @Watch('visibleSystemLinks', { immediate: true })
   onVisibleSystemLinksChange (val: SystemNavItem[]) {
     this.systemLinksLocal = [...val]
   }
 
-  @Watch('visibleCustomLinks', { immediate: true, deep: true })
+  @Watch('visibleCustomLinks', { immediate: true })
   onVisibleCustomLinksChange (val: CustomNavLink[]) {
     this.customLinksLocal = [...val]
+  }
+
+  @Watch('$route')
+  onRouteChange () {
+    this.hoverExpanded = false
+  }
+
+  mounted () {
+    document.addEventListener('click', this.handleDocumentClick, true)
+    window.addEventListener('keydown', this.handleKeyDown, false)
+  }
+
+  beforeDestroy () {
+    document.removeEventListener('click', this.handleDocumentClick, true)
+    window.removeEventListener('keydown', this.handleKeyDown)
+  }
+
+  get enableKeyboardShortcuts (): boolean {
+    return this.$typedState.config.uiSettings.general.enableKeyboardShortcuts
+  }
+
+  handleKeyDown (event: KeyboardEvent) {
+    if (!this.enableKeyboardShortcuts) return
+    if (eventTargetIsContentEditable(event)) return
+
+    const shortcut = keyboardEventToKeyboardShortcut(event)
+
+    // Find matching system nav item by keyboard shortcut
+    for (const item of this.allSystemLinks) {
+      if (!item.enabled) continue
+      const routeName = item.to as keyof typeof Globals.KEYBOARD_SHORTCUTS
+      if (isKeyOf(routeName, Globals.KEYBOARD_SHORTCUTS)) {
+        const accelerator = Globals.KEYBOARD_SHORTCUTS[routeName]
+        if (shortcut === accelerator && this.$route.name !== item.to) {
+          event.preventDefault()
+          this.$router.push({ name: item.to })
+          return
+        }
+      }
+    }
+  }
+
+  handleDocumentClick (event: MouseEvent) {
+    if (!this.hoverExpanded) return
+    if (event.button !== 0) return
+    const target = event.target as Node
+    const el = this.$el as HTMLElement
+    if (el && el.contains(target)) return
+    const logo = document.querySelector('.toolbar-logo')
+    if (logo && logo.contains(target)) return
+    const menuContent = (target as HTMLElement).closest?.('.v-menu__content')
+    if (menuContent) return
+    this.hoverExpanded = false
+  }
+
+  collapseSidebar () {
+    this.hoverExpanded = false
+  }
+
+  closePopupMenus () {
+    this.moreMenuOpen = false
+    this.bookmarksMenuOpen = false
+  }
+
+  openActivatorContextMenu (source: 'more' | 'bookmarks', event: MouseEvent) {
+    this.activatorContextMenu.open = false
+    this.$nextTick(() => {
+      this.activatorContextMenu.source = source
+      this.activatorContextMenu.x = event.clientX
+      this.activatorContextMenu.y = event.clientY
+      this.$nextTick(() => {
+        this.activatorContextMenu.open = true
+      })
+    })
+  }
+
+  showAllInSidebar () {
+    if (this.activatorContextMenu.source === 'more') {
+      this.$typedDispatch('config/saveByPath', {
+        path: 'uiSettings.navigation.collapsedSystemLinks',
+        value: [],
+        server: true
+      })
+    } else if (this.activatorContextMenu.source === 'bookmarks') {
+      this.$typedDispatch('config/saveByPath', {
+        path: 'uiSettings.navigation.collapsedCustomLinks',
+        value: [],
+        server: true
+      })
+    }
+  }
+
+  openAddLinkDialog () {
+    this.editDialogState = {
+      active: true,
+      link: null
+    }
   }
 
   get supportsHistory (): boolean {
@@ -415,8 +593,15 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedState.config.uiSettings.navigation?.collapsedSystemLinks ?? []
   }
 
+  get homeLink (): SystemNavItem | undefined {
+    return this.allSystemLinks.find(item => item.id === 'home' && item.enabled)
+  }
+
   get visibleSystemLinks (): SystemNavItem[] {
-    return this.orderedAllSystemLinks.filter(item => item.enabled && !this.collapsedSystemLinks.includes(item.id))
+    // Exclude 'home' - it's rendered separately and pinned at top
+    return this.orderedAllSystemLinks.filter(item =>
+      item.id !== 'home' && item.enabled && !this.collapsedSystemLinks.includes(item.id)
+    )
   }
 
   get collapsedSystemLinkItems (): SystemNavItem[] {
@@ -460,11 +645,13 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   // --- Context menu ---
 
-  openContextMenu (item: SystemNavItem | CustomNavLink, type: 'system' | 'custom', event: MouseEvent) {
+  openContextMenu (item: SystemNavItem | CustomNavLink, type: 'system' | 'custom', event: MouseEvent, source: 'sidebar' | 'more-menu' | 'bookmarks-menu' = 'sidebar') {
+    if (type === 'system' && item.id === 'home') return
     this.contextMenuState.open = false
     this.$nextTick(() => {
       this.contextMenuState.item = item
       this.contextMenuState.type = type
+      this.contextMenuState.source = source
       this.contextMenuState.x = event.clientX
       this.contextMenuState.y = event.clientY
       this.$nextTick(() => {
@@ -476,14 +663,25 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   toggleContextItemCollapse () {
     const item = this.contextMenuState.item
     if (!item) return
+    const source = this.contextMenuState.source
     if (this.contextMenuState.type === 'system') {
       this.toggleSystemLinkCollapse(item.id)
     } else {
       this.toggleCustomLinkCollapse(item.id)
     }
+    if (source === 'more-menu' || source === 'bookmarks-menu') {
+      this.$nextTick(() => {
+        if (source === 'more-menu' && this.collapsedSystemLinkItems.length > 0) {
+          this.moreMenuOpen = true
+        } else if (source === 'bookmarks-menu' && this.collapsedCustomLinkItems.length > 0) {
+          this.bookmarksMenuOpen = true
+        }
+      })
+    }
   }
 
   toggleSystemLinkCollapse (id: string) {
+    if (id === 'home') return
     const collapsed = new Set(this.collapsedSystemLinks)
     if (collapsed.has(id)) {
       collapsed.delete(id)
@@ -514,8 +712,9 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   // --- Drag handlers ---
 
   handleSystemLinkDragEnd () {
-    const visibleIds = this.systemLinksLocal.map(item => item.id)
-    const collapsedIds = this.collapsedSystemLinkItems.map(item => item.id)
+    // Exclude 'home' from order - it's always pinned at top
+    const visibleIds = this.systemLinksLocal.map(item => item.id).filter(id => id !== 'home')
+    const collapsedIds = this.collapsedSystemLinkItems.map(item => item.id).filter(id => id !== 'home')
     const fullOrder = [...visibleIds, ...collapsedIds]
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.navigation.systemLinkOrder',
@@ -595,6 +794,31 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
     return this.hasSubNavigation && this.socketConnected && this.authenticated
   }
 
+  get isInnerMini (): boolean {
+    return !this.isSidebarExpanded
+  }
+
+  get isOuterMini (): boolean {
+    if (this.showSubNavigation) return false
+    return !this.isSidebarExpanded
+  }
+
+  get isOuterFloating (): boolean {
+    if (this.showSubNavigation) return false
+    return !this.isSidebarExpanded
+  }
+
+  get isSidebarExpanded (): boolean {
+    return this.syncedSidebarExpanded || this.hoverExpanded
+  }
+
+  get outerDrawerWidth (): number | undefined {
+    if (this.showSubNavigation && this.isSidebarExpanded) {
+      return 456
+    }
+    return undefined
+  }
+
   get canEditLayout () {
     return this.$route.meta?.dashboard ?? false
   }
@@ -605,6 +829,17 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   set layoutMode (val: boolean) {
     this.$typedCommit('config/setLayoutMode', val)
+  }
+
+  handleLayoutButtonClick () {
+    if (this.canEditLayout) {
+      this.layoutMode = !this.layoutMode
+    } else {
+      this.$router.push({ name: 'home' })
+      this.$nextTick(() => {
+        this.layoutMode = true
+      })
+    }
   }
 }
 </script>
@@ -618,5 +853,14 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   :deep(.v-navigation-drawer.no-subnav > .v-navigation-drawer__border) {
      display: none;
+  }
+
+  // GPU acceleration hints for smoother transitions
+  :deep(.v-navigation-drawer) {
+    will-change: width, transform;
+  }
+
+  :deep(.v-navigation-drawer__content) {
+    will-change: transform;
   }
 </style>
