@@ -511,6 +511,8 @@ app:
           Open external link?
           %{url}
         confirm_remove_nav_link: Are you sure you want to remove the navigation link %{name}?
+        confirm_import_links_replace: This will replace all existing custom links with %{count} imported link(s). Continue?
+        confirm_import_links_merge: This will add %{count} link(s) to your existing custom links. Continue?
         confirm_remove_thermal_preset: Are you sure you want to remove the thermal preset %{name}?
         confirm_remove_user: Are you sure you want to remove user %{username}?
         confirm_restore_backup: Are you sure you want to restore this backup? Moonraker will restart immediately after this request is processed.
@@ -662,6 +664,9 @@ app:
       add_category: Add Category
       add_filter: Add Filter
       add_nav_link: Add Link
+      import_export_links: Import/Export
+      export_links: Export Links
+      import_links: Import Links
       add_metric: Add Metric
       add_thermal_preset: Add Preset
       add_user: Add user
@@ -708,9 +713,9 @@ app:
       camera_url_stream: Camera Url Stream
       card: Card
       collector: Collector
+      color: Color
       custom_color: Custom Color
       custom_icon: Custom Icon (SVG)
-      custom_icon_hint: SVG path data (overrides icon)
       custom_image: Custom Image
       custom_svg_icon: Custom SVG Icon
       upload_image: Upload Image
@@ -737,6 +742,7 @@ app:
       enable_xy_homing: Enable XY Homing
       expression: Expression
       extrusion_line_width: Extrusion Line Width
+      file: File
       firmware_restart: Firmware Restart
       flip_horizontal: Horizontal Flip
       flip_vertical: Vertical Flip
@@ -752,10 +758,6 @@ app:
       host_restart: Host Restart
       icon: Icon
       icon_type: Icon Type
-      icon_type_hint_icon: Choose from Material Design icons. Supports theme color.
-      icon_type_hint_svg: Upload an SVG file. Rendered as image, so theme color does not apply.
-      icon_type_hint_path: Paste SVG path data. Supports theme color and custom colors.
-      icon_type_hint_image: Upload a PNG or JPEG. Rendered as image, so theme color does not apply.
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
@@ -801,7 +803,7 @@ app:
       show_upload_and_print: Show Upload and Print button in top navigation
       solid: Solid
       starts_with: Starts with
-      svg_path_data: SVG Path Data
+      theme: Theme
       theme_preset: Community preset
       thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
@@ -824,8 +826,9 @@ app:
       confirm_on_nav_link: Confirm Before Opening Links
       open_nav_links_in_new_tab: Open Links in New Tab
       link_icon_color: Link Icon Color
-      use_theme_color: Use theme color
       theme_nav_link: Theme Link
+      import_mode_replace: Replace existing links
+      import_mode_merge: Add to existing links
       drag_and_drop_functionality_for_files_and_folders: Drag-and-drop functionality for files and folders
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
@@ -874,16 +877,14 @@ app:
         URLs without a protocol will be treated as relative paths by the browser.
       nav_link_custom_icon: >-
         Upload an SVG file (max 64 KB) to use as the link icon.<br>
-        Uploaded SVGs are rendered as images, so the theme color and custom
-        color settings do not apply.<br>
-        Set colors directly in the SVG using <code>fill</code> or
-        <code>style</code> attributes.
+        Use "File Colors" to preserve the original SVG colors, or choose
+        theme/custom color to override with a single color.
       nav_link_custom_image: >-
         Upload a PNG or JPEG image (max 64 KB) to use as the link icon.
-      nav_link_svg_path_data: >-
-        Paste the <code>d</code> attribute from an SVG <code>&lt;path&gt;</code> element.<br>
-        The viewBox is assumed to be 0 0 24 24.<br>
-        Custom paths support the theme color and custom color options.
+      icon_type: >-
+        <b>Built In Icon</b>: Choose from Material Design icons. Supports theme or custom colors.<br>
+        <b>Custom SVG Icon</b>: Upload an SVG file. Supports file colors, theme color, or custom colors.<br>
+        <b>Custom Image</b>: Upload a PNG or JPEG. Color override does not apply.
       nav_link_position: >-
         Controls the sort order among custom and theme links.<br>
         Lower numbers appear higher in the sidebar.<br>

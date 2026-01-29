@@ -7,6 +7,7 @@
       <v-list-item
         :to="{ name: to }"
         :exact="exact"
+        :data-id="dataId"
         link
         color="secondary"
         v-bind="attrs"
@@ -56,6 +57,9 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
 
   @Prop({ type: Boolean, default: false })
   readonly hideTooltip!: boolean
+
+  @Prop({ type: String })
+  readonly dataId?: string
 
   get accelerator (): string | undefined {
     return isKeyOf(this.to, Globals.KEYBOARD_SHORTCUTS)

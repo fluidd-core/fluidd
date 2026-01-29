@@ -18,6 +18,48 @@
             @click.native.stop
           />
         </template>
+        <v-menu
+          offset-y
+          left
+        >
+          <template #activator="{ on, attrs }">
+            <app-btn
+              outlined
+              small
+              color="primary"
+              class="mr-2"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon
+                small
+                left
+              >
+                $menu
+              </v-icon>
+              {{ $t('app.setting.btn.import_export_links') }}
+            </app-btn>
+          </template>
+          <v-list dense>
+            <v-list-item @click="exportLinks">
+              <v-list-item-icon>
+                <v-icon>$download</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.setting.btn.export_links') }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item @click="triggerImport">
+              <v-list-item-icon>
+                <v-icon>$fileUpload</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.setting.btn.import_links') }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
         <app-btn
           outlined
           small
@@ -32,6 +74,15 @@
           </v-icon>
           {{ $t('app.setting.btn.add_nav_link') }}
         </app-btn>
+
+        <!-- Hidden file input for import -->
+        <input
+          ref="fileInput"
+          type="file"
+          accept=".json"
+          style="display: none"
+          @change="handleFileSelected"
+        >
       </app-setting>
 
       <app-setting v-if="!openNavLinksInNewTab">
@@ -151,14 +202,52 @@
         :link="dialogState.link"
         @save="handleSaveLink"
       />
+
+      <!-- Import mode selection dialog -->
+      <v-dialog
+        v-model="importDialogState.active"
+        max-width="400"
+      >
+        <v-card>
+          <v-card-title>{{ $t('app.setting.btn.import_links') }}</v-card-title>
+          <v-card-text>
+            <v-radio-group v-model="importDialogState.mode">
+              <v-radio
+                value="replace"
+                :label="$t('app.setting.label.import_mode_replace')"
+              />
+              <v-radio
+                value="merge"
+                :label="$t('app.setting.label.import_mode_merge')"
+              />
+            </v-radio-group>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <app-btn
+              text
+              @click="importDialogState.active = false"
+            >
+              {{ $t('app.general.btn.cancel') }}
+            </app-btn>
+            <app-btn
+              color="primary"
+              @click="confirmImport"
+            >
+              {{ $t('app.general.btn.save') }}
+            </app-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Ref, Vue } from 'vue-property-decorator'
 import NavLinkDialog from './NavLinkDialog.vue'
 import type { CustomNavLink } from '@/store/config/types'
+import { EventBus } from '@/eventBus'
 
 @Component({
   components: {
@@ -166,9 +255,18 @@ import type { CustomNavLink } from '@/store/config/types'
   }
 })
 export default class NavigationSettings extends Vue {
+  @Ref('fileInput')
+  readonly fileInput!: HTMLInputElement
+
   dialogState: any = {
     active: false,
     link: null
+  }
+
+  importDialogState = {
+    active: false,
+    mode: 'merge' as 'replace' | 'merge',
+    links: [] as CustomNavLink[]
   }
 
   get customLinks (): CustomNavLink[] {
@@ -210,12 +308,14 @@ export default class NavigationSettings extends Vue {
   }
 
   openAddDialog () {
+    // Calculate next position based on existing links
+    const maxPosition = this.customLinks.reduce((max, link) => Math.max(max, link.position), -1)
     const link: CustomNavLink = {
       id: '',
       title: '',
       url: '',
       icon: 'openInNew',
-      position: 100
+      position: maxPosition + 1
     }
     this.dialogState = {
       active: true,
@@ -260,6 +360,129 @@ export default class NavigationSettings extends Vue {
 
     if (result) {
       this.$typedDispatch('config/removeCustomNavLink', { id: link.id })
+    }
+  }
+
+  // --- Import/Export ---
+
+  exportLinks () {
+    const links = this.customLinks
+    const exportData = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      links: links.map(link => ({
+        title: link.title,
+        url: link.url,
+        icon: link.icon,
+        customIcon: link.customIcon,
+        customImage: link.customImage,
+        color: link.color,
+        position: link.position
+      }))
+    }
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `fluidd-nav-links-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
+  triggerImport () {
+    this.fileInput.click()
+  }
+
+  handleFileSelected (event: Event) {
+    const input = event.target as HTMLInputElement
+    const file = input.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string
+        const data = JSON.parse(content) as { links?: any[] }
+
+        // Validate the import data
+        if (!data.links || !Array.isArray(data.links)) {
+          throw new Error('Invalid import file: missing links array')
+        }
+
+        // Validate each link has required fields
+        const validLinks: CustomNavLink[] = data.links
+          .filter((link) => link.title && link.url)
+          .map((link, index) => ({
+            id: '', // Will be assigned on save
+            title: link.title as string,
+            url: link.url as string,
+            icon: (link.icon as string) || 'openInNew',
+            customIcon: link.customIcon,
+            customImage: link.customImage,
+            color: link.color,
+            position: (link.position as number) ?? index
+          }))
+
+        if (validLinks.length === 0) {
+          throw new Error('No valid links found in import file')
+        }
+
+        // Store the links and show the mode selection dialog
+        this.importDialogState.links = validLinks
+        this.importDialogState.mode = 'merge'
+        this.importDialogState.active = true
+      } catch (err) {
+        console.error('Import error:', err)
+        EventBus.$emit(err instanceof Error ? err.message : 'Failed to import links', { type: 'error' })
+      }
+    }
+    reader.readAsText(file)
+
+    // Reset the input so the same file can be selected again
+    input.value = ''
+  }
+
+  async confirmImport () {
+    const links = this.importDialogState.links
+    const mode = this.importDialogState.mode
+
+    // Show confirmation
+    const confirmMsg = mode === 'replace'
+      ? this.$t('app.general.simple_form.msg.confirm_import_links_replace', { count: links.length }).toString()
+      : this.$t('app.general.simple_form.msg.confirm_import_links_merge', { count: links.length }).toString()
+
+    const result = await this.$confirm(
+      confirmMsg,
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$info' }
+    )
+
+    if (!result) return
+
+    this.importDialogState.active = false
+
+    if (mode === 'replace') {
+      // Remove all existing links first
+      for (const link of this.customLinks) {
+        await this.$typedDispatch('config/removeCustomNavLink', { id: link.id })
+      }
+    }
+
+    // Calculate starting position for new links
+    const maxPosition = mode === 'merge'
+      ? this.customLinks.reduce((max, link) => Math.max(max, link.position), -1)
+      : -1
+
+    // Add the imported links
+    for (let i = 0; i < links.length; i++) {
+      const link = {
+        ...links[i],
+        id: '', // Force new ID
+        position: maxPosition + 1 + i
+      }
+      await this.$typedDispatch('config/updateCustomNavLink', link)
     }
   }
 }

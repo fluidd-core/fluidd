@@ -53,10 +53,15 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.setting.label.icon_type')"
-        :sub-title="iconModeHint"
-      >
+      <app-setting>
+        <template #title>
+          <span>{{ $t('app.setting.label.icon_type') }}</span>
+          <app-inline-help
+            bottom
+            small
+            :tooltip="$t('app.setting.tooltip.icon_type')"
+          />
+        </template>
         <v-select
           v-model="selectedIconMode"
           :items="iconModeItems"
@@ -153,25 +158,6 @@
         </div>
       </app-setting>
 
-      <app-setting v-if="selectedIconMode === 'path'">
-        <template #title>
-          <span>{{ $t('app.setting.label.svg_path_data') }}</span>
-          <app-inline-help
-            bottom
-            small
-            :tooltip="$t('app.setting.tooltip.nav_link_svg_path_data')"
-          />
-        </template>
-        <v-textarea
-          v-model="link.customIcon"
-          :placeholder="$t('app.setting.label.custom_icon_hint')"
-          hide-details="auto"
-          filled
-          dense
-          rows="3"
-        />
-      </app-setting>
-
       <app-setting v-if="selectedIconMode === 'image'">
         <template #title>
           <span>{{ $t('app.setting.label.custom_image') }}</span>
@@ -225,11 +211,13 @@
 
       <v-divider />
 
-      <template v-if="selectedIconMode === 'icon' || selectedIconMode === 'path'">
-        <app-setting>
-          <template #title>
+      <template v-if="selectedIconMode === 'icon' || selectedIconMode === 'svg'">
+        <app-setting
+          :r-cols="12"
+          class="color-setting"
+        >
+          <div class="d-flex justify-space-between align-center full-width">
             <v-menu
-              v-if="link.color !== 'theme'"
               bottom
               right
               :close-on-content-click="false"
@@ -240,10 +228,13 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                  <span class="mr-2">{{ $t('app.setting.label.custom_color') }}</span>
-                  <v-icon :color="customColorDisplay">
+                  <v-icon
+                    :color="customColorDisplay"
+                    class="mr-2"
+                  >
                     $circle
                   </v-icon>
+                  <span class="v-label">{{ $t('app.setting.label.custom_color') }}</span>
                 </span>
               </template>
               <v-color-picker
@@ -253,36 +244,25 @@
                 @update:color="handleCustomColorUpdate"
               />
             </v-menu>
-          </template>
-          <v-switch
-            :input-value="link.color === 'theme'"
-            :label="$t('app.setting.label.use_theme_color')"
-            hide-details
-            class="mt-0 pt-0"
-            @change="handleThemeColorToggle"
-          />
+            <v-switch
+              v-if="selectedIconMode === 'svg'"
+              :input-value="colorMode === 'file'"
+              :label="$t('app.setting.label.file')"
+              hide-details
+              class="mt-0 pt-0"
+              @change="handleFileColorsToggle"
+            />
+            <v-switch
+              :input-value="colorMode === 'theme'"
+              :label="$t('app.setting.label.theme')"
+              hide-details
+              class="mt-0 pt-0"
+              @change="handleThemeColorToggle"
+            />
+          </div>
         </app-setting>
         <v-divider />
       </template>
-
-      <app-setting>
-        <template #title>
-          <span>{{ $t('app.setting.label.position') }}</span>
-          <app-inline-help
-            bottom
-            small
-            :tooltip="$t('app.setting.tooltip.nav_link_position')"
-          />
-        </template>
-        <v-text-field
-          v-model.number="link.position"
-          :rules="[$rules.required, $rules.numberValid]"
-          hide-details="auto"
-          type="number"
-          filled
-          dense
-        />
-      </app-setting>
     </v-card-text>
   </app-dialog>
 </template>
@@ -311,22 +291,48 @@ export default class NavLinkDialog extends Vue {
   imageError = ''
   selectedIconMode = 'icon'
   savedCustomColor = ''
+  colorMode: 'file' | 'theme' | 'custom' = 'custom'
 
   created () {
     this.selectedIconMode = this.getIconMode()
     if (this.link.color && this.link.color !== 'theme') {
       this.savedCustomColor = this.link.color
     }
+    // Initialize colorMode based on current link state
+    this.colorMode = this.getInitialColorMode()
+  }
+
+  getInitialColorMode (): 'file' | 'theme' | 'custom' {
+    if (this.selectedIconMode === 'svg' && !this.link.color) {
+      return 'file'
+    }
+    if (this.link.color === 'theme') {
+      return 'theme'
+    }
+    return 'custom'
   }
 
   getIconMode (): string {
     if (this.link.customImage) return 'image'
-    if (this.link.customIcon) {
-      return typeof this.link.customIcon === 'string' && this.link.customIcon.startsWith('data:')
-        ? 'svg'
-        : 'path'
+    if (this.link.customIcon && typeof this.link.customIcon === 'string' && this.link.customIcon.startsWith('data:')) {
+      return 'svg'
     }
     return 'icon'
+  }
+
+  handleFileColorsToggle (checked: boolean) {
+    if (checked) {
+      // Save current color before clearing
+      if (this.link.color && this.link.color !== 'theme') {
+        this.savedCustomColor = this.link.color
+      }
+      this.colorMode = 'file'
+      this.$set(this.link, 'color', undefined)
+    } else {
+      // Switch to custom color mode
+      this.colorMode = 'custom'
+      this.$set(this.link, 'color', this.savedCustomColor || undefined)
+    }
   }
 
   handleThemeColorToggle (checked: boolean) {
@@ -334,15 +340,24 @@ export default class NavLinkDialog extends Vue {
       if (this.link.color && this.link.color !== 'theme') {
         this.savedCustomColor = this.link.color
       }
-      this.link.color = 'theme'
+      this.colorMode = 'theme'
+      this.$set(this.link, 'color', 'theme')
     } else {
-      this.link.color = this.savedCustomColor || undefined
+      // Switch to custom color mode (or file colors for SVG)
+      if (this.selectedIconMode === 'svg') {
+        this.colorMode = 'file'
+        this.$set(this.link, 'color', undefined)
+      } else {
+        this.colorMode = 'custom'
+        this.$set(this.link, 'color', this.savedCustomColor || undefined)
+      }
     }
   }
 
   handleCustomColorUpdate (color: { hex: string }) {
     const value = color.hex
-    this.link.color = value || undefined
+    this.colorMode = 'custom'
+    this.$set(this.link, 'color', value || undefined)
     if (value) {
       this.savedCustomColor = value
     }
@@ -354,16 +369,19 @@ export default class NavLinkDialog extends Vue {
         this.$set(this.link, 'customIcon', undefined)
         this.$set(this.link, 'customImage', undefined)
         this.imageError = ''
+        // Reset to theme or custom color mode (no file colors for built-in icons)
+        if (this.colorMode === 'file') {
+          this.colorMode = 'theme'
+          this.$set(this.link, 'color', 'theme')
+        }
         break
       case 'svg':
         this.$set(this.link, 'customIcon', undefined)
         this.$set(this.link, 'customImage', undefined)
         this.imageError = ''
-        break
-      case 'path':
-        this.$set(this.link, 'customIcon', undefined)
-        this.$set(this.link, 'customImage', undefined)
-        this.imageError = ''
+        // Default to file colors for new SVG uploads
+        this.colorMode = 'file'
+        this.$set(this.link, 'color', undefined)
         break
       case 'image':
         this.$set(this.link, 'customIcon', undefined)
@@ -372,16 +390,10 @@ export default class NavLinkDialog extends Vue {
     }
   }
 
-  get iconModeHint (): string {
-    const key = `app.setting.label.icon_type_hint_${this.selectedIconMode}`
-    return this.$t(key).toString()
-  }
-
   get iconModeItems () {
     return [
       { text: this.$t('app.setting.label.built_in_icon'), value: 'icon' },
       { text: this.$t('app.setting.label.custom_svg_icon'), value: 'svg' },
-      { text: this.$t('app.setting.label.svg_path_data'), value: 'path' },
       { text: this.$t('app.setting.label.custom_image'), value: 'image' }
     ]
   }
@@ -511,5 +523,22 @@ export default class NavLinkDialog extends Vue {
   .v-text-field__details .v-messages__message {
     color: var(--v-warning-base);
   }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.color-setting {
+  min-height: auto !important;
+}
+
+.color-setting ::v-deep .sc-label {
+  display: none;
+}
+
+.color-setting ::v-deep .sc-content {
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 </style>

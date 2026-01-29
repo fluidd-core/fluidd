@@ -46,15 +46,23 @@
             {{ $t(homeLink.title) }}
           </app-nav-item>
 
+          <!-- Divider between Home and draggable system links -->
+          <v-divider
+            v-if="homeLink && systemLinksLocal.length > 0"
+            class="my-1"
+            :style="{ borderColor: $vuetify.theme.currentTheme.primary }"
+          />
+
           <!-- Draggable system links (excluding Home) -->
           <app-draggable
             v-model="systemLinksLocal"
-            :options="{ handle: '' }"
-            @end="handleSystemLinkDragEnd"
+            :options="{ handle: false, dataIdAttr: 'data-id' }"
+            @sorted="handleSystemLinkSorted"
           >
             <app-nav-item
               v-for="item in systemLinksLocal"
               :key="item.id"
+              :data-id="item.id"
               :icon="item.icon"
               :exact="item.exact"
               :to="item.to"
@@ -107,8 +115,9 @@
             </v-list>
           </v-menu>
 
+          <!-- Divider between system links and custom links -->
           <v-divider
-            v-if="collapsedSystemLinkItems.length > 0 && (collapsedCustomLinkItems.length > 0 || customLinksLocal.length > 0)"
+            v-if="customLinksLocal.length > 0 || collapsedCustomLinkItems.length > 0"
             class="my-1"
             :style="{ borderColor: $vuetify.theme.currentTheme.primary }"
           />
@@ -164,12 +173,14 @@
           <!-- Draggable custom links -->
           <app-draggable
             v-model="customLinksLocal"
-            :options="{ handle: '' }"
-            @end="handleCustomLinkDragEnd"
+            :options="customLinkDragOptions"
+            @start="handleCustomLinkDragStart"
+            @sorted="handleCustomLinkSorted"
           >
             <app-nav-external-item
               v-for="link in customLinksLocal"
               :key="link.id"
+              :data-id="link.id"
               :icon="`$${link.icon}`"
               :custom-icon="link.customIcon"
               :custom-image="link.customImage"
@@ -417,6 +428,7 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   systemLinksLocal: SystemNavItem[] = []
   customLinksLocal: CustomNavLink[] = []
+  isCustomLinksDragging = false
 
   @Watch('visibleSystemLinks', { immediate: true })
   onVisibleSystemLinksChange (val: SystemNavItem[]) {
@@ -425,7 +437,17 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   @Watch('visibleCustomLinks', { immediate: true })
   onVisibleCustomLinksChange (val: CustomNavLink[]) {
-    this.customLinksLocal = [...val]
+    // Don't overwrite during drag - wait for drag to finish
+    if (!this.isCustomLinksDragging) {
+      // Filter out any null/undefined items to ensure clean array
+      this.customLinksLocal = val.filter(link => link != null)
+    }
+  }
+
+  // Computed for safe rendering - filters any undefined items that might
+  // appear during drag operations due to SortableJS array manipulation
+  get safeCustomLinksLocal (): CustomNavLink[] {
+    return this.customLinksLocal.filter(link => link != null)
   }
 
   @Watch('$route')
@@ -490,9 +512,16 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
     const url = this.resolveCustomLinkUrl(link.url)
 
     if (this.openNavLinksInNewTab) {
-      // New tab bypasses confirm - just open directly
+      // New tab - use anchor element for reliable cross-browser behavior
       e.preventDefault()
-      window.open(url, '_blank')
+      e.stopPropagation()
+      const a = document.createElement('a')
+      a.href = url
+      a.target = '_blank'
+      a.rel = 'noopener noreferrer'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
     } else if (this.confirmOnNavLink) {
       // Same window with confirm
       e.preventDefault()
@@ -651,6 +680,15 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
     return [...db, ...theme]
   }
 
+  // SortableJS options - filtering of extra DOM elements happens in AppDraggable
+  get customLinkDragOptions () {
+    return {
+      // Set handle to false to allow dragging from anywhere (not just .handle elements)
+      handle: false as any,
+      dataIdAttr: 'data-id'
+    }
+  }
+
   // --- Context menu helpers ---
 
   get isContextItemCollapsed (): boolean {
@@ -736,11 +774,13 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   // --- Drag handlers ---
 
-  handleSystemLinkDragEnd () {
-    // Exclude 'home' from order - it's always pinned at top
-    const visibleIds = this.systemLinksLocal.map(item => item.id).filter(id => id !== 'home')
+  handleSystemLinkSorted (sortedIds: string[]) {
+    console.log('[SYSTEM SORTED] sortedIds:', sortedIds)
+    // Filter out 'home' (it's always pinned at top) and combine with collapsed links
+    const visibleIds = sortedIds.filter(id => id !== 'home')
     const collapsedIds = this.collapsedSystemLinkItems.map(item => item.id).filter(id => id !== 'home')
     const fullOrder = [...visibleIds, ...collapsedIds]
+    console.log('[SYSTEM SORTED] Saving order:', fullOrder)
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.navigation.systemLinkOrder',
       value: fullOrder,
@@ -748,10 +788,61 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  handleCustomLinkDragEnd () {
-    this.customLinksLocal.forEach((link, index) => {
-      const updated = { ...link, position: index }
-      this.$typedDispatch('config/updateCustomNavLink', updated)
+  handleCustomLinkDragStart () {
+    this.isCustomLinksDragging = true
+    console.log('[DRAG START] customLinksLocal order:', this.customLinksLocal.map(l => l?.title || 'undefined'))
+  }
+
+  handleCustomLinkSorted (sortedIds: string[]) {
+    console.log('[SORTED] sortedIds:', sortedIds)
+
+    // Collect theme link positions and DB link position updates
+    const themeLinkPositions: Record<string, number> = {}
+    const dbLinkPositions: { id: string; position: number }[] = []
+
+    // Assign positions to visible links based on sorted order (0, 1, 2, ...)
+    sortedIds.forEach((id, index) => {
+      console.log(`[SORTED] Visible Index ${index}: id ${id.substring(0, 12)}...`)
+      if (id.startsWith('preset-')) {
+        themeLinkPositions[id] = index
+      } else {
+        dbLinkPositions.push({ id, position: index })
+      }
+    })
+
+    // Collapsed links get positions AFTER all visible links
+    // This prevents position conflicts between visible and collapsed links
+    const collapsedStartPosition = sortedIds.length
+    this.collapsedCustomLinkItems.forEach((link, index) => {
+      const position = collapsedStartPosition + index
+      console.log(`[SORTED] Collapsed Index ${position}: id ${link.id.substring(0, 12)}...`)
+      if (link.id.startsWith('preset-')) {
+        themeLinkPositions[link.id] = position
+      } else {
+        dbLinkPositions.push({ id: link.id, position })
+      }
+    })
+
+    console.log('[SORTED] Saving DB positions:', dbLinkPositions)
+    console.log('[SORTED] Saving theme positions:', themeLinkPositions)
+
+    // Batch update DB link positions (single mutation + single DB write)
+    if (dbLinkPositions.length > 0) {
+      this.$typedDispatch('config/updateCustomNavLinkPositions', dbLinkPositions)
+    }
+
+    // Save theme link positions if any exist
+    if (Object.keys(themeLinkPositions).length > 0) {
+      this.$typedDispatch('config/saveByPath', {
+        path: 'uiSettings.navigation.themeLinkPositions',
+        value: themeLinkPositions,
+        server: true
+      })
+    }
+
+    // Allow watcher to sync again after store is updated
+    this.$nextTick(() => {
+      this.isCustomLinksDragging = false
     })
   }
 

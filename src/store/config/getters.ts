@@ -112,13 +112,16 @@ export const getters = {
       p => p.logo.src === state.uiSettings.theme.logo.src
     )
     if (activePreset?.url) {
+      const id = `preset-${activePreset.logo.src}`
+      const storedPosition = state.uiSettings.navigation?.themeLinkPositions?.[id]
       return [{
-        id: `preset-${activePreset.logo.src}`,
+        id,
         title: activePreset.name,
         url: activePreset.url,
         icon: 'openInNew',
         customIcon: activePreset.icon,
-        position: 0
+        // Use stored position if available, otherwise default to end
+        position: storedPosition ?? Number.MAX_SAFE_INTEGER
       }]
     }
     return []
@@ -134,7 +137,11 @@ export const getters = {
     const hidden = state.uiSettings.navigation?.hiddenThemeLinks || []
     const themeLinks = (getters.getThemeNavLinks as CustomNavLink[])
       .filter(l => !hidden.includes(l.id))
-    return [...dbLinks, ...themeLinks].sort((a, b) => a.position - b.position)
+    const combined = [...dbLinks, ...themeLinks]
+    console.log('[getCustomNavLinks] BEFORE sort:', combined.map(l => `${l.title}(pos:${l.position})`))
+    const sorted = combined.sort((a, b) => a.position - b.position)
+    console.log('[getCustomNavLinks] AFTER sort:', sorted.map(l => `${l.title}(pos:${l.position})`))
+    return sorted
   },
 
   getTokenKeys: (state) => {

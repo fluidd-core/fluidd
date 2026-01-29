@@ -22,6 +22,7 @@ export interface NavigationConfig {
   collapsedSystemLinks: string[]
   systemLinkOrder: string[]
   collapsedCustomLinks: string[]
+  themeLinkPositions: Record<string, number>
   openNavLinksInNewTab: boolean
   confirmOnNavLink: boolean
   sidebarExpanded: boolean

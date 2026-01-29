@@ -230,5 +230,16 @@ export const mutations = {
     if (i >= 0) {
       links.splice(i, 1)
     }
+  },
+
+  setCustomNavLinkPositions (state, payload: { id: string; position: number }[]) {
+    const links = state.uiSettings.navigation.customLinks
+    for (const { id, position } of payload) {
+      const index = links.findIndex(l => l.id === id)
+      if (index >= 0) {
+        // Use Vue.set to ensure reactivity
+        Vue.set(links[index], 'position', position)
+      }
+    }
   }
 } satisfies MutationTree<ConfigState>

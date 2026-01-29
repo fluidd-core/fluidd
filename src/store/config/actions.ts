@@ -220,6 +220,11 @@ export const actions = {
     SocketActions.serverDatabasePostItem('uiSettings.navigation.customLinks', state.uiSettings.navigation.customLinks)
   },
 
+  async updateCustomNavLinkPositions ({ commit, state }, payload: { id: string; position: number }[]) {
+    commit('setCustomNavLinkPositions', payload)
+    SocketActions.serverDatabasePostItem('uiSettings.navigation.customLinks', state.uiSettings.navigation.customLinks)
+  },
+
   async removeCustomNavLink ({ commit, state }, payload: { id: string }) {
     commit('setRemoveCustomNavLink', payload)
     SocketActions.serverDatabasePostItem('uiSettings.navigation.customLinks', state.uiSettings.navigation.customLinks)

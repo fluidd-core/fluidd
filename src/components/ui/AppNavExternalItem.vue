@@ -6,6 +6,7 @@
     <template #activator="{ attrs, on }">
       <v-list-item
         :href="newTab ? undefined : resolvedUrl"
+        :data-id="dataId"
         link
         color="secondary"
         v-bind="attrs"
@@ -65,6 +66,9 @@ export default class AppNavExternalItem extends Mixins(BrowserMixin) {
   @Prop({ type: Boolean, default: false })
   readonly hideTooltip!: boolean
 
+  @Prop({ type: String })
+  readonly dataId?: string
+
   get resolvedUrl (): string {
     if (this.url.startsWith('/')) {
       return `${window.location.origin}${this.url}`
@@ -80,9 +84,16 @@ export default class AppNavExternalItem extends Mixins(BrowserMixin) {
 
   handleClick (e: Event) {
     if (this.newTab) {
-      // New tab bypasses confirm - just open directly
+      // New tab - use anchor element for reliable cross-browser behavior
       e.preventDefault()
-      window.open(this.resolvedUrl, '_blank')
+      e.stopPropagation()
+      const a = document.createElement('a')
+      a.href = this.resolvedUrl
+      a.target = '_blank'
+      a.rel = 'noopener noreferrer'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
     } else if (this.confirm) {
       // Same window with confirm
       e.preventDefault()
