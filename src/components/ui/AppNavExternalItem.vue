@@ -1,17 +1,16 @@
 <template>
   <v-tooltip
     right
-    :disabled="isMobileViewport"
+    :disabled="isMobileViewport || hideTooltip"
   >
     <template #activator="{ attrs, on }">
       <v-list-item
-        :href="resolvedUrl"
-        :target="newTab ? '_blank' : '_self'"
+        :href="newTab ? undefined : resolvedUrl"
         link
         color="secondary"
         v-bind="attrs"
         v-on="on"
-        @click="confirm ? handleConfirmClick($event) : undefined"
+        @click="handleClick($event)"
         @contextmenu.prevent="$emit('contextmenu', $event)"
       >
         <v-list-item-icon>
@@ -63,6 +62,9 @@ export default class AppNavExternalItem extends Mixins(BrowserMixin) {
   @Prop({ type: Boolean, default: false })
   readonly newTab!: boolean
 
+  @Prop({ type: Boolean, default: false })
+  readonly hideTooltip!: boolean
+
   get resolvedUrl (): string {
     if (this.url.startsWith('/')) {
       return `${window.location.origin}${this.url}`
@@ -76,14 +78,26 @@ export default class AppNavExternalItem extends Mixins(BrowserMixin) {
       : this.color
   }
 
-  async handleConfirmClick (e: Event) {
-    e.preventDefault()
+  handleClick (e: Event) {
+    if (this.newTab) {
+      // New tab bypasses confirm - just open directly
+      e.preventDefault()
+      window.open(this.resolvedUrl, '_blank')
+    } else if (this.confirm) {
+      // Same window with confirm
+      e.preventDefault()
+      this.handleConfirmNavigation()
+    }
+    // If neither newTab nor confirm, let the href handle it naturally
+  }
+
+  async handleConfirmNavigation () {
     const result = await this.$confirm(
       this.$t('app.general.simple_form.msg.confirm_open_nav_link', { url: this.resolvedUrl }).toString(),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
     )
     if (result) {
-      window.open(this.resolvedUrl, this.newTab ? '_blank' : '_self')
+      window.location.href = this.resolvedUrl
     }
   }
 }

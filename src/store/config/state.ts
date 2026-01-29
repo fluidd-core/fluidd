@@ -170,8 +170,9 @@ export const defaultState = (): ConfigState => {
         collapsedSystemLinks: [],
         systemLinkOrder: [],
         collapsedCustomLinks: [],
-        openNavLinksInNewTab: false,
-        confirmOnNavLink: true
+        openNavLinksInNewTab: true,
+        confirmOnNavLink: false,
+        sidebarExpanded: false
       }
     }
   }

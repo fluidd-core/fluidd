@@ -19,6 +19,11 @@
       :d="p.d"
     />
   </svg>
+  <span
+    v-else-if="isCustomIconDataUrl && color"
+    :class="svgClass"
+    :style="maskedSvgStyle"
+  />
   <img
     v-else-if="isCustomIconDataUrl"
     :src="customIcon"
@@ -79,6 +84,24 @@ export default class AppNavLinkIcon extends Vue {
   get svgStyle (): string {
     const size = this.small ? '16px' : '24px'
     return `width: ${size}; height: ${size};`
+  }
+
+  get maskedSvgStyle (): string {
+    const size = this.small ? '16px' : '24px'
+    return `
+      display: inline-block;
+      width: ${size};
+      height: ${size};
+      background-color: ${this.color};
+      mask-image: url(${this.customIcon});
+      mask-size: contain;
+      mask-repeat: no-repeat;
+      mask-position: center;
+      -webkit-mask-image: url(${this.customIcon});
+      -webkit-mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+    `.replace(/\s+/g, ' ').trim()
   }
 
   get iconClass (): string | undefined {
