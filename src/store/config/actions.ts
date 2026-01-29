@@ -200,19 +200,32 @@ export const actions = {
     }
   },
 
-  async updateTheme ({ state, dispatch }, payload: Partial<ThemeConfig>) {
+  async updateTheme ({ state, commit, dispatch }, payload: Partial<ThemeConfig>) {
+    // Check if theme preset is changing (logo changed) BEFORE updating state
+    const isLogoChanging = payload.logo && payload.logo.src !== state.uiSettings.theme.logo.src
+
     const updatedTheme: ThemeConfig = {
       ...state.uiSettings.theme,
       ...payload
     }
 
+    // Save theme FIRST (synchronously) so getters evaluate with new theme
+    commit('setSaveByPath', {
+      path: 'uiSettings.theme',
+      value: updatedTheme
+    })
+
+    // Then clear positions - getter will now return new theme's link with -1 position
+    if (isLogoChanging) {
+      commit('setThemeLinkPositions', {})
+      SocketActions.serverDatabasePostItem('uiSettings.navigation.themeLinkPositions', {})
+    }
+
+    // Apply Vuetify theme changes
     dispatch('onThemeChange', updatedTheme)
 
-    dispatch('saveByPath', {
-      path: 'uiSettings.theme',
-      value: updatedTheme,
-      server: true
-    })
+    // Persist theme to database
+    SocketActions.serverDatabasePostItem('uiSettings.theme', updatedTheme)
   },
 
   async updateCustomNavLink ({ commit, state }, payload: CustomNavLink) {
@@ -228,5 +241,10 @@ export const actions = {
   async removeCustomNavLink ({ commit, state }, payload: { id: string }) {
     commit('setRemoveCustomNavLink', payload)
     SocketActions.serverDatabasePostItem('uiSettings.navigation.customLinks', state.uiSettings.navigation.customLinks)
+  },
+
+  async updateThemeLinkPositions ({ commit, state }, payload: Record<string, number>) {
+    commit('setThemeLinkPositions', payload)
+    SocketActions.serverDatabasePostItem('uiSettings.navigation.themeLinkPositions', state.uiSettings.navigation.themeLinkPositions)
   }
 } satisfies ActionTree<ConfigState, RootState>

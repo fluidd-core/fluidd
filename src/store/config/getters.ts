@@ -114,14 +114,16 @@ export const getters = {
     if (activePreset?.url) {
       const id = `preset-${activePreset.logo.src}`
       const storedPosition = state.uiSettings.navigation?.themeLinkPositions?.[id]
+      const finalPosition = storedPosition ?? -1
+      console.log('[getThemeNavLinks] activePreset:', activePreset.name, 'id:', id, 'storedPosition:', storedPosition, 'finalPosition:', finalPosition)
       return [{
         id,
         title: activePreset.name,
         url: activePreset.url,
         icon: 'openInNew',
         customIcon: activePreset.icon,
-        // Use stored position if available, otherwise default to end
-        position: storedPosition ?? Number.MAX_SAFE_INTEGER
+        // Use stored position if available, otherwise default to first (before user links)
+        position: finalPosition
       }]
     }
     return []

@@ -241,5 +241,10 @@ export const mutations = {
         Vue.set(links[index], 'position', position)
       }
     }
+  },
+
+  setThemeLinkPositions (state, payload: Record<string, number>) {
+    // Use Vue.set to ensure reactivity when updating nested object
+    Vue.set(state.uiSettings.navigation, 'themeLinkPositions', payload)
   }
 } satisfies MutationTree<ConfigState>

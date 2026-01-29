@@ -437,10 +437,14 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   @Watch('visibleCustomLinks', { immediate: true })
   onVisibleCustomLinksChange (val: CustomNavLink[]) {
+    console.log('[WATCHER] visibleCustomLinks changed:', val.map(l => `${l.title}(pos:${l.position}, id:${l.id.substring(0, 15)})`))
     // Don't overwrite during drag - wait for drag to finish
     if (!this.isCustomLinksDragging) {
       // Filter out any null/undefined items to ensure clean array
       this.customLinksLocal = val.filter(link => link != null)
+      console.log('[WATCHER] Updated customLinksLocal')
+    } else {
+      console.log('[WATCHER] Skipped update - dragging in progress')
     }
   }
 
@@ -833,11 +837,7 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
     // Save theme link positions if any exist
     if (Object.keys(themeLinkPositions).length > 0) {
-      this.$typedDispatch('config/saveByPath', {
-        path: 'uiSettings.navigation.themeLinkPositions',
-        value: themeLinkPositions,
-        server: true
-      })
+      this.$typedDispatch('config/updateThemeLinkPositions', themeLinkPositions)
     }
 
     // Allow watcher to sync again after store is updated
