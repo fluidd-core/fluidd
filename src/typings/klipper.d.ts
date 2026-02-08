@@ -681,6 +681,7 @@ declare namespace Klipper {
     spoolman_support: string;
     enable_spoolman: number;
     bowden_progress: number;
+    espooler: string[];
     espooler_active: string;
     servo: string;
     grip?: string;
