@@ -450,7 +450,13 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
         command: 'MMU_EJECT',
         label: this.$t('app.mmu.btn.eject').toString(),
         loading: this.$waits.onMmuEject
-      }
+      },
+      {
+        icon: '$mmuChangeTool',
+        command: 'MMU_CHANGE_TOOL',
+        label: this.$t('app.mmu.btn.change_tool').toString(),
+        loading: this.$waits.onMmuChangeTool
+      },
     ]
   }
 

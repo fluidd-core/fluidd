@@ -1089,6 +1089,7 @@ app:
       remaining_filament_unit: Show remaining filament as
   mmu:
     btn:
+      change_tool: Change Tool
       check_all_gates: Check All Gates
       check_gate: Check Gate
       select: Select
