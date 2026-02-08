@@ -1,7 +1,7 @@
 <template>
   <svg
     ref="filStatusSvg"
-    viewBox="140 20 285 421"
+    viewBox="140 0 285 441"
     preserveAspectRatio="xMidYMid meet"
     class="svg-colors"
   >
@@ -211,6 +211,14 @@
       </g>
     </defs>
 
+    <text
+      x="282"
+      y="18"
+      font-size="16px"
+      text-anchor="middle"
+    >
+      {{ statusText }}
+    </text>
     <rect
       x="150"
       y="30"
@@ -642,6 +650,31 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
     if (this.configExtruderHomingEndstop === 'extruder') return POSITIONS.EXTRUDER
 
     return POSITIONS.END_BOWDEN
+  }
+
+  get statusText (): string {
+    let posStr: string = ''
+    if (['complete', 'error', 'cancelled', 'started'].includes(this.printState)) {
+      posStr = this.capitalize(this.printState)
+    } else if (this.action === 'Idle') {
+      if (this.printState === 'printing') {
+        posStr = `Printing (${this.numToolchanges}`
+        if (this.slicerToolMap?.total_toolchanges) posStr += `/${this.slicerToolMap?.total_toolchanges}`
+        posStr += ' swaps)'
+      } else {
+        posStr = this.filament !== 'Unloaded' ? `Filament: ${this.filamentPosition}mm` : 'Filament: Unloaded'
+      }
+    } else if (this.action === 'Loading' || this.action === 'Unloading') {
+      posStr = `${this.action}: ${this.filamentPosition}mm`
+    } else {
+      posStr = this.action ?? ''
+    }
+    return posStr
+  }
+
+  private capitalize (str: string): string {
+    if (!str) return str
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
   }
 
   get toolheadSensor () {
