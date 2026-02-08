@@ -205,6 +205,44 @@
       </div>
     </div>
 
+    <div class="mmu-unit-footer zindex-4 d-flex flex-row align-center px-2 pb-1">
+      <div
+        v-if="showLogos && vendorLogo"
+        class="mmu-logo"
+        :style="{
+          height: `${logoHeight}px`
+        }"
+      >
+        <inline-svg
+          :src="vendorLogoUrl"
+          height="100%"
+          @error="vendorLogo = 'HappyHare'"
+        />
+      </div>
+        <div class="flex-grow-1 flex-shrink-1 min-width-0 text-caption">
+            <div v-if="showName" class="text-truncate">{{ unitDisplayName }}</div>
+            <v-tooltip v-if="showClimate" :disabled="!showPerGateReport" top open-delay="500">
+                <template #activator="{ on, attrs }">
+                    <div class="text-truncate d-flex" v-bind="attrs" v-on="on">
+                        <span v-if="unitClimateHumidity" class="d-inline-flex align-center ml-n1 mr-1">
+                            <v-icon size="18" class="blue--text">{{ mdiWater }}</v-icon>
+                            {{ unitClimateHumidity }}
+                        </span>
+                        <span v-if="unitClimateTemp" class="d-inline-flex align-center mr-2">
+                            <v-icon size="18" class="deep-orange--text">{{ mdiThermometer }}</v-icon>
+                            {{ unitClimateTemp }}
+                        </span>
+                        <span v-if="unitHeaterIcon" class="d-inline-flex align-center ml-auto">
+                            <v-icon size="22" class="red--text">{{ unitHeaterIcon }}</v-icon>
+                            {{ unitHeaterTemp }}
+                        </span>
+                    </div>
+                </template>
+                <span style="white-space: pre-line">{{ perGateReport }}</span>
+            </v-tooltip>
+        </div>
+    </div>
+<!-- ORIG
     <div
       class="logo-row"
       :style="{
@@ -236,8 +274,42 @@
         </div>
       </div>
     </div>
+-->
   </v-container>
 </template>
+<!--
+    <div class="mmu-unit-footer zindex-4 d-flex flex-row align-center px-2 pb-1">
+        <v-icon
+            v-if="showFooter && showLogos"
+            class="mr-4 flex-grow-0 flex-shrink-0 opacity-70"
+            :class="logoClasses"
+            :size="logoHeight">
+            {{ logo }}
+        </v-icon>
+        <div v-if="showFooter" class="flex-grow-1 flex-shrink-1 min-width-0 text-caption">
+            <div v-if="showName" class="text-truncate">{{ unitDisplayName }}</div>
+            <v-tooltip v-if="showDetails && showClimate" :disabled="!showPerGateReport" top open-delay="500">
+                <template #activator="{ on, attrs }">
+                    <div class="text-truncate d-flex" v-bind="attrs" v-on="on">
+                        <span v-if="unitClimateHumidity" class="d-inline-flex align-center ml-n1 mr-1">
+                            <v-icon size="18" class="blue--text">{{ mdiWater }}</v-icon>
+                            {{ unitClimateHumidity }}
+                        </span>
+                        <span v-if="unitClimateTemp" class="d-inline-flex align-center mr-2">
+                            <v-icon size="18" class="deep-orange--text">{{ mdiThermometer }}</v-icon>
+                            {{ unitClimateTemp }}
+                        </span>
+                        <span v-if="unitHeaterIcon" class="d-inline-flex align-center ml-auto">
+                            <v-icon size="22" class="red--text">{{ unitHeaterIcon }}</v-icon>
+                            {{ unitHeaterTemp }}
+                        </span>
+                    </div>
+                </template>
+                <span style="white-space: pre-line">{{ perGateReport }}</span>
+            </v-tooltip>
+        </div>
+    </div>
+-->
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
@@ -358,6 +430,188 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   get showBypass (): boolean {
     return !this.editGateMap && this.unitDetails(this.unitIndex).hasBypass && this.hasBypass
   }
+
+  get showClimate(): boolean {
+    return false
+// PAUL    return this.$store.state.gui.view.mmu.showClimate ?? true
+  }
+
+// PAUL NEW vvv
+/*
+    get unitHeaterObj() {
+        const name = this.resolvePerGateName(
+            this.mmuMachineUnit?.filament_heaters,
+            this.mmuMachineUnit?.filament_heater
+        )
+        return name ? this.$store.state.printer[name] : undefined
+    }
+
+    get unitClimateSensorObj() {
+        const fullname = this.resolvePerGateName(
+            this.mmuMachineUnit?.environment_sensors,
+            this.mmuMachineUnit?.environment_sensor
+        )
+        return this.additionalSensorObj(fullname)
+    }
+
+    private additionalSensorObj(fullname: string | undefined) {
+        if (!fullname) return undefined
+        const parts = fullname.split(' ')
+        if (parts.length !== 2) return undefined
+        const name = parts[1]
+
+        for (const key of additionalSensors) {
+            const objectName: string = `${key} ${name}`
+            if (!(objectName in this.$store.state.printer)) continue
+
+            return this.$store.state.printer[objectName]
+        }
+
+        return undefined
+    }
+
+    get hasPerGateClimateSensors() {
+        return !!this.mmuMachineUnit?.environment_sensors
+    }
+
+    get hasPerGateHeaters() {
+        return !!this.mmuMachineUnit?.filament_heaters
+    }
+
+    get unitDryingCycle(): boolean {
+        const start = this.firstGateNumber
+        const end = this.firstGateNumber + this.numGates
+
+        return this.dryingState.slice(start, end).some((state) => state === 'active' || state === 'queued')
+    }
+
+    get dryingState() {
+        return this.mmu?.drying_state ?? []
+    }
+
+    get showPerGateReport(): boolean {
+        return (this.hasPerGateHeaters || this.hasPerGateClimateSensors) && this.showDetails
+    }
+
+    get perGateReport(): string {
+        const sensors = this.mmuMachineUnit?.environment_sensors
+        const heaters = this.mmuMachineUnit?.filament_heaters
+        const isDrying = this.unitDryingCycle
+
+        const gateLabel = this.$t('Panels.MmuPanel.Gate').toString()
+        const dryingLabel = this.$t('Panels.MmuPanel.Drying').toString()
+        const heaterLabel = this.$t('Panels.MmuPanel.Heater').toString()
+        const queued = this.$t('Panels.MmuPanel.DryingQueued').toString()
+        const complete = this.$t('Panels.MmuPanel.DryingComplete').toString()
+        const cancelled = this.$t('Panels.MmuPanel.DryingCancelled').toString()
+
+        const lines: string[] = []
+        for (let i = 0; i < this.numGates; i++) {
+            const gate = this.firstGateNumber + i
+            const parts: string[] = []
+
+            const fullname = sensors?.[i]
+            const sensorObj = this.additionalSensorObj(this.stripQuotes(fullname))
+            if (sensorObj) {
+                const h = this.humidity(sensorObj)
+                const t = this.temperature(sensorObj)
+                if (h || t) parts.push([h, t].filter(Boolean).join('/'))
+            }
+
+            const heaterName = heaters?.[i]
+            const heaterKey = this.stripQuotes(heaterName)
+            const heaterObj = heaterKey ? this.$store.state.printer[heaterKey] : undefined
+            if (heaterObj) {
+                const state = this.dryingState?.[gate]
+                if (isDrying) {
+                    if (state === 'active') parts.push(`${dryingLabel}: ${this.target(heaterObj) ?? ''}`.trim())
+                    else if (state === 'queued') parts.push(queued)
+                    else if (state === 'complete') parts.push(complete)
+                    else if (state === 'cancelled') parts.push(cancelled)
+                    else parts.push(`${heaterLabel}: ${this.target(heaterObj) ?? ''}`.trim())
+                } else {
+                    parts.push(`${heaterLabel}: ${this.target(heaterObj) ?? ''}`.trim())
+                }
+            }
+
+            lines.push(`${gateLabel} ${gate}: ${parts.join(', ')}`)
+        }
+
+        return lines.join('\n')
+    }
+
+    private formatMetric(obj: any, key: 'humidity' | 'temperature' | 'target', suffix: string) {
+        const v = obj?.[key]
+        return typeof v === 'number' ? `${v.toFixed(0)}${suffix}` : undefined
+    }
+
+    private humidity(obj: any) {
+        return this.formatMetric(obj, 'humidity', '%')
+    }
+
+    private temperature(obj: any) {
+        return this.formatMetric(obj, 'temperature', '°C')
+    }
+
+    private target(obj: any) {
+        return this.formatMetric(obj, 'target', '°C')
+    }
+
+    private resolvePerGateName(perGate: string[] | undefined, single: string | undefined) {
+        if (perGate) {
+            const start = this.firstGateNumber
+            const end = start + this.numGates
+            if (this.mmuGate < start || this.mmuGate >= end) return undefined
+            return this.stripQuotes(perGate[this.mmuGate - start])
+        }
+        return this.stripQuotes(single)
+    }
+
+    private stripQuotes(v?: string) {
+        return v?.replace(/^"(.*)"$/, '$1')
+    }
+
+    get unitHeaterIcon() {
+        if (this.unitDryingCycle) return mdiRotateOrbit
+
+        if (this.hasPerGateHeaters) {
+            // Check all heaters on unit
+            const heaters = this.mmuMachineUnit?.filament_heaters
+            for (let i = 0; i < this.numGates; i++) {
+                const heaterName = heaters?.[i]
+                const heaterKey = this.stripQuotes(heaterName)
+                const heaterObj = heaterKey ? this.$store.state.printer[heaterKey] : undefined
+                const raw = heaterObj?.target
+                if (typeof raw == 'number' && raw > 0) return mdiHeatingCoil
+            }
+        } else if (this.unitHeaterTemp) return mdiHeatingCoil
+
+        return undefined
+    }
+
+    get unitClimateHumidity() {
+        if (this.hasPerGateClimateSensors && !this.unitClimateSensorObj) return '...'
+        if (!this.unitClimateSensorObj) return undefined
+        return this.formatMetric(this.unitClimateSensorObj, 'humidity', '%')
+    }
+
+    get unitClimateTemp() {
+        if (this.hasPerGateClimateSensors && !this.unitClimateSensorObj) return '...'
+        if (!this.unitClimateSensorObj) return undefined
+        const value = this.formatMetric(this.unitClimateSensorObj, 'temperature', '°C')
+        return value ? (this.hasPerGateClimateSensors ? `${value} ...` : value) : undefined
+    }
+
+    get unitHeaterTemp() {
+        if (!this.unitHeaterObj && this.mmuGate >= 0) return undefined
+        if (!this.unitHeaterObj && this.hasPerGateHeaters) return '...'
+        const raw = this.unitHeaterObj?.target
+        if (typeof raw !== 'number' || raw <= 0) return undefined
+        const value = this.formatMetric(this.unitHeaterObj, 'target', '°C')
+        return value ? (this.hasPerGateHeaters ? `${value} ...` : value) : undefined
+    }
+*/
+// PAUL new ^^^
 
   gateTooltip (gate: number): string[] {
     const details = this.gateDetails(gate)
