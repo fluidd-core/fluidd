@@ -44,6 +44,35 @@ export default class AppDraggable extends Vue {
     this.attach()
   }
 
+  @Watch('items')
+  onItemsChange () {
+    // Sync DOM order when the backing array changes externally
+    // SortableJS manages DOM independently, so we need to tell it to re-sort
+    if (this.sortable && this.options?.dataIdAttr) {
+      const dataIdAttr = this.options.dataIdAttr
+      const newOrder = this.items
+        .map((item: any) => item?.id)
+        .filter((id): id is string => Boolean(id))
+
+      // Get current DOM order
+      const currentOrder: string[] = []
+      const el = this.sortable.el
+      for (const child of el.children) {
+        const id = child.getAttribute(dataIdAttr)
+        if (id) currentOrder.push(id)
+      }
+
+      // Only re-sort if order actually differs (avoid unnecessary DOM manipulation)
+      const ordersDiffer = newOrder.length !== currentOrder.length ||
+        newOrder.some((id, i) => currentOrder[i] !== id)
+
+      if (ordersDiffer) {
+        console.log('[AppDraggable.onItemsChange] Syncing DOM order. New:', newOrder, 'Current:', currentOrder)
+        this.sortable.sort(newOrder)
+      }
+    }
+  }
+
   sortable: Sortable | null = null
 
   handleStart (event: Sortable.SortableEvent) {
