@@ -201,11 +201,20 @@ export interface ThemePreset {
   isDark: boolean;
   logo: ThemeLogo;
   url?: string;
+  links?: ThemeLink[];
   icon?: SvgIconPath[];
+}
+
+export interface ThemeLink {
+  title: string
+  url: string
+  icon?: string
 }
 
 export interface ThemeLogo {
   src: string;
+  icon?: string;
+  background?: string;
   dark?: string;
   light?: string;
 }

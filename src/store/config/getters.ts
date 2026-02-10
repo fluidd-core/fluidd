@@ -111,22 +111,39 @@ export const getters = {
     const activePreset = state.hostConfig.themePresets.find(
       p => p.logo.src === state.uiSettings.theme.logo.src
     )
-    if (activePreset?.url) {
-      const id = `preset-${activePreset.logo.src}`
+    if (!activePreset) return []
+
+    // Resolve links array: prefer preset.links, fall back to legacy preset.url
+    const links = activePreset.links
+      ?? (activePreset.url ? [{ title: activePreset.name, url: activePreset.url }] : [])
+
+    if (links.length === 0) return []
+
+    const baseId = `preset-${activePreset.logo.src}`
+
+    return links.map((link, index) => {
+      // Resolve icon per link via fallback chain
+      const customIcon: string | undefined | any[] = link.icon      // per-link SVG filename
+        ?? activePreset.logo.icon                                   // preset-level SVG filename
+        ?? activePreset.icon                                        // legacy SvgIconPath[]
+        ?? activePreset.logo.src                                    // ultimate fallback
+
+      // Generate stable IDs: first link keeps legacy ID for backwards compat
+      const id = index === 0 ? baseId : `${baseId}-${index}`
+
+      // Position: use stored position if available, otherwise group at top
       const storedPosition = state.uiSettings.navigation?.themeLinkPositions?.[id]
-      const finalPosition = storedPosition ?? -1
-      console.log('[getThemeNavLinks] activePreset:', activePreset.name, 'id:', id, 'storedPosition:', storedPosition, 'finalPosition:', finalPosition)
-      return [{
+      const position = storedPosition ?? (-1 + index)
+
+      return {
         id,
-        title: activePreset.name,
-        url: activePreset.url,
+        title: link.title,
+        url: link.url,
         icon: 'openInNew',
-        customIcon: activePreset.icon,
-        // Use stored position if available, otherwise default to first (before user links)
-        position: finalPosition
-      }]
-    }
-    return []
+        customIcon,
+        position
+      }
+    })
   },
 
   getDbNavLinks: (state): CustomNavLink[] => {
@@ -140,10 +157,7 @@ export const getters = {
     const themeLinks = (getters.getThemeNavLinks as CustomNavLink[])
       .filter(l => !hidden.includes(l.id))
     const combined = [...dbLinks, ...themeLinks]
-    console.log('[getCustomNavLinks] BEFORE sort:', combined.map(l => `${l.title}(pos:${l.position})`))
-    const sorted = combined.sort((a, b) => a.position - b.position)
-    console.log('[getCustomNavLinks] AFTER sort:', sorted.map(l => `${l.title}(pos:${l.position})`))
-    return sorted
+    return combined.sort((a, b) => a.position - b.position)
   },
 
   getTokenKeys: (state) => {

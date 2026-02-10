@@ -162,7 +162,8 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get logoSrc () {
-    return `${import.meta.env.BASE_URL}${this.theme.logo.src}`
+    const bg = this.theme.logo.background || this.theme.logo.src
+    return `${import.meta.env.BASE_URL}${bg}`
   }
 
   get primaryColor (): string {

@@ -19,6 +19,13 @@
       :d="p.d"
     />
   </svg>
+  <inline-svg
+    v-else-if="isSvgFile"
+    :src="svgFileUrl"
+    class="nav-link-svg-icon"
+    width="24"
+    height="24"
+  />
   <span
     v-else-if="isCustomIconDataUrl && color"
     :class="svgClass"
@@ -72,6 +79,14 @@ export default class AppNavLinkIcon extends Vue {
 
   @Prop({ type: Boolean, default: false })
   readonly small!: boolean
+
+  get isSvgFile (): boolean {
+    return typeof this.customIcon === 'string' && this.customIcon.endsWith('.svg')
+  }
+
+  get svgFileUrl (): string {
+    return `${import.meta.env.BASE_URL}${this.customIcon}`
+  }
 
   get isCustomIconDataUrl (): boolean {
     return typeof this.customIcon === 'string' && this.customIcon.startsWith('data:')
