@@ -32,3 +32,6 @@ pnpm-debug.log*
 *.sw?
 
 *.tsbuildinfo
+
+# Claude Code
+.claude/

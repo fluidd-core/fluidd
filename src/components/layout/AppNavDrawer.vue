@@ -437,14 +437,10 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   @Watch('visibleCustomLinks', { immediate: true })
   onVisibleCustomLinksChange (val: CustomNavLink[]) {
-    console.log('[WATCHER] visibleCustomLinks changed:', val.map(l => `${l.title}(pos:${l.position}, id:${l.id.substring(0, 15)})`))
     // Don't overwrite during drag - wait for drag to finish
     if (!this.isCustomLinksDragging) {
       // Filter out any null/undefined items to ensure clean array
       this.customLinksLocal = val.filter(link => link != null)
-      console.log('[WATCHER] Updated customLinksLocal')
-    } else {
-      console.log('[WATCHER] Skipped update - dragging in progress')
     }
   }
 
@@ -779,12 +775,10 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   // --- Drag handlers ---
 
   handleSystemLinkSorted (sortedIds: string[]) {
-    console.log('[SYSTEM SORTED] sortedIds:', sortedIds)
     // Filter out 'home' (it's always pinned at top) and combine with collapsed links
     const visibleIds = sortedIds.filter(id => id !== 'home')
     const collapsedIds = this.collapsedSystemLinkItems.map(item => item.id).filter(id => id !== 'home')
     const fullOrder = [...visibleIds, ...collapsedIds]
-    console.log('[SYSTEM SORTED] Saving order:', fullOrder)
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.navigation.systemLinkOrder',
       value: fullOrder,
@@ -794,19 +788,15 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   handleCustomLinkDragStart () {
     this.isCustomLinksDragging = true
-    console.log('[DRAG START] customLinksLocal order:', this.customLinksLocal.map(l => l?.title || 'undefined'))
   }
 
   handleCustomLinkSorted (sortedIds: string[]) {
-    console.log('[SORTED] sortedIds:', sortedIds)
-
     // Collect theme link positions and DB link position updates
     const themeLinkPositions: Record<string, number> = {}
     const dbLinkPositions: { id: string; position: number }[] = []
 
     // Assign positions to visible links based on sorted order (0, 1, 2, ...)
     sortedIds.forEach((id, index) => {
-      console.log(`[SORTED] Visible Index ${index}: id ${id.substring(0, 12)}...`)
       if (id.startsWith('preset-')) {
         themeLinkPositions[id] = index
       } else {
@@ -819,16 +809,12 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
     const collapsedStartPosition = sortedIds.length
     this.collapsedCustomLinkItems.forEach((link, index) => {
       const position = collapsedStartPosition + index
-      console.log(`[SORTED] Collapsed Index ${position}: id ${link.id.substring(0, 12)}...`)
       if (link.id.startsWith('preset-')) {
         themeLinkPositions[link.id] = position
       } else {
         dbLinkPositions.push({ id: link.id, position })
       }
     })
-
-    console.log('[SORTED] Saving DB positions:', dbLinkPositions)
-    console.log('[SORTED] Saving theme positions:', themeLinkPositions)
 
     // Batch update DB link positions (single mutation + single DB write)
     if (dbLinkPositions.length > 0) {

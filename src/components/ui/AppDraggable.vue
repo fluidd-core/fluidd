@@ -67,7 +67,6 @@ export default class AppDraggable extends Vue {
         newOrder.some((id, i) => currentOrder[i] !== id)
 
       if (ordersDiffer) {
-        console.log('[AppDraggable.onItemsChange] Syncing DOM order. New:', newOrder, 'Current:', currentOrder)
         this.sortable.sort(newOrder)
       }
     }
@@ -76,7 +75,6 @@ export default class AppDraggable extends Vue {
   sortable: Sortable | null = null
 
   handleStart (event: Sortable.SortableEvent) {
-    console.log('[AppDraggable.handleStart] Drag started!', event.item)
     this.$emit('start', event)
   }
 
@@ -123,8 +121,6 @@ export default class AppDraggable extends Vue {
     // Use dataIdAttr to get reliable order by reading DOM directly
     const dataIdAttr = this.options?.dataIdAttr
     if (dataIdAttr && this.sortable) {
-      console.log('[AppDraggable.handleUpdate] items BEFORE:', this.items.map((i: any) => i?.title || i?.id || 'undefined'))
-
       // Create a map of id -> item for quick lookup
       const itemMap = new Map<string, unknown>()
       for (const item of this.items) {
@@ -150,11 +146,8 @@ export default class AppDraggable extends Vue {
       }
 
       const { oldIndex, newIndex } = event
-      console.log('[AppDraggable.handleUpdate] draggedId:', draggedId, 'oldIndex:', oldIndex, 'newIndex:', newIndex)
-      console.log('[AppDraggable.handleUpdate] event.item:', event.item.outerHTML.substring(0, 200))
 
       if (!draggedId || !itemMap.has(draggedId) || oldIndex === undefined || newIndex === undefined) {
-        console.log('[AppDraggable.handleUpdate] Invalid drag data, skipping')
         return
       }
 
@@ -162,7 +155,6 @@ export default class AppDraggable extends Vue {
       const items = [...this.items]
       const oldItemIndex = items.findIndex((item: any) => item?.id === draggedId)
       if (oldItemIndex === -1) {
-        console.log('[AppDraggable.handleUpdate] Could not find dragged item in array')
         return
       }
 
@@ -185,14 +177,11 @@ export default class AppDraggable extends Vue {
       // It should now be at ourItemsBeforeNewIndex
       const newItemIndex = newIndex > oldIndex ? ourItemsBeforeNewIndex : ourItemsBeforeNewIndex
 
-      console.log('[AppDraggable.handleUpdate] oldItemIndex:', oldItemIndex, 'newItemIndex:', newItemIndex)
-
       // Remove from old position and insert at new position
       const [movedItem] = items.splice(oldItemIndex, 1)
       items.splice(newItemIndex, 0, movedItem)
 
       const sortedIds = items.map((item: any) => item?.id).filter(Boolean)
-      console.log('[AppDraggable.handleUpdate] items AFTER:', items.map((i: any) => i?.title || i?.id || 'undefined'))
 
       this.items = items
       this.$emit('update', event)
@@ -202,9 +191,6 @@ export default class AppDraggable extends Vue {
 
     // Fallback to index-based reordering (less reliable)
     const { oldIndex, newIndex } = event
-
-    console.log('[AppDraggable.handleUpdate] oldIndex:', oldIndex, 'newIndex:', newIndex)
-    console.log('[AppDraggable.handleUpdate] items BEFORE:', this.items.map((i: any) => i?.title || i?.id || 'undefined'))
 
     if (
       oldIndex === undefined ||
@@ -217,7 +203,6 @@ export default class AppDraggable extends Vue {
 
     // Bounds check to prevent undefined items
     if (oldIndex < 0 || oldIndex >= items.length) {
-      console.log('[AppDraggable.handleUpdate] BOUNDS CHECK FAILED')
       return
     }
 
@@ -225,15 +210,12 @@ export default class AppDraggable extends Vue {
 
     // Safety check - don't insert undefined
     if (movedItem === undefined) {
-      console.log('[AppDraggable.handleUpdate] MOVED ITEM UNDEFINED')
       return
     }
 
     // Clamp newIndex to valid range
     const clampedNewIndex = Math.max(0, Math.min(newIndex, items.length))
     items.splice(clampedNewIndex, 0, movedItem)
-
-    console.log('[AppDraggable.handleUpdate] items AFTER:', items.map((i: any) => i?.title || i?.id || 'undefined'))
 
     this.items = items
 
@@ -264,13 +246,6 @@ export default class AppDraggable extends Vue {
       onUpdate: this.handleUpdate,
       onEnd: this.handleEnd
     }
-
-    console.log('[AppDraggable.attach] Creating sortable with options:', {
-      handle: options.handle,
-      dataIdAttr: options.dataIdAttr,
-      filter: options.filter ? 'function' : undefined
-    })
-    console.log('[AppDraggable.attach] Target element children:', targetElement.children.length)
 
     this.sortable = Sortable.create(targetElement, options)
   }
