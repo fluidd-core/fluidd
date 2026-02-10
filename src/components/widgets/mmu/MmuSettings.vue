@@ -98,6 +98,17 @@
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+
+      <v-list-item @click="showClimate = !showClimate">
+        <v-list-item-action class="my-0">
+          <v-checkbox :input-value="showClimate" />
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.mmu.setting.show_climate') }}
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
   </v-menu>
 </template>
@@ -188,6 +199,18 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
   set showLogos (value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showLogos',
+      value,
+      server: true
+    })
+  }
+
+  get showClimate (): boolean {
+    return this.$typedState.config.uiSettings.mmu.showClimate
+  }
+
+  set showClimate (value: boolean) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.mmu.showClimate',
       value,
       server: true
     })

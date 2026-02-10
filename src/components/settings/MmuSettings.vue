@@ -72,6 +72,26 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.mmu.setting.show_name')">
+        <v-switch
+          v-model="showName"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting :title="$t('app.mmu.setting.show_climate')">
+        <v-switch
+          v-model="showClimate"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -163,6 +183,30 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
   set showLogos (value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showLogos',
+      value,
+      server: true
+    })
+  }
+
+  get showName (): boolean {
+    return this.$typedState.config.uiSettings.mmu.showName
+  }
+
+  set showName (value: boolean) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.mmu.showName',
+      value,
+      server: true
+    })
+  }
+
+  get showClimate (): boolean {
+    return this.$typedState.config.uiSettings.mmu.showClimate
+  }
+
+  set showClimate (value: boolean) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.mmu.showClimate',
       value,
       server: true
     })

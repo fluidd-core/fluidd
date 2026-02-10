@@ -68,6 +68,7 @@ export interface MmuConfig {
   largeFilamentStatus: boolean;
   showName: boolean;
   showLogos: boolean;
+  showClimate: boolean;
   showUnavailableSpoolColor: boolean;
 }
 

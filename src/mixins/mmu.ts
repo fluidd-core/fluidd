@@ -71,7 +71,10 @@ export default class MmuMixin extends Vue {
       filamentAlwaysGripped: mmuMachine?.[unitRef]?.filament_always_gripped ?? false,
       hasBypass: mmuMachine?.[unitRef]?.has_bypass ?? false,
       multiGear: mmuMachine?.[unitRef]?.multi_gear ?? false,
-      environmentSensor: mmuMachine?.[unitRef]?.environment_sensor ?? ''
+      environmentSensor: mmuMachine?.[unitRef]?.environment_sensor ?? '',
+      filamentHeater: mmuMachine?.[unitRef]?.filament_heater ?? '',
+      environmentSensors: mmuMachine?.[unitRef]?.environment_sensors,
+      filamentHeaters: mmuMachine?.[unitRef]?.filament_heaters
     }
   }
 
@@ -416,6 +419,16 @@ export default class MmuMixin extends Vue {
   readonly ESPOOLER_REWIND: string = 'rewind'
   readonly ESPOOLER_ASSIST: string = 'assist'
 
+  get dryingState () {
+    return this.mmuState?.drying_state ?? []
+  }
+
+  readonly DRYING_STATE_ACTIVE: string = 'active'
+  readonly DRYING_STATE_QUEUED: string = 'queued'
+  readonly DRYING_STATE_COMPLETE: string = 'complete'
+  readonly DRYING_STATE_CANCELLED: string = 'cancelled'
+  readonly DRYING_STATUS_NONE: string = ''
+
   /*
      * Optional printer variables based on selector type
      */
@@ -499,6 +512,12 @@ export default class MmuMixin extends Vue {
   /*
      * Miscellaneous
      */
+
+  get spoolWidth (): number {
+    if (this.numGates <= 8) return 56
+    if (this.numGates <= 16) return 48
+    return 40
+  }
 
   gateText (gate: number): string {
     return gate === -1 ? '?' : gate === this.TOOL_GATE_BYPASS ? 'Bypass' : '@' + gate

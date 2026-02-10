@@ -32,4 +32,7 @@ export interface MmuUnitDetails {
   hasBypass: boolean
   multiGear: boolean
   environmentSensor: string
+  filamentHeater: string
+  environmentSensors: string[] | undefined
+  filamentHeaters: string[] | undefined
 }

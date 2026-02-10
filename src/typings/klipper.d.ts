@@ -685,6 +685,7 @@ declare namespace Klipper {
     servo: string;
     grip?: string;
     sensors: Record<string, boolean | null>;
+    drying_state?: string[];
     flowguard?: {
       trigger: string;
       reason: string;
@@ -731,6 +732,9 @@ declare namespace Klipper {
       has_bypass: boolean;
       multi_gear: boolean;
       environment_sensor?: string;
+      filament_heater?: string;
+      environment_sensors?: string[];
+      filament_heaters?: string[];
     };
   }
 
