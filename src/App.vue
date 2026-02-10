@@ -4,7 +4,10 @@
     :class="{ 'no-pointer-events': dragState }"
   >
     <app-tools-drawer v-model="toolsdrawer" />
-    <app-nav-drawer v-model="navdrawer" />
+    <app-nav-drawer
+      v-model="navdrawer"
+      :sidebar-expanded.sync="sidebarExpanded"
+    />
 
     <inline-svg
       v-if="showBackgroundLogo && !isMobileViewport"
@@ -15,6 +18,7 @@
     <app-bar
       @toolsdrawer="handleToolsDrawerChange"
       @navdrawer="handleNavDrawerChange"
+      @sidebarExpand="handleSidebarExpandToggle"
     />
 
     <flash-message
@@ -158,7 +162,8 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get logoSrc () {
-    return `${import.meta.env.BASE_URL}${this.theme.logo.src}`
+    const bg = this.theme.logo.background || this.theme.logo.src
+    return `${import.meta.env.BASE_URL}${bg}`
   }
 
   get primaryColor (): string {
@@ -378,6 +383,22 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
   handleNavDrawerChange () {
     this.navdrawer = !this.navdrawer
+  }
+
+  get sidebarExpanded (): boolean {
+    return this.$typedState.config.uiSettings.navigation?.sidebarExpanded ?? false
+  }
+
+  set sidebarExpanded (value: boolean) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.navigation.sidebarExpanded',
+      value,
+      server: true
+    })
+  }
+
+  handleSidebarExpandToggle () {
+    this.sidebarExpanded = !this.sidebarExpanded
   }
 
   handleDragOver (event: DragEvent) {

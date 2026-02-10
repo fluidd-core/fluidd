@@ -26,6 +26,7 @@ import {
   mdiArrowUp,
   mdiArrowDown,
   mdiArrowLeft,
+  mdiBookmarkMultiple,
   mdiArrowRight,
   mdiArrowCollapseDown,
   mdiViewGridOutline,
@@ -196,7 +197,9 @@ import {
   mdiWrench,
   mdiVariable,
   mdiArrowDownBold,
-  mdiArrowUpBold
+  mdiArrowUpBold,
+  mdiEye,
+  mdiEyeOff
 } from '@mdi/js'
 
 import {
@@ -438,6 +441,7 @@ export const Icons = Object.freeze({
   printer3d: mdiPrinter3d,
   printer3dNozzle: mdiPrinter3dNozzleOutline,
   printer3dNozzleAlert: mdiPrinter3dNozzleAlertOutline,
+  bookmarkMultiple: mdiBookmarkMultiple,
   bedMesh: mdiViewGridOutline,
   host: mdiDesktopTower,
   history: mdiHistory,
@@ -556,6 +560,8 @@ export const Icons = Object.freeze({
   afcUnloadLane: mdiArrowUpBold,
   afcLoadLane: mdiArrowDownBold,
   afcEjectFilament: mdiEject,
+  eye: mdiEye,
+  eyeOff: mdiEyeOff,
 })
 
 export const Waits = Object.freeze({

@@ -239,7 +239,7 @@ app:
       add_file: Add File
       add_printer: Add printer
       add_to_queue: Add to Queue
-      adjust_layout: Adjust dashboard layout
+      adjust_layout: Dashboard Layout
       adjusted: Adjusted
       all: All
       auth_unsure: Unsure why you're seeing this?
@@ -261,6 +261,7 @@ app:
       forgot_password: Forgotten your password?
       go_to_file: Go to file
       heaters_off: Heaters off
+      hide: Hide
       job_queue: Job Queue
       load_all: Load all
       login: Login
@@ -335,6 +336,7 @@ app:
       actual_time: Actual
       add_camera: Add Camera
       add_filter: Add Filter
+      add_nav_link: Add Navigation Link
       add_preset: Add Preset
       add_user: Add user
       all: All
@@ -346,6 +348,8 @@ app:
       change_password: Change password
       clean_nozzle: Clean Nozzle
       clear_all: Clear all
+      collapse_to_bookmarks: Collapse to links
+      collapse_to_more_menu: Collapse to More menu
       color: Color
       command: Command
       confirm: Confirm
@@ -360,6 +364,7 @@ app:
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_filter: Edit Filter
+      edit_nav_link: Edit Navigation Link
       edit_preset: Edit Preset
       edit_user: Edit user
       environment_facing: Environment Facing
@@ -413,6 +418,8 @@ app:
       screw_name: Screw name
       screw_number: Screw %{index}
       services: Services
+      show_all_in_sidebar: Show all in sidebar
+      show_in_sidebar: Show in sidebar
       slicer: Slicer
       smooth_time: Smooth Time
       speed: Speed
@@ -477,6 +484,7 @@ app:
         exists: Already exists
         invalid_number: Invalid Number
         invalid_url: Invalid URL
+        file_too_large: "File exceeds maximum size of %{size}"
         invalid_expression: Invalid Expression
         max: Max %{max}
         min: Min %{min}
@@ -499,6 +507,12 @@ app:
         confirm_remove_console_filter: Are you sure you want to remove the console filter %{name}?
         confirm_remove_macro_category: Are you sure you want to remove the macro category %{name}?
         confirm_remove_printer: Are you sure you want to remove the printer %{name}?
+        confirm_open_nav_link: >-
+          Open external link?
+          %{url}
+        confirm_remove_nav_link: Are you sure you want to remove the navigation link %{name}?
+        confirm_import_links_replace: This will replace all existing custom links with %{count} imported link(s). Continue?
+        confirm_import_links_merge: This will add %{count} link(s) to your existing custom links. Continue?
         confirm_remove_thermal_preset: Are you sure you want to remove the thermal preset %{name}?
         confirm_remove_user: Are you sure you want to remove user %{username}?
         confirm_restore_backup: Are you sure you want to restore this backup? Moonraker will restart immediately after this request is processed.
@@ -586,6 +600,8 @@ app:
       timelapse: Timelapse
       tool: Tool
       tune: Tune
+      bookmarks: Links
+      more: More
     tooltip:
       browse_metrics: Browse available metrics
       estop: Emergency Stop
@@ -647,6 +663,10 @@ app:
       add_camera: Add Camera
       add_category: Add Category
       add_filter: Add Filter
+      add_nav_link: Add Link
+      import_export_links: Import/Export
+      export_links: Export Links
+      import_links: Import Links
       add_metric: Add Metric
       add_thermal_preset: Add Preset
       add_user: Add user
@@ -680,6 +700,7 @@ app:
       auto_load_mobile_on_print_start: Automatically load file on mobile devices
       auto: Auto
       axes: Axes
+      built_in_icon: Built In Icon
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
       camera_fullscreen_action:
@@ -692,6 +713,13 @@ app:
       camera_url_stream: Camera Url Stream
       card: Card
       collector: Collector
+      color: Color
+      custom_color: Custom Color
+      custom_icon: Custom Icon (SVG)
+      custom_image: Custom Image
+      custom_svg_icon: Custom SVG Icon
+      upload_image: Upload Image
+      upload_svg: Upload SVG
       confirm_on_estop: Require confirm on Emergency Stop
       confirm_on_power_device_change: Require confirm on Device Power changes
       confirm_on_save_config_and_restart: Review Pending Configuration Changes before Save and Restart
@@ -714,6 +742,7 @@ app:
       enable_xy_homing: Enable XY Homing
       expression: Expression
       extrusion_line_width: Extrusion Line Width
+      file: File
       firmware_restart: Firmware Restart
       flip_horizontal: Horizontal Flip
       flip_vertical: Vertical Flip
@@ -728,6 +757,7 @@ app:
       gcode_coords: Use GCode Coordinates
       host_restart: Host Restart
       icon: Icon
+      icon_type: Icon Type
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
@@ -746,6 +776,7 @@ app:
       never: Never
       none: None
       optional: Optional
+      position: Position
       power_toggle_in_top_nav: Power toggle in top navigation
       primary_color: Primary color
       print_eta_calculation: Print ETA calculation
@@ -772,6 +803,7 @@ app:
       show_upload_and_print: Show Upload and Print button in top navigation
       solid: Solid
       starts_with: Starts with
+      theme: Theme
       theme_preset: Community preset
       thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
@@ -784,12 +816,19 @@ app:
       toolhead_z_move_distances: Toolhead Z distance values
       type: Type
       unit: Unit
+      url: URL
       warn_on_cpu_throttled: Warn if CPU throttling is detected
       warn_on_stepper_driver_overheating: Warn if stepper driver is over-heating
       z_adjust_values: Z Adjust values
       date_format: Date format
       time_format: Time format
       text_sort_order: Text sort order
+      confirm_on_nav_link: Confirm Before Opening Links
+      open_nav_links_in_new_tab: Open Links in New Tab
+      link_icon_color: Link Icon Color
+      theme_nav_link: Theme Link
+      import_mode_replace: Replace existing links
+      import_mode_merge: Add to existing links
       drag_and_drop_functionality_for_files_and_folders: Drag-and-drop functionality for files and folders
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
@@ -812,6 +851,7 @@ app:
       gcode_preview: Gcode Preview
       general: General
       macros: Macros
+      navigation: Navigation Links
       theme: Theme
       thermal_presets: Thermal Presets
       tool: Tool
@@ -831,6 +871,24 @@ app:
         However, please note that these themes are not officially maintained by the respective brands.<br>
         Any issues or inquiries related to the themes should be directed to the Fluidd team.<br>
         The use of brand names and logos is for decorative and aesthetic purposes only, and no official association with or endorsement by the brands is implied.
+      nav_link_url_warning: 'See the tooltip for details.'
+      nav_link_url: >-
+        Include the protocol (e.g. https://example.com) for external links.<br>
+        URLs without a protocol will be treated as relative paths by the browser.
+      nav_link_custom_icon: >-
+        Upload an SVG file (max 64 KB) to use as the link icon.<br>
+        Use "File Colors" to preserve the original SVG colors, or choose
+        theme/custom color to override with a single color.
+      nav_link_custom_image: >-
+        Upload a PNG or JPEG image (max 64 KB) to use as the link icon.
+      icon_type: >-
+        <b>Built In Icon</b>: Choose from Material Design icons. Supports theme or custom colors.<br>
+        <b>Custom SVG Icon</b>: Upload an SVG file. Supports file colors, theme color, or custom colors.<br>
+        <b>Custom Image</b>: Upload a PNG or JPEG. Color override does not apply.
+      nav_link_position: >-
+        Controls the sort order among custom and theme links.<br>
+        Lower numbers appear higher in the sidebar.<br>
+        Links are inserted directly above the Settings icon.
       warn_on_cpu_throttled: CPU throttling can cause prints to fail
       warn_on_stepper_driver_overheating: Trinamic drivers only
   socket:

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig, ConfiguredTableHeader } from './types'
+import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig, ConfiguredTableHeader, CustomNavLink } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 import { cloneDeep, mergeWith, set } from 'lodash-es'
@@ -209,5 +209,43 @@ export const mutations = {
 
   setUpdateThumbnailSizes (state, payload: { name: string; size: number }) {
     Vue.set(state.uiSettings.thumbnailSizes, payload.name, payload.size)
+  },
+
+  setCustomNavLink (state, payload: CustomNavLink) {
+    const link = { ...payload }
+    if (link.id === '') {
+      link.id = uuidv4()
+      state.uiSettings.navigation.customLinks.push(link)
+    } else {
+      const links = state.uiSettings.navigation.customLinks
+      const i = links.findIndex(l => l.id === link.id)
+      if (i >= 0) {
+        Vue.set(links, i, link)
+      }
+    }
+  },
+
+  setRemoveCustomNavLink (state, payload: { id: string }) {
+    const links = state.uiSettings.navigation.customLinks
+    const i = links.findIndex(link => link.id === payload.id)
+    if (i >= 0) {
+      links.splice(i, 1)
+    }
+  },
+
+  setCustomNavLinkPositions (state, payload: { id: string; position: number }[]) {
+    const links = state.uiSettings.navigation.customLinks
+    for (const { id, position } of payload) {
+      const index = links.findIndex(l => l.id === id)
+      if (index >= 0) {
+        // Use Vue.set to ensure reactivity
+        Vue.set(links[index], 'position', position)
+      }
+    }
+  },
+
+  setThemeLinkPositions (state, payload: Record<string, number>) {
+    // Use Vue.set to ensure reactivity when updating nested object
+    Vue.set(state.uiSettings.navigation, 'themeLinkPositions', payload)
   }
 } satisfies MutationTree<ConfigState>

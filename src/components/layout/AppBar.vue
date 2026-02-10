@@ -6,13 +6,14 @@
     :color="$vuetify.theme.currentTheme.appbar"
     :height="$globals.HEADER_HEIGHT"
   >
-    <router-link
+    <div
       v-if="!isMobileViewport"
-      :to="{ name: 'home' }"
       class="toolbar-logo"
+      style="cursor: pointer;"
+      @click="$emit('sidebarExpand')"
     >
       <app-icon />
-    </router-link>
+    </div>
 
     <div class="toolbar-title">
       <app-btn
