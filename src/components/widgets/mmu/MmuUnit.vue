@@ -140,7 +140,7 @@
       </div>
 
       <div
-        v-if="hasBypass"
+        v-if="showBypass"
         class="gate"
         @contextmenu.prevent="openContextMenu(-2, $event)"
         @click="selectBypass()"
@@ -274,10 +274,11 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   }
 
   get clipHeight (): number {
-    return Math.trunc(this.spoolWidth * 1.55)
+    return Math.trunc(this.spoolWidth * 1.6)
   }
 
-  get hasBypass () {
+  get showBypass () {
+    console.info(`PAUL: showByPass() hideBypass=${this.hideBypass}, unitIndex=${this.unitIndex}`)
     if (this.hideBypass) return false
     if (this.unitIndex < 0) return true
 
@@ -315,13 +316,14 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     return ret
   }
 
-  gateStatusClass (gate: number): string[] {
-    const firstGate = (this.unitIndex < 0 || gate === 0)
-    const lastGate = (gate === this.unitGateRange.length - 1 && !this.hasBypass) || gate === this.TOOL_GATE_BYPASS
+  gateStatusClass (index: number): string[] {
+    const firstGate = (this.unitIndex < 0 || index === 0)
+    const lastGate = (index === this.unitGateRange.length - 1 && !this.showBypass) || index === this.TOOL_GATE_BYPASS
     const classes = ['gate-status-row']
     if (firstGate) classes.push('first-gate')
     if (lastGate) classes.push('last-gate')
     classes.push(this.$vuetify.theme.dark ? 'gate-status-row-dark-theme' : 'gate-status-row-light-theme')
+    console.info(`PAUL: classes=${classes}`)
     return classes
   }
 
@@ -355,9 +357,9 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   }
 
   get footerStyle () {
-    const numSpools = this.mmuMachineUnit.numGates + (this.hasBypass ? 1 : 0)
+    const numSpools = this.mmuMachineUnit.numGates + (this.showBypass ? 1 : 0)
     const maxWidth = this.spoolWidth * numSpools + 32
-    return `max-width: ${maxWidth}px;`
+    return { maxWidth: `${maxWidth}px` }
   }
 
   // Gate context menu handling...

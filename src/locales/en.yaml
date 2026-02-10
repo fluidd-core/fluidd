@@ -1162,9 +1162,9 @@ app:
       spoolman_days_ago: '%{days} days ago'
       drying: Drying
       heater: Heater
-      dryer_queued: Drying queued
-      dryer_complete: Drying complete
-      dryer_cancelled: Drying cancelled
+      drying_queued: Drying queued
+      drying_complete: Drying complete
+      drying_cancelled: Drying cancelled
     tooltip:
       empty: Empty
       color: Color

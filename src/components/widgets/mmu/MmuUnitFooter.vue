@@ -28,6 +28,7 @@
       </div>
       <v-tooltip
         v-if="showDetails && showClimate"
+        v-model="isTooltipOpen"
         :disabled="!showPerGateReport"
         top
         open-delay="500"
@@ -72,14 +73,14 @@
             </span>
           </div>
         </template>
-        <span style="white-space: pre-line">{{ perGateReport }}</span>
+        <span style="white-space: pre-line">{{ perGateReportCached }}</span>
       </v-tooltip>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
@@ -97,6 +98,17 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   readonly showFooter!: boolean
 
   logoError = false
+  isTooltipOpen = false
+  perGateReportCached = ''
+
+  @Watch('unitIndex')
+  onUnitChanged () { this.logoError = false }
+
+  @Watch('isTooltipOpen')
+  onTooltipOpenChanged (open: boolean) {
+    if (!open) return
+    this.perGateReportCached = this.generatePerGateReport()
+  }
 
   get vendorLogo (): string {
     return this.logoError
@@ -104,7 +116,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
       : this.unitDetails(this.unitIndex).vendor
   }
 
-  get vendorLogoUrl (): string | null {
+  get vendorLogoUrl (): string {
     return `${import.meta.env.BASE_URL}img/mmu/mmu_${this.vendorLogo}.svg`
   }
 
@@ -146,7 +158,6 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
       this.mmuMachineUnit?.filamentHeaters,
       this.mmuMachineUnit?.filamentHeater
     )
-    console.info(`UnitHeaterObj(): heaterKey=${heaterKey}`)
     return heaterKey ? this.$store.state.printer.printer[heaterKey] : undefined
   }
 
@@ -186,7 +197,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     return this.hasPerGateHeaters || this.hasPerGateClimateSensors
   }
 
-  get perGateReport (): string {
+  private generatePerGateReport (): string {
     const sensors = this.mmuMachineUnit?.environmentSensors
     const heaters = this.mmuMachineUnit?.filamentHeaters
     const isDrying = this.unitDryingCycle
@@ -214,7 +225,6 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
       const heaterName = heaters?.[i]
       const heaterKey = this.stripQuotes(heaterName) ?? ''
       const heaterObj = heaterKey ? this.$store.state.printer.printer[heaterKey] : undefined
-      console.info(`perGateReport(): heaterName=${heaterName}, heaterKey=${heaterKey}, heaterObj=${heaterObj}`)
       if (heaterObj) {
         const state = this.dryingState?.[gate]
         if (isDrying) {
@@ -275,7 +285,6 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
         const heaterName = heaters?.[i]
         const heaterKey = this.stripQuotes(heaterName) ?? ''
         const heaterObj = heaterKey ? this.$store.state.printer.printer[heaterKey] : undefined
-        console.info(`unitHeaterIcon(): eaterName=${heaterName}, heaterKey=${heaterKey}, heaterObj=${heaterObj}`)
         const raw = heaterObj?.target
         if (typeof raw === 'number' && raw > 0) return '$mmuHeater'
       }

@@ -13,6 +13,7 @@
             :edit-gate-selected="editGateSelected"
             :show-context-menu="showContextMenu"
             :show-details="showDetails"
+            :hide-bypass="hideBypass"
             @select-gate="selectGate"
           />
         </div>
