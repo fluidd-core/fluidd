@@ -449,7 +449,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   // Gate context menu handling...
 
   private isItemDisabled (item: ContextMenuItem, gate: number): boolean {
-    if (!this.klippyReady || !this.canSend) return true
+    if (!this.klippyReady) return true
     if (!item.disabled) return false
     return typeof item.disabled === 'function' ? item.disabled(gate) : item.disabled
   }
