@@ -278,7 +278,6 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   }
 
   get showBypass () {
-    console.info(`PAUL: showByPass() hideBypass=${this.hideBypass}, unitIndex=${this.unitIndex}`)
     if (this.hideBypass) return false
     if (this.unitIndex < 0) return true
 
@@ -323,7 +322,6 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     if (firstGate) classes.push('first-gate')
     if (lastGate) classes.push('last-gate')
     classes.push(this.$vuetify.theme.dark ? 'gate-status-row-dark-theme' : 'gate-status-row-light-theme')
-    console.info(`PAUL: classes=${classes}`)
     return classes
   }
 
