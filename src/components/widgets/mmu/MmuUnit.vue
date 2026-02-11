@@ -479,7 +479,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
         label: this.$t('app.mmu.btn.select').toString(),
         loading: this.$waits.onMmuSelect,
         action: { kind: 'gcode', command: 'MMU_SELECT' },
-        disabled: (gate) => !this.canSend || gate === this.gate || this.isPrinting,
+        disabled: (gate) => !this.canSend || gate === this.gate || this.isPrinting || this.filamentPos === this.FILAMENT_POS_LOADED,
       },
       {
         icon: '$mmuPreload',
