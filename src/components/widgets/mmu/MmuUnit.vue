@@ -262,7 +262,6 @@ type ContextMenuItem = {
   label: string
   loading: string
   disabled?: MenuDisabled
-  disabledReason?: string | ((gate: number) => string)
   action: MenuAction
 }
 
