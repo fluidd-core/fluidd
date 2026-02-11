@@ -13,6 +13,7 @@
             :edit-gate-selected="editGateSelected"
             :show-context-menu="showContextMenu"
             @select-gate="selectGate"
+            @edit-filament="editFilament"
           />
         </div>
       </v-col>
@@ -48,6 +49,10 @@ export default class MmuMachine extends Mixins(StateMixin, MmuMixin) {
 
   private selectGate (gate: number) {
     this.$emit('select-gate', gate)
+  }
+
+  private editFilament (gate: number) {
+    this.$emit('edit-filament', gate)
   }
 }
 </script>

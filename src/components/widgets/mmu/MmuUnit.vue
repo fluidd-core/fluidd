@@ -11,7 +11,6 @@
         <div :class="clipSpoolClass">
           <v-menu
             v-model="gateMenuVisible[g]"
-            :disabled="g === gate"
             :position-x="menuX"
             :position-y="menuY"
             :close-on-content-click="false"
@@ -69,9 +68,9 @@
                 <v-btn
                   small
                   style="width: 100%"
-                  :disabled="!klippyReady || !canSend"
+                  :disabled="!klippyReady || isItemDisabled(item, g)"
                   :loading="hasWait(item.loading)"
-                  @click="contextMenuCommand(item.command, item.loading, g)"
+                  @click="runMenuItem(item, g)"
                 >
                   <v-icon left>
                     {{ item.icon }}
@@ -135,6 +134,7 @@
           :edit-gate-selected="editGateSelected"
         />
       </div>
+
       <div
         v-if="showBypass"
         class="gate"
@@ -248,6 +248,23 @@ import type { MmuGateDetails } from '@/types'
 import type { Sensor } from '@/store/printer/types'
 import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuGateStatus from '@/components/widgets/mmu/MmuGateStatus.vue'
+
+type MenuDisabled =
+  | boolean
+  | ((gate: number) => boolean)
+
+type MenuAction =
+  | { kind: 'gcode', command: string }
+  | { kind: 'call', fn: (gate: number) => void }
+
+type ContextMenuItem = {
+  icon: string
+  label: string
+  loading: string
+  disabled?: MenuDisabled
+  disabledReason?: string | ((gate: number) => string)
+  action: MenuAction
+}
 
 @Component({
   components: { MmuSpool, MmuGateStatus },
@@ -431,41 +448,70 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 
   // Gate context menu handling...
 
-  get contextMenuItems () {
+  private isItemDisabled (item: ContextMenuItem, gate: number): boolean {
+    if (!this.klippyReady || !this.canSend) return true
+    if (!item.disabled) return false
+    return typeof item.disabled === 'function' ? item.disabled(gate) : item.disabled
+  }
+
+  private runMenuItem (item: ContextMenuItem, gate: number) {
+    if (this.isItemDisabled(item, gate)) return
+
+    this.closeContextMenu()
+
+    if (item.action.kind === 'gcode') {
+      this.sendGcode(`${item.action.command} GATE=${gate}`, item.loading)
+    } else {
+      item.action.fn(gate)
+    }
+  }
+
+  get contextMenuItems (): ContextMenuItem[] {
     return [
       {
+        icon: '$mmuEditGateMap',
+        label: this.$t('app.mmu.btn.edit_gate_map').toString(),
+        loading: this.$waits.onMmuChangeTool,
+        action: { kind: 'call', fn: (gate) => this.editFilament(gate) },
+        disabled: () => false,
+      },
+      {
         icon: '$mmuSelectGate',
-        command: 'MMU_SELECT',
         label: this.$t('app.mmu.btn.select').toString(),
-        loading: this.$waits.onMmuSelect
+        loading: this.$waits.onMmuSelect,
+        action: { kind: 'gcode', command: 'MMU_SELECT' },
+        disabled: (gate) => !this.canSend || gate === this.gate || this.isPrinting,
       },
       {
         icon: '$mmuPreload',
-        command: 'MMU_PRELOAD',
         label: this.$t('app.mmu.btn.preload').toString(),
-        loading: this.$waits.onMmuPreload
+        loading: this.$waits.onMmuPreload,
+        action: { kind: 'gcode', command: 'MMU_PRELOAD' },
+        disabled: () => !this.canSend,
       },
       {
         icon: '$mmuEject',
-        command: 'MMU_EJECT',
         label: this.$t('app.mmu.btn.eject').toString(),
-        loading: this.$waits.onMmuEject
+        loading: this.$waits.onMmuEject,
+        action: { kind: 'gcode', command: 'MMU_EJECT' },
+        disabled: () => !this.canSend,
       },
       {
         icon: '$mmuChangeTool',
-        command: 'MMU_CHANGE_TOOL',
         label: this.$t('app.mmu.btn.change_tool').toString(),
-        loading: this.$waits.onMmuChangeTool
+        loading: this.$waits.onMmuChangeTool,
+        action: { kind: 'gcode', command: 'MMU_CHANGE_TOOL' },
+        disabled: (gate) => !this.canSend || gate === this.gate || this.isPrinting,
       },
     ]
   }
 
-  contextMenuCommand (command: string, loading: string, gate: number) {
-    this.sendGcode(`${command} GATE=${gate}`, loading)
+  private editFilament (gate: number) {
+    this.$emit('edit-filament', gate)
   }
 
   openContextMenu (gate: number, e: MouseEvent) {
-    if (gate < 0 || gate === this.gate || !this.showContextMenu) {
+    if (gate < 0 || !this.showContextMenu) {
       this.closeContextMenu()
       return
     }

@@ -344,7 +344,7 @@
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import { Mixins, VModel, Watch } from 'vue-property-decorator'
+import { Mixins, VModel, Prop, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
@@ -358,6 +358,9 @@ import MmuMachine from '@/components/widgets/mmu/MmuMachine.vue'
 export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
   @VModel({ required: true })
   open!: boolean
+
+  @Prop({ required: false, default: null })
+  readonly initialGate!: number | null
 
   private editGateMap: MmuGateDetails[] = []
   private editGateSelected: number = -1
@@ -375,10 +378,16 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   private initialize () {
     if (this.open) {
       this.editGateMap = Array.from(this.gateMap)
+
+      if (typeof this.initialGate === 'number' && this.initialGate >= 0 && this.initialGate < this.editGateMap.length) {
+        this.editGateSelected = this.initialGate
+      } else {
+        this.editGateSelected = -1
+      }
     } else {
       this.editGateMap = []
+      this.editGateSelected = -1
     }
-    this.editGateSelected = -1
   }
 
   private selectGate (gate: number) {

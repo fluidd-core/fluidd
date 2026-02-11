@@ -51,7 +51,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item @click="showEditGateMapDialog = true">
+          <v-list-item @click="openEditGateMapDialog()">
             <v-list-item-icon>
               <v-icon left>
                 $mmuEditGateMap
@@ -162,7 +162,7 @@
         pa-2
       >
         <v-row align="start">
-          <mmu-machine />
+          <mmu-machine @edit-filament="editFilament" />
         </v-row>
         <v-row align="start">
           <v-col
@@ -253,7 +253,11 @@
 
     <mmu-recover-state-dialog v-model="showRecoverStateDialog" />
     <mmu-maintenance-dialog v-model="showMaintenanceDialog" />
-    <mmu-edit-gate-map-dialog v-model="showEditGateMapDialog" />
+    <mmu-edit-gate-map-dialog
+      v-model="showEditGateMapDialog"
+      :initial-gate="initialEditGate"
+      @close="initialEditGate = null"
+    />
   </collapsable-card>
 </template>
 
@@ -292,6 +296,7 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
   showRecoverStateDialog = false
   showEditGateMapDialog = false
   showMaintenanceDialog = false
+  initialEditGate: number | null = null
 
   get col1Size (): number {
     if (this.$typedState.config.uiSettings.mmu.largeFilamentStatus) return 6
@@ -371,6 +376,15 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
 
   private hasSensor (sensorName: string): boolean {
     return sensorName in this.sensors
+  }
+
+  openEditGateMapDialog (gate?: number | null) {
+    this.initialEditGate = typeof gate === 'number' ? gate : null
+    this.showEditGateMapDialog = true
+  }
+
+  private editFilament (gate: number) {
+    this.openEditGateMapDialog(gate)
   }
 }
 </script>
