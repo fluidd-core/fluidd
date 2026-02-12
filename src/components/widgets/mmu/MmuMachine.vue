@@ -15,6 +15,7 @@
             :show-details="showDetails"
             :hide-bypass="hideBypass"
             @select-gate="selectGate"
+            @edit-filament="editFilament"
           />
         </div>
       </v-col>
@@ -27,7 +28,7 @@
           <mmu-unit
             :unit-index="-1"
             :edit-gate-map="false"
-            :show-context-menu="false"
+            :show-context-menu="showContextMenu"
             :show-details="false"
             :show-footer="false"
             @select-gate="selectGate"
@@ -88,6 +89,10 @@ export default class MmuMachine extends Mixins(StateMixin, MmuMixin) {
 
   private selectGate (gate: number) {
     this.$emit('select-gate', gate)
+  }
+
+  private editFilament (gate: number) {
+    this.$emit('edit-filament', gate)
   }
 }
 </script>

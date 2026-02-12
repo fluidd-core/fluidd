@@ -71,7 +71,7 @@
       />
     </g>
     <path
-      v-if="filamentAmount !== 0 || details.status !== GATE_EMPTY"
+      v-if="filamentAmount !== 0 || spoolStatus !== GATE_EMPTY"
       ref="filament"
       d="M0-63c35 0 63 28 63 63S35 63 0 63h-424V-63z"
       vector-effect="non-scaling-stroke"
@@ -104,7 +104,7 @@
         {{ filamentAmount }}%
       </text>
       <text
-        v-else-if="filamentAmount === 0 && details.status !== GATE_EMPTY"
+        v-else-if="filamentAmount === 0 && spoolStatus !== GATE_EMPTY"
         x="140"
         y="310"
         text-anchor="middle"
@@ -162,9 +162,17 @@ export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
     return this.$typedState.config.uiSettings.mmu.showUnavailableSpoolColor
   }
 
+  get spoolStatus(): number {
+    if (this.gateIndex === this.TOOL_GATE_BYPASS) {
+      if (this.filamentPos === this.FILAMENT_POS_LOADED) return this.GATE_AVAILABLE
+        return this.GATE_EMPTY
+      }
+    return this.details.status
+  } 
+
   get filamentAmount (): number {
     if (this.editGateMap) return 100
-    if (this.details.status === this.GATE_EMPTY && !(this.showUnavailableSpoolColor && this.details.color !== this.NO_FILAMENT_COLOR)) return 0
+    if (this.spoolStatus === this.GATE_EMPTY && !(this.showUnavailableSpoolColor && this.details.color !== this.NO_FILAMENT_COLOR)) return 0
 
     const spoolmanSpool = this.spoolmanSpool(this.details.spoolId)
     if (!spoolmanSpool) return -1
