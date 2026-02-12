@@ -108,7 +108,14 @@ export const getters = {
     const server = rootState.server.config.spoolman?.server
 
     if (server) {
-      const serverUrl = new URL(server)
+      const protocol = (
+        !server.startsWith('http://') &&
+        !server.startsWith('https://')
+      )
+        ? 'http://'
+        : ''
+
+      const serverUrl = new URL(protocol + server)
 
       if (isLoopback(serverUrl.hostname)) {
         const apiHostname = new URL(rootState.config.apiUrl).hostname
