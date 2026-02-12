@@ -370,7 +370,14 @@ export default class MmuMixin extends Vue {
     return this.mmuState?.sync_drive ?? false
   }
 
-  // return this.mmuState?.sync_feedback_state
+  get syncFeedbackState (): string {
+    return this.mmuState?.sync_feedback_state ?? this.SYNC_FEEDBACK_NONE
+  }
+
+  readonly SYNC_FEEDBACK_COMPRESSED = 'compressed'
+  readonly SYNC_FEEDBACK_TENSION = 'tension'
+  readonly SYNC_FEEDBACK_NEUTRAL = 'neutral'
+  readonly SYNC_FEEDBACK_NONE = ''
 
   get syncFeedbackEnabled (): boolean {
     return this.mmuState?.sync_feedback_enabled ?? false
