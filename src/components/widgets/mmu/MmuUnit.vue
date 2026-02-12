@@ -5,9 +5,7 @@
         v-for="(g, index) in unitGateRange"
         :key="`gate_${g}`"
         class="gate"
-        @contextmenu.prevent="openContextMenu(g, $event)"
-        @click="selectGate(g)"
-      >
+        cursor-pointer @click="handleClickGate(g, $event)" @contextmenu.prevent>
         <div :class="clipSpoolClass">
           <v-menu
             v-model="gateMenuVisible[g]"
@@ -138,8 +136,7 @@
       <div
         v-if="showBypass"
         class="gate"
-        @contextmenu.prevent="openContextMenu(-2, $event)"
-        @click="selectBypass()"
+        cursor-pointer @click="handleClickGate(TOOL_GATE_BYPASS, $event)" @contextmenu.prevent
       >
         <div :class="clipSpoolClass">
           <mmu-spool
@@ -429,6 +426,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     return classes
   }
 
+/* PAUL old
   selectGate (gate: number) {
     if (this.editGateMap) {
       this.$emit('select-gate', gate)
@@ -444,6 +442,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
       this.sendGcode('MMU_SELECT BYPASS=1')
     }
   }
+*/
 
   // Gate context menu handling...
 
@@ -466,34 +465,40 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   }
 
   get contextMenuItems (): ContextMenuItem[] {
-    return [
-      {
-        icon: '$mmuEditGateMap',
-        label: this.$t('app.mmu.btn.edit_gate_map').toString(),
-        loading: this.$waits.onMmuChangeTool,
-        action: { kind: 'call', fn: (gate) => this.editFilament(gate) },
-        disabled: () => false,
-      },
+      const isLoaded = this.filamentPos === this.FILAMENT_POS_LOADED
+      const canCrossload = this.unitDetails(this.unitIndex).canCrossload
+
+      const items: ContextMenuItem[] = [
       {
         icon: '$mmuSelectGate',
         label: this.$t('app.mmu.btn.select').toString(),
         loading: this.$waits.onMmuSelect,
         action: { kind: 'gcode', command: 'MMU_SELECT' },
-        disabled: (gate) => !this.canSend || gate === this.gate || this.isPrinting || this.filamentPos === this.FILAMENT_POS_LOADED,
+        disabled: (gate) => !this.canSend || gate === this.gate || this.isPrinting || isLoaded,
+      },
+      {
+        icon: '$mmuEditGateMap',
+        label: this.$t('app.mmu.btn.edit_gate_map').toString(),
+        loading: this.$waits.onMmuChangeTool,
+        action: { kind: 'call', fn: (gate) => this.editFilament(gate) },
+        disabled: (gate) => false,
       },
       {
         icon: '$mmuPreload',
         label: this.$t('app.mmu.btn.preload').toString(),
         loading: this.$waits.onMmuPreload,
         action: { kind: 'gcode', command: 'MMU_PRELOAD' },
-        disabled: () => !this.canSend,
+        disabled: (gate) =>
+            !this.canSend ||
+            (gate === this.gate && !canCrossload) ||
+            (gate === this.gate && isLoaded),
       },
       {
         icon: '$mmuEject',
         label: this.$t('app.mmu.btn.eject').toString(),
         loading: this.$waits.onMmuEject,
         action: { kind: 'gcode', command: 'MMU_EJECT' },
-        disabled: () => !this.canSend,
+        disabled: (gate) => !this.canSend || (gate !== this.gate && !canCrossload),
       },
       {
         icon: '$mmuChangeTool',
@@ -503,11 +508,25 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
         disabled: (gate) => !this.canSend || gate === this.gate || this.isPrinting,
       },
     ]
+
+        if (this.gate < 0) return items.slice(0, 1)
+
+        return items
+  }
+
+  private selectGate (gate: number) {
+    this.$emit('select-gate', gate)
   }
 
   private editFilament (gate: number) {
     this.$emit('edit-filament', gate)
   }
+
+  handleClickGate(gate: number, e: MouseEvent) {
+    console.info(`PAUL: handleClickGate(${gate}, ${e})`)
+    if (this.showContextMenu) return this.openContextMenu(gate, e)
+      this.selectGate(gate)
+  }     
 
   openContextMenu (gate: number, e: MouseEvent) {
     if (gate < 0 || !this.showContextMenu) {
