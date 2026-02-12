@@ -371,7 +371,7 @@ export default class MmuMixin extends Vue {
   }
 
   get syncFeedbackState (): string {
-    return this.mmuState?.sync_feedback_state ?? ''
+    return this.mmuState?.sync_feedback_state ?? this.SYNC_FEEDBACK_NONE
   }
 
   readonly SYNC_FEEDBACK_COMPRESSED = 'compressed'
