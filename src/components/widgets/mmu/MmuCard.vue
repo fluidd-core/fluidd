@@ -362,9 +362,4 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
     min-height: 1.0em;
     line-height: 1.0em;
 }
-
-.min-height-text {
-    min-height: 1.1em;
-    line-height: 1.1em;
-}
 </style>
