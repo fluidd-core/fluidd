@@ -640,6 +640,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   }
 
   close () {
+    this.$emit('close')
     this.editGateMap = []
     this.editGateSelected = -1
     this.open = false
