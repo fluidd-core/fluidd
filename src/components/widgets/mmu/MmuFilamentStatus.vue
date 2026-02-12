@@ -432,7 +432,7 @@
         <g v-if="syncFeedbackActive">
           <transition name="fade">
             <g
-              v-if="isSensorTriggered('filament_tension') && isSensorTriggered('filament_compression')"
+              v-if="syncFeedbackState === SYNC_FEEDBACK_NEUTRAL"
               key="neutral"
             >
               <text
@@ -447,7 +447,7 @@
               />
             </g>
             <g
-              v-else-if="isSensorTriggered('filament_tension')"
+              v-else-if="syncFeedbackState === SYNC_FEEDBACK_TENSION"
               key="tension"
             >
               <text
@@ -466,7 +466,7 @@
               />
             </g>
             <g
-              v-else-if="isSensorTriggered('filament_compression')"
+              v-else-if="syncFeedbackState === SYNC_FEEDBACK_COMPRESSED"
               key="compression"
             >
               <text
