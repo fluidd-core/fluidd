@@ -172,9 +172,6 @@
             <div class="text--disabled smaller-font">
               {{ toolchangeText }}
             </div>
-            <div class="min-height-text">
-              {{ statusText }}
-            </div>
             <mmu-filament-status />
             <template v-if="showClogDetection">
               <div class="text-center">
@@ -318,31 +315,6 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
     return this.$typedState.config.uiSettings.mmu.showDetails
   }
 
-  get statusText (): string {
-    let posStr: string = ''
-    if (['complete', 'error', 'cancelled', 'started'].includes(this.printState)) {
-      posStr = this.capitalize(this.printState)
-    } else if (this.action === 'Idle') {
-      if (this.printState === 'printing') {
-        posStr = `Printing (${this.numToolchanges}`
-        if (this.slicerToolMap?.total_toolchanges) posStr += `/${this.slicerToolMap.total_toolchanges}`
-        posStr += ' swaps)'
-      } else {
-        posStr = this.filament !== 'Unloaded' ? `Filament: ${this.filamentPosition}mm` : 'Filament: Unloaded'
-      }
-    } else if (this.action === 'Loading' || this.action === 'Unloading') {
-      posStr = `${this.action}: ${this.filamentPosition}mm`
-    } else {
-      posStr = this.action ?? ''
-    }
-    return posStr
-  }
-
-  private capitalize (str: string): string {
-    if (!str) return str
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
-  }
-
   handleSyncSpoolman () {
     this.sendGcode('MMU_SPOOLMAN REFRESH=1 QUIET=1', this.$waits.onMmuSpoolman)
   }
@@ -389,10 +361,5 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
     font-size: 0.8em;
     min-height: 1.0em;
     line-height: 1.0em;
-}
-
-.min-height-text {
-    min-height: 1.1em;
-    line-height: 1.1em;
 }
 </style>
