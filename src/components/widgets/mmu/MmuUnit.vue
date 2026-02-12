@@ -331,9 +331,9 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   }
 
   contextMenuItems (gate: number): ContextMenuItem[] {
-      const items = this.allContextMenuItems
-      if (gate < 0) return items.slice(0, 1)
-      return items
+    const items = this.allContextMenuItems
+    if (gate < 0) return items.slice(0, 1)
+    return items
   }
 
   get allContextMenuItems (): ContextMenuItem[] {

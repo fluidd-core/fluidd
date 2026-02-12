@@ -162,13 +162,13 @@ export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
     return this.$typedState.config.uiSettings.mmu.showUnavailableSpoolColor
   }
 
-  get spoolStatus(): number {
+  get spoolStatus (): number {
     if (this.gateIndex === this.TOOL_GATE_BYPASS) {
       if (this.filamentPos === this.FILAMENT_POS_LOADED) return this.GATE_AVAILABLE
-        return this.GATE_EMPTY
-      }
+      return this.GATE_EMPTY
+    }
     return this.details.status
-  } 
+  }
 
   get filamentAmount (): number {
     if (this.editGateMap) return 100
