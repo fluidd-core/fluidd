@@ -194,23 +194,29 @@ export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
   }
 
   get isEspoolerRewind (): boolean {
-    const espoolers = this.mmuState?.espooler
-    if (espoolers) {
-      return espoolers![this.gateIndex] === this.ESPOOLER_REWIND
-    }
+    const espooler = this.getEspoolerForGate(this.gateIndex)
 
-    // Legacy Happy Hare (selected gate only)
-    return this.gateIndex === this.mmuState?.gate && this.mmuState?.espooler_active === this.ESPOOLER_REWIND
+    return espooler === this.ESPOOLER_REWIND
   }
 
   get isEspoolerAssist (): boolean {
+    const espooler = this.getEspoolerForGate(this.gateIndex)
+
+    return espooler === this.ESPOOLER_ASSIST
+  }
+
+  getEspoolerForGate (gateIndex: number): string | undefined {
     const espoolers = this.mmuState?.espooler
+
     if (espoolers) {
-      return espoolers![this.gateIndex] === this.ESPOOLER_ASSIST
+      return espoolers[gateIndex]
+    }
+    // Legacy Happy Hare (selected gate only)
+    if (gateIndex === this.mmuState?.gate) {
+      return this.mmuState?.espooler_active
     }
 
-    // Legacy Happy Hare (selected gate only)
-    return this.gateIndex === this.mmuState?.gate && this.mmuState?.espooler_active === this.ESPOOLER_ASSIST
+    return undefined
   }
 }
 </script>
