@@ -348,19 +348,19 @@ export default class MmuMixin extends Vue {
     return this.mmuState?.action
   }
 
-  readonly ACTION_IDLE: string = 'Idle'
-  readonly ACTION_LOADING: string = 'Loading'
-  readonly ACTION_LOADING_EXTRUDER: string = 'Loading Ext'
-  readonly ACTION_UNLOADING: string = 'Unloading'
-  readonly ACTION_UNLOADING_EXTRUDER: string = 'Unloading Ext'
-  readonly ACTION_FORMING_TIP: string = 'Forming Tip'
-  readonly ACTION_CUTTING_TIP: string = 'Cutting Tip'
-  readonly ACTION_HEATING: string = 'Heating'
-  readonly ACTION_CHECKING: string = 'Checking'
-  readonly ACTION_HOMING: string = 'Homing'
-  readonly ACTION_SELECTING: string = 'Selecting'
-  readonly ACTION_CUTTING_FILAMENT: string = 'Cutting Filament'
-  readonly ACTION_PURGING: string = 'Purging'
+  readonly ACTION_IDLE = 'Idle'
+  readonly ACTION_LOADING = 'Loading'
+  readonly ACTION_LOADING_EXTRUDER = 'Loading Ext'
+  readonly ACTION_UNLOADING = 'Unloading'
+  readonly ACTION_UNLOADING_EXTRUDER = 'Unloading Ext'
+  readonly ACTION_FORMING_TIP = 'Forming Tip'
+  readonly ACTION_CUTTING_TIP = 'Cutting Tip'
+  readonly ACTION_HEATING = 'Heating'
+  readonly ACTION_CHECKING = 'Checking'
+  readonly ACTION_HOMING = 'Homing'
+  readonly ACTION_SELECTING = 'Selecting'
+  readonly ACTION_CUTTING_FILAMENT = 'Cutting Filament'
+  readonly ACTION_PURGING = 'Purging'
 
   get hasBypass (): boolean {
     return this.mmuState?.has_bypass ?? false
@@ -407,10 +407,10 @@ export default class MmuMixin extends Vue {
     return this.mmuState?.spoolman_support ?? 'off'
   }
 
-  readonly SPOOLMAN_OFF: string = 'off' // Spoolman disabled
-  readonly SPOOLMAN_READONLY: string = 'readonly' // Get filament attributes only
-  readonly SPOOLMAN_PUSH: string = 'push' // Local gatemap is the source or truth
-  readonly SPOOLMAN_PULL: string = 'pull' // Spoolman db is the source of truth
+  readonly SPOOLMAN_OFF = 'off' // Spoolman disabled
+  readonly SPOOLMAN_READONLY = 'readonly' // Get filament attributes only
+  readonly SPOOLMAN_PUSH = 'push' // Local gatemap is the source or truth
+  readonly SPOOLMAN_PULL = 'pull' // Spoolman db is the source of truth
 
   get sensors (): Record<string, boolean | null> {
     return this.mmuState?.sensors ?? {}
@@ -420,8 +420,8 @@ export default class MmuMixin extends Vue {
     return this.mmuState?.espooler_active ?? ''
   }
 
-  readonly ESPOOLER_REWIND: string = 'rewind'
-  readonly ESPOOLER_ASSIST: string = 'assist'
+  readonly ESPOOLER_REWIND = 'rewind'
+  readonly ESPOOLER_ASSIST = 'assist'
 
   /*
      * Optional printer variables based on selector type
@@ -494,14 +494,14 @@ export default class MmuMixin extends Vue {
     return this.$typedState.printer.printer['gcode_macro _MMU_LED_VARS']?.default_status_effect ?? 'off'
   }
 
-  readonly LED_OPTIONS: string[] = ['off', 'gate_status', 'filament_color', 'slicer_color']
-  readonly LED_STATUS_OPTIONS: string[] = [...this.LED_OPTIONS, 'on']
+  readonly LED_OPTIONS = ['off', 'gate_status', 'filament_color', 'slicer_color'] as const
+  readonly LED_STATUS_OPTIONS = [...this.LED_OPTIONS, 'on'] as const
 
   get macroVarsAutomapStrategy (): string {
     return this.$typedState.printer.printer['gcode_macro _MMU_SOFTWARE_VARS']?.automap_strategy ?? 'none'
   }
 
-  readonly AUTOMAP_OPTIONS: string[] = ['none', 'filament_name', 'material', 'color', 'closest_color', 'spool_id']
+  readonly AUTOMAP_OPTIONS = ['none', 'filament_name', 'material', 'color', 'closest_color', 'spool_id'] as const
 
   /*
      * Miscellaneous
