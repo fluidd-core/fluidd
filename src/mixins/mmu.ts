@@ -409,7 +409,7 @@ export default class MmuMixin extends Vue {
 
   readonly SPOOLMAN_OFF = 'off' // Spoolman disabled
   readonly SPOOLMAN_READONLY = 'readonly' // Get filament attributes only
-  readonly SPOOLMAN_PUSH = 'push' // Local gatemap is the source or truth
+  readonly SPOOLMAN_PUSH = 'push' // Local gatemap is the source of truth
   readonly SPOOLMAN_PULL = 'pull' // Spoolman db is the source of truth
 
   get sensors (): Record<string, boolean | null> {
