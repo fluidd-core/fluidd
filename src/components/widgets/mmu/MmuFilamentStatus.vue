@@ -1,7 +1,7 @@
 <template>
   <svg
     ref="filStatusSvg"
-    viewBox="140 20 285 421"
+    viewBox="140 0 285 441"
     preserveAspectRatio="xMidYMid meet"
     class="svg-colors"
   >
@@ -38,12 +38,12 @@
           stroke-width="1.5"
         />
         <path
-          d="M-15 -4 L-6 0 L-15 4 Z"
+          d="m-15-4 9 4-9 4Z"
           stroke-width="1"
           fill-opacity="0.6"
         />
         <path
-          d="M8 40 L 28 40"
+          d="M8 40h20"
           stroke-width="4"
         />
         <text
@@ -75,12 +75,12 @@
           fill-opacity="0.6"
         />
         <path
-          d="M-3 10 0 10 M-3 22 0.5 22 M-3 34.5 0 34.5"
+          d="M-3 10h3m-3 12H.5M-3 34.5h3"
           stroke-width="2"
           stroke-opacity="0.6"
         />
         <path
-          d="M8 0 L 28 0"
+          d="M8 0h20"
           stroke-width="4"
         />
       </g>
@@ -211,6 +211,14 @@
       </g>
     </defs>
 
+    <text
+      x="282"
+      y="18"
+      font-size="16px"
+      text-anchor="middle"
+    >
+      {{ statusText }}
+    </text>
     <rect
       x="150"
       y="30"
@@ -432,7 +440,7 @@
         <g v-if="syncFeedbackActive">
           <transition name="fade">
             <g
-              v-if="isSensorTriggered('filament_tension') && isSensorTriggered('filament_compression')"
+              v-if="syncFeedbackState === SYNC_FEEDBACK_NEUTRAL"
               key="neutral"
             >
               <text
@@ -447,7 +455,7 @@
               />
             </g>
             <g
-              v-else-if="isSensorTriggered('filament_tension')"
+              v-else-if="syncFeedbackState === SYNC_FEEDBACK_TENSION"
               key="tension"
             >
               <text
@@ -466,7 +474,7 @@
               />
             </g>
             <g
-              v-else-if="isSensorTriggered('filament_compression')"
+              v-else-if="syncFeedbackState === SYNC_FEEDBACK_COMPRESSED"
               key="compression"
             >
               <text
@@ -642,6 +650,31 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
     if (this.configExtruderHomingEndstop === 'extruder') return POSITIONS.EXTRUDER
 
     return POSITIONS.END_BOWDEN
+  }
+
+  get statusText (): string {
+    let posStr: string = ''
+    if (['complete', 'error', 'cancelled', 'started'].includes(this.printState)) {
+      posStr = this.capitalize(this.printState)
+    } else if (this.action === this.ACTION_IDLE) {
+      if (this.printState === 'printing') {
+        posStr = `Printing (${this.numToolchanges}`
+        if (this.slicerToolMap?.total_toolchanges) posStr += `/${this.slicerToolMap?.total_toolchanges}`
+        posStr += ' swaps)'
+      } else {
+        posStr = this.filament !== 'Unloaded' ? `Filament: ${this.filamentPosition} mm` : 'Filament: Unloaded'
+      }
+    } else if (this.action === this.ACTION_LOADING || this.action === this.ACTION_UNLOADING) {
+      posStr = `${this.action}: ${this.filamentPosition} mm`
+    } else {
+      posStr = this.action ?? ''
+    }
+    return posStr
+  }
+
+  private capitalize (str: string): string {
+    if (!str) return str
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
   }
 
   get toolheadSensor () {

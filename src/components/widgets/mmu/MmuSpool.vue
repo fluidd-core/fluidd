@@ -18,7 +18,7 @@
       <path
         id="espool"
         d="M89.561 35.5 60.333 15.734a.999.999 0 0 0-1.56.828v7.987c-12.038.262-26.306 5.201-37.501 13.023C7.554 47.155 0 59.894 0 73.438a1.001 1.001 0 0 0 1.911.412c7.823-17.312 26.952-26.183 56.861-26.376v8.62a.999.999 0 0 0 1.56.828L89.56 37.156c.275-.185.44-.495.44-.827s-.165-.643-.439-.829"
-        stroke-width="2"
+        stroke-width="3"
         stroke="#CCCCCC"
         fill="#808080"
         opacity="0.7"
@@ -115,14 +115,14 @@
         !
       </text>
       <use
-        v-if="espoolerActive === ESPOOLER_REWIND && gateIndex === gate"
+        v-if="isEspoolerRewind"
         href="#espool"
         transform="translate(225,0) rotate(90) scale(2,2)"
       />
       <use
-        v-if="espoolerActive === ESPOOLER_ASSIST && gateIndex === gate"
+        v-if="isEspoolerAssist"
         href="#espool"
-        transform="translate(225,500) rotate(270) scale(2,-2)"
+        transform="translate(225,480) rotate(270) scale(2,-2)"
       />
     </g>
   </svg>
@@ -199,6 +199,32 @@ export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
 
   get contrastColor (): string {
     return new TinyColor(this.filamentColor).getLuminance() > 0.5 ? 'black' : 'white'
+  }
+
+  get isEspoolerRewind (): boolean {
+    const espooler = this.getEspoolerForGate(this.gateIndex)
+
+    return espooler === this.ESPOOLER_REWIND
+  }
+
+  get isEspoolerAssist (): boolean {
+    const espooler = this.getEspoolerForGate(this.gateIndex)
+
+    return espooler === this.ESPOOLER_ASSIST
+  }
+
+  getEspoolerForGate (gateIndex: number): string | undefined {
+    const espoolers = this.mmuState?.espooler
+
+    if (espoolers) {
+      return espoolers[gateIndex]
+    }
+    // Legacy Happy Hare (selected gate only)
+    if (gateIndex === this.mmuState?.gate) {
+      return this.mmuState?.espooler_active
+    }
+
+    return undefined
   }
 }
 </script>
