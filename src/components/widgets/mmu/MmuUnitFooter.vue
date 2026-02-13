@@ -87,7 +87,7 @@ import MmuMixin from '@/mixins/mmu'
 import type { Sensor } from '@/store/printer/types'
 
 @Component
-export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
+export default class MmuUnitFooter extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
   @Prop({ required: false, default: 0 })
   readonly unitIndex!: number
 
