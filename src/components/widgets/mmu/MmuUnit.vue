@@ -145,7 +145,6 @@
     <mmu-unit-footer
       class="pt-0 position-relative"
       :style="footerStyle"
-      :mmu-machine-unit="mmuMachineUnit"
       :show-details="showDetails"
       :show-footer="showFooter"
       :unit-index="unitIndex"
