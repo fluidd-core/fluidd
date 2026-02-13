@@ -73,7 +73,7 @@
                   small
                   style="width: 100%"
                   :disabled="isItemDisabled(item, g)"
-                  :loading="hasWait(item.loading)"
+                  :loading="item.wait && hasWait(item.wait)"
                   @click="runMenuItem(item, g)"
                 >
                   <v-icon left>
@@ -173,7 +173,7 @@ type MenuAction =
 type ContextMenuItem = {
   icon: string
   label: string
-  loading: string
+  wait?: string
   disabled?: MenuDisabled
   action: MenuAction
 }
@@ -323,7 +323,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     this.closeContextMenu()
 
     if (item.action.kind === 'gcode') {
-      this.sendGcode(`${item.action.command} GATE=${gate}`, item.loading)
+      this.sendGcode(`${item.action.command} GATE=${gate}`, item.wait)
     } else {
       item.action.fn(gate)
     }
@@ -343,21 +343,18 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
       {
         icon: '$mmuSelectGate',
         label: this.$t('app.mmu.btn.select').toString(),
-        loading: '',
         action: { kind: 'call', fn: (gate) => this.selectGate(gate) },
         disabled: (gate) => !this.canSend || gate === this.gate || this.isPrinting || isLoaded,
       },
       {
         icon: '$mmuEditGateMap',
         label: this.$t('app.mmu.btn.edit_gate_map').toString(),
-        loading: '',
         action: { kind: 'call', fn: (gate) => this.editFilament(gate) },
-        disabled: () => false,
       },
       {
         icon: '$mmuPreload',
         label: this.$t('app.mmu.btn.preload').toString(),
-        loading: this.$waits.onMmuPreload,
+        wait: this.$waits.onMmuPreload,
         action: { kind: 'gcode', command: 'MMU_PRELOAD' },
         disabled: (gate) =>
           !this.canSend ||
@@ -367,14 +364,14 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
       {
         icon: '$mmuEject',
         label: this.$t('app.mmu.btn.eject').toString(),
-        loading: this.$waits.onMmuEject,
+        wait: this.$waits.onMmuEject,
         action: { kind: 'gcode', command: 'MMU_EJECT' },
         disabled: (gate) => !this.canSend || (gate !== this.gate && !canCrossload),
       },
       {
         icon: '$mmuChangeTool',
         label: this.$t('app.mmu.btn.change_tool').toString(),
-        loading: this.$waits.onMmuChangeTool,
+        wait: this.$waits.onMmuChangeTool,
         action: { kind: 'gcode', command: 'MMU_CHANGE_TOOL' },
         disabled: (gate) => !this.canSend || gate === this.gate || this.isPrinting,
       },

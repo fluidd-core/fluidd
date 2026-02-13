@@ -431,11 +431,11 @@ export default class MmuMixin extends Vue {
     return this.mmuState?.drying_state ?? []
   }
 
-  readonly DRYING_STATE_ACTIVE: string = 'active'
-  readonly DRYING_STATE_QUEUED: string = 'queued'
-  readonly DRYING_STATE_COMPLETE: string = 'complete'
-  readonly DRYING_STATE_CANCELLED: string = 'cancelled'
-  readonly DRYING_STATUS_NONE: string = ''
+  readonly DRYING_STATE_ACTIVE = 'active'
+  readonly DRYING_STATE_QUEUED = 'queued'
+  readonly DRYING_STATE_COMPLETE = 'complete'
+  readonly DRYING_STATE_CANCELLED = 'cancelled'
+  readonly DRYING_STATUS_NONE = ''
 
   /*
      * Optional printer variables based on selector type

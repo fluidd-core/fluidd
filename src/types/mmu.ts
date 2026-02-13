@@ -34,6 +34,6 @@ export interface MmuUnitDetails {
   multiGear: boolean
   environmentSensor: string
   filamentHeater: string
-  environmentSensors: string[] | undefined
-  filamentHeaters: string[] | undefined
+  environmentSensors?: string[]
+  filamentHeaters?: string[]
 }

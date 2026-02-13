@@ -360,11 +360,11 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
 
   private selectGate (gate: number) {
     if (gate === this.TOOL_GATE_BYPASS) {
-      this.sendGcode('MMU_SELECT BYPASS=1', 'mmu_select')
+      this.sendGcode('MMU_SELECT BYPASS=1', this.$waits.onMmuSelect)
       return
     }
 
-    this.sendGcode(`MMU_SELECT GATE=${gate}`, 'mmu_select')
+    this.sendGcode(`MMU_SELECT GATE=${gate}`, this.$waits.onMmuSelect)
   }
 
   private editFilament (gate: number) {
