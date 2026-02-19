@@ -73,7 +73,7 @@ export const getters = {
 
     const size = vuetify.framework.breakpoint.name
     const username = user.username
-      .replace(/[%.]/g, (m) => `%${m.charCodeAt(0).toString(16)}`) // encode . and % to avoid issues with localStorage keys
+      .replace(/[%.]/g, (m) => `%${m.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0')}`) // encode . and % to avoid issues with localStorage keys
 
     return `dashboard-${size}-${username}`
   }
