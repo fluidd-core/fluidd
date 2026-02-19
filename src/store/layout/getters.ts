@@ -72,8 +72,10 @@ export const getters = {
     if (!user) return 'dashboard'
 
     const size = vuetify.framework.breakpoint.name
+
+    // encode . and % to avoid issues with Moonraker DB keys (dots are JSON path separators)
     const username = user.username
-      .replace(/[%.]/g, (m) => `%${m.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0')}`) // encode . and % to avoid issues with localStorage keys
+      .replace(/[%.]/g, (m) => `%${m.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0')}`)
 
     return `dashboard-${size}-${username}`
   }
