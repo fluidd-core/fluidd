@@ -72,6 +72,9 @@ export const getters = {
     if (!user) return 'dashboard'
 
     const size = vuetify.framework.breakpoint.name
-    return `dashboard-${size}-${user.username}`
+    const username = user.username
+      .replace(/[%.]/g, (m) => `%${m.charCodeAt(0).toString(16)}`) // encode . and % to avoid issues with localStorage keys
+
+    return `dashboard-${size}-${username}`
   }
 } satisfies GetterTree<LayoutState, RootState>
