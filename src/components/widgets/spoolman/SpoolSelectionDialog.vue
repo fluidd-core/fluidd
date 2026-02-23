@@ -213,19 +213,45 @@
             </template>
 
             <template #[`item.first_used`]="{ value }">
-              {{
-                value
-                  ? $filters.formatRelativeTimeToNow(value)
-                  : $tc('app.setting.label.never')
-              }}
+              <v-tooltip
+                bottom
+                :disabled="!value"
+              >
+                <template #activator="{ on, attrs }">
+                  <span
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    {{
+                      value
+                        ? $filters.formatRelativeTimeToNow(value)
+                        : $tc('app.setting.label.never')
+                    }}
+                  </span>
+                </template>
+                <span>{{ value ? $filters.formatDateTime(value) : null }}</span>
+              </v-tooltip>
             </template>
 
             <template #[`item.last_used`]="{ value }">
-              {{
-                value
-                  ? $filters.formatRelativeTimeToNow(value)
-                  : $tc('app.setting.label.never')
-              }}
+              <v-tooltip
+                bottom
+                :disabled="!value"
+              >
+                <template #activator="{ on, attrs }">
+                  <span
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    {{
+                      value
+                        ? $filters.formatRelativeTimeToNow(value)
+                        : $tc('app.setting.label.never')
+                    }}
+                  </span>
+                </template>
+                <span>{{ value ? $filters.formatDateTime(value) : null }}</span>
+              </v-tooltip>
             </template>
 
             <template #[`item-value.filament.colors`]="{ value }">
