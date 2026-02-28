@@ -8,7 +8,7 @@
             block
             color="primary"
             class="mb-2"
-            :disabled="printerPrinting"
+            :disabled="printerBusy"
             v-on="on"
             @click="restartKlippy"
           >
@@ -25,7 +25,7 @@
             block
             color="primary"
             class="mb-2"
-            :disabled="printerPrinting"
+            :disabled="printerBusy"
             v-on="on"
             @click="firmwareRestartKlippy"
           >
