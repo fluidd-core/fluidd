@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue2'
 import { VitePWA } from 'vite-plugin-pwa'
-import Components from 'unplugin-vue-components/vite'
+import Components from 'unplugin-vue-components/rolldown'
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 import content from '@originjs/vite-plugin-content'
@@ -91,8 +91,13 @@ export default defineConfig({
     version(),
     content(),
     checker({
+      enableBuild: false,
       vueTsc: {
         tsconfigPath: path.resolve(__dirname, './tsconfig.app.json')
+      },
+      eslint: {
+        lintCommand: 'eslint .',
+        useFlatConfig: true
       }
     }),
     Components({

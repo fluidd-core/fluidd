@@ -88,6 +88,7 @@
     "@vue/eslint-config-typescript": "^14.7.0",
     "@vue/test-utils": "^1.3.6",
     "@vue/tsconfig": "~0.1.3",
+    "esbuild": "^0.27.4",
     "eslint": "^9.39.2",
     "eslint-plugin-regexp": "^3.1.0",
     "eslint-plugin-vue": "^9.33.0",
@@ -97,17 +98,17 @@
     "monaco-vscode-textmate-theme-converter": "^0.1.7",
     "neostandard": "^0.13.0",
     "rollup": "^4.59.0",
-    "sass": "^1.97.2",
+    "sass-embedded": "^1.98.0",
     "skott": "^0.35.7",
     "standard-version": "^9.5.0",
     "svgo": "^4.0.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.0",
     "unplugin-vue-components": "^30.0.0",
-    "vite": "^7.3.1",
+    "vite": "^8.0.0",
     "vite-plugin-checker": "^0.12.0",
     "vite-plugin-pwa": "^1.2.0",
-    "vitest": "^3.2.4",
+    "vitest": "^4.1.0",
     "vue-debounce-decorator": "^1.0.1",
     "vue-i18n-extract": "^2.0.7",
     "vue-template-compiler": "^2.7.16",
@@ -138,6 +139,12 @@
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "vite-plugin-checker": {
       "vue-tsc": "$vue-tsc"
+    },
+    "@vitejs/plugin-vue2": {
+      "vite": "$vite"
+    },
+    "vite-plugin-pwa": {
+      "vite": "$vite"
     }
   },
   "engines": {

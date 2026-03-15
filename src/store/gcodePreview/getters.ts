@@ -5,8 +5,8 @@ import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
 import isKeyOf from '@/util/is-key-of'
 
 const defaultColors = ['#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B']
-const lightDefaultColors = ['#000', ...defaultColors]
-const darkDefaultColors = ['#FFF', ...defaultColors]
+const lightDefaultColors = Object.freeze(['#000', ...defaultColors])
+const darkDefaultColors = Object.freeze(['#FFF', ...defaultColors])
 
 export const getters = {
   getLayers: (state, getters, rootState): readonly Layer[] => {
@@ -168,7 +168,7 @@ export const getters = {
     return []
   },
 
-  getDefaultColors: (state, getters, rootState) => {
+  getDefaultColors: (state, getters, rootState): readonly string[] => {
     return (
       rootState.config.uiSettings.theme.isDark
         ? darkDefaultColors
@@ -187,7 +187,7 @@ export const getters = {
           getters.getFileFilamentColors
         ]
 
-    const defaultColors: string[] = getters.getDefaultColors
+    const defaultColors: readonly string[] = getters.getDefaultColors
 
     const tools = toolIndexes
       .reduce<Record<Tool, string>>((tools, toolIndex, index) => {
@@ -306,7 +306,7 @@ export const getters = {
       return 0
     }
 
-    const layers: Layer[] = getters.getLayers
+    const layers: readonly Layer[] = getters.getLayers
 
     const layer = binarySearch(layers, layer => filePosition - layer.filePosition, true)
 

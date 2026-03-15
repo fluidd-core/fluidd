@@ -645,7 +645,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       return this.defaultLayerPaths
     }
 
-    const layer: readonly Layer | undefined = this.$typedGetters['gcodePreview/getLayers'][this.layer]
+    const layer: Layer | undefined = this.$typedGetters['gcodePreview/getLayers'][this.layer]
 
     if (this.followProgress) {
       const end: number = this.$typedGetters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)

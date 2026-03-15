@@ -9,6 +9,8 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.config.tsbuildinfo",
 
+    "moduleResolution": "Bundler",
+
     "types": [
       "node"
     ],
