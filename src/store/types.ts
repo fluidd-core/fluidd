@@ -56,8 +56,8 @@ type RootModulesType = {
   sensors: typeof sensors,
   database: typeof database,
   analysis: typeof analysis,
-  afc: typeof afc
-  plugins: typeof plugins
+  afc: typeof afc,
+  plugins: typeof plugins,
 }
 
 type RootStateType = {
