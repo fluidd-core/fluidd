@@ -5,7 +5,7 @@ import type { RootState } from '../types'
 import type { HistoryItem } from '../history/types'
 import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
 
-const knownExtensions = [
+const knownGcodeExtensions = [
   '.gcode.3mf', // must come before .3mf / .gcode
   '.gcode',
   '.gco',
@@ -82,7 +82,8 @@ export const getters = {
       for (const file of pathContent.files) {
         const metadata = toAppFileMetaWithHistory(file, rootGetters)
 
-        const extension = knownExtensions.find(ext => file.filename.endsWith(ext)) || ''
+        const extensionIndex = file.filename.lastIndexOf('.')
+        const extension = knownGcodeExtensions.find(ext => file.filename.endsWith(ext)) ?? (extensionIndex > -1 ? file.filename.substring(extensionIndex) : '')
 
         if (timelapseThumbnailFiles && extension !== '.jpg') {
           const expectedThumbnailFile = `${file.filename.slice(0, -extension.length)}.jpg`
@@ -142,7 +143,7 @@ export const getters = {
       case 'gcodes':
         return {
           readonly: false,
-          accepts: knownExtensions,
+          accepts: knownGcodeExtensions,
           canView,
           canConfigure: true,
           filterTypes: ['print_start_time', 'hidden_files', 'moonraker_temporary_upload_files']
@@ -212,7 +213,8 @@ export const getters = {
       const [, ...restOfPath] = path.split('/')
       const pathFilename = restOfPath.join('/')
 
-      const extension = knownExtensions.find(ext => filename.endsWith(ext)) || ''
+      const extensionIndex = filename.lastIndexOf('.')
+      const extension = knownGcodeExtensions.find(ext => filename.endsWith(ext)) ?? (extensionIndex > -1 ? filename.substring(extensionIndex) : '')
 
       const item: AppFile | AppFileWithMeta = {
         ...file,
