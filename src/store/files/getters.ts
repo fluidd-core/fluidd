@@ -6,7 +6,7 @@ import type { HistoryItem } from '../history/types'
 import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
 
 const knownGcodeExtensions = [
-  '.gcode.3mf', // must come before .3mf / .gcode
+  '.gcode.3mf',
   '.gcode',
   '.gco',
   '.g',
