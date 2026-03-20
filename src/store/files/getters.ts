@@ -5,6 +5,16 @@ import type { RootState } from '../types'
 import type { HistoryItem } from '../history/types'
 import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
 
+const knownExtensions = [
+  '.gcode.3mf', // must come before .3mf / .gcode
+  '.gcode',
+  '.gco',
+  '.g',
+  '.gc',
+  '.ufp',
+  '.nc'
+]
+
 const toAppFileMetaWithHistory = (file: Moonraker.Files.File | Moonraker.Files.FileWithMeta, rootGetters: any) => {
   const metadata: Partial<AppFileMeta> & Pick<AppFileWithMeta, 'history'> = {}
 
@@ -72,8 +82,7 @@ export const getters = {
       for (const file of pathContent.files) {
         const metadata = toAppFileMetaWithHistory(file, rootGetters)
 
-        const extensionIndex = file.filename.lastIndexOf('.')
-        const extension = extensionIndex > -1 ? file.filename.substring(extensionIndex) : ''
+        const extension = knownExtensions.find(ext => file.filename.endsWith(ext)) || ''
 
         if (timelapseThumbnailFiles && extension !== '.jpg') {
           const expectedThumbnailFile = `${file.filename.slice(0, -extension.length)}.jpg`
@@ -133,7 +142,7 @@ export const getters = {
       case 'gcodes':
         return {
           readonly: false,
-          accepts: ['.gcode', '.g', '.gc', '.gco', '.ufp', '.nc'],
+          accepts: knownExtensions,
           canView,
           canConfigure: true,
           filterTypes: ['print_start_time', 'hidden_files', 'moonraker_temporary_upload_files']
@@ -203,8 +212,7 @@ export const getters = {
       const [, ...restOfPath] = path.split('/')
       const pathFilename = restOfPath.join('/')
 
-      const extensionIndex = filename.lastIndexOf('.')
-      const extension = extensionIndex > -1 ? filename.substring(extensionIndex) : ''
+      const extension = knownExtensions.find(ext => filename.endsWith(ext)) || ''
 
       const item: AppFile | AppFileWithMeta = {
         ...file,
