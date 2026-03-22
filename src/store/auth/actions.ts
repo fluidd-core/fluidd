@@ -3,7 +3,6 @@ import type { ActionTree } from 'vuex'
 import type { AuthState } from './types'
 import type { RootState } from '../types'
 import { httpClientActions } from '@/api/httpClientActions'
-import router from '@/router'
 import { consola } from 'consola'
 import { SocketActions } from '@/api/socketActions'
 
@@ -184,8 +183,8 @@ export const actions = {
     if (!opts.partial) {
       if (Vue.$socket) Vue.$socket.close()
       commit('setAuthenticated', false)
-      if (router.currentRoute.name !== 'login') {
-        await router.push({ name: 'login' })
+      if (Vue.$filters.getCurrentRouteName() !== 'login') {
+        await Vue.$filters.routeTo({ name: 'login' })
       }
     }
   },
