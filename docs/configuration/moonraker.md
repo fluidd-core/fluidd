@@ -32,7 +32,7 @@ cases, you shouldn't need to touch anything here.
 
 ## [file_manager] block
 
-If you want to be able to cancel single objects on a muilti-object print, then
+If you want to be able to cancel single objects on a multi-object print, then
 you will need to set `enable_object_processing: True` here to enable it.
 
 ```yaml
@@ -59,9 +59,9 @@ gcode_store_size: 1000
 ## [authorization] block
 
 This configures the authorization required to access the moonraker API.
-Normally, this is enabled. Fluiddpi provides a default configuration that
-applies to most users network requirements, however - sometimes changes are
-required to meet specific needs.
+Normally, this is enabled. Your installation method may provide a default
+configuration that applies to most users network requirements, however -
+sometimes changes are required to meet specific needs.
 
 ### Cors Domains
 
@@ -78,7 +78,7 @@ You can enter an address as a wildcard or full host. The
 [configuration example](/configuration/moonraker_conf) provides configuration that should work
 for most users.
 
-Protocols are required, but can be ommitted with the use of wildcards.
+Protocols are required, but can be omitted with the use of wildcards.
 
 ### Trusted Clients
 

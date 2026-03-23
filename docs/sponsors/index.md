@@ -1,12 +1,15 @@
 ---
 layout: default
 title: Sponsors
-nav_order: 9
+nav_order: 10
 has_children: false
 permalink: /sponsors
 ---
 
 # Sponsors
+{: .no_toc }
+
+---
 
 Fluidd is a free open source project.
 

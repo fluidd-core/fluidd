@@ -2,7 +2,7 @@
 layout: default
 title: Diagnostics
 parent: Features
-nav_order: 16
+nav_order: 18
 permalink: /features/diagnostics
 ---
 
@@ -22,7 +22,7 @@ you to plot various metrics about your printer in a customizable dashboard.
 
 The feature can be enabled in the Fluidd settings under the general section.
 
-### Dashboard
+## Dashboard
 The dashboard is separated into 4 columns and allows you to customize the
 position of each chart. To edit the dashboard layout, simply open Fluidd's
 layout editor via the side menu:
@@ -30,7 +30,7 @@ layout editor via the side menu:
 ![screenshot](/assets/images/side_menu.png)
 ![screenshot](/assets/images/adjust_layout.png)
 
-### Configuration
+## Configuration
 The dashboard comes preloaded with a chart to plot speeds and flow rates.  
 This should give a general overview on how to configure individual charts.  
 By clicking "Add Chart" or "Edit Chart" in the dashboard, a configuration
@@ -38,8 +38,9 @@ dialog will open guiding you through the setup process:
 
 ![screenshot](/assets/images/diagnostics_edit_card.png)
 
-#### Metrics Collector
-Each plotted metric runs a collector, based on user-defined JavaScript code.  
+### Metrics Collector
+Each plotted metric runs a collector, based on user-defined JavaScript code
+executed in a sandboxed worker for safety.
 Metrics are collected once a second or every 250ms when a stepper motor is active.
 
 The default configuration acts as a starting point for scripting your own collectors.  
@@ -50,7 +51,7 @@ The example below calculates the current flow rate based on the printers
 
 ![screenshot](/assets/images/diagnostics_collector_config.png)
 
-#### Metrics Explorer
+### Metrics Explorer
 
 A metrics explorer is available to check the available data points as well as
 aid in the creation of scripts. Data points can be inserted into the collector

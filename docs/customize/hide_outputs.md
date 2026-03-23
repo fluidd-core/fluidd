@@ -15,7 +15,7 @@ Fluidd allows you to hide macros, output pins, fans and sensors by prefixing
 them with an underscore (`_`).
 
 By doing this - you're removing them from Fluidd. This can be handy in
-situations where you have a large quantiy of macros, or whereby you have an
+situations where you have a large quantity of macros, or whereby you have an
 output pin you may have no need to control in UI.
 
 Some examples;

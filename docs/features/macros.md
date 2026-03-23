@@ -2,7 +2,7 @@
 layout: default
 title: Macros
 parent: Features
-nav_order: 14
+nav_order: 3
 permalink: /features/macros
 ---
 

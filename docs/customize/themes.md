@@ -17,7 +17,7 @@ permalink: /customize/themes
 
 ---
 
-### Theme Presets
+## Theme Presets
 
 Fluidd lets you choose a community preset, apply a color of your
 choosing - along with either a dark or light theme.
@@ -27,13 +27,13 @@ you'd like to see your logo supported here, let us know!
 
 ![screenshot](/assets/images/theme.png)
 
-### Community Themes
+## Community Themes
 
 Fluidd offers a way for custom stylesheets and background images to be included.
 All custom theming is configured through a `.fluidd-theme` folder within your
 configuration files.
 
-#### Custom Background
+### Custom Background
 To use a custom background, upload your `background.png` file into the
 above-mentioned `.fluidd-theme` folder.
 Currently, the following file extensions are supported:
@@ -42,7 +42,7 @@ Currently, the following file extensions are supported:
 - `.png`
 - `.gif`
 
-#### Custom Styling
+### Custom Styling
 Fluidd offers a [curated list of community themes](https://github.com/fluidd-core/themes).  
 To use a community theme, simply upload the themes `custom.css` file to the
 `.fluidd-theme` directory.

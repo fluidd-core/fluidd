@@ -27,11 +27,11 @@ Reading through the documentation surrounding `cors_domains` in the
 [moonraker config docs](/configuration/moonraker#cors-domains) should
 help explain some requirements.
 
-### Example
+## Example
 
 Assuming you have a single host setup with Fluidd, by way of a
 [docker installation](/installation/docker) or
-[fluiddpi installation](/installation/fluiddpi);
+[KIAUH installation](/installation/kiauh);
 
 1. Note the URL you use to access Fluidd
    - For this example, let's assume you access Fluidd on `http://fluidd.local`
@@ -45,12 +45,12 @@ Assuming you have a single host setup with Fluidd, by way of a
      works, and you still can't connect - please review the
      [moonraker config docs](/configuration/moonraker#cors-domains)
 
-The `cors_domains` section does allow for wildcards to make this easier, and
-FluiddPI ships with sane defaults. You can see an example
+The `cors_domains` section does allow for wildcards to make this easier.
+You can see an example
 [here](/configuration/moonraker_conf) of a configuration that works for
 `http://app.fluidd.xyz` along with many common network setups.
 
-### Troubleshooting
+## Troubleshooting
 
 If you're entering a printer URL into the add printer dialog, but Fluidd won't let me save...
 

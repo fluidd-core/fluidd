@@ -19,17 +19,15 @@ Fluidd is downloaded to your browser.
 It has no interaction outside of your network unless configured to do so, and
 essentially works in the same way as hosting Fluidd yourself.
 
-FluiddPi comes OOB with support for this configuration built in.
-
-If you've installed in some other way, then in order for Fluidd to connect to
-your printer, you'll need to configure Moonraker.
+In order for Fluidd to connect to your printer, you'll need to configure
+Moonraker.
 
 In the `moonraker.conf` file is a section called `cors_domains:`.
 The fluidd.xyz host must be in this section for a successful connection to be
 made.
 
-Generally, you can find the moonraker.conf file here
-`~/klipper_configuration/moonraker.conf` for FluiddPi and Mainsail installs.
+Generally, you can find the moonraker.conf file here:
+`~/printer_data/config/moonraker.conf`.
 
 Alternatively, you can edit the file via the file browser in Fluidd.
 

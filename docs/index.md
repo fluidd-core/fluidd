@@ -42,6 +42,7 @@ support
 - [Version management](/updates/automated) and upgrades
 - Utilization graphs
 - Filament [spool management](/features/spoolman)
+- [Third-party integrations](/features/integrations) (Happy Hare, AFC, Beacon, Spoolman, and more)
 
 ## Supporting Fluidd
 

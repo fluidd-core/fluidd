@@ -2,18 +2,12 @@
 layout: default
 title: Cameras
 parent: Features
-nav_order: 12
+nav_order: 2
 permalink: /features/cameras
 ---
 
 # Cameras
 {: .no_toc }
-
-## Table of contents
-{: .no_toc .text-delta }
-
-1. TOC
-{:toc}
 
 ---
 
@@ -35,7 +29,7 @@ The current supported types are:
   - A more reliable approach in certain scenarios.
 
 - **UV4L-MJPEG Stream**
-  - Similiar to regular MJPEG Stream, however it has lower impact on the browser
+  - Similar to regular MJPEG Stream, however it has lower impact on the browser
     as it doesn't use a worker to read the stream and thus has no FPS
     indication.
 
@@ -60,7 +54,7 @@ The current supported types are:
   - Experimental option replacing the `<img>` tag with a `<video>` tag.
   - Use only if your provided URL supports native HTML5 video tags.
 
-- **HTTP Page**  
+- **HTTP Page**
   - Loads a website, displaying it in place of the camera feed.
   - Allows embedding any web video feed not supported by the aforementioned
     methods.

@@ -26,6 +26,6 @@ You can serve these with your preferred HTTP server, for example [NGINX](https:/
 Please note that building on a Raspberry Pi isn't supported as of now (due to hardware limitations).
 If you'd like to serve your Fluidd installation from a Raspberry Pi, please build it on a PC and copy the `dist` directory over using [scp](https://linux.die.net/man/1/scp) (or a method of your choice). Alternatively, you may want to consider one of our alternative installation methods:
 * [KIAUH](/installation/kiauh)
-* [FluiddPi](/installation/fluiddpi)
+* [Docker](/installation/docker)
 
-To build Fluidd for development purposes, run `npm run serve` instead of `npm run build` to enable hot-reloads.
+To build Fluidd for development purposes, run `npm run dev` instead of `npm run build` to enable hot-reloads.

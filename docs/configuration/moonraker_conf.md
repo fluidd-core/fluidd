@@ -12,7 +12,7 @@ permalink: /configuration/moonraker_conf
 ---
 
 This is an example configuration, which should apply to most users.
-Your moonraker configuration can usually be found here: `~/klipper_config/moonraker.conf`
+Your moonraker configuration can usually be found here: `~/printer_data/config/moonraker.conf`
 
 ```yaml
 [server]

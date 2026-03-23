@@ -31,7 +31,7 @@ Fluidd this is generally the first place to look.
 
 ```yaml
 [virtual_sdcard]
-path: ~/gcode_files
+path: ~/printer_data/gcodes
 ```
 
 ### [display_status]

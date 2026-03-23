@@ -2,7 +2,7 @@
 layout: default
 title: Thumbnails
 parent: Features
-nav_order: 3
+nav_order: 9
 permalink: /features/thumbnails
 ---
 
@@ -28,7 +28,7 @@ Fluidd's recommended thumbnails should be the following sizes;
 48x48   - For the smaller file thumbs.
 ```
 
-### PrusaSlicer
+## PrusaSlicer
 
 Running PrusaSlicer `2.3.0+`?
 
@@ -49,7 +49,7 @@ thumbnails = 48x48, 300x300
 
 - Now, restart PrusaSlicer, slice a file - and take a look at it in Fluidd!
 
-### SuperSlicer
+## SuperSlicer
 
 - With SuperSlicer open, navigate to `Printer Settings`.
 - Find the `General` tab, under the heading `Thumbnails`.
@@ -57,13 +57,13 @@ thumbnails = 48x48, 300x300
 - The Color override and Bed on Thumbnail options are personal preference, but having the Bed on Thumbnail option unticked looks the best!
 - Now, restart SuperSlicer, slice a file - and take a look at it in Fluidd!
 
-### Cura with OctoPrint plugin (recommended)
+## Cura with OctoPrint plugin (recommended)
 
 - Enable [Slicer Uploads](/features/slicer-uploads)
 - Follow the instructions to [install and use](https://github.com/fieldOfView/Cura-OctoPrintPlugin#installation) the OctoPrint Connection plugin in Cura.
 - After installing the plugin and restarting Cura, slice a file, click `Print with OctoPrint` button - and take a look at it in Fluidd!
 
-### Cura with post processing script
+## Cura with post processing script
 
 - With Cura open, navigate to `Extensions`, `Post Processing`, `Modify G-Code`
 - Click `Add a script`, and select `Create Thumbnail`

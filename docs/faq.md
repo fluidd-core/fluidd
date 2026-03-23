@@ -1,7 +1,7 @@
 ---
 layout: default
 title: FAQ
-nav_order: 8
+nav_order: 9
 permalink: /faq
 ---
 
@@ -29,8 +29,9 @@ permalink: /faq
 
 ## How do I turn on my camera?
 
-- Fluiddpi ships with mjpgstreamer built in. Plug in your camera, navigate to
-  the UI settings page, and enable the webcam.
+- Navigate to the UI Settings page and add a new camera. Fluidd supports
+  multiple camera types including MJPEG, HLS, and WebRTC. See the
+  [cameras feature](/features/cameras) for details.
 
 ## My camera is delayed, or slow
 
@@ -38,10 +39,10 @@ permalink: /faq
   - Some users have reported that their webcams were problematic when connected
     to the Pi4's USB2.0 ports. Try plugging your webcam into the USB3.0 port.
 
-  - Because mjpg streams static images, this can saturate your wifi. Try
-    reducing the fps and resolution of your images. See the `/boot/fluiddpi.txt`
-    folder on your Pi for more information on how to do this. You can also
-    try connecting to wired ethernet.
+  - MJPEG streams can saturate your wifi. Try reducing the fps and resolution
+    in your streamer configuration (e.g.
+    [Crowsnest](https://crowsnest.mainsail.xyz/)). You can also try connecting
+    to wired ethernet.
 
 ## Klipper updated and now my printer has an error
 
@@ -69,6 +70,7 @@ permalink: /faq
 
   Then rebooting.
   
-## Why can't I see a total layer count in Fluidd?
+## Does Fluidd show a total layer count?
 
-- Coming soon!
+- Yes. Fluidd displays the current layer and total layer count during a print,
+  provided your slicer includes layer information in the gcode file.

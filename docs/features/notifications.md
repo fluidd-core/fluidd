@@ -2,7 +2,7 @@
 layout: default
 title: Notifications
 parent: Features
-nav_order: 13
+nav_order: 16
 permalink: /features/notifications
 ---
 

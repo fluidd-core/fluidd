@@ -2,7 +2,7 @@
 layout: default
 title: Print History
 parent: Features
-nav_order: 13
+nav_order: 7
 permalink: /features/print_history
 ---
 
@@ -41,6 +41,9 @@ Fluidd is designed to balance functionality and performance for an optimal user
 experience, and for that reason, it will only load the last 50 prints from the
 history. While the limit extends to 10,000 history items, preloading this
 extensive history may lead to unnecessary performance impacts.
+
+A dedicated full-page History view is also available from the main navigation
+menu, giving you more room to sort, filter and inspect past jobs.
 
 ![screenshot](/assets/images/print_history.png)
 ![screenshot](/assets/images/print_stats.png)

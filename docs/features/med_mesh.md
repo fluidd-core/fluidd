@@ -2,7 +2,7 @@
 layout: default
 title: Bed Mesh
 parent: Features
-nav_order: 9
+nav_order: 6
 permalink: /features/bed_mesh
 ---
 

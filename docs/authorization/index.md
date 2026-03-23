@@ -19,10 +19,11 @@ Fluidd supports JWT authorization through moonrakers authentication endpoints.
 
 ## Setup
 
-- If you have a fluiddpi install from version 1.15+, then simply add a new user
-with Fluidd, after which time you'll be prompted for authorization.
+- Add a new user with Fluidd, after which time you'll be prompted for
+authorization.
 
-- If you have an older fluiddpi install,  add `force_logins` to your moonraker configuration. After restarting moonraker, add a user.
+- If you are not prompted, add `force_logins` to your moonraker configuration.
+After restarting Moonraker, add a user.
 
 ```sh
  [authorization]
@@ -104,5 +105,3 @@ moonraker_secure.json
 
 ![screenshot](/assets/images/auth_login_multisource.png)
 ![screenshot](/assets/images/auth_login_multisource_select.png)
-
-{: .fs-6 .fw-300 }
