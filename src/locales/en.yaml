@@ -538,6 +538,10 @@ app:
         name: Name
         nozzle_diameter: Nozzle diameter
         print_duration: Print duration
+        printer_model: Printer model
+        printer_variant: Printer variant
+        printer_vendor: Printer vendor
+        profile_version: Profile version
         referenced_tools: Referenced tools
         time_added: Time Added
         time_in_queue: Time In Queue

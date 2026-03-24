@@ -318,6 +318,30 @@ export default class JobHistory extends Mixins(FilesMixin) {
         cellClass: 'text-no-wrap'
       },
       {
+        text: this.$tc('app.general.table.header.printer_vendor'),
+        value: 'printer_vendor',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.printer_model'),
+        value: 'printer_model',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.printer_variant'),
+        value: 'printer_variant',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
+        text: this.$tc('app.general.table.header.profile_version'),
+        value: 'profile_version',
+        visible: false,
+        cellClass: 'text-no-wrap'
+      },
+      {
         text: this.$tc('app.general.table.header.estimated_time'),
         value: 'metadata.estimated_time',
         visible: false,
