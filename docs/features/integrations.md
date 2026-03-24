@@ -84,14 +84,10 @@ BME280, SHT3X, HTU21D, LM75, PT100/PT1000, and more. See
 ## Kalico Firmware
 
 Fluidd detects [Kalico](https://docs.kalico.gg) (and Danger Klipper) and
-enables firmware-specific features automatically:
-
-- Belay gearset retraction
-- Dockable probe status
-- Mixing extruder control
-- Trad rack tracking
-- Z calibration
-
+adapts its interface to the firmware automatically. Firmware-specific objects
+and commands exposed by Kalico are available through Fluidd’s existing
+panels, such as the Console, Macros list, and standard toolhead and sensor
+cards.
 No extra configuration is needed — Fluidd adapts when it detects the firmware
 variant.
 

@@ -39,7 +39,7 @@ permalink: /faq
   - Some users have reported that their webcams were problematic when connected
     to the Pi4's USB2.0 ports. Try plugging your webcam into the USB3.0 port.
 
-  - MJPEG streams can saturate your wifi. Try reducing the fps and resolution
+  - MJPEG streams can saturate your WiFi. Try reducing the fps and resolution
     in your streamer configuration (e.g.
     [Crowsnest](https://crowsnest.mainsail.xyz/)). You can also try connecting
     to wired ethernet.

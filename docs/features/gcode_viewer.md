@@ -22,7 +22,7 @@ Fluidd's Gcode viewer provides a 2D-visualization of the currently selected laye
 It can automatically follow the print progress and provide you with information about
 the currently executed moves. Multi-tool prints are supported, with each tool shown
 in a distinct color. The most commonly accessed settings are accessible via the cog
-icon in the cards header and allow you to customize the preview's behavior.
+icon in the card header and allow you to customize the preview's behavior.
 
 ![screenshot](/assets/images/gcode_preview.png)
 
