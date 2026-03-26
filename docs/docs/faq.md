@@ -36,7 +36,17 @@ title: FAQ
 
 - Klipper likely has configuration changes. Please see
   the [Klipper config changes](https://www.klipper3d.org/Config_Changes.html) page
-  for a list of recent changes.
+  for a list of recent changes. Common breaking changes include renamed
+  parameters, deprecated options, and changed macro behavior.
+
+## My probe or eddy current configuration stopped working after a Klipper update
+
+- Klipper 0.13.0 introduced changes to probe eddy current parameters. The
+  `z_offset` parameter was renamed to `descend_z`, and `speed`/`lift_speed`
+  no longer apply to `METHOD=scan`, `METHOD=rapid_scan`, or `METHOD=tap`
+  commands — these must be passed as command parameters instead. Check the
+  [Klipper config changes](https://www.klipper3d.org/Config_Changes.html) page
+  for details.
 
 ## The host reboot / shutdown commands don't work
 

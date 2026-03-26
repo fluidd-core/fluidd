@@ -38,6 +38,7 @@ support
 - Utilization graphs
 - Filament [spool management](/features/spoolman)
 - [Third-party integrations](/features/integrations) (Happy Hare, AFC, Beacon, Spoolman, and more)
+- [Kalico firmware](/features/integrations#kalico-firmware) support with MPC calibration and non-critical MCU handling
 
 ## Supporting Fluidd
 

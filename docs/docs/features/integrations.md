@@ -65,18 +65,42 @@ sensors when configured in Klipper. No extra Fluidd configuration is needed.
 ### Temperature & humidity sensors
 
 Any sensor Klipper exposes is shown automatically. This includes AHT10/20/30,
-BME280, SHT3X, HTU21D, LM75, PT100/PT1000, and more. See
+BME280, BMP180/388, SHT3X, HTU21D, LM75, PT100/PT1000, and more. See
 [Sensors](/features/sensors) for configuration examples.
 
 ## Kalico Firmware
 
-Fluidd detects [Kalico](https://docs.kalico.gg) (and Danger Klipper) and
-adapts its interface to the firmware automatically. Firmware-specific objects
-and commands exposed by Kalico are available through Fluidd’s existing
-panels, such as the Console, Macros list, and standard toolhead and sensor
-cards.
-No extra configuration is needed — Fluidd adapts when it detects the firmware
-variant.
+[Kalico](https://docs.kalico.gg) (formerly Danger Klipper) is a community
+fork of Klipper that adds advanced features for experienced users. Fluidd
+detects Kalico automatically and adapts its interface — no extra configuration
+is needed.
+
+Kalico can be installed via [KIAUH](https://github.com/dw-0/kiauh) as an
+alternative firmware.
+
+### Features exposed in Fluidd
+
+- **MPC (Model Predictive Control)** — an alternative to PID for extruder
+  temperature control. When MPC is configured (`control: mpc` in
+  `[extruder]`), Fluidd shows an `MPC_CALIBRATE` button in the thermals
+  card. See the [Kalico MPC docs](https://docs.kalico.gg/MPC.html) for
+  configuration details.
+- **Non-critical MCUs** — mark microcontrollers as optional with
+  `is_non_critical: true` in `[mcu]`. Fluidd gracefully disables controls
+  for disconnected optional MCUs instead of showing errors.
+- **Dockable probes** — native support for Quickdraw, Klicky/Unklicky, and
+  other dockable probe systems without external macros.
+- **Per-axis acceleration** — independent X/Y acceleration and velocity
+  limits for CoreXY and CoreXZ kinematics, shown in the Toolhead card.
+- **Fan curves** — temperature-based automatic fan speed curves.
+- **Python templates** — Python math library available in Jinja2 macro
+  templates for complex calculations.
+- **G-Code shell commands** — execute shell commands directly from macros.
+- **Firmware retraction with Z-hop** — built-in Z-hop support during
+  firmware retractions.
+
+For the full feature reference, see the
+[Kalico documentation](https://docs.kalico.gg).
 
 ## Companion Services
 

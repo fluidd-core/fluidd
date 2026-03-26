@@ -4,7 +4,14 @@ title: Authorization
 
 # Authorization
 
-Fluidd supports JWT authorization through moonrakers authentication endpoints.
+Fluidd supports JWT authorization through Moonraker's authentication endpoints.
+
+## API Keys
+
+Moonraker stores API keys in its internal database. To retrieve your API key:
+
+- From a trusted client, navigate to `http://{moonraker-host}/access/api_key`
+- Or run `~/moonraker/scripts/fetch-apikey.sh` on the host machine
 
 ## Setup
 
@@ -40,11 +47,15 @@ You can confirm this by noting your currently authenticated user.
 Lost your only password? You need to revert to a trusted setup. You can do this
 by editing your `moonraker.conf` and turning `force_logins` to `false`.
 
-## LDAP - Configuration
+## LDAP Configuration
 
 Need central authorization? Configure LDAP to include your authentication server.
 Remove `trusted_clients:` from `[authorization]` to force authentication.
-You can also modify `default_source` to change the default login interface to `ldap`. The rest of the configuration can be found here:
+You can also modify `default_source` to change the default login interface to
+`ldap`.
+
+The secrets file should be stored in a separate directory from `moonraker.conf`
+for security (e.g. `~/klipper_secure/moonraker_secure.json`).
 
 ```ini
  [secrets]

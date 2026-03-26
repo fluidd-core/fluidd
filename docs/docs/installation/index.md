@@ -12,7 +12,10 @@ KIAUH (Klipper Installation And Update Helper) makes installation and updates a 
 install or when you'd like to trial more than one user interface on your device,
 or have more of an advanced setup.
 
-For more information on KIAUH, please visit its github page.
+KIAUH also supports installing [Kalico](https://docs.kalico.gg) as an
+alternative firmware for advanced users.
+
+For more information on KIAUH, please visit its GitHub page.
 
 [View on GitHub](https://github.com/dw-0/kiauh){.md-button}
 

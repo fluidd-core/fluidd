@@ -9,18 +9,21 @@ It will notify you of available updates - and provide buttons to upgrade each in
 
 ## Automated Updates
 
-The recommended order of updates should be;
+The recommended order of updates is:
 
-1. Klipper
-2. Moonraker
+1. Klipper — firmware changes may affect Moonraker or Fluidd behavior
+2. Moonraker — API changes should be applied before updating frontends
 3. Fluidd
 4. Other clients
 
-Klipper can be skipped if you have a reason to not update klipper immediately.
+Klipper can be skipped if you have a reason to not update it immediately.
 
-In order for this feature to be enabled, you need to configure moonraker's update plugin.
+Moonraker automatically refreshes update status approximately every two hours.
+Update requests are blocked while a print is in progress.
 
-Please see here for the [moonraker configuration](/configuration#example-configuration) docs.
+In order for this feature to be enabled, you need to configure Moonraker's
+update plugin. See the
+[Moonraker configuration](/configuration#example-configuration) docs.
 
 ![screenshot](/assets/images/updates.png)
 
@@ -40,33 +43,20 @@ unzip fluidd.zip
 rm fluidd.zip
 
 # Restart services
-sudo service nginx restart
+sudo systemctl restart nginx
 ```
 
 ### Moonraker
 
+For manual Moonraker updates, refer to the
+[Moonraker installation docs](https://moonraker.readthedocs.io/en/latest/installation/)
+as the update procedure has changed across versions. The basic steps are:
+
 ```bash
-# Update files
 cd ~/moonraker
 git pull
-```
-
-Moonraker requires different update commands depending how long ago you last updated.
-
-```bash
-# Choose ONE of the following updates..
-
-# Full re-install. Rebuilds virtual env + redefines location of configuration.
-./scripts/install-moonraker.sh -r -f -c /home/pi/klipper_config/moonraker.conf
-
-# Full re-instrall. Rebuilds virtual env.
-./scripts/install-moonraker.sh -r -f
-
-# Regular update.
 ./scripts/install-moonraker.sh
-
-# Finally, restart services.
-sudo service moonraker restart
+sudo systemctl restart moonraker
 ```
 
 ### Klipper
@@ -74,12 +64,9 @@ sudo service moonraker restart
 Note, this guide does not cover MCU updates should one be required after a klipper update.
 
 ```bash
-# Pull the latest code.
 cd ~/klipper
 git pull
-
-# Restart services.
-sudo service klipper restart
+sudo systemctl restart klipper
 ```
 
 ### Host Restart

@@ -33,8 +33,27 @@ i2c_mcu: mcu
 i2c_bus: i2c1
 ```
 
+## BMP180, BMP280 and BMP388 pressure and temperature sensors
+
+```ini
+[temperature_sensor chamber_pressure]
+sensor_type: BMP388
+i2c_mcu: mcu
+i2c_bus: i2c1
+```
+
+## SHT3x temperature and humidity sensors
+
+```ini
+[temperature_sensor enclosure_sht]
+sensor_type: SHT3X
+i2c_mcu: mcu
+i2c_bus: i2c1
+```
+
 ## Other sensors
 
-Fluidd will display any temperature sensor that Klipper exposes. For a full
-list of supported sensor types, refer to the
+Fluidd will display any temperature sensor that Klipper exposes. Klipper 0.13.0
+added support for additional sensor types including load cells (ldc1612) and
+hall angle sensors (mt6816/mt6826s). For a full list, refer to the
 [Klipper documentation](https://www.klipper3d.org/Config_Reference.html#temperature-sensors).

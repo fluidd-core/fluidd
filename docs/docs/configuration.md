@@ -50,7 +50,10 @@ Enables Pause / Resume functionality within klipper. This is a single block, wit
 
 ### Macros
 
-These can be assumed sane defaults, but should be checked and modified to your own needs.
+The following macros are sane defaults to get started. Review and adapt them
+to your own printer — see the
+[Klipper G-Code commands reference](https://www.klipper3d.org/G-Codes.html)
+for all available commands.
 
 #### PAUSE
 
@@ -113,7 +116,8 @@ For more detailed instructions, please refer to the [Moonraker documentation](ht
 ### [server]
 
 This configures the general configuration of your moonraker instance. In most
-cases, you shouldn't need to touch anything here.
+cases, you shouldn't need to touch anything here. If Klipper's Unix socket
+is at a non-standard path, set `klippy_uds_address` accordingly.
 
 ### [file_manager]
 
@@ -182,8 +186,9 @@ See the [feature docs](/features/print_history) for more explanation of these fe
 ### [octoprint_compat]
 
 This enables the slicer upload feature, allowing PrusaSlicer, SuperSlicer and
-Cura users to directly upload gcodes. See the
-[configuration example](#example-configuration).
+Cura users to directly upload gcodes. This section must be explicitly included
+in your `moonraker.conf` and Moonraker must be restarted for the module to
+load. See the [configuration example](#example-configuration).
 
 ### [announcements]
 
@@ -199,11 +204,11 @@ subscriptions:
 ### [update_manager]
 
 Automated updates can be configured by ensuring the following is in your
-`moonraker.conf`.
+`moonraker.conf`. Moonraker automatically refreshes update status approximately
+every two hours. Update requests are blocked while a print is in progress.
 
 ```ini
 [update_manager]
-enable_auto_refresh: True
 
 [update_manager fluidd]
 type: web
@@ -252,7 +257,6 @@ trusted_clients:
 [octoprint_compat]
 
 [update_manager]
-enable_auto_refresh: True
 
 [announcements]
 subscriptions:
