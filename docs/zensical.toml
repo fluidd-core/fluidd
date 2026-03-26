@@ -49,6 +49,7 @@ nav = [
 [project.theme]
 variant = "modern"
 logo = "assets/images/fluidd_icon.svg"
+favicon = "favicon.ico"
 features = [
   "content.action.edit",
   "content.code.copy",
