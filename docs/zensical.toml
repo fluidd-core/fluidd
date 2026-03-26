@@ -1,0 +1,71 @@
+[project]
+site_name = "Fluidd"
+site_url = "https://docs.fluidd.xyz"
+site_description = "A web interface for Klipper 3D printer firmware"
+copyright = "&copy; Fluidd 2026"
+repo_url = "https://github.com/fluidd-core/fluidd"
+repo_name = "fluidd-core/fluidd"
+edit_uri = "edit/main/docs/docs/"
+site_dir = "site"
+extra_css = ["stylesheets/extra.css"]
+
+nav = [
+  {"Home" = "index.md"},
+  {"Installation" = "installation/index.md"},
+  {"Configuration" = "configuration.md"},
+  {"Customize" = "customize.md"},
+
+{"Features" = [
+    "features/authorization.md",
+    "features/cameras.md",
+    "features/chart.md",
+    "features/console.md",
+    "features/diagnostics.md",
+    "features/gcode_viewer.md",
+    "features/localization.md",
+    "features/macros.md",
+    "features/med_mesh.md",
+    "features/multiple_extruders.md",
+    "features/multiple_printers.md",
+    "features/notifications.md",
+    "features/presets.md",
+    "features/print_history.md",
+    "features/sensors.md",
+    "features/slicer-uploads.md",
+    "features/system.md",
+    "features/thumbnails.md",
+    "features/updates.md",
+    "features/spoolman.md",
+    "features/timelapse.md",
+    "features/obico_for_remote_access.md",
+    "features/octoeverywhere_free_remote_access.md",
+    "features/integrations.md"
+  ]},
+  {"Development" = "development.md"},
+  {"FAQ" = "faq.md"},
+  {"Sponsors" = "sponsors/index.md"}
+]
+
+[project.theme]
+variant = "modern"
+logo = "assets/images/fluidd_icon.svg"
+features = ["content.action.edit", "content.code.copy", "navigation.path"]
+custom_dir = "overrides"
+
+[[project.theme.palette]]
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/fluidd-core/fluidd"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/discord"
+link = "https://discord.gg/GZ3D5tqfcF"

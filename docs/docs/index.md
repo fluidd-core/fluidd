@@ -1,0 +1,75 @@
+---
+title: Welcome
+description: >-
+  Fluidd is the Klipper UI. Focused on usability, flexibility and a
+  responsive experience
+---
+
+# Welcome to Fluidd
+
+Fluidd is a lightweight & responsive user interface for Klipper, the 3D printer
+firmware.
+
+[Get Started](/installation){.md-button .md-button--primary}
+[View on GitHub](https://github.com/fluidd-core/fluidd){.md-button}
+[Release Notes](https://github.com/fluidd-core/fluidd/releases){.md-button}
+
+![screenshot](/assets/images/preview_sliced.png)
+
+## Features
+
+- Responsive UI, supports desktop, tablets and mobile
+- [Customizable layouts](/customize#application-layout). Move any panel where YOU want
+- Built-in [color themes](/customize#themes)
+- Manage [multiple printers](/features/printers) from one Fluidd install
+- [Notifications](/features/notifications) on Pi throttling + more
+- [Macro organization](/features/macros)
+- Full [localization](/development#localization) (i18n) support
+- View and Edit your Klipper config in app with code folding and Codelens
+support
+- View and Edit your Gcode files in app
+- [Bed Mesh](/features/bed_mesh) levelling
+- [Multiple extruder](/features/multiple_extruders) configurations
+- [Thermal Presets](/features/presets)
+- [Multiple web cam](/features/cameras) support
+- Control power devices - GPIO (relays), TPLink Smartplug, and Tasmota
+- [Print history](/features/print_history)
+- [Version management](/features/updates#automated-updates) and upgrades
+- Utilization graphs
+- Filament [spool management](/features/spoolman)
+- [Third-party integrations](/features/integrations) (Happy Hare, AFC, Beacon, Spoolman, and more)
+
+## Supporting Fluidd
+
+Fluidd development is driven by passionate volunteers who dedicate their time to
+improving and expanding its capabilities.
+
+Your sponsorship can help us enhance Fluidd, introduce new features, and ensure
+it remains accessible to all Klipper users.
+
+Your support can make a significant impact on the evolution of Fluidd. Please
+consider [sponsoring Fluidd](https://github.com/sponsors/fluidd-core).
+
+## Docker
+
+Fluidd ships with Docker support built in. The official docker image can be
+found on the [GitHub Container registry](https://github.com/fluidd-core/fluidd/pkgs/container/fluidd), and
+further information can be found in the [Docker installation docs](/installation#docker).
+
+## Need help?
+
+Primary support is provided via Discord, or Github Issues.
+
+[Discord](https://discord.gg/GZ3D5tqfcF){.md-button}
+[GitHub Issues](https://github.com/fluidd-core/fluidd/issues){.md-button}
+
+## Did you know?
+
+You can submit changes to these docs! At the bottom of every page is an option
+to edit this page. Any help is appreciated.
+
+## Architecture
+
+Fluidd relies on [Moonraker](https://moonraker.readthedocs.io/) and
+[Klipper](https://www.klipper3d.org/) to function. To learn more about the
+architecture and how these components work together, visit the [development resources](/development).
