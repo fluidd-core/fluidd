@@ -11,45 +11,52 @@ extra_css = ["stylesheets/extra.css"]
 
 nav = [
   {"Home" = "index.md"},
-  {"Installation" = "installation/index.md"},
+  {"Installation" = "installation.md"},
   {"Configuration" = "configuration.md"},
   {"Customize" = "customize.md"},
 
-{"Features" = [
+  {"Features" = [
     "features/authorization.md",
+    "features/bed-mesh.md",
     "features/cameras.md",
-    "features/chart.md",
     "features/console.md",
     "features/diagnostics.md",
-    "features/gcode_viewer.md",
+    "features/gcode-viewer.md",
+    "features/integrations.md",
     "features/localization.md",
     "features/macros.md",
-    "features/med_mesh.md",
-    "features/multiple_extruders.md",
-    "features/multiple_printers.md",
+    "features/multiple-extruders.md",
+    "features/multiple-printers.md",
     "features/notifications.md",
-    "features/presets.md",
-    "features/print_history.md",
+    "features/obico.md",
+    "features/octoeverywhere.md",
+    "features/print-history.md",
     "features/sensors.md",
     "features/slicer-uploads.md",
-    "features/system.md",
-    "features/thumbnails.md",
-    "features/updates.md",
     "features/spoolman.md",
+    "features/system.md",
+    "features/thermal-chart.md",
+    "features/thermal-presets.md",
+    "features/thumbnails.md",
     "features/timelapse.md",
-    "features/obico_for_remote_access.md",
-    "features/octoeverywhere_free_remote_access.md",
-    "features/integrations.md"
+    "features/updates.md"
   ]},
   {"Development" = "development.md"},
   {"FAQ" = "faq.md"},
-  {"Sponsors" = "sponsors/index.md"}
+  {"Sponsors" = "sponsors.md"}
 ]
 
 [project.theme]
 variant = "modern"
 logo = "assets/images/fluidd_icon.svg"
-features = ["content.action.edit", "content.code.copy", "navigation.path"]
+features = [
+  "content.action.edit",
+  "content.code.copy",
+  "navigation.path",
+  "navigation.instant",
+  "navigation.instant.progress",
+  "navigation.top"
+]
 custom_dir = "overrides"
 
 [[project.theme.palette]]
