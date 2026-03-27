@@ -200,7 +200,7 @@ src/
 - Lint: `markdownlint --config docs/.markdownlint.json docs/docs/`
 - Build: `cd docs && zensical build` (requires Python venv with zensical installed)
 - Serve: `cd docs && zensical serve` or `npm run serve:docs` (localhost:8000)
-- Deploy: GitHub Actions (`.github/workflows/docs.yml`) — builds on push to `main`, deploys to gh-pages with `docs.fluidd.xyz` CNAME
+- Deploy: GitHub Actions (`.github/workflows/docs.yml`) — builds on push to `master`, deploys to gh-pages with `docs.fluidd.xyz` CNAME
 
 ### Documentation Structure
 
