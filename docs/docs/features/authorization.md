@@ -22,8 +22,8 @@ authorization.
 After restarting Moonraker, add a user.
 
 ```ini
- [authorization]
- force_logins: true
+[authorization]
+force_logins: true
 ```
 
 ## Forced Logins?
@@ -58,39 +58,39 @@ The secrets file should be stored in a separate directory from `moonraker.conf`
 for security (e.g. `~/klipper_secure/moonraker_secure.json`).
 
 ```ini
- [secrets]
- secrets_path: ~/pathto/moonraker_secure.json
- # For security reasons this file must be located in a different
- # folder than `moonraker.conf`.
- # ~ e.g. ~/klipper_secure/moonraker_secure.json
+[secrets]
+secrets_path: ~/pathto/moonraker_secure.json
+# For security reasons this file must be located in a different
+# folder than `moonraker.conf`.
+# ~ e.g. ~/klipper_secure/moonraker_secure.json
 
- [ldap]
- ldap_host: xxx.xxx.xxx.xxx or fqdn
- #   The host address of the LDAP server.  This parameter must be provided
- ldap_port: 636
- #   The LDAP server's port.  The default is 389 for standard connections
- #   and 636 for SSL/TLS connections.
- ldap_secure: True
- #   Enables LDAP over SSL/TLS. The default is False.
- base_dn: DC=example,DC=local
- #   The base distinguished name used to search for users on the server.
- #   This option accepts Jinja2 Templates, see the [secrets] section for details.
- #   This parameter must be provided.
- bind_dn: {secrets.ldap_credentials.bind_dn}
- #   The distinguished name for bind authentication.  For example:
- #       CN=moonraker,OU=Users,DC=ldap,DC=local
- #   This option accepts Jinja2 Templates, see the [secrets] section for
- #   details.  By default the ldap client will attempt to bind anonymously.
- bind_password: {secrets.ldap_credentials.bind_password}
- #   The password for bind authentication. This option accepts Jinja2 Templates,
- #   see the [secrets] section for details.  This parameter must be provided
- #   if a "bind_dn" is specified, otherwise it must be omitted.
- group_dn: CN=exampleGroup,OU=exampleOU,DC=example,DC=local
- #   A group distinguished name in which the user must be a member of to pass
- #   authentication.  This option accepts Jinja2 Templates, see the [secrets]
- #   section for details. The default is no group requirement.
- is_active_directory: True
- #   Enables support for Microsoft Active Directory.  The default is False.
+[ldap]
+ldap_host: xxx.xxx.xxx.xxx or fqdn
+#   The host address of the LDAP server.  This parameter must be provided
+ldap_port: 636
+#   The LDAP server's port.  The default is 389 for standard connections
+#   and 636 for SSL/TLS connections.
+ldap_secure: True
+#   Enables LDAP over SSL/TLS. The default is False.
+base_dn: DC=example,DC=local
+#   The base distinguished name used to search for users on the server.
+#   This option accepts Jinja2 Templates, see the [secrets] section for details.
+#   This parameter must be provided.
+bind_dn: {secrets.ldap_credentials.bind_dn}
+#   The distinguished name for bind authentication.  For example:
+#       CN=moonraker,OU=Users,DC=ldap,DC=local
+#   This option accepts Jinja2 Templates, see the [secrets] section for
+#   details.  By default the ldap client will attempt to bind anonymously.
+bind_password: {secrets.ldap_credentials.bind_password}
+#   The password for bind authentication. This option accepts Jinja2 Templates,
+#   see the [secrets] section for details.  This parameter must be provided
+#   if a "bind_dn" is specified, otherwise it must be omitted.
+group_dn: CN=exampleGroup,OU=exampleOU,DC=example,DC=local
+#   A group distinguished name in which the user must be a member of to pass
+#   authentication.  This option accepts Jinja2 Templates, see the [secrets]
+#   section for details. The default is no group requirement.
+is_active_directory: True
+#   Enables support for Microsoft Active Directory.  The default is False.
 ```
 
 moonraker_secure.json

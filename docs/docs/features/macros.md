@@ -4,7 +4,7 @@ title: Macros
 
 # Macros
 
-Fluidd support turning your macros on and off, and categorizing them. You can
+Fluidd supports turning your macros on and off, and categorizing them. You can
 also hide macros from Fluidd entirely by prefixing their name with an
 underscore (`_`).
 
