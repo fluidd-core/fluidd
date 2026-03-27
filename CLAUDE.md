@@ -5,7 +5,7 @@ Fluidd is a Vue 2.7 + TypeScript web interface for Klipper 3D printers that comm
 ## Architecture Overview
 
 - **Vue 2.7 + Vuetify 2**: UI framework with Material Design components
-- **Vuex Store**: 30 namespaced modules mirroring Klipper/Moonraker domains (`printer/`, `files/`, `console/`, `macros/`, `webcams/`, `mmu/`, `spoolman/`, etc.)
+- **Vuex Store**: 28 namespaced modules mirroring Klipper/Moonraker domains (`printer/`, `files/`, `console/`, `macros/`, `webcams/`, `mmu/`, `spoolman/`, etc.)
 - **WebSocket Communication**: Real-time JSON-RPC via custom `WebSocketClient` in `src/plugins/socketClient.ts`
 - **Component Structure**: Class-style components with `vue-property-decorator`; mixins-based architecture with `StateMixin` providing common printer state access
 
@@ -49,7 +49,7 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 - All printer communication through `SocketActions` in `src/api/socketActions.ts` (not direct HTTP)
 - Pattern: `baseEmit<T>(method, { dispatch, wait, params })`
 - Use `wait` parameter for UI loading states: `wait: Waits.onPrintStart`
-- Wait constants defined in `src/globals.ts` (`Waits` object, 80+ operation types)
+- Wait constants defined in `src/globals.ts` (`Waits` object, ~90 operation types)
 - Real-time updates handled via store mutations from socket events
 - Auto-reconnect with configurable interval (`Globals.SOCKET_RETRY_DELAY`)
 
@@ -96,15 +96,15 @@ src/
 │   ├── layout/         # App shell: AppBar, AppDrawer, etc. (auto-imported)
 │   ├── settings/       # Settings page components
 │   ├── ui/             # Reusable: AppBtn, AppDialog, AppChart (auto-imported)
-│   └── widgets/        # Feature widgets: camera/, filesystem/, macros/, mmu/, etc.
+│   └── widgets/        # 27 feature widget dirs: bedmesh/, camera/, console/, filesystem/, macros/, mmu/, thermals/, toolhead/, etc.
 ├── directives/         # Custom Vue directives (v-safe-html for DOMPurify)
-├── locales/            # i18n YAML files (24 languages)
+├── locales/            # i18n YAML files (23 languages)
 ├── mixins/             # Vue mixins (StateMixin, FilesMixin, etc.)
 ├── monaco/             # TextMate grammars and editor themes
 ├── plugins/            # Vue plugins (i18n, httpClient, socketClient, vuetify, filters)
 ├── router/             # Vue Router (hash mode) with auth guards
 ├── scss/               # Global styles and Vuetify variable overrides
-├── store/              # 30 Vuex modules (printer, files, config, webcams, etc.)
+├── store/              # 28 Vuex modules (printer, files, config, webcams, etc.)
 ├── types/              # UI-specific TypeScript types
 ├── typings/            # Global .d.ts declarations (Klipper, Moonraker namespaces)
 ├── util/               # Helper functions (30+)
@@ -115,12 +115,14 @@ src/
 ### Router & Authentication
 
 - Hash-based routing (`#/path`)
+- Views lazy-loaded via dynamic imports: `component: () => import('@/views/X.vue')`
+- Auth guard via `defaultRouteConfig` spread pattern; `isAuthenticated()` checks `store.state.auth`
 - JWT token auth with auto-refresh (axios interceptors)
-- Key routes: `/`, `/console`, `/jobs`, `/tune`, `/diagnostics`, `/configure`, `/settings`
+- Key routes: `/`, `/console`, `/jobs`, `/tune`, `/diagnostics`, `/timelapse`, `/history`, `/system`, `/configure`, `/settings`, `/camera/:cameraId`, `/preview`, `/login`
 
 ### Icons & Theming
 
-- MDI icons via `@mdi/js` — mapped in `src/globals.ts` (`Icons` object, 150+ mappings)
+- MDI icons via `@mdi/js` — mapped in `src/globals.ts` (`Icons` object, ~225 mappings)
 - Usage: `<v-icon>{{ $globals.Icons.close }}</v-icon>`
 - Vuetify theme with custom dark/light overrides in `src/scss/variables.scss`
 - PWA support with service worker in `src/sw.ts` (Workbox, injectManifest strategy)
@@ -154,6 +156,7 @@ src/
   - `I18nLocales` — locale YAML files
   - `MonacoLanguageImports` — TextMate grammars
   - `CameraComponents` — camera service Vue components
+- Views also dynamically imported in `src/router/index.ts` via `() => import('@/views/X.vue')`
 
 ## Testing Conventions
 
@@ -185,6 +188,68 @@ src/
 - `@/scss/variables` auto-injected into all SCSS/Sass files via Vite config
 - `path` aliased to `path-browserify` for browser compatibility
 - Strict Vuex mode enabled only in dev (`strict: import.meta.env.DEV`)
+
+## Documentation Site
+
+- **Zensical** (Material for MkDocs successor) — static site generator in `docs/`
+- Config: `docs/zensical.toml` — nav, theme, extensions, social links
+- Content: `docs/docs/` — Markdown files with YAML frontmatter
+- Overrides: `docs/overrides/` — custom Jinja2 templates (header, htmltitle)
+- Custom CSS: `docs/docs/stylesheets/extra.css` — Fluidd brand colors
+- Glossary: `docs/includes/glossary.md` — abbreviation tooltips auto-appended to all pages
+- Lint: `markdownlint --config docs/.markdownlint.json docs/docs/`
+- Build: `cd docs && zensical build` (requires Python venv with zensical installed)
+- Serve: `cd docs && zensical serve` (localhost:8000)
+- Deploy: GitHub Actions (`.github/workflows/docs.yml`) — builds on push to `main`, deploys to gh-pages with `docs.fluidd.xyz` CNAME
+
+### Documentation Structure
+
+```
+docs/
+├── docs/                  # Markdown content
+│   ├── index.md           # Homepage
+│   ├── getting-started.md # Installation (KIAUH, Docker, Manual, fluidd.xyz, FluiddPI)
+│   ├── configuration.md   # Fluidd Config, Klipper, Moonraker, Multiple Printers
+│   ├── customize.md       # Layout, themes, hiding components
+│   ├── features/
+│   │   ├── index.md       # Features overview (section landing page)
+│   │   ├── printing.md    # G-code viewer, thumbnails, bed mesh, print history
+│   │   ├── thermals.md    # Chart, presets, sensors
+│   │   ├── cameras.md
+│   │   ├── console.md
+│   │   ├── macros.md
+│   │   ├── multi-material.md  # Multiple extruders + Spoolman
+│   │   ├── multiple-printers.md
+│   │   ├── diagnostics.md
+│   │   ├── updates.md
+│   │   ├── system.md      # System info + notifications
+│   │   ├── authorization.md
+│   │   ├── slicer-uploads.md
+│   │   ├── timelapse.md
+│   │   ├── localization.md
+│   │   └── integrations.md  # Kalico, Happy Hare, AFC, Beacon, Obico, OctoEverywhere, etc.
+│   ├── development.md     # Dev container, local dev, localization
+│   ├── faq.md             # Organized by topic (Setup, Cameras, System, Printing)
+│   └── sponsors.md
+├── includes/
+│   └── glossary.md        # Abbreviation definitions (auto-appended)
+├── overrides/             # Jinja2 template overrides
+├── zensical.toml          # Site configuration
+└── .markdownlint.json     # Lint rules (MD013 and MD025 disabled)
+```
+
+### Documentation Conventions
+
+- Frontmatter: `title` (required), `icon` (top-level pages only, Lucide icons)
+- Images: `/assets/images/` path, stored in `docs/docs/assets/images/`
+- Code blocks: `ini` for Klipper/Moonraker config, `bash` for shell commands, `json` for JSON
+- Links: use `{.md-button}` attribute for standalone action links
+- Keys: use `++key++` syntax (pymdownx.keys extension) instead of `<kbd>`
+- Terminology: G-code (not gcode/Gcode), Wi-Fi (not WiFi), GitHub (not Github), Node.js (not NodeJS), SD card (not SDCard), em dash (—) not hyphen (-) for parenthetical dashes
+- Glossary terms (AFC, API, CORS, JWT, MCU, MMU, MPC, PID, etc.) get automatic tooltips
+- **Before committing docs changes**, always run:
+  - `markdownlint --config docs/.markdownlint.json docs/docs/` — must be clean
+  - `codespell docs/docs/` — must be clean (install via `pip install codespell`)
 
 ## Communication Style
 
