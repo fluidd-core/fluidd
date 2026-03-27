@@ -56,7 +56,8 @@ features = [
   "navigation.path",
   "navigation.instant",
   "navigation.instant.progress",
-  "navigation.top"
+  "navigation.top",
+  "content.tooltips"
 ]
 custom_dir = "overrides"
 
@@ -70,8 +71,15 @@ scheme = "slate"
 toggle.icon = "lucide/moon"
 toggle.name = "Switch to light mode"
 
+[project.markdown_extensions.abbr]
 [project.markdown_extensions.attr_list]
+[project.markdown_extensions."pymdownx.highlight"]
+anchor_linenums = true
 [project.markdown_extensions."pymdownx.keys"]
+[project.markdown_extensions."pymdownx.superfences"]
+
+[project.markdown_extensions."pymdownx.snippets"]
+auto_append = ["includes/glossary.md"]
 
 [[project.extra.social]]
 icon = "fontawesome/brands/github"
