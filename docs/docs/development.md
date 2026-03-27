@@ -1,5 +1,6 @@
 ---
 title: Development
+icon: lucide/wrench
 ---
 
 # Development

@@ -1,74 +1,81 @@
 ---
 title: FAQ
+icon: lucide/circle-help
 ---
 
 # FAQ
 
-## I'd like to setup multiple cameras, how?
+Answers to common questions about Fluidd, Klipper, and Moonraker.
 
-- Please see the [cameras feature](/features/cameras)
+## Setup & Configuration
 
-## I have an INVALID status for Fluidd, Moonraker or Klipper on the Update panel
+### Klipper updated and now my printer has an error
 
-- Updates can sometimes fail and cause this error. Your first option is to try
-  Fluidd now provides a recovery option.
+Klipper likely has configuration changes. See the
+[Klipper config changes](https://www.klipper3d.org/Config_Changes.html) page
+for a list of recent changes. Common breaking changes include renamed
+parameters, deprecated options, and changed macro behavior.
 
-  If that fails, please reach out in Discord
+### My probe or eddy current configuration stopped working after a Klipper update
 
-## How do I turn on my camera?
+Klipper 0.13.0 introduced changes to probe eddy current parameters. The
+`z_offset` parameter was renamed to `descend_z`, and `speed`/`lift_speed`
+no longer apply to `METHOD=scan`, `METHOD=rapid_scan`, or `METHOD=tap`
+commands — these must be passed as command parameters instead. Check the
+[Klipper config changes](https://www.klipper3d.org/Config_Changes.html) page
+for details.
 
-- Navigate to the UI Settings page and add a new camera. Fluidd supports
-  multiple camera types including MJPEG, HLS, and WebRTC. See the
-  [cameras feature](/features/cameras) for details.
+### I have an INVALID status for Fluidd, Moonraker, or Klipper on the Update panel
 
-## My camera is delayed, or slow
+Updates can sometimes fail and cause this error. Fluidd provides a recovery
+option — try that first. If it fails, reach out on
+[Discord](https://discord.gg/GZ3D5tqfcF).
 
-- Here's a couple of suggestions;
-  - Some users have reported that their webcams were problematic when connected
-    to the Pi4's USB2.0 ports. Try plugging your webcam into the USB3.0 port.
+## Cameras
 
-  - MJPEG streams can saturate your Wi-Fi. Try reducing the fps and resolution
-    in your streamer configuration (e.g.
-    [Crowsnest](https://crowsnest.mainsail.xyz/)). You can also try connecting
-    to wired ethernet.
+### How do I turn on my camera?
 
-## Klipper updated and now my printer has an error
+Navigate to the UI Settings page and add a new camera. Fluidd supports
+multiple camera types including MJPEG, HLS, and WebRTC. See
+[Cameras](/features/cameras) for details.
 
-- Klipper likely has configuration changes. Please see
-  the [Klipper config changes](https://www.klipper3d.org/Config_Changes.html) page
-  for a list of recent changes. Common breaking changes include renamed
-  parameters, deprecated options, and changed macro behavior.
+### I'd like to set up multiple cameras
 
-## My probe or eddy current configuration stopped working after a Klipper update
+See the [cameras feature](/features/cameras) for supported stream types
+and configuration.
 
-- Klipper 0.13.0 introduced changes to probe eddy current parameters. The
-  `z_offset` parameter was renamed to `descend_z`, and `speed`/`lift_speed`
-  no longer apply to `METHOD=scan`, `METHOD=rapid_scan`, or `METHOD=tap`
-  commands — these must be passed as command parameters instead. Check the
-  [Klipper config changes](https://www.klipper3d.org/Config_Changes.html) page
-  for details.
+### My camera is delayed or slow
 
-## The host reboot / shutdown commands don't work
+A few suggestions:
 
-- Try jumping into `ssh` and running the following;
+- Some users have reported issues when webcams are connected to the Pi 4's
+  USB 2.0 ports. Try the USB 3.0 port.
+- MJPEG streams can saturate Wi-Fi. Try reducing the frame rate and
+  resolution in your streamer configuration (e.g.
+  [Crowsnest](https://crowsnest.mainsail.xyz/)). Wired ethernet also helps.
 
-  ```bash
-  ./moonraker/scripts/sudo-fix.sh
-  ```
+## System
 
-## My Wi-Fi keeps dropping, is there anything I can do?
+### The host reboot / shutdown commands don't work
 
-- Depending on your network configuration, sometimes the low power mode of the Pi's network adapter
-  can cause issues. You can try fixing this by editing the `/etc/rc.local` file and adding the following
-  to the bottom;
+Try running the following over SSH:
 
-  ```bash
-  iwconfig wlan0 power off
-  ```
+```bash
+./moonraker/scripts/sudo-fix.sh
+```
 
-  Then rebooting.
+### My Wi-Fi keeps dropping
 
-## Does Fluidd show a total layer count?
+The Pi's network adapter low-power mode can cause issues. Try adding the
+following to `/etc/rc.local` and rebooting:
 
-- Yes. Fluidd displays the current layer and total layer count during a print,
-  provided your slicer includes layer information in the G-code file.
+```bash
+iwconfig wlan0 power off
+```
+
+## Printing
+
+### Does Fluidd show a total layer count?
+
+Yes. Fluidd displays the current layer and total layer count during a print,
+provided your slicer includes layer information in the G-code file.

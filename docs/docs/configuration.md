@@ -1,5 +1,6 @@
 ---
 title: Configuration
+icon: lucide/settings
 ---
 
 # Configuration
@@ -23,7 +24,7 @@ required Klipper sections and enhanced macros in a single include file.
 
 ### Installation
 
-If you installed Fluidd via [KIAUH](/installation#kiauh), you can install
+If you installed Fluidd via [KIAUH](/getting-started#kiauh), you can install
 fluidd-config directly from the KIAUH menu — no manual cloning needed.
 
 For manual installations, clone the repository and create a symlink:
@@ -109,10 +110,11 @@ Enables Pause / Resume functionality within klipper. This is a single block, wit
 
 ### Macros
 
-The following macros are sane defaults to get started. Review and adapt them
-to your own printer — see the
-[Klipper G-Code commands reference](https://www.klipper3d.org/G-Codes.html)
-for all available commands.
+Klipper provides built-in `PAUSE`, `RESUME`, and `CANCEL_PRINT` commands when
+`[pause_resume]` is enabled. The macros below are **optional** — they override
+the built-ins to add park positioning and extrusion retract on pause. Adapt
+them to your printer or use
+[fluidd-config](#fluidd-config-recommended) for a more complete version.
 
 #### PAUSE
 
@@ -218,7 +220,7 @@ moonraker.
 
 If your IP address falls under the trusted clients, moonraker should allow
 your host to connect without changes.
-However, if you're having trouble - or otherwise attempting
+However, if you're having trouble — or otherwise attempting
 to connect from a unique location, you may need to add an entry into the `cors_domains`
 block.
 
@@ -240,7 +242,7 @@ format.
 Enables job history. Also provides benefits such as being able to reprint
 failed or cancelled prints, and sorting your filesystem by last print time.
 
-See the [feature docs](/features/print_history) for more explanation of these features.
+See the [feature docs](/features/printing#print-history) for more explanation of these features.
 
 ### [octoprint_compat]
 
@@ -341,19 +343,19 @@ Reading through the documentation surrounding `cors_domains` in the
 ### Example
 
 Assuming you have a single host setup with Fluidd, by way of a
-[docker installation](/installation#docker) or
-[KIAUH installation](/installation#kiauh);
+[docker installation](/getting-started#docker) or
+[KIAUH installation](/getting-started#kiauh);
 
 1. Note the URL you use to access Fluidd
    - For this example, let's assume you access Fluidd on `http://fluidd.local`
 
-2. On your fluidd host, when adding a new printer url - add the full address
+2. On your fluidd host, when adding a new printer URL — add the full address
    to your printer E.g., `http://myprinter.local`.
 
 3. If step #2 fails
    - Make sure moonraker is running, and accessible. You can try to directly test
      moonraker by going here; `http://myprinter.local/server/info`. If this URL
-     works, and you still can't connect - please review the
+     works, and you still can't connect — please review the
      [Moonraker section](#cors-domains)
 
 You can see an [example configuration](#example-configuration) that works for
@@ -361,7 +363,7 @@ You can see an [example configuration](#example-configuration) that works for
 
 ### Troubleshooting
 
-If you're entering a printer URL into the add printer dialog, but Fluidd won't let me save...
+If you're entering a printer URL into the add printer dialog but Fluidd won't let you save:
 
 Fluidd won't let you save a new printer if it can't confirm moonraker is running. To
 confirm a moonraker printer instance, try browsing directly to the moonraker API;

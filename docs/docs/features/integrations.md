@@ -66,7 +66,7 @@ sensors when configured in Klipper. No extra Fluidd configuration is needed.
 
 Any sensor Klipper exposes is shown automatically. This includes AHT10/20/30,
 BME280, BMP180/388, SHT3X, HTU21D, LM75, PT100/PT1000, and more. See
-[Sensors](/features/sensors) for configuration examples.
+[Thermals](/features/thermals#sensors) for configuration examples.
 
 ## Kalico Firmware
 
@@ -107,8 +107,8 @@ For the full feature reference, see the
 ### Spoolman
 
 Filament spool tracking with QR code scanning, toolchanger support, and
-print-start sanity checks. See [Spool Management](/features/spoolman) for
-details.
+print-start sanity checks. See [Spool Management](/features/multi-material#spool-management-spoolman)
+for details.
 
 [Spoolman on GitHub](https://github.com/Donkie/Spoolman){.md-button}
 
@@ -135,16 +135,20 @@ Fluidd recognizes `klipperscreen.conf` for editing in the config file editor.
 
 ### Obico
 
-Remote access and AI-powered print failure detection. See the
-[configuration guide](/features/obico_for_remote_access) for setup
-instructions.
+[Obico](https://www.obico.io/) (formerly The Spaghetti Detective) provides
+remote access to your full Fluidd interface from anywhere, AI-powered print
+failure detection, and mobile apps for iOS and Android. It is 100% open-source
+and can be self-hosted. Follow the
+[Obico setup guide](https://obico.io/docs/user-guides/klipper-setup/) to get
+started.
 
 [Obico](https://www.obico.io/){.md-button}
 
 ### OctoEverywhere
 
-Free remote access with AI monitoring (Gadget) and webcam streaming. See the
-[configuration guide](/features/octoeverywhere_free_remote_access) for
-setup instructions.
+[OctoEverywhere](https://octoeverywhere.com/) provides free, unlimited remote
+access to your Fluidd interface with full-framerate webcam streaming. It
+includes AI print failure detection (Gadget), real-time notifications via
+Telegram, SMS, and Discord, and mobile app support via Mobileraker and OctoApp.
 
 [OctoEverywhere](https://octoeverywhere.com/){.md-button}

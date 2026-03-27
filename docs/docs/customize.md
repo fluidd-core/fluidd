@@ -1,5 +1,6 @@
 ---
 title: Customize
+icon: lucide/palette
 ---
 
 # Customize
@@ -25,7 +26,7 @@ the default layout by clicking reset layout.
 ### Theme Presets
 
 Fluidd lets you choose a community preset, apply a color of your
-choosing - along with either a dark or light theme.
+choosing — along with either a dark or light theme.
 
 Community presets are a way for Fluidd to support 3d printing communities. If
 you'd like to see your logo supported here, let us know!
@@ -61,7 +62,7 @@ After a reload of Fluidd the changes should become visible.
 Fluidd allows you to hide macros, output pins, fans and sensors by prefixing
 them with an underscore (`_`).
 
-By doing this - you're removing them from Fluidd. This can be handy in
+By doing this — you're removing them from Fluidd. This can be handy in
 situations where you have a large quantity of macros, or whereby you have an
 output pin you may have no need to control in UI.
 

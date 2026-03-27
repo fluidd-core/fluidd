@@ -1,5 +1,6 @@
 ---
 title: Sponsors
+icon: lucide/heart
 ---
 
 # Sponsors
