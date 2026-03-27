@@ -32,7 +32,7 @@ object.
 ### AFC (Automated Filament Changer)
 
 Dashboard card for
-[AFC Klipper Add-On](https://github.com/AFC-Klipper-Add-On/AFC-Klipper-Add-On)
+[AFC Klipper Add-On](https://github.com/ArmoredTurtle/AFC-Klipper-Add-On)
 hardware (TurtleNeck, BoxTurtle, and others).
 
 Features include:
