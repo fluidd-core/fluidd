@@ -28,7 +28,7 @@ the default layout by clicking reset layout.
 Fluidd lets you choose a community preset, apply a color of your
 choosing — along with either a dark or light theme.
 
-Community presets are a way for Fluidd to support 3d printing communities. If
+Community presets are a way for Fluidd to support 3D printing communities. If
 you'd like to see your logo supported here, let us know!
 
 ![screenshot](/assets/images/theme.png)
