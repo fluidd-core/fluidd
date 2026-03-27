@@ -83,9 +83,9 @@ For more detailed instructions, please refer to the [Klipper documentation](http
 
 ### [virtual_sdcard]
 
-Fluidd requires your printer be setup with `virtual_sdcard`. This allows
-file uploads to work correctly. If you get a gcodes path not found error in
-Fluidd this is generally the first place to look.
+Fluidd requires your printer to be set up with `virtual_sdcard`. This allows
+file uploads to work correctly. If you get a G-code path not found error in
+Fluidd, this is generally the first place to look.
 
 ```ini
 [virtual_sdcard]
@@ -94,7 +94,7 @@ path: ~/printer_data/gcodes
 
 ### [display_status]
 
-Required to properly support display updates in fluidd- with no other lines required.
+Required to properly support display updates in Fluidd, with no other lines required.
 
 ```ini
 [display_status]
