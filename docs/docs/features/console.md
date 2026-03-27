@@ -7,14 +7,14 @@ title: Console
 Fluidd's console comes with these some sophisticated features:
 
 - **Effortless History Navigation**
-  - Scroll through your console history using the <kbd>&uarr;</kbd> and
-    <kbd>&darr;</kbd> keys.
+  - Scroll through your console history using the ++arrow-up++ and
+    ++arrow-down++ keys.
   - Benefit from intelligent history preservation across sessions for a
     seamless workflow.
 
 - **Intelligent Autocomplete Functionality**
   - Harness the power of built-in autocomplete by initiating a command and
-    using the <kbd>Tab</kbd> key.
+    using the ++tab++ key.
 
 - **Clickable Commands**
   - Click any known command, and watch it populate the console text entry area.

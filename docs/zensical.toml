@@ -70,6 +70,9 @@ scheme = "slate"
 toggle.icon = "lucide/moon"
 toggle.name = "Switch to light mode"
 
+[project.markdown_extensions.attr_list]
+[project.markdown_extensions."pymdownx.keys"]
+
 [[project.extra.social]]
 icon = "fontawesome/brands/github"
 link = "https://github.com/fluidd-core/fluidd"
