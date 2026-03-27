@@ -68,7 +68,7 @@ To build Fluidd for development purposes, run `npm run dev` instead of `npm run 
 
 Have Mainsail installed, or don't want to install Fluidd locally? We support that!
 
-Fluidd is also hosted at `http://app.fluidd.xyz`. When used in this way,
+Fluidd is also hosted at [https://app.fluidd.xyz](https://app.fluidd.xyz). When used in this way,
 Fluidd is downloaded to your browser.
 
 It has no interaction outside of your network unless configured to do so, and

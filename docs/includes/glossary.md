@@ -10,6 +10,7 @@
 *[KIAUH]: Klipper Installation And Update Helper
 *[LDAP]: Lightweight Directory Access Protocol — centralized authentication
 *[MCU]: Microcontroller Unit — the board running Klipper firmware
+*[MCUs]: Microcontroller Units — the boards running Klipper firmware
 *[MJPEG]: Motion JPEG — camera streaming format
 *[MMU]: Multi-Material Unit — hardware for multi-filament printing
 *[MPC]: Model Predictive Control — alternative to PID for temperature control

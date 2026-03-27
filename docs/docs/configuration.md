@@ -14,10 +14,69 @@ Fluidd requires some basic configuration to be applied in order to function
 correctly. Fluidd should warn you if these are not found in your configuration
 upon startup.
 
-## Klipper
+## Fluidd Config (recommended)
 
-Klipper is the printer firmware that Fluidd communicates with via Moonraker.
-The following sections must be present in your `printer.cfg` for Fluidd to function correctly.
+The easiest way to set up Klipper for Fluidd is to use
+[fluidd-config](https://github.com/fluidd-core/fluidd-config) — a maintained
+set of base macros and settings provided by the Fluidd team. It includes all
+required Klipper sections and enhanced macros in a single include file.
+
+### Installation
+
+If you installed Fluidd via [KIAUH](/installation#kiauh), you can install
+fluidd-config directly from the KIAUH menu — no manual cloning needed.
+
+For manual installations, clone the repository and create a symlink:
+
+```bash
+cd ~/printer_data/config
+git clone https://github.com/fluidd-core/fluidd-config.git
+ln -sf fluidd-config/fluidd.cfg fluidd.cfg
+```
+
+Then add the following to your `printer.cfg`:
+
+```ini
+[include fluidd.cfg]
+```
+
+And add this to your `moonraker.conf` to receive automatic updates:
+
+```ini
+[update_manager fluidd-config]
+type: git_repo
+primary_branch: master
+path: ~/printer_data/config/fluidd-config
+origin: https://github.com/fluidd-core/fluidd-config.git
+managed_services: klipper
+```
+
+### Features
+
+Fluidd-config provides enhanced versions of the standard macros with additional
+capabilities:
+
+- Configurable park positions (round beds, square beds, or custom coordinates)
+- Enhanced PAUSE macro with optional X, Y, and Z_MIN parameters
+- Pause at next layer or at a specific layer number
+- Temperature management during pause/resume cycles
+- Filament runout sensor integration
+- Configurable idle timeout behavior
+- Support for printers without extruders (e.g. CNC machines)
+
+### Customization
+
+You can customize the behavior by overriding the `_CLIENT_VARIABLE` macro in
+your `printer.cfg`. This lets you adjust retraction distances, movement speeds,
+park positions, and hook in your own custom macros. See the
+[fluidd-config documentation](https://github.com/fluidd-core/fluidd-config)
+for all available options.
+
+## Klipper (manual configuration)
+
+If you prefer to configure Klipper manually instead of using fluidd-config,
+the following sections must be present in your `printer.cfg` for Fluidd to
+function correctly.
 
 For more detailed instructions, please refer to the [Klipper documentation](https://www.klipper3d.org/Config_Reference.html).
 
@@ -298,7 +357,7 @@ Assuming you have a single host setup with Fluidd, by way of a
      [Moonraker section](#cors-domains)
 
 You can see an [example configuration](#example-configuration) that works for
-`http://app.fluidd.xyz` along with many common network setups.
+`https://app.fluidd.xyz` along with many common network setups.
 
 ### Troubleshooting
 
