@@ -4,7 +4,7 @@ title: Console
 
 # Console
 
-Fluidd's console comes with these some sophisticated features:
+Fluidd's console comes with some sophisticated features:
 
 - **Effortless History Navigation**
   - Scroll through your console history using the ++arrow-up++ and

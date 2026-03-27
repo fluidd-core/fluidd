@@ -27,7 +27,7 @@ title: FAQ
   - Some users have reported that their webcams were problematic when connected
     to the Pi4's USB2.0 ports. Try plugging your webcam into the USB3.0 port.
 
-  - MJPEG streams can saturate your WiFi. Try reducing the fps and resolution
+  - MJPEG streams can saturate your Wi-Fi. Try reducing the fps and resolution
     in your streamer configuration (e.g.
     [Crowsnest](https://crowsnest.mainsail.xyz/)). You can also try connecting
     to wired ethernet.
@@ -56,7 +56,7 @@ title: FAQ
   ./moonraker/scripts/sudo-fix.sh
   ```
 
-## My WiFi keeps dropping, is there anything I can do?
+## My Wi-Fi keeps dropping, is there anything I can do?
 
 - Depending on your network configuration, sometimes the low power mode of the Pi's network adapter
   can cause issues. You can try fixing this by editing the `/etc/rc.local` file and adding the following
@@ -71,4 +71,4 @@ title: FAQ
 ## Does Fluidd show a total layer count?
 
 - Yes. Fluidd displays the current layer and total layer count during a print,
-  provided your slicer includes layer information in the gcode file.
+  provided your slicer includes layer information in the G-code file.

@@ -56,7 +56,7 @@ gcode:
 
 ### Remembering associated spools across restarts
 
-By default, Klipper does not keep track of Gcode macro variables across restarts.
+By default, Klipper does not keep track of G-code macro variables across restarts.
 If Fluidd detects a [`[save_variables]`](https://www.klipper3d.org/Config_Reference.html#save_variables)
 section in your configuration, it will automatically emit a `SAVE_VARIABLE` command
 on spool selection, saving the selected spool to the `<MACRO_NAME>__SPOOL_ID` variable.
@@ -67,5 +67,5 @@ You can use the following macro to restore the previous selection after a restar
 [delayed_gcode RESTORE_SELECTED_SPOOLS]
 initial_duration: 0.1
 gcode:
-        SET_GCODE_VARIABLE MACRO={macro} VARIABLE=spool_id VALUE={svv[var]}
+  SET_GCODE_VARIABLE MACRO={macro} VARIABLE=spool_id VALUE={svv[var]}
 ```

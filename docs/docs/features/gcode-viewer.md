@@ -1,10 +1,10 @@
 ---
-title: Gcode Viewer
+title: G-code Viewer
 ---
 
-# Gcode Viewer
+# G-code Viewer
 
-Fluidd's Gcode viewer provides a 2D-visualization of the currently selected layer.
+Fluidd's G-code viewer provides a 2D-visualization of the currently selected layer.
 It can automatically follow the print progress and provide you with information about
 the currently executed moves. Multi-tool prints are supported, with each tool shown
 in a distinct color. The most commonly accessed settings are accessible via the cog
@@ -14,9 +14,9 @@ icon in the card header.
 
 ## Exclude Object
 
-The Gcode viewer has [Exclude Object](https://www.klipper3d.org/Exclude_Object.html#exclude-objects) support built-in. To exclude an object from your
+The G-code viewer has [Exclude Object](https://www.klipper3d.org/Exclude_Object.html#exclude-objects) support built-in. To exclude an object from your
 current print, for example in the case of a print failure, simply click on the cancel
-icon within the Gcode preview, or bring up a list of all objects by clicking the cancel
+icon within the G-code preview, or bring up a list of all objects by clicking the cancel
 icon in the header of the card.
 Excluded objects will be marked in red, the currently printing object in blue, and all
 other objects in green.

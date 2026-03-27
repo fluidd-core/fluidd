@@ -65,8 +65,8 @@ rename_existing: PAUSE_BASE
 variable_extrude: 1.0
 gcode:
   ##### read E from pause macro #####
-  ##### set park positon for x and y #####
-  # default is your max posion from your printer.cfg
+  ##### set park position for x and y #####
+  # default is your max position from your printer.cfg
   ##### calculate save lift position #####
   ##### end of definitions #####
   PAUSE_BASE
@@ -131,12 +131,12 @@ enable_object_processing: True
 
 ### [data_store]
 
-Temperature and gcode store sizes can be configured in moonraker.
+Temperature and G-code store sizes can be configured in moonraker.
 This is especially useful for temperature store data, as it
 directly affects how much time data is stored on the X axes of
 the thermals graph.
 
-Temperature store size is in seconds, while the gcode store size is defined
+Temperature store size is in seconds, while the G-code store size is defined
 in an entry count.
 
 ```ini
@@ -152,9 +152,9 @@ Normally, this is enabled. Your installation method may provide a default
 configuration that applies to most users network requirements, however -
 sometimes changes are required to meet specific needs.
 
-#### Cors Domains
+#### CORS Domains
 
-Cors Domains are a list of host names that are allowed to communicate with
+CORS Domains are a list of host names that are allowed to communicate with
 moonraker.
 
 If your IP address falls under the trusted clients, moonraker should allow
@@ -171,7 +171,7 @@ Protocols are required, but can be omitted with the use of wildcards.
 
 #### Trusted Clients
 
-Trusted clients are a list of ip ranges that moonraker will accept communication
+Trusted clients are a list of IP ranges that moonraker will accept communication
 from. The default list in the [configuration example](#example-configuration) covers
 most user configurations for internal networks. Note that these ranges are in CIDR
 format.
@@ -292,7 +292,7 @@ Assuming you have a single host setup with Fluidd, by way of a
    to your printer E.g., `http://myprinter.local`.
 
 3. If step #2 fails
-   - Make sure moonraker is running, and accessable. You can try to directly test
+   - Make sure moonraker is running, and accessible. You can try to directly test
      moonraker by going here; `http://myprinter.local/server/info`. If this URL
      works, and you still can't connect - please review the
      [Moonraker section](#cors-domains)

@@ -27,11 +27,11 @@ firmware.
 - Full [localization](/development#localization) (i18n) support
 - View and Edit your Klipper config in app with code folding and Codelens
 support
-- View and Edit your Gcode files in app
+- View and Edit your G-code files in app
 - [Bed Mesh](/features/bed_mesh) levelling
 - [Multiple extruder](/features/multiple_extruders) configurations
 - [Thermal Presets](/features/presets)
-- [Multiple web cam](/features/cameras) support
+- [Multiple webcam](/features/cameras) support
 - Control power devices - GPIO (relays), TPLink Smartplug, and Tasmota
 - [Print history](/features/print_history)
 - [Version management](/features/updates#automated-updates) and upgrades
@@ -59,7 +59,7 @@ further information can be found in the [Docker installation docs](/installation
 
 ## Need help?
 
-Primary support is provided via Discord, or Github Issues.
+Primary support is provided via Discord, or GitHub Issues.
 
 [Discord](https://discord.gg/GZ3D5tqfcF){.md-button}
 [GitHub Issues](https://github.com/fluidd-core/fluidd/issues){.md-button}

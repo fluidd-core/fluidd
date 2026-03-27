@@ -49,7 +49,7 @@ This is a list of the available docker image tags:
 Fluidd comes with a `build` script which automatically transpiles and bundles the source code.
 Every Fluidd release has a pre-built package available in the [GitHub Releases](https://github.com/fluidd-core/fluidd/releases) (`fluidd.zip`).
 
-To manually build Fluidd, make sure you have NodeJS (v24.x) and Git installed. You can follow these steps to build the Fluidd repository:
+To manually build Fluidd, make sure you have Node.js (v24.x) and Git installed. You can follow these steps to build the Fluidd repository:
 
 1. Clone the [Fluidd source code](https://github.com/fluidd-core/fluidd): `git clone https://github.com/fluidd-core/fluidd.git`
 2. Navigate to the Fluidd source code directory: `cd fluidd`
@@ -111,11 +111,11 @@ Start by downloading the latest release of [FluiddPI](https://github.com/fluidd-
 
 ### Flash
 
-Flashing your SDCard is the same process as any other Raspbian image.
+Flashing your SD card is the same process as any other Raspbian image.
 
-1. Quality of SDCard matters. Recommend using known, reputable brands such as
+1. Quality of SD card matters. Recommend using known, reputable brands such as
 Sandisk, Samsung and Kingston.
-2. The flashing process will WIPE YOUR SDCARD. Be sure you have no existing data
+2. The flashing process will WIPE YOUR SD CARD. Be sure you have no existing data
 you'd like to keep from it.
 
 For windows users, the recommended tool for flashing is [Balena Etcher](https://www.balena.io/etcher/).
@@ -124,20 +124,20 @@ For Linux or macOs users, the recommended tool for flashing is [Raspberry Pi Ima
 
 ### Configure
 
-1. Configure the WiFI connection by editing `fluiddpi-wpa-supplicant.txt` on the
+1. Configure the Wi-Fi connection by editing `fluiddpi-wpa-supplicant.txt` on the
 root of the flashed card when using it like a thumb drive.
 *Important:* Do not use WordPad (Windows) or TextEdit (MacOS X) for this, those
 editors are known to mangle the file, making configuration fail.
 Use something like Notepad++, Atom or VSCode instead or at the very least heed
 the warnings in the file.
-   - *Note:* Often, connectivity issues can be boiled down to WiFi issues. If
+   - *Note:* Often, connectivity issues can be boiled down to Wi-Fi issues. If
      you're having trouble, try plugging in an ethernet cable.
 2. Boot the Pi from the card.
 3. Log into your Pi via SSH (it should be located at `fluiddpi.local`)
-   if your computer supports Bonjour. If not, you may need to access via it's IP
+   if your computer supports Bonjour. If not, you may need to access via its IP
    address.
    - If your computer supports Bonjour, it should be located at `fluiddpi.local`.
-   - For networks that correctly manage DNS, your host maybe located at `fluiddpi`.
+   - For networks that correctly manage DNS, your host may be located at `fluiddpi`.
    - If you can't find your Pi, try inspecting your Router web UI.
 4. Configure your host.
    - The default username and password is `pi` and `raspberry`.
