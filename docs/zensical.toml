@@ -5,9 +5,11 @@ site_description = "A web interface for Klipper 3D printer firmware"
 copyright = "&copy; Fluidd 2026"
 repo_url = "https://github.com/fluidd-core/fluidd"
 repo_name = "fluidd-core/fluidd"
-edit_uri = "edit/main/docs/docs/"
+edit_uri = "edit/master/docs/docs/"
 site_dir = "site"
-extra_css = ["stylesheets/extra.css"]
+extra_css = [
+  "stylesheets/extra.css"
+]
 
 nav = [
   {"Home" = "index.md"},
@@ -71,7 +73,9 @@ anchor_linenums = true
 [project.markdown_extensions."pymdownx.superfences"]
 
 [project.markdown_extensions."pymdownx.snippets"]
-auto_append = ["includes/glossary.md"]
+auto_append = [
+  "includes/glossary.md"
+]
 
 [[project.extra.social]]
 icon = "fontawesome/brands/github"
