@@ -127,8 +127,8 @@ variable_extrude: 1.0
 gcode:
   ##### read E from pause macro #####
   {% set E = printer["gcode_macro PAUSE"].extrude|float %}
-  ##### set park positon for x and y #####
-  # default is your max posion from your printer.cfg
+  ##### set park position for x and y #####
+  # default is your max position from your printer.cfg
   {% set x_park = printer.toolhead.axis_maximum.x|float - 5.0 %}
   {% set y_park = printer.toolhead.axis_maximum.y|float - 5.0 %}
   ##### calculate save lift position #####
