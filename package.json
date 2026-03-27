@@ -14,7 +14,7 @@
     "start": "vite",
     "serve": "vite",
     "serve:prod": "vite preview --port 5000",
-    "serve:docs": "cd ./docs; bundle exec jekyll serve",
+    "serve:docs": "cd ./docs && zensical serve",
     "lint": "eslint .",
     "bootstrap": "husky",
     "release": "commit-and-tag-version",
