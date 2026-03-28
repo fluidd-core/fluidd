@@ -240,6 +240,8 @@ docs/
 │   │   ├── thermals.md    # Chart, presets, sensors
 │   │   ├── cameras.md
 │   │   ├── console.md
+│   │   ├── config-editor.md  # Monaco editor features, syntax, CodeLens, folding
+│   │   ├── keyboard-shortcuts.md  # Global, editor, console keyboard shortcuts
 │   │   ├── macros.md
 │   │   ├── multi-material.md  # Multiple extruders + Spoolman
 │   │   ├── multiple-printers.md

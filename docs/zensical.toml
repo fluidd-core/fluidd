@@ -22,6 +22,8 @@ nav = [
     "features/thermals.md",
     "features/cameras.md",
     "features/console.md",
+    "features/config-editor.md",
+    "features/keyboard-shortcuts.md",
     "features/macros.md",
     "features/multi-material.md",
     "features/multiple-printers.md",
