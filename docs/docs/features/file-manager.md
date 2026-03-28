@@ -109,7 +109,7 @@ Thumbnail size is adjustable per root from the toolbar.
 
 ## Built-in editor
 
-Files can be opened in the built-in [config editor](/features/config-editor)
+Files can be opened in the built-in [file editor](/features/file-editor)
 with syntax highlighting, CodeLens documentation links, code folding, and
 keyboard shortcuts.
 

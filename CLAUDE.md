@@ -240,7 +240,7 @@ docs/
 │   │   ├── thermals.md    # Chart, presets, sensors
 │   │   ├── cameras.md
 │   │   ├── console.md
-│   │   ├── config-editor.md  # Monaco editor features, syntax, CodeLens, folding
+│   │   ├── file-editor.md  # Monaco editor features, syntax, CodeLens, folding
 │   │   ├── keyboard-shortcuts.md  # Global, editor, console keyboard shortcuts
 │   │   ├── file-manager.md  # File browser, upload, search, previews, drag-and-drop
 │   │   ├── macros.md

@@ -55,9 +55,9 @@ enabled.
 Emergency stop works everywhere, including inside text inputs and the config
 editor.
 
-## Config editor
+## File editor
 
-The built-in [config editor](/features/config-editor) has its own set of
+The built-in [file editor](/features/file-editor) has its own set of
 shortcuts:
 
 | Shortcut                                  | Action            |

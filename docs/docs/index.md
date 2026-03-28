@@ -33,7 +33,7 @@ firmware.
 - [Thumbnail](/features/printing#thumbnails) previews from your slicer
 - [Diagnostics dashboard](/features/diagnostics) with custom metrics
 - [File manager](/features/file-manager) with upload, search, previews, and drag-and-drop
-- Built-in [config editor](/features/config-editor) with syntax highlighting
+- Built-in [file editor](/features/file-editor) with syntax highlighting
 - [Keyboard shortcuts](/features/keyboard-shortcuts) for quick navigation and actions
 - [Automated updates](/features/updates) for Klipper, Moonraker, and Fluidd
 - [Third-party integrations](/features/integrations) — Kalico, Happy Hare, AFC, Beacon, Obico, OctoEverywhere, and more
