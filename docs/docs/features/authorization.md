@@ -21,7 +21,7 @@ authorization.
 - If you are not prompted, add `force_logins` to your moonraker configuration.
 After restarting Moonraker, add a user.
 
-```ini
+```ini title="moonraker.conf"
 [authorization]
 force_logins: true
 ```
@@ -57,7 +57,7 @@ You can also modify `default_source` to change the default login interface to
 The secrets file should be stored in a separate directory from `moonraker.conf`
 for security (e.g. `~/klipper_secure/moonraker_secure.json`).
 
-```ini
+```ini title="moonraker.conf"
 [secrets]
 secrets_path: ~/pathto/moonraker_secure.json
 # For security reasons this file must be located in a different
@@ -95,7 +95,7 @@ is_active_directory: True
 
 moonraker_secure.json
 
-```json
+```json title="moonraker_secure.json"
 {
   "ldap_credentials": {
     "bind_dn": "CN=bindUser,CN=Users,DC=example,DC=local",

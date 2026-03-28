@@ -37,13 +37,13 @@ ln -sf fluidd-config/fluidd.cfg fluidd.cfg
 
 Then add the following to your `printer.cfg`:
 
-```ini
+```ini title="printer.cfg"
 [include fluidd.cfg]
 ```
 
 And add this to your `moonraker.conf` to receive automatic updates:
 
-```ini
+```ini title="moonraker.conf"
 [update_manager fluidd-config]
 type: git_repo
 primary_branch: master
@@ -87,7 +87,7 @@ Fluidd requires your printer to be set up with `virtual_sdcard`. This allows
 file uploads to work correctly. If you get a G-code path not found error in
 Fluidd, this is generally the first place to look.
 
-```ini
+```ini title="printer.cfg"
 [virtual_sdcard]
 path: ~/printer_data/gcodes
 ```
@@ -96,7 +96,7 @@ path: ~/printer_data/gcodes
 
 Required to properly support display updates in Fluidd, with no other lines required.
 
-```ini
+```ini title="printer.cfg"
 [display_status]
 ```
 
@@ -104,7 +104,7 @@ Required to properly support display updates in Fluidd, with no other lines requ
 
 Enables Pause / Resume functionality within klipper. This is a single block, with no other lines required.
 
-```ini
+```ini title="printer.cfg"
 [pause_resume]
 ```
 
@@ -118,7 +118,7 @@ them to your printer or use
 
 #### PAUSE
 
-```ini
+```ini title="printer.cfg"
 [gcode_macro PAUSE]
 description: Pause the actual running print
 rename_existing: PAUSE_BASE
@@ -158,7 +158,7 @@ gcode:
 
 #### RESUME
 
-```ini
+```ini title="printer.cfg"
 [gcode_macro RESUME]
 description: Resume the actual running print
 rename_existing: RESUME_BASE
@@ -183,7 +183,7 @@ gcode:
 
 #### CANCEL_PRINT
 
-```ini
+```ini title="printer.cfg"
 [gcode_macro CANCEL_PRINT]
 description: Cancel the actual running print
 rename_existing: CANCEL_PRINT_BASE
@@ -210,7 +210,7 @@ is at a non-standard path, set `klippy_uds_address` accordingly.
 If you want to be able to cancel single objects on a multi-object print, then
 you will need to set `enable_object_processing: True` here to enable it.
 
-```ini
+```ini title="moonraker.conf"
 [file_manager]
 enable_object_processing: True
 ```
@@ -225,7 +225,7 @@ the thermals graph.
 Temperature store size is in seconds, while the G-code store size is defined
 in an entry count.
 
-```ini
+```ini title="moonraker.conf"
 [data_store]
 temperature_store_size: 600
 gcode_store_size: 1000
@@ -281,7 +281,7 @@ load. See the [configuration example](#example-configuration).
 Enables Moonraker announcements for Fluidd, so that any important Fluidd message
 from the developers and maintainers is shown in the Fluidd notifications.
 
-```ini
+```ini title="moonraker.conf"
 [announcements]
 subscriptions:
   fluidd
@@ -293,7 +293,7 @@ Automated updates can be configured by ensuring the following is in your
 `moonraker.conf`. Moonraker automatically refreshes update status approximately
 every two hours. Update requests are blocked while a print is in progress.
 
-```ini
+```ini title="moonraker.conf"
 [update_manager]
 
 [update_manager fluidd]
@@ -307,7 +307,7 @@ path: ~/fluidd
 This is an example configuration which should apply to most users.
 Your moonraker configuration can usually be found here: `~/printer_data/config/moonraker.conf`
 
-```ini
+```ini title="moonraker.conf"
 [server]
 host: 0.0.0.0
 port: 7125

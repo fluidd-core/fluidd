@@ -68,18 +68,18 @@ output pin you may have no need to control in UI.
 
 Some examples;
 
-```ini
+```ini title="printer.cfg"
 [gcode_macro _MY_MACRO]
 gcode:
   G28
 ```
 
-```ini
+```ini title="printer.cfg"
 [output_pin _BEEPER]
 pin: z:P1.30
 ```
 
-```ini
+```ini title="printer.cfg"
 [temperature_sensor _MCU]
 sensor_type: MCU
 ```

@@ -32,7 +32,7 @@ common configuration examples.
 
 ### Host temperature (Raspberry Pi)
 
-```ini
+```ini title="printer.cfg"
 [temperature_sensor raspberry_pi]
 sensor_type: temperature_host
 min_temp: 10
@@ -41,7 +41,7 @@ max_temp: 100
 
 ### MCU temperature (ATSAM, ATAMD, STM32)
 
-```ini
+```ini title="printer.cfg"
 [temperature_sensor mcu_temp]
 sensor_type: temperature_mcu
 min_temp: 0
@@ -50,7 +50,7 @@ max_temp: 100
 
 ### AHT10 / AHT20 / AHT30 (temperature and humidity)
 
-```ini
+```ini title="printer.cfg"
 [temperature_sensor enclosure]
 sensor_type: AHT10
 i2c_mcu: mcu
@@ -59,7 +59,7 @@ i2c_bus: i2c1
 
 ### BMP180 / BMP280 / BMP388 (pressure and temperature)
 
-```ini
+```ini title="printer.cfg"
 [temperature_sensor chamber_pressure]
 sensor_type: BMP388
 i2c_mcu: mcu
@@ -68,7 +68,7 @@ i2c_bus: i2c1
 
 ### SHT3x (temperature and humidity)
 
-```ini
+```ini title="printer.cfg"
 [temperature_sensor enclosure_sht]
 sensor_type: SHT3X
 i2c_mcu: mcu

@@ -57,7 +57,7 @@ and call
 [`SET_ACTIVE_SPOOL`](https://moonraker.readthedocs.io/en/latest/configuration#setting-the-active-spool-from-klipper)
 in your toolchange macro:
 
-```ini
+```ini title="printer.cfg"
 [gcode_macro T0]
 variable_spool_id: None
 gcode:
@@ -75,7 +75,7 @@ If Fluidd detects a
 section in your configuration, it will automatically save the selected spool
 on each change. Use this macro to restore the selection after a restart:
 
-```ini
+```ini title="printer.cfg"
 [delayed_gcode RESTORE_SELECTED_SPOOLS]
 initial_duration: 0.1
 gcode:
