@@ -18,7 +18,6 @@ The recommended order of updates is:
 
 Klipper can be skipped if you have a reason to not update it immediately.
 
-Moonraker automatically refreshes update status approximately every two hours.
 Update requests are blocked while a print is in progress.
 
 In order for this feature to be enabled, you need to configure Moonraker's
@@ -26,6 +25,13 @@ update plugin. See the
 [Moonraker configuration](/configuration#example-configuration) docs.
 
 ![screenshot](/assets/images/updates.png)
+
+## Updating via KIAUH
+
+If you installed Klipper, Moonraker, or Fluidd using
+[KIAUH](https://github.com/dw-0/kiauh), you can also update them through the
+KIAUH menu. Launch KIAUH and select the update option to update any installed
+component.
 
 ## Manual Updates
 
