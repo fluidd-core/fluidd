@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.36.3](https://github.com/fluidd-core/fluidd/compare/v1.36.2...v1.36.3) (2026-03-28)
+
+
+### Features
+
+* **HappyHare:** Regular click pop-up action menu and reworked MMU unit layout and footer with heater/dryer info ([#1790](https://github.com/fluidd-core/fluidd/issues/1790)) ([347c159](https://github.com/fluidd-core/fluidd/commit/347c1596a2acf2d570b52a23bbd7045af6dbe978))
+* **HappyHare:** Support for multi-gate espooler display ([#1789](https://github.com/fluidd-core/fluidd/issues/1789)) ([3ff1e4f](https://github.com/fluidd-core/fluidd/commit/3ff1e4f33dba6d3103b6fce9375d309bb8a0156a))
+* **i18n-pl:** Update Polish translations ([edd8874](https://github.com/fluidd-core/fluidd/commit/edd8874db838d610411efb99557a6d23580d5f22))
+* **i18n-sv:** Update Swedish translations ([71132e1](https://github.com/fluidd-core/fluidd/commit/71132e1ac7be26627ecfad8ac3bb33144d792d40))
+* new Moonraker metadata support ([#1806](https://github.com/fluidd-core/fluidd/issues/1806)) ([85e0227](https://github.com/fluidd-core/fluidd/commit/85e022757a006b2a1fee1292b7671ec24c3e1ee7))
+
+
+### Bug Fixes
+
+* disable restart buttons during a print ([#1798](https://github.com/fluidd-core/fluidd/issues/1798)) ([1dd0531](https://github.com/fluidd-core/fluidd/commit/1dd05318557a8126cff53b9317a07d6d4847a3cc))
+* escape layout key ([#1794](https://github.com/fluidd-core/fluidd/issues/1794)) ([2e0aba0](https://github.com/fluidd-core/fluidd/commit/2e0aba0749c16e35fdaefd8d5ae513ea8a48116c))
+* **HappyHare:** Fixes sync-feedback buffer state output in visualization and supports analog sensors ([#1787](https://github.com/fluidd-core/fluidd/issues/1787)) ([ea4e7e0](https://github.com/fluidd-core/fluidd/commit/ea4e7e00b83ddde590bcbb20e86977c3b361f8de))
+* **HappyHare:** Retains the correct font size for filament status messages ([#1788](https://github.com/fluidd-core/fluidd/issues/1788)) ([0cb2650](https://github.com/fluidd-core/fluidd/commit/0cb2650404d58d113a8aa22a9241adf2753cb5bc))
+* Spoolman URL protocol ([#1792](https://github.com/fluidd-core/fluidd/issues/1792)) ([756be25](https://github.com/fluidd-core/fluidd/commit/756be25633c74e99555a77586d0d3a7c31c8db76))
+* timestamp tooltip on relative datetime labels ([#1796](https://github.com/fluidd-core/fluidd/issues/1796)) ([4fa9537](https://github.com/fluidd-core/fluidd/commit/4fa95374919c7b7b693def9f991b2d49640cd929))
+
+
+### Code Refactorings
+
+* typing improvements ([0fd9118](https://github.com/fluidd-core/fluidd/commit/0fd911885aaf8b0a35c97547d6f78e8bc032198c))
+* use dynamic view imports ([#1805](https://github.com/fluidd-core/fluidd/issues/1805)) ([52ee39d](https://github.com/fluidd-core/fluidd/commit/52ee39d184bb32b25c54b612ff41e1acff9ba2a5))
+
 ## [1.36.2](https://github.com/fluidd-core/fluidd/compare/v1.36.1...v1.36.2) (2026-01-02)
 
 
