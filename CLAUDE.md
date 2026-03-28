@@ -271,7 +271,9 @@ docs/
 - Links: use `{.md-button}` attribute for standalone action links
 - Keys: use `++key++` syntax (pymdownx.keys extension) instead of `<kbd>`
 - Terminology: G-code (not gcode/Gcode), Wi-Fi (not WiFi), GitHub (not Github), Node.js (not NodeJS), SD card (not SDCard), em dash (—) not hyphen (-) for parenthetical dashes
-- Glossary terms (AFC, API, CORS, JWT, MCU, MMU, MPC, PID, etc.) get automatic tooltips
+- Klipper macro names: format as inline code (e.g., `PAUSE`, `SET_PAUSE_AT_LAYER`, `_CLIENT_VARIABLE`)
+- Glossary terms (AFC, API, CNC, CORS, JWT, MCU, MMU, MPC, PID, etc.) get automatic tooltips via `docs/includes/glossary.md`
+- When introducing acronyms in docs, check if they exist in the glossary — if not, assess whether they should be added (domain-specific or non-obvious acronyms: yes; universally known ones like USB, HTTP, CPU: no)
 - **Before committing docs changes**, always run:
   - `markdownlint --config docs/.markdownlint.json docs/docs/` — must be clean
   - `codespell docs/docs/` — must be clean (install via `pip install codespell`)

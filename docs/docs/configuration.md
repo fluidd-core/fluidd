@@ -58,12 +58,30 @@ Fluidd-config provides enhanced versions of the standard macros with additional
 capabilities:
 
 - Configurable park positions (round beds, square beds, or custom coordinates)
-- Enhanced PAUSE macro with optional X, Y, and Z_MIN parameters
+- Separate park positions for `PAUSE` and `CANCEL_PRINT`
+- Enhanced `PAUSE` macro with optional X, Y, and Z_MIN parameters
 - Pause at next layer or at a specific layer number
-- Temperature management during pause/resume cycles
-- Filament runout sensor integration
-- Configurable idle timeout behavior
+- Temperature management during pause/resume cycles (save/restore extruder
+  temperature with idle timeout integration)
+- Configurable retraction and unretraction with firmware retraction support
+- Filament runout sensor integration (blocks `RESUME` if no filament detected)
+- Configurable idle timeout behavior during `PAUSE` state
+- User-injectable custom macros in `PAUSE`/`RESUME`/`CANCEL_PRINT` flows
+- Safer toolhead movement commands via `_CLIENT_LINEAR_MOVE`
 - Support for printers without extruders (e.g. CNC machines)
+
+### Fluidd UI Integration
+
+When fluidd-config is installed, Fluidd automatically detects its macros and
+enables additional UI features:
+
+- **Pause at layer** — the `SET_PAUSE_NEXT_LAYER` and `SET_PAUSE_AT_LAYER`
+  macros enable a pause-at-layer dropdown in the print controls, allowing you
+  to pause or trigger an `M600` filament change at a specific layer
+- **Toolhead park button** — the `PARK_TOOLHEAD` macro adds a park button to
+  the toolhead card
+- **Filament load/unload buttons** — the `LOAD_FILAMENT` and `UNLOAD_FILAMENT`
+  macros add dedicated buttons to the toolhead card
 
 ### Customization
 

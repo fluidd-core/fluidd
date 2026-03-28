@@ -21,26 +21,26 @@ If any of the following macros are found, they will automatically appear in the 
 
 **Load Filament:**
 
-- LOAD_FILAMENT
-- FILAMENT_LOAD
-- M701
+- `LOAD_FILAMENT`
+- `FILAMENT_LOAD`
+- `M701`
 
 **Unload Filament:**
 
-- UNLOAD_FILAMENT
-- FILAMENT_UNLOAD
-- M702
+- `UNLOAD_FILAMENT`
+- `FILAMENT_UNLOAD`
+- `M702`
 
 **Clean Nozzle:**
 
-- CLEAN_NOZZLE
-- NOZZLE_CLEAN
-- WIPE_NOZZLE
-- NOZZLE_WIPE
-- G12
+- `CLEAN_NOZZLE`
+- `NOZZLE_CLEAN`
+- `WIPE_NOZZLE`
+- `NOZZLE_WIPE`
+- `G12`
 
 **Park Toolhead:**
 
-- PARK_TOOLHEAD
-- TOOLHEAD_PARK
-- G27
+- `PARK_TOOLHEAD`
+- `TOOLHEAD_PARK`
+- `G27`
