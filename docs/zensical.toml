@@ -24,6 +24,7 @@ nav = [
     "features/console.md",
     "features/config-editor.md",
     "features/keyboard-shortcuts.md",
+    "features/file-manager.md",
     "features/macros.md",
     "features/multi-material.md",
     "features/multiple-printers.md",

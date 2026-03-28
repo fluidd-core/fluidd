@@ -38,6 +38,9 @@ Fluidd is packed with features to help you monitor, control, and manage your
 
 ## Management
 
+- **[File Manager](/features/file-manager)** — browse, upload, edit, and manage
+  G-code files, configuration, logs, and more with search, previews, drag and
+  drop, and bulk operations.
 - **[Updates](/features/updates)** — automated updates for Klipper, Moonraker,
   Fluidd, and other components, with manual update instructions.
 - **[System & Notifications](/features/system)** — host information, service

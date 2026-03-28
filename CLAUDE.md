@@ -242,6 +242,7 @@ docs/
 │   │   ├── console.md
 │   │   ├── config-editor.md  # Monaco editor features, syntax, CodeLens, folding
 │   │   ├── keyboard-shortcuts.md  # Global, editor, console keyboard shortcuts
+│   │   ├── file-manager.md  # File browser, upload, search, previews, drag-and-drop
 │   │   ├── macros.md
 │   │   ├── multi-material.md  # Multiple extruders + Spoolman
 │   │   ├── multiple-printers.md
