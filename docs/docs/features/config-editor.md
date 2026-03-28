@@ -78,7 +78,9 @@ Collapsible regions are supported for both Klipper config and G-code files.
 | Go to Symbol     | ++ctrl+shift+o++ / ++cmd+shift+o++ |
 | Command Palette  | ++f1++                             |
 
-All actions are also accessible from the Command Palette.
+All actions are also accessible from the Command Palette. For application-wide
+shortcuts and navigation hotkeys, see
+[Keyboard Shortcuts](/features/keyboard-shortcuts).
 
 ## View state persistence
 
