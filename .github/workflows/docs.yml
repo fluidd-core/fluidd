@@ -21,7 +21,7 @@ jobs:
         run: pip install "zensical==0.0.29"
 
       - name: Build docs
-        run: zensical build
+        run: zensical build --clean
         working-directory: docs
 
       - uses: actions/upload-pages-artifact@v4
