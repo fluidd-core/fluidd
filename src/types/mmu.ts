@@ -29,7 +29,11 @@ export interface MmuUnitDetails {
   variableBowdenLengths: boolean
   requireBowdenMove: boolean
   filamentAlwaysGripped: boolean
+  canCrossload: boolean
   hasBypass: boolean
   multiGear: boolean
   environmentSensor: string
+  filamentHeater: string
+  environmentSensors?: string[]
+  filamentHeaters?: string[]
 }

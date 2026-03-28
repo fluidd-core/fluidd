@@ -2,6 +2,8 @@ declare namespace Moonraker.Authorization {
   export interface InfoResponse {
     default_source: string;
     available_sources: string[];
+    login_required: boolean;
+    trusted: boolean;
   }
 
   export interface RefreshJwtResponse {

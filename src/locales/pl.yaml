@@ -252,6 +252,7 @@ app:
       load_filament: Załaduj filament
       park_toolhead: Zaparkuj głowicę
       unload_filament: Wycofaj filament
+      toolchange: Zmiana narzędzia
     btn:
       abort: Przerwij
       add: Dodaj
@@ -495,6 +496,10 @@ app:
         filament_weights: Wagi filamentu
         mmu_print: Wydruk MMU
         referenced_tools: Referencyjne narzędzia
+        printer_model: Model drukarki
+        printer_variant: Wariant drukarki
+        printer_vendor: Producent drukarki
+        profile_version: Wersja profilu
     tooltip:
       estop: Awaryjny stop
       managed_by_moonraker: Zarządzane przez konfigurację moonrakera
@@ -994,7 +999,7 @@ app:
       location: Lokalizacja
       material: Materiał
       remaining_weight: Pozostała waga
-      vendor: Sprzedawca
+      vendor: Producent
       lot_nr: Nr. partii
       device_camera: Urządzenie
       id: ID
@@ -1085,7 +1090,7 @@ app:
     btn:
       check_gate: Sprawdź bramkę
       load: Załaduj
-      unload_ext: Wyładuj zewnętrznie
+      unload_ext: Rozładuj ekstruder
       print_stats: Statystyki drukowania
       mmu_maintenance: Konserwacja MMU
       edit_gate_map: Edytuj filamenty
@@ -1095,7 +1100,7 @@ app:
       release: Uwolnij
       eject: Wysuń
       unlock: Odblokuj
-      unload: Wyładuj
+      unload: Rozładuj
       sync_spoolman: Synchronizuj Spoolman
       recover: Odzyskaj
       recover_state: Napraw stan MMU
@@ -1112,6 +1117,7 @@ app:
       load_ext: Załaduj zewnętrznie
       up: W górę
       select: Wybierz
+      change_tool: Zmień narzędzie
     title:
       mmu_maintenance: Konserwacja MMU
       edit_gate_map: Edytuj filamenty (edytuj mapę bramki)
@@ -1153,16 +1159,23 @@ app:
       enable: Włącz
       spoolman_never: Nigdy
       spoolman_today: Dzisiaj
+      clog_tangle_detection: Wykrywanie zatoru / splątania filamentu
+      drying: Suszenie
+      heater: Grzałka
+      drying_queued: Kolejkowanie suszenia
+      drying_complete: Suszenie ukończone
+      drying_cancelled: Przerwano suszenie
     msg:
       color: Kolor
       reset_gate_map_confirmation: Spowoduje to zresetowanie całej mapy bramki 
         do wartości domyślnej zdefiniowanej w pliku „mmu_parameters.cfg” lub 
         pustej mapy, jeśli nie są dostępne żadne wartości domyślne
       select_gate: Wybierz informacje o bramce/szpuli, które chcesz edytować
-      spoolman_off: Obsługa spoolman jest "%{mode}" w Happy Hare. Przypisywanie 
-        ID szpuli do bramki jest wyłączone
-      spoolman_other: Obsługa spoolman jest "%{mode}". Opcjonalnie możesz 
-        przypisać ID szpuli lub edytować atrybuty bramki bezpośrednio
+      spoolman_off: Obsługa Spoolmana to „%{mode}” w Happy Hare. Przypisywanie 
+        identyfikatora szpuli do bramki jest wyłączone.
+      spoolman_other: Obsługa Spoolmana to „%{mode}”. Opcjonalnie możesz 
+        przypisać identyfikator szpuli lub bezpośrednio edytować atrybuty 
+        bramki.
       spoolman_pull: Obsługa spoolman jest w trybie "%{mode}". Lokalna edycja 
         większości właściwości bramki jest wyłączona. Przypisz mapowanie 
         szpuli/bramki bezpośrednio w bazie danych Spoolman lub użyj polecenia 
@@ -1222,12 +1235,13 @@ app:
       color: Kolor
     setting:
       large_filament_status: Status dużego filamentu
-      show_clog_detection: Pokaż wykrywanie zatkania
+      show_clog_detection: Pokaż wykrywanie zatkania/splątania
       show_details: Pokaż szczegóły dotyczące filamentu
       show_logos: Pokaż loga
       show_ttg_map: Pokaż mapę TTG
       show_unavailable_spool_color: Pokaż niedostępne szpule
       show_name: Pokaż nazwę jednostki
+      show_climate: Pokaż informacje o klimacie
   database:
     btn:
       compact_database: Kompaktowa baza danych
@@ -1241,3 +1255,95 @@ app:
       not_found: Nie znaleziono istniejących kopii zapasowych bazy danych.
   afc:
     AfcSettings: Ustawienia AFC
+    BrushNozzle: Szczotkowanie dyszy
+    BufferDisabled: Bufor nieaktywny
+    BypassActive: Filament załadowany w trybie obejścia, zmiany narzędzi są 
+      dezaktywowane!
+    Calibrate: Kalibruj
+    Cancel: Anuluj
+    CaptureTd: Przechwyć TD
+    DebugJson: Debugowanie JSON
+    Detected: Wykryto
+    EjectFilament: Wysuń filament
+    Ejecting: Wysuwanie
+    Empty: Pusto
+    Error: Błąd
+    FilamentForLane: Filament dla {name}
+    Functions: Funkcje
+    Headline: AFC
+    Hub: Hub
+    HubLoad: Ładowanie do huba
+    Idle: Bezczynność
+    InfiniteSpoolDescription: Następna ścieżka do załadowania, gdy {name} się 
+      skończy
+    InfiniteSpoolHeadline: Nieskończona szpula
+    LaneControls: Sterowanie ścieżką
+    LaneLoaded: Ścieżka załadowana
+    LaneLoadedNone: Brak
+    LaneMapping: Mapowanie scieżki
+    LaneMappingToCommand: Przypisz {name} do komendy narzędzia
+    LedOff: Oświetlenie wył.
+    LedOn: Oświetlenie wł.
+    LoadedInLane: Załadowano w {lane}
+    Loading: Ładowanie
+    LoadLane: Załaduj ścieżkę
+    Material: Materiał
+    MaterialSubtitle: Na przykład ABS, PETG, PLA itp.
+    Moving: Przemieszczanie
+    ParkNozzle: Zaparkuj dyszę
+    PostExtruderSensor: Sensor za ekstruderem
+    PreExtruderSensor: Sensor przed ekstruderem
+    PrepDetected: Filament wykryty, ale nie jest załadowany
+    Printing: Drukowanie
+    SetSpool: Ustaw szpulę
+    Settings: Ustawienia
+    SettingsDialog:
+      BowdenLength: Długość rurki Bowden
+      BowdenLengthDescription: Jest to długość przewodu Bowdena między hubem a 
+        głowicą narzędziową.
+      DistHub: Odległość do huba
+      DistHubDescription: Odległość od kół zębatych ekstrudera danej ścieżki do 
+        huba w milimetrach.
+      SaveHubDist: Zapisz wartości ścieżki
+      SaveHubDistDescription: Zapisz wartości z wybranej ścieżki do pliku 
+        konfiguracyjnego.
+      LoadUnloadLane: Załaduj / Rozładuj ścieżkę
+      LoadUnloadLaneDescription: Kliknij przyciski, aby załadować lub rozładować
+        filament ze ścieżki do ekstrudera.
+      ToolStnUnloadDescription: Odległość, na jaką należy cofnąć filament, aby 
+        rozładować go z narzędzia, w milimetrach.
+      ToolSensorAfterExtruderDescription: Odległość od kół zębatych ekstrudera 
+        do czujnika tool_end w milimetrach. Wartość ta jest używana do wycofania
+        filamentu z kół zębatych ekstrudera, gdy czujnik tool_end przestaje być 
+        aktywowany.
+      ToolStnUnload: Długość wycofania filamentu z narzędzia
+      Help: Pomoc
+      Length: Długość
+      SaveExtruderValues: Zapisz wartości ekstrudera
+      SaveExtruderValuesDescription: Spowoduje zapisanie bieżących wartości 
+        ekstrudera do pliku konfiguracyjnego danego ekstrudera.
+      SensorAfterExtruder: Czujnik za ekstruderem
+      SettingsForTitle: Ustawienia dla {name}
+      ToolSensorAfterExtruder: Czujnik narzędzia za ekstruderem
+      ToolStn: Długość załadunku filamentu do narzędzia
+      ToolStnDescriptionWithEndSensor: Odległość od czujnika tool_end do 
+        początku strefy topnienia filamentu w milimetrach.
+      ToolStnDescriptionWithoutEndSensor: Odległość od czujnika tool_start do 
+        początku strefy topnienia filamentu w milimetrach.
+      ToolStnDescriptionWithRamming: Odległość od kół zębatych ekstrudera do 
+        początku strefy topnienia filamentu w milimetrach.
+      WriteToFile: Zapisz do pliku
+    SettingsForLane: Ustawienia dla {lane}
+    ShowLaneInfinite: Pokaż przycisk „Nieskończoność”
+    UnloadLane: Rozładuj ścieżkę
+    Unloading: Rozładowywanie
+    RammingSensor: Czujnik docisku
+    Restoring: Przywracanie
+    ShowFilamentName: Pokaż nazwę filamentu
+    ShowTool: Pokaż narzędzie „{name}”
+    ShowUnit: Pokaż jednostkę „{name}”
+    ShowUnitIcons: Pokaż ikony jednostek
+    ShowTd1Color: Pokaż kolor TD-1
+    Unknown: Nieznane
+    Weight: Waga
+    WeightSubtitle: Waga filamentu w gramach (bez szpuli).

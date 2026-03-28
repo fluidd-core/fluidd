@@ -1,4 +1,5 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import type * as MonacoEditor from 'monaco-editor'
 
 import { loadWASM } from 'onigasm'
 import onigasmWasm from 'onigasm/lib/onigasm.wasm?url'
@@ -485,7 +486,7 @@ async function setupMonaco () {
   monaco.editor.defineTheme('light-converted', themeLight as monaco.editor.IStandaloneThemeData)
 
   // Wire it up.
-  await wireTmGrammars(monaco, registry, grammars)
+  await wireTmGrammars(monaco as typeof MonacoEditor, registry, grammars)
 
   return monaco
 }

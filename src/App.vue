@@ -193,14 +193,23 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get pageTitle () {
+    const progress = this.printerPrinting
+      ? `[${this.progress}%]`
+      : ''
     const instanceName: string = this.$typedState.config.uiSettings.general.instanceName || ''
-    const pageName = this.$t(`app.general.title.${this.$route.name}`)
+    const pageName = this.$route.name
+      ? this.$t(`app.general.title.${this.$route.name}`)
+      : ''
 
-    if (this.printerPrinting) {
-      return `[${this.progress}%] | ${instanceName} | ${pageName}`
-    } else {
-      return `${instanceName} | ${pageName}`
-    }
+    const parts = [
+      progress,
+      instanceName,
+      pageName
+    ]
+
+    return parts
+      .filter(part => part)
+      .join(' | ')
   }
 
   get pageIcon (): LinkPropertyHref[] {

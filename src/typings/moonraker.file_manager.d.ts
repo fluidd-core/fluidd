@@ -88,6 +88,10 @@ declare namespace Moonraker.Files {
     filament_type?: string;
     filament_weight_total?: number;
     filament_weights?: number[];
+    printer_vendor?: string;
+    printer_model?: string;
+    printer_variant?: string;
+    profile_version?: string;
     mmu_print?: number;
     referenced_tools?: number[];
     first_layer_bed_temp?: number;

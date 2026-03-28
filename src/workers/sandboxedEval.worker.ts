@@ -73,7 +73,7 @@ self.onmessage = async (event: MessageEvent<SandboxedEvalWorkerServerMessage>) =
 
   try {
     // eslint-disable-next-line no-eval
-    const result = eval(`(function (self) { ${message.code} })(null)`)
+    const result = (0, eval)(`(function (self) { ${message.code} })(null)`)
 
     sendResult(result, message.id)
   } catch (e) {

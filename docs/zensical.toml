@@ -1,0 +1,86 @@
+[project]
+site_name = "Fluidd"
+site_url = "https://docs.fluidd.xyz"
+site_description = "A web interface for Klipper 3D printer firmware"
+copyright = "&copy; Fluidd 2026"
+repo_url = "https://github.com/fluidd-core/fluidd"
+repo_name = "fluidd-core/fluidd"
+edit_uri = "edit/master/docs/docs/"
+site_dir = "site"
+extra_css = [
+  "stylesheets/extra.css"
+]
+
+nav = [
+  {"Home" = "index.md"},
+  {"Getting Started" = "getting-started.md"},
+  {"Configuration" = "configuration.md"},
+  {"Customize" = "customize.md"},
+  {"Features" = [
+    "features/index.md",
+    "features/printing.md",
+    "features/thermals.md",
+    "features/cameras.md",
+    "features/console.md",
+    "features/macros.md",
+    "features/multi-material.md",
+    "features/multiple-printers.md",
+    "features/diagnostics.md",
+    "features/updates.md",
+    "features/system.md",
+    "features/authorization.md",
+    "features/slicer-uploads.md",
+    "features/timelapse.md",
+    "features/localization.md",
+    "features/integrations.md"
+  ]},
+  {"Development" = "development.md"},
+  {"FAQ" = "faq.md"},
+  {"Sponsors" = "sponsors.md"}
+]
+
+[project.theme]
+variant = "modern"
+logo = "assets/images/fluidd_icon.svg"
+favicon = "favicon.ico"
+features = [
+  "content.action.edit",
+  "content.code.copy",
+  "navigation.path",
+  "navigation.instant",
+  "navigation.instant.progress",
+  "navigation.indexes",
+  "navigation.top",
+  "content.tooltips"
+]
+custom_dir = "overrides"
+
+[[project.theme.palette]]
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+[project.markdown_extensions.abbr]
+[project.markdown_extensions.attr_list]
+[project.markdown_extensions."pymdownx.highlight"]
+anchor_linenums = true
+[project.markdown_extensions."pymdownx.keys"]
+[project.markdown_extensions."pymdownx.superfences"]
+
+[project.markdown_extensions."pymdownx.snippets"]
+auto_append = [
+  "includes/glossary.md"
+]
+
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/fluidd-core/fluidd"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/discord"
+link = "https://discord.gg/GZ3D5tqfcF"

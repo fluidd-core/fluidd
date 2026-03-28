@@ -34,8 +34,10 @@ export const mutations = {
 
       for (const [layoutKey, currentLayout] of Object.entries(payload.layouts)) {
         for (const [containerKey, components] of Object.entries(currentLayout)) {
-          currentLayout[containerKey] = components
-            .filter(card => card != null)
+          currentLayout[containerKey] = Array.isArray(components)
+            ? components
+              .filter(card => card != null)
+            : []
         }
 
         const migratableLayoutKey = migratableLayoutKeys.find(key => layoutKey.startsWith(key))

@@ -154,6 +154,7 @@ export const defaultState = (): ConfigState => {
         largeFilamentStatus: false,
         showName: true,
         showLogos: false,
+        showClimate: true,
         showUnavailableSpoolColor: false
       },
       afc: {

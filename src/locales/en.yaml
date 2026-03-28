@@ -538,6 +538,10 @@ app:
         name: Name
         nozzle_diameter: Nozzle diameter
         print_duration: Print duration
+        printer_model: Printer model
+        printer_variant: Printer variant
+        printer_vendor: Printer vendor
+        profile_version: Profile version
         referenced_tools: Referenced tools
         time_added: Time Added
         time_in_queue: Time In Queue
@@ -1089,6 +1093,7 @@ app:
       remaining_filament_unit: Show remaining filament as
   mmu:
     btn:
+      change_tool: Change Tool
       check_all_gates: Check All Gates
       check_gate: Check Gate
       select: Select
@@ -1160,6 +1165,11 @@ app:
       spoolman_today: Today
       spoolman_yesterday: Yesterday
       spoolman_days_ago: '%{days} days ago'
+      drying: Drying
+      heater: Heater
+      drying_queued: Drying queued
+      drying_complete: Drying complete
+      drying_cancelled: Drying cancelled
     tooltip:
       empty: Empty
       color: Color
@@ -1212,6 +1222,7 @@ app:
       show_ttg_map: Show TTG Map
       show_name: Show Unit Name
       show_logos: Show Logos
+      show_climate: Show Climate Info
       show_unavailable_spool_color: Show Unavailable Spools
   sensors:
     title:

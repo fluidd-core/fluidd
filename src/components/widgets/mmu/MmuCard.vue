@@ -51,7 +51,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item @click="showEditGateMapDialog = true">
+          <v-list-item @click="openEditGateMapDialog()">
             <v-list-item-icon>
               <v-icon left>
                 $mmuEditGateMap
@@ -162,7 +162,10 @@
         pa-2
       >
         <v-row align="start">
-          <mmu-machine />
+          <mmu-machine
+            @select-gate="selectGate"
+            @edit-filament="editFilament"
+          />
         </v-row>
         <v-row align="start">
           <v-col
@@ -171,9 +174,6 @@
           >
             <div class="text--disabled smaller-font">
               {{ toolchangeText }}
-            </div>
-            <div class="min-height-text">
-              {{ statusText }}
             </div>
             <mmu-filament-status />
             <template v-if="showClogDetection">
@@ -253,7 +253,11 @@
 
     <mmu-recover-state-dialog v-model="showRecoverStateDialog" />
     <mmu-maintenance-dialog v-model="showMaintenanceDialog" />
-    <mmu-edit-gate-map-dialog v-model="showEditGateMapDialog" />
+    <mmu-edit-gate-map-dialog
+      v-model="showEditGateMapDialog"
+      :initial-gate="initialEditGate"
+      @close="initialEditGate = null"
+    />
   </collapsable-card>
 </template>
 
@@ -292,6 +296,7 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
   showRecoverStateDialog = false
   showEditGateMapDialog = false
   showMaintenanceDialog = false
+  initialEditGate: number | null = null
 
   get col1Size (): number {
     if (this.$typedState.config.uiSettings.mmu.largeFilamentStatus) return 6
@@ -316,31 +321,6 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
 
   get showDetails (): boolean {
     return this.$typedState.config.uiSettings.mmu.showDetails
-  }
-
-  get statusText (): string {
-    let posStr: string = ''
-    if (['complete', 'error', 'cancelled', 'started'].includes(this.printState)) {
-      posStr = this.capitalize(this.printState)
-    } else if (this.action === 'Idle') {
-      if (this.printState === 'printing') {
-        posStr = `Printing (${this.numToolchanges}`
-        if (this.slicerToolMap?.total_toolchanges) posStr += `/${this.slicerToolMap.total_toolchanges}`
-        posStr += ' swaps)'
-      } else {
-        posStr = this.filament !== 'Unloaded' ? `Filament: ${this.filamentPosition}mm` : 'Filament: Unloaded'
-      }
-    } else if (this.action === 'Loading' || this.action === 'Unloading') {
-      posStr = `${this.action}: ${this.filamentPosition}mm`
-    } else {
-      posStr = this.action ?? ''
-    }
-    return posStr
-  }
-
-  private capitalize (str: string): string {
-    if (!str) return str
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
   }
 
   handleSyncSpoolman () {
@@ -372,6 +352,24 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
   private hasSensor (sensorName: string): boolean {
     return sensorName in this.sensors
   }
+
+  openEditGateMapDialog (gate?: number | null) {
+    this.initialEditGate = typeof gate === 'number' ? gate : null
+    this.showEditGateMapDialog = true
+  }
+
+  private selectGate (gate: number) {
+    if (gate === this.TOOL_GATE_BYPASS) {
+      this.sendGcode('MMU_SELECT BYPASS=1', this.$waits.onMmuSelect)
+      return
+    }
+
+    this.sendGcode(`MMU_SELECT GATE=${gate}`, this.$waits.onMmuSelect)
+  }
+
+  private editFilament (gate: number) {
+    this.openEditGateMapDialog(gate)
+  }
 }
 </script>
 
@@ -389,10 +387,5 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
     font-size: 0.8em;
     min-height: 1.0em;
     line-height: 1.0em;
-}
-
-.min-height-text {
-    min-height: 1.1em;
-    line-height: 1.1em;
 }
 </style>

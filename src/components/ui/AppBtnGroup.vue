@@ -87,11 +87,12 @@ export default class AppBtnGroup extends Vue {
           border-bottom-left-radius: $border-radius-root;
           border-bottom-right-radius: $border-radius-root;
         }
+      }
 
       &.app-btn-group--divided > :deep(.v-btn):not(:last-child) {
         border-bottom-width: thin;
         border-bottom-style: solid;
-      }}
+      }
 
       &:not(.app-btn-group--divided) > :deep(.v-btn):not(:last-child) {
         margin-bottom: 2px;

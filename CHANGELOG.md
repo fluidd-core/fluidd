@@ -1,6 +1,25 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
+## [1.36.2](https://github.com/fluidd-core/fluidd/compare/v1.36.1...v1.36.2) (2026-01-02)
+
+
+### Features
+
+* show full timestamp tooltip on relative ([#1771](https://github.com/fluidd-core/fluidd/issues/1771)) ([7bc16ee](https://github.com/fluidd-core/fluidd/commit/7bc16ee7d5cd1abdbdc5247a74c0a577ec02b57f))
+
+
+### Bug Fixes
+
+* **GcodePreview:** reset only null coordinates ([#1775](https://github.com/fluidd-core/fluidd/issues/1775)) ([8a6b082](https://github.com/fluidd-core/fluidd/commit/8a6b082b6e922b399b4cb8486ce79beadf717248))
+* **GcodePreview:** use approximate position ([#1776](https://github.com/fluidd-core/fluidd/issues/1776)) ([2781788](https://github.com/fluidd-core/fluidd/commit/2781788aa32494cd76044154cf89ace6b5e2db8e))
+* **HappyHare:** EMU Logo SVG fix for dark themes ([#1769](https://github.com/fluidd-core/fluidd/issues/1769)) ([2cc3420](https://github.com/fluidd-core/fluidd/commit/2cc34200072617445864db91efd8eb1a58d99fab))
+
+
+### Code Refactorings
+
+* removed "void" dispatch ([13071c0](https://github.com/fluidd-core/fluidd/commit/13071c0f9ad1ebf15a90f3be7dfd5b49b80fa2cd))
 
 ## [1.36.2](https://github.com/fluidd-core/fluidd/compare/v1.36.1...v1.36.2) (2026-01-02)
 
