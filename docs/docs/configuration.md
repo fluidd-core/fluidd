@@ -222,8 +222,9 @@ This is especially useful for temperature store data, as it
 directly affects how much time data is stored on the X axes of
 the thermals graph.
 
-Temperature store size is in seconds, while the G-code store size is defined
-in an entry count.
+Both values are entry counts. Temperature entries are stored once per second by
+default, so a value of 600 corresponds to approximately 10 minutes of history.
+The G-code store size is also defined as an entry count.
 
 ```ini title="moonraker.conf"
 [data_store]
@@ -287,11 +288,24 @@ subscriptions:
   fluidd
 ```
 
+### [analysis]
+
+Enables G-code print time estimation using Moonraker's built-in estimator.
+When enabled, Fluidd shows a "Perform Time Analysis" action in the file
+browser — available for single files via context menu or in bulk. Results are
+stored in file metadata and update the estimated print time displayed in the
+file list.
+
+### [job_queue]
+
+Enables the job queue feature. When enabled, Fluidd shows a job queue card on
+the dashboard, a queue tab on the Jobs page, and "Add to queue" actions in the
+file browser context menu and bulk actions toolbar.
+
 ### [update_manager]
 
 Automated updates can be configured by ensuring the following is in your
-`moonraker.conf`. Moonraker automatically refreshes update status approximately
-every two hours. Update requests are blocked while a print is in progress.
+`moonraker.conf`. Update requests are blocked while a print is in progress.
 
 ```ini title="moonraker.conf"
 [update_manager]
@@ -341,6 +355,10 @@ trusted_clients:
 [history]
 
 [octoprint_compat]
+
+[analysis]
+
+[job_queue]
 
 [update_manager]
 
