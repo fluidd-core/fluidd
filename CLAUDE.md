@@ -269,6 +269,7 @@ docs/
 - Images: `/assets/images/` path, stored in `docs/docs/assets/images/`
 - Code blocks must always have a language tag: `ini` for Klipper/Moonraker config, `bash` for shell commands, `json` for JSON, `text` when no language applies
 - Zensical uses Python-Markdown which requires 4-space indentation per nesting level for all block-level elements nested in lists (sub-lists, paragraphs, code blocks, blockquotes) — no tabs
+- Tables must use aligned pipe style (columns padded to equal width)
 - Links: use `{.md-button}` attribute for standalone action links
 - Keys: use `++key++` syntax (pymdownx.keys extension) instead of `<kbd>`
 - Terminology: G-code (not gcode/Gcode), Wi-Fi (not WiFi), GitHub (not Github), Node.js (not NodeJS), SD card (not SDCard), em dash (—) not hyphen (-) for parenthetical dashes

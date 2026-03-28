@@ -13,19 +13,14 @@ directly from your browser.
 Rich, TextMate grammar-based syntax highlighting is provided for the following
 file types:
 
-- **Klipper config** (`.cfg`, `.conf`) — section headers, keys and values, pin
-  references, sensor and thermistor types, driver types, serial paths, booleans,
-  numbers, and embedded G-code within macros including Jinja2 template blocks
-- **G-code** (`.gcode`, `.g`, `.gc`, `.gco`, `.ufp`, `.nc`) — G/M/T commands,
-  coordinates, feed rates, tool and offset registers, math functions, macro
-  variables, and control keywords
-- **Log files** (`.log`) — log-level colorization (debug, info, warning, error,
-  critical), timestamps, URLs, UUIDs, git SHAs, exception names, and stack
-  traces
-- **JSON** — full validation and IntelliSense via a dedicated language worker
-- **CSS, SCSS, Less** — property completion, hover, and validation via a
-  dedicated language worker
-- **Markdown** — basic syntax highlighting
+| File Type                                                 | Highlighted Elements                                                                                                                                                                             |
+|-----------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Klipper config** (`.cfg`, `.conf`)                      | Section headers, keys and values, pin references, sensor and thermistor types, driver types, serial paths, booleans, numbers, and embedded G-code within macros including Jinja2 template blocks |
+| **G-code** (`.gcode`, `.g`, `.gc`, `.gco`, `.ufp`, `.nc`) | G/M/T commands, coordinates, feed rates, tool and offset registers, math functions, macro variables, and control keywords                                                                        |
+| **Log files** (`.log`)                                    | Log-level colorization (debug, info, warning, error, critical), timestamps, URLs, UUIDs, git SHAs, exception names, and stack traces                                                             |
+| **JSON**                                                  | Full validation and IntelliSense via a dedicated language worker                                                                                                                                 |
+| **CSS, SCSS, Less**                                       | Property completion, hover, and validation via a dedicated language worker                                                                                                                       |
+| **Markdown**                                              | Basic syntax highlighting                                                                                                                                                                        |
 
 ## Documentation links
 
@@ -73,15 +68,15 @@ Collapsible regions are supported for both Klipper config and G-code files.
 
 ## Keyboard shortcuts
 
-| Action             | Shortcut                                      |
-| ------------------ | --------------------------------------------- |
-| Save               | ++ctrl+s++ / ++cmd+s++                        |
-| Save As            | ++ctrl+shift+s++ / ++cmd+shift+s++            |
-| Save and Restart   | ++ctrl+alt+s++ / ++cmd+alt+s++                |
-| Emergency Stop     | ++ctrl+shift+e++ / ++cmd+shift+e++            |
-| Go to Line         | ++ctrl+g++                                    |
-| Go to Symbol       | ++ctrl+shift+o++ / ++cmd+shift+o++            |
-| Command Palette    | ++f1++                                        |
+| Action           | Shortcut                           |
+|------------------|------------------------------------|
+| Save             | ++ctrl+s++ / ++cmd+s++             |
+| Save As          | ++ctrl+shift+s++ / ++cmd+shift+s++ |
+| Save and Restart | ++ctrl+alt+s++ / ++cmd+alt+s++     |
+| Emergency Stop   | ++ctrl+shift+e++ / ++cmd+shift+e++ |
+| Go to Line       | ++ctrl+g++                         |
+| Go to Symbol     | ++ctrl+shift+o++ / ++cmd+shift+o++ |
+| Command Palette  | ++f1++                             |
 
 All actions are also accessible from the Command Palette.
 
