@@ -4,32 +4,44 @@ title: Console
 
 # Console
 
-Fluidd's console comes with some sophisticated features:
+Fluidd's console lets you send G-code commands to Klipper and view responses
+in real time. A compact console card is available on the dashboard, and a
+dedicated fullscreen console page is accessible from the navigation menu.
 
-- **Effortless History Navigation**
-  - Scroll through your console history using the ++arrow-up++ and
-    ++arrow-down++ keys.
-  - Benefit from intelligent history preservation across sessions for a
-    seamless workflow.
+## History
 
-- **Intelligent Autocomplete Functionality**
-  - Harness the power of built-in autocomplete by initiating a command and
-    using the ++tab++ key.
+Use ++arrow-up++ and ++arrow-down++ to scroll through previously entered
+commands. History is preserved across sessions.
 
-- **Clickable Commands**
-  - Click any known command, and watch it populate the console text entry area.
+## Autocomplete
 
-- **Klipper Commands Listing**
-  - Gain insights into Klipper commands with ease by typing `help` and hitting
-    return to access an extensive list of available commands.
+Start typing a command and press ++tab++ to autocomplete. If multiple matches
+exist, they are printed to the console output.
 
-- **Tailored Console Output**
-  - Visit the Console Settings to configure custom filters, including:
-    - `contains`: Hides messages containing the specified string (case
-      insensitive).
-    - `starts with`: Hides messages that commence with the given string (case
-      insensitive).
-    - `expression` - Filters messages matching the provided [regular expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
-      (e.g. `probe at [\d\.,]+ is z=[01]\.\d+`) (case sensitive)
+## Clickable commands
+
+Click any known command in the output to copy it into the input field.
+
+## Command reference
+
+Type `help` and press ++enter++ to list all available Klipper commands,
+including built-in G-code commands and any extended commands provided by
+configured modules and macros. For detailed documentation of each command,
+see the [Klipper G-Codes reference](https://www.klipper3d.org/G-Codes.html).
+
+## Output filters
+
+Configure custom filters in Console Settings to hide unwanted messages:
+
+| Filter        | Description                                                                                                                                              |
+|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `contains`    | Hides messages containing the specified string (case insensitive)                                                                                        |
+| `starts with` | Hides messages starting with the given string (case insensitive)                                                                                         |
+| `expression`  | Hides messages matching a [regular expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp) (case sensitive) |
+
+## Layout
+
+The console input position can be flipped between top and bottom in the
+console settings. Choose whichever feels more natural for your workflow.
 
 ![screenshot](/assets/images/console.png)

@@ -80,24 +80,16 @@ alternative firmware.
 
 ### Features exposed in Fluidd
 
-- **MPC (Model Predictive Control)** — an alternative to PID for extruder
-  temperature control. When MPC is configured (`control: mpc` in
-  `[extruder]`), Fluidd shows an `MPC_CALIBRATE` button in the thermals
-  card. See the [Kalico MPC docs](https://docs.kalico.gg/MPC.html) for
-  configuration details.
-- **Non-critical MCUs** — mark microcontrollers as optional with
-  `is_non_critical: true` in `[mcu]`. Fluidd gracefully disables controls
-  for disconnected optional MCUs instead of showing errors.
-- **Dockable probes** — native support for Quickdraw, Klicky/Unklicky, and
-  other dockable probe systems without external macros.
-- **Per-axis acceleration** — independent X/Y acceleration and velocity
-  limits for CoreXY and CoreXZ kinematics, shown in the Toolhead card.
-- **Fan curves** — temperature-based automatic fan speed curves.
-- **Python templates** — Python math library available in Jinja2 macro
-  templates for complex calculations.
-- **G-Code shell commands** — execute shell commands directly from macros.
-- **Firmware retraction with Z-hop** — built-in Z-hop support during
-  firmware retractions.
+| Feature                            | Description                                                                                                                                                                                                                        |
+|------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **MPC (Model Predictive Control)** | An alternative to PID for extruder temperature control. When configured (`control: mpc` in `[extruder]`), Fluidd shows an `MPC_CALIBRATE` button in the thermals card. See the [Kalico MPC docs](https://docs.kalico.gg/MPC.html). |
+| **Non-critical MCUs**              | Mark microcontrollers as optional with `is_non_critical: true` in `[mcu]`. Fluidd gracefully disables controls for disconnected optional MCUs instead of showing errors.                                                           |
+| **Dockable probes**                | Native support for Quickdraw, Klicky/Unklicky, and other dockable probe systems without external macros.                                                                                                                           |
+| **Per-axis acceleration**          | Independent X/Y acceleration and velocity limits for CoreXY and CoreXZ kinematics, shown in the Toolhead card.                                                                                                                     |
+| **Fan curves**                     | Temperature-based automatic fan speed curves.                                                                                                                                                                                      |
+| **Python templates**               | Python math library available in Jinja2 macro templates for complex calculations.                                                                                                                                                  |
+| **G-Code shell commands**          | Execute shell commands directly from macros.                                                                                                                                                                                       |
+| **Firmware retraction with Z-hop** | Built-in Z-hop support during firmware retractions.                                                                                                                                                                                |
 
 For the full feature reference, see the
 [Kalico documentation](https://docs.kalico.gg).

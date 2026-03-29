@@ -8,6 +8,12 @@ icon: lucide/wrench
 Fluidd is built using VueJS, and the Vuetify Framework to provide a cohesive,
 easy to implement UI.
 
+## Contributing
+
+Contributions are welcome! Please review the
+[CONTRIBUTING.md](https://github.com/fluidd-core/fluidd/blob/develop/CONTRIBUTING.md)
+file before submitting a pull request.
+
 ## Dev Container in Visual Studio Code
 
 Fluidd includes a Dev Container configuration to easily open with Visual Studio Code

@@ -4,10 +4,21 @@ title: Localization
 
 # Localization
 
-Fluidd is equipped with robust localization features to cater to diverse user preferences.
+Fluidd is available in multiple languages. By default, Fluidd detects your
+browser's language preference and loads the closest matching translation
+automatically. If no match is found, English is used.
 
-By default, Fluidd adopts the language set in your browser. If needed, you have the flexibility to override this by specifying a preferred language through interface settings.
+## Changing language
 
-For those who want to contribute and enhance Fluidd's multilingual support, detailed information on localization and translation contributions is available in the [developer localization](/development#localization) docs.
+Go to Settings — General — Language and select a language from the dropdown.
+Choose **Browser default** to use automatic detection based on your browser's
+language setting.
+
+## Contributing translations
+
+Translations are managed through
+[Weblate](https://hosted.weblate.org/engage/fluidd/). Do not edit non-English
+locale files directly — use Weblate instead. See the
+[developer localization](/development#localization) docs for more details.
 
 ![screenshot](/assets/images/localization.png)

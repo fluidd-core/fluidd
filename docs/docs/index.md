@@ -32,11 +32,13 @@ firmware.
 - [Bed mesh](/features/printing#bed-mesh) visualization
 - [Thumbnail](/features/printing#thumbnails) previews from your slicer
 - [Diagnostics dashboard](/features/diagnostics) with custom metrics
-- Built-in [config editor](/features/console) with syntax highlighting
+- [File manager](/features/file-manager) with upload, search, previews, and drag-and-drop
+- Built-in [file editor](/features/file-editor) with syntax highlighting
+- [Keyboard shortcuts](/features/keyboard-shortcuts) for quick navigation and actions
 - [Automated updates](/features/updates) for Klipper, Moonraker, and Fluidd
 - [Third-party integrations](/features/integrations) — Kalico, Happy Hare, AFC, Beacon, Obico, OctoEverywhere, and more
-- Full [localization](/development#localization) in 23+ languages
-- Power device control (GPIO relays, TPLink Smartplug, Tasmota)
+- Full [localization](/features/localization) in multiple languages
+- Power device control via [Moonraker](https://moonraker.readthedocs.io/en/latest/configuration/#power)
 
 ## Supporting Fluidd
 

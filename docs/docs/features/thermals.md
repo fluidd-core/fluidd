@@ -27,8 +27,8 @@ apply with one click. Configure your presets in the UI Settings page.
 
 ## Sensors
 
-Fluidd displays any temperature sensor that Klipper exposes. Below are some
-common configuration examples.
+Fluidd displays any temperature sensor that Klipper exposes. Below are the
+two most common built-in sensor types.
 
 ### Host temperature (Raspberry Pi)
 
@@ -48,36 +48,16 @@ min_temp: 0
 max_temp: 100
 ```
 
-### AHT10 / AHT20 / AHT30 (temperature and humidity)
+### Environmental sensors
 
-```ini title="printer.cfg"
-[temperature_sensor enclosure]
-sensor_type: AHT10
-i2c_mcu: mcu
-i2c_bus: i2c1
-```
+Klipper supports a wide range of I2C temperature, humidity, and pressure
+sensors — including AHT10/20/30, BME280/680, BMP180/388, SHT3X, HTU21D,
+LM75, and more. Fluidd displays these automatically when configured. For
+setup details, refer to the
+[Klipper temperature sensor documentation](https://www.klipper3d.org/Config_Reference.html#temperature-sensors).
 
-### BMP180 / BMP280 / BMP388 (pressure and temperature)
+### MPC (Kalico)
 
-```ini title="printer.cfg"
-[temperature_sensor chamber_pressure]
-sensor_type: BMP388
-i2c_mcu: mcu
-i2c_bus: i2c1
-```
-
-### SHT3x (temperature and humidity)
-
-```ini title="printer.cfg"
-[temperature_sensor enclosure_sht]
-sensor_type: SHT3X
-i2c_mcu: mcu
-i2c_bus: i2c1
-```
-
-### Other sensors
-
-Klipper 0.13.0 added support for additional sensor types including load cells
-(ldc1612) and hall angle sensors (mt6816/mt6826s). For a full list, refer to
-the
-[Klipper documentation](https://www.klipper3d.org/Config_Reference.html#temperature-sensors).
+If you are running [Kalico](/features/integrations#kalico-firmware) with MPC
+(Model Predictive Control) configured for your extruder, Fluidd shows an
+`MPC_CALIBRATE` button in the thermals card.

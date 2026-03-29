@@ -2,6 +2,7 @@
 *[AFC]: Automated Filament Changer
 *[API]: Application Programming Interface
 *[CIDR]: Classless Inter-Domain Routing — IP address range notation
+*[CNC]: Computer Numerical Control — automated machining (also supported by Klipper)
 *[CORS]: Cross-Origin Resource Sharing — browser security policy for API access
 *[ERCF]: Enraged Rabbit Carrot Feeder — open-source multi-material unit
 *[FDM]: Fused Deposition Modeling — the most common 3D printing method

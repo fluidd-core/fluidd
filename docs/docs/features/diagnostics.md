@@ -7,7 +7,13 @@ title: Diagnostics
 The diagnostics dashboard is an opt-in feature, currently in beta, that allows
 you to plot various metrics about your printer in a customizable dashboard.
 
-The feature can be enabled in the Fluidd settings under the general section.
+## Getting started
+
+To enable the diagnostics dashboard:
+
+1. Go to **Settings** and open the **General** section.
+2. Toggle the **Diagnostics** option on.
+3. A new **Diagnostics** page will appear in the navigation menu.
 
 ## Dashboard
 
@@ -27,6 +33,15 @@ dialog will open guiding you through the setup process:
 
 ![screenshot](/assets/images/diagnostics_edit_card.png)
 
+### Chart settings
+
+Each chart can be configured with:
+
+- **Title** — a descriptive name shown in the chart header.
+- **Axis range** — set fixed min/max values or leave them on auto-scale.
+- **Colors** — assign a distinct color to each plotted metric.
+- **Legend** — toggle legend visibility.
+
 ### Metrics Collector
 
 Each plotted metric runs a collector, based on user-defined JavaScript code
@@ -41,10 +56,36 @@ The example below calculates the current flow rate based on the printers
 
 ![screenshot](/assets/images/diagnostics_collector_config.png)
 
+### Collector examples
+
+Here are a few more examples to get you started:
+
+**Temperature delta** — track how far the bed temperature is from its target:
+
+```javascript
+return state.heater_bed.temperature - state.heater_bed.target
+```
+
+**Fan speed** — plot the part cooling fan speed as a percentage:
+
+```javascript
+return state.fan.speed * 100
+```
+
+**Extruder power** — monitor how hard the extruder heater is working:
+
+```javascript
+return state.extruder.power * 100
+```
+
 ### Metrics Explorer
 
 A metrics explorer is available to check the available data points as well as
 aid in the creation of scripts. Data points can be inserted into the collector
-script by clicking their key (name) in the metrics explorer:
+script by clicking their key (name) in the metrics explorer.
+
+The data structure mirrors Klipper's
+[printer object model](https://www.klipper3d.org/Status_Reference.html), so
+any status value Klipper exposes can be accessed in your collector scripts.
 
 ![screenshot](/assets/images/diagnostics_metrics_explorer.png)

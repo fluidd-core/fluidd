@@ -58,12 +58,30 @@ Fluidd-config provides enhanced versions of the standard macros with additional
 capabilities:
 
 - Configurable park positions (round beds, square beds, or custom coordinates)
-- Enhanced PAUSE macro with optional X, Y, and Z_MIN parameters
+- Separate park positions for `PAUSE` and `CANCEL_PRINT`
+- Enhanced `PAUSE` macro with optional X, Y, and Z_MIN parameters
 - Pause at next layer or at a specific layer number
-- Temperature management during pause/resume cycles
-- Filament runout sensor integration
-- Configurable idle timeout behavior
+- Temperature management during pause/resume cycles (save/restore extruder
+  temperature with idle timeout integration)
+- Configurable retraction and unretraction with firmware retraction support
+- Filament runout sensor integration (blocks `RESUME` if no filament detected)
+- Configurable idle timeout behavior during `PAUSE` state
+- User-injectable custom macros in `PAUSE`/`RESUME`/`CANCEL_PRINT` flows
+- Safer toolhead movement commands via `_CLIENT_LINEAR_MOVE`
 - Support for printers without extruders (e.g. CNC machines)
+
+### Fluidd UI Integration
+
+When fluidd-config is installed, Fluidd automatically detects its macros and
+enables additional UI features:
+
+- **Pause at layer** — the `SET_PAUSE_NEXT_LAYER` and `SET_PAUSE_AT_LAYER`
+  macros enable a pause-at-layer dropdown in the print controls, allowing you
+  to pause or trigger an `M600` filament change at a specific layer
+- **Toolhead park button** — the `PARK_TOOLHEAD` macro adds a park button to
+  the toolhead card
+- **Filament load/unload buttons** — the `LOAD_FILAMENT` and `UNLOAD_FILAMENT`
+  macros add dedicated buttons to the toolhead card
 
 ### Customization
 
@@ -83,9 +101,9 @@ For more detailed instructions, please refer to the [Klipper documentation](http
 
 ### [virtual_sdcard]
 
-Fluidd requires your printer to be set up with `virtual_sdcard`. This allows
-file uploads to work correctly. If you get a G-code path not found error in
-Fluidd, this is generally the first place to look.
+Fluidd requires `virtual_sdcard` to upload, browse, and print G-code files.
+Without this, Fluidd cannot manage files on your printer. If you get a
+G-code path not found error, this is generally the first place to look.
 
 ```ini title="printer.cfg"
 [virtual_sdcard]
@@ -94,7 +112,8 @@ path: ~/printer_data/gcodes
 
 ### [display_status]
 
-Required to properly support display updates in Fluidd, with no other lines required.
+Required for Fluidd to show print progress percentages and M117 display
+messages. No additional configuration is needed.
 
 ```ini title="printer.cfg"
 [display_status]
@@ -102,7 +121,9 @@ Required to properly support display updates in Fluidd, with no other lines requ
 
 ### [pause_resume]
 
-Enables Pause / Resume functionality within klipper. This is a single block, with no other lines required.
+Enables the Pause, Resume, and Cancel buttons in Fluidd's print controls.
+Without this, Fluidd cannot pause or cancel a running print. No additional
+configuration is needed.
 
 ```ini title="printer.cfg"
 [pause_resume]
@@ -222,8 +243,9 @@ This is especially useful for temperature store data, as it
 directly affects how much time data is stored on the X axes of
 the thermals graph.
 
-Temperature store size is in seconds, while the G-code store size is defined
-in an entry count.
+Both values are entry counts. Temperature entries are stored once per second by
+default, so a value of 600 corresponds to approximately 10 minutes of history.
+The G-code store size is also defined as an entry count.
 
 ```ini title="moonraker.conf"
 [data_store]
@@ -287,11 +309,24 @@ subscriptions:
   fluidd
 ```
 
+### [analysis]
+
+Enables G-code print time estimation using Moonraker's built-in estimator.
+When enabled, Fluidd shows a "Perform Time Analysis" action in the file
+browser — available for single files via context menu or in bulk. Results are
+stored in file metadata and update the estimated print time displayed in the
+file list.
+
+### [job_queue]
+
+Enables the job queue feature. When enabled, Fluidd shows a job queue card on
+the dashboard, a queue tab on the Jobs page, and "Add to queue" actions in the
+file browser context menu and bulk actions toolbar.
+
 ### [update_manager]
 
 Automated updates can be configured by ensuring the following is in your
-`moonraker.conf`. Moonraker automatically refreshes update status approximately
-every two hours. Update requests are blocked while a print is in progress.
+`moonraker.conf`. Update requests are blocked while a print is in progress.
 
 ```ini title="moonraker.conf"
 [update_manager]
@@ -341,6 +376,10 @@ trusted_clients:
 [history]
 
 [octoprint_compat]
+
+[analysis]
+
+[job_queue]
 
 [update_manager]
 

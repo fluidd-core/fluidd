@@ -13,6 +13,8 @@ Fluidd is packed with features to help you monitor, control, and manage your
 - **[Printing](/features/printing)** — G-code viewer with multi-tool support,
   object exclusion, thumbnail previews, bed mesh visualization, and print
   history with statistics.
+- **[Slicer Uploads](/features/slicer-uploads)** — upload G-code directly from
+  OrcaSlicer, PrusaSlicer, SuperSlicer, or Cura.
 
 ## Monitoring
 
@@ -33,10 +35,21 @@ Fluidd is packed with features to help you monitor, control, and manage your
 - **[Multi-Material](/features/multi-material)** — multiple extruder support
   with Pressure Advance, plus Spoolman integration for filament spool
   tracking and QR code scanning.
-- **[Multiple Printers](/features/multiple-printers)** — connect and switch
-  between multiple printers from a single Fluidd instance.
 
-## Management
+## File Management
+
+- **[File Manager](/features/file-manager)** — browse, upload, edit, and manage
+  G-code files, configuration, logs, and more with search, previews, drag and
+  drop, and bulk operations.
+- **[File Editor](/features/file-editor)** — built-in editor with syntax
+  highlighting, CodeLens documentation links, outline navigation, and code
+  folding.
+
+## System & Administration
+
+- **[Keyboard Shortcuts](/features/keyboard-shortcuts)** — navigate pages,
+  control prints, and use the editor and console efficiently from the
+  keyboard.
 
 - **[Updates](/features/updates)** — automated updates for Klipper, Moonraker,
   Fluidd, and other components, with manual update instructions.
@@ -44,12 +57,12 @@ Fluidd is packed with features to help you monitor, control, and manage your
   management, database backup, and alerts for throttling and pending updates.
 - **[Authorization](/features/authorization)** — JWT authentication with
   support for forced logins and LDAP.
-- **[Slicer Uploads](/features/slicer-uploads)** — upload G-code directly from
-  PrusaSlicer, SuperSlicer, or Cura.
+- **[Multiple Printers](/features/multiple-printers)** — connect and switch
+  between multiple printers from a single Fluidd instance.
 - **[Timelapse](/features/timelapse)** — browse, download, and manage timelapse
   recordings via Moonraker's timelapse component.
-- **[Localization](/features/localization)** — available in 23+ languages with
-  automatic browser detection.
+- **[Localization](/features/localization)** — available in multiple languages
+  with automatic browser detection.
 
 ## Integrations
 

@@ -71,6 +71,12 @@ sizes are:
 1. Open `Printer Settings` → `General` tab → `Thumbnails` section.
 2. Set `Small` to `48x48` and `Large` to `300x300`.
 
+### OrcaSlicer
+
+1. Open `Printer Settings` → `Basic information` tab.
+2. In the `Thumbnails` section, ensure `48x48/PNG` and `300x300/PNG` are
+   listed. OrcaSlicer includes these by default for most printer profiles.
+
 ### Cura
 
 **OctoPrint plugin (recommended):** Enable
@@ -98,11 +104,12 @@ You need `[bed_mesh]` configured in Klipper for this option to appear.
 Fluidd integrates with Moonraker's print history component to give you
 insights into past prints.
 
-- **View and sort** — browse your print history chronologically, sorted by
-  last print date.
-- **Filter** — narrow the list to specific jobs or statuses.
-- **Statistics** — track total print time and filament usage over time.
-- **Re-print** — re-start failed or cancelled jobs directly from the history.
+| Action            | Description                                                           |
+|-------------------|-----------------------------------------------------------------------|
+| **View and sort** | Browse your print history chronologically, sorted by last print date. |
+| **Filter**        | Narrow the list to specific jobs or statuses.                         |
+| **Statistics**    | Track total print time and filament usage over time.                  |
+| **Re-print**      | Re-start failed or cancelled jobs directly from the history.          |
 
 Fluidd loads the last 50 prints by default. The full history can hold up to
 10,000 entries — a dedicated History page is available from the main navigation
