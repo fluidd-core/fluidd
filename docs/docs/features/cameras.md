@@ -27,11 +27,5 @@ Visit the UI Settings page to define and configure your cameras.
 
 ## Crowsnest support
 
-For optimal performance and feature-rich streaming, we recommend using
-**Crowsnest** as your preferred streamer in conjunction with Fluidd.
-
-Crowsnest seamlessly integrates with Fluidd, offering extensive configuration
-options tailored for a wide range of devices.
-
-Please check the [Crowsnest documentation](https://crowsnest.mainsail.xyz/) for
-more information.
+We recommend [Crowsnest](https://crowsnest.mainsail.xyz/) as your camera
+streamer. It integrates with Fluidd and supports a wide range of devices.

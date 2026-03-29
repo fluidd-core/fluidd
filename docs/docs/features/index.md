@@ -51,7 +51,7 @@ Fluidd is packed with features to help you monitor, control, and manage your
   PrusaSlicer, SuperSlicer, or Cura.
 - **[Timelapse](/features/timelapse)** — browse, download, and manage timelapse
   recordings via Moonraker's timelapse component.
-- **[Localization](/features/localization)** — available in 23+ languages with
+- **[Localization](/features/localization)** — available in multiple languages with
   automatic browser detection.
 
 ## Integrations

@@ -52,19 +52,24 @@ max_temp: 100
 
 ```ini title="printer.cfg"
 [temperature_sensor enclosure]
-sensor_type: AHT10
+sensor_type: AHT1X
 i2c_mcu: mcu
 i2c_bus: i2c1
 ```
+
+Use `AHT1X`, `AHT2X`, or `AHT3X` depending on your sensor model.
 
 ### BMP180 / BMP280 / BMP388 (pressure and temperature)
 
 ```ini title="printer.cfg"
 [temperature_sensor chamber_pressure]
-sensor_type: BMP388
+sensor_type: BME280
 i2c_mcu: mcu
 i2c_bus: i2c1
 ```
+
+All BMP/BME variants (BMP180, BMP280, BMP388, BME280, BME680) use
+`sensor_type: BME280` — Klipper auto-detects the specific model at startup.
 
 ### SHT3x (temperature and humidity)
 
@@ -77,7 +82,5 @@ i2c_bus: i2c1
 
 ### Other sensors
 
-Klipper 0.13.0 added support for additional sensor types including load cells
-(ldc1612) and hall angle sensors (mt6816/mt6826s). For a full list, refer to
-the
+Klipper supports many additional sensor types. For a full list, refer to the
 [Klipper documentation](https://www.klipper3d.org/Config_Reference.html#temperature-sensors).

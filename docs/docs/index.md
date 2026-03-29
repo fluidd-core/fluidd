@@ -37,7 +37,7 @@ firmware.
 - [Keyboard shortcuts](/features/keyboard-shortcuts) for quick navigation and actions
 - [Automated updates](/features/updates) for Klipper, Moonraker, and Fluidd
 - [Third-party integrations](/features/integrations) — Kalico, Happy Hare, AFC, Beacon, Obico, OctoEverywhere, and more
-- Full [localization](/development#localization) in 23+ languages
+- Full [localization](/features/localization) in multiple languages
 - Power device control (GPIO relays, TPLink Smartplug, Tasmota)
 
 ## Supporting Fluidd

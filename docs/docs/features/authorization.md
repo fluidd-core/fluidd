@@ -26,19 +26,18 @@ After restarting Moonraker, add a user.
 force_logins: true
 ```
 
-## Forced Logins?
+## Understanding forced logins
 
-1. With `force_logins` set to `true` and with no users defined — moonraker defaults
-to your `trusted_clients:` setup.
+The `force_logins` setting controls how Moonraker handles authentication:
 
-2. With `force_logins` set to `true` and with one or more users defined — moonraker
-will ignore your `trusted_clients:` setup, and require authorization credentials.
+| `force_logins` | Users defined? | Behavior                                            |
+|----------------|----------------|-----------------------------------------------------|
+| `false`        | —              | Relies on `trusted_clients` first                   |
+| `true`         | No             | Falls back to `trusted_clients`                     |
+| `true`         | Yes            | Ignores `trusted_clients`, requires authentication  |
 
-3. With `force_logins` set to `false`, moonraker will always rely on your
-`trusted_clients:` setup first.
-
-Under default conditions, a fresh installation would have your client trusted.
-You can confirm this by noting your currently authenticated user.
+A fresh installation has your client trusted by default. You can confirm this
+by checking your currently authenticated user.
 
 ![screenshot](/assets/images/auth_trusted.png)
 
