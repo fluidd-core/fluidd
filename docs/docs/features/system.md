@@ -20,8 +20,8 @@ From here you can:
   registered services.
 - **Manage the Moonraker database** — back up and restore your Moonraker
   database, or clear individual namespaces when troubleshooting. Click
-  **Backup** to download a JSON snapshot, and **Restore** to upload a
-  previously saved backup.
+  **Create Backup** to have Moonraker create a backup on the host, and
+  **Restore** to select and restore from an existing backup.
 
 ## Peripherals
 

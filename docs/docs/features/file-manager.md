@@ -36,7 +36,8 @@ menu (right-click) or toolbar:
 - Create new files and folders
 - Create ZIP archives from single or multiple items
 
-Large G-code uploads (over 100 MB) prompt for confirmation before proceeding.
+When opening G-code preview for very large files (over 100 MB), Fluidd
+prompts for confirmation before loading.
 
 ## G-code features
 
@@ -115,5 +116,5 @@ keyboard shortcuts.
 
 ## Disk usage
 
-A warning icon appears in the toolbar when free disk space drops below 1 GB or
-20% of total capacity.
+A warning icon appears in the toolbar when free disk space drops below the
+lower of 1 GB or 20% of total capacity.

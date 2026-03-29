@@ -74,7 +74,8 @@ Three options:
   macros, etc.).
 - **Moonraker database backup** — go to the
   [System page](/features/system), find the database section, and click
-  Backup to download a JSON file. Use Restore to upload it later.
+  Create Backup to save a backup on the host. Use Restore to select and
+  restore from an existing backup.
 - **Config files** — your Klipper and Moonraker configuration files are
   stored in `~/printer_data/config`. You can copy this directory manually
   via SSH or use the [File Manager](/features/file-manager) to download
