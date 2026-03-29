@@ -4,8 +4,12 @@ title: Diagnostics
 
 # Diagnostics
 
-The diagnostics dashboard is an opt-in feature, currently in beta, that allows
-you to plot various metrics about your printer in a customizable dashboard.
+!!! info "Beta feature"
+    The diagnostics dashboard is currently in beta. It is opt-in and must be
+    enabled in settings before use.
+
+The diagnostics dashboard allows you to plot various metrics about your
+printer in a customizable dashboard.
 
 ## Getting started
 

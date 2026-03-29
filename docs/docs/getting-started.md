@@ -59,9 +59,11 @@ To build from source (requires Node.js v24.x and Git):
 3. `npm ci`
 4. `npm run build`
 
-The output is written to `dist/`. Note: building on a Raspberry Pi is not
-supported due to hardware limitations — build on a PC and copy `dist/` to
-your Pi using `scp` or similar.
+The output is written to `dist/`.
+
+!!! note "Raspberry Pi"
+    Building on a Raspberry Pi is not supported due to hardware limitations.
+    Build on a PC and copy `dist/` to your Pi using `scp` or similar.
 
 ## fluidd.xyz
 
@@ -76,15 +78,10 @@ To connect, add `*://app.fluidd.xyz` to the `cors_domains` section of your
 
 ## FluiddPI
 
-### ⚠️ WARNING ⚠️
-
-FluiddPI is not under active maintenance and we've had reports from users
-finding issues while using it.
-
-As such, our recommendation is that you **do not use FluiddPI**, and instead
-use [KIAUH](#kiauh) to install Fluidd.
-
----
+!!! warning "FluiddPI is not recommended"
+    FluiddPI is not under active maintenance and we've had reports from users
+    finding issues while using it. We recommend using [KIAUH](#kiauh) to
+    install Fluidd instead.
 
 FluiddPI is a Raspberry Pi OS Lite image pre-configured with Klipper,
 Moonraker, and Fluidd.

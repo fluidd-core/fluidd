@@ -27,10 +27,11 @@ Click any printer in the drawer list to switch. Fluidd fully reinitializes —
 loading the new printer's settings, state, and authentication from its
 Moonraker instance.
 
-Each printer selection can be bookmarked. Fluidd adds a `?printer=` query
-parameter to the browser URL — a hash that identifies a printer you have
-already added. Opening such a URL on the same browser will select that saved
-printer automatically.
+!!! info "Bookmarkable URLs"
+    Each printer selection can be bookmarked. Fluidd adds a `?printer=`
+    query parameter to the browser URL — a hash that identifies a printer
+    you have already added. Opening such a URL on the same browser will
+    select that saved printer automatically.
 
 ## Printer names
 

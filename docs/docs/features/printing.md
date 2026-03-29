@@ -32,16 +32,16 @@ list of all objects by clicking the cancel icon in the card header.
 Excluded objects are marked in red, the currently printing object in blue,
 and all other objects in green.
 
-For this feature to work:
+!!! note "Requirements"
+    - Turn on `Label Objects` in your slicer.
+    - Add an `[exclude_object]` section to your `printer.cfg` or `fluidd.cfg`.
+    - Set `enable_object_processing: True` in the `[file_manager]` section of
+      `moonraker.conf`. Alternatively, configure
+      [object preprocessing in your slicer](https://github.com/kageurufu/preprocess_cancellation).
 
-- Turn on `Label Objects` in your slicer.
-- Add an `[exclude_object]` section to your `printer.cfg` or `fluidd.cfg`.
-- Set `enable_object_processing: True` in the `[file_manager]` section of
-  `moonraker.conf`. Alternatively, configure
-  [object preprocessing in your slicer](https://github.com/kageurufu/preprocess_cancellation).
-
-This only works on files uploaded _after_ enabling these settings — Moonraker
-needs to process the file with object preprocessing turned on.
+!!! warning "Reprocessing required"
+    This only works on files uploaded _after_ enabling these settings —
+    Moonraker needs to process the file with object preprocessing turned on.
 
 ![screenshot](/assets/images/exclude_object.png)
 ![screenshot](/assets/images/exclude_object_modal.png)

@@ -102,8 +102,12 @@ For more detailed instructions, please refer to the [Klipper documentation](http
 ### [virtual_sdcard]
 
 Fluidd requires `virtual_sdcard` to upload, browse, and print G-code files.
-Without this, Fluidd cannot manage files on your printer. If you get a
-G-code path not found error, this is generally the first place to look.
+Without this, Fluidd cannot manage files on your printer.
+
+!!! warning "G-code path not found"
+    If you get a G-code path not found error in Fluidd, check that
+    `[virtual_sdcard]` is configured correctly — this is the most common
+    cause.
 
 ```ini title="printer.cfg"
 [virtual_sdcard]
@@ -132,10 +136,13 @@ configuration is needed.
 ### Macros
 
 Klipper provides built-in `PAUSE`, `RESUME`, and `CANCEL_PRINT` commands when
-`[pause_resume]` is enabled. The macros below are **optional** — they override
-the built-ins to add park positioning and extrusion retract on pause. Adapt
-them to your printer or use
-[fluidd-config](#fluidd-config-recommended) for a more complete version.
+`[pause_resume]` is enabled.
+
+!!! note "Optional macros"
+    The macros below are **optional** — they override the built-ins to add
+    park positioning and extrusion retract on pause. If you use
+    [fluidd-config](#fluidd-config-recommended), these are already included
+    with additional features.
 
 #### PAUSE
 

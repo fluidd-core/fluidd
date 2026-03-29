@@ -37,12 +37,15 @@ into your host:
 
 ## Power devices
 
-If Moonraker's `[power]` component is configured, Fluidd displays power
-device controls on the dashboard and in the top navigation bar. You can
-toggle devices on and off directly from the UI.
+!!! note "Moonraker configuration required"
+    Power device controls require Moonraker's `[power]` component to be
+    configured. See the
+    [Moonraker power documentation](https://moonraker.readthedocs.io/en/latest/configuration/#power)
+    for setup details and supported device types.
 
-For configuration details and supported device types, see the
-[Moonraker power documentation](https://moonraker.readthedocs.io/en/latest/configuration/#power).
+When configured, Fluidd displays power device controls on the dashboard and
+in the top navigation bar. You can toggle devices on and off directly from
+the UI.
 
 ## Notifications
 
