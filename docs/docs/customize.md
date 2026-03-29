@@ -10,14 +10,17 @@ and control which components are visible.
 
 ## Application Layout
 
-Fluidd allows you to adjust your dashboard layout to your liking. Use the
-hamburger menu and click the `adjust layout` option.
+Fluidd's dashboard uses a multi-column layout. On desktop, cards are arranged
+across left and right columns. On mobile, they collapse into a single column.
 
-Use the drag handles to move cards to / from the left and right columns. You
-can also easily disable cards if you have no use for them.
+To adjust the layout, open the side menu and click **Adjust Layout**:
 
-Once you're done, click the exit layout mode button. You can reset back to
-the default layout by clicking reset layout.
+- **Drag** cards between columns or reorder them within a column using the
+  drag handles.
+- **Enable or disable** individual cards using the checkboxes — disabled
+  cards are hidden from the dashboard.
+- Click **Exit Layout** when you are done, or **Reset Layout** to restore
+  the default arrangement.
 
 ![screenshot](/assets/images/layout.png)
 
@@ -28,16 +31,19 @@ the default layout by clicking reset layout.
 Fluidd lets you choose a community preset, apply a color of your
 choosing — along with either a dark or light theme.
 
-Community presets are a way for Fluidd to support 3D printing communities. If
-you'd like to see your logo supported here, let us know!
+Community presets are themed around popular 3D printing brands and
+communities. If you'd like to see your logo supported here, let us know!
+
+You can also set any custom primary color and independently toggle between
+dark and light mode without using a preset.
 
 ![screenshot](/assets/images/theme.png)
 
-### Community Themes
+### Custom Themes
 
-Fluidd offers a way for custom stylesheets and background images to be included.
-All custom theming is configured through a `.fluidd-theme` folder within your
-configuration files.
+Fluidd supports custom stylesheets and background images. All custom theming
+is configured through a `.fluidd-theme` folder within your configuration
+files.
 
 #### Custom Background
 
@@ -50,12 +56,17 @@ Currently, the following file extensions are supported:
 - `.png`
 - `.gif`
 
+#### Custom Logo
+
+To replace the Fluidd logo in the sidebar, upload a `logo.svg` or `logo.png`
+file to the `.fluidd-theme` folder in your configuration directory. The logo
+will appear in the application bar after reloading Fluidd.
+
 #### Custom Styling
 
-Fluidd offers a [curated list of community themes](https://github.com/fluidd-core/themes).
-To use a community theme, simply upload the themes `custom.css` file to the
-`.fluidd-theme` directory.
-After a reload of Fluidd the changes should become visible.
+To apply custom CSS, create a `custom.css` file and upload it to the
+`.fluidd-theme` directory. After reloading Fluidd the changes should become
+visible.
 
 ## Hiding Components
 

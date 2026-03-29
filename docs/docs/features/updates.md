@@ -22,9 +22,19 @@ Update requests are blocked while a print is in progress.
 
 In order for this feature to be enabled, you need to configure Moonraker's
 update plugin. See the
-[Moonraker configuration](/configuration#example-configuration) docs.
+[Moonraker configuration](/configuration#example-configuration) docs. For
+advanced options (custom repositories, pinned branches, etc.), see the
+[Moonraker update_manager documentation](https://moonraker.readthedocs.io/en/latest/configuration/#update_manager).
 
 ![screenshot](/assets/images/updates.png)
+
+## Recovery
+
+If an update fails and a component shows an **INVALID** status, Fluidd
+provides a recovery button — click it to attempt automatic repair. If
+recovery does not resolve the issue, you can update the component manually
+via SSH (see [Manual Updates](#manual-updates) below) or reach out on
+[Discord](https://discord.gg/GZ3D5tqfcF).
 
 ## Updating via KIAUH
 

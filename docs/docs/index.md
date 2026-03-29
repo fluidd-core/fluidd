@@ -38,7 +38,7 @@ firmware.
 - [Automated updates](/features/updates) for Klipper, Moonraker, and Fluidd
 - [Third-party integrations](/features/integrations) — Kalico, Happy Hare, AFC, Beacon, Obico, OctoEverywhere, and more
 - Full [localization](/features/localization) in multiple languages
-- Power device control (GPIO relays, TPLink Smartplug, Tasmota)
+- Power device control via [Moonraker](https://moonraker.readthedocs.io/en/latest/configuration/#power)
 
 ## Supporting Fluidd
 

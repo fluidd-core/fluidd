@@ -5,12 +5,14 @@ title: Localization
 # Localization
 
 Fluidd is available in multiple languages. By default, Fluidd detects your
-browser's language and loads the matching translation automatically.
+browser's language preference and loads the closest matching translation
+automatically. If no match is found, English is used.
 
 ## Changing language
 
 Go to Settings — General — Language and select a language from the dropdown.
-Choose **Browser default** to use automatic detection.
+Choose **Browser default** to use automatic detection based on your browser's
+language setting.
 
 ## Contributing translations
 

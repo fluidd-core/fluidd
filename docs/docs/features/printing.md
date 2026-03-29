@@ -71,6 +71,12 @@ sizes are:
 1. Open `Printer Settings` → `General` tab → `Thumbnails` section.
 2. Set `Small` to `48x48` and `Large` to `300x300`.
 
+### OrcaSlicer
+
+1. Open `Printer Settings` → `Basic information` tab.
+2. In the `Thumbnails` section, ensure `48x48/PNG` and `300x300/PNG` are
+   listed. OrcaSlicer includes these by default for most printer profiles.
+
 ### Cura
 
 **OctoPrint plugin (recommended):** Enable

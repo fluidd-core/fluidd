@@ -101,9 +101,9 @@ For more detailed instructions, please refer to the [Klipper documentation](http
 
 ### [virtual_sdcard]
 
-Fluidd requires your printer to be set up with `virtual_sdcard`. This allows
-file uploads to work correctly. If you get a G-code path not found error in
-Fluidd, this is generally the first place to look.
+Fluidd requires `virtual_sdcard` to upload, browse, and print G-code files.
+Without this, Fluidd cannot manage files on your printer. If you get a
+G-code path not found error, this is generally the first place to look.
 
 ```ini title="printer.cfg"
 [virtual_sdcard]
@@ -112,7 +112,8 @@ path: ~/printer_data/gcodes
 
 ### [display_status]
 
-Required to properly support display updates in Fluidd, with no other lines required.
+Required for Fluidd to show print progress percentages and M117 display
+messages. No additional configuration is needed.
 
 ```ini title="printer.cfg"
 [display_status]
@@ -120,7 +121,9 @@ Required to properly support display updates in Fluidd, with no other lines requ
 
 ### [pause_resume]
 
-Enables Pause / Resume functionality within klipper. This is a single block, with no other lines required.
+Enables the Pause, Resume, and Cancel buttons in Fluidd's print controls.
+Without this, Fluidd cannot pause or cancel a running print. No additional
+configuration is needed.
 
 ```ini title="printer.cfg"
 [pause_resume]

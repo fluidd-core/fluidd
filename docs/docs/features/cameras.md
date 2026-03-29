@@ -21,11 +21,65 @@ The current supported types are:
 | **IP Camera**                | Experimental — replaces the `<img>` tag with a `<video>` tag. Use only if your URL supports native HTML5 video.                |
 | **HTTP Page**                | Loads a website in place of the camera feed. Use for embedding video feeds not supported by the other methods.                 |
 
-Visit the UI Settings page to define and configure your cameras.
+## Choosing a camera type
+
+Not sure which type to use? Here's a quick guide:
+
+- **MJPEG Stream** — the simplest and most widely compatible option. Works
+  with virtually any streamer. Uses more bandwidth than WebRTC, so it may
+  struggle on slow Wi-Fi connections.
+- **MJPEG Adaptive** — same source as MJPEG Stream but pulls snapshots at a
+  target frame rate instead of a continuous stream. Better for unstable or
+  low-bandwidth connections.
+- **WebRTC (camera-streamer)** — the most bandwidth-efficient option.
+  Leverages hardware video encoding on Raspberry Pi devices. Best choice if
+  you are running on a Pi and your streamer supports it.
+- **WebRTC (go2rtc)** — low-bandwidth WebRTC streaming that works on any
+  hardware, not just Raspberry Pi. A good alternative when camera-streamer
+  is not available.
+- **WebRTC (MediaMTX)** — similar to go2rtc. Useful if you already run
+  [MediaMTX](https://github.com/bluenviron/mediamtx) for other purposes.
+- **HLS Stream** — delivers high-resolution video with moderate latency.
+  Suitable for high-quality monitoring where a few seconds of delay is
+  acceptable.
+- **IP Camera / HTTP Page** — use these only for devices that provide their
+  own video feed URL or web interface.
+
+## Camera settings
+
+Visit the UI Settings page to define and configure your cameras. Each camera
+can be configured individually with:
+
+- **Aspect ratio** — set the display ratio to match your camera's output.
+- **Rotation and flip** — rotate or mirror the video feed to match your
+  camera's physical orientation.
+- **Fullscreen view** — click the expand icon on the camera card to view the
+  feed in fullscreen. You can also access a dedicated fullscreen camera page
+  from the navigation menu.
 
 ![screenshot](/assets/images/camera_settings.png)
 
-## Crowsnest support
+## Camera streamers
 
-We recommend [Crowsnest](https://crowsnest.mainsail.xyz/) as your camera
-streamer. It integrates with Fluidd and supports a wide range of devices.
+You will need a camera streaming service running alongside Klipper to serve
+the video feed. Fluidd does not capture video itself — it only displays
+streams provided by external services.
+
+### Crowsnest
+
+[Crowsnest](https://crowsnest.mainsail.xyz/) is the recommended camera
+streamer for Klipper setups. It supports a wide range of USB and CSI cameras
+and integrates with Fluidd out of the box. See the
+[Crowsnest documentation](https://crowsnest.mainsail.xyz/) for installation
+and configuration.
+
+### Alternatives
+
+- [**go2rtc**](https://github.com/AlexxIT/go2rtc) — lightweight WebRTC
+  server supporting many camera sources. Works on any hardware.
+- [**MediaMTX**](https://github.com/bluenviron/mediamtx) — real-time media
+  server supporting RTSP, RTMP, HLS, WebRTC, and more.
+- [**camera-streamer**](https://github.com/ayufan/camera-streamer) —
+  optimized for Raspberry Pi hardware video encoding.
+
+Refer to each project's documentation for setup instructions.
