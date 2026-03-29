@@ -24,6 +24,7 @@ nav = [
     "features/diagnostics.md",
     "features/file-editor.md",
     "features/file-manager.md",
+    "features/job-queue.md",
     "features/keyboard-shortcuts.md",
     "features/localization.md",
     "features/macros.md",

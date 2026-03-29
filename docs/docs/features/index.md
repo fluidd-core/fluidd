@@ -15,6 +15,8 @@ Fluidd is packed with features to help you monitor, control, and manage your
   history with statistics.
 - **[Slicer Uploads](/features/slicer-uploads)** — upload G-code directly from
   OrcaSlicer, PrusaSlicer, SuperSlicer, or Cura.
+- **[Job Queue](/features/job-queue)** — queue multiple G-code files for
+  sequential printing with drag-and-drop reordering and bulk actions.
 
 ## Monitoring
 

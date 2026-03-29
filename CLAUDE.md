@@ -242,6 +242,7 @@ docs/
 │   │   ├── diagnostics.md
 │   │   ├── file-editor.md     # Monaco editor features, syntax, CodeLens, folding
 │   │   ├── file-manager.md    # File browser, upload, search, previews, drag-and-drop
+│   │   ├── job-queue.md       # Sequential printing queue
 │   │   ├── keyboard-shortcuts.md  # Global, editor, console keyboard shortcuts
 │   │   ├── localization.md
 │   │   ├── macros.md
