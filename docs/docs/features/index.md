@@ -53,7 +53,7 @@ Fluidd is packed with features to help you monitor, control, and manage your
 
 - **[Updates](/features/updates)** — automated updates for Klipper, Moonraker,
   Fluidd, and other components, with manual update instructions.
-- **[System & Notifications](/features/system)** — host information, service
+- **[System & Notifications](/features/system-and-notifications)** — host information, service
   management, database backup, and alerts for throttling and pending updates.
 - **[Authorization](/features/authorization)** — JWT authentication with
   support for forced logins and LDAP.
@@ -66,7 +66,7 @@ Fluidd is packed with features to help you monitor, control, and manage your
 
 ## Integrations
 
-- **[Third-Party Integrations](/features/integrations)** — Kalico firmware
+- **[Third-Party Integrations](/features/third-party-integrations)** — Kalico firmware
   support (MPC, non-critical MCUs, dockable probes), Happy Hare and AFC
   multi-material systems, Beacon and Cartographer probes, Spoolman, Crowsnest,
   KlipperScreen, Obico, OctoEverywhere, and more.

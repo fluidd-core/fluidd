@@ -32,12 +32,27 @@ list of all objects by clicking the cancel icon in the card header.
 Excluded objects are marked in red, the currently printing object in blue,
 and all other objects in green.
 
-!!! note "Requirements"
-    - Turn on `Label Objects` in your slicer.
-    - Add an `[exclude_object]` section to your `printer.cfg` or `fluidd.cfg`.
-    - Set `enable_object_processing: True` in the `[file_manager]` section of
-      `moonraker.conf`. Alternatively, configure
-      [object preprocessing in your slicer](https://github.com/kageurufu/preprocess_cancellation).
+For this feature to work, complete the following setup:
+
+1. Add to `printer.cfg`:
+
+    ```ini title="printer.cfg"
+    [exclude_object]
+    ```
+
+2. Add to `moonraker.conf`:
+
+    ```ini title="moonraker.conf"
+    [file_manager]
+    enable_object_processing: True
+    ```
+
+3. Re-slice your model with object labeling enabled in your slicer:
+
+    - **PrusaSlicer / OrcaSlicer**: Print Settings → Output options → Label objects
+    - **SuperSlicer**: Print Settings → Output options → Label objects
+    - **Cura**: Extensions → Post Processing → Modify G-Code → Insert at layer change →
+      add object labels
 
 !!! warning "Reprocessing required"
     This only works on files uploaded _after_ enabling these settings —
@@ -118,3 +133,23 @@ for a full-screen view.
 ![screenshot](/assets/images/print_history.png)
 ![screenshot](/assets/images/print_stats.png)
 ![screenshot](/assets/images/reprint.png)
+
+## Firmware Retraction
+
+Fluidd shows a **Retraction** card on the dashboard when firmware retraction is
+configured in Klipper. This lets you adjust retraction settings live during a
+print without re-slicing.
+
+To enable firmware retraction, add to `printer.cfg`:
+
+```ini title="printer.cfg"
+[firmware_retraction]
+retract_length: 1.0
+retract_speed: 45
+unretract_extra_length: 0
+unretract_speed: 45
+```
+
+Also enable firmware retraction in your slicer (usually under Extruder or
+Printer settings) so it emits `G10`/`G11` commands instead of explicit
+`E` moves.

@@ -29,6 +29,8 @@ Requires Happy Hare installed on your Klipper instance. Fluidd will
 automatically show the MMU dashboard card when it detects the `mmu` Klipper
 object.
 
+[Happy Hare on GitHub](https://github.com/moggieuk/Happy-Hare){.md-button}
+
 ### AFC (Automated Filament Changer)
 
 Dashboard card for
@@ -44,23 +46,40 @@ Features include:
 
 Requires AFC-Klipper-Add-On installed on your Klipper instance.
 
+[AFC-Klipper-Add-On on GitHub](https://github.com/ArmoredTurtle/AFC-Klipper-Add-On){.md-button}
+
 ## Probes & Sensors
 
 ### Beacon
 
-Dedicated widget for the [Beacon](https://docs.beacon3d.com/) eddy current
-probe. You can view probe samples, manage saved probe models, and save new
-models directly from the UI.
+Fluidd includes a [Beacon](https://docs.beacon3d.com/) eddy current probe
+widget that appears automatically when the probe is detected. From this card
+you can view probe samples, manage saved probe models, and save new models
+directly from the UI. No extra Fluidd configuration is needed.
+
+[Beacon documentation](https://docs.beacon3d.com/){.md-button}
 
 ### Cartographer / Scanner
 
 Probe commands for [Cartographer](https://docs.cartographer3d.com/) and
-Scanner devices are integrated into the Toolhead card.
+Scanner devices are integrated into the Toolhead card. Two calibration
+methods are accessible directly from the Toolhead card when the probe is
+detected:
+
+- **Scan calibration** — performs a full bed scan for mesh generation.
+- **Touch calibration** — uses physical touch for Z offset calibration.
+
+No extra Fluidd configuration is needed; the buttons appear automatically
+when Fluidd detects a Cartographer or Scanner probe.
+
+[Cartographer documentation](https://docs.cartographer3d.com/){.md-button}
 
 ### Other probes
 
-Fluidd displays state for Smart Effector, Probe Eddy Current, and Load Cell
-sensors when configured in Klipper. No extra Fluidd configuration is needed.
+Any probe configured in Klipper (`[probe]`, `[bltouch]`, `[smart_effector]`) is
+automatically visible in Fluidd's Toolhead card with its current state. This
+includes Smart Effector, Probe Eddy Current, and Load Cell sensors.
+No extra Fluidd configuration is needed.
 
 ### Temperature & humidity sensors
 
@@ -88,7 +107,7 @@ alternative firmware.
 | **Per-axis acceleration**          | Independent X/Y acceleration and velocity limits for CoreXY and CoreXZ kinematics, shown in the Toolhead card.                                                                                                                     |
 | **Fan curves**                     | Temperature-based automatic fan speed curves.                                                                                                                                                                                      |
 | **Python templates**               | Python math library available in Jinja2 macro templates for complex calculations.                                                                                                                                                  |
-| **G-Code shell commands**          | Execute shell commands directly from macros.                                                                                                                                                                                       |
+| **G-code shell commands**          | Execute shell commands directly from macros.                                                                                                                                                                                       |
 | **Firmware retraction with Z-hop** | Built-in Z-hop support during firmware retractions.                                                                                                                                                                                |
 
 For the full feature reference, see the
@@ -138,9 +157,10 @@ started.
 
 ### OctoEverywhere
 
-[OctoEverywhere](https://octoeverywhere.com/) provides free, unlimited remote
-access to your Fluidd interface with full-framerate webcam streaming. It
-includes AI print failure detection (Gadget), real-time notifications via
-Telegram, SMS, and Discord, and mobile app support via Mobileraker and OctoApp.
+[OctoEverywhere](https://octoeverywhere.com/) is a cloud service with a free
+tier that provides remote access to your Fluidd interface with full-framerate
+webcam streaming. Premium plans unlock Gadget AI print failure detection,
+real-time notifications via Telegram, SMS, and Discord, and mobile app support
+via Mobileraker and OctoApp.
 
 [OctoEverywhere](https://octoeverywhere.com/){.md-button}

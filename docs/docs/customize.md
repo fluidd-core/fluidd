@@ -68,6 +68,11 @@ To apply custom CSS, create a `custom.css` file and upload it to the
 `.fluidd-theme` directory. After reloading Fluidd the changes should become
 visible.
 
+!!! tip "Custom CSS"
+    Custom CSS is applied globally. Fluidd uses Vuetify 2 CSS classes. Use
+    your browser's developer tools (++f12++) to inspect element classes before
+    writing custom selectors.
+
 ## Hiding Components
 
 Fluidd allows you to hide macros, output pins, fans and sensors by prefixing
@@ -99,3 +104,7 @@ Macros can also be hidden directly from the Fluidd settings by toggling their
 visibility, in order to not change their name:
 
 ![screenshot](/assets/images/macro_visibility.png)
+
+Note that the underscore prefix controls macro and pin/sensor visibility only.
+Dashboard widget cards (temperature, toolhead, etc.) are shown or hidden via
+the **Layout** settings instead.

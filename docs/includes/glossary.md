@@ -6,7 +6,8 @@
 *[CORS]: Cross-Origin Resource Sharing — browser security policy for API access
 *[ERCF]: Enraged Rabbit Carrot Feeder — open-source multi-material unit
 *[FDM]: Fused Deposition Modeling — the most common 3D printing method
-*[G-Code]: Programming language for CNC/3D printer instructions
+*[G-code]: Programming language for CNC/3D printer instructions
+*[GPIO]: General Purpose Input/Output — configurable hardware pins on SBCs and MCUs
 *[HLS]: HTTP Live Streaming — adaptive camera streaming format
 *[I2C]: Inter-Integrated Circuit — serial communication bus for sensors
 *[JWT]: JSON Web Token — authentication method used by Moonraker

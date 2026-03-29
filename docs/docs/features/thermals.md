@@ -25,6 +25,12 @@ apply with one click. Configure your presets in the UI Settings page.
 
 ![screenshot](/assets/images/presets.png)
 
+!!! tip "Turning heaters off"
+    Set a temperature to `0` in a preset to turn that heater off.
+
+Presets can also store fan speeds. Add a fan speed to a preset for materials
+that need active cooling (e.g., PLA) or none at all (e.g., ABS).
+
 ## Sensors
 
 Fluidd displays any temperature sensor that Klipper exposes. Below are the
@@ -58,6 +64,6 @@ setup details, refer to the
 
 ### MPC (Kalico)
 
-If you are running [Kalico](/features/integrations#kalico-firmware) with MPC
+If you are running [Kalico](/features/third-party-integrations#kalico-firmware) with MPC
 (Model Predictive Control) configured for your extruder, Fluidd shows an
 `MPC_CALIBRATE` button in the thermals card.

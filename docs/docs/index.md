@@ -36,7 +36,7 @@ firmware.
 - Built-in [file editor](/features/file-editor) with syntax highlighting
 - [Keyboard shortcuts](/features/keyboard-shortcuts) for quick navigation and actions
 - [Automated updates](/features/updates) for Klipper, Moonraker, and Fluidd
-- [Third-party integrations](/features/integrations) — Kalico, Happy Hare, AFC, Beacon, Obico, OctoEverywhere, and more
+- [Third-party integrations](/features/third-party-integrations) — Kalico, Happy Hare, AFC, Beacon, Obico, OctoEverywhere, and more
 - Full [localization](/features/localization) in multiple languages
 - Power device control via [Moonraker](https://moonraker.readthedocs.io/en/latest/configuration/#power)
 

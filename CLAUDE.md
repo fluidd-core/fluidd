@@ -235,25 +235,25 @@ docs/
 │   ├── configuration.md   # Fluidd Config, Klipper, Moonraker, Multiple Printers
 │   ├── customize.md       # Layout, themes, hiding components
 │   ├── features/
-│   │   ├── index.md       # Features overview (section landing page)
-│   │   ├── printing.md    # G-code viewer, thumbnails, bed mesh, print history
-│   │   ├── thermals.md    # Chart, presets, sensors
+│   │   ├── index.md           # Features overview (section landing page)
+│   │   ├── authorization.md
 │   │   ├── cameras.md
 │   │   ├── console.md
-│   │   ├── file-editor.md  # Monaco editor features, syntax, CodeLens, folding
+│   │   ├── diagnostics.md
+│   │   ├── file-editor.md     # Monaco editor features, syntax, CodeLens, folding
+│   │   ├── file-manager.md    # File browser, upload, search, previews, drag-and-drop
 │   │   ├── keyboard-shortcuts.md  # Global, editor, console keyboard shortcuts
-│   │   ├── file-manager.md  # File browser, upload, search, previews, drag-and-drop
+│   │   ├── localization.md
 │   │   ├── macros.md
 │   │   ├── multi-material.md  # Multiple extruders + Spoolman
 │   │   ├── multiple-printers.md
-│   │   ├── diagnostics.md
-│   │   ├── updates.md
-│   │   ├── system.md      # System info + notifications
-│   │   ├── authorization.md
+│   │   ├── printing.md        # G-code viewer, thumbnails, bed mesh, print history
 │   │   ├── slicer-uploads.md
+│   │   ├── system-and-notifications.md  # System info + notifications
+│   │   ├── thermals.md        # Chart, presets, sensors
+│   │   ├── third-party-integrations.md  # Kalico, Happy Hare, AFC, Beacon, Obico, OctoEverywhere, etc.
 │   │   ├── timelapse.md
-│   │   ├── localization.md
-│   │   └── integrations.md  # Kalico, Happy Hare, AFC, Beacon, Obico, OctoEverywhere, etc.
+│   │   └── updates.md
 │   ├── development.md     # Dev container, local dev, localization
 │   ├── faq.md             # Organized by topic (Setup, Cameras, System, Printing)
 │   └── sponsors.md

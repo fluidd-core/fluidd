@@ -298,6 +298,11 @@ failed or cancelled prints, and sorting your filesystem by last print time.
 
 See the [feature docs](/features/printing#print-history) for more explanation of these features.
 
+!!! tip "Backup & Restore"
+    You can back up and restore the Moonraker database from the
+    [System page](/features/system-and-notifications). This preserves Fluidd settings, print
+    history, and other Moonraker data.
+
 ### [octoprint_compat]
 
 This enables the slicer upload feature, allowing PrusaSlicer, SuperSlicer and
@@ -453,3 +458,29 @@ on your printer.
 If they do return a valid response, but fluidd still won't allow you to save,
 then refer to the above configuration example to ensure moonraker is configured
 to accept connections from your fluidd host.
+
+## Common Configuration Issues
+
+### Fluidd shows a configuration warning
+
+Fluidd checks for required sections in `printer.cfg` and warns if any are
+missing. Common warnings include:
+
+- `[virtual_sdcard] not found in printer configuration.`
+- `[pause_resume] not found in printer configuration.`
+- `CANCEL_PRINT macro not found in configuration.`
+
+Ensure `[virtual_sdcard]`, `[pause_resume]`, `[display_status]`, and a
+`CANCEL_PRINT` macro are present. See the configuration examples above.
+
+### Configuration changes are not saved
+
+If the file editor shows a "Read only" error, check that Moonraker has
+`enable_config_write_access: True` in `[file_manager]` (the default).
+Also verify file system permissions on the config directory.
+
+### CORS errors in the browser console
+
+Your browser is blocking cross-origin requests. Add your Fluidd URL to
+`cors_domains` in `moonraker.conf`. See [CORS Domains](#cors-domains) above
+and the [example configuration](#example-configuration).

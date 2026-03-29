@@ -15,16 +15,15 @@ Moonraker stores API keys in its internal database. To retrieve your API key:
 
 ## Setup
 
-- Add a new user with Fluidd, after which time you'll be prompted for
-authorization.
+If authorization is not yet enabled:
 
-- If you are not prompted, add `force_logins` to your moonraker configuration.
-After restarting Moonraker, add a user.
+1. Open Fluidd and go to **Settings → Authorization**
+2. Click **Add User** and create your first user account with a username and password
+3. Once a user exists, Fluidd will prompt for login on next visit
+4. Trusted clients (LAN IPs) bypass the login screen — configure these to avoid
+   logging in from your own network
 
-```ini title="moonraker.conf"
-[authorization]
-force_logins: true
-```
+If you're locked out, see the [Lost Password](#lost-password) section.
 
 ## Understanding forced logins
 
@@ -41,7 +40,7 @@ by checking your currently authenticated user.
 
 ![screenshot](/assets/images/auth_trusted.png)
 
-## Lost password?
+## Lost Password
 
 Lost your only password? You need to revert to a trusted setup. You can do this
 by editing your `moonraker.conf` and turning `force_logins` to `false`.
@@ -92,8 +91,6 @@ is_active_directory: True
 #   Enables support for Microsoft Active Directory.  The default is False.
 ```
 
-moonraker_secure.json
-
 ```json title="moonraker_secure.json"
 {
   "ldap_credentials": {
@@ -105,3 +102,13 @@ moonraker_secure.json
 
 ![screenshot](/assets/images/auth_login_multisource.png)
 ![screenshot](/assets/images/auth_login_multisource_select.png)
+
+### Common LDAP Issues
+
+- **"LDAP connection refused"** — verify the LDAP server address and port
+  (default: 389 for LDAP, 636 for LDAPS)
+- **"Invalid credentials"** — check the bind DN and password in `moonraker.conf`
+- **User can log in but has no access** — ensure the user is in the correct LDAP
+  group (if `group_dn` is configured)
+- **SSL/TLS errors** — for LDAPS, ensure the certificate is trusted on the
+  Moonraker host

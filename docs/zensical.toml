@@ -24,7 +24,6 @@ nav = [
     "features/diagnostics.md",
     "features/file-editor.md",
     "features/file-manager.md",
-    "features/integrations.md",
     "features/keyboard-shortcuts.md",
     "features/localization.md",
     "features/macros.md",
@@ -32,8 +31,9 @@ nav = [
     "features/multiple-printers.md",
     "features/printing.md",
     "features/slicer-uploads.md",
-    "features/system.md",
+    "features/system-and-notifications.md",
     "features/thermals.md",
+    "features/third-party-integrations.md",
     "features/timelapse.md",
     "features/updates.md"
   ]},
