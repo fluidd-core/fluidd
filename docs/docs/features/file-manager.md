@@ -99,10 +99,11 @@ Each root offers filters to hide specific file types:
 
 The file manager can preview files in-browser:
 
-- **Images** — `.bmp`, `.gif`, `.jpg`, `.jpeg`, `.png`, `.svg`, `.tif`,
-  `.webp`
+- **Images** — `.bmp`, `.gif`, `.jfif`, `.jpg`, `.jpeg`, `.png`, `.svg`,
+  `.tif`, `.tiff`, `.webp`
 - **Videos** — `.mp4`, `.mpeg`, `.mpg`
-- **Markdown** — `.md` files rendered with full formatting
+- **Markdown** — `.md`, `.markdown`, and `.mdown` files rendered with full
+  formatting
 - **G-code thumbnails** — slicer-generated preview images displayed in the file
   list
 
