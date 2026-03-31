@@ -15,7 +15,7 @@ firmware.
 [View on GitHub](https://github.com/fluidd-core/fluidd){.md-button}
 [Release Notes](https://github.com/fluidd-core/fluidd/releases){.md-button}
 
-![screenshot](/assets/images/preview_sliced.png)
+![Fluidd dashboard showing a sliced G-code 3D preview](/assets/images/preview_sliced.png)
 
 ## Features
 

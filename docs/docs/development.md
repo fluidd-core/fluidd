@@ -58,7 +58,7 @@ npm --version
 
 ```bash
 cd .../path/to/fluidd
-npm install
+npm ci
 ```
 
 ### Run a local development server

@@ -57,7 +57,7 @@ can be configured individually with:
   feed in fullscreen. You can also access a dedicated fullscreen camera page
   from the navigation menu.
 
-![screenshot](/assets/images/camera_settings.png)
+![Camera settings panel with stream URL, rotation, and aspect ratio options](/assets/images/camera_settings.png)
 
 ## Camera streamers
 

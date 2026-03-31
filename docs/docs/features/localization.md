@@ -21,4 +21,4 @@ Translations are managed through
 locale files directly — use Weblate instead. See the
 [developer localization](/development#localization) docs for more details.
 
-![screenshot](/assets/images/localization.png)
+![Language selection dropdown in Fluidd settings](/assets/images/localization.png)

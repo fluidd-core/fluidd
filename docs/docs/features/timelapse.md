@@ -56,7 +56,9 @@ frame:
 **Render settings:**
 
 - Fixed or variable frame rate (with min/max FPS and target length)
-- Quality (CRF value)
+- Quality (CRF value — Constant Rate Factor; lower values mean higher quality
+  and larger file size, higher values mean smaller files with more compression;
+  typical range is 17–28 for H.264)
 - Duplicate last frame count
 - Save raw frames after rendering
 - Generate preview thumbnail

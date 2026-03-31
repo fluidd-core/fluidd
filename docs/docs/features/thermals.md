@@ -16,14 +16,14 @@ fans in real time.
 - Click the power value to toggle power graph visibility.
 - Hold ++shift++ and scroll the mouse wheel over the chart to zoom.
 
-![screenshot](/assets/images/graph.png)
+![Thermal graph showing real-time temperature history for heaters and sensors](/assets/images/graph.png)
 
 ## Presets
 
 Fluidd supports custom thermal presets — saved temperature profiles you can
 apply with one click. Configure your presets in the UI Settings page.
 
-![screenshot](/assets/images/presets.png)
+![Temperature preset configuration with preset name and target temperature fields](/assets/images/presets.png)
 
 !!! tip "Turning heaters off"
     Set a temperature to `0` in a preset to turn that heater off.
@@ -38,6 +38,8 @@ two most common built-in sensor types.
 
 ### Host temperature (Raspberry Pi)
 
+See the [Klipper `temperature_host` reference](https://www.klipper3d.org/Config_Reference.html#temperature_host).
+
 ```ini title="printer.cfg"
 [temperature_sensor raspberry_pi]
 sensor_type: temperature_host
@@ -46,6 +48,8 @@ max_temp: 100
 ```
 
 ### MCU temperature (ATSAM, ATAMD, STM32)
+
+See the [Klipper `temperature_mcu` reference](https://www.klipper3d.org/Config_Reference.html#temperature_mcu).
 
 ```ini title="printer.cfg"
 [temperature_sensor mcu_temp]

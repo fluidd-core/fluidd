@@ -26,7 +26,7 @@ update plugin. See the
 advanced options (custom repositories, pinned branches, etc.), see the
 [Moonraker update_manager documentation](https://moonraker.readthedocs.io/en/latest/configuration/#update_manager).
 
-![screenshot](/assets/images/updates.png)
+![Update manager listing available updates for Klipper, Moonraker, and Fluidd](/assets/images/updates.png)
 
 ## Recovery
 

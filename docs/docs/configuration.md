@@ -6,14 +6,27 @@ icon: lucide/settings
 # Configuration
 
 Because Fluidd relies on Moonraker and Klipper, configuration needs to happen
-in more than one location. Start with the initial setup section to ensure you
-have the basic requirements in place first.
+in more than one location.
+
+!!! tip "Installed via KIAUH or another automated tool?"
+    Check whether your `printer.cfg` already has `[include fluidd.cfg]`. If
+    it does, [fluidd-config](#fluidd-config-recommended) is installed and you
+    are ready to print — no further configuration is required.
+
+    For manual or custom installations, follow the sections below in order:
+
+    1. **[Fluidd Config](#fluidd-config-recommended)** — recommended; installs
+       all required config in one step
+    2. **[Klipper](#klipper-manual-configuration)** — required sections if you
+       are not using fluidd-config
+    3. **[Moonraker](#moonraker)** — API configuration
+    4. Refer to [Common Configuration Issues](#common-configuration-issues)
+       if Fluidd shows warnings or won't connect
 
 ## Initial Setup
 
 Fluidd requires some basic configuration to be applied in order to function
-correctly. Fluidd should warn you if these are not found in your configuration
-upon startup.
+correctly. Fluidd will warn you on startup if required sections are missing.
 
 ## Fluidd Config (recommended)
 
@@ -103,6 +116,7 @@ For more detailed instructions, please refer to the [Klipper documentation](http
 
 Fluidd requires `virtual_sdcard` to upload, browse, and print G-code files.
 Without this, Fluidd cannot manage files on your printer.
+See the [Klipper `[virtual_sdcard]` reference](https://www.klipper3d.org/Config_Reference.html#virtual_sdcard).
 
 !!! warning "G-code path not found"
     If you get a G-code path not found error in Fluidd, check that
@@ -118,6 +132,7 @@ path: ~/printer_data/gcodes
 
 Required for Fluidd to show print progress percentages and M117 display
 messages. No additional configuration is needed.
+See the [Klipper `[display_status]` reference](https://www.klipper3d.org/Config_Reference.html#display_status).
 
 ```ini title="printer.cfg"
 [display_status]
@@ -128,6 +143,7 @@ messages. No additional configuration is needed.
 Enables the Pause, Resume, and Cancel buttons in Fluidd's print controls.
 Without this, Fluidd cannot pause or cancel a running print. No additional
 configuration is needed.
+See the [Klipper `[pause_resume]` reference](https://www.klipper3d.org/Config_Reference.html#pause_resume).
 
 ```ini title="printer.cfg"
 [pause_resume]
@@ -222,21 +238,23 @@ gcode:
 
 ## Moonraker
 
-Moonraker is the API that fluidd communicates with, which in turn communicates with Klipper.
-All three components are required for a healthy printer.
+Moonraker is the API that Fluidd communicates with, which in turn communicates
+with Klipper. All three components are required for a healthy printer.
 
-For more detailed instructions, please refer to the [Moonraker documentation](https://moonraker.readthedocs.io/en/latest/configuration/).
+For the full configuration reference, see the
+[Moonraker documentation](https://moonraker.readthedocs.io/en/latest/configuration/).
 
 ### [server]
 
-This configures the general configuration of your moonraker instance. In most
-cases, you shouldn't need to touch anything here. If Klipper's Unix socket
-is at a non-standard path, set `klippy_uds_address` accordingly.
+Configures the Moonraker server. In most cases the defaults are fine — only
+set `klippy_uds_address` if Klipper's Unix socket is at a non-standard path.
+See the [Moonraker `[server]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#server).
 
 ### [file_manager]
 
-If you want to be able to cancel single objects on a multi-object print, then
-you will need to set `enable_object_processing: True` here to enable it.
+To cancel individual objects during a multi-object print, enable object
+preprocessing here.
+See the [Moonraker `[file_manager]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#file_manager).
 
 ```ini title="moonraker.conf"
 [file_manager]
@@ -245,14 +263,11 @@ enable_object_processing: True
 
 ### [data_store]
 
-Temperature and G-code store sizes can be configured in moonraker.
-This is especially useful for temperature store data, as it
-directly affects how much time data is stored on the X axes of
-the thermals graph.
-
-Both values are entry counts. Temperature entries are stored once per second by
-default, so a value of 600 corresponds to approximately 10 minutes of history.
-The G-code store size is also defined as an entry count.
+Controls how much history Moonraker buffers in memory. The
+`temperature_store_size` value directly affects how much time is shown on
+the X axis of the [thermals graph](/features/thermals#thermals-graph). Temperature
+entries are stored once per second, so `600` equals approximately 10 minutes.
+See the [Moonraker `[data_store]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#data_store).
 
 ```ini title="moonraker.conf"
 [data_store]
@@ -262,15 +277,14 @@ gcode_store_size: 1000
 
 ### [authorization]
 
-This configures the authorization required to access the moonraker API.
-Normally, this is enabled. Your installation method may provide a default
-configuration that applies to most users network requirements, however -
-sometimes changes are required to meet specific needs.
+Controls which clients can access the Moonraker API. An automated installer
+typically provides a default that works for most home networks — adjustments
+are occasionally needed for remote access or unusual network topologies.
+See the [Moonraker `[authorization]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#authorization).
 
 #### CORS Domains
 
-CORS Domains are a list of host names that are allowed to communicate with
-moonraker.
+A list of hostnames that Moonraker accepts cross-origin requests from.
 
 If your IP address falls under the trusted clients, moonraker should allow
 your host to connect without changes.
@@ -286,17 +300,17 @@ Protocols are required, but can be omitted with the use of wildcards.
 
 #### Trusted Clients
 
-Trusted clients are a list of IP ranges that moonraker will accept communication
+Trusted clients are a list of IP ranges that Moonraker will accept communication
 from. The default list in the [configuration example](#example-configuration) covers
 most user configurations for internal networks. Note that these ranges are in CIDR
 format.
 
 ### [history]
 
-Enables job history. Also provides benefits such as being able to reprint
-failed or cancelled prints, and sorting your filesystem by last print time.
-
-See the [feature docs](/features/printing#print-history) for more explanation of these features.
+Enables job history, reprinting failed or cancelled prints, and sorting the
+file browser by last print time.
+See the [feature docs](/features/printing#print-history) for more details, and the
+[Moonraker `[history]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#history).
 
 !!! tip "Backup & Restore"
     You can back up and restore the Moonraker database from the
@@ -305,15 +319,17 @@ See the [feature docs](/features/printing#print-history) for more explanation of
 
 ### [octoprint_compat]
 
-This enables the slicer upload feature, allowing PrusaSlicer, SuperSlicer and
-Cura users to directly upload gcodes. This section must be explicitly included
-in your `moonraker.conf` and Moonraker must be restarted for the module to
-load. See the [configuration example](#example-configuration).
+Enables the slicer upload feature, allowing PrusaSlicer, SuperSlicer, and
+Cura users to upload G-code files directly. This section must be explicitly
+included in your `moonraker.conf` and Moonraker must be restarted for the
+module to load. See the [slicer uploads feature docs](/features/slicer-uploads)
+and the [configuration example](#example-configuration).
 
 ### [announcements]
 
-Enables Moonraker announcements for Fluidd, so that any important Fluidd message
-from the developers and maintainers is shown in the Fluidd notifications.
+Enables Moonraker announcements for Fluidd, so that important messages from
+the developers and maintainers are shown in the Fluidd notifications panel.
+See the [Moonraker `[announcements]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#announcements).
 
 ```ini title="moonraker.conf"
 [announcements]
@@ -328,17 +344,23 @@ When enabled, Fluidd shows a "Perform Time Analysis" action in the file
 browser — available for single files via context menu or in bulk. Results are
 stored in file metadata and update the estimated print time displayed in the
 file list.
+See the [Moonraker `[analysis]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#analysis).
 
 ### [job_queue]
 
 Enables the job queue feature. When enabled, Fluidd shows a job queue card on
 the dashboard, a queue tab on the Jobs page, and "Add to queue" actions in the
 file browser context menu and bulk actions toolbar.
+See the [job queue feature docs](/features/job-queue) and the
+[Moonraker `[job_queue]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#job_queue).
 
 ### [update_manager]
 
-Automated updates can be configured by ensuring the following is in your
-`moonraker.conf`. Update requests are blocked while a print is in progress.
+Enables automated updates for Klipper, Moonraker, Fluidd, and any extra
+components you configure. Update requests are blocked while a print is in
+progress. See the
+[Moonraker `[update_manager]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#update_manager)
+for advanced options such as custom repositories and pinned branches.
 
 ```ini title="moonraker.conf"
 [update_manager]
@@ -351,8 +373,8 @@ path: ~/fluidd
 
 ### Example Configuration
 
-This is an example configuration which should apply to most users.
-Your moonraker configuration can usually be found here: `~/printer_data/config/moonraker.conf`
+This is an example `moonraker.conf` that works for most home network setups.
+Your Moonraker configuration file is usually at `~/printer_data/config/moonraker.conf`.
 
 ```ini title="moonraker.conf"
 [server]

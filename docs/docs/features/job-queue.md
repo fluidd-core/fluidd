@@ -11,7 +11,8 @@ one starts automatically (if configured) or waits for you to resume.
 ## Setup
 
 Add `[job_queue]` to your `moonraker.conf` and restart Moonraker. See the
-[Moonraker configuration](/configuration#example-configuration) for a
+[Moonraker `[job_queue]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#job_queue)
+and the [Moonraker configuration](/configuration#example-configuration) for a
 complete example.
 
 !!! note "Manual start by default"
@@ -67,12 +68,12 @@ queue.
 
 The queue card shows the current state:
 
-| State        | Description                                                  |
-|--------------|--------------------------------------------------------------|
-| **Ready**    | Queue is active — the next job will load when the printer is free |
-| **Paused**   | Queue is on hold — waiting for you to resume                 |
-| **Loading**  | Queue is loading the next job file                           |
-| **Starting** | Queue is requesting Klipper to start the print               |
+| State        | Description                                                          |
+|--------------|----------------------------------------------------------------------|
+| **Ready**    | Queue is active — the next job will load when the printer is free    |
+| **Paused**   | Queue is on hold — waiting for you to resume                         |
+| **Loading**  | Queue is loading the next job file                                   |
+| **Starting** | Queue is requesting Klipper to start the print                       |
 
 ## Queue totals
 

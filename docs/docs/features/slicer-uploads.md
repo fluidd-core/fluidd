@@ -45,8 +45,8 @@ your printer.
 6. Enter any non-empty string in the **API Key** field.
 7. Click **Test** to verify the connection.
 
-![screenshot](/assets/images/physical-printer.png)
-![screenshot](/assets/images/slicer-upload.png)
+![PrusaSlicer physical printer configuration with connection details](/assets/images/physical-printer.png)
+![Slicer upload confirmation showing the file being sent to Fluidd](/assets/images/slicer-upload.png)
 
 ## Cura
 

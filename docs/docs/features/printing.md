@@ -17,9 +17,9 @@ shown in a distinct color.
 Frequently used settings are accessible via the cog icon in the card header.
 Less common options can be found on Fluidd's settings page.
 
-![screenshot](/assets/images/gcode_preview.png)
-![screenshot](/assets/images/gcode_display_opts.png)
-![screenshot](/assets/images/gcode_settings.png)
+![G-code 3D preview showing a sliced model with layer visualization](/assets/images/gcode_preview.png)
+![G-code viewer display options panel with layer and move-type toggles](/assets/images/gcode_display_opts.png)
+![G-code viewer settings with rendering and performance options](/assets/images/gcode_settings.png)
 
 ### Exclude Object
 
@@ -58,8 +58,8 @@ For this feature to work, complete the following setup:
     This only works on files uploaded _after_ enabling these settings —
     Moonraker needs to process the file with object preprocessing turned on.
 
-![screenshot](/assets/images/exclude_object.png)
-![screenshot](/assets/images/exclude_object_modal.png)
+![Exclude Object panel showing labeled objects on the print bed](/assets/images/exclude_object.png)
+![Exclude Object confirmation dialog](/assets/images/exclude_object_modal.png)
 
 ## Thumbnails
 
@@ -103,7 +103,7 @@ Use the `Print with OctoPrint` button after slicing.
 `Modify G-Code`. Add two `Create Thumbnail` scripts — one at `300x300` and
 one at `48x48`.
 
-![screenshot](/assets/images/thumbnails.png)
+![File browser showing thumbnail previews of sliced print files](/assets/images/thumbnails.png)
 
 ## Bed Mesh
 
@@ -112,7 +112,7 @@ calibrate a mesh to view it.
 
 You need `[bed_mesh]` configured in Klipper for this option to appear.
 
-![screenshot](/assets/images/bed_mesh.png)
+![Bed mesh viewer showing a calibrated height deviation heat map](/assets/images/bed_mesh.png)
 
 ## Print History
 
@@ -130,9 +130,9 @@ Fluidd loads the last 50 prints by default. The full history can hold up to
 10,000 entries — a dedicated History page is available from the main navigation
 for a full-screen view.
 
-![screenshot](/assets/images/print_history.png)
-![screenshot](/assets/images/print_stats.png)
-![screenshot](/assets/images/reprint.png)
+![Print history list with job name, status, and duration columns](/assets/images/print_history.png)
+![Print statistics showing total print time and filament usage](/assets/images/print_stats.png)
+![Re-print dialog with option to re-start a previous job](/assets/images/reprint.png)
 
 ## Firmware Retraction
 
@@ -140,7 +140,9 @@ Fluidd shows a **Retraction** card on the dashboard when firmware retraction is
 configured in Klipper. This lets you adjust retraction settings live during a
 print without re-slicing.
 
-To enable firmware retraction, add to `printer.cfg`:
+To enable firmware retraction, add to `printer.cfg`. See the
+[Klipper `[firmware_retraction]` reference](https://www.klipper3d.org/Config_Reference.html#firmware_retraction)
+for all available options.
 
 ```ini title="printer.cfg"
 [firmware_retraction]

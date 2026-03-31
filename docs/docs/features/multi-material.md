@@ -13,13 +13,13 @@ Fluidd supports single extruder, multiple extruder, and multiple extruder
 stepper configurations. Pressure Advance values can be set for all
 configurations.
 
-![screenshot](/assets/images/multiple-extruders.png)
+![Multiple extruder controls with per-extruder Pressure Advance settings](/assets/images/multiple-extruders.png)
 
 For multiple extruder stepper setups, Fluidd shows a section for each stepper
 where you can enable or disable it, associate it with an extruder, and set
 Pressure Advance values.
 
-![screenshot](/assets/images/multiple-extruder-steppers.png)
+![Multiple extruder stepper panel with enable, extruder, and Pressure Advance controls](/assets/images/multiple-extruder-steppers.png)
 
 ## Spool Management (Spoolman)
 
@@ -32,14 +32,14 @@ On print start, Fluidd shows a modal asking you to select a spool. You can
 pick one from the list or scan an associated QR code using an attached webcam.
 This modal can be disabled in Fluidd settings.
 
-![screenshot](/assets/images/spoolman-scan-spool.png)
+![Spoolman spool selection modal with a QR code scanner](/assets/images/spoolman-scan-spool.png)
 
 ### Dashboard card
 
 The currently selected spool and its metadata are shown in the Spoolman
 dashboard card. Use the "Change Spool" button to switch spools mid-print.
 
-![screenshot](/assets/images/spoolman-dashboard-card.png)
+![Spoolman dashboard card showing the active spool details with filament info](/assets/images/spoolman-dashboard-card.png)
 
 ### Sanity checks
 
@@ -66,7 +66,7 @@ gcode:
   ...
 ```
 
-![screenshot](/assets/images/spoolman-multitool.png)
+![Spoolman multi-tool panel with per-toolchange-macro spool assignment](/assets/images/spoolman-multitool.png)
 
 ### Remembering spools across restarts
 
@@ -79,5 +79,14 @@ on each change. Use this macro to restore the selection after a restart:
 [delayed_gcode RESTORE_SELECTED_SPOOLS]
 initial_duration: 0.1
 gcode:
-  SET_GCODE_VARIABLE MACRO={macro} VARIABLE=spool_id VALUE={svv[var]}
+  {% set svv = printer.save_variables.variables %}
+  {% for object in printer %}
+    {% if object.startswith('gcode_macro ') and printer[object].spool_id is defined %}
+      {% set macro = object.replace('gcode_macro ', '') %}
+      {% set var = (macro + '__SPOOL_ID')|lower %}
+      {% if svv[var] is defined %}
+        SET_GCODE_VARIABLE MACRO={macro} VARIABLE=spool_id VALUE={svv[var]}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
 ```

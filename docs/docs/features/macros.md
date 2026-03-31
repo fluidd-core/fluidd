@@ -13,8 +13,8 @@ automatically.
 To categorize a macro, first create a category in the settings menu, then click
 a macro's menu to assign it to a category and choose a color.
 
-![screenshot](/assets/images/macros2.png)
-![screenshot](/assets/images/macros1.png)
+![Macro panel showing a macro with category assignment and color picker](/assets/images/macros2.png)
+![Macro dashboard card showing categorized macro buttons](/assets/images/macros1.png)
 
 ## Tool Card Macros
 

@@ -19,7 +19,8 @@ logs, and more — all from your browser.
 | **logs**            | Klipper, Moonraker, and system logs                | No       |
 | **timelapse**       | Timelapse recordings and thumbnails (when enabled) | Yes      |
 
-Custom roots can be added via Moonraker's `registered_directories`
+Custom roots can be added via Moonraker's
+[`registered_directories`](https://moonraker.readthedocs.io/en/latest/configuration/#file_manager)
 configuration.
 
 ## File operations
