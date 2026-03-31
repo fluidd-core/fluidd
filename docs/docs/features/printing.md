@@ -24,7 +24,7 @@ Less common options can be found on Fluidd's settings page.
 ### Exclude Object
 
 The G-code viewer has
-[Exclude Object](https://www.klipper3d.org/Exclude_Object.html#exclude-objects)
+[Exclude Object](https://www.klipper3d.org/Exclude_Object.html)
 support built in. To exclude an object from your current print (for example
 after a failure), click the cancel icon in the G-code preview or bring up a
 list of all objects by clicking the cancel icon in the card header.

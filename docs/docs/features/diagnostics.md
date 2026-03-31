@@ -94,7 +94,7 @@ aid in the creation of scripts. Data points can be inserted into the collector
 script by clicking their key (name) in the metrics explorer.
 
 The data structure mirrors Klipper's
-[printer object model](https://www.klipper3d.org/Status_Reference.html), so
+[Status Reference](https://www.klipper3d.org/Status_Reference.html), so
 any status value Klipper exposes can be accessed in your collector scripts.
 
 ![Diagnostics metrics explorer listing available Klipper status fields](/assets/images/diagnostics_metrics_explorer.png)

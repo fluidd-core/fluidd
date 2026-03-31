@@ -62,3 +62,29 @@ frame:
 - Duplicate last frame count
 - Save raw frames after rendering
 - Generate preview thumbnail
+
+## Troubleshooting
+
+### Timelapse entry does not appear in the navigation menu
+
+The Timelapse page only appears when the Moonraker timelapse component is
+installed and enabled. Follow the
+[moonraker-timelapse setup guide](https://github.com/mainsail-crew/moonraker-timelapse)
+and restart Moonraker. After restarting, reload Fluidd.
+
+### No frames captured during the print
+
+- **Layer macro mode** — your slicer must insert the `TIMELAPSE_TAKE_FRAME`
+  macro at each layer change. Check your slicer's post-processing or
+  "after layer change" G-code settings.
+- **Hyperlapse mode** — ensure the `TIMELAPSE_RENDER` macro is called at
+  print end (usually via your `PRINT_END` macro or slicer end G-code).
+- Verify the camera is configured and the stream URL is reachable — the
+  timelapse component captures frames from the camera feed.
+
+### Video rendering fails
+
+- Check Moonraker's log (`~/printer_data/logs/moonraker.log`) for render
+  errors. FFmpeg is required — ensure it is installed on the host.
+- If raw frames were saved (enabled in Render settings), you can re-render
+  manually using FFmpeg outside of Fluidd.

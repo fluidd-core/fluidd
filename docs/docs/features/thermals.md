@@ -71,3 +71,25 @@ setup details, refer to the
 If you are running [Kalico](/features/third-party-integrations#kalico-firmware) with MPC
 (Model Predictive Control) configured for your extruder, Fluidd shows an
 `MPC_CALIBRATE` button in the thermals card.
+
+## Troubleshooting
+
+### Sensor not appearing in the chart or on the dashboard
+
+- Verify the sensor is configured in `printer.cfg` and that Klipper restarted
+  without errors after the change.
+- Check that the sensor type string is spelled correctly and is supported by
+  your version of Klipper — see the
+  [Klipper temperature sensor documentation](https://www.klipper3d.org/Config_Reference.html#temperature-sensors).
+- Host and MCU temperature sensors require the correct `sensor_type` value
+  (`temperature_host` or `temperature_mcu`). See the examples in the
+  [Sensors](#sensors) section above.
+
+### Temperature history is short or missing
+
+Moonraker stores a rolling temperature history buffer. If the chart shows
+only a few seconds of history, check the `temperature_store_size` value in
+the `[data_store]` section of your `moonraker.conf`. The default is 1200
+samples (20 minutes at one sample per second). See the
+[Moonraker data_store documentation](https://moonraker.readthedocs.io/en/latest/configuration/#data_store)
+for details.
