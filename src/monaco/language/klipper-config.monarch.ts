@@ -204,10 +204,7 @@ const klipperConfigMonarchLanguage: Monaco.languages.IMonarchLanguage = {
       [/[~^!]*(?:ar|analog)\d{1,2}/i, 'support.type'],
       // Booleans
       [/\b(?:true|false)\b/i, 'constant.language'],
-      // Numbers
-      [/-?\d+[.,]\d+\b/, 'constant.numeric'],
-      [/-?[.,]\d+\b/, 'constant.numeric'],
-      [/-?\d+\b/, 'constant.numeric'],
+      { include: '@numbers' },
       // Everything else on the value line
       [/[^\s#;]+/, '']
     ],
@@ -231,10 +228,7 @@ const klipperConfigMonarchLanguage: Monaco.languages.IMonarchLanguage = {
       [/^\s+[GMTD](?![a-zA-Z])/, 'keyword.operator'],
       // Macro blocks
       [/\{/, 'string.unquoted', '@macroBlock'],
-      // Numbers within gcode
-      [/-?\d+[.,]\d+\b/, 'constant.numeric'],
-      [/-?[.,]\d+\b/, 'constant.numeric'],
-      [/-?\d+\b/, 'constant.numeric']
+      { include: '@numbers' }
     ],
 
     gcodeParamValue: [
@@ -246,10 +240,14 @@ const klipperConfigMonarchLanguage: Monaco.languages.IMonarchLanguage = {
           '@default': ''
         }
       }],
+      { include: '@numbers' },
+      [/[^\s{]+/, '']
+    ],
+
+    numbers: [
       [/-?\d+[.,]\d+\b/, 'constant.numeric'],
       [/-?[.,]\d+\b/, 'constant.numeric'],
-      [/-?\d+\b/, 'constant.numeric'],
-      [/[^\s{]+/, '']
+      [/-?\d+\b/, 'constant.numeric']
     ],
 
     macroBlock: [

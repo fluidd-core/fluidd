@@ -33,25 +33,25 @@ const gcodeMonarchLanguage: Monaco.languages.IMonarchLanguage = {
       [/^O\d+/, 'string.regexp'],
 
       // P parameter
-      [/P\s?\d?\.?\d+\.?/, 'string.regexp'],
+      [/P\s?-?\d*\.?\d+/, 'string.regexp'],
       [/P(?=\s?[#[])/, 'string.regexp'],
 
       // Speed/feed: S, E, F
-      [/S\s?\d+/, 'constant.language'],
+      [/S\s?-?\d*\.?\d+/, 'constant.language'],
       [/S(?=\s?[#[])/, 'constant.language'],
-      [/[EF]\s?\d*\.?\d+\.?/, 'constant.language'],
+      [/[EF]\s?-?\d*\.?\d+/, 'constant.language'],
       [/[EF](?=\.?[#[])/, 'constant.language'],
 
       // Coordinates: X, Y
-      [/[XY]\s?-?\d?\.?\d+\.?/, 'string'],
+      [/[XY]\s?-?\d*\.?\d+/, 'string'],
       [/[XY](?=-?\.?[#[])/, 'string'],
 
       // Coordinate: Z (highlighted as invalid/warning for visibility)
-      [/Z\s?-?\d?\.?\d+\.?/, 'invalid'],
+      [/Z\s?-?\d*\.?\d+/, 'invalid'],
       [/Z(?=-?\.?[#[])/, 'invalid'],
 
       // Coordinates: A, B, C
-      [/[ABC]\s?-?\d?\.?\d+\.?/, 'constant.character.escape'],
+      [/[ABC]\s?-?\d*\.?\d+/, 'constant.character.escape'],
       [/[ABC](?=-?\.?[#[])/, 'constant.character.escape'],
 
       // Tools: D, H, T
@@ -59,11 +59,11 @@ const gcodeMonarchLanguage: Monaco.languages.IMonarchLanguage = {
       [/[DHT](?=[#[])/, 'constant.character'],
 
       // Modifiers: I, J, K
-      [/[IJK]-?\d?\.?\d+\.?/, 'constant.character.escape'],
+      [/[IJK]-?\d*\.?\d+/, 'constant.character.escape'],
       [/[IJK](?=-?\.?[#[])/, 'constant.character.escape'],
 
       // Modifiers: Q, R, U, W
-      [/[QRUW]-?\d?\.?\d+\.?/, 'support.constant.math'],
+      [/[QRUW]-?\d*\.?\d+/, 'support.constant.math'],
       [/[QRUW](?=-?\.?[#[])/, 'support.constant.math'],
 
       // Math functions
@@ -91,7 +91,7 @@ const gcodeMonarchLanguage: Monaco.languages.IMonarchLanguage = {
     bracketVar: [
       [/\[/, 'variable.other', '@push'],
       [/\]/, 'variable.other', '@pop'],
-      [/./, 'variable.other']
+      [/[^[\]]+/, 'variable.other']
     ]
   }
 }
