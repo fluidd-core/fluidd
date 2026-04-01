@@ -12,6 +12,10 @@ import themeLight from '@/monaco/theme/editor.light.theme.json'
 
 import { MonacoLanguageImports } from '@/dynamicImports'
 import type { KlippyApp, SupportedKlipperServices } from '@/store/printer/types'
+import gcodeMonarchLanguage from '@/monaco/language/gcode.monarch'
+import type { GcodeLanguageWorkerClientMessage, GcodeLanguageWorkerServerMessage, GcodeLanguageRangeKind } from '@/workers/gcodeLanguage.worker'
+
+import GcodeLanguageWorker from '@/workers/gcodeLanguage.worker.ts?worker'
 
 type ReduceState<T> = {
   current?: T,
@@ -94,9 +98,8 @@ async function setupMonaco () {
     }
   })
 
-  // Load our grammars...
+  // Load our grammars (gcode uses Monarch tokenizer instead of TextMate)
   const grammars = new Map([
-    ['gcode', 'source.gcode'],
     ['klipper-config', 'source.klipper-config'],
     ['log', 'text.log']
   ])
@@ -117,6 +120,9 @@ async function setupMonaco () {
       lineComment: '#'
     }
   })
+
+  // Use Monarch tokenizer for gcode (faster than TextMate, works with large files)
+  monaco.languages.setMonarchTokensProvider('gcode', gcodeMonarchLanguage)
 
   const app = getVueApp()
   const klippyApp: KlippyApp = app.$typedGetters['printer/getKlippyApp']
@@ -363,121 +369,37 @@ async function setupMonaco () {
   })
 
   monaco.languages.registerFoldingRangeProvider('gcode', {
-    provideFoldingRanges: (model) => {
-      const linesContent = model.getLinesContent()
+    provideFoldingRanges: (model, _context, token) => {
+      return new Promise<monaco.languages.FoldingRange[]>((resolve) => {
+        const worker = new GcodeLanguageWorker()
 
-      const layerBlocks = linesContent
-        .reduce<ReduceState<monaco.languages.FoldingRange>>((state, lineContent, index) => {
-          const isLayer = /^\s*SET_PRINT_STATS_INFO .*CURRENT_LAYER=/i.test(lineContent)
+        token.onCancellationRequested(() => {
+          worker.terminate()
+          resolve([])
+        })
 
-          if (isLayer) {
-            state.result.push(state.current = {
-              kind: monaco.languages.FoldingRangeKind.Region,
-              start: index + 1,
-              end: index + 1
-            })
-          } else {
-            const isNotComment = /^\s*[^;]/.test(lineContent)
+        const message: GcodeLanguageWorkerServerMessage = {
+          action: 'compute',
+          content: model.getValue()
+        }
 
-            if (isNotComment && state.current) {
-              state.current.end = index + 1
-            }
-          }
+        worker.postMessage(message)
 
-          return state
-        }, { result: [] })
-        .result
+        const foldingRangeKindMap: Record<GcodeLanguageRangeKind, monaco.languages.FoldingRangeKind> = {
+          comment: monaco.languages.FoldingRangeKind.Comment,
+          region: monaco.languages.FoldingRangeKind.Region
+        }
 
-      const objectBlocks = linesContent
-        .reduce<ReduceState<monaco.languages.FoldingRange>>((state, lineContent, index) => {
-          lineContent = lineContent.trim()
+        worker.addEventListener('message', (event: MessageEvent<GcodeLanguageWorkerClientMessage>) => {
+          resolve(event.data.ranges.map(range => ({
+            kind: foldingRangeKindMap[range.kind],
+            start: range.start,
+            end: range.end
+          })))
 
-          if (lineContent.length > 0) {
-            const isObject = /^\s*EXCLUDE_OBJECT_(START|END) /i.exec(lineContent)
-
-            if (isObject) {
-              switch (isObject[1].toUpperCase()) {
-                case 'START':
-                  state.result.push(state.current = {
-                    kind: monaco.languages.FoldingRangeKind.Region,
-                    start: index + 1,
-                    end: index + 1
-                  })
-                  break
-
-                case 'END':
-                  state.current = undefined
-                  break
-              }
-            } else {
-              if (state.current) {
-                state.current.end = index + 1
-              }
-            }
-          }
-
-          return state
-        }, { result: [] })
-        .result
-
-      const thumbnailBlocks = linesContent
-        .reduce<ReduceState<monaco.languages.FoldingRange>>((state, lineContent, index) => {
-          if (lineContent.startsWith('; thumbnail')) {
-            const type = lineContent.substring(11).split(' ')[1]
-
-            switch (type) {
-              case 'begin':
-                state.result.push(state.current = {
-                  kind: monaco.languages.FoldingRangeKind.Comment,
-                  start: index + 1,
-                  end: index + 1
-                })
-                break
-
-              case 'end':
-                if (state.current && state.current.start === state.current.end) {
-                  state.current.end = index
-                }
-                break
-            }
-          }
-
-          return state
-        }, { result: [] })
-        .result
-
-      const commentBlocks = linesContent
-        .reduce<ReduceState<monaco.languages.FoldingRange>>((state, lineContent, index) => {
-          lineContent = lineContent.trim()
-
-          if (lineContent.length > 0) {
-            const isComment = lineContent.startsWith(';')
-
-            if (isComment) {
-              if (state.current) {
-                state.current.end = index + 1
-              } else {
-                state.result.push(state.current = {
-                  kind: monaco.languages.FoldingRangeKind.Comment,
-                  start: index + 1,
-                  end: index + 1
-                })
-              }
-            } else {
-              state.current = undefined
-            }
-          }
-
-          return state
-        }, { result: [] })
-        .result
-
-      return [
-        ...layerBlocks,
-        ...objectBlocks,
-        ...commentBlocks,
-        ...thumbnailBlocks
-      ]
+          worker.terminate()
+        })
+      })
     }
   })
 
