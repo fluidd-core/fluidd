@@ -1,31 +1,19 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
-import type * as MonacoEditor from 'monaco-editor'
 
-import { loadWASM } from 'onigasm'
-import onigasmWasm from 'onigasm/lib/onigasm.wasm?url'
-
-import { Registry, type IGrammarDefinition } from 'monaco-textmate'
-import { wireTmGrammars } from 'monaco-editor-textmate'
 import getVueApp from '@/util/get-vue-app'
 import themeDark from '@/monaco/theme/editor.dark.theme.json'
 import themeLight from '@/monaco/theme/editor.light.theme.json'
 
-import { MonacoLanguageImports } from '@/dynamicImports'
 import type { KlippyApp, SupportedKlipperServices } from '@/store/printer/types'
 import gcodeMonarchLanguage from '@/monaco/language/gcode.monarch'
-import type { GcodeLanguageWorkerClientMessage, GcodeLanguageWorkerServerMessage, GcodeLanguageRangeKind } from '@/workers/gcodeLanguage.worker'
+import klipperConfigMonarchLanguage from '@/monaco/language/klipper-config.monarch'
+import logMonarchLanguage from '@/monaco/language/log.monarch'
 
+import type { GcodeLanguageWorkerClientMessage, GcodeLanguageWorkerServerMessage, GcodeLanguageRangeKind } from '@/workers/gcodeLanguage.worker'
 import GcodeLanguageWorker from '@/workers/gcodeLanguage.worker.ts?worker'
 
-type ReduceState<T> = {
-  current?: T,
-  result: T[]
-}
-
-type StackReduceState<U, T> = {
-  stack: U[],
-  result: T[]
-}
+import type { KlipperConfigLanguageWorkerClientMessage, KlipperConfigLanguageWorkerServerMessage, KlipperConfigFoldingRangeKind } from '@/workers/klipperConfigLanguage.worker'
+import KlipperConfigLanguageWorker from '@/workers/klipperConfigLanguage.worker.ts?worker'
 
 type CodeLensSupportedService = 'klipper' | 'moonraker' | 'moonraker-telegram-bot' | 'crowsnest'
 
@@ -80,36 +68,20 @@ const getDocsSectionHash = (service: DocsSectionService, sectionName: string) =>
   return sectionName
 }
 
+const foldingRangeKindMap: Record<GcodeLanguageRangeKind | KlipperConfigFoldingRangeKind, monaco.languages.FoldingRangeKind> = {
+  comment: monaco.languages.FoldingRangeKind.Comment,
+  region: monaco.languages.FoldingRangeKind.Region
+}
+
 async function setupMonaco () {
-  await Promise.all([
-    loadWASM(onigasmWasm),
-    import('./setupMonaco.features')
-  ])
+  await import('./setupMonaco.features')
 
-  // Register our custom TextMate languages.
-  const registry = new Registry({
-    getGrammarDefinition: async (scopeName): Promise<IGrammarDefinition> => {
-      const languageName = scopeName.split('.').pop() ?? ''
-      const language = await MonacoLanguageImports[languageName]()
-      return {
-        format: 'json',
-        content: language
-      }
-    }
-  })
-
-  // Load our grammars (gcode uses Monarch tokenizer instead of TextMate)
-  const grammars = new Map([
-    ['klipper-config', 'source.klipper-config'],
-    ['log', 'text.log']
-  ])
-
-  // ... and our languages
+  // Register languages
   monaco.languages.register({ id: 'gcode', extensions: ['gcode', 'g', 'gc', 'gco', 'ufp', 'nc'] })
   monaco.languages.register({ id: 'klipper-config', extensions: ['cfg', 'conf'] })
   monaco.languages.register({ id: 'log', extensions: ['log'] })
 
-  // Define how commenting works.
+  // Define how commenting works
   monaco.languages.setLanguageConfiguration('gcode', {
     comments: {
       lineComment: ';'
@@ -121,8 +93,10 @@ async function setupMonaco () {
     }
   })
 
-  // Use Monarch tokenizer for gcode (faster than TextMate, works with large files)
+  // Register Monarch tokenizers
   monaco.languages.setMonarchTokensProvider('gcode', gcodeMonarchLanguage)
+  monaco.languages.setMonarchTokensProvider('klipper-config', klipperConfigMonarchLanguage)
+  monaco.languages.setMonarchTokensProvider('log', logMonarchLanguage)
 
   const app = getVueApp()
   const klippyApp: KlippyApp = app.$typedGetters['printer/getKlippyApp']
@@ -138,83 +112,71 @@ async function setupMonaco () {
     window.open(url)
   })
 
+  // Klipper-config: worker-based document symbol provider
   monaco.languages.registerDocumentSymbolProvider('klipper-config', {
-    provideDocumentSymbols: (model) => {
-      const linesContent = model.getLinesContent()
+    provideDocumentSymbols: (model, token) => {
+      return new Promise<monaco.languages.DocumentSymbol[]>((resolve) => {
+        const worker = new KlipperConfigLanguageWorker()
 
-      const sectionBlocks = linesContent
-        .reduce<ReduceState<{ name: string, children: ReduceState<{ name: string, range: monaco.IRange }>, range: monaco.IRange }>>((state, lineContent, index) => {
-          const section = /^\[[^\]]+\]/.exec(lineContent)
+        token.onCancellationRequested(() => {
+          worker.terminate()
+          resolve([])
+        })
 
-          if (section) {
-            state.result.push(state.current = {
-              name: section[0],
-              children: { result: [] },
+        const message: KlipperConfigLanguageWorkerServerMessage = {
+          action: 'compute',
+          content: model.getValue()
+        }
+
+        worker.postMessage(message)
+
+        worker.addEventListener('message', (event: MessageEvent<KlipperConfigLanguageWorkerClientMessage>) => {
+          resolve(event.data.symbols.map(section => ({
+            name: section.name,
+            detail: section.name,
+            kind: monaco.languages.SymbolKind.Namespace,
+            range: {
+              startLineNumber: section.startLineNumber,
+              startColumn: section.startColumn,
+              endLineNumber: section.endLineNumber,
+              endColumn: section.endColumn
+            },
+            selectionRange: {
+              startLineNumber: section.startLineNumber,
+              startColumn: section.startColumn,
+              endLineNumber: section.endLineNumber,
+              endColumn: section.endColumn
+            },
+            tags: [],
+            children: section.children.map(child => ({
+              name: child.name,
+              detail: child.name,
+              kind: monaco.languages.SymbolKind.Property,
               range: {
-                startLineNumber: index + 1,
-                startColumn: model.getLineFirstNonWhitespaceColumn(index + 1),
-                endLineNumber: index + 1,
-                endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
-              }
-            })
-          } else {
-            const isNotComment = /^\s*[^#;]/.test(lineContent)
+                startLineNumber: child.startLineNumber,
+                startColumn: child.startColumn,
+                endLineNumber: child.endLineNumber,
+                endColumn: child.endColumn
+              },
+              selectionRange: {
+                startLineNumber: child.startLineNumber,
+                startColumn: child.startColumn,
+                endLineNumber: child.endLineNumber,
+                endColumn: child.endColumn
+              },
+              tags: []
+            }))
+          })))
 
-            if (isNotComment && state.current) {
-              const property = /^(\S+)\s*[:=]/.exec(lineContent)
-
-              if (property) {
-                state.current.children.result.push(state.current.children.current = {
-                  name: property[1],
-                  range: {
-                    startLineNumber: index + 1,
-                    startColumn: model.getLineFirstNonWhitespaceColumn(index + 1),
-                    endLineNumber: index + 1,
-                    endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
-                  }
-                })
-              } else if (state.current.children.current) {
-                state.current.children.current.range = {
-                  ...state.current.children.current.range,
-                  endLineNumber: index + 1,
-                  endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
-                }
-              }
-
-              state.current.range = {
-                ...state.current.range,
-                endLineNumber: index + 1,
-                endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
-              }
-            }
-          }
-
-          return state
-        }, { result: [] })
-        .result
-
-      return sectionBlocks
-        .map(section => ({
-          name: section.name,
-          detail: section.name,
-          kind: monaco.languages.SymbolKind.Namespace,
-          range: section.range,
-          selectionRange: section.range,
-          tags: [],
-          children: section.children.result.map(child => ({
-            name: child.name,
-            detail: child.name,
-            kind: monaco.languages.SymbolKind.Property,
-            range: child.range,
-            selectionRange: child.range,
-            tags: []
-          }))
-        }))
+          worker.terminate()
+        })
+      })
     }
   })
 
+  // Klipper-config: worker-based CodeLens provider
   monaco.languages.registerCodeLensProvider('klipper-config', {
-    provideCodeLenses: (model) => {
+    provideCodeLenses: (model, token) => {
       const { service } = app.$typedGetters['server/getConfigMapByFilename'](model.uri.path.split('/').pop()!) ?? {}
 
       if (
@@ -228,146 +190,83 @@ async function setupMonaco () {
         ? klippyApp.name
         : service
 
-      const linesContent = model.getLinesContent()
+      return new Promise<monaco.languages.CodeLensList>((resolve) => {
+        const worker = new KlipperConfigLanguageWorker()
 
-      const sectionBlocks = linesContent
-        .reduce<ReduceState<{ sectionName: string, hash: string, range: monaco.IRange }>>((state, lineContent, index) => {
-          const section = /^\[([^\]]+)\]/.exec(lineContent)
+        token.onCancellationRequested(() => {
+          worker.terminate()
+          resolve({ lenses: [], dispose: () => undefined })
+        })
 
-          if (section) {
-            const [sectionName] = section[1].split(' ', 1)
+        const message: KlipperConfigLanguageWorkerServerMessage = {
+          action: 'compute',
+          content: model.getValue()
+        }
 
-            const hash = getDocsSectionHash(docsSectionService, sectionName)
+        worker.postMessage(message)
 
-            state.result.push(state.current = {
-              sectionName,
-              hash,
-              range: {
-                startLineNumber: index + 1,
-                startColumn: model.getLineFirstNonWhitespaceColumn(index + 1),
-                endLineNumber: index + 1,
-                endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
+        worker.addEventListener('message', (event: MessageEvent<KlipperConfigLanguageWorkerClientMessage>) => {
+          resolve({
+            lenses: event.data.sections.map((section, index) => {
+              const hash = getDocsSectionHash(docsSectionService, section.sectionName)
+
+              return {
+                range: {
+                  startLineNumber: section.startLineNumber,
+                  startColumn: section.startColumn,
+                  endLineNumber: section.endLineNumber,
+                  endColumn: section.endColumn
+                },
+                id: `docs${index}`,
+                command: {
+                  id: 'fluidd_open_docs',
+                  title: app.$t('app.file_system.label.view_section_documentation', { section: section.sectionName }).toString(),
+                  arguments: [service, hash]
+                }
               }
-            })
-          } else {
-            const isNotComment = /^\s*[^#;]/.test(lineContent)
+            }),
+            dispose: () => undefined
+          })
 
-            if (isNotComment && state.current) {
-              state.current.range = {
-                ...state.current.range,
-                endLineNumber: index + 1,
-                endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
-              }
-            }
-          }
-
-          return state
-        }, { result: [] })
-        .result
-
-      return {
-        lenses: sectionBlocks
-          .map((section, index) => ({
-            range: section.range,
-            id: `docs${index}`,
-            command: {
-              id: 'fluidd_open_docs',
-              title: app.$t('app.file_system.label.view_section_documentation', { section: section.sectionName }).toString(),
-              arguments: [service, section.hash]
-            }
-          })),
-        dispose: () => undefined
-      }
+          worker.terminate()
+        })
+      })
     },
     resolveCodeLens: (_model, codeLens) => codeLens
   })
 
+  // Klipper-config: worker-based folding range provider
   monaco.languages.registerFoldingRangeProvider('klipper-config', {
-    provideFoldingRanges: (model) => {
-      const linesContent = model.getLinesContent()
+    provideFoldingRanges: (model, _context, token) => {
+      return new Promise<monaco.languages.FoldingRange[]>((resolve) => {
+        const worker = new KlipperConfigLanguageWorker()
 
-      const sectionBlocks = linesContent
-        .reduce<ReduceState<monaco.languages.FoldingRange>>((state, lineContent, index) => {
-          const isSection = /^\[[^\]]+\]/.test(lineContent)
+        token.onCancellationRequested(() => {
+          worker.terminate()
+          resolve([])
+        })
 
-          if (isSection) {
-            state.result.push(state.current = {
-              kind: monaco.languages.FoldingRangeKind.Region,
-              start: index + 1,
-              end: index + 1
-            })
-          } else {
-            const isNotComment = /^\s*[^#;]/.test(lineContent)
+        const message: KlipperConfigLanguageWorkerServerMessage = {
+          action: 'compute',
+          content: model.getValue()
+        }
 
-            if (isNotComment && state.current) {
-              state.current.end = index + 1
-            }
-          }
+        worker.postMessage(message)
 
-          return state
-        }, { result: [] })
-        .result
+        worker.addEventListener('message', (event: MessageEvent<KlipperConfigLanguageWorkerClientMessage>) => {
+          resolve(event.data.folding.map(range => ({
+            kind: foldingRangeKindMap[range.kind],
+            start: range.start,
+            end: range.end
+          })))
 
-      const regionBlocks = linesContent
-        .reduce<StackReduceState<number, monaco.languages.FoldingRange>>((state, lineContent, index) => {
-          lineContent = lineContent.trim()
-
-          if (lineContent.length > 0) {
-            const isRegion = /^#region\b/.test(lineContent)
-
-            if (isRegion) {
-              state.stack.push(index + 1)
-            } else {
-              const isEndRegion = /^#endregion\b/.test(lineContent)
-
-              if (isEndRegion && state.stack.length > 0) {
-                state.result.push({
-                  kind: monaco.languages.FoldingRangeKind.Region,
-                  start: state.stack.pop() ?? 0,
-                  end: index + 1
-                })
-              }
-            }
-          }
-
-          return state
-        }, { stack: [], result: [] })
-        .result
-
-      const commentBlocks = linesContent
-        .reduce<ReduceState<monaco.languages.FoldingRange>>((state, lineContent, index) => {
-          lineContent = lineContent.trim()
-
-          if (lineContent.length > 0) {
-            const isComment = /^;|#(?!(?:region|endregion)\b)/.test(lineContent)
-
-            if (isComment) {
-              if (state.current) {
-                state.current.end = index + 1
-              } else {
-                state.result.push(state.current = {
-                  kind: monaco.languages.FoldingRangeKind.Comment,
-                  start: index + 1,
-                  end: index + 1
-                })
-              }
-            } else {
-              state.current = undefined
-            }
-          }
-
-          return state
-        }, { result: [] })
-        .result
-
-      return [
-        ...sectionBlocks,
-        ...regionBlocks,
-        ...commentBlocks
-      ]
+          worker.terminate()
+        })
+      })
     }
   })
 
+  // Gcode: worker-based folding range provider
   monaco.languages.registerFoldingRangeProvider('gcode', {
     provideFoldingRanges: (model, _context, token) => {
       return new Promise<monaco.languages.FoldingRange[]>((resolve) => {
@@ -385,11 +284,6 @@ async function setupMonaco () {
 
         worker.postMessage(message)
 
-        const foldingRangeKindMap: Record<GcodeLanguageRangeKind, monaco.languages.FoldingRangeKind> = {
-          comment: monaco.languages.FoldingRangeKind.Comment,
-          region: monaco.languages.FoldingRangeKind.Region
-        }
-
         worker.addEventListener('message', (event: MessageEvent<GcodeLanguageWorkerClientMessage>) => {
           resolve(event.data.ranges.map(range => ({
             kind: foldingRangeKindMap[range.kind],
@@ -403,12 +297,9 @@ async function setupMonaco () {
     }
   })
 
-  // Defined the themes.
+  // Define the themes
   monaco.editor.defineTheme('dark-converted', themeDark as monaco.editor.IStandaloneThemeData)
   monaco.editor.defineTheme('light-converted', themeLight as monaco.editor.IStandaloneThemeData)
-
-  // Wire it up.
-  await wireTmGrammars(monaco as typeof MonacoEditor, registry, grammars)
 
   return monaco
 }
