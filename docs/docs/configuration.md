@@ -265,7 +265,7 @@ enable_object_processing: True
 
 Controls how much history Moonraker buffers in memory. The
 `temperature_store_size` value directly affects how much time is shown on
-the X axis of the [thermals graph](/features/thermals#thermals-graph). Temperature
+the X axis of the [thermals graph](/features/thermals#chart). Temperature
 entries are stored once per second, so `600` equals approximately 10 minutes.
 See the [Moonraker `[data_store]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#data_store).
 

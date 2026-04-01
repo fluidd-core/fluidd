@@ -43,7 +43,7 @@ printer.
 
 ## Running Fluidd locally
 
-### Install Node v24
+### Install Node.js
 
 Follow the instructions from [Node.js](https://nodejs.org) to install Node.js, v24.x.
 

@@ -19,9 +19,12 @@ If authorization is not yet enabled:
 
 1. Open Fluidd and go to **Settings → Authorization**
 2. Click **Add User** and create your first user account with a username and password
-3. Once a user exists, Fluidd will prompt for login on next visit
-4. Trusted clients (LAN IPs) bypass the login screen — configure these to avoid
-   logging in from your own network
+3. Once a user exists, login is required when `force_logins: true` is set in
+   `moonraker.conf`, or when the connecting client is not in `trusted_clients`.
+   See [Understanding forced logins](#understanding-forced-logins) for details.
+4. By default, trusted clients (LAN IPs) bypass the login screen while
+   `force_logins` remains `false` — adjust these settings if you want local
+   connections to always require logging in.
 
 If you're locked out, see the [Lost Password](#lost-password) section.
 
