@@ -282,7 +282,7 @@ docs/
 - When introducing acronyms in docs, check if they exist in the glossary — if not, assess whether they should be added (domain-specific or non-obvious acronyms: yes; universally known ones like USB, HTTP, CPU: no)
 - **Before committing docs changes**, always run:
   - `markdownlint --config docs/.markdownlint.json docs/docs/` — must be clean
-  - `codespell docs/docs/` — must be clean (install via `pip install codespell`)
+  - `codespell docs/docs/` — must be clean
 
 ## Communication Style
 
