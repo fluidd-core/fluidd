@@ -76,6 +76,35 @@ of your Moonraker instance, e.g. `http://192.168.0.101:7125`.
 npm run test
 ```
 
+## Running the documentation site locally
+
+### Install Python
+
+Follow the instructions from [Python](https://www.python.org/) to install Python 3.
+
+### Install dependencies
+
+```bash
+cd .../path/to/fluidd/docs
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### Serve locally
+
+```bash
+zensical serve
+```
+
+Browse to [http://localhost:8000/](http://localhost:8000/).
+
+### Build static site
+
+```bash
+zensical build --clean
+```
+
 ## Localization
 
 Fluidd uses [vue-i18n](https://kazupon.github.io/vue-i18n/) for its localization.
