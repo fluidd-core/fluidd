@@ -135,35 +135,15 @@ async function setupMonaco () {
             name: section.name,
             detail: section.name,
             kind: monaco.languages.SymbolKind.Namespace,
-            range: {
-              startLineNumber: section.startLineNumber,
-              startColumn: section.startColumn,
-              endLineNumber: section.endLineNumber,
-              endColumn: section.endColumn
-            },
-            selectionRange: {
-              startLineNumber: section.startLineNumber,
-              startColumn: section.startColumn,
-              endLineNumber: section.endLineNumber,
-              endColumn: section.endColumn
-            },
+            range: section.range,
+            selectionRange: section.range,
             tags: [],
             children: section.children.map(child => ({
               name: child.name,
               detail: child.name,
               kind: monaco.languages.SymbolKind.Property,
-              range: {
-                startLineNumber: child.startLineNumber,
-                startColumn: child.startColumn,
-                endLineNumber: child.endLineNumber,
-                endColumn: child.endColumn
-              },
-              selectionRange: {
-                startLineNumber: child.startLineNumber,
-                startColumn: child.startColumn,
-                endLineNumber: child.endLineNumber,
-                endColumn: child.endColumn
-              },
+              range: child.range,
+              selectionRange: child.range,
               tags: []
             }))
           })))
@@ -211,12 +191,7 @@ async function setupMonaco () {
               const hash = getDocsSectionHash(docsSectionService, section.sectionName)
 
               return {
-                range: {
-                  startLineNumber: section.startLineNumber,
-                  startColumn: section.startColumn,
-                  endLineNumber: section.endLineNumber,
-                  endColumn: section.endColumn
-                },
+                range: section.range,
                 id: `docs${index}`,
                 command: {
                   id: 'fluidd_open_docs',

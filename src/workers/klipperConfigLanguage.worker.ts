@@ -1,3 +1,7 @@
+import type { IRange } from 'monaco-editor/esm/vs/editor/editor.api'
+
+type MutableRange = { -readonly [K in keyof IRange]: IRange[K] }
+
 export type KlipperConfigLanguageWorkerServerMessage = {
   action: 'compute',
   content: string
@@ -20,27 +24,18 @@ export type KlipperConfigFoldingRange = {
 
 export type KlipperConfigSymbol = {
   name: string,
-  startLineNumber: number,
-  startColumn: number,
-  endLineNumber: number,
-  endColumn: number,
+  range: IRange,
   children: KlipperConfigSymbolChild[]
 }
 
 export type KlipperConfigSymbolChild = {
   name: string,
-  startLineNumber: number,
-  startColumn: number,
-  endLineNumber: number,
-  endColumn: number
+  range: IRange
 }
 
 export type KlipperConfigSection = {
   sectionName: string,
-  startLineNumber: number,
-  startColumn: number,
-  endLineNumber: number,
-  endColumn: number
+  range: IRange
 }
 
 type ReduceState<T> = {
@@ -146,13 +141,11 @@ const computeFolding = (lines: string[]): KlipperConfigFoldingRange[] => {
 }
 
 const computeSymbols = (lines: string[]): KlipperConfigSymbol[] => {
+  type MutableSymbolChild = { name: string, range: MutableRange }
   type SymbolState = {
     name: string,
-    startLineNumber: number,
-    startColumn: number,
-    endLineNumber: number,
-    endColumn: number,
-    children: { current?: KlipperConfigSymbolChild, result: KlipperConfigSymbolChild[] }
+    range: MutableRange,
+    children: { current?: MutableSymbolChild, result: MutableSymbolChild[] }
   }
 
   return lines
@@ -161,15 +154,15 @@ const computeSymbols = (lines: string[]): KlipperConfigSymbol[] => {
 
       if (section) {
         const lineNumber = index + 1
-        const startColumn = getFirstNonWhitespaceColumn(lineContent)
-        const endColumn = getLastNonWhitespaceColumn(lineContent)
 
         state.result.push(state.current = {
           name: section[0],
-          startLineNumber: lineNumber,
-          startColumn,
-          endLineNumber: lineNumber,
-          endColumn,
+          range: {
+            startLineNumber: lineNumber,
+            startColumn: getFirstNonWhitespaceColumn(lineContent),
+            endLineNumber: lineNumber,
+            endColumn: getLastNonWhitespaceColumn(lineContent)
+          },
           children: { result: [] }
         })
       } else {
@@ -178,24 +171,25 @@ const computeSymbols = (lines: string[]): KlipperConfigSymbol[] => {
         if (isNotComment && state.current) {
           const property = /^(\S+)\s*[:=]/.exec(lineContent)
           const lineNumber = index + 1
-          const startColumn = getFirstNonWhitespaceColumn(lineContent)
           const endColumn = getLastNonWhitespaceColumn(lineContent)
 
           if (property) {
             state.current.children.result.push(state.current.children.current = {
               name: property[1],
-              startLineNumber: lineNumber,
-              startColumn,
-              endLineNumber: lineNumber,
-              endColumn
+              range: {
+                startLineNumber: lineNumber,
+                startColumn: getFirstNonWhitespaceColumn(lineContent),
+                endLineNumber: lineNumber,
+                endColumn
+              }
             })
           } else if (state.current.children.current) {
-            state.current.children.current.endLineNumber = lineNumber
-            state.current.children.current.endColumn = endColumn
+            state.current.children.current.range.endLineNumber = lineNumber
+            state.current.children.current.range.endColumn = endColumn
           }
 
-          state.current.endLineNumber = lineNumber
-          state.current.endColumn = endColumn
+          state.current.range.endLineNumber = lineNumber
+          state.current.range.endColumn = endColumn
         }
       }
 
@@ -204,30 +198,29 @@ const computeSymbols = (lines: string[]): KlipperConfigSymbol[] => {
     .result
     .map(section => ({
       name: section.name,
-      startLineNumber: section.startLineNumber,
-      startColumn: section.startColumn,
-      endLineNumber: section.endLineNumber,
-      endColumn: section.endColumn,
+      range: section.range,
       children: section.children.result
     }))
 }
 
 const computeSections = (lines: string[]): KlipperConfigSection[] => {
+  type MutableSection = { sectionName: string, range: MutableRange }
+
   return lines
-    .reduce<ReduceState<KlipperConfigSection>>((state, lineContent, index) => {
+    .reduce<ReduceState<MutableSection>>((state, lineContent, index) => {
       const section = /^\[([^\]]+)\]/.exec(lineContent)
 
       if (section) {
         const lineNumber = index + 1
-        const startColumn = getFirstNonWhitespaceColumn(lineContent)
-        const endColumn = getLastNonWhitespaceColumn(lineContent)
 
         state.result.push(state.current = {
           sectionName: section[1].split(' ', 1)[0],
-          startLineNumber: lineNumber,
-          startColumn,
-          endLineNumber: lineNumber,
-          endColumn
+          range: {
+            startLineNumber: lineNumber,
+            startColumn: getFirstNonWhitespaceColumn(lineContent),
+            endLineNumber: lineNumber,
+            endColumn: getLastNonWhitespaceColumn(lineContent)
+          }
         })
       } else {
         const isNotComment = /^\s*[^#;]/.test(lineContent)
@@ -235,8 +228,8 @@ const computeSections = (lines: string[]): KlipperConfigSection[] => {
         if (isNotComment && state.current) {
           const lineNumber = index + 1
           const endColumn = getLastNonWhitespaceColumn(lineContent)
-          state.current.endLineNumber = lineNumber
-          state.current.endColumn = endColumn
+          state.current.range.endLineNumber = lineNumber
+          state.current.range.endColumn = endColumn
         }
       }
 
