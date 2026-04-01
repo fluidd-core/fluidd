@@ -105,6 +105,18 @@
             {{ $t('app.general.title.system') }}
           </app-nav-item>
 
+          <template v-if="naviPoints.length">
+            <v-divider class="my-2" />
+            <app-nav-item-external
+              v-for="point in naviPoints"
+              :key="point.href"
+              :title="point.title"
+              :href="point.href"
+              :target="point.target"
+              :icon="point.icon"
+            />
+          </template>
+
           <app-nav-item
             icon="$cog"
             to="settings"
@@ -147,12 +159,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, VModel } from 'vue-property-decorator'
+import { Component, Mixins, VModel, Watch } from 'vue-property-decorator'
 
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 
-@Component({})
+@Component({
+  components: {
+    AppNavItemExternal: () => import('@/components/ui/AppNavItemExternal.vue')
+  }
+})
 export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   @VModel({ type: Boolean })
   open?: boolean
@@ -187,6 +203,27 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   set layoutMode (val: boolean) {
     this.$typedCommit('config/setLayoutMode', val)
+  }
+
+  get naviPoints () {
+    return this.$store.getters['plugins/getNaviPoints'] ?? []
+  }
+
+  get naviPointsLoaded (): boolean {
+    return this.$store.getters['plugins/getNaviPointsLoaded'] ?? false
+  }
+
+  @Watch('socketConnected')
+  onSocketConnected (connected: boolean) {
+    if (connected && !this.naviPointsLoaded) {
+      this.$store.dispatch('plugins/fetchNaviPoints')
+    }
+  }
+
+  mounted () {
+    if (this.socketConnected && !this.naviPointsLoaded) {
+      this.$store.dispatch('plugins/fetchNaviPoints')
+    }
   }
 }
 </script>

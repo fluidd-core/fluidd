@@ -1247,12 +1247,15 @@ app:
       remove_model: Remove %{name} model
     msg:
       hint: >-
-        If saving as something other than %{name}, you can choose to also remove
-        the %{name} model
+        If saving as something other than '%{name}', you can choose to also remove
+        the '%{name}' model
       not_found: No existing beacon models found.
     tooltip:
       delete: Delete Model
       load: Load Model
+  external_navigation:
+    tooltip:
+      external_link: External navigation link
   database:
     btn:
       compact_database: Compact Database
