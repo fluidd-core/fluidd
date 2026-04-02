@@ -1,17 +1,22 @@
 import type { IRange } from 'monaco-editor/esm/vs/editor/editor.api'
 
-type MutableRange = { -readonly [K in keyof IRange]: IRange[K] }
-
 export type KlipperConfigLanguageWorkerServerMessage = {
-  action: 'compute',
+  action: 'getFoldingRanges' | 'getDocumentSymbols' | 'getCodeLens',
   content: string
 }
 
 export type KlipperConfigLanguageWorkerClientMessage = {
-  action: 'result',
-  folding: KlipperConfigFoldingRange[],
-  symbols: KlipperConfigSymbol[],
-  sections: KlipperConfigSection[]
+  action: 'resultFoldingRanges',
+  result: KlipperConfigFoldingRange[]
+} | {
+  action: 'resultDocumentSymbols',
+  result: KlipperConfigSymbol[]
+} | {
+  action: 'resultCodeLens',
+  result: KlipperConfigSection[]
+} | {
+  action: 'error',
+  error?: unknown
 }
 
 export type KlipperConfigFoldingRangeKind = 'comment' | 'region'
@@ -58,7 +63,7 @@ const getLastNonWhitespaceColumn = (line: string): number => {
   return match ? match.index + 2 : 1
 }
 
-const computeFolding = (lines: string[]): KlipperConfigFoldingRange[] => {
+const getFoldingRanges = (lines: string[]): KlipperConfigFoldingRange[] => {
   const sectionBlocks = lines
     .reduce<ReduceState<KlipperConfigFoldingRange>>((state, lineContent, index) => {
       const isSection = /^\[[^\]]+\]/.test(lineContent)
@@ -140,27 +145,18 @@ const computeFolding = (lines: string[]): KlipperConfigFoldingRange[] => {
   ]
 }
 
-const computeSymbols = (lines: string[]): KlipperConfigSymbol[] => {
-  type MutableSymbolChild = { name: string, range: MutableRange }
-  type SymbolState = {
-    name: string,
-    range: MutableRange,
-    children: { current?: MutableSymbolChild, result: MutableSymbolChild[] }
-  }
-
+const getDocumentSymbols = (lines: string[]): KlipperConfigSymbol[] => {
   return lines
-    .reduce<ReduceState<SymbolState>>((state, lineContent, index) => {
+    .reduce<ReduceState<{ name: string, children: ReduceState<{ name: string, range: IRange }>, range: IRange }>>((state, lineContent, index) => {
       const section = /^\[[^\]]+\]/.exec(lineContent)
 
       if (section) {
-        const lineNumber = index + 1
-
         state.result.push(state.current = {
           name: section[0],
           range: {
-            startLineNumber: lineNumber,
+            startLineNumber: index + 1,
             startColumn: getFirstNonWhitespaceColumn(lineContent),
-            endLineNumber: lineNumber,
+            endLineNumber: index + 1,
             endColumn: getLastNonWhitespaceColumn(lineContent)
           },
           children: { result: [] }
@@ -170,26 +166,30 @@ const computeSymbols = (lines: string[]): KlipperConfigSymbol[] => {
 
         if (isNotComment && state.current) {
           const property = /^(\S+)\s*[:=]/.exec(lineContent)
-          const lineNumber = index + 1
-          const endColumn = getLastNonWhitespaceColumn(lineContent)
 
           if (property) {
             state.current.children.result.push(state.current.children.current = {
               name: property[1],
               range: {
-                startLineNumber: lineNumber,
+                startLineNumber: index + 1,
                 startColumn: getFirstNonWhitespaceColumn(lineContent),
-                endLineNumber: lineNumber,
-                endColumn
+                endLineNumber: index + 1,
+                endColumn: getLastNonWhitespaceColumn(lineContent)
               }
             })
           } else if (state.current.children.current) {
-            state.current.children.current.range.endLineNumber = lineNumber
-            state.current.children.current.range.endColumn = endColumn
-          }
+            state.current.children.current.range = {
+              ...state.current.children.current.range,
+              endLineNumber: index + 1,
+              endColumn: getLastNonWhitespaceColumn(lineContent)
+            }
 
-          state.current.range.endLineNumber = lineNumber
-          state.current.range.endColumn = endColumn
+            state.current.range = {
+              ...state.current.range,
+              endLineNumber: index + 1,
+              endColumn: getLastNonWhitespaceColumn(lineContent)
+            }
+          }
         }
       }
 
@@ -203,11 +203,9 @@ const computeSymbols = (lines: string[]): KlipperConfigSymbol[] => {
     }))
 }
 
-const computeSections = (lines: string[]): KlipperConfigSection[] => {
-  type MutableSection = { sectionName: string, range: MutableRange }
-
+const getCodeLens = (lines: string[]): KlipperConfigSection[] => {
   return lines
-    .reduce<ReduceState<MutableSection>>((state, lineContent, index) => {
+    .reduce<ReduceState<KlipperConfigSection>>((state, lineContent, index) => {
       const section = /^\[([^\]]+)\]/.exec(lineContent)
 
       if (section) {
@@ -226,10 +224,11 @@ const computeSections = (lines: string[]): KlipperConfigSection[] => {
         const isNotComment = /^\s*[^#;]/.test(lineContent)
 
         if (isNotComment && state.current) {
-          const lineNumber = index + 1
-          const endColumn = getLastNonWhitespaceColumn(lineContent)
-          state.current.range.endLineNumber = lineNumber
-          state.current.range.endColumn = endColumn
+          state.current.range = {
+            ...state.current.range,
+            endLineNumber: index + 1,
+            endColumn: getLastNonWhitespaceColumn(lineContent)
+          }
         }
       }
 
@@ -238,19 +237,74 @@ const computeSections = (lines: string[]): KlipperConfigSection[] => {
     .result
 }
 
+const sendFoldingRanges = (result: KlipperConfigFoldingRange[]) => {
+  const message: KlipperConfigLanguageWorkerClientMessage = {
+    action: 'resultFoldingRanges',
+    result
+  }
+
+  self.postMessage(message)
+}
+
+const sendDocumentSymbols = (result: KlipperConfigSymbol[]) => {
+  const message: KlipperConfigLanguageWorkerClientMessage = {
+    action: 'resultDocumentSymbols',
+    result
+  }
+
+  self.postMessage(message)
+}
+
+const sendCodeLens = (result: KlipperConfigSection[]) => {
+  const message: KlipperConfigLanguageWorkerClientMessage = {
+    action: 'resultCodeLens',
+    result
+  }
+
+  self.postMessage(message)
+}
+
+const sendError = (error?: unknown) => {
+  const message: KlipperConfigLanguageWorkerClientMessage = {
+    action: 'error',
+    error
+  }
+
+  self.postMessage(message)
+}
+
 addEventListener('message', (event: MessageEvent<KlipperConfigLanguageWorkerServerMessage>) => {
   const { data } = event
 
-  if (data.action === 'compute') {
+  try {
     const lines = data.content.split('\n')
 
-    const message: KlipperConfigLanguageWorkerClientMessage = {
-      action: 'result',
-      folding: computeFolding(lines),
-      symbols: computeSymbols(lines),
-      sections: computeSections(lines)
-    }
+    switch (data.action) {
+      case 'getFoldingRanges': {
+        const foldingRanges = getFoldingRanges(lines)
 
-    postMessage(message)
+        sendFoldingRanges(foldingRanges)
+
+        break
+      }
+
+      case 'getDocumentSymbols': {
+        const documentSymbols = getDocumentSymbols(lines)
+
+        sendDocumentSymbols(documentSymbols)
+
+        break
+      }
+
+      case 'getCodeLens': {
+        const codeLens = getCodeLens(lines)
+
+        sendCodeLens(codeLens)
+
+        break
+      }
+    }
+  } catch (error) {
+    sendError(error)
   }
 })
