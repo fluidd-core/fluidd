@@ -1,13 +1,13 @@
 export type GcodeLanguageWorkerClientMessage = {
-  action: 'result',
-  ranges: GcodeLanguageRange[]
+  action: 'resultFoldingRanges',
+  result: GcodeLanguageRange[]
 } | {
   action: 'error',
   error?: unknown
 }
 
 export type GcodeLanguageWorkerServerMessage = {
-  action: 'compute',
+  action: 'getFoldingRanges',
   content: string
 }
 
@@ -141,10 +141,10 @@ const computeFoldingRanges = (content: string): GcodeLanguageRange[] => {
   ]
 }
 
-const sendResult = (ranges: GcodeLanguageRange[]) => {
+const sendFoldingRanges = (result: GcodeLanguageRange[]) => {
   const message: GcodeLanguageWorkerClientMessage = {
-    action: 'result',
-    ranges
+    action: 'resultFoldingRanges',
+    result
   }
 
   self.postMessage(message)
@@ -160,13 +160,17 @@ const sendError = (error?: unknown) => {
 }
 
 addEventListener('message', (event: MessageEvent<GcodeLanguageWorkerServerMessage>) => {
-  const { data } = event
+  const message = event.data
 
   try {
-    if (data.action === 'compute') {
-      const ranges = computeFoldingRanges(data.content)
+    switch (message.action) {
+      case 'getFoldingRanges': {
+        const ranges = computeFoldingRanges(message.content)
 
-      sendResult(ranges)
+        sendFoldingRanges(ranges)
+
+        break
+      }
     }
   } catch (error) {
     sendError(error)

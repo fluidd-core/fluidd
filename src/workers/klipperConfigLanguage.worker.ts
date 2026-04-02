@@ -274,12 +274,12 @@ const sendError = (error?: unknown) => {
 }
 
 addEventListener('message', (event: MessageEvent<KlipperConfigLanguageWorkerServerMessage>) => {
-  const { data } = event
+  const message = event.data
 
   try {
-    const lines = data.content.split('\n')
+    const lines = message.content.split('\n')
 
-    switch (data.action) {
+    switch (message.action) {
       case 'getFoldingRanges': {
         const foldingRanges = getFoldingRanges(lines)
 

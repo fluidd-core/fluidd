@@ -128,13 +128,6 @@ async function setupMonaco () {
           resolve([])
         })
 
-        const message: KlipperConfigLanguageWorkerServerMessage = {
-          action: 'getDocumentSymbols',
-          content: model.getValue()
-        }
-
-        worker.postMessage(message)
-
         worker.addEventListener('message', (event: MessageEvent<KlipperConfigLanguageWorkerClientMessage>) => {
           const message = event.data
 
@@ -156,15 +149,24 @@ async function setupMonaco () {
                   tags: []
                 }))
               })))
+
               break
 
             case 'error':
               reject(message.error)
+
               break
           }
 
           worker.terminate()
         })
+
+        const message: KlipperConfigLanguageWorkerServerMessage = {
+          action: 'getDocumentSymbols',
+          content: model.getValue()
+        }
+
+        worker.postMessage(message)
       })
     }
   })
@@ -192,13 +194,6 @@ async function setupMonaco () {
           resolve({ lenses: [], dispose: () => undefined })
         })
 
-        const message: KlipperConfigLanguageWorkerServerMessage = {
-          action: 'getCodeLens',
-          content: model.getValue()
-        }
-
-        worker.postMessage(message)
-
         worker.addEventListener('message', (event: MessageEvent<KlipperConfigLanguageWorkerClientMessage>) => {
           const message = event.data
 
@@ -220,15 +215,24 @@ async function setupMonaco () {
                 }),
                 dispose: () => undefined
               })
+
               break
 
             case 'error':
               reject(message.error)
+
               break
           }
 
           worker.terminate()
         })
+
+        const message: KlipperConfigLanguageWorkerServerMessage = {
+          action: 'getCodeLens',
+          content: model.getValue()
+        }
+
+        worker.postMessage(message)
       })
     },
     resolveCodeLens: (_model, codeLens) => codeLens
@@ -244,28 +248,30 @@ async function setupMonaco () {
           resolve([])
         })
 
-        const message: KlipperConfigLanguageWorkerServerMessage = {
-          action: 'getFoldingRanges',
-          content: model.getValue()
-        }
-
-        worker.postMessage(message)
-
         worker.addEventListener('message', (event: MessageEvent<KlipperConfigLanguageWorkerClientMessage>) => {
           const message = event.data
 
           switch (message.action) {
             case 'resultFoldingRanges':
               resolve(message.result.map(toMonacoFoldingRange))
+
               break
 
             case 'error':
               reject(message.error)
+
               break
           }
 
           worker.terminate()
         })
+
+        const message: KlipperConfigLanguageWorkerServerMessage = {
+          action: 'getFoldingRanges',
+          content: model.getValue()
+        }
+
+        worker.postMessage(message)
       })
     }
   })
@@ -280,28 +286,30 @@ async function setupMonaco () {
           resolve([])
         })
 
-        const message: GcodeLanguageWorkerServerMessage = {
-          action: 'compute',
-          content: model.getValue()
-        }
-
-        worker.postMessage(message)
-
         worker.addEventListener('message', (event: MessageEvent<GcodeLanguageWorkerClientMessage>) => {
           const message = event.data
 
           switch (message.action) {
-            case 'result':
-              resolve(message.ranges.map(toMonacoFoldingRange))
+            case 'resultFoldingRanges':
+              resolve(message.result.map(toMonacoFoldingRange))
+
               break
 
             case 'error':
               reject(message.error)
+
               break
           }
 
           worker.terminate()
         })
+
+        const message: GcodeLanguageWorkerServerMessage = {
+          action: 'getFoldingRanges',
+          content: model.getValue()
+        }
+
+        worker.postMessage(message)
       })
     }
   })
