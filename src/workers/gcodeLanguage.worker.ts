@@ -1,34 +1,8 @@
-export type GcodeLanguageWorkerClientMessage = {
-  action: 'resultFoldingRanges',
-  result: GcodeLanguageRange[]
-} | {
-  action: 'error',
-  error?: unknown
-}
+import type { MonacoEditorFoldingRange, MonacoEditorLanguageWorkerClientMessage, MonacoEditorLanguageWorkerServerMessage, ReduceState } from './monacoEditorLanguageWorkerHelpers'
 
-export type GcodeLanguageWorkerServerMessage = {
-  action: 'getFoldingRanges',
-  content: string
-}
-
-export type GcodeLanguageRangeKind = 'comment' | 'region'
-
-export type GcodeLanguageRange = {
-  kind: GcodeLanguageRangeKind,
-  start: number,
-  end: number
-}
-
-type ReduceState<T> = {
-  current?: T,
-  result: T[]
-}
-
-const computeFoldingRanges = (content: string): GcodeLanguageRange[] => {
-  const lines = content.split('\n')
-
+const computeFoldingRanges = (lines: string[]): MonacoEditorFoldingRange[] => {
   const layerBlocks = lines
-    .reduce<ReduceState<GcodeLanguageRange>>((state, lineContent, index) => {
+    .reduce<ReduceState<MonacoEditorFoldingRange>>((state, lineContent, index) => {
       const isLayer = /^\s*SET_PRINT_STATS_INFO .*CURRENT_LAYER=/i.test(lineContent)
 
       if (isLayer) {
@@ -50,7 +24,7 @@ const computeFoldingRanges = (content: string): GcodeLanguageRange[] => {
     .result
 
   const objectBlocks = lines
-    .reduce<ReduceState<GcodeLanguageRange>>((state, lineContent, index) => {
+    .reduce<ReduceState<MonacoEditorFoldingRange>>((state, lineContent, index) => {
       lineContent = lineContent.trim()
 
       if (lineContent.length > 0) {
@@ -82,7 +56,7 @@ const computeFoldingRanges = (content: string): GcodeLanguageRange[] => {
     .result
 
   const thumbnailBlocks = lines
-    .reduce<ReduceState<GcodeLanguageRange>>((state, lineContent, index) => {
+    .reduce<ReduceState<MonacoEditorFoldingRange>>((state, lineContent, index) => {
       if (lineContent.startsWith('; thumbnail')) {
         const type = lineContent.substring(11).split(' ')[1]
 
@@ -108,7 +82,7 @@ const computeFoldingRanges = (content: string): GcodeLanguageRange[] => {
     .result
 
   const commentBlocks = lines
-    .reduce<ReduceState<GcodeLanguageRange>>((state, lineContent, index) => {
+    .reduce<ReduceState<MonacoEditorFoldingRange>>((state, lineContent, index) => {
       lineContent = lineContent.trim()
 
       if (lineContent.length > 0) {
@@ -141,8 +115,8 @@ const computeFoldingRanges = (content: string): GcodeLanguageRange[] => {
   ]
 }
 
-const sendFoldingRanges = (result: GcodeLanguageRange[]) => {
-  const message: GcodeLanguageWorkerClientMessage = {
+const sendFoldingRanges = (result: MonacoEditorFoldingRange[]) => {
+  const message: MonacoEditorLanguageWorkerClientMessage = {
     action: 'resultFoldingRanges',
     result
   }
@@ -151,7 +125,7 @@ const sendFoldingRanges = (result: GcodeLanguageRange[]) => {
 }
 
 const sendError = (error?: unknown) => {
-  const message: GcodeLanguageWorkerClientMessage = {
+  const message: MonacoEditorLanguageWorkerClientMessage = {
     action: 'error',
     error
   }
@@ -159,18 +133,23 @@ const sendError = (error?: unknown) => {
   self.postMessage(message)
 }
 
-addEventListener('message', (event: MessageEvent<GcodeLanguageWorkerServerMessage>) => {
+addEventListener('message', (event: MessageEvent<MonacoEditorLanguageWorkerServerMessage>) => {
   const message = event.data
 
   try {
+    const lines = message.content.split('\n')
+
     switch (message.action) {
       case 'getFoldingRanges': {
-        const ranges = computeFoldingRanges(message.content)
+        const ranges = computeFoldingRanges(lines)
 
         sendFoldingRanges(ranges)
 
         break
       }
+
+      default:
+        throw new Error(`Unknown action: ${message.action}`)
     }
   } catch (error) {
     sendError(error)

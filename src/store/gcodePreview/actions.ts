@@ -35,7 +35,7 @@ export const actions = {
 
     commit('setParserWorker', worker)
 
-    worker.addEventListener('message', (event: MessageEvent<ParseGcodeWorkerClientMessage>) => {
+    worker.onmessage = (event: MessageEvent<ParseGcodeWorkerClientMessage>) => {
       const message = event.data
 
       switch (message.action) {
@@ -87,7 +87,7 @@ export const actions = {
           break
         }
       }
-    })
+    }
 
     commit('setParserProgress', 0)
     commit('setMoves', [])

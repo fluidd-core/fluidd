@@ -1,71 +1,10 @@
 import type { IRange } from 'monaco-editor/esm/vs/editor/editor.api'
+import { getFirstNonWhitespaceColumn, getLastNonWhitespaceColumn } from './monacoEditorLanguageWorkerHelpers'
+import type { MonacoEditorCodeLens, MonacoEditorFoldingRange, MonacoEditorLanguageWorkerClientMessage, MonacoEditorLanguageWorkerServerMessage, MonacoEditorSymbol, ReduceState, StackReduceState } from './monacoEditorLanguageWorkerHelpers'
 
-export type KlipperConfigLanguageWorkerServerMessage = {
-  action: 'getFoldingRanges' | 'getDocumentSymbols' | 'getCodeLens',
-  content: string
-}
-
-export type KlipperConfigLanguageWorkerClientMessage = {
-  action: 'resultFoldingRanges',
-  result: KlipperConfigFoldingRange[]
-} | {
-  action: 'resultDocumentSymbols',
-  result: KlipperConfigSymbol[]
-} | {
-  action: 'resultCodeLens',
-  result: KlipperConfigSection[]
-} | {
-  action: 'error',
-  error?: unknown
-}
-
-export type KlipperConfigFoldingRangeKind = 'comment' | 'region'
-
-export type KlipperConfigFoldingRange = {
-  kind: KlipperConfigFoldingRangeKind,
-  start: number,
-  end: number
-}
-
-export type KlipperConfigSymbol = {
-  name: string,
-  range: IRange,
-  children: KlipperConfigSymbolChild[]
-}
-
-export type KlipperConfigSymbolChild = {
-  name: string,
-  range: IRange
-}
-
-export type KlipperConfigSection = {
-  sectionName: string,
-  range: IRange
-}
-
-type ReduceState<T> = {
-  current?: T,
-  result: T[]
-}
-
-type StackReduceState<U, T> = {
-  stack: U[],
-  result: T[]
-}
-
-const getFirstNonWhitespaceColumn = (line: string): number => {
-  const match = /\S/.exec(line)
-  return match ? match.index + 1 : 1
-}
-
-const getLastNonWhitespaceColumn = (line: string): number => {
-  const match = /\S\s*$/.exec(line)
-  return match ? match.index + 2 : 1
-}
-
-const getFoldingRanges = (lines: string[]): KlipperConfigFoldingRange[] => {
+const getFoldingRanges = (lines: string[]): MonacoEditorFoldingRange[] => {
   const sectionBlocks = lines
-    .reduce<ReduceState<KlipperConfigFoldingRange>>((state, lineContent, index) => {
+    .reduce<ReduceState<MonacoEditorFoldingRange>>((state, lineContent, index) => {
       const isSection = /^\[[^\]]+\]/.test(lineContent)
 
       if (isSection) {
@@ -87,7 +26,7 @@ const getFoldingRanges = (lines: string[]): KlipperConfigFoldingRange[] => {
     .result
 
   const regionBlocks = lines
-    .reduce<StackReduceState<number, KlipperConfigFoldingRange>>((state, lineContent, index) => {
+    .reduce<StackReduceState<number, MonacoEditorFoldingRange>>((state, lineContent, index) => {
       lineContent = lineContent.trim()
 
       if (lineContent.length > 0) {
@@ -113,7 +52,7 @@ const getFoldingRanges = (lines: string[]): KlipperConfigFoldingRange[] => {
     .result
 
   const commentBlocks = lines
-    .reduce<ReduceState<KlipperConfigFoldingRange>>((state, lineContent, index) => {
+    .reduce<ReduceState<MonacoEditorFoldingRange>>((state, lineContent, index) => {
       lineContent = lineContent.trim()
 
       if (lineContent.length > 0) {
@@ -145,7 +84,7 @@ const getFoldingRanges = (lines: string[]): KlipperConfigFoldingRange[] => {
   ]
 }
 
-const getDocumentSymbols = (lines: string[]): KlipperConfigSymbol[] => {
+const getDocumentSymbols = (lines: string[]): MonacoEditorSymbol[] => {
   return lines
     .reduce<ReduceState<{ name: string, children: ReduceState<{ name: string, range: IRange }>, range: IRange }>>((state, lineContent, index) => {
       const section = /^\[[^\]]+\]/.exec(lineContent)
@@ -203,9 +142,9 @@ const getDocumentSymbols = (lines: string[]): KlipperConfigSymbol[] => {
     }))
 }
 
-const getCodeLens = (lines: string[]): KlipperConfigSection[] => {
+const getCodeLens = (lines: string[]): MonacoEditorCodeLens[] => {
   return lines
-    .reduce<ReduceState<KlipperConfigSection>>((state, lineContent, index) => {
+    .reduce<ReduceState<MonacoEditorCodeLens>>((state, lineContent, index) => {
       const section = /^\[([^\]]+)\]/.exec(lineContent)
 
       if (section) {
@@ -237,8 +176,8 @@ const getCodeLens = (lines: string[]): KlipperConfigSection[] => {
     .result
 }
 
-const sendFoldingRanges = (result: KlipperConfigFoldingRange[]) => {
-  const message: KlipperConfigLanguageWorkerClientMessage = {
+const sendFoldingRanges = (result: MonacoEditorFoldingRange[]) => {
+  const message: MonacoEditorLanguageWorkerClientMessage = {
     action: 'resultFoldingRanges',
     result
   }
@@ -246,8 +185,8 @@ const sendFoldingRanges = (result: KlipperConfigFoldingRange[]) => {
   self.postMessage(message)
 }
 
-const sendDocumentSymbols = (result: KlipperConfigSymbol[]) => {
-  const message: KlipperConfigLanguageWorkerClientMessage = {
+const sendDocumentSymbols = (result: MonacoEditorSymbol[]) => {
+  const message: MonacoEditorLanguageWorkerClientMessage = {
     action: 'resultDocumentSymbols',
     result
   }
@@ -255,8 +194,8 @@ const sendDocumentSymbols = (result: KlipperConfigSymbol[]) => {
   self.postMessage(message)
 }
 
-const sendCodeLens = (result: KlipperConfigSection[]) => {
-  const message: KlipperConfigLanguageWorkerClientMessage = {
+const sendCodeLens = (result: MonacoEditorCodeLens[]) => {
+  const message: MonacoEditorLanguageWorkerClientMessage = {
     action: 'resultCodeLens',
     result
   }
@@ -265,7 +204,7 @@ const sendCodeLens = (result: KlipperConfigSection[]) => {
 }
 
 const sendError = (error?: unknown) => {
-  const message: KlipperConfigLanguageWorkerClientMessage = {
+  const message: MonacoEditorLanguageWorkerClientMessage = {
     action: 'error',
     error
   }
@@ -273,7 +212,7 @@ const sendError = (error?: unknown) => {
   self.postMessage(message)
 }
 
-addEventListener('message', (event: MessageEvent<KlipperConfigLanguageWorkerServerMessage>) => {
+addEventListener('message', (event: MessageEvent<MonacoEditorLanguageWorkerServerMessage>) => {
   const message = event.data
 
   try {
@@ -303,6 +242,9 @@ addEventListener('message', (event: MessageEvent<KlipperConfigLanguageWorkerServ
 
         break
       }
+
+      default:
+        throw new Error(`Unknown action: ${message.action}`)
     }
   } catch (error) {
     sendError(error)

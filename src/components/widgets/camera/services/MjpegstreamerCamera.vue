@@ -62,7 +62,7 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
 
       const worker = this.worker = new MjpegWorker()
 
-      worker.addEventListener('message', (event: MessageEvent<MjpegWorkerClientMessage>) => {
+      worker.onmessage = (event: MessageEvent<MjpegWorkerClientMessage>) => {
         const message = event.data
 
         switch (message.action) {
@@ -99,7 +99,7 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
 
             break
         }
-      })
+      }
 
       const message: MjpegWorkerServerMessage = {
         action: 'start',
