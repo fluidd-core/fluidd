@@ -85,7 +85,7 @@ const gcodeMonarchLanguage: Monaco.languages.IMonarchLanguage = {
     bracketExpr: [
       [/\[/, 'delimiter.bracket', '@push'],
       [/\]/, 'delimiter.bracket', '@pop'],
-      { include: 'root' }
+      { include: '@root' }
     ],
 
     bracketVar: [
