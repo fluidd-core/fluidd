@@ -2,7 +2,12 @@ import type { BBox, Layer, Move, Part } from '@/store/gcodePreview/types'
 import parseGcode from './parseGcode'
 import { consola } from 'consola'
 
-export type ParseGcodeWorkerClientMessage = {
+export type ParseGcodeWorkerRequestMessage = {
+  action: 'parse',
+  gcode: ArrayBuffer
+}
+
+export type ParseGcodeWorkerResponseMessage = {
   action: 'progress',
   filePosition: number
 } | {
@@ -17,13 +22,8 @@ export type ParseGcodeWorkerClientMessage = {
   error?: unknown
 }
 
-export type ParseGcodeWorkerServerMessage = {
-  action: 'parse',
-  gcode: ArrayBuffer
-}
-
 const sendProgress = (filePosition: number) => {
-  const message: ParseGcodeWorkerClientMessage = {
+  const message: ParseGcodeWorkerResponseMessage = {
     action: 'progress',
     filePosition
   }
@@ -32,7 +32,7 @@ const sendProgress = (filePosition: number) => {
 }
 
 const sendResult = (moves: Move[], layers: Layer[], parts: Part[], tools: number[], bounds: BBox | null) => {
-  const message : ParseGcodeWorkerClientMessage = {
+  const message : ParseGcodeWorkerResponseMessage = {
     action: 'result',
     moves,
     layers,
@@ -45,7 +45,7 @@ const sendResult = (moves: Move[], layers: Layer[], parts: Part[], tools: number
 }
 
 const sendError = (error?: unknown) => {
-  const message: ParseGcodeWorkerClientMessage = {
+  const message: ParseGcodeWorkerResponseMessage = {
     action: 'error',
     error
   }
@@ -53,7 +53,7 @@ const sendError = (error?: unknown) => {
   self.postMessage(message)
 }
 
-self.onmessage = (event: MessageEvent<ParseGcodeWorkerServerMessage>) => {
+self.onmessage = (event: MessageEvent<ParseGcodeWorkerRequestMessage>) => {
   const message = event.data
 
   try {

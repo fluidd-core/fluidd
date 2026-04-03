@@ -1,4 +1,4 @@
-import type { SandboxedEvalWorkerClientMessage, SandboxedEvalWorkerServerMessage } from '@/workers/sandboxedEval.worker'
+import type { SandboxedEvalWorkerResponseMessage, SandboxedEvalWorkerRequestMessage } from '@/workers/sandboxedEval.worker'
 
 import SandboxedEvalWorker from '@/workers/sandboxedEval.worker?ts?worker'
 
@@ -9,7 +9,7 @@ const sandboxedEval = async<T>(code: string, feature?: string, timeout = 800): P
   const worker = getWorker(feature)
 
   const workerPromise = new Promise<unknown>((resolve, reject) => {
-    const messageHandler = (event: MessageEvent<SandboxedEvalWorkerClientMessage>) => {
+    const messageHandler = (event: MessageEvent<SandboxedEvalWorkerResponseMessage>) => {
       const message = event.data
 
       if (message.id !== id) {
@@ -35,7 +35,7 @@ const sandboxedEval = async<T>(code: string, feature?: string, timeout = 800): P
     worker.addEventListener('message', messageHandler)
   })
 
-  const message: SandboxedEvalWorkerServerMessage = {
+  const message: SandboxedEvalWorkerRequestMessage = {
     code,
     id
   }

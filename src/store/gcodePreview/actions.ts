@@ -6,7 +6,7 @@ import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
 import { consola } from 'consola'
 
-import type { ParseGcodeWorkerClientMessage, ParseGcodeWorkerServerMessage } from '@/workers/parseGcode.worker'
+import type { ParseGcodeWorkerResponseMessage, ParseGcodeWorkerRequestMessage } from '@/workers/parseGcode.worker'
 
 import ParseGcodeWorker from '@/workers/parseGcode.worker.ts?worker'
 
@@ -35,7 +35,7 @@ export const actions = {
 
     commit('setParserWorker', worker)
 
-    worker.onmessage = (event: MessageEvent<ParseGcodeWorkerClientMessage>) => {
+    worker.onmessage = (event: MessageEvent<ParseGcodeWorkerResponseMessage>) => {
       const message = event.data
 
       switch (message.action) {
@@ -98,7 +98,7 @@ export const actions = {
 
     commit('setFile', payload.file)
 
-    const message: ParseGcodeWorkerServerMessage = {
+    const message: ParseGcodeWorkerRequestMessage = {
       action: 'parse',
       gcode: payload.gcode
     }

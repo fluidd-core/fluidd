@@ -1,7 +1,12 @@
 import mjpegStream from './mjpegStream'
 import { consola } from 'consola'
 
-export type MjpegWorkerClientMessage = {
+export type MjpegWorkerRequestMessage = {
+  action: 'start',
+  url: string
+}
+
+export type MjpegWorkerResponseMessage = {
   action: 'frame',
   data: Uint8Array<ArrayBuffer>
 } | {
@@ -11,13 +16,8 @@ export type MjpegWorkerClientMessage = {
   error?: unknown
 }
 
-export type MjpegWorkerServerMessage = {
-  action: 'start',
-  url: string
-}
-
 const sendFrame = (data: Uint8Array<ArrayBuffer>) => {
-  const message: MjpegWorkerClientMessage = {
+  const message: MjpegWorkerResponseMessage = {
     action: 'frame',
     data
   }
@@ -26,7 +26,7 @@ const sendFrame = (data: Uint8Array<ArrayBuffer>) => {
 }
 
 const sendDone = () => {
-  const message: MjpegWorkerClientMessage = {
+  const message: MjpegWorkerResponseMessage = {
     action: 'done'
   }
 
@@ -34,7 +34,7 @@ const sendDone = () => {
 }
 
 const sendError = (error?: unknown) => {
-  const message: MjpegWorkerClientMessage = {
+  const message: MjpegWorkerResponseMessage = {
     action: 'error',
     error
   }
@@ -42,7 +42,7 @@ const sendError = (error?: unknown) => {
   self.postMessage(message)
 }
 
-self.onmessage = async (event: MessageEvent<MjpegWorkerServerMessage>) => {
+self.onmessage = async (event: MessageEvent<MjpegWorkerRequestMessage>) => {
   const message = event.data
 
   try {
