@@ -1,7 +1,6 @@
 import { consola } from 'consola'
 import type { IRange } from 'monaco-editor/esm/vs/editor/editor.api'
-import { getFirstNonWhitespaceColumn, getLastNonWhitespaceColumn } from './monacoWorkerHelpers'
-import type { MonacoLanguageWorkerRequestMessage, MonacoLanguageWorkerResponseMessage, ReduceState } from './monacoWorkerHelpers'
+import { getFirstNonWhitespaceColumn, getLastNonWhitespaceColumn, type MonacoLanguageWorkerRequestMessage, type MonacoLanguageWorkerResponseMessage, type ReduceState } from './monacoWorkerHelpers'
 
 export type MonacoCodeLensWorkerResponseMessage = MonacoLanguageWorkerResponseMessage<MonacoCodeLens[]>
 
