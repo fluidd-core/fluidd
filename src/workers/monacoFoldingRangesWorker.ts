@@ -1,4 +1,4 @@
-import consola from 'consola'
+import { consola } from 'consola'
 import type { MonacoLanguageWorkerRequestMessage, MonacoLanguageWorkerResponseMessage, ReduceState, StackReduceState } from './monacoWorkerHelpers'
 
 export type MonacoFoldingRangesWorkerResponseMessage = MonacoLanguageWorkerResponseMessage<MonacoFoldingRange[]>

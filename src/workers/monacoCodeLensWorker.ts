@@ -1,4 +1,4 @@
-import consola from 'consola'
+import { consola } from 'consola'
 import type { IRange } from 'monaco-editor/esm/vs/editor/editor.api'
 import { getFirstNonWhitespaceColumn, getLastNonWhitespaceColumn } from './monacoWorkerHelpers'
 import type { MonacoLanguageWorkerRequestMessage, MonacoLanguageWorkerResponseMessage, ReduceState } from './monacoWorkerHelpers'
