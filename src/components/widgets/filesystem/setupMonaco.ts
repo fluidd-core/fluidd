@@ -1,3 +1,20 @@
+import 'monaco-editor/esm/vs/editor/editor.all.js'
+
+// full list of features on 'monaco-editor/esm/metadata.js'
+import 'monaco-editor/esm/vs/editor/standalone/browser/iPadShowKeyboard/iPadShowKeyboard.js'
+import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoLineQuickAccess.js'
+import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoSymbolQuickAccess.js'
+import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess.js'
+
+import 'monaco-editor/esm/vs/language/css/monaco.contribution'
+import 'monaco-editor/esm/vs/language/json/monaco.contribution'
+import 'monaco-editor/esm/vs/basic-languages/css/css.contribution'
+import 'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution'
+
+import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
+import CssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
+
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 
 import getVueApp from '@/util/get-vue-app'
@@ -20,6 +37,21 @@ import MonacoCodeLensWorker from '@/workers/monacoCodeLensWorker?worker'
 import type { MonacoDocumentSymbolsWorkerResponseMessage } from '@/workers/monacoDocumentSymbolsWorker'
 import MonacoDocumentSymbolsWorker from '@/workers/monacoDocumentSymbolsWorker?worker'
 
+self.MonacoEnvironment = {
+  getWorker (_: string, label: string) {
+    switch (label) {
+      case 'json':
+        return new JsonWorker()
+      case 'css':
+      case 'scss':
+      case 'less':
+        return new CssWorker()
+      default:
+        return new EditorWorker()
+    }
+  }
+}
+
 type CodeLensSupportedService = 'klipper' | 'moonraker' | 'moonraker-telegram-bot' | 'crowsnest'
 
 const isCodeLensSupportedService = (service: string): service is CodeLensSupportedService => [
@@ -36,6 +68,7 @@ const monacoLanguageWorkerWrapper = <T extends MonacoLanguageWorkerResponseMessa
     const worker = new WorkerConstructor()
 
     const cleanup = () => {
+      tokenDispose.dispose()
       worker.onmessage = null
       worker.onerror = null
       worker.onmessageerror = null
@@ -52,7 +85,7 @@ const monacoLanguageWorkerWrapper = <T extends MonacoLanguageWorkerResponseMessa
       reject(error)
     }
 
-    token.onCancellationRequested(() => {
+    const tokenDispose = token.onCancellationRequested(() => {
       safeResolve(undefined)
     })
 
@@ -132,8 +165,6 @@ const getDocsSectionHash = (service: DocsSectionService, sectionName: string) =>
 }
 
 async function setupMonaco () {
-  await import('./setupMonaco.features')
-
   monaco.languages.register({ id: 'gcode', extensions: ['gcode', 'g', 'gc', 'gco', 'ufp', 'nc'] })
   monaco.languages.register({ id: 'klipper-config', extensions: ['cfg', 'conf'] })
   monaco.languages.register({ id: 'log', extensions: ['log'] })
