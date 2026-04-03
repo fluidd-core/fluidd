@@ -99,8 +99,6 @@ export default class FileEditor extends Mixins(BrowserMixin) {
       monaco.editor.setTheme('light-converted')
     }
 
-    const isGcode = /\.(?:gcode|g|gc|gco|ufp|nc)$/i.test(this.filename)
-
     // Create an editor instance.
     this.editor = monaco.editor.create(this.monacoEditor, {
       contextmenu: true,
@@ -114,17 +112,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
       minimap: {
         enabled: (!this.isMobileViewport)
       },
-      rulers: (this.isMobileViewport) ? [80, 120] : [],
-      // Large gcode file optimizations
-      ...(isGcode && {
-        largeFileOptimizations: false,
-        wordBasedSuggestions: 'off' as const,
-        occurrencesHighlight: 'off' as const,
-        selectionHighlight: false,
-        matchBrackets: 'never' as const,
-        links: false,
-        codeLens: false
-      })
+      rulers: (this.isMobileViewport) ? [80, 120] : []
     })
 
     if (!this.readonly) {
