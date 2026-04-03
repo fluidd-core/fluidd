@@ -65,6 +65,11 @@ type DocsSectionService = CodeLensSupportedService | SupportedKlipperServices
 
 const monacoLanguageWorkerWrapper = <T extends MonacoLanguageWorkerResponseMessage<U>, U = Extract<T, { action: 'result' }>['result']>(WorkerConstructor: new () => Worker, language: string, content: string, token: monaco.CancellationToken): Promise<U | undefined> => {
   return new Promise<U | undefined>((resolve, reject) => {
+    if (token.isCancellationRequested) {
+      resolve(undefined)
+      return
+    }
+
     const worker = new WorkerConstructor()
 
     let tokenDispose: monaco.IDisposable | null = null
@@ -120,7 +125,9 @@ const monacoLanguageWorkerWrapper = <T extends MonacoLanguageWorkerResponseMessa
       content
     }
 
-    worker.postMessage(message)
+    if (!token.isCancellationRequested) {
+      worker.postMessage(message)
+    }
   })
 }
 
