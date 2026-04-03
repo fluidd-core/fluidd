@@ -35,10 +35,25 @@ const monacoLanguageWorkerWrapper = <T extends MonacoLanguageWorkerResponseMessa
   return new Promise<U | undefined>((resolve, reject) => {
     const worker = new WorkerConstructor()
 
-    token.onCancellationRequested(() => {
+    const cleanup = () => {
+      worker.onmessage = null
+      worker.onerror = null
+      worker.onmessageerror = null
       worker.terminate()
+    }
 
-      resolve(undefined)
+    const safeResolve = (value: U | undefined) => {
+      cleanup()
+      resolve(value)
+    }
+
+    const safeReject = (error: unknown) => {
+      cleanup()
+      reject(error)
+    }
+
+    token.onCancellationRequested(() => {
+      safeResolve(undefined)
     })
 
     worker.onmessage = (event: MessageEvent<T>) => {
@@ -46,17 +61,23 @@ const monacoLanguageWorkerWrapper = <T extends MonacoLanguageWorkerResponseMessa
 
       switch (message.action) {
         case 'result':
-          resolve(message.result)
+          safeResolve(message.result)
 
           break
 
         case 'error':
-          reject(message.error)
+          safeReject(message.error)
 
           break
       }
+    }
 
-      worker.terminate()
+    worker.onerror = (event) => {
+      safeReject(new Error(event.message || 'Worker error'))
+    }
+
+    worker.onmessageerror = () => {
+      safeReject(new Error('Worker message error'))
     }
 
     const message: MonacoLanguageWorkerRequestMessage = {

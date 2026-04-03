@@ -248,6 +248,9 @@ self.onmessage = (event: MessageEvent<MonacoLanguageWorkerRequestMessage>) => {
 
         break
       }
+
+      default:
+        throw new Error(`Unsupported language: ${message.language}`)
     }
   } catch (e) {
     consola.error('[MonacoFoldingRanges] error in worker', e)

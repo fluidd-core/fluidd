@@ -106,6 +106,9 @@ self.onmessage = (event: MessageEvent<MonacoLanguageWorkerRequestMessage>) => {
 
         break
       }
+
+      default:
+        throw new Error(`Unsupported language: ${message.language}`)
     }
   } catch (e) {
     consola.error('[MonacoDocumentSymbols] error in worker', e)
