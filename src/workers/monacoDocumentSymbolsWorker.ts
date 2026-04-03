@@ -53,12 +53,12 @@ const klipperConfigDocumentSymbols = (lines: string[]): MonacoSymbol[] => {
               endLineNumber: index + 1,
               endColumn: getLastNonWhitespaceColumn(lineContent)
             }
+          }
 
-            state.current.range = {
-              ...state.current.range,
-              endLineNumber: index + 1,
-              endColumn: getLastNonWhitespaceColumn(lineContent)
-            }
+          state.current.range = {
+            ...state.current.range,
+            endLineNumber: index + 1,
+            endColumn: getLastNonWhitespaceColumn(lineContent)
           }
         }
       }
