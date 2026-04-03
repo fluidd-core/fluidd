@@ -67,8 +67,10 @@ const monacoLanguageWorkerWrapper = <T extends MonacoLanguageWorkerResponseMessa
   return new Promise<U | undefined>((resolve, reject) => {
     const worker = new WorkerConstructor()
 
+    let tokenDispose: monaco.IDisposable | null = null
+
     const cleanup = () => {
-      tokenDispose.dispose()
+      tokenDispose?.dispose()
       worker.onmessage = null
       worker.onerror = null
       worker.onmessageerror = null
@@ -85,7 +87,7 @@ const monacoLanguageWorkerWrapper = <T extends MonacoLanguageWorkerResponseMessa
       reject(error)
     }
 
-    const tokenDispose = token.onCancellationRequested(() => {
+    tokenDispose = token.onCancellationRequested(() => {
       safeResolve(undefined)
     })
 
