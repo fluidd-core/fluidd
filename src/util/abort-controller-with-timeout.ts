@@ -1,0 +1,17 @@
+class AbortControllerWithTimeout extends AbortController {
+  private timeout: ReturnType<typeof setTimeout>
+
+  constructor (ms: number) {
+    super()
+    this.timeout = setTimeout(() => this.abort(), ms)
+  }
+
+  abort (reason?: unknown): void {
+    clearTimeout(this.timeout)
+    super.abort(reason)
+  }
+}
+
+const abortControllerWithTimeout = (ms: number) => new AbortControllerWithTimeout(ms)
+
+export default abortControllerWithTimeout
