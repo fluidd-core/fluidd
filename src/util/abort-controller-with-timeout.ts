@@ -3,7 +3,7 @@ class AbortControllerWithTimeout extends AbortController {
 
   constructor (ms: number) {
     super()
-    this.timeout = setTimeout(() => this.abort(), ms)
+    this.timeout = setTimeout(() => this.abort(new Error('Timeout')), ms)
   }
 
   abort (reason?: unknown): void {

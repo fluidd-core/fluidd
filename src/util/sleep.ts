@@ -5,7 +5,7 @@ const sleep = (ms: number, signal?: AbortSignal): Promise<void> => {
 
   return new Promise((resolve, reject) => {
     if (signal?.aborted) {
-      return reject(signal.reason)
+      return reject(signal.reason ?? new Error('AbortError'))
     }
 
     debug(`sleeping for ${ms}...`)
@@ -15,7 +15,7 @@ const sleep = (ms: number, signal?: AbortSignal): Promise<void> => {
 
       clearTimeout(timeoutId)
 
-      reject(signal!.reason)
+      reject(signal!.reason ?? new Error('AbortError'))
     }
 
     const timeoutId = setTimeout(() => {

@@ -20,7 +20,7 @@ const sandboxedEval = async<T>(code: string, feature?: string, timeout = 800): P
 
     const abortHandler = () => {
       cleanup()
-      reject(signal.reason ?? new Error('Aborted'))
+      reject(signal.reason ?? new Error('Timeout'))
     }
 
     const messageHandler = (event: MessageEvent<SandboxedEvalWorkerResponseMessage>) => {
