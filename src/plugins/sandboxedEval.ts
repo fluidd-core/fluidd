@@ -63,6 +63,8 @@ const sandboxedEval = async<T>(code: string, feature?: string, timeout = 800): P
 
     return result as T
   } finally {
+    abortController.clear()
+
     if (feature && signal.aborted) {
       worker.terminate()
       delete workers[feature]

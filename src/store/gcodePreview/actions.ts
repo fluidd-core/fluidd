@@ -51,7 +51,7 @@ export const actions = {
             commit('setParts', message.parts)
             commit('setTools', message.tools)
             commit('setBounds', message.bounds)
-            commit('setParserProgress', payload.file.size ?? payload.gcode.byteLength)
+            commit('setParserProgress', payload.file.size ?? gcodeByteLength)
 
             if (rootState.config.uiSettings.gcodePreview.hideSinglePartBoundingBox && message.parts.length <= 1) {
               dispatch('config/saveByPath', {
@@ -97,6 +97,8 @@ export const actions = {
     commit('setBounds', null)
 
     commit('setFile', payload.file)
+
+    const gcodeByteLength = payload.gcode.byteLength
 
     const message: ParseGcodeWorkerRequestMessage = {
       action: 'parse',

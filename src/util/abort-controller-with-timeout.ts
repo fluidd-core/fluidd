@@ -10,6 +10,10 @@ class AbortControllerWithTimeout extends AbortController {
     clearTimeout(this.timeout)
     super.abort(reason)
   }
+
+  clear (): void {
+    clearTimeout(this.timeout)
+  }
 }
 
 const abortControllerWithTimeout = (ms: number) => new AbortControllerWithTimeout(ms)
