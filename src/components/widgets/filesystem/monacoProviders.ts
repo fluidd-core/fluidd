@@ -1,6 +1,8 @@
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import type Vue from 'vue'
 import getVueApp from '@/util/get-vue-app'
 import type { KlippyApp, SupportedKlipperServices } from '@/store/printer/types'
+
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import type { MonacoLanguageWorkerRequestMessage, MonacoLanguageWorkerResponseMessage } from '@/workers/monacoWorkerHelpers'
 
 import type { MonacoDocumentSymbolsWorkerResponseMessage } from '@/workers/monacoDocumentSymbolsWorker'
@@ -98,7 +100,11 @@ export class MonacoDocumentSymbolProvider extends MonacoProviderBase<monaco.lang
     const cacheKey = this._createCacheKey(model)
 
     if (this._lastCacheKey !== cacheKey) {
-      const result = await this._workerWrapper<MonacoDocumentSymbolsWorkerResponseMessage>(MonacoDocumentSymbolsWorker, 'klipper-config', model.getValue(), token) ?? []
+      const result = await this._workerWrapper<MonacoDocumentSymbolsWorkerResponseMessage>(MonacoDocumentSymbolsWorker, 'klipper-config', model.getValue(), token)
+
+      if (result == null) {
+        return []
+      }
 
       this._lastResult = result.map(section => ({
         name: section.name,
@@ -137,7 +143,16 @@ export class MonacoCodeLensProvider extends MonacoProviderBase<monaco.languages.
     const cacheKey = this._createCacheKey(model)
 
     if (this._lastCacheKey !== cacheKey) {
-      this._lastResult = await this._getCodeLens(model, token)
+      const result = await this._getCodeLens(model, token)
+
+      if (result == null) {
+        return {
+          lenses: [],
+          dispose: () => undefined
+        }
+      }
+
+      this._lastResult = result
       this._lastCacheKey = cacheKey
     }
 
@@ -147,7 +162,7 @@ export class MonacoCodeLensProvider extends MonacoProviderBase<monaco.languages.
     }
   }
 
-  private async _getCodeLens (model: monaco.editor.ITextModel, token: monaco.CancellationToken): Promise<monaco.languages.CodeLens[]> {
+  private async _getCodeLens (model: monaco.editor.ITextModel, token: monaco.CancellationToken): Promise<monaco.languages.CodeLens[] | undefined> {
     const { service } = this._app.$typedGetters['server/getConfigMapByFilename'](model.uri.path.split('/').pop()!) ?? {}
 
     if (
@@ -161,7 +176,11 @@ export class MonacoCodeLensProvider extends MonacoProviderBase<monaco.languages.
       ? this._klippyApp.name
       : service
 
-    const result = await this._workerWrapper<MonacoCodeLensWorkerResponseMessage>(MonacoCodeLensWorker, 'klipper-config', model.getValue(), token) ?? []
+    const result = await this._workerWrapper<MonacoCodeLensWorkerResponseMessage>(MonacoCodeLensWorker, 'klipper-config', model.getValue(), token)
+
+    if (result == null) {
+      return result
+    }
 
     return result.map((section, index) => {
       const hash = this._getDocsSectionHash(docsSectionService, section.sectionName)
@@ -235,7 +254,11 @@ export class MonacoFoldingRangeProvider extends MonacoProviderBase<monaco.langua
     const cacheKey = this._createCacheKey(model)
 
     if (this._lastCacheKey !== cacheKey) {
-      const result = await this._workerWrapper<MonacoFoldingRangesWorkerResponseMessage>(MonacoFoldingRangeWorker, model.getLanguageId(), model.getValue(), token) ?? []
+      const result = await this._workerWrapper<MonacoFoldingRangesWorkerResponseMessage>(MonacoFoldingRangeWorker, model.getLanguageId(), model.getValue(), token)
+
+      if (result == null) {
+        return []
+      }
 
       this._lastResult = result.map((range): monaco.languages.FoldingRange => {
         const kind = range.kind === 'comment'
