@@ -102,7 +102,7 @@ src/
 ├── directives/         # Custom Vue directives (v-safe-html for DOMPurify)
 ├── locales/            # i18n YAML files (23 languages)
 ├── mixins/             # Vue mixins (StateMixin, FilesMixin, etc.)
-├── monaco/             # TextMate grammars and editor themes
+├── monaco/             # Monarch tokenizers and editor themes
 ├── plugins/            # Vue plugins (i18n, httpClient, socketClient, vuetify, filters)
 ├── router/             # Vue Router (hash mode) with auth guards
 ├── scss/               # Global styles and Vuetify variable overrides
@@ -111,7 +111,7 @@ src/
 ├── typings/            # Global .d.ts declarations (Klipper, Moonraker namespaces)
 ├── util/               # Helper functions (30+)
 ├── views/              # Page components (Dashboard, Console, Jobs, etc.)
-└── workers/            # Web Workers (parseGcode, mjpegStream, sandboxedEval)
+└── workers/            # Web Workers (parseGcode, mjpegStream, sandboxedEval, Monaco language providers)
 ```
 
 ### Router & Authentication
@@ -124,18 +124,18 @@ src/
 
 ### Icons & Theming
 
-- MDI icons via `@mdi/js` — mapped in `src/globals.ts` (`Icons` object, ~225 mappings)
+- MDI icons via `@mdi/js` — mapped in `src/globals.ts` (`Icons` object, ~228 mappings)
 - Usage: `<v-icon>{{ $globals.Icons.close }}</v-icon>`
 - Vuetify theme with custom dark/light overrides in `src/scss/variables.scss`
 - PWA support with service worker in `src/sw.ts` (Workbox, injectManifest strategy)
 
 ### Monaco Editor
 
-- Setup in `src/components/widgets/filesystem/setupMonaco.ts`
-- TextMate grammars (onigasm WASM) for `gcode`, `klipper-config`, `log` languages
+- Setup in `src/components/widgets/filesystem/setupMonaco.ts` (includes worker environment setup)
+- Monarch tokenizers for `gcode`, `klipper-config`, `log` languages (in `src/monaco/language/*.monarch.ts`)
 - Custom CodeLens providers (links to Klipper docs from config sections)
-- Document symbol + folding range providers for `klipper-config` and `gcode`
-- Worker setup in `setupMonaco.features.ts` (editor, JSON, CSS workers)
+- Document symbol provider for `klipper-config`; folding range provider for `klipper-config` and `gcode`
+- Language providers run in dedicated Web Workers (`monacoCodeLensWorker`, `monacoDocumentSymbolsWorker`, `monacoFoldingRangesWorker`)
 
 ## Integration Points
 
@@ -156,7 +156,6 @@ src/
 
 - `import.meta.glob()` used in `src/dynamicImports.ts` for lazy-loading:
   - `I18nLocales` — locale YAML files
-  - `MonacoLanguageImports` — TextMate grammars
   - `CameraComponents` — camera service Vue components
 - Views also dynamically imported in `src/router/index.ts` via `() => import('@/views/X.vue')`
 

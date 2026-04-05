@@ -21,21 +21,12 @@ import getVueApp from '@/util/get-vue-app'
 import themeDark from '@/monaco/theme/editor.dark.theme.json'
 import themeLight from '@/monaco/theme/editor.light.theme.json'
 
-import type { KlippyApp, SupportedKlipperServices } from '@/store/printer/types'
+import type { KlippyApp } from '@/store/printer/types'
+
 import gcodeMonarchLanguage from '@/monaco/language/gcode.monarch'
 import klipperConfigMonarchLanguage from '@/monaco/language/klipper-config.monarch'
 import logMonarchLanguage from '@/monaco/language/log.monarch'
-
-import type { MonacoLanguageWorkerRequestMessage, MonacoLanguageWorkerResponseMessage } from '@/workers/monacoWorkerHelpers'
-
-import type { MonacoFoldingRangesWorkerResponseMessage } from '@/workers/monacoFoldingRangesWorker'
-import MonacoFoldingRangeWorker from '@/workers/monacoFoldingRangesWorker?worker'
-
-import type { MonacoCodeLensWorkerResponseMessage } from '@/workers/monacoCodeLensWorker'
-import MonacoCodeLensWorker from '@/workers/monacoCodeLensWorker?worker'
-
-import type { MonacoDocumentSymbolsWorkerResponseMessage } from '@/workers/monacoDocumentSymbolsWorker'
-import MonacoDocumentSymbolsWorker from '@/workers/monacoDocumentSymbolsWorker?worker'
+import { type CodeLensSupportedService, MonacoCodeLensProvider, MonacoDocumentSymbolProvider, MonacoFoldingRangeProvider } from './monacoProviders'
 
 self.MonacoEnvironment = {
   getWorker (_: string, label: string) {
@@ -50,127 +41,6 @@ self.MonacoEnvironment = {
         return new EditorWorker()
     }
   }
-}
-
-type CodeLensSupportedService = 'klipper' | 'moonraker' | 'moonraker-telegram-bot' | 'crowsnest'
-
-const isCodeLensSupportedService = (service: string): service is CodeLensSupportedService => [
-  'klipper',
-  'moonraker',
-  'moonraker-telegram-bot',
-  'crowsnest'
-].includes(service)
-
-type DocsSectionService = CodeLensSupportedService | SupportedKlipperServices
-
-const monacoLanguageWorkerWrapper = <T extends MonacoLanguageWorkerResponseMessage<U>, U = Extract<T, { action: 'result' }>['result']>(WorkerConstructor: new () => Worker, language: string, content: string, token: monaco.CancellationToken): Promise<U | undefined> => {
-  return new Promise<U | undefined>((resolve, reject) => {
-    if (token.isCancellationRequested) {
-      resolve(undefined)
-      return
-    }
-
-    const worker = new WorkerConstructor()
-
-    let tokenDispose: monaco.IDisposable | null = null
-
-    const cleanup = () => {
-      tokenDispose?.dispose()
-      worker.onmessage = null
-      worker.onerror = null
-      worker.onmessageerror = null
-      worker.terminate()
-    }
-
-    const safeResolve = (value: U | undefined) => {
-      cleanup()
-      resolve(value)
-    }
-
-    const safeReject = (error: unknown) => {
-      cleanup()
-      reject(error)
-    }
-
-    tokenDispose = token.onCancellationRequested(() => {
-      safeResolve(undefined)
-    })
-
-    worker.onmessage = (event: MessageEvent<T>) => {
-      const message = event.data
-
-      switch (message.action) {
-        case 'result':
-          safeResolve(message.result)
-
-          break
-
-        case 'error':
-          safeReject(message.error)
-
-          break
-      }
-    }
-
-    worker.onerror = (event) => {
-      safeReject(new Error(event.message || 'Worker error'))
-    }
-
-    worker.onmessageerror = () => {
-      safeReject(new Error('Worker message error'))
-    }
-
-    const message: MonacoLanguageWorkerRequestMessage = {
-      language,
-      content
-    }
-
-    if (!token.isCancellationRequested) {
-      worker.postMessage(message)
-    }
-  })
-}
-
-const getDocsSectionHash = (service: DocsSectionService, sectionName: string) => {
-  switch (service) {
-    case 'klipper':
-      if (sectionName.startsWith('stepper_')) {
-        return 'stepper'
-      }
-
-      if (/^extruder\d{0,2}$/.test(sectionName)) {
-        return 'extruder'
-      }
-
-      break
-
-    case 'danger-klipper':
-      if (sectionName === 'danger_options') {
-        return 'danger-options'
-      }
-
-      return getDocsSectionHash('klipper', sectionName)
-
-    case 'kalico':
-      if (sectionName === 'danger_options') {
-        return 'danger-options'
-      }
-
-      if (sectionName === 'constants') {
-        return 'configuration-references'
-      }
-
-      return getDocsSectionHash('klipper', sectionName)
-
-    case 'moonraker':
-      if (sectionName.startsWith('include')) {
-        return 'include-directives'
-      }
-
-      break
-  }
-
-  return sectionName
 }
 
 async function setupMonaco () {
@@ -207,87 +77,11 @@ async function setupMonaco () {
     window.open(url)
   })
 
-  monaco.languages.registerDocumentSymbolProvider('klipper-config', {
-    provideDocumentSymbols: async (model, token) => {
-      const result = await monacoLanguageWorkerWrapper<MonacoDocumentSymbolsWorkerResponseMessage>(MonacoDocumentSymbolsWorker, 'klipper-config', model.getValue(), token) ?? []
+  monaco.languages.registerDocumentSymbolProvider('klipper-config', new MonacoDocumentSymbolProvider())
 
-      return result.map(section => ({
-        name: section.name,
-        detail: section.name,
-        kind: monaco.languages.SymbolKind.Namespace,
-        range: section.range,
-        selectionRange: section.range,
-        tags: [],
-        children: section.children.map(child => ({
-          name: child.name,
-          detail: child.name,
-          kind: monaco.languages.SymbolKind.Property,
-          range: child.range,
-          selectionRange: child.range,
-          tags: []
-        }))
-      }))
-    }
-  })
+  monaco.languages.registerCodeLensProvider('klipper-config', new MonacoCodeLensProvider())
 
-  monaco.languages.registerCodeLensProvider('klipper-config', {
-    provideCodeLenses: async (model, token) => {
-      const { service } = app.$typedGetters['server/getConfigMapByFilename'](model.uri.path.split('/').pop()!) ?? {}
-
-      if (
-        !service ||
-        !isCodeLensSupportedService(service)
-      ) {
-        return null
-      }
-
-      const docsSectionService: DocsSectionService = service === 'klipper'
-        ? klippyApp.name
-        : service
-
-      const result = await monacoLanguageWorkerWrapper<MonacoCodeLensWorkerResponseMessage>(MonacoCodeLensWorker, 'klipper-config', model.getValue(), token) ?? []
-
-      return {
-        lenses: result.map((section, index) => {
-          const hash = getDocsSectionHash(docsSectionService, section.sectionName)
-
-          return {
-            range: section.range,
-            id: `docs${index}`,
-            command: {
-              id: 'fluidd_open_docs',
-              title: app.$t('app.file_system.label.view_section_documentation', { section: section.sectionName }).toString(),
-              arguments: [service, hash]
-            }
-          }
-        }),
-        dispose: () => undefined
-      }
-    },
-    resolveCodeLens: (_model, codeLens) => codeLens
-  })
-
-  const registerFoldingRangeProvider = (language: string) => monaco.languages.registerFoldingRangeProvider(language, {
-    provideFoldingRanges: async (model, _context, token) => {
-      const result = await monacoLanguageWorkerWrapper<MonacoFoldingRangesWorkerResponseMessage>(MonacoFoldingRangeWorker, language, model.getValue(), token) ?? []
-
-      return result
-        .map((range): monaco.languages.FoldingRange => {
-          const kind = range.kind === 'comment'
-            ? monaco.languages.FoldingRangeKind.Comment
-            : monaco.languages.FoldingRangeKind.Region
-
-          return {
-            start: range.start,
-            end: range.end,
-            kind
-          }
-        })
-    }
-  })
-
-  registerFoldingRangeProvider('klipper-config')
-  registerFoldingRangeProvider('gcode')
+  monaco.languages.registerFoldingRangeProvider(['klipper-config', 'gcode'], new MonacoFoldingRangeProvider())
 
   monaco.editor.defineTheme('dark-converted', themeDark as monaco.editor.IStandaloneThemeData)
   monaco.editor.defineTheme('light-converted', themeLight as monaco.editor.IStandaloneThemeData)
