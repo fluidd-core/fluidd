@@ -140,61 +140,52 @@ export class MonacoCodeLensProvider extends MonacoProviderBase<monaco.languages.
   }
 
   public async provideCodeLenses (model: monaco.editor.ITextModel, token: monaco.CancellationToken): Promise<monaco.languages.CodeLensList> {
-    const cacheKey = this._createCacheKey(model)
-
-    if (this._lastCacheKey !== cacheKey) {
-      const result = await this._getCodeLens(model, token)
-
-      if (result == null) {
-        return {
-          lenses: [],
-          dispose: () => undefined
-        }
-      }
-
-      this._lastResult = result
-      this._lastCacheKey = cacheKey
-    }
-
     return {
-      lenses: this._lastResult,
+      lenses: await this._getCodeLens(model, token),
       dispose: () => undefined
     }
   }
 
-  private async _getCodeLens (model: monaco.editor.ITextModel, token: monaco.CancellationToken): Promise<monaco.languages.CodeLens[] | undefined> {
-    const { service } = this._app.$typedGetters['server/getConfigMapByFilename'](model.uri.path.split('/').pop()!) ?? {}
+  private async _getCodeLens (model: monaco.editor.ITextModel, token: monaco.CancellationToken): Promise<monaco.languages.CodeLens[]> {
+    const cacheKey = this._createCacheKey(model)
 
-    if (
-      !service ||
-      !this._isCodeLensSupportedService(service)
-    ) {
-      return []
-    }
+    if (this._lastCacheKey !== cacheKey) {
+      const { service } = this._app.$typedGetters['server/getConfigMapByFilename'](model.uri.path.split('/').pop()!) ?? {}
 
-    const docsSectionService: DocsSectionService = service === 'klipper'
-      ? this._klippyApp.name
-      : service
-
-    const result = await this._workerWrapper<MonacoCodeLensWorkerResponseMessage>(MonacoCodeLensWorker, 'klipper-config', model.getValue(), token)
-
-    if (result == null) {
-      return result
-    }
-
-    return result.map((section, index) => {
-      const hash = this._getDocsSectionHash(docsSectionService, section.sectionName)
-
-      return {
-        range: section.range,
-        id: `docs${index}`,
-        command: {
-          id: 'fluidd_open_docs',
-          title: this._app.$t('app.file_system.label.view_section_documentation', { section: section.sectionName }).toString(),
-          arguments: [service, hash]
-        }
+      if (
+        !service ||
+        !this._isCodeLensSupportedService(service)
+      ) {
+        return []
       }
-    })
+
+      const docsSectionService: DocsSectionService = service === 'klipper'
+        ? this._klippyApp.name
+        : service
+
+      const result = await this._workerWrapper<MonacoCodeLensWorkerResponseMessage>(MonacoCodeLensWorker, 'klipper-config', model.getValue(), token)
+
+      if (result == null) {
+        return []
+      }
+
+      this._lastResult = result.map((section, index) => {
+        const hash = this._getDocsSectionHash(docsSectionService, section.sectionName)
+
+        return {
+          range: section.range,
+          id: `docs${index}`,
+          command: {
+            id: 'fluidd_open_docs',
+            title: this._app.$t('app.file_system.label.view_section_documentation', { section: section.sectionName }).toString(),
+            arguments: [service, hash]
+          }
+        }
+      })
+      this._lastCacheKey = cacheKey
+    }
+
+    return this._lastResult
   }
 
   private _isCodeLensSupportedService (service: string): service is CodeLensSupportedService {
