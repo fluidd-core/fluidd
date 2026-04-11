@@ -57,7 +57,7 @@ can be configured individually with:
   feed in fullscreen. You can also access a dedicated fullscreen camera page
   from the navigation menu.
 
-![screenshot](/assets/images/camera_settings.png)
+![Camera settings panel with stream URL, rotation, and aspect ratio options](/assets/images/camera_settings.png)
 
 ## Camera streamers
 
@@ -83,3 +83,28 @@ and configuration.
   optimized for Raspberry Pi hardware video encoding.
 
 Refer to each project's documentation for setup instructions.
+
+## Troubleshooting
+
+### Camera feed not loading
+
+- Verify your camera streamer is running. Try opening the stream URL directly
+  in a browser tab — if the page does not load, the streamer is not
+  reachable.
+- Check that the URL in Fluidd's camera settings matches the streamer's
+  configured address and port.
+- If using MJPEG with Crowsnest, confirm Crowsnest is active by checking the
+  service status on the [System page](/features/system-and-notifications).
+
+### High latency or choppy stream
+
+- Switch to a WebRTC type (go2rtc or camera-streamer) for the lowest
+  latency — MJPEG streams can be significantly slower, especially over Wi-Fi.
+- Reduce stream resolution or frame rate in your streamer configuration.
+- If on Wi-Fi, try a wired Ethernet connection — MJPEG streams can saturate
+  a wireless link at higher resolutions.
+
+### Feed shows but rotation is wrong
+
+Open Settings — Cameras, select your camera, and adjust the **Rotation** and
+**Flip** options to match your camera's physical orientation.

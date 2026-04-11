@@ -1,17 +1,17 @@
 import { consola } from 'consola'
 
-export type SandboxedEvalWorkerClientMessage = ({
+export type SandboxedEvalWorkerRequestMessage = {
+  code: string,
+  id?: unknown
+}
+
+export type SandboxedEvalWorkerResponseMessage = ({
   action: 'result',
   result: unknown
 } | {
   action: 'error',
   error?: unknown
 }) & {
-  id?: unknown
-}
-
-export type SandboxedEvalWorkerServerMessage = {
-  code: string,
   id?: unknown
 }
 
@@ -49,7 +49,7 @@ disableProperty('WebTransport')
 disableProperty('RTCPeerConnection')
 
 const sendResult = (result: unknown, id?: unknown) => {
-  const message : SandboxedEvalWorkerClientMessage = {
+  const message : SandboxedEvalWorkerResponseMessage = {
     action: 'result',
     result,
     id
@@ -59,7 +59,7 @@ const sendResult = (result: unknown, id?: unknown) => {
 }
 
 const sendError = (error?: unknown, id?: unknown) => {
-  const message: SandboxedEvalWorkerClientMessage = {
+  const message: SandboxedEvalWorkerResponseMessage = {
     action: 'error',
     error,
     id
@@ -68,7 +68,7 @@ const sendError = (error?: unknown, id?: unknown) => {
   self.postMessage(message)
 }
 
-self.onmessage = async (event: MessageEvent<SandboxedEvalWorkerServerMessage>) => {
+self.onmessage = async (event: MessageEvent<SandboxedEvalWorkerRequestMessage>) => {
   const message = event.data
 
   try {

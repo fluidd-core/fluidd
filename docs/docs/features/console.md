@@ -20,7 +20,9 @@ exist, they are printed to the console output.
 
 ## Clickable commands
 
-Click any known command in the output to copy it into the input field.
+Click any G-code command name that appears in the console output to copy it
+into the input field. Only recognized Klipper commands are clickable — these
+are the same commands listed by `help`.
 
 ## Command reference
 
@@ -44,4 +46,4 @@ Configure custom filters in Console Settings to hide unwanted messages:
 The console input position can be flipped between top and bottom in the
 console settings. Choose whichever feels more natural for your workflow.
 
-![screenshot](/assets/images/console.png)
+![Fluidd console showing command history and a text input with autocomplete](/assets/images/console.png)

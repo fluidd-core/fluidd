@@ -1,15 +1,12 @@
 {
   "extends": "@vue/tsconfig/tsconfig.json",
+
   "compilerOptions": {
-    "preserveValueImports": false,
-
-    "importsNotUsedAsValues": "remove",
-
-    "experimentalDecorators": true,
-
-    "verbatimModuleSyntax": true
+    "experimentalDecorators": true
   },
+
   "files": [],
+
   "references": [
     {
       "path": "./tsconfig.vitest.json"

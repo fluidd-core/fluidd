@@ -41,7 +41,7 @@ describe what went wrong. Common fixes:
 
 - Check your `printer.cfg` for syntax errors.
 - Try running `FIRMWARE_RESTART` from the console.
-- Restart the Klipper service from the [System page](/features/system).
+- Restart the Klipper service from the [System page](/features/system-and-notifications).
 
 ### Klipper updated and now my printer has an error
 
@@ -73,7 +73,7 @@ Three options:
   options to save or load your Fluidd UI settings (layout, theme, presets,
   macros, etc.).
 - **Moonraker database backup** — go to the
-  [System page](/features/system), find the database section, and click
+  [System page](/features/system-and-notifications), find the database section, and click
   Create Backup to save a backup on the host. Use Restore to select and
   restore from an existing backup.
 - **Config files** — your Klipper and Moonraker configuration files are

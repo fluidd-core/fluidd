@@ -9,16 +9,16 @@ It will notify you of available updates — and provide buttons to upgrade each 
 
 ## Automated Updates
 
-The recommended order of updates is:
+!!! tip "Recommended update order"
+    1. Klipper — firmware changes may affect Moonraker or Fluidd behavior
+    2. Moonraker — API changes should be applied before updating frontends
+    3. Fluidd
+    4. Other clients
 
-1. Klipper — firmware changes may affect Moonraker or Fluidd behavior
-2. Moonraker — API changes should be applied before updating frontends
-3. Fluidd
-4. Other clients
+    Klipper can be skipped if you have a reason to not update it immediately.
 
-Klipper can be skipped if you have a reason to not update it immediately.
-
-Update requests are blocked while a print is in progress.
+!!! note "Print in progress"
+    Update requests are blocked while a print is in progress.
 
 In order for this feature to be enabled, you need to configure Moonraker's
 update plugin. See the
@@ -26,7 +26,7 @@ update plugin. See the
 advanced options (custom repositories, pinned branches, etc.), see the
 [Moonraker update_manager documentation](https://moonraker.readthedocs.io/en/latest/configuration/#update_manager).
 
-![screenshot](/assets/images/updates.png)
+![Update manager listing available updates for Klipper, Moonraker, and Fluidd](/assets/images/updates.png)
 
 ## Recovery
 

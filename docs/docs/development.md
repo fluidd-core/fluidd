@@ -43,7 +43,7 @@ printer.
 
 ## Running Fluidd locally
 
-### Install Node v24
+### Install Node.js
 
 Follow the instructions from [Node.js](https://nodejs.org) to install Node.js, v24.x.
 
@@ -58,7 +58,7 @@ npm --version
 
 ```bash
 cd .../path/to/fluidd
-npm install
+npm ci
 ```
 
 ### Run a local development server
@@ -74,6 +74,35 @@ of your Moonraker instance, e.g. `http://192.168.0.101:7125`.
 
 ```bash
 npm run test
+```
+
+## Running the documentation site locally
+
+### Install Python
+
+Follow the instructions from [Python](https://www.python.org/) to install Python 3.
+
+### Install dependencies
+
+```bash
+cd .../path/to/fluidd/docs
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### Serve locally
+
+```bash
+zensical serve
+```
+
+Browse to [http://localhost:8000/](http://localhost:8000/).
+
+### Build static site
+
+```bash
+zensical build --clean
 ```
 
 ## Localization

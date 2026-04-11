@@ -1,36 +1,32 @@
 import { consola } from 'consola'
 
-const sleep = (ms: number, signal?: AbortSignal) => {
+const sleep = (ms: number, signal?: AbortSignal): Promise<void> => {
   const debug = (message: string, ...args: unknown[]) => consola.debug(`[sleep] ${message}`, ...args)
 
   return new Promise((resolve, reject) => {
-    debug(`sleeping for ${ms}...`)
-
-    const dispose = () => {
-      signal?.removeEventListener('abort', abortHandler)
-
-      clearTimeout(timeoutId)
+    if (signal?.aborted) {
+      return reject(signal.reason ?? new Error('AbortError'))
     }
+
+    debug(`sleeping for ${ms}...`)
 
     const abortHandler = () => {
       debug('aborted')
 
-      dispose()
+      clearTimeout(timeoutId)
 
-      reject(new Error('AbortError'))
+      reject(signal!.reason ?? new Error('AbortError'))
     }
 
-    const timeoutHandler = () => {
+    const timeoutId = setTimeout(() => {
       debug('timed out')
 
-      dispose()
+      signal?.removeEventListener('abort', abortHandler)
 
-      resolve(null)
-    }
+      resolve()
+    }, ms)
 
-    signal?.addEventListener('abort', abortHandler)
-
-    const timeoutId = setTimeout(timeoutHandler, ms)
+    signal?.addEventListener('abort', abortHandler, { once: true })
   })
 }
 

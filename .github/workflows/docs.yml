@@ -17,8 +17,8 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install Zensical
-        run: pip install "zensical==0.0.30"
+      - name: Install docs dependencies
+        run: pip install -r docs/requirements.txt
 
       - name: Build docs
         run: zensical build --clean

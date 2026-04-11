@@ -14,11 +14,16 @@ Go to Settings — General — Language and select a language from the dropdown.
 Choose **Browser default** to use automatic detection based on your browser's
 language setting.
 
+![Language selection dropdown in Fluidd settings](/assets/images/localization.png)
+
 ## Contributing translations
 
 Translations are managed through
 [Weblate](https://hosted.weblate.org/engage/fluidd/). Do not edit non-English
-locale files directly — use Weblate instead. See the
-[developer localization](/development#localization) docs for more details.
+locale files directly — use Weblate instead. The
+[Weblate project page](https://hosted.weblate.org/engage/fluidd/) shows the
+current completion percentage for each language, and new languages can be added
+there without needing a code change.
 
-![screenshot](/assets/images/localization.png)
+See the [developer localization](/development#localization) docs for technical
+details on how translations work.

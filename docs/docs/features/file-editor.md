@@ -8,6 +8,13 @@ Fluidd includes a built-in code editor powered by Monaco (the engine behind
 VS Code) for editing Klipper configuration files, G-code, and other files
 directly from your browser.
 
+!!! warning "Performance"
+    The editor handles most config files without issue. For very large G-code
+    files (over ~5 MB), the editor may be slow to load and syntax highlighting
+    may be limited. For large G-code files, the
+    [File Manager](/features/file-manager) and G-code preview are better tools
+    than the editor.
+
 ## Syntax highlighting
 
 Rich, TextMate grammar-based syntax highlighting is provided for the following

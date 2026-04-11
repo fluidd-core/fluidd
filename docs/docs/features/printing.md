@@ -17,14 +17,14 @@ shown in a distinct color.
 Frequently used settings are accessible via the cog icon in the card header.
 Less common options can be found on Fluidd's settings page.
 
-![screenshot](/assets/images/gcode_preview.png)
-![screenshot](/assets/images/gcode_display_opts.png)
-![screenshot](/assets/images/gcode_settings.png)
+![G-code 3D preview showing a sliced model with layer visualization](/assets/images/gcode_preview.png)
+![G-code viewer display options panel with layer and move-type toggles](/assets/images/gcode_display_opts.png)
+![G-code viewer settings with rendering and performance options](/assets/images/gcode_settings.png)
 
 ### Exclude Object
 
 The G-code viewer has
-[Exclude Object](https://www.klipper3d.org/Exclude_Object.html#exclude-objects)
+[Exclude Object](https://www.klipper3d.org/Exclude_Object.html)
 support built in. To exclude an object from your current print (for example
 after a failure), click the cancel icon in the G-code preview or bring up a
 list of all objects by clicking the cancel icon in the card header.
@@ -32,19 +32,34 @@ list of all objects by clicking the cancel icon in the card header.
 Excluded objects are marked in red, the currently printing object in blue,
 and all other objects in green.
 
-For this feature to work:
+For this feature to work, complete the following setup:
 
-- Turn on `Label Objects` in your slicer.
-- Add an `[exclude_object]` section to your `printer.cfg` or `fluidd.cfg`.
-- Set `enable_object_processing: True` in the `[file_manager]` section of
-  `moonraker.conf`. Alternatively, configure
-  [object preprocessing in your slicer](https://github.com/kageurufu/preprocess_cancellation).
+1. Add to `printer.cfg`:
 
-This only works on files uploaded _after_ enabling these settings — Moonraker
-needs to process the file with object preprocessing turned on.
+    ```ini title="printer.cfg"
+    [exclude_object]
+    ```
 
-![screenshot](/assets/images/exclude_object.png)
-![screenshot](/assets/images/exclude_object_modal.png)
+2. Add to `moonraker.conf`:
+
+    ```ini title="moonraker.conf"
+    [file_manager]
+    enable_object_processing: True
+    ```
+
+3. Re-slice your model with object labeling enabled in your slicer:
+
+    - **PrusaSlicer / OrcaSlicer**: Print Settings → Output options → Label objects
+    - **SuperSlicer**: Print Settings → Output options → Label objects
+    - **Cura**: Extensions → Post Processing → Modify G-Code → Insert at layer change →
+      add object labels
+
+!!! warning "Reprocessing required"
+    This only works on files uploaded _after_ enabling these settings —
+    Moonraker needs to process the file with object preprocessing turned on.
+
+![Exclude Object panel showing labeled objects on the print bed](/assets/images/exclude_object.png)
+![Exclude Object confirmation dialog](/assets/images/exclude_object_modal.png)
 
 ## Thumbnails
 
@@ -88,7 +103,7 @@ Use the `Print with OctoPrint` button after slicing.
 `Modify G-Code`. Add two `Create Thumbnail` scripts — one at `300x300` and
 one at `48x48`.
 
-![screenshot](/assets/images/thumbnails.png)
+![File browser showing thumbnail previews of sliced print files](/assets/images/thumbnails.png)
 
 ## Bed Mesh
 
@@ -97,7 +112,7 @@ calibrate a mesh to view it.
 
 You need `[bed_mesh]` configured in Klipper for this option to appear.
 
-![screenshot](/assets/images/bed_mesh.png)
+![Bed mesh viewer showing a calibrated height deviation heat map](/assets/images/bed_mesh.png)
 
 ## Print History
 
@@ -115,6 +130,28 @@ Fluidd loads the last 50 prints by default. The full history can hold up to
 10,000 entries — a dedicated History page is available from the main navigation
 for a full-screen view.
 
-![screenshot](/assets/images/print_history.png)
-![screenshot](/assets/images/print_stats.png)
-![screenshot](/assets/images/reprint.png)
+![Print history list with job name, status, and duration columns](/assets/images/print_history.png)
+![Print statistics showing total print time and filament usage](/assets/images/print_stats.png)
+![Re-print dialog with option to re-start a previous job](/assets/images/reprint.png)
+
+## Firmware Retraction
+
+Fluidd shows a **Retraction** card on the dashboard when firmware retraction is
+configured in Klipper. This lets you adjust retraction settings live during a
+print without re-slicing.
+
+To enable firmware retraction, add to `printer.cfg`. See the
+[Klipper `[firmware_retraction]` reference](https://www.klipper3d.org/Config_Reference.html#firmware_retraction)
+for all available options.
+
+```ini title="printer.cfg"
+[firmware_retraction]
+retract_length: 1.0
+retract_speed: 45
+unretract_extra_length: 0
+unretract_speed: 45
+```
+
+Also enable firmware retraction in your slicer (usually under Extruder or
+Printer settings) so it emits `G10`/`G11` commands instead of explicit
+`E` moves.

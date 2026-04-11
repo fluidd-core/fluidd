@@ -102,7 +102,7 @@ src/
 ├── directives/         # Custom Vue directives (v-safe-html for DOMPurify)
 ├── locales/            # i18n YAML files (23 languages)
 ├── mixins/             # Vue mixins (StateMixin, FilesMixin, etc.)
-├── monaco/             # TextMate grammars and editor themes
+├── monaco/             # Monarch tokenizers and editor themes
 ├── plugins/            # Vue plugins (i18n, httpClient, socketClient, vuetify, filters)
 ├── router/             # Vue Router (hash mode) with auth guards
 ├── scss/               # Global styles and Vuetify variable overrides
@@ -111,7 +111,7 @@ src/
 ├── typings/            # Global .d.ts declarations (Klipper, Moonraker namespaces)
 ├── util/               # Helper functions (30+)
 ├── views/              # Page components (Dashboard, Console, Jobs, etc.)
-└── workers/            # Web Workers (parseGcode, mjpegStream, sandboxedEval)
+└── workers/            # Web Workers (parseGcode, mjpegStream, sandboxedEval, Monaco language providers)
 ```
 
 ### Router & Authentication
@@ -124,18 +124,18 @@ src/
 
 ### Icons & Theming
 
-- MDI icons via `@mdi/js` — mapped in `src/globals.ts` (`Icons` object, ~225 mappings)
+- MDI icons via `@mdi/js` — mapped in `src/globals.ts` (`Icons` object, ~228 mappings)
 - Usage: `<v-icon>{{ $globals.Icons.close }}</v-icon>`
 - Vuetify theme with custom dark/light overrides in `src/scss/variables.scss`
 - PWA support with service worker in `src/sw.ts` (Workbox, injectManifest strategy)
 
 ### Monaco Editor
 
-- Setup in `src/components/widgets/filesystem/setupMonaco.ts`
-- TextMate grammars (onigasm WASM) for `gcode`, `klipper-config`, `log` languages
+- Setup in `src/components/widgets/filesystem/setupMonaco.ts` (includes worker environment setup)
+- Monarch tokenizers for `gcode`, `klipper-config`, `log` languages (in `src/monaco/language/*.monarch.ts`)
 - Custom CodeLens providers (links to Klipper docs from config sections)
-- Document symbol + folding range providers for `klipper-config` and `gcode`
-- Worker setup in `setupMonaco.features.ts` (editor, JSON, CSS workers)
+- Document symbol provider for `klipper-config`; folding range provider for `klipper-config` and `gcode`
+- Language providers run in dedicated Web Workers (`monacoCodeLensWorker`, `monacoDocumentSymbolsWorker`, `monacoFoldingRangesWorker`)
 
 ## Integration Points
 
@@ -156,7 +156,6 @@ src/
 
 - `import.meta.glob()` used in `src/dynamicImports.ts` for lazy-loading:
   - `I18nLocales` — locale YAML files
-  - `MonacoLanguageImports` — TextMate grammars
   - `CameraComponents` — camera service Vue components
 - Views also dynamically imported in `src/router/index.ts` via `() => import('@/views/X.vue')`
 
@@ -221,7 +220,8 @@ src/
 - Custom CSS: `docs/docs/stylesheets/extra.css` — Fluidd brand colors
 - Glossary: `docs/includes/glossary.md` — abbreviation tooltips auto-appended to all pages
 - Lint: `markdownlint --config docs/.markdownlint.json docs/docs/`
-- Build: `cd docs && zensical build` (requires Python venv with zensical installed)
+- Install: `cd docs && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt`
+- Build: `cd docs && zensical build --clean`
 - Serve: `cd docs && zensical serve` or `npm run serve:docs` (localhost:8000)
 - Deploy: GitHub Actions (`.github/workflows/docs.yml`) — builds on push to `master`, deploys to gh-pages with `docs.fluidd.xyz` CNAME
 
@@ -235,25 +235,26 @@ docs/
 │   ├── configuration.md   # Fluidd Config, Klipper, Moonraker, Multiple Printers
 │   ├── customize.md       # Layout, themes, hiding components
 │   ├── features/
-│   │   ├── index.md       # Features overview (section landing page)
-│   │   ├── printing.md    # G-code viewer, thumbnails, bed mesh, print history
-│   │   ├── thermals.md    # Chart, presets, sensors
+│   │   ├── index.md           # Features overview (section landing page)
+│   │   ├── authorization.md
 │   │   ├── cameras.md
 │   │   ├── console.md
-│   │   ├── file-editor.md  # Monaco editor features, syntax, CodeLens, folding
+│   │   ├── diagnostics.md
+│   │   ├── file-editor.md     # Monaco editor features, syntax, CodeLens, folding
+│   │   ├── file-manager.md    # File browser, upload, search, previews, drag-and-drop
+│   │   ├── job-queue.md       # Sequential printing queue
 │   │   ├── keyboard-shortcuts.md  # Global, editor, console keyboard shortcuts
-│   │   ├── file-manager.md  # File browser, upload, search, previews, drag-and-drop
+│   │   ├── localization.md
 │   │   ├── macros.md
 │   │   ├── multi-material.md  # Multiple extruders + Spoolman
 │   │   ├── multiple-printers.md
-│   │   ├── diagnostics.md
-│   │   ├── updates.md
-│   │   ├── system.md      # System info + notifications
-│   │   ├── authorization.md
+│   │   ├── printing.md        # G-code viewer, thumbnails, bed mesh, print history
 │   │   ├── slicer-uploads.md
+│   │   ├── system-and-notifications.md  # System info + notifications
+│   │   ├── thermals.md        # Chart, presets, sensors
+│   │   ├── third-party-integrations.md  # Kalico, Happy Hare, AFC, Beacon, Obico, OctoEverywhere, etc.
 │   │   ├── timelapse.md
-│   │   ├── localization.md
-│   │   └── integrations.md  # Kalico, Happy Hare, AFC, Beacon, Obico, OctoEverywhere, etc.
+│   │   └── updates.md
 │   ├── development.md     # Dev container, local dev, localization
 │   ├── faq.md             # Organized by topic (Setup, Cameras, System, Printing)
 │   └── sponsors.md
@@ -280,7 +281,7 @@ docs/
 - When introducing acronyms in docs, check if they exist in the glossary — if not, assess whether they should be added (domain-specific or non-obvious acronyms: yes; universally known ones like USB, HTTP, CPU: no)
 - **Before committing docs changes**, always run:
   - `markdownlint --config docs/.markdownlint.json docs/docs/` — must be clean
-  - `codespell docs/docs/` — must be clean (install via `pip install codespell`)
+  - `codespell docs/docs/` — must be clean
 
 ## Communication Style
 

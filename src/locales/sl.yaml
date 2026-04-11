@@ -13,15 +13,15 @@ app:
       wireframe: Žični diagram
     msg:
       hint: >-
-        Če shranite drugače kot %{name}, lahko tudi izberete,
-        da odstranite profil %{name}.
-      not_found: Ni obstoječe posteljne mreže
+        Če shranite drugače kot %{name}, lahko tudi izberete, da odstranite profil
+        %{name}
+      not_found: Ni obstoječe posteljne mreže.
       not_loaded: Nobena mreža ni naložena
     tooltip:
       calibrate: Prične novo kalibracijo, ki jo shrani kot profil 'default'
       delete: Zbriši profil
       load: Naloži profil
-      save: Shrani kalibriran profil v printer.cfg.
+      save: Shrani kalibriran profil v printer.cfg
       download_image: Prenesi sliko mreže mize
   chart:
     label:
@@ -48,8 +48,8 @@ app:
       hide_temp_waits: Skrij čakanje temperature
     tooltip:
       help: >-
-        Vnesite "help" za nabor ukazov.<br />Uporabite <kbd>Tab</kbd> za samo domončanje.<br
-        />Uporabite <kbd>&uarr;</kbd> in <kbd>&darr;</kbd> za zgodovino.
+        Vnesite "help" za nabor ukazov<br />Uporabite <kbd>Tab</kbd> za samo dokončanje<br
+        />Uporabite <kbd>&uarr;</kbd> in <kbd>&darr;</kbd> za zgodovino
   endpoint:
     error:
       cant_connect: >-
@@ -57,9 +57,8 @@ app:
         da je to pravi naslov?
       cors_error: blokirano zaradi CORS politike
       cors_note: >-
-        To pomeni, da je potrebno spremeniti moonraker konfiguracijo.
-        Prosimo, preberite dokumentacijo o <a href="%{url}"
-        target="_blank">nastavitvi</a> več tiskalnikov.
+        To pomeni, da je potrebno spremeniti moonraker konfiguracijo. Prosimo, preberite
+        dokumentacijo o <a href="%{url}" target="_blank">nastavitvi</a> več tiskalnikov
     hint:
       add_printer: Npr., http://fluidd.local
     msg:
@@ -107,9 +106,9 @@ app:
       processing: Procesiram
     overlay:
       drag_files_folders_upload: <strong>Povlecite</strong> mape in datoteke 
-        sem, da jih naložite.
+        sem, da jih naložite
       drag_files_enqueue: <strong>Povlecite</strong> datoteke sem za dodajanje v
-        vrsto.
+        vrsto
     title:
       add_dir: Dodaj mapo
       add_file: Dodaj datoteko
@@ -155,8 +154,8 @@ app:
         Datoteka "%{filename}" je velika %{size}. To lahko povzroči dodatno obremenitev
         sistema. Ste prepričani?
     overlay:
-      drag_file_load: <strong>Povlecite</strong> g-koda datoteko sem, da jo 
-        naložite.
+      drag_file_load: <strong>Povlecite</strong> datoteko g-kode sem, da jo 
+        naložite
   general:
     btn:
       abort: Prekini
@@ -326,7 +325,7 @@ app:
       partial_of_total: '%{partial} od %{total}'
       pause_at_layer: Zaustavi na plasti
       pause_at_next_layer: Zaustavi na naslednji plasti
-      pause_at_layer_number: Zaustavi na plasti št.
+      pause_at_layer_number: Zaustavi na plasti številka
       power: Moč
       pressure_advance: Napredni tlak
       printers: Tiskalniki
@@ -380,6 +379,7 @@ app:
       file_time: Datoteka
       stepper_driver: >-
         %{name} Gonilnik
+      toolchange: Menjava orodja
     msg:
       password_changed: Geslo spremenjeno
       wrong_password: Ups, nekaj se je zalomilo. Ali ste vnesi pravilno geslo?
@@ -447,7 +447,7 @@ app:
         confirm_remove_user: Ste prepričani, da želite odstraniti uporabnika 
           %{username}?
         confirm_restore_backup: Ste prepričani, da želite obnoviti varnostno 
-          kopijo?
+          kopijo? Moonraker se bo ponovno zagnal takoj po obdelavi te zahteve.
         confirm_shutdown_host: Ste prepričani? To dejanje bo zaustavilo 
           gostitelja.
         confirm_service_start: Ste prepričani, da želite zagnani storitev 
@@ -500,6 +500,10 @@ app:
         status: Status
         total_duration: Skupno trajanje
         user: Uporabnik
+        printer_model: Model tiskalnika
+        printer_variant: Različica tiskalnika
+        printer_vendor: Proizvajalec tiskalnika
+        profile_version: Verzija profila
     title:
       add_chart: Dodaj graf
       add_printer: Dodaj tiskalnik
@@ -558,20 +562,20 @@ app:
       set_default_layout: Nastavi trenutno postavitev kot privzeto postavitev 
         celotnega strežnika
       file_browser_help: >-
-        Povlecite in spustite mape ali datoteke v brskalink, da jih naložite sem.<br>Prestavite
-        mape ali datoteke v pod mape tako, da jih povlečete vanje ali "..".
+        Povlecite in spustite mape ali datoteke v brskalnik, da jih naložite sem.<br>Prestavite
+        mape ali datoteke v pod mape tako, da jih povlečete vanje ali ".."
       file_browser_configuration_help: >-
         Kopirajte mape ali datoteke v Nastavitvene datoteke tako, da jih povlečete
-        od tukaj in spustite tam.
+        od tukaj in spustite tam
   history:
     msg:
       confirm: Ste prepričani? To dejanje bo počistilo celotno zgodovino in 
-        statistiko.
+        statistiko
       confirm_jobs: Ste prepričani? To dejanje bo počistilo vsa opravila.
       confirm_stats: Ste prepričani? To dejanje bo počistilo vso statistiko.
   job_queue:
     msg:
-      confirm: Ste prepričani? To dejanje bo počistilo vrsto za tiskanje.
+      confirm: Ste prepričani? To dejanje bo počistilo vrsto za tiskanje
     label:
       eta: Do konca
       filament: Filament
@@ -584,7 +588,7 @@ app:
       help: >-
         Dodajte opravila v vrsto tako, da datoteke povlečete iz Opravil in spustite
         sem.<br>Nastavite vrstni red opravil v vrsti tako, da jih povlečete gor ali
-        dol.
+        dol
   printer:
     state:
       busy: Zaseden
@@ -741,7 +745,7 @@ app:
       show_relative_humidity: Prikaži relativno vlažnost
       show_save_config_and_restart: Shrani konfiguracijo in Ponovno zaženi gumb 
         v navigaciji zgoraj
-      show_upload_and_print: Pokaži naloži in tiskaj gumb v navigaciji zgoraj
+      show_upload_and_print: Prikaži gumb Naloži in tiskaj v navigaciji zgoraj
       solid: Polno
       starts_with: Začne se s/z
       theme_preset: Prednastavitve skupnosti
@@ -775,8 +779,8 @@ app:
     timer_options:
       absolute_file_position: Absoluten položaj datoteke
       duration: Samo trajanje
-      filament: Ocena filamenta
-      file: Ocena datoteke
+      filament: Filament
+      file: Datoteka
       relative_file_position: Relativen položaj datoteke
       slicer: Rezalnik
       slicer_m73: Rezalnik (M73)
@@ -801,12 +805,12 @@ app:
       gcode_coords: Uporabi položaj g-kode, namesto orodja v armaturi
       keyboard_shortcuts: >-
         [BETA] Omogoči in pritisni '?' za prikaz vseh bližnjic, ki so na voljo
-      show_manual_probe_dialog_automatically: Samodejno prikaže dialog za pomoč,
+      show_manual_probe_dialog_automatically: Samodejno prikaže dialog za pomoč 
         pri ročnem sondiranju
       show_bed_screws_adjust_dialog_automatically: Samodejno prikaže dialog za 
-        pomoč, pri poganjanju orodja BED_SCREWS_ADJUST
+        pomoč pri poganjanju orodja BED_SCREWS_ADJUST
       show_screws_tilt_adjust_dialog_automatically: Samodejno prikaže dialog za 
-        pomoč, pri poganjanju orodja SCREWS_TILT_CALCULATE
+        pomoč pri poganjanju orodja SCREWS_TILT_CALCULATE
       theme_disclaimer: >-
         Te teme vsebujejo imena blagovnih znamk in logotipe, ki so intelektualna lastnina
         njihovih lastnikov.<br>
@@ -886,31 +890,27 @@ app:
       home_xy: Nuliraj XY
       home_z: Nuliraj Z
       manual_probe: Ročna sonda
-      motors_off: IZKLOP MOTORJEV
+      motors_off: Izklop motorjev
       relative_positioning: Relativna pozicija
       select_tool: Izberi orodje %{tool}
       tools: Orodja
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Aktivna konfiguracija ekstruderja je nastavljena
-        za </span>
-        filament premera %{filamentDiameter} mm
-        <span class="secondary--text">in</span>
-        premer šobe %{nozzleDiameter} mm.
+        za</span> filament premera %{filamentDiameter} mm in premer šobe %{nozzleDiameter}
+        mm
       stats_volumetric_flow: >-
         <span class="secondary--text">Ekstruder bi moral biti sposoben zagotoviti</span>
-        pretok %{estimatedVolumetricFlow} mm³/s
-        <span class="secondary--text">pri</span> hitrosti iztiskovanja %{extrudeSpeed}
-        mm/s.
+        pretok %{estimatedVolumetricFlow} mm³/s pri hitrosti iztiskovanja %{extrudeSpeed}
+        mm/s
       stats_extruded_length: >-
-        Iztiskanje %{extrudeLength} mm filamenta pri
-        %{extrudeFactor} % pretoku<span class="secondary--text">,
-        bo iztisnilo približno</span>
-        %{estimatedExtrudedLength} mm filamenta.
+        Iztiskanje %{extrudeLength} mm filamenta pri %{extrudeFactor} % pretoku<span
+        class="secondary--text">, bo iztisnilo približno</span> %{estimatedExtrudedLength}
+        mm filamenta
       stats_max_speed: >-
-        <span class="secondary--text">Pri višini plasti</span>
-        %{layerHeight} mm<span class="secondary--text">,
-        je ocenjena </span>najvišja histrost  %{estimatedMaxSpeed} mm/s.
+        <span class="secondary--text">Pri višini plasti</span> %{layerHeight} mm<span
+        class="secondary--text">, je ocenjena</span> najvišja hitrost %{estimatedMaxSpeed}
+        mm/s
   version:
     btn:
       check_for_updates: Preveri za posodobitve
@@ -939,7 +939,7 @@ app:
     title: Programske posodobitve
     tooltip:
       commit_history: Zgodovina objav
-      dirty: Označuje odsekano glavo. Ni na bazi ali nepravilen izvor.
+      dirty: Označuje odsekano glavo. Ni na bazi ali nepravilen izvor
       invalid: nakazuje lokalne spremembe v skladišču
       packages: Paketi
       release_notes: Zapiski ob izdaji
@@ -1000,10 +1000,10 @@ app:
     btn:
       manage_spools: Upravljaj kolute
       scan_code: Skeniraj kodo
-      select: Izberi
+      select: Izberi | Izberi za {macro}
     title:
       spoolman: Spoolman
-      spool_selection: Izbor koluta
+      spool_selection: Izbor koluta | Izbor koluta za makro {macro}
       scan_spool: Skeniraj kolut
     label:
       active_spool: Aktiven kolut
@@ -1113,6 +1113,7 @@ app:
       grip: Primi
       release: Spusti
       reset: Ponastavi
+      change_tool: Zamenjaj orodje
     title:
       headline: VME
       mmu_maintenance: VME vzdrževanje
@@ -1154,6 +1155,12 @@ app:
       spoolman_today: Danes
       spoolman_yesterday: Včeraj
       spoolman_days_ago: 'Pred toliko dnevi: %{days}'
+      clog_tangle_detection: Zaznavanje zamašitve/zapleta
+      drying: Sušenje
+      heater: Grelec
+      drying_queued: Sušenje v vrsti
+      drying_complete: Sušenje končano
+      drying_cancelled: Sušenje preklicano
     tooltip:
       empty: Prazno
       color: Barva
@@ -1202,11 +1209,11 @@ app:
       no_active_spool: Ni aktivnega koluta
       no_spool_id: Ni ID koluta
       recover_filament_position: Obnovi položaj filamenta
-      multi_color: To izgleda kot večmaterialni tisk z enim ekstruderjem, pri 
+      multi_color: To izgleda kot več materialni tisk z enim ekstruderjem, pri 
         katerem se uporablja %{numTools} orodij. Verjetno bi morali pregledati 
-        mapiranje orodij.
+        mapiranje orodij
       single_color: To izgleda kot enobarvni tisk, vendar nimate izbrane 
-        možnosti obvoda na vašem VME. Preverite izbrano orodje.
+        možnosti obvoda na vašem VME. Preverite izbrano orodje
       map_slicer_tools: Mapiraj orodja rezalnika na VME vraza za tisk
       map_tools: Mapiraj orodja na VME vrata
       tool_not_used: Orodje %{tool} ni uporabljeno v tem tisku. Izberite 
@@ -1221,12 +1228,13 @@ app:
       select_tool: Izberite orodje za mapiranje in nato izberite vrata s seznama
     setting:
       large_filament_status: Velik status filamenta
-      show_clog_detection: Prikaži zaznavanje zamaška
+      show_clog_detection: Prikaži zaznavanje zamašitve/zapleta
       show_details: Prikaži podrobnosti o filamentu
       show_ttg_map: Prikaži TTG mape
       show_name: Prikaži ime enote
       show_logos: Prikaži logotipe
       show_unavailable_spool_color: Prikaži kolute, ki niso na voljo
+      show_climate: Prikaži informacije o podnebju
   sensors:
     title:
       sensors: Senzorji
@@ -1267,3 +1275,95 @@ app:
     tooltip:
       restore_backup: Obnovi varnostno kopijo
       delete_backup: Izbriši varnostno kopijo
+  afc:
+    Calibrate: Kalibriraj
+    Cancel: Prekliči
+    Detected: Zaznano
+    EjectFilament: Izvrzi filament
+    Ejecting: Izmetavanje
+    Empty: Prazno
+    Error: Napaka
+    FilamentForLane: Filament za {name}
+    Loading: Nalaganje
+    Material: Material
+    MaterialSubtitle: Na primer ABS PETG PLA idr.
+    Moving: Premikanje
+    ParkNozzle: Parkiraj šobo
+    PrepDetected: Filament je zaznan, vendar ni naložen
+    Printing: Tiskanje
+    SetSpool: Nastavi kolut
+    Settings: Nastavitve
+    SettingsDialog:
+      BowdenLength: Dolžina bovdna
+      DistHub: Razdalja do vozlišča
+      Help: Pomoč
+      Length: Dolžina
+      LoadUnloadLane: Naloži / izprazni progo
+      SaveExtruderValues: Shrani vrednosti ekstruderja
+      WriteToFile: Zapiši v datoteko
+      BowdenLengthDescription: To je dolžina bovdna med vozliščem in orodno 
+        glavo.
+      DistHubDescription: Razdalja med zobniki ekstruderja proge in vozlišča v 
+        mm.
+      LoadUnloadLaneDescription: Pritisnite gumbe, da naložite ali izpraznite 
+        filament iz proge v ekstruder.
+      SaveHubDist: Shrani vrednosti proge
+      SaveHubDistDescription: Shrani vrednosti specifične proge v nastavitveno 
+        datoteko.
+      SensorAfterExtruder: Senzor za ekstruderjem
+      SettingsForTitle: Nastavitve za {name}
+      ToolSensorAfterExtruder: Senzor orodja za ekstruderjem
+      ToolStn: Dolžina nalaganja za orodje
+      ToolStnUnload: Dolžina praznjenja za orodje
+      SaveExtruderValuesDescription: To bodo trenutne vrednosti ekstruderja 
+        zapisala v nastavitveno datoteko trenutnega ekstruderja.
+      ToolSensorAfterExtruderDescription: Razdalja med zobniki ekstruderja in 
+        tool_end senzor v mm. Ta vrednost se uporablja za izpraznitev filamenta 
+        iz zobnikov ekstruderja, ko tool_end senzor ne sproža več signala.
+      ToolStnDescriptionWithEndSensor: Razdalja od senzorja tool_end do začetka 
+        območja taljenja v mm.
+      ToolStnDescriptionWithoutEndSensor: Razdalja od senzorja tool_start do 
+        začetka območja taljenja v mm.
+      ToolStnDescriptionWithRamming: Razdalja od zobnikov ekstruderja do začetka
+        območja taljenja v mm.
+      ToolStnUnloadDescription: Razdalja umika, potrebna za izpraznitev 
+        filamenta iz orodja v mm.
+    AfcSettings: AFC Nastavitve
+    BrushNozzle: Skrtači šobo
+    CaptureTd: Zajemi TD
+    Functions: Funkcije
+    Headline: AFC
+    Hub: Vozlišče
+    HubLoad: Naloži vozlišče
+    Idle: V mirovanju
+    InfiniteSpoolHeadline: Neskončen kolut
+    LaneLoadedNone: NIČ
+    LedOff: Izklop LED
+    LedOn: Vklop LED
+    LoadLane: Naloži progo
+    Restoring: Obnavljanje
+    LaneControls: Upravljanje prog
+    LaneLoaded: Proga naložena
+    LoadedInLane: Naloži v {lane}
+    LaneMapping: Mapiranje prog
+    SettingsForLane: Nastavitve za {lane}
+    ShowFilamentName: Prikaži ime filamenta
+    ShowLaneInfinite: Prikaži neskončen gumb
+    ShowTool: Prikaži orodje »{name}«
+    ShowUnit: Prikaži enoto »{name}«
+    ShowUnitIcons: Prikaži ikone enote
+    InfiniteSpoolDescription: Naloži naslednjo progo, če zmanjka {name}
+    LaneMappingToCommand: Preslikaj {name} v orodni ukaz
+    PostExtruderSensor: Senzor za ekstruderjem
+    PreExtruderSensor: Senzor pred ekstruderjem
+    ShowTd1Color: Prikaži barvo TD-1
+    Unloading: Praznjenje
+    UnloadLane: Praznjenje proge
+    Unknown: Neznano
+    Weight: Masa
+    WeightSubtitle: Masa filamenta v gramih (brez koluta).
+    BufferDisabled: Vmesni pomnilnik ni aktiven
+    BypassActive: Filamenti, vstavljeni v obvozno menjavo orodja, so 
+      onemogočeni!
+    DebugJson: Odpravljanje JSON napak
+    RammingSensor: Senzor trka

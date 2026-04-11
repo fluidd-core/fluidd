@@ -1,50 +1,40 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.web.json",
-  "include": [
-    "env.d.ts",
-    "components.d.ts",
-    "src/**/*",
-    "src/**/*.vue",
-    "src/monaco/theme/editor.*.theme.json"
-  ],
-  "exclude": [
-    "src/**/__tests__/*"
-  ],
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
 
-    "lib": [
-      // Target ES2020 to align with Vite.
-      // <https://vitejs.dev/config/build-options.html#build-target>
-      // Support for newer versions of language built-ins are
-      // left for the users to include, because that would require:
-      //   - either the project doesn't need to support older versions of browsers;
-      //   - or the project has properly included the necessary polyfills.
-      "ES2020",
-
-      "DOM",
-      "DOM.Iterable"
-
-      // No `ScriptHost` because Vue 3 dropped support for IE
-    ],
-    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      // vuex's exports field resolves to dist/vuex.mjs under Bundler mode,
+      // which has no adjacent types. Point TypeScript to the actual type declarations.
+      "vuex": [
+        "./node_modules/vuex/types/index.d.ts"
+      ],
+      // Under Bundler mode the "./*": "./*" exports wildcard doesn't resolve
+      // subpath type declarations. Point TypeScript directly to the package files.
+      "monaco-editor/esm/*": [
+        "./node_modules/monaco-editor/esm/*"
       ]
     },
 
-    // if `<script setup>` is used, then remove the next line
-    "preserveValueImports": false,
-
-    "importsNotUsedAsValues": "remove",
-
-    "experimentalDecorators": true,
-
-    "verbatimModuleSyntax": true
+    "experimentalDecorators": true
   },
 
   "vueCompilerOptions": {
     "target": 2.7
-  }
+  },
+
+  "include": [
+    "*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "src/monaco/theme/editor.*.theme.json"
+  ],
+
+  "exclude": [
+    "src/**/__tests__/*"
+  ]
 }

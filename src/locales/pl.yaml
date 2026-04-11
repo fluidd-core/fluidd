@@ -620,7 +620,7 @@ app:
       to_browser_session_storage: Do lokalnej pamięci sesji przeglądarki
       show_manual_probe_dialog_automatically: Pokazuj okno ręcznej sondy 
         automatycznie
-      all_off: Wszystkie wył
+      all_off: Wył wszystkie
       axes: Osie
       aspect_ratio: Współczynnik proporcji
       aspect_ratio_format: '[szerokość : wysokość]'
@@ -631,7 +631,7 @@ app:
         drukowania
       auto_load_mobile_on_print_start: Automatyczne załaduj plik na urządzeniach
         mobilnych
-      all_on: Wszystkie wł
+      all_on: Wł wszystkie
       move_line_width: Szerokość linii ruchu
       camera_flip_x: Odwróć w poziomie
       camera_flip_y: Odwróć w pionie

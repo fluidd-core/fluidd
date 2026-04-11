@@ -19,7 +19,8 @@ logs, and more — all from your browser.
 | **logs**            | Klipper, Moonraker, and system logs                | No       |
 | **timelapse**       | Timelapse recordings and thumbnails (when enabled) | Yes      |
 
-Custom roots can be added via Moonraker's `registered_directories`
+Custom roots can be added via Moonraker's
+[`registered_directories`](https://moonraker.readthedocs.io/en/latest/configuration/#file_manager)
 configuration.
 
 ## File operations
@@ -38,6 +39,18 @@ menu (right-click) or toolbar:
 
 When opening G-code preview for very large files (over 100 MB), Fluidd
 prompts for confirmation before loading.
+
+!!! tip "Large files"
+    Moonraker's default upload size limit is 1024 MiB. For larger G-code
+    files, increase `max_upload_size` in `moonraker.conf`:
+
+    ```ini title="moonraker.conf"
+    [server]
+    max_upload_size: 2048
+    ```
+
+    Very large files may also cause the upload to time out in the browser.
+    Consider using `curl` or another tool for files over 500 MiB.
 
 ## G-code features
 
@@ -80,6 +93,11 @@ Select multiple files using checkboxes to access bulk actions:
 - Refresh metadata (G-code root only)
 - Perform time analysis (G-code root only)
 - Add to print queue (G-code root only)
+
+!!! note "ZIP archives"
+    ZIP archives are created on the server and stored in the same directory as
+    the selected files. To download multiple files at once, create an archive
+    first and then download it.
 
 ## Filtering
 

@@ -24,7 +24,7 @@ nav = [
     "features/diagnostics.md",
     "features/file-editor.md",
     "features/file-manager.md",
-    "features/integrations.md",
+    "features/job-queue.md",
     "features/keyboard-shortcuts.md",
     "features/localization.md",
     "features/macros.md",
@@ -32,8 +32,9 @@ nav = [
     "features/multiple-printers.md",
     "features/printing.md",
     "features/slicer-uploads.md",
-    "features/system.md",
+    "features/system-and-notifications.md",
     "features/thermals.md",
+    "features/third-party-integrations.md",
     "features/timelapse.md",
     "features/updates.md"
   ]},
@@ -69,10 +70,12 @@ toggle.icon = "lucide/moon"
 toggle.name = "Switch to light mode"
 
 [project.markdown_extensions.abbr]
+[project.markdown_extensions.admonition]
 [project.markdown_extensions.attr_list]
 [project.markdown_extensions."pymdownx.highlight"]
 anchor_linenums = true
 [project.markdown_extensions."pymdownx.keys"]
+[project.markdown_extensions."pymdownx.details"]
 [project.markdown_extensions."pymdownx.superfences"]
 
 [project.markdown_extensions."pymdownx.snippets"]

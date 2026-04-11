@@ -22,7 +22,7 @@ To adjust the layout, open the side menu and click **Adjust Layout**:
 - Click **Exit Layout** when you are done, or **Reset Layout** to restore
   the default arrangement.
 
-![screenshot](/assets/images/layout.png)
+![Dashboard layout editor with draggable card handles](/assets/images/layout.png)
 
 ## Themes
 
@@ -37,13 +37,13 @@ communities. If you'd like to see your logo supported here, let us know!
 You can also set any custom primary color and independently toggle between
 dark and light mode without using a preset.
 
-![screenshot](/assets/images/theme.png)
+![Theme settings showing community presets and a custom color picker](/assets/images/theme.png)
 
 ### Custom Themes
 
-Fluidd supports custom stylesheets and background images. All custom theming
-is configured through a `.fluidd-theme` folder within your configuration
-files.
+Fluidd supports custom stylesheets, background images, and logos. All custom
+theming is configured through a `.fluidd-theme` folder within your printer's
+configuration directory.
 
 #### Custom Background
 
@@ -67,6 +67,11 @@ will appear in the application bar after reloading Fluidd.
 To apply custom CSS, create a `custom.css` file and upload it to the
 `.fluidd-theme` directory. After reloading Fluidd the changes should become
 visible.
+
+!!! tip "Custom CSS"
+    Custom CSS is applied globally. Fluidd uses Vuetify 2 CSS classes. Use
+    your browser's developer tools (++f12++) to inspect element classes before
+    writing custom selectors.
 
 ## Hiding Components
 
@@ -96,6 +101,11 @@ sensor_type: MCU
 ```
 
 Macros can also be hidden directly from the Fluidd settings by toggling their
-visibility, in order to not change their name:
+visibility, in order to not change their name. For full macro management
+options including categories and colors, see the [Macros](/features/macros) page.
 
-![screenshot](/assets/images/macro_visibility.png)
+![Macro settings panel with visibility toggles for each macro](/assets/images/macro_visibility.png)
+
+Note that the underscore prefix controls macro and pin/sensor visibility only.
+Dashboard widget cards (temperature, toolhead, etc.) are shown or hidden via
+the **Layout** settings instead.

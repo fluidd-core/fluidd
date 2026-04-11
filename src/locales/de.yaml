@@ -123,6 +123,7 @@ app:
       duplicate_file: Doppelte Datei
       go_to_file: Zur Datei gehen
       devices: Geräte
+      save_as: Speichern unter
     tooltip:
       low_on_space: Wenig Speicherplatz auf der Festplatte
       root_disabled: '{root} ist nicht verfügbar. Bitte überprüfen Sie Ihre Logdateien.'
@@ -376,6 +377,11 @@ app:
       time_in_days: Zeit in Tagen
       connected: Verbunden
       disconnected: Nicht verbunden
+      clean_nozzle: Düse reinigen
+      load_filament: Filament laden
+      park_toolhead: Druckkopf parken
+      toolchange: Werkzeugwechsel
+      unload_filament: Filament entladen
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -397,6 +403,7 @@ app:
       not_valid_fluidd_backup_file: Keine gültige Fluidd-Backupdatei!
       fluidd_settings_restore_failed: Konnte das Backup der Fluidd-Einstellungen
         nicht wiederherstellen!
+      gcode_preview_failed: Fehler bei der Vorschau der G-code-Datei!
     simple_form:
       error:
         arrayofnums: Nur Zahlen
@@ -458,6 +465,9 @@ app:
           Temperaturvoreinstellung %{name} entfernen möchten?
         confirm_change_beacon_model: Der Drucker ist momentan beschäftigt. Sind 
           Sie sicher, dass Sie das Beacon-Modell ändern möchten?
+        confirm_restore_backup: Sind Sie sicher, dass Sie dieses Backup 
+          wiederherstellen möchten? Moonraker wird sofort nach Beenden dieser 
+          Aufgabe neu starten.
     table:
       header:
         actions: Aktionen
@@ -496,6 +506,10 @@ app:
         referenced_tools: Referenzierte Werkzeuge
         file_processors: Dateiprozessoren
         user: Benutzer
+        printer_model: Druckermodell
+        printer_variant: Druckervariante
+        printer_vendor: Druckerhersteller
+        profile_version: Profilversion
     title:
       add_printer: Drucker hinzufügen
       bedmesh: Bettnivellierung
@@ -1143,7 +1157,7 @@ app:
       temperature: Temperatur
       bad_temperature: Temperatur außerhalb des Bereichs
       warning_prefix: Warnung-
-      material: Werkstoff
+      material: Material
       no_gate_data: Keine Gate-Daten
       no_custom_controls: Keine benutzerdefinierten Steuerungen
       filament_loaded: Ist das Filament vollständig geladen oder vollständig 
@@ -1210,6 +1224,7 @@ app:
       grip: Halten
       release: Loslassen
       select: Auswählen
+      change_tool: Werkzeug wechseln
     title:
       headline: MMU
       recover_state: MMU-Status beheben (Fehlerbehebung)
@@ -1243,7 +1258,7 @@ app:
       spoolman_days_ago: vor %{days} Tagen
       leds: LEDs
       all_tools: Alle Werkzeuge
-      material: Werkstoff
+      material: Material
       reset: Zurücksetzen
       load_speed: Ladegeschwindigkeit
       gate: Gate
@@ -1260,3 +1275,32 @@ app:
       large_filament_status: Großer Filamentstatus
       show_ttg_map: TTG-Zuordnung anzeigen
       show_unavailable_spool_color: Nicht verfügbare Spulen anzeigen
+  afc:
+    AfcSettings: AFC-Einstellungen
+    BufferDisabled: Puffer nicht aktiv
+    Calibrate: Kalibrieren
+    Cancel: Abbrechen
+    Detected: Erkannt
+    Empty: Leer
+    Error: Fehler
+    FilamentForLane: Filament für {name}
+    Functions: Funktionen
+    Headline: AFC
+    Idle: Untätig
+    LaneLoadedNone: KEINE
+    LedOff: LEDs aus
+    LedOn: LEDs ein
+    LoadedInLane: Geladen in {lane}
+    Material: Material
+    MaterialSubtitle: z.B. ABS, PETG, PLA etc.
+  database:
+    btn:
+      compact_database: Datenbank komprimieren
+      create_backup: Backup erstellen
+    label:
+      moonraker_database: Moonraker-Datenbank
+    msg:
+      not_found: Keine existierenden Datenbank-Backups gefunden.
+    tooltip:
+      restore_backup: Backup wiederherstellen
+      delete_backup: Backup löschen
