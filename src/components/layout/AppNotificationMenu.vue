@@ -125,9 +125,10 @@
             >
               <v-icon
                 v-if="n.suffixIcon"
-                v-safe-html="n.suffixIcon"
                 :color="color"
-              />
+              >
+                {{ n.suffixIcon }}
+              </v-icon>
               <div
                 v-safe-html="n.suffix"
                 class="notification-temp"
