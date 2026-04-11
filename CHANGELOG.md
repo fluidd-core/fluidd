@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.36.4](https://github.com/fluidd-core/fluidd/compare/v1.36.3...v1.36.4) (2026-04-11)
+
+
+### Features
+
+* **i18n-de:** Update German translations ([7a6e54d](https://github.com/fluidd-core/fluidd/commit/7a6e54d63d83258a65fae9dbca127efadca5f0ad))
+* **i18n-pl:** Update Polish translations ([4c28150](https://github.com/fluidd-core/fluidd/commit/4c28150c7caf4d1d6d7e481a596c44f57ee21997))
+* **i18n-sl:** Update Slovenian translations ([bace4ce](https://github.com/fluidd-core/fluidd/commit/bace4ce758ee4f0f3ce842bcbe1119075885d473))
+* use Monarch tokenizer for large gcode files ([#1814](https://github.com/fluidd-core/fluidd/issues/1814)) ([c218928](https://github.com/fluidd-core/fluidd/commit/c2189282fd1c8e8c41d78143c01a6c9994aab7c6))
+
+
+### Bug Fixes
+
+* allow Klipper restart if printer paused ([#1811](https://github.com/fluidd-core/fluidd/issues/1811)) ([1b0478c](https://github.com/fluidd-core/fluidd/commit/1b0478c0b1e30ad404f2dcf0c8649908aacbaddf))
+
+
+### Code Refactorings
+
+* typing improvements ([107d6d6](https://github.com/fluidd-core/fluidd/commit/107d6d622c8f89a8699915ce0d616235b5c8e9a8))
+* use monaco provider classes ([#1816](https://github.com/fluidd-core/fluidd/issues/1816)) ([d8f154f](https://github.com/fluidd-core/fluidd/commit/d8f154fb9af4c19a13ce34ea4645c64fcc102330))
+
 ## [1.36.3](https://github.com/fluidd-core/fluidd/compare/v1.36.2...v1.36.3) (2026-03-28)
 
 
