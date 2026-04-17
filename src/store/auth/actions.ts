@@ -55,24 +55,6 @@ export const actions = {
   },
 
   /**
-   * Inspects the auth token to determine its validity.
-   */
-  async checkToken ({ state }) {
-    if (state.token?.exp) {
-      const exp = state.token.exp
-      const now = Date.now() / 1000 // now in unixtime.
-      const isExpiring = (exp - now) < 300 // refresh within 5 minutes / 5 * 60
-      if (isExpiring) {
-        consola.debug('checkToken - isExpiring', new Date(now * 1000), new Date(exp * 1000))
-        return true
-      } else {
-        return false
-      }
-    }
-    return false
-  },
-
-  /**
    * Refresh the auth tokens.
    */
   async refreshTokens ({ commit, rootGetters }) {
@@ -92,20 +74,6 @@ export const actions = {
       return response.token
     } catch {
       // Error on refresh. Caller is responsible for subsequent action (logout / redirect).
-    }
-  },
-
-  async getAuthInfo () {
-    try {
-      const response = await SocketActions.accessInfo()
-
-      return {
-        defaultSource: response.default_source,
-        availableSources: response.available_sources
-      }
-    } catch {
-      // external authentication sources not supported
-      return {}
     }
   },
 
