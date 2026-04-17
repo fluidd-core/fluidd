@@ -367,6 +367,14 @@ export const actions = {
     dispatch('auth/onUserDeleted', payload, { root: true })
   },
 
+  async notifyUserLoggedOut ({ dispatch }) {
+    // Moonraker invalidated the current user's session (we triggered logout,
+    // or another client called access.logout with invalidate=true). Clear
+    // local auth state and bounce to /login. auth/logout is idempotent:
+    // redundant if we initiated this ourselves, corrective if we didn't.
+    await dispatch('auth/logout', undefined, { root: true })
+  },
+
   async notifyServiceStateChanged ({ dispatch }, payload) {
     dispatch('server/onServiceStateChanged', payload, { root: true })
   },
