@@ -119,7 +119,7 @@ src/
 - Hash-based routing (`#/path`)
 - Views lazy-loaded via dynamic imports: `component: () => import('@/views/X.vue')`
 - Auth guard via `defaultRouteConfig` spread pattern; `isAuthenticated()` checks `store.state.auth`
-- JWT token auth over WebSocket: `server.connection.identify` with stored token on `onSocketOpen`, refreshed via `access.refresh_jwt` when expired. `auth.authenticated` defaults to `false` and gates protected routes until identify resolves
+- JWT token auth over WebSocket: `server.connection.identify` with stored token on `onSocketOpen`, refreshed via `access.refresh_jwt` when expired. After `access.login` succeeds, `auth/login` dispatches `socket/onLoginComplete` which identifies the live socket with the freshly-issued token — no socket teardown. Both paths converge on `socket/onAuthReady` for the shared post-auth bootstrap (serverInfo + Moonraker DB + config file list). `auth.authenticated` defaults to `false` and gates protected routes until identify resolves
 - Key routes: `/`, `/console`, `/jobs`, `/tune`, `/diagnostics`, `/timelapse`, `/history`, `/system`, `/configure`, `/settings`, `/camera/:cameraId`, `/preview`, `/login`
 
 ### Icons & Theming
