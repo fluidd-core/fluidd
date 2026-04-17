@@ -27,7 +27,6 @@ import { appInit } from './init'
 import type { InitConfig } from './store/config/types'
 
 // Import plugins
-import { HttpClientPlugin } from './plugins/httpClient'
 import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
 import { ColorSetPlugin } from './plugins/colorSet'
@@ -54,10 +53,6 @@ Vue.use(VuetifyConfirm, {
 })
 Vue.use(InlineSvgPlugin)
 Vue.use(Vue2TouchEvents)
-
-Vue.use(HttpClientPlugin, {
-  store
-})
 
 Vue.use(SocketPlugin, {
   reconnectEnabled: true,

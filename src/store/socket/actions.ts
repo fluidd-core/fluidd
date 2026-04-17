@@ -9,6 +9,16 @@ import { EventBus } from '@/eventBus'
 import { upperFirst, camelCase } from 'lodash-es'
 import isKeyOf from '@/util/is-key-of'
 
+const getMoorakerDatabase = async <T = Record<string, unknown>>(namespace: string) => {
+  try {
+    const response = await SocketActions.serverDatabaseGetItem<T>(undefined, namespace)
+
+    return response.value
+  } catch {
+    return {} as T
+  }
+}
+
 let retryTimeout: number
 
 export const actions = {
@@ -28,7 +38,7 @@ export const actions = {
   /**
     * Fired when the socket opens.
     */
-  async onSocketOpen ({ commit }, payload) {
+  async onSocketOpen ({ commit, dispatch }, payload) {
     commit('setSocketOpen', payload)
     if (payload === true) {
       SocketActions.serverInfo()
@@ -38,6 +48,39 @@ export const actions = {
         type: 'web',
         url: Globals.GITHUB_REPO
       })
+
+      for (const { NAMESPACE, ROOTS } of Object.values(Globals.MOONRAKER_DB)) {
+        const data = await getMoorakerDatabase(NAMESPACE)
+
+        const roots = Object.values<{
+          name: string;
+          dispatch: string;
+          migrate_only?: boolean;
+        }>(ROOTS)
+
+        const promises = roots
+          .map(async (root) => {
+            const value = root.name ? data[root.name] : data
+
+            if (root.migrate_only) {
+              if (value) {
+                await dispatch(root.dispatch, value, { root: true })
+              }
+            } else {
+              if (!value) {
+                try {
+                  await SocketActions.serverDatabasePostItem(root.name, {}, NAMESPACE)
+                } catch (e) {
+                  consola.debug('Error creating database item', e)
+                }
+              }
+
+              await dispatch(root.dispatch, value || {}, { root: true })
+            }
+          })
+
+        await Promise.all(promises)
+      }
       SocketActions.serverFilesList('config')
     }
   },

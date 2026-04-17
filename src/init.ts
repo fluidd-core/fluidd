@@ -4,8 +4,6 @@ import { consola } from 'consola'
 import { Globals } from './globals'
 import type { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
 import axios from 'axios'
-import router from './router'
-import { httpClientActions } from './api/httpClientActions'
 import sanitizeEndpoint from './util/sanitize-endpoint'
 import webSocketWrapper from './util/web-socket-wrapper'
 import promiseAny from './util/promise-any'
@@ -23,7 +21,7 @@ import md5 from 'md5'
  */
 
 const getHostConfig = async () => {
-  const hostConfigResponse = await httpClientActions.get<HostConfig>(`${import.meta.env.BASE_URL}config.json`)
+  const hostConfigResponse = await axios.get<HostConfig>(`${import.meta.env.BASE_URL}config.json`)
   if (hostConfigResponse && hostConfigResponse.data) {
     consola.debug('Loaded web host configuration', hostConfigResponse.data)
     return hostConfigResponse.data
@@ -116,45 +114,6 @@ const getApiConfig = async (hostConfig: HostConfig, apiUrlHash?: string | null):
   }
 }
 
-const getMoorakerDatabase = async (apiConfig: ApiConfig, namespace: string) => {
-  const result = {
-    data: {} as any,
-    apiConnected: true,
-    apiAuthenticated: true
-  }
-
-  if (apiConfig.apiUrl !== '' && apiConfig.socketUrl !== '') {
-    try {
-      const response = await httpClientActions.serverDatabaseItemGet(namespace)
-
-      result.data = response.data.result.value
-
-      consola.debug('loaded db', namespace, result.data)
-    } catch (e) {
-      switch (axios.isAxiosError(e) ? e.response?.status : 0) {
-        case 404:
-          // Connected but database does not yet exist
-          break
-
-        case 401:
-          // The API is technically connected, but we're un-authenticated.
-          result.apiAuthenticated = false
-          break
-
-        default:
-          consola.debug('API Down / Not Available:', e)
-          result.apiConnected = false
-          break
-      }
-    }
-  } else {
-    result.apiConnected = false
-    result.apiAuthenticated = false
-  }
-
-  return result
-}
-
 export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): Promise<InitConfig> => {
   // Reset the store to its default state.
   await store.dispatch('reset', undefined, { root: true })
@@ -189,74 +148,12 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     window.history.replaceState(window.history.state, '', locationUrl)
   }
 
-  // Setup axios
-  if (apiConfig.apiUrl) httpClientActions.defaults.baseURL = apiConfig.apiUrl
-
   // Just sets the api urls
   await store.dispatch('config/onInitApiConfig', apiConfig)
   consola.debug('inited apis', store.state.config, apiConfig)
 
-  // Init authentication
-  await store.dispatch('auth/initAuth')
-
-  // Load any configuration we may have in moonrakers db
-  let apiConnected = true
-  let apiAuthenticated = true
-  for (const { NAMESPACE, ROOTS } of Object.values(Globals.MOONRAKER_DB)) {
-    if (!apiConnected && !apiAuthenticated) {
-      break
-    }
-
-    if (Object.keys(ROOTS).length === 0) {
-      continue
-    }
-
-    const result = await getMoorakerDatabase(apiConfig, NAMESPACE)
-
-    apiAuthenticated = result.apiAuthenticated
-    apiConnected = result.apiConnected
-
-    if (!apiConnected || !apiAuthenticated) {
-      break
-    }
-
-    const { data } = result
-
-    const roots = Object.values<Record<string, any>>(ROOTS)
-
-    const promises = roots.map(async (root) => {
-      const value = root.name ? data[root.name] : data
-
-      if (root.migrate_only) {
-        if (value) await store.dispatch(root.dispatch, value)
-      } else {
-        if (!value) {
-          try {
-            await httpClientActions.serverDatabaseItemPost(NAMESPACE, root.name, {})
-          } catch (e) {
-            consola.debug('Error creating database item', e)
-          }
-        }
-
-        await store.dispatch(root.dispatch, value || {})
-      }
-    })
-
-    await Promise.all(promises)
-  }
-
   // apiConfig could have empty strings, meaning we have no valid connection.
-  await store.dispatch('init', { apiConfig, hostConfig, apiConnected })
+  await store.dispatch('init', { apiConfig, hostConfig, apiConnected: true })
 
-  if (store.state.auth.authenticated) {
-    if (router.currentRoute.name === 'login') {
-      await router.push({ name: 'home' })
-    }
-  } else {
-    if (router.currentRoute.name !== 'login') {
-      await router.push({ name: 'login' })
-    }
-  }
-
-  return { apiConfig, hostConfig, apiConnected, apiAuthenticated }
+  return { apiConfig, hostConfig, apiConnected: true, apiAuthenticated: true }
 }

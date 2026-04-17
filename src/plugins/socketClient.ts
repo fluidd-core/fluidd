@@ -6,7 +6,6 @@ import type _Vue from 'vue'
 import { Globals } from '@/globals'
 import { consola } from 'consola'
 import { camelCase, mergeWith } from 'lodash-es'
-import { httpClientActions } from '@/api/httpClientActions'
 import type { Store } from 'vuex'
 import type { RootState } from '@/store/types'
 import axios from 'axios'
@@ -81,13 +80,8 @@ export class WebSocketClient {
     this.clearRequests()
 
     try {
-      const response = await httpClientActions.accessOneshotTokenGet()
-
-      const token = response.data.result
-
-      // Good. Move on with setting up the socket.
       this.store.dispatch('socket/onSocketConnecting', true)
-      this.connection = new WebSocket(`${this.url}?token=${token}`)
+      this.connection = new WebSocket(this.url)
 
       this.connection.onopen = () => {
         if (this.reconnectEnabled) {

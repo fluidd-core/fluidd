@@ -103,6 +103,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { appInit } from '@/init'
 import { consola } from 'consola'
 import type { InstanceConfig } from '@/store/config/types'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({})
 export default class Login extends Vue {
@@ -114,16 +115,25 @@ export default class Login extends Vue {
   availableSources = [this.source]
 
   async mounted () {
-    const authInfo = await this.$typedDispatch('auth/getAuthInfo')
-    this.source = authInfo.defaultSource ?? this.source
-    this.availableSources = authInfo.availableSources ?? this.availableSources
+    const authInfo = await SocketActions.accessInfo()
+
+    if (authInfo.available_sources != null) {
+      this.availableSources = authInfo.available_sources
+    }
+    if (authInfo.default_source != null) {
+      this.source = authInfo.default_source
+    }
   }
 
   async handleLogin () {
     this.error = false
     this.loading = true
     try {
-      await this.$typedDispatch('auth/login', { username: this.username, password: this.password, source: this.source })
+      await this.$typedDispatch('auth/login', {
+        username: this.username,
+        password: this.password,
+        source: this.source
+      })
     } catch {
       this.error = true
     }
