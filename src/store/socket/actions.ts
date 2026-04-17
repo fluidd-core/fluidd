@@ -20,6 +20,20 @@ const getMoonrakerDatabase = async <T = Record<string, unknown>>(namespace: stri
   }
 }
 
+const getIdentifyParams = (accessToken?: string): {
+  client_name: string;
+  version: string;
+  type: string;
+  url: string;
+  access_token?: string;
+} => ({
+  client_name: Globals.APP_NAME,
+  version: `${import.meta.env.VERSION || '0.0.0'}-${import.meta.env.HASH || 'unknown'}`.trim(),
+  type: 'web',
+  url: Globals.GITHUB_REPO,
+  ...(accessToken ? { access_token: accessToken } : {})
+})
+
 let retryTimeout: number
 
 export const actions = {
@@ -43,20 +57,6 @@ export const actions = {
     commit('setSocketOpen', payload)
     if (payload !== true) return
 
-    const identifyParams: {
-      client_name: string;
-      version: string;
-      type: string;
-      url: string;
-      access_token?: string;
-      api_key?: string;
-    } = {
-      client_name: Globals.APP_NAME,
-      version: `${import.meta.env.VERSION || '0.0.0'}-${import.meta.env.HASH || 'unknown'}`.trim(),
-      type: 'web',
-      url: Globals.GITHUB_REPO
-    }
-
     // 1. Check the connection's trust / auth status before loading data.
     let info: Moonraker.Authorization.InfoResponse | undefined
     try {
@@ -79,7 +79,7 @@ export const actions = {
       const tryIdentify = async () => {
         if (!accessToken) return false
         try {
-          await SocketActions.serverConnectionIdentify({ ...identifyParams, access_token: accessToken })
+          await SocketActions.serverConnectionIdentify(getIdentifyParams(accessToken))
           return true
         } catch (e) {
           consola.debug('identify with stored token failed', e)
@@ -106,22 +106,43 @@ export const actions = {
       }
     } else {
       try {
-        await SocketActions.serverConnectionIdentify(identifyParams)
+        await SocketActions.serverConnectionIdentify(getIdentifyParams())
       } catch (e) {
         consola.debug('identify (unauthenticated) failed', e)
       }
     }
 
+    await dispatch('onAuthReady')
+  },
+
+  /**
+   * Fired by auth/login after access.login succeeds on the existing socket.
+   * The connection is already authenticated server-side; identify cements
+   * Fluidd's client metadata on it, then the shared post-auth bootstrap runs.
+   */
+  async onLoginComplete ({ dispatch }, accessToken: string) {
+    try {
+      await SocketActions.serverConnectionIdentify(getIdentifyParams(accessToken))
+    } catch (e) {
+      consola.debug('identify after login failed', e)
+    }
+
+    await dispatch('onAuthReady')
+  },
+
+  /**
+   * Post-identify bootstrap. Commits the authenticated flag, bounces the user
+   * off /login if that's where they were, and loads server info + Moonraker
+   * database + config file list. Shared by the onSocketOpen success path and
+   * the auth/login → socket/onLoginComplete post-login path.
+   */
+  async onAuthReady ({ commit, dispatch }) {
     commit('auth/setAuthenticated', true, { root: true })
 
-    // If we just authenticated while sitting on /login (e.g. right after a
-    // successful login, or a reconnect that restored auth from a stored
-    // token), bounce to the dashboard.
     if (Vue.$filters.getCurrentRouteName() === 'login') {
       await Vue.$filters.routeTo({ name: 'home' })
     }
 
-    // 2. Load server info + Moonraker database + config file list.
     SocketActions.serverInfo()
 
     await Promise.all(

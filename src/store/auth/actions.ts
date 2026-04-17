@@ -77,30 +77,34 @@ export const actions = {
     }
   },
 
-  async login ({ commit, rootGetters }, { username, password, source }) {
+  async login ({ commit, dispatch, rootGetters }, { username, password, source }) {
     const keys = rootGetters['config/getTokenKeys']
 
+    let user: Moonraker.Authorization.LoginResponse
     try {
-      const user = await SocketActions.accessLogin(username, password, source)
-
-      // Successful login. Set the tokens and auth status and move on.
-      localStorage.setItem(keys['user-token'], user.token)
-      localStorage.setItem(keys['refresh-token'], user.refresh_token)
-      commit('setAuthenticated', true)
-      commit('setCurrentUser', {
-        username: user.username,
-        source: user.source
-      })
-      commit('setToken', user.token)
-      commit('setRefreshToken', user.refresh_token)
-
-      return user
+      user = await SocketActions.accessLogin(username, password, source)
     } catch (error: unknown) {
       // Unsuccessful login. Remove any existing keys and propagate the error.
       localStorage.removeItem(keys['user-token'])
       localStorage.removeItem(keys['refresh-token'])
       throw error
     }
+
+    // Successful login. Moonraker has authenticated the current socket as
+    // this user; store the tokens and hand off to the socket module for
+    // the shared post-auth bootstrap (identify + data load + route).
+    localStorage.setItem(keys['user-token'], user.token)
+    localStorage.setItem(keys['refresh-token'], user.refresh_token)
+    commit('setCurrentUser', {
+      username: user.username,
+      source: user.source
+    })
+    commit('setToken', user.token)
+    commit('setRefreshToken', user.refresh_token)
+
+    await dispatch('socket/onLoginComplete', user.token, { root: true })
+
+    return user
   },
 
   /**
