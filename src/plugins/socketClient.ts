@@ -244,7 +244,12 @@ export class WebSocketClient {
   emit (method: string, options?: NotifyOptions) {
     return new Promise((resolve, reject) => {
       try {
-        if (this.store.state.socket.disconnecting || this.store.state.socket.connecting) {
+        // Block emits only when an explicit disconnect is in flight. The
+        // `connecting` flag is a UI heuristic driven by the pong timer and
+        // can flip while the underlying WebSocket is still healthy (e.g. on
+        // idle pages like /login with no active subscriptions); the
+        // readyState check below is the source of truth for send availability.
+        if (this.store.state.socket.disconnecting) {
           consola.debug(`${this.logPrefix} Socket emit denied, in disconnecting state:`, method, options)
 
           throw new Error('Socket is disconnecting')

@@ -38,51 +38,132 @@ export const actions = {
   /**
     * Fired when the socket opens.
     */
-  async onSocketOpen ({ commit, dispatch }, payload) {
+  async onSocketOpen ({ commit, dispatch, rootGetters }, payload) {
     commit('setSocketOpen', payload)
-    if (payload === true) {
-      SocketActions.serverInfo()
-      SocketActions.serverConnectionIdentify({
-        client_name: Globals.APP_NAME,
-        version: `${import.meta.env.VERSION || '0.0.0'}-${import.meta.env.HASH || 'unknown'}`.trim(),
-        type: 'web',
-        url: Globals.GITHUB_REPO
-      })
+    if (payload !== true) return
 
-      for (const { NAMESPACE, ROOTS } of Object.values(Globals.MOONRAKER_DB)) {
-        const data = await getMoorakerDatabase(NAMESPACE)
+    // Auth status is unknown until we finish the identify flow below. Gate
+    // App.vue's protected router-view on this so the user doesn't briefly see
+    // the Dashboard before being bounced to /login.
+    commit('auth/setAuthReady', false, { root: true })
 
-        const roots = Object.values<{
-          name: string;
-          dispatch: string;
-          migrate_only?: boolean;
-        }>(ROOTS)
-
-        const promises = roots
-          .map(async (root) => {
-            const value = root.name ? data[root.name] : data
-
-            if (root.migrate_only) {
-              if (value) {
-                await dispatch(root.dispatch, value, { root: true })
-              }
-            } else {
-              if (!value) {
-                try {
-                  await SocketActions.serverDatabasePostItem(root.name, {}, NAMESPACE)
-                } catch (e) {
-                  consola.debug('Error creating database item', e)
-                }
-              }
-
-              await dispatch(root.dispatch, value || {}, { root: true })
-            }
-          })
-
-        await Promise.all(promises)
-      }
-      SocketActions.serverFilesList('config')
+    const identifyParams: {
+      client_name: string;
+      version: string;
+      type: string;
+      url: string;
+      access_token?: string;
+      api_key?: string;
+    } = {
+      client_name: Globals.APP_NAME,
+      version: `${import.meta.env.VERSION || '0.0.0'}-${import.meta.env.HASH || 'unknown'}`.trim(),
+      type: 'web',
+      url: Globals.GITHUB_REPO
     }
+
+    // 1. Check the connection's trust / auth status before loading data.
+    let info: Moonraker.Authorization.InfoResponse | undefined
+    try {
+      info = await SocketActions.accessInfo()
+    } catch (e) {
+      consola.debug('accessInfo failed on socket open', e)
+    }
+
+    // login_required is the authoritative flag: when force_logins is enabled
+    // with at least one user configured, Moonraker reports login_required:true
+    // for EVERY connection, including trusted ones (trusted_clients is
+    // overridden in that mode). If accessInfo failed and info is undefined,
+    // assume auth is needed and let the flow below deal with it.
+    const needsAuth = info?.login_required !== false
+    const tokenKeys = rootGetters['config/getTokenKeys'] as { 'user-token': string; 'refresh-token': string }
+
+    if (needsAuth) {
+      let accessToken = localStorage.getItem(tokenKeys['user-token'])
+
+      const tryIdentify = async () => {
+        if (!accessToken) return false
+        try {
+          await SocketActions.serverConnectionIdentify({ ...identifyParams, access_token: accessToken })
+          return true
+        } catch (e) {
+          consola.debug('identify with stored token failed', e)
+          return false
+        }
+      }
+
+      let authenticated = await tryIdentify()
+
+      if (!authenticated && accessToken) {
+        // Token may have expired. Try a refresh and retry once.
+        const newToken = await dispatch('auth/refreshTokens', undefined, { root: true }) as string | undefined
+        if (newToken) {
+          accessToken = newToken
+          authenticated = await tryIdentify()
+        }
+      }
+
+      if (!authenticated) {
+        // No usable credentials — kick the user to /login. Socket stays open
+        // so the login view can still call access.info / access.login.
+        await dispatch('auth/logout', undefined, { root: true })
+        commit('auth/setAuthReady', true, { root: true })
+        return
+      }
+    } else {
+      try {
+        await SocketActions.serverConnectionIdentify(identifyParams)
+      } catch (e) {
+        consola.debug('identify (unauthenticated) failed', e)
+      }
+    }
+
+    commit('auth/setAuthenticated', true, { root: true })
+
+    // If we just authenticated while sitting on /login (e.g. right after a
+    // successful login, or a reconnect that restored auth from a stored
+    // token), bounce to the dashboard.
+    if (Vue.$filters.getCurrentRouteName() === 'login') {
+      await Vue.$filters.routeTo({ name: 'home' })
+    }
+
+    commit('auth/setAuthReady', true, { root: true })
+
+    // 2. Load server info + Moonraker database + config file list.
+    SocketActions.serverInfo()
+
+    for (const { NAMESPACE, ROOTS } of Object.values(Globals.MOONRAKER_DB)) {
+      const data = await getMoorakerDatabase(NAMESPACE)
+
+      const roots = Object.values<{
+        name: string;
+        dispatch: string;
+        migrate_only?: boolean;
+      }>(ROOTS)
+
+      const promises = roots
+        .map(async (root) => {
+          const value = root.name ? data[root.name] : data
+
+          if (root.migrate_only) {
+            if (value) {
+              await dispatch(root.dispatch, value, { root: true })
+            }
+          } else {
+            if (!value) {
+              try {
+                await SocketActions.serverDatabasePostItem(root.name, {}, NAMESPACE)
+              } catch (e) {
+                consola.debug('Error creating database item', e)
+              }
+            }
+
+            await dispatch(root.dispatch, value || {}, { root: true })
+          }
+        })
+
+      await Promise.all(promises)
+    }
+    SocketActions.serverFilesList('config')
   },
 
   /**
@@ -91,6 +172,11 @@ export const actions = {
   async onSocketClose ({ dispatch, commit, state }, event: CloseEvent) {
     const retry = state.disconnecting
     const modules = ['server', 'power', 'webcams', 'jobQueue', 'socket', 'wait', 'gcodePreview']
+
+    // Auth will need to be re-evaluated by the next onSocketOpen. Resetting
+    // just authReady (instead of the whole auth module) avoids wiping the
+    // currentUser / stored token on a transient disconnect.
+    commit('auth/setAuthReady', false, { root: true })
 
     if (event.wasClean && retry) {
       // This is most likely a moonraker restart, so only partially reset.

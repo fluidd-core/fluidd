@@ -13,6 +13,10 @@ export default class StateMixin extends Vue {
     return this.$typedState.auth.authenticated
   }
 
+  get authReady (): boolean {
+    return this.$typedState.auth.authReady
+  }
+
   get socketConnected (): boolean {
     return this.$typedGetters['socket/getConnectionState']
   }

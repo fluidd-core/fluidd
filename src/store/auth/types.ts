@@ -2,6 +2,7 @@ import type { JwtPayload } from 'jwt-decode'
 
 export interface AuthState {
   authenticated: boolean;
+  authReady: boolean;
   token: JwtPayload | null;
   refresh_token: JwtPayload | null;
   currentUser: AppUser | null;
