@@ -147,13 +147,17 @@ export const actions = {
 
     await Promise.all(
       Object.values(Globals.MOONRAKER_DB).map(async ({ NAMESPACE, ROOTS }) => {
-        const data = await getMoonrakerDatabase(NAMESPACE)
-
         const roots = Object.values<{
           name: string;
           dispatch: string;
           migrate_only?: boolean;
         }>(ROOTS)
+
+        if (roots.length === 0) {
+          return
+        }
+
+        const data = await getMoonrakerDatabase(NAMESPACE)
 
         await Promise.all(
           roots.map(async (root) => {

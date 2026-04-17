@@ -4,14 +4,22 @@ import store from '@/store'
 
 Vue.use(VueRouter)
 
-const isAuthenticated = (): boolean => (
-  store.state.auth.authenticated ||
+// Truly authenticated (identify resolved successfully). Used by the /login
+// route to decide whether to bounce the user to home.
+const isAuthenticated = (): boolean => store.state.auth.authenticated
+
+// Permissive guard for protected routes: allow navigation while the socket
+// is still opening so deep-linked URLs survive bootstrap. App.vue's template
+// gate hides actual content until auth resolves, so this can't leak
+// protected views.
+const canEnterProtectedRoute = (): boolean => (
+  isAuthenticated() ||
   !store.state.socket.open
 )
 
 const defaultRouteConfig: Partial<RouteConfig> = {
   beforeEnter: (to, from, next) => {
-    if (isAuthenticated()) {
+    if (canEnterProtectedRoute()) {
       next()
     } else {
       next({ name: 'login' })
