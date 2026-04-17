@@ -144,7 +144,7 @@ src/
 - All printer commands via `SocketActions` methods — both init and live data flow over a single WebSocket
 - Store updates from WebSocket events (not polling)
 - File operations through Moonraker's file API (`src/store/files/`)
-- File uploads/downloads use direct `axios` calls in `src/mixins/files.ts`, authenticated with a oneshot token fetched via `SocketActions.accessOneshotToken()` — there is no HTTP client plugin
+- File uploads/downloads are the sole consumer of `axios` — direct calls in `src/mixins/files.ts` (for upload/download progress, which `fetch` cannot report for uploads), authenticated with a oneshot token fetched via `SocketActions.accessOneshotToken()`. There is no HTTP client plugin, and the rest of the app uses `fetch` or the WebSocket
 
 ### Component Communication
 
