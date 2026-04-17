@@ -8,7 +8,6 @@ import { consola } from 'consola'
 import { camelCase, mergeWith } from 'lodash-es'
 import type { Store } from 'vuex'
 import type { RootState } from '@/store/types'
-import axios from 'axios'
 
 const fastNotifyStatusUpdateKeys = [
   'motion_report'
@@ -213,13 +212,8 @@ export class WebSocketClient {
         }
       }
     } catch (error: unknown) {
-      // Bad. If this is a 401, then don't retry. Otherwise do.
-      if (
-        !axios.isAxiosError(error) ||
-        error.response?.status !== 401
-      ) {
-        this.reconnect()
-      }
+      consola.error(`${this.logPrefix} Failed to open WebSocket:`, error)
+      this.reconnect()
     }
   }
 

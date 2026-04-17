@@ -124,7 +124,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
 
       const { socketUrl } = this.$filters.getApiUrls(value)
 
-      // Handle cancelling axios requests.
+      // Cancel any in-flight WebSocket probe before starting a new one.
       this.abortController?.abort()
 
       this.abortController = new AbortController()

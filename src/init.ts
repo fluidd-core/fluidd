@@ -3,7 +3,6 @@ import store from './store'
 import { consola } from 'consola'
 import { Globals } from './globals'
 import type { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
-import axios from 'axios'
 import sanitizeEndpoint from './util/sanitize-endpoint'
 import webSocketWrapper from './util/web-socket-wrapper'
 import promiseAny from './util/promise-any'
@@ -21,14 +20,18 @@ import md5 from 'md5'
  */
 
 const getHostConfig = async () => {
-  const hostConfigResponse = await axios.get<HostConfig>(`${import.meta.env.BASE_URL}config.json`)
-  if (hostConfigResponse && hostConfigResponse.data) {
-    consola.debug('Loaded web host configuration', hostConfigResponse.data)
-    return hostConfigResponse.data
-  } else {
+  const response = await fetch(`${import.meta.env.BASE_URL}config.json`)
+
+  if (!response.ok) {
     consola.debug('Failed loading web host configuration')
     throw new Error('Unable to load host configuration. Please check the host.')
   }
+
+  const hostConfig = await response.json() as HostConfig
+
+  consola.debug('Loaded web host configuration', hostConfig)
+
+  return hostConfig
 }
 
 const getApiConfig = async (hostConfig: HostConfig, apiUrlHash?: string | null): Promise<ApiConfig | InstanceConfig> => {
