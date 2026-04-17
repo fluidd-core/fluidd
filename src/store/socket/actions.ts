@@ -42,11 +42,6 @@ export const actions = {
     commit('setSocketOpen', payload)
     if (payload !== true) return
 
-    // Auth status is unknown until we finish the identify flow below. Gate
-    // App.vue's protected router-view on this so the user doesn't briefly see
-    // the Dashboard before being bounced to /login.
-    commit('auth/setAuthReady', false, { root: true })
-
     const identifyParams: {
       client_name: string;
       version: string;
@@ -106,7 +101,6 @@ export const actions = {
         // No usable credentials — kick the user to /login. Socket stays open
         // so the login view can still call access.info / access.login.
         await dispatch('auth/logout', undefined, { root: true })
-        commit('auth/setAuthReady', true, { root: true })
         return
       }
     } else {
@@ -125,8 +119,6 @@ export const actions = {
     if (Vue.$filters.getCurrentRouteName() === 'login') {
       await Vue.$filters.routeTo({ name: 'home' })
     }
-
-    commit('auth/setAuthReady', true, { root: true })
 
     // 2. Load server info + Moonraker database + config file list.
     SocketActions.serverInfo()
@@ -174,11 +166,6 @@ export const actions = {
   async onSocketClose ({ dispatch, commit, state }, event: CloseEvent) {
     const retry = state.disconnecting
     const modules = ['server', 'power', 'webcams', 'jobQueue', 'socket', 'wait', 'gcodePreview']
-
-    // Auth will need to be re-evaluated by the next onSocketOpen. Resetting
-    // just authReady (instead of the whole auth module) avoids wiping the
-    // currentUser / stored token on a transient disconnect.
-    commit('auth/setAuthReady', false, { root: true })
 
     if (event.wasClean && retry) {
       // This is most likely a moonraker restart, so only partially reset.

@@ -6,7 +6,7 @@ Vue.use(VueRouter)
 
 const isAuthenticated = (): boolean => (
   store.state.auth.authenticated ||
-  !store.state.socket.apiConnected
+  !store.state.socket.open
 )
 
 const defaultRouteConfig: Partial<RouteConfig> = {

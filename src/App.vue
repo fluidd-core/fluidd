@@ -65,7 +65,7 @@
         <router-view
           v-if="
             $route.name === 'login' ||
-              (socketConnected && apiConnected && authReady)
+              (socketConnected && apiConnected && authenticated)
           "
         />
 
@@ -75,7 +75,7 @@
       <socket-disconnected
         v-if="
           $route.name !== 'login' &&
-            !(socketConnected && apiConnected && authReady)
+            !(socketConnected && apiConnected && authenticated)
         "
       />
 

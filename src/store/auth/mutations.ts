@@ -27,10 +27,6 @@ export const mutations = {
     state.authenticated = authenticated
   },
 
-  setAuthReady (state, payload: boolean) {
-    state.authReady = payload
-  },
-
   setUsers (state, users) {
     state.users = users
   },
