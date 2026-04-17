@@ -9,12 +9,13 @@ import { EventBus } from '@/eventBus'
 import { upperFirst, camelCase } from 'lodash-es'
 import isKeyOf from '@/util/is-key-of'
 
-const getMoorakerDatabase = async <T = Record<string, unknown>>(namespace: string) => {
+const getMoonrakerDatabase = async <T = Record<string, unknown>>(namespace: string) => {
   try {
     const response = await SocketActions.serverDatabaseGetItem<T>(undefined, namespace)
 
     return response.value
-  } catch {
+  } catch (e) {
+    consola.debug('Error reading database namespace', namespace, e)
     return {} as T
   }
 }
@@ -125,7 +126,7 @@ export const actions = {
 
     await Promise.all(
       Object.values(Globals.MOONRAKER_DB).map(async ({ NAMESPACE, ROOTS }) => {
-        const data = await getMoorakerDatabase(NAMESPACE)
+        const data = await getMoonrakerDatabase(NAMESPACE)
 
         const roots = Object.values<{
           name: string;
