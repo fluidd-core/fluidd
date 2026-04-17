@@ -1,5 +1,4 @@
 export interface SocketState {
-  apiConnected: boolean;
   open: boolean;
   connecting: boolean;
   disconnecting: boolean;

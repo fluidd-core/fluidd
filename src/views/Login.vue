@@ -146,7 +146,7 @@ export default class Login extends Vue {
       const config = await appInit(instance, this.$typedState.config.hostConfig)
 
       // Reconnect the socket with the new instance url.
-      if (config.apiConnected && config.apiAuthenticated) {
+      if (config.apiConfig.socketUrl) {
         consola.debug('Activating socket with config', config)
         this.$socket.connect(config.apiConfig.socketUrl)
       }

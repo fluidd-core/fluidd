@@ -213,8 +213,6 @@ export interface SaveByPath {
 export interface InitConfig {
   apiConfig: ApiConfig | InstanceConfig;
   hostConfig?: HostConfig;
-  apiConnected?: boolean;
-  apiAuthenticated?: boolean;
 }
 
 export interface ApiConfig {

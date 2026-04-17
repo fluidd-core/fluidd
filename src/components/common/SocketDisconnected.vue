@@ -78,7 +78,7 @@ export default class SocketDisconnected extends Mixins(StateMixin) {
     const config = await appInit(this.activeInstance, this.$typedState.config.hostConfig)
 
     // Reconnect the socket with the instance url.
-    if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {
+    if (config.apiConfig.socketUrl) {
       this.$socket.connect(config.apiConfig.socketUrl)
     }
   }

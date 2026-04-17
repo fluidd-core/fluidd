@@ -17,10 +17,6 @@ export default class StateMixin extends Vue {
     return this.$typedGetters['socket/getConnectionState']
   }
 
-  get apiConnected (): boolean {
-    return this.$typedGetters['socket/getApiConnected']
-  }
-
   get socketConnecting (): boolean {
     return this.$typedGetters['socket/getConnectingState']
   }

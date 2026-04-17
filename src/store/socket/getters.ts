@@ -15,9 +15,5 @@ export const getters = {
    */
   getConnectingState: (state): boolean => {
     return state.connecting
-  },
-
-  getApiConnected: (state) => {
-    return state.apiConnected
   }
 } satisfies GetterTree<SocketState, RootState>

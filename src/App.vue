@@ -51,7 +51,7 @@
       >
         <v-row
           v-if="
-            (socketConnected && apiConnected) &&
+            socketConnected && authenticated &&
               (!klippyReady || hasWarnings) &&
               !inLayout &&
               $route.name !== 'login'
@@ -65,7 +65,7 @@
         <router-view
           v-if="
             $route.name === 'login' ||
-              (socketConnected && apiConnected && authenticated)
+              (socketConnected && authenticated)
           "
         />
 
@@ -75,7 +75,7 @@
       <socket-disconnected
         v-if="
           $route.name !== 'login' &&
-            !(socketConnected && apiConnected && authenticated)
+            !(socketConnected && authenticated)
         "
       />
 

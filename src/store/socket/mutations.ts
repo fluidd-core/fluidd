@@ -31,10 +31,6 @@ export const mutations = {
     state.disconnecting = payload
   },
 
-  setApiConnected (state, payload) {
-    state.apiConnected = payload
-  },
-
   setConnectionId (state, payload) {
     state.connectionId = payload
   }

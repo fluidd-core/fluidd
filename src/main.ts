@@ -74,7 +74,7 @@ appInit()
   .then((config: InitConfig) => {
     consola.debug('Loaded App Configuration', config)
 
-    if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {
+    if (config.apiConfig.socketUrl) {
       Vue.$socket.connect(config.apiConfig.socketUrl)
     }
   })

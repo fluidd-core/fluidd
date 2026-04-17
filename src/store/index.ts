@@ -87,10 +87,6 @@ export const storeOptions = {
     },
 
     async init ({ dispatch, commit }, payload: InitConfig) {
-      // Set the api connection state..
-      commit('socket/setApiConnected', payload.apiConnected)
-
-      // Init the host and local configs..
       await Promise.all([
         dispatch('config/initHost', payload),
         dispatch('config/initLocal', payload)

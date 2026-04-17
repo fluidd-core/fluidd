@@ -156,8 +156,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   // connection can identify with them.
   await store.dispatch('auth/initAuth')
 
-  // apiConfig could have empty strings, meaning we have no valid connection.
-  await store.dispatch('init', { apiConfig, hostConfig, apiConnected: true })
+  await store.dispatch('init', { apiConfig, hostConfig })
 
-  return { apiConfig, hostConfig, apiConnected: true, apiAuthenticated: true }
+  return { apiConfig, hostConfig }
 }
