@@ -100,6 +100,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { consola } from 'consola'
 import { SocketActions } from '@/api/socketActions'
 
 @Component({})
@@ -112,13 +113,17 @@ export default class Login extends Vue {
   availableSources = [this.source]
 
   async mounted () {
-    const authInfo = await SocketActions.accessInfo()
+    try {
+      const authInfo = await SocketActions.accessInfo()
 
-    if (authInfo.available_sources != null) {
-      this.availableSources = authInfo.available_sources
-    }
-    if (authInfo.default_source != null) {
-      this.source = authInfo.default_source
+      if (authInfo.available_sources != null) {
+        this.availableSources = authInfo.available_sources
+      }
+      if (authInfo.default_source != null) {
+        this.source = authInfo.default_source
+      }
+    } catch (e) {
+      consola.debug('accessInfo on Login mount failed', e)
     }
   }
 
