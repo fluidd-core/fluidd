@@ -92,7 +92,7 @@ npm run circular-check # Check for circular dependencies
 
 ```text
 src/
-├── api/                # HTTP (axios) and WebSocket (custom JSON-RPC) clients
+├── api/                # WebSocket (custom JSON-RPC) client (`socketActions.ts`)
 ├── components/
 │   ├── common/         # Shared dialogs & status components (auto-imported)
 │   ├── layout/         # App shell: AppBar, AppDrawer, etc. (auto-imported)
@@ -103,7 +103,7 @@ src/
 ├── locales/            # i18n YAML files (23 languages)
 ├── mixins/             # Vue mixins (StateMixin, FilesMixin, etc.)
 ├── monaco/             # Monarch tokenizers and editor themes
-├── plugins/            # Vue plugins (i18n, httpClient, socketClient, vuetify, filters)
+├── plugins/            # Vue plugins (i18n, socketClient, vuetify, filters, colorSet)
 ├── router/             # Vue Router (hash mode) with auth guards
 ├── scss/               # Global styles and Vuetify variable overrides
 ├── store/              # 28 Vuex modules (printer, files, config, webcams, etc.)
@@ -119,7 +119,7 @@ src/
 - Hash-based routing (`#/path`)
 - Views lazy-loaded via dynamic imports: `component: () => import('@/views/X.vue')`
 - Auth guard via `defaultRouteConfig` spread pattern; `isAuthenticated()` checks `store.state.auth`
-- JWT token auth with auto-refresh (axios interceptors)
+- JWT token auth over WebSocket: `server.connection.identify` with stored token on `onSocketOpen`, refreshed via `access.refresh_jwt` when expired. `auth.authenticated` defaults to `false` and gates protected routes until identify resolves
 - Key routes: `/`, `/console`, `/jobs`, `/tune`, `/diagnostics`, `/timelapse`, `/history`, `/system`, `/configure`, `/settings`, `/camera/:cameraId`, `/preview`, `/login`
 
 ### Icons & Theming
@@ -141,10 +141,10 @@ src/
 
 ### Klipper/Moonraker Communication
 
-- All printer commands via `SocketActions` methods
+- All printer commands via `SocketActions` methods — both init and live data flow over a single WebSocket
 - Store updates from WebSocket events (not polling)
 - File operations through Moonraker's file API (`src/store/files/`)
-- HTTP client (`src/plugins/httpClient.ts`) for file uploads, auth tokens
+- File uploads/downloads use direct `axios` calls in `src/mixins/files.ts`, authenticated with a oneshot token fetched via `SocketActions.accessOneshotToken()` — there is no HTTP client plugin
 
 ### Component Communication
 

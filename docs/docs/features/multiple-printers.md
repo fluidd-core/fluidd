@@ -53,8 +53,9 @@ remove it. The active printer cannot be removed.
   separate server), Moonraker must list Fluidd's origin in `cors_domains`.
   See the [configuration example](/configuration#example-configuration).
 
-Each printer connection uses both HTTP (for initialization) and WebSocket (for
-live data). The WebSocket URL is derived automatically from the HTTP URL.
+Each printer connection runs over a single WebSocket to Moonraker for both
+initialization and live data. The WebSocket URL is derived automatically from
+the Moonraker URL you enter.
 
 ## Authentication
 
