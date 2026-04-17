@@ -75,7 +75,7 @@ export const actions = {
     // overridden in that mode). If accessInfo failed and info is undefined,
     // assume auth is needed and let the flow below deal with it.
     const needsAuth = info?.login_required !== false
-    const tokenKeys = rootGetters['config/getTokenKeys'] as { 'user-token': string; 'refresh-token': string }
+    const tokenKeys = rootGetters['config/getTokenKeys']
 
     if (needsAuth) {
       let accessToken = localStorage.getItem(tokenKeys['user-token'])
@@ -131,38 +131,40 @@ export const actions = {
     // 2. Load server info + Moonraker database + config file list.
     SocketActions.serverInfo()
 
-    for (const { NAMESPACE, ROOTS } of Object.values(Globals.MOONRAKER_DB)) {
-      const data = await getMoorakerDatabase(NAMESPACE)
+    await Promise.all(
+      Object.values(Globals.MOONRAKER_DB).map(async ({ NAMESPACE, ROOTS }) => {
+        const data = await getMoorakerDatabase(NAMESPACE)
 
-      const roots = Object.values<{
-        name: string;
-        dispatch: string;
-        migrate_only?: boolean;
-      }>(ROOTS)
+        const roots = Object.values<{
+          name: string;
+          dispatch: string;
+          migrate_only?: boolean;
+        }>(ROOTS)
 
-      const promises = roots
-        .map(async (root) => {
-          const value = root.name ? data[root.name] : data
+        await Promise.all(
+          roots.map(async (root) => {
+            const value = root.name ? data[root.name] : data
 
-          if (root.migrate_only) {
-            if (value) {
-              await dispatch(root.dispatch, value, { root: true })
-            }
-          } else {
-            if (!value) {
-              try {
-                await SocketActions.serverDatabasePostItem(root.name, {}, NAMESPACE)
-              } catch (e) {
-                consola.debug('Error creating database item', e)
+            if (root.migrate_only) {
+              if (value) {
+                await dispatch(root.dispatch, value, { root: true })
               }
+            } else {
+              if (!value) {
+                try {
+                  await SocketActions.serverDatabasePostItem(root.name, {}, NAMESPACE)
+                } catch (e) {
+                  consola.debug('Error creating database item', e)
+                }
+              }
+
+              await dispatch(root.dispatch, value || {}, { root: true })
             }
+          })
+        )
+      })
+    )
 
-            await dispatch(root.dispatch, value || {}, { root: true })
-          }
-        })
-
-      await Promise.all(promises)
-    }
     SocketActions.serverFilesList('config')
   },
 
