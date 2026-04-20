@@ -12,7 +12,7 @@
         <div v-if="apiUrl">
           {{ apiUrl }}
         </div>
-        <span v-if="socketConnecting || !appReady">{{ $t('app.socket.msg.connecting') }}</span>
+        <span v-if="socketConnecting">{{ $t('app.socket.msg.connecting') }}</span>
         <span v-else>{{ $t('app.socket.msg.no_connection') }}</span>
       </v-col>
       <v-col
@@ -20,7 +20,7 @@
         lg="4"
       >
         <v-progress-linear
-          v-if="socketConnecting || !appReady"
+          v-if="socketConnecting"
           class="mb-4"
           color="warning"
           indeterminate

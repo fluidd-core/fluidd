@@ -7,7 +7,7 @@
       cols="12"
       lg="8"
     >
-      <router-view v-if="authenticated && socketConnected" />
+      <router-view v-if="socketReady" />
       <div v-if="$route.matched.length === 1">
         <general-settings />
         <warnings-settings />

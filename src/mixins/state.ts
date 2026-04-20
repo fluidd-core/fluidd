@@ -9,17 +9,20 @@ export default class StateMixin extends Vue {
     return this.$typedState.config.appReady
   }
 
-  get authenticated (): boolean {
-    return this.$typedState.socket.status === 'ready'
-  }
-
   get socketConnected (): boolean {
     return this.$typedGetters['socket/getIsConnected']
   }
 
   get socketConnecting (): boolean {
-    const status = this.$typedState.socket.status
-    return status === 'connecting' || status === 'identifying'
+    return this.$typedGetters['socket/getIsConnecting']
+  }
+
+  get socketAuthenticating (): boolean {
+    return this.$typedGetters['socket/getIsAuthenticating']
+  }
+
+  get socketReady (): boolean {
+    return this.$typedGetters['socket/getIsReady']
   }
 
   get klippyReady (): boolean {

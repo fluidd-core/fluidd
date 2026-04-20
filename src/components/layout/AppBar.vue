@@ -35,7 +35,7 @@
     <!-- <v-spacer /> -->
 
     <div class="toolbar-supplemental">
-      <div v-if="socketConnected && authenticated && klippyReady && showSaveConfigAndRestartForPendingChanges">
+      <div v-if="socketReady && klippyReady && showSaveConfigAndRestartForPendingChanges">
         <app-save-config-and-restart-btn
           :loading="hasWait($waits.onSaveConfig)"
           :disabled="printerPrinting || printerPaused"
@@ -43,7 +43,7 @@
         />
       </div>
 
-      <div v-if="socketConnected && authenticated && !isMobileViewport">
+      <div v-if="socketReady && !isMobileViewport">
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
@@ -69,14 +69,14 @@
         </v-tooltip>
       </div>
 
-      <div v-if="socketConnected && authenticated && showUploadAndPrint">
+      <div v-if="socketReady && showUploadAndPrint">
         <app-upload-and-print-btn
           :disabled="printerPrinting || printerPaused || !klippyReady"
           @upload="handleUploadAndPrint"
         />
       </div>
 
-      <div v-if="socketConnected && authenticated && topNavPowerToggle">
+      <div v-if="socketReady && topNavPowerToggle">
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
@@ -96,11 +96,11 @@
         </v-tooltip>
       </div>
 
-      <div v-if="socketConnected && authenticated">
+      <div v-if="socketReady">
         <app-notification-menu />
       </div>
 
-      <div v-if="socketConnected && authenticated && supportsAuth">
+      <div v-if="socketReady && supportsAuth">
         <app-user-menu @change-password="userPasswordDialogOpen = true" />
       </div>
 

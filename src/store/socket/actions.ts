@@ -7,7 +7,6 @@ import { Globals } from '@/globals'
 import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
 import { upperFirst, camelCase } from 'lodash-es'
-import isKeyOf from '@/util/is-key-of'
 
 const MODULES_TO_RESET_ON_DROP = ['server', 'power', 'webcams', 'jobQueue', 'wait', 'gcodePreview']
 
@@ -27,6 +26,7 @@ const getMoonrakerDatabase = async <T = Record<string, unknown>>(namespace: stri
     return response.value
   } catch (e) {
     consola.debug('Error reading database namespace', namespace, e)
+
     return {} as T
   }
 }
@@ -242,18 +242,6 @@ export const actions = {
    */
   async onConnectionId ({ commit }, payload: Moonraker.Websocket.ConnectionIdentifyResponse) {
     commit('setConnectionId', payload.connection_id)
-  },
-
-  async onServerRead ({ dispatch }, payload: Moonraker.Database.GetItemResponse) {
-    const { namespace, key, value } = payload
-
-    if (isKeyOf(namespace, Globals.MOONRAKER_DB)) {
-      const roots = Globals.MOONRAKER_DB[namespace].ROOTS
-
-      const root = key && isKeyOf(key, roots) ? roots[key] : Object.values(roots)[0]
-
-      dispatch(root.dispatch, value, { root: true })
-    }
   },
 
   /**

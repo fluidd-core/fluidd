@@ -549,7 +549,6 @@ export const SocketActions = {
   serverDatabaseGetItem<T = unknown> (key?: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
     return baseEmit<Moonraker.Database.GetItemResponse<T>>(
       'server.database.get_item', {
-        dispatch: 'socket/onServerRead',
         ...options,
         params: {
           namespace,

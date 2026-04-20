@@ -28,7 +28,7 @@
         </div>
 
         <div
-          v-if="socketConnected && authenticated"
+          v-if="socketReady"
           class="nav-items"
         >
           <app-nav-item
@@ -114,7 +114,7 @@
         </div>
 
         <template
-          v-if="socketConnected && authenticated && !isMobileViewport && canEditLayout"
+          v-if="socketReady && !isMobileViewport && canEditLayout"
           #append
         >
           <v-tooltip right>
@@ -174,7 +174,7 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get showSubNavigation () {
-    return this.hasSubNavigation && this.socketConnected && this.authenticated
+    return this.hasSubNavigation && this.socketReady
   }
 
   get canEditLayout () {

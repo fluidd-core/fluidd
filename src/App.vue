@@ -26,7 +26,7 @@
     />
 
     <v-btn
-      v-if="isMobileViewport && socketConnected && authenticated"
+      v-if="isMobileViewport && socketReady"
       x-small
       fab
       fixed
@@ -50,34 +50,23 @@
         class="constrained-width pa-2 pa-sm-4"
       >
         <v-row
-          v-if="
-            socketConnected && authenticated &&
-              (!klippyReady || hasWarnings) &&
-              !inLayout &&
-              $route.name !== 'login'
-          "
+          v-if="(
+            socketReady &&
+            (!klippyReady || hasWarnings) &&
+            !inLayout
+          )"
         >
           <v-col>
             <klippy-status-card />
           </v-col>
         </v-row>
 
-        <router-view
-          v-if="
-            $route.name === 'login' ||
-              (socketConnected && authenticated)
-          "
-        />
+        <router-view v-if="socketReady || socketAuthenticating" />
 
         <register-service-worker />
       </v-container>
 
-      <socket-disconnected
-        v-if="
-          $route.name !== 'login' &&
-            !(socketConnected && authenticated)
-        "
-      />
+      <socket-disconnected v-if="!socketReady && !socketAuthenticating" />
 
       <template v-if="socketConnected">
         <file-system-download-dialog />
@@ -392,8 +381,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
   handleDragOver (event: DragEvent) {
     if (
-      this.socketConnected &&
-      this.authenticated &&
+      this.socketReady &&
       this.fileDropRoot &&
       event.dataTransfer &&
       hasFilesInDataTransfer(event.dataTransfer)
