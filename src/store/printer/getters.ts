@@ -1004,9 +1004,7 @@ export const getters = {
 
   getHasWarnings: (state, getters, rootState) => {
     return (
-      rootState.socket &&
-      rootState.socket.open &&
-      rootState.socket.ready &&
+      rootState.socket?.status === 'ready' &&
       (
         getters.getPrinterWarnings.length > 0 ||
         getters.getKlipperWarnings.length > 0 ||

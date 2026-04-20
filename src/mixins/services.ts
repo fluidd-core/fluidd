@@ -57,7 +57,6 @@ export default class ServicesMixin extends Vue {
   async serviceRestartByName (name: string) {
     if (name === this.moonrakerServiceName) {
       SocketActions.serverRestart()
-      this.$typedCommit('socket/setSocketDisconnecting', true)
     } else {
       if (name === this.klipperServiceName) {
         await this._klipperReset()

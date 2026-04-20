@@ -3,7 +3,6 @@
  * and refactored.
  */
 import type _Vue from 'vue'
-import { Globals } from '@/globals'
 import { consola } from 'consola'
 import { camelCase, mergeWith } from 'lodash-es'
 import type { Store } from 'vuex'
@@ -13,99 +12,61 @@ const fastNotifyStatusUpdateKeys = [
   'motion_report'
 ] as const
 
+const ALLOWED_RETRIES = 3
+const RETRY_INTERVAL = 1000
+
 export class WebSocketClient {
   url = ''
   connection: WebSocket | null = null
-  reconnectEnabled = false
-  reconnectInterval = 1000
-  allowedReconnectAttempts = 3
-  reconnectCount = 0
   logPrefix = '[WEBSOCKET]'
   requests: Request[] = []
   requestId = 0
   store: Store<RootState>
-  pingTimeout: number | null = null
   cache: CachedParams | null = null
+  private retryCount = 0
+  private reconnectTimeout: number | null = null
 
   constructor (options: SocketPluginOptions) {
-    this.reconnectEnabled = options.reconnectEnabled || false
-    this.reconnectInterval = options.reconnectInterval || 1000
     this.store = options.store
   }
 
-  pong () {
-    // Valid response from the socket.
-    if (this.pingTimeout != null) {
-      clearTimeout(this.pingTimeout)
-      this.pingTimeout = null
-    }
-
-    // We have a connection again, so set the socket properties
-    // appropriately.
-    if (
-      !this.store.state.socket.disconnecting && // We arent about to disonnect and..
-      !this.store.state.files.download // We're not in the middle of a download.
-    ) {
-      this.store.commit('socket/setSocketOpen', true)
-      this.store.dispatch('socket/onSocketConnecting', false)
-    }
-
-    this.pingTimeout = window.setTimeout(() => {
-      if (
-        !this.store.state.socket.disconnecting && // We arent about to disonnect and..
-        !this.store.state.files.download // We're not in the middle of a download.
-      ) {
-        // In the event our socket stops responding, set the socket properties
-        // appropriately.
-        consola.debug(`${this.logPrefix} Connection timeout, pong failed`)
-        this.store.commit('socket/setSocketOpen', false)
-        this.store.dispatch('socket/onSocketConnecting', true)
-      }
-    }, Globals.SOCKET_PING_INTERVAL)
-  }
-
   close () {
+    this.cancelReconnect()
     if (this.connection) {
+      this.retryCount = 0
       this.cache = null
       this.clearRequests()
+      this.store.dispatch('socket/onSetStatus', 'disconnected')
       this.connection.close()
-      this.reconnectCount = 0
     }
   }
 
-  async connect (url?: string) {
+  connect (url?: string) {
+    this.cancelReconnect()
     if (url) this.url = url
+    this.retryCount = 0
+    this.openSocket()
+  }
+
+  private openSocket () {
     this.cache = null
     this.clearRequests()
 
     try {
-      this.store.dispatch('socket/onSocketConnecting', true)
+      this.store.dispatch('socket/onSetStatus', 'connecting')
       this.connection = new WebSocket(this.url)
 
       this.connection.onopen = () => {
-        if (this.reconnectEnabled) {
-          this.reconnectCount = 1
-        }
-
-        this.store.dispatch('socket/onSocketConnecting', false)
-        this.store.dispatch('socket/onSocketOpen', true)
+        this.store.dispatch('socket/onSetStatus', 'identifying')
       }
 
       this.connection.onclose = (event) => {
         consola.debug(`${this.logPrefix} Connection closed:`, event)
-        if (this.pingTimeout != null) {
-          clearTimeout(this.pingTimeout)
-          this.pingTimeout = null
-        }
-        this.store.dispatch('socket/onSocketClose', event)
-        if (!event.wasClean) {
-          this.reconnect()
-        }
+        this.handleClose()
       }
 
       this.connection.onerror = (event) => {
         consola.error(`${this.logPrefix} Connection error:`, event)
-        this.store.dispatch('socket/onSocketError', event)
       }
 
       this.connection.onmessage = (message) => {
@@ -141,9 +102,6 @@ export class WebSocketClient {
             return
           }
 
-          // we're still alive.
-          this.pong()
-
           if (request) {
             // these are specific answers to a request we've made.
             // Build the response, including a non-enumerable ref of the original request.
@@ -170,9 +128,6 @@ export class WebSocketClient {
 
           return
         }
-
-        // we're still alive.
-        this.pong()
 
         // These are socket notifications (i.e., no specific request was made..)
         // Dispatch with the name of the method, converted to camelCase.
@@ -213,20 +168,39 @@ export class WebSocketClient {
       }
     } catch (error: unknown) {
       consola.error(`${this.logPrefix} Failed to open WebSocket:`, error)
-      this.reconnect()
+      this.handleClose()
     }
   }
 
-  reconnect () {
-    if (this.reconnectCount <= this.allowedReconnectAttempts) {
-      this.reconnectCount += 1
-      this.connection = null
-      consola.debug(`${this.logPrefix} Reconnecting in ${this.reconnectInterval}`)
-      setTimeout(() => {
-        this.connect()
-      }, this.reconnectInterval)
-    } else {
-      this.store.dispatch('socket/onSocketConnecting', false)
+  private handleClose () {
+    const prevStatus = this.store.state.socket.status
+
+    // Explicit close(): onSetStatus('disconnected') was already dispatched; nothing to do.
+    if (prevStatus === 'disconnected') return
+
+    // Drop from live: each post-ready reconnect cycle starts a fresh retry chain.
+    if (prevStatus === 'ready') {
+      this.retryCount = 0
+    }
+
+    this.retryCount += 1
+
+    if (this.retryCount > ALLOWED_RETRIES) {
+      this.store.dispatch('socket/onSetStatus', 'disconnected')
+      return
+    }
+
+    this.store.dispatch('socket/onSetStatus', 'connecting')
+    this.reconnectTimeout = window.setTimeout(() => {
+      this.reconnectTimeout = null
+      this.openSocket()
+    }, RETRY_INTERVAL)
+  }
+
+  private cancelReconnect () {
+    if (this.reconnectTimeout !== null) {
+      clearTimeout(this.reconnectTimeout)
+      this.reconnectTimeout = null
     }
   }
 
@@ -238,15 +212,12 @@ export class WebSocketClient {
   emit (method: string, options?: NotifyOptions) {
     return new Promise((resolve, reject) => {
       try {
-        // Block emits only when an explicit disconnect is in flight. The
-        // `connecting` flag is a UI heuristic driven by the pong timer and
-        // can flip while the underlying WebSocket is still healthy (e.g. on
-        // idle pages like /login with no active subscriptions); the
-        // readyState check below is the source of truth for send availability.
-        if (this.store.state.socket.disconnecting) {
-          consola.debug(`${this.logPrefix} Socket emit denied, in disconnecting state:`, method, options)
+        // Any non-'disconnected' state is eligible to emit; physical readiness
+        // is enforced by the readyState check below.
+        if (this.store.state.socket.status === 'disconnected') {
+          consola.debug(`${this.logPrefix} Socket emit denied, disconnected:`, method, options)
 
-          throw new Error('Socket is disconnecting')
+          throw new Error('Socket is disconnected')
         }
 
         if (this.connection?.readyState === WebSocket.OPEN) {
@@ -325,9 +296,6 @@ declare module 'vue/types/vue' {
 }
 
 interface SocketPluginOptions {
-  token?: string;
-  reconnectEnabled?: boolean;
-  reconnectInterval?: number;
   store: Store<RootState>;
 }
 

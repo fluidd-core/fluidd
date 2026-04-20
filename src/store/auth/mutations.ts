@@ -23,10 +23,6 @@ export const mutations = {
     state.refresh_token = (token) ? jwtDecode(token) : null
   },
 
-  setAuthenticated (state, authenticated) {
-    state.authenticated = authenticated
-  },
-
   setUsers (state, users) {
     state.users = users
   },

@@ -50,11 +50,11 @@ export const actions = {
   /**
    * Notifications of specific updates
    */
-  async onUpdatedMoonraker ({ commit }, payload) {
+  async onUpdatedMoonraker (_, payload) {
     consola.debug('Finished updating moonraker', payload)
     SocketActions.machineUpdateStatus()
-    // We do this because moonraker is expected to restart.
-    commit('socket/setSocketDisconnecting', true, { root: true })
+    // Moonraker is expected to restart; the socket will drop and naturally
+    // cycle through connecting → identifying → ready via the state machine.
   },
 
   async onUpdatedKlipper (_, payload) {

@@ -8,7 +8,6 @@ import './setupConsola'
 
 // Common, 1st party.
 import Vue from 'vue'
-import { Globals } from './globals'
 import i18n from '@/plugins/i18n'
 import router from './router'
 import store from './store'
@@ -55,8 +54,6 @@ Vue.use(InlineSvgPlugin)
 Vue.use(Vue2TouchEvents)
 
 Vue.use(SocketPlugin, {
-  reconnectEnabled: true,
-  reconnectInterval: Globals.SOCKET_RETRY_DELAY,
   store
 })
 

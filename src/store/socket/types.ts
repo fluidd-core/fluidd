@@ -1,8 +1,12 @@
+export type SocketStatus =
+  | 'disconnected'
+  | 'connecting'
+  | 'identifying'
+  | 'authenticating'
+  | 'ready'
+
 export interface SocketState {
-  open: boolean;
-  connecting: boolean;
-  disconnecting: boolean;
-  ready: boolean;
+  status: SocketStatus;
   acceptingNotifications: boolean;
   error: SocketError | null;
   connectionId: string | null;

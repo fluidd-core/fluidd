@@ -1,13 +1,24 @@
 import Vue from 'vue'
 import type { ActionTree } from 'vuex'
 import { consola } from 'consola'
-import type { SocketState } from './types'
+import type { SocketState, SocketStatus } from './types'
 import type { RootState } from '../types'
 import { Globals } from '@/globals'
 import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
 import { upperFirst, camelCase } from 'lodash-es'
 import isKeyOf from '@/util/is-key-of'
+
+const MODULES_TO_RESET_ON_DROP = ['server', 'power', 'webcams', 'jobQueue', 'wait', 'gcodePreview']
+
+// State machine edges. Self-transitions (same → same) are accepted as no-ops.
+const VALID_TRANSITIONS: Record<SocketStatus, readonly SocketStatus[]> = {
+  disconnected: ['connecting'],
+  connecting: ['disconnected', 'identifying'],
+  identifying: ['connecting', 'authenticating', 'ready'],
+  authenticating: ['connecting', 'identifying'],
+  ready: ['disconnected', 'connecting', 'authenticating']
+}
 
 const getMoonrakerDatabase = async <T = Record<string, unknown>>(namespace: string) => {
   try {
@@ -46,103 +57,113 @@ export const actions = {
 
   /**
    * ==========================================================================
-   * Actions called via the socket client
+   * State-machine transitions driven by the socket client
    * ==========================================================================
    */
 
   /**
-    * Fired when the socket opens.
-    */
-  async onSocketOpen ({ commit, dispatch, rootGetters }, payload) {
-    commit('setSocketOpen', payload)
-    if (payload !== true) return
-
-    // 1. Check the connection's trust / auth status before loading data.
-    let info: Moonraker.Authorization.InfoResponse | undefined
-    try {
-      info = await SocketActions.accessInfo()
-    } catch (e) {
-      consola.debug('accessInfo failed on socket open', e)
+   * Single gateway for socket status changes. Validates the transition,
+   * commits the new state, then runs the side-effects for the destination
+   * state. Every caller (socket client, auth actions, identify flow) goes
+   * through this instead of committing `setStatus` directly.
+   *
+   *  - `disconnected`:   no side-effects.
+   *  - `connecting`:     no side-effects (the socket client opens the socket
+   *                      and owns the retry loop).
+   *  - `identifying`:    run the identify + one-shot refresh flow and, on
+   *                      the outcome, transition to `ready` or `authenticating`.
+   *  - `authenticating`: route to /login if we're not already there.
+   *  - `ready`:          route off /login if needed, then run the app
+   *                      bootstrap (serverInfo + Moonraker DB + config files).
+   *
+   * Leaving `ready` on an involuntary drop (→ `connecting`) also clears stale
+   * per-connection state so the next bootstrap starts clean.
+   */
+  async onSetStatus ({ commit, dispatch, state }, next: SocketStatus) {
+    if (state.status === next) return
+    if (!VALID_TRANSITIONS[state.status].includes(next)) {
+      consola.warn(`Invalid socket status transition: ${state.status} → ${next}`)
+      return
     }
 
-    // login_required is the authoritative flag: when force_logins is enabled
-    // with at least one user configured, Moonraker reports login_required:true
-    // for EVERY connection, including trusted ones (trusted_clients is
-    // overridden in that mode). If accessInfo failed and info is undefined,
-    // assume auth is needed and let the flow below deal with it.
-    const needsAuth = info?.login_required !== false
+    const prev = state.status
+    consola.log(`Socket status: ${prev} → ${next}`)
+    commit('setStatus', next)
+
+    if (prev === 'ready' && next === 'connecting') {
+      commit('setAcceptNotifications', false)
+      commit('setConnectionId', null)
+      await Promise.all([
+        dispatch('charts/resetChartStore', undefined, { root: true }),
+        dispatch('reset', MODULES_TO_RESET_ON_DROP, { root: true })
+      ])
+    }
+
+    switch (next) {
+      case 'identifying':
+        await dispatch('runIdentify')
+        break
+
+      case 'authenticating':
+        if (Vue.$filters.getCurrentRouteName() !== 'login') {
+          await Vue.$filters.routeTo({ name: 'login' })
+        }
+        break
+
+      case 'ready':
+        if (Vue.$filters.getCurrentRouteName() === 'login') {
+          await Vue.$filters.routeTo({ name: 'home' })
+        }
+        await dispatch('runBootstrap')
+        break
+    }
+  },
+
+  /**
+   * Identify flow. Called by onSetStatus when entering `identifying`. Fires
+   * server.connection.identify with whatever access token we have (or none);
+   * on failure, refreshes the token once and retries. Terminal transitions:
+   * → `ready` on success, → `authenticating` on failure. Aborts silently if
+   * the socket drops mid-flight (state moves out of 'identifying').
+   */
+  async runIdentify ({ dispatch, rootGetters, state }) {
+    if (state.status !== 'identifying') return
+
     const tokenKeys = rootGetters['config/getTokenKeys']
+    let accessToken = localStorage.getItem(tokenKeys['user-token']) || undefined
 
-    if (needsAuth) {
-      let accessToken = localStorage.getItem(tokenKeys['user-token'])
-
-      const tryIdentify = async () => {
-        if (!accessToken) return false
-        try {
-          await SocketActions.serverConnectionIdentify(getIdentifyParams(accessToken))
-          return true
-        } catch (e) {
-          consola.debug('identify with stored token failed', e)
-          return false
-        }
-      }
-
-      let authenticated = await tryIdentify()
-
-      if (!authenticated && accessToken) {
-        // Token may have expired. Try a refresh and retry once.
-        const newToken = await dispatch('auth/refreshTokens', undefined, { root: true }) as string | undefined
-        if (newToken) {
-          accessToken = newToken
-          authenticated = await tryIdentify()
-        }
-      }
-
-      if (!authenticated) {
-        // No usable credentials — kick the user to /login. Socket stays open
-        // so the login view can still call access.info / access.login.
-        await dispatch('auth/logout', undefined, { root: true })
-        return
-      }
-    } else {
+    const tryIdentify = async () => {
       try {
-        await SocketActions.serverConnectionIdentify(getIdentifyParams())
+        await SocketActions.serverConnectionIdentify(getIdentifyParams(accessToken))
+        return true
       } catch (e) {
-        consola.debug('identify (unauthenticated) failed', e)
+        consola.debug('identify failed', e)
+        return false
       }
     }
 
-    await dispatch('onAuthReady')
+    let ok = await tryIdentify()
+    if (state.status !== 'identifying') return
+
+    if (!ok) {
+      const newToken = await dispatch('auth/refreshTokens', undefined, { root: true }) as string | undefined
+      if (state.status !== 'identifying') return
+      if (newToken) {
+        accessToken = newToken
+        ok = await tryIdentify()
+        if (state.status !== 'identifying') return
+      }
+    }
+
+    await dispatch('onSetStatus', ok ? 'ready' : 'authenticating')
   },
 
   /**
-   * Fired by auth/login after access.login succeeds on the existing socket.
-   * The connection is already authenticated server-side; identify cements
-   * Fluidd's client metadata on it, then the shared post-auth bootstrap runs.
+   * Post-identify bootstrap. Called by onSetStatus when entering `ready`.
+   * Loads server info, the Moonraker database namespaces Fluidd owns, and the
+   * config file list. Split out of onSetStatus for readability.
    */
-  async onLoginComplete ({ dispatch }, accessToken: string) {
-    try {
-      await SocketActions.serverConnectionIdentify(getIdentifyParams(accessToken))
-    } catch (e) {
-      consola.debug('identify after login failed', e)
-    }
-
-    await dispatch('onAuthReady')
-  },
-
-  /**
-   * Post-identify bootstrap. Commits the authenticated flag, bounces the user
-   * off /login if that's where they were, and loads server info + Moonraker
-   * database + config file list. Shared by the onSocketOpen success path and
-   * the auth/login → socket/onLoginComplete post-login path.
-   */
-  async onAuthReady ({ commit, dispatch }) {
-    commit('auth/setAuthenticated', true, { root: true })
-
-    if (Vue.$filters.getCurrentRouteName() === 'login') {
-      await Vue.$filters.routeTo({ name: 'home' })
-    }
-
+  async runBootstrap ({ dispatch }) {
     SocketActions.serverInfo()
 
     await Promise.all(
@@ -187,57 +208,8 @@ export const actions = {
   },
 
   /**
-   * Fired when the socket closes.
-   */
-  async onSocketClose ({ dispatch, commit, state }, event: CloseEvent) {
-    const retry = state.disconnecting
-    const modules = ['server', 'power', 'webcams', 'jobQueue', 'socket', 'wait', 'gcodePreview']
-
-    if (event.wasClean && retry) {
-      // This is most likely a moonraker restart, so only partially reset.
-      await Promise.all([
-        dispatch('charts/resetChartStore', undefined, { root: true }),
-        dispatch('reset', modules, { root: true })
-      ])
-      commit('setSocketConnecting', true)
-      Vue.$socket.connect()
-    }
-
-    if (event.wasClean && !retry) {
-      // Set the socket state to closed.
-      // If we swap printer endpoints, then the init will run
-      // which will reset the state if necessary.
-      commit('setSocketConnecting', false)
-      commit('setSocketOpen', false)
-    }
-
-    if (!event.wasClean) {
-      // Not a clean disconnect. Service went down?
-      // Socket should attempt to reconnect itself.
-      await Promise.all([
-        dispatch('charts/resetChartStore', undefined, { root: true }),
-        dispatch('reset', modules, { root: true })
-      ])
-      commit('setSocketConnecting', true)
-      commit('setSocketOpen', false)
-    }
-  },
-
-  /**
-   * Sets state based on if we're attempting to reconnect
-   * the socket or not. If we are not, then the user
-   * can invoke a forced refresh.
-   */
-  async onSocketConnecting ({ commit }, payload) {
-    commit('setSocketConnecting', payload)
-  },
-
-  /**
-   * Fired when the socket encounters an error.
-   * We might see an error under code 400 for invalid circumstances, like
-   * trying to extrude under temp. Should present the user with an error
-   * for these cases.
-   * Another case might be during a klippy shutdown.
+   * Fired when the socket encounters an error. ws.onclose always follows and
+   * drives the transition; here we just surface RPC error codes.
    */
   async onSocketError ({ commit }, payload) {
     if (payload.code >= 400 && payload.code < 500) {
@@ -255,11 +227,7 @@ export const actions = {
       EventBus.$emit(message, { type: 'error' })
     }
     if (payload.code === 503) {
-      // This indicates klippy is non-responsive, or there's a configuration error
-      // in klipper. We should retry after the set delay.
-      // Restart our startup sequence.
-
-      // Forcefully set the printer in error
+      // Klippy non-responsive or config error. Retry serverInfo after a delay.
       commit('printer/setPrinterInfo', { state: 'error', state_message: payload.message }, { root: true })
       clearTimeout(retryTimeout)
       retryTimeout = window.setTimeout(() => {
@@ -296,10 +264,8 @@ export const actions = {
    * ==========================================================================
    */
 
-  async notifyStatusUpdate ({ state, commit, dispatch }, payload) {
+  async notifyStatusUpdate ({ dispatch }, payload) {
     await dispatch('printer/onNotifyStatusUpdate', payload, { root: true })
-
-    if (!state.ready) commit('setSocketReadyState', true)
   },
 
   async notifyGcodeResponse ({ dispatch }, payload) {
@@ -367,12 +333,23 @@ export const actions = {
     dispatch('auth/onUserDeleted', payload, { root: true })
   },
 
-  async notifyUserLoggedOut ({ dispatch }) {
-    // Moonraker invalidated the current user's session (we triggered logout,
-    // or another client called access.logout with invalidate=true). Clear
-    // local auth state and bounce to /login. auth/logout is idempotent:
-    // redundant if we initiated this ourselves, corrective if we didn't.
-    await dispatch('auth/logout', undefined, { root: true })
+  /**
+   * Moonraker invalidated the current session (we triggered logout, or another
+   * client called access.logout with invalidate=true). Clear local auth state
+   * and drop to `authenticating` so the login view takes over on the same
+   * socket.
+   */
+  async notifyUserLoggedOut ({ commit, dispatch, rootGetters, state }) {
+    const keys = rootGetters['config/getTokenKeys']
+    localStorage.removeItem(keys['user-token'])
+    localStorage.removeItem(keys['refresh-token'])
+    commit('auth/setCurrentUser', null, { root: true })
+    commit('auth/setToken', null, { root: true })
+    commit('auth/setRefreshToken', null, { root: true })
+
+    if (state.status === 'ready' || state.status === 'identifying') {
+      await dispatch('onSetStatus', 'authenticating')
+    }
   },
 
   async notifyServiceStateChanged ({ dispatch }, payload) {

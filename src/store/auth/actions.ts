@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import type { ActionTree } from 'vuex'
 import type { AuthState } from './types'
 import type { RootState } from '../types'
@@ -35,16 +34,7 @@ export const actions = {
   /**
    * Init auth status / tokens.
    */
-  async initAuth ({ commit, rootState, rootGetters }) {
-    // No known API?
-    // This is likely a new setup with no known instances yet. Set auth to true
-    // and move on until we know more.
-    if (rootState.config.apiUrl === '') {
-      commit('setAuthenticated', true)
-      return
-    }
-
-    // Load our tokens and apply them if found.
+  async initAuth ({ commit, rootGetters }) {
     const keys = rootGetters['config/getTokenKeys']
     const refreshToken = localStorage.getItem(keys['refresh-token'])
     const token = localStorage.getItem(keys['user-token'])
@@ -91,8 +81,9 @@ export const actions = {
     }
 
     // Successful login. Moonraker has authenticated the current socket as
-    // this user; store the tokens and hand off to the socket module for
-    // the shared post-auth bootstrap (identify + data load + route).
+    // this user; store the tokens and hand off to the socket state machine,
+    // which will re-identify (reading the fresh token from localStorage) and
+    // run the post-auth bootstrap on the transition to `ready`.
     localStorage.setItem(keys['user-token'], user.token)
     localStorage.setItem(keys['refresh-token'], user.refresh_token)
     commit('setCurrentUser', {
@@ -102,24 +93,24 @@ export const actions = {
     commit('setToken', user.token)
     commit('setRefreshToken', user.refresh_token)
 
-    await dispatch('socket/onLoginComplete', user.token, { root: true })
+    await dispatch('socket/onSetStatus', 'identifying', { root: true })
 
     return user
   },
 
   /**
-   * Logout the user. Removes their tokens, clears state, and sends them back
-   * to the login page. The websocket connection is intentionally kept open so
-   * the login view can call access.info / access.login over it.
+   * Logout the user. Removes their tokens and clears the in-memory auth state.
+   * For a full logout, also transitions the socket to `authenticating` so the
+   * router guard redirects the user to /login. The websocket connection is
+   * intentionally kept open so the login view can call access.info /
+   * access.login over it.
    */
-  async logout ({ commit, rootGetters }, options?: { invalidate: boolean; partial: boolean }) {
+  async logout ({ commit, dispatch, rootGetters, rootState }, options?: { invalidate?: boolean; partial?: boolean }) {
     const opts = {
       invalidate: false,
       partial: false,
       ...options
     }
-
-    const keys = rootGetters['config/getTokenKeys']
 
     // Invalidate all sessions (server-side). The current socket session becomes
     // anonymous; Moonraker does not close the connection.
@@ -131,22 +122,20 @@ export const actions = {
       }
     }
 
-    // Remove the tokens from local storage.
+    const keys = rootGetters['config/getTokenKeys']
     localStorage.removeItem(keys['user-token'])
     localStorage.removeItem(keys['refresh-token'])
 
-    // Clear the in memory store.
     commit('setCurrentUser', null)
     commit('setToken', null)
     commit('setRefreshToken', null)
 
-    // For a full logout, set unauthenticated and route to login. Partial logouts
-    // are used for trusted clients, in that they remain authenticated when
-    // logging out.
+    // Full logout: show the login form. Partial logouts are used for trusted
+    // clients so they remain signed in after clearing their user tokens.
     if (!opts.partial) {
-      commit('setAuthenticated', false)
-      if (Vue.$filters.getCurrentRouteName() !== 'login') {
-        await Vue.$filters.routeTo({ name: 'login' })
+      const status = rootState.socket.status
+      if (status === 'ready' || status === 'identifying') {
+        await dispatch('socket/onSetStatus', 'authenticating', { root: true })
       }
     }
   },
