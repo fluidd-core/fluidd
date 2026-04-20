@@ -33,7 +33,6 @@ export class WebSocketClient {
   close () {
     this.cancelReconnect()
     if (this.connection) {
-      this.retryCount = 0
       this.cache = null
       this.clearRequests()
       this.store.dispatch('socket/onSetStatus', 'disconnected')
@@ -57,6 +56,7 @@ export class WebSocketClient {
       this.connection = new WebSocket(this.url)
 
       this.connection.onopen = () => {
+        this.retryCount = 0
         this.store.dispatch('socket/onSetStatus', 'identifying')
       }
 
@@ -173,16 +173,11 @@ export class WebSocketClient {
   }
 
   private handleClose () {
-    const prevStatus = this.store.state.socket.status
-
     // Explicit close(): onSetStatus('disconnected') was already dispatched; nothing to do.
-    if (prevStatus === 'disconnected') return
+    if (this.store.state.socket.status === 'disconnected') return
 
-    // Drop from live: each post-ready reconnect cycle starts a fresh retry chain.
-    if (prevStatus === 'ready') {
-      this.retryCount = 0
-    }
-
+    // retryCount counts failed opens in a chain; ws.onopen zeroes it on any
+    // successful open, so we just increment here and give up at the cap.
     this.retryCount += 1
 
     if (this.retryCount > ALLOWED_RETRIES) {
