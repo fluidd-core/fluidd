@@ -129,6 +129,15 @@ export const actions = {
   async runIdentify ({ dispatch, rootGetters, state }) {
     if (state.status !== 'identifying') return
 
+    // Moonraker's server.connection.identify is one-shot per socket. If we
+    // already have a connectionId, the socket is identified and the RPC
+    // would be rejected — land in ready directly. This is the logout→login
+    // path where the same socket carries a new user after access.login.
+    if (state.connectionId !== null) {
+      await dispatch('onSetStatus', 'ready')
+      return
+    }
+
     const tokenKeys = rootGetters['config/getTokenKeys']
     let accessToken = localStorage.getItem(tokenKeys['user-token']) || undefined
 
