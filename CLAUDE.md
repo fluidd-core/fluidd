@@ -118,8 +118,11 @@ src/
 
 - Hash-based routing (`#/path`)
 - Views lazy-loaded via dynamic imports: `component: () => import('@/views/X.vue')`
-- Auth guard via `defaultRouteConfig` spread pattern; `isAuthenticated()` checks `store.state.auth`
-- JWT token auth over WebSocket: `server.connection.identify` with stored token on `onSocketOpen`, refreshed via `access.refresh_jwt` when expired. After `access.login` succeeds, `auth/login` dispatches `socket/onLoginComplete` which identifies the live socket with the freshly-issued token — no socket teardown. Both paths converge on `socket/onAuthReady` for the shared post-auth bootstrap (serverInfo + Moonraker DB + config file list). `auth.authenticated` defaults to `false` and gates protected routes until identify resolves
+- Auth guard via `defaultRouteConfig` spread pattern; protected routes are blocked only while `socket.status === 'authenticating'` (redirect to `/login`). The `/login` route has its own guard that redirects to `home` when `socket.status === 'ready'`
+- Socket state machine (`src/store/socket/actions.ts`): `disconnected → connecting → identifying → {ready | authenticating}`. Every transition goes through `socket/onSetStatus`, which validates the edge against `VALID_TRANSITIONS`, commits the new status, and runs side-effects for the destination state. Entering `connecting` clears per-socket identity (`connectionId`, `acceptNotifications`); `ready → connecting` additionally resets modules holding live data (charts + `MODULES_TO_RESET_ON_DROP`)
+- JWT auth over WebSocket: `runIdentify` sends `server.connection.identify` with the stored user token; on failure it refreshes once via `access.refresh_jwt` and retries. Outcome: → `ready` on success, → `authenticating` on failure. `server.connection.identify` is one-shot per socket, so the logout→login path (same physical socket, new user via `access.login`) short-circuits to `ready` when `connectionId` is already set
+- `auth/login` stores the fresh tokens then dispatches `socket/onSetStatus` with `identifying` to re-identify the live socket. `auth/logout` (full) transitions the socket to `authenticating` so the router redirects to `/login`; the socket stays open so the login view can call `access.info` / `access.login` over it. `notifyUserLoggedOut` (fired when Moonraker invalidates the session) does the same
+- On entry to `ready`, `runBootstrap` loads `server.info`, every Moonraker DB namespace Fluidd owns (skipping any with empty ROOTS), and the config file list
 - Key routes: `/`, `/console`, `/jobs`, `/tune`, `/diagnostics`, `/timelapse`, `/history`, `/system`, `/configure`, `/settings`, `/camera/:cameraId`, `/preview`, `/login`
 
 ### Icons & Theming

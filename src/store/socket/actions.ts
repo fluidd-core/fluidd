@@ -76,8 +76,9 @@ export const actions = {
    *  - `ready`:          route off /login if needed, then run the app
    *                      bootstrap (serverInfo + Moonraker DB + config files).
    *
-   * Leaving `ready` on an involuntary drop (→ `connecting`) also clears stale
-   * per-connection state so the next bootstrap starts clean.
+   * Entering `connecting` always clears per-socket identity so `runIdentify`
+   * can re-identify the new physical session. Coming from `ready` additionally
+   * resets modules that held live data from the dropped connection.
    */
   async onSetStatus ({ commit, dispatch, state }, next: SocketStatus) {
     if (state.status === next) return
@@ -90,13 +91,16 @@ export const actions = {
     consola.log(`Socket status: ${prev} → ${next}`)
     commit('setStatus', next)
 
-    if (prev === 'ready' && next === 'connecting') {
+    if (next === 'connecting') {
       commit('setAcceptNotifications', false)
       commit('setConnectionId', null)
-      await Promise.all([
-        dispatch('charts/resetChartStore', undefined, { root: true }),
-        dispatch('reset', MODULES_TO_RESET_ON_DROP, { root: true })
-      ])
+
+      if (prev === 'ready') {
+        await Promise.all([
+          dispatch('charts/resetChartStore', undefined, { root: true }),
+          dispatch('reset', MODULES_TO_RESET_ON_DROP, { root: true })
+        ])
+      }
     }
 
     switch (next) {

@@ -128,12 +128,15 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
       this.abortController?.abort()
 
       this.abortController = new AbortController()
+      const { signal } = this.abortController
 
       try {
-        await webSocketWrapper(socketUrl, this.abortController.signal)
+        await webSocketWrapper(socketUrl, signal)
 
         this.verified = true
       } catch (e) {
+        if (signal.aborted) return
+
         if (
           e != null &&
           typeof e === 'object' &&
