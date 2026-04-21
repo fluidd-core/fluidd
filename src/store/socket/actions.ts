@@ -7,6 +7,8 @@ import { Globals } from '@/globals'
 import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
 import { upperFirst, camelCase } from 'lodash-es'
+import { jwtDecode } from 'jwt-decode'
+import type { TokenKeys } from '../config/types'
 
 const MODULES_TO_RESET_ON_DROP = ['server', 'power', 'webcams', 'jobQueue', 'wait', 'gcodePreview']
 
@@ -31,19 +33,43 @@ const getMoonrakerDatabase = async <T = Record<string, unknown>>(namespace: stri
   }
 }
 
-const getIdentifyParams = (accessToken?: string): {
-  client_name: string;
-  version: string;
-  type: string;
-  url: string;
-  access_token?: string;
-} => ({
-  client_name: Globals.APP_NAME,
-  version: `${import.meta.env.VERSION || '0.0.0'}-${import.meta.env.HASH || 'unknown'}`.trim(),
-  type: 'web',
-  url: Globals.GITHUB_REPO,
-  ...(accessToken ? { access_token: accessToken } : {})
-})
+const isTokenExpired = (rawToken: string): boolean => {
+  try {
+    const { exp } = jwtDecode(rawToken)
+    return exp !== undefined && exp * 1000 < Date.now()
+  } catch {
+    return true
+  }
+}
+
+const getAccessToken = async (keys: TokenKeys): Promise<string | null> => {
+  try {
+    const token = localStorage.getItem(keys.userToken)
+
+    if (token && !isTokenExpired(token)) {
+      return token
+    }
+
+    const refreshToken = localStorage.getItem(keys.refreshToken)
+
+    if (refreshToken && !isTokenExpired(refreshToken)) {
+      const response = await SocketActions.accessRefreshJwt(refreshToken)
+
+      if (response.token) {
+        localStorage.setItem(keys.userToken, response.token)
+
+        return response.token
+      }
+    }
+  } catch (e) {
+    consola.debug('Error during token refresh', e)
+  }
+
+  localStorage.removeItem(keys.userToken)
+  localStorage.removeItem(keys.refreshToken)
+
+  return null
+}
 
 let retryTimeout: number
 
@@ -124,11 +150,12 @@ export const actions = {
   },
 
   /**
-   * Identify flow. Called by onSetStatus when entering `identifying`. Fires
-   * server.connection.identify with whatever access token we have (or none);
-   * on failure, refreshes the token once and retries. Terminal transitions:
-   * → `ready` on success, → `authenticating` on failure. Aborts silently if
-   * the socket drops mid-flight (state moves out of 'identifying').
+   * Identify flow. Called by onSetStatus when entering `identifying`. Pre-checks
+   * token expiry before making any RPC calls so identify is issued at most once:
+   * if the access token is expired and the refresh token is still valid, refreshes
+   * first; if both are expired, transitions directly to `authenticating` without
+   * calling identify. Terminal transitions: → `ready` on success, →
+   * `authenticating` on failure. Aborts silently if the socket drops mid-flight.
    */
   async runIdentify ({ dispatch, rootGetters, state }) {
     if (state.status !== 'identifying') return
@@ -142,31 +169,23 @@ export const actions = {
       return
     }
 
-    const tokenKeys = rootGetters['config/getTokenKeys']
-    let accessToken = localStorage.getItem(tokenKeys['user-token']) || undefined
+    const keys: TokenKeys = rootGetters['config/getTokenKeys']
+    const accessToken = await getAccessToken(keys)
 
-    const tryIdentify = async () => {
-      try {
-        await SocketActions.serverConnectionIdentify(getIdentifyParams(accessToken))
-        return true
-      } catch (e) {
-        consola.debug('identify failed', e)
-        return false
-      }
+    let ok = false
+    try {
+      await SocketActions.serverConnectionIdentify({
+        client_name: Globals.APP_NAME,
+        version: `${import.meta.env.VERSION || '0.0.0'}-${import.meta.env.HASH || 'unknown'}`.trim(),
+        type: 'web',
+        url: Globals.GITHUB_REPO,
+        ...(accessToken ? { access_token: accessToken } : {})
+      })
+      ok = true
+    } catch (e) {
+      consola.debug('identify failed', e)
     }
-
-    let ok = await tryIdentify()
     if (state.status !== 'identifying') return
-
-    if (!ok) {
-      const newToken = await dispatch('auth/refreshTokens', undefined, { root: true }) as string | undefined
-      if (state.status !== 'identifying') return
-      if (newToken) {
-        accessToken = newToken
-        ok = await tryIdentify()
-        if (state.status !== 'identifying') return
-      }
-    }
 
     await dispatch('onSetStatus', ok ? 'ready' : 'authenticating')
   },
@@ -341,12 +360,10 @@ export const actions = {
    * socket.
    */
   async notifyUserLoggedOut ({ commit, dispatch, rootGetters, state }) {
-    const keys = rootGetters['config/getTokenKeys']
-    localStorage.removeItem(keys['user-token'])
-    localStorage.removeItem(keys['refresh-token'])
+    const keys: TokenKeys = rootGetters['config/getTokenKeys']
+    localStorage.removeItem(keys.userToken)
+    localStorage.removeItem(keys.refreshToken)
     commit('auth/setCurrentUser', null, { root: true })
-    commit('auth/setToken', null, { root: true })
-    commit('auth/setRefreshToken', null, { root: true })
 
     if (state.status === 'ready' || state.status === 'identifying') {
       await dispatch('onSetStatus', 'authenticating')

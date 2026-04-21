@@ -12,6 +12,11 @@ export interface ConfigState {
   hostConfig: HostConfig;
 }
 
+export interface TokenKeys {
+  userToken: string;
+  refreshToken: string;
+}
+
 export interface UiSettings {
   general: GeneralConfig;
   theme: ThemeConfig;

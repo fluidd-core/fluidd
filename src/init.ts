@@ -155,10 +155,6 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   await store.dispatch('config/onInitApiConfig', apiConfig)
   consola.debug('inited apis', store.state.config, apiConfig)
 
-  // Load any stored auth tokens into the store so the upcoming socket
-  // connection can identify with them.
-  await store.dispatch('auth/initAuth')
-
   await store.dispatch('init', { apiConfig, hostConfig })
 
   return { apiConfig, hostConfig }

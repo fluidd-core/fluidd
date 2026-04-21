@@ -3,6 +3,7 @@ import type { AuthState } from './types'
 import type { RootState } from '../types'
 import { consola } from 'consola'
 import { SocketActions } from '@/api/socketActions'
+import type { TokenKeys } from '../config/types'
 
 export const actions = {
   /**
@@ -31,52 +32,16 @@ export const actions = {
     ])
   },
 
-  /**
-   * Init auth status / tokens.
-   */
-  async initAuth ({ commit, rootGetters }) {
-    const keys = rootGetters['config/getTokenKeys']
-    const refreshToken = localStorage.getItem(keys['refresh-token'])
-    const token = localStorage.getItem(keys['user-token'])
-    if (token && refreshToken) {
-      commit('setToken', token)
-      commit('setRefreshToken', refreshToken)
-    }
-  },
-
-  /**
-   * Refresh the auth tokens.
-   */
-  async refreshTokens ({ commit, rootGetters }) {
-    const keys = rootGetters['config/getTokenKeys']
-    const refresh_token = localStorage.getItem(keys['refresh-token'])
-
-    if (!refresh_token) {
-      return
-    }
-
-    try {
-      const response = await SocketActions.accessRefreshJwt(refresh_token)
-
-      // We've successfully retrieved a token. Set the new store data and move on.
-      localStorage.setItem(keys['user-token'], response.token)
-      commit('setToken', response.token)
-      return response.token
-    } catch {
-      // Error on refresh. Caller is responsible for subsequent action (logout / redirect).
-    }
-  },
-
   async login ({ commit, dispatch, rootGetters }, { username, password, source }) {
-    const keys = rootGetters['config/getTokenKeys']
+    const keys: TokenKeys = rootGetters['config/getTokenKeys']
 
     let user: Moonraker.Authorization.LoginResponse
     try {
       user = await SocketActions.accessLogin(username, password, source)
     } catch (error: unknown) {
       // Unsuccessful login. Remove any existing keys and propagate the error.
-      localStorage.removeItem(keys['user-token'])
-      localStorage.removeItem(keys['refresh-token'])
+      localStorage.removeItem(keys.userToken)
+      localStorage.removeItem(keys.refreshToken)
       throw error
     }
 
@@ -84,14 +49,12 @@ export const actions = {
     // this user; store the tokens and hand off to the socket state machine,
     // which will re-identify (reading the fresh token from localStorage) and
     // run the post-auth bootstrap on the transition to `ready`.
-    localStorage.setItem(keys['user-token'], user.token)
-    localStorage.setItem(keys['refresh-token'], user.refresh_token)
+    localStorage.setItem(keys.userToken, user.token)
+    localStorage.setItem(keys.refreshToken, user.refresh_token)
     commit('setCurrentUser', {
       username: user.username,
       source: user.source
     })
-    commit('setToken', user.token)
-    commit('setRefreshToken', user.refresh_token)
 
     await dispatch('socket/onSetStatus', 'identifying', { root: true })
 
@@ -122,13 +85,11 @@ export const actions = {
       }
     }
 
-    const keys = rootGetters['config/getTokenKeys']
-    localStorage.removeItem(keys['user-token'])
-    localStorage.removeItem(keys['refresh-token'])
+    const keys: TokenKeys = rootGetters['config/getTokenKeys']
+    localStorage.removeItem(keys.userToken)
+    localStorage.removeItem(keys.refreshToken)
 
     commit('setCurrentUser', null)
-    commit('setToken', null)
-    commit('setRefreshToken', null)
 
     // Full logout: show the login form. Partial logouts are used for trusted
     // clients so they remain signed in after clearing their user tokens.
