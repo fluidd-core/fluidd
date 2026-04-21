@@ -42,7 +42,7 @@ export default class AppColorPicker extends Vue {
     this.colorPicker.on('input:end', this.handleColorChange)
   }
 
-  beforeUnmount () {
+  beforeDestroy () {
     if (this.colorPicker) {
       this.colorPicker.off('input:end', this.handleColorChange)
     }

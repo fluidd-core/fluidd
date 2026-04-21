@@ -152,7 +152,7 @@ export default class AppDraggable extends Vue {
     this.attach()
   }
 
-  unmounted () {
+  beforeDestroy () {
     this.dettach()
   }
 }
