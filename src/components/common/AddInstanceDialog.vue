@@ -169,7 +169,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
     this.$emit('resolve', apiConfig)
   }
 
-  unmounted () {
+  beforeDestroy () {
     this.abortController?.abort()
   }
 }
