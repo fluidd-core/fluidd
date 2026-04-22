@@ -2,7 +2,7 @@ import Vue from 'vue'
 import store from './store'
 import { consola } from 'consola'
 import { Globals } from './globals'
-import type { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
+import type { ApiConfig, HostConfig, InstanceConfig } from './store/config/types'
 import sanitizeEndpoint from './util/sanitize-endpoint'
 import webSocketWrapper from './util/web-socket-wrapper'
 import promiseAny from './util/promise-any'
@@ -117,45 +117,49 @@ const getApiConfig = async (hostConfig: HostConfig, apiUrlHash?: string | null):
   }
 }
 
-export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): Promise<InitConfig> => {
-  // Reset the store to its default state.
-  await store.dispatch('reset', undefined, { root: true })
+export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): Promise<void> => {
+  try {
+    // Reset the store to its default state.
+    await store.dispatch('reset', undefined, { root: true })
 
-  // Load the Host Config
-  if (!hostConfig) {
-    hostConfig = await getHostConfig()
-  }
-
-  if (!(Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage)) {
-    for (const endpoint of hostConfig.endpoints) {
-      apiConfig = Vue.$filters.getApiUrls(endpoint)
-      await store.dispatch('config/initLocal', { apiConfig })
+    // Load the Host Config
+    if (!hostConfig) {
+      hostConfig = await getHostConfig()
     }
+
+    if (!(Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage)) {
+      for (const endpoint of hostConfig.endpoints) {
+        apiConfig = Vue.$filters.getApiUrls(endpoint)
+        await store.dispatch('config/initLocal', { apiConfig })
+      }
+    }
+
+    const locationUrl = new URL(window.location.href)
+
+    // Check if we have a printer url hash in search params
+    const apiUrlHash = locationUrl.searchParams.get('printer')
+
+    // Load the API Config
+    if (!apiConfig) {
+      apiConfig = await getApiConfig(hostConfig, apiUrlHash)
+    }
+
+    if (apiConfig.apiUrl) {
+      // Set the printer url hash in the search params so that the url is bookmarkable
+
+      locationUrl.searchParams.set('printer', md5(apiConfig.apiUrl))
+
+      window.history.replaceState(window.history.state, '', locationUrl)
+    }
+
+    // Just sets the api urls
+    await store.dispatch('config/onInitApiConfig', apiConfig)
+    consola.debug('inited apis', store.state.config, apiConfig)
+
+    await store.dispatch('init', { apiConfig, hostConfig })
+
+    Vue.$socket.connect()
+  } catch (e) {
+    consola.error('Error during app initialization', e)
   }
-
-  const locationUrl = new URL(window.location.href)
-
-  // Check if we have a printer url hash in search params
-  const apiUrlHash = locationUrl.searchParams.get('printer')
-
-  // Load the API Config
-  if (!apiConfig) {
-    apiConfig = await getApiConfig(hostConfig, apiUrlHash)
-  }
-
-  if (apiConfig.apiUrl) {
-    // Set the printer url hash in the search params so that the url is bookmarkable
-
-    locationUrl.searchParams.set('printer', md5(apiConfig.apiUrl))
-
-    window.history.replaceState(window.history.state, '', locationUrl)
-  }
-
-  // Just sets the api urls
-  await store.dispatch('config/onInitApiConfig', apiConfig)
-  consola.debug('inited apis', store.state.config, apiConfig)
-
-  await store.dispatch('init', { apiConfig, hostConfig })
-
-  return { apiConfig, hostConfig }
 }

@@ -99,12 +99,7 @@ export default class SystemPrinters extends Mixins(StateMixin) {
       this.$socket.close()
 
       // Re-init the app.
-      const config = await appInit(instance, this.$typedState.config.hostConfig)
-
-      // Reconnect the socket with the new instance url.
-      if (config.apiConfig.socketUrl) {
-        this.$socket.connect(config.apiConfig.socketUrl)
-      }
+      await appInit(instance, this.$typedState.config.hostConfig)
     }
   }
 }

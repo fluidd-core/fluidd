@@ -74,13 +74,7 @@ export default class SocketDisconnected extends Mixins(StateMixin) {
   }
 
   async reconnect () {
-    // Re-init the app.
-    const config = await appInit(this.activeInstance, this.$typedState.config.hostConfig)
-
-    // Reconnect the socket with the instance url.
-    if (config.apiConfig.socketUrl) {
-      this.$socket.connect(config.apiConfig.socketUrl)
-    }
+    await appInit(this.activeInstance, this.$typedState.config.hostConfig)
   }
 }
 </script>

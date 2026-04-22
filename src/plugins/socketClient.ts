@@ -16,7 +16,6 @@ const ALLOWED_RETRIES = 3
 const RETRY_INTERVAL = 1000
 
 export class WebSocketClient {
-  url = ''
   connection: WebSocket | null = null
   logPrefix = '[WEBSOCKET]'
   requests: Request[] = []
@@ -40,9 +39,8 @@ export class WebSocketClient {
     }
   }
 
-  connect (url?: string) {
+  connect () {
     this.cancelReconnect()
-    if (url) this.url = url
     this.retryCount = 0
     this.openSocket()
   }
@@ -52,8 +50,14 @@ export class WebSocketClient {
     this.clearRequests()
 
     try {
+      const url = this.store.state.config.socketUrl
+
+      if (!url) {
+        return
+      }
+
       this.store.dispatch('socket/onSetStatus', 'connecting')
-      this.connection = new WebSocket(this.url)
+      this.connection = new WebSocket(url)
 
       this.connection.onopen = () => {
         this.retryCount = 0

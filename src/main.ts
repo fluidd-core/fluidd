@@ -11,7 +11,6 @@ import Vue from 'vue'
 import i18n from '@/plugins/i18n'
 import router from './router'
 import store from './store'
-import { consola } from 'consola'
 
 // 3rd party.
 import vuetify from './plugins/vuetify'
@@ -23,7 +22,6 @@ import { InlineSvgPlugin } from 'vue-inline-svg'
 
 // Init.
 import { appInit } from './init'
-import type { InitConfig } from './store/config/types'
 
 // Import plugins
 import { FiltersPlugin } from './plugins/filters'
@@ -68,13 +66,3 @@ new Vue({
 }).$mount('#app')
 
 appInit()
-  .then((config: InitConfig) => {
-    consola.debug('Loaded App Configuration', config)
-
-    if (config.apiConfig.socketUrl) {
-      Vue.$socket.connect(config.apiConfig.socketUrl)
-    }
-  })
-  .catch((e) => {
-    consola.debug('Error attempting to init App:', e)
-  })
