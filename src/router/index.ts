@@ -115,10 +115,6 @@ const routes: Array<RouteConfig> = [
     ...defaultRouteConfig
   },
   {
-    path: '/login',
-    redirect: '/'
-  },
-  {
     path: '/icons',
     name: 'icons',
     component: () => import('@/views/Icons.vue')
@@ -149,7 +145,12 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   store.commit('config/setContainerColumnCount', 2)
   store.commit('config/setLayoutMode', false)
-  next()
+
+  if (to.path === '/login') {
+    next(from === VueRouter.START_LOCATION ? { name: 'home' } : false)
+  } else {
+    next()
+  }
 })
 
 declare module 'vue-router' {

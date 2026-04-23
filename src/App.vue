@@ -60,13 +60,13 @@
         </v-row>
 
         <router-view />
-
-        <register-service-worker />
       </v-container>
 
-      <login v-if="socketAuthenticating" />
+      <login v-else-if="socketAuthenticating" />
 
-      <socket-disconnected v-if="!socketReady && !socketAuthenticating" />
+      <socket-disconnected v-else />
+
+      <register-service-worker />
 
       <template v-if="socketConnected">
         <file-system-download-dialog />

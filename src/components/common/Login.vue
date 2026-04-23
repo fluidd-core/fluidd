@@ -120,6 +120,8 @@ export default class Login extends Mixins(StateMixin) {
 
   async mounted () {
     try {
+      this.$typedCommit('config/setLayoutMode', false)
+
       const authInfo = await SocketActions.accessInfo()
 
       if (authInfo.available_sources != null) {
