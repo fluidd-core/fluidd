@@ -13,6 +13,7 @@ const MODULES_TO_RESET_ON_DROP = ['server', 'power', 'webcams', 'jobQueue', 'wai
 
 // State machine edges. Self-transitions (same → same) are accepted as no-ops.
 const VALID_TRANSITIONS: Record<SocketStatus, readonly SocketStatus[]> = {
+  initializing: ['connecting', 'disconnected'],
   disconnected: ['connecting'],
   connecting: ['disconnected', 'identifying'],
   identifying: ['connecting', 'authenticating', 'ready'],

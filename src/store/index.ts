@@ -86,15 +86,6 @@ export const storeOptions = {
       await Promise.all(p)
     },
 
-    async init ({ dispatch, commit }, payload: InitConfig) {
-      await Promise.all([
-        dispatch('config/initHost', payload),
-        dispatch('config/initLocal', payload)
-      ])
-
-      commit('config/setAppReady', true)
-    },
-
     async resetKlippy ({ dispatch, commit }) {
       commit('socket/setAcceptNotifications', false)
 

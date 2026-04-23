@@ -1,6 +1,6 @@
 import vuetify from '@/plugins/vuetify'
 import type { ActionTree } from 'vuex'
-import type { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, ThemeConfig, ConfiguredTableHeader } from './types'
+import type { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, ThemeConfig, ConfiguredTableHeader, ApiConfig } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'
@@ -81,24 +81,12 @@ export const actions = {
   },
 
   /**
-   * Inits the host configuration.
+   * Initializes our config based on the host and local storage, and sets our API config.
    */
-  async initHost ({ commit }, payload: InitConfig) {
+  async initConfig ({ commit }, payload: InitConfig) {
+    commit('setInitApiConfig', payload.apiConfig)
     commit('setInitHostConfig', payload.hostConfig)
-  },
-
-  /**
-   * Inits any local storage state we may have.
-   */
-  async initLocal ({ commit }, payload: InitConfig) {
-    commit('setInitInstances', payload) // Loads instances from local storage, and also inits the current instance.
-  },
-
-  /**
-   * Ensure our instance is recorded, and set the current instance.
-   */
-  async onInitApiConfig ({ commit }, payload) {
-    commit('setInitApiConfig', payload)
+    commit('setInitInstances', payload.apiConfig)
   },
 
   /**

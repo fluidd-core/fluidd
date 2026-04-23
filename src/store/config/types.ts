@@ -2,7 +2,6 @@ import type { FileFilterType } from '../files/types'
 
 export interface ConfigState {
   [key: string]: any;
-  appReady: boolean;
   apiUrl: string;
   socketUrl: string;
   layoutMode: boolean;
@@ -223,6 +222,7 @@ export interface InitConfig {
 export interface ApiConfig {
   apiUrl: string;
   socketUrl: string;
+  name?: string;
 }
 
 // Saved to localstorage.

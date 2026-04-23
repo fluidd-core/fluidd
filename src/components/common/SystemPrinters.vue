@@ -67,12 +67,10 @@ export default class SystemPrinters extends Mixins(StateMixin) {
     return this.$typedGetters['config/getInstances']
   }
 
-  @Watch('appReady')
-  onAppReady (value: boolean) {
-    if (value) {
-      if (this.$typedState.config.apiUrl === '') {
-        this.instanceDialogOpen = true
-      }
+  @Watch('socketInitializing')
+  onSocketInitializingChanged (value: boolean) {
+    if (!value && this.$typedState.config.apiUrl === '') {
+      this.instanceDialogOpen = true
     }
   }
 

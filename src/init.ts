@@ -152,12 +152,9 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
       window.history.replaceState(window.history.state, '', locationUrl)
     }
 
-    // Just sets the api urls
-    await store.dispatch('config/onInitApiConfig', apiConfig)
-
     consola.debug('inited apis', store.state.config, apiConfig)
 
-    await store.dispatch('init', { apiConfig, hostConfig })
+    await store.dispatch('config/initConfig', { apiConfig, hostConfig })
 
     Vue.$socket.connect()
   } catch (e) {

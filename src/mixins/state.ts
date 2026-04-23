@@ -2,19 +2,20 @@ import Vue from 'vue'
 import { SocketActions } from '@/api/socketActions'
 import { Component } from 'vue-property-decorator'
 import type { Macro } from '@/store/macros/types'
+import type { PrinterStatus } from '@/store/printer/types'
 
 @Component
 export default class StateMixin extends Vue {
-  get appReady (): boolean {
-    return this.$typedState.config.appReady
+  get socketInitializing (): boolean {
+    return this.$typedGetters['socket/getIsInitializing']
+  }
+
+  get socketDisconnected (): boolean {
+    return this.$typedGetters['socket/getIsDisconnected']
   }
 
   get socketConnected (): boolean {
     return this.$typedGetters['socket/getIsConnected']
-  }
-
-  get socketConnecting (): boolean {
-    return this.$typedGetters['socket/getIsConnecting']
   }
 
   get socketAuthenticating (): boolean {
@@ -46,7 +47,7 @@ export default class StateMixin extends Vue {
   }
 
   // Return the printer state
-  get printerState (): 'printing' | 'paused' | 'cancelled' | 'ready' | 'busy' | 'idle' | 'loading' {
+  get printerState (): PrinterStatus {
     return this.$typedGetters['printer/getPrinterState']
   }
 

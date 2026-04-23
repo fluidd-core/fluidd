@@ -3,7 +3,6 @@ import { Globals } from '@/globals'
 
 export const defaultState = (): ConfigState => {
   return {
-    appReady: false,
     apiUrl: '',
     socketUrl: '',
     layoutMode: false,

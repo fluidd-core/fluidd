@@ -56,6 +56,7 @@ export class WebSocketClient {
       const url = this.store.state.config.socketUrl
 
       if (!url) {
+        this.store.dispatch('socket/onSetStatus', 'disconnected')
         return
       }
 

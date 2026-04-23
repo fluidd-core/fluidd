@@ -3,13 +3,19 @@ import type { SocketState } from './types'
 import type { RootState } from '../types'
 
 export const getters = {
-  getIsConnected: (state): boolean => (
-    state.status !== 'disconnected'
+  getIsInitializing: (state): boolean => (
+    state.status === 'initializing'
   ),
 
-  getIsConnecting: (state): boolean => (
+  getIsDisconnected: (state): boolean => (
+    state.status === 'disconnected'
+  ),
+
+  getIsConnected: (state): boolean => (
     state.status === 'connecting' ||
-    state.status === 'identifying'
+    state.status === 'identifying' ||
+    state.status === 'authenticating' ||
+    state.status === 'ready'
   ),
 
   getIsAuthenticating: (state): boolean => (
