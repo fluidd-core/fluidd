@@ -117,19 +117,19 @@ export const actions = {
     consola.log(`Socket status: ${prev} → ${next}`)
     commit('setStatus', next)
 
-    if (next === 'connecting') {
-      commit('setAcceptNotifications', false)
-      commit('setConnectionId', null)
-
-      if (prev === 'ready') {
-        await Promise.all([
-          dispatch('charts/resetChartStore', undefined, { root: true }),
-          dispatch('reset', MODULES_TO_RESET_ON_DROP, { root: true })
-        ])
-      }
-    }
-
     switch (next) {
+      case 'connecting':
+        commit('setAcceptNotifications', false)
+        commit('setConnectionId', null)
+
+        if (prev === 'ready') {
+          await Promise.all([
+            dispatch('charts/resetChartStore', undefined, { root: true }),
+            dispatch('reset', MODULES_TO_RESET_ON_DROP, { root: true })
+          ])
+        }
+        break
+
       case 'identifying':
         await dispatch('runIdentify')
         break
@@ -243,8 +243,8 @@ export const actions = {
    * Fired when the socket encounters an error. ws.onclose always follows and
    * drives the transition; here we just surface RPC error codes.
    */
-  async onSocketError ({ commit }, payload) {
-    if (payload.code >= 400 && payload.code < 500) {
+  async onSocketError ({ state, commit }, payload) {
+    if (state.status === 'ready' && payload.code >= 400 && payload.code < 500) {
       // If our message contains json, we should try to parse it.
       // This is pretty bad, should get moonraker to fix this response.
       let message = ''
@@ -257,8 +257,7 @@ export const actions = {
       }
 
       EventBus.$emit(message, { type: 'error' })
-    }
-    if (payload.code === 503) {
+    } else if (payload.code === 503) {
       // Klippy non-responsive or config error. Retry serverInfo after a delay.
       commit('printer/setPrinterInfo', { state: 'error', state_message: payload.message }, { root: true })
       clearTimeout(retryTimeout)

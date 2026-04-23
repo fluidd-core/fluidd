@@ -1,5 +1,6 @@
 <template>
   <v-row
+    v-if="socketAuthenticating"
     :dense="$vuetify.breakpoint.smAndDown"
     justify="center"
     align="center"
@@ -99,12 +100,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { consola } from 'consola'
 import { SocketActions } from '@/api/socketActions'
+import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class Login extends Vue {
+export default class Login extends Mixins(StateMixin) {
   username = ''
   password = ''
   error = false

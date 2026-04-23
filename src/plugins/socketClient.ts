@@ -13,7 +13,7 @@ const fastNotifyStatusUpdateKeys = [
 ] as const
 
 const ALLOWED_RETRIES = 3
-const RETRY_INTERVAL = 1000
+const EXPONENTIAL_BACKOFF = 1.4
 
 export class WebSocketClient {
   connection: WebSocket | null = null
@@ -76,7 +76,7 @@ export class WebSocketClient {
         consola.error(`${this.logPrefix} Connection error:`, event)
       }
 
-      this.connection.onmessage = (message) => {
+      this.connection.onmessage = async (message) => {
         // Parse the data packet.
         const socketResponse = JSON.parse(message.data) as SocketResponse
 
@@ -196,7 +196,7 @@ export class WebSocketClient {
     this.reconnectTimeout = window.setTimeout(() => {
       this.reconnectTimeout = null
       this.openSocket()
-    }, RETRY_INTERVAL)
+    }, EXPONENTIAL_BACKOFF ** this.retryCount * 1000)
   }
 
   private cancelReconnect () {

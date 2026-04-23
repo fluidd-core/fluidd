@@ -42,6 +42,7 @@
 
     <v-main :style="customBackgroundImageStyle">
       <v-container
+        v-if="socketReady || socketAuthenticating"
         fluid
         :class="{
           'fill-height': $route.meta?.fillHeight ?? false,
@@ -61,7 +62,7 @@
           </v-col>
         </v-row>
 
-        <router-view v-if="socketReady || socketAuthenticating" />
+        <router-view />
 
         <register-service-worker />
       </v-container>
