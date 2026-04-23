@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex, { type StoreOptions } from 'vuex'
 import { consola } from 'consola'
 import type { RootModules, RootState } from './types'
-import type { InitConfig } from './config/types'
 
 // Modules
 import { socket } from './socket'
