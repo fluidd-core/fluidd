@@ -95,9 +95,6 @@ export default class SystemPrinters extends Mixins(StateMixin) {
     // Close the drawer
     this.$emit('click')
     if (!instance.active) {
-      // Close the socket.
-      this.$socket.close()
-
       // Re-init the app.
       await appInit(instance, this.$typedState.config.hostConfig)
     }

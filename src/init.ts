@@ -119,6 +119,8 @@ const getApiConfig = async (hostConfig: HostConfig, apiUrlHash?: string | null):
 
 export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): Promise<void> => {
   try {
+    Vue.$socket.close()
+
     // Reset the store to its default state.
     await store.dispatch('reset', undefined, { root: true })
 
@@ -136,17 +138,15 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
 
     const locationUrl = new URL(window.location.href)
 
-    // Check if we have a printer url hash in search params
-    const apiUrlHash = locationUrl.searchParams.get('printer')
-
     // Load the API Config
     if (!apiConfig) {
+      const apiUrlHash = locationUrl.searchParams.get('printer')
+
       apiConfig = await getApiConfig(hostConfig, apiUrlHash)
     }
 
+    // Set the printer url hash in the search params so that the url is bookmarkable
     if (apiConfig.apiUrl) {
-      // Set the printer url hash in the search params so that the url is bookmarkable
-
       locationUrl.searchParams.set('printer', md5(apiConfig.apiUrl))
 
       window.history.replaceState(window.history.state, '', locationUrl)
@@ -154,6 +154,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
 
     // Just sets the api urls
     await store.dispatch('config/onInitApiConfig', apiConfig)
+
     consola.debug('inited apis', store.state.config, apiConfig)
 
     await store.dispatch('init', { apiConfig, hostConfig })

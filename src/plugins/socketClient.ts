@@ -34,7 +34,10 @@ export class WebSocketClient {
     if (this.connection) {
       this.cache = null
       this.clearRequests()
-      this.store.dispatch('socket/onSetStatus', 'disconnected')
+      this.connection.onopen = null
+      this.connection.onmessage = null
+      this.connection.onerror = null
+      this.connection.onclose = null
       this.connection.close()
     }
   }
