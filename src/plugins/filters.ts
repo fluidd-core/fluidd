@@ -67,10 +67,6 @@ const Filters = {
     }
   },
 
-  getCurrentRouteName (): string | null | undefined {
-    return router.currentRoute.name
-  },
-
   ...stringFormatters(),
 
   ...dateTimeFormatters(

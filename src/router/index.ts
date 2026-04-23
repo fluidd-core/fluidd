@@ -4,23 +4,7 @@ import store from '@/store'
 
 Vue.use(VueRouter)
 
-// Protected routes are blocked only while the socket state machine is in
-// `authenticating` — the one state that demands the login form. Every other
-// state (disconnected, connecting, identifying, ready) lets the route render;
-// App.vue's SocketDisconnected overlay handles the not-yet-ready UX so
-// deep-linked URLs survive bootstrap.
-const canEnterProtectedRoute = (): boolean => (
-  store.state.socket.status !== 'authenticating'
-)
-
 const defaultRouteConfig: Partial<RouteConfig> = {
-  beforeEnter: (to, from, next) => {
-    if (canEnterProtectedRoute()) {
-      next()
-    } else {
-      next({ name: 'login' })
-    }
-  },
   meta: {
     fileDropRoot: 'gcodes'
   }
@@ -132,18 +116,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/login',
-    name: 'login',
-    component: () => import('@/views/Login.vue'),
-    beforeEnter: (to, from, next) => {
-      if (store.state.socket.status === 'ready') {
-        next({ name: 'home' })
-      } else {
-        next()
-      }
-    },
-    meta: {
-      fillHeight: true
-    }
+    redirect: '/'
   },
   {
     path: '/icons',
@@ -181,7 +154,6 @@ router.beforeEach((to, from, next) => {
 
 declare module 'vue-router' {
   interface RouteMeta {
-    fillHeight?: boolean
     hasSubNavigation?: boolean
     fileDropRoot?: string
   }

@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import type { ActionTree } from 'vuex'
 import { consola } from 'consola'
 import type { SocketState, SocketStatus } from './types'
@@ -98,9 +97,9 @@ export const actions = {
    *                      and owns the retry loop).
    *  - `identifying`:    run the identify + one-shot refresh flow and, on
    *                      the outcome, transition to `ready` or `authenticating`.
-   *  - `authenticating`: route to /login if we're not already there.
-   *  - `ready`:          route off /login if needed, then run the app
-   *                      bootstrap (serverInfo + Moonraker DB + config files).
+   *  - `authenticating`: no side-effects — App.vue reacts to `socketAuthenticating`
+   *                      and renders the Login overlay over the current route.
+   *  - `ready`:          run the app bootstrap (serverInfo + Moonraker DB + config files).
    *
    * Entering `connecting` always clears per-socket identity so `runIdentify`
    * can re-identify the new physical session. Coming from `ready` additionally
@@ -134,16 +133,7 @@ export const actions = {
         await dispatch('runIdentify')
         break
 
-      case 'authenticating':
-        if (Vue.$filters.getCurrentRouteName() !== 'login') {
-          await Vue.$filters.routeTo({ name: 'login' })
-        }
-        break
-
       case 'ready':
-        if (Vue.$filters.getCurrentRouteName() === 'login') {
-          await Vue.$filters.routeTo({ name: 'home' })
-        }
         await dispatch('runBootstrap')
         break
     }

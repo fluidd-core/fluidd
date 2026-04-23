@@ -42,12 +42,9 @@
 
     <v-main :style="customBackgroundImageStyle">
       <v-container
-        v-if="socketReady || socketAuthenticating"
+        v-if="socketReady"
         fluid
-        :class="{
-          'fill-height': $route.meta?.fillHeight ?? false,
-          [['single', 'double', 'triple', 'quad'][columnCount - 1]]: true
-        }"
+        :class="[['single', 'double', 'triple', 'quad'][columnCount - 1]]"
         class="constrained-width pa-2 pa-sm-4"
       >
         <v-row
@@ -66,6 +63,8 @@
 
         <register-service-worker />
       </v-container>
+
+      <login v-if="socketAuthenticating" />
 
       <socket-disconnected v-if="!socketReady && !socketAuthenticating" />
 
