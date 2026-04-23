@@ -1002,15 +1002,12 @@ export const getters = {
     return state.printer.configfile.config
   },
 
-  getHasWarnings: (state, getters, rootState) => {
+  getHasWarnings: (state, getters) => {
     return (
-      rootState.socket?.status === 'ready' &&
-      (
-        getters.getPrinterWarnings.length > 0 ||
-        getters.getKlipperWarnings.length > 0 ||
-        getters.getMoonrakerFailedComponents.length > 0 ||
-        getters.getMoonrakerWarnings.length > 0
-      )
+      getters.getPrinterWarnings.length > 0 ||
+      getters.getKlipperWarnings.length > 0 ||
+      getters.getMoonrakerFailedComponents.length > 0 ||
+      getters.getMoonrakerWarnings.length > 0
     )
   },
 
