@@ -55,6 +55,7 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, Watch, Ref, PropSync } from 'vue-property-decorator'
+import { consola } from 'consola'
 import StateMixin from '@/mixins/state'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
@@ -86,6 +87,9 @@ export default class Console extends Mixins(StateMixin) {
   readonly dynamicScroller!: DinamicScroller
 
   _pauseScroll = false
+  declare _programmaticFrames: number
+  declare _programmaticRaf: number | null
+  _stopSizesWatcher: (() => void) | null = null
 
   get currentCommand (): string {
     return this.$typedState.console.consoleCommand
@@ -104,11 +108,43 @@ export default class Console extends Mixins(StateMixin) {
   }
 
   mounted () {
-    this.dynamicScroller.$el.addEventListener('scroll', this.onScroll)
+    // Vue 2 does not proxy _-prefixed properties onto the instance, so class-field
+    // initializers for these are silently dropped. Set them as own properties here.
+    this._programmaticFrames = 0
+    this._programmaticRaf = null
+
+    const el = this.dynamicScroller.$el
+    el.addEventListener('scroll', this.onScroll)
+
+    // DynamicScroller's internal `itemsWithSize` watcher adjusts scrollTop on item
+    // measurement, producing a scroll event indistinguishable from user input.
+    // Mirror vscrollData.sizes so we can open a programmatic window before that event.
+    const scroller = this.dynamicScroller as unknown as {
+      vscrollData?: { sizes: Record<string | number, number> }
+    }
+    const vscrollData = scroller.vscrollData
+    if (vscrollData) {
+      this._stopSizesWatcher = this.$watch(
+        () => vscrollData.sizes,
+        () => this.markProgrammatic(),
+        { deep: true }
+      )
+    } else {
+      consola.warn('[Console] DynamicScroller.vscrollData not found; auto-scroll pause detection may misfire on item measurement.')
+    }
   }
 
   beforeDestroy () {
-    this.dynamicScroller.$el.removeEventListener('scroll', this.onScroll)
+    const el = this.dynamicScroller.$el
+    el.removeEventListener('scroll', this.onScroll)
+    if (this._stopSizesWatcher) {
+      this._stopSizesWatcher()
+      this._stopSizesWatcher = null
+    }
+    if (this._programmaticRaf !== null) {
+      cancelAnimationFrame(this._programmaticRaf)
+      this._programmaticRaf = null
+    }
   }
 
   @Watch('items', { immediate: true })
@@ -121,6 +157,7 @@ export default class Console extends Mixins(StateMixin) {
 
         if (scrollHeight > clientHeight) {
           this.$nextTick(() => {
+            this.markProgrammatic()
             el.scrollTop += el.scrollHeight - scrollHeight
           })
         }
@@ -130,21 +167,48 @@ export default class Console extends Mixins(StateMixin) {
     }
   }
 
-  updateScrollingPaused () {
-    this.$nextTick(() => {
-      const { scrollTop, scrollHeight, clientHeight } = this.dynamicScroller.$el
-
-      const pauseScroll = this.flipLayout ? scrollTop > 1 : scrollHeight - scrollTop - clientHeight > 1
-
-      if (this._pauseScroll !== pauseScroll) {
-        this._pauseScroll = pauseScroll
-        this.scrollingPausedModel = pauseScroll
+  markProgrammatic (frames = 2) {
+    this._programmaticFrames = Math.max(this._programmaticFrames, frames)
+    if (this._programmaticRaf === null) {
+      const tick = () => {
+        this._programmaticFrames--
+        if (this._programmaticFrames > 0) {
+          this._programmaticRaf = requestAnimationFrame(tick)
+        } else {
+          this._programmaticRaf = null
+        }
       }
-    })
+      this._programmaticRaf = requestAnimationFrame(tick)
+    }
+  }
+
+  // Must be a method, not a getter: vue-class-component turns getters into cached
+  // computed properties. Because _programmaticFrames is non-reactive (Vue 2 does not
+  // proxy _-prefixed props), no dep is recorded and the cached value never updates.
+  isProgrammaticScroll (): boolean {
+    return this._programmaticFrames > 0
   }
 
   onScroll () {
-    this.updateScrollingPaused()
+    const { scrollTop, scrollHeight, clientHeight } = this.dynamicScroller.$el
+    const atLatest = this.flipLayout
+      ? scrollTop <= 1
+      : scrollHeight - scrollTop - clientHeight <= 1
+
+    if (this._pauseScroll) {
+      if (atLatest) {
+        this._pauseScroll = false
+        this.scrollingPausedModel = false
+      }
+      return
+    }
+
+    if (this.isProgrammaticScroll()) return
+
+    if (!atLatest) {
+      this._pauseScroll = true
+      this.scrollingPausedModel = true
+    }
   }
 
   scrollToLatest (force?: boolean) {
@@ -156,6 +220,7 @@ export default class Console extends Mixins(StateMixin) {
         this.readonly ||
         force
       ) {
+        this.markProgrammatic(3) // 3 frames covers scrollToBottom's async rAF settle
         if (this.flipLayout) {
           this.dynamicScroller.scrollToItem(0)
         } else {
@@ -164,8 +229,8 @@ export default class Console extends Mixins(StateMixin) {
       }
 
       if (force) {
-        // The fixed/floating nature of the console may only change if the scroll is forced.
-        this.updateScrollingPaused()
+        this._pauseScroll = false
+        this.scrollingPausedModel = false
       }
     }
   }
