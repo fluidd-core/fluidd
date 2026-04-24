@@ -128,14 +128,18 @@ export const actions = {
             dispatch('reset', MODULES_TO_RESET_ON_DROP, { root: true })
           ])
         }
+
         break
 
       case 'identifying':
         await dispatch('runIdentify')
+
         break
 
       case 'ready':
-        await dispatch('runBootstrap')
+        SocketActions.serverInfo()
+        SocketActions.serverFilesList('config')
+
         break
     }
   },
@@ -149,45 +153,30 @@ export const actions = {
    * mid-flight.
    */
   async runIdentify ({ dispatch, rootGetters, state }) {
-    if (state.status !== 'identifying') return
+    if (state.connectionId === null) {
+      const keys: TokenKeys = rootGetters['config/getTokenKeys']
+      const accessToken = await getAccessToken(keys)
 
-    // Moonraker's server.connection.identify is one-shot per socket. If we
-    // already have a connectionId, the socket is identified and the RPC
-    // would be rejected — land in ready directly. This is the logout→login
-    // path where the same socket carries a new user after access.login.
-    if (state.connectionId !== null) {
-      await dispatch('onSetStatus', 'ready')
-      return
+      try {
+        await SocketActions.serverConnectionIdentify({
+          client_name: Globals.APP_NAME,
+          version: `${import.meta.env.VERSION || '0.0.0'}-${import.meta.env.HASH || 'unknown'}`.trim(),
+          type: 'web',
+          url: Globals.GITHUB_REPO,
+          ...(accessToken ? { access_token: accessToken } : {})
+        })
+      } catch (e) {
+        consola.debug('identify failed', e)
+
+        if (state.status !== 'identifying') return
+
+        await dispatch('onSetStatus', 'authenticating')
+
+        return
+      }
     }
 
-    const keys: TokenKeys = rootGetters['config/getTokenKeys']
-    const accessToken = await getAccessToken(keys)
-
-    let ok = false
-    try {
-      await SocketActions.serverConnectionIdentify({
-        client_name: Globals.APP_NAME,
-        version: `${import.meta.env.VERSION || '0.0.0'}-${import.meta.env.HASH || 'unknown'}`.trim(),
-        type: 'web',
-        url: Globals.GITHUB_REPO,
-        ...(accessToken ? { access_token: accessToken } : {})
-      })
-      ok = true
-    } catch (e) {
-      consola.debug('identify failed', e)
-    }
     if (state.status !== 'identifying') return
-
-    await dispatch('onSetStatus', ok ? 'ready' : 'authenticating')
-  },
-
-  /**
-   * Post-identify bootstrap. Called by onSetStatus when entering `ready`.
-   * Loads server info, the Moonraker database namespaces Fluidd owns, and the
-   * config file list. Split out of onSetStatus for readability.
-   */
-  async runBootstrap ({ dispatch }) {
-    SocketActions.serverInfo()
 
     await Promise.all(
       Object.values(Globals.MOONRAKER_DB).map(async ({ NAMESPACE, ROOTS }) => {
@@ -227,7 +216,9 @@ export const actions = {
       })
     )
 
-    SocketActions.serverFilesList('config')
+    if (state.status !== 'identifying') return
+
+    await dispatch('onSetStatus', 'ready')
   },
 
   /**
