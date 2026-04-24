@@ -132,7 +132,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     if (!(Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage)) {
       for (const endpoint of hostConfig.endpoints) {
         apiConfig = Vue.$filters.getApiUrls(endpoint)
-        await store.dispatch('config/initLocal', { apiConfig })
+        store.commit('config/setInitInstances', apiConfig)
       }
     }
 

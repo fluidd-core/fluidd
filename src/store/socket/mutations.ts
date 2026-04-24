@@ -15,7 +15,7 @@ export const mutations = {
     state.acceptingNotifications = payload
   },
 
-  setConnectionId (state, payload: string | null) {
+  setConnectionId (state, payload: number | null) {
     state.connectionId = payload
   }
 } satisfies MutationTree<SocketState>

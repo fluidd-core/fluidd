@@ -142,11 +142,11 @@ export const actions = {
 
   /**
    * Identify flow. Called by onSetStatus when entering `identifying`. Pre-checks
-   * token expiry before making any RPC calls so identify is issued at most once:
-   * if the access token is expired and the refresh token is still valid, refreshes
-   * first; if both are expired, transitions directly to `authenticating` without
-   * calling identify. Terminal transitions: → `ready` on success, →
-   * `authenticating` on failure. Aborts silently if the socket drops mid-flight.
+   * token expiry: if the access token is expired but the refresh token is valid,
+   * refreshes first. If both are expired, identify is still called but without an
+   * access token (anonymous/trusted identify). Terminal transitions: → `ready` on
+   * success, → `authenticating` on failure. Aborts silently if the socket drops
+   * mid-flight.
    */
   async runIdentify ({ dispatch, rootGetters, state }) {
     if (state.status !== 'identifying') return

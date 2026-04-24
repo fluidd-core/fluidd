@@ -2,7 +2,7 @@ export interface SocketState {
   status: SocketStatus;
   acceptingNotifications: boolean;
   error: SocketError | null;
-  connectionId: string | null;
+  connectionId: number | null;
 }
 
 export type SocketStatus =

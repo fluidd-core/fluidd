@@ -63,10 +63,9 @@ export const actions = {
 
   /**
    * Logout the user. Removes their tokens and clears the in-memory auth state.
-   * For a full logout, also transitions the socket to `authenticating` so the
-   * router guard redirects the user to /login. The websocket connection is
-   * intentionally kept open so the login view can call access.info /
-   * access.login over it.
+   * For a full logout, also transitions the socket to `authenticating` so
+   * App.vue renders the login overlay. The websocket connection is intentionally
+   * kept open so the login overlay can call access.info / access.login over it.
    */
   async logout ({ commit, dispatch, rootGetters, rootState }, options?: { invalidate?: boolean; partial?: boolean }) {
     const opts = {
@@ -105,7 +104,7 @@ export const actions = {
    * Checks whether the current connection still has passwordless access (i.e.
    * Moonraker reports trusted:true AND login is not required). If so, a partial
    * logout keeps them signed in as the trusted user. Otherwise, a full logout
-   * sends them to /login. login_required overrides trusted_clients whenever
+   * shows the login overlay. login_required overrides trusted_clients whenever
    * force_logins is enabled with at least one user configured.
    */
   async checkTrust ({ dispatch, commit }) {
