@@ -32,8 +32,7 @@ export class WebSocketClient {
   close () {
     this.cancelReconnect()
     if (this.connection) {
-      this.cache = null
-      this.clearRequests()
+      this.clearCacheAndRequests()
       this.connection.onopen = null
       this.connection.onmessage = null
       this.connection.onerror = null
@@ -49,8 +48,7 @@ export class WebSocketClient {
   }
 
   private openSocket () {
-    this.cache = null
-    this.clearRequests()
+    this.clearCacheAndRequests()
 
     try {
       const url = this.store.state.config.socketUrl
@@ -190,6 +188,8 @@ export class WebSocketClient {
 
     if (this.retryCount > ALLOWED_RETRIES) {
       this.store.dispatch('socket/onSetStatus', 'disconnected')
+      this.clearCacheAndRequests()
+      this.connection = null
       return
     }
 
@@ -265,7 +265,9 @@ export class WebSocketClient {
     })
   }
 
-  clearRequests () {
+  clearCacheAndRequests () {
+    this.cache = null
+
     for (const request of this.requests) {
       if (request.onRejected) {
         request.onRejected(new Error('Socket disconnected'))
