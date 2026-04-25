@@ -75,41 +75,28 @@ export const actions = {
    * On server info
    */
   async onServerInfo ({ commit, dispatch, state }, payload: Moonraker.Server.InfoResponse) {
-    // This payload should return a list of enabled components
-    // and root directories that are available.
-    SocketActions.printerInfo()
-    SocketActions.serverConfig()
-    SocketActions.machineProcStats()
-    SocketActions.machineSystemInfo()
+    clearTimeout(retryTimeout)
 
-    const klippyConnectedNow = (
-      payload.klippy_connected &&
-      !state.info.klippy_connected
-    )
+    if (payload.klippy_connected) {
+      SocketActions.printerInfo()
+
+      if (payload.klippy_state !== state.info.klippy_state) {
+        SocketActions.printerObjectsList()
+      }
+    }
+
+    if (payload.components.length === 0 && state.info.components.length > 0) {
+      dispatch('initComponents', payload)
+    }
 
     commit('setServerInfo', payload)
 
     dispatch('checkMoonrakerMinVersion')
 
     if (payload.klippy_state !== 'ready') {
-      // If klippy is not connected, we'll continue to
-      // retry the init process.
-      if (state.klippy_retries === 0) {
-        dispatch('initComponents', payload)
-      }
-      if (klippyConnectedNow) {
-        SocketActions.printerObjectsList()
-      }
-      commit('setKlippyRetries', state.klippy_retries + 1)
-      clearTimeout(retryTimeout)
       retryTimeout = window.setTimeout(() => {
         SocketActions.serverInfo()
       }, Globals.KLIPPY_RETRY_DELAY)
-    } else {
-      // If klippy is connected, move on.
-      commit('setKlippyRetries', 0)
-      dispatch('initComponents', payload)
-      SocketActions.printerObjectsList()
     }
   },
 

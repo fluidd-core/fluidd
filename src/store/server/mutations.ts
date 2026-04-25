@@ -11,9 +11,8 @@ export const mutations = {
   },
 
   setResetKlippy (state) {
-    const { klippy_retries, info } = defaultState()
+    const { info } = defaultState()
 
-    state.klippy_retries = klippy_retries
     state.info.klippy_connected = info.klippy_connected
     state.info.klippy_state = info.klippy_state
   },
@@ -86,12 +85,5 @@ export const mutations = {
         }
       }
     }
-  },
-
-  /**
-   * Sets how many times we've retried connecting to klippy.
-   */
-  setKlippyRetries (state, payload: number) {
-    state.klippy_retries = payload
   }
 } satisfies MutationTree<ServerState>

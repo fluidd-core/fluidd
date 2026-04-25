@@ -71,8 +71,6 @@ const getAccessToken = async (keys: TokenKeys): Promise<string | null> => {
   return null
 }
 
-let retryTimeout: number
-
 export const actions = {
   /**
    * Reset our store
@@ -133,12 +131,6 @@ export const actions = {
 
       case 'identifying':
         await dispatch('runIdentify')
-
-        break
-
-      case 'ready':
-        SocketActions.serverInfo()
-        SocketActions.serverFilesList('config')
 
         break
     }
@@ -218,6 +210,16 @@ export const actions = {
 
     if (state.status !== 'identifying') return
 
+    await Promise.all([
+      SocketActions.serverInfo(),
+      SocketActions.serverConfig(),
+      SocketActions.machineProcStats(),
+      SocketActions.machineSystemInfo(),
+      SocketActions.serverFilesList('config')
+    ])
+
+    if (state.status !== 'identifying') return
+
     await dispatch('onSetStatus', 'ready')
   },
 
@@ -242,10 +244,7 @@ export const actions = {
     } else if (payload.code === 503) {
       // Klippy non-responsive or config error. Retry serverInfo after a delay.
       commit('printer/setPrinterInfo', { state: 'error', state_message: payload.message }, { root: true })
-      clearTimeout(retryTimeout)
-      retryTimeout = window.setTimeout(() => {
-        SocketActions.serverInfo()
-      }, Globals.KLIPPY_RETRY_DELAY)
+      SocketActions.serverInfo()
     }
   },
 

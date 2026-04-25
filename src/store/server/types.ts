@@ -1,5 +1,4 @@
 export interface ServerState {
-  klippy_retries: number;
   info: Moonraker.Server.InfoResponse;
   system_info: Moonraker.Machine.SystemInfo | null;
   peripherals: Peripherals;
