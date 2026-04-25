@@ -159,5 +159,10 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     Vue.$socket.connect()
   } catch (e) {
     consola.error('Error during app initialization', e)
+
+    // store.dispatch('reset') above set status back to `initializing`, so
+    // without this transition SocketDisconnected stays on the "connecting…"
+    // spinner indefinitely and the reconnect button never appears.
+    await store.dispatch('socket/onSetStatus', 'disconnected', { root: true })
   }
 }

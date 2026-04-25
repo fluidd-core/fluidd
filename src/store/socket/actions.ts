@@ -228,7 +228,11 @@ export const actions = {
 
     if (state.status !== 'identifying') return
 
-    await Promise.all([
+    // allSettled so a single failing RPC (e.g. transient 503) does not throw
+    // out of runIdentify and leave the status stuck at `identifying`. Each
+    // RPC's dispatch handler runs only on success; partial state is acceptable
+    // because individual UI components handle missing data.
+    await Promise.allSettled([
       SocketActions.serverInfo(),
       SocketActions.serverConfig(),
       SocketActions.machineProcStats(),
