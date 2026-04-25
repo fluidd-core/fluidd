@@ -11,6 +11,8 @@ import type { TokenKeys } from '../config/types'
 
 const MODULES_TO_RESET_ON_DROP = ['server', 'power', 'webcams', 'jobQueue', 'wait', 'gcodePreview']
 
+let retryTimeout: number
+
 // State machine edges. Self-transitions (same → same) are accepted as no-ops.
 const VALID_TRANSITIONS: Record<SocketStatus, readonly SocketStatus[]> = {
   initializing: ['connecting', 'disconnected'],
@@ -244,7 +246,10 @@ export const actions = {
     } else if (payload.code === 503) {
       // Klippy non-responsive or config error. Retry serverInfo after a delay.
       commit('printer/setPrinterInfo', { state: 'error', state_message: payload.message }, { root: true })
-      SocketActions.serverInfo()
+      clearTimeout(retryTimeout)
+      retryTimeout = window.setTimeout(() => {
+        SocketActions.serverInfo()
+      }, Globals.KLIPPY_RETRY_DELAY)
     }
   },
 

@@ -85,7 +85,7 @@ export const actions = {
       }
     }
 
-    if (payload.components.length === 0 && state.info.components.length > 0) {
+    if (payload.components.length > 0 && state.info.components.length === 0) {
       dispatch('initComponents', payload)
     }
 
