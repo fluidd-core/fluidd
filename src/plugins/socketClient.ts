@@ -181,7 +181,7 @@ export class WebSocketClient {
   }
 
   private handleClose () {
-    // Explicit close(): onSetStatus('disconnected') was already dispatched; nothing to do.
+    // If the socket is already marked disconnected, there is nothing left to do.
     if (this.store.state.socket.status === 'disconnected') return
 
     // retryCount counts failed opens in a chain; ws.onopen zeroes it on any
