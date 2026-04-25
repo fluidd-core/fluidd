@@ -47,13 +47,7 @@
         :class="[['single', 'double', 'triple', 'quad'][columnCount - 1]]"
         class="constrained-width pa-2 pa-sm-4"
       >
-        <v-row
-          v-if="(
-            socketReady &&
-            (!klippyReady || hasWarnings) &&
-            !inLayout
-          )"
-        >
+        <v-row v-if="(!klippyReady || hasWarnings) && !inLayout">
           <v-col>
             <klippy-status-card />
           </v-col>

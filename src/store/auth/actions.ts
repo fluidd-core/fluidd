@@ -33,22 +33,13 @@ export const actions = {
   },
 
   async login ({ commit, dispatch, rootGetters }, { username, password, source }) {
-    const keys: TokenKeys = rootGetters['config/getTokenKeys']
-
-    let user: Moonraker.Authorization.LoginResponse
-    try {
-      user = await SocketActions.accessLogin(username, password, source)
-    } catch (error: unknown) {
-      // Unsuccessful login. Remove any existing keys and propagate the error.
-      localStorage.removeItem(keys.userToken)
-      localStorage.removeItem(keys.refreshToken)
-      throw error
-    }
+    const user = await SocketActions.accessLogin(username, password, source)
 
     // Successful login. Moonraker has authenticated the current socket as
     // this user; store the tokens and hand off to the socket state machine,
     // which will re-identify (reading the fresh token from localStorage) and
     // run the post-auth bootstrap on the transition to `ready`.
+    const keys: TokenKeys = rootGetters['config/getTokenKeys']
     localStorage.setItem(keys.userToken, user.token)
     localStorage.setItem(keys.refreshToken, user.refresh_token)
     commit('setCurrentUser', {

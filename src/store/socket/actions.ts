@@ -45,16 +45,16 @@ const isTokenExpired = (rawToken: string): boolean => {
 }
 
 const getAccessToken = async (keys: TokenKeys): Promise<string | null> => {
-  try {
-    const token = localStorage.getItem(keys.userToken)
+  const token = localStorage.getItem(keys.userToken)
 
-    if (token && !isTokenExpired(token)) {
-      return token
-    }
+  if (token && !isTokenExpired(token)) {
+    return token
+  }
 
-    const refreshToken = localStorage.getItem(keys.refreshToken)
+  const refreshToken = localStorage.getItem(keys.refreshToken)
 
-    if (refreshToken && !isTokenExpired(refreshToken)) {
+  if (refreshToken && !isTokenExpired(refreshToken)) {
+    try {
       const response = await SocketActions.accessRefreshJwt(refreshToken)
 
       if (response.token) {
@@ -62,9 +62,22 @@ const getAccessToken = async (keys: TokenKeys): Promise<string | null> => {
 
         return response.token
       }
+    } catch (e) {
+      consola.error('Error during token refresh', e)
+
+      // if it's NOT a 401, bail out without touching tokens; otherwise fall
+      // through to the clear at the bottom.
+      if (
+        !(
+          e != null &&
+          typeof e === 'object' &&
+          'code' in e &&
+          e.code === 401
+        )
+      ) {
+        return null
+      }
     }
-  } catch (e) {
-    consola.debug('Error during token refresh', e)
   }
 
   localStorage.removeItem(keys.userToken)
@@ -114,7 +127,7 @@ export const actions = {
     }
 
     const prev = state.status
-    consola.log(`Socket status: ${prev} → ${next}`)
+    consola.debug(`Socket status: ${prev} → ${next}`)
     commit('setStatus', next)
 
     switch (next) {
@@ -147,6 +160,9 @@ export const actions = {
    * mid-flight.
    */
   async runIdentify ({ dispatch, rootGetters, state }) {
+    // Skip identify when the socket is already identified (e.g. post-access.login
+    // re-uses the same physical socket; Moonraker has already re-authenticated it
+    // as the new user). server.connection.identify is one-shot per connection.
     if (state.connectionId === null) {
       const keys: TokenKeys = rootGetters['config/getTokenKeys']
       const accessToken = await getAccessToken(keys)

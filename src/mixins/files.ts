@@ -327,7 +327,7 @@ export default class FilesMixin extends Vue {
       formData.append('print', 'true')
     }
 
-    const token = !this.isTrustedUser && await SocketActions.accessOneshotToken()
+    const token = this.isTrustedUser ? null : await SocketActions.accessOneshotToken()
 
     return axios.postForm<{
       result: {

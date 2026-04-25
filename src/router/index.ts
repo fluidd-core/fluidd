@@ -146,6 +146,9 @@ router.beforeEach((to, from, next) => {
   store.commit('config/setContainerColumnCount', 2)
   store.commit('config/setLayoutMode', false)
 
+  // /login no longer exists as a route — login is rendered as an overlay by
+  // App.vue when socket.status === 'authenticating'. On a deep link to /login
+  // (fresh navigation), redirect to home; on in-app navigation, block silently.
   if (to.path === '/login') {
     next(from === VueRouter.START_LOCATION ? { name: 'home' } : false)
   } else {
