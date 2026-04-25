@@ -107,13 +107,15 @@ export const actions = {
    * through this instead of committing `setStatus` directly.
    *
    *  - `disconnected`:   no side-effects.
-   *  - `connecting`:     no side-effects (the socket client opens the socket
-   *                      and owns the retry loop).
-   *  - `identifying`:    run the identify + one-shot refresh flow and, on
-   *                      the outcome, transition to `ready` or `authenticating`.
+   *  - `connecting`:     clears per-socket identity (the socket client opens
+   *                      the socket and owns the retry loop).
+   *  - `identifying`:    run `runIdentify` — token refresh + identify, then
+   *                      the post-auth bootstrap (DB load + serverInfo etc.),
+   *                      then dispatch `ready` (or `authenticating` on failure).
    *  - `authenticating`: no side-effects — App.vue reacts to `socketAuthenticating`
    *                      and renders the Login overlay over the current route.
-   *  - `ready`:          run the app bootstrap (serverInfo + Moonraker DB + config files).
+   *  - `ready`:          no side-effects — bootstrap already ran inside
+   *                      `runIdentify`; entering `ready` unblocks the main app render.
    *
    * Entering `connecting` always clears per-socket identity so `runIdentify`
    * can re-identify the new physical session. Coming from `ready` additionally
