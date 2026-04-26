@@ -1,27 +1,23 @@
-/**
- * Taken from https://github.com/DimanVorosh/vue-json-rpc-websocket/blob/master/src/wsClient.js
- * and refactored.
- */
 import type _Vue from 'vue'
 import { consola } from 'consola'
 import { camelCase, mergeWith } from 'lodash-es'
-import type { Store } from 'vuex'
-import type { RootState } from '@/store/types'
+import type { TypedStore } from '@/store'
 
-const fastNotifyStatusUpdateKeys = [
-  'motion_report'
-] as const
+const LOG_PREFIX = '[WEBSOCKET]'
 
 const ALLOWED_RETRIES = 3
 const EXPONENTIAL_BACKOFF = 1.4
 
+const FAST_NOTIFY_KEYS = [
+  'motion_report'
+] as const
+
 export class WebSocketClient {
-  connection: WebSocket | null = null
-  logPrefix = '[WEBSOCKET]'
-  requests: Request[] = []
-  requestId = 0
-  store: Store<RootState>
-  cache: CachedParams | null = null
+  private connection: WebSocket | null = null
+  private requests: Request[] = []
+  private requestId = 0
+  private store: TypedStore
+  private cache: CachedParams | null = null
   private retryCount = 0
   private reconnectTimeout: number | null = null
 
@@ -54,25 +50,25 @@ export class WebSocketClient {
       const url = this.store.state.config.socketUrl
 
       if (!url) {
-        this.store.dispatch('socket/onSetStatus', 'disconnected')
+        this.store.typedDispatch('socket/onSetStatus', 'disconnected')
         return
       }
 
-      this.store.dispatch('socket/onSetStatus', 'connecting')
+      this.store.typedDispatch('socket/onSetStatus', 'connecting')
       this.connection = new WebSocket(url)
 
       this.connection.onopen = () => {
         this.retryCount = 0
-        this.store.dispatch('socket/onSetStatus', 'identifying')
+        this.store.typedDispatch('socket/onSetStatus', 'identifying')
       }
 
       this.connection.onclose = (event) => {
-        consola.debug(`${this.logPrefix} Connection closed:`, event)
+        consola.debug(`${LOG_PREFIX} Connection closed:`, event)
         this.handleClose()
       }
 
       this.connection.onerror = (event) => {
-        consola.error(`${this.logPrefix} Connection error:`, event)
+        consola.error(`${LOG_PREFIX} Connection error:`, event)
       }
 
       this.connection.onmessage = async (message) => {
@@ -89,7 +85,7 @@ export class WebSocketClient {
 
           // Remove a wait if defined.
           if (request?.wait?.length) {
-            this.store.commit('wait/setRemoveWait', request.wait)
+            this.store.typedCommit('wait/setRemoveWait', request.wait)
           }
 
           if ('error' in socketResponse) { // Is it in error?
@@ -101,9 +97,9 @@ export class WebSocketClient {
               }
             }
 
-            consola.debug(`${this.logPrefix} Response error:`, socketResponse.error)
+            consola.debug(`${LOG_PREFIX} Response error:`, socketResponse.error)
 
-            this.store.dispatch('socket/onSocketError', socketResponse.error)
+            this.store.typedDispatch('socket/onSocketError', socketResponse.error)
 
             return
           }
@@ -117,7 +113,7 @@ export class WebSocketClient {
 
             Object.defineProperty(result, '__request__', { enumerable: false, value: request })
 
-            consola.debug(`${this.logPrefix} Response:`, result)
+            consola.debug(`${LOG_PREFIX} Response:`, result)
 
             if (request.dispatch) {
               this.store.dispatch(request.dispatch, result)
@@ -148,9 +144,9 @@ export class WebSocketClient {
             // so we cache these and send them through every second.
 
             // If any of these properties exist, bypass the cache and send immediately
-            for (const key of fastNotifyStatusUpdateKeys) {
+            for (const key of FAST_NOTIFY_KEYS) {
               if (key in params) {
-                this.store.dispatch('printer/onFastNotifyStatusUpdate', { key, payload: params[key] }, { root: true })
+                this.store.typedDispatch('printer/onFastNotifyStatusUpdate', { key, payload: params[key] }, { root: true })
                 delete params[key]
               }
             }
@@ -163,7 +159,7 @@ export class WebSocketClient {
 
             // If there's a second or more difference, flush the cache.
             if (timestamp - this.cache.timestamp >= 1000) {
-              this.store.dispatch('socket/notifyStatusUpdate', this.cache.params)
+              this.store.typedDispatch('socket/notifyStatusUpdate', this.cache.params)
               this.cache = { timestamp, params: {} }
             }
           }
@@ -173,7 +169,7 @@ export class WebSocketClient {
         }
       }
     } catch (error: unknown) {
-      consola.error(`${this.logPrefix} Failed to open WebSocket:`, error)
+      consola.error(`${LOG_PREFIX} Failed to open WebSocket:`, error)
       this.handleClose()
     }
   }
@@ -187,13 +183,13 @@ export class WebSocketClient {
     this.retryCount += 1
 
     if (this.retryCount > ALLOWED_RETRIES) {
-      this.store.dispatch('socket/onSetStatus', 'disconnected')
+      this.store.typedDispatch('socket/onSetStatus', 'disconnected')
       this.clearCacheAndRequests()
       this.connection = null
       return
     }
 
-    this.store.dispatch('socket/onSetStatus', 'connecting')
+    this.store.typedDispatch('socket/onSetStatus', 'connecting')
     this.reconnectTimeout = window.setTimeout(() => {
       this.reconnectTimeout = null
       this.openSocket()
@@ -218,7 +214,7 @@ export class WebSocketClient {
         // Any non-'disconnected' state is eligible to emit; physical readiness
         // is enforced by the readyState check below.
         if (this.store.state.socket.status === 'disconnected') {
-          consola.debug(`${this.logPrefix} Socket emit denied, disconnected:`, method, options)
+          consola.debug(`${LOG_PREFIX} Socket emit denied, disconnected:`, method, options)
 
           throw new Error('Socket is disconnected')
         }
@@ -243,7 +239,7 @@ export class WebSocketClient {
           if (options) {
             if (options.wait) {
               request.wait = options.wait
-              this.store.dispatch('wait/addWait', options.wait)
+              this.store.typedDispatch('wait/addWait', options.wait)
             }
             if (options.params) {
               packet.params = options.params
@@ -255,7 +251,7 @@ export class WebSocketClient {
           this.requests.push(request)
           this.connection.send(JSON.stringify(packet))
         } else {
-          consola.debug(`${this.logPrefix} Not ready, or closed.`, method, options, this.connection?.readyState)
+          consola.debug(`${LOG_PREFIX} Not ready, or closed.`, method, options, this.connection?.readyState)
 
           throw new Error('Socket is not ready or closed')
         }
@@ -301,7 +297,7 @@ declare module 'vue/types/vue' {
 }
 
 interface SocketPluginOptions {
-  store: Store<RootState>;
+  store: TypedStore;
 }
 
 export interface NotifyOptions {

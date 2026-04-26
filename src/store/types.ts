@@ -100,6 +100,22 @@ type RootActionsType = UnionToIntersection<{
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
 
+export type RootMutationType = {
+  [K in keyof RootModulesType]: RootModulesType[K] extends { mutations: infer M }
+    ? `${string & K}/${string & keyof M}`
+    : never
+}[keyof RootModulesType]
+
+export type RootActionType = {
+  [K in keyof RootModulesType]: RootModulesType[K] extends { actions: infer M }
+    ? `${string & K}/${string & keyof M}`
+    : never
+}[keyof RootModulesType] | (
+  typeof storeOptions extends { actions: infer M }
+    ? string & keyof M
+    : never
+)
+
 export interface RootModules extends RootModulesType {
 }
 

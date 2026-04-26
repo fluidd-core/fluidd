@@ -175,7 +175,7 @@ export const mutations = {
   /**
    * Puts us into layout mode
    */
-  setLayoutMode (state, payload) {
+  setLayoutMode (state, payload: boolean) {
     state.layoutMode = payload
   },
 

@@ -143,8 +143,8 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  store.commit('config/setContainerColumnCount', 2)
-  store.commit('config/setLayoutMode', false)
+  store.typedCommit('config/setContainerColumnCount', 2)
+  store.typedCommit('config/setLayoutMode', false)
 
   // /login no longer exists as a route — login is rendered as an overlay by
   // App.vue when socket.status === 'authenticating'. On a deep link to /login

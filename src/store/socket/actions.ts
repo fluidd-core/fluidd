@@ -9,7 +9,14 @@ import { upperFirst, camelCase } from 'lodash-es'
 import { jwtDecode } from 'jwt-decode'
 import type { TokenKeys } from '../config/types'
 
-const MODULES_TO_RESET_ON_DROP = ['server', 'power', 'webcams', 'jobQueue', 'wait', 'gcodePreview']
+const MODULES_TO_RESET_ON_DROP = [
+  'server',
+  'power',
+  'webcams',
+  'jobQueue',
+  'wait',
+  'gcodePreview'
+] as const
 
 let retryTimeout: number
 

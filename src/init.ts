@@ -122,7 +122,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     Vue.$socket.close()
 
     // Reset the store to its default state.
-    await store.dispatch('reset', undefined, { root: true })
+    await store.typedDispatch('reset', undefined)
 
     // Load the Host Config
     if (!hostConfig) {
@@ -132,7 +132,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     if (!(Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage)) {
       for (const endpoint of hostConfig.endpoints) {
         apiConfig = Vue.$filters.getApiUrls(endpoint)
-        store.commit('config/setInitInstances', apiConfig)
+        store.typedCommit('config/setInitInstances', apiConfig)
       }
     }
 
@@ -154,7 +154,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
 
     consola.debug('inited apis', store.state.config, apiConfig)
 
-    await store.dispatch('config/initConfig', { apiConfig, hostConfig })
+    await store.typedDispatch('config/initConfig', { apiConfig, hostConfig })
 
     Vue.$socket.connect()
   } catch (e) {
@@ -163,6 +163,6 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     // store.dispatch('reset') above set status back to `initializing`, so
     // without this transition SocketDisconnected stays on the "connecting…"
     // spinner indefinitely and the reconnect button never appears.
-    await store.dispatch('socket/onSetStatus', 'disconnected', { root: true })
+    await store.typedDispatch('socket/onSetStatus', 'disconnected')
   }
 }
