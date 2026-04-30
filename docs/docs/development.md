@@ -91,8 +91,8 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 ```
 
 **Vuex modules** live in `src/store/<name>/` with a standard layout
-(`state.ts`, `getters.ts`, `mutations.ts`, `actions.ts`, `types.ts`). Use
-`$typedState` and `$typedGetters` for type-safe access from components.
+(`index.ts`, `state.ts`, `getters.ts`, `mutations.ts`, `actions.ts`, `types.ts`).
+Use `$typedState` and `$typedGetters` for type-safe access from components.
 
 **WebSocket calls** go through `SocketActions` methods. Pass a `wait` parameter
 (constants in `src/globals.ts`) to drive UI loading state — for example,
@@ -114,8 +114,10 @@ build; do not edit it by hand.
   the component where it's used.
 - **A new route** → add a lazy import to `src/router/index.ts` and create the page
   in `src/views/<Name>.vue`.
-- **New store data** → add a module under `src/store/<name>/` with the standard
-  five files, and register it in `src/store/index.ts`.
+- **New store data** → add a module under `src/store/<name>/` with the six
+  standard files (including the module's `index.ts`), register it in
+  `src/store/index.ts`, and update `src/store/types.ts` so `RootModules`,
+  `RootState`, and `RootGetters` pick it up.
 - **A new translation key** → edit `src/locales/en.yaml`. Weblate handles the
   other languages — do not edit them directly.
 - **A new icon** → add an MDI mapping to the `Icons` object in `src/globals.ts`,
