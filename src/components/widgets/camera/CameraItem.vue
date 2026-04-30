@@ -196,6 +196,10 @@ export default class CameraItem extends Vue {
     pointer-events: none;
     user-select: none;
   }
+  iframe.camera-image {
+    pointer-events: auto;
+    user-select: auto;
+  }
 
   .camera-container {
     position: relative;
