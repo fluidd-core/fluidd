@@ -42,11 +42,12 @@ Browser ⇄ WebSocket (JSON-RPC) ⇄ Moonraker ⇄ Klipper
 ```
 
 All printer commands and live state updates flow through that single socket. The
-client lives in `src/api/socketActions.ts` — call its methods rather than making
-direct HTTP requests.
+client lives in `src/api/socketActions.ts` — for printer control and state, call
+its methods rather than making direct HTTP requests.
 
-The only HTTP exception is file upload and download, which uses `axios` for progress
-reporting (`fetch` cannot report upload progress). See `src/mixins/files.ts`.
+A few features still use HTTP: file upload and download (via `axios` for progress
+reporting — `fetch` cannot report upload progress; see `src/mixins/files.ts`),
+camera WebRTC signalling, and the initial `config.json` fetch at startup.
 
 ### Repository layout
 
