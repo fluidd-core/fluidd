@@ -18,8 +18,9 @@ tour of the codebase, see the
 
 ## Branching and pull requests
 
-- Branch off something other than `develop` or `master` — for example,
-  `feat/my-feature` based on `develop`.
+- Create your work on a feature branch from `develop` — for example,
+  `feat/my-feature` branched from `develop`. Do not open pull requests from
+  `develop` or `master` directly.
 - Keep `develop` clean: squash and rebase your feature branch before merging.
 - **Pull request titles must follow [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)**.
   This is enforced by CI.

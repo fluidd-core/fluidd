@@ -95,7 +95,7 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 
 **WebSocket calls** go through `SocketActions` methods. Pass a `wait` parameter
 (constants in `src/globals.ts`) to drive UI loading state — for example,
-`wait: Waits.onPrintStart`.
+`wait: Waits.onPrintPause`.
 
 **Auto-imported components.** Anything under `src/components/common`, `layout`, or
 `ui` is registered automatically by `unplugin-vue-components` — no manual import
