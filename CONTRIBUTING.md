@@ -1,8 +1,7 @@
 # Contributing to Fluidd
 
-Fluidd is an independent web client for [Moonraker](https://github.com/Arksine/moonraker)
-(and, by extension, [Klipper](https://github.com/Klipper3d/klipper)), built with Vue 2.7
-and TypeScript.
+Fluidd is an independent web client for [Klipper](https://github.com/Klipper3d/klipper)
+(via [Moonraker](https://github.com/Arksine/moonraker)), built with Vue 2.7 and TypeScript.
 
 Contributions of all kinds are welcome — bug reports, feature requests, code, and
 translations. This document covers the process and rules. For setup instructions and a
@@ -21,9 +20,9 @@ tour of the codebase, see the
 - Create your work on a feature branch from `develop` — for example,
   `feat/my-feature` branched from `develop`. Do not open pull requests from
   `develop` or `master` directly.
-- Keep `develop` clean: squash and rebase your feature branch before merging.
 - **Pull request titles must follow [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)**.
   This is enforced by CI.
+- Accepted pull requests are squashed and rebased onto `develop` when merged.
 
 ## Commits
 
