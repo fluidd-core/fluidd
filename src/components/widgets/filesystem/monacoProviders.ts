@@ -91,7 +91,7 @@ abstract class MonacoProviderBase<T> {
   }
 
   protected _createCacheKey (model: monaco.editor.ITextModel): string {
-    return `${model.uri.toString()}@${model.getVersionId()}`
+    return `${model.uri.toString()}@${model.getVersionId()}@${model.getLanguageId()}`
   }
 }
 
@@ -100,7 +100,7 @@ export class MonacoDocumentSymbolProvider extends MonacoProviderBase<monaco.lang
     const cacheKey = this._createCacheKey(model)
 
     if (this._lastCacheKey !== cacheKey) {
-      const result = await this._workerWrapper<MonacoDocumentSymbolsWorkerResponseMessage>(MonacoDocumentSymbolsWorker, 'klipper-config', model.getValue(), token)
+      const result = await this._workerWrapper<MonacoDocumentSymbolsWorkerResponseMessage>(MonacoDocumentSymbolsWorker, model.getLanguageId(), model.getValue(), token)
 
       if (result == null) {
         return []
@@ -163,7 +163,7 @@ export class MonacoCodeLensProvider extends MonacoProviderBase<monaco.languages.
         ? this._klippyApp.name
         : service
 
-      const result = await this._workerWrapper<MonacoCodeLensWorkerResponseMessage>(MonacoCodeLensWorker, 'klipper-config', model.getValue(), token)
+      const result = await this._workerWrapper<MonacoCodeLensWorkerResponseMessage>(MonacoCodeLensWorker, model.getLanguageId(), model.getValue(), token)
 
       if (result == null) {
         return []

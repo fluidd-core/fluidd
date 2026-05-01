@@ -18,7 +18,7 @@ export type MonacoSymbolChild = {
 const klipperConfigDocumentSymbols = (lines: string[]): MonacoSymbol[] => {
   return lines
     .reduce<ReduceState<{ name: string, children: ReduceState<{ name: string, range: IRange }>, range: IRange }>>((state, lineContent, index) => {
-      const section = /^\[[^\]]+\]/.exec(lineContent)
+      const section = /^\s*\[[^\]]+\]/.exec(lineContent)
 
       if (section) {
         state.result.push(state.current = {
@@ -35,7 +35,7 @@ const klipperConfigDocumentSymbols = (lines: string[]): MonacoSymbol[] => {
         const isNotComment = /^\s*[^#;]/.test(lineContent)
 
         if (isNotComment && state.current) {
-          const property = /^(\S+)\s*[:=]/.exec(lineContent)
+          const property = /^\s*([^=:\s#;](?:[^=:]*[^=:\s])?)\s*[=:]/.exec(lineContent)
 
           if (property) {
             state.current.children.result.push(state.current.children.current = {
@@ -98,6 +98,7 @@ self.onmessage = (event: MessageEvent<MonacoLanguageWorkerRequestMessage>) => {
     const lines = message.content.split('\n')
 
     switch (message.language) {
+      case 'moonraker-config':
       case 'klipper-config': {
         const documentSymbols = klipperConfigDocumentSymbols(lines)
 

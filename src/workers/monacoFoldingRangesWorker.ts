@@ -129,7 +129,7 @@ const gcodeFoldingRanges = (lines: string[]): MonacoFoldingRange[] => {
 const klipperConfigFoldingRanges = (lines: string[]): MonacoFoldingRange[] => {
   const sectionBlocks = lines
     .reduce<ReduceState<MonacoFoldingRange>>((state, lineContent, index) => {
-      const isSection = /^\[[^\]]+\]/.test(lineContent)
+      const isSection = /^\s*\[[^\]]+\]/.test(lineContent)
 
       if (isSection) {
         state.result.push(state.current = {
@@ -154,12 +154,12 @@ const klipperConfigFoldingRanges = (lines: string[]): MonacoFoldingRange[] => {
       lineContent = lineContent.trim()
 
       if (lineContent.length > 0) {
-        const isRegion = /^#region\b/.test(lineContent)
+        const isRegion = /^\s*#region\b/.test(lineContent)
 
         if (isRegion) {
           state.stack.push(index + 1)
         } else {
-          const isEndRegion = /^#endregion\b/.test(lineContent)
+          const isEndRegion = /^\s*#endregion\b/.test(lineContent)
 
           if (isEndRegion && state.stack.length > 0) {
             state.result.push({
@@ -175,12 +175,38 @@ const klipperConfigFoldingRanges = (lines: string[]): MonacoFoldingRange[] => {
     }, { stack: [], result: [] })
     .result
 
+  const saveConfigBlocks = lines
+    .reduce<ReduceState<MonacoFoldingRange>>((state, lineContent, index) => {
+      lineContent = lineContent.trim()
+
+      if (lineContent.length > 0) {
+        const isSaveConfigComment = /^\s*#\*#/.test(lineContent)
+
+        if (isSaveConfigComment) {
+          if (state.current) {
+            state.current.end = index + 1
+          } else {
+            state.result.push(state.current = {
+              kind: 'comment',
+              start: index + 1,
+              end: index + 1
+            })
+          }
+        } else {
+          state.current = undefined
+        }
+      }
+
+      return state
+    }, { result: [] })
+    .result
+
   const commentBlocks = lines
     .reduce<ReduceState<MonacoFoldingRange>>((state, lineContent, index) => {
       lineContent = lineContent.trim()
 
       if (lineContent.length > 0) {
-        const isComment = /^;|#(?!(?:region|endregion)\b)/.test(lineContent)
+        const isComment = /^\s*(?:;|#(?!region\b|endregion\b|\*#))/.test(lineContent)
 
         if (isComment) {
           if (state.current) {
@@ -204,6 +230,7 @@ const klipperConfigFoldingRanges = (lines: string[]): MonacoFoldingRange[] => {
   return [
     ...sectionBlocks,
     ...regionBlocks,
+    ...saveConfigBlocks,
     ...commentBlocks
   ]
 }
@@ -241,6 +268,7 @@ self.onmessage = (event: MessageEvent<MonacoLanguageWorkerRequestMessage>) => {
         break
       }
 
+      case 'moonraker-config':
       case 'klipper-config': {
         const foldingRanges = klipperConfigFoldingRanges(lines)
 

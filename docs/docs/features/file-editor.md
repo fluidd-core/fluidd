@@ -17,23 +17,23 @@ directly from your browser.
 
 ## Syntax highlighting
 
-Rich, TextMate grammar-based syntax highlighting is provided for the following
-file types:
+Syntax highlighting is provided for the following file types:
 
-| File Type                                                 | Highlighted Elements                                                                                                                                                                             |
-|-----------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Klipper config** (`.cfg`, `.conf`)                      | Section headers, keys and values, pin references, sensor and thermistor types, driver types, serial paths, booleans, numbers, and embedded G-code within macros including Jinja2 template blocks |
-| **G-code** (`.gcode`, `.g`, `.gc`, `.gco`, `.ufp`, `.nc`) | G/M/T commands, coordinates, feed rates, tool and offset registers, math functions, macro variables, and control keywords                                                                        |
-| **Log files** (`.log`)                                    | Log-level colorization (debug, info, warning, error, critical), timestamps, URLs, UUIDs, git SHAs, exception names, and stack traces                                                             |
-| **JSON**                                                  | Full validation and IntelliSense via a dedicated language worker                                                                                                                                 |
-| **CSS, SCSS, Less**                                       | Property completion, hover, and validation via a dedicated language worker                                                                                                                       |
-| **Markdown**                                              | Basic syntax highlighting                                                                                                                                                                        |
+| File Type                                                 | Highlighted Elements                                                                                                                     |
+|-----------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| **Klipper config** (`.cfg`)                               | Section headers, key names, values, boolean constants, comments, and SAVE_CONFIG block markers                                           |
+| **Moonraker config** (`.conf`)                            | Section headers, key names, values, boolean constants, space-prefixed escaped comment sigils (`\#`, `\;`), inline comments, and comments |
+| **G-code** (`.gcode`, `.g`, `.gc`, `.gco`, `.ufp`, `.nc`) | G/M/T commands, coordinates, feed rates, tool and offset registers, math functions, macro variables, and control keywords                |
+| **Log files** (`.log`)                                    | Log-level colorization (debug, info, warning, error, critical), timestamps, URLs, UUIDs, git SHAs, exception names, and stack traces     |
+| **JSON**                                                  | Full validation and IntelliSense via a dedicated language worker                                                                         |
+| **CSS, SCSS, Less**                                       | Property completion, hover, and validation via a dedicated language worker                                                               |
+| **Markdown**                                              | Basic syntax highlighting                                                                                                                |
 
 ## Documentation links
 
-When editing Klipper config files, clickable **CodeLens** links appear above
-each `[section]` header — linking directly to the relevant documentation page
-for:
+When editing Klipper or Moonraker config files, clickable **CodeLens** links
+appear above each `[section]` header — linking directly to the relevant
+documentation page for:
 
 - [Klipper](https://www.klipper3d.org/Config_Reference.html)
 - [Kalico](https://docs.kalico.gg/Config_Reference.html)
@@ -47,7 +47,7 @@ being edited. This feature can be disabled in the editor settings.
 
 ## Outline and navigation
 
-Klipper config files provide a two-level document outline:
+Klipper and Moonraker config files provide a two-level document outline:
 
 - **Sections** — each `[section_name]` block
 - **Properties** — each `key: value` or `key = value` within a section
@@ -57,13 +57,18 @@ property, or browse the outline panel.
 
 ## Code folding
 
-Collapsible regions are supported for both Klipper config and G-code files.
+Collapsible regions are supported for Klipper config, Moonraker config, and
+G-code files.
 
-**Klipper config:**
+**Klipper and Moonraker config:**
 
 - Section blocks — collapse an entire `[section]` and its contents
 - Comment blocks — consecutive comment lines fold together
 - Named regions — `#region` / `#endregion` markers for custom foldable areas
+
+**Klipper config only:**
+
+- SAVE_CONFIG blocks — the auto-generated `#*# ...` section folds as a unit
 
 **G-code:**
 

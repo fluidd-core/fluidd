@@ -135,9 +135,9 @@ src/
 ### Monaco Editor
 
 - Setup in `src/components/widgets/filesystem/setupMonaco.ts` (includes worker environment setup)
-- Monarch tokenizers for `gcode`, `klipper-config`, `log` languages (in `src/monaco/language/*.monarch.ts`)
-- Custom CodeLens providers (links to Klipper docs from config sections)
-- Document symbol provider for `klipper-config`; folding range provider for `klipper-config` and `gcode`
+- Monarch tokenizers for `gcode`, `klipper-config`, `moonraker-config`, `log` languages (in `src/monaco/language/*.monarch.ts`)
+- Custom CodeLens providers (links to Klipper/Moonraker docs from config sections)
+- CodeLens and document symbol providers for `klipper-config` and `moonraker-config`; folding range provider for `klipper-config`, `moonraker-config`, and `gcode`
 - Language providers run in dedicated Web Workers (`monacoCodeLensWorker`, `monacoDocumentSymbolsWorker`, `monacoFoldingRangesWorker`)
 
 ## Integration Points

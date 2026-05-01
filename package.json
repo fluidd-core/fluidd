@@ -25,8 +25,7 @@
     "test": "npm run test:unit",
     "test:unit": "vitest --environment jsdom --config ./vitest.config.ts",
     "type-check": "vue-tsc --build --noEmit",
-    "circular-check": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --tsconfig=./tsconfig.app.json",
-    "theme:convert": "cd tools; node convertTheme.mjs"
+    "circular-check": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --tsconfig=./tsconfig.app.json"
   },
   "main": "index.js",
   "dependencies": {
@@ -93,7 +92,6 @@
     "husky": "^9.1.7",
     "jsdom": "^29.0.2",
     "mockdate": "^3.0.5",
-    "monaco-vscode-textmate-theme-converter": "^0.1.7",
     "neostandard": "^0.13.0",
     "rollup": "^4.60.2",
     "sass-embedded": "^1.99.0",
