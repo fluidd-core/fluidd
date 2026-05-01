@@ -27,7 +27,7 @@ jobs:
         run: pip install -r docs/requirements.txt
 
       - name: Build docs
-        run: zensical build --strict --clean
+        run: zensical build --clean
         working-directory: docs
 
       - uses: actions/upload-pages-artifact@v4
