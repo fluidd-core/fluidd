@@ -13,15 +13,18 @@ import type * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 //      → # or ; as first non-whitespace drops the whole line.
 //
 //   2. Inline comments:
+//        line = line.expandtabs(tabsize=4)          ← runs FIRST
 //        cmt_match = re.search(r" +[#;]", line)
 //        if cmt_match: line = line[:cmt_match.start()]
-//      → ONE OR MORE SPACES before # or ; triggers a comment.
-//        The cut point is cmt_match.start(), so the leading space(s) are
-//        also removed. No whitespace before the sigil → kept in value.
-//        key=value#comment  → '#comment' kept  (no space before #)
-//        key=value;comment  → ';comment' kept  (no space before ;)
-//        key=value #comment → ' #comment' cut  (space before #)
-//        key=value ;comment → ' ;comment' cut  (space before ;)
+//      → expandtabs() converts tabs to spaces before the regex runs,
+//        so tabs before # or ; also trigger inline comment stripping.
+//        The regex requires one or more spaces (post-expansion) before
+//        the sigil. The cut point is cmt_match.start(), so the leading
+//        whitespace is also removed. No whitespace → kept in value.
+//        key=value#comment  → '#comment' kept   (no whitespace before #)
+//        key=value;comment  → ';comment' kept   (no whitespace before ;)
+//        key=value #comment → ' #comment' cut   (space before #)
+//        key=value\t#comment → '\t#comment' cut  (tab expanded to spaces)
 //
 //   3. Backslash escape:
 //        line = re.sub(r" \\(#|;)", r" \1", line)
