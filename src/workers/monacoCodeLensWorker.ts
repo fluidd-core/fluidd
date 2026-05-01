@@ -12,7 +12,7 @@ export type MonacoCodeLens = {
 const klipperConfigCodeLens = (lines: string[]): MonacoCodeLens[] => {
   return lines
     .reduce<ReduceState<MonacoCodeLens>>((state, lineContent, index) => {
-      const section = /^\[([^\]]+)\]/.exec(lineContent)
+      const section = /^\s*\[([^\]]+)\]/.exec(lineContent)
 
       if (section) {
         const lineNumber = index + 1
@@ -68,6 +68,7 @@ self.onmessage = (event: MessageEvent<MonacoLanguageWorkerRequestMessage>) => {
     const lines = message.content.split('\n')
 
     switch (message.language) {
+      case 'moonraker-config':
       case 'klipper-config': {
         const codeLens = klipperConfigCodeLens(lines)
 

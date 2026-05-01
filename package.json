@@ -93,7 +93,6 @@
     "husky": "^9.1.7",
     "jsdom": "^29.0.2",
     "mockdate": "^3.0.5",
-    "monaco-vscode-textmate-theme-converter": "^0.1.7",
     "neostandard": "^0.13.0",
     "rollup": "^4.60.2",
     "sass-embedded": "^1.99.0",
