@@ -1,97 +1,129 @@
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
 
 const gcodeMonarchLanguage: Monaco.languages.IMonarchLanguage = {
-  defaultToken: '',
   ignoreCase: true,
-  tokenPostfix: '.gcode',
+
+  decimal: /-?(?:\d+\.?\d*|\d*\.\d+)/,
+
+  override: /(?:\.\d+)?/,
 
   tokenizer: {
     root: [
-      // Comments
-      [/\(.*?\)/, 'comment'],
-      [/;.*$/, 'comment'],
+      [
+        /;.*$/,
+        'comment'
+      ],
 
-      // Control keywords
-      [/(?:GOTO|DO|END)\d+/, 'keyword.control'],
-      [/\b(?:IF|EQ|NE|LT|GT|LE|GE|WHILE|WH|AND|OR|XOR)\b/, 'keyword.control'],
+      [
+        /\*[^\s;]+/,
+        'tag'
+      ],
 
-      // Special G-codes (work offsets, etc.) - before general G-code match
-      [/G1?5[4-9](?:\.1)?(?:\s?P\d{1,3})?/, 'constant.numeric'],
-      [/G1[12]\d/, 'constant.numeric'],
-      [/G15(?:\s?H\d{1,2})?/, 'constant.numeric'],
+      [
+        /(m11[78]@override)((?:[^;\d][^;]*)?)/,
+        ['keyword.command.m', 'string']
+      ],
 
-      // General G-codes and M-codes
-      [/G\d{1,3}(?:\.\d)?/, 'markup.bold'],
-      [/M\d{1,3}/, 'keyword.operator.quantifier.regexp'],
+      [
+        /([gmnt])\d+@override/,
+        { token: 'keyword.command.$1' }
+      ],
 
-      // Macro variables
-      [/#\d+/, 'variable.other'],
-      [/#\[/, 'variable.other', '@bracketVar'],
+      [
+        /[a-z_]{2,}\d*/,
+        { token: 'keyword.macro', next: '@params' }
+      ],
 
-      // Line numbers and O-codes (start of line)
-      [/^N\d+/, 'constant.numeric'],
-      [/^O\d+/, 'string.regexp'],
+      [
+        /([a-z])\s*@decimal/,
+        { token: 'keyword.param.$1' }
+      ],
 
-      // P parameter
-      [/P\s?-?\d*\.?\d+/, 'string.regexp'],
-      [/P(?=\s?[#[])/, 'string.regexp'],
+      [
+        '@decimal',
+        'constant'
+      ],
 
-      // Speed/feed: S, E, F
-      [/S\s?-?\d*\.?\d+/, 'constant.language'],
-      [/S(?=\s?[#[])/, 'constant.language'],
-      [/[EF]\s?-?\d*\.?\d+/, 'constant.language'],
-      [/[EF](?=\.?[#[])/, 'constant.language'],
-
-      // Coordinates: X, Y
-      [/[XY]\s?-?\d*\.?\d+/, 'string'],
-      [/[XY](?=-?\.?[#[])/, 'string'],
-
-      // Coordinate: Z (highlighted as invalid/warning for visibility)
-      [/Z\s?-?\d*\.?\d+/, 'invalid'],
-      [/Z(?=-?\.?[#[])/, 'invalid'],
-
-      // Coordinates: A, B, C
-      [/[ABC]\s?-?\d*\.?\d+/, 'constant.character.escape'],
-      [/[ABC](?=-?\.?[#[])/, 'constant.character.escape'],
-
-      // Tools: D, H, T
-      [/[DHT]\s?\d+\.?\d*/, 'constant.character'],
-      [/[DHT](?=[#[])/, 'constant.character'],
-
-      // Modifiers: I, J, K
-      [/[IJK]-?\d*\.?\d+/, 'constant.character.escape'],
-      [/[IJK](?=-?\.?[#[])/, 'constant.character.escape'],
-
-      // Modifiers: Q, R, U, W
-      [/[QRUW]-?\d*\.?\d+/, 'support.constant.math'],
-      [/[QRUW](?=-?\.?[#[])/, 'support.constant.math'],
-
-      // Math functions
-      [/\b(?:SIN|COS|TAN|ASIN|ACOS|ATAN|FIX|FUP|LN|ROUND|SQRT|ABS|MOD)\b/, 'support.constant.math'],
-
-      // Operators
-      [/\*\*/, 'support.constant.math'],
-      [/[+*/]/, 'support.constant.math'],
-      [/-/, 'invalid'],
-
-      // Percent sign
-      [/%/, 'string'],
-
-      // Bracket expressions
-      [/\[/, 'delimiter.bracket', '@bracketExpr'],
-      [/\]/, 'delimiter.bracket']
+      [
+        /\s+/,
+        'white'
+      ]
     ],
 
-    bracketExpr: [
-      [/\[/, 'delimiter.bracket', '@push'],
-      [/\]/, 'delimiter.bracket', '@pop'],
-      { include: '@root' }
+    params: [
+      [
+        /[*;]/,
+        { token: '@rematch', next: '@pop' }
+      ],
+
+      [
+        /([a-z_]+)(=)/,
+        ['keyword.param', {
+          cases: {
+            '@eos': { token: 'operator', next: '@pop' },
+            '@default': { token: 'operator', next: '@value' }
+          }
+        }]
+      ],
+
+      [
+        /\s+/,
+        'white'
+      ],
+
+      [
+        '',
+        { token: '', next: '@pop' }
+      ]
     ],
 
-    bracketVar: [
-      [/\[/, 'variable.other', '@push'],
-      [/\]/, 'variable.other', '@pop'],
-      [/[^[\]]+/, 'variable.other']
+    value: [
+      [
+        /[*;]/,
+        { token: '@rematch', next: '@pop' }
+      ],
+
+      [
+        /"/,
+        {
+          cases: {
+            '@eos': { token: 'invalid', next: '@popall' },
+            '@default': { token: 'string.quote', bracket: '@open', next: '@string' }
+          }
+        }
+      ],
+
+      [
+        /\S+/,
+        { token: 'string', next: '@pop' }
+      ],
+
+      [
+        '',
+        { token: '', next: '@pop' }
+      ]
+    ],
+
+    string: [
+      [
+        /(\\"|[^"])+/,
+        {
+          cases: {
+            '@eos': { token: 'invalid', next: '@popall' },
+            '@default': 'string'
+          }
+        }
+      ],
+
+      [
+        /"/,
+        {
+          cases: {
+            '@eos': { token: 'string.quote', bracket: '@close', next: '@popall' },
+            '@default': { token: 'string.quote', bracket: '@close', next: '@pop' }
+          }
+        }
+      ]
     ]
   }
 }
