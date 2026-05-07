@@ -10,12 +10,17 @@ const gcodeMonarchLanguage: Monaco.languages.IMonarchLanguage = {
   tokenizer: {
     root: [
       [
+        /^(\s*)(n\d+)/,
+        ['white', 'keyword.command.n']
+      ],
+
+      [
         /;.*$/,
         'comment'
       ],
 
       [
-        /\*[^\s;]+/,
+        /\*\d+/,
         'tag'
       ],
 
@@ -25,7 +30,7 @@ const gcodeMonarchLanguage: Monaco.languages.IMonarchLanguage = {
       ],
 
       [
-        /([gmnt])\d+@override/,
+        /([gmt])\d+@override/,
         { token: 'keyword.command.$1' }
       ],
 
@@ -35,18 +40,18 @@ const gcodeMonarchLanguage: Monaco.languages.IMonarchLanguage = {
       ],
 
       [
-        /([a-z])\s*@decimal/,
+        /([a-mo-z])\s*@decimal/,
         { token: 'keyword.param.$1' }
-      ],
-
-      [
-        '@decimal',
-        'constant'
       ],
 
       [
         /\s+/,
         'white'
+      ],
+
+      [
+        '.*$',
+        'invalid'
       ]
     ],
 
