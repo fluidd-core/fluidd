@@ -101,9 +101,40 @@ describe('klipper-config Monarch tokenizer', () => {
       [
         'key = value\t;comment',
         [t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'], ['white', '\t'], ['comment', ';comment'])]
+      ],
+      // Values containing `:` or `=` — the value rule's `[^ \t]+` greedily
+      // consumes both, so URLs and key-like fragments stay in one string
+      // token.
+      [
+        'mqtt_address: mqtt://broker:1883/topic',
+        [t(['keyword', 'mqtt_address'], ['separator', ':'], ['white', ' '], ['string', 'mqtt://broker:1883/topic'])]
+      ],
+      [
+        'cmd = foo=bar',
+        [t(['keyword', 'cmd'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'foo=bar'])]
+      ],
+      [
+        'cmd: a=b c=d',
+        [t(['keyword', 'cmd'], ['separator', ':'], ['white', ' '], ['string', 'a=b c=d'])]
       ]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenize(input)).toEqual(expected)
+    })
+
+    // Empty value with a trailing space at end of line — the `@value`
+    // state's empty-value rule matches `[ \t]*` and, on @eos, transitions
+    // to `@checkValue` so the next line can still continue the value.
+    it('emits a trailing white token when the value is empty with whitespace', () => {
+      expect(tokenize('key = ')).toEqual([
+        t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '])
+      ])
+    })
+
+    it('still accepts a continuation after an empty trailing-whitespace value', () => {
+      expect(tokenize('key = \n  G28')).toEqual([
+        t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' ']),
+        t(['white', '  '], ['string', 'G28'])
+      ])
     })
   })
 
@@ -154,6 +185,60 @@ describe('klipper-config Monarch tokenizer', () => {
       ])
     })
 
+    it('also skips ; comment lines while waiting', () => {
+      expect(tokenize('gcode:\n; mid\n  G28')).toEqual([
+        t(['keyword', 'gcode'], ['separator', ':']),
+        t(['comment', '; mid']),
+        t(['white', '  '], ['string', 'G28'])
+      ])
+    })
+
+    it('skips indented comment lines while waiting', () => {
+      expect(tokenize('gcode:\n  # indented\n  G28')).toEqual([
+        t(['keyword', 'gcode'], ['separator', ':']),
+        t(['white', '  '], ['comment', '# indented']),
+        t(['white', '  '], ['string', 'G28'])
+      ])
+    })
+
+    it('skips whitespace-only lines while waiting', () => {
+      expect(tokenize('gcode:\n   \n  G28')).toEqual([
+        t(['keyword', 'gcode'], ['separator', ':']),
+        t(['white', '   ']),
+        t(['white', '  '], ['string', 'G28'])
+      ])
+    })
+
+    // The `@value` state has its own inline-comment rule, so a `;` (or
+    // `#`) preceded by whitespace inside a continuation body is stripped
+    // the same way as on the original key=value line.
+    it('strips inline comments inside a continuation body', () => {
+      expect(tokenize('gcode:\n  G28 ; mid-comment')).toEqual([
+        t(['keyword', 'gcode'], ['separator', ':']),
+        t(['white', '  '], ['string', 'G28'], ['white', ' '], ['comment', '; mid-comment'])
+      ])
+    })
+
+    // `$S2` is a literal byte-substitution: a key indented with two
+    // spaces is *not* continued by a tab-indented next line, even though
+    // they may render the same width.
+    it('does not continue when next-line indent does not start with the key indent literally', () => {
+      expect(tokenize('\tgcode:\n  G28')).toEqual([
+        t(['white', '\t'], ['keyword', 'gcode'], ['separator', ':']),
+        t(['white', '  '], ['invalid', 'G28'])
+      ])
+    })
+
+    it('weaves blank lines and indented comments through a multi-line continuation', () => {
+      expect(tokenize('gcode:\n  G28\n\n  ; reset\n  G1')).toEqual([
+        t(['keyword', 'gcode'], ['separator', ':']),
+        t(['white', '  '], ['string', 'G28']),
+        t(),
+        t(['white', '  '], ['comment', '; reset']),
+        t(['white', '  '], ['string', 'G1'])
+      ])
+    })
+
     it('does not continue when the next line has no indent', () => {
       // `G28` with zero indent fails the continuation lookahead and falls
       // through to root, where the catch-all rule emits `invalid`.
@@ -182,7 +267,14 @@ describe('klipper-config Monarch tokenizer', () => {
       ['# hello', [t(['comment', '# hello'])]],
       ['; hello', [t(['comment', '; hello'])]],
       ['   ', [t(['white', '   '])]],
-      ['???', [t(['invalid', '???'])]]
+      ['???', [t(['invalid', '???'])]],
+      // Empty section header — `[^\]]+` requires at least one inner char,
+      // so `[]` falls through to the catch-all `.*$` rule.
+      ['[]', [t(['invalid', '[]'])]],
+      // Lines that start with a separator have no key, so the root rule
+      // doesn't match and the whole line is consumed by the catch-all.
+      ['=value', [t(['invalid', '=value'])]],
+      [':foo', [t(['invalid', ':foo'])]]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenize(input)).toEqual(expected)
     })
