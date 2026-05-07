@@ -1,0 +1,386 @@
+import language from '../gcode.monarch'
+import { registerLanguage, type TokenLine, tokenBuilder, tokenizeLines } from './tokenize-helper'
+
+const LANG = 'gcode'
+
+const t = tokenBuilder(LANG)
+
+const tokenize = (text: string) => tokenizeLines(text, LANG)
+
+beforeAll(() => {
+  registerLanguage(LANG, language)
+})
+
+describe('gcode Monarch tokenizer', () => {
+  describe('G/M/N/T commands', () => {
+    it.each<[string, TokenLine[][]]>([
+      ['G1', [t(['keyword.command.g', 'G1'])]],
+      ['G28', [t(['keyword.command.g', 'G28'])]],
+      // The `override` macro tolerates a trailing `.\d+` so commands like
+      // G28.1, M204.1 still tokenize as a single command token.
+      ['G28.1', [t(['keyword.command.g', 'G28.1'])]],
+      ['M104', [t(['keyword.command.m', 'M104'])]],
+      ['T0', [t(['keyword.command.t', 'T0'])]],
+      ['N5', [t(['keyword.command.n', 'N5'])]]
+    ])('tokenizes %j', (input, expected) => {
+      expect(tokenize(input)).toEqual(expected)
+    })
+  })
+
+  describe('parameter letter + decimal', () => {
+    it.each<[string, TokenLine[][]]>([
+      [
+        'G1 X10',
+        [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X10'])]
+      ],
+      [
+        'G1 X10 Y-3.5 Z.5',
+        [t(
+          ['keyword.command.g', 'G1'],
+          ['white', ' '], ['keyword.param.x', 'X10'],
+          ['white', ' '], ['keyword.param.y', 'Y-3.5'],
+          ['white', ' '], ['keyword.param.z', 'Z.5']
+        )]
+      ],
+      // Multiple spaces between tokens collapse into a single white token.
+      [
+        'G1   X10  Y20',
+        [t(
+          ['keyword.command.g', 'G1'],
+          ['white', '   '], ['keyword.param.x', 'X10'],
+          ['white', '  '], ['keyword.param.y', 'Y20']
+        )]
+      ]
+    ])('tokenizes %j', (input, expected) => {
+      expect(tokenize(input)).toEqual(expected)
+    })
+  })
+
+  describe('case-insensitive matching (ignoreCase)', () => {
+    it('lowercase command and param tokenize the same as uppercase', () => {
+      expect(tokenize('g1 x10')).toEqual([t(
+        ['keyword.command.g', 'g1'], ['white', ' '], ['keyword.param.x', 'x10']
+      )])
+    })
+  })
+
+  describe('comments', () => {
+    it.each<[string, TokenLine[][]]>([
+      ['; full line comment', [t(['comment', '; full line comment'])]],
+      [
+        'G1 X10 ; some comment',
+        [t(
+          ['keyword.command.g', 'G1'],
+          ['white', ' '], ['keyword.param.x', 'X10'],
+          ['white', ' '], ['comment', '; some comment']
+        )]
+      ]
+    ])('tokenizes %j', (input, expected) => {
+      expect(tokenize(input)).toEqual(expected)
+    })
+  })
+
+  describe('checksum tag (*…)', () => {
+    it('captures a *NNN checksum after a value', () => {
+      expect(tokenize('G1 X0*123')).toEqual([t(
+        ['keyword.command.g', 'G1'],
+        ['white', ' '], ['keyword.param.x', 'X0'],
+        ['tag', '*123']
+      )])
+    })
+
+    it('captures a standalone *foo as a tag', () => {
+      expect(tokenize('*checksum')).toEqual([t(['tag', '*checksum'])])
+    })
+
+    // The tag regex `\*[^\s;]+` requires at least one non-space, non-semicolon
+    // char after `*`. A lone `*` falls through to the Monarch default token.
+    it('tokenizes a lone * as the default source token', () => {
+      expect(tokenize('*')).toEqual([t(['source', '*'])])
+    })
+  })
+
+  describe('M117 / M118 string payload', () => {
+    it('captures the rest of the line as a single string token', () => {
+      expect(tokenize('M117 Hello World')).toEqual([t(
+        ['keyword.command.m', 'M117'],
+        ['string', ' Hello World']
+      )])
+    })
+
+    it('also applies to M118', () => {
+      expect(tokenize('M118 status: ok')).toEqual([t(
+        ['keyword.command.m', 'M118'],
+        ['string', ' status: ok']
+      )])
+    })
+
+    it('emits no string token when the payload is empty', () => {
+      expect(tokenize('M117')).toEqual([t(['keyword.command.m', 'M117'])])
+    })
+
+    // The M117/M118 payload regex stops at `;`, so a trailing comment is
+    // recognised — the leading whitespace is captured as part of the payload
+    // string token, and the comment is tokenised normally.
+    it('lets a trailing ; comment terminate the payload', () => {
+      expect(tokenize('M117 ; not a comment')).toEqual([t(
+        ['keyword.command.m', 'M117'],
+        ['string', ' '],
+        ['comment', '; not a comment']
+      )])
+    })
+  })
+
+  describe('macros and macro params', () => {
+    it('tokenizes a bare macro identifier', () => {
+      expect(tokenize('MY_MACRO')).toEqual([t(['keyword.macro', 'MY_MACRO'])])
+    })
+
+    it('tokenizes key=value macro params', () => {
+      expect(tokenize('MY_MACRO X=1 Y=2')).toEqual([t(
+        ['keyword.macro', 'MY_MACRO'],
+        ['white', ' '], ['keyword.param', 'X'], ['operator', '='], ['string', '1'],
+        ['white', ' '], ['keyword.param', 'Y'], ['operator', '='], ['string', '2']
+      )])
+    })
+
+    it('tokenizes quoted-string macro params', () => {
+      expect(tokenize('MY_MACRO MSG="hello world"')).toEqual([t(
+        ['keyword.macro', 'MY_MACRO'],
+        ['white', ' '],
+        ['keyword.param', 'MSG'],
+        ['operator', '='],
+        ['string.quote', '"'],
+        ['string', 'hello world'],
+        ['string.quote', '"']
+      )])
+    })
+
+    // Backslash-escaped quotes inside a quoted string are part of the string
+    // body — the closing `"` is the unescaped one.
+    it('preserves \\" sequences inside the quoted string body', () => {
+      expect(tokenize('MY_MACRO MSG="he said \\"hi\\""')).toEqual([t(
+        ['keyword.macro', 'MY_MACRO'],
+        ['white', ' '],
+        ['keyword.param', 'MSG'],
+        ['operator', '='],
+        ['string.quote', '"'],
+        ['string', 'he said \\"hi\\"'],
+        ['string.quote', '"']
+      )])
+    })
+
+    it('lets a trailing ; comment terminate the param list', () => {
+      expect(tokenize('MY_MACRO X=1 ; comment')).toEqual([t(
+        ['keyword.macro', 'MY_MACRO'],
+        ['white', ' '], ['keyword.param', 'X'], ['operator', '='], ['string', '1'],
+        ['white', ' '], ['comment', '; comment']
+      )])
+    })
+
+    // Empty / missing values. At end of line the `key=` rule branches via
+    // `@eos`: the `=` is still emitted as `operator`, but the state pops
+    // straight back to @params instead of entering @value, avoiding a
+    // cross-line leak (see "state resets across lines").
+    it('emits no string token when the value is empty (end of line)', () => {
+      expect(tokenize('MY_MACRO X=')).toEqual([t(
+        ['keyword.macro', 'MY_MACRO'],
+        ['white', ' '], ['keyword.param', 'X'], ['operator', '=']
+      )])
+    })
+
+    it('handles an empty value followed by another param', () => {
+      expect(tokenize('MY_MACRO X= Y=2')).toEqual([t(
+        ['keyword.macro', 'MY_MACRO'],
+        ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
+        ['white', ' '], ['keyword.param', 'Y'], ['operator', '='], ['string', '2']
+      )])
+    })
+
+    // Empty quoted string: the open and close quotes are both
+    // `string.quote`, and Monaco's emit-time coalescing merges them into one
+    // span "" — there is no inner string token because @string consumes
+    // nothing before seeing the closing quote.
+    it('handles an empty quoted value', () => {
+      expect(tokenize('MY_MACRO X=""')).toEqual([t(
+        ['keyword.macro', 'MY_MACRO'],
+        ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
+        ['string.quote', '""']
+      )])
+    })
+
+    // The @value state's `\S+` rule is greedy and stops only at whitespace,
+    // `*`, or `;` — so `Y=2` after `X=` is consumed as the value of X, not
+    // parsed as a new key=value pair.
+    it('treats the next non-whitespace run as the value, even if it looks like a key=value', () => {
+      expect(tokenize('MY_MACRO X=Y=2')).toEqual([t(
+        ['keyword.macro', 'MY_MACRO'],
+        ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
+        ['string', 'Y=2']
+      )])
+    })
+  })
+
+  // Real G-code can pack multiple words onto a single line with no spaces.
+  // The Monarch rules match each command/param separately — but Monaco
+  // coalesces adjacent tokens that share the *same* type into one span at
+  // emit time. So `G28G1` (two `keyword.command.g` tokens) shows up as a
+  // single merged span, while `G28T0` (different sub-types: g and t) stays
+  // as two distinct tokens. These cases pin both behaviours.
+  describe('chained commands without whitespace', () => {
+    it('tokenizes a long no-space chain of commands and params', () => {
+      expect(tokenize('G28G1X10Y2.2T0M106S200M140S50')).toEqual([t(
+        ['keyword.command.g', 'G28G1'],
+        ['keyword.param.x', 'X10'],
+        ['keyword.param.y', 'Y2.2'],
+        ['keyword.command.t', 'T0'],
+        ['keyword.command.m', 'M106'],
+        ['keyword.param.s', 'S200'],
+        ['keyword.command.m', 'M140'],
+        ['keyword.param.s', 'S50']
+      )])
+    })
+
+    it('tokenizes command + param with no space', () => {
+      expect(tokenize('G1X10')).toEqual([t(
+        ['keyword.command.g', 'G1'], ['keyword.param.x', 'X10']
+      )])
+    })
+
+    it('keeps adjacent params with different letters as separate tokens', () => {
+      expect(tokenize('G1X10Y20')).toEqual([t(
+        ['keyword.command.g', 'G1'],
+        ['keyword.param.x', 'X10'],
+        ['keyword.param.y', 'Y20']
+      )])
+    })
+
+    it('keeps adjacent commands with different letters as separate tokens', () => {
+      expect(tokenize('G28T0')).toEqual([t(
+        ['keyword.command.g', 'G28'], ['keyword.command.t', 'T0']
+      )])
+    })
+
+    it('merges adjacent same-letter commands into one span', () => {
+      // G28 and G1 are both `keyword.command.g`; the override keeps merging
+      // through G28.1 too.
+      expect(tokenize('G28.1G1X10')).toEqual([t(
+        ['keyword.command.g', 'G28.1G1'],
+        ['keyword.param.x', 'X10']
+      )])
+    })
+
+    it('captures a checksum tag even with no whitespace before it', () => {
+      expect(tokenize('G1X10*123')).toEqual([t(
+        ['keyword.command.g', 'G1'],
+        ['keyword.param.x', 'X10'],
+        ['tag', '*123']
+      )])
+    })
+  })
+
+  // Each line must tokenize independently — macro/param state must not leak
+  // into the following line.
+  describe('state resets across lines', () => {
+    it('returns to root after a bare macro line', () => {
+      expect(tokenize('MY_MACRO\nG28')).toEqual([
+        t(['keyword.macro', 'MY_MACRO']),
+        t(['keyword.command.g', 'G28'])
+      ])
+    })
+
+    it('returns to root after a macro line with params', () => {
+      expect(tokenize('MY_MACRO X=1\nG28')).toEqual([
+        t(['keyword.macro', 'MY_MACRO'], ['white', ' '], ['keyword.param', 'X'], ['operator', '='], ['string', '1']),
+        t(['keyword.command.g', 'G28'])
+      ])
+    })
+
+    it('tokenizes a small program independently per line', () => {
+      expect(tokenize('G28\nG1 X10\nM104 S200')).toEqual([
+        t(['keyword.command.g', 'G28']),
+        t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X10']),
+        t(['keyword.command.m', 'M104'], ['white', ' '], ['keyword.param.s', 'S200'])
+      ])
+    })
+
+    // The `key=` rule's @eos branch pops back to @params at end of line
+    // when there is no value, so the @value state never activates and the
+    // next line tokenizes from root.
+    it('does not leak state when a param value is empty at end of line', () => {
+      expect(tokenize('MY_MACRO X=\nG28')).toEqual([
+        t(['keyword.macro', 'MY_MACRO'], ['white', ' '], ['keyword.param', 'X'], ['operator', '=']),
+        t(['keyword.command.g', 'G28'])
+      ])
+    })
+
+    // An unclosed quote with content — `@string`'s content regex now has
+    // an `@eos` branch that emits `invalid` and `@popall`s back to root,
+    // so the next line tokenizes from root.
+    it('marks unclosed-quote content as invalid and recovers on the next line', () => {
+      expect(tokenize('MY_MACRO X="hello\nG28')).toEqual([
+        t(
+          ['keyword.macro', 'MY_MACRO'],
+          ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
+          ['string.quote', '"'], ['invalid', 'hello']
+        ),
+        t(['keyword.command.g', 'G28'])
+      ])
+    })
+
+    // A bare opening `"` at end of line — @value's `"` rule now has an
+    // `@eos` branch that emits `invalid` and `@popall`s back to root.
+    it('marks a bare opening " at end of line as invalid and recovers', () => {
+      expect(tokenize('MY_MACRO X="\nG28')).toEqual([
+        t(
+          ['keyword.macro', 'MY_MACRO'],
+          ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
+          ['invalid', '"']
+        ),
+        t(['keyword.command.g', 'G28'])
+      ])
+    })
+
+    // A closing `"` on the last column of a line — @string's closing-`"`
+    // rule's `@eos` branch uses `@popall` instead of `@pop`, going
+    // straight to root so neither @value nor @params is left parked at
+    // EOL.
+    it('recovers when the closing " is at end of line', () => {
+      expect(tokenize('MY_MACRO X="hello"\nG28')).toEqual([
+        t(
+          ['keyword.macro', 'MY_MACRO'],
+          ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
+          ['string.quote', '"'], ['string', 'hello'], ['string.quote', '"']
+        ),
+        t(['keyword.command.g', 'G28'])
+      ])
+    })
+
+    // A single trailing whitespace char after the closing `"` is enough
+    // for @value to pop back through @params to root: the `\s+` rule in
+    // @params consumes it, then the empty-regex pop fires.
+    it('recovers when a closing " is followed by whitespace', () => {
+      expect(tokenize('MY_MACRO X="hello" \nG28')).toEqual([
+        t(
+          ['keyword.macro', 'MY_MACRO'],
+          ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
+          ['string.quote', '"'], ['string', 'hello'], ['string.quote', '"'],
+          ['white', ' ']
+        ),
+        t(['keyword.command.g', 'G28'])
+      ])
+    })
+  })
+
+  describe('edge cases', () => {
+    it.each<[string, TokenLine[][]]>([
+      ['', [[]]],
+      ['   ', [t(['white', '   '])]],
+      // A standalone numeric literal at root falls through to @decimal /
+      // 'constant' — uncommon in real G-code but well-defined.
+      ['42', [t(['constant', '42'])]]
+    ])('tokenizes %j', (input, expected) => {
+      expect(tokenize(input)).toEqual(expected)
+    })
+  })
+})

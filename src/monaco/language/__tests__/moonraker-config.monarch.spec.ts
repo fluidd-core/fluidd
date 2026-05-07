@@ -1,31 +1,14 @@
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
-
 import { conf, language } from '../moonraker-config.monarch'
+import { registerLanguage, type TokenLine, tokenBuilder, tokenizeLines } from './tokenize-helper'
 
 const LANG = 'moonraker-config'
 
-interface TokenLine { type: string, value: string }
+const t = tokenBuilder(LANG)
 
-// Variadic line-builder. Each `[baseType, value]` tuple becomes one token;
-// Monaco appends `.<langId>` to every Monarch token type.
-const t = (...tokens: Array<[baseType: string, value: string]>): TokenLine[] =>
-  tokens.map(([baseType, value]) => ({ type: `${baseType}.${LANG}`, value }))
-
-const tokenize = (text: string): TokenLine[][] => {
-  const lines = text.split('\n')
-  return monaco.editor.tokenize(text, LANG).map((tokens, lineIdx) => {
-    const line = lines[lineIdx] ?? ''
-    return tokens.map((tok, i) => ({
-      type: tok.type,
-      value: line.slice(tok.offset, tokens[i + 1]?.offset ?? line.length)
-    }))
-  })
-}
+const tokenize = (text: string) => tokenizeLines(text, LANG)
 
 beforeAll(() => {
-  monaco.languages.register({ id: LANG })
-  monaco.languages.setMonarchTokensProvider(LANG, language)
-  monaco.languages.setLanguageConfiguration(LANG, conf)
+  registerLanguage(LANG, language, conf)
 })
 
 describe('moonraker-config Monarch tokenizer', () => {
