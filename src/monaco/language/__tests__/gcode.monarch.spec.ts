@@ -12,7 +12,7 @@ beforeAll(() => {
 })
 
 describe('gcode Monarch tokenizer', () => {
-  describe('G/M/N/T commands', () => {
+  describe('G/M/T commands', () => {
     it.each<[string, TokenLine[][]]>([
       ['G1', [t(['keyword.command.g', 'G1'])]],
       ['G28', [t(['keyword.command.g', 'G28'])]],
@@ -20,10 +20,45 @@ describe('gcode Monarch tokenizer', () => {
       // G28.1, M204.1 still tokenize as a single command token.
       ['G28.1', [t(['keyword.command.g', 'G28.1'])]],
       ['M104', [t(['keyword.command.m', 'M104'])]],
-      ['T0', [t(['keyword.command.t', 'T0'])]],
-      ['N5', [t(['keyword.command.n', 'N5'])]]
+      ['T0', [t(['keyword.command.t', 'T0'])]]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenize(input)).toEqual(expected)
+    })
+  })
+
+  // `N` is handled by a dedicated `^(\s*)(n\d+)` rule that only fires at
+  // the very start of a line. Mid-line `N` is excluded from both the
+  // command rule (`[gmt]`) and the param rule (`[a-mo-z]`), so it falls
+  // through to the catch-all `invalid` rule.
+  describe('N line numbers (line-start only)', () => {
+    it('matches at the very start of a line', () => {
+      expect(tokenize('N5')).toEqual([t(['keyword.command.n', 'N5'])])
+    })
+
+    it('matches with leading whitespace', () => {
+      expect(tokenize('  N5')).toEqual([t(['white', '  '], ['keyword.command.n', 'N5'])])
+    })
+
+    it('chains with subsequent commands and params on the same line', () => {
+      expect(tokenize('N5 G1 X10')).toEqual([t(
+        ['keyword.command.n', 'N5'],
+        ['white', ' '],
+        ['keyword.command.g', 'G1'],
+        ['white', ' '],
+        ['keyword.param.x', 'X10']
+      )])
+    })
+
+    it('tokenizes mid-line N as invalid', () => {
+      expect(tokenize('G1 N5')).toEqual([t(
+        ['keyword.command.g', 'G1'],
+        ['white', ' '],
+        ['invalid', 'N5']
+      )])
+    })
+
+    it('still applies ignoreCase to the line-start rule', () => {
+      expect(tokenize('n5')).toEqual([t(['keyword.command.n', 'n5'])])
     })
   })
 
@@ -80,7 +115,7 @@ describe('gcode Monarch tokenizer', () => {
     })
   })
 
-  describe('checksum tag (*…)', () => {
+  describe('checksum tag (*N)', () => {
     it('captures a *NNN checksum after a value', () => {
       expect(tokenize('G1 X0*123')).toEqual([t(
         ['keyword.command.g', 'G1'],
@@ -89,14 +124,19 @@ describe('gcode Monarch tokenizer', () => {
       )])
     })
 
-    it('captures a standalone *foo as a tag', () => {
-      expect(tokenize('*checksum')).toEqual([t(['tag', '*checksum'])])
+    it('captures a standalone *NNN as a tag', () => {
+      expect(tokenize('*123')).toEqual([t(['tag', '*123'])])
     })
 
-    // The tag regex `\*[^\s;]+` requires at least one non-space, non-semicolon
-    // char after `*`. A lone `*` falls through to the Monarch default token.
-    it('tokenizes a lone * as the default source token', () => {
-      expect(tokenize('*')).toEqual([t(['source', '*'])])
+    // The tag regex `\*\d+` requires digits after `*`, so non-digit
+    // content like `*checksum` falls through to the catch-all `invalid`
+    // rule rather than being treated as a tag.
+    it('tokenizes *foo (non-digit) as invalid', () => {
+      expect(tokenize('*checksum')).toEqual([t(['invalid', '*checksum'])])
+    })
+
+    it('tokenizes a lone * as invalid', () => {
+      expect(tokenize('*')).toEqual([t(['invalid', '*'])])
     })
   })
 
@@ -376,9 +416,10 @@ describe('gcode Monarch tokenizer', () => {
     it.each<[string, TokenLine[][]]>([
       ['', [[]]],
       ['   ', [t(['white', '   '])]],
-      // A standalone numeric literal at root falls through to @decimal /
-      // 'constant' — uncommon in real G-code but well-defined.
-      ['42', [t(['constant', '42'])]]
+      // A standalone numeric literal at root has no rule to match it any
+      // more (the `@decimal` → `'constant'` rule was removed) and falls
+      // through to the catch-all `invalid` rule.
+      ['42', [t(['invalid', '42'])]]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenize(input)).toEqual(expected)
     })
