@@ -165,8 +165,9 @@ src/
 ## Testing Conventions
 
 - Unit tests in `src/util/__tests__/*.spec.ts` with Vitest + jsdom
+- Monarch tokenizer tests co-located in `src/monaco/language/__tests__/` — use shared `tokenize-helper.ts` (`registerLanguage`, `tokenizeLines`, `tokenBuilder`)
 - Global test functions (`describe`, `it`, `expect`) — `globals: true` in vitest config
-- Setup file: `tests/unit/setup.ts`
+- Setup file: `tests/unit/setup.ts` — includes `CSS.escape` and `window.matchMedia` polyfills required by Monaco in jsdom
 - Time manipulation utility: `timeTravel(date, callback)` in `tests/unit/utils.ts`
 - Parameterized tests: `it.each([...])` pattern
 - Test store actions/mutations independently from UI
