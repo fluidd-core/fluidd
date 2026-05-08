@@ -22,6 +22,32 @@ describe('klipper-config Monarch tokenizer', () => {
         '[heater_bed nozzle]',
         [t(['bracket', '['], ['type.identifier', 'heater_bed nozzle'], ['bracket', ']'])]
       ],
+      // Canonical Klipper section-with-arg shape (`gcode_macro`,
+      // `gcode_button`, `heater_generic`, etc.) — same regex path as
+      // `[heater_bed nozzle]` but pinned because it's the most common form
+      // a user will see.
+      [
+        '[gcode_macro MY_MACRO]',
+        [t(['bracket', '['], ['type.identifier', 'gcode_macro MY_MACRO'], ['bracket', ']'])]
+      ],
+      // Klipper's `[include]` directive — slash and `*` are not in the
+      // identifier exclusion set, so the whole `include …` argument lands
+      // in a single `type.identifier` token.
+      [
+        '[include extras/*.cfg]',
+        [t(['bracket', '['], ['type.identifier', 'include extras/*.cfg'], ['bracket', ']'])]
+      ],
+      // configparser's SECTCRE strips bracket-internal whitespace before
+      // matching; the tokenizer keeps it verbatim. `[ ]` matches because
+      // `[^\]]+` requires only one char, and a space qualifies.
+      [
+        '[ section ]',
+        [t(['bracket', '['], ['type.identifier', ' section '], ['bracket', ']'])]
+      ],
+      [
+        '[ ]',
+        [t(['bracket', '['], ['type.identifier', ' '], ['bracket', ']'])]
+      ],
       // configparser strips inline comments before parsing, so all four
       // variants below yield the same parsed header in real Klipper. The
       // tokenizer does not replicate that strip — assertions pin the actual
@@ -44,6 +70,13 @@ describe('klipper-config Monarch tokenizer', () => {
       ]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenize(input)).toEqual(expected)
+    })
+
+    // Unclosed `[`: the section regex requires a literal `]`, the line has
+    // no separator, and `[` is in `[^#;=: \t]+` so configparser-style key
+    // detection also fails. The whole line falls through to the catch-all.
+    it('tokenizes an unclosed [section as invalid', () => {
+      expect(tokenize('[stepper_x')).toEqual([t(['invalid', '[stepper_x'])])
     })
   })
 
@@ -116,9 +149,26 @@ describe('klipper-config Monarch tokenizer', () => {
       [
         'cmd: a=b c=d',
         [t(['keyword', 'cmd'], ['separator', ':'], ['white', ' '], ['string', 'a=b c=d'])]
+      ],
+      // `variable_*` keys typically hold quoted strings (Klipper passes the
+      // raw value through `ast.literal_eval`). The tokenizer has no string
+      // sub-state — quotes are kept inside the single `string` token.
+      [
+        'variable_msg: "hello world"',
+        [t(['keyword', 'variable_msg'], ['separator', ':'], ['white', ' '], ['string', '"hello world"'])]
       ]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenize(input)).toEqual(expected)
+    })
+
+    // Trailing whitespace after the value: the value rule emits `string`,
+    // then the empty-value rule's `[ \t]*` consumes the rest as `white`
+    // and (on @eos) transitions to `@checkValue.$S2` so a continuation
+    // can still follow on the next line.
+    it('emits trailing whitespace after a value as a white token', () => {
+      expect(tokenize('key = value   ')).toEqual([
+        t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'], ['white', '   '])
+      ])
     })
 
     // Empty value with a trailing space at end of line — the `@value`
@@ -247,6 +297,18 @@ describe('klipper-config Monarch tokenizer', () => {
         t(['invalid', 'G28'])
       ])
     })
+
+    // A `[section]`-shaped line inside an active continuation is *not* a
+    // section header — the tokenizer is in `@value` and the value rule
+    // greedily consumes `[foo]` as a single `string` token. Pinning this
+    // catches an accidental `^` anchor on the section regex bringing it
+    // into root precedence over an active continuation.
+    it('treats an indented [section] line as part of the continuation value', () => {
+      expect(tokenize('gcode:\n  [foo]')).toEqual([
+        t(['keyword', 'gcode'], ['separator', ':']),
+        t(['white', '  '], ['string', '[foo]'])
+      ])
+    })
   })
 
   describe('SAVE_CONFIG marker (#*#)', () => {
@@ -258,6 +320,17 @@ describe('klipper-config Monarch tokenizer', () => {
 
     it('does not match a regular # comment', () => {
       expect(tokenize('# hello')).toEqual([t(['comment', '# hello'])])
+    })
+
+    // Klipper's `_read_config_file` strips the SAVE_CONFIG block by
+    // `line.startswith('#*#')` (column 0 only). The tokenizer's rule has
+    // a `^` anchor too, so an indented `#*#` is *not* save-config — it
+    // falls through to the regular `[#;].*$` comment rule after the
+    // whitespace prefix is consumed.
+    it('does not match #*# preceded by whitespace (column 0 only)', () => {
+      expect(tokenize('  #*# [stepper_x]')).toEqual([
+        t(['white', '  '], ['comment', '#*# [stepper_x]'])
+      ])
     })
   })
 

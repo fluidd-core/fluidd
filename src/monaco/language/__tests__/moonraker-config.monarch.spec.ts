@@ -22,6 +22,37 @@ describe('moonraker-config Monarch tokenizer', () => {
         '[machine name]',
         [t(['bracket', '['], ['type.identifier', 'machine name'], ['bracket', ']'])]
       ],
+      // Canonical Moonraker section-with-arg shapes (`notifier <name>`,
+      // `update_manager <name>`, `power <name>`, etc.) — same regex path
+      // as `[machine name]` but pinned because these are the most common
+      // forms a user will see.
+      [
+        '[notifier my_telegram]',
+        [t(['bracket', '['], ['type.identifier', 'notifier my_telegram'], ['bracket', ']'])]
+      ],
+      [
+        '[update_manager fluidd]',
+        [t(['bracket', '['], ['type.identifier', 'update_manager fluidd'], ['bracket', ']'])]
+      ],
+      // Moonraker's `[include]` directive — slash and `*` are not in the
+      // identifier exclusion set, so the whole `include …` argument lands
+      // in a single `type.identifier` token.
+      [
+        '[include extras/*.conf]',
+        [t(['bracket', '['], ['type.identifier', 'include extras/*.conf'], ['bracket', ']'])]
+      ],
+      // Moonraker's `section_r` (`\s*\[([^]]+)\]`) does not strip
+      // bracket-internal whitespace; configparser's section lookup also
+      // keeps it. `[ ]` matches because `[^\]]+` requires only one char,
+      // and a space qualifies.
+      [
+        '[ section ]',
+        [t(['bracket', '['], ['type.identifier', ' section '], ['bracket', ']'])]
+      ],
+      [
+        '[ ]',
+        [t(['bracket', '['], ['type.identifier', ' '], ['bracket', ']'])]
+      ],
       // The Moonraker pre-processor strips inline comments before configparser
       // sees the line; the tokenizer does not replicate the strip — these
       // assertions pin the actual Monaco output.
@@ -43,6 +74,13 @@ describe('moonraker-config Monarch tokenizer', () => {
       ]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenize(input)).toEqual(expected)
+    })
+
+    // Unclosed `[`: the section regex requires a literal `]`, the line has
+    // no separator, and `[` is in `[^#;=: \t]+` so configparser-style key
+    // detection also fails. The whole line falls through to the catch-all.
+    it('tokenizes an unclosed [section as invalid', () => {
+      expect(tokenize('[server')).toEqual([t(['invalid', '[server'])])
     })
   })
 
@@ -113,9 +151,26 @@ describe('moonraker-config Monarch tokenizer', () => {
       [
         'cmd: a=b c=d',
         [t(['keyword', 'cmd'], ['separator', ':'], ['white', ' '], ['string', 'a=b c=d'])]
+      ],
+      // Moonraker's typed accessors (`getstr`, `getlist`, etc.) leave
+      // quotes inside the raw value. The tokenizer has no string sub-state
+      // — quotes are kept inside the single `string` token.
+      [
+        'name: "Pedro Lamas"',
+        [t(['keyword', 'name'], ['separator', ':'], ['white', ' '], ['string', '"Pedro Lamas"'])]
       ]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenize(input)).toEqual(expected)
+    })
+
+    // Trailing whitespace after the value: the value rule emits `string`,
+    // then the empty-value rule's `[ \t]*` consumes the rest as `white`
+    // and (on @eos) transitions to `@checkValue.$S2` so a continuation
+    // can still follow on the next line.
+    it('emits trailing whitespace after a value as a white token', () => {
+      expect(tokenize('key = value   ')).toEqual([
+        t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'], ['white', '   '])
+      ])
     })
 
     // Empty value with a trailing space at end of line — the `@value`
@@ -252,6 +307,18 @@ describe('moonraker-config Monarch tokenizer', () => {
       expect(tokenize('key:\nG28')).toEqual([
         t(['keyword', 'key'], ['separator', ':']),
         t(['invalid', 'G28'])
+      ])
+    })
+
+    // A `[section]`-shaped line inside an active continuation is *not* a
+    // section header — the tokenizer is in `@value` and the value rule
+    // greedily consumes `[foo]` as a single `string` token. Pinning this
+    // catches an accidental `^` anchor on the section regex bringing it
+    // into root precedence over an active continuation.
+    it('treats an indented [section] line as part of the continuation value', () => {
+      expect(tokenize('gcode:\n  [foo]')).toEqual([
+        t(['keyword', 'gcode'], ['separator', ':']),
+        t(['white', '  '], ['string', '[foo]'])
       ])
     })
   })
