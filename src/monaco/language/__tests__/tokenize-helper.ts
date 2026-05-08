@@ -1,6 +1,9 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 
-export interface TokenLine { type: string, value: string }
+export interface TokenLine {
+  type: string;
+  value: string;
+}
 
 export const registerLanguage = (
   langId: string,
