@@ -21,8 +21,8 @@ Syntax highlighting is provided for the following file types:
 
 | File Type                                                 | Highlighted Elements                                                                                                                     |
 |-----------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| **Klipper config** (`.cfg`)                               | Section headers, key names, values, boolean constants, comments, and SAVE_CONFIG block markers                                           |
-| **Moonraker config** (`.conf`)                            | Section headers, key names, values, boolean constants, space-prefixed escaped comment sigils (`\#`, `\;`), inline comments, and comments |
+| **Klipper config** (`.cfg`)                               | Section headers, key names, values, comments, and SAVE_CONFIG block markers                                                              |
+| **Moonraker config** (`.conf`)                            | Section headers, key names, values, and comments                                                                                         |
 | **G-code** (`.gcode`, `.g`, `.gc`, `.gco`, `.ufp`, `.nc`) | G/M/T/N command codes, checksum tags, M117/M118 messages, macro names and parameters, per-axis letters (X, Y, Z, E, F, S), and comments  |
 | **Log files** (`.log`)                                    | Log-level colorization (debug, info, warning, error, critical), timestamps, URLs, UUIDs, git SHAs, exception names, and stack traces     |
 | **JSON**                                                  | Full validation and IntelliSense via a dedicated language worker                                                                         |
