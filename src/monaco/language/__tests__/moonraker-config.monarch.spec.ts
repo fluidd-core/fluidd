@@ -7,6 +7,12 @@ const t = tokenBuilder(LANG)
 
 const tokenize = (text: string) => tokenizeLines(text, LANG)
 
+// The tokenizer starts in `@initialRoot`, which has no key/value rule —
+// configparser raises `MissingSectionHeaderError` for keys before any
+// `[section]`. Most tests below describe behavior *inside* a section, so
+// we prepend a section header and slice it off the result.
+const tokenizeInSection = (text: string) => tokenize(`[s]\n${text}`).slice(1)
+
 beforeAll(() => {
   registerLanguage(LANG, language, conf)
 })
@@ -52,6 +58,17 @@ describe('moonraker-config Monarch tokenizer', () => {
       [
         '[ ]',
         [t(['bracket', '['], ['type.identifier', ' '], ['bracket', ']'])]
+      ],
+      // Indented section header — Moonraker's `section_r` (`\s*\[…`) and
+      // configparser's SECTCRE both allow leading whitespace. The
+      // tokenizer rule's `^([ \t]*)` prefix captures it as `white`.
+      [
+        '  [server]',
+        [t(['white', '  '], ['bracket', '['], ['type.identifier', 'server'], ['bracket', ']'])]
+      ],
+      [
+        '\t[server]',
+        [t(['white', '\t'], ['bracket', '['], ['type.identifier', 'server'], ['bracket', ']'])]
       ],
       // The Moonraker pre-processor strips inline comments before configparser
       // sees the line; the tokenizer does not replicate the strip — these
@@ -111,7 +128,14 @@ describe('moonraker-config Monarch tokenizer', () => {
         [t(['white', '\t'], ['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'val'])]
       ]
     ])('tokenizes %j', (input, expected) => {
-      expect(tokenize(input)).toEqual(expected)
+      expect(tokenizeInSection(input)).toEqual(expected)
+    })
+
+    // The keyword char class `[^#;=: \t[]+` excludes `[` from the *first*
+    // run of key chars, so a key starting with `key[` cannot reach the
+    // `=` separator and the whole line falls through to the catch-all.
+    it('rejects keys whose first run contains [ (key[0] = v)', () => {
+      expect(tokenizeInSection('key[0] = v')).toEqual([t(['invalid', 'key[0] = v'])])
     })
   })
 
@@ -160,7 +184,7 @@ describe('moonraker-config Monarch tokenizer', () => {
         [t(['keyword', 'name'], ['separator', ':'], ['white', ' '], ['string', '"Pedro Lamas"'])]
       ]
     ])('tokenizes %j', (input, expected) => {
-      expect(tokenize(input)).toEqual(expected)
+      expect(tokenizeInSection(input)).toEqual(expected)
     })
 
     // Trailing whitespace after the value: the value rule emits `string`,
@@ -168,7 +192,7 @@ describe('moonraker-config Monarch tokenizer', () => {
     // and (on @eos) transitions to `@checkValue.$S2` so a continuation
     // can still follow on the next line.
     it('emits trailing whitespace after a value as a white token', () => {
-      expect(tokenize('key = value   ')).toEqual([
+      expect(tokenizeInSection('key = value   ')).toEqual([
         t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'], ['white', '   '])
       ])
     })
@@ -177,13 +201,13 @@ describe('moonraker-config Monarch tokenizer', () => {
     // state's empty-value rule matches `[ \t]*` and, on @eos, transitions
     // to `@checkValue` so the next line can still continue the value.
     it('emits a trailing white token when the value is empty with whitespace', () => {
-      expect(tokenize('key = ')).toEqual([
+      expect(tokenizeInSection('key = ')).toEqual([
         t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '])
       ])
     })
 
     it('still accepts a continuation after an empty trailing-whitespace value', () => {
-      expect(tokenize('key = \n  G28')).toEqual([
+      expect(tokenizeInSection('key = \n  G28')).toEqual([
         t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' ']),
         t(['white', '  '], ['string', 'G28'])
       ])
@@ -196,7 +220,7 @@ describe('moonraker-config Monarch tokenizer', () => {
     // value rule's `[^ \t#;]` lookahead succeeds and the whole tail is
     // swallowed into a single string token. Pin the current behaviour.
     it('does not implement the backslash escape (whole tail becomes one string)', () => {
-      expect(tokenize('key = value \\;literal')).toEqual([
+      expect(tokenizeInSection('key = value \\;literal')).toEqual([
         t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value \\;literal'])
       ])
     })
@@ -204,7 +228,7 @@ describe('moonraker-config Monarch tokenizer', () => {
 
   describe('multi-line continuations', () => {
     it('continues into more-indented lines (zero-indent key)', () => {
-      expect(tokenize('gcode:\n  G28\n  G1 X0')).toEqual([
+      expect(tokenizeInSection('gcode:\n  G28\n  G1 X0')).toEqual([
         t(['keyword', 'gcode'], ['separator', ':']),
         t(['white', '  '], ['string', 'G28']),
         t(['white', '  '], ['string', 'G1 X0'])
@@ -212,14 +236,14 @@ describe('moonraker-config Monarch tokenizer', () => {
     })
 
     it('continues into deeper-indented lines (indented key, $S2 capture)', () => {
-      expect(tokenize('  parent = v\n    child')).toEqual([
+      expect(tokenizeInSection('  parent = v\n    child')).toEqual([
         t(['white', '  '], ['keyword', 'parent'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'v']),
         t(['white', '    '], ['string', 'child'])
       ])
     })
 
     it('returns to root when next line drops below key indent', () => {
-      expect(tokenize('gcode:\n  G28\nother_key = 1')).toEqual([
+      expect(tokenizeInSection('gcode:\n  G28\nother_key = 1')).toEqual([
         t(['keyword', 'gcode'], ['separator', ':']),
         t(['white', '  '], ['string', 'G28']),
         t(['keyword', 'other_key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', '1'])
@@ -227,14 +251,14 @@ describe('moonraker-config Monarch tokenizer', () => {
     })
 
     it('treats equal-indent next line as a sibling, not a continuation', () => {
-      expect(tokenize('  parent = v\n  sibling = w')).toEqual([
+      expect(tokenizeInSection('  parent = v\n  sibling = w')).toEqual([
         t(['white', '  '], ['keyword', 'parent'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'v']),
         t(['white', '  '], ['keyword', 'sibling'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'w'])
       ])
     })
 
     it('skips blank lines while waiting for the continuation', () => {
-      expect(tokenize('gcode:\n\n  G28')).toEqual([
+      expect(tokenizeInSection('gcode:\n\n  G28')).toEqual([
         t(['keyword', 'gcode'], ['separator', ':']),
         t(),
         t(['white', '  '], ['string', 'G28'])
@@ -242,7 +266,7 @@ describe('moonraker-config Monarch tokenizer', () => {
     })
 
     it('skips full-line comments while waiting for the continuation', () => {
-      expect(tokenize('gcode:\n# blank-ish\n  G28')).toEqual([
+      expect(tokenizeInSection('gcode:\n# blank-ish\n  G28')).toEqual([
         t(['keyword', 'gcode'], ['separator', ':']),
         t(['comment', '# blank-ish']),
         t(['white', '  '], ['string', 'G28'])
@@ -250,7 +274,7 @@ describe('moonraker-config Monarch tokenizer', () => {
     })
 
     it('also skips ; comment lines while waiting', () => {
-      expect(tokenize('gcode:\n; mid\n  G28')).toEqual([
+      expect(tokenizeInSection('gcode:\n; mid\n  G28')).toEqual([
         t(['keyword', 'gcode'], ['separator', ':']),
         t(['comment', '; mid']),
         t(['white', '  '], ['string', 'G28'])
@@ -258,7 +282,7 @@ describe('moonraker-config Monarch tokenizer', () => {
     })
 
     it('skips indented comment lines while waiting', () => {
-      expect(tokenize('gcode:\n  # indented\n  G28')).toEqual([
+      expect(tokenizeInSection('gcode:\n  # indented\n  G28')).toEqual([
         t(['keyword', 'gcode'], ['separator', ':']),
         t(['white', '  '], ['comment', '# indented']),
         t(['white', '  '], ['string', 'G28'])
@@ -266,7 +290,7 @@ describe('moonraker-config Monarch tokenizer', () => {
     })
 
     it('skips whitespace-only lines while waiting', () => {
-      expect(tokenize('gcode:\n   \n  G28')).toEqual([
+      expect(tokenizeInSection('gcode:\n   \n  G28')).toEqual([
         t(['keyword', 'gcode'], ['separator', ':']),
         t(['white', '   ']),
         t(['white', '  '], ['string', 'G28'])
@@ -277,7 +301,7 @@ describe('moonraker-config Monarch tokenizer', () => {
     // `#`) preceded by whitespace inside a continuation body is stripped
     // the same way as on the original key=value line.
     it('strips inline comments inside a continuation body', () => {
-      expect(tokenize('gcode:\n  G28 ; mid-comment')).toEqual([
+      expect(tokenizeInSection('gcode:\n  G28 ; mid-comment')).toEqual([
         t(['keyword', 'gcode'], ['separator', ':']),
         t(['white', '  '], ['string', 'G28'], ['white', ' '], ['comment', '; mid-comment'])
       ])
@@ -287,14 +311,14 @@ describe('moonraker-config Monarch tokenizer', () => {
     // spaces is *not* continued by a tab-indented next line, even though
     // they may render the same width.
     it('does not continue when next-line indent does not start with the key indent literally', () => {
-      expect(tokenize('\tgcode:\n  G28')).toEqual([
+      expect(tokenizeInSection('\tgcode:\n  G28')).toEqual([
         t(['white', '\t'], ['keyword', 'gcode'], ['separator', ':']),
         t(['white', '  '], ['invalid', 'G28'])
       ])
     })
 
     it('weaves blank lines and indented comments through a multi-line continuation', () => {
-      expect(tokenize('gcode:\n  G28\n\n  ; reset\n  G1')).toEqual([
+      expect(tokenizeInSection('gcode:\n  G28\n\n  ; reset\n  G1')).toEqual([
         t(['keyword', 'gcode'], ['separator', ':']),
         t(['white', '  '], ['string', 'G28']),
         t(),
@@ -304,7 +328,7 @@ describe('moonraker-config Monarch tokenizer', () => {
     })
 
     it('does not continue when the next line has no indent', () => {
-      expect(tokenize('key:\nG28')).toEqual([
+      expect(tokenizeInSection('key:\nG28')).toEqual([
         t(['keyword', 'key'], ['separator', ':']),
         t(['invalid', 'G28'])
       ])
@@ -316,9 +340,22 @@ describe('moonraker-config Monarch tokenizer', () => {
     // catches an accidental `^` anchor on the section regex bringing it
     // into root precedence over an active continuation.
     it('treats an indented [section] line as part of the continuation value', () => {
-      expect(tokenize('gcode:\n  [foo]')).toEqual([
+      expect(tokenizeInSection('gcode:\n  [foo]')).toEqual([
         t(['keyword', 'gcode'], ['separator', ':']),
         t(['white', '  '], ['string', '[foo]'])
+      ])
+    })
+
+    // The `''` empty-rematch fallback in `checkValue` defers a zero-indent
+    // line back to `@root`, where `@initialRoot`'s section regex matches.
+    // This is the path that ends a multi-line continuation when a new
+    // `[section]` begins — pinning it catches a regression where the
+    // empty-rematch rule is reordered or removed.
+    it('aborts the continuation when a zero-indent [section] header appears', () => {
+      expect(tokenizeInSection('gcode:\n  G28\n[other_section]')).toEqual([
+        t(['keyword', 'gcode'], ['separator', ':']),
+        t(['white', '  '], ['string', 'G28']),
+        t(['bracket', '['], ['type.identifier', 'other_section'], ['bracket', ']'])
       ])
     })
   })
@@ -329,6 +366,56 @@ describe('moonraker-config Monarch tokenizer', () => {
   describe('SAVE_CONFIG marker is klipper-only', () => {
     it('tokenizes #*# lines as a plain comment', () => {
       expect(tokenize('#*# [stepper_x]')).toEqual([t(['comment', '#*# [stepper_x]'])])
+    })
+  })
+
+  // Moonraker's configparser raises `MissingSectionHeaderError` when a
+  // key=value line appears before any [section]. The tokenizer mirrors
+  // this by starting in `@initialRoot`, which has no key/value rule —
+  // bare lines fall through to the catch-all.
+  describe('top-of-file (initialRoot — pre-section)', () => {
+    it.each<[string, TokenLine[][]]>([
+      ['key = value', [t(['invalid', 'key = value'])]],
+      ['key: value', [t(['invalid', 'key: value'])]],
+      ['gcode:', [t(['invalid', 'gcode:'])]],
+      // The catch-all has no `^` anchor, so the leading whitespace rule
+      // consumes the indent first and the rest goes to invalid.
+      ['  key = value', [t(['white', '  '], ['invalid', 'key = value'])]]
+    ])('tokenizes %j as invalid before any section', (input, expected) => {
+      expect(tokenize(input)).toEqual(expected)
+    })
+
+    // A `[section]` header (matched by `@initialRoot`) transitions to
+    // `@root`, where the key/value rule is enabled. Subsequent sections
+    // and key/value lines all run through `@root`.
+    it('transitions to @root after a [section] header', () => {
+      expect(tokenize('[server]\nkey = value')).toEqual([
+        t(['bracket', '['], ['type.identifier', 'server'], ['bracket', ']']),
+        t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'])
+      ])
+    })
+
+    // `@initialRoot` includes the `[#;].*$` comment rule, so leading-file
+    // comments (license headers, hand-written notes above the first
+    // section) tokenize correctly even before any `[section]` opens.
+    it('tokenizes comments before any section header, then continues to @root', () => {
+      expect(tokenize('# hello\n[server]\nkey = v')).toEqual([
+        t(['comment', '# hello']),
+        t(['bracket', '['], ['type.identifier', 'server'], ['bracket', ']']),
+        t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'v'])
+      ])
+    })
+
+    // `@root` is sticky: a second `[section]` header (matched via the
+    // `@initialRoot` include) keeps `next: 'root'`, so subsequent
+    // key/value lines remain enabled.
+    it('keeps key/value enabled across multiple sections', () => {
+      expect(tokenize('[a]\nkey = v\n[b]\nkey = v')).toEqual([
+        t(['bracket', '['], ['type.identifier', 'a'], ['bracket', ']']),
+        t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'v']),
+        t(['bracket', '['], ['type.identifier', 'b'], ['bracket', ']']),
+        t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'v'])
+      ])
     })
   })
 
@@ -348,6 +435,43 @@ describe('moonraker-config Monarch tokenizer', () => {
       [':foo', [t(['invalid', ':foo'])]]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenize(input)).toEqual(expected)
+    })
+  })
+
+  // End-to-end tokenization of a realistic moonraker.conf — multiple
+  // sections, key/value pairs, blank lines, and the canonical `getlist()`
+  // shape (a `:`-key followed by indented values, one per line). Catches
+  // regressions in the interaction between `@initialRoot`, `@root`,
+  // `@checkValue`, and `@value` that unit tests above only exercise
+  // individually.
+  describe('realistic moonraker.conf snippet', () => {
+    it('tokenizes multiple sections with a list continuation end-to-end', () => {
+      const input = [
+        '[server]',
+        'host: 0.0.0.0',
+        'port: 7125',
+        '',
+        '[authorization]',
+        'trusted_clients:',
+        '  192.168.1.0/24',
+        '  127.0.0.1',
+        '',
+        '[machine]',
+        'provider: systemd_dbus'
+      ].join('\n')
+      expect(tokenize(input)).toEqual([
+        t(['bracket', '['], ['type.identifier', 'server'], ['bracket', ']']),
+        t(['keyword', 'host'], ['separator', ':'], ['white', ' '], ['string', '0.0.0.0']),
+        t(['keyword', 'port'], ['separator', ':'], ['white', ' '], ['string', '7125']),
+        t(),
+        t(['bracket', '['], ['type.identifier', 'authorization'], ['bracket', ']']),
+        t(['keyword', 'trusted_clients'], ['separator', ':']),
+        t(['white', '  '], ['string', '192.168.1.0/24']),
+        t(['white', '  '], ['string', '127.0.0.1']),
+        t(),
+        t(['bracket', '['], ['type.identifier', 'machine'], ['bracket', ']']),
+        t(['keyword', 'provider'], ['separator', ':'], ['white', ' '], ['string', 'systemd_dbus'])
+      ])
     })
   })
 })
