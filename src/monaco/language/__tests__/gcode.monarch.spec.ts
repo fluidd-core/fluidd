@@ -1,4 +1,4 @@
-import language from '../gcode.monarch'
+import { conf, language } from '../gcode.monarch'
 import { registerLanguage, type TokenLine, tokenBuilder, tokenizeLines } from './tokenize-helper'
 
 const LANG = 'gcode'
@@ -8,7 +8,7 @@ const t = tokenBuilder(LANG)
 const tokenize = (text: string) => tokenizeLines(text, LANG)
 
 beforeAll(() => {
-  registerLanguage(LANG, language)
+  registerLanguage(LANG, language, conf)
 })
 
 describe('gcode Monarch tokenizer', () => {

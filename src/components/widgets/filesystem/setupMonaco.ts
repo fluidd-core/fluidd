@@ -21,7 +21,7 @@ import getVueApp from '@/util/get-vue-app'
 
 import type { KlippyApp } from '@/store/printer/types'
 
-import gcodeMonarchLanguage from '@/monaco/language/gcode.monarch'
+import * as gcodeMonarchLanguage from '@/monaco/language/gcode.monarch'
 import * as klipperConfigMonarchLanguage from '@/monaco/language/klipper-config.monarch'
 import * as moonrakerConfigMonarchLanguage from '@/monaco/language/moonraker-config.monarch'
 import logMonarchLanguage from '@/monaco/language/log.monarch'
@@ -48,15 +48,11 @@ async function setupMonaco () {
   monaco.languages.register({ id: 'moonraker-config', extensions: ['conf'] })
   monaco.languages.register({ id: 'log', extensions: ['log'] })
 
-  monaco.languages.setLanguageConfiguration('gcode', {
-    comments: {
-      lineComment: ';'
-    }
-  })
+  monaco.languages.setLanguageConfiguration('gcode', gcodeMonarchLanguage.conf)
   monaco.languages.setLanguageConfiguration('klipper-config', klipperConfigMonarchLanguage.conf)
   monaco.languages.setLanguageConfiguration('moonraker-config', moonrakerConfigMonarchLanguage.conf)
 
-  monaco.languages.setMonarchTokensProvider('gcode', gcodeMonarchLanguage)
+  monaco.languages.setMonarchTokensProvider('gcode', gcodeMonarchLanguage.language)
   monaco.languages.setMonarchTokensProvider('klipper-config', klipperConfigMonarchLanguage.language)
   monaco.languages.setMonarchTokensProvider('moonraker-config', moonrakerConfigMonarchLanguage.language)
   monaco.languages.setMonarchTokensProvider('log', logMonarchLanguage)

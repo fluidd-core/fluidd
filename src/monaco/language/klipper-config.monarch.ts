@@ -39,7 +39,7 @@ export const conf: monaco.languages.LanguageConfiguration = {
 
 export const language: monaco.languages.IMonarchLanguage = {
   tokenizer: {
-    initialRoot: [
+    root: [
       [
         /^#\*#.*$/,
         'comment.control.save-config'
@@ -47,7 +47,7 @@ export const language: monaco.languages.IMonarchLanguage = {
 
       [
         /^([ \t]*)(\[)([^\]]+)(\])/,
-        ['white', 'bracket', 'type.identifier', { token: 'bracket', next: 'root' }]
+        ['white', 'bracket', 'type.identifier', { token: 'bracket', next: 'content' }]
       ],
 
       [
@@ -66,7 +66,7 @@ export const language: monaco.languages.IMonarchLanguage = {
       ]
     ],
 
-    root: [
+    content: [
       [
         /^([ \t]*)([^#;=: \t[]+(?:[ \t]+[^#;=: \t]+)*)([ \t]*)(=|:)/,
         ['white', 'keyword', 'white', {
@@ -77,13 +77,13 @@ export const language: monaco.languages.IMonarchLanguage = {
         }]
       ],
 
-      { include: '@initialRoot' }
+      { include: '@root' }
     ],
 
     checkValue: [
       [
         /^#\*#/,
-        { token: '@rematch', next: '@root' }
+        { token: '@rematch', next: '@content' }
       ],
 
       // Blank line or comment: stay and keep waiting
@@ -98,10 +98,10 @@ export const language: monaco.languages.IMonarchLanguage = {
         { token: 'white', next: '@value.$S2' }
       ],
 
-      // Anything else: not a continuation, return to root without consuming
+      // Anything else: not a continuation, return to content without consuming
       [
         '',
-        { token: '@rematch', next: '@root' }
+        { token: '@rematch', next: '@content' }
       ]
     ],
 

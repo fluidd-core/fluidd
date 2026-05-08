@@ -1,6 +1,12 @@
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
 
-const gcodeMonarchLanguage: Monaco.languages.IMonarchLanguage = {
+export const conf: Monaco.languages.LanguageConfiguration = {
+  comments: {
+    lineComment: ';'
+  }
+}
+
+export const language: Monaco.languages.IMonarchLanguage = {
   ignoreCase: true,
 
   decimal: /[-+]?(?:\d+\.?\d*|\d*\.\d+)/,
@@ -133,5 +139,3 @@ const gcodeMonarchLanguage: Monaco.languages.IMonarchLanguage = {
     ]
   }
 }
-
-export default gcodeMonarchLanguage

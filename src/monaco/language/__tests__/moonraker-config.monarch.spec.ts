@@ -7,7 +7,7 @@ const t = tokenBuilder(LANG)
 
 const tokenize = (text: string) => tokenizeLines(text, LANG)
 
-// The tokenizer starts in `@initialRoot`, which has no key/value rule —
+// The tokenizer starts in `@root`, which has no key/value rule —
 // configparser raises `MissingSectionHeaderError` for keys before any
 // `[section]`. Most tests below describe behavior *inside* a section, so
 // we prepend a section header and slice it off the result.
@@ -347,7 +347,7 @@ describe('moonraker-config Monarch tokenizer', () => {
     })
 
     // The `''` empty-rematch fallback in `checkValue` defers a zero-indent
-    // line back to `@root`, where `@initialRoot`'s section regex matches.
+    // line back to `@content`, where `@root`'s section regex matches.
     // This is the path that ends a multi-line continuation when a new
     // `[section]` begins — pinning it catches a regression where the
     // empty-rematch rule is reordered or removed.
@@ -371,9 +371,9 @@ describe('moonraker-config Monarch tokenizer', () => {
 
   // Moonraker's configparser raises `MissingSectionHeaderError` when a
   // key=value line appears before any [section]. The tokenizer mirrors
-  // this by starting in `@initialRoot`, which has no key/value rule —
+  // this by starting in `@root`, which has no key/value rule —
   // bare lines fall through to the catch-all.
-  describe('top-of-file (initialRoot — pre-section)', () => {
+  describe('top-of-file (root — pre-section)', () => {
     it.each<[string, TokenLine[][]]>([
       ['key = value', [t(['invalid', 'key = value'])]],
       ['key: value', [t(['invalid', 'key: value'])]],
@@ -385,20 +385,20 @@ describe('moonraker-config Monarch tokenizer', () => {
       expect(tokenize(input)).toEqual(expected)
     })
 
-    // A `[section]` header (matched by `@initialRoot`) transitions to
-    // `@root`, where the key/value rule is enabled. Subsequent sections
-    // and key/value lines all run through `@root`.
-    it('transitions to @root after a [section] header', () => {
+    // A `[section]` header (matched by `@root`) transitions to
+    // `@content`, where the key/value rule is enabled. Subsequent sections
+    // and key/value lines all run through `@content`.
+    it('transitions to @content after a [section] header', () => {
       expect(tokenize('[server]\nkey = value')).toEqual([
         t(['bracket', '['], ['type.identifier', 'server'], ['bracket', ']']),
         t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'])
       ])
     })
 
-    // `@initialRoot` includes the `[#;].*$` comment rule, so leading-file
+    // `@root` includes the `[#;].*$` comment rule, so leading-file
     // comments (license headers, hand-written notes above the first
     // section) tokenize correctly even before any `[section]` opens.
-    it('tokenizes comments before any section header, then continues to @root', () => {
+    it('tokenizes comments before any section header, then continues to @content', () => {
       expect(tokenize('# hello\n[server]\nkey = v')).toEqual([
         t(['comment', '# hello']),
         t(['bracket', '['], ['type.identifier', 'server'], ['bracket', ']']),
@@ -406,8 +406,8 @@ describe('moonraker-config Monarch tokenizer', () => {
       ])
     })
 
-    // `@root` is sticky: a second `[section]` header (matched via the
-    // `@initialRoot` include) keeps `next: 'root'`, so subsequent
+    // `@content` is sticky: a second `[section]` header (matched via the
+    // `@root` include) keeps `next: 'content'`, so subsequent
     // key/value lines remain enabled.
     it('keeps key/value enabled across multiple sections', () => {
       expect(tokenize('[a]\nkey = v\n[b]\nkey = v')).toEqual([
@@ -441,7 +441,7 @@ describe('moonraker-config Monarch tokenizer', () => {
   // End-to-end tokenization of a realistic moonraker.conf — multiple
   // sections, key/value pairs, blank lines, and the canonical `getlist()`
   // shape (a `:`-key followed by indented values, one per line). Catches
-  // regressions in the interaction between `@initialRoot`, `@root`,
+  // regressions in the interaction between `@root`, `@content`,
   // `@checkValue`, and `@value` that unit tests above only exercise
   // individually.
   describe('realistic moonraker.conf snippet', () => {
