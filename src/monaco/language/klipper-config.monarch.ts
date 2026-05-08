@@ -39,25 +39,15 @@ export const conf: monaco.languages.LanguageConfiguration = {
 
 export const language: monaco.languages.IMonarchLanguage = {
   tokenizer: {
-    root: [
+    initialRoot: [
       [
         /^#\*#.*$/,
         'comment.control.save-config'
       ],
 
       [
-        /^([ \t]*)([^#;=: \t]+(?:[ \t]+[^#;=: \t]+)*)([ \t]*)(=|:)/,
-        ['white', 'keyword', 'white', {
-          cases: {
-            '@eos': { token: 'separator', next: '@checkValue.$1' },
-            '@default': { token: 'separator', next: '@value.$1' }
-          }
-        }]
-      ],
-
-      [
-        /(\[)([^\]]+)(\])/,
-        ['bracket', 'type.identifier', 'bracket']
+        /^([ \t]*)(\[)([^\]]+)(\])/,
+        ['white', 'bracket', 'type.identifier', { token: 'bracket', next: 'root' }]
       ],
 
       [
@@ -76,7 +66,26 @@ export const language: monaco.languages.IMonarchLanguage = {
       ]
     ],
 
+    root: [
+      [
+        /^([ \t]*)([^#;=: \t[]+(?:[ \t]+[^#;=: \t]+)*)([ \t]*)(=|:)/,
+        ['white', 'keyword', 'white', {
+          cases: {
+            '@eos': { token: 'separator', next: '@checkValue.$1' },
+            '@default': { token: 'separator', next: '@value.$1' }
+          }
+        }]
+      ],
+
+      { include: '@initialRoot' }
+    ],
+
     checkValue: [
+      [
+        /^#\*#/,
+        { token: '@rematch', next: '@root' }
+      ],
+
       // Blank line or comment: stay and keep waiting
       [
         /^([ \t]*)((?:[#;].*)?)$/,
