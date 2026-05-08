@@ -151,23 +151,19 @@ const klipperConfigFoldingRanges = (lines: string[], includeSaveConfigBlocks: bo
 
   const regionBlocks = lines
     .reduce<StackReduceState<number, MonacoFoldingRange>>((state, lineContent, index) => {
-      lineContent = lineContent.trim()
+      const isRegion = /^\s*#region\b/.test(lineContent)
 
-      if (lineContent.length > 0) {
-        const isRegion = /^#region\b/.test(lineContent)
+      if (isRegion) {
+        state.stack.push(index + 1)
+      } else {
+        const isEndRegion = /^\s*#endregion\b/.test(lineContent)
 
-        if (isRegion) {
-          state.stack.push(index + 1)
-        } else {
-          const isEndRegion = /^#endregion\b/.test(lineContent)
-
-          if (isEndRegion && state.stack.length > 0) {
-            state.result.push({
-              kind: 'region',
-              start: state.stack.pop() ?? 0,
-              end: index + 1
-            })
-          }
+        if (isEndRegion && state.stack.length > 0) {
+          state.result.push({
+            kind: 'region',
+            start: state.stack.pop() ?? 0,
+            end: index + 1
+          })
         }
       }
 
@@ -178,39 +174,9 @@ const klipperConfigFoldingRanges = (lines: string[], includeSaveConfigBlocks: bo
   const saveConfigBlocks = includeSaveConfigBlocks
     ? lines
       .reduce<ReduceState<MonacoFoldingRange>>((state, lineContent, index) => {
-        lineContent = lineContent.trim()
+        const isSaveConfigComment = /^#\*#/.test(lineContent)
 
-        if (lineContent.length > 0) {
-          const isSaveConfigComment = /^#\*#/.test(lineContent)
-
-          if (isSaveConfigComment) {
-            if (state.current) {
-              state.current.end = index + 1
-            } else {
-              state.result.push(state.current = {
-                kind: 'comment',
-                start: index + 1,
-                end: index + 1
-              })
-            }
-          } else {
-            state.current = undefined
-          }
-        }
-
-        return state
-      }, { result: [] })
-      .result
-    : []
-
-  const commentBlocks = lines
-    .reduce<ReduceState<MonacoFoldingRange>>((state, lineContent, index) => {
-      lineContent = lineContent.trim()
-
-      if (lineContent.length > 0) {
-        const isComment = /^(?:;|#(?!region\b|endregion\b|\*#))/.test(lineContent)
-
-        if (isComment) {
+        if (isSaveConfigComment) {
           if (state.current) {
             state.current.end = index + 1
           } else {
@@ -220,9 +186,31 @@ const klipperConfigFoldingRanges = (lines: string[], includeSaveConfigBlocks: bo
               end: index + 1
             })
           }
-        } else {
+        } else if (lineContent.trim().length > 0) {
           state.current = undefined
         }
+
+        return state
+      }, { result: [] })
+      .result
+    : []
+
+  const commentBlocks = lines
+    .reduce<ReduceState<MonacoFoldingRange>>((state, lineContent, index) => {
+      const isComment = /^(?:\s*;|#(?!region\b|endregion\b|\*#)|\s+#(?!region\b|endregion\b))/.test(lineContent)
+
+      if (isComment) {
+        if (state.current) {
+          state.current.end = index + 1
+        } else {
+          state.result.push(state.current = {
+            kind: 'comment',
+            start: index + 1,
+            end: index + 1
+          })
+        }
+      } else if (lineContent.trim().length > 0) {
+        state.current = undefined
       }
 
       return state

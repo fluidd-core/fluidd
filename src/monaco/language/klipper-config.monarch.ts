@@ -41,6 +41,11 @@ export const language: monaco.languages.IMonarchLanguage = {
   tokenizer: {
     root: [
       [
+        /^#\*#.*$/,
+        'comment.control.save-config'
+      ],
+
+      [
         /^([ \t]*)([^#;=: \t]+(?:[ \t]+[^#;=: \t]+)*)([ \t]*)(=|:)/,
         ['white', 'keyword', 'white', {
           cases: {
@@ -53,11 +58,6 @@ export const language: monaco.languages.IMonarchLanguage = {
       [
         /(\[)([^\]]+)(\])/,
         ['bracket', 'type.identifier', 'bracket']
-      ],
-
-      [
-        /#\*#.*$/,
-        'comment.control.save-config'
       ],
 
       [
