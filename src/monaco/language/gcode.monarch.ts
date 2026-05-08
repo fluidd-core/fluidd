@@ -3,7 +3,7 @@ import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
 const gcodeMonarchLanguage: Monaco.languages.IMonarchLanguage = {
   ignoreCase: true,
 
-  decimal: /-?(?:\d+\.?\d*|\d*\.\d+)/,
+  decimal: /[-+]?(?:\d+\.?\d*|\d*\.\d+)/,
 
   override: /(?:\.\d+)?/,
 
@@ -25,7 +25,8 @@ const gcodeMonarchLanguage: Monaco.languages.IMonarchLanguage = {
       ],
 
       [
-        /(m11[78]@override)((?:[^;\d][^;]*)?)/,
+        // eslint-disable-next-line regexp/no-useless-assertions
+        /(m11[78](?!\d)@override)([^;]*)/,
         ['keyword.command.m', 'string']
       ],
 

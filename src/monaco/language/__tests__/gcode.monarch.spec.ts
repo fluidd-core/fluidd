@@ -60,6 +60,17 @@ describe('gcode Monarch tokenizer', () => {
     it('still applies ignoreCase to the line-start rule', () => {
       expect(tokenize('n5')).toEqual([t(['keyword.command.n', 'n5'])])
     })
+
+    // The canonical USB-serial line: line number + command + params +
+    // checksum, all in one line.
+    it('tokenizes a full N + command + checksum line', () => {
+      expect(tokenize('N5 G1 X10*123')).toEqual([t(
+        ['keyword.command.n', 'N5'],
+        ['white', ' '], ['keyword.command.g', 'G1'],
+        ['white', ' '], ['keyword.param.x', 'X10'],
+        ['tag', '*123']
+      )])
+    })
   })
 
   describe('parameter letter + decimal', () => {
@@ -85,6 +96,39 @@ describe('gcode Monarch tokenizer', () => {
           ['white', '   '], ['keyword.param.x', 'X10'],
           ['white', '  '], ['keyword.param.y', 'Y20']
         )]
+      ],
+      // `decimal` accepts both `+` and `-` prefixes — Marlin's `strtof`
+      // and Klipper's `float()` both accept either, so `S+200` etc.
+      // should highlight as a normal param value, not invalid.
+      [
+        'G1 X+10',
+        [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X+10'])]
+      ],
+      [
+        'M104 S+200',
+        [t(['keyword.command.m', 'M104'], ['white', ' '], ['keyword.param.s', 'S+200'])]
+      ],
+      [
+        'G1 X+.5',
+        [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X+.5'])]
+      ],
+      // The decimal regex's second alt `\d*\.\d+` matches `-.5` (sign +
+      // leading-dot decimal).
+      [
+        'G1 X-.5',
+        [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X-.5'])]
+      ],
+      // The param rule allows whitespace (`\s*`) between the letter and
+      // the number — the whole `X 10` is one `keyword.param.x` token,
+      // including the inner space. Marlin/Klipper parsers accept this
+      // form too.
+      [
+        'M114 X 10',
+        [t(['keyword.command.m', 'M114'], ['white', ' '], ['keyword.param.x', 'X 10'])]
+      ],
+      [
+        'G1 X\t10',
+        [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X\t10'])]
       ]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenize(input)).toEqual(expected)
@@ -138,6 +182,18 @@ describe('gcode Monarch tokenizer', () => {
     it('tokenizes a lone * as invalid', () => {
       expect(tokenize('*')).toEqual([t(['invalid', '*'])])
     })
+
+    // Realistic serial-protocol line: command + params + checksum +
+    // trailing comment.
+    it('tokenizes a command with both checksum and trailing comment', () => {
+      expect(tokenize('G1 X10 Y10*123 ; comment')).toEqual([t(
+        ['keyword.command.g', 'G1'],
+        ['white', ' '], ['keyword.param.x', 'X10'],
+        ['white', ' '], ['keyword.param.y', 'Y10'],
+        ['tag', '*123'],
+        ['white', ' '], ['comment', '; comment']
+      )])
+    })
   })
 
   describe('M117 / M118 string payload', () => {
@@ -159,6 +215,29 @@ describe('gcode Monarch tokenizer', () => {
       expect(tokenize('M117')).toEqual([t(['keyword.command.m', 'M117'])])
     })
 
+    // 4+ digit M-codes that start with `M117` or `M118` (custom-firmware
+    // territory). The M117/M118 rule has a `(?!\d)` lookahead after
+    // `m11[78]`, so it only fires when the next char is a non-digit
+    // (space, `.`, EOL, etc.). For digit-suffixed codes the regex
+    // backtracks and the generic `[gmt]\d+@override` rule catches the
+    // whole code as a single command. The dot-suffix override form
+    // (M117.5) is unaffected because `@override` matches `.\d+`.
+    it('tokenizes M1170 as a single command (no M117 mis-match)', () => {
+      expect(tokenize('M1170')).toEqual([t(['keyword.command.m', 'M1170'])])
+    })
+
+    it('tokenizes M1180 as a single command (no M118 mis-match)', () => {
+      expect(tokenize('M1180')).toEqual([t(['keyword.command.m', 'M1180'])])
+    })
+
+    it('tokenizes longer M-codes that share the M117 prefix', () => {
+      expect(tokenize('M11700')).toEqual([t(['keyword.command.m', 'M11700'])])
+    })
+
+    it('still tokenizes M117.5 as a single command via @override', () => {
+      expect(tokenize('M117.5')).toEqual([t(['keyword.command.m', 'M117.5'])])
+    })
+
     // The M117/M118 payload regex stops at `;`, so a trailing comment is
     // recognised — the leading whitespace is captured as part of the payload
     // string token, and the comment is tokenised normally.
@@ -167,6 +246,34 @@ describe('gcode Monarch tokenizer', () => {
         ['keyword.command.m', 'M117'],
         ['string', ' '],
         ['comment', '; not a comment']
+      )])
+    })
+
+    // No space is required between the command and the payload — the
+    // `(?!\d)` lookahead just blocks digit-suffixed M-codes, so any other
+    // first char (letters, quotes, punctuation) is captured into the
+    // string payload.
+    it('captures a payload with no space after M117', () => {
+      expect(tokenize('M117hello')).toEqual([t(
+        ['keyword.command.m', 'M117'],
+        ['string', 'hello']
+      )])
+    })
+
+    it('captures a no-space payload up to a trailing ; comment', () => {
+      expect(tokenize('M117hello;comment')).toEqual([t(
+        ['keyword.command.m', 'M117'],
+        ['string', 'hello'],
+        ['comment', ';comment']
+      )])
+    })
+
+    it('captures quote characters as part of a no-space M117 payload (root, not @string)', () => {
+      // The M117/M118 special rule fires at root, so a `"` in the payload
+      // is just a `string` character — @string state is not entered.
+      expect(tokenize('M117"hello"')).toEqual([t(
+        ['keyword.command.m', 'M117'],
+        ['string', '"hello"']
       )])
     })
   })
@@ -259,14 +366,45 @@ describe('gcode Monarch tokenizer', () => {
         ['string', 'Y=2']
       )])
     })
+
+    // Realistic Klipper command — multiple quoted-string params on the
+    // same line. Verifies the @string → @value → @params → @value →
+    // @string cycle works end-to-end.
+    it('tokenizes multiple quoted macro params on one line', () => {
+      expect(tokenize('RESPOND PREFIX="!" MSG="hello"')).toEqual([t(
+        ['keyword.macro', 'RESPOND'],
+        ['white', ' '], ['keyword.param', 'PREFIX'], ['operator', '='],
+        ['string.quote', '"'], ['string', '!'], ['string.quote', '"'],
+        ['white', ' '], ['keyword.param', 'MSG'], ['operator', '='],
+        ['string.quote', '"'], ['string', 'hello'], ['string.quote', '"']
+      )])
+    })
+
+    // ignoreCase is set globally — the macro rule matches any case mix.
+    it('tokenizes mixed-case macro names', () => {
+      expect(tokenize('My_Macro X=1')).toEqual([t(
+        ['keyword.macro', 'My_Macro'],
+        ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
+        ['string', '1']
+      )])
+    })
+
+    it('tokenizes lowercase macro names', () => {
+      expect(tokenize('set_pressure_advance ADVANCE=0.05')).toEqual([t(
+        ['keyword.macro', 'set_pressure_advance'],
+        ['white', ' '], ['keyword.param', 'ADVANCE'], ['operator', '='],
+        ['string', '0.05']
+      )])
+    })
   })
 
-  // Real G-code can pack multiple words onto a single line with no spaces.
-  // The Monarch rules match each command/param separately — but Monaco
-  // coalesces adjacent tokens that share the *same* type into one span at
-  // emit time. So `G28G1` (two `keyword.command.g` tokens) shows up as a
-  // single merged span, while `G28T0` (different sub-types: g and t) stays
-  // as two distinct tokens. These cases pin both behaviours.
+  // Real G-code (and CNC-style parsers, including Klipper) accepts
+  // multiple words packed onto one line without separators — the parser
+  // re-tokenizes on letter boundaries. The Monarch rules match each
+  // command/param separately, but Monaco coalesces adjacent tokens that
+  // share the *same* type into one span at emit time. So `G28G1` (two
+  // `keyword.command.g` tokens) renders as a single merged span, while
+  // `G28T0` (different sub-types: g and t) stays as two distinct tokens.
   describe('chained commands without whitespace', () => {
     it('tokenizes a long no-space chain of commands and params', () => {
       expect(tokenize('G28G1X10Y2.2T0M106S200M140S50')).toEqual([t(
@@ -315,6 +453,69 @@ describe('gcode Monarch tokenizer', () => {
         ['keyword.command.g', 'G1'],
         ['keyword.param.x', 'X10'],
         ['tag', '*123']
+      )])
+    })
+  })
+
+  // Pinning a handful of realistic Marlin/Klipper lines as they appear
+  // in slicer output and macros. Each individual rule is exercised
+  // elsewhere; these check that the rules compose correctly on lines a
+  // user would actually edit.
+  describe('realistic Marlin/Klipper lines', () => {
+    it('tokenizes a typical print move', () => {
+      expect(tokenize('G1 X100 Y100 Z0.2 E5 F1500')).toEqual([t(
+        ['keyword.command.g', 'G1'],
+        ['white', ' '], ['keyword.param.x', 'X100'],
+        ['white', ' '], ['keyword.param.y', 'Y100'],
+        ['white', ' '], ['keyword.param.z', 'Z0.2'],
+        ['white', ' '], ['keyword.param.e', 'E5'],
+        ['white', ' '], ['keyword.param.f', 'F1500']
+      )])
+    })
+
+    it('tokenizes a clockwise arc with I/J center offsets', () => {
+      expect(tokenize('G2 X10 Y10 I5 J5')).toEqual([t(
+        ['keyword.command.g', 'G2'],
+        ['white', ' '], ['keyword.param.x', 'X10'],
+        ['white', ' '], ['keyword.param.y', 'Y10'],
+        ['white', ' '], ['keyword.param.i', 'I5'],
+        ['white', ' '], ['keyword.param.j', 'J5']
+      )])
+    })
+
+    // `T0` here is a tool selector argument to M104, but the Monarch
+    // rules don't have semantic context — the command rule fires before
+    // the param rule, so any `[gmt]\d+` run tokenizes as a command.
+    it('tokenizes M-code with tool-selector argument (T as command, not param)', () => {
+      expect(tokenize('M104 S200 T0')).toEqual([t(
+        ['keyword.command.m', 'M104'],
+        ['white', ' '], ['keyword.param.s', 'S200'],
+        ['white', ' '], ['keyword.command.t', 'T0']
+      )])
+    })
+
+    it('tokenizes Marlin print-progress (M73 P R)', () => {
+      expect(tokenize('M73 P50 R5')).toEqual([t(
+        ['keyword.command.m', 'M73'],
+        ['white', ' '], ['keyword.param.p', 'P50'],
+        ['white', ' '], ['keyword.param.r', 'R5']
+      )])
+    })
+
+    it('tokenizes G92 set-position', () => {
+      expect(tokenize('G92 X0 Y0 Z0 E0')).toEqual([t(
+        ['keyword.command.g', 'G92'],
+        ['white', ' '], ['keyword.param.x', 'X0'],
+        ['white', ' '], ['keyword.param.y', 'Y0'],
+        ['white', ' '], ['keyword.param.z', 'Z0'],
+        ['white', ' '], ['keyword.param.e', 'E0']
+      )])
+    })
+
+    it('tokenizes negative param values (M104 S-1 to disable a heater)', () => {
+      expect(tokenize('M104 S-1')).toEqual([t(
+        ['keyword.command.m', 'M104'],
+        ['white', ' '], ['keyword.param.s', 'S-1']
       )])
     })
   })
