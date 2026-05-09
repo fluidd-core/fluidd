@@ -142,8 +142,3 @@ export const language: monaco.languages.IMonarchLanguage = {
     ]
   },
 }
-
-// --- Monaco registration ---
-// monaco.languages.register({ id: 'moonraker-config' })
-// monaco.languages.setMonarchTokensProvider('moonraker-config', language)
-// monaco.languages.setLanguageConfiguration('moonraker-config', conf)

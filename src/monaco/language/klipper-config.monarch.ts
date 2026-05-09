@@ -136,8 +136,3 @@ export const language: monaco.languages.IMonarchLanguage = {
     ]
   },
 }
-
-// --- Monaco registration ---
-// monaco.languages.register({ id: 'klipper-config' })
-// monaco.languages.setMonarchTokensProvider('klipper-config', language)
-// monaco.languages.setLanguageConfiguration('klipper-config', conf)
