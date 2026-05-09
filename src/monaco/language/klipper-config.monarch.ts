@@ -47,7 +47,7 @@ export const language: monaco.languages.IMonarchLanguage = {
 
       [
         /^([ \t]*)(\[)([^\]]+)(\])/,
-        ['white', 'bracket', 'type.identifier', { token: 'bracket', next: 'content' }]
+        ['white', 'bracket', 'type.identifier', { token: 'bracket', next: '@content' }]
       ],
 
       [
@@ -118,7 +118,7 @@ export const language: monaco.languages.IMonarchLanguage = {
         {
           cases: {
             '@eos': { token: 'string', next: '@checkValue.$S2' },
-            '@default': { token: 'string' }
+            '@default': 'string'
           }
         }
       ],
@@ -129,7 +129,7 @@ export const language: monaco.languages.IMonarchLanguage = {
         {
           cases: {
             '@eos': { token: 'white', next: '@checkValue.$S2' },
-            '@default': { token: 'white' }
+            '@default': 'white'
           }
         }
       ]

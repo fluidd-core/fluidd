@@ -12,17 +12,23 @@ export const registerLanguage = (
 ) => {
   monaco.languages.register({ id: langId })
   monaco.languages.setMonarchTokensProvider(langId, language)
-  if (conf) monaco.languages.setLanguageConfiguration(langId, conf)
+
+  if (conf) {
+    monaco.languages.setLanguageConfiguration(langId, conf)
+  }
 }
 
 export const tokenizeLines = (text: string, langId: string): TokenLine[][] => {
   const lines = text.split('\n')
+
   return monaco.editor.tokenize(text, langId).map((tokens, lineIdx) => {
     const line = lines[lineIdx] ?? ''
-    return tokens.map((tok, i) => ({
-      type: tok.type,
-      value: line.slice(tok.offset, tokens[i + 1]?.offset ?? line.length)
-    }))
+
+    return tokens
+      .map((tok, i) => ({
+        type: tok.type,
+        value: line.slice(tok.offset, tokens[i + 1]?.offset ?? line.length)
+      }))
   })
 }
 
@@ -31,4 +37,8 @@ export const tokenizeLines = (text: string, langId: string): TokenLine[][] => {
 // Monarch token type, so this keeps the per-case expectations readable.
 export const tokenBuilder = (langId: string) =>
   (...tokens: Array<[baseType: string, value: string]>): TokenLine[] =>
-    tokens.map(([baseType, value]) => ({ type: `${baseType}.${langId}`, value }))
+    tokens
+      .map(([baseType, value]) => ({
+        type: `${baseType}.${langId}`,
+        value
+      }))

@@ -124,7 +124,7 @@ export const language: monaco.languages.IMonarchLanguage = {
         {
           cases: {
             '@eos': { token: 'string', next: '@checkValue.$S2' },
-            '@default': { token: 'string' }
+            '@default': 'string'
           }
         }
       ],
@@ -135,7 +135,7 @@ export const language: monaco.languages.IMonarchLanguage = {
         {
           cases: {
             '@eos': { token: 'white', next: '@checkValue.$S2' },
-            '@default': { token: 'white' }
+            '@default': 'white'
           }
         }
       ]
