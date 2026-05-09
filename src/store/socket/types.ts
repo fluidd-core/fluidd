@@ -1,7 +1,6 @@
 export interface SocketState {
   status: SocketStatus;
   acceptingNotifications: boolean;
-  error: SocketError | null;
   connectionId: number | null;
 }
 

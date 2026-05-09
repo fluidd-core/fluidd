@@ -339,7 +339,7 @@ interface SocketApiResponse extends SocketResponseBase {
 
 interface SocketApiErrorResponse extends SocketResponseBase {
   id: number;
-  error: string | SocketError;
+  error: SocketError;
 }
 
 interface SocketNotificationResponse extends SocketResponseBase {

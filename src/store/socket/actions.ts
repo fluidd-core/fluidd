@@ -1,6 +1,6 @@
 import type { ActionTree } from 'vuex'
 import { consola } from 'consola'
-import type { SocketState, SocketStatus } from './types'
+import type { SocketError, SocketState, SocketStatus } from './types'
 import type { RootState } from '../types'
 import { Globals } from '@/globals'
 import { SocketActions } from '@/api/socketActions'
@@ -28,6 +28,27 @@ const VALID_TRANSITIONS: Record<SocketStatus, readonly SocketStatus[]> = {
   identifying: ['connecting', 'authenticating', 'ready'],
   authenticating: ['connecting', 'identifying'],
   ready: ['disconnected', 'connecting', 'authenticating']
+}
+
+const tryGetErrorMessageFromJson = (message: string): string | null => {
+  try {
+    // If our message contains JSON, we should try to parse it.
+    // This was a problem in old versions of Moonraker, not sure if it's still the case, but it doesn't hurt to be defensive here.
+    const messageAsObject = JSON.parse(message.replace(/'/g, '"'))
+
+    if (
+      messageAsObject !== null &&
+      typeof messageAsObject === 'object' &&
+      'message' in messageAsObject &&
+      typeof messageAsObject.message === 'string'
+    ) {
+      return messageAsObject.message
+    }
+  } catch {
+    // ignore and assume it's a plain string
+  }
+
+  return null
 }
 
 const getMoonrakerDatabase = async <T = Record<string, unknown>>(namespace: string) => {
@@ -258,18 +279,16 @@ export const actions = {
    * Fired when the socket encounters an error. ws.onclose always follows and
    * drives the transition; here we just surface RPC error codes.
    */
-  async onSocketError ({ state, commit }, payload) {
-    if (state.status === 'ready' && payload.code >= 400 && payload.code < 500) {
-      // If our message contains json, we should try to parse it.
-      // This is pretty bad, should get moonraker to fix this response.
-      let message = ''
-      try {
-        const messageAsObject = JSON.parse(payload.message.replace(/'/g, '"')) as { message: string }
-
-        message = messageAsObject.message
-      } catch {
-        message = payload.message
-      }
+  async onSocketError ({ state, commit }, payload: SocketError) {
+    if (
+      state.status === 'ready' &&
+      payload.code >= 400 &&
+      payload.code < 500
+    ) {
+      const message = (
+        tryGetErrorMessageFromJson(payload.message) ||
+        payload.message
+      )
 
       EventBus.$emit(message, { type: 'error' })
     } else if (payload.code === 503) {

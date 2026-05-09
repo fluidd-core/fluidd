@@ -245,11 +245,14 @@ export default class JobQueue extends Vue {
       hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')
     ) {
       const files = getFileDataTransferDataFromDataTransfer(event.dataTransfer, 'jobs')
-      const filePath = files.path ? `${files.path}/` : ''
-      const filenames = files.items
-        .map(file => `${filePath}${file}`)
 
-      SocketActions.serverJobQueuePostJob(filenames)
+      if (files) {
+        const filePath = files.path ? `${files.path}/` : ''
+        const filenames = files.items
+          .map(file => `${filePath}${file}`)
+
+        SocketActions.serverJobQueuePostJob(filenames)
+      }
     }
   }
 }

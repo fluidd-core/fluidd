@@ -4,7 +4,6 @@ export const defaultState = (): SocketState => {
   return {
     status: 'initializing',
     acceptingNotifications: false,
-    error: null,
     connectionId: null
   }
 }

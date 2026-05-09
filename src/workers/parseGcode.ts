@@ -1,5 +1,5 @@
 /* eslint-disable no-fallthrough */
-import type { ArcMove, BBox, Layer, LinearMove, Move, Part, Point, PositioningMode } from '@/store/gcodePreview/types'
+import type { ArcMove, BBox, Layer, LinearMove, Move, Part, PositioningMode } from '@/store/gcodePreview/types'
 import isKeyOf from '@/util/is-key-of'
 import { pick } from 'lodash-es'
 import { split } from 'shlex'
@@ -63,6 +63,16 @@ const decimalRound = (a: number) => {
   return Math.round(a * 10000) / 10000
 }
 
+const isPolygonData = (data: unknown): data is [number, number][] => (
+  Array.isArray(data) &&
+  data
+    .every(x => (
+      Array.isArray(x) &&
+      x.length === 2 &&
+      x.every(y => typeof y === 'number')
+    ))
+)
+
 const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void) => {
   const moves: Move[] = []
   const layers: Layer[] = []
@@ -115,17 +125,20 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
           break
         case 'EXCLUDE_OBJECT_DEFINE':
           if ('polygon' in args && args.polygon) {
-            const polygonData = JSON.parse(args.polygon) as [number, number][]
+            try {
+              const data = JSON.parse(args.polygon)
 
-            const part: Part = {
-              polygon: polygonData
-                .map(([x, y]): Point => ({
-                  x,
-                  y
-                }))
+              if (isPolygonData(data)) {
+                const part: Part = {
+                  polygon: data
+                    .map(([x, y]) => ({ x, y }))
+                }
+
+                parts.push(part)
+              }
+            } catch {
+              // ignore invalid JSON
             }
-
-            parts.push(part)
           }
           break
         case 'SET_RETRACTION':
