@@ -14,7 +14,7 @@
   >
     <template #menu>
       <app-btn
-        v-if="scrollingPaused"
+        v-if="autoScrollPaused"
         icon
         @click="consoleElement.scrollToLatest()"
       >
@@ -108,9 +108,9 @@
 
     <console
       ref="console"
-      :scrolling-paused.sync="scrollingPaused"
       :items="items"
       :fullscreen="fullscreen"
+      @update:auto-scroll-paused="autoScrollPaused = $event"
     />
   </collapsable-card>
 </template>
@@ -132,7 +132,7 @@ export default class ConsoleCard extends Vue {
   @Ref('console')
   readonly consoleElement!: Console
 
-  scrollingPaused = false
+  autoScrollPaused = false
 
   get filters (): ConsoleFilter[] {
     return this.$typedState.console.consoleFilters

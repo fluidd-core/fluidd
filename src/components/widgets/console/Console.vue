@@ -11,14 +11,14 @@
       flat
       class="console-wrapper"
     >
-      <app-scrollable-container
+      <app-auto-scroll-container
         ref="consoleScroller"
         class="console-scroller"
         :class="{
           'console-scroller-fullscreen': fullscreen
         }"
         :reversed="flipLayout"
-        @update:scrolling-away-from-latest="scrollingPausedModel = $event"
+        v-on="$listeners"
       >
         <console-item
           v-for="item in orderedItems"
@@ -27,7 +27,7 @@
           class="console-item"
           @click="handleEntryClick"
         />
-      </app-scrollable-container>
+      </app-auto-scroll-container>
     </v-card>
     <console-command
       v-if="!readonly && !flipLayout"
@@ -40,14 +40,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, Ref, PropSync } from 'vue-property-decorator'
+import { Component, Prop, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
 import { SocketActions } from '@/api/socketActions'
 import type { ConsoleEntry } from '@/store/console/types'
 import type { UpdateResponse } from '@/store/version/types'
-import type AppScrollableContainer from '@/components/ui/AppScrollableContainer.vue'
+import type AppAutoScrollContainer from '@/components/ui/AppAutoScrollContainer.vue'
 
 @Component({
   components: {
@@ -65,11 +65,8 @@ export default class Console extends Mixins(StateMixin) {
   @Prop({ type: Boolean })
   readonly readonly?: boolean
 
-  @PropSync('scrollingPaused', { type: Boolean })
-  scrollingPausedModel?: boolean
-
   @Ref('consoleScroller')
-  readonly consoleScrollerElement!: AppScrollableContainer
+  readonly consoleScrollerElement!: AppAutoScrollContainer
 
   get currentCommand (): string {
     return this.$typedState.console.consoleCommand

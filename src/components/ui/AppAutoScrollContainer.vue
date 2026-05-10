@@ -1,8 +1,8 @@
 <template>
   <div
     ref="box"
-    class="app-scrollable-container"
-    @scroll="onScroll"
+    class="app-auto-scroll-container"
+    @scroll="updateAutoScrollPaused"
   >
     <slot />
   </div>
@@ -10,37 +10,45 @@
 
 <script lang="ts">
 import { Component, Prop, Ref, Vue, Watch } from 'vue-property-decorator'
+import { markRaw } from 'vue'
 
 @Component
-export default class AppScrollableContainer extends Vue {
+export default class AppAutoScrollContainer extends Vue {
   @Prop({ type: Boolean })
   readonly reversed?: boolean
 
   @Ref('box')
   readonly box!: HTMLElement
 
-  scrollingAwayFromLatest = false
+  autoScrollPaused = false
+  resizeObserver?: ResizeObserver
 
   @Watch('reversed')
   onReversed () {
     this.scrollToLatest(true)
   }
 
-  @Watch('scrollingAwayFromLatest')
-  onScrollingAwayFromLatest (value: boolean) {
-    this.$emit('update:scrolling-away-from-latest', value)
+  @Watch('autoScrollPaused')
+  onAutoScrollPaused (value: boolean) {
+    this.$emit('update:auto-scroll-paused', value)
   }
 
   mounted () {
     this.scrollToLatest()
+    this.resizeObserver = markRaw(new ResizeObserver(() => this.updateAutoScrollPaused()))
+    this.resizeObserver.observe(this.box)
   }
 
   updated () {
     this.scrollToLatest()
   }
 
-  onScroll () {
-    this.scrollingAwayFromLatest = (
+  beforeDestroy () {
+    this.resizeObserver?.disconnect()
+  }
+
+  private updateAutoScrollPaused () {
+    this.autoScrollPaused = (
       this.reversed
         ? this.getScrollTop()
         : this.getScrollBottom()
@@ -50,7 +58,7 @@ export default class AppScrollableContainer extends Vue {
   scrollToLatest (force?: boolean) {
     if (
       !force &&
-      this.scrollingAwayFromLatest
+      this.autoScrollPaused
     ) {
       return
     }
@@ -61,19 +69,19 @@ export default class AppScrollableContainer extends Vue {
           ? 0
           : this.box.scrollHeight
       )
-      this.scrollingAwayFromLatest = false
+      this.autoScrollPaused = false
     })
   }
 
-  getScrollTop () {
+  private getScrollTop () {
     return this.box.scrollTop
   }
 
-  setScrollTop (value: number) {
+  private setScrollTop (value: number) {
     this.box.scrollTop = value
   }
 
-  getScrollBottom () {
+  private getScrollBottom () {
     const { scrollTop, scrollHeight, clientHeight } = this.box
 
     return scrollHeight - clientHeight - scrollTop
@@ -81,7 +89,7 @@ export default class AppScrollableContainer extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-  .app-scrollable-container {
+  .app-auto-scroll-container {
     overflow-y: auto;
     overflow-x: hidden;
   }
