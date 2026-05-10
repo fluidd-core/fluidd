@@ -37,10 +37,8 @@ export default class AppObservedColumn extends Vue {
   }
 
   beforeDestroy () {
-    if (this.observer) {
-      this.observer.disconnect()
-      this.observer = null
-    }
+    this.observer?.disconnect()
+    this.observer = null
   }
 }
 </script>

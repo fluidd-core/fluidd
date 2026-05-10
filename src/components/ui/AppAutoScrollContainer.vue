@@ -21,7 +21,7 @@ export default class AppAutoScrollContainer extends Vue {
   readonly box!: HTMLElement
 
   autoScrollPaused = false
-  resizeObserver?: ResizeObserver
+  resizeObserver: ResizeObserver | null = null
 
   @Watch('reversed')
   onReversed () {
@@ -35,8 +35,10 @@ export default class AppAutoScrollContainer extends Vue {
 
   mounted () {
     this.scrollToLatest()
-    this.resizeObserver = markRaw(new ResizeObserver(() => this.updateAutoScrollPaused()))
-    this.resizeObserver.observe(this.box)
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = markRaw(new ResizeObserver(() => this.updateAutoScrollPaused()))
+      this.resizeObserver.observe(this.box)
+    }
   }
 
   updated () {
@@ -45,6 +47,7 @@ export default class AppAutoScrollContainer extends Vue {
 
   beforeDestroy () {
     this.resizeObserver?.disconnect()
+    this.resizeObserver = null
   }
 
   private updateAutoScrollPaused () {
