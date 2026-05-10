@@ -16,7 +16,7 @@
       <app-btn
         v-if="scrollingPaused"
         icon
-        @click="consoleElement.scrollToLatest(true)"
+        @click="consoleElement.scrollToLatest()"
       >
         <v-icon dense>
           {{ flipLayout ? '$up' : '$down' }}
@@ -69,17 +69,6 @@
             <v-list-item-content>
               <v-list-item-title>
                 {{ $t('app.console.label.hide_temp_waits') }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item @click="autoScroll = !autoScroll">
-            <v-list-item-action class="my-0">
-              <v-checkbox :input-value="autoScroll" />
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>
-                {{ $t('app.console.label.auto_scroll') }}
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -171,8 +160,6 @@ export default class ConsoleCard extends Vue {
       value,
       server: true
     })
-
-    this.consoleElement.flipLayout = value
   }
 
   get items (): ConsoleEntry[] {
@@ -181,17 +168,6 @@ export default class ConsoleCard extends Vue {
 
   get inLayout (): boolean {
     return (this.$typedState.config.layoutMode)
-  }
-
-  get autoScroll (): boolean {
-    return this.$typedState.console.autoScroll
-  }
-
-  set autoScroll (value: boolean) {
-    this.$typedDispatch('console/onUpdateAutoScroll', value)
-    if (value) {
-      this.consoleElement.scrollToLatest(true)
-    }
   }
 
   @Watch('inLayout')

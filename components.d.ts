@@ -47,6 +47,7 @@ declare module 'vue' {
     AppObservedColumn: typeof import('./src/components/layout/AppObservedColumn.vue')['default']
     AppQrCode: typeof import('./src/components/ui/AppQrCode.vue')['default']
     AppSaveConfigAndRestartBtn: typeof import('./src/components/layout/AppSaveConfigAndRestartBtn.vue')['default']
+    AppScrollableContainer: typeof import('./src/components/ui/AppScrollableContainer.vue')['default']
     AppSetting: typeof import('./src/components/ui/AppSetting.vue')['default']
     AppSettingsNav: typeof import('./src/components/layout/AppSettingsNav.vue')['default']
     AppTextField: typeof import('./src/components/ui/AppTextField.vue')['default']

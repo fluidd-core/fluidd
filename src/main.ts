@@ -1,6 +1,5 @@
 // Styles
 import '@/scss/global.scss'
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 // Global Registrations
 import './registerComponentHooks'
@@ -14,7 +13,6 @@ import store from './store'
 
 // 3rd party.
 import vuetify from './plugins/vuetify'
-import VueVirtualScroller from 'vue-virtual-scroller'
 import VueMeta from 'vue-meta'
 import VuetifyConfirm from 'vuetify-confirm'
 import Vue2TouchEvents from 'vue2-touch-events'
@@ -41,7 +39,6 @@ Vue.directive('safe-html', SafeHtml)
 Vue.component('EChart', () => import('./vue-echarts-chunk'))
 
 // Use any Plugins
-Vue.use(VueVirtualScroller)
 Vue.use(FiltersPlugin)
 Vue.use(VueMeta)
 Vue.use(ColorSetPlugin, {})
