@@ -21,7 +21,7 @@
         @update:scrolling-away-from-latest="scrollingPausedModel = $event"
       >
         <console-item
-          v-for="item in flipLayout ? [...items].reverse() : items"
+          v-for="item in orderedItems"
           :key="item.id"
           :value="item"
           class="console-item"
@@ -81,6 +81,12 @@ export default class Console extends Mixins(StateMixin) {
 
   get flipLayout (): boolean {
     return this.$typedState.config.uiSettings.general.flipConsoleLayout
+  }
+
+  get orderedItems () {
+    return this.flipLayout
+      ? [...this.items].reverse()
+      : this.items
   }
 
   scrollToLatest () {

@@ -32,15 +32,11 @@ export default class AppScrollableContainer extends Vue {
   }
 
   mounted () {
-    this.$nextTick(() => {
-      this.scrollToLatest()
-    })
+    this.scrollToLatest()
   }
 
   updated () {
-    this.$nextTick(() => {
-      this.scrollToLatest()
-    })
+    this.scrollToLatest()
   }
 
   onScroll () {
@@ -59,11 +55,14 @@ export default class AppScrollableContainer extends Vue {
       return
     }
 
-    this.setScrollTop(
-      this.reversed
-        ? 0
-        : this.box.scrollHeight
-    )
+    this.$nextTick(() => {
+      this.setScrollTop(
+        this.reversed
+          ? 0
+          : this.box.scrollHeight
+      )
+      this.scrollingAwayFromLatest = false
+    })
   }
 
   getScrollTop () {
