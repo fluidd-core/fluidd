@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.37.0](https://github.com/fluidd-core/fluidd/compare/v1.36.4...v1.37.0) (2026-05-11)
+
+
+### Features
+
+* add support for Apple device keyboard shortcuts in emergency stop ([51fc668](https://github.com/fluidd-core/fluidd/commit/51fc668fe3b0c29a369fd6be5c7839f860d677e8))
+* **i18n-sl:** Update Slovenian translations ([c85193c](https://github.com/fluidd-core/fluidd/commit/c85193c53d78b787d5c89e9217348d78d860abd2))
+* improved config file handling in monaco ([#1827](https://github.com/fluidd-core/fluidd/issues/1827)) ([68e6a21](https://github.com/fluidd-core/fluidd/commit/68e6a21f7c21da75290536095f126996a6c8d776))
+* improved Monaco editor languages ([5cb24a4](https://github.com/fluidd-core/fluidd/commit/5cb24a4d57ea607d449cff58d15f816c4785ff57))
+
+
+### Bug Fixes
+
+* Apple keyboard shortcuts ([210f289](https://github.com/fluidd-core/fluidd/commit/210f2890e048294c70f44ae70a813738993a677e))
+* circle control contrast ([#1835](https://github.com/fluidd-core/fluidd/issues/1835)) ([5828c5b](https://github.com/fluidd-core/fluidd/commit/5828c5b6964a5f89da0d3279f9609f797bd15c46))
+* comment matching in klipper config monarch ([9552d38](https://github.com/fluidd-core/fluidd/commit/9552d38b1e1b883e822f09d89d1af7002d68195a))
+* console text selection ([#1834](https://github.com/fluidd-core/fluidd/issues/1834)) ([65dd5a1](https://github.com/fluidd-core/fluidd/commit/65dd5a12875d7c0774e3015bfd1148ada9e02f03))
+* enable pointer events for camera iframe ([#1826](https://github.com/fluidd-core/fluidd/issues/1826)) ([2471413](https://github.com/fluidd-core/fluidd/commit/2471413f149ed831dc2f95033f2708e9a9fe4378))
+* incorrect vue handlers ([e65e94c](https://github.com/fluidd-core/fluidd/commit/e65e94c881bc80f8a3eab86fa75852d05a8cd5cc))
+* **notifications:** fix suffix icon display ([#1818](https://github.com/fluidd-core/fluidd/issues/1818)) ([08d9201](https://github.com/fluidd-core/fluidd/commit/08d9201d3280626d93369aed5ea9791af126a23e))
+* replace content with lines in Monaco workers ([d529b6a](https://github.com/fluidd-core/fluidd/commit/d529b6aae4d43df7caab34fdfae63f227136012f))
+* **timelapse:** parse timelapse status consistently ([#1829](https://github.com/fluidd-core/fluidd/issues/1829)) ([5dd6a96](https://github.com/fluidd-core/fluidd/commit/5dd6a961eaa57ddc49e11676f7d6cb64faea5adb))
+
+
+### Code Refactorings
+
+* added some type guards ([#1833](https://github.com/fluidd-core/fluidd/issues/1833)) ([ff6690e](https://github.com/fluidd-core/fluidd/commit/ff6690e79f7807db5f4f701ffd100aaff3b3c0c9))
+* improve Monaco language definitions ([#1832](https://github.com/fluidd-core/fluidd/issues/1832)) ([eab2bbf](https://github.com/fluidd-core/fluidd/commit/eab2bbfaa4df6ce5694f18811ed58b1a2ee57b8c))
+* improve signal handling in sleep and webSocketWrapper ([c815f46](https://github.com/fluidd-core/fluidd/commit/c815f4655cd45315500297f4c35f960a69dc4db4))
+* no attribute inheritance in AppAutoScrollContainer ([ca90868](https://github.com/fluidd-core/fluidd/commit/ca908681f6ef28ead8a340c38f366e803f383245))
+* reset components.d.ts typings ([a6c5145](https://github.com/fluidd-core/fluidd/commit/a6c5145af32ed868bc400a5dda15ca6cdd5884c5))
+* use markRaw for non-reactivity ([bdc580e](https://github.com/fluidd-core/fluidd/commit/bdc580ec002545e8fd584907c602b4a2c8d45aa8))
+* use markRaw for non-reactivity (cont.) ([0724254](https://github.com/fluidd-core/fluidd/commit/072425491b40d45417daed77ece24a3490c2cd3e))
+* websocket initialization ([#1819](https://github.com/fluidd-core/fluidd/issues/1819)) ([b919aae](https://github.com/fluidd-core/fluidd/commit/b919aaed7b6038969ed05100e12db3d53bad63d2))
+* webSocketWrapper implementation ([7fca174](https://github.com/fluidd-core/fluidd/commit/7fca174d57f52b05592586b3d191685994aa050c))
+
 ## [1.36.4](https://github.com/fluidd-core/fluidd/compare/v1.36.3...v1.36.4) (2026-04-11)
 
 
