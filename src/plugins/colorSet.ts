@@ -5,7 +5,6 @@ import type _Vue from 'vue'
 import { TinyColor } from '@ctrl/tinycolor'
 
 export class ColorSet {
-  logPrefix = '[WEBSOCKET]'
   colorList: ColorList = {}
 
   constructor (options: ColorSetPluginOptions) {

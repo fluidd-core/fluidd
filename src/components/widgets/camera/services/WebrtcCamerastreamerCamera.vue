@@ -14,6 +14,7 @@
 
 <script lang="ts">
 import { Component, Ref, Mixins } from 'vue-property-decorator'
+import { markRaw } from 'vue'
 import { consola } from 'consola'
 import CameraMixin from '@/mixins/camera'
 import sleep from '@/util/sleep'
@@ -73,7 +74,7 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
         config.iceServers = rtcSessionDescriptionInit.iceServers
       }
 
-      const pc = this.pc = new RTCPeerConnection(config)
+      const pc = this.pc = markRaw(new RTCPeerConnection(config))
 
       pc.ondatachannel = (event: RTCDataChannelEvent) => {
         const dc = event.channel

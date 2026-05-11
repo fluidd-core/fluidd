@@ -92,7 +92,7 @@ npm run circular-check # Check for circular dependencies
 
 ```text
 src/
-├── api/                # HTTP (axios) and WebSocket (custom JSON-RPC) clients
+├── api/                # WebSocket (custom JSON-RPC) client (`socketActions.ts`)
 ├── components/
 │   ├── common/         # Shared dialogs & status components (auto-imported)
 │   ├── layout/         # App shell: AppBar, AppDrawer, etc. (auto-imported)
@@ -103,8 +103,8 @@ src/
 ├── locales/            # i18n YAML files (23 languages)
 ├── mixins/             # Vue mixins (StateMixin, FilesMixin, etc.)
 ├── monaco/             # Monarch tokenizers and editor themes
-├── plugins/            # Vue plugins (i18n, httpClient, socketClient, vuetify, filters)
-├── router/             # Vue Router (hash mode) with auth guards
+├── plugins/            # Vue plugins (i18n, socketClient, vuetify, filters, colorSet)
+├── router/             # Vue Router (hash mode) — no route-level auth guards
 ├── scss/               # Global styles and Vuetify variable overrides
 ├── store/              # 28 Vuex modules (printer, files, config, webcams, etc.)
 ├── types/              # UI-specific TypeScript types
@@ -118,9 +118,12 @@ src/
 
 - Hash-based routing (`#/path`)
 - Views lazy-loaded via dynamic imports: `component: () => import('@/views/X.vue')`
-- Auth guard via `defaultRouteConfig` spread pattern; `isAuthenticated()` checks `store.state.auth`
-- JWT token auth with auto-refresh (axios interceptors)
-- Key routes: `/`, `/console`, `/jobs`, `/tune`, `/diagnostics`, `/timelapse`, `/history`, `/system`, `/configure`, `/settings`, `/camera/:cameraId`, `/preview`, `/login`
+- No route-level auth guard — authentication is handled entirely by `App.vue`: `socketReady` → render main app; `socketAuthenticating` → render Login overlay; else → render `SocketDisconnected`. Navigating to `/login` is redirected to `home` (the route no longer exists)
+- Socket state machine (`src/store/socket/actions.ts`): `initializing → {connecting | disconnected} → identifying → {ready | authenticating}`. `initializing` is the one-shot startup state; the app begins here and leaves it once `$socket.connect()` runs — transitioning to `connecting` (valid URL) or `disconnected` (empty URL). Every transition goes through `socket/onSetStatus`, which validates the edge against `VALID_TRANSITIONS`, commits the new status, and runs side-effects for the destination state. Entering `connecting` clears per-socket identity (`connectionId`, `acceptNotifications`); `ready → connecting` additionally resets modules holding live data (charts + `MODULES_TO_RESET_ON_DROP`). Re-running `appInit` (instance switch) calls `store.dispatch('reset')` which mutates socket state back to `initializing` directly via `setReset`, bypassing the state machine
+- JWT auth over WebSocket: `runIdentify` sends `server.connection.identify` with the stored user token (refreshed proactively if expired); if both tokens are expired, identify is called without a token (anonymous/trusted identify). On success it awaits the post-auth bootstrap — every Moonraker DB namespace Fluidd owns (skipping any with empty ROOTS), then `server.info`, `server.config`, `machine.proc_stats`, `machine.system_info`, and `server.files.list('config')` — before transitioning to `ready`; on failure → `authenticating`. `server.connection.identify` is one-shot per socket, so the logout→login path (same physical socket, new user via `access.login`) skips the identify call (connectionId already set) and runs only the bootstrap before transitioning to `ready`. The `ready` transition itself has no side-effects — entering `ready` simply unblocks the main app render
+- `auth/login` stores the fresh tokens then dispatches `socket/onSetStatus` with `identifying` to re-identify the live socket. `auth/logout` (full) transitions the socket to `authenticating`; the socket stays open and `App.vue` renders the Login overlay while `socket.status === 'authenticating'`, so login continues over the existing connection via `access.info` / `access.login`. `notifyUserLoggedOut` (fired when Moonraker invalidates the session) does the same
+- Token refresh policy (`getAccessToken` in `src/store/socket/actions.ts`): valid access token → use it; expired access token + valid refresh token → call `access.refresh_jwt` and use the new token; refresh rejected with code 401 (or both tokens unusable) → clear both from localStorage and identify anonymously; refresh rejected with anything else (transient: socket drop, network) → keep tokens, return `null`, let the next identify cycle retry
+- Key routes: `/`, `/console`, `/jobs`, `/tune`, `/diagnostics`, `/timelapse`, `/history`, `/system`, `/configure`, `/settings`, `/camera/:cameraId`, `/preview`
 
 ### Icons & Theming
 
@@ -132,19 +135,19 @@ src/
 ### Monaco Editor
 
 - Setup in `src/components/widgets/filesystem/setupMonaco.ts` (includes worker environment setup)
-- Monarch tokenizers for `gcode`, `klipper-config`, `log` languages (in `src/monaco/language/*.monarch.ts`)
-- Custom CodeLens providers (links to Klipper docs from config sections)
-- Document symbol provider for `klipper-config`; folding range provider for `klipper-config` and `gcode`
+- Monarch tokenizers for `gcode`, `klipper-config`, `moonraker-config`, `log` languages (in `src/monaco/language/*.monarch.ts`)
+- Custom CodeLens providers (links to Klipper/Moonraker docs from config sections)
+- CodeLens and document symbol providers for `klipper-config` and `moonraker-config`; folding range provider for `klipper-config`, `moonraker-config`, and `gcode`
 - Language providers run in dedicated Web Workers (`monacoCodeLensWorker`, `monacoDocumentSymbolsWorker`, `monacoFoldingRangesWorker`)
 
 ## Integration Points
 
 ### Klipper/Moonraker Communication
 
-- All printer commands via `SocketActions` methods
+- All printer commands via `SocketActions` methods — both init and live data flow over a single WebSocket
 - Store updates from WebSocket events (not polling)
 - File operations through Moonraker's file API (`src/store/files/`)
-- HTTP client (`src/plugins/httpClient.ts`) for file uploads, auth tokens
+- File uploads/downloads are the sole consumer of `axios` — direct calls in `src/mixins/files.ts` (for upload/download progress, which `fetch` cannot report for uploads), authenticated with a oneshot token fetched via `SocketActions.accessOneshotToken()`. There is no HTTP client plugin, and the rest of the app uses `fetch` or the WebSocket
 
 ### Component Communication
 
@@ -162,8 +165,9 @@ src/
 ## Testing Conventions
 
 - Unit tests in `src/util/__tests__/*.spec.ts` with Vitest + jsdom
+- Monarch tokenizer tests co-located in `src/monaco/language/__tests__/` — use shared `tokenize-helper.ts` (`registerLanguage`, `tokenizeLines`, `tokenBuilder`)
 - Global test functions (`describe`, `it`, `expect`) — `globals: true` in vitest config
-- Setup file: `tests/unit/setup.ts`
+- Setup file: `tests/unit/setup.ts` — includes `CSS.escape` and `window.matchMedia` polyfills required by Monaco in jsdom
 - Time manipulation utility: `timeTravel(date, callback)` in `tests/unit/utils.ts`
 - Parameterized tests: `it.each([...])` pattern
 - Test store actions/mutations independently from UI

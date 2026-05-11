@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
-import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, ExtruderStepper, Extruder, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, KlippyApp, ExcludeObjectPart, BeaconModel, BedScrewsScrew, Probe } from './types'
+import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, ExtruderStepper, Extruder, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, KlippyApp, ExcludeObjectPart, BeaconModel, BedScrewsScrew, Probe, PrinterStatus } from './types'
 import getKlipperType from '@/util/get-klipper-type'
 import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
 import i18n from '@/plugins/i18n'
@@ -98,7 +98,7 @@ export const getters = {
   /**
    * Returns a string value indicating the state of the printer.
    */
-  getPrinterState: (state) => {
+  getPrinterState: (state): PrinterStatus => {
     const state1 = state.printer.idle_timeout.state // printing, ready, idle
     const state2 = state.printer.print_stats?.state // printing, paused, standby, complete, cancelled, error
     // If the idle state says we're printing, but the print_stats say otherwise - then
@@ -1002,17 +1002,12 @@ export const getters = {
     return state.printer.configfile.config
   },
 
-  getHasWarnings: (state, getters, rootState) => {
+  getHasWarnings: (state, getters) => {
     return (
-      rootState.socket &&
-      rootState.socket.open &&
-      rootState.socket.ready &&
-      (
-        getters.getPrinterWarnings.length > 0 ||
-        getters.getKlipperWarnings.length > 0 ||
-        getters.getMoonrakerFailedComponents.length > 0 ||
-        getters.getMoonrakerWarnings.length > 0
-      )
+      getters.getPrinterWarnings.length > 0 ||
+      getters.getKlipperWarnings.length > 0 ||
+      getters.getMoonrakerFailedComponents.length > 0 ||
+      getters.getMoonrakerWarnings.length > 0
     )
   },
 

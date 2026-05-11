@@ -116,7 +116,7 @@ import type { NavigationGuardNext, Route, Location } from 'vue-router'
 const routeGuard = (to: Route): Parameters<NavigationGuardNext>[0] => {
   // No need to translate here, these are just used for the route.
   const id = to.params.categoryId
-  const categories: MacroCategory[] = store.getters['macros/getCategories']
+  const categories: MacroCategory[] = store.typedGetters['macros/getCategories']
   const i = categories.findIndex(c => c.id === id)
   if (id !== '0' && i === -1) {
     return { name: 'settings', hash: '#macros' } satisfies Location

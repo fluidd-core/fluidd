@@ -2,7 +2,6 @@ import type { FileFilterType } from '../files/types'
 
 export interface ConfigState {
   [key: string]: any;
-  appReady: boolean;
   apiUrl: string;
   socketUrl: string;
   layoutMode: boolean;
@@ -10,6 +9,11 @@ export interface ConfigState {
   instances: InstanceConfig[];
   uiSettings: UiSettings;
   hostConfig: HostConfig;
+}
+
+export interface TokenKeys {
+  userToken: string;
+  refreshToken: string;
 }
 
 export interface UiSettings {
@@ -213,13 +217,12 @@ export interface SaveByPath {
 export interface InitConfig {
   apiConfig: ApiConfig | InstanceConfig;
   hostConfig?: HostConfig;
-  apiConnected?: boolean;
-  apiAuthenticated?: boolean;
 }
 
 export interface ApiConfig {
   apiUrl: string;
   socketUrl: string;
+  name?: string;
 }
 
 // Saved to localstorage.

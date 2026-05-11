@@ -11,7 +11,6 @@
       <console
         :items="responses"
         :fullscreen="isMobileViewport"
-        :height="250"
         readonly
       />
     </v-card-text>

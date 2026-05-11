@@ -8,40 +8,26 @@
       @send="sendCommand"
     />
     <v-card
-      ref="console-wrapper"
       flat
       class="console-wrapper"
     >
-      <DynamicScroller
-        ref="scroller"
-        :items="flipLayout ? [...items].reverse() : items"
-        :min-item-size="24"
+      <app-auto-scroll-container
+        ref="consoleScroller"
         class="console-scroller"
         :class="{
           'console-scroller-fullscreen': fullscreen
         }"
-        key-field="id"
-        :buffer="600"
-        @resize="scrollToLatest()"
+        :reversed="flipLayout"
+        v-on="$listeners"
       >
-        <template #default="{ item, index, active }">
-          <DynamicScrollerItem
-            :item="item"
-            :active="active"
-            :size-dependencies="[
-              item.message,
-            ]"
-            :data-index="index"
-          >
-            <console-item
-              :key="item.id"
-              :value="item"
-              class="console-item"
-              @click="handleEntryClick"
-            />
-          </DynamicScrollerItem>
-        </template>
-      </DynamicScroller>
+        <console-item
+          v-for="item in orderedItems"
+          :key="item.id"
+          :value="item"
+          class="console-item"
+          @click="handleEntryClick"
+        />
+      </app-auto-scroll-container>
     </v-card>
     <console-command
       v-if="!readonly && !flipLayout"
@@ -54,14 +40,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, Watch, Ref, PropSync } from 'vue-property-decorator'
+import { Component, Prop, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
 import { SocketActions } from '@/api/socketActions'
-import type { DinamicScroller } from 'vue-virtual-scroller'
 import type { ConsoleEntry } from '@/store/console/types'
 import type { UpdateResponse } from '@/store/version/types'
+import type AppAutoScrollContainer from '@/components/ui/AppAutoScrollContainer.vue'
 
 @Component({
   components: {
@@ -70,7 +56,7 @@ import type { UpdateResponse } from '@/store/version/types'
   }
 })
 export default class Console extends Mixins(StateMixin) {
-  @Prop({ type: [Array<ConsoleEntry>, Array<UpdateResponse>], default: () => [] })
+  @Prop({ type: [Array], default: () => [] })
   readonly items!: ConsoleEntry[] | UpdateResponse[]
 
   @Prop({ type: Boolean })
@@ -79,13 +65,8 @@ export default class Console extends Mixins(StateMixin) {
   @Prop({ type: Boolean })
   readonly readonly?: boolean
 
-  @PropSync('scrollingPaused', { type: Boolean })
-  scrollingPausedModel?: boolean
-
-  @Ref('scroller')
-  readonly dynamicScroller!: DinamicScroller
-
-  _pauseScroll = false
+  @Ref('consoleScroller')
+  readonly consoleScrollerElement!: AppAutoScrollContainer
 
   get currentCommand (): string {
     return this.$typedState.console.consoleCommand
@@ -99,79 +80,18 @@ export default class Console extends Mixins(StateMixin) {
     return this.$typedState.config.uiSettings.general.flipConsoleLayout
   }
 
-  set flipLayout (_) {
-    this.scrollToLatest(true)
+  get orderedItems () {
+    return this.flipLayout
+      ? [...this.items].reverse()
+      : this.items
   }
 
-  mounted () {
-    this.dynamicScroller.$el.addEventListener('scroll', this.onScroll)
-  }
-
-  beforeDestroy () {
-    this.dynamicScroller.$el.removeEventListener('scroll', this.onScroll)
-  }
-
-  @Watch('items', { immediate: true })
-  onItemsChange (_: unknown, oldItems: unknown[]) {
-    if (this.dynamicScroller) {
-      const el = this.dynamicScroller.$el
-
-      if (this.flipLayout && (this._pauseScroll || !this.$typedState.console.autoScroll)) {
-        const { scrollHeight, clientHeight } = el
-
-        if (scrollHeight > clientHeight) {
-          this.$nextTick(() => {
-            el.scrollTop += el.scrollHeight - scrollHeight
-          })
-        }
-      } else {
-        this.scrollToLatest(oldItems?.length === 0)
-      }
-    }
-  }
-
-  updateScrollingPaused () {
-    this.$nextTick(() => {
-      const { scrollTop, scrollHeight, clientHeight } = this.dynamicScroller.$el
-
-      const pauseScroll = this.flipLayout ? scrollTop > 1 : scrollHeight - scrollTop - clientHeight > 1
-
-      if (this._pauseScroll !== pauseScroll) {
-        this._pauseScroll = pauseScroll
-        this.scrollingPausedModel = pauseScroll
-      }
-    })
-  }
-
-  onScroll () {
-    this.updateScrollingPaused()
-  }
-
-  scrollToLatest (force?: boolean) {
-    if (this._pauseScroll && !force) return
-
-    if (this.dynamicScroller) {
-      if (
-        this.$typedState.console.autoScroll ||
-        this.readonly ||
-        force
-      ) {
-        if (this.flipLayout) {
-          this.dynamicScroller.scrollToItem(0)
-        } else {
-          this.dynamicScroller.scrollToBottom()
-        }
-      }
-
-      if (force) {
-        // The fixed/floating nature of the console may only change if the scroll is forced.
-        this.updateScrollingPaused()
-      }
-    }
+  scrollToLatest () {
+    this.consoleScrollerElement.scrollToLatest(true)
   }
 
   sendCommand (command?: string) {
-    if (command && command.length) {
+    if (command) {
       // If clients detect M112 input from the console, we should invoke the emergency_stop endpoint
       if (command.trim().toLowerCase() === 'm112') {
         SocketActions.printerEmergencyStop()
@@ -202,6 +122,7 @@ export default class Console extends Mixins(StateMixin) {
   .console-scroller {
     height: 300px;
   }
+
   .console-scroller-fullscreen {
     height: calc(100vh - 260px);
     height: calc(100svh - 260px);
@@ -210,9 +131,4 @@ export default class Console extends Mixins(StateMixin) {
   .v-input {
     flex: 0 0 auto;
   }
-
-  :deep(.vue-recycle-scroller__item-wrapper) {
-    overflow: revert;
-  }
-
 </style>

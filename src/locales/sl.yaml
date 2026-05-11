@@ -1002,7 +1002,7 @@ app:
       scan_code: Skeniraj kodo
       select: Izberi | Izberi za {macro}
     title:
-      spoolman: Spoolman
+      spoolman: Kolutar
       spool_selection: Izbor koluta | Izbor koluta za makro {macro}
       scan_spool: Skeniraj kolut
     label:
@@ -1051,7 +1051,7 @@ app:
       tracking_inactive: >-
         Beleženje porabe filamenta ni aktivno.
         Za začetek beleženja, izberite kolut.
-      not_connected: Spoolman strežnik ni na voljo.
+      not_connected: Kolutarjev strežnik ni na voljo.
       info:
         howto: >-
           Pokažite QR kodo koluta kameri.
@@ -1071,7 +1071,7 @@ app:
       auto_open_qr_camera: Samodejno odpri kamero za zajem QR kode
       auto_select_spool_on_match: Samodejno potrdi izbiro koluta, če se QR koda 
         ujema
-      card_fields: Polja za prikaz v kartici Spoolman
+      card_fields: Polja za prikaz v kartici Kolutarja
       prefer_device_camera: Če je na voljo, uporabi kamero naprave za zajem QR 
         kode
       show_spool_selection_dialog_on_print_start: Prikaži okno za izbiro koluta 
@@ -1095,7 +1095,7 @@ app:
       preload: Predobremenitev
       print_stats: Statistika tiska
       recover: Okrevanje
-      sync_spoolman: Sinhroniziraj Spoolman
+      sync_spoolman: Sinhroniziraj Kolutarja
       unlock: Odkleni
       cancel: Prekliči
       mmu_maintenance: MMU vzdrževanje
@@ -1122,8 +1122,8 @@ app:
       edit_ttg_map: Mapa orodij / filametov (uredi TTG mapo)
     label:
       tool_mapping: Mapiranje orodij
-      spoolman: Spoolman
-      spoolman_id: Spoolman ID
+      spoolman: Kolutar
+      spoolman_id: Kolutar ID
       choose_spool: Izberi kolut
       filament_name: Ime filamenta
       load_speed: Naloži prekoračitev hitrosti
@@ -1174,13 +1174,14 @@ app:
         v datoteki 'mmu_parameters.cfg', ali na privzeto preslikavanje 1:1, če 
         privzete vrednosti niso na voljo
       select_gate: Izberite informacije o vratih/kolutu, ki jih želite urediti
-      spoolman_off: Podpora za Spoolman je v Happy Hare "%{mode}". Dodeljevanje 
+      spoolman_off: Podpora za Kolutarja je v Happy Hare "%{mode}". Dodeljevanje
         ID koluta vratom je onemogočeno
-      spoolman_other: Podpora za Spoolman je "%{mode}". Po želji lahko dodelite 
+      spoolman_other: Podpora za Kolutarja je "%{mode}". Po želji lahko dodelite
         ID koluta ali neposredno uredite atribute vrat
-      spoolman_pull: Podpora za Spoolman je v nečinu "%{mode}". Lokalno urejanje
-        večine lastnosti vrat je onemogočeno. Dodelite mapiranje kolut/vrata 
-        neposredno v Spoolmanovi bazi ali uporabite ukaz MMU_SPOOLMAN
+      spoolman_pull: Podpora za Kolutarja je v načinu "%{mode}". Lokalno 
+        urejanje večine lastnosti vrat je onemogočeno. Dodelite mapiranje 
+        kolut/vrata neposredno v Kolutarjevi bazi ali uporabite ukaz 
+        MMU_SPOOLMAN
       no_matching_spool: Ni najdenih ustraznih kolutov
       are_you_sure: Ste prepričani?
       bad_temperature: Temperatura je izven območja

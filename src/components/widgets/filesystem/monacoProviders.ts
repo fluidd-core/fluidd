@@ -22,7 +22,7 @@ abstract class MonacoProviderBase<T> {
   protected _lastCacheKey: string | null = null
   protected _lastResult: T[] = []
 
-  protected _workerWrapper<T extends MonacoLanguageWorkerResponseMessage<U>, U = Extract<T, { action: 'result' }>['result']>(WorkerConstructor: new () => Worker, language: string, content: string, token: monaco.CancellationToken): Promise<U | undefined> {
+  protected _workerWrapper<T extends MonacoLanguageWorkerResponseMessage<U>, U = Extract<T, { action: 'result' }>['result']>(WorkerConstructor: new () => Worker, language: string, lines: string[], token: monaco.CancellationToken): Promise<U | undefined> {
     return new Promise<U | undefined>((resolve, reject) => {
       if (token.isCancellationRequested) {
         resolve(undefined)
@@ -81,7 +81,7 @@ abstract class MonacoProviderBase<T> {
 
       const message: MonacoLanguageWorkerRequestMessage = {
         language,
-        content
+        lines
       }
 
       if (!token.isCancellationRequested) {
@@ -91,7 +91,7 @@ abstract class MonacoProviderBase<T> {
   }
 
   protected _createCacheKey (model: monaco.editor.ITextModel): string {
-    return `${model.uri.toString()}@${model.getVersionId()}`
+    return `${model.uri.toString()}@${model.getVersionId()}@${model.getLanguageId()}`
   }
 }
 
@@ -100,7 +100,7 @@ export class MonacoDocumentSymbolProvider extends MonacoProviderBase<monaco.lang
     const cacheKey = this._createCacheKey(model)
 
     if (this._lastCacheKey !== cacheKey) {
-      const result = await this._workerWrapper<MonacoDocumentSymbolsWorkerResponseMessage>(MonacoDocumentSymbolsWorker, 'klipper-config', model.getValue(), token)
+      const result = await this._workerWrapper<MonacoDocumentSymbolsWorkerResponseMessage>(MonacoDocumentSymbolsWorker, model.getLanguageId(), model.getLinesContent(), token)
 
       if (result == null) {
         return []
@@ -163,7 +163,7 @@ export class MonacoCodeLensProvider extends MonacoProviderBase<monaco.languages.
         ? this._klippyApp.name
         : service
 
-      const result = await this._workerWrapper<MonacoCodeLensWorkerResponseMessage>(MonacoCodeLensWorker, 'klipper-config', model.getValue(), token)
+      const result = await this._workerWrapper<MonacoCodeLensWorkerResponseMessage>(MonacoCodeLensWorker, model.getLanguageId(), model.getLinesContent(), token)
 
       if (result == null) {
         return []
@@ -245,7 +245,7 @@ export class MonacoFoldingRangeProvider extends MonacoProviderBase<monaco.langua
     const cacheKey = this._createCacheKey(model)
 
     if (this._lastCacheKey !== cacheKey) {
-      const result = await this._workerWrapper<MonacoFoldingRangesWorkerResponseMessage>(MonacoFoldingRangeWorker, model.getLanguageId(), model.getValue(), token)
+      const result = await this._workerWrapper<MonacoFoldingRangesWorkerResponseMessage>(MonacoFoldingRangeWorker, model.getLanguageId(), model.getLinesContent(), token)
 
       if (result == null) {
         return []

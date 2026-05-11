@@ -4,19 +4,7 @@ import store from '@/store'
 
 Vue.use(VueRouter)
 
-const isAuthenticated = (): boolean => (
-  store.state.auth.authenticated ||
-  !store.state.socket.apiConnected
-)
-
 const defaultRouteConfig: Partial<RouteConfig> = {
-  beforeEnter: (to, from, next) => {
-    if (isAuthenticated()) {
-      next()
-    } else {
-      next({ name: 'login' })
-    }
-  },
   meta: {
     fileDropRoot: 'gcodes'
   }
@@ -127,21 +115,6 @@ const routes: Array<RouteConfig> = [
     ...defaultRouteConfig
   },
   {
-    path: '/login',
-    name: 'login',
-    component: () => import('@/views/Login.vue'),
-    beforeEnter: (to, from, next) => {
-      if (isAuthenticated()) {
-        next({ name: 'home' })
-      } else {
-        next()
-      }
-    },
-    meta: {
-      fillHeight: true
-    }
-  },
-  {
     path: '/icons',
     name: 'icons',
     component: () => import('@/views/Icons.vue')
@@ -170,14 +143,21 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  store.commit('config/setContainerColumnCount', 2)
-  store.commit('config/setLayoutMode', false)
-  next()
+  store.typedCommit('config/setContainerColumnCount', 2)
+  store.typedCommit('config/setLayoutMode', false)
+
+  // /login no longer exists as a route — login is rendered as an overlay by
+  // App.vue when socket.status === 'authenticating'. On a deep link to /login
+  // (fresh navigation), redirect to home; on in-app navigation, block silently.
+  if (to.path === '/login') {
+    next(from === VueRouter.START_LOCATION ? { name: 'home' } : false)
+  } else {
+    next()
+  }
 })
 
 declare module 'vue-router' {
   interface RouteMeta {
-    fillHeight?: boolean
     hasSubNavigation?: boolean
     fileDropRoot?: string
   }

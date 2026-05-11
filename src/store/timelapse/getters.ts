@@ -10,7 +10,7 @@ export const getters = {
       return null
     }
 
-    const uniqueCount = +(lastFrame.lastframefile?.match(/\d+/)?.[0] ?? 0)
+    const uniqueCount = +(lastFrame.framecount ?? lastFrame.lastframefile?.match(/\d+/)?.[0] ?? 0)
 
     return {
       count: lastFrame.framecount,

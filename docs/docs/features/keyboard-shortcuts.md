@@ -47,10 +47,10 @@ enabled.
 
 ## Actions
 
-| Shortcut              | Action                    |
-| --------------------- | ------------------------- |
-| ++ctrl+shift+e++      | Emergency stop            |
-| ++question++          | Open keyboard shortcuts   |
+| Shortcut                                 | Action                    |
+| ---------------------------------------- | ------------------------- |
+| ++ctrl+shift+e++ / ++cmd+shift+e++       | Emergency stop            |
+| ++question++                             | Open keyboard shortcuts   |
 
 Emergency stop works everywhere, including inside text inputs and the config
 editor.

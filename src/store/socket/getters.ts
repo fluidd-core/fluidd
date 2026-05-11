@@ -3,21 +3,26 @@ import type { SocketState } from './types'
 import type { RootState } from '../types'
 
 export const getters = {
-  /**
-   * Indicates if our socket is connected / open.
-   */
-  getConnectionState: (state): boolean => {
-    return state.open
-  },
+  getIsInitializing: (state): boolean => (
+    state.status === 'initializing'
+  ),
 
-  /**
-   * Indicates if our socket is attempting to connect still..
-   */
-  getConnectingState: (state): boolean => {
-    return state.connecting
-  },
+  getIsDisconnected: (state): boolean => (
+    state.status === 'disconnected'
+  ),
 
-  getApiConnected: (state) => {
-    return state.apiConnected
-  }
+  getIsConnected: (state): boolean => (
+    state.status === 'connecting' ||
+    state.status === 'identifying' ||
+    state.status === 'authenticating' ||
+    state.status === 'ready'
+  ),
+
+  getIsAuthenticating: (state): boolean => (
+    state.status === 'authenticating'
+  ),
+
+  getIsReady: (state): boolean => (
+    state.status === 'ready'
+  )
 } satisfies GetterTree<SocketState, RootState>

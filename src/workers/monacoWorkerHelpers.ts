@@ -1,6 +1,6 @@
 export type MonacoLanguageWorkerRequestMessage = {
   language: string,
-  content: string
+  lines: string[]
 }
 
 export type MonacoLanguageWorkerResponseMessage<T> = {

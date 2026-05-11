@@ -6,6 +6,7 @@
 
 <script lang="ts">
 import { Component, Prop, VModel, Vue, Watch } from 'vue-property-decorator'
+import { markRaw } from 'vue'
 import Sortable from 'sortablejs'
 
 const instanceKey = Symbol('instanceKey')
@@ -134,7 +135,7 @@ export default class AppDraggable extends Vue {
       onEnd: this.handleEnd
     }
 
-    this.sortable = Sortable.create(targetElement, options)
+    this.sortable = markRaw(Sortable.create(targetElement, options))
   }
 
   dettach () {
@@ -152,7 +153,7 @@ export default class AppDraggable extends Vue {
     this.attach()
   }
 
-  unmounted () {
+  beforeDestroy () {
     this.dettach()
   }
 }

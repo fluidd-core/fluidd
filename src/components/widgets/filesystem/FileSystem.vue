@@ -1232,12 +1232,18 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       if (hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'files')) {
         const files = getFileDataTransferDataFromDataTransfer(event.dataTransfer, 'files')
 
-        for (const file of files.items) {
-          const src = `${files.path}/${file}`
-          const dest = `${this.currentPath}/${file}`
-          SocketActions.serverFilesCopy(src, dest)
+        if (files) {
+          for (const file of files.items) {
+            const src = `${files.path}/${file}`
+            const dest = `${this.currentPath}/${file}`
+            SocketActions.serverFilesCopy(src, dest)
+          }
+
+          return
         }
-      } else if (hasFilesInDataTransfer(event.dataTransfer)) {
+      }
+
+      if (hasFilesInDataTransfer(event.dataTransfer)) {
         const files = await getFilesFromDataTransfer(event.dataTransfer)
 
         if (files) {

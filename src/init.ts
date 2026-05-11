@@ -2,14 +2,10 @@ import Vue from 'vue'
 import store from './store'
 import { consola } from 'consola'
 import { Globals } from './globals'
-import type { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
-import axios from 'axios'
-import router from './router'
-import { httpClientActions } from './api/httpClientActions'
+import type { ApiConfig, HostConfig, InstanceConfig } from './store/config/types'
 import sanitizeEndpoint from './util/sanitize-endpoint'
 import webSocketWrapper from './util/web-socket-wrapper'
 import promiseAny from './util/promise-any'
-import sleep from './util/sleep'
 import md5 from 'md5'
 
 // Load API configuration
@@ -23,14 +19,18 @@ import md5 from 'md5'
  */
 
 const getHostConfig = async () => {
-  const hostConfigResponse = await httpClientActions.get<HostConfig>(`${import.meta.env.BASE_URL}config.json`)
-  if (hostConfigResponse && hostConfigResponse.data) {
-    consola.debug('Loaded web host configuration', hostConfigResponse.data)
-    return hostConfigResponse.data
-  } else {
+  const response = await fetch(`${import.meta.env.BASE_URL}config.json`)
+
+  if (!response.ok) {
     consola.debug('Failed loading web host configuration')
     throw new Error('Unable to load host configuration. Please check the host.')
   }
+
+  const hostConfig = await response.json() as HostConfig
+
+  consola.debug('Loaded web host configuration', hostConfig)
+
+  return hostConfig
 }
 
 const getApiConfig = async (hostConfig: HostConfig, apiUrlHash?: string | null): Promise<ApiConfig | InstanceConfig> => {
@@ -92,171 +92,79 @@ const getApiConfig = async (hostConfig: HostConfig, apiUrlHash?: string | null):
   try {
     const { signal } = abortController
 
-    const defaultOnTimeout = async () => {
-      await sleep(5000, signal)
+    return await promiseAny(
+      endpoints
+        .map(async (endpoint) => {
+          const apiEndpoints = Vue.$filters.getApiUrls(endpoint)
 
-      return {
-        apiUrl: '',
-        socketUrl: ''
-      } satisfies ApiConfig
-    }
+          const result = await webSocketWrapper(apiEndpoints.socketUrl, {
+            timeout: 1200,
+            signal
+          })
 
-    return await promiseAny([
-      ...endpoints.map(async (endpoint) => {
-        const apiEndpoints = Vue.$filters.getApiUrls(endpoint)
+          if (!result.ok) {
+            throw new Error(result.message)
+          }
 
-        await webSocketWrapper(apiEndpoints.socketUrl, signal)
-
-        return apiEndpoints
-      }),
-      defaultOnTimeout()
-    ])
+          return apiEndpoints
+        })
+    )
+  } catch {
+    return {
+      apiUrl: '',
+      socketUrl: ''
+    } satisfies ApiConfig
   } finally {
     abortController.abort()
   }
 }
 
-const getMoorakerDatabase = async (apiConfig: ApiConfig, namespace: string) => {
-  const result = {
-    data: {} as any,
-    apiConnected: true,
-    apiAuthenticated: true
-  }
+export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): Promise<void> => {
+  try {
+    Vue.$socket.close()
 
-  if (apiConfig.apiUrl !== '' && apiConfig.socketUrl !== '') {
-    try {
-      const response = await httpClientActions.serverDatabaseItemGet(namespace)
+    // Reset the store to its default state.
+    await store.typedDispatch('reset', undefined)
 
-      result.data = response.data.result.value
+    // Load the Host Config
+    if (!hostConfig) {
+      hostConfig = await getHostConfig()
+    }
 
-      consola.debug('loaded db', namespace, result.data)
-    } catch (e) {
-      switch (axios.isAxiosError(e) ? e.response?.status : 0) {
-        case 404:
-          // Connected but database does not yet exist
-          break
-
-        case 401:
-          // The API is technically connected, but we're un-authenticated.
-          result.apiAuthenticated = false
-          break
-
-        default:
-          consola.debug('API Down / Not Available:', e)
-          result.apiConnected = false
-          break
+    if (!(Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage)) {
+      for (const endpoint of hostConfig.endpoints) {
+        apiConfig = Vue.$filters.getApiUrls(endpoint)
+        store.typedCommit('config/setInitInstances', apiConfig)
       }
     }
-  } else {
-    result.apiConnected = false
-    result.apiAuthenticated = false
-  }
 
-  return result
-}
+    const locationUrl = new URL(window.location.href)
 
-export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): Promise<InitConfig> => {
-  // Reset the store to its default state.
-  await store.dispatch('reset', undefined, { root: true })
+    // Load the API Config
+    if (!apiConfig) {
+      const apiUrlHash = locationUrl.searchParams.get('printer')
 
-  // Load the Host Config
-  if (!hostConfig) {
-    hostConfig = await getHostConfig()
-  }
-
-  if (!(Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage)) {
-    for (const endpoint of hostConfig.endpoints) {
-      apiConfig = Vue.$filters.getApiUrls(endpoint)
-      await store.dispatch('config/initLocal', { apiConfig })
+      apiConfig = await getApiConfig(hostConfig, apiUrlHash)
     }
-  }
 
-  const locationUrl = new URL(window.location.href)
-
-  // Check if we have a printer url hash in search params
-  const apiUrlHash = locationUrl.searchParams.get('printer')
-
-  // Load the API Config
-  if (!apiConfig) {
-    apiConfig = await getApiConfig(hostConfig, apiUrlHash)
-  }
-
-  if (apiConfig.apiUrl) {
     // Set the printer url hash in the search params so that the url is bookmarkable
+    if (apiConfig.apiUrl) {
+      locationUrl.searchParams.set('printer', md5(apiConfig.apiUrl))
 
-    locationUrl.searchParams.set('printer', md5(apiConfig.apiUrl))
+      window.history.replaceState(window.history.state, '', locationUrl)
+    }
 
-    window.history.replaceState(window.history.state, '', locationUrl)
+    consola.debug('inited apis', store.state.config, apiConfig)
+
+    await store.typedDispatch('config/initConfig', { apiConfig, hostConfig })
+
+    Vue.$socket.connect()
+  } catch (e) {
+    consola.error('Error during app initialization', e)
+
+    // store.dispatch('reset') above set status back to `initializing`, so
+    // without this transition SocketDisconnected stays on the "connecting…"
+    // spinner indefinitely and the reconnect button never appears.
+    await store.typedDispatch('socket/onSetStatus', 'disconnected')
   }
-
-  // Setup axios
-  if (apiConfig.apiUrl) httpClientActions.defaults.baseURL = apiConfig.apiUrl
-
-  // Just sets the api urls
-  await store.dispatch('config/onInitApiConfig', apiConfig)
-  consola.debug('inited apis', store.state.config, apiConfig)
-
-  // Init authentication
-  await store.dispatch('auth/initAuth')
-
-  // Load any configuration we may have in moonrakers db
-  let apiConnected = true
-  let apiAuthenticated = true
-  for (const { NAMESPACE, ROOTS } of Object.values(Globals.MOONRAKER_DB)) {
-    if (!apiConnected && !apiAuthenticated) {
-      break
-    }
-
-    if (Object.keys(ROOTS).length === 0) {
-      continue
-    }
-
-    const result = await getMoorakerDatabase(apiConfig, NAMESPACE)
-
-    apiAuthenticated = result.apiAuthenticated
-    apiConnected = result.apiConnected
-
-    if (!apiConnected || !apiAuthenticated) {
-      break
-    }
-
-    const { data } = result
-
-    const roots = Object.values<Record<string, any>>(ROOTS)
-
-    const promises = roots.map(async (root) => {
-      const value = root.name ? data[root.name] : data
-
-      if (root.migrate_only) {
-        if (value) await store.dispatch(root.dispatch, value)
-      } else {
-        if (!value) {
-          try {
-            await httpClientActions.serverDatabaseItemPost(NAMESPACE, root.name, {})
-          } catch (e) {
-            consola.debug('Error creating database item', e)
-          }
-        }
-
-        await store.dispatch(root.dispatch, value || {})
-      }
-    })
-
-    await Promise.all(promises)
-  }
-
-  // apiConfig could have empty strings, meaning we have no valid connection.
-  await store.dispatch('init', { apiConfig, hostConfig, apiConnected })
-
-  if (store.state.auth.authenticated) {
-    if (router.currentRoute.name === 'login') {
-      await router.push({ name: 'home' })
-    }
-  } else {
-    if (router.currentRoute.name !== 'login') {
-      await router.push({ name: 'login' })
-    }
-  }
-
-  return { apiConfig, hostConfig, apiConnected, apiAuthenticated }
 }

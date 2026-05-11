@@ -26,7 +26,7 @@
     />
 
     <v-btn
-      v-if="isMobileViewport && socketConnected && authenticated"
+      v-if="isMobileViewport && socketReady"
       x-small
       fab
       fixed
@@ -42,41 +42,25 @@
 
     <v-main :style="customBackgroundImageStyle">
       <v-container
+        v-if="socketReady"
         fluid
-        :class="{
-          'fill-height': $route.meta?.fillHeight ?? false,
-          [['single', 'double', 'triple', 'quad'][columnCount - 1]]: true
-        }"
+        :class="[['single', 'double', 'triple', 'quad'][columnCount - 1]]"
         class="constrained-width pa-2 pa-sm-4"
       >
-        <v-row
-          v-if="
-            (socketConnected && apiConnected) &&
-              (!klippyReady || hasWarnings) &&
-              !inLayout &&
-              $route.name !== 'login'
-          "
-        >
+        <v-row v-if="(!klippyReady || hasWarnings) && !inLayout">
           <v-col>
             <klippy-status-card />
           </v-col>
         </v-row>
 
-        <router-view
-          v-if="
-            (socketConnected && apiConnected) ||
-              (!authenticated && apiConnected)
-          "
-        />
-
-        <register-service-worker />
+        <router-view />
       </v-container>
 
-      <socket-disconnected
-        v-if="
-          (!socketConnected && !apiConnected) ||
-            (!socketConnected && authenticated)"
-      />
+      <login v-else-if="socketAuthenticating" />
+
+      <socket-disconnected v-else />
+
+      <register-service-worker />
 
       <template v-if="socketConnected">
         <file-system-download-dialog />
@@ -391,8 +375,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
   handleDragOver (event: DragEvent) {
     if (
-      this.socketConnected &&
-      this.authenticated &&
+      this.socketReady &&
       this.fileDropRoot &&
       event.dataTransfer &&
       hasFilesInDataTransfer(event.dataTransfer)
@@ -454,7 +437,11 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
     const shortcut = keyboardEventToKeyboardShortcut(event)
 
-    if (shortcut === 'Ctrl+Shift+E') {
+    if (
+      this.isAppleDevice
+        ? shortcut === 'Meta+Shift+e'
+        : shortcut === 'Ctrl+Shift+E'
+    ) {
       event.preventDefault()
 
       this.emergencyStop()

@@ -29,4 +29,8 @@ export default class BrowserMixin extends Vue {
       (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
     )
   }
+
+  get isAppleDevice (): boolean {
+    return /iPhone|iPad|iPod|Macintosh|MacIntel|MacPPC|Mac68K/.test(navigator.platform)
+  }
 }

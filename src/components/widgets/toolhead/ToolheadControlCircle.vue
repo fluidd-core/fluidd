@@ -13,6 +13,7 @@
           class="app-circle-control"
           :class="{
             [$vuetify.theme.dark ? 'theme--dark': 'theme--light']: true,
+            'theme--text--contrast': !isPrimaryColorDark
           }"
         >
           <g class="cc-section">
@@ -543,6 +544,10 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     return this.$typedGetters['printer/getHasSteppersEnabled']
   }
 
+  get isPrimaryColorDark (): boolean {
+    return this.$filters.isColorDark(this.$typedState.config.uiSettings.theme.color)
+  }
+
   get klippyApp (): KlippyApp {
     return this.$typedGetters['printer/getKlippyApp']
   }
@@ -784,48 +789,59 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   @import 'vuetify/src/styles/styles.sass';
 
   @include theme(app-circle-control) using ($material) {
+    $material-text-primary: map-deep-get($material, 'text', 'primary');
+    $material-buttons-disabled: map-deep-get($material, 'buttons', 'disabled');
+
     .disabled {
-      fill: map-deep-get($material, 'buttons', 'disabled') !important;
-      stroke: map-deep-get($material, 'buttons', 'disabled') !important;
+      fill: $material-buttons-disabled !important;
+      stroke: $material-buttons-disabled !important;
     }
 
     .cc-btn,
     .cc-lbl {
-      fill: map-deep-get($material, 'text', 'primary');
-      stroke: map-deep-get($material, 'text', 'primary');
+      fill: $material-text-primary;
+      stroke: $material-text-primary;
     }
   }
 
-  @mixin cc-btn-theme ($component, $text, $back, $hover) {
+  @mixin cc-btn-theme ($component, $text: null, $back: null, $hover: null) {
     &#{$component} {
-      fill: #{$text};
-      stroke: #{$text};
-
-      .cc-btn-container {
-        fill: #{$back};
+      @if $text {
+        fill: $text;
+        stroke: $text;
       }
 
-      &:hover .cc-btn-container {
-        fill: #{$hover};
+      @if $back {
+        .cc-btn-container {
+          fill: #{$back};
+        }
+      }
+
+      @if $hover {
+        &:hover .cc-btn-container {
+          fill: #{$hover};
+        }
       }
     }
   }
 
   .theme--light.app-circle-control .cc-btn {
-    @include cc-btn-theme('.inner', '', 'var(--v-btncolor-lighten1)', '');
-    @include cc-btn-theme('.inner-mid', '', 'var(--v-btncolor-base)', '');
-    @include cc-btn-theme('.outer-mid', '', 'var(--v-btncolor-darken1)', '');
-    @include cc-btn-theme('.outer', '', 'var(--v-btncolor-darken2)', '');
+    @include cc-btn-theme('.inner', $back: 'var(--v-btncolor-lighten1)');
+    @include cc-btn-theme('.inner-mid', $back: 'var(--v-btncolor-base)');
+    @include cc-btn-theme('.outer-mid', $back: 'var(--v-btncolor-darken1)');
+    @include cc-btn-theme('.outer', $back: 'var(--v-btncolor-darken2)');
   }
 
   .theme--dark.app-circle-control .cc-btn {
-    @include cc-btn-theme('.inner', '', 'var(--v-btncolor-lighten2)', '');
-    @include cc-btn-theme('.inner-mid', '', 'var(--v-btncolor-lighten1)', '');
-    @include cc-btn-theme('.outer-mid', '', 'var(--v-btncolor-base)', '');
-    @include cc-btn-theme('.outer', '', 'var(--v-btncolor-darken1)', '');
+    @include cc-btn-theme('.inner', $back: 'var(--v-btncolor-lighten2)');
+    @include cc-btn-theme('.inner-mid', $back: 'var(--v-btncolor-lighten1)');
+    @include cc-btn-theme('.outer-mid', $back: 'var(--v-btncolor-base)');
+    @include cc-btn-theme('.outer', $back: 'var(--v-btncolor-darken1)');
   }
 
   .app-circle-control {
+    $material-dark-text-primary: map-deep-get($material-dark, 'text', 'primary');
+
     font-size: 16px;
     max-height: 350px;
     min-height: 275px;
@@ -849,8 +865,6 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
       }
 
       &:not(.disabled) {
-        $material-dark-text-primary: map-deep-get($material-dark, 'text', 'primary');
-
         @include cc-btn-theme(
           '.primary',
           $material-dark-text-primary,
@@ -890,6 +904,10 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     .cc-lbl {
       pointer-events: none;
       stroke-width: 0;
+
+      &:not(.disabled) {
+        fill: $material-dark-text-primary;
+      }
     }
 
     .large {
@@ -898,6 +916,24 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
     .disabled {
       pointer-events: none;
+    }
+  }
+
+  .theme--text--contrast.app-circle-control {
+    $material-light-text-primary: map-deep-get($material-light, 'text', 'primary');
+
+    .cc-btn {
+      &:not(.disabled) {
+        @each $cls in '.primary', '.inner', '.inner-mid', '.outer-mid', '.outer' {
+          @include cc-btn-theme($cls, $material-light-text-primary);
+        }
+      }
+    }
+
+    .cc-lbl {
+      &:not(.disabled) {
+        fill: $material-light-text-primary;
+      }
     }
   }
 </style>

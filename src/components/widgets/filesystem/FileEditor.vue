@@ -17,6 +17,7 @@
 
 <script lang="ts">
 import { Component, Prop, Ref, Mixins, Watch } from 'vue-property-decorator'
+import { markRaw } from 'vue'
 import BrowserMixin from '@/mixins/browser'
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import md5 from 'md5'
@@ -100,7 +101,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
     }
 
     // Create an editor instance.
-    this.editor = monaco.editor.create(this.monacoEditor, {
+    this.editor = markRaw(monaco.editor.create(this.monacoEditor, {
       contextmenu: true,
       readOnly: this.readonly,
       codeLens: this.codeLens,
@@ -113,7 +114,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
         enabled: (!this.isMobileViewport)
       },
       rulers: (this.isMobileViewport) ? [80, 120] : []
-    })
+    }))
 
     if (!this.readonly) {
       this.editor.addAction({
@@ -156,11 +157,11 @@ export default class FileEditor extends Mixins(BrowserMixin) {
     })
 
     // Define the model. The filename will map to the supported languages.
-    const model = monaco.editor.createModel(
+    const model = markRaw(monaco.editor.createModel(
       this.value,
       undefined,
       monaco.Uri.file(this.pathFilename)
-    )
+    ))
     this.editor.setModel(model)
 
     const restoreViewStateStorage = this.restoreViewStateStorage

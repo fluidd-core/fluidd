@@ -1,14 +1,25 @@
 import type { AppFile, FileUpload, AppFileThumbnail, FileDownload } from '@/store/files/types'
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import type { AxiosRequestConfig, AxiosProgressEvent } from 'axios'
-import { httpClientActions, type AxiosRequestConfigForReturnType } from '@/api/httpClientActions'
+import axios, { type AxiosRequestConfig, type AxiosProgressEvent } from 'axios'
 import type { FileWithPath } from '@/types'
 import { consola } from 'consola'
 import { v4 as uuidv4 } from 'uuid'
 import type { AppUser } from '@/store/auth/types'
 import downloadUrl from '@/util/download-url'
 import { SocketActions } from '@/api/socketActions'
+
+type AxiosRequestConfigForReturnType<T = unknown, D = unknown> = AxiosRequestConfig<D> & (
+  T extends string
+    ? { responseType?: 'text' | 'json' }
+    : T extends ArrayBuffer
+      ? { responseType: 'arraybuffer' }
+      : T extends Blob
+        ? { responseType: 'blob' }
+        : T extends FormData
+          ? { responseType: 'formdata' }
+          : unknown
+        )
 
 @Component
 export default class FilesMixin extends Vue {
@@ -109,38 +120,34 @@ export default class FilesMixin extends Vue {
         abortController
       })
 
-      if (options) {
-        options = {
-          ...options,
-          signal: abortController.signal,
-          onDownloadProgress: (event: AxiosProgressEvent) => {
-            if (abortController.signal.aborted) {
-              return
-            }
-
-            const progress = event.progress ?? (
-              size > 0
-                ? event.loaded / size
-                : 0
-            )
-
-            const payload: any = {
-              uid,
-              loaded: event.loaded,
-              percent: Math.round(progress * 100),
-              speed: event.rate ?? 0
-            }
-
-            if (event.total) {
-              size = payload.size = event.total
-            }
-
-            this.$typedDispatch('files/updateFileDownload', payload)
+      const response = await this.serverFilesGet<T>(filepath, {
+        ...options ?? {} as AxiosRequestConfigForReturnType<T>,
+        signal: abortController.signal,
+        onDownloadProgress: (event: AxiosProgressEvent) => {
+          if (abortController.signal.aborted) {
+            return
           }
-        }
-      }
 
-      const response = await httpClientActions.serverFilesGet<T>(filepath, options)
+          const progress = event.progress ?? (
+            size > 0
+              ? event.loaded / size
+              : 0
+          )
+
+          const payload: any = {
+            uid,
+            loaded: event.loaded,
+            percent: Math.round(progress * 100),
+            speed: event.rate ?? 0
+          }
+
+          if (event.total) {
+            size = payload.size = event.total
+          }
+
+          this.$typedDispatch('files/updateFileDownload', payload)
+        }
+      })
 
       abortController.abort()
 
@@ -215,7 +222,7 @@ export default class FilesMixin extends Vue {
         abortController
       } satisfies FileUpload)
 
-      const response = await httpClientActions.serverFilesUploadPost(file, path, root, andPrint, {
+      const response = await this.serverFilesUploadPost(file, path, root, andPrint, {
         ...options,
         signal: abortController.signal,
         onUploadProgress: (event: AxiosProgressEvent) => {
@@ -302,5 +309,39 @@ export default class FilesMixin extends Vue {
         this.$typedDispatch('files/removeFileUpload', fileUpload.uid)
       }
     }
+  }
+
+  async serverFilesGet<T = unknown> (filepath: string, options?: AxiosRequestConfigForReturnType<T>) {
+    const fileUrl = await this.createFileUrlWithToken(filepath, '')
+
+    return axios.get<T>(fileUrl, options)
+  }
+
+  async serverFilesUploadPost (file: File, path: string, root: string, print?: boolean, options?: AxiosRequestConfig) {
+    const formData = new FormData()
+
+    formData.append('file', file, file.name)
+    formData.append('path', path)
+    formData.append('root', root)
+    if (print) {
+      formData.append('print', 'true')
+    }
+
+    const token = this.isTrustedUser ? null : await SocketActions.accessOneshotToken()
+
+    return axios.postForm<{
+      result: {
+        item: {
+          modified?: number,
+          size?: number,
+          permissions?: string,
+          path: string,
+          root: string
+        }
+        print_started?: boolean,
+        print_queued?: boolean,
+        action: 'create_file'
+      }
+    }>(`${this.apiUrl}/server/files/upload${token ? `?token=${token}` : ''}`, formData, options)
   }
 }

@@ -1,41 +1,21 @@
 import type { MutationTree } from 'vuex'
-import type { SocketState } from './types'
+import type { SocketState, SocketStatus } from './types'
 import { defaultState } from './state'
 
 export const mutations = {
-  /**
-   * Reset state
-   */
   setReset (state) {
     Object.assign(state, defaultState())
   },
 
-  setSocketOpen (state, payload) {
-    if (state.open !== payload) state.open = payload
-    if (state.disconnecting) state.disconnecting = false
+  setStatus (state, payload: SocketStatus) {
+    if (state.status !== payload) state.status = payload
   },
 
-  setSocketConnecting (state, payload) {
-    if (state.connecting !== payload) state.connecting = payload
-  },
-
-  setSocketReadyState (state, payload) {
-    state.ready = payload
-  },
-
-  setAcceptNotifications (state, payload) {
+  setAcceptNotifications (state, payload: boolean) {
     state.acceptingNotifications = payload
   },
 
-  setSocketDisconnecting (state, payload) {
-    state.disconnecting = payload
-  },
-
-  setApiConnected (state, payload) {
-    state.apiConnected = payload
-  },
-
-  setConnectionId (state, payload) {
+  setConnectionId (state, payload: number | null) {
     state.connectionId = payload
   }
 } satisfies MutationTree<SocketState>

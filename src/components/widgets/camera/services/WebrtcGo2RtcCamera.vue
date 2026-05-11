@@ -14,6 +14,7 @@
 
 <script lang="ts">
 import { Component, Ref, Mixins } from 'vue-property-decorator'
+import { markRaw } from 'vue'
 import CameraMixin from '@/mixins/camera'
 import { consola } from 'consola'
 import sleep from '@/util/sleep'
@@ -62,7 +63,7 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
         ? 'wss:'
         : 'ws:'
 
-      this.ws = new WebSocket(socketUrl)
+      this.ws = markRaw(new WebSocket(socketUrl))
       this.ws.binaryType = 'arraybuffer'
       this.ws.onopen = this.onWebSocketOpen
       this.ws.onmessage = this.onWebSocketMessage
@@ -85,7 +86,7 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
       sdpSemantics: 'unified-plan'
     }
 
-    this.pc = new RTCPeerConnection(config)
+    this.pc = markRaw(new RTCPeerConnection(config))
 
     this.pc.onicecandidate = ev => {
       if (!ev.candidate) return

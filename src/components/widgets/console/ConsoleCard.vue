@@ -14,9 +14,9 @@
   >
     <template #menu>
       <app-btn
-        v-if="scrollingPaused"
+        v-if="autoScrollPaused"
         icon
-        @click="consoleElement.scrollToLatest(true)"
+        @click="consoleElement.scrollToLatest()"
       >
         <v-icon dense>
           {{ flipLayout ? '$up' : '$down' }}
@@ -73,17 +73,6 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item @click="autoScroll = !autoScroll">
-            <v-list-item-action class="my-0">
-              <v-checkbox :input-value="autoScroll" />
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>
-                {{ $t('app.console.label.auto_scroll') }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
           <v-list-item @click="flipLayout = !flipLayout">
             <v-list-item-action class="my-0">
               <v-checkbox :input-value="flipLayout" />
@@ -119,9 +108,9 @@
 
     <console
       ref="console"
-      :scrolling-paused.sync="scrollingPaused"
       :items="items"
       :fullscreen="fullscreen"
+      @update:auto-scroll-paused="autoScrollPaused = $event"
     />
   </collapsable-card>
 </template>
@@ -143,7 +132,7 @@ export default class ConsoleCard extends Vue {
   @Ref('console')
   readonly consoleElement!: Console
 
-  scrollingPaused = false
+  autoScrollPaused = false
 
   get filters (): ConsoleFilter[] {
     return this.$typedState.console.consoleFilters
@@ -171,8 +160,6 @@ export default class ConsoleCard extends Vue {
       value,
       server: true
     })
-
-    this.consoleElement.flipLayout = value
   }
 
   get items (): ConsoleEntry[] {
@@ -181,17 +168,6 @@ export default class ConsoleCard extends Vue {
 
   get inLayout (): boolean {
     return (this.$typedState.config.layoutMode)
-  }
-
-  get autoScroll (): boolean {
-    return this.$typedState.console.autoScroll
-  }
-
-  set autoScroll (value: boolean) {
-    this.$typedDispatch('console/onUpdateAutoScroll', value)
-    if (value) {
-      this.consoleElement.scrollToLatest(true)
-    }
   }
 
   @Watch('inLayout')

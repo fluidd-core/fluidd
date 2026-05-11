@@ -2,7 +2,7 @@
 
 Fluidd is a free and open-source Klipper web interface for managing your 3d printer.
 
-![Fluidd](/docs/assets/images/preview_sliced.png "Fluidd")
+![Fluidd](/docs/docs/assets/images/preview_sliced.png "Fluidd")
 
 ## Features
 
@@ -39,7 +39,7 @@ Both of these docker images are updated for each release and on each commit.
 
 ## Official sponsors
 
-[![LDO](/docs/assets/images/logo_ldo.svg "LDO")](https://ldomotors.com/)
+[![LDO](/docs/docs/assets/images/logo_ldo.svg "LDO")](https://ldomotors.com/)
 
 LDO, Excellence in Motion. LDO is an official sponsor of Fluidd.
 

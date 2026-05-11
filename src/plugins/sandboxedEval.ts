@@ -1,4 +1,3 @@
-import abortControllerWithTimeout from '@/util/abort-controller-with-timeout'
 import type { SandboxedEvalWorkerResponseMessage, SandboxedEvalWorkerRequestMessage } from '@/workers/sandboxedEval.worker'
 
 import SandboxedEvalWorker from '@/workers/sandboxedEval.worker?ts?worker'
@@ -9,8 +8,7 @@ const sandboxedEval = async<T>(code: string, feature?: string, timeout = 800): P
   const id = Date.now()
   const worker = getWorker(feature)
 
-  const abortController = abortControllerWithTimeout(timeout)
-  const { signal } = abortController
+  const signal = AbortSignal.timeout(timeout)
 
   const workerPromise = new Promise<unknown>((resolve, reject) => {
     const cleanup = () => {
@@ -63,8 +61,6 @@ const sandboxedEval = async<T>(code: string, feature?: string, timeout = 800): P
 
     return result as T
   } finally {
-    abortController.clear()
-
     if (feature && signal.aborted) {
       worker.terminate()
       delete workers[feature]

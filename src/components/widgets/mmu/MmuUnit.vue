@@ -205,7 +205,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 
   gateMenuVisible: Record<number, boolean> = {}
 
-  closeTimeout: number | null = null
+  closeTimeout: ReturnType<typeof setTimeout> | null = null
   menuX = 0
   menuY = 0
 
@@ -402,7 +402,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     this.closeContextMenu()
 
     this.$set(this.gateMenuVisible, gate, true)
-    this.closeTimeout = window.setTimeout(() => {
+    this.closeTimeout = setTimeout(() => {
       this.closeContextMenu()
     }, 6000)
   }

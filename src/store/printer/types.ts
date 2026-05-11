@@ -9,6 +9,15 @@ export interface PrinterState {
   printer: Klipper.PrinterState;
 }
 
+export type PrinterStatus =
+  | 'ready'
+  | 'printing'
+  | 'paused'
+  | 'cancelled'
+  | 'busy'
+  | 'idle'
+  | 'loading'
+
 export interface KnownExtruder {
   name: string;
   key: Klipper.ExtruderKey;

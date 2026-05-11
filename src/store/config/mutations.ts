@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig, ConfiguredTableHeader } from './types'
+import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, ConfiguredTableHeader, HostConfig, ApiConfig } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 import { cloneDeep, mergeWith, set } from 'lodash-es'
@@ -55,30 +55,29 @@ export const mutations = {
     }
   },
 
-  setAppReady (state, payload: boolean) {
-    state.appReady = payload
-  },
-
   /**
    * Sets the API and Socket URLS on first load and
    * ensure the instance is configured in local storage
    */
-  setInitApiConfig (state, payload) {
+  setInitApiConfig (state, payload: ApiConfig) {
     state.apiUrl = payload.apiUrl
     state.socketUrl = payload.socketUrl
-    if (payload.name && payload.name !== '') state.uiSettings.general.instanceName = payload.name
+    if (payload.name) {
+      state.uiSettings.general.instanceName = payload.name
+    }
   },
 
-  setInitHostConfig (state, payload) {
-    state.hostConfig.blacklist = payload.blacklist
-    state.hostConfig.endpoints = payload.endpoints
-    state.hostConfig.hosted = payload.hosted
-    state.hostConfig.themePresets = payload.themePresets
+  setInitHostConfig (state, payload: HostConfig | undefined) {
+    if (payload) {
+      state.hostConfig.blacklist = payload.blacklist
+      state.hostConfig.endpoints = payload.endpoints
+      state.hostConfig.hosted = payload.hosted
+      state.hostConfig.themePresets = payload.themePresets
+    }
   },
 
-  setInitInstances (state, payload: InitConfig) {
+  setInitInstances (state, payload: ApiConfig) {
     let instances: InstanceConfig[] = []
-    const apiConfig = payload.apiConfig
     // const uiSettings = payload.uiSettings
     const uiSettings = state.uiSettings
     if (Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage) {
@@ -89,15 +88,15 @@ export const mutations = {
       }
     }
 
-    const i = instances.findIndex((instance: InstanceConfig) => instance.apiUrl === payload.apiConfig.apiUrl)
+    const i = instances.findIndex((instance: InstanceConfig) => instance.apiUrl === payload.apiUrl)
     if (i === -1) {
       if (
         (uiSettings || uiSettings === null) &&
-        (apiConfig && apiConfig.apiUrl !== '' && apiConfig.socketUrl !== '')
+        (payload && payload.apiUrl !== '' && payload.socketUrl !== '')
       ) {
         // Ensures we only add instances we've had a successful connection to.
         instances.forEach(instance => { instance.active = false })
-        instances.push({ ...apiConfig, active: true, name: state.uiSettings.general.instanceName })
+        instances.push({ ...payload, active: true, name: state.uiSettings.general.instanceName })
       }
     } else {
       instances.forEach((instance, index) => {
@@ -176,7 +175,7 @@ export const mutations = {
   /**
    * Puts us into layout mode
    */
-  setLayoutMode (state, payload) {
+  setLayoutMode (state, payload: boolean) {
     state.layoutMode = payload
   },
 

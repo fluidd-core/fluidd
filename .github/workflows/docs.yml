@@ -6,6 +6,12 @@ on:
       - master
     paths:
       - 'docs/**'
+  pull_request:
+    branches:
+      - master
+      - develop
+    paths:
+      - 'docs/**'
 
 jobs:
   build:
@@ -25,11 +31,13 @@ jobs:
         working-directory: docs
 
       - uses: actions/upload-pages-artifact@v4
+        if: ${{ github.event_name != 'pull_request' }}
         with:
           path: docs/site
 
   deploy:
     needs: build
+    if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
     permissions:
       pages: write
