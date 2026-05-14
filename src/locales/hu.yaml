@@ -43,8 +43,6 @@ app:
       mpc_calibrate: MPC kalibrálás {name}
   console:
     label:
-      auto_scroll: Automatikus görgetés
-      flip_layout: Fordított elrendezés
       hide_temp_waits: Hőmérsékletek elrejtése
     tooltip:
       help: >-
@@ -178,6 +176,7 @@ app:
       exit_layout: Kilépés
       extrude: Extrudálás
       filter: Szűrő
+      flip_layout: Fordított elrendezés
       forgot_password: Elfelejtetted a jelszavad?
       go_to_file: Menj a fájlhoz
       heaters_off: Fűtőtestek Ki

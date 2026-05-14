@@ -37,11 +37,9 @@ app:
       mpc_calibrate: MPC校准 {name}
   console:
     label:
-      auto_scroll: 自动滚动
-      flip_layout: 翻转布局
       hide_temp_waits: 隐藏温度信息
     tooltip:
-      help: 输入"help"获取可用命令<br />使用 <kbd>Tab键</kbd> 自动补全<br 
+      help: 输入"help"获取可用命令<br />使用 <kbd>Tab键</kbd> 自动补全<br
         />使用<kbd>&uarr;键</kbd> 和 <kbd>&darr;键</kbd>输入历史命令
   endpoint:
     error:
@@ -111,7 +109,7 @@ app:
       klipper_config: '%{klipperDomain}/zh/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
-      crowsnest_config: 
+      crowsnest_config:
         https://crowsnest.mainsail.xyz/configuration/%{hash}-section
   gcode:
     btn:
@@ -161,6 +159,7 @@ app:
       exit_layout: 退出
       extrude: 挤出
       filter: 过滤
+      flip_layout: 翻转布局
       forgot_password: 忘记密码？
       go_to_file: 转到文件
       heaters_off: 停止加热
@@ -696,13 +695,13 @@ app:
       diagnostics_performance: '[BETA] 记录诊断信息可能会影响性能'
       gcode_coords: 使用 GCode 坐标位置而不是仪表板上的打印头坐标位置
       show_manual_probe_dialog_automatically: 运行手动探测工具时自动显示帮助对话框
-      show_bed_screws_adjust_dialog_automatically: 
+      show_bed_screws_adjust_dialog_automatically:
         如果运行BED_SCREWS_ADJUST工具，自动显示帮助对话框
       average_calculation: 如果选择多个选项，则将计算平均值
       keyboard_shortcuts: '[BETA] 启用功能：按“?”查看可用键盘快捷键列表'
       warn_on_stepper_driver_overheating: 仅限TMC驱动
       warn_on_cpu_throttled: CPU降频会导致打印失败
-      show_screws_tilt_adjust_dialog_automatically: 运行 SCREWS_TILT_CALCULATE 
+      show_screws_tilt_adjust_dialog_automatically: 运行 SCREWS_TILT_CALCULATE
         工具时，会自动显示辅助对话框
   socket:
     msg:
@@ -745,8 +744,8 @@ app:
     msg:
       no_devices_found: 未发现设备
       no_devices_searched: 使用刷新按钮搜索设备
-      canbus_warning: 只能检测到未分配的 CAN 总线节点。<br>建议 CAN 
-        总线上只连接一个未分配的设备，以避免通信问题。<br>更多信息请访问<a target="_blank" 
+      canbus_warning: 只能检测到未分配的 CAN 总线节点。<br>建议 CAN
+        总线上只连接一个未分配的设备，以避免通信问题。<br>更多信息请访问<a target="_blank"
         href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">。</a>
   tool:
     btn:
@@ -792,7 +791,7 @@ app:
       package_list: 软件包列表
       up_to_date: 最新
       updates_available: 有可用更新
-      old_component_version: 您正在使用 %{name} 的旧版本，该版本不支持 Fluidd 的所有功能。<br>至少将 
+      old_component_version: 您正在使用 %{name} 的旧版本，该版本不支持 Fluidd 的所有功能。<br>至少将
         %{name} 更新至 %{version}。
     status:
       finished: 更新已完成
@@ -940,14 +939,14 @@ app:
       color: 颜色
     msg:
       no_spool_id: 无spool ID
-      reset_ttg_map_confirmation: 
-        这会将整个工具到通道映射和自动续料组重置为“mmu_parameters.cfg”中定义的默认值，或在没有默认值的情况下重置为默认的 1:1 
+      reset_ttg_map_confirmation:
+        这会将整个工具到通道映射和自动续料组重置为“mmu_parameters.cfg”中定义的默认值，或在没有默认值的情况下重置为默认的 1:1
         映射
       select_gate: 选择您想要编辑的通道/料盘信息
-      spoolman_off: Happy Hare 中Spoolman support 设定为 "%{mode}" . 分配spool 
+      spoolman_off: Happy Hare 中Spoolman support 设定为 "%{mode}" . 分配spool
         id至通道已禁用
       no_tool: 必须先选择一个工具
-      spoolman_pull: Spoolman support设定为"%{mode}"模式. 大多数通道属性的本地编辑已禁用. 请直接在 
+      spoolman_pull: Spoolman support设定为"%{mode}"模式. 大多数通道属性的本地编辑已禁用. 请直接在
         Spoolman DB 中分配 料盘/通道映射，或使用 MMU_SPOOLMAN 命令
       no_matching_spool: 找不到匹配的料盘
       are_you_sure: 你确定？
@@ -964,7 +963,7 @@ app:
       tool_bypass: 工具已设定至旁通!
       warning_prefix: 警告-
       no_active_spool: 无激活料盘
-      reset_gate_map_confirmation: 
+      reset_gate_map_confirmation:
         这会将所有通道映射重置为“mmu_parameters.cfg”中定义的默认值，如果没有可用的默认值，则重置为空映射
       spoolman_other: Spoolman support设定为"%{mode}". 您可以选择分配 Spool ID 或直接编辑通道属性
       gate_bypass: 通道已设定至旁通!
@@ -982,8 +981,8 @@ app:
       no_slicer_info: 无切片信息，选择 %{tool} 的默认映射
       select_tool: 选择要映射的工具，然后从列表中选择通道
       multi_color: 这看起来像是使用 %{numTools} 个工具进行的多材料单挤出机打印。你或许应该查看一下工具映射
-      recover_intro: 这是一个低级修复，用于当Happy 
-        Hare与您的MMU不一致时使用。建议首先尝试自动恢复，但可能需要此操作来纠正当前工具或通道（也许在Type-A 
+      recover_intro: 这是一个低级修复，用于当Happy
+        Hare与您的MMU不一致时使用。建议首先尝试自动恢复，但可能需要此操作来纠正当前工具或通道（也许在Type-A
         MMU上，您应卸载并归位选择器）。
     btn:
       check_gate: 检测通道

@@ -33,9 +33,7 @@ app:
         전환됩니다.
   console:
     label:
-      auto_scroll: 자동 스크롤
       hide_temp_waits: 온도변화 숨김
-      flip_layout: 플립 레이아웃
     tooltip:
       help: 명령에 "도움말"을 입력합니다 <br />자동 완성을 위해 <kbd>Tab 키</kbd>를 사용합니다 기록을 위해 <br />
         <kbd>&uarr;</kbd>와 <kbd>&darr;</kbd>를 사용합니다
@@ -144,6 +142,7 @@ app:
       edit: 수정
       exit_layout: 레이아웃 모드 나가기
       extrude: 압출
+      flip_layout: 플립 레이아웃
       heaters_off: 히터 꺼짐
       load_all: 전체 다운로드
       more_information: 추가정보

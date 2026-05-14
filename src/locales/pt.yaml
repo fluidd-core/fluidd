@@ -38,9 +38,7 @@ app:
         no gráfico.
   console:
     label:
-      auto_scroll: Auto scroll
       hide_temp_waits: Ocultar temperaturas
-      flip_layout: Inverter layout
     tooltip:
       help: Introduza "help" para comandos<br />Carregue em <kbd>Tab</kbd> para autocomplemento<br
         />Carregue em <kbd>&uarr;</kbd> e <kbd>&darr;</kbd> para o historico
@@ -135,6 +133,7 @@ app:
       download: Download
       edit: Editar
       extrude: Extrudir
+      flip_layout: Inverter layout
       heaters_off: Heaters desligados
       load_all: Carregar tudo
       pause: Pausa

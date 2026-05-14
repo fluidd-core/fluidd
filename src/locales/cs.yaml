@@ -32,7 +32,6 @@ app:
         položku.<br/> Klikněte na výkon pro jeho zobrazení v grafu.
   console:
     label:
-      auto_scroll: Automatický posun
       hide_temp_waits: Skrýt čekání na teplotu
   endpoint:
     error:

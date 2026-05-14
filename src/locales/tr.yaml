@@ -18,7 +18,7 @@ app:
       not_found: Mevcut yatak örgüleri bulunamadı.
       not_loaded: Örgü yüklenmedi
     tooltip:
-      calibrate: Yeni bir kalibrasyon başlatır, varsayılan olarak 'default' 
+      calibrate: Yeni bir kalibrasyon başlatır, varsayılan olarak 'default'
         profiline kaydeder
       delete: Profili Sil
       load: Profil Yükle
@@ -44,8 +44,6 @@ app:
       mpc_calibrate: '{name} MPC Kalibre Et'
   console:
     label:
-      auto_scroll: Otomatik kaydırma
-      flip_layout: Düzeni çevir
       hide_temp_waits: Sıcaklık bekleme sürelerini gizle
     tooltip:
       help: >-
@@ -89,7 +87,7 @@ app:
         klipper_backup_files: Klipper yedek dosyalarını filtrele
         moonraker_backup_files: Moonraker yedekleme dosyalarını filtrele
         rolled_log_files: Sarılmış günlük dosyalarını filtrele
-        moonraker_temporary_upload_files: Moonraker geçici yükleme dosyalarını 
+        moonraker_temporary_upload_files: Moonraker geçici yükleme dosyalarını
           filtrele
     label:
       dir_name: Dizin adı
@@ -106,9 +104,9 @@ app:
       not_found: Dosya bulunamadı
       processing: İşleniyor
     overlay:
-      drag_files_folders_upload: Dosyaları ve klasörleri yüklemek için buraya 
+      drag_files_folders_upload: Dosyaları ve klasörleri yüklemek için buraya
         <strong>sürükleyin</strong>
-      drag_files_enqueue: Dosyaları buraya <strong>sürükleyin</strong> sıraya 
+      drag_files_enqueue: Dosyaları buraya <strong>sürükleyin</strong> sıraya
         eklemek için
     title:
       add_dir: Dizin Ekle
@@ -183,6 +181,7 @@ app:
       exit_layout: Çıkış
       extrude: Ekstrüzyon
       filter: Filtrele
+      flip_layout: Düzeni çevir
       forgot_password: Parolanızı mı unuttunuz?
       go_to_file: Dosyaya git
       heaters_off: Isıtıcılar kapalı
@@ -251,7 +250,7 @@ app:
       failed_components: >-
         Moonraker'da başarısız eklentiler var, lütfen günlüklerinizi kontrol edin,
         yapılandırmanızı güncelleyin ve moonraker'ı yeniden başlatın.
-      printer_powered_off: Yazıcı şu anda kapalıdır.<br/><br/> Yazıcıyı açmak 
+      printer_powered_off: Yazıcı şu anda kapalıdır.<br/><br/> Yazıcıyı açmak
         için lütfen soldaki düğmeye tıklayın.
     label:
       accel_to_decel: Hızlanmadan Yavaşlamaya
@@ -383,14 +382,14 @@ app:
         Tekrar hoş geldiniz.<br>Yazıcınızla iletişimde kalabilmek için aşağıdan oturum
         açın.
       offline_ready: Fluidd artık çevrimdışı olarak kullanıma hazır.
-      needs_refresh: Yeni içerik mevcut, lütfen güncellemek için <b>Yenile</b> 
+      needs_refresh: Yeni içerik mevcut, lütfen güncellemek için <b>Yenile</b>
         düğmesine tıklayın.
-      pending_configuration_sections_deleted: Aşağıdaki bölümler silinmek üzere 
+      pending_configuration_sections_deleted: Aşağıdaki bölümler silinmek üzere
         işaretlendi
       rolledover_logs: >-
         Aşağıdaki uygulama günlükleri katlanmıştır: %{applications}
       fluidd_settings_backup_failed: Fluidd ayarlarını yedekleme başarısız oldu!
-      fluidd_settings_restore_failed: Fluidd ayarlarını geri yükleme başarısız 
+      fluidd_settings_restore_failed: Fluidd ayarlarını geri yükleme başarısız
         oldu!
       not_valid_fluidd_backup_file: Geçerli bir Fluidd yedek dosyası değil!
     simple_form:
@@ -409,24 +408,24 @@ app:
         invalid_aspect: Geçersiz En Boy Oranı
       msg:
         confirm: Emin misiniz?
-        confirm_cancel_print: Mevcut baskıyı iptal etmek istediğinizden emin 
+        confirm_cancel_print: Mevcut baskıyı iptal etmek istediğinizden emin
           misiniz?
-        confirm_clear_mesh: Yazıcı şu anda meşgul. Yatak meshini silmek 
+        confirm_clear_mesh: Yazıcı şu anda meşgul. Yatak meshini silmek
           istediğinizden emin misiniz?
-        confirm_delete: Emin misiniz? Seçilen öğe silinecektir. | Emin misiniz? 
+        confirm_delete: Emin misiniz? Seçilen öğe silinecektir. | Emin misiniz?
           {count} seçili öğe silinecektir.
-        confirm_emergency_stop: Yazıcıyı acil duraklatmak istediğinizden emin 
+        confirm_emergency_stop: Yazıcıyı acil duraklatmak istediğinizden emin
           misiniz?
-        confirm_exclude_object: Bu nesneyi baskıdan hariç tutmak istediğinizden 
+        confirm_exclude_object: Bu nesneyi baskıdan hariç tutmak istediğinizden
           emin misiniz?
         confirm_forcemove_toggle: Emin misiniz? Bu, yazıcıya zarar verebilir.
-        confirm_load_bedmesh_profile: Yazıcı şu anda meşgul. %{name} profilini 
+        confirm_load_bedmesh_profile: Yazıcı şu anda meşgul. %{name} profilini
           yüklemek istediğinizden emin misiniz?
-        confirm_reboot_host: Emin misiniz? Bu, ana bilgisayar sisteminizi 
+        confirm_reboot_host: Emin misiniz? Bu, ana bilgisayar sisteminizi
           yeniden başlatacaktır.
         confirm_remove_user: >-
           %{username} kullanıcısını kaldırmak istediğinizden emin misiniz?
-        confirm_shutdown_host: Emin misiniz? Bu, ana bilgisayar sistemini 
+        confirm_shutdown_host: Emin misiniz? Bu, ana bilgisayar sistemini
           kapatır.
         confirm_service_start: >-
           %{name} hizmetini başlatmak istediğinizden emin misiniz?
@@ -434,23 +433,23 @@ app:
           %{name} hizmetini yeniden başlatmak istediğinizden emin misiniz?
         confirm_service_stop: >-
           %{name} hizmetini durdurmak istediğinizden emin misiniz?
-        confirm_power_device_toggle: Emin misiniz? Bu, cihazın gücünü açıp 
+        confirm_power_device_toggle: Emin misiniz? Bu, cihazın gücünü açıp
           kapatır.
-        unsaved_changes: Kaydedilmemiş değişiklikleriniz var. Bu dosyayı 
+        unsaved_changes: Kaydedilmemiş değişiklikleriniz var. Bu dosyayı
           kapatmak istediğinizden emin misiniz?
         no_file_preview: >-
           Şu anda %{name} önizlenemiyor.
-        confirm_remove_camera: Kamerayı %{name} kaldırmak istediğinizden emin 
+        confirm_remove_camera: Kamerayı %{name} kaldırmak istediğinizden emin
           misiniz?
-        confirm_remove_console_filter: Konsol filtresini %{name} kaldırmak 
+        confirm_remove_console_filter: Konsol filtresini %{name} kaldırmak
           istediğinizden emin misiniz?
-        confirm_remove_macro_category: Makro kategorisi %{name}'i kaldırmak 
+        confirm_remove_macro_category: Makro kategorisi %{name}'i kaldırmak
           istediğinizden emin misiniz?
-        confirm_remove_printer: Yazıcıyı %{name} kaldırmak istediğinizden emin 
+        confirm_remove_printer: Yazıcıyı %{name} kaldırmak istediğinizden emin
           misiniz?
-        confirm_remove_thermal_preset: Termal ön ayar %{name}'i kaldırmak 
+        confirm_remove_thermal_preset: Termal ön ayar %{name}'i kaldırmak
           istediğinizden emin misiniz?
-        confirm_change_beacon_model: Yazıcı şu anda meşgul. Beacon modelini 
+        confirm_change_beacon_model: Yazıcı şu anda meşgul. Beacon modelini
           değiştirmek istediğinizden emin misiniz?
     table:
       header:
@@ -534,7 +533,7 @@ app:
       managed_by_moonraker: Moonraker yapılandırmanız tarafından yönetilmektedir
       notifications: Bildirimler
       reload_klipper: Klipper yapılandırmasını yeniden yükler.
-      reload_restart_klipper: Klipper yapılandırmasını yeniden yükler ve 
+      reload_restart_klipper: Klipper yapılandırmasını yeniden yükler ve
         MCU'ları yeniden başlatır.
       restart_klipper: Klipper sistem hizmetini yeniden başlatır.
       run_collector: Toplayıcıyı Çalıştır
@@ -548,10 +547,10 @@ app:
         kopyalayın
       power_on_printer: Yazıcıya giden gücü açar
       exit_layout: Düzen modundan çıkın
-      reset_default_layout: Sunucu genelinde varsayılan düzeni fabrika 
+      reset_default_layout: Sunucu genelinde varsayılan düzeni fabrika
         varsayılanlarına sıfırlama
       reset_layout: Geçerli düzeni sunucu genelinde varsayılan düzene sıfırla
-      set_default_layout: Geçerli düzeni sunucu genelinde varsayılan düzen 
+      set_default_layout: Geçerli düzeni sunucu genelinde varsayılan düzen
         olarak ayarla
   history:
     msg:
@@ -625,7 +624,7 @@ app:
       auto_edit_extensions: Otomatik düzenleme modunda açılacak uzantılar
       auto_follow_on_file_load: Dosya yüklemesinde ilerlemeyi otomatik takip et
       auto_load_on_print_start: Baskı başlangıcında dosyayı otomatik yükle
-      auto_load_mobile_on_print_start: Mobil cihazlarda baskı başlangıcında 
+      auto_load_mobile_on_print_start: Mobil cihazlarda baskı başlangıcında
         dosyayı otomatik yükle
       axes: Eksenler
       camera_flip_x: Yatayda çevir
@@ -642,9 +641,9 @@ app:
       collector: Toplayıcı
       confirm_on_estop: Acil durdurma için onay iste
       confirm_on_power_device_change: Cihaz Güç değişiklikleri için onay iste
-      confirm_on_save_config_and_restart: Kaydet ve yeniden başlatmadan önce 
+      confirm_on_save_config_and_restart: Kaydet ve yeniden başlatmadan önce
         Bekleyen Yapılandırma Değişikliklerini İncele
-      confirm_dirty_editor_close: Kaydedilmemiş değişikliklerle editörü 
+      confirm_dirty_editor_close: Kaydedilmemiş değişikliklerle editörü
         kapatırken onay iste
       contains: İçerir
       dark_mode: Koyu mod
@@ -672,7 +671,7 @@ app:
       fps_target: FPS Hedefi
       fps_idle_target: Odaklanmadayken FPS Hedefi
       height: Yükseklik
-      hide_single_part_bounding_box: Tek bir parça basıldığında parça 
+      hide_single_part_bounding_box: Tek bir parça basıldığında parça
         sınırlayıcı kutusunu gizle
       gcode_coords: GCode Koordinatlarını Kullan
       icon: Simge
@@ -702,7 +701,7 @@ app:
       retraction_icon_size: Geri Çekme Simge Boyutu
       right_y: Sağ Y-Ekseni
       save_and_restore_view_state: Görünüm durumunu kaydet ve geri yükle
-      sections_to_ignore_pending_configuration_changes: Bekleyen Yapılandırma 
+      sections_to_ignore_pending_configuration_changes: Bekleyen Yapılandırma
         Değişikliklerini Yoksayılacak Bölümler
       show_animations: Animasyonları Göster
       show_barometric_pressure: Barometrik basıncı göster
@@ -713,9 +712,9 @@ app:
       show_logo_on_background: Arka planda logo göster
       show_rate_of_change: Sıcaklık değişim hızını göster
       show_relative_humidity: İlgili nem göster
-      show_save_config_and_restart: Üst navigasyonda Yapılandırmayı Kaydet ve 
+      show_save_config_and_restart: Üst navigasyonda Yapılandırmayı Kaydet ve
         Yeniden Başlat düğmesini göster
-      show_upload_and_print: Üst navigasyonda Yükle ve Baskı Yap düğmesini 
+      show_upload_and_print: Üst navigasyonda Yükle ve Baskı Yap düğmesini
         göster
       solid: Katı
       starts_with: İle başlar
@@ -736,11 +735,11 @@ app:
       time_format: Zaman formatı
       text_sort_order: Metin sıralama düzeni
       force_move_toggle_warning: FORCE_MOVE aktive edilirken onay gerektirir
-      show_manual_probe_dialog_automatically: Manuel probe iletişim kutusunu 
+      show_manual_probe_dialog_automatically: Manuel probe iletişim kutusunu
         otomatik olarak göster
-      show_bed_screws_adjust_dialog_automatically: Yatak Vidaları Ayar iletişim 
+      show_bed_screws_adjust_dialog_automatically: Yatak Vidaları Ayar iletişim
         kutusunu otomatik olarak göster
-      show_screws_tilt_adjust_dialog_automatically: Vida Eğim Ayar iletişim 
+      show_screws_tilt_adjust_dialog_automatically: Vida Eğim Ayar iletişim
         kutusunu otomatik olarak göster
       keyboard_shortcuts: Klavye kısayolları
       fluidd_settings_in_moonraker_db: Moonraker veritabanındaki Fluidd ayarları
@@ -775,13 +774,13 @@ app:
     tooltip:
       average_calculation: Birden fazla seçenek seçilirse, ortalama hesaplanır
       diagnostics_performance: '[BETA] Tanısal bilgi kaydı performansı etkileyebilir'
-      gcode_coords: Gösterge tablosunda extruder konumu yerine GCode konumunu 
+      gcode_coords: Gösterge tablosunda extruder konumu yerine GCode konumunu
         kullanın
-      show_manual_probe_dialog_automatically: Probe aracı Elle çalıştırılırsa 
+      show_manual_probe_dialog_automatically: Probe aracı Elle çalıştırılırsa
         yardımcı iletişim kutusu otomatik olarak gösterilir
-      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST aracı 
+      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST aracı
         çalıştırılırsa yardımcı iletişim kutusu otomatik olarak gösterilir
-      show_screws_tilt_adjust_dialog_automatically: SCREWS_TILT_CALCULATE aracı 
+      show_screws_tilt_adjust_dialog_automatically: SCREWS_TILT_CALCULATE aracı
         çalıştırılırsa yardımcı iletişim kutusu otomatik olarak gösterilir
       theme_disclaimer: >-
         Bu temalar, ilgili sahiplerin fikri mülkiyetinde olan marka adlarını ve logolarını
@@ -792,7 +791,7 @@ app:
         Temalarla ilgili herhangi bir sorun veya soruşturma, Fluidd ekibine yönlendirilmelidir.<br>
         Marka adlarının ve logolarının kullanımı sadece dekoratif ve estetik amaçlarla
         yapılmış olup, markalarla resmi bir ilişki veya onay ima edilmez.
-      keyboard_shortcuts: Kullanılabilir klavye kısayollarını görüntülemek için 
+      keyboard_shortcuts: Kullanılabilir klavye kısayollarını görüntülemek için
         "?" tuşuna basın
   socket:
     msg:
@@ -860,7 +859,7 @@ app:
       screws_tilt_adjust: Vida Eğim Ayarı
     tooltip:
       absolute_positioning: Mutlak Konumlama
-      extruder_disabled: Ekstruder devre dışı, min_extrude_temp 
+      extruder_disabled: Ekstruder devre dışı, min_extrude_temp
         (%{min}<small>°C</small>) altında
       home_xy: XY Eksenlerini Ana Konumuna Getir
       home_z: Z Eksenini Ana Konumuna Getir
@@ -1046,15 +1045,15 @@ app:
           deneyin.
     setting:
       auto_open_qr_camera: QR kodu algılama için kamerayı otomatik olarak aç
-      auto_select_spool_on_match: QR kodu eşleşmesinde makara seçimini otomatik 
+      auto_select_spool_on_match: QR kodu eşleşmesinde makara seçimini otomatik
         olarak onayla
-      prefer_device_camera: Mevcutsa QR kodu algılama için aygıt kamerasını 
+      prefer_device_camera: Mevcutsa QR kodu algılama için aygıt kamerasını
         kullan
-      show_spool_selection_dialog_on_print_start: Yazdırma başlangıcında makara 
+      show_spool_selection_dialog_on_print_start: Yazdırma başlangıcında makara
         seçim iletişim kutusunu göster
-      warn_on_not_enough_filament: Seçilen makaranın baskıyı tamamlamak için 
+      warn_on_not_enough_filament: Seçilen makaranın baskıyı tamamlamak için
         yeterli filamenti olmadığında bir uyarı göster
-      warn_on_filament_type_mismatch: Makaranın filament tipi ile slicer'da 
+      warn_on_filament_type_mismatch: Makaranın filament tipi ile slicer'da
         seçilen filament tipi eşleşmediğinde bir uyarı göster
       remaining_filament_unit: Kalan filamenti şu şekilde göster
       card_fields: Spoolman kartında gösterilecek alanlar
@@ -1084,7 +1083,7 @@ app:
       delete: Modeli Sil
       load: Modeli Yükle
     msg:
-      hint: Eğer %{name} dışında bir şekilde kaydediyorsanız, %{name} modelini 
+      hint: Eğer %{name} dışında bir şekilde kaydediyorsanız, %{name} modelini
         de kaldırmayı seçebilirsiniz
       not_found: Mevcut bir beacon modeli bulunamadı.
   mmu:
@@ -1155,31 +1154,31 @@ app:
     msg:
       no_custom_controls: Özel Kontrol Yok
       reset_gate_map_confirmation: Bu, tüm geçit haritasını 'mmu_parameters.cfg'
-        içinde tanımlanan varsayılana veya varsayılan yoksa boş haritaya 
+        içinde tanımlanan varsayılana veya varsayılan yoksa boş haritaya
         sıfırlayacaktır
       select_gate: Düzenlemek istediğiniz geçit/spool bilgisini seçin
-      spoolman_pull: Spoolman desteği “%{mode}” modundadır. Çoğu geçit 
-        özelliğinin yerel olarak düzenlenmesi devre dışıdır. Spoolman DB'de 
-        spool/gate eşlemesini doğrudan atayın veya MMU_SPOOLMAN komutunu 
+      spoolman_pull: Spoolman desteği “%{mode}” modundadır. Çoğu geçit
+        özelliğinin yerel olarak düzenlenmesi devre dışıdır. Spoolman DB'de
+        spool/gate eşlemesini doğrudan atayın veya MMU_SPOOLMAN komutunu
         kullanın
       no_matching_spool: Eşleşen makara bulunamadı
       are_you_sure: Emin misin?
       bad_temperature: Sıcaklık aralık dışında
       filament_available: Filament mevcut
-      maintenance_intro: Belirli MMU işlevlerini ve seçici yapılandırmayı 
+      maintenance_intro: Belirli MMU işlevlerini ve seçici yapılandırmayı
         doğrudan yönetin.
       gate_bypass: Kapı Bypass'a ayarlandı!
       color: Renk
       material: Malzeme
       temperature: Sıcaklık
-      tool_not_used: Araç %{tool} bu baskıda kullanılmıyor, varsayılan eşlemeyi 
+      tool_not_used: Araç %{tool} bu baskıda kullanılmıyor, varsayılan eşlemeyi
         seçin
       mismatch: Olası filament uyuşmazlığı
       no_gate_data: Geçit verisi yok
       select_tool: Eşlenecek Aracı seçin, ardından listeden kapıyı seçin
       filament_unknown: Bilinmeyen filament durumu (lütfen ayarlayın)
       filament_empty: Filament mevcut değil
-      filament_loaded: Filament ekstrüdere tamamen yüklenmiş mi yoksa tamamen 
+      filament_loaded: Filament ekstrüdere tamamen yüklenmiş mi yoksa tamamen
         boşaltılmış mı?
       no_gate: Bir kapı seçilmelidir
       no_position: Pozisyonu kurtarma girişimi
@@ -1191,28 +1190,28 @@ app:
       no_active_spool: Aktif makara yok
       no_spool_id: Makara kimliği yok
       recover_filament_position: Filament Konumunu Kurtarma
-      multi_color: Bu, %{numTools} araçlarını kullanan bir Çok Malzemeli Tek 
-        Ekstrüder baskısına benziyor. Muhtemelen araç eşlemesini gözden 
+      multi_color: Bu, %{numTools} araçlarını kullanan bir Çok Malzemeli Tek
+        Ekstrüder baskısına benziyor. Muhtemelen araç eşlemesini gözden
         geçirmelisiniz
-      single_color: Bu tek renkli bir baskı gibi görünüyor ancak MMU'nuzda 
+      single_color: Bu tek renkli bir baskı gibi görünüyor ancak MMU'nuzda
         bypass seçili değil. Seçilen aracı kontrol etmek isteyebilirsiniz
       map_slicer_tools: Baskı için dilimleyici araçlarını MMU kapılarına eşleme
       map_tools: Araçları MMU kapılarına eşleme
-      no_slicer_info: Dilimleyici bilgisi yok, %{tool} için varsayılan eşlemeyi 
+      no_slicer_info: Dilimleyici bilgisi yok, %{tool} için varsayılan eşlemeyi
         seçin
-      spoolman_off: Spoolman desteği Happy Hare'de “%{mode}” şeklindedir. Bir 
+      spoolman_off: Spoolman desteği Happy Hare'de “%{mode}” şeklindedir. Bir
         kapıya biriktirme kimliği atama devre dışı bırakıldı
       recover_intro: Bu, Happy Hare MMU'nuzla senkronize olmadığında kullanılmak
         üzere düşük seviyeli bir kurtarmadır. Önce otomatik kurtarmayı denemeniz
-        önerilir, ancak bu mevcut aracı veya geçidi düzeltmek için gerekli 
-        olacaktır (Alternatif olarak A Tipi MMU'larda seçiciyi boşaltabilir ve 
+        önerilir, ancak bu mevcut aracı veya geçidi düzeltmek için gerekli
+        olacaktır (Alternatif olarak A Tipi MMU'larda seçiciyi boşaltabilir ve
         yerleştirebilirsiniz).
       warning_prefix: Uyarı-
-      reset_ttg_map_confirmation: Bu, tüm takım-kapı eşlemesini ve sonsuz 
-        bekletme gruplarını 'mmu_parameters.cfg' içinde tanımlanan varsayılana 
+      reset_ttg_map_confirmation: Bu, tüm takım-kapı eşlemesini ve sonsuz
+        bekletme gruplarını 'mmu_parameters.cfg' içinde tanımlanan varsayılana
         veya varsayılan yoksa varsayılan 1:1 eşlemeye geri döndürür
-      spoolman_other: Spoolman desteği “%{mode}” şeklindedir. İsteğe bağlı 
-        olarak bir spool kimliği atayabilir veya kapı niteliklerini doğrudan 
+      spoolman_other: Spoolman desteği “%{mode}” şeklindedir. İsteğe bağlı
+        olarak bir spool kimliği atayabilir veya kapı niteliklerini doğrudan
         düzenleyebilirsiniz
     title:
       recover_state: MMU Durumunu Düzeltme (Hata Kurtarma)

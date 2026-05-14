@@ -30,8 +30,6 @@ app:
       help: 按住 <kbd>Shift 鍵</kbd>可縮放圖表。<br />單擊一個項目名稱可切換其在圖表中的顯示。<br />單擊開關可切換圖表顯示。
   console:
     label:
-      auto_scroll: 自動滾動
-      flip_layout: 翻轉布局
       hide_temp_waits: 隱藏溫度信息
   endpoint:
     error:
@@ -134,6 +132,7 @@ app:
       exit_layout: 退出修改模式
       extrude: 擠出
       filter: 過濾
+      flip_layout: 翻轉布局
       forgot_password: 忘記密碼？
       heaters_off: 停止加熱
       job_queue: 作業隊列

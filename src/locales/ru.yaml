@@ -42,8 +42,6 @@ app:
         по мощности датчика, чтобы включить/отключить отображение его шкалы на графике.
   console:
     label:
-      auto_scroll: Автопрокрутка
-      flip_layout: Реверс сортировки
       hide_temp_waits: Скрыть статусные сообщения температуры
     tooltip:
       help: >-
@@ -179,6 +177,7 @@ app:
       exit_layout: Выйти из режима редактирования
       extrude: Выдавить
       filter: Фильтр
+      flip_layout: Реверс сортировки
       forgot_password: Забыли пароль?
       go_to_file: Перейти к файлу
       heaters_off: Отключить нагрев

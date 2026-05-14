@@ -8,12 +8,26 @@
     persistent
   >
     <v-card-text>
-      <console
+      <console-browser
+        ref="consoleBrowser"
         :items="responses"
         :fullscreen="isMobileViewport"
         readonly
+        @update:auto-scroll-paused="autoScrollPaused = $event"
       />
     </v-card-text>
+
+    <template #menu>
+      <app-btn
+        v-if="autoScrollPaused"
+        icon
+        @click="consoleBrowserElement.scrollToLatest()"
+      >
+        <v-icon dense>
+          $down
+        </v-icon>
+      </app-btn>
+    </template>
 
     <template #actions>
       <v-spacer />
@@ -31,19 +45,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import Console from '@/components/widgets/console/Console.vue'
+import ConsoleBrowser from '@/components/widgets/console/ConsoleBrowser.vue'
 import BrowserMixin from '@/mixins/browser'
 import type { UpdateResponse } from '@/store/version/types'
 
 @Component({
   components: {
-    Console
+    ConsoleBrowser
   }
 })
 export default class UpdatingDialog extends Mixins(StateMixin, BrowserMixin) {
+  @Ref('consoleBrowser')
+  readonly consoleBrowserElement!: ConsoleBrowser
+
   invokedDialog = false
+  autoScrollPaused = false
 
   get open (): boolean {
     if (this.invokedDialog || this.updating) {

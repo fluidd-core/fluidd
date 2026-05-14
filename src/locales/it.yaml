@@ -36,9 +36,7 @@ app:
         il grafico.
   console:
     label:
-      auto_scroll: Scorrimento automatico
       hide_temp_waits: Nascondi i wait di temperatura
-      flip_layout: Specchia layout
     tooltip:
       help: Scrivi "help" per l'elenco comandi<br />Usa<kbd>Tab</kbd> per l'autocompletamento<br
         />Usa<kbd>&uarr;</kbd> e <kbd>&darr;</kbd> per la cronologia dei comandi
@@ -154,6 +152,7 @@ app:
       edit: Modifica
       exit_layout: Esci dalla modalità layout
       extrude: Estrudi
+      flip_layout: Specchia layout
       heaters_off: Riscaldatori spenti
       load_all: Carica tutto
       more_information: Più informazioni

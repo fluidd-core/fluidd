@@ -32,7 +32,6 @@ app:
         />Click a power to toggle in the graph.
   console:
     label:
-      auto_scroll: التفاف تلقائي
       hide_temp_waits: Hide temp waits
   endpoint:
     error:
