@@ -239,7 +239,7 @@ src/
 - Install: `cd docs && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt`
 - Build: `cd docs && zensical build --clean`
 - Serve: `cd docs && zensical serve` or `npm run serve:docs` (localhost:8000)
-- Deploy: GitHub Actions (`.github/workflows/docs.yml`) — builds on push to `master`, deploys to gh-pages with `docs.fluidd.xyz` CNAME
+- Deploy: GitHub Actions (`.github/workflows/docs.yml`) — builds on push to `master`, uploads Pages artifact via `actions/upload-pages-artifact`, deploys via `actions/deploy-pages`
 
 ### Documentation Structure
 
