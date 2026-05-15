@@ -1,10 +1,11 @@
 import { vi } from 'vitest'
+import type { VueConstructor } from 'vue'
 
 vi.mock('vue', async () => {
-  const Vue = await vi.importActual('vue') as any
+  const Vue = await vi.importActual<VueConstructor>('vue')
 
-  Vue.default.config.productionTip = false
-  Vue.default.config.devtools = false
+  Vue.config.productionTip = false
+  Vue.config.devtools = false
 
   return Vue
 })
