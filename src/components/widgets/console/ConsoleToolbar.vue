@@ -69,8 +69,9 @@
         dense
         single-line
         hide-details
+        clearable
         spellcheck="false"
-        append-icon="$magnify"
+        :append-icon="searchModel ? undefined : '$magnify'"
         @focus="$event.target.select()"
       />
     </div>

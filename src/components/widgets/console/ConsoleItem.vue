@@ -19,17 +19,36 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Globals } from '@/globals'
 import type { ConsoleEntry } from '@/store/console/types'
 import type { UpdateResponse } from '@/store/version/types'
+import { escapeRegExp } from 'lodash-es'
 
 @Component({})
 export default class ConsoleItem extends Vue {
   @Prop({ type: Object, required: true })
   readonly value!: ConsoleEntry | UpdateResponse
 
+  @Prop({ type: String })
+  readonly search?: string
+
   get knownCommands (): Moonraker.KlippyApis.GcodeHelpResponse {
     return this.$typedGetters['console/getAllKnownCommands']
   }
 
   get itemMessage () {
+    const rawItemMessage = this.rawItemMessage
+
+    if (this.search) {
+      const searchRegexp = new RegExp(`(<[^>]*>)|${escapeRegExp(this.search)}`, 'gi')
+
+      return rawItemMessage
+        .replace(searchRegexp, (match, tag) => (
+          tag ?? `<mark>${match}</mark>`
+        ))
+    }
+
+    return rawItemMessage
+  }
+
+  get rawItemMessage () {
     const message = this.value.message
 
     if ('type' in this.value) {
@@ -89,5 +108,10 @@ export default class ConsoleItem extends Vue {
 <style lang="scss" scoped>
   .console-item {
     flex: 0 0 auto;
+  }
+
+  :deep(mark) {
+    background-color: #ff0;
+    color: #000;
   }
 </style>

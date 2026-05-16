@@ -24,6 +24,7 @@
           v-for="item in orderedItems"
           :key="item.id"
           :value="item"
+          :search="search"
           class="console-item"
           @click="handleEntryClick"
         />
@@ -84,12 +85,7 @@ export default class ConsoleBrowser extends Mixins(StateMixin) {
   }
 
   get orderedItems () {
-    const search = this.search?.toLowerCase()
-
-    const items = search
-      ? this.items
-        .filter(item => item.message.toLowerCase().includes(search))
-      : [...this.items]
+    const items = [...this.items]
 
     return this.flipLayout
       ? items.reverse()

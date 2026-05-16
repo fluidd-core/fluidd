@@ -61,8 +61,15 @@ export default class ConsoleCard extends Vue {
   @Ref('consoleBrowser')
   readonly consoleBrowserElement!: ConsoleBrowser
 
-  search = ''
   autoScrollPaused = false
+
+  get search (): string {
+    return this.$typedState.console.consoleSearch
+  }
+
+  set search (value: string) {
+    this.$typedCommit('console/setConsoleSearch', value)
+  }
 
   get flipLayout (): boolean {
     return this.$typedState.config.uiSettings.general.flipConsoleLayout

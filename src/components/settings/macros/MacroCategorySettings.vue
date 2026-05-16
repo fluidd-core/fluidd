@@ -24,7 +24,7 @@
         single-line
         hide-details
         spellcheck="false"
-        append-icon="$magnify"
+        :append-icon="search ? undefined : '$magnify'"
         @focus="$event.target.select()"
       />
     </v-subheader>

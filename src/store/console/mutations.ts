@@ -123,6 +123,10 @@ export const mutations = {
     state.consoleCommand = payload
   },
 
+  setConsoleSearch (state, payload: string) {
+    state.consoleSearch = payload
+  },
+
   /**
    * Sets auto scroll
    */
