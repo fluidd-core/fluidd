@@ -1,28 +1,47 @@
 declare module 'vuetify/lib/components' {
   interface _Loadable {
-    readonly isLoading: boolean
+    loading: boolean | string,
+    loaderHeight: number | string
   }
 
   interface _Validatable {
+    disabled: boolean,
+    error: boolean,
+    errorCount: number | string,
+    errorMessages: string | string[],
+    messages: string | string[],
+    readonly: boolean,
+    rules: [],
+    success: boolean,
+    successMessages: string | string[],
+    validateOnBlur: boolean,
+    readonly errorBucket: string[],
     readonly hasColor: boolean,
     readonly hasFocused: boolean,
     readonly hasInput: boolean,
     readonly isFocused: boolean,
     readonly isResetting: boolean,
     readonly valid: boolean,
+    readonly hasError: boolean,
+    readonly hasSuccess: boolean,
+    readonly hasMessages: boolean,
+    readonly isDisabled: boolean,
+    readonly isReadonly: boolean,
+    readonly shouldValidate: boolean,
+    readonly validationState: string | undefined,
     reset: () => void,
     resetValidation: () => void,
     validate: (force?: boolean, value?: any) => boolean
   }
 
   interface _Toggleable {
-    readonly isActive: boolean,
+    readonly isActive: boolean
   }
 
   interface _Groupable {
     activeClass: string,
-    readonly isActive: boolean,
     disabled: boolean,
+    readonly isActive: boolean,
     readonly groupClasses: object,
     readonly toggle: (e?: Event) => void
   }
@@ -50,14 +69,14 @@ declare module 'vuetify/lib/components' {
       readonly 'prepend-inner': HTMLElement,
       readonly prefix: HTMLElement,
       readonly suffix: HTMLElement
-    }
+    },
     readonly focus: () => void,
     readonly blur: (e?: Event) => void
   }
 
   export interface VSlider extends VInput, _Loadable {
     readonly $refs: {
-      readonly track: HTMLElement,
+      readonly track: HTMLElement
     },
     value: number
   }
@@ -65,21 +84,38 @@ declare module 'vuetify/lib/components' {
   export interface VTextarea extends VTextField {
     readonly $refs: VTextField['$refs'] & {
       readonly input: HTMLTextAreaElement
-    }
+    },
+    autoGrow: boolean,
+    noResize: boolean,
+    rowHeight: number | string,
+    rows: number | string
   }
 
   export interface VSelect extends VTextField {
     readonly $refs: VTextField['$refs'] & {
-      readonly content: HTMLElement
-      readonly label: HTMLElement
-      readonly input: HTMLInputElement
-      readonly 'prepend-inner': HTMLElement
+      readonly content: HTMLElement,
       readonly 'append-inner': HTMLElement
-      readonly prefix: HTMLElement
-      readonly suffix: HTMLElement
-    }
+    },
+    multiple: boolean,
+    chips: boolean,
+    smallChips: boolean,
+    hideSelected: boolean,
+    returnObject: boolean,
+    readonly isMenuActive: boolean,
+    readonly selectedItems: object[]
   }
 
-  export interface VCombobox extends VSelect {
+  export interface VAutocomplete extends VSelect {
+    autoSelectFirst: boolean,
+    noFilter: boolean,
+    hideNoData: boolean,
+    searchInput: string | null,
+    readonly internalSearch: string | null,
+    readonly filteredItems: object[],
+    readonly isSearching: boolean
+  }
+
+  export interface VCombobox extends VAutocomplete {
+    delimiters: string[]
   }
 }

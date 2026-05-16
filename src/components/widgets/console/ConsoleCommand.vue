@@ -19,8 +19,8 @@
         @input="emitChange"
         @keyup.enter.exact="emitSend(newValue)"
         @keydown.enter.exact.prevent
-        @keydown.up.exact.prevent="historyUp()"
-        @keydown.down.exact.prevent="historyDown()"
+        @keydown.up.exact="handleKeyUp"
+        @keydown.down.exact="handleKeyDown"
         @keydown.prevent.tab="autoComplete()"
       />
     </v-col>
@@ -38,7 +38,7 @@
 <script lang="ts">
 import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
 import { Globals } from '@/globals'
-import type { VTextField } from 'vuetify/lib'
+import type { VTextarea } from 'vuetify/lib'
 import type { GcodeCommands } from '@/store/printer/types'
 
 @Component({})
@@ -47,7 +47,7 @@ export default class ConsoleCommand extends Vue {
   readonly value!: string
 
   @Ref('input')
-  readonly input!: VTextField
+  readonly input!: VTextarea
 
   @Prop({ type: Boolean })
   readonly disabled?: boolean
@@ -68,14 +68,12 @@ export default class ConsoleCommand extends Vue {
   newValue = ''
   commandHistoryCount = Globals.CONSOLE_COMMAND_HISTORY
   history: string[] = []
-  originalHistory: string[] = []
-  isFirst = true
+  historyIndex = -1
 
   mounted () {
     this.newValue = this.value
     const savedHistory: string[] = this.$typedState.console.commandHistory
     this.history = [...savedHistory]
-    this.originalHistory = [...savedHistory]
   }
 
   emitChange (val: string) {
@@ -86,35 +84,56 @@ export default class ConsoleCommand extends Vue {
   emitSend (val: string) {
     if (val && val.length > 0) {
       if (this.history.length >= this.commandHistoryCount) {
-        this.originalHistory.pop()
+        this.history.pop()
       }
-      this.originalHistory.unshift(val)
-      this.$typedDispatch('console/onUpdateCommandHistory', [...this.originalHistory])
-      this.history = [...this.originalHistory]
-      this.isFirst = true
+      this.history.unshift(val)
+      this.$typedDispatch('console/onUpdateCommandHistory', [...this.history])
+      this.historyIndex = -1
       this.$emit('send', val)
     }
   }
 
-  historyUp () {
-    if (this.history.length >= 1) {
-      if (!this.isFirst) {
-        const f = this.history.shift()
-        if (f != null) this.history.push(f)
+  handleKeyUp (event: KeyboardEvent) {
+    const el = this.input.$refs.input
+
+    if (
+      el.selectionStart === el.selectionEnd &&
+      el.value.slice(0, el.selectionStart ?? 0).indexOf('\n') === -1
+    ) {
+      event.preventDefault()
+
+      const historyLength = this.history.length
+
+      if (
+        historyLength >= 1 &&
+        this.historyIndex !== historyLength
+      ) {
+        const index = ++this.historyIndex
+
+        this.emitChange(this.history[index] ?? '')
       }
-      this.emitChange(this.history[0])
-      this.isFirst = false
     }
   }
 
-  historyDown () {
-    if (this.history.length >= 1) {
-      if (!this.isFirst) {
-        const f = this.history.pop()
-        if (f != null) this.history.unshift(f)
+  handleKeyDown (event: KeyboardEvent) {
+    const el = this.input.$refs.input
+
+    if (
+      el.selectionStart === el.selectionEnd &&
+      el.value.slice(el.selectionEnd ?? 0).indexOf('\n') === -1
+    ) {
+      event.preventDefault()
+
+      const historyLength = this.history.length
+
+      if (
+        historyLength >= 1 &&
+        this.historyIndex !== -1
+      ) {
+        const index = --this.historyIndex
+
+        this.emitChange(this.history[index] ?? '')
       }
-      this.emitChange(this.history[0])
-      this.isFirst = false
     }
   }
 
