@@ -26,11 +26,14 @@ export interface ArcMove extends LinearMove {
   k?: number;
   r?: number;
   d: Rotation;
+  plane: ArcPlane;
 }
 
 export type Move = LinearMove | ArcMove
 
 export type Rotation = 'clockwise' | 'counter-clockwise'
+
+export type ArcPlane = 'xy' | 'xz' | 'yz'
 
 export type Tool = `T${number}`
 

@@ -1,5 +1,5 @@
 /* eslint-disable no-fallthrough */
-import type { ArcMove, BBox, Layer, LinearMove, Move, Part, PositioningMode } from '@/store/gcodePreview/types'
+import type { ArcMove, ArcPlane, BBox, Layer, LinearMove, Move, Part, PositioningMode } from '@/store/gcodePreview/types'
 import isKeyOf from '@/util/is-key-of'
 import { pick } from 'lodash-es'
 import { split } from 'shlex'
@@ -83,6 +83,7 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
   let newLayerForNextMove = false
   let extrusionMode: PositioningMode = 'relative'
   let positioningMode: PositioningMode = 'absolute'
+  let plane: ArcPlane = 'xy'
   const toolhead = {
     x: 0,
     y: 0,
@@ -180,12 +181,22 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
               d: command === 'G2'
                 ? 'clockwise'
                 : 'counter-clockwise',
+              plane,
               tool,
               filePosition
             } satisfies ArcMove
           }
           break
         }
+        case 'G17':
+          plane = 'xy'
+          break
+        case 'G18':
+          plane = 'xz'
+          break
+        case 'G19':
+          plane = 'yz'
+          break
         case 'G10':
           move = {
             e: -fwretraction.length,
