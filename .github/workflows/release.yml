@@ -16,7 +16,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 11
           run_install: false
 
       - name: Setup Node
@@ -35,7 +34,7 @@ jobs:
 
       - name: Run type check
         run: |
-          npm run type-check
+          pnpm run type-check
 
       - name: Run tests
         run: |

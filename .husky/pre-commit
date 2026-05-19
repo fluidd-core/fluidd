@@ -1,7 +1,7 @@
 FILES_TO_LINT=$(git diff --cached --name-only --diff-filter=ACMR | grep -iE "\.(js|mjs|ts|vue)$" || true)
 
 if [ -n "$FILES_TO_LINT" ]; then
-  pnpm dlx --no eslint -- --max-warnings 0 $FILES_TO_LINT
+  pnpm exec eslint --max-warnings 0 $FILES_TO_LINT
 fi
 
 FILES_TO_OPTIMIZE_SVG=$(git diff --cached --name-only --diff-filter=ACMR | grep -iE "^src\/globals\.ts$|\.(vue|svg)$" || true)
