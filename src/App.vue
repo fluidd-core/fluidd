@@ -177,10 +177,15 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get pageTitle () {
+    const instanceName: string = this.$typedState.config.uiSettings.general.instanceName
+
+    if (!this.socketReady) {
+      return instanceName
+    }
+
     const progress = this.printerPrinting
       ? `[${this.progress}%]`
       : ''
-    const instanceName: string = this.$typedState.config.uiSettings.general.instanceName || ''
     const pageName = this.$route.name
       ? this.$t(`app.general.title.${this.$route.name}`)
       : ''
@@ -225,7 +230,10 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get printInProgressIconDataUrl () {
-    if (this.printerPrinting) {
+    if (
+      this.socketReady &&
+      this.printerPrinting
+    ) {
       const favIconSize = 64
       const primaryColor = this.primaryColor
       const secondaryColor = 'rgba(128, 128, 128, 0.3)'
