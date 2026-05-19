@@ -1,0 +1,12 @@
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  vue-demi: true
+
+overrides:
+  '@vue/tsconfig>vue': '$vue'
+  glob: ^13.0.6
+  'monaco-editor>dompurify': '$dompurify'
+  serialize-javascript: ^7.0.3
+  'vite-plugin-pwa>vite': '$vite'
+  '@originjs/vite-plugin-content>xlsx': '-'
