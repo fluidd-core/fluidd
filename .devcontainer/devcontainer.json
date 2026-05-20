@@ -39,7 +39,13 @@
         },
         "i18n-ally.localesPaths": [
           "src/locales"
-        ]
+        ],
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "/bin/zsh"
+          }
+        }
       }
     }
   },
