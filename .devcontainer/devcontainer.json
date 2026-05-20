@@ -6,6 +6,16 @@
   "service": "fluidd",
   "workspaceFolder": "/workspaces/fluidd",
   "forwardPorts": [7125, 8080],
+  "portsAttributes": {
+    "7125": {
+      "label": "Moonraker",
+      "onAutoForward": "silent"
+    },
+    "8080": {
+      "label": "Fluidd",
+      "onAutoForward": "notify"
+    }
+  },
   "features": {
   },
   "postCreateCommand": "pnpm i --frozen-lockfile && pnpm run bootstrap",

@@ -6,7 +6,7 @@ services:
       context: ./
     volumes:
       - ..:/workspaces/fluidd/:cached
-      - pnpm-store:/home/node/.local/share/pnpm/store
+      - node-modules:/workspaces/fluidd/node_modules
     command: sleep infinity
     network_mode: service:klipper-simulavr
 
@@ -15,4 +15,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  pnpm-store:
+  node-modules:
