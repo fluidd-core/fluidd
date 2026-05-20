@@ -12,8 +12,8 @@
       "onAutoForward": "silent"
     },
     "8080": {
-      "label": "Vite dev",
-      "onAutoForward": "notify"
+      "label": "mjpg-streamer",
+      "onAutoForward": "silent"
     }
   },
   "features": {
