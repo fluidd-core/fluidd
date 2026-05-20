@@ -7,7 +7,7 @@ RUN \
     git-zsh-completion \
     zsh \
     zsh-completions \
-  && sed -i 's|/bin/ash|/bin/zsh|' /etc/passwd \
+  && sed -i '/^node:/s|/bin/ash|/bin/zsh|' /etc/passwd \
   && corepack enable \
   && mkdir -p /workspaces/fluidd/node_modules /workspaces/fluidd/.pnpm-store \
   && chown -R node:node /workspaces/fluidd \

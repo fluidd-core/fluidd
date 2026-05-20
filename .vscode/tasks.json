@@ -4,7 +4,7 @@
     {
       "label": "Serve",
       "type": "npm",
-      "script": "serve",
+      "script": "dev",
       "problemMatcher": [
         "$vite"
       ],
