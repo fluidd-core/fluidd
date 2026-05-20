@@ -9,20 +9,11 @@ services:
       - node-modules:/workspaces/fluidd/node_modules
       - pnpm-store:/workspaces/fluidd/.pnpm-store
     command: sleep infinity
-    networks:
-      - devnet
+    network_mode: service:klipper-simulavr
 
   klipper-simulavr:
     image: ei99070/docker-klipper-simulavr:latest
     restart: unless-stopped
-    ports:
-      - "7125:7125"
-      - "8081:8080"
-    networks:
-      - devnet
-
-networks:
-  devnet:
 
 volumes:
   node-modules:
