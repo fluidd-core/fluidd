@@ -56,8 +56,9 @@ To build from source (requires Node.js v24.x and Git):
 
 1. `git clone https://github.com/fluidd-core/fluidd.git`
 2. `cd fluidd`
-3. `pnpm i --frozen-lockfile`
-4. `pnpm run build`
+3. `corepack enable` (installs the project-pinned `pnpm` via Node.js' [Corepack](https://nodejs.org/api/corepack.html))
+4. `pnpm i --frozen-lockfile`
+5. `pnpm run build`
 
 The output is written to `dist/`.
 
