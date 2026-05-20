@@ -5,14 +5,10 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "fluidd",
   "workspaceFolder": "/workspaces/fluidd",
-  "forwardPorts": [7125, 8080],
+  "forwardPorts": [8080],
   "portsAttributes": {
-    "7125": {
-      "label": "Moonraker",
-      "onAutoForward": "silent"
-    },
     "8080": {
-      "label": "Fluidd",
+      "label": "Vite dev",
       "onAutoForward": "notify"
     }
   },

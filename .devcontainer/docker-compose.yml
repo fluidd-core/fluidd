@@ -8,11 +8,20 @@ services:
       - ..:/workspaces/fluidd/:cached
       - node-modules:/workspaces/fluidd/node_modules
     command: sleep infinity
-    network_mode: service:klipper-simulavr
+    networks:
+      - devnet
 
   klipper-simulavr:
     image: ei99070/docker-klipper-simulavr:latest
     restart: unless-stopped
+    ports:
+      - "7125:7125"
+      - "8081:8080"
+    networks:
+      - devnet
+
+networks:
+  devnet:
 
 volumes:
   node-modules:
