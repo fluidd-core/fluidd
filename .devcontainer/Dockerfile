@@ -9,7 +9,7 @@ RUN \
     zsh-completions \
   && sed -i 's|/bin/ash|/bin/zsh|' /etc/passwd \
   && corepack enable \
-  && mkdir -p /workspaces/fluidd/node_modules \
+  && mkdir -p /workspaces/fluidd/node_modules /workspaces/fluidd/.pnpm-store \
   && chown -R node:node /workspaces/fluidd \
   && rm -f /etc/apk/cache/* /root/.cache
 

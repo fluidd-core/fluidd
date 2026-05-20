@@ -11,8 +11,6 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "vite",
-    "serve": "vite",
     "serve:prod": "vite preview --port 5000",
     "serve:docs": "cd ./docs && zensical serve",
     "lint": "eslint .",
@@ -27,7 +25,6 @@
     "type-check": "vue-tsc --build --noEmit",
     "circular-check": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --tsconfig=./tsconfig.app.json"
   },
-  "main": "index.js",
   "dependencies": {
     "@ctrl/tinycolor": "^4.2.0",
     "@fontsource/raleway": "^5.2.8",
@@ -114,7 +111,6 @@
     "workbox-strategies": "^7.4.1",
     "workbox-window": "^7.4.1"
   },
-  "_id": "fluidd@0.0.3",
   "bugs": {
     "url": "https://github.com/fluidd-core/fluidd/issues"
   },
@@ -123,7 +119,6 @@
     "klipper"
   ],
   "license": "GPL-3.0",
-  "readme": "README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fluidd-core/fluidd.git"
