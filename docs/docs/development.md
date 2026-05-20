@@ -168,6 +168,22 @@ Check that Node.js was installed properly:
 
 ```bash
 node --version
+```
+
+### Enable pnpm
+
+Fluidd uses [pnpm](https://pnpm.io/) as its package manager. The required version
+is pinned in `package.json` via the `packageManager` field, and
+[Corepack](https://nodejs.org/api/corepack.html) (bundled with Node.js) will
+install and run that exact version automatically — just enable it once:
+
+```bash
+corepack enable
+```
+
+Verify that pnpm resolves correctly:
+
+```bash
 pnpm --version
 ```
 

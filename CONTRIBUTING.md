@@ -13,7 +13,8 @@ tour of the codebase, see the
 - Read the [Development guide](https://docs.fluidd.xyz/development/) — it covers the
   Dev Container, running Fluidd locally, and a quick architecture overview.
 - After cloning, run `pnpm i --frozen-lockfile && pnpm run bootstrap` to install dependencies and set up
-  the Git hooks that pre-validate your commits.
+  the Git hooks that pre-validate your commits. If you don't have pnpm yet, run `corepack enable`
+  first — see the [Development guide](https://docs.fluidd.xyz/development/) for details.
 
 ## Branching and pull requests
 
