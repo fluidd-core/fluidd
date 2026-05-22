@@ -279,23 +279,39 @@ export const actions = {
     }
 
     const layout = rootState.layout.layouts.diagnostics as DiagnosticsCardContainer
-
-    const metrics = Object.values(layout)
+    const allCards = Object.values(layout)
       .flat()
+
+    const chartMetrics = allCards
+      .filter(card => card.type === 'chart')
       .flatMap(card => card.axes)
       .filter(axis => axis.enabled)
       .flatMap(axis => axis.metrics)
 
-    const collectors = [...new Set(metrics.map(metric => metric.collector))]
+    if (chartMetrics.length > 0) {
+      const collectors = [...new Set(chartMetrics.map(metric => metric.collector))]
 
-    const data = await evalCollectors(state.printer, collectors)
+      const data = await evalCollectors(state.printer, collectors)
 
-    data.date = new Date()
+      data.date = new Date()
 
-    commit('charts/setChartEntry', {
-      type: 'diagnostics',
-      retention: rootGetters['charts/getChartRetention'],
-      data
-    }, { root: true })
+      commit('charts/setChartEntry', {
+        type: 'diagnostics',
+        retention: rootGetters['charts/getChartRetention'],
+        data
+      }, { root: true })
+    }
+
+    const watchMetrics = allCards
+      .filter(card => card.type === 'watches')
+      .flatMap(card => card.metrics)
+
+    if (watchMetrics.length > 0) {
+      const collectors = [...new Set(watchMetrics.map(metric => metric.collector))]
+
+      const data = await evalCollectors(state.printer, collectors)
+
+      commit('diagnostics/setWatchValues', data, { root: true })
+    }
   }
 } satisfies ActionTree<PrinterState, RootState>

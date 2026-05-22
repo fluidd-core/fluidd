@@ -63,6 +63,10 @@ export const mutations = {
 
           for (const diagnosticsCardConfigs of Object.values(diagnostics)) {
             for (const diagnosticsCardConfig of diagnosticsCardConfigs) {
+              if (diagnosticsCardConfig.type !== 'chart') {
+                continue
+              }
+
               for (const axis of diagnosticsCardConfig.axes) {
                 for (const metric of axis.metrics) {
                   metric.style.fillColor = metric.style.fillColor ?? null

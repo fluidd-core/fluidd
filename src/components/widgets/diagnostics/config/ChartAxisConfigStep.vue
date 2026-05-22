@@ -99,12 +99,12 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
+import type { DiagnosticsChartConfig } from '@/store/diagnostics/types'
 
 @Component({})
-export default class AxesConfigStep extends Vue {
+export default class ChartAxisConfigStep extends Vue {
   @Prop({ type: Object, required: true })
-  readonly config!: DiagnosticsCardConfig
+  readonly config!: DiagnosticsChartConfig
 
   currentStep = 1
   steps = [this.$t('app.setting.label.left_y'), this.$t('app.setting.label.right_y')]

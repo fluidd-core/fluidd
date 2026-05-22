@@ -10,6 +10,7 @@
             <app-btn-collapse-group>
               <app-btn
                 small
+                class="me-1 my-1"
                 @click="handleAddCard"
               >
                 <v-icon
@@ -19,6 +20,19 @@
                   $plus
                 </v-icon>
                 {{ $t('app.general.title.add_chart') }}
+              </app-btn>
+              <app-btn
+                small
+                class="my-1"
+                @click="handleAddWatchCard"
+              >
+                <v-icon
+                  small
+                  left
+                >
+                  $plus
+                </v-icon>
+                {{ $t('app.general.title.add_watches') }}
               </app-btn>
             </app-btn-collapse-group>
           </template>
@@ -46,8 +60,15 @@
             @end.stop="updateLayout"
           >
             <template v-for="c in container">
-              <diagnostics-card
-                v-if="c.enabled || inLayout"
+              <diagnostics-watch-card
+                v-if="(c.enabled || inLayout) && c.type === 'watches'"
+                :key="c.id"
+                :config="c"
+                class="mb-2 mb-md-4"
+                @edit="handleEditCard"
+              />
+              <diagnostics-chart-card
+                v-else-if="c.enabled || inLayout"
                 :key="c.id"
                 :config="c"
                 class="mb-2 mb-md-4"
@@ -73,15 +94,16 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { v4 as uuidv4 } from 'uuid'
 import StateMixin from '@/mixins/state'
-import type { DiagnosticsCardConfig, DiagnosticsCardContainer } from '@/store/diagnostics/types'
-import DiagnosticsCard from '@/components/widgets/diagnostics/DiagnosticsCard.vue'
+import type { DiagnosticsCardConfig, DiagnosticsCardContainer, DiagnosticsChartConfig, DiagnosticsWatchesConfig } from '@/store/diagnostics/types'
+import DiagnosticsChartCard from '@/components/widgets/diagnostics/DiagnosticsChartCard.vue'
+import DiagnosticsWatchCard from '@/components/widgets/diagnostics/DiagnosticsWatchCard.vue'
 import DiagnosticsCardConfigDialog from '@/components/widgets/diagnostics/DiagnosticsCardConfigDialog.vue'
 import type { LayoutConfig } from '@/store/layout/types'
-import { defaultState } from '@/store/layout/state'
 
 @Component({
   components: {
-    DiagnosticsCard,
+    DiagnosticsChartCard,
+    DiagnosticsWatchCard,
     DiagnosticsCardConfigDialog
   }
 })
@@ -98,9 +120,34 @@ export default class Diagnostics extends Mixins(StateMixin) {
   }
 
   handleAddCard () {
-    const clonedDefaultCard = JSON.parse(JSON.stringify(defaultState().layouts.diagnostics.container1[0])) as DiagnosticsCardConfig
-    clonedDefaultCard.id = ''
-    this.dialogState.card = clonedDefaultCard
+    const newCard: DiagnosticsChartConfig = {
+      id: '',
+      enabled: true,
+      collapsed: false,
+      type: 'chart',
+      title: '',
+      icon: 'chart',
+      height: 300,
+      axes: [
+        { enabled: true, unit: '', showLegend: true, metrics: [] },
+        { enabled: false, unit: '', showLegend: false, metrics: [] }
+      ]
+    }
+    this.dialogState.card = newCard
+    this.dialogState.active = true
+  }
+
+  handleAddWatchCard () {
+    const newCard: DiagnosticsWatchesConfig = {
+      id: '',
+      enabled: true,
+      collapsed: false,
+      type: 'watches',
+      title: '',
+      icon: 'chart',
+      metrics: []
+    }
+    this.dialogState.card = newCard
     this.dialogState.active = true
   }
 
