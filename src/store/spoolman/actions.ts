@@ -189,14 +189,14 @@ export const actions = {
   /**
    * Make a socket request to init the spoolman component.
    */
-  async init ({ rootState }) {
-    if (supportsFilaman(rootState)) {
+  async init ({ rootState }, payload?: Moonraker.Server.InfoResponse) {
+    const components = payload?.components ?? rootState.server.info.components
+    const hasFilaman = components.includes('filaman')
+
+    if (hasFilaman) {
       SocketActions.serverFilamanGetSpoolId()
       SocketActions.serverFilamanProxyGetAvailableSpools(1, FILAMAN_PAGE_SIZE, {
         dispatch: 'spoolman/fetchAllFilamanSpools'
-      })
-      SocketActions.serverFilamanProxyGetInfo({
-        dispatch: 'spoolman/onInfo'
       })
       return
     }
