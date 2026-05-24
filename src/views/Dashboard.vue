@@ -153,7 +153,10 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get supportsSpoolTracking (): boolean {
-    return this.$typedGetters['server/componentSupport']('spoolman')
+    return (
+      this.$typedGetters['server/componentSupport']('spoolman') ||
+      this.$typedGetters['server/componentSupport']('filaman')
+    )
   }
 
   get supportsFilaman (): boolean {
