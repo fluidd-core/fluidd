@@ -1152,6 +1152,20 @@ export const SocketActions = {
     )
   },
 
+  serverFilamanProxyGetInfo (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Info>>(
+      'server.filaman.proxy', {
+        dispatch: 'spoolman/onInfo',
+        ...options,
+        params: {
+          request_method: 'GET',
+          path: '/api/v1/info',
+          use_v2_response: true
+        }
+      }
+    )
+  },
+
   serverSpoolmanProxyGetSettingCurrency (options?: NotifyOptions) {
     return baseEmit<Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Currency>>(
       'server.spoolman.proxy', {
