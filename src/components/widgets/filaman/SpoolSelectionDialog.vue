@@ -127,7 +127,7 @@
                   :rotate="-90"
                   :size="44"
                   :width="3"
-                  :value="item.remaining_weight / item.initial_weight * 100"
+                  :value="getSpoolRemainingPercent(item)"
                   color="primary"
                   class="mr-4 flex-column"
                 >
@@ -843,6 +843,18 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   getSpoolColor (spool?: Spool) {
     return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
+  }
+
+  getSpoolRemainingPercent (spool: Spool): number {
+    const remaining = Number(spool.remaining_weight)
+    const initial = Number(spool.initial_weight)
+
+    if (!Number.isFinite(remaining) || !Number.isFinite(initial) || initial <= 0) {
+      return 0
+    }
+
+    const ratio = (remaining / initial) * 100
+    return Math.min(100, Math.max(0, ratio))
   }
 }
 </script>
