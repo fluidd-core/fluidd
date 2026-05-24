@@ -132,12 +132,18 @@
                   class="mr-4 flex-column"
                 >
                   <v-icon
-                    :color="getSpoolColor(item)"
+                    v-if="item.id === selectedSpoolId"
                     size="42"
                     class="spool-icon"
                   >
-                    {{ item.id === selectedSpoolId ? '$markedCircle' : '$filament' }}
+                    $markedCircle
                   </v-icon>
+                  <img
+                    v-else
+                    src="/img/icons/filaman-spool.svg"
+                    alt="FilaMan Spool"
+                    class="filaman-spool-select-icon"
+                  >
                 </v-progress-circular>
 
                 <div class="flex-column">
@@ -848,5 +854,11 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     flex-direction: column;
     overflow: auto;
     height: 100%;
+  }
+
+  .filaman-spool-select-icon {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
   }
 </style>

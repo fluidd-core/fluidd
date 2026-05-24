@@ -1,10 +1,19 @@
 <template>
   <collapsable-card
     :title="cardTitle"
-    icon="$filament"
+    icon="$filaman"
     draggable
     layout-path="dashboard.spoolman-card"
   >
+    <template #title>
+      <img
+        src="/img/icons/filaman-logo.png"
+        alt="FilaMan"
+        class="filaman-title-logo"
+      >
+      <span class="font-weight-light">{{ cardTitle }}</span>
+    </template>
+
     <template #menu>
       <app-btn
         v-if="!klippyReady || !targetableMacros.length"
@@ -52,12 +61,11 @@
             </v-list-item-content>
 
             <v-list-item-icon v-if="activeSpool">
-              <v-icon
-                :color="getSpoolColor(activeSpool)"
-                class="spool-icon"
+              <img
+                src="/img/icons/filaman-spool.svg"
+                alt="FilaMan Spool"
+                class="filaman-spool-icon"
               >
-                $filament
-              </v-icon>
             </v-list-item-icon>
           </v-list-item>
 
@@ -78,12 +86,11 @@
               </v-list-item-content>
 
               <v-list-item-icon v-if="macro.variables.spool_id">
-                <v-icon
-                  :color="getSpoolColor(getSpoolById(macro.variables.spool_id))"
-                  class="spool-icon"
+                <img
+                  src="/img/icons/filaman-spool.svg"
+                  alt="FilaMan Spool"
+                  class="filaman-spool-icon"
                 >
-                  $filament
-                </v-icon>
               </v-list-item-icon>
             </v-list-item>
           </template>
@@ -184,13 +191,11 @@
             color="primary"
             class="mr-4 flex-column"
           >
-            <v-icon
-              :color="getSpoolColor(activeSpool)"
-              size="100"
-              class="spool-icon"
+            <img
+              src="/img/icons/filaman-spool.svg"
+              alt="FilaMan Spool"
+              class="filaman-spool-icon filaman-spool-icon-xl"
             >
-              $filament
-            </v-icon>
           </v-progress-circular>
           <v-icon
             v-else-if="isConnected"
@@ -393,3 +398,25 @@ export default class FilamanCard extends Mixins(StateMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.filaman-title-logo {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  margin-right: 8px;
+  vertical-align: middle;
+  border-radius: 4px;
+}
+
+.filaman-spool-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.filaman-spool-icon-xl {
+  width: 90px;
+  height: 90px;
+}
+</style>
