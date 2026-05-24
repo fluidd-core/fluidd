@@ -1068,9 +1068,30 @@ export const SocketActions = {
     )
   },
 
+  serverFilamanGetSpoolId (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Spoolman.SpoolIdResponse>(
+      'server.filaman.get_spool_id', {
+        dispatch: 'spoolman/onActiveSpool',
+        ...options
+      }
+    )
+  },
+
   serverSpoolmanPostSpoolId (spoolId: number | undefined, options?: NotifyOptions) {
     return baseEmit<Moonraker.Spoolman.SpoolIdResponse>(
       'server.spoolman.post_spool_id', {
+        dispatch: 'spoolman/onActiveSpool',
+        ...options,
+        params: {
+          spool_id: spoolId
+        }
+      }
+    )
+  },
+
+  serverFilamanPostSpoolId (spoolId: number | undefined, options?: NotifyOptions) {
+    return baseEmit<Moonraker.Spoolman.SpoolIdResponse>(
+      'server.filaman.post_spool_id', {
         dispatch: 'spoolman/onActiveSpool',
         ...options,
         params: {
@@ -1088,6 +1109,21 @@ export const SocketActions = {
         params: {
           request_method: 'GET',
           path: '/v1/spool',
+          use_v2_response: true
+        }
+      }
+    )
+  },
+
+  serverFilamanProxyGetAvailableSpools (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Spool[]>>(
+      'server.filaman.proxy', {
+        dispatch: 'spoolman/onAvailableSpools',
+        ...options,
+        params: {
+          request_method: 'GET',
+          path: '/api/v1/spools',
+          query: 'page=1&page_size=200',
           use_v2_response: true
         }
       }

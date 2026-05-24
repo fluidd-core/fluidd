@@ -22,8 +22,14 @@
             <template v-for="c in container">
               <component
                 :is="c.id"
-                v-if="inLayout || (c.enabled && !filtered(c))"
+                v-if="(inLayout || (c.enabled && !filtered(c))) && !(supportsFilaman && c.id === 'spoolman-card')"
                 :key="c.id"
+                :narrow="narrow"
+                class="mb-2 mb-md-4"
+              />
+              <filaman-card
+                v-if="c.id === 'spoolman-card' && (inLayout || (c.enabled && !filtered(c))) && supportsFilaman"
+                :key="`${c.id}-filaman`"
                 :narrow="narrow"
                 class="mb-2 mb-md-4"
               />
@@ -53,6 +59,7 @@ import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
 import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
 import SpoolmanCard from '@/components/widgets/spoolman/SpoolmanCard.vue'
+import FilamanCard from '@/components/widgets/filaman/FilamanCard.vue'
 import MmuCard from '@/components/widgets/mmu/MmuCard.vue'
 import SensorsCard from '@/components/widgets/sensors/SensorsCard.vue'
 import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
@@ -75,6 +82,7 @@ import AfcCard from '@/components/widgets/afc/AfcCard.vue'
     GcodePreviewCard,
     JobQueueCard,
     SpoolmanCard,
+    FilamanCard,
     MmuCard,
     SensorsCard,
     RunoutSensorsCard,
@@ -144,8 +152,12 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.$typedGetters['printer/getRunoutSensors'].length > 0
   }
 
-  get supportsSpoolman (): boolean {
+  get supportsSpoolTracking (): boolean {
     return this.$typedGetters['server/componentSupport']('spoolman')
+  }
+
+  get supportsFilaman (): boolean {
+    return this.$typedGetters['server/componentSupport']('filaman')
   }
 
   get supportsMmu (): boolean {
@@ -227,7 +239,8 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'bed-mesh-card' && !this.supportsBedMesh) return true
     if (item.id === 'beacon-card' && !this.supportsBeacon) return true
     if (item.id === 'runout-sensors-card' && !this.supportsRunoutSensors) return true
-    if (item.id === 'spoolman-card' && !this.supportsSpoolman) return true
+    if (item.id === 'spoolman-card' && !this.supportsSpoolTracking && !this.supportsFilaman) return true
+    if (item.id === 'filaman-card' && !this.supportsFilaman) return true
     if (item.id === 'mmu-card' && !this.supportsMmu) return true
     if (item.id === 'sensors-card' && !this.hasSensors) return true
     if (item.id === 'temperature-card' && !this.hasHeatersOrTemperatureSensors) return true

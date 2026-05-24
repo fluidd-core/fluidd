@@ -146,10 +146,10 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
       }
     }
 
-    const spoolmanSupported: boolean = this.$typedGetters['spoolman/getAvailable']
+    const spoolTrackingAvailable: boolean = this.$typedGetters['spoolman/getAvailable']
     const autoSpoolSelectionDialog: boolean = this.$typedState.config.uiSettings.spoolman.autoSpoolSelectionDialog
 
-    if (spoolmanSupported && autoSpoolSelectionDialog) {
+    if (spoolTrackingAvailable && autoSpoolSelectionDialog) {
       this.$typedCommit('spoolman/setDialogState', {
         show: true,
         filename

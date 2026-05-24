@@ -1092,6 +1092,11 @@ app:
       warn_on_filament_type_mismatch: >-
         Show a warning when the spool's filament type and the one selected in the slicer don't match
       remaining_filament_unit: Show remaining filament as
+  filaman:
+    title:
+      filaman: FilaMan
+    msg:
+      not_connected: FilaMan server not available.
   mmu:
     btn:
       change_tool: Change Tool

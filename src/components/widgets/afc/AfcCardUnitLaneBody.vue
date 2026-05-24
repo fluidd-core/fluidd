@@ -113,9 +113,9 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   readonly name!: string
 
   showInfintiyDialog = false
-  showSpoolmanDialog = false
+  showSpoolTrackingDialog = false
   showFilamentDialog = false
-  spoolmanSelection = false
+  spoolTrackingSelection = false
 
   get lane (): Klipper.AfcLaneState | undefined {
     return this.getAfcLaneObject(this.name)
@@ -174,7 +174,7 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   }
 
   get spoolFilamentName (): string {
-    return this.afcExistsSpoolman
+    return this.afcHasSpoolTracking
       ? this.spool?.filament?.name ?? this.$t('app.afc.Unknown').toString()
       : ''
   }
@@ -192,7 +192,7 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   }
 
   handleSelectSpool () {
-    this.spoolmanSelection = true
+    this.spoolTrackingSelection = true
     this.$typedCommit('spoolman/setDialogState', {
       show: true,
       spoolSelectionOnly: true,
@@ -201,12 +201,12 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   }
 
   @Watch('$typedState.spoolman.dialog')
-  onSpoolmanChanged (dialog: SpoolSelectionDialogState) {
+  onSpoolTrackingDialogChanged (dialog: SpoolSelectionDialogState) {
     if (
       !dialog.show &&
-      this.spoolmanSelection
+      this.spoolTrackingSelection
     ) {
-      this.spoolmanSelection = false
+      this.spoolTrackingSelection = false
 
       if (dialog.selectedSpoolId !== this.spoolId) {
         this.sendGcode(`SET_SPOOL_ID LANE=${this.name} SPOOL_ID=${dialog.selectedSpoolId ?? ''}`)
@@ -215,7 +215,7 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   }
 
   onFilamentClick () {
-    if (this.afcExistsSpoolman) {
+    if (this.afcHasSpoolTracking) {
       this.handleSelectSpool()
       return
     }
