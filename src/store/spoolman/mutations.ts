@@ -15,7 +15,7 @@ export const mutations = {
     Object.assign(state, defaultState())
   },
 
-  setActiveSpool (state, payload: number) {
+  setActiveSpool (state, payload: number | null) {
     state.activeSpool = payload
   },
 

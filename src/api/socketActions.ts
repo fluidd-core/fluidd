@@ -1078,25 +1078,29 @@ export const SocketActions = {
   },
 
   serverSpoolmanPostSpoolId (spoolId: number | undefined, options?: NotifyOptions) {
+    const params = spoolId == null
+      ? {}
+      : { spool_id: spoolId }
+
     return baseEmit<Moonraker.Spoolman.SpoolIdResponse>(
       'server.spoolman.post_spool_id', {
         dispatch: 'spoolman/onActiveSpool',
         ...options,
-        params: {
-          spool_id: spoolId
-        }
+        params
       }
     )
   },
 
   serverFilamanPostSpoolId (spoolId: number | undefined, options?: NotifyOptions) {
+    const params = spoolId == null
+      ? {}
+      : { spool_id: spoolId }
+
     return baseEmit<Moonraker.Spoolman.SpoolIdResponse>(
       'server.filaman.post_spool_id', {
         dispatch: 'spoolman/onActiveSpool',
         ...options,
-        params: {
-          spool_id: spoolId
-        }
+        params
       }
     )
   },

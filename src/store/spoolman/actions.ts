@@ -204,7 +204,15 @@ export const actions = {
   },
 
   async onActiveSpool ({ commit }, payload) {
-    commit('setActiveSpool', payload.spool_id)
+    const rawSpoolId = payload?.spool_id
+
+    if (rawSpoolId == null) {
+      commit('setActiveSpool', null)
+      return
+    }
+
+    const spoolId = Number(rawSpoolId)
+    commit('setActiveSpool', Number.isFinite(spoolId) ? spoolId : null)
   },
 
   async onSpoolChange ({ commit, state }, { type, payload }: WebsocketSpoolPayload) {
