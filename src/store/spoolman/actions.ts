@@ -175,6 +175,9 @@ const supportsSpoolmanComponent = (rootState: RootState): boolean => {
   return rootState.server.info.components.includes('spoolman')
 }
 
+const FILAMAN_PAGE_SIZE = 200
+const FILAMAN_MAX_PAGES = 100
+
 export const actions = {
   /**
    * Reset our store
@@ -189,8 +192,8 @@ export const actions = {
   async init ({ rootState }) {
     if (supportsFilaman(rootState)) {
       SocketActions.serverFilamanGetSpoolId()
-      SocketActions.serverFilamanProxyGetAvailableSpools({
-        dispatch: 'spoolman/onAvailableSpools'
+      SocketActions.serverFilamanProxyGetAvailableSpools(1, FILAMAN_PAGE_SIZE, {
+        dispatch: 'spoolman/fetchAllFilamanSpools'
       })
       return
     }
@@ -302,6 +305,41 @@ export const actions = {
 
     commit('setConnected', true)
 
+    dispatch('initializeWebsocketConnection')
+  },
+
+  async fetchAllFilamanSpools ({ commit, dispatch }, payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.FilamanPaginatedResponse>) {
+    payload = payloadAsSpoolmanProxyResponseV2(payload)
+
+    if (payload.error != null) {
+      return
+    }
+
+    let pageItems = payload.response?.items ?? []
+    const allItems: Moonraker.Spoolman.FilamanSpool[] = [...pageItems]
+
+    let page = 2
+    while (pageItems.length === FILAMAN_PAGE_SIZE && page <= FILAMAN_MAX_PAGES) {
+      const nextPayload = payloadAsSpoolmanProxyResponseV2(
+        await SocketActions.serverFilamanProxyGetAvailableSpools(page, FILAMAN_PAGE_SIZE)
+      )
+
+      if (nextPayload.error != null) {
+        break
+      }
+
+      pageItems = nextPayload.response?.items ?? []
+      allItems.push(...pageItems)
+
+      if (pageItems.length < FILAMAN_PAGE_SIZE) {
+        break
+      }
+
+      page += 1
+    }
+
+    commit('setSpools', normalizeSpoolList({ items: allItems }))
+    commit('setConnected', true)
     dispatch('initializeWebsocketConnection')
   },
 
