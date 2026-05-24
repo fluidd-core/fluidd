@@ -439,7 +439,15 @@ export const actions = {
     dispatch('spoolman/onActiveSpool', payload, { root: true })
   },
 
+  async notifyFilamanActiveSpoolSet ({ dispatch }, payload) {
+    dispatch('spoolman/onActiveSpool', payload, { root: true })
+  },
+
   async notifySpoolmanStatusChanged ({ dispatch }, payload) {
     dispatch('spoolman/onStatusChanged', payload.spoolman_connected, { root: true })
+  },
+
+  async notifyFilamanStatusChanged ({ dispatch }, payload) {
+    dispatch('spoolman/onStatusChanged', payload.filaman_connected, { root: true })
   }
 } satisfies ActionTree<SocketState, RootState>
