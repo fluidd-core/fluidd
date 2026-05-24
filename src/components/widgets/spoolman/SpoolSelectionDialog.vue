@@ -751,33 +751,22 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$typedGetters['server/componentSupport']('filaman')
   }
 
-  get brandName (): string {
-    return this.supportsFilaman
-      ? 'FilaMan'
-      : this.$tc('app.spoolman.title.spoolman').toString()
-  }
-
-  replaceBrandName (text: string): string {
-    if (!this.supportsFilaman) {
-      return text
-    }
-
-    return text
-      .replace(/Spoolman/g, this.brandName)
-      .replace(/spoolman/g, this.brandName.toLowerCase())
-  }
-
   get dialogTitle (): string {
-    const title = this.$tc('app.spoolman.title.spool_selection', this.targetMacro ? 2 : 1, {
+    const key = this.supportsFilaman && this.$te('app.filaman.title.spool_selection')
+      ? 'app.filaman.title.spool_selection'
+      : 'app.spoolman.title.spool_selection'
+
+    return this.$tc(key, this.targetMacro ? 2 : 1, {
       macro: this.targetMacro?.toUpperCase()
     }).toString()
-
-    return this.replaceBrandName(title)
   }
 
   get manageSpoolsLabel (): string {
-    const text = this.$t('app.spoolman.btn.manage_spools').toString()
-    return this.replaceBrandName(text)
+    const key = this.supportsFilaman && this.$te('app.filaman.btn.manage_spools')
+      ? 'app.filaman.btn.manage_spools'
+      : 'app.spoolman.btn.manage_spools'
+
+    return this.$t(key).toString()
   }
 
   get selectButtonLabel (): string {
@@ -785,11 +774,13 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       return this.$t('app.general.btn.print').toString()
     }
 
-    const text = this.$tc('app.spoolman.btn.select', this.targetMacro ? 2 : 1, {
+    const key = this.supportsFilaman && this.$te('app.filaman.btn.select')
+      ? 'app.filaman.btn.select'
+      : 'app.spoolman.btn.select'
+
+    return this.$tc(key, this.targetMacro ? 2 : 1, {
       macro: this.targetMacro
     }).toString()
-
-    return this.replaceBrandName(text)
   }
 
   get supportsQRCodeScan (): boolean {

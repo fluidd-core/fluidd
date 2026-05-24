@@ -1085,8 +1085,12 @@ app:
         übereinstimmt
       remaining_filament_unit: Verbleibendes Filament anzeigen als
   filaman:
+    btn:
+      manage_spools: Spulen verwalten
+      select: 'Auswählen | Für {macro} auswählen'
     title:
       filaman: FilaMan
+      spool_selection: 'Spulenauswahl | Spulenauswahl für {macro}'
     msg:
       not_connected: FilaMan-Server nicht verfügbar.
   job_queue:
