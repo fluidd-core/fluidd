@@ -49,58 +49,15 @@ const createSpoolmanSocket = (spoolmanUrl: string): WebSocket | undefined => {
   }
 }
 
-interface FilaManPaginatedResponse {
-  items?: FilaManSpool[];
-}
-
-interface FilaManSpool {
-  id: number;
-  created_at?: string | null;
-  last_used_at?: string | null;
-  purchase_price?: number | null;
-  remaining_weight_g?: number | null;
-  initial_total_weight_g?: number | null;
-  empty_spool_weight_g?: number | null;
-  lot_number?: string | null;
-  location_id?: number | null;
-  custom_fields?: Record<string, unknown> | null;
-  filament?: FilaManFilament | null;
-}
-
-interface FilaManFilament {
-  id: number;
-  designation?: string | null;
-  material_type?: string | null;
-  price?: number | null;
-  raw_material_weight_g?: number | null;
-  default_spool_weight_g?: number | null;
-  diameter_mm?: number | null;
-  density_g_cm3?: number | null;
-  manufacturer?: FilaManManufacturer | null;
-  colors?: FilaManFilamentColor[] | null;
-}
-
-interface FilaManFilamentColor {
-  color?: {
-    hex_code?: string | null;
-  } | null;
-}
-
-interface FilaManManufacturer {
-  id?: number | null;
-  name?: string | null;
-  empty_spool_weight_g?: number | null;
-}
-
 const DEFAULT_DENSITY_G_CM3 = 1.24
 const DEFAULT_DIAMETER_MM = 1.75
 
-const isFilamanPaginatedResponse = (value: unknown): value is FilaManPaginatedResponse => {
+const isFilamanPaginatedResponse = (value: unknown): value is Moonraker.Spoolman.FilamanPaginatedResponse => {
   return (
     value != null &&
     typeof value === 'object' &&
     'items' in value &&
-    Array.isArray((value as FilaManPaginatedResponse).items)
+    Array.isArray((value as Moonraker.Spoolman.FilamanPaginatedResponse).items)
   )
 }
 
@@ -118,7 +75,7 @@ const normalizedColorHex = (hex: string): string => {
     : hex
 }
 
-const mapFilamanSpoolToSpoolmanSpool = (spool: FilaManSpool): Moonraker.Spoolman.Spool => {
+const mapFilamanSpoolToSpoolmanSpool = (spool: Moonraker.Spoolman.FilamanSpool): Moonraker.Spoolman.Spool => {
   const registered = spool.created_at ?? new Date().toISOString()
   const filament = spool.filament
   const manufacturer = filament?.manufacturer
@@ -197,7 +154,7 @@ const mapFilamanSpoolToSpoolmanSpool = (spool: FilaManSpool): Moonraker.Spoolman
 }
 
 const normalizeSpoolList = (
-  payload: Moonraker.Spoolman.Spool[] | FilaManPaginatedResponse
+  payload: Moonraker.Spoolman.Spool[] | Moonraker.Spoolman.FilamanPaginatedResponse
 ): Moonraker.Spoolman.Spool[] => {
   if (Array.isArray(payload)) {
     return payload
@@ -331,7 +288,10 @@ export const actions = {
     }
   },
 
-  async onAvailableSpools ({ commit, dispatch }, payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Spool[]>) {
+  async onAvailableSpools (
+    { commit, dispatch },
+    payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Spool[] | Moonraker.Spoolman.FilamanPaginatedResponse>
+  ) {
     payload = payloadAsSpoolmanProxyResponseV2(payload)
 
     if (payload.error != null) {

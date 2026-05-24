@@ -1116,7 +1116,7 @@ export const SocketActions = {
   },
 
   serverFilamanProxyGetAvailableSpools (options?: NotifyOptions) {
-    return baseEmit<Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Spool[]>>(
+    return baseEmit<Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.FilamanPaginatedResponse>>(
       'server.filaman.proxy', {
         dispatch: 'spoolman/onAvailableSpools',
         ...options,
