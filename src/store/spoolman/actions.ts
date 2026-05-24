@@ -195,6 +195,9 @@ export const actions = {
       SocketActions.serverFilamanProxyGetAvailableSpools(1, FILAMAN_PAGE_SIZE, {
         dispatch: 'spoolman/fetchAllFilamanSpools'
       })
+      SocketActions.serverFilamanProxyGetInfo({
+        dispatch: 'spoolman/onInfo'
+      })
       return
     }
 
@@ -377,7 +380,7 @@ export const actions = {
     dispatch('initializeWebsocketConnection')
   },
 
-  async onInfo ({ state, commit }, payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Info>) {
+  async onInfo ({ state, commit, rootState }, payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Info>) {
     payload = payloadAsSpoolmanProxyResponseV2(payload)
 
     if (payload.error != null) {
@@ -389,7 +392,8 @@ export const actions = {
     if (
       state.info &&
       valid(state.info.version) &&
-      gte(state.info.version, '0.16.0')
+      gte(state.info.version, '0.16.0') &&
+      !supportsFilaman(rootState)
     ) {
       SocketActions.serverSpoolmanProxyGetSettingCurrency()
     }

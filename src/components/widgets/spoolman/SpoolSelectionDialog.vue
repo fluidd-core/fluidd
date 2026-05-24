@@ -298,7 +298,6 @@
       v-model="cameraScanSource"
       @detected="handleQRCodeDetected"
     />
-
   </app-dialog>
 </template>
 
