@@ -76,7 +76,7 @@ const normalizedColorHex = (hex: string): string => {
 }
 
 const mapFilamanSpoolToSpoolmanSpool = (spool: Moonraker.Spoolman.FilamanSpool): Moonraker.Spoolman.Spool => {
-  const registered = spool.created_at ?? new Date().toISOString()
+  const registered = spool.created_at ?? spool.last_used_at ?? '1970-01-01T00:00:00.000Z'
   const filament = spool.filament
   const manufacturer = filament?.manufacturer
 
