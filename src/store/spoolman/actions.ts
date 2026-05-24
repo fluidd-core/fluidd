@@ -315,8 +315,26 @@ export const actions = {
       return
     }
 
+    const seenSpoolIds = new Set<number>()
     let pageItems = payload.response?.items ?? []
-    const allItems: Moonraker.Spoolman.FilamanSpool[] = [...pageItems]
+    const allItems: Moonraker.Spoolman.FilamanSpool[] = []
+
+    const appendUniquePageItems = (items: Moonraker.Spoolman.FilamanSpool[]): number => {
+      let appended = 0
+      for (const item of items) {
+        if (seenSpoolIds.has(item.id)) {
+          continue
+        }
+        seenSpoolIds.add(item.id)
+        allItems.push(item)
+        appended += 1
+      }
+
+      return appended
+    }
+
+    appendUniquePageItems(pageItems)
+    commit('setSpools', normalizeSpoolList({ items: allItems }))
 
     let page = 2
     while (pageItems.length === FILAMAN_PAGE_SIZE && page <= FILAMAN_MAX_PAGES) {
@@ -329,7 +347,15 @@ export const actions = {
       }
 
       pageItems = nextPayload.response?.items ?? []
-      allItems.push(...pageItems)
+      if (pageItems.length === 0) {
+        break
+      }
+
+      const appended = appendUniquePageItems(pageItems)
+      if (appended === 0) {
+        break
+      }
+      commit('setSpools', normalizeSpoolList({ items: allItems }))
 
       if (pageItems.length < FILAMAN_PAGE_SIZE) {
         break

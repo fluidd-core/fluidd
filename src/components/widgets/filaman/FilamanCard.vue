@@ -249,7 +249,7 @@ export default class FilamanCard extends Mixins(StateMixin) {
 
   get brandName (): string {
     return this.isFilamanActive
-      ? 'FilaMan'
+      ? this.$t('app.filaman.title.filaman').toString()
       : this.$tc('app.spoolman.title.spoolman').toString()
   }
 

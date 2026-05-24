@@ -139,7 +139,7 @@ import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
 export default class SpoolmanSettings extends Mixins(StateMixin) {
   get headingTitle (): string {
     return this.$typedGetters['server/componentSupport']('filaman')
-      ? 'FilaMan'
+      ? this.$t('app.filaman.title.filaman').toString()
       : this.$t('app.spoolman.title.spoolman').toString()
   }
 

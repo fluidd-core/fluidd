@@ -55,7 +55,7 @@ export default class AppSettingsNav extends Vue {
 
   get spoolTrackingSettingsTitle (): string {
     return this.$typedGetters['server/componentSupport']('filaman')
-      ? 'FilaMan'
+      ? this.$t('app.filaman.title.filaman').toString()
       : this.$t('app.spoolman.title.spoolman').toString()
   }
 

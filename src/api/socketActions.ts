@@ -1116,13 +1116,18 @@ export const SocketActions = {
   },
 
   serverFilamanProxyGetAvailableSpools (page = 1, pageSize = 200, options?: NotifyOptions) {
+    const query = new URLSearchParams({
+      page: `${page}`,
+      page_size: `${pageSize}`
+    }).toString()
+
     return baseEmit<Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.FilamanPaginatedResponse>>(
       'server.filaman.proxy', {
         ...options,
         params: {
           request_method: 'GET',
           path: '/api/v1/spools',
-          query: `page=${page}&page_size=${pageSize}`,
+          query,
           use_v2_response: true
         }
       }

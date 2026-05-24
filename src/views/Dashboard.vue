@@ -242,7 +242,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'bed-mesh-card' && !this.supportsBedMesh) return true
     if (item.id === 'beacon-card' && !this.supportsBeacon) return true
     if (item.id === 'runout-sensors-card' && !this.supportsRunoutSensors) return true
-    if (item.id === 'spoolman-card' && !this.supportsSpoolTracking && !this.supportsFilaman) return true
+    if (item.id === 'spoolman-card' && !this.supportsSpoolTracking) return true
     if (item.id === 'filaman-card' && !this.supportsFilaman) return true
     if (item.id === 'mmu-card' && !this.supportsMmu) return true
     if (item.id === 'sensors-card' && !this.hasSensors) return true
