@@ -272,6 +272,7 @@ export const Globals = Object.freeze({
     webcams: { name: 'webcam', dispatch: 'webcams/init' },
     jobQueue: { name: 'job_queue', dispatch: 'jobQueue/init' },
     spoolman: { name: 'spoolman', dispatch: 'spoolman/init' },
+    filaman: { name: 'filaman', dispatch: 'spoolman/init' },
     sensors: { name: 'sensor', dispatch: 'sensors/init' }
   },
   // Ordered by weight.
