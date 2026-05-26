@@ -153,7 +153,7 @@
               <v-list-item
                 v-for="link in collapsedCustomLinkItems"
                 :key="link.id"
-                :href="openNavLinksInNewTab ? undefined : resolveCustomLinkUrl(link.url)"
+                :href="resolveNewTab(link) ? undefined : resolveCustomLinkUrl(link.url)"
                 @click="handleCustomLinkClick($event, link)"
                 @contextmenu.prevent="openContextMenu(link, 'custom', $event, 'bookmarks-menu')"
               >
@@ -178,6 +178,7 @@
             :options="customLinkDragOptions"
             @start="handleCustomLinkDragStart"
             @update="handleCustomLinkUpdate"
+            @end="handleCustomLinkDragEnd"
           >
             <div
               v-for="link in customLinksLocal"
@@ -190,7 +191,7 @@
                 :color="link.color"
                 :url="link.url"
                 :confirm="confirmOnNavLink"
-                :new-tab="openNavLinksInNewTab"
+                :new-tab="resolveNewTab(link)"
                 :hide-tooltip="isSidebarExpanded"
                 @click.native="collapseSidebar"
                 @contextmenu="openContextMenu(link, 'custom', $event)"
@@ -386,6 +387,7 @@ import NavLinkDialog from '@/components/settings/navigation/NavLinkDialog.vue'
 import { Globals } from '@/globals'
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
 import isKeyOf from '@/util/is-key-of'
+import { isSafeNavLinkUrl, resolveNavLinkNewTab, THEME_LINK_ID_PREFIX } from '@/util/nav-link'
 
 interface SystemNavItem {
   id: string
@@ -508,9 +510,15 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   handleCustomLinkClick (e: Event, link: CustomNavLink) {
     this.collapseSidebar()
+    if (!isSafeNavLinkUrl(link.url)) {
+      // Unsafe URL resolves to '#'; suppress navigation entirely rather than scroll/hash.
+      e.preventDefault()
+      e.stopPropagation()
+      return
+    }
     const url = this.resolveCustomLinkUrl(link.url)
 
-    if (this.openNavLinksInNewTab) {
+    if (this.resolveNewTab(link)) {
       // New tab - use anchor element for reliable cross-browser behavior
       e.preventDefault()
       e.stopPropagation()
@@ -581,6 +589,7 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
         title: '',
         url: '',
         icon: 'openInNew',
+        target: 'new-tab',
         position: maxPosition + 1
       }
     }
@@ -600,10 +609,6 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
   get confirmOnNavLink (): boolean {
     return this.$typedState.config.uiSettings.navigation?.confirmOnNavLink ?? false
-  }
-
-  get openNavLinksInNewTab (): boolean {
-    return this.$typedState.config.uiSettings.navigation?.openNavLinksInNewTab ?? true
   }
 
   get enableDiagnostics (): boolean {
@@ -681,8 +686,8 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   get collapsedCustomLinkItems (): CustomNavLink[] {
     const items = this.customNavLinks.filter(link => this.collapsedCustomLinks.includes(link.id))
     // Theme links always at the bottom
-    const db = items.filter(link => !link.id.startsWith('preset-'))
-    const theme = items.filter(link => link.id.startsWith('preset-'))
+    const db = items.filter(link => !link.id.startsWith(THEME_LINK_ID_PREFIX))
+    const theme = items.filter(link => link.id.startsWith(THEME_LINK_ID_PREFIX))
     return [...db, ...theme]
   }
 
@@ -709,7 +714,7 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   get isContextItemThemeLink (): boolean {
     const item = this.contextMenuState.item
     if (!item) return false
-    return item.id.startsWith('preset-')
+    return item.id.startsWith(THEME_LINK_ID_PREFIX)
   }
 
   // --- Context menu ---
@@ -796,6 +801,15 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
     this.isCustomLinksDragging = true
   }
 
+  handleCustomLinkDragEnd () {
+    // SortableJS only fires @update when the index actually changed; @end always fires.
+    // Reset the drag guard here so a cancelled or drop-in-place drag can't leave the
+    // watcher permanently blocked (which would freeze sidebar updates from the store).
+    this.$nextTick(() => {
+      this.isCustomLinksDragging = false
+    })
+  }
+
   handleCustomLinkUpdate () {
     // v-model already updated customLinksLocal with new order — read IDs from it
     const sortedIds = this.customLinksLocal.map(link => link.id)
@@ -806,7 +820,7 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 
     // Assign positions to visible links based on sorted order (0, 1, 2, ...)
     sortedIds.forEach((id, index) => {
-      if (id.startsWith('preset-')) {
+      if (id.startsWith(THEME_LINK_ID_PREFIX)) {
         themeLinkPositions[id] = index
       } else {
         dbLinkPositions.push({ id, position: index })
@@ -818,7 +832,7 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
     const collapsedStartPosition = sortedIds.length
     this.collapsedCustomLinkItems.forEach((link, index) => {
       const position = collapsedStartPosition + index
-      if (link.id.startsWith('preset-')) {
+      if (link.id.startsWith(THEME_LINK_ID_PREFIX)) {
         themeLinkPositions[link.id] = position
       } else {
         dbLinkPositions.push({ id: link.id, position })
@@ -834,11 +848,8 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
     if (Object.keys(themeLinkPositions).length > 0) {
       this.$typedDispatch('config/updateThemeLinkPositions', themeLinkPositions)
     }
-
-    // Allow watcher to sync again after store is updated
-    this.$nextTick(() => {
-      this.isCustomLinksDragging = false
-    })
+    // Note: the drag guard (isCustomLinksDragging) is cleared in handleCustomLinkDragEnd,
+    // which fires for every drag including no-op/cancelled drops.
   }
 
   // --- Edit / Delete from context menu ---
@@ -883,10 +894,18 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   // --- Helpers ---
 
   resolveCustomLinkUrl (url: string): string {
+    // Defend at the sink: never resolve an unsafe (script-capable) URL, regardless of source.
+    if (!isSafeNavLinkUrl(url)) {
+      return '#'
+    }
     if (url.startsWith('/')) {
       return `${window.location.origin}${url}`
     }
     return url
+  }
+
+  resolveNewTab (link: CustomNavLink): boolean {
+    return resolveNavLinkNewTab(link.target)
   }
 
   resolveColor (color?: string): string | undefined {

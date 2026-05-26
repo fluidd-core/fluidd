@@ -37,6 +37,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import type { SvgIconPath } from '@/store/config/types'
+import { isSafeNavLinkUrl } from '@/util/nav-link'
 
 import BrowserMixin from '@/mixins/browser'
 
@@ -70,6 +71,10 @@ export default class AppNavExternalItem extends Mixins(BrowserMixin) {
   readonly dataId?: string
 
   get resolvedUrl (): string {
+    // Defend at the sink: never resolve an unsafe (script-capable) URL, regardless of source.
+    if (!isSafeNavLinkUrl(this.url)) {
+      return '#'
+    }
     if (this.url.startsWith('/')) {
       return `${window.location.origin}${this.url}`
     }
@@ -83,6 +88,12 @@ export default class AppNavExternalItem extends Mixins(BrowserMixin) {
   }
 
   handleClick (e: Event) {
+    if (!isSafeNavLinkUrl(this.url)) {
+      // Unsafe URL resolves to '#'; suppress navigation entirely rather than scroll/hash.
+      e.preventDefault()
+      e.stopPropagation()
+      return
+    }
     if (this.newTab) {
       // New tab - use anchor element for reliable cross-browser behavior
       e.preventDefault()

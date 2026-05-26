@@ -14,6 +14,9 @@ export interface CustomNavLink {
   customImage?: string          // base64 data URI (e.g. "data:image/png;base64,...")
   color?: string
   position: number
+  // Per-link open behaviour. Absent defaults to opening in a new tab; 'same-tab' keeps the
+  // current tab.
+  target?: 'same-tab' | 'new-tab'
 }
 
 export interface NavigationConfig {
@@ -23,7 +26,6 @@ export interface NavigationConfig {
   systemLinkOrder: string[]
   collapsedCustomLinks: string[]
   themeLinkPositions: Record<string, number>
-  openNavLinksInNewTab: boolean
   confirmOnNavLink: boolean
   sidebarExpanded: boolean
 }

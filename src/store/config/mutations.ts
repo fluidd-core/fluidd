@@ -7,6 +7,7 @@ import { cloneDeep, mergeWith, set } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
 import type { FileFilterType } from '../files/types'
 import { consola } from 'consola'
+import { isReservedNavLinkId } from '@/util/nav-link'
 
 export const mutations = {
   /**
@@ -50,6 +51,18 @@ export const mutations = {
         payload,
         (dest, src) => Array.isArray(dest) ? src : undefined
       )
+
+      // Defensively normalise loaded custom nav links. An empty or reserved ID — e.g. an
+      // external tool writing the Moonraker DB directly with a 'preset-' prefix — would be
+      // misclassified as a non-editable theme link, so reassign a real ID on load.
+      const navLinks = mergedSettings.navigation?.customLinks
+      if (Array.isArray(navLinks)) {
+        for (const link of navLinks) {
+          if (!link.id || isReservedNavLinkId(link.id)) {
+            link.id = uuidv4()
+          }
+        }
+      }
 
       Vue.set(state, 'uiSettings', mergedSettings)
     }
@@ -213,7 +226,9 @@ export const mutations = {
 
   setCustomNavLink (state, payload: CustomNavLink) {
     const link = { ...payload }
-    if (link.id === '') {
+    // Never let a stored link claim a reserved theme-link ID — it would be misclassified
+    // as a preset link and become un-editable/un-deletable.
+    if (link.id === '' || isReservedNavLinkId(link.id)) {
       link.id = uuidv4()
       state.uiSettings.navigation.customLinks.push(link)
     } else {
@@ -221,8 +236,21 @@ export const mutations = {
       const i = links.findIndex(l => l.id === link.id)
       if (i >= 0) {
         Vue.set(links, i, link)
+      } else {
+        // Upsert: an unknown ID is treated as a new link rather than silently dropped.
+        links.push(link)
       }
     }
+  },
+
+  setCustomNavLinks (state, payload: CustomNavLink[]) {
+    // Replace the whole collection in one mutation (used by import). Empty or reserved IDs
+    // are reassigned a fresh UUID so the stored set always satisfies the link contract.
+    const links = payload.map(link => ({
+      ...link,
+      id: (link.id === '' || isReservedNavLinkId(link.id)) ? uuidv4() : link.id
+    }))
+    Vue.set(state.uiSettings.navigation, 'customLinks', links)
   },
 
   setRemoveCustomNavLink (state, payload: { id: string }) {

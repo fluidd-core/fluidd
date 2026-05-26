@@ -824,9 +824,11 @@ app:
       time_format: Time format
       text_sort_order: Text sort order
       confirm_on_nav_link: Confirm Before Opening Links
-      open_nav_links_in_new_tab: Open Links in New Tab
       link_icon_color: Link Icon Color
       theme_nav_link: Theme Link
+      nav_link_target: Open In
+      nav_link_target_same_tab: Same Tab
+      nav_link_target_new_tab: New Tab
       import_mode_replace: Replace existing links
       import_mode_merge: Add to existing links
       drag_and_drop_functionality_for_files_and_folders: Drag-and-drop functionality for files and folders
@@ -875,6 +877,9 @@ app:
       nav_link_url: >-
         Include the protocol (e.g. https://example.com) for external links.<br>
         URLs without a protocol will be treated as relative paths by the browser.
+      nav_link_target: >-
+        <b>New Tab</b>: open this link in a new browser tab.<br>
+        <b>Same Tab</b>: open this link in the current tab.
       nav_link_custom_icon: >-
         Upload an SVG file (max 64 KB) to use as the link icon.<br>
         Use "File Colors" to preserve the original SVG colors, or choose

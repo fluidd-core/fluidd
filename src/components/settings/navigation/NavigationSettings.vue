@@ -11,8 +11,8 @@
       <app-setting>
         <template #title>
           <v-switch
-            v-model="openNavLinksInNewTab"
-            :label="$t('app.setting.label.open_nav_links_in_new_tab')"
+            v-model="confirmOnNavLink"
+            :label="$t('app.setting.label.confirm_on_nav_link')"
             hide-details
             class="mt-0 pt-0"
             @click.native.stop
@@ -83,18 +83,6 @@
           style="display: none"
           @change="handleFileSelected"
         >
-      </app-setting>
-
-      <app-setting v-if="!openNavLinksInNewTab">
-        <template #title>
-          <v-switch
-            v-model="confirmOnNavLink"
-            :label="$t('app.setting.label.confirm_on_nav_link')"
-            hide-details
-            class="mt-0 pt-0"
-            @click.native.stop
-          />
-        </template>
       </app-setting>
 
       <template v-if="themeLinks.length > 0">
@@ -246,8 +234,9 @@
 <script lang="ts">
 import { Component, Ref, Vue } from 'vue-property-decorator'
 import NavLinkDialog from './NavLinkDialog.vue'
-import type { CustomNavLink } from '@/store/config/types'
+import type { CustomNavLink, SvgIconPath } from '@/store/config/types'
 import { EventBus } from '@/eventBus'
+import { isSafeNavLinkUrl, isWithinNavLinkDataUriLimit } from '@/util/nav-link'
 
 @Component({
   components: {
@@ -283,6 +272,23 @@ export default class NavigationSettings extends Vue {
       : color
   }
 
+  sanitizeImportedDataUri (value: unknown): string | undefined {
+    return (typeof value === 'string' && value.startsWith('data:') && isWithinNavLinkDataUriLimit(value))
+      ? value
+      : undefined
+  }
+
+  sanitizeImportedCustomIcon (value: unknown): string | SvgIconPath[] | undefined {
+    // Accept inline SVG path arrays, or data: URIs within the size limit. Reject arbitrary
+    // strings (e.g. ".svg" filenames) that would be fetched and injected via <inline-svg>.
+    if (Array.isArray(value)) {
+      return value.every(p => p && typeof p === 'object' && typeof p.d === 'string')
+        ? value as SvgIconPath[]
+        : undefined
+    }
+    return this.sanitizeImportedDataUri(value)
+  }
+
   get confirmOnNavLink (): boolean {
     return this.$typedState.config.uiSettings.navigation.confirmOnNavLink
   }
@@ -290,18 +296,6 @@ export default class NavigationSettings extends Vue {
   set confirmOnNavLink (value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.navigation.confirmOnNavLink',
-      value,
-      server: true
-    })
-  }
-
-  get openNavLinksInNewTab (): boolean {
-    return this.$typedState.config.uiSettings.navigation.openNavLinksInNewTab
-  }
-
-  set openNavLinksInNewTab (value: boolean) {
-    this.$typedDispatch('config/saveByPath', {
-      path: 'uiSettings.navigation.openNavLinksInNewTab',
       value,
       server: true
     })
@@ -315,6 +309,7 @@ export default class NavigationSettings extends Vue {
       title: '',
       url: '',
       icon: 'openInNew',
+      target: 'new-tab',
       position: maxPosition + 1
     }
     this.dialogState = {
@@ -377,6 +372,7 @@ export default class NavigationSettings extends Vue {
         customIcon: link.customIcon,
         customImage: link.customImage,
         color: link.color,
+        target: link.target,
         position: link.position
       }))
     }
@@ -419,17 +415,20 @@ export default class NavigationSettings extends Vue {
           throw new Error('Invalid import file: missing links array')
         }
 
-        // Validate each link has required fields
+        // Validate each link: require title + a safe URL, and drop oversized inline assets.
+        // Import bypasses the dialog's field-level validation, so it is enforced here too.
+        const allowedTargets = ['same-tab', 'new-tab']
         const validLinks: CustomNavLink[] = data.links
-          .filter((link) => link.title && link.url)
+          .filter((link) => link.title && isSafeNavLinkUrl(link.url))
           .map((link, index) => ({
             id: '', // Will be assigned on save
             title: link.title as string,
             url: link.url as string,
             icon: (link.icon as string) || 'openInNew',
-            customIcon: link.customIcon,
-            customImage: link.customImage,
-            color: link.color,
+            customIcon: this.sanitizeImportedCustomIcon(link.customIcon),
+            customImage: this.sanitizeImportedDataUri(link.customImage),
+            color: typeof link.color === 'string' ? link.color : undefined,
+            target: allowedTargets.includes(link.target) ? link.target : undefined,
             position: (link.position as number) ?? index
           }))
 
@@ -470,27 +469,18 @@ export default class NavigationSettings extends Vue {
 
     this.importDialogState.active = false
 
-    if (mode === 'replace') {
-      // Remove all existing links first
-      for (const link of this.customLinks) {
-        await this.$typedDispatch('config/removeCustomNavLink', { id: link.id })
-      }
-    }
+    // Merge keeps existing links; replace starts from an empty set.
+    const existing = mode === 'merge' ? this.customLinks : []
+    const maxPosition = existing.reduce((max, link) => Math.max(max, link.position), -1)
 
-    // Calculate starting position for new links
-    const maxPosition = mode === 'merge'
-      ? this.customLinks.reduce((max, link) => Math.max(max, link.position), -1)
-      : -1
+    const imported = links.map((link, i) => ({
+      ...link,
+      id: '', // Force new ID (assigned in the mutation)
+      position: maxPosition + 1 + i
+    }))
 
-    // Add the imported links
-    for (let i = 0; i < links.length; i++) {
-      const link = {
-        ...links[i],
-        id: '', // Force new ID
-        position: maxPosition + 1 + i
-      }
-      await this.$typedDispatch('config/updateCustomNavLink', link)
-    }
+    // Single batched write rather than N deletes + N adds, avoiding transient DB states.
+    this.$typedDispatch('config/replaceCustomNavLinks', [...existing, ...imported])
   }
 }
 </script>

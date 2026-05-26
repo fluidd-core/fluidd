@@ -55,6 +55,26 @@
 
       <app-setting>
         <template #title>
+          <span>{{ $t('app.setting.label.nav_link_target') }}</span>
+          <app-inline-help
+            bottom
+            small
+            :tooltip="$t('app.setting.tooltip.nav_link_target')"
+          />
+        </template>
+        <v-select
+          v-model="linkTarget"
+          :items="targetItems"
+          hide-details
+          filled
+          dense
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting>
+        <template #title>
           <span>{{ $t('app.setting.label.icon_type') }}</span>
           <app-inline-help
             bottom
@@ -270,6 +290,8 @@
 <script lang="ts">
 import { Component, Vue, Prop, VModel, Ref } from 'vue-property-decorator'
 import type { CustomNavLink } from '@/store/config/types'
+import type { NavLinkTarget } from '@/util/nav-link'
+import { isSafeNavLinkUrl } from '@/util/nav-link'
 import { Icons } from '@/globals'
 
 const MAX_IMAGE_SIZE = 64 * 1024 // 64 KB
@@ -400,6 +422,21 @@ export default class NavLinkDialog extends Vue {
     ]
   }
 
+  get linkTarget (): NavLinkTarget {
+    return this.localLink.target ?? 'new-tab'
+  }
+
+  set linkTarget (value: NavLinkTarget) {
+    this.$set(this.localLink, 'target', value)
+  }
+
+  get targetItems () {
+    return [
+      { text: this.$t('app.setting.label.nav_link_target_new_tab'), value: 'new-tab' },
+      { text: this.$t('app.setting.label.nav_link_target_same_tab'), value: 'same-tab' }
+    ]
+  }
+
   get resolvedPreviewColor (): string | undefined {
     if (this.localLink.color === 'theme') {
       return this.$vuetify.theme.currentTheme.primary?.toString()
@@ -442,8 +479,7 @@ export default class NavLinkDialog extends Vue {
 
   get urlSafe () {
     return (v: string) => {
-      const trimmed = v.trim().toLowerCase()
-      if (/^(?:javascript|data|vbscript):/i.test(trimmed)) {
+      if (!isSafeNavLinkUrl(v)) {
         return this.$t('app.general.simple_form.error.invalid_url')
       }
       return true

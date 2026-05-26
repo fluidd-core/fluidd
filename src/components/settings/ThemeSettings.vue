@@ -24,7 +24,7 @@
           single-line
           hide-details="auto"
           :items="themePresets"
-          item-value="icon.src"
+          item-value="logo.src"
           item-text="name"
           return-object
         />

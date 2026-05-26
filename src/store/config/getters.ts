@@ -4,6 +4,7 @@ import type { RootState } from '../types'
 import type { Heater, Fan } from '../printer/types'
 import type { AppDataTableHeader } from '@/types'
 import md5 from 'md5'
+import { THEME_LINK_ID_PREFIX } from '@/util/nav-link'
 
 export const getters = {
   getCurrentInstance: (state) => {
@@ -119,7 +120,7 @@ export const getters = {
 
     if (links.length === 0) return []
 
-    const baseId = `preset-${activePreset.logo.src}`
+    const baseId = `${THEME_LINK_ID_PREFIX}${activePreset.logo.src}`
 
     return links.map((link, index) => {
       // Resolve icon per link via fallback chain
