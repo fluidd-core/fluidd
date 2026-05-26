@@ -2,27 +2,28 @@ import Vue from 'vue'
 import { SocketActions } from '@/api/socketActions'
 import { Component } from 'vue-property-decorator'
 import type { Macro } from '@/store/macros/types'
+import type { PrinterStatus } from '@/store/printer/types'
 
 @Component
 export default class StateMixin extends Vue {
-  get appReady (): boolean {
-    return this.$typedState.config.appReady
+  get socketInitializing (): boolean {
+    return this.$typedGetters['socket/getIsInitializing']
   }
 
-  get authenticated (): boolean {
-    return this.$typedState.auth.authenticated
+  get socketDisconnected (): boolean {
+    return this.$typedGetters['socket/getIsDisconnected']
   }
 
   get socketConnected (): boolean {
-    return this.$typedGetters['socket/getConnectionState']
+    return this.$typedGetters['socket/getIsConnected']
   }
 
-  get apiConnected (): boolean {
-    return this.$typedGetters['socket/getApiConnected']
+  get socketAuthenticating (): boolean {
+    return this.$typedGetters['socket/getIsAuthenticating']
   }
 
-  get socketConnecting (): boolean {
-    return this.$typedGetters['socket/getConnectingState']
+  get socketReady (): boolean {
+    return this.$typedGetters['socket/getIsReady']
   }
 
   get klippyReady (): boolean {
@@ -46,7 +47,7 @@ export default class StateMixin extends Vue {
   }
 
   // Return the printer state
-  get printerState (): 'printing' | 'paused' | 'cancelled' | 'ready' | 'busy' | 'idle' | 'loading' {
+  get printerState (): PrinterStatus {
     return this.$typedGetters['printer/getPrinterState']
   }
 

@@ -1,0 +1,50 @@
+name: Deploy docs
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'docs/**'
+  pull_request:
+    branches:
+      - master
+      - develop
+    paths:
+      - 'docs/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Install docs dependencies
+        run: pip install -r docs/requirements.txt
+
+      - name: Build docs
+        run: zensical build --clean
+        working-directory: docs
+
+      - uses: actions/upload-pages-artifact@v4
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          path: docs/site
+
+  deploy:
+    needs: build
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

@@ -1,48 +1,127 @@
-import { consola } from 'consola'
+import consola from 'consola'
 
-const webSocketWrapper = (url: string, signal?: AbortSignal) => {
+export type WebSocketCheckResult =
+  | { ok: true }
+  | { ok: false; reason: 'timeout' | 'cancelled' | 'error'; message: string }
+
+export interface CheckWebSocketOptions {
+  timeout?: number;
+  signal?: AbortSignal;
+  protocols?: string | string[];
+}
+
+const webSocketWrapper = (url: string, options: CheckWebSocketOptions = {}): Promise<WebSocketCheckResult> => {
   const debug = (message: string, ...args: unknown[]) => consola.debug(`[webSocketWrapper] ${url} ${message}`, ...args)
 
-  return new Promise((resolve, reject) => {
-    debug('opening...')
+  const { timeout, signal, protocols } = options
 
-    const dispose = () => {
-      signal?.removeEventListener('abort', abortHandler)
+  const timeoutSignal = timeout !== undefined
+    ? AbortSignal.timeout(timeout)
+    : undefined
 
-      connection.close()
+  const combinedSignal = AbortSignal.any(
+    [timeoutSignal, signal]
+      .filter((x): x is AbortSignal => x !== undefined)
+  )
+
+  const getAbortResult = (): WebSocketCheckResult => {
+    if (timeoutSignal?.aborted) {
+      debug('timed out')
+
+      return {
+        ok: false,
+        reason: 'timeout',
+        message: combinedSignal.reason.message
+      }
     }
 
-    const abortHandler = () => {
-      debug('aborted')
+    debug('aborted')
 
-      dispose()
+    return {
+      ok: false,
+      reason: 'cancelled',
+      message: combinedSignal.reason instanceof Error
+        ? combinedSignal.reason.message
+        : 'Check was cancelled via AbortSignal.',
+    }
+  }
 
-      reject(new Error('AbortError'))
+  if (combinedSignal.aborted) {
+    return Promise.resolve(getAbortResult())
+  }
+
+  return new Promise<WebSocketCheckResult>((resolve) => {
+    let settled = false
+
+    const settle = (result: WebSocketCheckResult) => {
+      if (settled) return
+
+      settled = true
+
+      combinedSignal.removeEventListener('abort', onAbort)
+
+      if (
+        ws.readyState === WebSocket.CONNECTING ||
+        ws.readyState === WebSocket.OPEN
+      ) {
+        // Use code 1000 (Normal Closure) so servers don't log warnings.
+        try {
+          ws.close(1000, 'probe complete')
+        } catch {
+          /* ignore */
+        }
+      }
+
+      resolve(result)
     }
 
-    signal?.addEventListener('abort', abortHandler)
+    let ws: WebSocket
 
-    const connection = new WebSocket(url)
+    try {
+      debug('opening...')
 
-    connection.onopen = (event) => {
+      ws = new WebSocket(url, protocols)
+    } catch (err) {
+      // `new WebSocket()` throws synchronously for an invalid URL scheme.
+      resolve({
+        ok: false,
+        reason: 'error',
+        message: err instanceof Error ? err.message : String(err),
+      })
+
+      return
+    }
+
+    ws.onopen = (event) => {
       debug('opened', event)
 
-      dispose()
-
-      resolve(null)
+      settle({ ok: true })
     }
 
-    connection.onerror = (event) => {
+    ws.onerror = (event) => {
       debug('error', event)
 
-      dispose()
-
-      reject(event)
+      // The browser hides error details for security reasons; the close event
+      // that always follows carries a (limited) code and reason.
     }
 
-    connection.onclose = (event) => {
+    ws.onclose = (event) => {
       debug('closed', event)
+
+      settle({
+        ok: false,
+        reason: 'error',
+        message: event.reason
+          ? `Connection closed before opening: ${event.reason} (code ${event.code})`
+          : `Connection closed before opening (code ${event.code}).`,
+      })
     }
+
+    const onAbort = (): void => {
+      settle(getAbortResult())
+    }
+
+    combinedSignal.addEventListener('abort', onAbort, { once: true })
   })
 }
 

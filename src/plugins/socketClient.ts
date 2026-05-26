@@ -1,121 +1,77 @@
-/**
- * Taken from https://github.com/DimanVorosh/vue-json-rpc-websocket/blob/master/src/wsClient.js
- * and refactored.
- */
 import type _Vue from 'vue'
-import { Globals } from '@/globals'
 import { consola } from 'consola'
 import { camelCase, mergeWith } from 'lodash-es'
-import { httpClientActions } from '@/api/httpClientActions'
-import type { Store } from 'vuex'
-import type { RootState } from '@/store/types'
-import axios from 'axios'
+import type { TypedStore } from '@/store'
 
-const fastNotifyStatusUpdateKeys = [
+const LOG_PREFIX = '[WEBSOCKET]'
+
+const ALLOWED_RETRIES = 3
+const EXPONENTIAL_BACKOFF = 1.4
+
+const FAST_NOTIFY_KEYS = [
   'motion_report'
 ] as const
 
 export class WebSocketClient {
-  url = ''
-  connection: WebSocket | null = null
-  reconnectEnabled = false
-  reconnectInterval = 1000
-  allowedReconnectAttempts = 3
-  reconnectCount = 0
-  logPrefix = '[WEBSOCKET]'
-  requests: Request[] = []
-  requestId = 0
-  store: Store<RootState>
-  pingTimeout: number | null = null
-  cache: CachedParams | null = null
+  private connection: WebSocket | null = null
+  private requests: Request[] = []
+  private requestId = 0
+  private store: TypedStore
+  private cache: CachedParams | null = null
+  private retryCount = 0
+  private reconnectTimeout: ReturnType<typeof setTimeout> | null = null
 
   constructor (options: SocketPluginOptions) {
-    this.reconnectEnabled = options.reconnectEnabled || false
-    this.reconnectInterval = options.reconnectInterval || 1000
     this.store = options.store
   }
 
-  pong () {
-    // Valid response from the socket.
-    if (this.pingTimeout != null) {
-      clearTimeout(this.pingTimeout)
-      this.pingTimeout = null
-    }
-
-    // We have a connection again, so set the socket properties
-    // appropriately.
-    if (
-      !this.store.state.socket.disconnecting && // We arent about to disonnect and..
-      !this.store.state.files.download // We're not in the middle of a download.
-    ) {
-      this.store.commit('socket/setSocketOpen', true)
-      this.store.dispatch('socket/onSocketConnecting', false)
-    }
-
-    this.pingTimeout = window.setTimeout(() => {
-      if (
-        !this.store.state.socket.disconnecting && // We arent about to disonnect and..
-        !this.store.state.files.download // We're not in the middle of a download.
-      ) {
-        // In the event our socket stops responding, set the socket properties
-        // appropriately.
-        consola.debug(`${this.logPrefix} Connection timeout, pong failed`)
-        this.store.commit('socket/setSocketOpen', false)
-        this.store.dispatch('socket/onSocketConnecting', true)
-      }
-    }, Globals.SOCKET_PING_INTERVAL)
-  }
-
   close () {
+    this.cancelReconnect()
     if (this.connection) {
-      this.cache = null
-      this.clearRequests()
+      this.clearCacheAndRequests()
+      this.connection.onopen = null
+      this.connection.onmessage = null
+      this.connection.onerror = null
+      this.connection.onclose = null
       this.connection.close()
-      this.reconnectCount = 0
     }
   }
 
-  async connect (url?: string) {
-    if (url) this.url = url
-    this.cache = null
-    this.clearRequests()
+  connect () {
+    this.cancelReconnect()
+    this.retryCount = 0
+    this.openSocket()
+  }
+
+  private openSocket () {
+    this.clearCacheAndRequests()
 
     try {
-      const response = await httpClientActions.accessOneshotTokenGet()
+      const url = this.store.state.config.socketUrl
 
-      const token = response.data.result
+      if (!url) {
+        this.store.typedDispatch('socket/onSetStatus', 'disconnected')
+        return
+      }
 
-      // Good. Move on with setting up the socket.
-      this.store.dispatch('socket/onSocketConnecting', true)
-      this.connection = new WebSocket(`${this.url}?token=${token}`)
+      this.store.typedDispatch('socket/onSetStatus', 'connecting')
+      this.connection = new WebSocket(url)
 
       this.connection.onopen = () => {
-        if (this.reconnectEnabled) {
-          this.reconnectCount = 1
-        }
-
-        this.store.dispatch('socket/onSocketConnecting', false)
-        this.store.dispatch('socket/onSocketOpen', true)
+        this.retryCount = 0
+        this.store.typedDispatch('socket/onSetStatus', 'identifying')
       }
 
       this.connection.onclose = (event) => {
-        consola.debug(`${this.logPrefix} Connection closed:`, event)
-        if (this.pingTimeout != null) {
-          clearTimeout(this.pingTimeout)
-          this.pingTimeout = null
-        }
-        this.store.dispatch('socket/onSocketClose', event)
-        if (!event.wasClean) {
-          this.reconnect()
-        }
+        consola.debug(`${LOG_PREFIX} Connection closed:`, event)
+        this.handleClose()
       }
 
       this.connection.onerror = (event) => {
-        consola.error(`${this.logPrefix} Connection error:`, event)
-        this.store.dispatch('socket/onSocketError', event)
+        consola.error(`${LOG_PREFIX} Connection error:`, event)
       }
 
-      this.connection.onmessage = (message) => {
+      this.connection.onmessage = async (message) => {
         // Parse the data packet.
         const socketResponse = JSON.parse(message.data) as SocketResponse
 
@@ -129,7 +85,7 @@ export class WebSocketClient {
 
           // Remove a wait if defined.
           if (request?.wait?.length) {
-            this.store.commit('wait/setRemoveWait', request.wait)
+            this.store.typedCommit('wait/setRemoveWait', request.wait)
           }
 
           if ('error' in socketResponse) { // Is it in error?
@@ -141,15 +97,12 @@ export class WebSocketClient {
               }
             }
 
-            consola.debug(`${this.logPrefix} Response error:`, socketResponse.error)
+            consola.debug(`${LOG_PREFIX} Response error:`, socketResponse.error)
 
-            this.store.dispatch('socket/onSocketError', socketResponse.error)
+            this.store.typedDispatch('socket/onSocketError', socketResponse.error)
 
             return
           }
-
-          // we're still alive.
-          this.pong()
 
           if (request) {
             // these are specific answers to a request we've made.
@@ -160,7 +113,7 @@ export class WebSocketClient {
 
             Object.defineProperty(result, '__request__', { enumerable: false, value: request })
 
-            consola.debug(`${this.logPrefix} Response:`, result)
+            consola.debug(`${LOG_PREFIX} Response:`, result)
 
             if (request.dispatch) {
               this.store.dispatch(request.dispatch, result)
@@ -178,9 +131,6 @@ export class WebSocketClient {
           return
         }
 
-        // we're still alive.
-        this.pong()
-
         // These are socket notifications (i.e., no specific request was made..)
         // Dispatch with the name of the method, converted to camelCase.
         if (socketResponse.params?.[0]) {
@@ -194,9 +144,9 @@ export class WebSocketClient {
             // so we cache these and send them through every second.
 
             // If any of these properties exist, bypass the cache and send immediately
-            for (const key of fastNotifyStatusUpdateKeys) {
+            for (const key of FAST_NOTIFY_KEYS) {
               if (key in params) {
-                this.store.dispatch('printer/onFastNotifyStatusUpdate', { key, payload: params[key] }, { root: true })
+                this.store.typedDispatch('printer/onFastNotifyStatusUpdate', { key, payload: params[key] }, { root: true })
                 delete params[key]
               }
             }
@@ -209,7 +159,7 @@ export class WebSocketClient {
 
             // If there's a second or more difference, flush the cache.
             if (timestamp - this.cache.timestamp >= 1000) {
-              this.store.dispatch('socket/notifyStatusUpdate', this.cache.params)
+              this.store.typedDispatch('socket/notifyStatusUpdate', this.cache.params)
               this.cache = { timestamp, params: {} }
             }
           }
@@ -219,26 +169,37 @@ export class WebSocketClient {
         }
       }
     } catch (error: unknown) {
-      // Bad. If this is a 401, then don't retry. Otherwise do.
-      if (
-        !axios.isAxiosError(error) ||
-        error.response?.status !== 401
-      ) {
-        this.reconnect()
-      }
+      consola.error(`${LOG_PREFIX} Failed to open WebSocket:`, error)
+      this.handleClose()
     }
   }
 
-  reconnect () {
-    if (this.reconnectCount <= this.allowedReconnectAttempts) {
-      this.reconnectCount += 1
+  private handleClose () {
+    // If the socket is already marked disconnected, there is nothing left to do.
+    if (this.store.state.socket.status === 'disconnected') return
+
+    // retryCount counts failed opens in a chain; ws.onopen zeroes it on any
+    // successful open, so we just increment here and give up at the cap.
+    this.retryCount += 1
+
+    if (this.retryCount > ALLOWED_RETRIES) {
+      this.store.typedDispatch('socket/onSetStatus', 'disconnected')
+      this.clearCacheAndRequests()
       this.connection = null
-      consola.debug(`${this.logPrefix} Reconnecting in ${this.reconnectInterval}`)
-      setTimeout(() => {
-        this.connect()
-      }, this.reconnectInterval)
-    } else {
-      this.store.dispatch('socket/onSocketConnecting', false)
+      return
+    }
+
+    this.store.typedDispatch('socket/onSetStatus', 'connecting')
+    this.reconnectTimeout = setTimeout(() => {
+      this.reconnectTimeout = null
+      this.openSocket()
+    }, EXPONENTIAL_BACKOFF ** this.retryCount * 1000)
+  }
+
+  private cancelReconnect () {
+    if (this.reconnectTimeout !== null) {
+      clearTimeout(this.reconnectTimeout)
+      this.reconnectTimeout = null
     }
   }
 
@@ -250,10 +211,12 @@ export class WebSocketClient {
   emit (method: string, options?: NotifyOptions) {
     return new Promise((resolve, reject) => {
       try {
-        if (this.store.state.socket.disconnecting || this.store.state.socket.connecting) {
-          consola.debug(`${this.logPrefix} Socket emit denied, in disconnecting state:`, method, options)
+        // Any non-'disconnected' state is eligible to emit; physical readiness
+        // is enforced by the readyState check below.
+        if (this.store.state.socket.status === 'disconnected') {
+          consola.debug(`${LOG_PREFIX} Socket emit denied, disconnected:`, method, options)
 
-          throw new Error('Socket is disconnecting')
+          throw new Error('Socket is disconnected')
         }
 
         if (this.connection?.readyState === WebSocket.OPEN) {
@@ -276,7 +239,7 @@ export class WebSocketClient {
           if (options) {
             if (options.wait) {
               request.wait = options.wait
-              this.store.dispatch('wait/addWait', options.wait)
+              this.store.typedDispatch('wait/addWait', options.wait)
             }
             if (options.params) {
               packet.params = options.params
@@ -288,7 +251,7 @@ export class WebSocketClient {
           this.requests.push(request)
           this.connection.send(JSON.stringify(packet))
         } else {
-          consola.debug(`${this.logPrefix} Not ready, or closed.`, method, options, this.connection?.readyState)
+          consola.debug(`${LOG_PREFIX} Not ready, or closed.`, method, options, this.connection?.readyState)
 
           throw new Error('Socket is not ready or closed')
         }
@@ -298,7 +261,9 @@ export class WebSocketClient {
     })
   }
 
-  clearRequests () {
+  clearCacheAndRequests () {
+    this.cache = null
+
     for (const request of this.requests) {
       if (request.onRejected) {
         request.onRejected(new Error('Socket disconnected'))
@@ -332,10 +297,7 @@ declare module 'vue/types/vue' {
 }
 
 interface SocketPluginOptions {
-  token?: string;
-  reconnectEnabled?: boolean;
-  reconnectInterval?: number;
-  store: Store<RootState>;
+  store: TypedStore;
 }
 
 export interface NotifyOptions {
@@ -377,7 +339,7 @@ interface SocketApiResponse extends SocketResponseBase {
 
 interface SocketApiErrorResponse extends SocketResponseBase {
   id: number;
-  error: string | SocketError;
+  error: SocketError;
 }
 
 interface SocketNotificationResponse extends SocketResponseBase {

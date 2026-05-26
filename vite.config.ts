@@ -1,11 +1,10 @@
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue2'
+import vue from '@pedrolamas/plugin-vue2'
 import { VitePWA } from 'vite-plugin-pwa'
-import Components from 'unplugin-vue-components/vite'
+import Components from 'unplugin-vue-components/rolldown'
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 import content from '@originjs/vite-plugin-content'
-import monacoEditorEsmPlugin from 'vite-plugin-monaco-editor-esm'
 import checker from 'vite-plugin-checker'
 import version from './vite.config.inject-version'
 
@@ -19,7 +18,6 @@ export default defineConfig({
         '**/*.svg',
         '**/*.png',
         '**/*.ico',
-        'editor.theme.json'
       ],
       injectManifest: {
         globPatterns: [
@@ -91,12 +89,14 @@ export default defineConfig({
     vue(),
     version(),
     content(),
-    monacoEditorEsmPlugin({
-      languageWorkers: ['editorWorkerService', 'json', 'css']
-    }),
     checker({
+      enableBuild: false,
       vueTsc: {
         tsconfigPath: path.resolve(__dirname, './tsconfig.app.json')
+      },
+      eslint: {
+        lintCommand: 'eslint .',
+        useFlatConfig: true
       }
     }),
     Components({

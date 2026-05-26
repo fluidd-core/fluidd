@@ -1,0 +1,15 @@
+:root {
+  --md-primary-fg-color: #2196F3;
+  --md-primary-fg-color--light: #42A5F5;
+  --md-primary-fg-color--dark: #1E88E5;
+  --md-accent-fg-color: #2196F3;
+}
+
+.md-typeset .md-button {
+  border-radius: 16px;
+}
+
+.md-header .md-header__topic:first-child {
+    opacity: 0 !important;
+    pointer-events: none;
+}

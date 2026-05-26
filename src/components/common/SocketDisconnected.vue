@@ -12,7 +12,7 @@
         <div v-if="apiUrl">
           {{ apiUrl }}
         </div>
-        <span v-if="socketConnecting || !appReady">{{ $t('app.socket.msg.connecting') }}</span>
+        <span v-if="!socketDisconnected">{{ $t('app.socket.msg.connecting') }}</span>
         <span v-else>{{ $t('app.socket.msg.no_connection') }}</span>
       </v-col>
       <v-col
@@ -20,7 +20,7 @@
         lg="4"
       >
         <v-progress-linear
-          v-if="socketConnecting || !appReady"
+          v-if="!socketDisconnected"
           class="mb-4"
           color="warning"
           indeterminate
@@ -29,7 +29,7 @@
         />
 
         <app-btn
-          v-if="!socketConnecting && activeInstance"
+          v-if="socketDisconnected && activeInstance"
           block
           color="info"
           class="me-2 mb-2"
@@ -74,13 +74,7 @@ export default class SocketDisconnected extends Mixins(StateMixin) {
   }
 
   async reconnect () {
-    // Re-init the app.
-    const config = await appInit(this.activeInstance, this.$typedState.config.hostConfig)
-
-    // Reconnect the socket with the instance url.
-    if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {
-      this.$socket.connect(config.apiConfig.socketUrl)
-    }
+    await appInit(this.activeInstance, this.$typedState.config.hostConfig)
   }
 }
 </script>

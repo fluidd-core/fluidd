@@ -69,11 +69,8 @@
 <script lang="ts">
 import { Component, Mixins, VModel, Watch } from 'vue-property-decorator'
 import { Globals } from '@/globals'
-import axios from 'axios'
 import StateMixin from '@/mixins/state'
 import { Debounce } from 'vue-debounce-decorator'
-import { consola } from 'consola'
-import { httpClientActions } from '@/api/httpClientActions'
 import webSocketWrapper from '@/util/web-socket-wrapper'
 
 @Component({})
@@ -84,8 +81,8 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   valid = true
   verifying = false
   verified = false
-  error: any = null
-  note: any = null
+  error: string | null = null
+  note: string | null = null
 
   get customRules () {
     return {
@@ -125,79 +122,27 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
       this.note = null
       this.verifying = true
 
-      const { apiUrl, socketUrl } = this.$filters.getApiUrls(value)
+      const { socketUrl } = this.$filters.getApiUrls(value)
 
-      // Handle cancelling axios requests.
+      // Cancel any in-flight WebSocket probe before starting a new one.
       this.abortController?.abort()
 
       this.abortController = new AbortController()
-
       const { signal } = this.abortController
 
-      // Start by making a standard request. Maybe it's good?
-      const request = await httpClientActions.get(`${apiUrl}/server/info?t=${Date.now()}`, {
-        withAuth: false,
+      const result = await webSocketWrapper(socketUrl, {
+        timeout: 3000,
         signal
       })
-        .then(() => {
-          this.verified = true
-          this.verifying = false
-          return 'ok'
-        })
-        .catch(e => {
-          // If it failed because we cancelled, set ok and move on.
-          if (axios.isCancel(e)) {
-            return 'ok'
-          } else if (axios.isAxiosError(e)) {
-            // If it failed because of a 401, set ok and move on.
-            if (e.response?.status === 401) {
-              this.verified = true
-              this.verifying = false
-              return 'ok'
-            }
 
-            // If it failed with a network issue..
-            if (e.request) return e.message
-          }
-
-          // Otherwise pass along the error..
-          this.error = e
-          return 'ok'
-        })
-
-      // The initial request failed with a network issue..
-      if (request !== 'ok') {
-        if (this.hosted) {
-          await webSocketWrapper(socketUrl, signal)
-            .then(() => {
-              // likely a cors issue, but socket worked
-              this.verified = true
-            })
-            .catch(e => {
-              // external host not reachable (fetch returns 'failed to fetch')
-              consola.debug('Network Error', e, request)
-              this.error = request
-              this.note = this.$t('app.endpoint.error.cant_connect')
-            })
-            .finally(() => { this.verifying = false })
-        } else {
-          await fetch(`${apiUrl}/server/info`, { signal, mode: 'no-cors', cache: 'no-cache' })
-            .then(() => {
-              // likely a cors issue
-              this.error = this.$t('app.endpoint.error.cors_error')
-              this.note = this.$t('app.endpoint.error.cors_note', {
-                url: Globals.DOCS_MULTIPLE_INSTANCES
-              })
-            })
-            .catch(e => {
-              // external host not reachable (fetch returns 'failed to fetch')
-              consola.debug('Network Error', e, request)
-              this.error = request
-              this.note = this.$t('app.endpoint.error.cant_connect')
-            })
-            .finally(() => { this.verifying = false })
-        }
+      if (result.ok) {
+        this.verified = true
+      } else if (result.reason !== 'cancelled') {
+        this.error = result.message
+        this.note = this.$t('app.endpoint.error.cant_connect').toString()
       }
+
+      this.verifying = false
     }
   }
 
@@ -215,6 +160,10 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
     const apiConfig = this.$filters.getApiUrls(this.url)
     this.open = false
     this.$emit('resolve', apiConfig)
+  }
+
+  beforeDestroy () {
+    this.abortController?.abort()
   }
 }
 </script>

@@ -13,7 +13,9 @@ export default defineConfigWithVueTs(
     ignores: [
       'dist/**',
       'dev-dist/**',
-      'docs/_site/**'
+      'docs/.cache/**',
+      'docs/.venv/**',
+      'docs/site/**',
     ]
   },
   pluginVue.configs['flat/vue2-recommended'],

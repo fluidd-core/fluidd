@@ -1,3 +1,4 @@
+import { markRaw } from 'vue'
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type {
@@ -10,6 +11,7 @@ export const mutations = {
    * Reset state
    */
   setReset (state) {
+    state.socket?.close()
     Object.assign(state, defaultState())
   },
 
@@ -35,5 +37,10 @@ export const mutations = {
 
   setConnected (state, payload) {
     state.connected = payload
+  },
+
+  setSocket (state, payload: WebSocket | null) {
+    state.socket?.close()
+    state.socket = payload != null ? markRaw(payload) : null
   }
 } satisfies MutationTree<SpoolmanState>

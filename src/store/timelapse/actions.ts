@@ -39,9 +39,8 @@ export const actions = {
         } else {
           const count = parseInt(payload.frame)
           commit('setLastFrame', {
-            count,
-            uniqueCount: count,
-            file: payload.framefile
+            framecount: count,
+            lastframefile: payload.framefile
           })
         }
 

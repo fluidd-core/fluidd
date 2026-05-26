@@ -3,7 +3,6 @@ import type { WebcamsState, LegacyCamerasState, LegacyCameraType, DatabaseWebcam
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import setUrlQueryParam from '@/util/set-url-query-param'
-import { httpClientActions } from '@/api/httpClientActions'
 import { Globals } from '@/globals'
 
 const legacyCameraTypeToWebcamService: Record<LegacyCameraType, Moonraker.Webcam.Service> = {
@@ -54,10 +53,10 @@ export const actions = {
           extraData: {}
         }
 
-        await httpClientActions.serverDatabaseItemPost(Globals.MOONRAKER_DB.webcams.NAMESPACE, legacyCamera.id, webcam)
+        await SocketActions.serverDatabasePostItem(legacyCamera.id, webcam, Globals.MOONRAKER_DB.webcams.NAMESPACE)
       }
 
-      await httpClientActions.serverDatabaseItemDelete(Globals.MOONRAKER_DB.fluidd.NAMESPACE, Globals.MOONRAKER_DB.fluidd.ROOTS.cameras.name)
+      await SocketActions.serverDatabaseDeleteItem(Globals.MOONRAKER_DB.fluidd.ROOTS.cameras.name, Globals.MOONRAKER_DB.fluidd.NAMESPACE)
     }
   },
 

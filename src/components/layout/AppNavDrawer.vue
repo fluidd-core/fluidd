@@ -32,7 +32,7 @@
         </div>
 
         <div
-          v-if="socketConnected && authenticated"
+          v-if="socketReady"
           class="nav-items"
         >
           <!-- Home link (pinned at top, not draggable) -->
@@ -329,7 +329,7 @@
         </div>
 
         <template
-          v-if="socketConnected && authenticated && !isMobileViewport"
+          v-if="socketReady && !isMobileViewport && canEditLayout"
           #append
         >
           <v-tooltip
@@ -921,7 +921,7 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get showSubNavigation () {
-    return this.hasSubNavigation && this.socketConnected && this.authenticated
+    return this.hasSubNavigation && this.socketReady
   }
 
   get isInnerMini (): boolean {

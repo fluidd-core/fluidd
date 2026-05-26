@@ -342,6 +342,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
+import { markRaw } from 'vue'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import panzoom, { type PanZoom } from 'panzoom'
@@ -645,7 +646,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       return this.defaultLayerPaths
     }
 
-    const layer: readonly Layer | undefined = this.$typedGetters['gcodePreview/getLayers'][this.layer]
+    const layer: Layer | undefined = this.$typedGetters['gcodePreview/getLayers'][this.layer]
 
     if (this.followProgress) {
       const end: number = this.$typedGetters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
@@ -714,7 +715,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   mounted () {
-    this.panzoom = panzoom(this.svg, {
+    this.panzoom = markRaw(panzoom(this.svg, {
       maxZoom: 20,
       minZoom: 0.95,
       smoothScroll: this.showAnimations,
@@ -723,7 +724,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       beforeWheel: () => !this.focused || this.disabled,
       onClick: () => this.disabled,
       onDoubleClick: () => this.disabled
-    })
+    }))
 
     this.panzoom.on('panstart', () => {
       this.panning = true

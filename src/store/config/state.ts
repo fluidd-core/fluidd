@@ -3,7 +3,6 @@ import { Globals } from '@/globals'
 
 export const defaultState = (): ConfigState => {
   return {
-    appReady: false,
     apiUrl: '',
     socketUrl: '',
     layoutMode: false,
@@ -154,6 +153,7 @@ export const defaultState = (): ConfigState => {
         largeFilamentStatus: false,
         showName: true,
         showLogos: false,
+        showClimate: true,
         showUnavailableSpoolColor: false
       },
       afc: {

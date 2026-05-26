@@ -14,6 +14,7 @@
 
 <script lang="ts">
 import { Component, Ref, Mixins } from 'vue-property-decorator'
+import { markRaw } from 'vue'
 import CameraMixin from '@/mixins/camera'
 import Hls from 'hls.js'
 import { consola } from 'consola'
@@ -34,14 +35,14 @@ export default class HlsstreamCamera extends Mixins(CameraMixin) {
       if (Hls.isSupported()) {
         this.hls?.destroy()
 
-        this.hls = new Hls({
+        this.hls = markRaw(new Hls({
           enableWorker: true,
           lowLatencyMode: true,
           maxLiveSyncPlaybackRate: 2,
           liveSyncDuration: 0.5,
           liveMaxLatencyDuration: 2,
           backBufferLength: 5
-        })
+        }))
         this.hls.loadSource(url)
         this.hls.attachMedia(this.cameraVideo)
         this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {

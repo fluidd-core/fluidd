@@ -6,7 +6,7 @@ import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
 import { consola } from 'consola'
 
-import type { ParseGcodeWorkerClientMessage, ParseGcodeWorkerServerMessage } from '@/workers/parseGcode.worker'
+import type { ParseGcodeWorkerResponseMessage, ParseGcodeWorkerRequestMessage } from '@/workers/parseGcode.worker'
 
 import ParseGcodeWorker from '@/workers/parseGcode.worker.ts?worker'
 
@@ -35,7 +35,7 @@ export const actions = {
 
     commit('setParserWorker', worker)
 
-    worker.addEventListener('message', (event: MessageEvent<ParseGcodeWorkerClientMessage>) => {
+    worker.onmessage = (event: MessageEvent<ParseGcodeWorkerResponseMessage>) => {
       const message = event.data
 
       switch (message.action) {
@@ -51,7 +51,7 @@ export const actions = {
             commit('setParts', message.parts)
             commit('setTools', message.tools)
             commit('setBounds', message.bounds)
-            commit('setParserProgress', payload.file.size ?? payload.gcode.byteLength)
+            commit('setParserProgress', payload.file.size ?? gcodeByteLength)
 
             if (rootState.config.uiSettings.gcodePreview.hideSinglePartBoundingBox && message.parts.length <= 1) {
               dispatch('config/saveByPath', {
@@ -87,7 +87,7 @@ export const actions = {
           break
         }
       }
-    })
+    }
 
     commit('setParserProgress', 0)
     commit('setMoves', [])
@@ -98,7 +98,9 @@ export const actions = {
 
     commit('setFile', payload.file)
 
-    const message: ParseGcodeWorkerServerMessage = {
+    const gcodeByteLength = payload.gcode.byteLength
+
+    const message: ParseGcodeWorkerRequestMessage = {
       action: 'parse',
       gcode: payload.gcode
     }

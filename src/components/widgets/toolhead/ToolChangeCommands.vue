@@ -93,7 +93,7 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
           name: command,
           description,
           color: macro?.variables?.color ? `#${macro.variables.color}` : undefined,
-          active: macro?.variables?.active === true,
+          active: Boolean(macro?.variables?.active),
           spoolId: macro?.variables?.spool_id ? +macro.variables.spool_id : undefined
         }
       })

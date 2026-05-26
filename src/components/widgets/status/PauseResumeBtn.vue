@@ -86,8 +86,8 @@ export default class PauseResumeBtn extends Mixins(StateMixin) {
     const { total_layer, current_layer } = this.$typedState.printer.printer.print_stats?.info ?? {}
 
     return (
-      typeof (total_layer) === 'number' &&
-      typeof (current_layer) === 'number'
+      typeof total_layer === 'number' &&
+      typeof current_layer === 'number'
     )
   }
 

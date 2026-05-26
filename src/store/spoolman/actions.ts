@@ -34,6 +34,21 @@ const payloadAsSpoolmanProxyResponseV2 = <T>(payload: Moonraker.Spoolman.ProxyRe
   }
 }
 
+const createSpoolmanSocket = (spoolmanUrl: string): WebSocket | undefined => {
+  try {
+    const socketUrl = new URL(spoolmanUrl)
+
+    socketUrl.pathname += `${socketUrl.pathname.endsWith('/') ? '' : '/'}api/v1/`
+    socketUrl.protocol = socketUrl.protocol === 'https:'
+      ? 'wss:'
+      : 'ws:'
+
+    return new WebSocket(socketUrl)
+  } catch (err) {
+    consola.error(`${logPrefix} failed to create websocket`, err)
+  }
+}
+
 export const actions = {
   /**
    * Reset our store
@@ -181,7 +196,7 @@ export const actions = {
     commit('setCurrency', payload.response)
   },
 
-  async initializeWebsocketConnection ({ state, getters, rootState, dispatch }) {
+  async initializeWebsocketConnection ({ state, getters, rootState, commit, dispatch }) {
     if (rootState.server.config.spoolman?.server) {
       if (state.socket?.readyState === WebSocket.OPEN) {
         // we already have a working WS conn
@@ -190,16 +205,15 @@ export const actions = {
 
       // init websocket to listen for updates
       const spoolmanUrl: string = getters.getSpoolmanUrl
-      const socketUrl = new URL(spoolmanUrl)
+      const socket = createSpoolmanSocket(spoolmanUrl)
 
-      socketUrl.pathname += `${socketUrl.pathname.endsWith('/') ? '' : '/'}api/v1/`
-      socketUrl.protocol = socketUrl.protocol === 'https:'
-        ? 'wss:'
-        : 'ws:'
+      if (socket == null) {
+        commit('setSocket', null)
+        return
+      }
 
-      state.socket = new WebSocket(socketUrl)
-      state.socket.onerror = err => consola.warn(`${logPrefix} received websocket error`, err)
-      state.socket.onmessage = event => {
+      socket.onerror = err => consola.warn(`${logPrefix} received websocket error`, err)
+      socket.onmessage = event => {
         let data: WebsocketBasePayload
 
         try {
@@ -226,10 +240,10 @@ export const actions = {
             consola.warn(`${logPrefix} ignoring websocket message with type ${data.resource}`)
         }
       }
+
+      commit('setSocket', socket)
     } else {
-      // destroy ws
-      state.socket?.close()
-      state.socket = undefined
+      commit('setSocket', null)
     }
   }
 } satisfies ActionTree<SpoolmanState, RootState>

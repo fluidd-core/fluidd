@@ -1,13 +1,11 @@
-FILES_TO_LINT=$(git diff --cached --name-only --diff-filter=ACMR | grep -iE "\.(js|mjs|ts|vue)$" || true)
+git diff --cached --name-only --diff-filter=ACMR -z \
+  | grep -izE '\.(js|mjs|ts|vue)$' \
+  | xargs -0 -r pnpm exec eslint --max-warnings 0
 
-if [ -n "$FILES_TO_LINT" ]; then
-  npx --no eslint -- --max-warnings 0 $FILES_TO_LINT
-fi
-
-FILES_TO_OPTIMIZE_SVG=$(git diff --cached --name-only --diff-filter=ACMR | grep -iE "^src\/globals\.ts$|\.(vue|svg)$" || true)
-
-if [ -n "$FILES_TO_OPTIMIZE_SVG" ]; then
-  node tools/svgo.mjs $FILES_TO_OPTIMIZE_SVG
+if git diff --cached --name-only --diff-filter=ACMR | grep -iqE '^src/globals\.ts$|\.(vue|svg)$'; then
+  git diff --cached --name-only --diff-filter=ACMR -z \
+    | grep -izE '^src/globals\.ts$|\.(vue|svg)$' \
+    | xargs -0 -r node tools/svgo.mjs
 
   git update-index --again
 fi

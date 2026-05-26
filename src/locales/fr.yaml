@@ -37,12 +37,10 @@ app:
         />Cliquez sur une puissance pour l'afficher.
   console:
     label:
-      auto_scroll: Scroll auto
       hide_temp_waits: Cacher les messages de température
-      flip_layout: Inverser disposition
     tooltip:
-      help: Saisir "help" pour les commandes<br />Utiliser <kbd>Tab</kbd> pour 
-        l'autocomplétion<br />Utiliser <kbd>&uarr;</kbd> et <kbd>&darr;</kbd> 
+      help: Saisir "help" pour les commandes<br />Utiliser <kbd>Tab</kbd> pour
+        l'autocomplétion<br />Utiliser <kbd>&uarr;</kbd> et <kbd>&darr;</kbd>
         pour l'historique
   endpoint:
     error:
@@ -106,21 +104,21 @@ app:
       command_palette: Palette de commandes
     tooltip:
       low_on_space: Espace disque limité
-      root_disabled: La racine {root} n'est pas disponible. Veuillez vérifier 
+      root_disabled: La racine {root} n'est pas disponible. Veuillez vérifier
         vos logs.
       items_count: élément {count} | éléments {count}
     url:
-      moonraker_telegram_bot_config: 
+      moonraker_telegram_bot_config:
         https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
       klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
-      moonraker_config: 
+      moonraker_config:
         https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
-      crowsnest_config: 
+      crowsnest_config:
         https://crowsnest.mainsail.xyz/configuration/%{hash}-section
     overlay:
-      drag_files_enqueue: <strong>Glisser</strong> les fichiers ici pour les 
+      drag_files_enqueue: <strong>Glisser</strong> les fichiers ici pour les
         mettre en file d'attente
-      drag_files_folders_upload: <strong>Glisser</strong> les fichiers et les 
+      drag_files_folders_upload: <strong>Glisser</strong> les fichiers et les
         dossiers ici pour les télécharger
   gcode:
     btn:
@@ -145,7 +143,7 @@ app:
         Le fichier "%{filename}" est de %{size}, ce qui peut être coûteux en ressources
         pour votre système. En êtes-vous certain ?
     overlay:
-      drag_file_load: <strong>Glisser</strong> un fichier gcode ici pour le 
+      drag_file_load: <strong>Glisser</strong> un fichier gcode ici pour le
         charger
   general:
     btn:
@@ -164,6 +162,7 @@ app:
       edit: Editer
       exit_layout: Quitter le mode de mise en page
       extrude: Extruder
+      flip_layout: Inverser disposition
       heaters_off: Tout éteindre
       load_all: Tout charger
       more_information: Plus d'informations
@@ -308,7 +307,7 @@ app:
       numeric_prefix_sort: Préfixe numérique tri
       current_user: Utilisateur actuel
       default: Défaut
-      heaters_busy: L'imprimante est actuellement occupée. Le fait d'éteindre 
+      heaters_busy: L'imprimante est actuellement occupée. Le fait d'éteindre
         les appareils de chauffage peut entraîner un échec de l'impression.
       moonraker: Moonraker
       pause_at_layer: Pause à la couche
@@ -352,23 +351,23 @@ app:
       stepper_driver: '%{name} Driver'
     msg:
       password_changed: Mot de passe modifié
-      wrong_password: Oops, il y a eu un problème. Le mot de passe est il 
+      wrong_password: Oops, il y a eu un problème. Le mot de passe est il
         correct ?
-      pending_configuration_sections_deleted: Les sections suivantes sont 
+      pending_configuration_sections_deleted: Les sections suivantes sont
         marquées pour suppression
       bed_screws_adjust: Cliquez sur <b>Ajusté</b> si un ajustement significatif
-        est nécessaire sur la vis actuelle ; sinon, cliquez sur <b>Accepter</b> 
+        est nécessaire sur la vis actuelle ; sinon, cliquez sur <b>Accepter</b>
         pour continuer.
-      needs_refresh: Nouveau contenu disponible, veuillez cliquer sur le bouton 
+      needs_refresh: Nouveau contenu disponible, veuillez cliquer sur le bouton
         <b>Recharger</b> pour mettre à jour.
       rolledover_logs: "Les journaux d'application suivants ont été transférés : %{applications}"
-      welcome_back: Bienvenue. <br>Connectez-vous ci-dessous pour rester en 
+      welcome_back: Bienvenue. <br>Connectez-vous ci-dessous pour rester en
         communication avec votre imprimante.
       offline_ready: Fluidd est maintenant prêt à travailler hors ligne.
-      fluidd_settings_restore_failed: Échec de la restauration des paramètres 
+      fluidd_settings_restore_failed: Échec de la restauration des paramètres
         Fluidd !
       not_valid_fluidd_backup_file: Fichier de sauvegarde Fluidd non valide !
-      fluidd_settings_backup_failed: Échec de la sauvegarde des paramètres 
+      fluidd_settings_backup_failed: Échec de la sauvegarde des paramètres
         Fluidd !
     simple_form:
       error:
@@ -386,36 +385,36 @@ app:
         invalid_aspect: Ratio d'aspect invalide
       msg:
         confirm: Êtes-vous sûr(e) ?
-        confirm_reboot_host: Êtes-vous sûr(e) ? Ceci va redémarrer le système 
+        confirm_reboot_host: Êtes-vous sûr(e) ? Ceci va redémarrer le système
           hôte.
-        confirm_shutdown_host: Êtes-vous sûr(e) ? Ceci va éteindre le système 
+        confirm_shutdown_host: Êtes-vous sûr(e) ? Ceci va éteindre le système
           hôte.
-        confirm_forcemove_toggle: En êtes-vous sûr ? Cela peut endommager 
+        confirm_forcemove_toggle: En êtes-vous sûr ? Cela peut endommager
           l'imprimante.
-        confirm_power_device_toggle: Êtes-vous sûr ? Cela va basculer l'état de 
+        confirm_power_device_toggle: Êtes-vous sûr ? Cela va basculer l'état de
           cet appareil.
         unsaved_changes: Vous avez des modifications non enregistrées. Êtes-vous
           sûr de vouloir fermer ce fichier ?
-        confirm_service_restart: Êtes-vous sûr de vouloir redémarrer le service 
+        confirm_service_restart: Êtes-vous sûr de vouloir redémarrer le service
           %{name} ?
-        confirm_cancel_print: Êtes-vous sûr de vouloir annuler l'impression en 
+        confirm_cancel_print: Êtes-vous sûr de vouloir annuler l'impression en
           cours ?
-        confirm_delete: Êtes-vous sûr ? Cette opération supprime l'élément 
-          sélectionné. | Êtes-vous sûr ? Cela supprimera les {count} éléments 
+        confirm_delete: Êtes-vous sûr ? Cette opération supprime l'élément
+          sélectionné. | Êtes-vous sûr ? Cela supprimera les {count} éléments
           sélectionnés.
-        confirm_emergency_stop: Êtes-vous sûr de vouloir arrêter d'urgence 
+        confirm_emergency_stop: Êtes-vous sûr de vouloir arrêter d'urgence
           l'imprimante ?
-        confirm_exclude_object: Êtes-vous sûr de vouloir exclure cet objet de 
+        confirm_exclude_object: Êtes-vous sûr de vouloir exclure cet objet de
           l'impression ?
-        confirm_load_bedmesh_profile: L'imprimante est actuellement occupée. 
+        confirm_load_bedmesh_profile: L'imprimante est actuellement occupée.
           Êtes-vous sûr de vouloir charger le profil %{name} ?
         confirm_clear_mesh: L'imprimante est actuellement occupée. Êtes-vous sûr
           de vouloir effacer le maillage du lit ?
-        confirm_service_start: Êtes-vous sûr de vouloir démarrer le service 
+        confirm_service_start: Êtes-vous sûr de vouloir démarrer le service
           %{name} ?
-        confirm_remove_user: Êtes-vous sûr de vouloir supprimer l'utilisateur 
+        confirm_remove_user: Êtes-vous sûr de vouloir supprimer l'utilisateur
           %{username} ?
-        confirm_service_stop: Êtes-vous sûr de vouloir arrêter le service 
+        confirm_service_stop: Êtes-vous sûr de vouloir arrêter le service
           %{name} ?
         no_file_preview: '%{name} ne peut pas être prévisualisé actuellement.'
     table:
@@ -481,7 +480,7 @@ app:
       timelapse: Timelapse
       metrics_explorer: Explorateur de métriques
       other_files: Autres fichiers
-      pending_configuration_changes: Attente de changements de configuration en 
+      pending_configuration_changes: Attente de changements de configuration en
         cours
     tooltip:
       estop: Arrêt d'urgence
@@ -494,11 +493,11 @@ app:
       managed_by_moonraker: Géré par la configuration de votre Moonraker
       notifications: Notifications
       run_collector: Exécuter le collecteur
-      file_browser_configuration_help: Copier les fichiers et les dossiers dans 
-        les fichiers de configuration en les faisant glisser d'ici et en les 
+      file_browser_configuration_help: Copier les fichiers et les dossiers dans
+        les fichiers de configuration en les faisant glisser d'ici et en les
         déposant là
-      file_browser_help: Glisser-déposer des fichiers ou des dossiers depuis 
-        l'extérieur du navigateur pour les téléverser ici<br>Déplacer des 
+      file_browser_help: Glisser-déposer des fichiers ou des dossiers depuis
+        l'extérieur du navigateur pour les téléverser ici<br>Déplacer des
         fichiers et des dossiers en les glissant-déposant dans des sous-dossiers
         ou ".."
   printer:
@@ -550,7 +549,7 @@ app:
       dark_mode: Mode sombre
       default_extrude_length: Longueur d'extrusion par défaut
       default_extrude_speed: Vitesse d'extrusion par défaut
-      default_toolhead_move_length: Longueur de déplacement par défaut de la 
+      default_toolhead_move_length: Longueur de déplacement par défaut de la
         tête d'outil
       default_toolhead_xy_speed: Vitesse XY de la tête d'outil par défaut
       default_toolhead_z_speed: Vitesse Z de la tête d'outil par défaut
@@ -579,7 +578,7 @@ app:
       print_eta_calculation: Imprimer le calcul de l'ETA
       print_in_progress_layout: Afficher la progression
       print_progress_calculation: Afficher le calcul de la progression
-      show_manual_probe_dialog_automatically: Afficher automatiquement la boîte 
+      show_manual_probe_dialog_automatically: Afficher automatiquement la boîte
         de dialogue pour la Sonde manuelle
       show_barometric_pressure: Afficher la pression barométrique
       camera_fullscreen_action:
@@ -591,13 +590,13 @@ app:
       dashed: En pointillés
       metrics: Indicateurs
       name: Nom
-      show_save_config_and_restart: Bouton "Sauvegarder la configuration et 
+      show_save_config_and_restart: Bouton "Sauvegarder la configuration et
         redémarrer" dans la barre de navigation supérieure
-      auto_load_mobile_on_print_start: Chargement automatique des fichiers sur 
+      auto_load_mobile_on_print_start: Chargement automatique des fichiers sur
         les appareils mobiles
-      confirm_on_power_device_change: Demander une confirmation pour le 
+      confirm_on_power_device_change: Demander une confirmation pour le
         changement d'état de l'alimentation de l'appareil
-      confirm_on_save_config_and_restart: Examiner les modifications de 
+      confirm_on_save_config_and_restart: Examiner les modifications de
         configuration en cours avant l'enregistrement et le redémarrage
       enable_diagnostics: Activer les diagnostics
       filter: Filtre | Filtres
@@ -611,7 +610,7 @@ app:
         dans la barre de navigation supérieure
       toolhead_move_distances: Valeurs de distance de la tête d'outil
       show_gas_resistance: Montrer la résistance au gaz
-      sections_to_ignore_pending_configuration_changes: Sections ignorant les 
+      sections_to_ignore_pending_configuration_changes: Sections ignorant les
         changements de configuration en attente
       show_rate_of_change: Afficher le taux de variation de la température
       show_relative_humidity: Afficher l'humidité relative
@@ -642,18 +641,18 @@ app:
       aspect_ratio: Ratio d'aspect
       aspect_ratio_format: '[width : height]'
       auto_edit_extensions: Extensions à ouvrir automatiquement en mode édition
-      auto_follow_on_file_load: Suivi automatique de la progression du 
+      auto_follow_on_file_load: Suivi automatique de la progression du
         chargement des fichiers
-      auto_load_on_print_start: Chargement automatique du fichier au démarrage 
+      auto_load_on_print_start: Chargement automatique du fichier au démarrage
         de l'impression
       camera_rotate_by: Rotation par
       camera_url_stream: URL du flux de la caméra
       draw_origin: Dessiner l'origine
-      confirm_dirty_editor_close: Demander confirmation avant fermeture de 
+      confirm_dirty_editor_close: Demander confirmation avant fermeture de
         l'éditeur avec changements non sauvegardés
       expression: Expression
       fill_opacity: Opacité du remplissage
-      hide_single_part_bounding_box: Masquer la boîte englobante de la pièce 
+      hide_single_part_bounding_box: Masquer la boîte englobante de la pièce
         lors de l'impression d'une seule pièce
       fill_color: Couleur de remplissage
       fps_idle_target: FPS Cible sans mise au point
@@ -664,10 +663,10 @@ app:
       power_toggle_in_top_nav: Bouton d'allumage dans la navigation supérieure
       right_y: Axe Y droit
       save_and_restore_view_state: Sauvegarder et restaurer l'état de la vue
-      show_screws_tilt_adjust_dialog_automatically: Afficher automatiquement la 
+      show_screws_tilt_adjust_dialog_automatically: Afficher automatiquement la
         boîte de dialogue des Vis pour le Réglage de l'inclinaison
       toolhead_xy_move_distances: Valeurs de la distance XY de la tête d'outil
-      force_move_toggle_warning: Confirmation obligatoire lors de l'activation 
+      force_move_toggle_warning: Confirmation obligatoire lors de l'activation
         de FORCE_MOVE
       camera_url_snapshot: URL de l'instatané de la caméra
       card: Carte
@@ -697,27 +696,27 @@ app:
       gcode_coords: >-
         Utiliser la posistion GCode au lieu de la position de l'outil sur le
         tableau de bord
-      average_calculation: Si plusieurs options sont sélectionnées, une moyenne 
+      average_calculation: Si plusieurs options sont sélectionnées, une moyenne
         sera calculée
-      show_manual_probe_dialog_automatically: Affiche automatiquement la boîte 
+      show_manual_probe_dialog_automatically: Affiche automatiquement la boîte
         de dialogue d'aide si l'on exécute une sonde manuelle
-      show_screws_tilt_adjust_dialog_automatically: Affiche automatiquement un 
+      show_screws_tilt_adjust_dialog_automatically: Affiche automatiquement un
         dialogue d'aide si l'outil SCREWS_TILT_CALCULATE est exécuté
-      theme_disclaimer: Ces thèmes comportent des noms de marques et des logos 
-        qui sont la propriété intellectuelle de leurs propriétaires 
-        respectifs.<br> L'inclusion de ces noms et logos est faite avec la 
-        permission des marques.<br> Cependant, veuillez noter que ces thèmes ne 
-        sont pas officiellement maintenus par les marques respectives.<br> Tous 
-        les problèmes ou demandes liés aux thèmes doivent être adressés à 
-        l'équipe Fluidd.<br> L'utilisation des noms de marques et des logos est 
-        uniquement à des fins décoratives et esthétiques, et aucune association 
+      theme_disclaimer: Ces thèmes comportent des noms de marques et des logos
+        qui sont la propriété intellectuelle de leurs propriétaires
+        respectifs.<br> L'inclusion de ces noms et logos est faite avec la
+        permission des marques.<br> Cependant, veuillez noter que ces thèmes ne
+        sont pas officiellement maintenus par les marques respectives.<br> Tous
+        les problèmes ou demandes liés aux thèmes doivent être adressés à
+        l'équipe Fluidd.<br> L'utilisation des noms de marques et des logos est
+        uniquement à des fins décoratives et esthétiques, et aucune association
         officielle avec ou l'approbation par les marques n'est implicite.
       keyboard_shortcuts: "[BETA] Activer et appuyer sur '?' pour afficher la liste
         des raccourcis clavier disponibles"
       diagnostics_performance: "[BETA] L'enregistrement des informations de diagnostic
         peut avoir un impact sur les performances"
-      show_bed_screws_adjust_dialog_automatically: Affiche automatiquement une 
-        boîte de dialogue d'aide si l'outil BED_SCREWS_ADJUST est en cours 
+      show_bed_screws_adjust_dialog_automatically: Affiche automatiquement une
+        boîte de dialogue d'aide si l'outil BED_SCREWS_ADJUST est en cours
         d'exécution
     camera_rotate_options:
       '90': 90°
@@ -769,13 +768,13 @@ app:
       load: charge
     msg:
       no_devices_found: Aucun dispositif trouvé
-      no_devices_searched: Utilisez le bouton d'actualisation pour rechercher 
+      no_devices_searched: Utilisez le bouton d'actualisation pour rechercher
         des appareils
-      canbus_warning: Seuls les nœuds de bus CAN non assignés peuvent être 
-        détectés.<br> Il est recommandé de n'avoir qu'un seul dispositif non 
-        assigné connecté au bus CAN pour éviter les problèmes de 
-        communication.<br> De plus amples informations peuvent être trouvées <a 
-        target="_blank" 
+      canbus_warning: Seuls les nœuds de bus CAN non assignés peuvent être
+        détectés.<br> Il est recommandé de n'avoir qu'un seul dispositif non
+        assigné connecté au bus CAN pour éviter les problèmes de
+        communication.<br> De plus amples informations peuvent être trouvées <a
+        target="_blank"
         href="https://moonraker.readthedocs.io/en/latest/external_api/machine/#query-unassigned-canbus-uuids">ici.</a>
   tool:
     btn:
@@ -799,18 +798,18 @@ app:
       manual_probe: Sonde manuelle
       screws_tilt_adjust: Vis Réglage de l'inclinaison
     label:
-      stats_volumetric_flow: Extrudant à %{extrudeSpeed} mm/s<span 
-        class="secondary--text">, l'extrudeur doit pouvoir fournir un</span> 
+      stats_volumetric_flow: Extrudant à %{extrudeSpeed} mm/s<span
+        class="secondary--text">, l'extrudeur doit pouvoir fournir un</span>
         débit volumétrique estimé de %{estimatedVolumetricFlow} mm³/s
-      stats_active_extruder: <span class="secondary--text">La configuration 
+      stats_active_extruder: <span class="secondary--text">La configuration
         active de l'extrudeuse est définie pour</span> %{filamentDiameter} mm de
-        diamètre de filament <span class="secondary--text">et</span> 
+        diamètre de filament <span class="secondary--text">et</span>
         %{nozzleDiameter} mm de buse
-      stats_extruded_length: L'extrusion de %{extrudeLength} mm de filament à 
-        %{extrudeFactor} % de débit<span class="secondary--text">, donnera 
+      stats_extruded_length: L'extrusion de %{extrudeLength} mm de filament à
+        %{extrudeFactor} % de débit<span class="secondary--text">, donnera
         une</span> longueur de sortie estimée à %{estimatedExtrudedLength} mm
-      stats_max_speed: <span class="secondary--text">En supposant une</span> 
-        %{layerHeight} mm de hauteur de couche<span class="secondary--text">, 
+      stats_max_speed: <span class="secondary--text">En supposant une</span>
+        %{layerHeight} mm de hauteur de couche<span class="secondary--text">,
         la</span> vitesse d'impression maximale estimée est %{estimatedMaxSpeed}
         mm/s
   version:
@@ -830,7 +829,7 @@ app:
       package_list: Liste des paquets
       up_to_date: A JOUR
       updates_available: Mises à jour disponibles
-      old_component_version: Vous utilisez une ancienne version de %{name} qui 
+      old_component_version: Vous utilisez une ancienne version de %{name} qui
         ne prend pas en charge toutes les fonctionnalités de Fluidd.<br>Mettre à
         jour %{name} vers au moins %{version}.
     status:
@@ -848,33 +847,33 @@ app:
   spoolman:
     msg:
       error:
-        spool_not_existant: Le spool que vous avez analysé n'existe pas dans la 
+        spool_not_existant: Le spool que vous avez analysé n'existe pas dans la
           base de données.
-        cors: Une erreur s'est produite lors de l'accès au flux des caméras. 
-          Veuillez vous assurer que le serveur de votre webcam autorise l'accès 
+        cors: Une erreur s'est produite lors de l'accès au flux des caméras.
+          Veuillez vous assurer que le serveur de votre webcam autorise l'accès
           CORS.
-        no_image_data: Une erreur s'est produite lors de l'accès au flux de la 
-          caméra. Veuillez vérifier la configuration de votre caméra ou essayer 
+        no_image_data: Une erreur s'est produite lors de l'accès au flux de la
+          caméra. Veuillez vérifier la configuration de votre caméra ou essayer
           une autre source de caméra.
       warning:
         code_not_recognized: Ce code ne ressemble pas à un code QR compatible.
-        invalid_spool_id: L'identifiant du spool contenu dans ce code QR n'est 
+        invalid_spool_id: L'identifiant du spool contenu dans ce code QR n'est
           pas valide.
       not_connected: Le serveur Spoolman n'est pas disponible.
-      no_spool: Vous n'avez pas sélectionné de bobine. Êtes-vous sûr de vouloir 
+      no_spool: Vous n'avez pas sélectionné de bobine. Êtes-vous sûr de vouloir
         imprimer sans suivi de filament ?
       mismatched_filament: Le matériau du filament sélectionné ne correspond pas
-        au matériau sélectionné dans le slicer. Êtes-vous sûr de vouloir 
+        au matériau sélectionné dans le slicer. Êtes-vous sûr de vouloir
         continuer ?
-      no_filament: Il se peut que la bobine que vous avez sélectionnée ne 
-        contienne pas suffisamment de filament pour terminer le travail 
+      no_filament: Il se peut que la bobine que vous avez sélectionnée ne
+        contienne pas suffisamment de filament pour terminer le travail
         d'impression. Êtes-vous sûr de vouloir continuer ?
-      no_required_length: La quantité de filament nécessaire pour imprimer le 
+      no_required_length: La quantité de filament nécessaire pour imprimer le
         fichier sélectionné est inconnue. Souhaitez-vous continuer ?
       info:
-        howto: Montrez le code QR de votre bobine à la caméra. Cette fenêtre se 
+        howto: Montrez le code QR de votre bobine à la caméra. Cette fenêtre se
           fermera dès qu'une bobine sera détectée.
-      tracking_inactive: Le suivi du filament est inactif. Pour commencer, 
+      tracking_inactive: Le suivi du filament est inactif. Pour commencer,
         veuillez sélectionner une bobine.
     label:
       first_used: Première utilisation
@@ -898,28 +897,28 @@ app:
       manage_spools: Gérer les bobines
     title:
       spoolman: Spoolman
-      spool_selection: Sélection du spool | Sélection du spool pour la macro 
+      spool_selection: Sélection du spool | Sélection du spool pour la macro
         {macro}
       scan_spool: Scanner la bobine
     setting:
-      auto_select_spool_on_match: Validation automatique de la sélection de la 
+      auto_select_spool_on_match: Validation automatique de la sélection de la
         bobine en cas de correspondance avec le code QR
-      show_spool_selection_dialog_on_print_start: Afficher la boîte de dialogue 
+      show_spool_selection_dialog_on_print_start: Afficher la boîte de dialogue
         de sélection de la bobine au démarrage de l'impression
-      auto_open_qr_camera: Ouverture automatique de l'appareil photo pour la 
+      auto_open_qr_camera: Ouverture automatique de l'appareil photo pour la
         détection des codes QR
-      prefer_device_camera: Utiliser l'appareil photo de l'appareil pour la 
+      prefer_device_camera: Utiliser l'appareil photo de l'appareil pour la
         détection des codes QR, le cas échéant
-      warn_on_not_enough_filament: Afficher un avertissement lorsque la bobine 
+      warn_on_not_enough_filament: Afficher un avertissement lorsque la bobine
         sélectionnée n'a plus assez de filament pour terminer l'impression
-      warn_on_filament_type_mismatch: Afficher un avertissement lorsque le type 
-        de filament de la bobine et celui sélectionné dans le slicer ne 
+      warn_on_filament_type_mismatch: Afficher un avertissement lorsque le type
+        de filament de la bobine et celui sélectionné dans le slicer ne
         correspondent pas
       remaining_filament_unit: Montrer le filament restant comme
   history:
     msg:
       confirm_jobs: Êtes-vous sûr ? Cette opération effacera tous les jobs.
-      confirm: Êtes-vous sûr ? Cela effacera tout l'historique et les 
+      confirm: Êtes-vous sûr ? Cela effacera tout l'historique et les
         statistiques de l'imprimante
       confirm_stats: Êtes-vous sûr ? Cela effacera toutes les statistiques.
   timelapse:
@@ -993,15 +992,15 @@ app:
       keyboard_shortcuts: Raccourcis clavier
   job_queue:
     msg:
-      confirm: Êtes-vous sûr ? Cela effacera toute la file d'attente de 
+      confirm: Êtes-vous sûr ? Cela effacera toute la file d'attente de
         l'imprimante
     label:
       number_of_copies: Nombre de copies
     title:
       multiply_job: Multiplier le job | Multiplier les jobs
     tooltip:
-      help: Mettez les jobs en file d'attente en faisant glisser les fichiers 
-        depuis les jobs et en les déposant ici<br>Réglez l'ordre des jobs en 
+      help: Mettez les jobs en file d'attente en faisant glisser les fichiers
+        depuis les jobs et en les déposant ici<br>Réglez l'ordre des jobs en
         file d'attente en les faisant glisser vers le haut ou vers le bas
   afc:
     AfcSettings: Paramètres AFC

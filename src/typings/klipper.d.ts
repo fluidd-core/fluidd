@@ -681,10 +681,12 @@ declare namespace Klipper {
     spoolman_support: string;
     enable_spoolman: number;
     bowden_progress: number;
+    espooler: string[];
     espooler_active: string;
     servo: string;
     grip?: string;
     sensors: Record<string, boolean | null>;
+    drying_state?: string[];
     flowguard?: {
       trigger: string;
       reason: string;
@@ -728,9 +730,13 @@ declare namespace Klipper {
       variable_bowden_lengths: boolean;
       require_bowden_move: boolean;
       filament_always_gripped: boolean;
+      can_crossload: boolean;
       has_bypass: boolean;
       multi_gear: boolean;
       environment_sensor?: string;
+      filament_heater?: string;
+      environment_sensors?: string[];
+      filament_heaters?: string[];
     };
   }
 
@@ -873,6 +879,8 @@ declare namespace Klipper {
       [key: `temperature_sensor ${Lowercase<string>}`]: TemperatureSensorSettings;
 
       [key: `temperature_probe ${Lowercase<string>}`]: TemperatureProbeSettings;
+
+      axis_twist_compensation: AxisTwistCompensationSettings;
 
       safe_z_home: SafeZHomeSettings;
 
@@ -1155,6 +1163,19 @@ declare namespace Klipper {
     calibration_extruder_temp?: number;
     extruder_heating_z: number;
     smooth_time: number;
+  }
+
+  export interface AxisTwistCompensationSettings {
+    horizontal_move_z: number;
+    speed: number;
+    z_compensations: number[];
+    zy_compensations: number[];
+    calibrate_start_x?: number;
+    calibrate_end_x?: number;
+    calibrate_y?: number;
+    calibrate_start_y?: number;
+    calibrate_end_y?: number;
+    calibrate_x?: number;
   }
 
   export interface SafeZHomeSettings {

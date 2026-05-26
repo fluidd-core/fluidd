@@ -6,13 +6,13 @@
     preserveAspectRatio="xMidYMid meet"
   >
     <rect
-      x="20"
-      y="16"
-      width="80"
-      height="35"
+      x="15"
+      y="14"
+      width="90"
+      height="39"
       rx="8"
       ry="8"
-      stroke-width="4"
+      stroke-width="5"
       :stroke="statusColor"
       :fill="selectedColor"
     />
@@ -23,7 +23,7 @@
       text-anchor="middle"
       font-weight="bold"
       font-size="30px"
-      :class="!editGateMap && gateIndex === gate ? 'selected-text' : 'regular-text'"
+      :fill="fontColor"
     >
       {{ gateIndex }}
     </text>
@@ -34,7 +34,7 @@
       text-anchor="middle"
       font-weight="bold"
       font-size="20px"
-      :class="!editGateMap && gateIndex === gate ? 'selected-text' : 'regular-text'"
+      :fill="fontColor"
     >
       BYPASS
     </text>
@@ -82,15 +82,14 @@ export default class MmuGateStatus extends Mixins(StateMixin, MmuMixin) {
       return 'none'
     }
   }
+
+  get fontColor (): string {
+    if (!this.editGateMap && this.gateIndex === this.gate) return '#000000'
+    if (this.$vuetify.theme.dark) return '#c0c0c0'
+    return '#808080'
+  }
 }
 </script>
 
 <style scoped>
-.selected-text {
-    fill: #000000;
-}
-
-.regular-text {
-    fill: #c0c0c0;
-}
 </style>

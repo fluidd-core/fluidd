@@ -67,12 +67,10 @@ export default class SystemPrinters extends Mixins(StateMixin) {
     return this.$typedGetters['config/getInstances']
   }
 
-  @Watch('appReady')
-  onAppReady (value: boolean) {
-    if (value) {
-      if (this.$typedState.config.apiUrl === '') {
-        this.instanceDialogOpen = true
-      }
+  @Watch('socketInitializing')
+  onSocketInitializingChanged (value: boolean) {
+    if (!value && this.$typedState.config.apiUrl === '') {
+      this.instanceDialogOpen = true
     }
   }
 
@@ -95,16 +93,8 @@ export default class SystemPrinters extends Mixins(StateMixin) {
     // Close the drawer
     this.$emit('click')
     if (!instance.active) {
-      // Close the socket.
-      this.$socket.close()
-
       // Re-init the app.
-      const config = await appInit(instance, this.$typedState.config.hostConfig)
-
-      // Reconnect the socket with the new instance url.
-      if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {
-        this.$socket.connect(config.apiConfig.socketUrl)
-      }
+      await appInit(instance, this.$typedState.config.hostConfig)
     }
   }
 }

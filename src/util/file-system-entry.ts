@@ -109,7 +109,13 @@ export const readFileAsTextAsync = (file: File) => {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader()
 
-    reader.onload = () => resolve(reader.result as string)
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        resolve(reader.result)
+      } else {
+        reject(new Error('Unexpected FileReader result type'))
+      }
+    }
     reader.onerror = (event) => reject(event)
 
     reader.readAsText(file, 'UTF8')

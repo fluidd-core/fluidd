@@ -31,8 +31,11 @@ export const getters = {
     }
   },
 
-  isEnabledInLayout: (state, getters) => (layout: string, id: string): boolean => {
-    const configs = Object.values(getters.getLayout(layout) ?? {}).flat() as LayoutConfig[]
+  isEnabledInLayout: (state, getters) => (name: string, id: string): boolean => {
+    const layout: LayoutContainer | undefined = getters.getLayout(name)
+    const configs = layout
+      ? Object.values(layout).flat()
+      : []
 
     return configs.find(configs => configs.id === id)?.enabled ?? false
   },
@@ -72,6 +75,11 @@ export const getters = {
     if (!user) return 'dashboard'
 
     const size = vuetify.framework.breakpoint.name
-    return `dashboard-${size}-${user.username}`
+
+    // encode . and % to avoid issues with Moonraker DB keys (dots are JSON path separators)
+    const username = user.username
+      .replace(/[%.]/g, (m) => `%${m.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0')}`)
+
+    return `dashboard-${size}-${username}`
   }
 } satisfies GetterTree<LayoutState, RootState>

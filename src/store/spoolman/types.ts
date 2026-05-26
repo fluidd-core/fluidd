@@ -5,7 +5,7 @@ export interface SpoolmanState {
   currency: string | null;
   connected: boolean;
   dialog: SpoolSelectionDialogState;
-  socket?: WebSocket;
+  socket: WebSocket | null;
 }
 
 export interface Spool extends Omit<Moonraker.Spoolman.Spool, 'registered' | 'filament' | 'first_used' | 'last_used'> {

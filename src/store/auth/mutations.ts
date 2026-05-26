@@ -1,7 +1,6 @@
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type { AuthState } from './types'
-import { jwtDecode } from 'jwt-decode'
 
 export const mutations = {
   /**
@@ -13,18 +12,6 @@ export const mutations = {
 
   setCurrentUser (state, user) {
     state.currentUser = user
-  },
-
-  setToken (state, token) {
-    state.token = (token) ? jwtDecode(token) : null
-  },
-
-  setRefreshToken (state, token) {
-    state.refresh_token = (token) ? jwtDecode(token) : null
-  },
-
-  setAuthenticated (state, authenticated) {
-    state.authenticated = authenticated
   },
 
   setUsers (state, users) {

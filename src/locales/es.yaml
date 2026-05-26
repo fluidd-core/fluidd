@@ -36,8 +36,6 @@ app:
         mostrarla.
   console:
     label:
-      auto_scroll: Scroll automático
-      flip_layout: Invertir diseño
       hide_temp_waits: Esconder los mensajes de temperatura
     tooltip:
       help: Introduce "help" para los comandos<br />Utiliza <kbd>Tab</kbd> para autocompletar<br
@@ -159,6 +157,7 @@ app:
       download: Descargar
       edit: Editar
       extrude: Extrudir
+      flip_layout: Invertir diseño
       forgot_password: Olvido su contraseña?
       heaters_off: Apagar calentadores
       load_all: Cargar todos

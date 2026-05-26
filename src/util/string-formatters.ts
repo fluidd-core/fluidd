@@ -47,8 +47,16 @@ const stringFormatters = () => {
     getStringArray: (value: string, separator = ';') => {
       if (value.startsWith('["') && value.endsWith('"]')) {
         try {
-          return JSON.parse(value) as string[]
+          const valueAsObject = JSON.parse(value)
+
+          if (
+            Array.isArray(valueAsObject) &&
+            valueAsObject.every(item => typeof item === 'string')
+          ) {
+            return valueAsObject
+          }
         } catch {
+          // ignore and fallback to splitting by separator
         }
       }
 

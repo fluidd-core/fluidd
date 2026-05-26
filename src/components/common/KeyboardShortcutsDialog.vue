@@ -96,7 +96,7 @@
           <tbody>
             <tr>
               <th>{{ $t('app.keyboard_shortcuts.label.emergency_stop') }}</th>
-              <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>e</kbd></td>
+              <td><kbd v-if="isAppleDevice">&#8984;</kbd><kbd v-else>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>e</kbd></td>
             </tr>
             <tr>
               <th>{{ $t('app.keyboard_shortcuts.label.open_keyboard_shortcut_help') }}</th>
@@ -111,11 +111,12 @@
 
 <script lang="ts">
 import { Globals } from '@/globals'
+import BrowserMixin from '@/mixins/browser'
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 
 @Component({})
-export default class KeyboardShortcutsDialog extends Vue {
+export default class KeyboardShortcutsDialog extends Mixins(BrowserMixin) {
   open = false
 
   get keyboardShortcuts () {

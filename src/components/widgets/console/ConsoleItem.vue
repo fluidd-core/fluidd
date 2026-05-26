@@ -1,7 +1,7 @@
 <template>
   <v-layout class="console-item">
     <span
-      v-if="value.time"
+      v-if="itemTime"
       class="secondary--text mr-3 d-none d-sm-block text-no-wrap"
     >
       {{ itemTime }}&nbsp;
@@ -18,31 +18,62 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Globals } from '@/globals'
 import type { ConsoleEntry } from '@/store/console/types'
+import type { UpdateResponse } from '@/store/version/types'
+import { escapeRegExp } from 'lodash-es'
 
 @Component({})
 export default class ConsoleItem extends Vue {
-  @Prop({ type: Object, default: () => {} })
-  readonly value!: ConsoleEntry
+  @Prop({ type: Object, required: true })
+  readonly value!: ConsoleEntry | UpdateResponse
+
+  @Prop({ type: String })
+  readonly search?: string
 
   get knownCommands (): Moonraker.KlippyApis.GcodeHelpResponse {
     return this.$typedGetters['console/getAllKnownCommands']
   }
 
   get itemMessage () {
-    let message = this.value.message
-    if (this.value.type === 'response') {
-      message = this.value.message.replace(/([A-Z_][A-Z0-9_.]+)/g, (match, command) => {
-        if (command in this.knownCommands) return `<a class="primary--text text--lighten-1">${command.toUpperCase()}</a>`
-        return match
-      })
+    const rawItemMessage = this.rawItemMessage
+
+    if (this.search) {
+      const searchRegexp = new RegExp(`(<[^>]*>)|${escapeRegExp(this.search)}`, 'gi')
+
+      return rawItemMessage
+        .replace(searchRegexp, (match, tag) => (
+          tag ?? `<mark>${match}</mark>`
+        ))
     }
-    return (this.value.type === 'command')
-      ? `${Globals.CONSOLE_SEND_PREFIX}<a class="primary--text text--lighten-1">${message}</a>`
-      : message
+
+    return rawItemMessage
+  }
+
+  get rawItemMessage () {
+    const message = this.value.message
+
+    if ('type' in this.value) {
+      switch (this.value.type) {
+        case 'command':
+          return `${Globals.CONSOLE_SEND_PREFIX}<a class="primary--text text--lighten-1">${message}</a>`
+
+        case 'response':
+          return message
+            .replace(/([A-Z_][A-Z0-9_.]+)/g, (match, command) => (
+              command in this.knownCommands
+                ? `<a class="primary--text text--lighten-1">${command.toUpperCase()}</a>`
+                : match
+            ))
+      }
+    }
+
+    return message
   }
 
   get itemTime () {
-    return (this.value.time)
+    return (
+      'time' in this.value &&
+      this.value.time
+    )
       ? this.$filters.formatTimeWithSeconds(this.value.time * 1000)
       : ''
   }
@@ -52,11 +83,10 @@ export default class ConsoleItem extends Vue {
       return { 'error--text': true }
     }
 
-    // if (this.value.message.startsWith('//')) {
-    //   return { 'secondary--text': true }
-    // }
-
-    if (this.value.type === 'command') {
+    if (
+      'type' in this.value &&
+      this.value.type === 'command'
+    ) {
       return { 'primary--text': true }
     }
 
@@ -78,5 +108,10 @@ export default class ConsoleItem extends Vue {
 <style lang="scss" scoped>
   .console-item {
     flex: 0 0 auto;
+  }
+
+  :deep(mark) {
+    background-color: #ff0;
+    color: #000;
   }
 </style>

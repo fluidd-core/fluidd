@@ -137,7 +137,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
   get chartReady (): boolean {
     return (
       this.$typedState.socket.acceptingNotifications &&
-      this.$typedState.socket.ready &&
+      this.$typedState.socket.status === 'ready' &&
       this.$typedState.charts.ready &&
       this.klippyReady
     )

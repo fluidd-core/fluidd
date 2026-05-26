@@ -134,6 +134,21 @@
                   </span>
                 </template>
 
+                <template v-else-if="getTooltipField(field) != null">
+                  <v-tooltip bottom>
+                    <template #activator="{ on, attrs }">
+                      <span
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        {{ getFormattedField(field) }}
+                      </span>
+                    </template>
+
+                    {{ getTooltipField(field) }}
+                  </v-tooltip>
+                </template>
+
                 <span v-else>{{ getFormattedField(field) }}</span>
               </status-label>
             </template>
@@ -337,6 +352,21 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
 
       default:
         return this.activeSpool[field as keyof Spool] || '-'
+    }
+  }
+
+  getTooltipField (field: string) {
+    if (!this.activeSpool) return null
+
+    switch (field) {
+      case 'first_used':
+        return this.activeSpool.first_used ? this.$filters.formatDateTime(this.activeSpool.first_used) : null
+
+      case 'last_used':
+        return this.activeSpool.last_used ? this.$filters.formatDateTime(this.activeSpool.last_used) : null
+
+      default:
+        return null
     }
   }
 }

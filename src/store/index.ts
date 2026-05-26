@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Vuex, { type StoreOptions } from 'vuex'
 import { consola } from 'consola'
-import type { RootModules, RootState } from './types'
-import type { InitConfig } from './config/types'
+import type { RootActions, RootGetters, RootModules, RootMutations, RootState } from './types'
 
 // Modules
 import { socket } from './socket'
@@ -71,7 +70,7 @@ export const storeOptions = {
     /**
      * Resets all stores
      */
-    async reset ({ dispatch }, payload: string[]) {
+    async reset ({ dispatch }, payload: string[] | undefined) {
       // Reset our color set.
       Vue.$colorset.forceResetAll()
 
@@ -84,19 +83,6 @@ export const storeOptions = {
         }
       })
       await Promise.all(p)
-    },
-
-    async init ({ dispatch, commit }, payload: InitConfig) {
-      // Set the api connection state..
-      commit('socket/setApiConnected', payload.apiConnected)
-
-      // Init the host and local configs..
-      await Promise.all([
-        dispatch('config/initHost', payload),
-        dispatch('config/initLocal', payload)
-      ])
-
-      commit('config/setAppReady', true)
     },
 
     async resetKlippy ({ dispatch, commit }) {
@@ -121,4 +107,18 @@ export const storeOptions = {
   }
 } satisfies StoreOptions<RootState>
 
-export default new Vuex.Store<RootState>(storeOptions)
+export class TypedStore extends Vuex.Store<RootState> {
+  get typedGetters (): RootGetters {
+    return this.getters as RootGetters
+  }
+
+  typedCommit: RootMutations = (...params) => {
+    this.commit(...params)
+  }
+
+  typedDispatch: RootActions = (...params) => {
+    return this.dispatch(...params)
+  }
+}
+
+export default new TypedStore(storeOptions)

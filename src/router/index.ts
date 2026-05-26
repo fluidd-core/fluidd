@@ -1,40 +1,10 @@
 import Vue from 'vue'
 import VueRouter, { type RouteConfig } from 'vue-router'
-
-// Views
-import Dashboard from '@/views/Dashboard.vue'
-import Console from '@/views/Console.vue'
-import GcodePreview from '@/views/GcodePreview.vue'
-import Jobs from '@/views/Jobs.vue'
-import Tune from '@/views/Tune.vue'
-import Diagnostics from '@/views/Diagnostics.vue'
-import History from '@/views/History.vue'
-import Timelapse from '@/views/Timelapse.vue'
-import Configure from '@/views/Configure.vue'
-import System from '@/views/System.vue'
-import Settings from '@/views/Settings.vue'
-import AppSettingsNav from '@/components/layout/AppSettingsNav.vue'
-import MacroCategorySettings from '@/components/settings/macros/MacroCategorySettings.vue'
-import FullscreenCamera from '@/views/FullscreenCamera.vue'
-import NotFound from '@/views/NotFound.vue'
-import Login from '@/views/Login.vue'
-import Icons from '@/views/Icons.vue'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
-const isAuthenticated = (): boolean => (
-  router.app.$typedState.auth.authenticated ||
-  !router.app.$typedState.socket.apiConnected
-)
-
 const defaultRouteConfig: Partial<RouteConfig> = {
-  beforeEnter: (to, from, next) => {
-    if (isAuthenticated()) {
-      next()
-    } else {
-      next({ name: 'login' })
-    }
-  },
   meta: {
     fileDropRoot: 'gcodes'
   }
@@ -44,7 +14,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'home',
-    component: Dashboard,
+    component: () => import('@/views/Dashboard.vue'),
     ...defaultRouteConfig,
     meta: {
       ...defaultRouteConfig.meta,
@@ -54,25 +24,25 @@ const routes: Array<RouteConfig> = [
   {
     path: '/console',
     name: 'console',
-    component: Console,
+    component: () => import('@/views/Console.vue'),
     ...defaultRouteConfig
   },
   {
     path: '/jobs',
     name: 'jobs',
-    component: Jobs,
+    component: () => import('@/views/Jobs.vue'),
     ...defaultRouteConfig
   },
   {
     path: '/tune',
     name: 'tune',
-    component: Tune,
+    component: () => import('@/views/Tune.vue'),
     ...defaultRouteConfig
   },
   {
     path: '/diagnostics',
     name: 'diagnostics',
-    component: Diagnostics,
+    component: () => import('@/views/Diagnostics.vue'),
     ...defaultRouteConfig,
     meta: {
       ...defaultRouteConfig.meta,
@@ -82,7 +52,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/timelapse',
     name: 'timelapse',
-    component: Timelapse,
+    component: () => import('@/views/Timelapse.vue'),
     ...defaultRouteConfig,
     meta: {
       fileDropRoot: 'timelapse'
@@ -91,19 +61,19 @@ const routes: Array<RouteConfig> = [
   {
     path: '/history',
     name: 'history',
-    component: History,
+    component: () => import('@/views/History.vue'),
     ...defaultRouteConfig
   },
   {
     path: '/system',
     name: 'system',
-    component: System,
+    component: () => import('@/views/System.vue'),
     ...defaultRouteConfig
   },
   {
     path: '/configure',
     name: 'configure',
-    component: Configure,
+    component: () => import('@/views/Configure.vue'),
     ...defaultRouteConfig,
     meta: {}
   },
@@ -115,8 +85,8 @@ const routes: Array<RouteConfig> = [
       hasSubNavigation: true
     },
     components: {
-      default: Settings,
-      navigation: AppSettingsNav
+      default: () => import('@/views/Settings.vue'),
+      navigation: () => import('@/components/layout/AppSettingsNav.vue')
     },
     children: [
       {
@@ -126,8 +96,8 @@ const routes: Array<RouteConfig> = [
           hasSubNavigation: true
         },
         components: {
-          default: MacroCategorySettings,
-          navigation: AppSettingsNav
+          default: () => import('@/components/settings/macros/MacroCategorySettings.vue'),
+          navigation: () => import('@/components/layout/AppSettingsNav.vue')
         }
       }
     ]
@@ -135,39 +105,24 @@ const routes: Array<RouteConfig> = [
   {
     path: '/camera/:cameraId',
     name: 'camera',
-    component: FullscreenCamera,
+    component: () => import('@/views/FullscreenCamera.vue'),
     ...defaultRouteConfig
   },
   {
     path: '/preview',
     name: 'gcode_preview',
-    component: GcodePreview,
+    component: () => import('@/views/GcodePreview.vue'),
     ...defaultRouteConfig
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: Login,
-    beforeEnter: (to, from, next) => {
-      if (isAuthenticated()) {
-        next({ name: 'home' })
-      } else {
-        next()
-      }
-    },
-    meta: {
-      fillHeight: true
-    }
   },
   {
     path: '/icons',
     name: 'icons',
-    component: Icons
+    component: () => import('@/views/Icons.vue')
   },
   {
     path: '*',
     name: 'not_found',
-    component: NotFound
+    component: () => import('@/views/NotFound.vue')
   }
 ]
 
@@ -188,14 +143,21 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  router.app?.$typedCommit('config/setContainerColumnCount', 2)
-  router.app?.$typedCommit('config/setLayoutMode', false)
-  next()
+  store.typedCommit('config/setContainerColumnCount', 2)
+  store.typedCommit('config/setLayoutMode', false)
+
+  // /login no longer exists as a route — login is rendered as an overlay by
+  // App.vue when socket.status === 'authenticating'. On a deep link to /login
+  // (fresh navigation), redirect to home; on in-app navigation, block silently.
+  if (to.path === '/login') {
+    next(from === VueRouter.START_LOCATION ? { name: 'home' } : false)
+  } else {
+    next()
+  }
 })
 
 declare module 'vue-router' {
   interface RouteMeta {
-    fillHeight?: boolean
     hasSubNavigation?: boolean
     fileDropRoot?: string
   }

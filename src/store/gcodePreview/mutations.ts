@@ -1,3 +1,4 @@
+import { markRaw } from 'vue'
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type { BBox, GcodePreviewState, Layer, Move, Part } from './types'
@@ -40,6 +41,8 @@ export const mutations = {
   },
 
   setParserWorker (state, payload: Worker | null) {
-    state.parserWorker = payload
+    state.parserWorker = payload != null
+      ? markRaw(payload)
+      : null
   }
 } satisfies MutationTree<GcodePreviewState>

@@ -69,9 +69,13 @@ export default class MmuMixin extends Vue {
       variableBowdenLengths: mmuMachine?.[unitRef]?.variable_bowden_lengths ?? true,
       requireBowdenMove: mmuMachine?.[unitRef]?.require_bowden_move ?? true,
       filamentAlwaysGripped: mmuMachine?.[unitRef]?.filament_always_gripped ?? false,
+      canCrossload: mmuMachine?.[unitRef]?.can_crossload ?? false,
       hasBypass: mmuMachine?.[unitRef]?.has_bypass ?? false,
       multiGear: mmuMachine?.[unitRef]?.multi_gear ?? false,
-      environmentSensor: mmuMachine?.[unitRef]?.environment_sensor ?? ''
+      environmentSensor: mmuMachine?.[unitRef]?.environment_sensor ?? '',
+      filamentHeater: mmuMachine?.[unitRef]?.filament_heater ?? '',
+      environmentSensors: mmuMachine?.[unitRef]?.environment_sensors,
+      filamentHeaters: mmuMachine?.[unitRef]?.filament_heaters
     }
   }
 
@@ -348,19 +352,19 @@ export default class MmuMixin extends Vue {
     return this.mmuState?.action
   }
 
-  readonly ACTION_IDLE: string = 'Idle'
-  readonly ACTION_LOADING: string = 'Loading'
-  readonly ACTION_LOADING_EXTRUDER: string = 'Loading Ext'
-  readonly ACTION_UNLOADING: string = 'Unloading'
-  readonly ACTION_UNLOADING_EXTRUDER: string = 'Unloading Ext'
-  readonly ACTION_FORMING_TIP: string = 'Forming Tip'
-  readonly ACTION_CUTTING_TIP: string = 'Cutting Tip'
-  readonly ACTION_HEATING: string = 'Heating'
-  readonly ACTION_CHECKING: string = 'Checking'
-  readonly ACTION_HOMING: string = 'Homing'
-  readonly ACTION_SELECTING: string = 'Selecting'
-  readonly ACTION_CUTTING_FILAMENT: string = 'Cutting Filament'
-  readonly ACTION_PURGING: string = 'Purging'
+  readonly ACTION_IDLE = 'Idle'
+  readonly ACTION_LOADING = 'Loading'
+  readonly ACTION_LOADING_EXTRUDER = 'Loading Ext'
+  readonly ACTION_UNLOADING = 'Unloading'
+  readonly ACTION_UNLOADING_EXTRUDER = 'Unloading Ext'
+  readonly ACTION_FORMING_TIP = 'Forming Tip'
+  readonly ACTION_CUTTING_TIP = 'Cutting Tip'
+  readonly ACTION_HEATING = 'Heating'
+  readonly ACTION_CHECKING = 'Checking'
+  readonly ACTION_HOMING = 'Homing'
+  readonly ACTION_SELECTING = 'Selecting'
+  readonly ACTION_CUTTING_FILAMENT = 'Cutting Filament'
+  readonly ACTION_PURGING = 'Purging'
 
   get hasBypass (): boolean {
     return this.mmuState?.has_bypass ?? false
@@ -370,7 +374,14 @@ export default class MmuMixin extends Vue {
     return this.mmuState?.sync_drive ?? false
   }
 
-  // return this.mmuState?.sync_feedback_state
+  get syncFeedbackState (): string {
+    return this.mmuState?.sync_feedback_state ?? this.SYNC_FEEDBACK_NONE
+  }
+
+  readonly SYNC_FEEDBACK_COMPRESSED = 'compressed'
+  readonly SYNC_FEEDBACK_TENSION = 'tension'
+  readonly SYNC_FEEDBACK_NEUTRAL = 'neutral'
+  readonly SYNC_FEEDBACK_NONE = ''
 
   get syncFeedbackEnabled (): boolean {
     return this.mmuState?.sync_feedback_enabled ?? false
@@ -400,10 +411,10 @@ export default class MmuMixin extends Vue {
     return this.mmuState?.spoolman_support ?? 'off'
   }
 
-  readonly SPOOLMAN_OFF: string = 'off' // Spoolman disabled
-  readonly SPOOLMAN_READONLY: string = 'readonly' // Get filament attributes only
-  readonly SPOOLMAN_PUSH: string = 'push' // Local gatemap is the source or truth
-  readonly SPOOLMAN_PULL: string = 'pull' // Spoolman db is the source of truth
+  readonly SPOOLMAN_OFF = 'off' // Spoolman disabled
+  readonly SPOOLMAN_READONLY = 'readonly' // Get filament attributes only
+  readonly SPOOLMAN_PUSH = 'push' // Local gatemap is the source of truth
+  readonly SPOOLMAN_PULL = 'pull' // Spoolman db is the source of truth
 
   get sensors (): Record<string, boolean | null> {
     return this.mmuState?.sensors ?? {}
@@ -413,8 +424,18 @@ export default class MmuMixin extends Vue {
     return this.mmuState?.espooler_active ?? ''
   }
 
-  readonly ESPOOLER_REWIND: string = 'rewind'
-  readonly ESPOOLER_ASSIST: string = 'assist'
+  readonly ESPOOLER_REWIND = 'rewind'
+  readonly ESPOOLER_ASSIST = 'assist'
+
+  get dryingState () {
+    return this.mmuState?.drying_state ?? []
+  }
+
+  readonly DRYING_STATE_ACTIVE = 'active'
+  readonly DRYING_STATE_QUEUED = 'queued'
+  readonly DRYING_STATE_COMPLETE = 'complete'
+  readonly DRYING_STATE_CANCELLED = 'cancelled'
+  readonly DRYING_STATUS_NONE = ''
 
   /*
      * Optional printer variables based on selector type
@@ -487,18 +508,24 @@ export default class MmuMixin extends Vue {
     return this.$typedState.printer.printer['gcode_macro _MMU_LED_VARS']?.default_status_effect ?? 'off'
   }
 
-  readonly LED_OPTIONS: string[] = ['off', 'gate_status', 'filament_color', 'slicer_color']
-  readonly LED_STATUS_OPTIONS: string[] = [...this.LED_OPTIONS, 'on']
+  readonly LED_OPTIONS = ['off', 'gate_status', 'filament_color', 'slicer_color'] as const
+  readonly LED_STATUS_OPTIONS = [...this.LED_OPTIONS, 'on'] as const
 
   get macroVarsAutomapStrategy (): string {
     return this.$typedState.printer.printer['gcode_macro _MMU_SOFTWARE_VARS']?.automap_strategy ?? 'none'
   }
 
-  readonly AUTOMAP_OPTIONS: string[] = ['none', 'filament_name', 'material', 'color', 'closest_color', 'spool_id']
+  readonly AUTOMAP_OPTIONS = ['none', 'filament_name', 'material', 'color', 'closest_color', 'spool_id'] as const
 
   /*
      * Miscellaneous
      */
+
+  get spoolWidth (): number {
+    if (this.numGates <= 8) return 56
+    if (this.numGates <= 16) return 48
+    return 40
+  }
 
   gateText (gate: number): string {
     return gate === -1 ? '?' : gate === this.TOOL_GATE_BYPASS ? 'Bypass' : '@' + gate

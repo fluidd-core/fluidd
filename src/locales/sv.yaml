@@ -10,5 +10,23 @@ app:
       active: aktiv
       remove_profile: Ta bort %{name} profil
     msg:
-      hint: Om det sparas som något annat än %{name}, kan du välja att också ta bort
-        %{name} profilen
+      hint: Om det sparas som något annat än %{name}, kan du välja att också ta 
+        bort %{name} profilen
+  afc:
+    AfcSettings: AFC-Inställningar
+    BufferDisabled: Buffer inte aktiv
+    BrushNozzle: Borstmunstycke
+    BypassActive: Filament som laddats i bypassverktygsbyten är inaktiverade!
+    Calibrate: Kalibrera
+    Cancel: Avbryt
+    CaptureTd: Fånga TD
+    DebugJson: Felsöka JSON
+    Detected: Upptäckt
+    EjectFilament: Mata ut filament
+    Ejecting: Matar ut
+    Empty: Tömma
+    Error: Fel
+    FilamentForLane: Filament för {name}
+    Functions: Funktioner
+    Headline: AFC
+    Hub: Hubb

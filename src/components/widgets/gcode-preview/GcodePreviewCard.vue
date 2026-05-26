@@ -442,12 +442,15 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
       hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')
     ) {
       const files = getFileDataTransferDataFromDataTransfer(event.dataTransfer, 'jobs')
-      const path = files.path ? `gcodes/${files.path}` : 'gcodes'
 
-      const file: AppFile | undefined = this.$typedGetters['files/getFile'](path, files.items[0])
+      if (files) {
+        const path = files.path ? `gcodes/${files.path}` : 'gcodes'
 
-      if (file) {
-        this.loadFile(file)
+        const file: AppFile | undefined = this.$typedGetters['files/getFile'](path, files.items[0])
+
+        if (file) {
+          this.loadFile(file)
+        }
       }
     }
   }

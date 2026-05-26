@@ -1,10 +1,19 @@
 export const eventTargetIsContentEditable = (event: Event): boolean => {
-  if (event.target) {
-    const { isContentEditable, tagName, type, readOnly, role, ariaRoleDescription } = event.target as HTMLInputElement
+  const target = event.target
+
+  if (target instanceof HTMLElement) {
+    const { isContentEditable, tagName, role, ariaRoleDescription } = target
 
     if (isContentEditable) {
       return true
     }
+
+    const type = target instanceof HTMLInputElement
+      ? target.type
+      : ''
+    const readOnly = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement
+      ? target.readOnly
+      : false
 
     return (
       !readOnly &&

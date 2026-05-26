@@ -9,7 +9,7 @@
     dense
   >
     <v-list
-      v-if="socketConnected && authenticated"
+      v-if="socketReady"
       dense
     >
       <v-subheader>{{ instanceName }}</v-subheader>
@@ -20,7 +20,7 @@
     <system-printers @click="open = false" />
 
     <system-layout
-      v-if="socketConnected && authenticated"
+      v-if="socketReady"
       @click="open = false"
     />
   </v-navigation-drawer>

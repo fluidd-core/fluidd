@@ -35,8 +35,6 @@ app:
         />Klik 'n drywing om dit aan en af te skakel op die grafiek.
   console:
     label:
-      auto_scroll: Rol outomaties aan
-      flip_layout: Keer uitleg om
       hide_temp_waits: Versteek temp. wagtye
   endpoint:
     error:
@@ -157,6 +155,7 @@ app:
       exit_layout: Maak uileg toe
       extrude: Druk Uit
       filter: Filter
+      flip_layout: Keer uitleg om
       forgot_password: Wagwoord vergeet?
       go_to_file: Gaan na lêer
       heaters_off: Verwarmers af

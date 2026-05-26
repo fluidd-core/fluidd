@@ -413,6 +413,30 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
             cellClass: 'text-no-wrap'
           },
           {
+            text: this.$tc('app.general.table.header.printer_vendor'),
+            value: 'printer_vendor',
+            visible: false,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.printer_model'),
+            value: 'printer_model',
+            visible: false,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.printer_variant'),
+            value: 'printer_variant',
+            visible: false,
+            cellClass: 'text-no-wrap'
+          },
+          {
+            text: this.$tc('app.general.table.header.profile_version'),
+            value: 'profile_version',
+            visible: false,
+            cellClass: 'text-no-wrap'
+          },
+          {
             text: this.$tc('app.general.table.header.estimated_time'),
             value: 'estimated_time',
             visible: isNotDashboard,
@@ -1208,12 +1232,18 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       if (hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'files')) {
         const files = getFileDataTransferDataFromDataTransfer(event.dataTransfer, 'files')
 
-        for (const file of files.items) {
-          const src = `${files.path}/${file}`
-          const dest = `${this.currentPath}/${file}`
-          SocketActions.serverFilesCopy(src, dest)
+        if (files) {
+          for (const file of files.items) {
+            const src = `${files.path}/${file}`
+            const dest = `${this.currentPath}/${file}`
+            SocketActions.serverFilesCopy(src, dest)
+          }
+
+          return
         }
-      } else if (hasFilesInDataTransfer(event.dataTransfer)) {
+      }
+
+      if (hasFilesInDataTransfer(event.dataTransfer)) {
         const files = await getFilesFromDataTransfer(event.dataTransfer)
 
         if (files) {

@@ -69,7 +69,7 @@
 import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { AppFile } from '@/store/files/types'
-import { Marked, type MarkedExtension } from 'marked'
+import { Marked, type MarkedExtension, type Tokens } from 'marked'
 import { baseUrl } from 'marked-base-url'
 import { consola } from 'consola'
 
@@ -142,8 +142,8 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
 
     const customExtension: MarkedExtension = {
       renderer: {
-        link (...args) {
-          const html = this.constructor.prototype.link.call(this, ...args)
+        link (args: Tokens.Link) {
+          const html = this.constructor.prototype.link.call(this, args)
 
           return html.replace(/^<a /, '<a target="_blank" ')
         }

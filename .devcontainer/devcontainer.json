@@ -6,9 +6,19 @@
   "service": "fluidd",
   "workspaceFolder": "/workspaces/fluidd",
   "forwardPorts": [7125, 8080],
+  "portsAttributes": {
+    "7125": {
+      "label": "Moonraker",
+      "onAutoForward": "silent"
+    },
+    "8080": {
+      "label": "mjpg-streamer",
+      "onAutoForward": "silent"
+    }
+  },
   "features": {
   },
-  "postCreateCommand": "npm ci && npm run bootstrap",
+  "postCreateCommand": "pnpm i --frozen-lockfile && pnpm run bootstrap",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -29,7 +39,13 @@
         },
         "i18n-ally.localesPaths": [
           "src/locales"
-        ]
+        ],
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "/bin/zsh"
+          }
+        }
       }
     }
   },

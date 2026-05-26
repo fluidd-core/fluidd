@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { ConfigState, CustomNavLink, SvgIconPath, TemperaturePreset } from './types'
+import type { ConfigState, CustomNavLink, SvgIconPath, TemperaturePreset, TokenKeys } from './types'
 import type { RootState } from '../types'
 import type { Heater, Fan } from '../printer/types'
 import type { AppDataTableHeader } from '@/types'
@@ -164,9 +164,12 @@ export const getters = {
   getTokenKeys: (state) => {
     const url = state.apiUrl
     const hash = (url) ? md5(url) : ''
-    return {
-      'user-token': `user-token-${hash}`,
-      'refresh-token': `refresh-token-${hash}`
+
+    const tokenKeys: TokenKeys = {
+      userToken: `user-token-${hash}`,
+      refreshToken: `refresh-token-${hash}`
     }
+
+    return tokenKeys
   }
 } satisfies GetterTree<ConfigState, RootState>

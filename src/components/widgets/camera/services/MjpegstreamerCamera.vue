@@ -11,10 +11,11 @@
 
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
+import { markRaw } from 'vue'
 import CameraMixin from '@/mixins/camera'
 import { consola } from 'consola'
 
-import type { MjpegWorkerClientMessage, MjpegWorkerServerMessage } from '@/workers/mjpegStream.worker'
+import type { MjpegWorkerResponseMessage, MjpegWorkerRequestMessage } from '@/workers/mjpegStream.worker'
 
 import MjpegWorker from '@/workers/mjpegStream.worker?ts?worker'
 
@@ -60,9 +61,9 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
 
       url.searchParams.set('cacheBust', Date.now().toString())
 
-      const worker = this.worker = new MjpegWorker()
+      const worker = this.worker = markRaw(new MjpegWorker())
 
-      worker.addEventListener('message', (event: MessageEvent<MjpegWorkerClientMessage>) => {
+      worker.onmessage = (event: MessageEvent<MjpegWorkerResponseMessage>) => {
         const message = event.data
 
         switch (message.action) {
@@ -99,9 +100,9 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
 
             break
         }
-      })
+      }
 
-      const message: MjpegWorkerServerMessage = {
+      const message: MjpegWorkerRequestMessage = {
         action: 'start',
         url: url.toString()
       }
