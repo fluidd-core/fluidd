@@ -55,9 +55,11 @@ export default class FilesMixin extends Vue {
   }
 
   /**
-   * Loads a gcode file and parses for the gcode-viewer.
+   * Builds a download URL for a gcode file, for the gcode-viewer worker to
+   * stream and parse without buffering the whole file in memory. Prompts
+   * the user for confirmation if the file exceeds 100 MB.
    */
-  async getGcode (file: AppFile) {
+  async getGcodePreviewUrl (file: AppFile): Promise<string | undefined> {
     const sizeInMB = file.size / 1024 / 1024
 
     const result = (
@@ -76,13 +78,7 @@ export default class FilesMixin extends Vue {
     if (result) {
       const path = file.path ? `gcodes/${file.path}` : 'gcodes'
 
-      return await this.getFile<ArrayBuffer>(
-        file.filename,
-        path,
-        file.size,
-        {
-          responseType: 'arraybuffer',
-        })
+      return await this.createFileUrlWithToken(file.filename, path)
     }
   }
 

@@ -23,7 +23,7 @@ const mjpegStream = async (url: string, sendFrame: (data: Uint8Array<ArrayBuffer
     mode: 'cors'
   })
 
-  if (!response.ok) {
+  if (!response.ok || !response.body) {
     throw new Error(`Failed to fetch MJPEG stream: ${response.status}`)
   }
 
@@ -41,7 +41,7 @@ const mjpegStream = async (url: string, sendFrame: (data: Uint8Array<ArrayBuffer
 
   const boundaryBytes = new TextEncoder().encode(`--${boundary}`)
 
-  const reader = response.body!.getReader({
+  const reader = response.body.getReader({
     mode: 'byob'
   })
 

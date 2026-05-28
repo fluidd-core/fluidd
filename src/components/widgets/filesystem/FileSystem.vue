@@ -854,11 +854,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   async handlePreviewGcode (file: AppFile | AppFileWithMeta) {
     try {
-      const response = await this.getGcode(file)
+      const url = await this.getGcodePreviewUrl(file)
 
-      const gcode = response?.data
-
-      if (!gcode) return
+      if (!url) return
 
       if (
         this.$route.name !== 'home' ||
@@ -869,7 +867,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
       this.$typedDispatch('gcodePreview/loadGcode', {
         file,
-        gcode
+        url
       })
     } catch (error: unknown) {
       consola.error('[FileSystem] preview gcode', error)

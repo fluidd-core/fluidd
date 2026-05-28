@@ -72,12 +72,24 @@ const isPolygonData = (data: unknown): data is [number, number][] => (
     ))
 )
 
-const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void) => {
+const parseGcode = async (
+  url: string,
+  fileSize: number,
+  sendProgress: (filePosition: number) => void
+) => {
+  const response = await fetch(url)
+
+  if (!response.ok || !response.body) {
+    throw new Error(`Failed to download gcode (${response.status} ${response.statusText})`)
+  }
+
+  const progressStep = Math.max(1, Math.floor(fileSize / 100))
+  let nextProgressByte = 0
+
   const moves: Move[] = []
   const layers: Layer[] = []
   const parts: Part[] = []
   const tools = new Set<number>()
-  const lines = gcode.split('\n')
 
   let newLayerForNextMove = false
   let extrusionMode: PositioningMode = 'relative'
@@ -111,8 +123,8 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
     z: 0
   }
 
-  for (let i = 0; i < lines.length; i++) {
-    const { type, command, args } = parseLine(lines[i]) ?? {}
+  const handleLine = (line: string) => {
+    const { type, command, args } = parseLine(line) ?? {}
 
     let move: Move | null = null
 
@@ -332,11 +344,57 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
       }
     }
 
-    if (i % Math.floor(lines.length / 100) === 0) {
+    if (filePosition >= nextProgressByte) {
       sendProgress(filePosition)
+      nextProgressByte = filePosition + progressStep
     }
 
-    filePosition += lines[i].length + 1 // + 1 for newline
+    filePosition += line.length + 1 // + 1 for newline
+  }
+
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+  let cursor = 0
+
+  const drainLines = () => {
+    while (true) {
+      const nl = buffer.indexOf('\n', cursor)
+
+      if (nl === -1) {
+        break
+      }
+
+      handleLine(buffer.slice(cursor, nl))
+
+      cursor = nl + 1
+    }
+
+    if (cursor > 0) {
+      buffer = buffer.slice(cursor)
+      cursor = 0
+    }
+  }
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read()
+
+      if (done) {
+        buffer += decoder.decode()
+        drainLines()
+        break
+      }
+
+      buffer += decoder.decode(value, { stream: true })
+      drainLines()
+    }
+
+    if (buffer.length > 0) {
+      handleLine(buffer)
+    }
+  } finally {
+    reader.releaseLock()
   }
 
   sendProgress(filePosition)
