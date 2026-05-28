@@ -1,4 +1,3 @@
-/* eslint-disable no-fallthrough */
 import type { ArcMove, ArcPlane, BBox, Layer, LinearMove, Move, Part, PositioningMode } from '@/store/gcodePreview/types'
 import isKeyOf from '@/util/is-key-of'
 import { pick } from 'lodash-es'
@@ -243,12 +242,13 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
         }
         case 'G90':
           positioningMode = 'absolute'
+          break
         case 'M82':
           extrusionMode = 'absolute'
-          toolhead.e = 0
           break
         case 'G91':
           positioningMode = 'relative'
+          break
         case 'M83':
           extrusionMode = 'relative'
           break
