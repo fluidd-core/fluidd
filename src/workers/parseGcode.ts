@@ -389,10 +389,6 @@ const parseGcode = async (
       buffer += decoder.decode(value, { stream: true })
       drainLines()
     }
-
-    if (buffer.length > 0) {
-      handleLine(buffer)
-    }
   } finally {
     reader.releaseLock()
   }
