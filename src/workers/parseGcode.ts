@@ -62,6 +62,27 @@ const decimalRound = (a: number) => {
   return Math.round(a * 10000) / 10000
 }
 
+const utf8ByteLength = (str: string) => {
+  let bytes = 0
+
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i)
+
+    if (code < 0x80) {
+      bytes += 1
+    } else if (code < 0x800) {
+      bytes += 2
+    } else if (code >= 0xd800 && code <= 0xdbff) {
+      bytes += 4 // high surrogate + its low surrogate = one 4-byte sequence
+      i++
+    } else {
+      bytes += 3
+    }
+  }
+
+  return bytes
+}
+
 const isPolygonData = (data: unknown): data is [number, number][] => (
   Array.isArray(data) &&
   data
@@ -349,7 +370,7 @@ const parseGcode = async (
       nextProgressByte = filePosition + progressStep
     }
 
-    filePosition += line.length + 1 // + 1 for newline
+    filePosition += utf8ByteLength(line) + 1 // + 1 for the '\n' (1 byte)
   }
 
   const reader = response.body.getReader()
