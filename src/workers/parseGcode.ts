@@ -58,6 +58,15 @@ const parseLine = (line: string) => {
   }
 }
 
+const linearMoveParams: (keyof LinearMove)[] = [
+  'x', 'y', 'z', 'e'
+]
+
+const arcMoveParams: (keyof ArcMove)[] = [
+  'x', 'y', 'z', 'e',
+  'i', 'j', 'k', 'r'
+]
+
 const decimalRound = (a: number) => {
   return Math.round(a * 10000) / 10000
 }
@@ -187,13 +196,9 @@ const parseGcode = async (
       switch (command) {
         case 'G0':
         case 'G1': {
-          const params: (keyof LinearMove)[] = [
-            'x', 'y', 'z', 'e'
-          ]
-
-          if (params.some(param => param in args)) {
+          if (linearMoveParams.some(param => param in args)) {
             move = {
-              ...pick(args, params),
+              ...pick(args, linearMoveParams),
               tool,
               filePosition
             } satisfies LinearMove
@@ -202,14 +207,9 @@ const parseGcode = async (
         }
         case 'G2':
         case 'G3': {
-          const params: (keyof ArcMove)[] = [
-            'x', 'y', 'z', 'e',
-            'i', 'j', 'k', 'r'
-          ]
-
-          if (params.some(param => param in args)) {
+          if (arcMoveParams.some(param => param in args)) {
             move = {
-              ...pick(args, params),
+              ...pick(args, arcMoveParams),
               d: command === 'G2'
                 ? 'clockwise'
                 : 'counter-clockwise',
