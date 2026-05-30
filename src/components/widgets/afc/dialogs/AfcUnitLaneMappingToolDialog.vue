@@ -62,7 +62,7 @@ export default class AfcUnitLaneMappingToolDialog extends Mixins(StateMixin, Afc
 
       const tools = Array.isArray(lane.map) ? lane.map : [lane.map]
       for (const tool of tools) {
-        seen.add(tool)
+        if (tool != null && tool !== '') seen.add(tool)
       }
     }
 

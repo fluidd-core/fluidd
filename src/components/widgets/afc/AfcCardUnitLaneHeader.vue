@@ -7,7 +7,7 @@
         class="fill-width elevation-0"
         @click="showDialog = true"
       >
-        {{ $filters.prettyCase(name) }} > {{ mappedTool }}
+        {{ mappedTool }} > {{ $filters.prettyCase(name) }}
       </v-btn>
       <afc-unit-lane-mapping-tool-dialog
         v-model="showDialog"
