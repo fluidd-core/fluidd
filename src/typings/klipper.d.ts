@@ -806,7 +806,7 @@ declare namespace Klipper {
     buffer: string | null;
     buffer_status: AfcBufferStatus | null;
     lane: number;
-    map: string | null;
+    map: string | string[] | null;
     load: boolean;
     prep: boolean;
     tool_loaded: boolean;
