@@ -9,8 +9,8 @@
         ref="chart"
         style="overflow: initial;"
         :option="opts"
-        :update-options="{ notMerge: true }"
-        :init-options="{ renderer: 'canvas' }"
+        :update-options="updateOptions"
+        :init-options="initOptions"
         autoresize
       />
     </div>
@@ -38,6 +38,12 @@ export default class AppChart extends Vue {
 
   @Ref('chart')
   readonly chart!: ECharts
+
+  // Stable references so component re-renders don't make vue-echarts dispose/
+  // re-init the chart or re-apply the options, both of which would wipe the
+  // imperatively-set dataset and blank the chart.
+  readonly updateOptions = Object.freeze({ notMerge: true })
+  readonly initOptions = Object.freeze({ renderer: 'canvas' })
 
   ready = false
 

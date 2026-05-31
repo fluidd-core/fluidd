@@ -8,8 +8,8 @@
     <e-chart
       ref="chart"
       :option="opts"
-      :update-options="{ notMerge: false }"
-      :init-options="{ renderer: 'canvas' }"
+      :update-options="updateOptions"
+      :init-options="initOptions"
       autoresize
     />
 
@@ -43,6 +43,11 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
 
   @Ref('chart')
   readonly chart!: ECharts
+
+  // Stable references so component re-renders don't make vue-echarts dispose/
+  // re-init the chart, which would reset the 3D camera (rotation/zoom) state.
+  readonly updateOptions = Object.freeze({ notMerge: false })
+  readonly initOptions = Object.freeze({ renderer: 'canvas' })
 
   get flatSurface (): boolean {
     return this.$typedState.mesh.flatSurface
