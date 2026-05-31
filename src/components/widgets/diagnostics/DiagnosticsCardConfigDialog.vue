@@ -1,7 +1,7 @@
 <template>
   <app-dialog
     v-model="open"
-    :title="(config.id !== '') ? $t('app.general.title.edit_chart') : $t('app.general.title.add_chart')"
+    :title="dialogTitle"
     max-width="800"
   >
     <v-card-text>
@@ -79,8 +79,9 @@
 import { Component, Prop, VModel, Mixins } from 'vue-property-decorator'
 import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
 import CardConfigStep from './config/CardConfigStep.vue'
-import AxesConfigStep from './config/AxesConfigStep.vue'
-import MetricsConfigStep from './config/MetricsConfigStep.vue'
+import ChartAxisConfigStep from './config/ChartAxisConfigStep.vue'
+import ChartMetricsConfigStep from './config/ChartMetricsConfigStep.vue'
+import WatchMetricsConfigStep from './config/WatchMetricsConfigStep.vue'
 import BrowserMixin from '@/mixins/browser'
 
 @Component({})
@@ -92,11 +93,59 @@ export default class DiagnosticsCardConfigDialog extends Mixins(BrowserMixin) {
   readonly config!: DiagnosticsCardConfig
 
   currentStep = 1
-  steps = [
-    { name: this.$t('app.setting.label.card'), component: CardConfigStep },
-    { name: this.$t('app.setting.label.axes'), component: AxesConfigStep },
-    { name: this.$t('app.setting.label.metrics'), component: MetricsConfigStep }
-  ]
+
+  get dialogTitle (): string {
+    const isNew = this.config.id === ''
+
+    switch (this.config.type) {
+      case 'chart':
+        return isNew
+          ? this.$t('app.general.title.add_chart').toString()
+          : this.$t('app.general.title.edit_chart').toString()
+
+      case 'watches':
+        return isNew
+          ? this.$t('app.general.title.add_watch_panel').toString()
+          : this.$t('app.general.title.edit_watch_panel').toString()
+
+      default:
+        return ''
+    }
+  }
+
+  get steps () {
+    const cardStep = {
+      name: this.$t('app.setting.label.card').toString(),
+      component: CardConfigStep
+    }
+
+    switch (this.config.type) {
+      case 'chart':
+        return [
+          cardStep,
+          {
+            name: this.$t('app.setting.label.axes').toString(),
+            component: ChartAxisConfigStep
+          },
+          {
+            name: this.$t('app.setting.label.metrics').toString(),
+            component: ChartMetricsConfigStep
+          }
+        ]
+
+      case 'watches':
+        return [
+          cardStep,
+          {
+            name: this.$t('app.setting.label.watch_metrics').toString(),
+            component: WatchMetricsConfigStep
+          }
+        ]
+
+      default:
+        return []
+    }
+  }
 
   handleSave () {
     this.$emit('save', this.config)

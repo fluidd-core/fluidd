@@ -1,15 +1,34 @@
 import type { LayoutConfig } from '@/store/layout/types'
 
+export interface DiagnosticsState {
+  watchValues: Record<string, unknown>
+}
+
 export interface DiagnosticsCardContainer {
   [key: string]: DiagnosticsCardConfig[]
 }
 
-export interface DiagnosticsCardConfig extends LayoutConfig {
+interface DiagnosticsCardBase extends LayoutConfig {
   icon: string
   title: string
-  height: number
+}
 
+export interface DiagnosticsChartConfig extends DiagnosticsCardBase {
+  type: 'chart'
+  height: number
   axes: ChartAxis[]
+}
+
+export interface DiagnosticsWatchesConfig extends DiagnosticsCardBase {
+  type: 'watches'
+  metrics: WatchMetric[]
+}
+
+export type DiagnosticsCardConfig = DiagnosticsChartConfig | DiagnosticsWatchesConfig
+
+export interface WatchMetric {
+  name: string
+  collector: string
 }
 
 export interface ChartAxis {
@@ -19,16 +38,16 @@ export interface ChartAxis {
   max?: number
   showLegend: boolean
 
-  metrics: Metric[]
+  metrics: ChartMetric[]
 }
 
-export interface Metric {
+export interface ChartMetric {
   collector: string
   name: string
-  style: MetricStyle
+  style: ChartMetricStyle
 }
 
-export interface MetricStyle {
+export interface ChartMetricStyle {
   lineColor: string
   lineStyle: 'solid' | 'dashed' | 'dotted'
   fillColor: string | null

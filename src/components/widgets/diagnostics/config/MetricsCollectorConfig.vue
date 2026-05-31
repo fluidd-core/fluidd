@@ -1,53 +1,60 @@
 <template>
   <v-card outlined>
-    <v-textarea
-      ref="textarea"
-      v-model="metric.collector"
-      class="px-4"
-      :label="$t('app.setting.label.collector')"
-      spellcheck="false"
-      auto-grow
-      hide-details="auto"
-    >
-      <template #append>
-        <app-btn
-          icon
-          small
-          color="secondary"
-          :title="$t('app.general.tooltip.browse_metrics')"
-          @click="browserOpen = true"
-        >
-          <v-icon>
-            $magnify
-          </v-icon>
-        </app-btn>
+    <v-card-text>
+      <v-row>
+        <v-col>
+          <v-textarea
+            ref="textarea"
+            v-model="metric.collector"
+            class="metric-collector"
+            spellcheck="false"
+            auto-grow
+            filled
+            dense
+            hide-details
+          >
+            <template #append>
+              <app-btn
+                icon
+                small
+                color="secondary"
+                :title="$t('app.general.tooltip.browse_metrics')"
+                @click="browserOpen = true"
+              >
+                <v-icon>
+                  $magnify
+                </v-icon>
+              </app-btn>
 
-        <app-btn
-          icon
-          small
-          color="primary"
-          :title="$t('app.general.tooltip.run_collector')"
-          @click="runCollector"
-        >
-          <v-icon>
-            $play
-          </v-icon>
-        </app-btn>
-      </template>
-    </v-textarea>
+              <app-btn
+                icon
+                small
+                color="primary"
+                :title="$t('app.general.tooltip.run_collector')"
+                @click="runCollector"
+              >
+                <v-icon>
+                  $play
+                </v-icon>
+              </app-btn>
+            </template>
+          </v-textarea>
+        </v-col>
+      </v-row>
 
-    <app-setting :title="$t('app.setting.label.last_result')">
-      <v-text-field
-        ref="result"
-        filled
-        dense
-        single-line
-        hide-details="auto"
-        disabled
-        :suffix="unit"
-        :value="result"
-      />
-    </app-setting>
+      <app-setting :title="$t('app.setting.label.last_result')">
+        <v-text-field
+          ref="result"
+          filled
+          dense
+          single-line
+          hide-details
+          disabled
+          :suffix="unit"
+          :value="result"
+        />
+      </app-setting>
+    </v-card-text>
 
     <app-dialog
       v-if="browserOpen"
@@ -67,7 +74,6 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
-import type { Metric } from '@/store/diagnostics/types'
 import sandboxedEval from '@/plugins/sandboxedEval'
 import StateExplorer from '@/components/widgets/diagnostics/StateExplorer.vue'
 import type { VTextarea } from 'vuetify/lib'
@@ -79,9 +85,9 @@ import type { VTextarea } from 'vuetify/lib'
 })
 export default class MetricsCollectorConfig extends Vue {
   @Prop({ type: Object, required: true })
-  readonly metric!: Metric
+  readonly metric!: { collector: string }
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, default: '' })
   readonly unit!: string
 
   @Ref('textarea')
@@ -123,3 +129,9 @@ export default class MetricsCollectorConfig extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .metric-collector {
+    font-family: monospace;
+  }
+</style>

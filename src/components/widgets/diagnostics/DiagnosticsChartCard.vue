@@ -9,6 +9,7 @@
       <app-btn-collapse-group>
         <app-btn
           small
+          class="me-1 my-1"
           @click="$emit('edit', config)"
         >
           <v-icon
@@ -34,7 +35,7 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator'
-import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
+import type { DiagnosticsChartConfig } from '@/store/diagnostics/types'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
 import BrowserMixin from '@/mixins/browser'
 
@@ -44,9 +45,9 @@ type LineSeriesOptionExtended = LineSeriesOption & {
 }
 
 @Component({})
-export default class DiagnosticsCard extends Mixins(BrowserMixin) {
+export default class DiagnosticsChartCard extends Mixins(BrowserMixin) {
   @Prop({ type: Object, required: true })
-  readonly config!: DiagnosticsCardConfig
+  readonly config!: DiagnosticsChartConfig
 
   get chartData () {
     return this.$typedState.charts.diagnostics || []

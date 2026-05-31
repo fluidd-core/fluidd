@@ -157,18 +157,18 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
+import type { DiagnosticsChartConfig } from '@/store/diagnostics/types'
 import MetricsCollectorConfig from './MetricsCollectorConfig.vue'
-import { defaultState } from '@/store/layout/state'
+import { defaultDiagnosticsChartConfig } from '@/store/layout/state'
 
 @Component({
   components: {
     MetricsCollectorConfig
   }
 })
-export default class MetricsConfigStep extends Vue {
+export default class ChartMetricsConfigStep extends Vue {
   @Prop({ type: Object, required: true })
-  readonly config!: DiagnosticsCardConfig
+  readonly config!: DiagnosticsChartConfig
 
   currentStep = 1
   steps = [this.$t('app.setting.label.left_y'), this.$t('app.setting.label.right_y')]
@@ -180,7 +180,7 @@ export default class MetricsConfigStep extends Vue {
   ]
 
   addMetric (axis: number) {
-    const defaultCard = defaultState().layouts.diagnostics.container1[0] as DiagnosticsCardConfig
+    const defaultCard = defaultDiagnosticsChartConfig()
     const defaultMetric = defaultCard.axes[0].metrics[0]
 
     this.config.axes[axis].metrics.push(defaultMetric)

@@ -31,6 +31,7 @@ import { sensors } from './sensors'
 import { database } from './database'
 import { analysis } from './analysis'
 import { afc } from './afc'
+import { diagnostics } from './diagnostics'
 
 Vue.use(Vuex)
 
@@ -63,7 +64,8 @@ export const storeOptions = {
     sensors,
     database,
     analysis,
-    afc
+    afc,
+    diagnostics
   } satisfies RootModules,
   mutations: {},
   actions: {

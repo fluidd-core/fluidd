@@ -44,22 +44,24 @@
       </v-select>
     </app-setting>
 
-    <v-divider />
+    <template v-if="config.type !== 'watches'">
+      <v-divider />
 
-    <app-setting :title="$t('app.setting.label.height')">
-      <v-text-field
-        v-model="config.height"
-        filled
-        dense
-        single-line
-        hide-details="auto"
-        suffix="px"
-        :rules="[
-          $rules.required,
-          $rules.numberGreaterThanOrEqual(1)
-        ]"
-      />
-    </app-setting>
+      <app-setting :title="$t('app.setting.label.height')">
+        <v-text-field
+          v-model="height"
+          filled
+          dense
+          single-line
+          hide-details="auto"
+          suffix="px"
+          :rules="[
+            $rules.required,
+            $rules.numberGreaterThanOrEqual(1)
+          ]"
+        />
+      </app-setting>
+    </template>
   </div>
 </template>
 
@@ -72,6 +74,16 @@ import { Icons } from '@/globals'
 export default class CardConfigStep extends Vue {
   @Prop({ type: Object, required: true })
   readonly config!: DiagnosticsCardConfig
+
+  get height (): number {
+    return this.config.type === 'chart' ? this.config.height : 0
+  }
+
+  set height (value: number) {
+    if (this.config.type === 'chart') {
+      this.config.height = value
+    }
+  }
 
   get icons () {
     const icons = Object.keys(Icons)

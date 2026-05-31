@@ -392,6 +392,7 @@ app:
       name: Name
       new_password: New password
       no_notifications: No notifications
+      no_watch_metrics: No watch metrics configured
       'on': 'On'
       'off': 'Off'
       numeric_prefix_sort: Numeric Prefix sort
@@ -555,6 +556,8 @@ app:
         user: User
     title:
       add_chart: Add Chart
+      add_watch_panel: Add Watch Panel
+      add_watches: Add Watches
       add_printer: Add Printer
       beacon: Beacon
       bedmesh: Bed Mesh
@@ -565,6 +568,7 @@ app:
       console: Console
       diagnostics: Diagnostics
       edit_chart: Edit Chart
+      edit_watch_panel: Edit Watch Panel
       endstops: Endstops
       fans_outputs: Fans & Outputs
       gcode_preview: Gcode Preview
@@ -696,6 +700,7 @@ app:
       camera_url_snapshot: Camera Url Snapshot
       camera_url_stream: Camera Url Stream
       card: Card
+      chart: Chart
       collector: Collector
       confirm_on_estop: Require confirm on Emergency Stop
       confirm_on_power_device_change: Require confirm on Device Power changes
@@ -789,6 +794,9 @@ app:
       toolhead_z_move_distances: Toolhead Z distance values
       type: Type
       unit: Unit
+      value: Value
+      watch_metrics: Watch Metrics
+      watch_panel: Watch Panel
       warn_on_cpu_throttled: Warn if CPU throttling is detected
       warn_on_stepper_driver_overheating: Warn if stepper driver is over-heating
       z_adjust_values: Z Adjust values
