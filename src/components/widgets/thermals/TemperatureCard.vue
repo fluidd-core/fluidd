@@ -95,6 +95,8 @@
 
     <temperature-targets
       @updateChartSelectedLegends="updateChartSelectedLegends"
+      @highlightChartSeries="highlightChartSeries"
+      @downplayChartSeries="downplayChartSeries"
     />
 
     <template v-if="chartReady && chartVisible">
@@ -146,6 +148,18 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
   updateChartSelectedLegends (chartSelectedLegends: ChartSelectedLegends) {
     if (this.chartVisible) {
       this.thermalChartElement.updateChartSelectedLegends(chartSelectedLegends)
+    }
+  }
+
+  highlightChartSeries (key: string) {
+    if (this.chartVisible) {
+      this.thermalChartElement.highlightSeries(key)
+    }
+  }
+
+  downplayChartSeries () {
+    if (this.chartVisible) {
+      this.thermalChartElement.downplaySeries()
     }
   }
 

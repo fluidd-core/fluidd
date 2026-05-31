@@ -29,6 +29,8 @@
           v-for="item in heaters"
           :key="item.key"
           @contextmenu.prevent="handleHeaterRowClick(item, $event)"
+          @mouseenter="handleHeaterMouseEnter(item)"
+          @mouseleave="handleHeaterMouseLeave"
         >
           <td>
             <v-icon
@@ -105,6 +107,8 @@
         <tr
           v-for="item in fans"
           :key="item.key"
+          @mouseenter="handleHeaterMouseEnter(item)"
+          @mouseleave="handleHeaterMouseLeave"
         >
           <td>
             <v-icon
@@ -189,6 +193,8 @@
         <tr
           v-for="item in sensors"
           :key="item.key"
+          @mouseenter="handleHeaterMouseEnter(item)"
+          @mouseleave="handleHeaterMouseLeave"
         >
           <td>
             <v-icon
@@ -459,6 +465,14 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     }
 
     this.$emit('updateChartSelectedLegends', chartSelectedLegends)
+  }
+
+  handleHeaterMouseEnter (item: Heater | Fan | Sensor) {
+    this.$emit('highlightChartSeries', item.key)
+  }
+
+  handleHeaterMouseLeave () {
+    this.$emit('downplayChartSeries')
   }
 
   getNevermoreSensors (item: Record<string, number | undefined>) {

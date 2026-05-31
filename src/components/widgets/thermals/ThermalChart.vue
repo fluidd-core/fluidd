@@ -337,9 +337,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
       animation: false,
       color,
       emphasis: {
-        lineStyle: {
-          width: 1.5
-        }
+        focus: 'series'
       },
       lineStyle: {
         color,
@@ -359,7 +357,6 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     // If this is a target, adjust its display.
     if (subKey === '#target') {
       series.yAxisIndex = 0
-      series.emphasis!.lineStyle!.width = 1
       series.lineStyle!.width = 1
       series.lineStyle!.type = 'dashed'
       series.lineStyle!.opacity = 0.8
@@ -369,7 +366,6 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     // If this is a power or speed, adjust its display.
     if (subKey === '#power' || subKey === '#speed') {
       series.yAxisIndex = 1
-      series.emphasis!.lineStyle!.width = 1
       series.lineStyle!.width = 1
       series.lineStyle!.type = 'dotted'
       series.lineStyle!.opacity = 1
@@ -392,6 +388,23 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
         ) &&
         selected[key] === true
       )
+  }
+
+  highlightSeries (key: string) {
+    if (this.chart && !this.loading) {
+      const seriesName = this.series
+        .map(series => series.name as string)
+        .filter(name => name === key || name.startsWith(`${key}#`))
+
+      this.chart.dispatchAction({ type: 'downplay' })
+      this.chart.dispatchAction({ type: 'highlight', seriesName })
+    }
+  }
+
+  downplaySeries () {
+    if (this.chart && !this.loading) {
+      this.chart.dispatchAction({ type: 'downplay' })
+    }
   }
 
   updateChartSelectedLegends (chartSelectedLegends: ChartSelectedLegends) {
