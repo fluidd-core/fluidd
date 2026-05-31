@@ -151,7 +151,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
         right: margin,
         bottom: margin,
         outerBoundsMode: 'same',
-        outerBoundsContain: 'axisLabel'
+        outerBoundsContain: 'auto'
       },
       textStyle: {
         fontFamily: 'Roboto'
@@ -420,7 +420,6 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
 <style lang='scss' scoped>
   .chart {
-    margin-top: 16px;
     width: 100%;
   }
 </style>

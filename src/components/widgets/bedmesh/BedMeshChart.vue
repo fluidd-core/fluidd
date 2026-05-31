@@ -260,7 +260,6 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
 
 <style lang='scss' scoped>
   .chart {
-    margin-top: 16px;
     width: 100%;
     // height: 625px;
   }
