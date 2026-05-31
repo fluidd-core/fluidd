@@ -1,5 +1,35 @@
 import type { FileFilterType } from '../files/types'
 
+export interface SvgIconPath {
+  d: string
+  fill?: string
+}
+
+export interface CustomNavLink {
+  id: string
+  title: string
+  url: string
+  icon: string
+  customIcon?: string | SvgIconPath[]
+  customImage?: string          // base64 data URI (e.g. "data:image/png;base64,...")
+  color?: string
+  position: number
+  // Per-link open behaviour. Absent defaults to opening in a new tab; 'same-tab' keeps the
+  // current tab.
+  target?: 'same-tab' | 'new-tab'
+}
+
+export interface NavigationConfig {
+  customLinks: CustomNavLink[]
+  hiddenThemeLinks: string[]
+  collapsedSystemLinks: string[]
+  systemLinkOrder: string[]
+  collapsedCustomLinks: string[]
+  themeLinkPositions: Record<string, number>
+  confirmOnNavLink: boolean
+  sidebarExpanded: boolean
+}
+
 export interface ConfigState {
   [key: string]: any;
   apiUrl: string;
@@ -31,6 +61,7 @@ export interface UiSettings {
   history: HistoryConfig;
   mmu: MmuConfig;
   afc: AfcConfig;
+  navigation: NavigationConfig;
 }
 
 export interface WarningsConfig {
@@ -176,10 +207,21 @@ export interface ThemePreset {
   color: string;
   isDark: boolean;
   logo: ThemeLogo;
+  url?: string;
+  links?: ThemeLink[];
+  icon?: SvgIconPath[];
+}
+
+export interface ThemeLink {
+  title: string
+  url: string
+  icon?: string
 }
 
 export interface ThemeLogo {
   src: string;
+  icon?: string;
+  background?: string;
   dark?: string;
   light?: string;
 }

@@ -5,6 +5,7 @@
   >
     <v-col
       cols="12"
+      md="10"
       lg="8"
     >
       <router-view v-if="socketReady" />
@@ -12,6 +13,7 @@
         <general-settings />
         <warnings-settings />
         <theme-settings />
+        <navigation-settings />
         <auth-settings v-if="supportsAuth" />
         <console-settings />
         <file-browser-settings />
@@ -38,6 +40,7 @@ import MacroSettings from '@/components/settings/macros/MacroSettings.vue'
 import GeneralSettings from '@/components/settings/GeneralSettings.vue'
 import PresetSettings from '@/components/settings/presets/PresetSettings.vue'
 import CameraSettings from '@/components/settings/cameras/CameraSettings.vue'
+import NavigationSettings from '@/components/settings/navigation/NavigationSettings.vue'
 import ToolheadSettings from '@/components/settings/ToolheadSettings.vue'
 import ThemeSettings from '@/components/settings/ThemeSettings.vue'
 import VersionSettings from '@/components/settings/VersionSettings.vue'
@@ -60,6 +63,7 @@ import WarningsSettings from '@/components/settings/WarningsSettings.vue'
     GeneralSettings,
     PresetSettings,
     CameraSettings,
+    NavigationSettings,
     ToolheadSettings,
     ThemeSettings,
     VersionSettings,

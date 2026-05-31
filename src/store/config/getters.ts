@@ -1,9 +1,10 @@
 import type { GetterTree } from 'vuex'
-import type { ConfigState, TemperaturePreset, TokenKeys } from './types'
+import type { ConfigState, CustomNavLink, SvgIconPath, TemperaturePreset, TokenKeys } from './types'
 import type { RootState } from '../types'
 import type { Heater, Fan } from '../printer/types'
 import type { AppDataTableHeader } from '@/types'
 import md5 from 'md5'
+import { THEME_LINK_ID_PREFIX } from '@/util/nav-link'
 
 export const getters = {
   getCurrentInstance: (state) => {
@@ -105,6 +106,59 @@ export const getters = {
           ...header,
           ...configuredHeaders.find(p => p.value === header.value)
         }))
+  },
+
+  getThemeNavLinks: (state): CustomNavLink[] => {
+    const activePreset = state.hostConfig.themePresets.find(
+      p => p.logo.src === state.uiSettings.theme.logo.src
+    )
+    if (!activePreset) return []
+
+    // Resolve links array: prefer preset.links, fall back to legacy preset.url
+    const links = activePreset.links ??
+      (activePreset.url ? [{ title: activePreset.name, url: activePreset.url }] : [])
+
+    if (links.length === 0) return []
+
+    const baseId = `${THEME_LINK_ID_PREFIX}${activePreset.logo.src}`
+
+    return links.map((link, index) => {
+      // Resolve icon per link via fallback chain
+      const customIcon: string | undefined | SvgIconPath[] = link.icon ??
+        activePreset.logo.icon ??
+        activePreset.icon ??
+        activePreset.logo.src
+
+      // Generate stable IDs: first link keeps legacy ID for backwards compat
+      const id = index === 0 ? baseId : `${baseId}-${index}`
+
+      // Position: use stored position if available, otherwise group at top
+      const storedPosition = state.uiSettings.navigation?.themeLinkPositions?.[id]
+      const position = storedPosition ?? (-1 + index)
+
+      return {
+        id,
+        title: link.title,
+        url: link.url,
+        icon: 'openInNew',
+        customIcon,
+        position
+      }
+    })
+  },
+
+  getDbNavLinks: (state): CustomNavLink[] => {
+    return [...(state.uiSettings.navigation?.customLinks || [])]
+      .sort((a, b) => a.position - b.position)
+  },
+
+  getCustomNavLinks: (state, getters): CustomNavLink[] => {
+    const dbLinks = state.uiSettings.navigation?.customLinks || []
+    const hidden = state.uiSettings.navigation?.hiddenThemeLinks || []
+    const themeLinks = (getters.getThemeNavLinks as CustomNavLink[])
+      .filter(l => !hidden.includes(l.id))
+    const combined = [...dbLinks, ...themeLinks]
+    return combined.sort((a, b) => a.position - b.position)
   },
 
   getTokenKeys: (state) => {

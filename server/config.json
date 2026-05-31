@@ -12,24 +12,40 @@
       "color": "#2196F3",
       "isDark": true,
       "logo": {
-        "src": "logo_fluidd.svg"
-      }
+        "src": "logo_fluidd.svg",
+        "icon": "icon_fluidd.svg"
+      },
+      "links": [{ "title": "Fluidd", "url": "https://docs.fluidd.xyz/" }]
     },
     {
       "name": "Annex",
       "color": "#96CC4A",
       "isDark": true,
       "logo": {
-        "src": "logo_annex.svg"
-      }
+        "src": "logo_annex.svg",
+        "icon": "icon_annex.svg"
+      },
+      "links": [{ "title": "Annex", "url": "https://annex-engineering.eu/" }]
     },
     {
       "name": "BTT",
       "color": "#475A91",
       "isDark": true,
       "logo": {
-        "src": "logo_btt.svg"
-      }
+        "src": "logo_btt.svg",
+        "icon": "icon_btt.svg"
+      },
+      "links": [{ "title": "BTT", "url": "https://bigtree-tech.com/" }]
+    },
+    {
+      "name": "Cocoa Press",
+      "color": "#F27121",
+      "isDark": true,
+      "logo": {
+        "src": "logo_cocoapress.svg",
+        "icon": "icon_cocoapress.svg"
+      },
+      "links": [{ "title": "Cocoa Press", "url": "https://cocoapress.com/" }]
     },
     {
       "name": "EVA",
@@ -38,72 +54,90 @@
       "logo": {
         "src": "logo_eva.svg",
         "dark": "#232323",
-        "light": "#ffffff"
-      }
+        "light": "#ffffff",
+        "icon": "icon_eva.svg"
+      },
+      "links": [{ "title": "EVA", "url": "https://main.eva-3d.page/" }]
     },
     {
       "name": "HevORT",
       "color": "#dfff3e",
       "isDark": true,
       "logo": {
-        "src": "logo_hevort.svg"
-      }
+        "src": "logo_hevort.svg",
+        "icon": "icon_hevort.svg"
+      },
+      "links": [{ "title": "HevORT", "url": "https://hevort.com/" }]
     },
     {
       "name": "Kingroon",
       "color": "#DA7A2C",
       "isDark": true,
       "logo": {
-        "src": "logo_kingroon.svg"
-      }
+        "src": "logo_kingroon.svg",
+        "icon": "icon_kingroon.svg"
+      },
+      "links": [{ "title": "Kingroon", "url": "https://kingroon.com/" }]
     },
     {
       "name": "Klipper",
       "color": "#B12F36",
       "isDark": true,
       "logo": {
-        "src": "logo_klipper.svg"
-      }
+        "src": "logo_klipper.svg",
+        "icon": "icon_klipper.svg"
+      },
+      "links": [{ "title": "Klipper", "url": "https://www.klipper3d.org/" }]
     },
     {
       "name": "LDO",
       "color": "#326799",
       "isDark": true,
       "logo": {
-        "src": "logo_ldo.svg"
-      }
+        "src": "logo_ldo.svg",
+        "icon": "icon_ldo.svg"
+      },
+      "links": [{ "title": "LDO", "url": "https://ldomotion.com/" }]
     },
     {
       "name": "Mellow",
       "color": "#003DFF",
       "isDark": true,
       "logo": {
-        "src": "logo_mellow.svg"
-      }
+        "src": "logo_mellow.svg",
+        "icon": "icon_mellow.svg"
+      },
+      "links": [{ "title": "Mellow", "url": "https://3dmellow.com/" }]
     },
     {
       "name": "Peopoly",
       "color": "#007CC2",
       "isDark": true,
       "logo": {
-        "src": "logo_peopoly.svg"
-      }
+        "src": "logo_peopoly.svg",
+        "icon": "icon_peopoly.svg"
+      },
+      "links": [{ "title": "Peopoly", "url": "https://peopoly.net/" }]
     },
     {
       "name": "Prusa",
       "color": "#E05D2D",
       "isDark": false,
       "logo": {
-        "src": "logo_prusa.svg"
-      }
+        "src": "logo_prusa.svg",
+        "icon": "icon_prusa.svg"
+      },
+      "links": [{ "title": "Prusa", "url": "https://www.prusa3d.com/" }]
     },
     {
       "name": "Qidi Tech",
-      "color": "#5B7AEA",
+      "color": "#3885EA",
       "isDark": true,
       "logo": {
-        "src": "logo_qidi.svg"
-      }
+        "src": "logo_qidi.svg",
+        "icon": "icon_qidi.svg"
+      },
+      "links": [{ "title": "Qidi Tech", "url": "https://qidi3d.com/" }]
     },
     {
       "name": "RatRig",
@@ -112,82 +146,100 @@
       "logo": {
         "src": "logo_ratrig.svg",
         "dark": "#232323",
-        "light": "#ffffff"
-      }
+        "light": "#ffffff",
+        "icon": "icon_ratrig.svg"
+      },
+      "links": [{ "title": "RatRig", "url": "https://ratrig.com/" }]
     },
     {
       "name": "Siboor",
       "color": "#32E0DF",
       "isDark": true,
       "logo": {
-        "src": "logo_siboor.svg"
-      }
+        "src": "logo_siboor.svg",
+        "icon": "icon_siboor.svg"
+      },
+      "links": [{ "title": "Siboor", "url": "https://www.siboor.com/" }]
     },
     {
       "name": "Voron",
       "color": "#FF2300",
       "isDark": true,
       "logo": {
-        "src": "logo_voron.svg"
-      }
+        "src": "logo_voron.svg",
+        "icon": "icon_voron.svg"
+      },
+      "links": [{ "title": "Voron", "url": "https://vorondesign.com/" }]
     },
     {
       "name": "VzBot",
       "color": "#FF2300",
       "isDark": true,
       "logo": {
-        "src": "logo_vzbot.svg"
-      }
+        "src": "logo_vzbot.svg",
+        "icon": "icon_vzbot.svg"
+      },
+      "links": [{ "title": "VzBot", "url": "https://vez3d.com/" }]
     },
     {
       "name": "Z-Bolt",
-      "color": "#2196F3",
+      "color": "#FFFFFF",
       "isDark": true,
       "logo": {
         "src": "logo_z-bolt.svg",
-        "dark": "#232323",
-        "light": "#ffffff"
-      }
+        "icon": "icon_z-bolt.svg"
+      },
+      "links": [{ "title": "Z-Bolt", "url": "https://z-bolt.ru/" }]
     },
     {
       "name": "ZeroG",
       "color": "#e34234",
       "isDark": true,
       "logo": {
-        "src": "logo_zerog.svg"
-      }
+        "src": "logo_zerog.svg",
+        "icon": "icon_zerog.svg"
+      },
+      "links": [{ "title": "ZeroG", "url": "https://zerog.one/" }]
     },
     {
       "name": "SnakeOil",
       "color": "#4bc3ca",
       "isDark": true,
       "logo": {
-        "src": "logo_snakeoil.svg"
-      }
+        "src": "logo_snakeoil.svg",
+        "icon": "icon_snakeoil.svg"
+      },
+      "links": [{ "title": "SnakeOil", "url": "https://github.com/SnakeOilXY/SnakeOil-XY" }]
     },
     {
       "name": "Printers for Ants",
       "color": "#42d62c",
       "isDark": true,
       "logo": {
-        "src": "logo_pfa.svg"
-      }
+        "src": "logo_pfa.svg",
+        "icon": "icon_pfa.svg"
+      },
+      "links": [{ "title": "Printers for Ants", "url": "https://3dprintersforants.com/" }]
     },
     {
       "name": "Micron",
       "color": "#42d62c",
       "isDark": true,
       "logo": {
-        "src": "logo_micron.svg"
-      }
+        "src": "logo_micron.svg",
+        "icon": "icon_micron.svg"
+      },
+      "links": [{ "title": "Micron", "url": "https://3dprintersforants.com/" }]
     },
     {
       "name": "Salad Fork",
       "color": "#0cff28",
       "isDark": true,
       "logo": {
-        "src": "logo_salad_fork.svg"
-      }
+        "src": "logo_salad_fork.svg",
+        "icon": "icon_salad_fork.svg"
+      },
+      "links": [{ "title": "Salad Fork", "url": "https://3dprintersforants.com/" }]
     }
   ]
 }
