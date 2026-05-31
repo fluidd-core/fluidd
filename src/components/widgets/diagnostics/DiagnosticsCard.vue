@@ -93,7 +93,8 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
         left: 16,
         right: 16,
         bottom: 16,
-        containLabel: true
+        outerBoundsMode: 'same',
+        outerBoundsContain: 'axisLabel'
       },
       color,
       textStyle: {

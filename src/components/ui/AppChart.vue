@@ -10,7 +10,7 @@
         style="overflow: initial;"
         :option="opts"
         :update-options="{ notMerge: true }"
-        :init-options="{ renderer: 'svg' }"
+        :init-options="{ renderer: 'canvas' }"
         autoresize
       />
     </div>

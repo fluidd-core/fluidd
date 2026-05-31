@@ -10,7 +10,7 @@
       style="overflow: initial;"
       :option="options"
       :update-options="{ notMerge: true }"
-      :init-options="{ renderer: 'svg' }"
+      :init-options="{ renderer: 'canvas' }"
       autoresize
       @legendselectchanged="handleLegendSelectChanged"
       @legendselected="handleLegendSelectChanged"
@@ -146,11 +146,12 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
     const options: EChartsOption = {
       grid: {
-        top: margin * 1.5,
+        top: margin,
         left: margin,
         right: margin,
         bottom: margin,
-        containLabel: true
+        outerBoundsMode: 'same',
+        outerBoundsContain: 'axisLabel'
       },
       textStyle: {
         fontFamily: 'Roboto'
