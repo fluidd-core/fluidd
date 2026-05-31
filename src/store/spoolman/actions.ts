@@ -57,7 +57,7 @@ const isFilamanPaginatedResponse = (value: unknown): value is Moonraker.Spoolman
     value != null &&
     typeof value === 'object' &&
     'items' in value &&
-    Array.isArray((value as Moonraker.Spoolman.FilamanPaginatedResponse).items)
+    Array.isArray(value.items)
   )
 }
 
