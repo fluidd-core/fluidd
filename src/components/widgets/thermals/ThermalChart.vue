@@ -17,11 +17,22 @@
       @legendunselected="handleLegendSelectChanged"
     />
 
-    <div
-      class="chart-pause"
-      @click="togglePause"
-    >
-      <v-icon>{{ paused ? '$resume' : '$pause' }}</v-icon>
+    <div class="chart-options">
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            icon
+            small
+            tabindex="-1"
+            v-on="on"
+            @click="togglePause"
+          >
+            <v-icon>{{ paused ? '$resume' : '$pause' }}</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ paused ? $t('app.general.btn.resume') : $t('app.general.btn.pause') }}</span>
+      </v-tooltip>
     </div>
   </div>
 </template>
@@ -463,13 +474,12 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     width: 100%;
   }
 
-  .chart-pause {
+  .chart-options {
     position: absolute;
     top: 0;
     right: 0;
-    padding: 2px 6px;
+    padding: 2px 0px;
     margin-right: 16px;
-    cursor: pointer;
     z-index: 1;
   }
 </style>
