@@ -1121,8 +1121,8 @@ export const SocketActions = {
 
   serverFilamanProxyGetAvailableSpools (page = 1, pageSize = 200, options?: NotifyOptions) {
     const query = new URLSearchParams({
-      page: `${page}`,
-      page_size: `${pageSize}`
+      page,
+      page_size: pageSize
     }).toString()
 
     return baseEmit<Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.FilamanPaginatedResponse>>(
