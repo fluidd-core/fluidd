@@ -1,4 +1,3 @@
-/* eslint-disable no-fallthrough */
 import type { ArcMove, ArcPlane, BBox, Layer, LinearMove, Move, Part, PositioningMode } from '@/store/gcodePreview/types'
 import isKeyOf from '@/util/is-key-of'
 import { pick } from 'lodash-es'
@@ -59,8 +58,38 @@ const parseLine = (line: string) => {
   }
 }
 
+const linearMoveParams: (keyof LinearMove)[] = [
+  'x', 'y', 'z', 'e'
+]
+
+const arcMoveParams: (keyof ArcMove)[] = [
+  'x', 'y', 'z', 'e',
+  'i', 'j', 'k', 'r'
+]
+
 const decimalRound = (a: number) => {
   return Math.round(a * 10000) / 10000
+}
+
+const utf8ByteLength = (str: string) => {
+  let bytes = 0
+
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i)
+
+    if (code < 0x80) {
+      bytes += 1
+    } else if (code < 0x800) {
+      bytes += 2
+    } else if (code >= 0xd800 && code <= 0xdbff) {
+      bytes += 4 // high surrogate + its low surrogate = one 4-byte sequence
+      i++
+    } else {
+      bytes += 3
+    }
+  }
+
+  return bytes
 }
 
 const isPolygonData = (data: unknown): data is [number, number][] => (
@@ -73,12 +102,24 @@ const isPolygonData = (data: unknown): data is [number, number][] => (
     ))
 )
 
-const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void) => {
+const parseGcode = async (
+  url: string,
+  fileSize: number,
+  sendProgress: (filePosition: number) => void
+) => {
+  const response = await fetch(url)
+
+  if (!response.ok || !response.body) {
+    throw new Error(`Failed to download gcode (${response.status} ${response.statusText})`)
+  }
+
+  const progressStep = Math.max(1, Math.floor(fileSize / 100))
+  let nextProgressByte = 0
+
   const moves: Move[] = []
   const layers: Layer[] = []
   const parts: Part[] = []
   const tools = new Set<number>()
-  const lines = gcode.split('\n')
 
   let newLayerForNextMove = false
   let extrusionMode: PositioningMode = 'relative'
@@ -112,8 +153,8 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
     z: 0
   }
 
-  for (let i = 0; i < lines.length; i++) {
-    const { type, command, args } = parseLine(lines[i]) ?? {}
+  const handleLine = (line: string) => {
+    const { type, command, args } = parseLine(line) ?? {}
 
     let move: Move | null = null
 
@@ -155,13 +196,9 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
       switch (command) {
         case 'G0':
         case 'G1': {
-          const params: (keyof LinearMove)[] = [
-            'x', 'y', 'z', 'e'
-          ]
-
-          if (params.some(param => param in args)) {
+          if (linearMoveParams.some(param => param in args)) {
             move = {
-              ...pick(args, params),
+              ...pick(args, linearMoveParams),
               tool,
               filePosition
             } satisfies LinearMove
@@ -170,14 +207,9 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
         }
         case 'G2':
         case 'G3': {
-          const params: (keyof ArcMove)[] = [
-            'x', 'y', 'z', 'e',
-            'i', 'j', 'k', 'r'
-          ]
-
-          if (params.some(param => param in args)) {
+          if (arcMoveParams.some(param => param in args)) {
             move = {
-              ...pick(args, params),
+              ...pick(args, arcMoveParams),
               d: command === 'G2'
                 ? 'clockwise'
                 : 'counter-clockwise',
@@ -243,12 +275,13 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
         }
         case 'G90':
           positioningMode = 'absolute'
+          break
         case 'M82':
           extrusionMode = 'absolute'
-          toolhead.e = 0
           break
         case 'G91':
           positioningMode = 'relative'
+          break
         case 'M83':
           extrusionMode = 'relative'
           break
@@ -332,11 +365,53 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
       }
     }
 
-    if (i % Math.floor(lines.length / 100) === 0) {
+    if (filePosition >= nextProgressByte) {
       sendProgress(filePosition)
+      nextProgressByte = filePosition + progressStep
     }
 
-    filePosition += lines[i].length + 1 // + 1 for newline
+    filePosition += utf8ByteLength(line) + 1 // + 1 for the '\n' (1 byte)
+  }
+
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+  let cursor = 0
+
+  const drainLines = () => {
+    while (true) {
+      const nl = buffer.indexOf('\n', cursor)
+
+      if (nl === -1) {
+        break
+      }
+
+      handleLine(buffer.slice(cursor, nl))
+
+      cursor = nl + 1
+    }
+
+    if (cursor > 0) {
+      buffer = buffer.slice(cursor)
+      cursor = 0
+    }
+  }
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read()
+
+      if (done) {
+        buffer += decoder.decode()
+        drainLines()
+        break
+      }
+
+      buffer += decoder.decode(value, { stream: true })
+      drainLines()
+    }
+  } finally {
+    reader.releaseLock()
   }
 
   sendProgress(filePosition)

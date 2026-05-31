@@ -7,7 +7,7 @@
         class="fill-width elevation-0"
         @click="showDialog = true"
       >
-        {{ $filters.prettyCase(name) }} > {{ mappedTool }}
+        {{ mappedTool }} > {{ $filters.prettyCase(name) }}
       </v-btn>
       <afc-unit-lane-mapping-tool-dialog
         v-model="showDialog"
@@ -38,7 +38,9 @@ export default class AfcCardUnitLaneHeader extends Mixins(StateMixin, AfcMixin) 
   }
 
   get mappedTool (): string {
-    return this.lane?.map ?? '--'
+    const map = this.lane?.map
+    if (map == null || map.length === 0) return 'NONE'
+    return Array.isArray(map) ? map.join(', ') : map
   }
 }
 </script>
