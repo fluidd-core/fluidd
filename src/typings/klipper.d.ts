@@ -815,9 +815,11 @@ declare namespace Klipper {
     density?: number;
     diameter?: number;
     empty_spool_weight?: number;
+    initial_weight?: number;
     spool_id: number | null;
     color: string | null;
     weight: number;
+    filament_name?: string;
     extruder_temp: number | null;
     runout_lane: string | null;
     filament_status: 'In Tool' | 'Ready' | 'Prep' | 'Not Ready';
