@@ -36,9 +36,9 @@
             </template>
             <template v-if="spoolRemainingWeight != null">
               <br>
-              {{ Math.round(spoolRemainingWeight) }} g remaining
-              <template v-if="spoolUsedWeight">
-                ({{ Math.round(spoolUsedWeight) }} g used)
+              {{ $t('app.afc.WeightRemaining', { weight: Math.round(spoolRemainingWeight) }) }}
+              <template v-if="spoolUsedWeight != null">
+                ({{ $t('app.afc.WeightUsed', { weight: Math.round(spoolUsedWeight) }) }})
               </template>
             </template>
           </span>
@@ -106,6 +106,7 @@
             v-if="spoolUrl"
             :href="spoolUrl"
             target="_blank"
+            rel="noopener noreferrer"
             class="position-absolute text-truncate text-truncate-element text-center text-decoration-none filament-link"
           >{{ spoolFilamentName }}</a>
           <span
