@@ -144,7 +144,11 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
         this.note = this.$t('app.endpoint.error.cant_connect').toString()
       }
 
-      this.verifying = false
+      // A newer probe may have superseded this one while awaiting; if so, leave
+      // the spinner for it to own.
+      if (!signal.aborted) {
+        this.verifying = false
+      }
     }
   }
 
@@ -173,6 +177,10 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
       case 'unreachable':
         this.error = wsMessage
         this.note = this.$t('app.endpoint.error.cant_connect').toString()
+        break
+
+      case 'cancelled':
+        // Superseded by a newer probe; leave the UI state untouched.
         break
     }
   }
