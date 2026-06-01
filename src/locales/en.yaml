@@ -147,6 +147,14 @@ app:
         This may mean you need to modify your moonraker configuration. Please
         see the documentation on multi printer setups <a href="%{url}"
         target="_blank">here</a>
+      mixed_content: >-
+        Fluidd is served over HTTPS but this address uses HTTP. Browsers block
+        mixed (insecure) connections. Use an HTTPS/secure address, or open
+        Fluidd over HTTP.
+      websocket_failed: >-
+        The server responded over HTTP but the WebSocket connection failed. If
+        you are behind a reverse proxy, make sure it is configured to upgrade
+        and forward WebSocket connections.
     hint:
       add_printer: E.g., http://fluidd.local
     msg:
