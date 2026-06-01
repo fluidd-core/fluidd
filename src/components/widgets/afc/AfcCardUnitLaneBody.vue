@@ -27,10 +27,10 @@
             <template v-if="spoolMaterial">
               <br>
               {{ spoolMaterial }}
-              <template v-if="spoolExtruderTemp">
+              <template v-if="spoolExtruderTemp != null">
                 | {{ spoolExtruderTemp }}°C
               </template>
-              <template v-if="spoolBedTemp">
+              <template v-if="spoolBedTemp != null">
                 | {{ spoolBedTemp }}°C
               </template>
             </template>
@@ -70,7 +70,7 @@
           :name="name"
         />
         <span class="font-weight-bold">
-          {{ spoolMaterial }}
+          {{ spoolMaterial || '--' }}
         </span>
         <span class="text--disabled">
           <template v-if="spoolRemainingWeight != null">{{ Math.round(spoolRemainingWeight) }} g</template>
@@ -287,5 +287,11 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
 
 .filament-link {
   color: inherit !important;
+  cursor: pointer;
+}
+
+.filament-link:hover,
+.filament-link:focus {
+  text-decoration: underline !important;
 }
 </style>
