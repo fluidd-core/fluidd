@@ -342,6 +342,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     if (this.open) {
       if (this.spoolSelectionOnly) {
         this.selectedSpoolId = this.$typedState.spoolman.dialog.selectedSpoolId ?? null
+      } else if (this.targetExtruder) {
+        const spoolId = this.$typedState.spoolman.activeSpoolsByExtruder[this.targetExtruder]
+        this.selectedSpoolId = spoolId ?? null
       } else if (this.targetMacro) {
         const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
 
@@ -566,6 +569,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$typedState.spoolman.dialog.targetMacro
   }
 
+  get targetExtruder (): string | undefined {
+    return this.$typedState.spoolman.dialog.targetExtruder
+  }
+
   get enabledWebcams (): Moonraker.Webcam.Entry[] {
     return this.$typedGetters['webcams/getEnabledWebcams']
   }
@@ -625,6 +632,16 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       if (!confirmation) {
         return
       }
+    }
+
+    if (this.targetExtruder) {
+      if (this.supportsFilaman) {
+        await SocketActions.serverFilamanPostSpoolId(this.selectedSpoolId ?? undefined, this.targetExtruder)
+      } else {
+        await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
+      }
+      this.open = false
+      return
     }
 
     if (this.targetMacro) {
@@ -751,6 +768,16 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get dialogTitle (): string {
+    if (this.targetExtruder) {
+      const extruders = this.$typedGetters['printer/getExtruders']
+      const extruder = extruders.find((e: { key: string }) => e.key === this.targetExtruder)
+      const label = extruder?.name ?? this.targetExtruder
+      const key = this.supportsFilaman && this.$te('app.filaman.title.spool_selection')
+        ? 'app.filaman.title.spool_selection'
+        : 'app.spoolman.title.spool_selection'
+      return `${this.$tc(key, 1)} – ${label}`
+    }
+
     const key = this.supportsFilaman && this.$te('app.filaman.title.spool_selection')
       ? 'app.filaman.title.spool_selection'
       : 'app.spoolman.title.spool_selection'
