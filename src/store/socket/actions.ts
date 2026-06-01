@@ -443,6 +443,10 @@ export const actions = {
     dispatch('spoolman/onActiveSpool', payload, { root: true })
   },
 
+  async notifyFilamanExtruderSpoolsChanged ({ dispatch }, payload) {
+    dispatch('spoolman/onExtruderSpoolsChanged', payload, { root: true })
+  },
+
   async notifySpoolmanStatusChanged ({ dispatch }, payload) {
     dispatch('spoolman/onStatusChanged', payload.spoolman_connected, { root: true })
   },

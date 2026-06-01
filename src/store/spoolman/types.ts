@@ -2,6 +2,7 @@ export interface SpoolmanState {
   info: Moonraker.Spoolman.Info | null;
   spools: Moonraker.Spoolman.Spool[];
   activeSpool: number | null;
+  activeSpoolsByExtruder: Partial<Record<string, number | null>>;
   currency: string | null;
   connected: boolean;
   dialog: SpoolSelectionDialogState;

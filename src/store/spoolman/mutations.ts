@@ -19,6 +19,14 @@ export const mutations = {
     state.activeSpool = payload
   },
 
+  setExtruderSpools (state, payload: Partial<Record<string, number | null>>) {
+    state.activeSpoolsByExtruder = payload
+  },
+
+  setExtruderSpool (state, { extruder, spoolId }: { extruder: string, spoolId: number | null }) {
+    state.activeSpoolsByExtruder = { ...state.activeSpoolsByExtruder, [extruder]: spoolId }
+  },
+
   setSpools (state, payload: Moonraker.Spoolman.Spool[]) {
     state.spools = payload
   },

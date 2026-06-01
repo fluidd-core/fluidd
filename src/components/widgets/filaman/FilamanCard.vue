@@ -443,10 +443,6 @@ export default class FilamanCard extends Mixins(StateMixin) {
     return this.$typedState.printer.printer.toolhead?.extruder ?? 'extruder'
   }
 
-  get extruderSpools (): Partial<Record<string, number | null>> {
-    return this.$typedState.config.uiSettings.spoolman.extruderSpools
-  }
-
   get extruderEntries () {
     return this.extruders.map(extruder => ({
       extruder,
@@ -457,8 +453,7 @@ export default class FilamanCard extends Mixins(StateMixin) {
 
   getExtruderSpool (extruderKey: string): Spool | undefined {
     if (!this.isConnected) return undefined
-    const spoolId = this.extruderSpools[extruderKey]
-    return spoolId != null ? this.getSpoolById(spoolId) : undefined
+    return this.$typedGetters['spoolman/getSpoolForExtruder'](extruderKey)
   }
 
   handleSelectExtruderSpool (extruderKey: string) {

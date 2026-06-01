@@ -343,7 +343,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       if (this.spoolSelectionOnly) {
         this.selectedSpoolId = this.$typedState.spoolman.dialog.selectedSpoolId ?? null
       } else if (this.targetExtruder) {
-        const spoolId = this.$typedState.config.uiSettings.spoolman.extruderSpools[this.targetExtruder]
+        const spoolId = this.$typedState.spoolman.activeSpoolsByExtruder[this.targetExtruder]
         this.selectedSpoolId = spoolId ?? null
       } else if (this.targetMacro) {
         const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
@@ -635,23 +635,11 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     }
 
     if (this.targetExtruder) {
-      const currentSpools = { ...this.$typedState.config.uiSettings.spoolman.extruderSpools }
-      currentSpools[this.targetExtruder] = this.selectedSpoolId
-      this.$typedDispatch('config/saveByPath', {
-        path: 'uiSettings.spoolman.extruderSpools',
-        value: currentSpools,
-        server: true
-      })
-
-      const activeExtruder = this.$typedState.printer.printer.toolhead?.extruder ?? 'extruder'
-      if (this.targetExtruder === activeExtruder) {
-        if (this.supportsFilaman) {
-          await SocketActions.serverFilamanPostSpoolId(this.selectedSpoolId ?? undefined)
-        } else {
-          await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
-        }
+      if (this.supportsFilaman) {
+        await SocketActions.serverFilamanPostSpoolId(this.selectedSpoolId ?? undefined, this.targetExtruder)
+      } else {
+        await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
       }
-
       this.open = false
       return
     }

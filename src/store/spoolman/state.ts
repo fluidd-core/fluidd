@@ -5,6 +5,7 @@ export const defaultState = (): SpoolmanState => {
     info: null,
     spools: [],
     activeSpool: null,
+    activeSpoolsByExtruder: {},
     currency: null,
     connected: false,
     dialog: {

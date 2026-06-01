@@ -98,6 +98,11 @@ export const getters = {
       : undefined
   },
 
+  getSpoolForExtruder: (state, getters) => (extruderKey: string): Spool | undefined => {
+    const spoolId = state.activeSpoolsByExtruder[extruderKey]
+    return spoolId != null ? getters.getSpoolById(spoolId) : undefined
+  },
+
   getSpoolById: (state, getters) => (id: number): Spool | undefined => {
     const spools: Spool[] = getters.getAvailableSpools
 

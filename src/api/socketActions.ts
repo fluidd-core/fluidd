@@ -1077,6 +1077,15 @@ export const SocketActions = {
     )
   },
 
+  serverFilamanGetSpoolIds (options?: NotifyOptions) {
+    return baseEmit<{ extruder_spools: Partial<Record<string, number | null>> }>(
+      'server.filaman.spool_ids', {
+        dispatch: 'spoolman/onExtruderSpoolsChanged',
+        ...options
+      }
+    )
+  },
+
   serverSpoolmanPostSpoolId (spoolId: number | undefined, options?: NotifyOptions) {
     const params = spoolId == null
       ? {}
@@ -1091,14 +1100,13 @@ export const SocketActions = {
     )
   },
 
-  serverFilamanPostSpoolId (spoolId: number | undefined, options?: NotifyOptions) {
-    const params = spoolId == null
-      ? {}
-      : { spool_id: spoolId }
+  serverFilamanPostSpoolId (spoolId: number | undefined, extruder?: string, options?: NotifyOptions) {
+    const params: Record<string, unknown> = spoolId != null ? { spool_id: spoolId } : {}
+    if (extruder != null) params.extruder = extruder
 
     return baseEmit<Moonraker.Spoolman.SpoolIdResponse>(
       'server.filaman.post_spool_id', {
-        dispatch: 'spoolman/onActiveSpool',
+        dispatch: extruder != null ? 'spoolman/onExtruderSpoolsChanged' : 'spoolman/onActiveSpool',
         ...options,
         params
       }

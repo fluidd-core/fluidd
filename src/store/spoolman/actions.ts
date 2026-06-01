@@ -195,6 +195,7 @@ export const actions = {
 
     if (hasFilaman) {
       SocketActions.serverFilamanGetSpoolId()
+      SocketActions.serverFilamanGetSpoolIds()
       SocketActions.serverFilamanProxyGetAvailableSpools(1, FILAMAN_PAGE_SIZE, {
         dispatch: 'spoolman/fetchAllFilamanSpools'
       })
@@ -204,6 +205,13 @@ export const actions = {
     SocketActions.serverSpoolmanGetSpoolId()
     SocketActions.serverSpoolmanProxyGetAvailableSpools()
     SocketActions.serverSpoolmanProxyGetInfo()
+  },
+
+  async onExtruderSpoolsChanged ({ commit }, payload) {
+    const spools = payload?.extruder_spools
+    if (spools != null && typeof spools === 'object') {
+      commit('setExtruderSpools', spools)
+    }
   },
 
   async onActiveSpool ({ commit }, payload) {
