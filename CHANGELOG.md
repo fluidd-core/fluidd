@@ -2,6 +2,69 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.37.1](https://github.com/fluidd-core/fluidd/compare/v1.37.0...v1.37.1) (2026-06-01)
+
+
+### Features
+
+* add pause functionality in ThermalChart ([#1859](https://github.com/fluidd-core/fluidd/issues/1859)) ([ddb6d79](https://github.com/fluidd-core/fluidd/commit/ddb6d7968dbcc0ae921ab726a47e0a58e31e8798))
+* adds basic axis_twist_compensation support ([#1838](https://github.com/fluidd-core/fluidd/issues/1838)) ([0d88d0e](https://github.com/fluidd-core/fluidd/commit/0d88d0e701adfb0b6d02d98fbfb1f477424e4687))
+* adds HTTP endpoint diagnostics support ([#1861](https://github.com/fluidd-core/fluidd/issues/1861)) ([f75cb01](https://github.com/fluidd-core/fluidd/commit/f75cb0128f6268d33152e3c1d78af684a4455850))
+* adds SGP40 sensor basic support ([a83f891](https://github.com/fluidd-core/fluidd/commit/a83f8919ce93e3fa832861f3e350bda8af8e697c))
+* **afc:** support multiple tools per lane via `map` array ([#1856](https://github.com/fluidd-core/fluidd/issues/1856)) ([9f10d19](https://github.com/fluidd-core/fluidd/commit/9f10d19e35d521b72b660aaff53b86632b862b3b))
+* **Console:** adds toolbar and highlighting ([#1841](https://github.com/fluidd-core/fluidd/issues/1841)) ([ca25ce5](https://github.com/fluidd-core/fluidd/commit/ca25ce53d1674c6d4d426c7afeb68f30b6fcb191))
+* **Console:** improve command history navigation ([#1843](https://github.com/fluidd-core/fluidd/issues/1843)) ([f14389e](https://github.com/fluidd-core/fluidd/commit/f14389e142362ca5716c8f22e4355c855932c04f))
+* **FileSystem:** adds breadcrumb navigation ([#1863](https://github.com/fluidd-core/fluidd/issues/1863)) ([5de20d1](https://github.com/fluidd-core/fluidd/commit/5de20d1f3fd565786177a72df2c316d2bc9de763))
+* **GcodePreview:** improved arc support ([#1846](https://github.com/fluidd-core/fluidd/issues/1846)) ([9d5e81d](https://github.com/fluidd-core/fluidd/commit/9d5e81df317a6b58a81b8f76dfc387a019077657))
+* **i18n-af:** Update Afrikaans translations ([e4190fe](https://github.com/fluidd-core/fluidd/commit/e4190fea3b067ab80226f1082a9ece1098d4f99f))
+* **i18n-ar:** Update Arabic translations ([7e19fc2](https://github.com/fluidd-core/fluidd/commit/7e19fc2a00b96412aa12204a69532c08fd122f21))
+* **i18n-cs:** Update Czech translations ([afd89df](https://github.com/fluidd-core/fluidd/commit/afd89dfe6ba5a821782e85ac52919c8b9ddb7c34))
+* **i18n-de:** Update German translations ([2db3c37](https://github.com/fluidd-core/fluidd/commit/2db3c37252e9a8daa7dd1de3c077211f394a7391))
+* **i18n-de:** Update German translations ([de0474f](https://github.com/fluidd-core/fluidd/commit/de0474f2cecf322b8911ab55117b35edd8e206ab))
+* **i18n-en:** Update English translations ([3fae42f](https://github.com/fluidd-core/fluidd/commit/3fae42f31e1e19a3eaeb7c2dc2bd12b6714142b5))
+* **i18n-en:** Update English translations ([9d8734e](https://github.com/fluidd-core/fluidd/commit/9d8734ec5ff873828c6861711576b94e317227b7))
+* **i18n-es:** Update Spanish translations ([cdf8e64](https://github.com/fluidd-core/fluidd/commit/cdf8e6459f599c773d21ee740369d5c486dc66f7))
+* **i18n-fr:** Update French translations ([7fa96e7](https://github.com/fluidd-core/fluidd/commit/7fa96e71af6a32ba932322a6e4953ac0f9803222))
+* **i18n-hu:** Update Hungarian translations ([779f0c2](https://github.com/fluidd-core/fluidd/commit/779f0c2fdb94190e04156e5683f628c5fe15ff06))
+* **i18n-it:** Update Italian translations ([d86a982](https://github.com/fluidd-core/fluidd/commit/d86a982b73f0efbc2fc1e0d78e29cc4a7bb1a181))
+* **i18n-ja:** Update Japanese translations ([5937629](https://github.com/fluidd-core/fluidd/commit/5937629e8e03797f9147b60fa5a7f8528c59ebc9))
+* **i18n-ko:** Update Korean translations ([06fa561](https://github.com/fluidd-core/fluidd/commit/06fa561dfb95161d00535de06f22401f0e97e41e))
+* **i18n-nl:** Update Dutch translations ([4f00f62](https://github.com/fluidd-core/fluidd/commit/4f00f623ee2f9a75a9e96ca62693aec54ff1a43e))
+* **i18n-pl:** Update Polish translations ([b050a49](https://github.com/fluidd-core/fluidd/commit/b050a4959ef798eb6e4f324497e3931c8b8535c8))
+* **i18n-pl:** Update Polish translations ([f0945ee](https://github.com/fluidd-core/fluidd/commit/f0945ee702c63e1fcbb1037d32106dec3bd673cf))
+* **i18n-pt_BR:** Update Portuguese (Brazil) translations ([ece76f0](https://github.com/fluidd-core/fluidd/commit/ece76f08e40bf36022e14f99a9901b565a492c72))
+* **i18n-pt:** Update Portuguese translations ([28fb3e5](https://github.com/fluidd-core/fluidd/commit/28fb3e5997d16d1839c48ca040483f5b8d25322a))
+* **i18n-ru:** Update Russian translations ([6ac05ff](https://github.com/fluidd-core/fluidd/commit/6ac05ffa30982fbdc01a9cf0cc535e49aeff1547))
+* **i18n-sl:** Update Slovenian translations ([5b2ea9b](https://github.com/fluidd-core/fluidd/commit/5b2ea9b49d303e1d4818cfee9e8d55b03406451d))
+* **i18n-ta:** Update Tamil translations ([5d865a4](https://github.com/fluidd-core/fluidd/commit/5d865a475bc1a8bd9c65217d021dad88c8cf09b9))
+* **i18n-tr:** Update Turkish translations ([04a43f6](https://github.com/fluidd-core/fluidd/commit/04a43f63db97adb554ac2ec36f584398fb218d9c))
+* **i18n-uk:** Update Ukrainian translations ([b8733b1](https://github.com/fluidd-core/fluidd/commit/b8733b15aa52f981d54f6d102d046e858aa51646))
+* **i18n-zh-CN:** Update Chinese (Simplified Han script) translations ([9779c34](https://github.com/fluidd-core/fluidd/commit/9779c34bbde9e5aa42a36500248e2b858476fa38))
+* **i18n-zh-HK:** Update Chinese (Traditional Han script, Hong Kong) translations ([893b111](https://github.com/fluidd-core/fluidd/commit/893b1114fe90bd305b1027d0ef29cdbdcbac8a99))
+* switch echarts rendering to Canvas ([#1857](https://github.com/fluidd-core/fluidd/issues/1857)) ([75bffb9](https://github.com/fluidd-core/fluidd/commit/75bffb993938448507800ac6cd76c4edd930189e))
+* **Thermals:** highlight series on mouse hover ([#1858](https://github.com/fluidd-core/fluidd/issues/1858)) ([46fa66c](https://github.com/fluidd-core/fluidd/commit/46fa66ca5fea983ae9da951a10308b75391ac381))
+
+
+### Bug Fixes
+
+* **afc:** pull remaining weight from Spoolman when enabled ([#1855](https://github.com/fluidd-core/fluidd/issues/1855)) ([3988f39](https://github.com/fluidd-core/fluidd/commit/3988f39e9926f0a8c89d5004462f18fc91c2cc43))
+* **parseGcode:** absolute/relative positioning ([#1853](https://github.com/fluidd-core/fluidd/issues/1853)) ([1c11f17](https://github.com/fluidd-core/fluidd/commit/1c11f1764ad7079556cc545b311608ba8fbaa9d3))
+* **ToolChangeCommands:** assert active state as boolean ([1491f9c](https://github.com/fluidd-core/fluidd/commit/1491f9c37242b70b0bad2e92644ff7212d37a7a4))
+* update page meta based on socket readiness ([#1845](https://github.com/fluidd-core/fluidd/issues/1845)) ([2020b5d](https://github.com/fluidd-core/fluidd/commit/2020b5d2f092890853590851d9165be2c54f8f59))
+* vue-json-viewer import ([#1848](https://github.com/fluidd-core/fluidd/issues/1848)) ([242e266](https://github.com/fluidd-core/fluidd/commit/242e2660c5a3ff689cc2e50fa01564e45fb4af9d))
+
+
+### Code Refactorings
+
+* **GcodePreview:** stream gcode parsing ([#1854](https://github.com/fluidd-core/fluidd/issues/1854)) ([e4f101d](https://github.com/fluidd-core/fluidd/commit/e4f101d1263b33e49519210616aace60ef4d4ab4))
+* improved type guards ([22c1fbe](https://github.com/fluidd-core/fluidd/commit/22c1fbe06430b94741bebc4b08631af07ac5646f))
+* minor test setup typing improvement ([9710f4a](https://github.com/fluidd-core/fluidd/commit/9710f4ab67f79f1fbcb6473cba7a434c3f4e2970))
+* simplify filter conditions using Boolean ([889561a](https://github.com/fluidd-core/fluidd/commit/889561ab90277607b15bf07f092a08d4689fd7e6))
+* stable references for app-draggable ([1836c6d](https://github.com/fluidd-core/fluidd/commit/1836c6dd9085cc610966c7a181d44241eab3a8b1))
+* type safety improvements ([7911243](https://github.com/fluidd-core/fluidd/commit/79112439a71eb0d0bc8683b88d84bdec974c67c7))
+* typing improvements ([faf680a](https://github.com/fluidd-core/fluidd/commit/faf680ab88957e2802a52d9bf40650fc46c31d7d))
+* update type safety guidelines ([40af6c2](https://github.com/fluidd-core/fluidd/commit/40af6c2a25916dd2e50a8db791a6709f959f0e2d))
+
 ## [1.37.0](https://github.com/fluidd-core/fluidd/compare/v1.36.4...v1.37.0) (2026-05-11)
 
 
