@@ -6,7 +6,12 @@
     <template #item="{ item }">
       <v-breadcrumbs-item
         :disabled="item.disabled"
+        :aria-label="`${root}${item.fullPath}`"
+        :tabindex="item.disabled ? -1 : 0"
+        role="link"
         @click="handleBreadcrumbItemClick(item)"
+        @keydown.enter.prevent="handleBreadcrumbItemClick(item)"
+        @keydown.space.prevent="handleBreadcrumbItemClick(item)"
       >
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
