@@ -34,6 +34,7 @@
       :root="currentRoot"
       :path="visiblePath"
       :selected="selected"
+      @navigate-to="loadFiles"
       @remove="handleRemove"
       @create-zip="handleCreateZip"
       @refresh-metadata="handleRefreshMetadata"

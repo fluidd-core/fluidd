@@ -3,39 +3,12 @@
     dense
   >
     <v-toolbar-title class="d-none d-sm-block">
-      <v-breadcrumbs
-        class="pa-0"
-        :items="breadcrumbItems"
-      >
-        <template #item="{ item }">
-          <v-breadcrumbs-item
-            :disabled="item.disabled"
-            @click="handleBreadcrumbItemClick(item)"
-          >
-            <v-tooltip bottom>
-              <template #activator="{ on, attrs }">
-                <v-icon
-                  v-if="!item.fullPath"
-                  v-bind="attrs"
-                  :disabled="item.disabled"
-                  :small="dense"
-                  v-on="on"
-                >
-                  {{ item.disabled ? '$folder' : '$folderOpen' }}
-                </v-icon>
-                <span
-                  v-else
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  {{ item.text }}
-                </span>
-              </template>
-              <span>{{ item.fullPath || "/" }}</span>
-            </v-tooltip>
-          </v-breadcrumbs-item>
-        </template>
-      </v-breadcrumbs>
+      <file-system-breadcrumbs
+        :root="root"
+        :path="path"
+        :dense="dense"
+        @navigate-to="$emit('navigate-to', $event)"
+      />
     </v-toolbar-title>
 
     <v-spacer />
@@ -186,19 +159,15 @@
 import { Component, Prop, Mixins, PropSync } from 'vue-property-decorator'
 import StatesMixin from '@/mixins/state'
 import FileSystemAddMenu from './FileSystemAddMenu.vue'
+import FileSystemBreadcrumbs from './FileSystemBreadcrumbs.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
 import type { AppDataTableHeader } from '@/types'
 import type { RootProperties } from '@/store/files/types'
 
-type BreadcrumbItem = {
-  text?: string
-  fullPath: string
-  disabled: boolean
-}
-
 @Component({
   components: {
     FileSystemAddMenu,
+    FileSystemBreadcrumbs,
     FileSystemFilterMenu
   }
 })
@@ -219,7 +188,7 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   readonly headers?: AppDataTableHeader[]
 
   // The current path
-  @Prop({ type: String })
+  @Prop({ type: String, required: true })
   readonly path!: string
 
   @Prop({ type: Boolean })
@@ -235,25 +204,6 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
 
   @PropSync('search', { type: String, default: '' })
   searchModel!: string
-
-  get breadcrumbItems (): BreadcrumbItem[] {
-    const segments = this.path
-      .split('/')
-      .filter(Boolean)
-
-    return [
-      {
-        fullPath: '',
-        disabled: segments.length === 0
-      },
-      ...segments
-        .map((segment, index) => ({
-          text: segment,
-          fullPath: `/${segments.slice(0, index + 1).join('/')}`,
-          disabled: index === segments.length - 1
-        }))
-    ]
-  }
 
   get readonly () {
     return this.rootProperties.readonly
@@ -284,22 +234,8 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
     this.$typedDispatch('config/updateThumbnailSizes', { name: this.root, size: value })
   }
 
-  handleBreadcrumbItemClick (item: BreadcrumbItem) {
-    this.$emit('navigate-to', `${this.root}${item.fullPath}`)
-  }
-
   handleUpload (files: FileList | File[], print: boolean) {
     this.$emit('upload', files, print)
   }
 }
 </script>
-
-<style lang="scss" scoped>
-::v-deep .v-breadcrumbs__item:not(.v-breadcrumbs__item--disabled) {
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-</style>
