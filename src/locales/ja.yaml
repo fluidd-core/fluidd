@@ -238,9 +238,9 @@ app:
       app_setup_link: 'Fluiddのセットアップ要件はこちら <a target="_blank" href="%{url}">をご覧ください。</a>'
       app_warnings_found: '%{appName} の警告が見つかりました。'
       components_config: 'Moonrakerのプラグイン設定は、こちら <a target="_blank" href="%{url}">です。</a>'
-      failed_components:
+      failed_components: 
         Moonrakerはプラグインに失敗しています。ログを確認し、設定を更新して、moonrakerを再起動してください。
-      printer_powered_off: 現在、プリンターの電源はオフになっています。<br/><br/>
+      printer_powered_off: 現在、プリンターの電源はオフになっています。<br/><br/> 
         プリンターの電源をオンにするには、左側のボタンをクリックしてください。
     label:
       accel_to_decel: 加減速
@@ -496,7 +496,7 @@ app:
     tooltip:
       browse_metrics: 利用可能なメトリックを閲覧する
       estop: 緊急停止
-      file_browser_configuration_help:
+      file_browser_configuration_help: 
         ファイルとフォルダーをここからドラッグ＆ドロップすることで、構成ファイルにコピーします
       file_browser_help: >-
         ブラウザの外部からファイルやフォルダをドラッグ＆ドロップして、ここにアップロードします。<br>ファイルやフォルダをサブフォルダまたは「..」にドラッグ
@@ -631,7 +631,7 @@ app:
       default_toolhead_xy_speed: デフォルトのツールヘッドXY速度
       default_toolhead_z_speed: デフォルトのツールヘッドZ速度
       dotted: 点在
-      drag_and_drop_functionality_for_files_and_folders:
+      drag_and_drop_functionality_for_files_and_folders: 
         ファイルとフォルダのドラッグアンドドロップの有効
       draw_background: 背景を描く
       draw_origin: 描画原点
@@ -746,11 +746,11 @@ app:
       diagnostics_performance: '[ベータ] 診断情報をログに記録すると、パフォーマンスに影響を与える可能性があります'
       gcode_coords: ダッシュボードのツールヘッド位置の代わりにGCode位置を使用する
       keyboard_shortcuts: '[ベータ版] 「?」を押すと、使用可能なキーボードショートカットのリストが表示されます'
-      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST
+      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST 
         ツールを実行している場合、自動的にヘルパー ダイアログを表示します
       show_manual_probe_dialog_automatically: Manual Probe ツールを実行している場合、自動的にヘルパー
         ダイアログを表示します
-      show_screws_tilt_adjust_dialog_automatically: SCREWS_TILT_CALCULATE
+      show_screws_tilt_adjust_dialog_automatically: SCREWS_TILT_CALCULATE 
         ツールを実行している場合、ヘルパー ダイアログが自動的に表示されます
       theme_disclaimer: >-
         これらのテーマには、それぞれの所有者の知的財産であるブランド名とロゴが使用されています。<br>
@@ -800,15 +800,15 @@ app:
       used: 使用
     msg:
       error:
-        cors: カメラ フィードへのアクセス中にエラーが発生しました。 Web カメラサーバーが CORS
+        cors: カメラ フィードへのアクセス中にエラーが発生しました。 Web カメラサーバーが CORS 
           アクセスを許可していることを確認してください。
-        no_image_data: カメラ フィードへのアクセス中にエラーが発生しました。カメラの構成を確認するか、別のカメラ
+        no_image_data: カメラ フィードへのアクセス中にエラーが発生しました。カメラの構成を確認するか、別のカメラ 
           ソースを試してください。
         spool_not_existant: スキャンしたスプールはデータベースに存在しません。
       info:
         howto: スプールの QR コードをカメラに見せてください。このウィンドウは、スプールが検出されるとすぐに閉じます。
       mismatched_filament: 選択したフィラメントの材質がスライサーで選択した材質と一致しません。続行してもよろしいですか?
-      no_filament:
+      no_filament: 
         選択したスプールには、印刷ジョブを正常に完了するのに十分なフィラメントが残っていない可能性があります。続行してもよろしいですか?
       no_required_length: 選択したファイルを印刷するために必要なフィラメントの量は不明です。続行しますか?
       no_spool: スプールが選択されていません。フィラメントトラッキングなしで印刷してもよろしいですか?
@@ -824,7 +824,7 @@ app:
       prefer_device_camera: 可能な場合はデバイスのカメラを QR コード検出に使用します
       remaining_filament_unit: 残りのフィラメントを
       show_spool_selection_dialog_on_print_start: 印刷開始時にスプール選択ダイアログを表示する
-      warn_on_filament_type_mismatch: スプールのフィラメント タイプとスライサーで選択したフィラメント
+      warn_on_filament_type_mismatch: スプールのフィラメント タイプとスライサーで選択したフィラメント 
         タイプが一致しない場合に警告を表示します
       warn_on_not_enough_filament: 選択したスプールに印刷を完了するのに十分なフィラメントが残っていない場合に警告を表示します
     title:
@@ -1074,18 +1074,18 @@ app:
       color: カラー
       spoolid: スプール ID
     msg:
-      reset_gate_map_confirmation: 「これによりゲートマップは、`mmu_parameters.cfg`
+      reset_gate_map_confirmation: 「これによりゲートマップは、`mmu_parameters.cfg` 
         に定義されたデフォルト設定（デフォルトがない場合は空のマップ）に完全にリセットされます。」
-      reset_ttg_map_confirmation:
-        これにより、ツール-ゲートマッピングとエンドレススプールのグループ設定はすべて、`mmu_parameters.cfg`
+      reset_ttg_map_confirmation: 
+        これにより、ツール-ゲートマッピングとエンドレススプールのグループ設定はすべて、`mmu_parameters.cfg` 
         に定義されたデフォルト設定にリセットされます。デフォルト設定がない場合は、1:1 の標準マッピングに戻ります
       select_gate: 編集したいゲート/スプール情報を選択してください
-      spoolman_off: Happy Hare での Spoolman
+      spoolman_off: Happy Hare での Spoolman 
         サポートは「%{mode}」です。ゲートへのスプールID割り当ては無効になっています
-      spoolman_other: Spoolman
+      spoolman_other: Spoolman 
         サポートは「%{mode}」です。必要に応じてスプールIDを割り当てるか、ゲート属性を直接編集できます
-      spoolman_pull: Spoolman
-        は「%{mode}」モードで動作しています。ほとんどのゲート設定のローカル編集は無効です。Spoolman
+      spoolman_pull: Spoolman 
+        は「%{mode}」モードで動作しています。ほとんどのゲート設定のローカル編集は無効です。Spoolman 
         のデータベースでスプール／ゲートのマッピングを設定するか、MMU_SPOOLMAN コマンドを使用してください
       no_matching_spool: 一致するスプールが見つかりません
       are_you_sure: 適用してよろしいですか？
@@ -1094,7 +1094,7 @@ app:
       filament_unknown: フィラメント状態が不明です（設定してください）
       filament_empty: フィラメントがありません
       maintenance_intro: 特定の MMU 機能と選択的な設定を直接管理します。
-      recover_intro: これは、Happy Hare が MMU
+      recover_intro: これは、Happy Hare が MMU 
         と同期していない場合に使用する低レベルの回復処理です。まず自動回復を試すことが推奨されますが、現在のツールまたはゲートを修正するにはこの処理が必要となります（Type-A
         MMU の場合は、代わりにアンロードしてセレクタをホームさせることもできます）。
       no_custom_controls: カスタムコントロールなし
@@ -1111,7 +1111,7 @@ app:
       no_active_spool: アクティブなスプールがありません
       no_spool_id: スプールIDがありません
       recover_filament_position: フィラメント位置を回復
-      multi_color: これは %{numTools}
+      multi_color: これは %{numTools} 
         個のツールを使用したマルチマテリアル・シングルエクストルーダー印刷のようです。ツールマッピングを確認することをお勧めします
       single_color: これは単色プリントのようですが、MMU でバイパスが選択されていません。選択中のツールを確認することをお勧めします
       map_slicer_tools: プリント用に、スライサーのツールを MMU のゲートにマッピングします

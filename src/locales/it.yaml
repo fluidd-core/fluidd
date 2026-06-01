@@ -18,7 +18,8 @@ app:
       not_found: Nessuna mesh del letto esistente trovata.
       not_loaded: Nessuna mesh caricata
     tooltip:
-      calibrate: Comincia una nuova calibrazione, salvando il profilo come 'predefinito'
+      calibrate: Comincia una nuova calibrazione, salvando il profilo come 
+        'predefinito'
       delete: Elimina profilo
       load: Carica profilo
       save: Salva il profilo calibrato in printer.cfg
@@ -38,8 +39,9 @@ app:
     label:
       hide_temp_waits: Nascondi i wait di temperatura
     tooltip:
-      help: Scrivi "help" per l'elenco comandi<br />Usa<kbd>Tab</kbd> per l'autocompletamento<br
-        />Usa<kbd>&uarr;</kbd> e <kbd>&darr;</kbd> per la cronologia dei comandi
+      help: Scrivi "help" per l'elenco comandi<br />Usa<kbd>Tab</kbd> per 
+        l'autocompletamento<br />Usa<kbd>&uarr;</kbd> e <kbd>&darr;</kbd> per la
+        cronologia dei comandi
   endpoint:
     error:
       cant_connect: >-
@@ -109,8 +111,8 @@ app:
       low_on_space: Spazio su disco insufficiente
       items_count: '{count} oggetto | {count} oggetti'
     overlay:
-      drag_files_folders_upload: <strong>Trascina qui</strong> file e cartelle per
-        caricarli
+      drag_files_folders_upload: <strong>Trascina qui</strong> file e cartelle 
+        per caricarli
       drag_files_enqueue: <strong>Trascina qui</strong> file da accodare
   gcode:
     btn:
@@ -332,7 +334,8 @@ app:
     tooltip:
       estop: Arresto di Emergenza
       reload_klipper: Ricarica la configurazione di Klipper.
-      reload_restart_klipper: Ricarica la configurazione di Klipper e riavvia la MCU.
+      reload_restart_klipper: Ricarica la configurazione di Klipper e riavvia la
+        MCU.
       restart_klipper: Riavvia il servizio di Klipper.
   printer:
     state:
@@ -365,7 +368,8 @@ app:
       dark_mode: Dark Mode
       default_extrude_length: Lunghezza di estrusione predefinita
       default_extrude_speed: Velocità di estrusione predefinita
-      default_toolhead_move_length: Lunghezza di spostamento testa di stampa predefinita
+      default_toolhead_move_length: Lunghezza di spostamento testa di stampa 
+        predefinita
       default_toolhead_xy_speed: Velocità XY della testa di stampa predefinita
       default_toolhead_z_speed: Velocità Z predefinita della testa di stampa
       draw_background: Mostra sfondo

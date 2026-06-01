@@ -56,9 +56,7 @@
 
       <app-draggable
         v-model="macros"
-        :options="{
-          group: `macro-settings-${category.name}`,
-        }"
+        :options="draggableOptions"
       >
         <section
           v-for="macro in macros"
@@ -108,6 +106,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import type Sortable from 'sortablejs'
 import MacroSettingsDialog from './MacroSettingsDialog.vue'
 import type { Macro, MacroCategory } from '@/store/macros/types'
 import store from '@/store'
@@ -135,6 +134,12 @@ export default class MacroCategorySettings extends Vue {
   dialogState: any = {
     open: false,
     macro: null
+  }
+
+  get draggableOptions (): Sortable.Options {
+    return {
+      group: `macro-settings-${this.category.name}`
+    }
   }
 
   get macrosForCategory (): Macro[] {

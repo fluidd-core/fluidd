@@ -35,8 +35,8 @@ app:
     label:
       hide_temp_waits: 온도변화 숨김
     tooltip:
-      help: 명령에 "도움말"을 입력합니다 <br />자동 완성을 위해 <kbd>Tab 키</kbd>를 사용합니다 기록을 위해 <br />
-        <kbd>&uarr;</kbd>와 <kbd>&darr;</kbd>를 사용합니다
+      help: 명령에 "도움말"을 입력합니다 <br />자동 완성을 위해 <kbd>Tab 키</kbd>를 사용합니다 기록을 위해 <br 
+        /> <kbd>&uarr;</kbd>와 <kbd>&darr;</kbd>를 사용합니다
   endpoint:
     error:
       cant_connect: 문제가 발생하여 Fluidd가 대상에 연결할 수 없습니다. 이것이 올바른 장치 주소인가요?
@@ -98,10 +98,13 @@ app:
       drag_files_enqueue: 파일을 여기로 <strong>드래그</strong>하여 대기열에 넣습니다
       drag_files_folders_upload: 업로드할 파일과 폴더를 여기로 <strong>끌어다</strong> 놓습니다
     url:
-      moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
-      moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
+      moonraker_telegram_bot_config: 
+        https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
+      moonraker_config: 
+        https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
       klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
-      crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
+      crowsnest_config: 
+        https://crowsnest.mainsail.xyz/configuration/%{hash}-section
   gcode:
     btn:
       load_current_file: 현재 파일 불러오기
@@ -207,13 +210,13 @@ app:
       abort: 중단
       multiply: 곱하기
     error:
-      app_setup_link: <a target="_blank" href="%{url}">여기서</a> Fluidd 설치 요구조건을 찾을
-        수 있습니다
-      app_warnings_found: '%{appName} 경고 발견.'
-      components_config: <a target="_blank" href="%{url}">여기서</a> Moonraker 플러그인 설정을
+      app_setup_link: <a target="_blank" href="%{url}">여기서</a> Fluidd 설치 요구조건을 
         찾을 수 있습니다
-      failed_components: Moonraker에서 플러그인에 실패했습니다. 로그를 확인하고 설정을 업데이트 후 Moonraker를
-        재시작 하십시오.
+      app_warnings_found: '%{appName} 경고 발견.'
+      components_config: <a target="_blank" href="%{url}">여기서</a> Moonraker 플러그인
+        설정을 찾을 수 있습니다
+      failed_components: Moonraker에서 플러그인에 실패했습니다. 로그를 확인하고 설정을 업데이트 후 
+        Moonraker를 재시작 하십시오.
     label:
       accel_to_decel: 감속도
       acceleration: 가속도
@@ -324,8 +327,8 @@ app:
     msg:
       password_changed: 비밀번호 변경됨
       wrong_password: 무언가 잘못되었습니다. 비밀번호가 일치합니까?
-      bed_screws_adjust: 현재 나사를 크게 조정해야 하는 경우 조정됨을 <b>클릭</b>하고, 그렇지 않은 경우 <b>수락</b>을
-        클릭하여 계속합니다.
+      bed_screws_adjust: 현재 나사를 크게 조정해야 하는 경우 조정됨을 <b>클릭</b>하고, 그렇지 않은 경우 
+        <b>수락</b>을 클릭하여 계속합니다.
       rolledover_logs: '다음 애플리케이션 로그가 롤오버되었습니다: %{applications}'
       welcome_back: 다시 오신 것을 환영합니다.<br>아래에서 로그인하여 프린터와 연결하세요.
       offline_ready: 이제 Fluidd가 오프라인에서 작동할 준비가 되었습니다.
@@ -356,8 +359,8 @@ app:
         confirm_service_start: '%{name} 서비스를 시작하시겠습니까?'
         confirm_service_restart: '%{name} 서비스를 다시 시작하시겠습니까?'
         confirm_power_device_toggle: 확실하신가요? 그러면 이 장치의 전원이 전환됩니다.
-        confirm_delete: 정말 삭제하시겠습니까? 선택한 항목이 삭제됩니다. | 정말 삭제하시겠습니까? 선택한 항목 {count}가
-          삭제됩니다.
+        confirm_delete: 정말 삭제하시겠습니까? 선택한 항목이 삭제됩니다. | 정말 삭제하시겠습니까? 선택한 항목 
+          {count}가 삭제됩니다.
         no_file_preview: 현재 %{name}을(를) 미리 볼 수 없습니다.
     table:
       header:
@@ -432,8 +435,8 @@ app:
       managed_by_moonraker: moonraker 구성으로 관리
       run_collector: 집진기 실행
       rollover_logs: 롤오버 로그
-      file_browser_help: 브라우저 외부에서 파일이나 폴더를 끌어다 놓아 여기에 업로드하기<br>파일과 폴더를 하위 폴더 또는 "..."에
-        끌어다 놓아 이동합니다
+      file_browser_help: 브라우저 외부에서 파일이나 폴더를 끌어다 놓아 여기에 업로드하기<br>파일과 폴더를 하위 폴더 또는
+        "..."에 끌어다 놓아 이동합니다
       browse_metrics: 사용 가능한 메트릭스 찾아보기
       notifications: 알림
   printer:
@@ -597,16 +600,17 @@ app:
       console: 콘솔
     tooltip:
       gcode_coords: 대시보드의 툴헤드 위치 대신에 G코드 위치를 사용합니다
-      theme_disclaimer: 이러한 테마에는 해당 소유자의 지적 재산인 브랜드 이름과 로고가 포함되어 있습니다.<br> 이러한 이름과
-        로고의 포함은 해당 브랜드의 허가를 받아 이루어졌습니다.<br> 그러나 이러한 테마는 해당 브랜드에서 공식적으로 유지 관리하지 않는다는
-        점에 유의하세요.<br> 테마와 관련된 문제나 문의 사항은 Fluidd 팀에 문의하시기 바랍니다.<br> 브랜드 이름과 로고의 사용은
-        장식 및 미적 목적으로만 사용되며, 해당 브랜드와의 공식적인 연관성이나 브랜드에 의한 보증을 암시하지 않습니다.
+      theme_disclaimer: 이러한 테마에는 해당 소유자의 지적 재산인 브랜드 이름과 로고가 포함되어 있습니다.<br> 이러한 
+        이름과 로고의 포함은 해당 브랜드의 허가를 받아 이루어졌습니다.<br> 그러나 이러한 테마는 해당 브랜드에서 공식적으로 유지 
+        관리하지 않는다는 점에 유의하세요.<br> 테마와 관련된 문제나 문의 사항은 Fluidd 팀에 문의하시기 바랍니다.<br> 브랜드
+        이름과 로고의 사용은 장식 및 미적 목적으로만 사용되며, 해당 브랜드와의 공식적인 연관성이나 브랜드에 의한 보증을 암시하지 
+        않습니다.
       diagnostics_performance: '[BETA] 진단 정보 로깅이 성능에 영향을 줄 수 있음'
       show_manual_probe_dialog_automatically: 수동 프로브 도구를 실행하는 경우 도우미 대화상자 자동 표시
-      show_screws_tilt_adjust_dialog_automatically: SCREWS_TILT_CALCULATE 도구를 실행하는
-        경우 자동으로 도우미 대화 상자를 표시
-      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST 도구를 실행하는 경우 자동으로
-        도우미 대화상자 표시
+      show_screws_tilt_adjust_dialog_automatically: SCREWS_TILT_CALCULATE 도구를 
+        실행하는 경우 자동으로 도우미 대화 상자를 표시
+      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST 도구를 실행하는 경우
+        자동으로 도우미 대화상자 표시
     camera_rotate_options:
       '270': 270°
       none: 없음
@@ -667,12 +671,12 @@ app:
       bed_screws_adjust: 베드 스크류 조정
       manual_probe: 수동 프로브
     label:
-      stats_max_speed: <span class="secondary--text">레이어 높이가 </span> %{layerHeight}
-        mm라고 가정할 때 <span class="secondary--text"> </span> 예상 최대 인쇄 속도는 %{estimatedMaxSpeed}
-        mm/s입니다
-      stats_active_extruder: <span class="secondary--text">활성 압출기 구성은</span> %{filamentDiameter}
-        mm 직경의 필라멘트 <span class="secondary--text"> 및</span> %{nozzleDiameter} mm 노즐에
-        대해 설정됩니다
+      stats_max_speed: <span class="secondary--text">레이어 높이가 </span> 
+        %{layerHeight} mm라고 가정할 때 <span class="secondary--text"> </span> 예상 최대 
+        인쇄 속도는 %{estimatedMaxSpeed} mm/s입니다
+      stats_active_extruder: <span class="secondary--text">활성 압출기 구성은</span> 
+        %{filamentDiameter} mm 직경의 필라멘트 <span class="secondary--text"> 및</span> 
+        %{nozzleDiameter} mm 노즐에 대해 설정됩니다
       stats_volumetric_flow: '%{extrudeSpeed} mm/s<span class="secondary--text">로
         압출하는 경우, 압출기는 </span> 예상 체적 유량인 %{estimatedVolumetricFlow} mm³/s를 제공할 수 있어야
         합니다'
@@ -726,8 +730,8 @@ app:
       prefer_device_camera: 가능한 경우 장치 카메라를 사용하여 QR 코드 감지하기
       auto_select_spool_on_match: QR코드 일치 시 스풀 선택 자동 커밋
       show_spool_selection_dialog_on_print_start: 인쇄 시작 시 스풀 선택 대화 상자 표시
-      warn_on_filament_type_mismatch: 스풀의 필라멘트 유형과 슬라이서에서 선택한 필라멘트 유형이 일치하지 않는 경우
-        경고 표시
+      warn_on_filament_type_mismatch: 스풀의 필라멘트 유형과 슬라이서에서 선택한 필라멘트 유형이 일치하지 않는 
+        경우 경고 표시
     btn:
       scan_code: 코드 스캔
       manage_spools: 스풀 관리
@@ -735,9 +739,11 @@ app:
     msg:
       error:
         cors: 카메라 피드에 접근하는 동안 오류가 발생했습니다. 웹캠 서버에서 CORS 접근을 허용하는지 확인하세요.
-        no_image_data: 카메라 피드에 접근하는 동안 오류가 발생했습니다. 카메라 구성을 확인하거나 다른 카메라 소스를 사용해 보세요.
+        no_image_data: 카메라 피드에 접근하는 동안 오류가 발생했습니다. 카메라 구성을 확인하거나 다른 카메라 소스를 사용해 
+          보세요.
         spool_not_existant: 스캔한 스풀이 데이터베이스에 존재하지 않습니다.
-      no_filament: 선택한 스풀에 인쇄 작업을 성공적으로 완료하기에 필라멘트가 충분히 남아 있지 않을 수 있습니다. 계속하시겠습니까?
+      no_filament: 선택한 스풀에 인쇄 작업을 성공적으로 완료하기에 필라멘트가 충분히 남아 있지 않을 수 있습니다. 
+        계속하시겠습니까?
       warning:
         invalid_spool_id: 이 QR코드에 포함된 스풀 ID가 유효하지 않습니다.
         code_not_recognized: 이 코드는 호환되는 QR 코드가 아닌 것 같습니다.

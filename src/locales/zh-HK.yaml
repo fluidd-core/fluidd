@@ -27,7 +27,8 @@ app:
       target: 目標值
       rate_of_change: 變化值
     tooltip:
-      help: 按住 <kbd>Shift 鍵</kbd>可縮放圖表。<br />單擊一個項目名稱可切換其在圖表中的顯示。<br />單擊開關可切換圖表顯示。
+      help: 按住 <kbd>Shift 鍵</kbd>可縮放圖表。<br />單擊一個項目名稱可切換其在圖表中的顯示。<br 
+        />單擊開關可切換圖表顯示。
   console:
     label:
       hide_temp_waits: 隱藏溫度信息
@@ -553,7 +554,8 @@ app:
       diagnostics_performance: '[BETA] 記錄診斷信息可能會影響性能'
       gcode_coords: 使用 GCode 坐標位置而不是儀表板上的打印頭坐標位置
       show_manual_probe_dialog_automatically: 運行手動探測工具時自動顯示幫助對話框
-      show_bed_screws_adjust_dialog_automatically: 如果運行 BED_SCREWS_ADJUST 工具，自動顯示助手對話框
+      show_bed_screws_adjust_dialog_automatically: 如果運行 BED_SCREWS_ADJUST 
+        工具，自動顯示助手對話框
   socket:
     msg:
       connecting: 正在連接至 Moonraker ...

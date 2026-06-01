@@ -11,4 +11,5 @@ overrides:
   'monaco-editor>dompurify': '$dompurify'
   serialize-javascript: ^7.0.3
   'vite-plugin-pwa>vite': '$vite'
+  'vue-echarts>echarts': '$echarts'
   '@originjs/vite-plugin-content>xlsx': '-'

@@ -847,6 +847,7 @@ export const getters = {
       aht3x: 'aht10',
       bme280: 'bme280',
       htu21d: 'htu21d',
+      sgp40: 'sgp40',
       sht21: 'htu21d',
       sht3x: 'sht3x',
       si7013: 'htu21d',

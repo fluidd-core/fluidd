@@ -89,11 +89,12 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
 
     const options: EChartsOption = {
       grid: {
-        top: 32,
+        top: 16,
         left: 16,
         right: 16,
         bottom: 16,
-        containLabel: true
+        outerBoundsMode: 'same',
+        outerBoundsContain: 'auto'
       },
       color,
       textStyle: {

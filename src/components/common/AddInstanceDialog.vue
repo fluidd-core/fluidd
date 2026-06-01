@@ -72,6 +72,7 @@ import { Globals } from '@/globals'
 import StateMixin from '@/mixins/state'
 import { Debounce } from 'vue-debounce-decorator'
 import webSocketWrapper from '@/util/web-socket-wrapper'
+import diagnoseHttpEndpoint from '@/util/http-endpoint-diagnostics'
 
 @Component({})
 export default class AddInstanceDialog extends Mixins(StateMixin) {
@@ -122,9 +123,9 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
       this.note = null
       this.verifying = true
 
-      const { socketUrl } = this.$filters.getApiUrls(value)
+      const { apiUrl, socketUrl } = this.$filters.getApiUrls(value)
 
-      // Cancel any in-flight WebSocket probe before starting a new one.
+      // Cancel any in-flight probe before starting a new one.
       this.abortController?.abort()
 
       this.abortController = new AbortController()
@@ -137,12 +138,50 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
 
       if (result.ok) {
         this.verified = true
-      } else if (result.reason !== 'cancelled') {
-        this.error = result.message
+      } else if (result.reason === 'error') {
+        await this.diagnoseError(apiUrl, result.message, signal)
+      } else if (result.reason === 'timeout') {
         this.note = this.$t('app.endpoint.error.cant_connect').toString()
       }
 
-      this.verifying = false
+      // A newer probe may have superseded this one while awaiting; if so, leave
+      // the spinner for it to own.
+      if (!signal.aborted) {
+        this.verifying = false
+      }
+    }
+  }
+
+  async diagnoseError (apiUrl: string, wsMessage: string, signal: AbortSignal) {
+    const diagnostic = await diagnoseHttpEndpoint(apiUrl, {
+      timeout: 3000,
+      signal
+    })
+
+    switch (diagnostic.kind) {
+      case 'mixed-content':
+        this.error = this.$t('app.endpoint.error.mixed_content').toString()
+        break
+
+      case 'cors':
+        this.error = this.$t('app.endpoint.error.cors_error').toString()
+        this.note = this.$t('app.endpoint.error.cors_note', {
+          url: Globals.DOCS_MULTIPLE_INSTANCES
+        }).toString()
+        break
+
+      case 'reachable':
+        this.error = this.$t('app.endpoint.error.websocket_failed').toString()
+        break
+
+      case 'unreachable':
+        this.error = wsMessage
+        this.note = this.$t('app.endpoint.error.cant_connect').toString()
+        break
+
+      case 'cancelled':
+        // Superseded by a newer probe; leave the UI state untouched.
+        break
     }
   }
 
@@ -150,10 +189,6 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
     return this.$t('app.endpoint.msg.trouble', {
       url: Globals.DOCS_MULTIPLE_INSTANCES
     })
-  }
-
-  get hosted (): boolean {
-    return this.$typedState.config.hostConfig.hosted
   }
 
   addInstance () {

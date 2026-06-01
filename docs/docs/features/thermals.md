@@ -14,6 +14,7 @@ fans in real time.
 
 - Click a heater, sensor, or fan name to toggle its visibility.
 - Click the power value to toggle power graph visibility.
+- Hover over a heater, sensor, or fan row to highlight its series in the chart.
 - Hold ++shift++ and scroll the mouse wheel over the chart to zoom.
 
 ![Thermal graph showing real-time temperature history for heaters and sensors](/assets/images/graph.png)

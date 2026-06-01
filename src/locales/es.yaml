@@ -38,8 +38,9 @@ app:
     label:
       hide_temp_waits: Esconder los mensajes de temperatura
     tooltip:
-      help: Introduce "help" para los comandos<br />Utiliza <kbd>Tab</kbd> para autocompletar<br
-        />Utiliza <kbd>&uarr;</kbd> y <kbd>&darr;</kbd> para el historial
+      help: Introduce "help" para los comandos<br />Utiliza <kbd>Tab</kbd> para 
+        autocompletar<br />Utiliza <kbd>&uarr;</kbd> y <kbd>&darr;</kbd> para el
+        historial
   endpoint:
     error:
       cant_connect: >-
@@ -106,13 +107,16 @@ app:
       items_count: '{count} elemento | {count} elementos'
     url:
       klipper_config: '%{klipperDomain}/Config_Reference.html#%{hash}'
-      crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
-      moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
-      moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
+      crowsnest_config: 
+        https://crowsnest.mainsail.xyz/configuration/%{hash}-section
+      moonraker_config: 
+        https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
+      moonraker_telegram_bot_config: 
+        https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
     overlay:
       drag_files_enqueue: <strong>Arrastrar</strong> archivos aqui para encolar
-      drag_files_folders_upload: <strong>Arrastrar</strong> archivos y carpetas aqui
-        para subir
+      drag_files_folders_upload: <strong>Arrastrar</strong> archivos y carpetas 
+        aqui para subir
   gcode:
     btn:
       load_current_file: Cargar archivo actual
@@ -136,7 +140,8 @@ app:
         El archivo "%{filename}" pesa %{size}. Esto podría usar muchos recursos
         de su sistema. ¿Está seguro?
     overlay:
-      drag_file_load: <strong>Arrastra</strong> un archivo gcode aqui para cargar
+      drag_file_load: <strong>Arrastra</strong> un archivo gcode aqui para 
+        cargar
   general:
     btn:
       abort: Abortar
@@ -348,12 +353,12 @@ app:
       wrong_password: Se ha producido un error. ¿Es su contraseña correcta?
       fluidd_settings_restore_failed: Fallo al restaurar los Ajustes de Fluid!
       offline_ready: Fluidd se encuentra listo para trabajar fuera de línea.
-      welcome_back: Bienvenido de nuevo. <br>A continuación, inicie sesión para mantenerse
-        conectado a su impresora.
-      needs_refresh: Nuevo contenido disponible. Haga clic en botón <b>Actualizar</b>
-        para ver los cambios.
-      pending_configuration_sections_deleted: Las siguientes secciones se encuentran
-        marcadas para ser eliminadas
+      welcome_back: Bienvenido de nuevo. <br>A continuación, inicie sesión para 
+        mantenerse conectado a su impresora.
+      needs_refresh: Nuevo contenido disponible. Haga clic en botón 
+        <b>Actualizar</b> para ver los cambios.
+      pending_configuration_sections_deleted: Las siguientes secciones se 
+        encuentran marcadas para ser eliminadas
     simple_form:
       error:
         arrayofnums: Solo números
@@ -368,8 +373,8 @@ app:
         required: Obligatorio
       msg:
         confirm: ¿Está seguro?
-        confirm_power_device_toggle: ¿Está seguro? Esto alternará la alimentación
-          del dispositivo.
+        confirm_power_device_toggle: ¿Está seguro? Esto alternará la 
+          alimentación del dispositivo.
         confirm_reboot_host: ¿Está seguro? Esto reiniciará el sistema anfitrión.
         confirm_shutdown_host: ¿Está seguro? Esto apagará el sistema anfitrión.
     table:
@@ -426,7 +431,8 @@ app:
       estop: Parada de Emergencia
       notifications: Notificaciones
       reload_klipper: Recarga la configuración de Klipper.
-      reload_restart_klipper: Recarga la configuración de Klipper y reinicia los MCUs.
+      reload_restart_klipper: Recarga la configuración de Klipper y reinicia los
+        MCUs.
       restart_klipper: Reinicia el servicio de sistema de Klipper.
   printer:
     state:
@@ -462,7 +468,8 @@ app:
       dark_mode: Modo oscuro
       default_extrude_length: Longitud de extrusión por defecto
       default_extrude_speed: Velocidad de extrusión por defecto
-      default_toolhead_move_length: Longitud de movimiento por defecto del cabezal
+      default_toolhead_move_length: Longitud de movimiento por defecto del 
+        cabezal
       default_toolhead_xy_speed: Velocidad XY por defecto del cabezal
       default_toolhead_z_speed: Velocidad Z por defecto del cabezal
       draw_background: Dibujar fondo
@@ -489,8 +496,8 @@ app:
       reset: Restablecer opciones
       retraction_icon_size: Tamaño del icono de retracción
       show_animations: Mostrar animaciones
-      show_bed_screws_adjust_dialog_automatically: Mostrar diálogo de ajuste de tornillos
-        de cama automáticamente
+      show_bed_screws_adjust_dialog_automatically: Mostrar diálogo de ajuste de 
+        tornillos de cama automáticamente
       show_rate_of_change: Mostrar tasa de cambio de temperatura
       solid: Sólido
       starts_with: Comienza con
@@ -503,8 +510,8 @@ app:
       unit: Unidad
       z_adjust_values: Valores de ajuste de Z
       show_logo_on_background: Mostrar logotipo en el fondo
-      drag_and_drop_functionality_for_files_and_folders: Función de arrastrar y soltar
-        archivos y carpetas
+      drag_and_drop_functionality_for_files_and_folders: Función de arrastrar y 
+        soltar archivos y carpetas
       force_move_toggle_warning: Requerir confirmación al activar FORCE_MOVE
     timer_options:
       duration: Solo duración

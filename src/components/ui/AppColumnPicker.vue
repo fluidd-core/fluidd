@@ -31,9 +31,7 @@
     >
       <app-draggable
         v-model="configurableHeaders"
-        :options="{
-          group: 'columnPicker',
-        }"
+        :options="draggableOptions"
       >
         <template v-for="header in configurableHeaders">
           <v-list-item
@@ -60,6 +58,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import type { AppDataTableHeader } from '@/types'
 import type { ConfiguredTableHeader } from '@/store/config/types'
+import type Sortable from 'sortablejs'
 
 @Component({})
 export default class AppColumnPicker extends Vue {
@@ -68,6 +67,10 @@ export default class AppColumnPicker extends Vue {
 
   @Prop({ type: Array, required: true })
   readonly headers!: AppDataTableHeader[]
+
+  readonly draggableOptions: Sortable.Options = Object.freeze({
+    group: 'columnPicker'
+  })
 
   get configurableHeaders (): AppDataTableHeader[] {
     return this.headers
