@@ -8,7 +8,7 @@
         :disabled="item.disabled"
         :aria-label="`${root}${item.fullPath}`"
         :tabindex="item.disabled ? -1 : 0"
-        role="link"
+        :role="item.disabled ? undefined : 'link'"
         @click="handleBreadcrumbItemClick(item)"
         @keydown.enter.prevent="handleBreadcrumbItemClick(item)"
         @keydown.space.prevent="handleBreadcrumbItemClick(item)"
