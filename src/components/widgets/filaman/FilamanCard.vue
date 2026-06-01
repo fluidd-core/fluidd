@@ -111,7 +111,6 @@
           <template v-for="entry in extruderEntries">
             <v-list-item
               :key="entry.extruder.key"
-              :class="{ primary: entry.isActive }"
               class="px-2"
             >
               <v-list-item-action
@@ -124,13 +123,14 @@
                   :size="36"
                   :width="3"
                   :value="entry.spool.progress ?? 0"
-                  color="primary"
+                  :color="getSpoolColor(entry.spool)"
                 >
-                  <img
-                    src="/img/icons/filaman-spool.svg"
-                    alt="FilaMan Spool"
-                    class="filaman-spool-icon"
+                  <v-icon
+                    :color="getSpoolColor(entry.spool)"
+                    size="22"
                   >
+                    $filament
+                  </v-icon>
                 </v-progress-circular>
                 <v-icon
                   v-else
@@ -143,11 +143,14 @@
               <v-list-item-content class="py-1">
                 <v-list-item-title>
                   <strong class="mr-1">{{ entry.extruder.name }}</strong>
-                  <span
-                    v-if="entry.spool"
+                  <v-icon
+                    v-if="entry.isActive"
+                    x-small
+                    color="primary"
                     class="mr-1"
-                    :style="{ color: getSpoolColor(entry.spool) }"
-                  >●</span>
+                  >
+                    $printer3dNozzle
+                  </v-icon>
                   <span v-if="entry.spool">{{ entry.spool.filament_name }}</span>
                   <span
                     v-else
