@@ -42,9 +42,9 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
     this.updateStatus('disconnected')
 
     try {
-      const stream = this.cameraVideo.srcObject as MediaStream | null
+      const stream = this.cameraVideo.srcObject
 
-      if (stream) {
+      if (stream instanceof MediaStream) {
         for (const track of stream.getTracks()) {
           track.stop()
           stream.removeTrack(track)

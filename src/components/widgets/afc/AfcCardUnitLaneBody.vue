@@ -148,6 +148,9 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
   }
 
   get spoolRemainingWeight (): number {
+    if (this.afcExistsSpoolman && this.spool?.remaining_weight != null) {
+      return Math.round(this.spool.remaining_weight)
+    }
     return Math.round(this.lane?.weight ?? 0)
   }
 

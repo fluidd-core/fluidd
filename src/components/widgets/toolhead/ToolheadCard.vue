@@ -224,14 +224,13 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
       this.printerSettings.bltouch != null ||
       this.printerSettings.smart_effector != null ||
       this.printerSettings.cartographer != null ||
-      (
-        this.printerSettings.scanner != null &&
-        'sensor' in this.printerSettings.scanner &&
-        this.printerSettings.scanner.sensor === 'cartographer'
-      ) ||
       Object.keys(this.printerSettings)
         .some(x => x.startsWith('probe_eddy_current '))
     )
+  }
+
+  get printerSupportsAxisTwistCompensationCalibrate (): boolean {
+    return this.printerSettings.axis_twist_compensation != null
   }
 
   get printerSupportsBeaconCalibrate (): boolean {
@@ -240,6 +239,13 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get printerSupportsCartographerCalibrate (): boolean {
     return this.printerSettings.cartographer != null
+  }
+
+  get printerSupportsCartographerAxisTwistCompensation (): boolean {
+    return (
+      this.printerSettings.cartographer != null &&
+      this.printerSettings.axis_twist_compensation != null
+    )
   }
 
   get printerSupportsZEndstopCalibrate (): boolean {
@@ -338,6 +344,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
       })
     }
 
+    if (this.printerSupportsAxisTwistCompensationCalibrate) {
+      tools.push({
+        name: 'AXIS_TWIST_COMPENSATION_CALIBRATE',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onAxisTwistCompensationCalibrate
+      })
+    }
+
     if (this.printerSupportsBeaconCalibrate) {
       tools.push({
         name: 'BEACON_AUTO_CALIBRATE',
@@ -373,6 +387,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
         name: 'CARTOGRAPHER_TOUCH_CALIBRATE',
         disabled: !this.allHomed || this.isManualProbeActive,
         wait: this.$waits.onCartographerTouchCalibrate
+      })
+    }
+
+    if (this.printerSupportsCartographerAxisTwistCompensation) {
+      tools.push({
+        name: 'CARTOGRAPHER_AXIS_TWIST_COMPENSATION',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onCartographerAxisTwistCompensation
       })
     }
 

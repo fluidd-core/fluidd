@@ -4,7 +4,7 @@ import SandboxedEvalWorker from '@/workers/sandboxedEval.worker?ts?worker'
 
 const workers: Record<string, Worker> = {}
 
-const sandboxedEval = async<T>(code: string, feature?: string, timeout = 800): Promise<T> => {
+const sandboxedEval = async (code: string, feature?: string, timeout = 800): Promise<unknown> => {
   const id = Date.now()
   const worker = getWorker(feature)
 
@@ -57,9 +57,7 @@ const sandboxedEval = async<T>(code: string, feature?: string, timeout = 800): P
   worker.postMessage(message)
 
   try {
-    const result = await workerPromise
-
-    return result as T
+    return await workerPromise
   } finally {
     if (feature && signal.aborted) {
       worker.terminate()

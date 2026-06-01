@@ -73,7 +73,7 @@ const getApiConfig = async (hostConfig: HostConfig, apiUrlHash?: string | null):
     endpoints.push(
       ...hostConfig.endpoints
         .map(sanitizeEndpoint)
-        .filter((endpoint): endpoint is string => !!endpoint))
+        .filter(Boolean))
   }
 
   // Add the browsers url to our endpoints list, unless black listed.

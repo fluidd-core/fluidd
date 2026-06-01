@@ -16,7 +16,7 @@
           <v-btn
             v-for="tool in mapList"
             :key="tool"
-            :disabled="tool.toLowerCase() === mappedTool.toLowerCase()"
+            :disabled="mappedTools.includes(tool.toLowerCase())"
             color="primary"
             class="ma-2"
             @click="mapTool(tool)"
@@ -47,23 +47,26 @@ export default class AfcUnitLaneMappingToolDialog extends Mixins(StateMixin, Afc
     return this.getAfcLaneObject(this.name)
   }
 
-  get mappedTool (): string {
-    return this.lane?.map ?? '--'
+  get mappedTools (): string[] {
+    const map = this.lane?.map
+    if (map == null) return []
+    return Array.isArray(map) ? map.map(t => t.toLowerCase()) : [map.toLowerCase()]
   }
 
   get mapList (): string[] {
-    const mapList: string[] = []
+    const seen = new Set<string>()
 
     for (const laneName of this.afcLanes) {
       const lane = this.getAfcLaneObject(laneName)
+      if (lane?.map == null) continue
 
-      if (lane?.map != null) {
-        mapList.push(lane.map)
+      const tools = Array.isArray(lane.map) ? lane.map : [lane.map]
+      for (const tool of tools) {
+        if (tool != null && tool !== '') seen.add(tool)
       }
     }
 
-    return mapList
-      .sort((a, b) => a.localeCompare(b))
+    return [...seen].sort((a, b) => a.localeCompare(b))
   }
 
   mapTool (newTool: string) {

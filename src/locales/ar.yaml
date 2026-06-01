@@ -32,7 +32,6 @@ app:
         />Click a power to toggle in the graph.
   console:
     label:
-      auto_scroll: التفاف تلقائي
       hide_temp_waits: Hide temp waits
   endpoint:
     error:
@@ -363,8 +362,8 @@ app:
   socket:
     msg:
       connecting: Connecting to moonraker...
-      no_connection: No moonraker connection. Please check moonraker status and /
-        or refresh.
+      no_connection: No moonraker connection. Please check moonraker status and 
+        / or refresh.
   system_info:
     label:
       capacity: السعة
@@ -394,7 +393,8 @@ app:
       home_x: X
       home_y: 'Y'
     tooltip:
-      extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
+      extruder_disabled: extruder disabled, below min_extrude_temp 
+        (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
   version:

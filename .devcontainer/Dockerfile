@@ -5,16 +5,15 @@ RUN \
   && apk add \
     git \
     git-zsh-completion \
-    sudo \
-    shadow \
     zsh \
     zsh-completions \
-  && echo node ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/node \
-  && chmod 0440 /etc/sudoers.d/node \
-  && chsh -s /bin/zsh node \
+  && sed -i '/^node:/s|/bin/ash|/bin/zsh|' /etc/passwd \
+  && corepack enable \
+  && mkdir -p /workspaces/fluidd/node_modules /workspaces/fluidd/.pnpm-store \
+  && chown -R node:node /workspaces/fluidd \
   && rm -f /etc/apk/cache/* /root/.cache
 
 USER node
+WORKDIR /workspaces/fluidd
 
-RUN \
-  sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
+RUN sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)" "" --unattended

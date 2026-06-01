@@ -43,8 +43,6 @@ app:
         />Kliknite na moč, da spremenite vidnost v grafu.
   console:
     label:
-      auto_scroll: Samodejno drsenje
-      flip_layout: Obrni postavitev
       hide_temp_waits: Skrij čakanje temperature
     tooltip:
       help: >-
@@ -183,6 +181,7 @@ app:
       edit: Uredi
       exit_layout: Izhod
       extrude: Iztisni
+      flip_layout: Obrni postavitev
       filter: Filter
       forgot_password: Ste pozabili geslo?
       go_to_file: Pojdi v datoteko
@@ -240,6 +239,8 @@ app:
       upload_print: Naloži & tiskaj
       view: Pogled
       reset_stats: Ponastavi statistiko
+      clear: Počisti
+      scroll_to_latest: Pomakni se na najnovejše
     error:
       app_setup_link: >-
         Zahteve za namestitve Fluidda lahko najdete <a target="_blank"
@@ -549,9 +550,9 @@ app:
       managed_by_moonraker: Upravlja konfiguracija moonrakerja
       notifications: Obvestila
       power_on_printer: Vklopi napajanje tiskalnika
-      reload_klipper: Ponovno naloži klipperjeve konfiguracije.
+      reload_klipper: Ponovno naloži klipperjeve konfiguracije
       reload_restart_klipper: Ponovno naloži klipperjeve konfiguracije in 
-        ponovno zažene MKE.
+        ponovno zažene MKE
       reset_layout: Ponastavi trenutno postavitev kot privzeto postavitev 
         celotnega strežnika
       reset_default_layout: Ponastavi privzeto postavitev celotnega strežnika na

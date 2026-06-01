@@ -14,16 +14,6 @@
   >
     <template #menu>
       <app-btn
-        v-if="autoScrollPaused"
-        icon
-        @click="consoleElement.scrollToLatest()"
-      >
-        <v-icon dense>
-          {{ flipLayout ? '$up' : '$down' }}
-        </v-icon>
-      </app-btn>
-
-      <app-btn
         v-if="!fullscreen"
         icon
         @click="$filters.routeTo({ name: 'console' })"
@@ -32,83 +22,20 @@
           $fullScreen
         </v-icon>
       </app-btn>
-
-      <app-btn
-        icon
-        @click="handleClear"
-      >
-        <v-icon dense>
-          $delete
-        </v-icon>
-      </app-btn>
-
-      <v-menu
-        bottom
-        left
-        offset-y
-        transition="slide-y-transition"
-        :close-on-content-click="false"
-      >
-        <template #activator="{ on, attrs }">
-          <app-btn
-            icon
-            v-bind="attrs"
-            v-on="on"
-          >
-            <v-icon dense>
-              $cog
-            </v-icon>
-          </app-btn>
-        </template>
-
-        <v-list dense>
-          <v-list-item @click="hideTempWaits = !hideTempWaits">
-            <v-list-item-action class="my-0">
-              <v-checkbox :input-value="hideTempWaits" />
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>
-                {{ $t('app.console.label.hide_temp_waits') }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item @click="flipLayout = !flipLayout">
-            <v-list-item-action class="my-0">
-              <v-checkbox :input-value="flipLayout" />
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>
-                {{ $t('app.console.label.flip_layout') }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <template v-if="filters && filters.length">
-            <v-divider />
-
-            <v-list-item
-              v-for="filter in filters"
-              :key="filter.id"
-              @click="handleToggleFilter(filter)"
-            >
-              <v-list-item-action class="my-0">
-                <v-checkbox :input-value="filter.enabled" />
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title>
-                  {{ filter.name }}
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </template>
-        </v-list>
-      </v-menu>
     </template>
 
-    <console
-      ref="console"
+    <console-toolbar
+      :auto-scroll-paused="autoScrollPaused"
+      :flip-layout.sync="flipLayout"
+      :search.sync="search"
+      @clear="handleClear"
+      @scrollToLatest="consoleBrowserElement.scrollToLatest()"
+    />
+
+    <console-browser
+      ref="consoleBrowser"
       :items="items"
+      :search="search"
       :fullscreen="fullscreen"
       @update:auto-scroll-paused="autoScrollPaused = $event"
     />
@@ -117,37 +44,31 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import Console from './Console.vue'
-import type { ConsoleEntry, ConsoleFilter } from '@/store/console/types'
+import ConsoleBrowser from './ConsoleBrowser.vue'
+import ConsoleToolbar from './ConsoleToolbar.vue'
+import type { ConsoleEntry } from '@/store/console/types'
 
 @Component({
   components: {
-    Console
+    ConsoleBrowser,
+    ConsoleToolbar
   }
 })
 export default class ConsoleCard extends Vue {
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean
 
-  @Ref('console')
-  readonly consoleElement!: Console
+  @Ref('consoleBrowser')
+  readonly consoleBrowserElement!: ConsoleBrowser
 
   autoScrollPaused = false
 
-  get filters (): ConsoleFilter[] {
-    return this.$typedState.console.consoleFilters
+  get search (): string {
+    return this.$typedState.console.consoleSearch
   }
 
-  get hideTempWaits (): boolean {
-    return this.$typedState.config.uiSettings.general.hideTempWaits
-  }
-
-  set hideTempWaits (value: boolean) {
-    this.$typedDispatch('config/saveByPath', {
-      path: 'uiSettings.general.hideTempWaits',
-      value,
-      server: true
-    })
+  set search (value: string) {
+    this.$typedCommit('console/setConsoleSearch', value)
   }
 
   get flipLayout (): boolean {
@@ -173,25 +94,18 @@ export default class ConsoleCard extends Vue {
   @Watch('inLayout')
   inLayoutChange (inLayout: boolean) {
     if (!inLayout) {
-      this.consoleElement.scrollToLatest()
+      this.consoleBrowserElement.scrollToLatest()
     }
   }
 
   handleCollapseChange (collapsed: boolean) {
     if (!collapsed) {
-      this.consoleElement.scrollToLatest()
+      this.consoleBrowserElement.scrollToLatest()
     }
   }
 
   handleClear () {
     this.$typedDispatch('console/onClear')
-  }
-
-  handleToggleFilter (filter: ConsoleFilter) {
-    this.$typedDispatch('console/onSaveFilter', {
-      ...filter,
-      enabled: !filter.enabled
-    })
   }
 }
 </script>

@@ -37,8 +37,6 @@ app:
       mpc_calibrate: MPC校准 {name}
   console:
     label:
-      auto_scroll: 自动滚动
-      flip_layout: 翻转布局
       hide_temp_waits: 隐藏温度信息
     tooltip:
       help: 输入"help"获取可用命令<br />使用 <kbd>Tab键</kbd> 自动补全<br 
@@ -161,6 +159,7 @@ app:
       exit_layout: 退出
       extrude: 挤出
       filter: 过滤
+      flip_layout: 翻转布局
       forgot_password: 忘记密码？
       go_to_file: 转到文件
       heaters_off: 停止加热

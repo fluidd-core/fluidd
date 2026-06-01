@@ -44,8 +44,6 @@ app:
       mpc_calibrate: '{name} MPC Kalibre Et'
   console:
     label:
-      auto_scroll: Otomatik kaydırma
-      flip_layout: Düzeni çevir
       hide_temp_waits: Sıcaklık bekleme sürelerini gizle
     tooltip:
       help: >-
@@ -183,6 +181,7 @@ app:
       exit_layout: Çıkış
       extrude: Ekstrüzyon
       filter: Filtrele
+      flip_layout: Düzeni çevir
       forgot_password: Parolanızı mı unuttunuz?
       go_to_file: Dosyaya git
       heaters_off: Isıtıcılar kapalı

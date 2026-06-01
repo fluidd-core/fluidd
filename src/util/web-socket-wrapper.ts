@@ -21,7 +21,7 @@ const webSocketWrapper = (url: string, options: CheckWebSocketOptions = {}): Pro
 
   const combinedSignal = AbortSignal.any(
     [timeoutSignal, signal]
-      .filter((x): x is AbortSignal => x !== undefined)
+      .filter(Boolean)
   )
 
   const getAbortResult = (): WebSocketCheckResult => {

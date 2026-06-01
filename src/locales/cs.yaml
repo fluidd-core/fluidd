@@ -32,7 +32,6 @@ app:
         položku.<br/> Klikněte na výkon pro jeho zobrazení v grafu.
   console:
     label:
-      auto_scroll: Automatický posun
       hide_temp_waits: Skrýt čekání na teplotu
   endpoint:
     error:
@@ -405,7 +404,8 @@ app:
       home_x: X
       home_y: 'Y'
     tooltip:
-      extruder_disabled: Extruze zakázána pod min_extrude_temp (%{min}<small>°C</small>)
+      extruder_disabled: Extruze zakázána pod min_extrude_temp 
+        (%{min}<small>°C</small>)
       home_xy: Výchozí pozice XY
       home_z: Výchozí pozice Z
   version:

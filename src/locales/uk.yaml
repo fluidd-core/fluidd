@@ -42,8 +42,6 @@ app:
       pid_calibrate: Калібрування PID {name}
   console:
     label:
-      auto_scroll: Автопрокрутка
-      flip_layout: Перевернути відображення
       hide_temp_waits: Приховати тимчасові очікування
     tooltip:
       help: Введіть "help" для команд<br />Використовуйте <kbd>Tab</kbd> для 
@@ -179,6 +177,7 @@ app:
       exit_layout: Вихід
       extrude: Вичавити
       filter: Фільтр
+      flip_layout: Перевернути відображення
       forgot_password: Забули ваш пароль?
       heaters_off: Нагрівачі ВИМК
       job_queue: Черга завдань

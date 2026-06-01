@@ -4,7 +4,8 @@ import { consola } from 'consola'
 
 export type ParseGcodeWorkerRequestMessage = {
   action: 'parse',
-  gcode: ArrayBuffer
+  url: string,
+  fileSize: number
 }
 
 export type ParseGcodeWorkerResponseMessage = {
@@ -53,15 +54,13 @@ const sendError = (error?: unknown) => {
   self.postMessage(message)
 }
 
-self.onmessage = (event: MessageEvent<ParseGcodeWorkerRequestMessage>) => {
+self.onmessage = async (event: MessageEvent<ParseGcodeWorkerRequestMessage>) => {
   const message = event.data
 
   try {
     switch (message.action) {
       case 'parse': {
-        const gcode = new TextDecoder().decode(message.gcode)
-
-        const { moves, layers, parts, tools, bounds } = parseGcode(gcode, sendProgress)
+        const { moves, layers, parts, tools, bounds } = await parseGcode(message.url, message.fileSize, sendProgress)
 
         sendResult(moves, layers, parts, tools, bounds)
 

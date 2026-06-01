@@ -357,15 +357,13 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
 
   async loadFile (file: AppFile | AppFileWithMeta) {
     try {
-      const response = await this.getGcode(file)
+      const url = await this.getGcodePreviewUrl(file)
 
-      const gcode = response?.data
-
-      if (!gcode) return
+      if (!url) return
 
       this.$typedDispatch('gcodePreview/loadGcode', {
         file,
-        gcode
+        url
       })
     } catch (error: unknown) {
       consola.error('[GcodePreview] load', error)

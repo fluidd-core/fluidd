@@ -13,10 +13,7 @@
           <app-draggable
             v-model="containers[containerIndex]"
             class="list-group"
-            :options="{
-              group: 'dashboard',
-              disabled: !inLayout,
-            }"
+            :options="draggableOptions"
             @end="handleUpdateLayout"
           >
             <template v-for="c in container">
@@ -58,6 +55,7 @@ import SensorsCard from '@/components/widgets/sensors/SensorsCard.vue'
 import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
 import BeaconCard from '@/components/widgets/beacon/BeaconCard.vue'
 import AfcCard from '@/components/widgets/afc/AfcCard.vue'
+import type Sortable from 'sortablejs'
 
 @Component({
   components: {
@@ -176,6 +174,13 @@ export default class Dashboard extends Mixins(StateMixin) {
     const layoutName: string = this.$typedGetters['layout/getSpecificLayoutName']
 
     return this.$typedGetters['layout/getLayout'](layoutName)
+  }
+
+  get draggableOptions (): Sortable.Options {
+    return {
+      group: 'dashboard',
+      disabled: !this.inLayout
+    }
   }
 
   @Watch('layout')

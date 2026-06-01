@@ -62,63 +62,56 @@ function arcIJMoveToSVGPath (toolhead: Point, move: ArcMove): string {
   switch (move.d) {
     case 'clockwise':
       return `A${radius},${radius},0,${+(angle < 0)},0,${destination.x},${destination.y}`
+
     case 'counter-clockwise':
       return `M${destination.x},${destination.y}` +
         `A${radius},${radius},0,${+(angle > 0)},0,${toolhead.x},${toolhead.y}` +
         `M${destination.x},${destination.y}`
+
     default:
       throw new TypeError('move has no direction')
   }
 }
 
-/**
- * Taken from https://stackoverflow.com/a/42803692
- */
-// function findIntersections (center1: Point, center2: Point, radius: number) {
-//   const d = Math.sqrt((center2.x - center1.x) ** 2 + (center2.y - center1.y) ** 2)
-//   const a = (d ** 2) / (2 * d)
-//   const h = Math.sqrt(radius ** 2 - a ** 2)
-//   const x2 = center1.x + a * (center2.x - center1.x) / d
-//   const y2 = center1.y + a * (center2.y - center1.y) / d
+function arcRMoveToSVGPath (toolhead: Point, move: ArcMove): string {
+  const destination = {
+    x: move.x ?? toolhead.x,
+    y: move.y ?? toolhead.y
+  }
 
-//   const x3 = x2 + h * (center2.y - center1.y) / d
-//   const y3 = y2 - h * (center2.x - center1.x) / d
+  const delta = {
+    x: destination.x - toolhead.x,
+    y: destination.y - toolhead.y
+  }
 
-//   const x4 = x2 - h * (center2.y - center1.y) / d
-//   const y4 = y2 + h * (center2.x - center1.x) / d
+  const r = move.r ?? 0
+  const chord = Math.hypot(delta.x, delta.y)
 
-//   return [{
-//     x: x3,
-//     y: y3
-//   }, {
-//     x: x4,
-//     y: y4
-//   }]
-// }
+  if (chord === 0 || chord > 2 * Math.abs(r)) {
+    return `L${destination.x},${destination.y}`
+  }
 
-// function arcRMoveToSVGPath (toolhead: Point, move: ArcMove): string {
-//   const intersections = findIntersections(
-//     toolhead,
-//     {
-//       x: move.x ?? toolhead.x,
-//       y: move.y ?? toolhead.y
-//     },
-//     move.r ?? NaN
-//   )
+  const h = Math.sqrt(r * r - (chord * chord) / 4)
+  const sign = ((r < 0) !== (move.d === 'clockwise')) ? -1 : 1
+  const i = delta.x / 2 + (sign * h * -delta.y) / chord
+  const j = delta.y / 2 + (sign * h * delta.x) / chord
 
-//   throw new Error('Arcs with the R parameter are currently not supported. ' +
-//     'Please make a Github issue with some sample gcode so we can resolve this')
-// }
+  return arcIJMoveToSVGPath(toolhead, { ...move, i, j })
+}
 
 export function arcMoveToSvgPath (toolhead: Point, move: ArcMove): string {
+  if (move.plane === 'xz' || move.plane === 'yz') {
+    // G18/G19: arc lies in a vertical plane; the XY projection is not a clean
+    // SVG arc, so render as a straight line to the destination XY.
+    return `L${move.x ?? toolhead.x},${move.y ?? toolhead.y}`
+  }
+
   if (move.i !== undefined || move.j !== undefined) {
     return arcIJMoveToSVGPath(toolhead, move)
   }
 
   if (move.r !== undefined) {
-    // return arcRMoveToSVGPath(toolhead, move)
-    throw new Error('Arcs with the R parameter are currently not supported. ' +
-    'Please make a Github issue with some sample gcode so we can resolve this')
+    return arcRMoveToSVGPath(toolhead, move)
   }
 
   throw new TypeError('Move is not a valid arc')

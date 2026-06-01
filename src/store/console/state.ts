@@ -3,6 +3,7 @@ import type { ConsoleState } from './types'
 export const defaultState = (): ConsoleState => {
   return {
     consoleCommand: '',
+    consoleSearch: '',
     consoleEntryCount: 0,
     console: [],
     gcodeHelp: {},

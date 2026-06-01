@@ -20,35 +20,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          run_install: false
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: |
-          npm ci
+          pnpm i --frozen-lockfile
 
       - name: Run lint
         run: |
-          npm run lint -- --no-fix
+          pnpm run lint --no-fix
 
       - name: Run type check
         run: |
-          npm run type-check
+          pnpm run type-check
 
       - name: Run tests
         run: |
-          npm run test:unit
+          pnpm run test:unit
 
       - name: Run circular references check
         run: |
-          npm run circular-check
+          pnpm run circular-check
 
       - name: Build
         run: |
-          npm run build
+          pnpm run build
 
       - name: Upload fluidd.zip
         uses: actions/upload-artifact@v7

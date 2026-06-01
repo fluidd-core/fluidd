@@ -21,7 +21,7 @@ import {
   type GraphicComponentOption,
   type TimelineComponentOption
 } from 'echarts/components'
-import { SVGRenderer, CanvasRenderer } from 'echarts/renderers'
+import { CanvasRenderer } from 'echarts/renderers'
 
 // Configure echarts
 use([
@@ -35,7 +35,6 @@ use([
   GraphicComponent,
   SurfaceChart,
   Grid3DComponent,
-  SVGRenderer,
   CanvasRenderer
 ])
 

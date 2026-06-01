@@ -2,9 +2,7 @@
   <div class="file-system">
     <app-draggable
       v-model="jobsWithKey"
-      :options="{
-        group: 'jobQueue',
-      }"
+      :options="draggableOptions"
       target="tbody"
     >
       <v-data-table
@@ -139,6 +137,7 @@ import type { DataTableHeader } from 'vuetify'
 import FilesMixin from '@/mixins/files'
 import getFilePaths from '@/util/get-file-paths'
 import type { TimeEstimates } from '@/store/printer/types'
+import type Sortable from 'sortablejs'
 
 type JobTotals = {
   filamentLength: number,
@@ -167,6 +166,10 @@ export default class JobQueueBrowser extends Mixins(StateMixin, FilesMixin) {
 
   @Prop({ type: Array, required: true })
   readonly headers!: DataTableHeader[]
+
+  readonly draggableOptions: Sortable.Options = Object.freeze({
+    group: 'jobQueue'
+  })
 
   get jobsWithKey (): QueueJobWithKey[] {
     const refresh = Date.now()

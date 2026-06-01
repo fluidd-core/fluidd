@@ -200,7 +200,9 @@ import {
   mdiWrench,
   mdiVariable,
   mdiArrowDownBold,
-  mdiArrowUpBold
+  mdiArrowUpBold,
+  mdiDockTop,
+  mdiDockBottom
 } from '@mdi/js'
 
 import {
@@ -507,6 +509,8 @@ export const Icons = Object.freeze({
   beacon: mdiMagnet,
   pidCalibrate: mdiSineWave,
   database: mdiDatabase,
+  dockTop: mdiDockTop,
+  dockBottom: mdiDockBottom,
   mmu: mdiMulticast,
   mmuEditTtgMap: mdiStateMachine,
   mmuEditGateMap: mdiDatabaseEdit,
@@ -577,6 +581,7 @@ export const Waits = Object.freeze({
   onHomeZ: 'onHomeZ',
   onQGL: 'onQGL',
   onZTilt: 'onZTilt',
+  onAxisTwistCompensationCalibrate: 'onAxisTwistCompensationCalibrate',
   onBedScrewsAdjust: 'onBedScrewAdjust',
   onDatabaseList: 'onDatabaseList',
   onDatabaseCompact: 'onDatabaseCompact',
@@ -585,6 +590,7 @@ export const Waits = Object.freeze({
   onDatabaseDeleteBackup: 'onDatabaseDeleteBackup',
   onBedScrewsCalculate: 'onBedScrewsCalculate',
   onBedTiltCalibrate: 'onBedTiltCalibrate',
+  onCartographerAxisTwistCompensation: 'onCartographerAxisTwistCompensation',
   onCartographerScanCalibrate: 'onCartographerScanCalibrate',
   onCartographerTouchCalibrate: 'onCartographerTouchCalibrate',
   onDeltaCalibrate: 'onDeltaCalibrate',

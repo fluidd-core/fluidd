@@ -76,3 +76,6 @@ shortcuts:
 | ------------------------------------ | ------------------------- |
 | ++arrow-up++ / ++arrow-down++        | Navigate command history  |
 | ++tab++                              | Autocomplete command      |
+
+The command input is multi-line, so ++arrow-up++ and ++arrow-down++ navigate
+command history only when the cursor is on the first or last line.

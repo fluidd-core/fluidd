@@ -27,9 +27,7 @@
 
       <app-draggable
         v-model="categories"
-        :options="{
-          group: `macro-settings`,
-        }"
+        :options="draggableOptions"
       >
         <section
           v-for="category in categories"
@@ -117,6 +115,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import MacroCategoryDialog from './MacroCategoryDialog.vue'
 import StateMixin from '@/mixins/state'
 import type { Macro, MacroCategory } from '@/store/macros/types'
+import type Sortable from 'sortablejs'
 
 @Component({
   components: {
@@ -132,6 +131,10 @@ export default class MacroSettings extends Mixins(StateMixin) {
     name: '',
     handler: this.handleAddCategory
   }
+
+  readonly draggableOptions: Sortable.Options = Object.freeze({
+    group: 'macro-settings'
+  })
 
   get categories (): MacroCategory[] {
     return this.$typedGetters['macros/getCategories']

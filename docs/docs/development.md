@@ -168,20 +168,36 @@ Check that Node.js was installed properly:
 
 ```bash
 node --version
-npm --version
+```
+
+### Enable pnpm
+
+Fluidd uses [pnpm](https://pnpm.io/) as its package manager. The required version
+is pinned in `package.json` via the `packageManager` field, and
+[Corepack](https://nodejs.org/api/corepack.html) (bundled with Node.js) will
+install and run that exact version automatically — just enable it once:
+
+```bash
+corepack enable
+```
+
+Verify that pnpm resolves correctly:
+
+```bash
+pnpm --version
 ```
 
 ### Install dependencies
 
 ```bash
 cd .../path/to/fluidd
-npm ci
+pnpm i --frozen-lockfile
 ```
 
 ### Run a local development server
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Browse to [http://localhost:8080/](http://localhost:8080/) and type in the URL
@@ -190,7 +206,7 @@ of your Moonraker instance, e.g. `http://192.168.0.101:7125`.
 ### Run unit tests
 
 ```bash
-npm run test
+pnpm run test
 ```
 
 ## Running the documentation site locally

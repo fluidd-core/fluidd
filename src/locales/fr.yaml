@@ -37,9 +37,7 @@ app:
         />Cliquez sur une puissance pour l'afficher.
   console:
     label:
-      auto_scroll: Scroll auto
       hide_temp_waits: Cacher les messages de température
-      flip_layout: Inverser disposition
     tooltip:
       help: Saisir "help" pour les commandes<br />Utiliser <kbd>Tab</kbd> pour 
         l'autocomplétion<br />Utiliser <kbd>&uarr;</kbd> et <kbd>&darr;</kbd> 
@@ -164,6 +162,7 @@ app:
       edit: Editer
       exit_layout: Quitter le mode de mise en page
       extrude: Extruder
+      flip_layout: Inverser disposition
       heaters_off: Tout éteindre
       load_all: Tout charger
       more_information: Plus d'informations

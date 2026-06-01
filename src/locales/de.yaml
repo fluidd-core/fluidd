@@ -43,8 +43,6 @@ app:
       pid_calibrate: PID-Kalibrierung {name}
   console:
     label:
-      auto_scroll: Automatisches Scrollen
-      flip_layout: Layout umkehren
       hide_temp_waits: Temperaturbenachrichtigungen ausblenden
     tooltip:
       help: Geben Sie "help" für eine Befehlsliste ein<br />Benutzen Sie 
@@ -178,6 +176,7 @@ app:
       edit: Bearbeiten
       exit_layout: Verlassen
       extrude: Extrudieren
+      flip_layout: Layout umkehren
       heaters_off: Heizelemente aus
       load_all: Alle laden
       more_information: Mehr Informationen
@@ -244,6 +243,8 @@ app:
       copy: Kopieren
       power_on_printer: Drucker einschalten
       perform_time_analysis: Zeitanalyse ausführen
+      clear: Leeren
+      scroll_to_latest: Zum Neusten scrollen
     error:
       app_setup_link: >-
         Die Anforderungen für die Einrichtung von Fluidd finden Sie <a
@@ -554,9 +555,9 @@ app:
       exit_layout: Layout-Modus verlassen
       managed_by_moonraker: Verwaltet durch Ihre Moonraker-Konfiguration
       notifications: Benachrichtigungen
-      reload_klipper: Lädt die Klipper-Konfiguration neu.
+      reload_klipper: Lädt die Klipper-Konfiguration neu
       reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die
-        MCUs neu.
+        MCUs neu
       reset_layout: Aktuelles Layout zu serverweitem Standard-Layout 
         zurücksetzen
       reset_default_layout: Serverweites Standard-Layout auf Werkseinstellungen 
@@ -1270,7 +1271,7 @@ app:
       color: Farbe
     setting:
       show_logos: Logos anzeigen
-      show_clog_detection: Verstopfungserkennung anzeigen
+      show_clog_detection: Verstopfungs-/Verknotungserkennung anzeigen
       show_details: Filamentdetails anzeigen
       large_filament_status: Großer Filamentstatus
       show_ttg_map: TTG-Zuordnung anzeigen

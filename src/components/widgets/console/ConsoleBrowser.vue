@@ -24,6 +24,7 @@
           v-for="item in orderedItems"
           :key="item.id"
           :value="item"
+          :search="search"
           class="console-item"
           @click="handleEntryClick"
         />
@@ -55,7 +56,7 @@ import type AppAutoScrollContainer from '@/components/ui/AppAutoScrollContainer.
     ConsoleItem
   }
 })
-export default class Console extends Mixins(StateMixin) {
+export default class ConsoleBrowser extends Mixins(StateMixin) {
   @Prop({ type: [Array], default: () => [] })
   readonly items!: ConsoleEntry[] | UpdateResponse[]
 
@@ -64,6 +65,9 @@ export default class Console extends Mixins(StateMixin) {
 
   @Prop({ type: Boolean })
   readonly readonly?: boolean
+
+  @Prop({ type: String })
+  readonly search?: string
 
   @Ref('consoleScroller')
   readonly consoleScrollerElement!: AppAutoScrollContainer
@@ -81,9 +85,11 @@ export default class Console extends Mixins(StateMixin) {
   }
 
   get orderedItems () {
+    const items = [...this.items]
+
     return this.flipLayout
-      ? [...this.items].reverse()
-      : this.items
+      ? items.reverse()
+      : items
   }
 
   scrollToLatest () {
@@ -124,8 +130,8 @@ export default class Console extends Mixins(StateMixin) {
   }
 
   .console-scroller-fullscreen {
-    height: calc(100vh - 260px);
-    height: calc(100svh - 260px);
+    height: calc(100vh - 308px);
+    height: calc(100svh - 308px);
   }
 
   .v-input {

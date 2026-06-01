@@ -138,6 +138,7 @@ app:
       edit: Editar
       exit_layout: Sair
       filter: Filtrar
+      flip_layout: Inverter layout
       extrude: Extrudar
       heaters_off: Heaters desligados
       forgot_password: Esqueceu sua senha?
@@ -651,8 +652,6 @@ app:
       sensors: Sensores
   console:
     label:
-      flip_layout: Inverter layout
-      auto_scroll: Auto rolagem
       hide_temp_waits: Ocultar espera de temperaturas
     tooltip:
       help: Introduza "help" para comandos<br />Carregue em <kbd>Tab</kbd> para 

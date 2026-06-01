@@ -9,13 +9,7 @@ import { Component, Prop, VModel, Vue, Watch } from 'vue-property-decorator'
 import { markRaw } from 'vue'
 import Sortable from 'sortablejs'
 
-const instanceKey = Symbol('instanceKey')
-
-type TargetHtmlElement = HTMLElement & {
-  [instanceKey]: AppDraggable | null
-}
-
-const isTargetHtmlElement = (element: HTMLElement): element is TargetHtmlElement => instanceKey in element
+const instanceMap = new WeakMap<HTMLElement, AppDraggable>()
 
 @Component({})
 export default class AppDraggable extends Vue {
@@ -53,17 +47,15 @@ export default class AppDraggable extends Vue {
 
   handleAdd (event: Sortable.SortableEvent) {
     const { oldIndex, newIndex, from } = event
+    const fromInstance = instanceMap.get(from)
 
     if (
       oldIndex === undefined ||
       newIndex === undefined ||
-      !isTargetHtmlElement(from) ||
-      from[instanceKey] === null
+      fromInstance === undefined
     ) {
       return
     }
-
-    const fromInstance = from[instanceKey]
 
     const items = [...this.items]
 
@@ -117,32 +109,34 @@ export default class AppDraggable extends Vue {
   attach () {
     const targetElement = (
       this.target &&
-      this.$el.querySelector<TargetHtmlElement>(this.target)
-    ) || this.$el as TargetHtmlElement
+      this.$el.querySelector(this.target)
+    ) || this.$el
 
-    targetElement[instanceKey] = this
+    if (targetElement instanceof HTMLElement) {
+      instanceMap.set(targetElement, this)
 
-    const options: Sortable.Options = {
-      animation: 200,
-      handle: '.handle',
-      ghostClass: 'app-draggable__ghost',
-      chosenClass: 'app-draggable__chosen',
-      ...this.options,
-      onStart: this.handleStart,
-      onAdd: this.handleAdd,
-      onRemove: this.handleRemove,
-      onUpdate: this.handleUpdate,
-      onEnd: this.handleEnd
+      const options: Sortable.Options = {
+        animation: 200,
+        handle: '.handle',
+        ghostClass: 'app-draggable__ghost',
+        chosenClass: 'app-draggable__chosen',
+        ...this.options,
+        onStart: this.handleStart,
+        onAdd: this.handleAdd,
+        onRemove: this.handleRemove,
+        onUpdate: this.handleUpdate,
+        onEnd: this.handleEnd
+      }
+
+      this.sortable = markRaw(Sortable.create(targetElement, options))
     }
-
-    this.sortable = markRaw(Sortable.create(targetElement, options))
   }
 
   dettach () {
     const targetElement = this.sortable?.el
 
-    if (targetElement && isTargetHtmlElement(targetElement)) {
-      targetElement[instanceKey] = null
+    if (targetElement) {
+      instanceMap.delete(targetElement)
     }
 
     this.sortable?.destroy()

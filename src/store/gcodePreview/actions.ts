@@ -30,12 +30,20 @@ export const actions = {
     }
   },
 
-  async loadGcode ({ commit, state, rootState, dispatch }, payload: { file: AppFile | AppFileWithMeta; gcode: ArrayBuffer }) {
+  async loadGcode ({ commit, state, rootState, dispatch }, payload: { file: AppFile | AppFileWithMeta; url: string }) {
+    if (state.parserWorker) {
+      await dispatch('terminateParserWorker')
+    }
+
     const worker = new ParseGcodeWorker()
 
     commit('setParserWorker', worker)
 
     worker.onmessage = (event: MessageEvent<ParseGcodeWorkerResponseMessage>) => {
+      if (state.parserWorker !== worker) {
+        return
+      }
+
       const message = event.data
 
       switch (message.action) {
@@ -51,7 +59,7 @@ export const actions = {
             commit('setParts', message.parts)
             commit('setTools', message.tools)
             commit('setBounds', message.bounds)
-            commit('setParserProgress', payload.file.size ?? gcodeByteLength)
+            commit('setParserProgress', payload.file.size)
 
             if (rootState.config.uiSettings.gcodePreview.hideSinglePartBoundingBox && message.parts.length <= 1) {
               dispatch('config/saveByPath', {
@@ -66,11 +74,9 @@ export const actions = {
             EventBus.$emit(i18n.t('app.general.msg.gcode_preview_failed').toString(), { type: 'error' })
           }
 
-          if (state.parserWorker) {
-            commit('setParserWorker', null)
+          commit('setParserWorker', null)
 
-            worker.terminate()
-          }
+          worker.terminate()
 
           if (state.moves.length === 0) {
             commit('setFile', null)
@@ -98,13 +104,12 @@ export const actions = {
 
     commit('setFile', payload.file)
 
-    const gcodeByteLength = payload.gcode.byteLength
-
     const message: ParseGcodeWorkerRequestMessage = {
       action: 'parse',
-      gcode: payload.gcode
+      url: payload.url,
+      fileSize: payload.file.size
     }
 
-    worker.postMessage(message, [payload.gcode])
+    worker.postMessage(message)
   }
 } satisfies ActionTree<GcodePreviewState, RootState>

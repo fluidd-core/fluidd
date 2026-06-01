@@ -31,8 +31,11 @@ export const getters = {
     }
   },
 
-  isEnabledInLayout: (state, getters) => (layout: string, id: string): boolean => {
-    const configs = Object.values(getters.getLayout(layout) ?? {}).flat() as LayoutConfig[]
+  isEnabledInLayout: (state, getters) => (name: string, id: string): boolean => {
+    const layout: LayoutContainer | undefined = getters.getLayout(name)
+    const configs = layout
+      ? Object.values(layout).flat()
+      : []
 
     return configs.find(configs => configs.id === id)?.enabled ?? false
   },

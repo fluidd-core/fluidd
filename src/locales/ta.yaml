@@ -28,6 +28,7 @@ app:
       edit: தொகு
       exit_layout: வெளியேறு
       extrude: எக்ச்ட்ரூட்
+      flip_layout: புரட்டும் தளவமைப்பு
       filter: வடிப்பி
       forgot_password: உங்கள் கடவுச்சொல்லை மறந்துவிட்டீர்களா?
       go_to_file: கோப்புக்குச் செல்லவும்
@@ -696,8 +697,6 @@ app:
       pid_calibrate: PID அளவீடு {name}
   console:
     label:
-      auto_scroll: ஆட்டோ ச்க்ரோல்
-      flip_layout: புரட்டும் தளவமைப்பு
       hide_temp_waits: தற்காலிக காத்திருப்புகளை மறைக்கவும்
     tooltip:
       help: கட்டளைகளுக்கு "உதவி" <br/> ஐ உள்ளிடவும் <kbd> தாவல் </kbd> ஐப் 

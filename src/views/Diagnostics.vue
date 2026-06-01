@@ -39,10 +39,7 @@
           <app-draggable
             v-model="containers[containerIndex]"
             class="list-group"
-            :options="{
-              group: 'diagnostics',
-              disabled: !inLayout,
-            }"
+            :options="draggableOptions"
             @end.stop="updateLayout"
           >
             <template v-for="c in container">
@@ -78,6 +75,7 @@ import DiagnosticsCard from '@/components/widgets/diagnostics/DiagnosticsCard.vu
 import DiagnosticsCardConfigDialog from '@/components/widgets/diagnostics/DiagnosticsCardConfigDialog.vue'
 import type { LayoutConfig } from '@/store/layout/types'
 import { defaultState } from '@/store/layout/state'
+import type Sortable from 'sortablejs'
 
 @Component({
   components: {
@@ -146,6 +144,13 @@ export default class Diagnostics extends Mixins(StateMixin) {
 
   get columnSpan () {
     return 12 / this.columnCount
+  }
+
+  get draggableOptions (): Sortable.Options {
+    return {
+      group: 'diagnostics',
+      disabled: !this.inLayout
+    }
   }
 
   get inLayout (): boolean {

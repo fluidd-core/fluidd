@@ -50,8 +50,6 @@ app:
         <kbd>シフト</kbd>を押したままズームします。<br />項目をクリックするとグラフが切り替わります。<br />電源をクリックすると、グラフが切り替わります。
   console:
     label:
-      auto_scroll: オートスクロール
-      flip_layout: レイアウト上下変更
       hide_temp_waits: 待機中を隠す
     tooltip:
       help: >-
@@ -179,6 +177,7 @@ app:
       exit_layout: 終了する
       extrude: 押し出し
       filter: フィルタ
+      flip_layout: レイアウト上下変更
       forgot_password: パスワードをお忘れですか？
       go_to_file: ファイルへ移動
       heaters_off: ヒーターオフ

@@ -1,6 +1,7 @@
 export interface ConsoleState {
   // [key: string]: string;
   consoleCommand: string;
+  consoleSearch: string;
   console: ConsoleEntry[]; // console stream
   gcodeHelp: Moonraker.KlippyApis.GcodeHelpResponse; // known commands
   consoleEntryCount: number; // give each console entry a unique id.
