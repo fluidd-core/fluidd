@@ -99,14 +99,89 @@
     </template>
 
     <v-progress-linear
-      v-if="activeSpool && $vuetify.breakpoint.lgAndDown"
-      :value="activeSpool.progress"
+      v-if="progressSpool && $vuetify.breakpoint.lgAndDown"
+      :value="progressSpool.progress"
       :height="6"
-      :color="getSpoolColor(activeSpool)"
+      :color="getSpoolColor(progressSpool)"
     />
 
     <v-card-text>
-      <v-row>
+      <template v-if="targetableMacros.length > 0">
+        <v-list dense class="pa-0">
+          <template v-for="entry in macroSpoolEntries">
+            <v-list-item
+              :key="entry.macro.name"
+              :class="{ primary: entry.macro.variables.active }"
+              class="px-2"
+            >
+              <v-list-item-action
+                class="mr-3 my-1"
+                style="min-width: 36px;"
+              >
+                <v-progress-circular
+                  v-if="entry.spool"
+                  :rotate="-90"
+                  :size="36"
+                  :width="3"
+                  :value="entry.spool.progress ?? 0"
+                  color="primary"
+                >
+                  <img
+                    src="/img/icons/filaman-spool.svg"
+                    alt="FilaMan Spool"
+                    class="filaman-spool-icon"
+                  >
+                </v-progress-circular>
+                <v-icon
+                  v-else
+                  size="36"
+                >
+                  $progressQuestion
+                </v-icon>
+              </v-list-item-action>
+
+              <v-list-item-content class="py-1">
+                <v-list-item-title>
+                  <strong class="mr-1">{{ entry.macro.name.toUpperCase() }}</strong>
+                  <span
+                    v-if="entry.spool"
+                    class="mr-1"
+                    :style="{ color: getSpoolColor(entry.spool) }"
+                  >●</span>
+                  <span v-if="entry.spool">{{ entry.spool.filament_name }}</span>
+                  <span
+                    v-else
+                    class="grey--text"
+                  >—</span>
+                </v-list-item-title>
+                <v-list-item-subtitle v-if="entry.spool">
+                  <span v-if="remainingFilamentUnit === 'weight'">
+                    {{ $filters.getReadableWeightString(entry.spool.remaining_weight ?? 0) }}
+                    <small>/ {{ $filters.getReadableWeightString(entry.spool.initial_weight ?? 0) }}</small>
+                  </span>
+                  <span v-else-if="remainingFilamentUnit === 'length'">
+                    {{ $filters.getReadableLengthString(entry.spool.remaining_length ?? 0) }}
+                    <small>/ {{ $filters.getReadableLengthString(entry.spool.initial_length ?? 0) }}</small>
+                  </span>
+                </v-list-item-subtitle>
+              </v-list-item-content>
+
+              <v-list-item-action class="my-1">
+                <app-btn
+                  icon
+                  small
+                  :disabled="!isConnected"
+                  @click="handleSelectSpool(entry.macro)"
+                >
+                  <v-icon small>$pencil</v-icon>
+                </app-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </template>
+        </v-list>
+      </template>
+
+      <v-row v-else>
         <template v-if="activeSpool">
           <v-col
             v-for="(fields, i) in selectedCardFields"
@@ -282,6 +357,26 @@ export default class FilamanCard extends Mixins(StateMixin) {
   get activeSpool (): Spool | undefined {
     if (!this.isConnected) return undefined
     return this.$typedGetters['spoolman/getActiveSpool']
+  }
+
+  get progressSpool (): Spool | undefined {
+    if (this.targetableMacros.length > 0) {
+      const activeMacro = this.targetableMacros.find(m => m.variables.active)
+      return activeMacro ? this.getMacroSpool(activeMacro) : undefined
+    }
+    return this.activeSpool
+  }
+
+  get macroSpoolEntries () {
+    return this.targetableMacros.map(macro => ({
+      macro,
+      spool: this.getMacroSpool(macro)
+    }))
+  }
+
+  getMacroSpool (macro: MacroWithSpoolId): Spool | undefined {
+    if (!this.isConnected || macro.variables.spool_id == null) return undefined
+    return this.getSpoolById(macro.variables.spool_id)
   }
 
   get currency (): string | null {
