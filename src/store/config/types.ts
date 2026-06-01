@@ -61,6 +61,7 @@ export interface SpoolmanConfig {
   },
   remainingFilamentUnit: SpoolmanRemainingFilamentUnit;
   selectedCardFields: string[];
+  extruderSpools: Partial<Record<string, number | null>>;
 }
 
 export type SpoolmanRemainingFilamentUnit = 'weight' | 'length'

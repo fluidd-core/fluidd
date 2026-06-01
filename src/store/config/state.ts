@@ -140,7 +140,8 @@ export const defaultState = (): ConfigState => {
           desc: false
         },
         remainingFilamentUnit: 'weight',
-        selectedCardFields: ['vendor', 'filament_name', 'remaining_weight', 'location', 'material', 'lot_nr', 'first_used', 'comment']
+        selectedCardFields: ['vendor', 'filament_name', 'remaining_weight', 'location', 'material', 'lot_nr', 'first_used', 'comment'],
+        extruderSpools: {}
       },
       history: {
         timeInDays: false,

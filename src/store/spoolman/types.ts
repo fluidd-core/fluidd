@@ -35,6 +35,7 @@ export interface SpoolSelectionDialogState {
   show: boolean;
   filename?: string;
   targetMacro?: string;
+  targetExtruder?: string;
   spoolSelectionOnly?: boolean;
   selectedSpoolId?: number;
 }

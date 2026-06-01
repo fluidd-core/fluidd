@@ -106,7 +106,82 @@
     />
 
     <v-card-text>
-      <template v-if="targetableMacros.length > 0">
+      <template v-if="isFilamanActive && extruders.length > 1">
+        <v-list dense class="pa-0">
+          <template v-for="entry in extruderEntries">
+            <v-list-item
+              :key="entry.extruder.key"
+              :class="{ primary: entry.isActive }"
+              class="px-2"
+            >
+              <v-list-item-action
+                class="mr-3 my-1"
+                style="min-width: 36px;"
+              >
+                <v-progress-circular
+                  v-if="entry.spool"
+                  :rotate="-90"
+                  :size="36"
+                  :width="3"
+                  :value="entry.spool.progress ?? 0"
+                  color="primary"
+                >
+                  <img
+                    src="/img/icons/filaman-spool.svg"
+                    alt="FilaMan Spool"
+                    class="filaman-spool-icon"
+                  >
+                </v-progress-circular>
+                <v-icon
+                  v-else
+                  size="36"
+                >
+                  $progressQuestion
+                </v-icon>
+              </v-list-item-action>
+
+              <v-list-item-content class="py-1">
+                <v-list-item-title>
+                  <strong class="mr-1">{{ entry.extruder.name }}</strong>
+                  <span
+                    v-if="entry.spool"
+                    class="mr-1"
+                    :style="{ color: getSpoolColor(entry.spool) }"
+                  >●</span>
+                  <span v-if="entry.spool">{{ entry.spool.filament_name }}</span>
+                  <span
+                    v-else
+                    class="grey--text"
+                  >—</span>
+                </v-list-item-title>
+                <v-list-item-subtitle v-if="entry.spool">
+                  <span v-if="remainingFilamentUnit === 'weight'">
+                    {{ $filters.getReadableWeightString(entry.spool.remaining_weight ?? 0) }}
+                    <small>/ {{ $filters.getReadableWeightString(entry.spool.initial_weight ?? 0) }}</small>
+                  </span>
+                  <span v-else-if="remainingFilamentUnit === 'length'">
+                    {{ $filters.getReadableLengthString(entry.spool.remaining_length ?? 0) }}
+                    <small>/ {{ $filters.getReadableLengthString(entry.spool.initial_length ?? 0) }}</small>
+                  </span>
+                </v-list-item-subtitle>
+              </v-list-item-content>
+
+              <v-list-item-action class="my-1">
+                <app-btn
+                  icon
+                  small
+                  :disabled="!isConnected"
+                  @click="handleSelectExtruderSpool(entry.extruder.key)"
+                >
+                  <v-icon small>$pencil</v-icon>
+                </app-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </template>
+        </v-list>
+      </template>
+
+      <template v-else-if="targetableMacros.length > 0">
         <v-list dense class="pa-0">
           <template v-for="entry in macroSpoolEntries">
             <v-list-item
@@ -307,6 +382,7 @@ import type { Spool } from '@/store/spoolman/types'
 import StatusLabel from '@/components/widgets/status/StatusLabel.vue'
 import type { Macro } from '@/store/macros/types'
 import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
+import type { KnownExtruder } from '@/store/printer/types'
 
 type MacroWithSpoolId = Macro & {
   variables: Record<string, unknown> & {
@@ -359,7 +435,43 @@ export default class FilamanCard extends Mixins(StateMixin) {
     return this.$typedGetters['spoolman/getActiveSpool']
   }
 
+  get extruders (): KnownExtruder[] {
+    return this.$typedGetters['printer/getExtruders']
+  }
+
+  get activeExtruderKey (): string {
+    return this.$typedState.printer.printer.toolhead?.extruder ?? 'extruder'
+  }
+
+  get extruderSpools (): Partial<Record<string, number | null>> {
+    return this.$typedState.config.uiSettings.spoolman.extruderSpools
+  }
+
+  get extruderEntries () {
+    return this.extruders.map(extruder => ({
+      extruder,
+      isActive: extruder.key === this.activeExtruderKey,
+      spool: this.getExtruderSpool(extruder.key)
+    }))
+  }
+
+  getExtruderSpool (extruderKey: string): Spool | undefined {
+    if (!this.isConnected) return undefined
+    const spoolId = this.extruderSpools[extruderKey]
+    return spoolId != null ? this.getSpoolById(spoolId) : undefined
+  }
+
+  handleSelectExtruderSpool (extruderKey: string) {
+    this.$typedCommit('spoolman/setDialogState', {
+      show: true,
+      targetExtruder: extruderKey
+    })
+  }
+
   get progressSpool (): Spool | undefined {
+    if (this.isFilamanActive && this.extruders.length > 1) {
+      return this.getExtruderSpool(this.activeExtruderKey)
+    }
     if (this.targetableMacros.length > 0) {
       const activeMacro = this.targetableMacros.find(m => m.variables.active)
       return activeMacro ? this.getMacroSpool(activeMacro) : undefined

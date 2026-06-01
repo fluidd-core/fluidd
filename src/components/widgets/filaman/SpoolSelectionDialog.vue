@@ -342,6 +342,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     if (this.open) {
       if (this.spoolSelectionOnly) {
         this.selectedSpoolId = this.$typedState.spoolman.dialog.selectedSpoolId ?? null
+      } else if (this.targetExtruder) {
+        const spoolId = this.$typedState.config.uiSettings.spoolman.extruderSpools[this.targetExtruder]
+        this.selectedSpoolId = spoolId ?? null
       } else if (this.targetMacro) {
         const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
 
@@ -566,6 +569,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$typedState.spoolman.dialog.targetMacro
   }
 
+  get targetExtruder (): string | undefined {
+    return this.$typedState.spoolman.dialog.targetExtruder
+  }
+
   get enabledWebcams (): Moonraker.Webcam.Entry[] {
     return this.$typedGetters['webcams/getEnabledWebcams']
   }
@@ -625,6 +632,28 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       if (!confirmation) {
         return
       }
+    }
+
+    if (this.targetExtruder) {
+      const currentSpools = { ...this.$typedState.config.uiSettings.spoolman.extruderSpools }
+      currentSpools[this.targetExtruder] = this.selectedSpoolId
+      this.$typedDispatch('config/saveByPath', {
+        path: 'uiSettings.spoolman.extruderSpools',
+        value: currentSpools,
+        server: true
+      })
+
+      const activeExtruder = this.$typedState.printer.printer.toolhead?.extruder ?? 'extruder'
+      if (this.targetExtruder === activeExtruder) {
+        if (this.supportsFilaman) {
+          await SocketActions.serverFilamanPostSpoolId(this.selectedSpoolId ?? undefined)
+        } else {
+          await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
+        }
+      }
+
+      this.open = false
+      return
     }
 
     if (this.targetMacro) {
@@ -767,6 +796,14 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get dialogTitle (): string {
+    if (this.targetExtruder) {
+      const extruders = this.$typedGetters['printer/getExtruders']
+      const extruder = extruders.find((e: { key: string }) => e.key === this.targetExtruder)
+      const label = extruder?.name ?? this.targetExtruder
+      const base = this.$tc('app.spoolman.title.spool_selection', 1).toString()
+      return `${this.replaceBrandName(base)} – ${label}`
+    }
+
     const title = this.$tc('app.spoolman.title.spool_selection', this.targetMacro ? 2 : 1, {
       macro: this.targetMacro?.toUpperCase()
     }).toString()
