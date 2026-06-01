@@ -74,7 +74,9 @@ export default class FileSystemBreadcrumbs extends Vue {
   }
 
   handleBreadcrumbItemClick (item: BreadcrumbItem) {
-    this.$emit('navigate-to', `${this.root}${item.fullPath}`)
+    if (!item.disabled) {
+      this.$emit('navigate-to', `${this.root}${item.fullPath}`)
+    }
   }
 }
 </script>
