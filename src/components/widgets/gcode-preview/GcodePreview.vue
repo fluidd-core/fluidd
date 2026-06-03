@@ -705,6 +705,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     }
   }
 
+  @Watch('bedSize')
   @Watch('bounds')
   @Watch('flipX')
   @Watch('flipY')
