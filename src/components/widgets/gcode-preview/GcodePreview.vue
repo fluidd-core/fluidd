@@ -425,12 +425,6 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       value,
       server: true
     })
-
-    if (value) {
-      this.$nextTick(() => this.zoomToBounds())
-    } else {
-      this.reset()
-    }
   }
 
   get followProgress (): boolean {
@@ -699,6 +693,15 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       } else {
         this.panzoom.pause()
       }
+    }
+  }
+
+  @Watch('autoZoom')
+  onAutoZoomChanged (value: boolean) {
+    if (value) {
+      this.$nextTick(() => this.zoomToBounds())
+    } else {
+      this.reset()
     }
   }
 
