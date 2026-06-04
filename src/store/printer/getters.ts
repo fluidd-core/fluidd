@@ -901,8 +901,13 @@ export const getters = {
       .flatMap(keyCheck => {
         return printerKeys
           .filter(keyCheck)
-          .filter(key => !/^\S+ _/.test(key))
-          .sort((a, b) => a.localeCompare(b))
+          .map(key => ({
+            key,
+            name: key.trim().split(/\s+/).pop() || ''
+          }))
+          .filter(entry => !entry.name.startsWith('_'))
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map(entry => entry.key)
       })
 
     const heaters = [...state.printer.heaters?.available_heaters ?? []]
