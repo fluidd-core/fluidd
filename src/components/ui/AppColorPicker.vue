@@ -172,6 +172,7 @@
         <v-spacer />
         <app-btn
           small
+          color="primary"
           text
           @click="$emit('reset')"
         >
