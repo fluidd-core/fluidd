@@ -19,6 +19,9 @@ const configHasDisconnectedMcu = (config: Record<string, any> | undefined, disco
   false
 )
 
+const resolveSensorColor = (sensorColors: Record<string, string>, key: string): string | undefined =>
+  Vue.$colorset.next(getKlipperType(key), key, sensorColors[key])
+
 export const getters = {
 
   /**
@@ -575,8 +578,9 @@ export const getters = {
   /**
    * Return available heaters
    */
-  getHeaters: (state, getters): Heater[] => {
+  getHeaters: (state, getters, rootState): Heater[] => {
     const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
+    const sensorColors: Record<string, string> = rootState.config.uiSettings.dashboard.sensorColors
 
     const heaters: Heater[] = []
 
@@ -592,7 +596,7 @@ export const getters = {
         const nameFromSplit = restSplit.pop()
         const name = nameFromSplit || key
 
-        const color = Vue.$colorset.next(getKlipperType(key), key)
+        const color = resolveSensorColor(sensorColors, key)
         const prettyName = Vue.$filters.prettyCase(name)
 
         const disconnected = configHasDisconnectedMcu(config, nonCriticalDisconnectedMcusSet)
@@ -656,7 +660,9 @@ export const getters = {
   /**
   * Return available fans and output pins
   */
-  getOutputs: (state, getters) => (filter?: string[]): Array<Fan | Led | OutputPin> => {
+  getOutputs: (state, getters, rootState) => (filter?: string[]): Array<Fan | Led | OutputPin> => {
+    const sensorColors: Record<string, string> = rootState.config.uiSettings.dashboard.sensorColors
+
     // Fans..
     const fans = [
       'temperature_fan',
@@ -738,8 +744,8 @@ export const getters = {
           ? 'Part Fan' // If we know its the part fan.
           : Vue.$filters.prettyCase(name)
 
-        const color = (applyColor.includes(type))
-          ? Vue.$colorset.next(getKlipperType(key), key)
+        const color = applyColor.includes(type)
+          ? resolveSensorColor(sensorColors, key)
           : undefined
 
         const config = state.printer.configfile.settings[key.toLowerCase()]
@@ -787,7 +793,7 @@ export const getters = {
   /**
    * Return available temperature probes / sensors.
    */
-  getSensors: (state, getters): Sensor[] => {
+  getSensors: (state, getters, rootState): Sensor[] => {
     const keyGroups = [
       (key: string) => (
         key.startsWith('temperature_sensor ') ||
@@ -797,6 +803,7 @@ export const getters = {
       (key: string) => key === 'z_thermal_adjust'
     ]
     const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
+    const sensorColors: Record<string, string> = rootState.config.uiSettings.dashboard.sensorColors
 
     const printerKeys = Object.keys(state.printer)
 
@@ -819,7 +826,7 @@ export const getters = {
                         : Vue.$filters.prettyCase(name)
                   }).toString()
                 : Vue.$filters.prettyCase(name)
-              const color = Vue.$colorset.next(getKlipperType(key), key)
+              const color = resolveSensorColor(sensorColors, key)
               const config = state.printer.configfile.settings[key.toLowerCase()]
 
               const disconnected = configHasDisconnectedMcu(config, nonCriticalDisconnectedMcusSet)

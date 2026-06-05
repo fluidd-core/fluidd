@@ -146,6 +146,27 @@ export const actions = {
     SocketActions.serverDatabasePostItem('uiSettings.dashboard.tempPresets', state.uiSettings.dashboard.tempPresets)
   },
 
+  /**
+   * Set or update the color override for a temperature item
+   */
+  async updateSensorColor ({ commit }, payload: { key: string; color: string }) {
+    commit('setSensorColor', payload)
+    SocketActions.serverDatabasePostItem(`uiSettings.dashboard.sensorColors.${payload.key}`, payload.color)
+  },
+
+  /**
+   * Remove the color override for a temperature item
+   */
+  async removeSensorColor ({ commit, state }, payload: { key: string }) {
+    // Guard: delete_item errors on a key Moonraker never stored, so only fire the
+    // network delete when an override actually existed.
+    const existed = payload.key in state.uiSettings.dashboard.sensorColors
+    commit('setRemoveSensorColor', payload)
+    if (existed) {
+      SocketActions.serverDatabaseDeleteItem(`uiSettings.dashboard.sensorColors.${payload.key}`)
+    }
+  },
+
   async updateFileSystemActiveFilters ({ commit, state }, payload: { root: string, value: FileFilterType[] }) {
     commit('setFileSystemActiveFilters', payload)
     SocketActions.serverDatabasePostItem(`uiSettings.fileSystem.activeFilters.${payload.root}`, state.uiSettings.fileSystem.activeFilters[payload.root])

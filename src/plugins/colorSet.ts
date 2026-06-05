@@ -1,14 +1,6 @@
 import type _Vue from 'vue'
 import { TinyColor } from '@ctrl/tinycolor'
-
-interface ColorGenOption {
-  base: string
-  count: number
-  hsplit?: number
-  lsplit?: number
-}
-
-type PaletteOption = string[] | ColorGenOption
+import { DefaultPalettes, type PaletteOption } from '@/globals'
 
 interface ColorSlot {
   readonly color: string
@@ -31,17 +23,10 @@ const buildPalette = (option: PaletteOption): string[] => {
   )
 }
 
-const DEFAULT_PALETTES: Record<string, PaletteOption> = {
-  heater: { base: '#ff5252', hsplit: 20, count: 4 },
-  bed: { base: '#1fb0ff', hsplit: 20, count: 2 },
-  fan: { base: '#4CAF50', hsplit: 20, count: 4 },
-  sensor: ['#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B', '#3F51B5', '#F50057']
-}
-
 export class ColorSet {
   readonly lists: Record<string, ColorSlot[]>
 
-  constructor (palettes: Record<string, PaletteOption> = DEFAULT_PALETTES) {
+  constructor (palettes: Record<string, PaletteOption> = DefaultPalettes) {
     this.lists = Object.fromEntries(
       Object.entries(palettes)
         .map(([list, option]) => [
@@ -56,22 +41,23 @@ export class ColorSet {
   }
 
   /**
-   * Get a stable color for `name` within `list`.
+   * Resolve the display color for `name` within `list`.
    *
-   * Returns the color already assigned to `name`, otherwise the next
-   * never-assigned color, otherwise the first non-locked (recyclable) color, or
-   * `undefined` when the list is unknown or every color is assigned and locked.
-   *
-   * `locked` (default true) keeps the assignment permanent until `forceResetAll`.
-   * Pass false to allow the color to be recycled once the palette is exhausted
-   * (e.g. when the key's display color is overridden elsewhere).
+   * When `override` is given it is returned as-is and the key's palette slot is
+   * left recyclable (so an overridden key never permanently consumes a color).
+   * Otherwise returns the color already assigned to `name`, then the next
+   * never-assigned color, then the first non-locked (recyclable) color, locking
+   * the assignment until `forceResetAll`. Returns `undefined` only when there is
+   * no override and the list is unknown or fully assigned-and-locked.
    */
-  next (list: string, name?: string, locked = true): string | undefined {
+  next (list: string, name?: string, override?: string): string | undefined {
     const slots = this.lists[list]
 
     if (!slots) {
-      return undefined
+      return override
     }
+
+    const locked = !override
 
     if (name !== undefined) {
       const existing = slots
@@ -80,7 +66,7 @@ export class ColorSet {
       if (existing) {
         existing.locked = locked
 
-        return existing.color
+        return override ?? existing.color
       }
     }
 
@@ -88,13 +74,13 @@ export class ColorSet {
       slots.find(slot => !slot.locked)
 
     if (!slot) {
-      return undefined
+      return override
     }
 
     slot.name = name
     slot.locked = locked
 
-    return slot.color
+    return override ?? slot.color
   }
 
   /**

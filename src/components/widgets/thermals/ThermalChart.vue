@@ -362,7 +362,8 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   createSeries (baseKey: string, subKey?: '#target' | '#power' | '#speed'): LineSeriesOption {
     // Grab the color
     const key = `${baseKey}${subKey ?? ''}`
-    const color = this.$colorset.next(getKlipperType(baseKey), baseKey)
+    const sensorColors = this.$typedState.config.uiSettings.dashboard.sensorColors
+    const color = this.$colorset.next(getKlipperType(baseKey), baseKey, sensorColors[baseKey])
 
     // Base properties
     const series: LineSeriesOption = {

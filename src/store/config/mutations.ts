@@ -160,6 +160,20 @@ export const mutations = {
     state.uiSettings.dashboard.tempPresets.splice(i, 1)
   },
 
+  /**
+   * Set / update a temperature item color override
+   */
+  setSensorColor (state, payload: { key: string; color: string }) {
+    Vue.set(state.uiSettings.dashboard.sensorColors, payload.key, payload.color)
+  },
+
+  /**
+   * Remove a temperature item color override
+   */
+  setRemoveSensorColor (state, payload: { key: string }) {
+    Vue.delete(state.uiSettings.dashboard.sensorColors, payload.key)
+  },
+
   setFileSystemActiveFilters (state, payload: { root: string, value: FileFilterType[] }) {
     Vue.set(state.uiSettings.fileSystem.activeFilters, payload.root, payload.value)
   },

@@ -89,7 +89,8 @@ export const defaultState = (): ConfigState => {
         klipperSaveAndRestartAction: 'auto'
       },
       dashboard: {
-        tempPresets: []
+        tempPresets: [],
+        sensorColors: {}
       },
       tableHeaders: {},
       thumbnailSizes: {},
