@@ -48,7 +48,7 @@ export const actions = {
   },
 
   async notifyOldMoonraker ({ dispatch }) {
-    dispatch('notifications/pushNotification', {
+    await dispatch('notifications/pushNotification', {
       id: 'old-moonraker',
       title: 'Moonraker',
       description: i18n.t('app.version.label.old_component_version', { name: 'Moonraker', version: Globals.MOONRAKER_MIN_VERSION }),
@@ -71,7 +71,7 @@ export const actions = {
       valid(Globals.MOONRAKER_MIN_VERSION) &&
       !gte(fullMoonrakerVersion, Globals.MOONRAKER_MIN_VERSION)
     ) {
-      dispatch('notifyOldMoonraker')
+      await dispatch('notifyOldMoonraker')
     }
   },
 
