@@ -49,8 +49,8 @@ export class ColorSet {
    * left recyclable (so an overridden key never permanently consumes a color).
    * Otherwise returns the color already assigned to `name`, then the next
    * never-assigned color, then the first non-locked (recyclable) color, locking
-   * the assignment until `forceResetAll`. Returns `undefined` only when there is
-   * no override and the list is unknown or fully assigned-and-locked.
+   * the assignment until `forceResetAll`. Falls back to `FALLBACK_COLOR` when
+   * the list is unknown or fully assigned-and-locked and no override is given.
    */
   next (list: string, name?: string, override?: string): string {
     const slots = this.lists[list]
