@@ -19,6 +19,18 @@ fans in real time.
 
 ![Thermal graph showing real-time temperature history for heaters and sensors](/assets/images/graph.png)
 
+## Sensor colors
+
+Each heater, fan, and sensor row displays a colored icon. Click it to open a
+color picker and set a custom color for that sensor. The color is reflected
+immediately in both the list and the chart.
+
+To revert to the automatically assigned palette color, open the picker and
+click **Reset to default**.
+
+Colors are saved per sensor in Moonraker's database and restored on the next
+page load.
+
 ## Presets
 
 Fluidd supports custom thermal presets — saved temperature profiles you can
