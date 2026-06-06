@@ -2,6 +2,8 @@ import type _Vue from 'vue'
 import { TinyColor } from '@ctrl/tinycolor'
 import { DefaultPalettes, type PaletteOption } from '@/globals'
 
+const FALLBACK_COLOR = '#2196F3'
+
 interface ColorSlot {
   readonly color: string
   name?: string
@@ -50,11 +52,11 @@ export class ColorSet {
    * the assignment until `forceResetAll`. Returns `undefined` only when there is
    * no override and the list is unknown or fully assigned-and-locked.
    */
-  next (list: string, name?: string, override?: string): string | undefined {
+  next (list: string, name?: string, override?: string): string {
     const slots = this.lists[list]
 
     if (!slots) {
-      return override
+      return override ?? FALLBACK_COLOR
     }
 
     const locked = !override
@@ -74,7 +76,7 @@ export class ColorSet {
       slots.find(slot => !slot.locked)
 
     if (!slot) {
-      return override
+      return override ?? FALLBACK_COLOR
     }
 
     slot.name = name

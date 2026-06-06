@@ -391,7 +391,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     return options
   }
 
-  seriesColor (baseKey: string): string | undefined {
+  seriesColor (baseKey: string): string {
     return this.$colorset.next(getKlipperType(baseKey), baseKey, this.sensorColors[baseKey])
   }
 

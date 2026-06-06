@@ -19,7 +19,7 @@ const configHasDisconnectedMcu = (config: Record<string, any> | undefined, disco
   false
 )
 
-const resolveSensorColor = (sensorColors: Record<string, string>, key: string): string | undefined =>
+const resolveSensorColor = (sensorColors: Record<string, string>, key: string): string =>
   Vue.$colorset.next(getKlipperType(key), key, sensorColors[key])
 
 export const getters = {
