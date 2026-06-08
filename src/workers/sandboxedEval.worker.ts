@@ -2,6 +2,7 @@ import { consola } from 'consola'
 
 export type SandboxedEvalWorkerRequestMessage = {
   code: string,
+  context?: unknown,
   id?: unknown
 }
 
@@ -73,7 +74,8 @@ self.onmessage = async (event: MessageEvent<SandboxedEvalWorkerRequestMessage>) 
 
   try {
     // eslint-disable-next-line no-eval
-    const result = (0, eval)(`(function (self) { ${message.code} })(null)`)
+    const fn = (0, eval)(`(function (self, context) { ${message.code} })`)
+    const result = fn(null, message.context)
 
     sendResult(result, message.id)
   } catch (e) {

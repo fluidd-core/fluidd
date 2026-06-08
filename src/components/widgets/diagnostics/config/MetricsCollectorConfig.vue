@@ -93,9 +93,14 @@ export default class MetricsCollectorConfig extends Vue {
   async runCollector () {
     try {
       const data = await sandboxedEval(`
-        const printer = ${JSON.stringify(this.$typedState.printer.printer)}
-        return eval(${JSON.stringify(this.metric.collector)})
-      `)
+        const { printer, collector } = context
+        return eval(collector)
+      `, {
+        context: {
+          printer: this.$typedState.printer.printer,
+          collector: this.metric.collector
+        }
+      })
 
       this.result = String(
         typeof data === 'number'
