@@ -32,27 +32,25 @@ export const mutations = {
   },
 
   setClearEndStops (state) {
-    if (state.printer.query_endstops == null) {
+    const queryEndstops = state.printer.query_endstops
+
+    if (queryEndstops == null) {
       return
     }
 
-    state.printer.query_endstops = Object.freeze({
-      ...state.printer.query_endstops,
-      last_query: {}
-    })
+    queryEndstops.last_query = Object.freeze({})
   },
 
   setClearScrewsTiltAdjust (state) {
-    if (state.printer.screws_tilt_adjust == null) {
+    const screwsTiltAdjust = state.printer.screws_tilt_adjust
+
+    if (screwsTiltAdjust == null) {
       return
     }
 
-    state.printer.screws_tilt_adjust = Object.freeze({
-      ...state.printer.screws_tilt_adjust,
-      error: false,
-      max_deviation: null,
-      results: {}
-    })
+    screwsTiltAdjust.error = false
+    screwsTiltAdjust.max_deviation = null
+    screwsTiltAdjust.results = Object.freeze({})
   },
 
   setSocketNotify<T extends keyof Klipper.PrinterState> (state: PrinterState, payload: { key: T, payload: Klipper.PrinterState[T] }) {
