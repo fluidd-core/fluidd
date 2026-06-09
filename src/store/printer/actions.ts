@@ -170,17 +170,17 @@ export const actions = {
   /**
    * Stores the printers object list.
    */
-  async onPrinterObjectsList ({ commit }, payload: Moonraker.KlippyApis.ObjectsListResponse) {
+  async onPrinterObjectsList (_, payload: Moonraker.KlippyApis.ObjectsListResponse) {
     // Given our object list, subscribe to any data we'd want constant updates for
     // and prepopulate our store.
     const subscriptions: Record<string, null> = {}
 
     for (const key of payload.objects) {
-      if (!key.includes('menu')) {
-        subscriptions[key] = null
+      if (key.split(' ', 1)[0] === 'menu') {
+        continue
       }
 
-      commit('setPrinterObjectList', key.replace(' ', '.'))
+      subscriptions[key] = null
     }
 
     SocketActions.printerObjectsSubscribe(subscriptions)

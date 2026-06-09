@@ -14,8 +14,6 @@ declare namespace Klipper {
     {
       // These keys are always available
 
-      objects: string[];
-
       configfile: ConfigFileState;
 
       gcode_move: GcodeMoveState;

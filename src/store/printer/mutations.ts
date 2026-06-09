@@ -28,13 +28,7 @@ export const mutations = {
   },
 
   setPrinterInfo (state, payload: Moonraker.KlippyApis.Info) {
-    state.info = payload
-  },
-
-  setPrinterObjectList (state, payload) {
-    if (!state.printer.objects.includes(payload)) {
-      state.printer.objects.push(payload)
-    }
+    state.info = Object.freeze(payload)
   },
 
   setClearEndStops (state) {
@@ -42,10 +36,10 @@ export const mutations = {
       return
     }
 
-    state.printer.query_endstops = {
+    state.printer.query_endstops = Object.freeze({
       ...state.printer.query_endstops,
       last_query: {}
-    }
+    })
   },
 
   setClearScrewsTiltAdjust (state) {
@@ -53,12 +47,12 @@ export const mutations = {
       return
     }
 
-    state.printer.screws_tilt_adjust = {
+    state.printer.screws_tilt_adjust = Object.freeze({
       ...state.printer.screws_tilt_adjust,
       error: false,
       max_deviation: null,
       results: {}
-    }
+    })
   },
 
   setSocketNotify<T extends keyof Klipper.PrinterState> (state: PrinterState, payload: { key: T, payload: Klipper.PrinterState[T] }) {
