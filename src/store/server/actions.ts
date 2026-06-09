@@ -47,6 +47,18 @@ export const actions = {
     }
   },
 
+  async notifyOldMoonraker ({ dispatch }) {
+    await dispatch('notifications/pushNotification', {
+      id: 'old-moonraker',
+      title: 'Moonraker',
+      description: i18n.t('app.version.label.old_component_version', { name: 'Moonraker', version: Globals.MOONRAKER_MIN_VERSION }),
+      to: '/settings#versions',
+      btnText: i18n.t('app.version.btn.view_versions'),
+      type: 'warning',
+      merge: true
+    }, { root: true })
+  },
+
   async checkMoonrakerMinVersion ({ state, dispatch }) {
     const moonrakerVersion = state.info.moonraker_version ?? '?'
 
@@ -59,15 +71,7 @@ export const actions = {
       valid(Globals.MOONRAKER_MIN_VERSION) &&
       !gte(fullMoonrakerVersion, Globals.MOONRAKER_MIN_VERSION)
     ) {
-      dispatch('notifications/pushNotification', {
-        id: `old-moonraker-${moonrakerVersion}`,
-        title: 'Moonraker',
-        description: i18n.t('app.version.label.old_component_version', { name: 'Moonraker', version: Globals.MOONRAKER_MIN_VERSION }),
-        to: '/settings#versions',
-        btnText: i18n.t('app.version.btn.view_versions'),
-        type: 'warning',
-        merge: true
-      }, { root: true })
+      await dispatch('notifyOldMoonraker')
     }
   },
 

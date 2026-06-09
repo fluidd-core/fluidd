@@ -22,11 +22,13 @@
       <v-icon
         v-else
         v-bind="attrs"
+        :class="iconClass"
         :color="controlColor"
         :disabled="disabled"
+        :small="small"
         v-on="on"
       >
-        $circle
+        {{ icon }}
       </v-icon>
     </template>
     <v-card ref="card">
@@ -163,6 +165,20 @@
           </div>
         </v-layout>
       </v-card-text>
+      <v-card-actions
+        v-if="resettable"
+        class="pt-0"
+      >
+        <v-spacer />
+        <app-btn
+          small
+          color="primary"
+          text
+          @click="$emit('reset')"
+        >
+          {{ $t('app.general.btn.reset_to_default') }}
+        </app-btn>
+      </v-card-actions>
     </v-card>
   </v-menu>
 </template>
@@ -192,6 +208,18 @@ export default class AppColorPicker extends Vue {
 
   @Prop({ type: Boolean })
   readonly dot?: boolean
+
+  @Prop({ type: String, default: '$circle' })
+  readonly icon!: string
+
+  @Prop({ type: [String, Object, Array], default: undefined })
+  readonly iconClass?: string | Record<string, boolean> | unknown[]
+
+  @Prop({ type: Boolean })
+  readonly small?: boolean
+
+  @Prop({ type: Boolean })
+  readonly resettable?: boolean
 
   @Prop({ type: String, default: 'RGB' })
   readonly supportedChannels!: string

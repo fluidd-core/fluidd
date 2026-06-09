@@ -51,9 +51,16 @@ app:
       cant_connect: Coś poszło nie tak i fluidd nie może dotrzeć do celu. Czy to
         na pewno prawidłowy adres?
       cors_error: zablokowane przez politykę CORS
-      cors_note: Może to oznaczać konieczność modyfikacji konfiguracji 
-        moonrakera. Zapoznaj się z dokumentacją dotyczącą konfiguracji wielu 
-        drukarek <a href="%{url}" target="_blank">tutaj</a>
+      cors_note: To może oznaczać, że musisz zmodyfikować swoją konfigurację 
+        Moonraker. Dokumentację dotyczącą konfiguracji wielu drukarek znajdziesz
+        <a href="%{url}" target="_blank">tutaj</a>
+      mixed_content: Fluidd jest uruchomiony przez HTTPS, ale ten adres używa 
+        HTTP. Przeglądarki blokują mieszane (niezabezpieczone) połączenia. Użyj 
+        adresu HTTPS (bezpiecznego) albo otwórz Fluidd przez HTTP.
+      websocket_failed: Serwer odpowiedział przez HTTP, ale połączenie WebSocket
+        nie powiodło się. Jeśli korzystasz z serwera pośredniczącego (reverse 
+        proxy), upewnij się, że jest on skonfigurowany do obsługi (upgrade) i 
+        przekazywania połączeń WebSocket.
     hint:
       add_printer: Np. http://fluidd.local
     msg:
@@ -453,8 +460,8 @@ app:
       app_warnings_found: '%{appName} - znaleziono ostrzeżenia.'
       app_setup_link: Wymagania dotyczące konfiguracji Fluidd można znaleźć <a 
         target="_blank" href="%{url}">tutaj.</a>
-      failed_components: Moonraker ma niedziałające wtyczki, sprawdź logi, 
-        zaktualizuj konfigurację i uruchom ponownie moonraker.
+      failed_components: Moonraker wykrył błędy w działaniu wtyczek. Sprawdź 
+        logi, zaktualizuj konfigurację i zrestartuj Moonraker.
       components_config: Konfigurację wtyczki Moonrakera można znaleźć <a 
         target="_blank" href="%{url}">tutaj.</a>
       printer_powered_off: Drukarka jest obecnie wyłączona.<br/><br/> Aby 
@@ -503,12 +510,12 @@ app:
         profile_version: Wersja profilu
     tooltip:
       estop: Awaryjny stop
-      managed_by_moonraker: Zarządzane przez konfigurację moonrakera
+      managed_by_moonraker: Zarządzane przez konfigurację Moonraker
       notifications: Powiadomienia
-      reload_klipper: Przeładowuje konfigurację klipera
-      reload_restart_klipper: Przeładowuje konfigurację klippera i restartuje 
-        MCU
-      restart_klipper: Restartuje usługę systemową klipper.
+      reload_klipper: Przeładowuje konfigurację Klippera
+      reload_restart_klipper: Przeładowuje konfigurację Klippera i restartuje 
+        mikrokontrolery (MCU)
+      restart_klipper: Restartuje usługę systemową Klippera
       run_collector: Uruchom kolektor
       browse_metrics: Przeglądaj dostępne metryki
       rollover_logs: Resetuj logi
@@ -737,7 +744,8 @@ app:
       auto: Auto
       firmware_restart: Restartuj Firmware
       host_restart: Restartuj Host
-      klipper_save_and_restart_action: Zapisanie Klippera i akcja restartu
+      klipper_save_and_restart_action: Działanie przycisku zapisu konfiguracji i
+        restartu
       service_restart: Restart usługi
       warn_on_cpu_throttled: Ostrzegaj w przypadku wykrycia ograniczania 
         wydajności CPU
@@ -926,9 +934,9 @@ app:
     title: Aktualizacje
   socket:
     msg:
-      no_connection: Brak połączenia z moonraker. Sprawdź jego status i/lub 
-        odśwież.
-      connecting: Łączenie z moonraker...
+      no_connection: Brak połączenia z Moonraker. Sprawdź status Moonrakera 
+        i/lub odśwież stronę.
+      connecting: Łączenie z Moonraker...
   timelapse:
     title:
       timelapse_settings: Ustawienia timelapse

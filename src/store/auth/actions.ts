@@ -58,16 +58,12 @@ export const actions = {
    * App.vue renders the login overlay. The websocket connection is intentionally
    * kept open so the login overlay can call access.info / access.login over it.
    */
-  async logout ({ commit, dispatch, rootGetters, rootState }, options?: { invalidate?: boolean; partial?: boolean }) {
-    const opts = {
-      invalidate: false,
-      partial: false,
-      ...options
-    }
+  async logout ({ commit, dispatch, rootGetters, rootState }, payload: { invalidate?: boolean; partial?: boolean } = {}) {
+    const { invalidate = false, partial = false } = payload
 
     // Invalidate all sessions (server-side). The current socket session becomes
     // anonymous; Moonraker does not close the connection.
-    if (opts.invalidate) {
+    if (invalidate) {
       try {
         await SocketActions.accessLogout()
       } catch (e) {
@@ -83,7 +79,7 @@ export const actions = {
 
     // Full logout: show the login form. Partial logouts are used for trusted
     // clients so they remain signed in after clearing their user tokens.
-    if (!opts.partial) {
+    if (!partial) {
       const status = rootState.socket.status
       if (status === 'ready' || status === 'identifying') {
         await dispatch('socket/onSetStatus', 'authenticating', { root: true })

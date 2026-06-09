@@ -39,7 +39,7 @@ export const getFilesFromDataTransfer = async (dataTransfer: DataTransfer) => {
   if (dataTransfer.items.length) {
     const entries = [...dataTransfer.items]
       .map(x => x.webkitGetAsEntry())
-      .filter((x): x is FileSystemEntry => !!x)
+      .filter(Boolean)
 
     return await getFilesFromFileSystemEntries(entries)
   } else if (dataTransfer.files.length) {

@@ -14,8 +14,7 @@ import i18n from '@/plugins/i18n'
 const evalCollectors = async (printer: Klipper.PrinterState, collectors: string[]): Promise<Record<string, unknown>> => {
   try {
     const data = await sandboxedEval(`
-    const printer = ${JSON.stringify(printer)}
-    const collectors = ${JSON.stringify(collectors)}
+    const { printer, collectors } = context
     const result = {}
 
     for (const collector of collectors) {
@@ -27,7 +26,13 @@ const evalCollectors = async (printer: Klipper.PrinterState, collectors: string[
     }
 
     return result
-  `, 'metrics') as Record<string, unknown>
+  `, {
+      feature: 'metrics',
+      context: {
+        printer,
+        collectors
+      }
+    }) as Record<string, unknown>
 
     return data
   } catch (e) {

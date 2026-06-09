@@ -8,6 +8,7 @@ import { EventBus } from '@/eventBus'
 import { upperFirst, camelCase } from 'lodash-es'
 import { jwtDecode } from 'jwt-decode'
 import type { TokenKeys } from '../config/types'
+import i18n from '@/plugins/i18n'
 
 const MODULES_TO_RESET_ON_DROP = [
   'server',
@@ -50,6 +51,14 @@ const tryGetErrorMessageFromJson = (message: string): string | null => {
 
   return null
 }
+
+const isSocketError = (value: unknown): value is SocketError =>
+  value != null &&
+  typeof value === 'object' &&
+  'code' in value &&
+  typeof value.code === 'number' &&
+  'message' in value &&
+  typeof value.message === 'string'
 
 const getMoonrakerDatabase = async <T = Record<string, unknown>>(namespace: string) => {
   try {
@@ -96,12 +105,8 @@ const getAccessToken = async (keys: TokenKeys): Promise<string | null> => {
       // if it's NOT a 401, bail out without touching tokens; otherwise fall
       // through to the clear at the bottom.
       if (
-        !(
-          e != null &&
-          typeof e === 'object' &&
-          'code' in e &&
-          e.code === 401
-        )
+        !isSocketError(e) ||
+        e.code !== 401
       ) {
         return null
       }
@@ -186,8 +191,9 @@ export const actions = {
    * token expiry: if the access token is expired but the refresh token is valid,
    * refreshes first. If both are expired, identify is still called but without an
    * access token (anonymous/trusted identify). Terminal transitions: → `ready` on
-   * success, → `authenticating` on failure. Aborts silently if the socket drops
-   * mid-flight.
+   * success; → `authenticating` on auth failure; → `ready` with a warning on
+   * JSON-RPC -32601 (very old Moonraker that predates `server.connection.identify`).
+   * Aborts silently if the socket drops mid-flight.
    */
   async runIdentify ({ dispatch, rootGetters, state }) {
     // Skip identify when the socket is already identified (e.g. post-access.login
@@ -210,9 +216,24 @@ export const actions = {
 
         if (state.status !== 'identifying') return
 
-        await dispatch('onSetStatus', 'authenticating')
+        // Very old Moonraker that predates server.connection.identify returns
+        // JSON-RPC -32601 ("Method not found"). Warn the user and continue
+        // loading unauthenticated through the normal bootstrap → ready path.
+        if (
+          isSocketError(e) &&
+          e.code === -32601
+        ) {
+          EventBus.$emit(
+            i18n.t('app.version.label.old_component_version', { name: 'Moonraker', version: Globals.MOONRAKER_MIN_VERSION }).toString(),
+            { type: 'warning' }
+          )
 
-        return
+          await dispatch('server/notifyOldMoonraker', undefined, { root: true })
+        } else {
+          await dispatch('onSetStatus', 'authenticating')
+
+          return
+        }
       }
     }
 

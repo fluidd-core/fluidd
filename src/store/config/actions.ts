@@ -7,6 +7,7 @@ import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'
 import { Waits } from '@/globals'
 import type { FileFilterType } from '../files/types'
 import { TinyColor } from '@ctrl/tinycolor'
+import dbKey from '@/util/db-key'
 
 export const actions = {
   /**
@@ -146,19 +147,40 @@ export const actions = {
     SocketActions.serverDatabasePostItem('uiSettings.dashboard.tempPresets', state.uiSettings.dashboard.tempPresets)
   },
 
+  /**
+   * Set or update the color override for a temperature item
+   */
+  async updateSensorColor ({ commit }, payload: { key: string; color: string }) {
+    commit('setSensorColor', payload)
+    SocketActions.serverDatabasePostItem(dbKey`uiSettings.dashboard.sensorColors.${payload.key}`, payload.color)
+  },
+
+  /**
+   * Remove the color override for a temperature item
+   */
+  async removeSensorColor ({ commit, state }, payload: { key: string }) {
+    // Guard: delete_item errors on a key Moonraker never stored, so only fire the
+    // network delete when an override actually existed.
+    const existed = payload.key in state.uiSettings.dashboard.sensorColors
+    commit('setRemoveSensorColor', payload)
+    if (existed) {
+      SocketActions.serverDatabaseDeleteItem(dbKey`uiSettings.dashboard.sensorColors.${payload.key}`)
+    }
+  },
+
   async updateFileSystemActiveFilters ({ commit, state }, payload: { root: string, value: FileFilterType[] }) {
     commit('setFileSystemActiveFilters', payload)
-    SocketActions.serverDatabasePostItem(`uiSettings.fileSystem.activeFilters.${payload.root}`, state.uiSettings.fileSystem.activeFilters[payload.root])
+    SocketActions.serverDatabasePostItem(dbKey`uiSettings.fileSystem.activeFilters.${payload.root}`, state.uiSettings.fileSystem.activeFilters[payload.root])
   },
 
   async updateFileSystemSortBy ({ commit, state }, payload: { root: string, value: string | null }) {
     commit('setFileSystemSortBy', payload)
-    SocketActions.serverDatabasePostItem(`uiSettings.fileSystem.sortBy.${payload.root}`, state.uiSettings.fileSystem.sortBy[payload.root])
+    SocketActions.serverDatabasePostItem(dbKey`uiSettings.fileSystem.sortBy.${payload.root}`, state.uiSettings.fileSystem.sortBy[payload.root])
   },
 
   async updateFileSystemSortDesc ({ commit, state }, payload: { root: string, value: boolean | null }) {
     commit('setFileSystemSortDesc', payload)
-    SocketActions.serverDatabasePostItem(`uiSettings.fileSystem.sortDesc.${payload.root}`, state.uiSettings.fileSystem.sortDesc[payload.root])
+    SocketActions.serverDatabasePostItem(dbKey`uiSettings.fileSystem.sortDesc.${payload.root}`, state.uiSettings.fileSystem.sortDesc[payload.root])
   },
 
   /**
@@ -168,7 +190,7 @@ export const actions = {
     commit('setUpdateHeader', payload)
 
     if (state.uiSettings.tableHeaders[payload.name]) {
-      SocketActions.serverDatabasePostItem(`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
+      SocketActions.serverDatabasePostItem(dbKey`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
     }
   },
 
@@ -176,7 +198,7 @@ export const actions = {
     commit('setUpdateHeaders', payload)
 
     if (state.uiSettings.tableHeaders[payload.name]) {
-      SocketActions.serverDatabasePostItem(`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
+      SocketActions.serverDatabasePostItem(dbKey`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
     }
   },
 
@@ -184,7 +206,7 @@ export const actions = {
     commit('setUpdateThumbnailSizes', payload)
 
     if (state.uiSettings.thumbnailSizes[payload.name]) {
-      SocketActions.serverDatabasePostItem(`uiSettings.thumbnailSizes.${payload.name}`, state.uiSettings.thumbnailSizes[payload.name])
+      SocketActions.serverDatabasePostItem(dbKey`uiSettings.thumbnailSizes.${payload.name}`, state.uiSettings.thumbnailSizes[payload.name])
     }
   },
 

@@ -72,7 +72,7 @@ export const gcodeCommandBuilder = (commandName: string, params: Record<string, 
 
         return `${key}=${encodeGcodeParamValue(value)}`
       })
-      .filter(x => x != null)
+      .filter(Boolean)
       .join(' ')
 
   if (paramsString) {

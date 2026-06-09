@@ -252,7 +252,7 @@ export default class FilesMixin extends Vue {
         const [fullPath, fileObject] = 'path' in file
           ? [
               [path, file.path]
-                .filter(path => !!path)
+                .filter(Boolean)
                 .join('/'),
               file.file
             ]

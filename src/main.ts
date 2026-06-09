@@ -41,7 +41,7 @@ Vue.component('EChart', () => import('./vue-echarts-chunk'))
 // Use any Plugins
 Vue.use(FiltersPlugin)
 Vue.use(VueMeta)
-Vue.use(ColorSetPlugin, {})
+Vue.use(ColorSetPlugin)
 Vue.use(VuetifyConfirm, {
   vuetify
 })
