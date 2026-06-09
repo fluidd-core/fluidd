@@ -168,7 +168,7 @@ export const actions = {
    */
 
   /**
-   * Stores the printers object list.
+   * Builds the subscription map from the printer object list and subscribes to updates.
    */
   async onPrinterObjectsList (_, payload: Moonraker.KlippyApis.ObjectsListResponse) {
     // Given our object list, subscribe to any data we'd want constant updates for
@@ -176,7 +176,7 @@ export const actions = {
     const subscriptions: Record<string, null> = {}
 
     for (const key of payload.objects) {
-      if (key.split(' ', 1)[0] === 'menu') {
+      if (key === 'menu' || key.startsWith('menu ')) {
         continue
       }
 
