@@ -12,7 +12,7 @@ export const actions = {
     SocketActions.serverSensorsList()
   },
 
-  async onSensorsList ({ commit }, payload: { sensors: Moonraker.Sensor.ListResponse }) {
+  async onSensorsList ({ commit }, payload: Moonraker.Sensor.ListResponse) {
     if (payload) {
       commit('setSensorsList', payload)
     }
