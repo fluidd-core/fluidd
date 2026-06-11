@@ -34,6 +34,7 @@ export const mutations = {
   },
 
   setClearAllNotifications (state) {
-    state.notifications = [...state.notifications.filter(n => !n.clear)]
+    state.notifications = state.notifications
+      .filter(n => !n.clear)
   }
 } satisfies MutationTree<NotificationsState>
