@@ -18,7 +18,7 @@ export const actions = {
     }
   },
 
-  async onSensorUpdate ({ commit }, payload: Record<string, Moonraker.Sensor.Entry>) {
+  async onSensorUpdate ({ commit }, payload: Record<string, Moonraker.Sensor.Values>) {
     if (payload) {
       commit('setSensorUpdate', payload)
     }

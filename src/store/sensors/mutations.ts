@@ -17,7 +17,7 @@ export const mutations = {
     state.sensors = payload.sensors
   },
 
-  setSensorUpdate (state, payload: Record<string, Moonraker.Sensor.Entry>) {
+  setSensorUpdate (state, payload: Record<string, Moonraker.Sensor.Values>) {
     for (const sensorKey in payload) {
       state.sensors[sensorKey].values = Object.freeze(payload[sensorKey])
     }
