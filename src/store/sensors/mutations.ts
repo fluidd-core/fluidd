@@ -11,10 +11,16 @@ export const mutations = {
   },
 
   setSensorsList (state, payload: Moonraker.Sensor.ListResponse) {
-    for (const sensorKey in payload.sensors) {
-      payload.sensors[sensorKey].values = Object.freeze(payload.sensors[sensorKey].values)
-    }
-    state.sensors = payload.sensors
+    state.sensors = Object.fromEntries(
+      Object.entries(payload.sensors)
+        .map(([key, entry]) => [
+          key,
+          {
+            ...entry,
+            values: Object.freeze(entry.values)
+          }
+        ])
+    )
   },
 
   setSensorUpdate (state, payload: Record<string, Moonraker.Sensor.Values>) {
