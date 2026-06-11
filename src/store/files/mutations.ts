@@ -21,7 +21,7 @@ export const mutations = {
     }
 
     if (state.currentPaths[root]) {
-      Vue.set(state.currentPaths, root, undefined)
+      Vue.delete(state.currentPaths, root)
     }
   },
 

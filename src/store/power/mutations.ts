@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import type { DevicePowerState } from './types'
 import { defaultState } from './state'
@@ -19,7 +18,7 @@ export const mutations = {
     for (const key in payload) {
       const i = state.devices.findIndex(device => device.device === key)
       if (i >= 0) {
-        Vue.set(state.devices[i], 'status', payload[key])
+        state.devices[i].status = payload[key]
       }
     }
   }

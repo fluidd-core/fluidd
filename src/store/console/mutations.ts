@@ -163,6 +163,6 @@ export const mutations = {
   },
 
   setLastCleared (state) {
-    Vue.set(state, 'lastCleared', Date.now())
+    state.lastCleared = Date.now()
   }
 } satisfies MutationTree<ConsoleState>

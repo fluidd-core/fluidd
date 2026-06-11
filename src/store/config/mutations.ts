@@ -51,7 +51,7 @@ export const mutations = {
         (dest, src) => Array.isArray(dest) ? src : undefined
       )
 
-      Vue.set(state, 'uiSettings', mergedSettings)
+      state.uiSettings = mergedSettings
     }
   },
 
@@ -107,7 +107,7 @@ export const mutations = {
       })
     }
     localStorage.setItem(Globals.LOCAL_INSTANCES_STORAGE_KEY, JSON.stringify(instances))
-    Vue.set(state, 'instances', instances)
+    state.instances = instances
   },
 
   setUpdateInstanceName (state, payload) {
@@ -120,12 +120,10 @@ export const mutations = {
   },
 
   setRemoveInstance (state, payload) {
-    const instances = state.instances
-    const i = instances.findIndex((instance: InstanceConfig) => instance.apiUrl === payload.apiUrl)
-    if (i >= 0) {
-      instances.splice(i, 1)
-      Vue.set(state, 'instances', instances)
-      localStorage.setItem(Globals.LOCAL_INSTANCES_STORAGE_KEY, JSON.stringify(instances))
+    const index = state.instances.findIndex((instance: InstanceConfig) => instance.apiUrl === payload.apiUrl)
+    if (index >= 0) {
+      state.instances.splice(index, 1)
+      localStorage.setItem(Globals.LOCAL_INSTANCES_STORAGE_KEY, JSON.stringify(state.instances))
     }
   },
 

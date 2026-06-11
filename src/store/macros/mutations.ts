@@ -93,6 +93,6 @@ export const mutations = {
   },
 
   setExpanded (state, expanded: number[]) {
-    Vue.set(state, 'expanded', expanded)
+    state.expanded = expanded
   }
 } satisfies MutationTree<MacrosState>
