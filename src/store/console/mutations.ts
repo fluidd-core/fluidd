@@ -36,7 +36,7 @@ export const mutations = {
     while (state.console.length >= Globals.CONSOLE_HISTORY_RETENTION) {
       state.console.shift()
     }
-    state.console.push(entry)
+    state.console.push(Object.freeze(entry))
   },
 
   /**
@@ -45,6 +45,7 @@ export const mutations = {
   setAllEntries (state, payload: ConsoleEntry[]) {
     state.consoleEntryCount = payload.length
     state.console = payload
+      .map(entry => Object.freeze(entry))
   },
 
   setResetPromptDialog (state, payload: string) {
