@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { AppUser, AuthState } from './types'
+import type { AppUser, AppUserWithPassword, AuthState } from './types'
 import type { RootState } from '../types'
 import { consola } from 'consola'
 import { SocketActions } from '@/api/socketActions'
@@ -117,8 +117,8 @@ export const actions = {
     await dispatch('logout', { invalidate: true })
   },
 
-  async addUser (_, user: AppUser) {
-    await SocketActions.accessPostUser(user.username, user.password ?? '')
+  async addUser (_, user: AppUserWithPassword) {
+    await SocketActions.accessPostUser(user.username, user.password)
 
     return user
   },

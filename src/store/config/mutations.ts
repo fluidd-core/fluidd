@@ -155,7 +155,9 @@ export const mutations = {
    */
   setRemovePreset (state, payload: TemperaturePreset) {
     const i = state.uiSettings.dashboard.tempPresets.findIndex(preset => preset.id === payload.id)
-    state.uiSettings.dashboard.tempPresets.splice(i, 1)
+    if (i >= 0) {
+      state.uiSettings.dashboard.tempPresets.splice(i, 1)
+    }
   },
 
   /**

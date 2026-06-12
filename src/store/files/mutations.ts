@@ -138,7 +138,8 @@ export const mutations = {
         ...payload
       })
     } else {
-      // The first update for a given uid always carries the full FileUpload shape.
+      // The first update for a given uid always carries the full FileUpload shape
+      // (abortController is the only field that may not be set yet).
       state.uploads.push(payload as FileUpload)
     }
   },

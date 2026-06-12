@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import type { AppUser } from '@/store/auth/types'
+import type { AppUserWithPassword } from '@/store/auth/types'
 
 @Component({})
 export default class UserConfigDialog extends Vue {
@@ -56,7 +56,7 @@ export default class UserConfigDialog extends Vue {
   open?: boolean
 
   @Prop({ type: Object, required: true })
-  readonly user!: AppUser
+  readonly user!: AppUserWithPassword
 
   handleSave () {
     this.$emit('save', this.user)

@@ -68,9 +68,10 @@ export interface FileDownload {
   abortController: AbortController;
 }
 
-export interface FileUpload extends FileDownload {
+export interface FileUpload extends Omit<FileDownload, 'abortController'> {
   complete: boolean; // indicates moonraker is finished with the file.
   cancelled: boolean; // in a cancelled state, don't show - nor try to upload.
+  abortController?: AbortController; // not set until the upload of this entry starts.
 }
 
 export type FileFilterType = 'print_start_time' | 'hidden_files' | 'klipper_backup_files' | 'rolled_log_files' | 'moonraker_backup_files' | 'moonraker_temporary_upload_files' | 'crowsnest_backup_files'

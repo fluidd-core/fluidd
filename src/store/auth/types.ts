@@ -6,7 +6,10 @@ export interface AuthState {
 
 export interface AppUser {
   username: string;
-  password?: string;
   source: string;
   created_on?: number;
+}
+
+export interface AppUserWithPassword extends AppUser {
+  password: string;
 }

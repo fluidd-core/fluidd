@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts">
-import type { AppUser } from '@/store/auth/types'
+import type { AppUser, AppUserWithPassword } from '@/store/auth/types'
 import { Component, Vue } from 'vue-property-decorator'
 import UserConfigDialog from './UserConfigDialog.vue'
 import ApiKeyDialog from './ApiKeyDialog.vue'
@@ -135,14 +135,6 @@ export default class AuthSettings extends Vue {
     }
   }
 
-  handleEditUserDialog (user: AppUser) {
-    this.userDialogState = {
-      open: true,
-      user,
-      handler: this.handleSaveUser
-    }
-  }
-
   handleApiKeyDialog () {
     this.apiKeyDialogState.open = true
   }
@@ -158,7 +150,7 @@ export default class AuthSettings extends Vue {
     }
   }
 
-  async handleSaveUser (user: AppUser) {
+  async handleSaveUser (user: AppUserWithPassword) {
     await this.$typedDispatch('auth/addUser', user)
 
     // We only want to check trust if this is the first user being added.
