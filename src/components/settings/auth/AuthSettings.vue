@@ -139,10 +139,13 @@ export default class AuthSettings extends Vue {
   }
 
   async handleSaveUser (user: { username: string, password: string }) {
+    const isFirstUser = this.users.length === 0
+
     await SocketActions.accessPostUser(user.username, user.password)
 
-    // We only want to check trust if this is the first user being added.
-    if (this.users.length === 0) this.$typedDispatch('auth/checkTrust')
+    if (isFirstUser) {
+      this.$typedDispatch('auth/checkTrust')
+    }
   }
 }
 </script>
