@@ -35,7 +35,7 @@ export const mutations = {
     state.currency = payload.value.replace(/^"|"$/g, '')
   },
 
-  setConnected (state, payload) {
+  setConnected (state, payload: boolean) {
     state.connected = payload
   },
 

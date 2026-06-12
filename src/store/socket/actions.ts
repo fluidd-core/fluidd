@@ -8,6 +8,7 @@ import { EventBus } from '@/eventBus'
 import { upperFirst, camelCase } from 'lodash-es'
 import { jwtDecode } from 'jwt-decode'
 import type { TokenKeys } from '../config/types'
+import type { HistoryItem } from '../history/types'
 import i18n from '@/plugins/i18n'
 
 const MODULES_TO_RESET_ON_DROP = [
@@ -338,11 +339,11 @@ export const actions = {
    * ==========================================================================
    */
 
-  async notifyStatusUpdate ({ dispatch }, payload) {
+  async notifyStatusUpdate ({ dispatch }, payload: Partial<Klipper.PrinterState>) {
     await dispatch('printer/onNotifyStatusUpdate', payload, { root: true })
   },
 
-  async notifyGcodeResponse ({ dispatch }, payload) {
+  async notifyGcodeResponse ({ dispatch }, payload: string) {
     dispatch('console/onAddConsoleEntry', { message: `${Globals.CONSOLE_RECEIVE_PREFIX}${payload}` }, { root: true })
   },
 
@@ -366,44 +367,44 @@ export const actions = {
     consola.debug('Klippy Ready')
   },
 
-  async notifyFilelistChanged ({ dispatch }, payload) {
+  async notifyFilelistChanged ({ dispatch }, payload: Moonraker.Files.ChangeResponse) {
     dispatch('files/notify' + upperFirst(camelCase(payload.action)), payload, { root: true })
   },
 
   // Next release, remove.
-  async notifyMetadataUpdate ({ dispatch }, payload) {
+  async notifyMetadataUpdate ({ dispatch }, payload: Moonraker.Files.FileWithMetaResponse) {
     dispatch('files/onFileMetaData', payload, { root: true })
   },
 
-  async notifyPowerChanged ({ dispatch }, payload) {
+  async notifyPowerChanged ({ dispatch }, payload: { device: string; status: Moonraker.Power.DeviceState }) {
     dispatch('power/onStatus', { [payload.device]: payload.status }, { root: true })
   },
 
-  async notifyUpdateResponse ({ dispatch }, payload) {
+  async notifyUpdateResponse ({ dispatch }, payload: Moonraker.UpdateManager.UpdateResponse) {
     dispatch('version/onUpdateResponse', payload, { root: true })
   },
 
-  async notifyUpdateRefreshed ({ dispatch }, payload) {
+  async notifyUpdateRefreshed ({ dispatch }, payload: Partial<Moonraker.UpdateManager.StatusResponse>) {
     dispatch('version/onUpdateStatus', payload, { root: true })
   },
 
-  async notifyHistoryChanged ({ dispatch }, payload) {
+  async notifyHistoryChanged ({ dispatch }, payload: { action: 'added' | 'finished'; job: HistoryItem }) {
     dispatch('history/onHistoryChange', payload, { root: true })
   },
 
-  async notifyCpuThrottled ({ dispatch }, payload) {
+  async notifyCpuThrottled ({ dispatch }, payload: Moonraker.ProcStats.ThrottledState) {
     dispatch('server/onMachineThrottledState', payload, { root: true })
   },
 
-  async notifyProcStatUpdate ({ dispatch }, payload) {
+  async notifyProcStatUpdate ({ dispatch }, payload: Moonraker.ProcStats.Response) {
     dispatch('server/onMachineProcStats', payload, { root: true })
   },
 
-  async notifyUserCreated ({ dispatch }, payload) {
+  async notifyUserCreated ({ dispatch }, payload: { username: string; source?: string }) {
     dispatch('auth/onUserCreated', payload, { root: true })
   },
 
-  async notifyUserDeleted ({ dispatch }, payload) {
+  async notifyUserDeleted ({ dispatch }, payload: { username: string }) {
     dispatch('auth/onUserDeleted', payload, { root: true })
   },
 
@@ -424,43 +425,43 @@ export const actions = {
     }
   },
 
-  async notifyServiceStateChanged ({ dispatch }, payload) {
+  async notifyServiceStateChanged ({ dispatch }, payload: Moonraker.Machine.ServiceState) {
     dispatch('server/onServiceStateChanged', payload, { root: true })
   },
 
-  async notifyTimelapseEvent ({ dispatch }, payload) {
+  async notifyTimelapseEvent ({ dispatch }, payload: Moonraker.Timelapse.Event) {
     dispatch('timelapse/onEvent', payload, { root: true })
   },
 
-  async notifyAnnouncementUpdate ({ dispatch }, payload) {
+  async notifyAnnouncementUpdate ({ dispatch }, payload: Moonraker.Announcements.ListResponse) {
     dispatch('announcements/onAnnouncementUpdate', payload, { root: true })
   },
 
-  async notifyAnnouncementDismissed ({ dispatch }, payload) {
+  async notifyAnnouncementDismissed ({ dispatch }, payload: { entry_id: string }) {
     dispatch('announcements/onAnnouncementDismissed', payload, { root: true })
   },
 
-  async notifyAnnouncementWake ({ dispatch }, payload) {
+  async notifyAnnouncementWake ({ dispatch }, payload: { entry_id: string }) {
     dispatch('announcements/onAnnouncementWake', payload, { root: true })
   },
 
-  async notifyWebcamsChanged ({ dispatch }, payload) {
+  async notifyWebcamsChanged ({ dispatch }, payload: Moonraker.Webcam.ListResponse) {
     dispatch('webcams/onWebcamsChanged', payload, { root: true })
   },
 
-  async notifySensorUpdate ({ dispatch }, payload) {
+  async notifySensorUpdate ({ dispatch }, payload: Record<string, Moonraker.Sensor.Values>) {
     dispatch('sensors/onSensorUpdate', payload, { root: true })
   },
 
-  async notifyJobQueueChanged ({ dispatch }, payload) {
+  async notifyJobQueueChanged ({ dispatch }, payload: { action: string, queue_state?: Moonraker.JobQueue.QueueState, updated_queue?: Moonraker.JobQueue.QueuedJob[] | null }) {
     dispatch('jobQueue/onJobQueueChanged', payload, { root: true })
   },
 
-  async notifyActiveSpoolSet ({ dispatch }, payload) {
+  async notifyActiveSpoolSet ({ dispatch }, payload: Moonraker.Spoolman.SpoolIdResponse) {
     dispatch('spoolman/onActiveSpool', payload, { root: true })
   },
 
-  async notifySpoolmanStatusChanged ({ dispatch }, payload) {
+  async notifySpoolmanStatusChanged ({ dispatch }, payload: { spoolman_connected: boolean }) {
     dispatch('spoolman/onStatusChanged', payload.spoolman_connected, { root: true })
   }
 } satisfies ActionTree<SocketState, RootState>

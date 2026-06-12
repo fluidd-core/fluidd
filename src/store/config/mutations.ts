@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, ConfiguredTableHeader, HostConfig, ApiConfig } from './types'
+import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, TemperaturePreset, ConfiguredTableHeader, HostConfig, ApiConfig } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 import { cloneDeep, mergeWith, set } from 'lodash-es'
@@ -110,17 +110,17 @@ export const mutations = {
     state.instances = instances
   },
 
-  setUpdateInstanceName (state, payload) {
+  setUpdateInstanceName (state, payload: InstanceConfig) {
     const index = state.instances.findIndex(instance => instance.apiUrl === payload.apiUrl)
     if (index > -1) {
       const instance = state.instances[index]
       Vue.set(state.instances, index, { ...instance, ...payload })
+      localStorage.setItem(Globals.LOCAL_INSTANCES_STORAGE_KEY, JSON.stringify(state.instances))
     }
-    localStorage.setItem(Globals.LOCAL_INSTANCES_STORAGE_KEY, JSON.stringify(state.instances))
   },
 
-  setRemoveInstance (state, payload) {
-    const index = state.instances.findIndex((instance: InstanceConfig) => instance.apiUrl === payload.apiUrl)
+  setRemoveInstance (state, payload: InstanceConfig) {
+    const index = state.instances.findIndex(instance => instance.apiUrl === payload.apiUrl)
     if (index >= 0) {
       state.instances.splice(index, 1)
       localStorage.setItem(Globals.LOCAL_INSTANCES_STORAGE_KEY, JSON.stringify(state.instances))
@@ -138,7 +138,7 @@ export const mutations = {
   /**
    * Update / Add a temperature preset
    */
-  setPreset (state, payload) {
+  setPreset (state, payload: TemperaturePreset) {
     if (payload.id === -1) {
       payload.id = uuidv4()
       state.uiSettings.dashboard.tempPresets.push(payload)
@@ -153,7 +153,7 @@ export const mutations = {
   /**
    * Remove a preset
    */
-  setRemovePreset (state, payload) {
+  setRemovePreset (state, payload: TemperaturePreset) {
     const i = state.uiSettings.dashboard.tempPresets.findIndex(preset => preset.id === payload.id)
     state.uiSettings.dashboard.tempPresets.splice(i, 1)
   },

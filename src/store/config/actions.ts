@@ -1,6 +1,6 @@
 import vuetify from '@/plugins/vuetify'
 import type { ActionTree } from 'vuex'
-import type { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, ThemeConfig, ConfiguredTableHeader } from './types'
+import type { ConfigState, SaveByPath, InitConfig, InstanceConfig, TemperaturePreset, UiSettings, ThemeConfig, ConfiguredTableHeader } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'
@@ -134,7 +134,7 @@ export const actions = {
   /**
    * Add or update a given temp preset
    */
-  async updatePreset ({ commit, state }, payload) {
+  async updatePreset ({ commit, state }, payload: TemperaturePreset) {
     commit('setPreset', payload)
     SocketActions.serverDatabasePostItem('uiSettings.dashboard.tempPresets', state.uiSettings.dashboard.tempPresets)
   },
@@ -142,7 +142,7 @@ export const actions = {
   /**
    * Remove a temp preset
    */
-  async removePreset ({ commit, state }, payload) {
+  async removePreset ({ commit, state }, payload: TemperaturePreset) {
     commit('setRemovePreset', payload)
     SocketActions.serverDatabasePostItem('uiSettings.dashboard.tempPresets', state.uiSettings.dashboard.tempPresets)
   },

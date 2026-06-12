@@ -233,7 +233,7 @@ export interface InstanceConfig extends ApiConfig {
 }
 
 export interface TemperaturePreset {
-  id: number;
+  id: number | string;
   name: string;
   values: Record<string, TemperaturePresetValue>;
   gcode?: string;

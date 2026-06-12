@@ -15,7 +15,7 @@ export const actions = {
   /**
    * Init stored macros
    */
-  initMacros ({ commit }, payload) {
+  initMacros ({ commit }, payload: Partial<MacrosState>) {
     commit('initMacros', payload)
   },
 
@@ -43,7 +43,7 @@ export const actions = {
     SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.stored', state.stored)
   },
 
-  saveAllOn ({ state, commit }, macros) {
+  saveAllOn ({ state, commit }, macros: Macro[]) {
     // Commit the change...
     commit('setUpdateAllVisible', { macros, visible: true })
 
@@ -51,7 +51,7 @@ export const actions = {
     SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.stored', state.stored)
   },
 
-  saveAllOff ({ state, commit }, macros) {
+  saveAllOff ({ state, commit }, macros: Macro[]) {
     // Commit the change...
     commit('setUpdateAllVisible', { macros, visible: false })
 

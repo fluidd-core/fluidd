@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { KlippyApp, PrinterState } from './types'
+import type { KlippyApp, PrinterState, SocketNotifyPayload } from './types'
 import type { RootState } from '../types'
 import { handlePrintStateChange, handleCurrentFileChange, handleTrinamicDriversChange } from '../helpers'
 import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
@@ -149,7 +149,7 @@ export const actions = {
    * Print start confirmation.
    * Fires as a watch on a printer state change.
    */
-  async onPrintStart (_, payload) {
+  async onPrintStart (_, payload: Partial<Klipper.PrinterState>) {
     consola.debug('Print start detected', payload)
   },
 
@@ -157,7 +157,7 @@ export const actions = {
    * Print end confirmation.
    * Fires as a watch on a printer state change.
    */
-  async onPrintEnd (_, payload) {
+  async onPrintEnd (_, payload: Partial<Klipper.PrinterState>) {
     consola.debug('Print end detected', payload)
   },
 
@@ -268,7 +268,7 @@ export const actions = {
     }
   },
 
-  async onFastNotifyStatusUpdate ({ rootState, commit, dispatch }, payload) {
+  async onFastNotifyStatusUpdate ({ rootState, commit, dispatch }, payload: SocketNotifyPayload) {
     // Do NOT accept updates until our subscribe comes back.
     // This is because moonraker currently sends notification updates
     // prior to subscribing on browser refresh.

@@ -81,7 +81,7 @@ export const mutations = {
   /**
    * Inits the console history from db
    */
-  setInitConsole (state, payload: ConsoleState) {
+  setInitConsole (state, payload: Partial<ConsoleState>) {
     if (payload) {
       if (payload.consoleFilters) {
         payload.consoleFiltersRegexp = payload.consoleFilters
@@ -120,7 +120,7 @@ export const mutations = {
   /**
    * Maintains the current console command
    */
-  setConsoleCommand (state, payload) {
+  setConsoleCommand (state, payload: string) {
     state.consoleCommand = payload
   },
 
@@ -131,7 +131,7 @@ export const mutations = {
   /**
    * Sets auto scroll
    */
-  setAutoScroll (state, payload) {
+  setAutoScroll (state, payload: boolean) {
     state.autoScroll = payload
   },
 

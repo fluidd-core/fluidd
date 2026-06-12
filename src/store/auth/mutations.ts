@@ -1,6 +1,6 @@
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import type { AuthState } from './types'
+import type { AppUser, AuthState } from './types'
 
 export const mutations = {
   /**
@@ -10,24 +10,24 @@ export const mutations = {
     Object.assign(state, defaultState())
   },
 
-  setCurrentUser (state, user) {
+  setCurrentUser (state, user: AppUser | null) {
     state.currentUser = user
   },
 
-  setUsers (state, users) {
+  setUsers (state, users: AppUser[]) {
     state.users = users
   },
 
-  setAddUser (state, user) {
+  setAddUser (state, user: { username: string; source?: string }) {
     state.users.push({ source: 'moonraker', ...user })
   },
 
-  setRemoveUser (state, user) {
+  setRemoveUser (state, user: { username: string }) {
     const i = state.users.findIndex(u => u.username === user.username)
     if (i >= 0) state.users.splice(i, 1)
   },
 
-  setApiKey (state, key) {
+  setApiKey (state, key: string) {
     state.apiKey = key
   }
 } satisfies MutationTree<AuthState>

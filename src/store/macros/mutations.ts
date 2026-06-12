@@ -24,7 +24,7 @@ export const mutations = {
   },
 
   // Sets macro state from db
-  initMacros (state, payload: MacrosState) {
+  initMacros (state, payload: Partial<MacrosState>) {
     if (payload && payload.categories) {
       if (typeof payload.categories[0] === 'string') payload.categories = []
     }

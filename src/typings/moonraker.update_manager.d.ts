@@ -101,4 +101,10 @@ declare namespace Moonraker.UpdateManager {
     info_tags: string[];
   }
 
+  export interface UpdateResponse {
+    application: string;
+    proc_id: number;
+    message: string;
+    complete?: boolean;
+  }
 }

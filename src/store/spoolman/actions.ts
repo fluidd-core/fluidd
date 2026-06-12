@@ -66,7 +66,7 @@ export const actions = {
     SocketActions.serverSpoolmanProxyGetInfo()
   },
 
-  async onActiveSpool ({ commit }, payload) {
+  async onActiveSpool ({ commit }, payload: Moonraker.Spoolman.SpoolIdResponse) {
     commit('setActiveSpool', payload.spool_id)
   },
 

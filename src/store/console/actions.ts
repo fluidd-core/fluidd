@@ -17,14 +17,14 @@ export const actions = {
   /**
    * Inits known command history
    */
-  async initConsole ({ commit }, payload) {
+  async initConsole ({ commit }, payload: Partial<ConsoleState>) {
     commit('setInitConsole', payload)
   },
 
   /**
    * Add a command history item, and update server store.
    */
-  async onUpdateCommandHistory ({ state, commit }, payload) {
+  async onUpdateCommandHistory ({ state, commit }, payload: string[]) {
     commit('setUpdateCommandHistory', payload)
     SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.commandHistory', state.commandHistory)
   },
@@ -32,7 +32,7 @@ export const actions = {
   /**
    * The result of a specific gcode request.
    */
-  async onGcodeScript ({ dispatch }, payload) {
+  async onGcodeScript ({ dispatch }, payload: { result?: string }) {
     // If the response is not ok, pass it to the console.
     if (payload && payload.result && payload.result !== 'ok') {
       dispatch('onAddConsoleEntry', { message: Globals.CONSOLE_RECEIVE_PREFIX + payload.result })
@@ -171,7 +171,7 @@ export const actions = {
   /**
    * Updates auto scroll value
    */
-  async onUpdateAutoScroll ({ commit }, payload) {
+  async onUpdateAutoScroll ({ commit }, payload: boolean) {
     commit('setAutoScroll', payload)
     SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.autoScroll', payload)
   },

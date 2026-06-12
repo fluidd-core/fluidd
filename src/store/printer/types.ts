@@ -18,6 +18,10 @@ export type PrinterStatus =
   | 'idle'
   | 'loading'
 
+export type SocketNotifyPayload = {
+  [K in keyof Klipper.PrinterState]: { key: K; payload: Klipper.PrinterState[K] }
+}[keyof Klipper.PrinterState]
+
 export interface KnownExtruder {
   name: string;
   key: Klipper.ExtruderKey;

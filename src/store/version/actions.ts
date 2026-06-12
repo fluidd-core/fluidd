@@ -43,41 +43,41 @@ export const actions = {
   /**
    * As updates happen, we get responses here.
    */
-  async onUpdateResponse ({ commit }, payload) {
+  async onUpdateResponse ({ commit }, payload: Moonraker.UpdateManager.UpdateResponse) {
     commit('setUpdateResponse', payload)
   },
 
   /**
    * Notifications of specific updates
    */
-  async onUpdatedMoonraker (_, payload) {
+  async onUpdatedMoonraker (_, payload: { result?: string }) {
     consola.debug('Finished updating moonraker', payload)
     SocketActions.machineUpdateStatus()
     // Moonraker is expected to restart; the socket will drop and naturally
     // cycle through connecting → identifying → ready via the state machine.
   },
 
-  async onUpdatedKlipper (_, payload) {
+  async onUpdatedKlipper (_, payload: { result?: string }) {
     consola.debug('Finished updating klipper', payload)
     SocketActions.machineUpdateStatus()
   },
 
-  async onUpdatedClient (_, payload) {
+  async onUpdatedClient (_, payload: { result?: string }) {
     consola.debug('Finished updating a client', payload)
     SocketActions.machineUpdateStatus()
   },
 
-  async onUpdatedFluidd (_, payload) {
+  async onUpdatedFluidd (_, payload: { result?: string }) {
     consola.debug('Finished updating fluidd, reloading', payload)
     window.location.reload()
   },
 
-  async onUpdatedSystem (_, payload) {
+  async onUpdatedSystem (_, payload: { result?: string }) {
     consola.debug('Finished updating system', payload)
     SocketActions.machineUpdateStatus()
   },
 
-  async onUpdatedAll (_, payload) {
+  async onUpdatedAll (_, payload: { result?: string }) {
     consola.debug('Finished updating all services', payload)
     window.location.reload()
   }
