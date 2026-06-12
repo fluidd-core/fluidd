@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { AppUser, AppUserWithPassword, AuthState } from './types'
+import type { AuthState } from './types'
 import type { RootState } from '../types'
 import { consola } from 'consola'
 import { SocketActions } from '@/api/socketActions'
@@ -117,19 +117,7 @@ export const actions = {
     await dispatch('logout', { invalidate: true })
   },
 
-  async addUser (_, user: AppUserWithPassword) {
-    await SocketActions.accessPostUser(user.username, user.password)
-
-    return user
-  },
-
-  async removeUser (_, user: AppUser) {
-    await SocketActions.accessDeleteUser(user.username)
-
-    return user
-  },
-
-  async onUserCreated ({ commit }, user: { username: string; source?: string }) {
+  async onUserCreated ({ commit }, user: { username: string }) {
     commit('setAddUser', user)
   },
 

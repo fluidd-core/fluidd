@@ -18,8 +18,11 @@ export const mutations = {
     state.users = users
   },
 
-  setAddUser (state, user: { username: string; source?: string }) {
-    state.users.push({ source: 'moonraker', ...user })
+  setAddUser (state, user: { username: string }) {
+    state.users.push({
+      ...user,
+      source: 'moonraker',
+    })
   },
 
   setRemoveUser (state, user: { username: string }) {

@@ -9,7 +9,3 @@ export interface AppUser {
   source: string;
   created_on?: number;
 }
-
-export interface AppUserWithPassword extends AppUser {
-  password: string;
-}
