@@ -33,8 +33,8 @@
     "@jaames/iro": "^5.5.2",
     "axios": "^1.17.0",
     "consola": "^3.4.2",
-    "dompurify": "^3.4.8",
-    "echarts": "^6.1.0",
+    "dompurify": "catalog:",
+    "echarts": "catalog:",
     "echarts-gl": "^2.1.0",
     "hls.js": "^1.6.16",
     "ipaddr.js": "^2.4.0",
@@ -48,11 +48,11 @@
     "path-browserify": "^1.0.1",
     "qr-scanner": "^1.4.2",
     "qrcode.vue": "^1.7.0",
-    "semver": "^7.8.2",
+    "semver": "^7.8.4",
     "shlex": "^3.0.0",
     "sortablejs": "^1.15.7",
     "uuid": "^14.0.0",
-    "vue": "^2.7.16",
+    "vue": "catalog:",
     "vue-class-component": "^7.2.6",
     "vue-echarts": "^7.0.3",
     "vue-i18n": "^8.28.2",
@@ -81,7 +81,7 @@
     "@vue/test-utils": "^1.3.6",
     "@vue/tsconfig": "^0.9.1",
     "commit-and-tag-version": "^12.7.3",
-    "esbuild": "^0.28.0",
+    "esbuild": "^0.28.1",
     "eslint": "^9.39.4",
     "eslint-plugin-regexp": "^3.1.0",
     "eslint-plugin-vue": "^9.33.0",
@@ -94,9 +94,9 @@
     "skott": "^0.35.11",
     "svgo": "^4.0.1",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.60.1",
+    "typescript-eslint": "^8.61.0",
     "unplugin-vue-components": "^30.0.0",
-    "vite": "^8.0.16",
+    "vite": "catalog:",
     "vite-plugin-checker": "^0.14.1",
     "vite-plugin-pwa": "^1.3.0",
     "vitest": "^4.1.8",
@@ -126,5 +126,5 @@
   "engines": {
     "node": "^22.12.0 || ^24"
   },
-  "packageManager": "pnpm@11.5.2+sha512.71c631e382066efc25625d5cf029075de07b61b37f6e27350fbd84b1bda5864c8c1967adc280776b45c30a715c0359a3be08fef42d5bb09e2b99029979692916"
+  "packageManager": "pnpm@11.6.0+sha512.9a36518224080c6fe5165afdcfe79bfa118c29be703f3f462b1e32efe1e98e47e8750b148e08286250aad4113cc7993ca413c4e2cd447752708c2ee5751bc95f"
 }
