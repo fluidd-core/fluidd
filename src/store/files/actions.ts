@@ -45,7 +45,7 @@ export const actions = {
   },
 
   async onServerFilesRoots ({ commit }, payload: Moonraker.Files.RootsResponse) {
-    commit('setServerFilesRoots', payload)
+    commit('setServerFilesRoots', [...payload])
   },
 
   async onServerFilesListRoot ({ commit }, payload: ObjectWithRequest<Moonraker.Files.ListRootResponse>) {
