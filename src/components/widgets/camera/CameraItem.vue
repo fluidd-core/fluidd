@@ -103,6 +103,7 @@
       <a
         :href="rawCameraUrl"
         target="_blank"
+        rel="noopener noreferrer"
       >
         <v-icon>$openInNew</v-icon>
       </a>

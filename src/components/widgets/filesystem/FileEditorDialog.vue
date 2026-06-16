@@ -76,6 +76,7 @@
             v-if="!printerPrinting && configMap?.link"
             :href="configMap.link"
             target="_blank"
+            rel="noopener noreferrer"
           >
             <v-icon
               small

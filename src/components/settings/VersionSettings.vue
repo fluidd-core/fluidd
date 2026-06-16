@@ -68,6 +68,7 @@
                   v-bind="attrs"
                   :href="component.remote_url"
                   target="_blank"
+                  rel="noopener noreferrer"
                   v-on="on"
                 >
                   <v-icon

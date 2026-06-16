@@ -145,7 +145,7 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
         link (args: Tokens.Link) {
           const html = this.constructor.prototype.link.call(this, args)
 
-          return html.replace(/^<a /, '<a target="_blank" ')
+          return html.replace(/^<a /, '<a target="_blank" rel="noopener noreferrer" ')
         }
       }
     }
