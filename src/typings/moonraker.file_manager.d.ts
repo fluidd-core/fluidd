@@ -1,4 +1,7 @@
 declare namespace Moonraker.Files {
+  export interface RootsResponse extends Array<RootInfoWithPath> {
+  }
+
   export interface ListRootResponse extends Array<RootFile> {
   }
 
@@ -37,6 +40,10 @@ declare namespace Moonraker.Files {
   export interface RootInfo {
     name: string;
     permissions?: Moonraker.Files.FilePermissions;
+  }
+
+  export interface RootInfoWithPath extends RootInfo {
+    path: string;
   }
 
   export type FilePermissions = '' | 'r' | 'rw'

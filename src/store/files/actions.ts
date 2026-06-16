@@ -44,6 +44,10 @@ export const actions = {
     commit('setServerFilesGetDirectory', { path, content: { files, dirs: filteredDirs } })
   },
 
+  async onServerFilesRoots ({ commit }, payload: Moonraker.Files.RootsResponse) {
+    commit('setServerFilesRoots', payload)
+  },
+
   async onServerFilesListRoot ({ commit }, payload: ObjectWithRequest<Moonraker.Files.ListRootResponse>) {
     const { root } = payload.__request__.params ?? {}
 

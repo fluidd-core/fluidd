@@ -624,6 +624,7 @@ export const Waits = Object.freeze({
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
   onFileSystem: 'onFileSystem',
+  onFileSystemRoots: 'onFileSystemRoots',
   onJobQueue: 'onJobQueue',
   onTimelapseSaveFrame: 'onTimelapseSaveFrame',
   onManualProbe: 'onManualProbe',

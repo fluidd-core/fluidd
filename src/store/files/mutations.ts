@@ -31,6 +31,10 @@ export const mutations = {
     Vue.set(state.pathContent, path, content)
   },
 
+  setServerFilesRoots (state, payload: Moonraker.Files.RootsResponse) {
+    state.roots = payload
+  },
+
   setServerFilesListRoot (state, payload: { root: string, files: Moonraker.Files.RootFile[] }) {
     const { root, files } = payload
 

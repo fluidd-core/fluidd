@@ -738,6 +738,17 @@ export const SocketActions = {
     )
   },
 
+  serverFilesRoots (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Files.RootsResponse>(
+      'server.files.roots',
+      {
+        dispatch: 'files/onServerFilesRoots',
+        wait: Waits.onFileSystemRoots,
+        ...options
+      }
+    )
+  },
+
   serverFilesList (root: string, options?: NotifyOptions) {
     return baseEmit<Moonraker.Files.ListRootResponse>(
       'server.files.list',

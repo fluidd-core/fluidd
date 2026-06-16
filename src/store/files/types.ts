@@ -6,7 +6,8 @@ export type { AppFileMeta }
 export interface FilesState {
   uploads: FileUpload[];
   download: FileDownload | null;
-  currentPaths: Record<string, string>;
+  roots: Moonraker.Files.RootInfoWithPath[] | null;
+  currentPaths: Record<string, string | undefined>;
   diskUsage: Record<string, Moonraker.Files.DiskUsage | undefined>;
   rootFiles: Record<string, Moonraker.Files.RootFile[] | undefined>;
   pathContent: Record<string, MoonrakerPathContent | undefined>;
