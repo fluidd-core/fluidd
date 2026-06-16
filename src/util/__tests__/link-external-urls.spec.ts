@@ -1,4 +1,4 @@
-import linkExternalUrls from '@/util/link-external-urls'
+import linkExternalUrls from '../link-external-urls'
 
 const anchor = (url: string) => `<a target="_blank" rel="noopener noreferrer" href="${url}">${url}</a>`
 
