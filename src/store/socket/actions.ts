@@ -408,21 +408,8 @@ export const actions = {
     dispatch('auth/onUserDeleted', payload, { root: true })
   },
 
-  /**
-   * Moonraker invalidated the current session (we triggered logout, or another
-   * client called access.logout with invalidate=true). Clear local auth state
-   * and drop to `authenticating` so the login view takes over on the same
-   * socket.
-   */
-  async notifyUserLoggedOut ({ commit, dispatch, rootGetters, state }) {
-    const keys: TokenKeys = rootGetters['config/getTokenKeys']
-    localStorage.removeItem(keys.userToken)
-    localStorage.removeItem(keys.refreshToken)
-    commit('auth/setCurrentUser', null, { root: true })
-
-    if (state.status === 'ready' || state.status === 'identifying') {
-      await dispatch('onSetStatus', 'authenticating')
-    }
+  async notifyUserLoggedOut ({ dispatch }) {
+    dispatch('auth/onUserLoggedOut', undefined, { root: true })
   },
 
   async notifyServiceStateChanged ({ dispatch }, payload: Moonraker.Machine.ServiceState) {

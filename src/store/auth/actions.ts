@@ -117,6 +117,15 @@ export const actions = {
     await dispatch('logout', { invalidate: true })
   },
 
+  /**
+   * Moonraker invalidated the current session (we triggered logout, or another
+   * client called access.logout with invalidate=true). The session is already
+   * invalid server-side, so run a plain logout without re-invalidating.
+   */
+  async onUserLoggedOut ({ dispatch }) {
+    await dispatch('logout')
+  },
+
   async onUserCreated ({ commit }, user: { username: string }) {
     commit('setAddUser', user)
   },
