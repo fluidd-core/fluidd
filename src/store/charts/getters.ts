@@ -133,8 +133,7 @@ export const getters = {
           show: false
         },
         axisLabel: {
-          show: false,
-          formatter: '{value}%'
+          show: false
         },
         splitLine: {
           show: true,
@@ -147,13 +146,9 @@ export const getters = {
       yAxis: {
         type: 'value',
         min: 0,
-        max: (value) => (value.max <= 100
-          ? 100
-          : value.max
-        ),
+        max: (value) => Math.max(100, value.max),
         axisLabel: {
-          show: false,
-          formatter: '{value}%'
+          show: false
         },
         splitLine: {
           show: true,
