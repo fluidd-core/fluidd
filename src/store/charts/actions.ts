@@ -93,6 +93,55 @@ export const actions = {
   },
 
   /**
+   * Loads stored Moonraker sensor measurements for the past ~20 minutes.
+   * Each sensor is stored under its own chart key `sensor:<id>`.
+   */
+  async initSensorStore ({ commit, rootGetters }, payload: Moonraker.Sensor.MeasurementsResponse) {
+    if (!payload) {
+      return
+    }
+
+    const now = new Date() // Set a base time to work out the measurement data from.
+    const retention = rootGetters['charts/getChartRetention']
+
+    for (const sensorId in payload) {
+      const measurements = payload[sensorId]
+      const fields = Object.keys(measurements)
+
+      // Pad / trim each field to the retention window, matching initTempStore.
+      for (const field of fields) {
+        const arr = measurements[field]
+        if (arr && arr.length) {
+          if (arr.length < retention) {
+            const length = retention - arr.length
+            const firstValue = arr[0]
+            measurements[field] = [...Array.from({ length }, () => firstValue), ...arr]
+          } else {
+            measurements[field] = arr.splice(arr.length - retention)
+          }
+        }
+      }
+
+      const data: ChartData[] = []
+      for (let i = 0; i < retention; i++) {
+        const date = new Date(now.getTime() - (1000 * (retention - i)) - 2000)
+        const entry: ChartData = {
+          date
+        }
+        for (const field of fields) {
+          entry[field] = measurements[field][i]
+        }
+        data.push(entry)
+      }
+
+      commit('setSensorChartStore', {
+        type: `sensor:${sensorId}`,
+        data
+      })
+    }
+  },
+
+  /**
    * Init the chart state from db
    */
   initCharts ({ commit }, payload: Partial<ChartState>) {

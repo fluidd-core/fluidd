@@ -413,6 +413,7 @@ app:
       moonraker: Moonraker
       name: Name
       new_password: New password
+      no_data: No data
       no_notifications: No notifications
       'on': 'On'
       'off': 'Off'

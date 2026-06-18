@@ -3,6 +3,12 @@ declare namespace Moonraker.Sensor {
     sensors: Record<string, Entry>;
   }
 
+  export interface MeasurementsResponse extends Record<string, Measurements> {
+  }
+
+  export interface Measurements extends Record<string, number[]> {
+  }
+
   export interface Entry {
     id: string;
     friendly_name: string;
