@@ -25,7 +25,12 @@ export const mutations = {
 
   setSensorUpdate (state, payload: Record<string, Moonraker.Sensor.Values>) {
     for (const sensorKey in payload) {
-      state.sensors[sensorKey].values = Object.freeze(payload[sensorKey])
+      if (state.sensors[sensorKey] != null) {
+        state.sensors[sensorKey].values = Object.freeze({
+          ...state.sensors[sensorKey].values,
+          ...payload[sensorKey]
+        })
+      }
     }
   }
 } satisfies MutationTree<MoonrakerSensorsState>
