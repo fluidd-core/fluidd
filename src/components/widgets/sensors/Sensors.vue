@@ -1,5 +1,6 @@
 <template>
   <v-expansion-panels
+    v-model="expanded"
     accordion
     multiple
   >
@@ -65,6 +66,25 @@ import SensorChart from './SensorChart.vue'
 export default class Sensors extends Vue {
   get sensors (): Moonraker.Sensor.Entry[] {
     return this.$typedGetters['sensors/getSensors']
+  }
+
+  get expanded (): number[] {
+    const sensors = this.sensors
+    const expandedKeys = this.$typedState.sensors.expanded
+
+    return sensors
+      .map((sensor, index) => expandedKeys.includes(sensor.id)
+        ? index
+        : -1)
+      .filter(i => i !== -1)
+  }
+
+  set expanded (value: number[]) {
+    const sensors = this.sensors
+    const expandedKeys = value
+      .map(index => sensors[index].id)
+
+    this.$typedDispatch('sensors/saveExpanded', expandedKeys)
   }
 
   getChartableFields (sensor: Moonraker.Sensor.Entry): string[] {

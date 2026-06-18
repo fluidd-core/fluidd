@@ -10,6 +10,16 @@ export const mutations = {
     Object.assign(state, defaultState())
   },
 
+  setInitSensors (state, payload: Partial<MoonrakerSensorsState>) {
+    if (payload) {
+      Object.assign(state, payload)
+    }
+  },
+
+  setExpanded (state, expanded: string[]) {
+    state.expanded = expanded
+  },
+
   setSensorsList (state, payload: Moonraker.Sensor.ListResponse) {
     state.sensors = Object.fromEntries(
       Object.entries(payload.sensors)

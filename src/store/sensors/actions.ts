@@ -3,6 +3,7 @@ import type { MoonrakerSensorsState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { handleSensorsChange } from '../chart_helpers'
+import { Globals } from '@/globals'
 
 export const actions = {
   async reset ({ commit }) {
@@ -12,6 +13,16 @@ export const actions = {
   async init () {
     SocketActions.serverSensorsList()
     SocketActions.serverSensorsMeasurements()
+  },
+
+  initSensors ({ commit }, payload: Partial<MoonrakerSensorsState>) {
+    commit('setInitSensors', payload)
+  },
+
+  saveExpanded ({ commit, state }, expanded: string[]) {
+    commit('setExpanded', expanded)
+
+    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.sensors.name + '.expanded', state.expanded)
   },
 
   async onSensorsList ({ commit }, payload: Moonraker.Sensor.ListResponse) {

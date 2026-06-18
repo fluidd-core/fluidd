@@ -249,6 +249,7 @@ export const Globals = Object.freeze({
       ROOTS: {
         uiSettings: { name: 'uiSettings', dispatch: 'config/initUiSettings' },
         macros: { name: 'macros', dispatch: 'macros/initMacros' },
+        sensors: { name: 'sensors', dispatch: 'sensors/initSensors' },
         console: { name: 'console', dispatch: 'console/initConsole' },
         charts: { name: 'charts', dispatch: 'charts/initCharts' },
         cameras: { name: 'cameras', dispatch: 'webcams/initLegacyCameras', migrate_only: true },
