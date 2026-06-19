@@ -198,16 +198,15 @@ export default class VersionSettings extends Mixins(StateMixin) {
     return this.$typedGetters['version/getVisibleComponents']
   }
 
-  get isRefreshing () {
+  get isRefreshing (): boolean {
     return this.hasWait(this.$waits.onVersionRefresh)
   }
 
-  get hasUpdates () {
-    const d = this.$typedGetters['version/hasUpdates']
-    return d
+  get hasUpdates (): boolean {
+    return this.$typedGetters['version/hasUpdates']
   }
 
-  get hasInvalidComponent () {
+  get hasInvalidComponent (): boolean {
     return this.components
       .some(component => !this.isValid(component))
   }
@@ -232,18 +231,18 @@ export default class VersionSettings extends Mixins(StateMixin) {
     return component.name
   }
 
-  hasUpdate (component: string) {
+  hasUpdate (component: string): boolean {
     return this.$typedGetters['version/hasUpdate'](component)
   }
 
-  isDirty (component: VersionInfo) {
+  isDirty (component: VersionInfo): boolean {
     return (
       'is_dirty' in component &&
       component.is_dirty
     )
   }
 
-  isValid (component: VersionInfo) {
+  isValid (component: VersionInfo): boolean {
     return (
       !('is_valid' in component) ||
       component.is_valid

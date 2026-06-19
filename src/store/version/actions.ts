@@ -23,10 +23,13 @@ export const actions = {
   /**
    * Inits any file config we may have.
    */
-  async onUpdateStatus ({ commit, dispatch, getters }, payload: Partial<Moonraker.UpdateManager.StatusResponse>) {
+  async onUpdateStatus ({ commit, dispatch, getters, rootState }, payload: Partial<Moonraker.UpdateManager.StatusResponse>) {
     commit('setUpdateStatus', payload)
 
-    if (getters.hasUpdates) {
+    if (
+      rootState.config.uiSettings.general.enableVersionNotifications &&
+      getters.hasUpdates
+    ) {
       dispatch('notifications/pushNotification', {
         id: 'updates-available',
         title: i18n.t('app.version.label.updates_available'),

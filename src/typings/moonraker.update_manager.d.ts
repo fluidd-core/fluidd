@@ -39,6 +39,7 @@ declare namespace Moonraker.UpdateManager {
     owner: string;
     branch: string;
     repo_name: string;
+    repo_detected?: boolean;
     is_dirty: boolean;
     corrupt: boolean;
     pristine: boolean;
