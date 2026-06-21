@@ -43,13 +43,6 @@ export const mutations = {
   },
 
   /**
-   * Inits a single sensor chart store from Moonraker measurements.
-   */
-  setSensorChartStore (state, payload: { type: string; data: ChartData[] }) {
-    Vue.set(state, payload.type, payload.data.map(entry => Object.freeze(entry)))
-  },
-
-  /**
    * Adds a single chart entry.
    */
   setChartEntry (state, payload: { type: string; retention: number; data: ChartData }) {
