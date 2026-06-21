@@ -118,11 +118,13 @@ export const handleAddSensorChartEntry = (state: RootState, commit: Commit) => {
     return
   }
 
+  const date = new Date()
+
   for (const sensorId in state.sensors.sensors) {
     const { values } = state.sensors.sensors[sensorId]
 
     const data: ChartData = {
-      date: new Date()
+      date
     }
 
     let hasNumericValue = false

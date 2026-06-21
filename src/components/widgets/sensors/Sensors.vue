@@ -82,7 +82,8 @@ export default class Sensors extends Vue {
   set expanded (value: number[]) {
     const sensors = this.sensors
     const expandedKeys = value
-      .map(index => sensors[index].id)
+      .map(index => sensors[index]?.id)
+      .filter((id): id is string => id != null)
 
     this.$typedDispatch('sensors/saveExpanded', expandedKeys)
   }
