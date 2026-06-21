@@ -1,38 +1,32 @@
 <template>
-  <v-col
-    v-if="ready"
-    cols="4"
-    class="chart-wrapper"
+  <system-chart
+    :data="chartData || []"
+    :options="options"
   >
-    <app-chart
-      :data="chartData || []"
-      :options="options"
-      height="120px"
-    />
-
-    <div class="chart-label-wrapper">
-      <div class="chart-label">
-        <span>{{ $t('app.system_info.label.mcu_load', { mcu: mcu.prettyName }) }}</span>
-        <span v-if="chartData.length">{{ chartData[chartData.length - 1].load }}%</span>
-      </div>
-
-      <div class="chart-label">
-        <span>{{ $t('app.system_info.label.mcu_awake', { mcu: mcu.prettyName }) }}</span>
-        <span v-if="chartData.length">{{ chartData[chartData.length - 1].awake }}%</span>
-      </div>
+    <div class="chart-label">
+      <span>{{ $t('app.system_info.label.mcu_load', { mcu: mcu.prettyName }) }}</span>
+      <span v-if="chartData.length">{{ chartData[chartData.length - 1].load }}%</span>
     </div>
-  </v-col>
+
+    <div class="chart-label">
+      <span>{{ $t('app.system_info.label.mcu_awake', { mcu: mcu.prettyName }) }}</span>
+      <span v-if="chartData.length">{{ chartData[chartData.length - 1].awake }}%</span>
+    </div>
+  </system-chart>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import type { MCU } from '@/store/printer/types'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
+import SystemChart from './SystemChart.vue'
 
-@Component({})
+@Component({
+  components: {
+    SystemChart
+  }
+})
 export default class McuLoadChart extends Vue {
-  ready = false
-
   @Prop({ type: Object, required: true })
   readonly mcu!: MCU
 
@@ -91,11 +85,6 @@ export default class McuLoadChart extends Vue {
         }
       }
     ]
-  }
-
-  @Watch('chartData', { immediate: true })
-  onChartData (data: any) {
-    if (data && data.length > 0) this.ready = true
   }
 }
 </script>

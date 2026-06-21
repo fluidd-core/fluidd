@@ -42,7 +42,7 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
   readonly height!: string | number
 
   @Ref('chart')
-  readonly chart!: ECharts
+  readonly chart?: ECharts
 
   // Stable references so component re-renders don't make vue-echarts dispose/
   // re-init the chart, which would reset the 3D camera (rotation/zoom) state.
@@ -59,6 +59,8 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
 
   @Watch('flatSurface')
   onFlatSurfaceChange (value: boolean) {
+    if (!this.chart) return
+
     const type = value ? 'legendSelect' : 'legendUnSelect'
     this.chart.dispatchAction({
       type,
@@ -72,7 +74,7 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
 
   beforeDestroy () {
     if (typeof window === 'undefined') return
-    this.chart.dispose()
+    this.chart?.dispose()
   }
 
   get opts (): EChartsOption {
@@ -248,6 +250,8 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
   }
 
   async downloadImage () {
+    if (!this.chart) return
+
     const url = this.chart.getDataURL({
       type: 'png',
       backgroundColor: '#262629'

@@ -52,19 +52,3 @@ export default class PrinterStatsCard extends Vue {
   }
 }
 </script>
-
-<style lang="scss">
-  // .chart-wrapper {
-  //   border: solid 1px #ccc;
-  // }
-
-  .chart-label-wrapper {
-    margin-top: 6px;
-    display: block;
-  }
-
-  .chart-label {
-    display: flex;
-    justify-content: space-between;
-  }
-</style>
