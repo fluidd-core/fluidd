@@ -23,7 +23,7 @@ import type { DatasetComponentOption, EChartsOption } from 'echarts'
 @Component({})
 export default class SystemChart extends Vue {
   @Prop({ type: Array, required: true })
-  readonly data!: DatasetComponentOption['source']
+  readonly data!: Extract<DatasetComponentOption['source'], unknown[]>
 
   @Prop({ type: Object, required: true })
   readonly options!: EChartsOption

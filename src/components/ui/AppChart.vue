@@ -23,7 +23,7 @@ import type { DatasetComponentOption, ECharts, EChartsInitOpts, EChartsOption } 
 @Component({})
 export default class AppChart extends Vue {
   @Prop({ type: Array, required: true })
-  readonly data!: DatasetComponentOption['source']
+  readonly data!: Extract<DatasetComponentOption['source'], unknown[]>
 
   @Prop({ type: Array })
   readonly dimensions?: DatasetComponentOption['dimensions']
@@ -69,11 +69,11 @@ export default class AppChart extends Vue {
 
   // Push only a dataset update, never a full options re-apply.
   @Watch('data')
-  onData (data?: unknown[]) {
+  onData (data?: Extract<DatasetComponentOption['source'], unknown[]>) {
     if (
-      this.chart &&
-      data &&
-      data.length
+      this.chart != null &&
+      Array.isArray(data) &&
+      data.length > 0
     ) {
       this.chart.setOption({
         dataset: {
