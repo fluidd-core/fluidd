@@ -57,6 +57,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   readonly initOptions: EChartsInitOpts = Object.freeze({ renderer: 'canvas' })
 
   paused = false
+  initialized = false
   series: LineSeriesOption[] = []
   initialSelected: Record<string, boolean> = {}
 
@@ -119,16 +120,20 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
   @Watch('chartData')
   onDataChange (data: any) {
-    if (
-      this.chart &&
-      !this.paused
-    ) {
-      this.chart.setOption({
-        dataset: {
-          source: data
-        }
-      })
+    if (!this.chart || this.paused) return
+
+    // Series deferred at creation (empty store): build now and re-apply.
+    if (!this.initialized) {
+      this.initSeries()
+      if (this.initialized) this.onChartReady()
+      return
     }
+
+    this.chart.setOption({
+      dataset: {
+        source: data
+      }
+    })
   }
 
   // Merge so the imperatively-set dataset and legend selection are preserved.
@@ -140,8 +145,15 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   }
 
   created () {
-    // Create the series and associated legends.
-    const dataKeys = Object.keys(this.chartData[0])
+    this.initSeries()
+  }
+
+  // Build the series; no-ops until chartData has at least one entry.
+  initSeries () {
+    const first = this.chartData[0]
+    if (this.initialized || !first) return
+
+    const dataKeys = Object.keys(first)
     const keys = this.chartableSensors
     const series: LineSeriesOption[] = []
 
@@ -162,6 +174,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     })
 
     this.series = markRaw(series)
+    this.initialized = true
   }
 
   // Apply the full options + current data once the chart is ready.
