@@ -272,10 +272,6 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     return this.$typedState.config.uiSettings.general.instanceName
   }
 
-  get hasUpdates (): boolean {
-    return this.$typedGetters['version/hasUpdates']
-  }
-
   get saveConfigPending (): boolean {
     return this.$typedGetters['printer/getSaveConfigPending']
   }

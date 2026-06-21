@@ -39,11 +39,8 @@ export const getters = {
   /**
    * Returns an object indicating if any component (but system) has an update.
    */
-  hasUpdates: (state, getters, rootState) => {
-    const enableNotifications = rootState.config.uiSettings.general.enableVersionNotifications
-
+  hasUpdates: (state, getters) => {
     return (
-      enableNotifications &&
       state.status?.version_info != null &&
       Object.keys(state.status.version_info)
         .filter(name => name !== 'system')
