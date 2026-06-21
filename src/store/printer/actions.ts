@@ -2,7 +2,7 @@ import type { ActionTree } from 'vuex'
 import type { KlippyApp, PrinterState, SocketNotifyPayload } from './types'
 import type { RootState } from '../types'
 import { handlePrintStateChange, handleCurrentFileChange, handleTrinamicDriversChange } from '../helpers'
-import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
+import { handleAddChartEntry, handleAddSensorChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import { consola } from 'consola'
@@ -264,6 +264,7 @@ export const actions = {
         rootStateServerConfig?.server?.temperature_store_size ??
         Globals.CHART_HISTORY_RETENTION
       handleAddChartEntry(retention, rootState, commit, getters)
+      handleAddSensorChartEntry(rootState, commit)
       dispatch('onDiagnosticsMetricsUpdate')
     }
   },

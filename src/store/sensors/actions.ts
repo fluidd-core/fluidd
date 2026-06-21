@@ -2,7 +2,6 @@ import type { ActionTree } from 'vuex'
 import type { MoonrakerSensorsState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
-import { handleSensorsChange } from '../chart_helpers'
 import { Globals } from '@/globals'
 
 export const actions = {
@@ -12,7 +11,6 @@ export const actions = {
 
   async init () {
     SocketActions.serverSensorsList()
-    SocketActions.serverSensorsMeasurements()
   },
 
   initSensors ({ commit }, payload: Partial<MoonrakerSensorsState>) {
@@ -31,10 +29,9 @@ export const actions = {
     }
   },
 
-  async onSensorUpdate ({ commit, rootGetters }, payload: Record<string, Moonraker.Sensor.Values>) {
+  async onSensorUpdate ({ commit }, payload: Record<string, Moonraker.Sensor.Values>) {
     if (payload) {
       commit('setSensorUpdate', payload)
-      handleSensorsChange(payload, commit, rootGetters)
     }
   }
 } satisfies ActionTree<MoonrakerSensorsState, RootState>

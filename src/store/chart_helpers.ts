@@ -113,15 +113,13 @@ export const handleSystemStatsChange = (payload: Partial<Klipper.PrinterState>, 
   }
 }
 
-/**
- * Add a chart entry for each Moonraker sensor that reports numeric values.
- * Each sensor gets its own chart store keyed `sensor:<id>`.
- */
-export const handleSensorsChange = (payload: Record<string, Moonraker.Sensor.Values>, commit: Commit, getters: any) => {
-  const retention: number = getters['charts/getChartRetention']
+export const handleAddSensorChartEntry = (state: RootState, commit: Commit) => {
+  if (!state.charts.ready) {
+    return
+  }
 
-  for (const sensorId in payload) {
-    const values = payload[sensorId]
+  for (const sensorId in state.sensors.sensors) {
+    const { values } = state.sensors.sensors[sensorId]
 
     const data: ChartData = {
       date: new Date()
@@ -139,7 +137,7 @@ export const handleSensorsChange = (payload: Record<string, Moonraker.Sensor.Val
     if (hasNumericValue) {
       commit('charts/setChartEntry', {
         type: `sensor:${sensorId}`,
-        retention,
+        retention: 600,
         data
       }, { root: true })
     }

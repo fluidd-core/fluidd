@@ -918,15 +918,6 @@ export const SocketActions = {
     )
   },
 
-  serverSensorsMeasurements (options?: NotifyOptions) {
-    return baseEmit<Moonraker.Sensor.MeasurementsResponse>(
-      'server.sensors.measurements', {
-        dispatch: 'charts/initSensorStore',
-        ...options
-      }
-    )
-  },
-
   serverAnalysisStatus (options?: NotifyOptions) {
     return baseEmit<Moonraker.Analysis.StatusResponse>(
       'server.analysis.status', {
