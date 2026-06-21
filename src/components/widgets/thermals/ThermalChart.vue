@@ -70,6 +70,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   }
 
   handleLegendSelectChanged (event: { selected: Record<string, boolean> }) {
+    this.initialSelected = event.selected
     this.$typedDispatch('charts/saveSelectedLegends', event.selected)
 
     if (this.chart) {

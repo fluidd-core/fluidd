@@ -72,8 +72,7 @@ export default class AppChart extends Vue {
   onData (data?: Extract<DatasetComponentOption['source'], unknown[]>) {
     if (
       this.chart != null &&
-      Array.isArray(data) &&
-      data.length > 0
+      Array.isArray(data)
     ) {
       this.chart.setOption({
         dataset: {
