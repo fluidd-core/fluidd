@@ -18,11 +18,13 @@ export default class KlipperLoadChart extends Vue {
   }
 
   get labels (): AppInlineChartLabel[] {
-    return [{
-      text: this.$t('app.system_info.label.klipper_load').toString(),
-      value: 'cputime_change',
-      suffix: '%'
-    }]
+    return [
+      {
+        text: this.$t('app.system_info.label.klipper_load').toString(),
+        value: 'cputime_change',
+        suffix: '%'
+      }
+    ]
   }
 
   get options (): EChartsOption {

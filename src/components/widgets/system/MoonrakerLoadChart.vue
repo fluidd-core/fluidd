@@ -18,11 +18,13 @@ export default class MoonrakerLoadChart extends Vue {
   }
 
   get labels (): AppInlineChartLabel[] {
-    return [{
-      text: this.$t('app.system_info.label.moonraker_load').toString(),
-      value: 'load',
-      suffix: '%'
-    }]
+    return [
+      {
+        text: this.$t('app.system_info.label.moonraker_load').toString(),
+        value: 'load',
+        suffix: '%'
+      }
+    ]
   }
 
   get options (): EChartsOption {

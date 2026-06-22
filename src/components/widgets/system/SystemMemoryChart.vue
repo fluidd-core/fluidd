@@ -18,11 +18,13 @@ export default class SystemMemoryChart extends Vue {
   }
 
   get labels (): AppInlineChartLabel[] {
-    return [{
-      text: this.$t('app.system_info.label.system_memory').toString(),
-      value: 'memused',
-      suffix: '%'
-    }]
+    return [
+      {
+        text: this.$t('app.system_info.label.system_memory').toString(),
+        value: 'memused',
+        suffix: '%'
+      }
+    ]
   }
 
   get options (): EChartsOption {

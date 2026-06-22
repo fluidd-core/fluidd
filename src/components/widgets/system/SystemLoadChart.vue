@@ -22,11 +22,13 @@ export default class SystemLoadChart extends Vue {
   }
 
   get labels (): AppInlineChartLabel[] {
-    return [{
-      text: this.$t('app.system_info.label.system_load').toString(),
-      value: 'load',
-      suffix: ` / ${this.cores}`
-    }]
+    return [
+      {
+        text: this.$t('app.system_info.label.system_load').toString(),
+        value: 'load',
+        suffix: ` / ${this.cores}`
+      }
+    ]
   }
 
   get options (): EChartsOption {
