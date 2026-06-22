@@ -102,6 +102,11 @@ export const getters = {
                   `
                   title = true
                 }
+                const value = param.value[yDimension as keyof typeof param.value] as unknown
+                const formattedValue = typeof value === 'number'
+                  ? value.toFixed(2)
+                  : value
+
                 text += `
                   <div style="white-space: nowrap;">
                     ${param.marker}
@@ -109,7 +114,7 @@ export const getters = {
                       ${Vue.$filters.prettyCase(param.seriesName)}:
                     </span>
                     <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
-                      ${param.value[yDimension as keyof typeof param.value]}${ySuffix}
+                      ${formattedValue}${ySuffix}
                     </span>
                     <div style="clear: both"></div>
                   </div>

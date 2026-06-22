@@ -26,12 +26,12 @@ export default class McuLoadChart extends Vue {
       {
         text: this.$t('app.system_info.label.mcu_load', { mcu: this.mcu.prettyName }).toString(),
         value: 'load',
-        suffix: '%'
+        suffix: ' %'
       },
       {
         text: this.$t('app.system_info.label.mcu_awake', { mcu: this.mcu.prettyName }).toString(),
         value: 'awake',
-        suffix: '%'
+        suffix: ' %'
       }
     ]
   }
@@ -39,8 +39,8 @@ export default class McuLoadChart extends Vue {
   get options (): EChartsOption {
     const options: EChartsOption = {
       ...this.$typedGetters['charts/getBaseChartOptions']({
-        load: '%',
-        awake: '%',
+        load: ' %',
+        awake: ' %',
         bw: 'b'
       }),
       series: this.series

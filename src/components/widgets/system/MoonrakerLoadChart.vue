@@ -22,7 +22,7 @@ export default class MoonrakerLoadChart extends Vue {
       {
         text: this.$t('app.system_info.label.moonraker_load').toString(),
         value: 'load',
-        suffix: '%'
+        suffix: ' %'
       }
     ]
   }
@@ -30,7 +30,7 @@ export default class MoonrakerLoadChart extends Vue {
   get options (): EChartsOption {
     return {
       ...this.$typedGetters['charts/getBaseChartOptions']({
-        load: '%'
+        load: ' %'
       }),
       series: this.series
     }

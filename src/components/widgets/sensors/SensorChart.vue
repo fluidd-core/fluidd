@@ -1,27 +1,16 @@
 <template>
-  <v-col
-    cols="4"
-    class="chart-wrapper"
-  >
-    <app-chart
-      :data="chartData"
-      :options="options"
-      height="120px"
-    />
-
-    <div class="chart-label-wrapper">
-      <div class="chart-label">
-        <span>{{ label }}</span>
-        <span v-if="currentValue != null">{{ currentValue }}{{ units ? ` ${units}` : '' }}</span>
-      </div>
-    </div>
-  </v-col>
+  <app-inline-chart
+    :data="chartData"
+    :options="options"
+    :labels="labels"
+  />
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
 import type { ChartData } from '@/store/charts/types'
+import type { AppInlineChartLabel } from '@/components/ui/AppInlineChart.vue'
 
 @Component({})
 export default class SensorChart extends Vue {
@@ -41,13 +30,14 @@ export default class SensorChart extends Vue {
     return this.$typedState.charts[`sensor:${this.sensorId}`] ?? []
   }
 
-  get currentValue (): number | null {
-    const lastEntry = this.chartData[this.chartData.length - 1]
-    const value = lastEntry?.[this.field]
-
-    return typeof value === 'number'
-      ? Math.round(value * 100) / 100
-      : null
+  get labels (): AppInlineChartLabel[] {
+    return [
+      {
+        text: this.label,
+        value: this.field,
+        suffix: this.units ? ` ${this.units}` : ''
+      }
+    ]
   }
 
   get options (): EChartsOption {
@@ -55,9 +45,6 @@ export default class SensorChart extends Vue {
       ...this.$typedGetters['charts/getBaseChartOptions']({
         [this.field]: this.units ?? ''
       }),
-      dataset: {
-        source: this.chartData
-      },
       series: this.series
     }
 
@@ -84,15 +71,3 @@ export default class SensorChart extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .chart-label-wrapper {
-    margin-top: 6px;
-    display: block;
-  }
-
-  .chart-label {
-    display: flex;
-    justify-content: space-between;
-  }
-</style>

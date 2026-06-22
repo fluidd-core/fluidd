@@ -148,7 +148,7 @@ export const actions = {
             retention: 600,
             data: {
               date: new Date(d.time * 1000),
-              load: d.cpu_usage.toFixed(2)
+              load: Math.round(d.cpu_usage * 100) / 100,
             }
           }, { root: true })
         }

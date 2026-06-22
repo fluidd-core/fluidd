@@ -73,7 +73,7 @@ export default class AppInlineChart extends Vue {
         label,
         value: this.isEmpty(value)
           ? '--'
-          : `${value}${label.suffix ?? ''}`
+          : `${typeof value === 'number' ? value.toFixed(2) : value}${label.suffix ?? ''}`
       }
     })
   }

@@ -22,7 +22,7 @@ export default class SystemMemoryChart extends Vue {
       {
         text: this.$t('app.system_info.label.system_memory').toString(),
         value: 'memused',
-        suffix: '%'
+        suffix: ' %'
       }
     ]
   }
@@ -30,7 +30,7 @@ export default class SystemMemoryChart extends Vue {
   get options (): EChartsOption {
     return {
       ...this.$typedGetters['charts/getBaseChartOptions']({
-        memused: '%'
+        memused: ' %'
       }),
       series: this.series
     }

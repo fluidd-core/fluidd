@@ -22,7 +22,7 @@ export default class KlipperLoadChart extends Vue {
       {
         text: this.$t('app.system_info.label.klipper_load').toString(),
         value: 'cputime_change',
-        suffix: '%'
+        suffix: ' %'
       }
     ]
   }
@@ -30,7 +30,7 @@ export default class KlipperLoadChart extends Vue {
   get options (): EChartsOption {
     return {
       ...this.$typedGetters['charts/getBaseChartOptions']({
-        cputime_change: '%'
+        cputime_change: ' %'
       }),
       series: this.series
     }
