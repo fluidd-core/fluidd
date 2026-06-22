@@ -34,15 +34,7 @@ export type AppInlineChartLabel = {
   suffix?: string
 }
 
-const defaultGetter = (item: unknown, label: AppInlineChartLabel): unknown => get(item, label.value)
-
-export type DefaultGetterFunction = typeof defaultGetter
-
-export type GetterFunction = (item: unknown, label: AppInlineChartLabel, defaultGetter: DefaultGetterFunction) => unknown
-
-@Component({
-  inheritAttrs: false
-})
+@Component({})
 export default class AppInlineChart extends Vue {
   @Prop({ type: Array, required: true })
   readonly data!: Extract<DatasetComponentOption['source'], unknown[]>
@@ -52,9 +44,6 @@ export default class AppInlineChart extends Vue {
 
   @Prop({ type: Array, required: true })
   readonly labels!: AppInlineChartLabel[]
-
-  @Prop({ type: Function })
-  readonly customGetter?: GetterFunction
 
   get hasData (): boolean {
     return (
@@ -66,16 +55,19 @@ export default class AppInlineChart extends Vue {
   isEmpty (value: unknown) {
     return (
       value == null ||
-      value === ''
+      value === '' ||
+      (
+        Array.isArray(value) &&
+        value.length === 0
+      )
     )
   }
 
   get items () {
-    const getter = this.customGetter ?? defaultGetter
     const item = this.data[this.data.length - 1]
 
     return this.labels.map(label => {
-      const value = getter(item, label, defaultGetter)
+      const value = get(item, label.value)
 
       return {
         label,
