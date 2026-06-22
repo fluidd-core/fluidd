@@ -1,28 +1,30 @@
 <template>
-  <system-chart
+  <app-inline-chart
     :data="chartData"
     :options="options"
-  >
-    <div class="chart-label">
-      <span>{{ $t('app.system_info.label.klipper_load') }}</span>
-      <span v-if="chartData.length">{{ chartData[chartData.length - 1].cputime_change }}%</span>
-    </div>
-  </system-chart>
+    :labels="labels"
+  />
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
-import SystemChart from './SystemChart.vue'
+import type { AppInlineChartLabel } from '@/components/ui/AppInlineChart.vue'
 
-@Component({
-  components: {
-    SystemChart
-  }
-})
+@Component({})
 export default class KlipperLoadChart extends Vue {
   get chartData () {
     return this.$typedState.charts.klipper || []
+  }
+
+  get labels (): AppInlineChartLabel[] {
+    return [
+      {
+        text: this.$t('app.system_info.label.klipper_load').toString(),
+        value: 'cputime_change',
+        suffix: '%'
+      }
+    ]
   }
 
   get options (): EChartsOption {
