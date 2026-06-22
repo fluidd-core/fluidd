@@ -30,12 +30,18 @@ export default class SensorChart extends Vue {
     return this.$typedState.charts[`sensor:${this.sensorId}`] ?? []
   }
 
+  get suffix (): string {
+    return this.units
+      ? ` ${this.units}`
+      : ''
+  }
+
   get labels (): AppInlineChartLabel[] {
     return [
       {
         text: this.label,
         value: this.field,
-        suffix: this.units ? ` ${this.units}` : ''
+        suffix: this.suffix
       }
     ]
   }
@@ -43,7 +49,7 @@ export default class SensorChart extends Vue {
   get options (): EChartsOption {
     const options: EChartsOption = {
       ...this.$typedGetters['charts/getBaseChartOptions']({
-        [this.field]: this.units ?? ''
+        [this.field]: this.suffix
       }),
       series: this.series
     }
