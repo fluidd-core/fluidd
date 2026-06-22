@@ -63,14 +63,27 @@ export default class AppInlineChart extends Vue {
     )
   }
 
+  isEmpty (value: unknown) {
+    return (
+      value == null ||
+      value === ''
+    )
+  }
+
   get items () {
     const getter = this.customGetter ?? defaultGetter
     const item = this.data[this.data.length - 1]
 
-    return this.labels.map(label => ({
-      label,
-      value: `${getter(item, label, defaultGetter)}${label.suffix ?? ''}`
-    }))
+    return this.labels.map(label => {
+      const value = getter(item, label, defaultGetter)
+
+      return {
+        label,
+        value: this.isEmpty(value)
+          ? '--'
+          : `${value}${label.suffix ?? ''}`
+      }
+    })
   }
 }
 </script>
