@@ -83,13 +83,15 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
       return `${year}${month}${day}-${hours}${minutes}${seconds}`
     },
 
-    formatCounterSeconds: (seconds: number | string, options?: { includeDays: boolean }) => {
+    formatCounterSeconds: (seconds: number | string, options: { includeDays?: boolean } = {}) => {
+      const { includeDays = false } = options
+
       const range = instance.secondsAsRange(seconds)
 
       const parts = []
 
       if (range.days > 0) {
-        if (options?.includeDays) {
+        if (includeDays) {
           parts.push(`${range.days}d`)
 
           if (range.hours > 0) {

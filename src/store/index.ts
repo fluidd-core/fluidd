@@ -101,7 +101,7 @@ export const storeOptions = {
     /**
      * A void action. Some socket commands may not need processing.
      */
-    void (_, payload) {
+    void (_, payload: unknown) {
       consola.debug('void action', payload)
     }
   }

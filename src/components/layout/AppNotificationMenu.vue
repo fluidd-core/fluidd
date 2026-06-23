@@ -109,6 +109,7 @@
                   x-small
                   :href="n.to"
                   target="_blank"
+                  rel="noopener noreferrer"
                   class="mr-1"
                   @click="menu = false"
                 />

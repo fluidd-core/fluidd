@@ -97,7 +97,7 @@ export default class FileSystemUploadDialog extends Mixins(StateMixin) {
 
       // Started uploading, but not complete.
       if (file.loaded > 0 && file.loaded < file.size) {
-        file.abortController.abort()
+        file.abortController?.abort()
       }
     }
   }

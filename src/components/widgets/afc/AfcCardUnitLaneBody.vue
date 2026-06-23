@@ -21,9 +21,26 @@
             </span>
           </template>
           <span>
-            #{{ spoolId }} | {{ spoolVendor }}
+            <strong>ID #{{ spoolId }}</strong>
             <br>
-            {{ spoolFilamentName }}
+            <template v-if="spoolFilamentVendor">{{ spoolFilamentVendor }} — </template>{{ spoolFilamentName }}
+            <template v-if="spoolMaterial">
+              <br>
+              {{ spoolMaterial }}
+              <template v-if="spoolExtruderTemp != null">
+                | {{ spoolExtruderTemp }}°C
+              </template>
+              <template v-if="spoolBedTemp != null">
+                | {{ spoolBedTemp }}°C
+              </template>
+            </template>
+            <template v-if="spoolRemainingWeight != null">
+              <br>
+              {{ $t('app.afc.WeightRemaining', { weight: Math.round(spoolRemainingWeight) }) }}
+              <template v-if="spoolUsedWeight != null">
+                ({{ $t('app.afc.WeightUsed', { weight: Math.round(spoolUsedWeight) }) }})
+              </template>
+            </template>
           </span>
         </v-tooltip>
         <afc-unit-lane-filament-dialog
@@ -53,10 +70,11 @@
           :name="name"
         />
         <span class="font-weight-bold">
-          {{ spoolMaterial }}
+          {{ spoolMaterial || '--' }}
         </span>
         <span class="text--disabled">
-          {{ spoolRemainingWeightOutput }}
+          <template v-if="spoolRemainingWeight != null">{{ Math.round(spoolRemainingWeight) }} g</template>
+          <template v-else>--</template>
         </span>
         <v-tooltip
           v-if="tdPresent"
@@ -84,9 +102,17 @@
     >
       <v-col class="px-6 pt-1">
         <div class="position-relative pb-4">
-          <span class="position-absolute text-truncate text-truncate-element text-center">
-            {{ spoolFilamentName }}
-          </span>
+          <a
+            v-if="spoolUrl"
+            :href="spoolUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="position-absolute text-truncate text-truncate-element text-center text-decoration-none filament-link"
+          >{{ spoolFilamentName }}</a>
+          <span
+            v-else
+            class="position-absolute text-truncate text-truncate-element text-center"
+          >{{ spoolFilamentName }}</span>
         </div>
       </v-col>
     </v-row>
@@ -147,39 +173,51 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
     return this.lane?.color || '#000000'
   }
 
-  get spoolRemainingWeight (): number {
-    if (this.afcExistsSpoolman && this.spool?.remaining_weight != null) {
-      return Math.round(this.spool.remaining_weight)
-    }
-    return Math.round(this.lane?.weight ?? 0)
+  get spoolRemainingWeight (): number | undefined {
+    return this.spool?.remaining_weight ?? this.lane?.weight
   }
 
-  get spoolRemainingWeightOutput (): string {
-    return `${this.spoolRemainingWeight} g`
-  }
-
-  get spoolFullWeight (): number {
-    return this.spool?.initial_weight ?? 1000
+  get spoolFullWeight (): number | undefined {
+    return this.spool?.initial_weight ?? this.lane?.initial_weight
   }
 
   get spoolPercent (): number {
+    if (this.spoolRemainingWeight == null || this.spoolFullWeight == null) return 100
     if (this.spoolFullWeight === 0) return 100
 
     return Math.round((this.spoolRemainingWeight / this.spoolFullWeight) * 100)
   }
 
   get spoolMaterial (): string {
-    return this.lane?.material || '--'
+    return this.spool?.filament?.material ?? this.lane?.material ?? ''
   }
 
-  get spoolVendor (): string {
-    return this.spool?.filament?.vendor?.name ?? this.$t('app.afc.Unknown').toString()
+  get spoolFilamentVendor (): string | undefined {
+    return this.spool?.filament?.vendor?.name
   }
 
-  get spoolFilamentName (): string {
-    return this.afcExistsSpoolman
-      ? this.spool?.filament?.name ?? this.$t('app.afc.Unknown').toString()
-      : ''
+  get spoolFilamentName (): string | undefined {
+    return this.spool?.filament?.name ||
+      this.lane?.filament_name ||
+      undefined
+  }
+
+  get spoolUrl (): string | undefined {
+    const base: string | undefined = this.$typedGetters['spoolman/getSpoolmanUrl']
+    if (!base || !this.spoolId) return undefined
+    return `${base.replace(/\/$/, '')}/spool/show/${this.spoolId}`
+  }
+
+  get spoolExtruderTemp (): number | undefined {
+    return this.spool?.filament?.settings_extruder_temp
+  }
+
+  get spoolBedTemp (): number | undefined {
+    return this.spool?.filament?.settings_bed_temp
+  }
+
+  get spoolUsedWeight (): number | undefined {
+    return this.spool?.used_weight
   }
 
   get tdPresent (): boolean {
@@ -245,5 +283,15 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
 
 .position-relative {
     position: relative !important;
+}
+
+.filament-link {
+  color: inherit !important;
+  cursor: pointer;
+}
+
+.filament-link:hover,
+.filament-link:focus {
+  text-decoration: underline !important;
 }
 </style>

@@ -24,13 +24,13 @@ export const actions = {
     SocketActions.serverHistoryTotals()
   },
 
-  async updateHistory ({ commit }, payload) {
+  async updateHistory ({ commit }, payload: Moonraker.History.Job) {
     if (payload) {
       commit('setUpdateHistory', payload)
     }
   },
 
-  async clearHistoryThumbnails ({ commit }, payload) {
+  async clearHistoryThumbnails ({ commit }, payload: string) {
     if (payload) {
       commit('setClearHistoryThumbnails', payload)
     }

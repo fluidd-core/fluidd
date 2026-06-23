@@ -76,16 +76,15 @@
         />
       </template>
 
-      <user-config-dialog
-        v-if="userDialogState.open"
-        v-model="userDialogState.open"
-        :user="userDialogState.user"
-        @save="userDialogState.handler"
+      <add-user-dialog
+        v-if="addUserDialogOpen"
+        v-model="addUserDialogOpen"
+        @save="handleSaveUser"
       />
 
       <api-key-dialog
-        v-if="apiKeyDialogState.open"
-        v-model="apiKeyDialogState.open"
+        v-if="apiKeyDialogOpen"
+        v-model="apiKeyDialogOpen"
       />
     </v-card>
   </div>
@@ -94,28 +93,21 @@
 <script lang="ts">
 import type { AppUser } from '@/store/auth/types'
 import { Component, Vue } from 'vue-property-decorator'
-import UserConfigDialog from './UserConfigDialog.vue'
+import AddUserDialog from './AddUserDialog.vue'
 import ApiKeyDialog from './ApiKeyDialog.vue'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: {
-    UserConfigDialog,
+    AddUserDialog,
     ApiKeyDialog
   }
 })
 export default class AuthSettings extends Vue {
   search = ''
   categoryId?: string = undefined
-
-  userDialogState: any = {
-    open: false,
-    user: null,
-    handler: null
-  }
-
-  apiKeyDialogState: any = {
-    open: false
-  }
+  addUserDialogOpen = false
+  apiKeyDialogOpen = false
 
   get users (): AppUser[] {
     return this.$typedState.auth.users
@@ -128,23 +120,11 @@ export default class AuthSettings extends Vue {
   }
 
   handleAddUserDialog () {
-    this.userDialogState = {
-      open: true,
-      user: { username: '', password: '' },
-      handler: this.handleSaveUser
-    }
-  }
-
-  handleEditUserDialog (user: AppUser) {
-    this.userDialogState = {
-      open: true,
-      user,
-      handler: this.handleSaveUser
-    }
+    this.addUserDialogOpen = true
   }
 
   handleApiKeyDialog () {
-    this.apiKeyDialogState.open = true
+    this.apiKeyDialogOpen = true
   }
 
   async handleRemoveUser (user: AppUser) {
@@ -154,15 +134,18 @@ export default class AuthSettings extends Vue {
     )
 
     if (result) {
-      this.$typedDispatch('auth/removeUser', user)
+      await SocketActions.accessDeleteUser(user.username)
     }
   }
 
-  async handleSaveUser (user: AppUser) {
-    await this.$typedDispatch('auth/addUser', user)
+  async handleSaveUser (user: { username: string, password: string }) {
+    const isFirstUser = this.users.length === 0
 
-    // We only want to check trust if this is the first user being added.
-    if (this.users.length === 0) this.$typedDispatch('auth/checkTrust')
+    await SocketActions.accessPostUser(user.username, user.password)
+
+    if (isFirstUser) {
+      this.$typedDispatch('auth/checkTrust')
+    }
   }
 }
 </script>

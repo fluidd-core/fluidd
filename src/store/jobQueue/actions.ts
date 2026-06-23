@@ -30,7 +30,7 @@ export const actions = {
     }
   },
 
-  async onJobQueueStatus ({ commit, dispatch }, payload : Moonraker.JobQueue.StatusResponse) {
+  async onJobQueueStatus ({ commit, dispatch }, payload: Moonraker.JobQueue.StatusResponse) {
     if (payload) {
       commit('setQueueState', payload.queue_state)
       commit('setQueuedJobs', payload.queued_jobs)
@@ -39,7 +39,7 @@ export const actions = {
     }
   },
 
-  async onJobQueueChanged ({ commit, dispatch }, payload : { action: string, queue_state?: Moonraker.JobQueue.QueueState, updated_queue?: Moonraker.JobQueue.QueuedJob[] | null }) {
+  async onJobQueueChanged ({ commit, dispatch }, payload: Moonraker.JobQueue.JobQueueChangedResponse) {
     if (payload) {
       const { queue_state, updated_queue } = payload
 

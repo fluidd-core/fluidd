@@ -47,12 +47,34 @@ When configured, Fluidd displays power device controls on the dashboard and
 in the top navigation bar. You can toggle devices on and off directly from
 the UI.
 
+## Sensors
+
+!!! note "Moonraker configuration required"
+    The Sensors card shows generic sensors exposed via Moonraker's `[sensor]`
+    component (for example power meters or environmental sensors). See the
+    [Moonraker sensor documentation](https://moonraker.readthedocs.io/en/latest/configuration/#sensor)
+    for setup details and supported sensor types.
+
+These are distinct from the Klipper temperature sensors shown in the
+[Thermals](thermals.md) chart.
+
+The **Sensors** dashboard card lists each configured sensor as a collapsible
+panel:
+
+- The panel header shows the sensor's friendly name and the current value of
+  each of its measurements.
+- Expand a panel to see a real-time history chart for every numeric
+  measurement. Sensors with no numeric measurements show **No data**.
+
 ## Notifications
 
 Fluidd has a built-in notification system that warns you of potential issues:
 
 - **Pending updates** — shown when Klipper, Moonraker, Fluidd, or other
   components have updates available.
+- **Outdated Moonraker** — a warning shown when the connected Moonraker is
+  older than the minimum version Fluidd supports, with a link to the versions
+  list in Settings.
 - **Throttle conditions** — fires when the host reports throttling (e.g.
   undervoltage or thermal throttling on a Raspberry Pi via `vcgencmd`).
 - **Moonraker announcements** — important messages from the Fluidd developers

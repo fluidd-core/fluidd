@@ -258,6 +258,7 @@ app:
       park_toolhead: Zaparkuj głowicę
       unload_filament: Wycofaj filament
       toolchange: Zmiana narzędzia
+      no_data: Brak danych
     btn:
       abort: Przerwij
       add: Dodaj
@@ -344,6 +345,7 @@ app:
       perform_time_analysis: Wykonaj analizę czasową
       clear: Wyczyść
       scroll_to_latest: Przewiń do najnowszych
+      reset_to_default: Przywróć domyślne
     title:
       home: Ekran główny
       camera: Kamera | Kamery
@@ -751,6 +753,7 @@ app:
         wydajności CPU
       warn_on_stepper_driver_overheating: Ostrzegaj w przypadku przegrzania 
         sterownika silnika krokowego
+      sensor_color: Kolor sensora
     camera_type_options:
       mjpegstream: Strumień MJPEG
       mjpegadaptive: Adaptacyjny MJPEG
@@ -1356,3 +1359,5 @@ app:
     Unknown: Nieznane
     Weight: Waga
     WeightSubtitle: Waga filamentu w gramach (bez szpuli).
+    WeightRemaining: Pozostało {weight}g
+    WeightUsed: Użyto {weight}g

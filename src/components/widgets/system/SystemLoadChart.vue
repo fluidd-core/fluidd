@@ -1,38 +1,34 @@
 <template>
-  <v-col
-    v-if="ready"
-    cols="4"
-    class="chart-wrapper"
-  >
-    <app-chart
-      :data="chartData"
-      :options="options"
-      height="120px"
-    />
-
-    <div class="chart-label-wrapper">
-      <div class="chart-label">
-        <span>{{ $t('app.system_info.label.system_load') }}</span>
-        <span v-if="chartData.length">{{ chartData[chartData.length - 1].load }} / {{ cores }}</span>
-      </div>
-    </div>
-  </v-col>
+  <app-inline-chart
+    :data="chartData"
+    :options="options"
+    :labels="labels"
+  />
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
+import type { AppInlineChartLabel } from '@/components/ui/AppInlineChart.vue'
 
 @Component({})
 export default class SystemLoadChart extends Vue {
-  ready = false
-
   get chartData () {
     return this.$typedState.charts.klipper || []
   }
 
   get cores (): number {
     return this.$typedState.server.system_info?.cpu_info?.cpu_count || 1
+  }
+
+  get labels (): AppInlineChartLabel[] {
+    return [
+      {
+        text: this.$t('app.system_info.label.system_load').toString(),
+        value: 'load',
+        suffix: ` / ${this.cores}`
+      }
+    ]
   }
 
   get options (): EChartsOption {
@@ -45,11 +41,7 @@ export default class SystemLoadChart extends Vue {
       options.yAxis &&
       !Array.isArray(options.yAxis)
     ) {
-      options.yAxis.max = (value) => (
-        value.max <= this.cores
-          ? this.cores
-          : value.max
-      )
+      options.yAxis.max = (value) => Math.max(this.cores, value.max)
     }
 
     return options
@@ -64,11 +56,6 @@ export default class SystemLoadChart extends Vue {
         y: 'load'
       }
     }
-  }
-
-  @Watch('chartData', { immediate: true })
-  onChartData (data: any) {
-    if (data && data.length > 0) this.ready = true
   }
 }
 </script>

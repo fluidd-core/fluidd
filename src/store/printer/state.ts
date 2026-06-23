@@ -19,7 +19,6 @@ export const defaultState = (): PrinterState => {
         config: {},
         settings: {}
       },
-      objects: [],
       idle_timeout: {
         state: 'Idle',
         printing_time: 0

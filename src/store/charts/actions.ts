@@ -1,7 +1,7 @@
 import type { ActionTree } from 'vuex'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
-import type { ChartData, ChartState } from './types'
+import type { ChartData, ChartSelectedLegends, ChartState } from './types'
 import type { RootState } from '../types'
 import { isEqual } from 'lodash-es'
 
@@ -95,14 +95,14 @@ export const actions = {
   /**
    * Init the chart state from db
    */
-  initCharts ({ commit }, payload) {
+  initCharts ({ commit }, payload: Partial<ChartState>) {
     commit('setInitCharts', payload)
   },
 
   /**
    * Saves current state of selected legends to store and db
    */
-  saveSelectedLegends ({ commit, state }, payload) {
+  saveSelectedLegends ({ commit, state }, payload: ChartSelectedLegends) {
     // Only change the data if they require it
     if (!isEqual(state.selectedLegends, payload)) {
       commit('setSelectedLegends', payload)

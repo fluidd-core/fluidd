@@ -5,11 +5,17 @@ allowBuilds:
   esbuild: true
   vue-demi: true
 
+catalog:
+  vue: ^2.7.16
+  dompurify: ^3.4.10
+  vite: ^8.0.16
+  echarts: ^6.1.0
+
 overrides:
-  '@vue/tsconfig>vue': '$vue'
+  '@vue/tsconfig>vue': 'catalog:'
   glob: ^13.0.6
-  'monaco-editor>dompurify': '$dompurify'
+  'monaco-editor>dompurify': 'catalog:'
   serialize-javascript: ^7.0.3
-  'vite-plugin-pwa>vite': '$vite'
-  'vue-echarts>echarts': '$echarts'
+  'vite-plugin-pwa>vite': 'catalog:'
+  'vue-echarts>echarts': 'catalog:'
   '@originjs/vite-plugin-content>xlsx': '-'

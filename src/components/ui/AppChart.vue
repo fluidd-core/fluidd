@@ -1,55 +1,79 @@
 <template>
-  <div>
-    <div
-      class="chart"
-      :style="{ 'height': height }"
-    >
-      <e-chart
-        v-if="ready"
-        ref="chart"
-        style="overflow: initial;"
-        :option="opts"
-        :update-options="updateOptions"
-        :init-options="initOptions"
-        autoresize
-      />
-    </div>
+  <div
+    class="chart"
+    :style="{
+      height: $filters.getPixelsString(height)
+    }"
+  >
+    <e-chart
+      ref="chart"
+      style="overflow: initial;"
+      manual-update
+      :init-options="initOptions"
+      autoresize
+      @hook:mounted="applyOption"
+    />
   </div>
 </template>
 
 <script lang='ts'>
 import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
-import type { ECharts } from 'echarts'
-import { merge } from 'lodash-es'
+import type { DatasetComponentOption, ECharts, EChartsInitOpts, EChartsOption } from 'echarts'
 
 @Component({})
 export default class AppChart extends Vue {
   @Prop({ type: Array, required: true })
-  readonly data!: unknown[]
+  readonly data!: Extract<DatasetComponentOption['source'], unknown[]>
 
   @Prop({ type: Array })
-  readonly dimensions?: unknown[]
+  readonly dimensions?: DatasetComponentOption['dimensions']
 
   @Prop({ type: Object, default: () => {} })
-  readonly options!: Record<string, unknown>
+  readonly options!: EChartsOption
 
   @Prop({ type: String, default: '100%' })
   readonly height!: string
 
   @Ref('chart')
-  readonly chart!: ECharts
+  readonly chart?: ECharts
 
-  // Stable references so component re-renders don't make vue-echarts dispose/
-  // re-init the chart or re-apply the options, both of which would wipe the
-  // imperatively-set dataset and blank the chart.
-  readonly updateOptions = Object.freeze({ notMerge: true })
-  readonly initOptions = Object.freeze({ renderer: 'canvas' })
+  // Stable reference so re-renders don't make vue-echarts re-init the chart.
+  readonly initOptions: EChartsInitOpts = Object.freeze({ renderer: 'canvas' })
 
-  ready = false
+  // Apply the full options + current data (on chart ready and on option changes).
+  applyOption () {
+    if (!this.chart) return
 
+    const options: EChartsOption = {
+      ...this.options,
+      grid: {
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        ...this.options.grid
+      },
+      dataset: {
+        dimensions: this.dimensions,
+        source: this.data
+      }
+    }
+
+    this.chart.setOption(options, { notMerge: true })
+  }
+
+  @Watch('options')
+  onOptions () {
+    this.applyOption()
+  }
+
+  // Push only a dataset update, never a full options re-apply.
   @Watch('data')
-  onData (data?: unknown[]) {
-    if (this.chart && data && data.length) {
+  onData (data?: Extract<DatasetComponentOption['source'], unknown[]>) {
+    if (
+      this.chart != null &&
+      Array.isArray(data)
+    ) {
       this.chart.setOption({
         dataset: {
           dimensions: this.dimensions,
@@ -59,29 +83,9 @@ export default class AppChart extends Vue {
     }
   }
 
-  get opts () {
-    const baseOptions = {
-      grid: {
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0
-      }
-    }
-
-    const options = merge(baseOptions, this.options)
-    return options
-  }
-
-  mounted () {
-    if (this.data && !this.ready) this.ready = true
-  }
-
   beforeDestroy () {
     if (typeof window === 'undefined') return
-    if (this.chart) {
-      this.chart.dispose()
-    }
+    this.chart?.dispose()
   }
 }
 

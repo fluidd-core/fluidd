@@ -25,7 +25,7 @@ declare namespace Moonraker.KlippyApis {
   }
 
   export interface ObjectsSubscribeResponse {
-    status: Klipper.PrinterState;
+    status: Partial<Klipper.PrinterState>;
   }
 
   export interface GcodeHelpResponse extends Record<string, string> {

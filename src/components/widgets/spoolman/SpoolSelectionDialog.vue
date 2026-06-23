@@ -269,6 +269,7 @@
         v-if="spoolmanURL"
         :href="spoolmanURL"
         target="_blank"
+        rel="noopener noreferrer"
         color="primary"
         text
         type="button"

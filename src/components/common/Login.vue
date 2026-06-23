@@ -84,6 +84,7 @@
               class="custom-transform-class text-none"
               :href="$globals.DOCS_AUTH_LOST_PASSWORD"
               target="_blank"
+              rel="noopener noreferrer"
             >
               {{ $t('app.general.btn.forgot_password') }}
             </app-btn>
@@ -93,6 +94,7 @@
               class="custom-transform-class text-none"
               :href="$globals.DOCS_AUTH"
               target="_blank"
+              rel="noopener noreferrer"
             >
               {{ $t('app.general.btn.auth_unsure') }}
             </app-btn>

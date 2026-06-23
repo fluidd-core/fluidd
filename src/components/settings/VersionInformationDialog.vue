@@ -48,6 +48,7 @@
                       class="secondary--text"
                       :href="`${baseUrl}/commits/${component.branch}`"
                       target="_blank"
+                      rel="noopener noreferrer"
                     >
                       <strong>{{ commit.author }}</strong>
                     </a>
@@ -71,6 +72,7 @@
                     color="secondary"
                     :href="`${baseUrl}/commit/${commit.sha}`"
                     target="_blank"
+                    rel="noopener noreferrer"
                   >
                     <span class="primary--text">{{ commit.sha.substring(0, 7) }}</span>
                   </app-btn>

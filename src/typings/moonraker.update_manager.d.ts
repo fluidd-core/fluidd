@@ -39,6 +39,7 @@ declare namespace Moonraker.UpdateManager {
     owner: string;
     branch: string;
     repo_name: string;
+    repo_detected?: boolean;
     is_dirty: boolean;
     corrupt: boolean;
     pristine: boolean;
@@ -101,4 +102,10 @@ declare namespace Moonraker.UpdateManager {
     info_tags: string[];
   }
 
+  export interface UpdateResponse {
+    application: string;
+    proc_id: number;
+    message: string;
+    complete?: boolean;
+  }
 }

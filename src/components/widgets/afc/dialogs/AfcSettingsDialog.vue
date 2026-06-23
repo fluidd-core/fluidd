@@ -12,6 +12,7 @@
         tile
         href="https://www.armoredturtle.xyz/docs/afc-klipper-add-on/toolhead/calculation.html"
         target="_blank"
+        rel="noopener noreferrer"
         class="me-1"
       >
         <v-icon left>

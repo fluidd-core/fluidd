@@ -249,6 +249,7 @@ export const Globals = Object.freeze({
       ROOTS: {
         uiSettings: { name: 'uiSettings', dispatch: 'config/initUiSettings' },
         macros: { name: 'macros', dispatch: 'macros/initMacros' },
+        sensors: { name: 'sensors', dispatch: 'sensors/initSensors' },
         console: { name: 'console', dispatch: 'console/initConsole' },
         charts: { name: 'charts', dispatch: 'charts/initCharts' },
         cameras: { name: 'cameras', dispatch: 'webcams/initLegacyCameras', migrate_only: true },
@@ -624,6 +625,7 @@ export const Waits = Object.freeze({
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
   onFileSystem: 'onFileSystem',
+  onFileSystemRoots: 'onFileSystemRoots',
   onJobQueue: 'onJobQueue',
   onTimelapseSaveFrame: 'onTimelapseSaveFrame',
   onManualProbe: 'onManualProbe',
@@ -746,4 +748,20 @@ export const TimeFormats = Object.freeze<Record<string, DateTimeFormat>>({
   hours24: {
     options: { hour: '2-digit', minute: '2-digit', hour12: false }
   }
+})
+
+export interface ColorGenOption {
+  base: string
+  count: number
+  hsplit?: number
+  lsplit?: number
+}
+
+export type PaletteOption = string[] | ColorGenOption
+
+export const DefaultPalettes = Object.freeze<Record<string, PaletteOption>>({
+  heater: { base: '#ff5252', hsplit: 20, count: 4 },
+  bed: { base: '#1fb0ff', hsplit: 20, count: 2 },
+  fan: { base: '#4CAF50', hsplit: 20, count: 4 },
+  sensor: ['#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B', '#3F51B5', '#F50057']
 })

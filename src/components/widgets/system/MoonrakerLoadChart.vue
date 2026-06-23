@@ -1,40 +1,36 @@
 <template>
-  <v-col
-    v-if="ready"
-    cols="4"
-    class="chart-wrapper"
-  >
-    <app-chart
-      :data="chartData"
-      :options="options"
-      height="120px"
-    />
-
-    <div class="chart-label-wrapper">
-      <div class="chart-label">
-        <span>{{ $t('app.system_info.label.moonraker_load') }}</span>
-        <span v-if="chartData.length">{{ chartData[chartData.length - 1].load }}%</span>
-      </div>
-    </div>
-  </v-col>
+  <app-inline-chart
+    :data="chartData"
+    :options="options"
+    :labels="labels"
+  />
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
+import type { AppInlineChartLabel } from '@/components/ui/AppInlineChart.vue'
 
 @Component({})
 export default class MoonrakerLoadChart extends Vue {
-  ready = false
-
   get chartData () {
     return this.$typedState.charts.moonraker || []
+  }
+
+  get labels (): AppInlineChartLabel[] {
+    return [
+      {
+        text: this.$t('app.system_info.label.moonraker_load').toString(),
+        value: 'load',
+        suffix: ' %'
+      }
+    ]
   }
 
   get options (): EChartsOption {
     return {
       ...this.$typedGetters['charts/getBaseChartOptions']({
-        load: '%'
+        load: ' %'
       }),
       series: this.series
     }
@@ -49,11 +45,6 @@ export default class MoonrakerLoadChart extends Vue {
         y: 'load'
       }
     }
-  }
-
-  @Watch('chartData', { immediate: true })
-  onChartData (data: any) {
-    if (data && data.length > 0) this.ready = true
   }
 }
 </script>

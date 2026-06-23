@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { FilesState, MoonrakerPathContent, FilePaths } from './types'
+import type { FilesState, MoonrakerPathContent, FilePaths, FileUpload, FileDownload } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 
@@ -12,7 +12,7 @@ export const mutations = {
     Object.assign(state, defaultState())
   },
 
-  setResetRoot (state, root) {
+  setResetRoot (state, root: string) {
     const keysToDelete = Object.keys(state.pathContent)
       .filter(key => key === root || key.startsWith(`${root}/`))
 
@@ -21,7 +21,7 @@ export const mutations = {
     }
 
     if (state.currentPaths[root]) {
-      Vue.set(state.currentPaths, root, undefined)
+      Vue.delete(state.currentPaths, root)
     }
   },
 
@@ -29,6 +29,10 @@ export const mutations = {
     const { path, content } = payload
 
     Vue.set(state.pathContent, path, content)
+  },
+
+  setServerFilesRoots (state, payload: Moonraker.Files.RootInfoWithPath[]) {
+    state.roots = payload
   },
 
   setServerFilesListRoot (state, payload: { root: string, files: Moonraker.Files.RootFile[] }) {
@@ -129,7 +133,7 @@ export const mutations = {
     }
   },
 
-  setUpdateFileUpload (state, payload) {
+  setUpdateFileUpload (state, payload: Partial<FileUpload> & { uid: string }) {
     const uploadIndex = state.uploads.findIndex(upload => upload.uid === payload.uid)
 
     if (uploadIndex >= 0) {
@@ -138,7 +142,9 @@ export const mutations = {
         ...payload
       })
     } else {
-      state.uploads.push(payload)
+      // The first update for a given uid always carries the full FileUpload shape
+      // (abortController is the only field that may not be set yet).
+      state.uploads.push(payload as FileUpload)
     }
   },
 
@@ -149,15 +155,16 @@ export const mutations = {
     }
   },
 
-  setUpdateFileDownload (state, payload) {
+  setUpdateFileDownload (state, payload: Partial<FileDownload> & { uid: string }) {
     if (
       state.download == null ||
       state.download.uid === payload.uid
     ) {
+      // The first update for a given uid always carries the full FileDownload shape.
       state.download = {
         ...state.download,
         ...payload
-      }
+      } as FileDownload
     }
   },
 
