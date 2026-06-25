@@ -24,6 +24,7 @@ export const mutations = {
   setHistoryList (state, payload: Moonraker.History.ListResponse) {
     if (payload.jobs != null) {
       state.jobs = payload.jobs
+        .map(job => Object.freeze(job))
     }
     if (payload.count != null) {
       state.count = payload.count
@@ -35,7 +36,7 @@ export const mutations = {
    */
   setAddHistory (state, payload: Moonraker.History.Job) {
     if (payload) {
-      state.jobs.push(payload)
+      state.jobs.push(Object.freeze(payload))
       state.count++
     }
   },
@@ -47,7 +48,7 @@ export const mutations = {
     if (payload) {
       const i = state.jobs.findIndex(job => job.job_id === payload.job_id)
       if (i >= 0) {
-        Vue.set(state.jobs, i, payload)
+        Vue.set(state.jobs, i, Object.freeze(payload))
       }
     }
   },
@@ -57,13 +58,13 @@ export const mutations = {
       const i = state.jobs.findIndex(job => job.job_id === payload)
       if (i >= 0) {
         const job = state.jobs[i]
-        Vue.set(state.jobs, i, {
+        Vue.set(state.jobs, i, Object.freeze({
           ...job,
           metadata: {
             ...job.metadata,
             thumbnails: []
           }
-        })
+        }))
       }
     }
   },

@@ -28,17 +28,25 @@ export const mutations = {
   setServerFilesGetDirectory (state, payload: { path: string, content: MoonrakerPathContent }) {
     const { path, content } = payload
 
-    Vue.set(state.pathContent, path, content)
+    const pathContent: MoonrakerPathContent = {
+      ...content,
+      files: content.files
+        .map(file => Object.freeze(file)),
+      dirs: content.dirs
+        .map(dir => Object.freeze(dir))
+    }
+
+    Vue.set(state.pathContent, path, pathContent)
   },
 
   setServerFilesRoots (state, payload: Moonraker.Files.RootInfoWithPath[]) {
-    state.roots = payload
+    state.roots = Object.freeze(payload)
   },
 
   setServerFilesListRoot (state, payload: { root: string, files: Moonraker.Files.RootFile[] }) {
     const { root, files } = payload
 
-    Vue.set(state.rootFiles, root, files)
+    Vue.set(state.rootFiles, root, Object.freeze(files))
   },
 
   setFileUpdate (state, payload: { paths: FilePaths, file: Moonraker.Files.File | Moonraker.Files.FileWithMeta }) {
@@ -57,14 +65,14 @@ export const mutations = {
         const fileIndex = directory.files.findIndex(file => file.filename === paths.filename)
 
         if (fileIndex >= 0) {
-          Vue.set(directory.files, fileIndex, file)
+          Vue.set(directory.files, fileIndex, Object.freeze(file))
         } else {
-          directory.files.push(file)
+          directory.files.push(Object.freeze(file))
         }
       } else {
         const directory: MoonrakerPathContent = {
           partial: true,
-          files: [file],
+          files: [Object.freeze(file)],
           dirs: []
         }
 
@@ -89,9 +97,9 @@ export const mutations = {
         const dirIndex = directory.dirs.findIndex(dir => dir.dirname === paths.filename)
 
         if (dirIndex >= 0) {
-          Vue.set(directory.dirs, dirIndex, dir)
+          Vue.set(directory.dirs, dirIndex, Object.freeze(dir))
         } else {
-          directory.dirs.push(dir)
+          directory.dirs.push(Object.freeze(dir))
         }
       }
     }
@@ -179,6 +187,6 @@ export const mutations = {
   },
 
   setDiskUsage (state, payload: { root: string, disk_usage: Moonraker.Files.DiskUsage }) {
-    Vue.set(state.diskUsage, payload.root, payload.disk_usage)
+    Vue.set(state.diskUsage, payload.root, Object.freeze(payload.disk_usage))
   }
 } satisfies MutationTree<FilesState>

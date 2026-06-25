@@ -65,7 +65,7 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
   search = ''
   loaded = false
 
-  get rootFiles (): Moonraker.Files.RootFile[] | undefined {
+  get rootFiles (): readonly Moonraker.Files.RootFile[] | undefined {
     return this.$typedGetters['files/getRootFiles'](this.root)
   }
 

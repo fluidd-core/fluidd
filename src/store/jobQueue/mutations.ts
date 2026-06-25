@@ -12,6 +12,6 @@ export const mutations = {
   },
 
   setQueuedJobs (state, payload: Moonraker.JobQueue.QueuedJob[]) {
-    state.queuedJobs = payload || []
+    state.queuedJobs = Object.freeze(payload || [])
   }
 } satisfies MutationTree<JobQueueState>
