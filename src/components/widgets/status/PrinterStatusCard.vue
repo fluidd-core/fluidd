@@ -65,6 +65,8 @@
         />
       </v-tab-item>
     </v-tabs-items>
+
+    <afc-print-start-dialog v-if="afc != null" />
   </collapsable-card>
 </template>
 
@@ -72,9 +74,11 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
 import StateMixin from '@/mixins/state'
+import AfcMixin from '@/mixins/afc'
 import StatusControls from './StatusControls.vue'
 import StatusTab from './StatusTab.vue'
 import ReprintTab from './ReprintTab.vue'
+import AfcPrintStartDialog from '@/components/widgets/afc/dialogs/AfcPrintStartDialog.vue'
 import type { TimeEstimates } from '@/store/printer/types'
 import getFilePaths from '@/util/get-file-paths'
 
@@ -82,10 +86,11 @@ import getFilePaths from '@/util/get-file-paths'
   components: {
     StatusControls,
     StatusTab,
-    ReprintTab
+    ReprintTab,
+    AfcPrintStartDialog
   }
 })
-export default class PrinterStatusCard extends Mixins(StateMixin) {
+export default class PrinterStatusCard extends Mixins(StateMixin, AfcMixin) {
   tab = 0
 
   // If the user has no history plugin, and there's no print running..
@@ -128,6 +133,27 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
   }
 
   handlePrint (filename: string) {
+    // AFC check — show lane mapping dialog when AFC is installed. If metadata
+    // is not yet loaded we open the dialog anyway (it will fetch on open);
+    // if metadata is loaded we only show it for multi-tool prints.
+    if (this.afc != null) {
+      const { rootPath, filename: filenameOnly } = getFilePaths(filename, 'gcodes')
+      const fileWithMeta = this.$typedGetters['files/getFile'](rootPath, filenameOnly)
+
+      const hasMetadata = fileWithMeta != null && 'filament_weights' in fileWithMeta
+      const filamentWeights: number[] = hasMetadata ? (fileWithMeta.filament_weights ?? []) : []
+      const usedTools = filamentWeights.filter((w: number) => w > 0)
+
+      if (!hasMetadata || usedTools.length > 0) {
+        this.$typedCommit('afc/setDialogState', {
+          show: true,
+          filename
+        })
+
+        return
+      }
+    }
+
     if (this.$typedState.printer.printer.mmu?.enabled === true) {
       const { rootPath, filename: filenameOnly } = getFilePaths(filename, 'gcodes')
       const fileWithMeta = this.$typedGetters['files/getFile'](rootPath, filenameOnly)

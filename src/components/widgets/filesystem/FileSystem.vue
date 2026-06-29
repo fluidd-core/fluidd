@@ -135,6 +135,8 @@
       :root="currentRoot"
       @path-change="loadFiles"
     />
+
+    <afc-print-start-dialog v-if="afc != null" />
   </v-card>
 </template>
 
@@ -153,6 +155,8 @@ import FileEditorDialog from './FileEditorDialog.vue'
 import FileNameDialog from './FileNameDialog.vue'
 import FileSystemGoToFileDialog from './FileSystemGoToFileDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
+import AfcPrintStartDialog from '@/components/widgets/afc/dialogs/AfcPrintStartDialog.vue'
+import AfcMixin from '@/mixins/afc'
 import type { AppDataTableHeader, FileWithPath } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer, setFileDataTransferDataInDataTransfer } from '@/util/file-data-transfer'
@@ -175,10 +179,11 @@ import type { KlipperSaveAndRestartAction } from '@/store/config/types'
     FileEditorDialog,
     FileNameDialog,
     FileSystemGoToFileDialog,
-    FilePreviewDialog
+    FilePreviewDialog,
+    AfcPrintStartDialog
   }
 })
-export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
+export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin, AfcMixin) {
   // Can be a list of roots, or a single root.
   @Prop({ type: [String, Array], required: true })
   readonly roots!: string | string[]
@@ -928,6 +933,24 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.disabled) return
 
     const filename = file.path ? `${file.path}/${file.filename}` : file.filename
+
+    // AFC check — show lane mapping dialog when AFC is installed. If metadata
+    // is not yet loaded we open the dialog anyway (it will fetch on open);
+    // if metadata is loaded we only show it for multi-tool prints.
+    if (this.afc != null) {
+      const hasMetadata = 'filament_weights' in file
+      const filamentWeights: number[] = hasMetadata ? (file.filament_weights ?? []) : []
+      const usedTools = filamentWeights.filter(w => w > 0)
+
+      if (!hasMetadata || usedTools.length > 0) {
+        this.$typedCommit('afc/setDialogState', {
+          show: true,
+          filename
+        })
+
+        return
+      }
+    }
 
     if (this.$typedState.printer.printer.mmu?.enabled === true) {
       if ('referenced_tools' in file) {
