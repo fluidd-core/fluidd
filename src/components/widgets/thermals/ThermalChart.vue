@@ -42,6 +42,7 @@ import { markRaw } from 'vue'
 import { Component, Watch, Prop, Ref, Mixins } from 'vue-property-decorator'
 import type { ECharts, EChartsInitOpts, EChartsOption, LineSeriesOption } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
+import { isPowerOrSpeed, smoothChartData } from '@/util/chart-smoothing'
 import BrowserMixin from '@/mixins/browser'
 import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
 
@@ -65,7 +66,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     this.paused = !this.paused
 
     if (!this.paused) {
-      this.onDataChange(this.chartData)
+      this.onDataChange()
     }
   }
 
@@ -90,6 +91,16 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
   get chartData (): Readonly<ChartData>[] {
     return this.$typedState.charts.chart
+  }
+
+  get chartSmoothingWindow (): number {
+    return this.$typedState.config.uiSettings.general.chartSmoothingWindow
+  }
+
+  // Raw data with a trailing moving average applied to power/speed series only.
+  // A window of 0 returns chartData untouched.
+  get smoothedChartData (): Readonly<ChartData>[] {
+    return smoothChartData(this.chartData, this.chartSmoothingWindow, isPowerOrSpeed)
   }
 
   get chartableSensors (): string[] {
@@ -119,8 +130,10 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     this.chart.setOption({ series: this.series })
   }
 
-  @Watch('chartData')
-  onDataChange (data: any) {
+  // Watch the smoothed data so both new samples and a smoothing-window change
+  // re-render the chart live.
+  @Watch('smoothedChartData')
+  onDataChange () {
     if (!this.chart || this.paused) return
 
     // Series deferred at creation (empty store): build now and re-apply.
@@ -132,7 +145,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
     this.chart.setOption({
       dataset: {
-        source: data
+        source: this.smoothedChartData
       }
     })
   }
@@ -185,7 +198,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     this.chart.setOption({
       ...this.options,
       dataset: {
-        source: this.chartData
+        source: this.smoothedChartData
       }
     }, { notMerge: true })
   }

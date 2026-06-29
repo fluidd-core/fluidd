@@ -66,6 +66,19 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.setting.label.chart_smoothing')">
+        <v-select
+          v-model="chartSmoothingWindow"
+          filled
+          dense
+          single-line
+          hide-details="auto"
+          :items="availableChartSmoothingWindows"
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting
         :title="$t('app.setting.label.keyboard_shortcuts')"
         :sub-title="$t('app.setting.tooltip.keyboard_shortcuts')"
@@ -356,6 +369,27 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
         value: key,
         text: `${date.toLocaleTimeString(entry.locales ?? getAllLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
+  }
+
+  get chartSmoothingWindow (): number {
+    return this.$typedState.config.uiSettings.general.chartSmoothingWindow
+  }
+
+  set chartSmoothingWindow (value: number) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.general.chartSmoothingWindow',
+      value,
+      server: true
+    })
+  }
+
+  get availableChartSmoothingWindows () {
+    return [
+      { value: 0, text: this.$t('app.setting.label.chart_smoothing_none') },
+      { value: 1, text: this.$t('app.setting.label.chart_smoothing_seconds', { count: 1 }) },
+      { value: 3, text: this.$t('app.setting.label.chart_smoothing_seconds', { count: 3 }) },
+      { value: 5, text: this.$t('app.setting.label.chart_smoothing_seconds', { count: 5 }) }
+    ]
   }
 
   get enableKeyboardShortcuts (): boolean {
