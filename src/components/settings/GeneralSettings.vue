@@ -388,7 +388,10 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
       { value: 0, text: this.$t('app.setting.label.chart_smoothing_none') },
       { value: 1, text: this.$t('app.setting.label.chart_smoothing_seconds', { count: 1 }) },
       { value: 3, text: this.$t('app.setting.label.chart_smoothing_seconds', { count: 3 }) },
-      { value: 5, text: this.$t('app.setting.label.chart_smoothing_seconds', { count: 5 }) }
+      { value: 5, text: this.$t('app.setting.label.chart_smoothing_seconds', { count: 5 }) },
+      { value: 10, text: this.$t('app.setting.label.chart_smoothing_seconds', { count: 10 }) },
+      { value: 15, text: this.$t('app.setting.label.chart_smoothing_seconds', { count: 15 }) },
+      { value: 30, text: this.$t('app.setting.label.chart_smoothing_seconds', { count: 30 }) }
     ]
   }
 
