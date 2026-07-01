@@ -27,11 +27,12 @@
 
     <v-btn
       v-if="isMobileViewport && socketReady"
-      x-small
       fab
       fixed
       bottom
       left
+      width="36"
+      height="36"
       class="ml-2 mb-2"
       color="error"
       style="z-index: 2000"
@@ -103,6 +104,7 @@ import ActionCommandPromptDialog from '@/components/common/ActionCommandPromptDi
 import KeyboardShortcutsDialog from '@/components/common/KeyboardShortcutsDialog.vue'
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
 import MmuEditTtgMapDialog from './components/widgets/mmu/MmuEditTtgMapDialog.vue'
+import type { MoonrakerPathContent } from './store/files/types'
 
 @Component<App>({
   metaInfo () {
@@ -177,7 +179,12 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get pageTitle () {
-    const instanceName: string = this.$typedState.config.uiSettings.general.instanceName
+    const q = this.hasPrinterConfig === true
+      ? '1 '
+      : this.hasPrinterConfig === false
+        ? '0 '
+        : ''
+    const instanceName: string = q + this.$typedState.config.uiSettings.general.instanceName
 
     if (!this.socketReady) {
       return instanceName
@@ -279,8 +286,37 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     return `data:image/svg+xml;base64,${btoa(logoWithColor)}`
   }
 
+  get hasPrinterConfig (): boolean | undefined {
+    const configFiles: readonly Moonraker.Files.RootFile[] | undefined = this.$typedGetters['files/getRootFiles']('config')
+    const configRoot: Moonraker.Files.RootInfoWithPath | undefined = this.$typedGetters['files/getRootDetails']('config')
+    const printerConfigFile: string | undefined = this.$typedState.printer.info?.config_file
+
+    console.log('hasPrinterConfig', {
+      configFiles,
+      configRoot,
+      printerConfigFile
+    })
+
+    if (
+      configFiles &&
+      configRoot &&
+      printerConfigFile
+    ) {
+      const relativePrinterConfigFile = printerConfigFile.startsWith(configRoot.path)
+        ? printerConfigFile.substring(configRoot.path.length + 1)
+        : printerConfigFile
+
+      return configFiles
+        .some(file => file.path === relativePrinterConfigFile)
+    }
+  }
+
+  get fluiddThemeMoonrakerPathContent (): MoonrakerPathContent | undefined {
+    return this.$typedState.files.pathContent['config/.fluidd-theme']
+  }
+
   get customStyleSheet (): string | undefined {
-    return this.$typedGetters['config/getCustomThemeFile']('custom', ['.css'])
+    return this.fluiddThemeMoonrakerPathContent?.files.find(file => file.filename === 'custom.css')?.filename
   }
 
   @Watch('customStyleSheet')
@@ -289,7 +325,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
       return
     }
 
-    const url = await this.createFileUrlWithToken(value, 'config')
+    const url = await this.createFileUrlWithToken(`.fluidd-theme/${value}`, 'config')
 
     const oldCustomStylesheet = document.getElementById('customStylesheet')
 
@@ -309,7 +345,10 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get customBackgroundImage (): string | undefined {
-    return this.$typedGetters['config/getCustomThemeFile']('background', ['.png', '.jpg', '.jpeg', '.gif'])
+    const filenames = ['png', 'jpg', 'jpeg', 'gif']
+      .map(extension => `background.${extension}`)
+
+    return this.fluiddThemeMoonrakerPathContent?.files.find(file => filenames.includes(file.filename))?.filename
   }
 
   @Watch('customBackgroundImage')
@@ -318,7 +357,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
       return
     }
 
-    const url = await this.createFileUrlWithToken(value, 'config')
+    const url = await this.createFileUrlWithToken(`.fluidd-theme/${value}`, 'config')
 
     this.customBackgroundImageStyle = {
       backgroundImage: `url(${url})`,
