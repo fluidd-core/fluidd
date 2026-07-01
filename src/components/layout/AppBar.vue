@@ -52,6 +52,7 @@
               class="mx-1"
               color="error"
               rounded
+              :aria-label="$t('app.general.tooltip.estop')"
               v-on="on"
               @click="emergencyStop()"
             >
