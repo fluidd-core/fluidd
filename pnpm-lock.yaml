@@ -89,9 +89,6 @@ importers:
       panzoom:
         specifier: ^9.4.4
         version: 9.4.4
-      path-browserify:
-        specifier: ^1.0.1
-        version: 1.0.1
       qr-scanner:
         specifier: ^1.4.2
         version: 1.4.2
