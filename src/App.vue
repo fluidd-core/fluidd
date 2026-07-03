@@ -27,14 +27,16 @@
 
     <v-btn
       v-if="isMobileViewport && socketReady"
-      x-small
       fab
       fixed
       bottom
       left
+      width="36"
+      height="36"
       class="ml-2 mb-2"
       color="error"
       style="z-index: 2000"
+      :aria-label="$t('app.general.tooltip.estop')"
       @click="emergencyStop()"
     >
       <v-icon>$estop</v-icon>
