@@ -211,12 +211,8 @@
                       class="mr-2"
                       style="min-width: 0; width: 16px; height: 16px; padding: 0;"
                     />
-                    <span class="text-uppercase font-weight-bold mr-2">
-                      {{ option.lane }}
-                    </span>
-                    <span class="text--secondary text-body-2 mr-1">
-                      {{ option.material }}
-                    </span>
+                    <span class="text-uppercase font-weight-bold mr-2">{{ option.lane }}</span>
+                    <span class="text--secondary text-body-2 mr-1">{{ option.material }}</span>
                     <span
                       v-if="option.weight > 0"
                       class="text--secondary text-body-2"
@@ -234,9 +230,7 @@
                   </v-list-item-title>
                 </template>
                 <div v-if="option.spoolId != null">
-                  <div>
-                    {{ $t('app.afc.PrintStartDialog.SpoolId', { id: option.spoolId }) }}
-                  </div>
+                  <div>{{ $t('app.afc.PrintStartDialog.SpoolId', { id: option.spoolId }) }}</div>
                   <div>
                     {{ option.vendorName }} — {{ option.filamentName }}
                   </div>
@@ -342,22 +336,26 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
     })
   }
 
-  get laneSpoolId (): number | undefined {
+  get laneInfo (): Klipper.AfcSpoolLaneInfo | undefined {
     if (!this.laneName) return undefined
-    return this.getAfcLaneObject(this.laneName)?.spool_id ?? undefined
+
+    return this.getAfcLaneInfo(this.laneName)
+  }
+
+  get laneSpoolId (): number | undefined {
+    return this.laneInfo?.spoolId
   }
 
   get laneSpool () {
-    if (!this.laneSpoolId) return null
-    return this.$typedGetters['spoolman/getSpoolById'](this.laneSpoolId) ?? null
+    return this.laneInfo?.spool ?? null
   }
 
   get laneSpoolVendorName (): string {
-    return this.laneSpool?.filament?.vendor?.name ?? this.$t('app.afc.Unknown') as string
+    return this.laneInfo?.filamentVendor ?? this.$t('app.afc.Unknown') as string
   }
 
   get laneSpoolFilamentName (): string {
-    return this.laneSpool?.filament?.name ?? this.$t('app.afc.Unknown') as string
+    return this.laneInfo?.filamentName ?? this.$t('app.afc.Unknown') as string
   }
 
   get hasLaneTooltipContent (): boolean {
@@ -368,16 +366,13 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
   }
 
   get laneFilament (): FilamentInfo | undefined {
-    if (!this.laneName) return undefined
-
-    const lane = this.getAfcLaneObject(this.laneName)
-    const spool = this.laneSpool
+    if (!this.laneName || !this.laneInfo) return undefined
 
     return {
-      color: (spool?.filament?.color_hex ? `#${spool.filament.color_hex.replace(/^#/, '')}` : lane?.color) ?? '',
-      name: spool?.filament_name ?? '--',
-      material: spool?.filament?.material || lane?.material || '--',
-      weight: Number(spool?.remaining_weight ?? lane?.weight ?? 0)
+      color: this.laneInfo.color,
+      name: this.laneInfo.filamentName ?? '--',
+      material: this.laneInfo.material || '--',
+      weight: Number(this.laneInfo.remainingWeight ?? 0)
     }
   }
 
@@ -431,30 +426,22 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
 
   get laneOptions (): LaneOption[] {
     return this.afcLanes.map(lane => {
-      const laneObj = this.getAfcLaneObject(lane)
-      const spoolId = laneObj?.spool_id ?? undefined
-      const spool = spoolId ? (this.$typedGetters['spoolman/getSpoolById'](spoolId) ?? null) : null
-
-      const color = spool?.filament?.color_hex
-        ? `#${spool.filament.color_hex.replace(/^#/, '')}`
-        : (laneObj?.color ?? undefined)
-
-      const weight = Number(spool?.remaining_weight ?? laneObj?.weight ?? 0)
-
-      const material = spool?.filament?.material || laneObj?.material || '--'
-      const hasContent = spool != null || material !== '--' || weight > 0
+      const info = this.getAfcLaneInfo(lane)
+      const material = info.material || '--'
+      const weight = Number(info.remainingWeight ?? 0)
+      const hasContent = info.spool != null || material !== '--' || weight > 0
 
       return {
         lane,
-        spoolId: spool?.id ?? null,
-        color,
+        spoolId: info.spoolId ?? null,
+        color: info.color,
         material,
-        vendorName: spool?.filament?.vendor?.name ?? this.$t('app.afc.Unknown') as string,
-        filamentName: spool?.filament?.name ?? this.$t('app.afc.Unknown') as string,
-        extruderTemp: spool?.filament?.settings_extruder_temp,
-        bedTemp: spool?.filament?.settings_bed_temp,
+        vendorName: info.filamentVendor ?? this.$t('app.afc.Unknown') as string,
+        filamentName: info.filamentName ?? this.$t('app.afc.Unknown') as string,
+        extruderTemp: info.extruderTemp,
+        bedTemp: info.bedTemp,
         weight,
-        usedWeight: Number(spool?.used_weight ?? 0),
+        usedWeight: Number(info.usedWeight ?? 0),
         hasContent
       }
     })
