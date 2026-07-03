@@ -133,31 +133,22 @@ export default class PrinterStatusCard extends Mixins(StateMixin, AfcMixin) {
   }
 
   handlePrint (filename: string) {
+    const { rootPath, filename: filenameOnly } = getFilePaths(filename, 'gcodes')
+    const fileWithMeta = this.$typedGetters['files/getFile'](rootPath, filenameOnly)
+
     // AFC check — show lane mapping dialog when AFC is installed. If metadata
     // is not yet loaded we open the dialog anyway (it will fetch on open);
     // if metadata is loaded we only show it for multi-tool prints.
-    if (this.afc != null) {
-      const { rootPath, filename: filenameOnly } = getFilePaths(filename, 'gcodes')
-      const fileWithMeta = this.$typedGetters['files/getFile'](rootPath, filenameOnly)
+    if (this.shouldShowAfcDialog(fileWithMeta)) {
+      this.$typedCommit('afc/setDialogState', {
+        show: true,
+        filename
+      })
 
-      const hasMetadata = fileWithMeta != null && 'filament_weights' in fileWithMeta
-      const filamentWeights: number[] = hasMetadata ? (fileWithMeta.filament_weights ?? []) : []
-      const usedTools = filamentWeights.filter((w: number) => w > 0)
-
-      if (!hasMetadata || usedTools.length > 0) {
-        this.$typedCommit('afc/setDialogState', {
-          show: true,
-          filename
-        })
-
-        return
-      }
+      return
     }
 
     if (this.$typedState.printer.printer.mmu?.enabled === true) {
-      const { rootPath, filename: filenameOnly } = getFilePaths(filename, 'gcodes')
-      const fileWithMeta = this.$typedGetters['files/getFile'](rootPath, filenameOnly)
-
       if (fileWithMeta != null && 'referenced_tools' in fileWithMeta) {
         const mmuPrint = (fileWithMeta.referenced_tools?.length ?? 1) > 1 || this.$typedState.printer.printer.mmu.gate !== -2
 

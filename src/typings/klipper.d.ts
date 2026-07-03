@@ -1812,5 +1812,6 @@ declare namespace Klipper {
     extruderTemp: number | undefined;
     bedTemp: number | undefined;
     spoolUrl: string | undefined;
+    filamentLoaded: boolean | undefined;
   }
 }

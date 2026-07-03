@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import type { Spool } from '@/store/spoolman/types'
+import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 
 @Component
 export default class AfcMixin extends Vue {
@@ -174,25 +175,29 @@ export default class AfcMixin extends Vue {
     const spoolUrl = spoolmanBase && spoolId
       ? `${spoolmanBase.replace(/\/$/, '')}/spool/show/${spoolId}`
       : undefined
-    const usedWeight = spool?.used_weight ??
-      (fullWeight != null && remainingWeight != null
-        ? fullWeight - remainingWeight
-        : undefined)
 
     return {
       spoolId,
       spool,
       color,
       material,
-      filamentVendor: spool?.filament?.vendor?.name,
+      filamentVendor: spool?.filament?.vendor?.name ?? undefined,
       filamentName: spool?.filament?.name || laneObj?.filament_name || undefined,
       remainingWeight,
       fullWeight,
       spoolPercent,
-      usedWeight,
-      extruderTemp: spool?.filament?.settings_extruder_temp,
-      bedTemp: spool?.filament?.settings_bed_temp,
-      spoolUrl
+      usedWeight: spool?.used_weight ?? undefined,
+      extruderTemp: spool?.filament?.settings_extruder_temp ?? laneObj?.extruder_temp ?? undefined,
+      bedTemp: spool?.filament?.settings_bed_temp ?? undefined,
+      spoolUrl,
+      filamentLoaded: laneObj ? (laneObj?.prep && laneObj?.load) : undefined
     }
+  }
+
+  shouldShowAfcDialog (fileWithMeta: AppFileWithMeta | AppFile | undefined): boolean {
+    if (this.afc == null) return false
+    const hasMetadata = fileWithMeta != null && 'filament_weights' in fileWithMeta
+    const usedTools = hasMetadata ? (fileWithMeta!.filament_weights ?? []).filter(w => w > 0) : []
+    return !hasMetadata || usedTools.length > 0
   }
 }

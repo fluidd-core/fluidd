@@ -937,19 +937,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     // AFC check — show lane mapping dialog when AFC is installed. If metadata
     // is not yet loaded we open the dialog anyway (it will fetch on open);
     // if metadata is loaded we only show it for multi-tool prints.
-    if (this.afc != null) {
-      const hasMetadata = 'filament_weights' in file
-      const filamentWeights: number[] = hasMetadata ? (file.filament_weights ?? []) : []
-      const usedTools = filamentWeights.filter(w => w > 0)
+    if (this.shouldShowAfcDialog(file)) {
+      this.$typedCommit('afc/setDialogState', {
+        show: true,
+        filename
+      })
 
-      if (!hasMetadata || usedTools.length > 0) {
-        this.$typedCommit('afc/setDialogState', {
-          show: true,
-          filename
-        })
-
-        return
-      }
+      return
     }
 
     if (this.$typedState.printer.printer.mmu?.enabled === true) {

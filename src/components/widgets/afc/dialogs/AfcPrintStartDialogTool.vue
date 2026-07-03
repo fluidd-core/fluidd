@@ -378,14 +378,15 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
 
   get isFilamentTypeValid (): boolean {
     if (!this.laneFilament) return false
-    if (this.fileFilament.material === '--' || this.laneFilament.material === '--') return true
+    if (this.fileFilament.material === '--' || this.laneFilament.material === '--') return false
 
-    return this.fileFilament.material.toLowerCase() === this.laneFilament.material.toLowerCase()
+    const laneMaterialLower = this.laneFilament.material.toLowerCase()
+
+    return laneMaterialLower.includes(this.fileFilament.material.toLowerCase())
   }
 
   get isFilamentWeightValid (): boolean {
     if (!this.laneFilament) return false
-    if (this.fileFilament.weight === 0 || this.laneFilament.weight === 0) return true
 
     return this.fileFilament.weight <= this.laneFilament.weight
   }
@@ -397,6 +398,15 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
       warnings.push(
         this.$t('app.afc.PrintStartDialog.NoLaneMapped', {
           tool: this.toolName
+        }) as string
+      )
+      return warnings
+    }
+
+    if (!this.laneInfo?.filamentLoaded) {
+      warnings.push(
+        this.$t('app.afc.PrintStartDialog.NoFilamentLoaded', {
+          lane: this.laneName
         }) as string
       )
       return warnings
