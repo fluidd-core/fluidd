@@ -202,8 +202,6 @@ import {
   mdiArrowUpBold,
   mdiDockTop,
   mdiDockBottom,
-  mdiTriangle,
-  mdiTriangleDown,
 } from '@mdi/js'
 
 import {
@@ -464,8 +462,8 @@ export const Icons = Object.freeze({
   contentCopy: mdiContentCopy,
   apps: mdiApps,
   shieldAccount: mdiShieldAccount,
-  retract: mdiTriangle,
-  extrude: mdiTriangleDown,
+  retract: mdiArrowUpBold,
+  extrude: mdiArrowDownBold,
   codeJson: mdiCodeJson,
   desktopTower: mdiDesktopTower,
   harddisk: mdiHarddisk,
