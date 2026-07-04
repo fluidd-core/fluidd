@@ -93,12 +93,12 @@ export default class AfcPrintStartDialog extends Mixins(StateMixin, AfcMixin, Fi
     if (this.activeSpool) {
       return this.$t('app.afc.PrintStartDialog.QuestionWithSpool', {
         filename: this.shortFilename
-      }) as string
+      }).toString()
     }
 
     return this.$t('app.afc.PrintStartDialog.Question', {
       filename: this.shortFilename
-    }) as string
+    }).toString()
   }
 
   get thumbnailUrl (): string {

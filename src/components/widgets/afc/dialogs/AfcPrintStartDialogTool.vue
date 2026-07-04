@@ -351,11 +351,11 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
   }
 
   get laneSpoolVendorName (): string {
-    return this.laneInfo?.filamentVendor ?? this.$t('app.afc.Unknown') as string
+    return this.laneInfo?.filamentVendor ?? this.$t('app.afc.Unknown').toString()
   }
 
   get laneSpoolFilamentName (): string {
-    return this.laneInfo?.filamentName ?? this.$t('app.afc.Unknown') as string
+    return this.laneInfo?.filamentName ?? this.$t('app.afc.Unknown').toString()
   }
 
   get hasLaneTooltipContent (): boolean {
@@ -398,7 +398,7 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
       warnings.push(
         this.$t('app.afc.PrintStartDialog.NoLaneMapped', {
           tool: this.toolName
-        }) as string
+        }).toString()
       )
       return warnings
     }
@@ -407,7 +407,7 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
       warnings.push(
         this.$t('app.afc.PrintStartDialog.NoFilamentLoaded', {
           lane: this.laneName
-        }) as string
+        }).toString()
       )
       return warnings
     }
@@ -417,7 +417,7 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
         this.$t('app.afc.PrintStartDialog.FilamentTypeMismatch', {
           file: this.fileFilament.material,
           lane: this.laneFilament?.material ?? '--'
-        }) as string
+        }).toString()
       )
     }
 
@@ -427,7 +427,7 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
           lane: this.laneName,
           required: this.$filters.getReadableWeightString(this.fileFilament.weight),
           available: this.$filters.getReadableWeightString(this.laneFilament?.weight ?? 0)
-        }) as string
+        }).toString()
       )
     }
 
@@ -446,8 +446,8 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
         spoolId: info.spoolId ?? null,
         color: info.color,
         material,
-        vendorName: info.filamentVendor ?? this.$t('app.afc.Unknown') as string,
-        filamentName: info.filamentName ?? this.$t('app.afc.Unknown') as string,
+        vendorName: info.filamentVendor ?? this.$t('app.afc.Unknown').toString(),
+        filamentName: info.filamentName ?? this.$t('app.afc.Unknown').toString(),
         extruderTemp: info.extruderTemp,
         bedTemp: info.bedTemp,
         weight,
