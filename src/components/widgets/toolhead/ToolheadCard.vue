@@ -12,7 +12,7 @@
       </v-icon>
       <span class="font-weight-light">{{ $t('app.general.title.tool') }}</span>
 
-      <template v-if="hasExtruder">
+      <template v-if="klippyReady && hasExtruder">
         <v-tooltip
           v-if="extruderDisconnected"
           bottom
@@ -49,7 +49,7 @@
         </v-tooltip>
 
         <v-tooltip
-          v-if="extruderMovementDirection"
+          v-else-if="extruderMovementDirection"
           bottom
         >
           <template #activator="{ on, attrs }">
