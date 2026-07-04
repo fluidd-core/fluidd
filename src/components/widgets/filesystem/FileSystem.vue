@@ -936,7 +936,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     // AFC check — show lane mapping dialog when AFC is installed. If metadata
     // is not yet loaded we open the dialog anyway (it will fetch on open);
-    // if metadata is loaded we only show it for multi-tool prints.
+    // if metadata is loaded, this panel should show for both single-color
+    // and multi-color prints to allow the user to remap lanes(if needed)
+    // before starting their print.
     if (this.shouldShowAfcDialog(file)) {
       this.$typedCommit('afc/setDialogState', {
         show: true,
