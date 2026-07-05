@@ -65,8 +65,6 @@
         />
       </v-tab-item>
     </v-tabs-items>
-
-    <afc-print-start-dialog v-if="afc != null" />
   </collapsable-card>
 </template>
 
@@ -78,7 +76,6 @@ import AfcMixin from '@/mixins/afc'
 import StatusControls from './StatusControls.vue'
 import StatusTab from './StatusTab.vue'
 import ReprintTab from './ReprintTab.vue'
-import AfcPrintStartDialog from '@/components/widgets/afc/dialogs/AfcPrintStartDialog.vue'
 import type { TimeEstimates } from '@/store/printer/types'
 import getFilePaths from '@/util/get-file-paths'
 
@@ -86,8 +83,7 @@ import getFilePaths from '@/util/get-file-paths'
   components: {
     StatusControls,
     StatusTab,
-    ReprintTab,
-    AfcPrintStartDialog
+    ReprintTab
   }
 })
 export default class PrinterStatusCard extends Mixins(StateMixin, AfcMixin) {

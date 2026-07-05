@@ -135,8 +135,6 @@
       :root="currentRoot"
       @path-change="loadFiles"
     />
-
-    <afc-print-start-dialog v-if="afc != null" />
   </v-card>
 </template>
 
@@ -155,7 +153,6 @@ import FileEditorDialog from './FileEditorDialog.vue'
 import FileNameDialog from './FileNameDialog.vue'
 import FileSystemGoToFileDialog from './FileSystemGoToFileDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
-import AfcPrintStartDialog from '@/components/widgets/afc/dialogs/AfcPrintStartDialog.vue'
 import AfcMixin from '@/mixins/afc'
 import type { AppDataTableHeader, FileWithPath } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
@@ -179,8 +176,7 @@ import type { KlipperSaveAndRestartAction } from '@/store/config/types'
     FileEditorDialog,
     FileNameDialog,
     FileSystemGoToFileDialog,
-    FilePreviewDialog,
-    AfcPrintStartDialog
+    FilePreviewDialog
   }
 })
 export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin, AfcMixin) {
