@@ -80,7 +80,7 @@
       text-anchor="middle"
       class="small-text-color"
       font-size="11px"
-    >FLOW</text>
+    >{{ $t('app.mmu.label.flow') }}</text>
     <text
       x="70"
       y="80"
@@ -96,7 +96,7 @@
       class="small-text-color"
       font-size="12px"
     >
-      Auto
+      {{ $t('app.setting.label.auto') }}
     </text>
     <text
       x="32"

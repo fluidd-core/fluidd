@@ -280,7 +280,7 @@
           x="278"
           y="55"
           :class="{ 'text-disabled': !isSensorEnabled('mmu_pre_gate') }"
-        >Pre-Gate</text>
+        >{{ $t('app.mmu.label.pre_gate') }}</text>
       </g>
 
       <g v-if="hasSensor('mmu_gear')">
@@ -295,7 +295,7 @@
           x="278"
           y="85"
           :class="{ 'text-disabled': !isSensorEnabled('mmu_gear') }"
-        >Gear</text>
+        >{{ $t('app.mmu.label.gear') }}</text>
         <text
           v-if="homedToGear"
           x="219.5"
@@ -343,7 +343,7 @@
         <text
           x="278"
           y="145"
-        >Encoder</text>
+        >{{ $t('app.mmu.label.encoder') }}</text>
         <text
           x="345"
           y="145"
@@ -371,7 +371,7 @@
           x="278"
           y="325"
           :class="{ 'text-disabled': !isSensorEnabled('extruder') }"
-        >Extruder</text>
+        >{{ $t('app.mmu.label.extruder') }}</text>
         <transition name="fade">
           <text
             v-if="homedToExtruder"
@@ -403,7 +403,7 @@
           x="278"
           y="355"
           :class="{ 'text-disabled': !isSensorEnabled('toolhead') }"
-        >Toolhead</text>
+        >{{ $t('app.mmu.label.toolhead') }}</text>
         <transition name="fade">
           <text
             v-if="homedToToolhead"
@@ -447,7 +447,7 @@
                 x="298"
                 y="240"
               >
-                Neutral
+                {{ $t('app.mmu.label.neutral') }}
               </text>
               <use
                 xlink:href="#sync-feedback"
@@ -462,7 +462,7 @@
                 x="298"
                 y="240"
               >
-                Tension
+                {{ $t('app.mmu.label.tension') }}
               </text>
               <use
                 xlink:href="#sync-feedback"
@@ -481,7 +481,7 @@
                 x="298"
                 y="240"
               >
-                Compression
+                {{ $t('app.mmu.label.compression') }}
               </text>
               <use
                 xlink:href="#sync-feedback"

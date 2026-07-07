@@ -242,8 +242,8 @@ export default class MmuMixin extends Vue {
     const gd: MmuGateDetails = {
       index: -1,
       status: -1,
-      filamentName: 'No active spool',
-      material: 'Unknown',
+      filamentName: this.$tc('app.mmu.msg.no_active_spool'),
+      material: this.$tc('app.mmu.label.unknown'),
       color: '',
       temperature: -1,
       spoolId: -1,
@@ -257,14 +257,14 @@ export default class MmuMixin extends Vue {
 
       if (this.gate === gateIndex) {
         const activeSpool = this.$typedGetters['spoolman/getActiveSpool']
-        gd.filamentName = activeSpool?.filament?.name ?? 'No active spool'
-        gd.material = activeSpool?.filament?.material ?? 'Unknown'
+        gd.filamentName = activeSpool?.filament?.name ?? this.$tc('app.mmu.msg.no_active_spool')
+        gd.material = activeSpool?.filament?.material ?? this.$tc('app.mmu.label.unknown')
         gd.color = this.fromColorString(activeSpool?.filament?.color_hex ?? null)
         gd.temperature = activeSpool?.filament?.settings_extruder_temp ?? -1
         gd.spoolId = activeSpool?.id ?? -1
       } else {
-        gd.filamentName = 'Unknown'
-        gd.material = 'Unknown'
+        gd.filamentName = this.$tc('app.mmu.label.unknown')
+        gd.material = this.$tc('app.mmu.label.unknown')
         gd.color = this.fromColorString(null)
         gd.temperature = -1
         gd.spoolId = -1
@@ -274,8 +274,8 @@ export default class MmuMixin extends Vue {
     } else {
       gd.index = gateIndex
       gd.status = this.mmuState?.gate_status?.[gateIndex] ?? -1
-      gd.filamentName = this.mmuState?.gate_filament_name?.[gateIndex] || 'Unknown'
-      gd.material = this.mmuState?.gate_material?.[gateIndex] || 'Unknown'
+      gd.filamentName = this.mmuState?.gate_filament_name?.[gateIndex] || this.$tc('app.mmu.label.unknown')
+      gd.material = this.mmuState?.gate_material?.[gateIndex] || this.$tc('app.mmu.label.unknown')
       gd.color = this.fromColorString(this.mmuState?.gate_color[gateIndex] ?? '')
       gd.temperature = this.mmuState?.gate_temperature?.[gateIndex] ?? -1
       gd.spoolId = this.mmuState?.gate_spool_id?.[gateIndex] ?? -1
@@ -303,9 +303,9 @@ export default class MmuMixin extends Vue {
   toolDetails (toolIndex: number, file?: AppFileWithMeta | null): SlicerToolDetails {
     const td: SlicerToolDetails = {
       color: '',
-      material: 'Unknown',
+      material: this.$tc('app.mmu.label.unknown'),
       temp: -1,
-      name: 'Unknown',
+      name: this.$tc('app.mmu.label.unknown'),
       inUse: false
     }
 
@@ -328,11 +328,11 @@ export default class MmuMixin extends Vue {
       const colors = c1.length === 0 || c1.every((c: string) => c === '') ? c2 : c1
       td.color = colors.length > toolIndex ? this.fromColorString(colors[toolIndex]) : this.fromColorString('')
       const materials = file.filament_type ?? []
-      td.material = materials.length > toolIndex ? materials[toolIndex] : 'Unknown'
+      td.material = materials.length > toolIndex ? materials[toolIndex] : this.$tc('app.mmu.label.unknown')
       const temps = file.filament_temps ?? []
       td.temp = temps.length > toolIndex ? temps[toolIndex] : -1
       const names = file.filament_name ?? []
-      td.name = names.length > toolIndex ? names[toolIndex] : 'Unknown'
+      td.name = names.length > toolIndex ? names[toolIndex] : this.$tc('app.mmu.label.unknown')
       const referencedTools = file.referenced_tools ?? []
       td.inUse = referencedTools?.includes(toolIndex) ?? false
     } else {
@@ -340,9 +340,9 @@ export default class MmuMixin extends Vue {
       td.color = this.fromColorString(
         this.mmuState?.slicer_tool_map?.tools?.[toolIndex]?.color ?? ''
       )
-      td.material = this.mmuState?.slicer_tool_map?.tools?.[toolIndex]?.material || 'Unknown'
+      td.material = this.mmuState?.slicer_tool_map?.tools?.[toolIndex]?.material || this.$tc('app.mmu.label.unknown')
       td.temp = this.mmuState?.slicer_tool_map?.tools?.[toolIndex]?.temp ?? -1
-      td.name = this.mmuState?.slicer_tool_map?.tools?.[toolIndex]?.name || 'Unknown'
+      td.name = this.mmuState?.slicer_tool_map?.tools?.[toolIndex]?.name || this.$tc('app.mmu.label.unknown')
       td.inUse = this.mmuState?.slicer_tool_map?.tools?.[toolIndex]?.in_use || false
     }
     return td
@@ -441,11 +441,11 @@ export default class MmuMixin extends Vue {
      * Optional printer variables based on selector type
      */
   get servo (): string {
-    return this.mmuState?.servo ?? 'Unknown'
+    return this.mmuState?.servo ?? this.$tc('app.mmu.label.unknown')
   }
 
   get grip (): string {
-    return this.mmuState?.grip ?? 'Unknown'
+    return this.mmuState?.grip ?? this.$tc('app.mmu.label.unknown')
   }
 
   /*
