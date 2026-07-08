@@ -26,7 +26,7 @@
             >
               $tools
             </v-icon>
-            {{ $t('app.tool.tooltip.tools') }}
+            {{ $t('app.mmu.label.tools') }}
             <v-icon
               small
               class="ms-1"

@@ -1266,6 +1266,7 @@ app:
       tension: Tension
       tool: Tool
       toolhead: Toolhead
+      tools: Tools
     tooltip:
       empty: Empty
       color: Color
