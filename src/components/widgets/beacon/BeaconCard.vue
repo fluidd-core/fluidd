@@ -95,7 +95,7 @@
         v-if="beaconModels.length === 0"
         class="mb-4"
       >
-        No existing beacon models found
+        {{ $t('app.beacon.msg.not_found') }}
       </div>
       <v-row>
         <v-col cols="6">

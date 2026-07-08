@@ -497,6 +497,8 @@ app:
       fluidd_settings_backup_failed: Failed to backup Fluidd settings!
       fluidd_settings_restore_failed: Failed to restore Fluidd settings!
       gcode_preview_failed: Failed to preview G-code file!
+      throttled_warning: This may lead to a throttle condition and result in
+        a failed print
     simple_form:
       error:
         arrayofnums: Only numbers
@@ -1246,6 +1248,27 @@ app:
       drying_queued: Drying queued
       drying_complete: Drying complete
       drying_cancelled: Drying cancelled
+      active: ACTIVE
+      auto: Auto
+      bypass: BYPASS
+      clog: CLOG
+      compression: Compression
+      encoder: Encoder
+      entry: Entry
+      exit: Exit
+      extruder: Extruder
+      filament_position: Filament Position
+      flow: FLOW
+      gear: Gear
+      last_error: Last Error
+      neutral: Neutral
+      pre_gate: Pre-Gate
+      status: Status
+      tangle: TANGLE
+      tension: Tension
+      tool: Tool
+      toolhead: Toolhead
+      tools: Tools
     tooltip:
       empty: Empty
       color: Color
