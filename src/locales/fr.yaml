@@ -1216,6 +1216,7 @@ app:
   mmu:
     label:
       active: ACTIF
+      auto: Auto
       bypass: BYPASS
       clog: BOUCHON
       compression: Compression
@@ -1230,8 +1231,10 @@ app:
       last_error: Dernière erreur
       neutral: Neutre
       pre_gate: Pre-Gate
+      status: Statut
       tangle: NŒUD
       tension: Tension
+      tool: Outil
       toolhead: Tête outil
       unknown: Inconnu
       all_tools: Tous les outils

@@ -207,7 +207,7 @@ export default class MmuFlowguardMeter extends Mixins(StateMixin, MmuMixin) {
       const flowRate = this.mmuState?.sync_feedback_flow_rate ?? 100.0
       return `${Math.round(flowRate)}%`
     }
-    return this.$tc('app.mmu.label.active')
+    return this.$t('app.mmu.label.active').toString()
   }
 
   get flowrateTextSize (): string {

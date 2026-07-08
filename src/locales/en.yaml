@@ -1247,6 +1247,7 @@ app:
       drying_complete: Drying complete
       drying_cancelled: Drying cancelled
       active: ACTIVE
+      auto: Auto
       bypass: BYPASS
       clog: CLOG
       compression: Compression
@@ -1260,8 +1261,10 @@ app:
       last_error: Last Error
       neutral: Neutral
       pre_gate: Pre-Gate
+      status: Status
       tangle: TANGLE
       tension: Tension
+      tool: Tool
       toolhead: Toolhead
     tooltip:
       empty: Empty

@@ -384,7 +384,7 @@
             :class="{ 'disabled-row': !hasLedsOfType('status') }"
           >
             <v-col class="col-4 d-flex justify-end align-center pr-6">
-              {{ $t('app.general.table.header.status') }}
+              {{ $t('app.mmu.label.status') }}
             </v-col>
             <v-col class="col-8 d-flex align-center">
               <v-select

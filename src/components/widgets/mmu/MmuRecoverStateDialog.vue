@@ -18,7 +18,7 @@
         <v-col class="col-5 d-flex justify-center">
           <v-row class="d-flex flex-row">
             <v-col class="d-flex justify-center flex-column">
-              <span class="settings-row-title">{{ $t('app.general.title.tool') }}</span>
+              <span class="settings-row-title">{{ $t('app.mmu.label.tool') }}</span>
               <span class="settings-row-subtitle">
                 {{ $t('app.mmu.msg.set_tool') }}
               </span>

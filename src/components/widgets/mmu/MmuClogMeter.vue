@@ -96,7 +96,7 @@
       class="small-text-color"
       font-size="12px"
     >
-      {{ $t('app.setting.label.auto') }}
+      {{ $t('app.mmu.label.auto') }}
     </text>
     <text
       x="32"
