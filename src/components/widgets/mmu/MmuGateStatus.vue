@@ -36,7 +36,7 @@
       font-size="20px"
       :fill="fontColor"
     >
-      BYPASS
+      {{ $t('app.mmu.label.bypass') }}
     </text>
   </svg>
 </template>

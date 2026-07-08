@@ -156,7 +156,7 @@
       class="small-text-color"
       font-size="12px"
     >
-      TANGLE
+      {{ $t('app.mmu.label.tangle') }}
     </text>
     <text
       x="86"
@@ -164,7 +164,7 @@
       class="small-text-color"
       font-size="12px"
     >
-      CLOG
+      {{ $t('app.mmu.label.clog') }}
     </text>
   </svg>
 </template>
@@ -207,7 +207,7 @@ export default class MmuFlowguardMeter extends Mixins(StateMixin, MmuMixin) {
       const flowRate = this.mmuState?.sync_feedback_flow_rate ?? 100.0
       return `${Math.round(flowRate)}%`
     }
-    return 'ACTIVE'
+    return this.$t('app.mmu.label.active').toString()
   }
 
   get flowrateTextSize (): string {
