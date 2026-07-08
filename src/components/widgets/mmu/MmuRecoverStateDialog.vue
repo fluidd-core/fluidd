@@ -18,7 +18,7 @@
         <v-col class="col-5 d-flex justify-center">
           <v-row class="d-flex flex-row">
             <v-col class="d-flex justify-center flex-column">
-              <span class="settings-row-title">Tool</span>
+              <span class="settings-row-title">{{ $t('app.mmu.label.tool') }}</span>
               <span class="settings-row-subtitle">
                 {{ $t('app.mmu.msg.set_tool') }}
               </span>
@@ -41,7 +41,7 @@
         <v-col class="col-5 d-flex justify-center">
           <v-row class="d-flex flex-row">
             <v-col class="d-flex justify-center flex-column">
-              <span class="settings-row-title">Gate</span>
+              <span class="settings-row-title">{{ $t('app.mmu.label.gate') }}</span>
               <span class="settings-row-subtitle">
                 {{ $t('app.mmu.msg.set_gate') }}
               </span>
@@ -64,7 +64,7 @@
         <v-col class="col-5 d-flex justify-center">
           <v-row class="d-flex flex-row">
             <v-col class="d-flex justify-center flex-column">
-              <span class="settings-row-title">Filament Position</span>
+              <span class="settings-row-title">{{ $t('app.mmu.label.filament_position') }}</span>
               <span class="settings-row-subtitle">
                 {{ $t('app.mmu.msg.filament_loaded') }}
               </span>

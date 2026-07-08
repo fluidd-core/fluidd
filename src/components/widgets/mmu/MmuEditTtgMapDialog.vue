@@ -101,7 +101,7 @@
                             class="d-flex flex-column no-padding pr-1 pt-2"
                           >
                             <div class="small-font text-center">
-                              Gate
+                              {{ $t('app.mmu.label.gate') }}
                             </div>
                             <div class="text-center">
                               #{{ g }}

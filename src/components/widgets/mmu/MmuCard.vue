@@ -26,7 +26,7 @@
             >
               $tools
             </v-icon>
-            Tools
+            {{ $t('app.mmu.label.tools') }}
             <v-icon
               small
               class="ms-1"
@@ -240,7 +240,7 @@
           <v-col class="d-flex align-center">
             <div>
               <div class="text--secondary">
-                <strong>Last Error</strong>
+                <strong>{{ $t('app.mmu.label.last_error') }}</strong>
               </div>
               <div class="text--disabled smaller-font">
                 {{ reasonForPause }}

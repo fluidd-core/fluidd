@@ -186,7 +186,7 @@ export const actions = {
             let n: AppPushNotification = {
               id: flag,
               title: flag,
-              description: 'This may lead to a throttle condition and result in a failed print',
+              description: i18n.t('app.general.msg.throttled_warning').toString(),
               to: 'https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#frequency-management-and-thermal-control',
               type: (previousEvent) ? 'info' : 'error',
               snackbar: !previousEvent, // Snackbar only if not a previously encountered event.
@@ -211,7 +211,7 @@ export const actions = {
             if (!previousEvent) {
               n = {
                 ...n,
-                description: 'This may lead to a failed print'
+                description: i18n.t('app.printer.msg.possible_print_failure').toString()
               }
             }
 

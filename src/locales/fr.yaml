@@ -24,17 +24,24 @@ app:
       delete: Supprime le profil
       load: Charger le profil
       save: Enregistrer le profil calibré dans 'printer.cfg'
+      download_image: Télécharger l'image du maillage du plateau
   chart:
     label:
-      current: Courant
+      current: Actuel
       item: Élément
       power: Puissance
       target: Cible
       rate_of_change: Changement
+      fan_breakpoints: Paliers du ventilateur
+      target_temperature: Température cible
+      turn_off: Éteindre
     tooltip:
       help: >-
-        Maintenez <kbd>Shift</kbd> pour zoomer.<br />Cliquez sur un élément pour l'afficher.  <br
+        Maintenez <kbd>Shift</kbd> pour zoomer.<br />Cliquez sur un élément pour l'afficher. <br
         />Cliquez sur une puissance pour l'afficher.
+    title:
+      mpc_calibrate: Calibrage MPC {name}
+      pid_calibrate: Calibrage PID {name}
   console:
     label:
       hide_temp_waits: Cacher les messages de température
@@ -49,9 +56,15 @@ app:
         sûr(e) qu'il s'agisse de la bonne adresse ?
       cors_error: Bloqué par la configuration CORS
       cors_note: >-
-        Cela peut signifier que vous devez modifier la configuration de votre moonraker.
+        Cela peut signifier que vous devez modifier la configuration de votre Moonraker.
         Veuillez consulter la documentation sur les configurations multi-imprimantes
         <a href="%{url}" target="_blank">ici</a>
+      mixed_content: Fluidd est servi en HTTPS mais cette adresse utilise HTTP.
+        Les navigateurs bloquent les connexions mixtes (non sécurisées). Utilisez
+        une adresse HTTPS/sécurisée, ou ouvrez Fluidd en HTTP.
+      websocket_failed: Le serveur a répondu en HTTP mais la connexion WebSocket
+        a échoué. Si vous êtes derrière un reverse proxy, assurez-vous qu'il est
+        configuré pour prendre en charge et transmettre les connexions WebSocket.
     hint:
       add_printer: 'Ex : http://fluidd.local'
     msg:
@@ -69,6 +82,8 @@ app:
     msg:
       subtitle: 'Utilisez le bouton d''actualisation pour mettre à jour l''état de
         l''arrêt final.'
+    label:
+      endstop: Fin de course %{name}
   file_system:
     filters:
       label:
@@ -78,6 +93,8 @@ app:
         rolled_log_files: Filtrer les fichiers log rotatifs
         crowsnest_backup_files: Filtrer les fichiers de sauvegarde de Crowsnest
         hidden_files: Filtrer les fichiers et dossiers cachés
+        moonraker_temporary_upload_files: Filtrer les fichiers de téléversement
+          temporaires de Moonraker
     label:
       dir_name: Nom du dossier
       disk_usage: Utilisation du disque
@@ -87,6 +104,7 @@ app:
       transfer_rate: Vitesse de transfert
       uploaded: Téléchargé
       view_section_documentation: "Voir la documentation : '%{section}'"
+      sd_card_info: Informations de la carte SD
     msg:
       not_found: Aucun fichier trouvé
       processing: Traitement en cours
@@ -96,12 +114,13 @@ app:
       download_file: Téléchargement en cours
       rename_dir: Renommer le dossier
       rename_file: Renommer le fichier
-      upload_file: Upload en cours
+      upload_file: Téléversement du fichier | Téléversement des fichiers
       devices: Périphériques
       duplicate_dir: Répertoire des doublons
       duplicate_file: Fichier Dupliqués
       go_to_file: Aller au fichier
       command_palette: Palette de commandes
+      save_as: Enregistrer sous
     tooltip:
       low_on_space: Espace disque limité
       root_disabled: La racine {root} n'est pas disponible. Veuillez vérifier 
@@ -133,7 +152,7 @@ app:
       show_moves: Afficher les déplacements
       show_next_layer: Afficher la couche suivante
       show_previous_layer: Afficher la couche précédente
-      show_retractions: Afficher les rétractations
+      show_retractions: Afficher les rétractions
       exclude_object: Exclure un objet
       parsing_file: Analyse du fichier
       show_current_layer: Afficher la couche actuelle
@@ -143,7 +162,7 @@ app:
         Le fichier "%{filename}" est de %{size}, ce qui peut être coûteux en ressources
         pour votre système. En êtes-vous certain ?
     overlay:
-      drag_file_load: <strong>Glisser</strong> un fichier gcode ici pour le 
+      drag_file_load: <strong>Glisser</strong> un fichier G-code ici pour le 
         charger
   general:
     btn:
@@ -159,8 +178,8 @@ app:
       close: Fermer
       config_reference: Référence de configuration
       download: Télécharger
-      edit: Editer
-      exit_layout: Quitter le mode de mise en page
+      edit: Modifier
+      exit_layout: Quitter le mode disposition
       extrude: Extruder
       flip_layout: Inverser disposition
       heaters_off: Tout éteindre
@@ -169,7 +188,7 @@ app:
       pause: Pause
       preheat: Préchauffer
       presets: Préréglage
-      preview_gcode: Prévisualiser le Gcode
+      preview_gcode: Prévisualiser le G-code
       quad_gantry_level: QGL
       reboot: Redémarrer
       refresh: Rafraîchir
@@ -178,7 +197,7 @@ app:
       rename: Renommer
       reprint: Imprimer à nouveau
       reset_file: Réinitialiser le fichier
-      reset_layout: Remettre la disposition à zéro
+      reset_layout: Réinitialiser la disposition
       restart_firmware: Redémarrer le firmware
       restart_service: Redémarrer %{service}
       restart_service_klipper: Redémarrer Klipper
@@ -186,13 +205,13 @@ app:
       resume: Reprendre
       retract: Rétracter
       save: Enregistrer
-      save_as: Sauvegarder sous
+      save_as: Enregistrer sous
       save_restart: Enregistrer et redémarrer
       send: Envoyer
       set_color: Définir la couleur
       shutdown: Éteindre
       socket_refresh: Forcer le rafraîchissement
-      upload: Téléversé
+      upload: Téléverser
       upload_print: Téléversé & imprimer
       view: Voir
       socket_reconnect: Se reconnecter
@@ -218,16 +237,22 @@ app:
       thumbnail_size: Taille des vignettes
       upload_files: Téléversement de fichiers
       duplicate: Duplicata
-      set_default_layout: Définir en mise en page par défaut
+      set_default_layout: Définir comme disposition par défaut
       multiply: Multiplier
       abort: Abandonner
       accept: Accepter
       go_to_file: Aller au fichier
       recover: Récupérer
       refresh_metadata: Actualiser les métadonnées
-      reset_default_layout: Réinitialisation de la présentation par défaut
+      reset_default_layout: Réinitialiser la disposition par défaut
       return_dashboard: Retour au tableau de bord
       upload_folder: Téléversement du dossier
+      clear: Effacer
+      clear_profile: Effacer le profil
+      perform_time_analysis: Analyser la durée d'impression
+      power_on_printer: Allumer l'imprimante
+      reset_to_default: Rétablir les valeurs par défaut
+      scroll_to_latest: Aller au plus récent
     error:
       app_setup_link: >-
         Les instructions d'installation de Fluidd sont disponibles <a target="_blank"
@@ -236,10 +261,12 @@ app:
       components_config: >-
         La configuration du plugin moonraker est disponible <a target="_blank" href="%{url}">ici.</a>
       failed_components: >-
-        Moonraker a des plugins en échec, veuillez vérifier les logs, mettre à
-        jour la configuration et redémarrer moonraker.
+        Moonraker a des plugins en échec, veuillez vérifier vos journaux, mettre à
+        jour votre configuration et redémarrer Moonraker.
+      printer_powered_off: L'imprimante est actuellement hors tension.<br/><br/>
+        Pour l'allumer, veuillez cliquer sur le bouton à gauche.
     label:
-      accel_to_decel: Accel. à Décel
+      accel_to_decel: Accél. à décél.
       acceleration: Accélération
       add_camera: Ajouter une caméra
       add_preset: Ajouter un pré-réglage
@@ -253,8 +280,8 @@ app:
       confirm: Confirmation
       current_password: Mot de passe actuel
       disabled_while_printing: Désactiver durant l'impression
-      edit_camera: Éditer une caméra
-      edit_preset: Editer le pré-réglage
+      edit_camera: Modifier la caméra
+      edit_preset: Modifier le préréglage
       edit_user: Modifier l'utilisateur
       extrude_length: Longueur d'extrusion
       extrude_speed: Vitesse d'extrusion
@@ -274,9 +301,9 @@ app:
       printers: Imprimantes
       progress: Progression
       requested_speed: Vitesse demandée
-      retract_length: Longueur de retractation
-      retract_speed: Vitesse de rétractation
-      save_as: Sauvegarder sous
+      retract_length: Longueur de rétraction
+      retract_speed: Vitesse de rétraction
+      save_as: Enregistrer sous
       services: Services
       speed: Vitesse
       sqv: Vitesse angle droit
@@ -286,15 +313,15 @@ app:
       total_print_time: Temps total d'impression
       total_print_time_avg: Moy. par impression
       total_time: Temps total
-      total_time_avg: Temps moyen
+      total_time_avg: Moy. par impression
       uncategorized: Non catégorisé
-      unretract_speed: Vitesse de dérétractation
+      unretract_speed: Vitesse de dérétraction
       used: occupé
       velocity: Vélocité
       visible: Visible
       z_offset: Z Offset
       finish_time: Fin
-      unretract_extra_length: Longueur de rétractation supplémentaire
+      unretract_extra_length: Longueur de rétraction supplémentaire
       layer: Couche
       actual_time: Actuel
       file: Fichier
@@ -338,7 +365,7 @@ app:
       manage_accounts: Gérer les comptes
       user_managed_source: Utilisateur géré par %{source} authentification
       pressure_advance: Avance de pression
-      thumbnail_size: Taille de la vignette
+      thumbnail_size: Taille des vignettes
       file_time: Fichier
       bars: Barres
       cross: Croiser
@@ -349,9 +376,23 @@ app:
       username: Nom d'utilisateur
       edit_category: Modifier la catégorie
       stepper_driver: '%{name} Driver'
+      clean_nozzle: Nettoyer la buse
+      connected: Connecté
+      device: Périphérique
+      disconnected: Déconnecté
+      environment_facing: Face à l'environnement
+      length_in_kilometers: Longueur en kilomètres
+      load_filament: Charger le filament
+      no_data: Aucune donnée
+      park_toolhead: Parquer la tête outil
+      time_in_days: Temps en jours
+      toolchange: Changement d'outil
+      unload_filament: Décharger le filament
+      user_facing: Face à l'utilisateur
+      z_hop_height: Hauteur de Z-Hop
     msg:
       password_changed: Mot de passe modifié
-      wrong_password: Oops, il y a eu un problème. Le mot de passe est il 
+      wrong_password: Oups, il y a eu un problème. Le mot de passe est-il 
         correct ?
       pending_configuration_sections_deleted: Les sections suivantes sont 
         marquées pour suppression
@@ -369,10 +410,13 @@ app:
       not_valid_fluidd_backup_file: Fichier de sauvegarde Fluidd non valide !
       fluidd_settings_backup_failed: Échec de la sauvegarde des paramètres 
         Fluidd !
+      throttled_warning: Cela peut provoquer un bridage du système et faire
+        échouer une impression
+      gcode_preview_failed: Échec de l'aperçu du fichier G-code !
     simple_form:
       error:
         arrayofnums: Nombres uniquement
-        exists: Existe déja
+        exists: Existe déjà
         invalid_url: URL invalide
         max: Max %{max}
         min: Min %{min}
@@ -384,7 +428,7 @@ app:
         invalid_expression: Expression invalide
         invalid_aspect: Ratio d'aspect invalide
       msg:
-        confirm: Êtes-vous sûr(e) ?
+        confirm: Êtes-vous sûr(e) ?
         confirm_reboot_host: Êtes-vous sûr(e) ? Ceci va redémarrer le système 
           hôte.
         confirm_shutdown_host: Êtes-vous sûr(e) ? Ceci va éteindre le système 
@@ -417,6 +461,19 @@ app:
         confirm_service_stop: Êtes-vous sûr de vouloir arrêter le service 
           %{name} ?
         no_file_preview: '%{name} ne peut pas être prévisualisé actuellement.'
+        confirm_change_beacon_model: L'imprimante est actuellement occupée. Êtes-vous
+          sûr de vouloir changer de modèle Beacon ?
+        confirm_remove_camera: Êtes-vous sûr de vouloir supprimer la caméra %{name} ?
+        confirm_remove_console_filter: Êtes-vous sûr de vouloir supprimer le filtre
+          de console %{name} ?
+        confirm_remove_macro_category: Êtes-vous sûr de vouloir supprimer la catégorie
+          de macros %{name} ?
+        confirm_remove_printer: Êtes-vous sûr de vouloir supprimer l'imprimante
+          %{name} ?
+        confirm_remove_thermal_preset: Êtes-vous sûr de vouloir supprimer le préréglage
+          thermique %{name} ?
+        confirm_restore_backup: Êtes-vous sûr de vouloir restaurer cette sauvegarde ?
+          Moonraker redémarrera immédiatement après le traitement de cette requête.
     table:
       header:
         actions: Actions
@@ -446,23 +503,36 @@ app:
         time_in_queue: Temps d'attente
         nozzle_diameter: Diamètre de la buse
         time_added: Temps ajouté
+        extruder_colors: Couleurs des extrudeurs
+        filament_change_count: Changements de filament
+        filament_colors: Couleurs du filament
+        filament_temps: Temp. du filament
+        filament_weights: Poids du filament
+        file_processors: Processeurs de fichiers
+        mmu_print: Impression MMU
+        printer_model: Modèle d'imprimante
+        printer_variant: Variante d'imprimante
+        printer_vendor: Fabricant de l'imprimante
+        profile_version: Version du profil
+        referenced_tools: Outils référencés
+        user: Utilisateur
     title:
       add_printer: Ajouter une imprimante
       bedmesh: Maillage du lit
       bedmesh_controls: Options du Bed Mesh
-      camera: Webcam
+      camera: Webcam | Webcams
       config_files: Fichiers de configuration
       configure: Configuration
       console: Console
       endstops: Fin de course
       fans_outputs: Ventilateur & sorties
-      gcode_preview: Prévisualisation du Gcode
+      gcode_preview: Prévisualisation du G-code
       history: Historique des impressions
       home: Tableau de bord
       jobs: Fichiers
       limits: Limites de l'imprimante
       macros: Macros
-      retract: Rétractation Firmware
+      retract: Rétraction firmware
       runout_sensors: Capteurs de filament
       settings: Paramètres
       stats: Statistiques de l'imprimante
@@ -475,19 +545,22 @@ app:
       rollover_logs: Rotation des logs
       not_found: 404 Non trouvé
       diagnostics: Diagnostics
-      edit_chart: Editer le graphique
+      edit_chart: Modifier le graphique
       job_queue: File d'attente
       timelapse: Timelapse
       metrics_explorer: Explorateur de métriques
       other_files: Autres fichiers
       pending_configuration_changes: Attente de changements de configuration en 
         cours
+      beacon: Beacon
+      login: Connexion
+      macro_category_settings: Paramètres de la catégorie de macros
     tooltip:
       estop: Arrêt d'urgence
-      reload_klipper: Recharge la configuration Klipper.
+      reload_klipper: Recharge la configuration Klipper
       reload_restart_klipper: Recharge la configuration Klipper et redémarre les
-        cartes de contrôle.
-      restart_klipper: Redémarre le service système klipper.
+        MCU
+      restart_klipper: Redémarre le service système Klipper
       browse_metrics: Consulter les indicateurs disponibles
       rollover_logs: Rotation des logs
       managed_by_moonraker: Géré par la configuration de votre Moonraker
@@ -500,6 +573,14 @@ app:
         l'extérieur du navigateur pour les téléverser ici<br>Déplacer des 
         fichiers et des dossiers en les glissant-déposant dans des sous-dossiers
         ou ".."
+      exit_layout: Quitter le mode disposition
+      power_on_printer: Met l'imprimante sous tension
+      reset_default_layout: Réinitialiser la disposition par défaut du serveur
+        aux valeurs d'usine
+      reset_layout: Réinitialiser la disposition actuelle sur la disposition par
+        défaut du serveur
+      set_default_layout: Définir la disposition actuelle comme disposition par
+        défaut du serveur
   printer:
     state:
       busy: Occupée
@@ -523,7 +604,7 @@ app:
       add_camera: Ajouter une caméra
       add_thermal_preset: Ajouter un pré-réglage
       add_user: Ajouter un utilisateur
-      reset: RAZ
+      reset: Réinitialiser
       select_theme: Sélectionner le thème
       add_category: Ajouter une catégorie
       add_filter: Ajouter un filtre
@@ -533,12 +614,13 @@ app:
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: Flux MJPEG
-      video: caméra ip
+      video: Caméra IP
       webrtc_camera_streamer: WebRTC (camera-streamer)
       iframe: Page HTTP
       webrtc_go2rtc: WebRTC (go2rtc)
       hlsstream: Flux HLS
       webrtc_mediamtx: WebRTC (MediaMTX)
+      uv4l_mjpeg_stream: Flux UV4L-MJPEG
     label:
       all_off: Tout éteindre
       all_on: Tout allumer
@@ -560,7 +642,7 @@ app:
       flip_horizontal: Retourner horizontalement
       flip_vertical: Retourner verticalement
       fps_target: Nombre d'images par seconde
-      gcode_coords: Utiliser les coordonnées GCode
+      gcode_coords: Utiliser les coordonnées G-code
       invert_x_control: Inverser les contrôles en X
       invert_y_control: Inverser les contrôles en Y
       invert_z_control: Inverser les contrôles en Z
@@ -569,12 +651,12 @@ app:
       primary_color: Couleur primaire
       printer_name: Nom de l'imprimante
       reset: Remettre à zéro
-      retraction_icon_size: Taille de l'icone de rétractation
+      retraction_icon_size: Taille de l'icône de rétraction
       show_animations: Afficher les animations
       theme_preset: Préréglage communautaire
       thermal_preset_name: Nom du pré-réglage
       z_adjust_values: Valeurs de Z Adjust
-      thermal_preset_gcode: GCode
+      thermal_preset_gcode: G-code
       print_eta_calculation: Imprimer le calcul de l'ETA
       print_in_progress_layout: Afficher la progression
       print_progress_calculation: Afficher le calcul de la progression
@@ -668,10 +750,22 @@ app:
       toolhead_xy_move_distances: Valeurs de la distance XY de la tête d'outil
       force_move_toggle_warning: Confirmation obligatoire lors de l'activation 
         de FORCE_MOVE
-      camera_url_snapshot: URL de l'instatané de la caméra
+      camera_url_snapshot: URL de l'instantané de la caméra
       card: Carte
       fluidd_settings_in_moonraker_db: Paramètres Fluidd dans la base de données
         Moonraker
+      auto: Auto
+      drag_and_drop_functionality_for_files_and_folders: Glisser-déposer pour
+        les fichiers et dossiers
+      firmware_restart: Redémarrage du firmware
+      host_restart: Redémarrage de l'hôte
+      klipper_save_and_restart_action: Action Enregistrer & redémarrer de Klipper
+      printer_power_device: Périphérique d'alimentation de l'imprimante
+      sensor_color: Couleur du capteur
+      service_restart: Redémarrage du service
+      warn_on_cpu_throttled: Avertir si un bridage du processeur est détecté
+      warn_on_stepper_driver_overheating: Avertir en cas de surchauffe d'un driver
+        de moteur
     timer_options:
       duration: Durée uniquement
       filament: Filament
@@ -682,8 +776,8 @@ app:
       relative_file_position: Position relative du fichier
     title:
       authentication: Authentification
-      camera: Webcam
-      gcode_preview: Prévisualiser le Gcode
+      camera: Webcam | Webcams
+      gcode_preview: Prévisualisation du G-code
       general: Général
       macros: Macros
       theme: Thème
@@ -692,9 +786,10 @@ app:
       file_editor: Éditeur de fichiers
       console: Console
       file_browser: Navigateur de fichiers
+      warnings: Avertissements
     tooltip:
       gcode_coords: >-
-        Utiliser la posistion GCode au lieu de la position de l'outil sur le
+        Utiliser la position G-code au lieu de la position de l'outil sur le
         tableau de bord
       average_calculation: Si plusieurs options sont sélectionnées, une moyenne 
         sera calculée
@@ -718,6 +813,8 @@ app:
       show_bed_screws_adjust_dialog_automatically: Affiche automatiquement une 
         boîte de dialogue d'aide si l'outil BED_SCREWS_ADJUST est en cours 
         d'exécution
+      warn_on_cpu_throttled: Le bridage du processeur peut faire échouer les impressions
+      warn_on_stepper_driver_overheating: Drivers Trinamic uniquement
     camera_rotate_options:
       '90': 90°
       none: Aucun
@@ -725,9 +822,9 @@ app:
       '270': 270°
   socket:
     msg:
-      connecting: Connexion à Moonraker ...
+      connecting: Connexion à Moonraker…
       no_connection: >-
-        Pas de connection à Moonraker. Vérifiez l'état de Moonraker et / ou
+        Pas de connexion à Moonraker. Vérifiez l'état de Moonraker et / ou
         rafraîchissez.
   system_info:
     label:
@@ -755,7 +852,7 @@ app:
       total_memory: Mémoire totale
       network: Réseau
       micro_controller: Micro-contrôleur
-      devices: Dispositifs
+      devices: Périphériques
       frequency: Fréquence
       memory_used: mémoire utilisée
       mcu_information: Informations sur le {mcu}
@@ -766,6 +863,8 @@ app:
       version: Version
       virtualization: Virtualisation
       load: charge
+      application: Application
+      non_critical_connection: Connexion non critique
     msg:
       no_devices_found: Aucun dispositif trouvé
       no_devices_searched: Utilisez le bouton d'actualisation pour rechercher 
@@ -832,16 +931,17 @@ app:
       old_component_version: Vous utilisez une ancienne version de %{name} qui 
         ne prend pas en charge toutes les fonctionnalités de Fluidd.<br>Mettre à
         jour %{name} vers au moins %{version}.
+      packages: '{count} paquet | {count} paquets'
     status:
       finished: Mises à jour terminées
-      updating: Mise à jour ...
+      updating: Mise à jour…
     title: Mises à jour
     tooltip:
       commit_history: Historique des commits
       dirty: >-
         indique un état 'detached head', pas sur 'master' ou une 'origin'
         invalide
-      invalid: indique des changements locaux dans le répo
+      invalid: indique des changements locaux dans le dépôt
       packages: Paquets
       release_notes: Notes de mise à jour
   spoolman:
@@ -878,19 +978,32 @@ app:
     label:
       first_used: Première utilisation
       change_spool: Changer de bobine
-      remaining_weight: Restant
+      remaining_weight: Poids restant
       filament_name: Filament
       location: Localisation
       comment: Commentaire
       id: ID
       lot_nr: Lot n°
-      material: Matériel
+      material: Matériau
       active_spool: Bobine active
       last_used: Dernière utilisation
       device_camera: Périphérique
       vendor: Vendeur
       weight: Poids
       length: Longueur
+      bed_temp: Temp. du plateau
+      colors: Couleurs
+      density: Densité
+      diameter: Diamètre
+      extruder_temp: Temp. de l'extrudeur
+      initial_length: Longueur initiale
+      initial_weight: Poids initial
+      price: Prix
+      remaining: Restant
+      remaining_length: Longueur restante
+      used: Utilisé
+      used_length: Longueur utilisée
+      used_weight: Poids utilisé
     btn:
       scan_code: Scanner le code
       select: Sélectionner | Sélectionner pour {macro}
@@ -915,6 +1028,7 @@ app:
         de filament de la bobine et celui sélectionné dans le slicer ne 
         correspondent pas
       remaining_filament_unit: Montrer le filament restant comme
+      card_fields: Champs à afficher dans la carte Spoolman
   history:
     msg:
       confirm_jobs: Êtes-vous sûr ? Cette opération effacera tous les jobs.
@@ -923,7 +1037,7 @@ app:
       confirm_stats: Êtes-vous sûr ? Cela effacera toutes les statistiques.
   timelapse:
     setting:
-      park_retract_distance: Distance de rétractation du mode Park
+      park_retract_distance: Distance de rétraction du mode Park
       park_time: Temps du mode Park
       parkhead: Parquer la tête d'impression
       parkpos:
@@ -942,13 +1056,13 @@ app:
       variable_fps_min: Fréquence de rafraîchissement minimale
       park_custom_pos_x: Position du mode Park en X
       park_custom_pos_dz: Position du Z-Hop pour le mode Park
-      fw_retract: Utiliser la rétractation du micrologiciel
+      fw_retract: Utiliser la rétraction du firmware
       previewimage: Générer une miniature
-      saveframes: Sauvegarde les images
+      saveframes: Enregistrer les images
       enable: Activé
       crf: Facteur de taux constant
       duplicatelastframe: Duplication des dernières images
-      gcode_verbose: GCode détaillé
+      gcode_verbose: G-code détaillé
       park_extrude_distance: Distance d'extrusion du mode Park
       park_extrude_speed: Vitesse d'extrusion du mode Park
       mode: Mode
@@ -972,7 +1086,7 @@ app:
     error:
       newframe: Erreur lors de la prise d'une image timelapse
     btn:
-      save_frames: Sauvegarder les prise de vues
+      save_frames: Enregistrer les images
       render: Rendu
   sensors:
     title:
@@ -996,6 +1110,10 @@ app:
         l'imprimante
     label:
       number_of_copies: Nombre de copies
+      eta: ETA
+      filament: Filament
+      print_time: Durée d'impression
+      unknown_jobs: Jobs inconnus
     title:
       multiply_job: Multiplier le job | Multiplier les jobs
     tooltip:
@@ -1007,10 +1125,10 @@ app:
     BrushNozzle: Nettoyer Brosse
     BufferDisabled: Tampon inactif
     BypassActive: Les filaments chargés dans le bypass sont désactivés !
-    Calibrate: Calibrage
+    Calibrate: Calibrer
     Cancel: Annuler
     CaptureTd: Capture TD
-    DebugJson: Débugger JSON
+    DebugJson: Déboguer JSON
     Detected: Détecté
     EjectFilament: Éjecter filament
     Ejecting: Éjection
@@ -1034,7 +1152,266 @@ app:
     LoadedInLane: Chargé dans {lane}
     Loading: Chargement
     LoadLane: Charger voie
-    Material: Matériel
+    Material: Matériau
     MaterialSubtitle: Par exemple ABS PETG PLA etc.
     Moving: Mouvement
     ParkNozzle: Ranger Buse
+    PostExtruderSensor: Capteur post-extrudeur
+    PreExtruderSensor: Capteur pré-extrudeur
+    PrepDetected: Filament détecté mais non chargé
+    Printing: Impression
+    RammingSensor: Capteur de ramming
+    Restoring: Restauration
+    SetSpool: Définir la bobine
+    Settings: Paramètres
+    SettingsDialog:
+      BowdenLength: Longueur du Bowden
+      BowdenLengthDescription: Longueur du tube Bowden entre le hub et la tête
+        outil.
+      DistHub: Distance jusqu'au hub
+      DistHubDescription: Distance entre les engrenages d'extrusion de la voie
+        et le hub, en mm.
+      Help: Aide
+      Length: Longueur
+      LoadUnloadLane: Charger / Décharger la voie
+      LoadUnloadLaneDescription: Cliquez sur les boutons pour charger ou décharger
+        le filament de la voie vers l'extrudeur.
+      SaveExtruderValues: Enregistrer les valeurs de l'extrudeur
+      SaveExtruderValuesDescription: Écrit les valeurs actuelles de l'extrudeur
+        dans le fichier de configuration de l'extrudeur actuel.
+      SaveHubDist: Enregistrer les valeurs de la voie
+      SaveHubDistDescription: Enregistre les valeurs de cette voie dans le fichier
+        de configuration.
+      SensorAfterExtruder: Capteur après l'extrudeur
+      SettingsForTitle: Paramètres de {name}
+      ToolSensorAfterExtruder: Capteur outil après l'extrudeur
+      ToolSensorAfterExtruderDescription: Distance entre les engrenages de l'extrudeur
+        et le capteur tool_end, en mm. Utilisée pour décharger le filament des
+        engrenages de l'extrudeur une fois que le capteur tool_end n'est plus
+        déclenché.
+      ToolStn: Longueur de chargement de l'outil
+      ToolStnDescriptionWithEndSensor: Distance entre le capteur tool_end et le
+        début de la zone de fusion, en mm.
+      ToolStnDescriptionWithRamming: Distance entre les engrenages de l'extrudeur
+        et le début de la zone de fusion, en mm.
+      ToolStnDescriptionWithoutEndSensor: Distance entre le capteur tool_start
+        et le début de la zone de fusion, en mm.
+      ToolStnUnload: Longueur de déchargement de l'outil
+      ToolStnUnloadDescription: Distance de rétraction du filament pour le décharger
+        de l'outil, en mm.
+      WriteToFile: Écrire dans le fichier
+    SettingsForLane: Paramètres de {lane}
+    ShowFilamentName: Afficher le nom du filament
+    ShowLaneInfinite: Afficher le bouton infini
+    ShowTd1Color: Afficher la couleur TD-1
+    ShowTool: Afficher l'outil "{name}"
+    ShowUnit: Afficher l'unité "{name}"
+    ShowUnitIcons: Afficher les icônes des unités
+    UnloadLane: Décharger la voie
+    Unloading: Déchargement
+    Weight: Poids
+    WeightRemaining: '{weight} g restants'
+    WeightSubtitle: Poids du filament en grammes (sans la bobine).
+    WeightUsed: '{weight} g utilisés'
+  mmu:
+    label:
+      active: ACTIF
+      auto: Auto
+      bypass: BYPASS
+      clog: BOUCHON
+      compression: Compression
+      encoder: Encodeur
+      entry: Entrée
+      exit: Sortie
+      extruder: Extrudeur
+      filament_position: Position du filament
+      flow: DÉBIT
+      gate: Gate
+      gear: Gear
+      last_error: Dernière erreur
+      neutral: Neutre
+      pre_gate: Pre-Gate
+      status: Statut
+      tangle: NŒUD
+      tension: Tension
+      tool: Outil
+      toolhead: Tête outil
+      tools: Outils
+      unknown: Inconnu
+      all_tools: Tous les outils
+      animation: Animation
+      cancel: Annuler
+      choose_spool: Choisir une bobine
+      clog_tangle_detection: Détection de bouchon/nœud
+      config: Config
+      drying: Séchage
+      drying_cancelled: Séchage annulé
+      drying_complete: Séchage terminé
+      drying_queued: Séchage en attente
+      enable: Activer
+      endless_spool: ES ∞
+      extruder_only: Extrudeur seul
+      extruder_tx: Outils Tx
+      filament_info: Informations sur le filament
+      filament_name: Nom du filament
+      heater: Chauffage
+      leds: LED
+      load_speed: Vitesse de chargement personnalisée
+      material: Matériau
+      mmu_motors: Moteurs MMU
+      motor_sync: Synchronisation du moteur de l'extrudeur
+      ok: Ok
+      reset: Réinitialiser
+      save: Enregistrer
+      selector: Sélecteur
+      skip_automap: Ignorer l'automap
+      slicer_expects: Attendu par le slicer
+      spoolman: Spoolman
+      spoolman_days_ago: Il y a %{days} jours
+      spoolman_id: ID Spoolman
+      spoolman_last_used: Dernière utilisation
+      spoolman_never: Jamais
+      spoolman_today: Aujourd'hui
+      spoolman_yesterday: Hier
+      temperature: Température
+      tool_mapping: Mappage des outils
+      ui_visual: Apparence de l'interface
+    msg:
+      no_active_spool: Aucune bobine active
+      are_you_sure: Êtes-vous sûr(e) ?
+      bad_temperature: Température hors limites
+      color: Couleur
+      filament_available: Filament disponible dans le gate
+      filament_empty: Filament non disponible
+      filament_loaded: Le filament est-il complètement chargé jusqu'à l'extrudeur
+        ou complètement déchargé ?
+      filament_unknown: État du filament inconnu (veuillez le définir)
+      gate_bypass: Le gate est réglé sur Bypass !
+      maintenance_intro: Gérez directement des fonctions spécifiques du MMU et
+        une partie de sa configuration.
+      map_slicer_tools: Associer les outils du slicer aux gates du MMU pour l'impression
+      map_tools: Associer les outils aux gates du MMU
+      material: Matériau
+      mismatch: Incohérence de filament possible
+      multi_color: Cela ressemble à une impression multi-matériaux à extrudeur
+        unique utilisant %{numTools} outils. Vous devriez probablement vérifier
+        le mappage des outils
+      no_custom_controls: Aucun contrôle personnalisé
+      no_gate: Un gate doit être sélectionné
+      no_gate_data: Aucune donnée de gate
+      no_matching_spool: Aucune bobine correspondante trouvée
+      no_position: Tenter de récupérer la position
+      no_slicer_info: Aucune information du slicer, choisissez le mappage par
+        défaut pour %{tool}
+      no_spool_id: Aucun ID de bobine
+      no_tool: Un outil doit être sélectionné
+      recover_filament_position: Récupérer la position du filament
+      recover_intro: Il s'agit d'une récupération de bas niveau à utiliser lorsque
+        Happy Hare est désynchronisé de votre MMU. Il est recommandé d'essayer
+        d'abord la récupération automatique, mais cette procédure sera nécessaire
+        pour corriger l'outil ou le gate actuel (sur les MMU de type A, vous pouvez
+        aussi décharger et faire un home du sélecteur).
+      remap: Ceci associera le gate à %{tool}
+      reset_gate_map_confirmation: Ceci réinitialisera toute la carte des gates
+        aux valeurs par défaut définies dans 'mmu_parameters.cfg', ou à une carte
+        vide si aucune valeur par défaut n'est disponible
+      reset_ttg_map_confirmation: Ceci réinitialisera tout le mappage outil-gate
+        et les groupes de bobine infinie aux valeurs par défaut définies dans
+        'mmu_parameters.cfg', ou au mappage 1:1 par défaut si aucune valeur par
+        défaut n'est disponible
+      select_gate: Sélectionnez le gate ou la bobine dont vous souhaitez modifier
+        les informations
+      select_tool: Sélectionnez l'outil à associer puis choisissez le gate dans
+        la liste
+      set_gate: Définir sur le gate actuel
+      set_tool: Définir sur l'outil actuel
+      single_color: Cela ressemble à une impression à une seule couleur mais le
+        bypass n'est pas sélectionné sur votre MMU. Vous devriez vérifier l'outil
+        choisi
+      spoolman_off: La prise en charge de Spoolman est "%{mode}" dans Happy Hare.
+        L'affectation d'un ID de bobine à un gate est désactivée
+      spoolman_other: La prise en charge de Spoolman est "%{mode}". Vous pouvez
+        au choix affecter un ID de bobine ou modifier directement les attributs
+        du gate
+      spoolman_pull: La prise en charge de Spoolman est en mode "%{mode}". La
+        modification locale de la plupart des propriétés du gate est désactivée.
+        Affectez le mappage bobine/gate directement dans la base Spoolman ou utilisez
+        la commande MMU_SPOOLMAN
+      temperature: Température
+      tool_bypass: L'outil est réglé sur Bypass !
+      tool_not_used: L'outil %{tool} n'est pas utilisé dans cette impression,
+        choisissez le mappage par défaut
+      warning_prefix: Avertissement-
+    btn:
+      cancel: Annuler
+      change_tool: Changer d'outil
+      check_all_gates: Vérifier tous les gates
+      check_gate: Vérifier le gate
+      down: Bas
+      edit_gate_map: Modifier les filaments
+      edit_ttg_map: Associer outils / filaments
+      eject: Éjecter
+      grip: Serrer
+      home: Home
+      load: Charger
+      load_ext: Charger Ext
+      mmu_maintenance: Maintenance MMU
+      move: Déplacer
+      off: Off
+      on: On
+      preload: Précharger
+      print_stats: Stats d'impression
+      recover: Récupérer
+      recover_state: Corriger l'état du MMU
+      release: Relâcher
+      reset: Réinitialiser
+      select: Sélectionner
+      sync: Synchroniser
+      sync_spoolman: Synchroniser Spoolman
+      unload: Décharger
+      unload_ext: Décharger Ext
+      unlock: Déverrouiller
+      unsync: Désynchroniser
+      up: Haut
+    setting:
+      large_filament_status: Statut du filament en grand
+      show_climate: Afficher les infos climatiques
+      show_clog_detection: Afficher la détection de bouchon/nœud
+      show_details: Afficher les détails du filament
+      show_logos: Afficher les logos
+      show_name: Afficher le nom de l'unité
+      show_ttg_map: Afficher le mappage TTG
+      show_unavailable_spool_color: Afficher les bobines indisponibles
+    title:
+      edit_gate_map: Modifier les filaments (carte des gates)
+      edit_ttg_map: Associer outils / filaments (mappage TTG)
+      headline: MMU
+      mmu_maintenance: Maintenance MMU
+      recover_state: Corriger l'état du MMU (récupération d'erreur)
+    tooltip:
+      color: Couleur
+      empty: Vide
+      spoolid: ID de bobine
+  beacon:
+    label:
+      active: actif
+      model_name: Nom du modèle
+      remove_model: Supprimer le modèle %{name}
+    msg:
+      hint: Si vous enregistrez sous un autre nom que %{name}, vous pouvez
+        également choisir de supprimer le modèle %{name}
+      not_found: Aucun modèle Beacon existant trouvé.
+    tooltip:
+      delete: Supprimer le modèle
+      load: Charger le modèle
+  database:
+    btn:
+      compact_database: Compacter la base de données
+      create_backup: Créer une sauvegarde
+    label:
+      moonraker_database: Base de données Moonraker
+    msg:
+      not_found: Aucune sauvegarde de base de données trouvée.
+    tooltip:
+      delete_backup: Supprimer la sauvegarde
+      restore_backup: Restaurer la sauvegarde
