@@ -723,6 +723,7 @@ app:
       '270': 270°
       none: None
     label:
+      aliases: Custom display names
       all_off: All off
       all_on: All on
       aspect_ratio: Aspect Ratio
@@ -867,6 +868,7 @@ app:
       slicer: Slicer
       slicer_m73: Slicer (M73)
     title:
+      aliases: Custom Names
       authentication: Authentication
       console: Console
       camera: Camera | Cameras
@@ -880,6 +882,9 @@ app:
       tool: Tool
       warnings: Warnings
     tooltip:
+      aliases: Give fans, output pins, LEDs, heaters and temperature sensors friendly
+        display names. This only changes what Fluidd shows — the Klipper
+        configuration and object names are left untouched.
       average_calculation: If more than one option is select, an average will be
         calculated
       diagnostics_performance: '[BETA] Logging diagnostics info may impact performance'

@@ -45,6 +45,7 @@ export default class AppSettingsNav extends Vue {
       { name: this.$tc('app.setting.title.camera', 2), hash: '#camera', visible: true },
       { name: this.$t('app.setting.title.tool'), hash: '#toolhead', visible: true },
       { name: this.$t('app.setting.title.thermal_presets'), hash: '#presets', visible: true },
+      { name: this.$t('app.setting.title.aliases'), hash: '#aliases', visible: true },
       { name: this.$t('app.setting.title.gcode_preview'), hash: '#gcodePreview', visible: true },
       { name: this.$t('app.general.title.timelapse'), hash: '#timelapse', visible: this.supportsTimelapse },
       { name: this.$t('app.mmu.title.headline'), hash: '#mmu', visible: this.supportsMmu },

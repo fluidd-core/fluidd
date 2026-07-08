@@ -5,7 +5,7 @@
       suffix="%"
       :value="value"
       :reset-value="0"
-      :label="(rpm) ? `${fan.prettyName} <small>${rpm}</small>` : fan.prettyName"
+      :label="label"
       :rules="[
         customRules.minFan
       ]"
@@ -43,12 +43,19 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import type { Fan } from '@/store/printer/types'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
-import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import buildOutputLabel from '@/util/build-output-label'
+import { buildFanSpeedGcode } from '@/util/output-gcode'
 
 @Component({})
 export default class OutputFan extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: Object, required: true })
   readonly fan!: Fan
+
+  // prettyName may be a user-supplied alias; the label is rendered as HTML
+  // (v-safe-html) so escape it before composing the optional <small> rpm markup.
+  get label () {
+    return buildOutputLabel(this.fan.prettyName, this.rpm)
+  }
 
   get prettyValue () {
     return (this.value === 0)
@@ -63,14 +70,11 @@ export default class OutputFan extends Mixins(StateMixin, BrowserMixin) {
   }
 
   handleChange (target: number) {
-    // If this is a controllable fan, it's either the part fan [fan] or a generic fan [fan_generic].
-    if (this.fan.type === 'fan') {
-      target = Math.ceil(target * 2.55)
-      this.sendGcode(`M106 S${target}`, `${this.$waits.onSetFanSpeed}${this.fan.name}`)
-    }
-    if (this.fan.type === 'fan_generic') {
-      target = target / 100
-      this.sendGcode(`SET_FAN_SPEED FAN=${encodeGcodeParamValue(this.fan.name)} SPEED=${target}`, `${this.$waits.onSetFanSpeed}${this.fan.name}`)
+    // Display-only: the command is keyed by the raw Klipper name, never the alias.
+    const gcode = buildFanSpeedGcode(this.fan, target)
+
+    if (gcode) {
+      this.sendGcode(gcode, `${this.$waits.onSetFanSpeed}${this.fan.name}`)
     }
   }
 

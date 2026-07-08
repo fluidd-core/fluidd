@@ -160,11 +160,47 @@ export const actions = {
    */
   async removeSensorColor ({ commit, state }, payload: { key: string }) {
     // Guard: delete_item errors on a key Moonraker never stored, so only fire the
-    // network delete when an override actually existed.
-    const existed = payload.key in state.uiSettings.dashboard.sensorColors
+    // network delete when an override actually existed. Own-property check (not
+    // `key in`) so a Klipper section named like a prototype member (e.g.
+    // `constructor`) can't spoof a delete on an empty map — mirrors removeAlias.
+    const existed = Object.prototype.hasOwnProperty.call(state.uiSettings.dashboard.sensorColors, payload.key)
     commit('setRemoveSensorColor', payload)
     if (existed) {
       SocketActions.serverDatabaseDeleteItem(dbKey`uiSettings.dashboard.sensorColors.${payload.key}`)
+    }
+  },
+
+  /**
+   * Set or update the display-name alias for a fan, output pin, LED, heater or sensor.
+   * Display-only: persists to the Moonraker DB `fluidd` namespace, never to Klipper config.
+   */
+  async updateAlias ({ commit, dispatch }, payload: { key: string; name: string }) {
+    const name = payload.name.trim()
+
+    // Never persist an empty alias. Delegate to removeAlias so the DB entry is
+    // cleared via the guarded delete, keeping the getter fallback (`|| default`)
+    // and the tooltip resolver in agreement.
+    if (name === '') {
+      await dispatch('removeAlias', { key: payload.key })
+      return
+    }
+
+    commit('setAlias', { key: payload.key, name })
+    SocketActions.serverDatabasePostItem(dbKey`uiSettings.dashboard.aliases.${payload.key}`, name)
+  },
+
+  /**
+   * Remove the display-name alias for a fan, output pin, LED, heater or sensor.
+   */
+  async removeAlias ({ commit, state }, payload: { key: string }) {
+    // Guard: delete_item errors on a key Moonraker never stored, so only fire the
+    // network delete when an alias actually existed. Use an own-property check
+    // (not `key in`) so a Klipper section named like a prototype member
+    // (e.g. `constructor`, `toString`) can't spoof a delete on an empty map.
+    const existed = Object.prototype.hasOwnProperty.call(state.uiSettings.dashboard.aliases, payload.key)
+    commit('setRemoveAlias', payload)
+    if (existed) {
+      SocketActions.serverDatabaseDeleteItem(dbKey`uiSettings.dashboard.aliases.${payload.key}`)
     }
   },
 

@@ -43,6 +43,7 @@ import { Component, Watch, Prop, Ref, Mixins } from 'vue-property-decorator'
 import type { ECharts, EChartsInitOpts, EChartsOption, LineSeriesOption } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
 import BrowserMixin from '@/mixins/browser'
+import { formatThermalTooltip } from './thermal-tooltip-formatter'
 import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
 
 @Component({})
@@ -102,6 +103,10 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
   get sensorColors (): Record<string, string> {
     return this.$typedState.config.uiSettings.dashboard.sensorColors
+  }
+
+  get aliases (): Record<string, string> {
+    return this.$typedState.config.uiSettings.dashboard.aliases
   }
 
   @Watch('sensorColors', { deep: true })
@@ -267,48 +272,14 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 10
           return obj
         },
-        formatter: (params) => {
-          if (!Array.isArray(params)) {
-            return ''
-          }
-
-          let text = ''
-          params
-            .forEach((param: any) => {
-              if (
-                param.seriesName &&
-                !param.seriesName.endsWith('#target') &&
-                !param.seriesName.endsWith('#power') &&
-                !param.seriesName.endsWith('#speed') &&
-                param.value[param.seriesName] != null
-              ) {
-                const name = param.seriesName.trim().split(/\s+/).pop() || ''
-                text += `
-                  <div>
-                    ${param.marker}
-                    <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
-                      ${this.$filters.prettyCase(name)}:
-                    </span>
-                    <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
-                      ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`
-
-                if (param.value[`${param.seriesName}#target`] != null) {
-                  text += ` / ${param.value[`${param.seriesName}#target`].toFixed()}<small>°C</small>`
-                }
-                if (param.value[`${param.seriesName}#power`] != null) {
-                  text += ` / ${(param.value[`${param.seriesName}#power`] * 100).toFixed()}<small>%</small>`
-                }
-                if (param.value[`${param.seriesName}#speed`] != null) {
-                  text += ` / ${(param.value[`${param.seriesName}#speed`] * 100).toFixed()}<small>%</small>`
-                }
-                text += `</span>
-                  <div style="clear: both"></div>
-                </div>
-                <div style="clear: both"></div>`
-              }
-            })
-          return text
-        }
+        // Reads the live `aliases` object per-hover so in-place Vue.set/Vue.delete
+        // mutations are reflected without rebuilding the chart options.
+        formatter: (params) => formatThermalTooltip(params, {
+          aliases: this.aliases,
+          prettyCase: (value: string) => this.$filters.prettyCase(value),
+          fontColor,
+          fontSize
+        })
       },
       xAxis: {
         type: 'time',

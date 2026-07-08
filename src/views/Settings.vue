@@ -20,6 +20,7 @@
         <camera-settings />
         <toolhead-settings />
         <preset-settings />
+        <alias-settings />
         <gcode-preview-settings />
         <timelapse-settings v-if="supportsTimelapse" />
         <mmu-settings v-if="supportsMmu" />
@@ -37,6 +38,7 @@ import StateMixin from '@/mixins/state'
 import MacroSettings from '@/components/settings/macros/MacroSettings.vue'
 import GeneralSettings from '@/components/settings/GeneralSettings.vue'
 import PresetSettings from '@/components/settings/presets/PresetSettings.vue'
+import AliasSettings from '@/components/settings/AliasSettings.vue'
 import CameraSettings from '@/components/settings/cameras/CameraSettings.vue'
 import ToolheadSettings from '@/components/settings/ToolheadSettings.vue'
 import ThemeSettings from '@/components/settings/ThemeSettings.vue'
@@ -59,6 +61,7 @@ import WarningsSettings from '@/components/settings/WarningsSettings.vue'
     MacroSettings,
     GeneralSettings,
     PresetSettings,
+    AliasSettings,
     CameraSettings,
     ToolheadSettings,
     ThemeSettings,

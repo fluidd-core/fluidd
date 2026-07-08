@@ -90,7 +90,8 @@ export const defaultState = (): ConfigState => {
       },
       dashboard: {
         tempPresets: [],
-        sensorColors: {}
+        sensorColors: {},
+        aliases: {}
       },
       tableHeaders: {},
       thumbnailSizes: {},

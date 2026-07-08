@@ -3,7 +3,7 @@
     <app-named-slider
       v-if="pwm"
       suffix="%"
-      :label="pin.prettyName"
+      :label="label"
       :min="0"
       :max="100"
       :value="value"
@@ -17,7 +17,7 @@
     <app-named-switch
       v-else
       :disabled="!klippyReady || pin.disconnected"
-      :label="pin.prettyName"
+      :label="label"
       :value="pin.value > 0"
       :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"
       @input="handleChange"
@@ -30,12 +30,18 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import type { OutputPin as IOutputPin } from '@/store/printer/types'
-import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import buildOutputLabel from '@/util/build-output-label'
+import { buildSetPinGcode } from '@/util/output-gcode'
 
 @Component({})
 export default class OutputPin extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: Object, required: true })
   readonly pin!: IOutputPin
+
+  // prettyName may be a user-supplied alias rendered as HTML (v-safe-html label).
+  get label () {
+    return buildOutputLabel(this.pin.prettyName)
+  }
 
   get pwm () {
     return (
@@ -68,7 +74,8 @@ export default class OutputPin extends Mixins(StateMixin, BrowserMixin) {
       target = Math.round(target * this.pin.scale) / 100
     }
 
-    this.sendGcode(`SET_PIN PIN=${encodeGcodeParamValue(this.pin.name)} VALUE=${target}`, `${this.$waits.onSetOutputPin}${this.pin.name}`)
+    // Display-only: the command is keyed by the raw Klipper name, never the alias.
+    this.sendGcode(buildSetPinGcode(this.pin.name, target), `${this.$waits.onSetOutputPin}${this.pin.name}`)
   }
 }
 </script>

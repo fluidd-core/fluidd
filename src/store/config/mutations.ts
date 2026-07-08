@@ -174,6 +174,21 @@ export const mutations = {
     Vue.delete(state.uiSettings.dashboard.sensorColors, payload.key)
   },
 
+  /**
+   * Set / update a display-name alias for a fan, output pin, LED, heater or sensor.
+   * Display-only: this never renames the underlying Klipper object.
+   */
+  setAlias (state, payload: { key: string; name: string }) {
+    Vue.set(state.uiSettings.dashboard.aliases, payload.key, payload.name)
+  },
+
+  /**
+   * Remove a display-name alias.
+   */
+  setRemoveAlias (state, payload: { key: string }) {
+    Vue.delete(state.uiSettings.dashboard.aliases, payload.key)
+  },
+
   setFileSystemActiveFilters (state, payload: { root: string, value: FileFilterType[] }) {
     Vue.set(state.uiSettings.fileSystem.activeFilters, payload.root, payload.value)
   },
