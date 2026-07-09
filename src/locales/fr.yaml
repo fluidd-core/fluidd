@@ -56,7 +56,7 @@ app:
         sûr(e) qu'il s'agisse de la bonne adresse ?
       cors_error: Bloqué par la configuration CORS
       cors_note: >-
-        Cela peut signifier que vous devez modifier la configuration de votre moonraker.
+        Cela peut signifier que vous devez modifier la configuration de votre Moonraker.
         Veuillez consulter la documentation sur les configurations multi-imprimantes
         <a href="%{url}" target="_blank">ici</a>
       mixed_content: Fluidd est servi en HTTPS mais cette adresse utilise HTTP.
@@ -244,7 +244,7 @@ app:
       go_to_file: Aller au fichier
       recover: Récupérer
       refresh_metadata: Actualiser les métadonnées
-      reset_default_layout: Réinitialisation de la présentation par défaut
+      reset_default_layout: Réinitialiser la disposition par défaut
       return_dashboard: Retour au tableau de bord
       upload_folder: Téléversement du dossier
       clear: Effacer
@@ -261,8 +261,8 @@ app:
       components_config: >-
         La configuration du plugin moonraker est disponible <a target="_blank" href="%{url}">ici.</a>
       failed_components: >-
-        Moonraker a des plugins en échec, veuillez vérifier les logs, mettre à
-        jour la configuration et redémarrer moonraker.
+        Moonraker a des plugins en échec, veuillez vérifier vos journaux, mettre à
+        jour votre configuration et redémarrer Moonraker.
       printer_powered_off: L'imprimante est actuellement hors tension.<br/><br/>
         Pour l'allumer, veuillez cliquer sur le bouton à gauche.
     label:
@@ -557,10 +557,10 @@ app:
       macro_category_settings: Paramètres de la catégorie de macros
     tooltip:
       estop: Arrêt d'urgence
-      reload_klipper: Recharge la configuration Klipper.
+      reload_klipper: Recharge la configuration Klipper
       reload_restart_klipper: Recharge la configuration Klipper et redémarre les
-        cartes de contrôle.
-      restart_klipper: Redémarre le service système klipper.
+        MCU
+      restart_klipper: Redémarre le service système Klipper
       browse_metrics: Consulter les indicateurs disponibles
       rollover_logs: Rotation des logs
       managed_by_moonraker: Géré par la configuration de votre Moonraker
@@ -789,7 +789,7 @@ app:
       warnings: Avertissements
     tooltip:
       gcode_coords: >-
-        Utiliser la position GCode au lieu de la position de l'outil sur le
+        Utiliser la position G-code au lieu de la position de l'outil sur le
         tableau de bord
       average_calculation: Si plusieurs options sont sélectionnées, une moyenne 
         sera calculée
@@ -978,7 +978,7 @@ app:
     label:
       first_used: Première utilisation
       change_spool: Changer de bobine
-      remaining_weight: Restant
+      remaining_weight: Poids restant
       filament_name: Filament
       location: Localisation
       comment: Commentaire
@@ -1343,8 +1343,6 @@ app:
         choisissez le mappage par défaut
       warning_prefix: Avertissement-
     btn:
-      'False': Faux
-      'True': Vrai
       cancel: Annuler
       change_tool: Changer d'outil
       check_all_gates: Vérifier tous les gates
@@ -1359,6 +1357,8 @@ app:
       load_ext: Charger Ext
       mmu_maintenance: Maintenance MMU
       move: Déplacer
+      off: Off
+      on: On
       preload: Précharger
       print_stats: Stats d'impression
       recover: Récupérer
