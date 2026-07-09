@@ -198,6 +198,6 @@ export default class AfcMixin extends Vue {
     if (this.afc == null) return false
     const hasMetadata = fileWithMeta != null && 'filament_weights' in fileWithMeta
     const usedTools = hasMetadata ? (fileWithMeta!.filament_weights ?? []).filter(w => w > 0) : []
-    return !hasMetadata || usedTools.length > 0
+    return usedTools.length > 0
   }
 }
