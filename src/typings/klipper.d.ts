@@ -1797,4 +1797,21 @@ declare namespace Klipper {
     pin: string;
     long_press_duration: number;
   }
+
+  export interface AfcSpoolLaneInfo {
+    spoolId: number | undefined;
+    spool: import('@/store/spoolman/types').Spool | null;
+    color: string;
+    material: string;
+    filamentVendor: string | undefined;
+    filamentName: string | undefined;
+    remainingWeight: number | undefined;
+    fullWeight: number | undefined;
+    spoolPercent: number;
+    usedWeight: number | undefined;
+    extruderTemp: number | undefined;
+    bedTemp: number | undefined;
+    spoolUrl: string | undefined;
+    filamentLoaded: boolean | undefined;
+  }
 }
