@@ -348,7 +348,7 @@
             :class="{ 'disabled-row': !hasLedsOfType('entry') }"
           >
             <v-col class="col-4 d-flex justify-end align-center pr-6">
-              Entry
+              {{ $t('app.mmu.label.entry') }}
             </v-col>
             <v-col class="col-8 d-flex align-center">
               <v-select
@@ -366,7 +366,7 @@
             :class="{ 'disabled-row': !hasLedsOfType('exit') }"
           >
             <v-col class="col-4 d-flex justify-end align-center pr-6">
-              Exit
+              {{ $t('app.mmu.label.exit') }}
             </v-col>
             <v-col class="col-8 d-flex align-center">
               <v-select
@@ -384,7 +384,7 @@
             :class="{ 'disabled-row': !hasLedsOfType('status') }"
           >
             <v-col class="col-4 d-flex justify-end align-center pr-6">
-              Status
+              {{ $t('app.mmu.label.status') }}
             </v-col>
             <v-col class="col-8 d-flex align-center">
               <v-select
