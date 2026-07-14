@@ -52,8 +52,8 @@
       </template>
 
       <v-list-item
-        v-for="(device, index) in powerDevices"
-        :key="index"
+        v-for="device in powerDevices"
+        :key="device.device"
         :disabled="(device.status === 'error' || device.status === 'init' || (printerPrinting && device.locked_while_printing))"
         :loading="hasWait(`${$waits.onDevicePowerToggle}/${device.device}`)"
         @click="togglePowerDevice(device)"
