@@ -53,10 +53,10 @@
         />
       </app-setting>
 
-      <v-divider />
+      <template v-for="component in components">
+        <v-divider :key="`component:divider:${component.name}`" />
 
-      <template v-for="(component, i) in components">
-        <app-setting :key="`component-${component.name}-${i}`">
+        <app-setting :key="`component::${component.name}`">
           <template #title>
             {{ packageTitle(component) }}
             <v-tooltip
@@ -158,11 +158,6 @@
             {{ anomaly }}
           </v-alert>
         </template>
-
-        <v-divider
-          v-if="i < components.length - 1 && components.length > 0"
-          :key="`component-${component.name}-${i}-_divider`"
-        />
       </template>
     </v-card>
 
