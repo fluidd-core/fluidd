@@ -3,6 +3,10 @@ import type { RootState } from './types'
 import type { ChartData } from './charts/types'
 import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
 
+const decimalRound = (value: number) => {
+  return Math.round(value * 100) / 100
+}
+
 export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, state: RootState, commit: Commit) => {
   for (const key in payload) {
     if (key.startsWith('mcu')) {
@@ -50,9 +54,9 @@ export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, sta
           retention: 600,
           data: {
             date,
-            load: load.toFixed(2),
-            awake: awake.toFixed(2),
-            bw: bw.toFixed(2)
+            load: decimalRound(load),
+            awake: decimalRound(awake),
+            bw: decimalRound(bw)
           }
         }, { root: true })
       }
@@ -86,7 +90,7 @@ export const handleSystemStatsChange = (payload: Partial<Klipper.PrinterState>, 
         retention: 600,
         data: {
           date,
-          memused: percent_mem_used.toFixed(2)
+          memused: decimalRound(percent_mem_used)
         }
       }, { root: true })
     }
@@ -105,9 +109,41 @@ export const handleSystemStatsChange = (payload: Partial<Klipper.PrinterState>, 
         retention: 600,
         data: {
           date,
-          load: stats.sysload.toFixed(2),
-          cputime_change: ((cputime - last_cputime) * 100).toFixed(2)
+          load: decimalRound(stats.sysload),
+          cputime_change: decimalRound((cputime - last_cputime) * 100)
         }
+      }, { root: true })
+    }
+  }
+}
+
+export const handleAddSensorChartEntry = (state: RootState, commit: Commit) => {
+  const date = new Date()
+
+  for (const sensorId in state.sensors.sensors) {
+    const { values } = state.sensors.sensors[sensorId]
+
+    const data: ChartData = {
+      date
+    }
+
+    let hasNumericValue = false
+
+    for (const field in values) {
+      const value = values[field]
+
+      if (typeof value === 'number') {
+        data[field] = decimalRound(value)
+
+        hasNumericValue = true
+      }
+    }
+
+    if (hasNumericValue) {
+      commit('charts/setChartEntry', {
+        type: `sensor:${sensorId}`,
+        retention: 600,
+        data
       }, { root: true })
     }
   }
@@ -142,14 +178,21 @@ export const handleAddChartEntry = (retention: number, state: RootState, commit:
           }
         }
 
-        const temp = sensor.temperature
-        const target = sensor.target
-        const power = sensor.power
-        const speed = sensor.speed
-        chartData[key] = temp
-        if (target != null) chartData[`${key}#target`] = target
-        if (power != null) chartData[`${key}#power`] = power
-        if (speed != null) chartData[`${key}#speed`] = speed
+        const { temperature, target, power, speed } = sensor
+
+        chartData[key] = decimalRound(temperature)
+
+        if (target != null) {
+          chartData[`${key}#target`] = decimalRound(target)
+        }
+
+        if (power != null) {
+          chartData[`${key}#power`] = decimalRound(power)
+        }
+
+        if (speed != null) {
+          chartData[`${key}#speed`] = decimalRound(speed)
+        }
       }
     }
 

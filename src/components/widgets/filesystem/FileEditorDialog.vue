@@ -76,6 +76,7 @@
             v-if="!printerPrinting && configMap?.link"
             :href="configMap.link"
             target="_blank"
+            rel="noopener noreferrer"
           >
             <v-icon
               small
@@ -313,11 +314,11 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
     }
   }
 
-  emitSave (options?: boolean | { restart?: boolean, saveAs?: boolean }) {
+  emitSave (options: boolean | { restart?: boolean, saveAs?: boolean } = {}) {
     if (this.editorReady) {
-      const [restart, saveAs] = typeof options === 'object' && options != null
-        ? [options.restart === true, options.saveAs === true]
-        : [options === true, false]
+      const { restart = false, saveAs = false } = typeof options === 'boolean'
+        ? { restart: options }
+        : options
 
       if (this.configMap?.serviceSupported && restart) {
         this.$emit('save', this.updatedContent, this.configMap.service)

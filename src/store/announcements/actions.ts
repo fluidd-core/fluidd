@@ -30,19 +30,19 @@ export const actions = {
     }
   },
 
-  async onAnnouncementDismissed ({ commit }, payload) {
+  async onAnnouncementDismissed ({ commit }, payload: { entry_id: string }) {
     if (payload) {
       commit('setAnnouncementDismissed', { entry_id: payload.entry_id, dismissed: true })
     }
   },
 
-  async onAnnouncementWake ({ commit }, payload) {
+  async onAnnouncementWake ({ commit }, payload: { entry_id: string }) {
     if (payload) {
       commit('setAnnouncementDismissed', { entry_id: payload.entry_id, dismissed: false })
     }
   },
 
-  async dismiss (_, payload) {
+  async dismiss (_, payload: { entry_id: string; wake_time?: number }) {
     SocketActions.serverAnnouncementsDismiss(payload.entry_id, payload.wake_time)
   },
 

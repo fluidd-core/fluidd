@@ -30,7 +30,7 @@ export const actions = {
     commit('setLastFrame', payload)
   },
 
-  async onEvent ({ commit }, payload) {
+  async onEvent ({ commit }, payload: Moonraker.Timelapse.Event) {
     switch (payload.action) {
       case 'newframe': {
         if (payload.status === 'error') {

@@ -13,14 +13,14 @@ export const actions = {
   /**
    * Add's a wait to the list of waits.
    */
-  async addWait ({ commit }, wait) {
+  async addWait ({ commit }, wait: string) {
     commit('setAddWait', wait)
   },
 
   /**
    * Removes a wait from the list of waits.
    */
-  async removeWait ({ commit }, wait) {
+  async removeWait ({ commit }, wait: string) {
     commit('setRemoveWait', wait)
   }
 } satisfies ActionTree<WaitState, RootState>

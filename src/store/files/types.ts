@@ -6,9 +6,10 @@ export type { AppFileMeta }
 export interface FilesState {
   uploads: FileUpload[];
   download: FileDownload | null;
-  currentPaths: Record<string, string>;
-  diskUsage: Record<string, Moonraker.Files.DiskUsage | undefined>;
-  rootFiles: Record<string, Moonraker.Files.RootFile[] | undefined>;
+  roots: readonly Moonraker.Files.RootInfoWithPath[] | null;
+  currentPaths: Record<string, string | undefined>;
+  diskUsage: Record<string, Readonly<Moonraker.Files.DiskUsage> | undefined>;
+  rootFiles: Record<string, readonly Moonraker.Files.RootFile[] | undefined>;
   pathContent: Record<string, MoonrakerPathContent | undefined>;
 }
 
@@ -19,8 +20,8 @@ export interface AppDiskUsage extends Moonraker.Files.DiskUsage {
 
 export interface MoonrakerPathContent {
   partial?: boolean;
-  files: (Moonraker.Files.File | Moonraker.Files.FileWithMeta)[];
-  dirs: Moonraker.Files.Dir[];
+  files: (Readonly<Moonraker.Files.File> | Readonly<Moonraker.Files.FileWithMeta>)[];
+  dirs: Readonly<Moonraker.Files.Dir>[];
 }
 
 export interface AppFile extends Moonraker.Files.File, Pick<Moonraker.Files.Metadata, 'thumbnails'> {
@@ -68,9 +69,10 @@ export interface FileDownload {
   abortController: AbortController;
 }
 
-export interface FileUpload extends FileDownload {
+export interface FileUpload extends Omit<FileDownload, 'abortController'> {
   complete: boolean; // indicates moonraker is finished with the file.
   cancelled: boolean; // in a cancelled state, don't show - nor try to upload.
+  abortController?: AbortController; // not set until the upload of this entry starts.
 }
 
 export type FileFilterType = 'print_start_time' | 'hidden_files' | 'klipper_backup_files' | 'rolled_log_files' | 'moonraker_backup_files' | 'moonraker_temporary_upload_files' | 'crowsnest_backup_files'

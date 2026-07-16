@@ -34,6 +34,7 @@ export const mutations = {
   },
 
   setClearAllNotifications (state) {
-    Vue.set(state, 'notifications', [...state.notifications.filter(n => !n.clear)])
+    state.notifications = state.notifications
+      .filter(n => !n.clear)
   }
 } satisfies MutationTree<NotificationsState>

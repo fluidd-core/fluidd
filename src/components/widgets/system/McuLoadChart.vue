@@ -1,38 +1,19 @@
 <template>
-  <v-col
-    v-if="ready"
-    cols="4"
-    class="chart-wrapper"
-  >
-    <app-chart
-      :data="chartData || []"
-      :options="options"
-      height="120px"
-    />
-
-    <div class="chart-label-wrapper">
-      <div class="chart-label">
-        <span>{{ $t('app.system_info.label.mcu_load', { mcu: mcu.prettyName }) }}</span>
-        <span v-if="chartData.length">{{ chartData[chartData.length - 1].load }}%</span>
-      </div>
-
-      <div class="chart-label">
-        <span>{{ $t('app.system_info.label.mcu_awake', { mcu: mcu.prettyName }) }}</span>
-        <span v-if="chartData.length">{{ chartData[chartData.length - 1].awake }}%</span>
-      </div>
-    </div>
-  </v-col>
+  <app-inline-chart
+    :data="chartData"
+    :options="options"
+    :labels="labels"
+  />
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import type { MCU } from '@/store/printer/types'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
+import type { AppInlineChartLabel } from '@/components/ui/AppInlineChart.vue'
 
 @Component({})
 export default class McuLoadChart extends Vue {
-  ready = false
-
   @Prop({ type: Object, required: true })
   readonly mcu!: MCU
 
@@ -40,11 +21,26 @@ export default class McuLoadChart extends Vue {
     return this.$typedState.charts[this.mcu.key] || []
   }
 
+  get labels (): AppInlineChartLabel[] {
+    return [
+      {
+        text: this.$t('app.system_info.label.mcu_load', { mcu: this.mcu.prettyName }).toString(),
+        value: 'load',
+        suffix: ' %'
+      },
+      {
+        text: this.$t('app.system_info.label.mcu_awake', { mcu: this.mcu.prettyName }).toString(),
+        value: 'awake',
+        suffix: ' %'
+      }
+    ]
+  }
+
   get options (): EChartsOption {
     const options: EChartsOption = {
       ...this.$typedGetters['charts/getBaseChartOptions']({
-        load: '%',
-        awake: '%',
+        load: ' %',
+        awake: ' %',
         bw: 'b'
       }),
       series: this.series
@@ -91,11 +87,6 @@ export default class McuLoadChart extends Vue {
         }
       }
     ]
-  }
-
-  @Watch('chartData', { immediate: true })
-  onChartData (data: any) {
-    if (data && data.length > 0) this.ready = true
   }
 }
 </script>

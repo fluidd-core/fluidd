@@ -2,7 +2,7 @@ import type { AppFileMeta } from '@/store/files/types.metadata'
 
 export interface HistoryState {
   count: number;
-  jobs: Moonraker.History.Job[];
+  jobs: Readonly<Moonraker.History.Job>[];
   job_totals: Moonraker.History.JobTotals;
 }
 

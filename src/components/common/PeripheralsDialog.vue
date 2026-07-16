@@ -78,8 +78,8 @@
 
           <template v-else-if="peripheralGroup.type === 'serial'">
             <v-row
-              v-for="(device, index) in peripherals.serial_devices"
-              :key="index"
+              v-for="device in peripherals.serial_devices"
+              :key="`serial::${device.device_path}`"
             >
               <v-col>
                 <v-card outlined>
@@ -151,8 +151,8 @@
 
           <template v-else-if="peripheralGroup.type === 'usb'">
             <v-row
-              v-for="(device, index) in peripherals.usb_devices"
-              :key="index"
+              v-for="device in peripherals.usb_devices"
+              :key="`usb::${device.usb_location}`"
             >
               <v-col>
                 <v-card outlined>
@@ -192,8 +192,8 @@
 
           <template v-else-if="peripheralGroup.type === 'video'">
             <v-row
-              v-for="(device, index) in peripherals.v4l2_devices"
-              :key="index"
+              v-for="device in peripherals.v4l2_devices"
+              :key="`video::${device.device_path}`"
             >
               <v-col>
                 <v-card outlined>
@@ -270,8 +270,8 @@
             </v-row>
 
             <v-row
-              v-for="(device, index) in peripherals.libcamera_devices"
-              :key="index"
+              v-for="device in peripherals.libcamera_devices"
+              :key="`libcamera::${device.libcamera_id}`"
             >
               <v-col>
                 <v-card outlined>
@@ -314,8 +314,8 @@
 
           <template v-else-if="peripheralGroup.type === 'can'">
             <v-row
-              v-for="(canUuids, canInterface, index) in canbusUuids"
-              :key="index"
+              v-for="(canUuids, canInterface) in canbusUuids"
+              :key="`can::${canInterface}`"
             >
               <v-col>
                 <v-card outlined>
@@ -325,8 +325,8 @@
 
                   <v-card-text>
                     <v-row
-                      v-for="(canUuid, index2) in canUuids"
-                      :key="index2"
+                      v-for="canUuid in canUuids"
+                      :key="`can::${canInterface}::${canUuid.uuid}`"
                     >
                       <v-col>
                         <app-text-field-with-copy

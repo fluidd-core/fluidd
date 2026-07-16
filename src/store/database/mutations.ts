@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type { DatabaseInfo, DatabaseState } from './types'
@@ -10,7 +9,7 @@ export const mutations = {
   },
 
   setServerDatabaseList (state, payload: DatabaseInfo) {
-    Vue.set(state, 'info', payload)
+    state.info = payload
   },
 
   setServerDatabasePostBackup (state, payload: { backup_path: string }) {

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { FilesState, MoonrakerPathContent, FilePaths } from './types'
+import type { FilesState, MoonrakerPathContent, FilePaths, FileUpload, FileDownload } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 
@@ -12,7 +12,7 @@ export const mutations = {
     Object.assign(state, defaultState())
   },
 
-  setResetRoot (state, root) {
+  setResetRoot (state, root: string) {
     const keysToDelete = Object.keys(state.pathContent)
       .filter(key => key === root || key.startsWith(`${root}/`))
 
@@ -21,20 +21,32 @@ export const mutations = {
     }
 
     if (state.currentPaths[root]) {
-      Vue.set(state.currentPaths, root, undefined)
+      Vue.delete(state.currentPaths, root)
     }
   },
 
   setServerFilesGetDirectory (state, payload: { path: string, content: MoonrakerPathContent }) {
     const { path, content } = payload
 
-    Vue.set(state.pathContent, path, content)
+    const pathContent: MoonrakerPathContent = {
+      ...content,
+      files: content.files
+        .map(file => Object.freeze(file)),
+      dirs: content.dirs
+        .map(dir => Object.freeze(dir))
+    }
+
+    Vue.set(state.pathContent, path, pathContent)
+  },
+
+  setServerFilesRoots (state, payload: Moonraker.Files.RootInfoWithPath[]) {
+    state.roots = Object.freeze(payload)
   },
 
   setServerFilesListRoot (state, payload: { root: string, files: Moonraker.Files.RootFile[] }) {
     const { root, files } = payload
 
-    Vue.set(state.rootFiles, root, files)
+    Vue.set(state.rootFiles, root, Object.freeze(files))
   },
 
   setFileUpdate (state, payload: { paths: FilePaths, file: Moonraker.Files.File | Moonraker.Files.FileWithMeta }) {
@@ -53,14 +65,14 @@ export const mutations = {
         const fileIndex = directory.files.findIndex(file => file.filename === paths.filename)
 
         if (fileIndex >= 0) {
-          Vue.set(directory.files, fileIndex, file)
+          Vue.set(directory.files, fileIndex, Object.freeze(file))
         } else {
-          directory.files.push(file)
+          directory.files.push(Object.freeze(file))
         }
       } else {
         const directory: MoonrakerPathContent = {
           partial: true,
-          files: [file],
+          files: [Object.freeze(file)],
           dirs: []
         }
 
@@ -85,9 +97,9 @@ export const mutations = {
         const dirIndex = directory.dirs.findIndex(dir => dir.dirname === paths.filename)
 
         if (dirIndex >= 0) {
-          Vue.set(directory.dirs, dirIndex, dir)
+          Vue.set(directory.dirs, dirIndex, Object.freeze(dir))
         } else {
-          directory.dirs.push(dir)
+          directory.dirs.push(Object.freeze(dir))
         }
       }
     }
@@ -129,7 +141,7 @@ export const mutations = {
     }
   },
 
-  setUpdateFileUpload (state, payload) {
+  setUpdateFileUpload (state, payload: Partial<FileUpload> & { uid: string }) {
     const uploadIndex = state.uploads.findIndex(upload => upload.uid === payload.uid)
 
     if (uploadIndex >= 0) {
@@ -138,7 +150,9 @@ export const mutations = {
         ...payload
       })
     } else {
-      state.uploads.push(payload)
+      // The first update for a given uid always carries the full FileUpload shape
+      // (abortController is the only field that may not be set yet).
+      state.uploads.push(payload as FileUpload)
     }
   },
 
@@ -149,15 +163,16 @@ export const mutations = {
     }
   },
 
-  setUpdateFileDownload (state, payload) {
+  setUpdateFileDownload (state, payload: Partial<FileDownload> & { uid: string }) {
     if (
       state.download == null ||
       state.download.uid === payload.uid
     ) {
+      // The first update for a given uid always carries the full FileDownload shape.
       state.download = {
         ...state.download,
         ...payload
-      }
+      } as FileDownload
     }
   },
 
@@ -172,6 +187,6 @@ export const mutations = {
   },
 
   setDiskUsage (state, payload: { root: string, disk_usage: Moonraker.Files.DiskUsage }) {
-    Vue.set(state.diskUsage, payload.root, payload.disk_usage)
+    Vue.set(state.diskUsage, payload.root, Object.freeze(payload.disk_usage))
   }
 } satisfies MutationTree<FilesState>

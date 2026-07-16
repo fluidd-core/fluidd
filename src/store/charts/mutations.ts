@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { ChartData, ChartState } from './types'
+import type { ChartData, ChartSelectedLegends, ChartState } from './types'
 import { defaultState } from './state'
 
 export const mutations = {
@@ -29,7 +29,7 @@ export const mutations = {
   /**
    * Init the chart store from db
    */
-  setInitCharts (state, payload: ChartState) {
+  setInitCharts (state, payload: Partial<ChartState>) {
     if (payload) Object.assign(state, payload)
   },
 
@@ -55,7 +55,7 @@ export const mutations = {
     if (firstInRange > 0) state[payload.type].splice(0, firstInRange)
   },
 
-  setSelectedLegends (state, payload) {
+  setSelectedLegends (state, payload: ChartSelectedLegends) {
     state.selectedLegends = payload
   }
 } satisfies MutationTree<ChartState>

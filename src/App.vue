@@ -27,14 +27,16 @@
 
     <v-btn
       v-if="isMobileViewport && socketReady"
-      x-small
       fab
       fixed
       bottom
       left
+      width="36"
+      height="36"
       class="ml-2 mb-2"
       color="error"
       style="z-index: 2000"
+      :aria-label="$t('app.general.tooltip.estop')"
       @click="emergencyStop()"
     >
       <v-icon>$estop</v-icon>
@@ -73,6 +75,7 @@
         <bed-screws-adjust-dialog />
         <screws-tilt-adjust-dialog />
         <mmu-edit-ttg-map-dialog />
+        <afc-print-start-dialog />
       </template>
     </v-main>
 
@@ -103,6 +106,7 @@ import ActionCommandPromptDialog from '@/components/common/ActionCommandPromptDi
 import KeyboardShortcutsDialog from '@/components/common/KeyboardShortcutsDialog.vue'
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
 import MmuEditTtgMapDialog from './components/widgets/mmu/MmuEditTtgMapDialog.vue'
+import AfcPrintStartDialog from './components/widgets/afc/dialogs/AfcPrintStartDialog.vue'
 
 @Component<App>({
   metaInfo () {
@@ -118,7 +122,8 @@ import MmuEditTtgMapDialog from './components/widgets/mmu/MmuEditTtgMapDialog.vu
     FileSystemUploadDialog,
     ActionCommandPromptDialog,
     KeyboardShortcutsDialog,
-    MmuEditTtgMapDialog
+    MmuEditTtgMapDialog,
+    AfcPrintStartDialog
   }
 })
 export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {

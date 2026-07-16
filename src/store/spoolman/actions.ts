@@ -207,14 +207,14 @@ export const actions = {
     SocketActions.serverSpoolmanProxyGetInfo()
   },
 
-  async onExtruderSpoolsChanged ({ commit }, payload) {
+  async onExtruderSpoolsChanged ({ commit }, payload: { extruder_spools?: Partial<Record<string, number | null>> }) {
     const spools = payload?.extruder_spools
     if (spools != null && typeof spools === 'object') {
       commit('setExtruderSpools', spools)
     }
   },
 
-  async onActiveSpool ({ commit }, payload) {
+  async onActiveSpool ({ commit }, payload: { spool_id?: number | string | null }) {
     const rawSpoolId = payload?.spool_id
 
     if (rawSpoolId == null) {

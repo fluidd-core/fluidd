@@ -19,6 +19,9 @@ const configHasDisconnectedMcu = (config: Record<string, any> | undefined, disco
   false
 )
 
+const resolveSensorColor = (sensorColors: Record<string, string>, key: string): string =>
+  Vue.$colorset.next(getKlipperType(key), key, sensorColors[key])
+
 export const getters = {
 
   /**
@@ -575,8 +578,9 @@ export const getters = {
   /**
    * Return available heaters
    */
-  getHeaters: (state, getters): Heater[] => {
+  getHeaters: (state, getters, rootState): Heater[] => {
     const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
+    const sensorColors: Record<string, string> = rootState.config.uiSettings.dashboard.sensorColors
 
     const heaters: Heater[] = []
 
@@ -592,7 +596,7 @@ export const getters = {
         const nameFromSplit = restSplit.pop()
         const name = nameFromSplit || key
 
-        const color = Vue.$colorset.next(getKlipperType(key), key)
+        const color = resolveSensorColor(sensorColors, key)
         const prettyName = Vue.$filters.prettyCase(name)
 
         const disconnected = configHasDisconnectedMcu(config, nonCriticalDisconnectedMcusSet)
@@ -656,7 +660,9 @@ export const getters = {
   /**
   * Return available fans and output pins
   */
-  getOutputs: (state, getters) => (filter?: string[]): Array<Fan | Led | OutputPin> => {
+  getOutputs: (state, getters, rootState) => (filter?: string[]): Array<Fan | Led | OutputPin> => {
+    const sensorColors: Record<string, string> = rootState.config.uiSettings.dashboard.sensorColors
+
     // Fans..
     const fans = [
       'temperature_fan',
@@ -738,8 +744,8 @@ export const getters = {
           ? 'Part Fan' // If we know its the part fan.
           : Vue.$filters.prettyCase(name)
 
-        const color = (applyColor.includes(type))
-          ? Vue.$colorset.next(getKlipperType(key), key)
+        const color = applyColor.includes(type)
+          ? resolveSensorColor(sensorColors, key)
           : undefined
 
         const config = state.printer.configfile.settings[key.toLowerCase()]
@@ -787,56 +793,67 @@ export const getters = {
   /**
    * Return available temperature probes / sensors.
    */
-  getSensors: (state, getters): Sensor[] => {
-    const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
-
-    const sensors = Object.keys(state.printer)
-      .filter(key => (
+  getSensors: (state, getters, rootState): Sensor[] => {
+    const keyGroups = [
+      (key: string) => (
         key.startsWith('temperature_sensor ') ||
-        key.startsWith('temperature_probe ') ||
-        key.startsWith('tmc2240 ') ||
-        key === 'z_thermal_adjust'
-      ))
-      .reduce<Record<string, Sensor>>((groups, key) => {
-        const [type, ...restSplit] = key.trim().split(/\s+/)
-        const nameFromSplit = restSplit.pop()
-        const name = nameFromSplit || key
+        key.startsWith('temperature_probe ')
+      ),
+      (key: string) => key.startsWith('tmc2240 '),
+      (key: string) => key === 'z_thermal_adjust'
+    ]
+    const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
+    const sensorColors: Record<string, string> = rootState.config.uiSettings.dashboard.sensorColors
 
-        if (!name.startsWith('_')) {
-          const prettyName = type === 'tmc2240'
-            ? i18n.t('app.general.label.stepper_driver',
-              {
-                name:
-                  name.startsWith('stepper_')
-                    ? name.substring(8).toUpperCase()
-                    : Vue.$filters.prettyCase(name)
-              }).toString()
-            : Vue.$filters.prettyCase(name)
-          const color = Vue.$colorset.next(getKlipperType(key), key)
-          const config = state.printer.configfile.settings[key.toLowerCase()]
+    const printerKeys = Object.keys(state.printer)
 
-          const disconnected = configHasDisconnectedMcu(config, nonCriticalDisconnectedMcusSet)
+    const sensors = keyGroups
+      .flatMap(keyCheck => {
+        const sensors = printerKeys
+          .filter(keyCheck)
+          .reduce<Record<string, Sensor>>((groups, key) => {
+            const [type, ...restSplit] = key.trim().split(/\s+/)
+            const nameFromSplit = restSplit.pop()
+            const name = nameFromSplit || key
 
-          groups[name] = {
-            ...state.printer[key],
-            ...getters.getExtraSensorData(config && 'sensor_type' in config && config.sensor_type?.toLowerCase(), name),
-            config: { ...config },
-            minTemp: config && 'min_temp' in config ? config.min_temp ?? null : null,
-            maxTemp: config && 'max_temp' in config ? config.max_temp ?? null : null,
-            name,
-            key,
-            prettyName,
-            color,
-            type,
-            disconnected
-          }
-        }
+            if (!name.startsWith('_')) {
+              const prettyName = type === 'tmc2240'
+                ? i18n.t('app.general.label.stepper_driver',
+                  {
+                    name:
+                      name.startsWith('stepper_')
+                        ? name.substring(8).toUpperCase()
+                        : Vue.$filters.prettyCase(name)
+                  }).toString()
+                : Vue.$filters.prettyCase(name)
+              const color = resolveSensorColor(sensorColors, key)
+              const config = state.printer.configfile.settings[key.toLowerCase()]
 
-        return groups
-      }, {})
+              const disconnected = configHasDisconnectedMcu(config, nonCriticalDisconnectedMcusSet)
 
-    return Object.values(sensors)
-      .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name))
+              groups[name] = {
+                ...state.printer[key],
+                ...getters.getExtraSensorData(config && 'sensor_type' in config && config.sensor_type?.toLowerCase(), name),
+                config: { ...config },
+                minTemp: config && 'min_temp' in config ? config.min_temp ?? null : null,
+                maxTemp: config && 'max_temp' in config ? config.max_temp ?? null : null,
+                name,
+                key,
+                prettyName,
+                color,
+                type,
+                disconnected
+              }
+            }
+
+            return groups
+          }, {})
+
+        return Object.values(sensors)
+          .sort((a, b) => a.name.localeCompare(b.name))
+      })
+
+    return sensors
   },
 
   getExtraSensorData: (state) => (sensorType: string, name: string) => {
@@ -876,29 +893,28 @@ export const getters = {
    */
   getChartableSensors: (state) => {
     const keyGroups = [
-      [
-        'temperature_fan'
-      ],
-      [
-        'temperature_probe',
-        'z_thermal_adjust',
-        'temperature_sensor'
-      ],
-      [
-        'tmc2240'
-      ]
+      (key: string) => key.startsWith('temperature_fan '),
+      (key: string) => (
+        key.startsWith('temperature_sensor ') ||
+        key.startsWith('temperature_probe ')
+      ),
+      (key: string) => key.startsWith('tmc2240 '),
+      (key: string) => key === 'z_thermal_adjust'
     ]
 
     const printerKeys = Object.keys(state.printer)
 
     const sensors = keyGroups
-      .flatMap(keyGroup => {
-        const keyGroupRegExpArray = keyGroup
-          .map(x => new RegExp(`^${x}(?! _)`))
-
+      .flatMap(keyCheck => {
         return printerKeys
-          .filter(key => keyGroupRegExpArray.some(x => x.test(key)))
-          .sort((a, b) => a.localeCompare(b))
+          .filter(keyCheck)
+          .map(key => ({
+            key,
+            name: key.trim().split(/\s+/).pop() || ''
+          }))
+          .filter(entry => !entry.name.startsWith('_'))
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map(entry => entry.key)
       })
 
     const heaters = [...state.printer.heaters?.available_heaters ?? []]

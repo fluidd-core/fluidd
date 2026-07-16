@@ -425,8 +425,6 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       value,
       server: true
     })
-
-    this.reset()
   }
 
   get followProgress (): boolean {
@@ -591,22 +589,6 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
 
   get viewBox (): BBox {
     const bounds = this.bounds
-
-    if (this.autoZoom) {
-      const padding = Math.min(bounds.x.max - bounds.x.min, bounds.y.max - bounds.y.min) * 0.05
-
-      return {
-        x: {
-          min: bounds.x.min - padding,
-          max: bounds.x.max + padding
-        },
-        y: {
-          min: bounds.y.min - padding,
-          max: bounds.y.max + padding
-        }
-      }
-    }
-
     const bedSize = this.bedSize
 
     return {
@@ -714,9 +696,28 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     }
   }
 
+  @Watch('autoZoom')
+  onAutoZoomChanged (value: boolean) {
+    if (value) {
+      this.$nextTick(() => this.zoomToBounds())
+    } else {
+      this.reset()
+    }
+  }
+
+  @Watch('bedSize')
+  @Watch('bounds')
+  @Watch('flipX')
+  @Watch('flipY')
+  onAutoZoomDependenciesChanged () {
+    if (this.autoZoom) {
+      this.$nextTick(() => this.zoomToBounds())
+    }
+  }
+
   mounted () {
     this.panzoom = markRaw(panzoom(this.svg, {
-      maxZoom: 20,
+      maxZoom: 40,
       minZoom: 0.95,
       smoothScroll: this.showAnimations,
 
@@ -733,6 +734,10 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     this.panzoom.on('panend', () => {
       this.panning = false
     })
+
+    if (this.autoZoom) {
+      requestAnimationFrame(() => this.zoomToBounds())
+    }
   }
 
   beforeDestroy () {
@@ -742,6 +747,67 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   reset () {
     this.panzoom?.moveTo(0, 0)
     this.panzoom?.zoomAbs(0, 0, 1)
+  }
+
+  zoomToBounds () {
+    if (!this.panzoom || this.disabled) {
+      return
+    }
+
+    const owner = this.svg.parentElement
+
+    if (!owner) {
+      return
+    }
+
+    const containerWidth = owner.clientWidth
+    const containerHeight = owner.clientHeight
+
+    if (containerWidth === 0 || containerHeight === 0) {
+      return
+    }
+
+    const viewBox = this.viewBox
+    const viewBoxWidth = viewBox.x.max - viewBox.x.min
+    const viewBoxHeight = viewBox.y.max - viewBox.y.min
+
+    const bounds = this.bounds
+    const boundsWidth = bounds.x.max - bounds.x.min
+    const boundsHeight = bounds.y.max - bounds.y.min
+
+    if (boundsWidth <= 0 || boundsHeight <= 0) {
+      this.reset()
+
+      return
+    }
+
+    const minX = this.flipX
+      ? (viewBox.x.max + viewBox.x.min) - bounds.x.max
+      : bounds.x.min
+    const minY = this.flipY
+      ? (viewBox.y.max + viewBox.y.min) - bounds.y.max
+      : bounds.y.min
+    const boundsCenterX = minX + boundsWidth / 2
+    const boundsCenterY = minY + boundsHeight / 2
+
+    const unitsToPixels = Math.min(containerWidth / viewBoxWidth, containerHeight / viewBoxHeight)
+    const offsetX = (containerWidth - viewBoxWidth * unitsToPixels) / 2
+    const offsetY = (containerHeight - viewBoxHeight * unitsToPixels) / 2
+    const pixelCenterX = offsetX + (boundsCenterX - viewBox.x.min) * unitsToPixels
+    const pixelCenterY = offsetY + (boundsCenterY - viewBox.y.min) * unitsToPixels
+
+    const padding = 1.1
+    const rawScale = Math.min(
+      containerWidth / (boundsWidth * unitsToPixels),
+      containerHeight / (boundsHeight * unitsToPixels)
+    ) / padding
+    const scale = Math.min(Math.max(rawScale, this.panzoom.getMinZoom()), this.panzoom.getMaxZoom())
+
+    this.panzoom.zoomAbs(0, 0, scale)
+    this.panzoom.moveTo(
+      containerWidth / 2 - scale * pixelCenterX,
+      containerHeight / 2 - scale * pixelCenterY
+    )
   }
 
   keepFocus () {

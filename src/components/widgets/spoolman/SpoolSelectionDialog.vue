@@ -269,6 +269,7 @@
         v-if="spoolTrackingManagerUrl"
         :href="spoolTrackingManagerUrl"
         target="_blank"
+        rel="noopener noreferrer"
         color="primary"
         text
         type="button"

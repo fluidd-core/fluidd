@@ -14,7 +14,7 @@ const spoolmanSpoolAsSpool = (spool: Moonraker.Spoolman.Spool): Spool => {
   const filament_name = [
     filament.vendor?.name,
     filament.name
-  ].filter(x => x != null).join(' - ') || spool.id.toString()
+  ].filter(Boolean).join(' - ') || spool.id.toString()
 
   const initial_weight = spool.initial_weight ?? filament.weight
 

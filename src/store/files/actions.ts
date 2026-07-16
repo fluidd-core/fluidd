@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { FilesState, FilePaths } from './types'
+import type { FilesState, FilePaths, FileUpload, FileDownload } from './types'
 import type { RootState } from '../types'
 import getFilePaths from '@/util/get-file-paths'
 import { SocketActions } from '@/api/socketActions'
@@ -44,6 +44,10 @@ export const actions = {
     commit('setServerFilesGetDirectory', { path, content: { files, dirs: filteredDirs } })
   },
 
+  async onServerFilesRoots ({ commit }, payload: Moonraker.Files.RootsResponse) {
+    commit('setServerFilesRoots', [...payload])
+  },
+
   async onServerFilesListRoot ({ commit }, payload: ObjectWithRequest<Moonraker.Files.ListRootResponse>) {
     const { root } = payload.__request__.params ?? {}
 
@@ -72,9 +76,9 @@ export const actions = {
    */
 
   // Old notifications for backwards compat
-  async notifyCopyItem ({ dispatch }, payload) { dispatch('notifyCreateFile', payload) },
-  async notifyMoveItem ({ dispatch }, payload) { dispatch('notifyMoveFile', payload) },
-  async notifyUploadFile ({ dispatch }, payload) { dispatch('notifyCreateFile', payload) },
+  async notifyCopyItem ({ dispatch }, payload: Moonraker.Files.ChangeResponse) { dispatch('notifyCreateFile', payload) },
+  async notifyMoveItem ({ dispatch }, payload: Moonraker.Files.ChangeResponse) { dispatch('notifyMoveFile', payload) },
+  async notifyUploadFile ({ dispatch }, payload: Moonraker.Files.ChangeResponse) { dispatch('notifyCreateFile', payload) },
 
   // New notifications
   async notifyRootUpdate ({ commit }, payload: Moonraker.Files.ChangeResponse) {
@@ -131,7 +135,15 @@ export const actions = {
 
     dispatch('notifyCreateFile', { item })
 
-    dispatch('notifyDeleteFile', { item: source_item })
+    if (
+      source_item &&
+      (
+        source_item.root !== item.root ||
+        source_item.path !== item.path
+      )
+    ) {
+      dispatch('notifyDeleteFile', { item: source_item })
+    }
   },
 
   async notifyMoveDir ({ dispatch }, payload: Moonraker.Files.ChangeResponse) {
@@ -139,7 +151,15 @@ export const actions = {
 
     dispatch('notifyCreateDir', { item })
 
-    dispatch('notifyDeleteDir', { item: source_item })
+    if (
+      source_item &&
+      (
+        source_item.root !== item.root ||
+        source_item.path !== item.path
+      )
+    ) {
+      dispatch('notifyDeleteDir', { item: source_item })
+    }
   },
 
   async notifyDeleteFile ({ commit }, payload: Moonraker.Files.ChangeResponse) {
@@ -172,19 +192,19 @@ export const actions = {
   /**
    * Handles the state of current uploads and downloads.
    */
-  async updateFileUpload ({ commit }, payload) {
+  async updateFileUpload ({ commit }, payload: Partial<FileUpload> & { uid: string }) {
     commit('setUpdateFileUpload', payload)
   },
 
-  async removeFileUpload ({ commit }, payload) {
+  async removeFileUpload ({ commit }, payload: string) {
     commit('setRemoveFileUpload', payload)
   },
 
-  async updateFileDownload ({ commit }, payload) {
+  async updateFileDownload ({ commit }, payload: Partial<FileDownload> & { uid: string }) {
     commit('setUpdateFileDownload', payload)
   },
 
-  async removeFileDownload ({ commit }, payload) {
+  async removeFileDownload ({ commit }, payload: string) {
     commit('setRemoveFileDownload', payload)
   },
 

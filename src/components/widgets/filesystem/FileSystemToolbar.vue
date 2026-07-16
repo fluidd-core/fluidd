@@ -3,9 +3,12 @@
     dense
   >
     <v-toolbar-title class="d-none d-sm-block">
-      <div class="file-path">
-        &lrm;/{{ path }}
-      </div>
+      <file-system-breadcrumbs
+        :root="root"
+        :path="path"
+        :dense="dense"
+        @navigate-to="$emit('navigate-to', $event)"
+      />
     </v-toolbar-title>
 
     <v-spacer />
@@ -156,6 +159,7 @@
 import { Component, Prop, Mixins, PropSync } from 'vue-property-decorator'
 import StatesMixin from '@/mixins/state'
 import FileSystemAddMenu from './FileSystemAddMenu.vue'
+import FileSystemBreadcrumbs from './FileSystemBreadcrumbs.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
 import type { AppDataTableHeader } from '@/types'
 import type { RootProperties } from '@/store/files/types'
@@ -163,6 +167,7 @@ import type { RootProperties } from '@/store/files/types'
 @Component({
   components: {
     FileSystemAddMenu,
+    FileSystemBreadcrumbs,
     FileSystemFilterMenu
   }
 })
@@ -183,8 +188,11 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   readonly headers?: AppDataTableHeader[]
 
   // The current path
-  @Prop({ type: String })
+  @Prop({ type: String, required: true })
   readonly path!: string
+
+  @Prop({ type: Boolean })
+  readonly dense?: boolean
 
   // If the controls are disabled or not.
   @Prop({ type: Boolean })

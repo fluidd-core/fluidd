@@ -11,5 +11,21 @@ declare namespace Moonraker.JobQueue {
     time_in_queue: number;
   }
 
-  export type QueueState = 'ready' | 'loading' | 'starting' | 'paused'
+  export type QueueState =
+    | 'ready'
+    | 'loading'
+    | 'starting'
+    | 'paused'
+
+  export type JobQueueChangedAction =
+    | 'state_changed'
+    | 'jobs_added'
+    | 'jobs_removed'
+    | 'job_loaded'
+
+  export interface JobQueueChangedResponse {
+    action: JobQueueChangedAction;
+    queue_state: QueueState;
+    updated_queue?: QueuedJob[] | null;
+  }
 }

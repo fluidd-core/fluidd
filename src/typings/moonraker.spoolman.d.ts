@@ -100,6 +100,10 @@ declare namespace Moonraker.Spoolman {
     extra?: Record<string, unknown>;
   }
 
+  export type FilamentMultiColorDirection =
+    | 'coaxial'
+    | 'longitudinal'
+
   export interface Filament {
     id: number;
     registered: string;
@@ -118,7 +122,7 @@ declare namespace Moonraker.Spoolman {
     settings_bed_temp?: number;
     color_hex?: string;
     multi_color_hexes?: string;
-    multi_color_direction?: string;
+    multi_color_direction?: FilamentMultiColorDirection;
     external_id?: string;
     extra?: Record<string, unknown>;
   }

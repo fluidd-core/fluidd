@@ -14,8 +14,6 @@ declare namespace Klipper {
     {
       // These keys are always available
 
-      objects: string[];
-
       configfile: ConfigFileState;
 
       gcode_move: GcodeMoveState;
@@ -815,9 +813,11 @@ declare namespace Klipper {
     density?: number;
     diameter?: number;
     empty_spool_weight?: number;
+    initial_weight?: number;
     spool_id: number | null;
     color: string | null;
     weight: number;
+    filament_name?: string;
     extruder_temp: number | null;
     runout_lane: string | null;
     filament_status: 'In Tool' | 'Ready' | 'Prep' | 'Not Ready';
@@ -1796,5 +1796,22 @@ declare namespace Klipper {
   export interface AfcButtonSettings {
     pin: string;
     long_press_duration: number;
+  }
+
+  export interface AfcSpoolLaneInfo {
+    spoolId: number | undefined;
+    spool: import('@/store/spoolman/types').Spool | null;
+    color: string;
+    material: string;
+    filamentVendor: string | undefined;
+    filamentName: string | undefined;
+    remainingWeight: number | undefined;
+    fullWeight: number | undefined;
+    spoolPercent: number;
+    usedWeight: number | undefined;
+    extruderTemp: number | undefined;
+    bedTemp: number | undefined;
+    spoolUrl: string | undefined;
+    filamentLoaded: boolean | undefined;
   }
 }

@@ -3,7 +3,6 @@ import { Globals } from '@/globals'
 import type { ConsoleEntry, ConsoleFilter, ConsoleState, PromptDialogButton, PromptDialogItemButton, PromptDialogItemText } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
-import DOMPurify from 'dompurify'
 import { takeRightWhile } from 'lodash-es'
 
 export const actions = {
@@ -17,14 +16,14 @@ export const actions = {
   /**
    * Inits known command history
    */
-  async initConsole ({ commit }, payload) {
+  async initConsole ({ commit }, payload: Partial<ConsoleState>) {
     commit('setInitConsole', payload)
   },
 
   /**
    * Add a command history item, and update server store.
    */
-  async onUpdateCommandHistory ({ state, commit }, payload) {
+  async onUpdateCommandHistory ({ state, commit }, payload: string[]) {
     commit('setUpdateCommandHistory', payload)
     SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.commandHistory', state.commandHistory)
   },
@@ -32,7 +31,7 @@ export const actions = {
   /**
    * The result of a specific gcode request.
    */
-  async onGcodeScript ({ dispatch }, payload) {
+  async onGcodeScript ({ dispatch }, payload: { result?: string }) {
     // If the response is not ok, pass it to the console.
     if (payload && payload.result && payload.result !== 'ok') {
       dispatch('onAddConsoleEntry', { message: Globals.CONSOLE_RECEIVE_PREFIX + payload.result })
@@ -43,13 +42,17 @@ export const actions = {
    * Add a console entry
    */
   async onAddConsoleEntry ({ commit, dispatch }, payload: Omit<ConsoleEntry, 'id'>) {
-    payload.message = DOMPurify.sanitize(payload.message).replace(/\r\n|\r|\n/g, '<br />')
+    payload.message = payload.message
+      .replace(/\r\n|\r|\n/g, '<br />')
+
     if (!payload.time || payload.time <= 0) {
       payload.time = Date.now() / 1000 | 0
     }
+
     if (!payload.type) {
       payload.type = 'response'
     }
+
     if (payload.type === 'response' && payload.message.startsWith('// action:')) {
       payload.type = 'action'
     }
@@ -66,8 +69,7 @@ export const actions = {
     if (payload && payload.gcode_store) {
       const entries = payload.gcode_store
         .map((entry, index): ConsoleEntry => {
-          const rawMessage = Globals.CONSOLE_RECEIVE_PREFIX + entry.message
-          const message = DOMPurify.sanitize(rawMessage)
+          const message = Globals.CONSOLE_RECEIVE_PREFIX + entry.message
             .replace(/\r\n|\r|\n/g, '<br />')
 
           const type = (
@@ -171,7 +173,7 @@ export const actions = {
   /**
    * Updates auto scroll value
    */
-  async onUpdateAutoScroll ({ commit }, payload) {
+  async onUpdateAutoScroll ({ commit }, payload: boolean) {
     commit('setAutoScroll', payload)
     SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.autoScroll', payload)
   },

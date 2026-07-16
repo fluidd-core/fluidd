@@ -39,6 +39,19 @@ app:
     PreExtruderSensor: "Pre-Extruder Sensor"
     PrepDetected: "Filament detected but not loaded"
     Printing: "Printing"
+    PrintStartDialog:
+      StartJob: "Start Job"
+      Title: "AFC Lane Assignment"
+      NoLane: "No Lane"
+      NoLaneMapped: "No lane mapped to {tool}"
+      NoFilamentLoaded: "No filament loaded into {lane}"
+      FilamentTypeMismatch: "Filament material type mismatch: file requires {file}, lane has {lane}"
+      FilamentWeightNotEnough: "Not enough filament in lane {lane}: requires {required}, available {available}"
+      Question: "Do you want to start printing {filename}?"
+      QuestionWithSpool: "Do you want to start printing {filename} with the active spool?"
+      SpoolId: "ID #{id}"
+      SpoolWeightRemaining: "{remaining}g remaining ({used}g used)"
+      LaneWeightRemaining: "Weight remaining {weight}g"
     RammingSensor: "Ramming Sensor"
     Restoring: "Restoring"
     SetSpool: "Set Spool"
@@ -86,9 +99,10 @@ app:
     ShowTd1Color: "Show TD-1 Color"
     Unloading: "Unloading"
     UnloadLane: "Unload Lane"
-    Unknown: "Unknown"
     Weight: "Weight"
+    WeightRemaining: "{weight} g remaining"
     WeightSubtitle: "The weight of the filament in grams (without spool)."
+    WeightUsed: "{weight} g used"
   bedmesh:
     label:
       active: active
@@ -144,9 +158,8 @@ app:
         sure this is the correct address?
       cors_error: blocked by CORS policy
       cors_note: >-
-        This may mean you need to modify your moonraker configuration. Please
-        see the documentation on multi printer setups <a href="%{url}"
-        target="_blank">here</a>
+        This may mean you need to modify your Moonraker configuration. Please see
+        the documentation on multi printer setups <a href="%{url}" target="_blank">here</a>
       mixed_content: >-
         Fluidd is served over HTTPS but this address uses HTTP. Browsers block
         mixed (insecure) connections. Use an HTTPS/secure address, or open
@@ -307,6 +320,7 @@ app:
       reset_file: Clear File
       reset_layout: Reset
       reset_default_layout: Reset Default
+      reset_to_default: Reset to default
       restart_firmware: Firmware Restart
       restart_service: Restart %{service}
       restart_service_klipper: Restart Klipper
@@ -345,8 +359,8 @@ app:
         Moonraker plugin configuration can be found <a target="_blank"
         href="%{url}">here.</a>
       failed_components: >-
-        Moonraker has failed plugins, please check your logs, update your
-        configuration and restart moonraker.
+        Moonraker has failed plugins, please check your logs, update your configuration
+        and restart Moonraker.
       printer_powered_off: >-
         The printer is currently powered off.<br/><br/>
         To power on the printer, please click the button on the left.
@@ -412,6 +426,7 @@ app:
       moonraker: Moonraker
       name: Name
       new_password: New password
+      no_data: No data
       no_notifications: No notifications
       'on': 'On'
       'off': 'Off'
@@ -446,12 +461,12 @@ app:
       toolchange: Toolchange
       total: Total
       total_filament: Total filament used
-      total_filament_avg: Avg per print
+      total_filament_avg: Average per print
       total_jobs: Total print jobs
       total_print_time: Total print time
-      total_print_time_avg: Avg per print
+      total_print_time_avg: Average per print
       total_time: Total time
-      total_time_avg: Avg per print
+      total_time_avg: Average per print
       turn_device_on: Turn %{device} on
       turn_device_off: Turn %{device} off
       uncategorized: Uncategorized
@@ -495,6 +510,8 @@ app:
       fluidd_settings_backup_failed: Failed to backup Fluidd settings!
       fluidd_settings_restore_failed: Failed to restore Fluidd settings!
       gcode_preview_failed: Failed to preview G-code file!
+      throttled_warning: This may lead to a throttle condition and result in
+        a failed print
     simple_form:
       error:
         arrayofnums: Only numbers
@@ -636,14 +653,14 @@ app:
       browse_metrics: Browse available metrics
       estop: Emergency Stop
       exit_layout: Exit layout mode
-      managed_by_moonraker: Managed by your moonraker configuration
+      managed_by_moonraker: Managed by your Moonraker configuration
       notifications: Notifications
       power_on_printer: Turns on the power to the printer
-      reload_klipper: Reloads klipper configuration
-      reload_restart_klipper: Reloads klipper configuration and restarts MCU's
+      reload_klipper: Reloads Klipper configuration
+      reload_restart_klipper: Reloads Klipper configuration and restarts MCU's
       reset_layout: Reset current layout to server-wide default layout
       reset_default_layout: Reset server-wide default layout to factory defaults
-      restart_klipper: Restarts the klipper system service.
+      restart_klipper: Restarts the Klipper system service
       run_collector: Run collector
       rollover_logs: Rollover logs
       set_default_layout: Set current layout as server-wide default layout
@@ -811,6 +828,7 @@ app:
       save_and_restore_view_state: Save and restore view state
       sections_to_ignore_pending_configuration_changes: Sections to ignore 
         Pending Configuration Changes
+      sensor_color: Sensor Color
       service_restart: Service Restart
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
@@ -901,8 +919,8 @@ app:
       warn_on_stepper_driver_overheating: Trinamic drivers only
   socket:
     msg:
-      connecting: Connecting to moonraker...
-      no_connection: No moonraker connection. Please check moonraker status and 
+      connecting: Connecting to Moonraker...
+      no_connection: No Moonraker connection. Please check Moonraker status and 
         / or refresh.
   system_info:
     label:
@@ -964,11 +982,13 @@ app:
       absolute_positioning: Absolute Positioning
       extruder_disabled: extruder disabled, below min_extrude_temp 
         (%{min}<small>°C</small>)
+      extruding: Extruding
       home_xy: Home XY
       home_z: Home Z
       manual_probe: Manual Probe
       motors_off: Motors Off
       relative_positioning: Relative Positioning
+      retracting: Retracting
       select_tool: Select tool %{tool}
       tools: Tools
     label:
@@ -1250,6 +1270,27 @@ app:
       drying_queued: Drying queued
       drying_complete: Drying complete
       drying_cancelled: Drying cancelled
+      active: ACTIVE
+      auto: Auto
+      bypass: BYPASS
+      clog: CLOG
+      compression: Compression
+      encoder: Encoder
+      entry: Entry
+      exit: Exit
+      extruder: Extruder
+      filament_position: Filament Position
+      flow: FLOW
+      gear: Gear
+      last_error: Last Error
+      neutral: Neutral
+      pre_gate: Pre-Gate
+      status: Status
+      tangle: TANGLE
+      tension: Tension
+      tool: Tool
+      toolhead: Toolhead
+      tools: Tools
     tooltip:
       empty: Empty
       color: Color

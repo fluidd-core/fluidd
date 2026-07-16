@@ -107,7 +107,10 @@
 
     <v-card-text>
       <template v-if="isFilamanActive && extruders.length > 1">
-        <v-list dense class="pa-0">
+        <v-list
+          dense
+          class="pa-0"
+        >
           <template v-for="entry in extruderEntries">
             <v-list-item
               :key="entry.extruder.key"
@@ -176,7 +179,9 @@
                   :disabled="!isConnected"
                   @click="handleSelectExtruderSpool(entry.extruder.key)"
                 >
-                  <v-icon small>$pencil</v-icon>
+                  <v-icon small>
+                    $pencil
+                  </v-icon>
                 </app-btn>
               </v-list-item-action>
             </v-list-item>
@@ -185,7 +190,10 @@
       </template>
 
       <template v-else-if="targetableMacros.length > 0">
-        <v-list dense class="pa-0">
+        <v-list
+          dense
+          class="pa-0"
+        >
           <template v-for="entry in macroSpoolEntries">
             <v-list-item
               :key="entry.macro.name"
@@ -251,7 +259,9 @@
                   :disabled="!isConnected"
                   @click="handleSelectSpool(entry.macro)"
                 >
-                  <v-icon small>$pencil</v-icon>
+                  <v-icon small>
+                    $pencil
+                  </v-icon>
                 </app-btn>
               </v-list-item-action>
             </v-list-item>

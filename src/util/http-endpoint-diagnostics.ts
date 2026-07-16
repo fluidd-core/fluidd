@@ -32,7 +32,7 @@ const diagnoseHttpEndpoint = async (apiUrl: string, options: DiagnoseOptions = {
 
   const combinedSignal = AbortSignal.any(
     [timeoutSignal, signal]
-      .filter((x): x is AbortSignal => x !== undefined)
+      .filter(Boolean)
   )
 
   const probeUrl = `${apiUrl}/server/info?t=${Date.now()}`

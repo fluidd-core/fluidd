@@ -227,6 +227,10 @@ export const getters = {
     return state.currentPaths[root] ?? ''
   },
 
+  getRootDetails: (state) => (root: string): Moonraker.Files.RootInfoWithPath | undefined => {
+    return state.roots?.find(rootInfo => rootInfo.name === root)
+  },
+
   getDiskUsage: (state) => (root: string): AppDiskUsage | undefined => {
     const diskUsage = state.diskUsage[root]
 

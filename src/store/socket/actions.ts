@@ -8,6 +8,8 @@ import { EventBus } from '@/eventBus'
 import { upperFirst, camelCase } from 'lodash-es'
 import { jwtDecode } from 'jwt-decode'
 import type { TokenKeys } from '../config/types'
+import type { HistoryItem } from '../history/types'
+import i18n from '@/plugins/i18n'
 
 const MODULES_TO_RESET_ON_DROP = [
   'server',
@@ -50,6 +52,14 @@ const tryGetErrorMessageFromJson = (message: string): string | null => {
 
   return null
 }
+
+const isSocketError = (value: unknown): value is SocketError =>
+  value != null &&
+  typeof value === 'object' &&
+  'code' in value &&
+  typeof value.code === 'number' &&
+  'message' in value &&
+  typeof value.message === 'string'
 
 const getMoonrakerDatabase = async <T = Record<string, unknown>>(namespace: string) => {
   try {
@@ -96,12 +106,8 @@ const getAccessToken = async (keys: TokenKeys): Promise<string | null> => {
       // if it's NOT a 401, bail out without touching tokens; otherwise fall
       // through to the clear at the bottom.
       if (
-        !(
-          e != null &&
-          typeof e === 'object' &&
-          'code' in e &&
-          e.code === 401
-        )
+        !isSocketError(e) ||
+        e.code !== 401
       ) {
         return null
       }
@@ -186,8 +192,9 @@ export const actions = {
    * token expiry: if the access token is expired but the refresh token is valid,
    * refreshes first. If both are expired, identify is still called but without an
    * access token (anonymous/trusted identify). Terminal transitions: → `ready` on
-   * success, → `authenticating` on failure. Aborts silently if the socket drops
-   * mid-flight.
+   * success; → `authenticating` on auth failure; → `ready` with a warning on
+   * JSON-RPC -32601 (very old Moonraker that predates `server.connection.identify`).
+   * Aborts silently if the socket drops mid-flight.
    */
   async runIdentify ({ dispatch, rootGetters, state }) {
     // Skip identify when the socket is already identified (e.g. post-access.login
@@ -210,9 +217,24 @@ export const actions = {
 
         if (state.status !== 'identifying') return
 
-        await dispatch('onSetStatus', 'authenticating')
+        // Very old Moonraker that predates server.connection.identify returns
+        // JSON-RPC -32601 ("Method not found"). Warn the user and continue
+        // loading unauthenticated through the normal bootstrap → ready path.
+        if (
+          isSocketError(e) &&
+          e.code === -32601
+        ) {
+          EventBus.$emit(
+            i18n.t('app.version.label.old_component_version', { name: 'Moonraker', version: Globals.MOONRAKER_MIN_VERSION }).toString(),
+            { type: 'warning' }
+          )
 
-        return
+          await dispatch('server/notifyOldMoonraker', undefined, { root: true })
+        } else {
+          await dispatch('onSetStatus', 'authenticating')
+
+          return
+        }
       }
     }
 
@@ -317,11 +339,11 @@ export const actions = {
    * ==========================================================================
    */
 
-  async notifyStatusUpdate ({ dispatch }, payload) {
+  async notifyStatusUpdate ({ dispatch }, payload: Partial<Klipper.PrinterState>) {
     await dispatch('printer/onNotifyStatusUpdate', payload, { root: true })
   },
 
-  async notifyGcodeResponse ({ dispatch }, payload) {
+  async notifyGcodeResponse ({ dispatch }, payload: string) {
     dispatch('console/onAddConsoleEntry', { message: `${Globals.CONSOLE_RECEIVE_PREFIX}${payload}` }, { root: true })
   },
 
@@ -345,113 +367,100 @@ export const actions = {
     consola.debug('Klippy Ready')
   },
 
-  async notifyFilelistChanged ({ dispatch }, payload) {
+  async notifyFilelistChanged ({ dispatch }, payload: Moonraker.Files.ChangeResponse) {
     dispatch('files/notify' + upperFirst(camelCase(payload.action)), payload, { root: true })
   },
 
   // Next release, remove.
-  async notifyMetadataUpdate ({ dispatch }, payload) {
+  async notifyMetadataUpdate ({ dispatch }, payload: Moonraker.Files.FileWithMetaResponse) {
     dispatch('files/onFileMetaData', payload, { root: true })
   },
 
-  async notifyPowerChanged ({ dispatch }, payload) {
+  async notifyPowerChanged ({ dispatch }, payload: { device: string; status: Moonraker.Power.DeviceState }) {
     dispatch('power/onStatus', { [payload.device]: payload.status }, { root: true })
   },
 
-  async notifyUpdateResponse ({ dispatch }, payload) {
+  async notifyUpdateResponse ({ dispatch }, payload: Moonraker.UpdateManager.UpdateResponse) {
     dispatch('version/onUpdateResponse', payload, { root: true })
   },
 
-  async notifyUpdateRefreshed ({ dispatch }, payload) {
+  async notifyUpdateRefreshed ({ dispatch }, payload: Partial<Moonraker.UpdateManager.StatusResponse>) {
     dispatch('version/onUpdateStatus', payload, { root: true })
   },
 
-  async notifyHistoryChanged ({ dispatch }, payload) {
+  async notifyHistoryChanged ({ dispatch }, payload: { action: 'added' | 'finished'; job: HistoryItem }) {
     dispatch('history/onHistoryChange', payload, { root: true })
   },
 
-  async notifyCpuThrottled ({ dispatch }, payload) {
+  async notifyCpuThrottled ({ dispatch }, payload: Moonraker.ProcStats.ThrottledState) {
     dispatch('server/onMachineThrottledState', payload, { root: true })
   },
 
-  async notifyProcStatUpdate ({ dispatch }, payload) {
+  async notifyProcStatUpdate ({ dispatch }, payload: Moonraker.ProcStats.Response) {
     dispatch('server/onMachineProcStats', payload, { root: true })
   },
 
-  async notifyUserCreated ({ dispatch }, payload) {
+  async notifyUserCreated ({ dispatch }, payload: { username: string; source?: string }) {
     dispatch('auth/onUserCreated', payload, { root: true })
   },
 
-  async notifyUserDeleted ({ dispatch }, payload) {
+  async notifyUserDeleted ({ dispatch }, payload: { username: string }) {
     dispatch('auth/onUserDeleted', payload, { root: true })
   },
 
-  /**
-   * Moonraker invalidated the current session (we triggered logout, or another
-   * client called access.logout with invalidate=true). Clear local auth state
-   * and drop to `authenticating` so the login view takes over on the same
-   * socket.
-   */
-  async notifyUserLoggedOut ({ commit, dispatch, rootGetters, state }) {
-    const keys: TokenKeys = rootGetters['config/getTokenKeys']
-    localStorage.removeItem(keys.userToken)
-    localStorage.removeItem(keys.refreshToken)
-    commit('auth/setCurrentUser', null, { root: true })
-
-    if (state.status === 'ready' || state.status === 'identifying') {
-      await dispatch('onSetStatus', 'authenticating')
-    }
+  async notifyUserLoggedOut ({ dispatch }) {
+    dispatch('auth/onUserLoggedOut', undefined, { root: true })
   },
 
-  async notifyServiceStateChanged ({ dispatch }, payload) {
+  async notifyServiceStateChanged ({ dispatch }, payload: Moonraker.Machine.ServiceState) {
     dispatch('server/onServiceStateChanged', payload, { root: true })
   },
 
-  async notifyTimelapseEvent ({ dispatch }, payload) {
+  async notifyTimelapseEvent ({ dispatch }, payload: Moonraker.Timelapse.Event) {
     dispatch('timelapse/onEvent', payload, { root: true })
   },
 
-  async notifyAnnouncementUpdate ({ dispatch }, payload) {
+  async notifyAnnouncementUpdate ({ dispatch }, payload: Moonraker.Announcements.ListResponse) {
     dispatch('announcements/onAnnouncementUpdate', payload, { root: true })
   },
 
-  async notifyAnnouncementDismissed ({ dispatch }, payload) {
+  async notifyAnnouncementDismissed ({ dispatch }, payload: { entry_id: string }) {
     dispatch('announcements/onAnnouncementDismissed', payload, { root: true })
   },
 
-  async notifyAnnouncementWake ({ dispatch }, payload) {
+  async notifyAnnouncementWake ({ dispatch }, payload: { entry_id: string }) {
     dispatch('announcements/onAnnouncementWake', payload, { root: true })
   },
 
-  async notifyWebcamsChanged ({ dispatch }, payload) {
+  async notifyWebcamsChanged ({ dispatch }, payload: Moonraker.Webcam.ListResponse) {
     dispatch('webcams/onWebcamsChanged', payload, { root: true })
   },
 
-  async notifySensorUpdate ({ dispatch }, payload) {
+  async notifySensorUpdate ({ dispatch }, payload: Record<string, Moonraker.Sensor.Values>) {
     dispatch('sensors/onSensorUpdate', payload, { root: true })
   },
 
-  async notifyJobQueueChanged ({ dispatch }, payload) {
+  async notifyJobQueueChanged ({ dispatch }, payload: Moonraker.JobQueue.JobQueueChangedResponse) {
     dispatch('jobQueue/onJobQueueChanged', payload, { root: true })
   },
 
-  async notifyActiveSpoolSet ({ dispatch }, payload) {
+  async notifyActiveSpoolSet ({ dispatch }, payload: Moonraker.Spoolman.SpoolIdResponse) {
     dispatch('spoolman/onActiveSpool', payload, { root: true })
   },
 
-  async notifyFilamanActiveSpoolSet ({ dispatch }, payload) {
+  async notifyFilamanActiveSpoolSet ({ dispatch }, payload: { spool_id?: number | string | null }) {
     dispatch('spoolman/onActiveSpool', payload, { root: true })
   },
 
-  async notifyFilamanExtruderSpoolsChanged ({ dispatch }, payload) {
+  async notifyFilamanExtruderSpoolsChanged ({ dispatch }, payload: { extruder_spools?: Partial<Record<string, number | null>> }) {
     dispatch('spoolman/onExtruderSpoolsChanged', payload, { root: true })
   },
 
-  async notifySpoolmanStatusChanged ({ dispatch }, payload) {
+  async notifySpoolmanStatusChanged ({ dispatch }, payload: { spoolman_connected: boolean }) {
     dispatch('spoolman/onStatusChanged', payload.spoolman_connected, { root: true })
   },
 
-  async notifyFilamanStatusChanged ({ dispatch }, payload) {
+  async notifyFilamanStatusChanged ({ dispatch }, payload: { filaman_connected: boolean }) {
     dispatch('spoolman/onStatusChanged', payload.filaman_connected, { root: true })
   }
 } satisfies ActionTree<SocketState, RootState>

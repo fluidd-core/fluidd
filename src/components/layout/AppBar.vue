@@ -50,11 +50,13 @@
               :disabled="!klippyReady"
               v-bind="attrs"
               class="mx-1"
-              color=""
+              color="error"
+              rounded
+              :aria-label="$t('app.general.tooltip.estop')"
               v-on="on"
               @click="emergencyStop()"
             >
-              <v-icon color="error">
+              <v-icon color="white">
                 $estop
               </v-icon>
             </app-btn>
@@ -270,10 +272,6 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
   get instanceName (): string {
     return this.$typedState.config.uiSettings.general.instanceName
-  }
-
-  get hasUpdates (): boolean {
-    return this.$typedGetters['version/hasUpdates']
   }
 
   get saveConfigPending (): boolean {

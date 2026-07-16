@@ -15,10 +15,12 @@
       :name="name"
       :search.sync="search"
       :path="visiblePath"
+      :dense="dense"
       :disabled="disabled"
       :loading="filesLoading"
       :headers="configurableHeaders"
       @root-change="handleRootChange"
+      @navigate-to="loadFiles"
       @refresh="handleRefresh"
       @add-file="handleAddFileDialog"
       @add-dir="handleAddDirDialog"
@@ -32,6 +34,7 @@
       :root="currentRoot"
       :path="visiblePath"
       :selected="selected"
+      @navigate-to="loadFiles"
       @remove="handleRemove"
       @create-zip="handleCreateZip"
       @refresh-metadata="handleRefreshMetadata"
@@ -150,6 +153,7 @@ import FileEditorDialog from './FileEditorDialog.vue'
 import FileNameDialog from './FileNameDialog.vue'
 import FileSystemGoToFileDialog from './FileSystemGoToFileDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
+import AfcMixin from '@/mixins/afc'
 import type { AppDataTableHeader, FileWithPath } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer, setFileDataTransferDataInDataTransfer } from '@/util/file-data-transfer'
@@ -175,7 +179,7 @@ import type { KlipperSaveAndRestartAction } from '@/store/config/types'
     FilePreviewDialog
   }
 })
-export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
+export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin, AfcMixin) {
   // Can be a list of roots, or a single root.
   @Prop({ type: [String, Array], required: true })
   readonly roots!: string | string[]
@@ -925,6 +929,20 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.disabled) return
 
     const filename = file.path ? `${file.path}/${file.filename}` : file.filename
+
+    // AFC check — show lane mapping dialog when AFC is installed. If metadata
+    // is not yet loaded we open the dialog anyway (it will fetch on open);
+    // if metadata is loaded, this panel should show for both single-color
+    // and multi-color prints to allow the user to remap lanes(if needed)
+    // before starting their print.
+    if (this.shouldShowAfcDialog(file)) {
+      this.$typedCommit('afc/setDialogState', {
+        show: true,
+        filename
+      })
+
+      return
+    }
 
     if (this.$typedState.printer.printer.mmu?.enabled === true) {
       if ('referenced_tools' in file) {

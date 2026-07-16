@@ -72,6 +72,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
 import StateMixin from '@/mixins/state'
+import AfcMixin from '@/mixins/afc'
 import StatusControls from './StatusControls.vue'
 import StatusTab from './StatusTab.vue'
 import ReprintTab from './ReprintTab.vue'
@@ -85,7 +86,7 @@ import getFilePaths from '@/util/get-file-paths'
     ReprintTab
   }
 })
-export default class PrinterStatusCard extends Mixins(StateMixin) {
+export default class PrinterStatusCard extends Mixins(StateMixin, AfcMixin) {
   tab = 0
 
   // If the user has no history plugin, and there's no print running..
@@ -128,10 +129,24 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
   }
 
   handlePrint (filename: string) {
-    if (this.$typedState.printer.printer.mmu?.enabled === true) {
-      const { rootPath, filename: filenameOnly } = getFilePaths(filename, 'gcodes')
-      const fileWithMeta = this.$typedGetters['files/getFile'](rootPath, filenameOnly)
+    const { rootPath, filename: filenameOnly } = getFilePaths(filename, 'gcodes')
+    const fileWithMeta = this.$typedGetters['files/getFile'](rootPath, filenameOnly)
 
+    // AFC check — show lane mapping dialog when AFC is installed. If metadata
+    // is not yet loaded we open the dialog anyway (it will fetch on open);
+    // if metadata is loaded, this panel should show for both single-color
+    // and multi-color prints to allow the user to remap lanes(if needed)
+    // before starting their print.
+    if (this.shouldShowAfcDialog(fileWithMeta)) {
+      this.$typedCommit('afc/setDialogState', {
+        show: true,
+        filename
+      })
+
+      return
+    }
+
+    if (this.$typedState.printer.printer.mmu?.enabled === true) {
       if (fileWithMeta != null && 'referenced_tools' in fileWithMeta) {
         const mmuPrint = (fileWithMeta.referenced_tools?.length ?? 1) > 1 || this.$typedState.printer.printer.mmu.gate !== -2
 

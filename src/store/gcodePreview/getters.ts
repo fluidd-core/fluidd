@@ -193,7 +193,7 @@ export const getters = {
       .reduce<Record<Tool, string>>((tools, toolIndex, index) => {
         const tool: Tool = `T${toolIndex}`
         const color: string = (
-          colorsFromFileMetadata[index] ||
+          colorsFromFileMetadata[toolIndex] ||
           defaultColors[index - colorsFromFileMetadata.length] ||
           defaultColors[0]
         )

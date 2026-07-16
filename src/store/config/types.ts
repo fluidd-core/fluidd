@@ -206,6 +206,7 @@ export interface AxisConfig {
 
 export interface DashboardConfig {
   tempPresets: TemperaturePreset[];
+  sensorColors: Record<string, string>;
 }
 
 export interface SaveByPath {
@@ -232,7 +233,7 @@ export interface InstanceConfig extends ApiConfig {
 }
 
 export interface TemperaturePreset {
-  id: number;
+  id: number | string;
   name: string;
   values: Record<string, TemperaturePresetValue>;
   gcode?: string;

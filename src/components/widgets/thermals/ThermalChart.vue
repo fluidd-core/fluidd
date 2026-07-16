@@ -8,10 +8,10 @@
     <e-chart
       ref="chart"
       style="overflow: initial;"
-      :option="options"
-      :update-options="updateOptions"
+      manual-update
       :init-options="initOptions"
       autoresize
+      @hook:mounted="onChartReady"
       @legendselectchanged="handleLegendSelectChanged"
       @legendselected="handleLegendSelectChanged"
       @legendunselected="handleLegendSelectChanged"
@@ -38,8 +38,9 @@
 </template>
 
 <script lang='ts'>
+import { markRaw } from 'vue'
 import { Component, Watch, Prop, Ref, Mixins } from 'vue-property-decorator'
-import type { ECharts, EChartsOption, LineSeriesOption } from 'echarts'
+import type { ECharts, EChartsInitOpts, EChartsOption, LineSeriesOption } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
 import BrowserMixin from '@/mixins/browser'
 import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
@@ -50,16 +51,13 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   readonly narrow?: boolean
 
   @Ref('chart')
-  readonly chart!: ECharts
+  readonly chart?: ECharts
 
-  // Stable references so component re-renders (e.g. toggling pause) don't cause
-  // vue-echarts to dispose/re-init the chart or re-apply the options, both of
-  // which would wipe the imperatively-set dataset and blank the chart.
-  readonly updateOptions = Object.freeze({ notMerge: true })
-  readonly initOptions = Object.freeze({ renderer: 'canvas' })
+  // Stable reference so re-renders don't make vue-echarts re-init the chart.
+  readonly initOptions: EChartsInitOpts = Object.freeze({ renderer: 'canvas' })
 
-  loading = false
   paused = false
+  initialized = false
   series: LineSeriesOption[] = []
   initialSelected: Record<string, boolean> = {}
 
@@ -72,12 +70,10 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   }
 
   handleLegendSelectChanged (event: { selected: Record<string, boolean> }) {
+    this.initialSelected = event.selected
     this.$typedDispatch('charts/saveSelectedLegends', event.selected)
 
-    if (
-      this.chart &&
-      !this.loading
-    ) {
+    if (this.chart) {
       const show = this.showPowerAxis(event.selected)
 
       this.chart.setOption({
@@ -104,44 +100,99 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     return this.$typedState.charts.selectedLegends
   }
 
-  @Watch('chartData')
-  onDataChange (data: any) {
-    if (
-      this.chart &&
-      !this.loading &&
-      !this.paused
-    ) {
-      this.chart.setOption({
-        dataset: {
-          source: data
-        }
-      })
-    }
+  get sensorColors (): Record<string, string> {
+    return this.$typedState.config.uiSettings.dashboard.sensorColors
   }
 
-  mounted () {
-    this.init()
-    this.loading = false
+  @Watch('sensorColors', { deep: true })
+  onSensorColorsChange () {
+    if (!this.chart) return
+
+    for (const series of this.series) {
+      const baseKey = (series.name as string).replace(/(#target|#power|#speed)$/, '')
+      const color = this.seriesColor(baseKey)
+      series.color = color
+      if (series.lineStyle) series.lineStyle.color = color
+    }
+
+    // Merge (no notMerge) so the imperatively-set dataset is preserved.
+    this.chart.setOption({ series: this.series })
+  }
+
+  @Watch('chartData')
+  onDataChange (data: any) {
+    if (!this.chart || this.paused) return
+
+    // Series deferred at creation (empty store): build now and re-apply.
+    if (!this.initialized) {
+      this.initSeries()
+      if (this.initialized) this.onChartReady()
+      return
+    }
+
+    this.chart.setOption({
+      dataset: {
+        source: data
+      }
+    })
+  }
+
+  // Merge so the imperatively-set dataset and legend selection are preserved.
+  @Watch('options')
+  onOptionsChange (options: EChartsOption) {
+    if (!this.chart) return
+
+    this.chart.setOption(options)
+  }
+
+  created () {
+    this.initSeries()
+  }
+
+  // Build the series; no-ops until chartData has at least one entry.
+  initSeries () {
+    const first = this.chartData[0]
+    if (this.initialized || !first) return
+
+    const dataKeys = Object.keys(first)
+    const keys = this.chartableSensors
+    const series: LineSeriesOption[] = []
+
+    keys.forEach((key) => {
+      series.push(this.createSeries(key))
+
+      if (dataKeys.includes(`${key}#target`)) {
+        series.push(this.createSeries(key, '#target'))
+      }
+
+      if (dataKeys.includes(`${key}#power`)) {
+        series.push(this.createSeries(key, '#power'))
+      }
+
+      if (dataKeys.includes(`${key}#speed`)) {
+        series.push(this.createSeries(key, '#speed'))
+      }
+    })
+
+    this.series = markRaw(series)
+    this.initialized = true
+  }
+
+  // Apply the full options + current data once the chart is ready.
+  onChartReady () {
+    if (!this.chart) return
+
+    this.chart.setOption({
+      ...this.options,
+      dataset: {
+        source: this.chartData
+      }
+    }, { notMerge: true })
   }
 
   beforeDestroy () {
     if (typeof window === 'undefined') return
-    if (this.chart) {
-      this.chart.dispose()
-    }
-  }
-
-  init () {
-    // Create the series and associated legends.
-    const dataKeys = Object.keys(this.chartData[0])
-    const keys = this.chartableSensors
-
-    keys.forEach((key) => {
-      this.series.push(this.createSeries(key))
-      if (dataKeys.includes(`${key}#target`)) this.series.push(this.createSeries(key, '#target'))
-      if (dataKeys.includes(`${key}#power`)) this.series.push(this.createSeries(key, '#power'))
-      if (dataKeys.includes(`${key}#speed`)) this.series.push(this.createSeries(key, '#speed'))
-    })
+    this.chart?.dispose()
   }
 
   get options (): EChartsOption {
@@ -359,10 +410,14 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     return options
   }
 
+  seriesColor (baseKey: string): string {
+    return this.$colorset.next(getKlipperType(baseKey), baseKey, this.sensorColors[baseKey])
+  }
+
   createSeries (baseKey: string, subKey?: '#target' | '#power' | '#speed'): LineSeriesOption {
     // Grab the color
     const key = `${baseKey}${subKey ?? ''}`
-    const color = this.$colorset.next(getKlipperType(baseKey), baseKey)
+    const color = this.seriesColor(baseKey)
 
     // Base properties
     const series: LineSeriesOption = {
@@ -428,7 +483,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   }
 
   highlightSeries (key: string) {
-    if (this.chart && !this.loading) {
+    if (this.chart) {
       const seriesName = this.series
         .map(series => series.name as string)
         .filter(name => name === key || name.startsWith(`${key}#`))
@@ -439,7 +494,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   }
 
   downplaySeries () {
-    if (this.chart && !this.loading) {
+    if (this.chart) {
       this.chart.dispatchAction({ type: 'downplay' })
     }
   }

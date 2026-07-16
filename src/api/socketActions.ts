@@ -521,7 +521,7 @@ export const SocketActions = {
     )
   },
 
-  serverDatabasePostItem<T = unknown> (key: string, value: T, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
+  serverDatabasePostItem<T = unknown> (key: string | string[], value: T, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
     return baseEmit<Moonraker.Database.PostItemResponse<T>>(
       'server.database.post_item', {
         ...options,
@@ -534,7 +534,7 @@ export const SocketActions = {
     )
   },
 
-  serverDatabaseDeleteItem<T = unknown> (key: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
+  serverDatabaseDeleteItem<T = unknown> (key: string | string[], namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
     return baseEmit<Moonraker.Database.DeleteItemResponse<T>>(
       'server.database.delete_item', {
         ...options,
@@ -546,7 +546,7 @@ export const SocketActions = {
     )
   },
 
-  serverDatabaseGetItem<T = unknown> (key?: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
+  serverDatabaseGetItem<T = unknown> (key?: string | string[], namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: NotifyOptions) {
     return baseEmit<Moonraker.Database.GetItemResponse<T>>(
       'server.database.get_item', {
         ...options,
@@ -734,6 +734,17 @@ export const SocketActions = {
           path,
           extended: true
         }
+      }
+    )
+  },
+
+  serverFilesRoots (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Files.RootsResponse>(
+      'server.files.roots',
+      {
+        dispatch: 'files/onServerFilesRoots',
+        wait: Waits.onFileSystemRoots,
+        ...options
       }
     )
   },

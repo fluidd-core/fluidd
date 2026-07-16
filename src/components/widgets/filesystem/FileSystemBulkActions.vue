@@ -3,9 +3,11 @@
     dense
   >
     <v-toolbar-title class="d-none d-sm-block">
-      <div class="file-path">
-        &lrm;/{{ path }}
-      </div>
+      <file-system-breadcrumbs
+        :root="root"
+        :path="path"
+        @navigate-to="$emit('navigate-to', $event)"
+      />
     </v-toolbar-title>
 
     <v-spacer />
@@ -112,15 +114,20 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StatesMixin from '@/mixins/state'
+import FileSystemBreadcrumbs from './FileSystemBreadcrumbs.vue'
 import type { FileBrowserEntry, RootProperties } from '@/store/files/types'
 
-@Component({})
+@Component({
+  components: {
+    FileSystemBreadcrumbs
+  }
+})
 export default class FileSystemBulkActions extends Mixins(StatesMixin) {
   @Prop({ type: String, required: true })
   readonly root!: string
 
   // The current path
-  @Prop({ type: String })
+  @Prop({ type: String, required: true })
   readonly path!: string
 
   @Prop({ type: [Object, Array], required: true })

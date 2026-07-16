@@ -102,4 +102,13 @@ declare namespace Moonraker.Timelapse {
     crf: number;
     pixelformat: string;
   }
+
+  export interface NewFrameResponse {
+    action: 'newframe';
+    status?: 'error';
+    frame: string;
+    framefile: string;
+  }
+
+  export type Event = NewFrameResponse | RenderResponse
 }

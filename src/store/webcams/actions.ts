@@ -26,7 +26,7 @@ export const actions = {
     SocketActions.serverWebcamsList()
   },
 
-  async initWebcams ({ commit }, payload) {
+  async initWebcams ({ commit }, payload: { activeWebcam?: string }) {
     commit('setInitWebcams', payload)
   },
 

@@ -41,37 +41,32 @@
         class="py-0 overflow-y-auto app-notifications"
         style="max-height: 90vh"
       >
-        <v-list-item
-          v-if="notifications.length === 0"
-        >
+        <v-list-item v-if="notifications.length === 0">
           <v-list-item-content>
             <v-list-item-title>{{ $t('app.general.label.no_notifications') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
-        <template v-else-if="notifications.length > 0">
-          <v-list-item
-            :disabled="clearableNotifications.length <= 0"
-            @click="handleClearAll"
-          >
-            <v-list-item-content>
-              <v-list-item-title>{{ $t('app.general.label.clear_all') }}</v-list-item-title>
-            </v-list-item-content>
-            <v-list-item-icon class="notification-clear-all">
-              <v-icon dense>
-                $close
-              </v-icon>
-            </v-list-item-icon>
-          </v-list-item>
-
-          <v-divider />
-        </template>
-
-        <template
-          v-for="(n, i) in notifications"
+        <v-list-item
+          v-else
+          :disabled="clearableNotifications.length <= 0"
+          @click="handleClearAll"
         >
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('app.general.label.clear_all') }}</v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-icon class="notification-clear-all">
+            <v-icon dense>
+              $close
+            </v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+
+        <template v-for="n in notifications">
+          <v-divider :key="`notification:divider:${n.id}`" />
+
           <v-list-item
-            :key="`notification-${n.id}`"
+            :key="`notification::${n.id}`"
             three-line
             :class="classes(n)"
           >
@@ -109,6 +104,7 @@
                   x-small
                   :href="n.to"
                   target="_blank"
+                  rel="noopener noreferrer"
                   class="mr-1"
                   @click="menu = false"
                 />
@@ -149,11 +145,6 @@
               </app-btn>
             </v-list-item-action>
           </v-list-item>
-
-          <v-divider
-            v-if="i < notifications.length - 1"
-            :key="`divider-${n.id}`"
-          />
         </template>
       </v-list>
     </v-card>

@@ -6,7 +6,6 @@ import {
   mdiCheck,
   mdiFire,
   mdiCog,
-  mdiCarBrakeAlert,
   mdiPrinter3d,
   mdiPrinter3dNozzle,
   mdiPrinter3dNozzleOutline,
@@ -202,7 +201,7 @@ import {
   mdiArrowDownBold,
   mdiArrowUpBold,
   mdiDockTop,
-  mdiDockBottom
+  mdiDockBottom,
 } from '@mdi/js'
 
 import {
@@ -220,6 +219,8 @@ const mdiFilamentUp = 'M12 2a10 10 0 0 0-1.129.08 10 10 0 0 0-1.02.18 10 10 0 0 
 const mdiFilamentChange = 'm23.5 18.5-3-3v2h-4v2h4v2zm-9 0 3 3v-2h4v-2h-4v-2zM12 2a10 10 0 0 0-1.129.08 10 10 0 0 0-1.02.18 10 10 0 0 0-1.314.386A10 10 0 0 0 7.672 3H7.67a10 10 0 0 0-1.295.752 10 10 0 0 0-.754.564 10 10 0 0 0-.98.938 10 10 0 0 0-.598.732 10 10 0 0 0-1.57 3.016 10 10 0 0 0-.315 1.314 10 10 0 0 0-.105.932v.008A10 10 0 0 0 2 12q.012.372.053.742v.006a10 10 0 0 0 .105.936 10 10 0 0 0 .315 1.314 10 10 0 0 0 .904 2.022 10 10 0 0 0 .666.994 10 10 0 0 0 .598.732 10 10 0 0 0 .98.938q.364.3.754.564A10 10 0 0 0 7.67 21h.002a10 10 0 0 0 .865.354 10 10 0 0 0 1.315.386 10 10 0 0 0 1.02.18A10 10 0 0 0 12 22a10 10 0 0 0 1.129-.08 10 10 0 0 0 .59-.104 6 6 0 0 1-.676-2.214l-.61-.352v-1l.434-.25.258-.148a6 6 0 0 1 .607-1.692V16l.127-.074a6 6 0 0 1 1.342-1.559 4 4 0 0 0 .563-1.04l.132-.077.56.322A6 6 0 0 1 19 13a6 6 0 0 1 2.834.713l.008-.03a10 10 0 0 0 .105-.931v-.008A10 10 0 0 0 22 12q0-.378-.031-.756l-.002-.012a10 10 0 0 0-.426-2.222 10 10 0 0 0-.38-1.014l-.007-.014-.008-.013a10 10 0 0 0-.488-.967L20.656 7a10 10 0 0 0-2.265-2.69 10 10 0 0 0-2.06-1.322h-.003a10 10 0 0 0-2.15-.746h-.002a10 10 0 0 0-1.114-.183A10 10 0 0 0 12 2m-1.299 2.25.432.25.433.25v1l-.865.5-.433-.25-.432-.25v-1l.268-.154Zm2.598 0 .865.5v1l-.865.5-.865-.5v-1zm1.883.414a8 8 0 0 1 1.58.91v.176l-.658.38-.208.12-.865-.5v-1zm-6.342.012.129.074v1L8.537 6l-.433.25-.866-.5v-.172a8 8 0 0 1 1.602-.902M6.805 6.5l.865.5v1l-.865.5-.104-.06L5.94 8V7Zm2.597 0 .866.5v1l-.434.25-.432.25-.431-.25L8.537 8V7l.432-.25ZM12 6.5l.865.5v1l-.12.07A4 4 0 0 0 12 8a4 4 0 0 0-.732.076L11.135 8V7Zm2.598 0 .865.5v1l-.865.5-.866-.5V7Zm2.597 0 .866.5v1l-.866.5-.865-.5V7ZM5.505 8.75l.866.5v1l-.865.5-.865-.5v-1zm2.599 0 .865.5v.14a4 4 0 0 0-.733 1.284l-.132.076-.866-.5v-1zm7.792 0 .866.5v1l-.866.5-.12-.07a4 4 0 0 0-.745-1.287V9.25Zm2.598 0 .865.5v1l-.865.5-.207-.12-.658-.38v-1zM12 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4m-7.793 1 .865.5v1l-.865.5-.135-.078A8 8 0 0 1 4 12a8 8 0 0 1 .072-.922Zm2.598 0 .865.5v1l-.865.5-.104-.06-.762-.44v-1l.762-.44zm10.39 0 .866.5v1l-.866.5-.431-.25-.434-.25v-1zm2.598 0 .154.09A8 8 0 0 1 20 12a8 8 0 0 1-.072.922l-.135.078-.865-.5v-1ZM5.506 13.25l.865.5v1l-.865.5-.865-.5v-1zm2.598 0 .132.076a4 4 0 0 0 .733 1.283v.141l-.432.25-.433.25-.866-.5v-1l.434-.25Zm-1.3 2.25.866.5v1l-.865.5-.104-.06L5.94 17v-1l.762-.44zm2.598 0 .432.25.434.25v1l-.434.25-.432.25-.431-.25-.434-.25v-1l.432-.25h.002Zm1.866.424A4 4 0 0 0 12 16q.37-.004.732-.076l.133.076v1l-.761.44-.104.06-.865-.5v-1ZM8.104 17.75l.865.5v1l-.13.074a8 8 0 0 1-1.6-.902v-.172Zm2.597 0 .865.5v1l-.865.5-.865-.5v-1z'
 const mdiFileImageLock = 'M6 2c-1.11 0-2 .89-2 2v16a2 2 0 0 0 2 2h6v-2H6l6-6 1.21 1.21C13.377 12.674 15.688 11 18 11c.7 0 1.4.2 2 .4V8l-6-6zm7 1.5L18.5 9H13zM8 9a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2m10 4c-1.4 0-2.8 1.1-2.8 2.5V17c-.6 0-1.2.6-1.2 1.2v3.5c0 .7.6 1.3 1.2 1.3h5.5c.7 0 1.3-.6 1.3-1.2v-3.5c0-.7-.6-1.3-1.2-1.3v-1.5c0-1.4-1.4-2.5-2.8-2.5m0 1.2c.8 0 1.5.5 1.5 1.3V17h-3v-1.5c0-.8.7-1.3 1.5-1.3'
 const mdiFileDocumentLock = 'M12 21.7V18H6v-2h6.9l.3-.3v-.2q0-.75.3-1.5H6v-2h9.1c.8-.6 1.8-1 2.9-1 .7 0 1.4.2 2 .4V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h6zm1-18.2L18.5 9H13ZM20.8 17v-1.5c0-1.4-1.4-2.5-2.8-2.5s-2.8 1.1-2.8 2.5V17c-.6 0-1.2.6-1.2 1.2v3.5c0 .7.6 1.3 1.2 1.3h5.5c.7 0 1.3-.6 1.3-1.2v-3.5c0-.7-.6-1.3-1.2-1.3m-1.3 0h-3v-1.5c0-.8.7-1.3 1.5-1.3s1.5.5 1.5 1.3z'
+const mdiEmergencyStop = 'M12 1 8 5l.05.05 1.48 1.48L12 9V6a5.98 5.98 0 0 1 5.828 4.564l1.93-.517C18.883 6.579 15.733 4 12 4zM6.436 6.264a7.975 7.975 0 0 0-1.36 9.734L2.475 17.5l5.462 1.465.018-.069h.002l.541-2.019.904-3.377-2.6 1.502A6 6 0 0 1 6 12a5.98 5.98 0 0 1 1.84-4.332zm13.627 5.771-.065.018-1.336.357-.691.186-3.373.904 2.601 1.502A5.98 5.98 0 0 1 12 18c-.58 0-1.14-.082-1.67-.234l-.518 1.927c.696.199 1.43.307 2.188.307 2.952 0 5.536-1.614 6.922-4.004l2.603 1.504z'
+
 /**
  * Global, static constants.
  */
@@ -249,6 +250,7 @@ export const Globals = Object.freeze({
       ROOTS: {
         uiSettings: { name: 'uiSettings', dispatch: 'config/initUiSettings' },
         macros: { name: 'macros', dispatch: 'macros/initMacros' },
+        sensors: { name: 'sensors', dispatch: 'sensors/initSensors' },
         console: { name: 'console', dispatch: 'console/initConsole' },
         charts: { name: 'charts', dispatch: 'charts/initCharts' },
         cameras: { name: 'cameras', dispatch: 'webcams/initLegacyCameras', migrate_only: true },
@@ -398,7 +400,7 @@ export const Icons = Object.freeze({
   save: mdiContentSaveOutline,
   saveAs: mdiContentSaveEditOutline,
   saveDefault: mdiContentSaveCogOutline,
-  estop: mdiCarBrakeAlert,
+  estop: mdiEmergencyStop,
   fire: mdiFire,
   tools: mdiHammerWrench,
   minus: mdiMinus,
@@ -461,7 +463,8 @@ export const Icons = Object.freeze({
   contentCopy: mdiContentCopy,
   apps: mdiApps,
   shieldAccount: mdiShieldAccount,
-  retract: mdiSwapVertical,
+  retract: mdiArrowUpBold,
+  extrude: mdiArrowDownBold,
   codeJson: mdiCodeJson,
   desktopTower: mdiDesktopTower,
   harddisk: mdiHarddisk,
@@ -625,6 +628,7 @@ export const Waits = Object.freeze({
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
   onFileSystem: 'onFileSystem',
+  onFileSystemRoots: 'onFileSystemRoots',
   onJobQueue: 'onJobQueue',
   onTimelapseSaveFrame: 'onTimelapseSaveFrame',
   onManualProbe: 'onManualProbe',
@@ -747,4 +751,20 @@ export const TimeFormats = Object.freeze<Record<string, DateTimeFormat>>({
   hours24: {
     options: { hour: '2-digit', minute: '2-digit', hour12: false }
   }
+})
+
+export interface ColorGenOption {
+  base: string
+  count: number
+  hsplit?: number
+  lsplit?: number
+}
+
+export type PaletteOption = string[] | ColorGenOption
+
+export const DefaultPalettes = Object.freeze<Record<string, PaletteOption>>({
+  heater: { base: '#ff5252', hsplit: 20, count: 4 },
+  bed: { base: '#1fb0ff', hsplit: 20, count: 2 },
+  fan: { base: '#4CAF50', hsplit: 20, count: 4 },
+  sensor: ['#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B', '#3F51B5', '#F50057']
 })
