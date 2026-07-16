@@ -7,8 +7,8 @@ allowBuilds:
 
 catalog:
   vue: ^2.7.16
-  dompurify: ^3.4.11
-  vite: ^8.1.3
+  dompurify: ^3.4.12
+  vite: ^8.1.4
   echarts: ^6.1.0
 
 overrides:

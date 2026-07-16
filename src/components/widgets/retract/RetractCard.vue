@@ -1,7 +1,7 @@
 <template>
   <collapsable-card
     :title="$t('app.general.title.retract')"
-    icon="$retract"
+    icon="$retractions"
     draggable
     layout-path="dashboard.retract-card"
   >

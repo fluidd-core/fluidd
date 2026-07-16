@@ -201,7 +201,7 @@ import {
   mdiArrowDownBold,
   mdiArrowUpBold,
   mdiDockTop,
-  mdiDockBottom
+  mdiDockBottom,
 } from '@mdi/js'
 
 import {
@@ -220,6 +220,7 @@ const mdiFilamentChange = 'm23.5 18.5-3-3v2h-4v2h4v2zm-9 0 3 3v-2h4v-2h-4v-2zM12
 const mdiFileImageLock = 'M6 2c-1.11 0-2 .89-2 2v16a2 2 0 0 0 2 2h6v-2H6l6-6 1.21 1.21C13.377 12.674 15.688 11 18 11c.7 0 1.4.2 2 .4V8l-6-6zm7 1.5L18.5 9H13zM8 9a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2m10 4c-1.4 0-2.8 1.1-2.8 2.5V17c-.6 0-1.2.6-1.2 1.2v3.5c0 .7.6 1.3 1.2 1.3h5.5c.7 0 1.3-.6 1.3-1.2v-3.5c0-.7-.6-1.3-1.2-1.3v-1.5c0-1.4-1.4-2.5-2.8-2.5m0 1.2c.8 0 1.5.5 1.5 1.3V17h-3v-1.5c0-.8.7-1.3 1.5-1.3'
 const mdiFileDocumentLock = 'M12 21.7V18H6v-2h6.9l.3-.3v-.2q0-.75.3-1.5H6v-2h9.1c.8-.6 1.8-1 2.9-1 .7 0 1.4.2 2 .4V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h6zm1-18.2L18.5 9H13ZM20.8 17v-1.5c0-1.4-1.4-2.5-2.8-2.5s-2.8 1.1-2.8 2.5V17c-.6 0-1.2.6-1.2 1.2v3.5c0 .7.6 1.3 1.2 1.3h5.5c.7 0 1.3-.6 1.3-1.2v-3.5c0-.7-.6-1.3-1.2-1.3m-1.3 0h-3v-1.5c0-.8.7-1.3 1.5-1.3s1.5.5 1.5 1.3z'
 const mdiEmergencyStop = 'M12 1 8 5l.05.05 1.48 1.48L12 9V6a5.98 5.98 0 0 1 5.828 4.564l1.93-.517C18.883 6.579 15.733 4 12 4zM6.436 6.264a7.975 7.975 0 0 0-1.36 9.734L2.475 17.5l5.462 1.465.018-.069h.002l.541-2.019.904-3.377-2.6 1.502A6 6 0 0 1 6 12a5.98 5.98 0 0 1 1.84-4.332zm13.627 5.771-.065.018-1.336.357-.691.186-3.373.904 2.601 1.502A5.98 5.98 0 0 1 12 18c-.58 0-1.14-.082-1.67-.234l-.518 1.927c.696.199 1.43.307 2.188.307 2.952 0 5.536-1.614 6.922-4.004l2.603 1.504z'
+
 /**
  * Global, static constants.
  */
@@ -461,7 +462,8 @@ export const Icons = Object.freeze({
   contentCopy: mdiContentCopy,
   apps: mdiApps,
   shieldAccount: mdiShieldAccount,
-  retract: mdiSwapVertical,
+  retract: mdiArrowUpBold,
+  extrude: mdiArrowDownBold,
   codeJson: mdiCodeJson,
   desktopTower: mdiDesktopTower,
   harddisk: mdiHarddisk,

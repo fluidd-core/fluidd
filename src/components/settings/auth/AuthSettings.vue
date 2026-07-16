@@ -41,13 +41,11 @@
         </app-btn>
       </app-setting>
 
-      <v-divider v-if="users.length > 0" />
+      <template v-for="user in users">
+        <v-divider :key="`user:divider:${user.username}`" />
 
-      <template
-        v-for="(user, i) in users"
-      >
         <app-setting
-          :key="`user-${user.username}`"
+          :key="`user::${user.username}`"
           :sub-title="
             user.username === currentUser ? $t('app.general.label.current_user') :
             user.source !== 'moonraker' ? $t('app.general.label.user_managed_source', { source: $t(`app.general.label.${user.source}`) }) :
@@ -69,11 +67,6 @@
             </v-icon>
           </app-btn>
         </app-setting>
-
-        <v-divider
-          v-if="i < users.length - 1"
-          :key="`divider-${user.username}`"
-        />
       </template>
 
       <add-user-dialog

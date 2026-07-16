@@ -70,13 +70,13 @@
 
       <afc-card-settings-extruder
         v-for="extruder in afcExtruders"
-        :key="extruder"
+        :key="`extruder:${extruder}`"
         :name="extruder"
       />
 
       <afc-card-settings-unit
         v-for="unit in afcUnits"
-        :key="unit"
+        :key="`unit:${unit}`"
         :name="unit"
       />
     </v-list>

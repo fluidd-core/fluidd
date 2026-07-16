@@ -39,6 +39,19 @@ app:
     PreExtruderSensor: "Pre-Extruder Sensor"
     PrepDetected: "Filament detected but not loaded"
     Printing: "Printing"
+    PrintStartDialog:
+      StartJob: "Start Job"
+      Title: "AFC Lane Assignment"
+      NoLane: "No Lane"
+      NoLaneMapped: "No lane mapped to {tool}"
+      NoFilamentLoaded: "No filament loaded into {lane}"
+      FilamentTypeMismatch: "Filament material type mismatch: file requires {file}, lane has {lane}"
+      FilamentWeightNotEnough: "Not enough filament in lane {lane}: requires {required}, available {available}"
+      Question: "Do you want to start printing {filename}?"
+      QuestionWithSpool: "Do you want to start printing {filename} with the active spool?"
+      SpoolId: "ID #{id}"
+      SpoolWeightRemaining: "{remaining}g remaining ({used}g used)"
+      LaneWeightRemaining: "Weight remaining {weight}g"
     RammingSensor: "Ramming Sensor"
     Restoring: "Restoring"
     SetSpool: "Set Spool"
@@ -969,11 +982,13 @@ app:
       absolute_positioning: Absolute Positioning
       extruder_disabled: extruder disabled, below min_extrude_temp 
         (%{min}<small>°C</small>)
+      extruding: Extruding
       home_xy: Home XY
       home_z: Home Z
       manual_probe: Manual Probe
       motors_off: Motors Off
       relative_positioning: Relative Positioning
+      retracting: Retracting
       select_tool: Select tool %{tool}
       tools: Tools
     label:

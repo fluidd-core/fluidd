@@ -21,9 +21,9 @@
 
       <v-divider />
 
-      <template v-for="(item, i) in heaters">
+      <template v-for="item in heaters">
         <app-setting
-          :key="`${i}heater`"
+          :key="`heater::${item.name}`"
           :title="$filters.prettyCase(item.name)"
         >
           <v-checkbox
@@ -47,12 +47,12 @@
           />
         </app-setting>
 
-        <v-divider :key="i + 'heaterd'" />
+        <v-divider :key="`heater:divider:${item.name}`" />
       </template>
 
-      <template v-for="(item, i) in fans">
+      <template v-for="item in fans">
         <app-setting
-          :key="`${i}fan`"
+          :key="`fan::${item.name}`"
           :title="$filters.prettyCase(item.name)"
         >
           <v-checkbox
@@ -76,7 +76,7 @@
           />
         </app-setting>
 
-        <v-divider :key="i + 'fand'" />
+        <v-divider :key="`fan:divider:${item.name}`" />
       </template>
 
       <app-setting :title="$t('app.setting.label.thermal_preset_gcode')">

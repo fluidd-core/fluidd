@@ -14,13 +14,13 @@
       <afc-card-bypass />
       <afc-card-extruder
         v-for="extruder in filteredExtruders"
-        :key="extruder"
+        :key="`extruder:${extruder}`"
         :name="extruder"
         class="mt-3"
       />
       <afc-card-unit
         v-for="unit in filteredUnits"
-        :key="unit"
+        :key="`unit:${unit}`"
         :name="unit"
         class="mt-3"
       />

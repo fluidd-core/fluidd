@@ -12,41 +12,59 @@
       </v-icon>
       <span class="font-weight-light">{{ $t('app.general.title.tool') }}</span>
 
-      <v-tooltip
-        v-if="extruderDisconnected"
-        bottom
-      >
-        <template #activator="{ on, attrs }">
-          <v-icon
-            v-bind="attrs"
-            class="ml-3"
-            color="warning"
-            small
-            v-on="on"
-          >
-            $warning
-          </v-icon>
-        </template>
-        <span>{{ $t('app.general.label.disconnected') }}</span>
-      </v-tooltip>
+      <template v-if="klippyReady && hasExtruder">
+        <v-tooltip
+          v-if="extruderDisconnected"
+          bottom
+        >
+          <template #activator="{ on, attrs }">
+            <v-icon
+              v-bind="attrs"
+              class="ml-3"
+              color="warning"
+              small
+              v-on="on"
+            >
+              $warning
+            </v-icon>
+          </template>
+          <span>{{ $t('app.general.label.disconnected') }}</span>
+        </v-tooltip>
 
-      <v-tooltip
-        v-else
-        bottom
-      >
-        <template #activator="{ on, attrs }">
-          <v-icon
-            v-show="hasExtruder && !extruderReady"
-            v-bind="attrs"
-            class="ml-3"
-            color="info"
-            v-on="on"
-          >
-            $snowflakeAlert
-          </v-icon>
-        </template>
-        <span v-safe-html="$t('app.tool.tooltip.extruder_disabled', { min: activeExtruder?.min_extrude_temp })" />
-      </v-tooltip>
+        <v-tooltip
+          v-else-if="!extruderReady"
+          bottom
+        >
+          <template #activator="{ on, attrs }">
+            <v-icon
+              v-bind="attrs"
+              class="ml-3"
+              color="info"
+              v-on="on"
+            >
+              $snowflakeAlert
+            </v-icon>
+          </template>
+          <span v-safe-html="$t('app.tool.tooltip.extruder_disabled', { min: activeExtruder?.min_extrude_temp })" />
+        </v-tooltip>
+
+        <v-tooltip
+          v-else-if="extruderMovementDirection"
+          bottom
+        >
+          <template #activator="{ on, attrs }">
+            <v-icon
+              v-bind="attrs"
+              class="ml-3"
+              :color="extruderMovementDirection < 0 ? 'red' : 'green'"
+              v-on="on"
+            >
+              {{ extruderMovementDirection < 0 ? '$retract' : '$extrude' }}
+            </v-icon>
+          </template>
+          <span>{{ extruderMovementDirection < 0 ? $t('app.tool.tooltip.retracting') : $t('app.tool.tooltip.extruding') }}</span>
+        </v-tooltip>
+      </template>
     </template>
 
     <template #menu>
@@ -182,6 +200,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get klippyApp (): KlippyApp {
     return this.$typedGetters['printer/getKlippyApp']
+  }
+
+  get liveExtruderVelocity (): number {
+    return this.$typedState.printer.printer.motion_report?.live_extruder_velocity ?? 0
+  }
+
+  get extruderMovementDirection (): number {
+    return Math.sign(this.liveExtruderVelocity)
   }
 
   get printerSettings (): Klipper.SettingsState {

@@ -26,10 +26,10 @@
       </app-setting>
 
       <template v-for="filter in filters">
-        <v-divider :key="`divider-${filter.name}`" />
+        <v-divider :key="`filter:divider:${filter.name}`" />
 
         <app-setting
-          :key="`filter-${filter.name}`"
+          :key="`filter::${filter.name}`"
           :r-cols="3"
         >
           <template #title>
