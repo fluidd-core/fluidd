@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.37.3](https://github.com/fluidd-core/fluidd/compare/v1.37.2...v1.37.3) (2026-07-20)
+
+
+### Features
+
+* add retract and extrude indicator ([#1898](https://github.com/fluidd-core/fluidd/issues/1898)) ([2f7db5b](https://github.com/fluidd-core/fluidd/commit/2f7db5b763155752903e968289055168c854a37d))
+* **AFC:** Adding AFC print dialog ([#1900](https://github.com/fluidd-core/fluidd/issues/1900)) ([3b1fdbb](https://github.com/fluidd-core/fluidd/commit/3b1fdbba93f7bb80a348cfe72ab34f6208b8c2d5))
+* **i18n-fr:** Update French translations ([51b8e72](https://github.com/fluidd-core/fluidd/commit/51b8e7238991ee3f04f2d36152921f52bf71a7e8))
+* **i18n-sl:** Update Slovenian translations ([6381e70](https://github.com/fluidd-core/fluidd/commit/6381e708c613a18b6502c285af997896e1118869))
+* **i18n-th:** Add Thai translations ([915030d](https://github.com/fluidd-core/fluidd/commit/915030d10ea9e3fa59bae72de3f9c77d756a2f52))
+
+
+### Bug Fixes
+
+* don't remove file item if rename to same name ([2f4c9a3](https://github.com/fluidd-core/fluidd/commit/2f4c9a3b40eec714c52b370036579418173f8376))
+
+
+### Code Refactorings
+
+* stable keys bindings for v-for loops ([#1903](https://github.com/fluidd-core/fluidd/issues/1903)) ([c49e50e](https://github.com/fluidd-core/fluidd/commit/c49e50e30ab31b4bebfbd9d61e368fd56f0e2580))
+* typing improvements ([#1894](https://github.com/fluidd-core/fluidd/issues/1894)) ([bb92391](https://github.com/fluidd-core/fluidd/commit/bb923912e94215131382b7deb952c7cb3b9e5687))
+
 ## [1.37.2](https://github.com/fluidd-core/fluidd/compare/v1.37.1...v1.37.2) (2026-06-23)
 
 
