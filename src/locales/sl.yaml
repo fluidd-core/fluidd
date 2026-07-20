@@ -55,8 +55,16 @@ app:
         da je to pravi naslov?
       cors_error: blokirano zaradi CORS politike
       cors_note: >-
-        To pomeni, da je potrebno spremeniti moonraker konfiguracijo. Prosimo, preberite
+        To pomeni, da je potrebno spremeniti Moonraker konfiguracijo. Prosimo, preberite
         dokumentacijo o <a href="%{url}" target="_blank">nastavitvi</a> več tiskalnikov
+      mixed_content: Fluidd deluje prek protokola HTTPS, ta naslov pa uporablja 
+        protokol HTTP. Brskalniki blokirajo mešane (nezavarovane) povezave. 
+        Uporabite naslov HTTPS (zavarovan) ali pa Fluidd odprite prek protokola 
+        HTTP.
+      websocket_failed: Strežnik je odgovoril prek protokola HTTP, vendar je 
+        povezava WebSocket spodletela. Če uporabljate reverzni proxy, se 
+        prepričajte, da je nastavljen tako, da nadgrajuje in posreduje povezave 
+        WebSocket.
     hint:
       add_printer: Npr., http://fluidd.local
     msg:
@@ -241,6 +249,7 @@ app:
       reset_stats: Ponastavi statistiko
       clear: Počisti
       scroll_to_latest: Pomakni se na najnovejše
+      reset_to_default: Ponastavi na privzete nastavitve
     error:
       app_setup_link: >-
         Zahteve za namestitve Fluidda lahko najdete <a target="_blank"
@@ -381,6 +390,7 @@ app:
       stepper_driver: >-
         %{name} Gonilnik
       toolchange: Menjava orodja
+      no_data: Ni podatkov
     msg:
       password_changed: Geslo spremenjeno
       wrong_password: Ups, nekaj se je zalomilo. Ali ste vnesi pravilno geslo?
@@ -547,17 +557,17 @@ app:
       browse_metrics: Brskaj meritve, ki so na voljo
       estop: Zasilna ustavitev
       exit_layout: Izhod iz načina postavitve
-      managed_by_moonraker: Upravlja konfiguracija moonrakerja
+      managed_by_moonraker: Upravlja konfiguracija Moonrakerja
       notifications: Obvestila
       power_on_printer: Vklopi napajanje tiskalnika
-      reload_klipper: Ponovno naloži klipperjeve konfiguracije
-      reload_restart_klipper: Ponovno naloži klipperjeve konfiguracije in 
+      reload_klipper: Ponovno naloži Klipperjeve konfiguracije
+      reload_restart_klipper: Ponovno naloži Klipperjeve konfiguracije in 
         ponovno zažene MKE
       reset_layout: Ponastavi trenutno postavitev kot privzeto postavitev 
         celotnega strežnika
       reset_default_layout: Ponastavi privzeto postavitev celotnega strežnika na
         tovarniške nastavitve
-      restart_klipper: Ponovno zažene sistemsko storitev klipper.
+      restart_klipper: Ponovno zažene sistemsko storitev Klipper
       run_collector: Zaženi zbiralnik
       rollover_logs: Zaviti dnevniki
       set_default_layout: Nastavi trenutno postavitev kot privzeto postavitev 
@@ -777,6 +787,7 @@ app:
         nastavitev posteljnih vijakov
       show_screws_tilt_adjust_dialog_automatically: Samodejno prikaži dialog za 
         nastavitev naklona vijakov
+      sensor_color: Barva senzorja
     timer_options:
       absolute_file_position: Absoluten položaj datoteke
       duration: Samo trajanje
@@ -825,9 +836,9 @@ app:
       warn_on_stepper_driver_overheating: Samo za gonilnike Trinamic
   socket:
     msg:
-      connecting: Povezujem se na moonraker...
-      no_connection: Ni povezave z moonrakerjem. Prosimo, preverite status 
-        moonrakerja ali osvežite stran.
+      connecting: Povezujem se na Moonraker...
+      no_connection: Ni povezave z Moonrakerjem. Prosimo, preverite status 
+        Moonrakerja ali osvežite stran.
   system_info:
     label:
       application: Aplikacija
@@ -1369,3 +1380,5 @@ app:
       onemogočeni!
     DebugJson: Odpravljanje JSON napak
     RammingSensor: Senzor trka
+    WeightRemaining: preostalo še {weight} g
+    WeightUsed: porabljeno {weight} g

@@ -75,7 +75,7 @@ export const mutations = {
    * Defines the list of available commands
    */
   setGcodeHelp (state, payload: Moonraker.KlippyApis.GcodeHelpResponse) {
-    state.gcodeHelp = payload
+    state.gcodeHelp = Object.freeze(payload)
   },
 
   /**

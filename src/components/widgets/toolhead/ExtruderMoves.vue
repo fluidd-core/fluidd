@@ -35,7 +35,12 @@
           @click="retract"
         >
           {{ $t('app.general.btn.retract') }}
-          <v-icon>$chevronUp</v-icon>
+          <v-icon
+            small
+            right
+          >
+            $retract
+          </v-icon>
         </app-btn>
       </v-col>
     </v-row>
@@ -73,7 +78,12 @@
           @click="extrude"
         >
           {{ $t('app.general.btn.extrude') }}
-          <v-icon>$chevronDown</v-icon>
+          <v-icon
+            small
+            right
+          >
+            $extrude
+          </v-icon>
         </app-btn>
       </v-col>
     </v-row>

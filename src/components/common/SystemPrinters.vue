@@ -2,9 +2,9 @@
   <v-list dense>
     <v-subheader>{{ $t('app.general.label.printers') }}</v-subheader>
 
-    <template v-for="(instance, index) in instances">
+    <template v-for="instance in instances">
       <v-list-item
-        :key="index"
+        :key="instance.apiUrl"
         class="instance-item"
         :class="{ 'v-item--active v-list-item--active': instance.active }"
         @click.stop="activateInstance(instance)"

@@ -25,11 +25,11 @@
         </app-btn>
       </app-setting>
 
-      <v-divider v-if="presets.length > 0" />
+      <template v-for="preset in presets">
+        <v-divider :key="`preset:divider:${preset.id}`" />
 
-      <template v-for="(preset, i) in presets">
         <app-setting
-          :key="`preset${i}`"
+          :key="`preset::${preset.id}`"
           :title="preset.name"
           :r-cols="2"
         >
@@ -62,11 +62,6 @@
             </v-icon>
           </app-btn>
         </app-setting>
-
-        <v-divider
-          v-if="i < presets.length - 1 && presets.length > 0"
-          :key="preset.id"
-        />
       </template>
 
       <preset-dialog

@@ -20,7 +20,7 @@ export const mutations = {
   },
 
   setSpools (state, payload: Moonraker.Spoolman.Spool[]) {
-    state.spools = payload
+    state.spools = Object.freeze(payload)
   },
 
   setDialogState (state, payload: SpoolSelectionDialogState) {
@@ -28,7 +28,7 @@ export const mutations = {
   },
 
   setInfo (state, payload: Moonraker.Spoolman.Info) {
-    state.info = payload
+    state.info = Object.freeze(payload)
   },
 
   setCurrency (state, payload: Moonraker.Spoolman.Currency) {

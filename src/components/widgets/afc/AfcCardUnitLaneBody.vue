@@ -122,7 +122,7 @@
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
-import type { Spool, SpoolSelectionDialogState } from '@/store/spoolman/types'
+import type { SpoolSelectionDialogState } from '@/store/spoolman/types'
 import AfcUnitLaneInfiniteDialog from '@/components/widgets/afc/dialogs/AfcUnitLaneInfiniteDialog.vue'
 import AfcUnitLaneFilamentDialog from '@/components/widgets/afc/dialogs/AfcUnitLaneFilamentDialog.vue'
 import AfcFilamentReel from './AfcFilamentReel.vue'
@@ -151,73 +151,60 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
     return this.lane?.runout_lane ?? 'NONE'
   }
 
-  get spoolId (): number | undefined {
-    return this.lane?.spool_id ?? undefined
+  get laneInfo (): Klipper.AfcSpoolLaneInfo {
+    return this.getAfcLaneInfo(this.name)
   }
 
-  get spool (): Spool | null {
-    if (!this.spoolId) return null
+  get spoolId (): number | undefined {
+    return this.laneInfo.spoolId
+  }
 
-    return this.$typedGetters['spoolman/getSpoolById'](this.spoolId) ?? null
+  get spool () {
+    return this.laneInfo.spool
   }
 
   get spoolColor (): string {
-    if (
-      this.afc?.td1_present &&
-      this.lane?.td1_color &&
-      this.afcShowTd1Color
-    ) {
-      return `#${this.lane.td1_color}`
-    }
-
-    return this.lane?.color || '#000000'
+    return this.laneInfo.color
   }
 
   get spoolRemainingWeight (): number | undefined {
-    return this.spool?.remaining_weight ?? this.lane?.weight
+    return this.laneInfo.remainingWeight
   }
 
   get spoolFullWeight (): number | undefined {
-    return this.spool?.initial_weight ?? this.lane?.initial_weight
+    return this.laneInfo.fullWeight
   }
 
   get spoolPercent (): number {
-    if (this.spoolRemainingWeight == null || this.spoolFullWeight == null) return 100
-    if (this.spoolFullWeight === 0) return 100
-
-    return Math.round((this.spoolRemainingWeight / this.spoolFullWeight) * 100)
+    return this.laneInfo.spoolPercent
   }
 
   get spoolMaterial (): string {
-    return this.spool?.filament?.material ?? this.lane?.material ?? ''
+    return this.laneInfo.material
   }
 
   get spoolFilamentVendor (): string | undefined {
-    return this.spool?.filament?.vendor?.name
+    return this.laneInfo.filamentVendor
   }
 
   get spoolFilamentName (): string | undefined {
-    return this.spool?.filament?.name ||
-      this.lane?.filament_name ||
-      undefined
+    return this.laneInfo.filamentName
   }
 
   get spoolUrl (): string | undefined {
-    const base: string | undefined = this.$typedGetters['spoolman/getSpoolmanUrl']
-    if (!base || !this.spoolId) return undefined
-    return `${base.replace(/\/$/, '')}/spool/show/${this.spoolId}`
+    return this.laneInfo.spoolUrl
   }
 
   get spoolExtruderTemp (): number | undefined {
-    return this.spool?.filament?.settings_extruder_temp
+    return this.laneInfo.extruderTemp
   }
 
   get spoolBedTemp (): number | undefined {
-    return this.spool?.filament?.settings_bed_temp
+    return this.laneInfo.bedTemp
   }
 
   get spoolUsedWeight (): number | undefined {
-    return this.spool?.used_weight
+    return this.laneInfo.usedWeight
   }
 
   get tdPresent (): boolean {

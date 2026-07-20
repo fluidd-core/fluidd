@@ -6,10 +6,10 @@ export type { AppFileMeta }
 export interface FilesState {
   uploads: FileUpload[];
   download: FileDownload | null;
-  roots: Moonraker.Files.RootInfoWithPath[] | null;
+  roots: readonly Moonraker.Files.RootInfoWithPath[] | null;
   currentPaths: Record<string, string | undefined>;
-  diskUsage: Record<string, Moonraker.Files.DiskUsage | undefined>;
-  rootFiles: Record<string, Moonraker.Files.RootFile[] | undefined>;
+  diskUsage: Record<string, Readonly<Moonraker.Files.DiskUsage> | undefined>;
+  rootFiles: Record<string, readonly Moonraker.Files.RootFile[] | undefined>;
   pathContent: Record<string, MoonrakerPathContent | undefined>;
 }
 
@@ -20,8 +20,8 @@ export interface AppDiskUsage extends Moonraker.Files.DiskUsage {
 
 export interface MoonrakerPathContent {
   partial?: boolean;
-  files: (Moonraker.Files.File | Moonraker.Files.FileWithMeta)[];
-  dirs: Moonraker.Files.Dir[];
+  files: (Readonly<Moonraker.Files.File> | Readonly<Moonraker.Files.FileWithMeta>)[];
+  dirs: Readonly<Moonraker.Files.Dir>[];
 }
 
 export interface AppFile extends Moonraker.Files.File, Pick<Moonraker.Files.Metadata, 'thumbnails'> {

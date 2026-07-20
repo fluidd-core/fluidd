@@ -135,7 +135,15 @@ export const actions = {
 
     dispatch('notifyCreateFile', { item })
 
-    dispatch('notifyDeleteFile', { item: source_item })
+    if (
+      source_item &&
+      (
+        source_item.root !== item.root ||
+        source_item.path !== item.path
+      )
+    ) {
+      dispatch('notifyDeleteFile', { item: source_item })
+    }
   },
 
   async notifyMoveDir ({ dispatch }, payload: Moonraker.Files.ChangeResponse) {
@@ -143,7 +151,15 @@ export const actions = {
 
     dispatch('notifyCreateDir', { item })
 
-    dispatch('notifyDeleteDir', { item: source_item })
+    if (
+      source_item &&
+      (
+        source_item.root !== item.root ||
+        source_item.path !== item.path
+      )
+    ) {
+      dispatch('notifyDeleteDir', { item: source_item })
+    }
   },
 
   async notifyDeleteFile ({ commit }, payload: Moonraker.Files.ChangeResponse) {

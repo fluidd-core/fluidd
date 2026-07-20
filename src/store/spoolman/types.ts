@@ -1,6 +1,6 @@
 export interface SpoolmanState {
-  info: Moonraker.Spoolman.Info | null;
-  spools: Moonraker.Spoolman.Spool[];
+  info: Readonly<Moonraker.Spoolman.Info> | null;
+  spools: readonly Moonraker.Spoolman.Spool[];
   activeSpool: number | null;
   currency: string | null;
   connected: boolean;

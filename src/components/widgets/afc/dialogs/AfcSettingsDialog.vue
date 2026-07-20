@@ -25,17 +25,17 @@
     <v-card-text class="d-flex flex-column gap-3">
       <afc-settings-dialog-hub
         v-for="hub in afcHubs"
-        :key="hub"
+        :key="`hub:${hub}`"
         :name="hub"
       />
       <afc-settings-dialog-extruder
         v-for="extruder in afcExtruders"
-        :key="extruder"
+        :key="`extruder:${extruder}`"
         :name="extruder"
       />
       <afc-settings-dialog-lane
         v-for="lane in afcLanes"
-        :key="lane"
+        :key="`lane:${lane}`"
         :name="lane"
       />
     </v-card-text>
