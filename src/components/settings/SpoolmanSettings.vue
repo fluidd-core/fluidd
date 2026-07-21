@@ -18,43 +18,44 @@
         />
       </app-setting>
 
-      <template v-if="supportsQRCodeScanSettings">
-        <v-divider />
-        <app-setting
-          :title="$tc('app.spoolman.setting.auto_open_qr_camera')"
-        >
-          <v-select
-            v-model="autoOpenQRDetectionCameraId"
-            filled
-            dense
-            single-line
-            hide-details="auto"
-            :items="supportedCameras"
-          />
-        </app-setting>
+      <v-divider v-if="supportsQRCodeScanSettings" />
+      <app-setting
+        v-if="supportsQRCodeScanSettings"
+        :title="$tc('app.spoolman.setting.auto_open_qr_camera')"
+      >
+        <v-select
+          v-model="autoOpenQRDetectionCameraId"
+          filled
+          dense
+          single-line
+          hide-details="auto"
+          :items="supportedCameras"
+        />
+      </app-setting>
 
-        <v-divider />
-        <app-setting
-          :title="$t('app.spoolman.setting.prefer_device_camera')"
-        >
-          <v-switch
-            v-model="preferDeviceCamera"
-            hide-details
-            class="mt-0 mb-4"
-          />
-        </app-setting>
+      <v-divider v-if="supportsQRCodeScanSettings" />
+      <app-setting
+        v-if="supportsQRCodeScanSettings"
+        :title="$t('app.spoolman.setting.prefer_device_camera')"
+      >
+        <v-switch
+          v-model="preferDeviceCamera"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
 
-        <v-divider />
-        <app-setting
-          :title="$t('app.spoolman.setting.auto_select_spool_on_match')"
-        >
-          <v-switch
-            v-model="autoSelectSpoolOnMatch"
-            hide-details
-            class="mt-0 mb-4"
-          />
-        </app-setting>
-      </template>
+      <v-divider v-if="supportsQRCodeScanSettings" />
+      <app-setting
+        v-if="supportsQRCodeScanSettings"
+        :title="$t('app.spoolman.setting.auto_select_spool_on_match')"
+      >
+        <v-switch
+          v-model="autoSelectSpoolOnMatch"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
 
       <v-divider />
       <app-setting

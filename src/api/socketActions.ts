@@ -1079,47 +1079,14 @@ export const SocketActions = {
     )
   },
 
-  serverFilamanGetSpoolId (options?: NotifyOptions) {
-    return baseEmit<Moonraker.Spoolman.SpoolIdResponse>(
-      'server.filaman.get_spool_id', {
-        dispatch: 'spoolman/onActiveSpool',
-        ...options
-      }
-    )
-  },
-
-  serverFilamanGetSpoolIds (options?: NotifyOptions) {
-    return baseEmit<{ extruder_spools: Partial<Record<string, number | null>> }>(
-      'server.filaman.spool_ids', {
-        dispatch: 'spoolman/onExtruderSpoolsChanged',
-        ...options
-      }
-    )
-  },
-
   serverSpoolmanPostSpoolId (spoolId: number | undefined, options?: NotifyOptions) {
-    const params = spoolId == null
-      ? {}
-      : { spool_id: spoolId }
-
     return baseEmit<Moonraker.Spoolman.SpoolIdResponse>(
       'server.spoolman.post_spool_id', {
         dispatch: 'spoolman/onActiveSpool',
         ...options,
-        params
-      }
-    )
-  },
-
-  serverFilamanPostSpoolId (spoolId: number | undefined, extruder?: string, options?: NotifyOptions) {
-    const params: Record<string, unknown> = spoolId != null ? { spool_id: spoolId } : {}
-    if (extruder != null) params.extruder = extruder
-
-    return baseEmit<Moonraker.Spoolman.SpoolIdResponse>(
-      'server.filaman.post_spool_id', {
-        dispatch: extruder != null ? 'spoolman/onExtruderSpoolsChanged' : 'spoolman/onActiveSpool',
-        ...options,
-        params
+        params: {
+          spool_id: spoolId
+        }
       }
     )
   },
@@ -1138,25 +1105,6 @@ export const SocketActions = {
     )
   },
 
-  serverFilamanProxyGetAvailableSpools (page = 1, pageSize = 200, options?: NotifyOptions) {
-    const query = new URLSearchParams({
-      page: String(page),
-      page_size: String(pageSize)
-    }).toString()
-
-    return baseEmit<Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.FilamanPaginatedResponse>>(
-      'server.filaman.proxy', {
-        ...options,
-        params: {
-          request_method: 'GET',
-          path: '/api/v1/spools',
-          query,
-          use_v2_response: true
-        }
-      }
-    )
-  },
-
   serverSpoolmanProxyGetInfo (options?: NotifyOptions) {
     return baseEmit<Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Info>>(
       'server.spoolman.proxy', {
@@ -1165,20 +1113,6 @@ export const SocketActions = {
         params: {
           request_method: 'GET',
           path: '/v1/info',
-          use_v2_response: true
-        }
-      }
-    )
-  },
-
-  serverFilamanProxyGetInfo (options?: NotifyOptions) {
-    return baseEmit<Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Info>>(
-      'server.filaman.proxy', {
-        dispatch: 'spoolman/onInfo',
-        ...options,
-        params: {
-          request_method: 'GET',
-          path: '/api/v1/info',
           use_v2_response: true
         }
       }

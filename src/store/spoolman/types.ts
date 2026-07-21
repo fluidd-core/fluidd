@@ -1,5 +1,8 @@
+export type SpoolmanBackend = 'spoolman' | 'filaman'
+
 export interface SpoolmanState {
   info: Readonly<Moonraker.Spoolman.Info> | null;
+  backend: SpoolmanBackend;
   spools: readonly Moonraker.Spoolman.Spool[];
   activeSpool: number | null;
   activeSpoolsByExtruder: Partial<Record<string, number | null>>;

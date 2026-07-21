@@ -2,6 +2,7 @@ import { markRaw } from 'vue'
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type {
+  SpoolmanBackend,
   SpoolmanState,
   SpoolSelectionDialogState
 } from '@/store/spoolman/types'
@@ -23,8 +24,8 @@ export const mutations = {
     state.activeSpoolsByExtruder = payload
   },
 
-  setExtruderSpool (state, { extruder, spoolId }: { extruder: string, spoolId: number | null }) {
-    state.activeSpoolsByExtruder = { ...state.activeSpoolsByExtruder, [extruder]: spoolId }
+  setBackend (state, payload: SpoolmanBackend) {
+    state.backend = payload
   },
 
   setSpools (state, payload: Moonraker.Spoolman.Spool[]) {

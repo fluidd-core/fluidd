@@ -36,17 +36,11 @@ export const actions = {
       payload.components.length > 0
     ) {
       const promises = Object.values(Globals.MOONRAKER_COMPONENTS)
-        .map((component) => {
-          if (!payload.components.includes(component.name)) {
-            return null
-          }
-
-          const initPayload = component.dispatch === 'spoolman/init'
-            ? payload
-            : undefined
-
-          return dispatch(component.dispatch, initPayload, { root: true })
-        })
+        .map((component) => (
+          payload.components.includes(component.name)
+            ? dispatch(component.dispatch, undefined, { root: true })
+            : null
+        ))
         .filter(promise => promise)
 
       await Promise.all(promises)

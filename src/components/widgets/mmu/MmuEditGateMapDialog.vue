@@ -308,7 +308,7 @@
                         :color="spoolmanColor"
                         size="120px"
                         class="spool-icon"
-                        @click="handleSelectSpoolTracking()"
+                        @click="handleSelectSpool()"
                       >
                         $filament
                       </v-icon>
@@ -325,7 +325,7 @@
                         block
                         color="secondary"
                         class="spoolman-btn"
-                        @click="handleSelectSpoolTracking()"
+                        @click="handleSelectSpool()"
                       >
                         <v-icon>
                           $mmuChooseSpool
@@ -531,7 +531,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     return this.$t('app.mmu.msg.filament_available').toString()
   }
 
-  handleSelectSpoolTracking () {
+  handleSelectSpool () {
     this.$typedCommit('spoolman/setDialogState', {
       show: true,
       spoolSelectionOnly: true
@@ -539,7 +539,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   }
 
   @Watch('$typedState.spoolman.dialog')
-  onSpoolTrackingDialogChanged (newDialog: SpoolSelectionDialogState) {
+  onSpoolmanChanged (newDialog: SpoolSelectionDialogState) {
     if (newDialog.selectedSpoolId != null) {
       this.editGateMap[this.editGateSelected].spoolId = newDialog.selectedSpoolId
     }

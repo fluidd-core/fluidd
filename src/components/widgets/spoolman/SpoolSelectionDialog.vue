@@ -307,6 +307,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import { SocketActions } from '@/api/socketActions'
+import { FilamanActions } from '@/api/filamanActions'
 import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
 import QRReader from '@/components/widgets/spoolman/QRReader.vue'
@@ -583,6 +584,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       .filter(camera => camera.service !== 'iframe')
 
     if (this.hasDeviceCamera) {
+      // always show device camera first
       cameras.unshift({
         name: this.$t('app.spoolman.label.device_camera').toString(),
         uid: 'device'
@@ -604,6 +606,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         .filter(spool => this.filterResults('', this.search, spool))
         .some(spool => spool.id === id)
     ) {
+      // clear filter if selected spool isn't in filter results
       this.search = ''
     }
 
@@ -636,11 +639,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     }
 
     if (this.targetExtruder) {
-      if (this.supportsFilaman) {
-        await SocketActions.serverFilamanPostSpoolId(this.selectedSpoolId ?? undefined, this.targetExtruder)
-      } else {
-        await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
-      }
+      await this.postSpoolId(this.targetExtruder)
+
       this.open = false
       return
     }
@@ -665,11 +665,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
       if (macro?.variables?.active) {
         // selected tool is active, update active spool
-        if (this.supportsFilaman) {
-          await SocketActions.serverFilamanPostSpoolId(this.selectedSpoolId ?? undefined)
-        } else {
-          await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
-        }
+        await this.postSpoolId()
       }
 
       this.open = false
@@ -737,11 +733,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       }
     }
 
-    if (this.supportsFilaman) {
-      await SocketActions.serverFilamanPostSpoolId(this.selectedSpoolId ?? undefined)
-    } else {
-      await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
-    }
+    await this.postSpoolId()
 
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
@@ -768,20 +760,35 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$typedGetters['server/componentSupport']('filaman')
   }
 
-  get dialogTitle (): string {
-    if (this.targetExtruder) {
-      const extruders = this.$typedGetters['printer/getExtruders']
-      const extruder = extruders.find((e: { key: string }) => e.key === this.targetExtruder)
-      const label = extruder?.name ?? this.targetExtruder
-      const key = this.supportsFilaman && this.$te('app.filaman.title.spool_selection')
-        ? 'app.filaman.title.spool_selection'
-        : 'app.spoolman.title.spool_selection'
-      return `${this.$tc(key, 1)} – ${label}`
-    }
+  postSpoolId (extruder?: string) {
+    const spoolId = this.selectedSpoolId ?? undefined
 
-    const key = this.supportsFilaman && this.$te('app.filaman.title.spool_selection')
-      ? 'app.filaman.title.spool_selection'
-      : 'app.spoolman.title.spool_selection'
+    return this.supportsFilaman
+      ? FilamanActions.postSpoolId(spoolId, extruder)
+      : SocketActions.serverSpoolmanPostSpoolId(spoolId)
+  }
+
+  /**
+   * Resolves an `app.spoolman.*` key to its `app.filaman.*` counterpart when FilaMan
+   * is the active backend and a translation exists.
+   */
+  spoolTrackingKey (suffix: string): string {
+    const filamanKey = `app.filaman.${suffix}`
+
+    return this.supportsFilaman && this.$te(filamanKey)
+      ? filamanKey
+      : `app.spoolman.${suffix}`
+  }
+
+  get dialogTitle (): string {
+    const key = this.spoolTrackingKey('title.spool_selection')
+
+    if (this.targetExtruder) {
+      const extruder = this.$typedGetters['printer/getExtruders']
+        .find(e => e.key === this.targetExtruder)
+
+      return `${this.$tc(key, 1)} – ${extruder?.name ?? this.targetExtruder}`
+    }
 
     return this.$tc(key, this.targetMacro ? 2 : 1, {
       macro: this.targetMacro?.toUpperCase()
@@ -789,11 +796,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get manageSpoolsLabel (): string {
-    const key = this.supportsFilaman && this.$te('app.filaman.btn.manage_spools')
-      ? 'app.filaman.btn.manage_spools'
-      : 'app.spoolman.btn.manage_spools'
-
-    return this.$t(key).toString()
+    return this.$t(this.spoolTrackingKey('btn.manage_spools')).toString()
   }
 
   get selectButtonLabel (): string {
@@ -801,11 +804,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       return this.$t('app.general.btn.print').toString()
     }
 
-    const key = this.supportsFilaman && this.$te('app.filaman.btn.select')
-      ? 'app.filaman.btn.select'
-      : 'app.spoolman.btn.select'
-
-    return this.$tc(key, this.targetMacro ? 2 : 1, {
+    return this.$tc(this.spoolTrackingKey('btn.select'), this.targetMacro ? 2 : 1, {
       macro: this.targetMacro
     }).toString()
   }

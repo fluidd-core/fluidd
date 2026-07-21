@@ -9,30 +9,12 @@ import type {
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { consola } from 'consola'
-import { EventBus } from '@/eventBus'
 import { gte, valid } from 'semver'
+import { filamanActions } from './filamanActions'
+import { normalizeSpoolList } from '@/util/filaman-spool-mapper'
+import { payloadAsSpoolmanProxyResponseV2 } from './proxyResponse'
 
 const logPrefix = '[SPOOLMAN]'
-
-const payloadAsSpoolmanProxyResponseV2 = <T>(payload: Moonraker.Spoolman.ProxyResponse<T>): Moonraker.Spoolman.ProxyResponseV2<T> => {
-  if (
-    payload != null &&
-    typeof payload === 'object' &&
-    'error' in payload &&
-    'response' in payload
-  ) {
-    if (payload.error != null) {
-      EventBus.$emit(typeof payload.error === 'string' ? payload.error : payload.error.message, { type: 'error' })
-    }
-
-    return payload
-  }
-
-  return {
-    error: null,
-    response: payload
-  }
-}
 
 const createSpoolmanSocket = (spoolmanUrl: string): WebSocket | undefined => {
   try {
@@ -49,136 +31,9 @@ const createSpoolmanSocket = (spoolmanUrl: string): WebSocket | undefined => {
   }
 }
 
-const DEFAULT_DENSITY_G_CM3 = 1.24
-const DEFAULT_DIAMETER_MM = 1.75
-
-const isFilamanPaginatedResponse = (value: unknown): value is Moonraker.Spoolman.FilamanPaginatedResponse => {
-  return (
-    value != null &&
-    typeof value === 'object' &&
-    'items' in value &&
-    Array.isArray(value.items)
-  )
-}
-
-const numberOrUndefined = (value: unknown): number | undefined => {
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return value
-  }
-
-  return undefined
-}
-
-const normalizedColorHex = (hex: string): string => {
-  return hex.startsWith('#')
-    ? hex.slice(1)
-    : hex
-}
-
-const mapFilamanSpoolToSpoolmanSpool = (spool: Moonraker.Spoolman.FilamanSpool): Moonraker.Spoolman.Spool => {
-  const registered = spool.created_at ?? spool.last_used_at ?? '1970-01-01T00:00:00.000Z'
-  const filament = spool.filament
-  const manufacturer = filament?.manufacturer
-
-  const density = numberOrUndefined(filament?.density_g_cm3) ?? DEFAULT_DENSITY_G_CM3
-  const diameter = numberOrUndefined(filament?.diameter_mm) ?? DEFAULT_DIAMETER_MM
-
-  const initialTotalWeight = numberOrUndefined(spool.initial_total_weight_g)
-  const spoolWeight = numberOrUndefined(spool.empty_spool_weight_g)
-  const fallbackFilamentWeight = numberOrUndefined(filament?.raw_material_weight_g)
-
-  let initialWeight: number | undefined = fallbackFilamentWeight
-  if (initialTotalWeight != null && spoolWeight != null) {
-    initialWeight = Math.max(initialTotalWeight - spoolWeight, 0)
-  }
-
-  const remainingWeight = numberOrUndefined(spool.remaining_weight_g)
-  const usedWeight = (
-    initialWeight != null &&
-    remainingWeight != null
-  )
-    ? Math.max(initialWeight - remainingWeight, 0)
-    : undefined
-
-  const colors = (filament?.colors ?? [])
-    .map(entry => entry.color?.hex_code)
-    .filter((value): value is string => typeof value === 'string' && value.length > 0)
-    .map(normalizedColorHex)
-
-  const primaryColor = colors[0]
-  const multiColorHexes = colors.length > 1
-    ? colors.join(',')
-    : undefined
-
-  const vendor: Moonraker.Spoolman.Vendor | undefined = manufacturer?.name
-    ? {
-        id: numberOrUndefined(manufacturer.id) ?? 0,
-        registered,
-        name: manufacturer.name,
-        empty_spool_weight: numberOrUndefined(manufacturer.empty_spool_weight_g)
-      }
-    : undefined
-
-  const spoolmanSpool: Moonraker.Spoolman.Spool = {
-    id: spool.id,
-    registered,
-    filament: {
-      id: filament?.id ?? 0,
-      registered,
-      density,
-      diameter,
-      name: filament?.designation ?? undefined,
-      vendor,
-      material: filament?.material_type ?? undefined,
-      price: numberOrUndefined(filament?.price),
-      weight: fallbackFilamentWeight,
-      spool_weight: numberOrUndefined(filament?.default_spool_weight_g),
-      color_hex: primaryColor,
-      multi_color_hexes: multiColorHexes,
-    },
-    last_used: spool.last_used_at ?? undefined,
-    price: numberOrUndefined(spool.purchase_price),
-    remaining_weight: remainingWeight,
-    initial_weight: initialWeight,
-    spool_weight: spoolWeight,
-    used_weight: usedWeight,
-    lot_nr: spool.lot_number ?? undefined,
-    location: spool.location_id != null
-      ? `#${spool.location_id}`
-      : undefined,
-    archived: false,
-    extra: spool.custom_fields ?? undefined
-  }
-
-  return spoolmanSpool
-}
-
-const normalizeSpoolList = (
-  payload: Moonraker.Spoolman.Spool[] | Moonraker.Spoolman.FilamanPaginatedResponse
-): Moonraker.Spoolman.Spool[] => {
-  if (Array.isArray(payload)) {
-    return payload
-  }
-
-  if (isFilamanPaginatedResponse(payload)) {
-    return payload.items?.map(mapFilamanSpoolToSpoolmanSpool) ?? []
-  }
-
-  return []
-}
-
-const supportsFilaman = (rootState: RootState): boolean => {
-  return rootState.server.info.components.includes('filaman')
-}
-
-const supportsSpoolmanComponent = (rootState: RootState): boolean => {
-  return rootState.server.info.components.includes('spoolman')
-}
-
-const FILAMAN_PAGE_SIZE = 200
-const FILAMAN_MAX_PAGES = 100
-
 export const actions = {
+  ...filamanActions,
+
   /**
    * Reset our store
    */
@@ -189,16 +44,9 @@ export const actions = {
   /**
    * Make a socket request to init the spoolman component.
    */
-  async init ({ rootState }, payload?: Moonraker.Server.InfoResponse) {
-    const components = payload?.components ?? rootState.server.info.components
-    const hasFilaman = components.includes('filaman')
-
-    if (hasFilaman) {
-      SocketActions.serverFilamanGetSpoolId()
-      SocketActions.serverFilamanGetSpoolIds()
-      SocketActions.serverFilamanProxyGetAvailableSpools(1, FILAMAN_PAGE_SIZE, {
-        dispatch: 'spoolman/fetchAllFilamanSpools'
-      })
+  async init ({ state }) {
+    if (state.backend === 'filaman') {
+      // filaman drives the spool data, see `initFilaman`
       return
     }
 
@@ -207,14 +55,7 @@ export const actions = {
     SocketActions.serverSpoolmanProxyGetInfo()
   },
 
-  async onExtruderSpoolsChanged ({ commit }, payload: { extruder_spools?: Partial<Record<string, number | null>> }) {
-    const spools = payload?.extruder_spools
-    if (spools != null && typeof spools === 'object') {
-      commit('setExtruderSpools', spools)
-    }
-  },
-
-  async onActiveSpool ({ commit }, payload: { spool_id?: number | string | null }) {
+  async onActiveSpool ({ commit }, payload: Moonraker.Spoolman.FilamanActiveSpoolPayload) {
     const rawSpoolId = payload?.spool_id
 
     if (rawSpoolId == null) {
@@ -301,10 +142,10 @@ export const actions = {
     commit('setSpools', spools)
   },
 
-  async onStatusChanged ({ commit, dispatch }, payload: boolean) {
+  async onStatusChanged ({ commit, dispatch, state }, payload: boolean) {
     if (payload) {
       // refresh data, connected state will be set on data retrieval
-      dispatch('init')
+      dispatch(state.backend === 'filaman' ? 'initFilaman' : 'init')
     } else {
       commit('setConnected', payload)
     }
@@ -327,68 +168,7 @@ export const actions = {
     dispatch('initializeWebsocketConnection')
   },
 
-  async fetchAllFilamanSpools ({ commit, dispatch }, payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.FilamanPaginatedResponse>) {
-    payload = payloadAsSpoolmanProxyResponseV2(payload)
-
-    if (payload.error != null) {
-      return
-    }
-
-    const seenSpoolIds = new Set<number>()
-    let pageItems = payload.response?.items ?? []
-    const allItems: Moonraker.Spoolman.FilamanSpool[] = []
-
-    const appendUniquePageItems = (items: Moonraker.Spoolman.FilamanSpool[]): number => {
-      let appended = 0
-      for (const item of items) {
-        if (seenSpoolIds.has(item.id)) {
-          continue
-        }
-        seenSpoolIds.add(item.id)
-        allItems.push(item)
-        appended += 1
-      }
-
-      return appended
-    }
-
-    appendUniquePageItems(pageItems)
-    commit('setSpools', normalizeSpoolList({ items: allItems }))
-
-    let page = 2
-    while (pageItems.length === FILAMAN_PAGE_SIZE && page <= FILAMAN_MAX_PAGES) {
-      const nextPayload = payloadAsSpoolmanProxyResponseV2(
-        await SocketActions.serverFilamanProxyGetAvailableSpools(page, FILAMAN_PAGE_SIZE)
-      )
-
-      if (nextPayload.error != null) {
-        break
-      }
-
-      pageItems = nextPayload.response?.items ?? []
-      if (pageItems.length === 0) {
-        break
-      }
-
-      const appended = appendUniquePageItems(pageItems)
-      if (appended === 0) {
-        break
-      }
-      commit('setSpools', normalizeSpoolList({ items: allItems }))
-
-      if (pageItems.length < FILAMAN_PAGE_SIZE) {
-        break
-      }
-
-      page += 1
-    }
-
-    commit('setSpools', normalizeSpoolList({ items: allItems }))
-    commit('setConnected', true)
-    dispatch('initializeWebsocketConnection')
-  },
-
-  async onInfo ({ state, commit, rootState }, payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Info>) {
+  async onInfo ({ state, commit }, payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Info>) {
     payload = payloadAsSpoolmanProxyResponseV2(payload)
 
     if (payload.error != null) {
@@ -401,7 +181,7 @@ export const actions = {
       state.info &&
       valid(state.info.version) &&
       gte(state.info.version, '0.16.0') &&
-      !supportsFilaman(rootState)
+      state.backend !== 'filaman'
     ) {
       SocketActions.serverSpoolmanProxyGetSettingCurrency()
     }
@@ -418,7 +198,7 @@ export const actions = {
   },
 
   async initializeWebsocketConnection ({ state, getters, rootState, commit, dispatch }) {
-    if (supportsSpoolmanComponent(rootState) && rootState.server.config.spoolman?.server) {
+    if (state.backend !== 'filaman' && rootState.server.config.spoolman?.server) {
       if (state.socket?.readyState === WebSocket.OPEN) {
         // we already have a working WS conn
         return

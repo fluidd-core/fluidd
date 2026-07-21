@@ -64,7 +64,7 @@ export default class AfcMixin extends Vue {
     return this.afc?.current_state ?? 'Idle'
   }
 
-  get afcHasSpoolTracking (): boolean {
+  get afcExistsSpoolman (): boolean {
     return (
       this.$typedGetters['server/componentSupport']('spoolman') ||
       this.$typedGetters['server/componentSupport']('filaman')

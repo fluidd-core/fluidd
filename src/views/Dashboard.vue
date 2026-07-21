@@ -18,15 +18,9 @@
           >
             <template v-for="c in container">
               <component
-                :is="c.id"
-                v-if="(inLayout || (c.enabled && !filtered(c))) && !(supportsFilaman && c.id === 'spoolman-card')"
+                :is="componentFor(c.id)"
+                v-if="inLayout || (c.enabled && !filtered(c))"
                 :key="c.id"
-                :narrow="narrow"
-                class="mb-2 mb-md-4"
-              />
-              <filaman-card
-                v-if="c.id === 'spoolman-card' && (inLayout || (c.enabled && !filtered(c))) && supportsFilaman"
-                :key="`${c.id}-filaman`"
                 :narrow="narrow"
                 class="mb-2 mb-md-4"
               />
@@ -161,6 +155,13 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.$typedGetters['server/componentSupport']('filaman')
   }
 
+  // FilaMan reuses the spoolman-card layout slot
+  componentFor (id: string): string {
+    return id === 'spoolman-card' && this.supportsFilaman
+      ? 'FilamanCard'
+      : id
+  }
+
   get supportsMmu (): boolean {
     return this.$typedState.printer.printer.mmu != null
   }
@@ -248,7 +249,6 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'beacon-card' && !this.supportsBeacon) return true
     if (item.id === 'runout-sensors-card' && !this.supportsRunoutSensors) return true
     if (item.id === 'spoolman-card' && !this.supportsSpoolTracking) return true
-    if (item.id === 'filaman-card' && !this.supportsFilaman) return true
     if (item.id === 'mmu-card' && !this.supportsMmu) return true
     if (item.id === 'sensors-card' && !this.hasSensors) return true
     if (item.id === 'temperature-card' && !this.hasHeatersOrTemperatureSensors) return true

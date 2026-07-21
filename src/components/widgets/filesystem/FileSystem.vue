@@ -958,9 +958,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       }
     }
 
-    const spoolTrackingAvailable: boolean = this.$typedGetters['spoolman/getAvailable']
+    const spoolmanSupported: boolean = this.$typedGetters['spoolman/getAvailable']
     const autoSpoolSelectionDialog: boolean = this.$typedState.config.uiSettings.spoolman.autoSpoolSelectionDialog
-    if (spoolTrackingAvailable && autoSpoolSelectionDialog) {
+    if (spoolmanSupported && autoSpoolSelectionDialog) {
       this.$typedCommit('spoolman/setDialogState', {
         show: true,
         filename
