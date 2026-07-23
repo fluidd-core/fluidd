@@ -159,7 +159,7 @@ export default class AfcMixin extends Vue {
     } else if (spool?.filament?.color_hex) {
       color = `#${spool.filament.color_hex.replace(/^#/, '')}`
     } else {
-      color = laneObj?.color || '#000000'
+      color = laneObj?.color || ''
     }
 
     const material = spool?.filament?.material || laneObj?.material || ''
