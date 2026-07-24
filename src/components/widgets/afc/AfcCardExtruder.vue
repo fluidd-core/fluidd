@@ -59,7 +59,7 @@
         >
           <template #activator="{ on, attrs }">
             <v-btn
-              :disabled="!klippyReady || printerPrinting"
+              :disabled="toolSelectionDisabled"
               x-small
               icon
               class="tool-select-btn"
@@ -82,7 +82,7 @@
         >
           <template #activator="{ on, attrs }">
             <v-btn
-              :disabled="!klippyReady || printerPrinting"
+              :disabled="toolSelectionDisabled"
               x-small
               icon
               class="tool-select-btn"
@@ -236,6 +236,12 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     }
 
     return `${this.afcCurrentLane?.buffer ?? '--'}: ${this.afcCurrentBuffer?.state ?? '--'}`
+  }
+
+  get toolSelectionDisabled (): boolean {
+    const status = this.afcExtruder?.status
+    return !this.klippyReady || this.printerPrinting ||
+      ((status != null && status !== 'Idle') || this.afcCurrentState !== 'Idle')
   }
 
   get state (): string {
