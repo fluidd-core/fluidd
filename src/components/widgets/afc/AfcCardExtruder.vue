@@ -43,11 +43,62 @@
       <v-col class="py-4 text-center">
         {{ bufferOutput }}
       </v-col>
-      <v-col class="py-4 pr-6 text-right">
+      <v-col class="py-4 text-right">
         {{ state }}:
         <span :class="stateLaneClasses">
           {{ stateLane }}
         </span>
+      </v-col>
+      <v-col
+        v-if="afcHasToolchanger"
+        class="py-4 pr-6 text-right flex-grow-0"
+      >
+        <v-tooltip
+          v-if="onShuttle"
+          top
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn
+              :disabled="!klippyReady || printerPrinting"
+              x-small
+              icon
+              class="tool-select-btn"
+              v-bind="attrs"
+              v-on="on"
+              @click="unselectTool"
+            >
+              <v-icon x-small>
+                $afcUnselectTool
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>
+            {{ $t('app.afc.UnselectTool') }}
+          </span>
+        </v-tooltip>
+        <v-tooltip
+          v-else
+          top
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn
+              :disabled="!klippyReady || printerPrinting"
+              x-small
+              icon
+              class="tool-select-btn"
+              v-bind="attrs"
+              v-on="on"
+              @click="selectTool"
+            >
+              <v-icon x-small>
+                $afcSelectTool
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>
+            {{ $t('app.afc.SelectTool') }}
+          </span>
+        </v-tooltip>
       </v-col>
     </v-row>
   </div>
@@ -56,6 +107,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
@@ -84,6 +136,10 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     const lanes = this.afcExtruder?.lanes ?? []
 
     return lanes.includes(currentLane.name)
+  }
+
+  get onShuttle (): boolean {
+    return this.afcExtruder?.on_shuttle === true
   }
 
   get containerClasses () {
@@ -185,6 +241,12 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   get state (): string {
     const extruder = this.afcCurrentLane?.extruder
 
+    if (this.afcExtruder?.status) {
+      if (this.afcExtruder?.status !== 'Idle') {
+        return this.$t(`app.afc.${this.afcExtruder.status}`).toString()
+      }
+    }
+
     if (extruder === this.name) {
       if (this.printerPrinting) {
         return this.$t('app.afc.Printing').toString()
@@ -210,6 +272,14 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
       'error--text': this.hasActiveLane && this.afcErrorState,
     }
   }
+
+  selectTool () {
+    this.sendGcode(`AFC_SELECT_TOOL TOOL=${encodeGcodeParamValue(this.name)}`)
+  }
+
+  unselectTool () {
+    this.sendGcode('AFC_UNSELECT_TOOL')
+  }
 }
 </script>
 
@@ -234,5 +304,10 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
 
 .v-application .border-yellow {
   border-color: #FFFF00 !important;
+}
+
+.tool-select-btn.v-size--x-small {
+  height: 24px;
+  width: 24px;
 }
 </style>

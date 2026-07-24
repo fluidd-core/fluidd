@@ -3,6 +3,9 @@ import Component from 'vue-class-component'
 import type { Spool } from '@/store/spoolman/types'
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 
+// AFC's default full-spool weight (g) when no initial_weight is tracked (e.g. no Spoolman spool)
+const AFC_DEFAULT_SPOOL_WEIGHT = 1000
+
 @Component
 export default class AfcMixin extends Vue {
   get afc (): Klipper.AfcState | undefined {
@@ -42,6 +45,12 @@ export default class AfcMixin extends Vue {
 
   get afcErrorState (): boolean {
     return this.afc?.error_state === true
+  }
+
+  get afcHasToolchanger (): boolean {
+    const printerState = this.$typedState.printer.printer
+
+    return Object.keys(printerState).some(key => key.startsWith('AFC_Toolchanger'))
   }
 
   get afcCurrentLane (): Klipper.AfcLaneState | undefined {
@@ -164,7 +173,7 @@ export default class AfcMixin extends Vue {
 
     const material = spool?.filament?.material || laneObj?.material || ''
     const remainingWeight = spool?.remaining_weight ?? laneObj?.weight
-    const fullWeight = spool?.initial_weight ?? laneObj?.initial_weight
+    const fullWeight = spool?.initial_weight ?? laneObj?.initial_weight ?? AFC_DEFAULT_SPOOL_WEIGHT
 
     let spoolPercent = 100
     if (remainingWeight != null && fullWeight != null && fullWeight > 0) {

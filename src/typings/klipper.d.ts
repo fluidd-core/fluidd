@@ -742,7 +742,7 @@ declare namespace Klipper {
     num_units: number;
   }
 
-  export type AfcStateState = 'Initialized' | 'Idle' | 'Error' | 'Loading' | 'Unloading' | 'Ejecting' | 'Moving' | 'Restoring'
+  export type AfcStateState = 'Initialized' | 'Idle' | 'Error' | 'Loading' | 'Unloading' | 'Ejecting' | 'Moving' | 'Restoring' | 'ToolSwap' | 'ToolDock' | 'ToolPickup'
 
   export interface AfcState {
     current_load: string | null;
@@ -787,6 +787,7 @@ declare namespace Klipper {
     on_shuttle?: boolean;
     is_standalone?: boolean;
     next_pickup?: boolean;
+    status?: AfcStateState;
   }
 
   export type AfcBufferStatus = 'Unknown' | 'Advancing' | 'Trailing'
