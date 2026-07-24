@@ -784,6 +784,9 @@ declare namespace Klipper {
     tool_end: string | null;
     tool_end_status: boolean;
     lanes: string[];
+    on_shuttle?: boolean;
+    is_standalone?: boolean;
+    next_pickup?: boolean;
   }
 
   export type AfcBufferStatus = 'Unknown' | 'Advancing' | 'Trailing'

@@ -88,7 +88,8 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
 
   get containerClasses () {
     return {
-      'border-primary': this.hasActiveLane,
+      'border-primary': this.hasActiveLane || this.afcExtruder?.on_shuttle,
+      'border-yellow': this.afcExtruder?.next_pickup,
       'border-error': this.hasActiveLane && this.afcErrorState,
       'darken-3': this.$vuetify.theme.dark,
       'lighten-2': !this.$vuetify.theme.dark,
@@ -170,6 +171,10 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   get bufferOutput (): string {
     const extruder = this.afcCurrentLane?.extruder
 
+    if (this.afcExtruder?.is_standalone) {
+      return ' '
+    }
+
     if (extruder !== this.name) {
       return this.$t('app.afc.BufferDisabled').toString()
     }
@@ -194,10 +199,6 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   get stateLane (): string {
     if (this.afcExtruder?.lane_loaded) {
       return this.afcExtruder.lane_loaded
-    }
-
-    if (this.afcCurrentLane) {
-      return this.afcCurrentLane.name
     }
 
     return this.$t('app.afc.LaneLoadedNone').toString()
@@ -229,5 +230,9 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
 
 .v-application .border-error {
   border-color: var(--v-error-base) !important;
+}
+
+.v-application .border-yellow {
+  border-color: #FFFF00 !important;
 }
 </style>
