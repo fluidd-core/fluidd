@@ -99,7 +99,7 @@ app:
     ShowUnitIcons: "Show Unit Icons"
     ShowTd1Color: "Show TD-1 Color"
     ToolSwap: "Swapping Toolheads"
-    ToolPickup: "Grabbing Toolhead"
+    ToolPickup: "Picking up Toolhead"
     ToolDock: "Docking Toolhead"
     Unloading: "Unloading"
     UnloadLane: "Unload Lane"

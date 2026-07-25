@@ -43,7 +43,10 @@
       <v-col class="py-4 text-center">
         {{ bufferOutput }}
       </v-col>
-      <v-col class="py-4 text-right">
+      <v-col
+        class="py-4 text-right"
+        :class="{ 'pr-6': !afcHasToolchanger }"
+      >
         {{ state }}:
         <span :class="stateLaneClasses">
           {{ stateLane }}
@@ -145,7 +148,7 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   get containerClasses () {
     return {
       'border-primary': this.hasActiveLane || this.afcExtruder?.on_shuttle,
-      'border-yellow': this.afcExtruder?.next_pickup,
+      'border-warning': this.afcExtruder?.next_pickup,
       'border-error': this.hasActiveLane && this.afcErrorState,
       'darken-3': this.$vuetify.theme.dark,
       'lighten-2': !this.$vuetify.theme.dark,
@@ -227,6 +230,7 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   get bufferOutput (): string {
     const extruder = this.afcCurrentLane?.extruder
 
+    // "Standalone" lanes don't have buffers, so don't show any buffer status
     if (this.afcExtruder?.is_standalone) {
       return ' '
     }
@@ -247,10 +251,8 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   get state (): string {
     const extruder = this.afcCurrentLane?.extruder
 
-    if (this.afcExtruder?.status) {
-      if (this.afcExtruder?.status !== 'Idle') {
-        return this.$t(`app.afc.${this.afcExtruder.status}`).toString()
-      }
+    if (this.afcExtruder?.status && this.afcExtruder.status !== 'Idle') {
+      return this.$t(`app.afc.${this.afcExtruder.status}`).toString()
     }
 
     if (extruder === this.name) {
@@ -308,8 +310,8 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   border-color: var(--v-error-base) !important;
 }
 
-.v-application .border-yellow {
-  border-color: #FFFF00 !important;
+.v-application .border-warning {
+  border-color: var(--v-warning-base) !important;
 }
 
 .tool-select-btn.v-size--x-small {
