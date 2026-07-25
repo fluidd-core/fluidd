@@ -1,21 +1,17 @@
-import 'monaco-editor/esm/vs/editor/editor.all.js'
+// All editor features (find, folding, hover, quick access, iPad keyboard, …).
+// Full list of features on 'monaco-editor/esm/metadata.js'
+import 'monaco-editor/features/register.all.js'
 
-// full list of features on 'monaco-editor/esm/metadata.js'
-import 'monaco-editor/esm/vs/editor/standalone/browser/iPadShowKeyboard/iPadShowKeyboard.js'
-import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoLineQuickAccess.js'
-import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoSymbolQuickAccess.js'
-import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess.js'
+import 'monaco-editor/language/css/monaco.contribution'
+import 'monaco-editor/language/json/monaco.contribution'
+import 'monaco-editor/languages/definitions/css/register.js'
+import 'monaco-editor/languages/definitions/markdown/register.js'
 
-import 'monaco-editor/esm/vs/language/css/monaco.contribution'
-import 'monaco-editor/esm/vs/language/json/monaco.contribution'
-import 'monaco-editor/esm/vs/basic-languages/css/css.contribution'
-import 'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution'
+import EditorWorker from 'monaco-editor/editor/editor.worker?worker'
+import JsonWorker from 'monaco-editor/language/json/json.worker?worker'
+import CssWorker from 'monaco-editor/language/css/css.worker?worker'
 
-import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
-import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
-import CssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
-
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import * as monaco from 'monaco-editor/editor/editor.api'
 
 import getVueApp from '@/util/get-vue-app'
 

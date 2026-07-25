@@ -1,4 +1,4 @@
-import type * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import type * as monaco from 'monaco-editor/editor/editor.api'
 
 // Monarch language definition for Klipper printer.cfg
 //
