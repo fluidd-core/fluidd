@@ -232,7 +232,7 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
 
     // "Standalone" lanes don't have buffers, so don't show any buffer status
     if (this.afcExtruder?.is_standalone) {
-      return ' '
+      return ''
     }
 
     if (extruder !== this.name) {
