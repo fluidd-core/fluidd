@@ -824,6 +824,7 @@ declare namespace Klipper {
     weight: number;
     filament_name?: string;
     extruder_temp: number | null;
+    bed_temp?: number | null;
     runout_lane: string | null;
     filament_status: 'In Tool' | 'Ready' | 'Prep' | 'Not Ready';
     filament_status_led: string;

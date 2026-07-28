@@ -198,7 +198,7 @@ export default class AfcMixin extends Vue {
       spoolPercent,
       usedWeight: spool?.used_weight ?? undefined,
       extruderTemp: spool?.filament?.settings_extruder_temp ?? laneObj?.extruder_temp ?? undefined,
-      bedTemp: spool?.filament?.settings_bed_temp ?? undefined,
+      bedTemp: spool?.filament?.settings_bed_temp ?? laneObj?.bed_temp ?? undefined,
       spoolUrl,
       filamentLoaded: laneObj ? (laneObj?.prep && laneObj?.load) : undefined
     }
