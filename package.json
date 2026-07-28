@@ -85,7 +85,7 @@
     "eslint-plugin-regexp": "^3.1.1",
     "eslint-plugin-vue": "^9.33.0",
     "husky": "^9.1.7",
-    "jsdom": "^30.0.0",
+    "jsdom": "^29.1.1",
     "mockdate": "^3.0.5",
     "neostandard": "^0.13.0",
     "rollup": "^4.62.3",
