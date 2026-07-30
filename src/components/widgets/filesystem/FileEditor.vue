@@ -19,7 +19,7 @@
 import { Component, Prop, Ref, Mixins, Watch } from 'vue-property-decorator'
 import { markRaw } from 'vue'
 import BrowserMixin from '@/mixins/browser'
-import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import type * as Monaco from 'monaco-editor/editor/editor.api'
 import md5 from 'md5'
 import type { RestoreViewState } from '@/store/config/types'
 import { consola } from 'consola'
