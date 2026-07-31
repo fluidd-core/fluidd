@@ -56,10 +56,7 @@
         v-if="afcHasToolchanger"
         class="py-4 pr-6 text-right flex-grow-0"
       >
-        <v-tooltip
-          v-if="onShuttle"
-          top
-        >
+        <v-tooltip top>
           <template #activator="{ on, attrs }">
             <v-btn
               :disabled="toolSelectionDisabled"
@@ -68,38 +65,15 @@
               class="tool-select-btn"
               v-bind="attrs"
               v-on="on"
-              @click="unselectTool"
+              @click="toolSelectionHandler"
             >
               <v-icon x-small>
-                $afcUnselectTool
+                {{ toolSelectionIcon }}
               </v-icon>
             </v-btn>
           </template>
           <span>
-            {{ $t('app.afc.UnselectTool') }}
-          </span>
-        </v-tooltip>
-        <v-tooltip
-          v-else
-          top
-        >
-          <template #activator="{ on, attrs }">
-            <v-btn
-              :disabled="toolSelectionDisabled"
-              x-small
-              icon
-              class="tool-select-btn"
-              v-bind="attrs"
-              v-on="on"
-              @click="selectTool"
-            >
-              <v-icon x-small>
-                $afcSelectTool
-              </v-icon>
-            </v-btn>
-          </template>
-          <span>
-            {{ $t('app.afc.SelectTool') }}
+            {{ toolSelectionLabel }}
           </span>
         </v-tooltip>
       </v-col>
@@ -149,7 +123,7 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     const isError = this.hasActiveLane && this.afcErrorState
 
     return {
-      'border-primary': !isError && (this.hasActiveLane || this.onShuttle),
+      'border-primary': !isError && (this.hasActiveLane || (this.onShuttle && this.afcHasToolchanger)),
       'border-warning': !isError && (this.afcExtruder?.next_pickup === true),
       'border-error': isError,
       'darken-3': this.$vuetify.theme.dark,
@@ -287,12 +261,21 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     }
   }
 
-  selectTool () {
-    this.sendGcode(`AFC_SELECT_TOOL TOOL=${encodeGcodeParamValue(this.name)}`)
+  get toolSelectionIcon (): string {
+    return this.onShuttle ? '$afcUnselectTool' : '$afcSelectTool'
   }
 
-  unselectTool () {
-    this.sendGcode('AFC_UNSELECT_TOOL')
+  get toolSelectionLabel (): string {
+    return this.$t(this.onShuttle ? 'app.afc.UnselectTool' : 'app.afc.SelectTool').toString()
+  }
+
+  toolSelectionHandler () {
+    if (this.onShuttle) {
+      this.sendGcode('AFC_UNSELECT_TOOL')
+      return
+    }
+
+    this.sendGcode(`AFC_SELECT_TOOL TOOL=${encodeGcodeParamValue(this.name)}`)
   }
 }
 </script>
