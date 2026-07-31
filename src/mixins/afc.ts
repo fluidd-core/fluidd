@@ -50,7 +50,8 @@ export default class AfcMixin extends Vue {
   get afcHasToolchanger (): boolean {
     const printerState = this.$typedState.printer.printer
 
-    return Object.keys(printerState).some(key => key.startsWith('AFC_Toolchanger'))
+    // AFC_Toolchanger has to be registered as a named section in klipper config
+    return Object.keys(printerState).some(key => key.startsWith('AFC_Toolchanger '))
   }
 
   get afcCurrentLane (): Klipper.AfcLaneState | undefined {
@@ -177,7 +178,7 @@ export default class AfcMixin extends Vue {
 
     let spoolPercent = 100
     if (remainingWeight != null && fullWeight != null && fullWeight > 0) {
-      spoolPercent = Math.round((remainingWeight / fullWeight) * 100)
+      spoolPercent = Math.min(100, Math.round((remainingWeight / fullWeight) * 100))
     }
 
     const spoolmanBase: string | undefined = this.$typedGetters['spoolman/getSpoolmanUrl']

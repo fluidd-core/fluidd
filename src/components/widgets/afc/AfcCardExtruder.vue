@@ -146,10 +146,12 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   }
 
   get containerClasses () {
+    const isError = this.hasActiveLane && this.afcErrorState
+
     return {
-      'border-primary': this.hasActiveLane || this.afcExtruder?.on_shuttle,
-      'border-warning': this.afcExtruder?.next_pickup,
-      'border-error': this.hasActiveLane && this.afcErrorState,
+      'border-primary': !isError && (this.hasActiveLane || this.onShuttle),
+      'border-warning': !isError && (this.afcExtruder?.next_pickup === true),
+      'border-error': isError,
       'darken-3': this.$vuetify.theme.dark,
       'lighten-2': !this.$vuetify.theme.dark,
     }
@@ -243,9 +245,9 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   }
 
   get toolSelectionDisabled (): boolean {
-    const status = this.afcExtruder?.status
     return !this.klippyReady || this.printerPrinting ||
-      ((status != null && status !== 'Idle') || this.afcCurrentState !== 'Idle')
+     (this.afcExtruder?.status ?? 'Idle') !== 'Idle' ||
+      (this.afcCurrentState !== 'Idle' && this.afcCurrentState !== 'Error')
   }
 
   get state (): string {
@@ -269,6 +271,10 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   get stateLane (): string {
     if (this.afcExtruder?.lane_loaded) {
       return this.afcExtruder.lane_loaded
+    }
+
+    if (this.hasActiveLane && this.afcCurrentLane) {
+      return this.afcCurrentLane.name
     }
 
     return this.$t('app.afc.LaneLoadedNone').toString()

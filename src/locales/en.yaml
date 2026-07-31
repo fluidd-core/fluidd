@@ -21,6 +21,7 @@ app:
     Idle: "Idle"
     InfiniteSpoolDescription: "Next lane to load if {name} runs out"
     InfiniteSpoolHeadline: "Infinite Spool"
+    Initialized: "Initialized"
     LaneControls: "Lane Controls"
     LaneLoaded: "Lane Loaded"
     LaneLoadedNone: "NONE"
