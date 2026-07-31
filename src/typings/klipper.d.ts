@@ -770,7 +770,7 @@ declare namespace Klipper {
     }
     led_state: boolean;
   }
-  export type AFCExtruderState = 'Idle' | 'ToolSwap' | 'ToolDock' | 'ToolPickup' | 'Error'
+  export type AfcExtruderStatus = 'Idle' | 'Error' | 'ToolSwap' | 'ToolDock' | 'ToolPickup'
 
   export interface AfcExtruderState {
     tool_stn: number;
@@ -788,7 +788,7 @@ declare namespace Klipper {
     on_shuttle?: boolean;
     is_standalone?: boolean;
     next_pickup?: boolean;
-    status?: AFCExtruderState;
+    status?: AfcExtruderStatus;
   }
 
   export type AfcBufferStatus = 'Unknown' | 'Advancing' | 'Trailing'
