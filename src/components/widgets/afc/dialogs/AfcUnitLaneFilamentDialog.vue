@@ -36,42 +36,42 @@
           hide-details
         />
       </app-setting>
-      <v-divider class="my-3" />
-      <app-setting
-        :title="$t('app.afc.ExtruderTemp')"
-        :sub-title="$t('app.afc.ExtruderTempSubtitle')"
-      >
-        <v-text-field
-          v-model.number="extruderTemp"
-          placeholder="220"
-          dense
-          outlined
-          type="number"
-          :min="0"
-          :step="1"
-          hide-details
-        />
-      </app-setting>
-      <v-divider
-        v-if="currentBedTemp"
-        class="my-3"
-      />
-      <app-setting
-        v-if="currentBedTemp"
-        :title="$t('app.afc.BedTemp')"
-        :sub-title="$t('app.afc.BedTempSubtitle')"
-      >
-        <v-text-field
-          v-model.number="bedTemp"
-          placeholder="60"
-          dense
-          outlined
-          type="number"
-          :min="0"
-          :step="1"
-          hide-details
-        />
-      </app-setting>
+      <template v-if="hasSpoolTempMacro">
+        <v-divider class="my-3" />
+        <app-setting
+          :title="$t('app.afc.ExtruderTemp')"
+          :sub-title="$t('app.afc.ExtruderTempSubtitle')"
+        >
+          <v-text-field
+            v-model.number="extruderTemp"
+            placeholder="220"
+            dense
+            outlined
+            type="number"
+            :min="0"
+            :step="1"
+            hide-details
+          />
+        </app-setting>
+        <template v-if="lane?.bed_temp != null">
+          <v-divider class="my-3" />
+          <app-setting
+            :title="$t('app.afc.BedTemp')"
+            :sub-title="$t('app.afc.BedTempSubtitle')"
+          >
+            <v-text-field
+              v-model.number="bedTemp"
+              placeholder="60"
+              dense
+              outlined
+              type="number"
+              :min="0"
+              :step="1"
+              hide-details
+            />
+          </app-setting>
+        </template>
+      </template>
       <v-divider class="my-3" />
       <v-color-picker
         hide-mode-switch
@@ -99,6 +99,7 @@ import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import { Debounce } from 'vue-debounce-decorator'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import type { GcodeCommands } from '@/store/printer/types'
 
 @Component({})
 export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMixin) {
@@ -121,6 +122,14 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
 
   get hasSpoolId (): boolean {
     return this.lane?.spool_id != null
+  }
+
+  get availableCommands (): GcodeCommands {
+    return this.$typedGetters['printer/getAvailableCommands']
+  }
+
+  get hasSpoolTempMacro (): boolean {
+    return 'AFC_SET_SPOOL_TEMP' in this.availableCommands
   }
 
   get currentColor (): string {
@@ -181,9 +190,12 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
     }
 
     if (
-      this.clearSpoolId ||
-      this.extruderTemp !== this.currentExtruderTemp ||
-      this.bedTemp !== this.currentBedTemp
+      this.hasSpoolTempMacro &&
+      (
+        this.clearSpoolId ||
+        this.extruderTemp !== this.currentExtruderTemp ||
+        this.bedTemp !== this.currentBedTemp
+      )
     ) {
       // Only include BED_TEMP parameter if bed_temp variable is not undefined
       const bedTempParam = this.bedTemp !== undefined ? ` BED_TEMP=${this.bedTemp}` : ''
