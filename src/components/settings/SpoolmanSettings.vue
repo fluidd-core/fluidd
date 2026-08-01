@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-subheader id="spoolman">
-      {{ $t('app.spoolman.title.spoolman') }}
+      {{ headingTitle }}
     </v-subheader>
     <v-card
       :elevation="5"
@@ -18,8 +18,9 @@
         />
       </app-setting>
 
-      <v-divider />
+      <v-divider v-if="supportsQRCodeScanSettings" />
       <app-setting
+        v-if="supportsQRCodeScanSettings"
         :title="$tc('app.spoolman.setting.auto_open_qr_camera')"
       >
         <v-select
@@ -32,8 +33,9 @@
         />
       </app-setting>
 
-      <v-divider />
+      <v-divider v-if="supportsQRCodeScanSettings" />
       <app-setting
+        v-if="supportsQRCodeScanSettings"
         :title="$t('app.spoolman.setting.prefer_device_camera')"
       >
         <v-switch
@@ -43,8 +45,9 @@
         />
       </app-setting>
 
-      <v-divider />
+      <v-divider v-if="supportsQRCodeScanSettings" />
       <app-setting
+        v-if="supportsQRCodeScanSettings"
         :title="$t('app.spoolman.setting.auto_select_spool_on_match')"
       >
         <v-switch
@@ -135,6 +138,16 @@ import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
   components: {}
 })
 export default class SpoolmanSettings extends Mixins(StateMixin) {
+  get headingTitle (): string {
+    return this.$typedGetters['server/componentSupport']('filaman')
+      ? this.$t('app.filaman.title.filaman').toString()
+      : this.$t('app.spoolman.title.spoolman').toString()
+  }
+
+  get supportsQRCodeScanSettings (): boolean {
+    return !this.$typedGetters['server/componentSupport']('filaman')
+  }
+
   get autoSpoolSelectionDialog (): boolean {
     return this.$typedState.config.uiSettings.spoolman.autoSpoolSelectionDialog
   }

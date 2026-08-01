@@ -75,7 +75,10 @@ export default class AfcMixin extends Vue {
   }
 
   get afcExistsSpoolman (): boolean {
-    return this.$typedGetters['server/componentSupport']('spoolman')
+    return (
+      this.$typedGetters['server/componentSupport']('spoolman') ||
+      this.$typedGetters['server/componentSupport']('filaman')
+    )
   }
 
   get afcShowFilamentName (): boolean {

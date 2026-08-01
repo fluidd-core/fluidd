@@ -275,6 +275,8 @@ export const Globals = Object.freeze({
     announcements: { name: 'announcements', dispatch: 'announcements/init' },
     webcams: { name: 'webcam', dispatch: 'webcams/init' },
     jobQueue: { name: 'job_queue', dispatch: 'jobQueue/init' },
+    // filaman must init before spoolman, so `spoolman/init` can bail out
+    filaman: { name: 'filaman', dispatch: 'spoolman/initFilaman' },
     spoolman: { name: 'spoolman', dispatch: 'spoolman/init' },
     sensors: { name: 'sensor', dispatch: 'sensors/init' }
   },

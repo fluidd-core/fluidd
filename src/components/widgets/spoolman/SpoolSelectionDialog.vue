@@ -3,12 +3,12 @@
     v-model="open"
     scrollable
     :max-width="$vuetify.breakpoint.mdAndDown ? '90vw' : '75vw'"
-    :title="$tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro?.toUpperCase() })"
+    :title="dialogTitle"
     title-shadow
   >
     <template #menu>
       <v-menu
-        v-if="availableCameras.length > 1"
+        v-if="supportsQRCodeScan && availableCameras.length > 1"
         left
         offset-y
         transition="slide-y-transition"
@@ -57,7 +57,7 @@
       </v-menu>
 
       <app-btn
-        v-else-if="availableCameras.length"
+        v-else-if="supportsQRCodeScan && availableCameras.length"
         small
         class="me-1 my-1"
         @click="cameraScanSource = availableCameras[0].uid"
@@ -266,15 +266,15 @@
       <v-spacer v-if="isMobileViewport" />
 
       <app-btn
-        v-if="spoolmanURL"
-        :href="spoolmanURL"
+        v-if="spoolTrackingManagerUrl"
+        :href="spoolTrackingManagerUrl"
         target="_blank"
         rel="noopener noreferrer"
         color="primary"
         text
         type="button"
       >
-        {{ $t('app.spoolman.btn.manage_spools') }}
+        {{ manageSpoolsLabel }}
       </app-btn>
 
       <v-spacer v-if="!isMobileViewport" />
@@ -290,16 +290,12 @@
         color="primary"
         @click="handleSelectSpool"
       >
-        {{
-          filename
-            ? $t('app.general.btn.print')
-            : $tc('app.spoolman.btn.select', targetMacro ? 2 : 1, { macro: targetMacro })
-        }}
+        {{ selectButtonLabel }}
       </app-btn>
     </template>
 
     <QRReader
-      v-if="cameraScanSource"
+      v-if="supportsQRCodeScan && cameraScanSource"
       v-model="cameraScanSource"
       @detected="handleQRCodeDetected"
     />
@@ -311,6 +307,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
 import { SocketActions } from '@/api/socketActions'
+import { FilamanActions } from '@/api/filamanActions'
 import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
 import QRReader from '@/components/widgets/spoolman/QRReader.vue'
@@ -347,6 +344,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     if (this.open) {
       if (this.spoolSelectionOnly) {
         this.selectedSpoolId = this.$typedState.spoolman.dialog.selectedSpoolId ?? null
+      } else if (this.targetExtruder) {
+        const spoolId = this.$typedState.spoolman.activeSpoolsByExtruder[this.targetExtruder]
+        this.selectedSpoolId = spoolId ?? null
       } else if (this.targetMacro) {
         const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
 
@@ -361,12 +361,14 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         SocketActions.serverFilesMetadata(this.currentFileName)
       }
 
-      if (this.hasDeviceCamera && this.preferDeviceCamera) {
-        this.$nextTick(() => (this.cameraScanSource = 'device'))
-      } else {
-        const autoOpenCameraId = this.autoOpenQRDetectionCamera
-        if (autoOpenCameraId && this.$typedGetters['webcams/getWebcamById'](autoOpenCameraId)) {
-          this.$nextTick(() => (this.cameraScanSource = autoOpenCameraId))
+      if (this.supportsQRCodeScan) {
+        if (this.hasDeviceCamera && this.preferDeviceCamera) {
+          this.$nextTick(() => (this.cameraScanSource = 'device'))
+        } else {
+          const autoOpenCameraId = this.autoOpenQRDetectionCamera
+          if (autoOpenCameraId && this.$typedGetters['webcams/getWebcamById'](autoOpenCameraId)) {
+            this.$nextTick(() => (this.cameraScanSource = autoOpenCameraId))
+          }
         }
       }
     }
@@ -569,6 +571,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$typedState.spoolman.dialog.targetMacro
   }
 
+  get targetExtruder (): string | undefined {
+    return this.$typedState.spoolman.dialog.targetExtruder
+  }
+
   get enabledWebcams (): Moonraker.Webcam.Entry[] {
     return this.$typedGetters['webcams/getEnabledWebcams']
   }
@@ -632,6 +638,13 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       }
     }
 
+    if (this.targetExtruder) {
+      await this.postSpoolId(this.targetExtruder)
+
+      this.open = false
+      return
+    }
+
     if (this.targetMacro) {
       // no need to run sanity checks or start a print when we target a macro, so we return early
 
@@ -652,7 +665,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
       if (macro?.variables?.active) {
         // selected tool is active, update active spool
-        await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
+        await this.postSpoolId()
       }
 
       this.open = false
@@ -720,7 +733,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       }
     }
 
-    await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpoolId ?? undefined)
+    await this.postSpoolId()
 
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
@@ -739,8 +752,65 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       .some(val => val?.toString().toLowerCase().includes(query))
   }
 
-  get spoolmanURL (): string | undefined {
+  get spoolTrackingManagerUrl (): string | undefined {
     return this.$typedGetters['spoolman/getSpoolmanUrl']
+  }
+
+  get supportsFilaman (): boolean {
+    return this.$typedGetters['server/componentSupport']('filaman')
+  }
+
+  postSpoolId (extruder?: string) {
+    const spoolId = this.selectedSpoolId ?? undefined
+
+    return this.supportsFilaman
+      ? FilamanActions.postSpoolId(spoolId, extruder)
+      : SocketActions.serverSpoolmanPostSpoolId(spoolId)
+  }
+
+  /**
+   * Resolves an `app.spoolman.*` key to its `app.filaman.*` counterpart when FilaMan
+   * is the active backend and a translation exists.
+   */
+  spoolTrackingKey (suffix: string): string {
+    const filamanKey = `app.filaman.${suffix}`
+
+    return this.supportsFilaman && this.$te(filamanKey)
+      ? filamanKey
+      : `app.spoolman.${suffix}`
+  }
+
+  get dialogTitle (): string {
+    const key = this.spoolTrackingKey('title.spool_selection')
+
+    if (this.targetExtruder) {
+      const extruder = this.$typedGetters['printer/getExtruders']
+        .find(e => e.key === this.targetExtruder)
+
+      return `${this.$tc(key, 1)} – ${extruder?.name ?? this.targetExtruder}`
+    }
+
+    return this.$tc(key, this.targetMacro ? 2 : 1, {
+      macro: this.targetMacro?.toUpperCase()
+    }).toString()
+  }
+
+  get manageSpoolsLabel (): string {
+    return this.$t(this.spoolTrackingKey('btn.manage_spools')).toString()
+  }
+
+  get selectButtonLabel (): string {
+    if (this.filename) {
+      return this.$t('app.general.btn.print').toString()
+    }
+
+    return this.$tc(this.spoolTrackingKey('btn.select'), this.targetMacro ? 2 : 1, {
+      macro: this.targetMacro
+    }).toString()
+  }
+
+  get supportsQRCodeScan (): boolean {
+    return !this.supportsFilaman && this.$typedGetters['server/componentSupport']('spoolman')
   }
 
   get preferDeviceCamera () {

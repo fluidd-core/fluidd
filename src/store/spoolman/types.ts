@@ -1,7 +1,11 @@
+export type SpoolmanBackend = 'spoolman' | 'filaman'
+
 export interface SpoolmanState {
   info: Readonly<Moonraker.Spoolman.Info> | null;
+  backend: SpoolmanBackend;
   spools: readonly Moonraker.Spoolman.Spool[];
   activeSpool: number | null;
+  activeSpoolsByExtruder: Partial<Record<string, number | null>>;
   currency: string | null;
   connected: boolean;
   dialog: SpoolSelectionDialogState;
@@ -35,6 +39,7 @@ export interface SpoolSelectionDialogState {
   show: boolean;
   filename?: string;
   targetMacro?: string;
+  targetExtruder?: string;
   spoolSelectionOnly?: boolean;
   selectedSpoolId?: number;
 }

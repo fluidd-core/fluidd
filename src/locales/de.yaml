@@ -1086,6 +1086,15 @@ app:
         Warnung anzeigen, wenn der Filamenttyp der Spule nicht mit dem im Slicer ausgewählten
         übereinstimmt
       remaining_filament_unit: Verbleibendes Filament anzeigen als
+  filaman:
+    btn:
+      manage_spools: Spulen verwalten
+      select: 'Auswählen | Für {macro} auswählen'
+    title:
+      filaman: FilaMan
+      spool_selection: 'Spulenauswahl | Spulenauswahl für {macro}'
+    msg:
+      not_connected: FilaMan-Server nicht verfügbar.
   job_queue:
     msg:
       confirm: Sind Sie sicher? Hierdurch wird die gesamte Druckwarteschlange 

@@ -23,7 +23,7 @@
         <gcode-preview-settings />
         <timelapse-settings v-if="supportsTimelapse" />
         <mmu-settings v-if="supportsMmu" />
-        <spoolman-settings v-if="supportsSpoolman" />
+        <spoolman-settings v-if="supportsSpoolTracking" />
         <version-settings v-if="supportsVersions" />
       </div>
     </v-col>
@@ -84,8 +84,11 @@ export default class Settings extends Mixins(StateMixin) {
     return this.$typedGetters['server/componentSupport']('timelapse')
   }
 
-  get supportsSpoolman (): boolean {
-    return this.$typedGetters['server/componentSupport']('spoolman')
+  get supportsSpoolTracking (): boolean {
+    return (
+      this.$typedGetters['server/componentSupport']('spoolman') ||
+      this.$typedGetters['server/componentSupport']('filaman')
+    )
   }
 
   get supportsMmu (): boolean {

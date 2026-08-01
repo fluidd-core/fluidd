@@ -448,7 +448,19 @@ export const actions = {
     dispatch('spoolman/onActiveSpool', payload, { root: true })
   },
 
+  async notifyFilamanActiveSpoolSet ({ dispatch }, payload: { spool_id?: number | string | null }) {
+    dispatch('spoolman/onActiveSpool', payload, { root: true })
+  },
+
+  async notifyFilamanExtruderSpoolsChanged ({ dispatch }, payload: { extruder_spools?: Partial<Record<string, number | null>> }) {
+    dispatch('spoolman/onExtruderSpoolsChanged', payload, { root: true })
+  },
+
   async notifySpoolmanStatusChanged ({ dispatch }, payload: { spoolman_connected: boolean }) {
     dispatch('spoolman/onStatusChanged', payload.spoolman_connected, { root: true })
+  },
+
+  async notifyFilamanStatusChanged ({ dispatch }, payload: { filaman_connected: boolean }) {
+    dispatch('spoolman/onStatusChanged', payload.filaman_connected, { root: true })
   }
 } satisfies ActionTree<SocketState, RootState>

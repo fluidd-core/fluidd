@@ -3,8 +3,10 @@ import type { SpoolmanState } from './types'
 export const defaultState = (): SpoolmanState => {
   return {
     info: null,
+    backend: 'spoolman',
     spools: [],
     activeSpool: null,
+    activeSpoolsByExtruder: {},
     currency: null,
     connected: false,
     dialog: {

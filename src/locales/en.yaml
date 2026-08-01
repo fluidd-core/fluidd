@@ -1188,6 +1188,15 @@ app:
         Show a warning when the spool's filament type and the one selected in the
         slicer don't match
       remaining_filament_unit: Show remaining filament as
+  filaman:
+    btn:
+      manage_spools: Manage Spools
+      select: 'Select | Select for {macro}'
+    title:
+      filaman: FilaMan
+      spool_selection: 'Spool Selection | Spool Selection for macro {macro}'
+    msg:
+      not_connected: FilaMan server not available.
   mmu:
     btn:
       change_tool: Change Tool

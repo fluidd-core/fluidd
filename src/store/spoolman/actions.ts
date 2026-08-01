@@ -9,30 +9,12 @@ import type {
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { consola } from 'consola'
-import { EventBus } from '@/eventBus'
 import { gte, valid } from 'semver'
+import { filamanActions } from './filamanActions'
+import { normalizeSpoolList } from '@/util/filaman-spool-mapper'
+import { payloadAsSpoolmanProxyResponseV2 } from './proxyResponse'
 
 const logPrefix = '[SPOOLMAN]'
-
-const payloadAsSpoolmanProxyResponseV2 = <T>(payload: Moonraker.Spoolman.ProxyResponse<T>): Moonraker.Spoolman.ProxyResponseV2<T> => {
-  if (
-    payload != null &&
-    typeof payload === 'object' &&
-    'error' in payload &&
-    'response' in payload
-  ) {
-    if (payload.error != null) {
-      EventBus.$emit(typeof payload.error === 'string' ? payload.error : payload.error.message, { type: 'error' })
-    }
-
-    return payload
-  }
-
-  return {
-    error: null,
-    response: payload
-  }
-}
 
 const createSpoolmanSocket = (spoolmanUrl: string): WebSocket | undefined => {
   try {
@@ -50,6 +32,8 @@ const createSpoolmanSocket = (spoolmanUrl: string): WebSocket | undefined => {
 }
 
 export const actions = {
+  ...filamanActions,
+
   /**
    * Reset our store
    */
@@ -60,14 +44,27 @@ export const actions = {
   /**
    * Make a socket request to init the spoolman component.
    */
-  async init () {
+  async init ({ state }) {
+    if (state.backend === 'filaman') {
+      // filaman drives the spool data, see `initFilaman`
+      return
+    }
+
     SocketActions.serverSpoolmanGetSpoolId()
     SocketActions.serverSpoolmanProxyGetAvailableSpools()
     SocketActions.serverSpoolmanProxyGetInfo()
   },
 
-  async onActiveSpool ({ commit }, payload: Moonraker.Spoolman.SpoolIdResponse) {
-    commit('setActiveSpool', payload.spool_id)
+  async onActiveSpool ({ commit }, payload: Moonraker.Spoolman.FilamanActiveSpoolPayload) {
+    const rawSpoolId = payload?.spool_id
+
+    if (rawSpoolId == null) {
+      commit('setActiveSpool', null)
+      return
+    }
+
+    const spoolId = Number(rawSpoolId)
+    commit('setActiveSpool', Number.isFinite(spoolId) ? spoolId : null)
   },
 
   async onSpoolChange ({ commit, state }, { type, payload }: WebsocketSpoolPayload) {
@@ -145,23 +142,26 @@ export const actions = {
     commit('setSpools', spools)
   },
 
-  async onStatusChanged ({ commit, dispatch }, payload: boolean) {
+  async onStatusChanged ({ commit, dispatch, state }, payload: boolean) {
     if (payload) {
       // refresh data, connected state will be set on data retrieval
-      dispatch('init')
+      dispatch(state.backend === 'filaman' ? 'initFilaman' : 'init')
     } else {
       commit('setConnected', payload)
     }
   },
 
-  async onAvailableSpools ({ commit, dispatch }, payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Spool[]>) {
+  async onAvailableSpools (
+    { commit, dispatch },
+    payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Spool[] | Moonraker.Spoolman.FilamanPaginatedResponse>
+  ) {
     payload = payloadAsSpoolmanProxyResponseV2(payload)
 
     if (payload.error != null) {
       return
     }
 
-    commit('setSpools', payload.response)
+    commit('setSpools', normalizeSpoolList(payload.response))
 
     commit('setConnected', true)
 
@@ -180,7 +180,8 @@ export const actions = {
     if (
       state.info &&
       valid(state.info.version) &&
-      gte(state.info.version, '0.16.0')
+      gte(state.info.version, '0.16.0') &&
+      state.backend !== 'filaman'
     ) {
       SocketActions.serverSpoolmanProxyGetSettingCurrency()
     }
@@ -197,7 +198,7 @@ export const actions = {
   },
 
   async initializeWebsocketConnection ({ state, getters, rootState, commit, dispatch }) {
-    if (rootState.server.config.spoolman?.server) {
+    if (state.backend !== 'filaman' && rootState.server.config.spoolman?.server) {
       if (state.socket?.readyState === WebSocket.OPEN) {
         // we already have a working WS conn
         return

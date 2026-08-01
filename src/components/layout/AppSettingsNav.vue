@@ -48,9 +48,15 @@ export default class AppSettingsNav extends Vue {
       { name: this.$t('app.setting.title.gcode_preview'), hash: '#gcodePreview', visible: true },
       { name: this.$t('app.general.title.timelapse'), hash: '#timelapse', visible: this.supportsTimelapse },
       { name: this.$t('app.mmu.title.headline'), hash: '#mmu', visible: this.supportsMmu },
-      { name: this.$t('app.spoolman.title.spoolman'), hash: '#spoolman', visible: this.supportsSpoolman },
+      { name: this.spoolTrackingSettingsTitle, hash: '#spoolman', visible: this.supportsSpoolTracking },
       { name: this.$t('app.version.title'), hash: '#versions', visible: this.supportsVersions }
     ]
+  }
+
+  get spoolTrackingSettingsTitle (): string {
+    return this.$typedGetters['server/componentSupport']('filaman')
+      ? this.$t('app.filaman.title.filaman').toString()
+      : this.$t('app.spoolman.title.spoolman').toString()
   }
 
   get supportsVersions (): boolean {
@@ -61,8 +67,11 @@ export default class AppSettingsNav extends Vue {
     return this.$typedGetters['server/componentSupport']('timelapse')
   }
 
-  get supportsSpoolman (): boolean {
-    return this.$typedGetters['server/componentSupport']('spoolman')
+  get supportsSpoolTracking (): boolean {
+    return (
+      this.$typedGetters['server/componentSupport']('spoolman') ||
+      this.$typedGetters['server/componentSupport']('filaman')
+    )
   }
 
   get supportsMmu (): boolean {
