@@ -238,8 +238,11 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
       this.spoolmanSelection = false
 
       if (dialog.switchToManualEntry) {
-        dialog.allowManualEntry = false
-        dialog.switchToManualEntry = false
+        this.$typedCommit('spoolman/setDialogState', {
+          ...dialog,
+          switchToManualEntry: false,
+          allowManualEntry: false
+        })
         this.showFilamentDialog = true
         return
       }
