@@ -208,7 +208,9 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
       gcode.push(`AFC_SET_SPOOL_TEMP LANE=${encodeGcodeParamValue(this.name)}${bedTempParam} EXTRUDER_TEMP=${this.extruderTemp}`)
     }
 
-    this.sendGcode(gcode.join('\n'))
+    if (gcode.length) {
+      this.sendGcode(gcode.join('\n'))
+    }
 
     this.show = false
   }
