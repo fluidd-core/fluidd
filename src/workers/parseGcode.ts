@@ -1,5 +1,4 @@
 import type { ArcMove, ArcPlane, BBox, Layer, LinearMove, Move, Part, PositioningMode } from '@/store/gcodePreview/types'
-import isKeyOf from '@/util/is-key-of'
 import { pick } from 'lodash-es'
 import { split } from 'shlex'
 
@@ -71,6 +70,17 @@ const decimalRound = (a: number) => {
   return Math.round(a * 10000) / 10000
 }
 
+const createBounds = (): BBox => ({
+  x: {
+    min: Number.POSITIVE_INFINITY,
+    max: Number.NEGATIVE_INFINITY
+  },
+  y: {
+    min: Number.POSITIVE_INFINITY,
+    max: Number.NEGATIVE_INFINITY
+  }
+})
+
 const utf8ByteLength = (str: string) => {
   let bytes = 0
 
@@ -122,7 +132,7 @@ const parseGcode = async (
   const tools = new Set<number>()
 
   let newLayerForNextMove = false
-  let extrusionMode: PositioningMode = 'relative'
+  let extrusionMode: PositioningMode = 'absolute'
   let positioningMode: PositioningMode = 'absolute'
   let plane: ArcPlane = 'xy'
   const toolhead = {
@@ -133,16 +143,8 @@ const parseGcode = async (
   }
   let tool = 0
   let filePosition = 0
-  const bounds: BBox = {
-    x: {
-      min: Number.POSITIVE_INFINITY,
-      max: Number.NEGATIVE_INFINITY
-    },
-    y: {
-      min: Number.POSITIVE_INFINITY,
-      max: Number.NEGATIVE_INFINITY
-    }
-  }
+  let bounds = createBounds()
+  let lastBounds: BBox | null = null
 
   // todo get from firmware
   // store path: printer.printer.configFile.settings.firmware_retraction
@@ -157,6 +159,7 @@ const parseGcode = async (
     const { type, command, args } = parseLine(line) ?? {}
 
     let move: Move | null = null
+    let isSynthesizedMove = false
 
     if (type === 'macro') {
       switch (command) {
@@ -230,6 +233,8 @@ const parseGcode = async (
           plane = 'yz'
           break
         case 'G10':
+          isSynthesizedMove = true
+
           move = {
             e: -fwretraction.length,
             tool,
@@ -241,6 +246,8 @@ const parseGcode = async (
           }
           break
         case 'G11':
+          isSynthesizedMove = true
+
           move = {
             e: decimalRound(fwretraction.length + fwretraction.extrudeExtra),
             tool,
@@ -252,6 +259,8 @@ const parseGcode = async (
           }
           break
         case 'G28': {
+          isSynthesizedMove = true
+
           const hasX = 'x' in args
           const hasY = 'y' in args
           const hasZ = 'z' in args
@@ -286,9 +295,7 @@ const parseGcode = async (
           extrusionMode = 'relative'
           break
         case 'G92':
-          if (extrusionMode === 'absolute') {
-            toolhead.e = args.e ?? toolhead.e
-          }
+          toolhead.e = args.e ?? toolhead.e
 
           if (positioningMode === 'absolute') {
             toolhead.x = args.x ?? toolhead.x
@@ -314,14 +321,18 @@ const parseGcode = async (
       }
 
       if (move) {
-        if (extrusionMode === 'absolute' && move.e !== undefined) {
-          const extrusionLength = decimalRound(move.e - toolhead.e)
+        if (move.e !== undefined) {
+          if (positioningMode === 'absolute' && extrusionMode === 'absolute' && !isSynthesizedMove) {
+            const extrusionLength = decimalRound(move.e - toolhead.e)
 
-          toolhead.e = move.e
-          move.e = extrusionLength
+            toolhead.e = move.e
+            move.e = extrusionLength
+          } else {
+            toolhead.e = decimalRound(toolhead.e + move.e)
+          }
         }
 
-        if (positioningMode === 'relative') {
+        if (positioningMode === 'relative' && !isSynthesizedMove) {
           if (move.x !== undefined) {
             move.x = decimalRound(move.x + toolhead.x)
           }
@@ -336,8 +347,23 @@ const parseGcode = async (
         }
 
         if (newLayerForNextMove && move.e && move.e > 0) {
-          const m = move
-          if (['x', 'y', 'i', 'j'].some(x => isKeyOf(x, m) && m[x] !== 0)) {
+          if (
+            ('x' in move && move.x !== toolhead.x) ||
+            ('y' in move && move.y !== toolhead.y) ||
+            ('i' in move && move.i !== 0) ||
+            ('j' in move && move.j !== 0)
+          ) {
+            if (layers.length > 0) {
+              lastBounds = {
+                x: { ...bounds.x },
+                y: { ...bounds.y }
+              }
+
+              if (layers.length === 1) {
+                bounds = createBounds()
+              }
+            }
+
             const layer: Layer = {
               z: toolhead.z,
               move: moves.length - 1,
@@ -421,7 +447,7 @@ const parseGcode = async (
     layers,
     parts,
     bounds: layers.length > 0
-      ? bounds
+      ? lastBounds ?? bounds
       : null,
     tools: [...tools]
       .sort((a, b) => a - b)
