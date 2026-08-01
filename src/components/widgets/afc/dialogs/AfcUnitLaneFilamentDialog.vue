@@ -26,7 +26,7 @@
         :sub-title="$t('app.afc.WeightSubtitle')"
       >
         <v-text-field
-          v-model="weight"
+          v-model.number="weight"
           placeholder="1000"
           dense
           outlined
@@ -42,7 +42,7 @@
         :sub-title="$t('app.afc.ExtruderTempSubtitle')"
       >
         <v-text-field
-          v-model="extruderTemp"
+          v-model.number="extruderTemp"
           placeholder="220"
           dense
           outlined
@@ -52,13 +52,17 @@
           hide-details
         />
       </app-setting>
-      <v-divider class="my-3" />
+      <v-divider
+        v-if="currentBedTemp"
+        class="my-3"
+      />
       <app-setting
+        v-if="currentBedTemp"
         :title="$t('app.afc.BedTemp')"
         :sub-title="$t('app.afc.BedTempSubtitle')"
       >
         <v-text-field
-          v-model="bedTemp"
+          v-model.number="bedTemp"
           placeholder="60"
           dense
           outlined
@@ -108,7 +112,7 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
   material = ''
   weight = 0
   extruderTemp = 0
-  bedTemp = 0
+  bedTemp: number | undefined = undefined
   clearSpoolId = false
 
   get lane () {
@@ -135,15 +139,19 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
     return Math.round(this.lane?.extruder_temp ?? 0)
   }
 
-  get currentBedTemp (): number {
-    return Math.round(this.lane?.bed_temp ?? 0)
+  get currentBedTemp (): number | undefined {
+    return this.lane?.bed_temp != null
+      ? Math.round(this.lane.bed_temp)
+      : undefined
   }
 
   get disableSetBtn (): boolean {
     return (
       !this.material ||
       !this.weight ||
-      !this.color
+      !this.color ||
+      !Number.isFinite(Number(this.extruderTemp)) ||
+      (this.bedTemp !== undefined && !Number.isFinite(Number(this.bedTemp)))
     )
   }
 
@@ -177,7 +185,9 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
       this.extruderTemp !== this.currentExtruderTemp ||
       this.bedTemp !== this.currentBedTemp
     ) {
-      gcode.push(`AFC_SET_SPOOL_TEMP LANE=${encodeGcodeParamValue(this.name)} BED_TEMP=${this.bedTemp} EXTRUDER_TEMP=${this.extruderTemp}`)
+      // Only include BED_TEMP parameter if bed_temp variable is not undefined
+      const bedTempParam = this.bedTemp !== undefined ? ` BED_TEMP=${this.bedTemp}` : ''
+      gcode.push(`AFC_SET_SPOOL_TEMP LANE=${encodeGcodeParamValue(this.name)}${bedTempParam} EXTRUDER_TEMP=${this.extruderTemp}`)
     }
 
     this.sendGcode(gcode.join('\n'))

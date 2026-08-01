@@ -225,7 +225,7 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
       show: true,
       spoolSelectionOnly: true,
       selectedSpoolId: this.spoolId,
-      afcLaneName: this.name
+      allowManualEntry: true
     })
   }
 
@@ -238,6 +238,8 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
       this.spoolmanSelection = false
 
       if (dialog.switchToManualEntry) {
+        dialog.allowManualEntry = false
+        dialog.switchToManualEntry = false
         this.showFilamentDialog = true
         return
       }

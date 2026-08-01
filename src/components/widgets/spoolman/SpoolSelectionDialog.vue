@@ -266,7 +266,7 @@
       <v-spacer v-if="isMobileViewport" />
 
       <app-btn
-        v-if="afcLaneName"
+        v-if="allowManualEntry"
         text
         color="primary"
         type="button"
@@ -575,15 +575,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$typedState.spoolman.dialog.spoolSelectionOnly ?? false
   }
 
-  get afcLaneName (): string | undefined {
-    return this.$typedState.spoolman.dialog.afcLaneName
-  }
-
-  handleSwitchToManualEntry () {
-    this.$typedCommit('spoolman/setDialogState', {
-      show: false,
-      switchToManualEntry: true
-    })
+  get allowManualEntry (): boolean {
+    return this.$typedState.spoolman.dialog.allowManualEntry ?? false
   }
 
   get targetMacro (): string | undefined {
@@ -801,6 +794,13 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       path: 'uiSettings.spoolman.selectionDialogSortOrder.desc',
       value: value ?? null,
       server: true
+    })
+  }
+
+  handleSwitchToManualEntry () {
+    this.$typedCommit('spoolman/setDialogState', {
+      show: false,
+      switchToManualEntry: true
     })
   }
 

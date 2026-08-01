@@ -37,7 +37,7 @@ export interface SpoolSelectionDialogState {
   targetMacro?: string;
   spoolSelectionOnly?: boolean;
   selectedSpoolId?: number;
-  afcLaneName?: string;
+  allowManualEntry?: boolean;
   switchToManualEntry?: boolean;
 }
 
