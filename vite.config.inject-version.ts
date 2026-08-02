@@ -1,12 +1,12 @@
 import child_process from 'child_process'
 import fs from 'fs'
 import path from 'path'
-import { version } from './package.json'
+import { version } from './package.json' with { type: 'json' }
 
 import type { Plugin } from 'vite'
 
 const writeVersionFile = async () => {
-  const versionFile = await fs.promises.open(path.resolve(__dirname, 'dist/.version'), 'w')
+  const versionFile = await fs.promises.open(path.resolve(import.meta.dirname, 'dist/.version'), 'w')
 
   await versionFile.writeFile(`v${version}`)
 
@@ -14,7 +14,7 @@ const writeVersionFile = async () => {
 }
 
 const writeReleaseInfoFile = async () => {
-  const releaseInfoFile = await fs.promises.open(path.resolve(__dirname, 'dist/release_info.json'), 'w')
+  const releaseInfoFile = await fs.promises.open(path.resolve(import.meta.dirname, 'dist/release_info.json'), 'w')
 
   await releaseInfoFile.writeFile(JSON.stringify({
     project_name: 'fluidd',

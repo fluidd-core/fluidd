@@ -9,7 +9,7 @@ catalog:
   dompurify: ^3.4.12
   echarts: ^6.1.0
   typescript: npm:typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2
-  vite: ^8.1.5
+  vite: ^8.2.0
   vue: ^2.7.16
 
 overrides:
