@@ -37,6 +37,8 @@ export interface SpoolSelectionDialogState {
   targetMacro?: string;
   spoolSelectionOnly?: boolean;
   selectedSpoolId?: number;
+  allowManualEntry?: boolean;
+  switchToManualEntry?: boolean;
 }
 
 export interface WebsocketBasePayload {
