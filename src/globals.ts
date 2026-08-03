@@ -193,6 +193,8 @@ import {
   mdiMulticast,
   mdiInformationOutline,
   mdiSwapHorizontal,
+  mdiSwapHorizontalVariant,
+  mdiRadioboxBlank,
   mdiLifebuoy,
   mdiLightbulbOnOutline,
   mdiLightbulbOutline,
@@ -570,6 +572,8 @@ export const Icons = Object.freeze({
   afcUnloadLane: mdiArrowUpBold,
   afcLoadLane: mdiArrowDownBold,
   afcEjectFilament: mdiEject,
+  afcSelectTool: mdiRadioboxBlank,
+  afcUnselectTool: mdiSwapHorizontalVariant,
 })
 
 export const Waits = Object.freeze({

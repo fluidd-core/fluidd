@@ -132,6 +132,14 @@
       }
     },
     {
+      "name": "Snapmaker",
+      "color": "#0c63e2",
+      "isDark": true,
+      "logo": {
+        "src": "logo_snapmaker.svg"
+      }
+    },
+    {
       "name": "Voron",
       "color": "#FF2300",
       "isDark": true,

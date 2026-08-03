@@ -43,11 +43,39 @@
       <v-col class="py-4 text-center">
         {{ bufferOutput }}
       </v-col>
-      <v-col class="py-4 pr-6 text-right">
+      <v-col
+        class="py-4 text-right"
+        :class="{ 'pr-6': !afcHasToolchanger }"
+      >
         {{ state }}:
         <span :class="stateLaneClasses">
           {{ stateLane }}
         </span>
+      </v-col>
+      <v-col
+        v-if="afcHasToolchanger"
+        class="py-4 pr-6 text-right flex-grow-0"
+      >
+        <v-tooltip top>
+          <template #activator="{ on, attrs }">
+            <v-btn
+              :disabled="toolSelectionDisabled"
+              x-small
+              icon
+              class="tool-select-btn"
+              v-bind="attrs"
+              v-on="on"
+              @click="toolSelectionHandler"
+            >
+              <v-icon x-small>
+                {{ toolSelectionIcon }}
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>
+            {{ toolSelectionLabel }}
+          </span>
+        </v-tooltip>
       </v-col>
     </v-row>
   </div>
@@ -56,6 +84,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
@@ -86,10 +115,17 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     return lanes.includes(currentLane.name)
   }
 
+  get onShuttle (): boolean {
+    return this.afcExtruder?.on_shuttle === true
+  }
+
   get containerClasses () {
+    const isError = this.hasActiveLane && this.afcErrorState
+
     return {
-      'border-primary': this.hasActiveLane,
-      'border-error': this.hasActiveLane && this.afcErrorState,
+      'border-primary': !isError && (this.hasActiveLane || (this.onShuttle && this.afcHasToolchanger)),
+      'border-warning': !isError && (this.afcExtruder?.next_pickup === true),
+      'border-error': isError,
       'darken-3': this.$vuetify.theme.dark,
       'lighten-2': !this.$vuetify.theme.dark,
     }
@@ -170,6 +206,11 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   get bufferOutput (): string {
     const extruder = this.afcCurrentLane?.extruder
 
+    // "Standalone" lanes don't have buffers, so don't show any buffer status
+    if (this.afcExtruder?.is_standalone) {
+      return ''
+    }
+
     if (extruder !== this.name) {
       return this.$t('app.afc.BufferDisabled').toString()
     }
@@ -177,8 +218,18 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     return `${this.afcCurrentLane?.buffer ?? '--'}: ${this.afcCurrentBuffer?.state ?? '--'}`
   }
 
+  get toolSelectionDisabled (): boolean {
+    return !this.klippyReady || this.printerPrinting ||
+     (this.afcExtruder?.status ?? 'Idle') !== 'Idle' ||
+      (this.afcCurrentState !== 'Idle' && this.afcCurrentState !== 'Error')
+  }
+
   get state (): string {
     const extruder = this.afcCurrentLane?.extruder
+
+    if (this.afcExtruder?.status && this.afcExtruder.status !== 'Idle') {
+      return this.$t(`app.afc.${this.afcExtruder.status}`).toString()
+    }
 
     if (extruder === this.name) {
       if (this.printerPrinting) {
@@ -196,7 +247,7 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
       return this.afcExtruder.lane_loaded
     }
 
-    if (this.afcCurrentLane) {
+    if (this.hasActiveLane && this.afcCurrentLane) {
       return this.afcCurrentLane.name
     }
 
@@ -208,6 +259,23 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
       'primary--text': this.hasActiveLane,
       'error--text': this.hasActiveLane && this.afcErrorState,
     }
+  }
+
+  get toolSelectionIcon (): string {
+    return this.onShuttle ? '$afcUnselectTool' : '$afcSelectTool'
+  }
+
+  get toolSelectionLabel (): string {
+    return this.$t(this.onShuttle ? 'app.afc.UnselectTool' : 'app.afc.SelectTool').toString()
+  }
+
+  toolSelectionHandler () {
+    if (this.onShuttle) {
+      this.sendGcode('AFC_UNSELECT_TOOL')
+      return
+    }
+
+    this.sendGcode(`AFC_SELECT_TOOL TOOL=${encodeGcodeParamValue(this.name)}`)
   }
 }
 </script>
@@ -229,5 +297,14 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
 
 .v-application .border-error {
   border-color: var(--v-error-base) !important;
+}
+
+.v-application .border-warning {
+  border-color: var(--v-warning-base) !important;
+}
+
+.tool-select-btn.v-size--x-small {
+  height: 24px;
+  width: 24px;
 }
 </style>
