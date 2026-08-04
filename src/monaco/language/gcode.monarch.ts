@@ -7,10 +7,7 @@ export const conf: Monaco.languages.LanguageConfiguration = {
   }
 }
 
-const { attributes, states } = createGcodeRules({
-  mode: 'standalone',
-  fallback: 'invalid'
-})
+const { attributes, states } = createGcodeRules('standalone')
 
 export const language: Monaco.languages.IMonarchLanguage = {
   ignoreCase: true,

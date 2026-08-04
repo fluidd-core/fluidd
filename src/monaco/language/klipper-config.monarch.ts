@@ -43,18 +43,7 @@ export const conf: monaco.languages.LanguageConfiguration = {
   autoClosingPairs: [{ open: '[', close: ']' }],
 }
 
-const {
-  entryState: gcodeEntryState,
-  resumeAction: gcodeResume,
-  attributes: gcodeAttributes,
-  states: gcodeStates
-} = createGcodeRules({
-  mode: 'embedded',
-  prefix: 'gcode',
-  fallback: 'string',
-  checkState: 'gcodeCheck',
-  inlineComment: /([ \t]+)([#;].*)$/
-})
+const gcode = createGcodeRules('embedded')
 
 // Runs at the start of every physical line to decide whether it still belongs
 // to the value being accumulated. `$S2` is the key's indent.
@@ -88,7 +77,7 @@ export const language: monaco.languages.IMonarchLanguage = {
   // set at language level — Monarch drops per-rule regex flags.
   ignoreCase: true,
 
-  ...gcodeAttributes,
+  ...gcode.attributes,
 
   tokenizer: {
     root: [
@@ -122,12 +111,7 @@ export const language: monaco.languages.IMonarchLanguage = {
       // G-code template keys — `/^(.*_)?gcode$/`; see the module comment.
       [
         /^([ \t]*)((?:[^#;=: \t[]*_)?gcode)([ \t]*)(=|:)/,
-        ['white', 'keyword', 'white', {
-          cases: {
-            '@eos': { token: 'separator', next: '@gcodeCheck.$1.none' },
-            '@default': { token: 'separator', next: `@${gcodeEntryState}.$1` }
-          }
-        }]
+        ['white', 'keyword', 'white', gcode.entryAction('$1', 'separator')]
       ],
 
       [
@@ -143,9 +127,9 @@ export const language: monaco.languages.IMonarchLanguage = {
       { include: '@root' }
     ],
 
-    gcodeCheck: continuationCheck(gcodeResume),
+    [gcode.checkState]: continuationCheck(gcode.resumeAction),
 
-    ...gcodeStates,
+    ...gcode.states,
 
     checkValue: continuationCheck({ token: 'white', next: '@value.$S2' }),
 
