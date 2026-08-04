@@ -586,6 +586,26 @@ describe('klipper-config Monarch tokenizer', () => {
         ])
       })
 
+      // A region that is only a prefix of the argument must close back into it.
+      it('tokenizes a compound argument value', () => {
+        expect(tokenizeInSection('gcode:\n  SET_X V={% if 1 %}1{% endif %} MOVE=1')).toEqual([
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(
+            ['white', '  '],
+            ['keyword.macro', 'SET_X'], ['white', ' '],
+            ['keyword.param', 'V'], ['operator', '='],
+            ['delimiter.jinja', '{%'], ['white', ' '],
+            ['keyword.control.jinja', 'if'], ['white', ' '],
+            ['number.jinja', '1'], ['white', ' '], ['delimiter.jinja', '%}'],
+            ['string', '1'],
+            ['delimiter.jinja', '{%'], ['white', ' '],
+            ['keyword.control.jinja', 'endif'], ['white', ' '], ['delimiter.jinja', '%}'],
+            ['white', ' '],
+            ['keyword.param', 'MOVE'], ['operator', '='], ['string', '1']
+          )
+        ])
+      })
+
       // A param letter before `{` is a Jinja expression, not a decimal.
       it('tokenizes a param value substituted from a Jinja expression', () => {
         expect(tokenizeInSection('gcode:\n  G1 X{x} Y10')).toEqual([
@@ -626,6 +646,47 @@ describe('klipper-config Monarch tokenizer', () => {
     // Dedenting out of a G-code value must cleanly hand control back to
     // `@content` — a sibling key and a new `[section]` header both need to
     // tokenize normally afterward, not get swallowed as more G-code.
+    // Must still reach the continuation check, or the rest of the file is
+    // read as part of the value.
+    it.each<[string, TokenLine[][]]>([
+      [
+        'gcode:\n  MY_MACRO\n[next_section]',
+        [
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(['white', '  '], ['keyword.macro', 'MY_MACRO']),
+          t(['bracket', '['], ['type.identifier', 'next_section'], ['bracket', ']'])
+        ]
+      ],
+      [
+        'gcode:\n  SET_PIN PIN=x\nother = 1',
+        [
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(
+            ['white', '  '],
+            ['keyword.macro', 'SET_PIN'], ['white', ' '],
+            ['keyword.param', 'PIN'], ['operator', '='], ['string', 'x']
+          ),
+          t(['keyword', 'other'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', '1'])
+        ]
+      ],
+      // Unterminated quote recovery must not strand the sub-machine either.
+      [
+        'gcode:\n  SET_PIN PIN="a\nother = 1',
+        [
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(
+            ['white', '  '],
+            ['keyword.macro', 'SET_PIN'], ['white', ' '],
+            ['keyword.param', 'PIN'], ['operator', '='],
+            ['string.quote', '"'], ['invalid', 'a']
+          ),
+          t(['keyword', 'other'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', '1'])
+        ]
+      ]
+    ])('ends the value when a line ends inside a macro call: %j', (input, expected) => {
+      expect(tokenizeInSection(input)).toEqual(expected)
+    })
+
     it('returns to normal tokenizing after dedenting out of a G-code value', () => {
       expect(tokenizeInSection('gcode:\n  G28\nother_key = 1')).toEqual([
         t(['keyword', 'gcode'], ['separator', ':']),

@@ -108,20 +108,24 @@ export function createGcodeRules (options: GcodeRulesOptions): GcodeRules {
     ? [[options.inlineComment, ['white', { token: 'comment', next: `@${checkState}.$S2.none` }]]]
     : []
 
-  // `@popall` would unwind the host's own frames when embedded; pop one level
-  // and let each state's end-of-line catch-all cascade the rest.
-  const abandon = embedded ? '@pop' : '@popall'
+  const abandon = '@popall'
 
-  // The prologue rules spliced into the pushed sub-states still reference
-  // `$S2`, so the key indent has to travel down with them.
-  const push = (state: string): string => embedded ? `@${state}.$S2` : `@${state}`
+  // Embedded, a line ending mid-macro must hand back to `checkState` or the
+  // next line skips its continuation check — so the sub-machine moves with
+  // `switchTo`, which keeps depth constant and strands no frame. Standalone
+  // keeps push/pop and just resumes mid-macro on the next line.
+  const enter = (state: string): ExpandedAction =>
+    embedded ? { switchTo: `@${state}.$S2` } : { next: `@${state}` }
 
-  // A Jinja region records where to resume once it closes, so one opened in a
-  // macro argument value returns to the params state rather than to the entry
-  // state, which would read the next `NAME=value` as another macro call. The
-  // tag has to be lower case and cannot be the state name itself: `$Sn`
-  // substitution runs through `fixCase`, which `ignoreCase` makes destructive.
-  const jinjaOpeners = (returnTag: 'value' | 'params'): Rule[] => {
+  const leaveTo = (state: string): ExpandedAction =>
+    embedded ? { switchTo: `@${state}.$S2` } : { next: '@pop' }
+
+  const handBack = `@${checkState}.$S2.none`
+
+  // Records where to resume once the region closes. The tag must be lower
+  // case and cannot be the state name: `$Sn` substitution runs through
+  // `fixCase`, which `ignoreCase` makes destructive.
+  const jinjaOpeners = (returnTag: 'value' | 'params' | 'arg'): Rule[] => {
     const open = (kind: string) =>
       ({ token: 'delimiter.jinja', switchTo: `@${jinjaState}.$S2.${kind}.${returnTag}` })
 
@@ -176,7 +180,14 @@ export function createGcodeRules (options: GcodeRulesOptions): GcodeRules {
 
     [
       /[a-z_]{2,}\d*/,
-      { token: 'keyword.macro', next: push(paramsState) }
+      embedded
+        ? {
+            cases: {
+              '@eos': { token: 'keyword.macro', switchTo: handBack },
+              '@default': { token: 'keyword.macro', switchTo: `@${paramsState}.$S2` }
+            }
+          }
+        : { token: 'keyword.macro', next: `@${paramsState}` }
     ],
 
     [
@@ -209,27 +220,29 @@ export function createGcodeRules (options: GcodeRulesOptions): GcodeRules {
 
     [
       /[*;]/,
-      { token: '@rematch', next: '@pop' }
+      { token: '@rematch', ...leaveTo(entryState) }
     ],
 
     [
       /([a-z_]+)(=)/,
       ['keyword.param', {
         cases: {
-          '@eos': { token: 'operator', next: '@pop' },
-          '@default': { token: 'operator', next: push(argValueState) }
+          '@eos': embedded
+            ? { token: 'operator', switchTo: handBack }
+            : { token: 'operator', next: '@pop' },
+          '@default': { token: 'operator', ...enter(argValueState) }
         }
       }]
     ],
 
     [
       /\s+/,
-      'white'
+      eosSwitch('white')
     ],
 
     [
       '',
-      { token: '', next: '@pop' }
+      { token: '', ...leaveTo(entryState) }
     ]
   ]
 
@@ -238,29 +251,37 @@ export function createGcodeRules (options: GcodeRulesOptions): GcodeRules {
 
     [
       /[*;]/,
-      { token: '@rematch', next: '@pop' }
+      { token: '@rematch', ...leaveTo(paramsState) }
     ],
 
     [
       /"/,
       {
         cases: {
-          '@eos': { token: 'invalid', next: abandon },
-          '@default': { token: 'string.quote', bracket: '@open', next: push(stringState) }
+          '@eos': embedded
+            ? { token: 'invalid', switchTo: handBack }
+            : { token: 'invalid', next: abandon },
+          '@default': { token: 'string.quote', bracket: '@open', ...enter(stringState) }
         }
       }
     ],
 
-    ...(embedded ? jinjaOpeners('params') : []),
+    ...(embedded
+      ? ([
+          ...jinjaOpeners('arg'),
 
-    [
-      /\S+/,
-      { token: 'string', next: '@pop' }
-    ],
+          // Stay put so a later `{…}` is Jinja too; whitespace ends the value.
+          [/[^\s{]+/, eosSwitch('string')],
+
+          [/\s+/, { token: '@rematch', switchTo: `@${paramsState}.$S2` }]
+        ] satisfies Rule[])
+      : ([
+          [/\S+/, { token: 'string', next: '@pop' }]
+        ] satisfies Rule[])),
 
     [
       '',
-      { token: '', next: '@pop' }
+      { token: '', ...leaveTo(paramsState) }
     ]
   ]
 
@@ -271,7 +292,9 @@ export function createGcodeRules (options: GcodeRulesOptions): GcodeRules {
       /(\\"|[^"])+/,
       {
         cases: {
-          '@eos': { token: 'invalid', next: abandon },
+          '@eos': embedded
+            ? { token: 'invalid', switchTo: handBack }
+            : { token: 'invalid', next: abandon },
           '@default': 'string'
         }
       }
@@ -281,8 +304,10 @@ export function createGcodeRules (options: GcodeRulesOptions): GcodeRules {
       /"/,
       {
         cases: {
-          '@eos': { token: 'string.quote', bracket: '@close', next: abandon },
-          '@default': { token: 'string.quote', bracket: '@close', next: '@pop' }
+          '@eos': embedded
+            ? { token: 'string.quote', bracket: '@close', switchTo: handBack }
+            : { token: 'string.quote', bracket: '@close', next: abandon },
+          '@default': { token: 'string.quote', bracket: '@close', ...leaveTo(argValueState) }
         }
       }
     ]
@@ -301,6 +326,7 @@ export function createGcodeRules (options: GcodeRulesOptions): GcodeRules {
       cases: {
         '@eos': { token, switchTo: `@${checkState}.$S2.none` },
         '$S4==params': { token, switchTo: `@${paramsState}.$S2` },
+        '$S4==arg': { token, switchTo: `@${argValueState}.$S2` },
         '@default': { token, switchTo: `@${entryState}.$S2` }
       }
     })
