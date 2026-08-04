@@ -1,4 +1,5 @@
 import type * as monaco from 'monaco-editor/editor/editor.api'
+import { createGcodeRules } from './gcode-rules'
 
 // Monarch language definition for Klipper printer.cfg
 //
@@ -30,6 +31,11 @@ import type * as monaco from 'monaco-editor/editor/editor.api'
 //   - No interpolation (RawConfigParser) — %(x)s / ${x} are plain text
 //   - Duplicate sections/keys allowed (strict=False, last wins)
 //   - #*# lines are Klipper's SAVE_CONFIG auto-written block marker
+//
+// G-code values: Klipper renders any option named `gcode` or ending in
+// `_gcode` as a template, and hands it to gcode-rules.ts. The match is a
+// suffix, not a substring — `gcode_id`, `gcode_x_offset` and
+// `gcode_load_sequence` merely start with `gcode` and are plain values.
 
 export const conf: monaco.languages.LanguageConfiguration = {
   comments: { lineComment: '#' },
@@ -37,7 +43,53 @@ export const conf: monaco.languages.LanguageConfiguration = {
   autoClosingPairs: [{ open: '[', close: ']' }],
 }
 
+const {
+  entryState: gcodeEntryState,
+  resumeAction: gcodeResume,
+  attributes: gcodeAttributes,
+  states: gcodeStates
+} = createGcodeRules({
+  mode: 'embedded',
+  prefix: 'gcode',
+  fallback: 'string',
+  checkState: 'gcodeCheck',
+  inlineComment: /([ \t]+)([#;].*)$/
+})
+
+// Runs at the start of every physical line to decide whether it still belongs
+// to the value being accumulated. `$S2` is the key's indent.
+const continuationCheck = (onContinuation: monaco.languages.IMonarchLanguageAction): monaco.languages.IMonarchLanguageRule[] => [
+  [
+    /^#\*#/,
+    { token: '@rematch', next: '@content' }
+  ],
+
+  // Blank line or comment: stay and keep waiting
+  [
+    /^([ \t]*)((?:[#;].*)?)$/,
+    ['white', 'comment']
+  ],
+
+  // Continuation: strictly more indented than the key (indent = $S2)
+  [
+    '^$S2(?=[ \t]+[^ \t])',
+    onContinuation
+  ],
+
+  // Anything else: not a continuation, return to content without consuming
+  [
+    '',
+    { token: '@rematch', next: '@content' }
+  ]
+]
+
 export const language: monaco.languages.IMonarchLanguage = {
+  // RawConfigParser lower-cases option names, so `GCODE:` is valid. Must be
+  // set at language level — Monarch drops per-rule regex flags.
+  ignoreCase: true,
+
+  ...gcodeAttributes,
+
   tokenizer: {
     root: [
       [
@@ -67,6 +119,17 @@ export const language: monaco.languages.IMonarchLanguage = {
     ],
 
     content: [
+      // G-code template keys — `/^(.*_)?gcode$/`; see the module comment.
+      [
+        /^([ \t]*)((?:[^#;=: \t[]*_)?gcode)([ \t]*)(=|:)/,
+        ['white', 'keyword', 'white', {
+          cases: {
+            '@eos': { token: 'separator', next: '@gcodeCheck.$1.none' },
+            '@default': { token: 'separator', next: `@${gcodeEntryState}.$1` }
+          }
+        }]
+      ],
+
       [
         /^([ \t]*)([^#;=: \t[]+(?:[ \t]+[^#;=: \t]+)*)([ \t]*)(=|:)/,
         ['white', 'keyword', 'white', {
@@ -80,30 +143,11 @@ export const language: monaco.languages.IMonarchLanguage = {
       { include: '@root' }
     ],
 
-    checkValue: [
-      [
-        /^#\*#/,
-        { token: '@rematch', next: '@content' }
-      ],
+    gcodeCheck: continuationCheck(gcodeResume),
 
-      // Blank line or comment: stay and keep waiting
-      [
-        /^([ \t]*)((?:[#;].*)?)$/,
-        ['white', 'comment']
-      ],
+    ...gcodeStates,
 
-      // Continuation: strictly more indented than the key (indent = $S2)
-      [
-        '^$S2(?=[ \t]+[^ \t])',
-        { token: 'white', next: '@value.$S2' }
-      ],
-
-      // Anything else: not a continuation, return to content without consuming
-      [
-        '',
-        { token: '@rematch', next: '@content' }
-      ]
-    ],
+    checkValue: continuationCheck({ token: 'white', next: '@value.$S2' }),
 
     value: [
       // Comment

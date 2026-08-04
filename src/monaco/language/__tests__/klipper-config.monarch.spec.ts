@@ -213,9 +213,11 @@ describe('klipper-config Monarch tokenizer', () => {
   })
 
   describe('multi-line continuations', () => {
+    // `description` is deliberately not a G-code key, so this block pins the
+    // generic continuation machinery rather than the G-code path below.
     it('continues into more-indented lines (zero-indent key)', () => {
-      expect(tokenizeInSection('gcode:\n  G28\n  G1 X0')).toEqual([
-        t(['keyword', 'gcode'], ['separator', ':']),
+      expect(tokenizeInSection('description:\n  G28\n  G1 X0')).toEqual([
+        t(['keyword', 'description'], ['separator', ':']),
         t(['white', '  '], ['string', 'G28']),
         t(['white', '  '], ['string', 'G1 X0'])
       ])
@@ -229,8 +231,8 @@ describe('klipper-config Monarch tokenizer', () => {
     })
 
     it('returns to root when next line drops below key indent', () => {
-      expect(tokenizeInSection('gcode:\n  G28\nother_key = 1')).toEqual([
-        t(['keyword', 'gcode'], ['separator', ':']),
+      expect(tokenizeInSection('description:\n  G28\nother_key = 1')).toEqual([
+        t(['keyword', 'description'], ['separator', ':']),
         t(['white', '  '], ['string', 'G28']),
         t(['keyword', 'other_key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', '1'])
       ])
@@ -244,40 +246,40 @@ describe('klipper-config Monarch tokenizer', () => {
     })
 
     it('skips blank lines while waiting for the continuation', () => {
-      expect(tokenizeInSection('gcode:\n\n  G28')).toEqual([
-        t(['keyword', 'gcode'], ['separator', ':']),
+      expect(tokenizeInSection('description:\n\n  G28')).toEqual([
+        t(['keyword', 'description'], ['separator', ':']),
         t(),
         t(['white', '  '], ['string', 'G28'])
       ])
     })
 
     it('skips full-line comments while waiting for the continuation', () => {
-      expect(tokenizeInSection('gcode:\n# blank-ish\n  G28')).toEqual([
-        t(['keyword', 'gcode'], ['separator', ':']),
+      expect(tokenizeInSection('description:\n# blank-ish\n  G28')).toEqual([
+        t(['keyword', 'description'], ['separator', ':']),
         t(['comment', '# blank-ish']),
         t(['white', '  '], ['string', 'G28'])
       ])
     })
 
     it('also skips ; comment lines while waiting', () => {
-      expect(tokenizeInSection('gcode:\n; mid\n  G28')).toEqual([
-        t(['keyword', 'gcode'], ['separator', ':']),
+      expect(tokenizeInSection('description:\n; mid\n  G28')).toEqual([
+        t(['keyword', 'description'], ['separator', ':']),
         t(['comment', '; mid']),
         t(['white', '  '], ['string', 'G28'])
       ])
     })
 
     it('skips indented comment lines while waiting', () => {
-      expect(tokenizeInSection('gcode:\n  # indented\n  G28')).toEqual([
-        t(['keyword', 'gcode'], ['separator', ':']),
+      expect(tokenizeInSection('description:\n  # indented\n  G28')).toEqual([
+        t(['keyword', 'description'], ['separator', ':']),
         t(['white', '  '], ['comment', '# indented']),
         t(['white', '  '], ['string', 'G28'])
       ])
     })
 
     it('skips whitespace-only lines while waiting', () => {
-      expect(tokenizeInSection('gcode:\n   \n  G28')).toEqual([
-        t(['keyword', 'gcode'], ['separator', ':']),
+      expect(tokenizeInSection('description:\n   \n  G28')).toEqual([
+        t(['keyword', 'description'], ['separator', ':']),
         t(['white', '   ']),
         t(['white', '  '], ['string', 'G28'])
       ])
@@ -287,8 +289,8 @@ describe('klipper-config Monarch tokenizer', () => {
     // `#`) preceded by whitespace inside a continuation body is stripped
     // the same way as on the original key=value line.
     it('strips inline comments inside a continuation body', () => {
-      expect(tokenizeInSection('gcode:\n  G28 ; mid-comment')).toEqual([
-        t(['keyword', 'gcode'], ['separator', ':']),
+      expect(tokenizeInSection('description:\n  G28 ; mid-comment')).toEqual([
+        t(['keyword', 'description'], ['separator', ':']),
         t(['white', '  '], ['string', 'G28'], ['white', ' '], ['comment', '; mid-comment'])
       ])
     })
@@ -297,15 +299,15 @@ describe('klipper-config Monarch tokenizer', () => {
     // spaces is *not* continued by a tab-indented next line, even though
     // they may render the same width.
     it('does not continue when next-line indent does not start with the key indent literally', () => {
-      expect(tokenizeInSection('\tgcode:\n  G28')).toEqual([
-        t(['white', '\t'], ['keyword', 'gcode'], ['separator', ':']),
+      expect(tokenizeInSection('\tdescription:\n  G28')).toEqual([
+        t(['white', '\t'], ['keyword', 'description'], ['separator', ':']),
         t(['white', '  '], ['invalid', 'G28'])
       ])
     })
 
     it('weaves blank lines and indented comments through a multi-line continuation', () => {
-      expect(tokenizeInSection('gcode:\n  G28\n\n  ; reset\n  G1')).toEqual([
-        t(['keyword', 'gcode'], ['separator', ':']),
+      expect(tokenizeInSection('description:\n  G28\n\n  ; reset\n  G1')).toEqual([
+        t(['keyword', 'description'], ['separator', ':']),
         t(['white', '  '], ['string', 'G28']),
         t(),
         t(['white', '  '], ['comment', '; reset']),
@@ -328,8 +330,8 @@ describe('klipper-config Monarch tokenizer', () => {
     // catches an accidental `^` anchor on the section regex bringing it
     // into root precedence over an active continuation.
     it('treats an indented [section] line as part of the continuation value', () => {
-      expect(tokenizeInSection('gcode:\n  [foo]')).toEqual([
-        t(['keyword', 'gcode'], ['separator', ':']),
+      expect(tokenizeInSection('description:\n  [foo]')).toEqual([
+        t(['keyword', 'description'], ['separator', ':']),
         t(['white', '  '], ['string', '[foo]'])
       ])
     })
@@ -337,10 +339,10 @@ describe('klipper-config Monarch tokenizer', () => {
     // `checkValue` has a dedicated `^#\*#` rematch rule that aborts the
     // continuation and re-runs the line via `@content`. Without this, the
     // SAVE_CONFIG block at the end of a printer.cfg could be mis-tokenized
-    // as a continuation of the last gcode-style value.
+    // as a continuation of the previous value.
     it('aborts the continuation when a #*# save-config line appears', () => {
-      expect(tokenizeInSection('gcode:\n  G28\n#*# [stepper_x]')).toEqual([
-        t(['keyword', 'gcode'], ['separator', ':']),
+      expect(tokenizeInSection('description:\n  G28\n#*# [stepper_x]')).toEqual([
+        t(['keyword', 'description'], ['separator', ':']),
         t(['white', '  '], ['string', 'G28']),
         t(['comment.control.save-config', '#*# [stepper_x]'])
       ])
@@ -348,12 +350,9 @@ describe('klipper-config Monarch tokenizer', () => {
 
     // The `''` empty-rematch fallback in `checkValue` defers a zero-indent
     // line back to `@content`, where `@root`'s section regex matches.
-    // This is the path that ends a `gcode:`-style continuation when a new
-    // `[section]` begins — pinning it catches a regression where the
-    // empty-rematch rule is reordered or removed.
     it('aborts the continuation when a zero-indent [section] header appears', () => {
-      expect(tokenizeInSection('gcode:\n  G28\n[other_section]')).toEqual([
-        t(['keyword', 'gcode'], ['separator', ':']),
+      expect(tokenizeInSection('description:\n  G28\n[other_section]')).toEqual([
+        t(['keyword', 'description'], ['separator', ':']),
         t(['white', '  '], ['string', 'G28']),
         t(['bracket', '['], ['type.identifier', 'other_section'], ['bracket', ']'])
       ])
@@ -364,10 +363,216 @@ describe('klipper-config Monarch tokenizer', () => {
     // and tokenizes as a regular comment. Klipper's `_read_config_file`
     // also uses `line.startswith('#*#')` (column 0).
     it('treats an indented #*# inside a continuation as a plain comment', () => {
-      expect(tokenizeInSection('gcode:\n  G28\n  #*# foo')).toEqual([
-        t(['keyword', 'gcode'], ['separator', ':']),
+      expect(tokenizeInSection('description:\n  G28\n  #*# foo')).toEqual([
+        t(['keyword', 'description'], ['separator', ':']),
         t(['white', '  '], ['string', 'G28']),
         t(['white', '  '], ['comment', '#*# foo'])
+      ])
+    })
+  })
+
+  describe('G-code values', () => {
+    it.each<[string, TokenLine[][]]>([
+      [
+        'gcode: G28',
+        [t(['keyword', 'gcode'], ['separator', ':'], ['white', ' '], ['keyword.command.g', 'G28'])]
+      ],
+      [
+        'activate_gcode: G28',
+        [t(['keyword', 'activate_gcode'], ['separator', ':'], ['white', ' '], ['keyword.command.g', 'G28'])]
+      ],
+      [
+        'pre_unload_gcode: G28',
+        [t(['keyword', 'pre_unload_gcode'], ['separator', ':'], ['white', ' '], ['keyword.command.g', 'G28'])]
+      ],
+      // RawConfigParser lower-cases option names.
+      [
+        'GCODE: G28',
+        [t(['keyword', 'GCODE'], ['separator', ':'], ['white', ' '], ['keyword.command.g', 'G28'])]
+      ],
+      // Merely *starts* with `gcode` — a plain value, not a template.
+      [
+        'gcode_id: C',
+        [t(['keyword', 'gcode_id'], ['separator', ':'], ['white', ' '], ['string', 'C'])]
+      ],
+      [
+        'gcode_x_offset: 1.5',
+        [t(['keyword', 'gcode_x_offset'], ['separator', ':'], ['white', ' '], ['string', '1.5'])]
+      ],
+      [
+        'gcode_load_sequence: manual',
+        [t(['keyword', 'gcode_load_sequence'], ['separator', ':'], ['white', ' '], ['string', 'manual'])]
+      ]
+    ])('tokenizes %j', (input, expected) => {
+      expect(tokenizeInSection(input)).toEqual(expected)
+    })
+
+    it('tokenizes a G-code command and its params', () => {
+      expect(tokenizeInSection('gcode:\n  G1 X10 Y20 F6000')).toEqual([
+        t(['keyword', 'gcode'], ['separator', ':']),
+        t(
+          ['white', '  '],
+          ['keyword.command.g', 'G1'], ['white', ' '],
+          ['keyword.param.x', 'X10'], ['white', ' '],
+          ['keyword.param.y', 'Y20'], ['white', ' '],
+          ['keyword.param.f', 'F6000']
+        )
+      ])
+    })
+
+    it('tokenizes a macro call with named params', () => {
+      expect(tokenizeInSection('gcode:\n  SET_PIN PIN=my_led VALUE=1')).toEqual([
+        t(['keyword', 'gcode'], ['separator', ':']),
+        t(
+          ['white', '  '],
+          ['keyword.macro', 'SET_PIN'], ['white', ' '],
+          ['keyword.param', 'PIN'], ['operator', '='], ['string', 'my_led'], ['white', ' '],
+          ['keyword.param', 'VALUE'], ['operator', '='], ['string', '1']
+        )
+      ])
+    })
+
+    it('resumes G-code parsing on the next continuation line', () => {
+      expect(tokenizeInSection('gcode:\n  G28\n  G1 X0')).toEqual([
+        t(['keyword', 'gcode'], ['separator', ':']),
+        t(['white', '  '], ['keyword.command.g', 'G28']),
+        t(['white', '  '], ['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X0'])
+      ])
+    })
+
+    // configparser strips these from the raw line before Klipper or Jinja
+    // sees it, so they win over G-code/Jinja tokenizing.
+    it.each<[string, TokenLine[][]]>([
+      [
+        'gcode:\n  G28 ; note',
+        [
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(['white', '  '], ['keyword.command.g', 'G28'], ['white', ' '], ['comment', '; note'])
+        ]
+      ],
+      [
+        'gcode:\n  {% set x = 1 %} ; note',
+        [
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(
+            ['white', '  '],
+            ['delimiter.jinja', '{%'], ['white', ' '],
+            ['keyword.control.jinja', 'set'], ['white', ' '],
+            ['variable.jinja', 'x'], ['white', ' '],
+            ['operator', '='], ['white', ' '],
+            ['number.jinja', '1'], ['white', ' '],
+            ['delimiter.jinja', '%}'], ['white', ' '],
+            ['comment', '; note']
+          )
+        ]
+      ]
+    ])('strips a whitespace-preceded comment inside a G-code value: %j', (input, expected) => {
+      expect(tokenizeInSection(input)).toEqual(expected)
+    })
+
+    // The macro-params sub-state is pushed mid-line and must carry the key
+    // indent ($S2), or the continuation check swallows the next sibling key.
+    it('keeps the key indent when a comment ends a macro call', () => {
+      expect(tokenizeInSection('  gcode:\n    MY_MACRO ; note\n  other = 1')).toEqual([
+        t(['white', '  '], ['keyword', 'gcode'], ['separator', ':']),
+        t(['white', '    '], ['keyword.macro', 'MY_MACRO'], ['white', ' '], ['comment', '; note']),
+        t(['white', '  '], ['keyword', 'other'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', '1'])
+      ])
+    })
+
+    describe('Jinja2 templates', () => {
+      // Klipper's Jinja env uses single-brace expressions, not `{{ }}`.
+      it('tokenizes a {% set %} statement', () => {
+        expect(tokenizeInSection('gcode:\n  {% set x = params.X|default(10) %}')).toEqual([
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(
+            ['white', '  '],
+            ['delimiter.jinja', '{%'], ['white', ' '],
+            ['keyword.control.jinja', 'set'], ['white', ' '],
+            ['variable.jinja', 'x'], ['white', ' '],
+            ['operator', '='], ['white', ' '],
+            ['variable.jinja', 'params'], ['operator', '.'], ['variable.jinja', 'X'],
+            ['operator', '|'], ['variable.jinja', 'default'], ['operator', '('], ['number.jinja', '10'], ['operator', ')'],
+            ['white', ' '],
+            ['delimiter.jinja', '%}']
+          )
+        ])
+      })
+
+      // `MACRO` and `.call` are variables, not keywords.
+      it('does not treat upper-case names or attributes as keywords', () => {
+        expect(tokenizeInSection('gcode:\n  {% set MACRO = params.MACRO | default(layer.call, True) %}')).toEqual([
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(
+            ['white', '  '],
+            ['delimiter.jinja', '{%'], ['white', ' '],
+            ['keyword.control.jinja', 'set'], ['white', ' '],
+            ['variable.jinja', 'MACRO'], ['white', ' '],
+            ['operator', '='], ['white', ' '],
+            ['variable.jinja', 'params'], ['operator', '.'], ['variable.jinja', 'MACRO'], ['white', ' '],
+            ['operator', '|'], ['white', ' '],
+            ['variable.jinja', 'default'], ['operator', '('],
+            ['variable.jinja', 'layer'], ['operator', '.'], ['variable.jinja', 'call'],
+            ['operator', ','], ['white', ' '],
+            ['constant.language.jinja', 'True'], ['operator', ')'], ['white', ' '],
+            ['delimiter.jinja', '%}']
+          )
+        ])
+      })
+
+      // A param letter before `{` is a Jinja expression, not a decimal.
+      it('tokenizes a param value substituted from a Jinja expression', () => {
+        expect(tokenizeInSection('gcode:\n  G1 X{x} Y10')).toEqual([
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(
+            ['white', '  '],
+            ['keyword.command.g', 'G1'], ['white', ' '],
+            ['keyword.param.x', 'X'],
+            ['delimiter.jinja', '{'], ['variable.jinja', 'x'], ['delimiter.jinja', '}'],
+            ['white', ' '],
+            ['keyword.param.y', 'Y10']
+          )
+        ])
+      })
+
+      // An open `{% if %}` stays open across a continuation line.
+      it('keeps a Jinja statement open across a wrapped continuation line', () => {
+        expect(tokenizeInSection('gcode:\n  {% if printer.toolhead.homed_axes\n      != "xyz" %}\n    G28\n  {% endif %}')).toEqual([
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(
+            ['white', '  '],
+            ['delimiter.jinja', '{%'], ['white', ' '],
+            ['keyword.control.jinja', 'if'], ['white', ' '],
+            ['variable.jinja', 'printer'], ['operator', '.'], ['variable.jinja', 'toolhead'], ['operator', '.'], ['variable.jinja', 'homed_axes']
+          ),
+          t(
+            ['white', '      '],
+            ['operator', '!='], ['white', ' '],
+            ['string.jinja', '"xyz"'], ['white', ' '],
+            ['delimiter.jinja', '%}']
+          ),
+          t(['white', '    '], ['keyword.command.g', 'G28']),
+          t(['white', '  '], ['delimiter.jinja', '{%'], ['white', ' '], ['keyword.control.jinja', 'endif'], ['white', ' '], ['delimiter.jinja', '%}'])
+        ])
+      })
+    })
+
+    // Dedenting out of a G-code value must cleanly hand control back to
+    // `@content` — a sibling key and a new `[section]` header both need to
+    // tokenize normally afterward, not get swallowed as more G-code.
+    it('returns to normal tokenizing after dedenting out of a G-code value', () => {
+      expect(tokenizeInSection('gcode:\n  G28\nother_key = 1')).toEqual([
+        t(['keyword', 'gcode'], ['separator', ':']),
+        t(['white', '  '], ['keyword.command.g', 'G28']),
+        t(['keyword', 'other_key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', '1'])
+      ])
+    })
+
+    it('aborts a G-code continuation when a #*# save-config line appears', () => {
+      expect(tokenizeInSection('gcode:\n  G28\n#*# [stepper_x]')).toEqual([
+        t(['keyword', 'gcode'], ['separator', ':']),
+        t(['white', '  '], ['keyword.command.g', 'G28']),
+        t(['comment.control.save-config', '#*# [stepper_x]'])
       ])
     })
   })
