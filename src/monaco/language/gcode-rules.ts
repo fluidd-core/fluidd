@@ -23,6 +23,16 @@ const JINJA_KEYWORDS = [
 
 const JINJA_CONSTANTS = ['true', 'false', 'none']
 
+// M117/M118 read the raw command line (`get_raw_command_parameters` in
+// klippy/gcode.py), so `;` does not start a comment in their payload.
+// eslint-disable-next-line regexp/no-useless-assertions
+const MESSAGE = /(m11[78](?!\d)@override)(.*)$/
+
+// Embedded, configparser has already stripped a whitespace-preceded `#`/`;`
+// before Klipper sees the line, so the payload stops there instead.
+// eslint-disable-next-line regexp/no-useless-assertions
+const MESSAGE_EMBEDDED = /(m11[78](?!\d)@override)((?:[^ \t]|[ \t]+(?![#;]))*)/
+
 const DECIMAL = /[-+]?(?:\d+\.?\d*|\d*\.\d+)/
 
 const OVERRIDE = /(?:\.\d+)?/
@@ -106,6 +116,22 @@ export function createGcodeRules (options: GcodeRulesOptions): GcodeRules {
   // `$S2`, so the key indent has to travel down with them.
   const push = (state: string): string => embedded ? `@${state}.$S2` : `@${state}`
 
+  // A Jinja region records where to resume once it closes, so one opened in a
+  // macro argument value returns to the params state rather than to the entry
+  // state, which would read the next `NAME=value` as another macro call. The
+  // tag has to be lower case and cannot be the state name itself: `$Sn`
+  // substitution runs through `fixCase`, which `ignoreCase` makes destructive.
+  const jinjaOpeners = (returnTag: 'value' | 'params'): Rule[] => {
+    const open = (kind: string) =>
+      ({ token: 'delimiter.jinja', switchTo: `@${jinjaState}.$S2.${kind}.${returnTag}` })
+
+    return [
+      [/\{%/, open('stmt')],
+      [/\{#/, open('comment')],
+      [/\{/, open('expr')]
+    ]
+  }
+
   // Monarch only re-evaluates rules while `pos < line.length`, so a rule
   // consuming to end of line gets no further pass — the state change has to be
   // in that same rule's action or it fires a line late. `resume` names the
@@ -139,8 +165,7 @@ export function createGcodeRules (options: GcodeRulesOptions): GcodeRules {
     ],
 
     [
-      // eslint-disable-next-line regexp/no-useless-assertions
-      /(m11[78](?!\d)@override)([^;]*)/,
+      embedded ? MESSAGE_EMBEDDED : MESSAGE,
       ['keyword.command.m', eosSwitch('string')]
     ],
 
@@ -164,9 +189,7 @@ export function createGcodeRules (options: GcodeRulesOptions): GcodeRules {
           // `G1 X{x}` — the rule above requires a literal decimal.
           [/([a-mo-z])(?=\{)/, { token: 'keyword.param.$1' }],
 
-          [/\{%/, { token: 'delimiter.jinja', switchTo: `@${jinjaState}.$S2.stmt` }],
-          [/\{#/, { token: 'delimiter.jinja', switchTo: `@${jinjaState}.$S2.comment` }],
-          [/\{/, { token: 'delimiter.jinja', switchTo: `@${jinjaState}.$S2.expr` }]
+          ...jinjaOpeners('value')
         ] satisfies Rule[])
       : []),
 
@@ -228,6 +251,8 @@ export function createGcodeRules (options: GcodeRulesOptions): GcodeRules {
       }
     ],
 
+    ...(embedded ? jinjaOpeners('params') : []),
+
     [
       /\S+/,
       { token: 'string', next: '@pop' }
@@ -275,12 +300,13 @@ export function createGcodeRules (options: GcodeRulesOptions): GcodeRules {
     const jinjaCloseEos = (token: string): Action => ({
       cases: {
         '@eos': { token, switchTo: `@${checkState}.$S2.none` },
+        '$S4==params': { token, switchTo: `@${paramsState}.$S2` },
         '@default': { token, switchTo: `@${entryState}.$S2` }
       }
     })
 
     // Keeps $S3 across the line break so a continuation resumes this region.
-    const stay = (token: string): ExpandedAction => eosSwitch(token, '$S3')
+    const stay = (token: string): ExpandedAction => eosSwitch(token, '$S3.$S4')
 
     // `ignoreCase` lowercases words before an `@list` lookup, making `MACRO` a
     // keyword. `$0==` matches the lower-case spelling only. Constants keep the
@@ -361,7 +387,7 @@ export function createGcodeRules (options: GcodeRulesOptions): GcodeRules {
       // Defensive: only reachable against an already-empty remainder.
       [
         '',
-        { token: '', switchTo: `@${checkState}.$S2.$S3` }
+        { token: '', switchTo: `@${checkState}.$S2.$S3.$S4` }
       ]
     ]
   }
@@ -371,7 +397,7 @@ export function createGcodeRules (options: GcodeRulesOptions): GcodeRules {
     resumeAction: {
       cases: {
         '$S3==none': { token: 'white', switchTo: `@${entryState}.$S2` },
-        '@default': { token: 'white', switchTo: `@${jinjaState}.$S2.$S3` }
+        '@default': { token: 'white', switchTo: `@${jinjaState}.$S2.$S3.$S4` }
       }
     },
     attributes: {

@@ -238,14 +238,24 @@ describe('gcode Monarch tokenizer', () => {
       expect(tokenize('M117.5')).toEqual([t(['keyword.command.m', 'M117.5'])])
     })
 
-    // The M117/M118 payload regex stops at `;`, so a trailing comment is
-    // recognised — the leading whitespace is captured as part of the payload
-    // string token, and the comment is tokenised normally.
-    it('lets a trailing ; comment terminate the payload', () => {
+    // M117/M118 read the raw command line (klippy/gcode.py
+    // `get_raw_command_parameters`), which never strips a `;`.
+    it('keeps a trailing ; inside the payload', () => {
       expect(tokenize('M117 ; not a comment')).toEqual([t(
         ['keyword.command.m', 'M117'],
-        ['string', ' '],
-        ['comment', '; not a comment']
+        ['string', ' ; not a comment']
+      )])
+    })
+
+    // Inside a klipper-config value configparser cuts ` ;test` first.
+    it.each([
+      ['M117 test ;test', 'M117', ' test ;test'],
+      ['M118 test ;test', 'M118', ' test ;test'],
+      ['M117 a;b', 'M117', ' a;b']
+    ])('keeps the payload of %j intact', (input, command, payload) => {
+      expect(tokenize(input)).toEqual([t(
+        ['keyword.command.m', command],
+        ['string', payload]
       )])
     })
 
@@ -260,11 +270,10 @@ describe('gcode Monarch tokenizer', () => {
       )])
     })
 
-    it('captures a no-space payload up to a trailing ; comment', () => {
+    it('keeps a ; inside a no-space payload', () => {
       expect(tokenize('M117hello;comment')).toEqual([t(
         ['keyword.command.m', 'M117'],
-        ['string', 'hello'],
-        ['comment', ';comment']
+        ['string', 'hello;comment']
       )])
     })
 

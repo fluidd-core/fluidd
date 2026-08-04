@@ -470,6 +470,55 @@ describe('klipper-config Monarch tokenizer', () => {
       expect(tokenizeInSection(input)).toEqual(expected)
     })
 
+    // configparser keeps `;note` in the value, then Klipper's G-code parser
+    // strips it — so unlike a plain value, this is a comment.
+    it.each<[string, TokenLine[][]]>([
+      [
+        'gcode:\n  G28;note',
+        [
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(['white', '  '], ['keyword.command.g', 'G28'], ['comment', ';note'])
+        ]
+      ],
+      // M117/M118 read the raw line, so `;` stays — but configparser has
+      // already cut ` ;tail`.
+      [
+        'gcode:\n  M117 Hello;World ;tail',
+        [
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(
+            ['white', '  '],
+            ['keyword.command.m', 'M117'], ['string', ' Hello;World'],
+            ['white', ' '], ['comment', ';tail']
+          )
+        ]
+      ],
+      [
+        'gcode:\n  M117 test #test',
+        [
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(
+            ['white', '  '],
+            ['keyword.command.m', 'M117'], ['string', ' test'],
+            ['white', ' '], ['comment', '#test']
+          )
+        ]
+      ],
+      [
+        'gcode:\n  M118 test ;test',
+        [
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(
+            ['white', '  '],
+            ['keyword.command.m', 'M118'], ['string', ' test'],
+            ['white', ' '], ['comment', ';test']
+          )
+        ]
+      ]
+    ])('applies Klipper G-code comment rules, not configparser ones: %j', (input, expected) => {
+      expect(tokenizeInSection(input)).toEqual(expected)
+    })
+
     // The macro-params sub-state is pushed mid-line and must carry the key
     // indent ($S2), or the continuation check swallows the next sibling key.
     it('keeps the key indent when a comment ends a macro call', () => {
@@ -516,6 +565,23 @@ describe('klipper-config Monarch tokenizer', () => {
             ['operator', ','], ['white', ' '],
             ['constant.language.jinja', 'True'], ['operator', ')'], ['white', ' '],
             ['delimiter.jinja', '%}']
+          )
+        ])
+      })
+
+      // Must close back into the params state, or `MOVE=1` reads as a macro.
+      it('tokenizes a Jinja expression in a macro argument value', () => {
+        expect(tokenizeInSection('gcode:\n  SET_GCODE_OFFSET Z={params.Z|float} MOVE=1')).toEqual([
+          t(['keyword', 'gcode'], ['separator', ':']),
+          t(
+            ['white', '  '],
+            ['keyword.macro', 'SET_GCODE_OFFSET'], ['white', ' '],
+            ['keyword.param', 'Z'], ['operator', '='],
+            ['delimiter.jinja', '{'],
+            ['variable.jinja', 'params'], ['operator', '.'], ['variable.jinja', 'Z'],
+            ['operator', '|'], ['variable.jinja', 'float'],
+            ['delimiter.jinja', '}'], ['white', ' '],
+            ['keyword.param', 'MOVE'], ['operator', '='], ['string', '1']
           )
         ])
       })
