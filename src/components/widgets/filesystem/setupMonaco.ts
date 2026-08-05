@@ -103,7 +103,11 @@ async function setupMonaco () {
       { token: 'keyword.param.t', foreground: '7b2fbe' },
       { token: 'keyword.param', foreground: '0070c1' },
       { token: 'operator', foreground: '767676' },
-      { token: 'string.quote', foreground: 'a31515' }
+      { token: 'string.quote', foreground: 'a31515' },
+      { token: 'delimiter.jinja', foreground: 'af00db' },
+      { token: 'keyword.control.jinja', foreground: 'af00db' },
+      { token: 'variable.jinja', foreground: '001080' },
+      { token: 'number.jinja', foreground: '098658' }
     ],
     colors: {},
   })
@@ -137,7 +141,11 @@ async function setupMonaco () {
       { token: 'keyword.param.t', foreground: 'c586c0' },
       { token: 'keyword.param', foreground: '9cdcfe' },
       { token: 'operator', foreground: 'd4d4d4' },
-      { token: 'string.quote', foreground: 'ce9178' }
+      { token: 'string.quote', foreground: 'ce9178' },
+      { token: 'delimiter.jinja', foreground: 'c586c0' },
+      { token: 'keyword.control.jinja', foreground: 'c586c0' },
+      { token: 'variable.jinja', foreground: '9cdcfe' },
+      { token: 'number.jinja', foreground: 'b5cea8' }
     ],
     colors: {
       'editor.background': '#28282b',
