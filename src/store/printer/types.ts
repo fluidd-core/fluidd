@@ -63,6 +63,9 @@ type OutputType<TConfig extends TSHelpers.ValueTypesOf<Klipper.SettingsStateBase
   config?: TConfig;
   name: string;
   prettyName: string;
+  // Auto-generated default display name (pre-alias). `prettyName` = alias || defaultPrettyName.
+  // Optional so any hand-built row literal (e.g. in tests) still type-checks.
+  defaultPrettyName?: string;
   key: string;
   color?: string;
   type: string;
@@ -103,6 +106,7 @@ export type OutputPin = OutputType<Klipper.OutputPinSettings, Klipper.OutputPinS
 export interface Sensor extends Partial<Klipper.TemperatureSensorState>, Partial<Klipper.TemperatureSensor2State>, Partial<Klipper.ZThermalAdjustState> {
   name: string;
   prettyName: string;
+  defaultPrettyName?: string;
   key: string;
   color?: string;
   type: string;

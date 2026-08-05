@@ -10,9 +10,24 @@
     ]
   },
 
+  // vitest's `include` OVERRIDES (does not merge with) the extended tsconfig.app
+  // include. The new store/getter specs import store source that references the
+  // ambient global namespaces (Moonraker/Klipper/TSHelpers in src/typings) and the
+  // Vue augmentations ($filters/$colorset, declared in the heavy src/plugins/*.ts),
+  // so a narrow test-only include leaves them unresolved under `vue-tsc --build`
+  // (only `type-check` bites — vitest itself esbuild-transpiles and never typechecks).
+  //
+  // Fix: mirror tsconfig.app's source include so this program sees the same global
+  // declarations (superset = app source + tests). A project reference to app was the
+  // structural first choice but app is `noEmit` / non-composite, so it can't be a
+  // reference target without restructuring the app build; and narrowly rooting
+  // src/plugins/filters.ts drags @/router → the whole component tree. Mirroring is
+  // green with no TS6307 composite-overlap here (tsconfig.app excludes __tests__).
   "include": [
+    "*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.vue",
     "tests/**/*",
-    "src/**/__tests__/*",
     "env.d.ts",
   ],
 

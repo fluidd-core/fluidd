@@ -207,6 +207,7 @@ export interface AxisConfig {
 export interface DashboardConfig {
   tempPresets: TemperaturePreset[];
   sensorColors: Record<string, string>;
+  aliases: Record<string, string>;
 }
 
 export interface SaveByPath {

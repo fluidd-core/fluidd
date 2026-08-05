@@ -581,6 +581,7 @@ export const getters = {
   getHeaters: (state, getters, rootState): Heater[] => {
     const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
     const sensorColors: Record<string, string> = rootState.config.uiSettings.dashboard.sensorColors
+    const aliases: Record<string, string> = rootState.config.uiSettings.dashboard.aliases
 
     const heaters: Heater[] = []
 
@@ -597,7 +598,8 @@ export const getters = {
         const name = nameFromSplit || key
 
         const color = resolveSensorColor(sensorColors, key)
-        const prettyName = Vue.$filters.prettyCase(name)
+        const defaultPrettyName = Vue.$filters.prettyCase(name)
+        const prettyName = aliases[key] || defaultPrettyName
 
         const disconnected = configHasDisconnectedMcu(config, nonCriticalDisconnectedMcusSet)
 
@@ -607,6 +609,7 @@ export const getters = {
           type,
           color,
           prettyName,
+          defaultPrettyName,
           key,
           minTemp: config?.min_temp ?? 0,
           maxTemp: config?.max_temp ?? 500,
@@ -662,6 +665,7 @@ export const getters = {
   */
   getOutputs: (state, getters, rootState) => (filter?: string[]): Array<Fan | Led | OutputPin> => {
     const sensorColors: Record<string, string> = rootState.config.uiSettings.dashboard.sensorColors
+    const aliases: Record<string, string> = rootState.config.uiSettings.dashboard.aliases
 
     // Fans..
     const fans = [
@@ -740,9 +744,10 @@ export const getters = {
         supportedTypes.includes(type) &&
         (!filterByPrefix.includes(type) || !name.startsWith('_'))
       ) {
-        const prettyName = name === 'fan'
+        const defaultPrettyName = name === 'fan'
           ? 'Part Fan' // If we know its the part fan.
           : Vue.$filters.prettyCase(name)
+        const prettyName = aliases[key] || defaultPrettyName
 
         const color = applyColor.includes(type)
           ? resolveSensorColor(sensorColors, key)
@@ -758,6 +763,7 @@ export const getters = {
           config: { ...config },
           name,
           prettyName,
+          defaultPrettyName,
           key,
           color,
           type,
@@ -804,6 +810,7 @@ export const getters = {
     ]
     const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
     const sensorColors: Record<string, string> = rootState.config.uiSettings.dashboard.sensorColors
+    const aliases: Record<string, string> = rootState.config.uiSettings.dashboard.aliases
 
     const printerKeys = Object.keys(state.printer)
 
@@ -817,7 +824,7 @@ export const getters = {
             const name = nameFromSplit || key
 
             if (!name.startsWith('_')) {
-              const prettyName = type === 'tmc2240'
+              const defaultPrettyName = type === 'tmc2240'
                 ? i18n.t('app.general.label.stepper_driver',
                   {
                     name:
@@ -826,6 +833,7 @@ export const getters = {
                         : Vue.$filters.prettyCase(name)
                   }).toString()
                 : Vue.$filters.prettyCase(name)
+              const prettyName = aliases[key] || defaultPrettyName
               const color = resolveSensorColor(sensorColors, key)
               const config = state.printer.configfile.settings[key.toLowerCase()]
 
@@ -840,6 +848,7 @@ export const getters = {
                 name,
                 key,
                 prettyName,
+                defaultPrettyName,
                 color,
                 type,
                 disconnected
