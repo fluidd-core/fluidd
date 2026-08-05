@@ -99,28 +99,17 @@ function arcRMoveToSVGPath (toolhead: Point, move: ArcMove): string {
   return arcIJMoveToSVGPath(toolhead, { ...move, i, j })
 }
 
-export function arcMoveToSvgPath (toolhead: Point, move: ArcMove): string {
-  if (move.plane === 'xz' || move.plane === 'yz') {
-    // G18/G19: arc lies in a vertical plane; the XY projection is not a clean
-    // SVG arc, so render as a straight line to the destination XY.
-    return `L${move.x ?? toolhead.x},${move.y ?? toolhead.y}`
+export function moveToSVGPath (toolhead: Point, move: Move): string {
+  if ('d' in move && move.plane === 'xy') {
+    if (move.i !== undefined || move.j !== undefined) {
+      return arcIJMoveToSVGPath(toolhead, move)
+    }
+
+    if (move.r !== undefined) {
+      return arcRMoveToSVGPath(toolhead, move)
+    }
   }
 
-  if (move.i !== undefined || move.j !== undefined) {
-    return arcIJMoveToSVGPath(toolhead, move)
-  }
-
-  if (move.r !== undefined) {
-    return arcRMoveToSVGPath(toolhead, move)
-  }
-
-  throw new TypeError('Move is not a valid arc')
-}
-
-export function moveToSVGPath (toolhead: Point, move: Move) {
-  return (
-    'd' in move
-      ? arcMoveToSvgPath(toolhead, move)
-      : `L${move.x ?? toolhead.x},${move.y ?? toolhead.y}`
-  )
+  // linear move, vertical plane arc (G18/G19), or arc missing I/J/R
+  return `L${move.x ?? toolhead.x},${move.y ?? toolhead.y}`
 }

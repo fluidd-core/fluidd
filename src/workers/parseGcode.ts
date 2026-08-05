@@ -1,11 +1,10 @@
 import type { ArcMove, ArcPlane, BBox, Layer, LinearMove, Move, Part, PositioningMode } from '@/store/gcodePreview/types'
-import { pick } from 'lodash-es'
 import { split } from 'shlex'
 
 const getArgsFromGcodeCommandArgs = (gcodeCommandArgs: string) => {
   const args: Record<string, number | undefined> = {}
 
-  for (const [, key, value] of gcodeCommandArgs.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))?/gi)) {
+  for (const [, key, value] of gcodeCommandArgs.matchAll(/([a-z])[ \t]*([-+]?\d*\.?\d+)?/gi)) {
     args[key.toLowerCase()] = value ? +value : undefined
   }
 
@@ -28,27 +27,29 @@ const getArgsFromMacroCommandArgs = (macroCommandArgs: string) => {
 const parseLine = (line: string) => {
   const clearedLine = line
     .trim()
-    .split(';', 2)[0]
+    .split(';', 1)[0]
 
-  const [, gcodeCommand, gcodeCommandArgs = ''] = clearedLine
-    .split(/^([gmt]\d+)\s*/i)
+  if (clearedLine) {
+    const [, gcodeCommand, gcodeCommandArgs = ''] = clearedLine
+      .split(/^([gmt]\d+)\s*/i)
 
-  if (gcodeCommand) {
-    return {
-      type: 'gcode' as const,
-      command: gcodeCommand.toUpperCase(),
-      args: getArgsFromGcodeCommandArgs(gcodeCommandArgs)
+    if (gcodeCommand) {
+      return {
+        type: 'gcode' as const,
+        command: gcodeCommand.toUpperCase(),
+        args: getArgsFromGcodeCommandArgs(gcodeCommandArgs)
+      }
     }
-  }
 
-  const [, macroCommand, macroCommandArgs = ''] = clearedLine
-    .split(/^(SET_PRINT_STATS_INFO|EXCLUDE_OBJECT_DEFINE|SET_RETRACTION)\s+/i)
+    const [, macroCommand, macroCommandArgs = ''] = clearedLine
+      .split(/^(SET_PRINT_STATS_INFO|EXCLUDE_OBJECT_DEFINE|SET_RETRACTION)\s+/i)
 
-  if (macroCommand) {
-    return {
-      type: 'macro' as const,
-      command: macroCommand.toUpperCase(),
-      args: getArgsFromMacroCommandArgs(macroCommandArgs)
+    if (macroCommand) {
+      return {
+        type: 'macro' as const,
+        command: macroCommand.toUpperCase(),
+        args: getArgsFromMacroCommandArgs(macroCommandArgs)
+      }
     }
   }
 
@@ -57,14 +58,30 @@ const parseLine = (line: string) => {
   }
 }
 
-const linearMoveParams: (keyof LinearMove)[] = [
+const linearMoveParams = [
   'x', 'y', 'z', 'e'
-]
+] satisfies (keyof LinearMove)[]
 
-const arcMoveParams: (keyof ArcMove)[] = [
+const arcMoveParams = [
   'x', 'y', 'z', 'e',
-  'i', 'j', 'k', 'r'
-]
+  'i', 'j', 'r'
+] satisfies (keyof ArcMove)[]
+
+const pickDefined = <T extends object, K extends keyof T>(object: T, keys: K[]) => {
+  const wanted = {} as Pick<T, K>
+  let empty = true
+
+  for (const key of keys) {
+    if (object[key] !== undefined) {
+      wanted[key] = object[key]
+      empty = false
+    }
+  }
+
+  if (!empty) {
+    return wanted
+  }
+}
 
 const decimalRound = (a: number) => {
   return Math.round(a * 10000) / 10000
@@ -199,9 +216,11 @@ const parseGcode = async (
       switch (command) {
         case 'G0':
         case 'G1': {
-          if (linearMoveParams.some(param => param in args)) {
+          const selectedArgs = pickDefined(args, linearMoveParams)
+
+          if (selectedArgs) {
             move = {
-              ...pick(args, linearMoveParams),
+              ...selectedArgs,
               tool,
               filePosition
             } satisfies LinearMove
@@ -210,9 +229,11 @@ const parseGcode = async (
         }
         case 'G2':
         case 'G3': {
-          if (arcMoveParams.some(param => param in args)) {
+          const selectedArgs = pickDefined(args, arcMoveParams)
+
+          if (selectedArgs) {
             move = {
-              ...pick(args, arcMoveParams),
+              ...selectedArgs,
               d: command === 'G2'
                 ? 'clockwise'
                 : 'counter-clockwise',

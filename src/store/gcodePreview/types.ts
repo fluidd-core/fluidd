@@ -23,7 +23,6 @@ export interface LinearMove {
 export interface ArcMove extends LinearMove {
   i?: number;
   j?: number;
-  k?: number;
   r?: number;
   d: Rotation;
   plane: ArcPlane;

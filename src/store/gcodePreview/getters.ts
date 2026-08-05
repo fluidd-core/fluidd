@@ -120,7 +120,7 @@ export const getters = {
       z: NaN
     }
 
-    for (let i = moveIndex, count = 0; i >= 0 && count < 3; i--) {
+    for (let i = Math.min(moveIndex, moves.length - 1), count = 0; i >= 0 && count < 3; i--) {
       const move = moves[i]
 
       if (Number.isNaN(output.x) && move.x != null) {
@@ -222,7 +222,7 @@ export const getters = {
       tool: 'T0'
     }
 
-    let traveling = true
+    let tool: Tool | undefined
 
     for (let index = startMove; index <= endMove && index < moves.length; index++) {
       const move = moves[index]
@@ -232,21 +232,25 @@ export const getters = {
       }
 
       if (move.e != null && move.e > 0) {
-        if (traveling) {
-          path.extrusions[path.tool] = `${path.extrusions[path.tool] || ''}M${toolhead.x},${toolhead.y}`
+        if (tool === undefined) {
           path.unretractions.push({
             x: toolhead.x,
             y: toolhead.y
           })
+        }
 
-          traveling = false
+        if (tool !== path.tool) {
+          path.extrusions[path.tool] = `${path.extrusions[path.tool] ?? ''}M${toolhead.x},${toolhead.y}`
+
+          tool = path.tool
         }
 
         path.extrusions[path.tool] += moveToSVGPath(toolhead, move)
       } else {
-        if (!traveling) {
+        if (tool !== undefined) {
           path.moves += `M${toolhead.x},${toolhead.y}`
-          traveling = true
+
+          tool = undefined
         }
 
         if (move.e != null && move.e < 0) {
@@ -259,7 +263,8 @@ export const getters = {
         path.moves += moveToSVGPath(toolhead, move)
       }
 
-      Object.assign(toolhead, move)
+      toolhead.x = move.x ?? toolhead.x
+      toolhead.y = move.y ?? toolhead.y
     }
 
     path.toolhead = {
