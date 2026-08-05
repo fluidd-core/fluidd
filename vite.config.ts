@@ -6,7 +6,7 @@ import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 import content from '@originjs/vite-plugin-content'
 import checker from 'vite-plugin-checker'
-import version from './vite.config.inject-version'
+import version from './vite.config.inject-version.ts'
 
 export default defineConfig({
   plugins: [
@@ -92,7 +92,7 @@ export default defineConfig({
     checker({
       enableBuild: false,
       vueTsc: {
-        tsconfigPath: path.resolve(__dirname, './tsconfig.app.json')
+        tsconfigPath: path.resolve(import.meta.dirname, './tsconfig.app.json')
       },
       eslint: {
         lintCommand: 'eslint .',
@@ -131,7 +131,7 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
+      '@': path.resolve(import.meta.dirname, './src')
     }
   },
 
