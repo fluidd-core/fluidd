@@ -1,5 +1,6 @@
 import type { BBox, Layer, MoveStore, Part } from '@/store/gcodePreview/types'
 import { MoveFlags } from '@/store/gcodePreview/types'
+import decimalRound from '@/util/decimal-round'
 import { split } from 'shlex'
 
 type PositioningMode = 'relative' | 'absolute'
@@ -119,10 +120,6 @@ const parseLine = (line: string) => {
   return {
     type: 'other' as const
   }
-}
-
-const decimalRound = (a: number) => {
-  return Math.round(a * 10000) / 10000
 }
 
 /** Converts an R-form (radius) G2/G3 arc to I/J form, or `null` if the radius cannot span the two points. */
@@ -339,7 +336,7 @@ const parseGcode = async (
           move = {
             x: undefined,
             y: undefined,
-            z: fwretraction.z !== 0 ? decimalRound(toolhead.z + fwretraction.z) : undefined,
+            z: fwretraction.z !== 0 ? decimalRound(toolhead.z + fwretraction.z, 4) : undefined,
             e: -fwretraction.length,
             i: undefined,
             j: undefined,
@@ -352,8 +349,8 @@ const parseGcode = async (
           move = {
             x: undefined,
             y: undefined,
-            z: fwretraction.z !== 0 ? decimalRound(toolhead.z - fwretraction.z) : undefined,
-            e: decimalRound(fwretraction.length + fwretraction.extrudeExtra),
+            z: fwretraction.z !== 0 ? decimalRound(toolhead.z - fwretraction.z, 4) : undefined,
+            e: decimalRound(fwretraction.length + fwretraction.extrudeExtra, 4),
             i: undefined,
             j: undefined,
             r: undefined
@@ -432,12 +429,12 @@ const parseGcode = async (
         } else {
           if (move.e !== undefined) {
             if (positioningMode === 'absolute' && extrusionMode === 'absolute' && !isSynthesizedMove) {
-              const extrusionLength = decimalRound(move.e - toolhead.e)
+              const extrusionLength = decimalRound(move.e - toolhead.e, 4)
 
               toolhead.e = move.e
               move.e = extrusionLength
             } else {
-              toolhead.e = decimalRound(toolhead.e + move.e)
+              toolhead.e = decimalRound(toolhead.e + move.e, 4)
             }
           }
 
@@ -445,15 +442,15 @@ const parseGcode = async (
 
           if (positioningMode === 'relative' && !isSynthesizedMove) {
             if (move.x !== undefined) {
-              move.x = decimalRound(move.x + toolhead.x)
+              move.x = decimalRound(move.x + toolhead.x, 4)
             }
 
             if (move.y !== undefined) {
-              move.y = decimalRound(move.y + toolhead.y)
+              move.y = decimalRound(move.y + toolhead.y, 4)
             }
 
             if (move.z !== undefined) {
-              move.z = decimalRound(move.z + toolhead.z)
+              move.z = decimalRound(move.z + toolhead.z, 4)
             }
           }
 

@@ -1,5 +1,6 @@
 import type { LayerPaths, MoveStore, Point, Tool } from '@/store/gcodePreview/types'
 import { MoveFlags } from '@/store/gcodePreview/types'
+import decimalRound from './decimal-round'
 
 export const binarySearch = (length: number, comp: (index: number) => number): number => {
   if (length <= 1) {
@@ -31,7 +32,7 @@ export const binarySearch = (length: number, comp: (index: number) => number): n
 // Float32 round-trips to values like 123.44999694824219; rounding to microns
 // keeps the emitted path data short with no visible difference at preview scale
 const formatCoordinate = (value: number): number => {
-  return Math.round(value * 1000) / 1000
+  return decimalRound(value, 3)
 }
 
 const RADIANS_TO_DEGREES = 180 / Math.PI

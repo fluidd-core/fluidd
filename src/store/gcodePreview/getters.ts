@@ -3,6 +3,7 @@ import type { BBox, GcodePreviewState, Layer, LayerPaths, Part, Tool } from './t
 import { MoveFlags } from './types'
 import type { RootState } from '../types'
 import { binarySearch, buildLayerPaths } from '@/util/gcode-preview'
+import decimalRound from '@/util/decimal-round'
 
 const defaultColors = ['#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B']
 const lightDefaultColors = Object.freeze(['#000', ...defaultColors])
@@ -43,10 +44,10 @@ export const getters = {
         )
       ) {
         zLast = currentZ
-        zNext = Math.round((currentZ + minLayerHeight) * 10000) / 10000
+        zNext = decimalRound(currentZ + minLayerHeight, 4)
 
         output.push({
-          z: Math.round(currentZ * 10000) / 10000,
+          z: decimalRound(currentZ, 4),
           move: zStart,
           filePosition: filePosition[index]
         })
@@ -102,12 +103,12 @@ export const getters = {
 
     return Object.freeze({
       x: {
-        min: Number.isFinite(minX) ? minX : 0,
-        max: Number.isFinite(maxX) ? maxX : 0
+        min: Number.isFinite(minX) ? decimalRound(minX, 4) : 0,
+        max: Number.isFinite(maxX) ? decimalRound(maxX, 4) : 0
       },
       y: {
-        min: Number.isFinite(minY) ? minY : 0,
-        max: Number.isFinite(maxY) ? maxY : 0
+        min: Number.isFinite(minY) ? decimalRound(minY, 4) : 0,
+        max: Number.isFinite(maxY) ? decimalRound(maxY, 4) : 0
       }
     })
   },
