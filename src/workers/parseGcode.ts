@@ -227,6 +227,7 @@ const parseGcode = async (
   let moveFlags = new Uint8Array(moveCapacity)
   let moveFilePosition = new Uint32Array(moveCapacity)
   let moveCount = 0
+  let lastArcMoveIndex = -1
 
   const layers: Layer[] = []
   const parts: Part[] = []
@@ -547,6 +548,10 @@ const parseGcode = async (
             (isArcMove && isClockwise ? MoveFlags.Clockwise : 0)
           )
 
+          if (isArcMove) {
+            lastArcMoveIndex = moveCount
+          }
+
           moveCount++
 
           if (layers.length > 0) {
@@ -631,8 +636,8 @@ const parseGcode = async (
     x: moveX.slice(0, moveCount),
     y: moveY.slice(0, moveCount),
     z: moveZ.slice(0, moveCount),
-    i: moveI.slice(0, moveCount),
-    j: moveJ.slice(0, moveCount),
+    i: moveI.slice(0, lastArcMoveIndex + 1),
+    j: moveJ.slice(0, lastArcMoveIndex + 1),
     tool: moveTool.slice(0, moveCount),
     flags: moveFlags.slice(0, moveCount),
     filePosition: moveFilePosition.slice(0, moveCount),

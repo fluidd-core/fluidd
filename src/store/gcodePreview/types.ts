@@ -21,8 +21,10 @@ export const MoveFlags = {
 /**
  * Columnar store of parsed moves, transferred from the parser worker.
  *
- * `x`/`y`/`z` are forward-filled absolute positions after each move; `i`/`j` are
- * arc centre offsets relative to the move start, `0` unless the `Arc` flag is set.
+ * `x`/`y`/`z` are forward-filled absolute positions after each move.
+ *
+ * `i`/`j` are arc centre offsets, still indexed by move but truncated after the
+ * last `Arc` move, so only read them when that move has the `Arc` flag set.
  */
 export interface MoveStore {
   readonly x: Float32Array<ArrayBuffer>;
