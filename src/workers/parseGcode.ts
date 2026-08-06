@@ -55,12 +55,19 @@ const growUint8Array = (source: Uint8Array<ArrayBuffer>, capacity: number) => {
   return result
 }
 
+// [a-z] is required, so no match is zero-length and the exec loop cannot spin
 const gcodeCommandArgsRegExp = /([a-z])[ \t]*([-+]?\d*\.?\d+)?/gi
 
 const getArgsFromGcodeCommandArgs = (gcodeCommandArgs: string) => {
   const args: Record<string, number | undefined> = {}
 
-  for (const [, key, value] of gcodeCommandArgs.matchAll(gcodeCommandArgsRegExp)) {
+  gcodeCommandArgsRegExp.lastIndex = 0
+
+  let match: RegExpExecArray | null
+
+  while ((match = gcodeCommandArgsRegExp.exec(gcodeCommandArgs)) !== null) {
+    const [, key, value] = match
+
     args[key.toLowerCase()] = value ? +value : undefined
   }
 
@@ -576,6 +583,10 @@ const parseGcode = async (
       handleLine(buffer.slice(cursor, nl))
 
       cursor = nl + 1
+
+      if (truncated) {
+        break
+      }
     }
 
     if (cursor > 0) {
@@ -596,6 +607,18 @@ const parseGcode = async (
 
       buffer += decoder.decode(value, { stream: true })
       drainLines()
+
+      if (truncated) {
+        break
+      }
+    }
+
+    if (truncated) {
+      try {
+        await reader.cancel()
+      } catch {
+        // the moves parsed so far are still usable
+      }
     }
   } finally {
     reader.releaseLock()

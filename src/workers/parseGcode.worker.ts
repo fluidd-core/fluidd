@@ -43,7 +43,7 @@ const sendResult = (result: Omit<ParseGcodeWorkerResultMessage, 'action'>) => {
 
   self.postMessage(
     message,
-    Object.values(message.moves)
+    Object.values(result.moves)
       .filter(ArrayBuffer.isView)
       .map(v => v.buffer)
   )
