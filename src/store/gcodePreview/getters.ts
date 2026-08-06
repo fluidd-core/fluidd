@@ -46,7 +46,7 @@ export const getters = {
         zNext = Math.round((currentZ + minLayerHeight) * 10000) / 10000
 
         output.push({
-          z: currentZ,
+          z: Math.round(currentZ * 10000) / 10000,
           move: zStart,
           filePosition: filePosition[index]
         })

@@ -109,7 +109,7 @@ export const buildLayerPaths = (
   let currentTool = 0
   let activePath: string[] = []
 
-  for (let index = startMove; index <= endMove && index < length; index++) {
+  for (let index = Math.max(0, startMove); index <= endMove && index < length; index++) {
     if (!ignoreTools) {
       currentTool = tool[index]
     }

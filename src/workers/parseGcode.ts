@@ -477,7 +477,7 @@ const parseGcode = async (
 
               const layer: Layer = {
                 z: toolhead.z,
-                move: moveCount - 1,
+                move: Math.max(0, moveCount - 1),
                 filePosition
               }
 
