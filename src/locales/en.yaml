@@ -522,6 +522,8 @@ app:
       fluidd_settings_backup_failed: Failed to backup Fluidd settings!
       fluidd_settings_restore_failed: Failed to restore Fluidd settings!
       gcode_preview_failed: Failed to preview G-code file!
+      gcode_preview_truncated: G-code file is too large, only part of it is
+        previewed
       throttled_warning: This may lead to a throttle condition and result in
         a failed print
     simple_form:

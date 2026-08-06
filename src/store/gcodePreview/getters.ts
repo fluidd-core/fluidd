@@ -1,8 +1,8 @@
 import type { GetterTree } from 'vuex'
-import type { BBox, GcodePreviewState, Layer, LayerPaths, Move, Part, Point3D, Tool } from './types'
+import type { BBox, GcodePreviewState, Layer, LayerPaths, Part, Tool } from './types'
+import { MoveFlags } from './types'
 import type { RootState } from '../types'
-import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
-import isKeyOf from '@/util/is-key-of'
+import { binarySearch, buildLayerPaths } from '@/util/gcode-preview'
 
 const defaultColors = ['#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B']
 const lightDefaultColors = Object.freeze(['#000', ...defaultColors])
@@ -15,42 +15,51 @@ export const getters = {
     }
 
     const output: Layer[] = []
-    const moves: readonly Move[] = state.moves
+    const { x, y, z, flags, filePosition, length } = state.moves
 
-    let z = NaN
+    const { minLayerHeight } = rootState.config.uiSettings.gcodePreview
+
+    let currentZ = NaN
     let zStart = 0
     let zLast = NaN
     let zNext = NaN
 
-    const { minLayerHeight } = rootState.config.uiSettings.gcodePreview
-
-    moves.forEach((move, index) => {
-      if (move.z !== undefined && z !== move.z) {
-        z = move.z
+    for (let index = 0; index < length; index++) {
+      if (z[index] !== currentZ) {
+        currentZ = z[index]
         zStart = index
       }
 
-      if (move.e != null && move.e > 0 && (Number.isNaN(zLast) || z < zLast || z >= zNext)) {
-        if (['x', 'y', 'i', 'j'].some(x => isKeyOf(x, move) && move[x] !== 0)) {
-          zLast = z
-          zNext = Math.round((z + minLayerHeight) * 10000) / 10000
+      const moveFlags = flags[index]
 
-          output.push({
-            z,
-            move: zStart,
-            filePosition: move.filePosition
-          })
-        }
+      if (
+        (moveFlags & MoveFlags.Extruding) !== 0 &&
+        (Number.isNaN(zLast) || currentZ < zLast || currentZ >= zNext) &&
+        (
+          index === 0 ||
+          x[index] !== x[index - 1] ||
+          y[index] !== y[index - 1] ||
+          (moveFlags & MoveFlags.Arc) !== 0
+        )
+      ) {
+        zLast = currentZ
+        zNext = Math.round((currentZ + minLayerHeight) * 10000) / 10000
+
+        output.push({
+          z: currentZ,
+          move: zStart,
+          filePosition: filePosition[index]
+        })
       }
-    })
+    }
 
     // If moves exist but there are no layers, add a single "default" layer at z=0
     // This can happen for gcode that only contains travel moves (eg: 2d plotters without Z or E steppers)
-    if (output.length === 0 && moves.length) {
+    if (output.length === 0 && length) {
       output.push({
         z: 0,
         move: 0,
-        filePosition: moves[0].filePosition
+        filePosition: filePosition[0]
       })
     }
 
@@ -67,83 +76,40 @@ export const getters = {
     }
 
     const layers: readonly Layer[] = getters.getLayers
+    const { x, y, length } = state.moves
 
-    // ignore first and last layer (priming and parking)
-    const moveRangeStart = layers[layers.length > 1 ? 1 : 0]?.move
-    const moveRangeEnd = layers[layers.length - 1]?.move
-    const moves: readonly Move[] = (moveRangeStart && moveRangeEnd)
-      ? Object.freeze(state.moves.slice(moveRangeStart, moveRangeEnd))
-      : state.moves
+    // ignore first and last layer (priming and parking), unless doing so would
+    // leave nothing to measure
+    const useLayerRange = layers.length > 1 && layers[1].move < layers[layers.length - 1].move
 
-    const bounds: BBox = {
-      x: {
-        min: Number.POSITIVE_INFINITY,
-        max: Number.NEGATIVE_INFINITY
-      },
-      y: {
-        min: Number.POSITIVE_INFINITY,
-        max: Number.NEGATIVE_INFINITY
-      }
-    }
+    const start = useLayerRange ? layers[1].move : 0
+    const end = useLayerRange ? Math.min(layers[layers.length - 1].move, length) : length
 
-    for (let index = 0; index < moves.length; index++) {
-      const move = moves[index]
+    let minX = Number.POSITIVE_INFINITY
+    let maxX = Number.NEGATIVE_INFINITY
+    let minY = Number.POSITIVE_INFINITY
+    let maxY = Number.NEGATIVE_INFINITY
 
-      if (move.x != null) {
-        bounds.x.min = Math.min(bounds.x.min, move.x)
-        bounds.x.max = Math.max(bounds.x.max, move.x)
-      }
+    for (let index = start; index < end; index++) {
+      const moveX = x[index]
+      const moveY = y[index]
 
-      if (move.y != null) {
-        bounds.y.min = Math.min(bounds.y.min, move.y)
-        bounds.y.max = Math.max(bounds.y.max, move.y)
-      }
+      if (moveX < minX) minX = moveX
+      if (moveX > maxX) maxX = moveX
+      if (moveY < minY) minY = moveY
+      if (moveY > maxY) maxY = moveY
     }
 
     return Object.freeze({
       x: {
-        min: Number.isFinite(bounds.x.min) ? bounds.x.min : 0,
-        max: Number.isFinite(bounds.x.max) ? bounds.x.max : 0
+        min: Number.isFinite(minX) ? minX : 0,
+        max: Number.isFinite(maxX) ? maxX : 0
       },
       y: {
-        min: Number.isFinite(bounds.y.min) ? bounds.y.min : 0,
-        max: Number.isFinite(bounds.y.max) ? bounds.y.max : 0
+        min: Number.isFinite(minY) ? minY : 0,
+        max: Number.isFinite(maxY) ? maxY : 0
       }
     })
-  },
-
-  getToolHeadPosition: (state) => (moveIndex: number): Point3D => {
-    const moves: readonly Move[] = state.moves
-    const output = {
-      x: NaN,
-      y: NaN,
-      z: NaN
-    }
-
-    for (let i = Math.min(moveIndex, moves.length - 1), count = 0; i >= 0 && count < 3; i--) {
-      const move = moves[i]
-
-      if (Number.isNaN(output.x) && move.x != null) {
-        output.x = move.x
-        count++
-      }
-
-      if (Number.isNaN(output.y) && move.y != null) {
-        output.y = move.y
-        count++
-      }
-
-      if (Number.isNaN(output.z) && move.z != null) {
-        output.z = move.z
-        count++
-      }
-    }
-
-    return {
-      x: output.x || 0,
-      y: output.y || 0,
-      z: output.z || 0
-    }
   },
 
   getFileFilamentColors: (state): string[] => {
@@ -206,73 +172,8 @@ export const getters = {
     return tools
   },
 
-  getPaths: (state, getters) => (startMove: number, endMove: number, ignoreTools = false): Readonly<LayerPaths> => {
-    const toolhead: Point3D = getters.getToolHeadPosition(startMove)
-    const moves: readonly Move[] = state.moves
-
-    const path: LayerPaths = {
-      extrusions: {},
-      moves: `M${toolhead.x},${toolhead.y}`,
-      retractions: [],
-      unretractions: [],
-      toolhead: {
-        x: 0,
-        y: 0
-      },
-      tool: 'T0'
-    }
-
-    let tool: Tool | undefined
-
-    for (let index = startMove; index <= endMove && index < moves.length; index++) {
-      const move = moves[index]
-
-      if (!ignoreTools) {
-        path.tool = `T${move.tool}`
-      }
-
-      if (move.e != null && move.e > 0) {
-        if (tool === undefined) {
-          path.unretractions.push({
-            x: toolhead.x,
-            y: toolhead.y
-          })
-        }
-
-        if (tool !== path.tool) {
-          path.extrusions[path.tool] = `${path.extrusions[path.tool] ?? ''}M${toolhead.x},${toolhead.y}`
-
-          tool = path.tool
-        }
-
-        path.extrusions[path.tool] += moveToSVGPath(toolhead, move)
-      } else {
-        if (tool !== undefined) {
-          path.moves += `M${toolhead.x},${toolhead.y}`
-
-          tool = undefined
-        }
-
-        if (move.e != null && move.e < 0) {
-          path.retractions.push({
-            x: toolhead.x,
-            y: toolhead.y
-          })
-        }
-
-        path.moves += moveToSVGPath(toolhead, move)
-      }
-
-      toolhead.x = move.x ?? toolhead.x
-      toolhead.y = move.y ?? toolhead.y
-    }
-
-    path.toolhead = {
-      x: toolhead.x,
-      y: toolhead.y
-    }
-
-    return Object.freeze(path)
+  getPaths: (state) => (startMove: number, endMove: number, ignoreTools = false): Readonly<LayerPaths> => {
+    return buildLayerPaths(state.moves, startMove, endMove, ignoreTools)
   },
 
   getLayerPaths: (state, getters) => (layer: number): Readonly<LayerPaths> => {
@@ -301,9 +202,9 @@ export const getters = {
       return 0
     }
 
-    const moves: readonly Move[] = state.moves
+    const moves = state.moves
 
-    return binarySearch(moves, move => filePosition - move.filePosition, true)
+    return binarySearch(moves.length, index => filePosition - moves.filePosition[index])
   },
 
   getLayerNrByFilePosition: (state, getters) => (filePosition: number): number => {
@@ -313,7 +214,7 @@ export const getters = {
 
     const layers: readonly Layer[] = getters.getLayers
 
-    const layer = binarySearch(layers, layer => filePosition - layer.filePosition, true)
+    const layer = binarySearch(layers.length, index => filePosition - layers[index].filePosition)
 
     return (
       layer >= 0

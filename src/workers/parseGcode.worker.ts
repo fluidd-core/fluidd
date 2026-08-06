@@ -1,4 +1,4 @@
-import type { BBox, Layer, Move, Part } from '@/store/gcodePreview/types'
+import type { BBox, Layer, MoveStore, Part } from '@/store/gcodePreview/types'
 import parseGcode from './parseGcode'
 import { consola } from 'consola'
 
@@ -8,17 +8,20 @@ export type ParseGcodeWorkerRequestMessage = {
   fileSize: number
 }
 
-export type ParseGcodeWorkerResponseMessage = {
-  action: 'progress',
-  filePosition: number
-} | {
+export type ParseGcodeWorkerResultMessage = {
   action: 'result',
-  moves: Move[],
+  moves: MoveStore,
   layers: Layer[],
   parts: Part[],
   tools: number[],
-  bounds: BBox | null
-} | {
+  bounds: BBox | null,
+  truncated: boolean
+}
+
+export type ParseGcodeWorkerResponseMessage = {
+  action: 'progress',
+  filePosition: number
+} | ParseGcodeWorkerResultMessage | {
   action: 'error',
   error?: unknown
 }
@@ -32,17 +35,18 @@ const sendProgress = (filePosition: number) => {
   self.postMessage(message)
 }
 
-const sendResult = (moves: Move[], layers: Layer[], parts: Part[], tools: number[], bounds: BBox | null) => {
-  const message : ParseGcodeWorkerResponseMessage = {
+const sendResult = (result: Omit<ParseGcodeWorkerResultMessage, 'action'>) => {
+  const message: ParseGcodeWorkerResponseMessage = {
     action: 'result',
-    moves,
-    layers,
-    parts,
-    tools,
-    bounds
+    ...result
   }
 
-  self.postMessage(message)
+  self.postMessage(
+    message,
+    Object.values(message.moves)
+      .filter(ArrayBuffer.isView)
+      .map(v => v.buffer)
+  )
 }
 
 const sendError = (error?: unknown) => {
@@ -60,9 +64,9 @@ self.onmessage = async (event: MessageEvent<ParseGcodeWorkerRequestMessage>) => 
   try {
     switch (message.action) {
       case 'parse': {
-        const { moves, layers, parts, tools, bounds } = await parseGcode(message.url, message.fileSize, sendProgress)
+        const result = await parseGcode(message.url, message.fileSize, sendProgress)
 
-        sendResult(moves, layers, parts, tools, bounds)
+        sendResult(result)
 
         break
       }
