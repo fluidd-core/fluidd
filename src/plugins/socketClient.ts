@@ -2,6 +2,7 @@ import type _Vue from 'vue'
 import { consola } from 'consola'
 import { camelCase, mergeWith } from 'lodash-es'
 import type { TypedStore } from '@/store'
+import { useWaitStore } from '@/stores/wait'
 
 const LOG_PREFIX = '[WEBSOCKET]'
 
@@ -82,7 +83,7 @@ export class WebSocketClient {
 
           // Remove a wait if defined.
           if (request?.wait?.length) {
-            this.store.typedCommit('wait/setRemoveWait', request.wait)
+            useWaitStore().removeWait(request.wait)
           }
 
           if ('error' in socketResponse) { // Is it in error?
@@ -244,7 +245,7 @@ export class WebSocketClient {
           }
 
           if (wait) {
-            this.store.typedDispatch('wait/addWait', wait)
+            useWaitStore().addWait(wait)
           }
 
           this.requests.set(id, request)

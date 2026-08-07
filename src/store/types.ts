@@ -17,14 +17,12 @@ import type { notifications } from './notifications'
 import type { announcements } from './announcements'
 import type { auth } from './auth'
 import type { timelapse } from '@/store/timelapse'
-import type { wait } from './wait'
 import type { webcams } from './webcams'
 import type { jobQueue } from './jobQueue'
 import type { spoolman } from './spoolman'
 import type { mmu } from './mmu'
 import type { sensors } from './sensors'
 import type { database } from './database'
-import type { analysis } from './analysis'
 import type { afc } from './afc'
 import type { storeOptions } from '.'
 
@@ -45,7 +43,6 @@ type RootModulesType = {
   mesh: typeof mesh,
   notifications: typeof notifications,
   announcements: typeof announcements,
-  wait: typeof wait,
   gcodePreview: typeof gcodePreview,
   timelapse: typeof timelapse,
   webcams: typeof webcams,
@@ -54,7 +51,6 @@ type RootModulesType = {
   mmu: typeof mmu,
   sensors: typeof sensors,
   database: typeof database,
-  analysis: typeof analysis,
   afc: typeof afc
 }
 
