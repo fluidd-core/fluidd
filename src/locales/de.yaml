@@ -58,6 +58,8 @@ app:
         Dies kann bedeuten, dass Sie Ihre Moonraker-Konfiguration ändern müssen.
         Bitte lesen Sie dazu die Dokumentation zur Einrichtung mehrerer Drucker
         <a href="%{url}" target="_blank">hier</a>
+      mixed_content: ''
+      websocket_failed: ''
     hint:
       add_printer: z.B. http://fluidd.local
     msg:
@@ -245,6 +247,7 @@ app:
       perform_time_analysis: Zeitanalyse ausführen
       clear: Leeren
       scroll_to_latest: Zum Neusten scrollen
+      reset_to_default: ''
     error:
       app_setup_link: >-
         Die Anforderungen für die Einrichtung von Fluidd finden Sie <a
@@ -379,10 +382,11 @@ app:
       connected: Verbunden
       disconnected: Nicht verbunden
       clean_nozzle: Düse reinigen
-      load_filament: Filament laden
+      load_filament: Filament einlegen
       park_toolhead: Druckkopf parken
       toolchange: Werkzeugwechsel
-      unload_filament: Filament entladen
+      unload_filament: Filament entnehmen
+      no_data: ''
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -405,6 +409,7 @@ app:
       fluidd_settings_restore_failed: Konnte das Backup der Fluidd-Einstellungen
         nicht wiederherstellen!
       gcode_preview_failed: Fehler bei der Vorschau der G-code-Datei!
+      throttled_warning: ''
     simple_form:
       error:
         arrayofnums: Nur Zahlen
@@ -618,6 +623,7 @@ app:
       hlsstream: HLS-Stream
       webrtc_go2rtc: WebRTC (go2rtc)
       webrtc_mediamtx: WebRTC (MediaMTX)
+      uv4l_mjpeg_stream: ''
     camera_rotate_options:
       none: Keine Drehung
       90: 90°
@@ -767,6 +773,7 @@ app:
       warn_on_cpu_throttled: Warnen, wenn eine CPU-Drosselung erkannt wird
       warn_on_stepper_driver_overheating: Warnen, wenn ein Schrittmotortreiber 
         überhitzt
+      sensor_color: ''
     timer_options:
       duration: Nur Dauer
       filament: Filament
@@ -890,6 +897,8 @@ app:
       relative_positioning: Relative Positionierung
       tools: Werkzeuge
       select_tool: Werkzeug %{tool} auswählen
+      extruding: ''
+      retracting: ''
     title:
       bed_screws_adjust: Bettschrauben einstellen
       manual_probe: Manuelles Probing
@@ -1097,6 +1106,7 @@ app:
       filament: Filament
       print_time: Druckzeit
       unknown_jobs: Unbekannte Aufträge
+      eta: ''
     tooltip:
       help: Fügen Sie Jobs der Warteschlange hinzu, indem Sie diese hierhin 
         ziehen<br>Passen Sie die Reihenfolge der Warteschlange an, indem Sie die
@@ -1226,6 +1236,7 @@ app:
       release: Loslassen
       select: Auswählen
       change_tool: Werkzeug wechseln
+      home: ''
     title:
       headline: MMU
       recover_state: MMU-Status beheben (Fehlerbehebung)
@@ -1265,6 +1276,35 @@ app:
       gate: Gate
       endless_spool: ES ∞
       slicer_expects: Slicer erwartet
+      tool: ''
+      auto: ''
+      ui_visual: ''
+      drying: ''
+      gear: ''
+      filament_position: ''
+      encoder: ''
+      heater: ''
+      clog_tangle_detection: ''
+      extruder: ''
+      active: ''
+      exit: ''
+      drying_queued: ''
+      toolhead: ''
+      compression: ''
+      tension: ''
+      last_error: ''
+      tools: ''
+      clog: ''
+      drying_cancelled: ''
+      flow: ''
+      tangle: ''
+      bypass: ''
+      neutral: ''
+      status: ''
+      pre_gate: ''
+      extruder_tx: ''
+      entry: ''
+      drying_complete: ''
     tooltip:
       empty: Leer
       spoolid: Spulen-ID
@@ -1276,6 +1316,8 @@ app:
       large_filament_status: Großer Filamentstatus
       show_ttg_map: TTG-Zuordnung anzeigen
       show_unavailable_spool_color: Nicht verfügbare Spulen anzeigen
+      show_climate: ''
+      show_name: ''
   afc:
     AfcSettings: AFC-Einstellungen
     BufferDisabled: Puffer nicht aktiv
@@ -1291,9 +1333,97 @@ app:
     LaneLoadedNone: KEINE
     LedOff: LEDs aus
     LedOn: LEDs ein
-    LoadedInLane: Geladen in {lane}
+    LoadedInLane: Eingelegt in {lane}
     Material: Material
     MaterialSubtitle: z.B. ABS, PETG, PLA etc.
+    ToolPickup: ''
+    ShowFilamentName: ''
+    PrintStartDialog:
+      QuestionWithSpool: ''
+      NoLaneMapped: ''
+      StartJob: ''
+      NoFilamentLoaded: ''
+      FilamentTypeMismatch: ''
+      SpoolWeightRemaining: ''
+      LaneWeightRemaining: ''
+      SpoolId: ''
+      Title: ''
+      NoLane: ''
+      Question: ''
+      FilamentWeightNotEnough: ''
+    SettingsDialog:
+      SaveExtruderValuesDescription: ''
+      ToolStnUnload: ''
+      ToolSensorAfterExtruder: ''
+      Help: ''
+      ToolSensorAfterExtruderDescription: ''
+      LoadUnloadLaneDescription: ''
+      ToolStnDescriptionWithoutEndSensor: ''
+      SaveExtruderValues: ''
+      SettingsForTitle: ''
+      BowdenLength: ''
+      SaveHubDistDescription: ''
+      ToolStnDescriptionWithEndSensor: ''
+      ToolStn: ''
+      DistHubDescription: ''
+      Length: ''
+      DistHub: ''
+      LoadUnloadLane: ''
+      WriteToFile: ''
+      ToolStnDescriptionWithRamming: ''
+      SaveHubDist: ''
+      BowdenLengthDescription: ''
+      ToolStnUnloadDescription: ''
+      SensorAfterExtruder: ''
+    DebugJson: ''
+    UnloadLane: ''
+    ToolDock: ''
+    WeightUsed: ''
+    Hub: ''
+    PreExtruderSensor: ''
+    SetSpool: ''
+    ShowTool: ''
+    CaptureTd: ''
+    ClearSpoolId: ''
+    SelectTool: ''
+    HubLoad: ''
+    ShowTd1Color: ''
+    Unloading: ''
+    WeightRemaining: ''
+    RammingSensor: ''
+    Restoring: ''
+    WeightSubtitle: ''
+    LaneControls: ''
+    ParkNozzle: ''
+    UnselectTool: ''
+    ShowUnit: ''
+    Printing: ''
+    Settings: ''
+    ToolSwap: ''
+    InfiniteSpoolHeadline: ''
+    LaneMappingToCommand: ''
+    ShowLaneInfinite: ''
+    PostExtruderSensor: ''
+    SettingsForLane: ''
+    Weight: ''
+    InfiniteSpoolDescription: ''
+    ShowUnitIcons: ''
+    Moving: ''
+    BypassActive: ''
+    PrepDetected: Filament erkannt, aber nicht eingelegt
+    BedTemp: Betttemperatur
+    EjectFilament: Filament auswerfen
+    ExtruderTemp: Extrudertemperatur
+    Loading: Laden
+    ManualEntry: Manuelle Eingabe
+    LaneLoaded: Spur eingelegt
+    LoadLane: Spur einlegen
+    BrushNozzle: Bürstendüse
+    LaneMapping: Spurzuordnung
+    ExtruderTempSubtitle: Extrudertemperatur für dieses Filament in °C.
+    BedTempSubtitle: Betttemperatur für dieses Filament in °C.
+    Ejecting: Wird ausgeworfen
+    Initialized: Initialisiert
   database:
     btn:
       compact_database: Datenbank komprimieren
