@@ -108,11 +108,12 @@
             class="color-input"
           >
             <v-text-field
-              v-model.number="currentRed"
+              :value="redText !== null ? redText : currentRed"
               dense
               hide-details
               outlined
               persistent-placeholder
+              @input="onRedInput"
               @blur="handleReset"
               @keyup.enter.exact="handleSubmitPrimary"
             />
@@ -123,11 +124,12 @@
             class="color-input"
           >
             <v-text-field
-              v-model.number="currentGreen"
+              :value="greenText !== null ? greenText : currentGreen"
               dense
               hide-details
               outlined
               persistent-placeholder
+              @input="onGreenInput"
               @blur="handleReset"
               @keyup.enter.exact="handleSubmitPrimary"
             />
@@ -138,11 +140,12 @@
             class="color-input"
           >
             <v-text-field
-              v-model.number="currentBlue"
+              :value="blueText !== null ? blueText : currentBlue"
               dense
               hide-details
               outlined
               persistent-placeholder
+              @input="onBlueInput"
               @blur="handleReset"
               @keyup.enter.exact="handleSubmitPrimary"
             />
@@ -153,11 +156,12 @@
             class="color-input"
           >
             <v-text-field
-              v-model.number="currentWhite"
+              :value="whiteText !== null ? whiteText : currentWhite"
               dense
               hide-details
               outlined
               persistent-placeholder
+              @input="onWhiteInput"
               @blur="handleReset"
               @keyup.enter.exact="handleSubmitWhite"
             />
@@ -273,6 +277,11 @@ export default class AppColorPicker extends Vue {
   currentPrimaryColor = new IroColor()
   currentWhiteColor = new IroColor()
 
+  redText: string | null = null
+  greenText: string | null = null
+  blueText: string | null = null
+  whiteText: string | null = null
+
   @Watch('value')
   onValue (value: string) {
     this.currentPrimaryColor.set(value)
@@ -341,15 +350,49 @@ export default class AppColorPicker extends Vue {
 
   handleSubmitPrimary () {
     this.inputPrimaryColor = this.currentPrimaryColor.hexString
+    this.clearChannelText()
   }
 
   handleSubmitWhite () {
     this.inputWhiteValue = this.currentWhiteColor.red
+    this.clearChannelText()
   }
 
   handleReset () {
     this.currentPrimaryColor.set(this.inputPrimaryColor)
     this.currentWhiteColor.set(this.inputWhiteColor)
+    this.clearChannelText()
+  }
+
+  clearChannelText () {
+    this.redText = null
+    this.greenText = null
+    this.blueText = null
+    this.whiteText = null
+  }
+
+  onRedInput (value: string) {
+    this.redText = value
+    const parsed = parseFloat(value)
+    if (Number.isFinite(parsed)) this.currentRed = parsed
+  }
+
+  onGreenInput (value: string) {
+    this.greenText = value
+    const parsed = parseFloat(value)
+    if (Number.isFinite(parsed)) this.currentGreen = parsed
+  }
+
+  onBlueInput (value: string) {
+    this.blueText = value
+    const parsed = parseFloat(value)
+    if (Number.isFinite(parsed)) this.currentBlue = parsed
+  }
+
+  onWhiteInput (value: string) {
+    this.whiteText = value
+    const parsed = parseFloat(value)
+    if (Number.isFinite(parsed)) this.currentWhite = parsed
   }
 
   valueToHexColor (value: number): string {
