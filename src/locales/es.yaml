@@ -22,6 +22,7 @@ app:
       delete: Elimina el perfil
       load: Cargar el perfil
       save: Guarda el perfil de calibracion en el archivo printer.cfg
+      download_image: ''
   chart:
     label:
       current: Tª
@@ -29,11 +30,17 @@ app:
       power: Potencia
       rate_of_change: Cambio
       target: Objetivo
+      turn_off: ''
+      target_temperature: ''
+      fan_breakpoints: ''
     tooltip:
       help: >-
         Mantenga presionada la tecla <kbd>Mayús</kbd> para hacer zoom. <br /> Haga
         clic en un elemento para mostrarlo. <br /> Haga clic en una potencia para
         mostrarla.
+    title:
+      mpc_calibrate: ''
+      pid_calibrate: ''
   console:
     label:
       hide_temp_waits: Esconder los mensajes de temperatura
@@ -51,6 +58,8 @@ app:
         Esto puede indicar que necesita modificar su configuración de Moonraker.
         Consulte la documentación sobre las configuraciones con varias
         impresoras <a href="%{url}" target="_blank">aquí</a>.
+      mixed_content: ''
+      websocket_failed: ''
     hint:
       add_printer: 'Ex., http://fluidd.local'
     msg:
@@ -68,6 +77,8 @@ app:
         triggered: ACTIVADO
     msg:
       subtitle: Presione el botón 'Actualizar' para actualizar el estado.
+    label:
+      endstop: ''
   file_system:
     filters:
       label:
@@ -77,6 +88,7 @@ app:
         rolled_log_files: Filtrar archivos de log rotados
         moonraker_backup_files: Filtrar archivos de backup de Moonraker
         crowsnest_backup_files: Filtrar archivos de backup de Crowsnest
+        moonraker_temporary_upload_files: ''
     label:
       dir_name: Nombre de la carpeta
       disk_usage: Uso del disco
@@ -86,6 +98,7 @@ app:
       transfer_rate: Tasa de transferencia
       uploaded: Subido
       view_section_documentation: 'Ver documentación sobre ''%{section}'''
+      sd_card_info: ''
     msg:
       not_found: No se encontraron archivos
       processing: Procesando...
@@ -101,6 +114,7 @@ app:
       duplicate_dir: Directorio duplicado
       go_to_file: Ir al archivo
       duplicate_file: Archivo duplicado
+      save_as: ''
     tooltip:
       low_on_space: Espacio en disco limitado
       root_disabled: '{root} root no esta disponible. Por favor chequear los registros.'
@@ -225,6 +239,11 @@ app:
       refresh_metadata: Actualizar metadatos
       upload_files: Subir archivos
       return_dashboard: Volver al panel de control
+      perform_time_analysis: ''
+      scroll_to_latest: ''
+      clear: ''
+      power_on_printer: ''
+      reset_to_default: ''
     error:
       app_setup_link: >-
         Las instrucciones de instalación de Fluidd están disponibles <a
@@ -236,6 +255,7 @@ app:
       failed_components: >-
         Moonraker ha fallado en los complementos. Verifique los registros,
         actualice su configuración y reinicie Moonraker.
+      printer_powered_off: ''
     label:
       accel_to_decel: Aceleración a deceleración
       acceleration: Aceleración
@@ -344,6 +364,24 @@ app:
       bars: Barras
       ldap: LDAP
       cross: Cruz
+      disconnected: ''
+      minimum_cruise_ratio: ''
+      device: ''
+      unload_filament: ''
+      toolchange: ''
+      user_facing: ''
+      z_hop_height: ''
+      length_in_kilometers: ''
+      no_data: ''
+      park_toolhead: ''
+      connected: ''
+      user_managed_source: ''
+      stepper_driver: ''
+      clean_nozzle: ''
+      load_filament: ''
+      time_in_days: ''
+      smooth_time: ''
+      environment_facing: ''
     msg:
       bed_screws_adjust: >-
         Haga click en <b>Ajustado</b> si fue necesario un ajuste significativo
@@ -359,6 +397,11 @@ app:
         <b>Actualizar</b> para ver los cambios.
       pending_configuration_sections_deleted: Las siguientes secciones se 
         encuentran marcadas para ser eliminadas
+      fluidd_settings_backup_failed: ''
+      rolledover_logs: ''
+      gcode_preview_failed: ''
+      throttled_warning: ''
+      not_valid_fluidd_backup_file: ''
     simple_form:
       error:
         arrayofnums: Solo números
@@ -371,12 +414,34 @@ app:
         min_or_0: 'Mín. %{min} o 0'
         password_username: No se puede emparejar con el nombre de usuario
         required: Obligatorio
+        invalid_expression: ''
+        invalid_aspect: ''
       msg:
         confirm: ¿Está seguro?
         confirm_power_device_toggle: ¿Está seguro? Esto alternará la 
           alimentación del dispositivo.
         confirm_reboot_host: ¿Está seguro? Esto reiniciará el sistema anfitrión.
         confirm_shutdown_host: ¿Está seguro? Esto apagará el sistema anfitrión.
+        confirm_exclude_object: ''
+        confirm_remove_camera: ''
+        unsaved_changes: ''
+        confirm_forcemove_toggle: ''
+        confirm_cancel_print: ''
+        confirm_service_stop: ''
+        confirm_service_start: ''
+        confirm_emergency_stop: ''
+        confirm_remove_macro_category: ''
+        confirm_service_restart: ''
+        confirm_remove_thermal_preset: ''
+        confirm_restore_backup: ''
+        confirm_remove_console_filter: ''
+        confirm_change_beacon_model: ''
+        confirm_delete: ''
+        confirm_remove_user: ''
+        confirm_remove_printer: ''
+        confirm_clear_mesh: ''
+        no_file_preview: ''
+        confirm_load_bedmesh_profile: ''
     table:
       header:
         actions: Acciones
@@ -400,6 +465,25 @@ app:
         start_time: Iniciado
         status: Estado
         total_duration: Duración total
+        referenced_tools: ''
+        filament_temps: ''
+        filament_type: ''
+        filament_colors: ''
+        user: ''
+        time_in_queue: ''
+        printer_vendor: ''
+        extruder_colors: ''
+        file_processors: ''
+        profile_version: ''
+        filament_weights: ''
+        chamber_temp: ''
+        time_added: ''
+        printer_variant: ''
+        filament_name: ''
+        mmu_print: ''
+        filament_change_count: ''
+        nozzle_diameter: ''
+        printer_model: ''
     title:
       add_chart: Agregar gráfico
       add_printer: Añadir impresora
@@ -427,6 +511,17 @@ app:
       temperature: Térmicas
       tool: Herramienta
       tune: Calibrar
+      timelapse: ''
+      pending_configuration_changes: ''
+      login: ''
+      not_found: ''
+      beacon: ''
+      metrics_explorer: ''
+      edit_chart: ''
+      job_queue: ''
+      diagnostics: ''
+      macro_category_settings: ''
+      rollover_logs: ''
     tooltip:
       estop: Parada de Emergencia
       notifications: Notificaciones
@@ -434,6 +529,17 @@ app:
       reload_restart_klipper: Recarga la configuración de Klipper y reinicia los
         MCUs.
       restart_klipper: Reinicia el servicio de sistema de Klipper.
+      power_on_printer: ''
+      file_browser_configuration_help: ''
+      reset_layout: ''
+      run_collector: ''
+      rollover_logs: ''
+      file_browser_help: ''
+      browse_metrics: ''
+      exit_layout: ''
+      set_default_layout: ''
+      reset_default_layout: ''
+      managed_by_moonraker: ''
   printer:
     state:
       busy: Ocupada
@@ -445,6 +551,13 @@ app:
       printing: Imprimiendo
       ready: Lista
       standby: Stand-by
+    title:
+      stepper_driver_overheating: ''
+      printer_status: ''
+    url:
+      stepper_driver_overheating: ''
+    msg:
+      possible_print_failure: ''
   setting:
     btn:
       add_camera: Añadir cámara
@@ -452,10 +565,21 @@ app:
       add_user: Añadir usuario
       reset: Resetear
       select_theme: Seleccionar tema
+      backup: ''
+      add_filter: ''
+      restore: ''
+      add_category: ''
+      add_metric: ''
     camera_type_options:
       mjpegadaptive: MJPEG Adaptative
       mjpegstream: MJPEG Stream
       video: Cámara IP
+      webrtc_go2rtc: ''
+      hlsstream: ''
+      iframe: ''
+      webrtc_camera_streamer: ''
+      webrtc_mediamtx: ''
+      uv4l_mjpeg_stream: ''
     label:
       all_off: Apagar todo
       all_on: Encender todo
@@ -513,11 +637,87 @@ app:
       drag_and_drop_functionality_for_files_and_folders: Función de arrastrar y 
         soltar archivos y carpetas
       force_move_toggle_warning: Requerir confirmación al activar FORCE_MOVE
+      camera_url_stream: ''
+      dotted: ''
+      show_relative_humidity: ''
+      show_chart: ''
+      service_restart: ''
+      print_progress_calculation: ''
+      auto_load_on_print_start: ''
+      draw_origin: ''
+      auto: ''
+      auto_edit_extensions: ''
+      save_and_restore_view_state: ''
+      height: ''
+      confirm_dirty_editor_close: ''
+      sections_to_ignore_pending_configuration_changes: ''
+      warn_on_cpu_throttled: ''
+      show_barometric_pressure: ''
+      fill_opacity: ''
+      line_color: ''
+      firmware_restart: ''
+      fps_idle_target: ''
+      contains: ''
+      enable_xy_homing: ''
+      filter: ''
+      aspect_ratio_format: ''
+      collector: ''
+      camera_fullscreen_action:
+        rawstream: ''
+        embed: ''
+        title: ''
+      line_style: ''
+      show_legend: ''
+      show_upload_and_print: ''
+      show_code_lens: ''
+      last_result: ''
+      right_y: ''
+      auto_follow_on_file_load: ''
+      toolhead_control_style: ''
+      icon: ''
+      klipper_save_and_restart_action: ''
+      to_browser_local_storage: ''
+      default_min_layer_height: ''
+      enable_diagnostics: ''
+      to_browser_session_storage: ''
+      fill_color: ''
+      power_toggle_in_top_nav: ''
+      auto_load_mobile_on_print_start: ''
+      show_save_config_and_restart: ''
+      host_restart: ''
+      date_format: ''
+      show_manual_probe_dialog_automatically: ''
+      toolhead_xy_move_distances: ''
+      camera_rotate_by: ''
+      camera_url_snapshot: ''
+      left_y: ''
+      dashed: ''
+      print_in_progress_layout: ''
+      print_eta_calculation: ''
+      warn_on_stepper_driver_overheating: ''
+      text_sort_order: ''
+      aspect_ratio: ''
+      card: ''
+      never: ''
+      hide_single_part_bounding_box: ''
+      confirm_on_save_config_and_restart: ''
+      time_format: ''
+      expression: ''
+      fluidd_settings_in_moonraker_db: ''
+      show_screws_tilt_adjust_dialog_automatically: ''
+      sensor_color: ''
+      printer_power_device: ''
+      toolhead_z_move_distances: ''
+      show_gas_resistance: ''
+      keyboard_shortcuts: ''
     timer_options:
       duration: Solo duración
       filament: Estimación por filamento
       file: Estimación por archivo
       slicer: Slicer
+      absolute_file_position: ''
+      relative_file_position: ''
+      slicer_m73: ''
     title:
       authentication: Autentificación
       camera: Cámara | Cámaras
@@ -529,10 +729,26 @@ app:
       theme: Tema
       thermal_presets: Preajustes térmicos
       tool: Herramienta
+      file_browser: ''
+      warnings: ''
     tooltip:
       gcode_coords: >-
         Usar la posición del GCode en lugar de la posición del cabezal en el
         tablero
+      theme_disclaimer: ''
+      diagnostics_performance: ''
+      show_manual_probe_dialog_automatically: ''
+      show_screws_tilt_adjust_dialog_automatically: ''
+      show_bed_screws_adjust_dialog_automatically: ''
+      keyboard_shortcuts: ''
+      average_calculation: ''
+      warn_on_cpu_throttled: ''
+      warn_on_stepper_driver_overheating: ''
+    camera_rotate_options:
+      '270': ''
+      none: ''
+      '90': ''
+      '180': ''
   socket:
     msg:
       connecting: Conectando con Moonraker...
@@ -564,6 +780,24 @@ app:
       system_memory: Memoria del sistema
       system_utilization: Utilización del sistema
       total_memory: Memoria total
+      non_critical_connection: ''
+      application: ''
+      constants: ''
+      mcu_information: ''
+      last_stats: ''
+      load: ''
+      micro_controller: ''
+      operating_system: ''
+      network: ''
+      version: ''
+      memory_used: ''
+      devices: ''
+      virtualization: ''
+      awake_time: ''
+    msg:
+      no_devices_found: ''
+      no_devices_searched: ''
+      canbus_warning: ''
   tool:
     btn:
       home_all: Todos
@@ -571,6 +805,8 @@ app:
       home_y: 'Y'
     title:
       bed_screws_adjust: Ajustar tornillos de la cama
+      screws_tilt_adjust: ''
+      manual_probe: ''
     tooltip:
       absolute_positioning: Posicionamiento Absoluto
       extruder_disabled: >-
@@ -580,6 +816,16 @@ app:
       home_z: Origen Z
       motors_off: Apagar Motores
       relative_positioning: Posicionamiento Relativo
+      select_tool: ''
+      manual_probe: ''
+      tools: ''
+      extruding: ''
+      retracting: ''
+    label:
+      stats_max_speed: ''
+      stats_active_extruder: ''
+      stats_volumetric_flow: ''
+      stats_extruded_length: ''
   version:
     btn:
       check_for_updates: Buscar actualizaciones
@@ -595,6 +841,10 @@ app:
       package_list: Lista de paquetes
       up_to_date: ACTUALIZADO
       updates_available: Hay actualizaciones disponibles
+      old_component_version: ''
+      commits_on: ''
+      committed: ''
+      packages: ''
     status:
       finished: Atualizaciones terminadas
       updating: Actualizando...
@@ -607,3 +857,435 @@ app:
       invalid: indica cambios locales a la repo
       packages: Paquetes
       release_notes: Notas de lanzamiento
+  keyboard_shortcuts:
+    label:
+      cancel: ''
+      open_keyboard_shortcut_help: ''
+      pause: ''
+      navigation: ''
+      actions: ''
+      printing: ''
+      home_all: ''
+      emergency_stop: ''
+      tool: ''
+    title:
+      keyboard_shortcuts: ''
+  mmu:
+    btn:
+      home: ''
+      sync: ''
+      recover_state: ''
+      preload: ''
+      check_all_gates: ''
+      cancel: ''
+      on: ''
+      select: ''
+      eject: ''
+      check_gate: ''
+      load: ''
+      load_ext: ''
+      unlock: ''
+      release: ''
+      unload: ''
+      change_tool: ''
+      off: ''
+      move: ''
+      reset: ''
+      down: ''
+      unload_ext: ''
+      mmu_maintenance: ''
+      grip: ''
+      edit_ttg_map: ''
+      sync_spoolman: ''
+      recover: ''
+      up: ''
+      print_stats: ''
+      edit_gate_map: ''
+      unsync: ''
+    msg:
+      no_custom_controls: ''
+      warning_prefix: ''
+      filament_loaded: ''
+      spoolman_off: ''
+      recover_intro: ''
+      set_gate: ''
+      tool_not_used: ''
+      temperature: ''
+      filament_empty: ''
+      material: ''
+      no_slicer_info: ''
+      spoolman_pull: ''
+      filament_available: ''
+      recover_filament_position: ''
+      remap: ''
+      gate_bypass: ''
+      no_active_spool: ''
+      select_tool: ''
+      tool_bypass: ''
+      single_color: ''
+      filament_unknown: ''
+      color: ''
+      map_tools: ''
+      no_spool_id: ''
+      set_tool: ''
+      multi_color: ''
+      are_you_sure: ''
+      map_slicer_tools: ''
+      reset_ttg_map_confirmation: ''
+      spoolman_other: ''
+      mismatch: ''
+      no_matching_spool: ''
+      maintenance_intro: ''
+      no_position: ''
+      no_gate: ''
+      bad_temperature: ''
+      no_tool: ''
+      reset_gate_map_confirmation: ''
+      select_gate: ''
+      no_gate_data: ''
+    label:
+      spoolman: ''
+      tool: ''
+      gate: ''
+      auto: ''
+      save: ''
+      ui_visual: ''
+      drying: ''
+      cancel: ''
+      tool_mapping: ''
+      gear: ''
+      leds: ''
+      slicer_expects: ''
+      filament_position: ''
+      encoder: ''
+      extruder_only: ''
+      heater: ''
+      clog_tangle_detection: ''
+      unknown: ''
+      extruder: ''
+      active: ''
+      spoolman_never: ''
+      exit: ''
+      spoolman_yesterday: ''
+      filament_name: ''
+      all_tools: ''
+      mmu_motors: ''
+      choose_spool: ''
+      drying_queued: ''
+      selector: ''
+      toolhead: ''
+      compression: ''
+      reset: ''
+      animation: ''
+      load_speed: ''
+      enable: ''
+      tension: ''
+      spoolman_id: ''
+      last_error: ''
+      tools: ''
+      filament_info: ''
+      clog: ''
+      drying_cancelled: ''
+      flow: ''
+      tangle: ''
+      bypass: ''
+      temperature: ''
+      spoolman_today: ''
+      neutral: ''
+      status: ''
+      spoolman_last_used: ''
+      pre_gate: ''
+      material: ''
+      ok: ''
+      spoolman_days_ago: ''
+      motor_sync: ''
+      extruder_tx: ''
+      skip_automap: ''
+      config: ''
+      entry: ''
+      endless_spool: ''
+      drying_complete: ''
+    tooltip:
+      color: ''
+      spoolid: ''
+      empty: ''
+    setting:
+      show_details: ''
+      large_filament_status: ''
+      show_climate: ''
+      show_logos: ''
+      show_name: ''
+      show_unavailable_spool_color: ''
+      show_ttg_map: ''
+      show_clog_detection: ''
+    title:
+      recover_state: ''
+      edit_ttg_map: ''
+      edit_gate_map: ''
+      headline: ''
+      mmu_maintenance: ''
+  afc:
+    ToolPickup: ''
+    ShowFilamentName: ''
+    PrintStartDialog:
+      QuestionWithSpool: ''
+      NoLaneMapped: ''
+      StartJob: ''
+      NoFilamentLoaded: ''
+      FilamentTypeMismatch: ''
+      SpoolWeightRemaining: ''
+      LaneWeightRemaining: ''
+      SpoolId: ''
+      Title: ''
+      NoLane: ''
+      Question: ''
+      FilamentWeightNotEnough: ''
+    SettingsDialog:
+      SaveExtruderValuesDescription: ''
+      ToolStnUnload: ''
+      ToolSensorAfterExtruder: ''
+      Help: ''
+      ToolSensorAfterExtruderDescription: ''
+      LoadUnloadLaneDescription: ''
+      ToolStnDescriptionWithoutEndSensor: ''
+      SaveExtruderValues: ''
+      SettingsForTitle: ''
+      BowdenLength: ''
+      SaveHubDistDescription: ''
+      ToolStnDescriptionWithEndSensor: ''
+      ToolStn: ''
+      DistHubDescription: ''
+      Length: ''
+      DistHub: ''
+      LoadUnloadLane: ''
+      WriteToFile: ''
+      ToolStnDescriptionWithRamming: ''
+      SaveHubDist: ''
+      BowdenLengthDescription: ''
+      ToolStnUnloadDescription: ''
+      SensorAfterExtruder: ''
+    DebugJson: ''
+    UnloadLane: ''
+    ToolDock: ''
+    WeightUsed: ''
+    PrepDetected: ''
+    BedTemp: ''
+    Hub: ''
+    PreExtruderSensor: ''
+    EjectFilament: ''
+    ExtruderTemp: ''
+    SetSpool: ''
+    ShowTool: ''
+    Error: ''
+    MaterialSubtitle: ''
+    CaptureTd: ''
+    ClearSpoolId: ''
+    SelectTool: ''
+    HubLoad: ''
+    Loading: ''
+    LedOn: ''
+    BufferDisabled: ''
+    ShowTd1Color: ''
+    Unloading: ''
+    WeightRemaining: ''
+    LoadedInLane: ''
+    ManualEntry: ''
+    RammingSensor: ''
+    Idle: ''
+    Restoring: ''
+    WeightSubtitle: ''
+    LaneControls: ''
+    Functions: ''
+    LaneLoadedNone: ''
+    ParkNozzle: ''
+    Empty: ''
+    UnselectTool: ''
+    ShowUnit: ''
+    Printing: ''
+    Settings: ''
+    LaneLoaded: ''
+    ToolSwap: ''
+    LoadLane: ''
+    BrushNozzle: ''
+    InfiniteSpoolHeadline: ''
+    LaneMapping: ''
+    Cancel: ''
+    ExtruderTempSubtitle: ''
+    LaneMappingToCommand: ''
+    BedTempSubtitle: ''
+    ShowLaneInfinite: ''
+    Headline: ''
+    AfcSettings: ''
+    FilamentForLane: ''
+    PostExtruderSensor: ''
+    SettingsForLane: ''
+    Ejecting: ''
+    Initialized: ''
+    Detected: ''
+    LedOff: ''
+    Weight: ''
+    InfiniteSpoolDescription: ''
+    Calibrate: ''
+    ShowUnitIcons: ''
+    Material: ''
+    Moving: ''
+    BypassActive: ''
+  spoolman:
+    label:
+      first_used: ''
+      used_weight: ''
+      density: ''
+      length: ''
+      lot_nr: ''
+      diameter: ''
+      remaining_weight: ''
+      colors: ''
+      used: ''
+      last_used: ''
+      remaining_length: ''
+      initial_weight: ''
+      filament_name: ''
+      bed_temp: ''
+      material: ''
+      extruder_temp: ''
+      id: ''
+      initial_length: ''
+      active_spool: ''
+      used_length: ''
+      price: ''
+      device_camera: ''
+      comment: ''
+      location: ''
+      vendor: ''
+      remaining: ''
+      change_spool: ''
+      weight: ''
+    setting:
+      auto_open_qr_camera: ''
+      warn_on_not_enough_filament: ''
+      prefer_device_camera: ''
+      remaining_filament_unit: ''
+      auto_select_spool_on_match: ''
+      show_spool_selection_dialog_on_print_start: ''
+      card_fields: ''
+      warn_on_filament_type_mismatch: ''
+    btn:
+      scan_code: ''
+      manage_spools: ''
+      select: ''
+    msg:
+      error:
+        cors: ''
+        no_image_data: ''
+        spool_not_existant: ''
+      no_filament: ''
+      warning:
+        invalid_spool_id: ''
+        code_not_recognized: ''
+      no_required_length: ''
+      info:
+        howto: ''
+      no_spool: ''
+      not_connected: ''
+      mismatched_filament: ''
+      tracking_inactive: ''
+    title:
+      scan_spool: ''
+      spoolman: ''
+      spool_selection: ''
+  timelapse:
+    setting:
+      crf: ''
+      parkpos:
+        back_left: ''
+        label: ''
+        front_right: ''
+        back_right: ''
+        custom: ''
+        x_only: ''
+        center: ''
+        y_only: ''
+        front_left: ''
+      targetlength: ''
+      previewimage: ''
+      variable_fps_max: ''
+      mode_layermacro: ''
+      mode: ''
+      park_custom_pos_y: ''
+      park_time: ''
+      stream_delay_compensation: ''
+      duplicatelastframe: ''
+      auto_render: ''
+      output_framerate: ''
+      gcode_verbose: ''
+      enable: ''
+      park_travel_speed: ''
+      park_custom_pos_dz: ''
+      variable_fps: ''
+      park_retract_distance: ''
+      park_extrude_speed: ''
+      park_custom_pos_x: ''
+      fw_retract: ''
+      variable_fps_min: ''
+      parkhead: ''
+      hyperlapse_cycle: ''
+      saveframes: ''
+      mode_hyperlapse: ''
+      park_extrude_distance: ''
+      park_retract_speed: ''
+    btn:
+      render: ''
+      save_frames: ''
+    title:
+      timelapse_settings: ''
+      timelapse_status: ''
+      render_settings: ''
+    label:
+      frames: ''
+      length: ''
+      frame: ''
+    error:
+      newframe: ''
+  job_queue:
+    tooltip:
+      help: ''
+    msg:
+      confirm: ''
+    label:
+      filament: ''
+      number_of_copies: ''
+      eta: ''
+      print_time: ''
+      unknown_jobs: ''
+    title:
+      multiply_job: ''
+  beacon:
+    label:
+      model_name: ''
+      active: ''
+      remove_model: ''
+    msg:
+      not_found: ''
+      hint: ''
+    tooltip:
+      delete: ''
+      load: ''
+  history:
+    msg:
+      confirm_jobs: ''
+      confirm_stats: ''
+      confirm: ''
+  database:
+    btn:
+      create_backup: ''
+      compact_database: ''
+    tooltip:
+      delete_backup: ''
+      restore_backup: ''
+    label:
+      moonraker_database: ''
+    msg:
+      not_found: ''
+  sensors:
+    title:
+      sensors: ''
