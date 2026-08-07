@@ -58,6 +58,8 @@ app:
         Ez azt jelentheti, hogy módosítanod kell a moonraker konfigurációt.
         Kérjük, tekintsd meg a több nyomtató beállításával kapcsolatos
         dokumentációt <a href="%{url}" target="_blank">itt</a>
+      mixed_content: ''
+      websocket_failed: ''
     hint:
       add_printer: 'Pl.: Http://fluidd.local'
     msg:
@@ -118,6 +120,7 @@ app:
       rename_file: Fájl átnevezése
       upload_file: Fájl feltöltése
       devices: Eszközök
+      save_as: ''
     tooltip:
       low_on_space: Kevés a lemezterület
       items_count: '{count} tétel | {count} tételeket'
@@ -236,6 +239,9 @@ app:
       copy: Másolás
       power_on_printer: Nyomtató bekapcsolása
       perform_time_analysis: Időelemzés
+      scroll_to_latest: ''
+      clear: ''
+      reset_to_default: ''
     error:
       app_setup_link: >-
         A Fluidd telepítési követelményeit <a target="_blank" href="%{url}">itt
@@ -367,6 +373,14 @@ app:
       z_hop_height: Z-ugrás magassága
       length_in_kilometers: Hossz a kilométerekben
       time_in_days: Idő napokban
+      disconnected: ''
+      unload_filament: ''
+      toolchange: ''
+      no_data: ''
+      park_toolhead: ''
+      connected: ''
+      clean_nozzle: ''
+      load_filament: ''
     msg:
       password_changed: A jelszó megváltozott
       wrong_password: Hoppá! Valami rosszul sült el. Ez a jelszavad?
@@ -386,6 +400,8 @@ app:
       fluidd_settings_restore_failed: Nem sikerült visszaállítani a Fluidd 
         beállításokat!
       not_valid_fluidd_backup_file: Nem érvényes Fluidd visszaállító fájl!
+      gcode_preview_failed: ''
+      throttled_warning: ''
     simple_form:
       error:
         arrayofnums: Csak számok
@@ -440,6 +456,7 @@ app:
           hőmérsékleti előbeállításokat %{name}?
         confirm_change_beacon_model: A nyomtató jelenleg foglalt. Biztos, hogy 
           meg akarod változtatni a jeladó modellt?
+        confirm_restore_backup: ''
     table:
       header:
         actions: Tevékenységek
@@ -478,6 +495,10 @@ app:
         filament_weights: Nyomtatószál súlya
         mmu_print: MMU nyomtatás
         referenced_tools: Referencia eszközök
+        printer_vendor: ''
+        profile_version: ''
+        printer_variant: ''
+        printer_model: ''
     title:
       add_chart: Ábra hozzáadása
       add_printer: Nyomtató hozzáadása
@@ -603,6 +624,7 @@ app:
       iframe: HTTP oldal
       webrtc_go2rtc: WebRTC (go2rtc)
       webrtc_mediamtx: WebRTC (MediaMTX)
+      uv4l_mjpeg_stream: ''
     camera_rotate_options:
       '90': 90°
       '180': 180°
@@ -747,6 +769,9 @@ app:
       firmware_restart: Firmware újraindítása
       host_restart: Gazdagép újraindítása
       service_restart: Szolgáltatás újraindítása
+      warn_on_cpu_throttled: ''
+      warn_on_stepper_driver_overheating: ''
+      sensor_color: ''
     timer_options:
       duration: Csak időtartam
       filament: Nyomtatószál
@@ -767,6 +792,7 @@ app:
       theme: Téma
       thermal_presets: Hőmérsékleti előbeállítások
       tool: Eszköz
+      warnings: ''
     tooltip:
       diagnostics_performance: A diagnosztikai információk naplózása hatással 
         lehet a teljesítményre
@@ -793,6 +819,8 @@ app:
         átlagot számít ki
       keyboard_shortcuts: "[BETA] Engedélyezd és nyomd meg a '?' gombot az elérhető
         billentyűparancsok listájának megtekintéséhez"
+      warn_on_cpu_throttled: ''
+      warn_on_stepper_driver_overheating: ''
   socket:
     msg:
       connecting: Csatlakozás a Moonraker-hez...
@@ -866,6 +894,8 @@ app:
       relative_positioning: Relatív pozicionálás
       select_tool: Eszköz kiválasztása %{tool}
       tools: Szerszámok
+      extruding: ''
+      retracting: ''
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Az aktív extruder konfigurációja be van állítva</span>
@@ -905,6 +935,7 @@ app:
       old_component_version: A(z) %{name} régi verzióját használod, amely nem 
         támogatja a Fluidd összes funkcióját.<br>Frissítsd a(z) %{name} terméket
         legalább %{version} értékre.
+      packages: ''
     status:
       finished: A frissítések befejeződtek
       updating: Frissítés...
@@ -1102,3 +1133,256 @@ app:
       mmu_maintenance: MMU Karbantartás
       recover_state: MMU állapot javítása
       edit_gate_map: Filamentek szerkesztése
+      home: ''
+      sync: ''
+      on: ''
+      select: ''
+      release: ''
+      change_tool: ''
+      off: ''
+      move: ''
+      reset: ''
+      down: ''
+      grip: ''
+      edit_ttg_map: ''
+      up: ''
+      unsync: ''
+    msg:
+      no_custom_controls: ''
+      warning_prefix: ''
+      filament_loaded: ''
+      spoolman_off: ''
+      recover_intro: ''
+      set_gate: ''
+      tool_not_used: ''
+      temperature: ''
+      filament_empty: ''
+      material: ''
+      no_slicer_info: ''
+      spoolman_pull: ''
+      filament_available: ''
+      recover_filament_position: ''
+      remap: ''
+      gate_bypass: ''
+      no_active_spool: ''
+      select_tool: ''
+      tool_bypass: ''
+      single_color: ''
+      filament_unknown: ''
+      color: ''
+      map_tools: ''
+      no_spool_id: ''
+      set_tool: ''
+      multi_color: ''
+      are_you_sure: ''
+      map_slicer_tools: ''
+      reset_ttg_map_confirmation: ''
+      spoolman_other: ''
+      mismatch: ''
+      no_matching_spool: ''
+      maintenance_intro: ''
+      no_position: ''
+      no_gate: ''
+      bad_temperature: ''
+      no_tool: ''
+      reset_gate_map_confirmation: ''
+      select_gate: ''
+      no_gate_data: ''
+    label:
+      spoolman: ''
+      tool: ''
+      gate: ''
+      auto: ''
+      save: ''
+      ui_visual: ''
+      drying: ''
+      cancel: ''
+      tool_mapping: ''
+      gear: ''
+      leds: ''
+      slicer_expects: ''
+      filament_position: ''
+      encoder: ''
+      extruder_only: ''
+      heater: ''
+      clog_tangle_detection: ''
+      unknown: ''
+      extruder: ''
+      active: ''
+      spoolman_never: ''
+      exit: ''
+      spoolman_yesterday: ''
+      filament_name: ''
+      all_tools: ''
+      mmu_motors: ''
+      choose_spool: ''
+      drying_queued: ''
+      selector: ''
+      toolhead: ''
+      compression: ''
+      reset: ''
+      animation: ''
+      load_speed: ''
+      enable: ''
+      tension: ''
+      spoolman_id: ''
+      last_error: ''
+      tools: ''
+      filament_info: ''
+      clog: ''
+      drying_cancelled: ''
+      flow: ''
+      tangle: ''
+      bypass: ''
+      temperature: ''
+      spoolman_today: ''
+      neutral: ''
+      status: ''
+      spoolman_last_used: ''
+      pre_gate: ''
+      material: ''
+      ok: ''
+      spoolman_days_ago: ''
+      motor_sync: ''
+      extruder_tx: ''
+      skip_automap: ''
+      config: ''
+      entry: ''
+      endless_spool: ''
+      drying_complete: ''
+    tooltip:
+      color: ''
+      spoolid: ''
+      empty: ''
+    setting:
+      show_details: ''
+      large_filament_status: ''
+      show_climate: ''
+      show_logos: ''
+      show_name: ''
+      show_unavailable_spool_color: ''
+      show_ttg_map: ''
+      show_clog_detection: ''
+    title:
+      recover_state: ''
+      edit_ttg_map: ''
+      edit_gate_map: ''
+      headline: ''
+      mmu_maintenance: ''
+  afc:
+    ToolPickup: ''
+    ShowFilamentName: ''
+    PrintStartDialog:
+      QuestionWithSpool: ''
+      NoLaneMapped: ''
+      StartJob: ''
+      NoFilamentLoaded: ''
+      FilamentTypeMismatch: ''
+      SpoolWeightRemaining: ''
+      LaneWeightRemaining: ''
+      SpoolId: ''
+      Title: ''
+      NoLane: ''
+      Question: ''
+      FilamentWeightNotEnough: ''
+    SettingsDialog:
+      SaveExtruderValuesDescription: ''
+      ToolStnUnload: ''
+      ToolSensorAfterExtruder: ''
+      Help: ''
+      ToolSensorAfterExtruderDescription: ''
+      LoadUnloadLaneDescription: ''
+      ToolStnDescriptionWithoutEndSensor: ''
+      SaveExtruderValues: ''
+      SettingsForTitle: ''
+      BowdenLength: ''
+      SaveHubDistDescription: ''
+      ToolStnDescriptionWithEndSensor: ''
+      ToolStn: ''
+      DistHubDescription: ''
+      Length: ''
+      DistHub: ''
+      LoadUnloadLane: ''
+      WriteToFile: ''
+      ToolStnDescriptionWithRamming: ''
+      SaveHubDist: ''
+      BowdenLengthDescription: ''
+      ToolStnUnloadDescription: ''
+      SensorAfterExtruder: ''
+    DebugJson: ''
+    UnloadLane: ''
+    ToolDock: ''
+    WeightUsed: ''
+    PrepDetected: ''
+    BedTemp: ''
+    Hub: ''
+    PreExtruderSensor: ''
+    EjectFilament: ''
+    ExtruderTemp: ''
+    SetSpool: ''
+    ShowTool: ''
+    Error: ''
+    MaterialSubtitle: ''
+    CaptureTd: ''
+    ClearSpoolId: ''
+    SelectTool: ''
+    HubLoad: ''
+    Loading: ''
+    LedOn: ''
+    BufferDisabled: ''
+    ShowTd1Color: ''
+    Unloading: ''
+    WeightRemaining: ''
+    LoadedInLane: ''
+    ManualEntry: ''
+    RammingSensor: ''
+    Idle: ''
+    Restoring: ''
+    WeightSubtitle: ''
+    LaneControls: ''
+    Functions: ''
+    LaneLoadedNone: ''
+    ParkNozzle: ''
+    Empty: ''
+    UnselectTool: ''
+    ShowUnit: ''
+    Printing: ''
+    Settings: ''
+    LaneLoaded: ''
+    ToolSwap: ''
+    LoadLane: ''
+    BrushNozzle: ''
+    InfiniteSpoolHeadline: ''
+    LaneMapping: ''
+    Cancel: ''
+    ExtruderTempSubtitle: ''
+    LaneMappingToCommand: ''
+    BedTempSubtitle: ''
+    ShowLaneInfinite: ''
+    Headline: ''
+    AfcSettings: ''
+    FilamentForLane: ''
+    PostExtruderSensor: ''
+    SettingsForLane: ''
+    Ejecting: ''
+    Initialized: ''
+    Detected: ''
+    LedOff: ''
+    Weight: ''
+    InfiniteSpoolDescription: ''
+    Calibrate: ''
+    ShowUnitIcons: ''
+    Material: ''
+    Moving: ''
+    BypassActive: ''
+  database:
+    btn:
+      create_backup: ''
+      compact_database: ''
+    tooltip:
+      delete_backup: ''
+      restore_backup: ''
+    label:
+      moonraker_database: ''
+    msg:
+      not_found: ''
