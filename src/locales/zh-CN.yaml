@@ -10,6 +10,7 @@ app:
       remove_profile: '删除 %{name} 配置文件'
       scale: 显示偏差值
       wireframe: 显示网格线
+      base: ''
     msg:
       hint: '如果将 %{name} 另存, 你也可以选择删除此 %{name} 配置'
       not_found: 热床网格配置不存在
@@ -48,6 +49,8 @@ app:
       cors_note: >-
         这可能意味着您需要修改 Moonraker 配置。请参阅有关多打印机设置的<a href=\"%{url}\"
         target=\"_blank\">文档</a>
+      mixed_content: ''
+      websocket_failed: ''
     hint:
       add_printer: 例如：http://fluidd.local
     msg:
@@ -102,9 +105,11 @@ app:
       rename_file: 重命名文件
       upload_file: 上传文件
       devices: 设备列表
+      save_as: ''
     tooltip:
       low_on_space: 磁盘空间不足
       root_disabled: '{root} G代码文件目录不可用，请首先连接打印机或者检查G代码存放目录的路径与读权限。'
+      items_count: ''
     url:
       klipper_config: '%{klipperDomain}/zh/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
@@ -217,6 +222,10 @@ app:
       copied: 已拷贝至粘贴板
       copy: 拷贝
       perform_time_analysis: 预计打印时间
+      scroll_to_latest: ''
+      clear: ''
+      reset_to_default: ''
+      multiply: ''
     error:
       app_setup_link: '如需查看 Fluidd 详细配置规则，请点击<a target="_blank" href="%{url}">此处</a>。'
       app_warnings_found: '%{appName} 出现警告'
@@ -342,6 +351,11 @@ app:
       unload_filament: 卸载耗材
       load_filament: 加载耗材
       clean_nozzle: 清理喷嘴
+      minimum_cruise_ratio: ''
+      toolchange: ''
+      no_data: ''
+      park_toolhead: ''
+      environment_facing: ''
     msg:
       password_changed: 密码已更改
       wrong_password: 密码错误
@@ -354,6 +368,8 @@ app:
       fluidd_settings_backup_failed: 备份Fluidd设置失败！
       not_valid_fluidd_backup_file: 不是有效的 Fluidd 备份文件！
       fluidd_settings_restore_failed: 恢复Fluidd设置失败！
+      gcode_preview_failed: ''
+      throttled_warning: ''
     simple_form:
       error:
         arrayofnums: 仅允许输入数字
@@ -431,6 +447,10 @@ app:
         file_processors: 文件进度
         mmu_print: 多耗材单元(MMU)打印
         referenced_tools: 参考工具
+        printer_vendor: ''
+        profile_version: ''
+        printer_variant: ''
+        printer_model: ''
     title:
       add_chart: 添加图表
       add_printer: 添加打印机
@@ -500,6 +520,10 @@ app:
       unknown_jobs: 未知任务
       eta: 剩余时间
       filament: 耗材
+    tooltip:
+      help: ''
+    title:
+      multiply_job: ''
   printer:
     state:
       busy: 处理中
@@ -539,6 +563,7 @@ app:
       webrtc_mediamtx: WebRTC (MediaMTX)
       webrtc_camera_streamer: WebRTC (camera-streamer)
       webrtc_go2rtc: WebRTC (go2rtc)
+      uv4l_mjpeg_stream: ''
     camera_rotate_options:
       '90': 90度
       '180': 180度
@@ -670,6 +695,7 @@ app:
       warn_on_stepper_driver_overheating: 若电机驱动过热 发出警告
       drag_and_drop_functionality_for_files_and_folders: 文件及文件夹拖放
       show_screws_tilt_adjust_dialog_automatically: 自动显示手动调平对话框
+      sensor_color: ''
     timer_options:
       duration: 仅显示已用时间
       filament: 按耗材估算
@@ -703,6 +729,7 @@ app:
       warn_on_cpu_throttled: CPU降频会导致打印失败
       show_screws_tilt_adjust_dialog_automatically: 运行 SCREWS_TILT_CALCULATE 
         工具时，会自动显示辅助对话框
+      theme_disclaimer: ''
   socket:
     msg:
       connecting: 正在连接至 Moonraker ...
@@ -741,6 +768,11 @@ app:
       load: 负载
       awake_time: 唤醒时间
       memory_used: 已用内存
+      non_critical_connection: ''
+      application: ''
+      constants: ''
+      last_stats: ''
+      devices: ''
     msg:
       no_devices_found: 未发现设备
       no_devices_searched: 使用刷新按钮搜索设备
@@ -755,6 +787,7 @@ app:
     title:
       bed_screws_adjust: 床螺钉调整
       manual_probe: 手动探测
+      screws_tilt_adjust: ''
     tooltip:
       absolute_positioning: 绝对位置
       extruder_disabled: '挤出机操作已被禁用，低于 min_extrude_temp 设置的最低温度 (%{min}<small>°C</small>)'
@@ -764,6 +797,9 @@ app:
       motors_off: 关闭电机
       relative_positioning: 相对位置
       tools: 工具
+      select_tool: ''
+      extruding: ''
+      retracting: ''
     label:
       stats_active_extruder: '<span class="secondary--text">挤出机配置为</span>耗材直径 %{filamentDiameter}mm<span
         class="secondary--text">，</span>喷嘴直径 %{nozzleDiameter}mm'
@@ -793,6 +829,7 @@ app:
       updates_available: 有可用更新
       old_component_version: 您正在使用 %{name} 的旧版本，该版本不支持 Fluidd 的所有功能。<br>至少将 
         %{name} 更新至 %{version}。
+      packages: ''
     status:
       finished: 更新已完成
       updating: 正在更新...
@@ -885,6 +922,7 @@ app:
       bed_temp: 热床温度
       density: 密度
       used_weight: 已用重量
+      active_spool: ''
     msg:
       not_connected: Spoolman服务不可用
       no_required_length: 打印所选文件所需的耗材量未知。是否继续？
@@ -904,6 +942,7 @@ app:
     title:
       spoolman: Spoolman
       scan_spool: 扫描Spool二维码
+      spool_selection: ''
     setting:
       prefer_device_camera: 如果可用，使用设备摄像头检测二维码
       remaining_filament_unit: 剩余耗材显示方式
@@ -916,6 +955,7 @@ app:
     btn:
       manage_spools: 管理Spools
       scan_code: 扫描二维码
+      select: ''
   sensors:
     title:
       sensors: 传感器
@@ -984,6 +1024,7 @@ app:
       recover_intro: 这是一个低级修复，用于当Happy 
         Hare与您的MMU不一致时使用。建议首先尝试自动恢复，但可能需要此操作来纠正当前工具或通道（也许在Type-A 
         MMU上，您应卸载并归位选择器）。
+      recover_filament_position: ''
     btn:
       check_gate: 检测通道
       check_all_gates: 检测所有通道
@@ -1007,10 +1048,20 @@ app:
       recover_state: 修复MMU状态
       off: 关闭
       on: 开启
+      unlock: ''
+      release: ''
+      change_tool: ''
+      move: ''
+      reset: ''
+      down: ''
+      grip: ''
+      up: ''
     title:
       mmu_maintenance: MMU维护
       edit_ttg_map: 映射工具/耗材 (编辑TTG映射)
       edit_gate_map: 编辑耗材(编辑通道映射)
+      recover_state: ''
+      headline: ''
     label:
       spoolman: Spoolman
       filament_name: 耗材名
@@ -1042,15 +1093,57 @@ app:
       load_speed: 加载速度覆写
       cancel: 取消
       save: 保存
+      tool: ''
+      auto: ''
+      drying: ''
+      gear: ''
+      leds: ''
+      filament_position: ''
+      encoder: ''
+      heater: ''
+      clog_tangle_detection: ''
+      extruder: ''
+      active: ''
+      exit: ''
+      all_tools: ''
+      drying_queued: ''
+      toolhead: ''
+      compression: ''
+      reset: ''
+      tension: ''
+      last_error: ''
+      tools: ''
+      clog: ''
+      drying_cancelled: ''
+      flow: ''
+      tangle: ''
+      bypass: ''
+      neutral: ''
+      status: ''
+      pre_gate: ''
+      ok: ''
+      entry: ''
+      drying_complete: ''
     setting:
       show_logos: 显示logo
       show_clog_detection: 显示堵塞检测
       show_details: 显示耗材详细信息
       show_ttg_map: 显示工具至通道的映射表
       show_unavailable_spool_color: 显示不可用的料盘
+      large_filament_status: ''
+      show_climate: ''
+      show_name: ''
   beacon:
     label:
       active: ''
+      model_name: ''
+      remove_model: ''
+    msg:
+      not_found: ''
+      hint: ''
+    tooltip:
+      delete: ''
+      load: ''
   database:
     label:
       moonraker_database: Moonraker数据库
@@ -1060,3 +1153,111 @@ app:
     tooltip:
       restore_backup: 恢复备份
       delete_backup: 删除备份
+    msg:
+      not_found: ''
+  afc:
+    ToolPickup: ''
+    ShowFilamentName: ''
+    PrintStartDialog:
+      QuestionWithSpool: ''
+      NoLaneMapped: ''
+      StartJob: ''
+      NoFilamentLoaded: ''
+      FilamentTypeMismatch: ''
+      SpoolWeightRemaining: ''
+      LaneWeightRemaining: ''
+      SpoolId: ''
+      Title: ''
+      NoLane: ''
+      Question: ''
+      FilamentWeightNotEnough: ''
+    SettingsDialog:
+      SaveExtruderValuesDescription: ''
+      ToolStnUnload: ''
+      ToolSensorAfterExtruder: ''
+      Help: ''
+      ToolSensorAfterExtruderDescription: ''
+      LoadUnloadLaneDescription: ''
+      ToolStnDescriptionWithoutEndSensor: ''
+      SaveExtruderValues: ''
+      SettingsForTitle: ''
+      BowdenLength: ''
+      SaveHubDistDescription: ''
+      ToolStnDescriptionWithEndSensor: ''
+      ToolStn: ''
+      DistHubDescription: ''
+      Length: ''
+      DistHub: ''
+      LoadUnloadLane: ''
+      WriteToFile: ''
+      ToolStnDescriptionWithRamming: ''
+      SaveHubDist: ''
+      BowdenLengthDescription: ''
+      ToolStnUnloadDescription: ''
+      SensorAfterExtruder: ''
+    DebugJson: ''
+    UnloadLane: ''
+    ToolDock: ''
+    WeightUsed: ''
+    PrepDetected: ''
+    BedTemp: ''
+    Hub: ''
+    PreExtruderSensor: ''
+    EjectFilament: ''
+    ExtruderTemp: ''
+    SetSpool: ''
+    ShowTool: ''
+    Error: ''
+    MaterialSubtitle: ''
+    CaptureTd: ''
+    ClearSpoolId: ''
+    SelectTool: ''
+    HubLoad: ''
+    Loading: ''
+    LedOn: ''
+    BufferDisabled: ''
+    ShowTd1Color: ''
+    Unloading: ''
+    WeightRemaining: ''
+    LoadedInLane: ''
+    ManualEntry: ''
+    RammingSensor: ''
+    Idle: ''
+    Restoring: ''
+    WeightSubtitle: ''
+    LaneControls: ''
+    Functions: ''
+    LaneLoadedNone: ''
+    ParkNozzle: ''
+    Empty: ''
+    UnselectTool: ''
+    ShowUnit: ''
+    Printing: ''
+    Settings: ''
+    LaneLoaded: ''
+    ToolSwap: ''
+    LoadLane: ''
+    BrushNozzle: ''
+    InfiniteSpoolHeadline: ''
+    LaneMapping: ''
+    Cancel: ''
+    ExtruderTempSubtitle: ''
+    LaneMappingToCommand: ''
+    BedTempSubtitle: ''
+    ShowLaneInfinite: ''
+    Headline: ''
+    AfcSettings: ''
+    FilamentForLane: ''
+    PostExtruderSensor: ''
+    SettingsForLane: ''
+    Ejecting: ''
+    Initialized: ''
+    Detected: ''
+    LedOff: ''
+    Weight: ''
+    InfiniteSpoolDescription: ''
+    Calibrate: ''
+    ShowUnitIcons: ''
+    Material: ''
+    Moving: ''
+    BypassActive: ''
