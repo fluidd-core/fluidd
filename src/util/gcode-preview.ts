@@ -1,18 +1,14 @@
-import type { ArcMove, Move, Point } from '@/store/gcodePreview/types'
+import type { LayerPaths, MoveStore, Point, Tool } from '@/store/gcodePreview/types'
+import { MoveFlags } from '@/store/gcodePreview/types'
+import decimalRound from './decimal-round'
 
-type BinarySearchComparer<T> = (item: T, index: number, array: Array<T> | ReadonlyArray<T>) => number
-
-export const binarySearch = <T>(arr: Array<T> | ReadonlyArray<T>, comp: BinarySearchComparer<T>, approx = false): number => {
-  if (arr.length <= 1) {
-    return 0
-  }
-
-  let index = Math.floor(arr.length / 2)
-  let topBound = arr.length - 1
+export const binarySearch = (length: number, comp: (index: number) => number): number => {
+  let topBound = length - 1
   let bottomBound = 0
 
   while (bottomBound <= topBound) {
-    const result = comp(arr[index], index, arr)
+    const index = (bottomBound + topBound) >> 1
+    const result = comp(index)
 
     if (result > 0) {
       bottomBound = index + 1
@@ -21,37 +17,39 @@ export const binarySearch = <T>(arr: Array<T> | ReadonlyArray<T>, comp: BinarySe
     } else {
       return index
     }
-
-    index = Math.floor((bottomBound + topBound) / 2)
   }
 
-  return approx ? index : -1
+  // -1 when the target sorts before the first entry
+  return topBound
 }
 
-function distance (a: Point, b: Point): number {
-  const diffX = Math.abs(a.x - b.x)
-  const diffY = Math.abs(a.y - b.y)
-
-  return Math.sqrt(diffX ** 2 + diffY ** 2)
+// Float32 round-trips to values like 123.44999694824219; rounding to microns
+// keeps the emitted path data short with no visible difference at preview scale
+const formatCoordinate = (value: number): number => {
+  return decimalRound(value, 3)
 }
 
-function angleBetween (a: Point, b: Point) {
-  return Math.atan2(b.y - a.y, b.x - a.x) * (180 / Math.PI)
+const RADIANS_TO_DEGREES = 180 / Math.PI
+
+const angleBetween = (fromX: number, fromY: number, toX: number, toY: number): number => {
+  return Math.atan2(toY - fromY, toX - fromX) * RADIANS_TO_DEGREES
 }
 
-function arcIJMoveToSVGPath (toolhead: Point, move: ArcMove): string {
-  const destination = {
-    x: move.x ?? toolhead.x,
-    y: move.y ?? toolhead.y
-  }
+const arcToSVGPath = (
+  fromX: number,
+  fromY: number,
+  toX: number,
+  toY: number,
+  i: number,
+  j: number,
+  clockwise: boolean
+): string => {
+  const centerX = fromX + i
+  const centerY = fromY + j
 
-  const center = {
-    x: toolhead.x + (move.i ?? 0),
-    y: toolhead.y + (move.j ?? 0)
-  }
+  const radius = formatCoordinate(Math.hypot(i, j))
 
-  const radius = distance(toolhead, center)
-  let angle = angleBetween(center, toolhead) - angleBetween(center, destination)
+  let angle = angleBetween(centerX, centerY, fromX, fromY) - angleBetween(centerX, centerY, toX, toY)
 
   if (angle > 180) {
     angle -= 360
@@ -59,68 +57,114 @@ function arcIJMoveToSVGPath (toolhead: Point, move: ArcMove): string {
     angle += 360
   }
 
-  switch (move.d) {
-    case 'clockwise':
-      return `A${radius},${radius},0,${+(angle < 0)},0,${destination.x},${destination.y}`
+  const x = formatCoordinate(toX)
+  const y = formatCoordinate(toY)
 
-    case 'counter-clockwise':
-      return `M${destination.x},${destination.y}` +
-        `A${radius},${radius},0,${+(angle > 0)},0,${toolhead.x},${toolhead.y}` +
-        `M${destination.x},${destination.y}`
-
-    default:
-      throw new TypeError('move has no direction')
+  if (clockwise) {
+    return `A${radius},${radius},0,${+(angle < 0)},0,${x},${y}`
   }
+
+  return `M${x},${y}` +
+    `A${radius},${radius},0,${+(angle > 0)},0,${formatCoordinate(fromX)},${formatCoordinate(fromY)}` +
+    `M${x},${y}`
 }
 
-function arcRMoveToSVGPath (toolhead: Point, move: ArcMove): string {
-  const destination = {
-    x: move.x ?? toolhead.x,
-    y: move.y ?? toolhead.y
+const moveToSVGPath = (moves: MoveStore, index: number, fromX: number, fromY: number): string => {
+  const toX = moves.x[index]
+  const toY = moves.y[index]
+  const flags = moves.flags[index]
+
+  if ((flags & MoveFlags.Arc) !== 0) {
+    return arcToSVGPath(fromX, fromY, toX, toY, moves.i[index], moves.j[index], (flags & MoveFlags.Clockwise) !== 0)
   }
 
-  const delta = {
-    x: destination.x - toolhead.x,
-    y: destination.y - toolhead.y
-  }
-
-  const r = move.r ?? 0
-  const chord = Math.hypot(delta.x, delta.y)
-
-  if (chord === 0 || chord > 2 * Math.abs(r)) {
-    return `L${destination.x},${destination.y}`
-  }
-
-  const h = Math.sqrt(r * r - (chord * chord) / 4)
-  const sign = ((r < 0) !== (move.d === 'clockwise')) ? -1 : 1
-  const i = delta.x / 2 + (sign * h * -delta.y) / chord
-  const j = delta.y / 2 + (sign * h * delta.x) / chord
-
-  return arcIJMoveToSVGPath(toolhead, { ...move, i, j })
+  return `L${formatCoordinate(toX)},${formatCoordinate(toY)}`
 }
 
-export function arcMoveToSvgPath (toolhead: Point, move: ArcMove): string {
-  if (move.plane === 'xz' || move.plane === 'yz') {
-    // G18/G19: arc lies in a vertical plane; the XY projection is not a clean
-    // SVG arc, so render as a straight line to the destination XY.
-    return `L${move.x ?? toolhead.x},${move.y ?? toolhead.y}`
+export const buildLayerPaths = (
+  moves: MoveStore,
+  startMove: number,
+  endMove: number,
+  ignoreTools: boolean
+): Readonly<LayerPaths> => {
+  const { x, y, tool, flags: moveFlags, length } = moves
+
+  const startIndex = Math.min(startMove, length - 1)
+
+  let toolheadX = startIndex >= 0 ? x[startIndex] : 0
+  let toolheadY = startIndex >= 0 ? y[startIndex] : 0
+
+  const movesPath: string[] = [`M${formatCoordinate(toolheadX)},${formatCoordinate(toolheadY)}`]
+  const extrusionPaths = new Map<number, string[]>()
+  const retractions: Point[] = []
+  const unretractions: Point[] = []
+
+  // tool currently laying down extrusions, or -1 while traveling
+  let activeTool = -1
+  let currentTool = 0
+  let activePath: string[] = []
+
+  for (let index = Math.max(0, startMove); index <= endMove && index < length; index++) {
+    if (!ignoreTools) {
+      currentTool = tool[index]
+    }
+
+    const flags = moveFlags[index]
+
+    if ((flags & MoveFlags.Extruding) !== 0) {
+      if (activeTool < 0) {
+        unretractions.push({
+          x: formatCoordinate(toolheadX),
+          y: formatCoordinate(toolheadY)
+        })
+      }
+
+      if (activeTool !== currentTool) {
+        activePath = extrusionPaths.get(currentTool) ?? []
+
+        extrusionPaths.set(currentTool, activePath)
+        activePath.push(`M${formatCoordinate(toolheadX)},${formatCoordinate(toolheadY)}`)
+
+        activeTool = currentTool
+      }
+
+      activePath.push(moveToSVGPath(moves, index, toolheadX, toolheadY))
+    } else {
+      if (activeTool >= 0) {
+        movesPath.push(`M${formatCoordinate(toolheadX)},${formatCoordinate(toolheadY)}`)
+
+        activeTool = -1
+      }
+
+      if ((flags & MoveFlags.Retracting) !== 0) {
+        retractions.push({
+          x: formatCoordinate(toolheadX),
+          y: formatCoordinate(toolheadY)
+        })
+      }
+
+      movesPath.push(moveToSVGPath(moves, index, toolheadX, toolheadY))
+    }
+
+    toolheadX = x[index]
+    toolheadY = y[index]
   }
 
-  if (move.i !== undefined || move.j !== undefined) {
-    return arcIJMoveToSVGPath(toolhead, move)
+  const extrusions = {} as Record<Tool, string>
+
+  for (const [toolIndex, path] of extrusionPaths) {
+    extrusions[`T${toolIndex}`] = path.join('')
   }
 
-  if (move.r !== undefined) {
-    return arcRMoveToSVGPath(toolhead, move)
-  }
-
-  throw new TypeError('Move is not a valid arc')
-}
-
-export function moveToSVGPath (toolhead: Point, move: Move) {
-  return (
-    'd' in move
-      ? arcMoveToSvgPath(toolhead, move)
-      : `L${move.x ?? toolhead.x},${move.y ?? toolhead.y}`
-  )
+  return Object.freeze({
+    extrusions,
+    moves: movesPath.join(''),
+    retractions,
+    unretractions,
+    toolhead: {
+      x: formatCoordinate(toolheadX),
+      y: formatCoordinate(toolheadY)
+    },
+    tool: `T${currentTool}`
+  })
 }

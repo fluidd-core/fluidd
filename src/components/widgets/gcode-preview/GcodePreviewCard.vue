@@ -147,7 +147,7 @@ import BrowserMixin from '@/mixins/browser'
 import GcodePreview from './GcodePreview.vue'
 import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog.vue'
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
-import type { Layer, MinMax, Move } from '@/store/gcodePreview/types'
+import type { Layer, MinMax, MoveStore } from '@/store/gcodePreview/types'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
 import { consola } from 'consola'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
@@ -212,7 +212,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
         max
       } = this.currentLayerMoveRange
 
-      if (this.filePosition < moves[min].filePosition || this.filePosition > moves[max].filePosition) {
+      if (this.filePosition < moves.filePosition[min] || this.filePosition > moves.filePosition[max]) {
         this.currentLayer = this.fileProgressLayerNr
       }
     }
@@ -265,7 +265,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     return this.$typedState.gcodePreview.file
   }
 
-  get moves (): readonly Move[] {
+  get moves (): MoveStore {
     return this.$typedState.gcodePreview.moves
   }
 

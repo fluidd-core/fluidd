@@ -62,3 +62,9 @@ export default class GcodePreviewParserProgressDialog extends Mixins(StateMixin)
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  :deep(.v-progress-linear__determinate) {
+    transition-duration: 0.05s !important;
+  }
+</style>

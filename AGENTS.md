@@ -140,6 +140,32 @@ src/
 - CodeLens and document symbol providers for `klipper-config` and `moonraker-config`; folding range provider for `klipper-config`, `moonraker-config`, and `gcode`
 - Language providers run in dedicated Web Workers (`monacoCodeLensWorker`, `monacoDocumentSymbolsWorker`, `monacoFoldingRangesWorker`)
 
+### G-code Preview
+
+- Parsed in `src/workers/parseGcode.worker.ts` → `parseGcode.ts` — streamed via `fetch` +
+  `ReadableStream`, reporting progress by file position
+- Result is a **columnar `MoveStore`** of typed arrays, not `Move` objects (`src/store/gcodePreview/types.ts`):
+  `x`/`y`/`z`/`i`/`j` `Float32Array`, `tool`/`flags` `Uint8Array`, `filePosition` `Uint32Array`,
+  plus a `length` — every column is indexed by the same move index
+- `x`/`y`/`z` are **forward-filled** absolute positions after each move — there are no `undefined`
+  axes to fall back through
+- `i`/`j` are arc centre offsets, **truncated after the last `Arc` move** — only read them when
+  that move has the `Arc` flag set
+- `MoveFlags` is a bit field: `Extruding`, `Retracting`, `Arc`, `Clockwise` — test with
+  `(flags[i] & MoveFlags.Arc) !== 0`
+- The worker **transfers** the `MoveStore` buffers via `postMessage` transferables rather than
+  copying them; the parser owns nothing afterwards. `defaultMoveStore` (`gcodePreview/state.ts`) is
+  the empty store used on reset
+- A layer's `move` is an **anchor** — the move whose *endpoint* is the layer start, i.e. the move
+  before the layer's first real move. `buildLayerPaths` both seeds the toolhead from it and
+  iterates from it, drawing it as a zero-length segment
+- SVG path data is built by `buildLayerPaths` in `src/util/gcode-preview.ts` (extracted from the old
+  `getPaths` getter, which now just delegates). Every emitted `d` **must** start with a moveto — a
+  `d` beginning with `L` or `A` renders nothing
+- Oversized files are truncated by the parser, which sets `truncated` on the result;
+  `gcodePreview/actions.ts` surfaces it as an `EventBus` warning
+  (`app.general.msg.gcode_preview_truncated`)
+
 ## Integration Points
 
 ### Klipper/Moonraker Communication
@@ -164,13 +190,23 @@ src/
 
 ## Testing Conventions
 
-- Unit tests in `src/util/__tests__/*.spec.ts` with Vitest + jsdom
+- Unit tests in any `src/**/__tests__/*.spec.ts` with Vitest + jsdom — not just `src/util/`; e.g.
+  `src/workers/__tests__/parseGcode.spec.ts`. `tsconfig.vitest.json` includes `src/**/__tests__/*`
+  at any depth, plus `src/typings/*.d.ts` so specs can reference the `Klipper`/`Moonraker`
+  namespaces
 - Monarch tokenizer tests co-located in `src/monaco/language/__tests__/` — use shared `tokenize-helper.ts` (`registerLanguage`, `tokenizeLines`, `tokenBuilder`)
-- Global test functions (`describe`, `it`, `expect`) — `globals: true` in vitest config
+- Global test functions (`describe`, `it`, `expect`, `vi`, `afterEach`, …) — `globals: true` in
+  vitest config, typed via `/// <reference types="vitest/globals" />` in `env.d.ts`; specs import
+  no vitest symbols
 - Setup file: `tests/unit/setup.ts` — includes `CSS.escape` and `window.matchMedia` polyfills required by Monaco in jsdom
 - Time manipulation utility: `timeTravel(date, callback)` in `tests/unit/utils.ts`
 - Parameterized tests: `it.each([...])` pattern
 - Test store actions/mutations independently from UI
+- Stub `fetch` with `vi.stubGlobal('fetch', …)`, always restore with `vi.unstubAllGlobals()` in
+  `afterEach` — see `src/util/__tests__/http-endpoint-diagnostics.spec.ts` and
+  `src/workers/__tests__/parseGcode.spec.ts` (the latter stubs a real `ReadableStream` body)
+- `Float32Array` values read back are inexact (`0.2` → `0.20000000298…`) — assert with
+  `toBeCloseTo`, or pick exactly-representable fixtures
 
 ## Code Style
 
@@ -183,6 +219,8 @@ src/
 - Use `consola` for logging, not `console.log` (configured in `src/setupConsola.ts` — warn in prod, verbose in dev)
 - Type imports: `import type { ... }` for types only (`verbatimModuleSyntax: true`)
 - `satisfies` keyword for store module type checking
+- `decimalRound(value, places)` (`src/util/decimal-round.ts`) is the shared rounding helper — use it
+  instead of ad-hoc `Math.round(value * 100) / 100`
 - No double-cast type assertions (`as unknown as T`) — use a proper TypeScript type guard instead (`in`, `typeof`, `instanceof`, or a custom type predicate):
 
   ```typescript
