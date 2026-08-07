@@ -411,6 +411,7 @@ app:
         uspelo!
       fluidd_settings_restore_failed: Obnovitev nastavitev Fluidd ni uspela!
       gcode_preview_failed: Predogled g-kode ni uspel!
+      throttled_warning: ''
     simple_form:
       error:
         arrayofnums: Samo številke
@@ -906,6 +907,8 @@ app:
       relative_positioning: Relativna pozicija
       select_tool: Izberi orodje %{tool}
       tools: Orodja
+      extruding: ''
+      retracting: ''
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Aktivna konfiguracija ekstruderja je nastavljena
@@ -1173,6 +1176,27 @@ app:
       drying_queued: Sušenje v vrsti
       drying_complete: Sušenje končano
       drying_cancelled: Sušenje preklicano
+      tool: ''
+      auto: ''
+      gear: ''
+      filament_position: ''
+      encoder: ''
+      extruder: ''
+      active: ''
+      exit: ''
+      toolhead: ''
+      compression: ''
+      tension: ''
+      last_error: ''
+      tools: ''
+      clog: ''
+      flow: ''
+      tangle: ''
+      bypass: ''
+      neutral: ''
+      status: ''
+      pre_gate: ''
+      entry: ''
     tooltip:
       empty: Prazno
       color: Barva
@@ -1382,3 +1406,28 @@ app:
     RammingSensor: Senzor trka
     WeightRemaining: preostalo še {weight} g
     WeightUsed: porabljeno {weight} g
+    ToolPickup: ''
+    PrintStartDialog:
+      QuestionWithSpool: ''
+      NoLaneMapped: ''
+      StartJob: ''
+      NoFilamentLoaded: ''
+      FilamentTypeMismatch: ''
+      SpoolWeightRemaining: ''
+      LaneWeightRemaining: ''
+      SpoolId: ''
+      Title: ''
+      NoLane: ''
+      Question: ''
+      FilamentWeightNotEnough: ''
+    ToolDock: ''
+    BedTemp: ''
+    ExtruderTemp: ''
+    ClearSpoolId: ''
+    SelectTool: ''
+    ManualEntry: ''
+    UnselectTool: ''
+    ToolSwap: ''
+    ExtruderTempSubtitle: ''
+    BedTempSubtitle: ''
+    Initialized: ''
