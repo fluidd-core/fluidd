@@ -3,6 +3,7 @@ import { SocketActions } from '@/api/socketActions'
 import { Component } from 'vue-property-decorator'
 import type { Macro } from '@/store/macros/types'
 import type { PrinterStatus } from '@/store/printer/types'
+import { useWaitStore } from '@/stores/wait'
 
 @Component
 export default class StateMixin extends Vue {
@@ -92,21 +93,21 @@ export default class StateMixin extends Vue {
    * Supports a single string or a list of.
    */
   hasWait (wait: string | string[]): boolean {
-    return this.$typedGetters['wait/hasWait'](wait)
+    return useWaitStore().hasWait(wait)
   }
 
   /**
    * Indicates if we have any waits.
    */
   get hasWaits (): boolean {
-    return this.$typedGetters['wait/hasWaits']
+    return useWaitStore().hasWaits
   }
 
   /**
    * Indicates if we have any waits prefixed by.
    */
   hasWaitsBy (prefix: string): boolean {
-    return this.$typedGetters['wait/hasWaitsBy'](prefix)
+    return useWaitStore().hasWaitsBy(prefix)
   }
 
   /**

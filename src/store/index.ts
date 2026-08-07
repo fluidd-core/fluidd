@@ -20,7 +20,6 @@ import { version } from './version'
 import { mesh } from './mesh'
 import { notifications } from './notifications'
 import { announcements } from './announcements'
-import { wait } from './wait'
 import { gcodePreview } from './gcodePreview'
 import { timelapse } from './timelapse'
 import { webcams } from './webcams'
@@ -29,8 +28,10 @@ import { spoolman } from './spoolman'
 import { mmu } from './mmu'
 import { sensors } from './sensors'
 import { database } from './database'
-import { analysis } from './analysis'
 import { afc } from './afc'
+import { useWaitStore } from '../stores/wait'
+import { useAnalysisStore } from '@/stores/analysis'
+import type { StoreGeneric } from 'pinia'
 
 Vue.use(Vuex)
 
@@ -53,7 +54,6 @@ export const storeOptions = {
     mesh,
     notifications,
     announcements,
-    wait,
     gcodePreview,
     timelapse,
     webcams,
@@ -62,7 +62,6 @@ export const storeOptions = {
     mmu,
     sensors,
     database,
-    analysis,
     afc
   } satisfies RootModules,
   mutations: {},
@@ -74,9 +73,20 @@ export const storeOptions = {
       // Reset our color set.
       Vue.$colorset.forceResetAll()
 
+      const piniaStores: Record<string, () => StoreGeneric> = {
+        wait: useWaitStore,
+        analysis: useAnalysisStore
+      }
+      const keys = payload || Object.keys(this.state)
+
+      // Stores that have moved to Pinia are no longer Vuex modules, so reset them directly.
+      for (const [key, useStore] of Object.entries(piniaStores)) {
+        if (!payload || keys.includes(key)) {
+          useStore().$reset()
+        }
+      }
       // Dispatch a reset for each registered module.
       const p: Promise<unknown>[] = []
-      const keys = payload || Object.keys(this.state)
       keys.forEach((key) => {
         if (this.hasModule(key)) {
           p.push(dispatch(key + '/reset'))
