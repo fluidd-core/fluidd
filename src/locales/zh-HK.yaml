@@ -10,6 +10,7 @@ app:
       remove_profile: '删除 %{name} 配置文件'
       scale: 顯示偏差值
       wireframe: 顯示網格線
+      base: ''
     msg:
       hint: '如果將 %{name} 另存, 你也可以選擇刪除此 %{name} 配置'
       not_found: 熱床網格配置不存在。
@@ -19,6 +20,7 @@ app:
       delete: 刪除配置
       load: 加載配置
       save: 將校準的配置文件應用於 printer.cfg
+      download_image: ''
   chart:
     label:
       current: 當前值
@@ -26,18 +28,28 @@ app:
       power: 功率
       target: 目標值
       rate_of_change: 變化值
+      turn_off: ''
+      target_temperature: ''
+      fan_breakpoints: ''
     tooltip:
       help: 按住 <kbd>Shift 鍵</kbd>可縮放圖表。<br />單擊一個項目名稱可切換其在圖表中的顯示。<br 
         />單擊開關可切換圖表顯示。
+    title:
+      mpc_calibrate: ''
+      pid_calibrate: ''
   console:
     label:
       hide_temp_waits: 隱藏溫度信息
+    tooltip:
+      help: ''
   endpoint:
     error:
       cant_connect: 出了點問題，Fluidd 無法連接目標。你確定這是正確的設備地址？
       cors_error: 被 CORS 政策阻止，請查看 Moonraker 幫助
       cors_note: >-
         這可能意味著您需要修改 Moonraker 配置。請參閱有關多打印機設置的<a href="%{url}" target="_blank">文檔</a>
+      mixed_content: ''
+      websocket_failed: ''
     hint:
       add_printer: '例如：http://fluidd.local'
     msg:
@@ -52,11 +64,18 @@ app:
         triggered: 已觸發
     msg:
       subtitle: 使用“刷新”按鈕更新限位開關狀態。
+    label:
+      endstop: ''
   file_system:
     filters:
       label:
         print_start_time: 隱藏已打印項目
         klipper_backup_files: 隱藏Klipper備份文件
+        moonraker_backup_files: ''
+        rolled_log_files: ''
+        crowsnest_backup_files: ''
+        moonraker_temporary_upload_files: ''
+        hidden_files: ''
     label:
       dir_name: 目錄名稱
       disk_usage: 磁盤使用率
@@ -66,6 +85,7 @@ app:
       transfer_rate: 傳輸速率
       uploaded: 上傳完成
       view_section_documentation: '%{section} 查看文檔'
+      sd_card_info: ''
     msg:
       not_found: 文件未找到
       processing: 處理中
@@ -80,14 +100,21 @@ app:
       rename_dir: 重命名目錄
       rename_file: 重命名文件
       upload_file: 上傳文件
+      go_to_file: ''
+      devices: ''
+      save_as: ''
+      duplicate_file: ''
+      duplicate_dir: ''
     tooltip:
       low_on_space: 磁盤空間不足
       root_disabled: '{root} G代碼文件目錄不可用，請檢查您的日誌。'
+      items_count: ''
     url:
       klipper_config: '%{klipperDomain}/zh-Hant/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: >-
         https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
+      crowsnest_config: ''
   gcode:
     btn:
       load_current_file: 載入當前文件
@@ -108,6 +135,8 @@ app:
       parsing_file: 解析文件
     msg:
       confirm: '文件 "%{filename}" 大小為 %{size}，這可能會導致系統短暫失去響應，是否確認？'
+    overlay:
+      drag_file_load: ''
   general:
     btn:
       abort: 中止
@@ -182,11 +211,26 @@ app:
       upload_print: 上傳並打印
       view: 查看
       reset_stats: 重置統計信息
+      copy: ''
+      perform_time_analysis: ''
+      copied: ''
+      go_to_file: ''
+      scroll_to_latest: ''
+      clear: ''
+      retry: ''
+      duplicate: ''
+      power_on_printer: ''
+      refresh_metadata: ''
+      thumbnail_size: ''
+      select_columns: ''
+      reset_to_default: ''
+      multiply: ''
     error:
       app_setup_link: '如需查看 Fluidd 詳細配置規則，請點擊<a target="_blank" href="%{url}">此處</a>。'
       app_warnings_found: '％{appName} 出現警告。'
       components_config: '如需查看 Moonraker 詳細配置規則，請點擊<a target="_blank" href="%{url}">此處</a>。'
       failed_components: Moonraker 插件啟用失敗，請檢查您的日誌，更新您的配置並重新啟動 Moonraker。
+      printer_powered_off: ''
     label:
       accel_to_decel: 加速到減速度
       acceleration: 加速度
@@ -289,6 +333,28 @@ app:
       edit_category: 編輯分類
       add_category: 添加分類
       file_time: 預計剩余
+      disconnected: ''
+      minimum_cruise_ratio: ''
+      unknown: ''
+      cross: ''
+      device: ''
+      unload_filament: ''
+      toolchange: ''
+      user_facing: ''
+      z_hop_height: ''
+      bars: ''
+      length_in_kilometers: ''
+      no_data: ''
+      park_toolhead: ''
+      connected: ''
+      circle: ''
+      stepper_driver: ''
+      range: ''
+      clean_nozzle: ''
+      load_filament: ''
+      compact: ''
+      time_in_days: ''
+      environment_facing: ''
     msg:
       password_changed: 密碼已更改
       wrong_password: 出現不明錯誤。您確定輸入正確密碼嗎？
@@ -298,6 +364,11 @@ app:
       needs_refresh: 有新內容可用，請單擊 <b>重新加載</b> 按鈕進行更新。
       pending_configuration_sections_deleted: 以下部分已標記為刪除
       rolledover_logs: '以下應用程序日誌已更新：%{applications}'
+      fluidd_settings_backup_failed: ''
+      fluidd_settings_restore_failed: ''
+      gcode_preview_failed: ''
+      throttled_warning: ''
+      not_valid_fluidd_backup_file: ''
     simple_form:
       error:
         arrayofnums: 僅允許輸入數字
@@ -324,6 +395,19 @@ app:
         confirm_power_device_toggle: 確認繼續？這會切換設備開關狀態。
         unsaved_changes: 這會丟失未保存的更改！是否確認？
         no_file_preview: '現在無法預覽%{name} 。'
+        confirm_remove_camera: ''
+        confirm_cancel_print: ''
+        confirm_emergency_stop: ''
+        confirm_remove_macro_category: ''
+        confirm_remove_thermal_preset: ''
+        confirm_restore_backup: ''
+        confirm_remove_console_filter: ''
+        confirm_change_beacon_model: ''
+        confirm_delete: ''
+        confirm_remove_user: ''
+        confirm_remove_printer: ''
+        confirm_clear_mesh: ''
+        confirm_load_bedmesh_profile: ''
     table:
       header:
         actions: 展開
@@ -353,6 +437,19 @@ app:
         start_time: 開始時間
         status: 狀態
         total_duration: 總耗時
+        referenced_tools: ''
+        filament_temps: ''
+        filament_colors: ''
+        user: ''
+        printer_vendor: ''
+        extruder_colors: ''
+        file_processors: ''
+        profile_version: ''
+        filament_weights: ''
+        printer_variant: ''
+        mmu_print: ''
+        filament_change_count: ''
+        printer_model: ''
     title:
       add_chart: 添加圖表
       add_printer: 添加打印機
@@ -388,6 +485,9 @@ app:
       timelapse: 延時
       tool: 移動控制
       tune: 調整
+      login: ''
+      beacon: ''
+      macro_category_settings: ''
     tooltip:
       browse_metrics: 瀏覽可用指標
       estop: 緊急停止
@@ -398,6 +498,13 @@ app:
       restart_klipper: 重啟 Klipper 服務。
       run_collector: 運行收集器
       rollover_logs: 滾動日誌
+      power_on_printer: ''
+      file_browser_configuration_help: ''
+      reset_layout: ''
+      file_browser_help: ''
+      exit_layout: ''
+      set_default_layout: ''
+      reset_default_layout: ''
   history:
     msg:
       confirm: 確認繼續？這將清除所有歷史記錄和打印機統計信息
@@ -406,6 +513,16 @@ app:
   job_queue:
     msg:
       confirm: 確認繼續？這將清除整個打印機隊列
+    tooltip:
+      help: ''
+    label:
+      filament: ''
+      number_of_copies: ''
+      eta: ''
+      print_time: ''
+      unknown_jobs: ''
+    title:
+      multiply_job: ''
   printer:
     state:
       busy: 處理中
@@ -417,6 +534,13 @@ app:
       printing: 打印中
       ready: 就緒
       standby: 待機
+    title:
+      stepper_driver_overheating: ''
+      printer_status: ''
+    url:
+      stepper_driver_overheating: ''
+    msg:
+      possible_print_failure: ''
   setting:
     btn:
       add_camera: 添加攝像頭
@@ -427,12 +551,18 @@ app:
       add_user: 添加用戶
       reset: 重置
       select_theme: 選擇顏色
+      backup: ''
+      restore: ''
     camera_type_options:
       mjpegadaptive: MJPEG 自適應
       mjpegstream: MJPEG 視頻流
       hlsstream: HLS流
       video: IP 攝像頭
       iframe: HTTP 頁面
+      webrtc_go2rtc: ''
+      webrtc_camera_streamer: ''
+      webrtc_mediamtx: ''
+      uv4l_mjpeg_stream: ''
     camera_rotate_options:
       '90': 90度
       '180': 180度
@@ -534,11 +664,45 @@ app:
       force_move_toggle_warning: 強制移動時是否需要確認
       show_manual_probe_dialog_automatically: 自動顯示手動探測對話框
       show_bed_screws_adjust_dialog_automatically: 自動顯示床身螺絲調整對話框
+      camera_url_stream: ''
+      show_chart: ''
+      service_restart: ''
+      print_progress_calculation: ''
+      draw_origin: ''
+      auto: ''
+      save_and_restore_view_state: ''
+      sections_to_ignore_pending_configuration_changes: ''
+      warn_on_cpu_throttled: ''
+      firmware_restart: ''
+      enable_xy_homing: ''
+      toolhead_control_style: ''
+      klipper_save_and_restart_action: ''
+      to_browser_local_storage: ''
+      to_browser_session_storage: ''
+      host_restart: ''
+      toolhead_xy_move_distances: ''
+      show_logo_on_background: ''
+      camera_url_snapshot: ''
+      print_in_progress_layout: ''
+      print_eta_calculation: ''
+      warn_on_stepper_driver_overheating: ''
+      never: ''
+      hide_single_part_bounding_box: ''
+      drag_and_drop_functionality_for_files_and_folders: ''
+      fluidd_settings_in_moonraker_db: ''
+      show_screws_tilt_adjust_dialog_automatically: ''
+      sensor_color: ''
+      printer_power_device: ''
+      toolhead_z_move_distances: ''
+      keyboard_shortcuts: ''
     timer_options:
       duration: 僅顯示已用時間
       filament: 通過耗材用量估算
       file: 通過文件進度估算
       slicer: 使用切片文件的時間
+      absolute_file_position: ''
+      relative_file_position: ''
+      slicer_m73: ''
     title:
       authentication: 安全認證
       console: 控制台
@@ -550,12 +714,20 @@ app:
       theme: 主題
       thermal_presets: 溫度預設
       tool: 移動控制
+      file_browser: ''
+      warnings: ''
     tooltip:
       diagnostics_performance: '[BETA] 記錄診斷信息可能會影響性能'
       gcode_coords: 使用 GCode 坐標位置而不是儀表板上的打印頭坐標位置
       show_manual_probe_dialog_automatically: 運行手動探測工具時自動顯示幫助對話框
       show_bed_screws_adjust_dialog_automatically: 如果運行 BED_SCREWS_ADJUST 
         工具，自動顯示助手對話框
+      theme_disclaimer: ''
+      show_screws_tilt_adjust_dialog_automatically: ''
+      keyboard_shortcuts: ''
+      average_calculation: ''
+      warn_on_cpu_throttled: ''
+      warn_on_stepper_driver_overheating: ''
   socket:
     msg:
       connecting: 正在連接至 Moonraker ...
@@ -591,6 +763,18 @@ app:
       operating_system: 操作系統
       version: 版本
       virtualization: 虛擬化
+      non_critical_connection: ''
+      application: ''
+      constants: ''
+      last_stats: ''
+      load: ''
+      memory_used: ''
+      devices: ''
+      awake_time: ''
+    msg:
+      no_devices_found: ''
+      no_devices_searched: ''
+      canbus_warning: ''
   tool:
     btn:
       home_x: 歸位X
@@ -599,6 +783,7 @@ app:
     title:
       bed_screws_adjust: 底板螺絲調整
       manual_probe: 手動探測
+      screws_tilt_adjust: ''
     tooltip:
       absolute_positioning: 絕對位置
       extruder_disabled: '擠出機操作已被禁用，低於 min_extrude_temp 設置的最低溫度 (%{min}<small>°C</small>)'
@@ -608,6 +793,9 @@ app:
       motors_off: 關閉電機
       relative_positioning: 相對位置
       tools: 工具
+      select_tool: ''
+      extruding: ''
+      retracting: ''
     label:
       stats_active_extruder: '<span class="secondary--text">擠出機配置為</span>耗材直徑 %{filamentDiameter}mm<span
         class="secondary--text">及</span>噴嘴直徑 %{nozzleDiameter}mm'
@@ -633,6 +821,8 @@ app:
       package_list: 軟件包列表
       up_to_date: 最新
       updates_available: 有可用更新
+      old_component_version: ''
+      packages: ''
     status:
       finished: 更新已完成
       updating: 正在更新...
@@ -696,3 +886,364 @@ app:
       variable_fps: 可變幀率
       variable_fps_min: 最小幀率
       variable_fps_max: 最大幀率
+  keyboard_shortcuts:
+    label:
+      cancel: ''
+      open_keyboard_shortcut_help: ''
+      pause: ''
+      navigation: ''
+      actions: ''
+      printing: ''
+      home_all: ''
+      emergency_stop: ''
+      tool: ''
+    title:
+      keyboard_shortcuts: ''
+  mmu:
+    btn:
+      home: ''
+      sync: ''
+      recover_state: ''
+      preload: ''
+      check_all_gates: ''
+      cancel: ''
+      on: ''
+      select: ''
+      eject: ''
+      check_gate: ''
+      load: ''
+      load_ext: ''
+      unlock: ''
+      release: ''
+      unload: ''
+      change_tool: ''
+      off: ''
+      move: ''
+      reset: ''
+      down: ''
+      unload_ext: ''
+      mmu_maintenance: ''
+      grip: ''
+      edit_ttg_map: ''
+      sync_spoolman: ''
+      recover: ''
+      up: ''
+      print_stats: ''
+      edit_gate_map: ''
+      unsync: ''
+    msg:
+      no_custom_controls: ''
+      warning_prefix: ''
+      filament_loaded: ''
+      spoolman_off: ''
+      recover_intro: ''
+      set_gate: ''
+      tool_not_used: ''
+      temperature: ''
+      filament_empty: ''
+      material: ''
+      no_slicer_info: ''
+      spoolman_pull: ''
+      filament_available: ''
+      recover_filament_position: ''
+      remap: ''
+      gate_bypass: ''
+      no_active_spool: ''
+      select_tool: ''
+      tool_bypass: ''
+      single_color: ''
+      filament_unknown: ''
+      color: ''
+      map_tools: ''
+      no_spool_id: ''
+      set_tool: ''
+      multi_color: ''
+      are_you_sure: ''
+      map_slicer_tools: ''
+      reset_ttg_map_confirmation: ''
+      spoolman_other: ''
+      mismatch: ''
+      no_matching_spool: ''
+      maintenance_intro: ''
+      no_position: ''
+      no_gate: ''
+      bad_temperature: ''
+      no_tool: ''
+      reset_gate_map_confirmation: ''
+      select_gate: ''
+      no_gate_data: ''
+    label:
+      spoolman: ''
+      tool: ''
+      gate: ''
+      auto: ''
+      save: ''
+      ui_visual: ''
+      drying: ''
+      cancel: ''
+      tool_mapping: ''
+      gear: ''
+      leds: ''
+      slicer_expects: ''
+      filament_position: ''
+      encoder: ''
+      extruder_only: ''
+      heater: ''
+      clog_tangle_detection: ''
+      unknown: ''
+      extruder: ''
+      active: ''
+      spoolman_never: ''
+      exit: ''
+      spoolman_yesterday: ''
+      filament_name: ''
+      all_tools: ''
+      mmu_motors: ''
+      choose_spool: ''
+      drying_queued: ''
+      selector: ''
+      toolhead: ''
+      compression: ''
+      reset: ''
+      animation: ''
+      load_speed: ''
+      enable: ''
+      tension: ''
+      spoolman_id: ''
+      last_error: ''
+      tools: ''
+      filament_info: ''
+      clog: ''
+      drying_cancelled: ''
+      flow: ''
+      tangle: ''
+      bypass: ''
+      temperature: ''
+      spoolman_today: ''
+      neutral: ''
+      status: ''
+      spoolman_last_used: ''
+      pre_gate: ''
+      material: ''
+      ok: ''
+      spoolman_days_ago: ''
+      motor_sync: ''
+      extruder_tx: ''
+      skip_automap: ''
+      config: ''
+      entry: ''
+      endless_spool: ''
+      drying_complete: ''
+    tooltip:
+      color: ''
+      spoolid: ''
+      empty: ''
+    setting:
+      show_details: ''
+      large_filament_status: ''
+      show_climate: ''
+      show_logos: ''
+      show_name: ''
+      show_unavailable_spool_color: ''
+      show_ttg_map: ''
+      show_clog_detection: ''
+    title:
+      recover_state: ''
+      edit_ttg_map: ''
+      edit_gate_map: ''
+      headline: ''
+      mmu_maintenance: ''
+  afc:
+    ToolPickup: ''
+    ShowFilamentName: ''
+    PrintStartDialog:
+      QuestionWithSpool: ''
+      NoLaneMapped: ''
+      StartJob: ''
+      NoFilamentLoaded: ''
+      FilamentTypeMismatch: ''
+      SpoolWeightRemaining: ''
+      LaneWeightRemaining: ''
+      SpoolId: ''
+      Title: ''
+      NoLane: ''
+      Question: ''
+      FilamentWeightNotEnough: ''
+    SettingsDialog:
+      SaveExtruderValuesDescription: ''
+      ToolStnUnload: ''
+      ToolSensorAfterExtruder: ''
+      Help: ''
+      ToolSensorAfterExtruderDescription: ''
+      LoadUnloadLaneDescription: ''
+      ToolStnDescriptionWithoutEndSensor: ''
+      SaveExtruderValues: ''
+      SettingsForTitle: ''
+      BowdenLength: ''
+      SaveHubDistDescription: ''
+      ToolStnDescriptionWithEndSensor: ''
+      ToolStn: ''
+      DistHubDescription: ''
+      Length: ''
+      DistHub: ''
+      LoadUnloadLane: ''
+      WriteToFile: ''
+      ToolStnDescriptionWithRamming: ''
+      SaveHubDist: ''
+      BowdenLengthDescription: ''
+      ToolStnUnloadDescription: ''
+      SensorAfterExtruder: ''
+    DebugJson: ''
+    UnloadLane: ''
+    ToolDock: ''
+    WeightUsed: ''
+    PrepDetected: ''
+    BedTemp: ''
+    Hub: ''
+    PreExtruderSensor: ''
+    EjectFilament: ''
+    ExtruderTemp: ''
+    SetSpool: ''
+    ShowTool: ''
+    Error: ''
+    MaterialSubtitle: ''
+    CaptureTd: ''
+    ClearSpoolId: ''
+    SelectTool: ''
+    HubLoad: ''
+    Loading: ''
+    LedOn: ''
+    BufferDisabled: ''
+    ShowTd1Color: ''
+    Unloading: ''
+    WeightRemaining: ''
+    LoadedInLane: ''
+    ManualEntry: ''
+    RammingSensor: ''
+    Idle: ''
+    Restoring: ''
+    WeightSubtitle: ''
+    LaneControls: ''
+    Functions: ''
+    LaneLoadedNone: ''
+    ParkNozzle: ''
+    Empty: ''
+    UnselectTool: ''
+    ShowUnit: ''
+    Printing: ''
+    Settings: ''
+    LaneLoaded: ''
+    ToolSwap: ''
+    LoadLane: ''
+    BrushNozzle: ''
+    InfiniteSpoolHeadline: ''
+    LaneMapping: ''
+    Cancel: ''
+    ExtruderTempSubtitle: ''
+    LaneMappingToCommand: ''
+    BedTempSubtitle: ''
+    ShowLaneInfinite: ''
+    Headline: ''
+    AfcSettings: ''
+    FilamentForLane: ''
+    PostExtruderSensor: ''
+    SettingsForLane: ''
+    Ejecting: ''
+    Initialized: ''
+    Detected: ''
+    LedOff: ''
+    Weight: ''
+    InfiniteSpoolDescription: ''
+    Calibrate: ''
+    ShowUnitIcons: ''
+    Material: ''
+    Moving: ''
+    BypassActive: ''
+  spoolman:
+    label:
+      first_used: ''
+      used_weight: ''
+      density: ''
+      length: ''
+      lot_nr: ''
+      diameter: ''
+      remaining_weight: ''
+      colors: ''
+      used: ''
+      last_used: ''
+      remaining_length: ''
+      initial_weight: ''
+      filament_name: ''
+      bed_temp: ''
+      material: ''
+      extruder_temp: ''
+      id: ''
+      initial_length: ''
+      active_spool: ''
+      used_length: ''
+      price: ''
+      device_camera: ''
+      comment: ''
+      location: ''
+      vendor: ''
+      remaining: ''
+      change_spool: ''
+      weight: ''
+    setting:
+      auto_open_qr_camera: ''
+      warn_on_not_enough_filament: ''
+      prefer_device_camera: ''
+      remaining_filament_unit: ''
+      auto_select_spool_on_match: ''
+      show_spool_selection_dialog_on_print_start: ''
+      card_fields: ''
+      warn_on_filament_type_mismatch: ''
+    btn:
+      scan_code: ''
+      manage_spools: ''
+      select: ''
+    msg:
+      error:
+        cors: ''
+        no_image_data: ''
+        spool_not_existant: ''
+      no_filament: ''
+      warning:
+        invalid_spool_id: ''
+        code_not_recognized: ''
+      no_required_length: ''
+      info:
+        howto: ''
+      no_spool: ''
+      not_connected: ''
+      mismatched_filament: ''
+      tracking_inactive: ''
+    title:
+      scan_spool: ''
+      spoolman: ''
+      spool_selection: ''
+  beacon:
+    label:
+      model_name: ''
+      active: ''
+      remove_model: ''
+    msg:
+      not_found: ''
+      hint: ''
+    tooltip:
+      delete: ''
+      load: ''
+  database:
+    btn:
+      create_backup: ''
+      compact_database: ''
+    tooltip:
+      delete_backup: ''
+      restore_backup: ''
+    label:
+      moonraker_database: ''
+    msg:
+      not_found: ''
+  sensors:
+    title:
+      sensors: ''
