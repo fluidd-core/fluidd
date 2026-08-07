@@ -472,10 +472,13 @@ const parseGcode = async (
                 }
               }
 
+              const layerMove = Math.max(0, moveCount - 1)
+
               const layer: Layer = {
                 z: toolhead.z,
-                move: Math.max(0, moveCount - 1),
-                filePosition
+                move: layerMove,
+                // move `moveCount` is only written below
+                filePosition: moveCount > 0 ? moveFilePosition[layerMove] : filePosition
               }
 
               layers.push(layer)

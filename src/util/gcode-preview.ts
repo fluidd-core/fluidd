@@ -3,15 +3,11 @@ import { MoveFlags } from '@/store/gcodePreview/types'
 import decimalRound from './decimal-round'
 
 export const binarySearch = (length: number, comp: (index: number) => number): number => {
-  if (length <= 1) {
-    return 0
-  }
-
-  let index = Math.floor(length / 2)
   let topBound = length - 1
   let bottomBound = 0
 
   while (bottomBound <= topBound) {
+    const index = (bottomBound + topBound) >> 1
     const result = comp(index)
 
     if (result > 0) {
@@ -21,12 +17,10 @@ export const binarySearch = (length: number, comp: (index: number) => number): n
     } else {
       return index
     }
-
-    index = Math.floor((bottomBound + topBound) / 2)
   }
 
-  // may be -1 when the target sorts before the first entry
-  return index
+  // -1 when the target sorts before the first entry
+  return topBound
 }
 
 // Float32 round-trips to values like 123.44999694824219; rounding to microns

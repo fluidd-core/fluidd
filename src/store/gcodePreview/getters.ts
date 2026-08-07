@@ -49,7 +49,7 @@ export const getters = {
         output.push({
           z: decimalRound(currentZ, 4),
           move: zStart,
-          filePosition: filePosition[index]
+          filePosition: filePosition[zStart]
         })
       }
     }
@@ -205,7 +205,9 @@ export const getters = {
 
     const moves = state.moves
 
-    return binarySearch(moves.length, index => filePosition - moves.filePosition[index])
+    const move = binarySearch(moves.length, index => filePosition - moves.filePosition[index])
+
+    return Math.max(0, move)
   },
 
   getLayerNrByFilePosition: (state, getters) => (filePosition: number): number => {
@@ -217,10 +219,6 @@ export const getters = {
 
     const layer = binarySearch(layers.length, index => filePosition - layers[index].filePosition)
 
-    return (
-      layer >= 0
-        ? layer
-        : 0
-    )
+    return Math.max(0, layer)
   }
 } satisfies GetterTree<GcodePreviewState, RootState>
