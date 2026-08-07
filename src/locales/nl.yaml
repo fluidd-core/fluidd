@@ -32,6 +32,7 @@ app:
       rate_of_change: Wijzig
       target_temperature: Doeltemperatuur
       turn_off: Zet Uit
+      fan_breakpoints: ''
     tooltip:
       help: >-
         Houd <kbd>shift</kbd> ingedrukt om te zoomen.<br />Klik op een item om deze
@@ -56,6 +57,8 @@ app:
       cors_note: >-
         Dit betekent dat er iets mis is met je moonraker instellingen. Bekijk alsjeblieft
         de documentatie omtrent multiprinter configuraties <a href="%{url}" target="_blank">hier</a>
+      mixed_content: ''
+      websocket_failed: ''
     hint:
       add_printer: V.B, http://fluidd.local
     msg:
@@ -73,6 +76,8 @@ app:
         triggered: GERAAKT
     msg:
       subtitle: Gebruik de ververs knop om je endstopstatus bij te werken.
+    label:
+      endstop: ''
   file_system:
     filters:
       label:
@@ -109,6 +114,7 @@ app:
       duplicate_file: Dupliceer Bestand
       duplicate_dir: Dupliceer Directory
       devices: Apparaten
+      save_as: ''
     tooltip:
       low_on_space: Weinig geheugen over op de schijf
       root_disabled: '{root} is niet beschikbaar. Controleer je logs.'
@@ -234,6 +240,10 @@ app:
       copied: Gekopieerd
       copy: Kopieer
       power_on_printer: Zet Printer Aan
+      perform_time_analysis: ''
+      scroll_to_latest: ''
+      clear: ''
+      reset_to_default: ''
     error:
       app_setup_link: >-
         Fluidd opstart vereisten kan je <a target="_blank" href="%{url}">hier</a>
@@ -355,6 +365,23 @@ app:
       length_in_kilometers: Lengte in kilometers
       time_in_days: Tijd in dagen
       z_hop_height: Z-Hop Hoogte
+      disconnected: ''
+      minimum_cruise_ratio: ''
+      unload_filament: ''
+      toolchange: ''
+      user_facing: ''
+      bars: ''
+      no_data: ''
+      park_toolhead: ''
+      connected: ''
+      pressure_advance: ''
+      unretract_extra_length: ''
+      stepper_driver: ''
+      numeric_prefix_sort: ''
+      clean_nozzle: ''
+      load_filament: ''
+      smooth_time: ''
+      environment_facing: ''
     msg:
       password_changed: Wachtwoord aangepast
       wrong_password: Oeps! Er is iets fout gegaan, klopt je wachtwoord wel?
@@ -370,6 +397,9 @@ app:
       not_valid_fluidd_backup_file: Niet een geldig Fluidd backup bestand!
       fluidd_settings_backup_failed: Backup Fluidd instellingen mislukt!
       fluidd_settings_restore_failed: Herstellen Fluidd instellingen mislukt!
+      rolledover_logs: ''
+      gcode_preview_failed: ''
+      throttled_warning: ''
     simple_form:
       error:
         arrayofnums: Alleen nummers
@@ -428,6 +458,8 @@ app:
           %{name} wilt verwijderen?
         confirm_change_beacon_model: De printer is momenteel bezig. Weet je 
           zeker dat je het beacon model wilt wijzigen?
+        confirm_emergency_stop: ''
+        confirm_restore_backup: ''
     table:
       header:
         actions: Acties
@@ -463,6 +495,13 @@ app:
         filament_change_count: Filament wijzigingen
         filament_colors: Filament kleuren
         user: Gebruiker
+        referenced_tools: ''
+        printer_vendor: ''
+        file_processors: ''
+        profile_version: ''
+        printer_variant: ''
+        mmu_print: ''
+        printer_model: ''
     title:
       add_printer: Printer toevoegen
       bedmesh: Bed Mesh
@@ -498,6 +537,9 @@ app:
       diagnostics: Diagnostiek
       macro_category_settings: Macro Categorie Instellingen
       login: Inloggen
+      beacon: ''
+      metrics_explorer: ''
+      rollover_logs: ''
     tooltip:
       estop: Noodstop
       reload_klipper: Herlaad de klipper configuratie.
@@ -514,6 +556,11 @@ app:
         te slepen
       browse_metrics: Bekijk beschikbare statistieken
       exit_layout: Sluit layout modus
+      power_on_printer: ''
+      reset_layout: ''
+      rollover_logs: ''
+      set_default_layout: ''
+      reset_default_layout: ''
   printer:
     state:
       busy: Bezig
@@ -527,8 +574,11 @@ app:
       cancelled: Geannuleerd
     title:
       printer_status: Printer Status
+      stepper_driver_overheating: ''
     msg:
       possible_print_failure: Dit kan een mislukte print veroorzaken
+    url:
+      stepper_driver_overheating: ''
   setting:
     btn:
       add_camera: Camera toevoegen
@@ -540,6 +590,7 @@ app:
       add_category: Categorie Toevoegen
       backup: Backup
       restore: Herstellen
+      add_metric: ''
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
@@ -547,6 +598,9 @@ app:
       hlsstream: HLS Stream
       iframe: HTTP pagina
       webrtc_camera_streamer: WebRTC (camera-streamer)
+      webrtc_go2rtc: ''
+      webrtc_mediamtx: ''
+      uv4l_mjpeg_stream: ''
     label:
       all_off: Alles uit
       all_on: Alles aan
@@ -642,6 +696,8 @@ app:
       dashed: Gestreept
       camera_fullscreen_action:
         title: Volledig scherm actie
+        rawstream: ''
+        embed: ''
       fluidd_settings_in_moonraker_db: Fluidd instellingen in Moonraker database
       print_progress_calculation: Print Voortgang calculatie
       axes: Assen
@@ -660,11 +716,35 @@ app:
       service_restart: Service Herstarten
       keyboard_shortcuts: Toetsenbord sneltoetsen
       metrics: Statistieken
+      camera_url_stream: ''
+      draw_origin: ''
+      auto: ''
+      save_and_restore_view_state: ''
+      sections_to_ignore_pending_configuration_changes: ''
+      warn_on_cpu_throttled: ''
+      fill_opacity: ''
+      collector: ''
+      toolhead_control_style: ''
+      solid: ''
+      enable_diagnostics: ''
+      power_toggle_in_top_nav: ''
+      show_rate_of_change: ''
+      camera_url_snapshot: ''
+      print_in_progress_layout: ''
+      warn_on_stepper_driver_overheating: ''
+      hide_single_part_bounding_box: ''
+      confirm_on_save_config_and_restart: ''
+      show_screws_tilt_adjust_dialog_automatically: ''
+      sensor_color: ''
+      printer_power_device: ''
     timer_options:
       duration: Alleen tijdsduur
       filament: Filament
       file: Bestand
       slicer: Slicer
+      absolute_file_position: ''
+      relative_file_position: ''
+      slicer_m73: ''
     title:
       authentication: Authentificatie
       camera: Camera | Camera's
@@ -675,9 +755,21 @@ app:
       thermal_presets: Temperatuurvoorkeuren
       tool: Werktuig
       console: Console
+      file_browser: ''
+      file_editor: ''
+      warnings: ''
     tooltip:
       gcode_coords: Gebruik GCode positie in plaats van toolhead positie op het 
         dashboard
+      theme_disclaimer: ''
+      diagnostics_performance: ''
+      show_manual_probe_dialog_automatically: ''
+      show_screws_tilt_adjust_dialog_automatically: ''
+      show_bed_screws_adjust_dialog_automatically: ''
+      keyboard_shortcuts: ''
+      average_calculation: ''
+      warn_on_cpu_throttled: ''
+      warn_on_stepper_driver_overheating: ''
     camera_rotate_options:
       none: Geen
       '90': 90°
@@ -727,9 +819,12 @@ app:
       constants: Constanten
       non_critical_connection: Niet-kritieke verbinding
       last_stats: Laatste Statistieken
+      load: ''
+      awake_time: ''
     msg:
       no_devices_found: Geen apparaten gevonden
       no_devices_searched: Gebruik de ververs knop om te zoeken naar apparaten
+      canbus_warning: ''
   tool:
     btn:
       home_x: X
@@ -744,8 +839,20 @@ app:
       select_tool: Selecteer tool %{tool}
       manual_probe: Handmatige Probe
       motors_off: Motors Uitschakelen
+      tools: ''
+      relative_positioning: ''
+      extruding: ''
+      retracting: ''
+      absolute_positioning: ''
     title:
       manual_probe: Handmatige Probe
+      screws_tilt_adjust: ''
+      bed_screws_adjust: ''
+    label:
+      stats_max_speed: ''
+      stats_active_extruder: ''
+      stats_volumetric_flow: ''
+      stats_extruded_length: ''
   version:
     btn:
       check_for_updates: Controleer voor updates
@@ -764,6 +871,7 @@ app:
       up_to_date: UP TO DATE
       updates_available: Updates zijn beschikbaar
       packages: '{count} pakket | {count} pakketten'
+      old_component_version: ''
     status:
       finished: Updates klaar
       updating: Updaten...
@@ -805,6 +913,9 @@ app:
       used_weight: Gebruikte Gewicht
       price: Prijs
       active_spool: Actieve Spool
+      lot_nr: ''
+      bed_temp: ''
+      extruder_temp: ''
     setting:
       auto_open_qr_camera: Open camera automatisch voor QR code detectie
       warn_on_not_enough_filament: Toon een waarschuwing als de geselecteerde 
@@ -815,6 +926,8 @@ app:
         filament van de spoel en slicer niet overeenkomen
       card_fields: Velden om te tonen in de Spoolman kaart
       remaining_filament_unit: Toon resterende filament als
+      prefer_device_camera: ''
+      auto_select_spool_on_match: ''
     btn:
       scan_code: Scan Code
       manage_spools: Beheer Spoelen
@@ -834,6 +947,8 @@ app:
       error:
         spool_not_existant: De spoel die je hebt gescand komt niet voor in de 
           database.
+        cors: ''
+        no_image_data: ''
       no_spool: Je hebt geen spoel geselecteerd. Weet je zeker dat je wilt 
         printen zonder filament tracking?
       mismatched_filament: Het materiaal van het geselecteerde filament past 
@@ -845,6 +960,7 @@ app:
     title:
       scan_spool: Scan Spoel
       spool_selection: Spoel selectie | Spool selectie voor macro {macro}
+      spoolman: ''
   job_queue:
     tooltip:
       help: Zet opdrachten in de wachtrij door bestanden vanuit Jobs hiernaartoe
@@ -859,6 +975,7 @@ app:
       filament: Filament
       print_time: Print tijd
       unknown_jobs: Onbekende jobs
+      eta: ''
   timelapse:
     setting:
       parkpos:
@@ -869,6 +986,8 @@ app:
         center: Midden
         y_only: Verplaats Y alleen
         front_left: Vooraan Links
+        label: ''
+        custom: ''
       targetlength: Doel lengte
       previewimage: Genereer Thumbnail
       mode_layermacro: Laag Macro
@@ -877,13 +996,39 @@ app:
       enable: Ingeschakeld
       saveframes: Frames Opslaan
       stream_delay_compensation: Vertraging Compensatie
+      crf: ''
+      variable_fps_max: ''
+      park_custom_pos_y: ''
+      park_time: ''
+      auto_render: ''
+      output_framerate: ''
+      gcode_verbose: ''
+      park_travel_speed: ''
+      park_custom_pos_dz: ''
+      variable_fps: ''
+      park_retract_distance: ''
+      park_extrude_speed: ''
+      park_custom_pos_x: ''
+      fw_retract: ''
+      variable_fps_min: ''
+      parkhead: ''
+      hyperlapse_cycle: ''
+      mode_hyperlapse: ''
+      park_extrude_distance: ''
+      park_retract_speed: ''
     label:
       frames: '%{frames} frame | %{frames} frames'
       length: 'Geschatte lengte: %{length}'
+      frame: ''
     title:
       render_settings: Render Instellingen
+      timelapse_settings: ''
+      timelapse_status: ''
     btn:
       save_frames: Frames Opslaan
+      render: ''
+    error:
+      newframe: ''
   history:
     msg:
       confirm_jobs: Weet je het zeker? Dit zal alle opdrachten verwijderen.
@@ -897,6 +1042,10 @@ app:
       open_keyboard_shortcut_help: Open toetsenbord sneltoets help
       cancel: Annuleren
       navigation: Navigatie
+      printing: ''
+      home_all: ''
+      emergency_stop: ''
+      tool: ''
     title:
       keyboard_shortcuts: Toetsenbord Sneltoetsen
   beacon:
@@ -907,6 +1056,9 @@ app:
       model_name: Model Naam
       remove_model: Verwijder %{name} model
       active: actief
+    msg:
+      not_found: ''
+      hint: ''
   mmu:
     btn:
       eject: Uitwerpen
@@ -919,6 +1071,26 @@ app:
       off: Uit
       down: Beneden
       move: Beweeg
+      home: ''
+      sync: ''
+      recover_state: ''
+      preload: ''
+      check_all_gates: ''
+      check_gate: ''
+      load_ext: ''
+      unlock: ''
+      release: ''
+      change_tool: ''
+      reset: ''
+      unload_ext: ''
+      mmu_maintenance: ''
+      grip: ''
+      edit_ttg_map: ''
+      sync_spoolman: ''
+      recover: ''
+      print_stats: ''
+      edit_gate_map: ''
+      unsync: ''
     label:
       animation: Animatie
       unknown: Onbekend
@@ -936,9 +1108,55 @@ app:
       spoolman_today: Vandaag
       spoolman_yesterday: Gisteren
       spoolman_days_ago: '%{days} dagen geleden'
+      spoolman: ''
+      tool: ''
+      gate: ''
+      auto: ''
+      ui_visual: ''
+      drying: ''
+      tool_mapping: ''
+      gear: ''
+      leds: ''
+      filament_position: ''
+      encoder: ''
+      extruder_only: ''
+      heater: ''
+      clog_tangle_detection: ''
+      extruder: ''
+      active: ''
+      exit: ''
+      all_tools: ''
+      drying_queued: ''
+      selector: ''
+      toolhead: ''
+      compression: ''
+      reset: ''
+      load_speed: ''
+      enable: ''
+      tension: ''
+      spoolman_id: ''
+      last_error: ''
+      tools: ''
+      clog: ''
+      drying_cancelled: ''
+      flow: ''
+      tangle: ''
+      bypass: ''
+      neutral: ''
+      status: ''
+      pre_gate: ''
+      ok: ''
+      motor_sync: ''
+      extruder_tx: ''
+      skip_automap: ''
+      config: ''
+      entry: ''
+      endless_spool: ''
+      drying_complete: ''
     tooltip:
       empty: Leeg
       color: Kleur
+      spoolid: ''
     msg:
       no_spool_id: Geen spoel ID
       warning_prefix: Waarschuwing-
@@ -948,7 +1166,167 @@ app:
       color: Kleur
       material: Materiaal
       temperature: Temperatuur
+      no_custom_controls: ''
+      filament_loaded: ''
+      spoolman_off: ''
+      recover_intro: ''
+      set_gate: ''
+      tool_not_used: ''
+      no_slicer_info: ''
+      spoolman_pull: ''
+      filament_available: ''
+      recover_filament_position: ''
+      remap: ''
+      gate_bypass: ''
+      select_tool: ''
+      tool_bypass: ''
+      single_color: ''
+      filament_unknown: ''
+      map_tools: ''
+      set_tool: ''
+      multi_color: ''
+      map_slicer_tools: ''
+      reset_ttg_map_confirmation: ''
+      spoolman_other: ''
+      mismatch: ''
+      no_matching_spool: ''
+      maintenance_intro: ''
+      no_position: ''
+      no_gate: ''
+      bad_temperature: ''
+      no_tool: ''
+      reset_gate_map_confirmation: ''
+      select_gate: ''
+      no_gate_data: ''
     setting:
       show_details: Toon Filament Details
       show_logos: Toon Logos
       show_unavailable_spool_color: Toon Onbeschikbare Spoelen
+      large_filament_status: ''
+      show_climate: ''
+      show_name: ''
+      show_ttg_map: ''
+      show_clog_detection: ''
+    title:
+      recover_state: ''
+      edit_ttg_map: ''
+      edit_gate_map: ''
+      headline: ''
+      mmu_maintenance: ''
+  afc:
+    ToolPickup: ''
+    ShowFilamentName: ''
+    PrintStartDialog:
+      QuestionWithSpool: ''
+      NoLaneMapped: ''
+      StartJob: ''
+      NoFilamentLoaded: ''
+      FilamentTypeMismatch: ''
+      SpoolWeightRemaining: ''
+      LaneWeightRemaining: ''
+      SpoolId: ''
+      Title: ''
+      NoLane: ''
+      Question: ''
+      FilamentWeightNotEnough: ''
+    SettingsDialog:
+      SaveExtruderValuesDescription: ''
+      ToolStnUnload: ''
+      ToolSensorAfterExtruder: ''
+      Help: ''
+      ToolSensorAfterExtruderDescription: ''
+      LoadUnloadLaneDescription: ''
+      ToolStnDescriptionWithoutEndSensor: ''
+      SaveExtruderValues: ''
+      SettingsForTitle: ''
+      BowdenLength: ''
+      SaveHubDistDescription: ''
+      ToolStnDescriptionWithEndSensor: ''
+      ToolStn: ''
+      DistHubDescription: ''
+      Length: ''
+      DistHub: ''
+      LoadUnloadLane: ''
+      WriteToFile: ''
+      ToolStnDescriptionWithRamming: ''
+      SaveHubDist: ''
+      BowdenLengthDescription: ''
+      ToolStnUnloadDescription: ''
+      SensorAfterExtruder: ''
+    DebugJson: ''
+    UnloadLane: ''
+    ToolDock: ''
+    WeightUsed: ''
+    PrepDetected: ''
+    BedTemp: ''
+    Hub: ''
+    PreExtruderSensor: ''
+    EjectFilament: ''
+    ExtruderTemp: ''
+    SetSpool: ''
+    ShowTool: ''
+    Error: ''
+    MaterialSubtitle: ''
+    CaptureTd: ''
+    ClearSpoolId: ''
+    SelectTool: ''
+    HubLoad: ''
+    Loading: ''
+    LedOn: ''
+    BufferDisabled: ''
+    ShowTd1Color: ''
+    Unloading: ''
+    WeightRemaining: ''
+    LoadedInLane: ''
+    ManualEntry: ''
+    RammingSensor: ''
+    Idle: ''
+    Restoring: ''
+    WeightSubtitle: ''
+    LaneControls: ''
+    Functions: ''
+    LaneLoadedNone: ''
+    ParkNozzle: ''
+    Empty: ''
+    UnselectTool: ''
+    ShowUnit: ''
+    Printing: ''
+    Settings: ''
+    LaneLoaded: ''
+    ToolSwap: ''
+    LoadLane: ''
+    BrushNozzle: ''
+    InfiniteSpoolHeadline: ''
+    LaneMapping: ''
+    Cancel: ''
+    ExtruderTempSubtitle: ''
+    LaneMappingToCommand: ''
+    BedTempSubtitle: ''
+    ShowLaneInfinite: ''
+    Headline: ''
+    AfcSettings: ''
+    FilamentForLane: ''
+    PostExtruderSensor: ''
+    SettingsForLane: ''
+    Ejecting: ''
+    Initialized: ''
+    Detected: ''
+    LedOff: ''
+    Weight: ''
+    InfiniteSpoolDescription: ''
+    Calibrate: ''
+    ShowUnitIcons: ''
+    Material: ''
+    Moving: ''
+    BypassActive: ''
+  database:
+    btn:
+      create_backup: ''
+      compact_database: ''
+    tooltip:
+      delete_backup: ''
+      restore_backup: ''
+    label:
+      moonraker_database: ''
+    msg:
+      not_found: ''
