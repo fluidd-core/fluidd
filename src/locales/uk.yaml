@@ -57,6 +57,8 @@ app:
         Це може означати, що ви повинні змінити вашу конфігурацію для moonraker.
         Будь-ласка перегляньте документацію налаштування декількох принтерів <a
         href="%{url}" target="_blank">тут</a>
+      mixed_content: ''
+      websocket_failed: ''
     hint:
       add_printer: Наприклад, http://fluidd.local
     msg:
@@ -237,6 +239,9 @@ app:
       thumbnail_size: Розмір мініатюри
       perform_time_analysis: Виконайте аналіз часу
       multiply: Помножити
+      scroll_to_latest: ''
+      clear: ''
+      reset_to_default: ''
     error:
       app_setup_link: >-
         Вимоги для встановлення Fluidd можна переглянути <a target="_blank"
@@ -375,6 +380,7 @@ app:
       park_toolhead: Парк Тулхед
       unload_filament: Вивантаження нитки
       toolchange: Зміна інструменту
+      no_data: ''
     msg:
       password_changed: Пароль змінено
       wrong_password: У-упс, щось пішло не так. Чи правильний ваш пароль?
@@ -396,6 +402,7 @@ app:
       pending_configuration_sections_deleted: Наступні розділи позначені для 
         видалення
       gcode_preview_failed: Не вдалося переглянути файл G-коду!
+      throttled_warning: ''
     simple_form:
       error:
         arrayofnums: Тільки цифри
@@ -487,6 +494,10 @@ app:
         user: Користувач
         filament_weights: Ваги ниток
         mmu_print: Друк MMU
+        printer_vendor: ''
+        profile_version: ''
+        printer_variant: ''
+        printer_model: ''
     title:
       add_chart: Додати діаграму
       add_printer: Додати принтер
@@ -761,6 +772,7 @@ app:
       warn_on_cpu_throttled: Попереджати, якщо виявлено дроселювання процесора
       warn_on_stepper_driver_overheating: Попереджати, якщо драйвер крокового 
         двигуна перегрівається
+      sensor_color: ''
     timer_options:
       duration: Тільки тривалість
       filament: Нитка розжарення
@@ -888,6 +900,8 @@ app:
       relative_positioning: Відносне позиціонування
       select_tool: Виберіть інструмент %{tool}
       tools: Інструменти
+      extruding: ''
+      retracting: ''
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Конфігурація активного екструдера
@@ -1127,6 +1141,7 @@ app:
       sync_spoolman: Синхронізувати з Spoolman
       sync: Синхронізувати
       select: Виберіть
+      change_tool: ''
     label:
       spoolman_never: Ніколи
       tool_mapping: Відображення інструментів
@@ -1163,6 +1178,32 @@ app:
       filament_info: Інформація про нитки
       spoolman_days_ago: '%{days} днів тому'
       clog_tangle_detection: Виявлення засмічення/заплутування
+      tool: ''
+      auto: ''
+      drying: ''
+      gear: ''
+      filament_position: ''
+      encoder: ''
+      heater: ''
+      extruder: ''
+      active: ''
+      exit: ''
+      drying_queued: ''
+      toolhead: ''
+      compression: ''
+      tension: ''
+      last_error: ''
+      tools: ''
+      clog: ''
+      drying_cancelled: ''
+      flow: ''
+      tangle: ''
+      bypass: ''
+      neutral: ''
+      status: ''
+      pre_gate: ''
+      entry: ''
+      drying_complete: ''
     msg:
       color: Колір
       select_gate: Виберіть інформацію про ворота/спул, яку ви бажаєте змінити
@@ -1245,6 +1286,7 @@ app:
       large_filament_status: Статус великої нитки
       show_unavailable_spool_color: Показати недоступні спули
       show_name: Показати назву одиниці
+      show_climate: ''
   database:
     btn:
       compact_database: Компактна база даних
@@ -1350,3 +1392,30 @@ app:
     Unknown: Невідомо
     Weight: Вага
     WeightSubtitle: Вага нитки в грамах (без котушки).
+    ToolPickup: ''
+    PrintStartDialog:
+      QuestionWithSpool: ''
+      NoLaneMapped: ''
+      StartJob: ''
+      NoFilamentLoaded: ''
+      FilamentTypeMismatch: ''
+      SpoolWeightRemaining: ''
+      LaneWeightRemaining: ''
+      SpoolId: ''
+      Title: ''
+      NoLane: ''
+      Question: ''
+      FilamentWeightNotEnough: ''
+    ToolDock: ''
+    WeightUsed: ''
+    BedTemp: ''
+    ExtruderTemp: ''
+    ClearSpoolId: ''
+    SelectTool: ''
+    WeightRemaining: ''
+    ManualEntry: ''
+    UnselectTool: ''
+    ToolSwap: ''
+    ExtruderTempSubtitle: ''
+    BedTempSubtitle: ''
+    Initialized: ''
