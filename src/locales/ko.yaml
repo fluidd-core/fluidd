@@ -20,6 +20,7 @@ app:
       delete: 프로파일을 삭제합니다
       load: 프로파일 불러오기
       save: 캘리브레이션이 된 프로파일을 printer.cfg에 적용합니다
+      download_image: ''
   chart:
     label:
       current: 현재 온도
@@ -27,10 +28,16 @@ app:
       power: 전원
       target: 목표 온도
       rate_of_change: 변경
+      turn_off: ''
+      target_temperature: ''
+      fan_breakpoints: ''
     tooltip:
       help: >-
         <kbd>쉬프트키</kbd>를 누르고 있으면 확대됩니다.<br />항목을 클릭하면 그래프가 전환됩니다.<br /> 전원을 클릭하면 그래프가
         전환됩니다.
+    title:
+      mpc_calibrate: ''
+      pid_calibrate: ''
   console:
     label:
       hide_temp_waits: 온도변화 숨김
@@ -44,6 +51,8 @@ app:
       cors_note: >-
         이는 당신의 Moonraker 설정을 수정해야 함을 의미할 수 있습니다. <a href="%{url}" target="_blank">여기에서</a>
         다중 프린터 설정에 대한 문서를 참조하십시오
+      mixed_content: ''
+      websocket_failed: ''
     hint:
       add_printer: 예) http://fluidd.local
     msg:
@@ -59,6 +68,8 @@ app:
         triggered: 닫힘
     msg:
       subtitle: 새로고침 버튼을 사용해서 엔드스탑 상태를 업데이트 합니다.
+    label:
+      endstop: ''
   file_system:
     filters:
       label:
@@ -67,6 +78,8 @@ app:
         rolled_log_files: 롤링된 로그 파일 필터링
         klipper_backup_files: Klipper 백업 파일 필터링
         hidden_files: 숨겨진 파일 및 폴더 필터링
+        crowsnest_backup_files: ''
+        moonraker_temporary_upload_files: ''
     label:
       dir_name: 폴더명
       disk_usage: 디스크 사용량
@@ -76,6 +89,7 @@ app:
       transfer_rate: 전송 속도
       uploaded: 업로드 완료
       view_section_documentation: "'%{섹션}' 문서 보기"
+      sd_card_info: ''
     msg:
       not_found: 파일을 찾을 수 없습니다
       processing: 처리중
@@ -90,6 +104,8 @@ app:
       command_palette: 명령 팔레트
       duplicate_file: 파일 복제
       duplicate_dir: 디렉토리 복제
+      devices: ''
+      save_as: ''
     tooltip:
       low_on_space: 디스크 공간 부족
       root_disabled: '{root}루트를 사용할 수 없습니다. 로그를 확인해 보세요.'
@@ -209,6 +225,13 @@ app:
       select_columns: 열 선택
       abort: 중단
       multiply: 곱하기
+      copy: ''
+      perform_time_analysis: ''
+      copied: ''
+      scroll_to_latest: ''
+      clear: ''
+      power_on_printer: ''
+      reset_to_default: ''
     error:
       app_setup_link: <a target="_blank" href="%{url}">여기서</a> Fluidd 설치 요구조건을 
         찾을 수 있습니다
@@ -217,6 +240,7 @@ app:
         설정을 찾을 수 있습니다
       failed_components: Moonraker에서 플러그인에 실패했습니다. 로그를 확인하고 설정을 업데이트 후 
         Moonraker를 재시작 하십시오.
+      printer_powered_off: ''
     label:
       accel_to_decel: 감속도
       acceleration: 가속도
@@ -324,6 +348,23 @@ app:
       apply_z_offset: Z_Offset 적용 및 저장
       add_filter: 필터 추가
       alias: 별칭
+      disconnected: ''
+      unknown: ''
+      device: ''
+      unload_filament: ''
+      toolchange: ''
+      user_facing: ''
+      z_hop_height: ''
+      length_in_kilometers: ''
+      no_data: ''
+      park_toolhead: ''
+      connected: ''
+      stepper_driver: ''
+      clean_nozzle: ''
+      load_filament: ''
+      compact: ''
+      time_in_days: ''
+      environment_facing: ''
     msg:
       password_changed: 비밀번호 변경됨
       wrong_password: 무언가 잘못되었습니다. 비밀번호가 일치합니까?
@@ -334,6 +375,11 @@ app:
       offline_ready: 이제 Fluidd가 오프라인에서 작동할 준비가 되었습니다.
       pending_configuration_sections_deleted: 삭제 대상으로 표시된 섹션은 다음과 같습니다
       needs_refresh: 새로운 콘텐츠를 사용하려면 <b>리로드</b> 버튼을 클릭하여 업데이트하세요.
+      fluidd_settings_backup_failed: ''
+      fluidd_settings_restore_failed: ''
+      gcode_preview_failed: ''
+      throttled_warning: ''
+      not_valid_fluidd_backup_file: ''
     simple_form:
       error:
         arrayofnums: 숫자만 입력 가능합니다
@@ -362,6 +408,18 @@ app:
         confirm_delete: 정말 삭제하시겠습니까? 선택한 항목이 삭제됩니다. | 정말 삭제하시겠습니까? 선택한 항목 
           {count}가 삭제됩니다.
         no_file_preview: 현재 %{name}을(를) 미리 볼 수 없습니다.
+        confirm_remove_camera: ''
+        confirm_cancel_print: ''
+        confirm_emergency_stop: ''
+        confirm_remove_macro_category: ''
+        confirm_remove_thermal_preset: ''
+        confirm_restore_backup: ''
+        confirm_remove_console_filter: ''
+        confirm_change_beacon_model: ''
+        confirm_remove_user: ''
+        confirm_remove_printer: ''
+        confirm_clear_mesh: ''
+        confirm_load_bedmesh_profile: ''
     table:
       header:
         actions: 동작
@@ -391,6 +449,19 @@ app:
         time_added: 추가된 시간
         filament_name: 필라멘트 이름
         nozzle_diameter: 노즐 직경
+        referenced_tools: ''
+        filament_temps: ''
+        filament_colors: ''
+        user: ''
+        printer_vendor: ''
+        extruder_colors: ''
+        file_processors: ''
+        profile_version: ''
+        filament_weights: ''
+        printer_variant: ''
+        mmu_print: ''
+        filament_change_count: ''
+        printer_model: ''
     title:
       add_printer: 프린터 추가
       bedmesh: 베드 메쉬
@@ -426,6 +497,9 @@ app:
       diagnostics: 진단
       system: 시스템
       rollover_logs: 롤오버 로그
+      login: ''
+      beacon: ''
+      macro_category_settings: ''
     tooltip:
       estop: 비상 정지
       reload_klipper: Klipper 설정을 다시 불러 옵니다.
@@ -439,6 +513,11 @@ app:
         "..."에 끌어다 놓아 이동합니다
       browse_metrics: 사용 가능한 메트릭스 찾아보기
       notifications: 알림
+      power_on_printer: ''
+      reset_layout: ''
+      exit_layout: ''
+      set_default_layout: ''
+      reset_default_layout: ''
   printer:
     state:
       busy: 바쁨
@@ -452,6 +531,11 @@ app:
       cancelled: 취소됨
     title:
       printer_status: 프린터 상태
+      stepper_driver_overheating: ''
+    url:
+      stepper_driver_overheating: ''
+    msg:
+      possible_print_failure: ''
   setting:
     btn:
       add_camera: 카메라 추가
@@ -462,6 +546,8 @@ app:
       add_filter: 필터 추가
       add_category: 카테고리 추가
       add_metric: 메트릭 추가
+      backup: ''
+      restore: ''
     camera_type_options:
       mjpegadaptive: MJPEG 적응형
       mjpegstream: MJPEG 스트림
@@ -470,6 +556,8 @@ app:
       hlsstream: HLS 스트림
       iframe: HTTP 페이지
       webrtc_camera_streamer: WebRTC (카메라 스트리머)
+      webrtc_mediamtx: ''
+      uv4l_mjpeg_stream: ''
     label:
       all_off: 모두 끄기
       all_on: 모두 켜기
@@ -581,11 +669,30 @@ app:
       show_screws_tilt_adjust_dialog_automatically: 나사 기울기 조정 대화 상자 자동 표시
       toolhead_z_move_distances: 툴헤드 Z 거리 값
       show_gas_resistance: 가스 저항 표시
+      service_restart: ''
+      print_progress_calculation: ''
+      auto: ''
+      warn_on_cpu_throttled: ''
+      firmware_restart: ''
+      klipper_save_and_restart_action: ''
+      host_restart: ''
+      print_in_progress_layout: ''
+      print_eta_calculation: ''
+      warn_on_stepper_driver_overheating: ''
+      hide_single_part_bounding_box: ''
+      drag_and_drop_functionality_for_files_and_folders: ''
+      fluidd_settings_in_moonraker_db: ''
+      sensor_color: ''
+      printer_power_device: ''
+      keyboard_shortcuts: ''
     timer_options:
       duration: 기간만
       filament: 필라멘트로 추정
       file: 파일로 추정
       slicer: 슬라이서
+      absolute_file_position: ''
+      relative_file_position: ''
+      slicer_m73: ''
     title:
       authentication: 인증
       camera: 카메라
@@ -598,6 +705,7 @@ app:
       file_browser: 파일 탐색
       file_editor: 파일 편집기
       console: 콘솔
+      warnings: ''
     tooltip:
       gcode_coords: 대시보드의 툴헤드 위치 대신에 G코드 위치를 사용합니다
       theme_disclaimer: 이러한 테마에는 해당 소유자의 지적 재산인 브랜드 이름과 로고가 포함되어 있습니다.<br> 이러한 
@@ -611,6 +719,10 @@ app:
         실행하는 경우 자동으로 도우미 대화 상자를 표시
       show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST 도구를 실행하는 경우
         자동으로 도우미 대화상자 표시
+      keyboard_shortcuts: ''
+      average_calculation: ''
+      warn_on_cpu_throttled: ''
+      warn_on_stepper_driver_overheating: ''
     camera_rotate_options:
       '270': 270°
       none: 없음
@@ -651,6 +763,18 @@ app:
       network: 네트워크
       version: 버전
       virtualization: 가상화
+      non_critical_connection: ''
+      application: ''
+      constants: ''
+      last_stats: ''
+      load: ''
+      memory_used: ''
+      devices: ''
+      awake_time: ''
+    msg:
+      no_devices_found: ''
+      no_devices_searched: ''
+      canbus_warning: ''
   tool:
     btn:
       home_x: X
@@ -666,6 +790,8 @@ app:
       tools: 도구
       relative_positioning: 상대 위치
       absolute_positioning: 절대 위치
+      extruding: ''
+      retracting: ''
     title:
       screws_tilt_adjust: 스크류 기울기 조정
       bed_screws_adjust: 베드 스크류 조정
@@ -700,6 +826,8 @@ app:
       package_list: 패키지 목록
       up_to_date: 최신 상태
       updates_available: 업데이트 사용 가능
+      old_component_version: ''
+      packages: ''
     status:
       finished: 업데이트 완료
       updating: 업데이트중...
@@ -724,6 +852,22 @@ app:
       location: 위치
       vendor: 제조자
       change_spool: 스풀 변경
+      used_weight: ''
+      density: ''
+      length: ''
+      diameter: ''
+      colors: ''
+      used: ''
+      remaining_length: ''
+      initial_weight: ''
+      bed_temp: ''
+      extruder_temp: ''
+      initial_length: ''
+      active_spool: ''
+      used_length: ''
+      price: ''
+      remaining: ''
+      weight: ''
     setting:
       auto_open_qr_camera: QR 코드 감지를 위한 카메라 자동 열기
       warn_on_not_enough_filament: 선택한 스풀에 인쇄를 완료하기에 충분한 필라멘트가 남아 있지 않은 경우 경고 표시
@@ -732,6 +876,8 @@ app:
       show_spool_selection_dialog_on_print_start: 인쇄 시작 시 스풀 선택 대화 상자 표시
       warn_on_filament_type_mismatch: 스풀의 필라멘트 유형과 슬라이서에서 선택한 필라멘트 유형이 일치하지 않는 
         경우 경고 표시
+      remaining_filament_unit: ''
+      card_fields: ''
     btn:
       scan_code: 코드 스캔
       manage_spools: 스풀 관리
@@ -753,6 +899,7 @@ app:
       no_spool: 스풀을 선택하지 않았습니다. 필라멘트 추적 없이 인쇄하시겠습니까?
       mismatched_filament: 선택한 필라멘트의 재료가 슬라이서에서 선택한 재료와 일치하지 않습니다. 계속하시겠습니까?
       tracking_inactive: 필라멘트 추적이 비활성화되었습니다. 시작하려면 스풀을 선택하세요.
+      not_connected: ''
     title:
       scan_spool: 스풀 스캔
       spoolman: 스풀 관리
@@ -819,6 +966,10 @@ app:
       multiply_job: 작업 늘리기 | 작업 늘리기
     label:
       number_of_copies: 복사본 수
+      filament: ''
+      eta: ''
+      print_time: ''
+      unknown_jobs: ''
   history:
     msg:
       confirm_jobs: 확실합니까? 그러면 모든 작업이 지워집니다.
@@ -827,3 +978,298 @@ app:
   sensors:
     title:
       sensors: 센서
+  keyboard_shortcuts:
+    label:
+      cancel: ''
+      open_keyboard_shortcut_help: ''
+      pause: ''
+      navigation: ''
+      actions: ''
+      printing: ''
+      home_all: ''
+      emergency_stop: ''
+      tool: ''
+    title:
+      keyboard_shortcuts: ''
+  mmu:
+    btn:
+      home: ''
+      sync: ''
+      recover_state: ''
+      preload: ''
+      check_all_gates: ''
+      cancel: ''
+      on: ''
+      select: ''
+      eject: ''
+      check_gate: ''
+      load: ''
+      load_ext: ''
+      unlock: ''
+      release: ''
+      unload: ''
+      change_tool: ''
+      off: ''
+      move: ''
+      reset: ''
+      down: ''
+      unload_ext: ''
+      mmu_maintenance: ''
+      grip: ''
+      edit_ttg_map: ''
+      sync_spoolman: ''
+      recover: ''
+      up: ''
+      print_stats: ''
+      edit_gate_map: ''
+      unsync: ''
+    msg:
+      no_custom_controls: ''
+      warning_prefix: ''
+      filament_loaded: ''
+      spoolman_off: ''
+      recover_intro: ''
+      set_gate: ''
+      tool_not_used: ''
+      temperature: ''
+      filament_empty: ''
+      material: ''
+      no_slicer_info: ''
+      spoolman_pull: ''
+      filament_available: ''
+      recover_filament_position: ''
+      remap: ''
+      gate_bypass: ''
+      no_active_spool: ''
+      select_tool: ''
+      tool_bypass: ''
+      single_color: ''
+      filament_unknown: ''
+      color: ''
+      map_tools: ''
+      no_spool_id: ''
+      set_tool: ''
+      multi_color: ''
+      are_you_sure: ''
+      map_slicer_tools: ''
+      reset_ttg_map_confirmation: ''
+      spoolman_other: ''
+      mismatch: ''
+      no_matching_spool: ''
+      maintenance_intro: ''
+      no_position: ''
+      no_gate: ''
+      bad_temperature: ''
+      no_tool: ''
+      reset_gate_map_confirmation: ''
+      select_gate: ''
+      no_gate_data: ''
+    label:
+      spoolman: ''
+      tool: ''
+      gate: ''
+      auto: ''
+      save: ''
+      ui_visual: ''
+      drying: ''
+      cancel: ''
+      tool_mapping: ''
+      gear: ''
+      leds: ''
+      slicer_expects: ''
+      filament_position: ''
+      encoder: ''
+      extruder_only: ''
+      heater: ''
+      clog_tangle_detection: ''
+      unknown: ''
+      extruder: ''
+      active: ''
+      spoolman_never: ''
+      exit: ''
+      spoolman_yesterday: ''
+      filament_name: ''
+      all_tools: ''
+      mmu_motors: ''
+      choose_spool: ''
+      drying_queued: ''
+      selector: ''
+      toolhead: ''
+      compression: ''
+      reset: ''
+      animation: ''
+      load_speed: ''
+      enable: ''
+      tension: ''
+      spoolman_id: ''
+      last_error: ''
+      tools: ''
+      filament_info: ''
+      clog: ''
+      drying_cancelled: ''
+      flow: ''
+      tangle: ''
+      bypass: ''
+      temperature: ''
+      spoolman_today: ''
+      neutral: ''
+      status: ''
+      spoolman_last_used: ''
+      pre_gate: ''
+      material: ''
+      ok: ''
+      spoolman_days_ago: ''
+      motor_sync: ''
+      extruder_tx: ''
+      skip_automap: ''
+      config: ''
+      entry: ''
+      endless_spool: ''
+      drying_complete: ''
+    tooltip:
+      color: ''
+      spoolid: ''
+      empty: ''
+    setting:
+      show_details: ''
+      large_filament_status: ''
+      show_climate: ''
+      show_logos: ''
+      show_name: ''
+      show_unavailable_spool_color: ''
+      show_ttg_map: ''
+      show_clog_detection: ''
+    title:
+      recover_state: ''
+      edit_ttg_map: ''
+      edit_gate_map: ''
+      headline: ''
+      mmu_maintenance: ''
+  afc:
+    ToolPickup: ''
+    ShowFilamentName: ''
+    PrintStartDialog:
+      QuestionWithSpool: ''
+      NoLaneMapped: ''
+      StartJob: ''
+      NoFilamentLoaded: ''
+      FilamentTypeMismatch: ''
+      SpoolWeightRemaining: ''
+      LaneWeightRemaining: ''
+      SpoolId: ''
+      Title: ''
+      NoLane: ''
+      Question: ''
+      FilamentWeightNotEnough: ''
+    SettingsDialog:
+      SaveExtruderValuesDescription: ''
+      ToolStnUnload: ''
+      ToolSensorAfterExtruder: ''
+      Help: ''
+      ToolSensorAfterExtruderDescription: ''
+      LoadUnloadLaneDescription: ''
+      ToolStnDescriptionWithoutEndSensor: ''
+      SaveExtruderValues: ''
+      SettingsForTitle: ''
+      BowdenLength: ''
+      SaveHubDistDescription: ''
+      ToolStnDescriptionWithEndSensor: ''
+      ToolStn: ''
+      DistHubDescription: ''
+      Length: ''
+      DistHub: ''
+      LoadUnloadLane: ''
+      WriteToFile: ''
+      ToolStnDescriptionWithRamming: ''
+      SaveHubDist: ''
+      BowdenLengthDescription: ''
+      ToolStnUnloadDescription: ''
+      SensorAfterExtruder: ''
+    DebugJson: ''
+    UnloadLane: ''
+    ToolDock: ''
+    WeightUsed: ''
+    PrepDetected: ''
+    BedTemp: ''
+    Hub: ''
+    PreExtruderSensor: ''
+    EjectFilament: ''
+    ExtruderTemp: ''
+    SetSpool: ''
+    ShowTool: ''
+    Error: ''
+    MaterialSubtitle: ''
+    CaptureTd: ''
+    ClearSpoolId: ''
+    SelectTool: ''
+    HubLoad: ''
+    Loading: ''
+    LedOn: ''
+    BufferDisabled: ''
+    ShowTd1Color: ''
+    Unloading: ''
+    WeightRemaining: ''
+    LoadedInLane: ''
+    ManualEntry: ''
+    RammingSensor: ''
+    Idle: ''
+    Restoring: ''
+    WeightSubtitle: ''
+    LaneControls: ''
+    Functions: ''
+    LaneLoadedNone: ''
+    ParkNozzle: ''
+    Empty: ''
+    UnselectTool: ''
+    ShowUnit: ''
+    Printing: ''
+    Settings: ''
+    LaneLoaded: ''
+    ToolSwap: ''
+    LoadLane: ''
+    BrushNozzle: ''
+    InfiniteSpoolHeadline: ''
+    LaneMapping: ''
+    Cancel: ''
+    ExtruderTempSubtitle: ''
+    LaneMappingToCommand: ''
+    BedTempSubtitle: ''
+    ShowLaneInfinite: ''
+    Headline: ''
+    AfcSettings: ''
+    FilamentForLane: ''
+    PostExtruderSensor: ''
+    SettingsForLane: ''
+    Ejecting: ''
+    Initialized: ''
+    Detected: ''
+    LedOff: ''
+    Weight: ''
+    InfiniteSpoolDescription: ''
+    Calibrate: ''
+    ShowUnitIcons: ''
+    Material: ''
+    Moving: ''
+    BypassActive: ''
+  beacon:
+    label:
+      model_name: ''
+      active: ''
+      remove_model: ''
+    msg:
+      not_found: ''
+      hint: ''
+    tooltip:
+      delete: ''
+      load: ''
+  database:
+    btn:
+      create_backup: ''
+      compact_database: ''
+    tooltip:
+      delete_backup: ''
+      restore_backup: ''
+    label:
+      moonraker_database: ''
+    msg:
+      not_found: ''
