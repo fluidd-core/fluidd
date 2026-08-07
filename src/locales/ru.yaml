@@ -23,6 +23,7 @@ app:
       delete: Удалить профиль
       load: Загрузить профиль
       save: Сохранить данные откалиброванного профиля в printer.cfg
+      download_image: ''
   chart:
     label:
       current: Текущая
@@ -60,6 +61,8 @@ app:
         Пожалуйста, ознакомьтесь с документацией по настройке нескольких принтеров
         <a
         href="%{url}" target="_blank">здесь</a>
+      mixed_content: ''
+      websocket_failed: ''
     hint:
       add_printer: Например, http://fluidd.local
     msg:
@@ -78,6 +81,8 @@ app:
     msg:
       subtitle: Для обновления текущего статуса концевиков, нажмите кнопку 
         обновить.
+    label:
+      endstop: ''
   file_system:
     filters:
       label:
@@ -99,6 +104,7 @@ app:
       uploaded: Отправлено
       view_section_documentation: >-
         Просмотр '%{section}' документации
+      sd_card_info: ''
     msg:
       not_found: Файлы не найдены
       processing: Обработка
@@ -119,6 +125,7 @@ app:
       rename_dir: Переименовать папку
       rename_file: Переименовать файл
       upload_file: Отправка файла | Отправка файлов
+      save_as: ''
     tooltip:
       low_on_space: Мало места на диске
       items_count: '{count} элемент | {count} элементов'
@@ -238,6 +245,10 @@ app:
       upload_print: Загрузить и напечатать
       view: Вид
       reset_stats: Сбросить статистику
+      perform_time_analysis: ''
+      scroll_to_latest: ''
+      clear: ''
+      reset_to_default: ''
     error:
       app_setup_link: >-
         Требования для установки Fluidd можно посмотреть <a target="_blank"
@@ -369,6 +380,16 @@ app:
       file_time: Файл
       stepper_driver: >-
         Драйвер %{name}
+      disconnected: ''
+      unload_filament: ''
+      toolchange: ''
+      length_in_kilometers: ''
+      no_data: ''
+      park_toolhead: ''
+      connected: ''
+      clean_nozzle: ''
+      load_filament: ''
+      time_in_days: ''
     msg:
       password_changed: Пароль изменён
       wrong_password: Ой, что-то пошло не так. Пароль введен верно?
@@ -390,6 +411,8 @@ app:
       fluidd_settings_backup_failed: Не удалось создать резервную копию настроек
         Fluidd!
       fluidd_settings_restore_failed: Не удалось восстановить настройки Fluidd!
+      gcode_preview_failed: ''
+      throttled_warning: ''
     simple_form:
       error:
         arrayofnums: Только цифры
@@ -444,6 +467,7 @@ app:
           хотите закрыть файл?
         no_file_preview: >-
           %{name} в настоящее время не может быть просмотрен.
+        confirm_restore_backup: ''
     table:
       header:
         actions: Доп. информация
@@ -473,6 +497,19 @@ app:
         start_time: Время начала
         status: Статус
         total_duration: Общая продолжительность
+        referenced_tools: ''
+        filament_temps: ''
+        filament_colors: ''
+        user: ''
+        printer_vendor: ''
+        extruder_colors: ''
+        file_processors: ''
+        profile_version: ''
+        filament_weights: ''
+        printer_variant: ''
+        mmu_print: ''
+        filament_change_count: ''
+        printer_model: ''
     title:
       add_chart: Добавить график
       add_printer: Добавить принтер
@@ -530,6 +567,10 @@ app:
       file_browser_configuration_help: >-
         Для копирования файлов и папок в конфигурационные файлы, перетащите их отсюда
         туда.
+      reset_layout: ''
+      exit_layout: ''
+      set_default_layout: ''
+      reset_default_layout: ''
   history:
     msg:
       confirm: Вы уверены, что хотите удалить всю историю и статистику печати 
@@ -541,6 +582,10 @@ app:
       confirm: Вы уверены, что хотите очистить всю очередь печати?
     label:
       number_of_copies: Количество копий
+      filament: ''
+      eta: ''
+      print_time: ''
+      unknown_jobs: ''
     title:
       multiply_job: Размножить задание | Размножить задания
     tooltip:
@@ -587,6 +632,7 @@ app:
       iframe: Страница HTTP
       webrtc_go2rtc: WebRTC (go2rtc)
       webrtc_mediamtx: WebRTC (MediaMTX)
+      uv4l_mjpeg_stream: ''
     camera_rotate_options:
       '90': 90°
       '180': 180°
@@ -727,6 +773,13 @@ app:
         регулировки винтов стола
       show_screws_tilt_adjust_dialog_automatically: Показывать окно для 
         регулировки поворота винтов стола
+      service_restart: ''
+      warn_on_cpu_throttled: ''
+      firmware_restart: ''
+      klipper_save_and_restart_action: ''
+      host_restart: ''
+      warn_on_stepper_driver_overheating: ''
+      sensor_color: ''
     timer_options:
       absolute_file_position: Абсолютное расположение файла
       duration: Продолжительность печати
@@ -747,6 +800,7 @@ app:
       theme: Тема
       thermal_presets: Предустановки преднагрева
       tool: Инструменты
+      warnings: ''
     tooltip:
       average_calculation: Если выбрано несколько, будет рассчитано среднее 
         значение.
@@ -775,6 +829,8 @@ app:
         Названия брендов и логотипы используются исключительно<br>
         в декоративных и эстетических целях, и не подразумевает<br>
         никакой официальной связи с брендами или их одобрения.
+      warn_on_cpu_throttled: ''
+      warn_on_stepper_driver_overheating: ''
   socket:
     msg:
       connecting: Подключение к moonraker...
@@ -850,6 +906,8 @@ app:
       relative_positioning: Относительная позиция
       select_tool: Выберите инструмент %{tool}
       tools: Инструменты
+      extruding: ''
+      retracting: ''
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Активный экструдер - </span> диаметр сопла %{nozzleDiameter}
@@ -888,6 +946,7 @@ app:
       old_component_version: >-
         Вы используете старую версию %{name}, которая не поддерживает все функции
         Fluidd.<br>Обновите %{name} как минимум до версии %{version}.
+      packages: ''
     status:
       finished: Обновление завершено
       updating: Обновление...
@@ -983,6 +1042,14 @@ app:
       vendor: Произв-ль
       weight: Вес
       length: Длина
+      diameter: ''
+      colors: ''
+      used: ''
+      remaining_length: ''
+      initial_weight: ''
+      initial_length: ''
+      used_length: ''
+      remaining: ''
     msg:
       no_spool: >-
         Вы не выбрали катушку.
@@ -1065,3 +1132,274 @@ app:
     tooltip:
       delete: Удалить профиль
       load: Загрузить профиль
+  mmu:
+    btn:
+      home: ''
+      sync: ''
+      recover_state: ''
+      preload: ''
+      check_all_gates: ''
+      cancel: ''
+      on: ''
+      select: ''
+      eject: ''
+      check_gate: ''
+      load: ''
+      load_ext: ''
+      unlock: ''
+      release: ''
+      unload: ''
+      change_tool: ''
+      off: ''
+      move: ''
+      reset: ''
+      down: ''
+      unload_ext: ''
+      mmu_maintenance: ''
+      grip: ''
+      edit_ttg_map: ''
+      sync_spoolman: ''
+      recover: ''
+      up: ''
+      print_stats: ''
+      edit_gate_map: ''
+      unsync: ''
+    msg:
+      no_custom_controls: ''
+      warning_prefix: ''
+      filament_loaded: ''
+      spoolman_off: ''
+      recover_intro: ''
+      set_gate: ''
+      tool_not_used: ''
+      temperature: ''
+      filament_empty: ''
+      material: ''
+      no_slicer_info: ''
+      spoolman_pull: ''
+      filament_available: ''
+      recover_filament_position: ''
+      remap: ''
+      gate_bypass: ''
+      no_active_spool: ''
+      select_tool: ''
+      tool_bypass: ''
+      single_color: ''
+      filament_unknown: ''
+      color: ''
+      map_tools: ''
+      no_spool_id: ''
+      set_tool: ''
+      multi_color: ''
+      are_you_sure: ''
+      map_slicer_tools: ''
+      reset_ttg_map_confirmation: ''
+      spoolman_other: ''
+      mismatch: ''
+      no_matching_spool: ''
+      maintenance_intro: ''
+      no_position: ''
+      no_gate: ''
+      bad_temperature: ''
+      no_tool: ''
+      reset_gate_map_confirmation: ''
+      select_gate: ''
+      no_gate_data: ''
+    label:
+      spoolman: ''
+      tool: ''
+      gate: ''
+      auto: ''
+      save: ''
+      ui_visual: ''
+      drying: ''
+      cancel: ''
+      tool_mapping: ''
+      gear: ''
+      leds: ''
+      slicer_expects: ''
+      filament_position: ''
+      encoder: ''
+      extruder_only: ''
+      heater: ''
+      clog_tangle_detection: ''
+      unknown: ''
+      extruder: ''
+      active: ''
+      spoolman_never: ''
+      exit: ''
+      spoolman_yesterday: ''
+      filament_name: ''
+      all_tools: ''
+      mmu_motors: ''
+      choose_spool: ''
+      drying_queued: ''
+      selector: ''
+      toolhead: ''
+      compression: ''
+      reset: ''
+      animation: ''
+      load_speed: ''
+      enable: ''
+      tension: ''
+      spoolman_id: ''
+      last_error: ''
+      tools: ''
+      filament_info: ''
+      clog: ''
+      drying_cancelled: ''
+      flow: ''
+      tangle: ''
+      bypass: ''
+      temperature: ''
+      spoolman_today: ''
+      neutral: ''
+      status: ''
+      spoolman_last_used: ''
+      pre_gate: ''
+      material: ''
+      ok: ''
+      spoolman_days_ago: ''
+      motor_sync: ''
+      extruder_tx: ''
+      skip_automap: ''
+      config: ''
+      entry: ''
+      endless_spool: ''
+      drying_complete: ''
+    tooltip:
+      color: ''
+      spoolid: ''
+      empty: ''
+    setting:
+      show_details: ''
+      large_filament_status: ''
+      show_climate: ''
+      show_logos: ''
+      show_name: ''
+      show_unavailable_spool_color: ''
+      show_ttg_map: ''
+      show_clog_detection: ''
+    title:
+      recover_state: ''
+      edit_ttg_map: ''
+      edit_gate_map: ''
+      headline: ''
+      mmu_maintenance: ''
+  afc:
+    ToolPickup: ''
+    ShowFilamentName: ''
+    PrintStartDialog:
+      QuestionWithSpool: ''
+      NoLaneMapped: ''
+      StartJob: ''
+      NoFilamentLoaded: ''
+      FilamentTypeMismatch: ''
+      SpoolWeightRemaining: ''
+      LaneWeightRemaining: ''
+      SpoolId: ''
+      Title: ''
+      NoLane: ''
+      Question: ''
+      FilamentWeightNotEnough: ''
+    SettingsDialog:
+      SaveExtruderValuesDescription: ''
+      ToolStnUnload: ''
+      ToolSensorAfterExtruder: ''
+      Help: ''
+      ToolSensorAfterExtruderDescription: ''
+      LoadUnloadLaneDescription: ''
+      ToolStnDescriptionWithoutEndSensor: ''
+      SaveExtruderValues: ''
+      SettingsForTitle: ''
+      BowdenLength: ''
+      SaveHubDistDescription: ''
+      ToolStnDescriptionWithEndSensor: ''
+      ToolStn: ''
+      DistHubDescription: ''
+      Length: ''
+      DistHub: ''
+      LoadUnloadLane: ''
+      WriteToFile: ''
+      ToolStnDescriptionWithRamming: ''
+      SaveHubDist: ''
+      BowdenLengthDescription: ''
+      ToolStnUnloadDescription: ''
+      SensorAfterExtruder: ''
+    DebugJson: ''
+    UnloadLane: ''
+    ToolDock: ''
+    WeightUsed: ''
+    PrepDetected: ''
+    BedTemp: ''
+    Hub: ''
+    PreExtruderSensor: ''
+    EjectFilament: ''
+    ExtruderTemp: ''
+    SetSpool: ''
+    ShowTool: ''
+    Error: ''
+    MaterialSubtitle: ''
+    CaptureTd: ''
+    ClearSpoolId: ''
+    SelectTool: ''
+    HubLoad: ''
+    Loading: ''
+    LedOn: ''
+    BufferDisabled: ''
+    ShowTd1Color: ''
+    Unloading: ''
+    WeightRemaining: ''
+    LoadedInLane: ''
+    ManualEntry: ''
+    RammingSensor: ''
+    Idle: ''
+    Restoring: ''
+    WeightSubtitle: ''
+    LaneControls: ''
+    Functions: ''
+    LaneLoadedNone: ''
+    ParkNozzle: ''
+    Empty: ''
+    UnselectTool: ''
+    ShowUnit: ''
+    Printing: ''
+    Settings: ''
+    LaneLoaded: ''
+    ToolSwap: ''
+    LoadLane: ''
+    BrushNozzle: ''
+    InfiniteSpoolHeadline: ''
+    LaneMapping: ''
+    Cancel: ''
+    ExtruderTempSubtitle: ''
+    LaneMappingToCommand: ''
+    BedTempSubtitle: ''
+    ShowLaneInfinite: ''
+    Headline: ''
+    AfcSettings: ''
+    FilamentForLane: ''
+    PostExtruderSensor: ''
+    SettingsForLane: ''
+    Ejecting: ''
+    Initialized: ''
+    Detected: ''
+    LedOff: ''
+    Weight: ''
+    InfiniteSpoolDescription: ''
+    Calibrate: ''
+    ShowUnitIcons: ''
+    Material: ''
+    Moving: ''
+    BypassActive: ''
+  database:
+    btn:
+      create_backup: ''
+      compact_database: ''
+    tooltip:
+      delete_backup: ''
+      restore_backup: ''
+    label:
+      moonraker_database: ''
+    msg:
+      not_found: ''
