@@ -84,6 +84,9 @@ app:
       reset_stats: புள்ளிவிவரங்களை மீட்டமை
       power_on_printer: அச்சுப்பொறியில் ஆற்றல்
       perform_time_analysis: நேர பகுப்பாய்வு செய்யுங்கள்
+      scroll_to_latest: ''
+      clear: ''
+      reset_to_default: ''
     error:
       app_setup_link: FlightD அமைவு தேவைகளை <a target = "_ வெற்று" href = 
         "%{url}"> இங்கே காணலாம். </a>
@@ -213,6 +216,14 @@ app:
       length_in_kilometers: கிலோமீட்டரில் நீளம்
       time_in_days: நாட்களில் நேரம்
       z_hop_height: இசட்-ஆப் உயரம்
+      disconnected: ''
+      unload_filament: ''
+      toolchange: ''
+      no_data: ''
+      park_toolhead: ''
+      connected: ''
+      clean_nozzle: ''
+      load_filament: ''
     msg:
       password_changed: கடவுச்சொல் மாற்றப்பட்டது
       wrong_password: அச்சச்சோ, ஏதோ தவறு நடந்தது. உங்கள் கடவுச்சொல் சரியானதா?
@@ -232,6 +243,8 @@ app:
       fluidd_settings_backup_failed: FlightD அமைப்புகளை காப்புப் பிரதி எடுக்கத் 
         தவறிவிட்டது!
       fluidd_settings_restore_failed: FILICD அமைப்புகளை மீட்டெடுப்பதில் தோல்வி!
+      gcode_preview_failed: ''
+      throttled_warning: ''
     simple_form:
       error:
         arrayofnums: எண்கள் மட்டுமே
@@ -285,6 +298,7 @@ app:
           சாதனத்தின் சக்தியை மாற்றும்.
         unsaved_changes: நீங்கள் சேமிக்கப்படாத மாற்றங்கள் உள்ளன. இந்த கோப்பை மூட
           விரும்புகிறீர்களா?
+        confirm_restore_backup: ''
     table:
       header:
         actions: செயல்கள்
@@ -323,6 +337,10 @@ app:
         mmu_print: எம்.எம்.யூ அச்சு
         referenced_tools: குறிப்பிடப்பட்ட கருவிகள்
         user: பயனர்
+        printer_vendor: ''
+        profile_version: ''
+        printer_variant: ''
+        printer_model: ''
     title:
       console: கன்சோல்
       diagnostics: கண்டறிதல்
@@ -528,6 +546,7 @@ app:
       warn_on_cpu_throttled: சிபியு தூண்டுதல் கண்டறியப்பட்டால் எச்சரிக்கவும்
       warn_on_stepper_driver_overheating: ச்டெப்பர் டிரைவர் அதிக வெப்பமடைகிறாரா 
         என்று எச்சரிக்கவும்
+      sensor_color: ''
     btn:
       add_thermal_preset: முன்னமைவு சேர்க்கவும்
       add_user: பயனரைச் சேர்க்கவும்
@@ -548,6 +567,7 @@ app:
       iframe: Http பக்கம்
       webrtc_go2rtc: Webrtc (Go2rtc)
       webrtc_mediamtx: WEBRTC (மீடியாஎம்டிஎக்ச்)
+      uv4l_mjpeg_stream: ''
     camera_rotate_options:
       '90': 90 °
       '180': 180 °
@@ -709,6 +729,8 @@ app:
       cors_note: இது உங்கள் மூன்ரேக்கர் உள்ளமைவை மாற்ற வேண்டும் என்று பொருள். பல
         அச்சுப்பொறி அமைப்புகளில் உள்ள ஆவணங்களைப் பார்க்கவும் <a href="%{url}" 
         target="_blank"> இங்கே </a>
+      mixed_content: ''
+      websocket_failed: ''
     tooltip:
       endpoint_examples: உங்கள் பநிஇ முகவரி ஐ உள்ளிடவும். <br /> சில 
         எடுத்துக்காட்டுகள் இருக்கலாம்;<br /><blockquote>fluidd.local, 
@@ -769,6 +791,7 @@ app:
       go_to_file: கோப்புக்குச் செல்லவும்
       rename_dir: கோப்பகத்தை மறுபெயரிடுங்கள்
       rename_file: கோப்பை மறுபெயரிடுங்கள்
+      save_as: ''
     tooltip:
       low_on_space: வட்டு இடத்தில் குறைவாக
       items_count: '{count} உருப்படி | {count} உருப்படிகள்'
@@ -867,6 +890,8 @@ app:
       relative_positioning: உறவினர் பொருத்துதல்
       select_tool: கருவி %{tool} என்பதைத் தேர்ந்தெடுக்கவும்
       tools: கருவிகள்
+      extruding: ''
+      retracting: ''
     label:
       stats_active_extruder: <span class="secondary--text">செயலில் எக்ச்ட்ரூடர் 
         உள்ளமைவு </span> %{filamentDiameter} mm விட்டம் இழை <span 
@@ -1105,6 +1130,7 @@ app:
       grip: பிடியில்
       release: வெளியீடு
       reset: மீட்டமை
+      change_tool: ''
     title:
       headline: எம்.எம்.யு
       mmu_maintenance: எம்.எம்.யூ பராமரிப்பு
@@ -1146,6 +1172,33 @@ app:
       spoolman_today: இன்று
       spoolman_yesterday: நேற்று
       spoolman_days_ago: '%{days} நாட்களுக்கு முன்பு'
+      tool: ''
+      auto: ''
+      drying: ''
+      gear: ''
+      filament_position: ''
+      encoder: ''
+      heater: ''
+      clog_tangle_detection: ''
+      extruder: ''
+      active: ''
+      exit: ''
+      drying_queued: ''
+      toolhead: ''
+      compression: ''
+      tension: ''
+      last_error: ''
+      tools: ''
+      clog: ''
+      drying_cancelled: ''
+      flow: ''
+      tangle: ''
+      bypass: ''
+      neutral: ''
+      status: ''
+      pre_gate: ''
+      entry: ''
+      drying_complete: ''
     tooltip:
       empty: காலி
       color: நிறம்
@@ -1222,3 +1275,122 @@ app:
       show_ttg_map: TTG வரைபடத்தைக் காட்டு
       show_logos: லோகோக்களைக் காட்டு
       show_unavailable_spool_color: கிடைக்காத ச்பூல்களைக் காட்டு
+      show_climate: ''
+      show_name: ''
+  afc:
+    ToolPickup: ''
+    ShowFilamentName: ''
+    PrintStartDialog:
+      QuestionWithSpool: ''
+      NoLaneMapped: ''
+      StartJob: ''
+      NoFilamentLoaded: ''
+      FilamentTypeMismatch: ''
+      SpoolWeightRemaining: ''
+      LaneWeightRemaining: ''
+      SpoolId: ''
+      Title: ''
+      NoLane: ''
+      Question: ''
+      FilamentWeightNotEnough: ''
+    SettingsDialog:
+      SaveExtruderValuesDescription: ''
+      ToolStnUnload: ''
+      ToolSensorAfterExtruder: ''
+      Help: ''
+      ToolSensorAfterExtruderDescription: ''
+      LoadUnloadLaneDescription: ''
+      ToolStnDescriptionWithoutEndSensor: ''
+      SaveExtruderValues: ''
+      SettingsForTitle: ''
+      BowdenLength: ''
+      SaveHubDistDescription: ''
+      ToolStnDescriptionWithEndSensor: ''
+      ToolStn: ''
+      DistHubDescription: ''
+      Length: ''
+      DistHub: ''
+      LoadUnloadLane: ''
+      WriteToFile: ''
+      ToolStnDescriptionWithRamming: ''
+      SaveHubDist: ''
+      BowdenLengthDescription: ''
+      ToolStnUnloadDescription: ''
+      SensorAfterExtruder: ''
+    DebugJson: ''
+    UnloadLane: ''
+    ToolDock: ''
+    WeightUsed: ''
+    PrepDetected: ''
+    BedTemp: ''
+    Hub: ''
+    PreExtruderSensor: ''
+    EjectFilament: ''
+    ExtruderTemp: ''
+    SetSpool: ''
+    ShowTool: ''
+    Error: ''
+    MaterialSubtitle: ''
+    CaptureTd: ''
+    ClearSpoolId: ''
+    SelectTool: ''
+    HubLoad: ''
+    Loading: ''
+    LedOn: ''
+    BufferDisabled: ''
+    ShowTd1Color: ''
+    Unloading: ''
+    WeightRemaining: ''
+    LoadedInLane: ''
+    ManualEntry: ''
+    RammingSensor: ''
+    Idle: ''
+    Restoring: ''
+    WeightSubtitle: ''
+    LaneControls: ''
+    Functions: ''
+    LaneLoadedNone: ''
+    ParkNozzle: ''
+    Empty: ''
+    UnselectTool: ''
+    ShowUnit: ''
+    Printing: ''
+    Settings: ''
+    LaneLoaded: ''
+    ToolSwap: ''
+    LoadLane: ''
+    BrushNozzle: ''
+    InfiniteSpoolHeadline: ''
+    LaneMapping: ''
+    Cancel: ''
+    ExtruderTempSubtitle: ''
+    LaneMappingToCommand: ''
+    BedTempSubtitle: ''
+    ShowLaneInfinite: ''
+    Headline: ''
+    AfcSettings: ''
+    FilamentForLane: ''
+    PostExtruderSensor: ''
+    SettingsForLane: ''
+    Ejecting: ''
+    Initialized: ''
+    Detected: ''
+    LedOff: ''
+    Weight: ''
+    InfiniteSpoolDescription: ''
+    Calibrate: ''
+    ShowUnitIcons: ''
+    Material: ''
+    Moving: ''
+    BypassActive: ''
+  database:
+    btn:
+      create_backup: ''
+      compact_database: ''
+    tooltip:
+      delete_backup: ''
+      restore_backup: ''
+    label:
+      moonraker_database: ''
+    msg:
+      not_found: ''
