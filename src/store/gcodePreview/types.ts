@@ -1,7 +1,7 @@
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 
 export interface GcodePreviewState {
-  moves: MoveStore;
+  moves: Readonly<MoveStore>;
   layers: readonly Layer[];
   parts: readonly Part[];
   tools: readonly number[];
