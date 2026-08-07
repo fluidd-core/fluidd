@@ -403,6 +403,7 @@ app:
         ustawień Fluidd!
       fluidd_settings_restore_failed: Nie udało się przywrócić ustawień Fluidd!
       gcode_preview_failed: Nie udało się wyświetlić podglądu pliku G-code!
+      throttled_warning: ''
     simple_form:
       error:
         exists: Już istnieje
@@ -574,6 +575,8 @@ app:
       manual_probe: Sonda ręczna
       relative_positioning: Pozycjonowanie względne
       select_tool: Wybierz narzędzie %{tool}
+      extruding: ''
+      retracting: ''
     title:
       bed_screws_adjust: Regulacja śrub stołu
       manual_probe: Sonda ręczna
@@ -1177,6 +1180,27 @@ app:
       drying_queued: Kolejkowanie suszenia
       drying_complete: Suszenie ukończone
       drying_cancelled: Przerwano suszenie
+      tool: ''
+      auto: ''
+      gear: ''
+      filament_position: ''
+      encoder: ''
+      extruder: ''
+      active: ''
+      exit: ''
+      toolhead: ''
+      compression: ''
+      tension: ''
+      last_error: ''
+      tools: ''
+      clog: ''
+      flow: ''
+      tangle: ''
+      bypass: ''
+      neutral: ''
+      status: ''
+      pre_gate: ''
+      entry: ''
     msg:
       color: Kolor
       reset_gate_map_confirmation: Spowoduje to zresetowanie całej mapy bramki 
@@ -1361,3 +1385,28 @@ app:
     WeightSubtitle: Waga filamentu w gramach (bez szpuli).
     WeightRemaining: Pozostało {weight}g
     WeightUsed: Użyto {weight}g
+    ToolPickup: ''
+    PrintStartDialog:
+      QuestionWithSpool: ''
+      NoLaneMapped: ''
+      StartJob: ''
+      NoFilamentLoaded: ''
+      FilamentTypeMismatch: ''
+      SpoolWeightRemaining: ''
+      LaneWeightRemaining: ''
+      SpoolId: ''
+      Title: ''
+      NoLane: ''
+      Question: ''
+      FilamentWeightNotEnough: ''
+    ToolDock: ''
+    BedTemp: ''
+    ExtruderTemp: ''
+    ClearSpoolId: ''
+    SelectTool: ''
+    ManualEntry: ''
+    UnselectTool: ''
+    ToolSwap: ''
+    ExtruderTempSubtitle: ''
+    BedTempSubtitle: ''
+    Initialized: ''
