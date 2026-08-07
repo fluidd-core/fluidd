@@ -62,6 +62,8 @@ app:
       cors_note: >-
         この場合、moonrakerの設定を変更する必要がある場合があります。マルチプリンター設定に関するドキュメントをご覧ください <a href="%{url}"
         target="_blank">こちら</a>
+      mixed_content: ''
+      websocket_failed: ''
     hint:
       add_printer: '例）http://fluiddpi.local'
     msg:
@@ -117,6 +119,7 @@ app:
       rename_dir: ディレクトリの名変更
       rename_file: ファイル名変更
       upload_file: ファイルをアップロードする｜ファイルをアップロードする
+      save_as: ''
     tooltip:
       items_count: '{count} アイテム | {count} 個のアイテム'
       low_on_space: ディスク容量が少なくなりました
@@ -234,6 +237,9 @@ app:
       upload_folder: アップロードフォルダ
       upload_print: アップロード＆プリント
       view: ビュー
+      scroll_to_latest: ''
+      clear: ''
+      reset_to_default: ''
     error:
       app_setup_link: 'Fluiddのセットアップ要件はこちら <a target="_blank" href="%{url}">をご覧ください。</a>'
       app_warnings_found: '%{appName} の警告が見つかりました。'
@@ -364,6 +370,8 @@ app:
       disconnected: 切断済み
       park_toolhead: ノズル退避
       unload_filament: フィラメントを戻す
+      toolchange: ''
+      no_data: ''
     msg:
       bed_screws_adjust: >-
         現在のネジで大幅な調整が必要な場合は、 <b>調整済み</b> をクリックします。そうでない場合は、 <b>同意する</b>
@@ -378,6 +386,8 @@ app:
       rolledover_logs: '以下のアプリケーションログがロールオーバーされました： %{applications}'
       welcome_back: お帰りなさい。<br>以下でログインして、プリンタと接続してください。
       wrong_password: おっと、何か問題が発生したようですよ。パスワードは正しいですか？
+      gcode_preview_failed: ''
+      throttled_warning: ''
     simple_form:
       error:
         arrayofnums: 数字のみ
@@ -455,6 +465,10 @@ app:
         time_in_queue: 待機時間
         total_duration: 合計時間
         user: ユーザー
+        printer_vendor: ''
+        profile_version: ''
+        printer_variant: ''
+        printer_model: ''
     title:
       add_chart: グラフを追加
       add_printer: プリンターの追加
@@ -720,6 +734,7 @@ app:
       service_restart: サービスの再起動
       warn_on_cpu_throttled: CPUスロットリングを検出したら警告する
       warn_on_stepper_driver_overheating: ステッパードライバの過熱を検出したら警告する
+      sensor_color: ''
     timer_options:
       absolute_file_position: 絶対ファイル位置
       duration: 期間のみ
@@ -966,6 +981,8 @@ app:
       relative_positioning: 相対位置
       select_tool: 'ツール %{tool}を選択してください'
       tools: ツール
+      extruding: ''
+      retracting: ''
   version:
     btn:
       check_for_updates: アップデートを確認
@@ -1028,6 +1045,7 @@ app:
       grip: グリップ
       release: リリース
       reset: リセット
+      change_tool: ''
     title:
       headline: Mmu
       mmu_maintenance: MMUメンテナンス
@@ -1069,6 +1087,33 @@ app:
       spoolman_today: 本日
       spoolman_yesterday: 昨日
       spoolman_days_ago: '%{days} 日前'
+      tool: ''
+      auto: ''
+      drying: ''
+      gear: ''
+      filament_position: ''
+      encoder: ''
+      heater: ''
+      clog_tangle_detection: ''
+      extruder: ''
+      active: ''
+      exit: ''
+      drying_queued: ''
+      toolhead: ''
+      compression: ''
+      tension: ''
+      last_error: ''
+      tools: ''
+      clog: ''
+      drying_cancelled: ''
+      flow: ''
+      tangle: ''
+      bypass: ''
+      neutral: ''
+      status: ''
+      pre_gate: ''
+      entry: ''
+      drying_complete: ''
     tooltip:
       empty: 空の
       color: カラー
@@ -1132,6 +1177,7 @@ app:
       show_name: ユニット名の表示
       show_logos: ロゴの表示
       show_unavailable_spool_color: 利用不可のスプールを表示
+      show_climate: ''
   database:
     btn:
       compact_database: データベースを圧縮
@@ -1143,3 +1189,109 @@ app:
       delete_backup: バックアップを削除
     msg:
       not_found: データベースの既存のバックアップが見つかりません。
+  afc:
+    ToolPickup: ''
+    ShowFilamentName: ''
+    PrintStartDialog:
+      QuestionWithSpool: ''
+      NoLaneMapped: ''
+      StartJob: ''
+      NoFilamentLoaded: ''
+      FilamentTypeMismatch: ''
+      SpoolWeightRemaining: ''
+      LaneWeightRemaining: ''
+      SpoolId: ''
+      Title: ''
+      NoLane: ''
+      Question: ''
+      FilamentWeightNotEnough: ''
+    SettingsDialog:
+      SaveExtruderValuesDescription: ''
+      ToolStnUnload: ''
+      ToolSensorAfterExtruder: ''
+      Help: ''
+      ToolSensorAfterExtruderDescription: ''
+      LoadUnloadLaneDescription: ''
+      ToolStnDescriptionWithoutEndSensor: ''
+      SaveExtruderValues: ''
+      SettingsForTitle: ''
+      BowdenLength: ''
+      SaveHubDistDescription: ''
+      ToolStnDescriptionWithEndSensor: ''
+      ToolStn: ''
+      DistHubDescription: ''
+      Length: ''
+      DistHub: ''
+      LoadUnloadLane: ''
+      WriteToFile: ''
+      ToolStnDescriptionWithRamming: ''
+      SaveHubDist: ''
+      BowdenLengthDescription: ''
+      ToolStnUnloadDescription: ''
+      SensorAfterExtruder: ''
+    DebugJson: ''
+    UnloadLane: ''
+    ToolDock: ''
+    WeightUsed: ''
+    PrepDetected: ''
+    BedTemp: ''
+    Hub: ''
+    PreExtruderSensor: ''
+    EjectFilament: ''
+    ExtruderTemp: ''
+    SetSpool: ''
+    ShowTool: ''
+    Error: ''
+    MaterialSubtitle: ''
+    CaptureTd: ''
+    ClearSpoolId: ''
+    SelectTool: ''
+    HubLoad: ''
+    Loading: ''
+    LedOn: ''
+    BufferDisabled: ''
+    ShowTd1Color: ''
+    Unloading: ''
+    WeightRemaining: ''
+    LoadedInLane: ''
+    ManualEntry: ''
+    RammingSensor: ''
+    Idle: ''
+    Restoring: ''
+    WeightSubtitle: ''
+    LaneControls: ''
+    Functions: ''
+    LaneLoadedNone: ''
+    ParkNozzle: ''
+    Empty: ''
+    UnselectTool: ''
+    ShowUnit: ''
+    Printing: ''
+    Settings: ''
+    LaneLoaded: ''
+    ToolSwap: ''
+    LoadLane: ''
+    BrushNozzle: ''
+    InfiniteSpoolHeadline: ''
+    LaneMapping: ''
+    Cancel: ''
+    ExtruderTempSubtitle: ''
+    LaneMappingToCommand: ''
+    BedTempSubtitle: ''
+    ShowLaneInfinite: ''
+    Headline: ''
+    AfcSettings: ''
+    FilamentForLane: ''
+    PostExtruderSensor: ''
+    SettingsForLane: ''
+    Ejecting: ''
+    Initialized: ''
+    Detected: ''
+    LedOff: ''
+    Weight: ''
+    InfiniteSpoolDescription: ''
+    Calibrate: ''
+    ShowUnitIcons: ''
+    Material: ''
+    Moving: ''
+    BypassActive: ''
