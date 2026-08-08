@@ -69,7 +69,10 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 - **`@pedrolamas/plugin-vue2`** — Vue 2 SFC support for Vite
 - **`unplugin-vue-components/rolldown`** — auto-imports components from `src/components/common|layout|ui`
 - **`sass-embedded`** — SCSS preprocessor (variables auto-injected via `@/scss/variables`)
-- **vitest v4** — unit test runner (jsdom environment)
+- **vitest v4** — unit test runner; `test:unit` is a bare `vitest` call, with the jsdom environment and setup files declared in `vitest.config.ts`
+- **pnpm catalog** (`pnpm-workspace.yaml`) — `dompurify`, `echarts`, `typescript`, `vite` and `vue` are pinned in the catalog and blanket-mapped through `overrides` so every transitive dependency resolves to the same version
+- **`typescript-native-bridge`** — the `typescript` catalog entry is `npm:typescript-native-bridge@…` (tsgo), not stock `typescript`
+- Local config imports use explicit `.ts` extensions (`./vite.config.ts`) and `import.meta.dirname` — no `__dirname`
 - **`commit-and-tag-version`** — release versioning (`pnpm run release`)
 - **ESLint flat config** (`eslint.config.mjs`) — enforced at dev time via `vite-plugin-checker` with `useFlatConfig: true`
 - **`vite-plugin-checker`** — runs vue-tsc and ESLint during dev (disabled at build time)
@@ -100,7 +103,7 @@ src/
 │   ├── ui/             # Reusable: AppBtn, AppDialog, AppChart (auto-imported)
 │   └── widgets/        # 27 feature widget dirs: bedmesh/, camera/, console/, filesystem/, macros/, mmu/, thermals/, toolhead/, etc.
 ├── directives/         # Custom Vue directives (v-safe-html for DOMPurify)
-├── locales/            # i18n YAML files (23 languages)
+├── locales/            # i18n YAML files (24 languages)
 ├── mixins/             # Vue mixins (StateMixin, FilesMixin, etc.)
 ├── monaco/             # Monarch tokenizers and editor themes
 ├── plugins/            # Vue plugins (i18n, socketClient, vuetify, filters, colorSet)
@@ -127,7 +130,7 @@ src/
 
 ### Icons & Theming
 
-- MDI icons via `@mdi/js` — mapped in `src/globals.ts` (`Icons` object, ~228 mappings)
+- MDI icons via `@mdi/js` — mapped in `src/globals.ts` (`Icons` object, ~233 mappings)
 - Usage: `<v-icon>{{ $globals.Icons.close }}</v-icon>`
 - Vuetify theme with custom dark/light overrides in `src/scss/variables.scss`
 - PWA support with service worker in `src/sw.ts` (Workbox, injectManifest strategy)
@@ -136,6 +139,10 @@ src/
 
 - Setup in `src/components/widgets/filesystem/setupMonaco.ts` (includes worker environment setup)
 - Monarch tokenizers for `gcode`, `klipper-config`, `moonraker-config`, `log` languages (in `src/monaco/language/*.monarch.ts`)
+- `src/monaco/language/gcode-rules.ts` is the shared G-code tokenizer factory — `createGcodeRules('standalone')` backs the `gcode` language, `createGcodeRules('embedded')` is spliced into `klipper-config` values
+- `klipper-config` highlights any option whose name **ends in** `gcode` (`gcode`, `*_gcode`) as a Klipper G-code template — `gcode_id`, `gcode_x_offset` and `gcode_load_sequence` merely start with it and stay plain values
+- Klipper's Jinja uses **single-brace** delimiters (`{ … }`, not `{{ }}`), so these rules are not reusable for standard Jinja; both hosts must set `ignoreCase: true` at language level because Monarch drops per-rule regex flags
+- Both editor themes in `setupMonaco.ts` carry `delimiter.jinja`, `keyword.control.jinja`, `variable.jinja` and `number.jinja` token colours
 - Custom CodeLens providers (links to Klipper/Moonraker docs from config sections)
 - CodeLens and document symbol providers for `klipper-config` and `moonraker-config`; folding range provider for `klipper-config`, `moonraker-config`, and `gcode`
 - Language providers run in dedicated Web Workers (`monacoCodeLensWorker`, `monacoDocumentSymbolsWorker`, `monacoFoldingRangesWorker`)
@@ -221,6 +228,9 @@ src/
 - `satisfies` keyword for store module type checking
 - `decimalRound(value, places)` (`src/util/decimal-round.ts`) is the shared rounding helper — use it
   instead of ad-hoc `Math.round(value * 100) / 100`
+- **Stable `v-for` keys** — key by identity, never by index (`` :key="`component::${component.name}`" ``).
+  Separators belong inside the loop with their own key (`` :key="`component:divider:${component.name}`" ``)
+  rather than a trailing `v-if="i < items.length - 1"` sibling
 - No double-cast type assertions (`as unknown as T`) — use a proper TypeScript type guard instead (`in`, `typeof`, `instanceof`, or a custom type predicate):
 
   ```typescript
@@ -253,7 +263,6 @@ src/
 - Dynamic imports for code splitting (see `vue-echarts-chunk.ts`, `src/dynamicImports.ts`)
 - SCSS deprecation warnings silenced: `import`, `global-builtin`, `slash-div`, `if-function`
 - `@/scss/variables` auto-injected into all SCSS/Sass files via Vite config
-- `path` aliased to `path-browserify` for browser compatibility
 - Strict Vuex mode enabled only in dev (`strict: import.meta.env.DEV`)
 - **SVG files auto-optimized on commit** — pre-commit hook runs SVGO on staged `.svg`, `.vue`, and `src/globals.ts` files
 - **`VUE_` env prefix required** — only env vars prefixed `VUE_` are exposed to app code via `import.meta.env` (Vite `envPrefix`)
