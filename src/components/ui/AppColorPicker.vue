@@ -335,7 +335,7 @@ export default class AppColorPicker extends Vue {
       return
     }
 
-    const parsedValue = this.convertValueRange(Number(value), 'in')
+    const parsedValue = Math.min(Math.max(this.convertValueRange(Number(value), 'in'), 0), 255)
 
     if (channel === 'white') {
       this.currentWhiteColor.set(this.valueToHexColor(parsedValue))
