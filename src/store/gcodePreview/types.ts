@@ -49,6 +49,13 @@ export interface LayerPaths {
   tool: Tool;
 }
 
+export interface BuildLayerPathsOptions {
+  includeExtrusions?: boolean;
+  includeMoves?: boolean;
+  includeRetractions?: boolean;
+  includeTools?: boolean;
+}
+
 export interface Point {
   x: number;
   y: number;

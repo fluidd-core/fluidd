@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { BBox, GcodePreviewState, Layer, LayerPaths, Part, Tool } from './types'
+import type { BBox, BuildLayerPathsOptions, GcodePreviewState, Layer, LayerPaths, Part, Tool } from './types'
 import { MoveFlags } from './types'
 import type { RootState } from '../types'
 import { binarySearch, buildLayerPaths } from '@/util/gcode-preview'
@@ -173,14 +173,14 @@ export const getters = {
     return tools
   },
 
-  getPaths: (state) => (startMove: number, endMove: number, ignoreTools = false): Readonly<LayerPaths> => {
-    return buildLayerPaths(state.moves, startMove, endMove, ignoreTools)
+  getPaths: (state) => (startMove: number, endMove: number, options?: BuildLayerPathsOptions): Readonly<LayerPaths> => {
+    return buildLayerPaths(state.moves, startMove, endMove, options)
   },
 
-  getLayerPaths: (state, getters) => (layer: number): Readonly<LayerPaths> => {
+  getLayerPaths: (state, getters) => (layer: number, options?: BuildLayerPathsOptions): Readonly<LayerPaths> => {
     const layers: readonly Layer[] = getters.getLayers
 
-    return getters.getPaths(layers[layer]?.move ?? 0, (layers[layer + 1]?.move ?? Number.POSITIVE_INFINITY) - 1, true)
+    return getters.getPaths(layers[layer]?.move ?? 0, (layers[layer + 1]?.move ?? Number.POSITIVE_INFINITY) - 1, options)
   },
 
   getPartPaths: (state, getters): readonly string[] => {

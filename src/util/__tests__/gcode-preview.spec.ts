@@ -105,7 +105,7 @@ describe('buildLayerPaths', () => {
       { x: 0, y: 0 },
       { x: 10, y: 0, flags: MoveFlags.Extruding },
       { x: 10, y: 10, flags: MoveFlags.Extruding }
-    ]), 0, 2, false)
+    ]), 0, 2, { includeMoves: true })
 
     expect(paths.moves.startsWith('M')).toBe(true)
 
@@ -120,7 +120,7 @@ describe('buildLayerPaths', () => {
       { x: 10, y: 0, tool: 0, flags: MoveFlags.Extruding },
       { x: 20, y: 0, tool: 1, flags: MoveFlags.Extruding },
       { x: 30, y: 0, tool: 0, flags: MoveFlags.Extruding }
-    ]), 0, 3, false)
+    ]), 0, 3, { includeTools: true })
 
     expect(Object.keys(paths.extrusions)).toEqual(['T0', 'T1'])
 
@@ -130,21 +130,22 @@ describe('buildLayerPaths', () => {
     }
   })
 
-  it('collapses extrusions under a single tool when ignoring tools', () => {
+  it('collapses extrusions under a single tool by default', () => {
     const paths = buildLayerPaths(createMoveStore([
       { x: 0, y: 0 },
       { x: 10, y: 0, tool: 0, flags: MoveFlags.Extruding },
       { x: 20, y: 0, tool: 1, flags: MoveFlags.Extruding }
-    ]), 0, 2, true)
+    ]), 0, 2)
 
     expect(Object.keys(paths.extrusions)).toEqual(['T0'])
+    expect(paths.tool).toBe('T0')
   })
 
   it('emits an arc command for clockwise arc moves', () => {
     const paths = buildLayerPaths(createMoveStore([
       { x: 0, y: 0 },
       { x: 10, y: 10, i: 10, j: 0, flags: MoveFlags.Extruding | MoveFlags.Arc | MoveFlags.Clockwise }
-    ]), 0, 1, true)
+    ]), 0, 1)
 
     expect(paths.extrusions.T0).toContain('A10,10,0,')
   })
@@ -153,7 +154,7 @@ describe('buildLayerPaths', () => {
     const paths = buildLayerPaths(createMoveStore([
       { x: 0, y: 0 },
       { x: 10, y: 10, i: 10, j: 0, flags: MoveFlags.Extruding | MoveFlags.Arc }
-    ]), 0, 1, true)
+    ]), 0, 1)
 
     // drawn backwards, then the toolhead is moved back to the real endpoint
     expect(paths.extrusions.T0).toMatch(/A[^M]+M10,10$/)
@@ -166,7 +167,7 @@ describe('buildLayerPaths', () => {
       { x: 20, y: 0, flags: MoveFlags.Retracting },
       { x: 30, y: 0 },
       { x: 40, y: 0, flags: MoveFlags.Extruding }
-    ]), 0, 4, true)
+    ]), 0, 4, { includeRetractions: true })
 
     expect(paths.retractions).toEqual([{ x: 10, y: 0 }])
     expect(paths.unretractions).toEqual([{ x: 0, y: 0 }, { x: 30, y: 0 }])
@@ -174,8 +175,49 @@ describe('buildLayerPaths', () => {
     expect(paths.tool).toBe('T0')
   })
 
+  it('omits extrusions but keeps moves and retractions when excluding extrusions', () => {
+    const paths = buildLayerPaths(createMoveStore([
+      { x: 0, y: 0 },
+      { x: 10, y: 0, flags: MoveFlags.Extruding },
+      { x: 20, y: 0 },
+      { x: 30, y: 0, flags: MoveFlags.Extruding }
+    ]), 0, 3, { includeExtrusions: false, includeMoves: true, includeRetractions: true })
+
+    expect(paths.extrusions).toEqual({})
+    expect(paths.moves).toBe('M0,0L0,0M10,0L20,0')
+    expect(paths.unretractions).toEqual([{ x: 0, y: 0 }, { x: 20, y: 0 }])
+    expect(paths.toolhead).toEqual({ x: 30, y: 0 })
+  })
+
+  it('omits moves but keeps extrusions and the toolhead by default', () => {
+    const paths = buildLayerPaths(createMoveStore([
+      { x: 0, y: 0 },
+      { x: 10, y: 0, flags: MoveFlags.Extruding },
+      { x: 20, y: 0 },
+      { x: 30, y: 0, flags: MoveFlags.Extruding }
+    ]), 0, 3)
+
+    expect(paths.moves).toBe('')
+    expect(paths.extrusions.T0).toBe('M0,0L10,0M20,0L30,0')
+    expect(paths.toolhead).toEqual({ x: 30, y: 0 })
+  })
+
+  it('omits retractions but keeps extrusions when excluding retractions', () => {
+    const paths = buildLayerPaths(createMoveStore([
+      { x: 0, y: 0 },
+      { x: 10, y: 0, flags: MoveFlags.Extruding },
+      { x: 20, y: 0, flags: MoveFlags.Retracting },
+      { x: 30, y: 0, flags: MoveFlags.Extruding }
+    ]), 0, 3, { includeMoves: true, includeRetractions: false })
+
+    expect(paths.retractions).toEqual([])
+    expect(paths.unretractions).toEqual([])
+    expect(paths.extrusions.T0).toBe('M0,0L10,0M20,0L30,0')
+    expect(paths.moves).toBe('M0,0L0,0M10,0L20,0')
+  })
+
   it('handles an empty move store', () => {
-    const paths = buildLayerPaths(createMoveStore([]), 0, 10, false)
+    const paths = buildLayerPaths(createMoveStore([]), 0, 10, { includeMoves: true })
 
     expect(paths.moves).toBe('M0,0')
     expect(paths.extrusions).toEqual({})
@@ -185,7 +227,7 @@ describe('buildLayerPaths', () => {
   it('clamps out of range move indexes', () => {
     const store = createMoveStore([{ x: 5, y: 5, flags: MoveFlags.Extruding }])
 
-    expect(() => buildLayerPaths(store, -3, 99, false)).not.toThrow()
-    expect(() => buildLayerPaths(store, 99, 200, false)).not.toThrow()
+    expect(() => buildLayerPaths(store, -3, 99)).not.toThrow()
+    expect(() => buildLayerPaths(store, 99, 200)).not.toThrow()
   })
 })
