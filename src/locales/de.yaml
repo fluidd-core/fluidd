@@ -379,10 +379,10 @@ app:
       connected: Verbunden
       disconnected: Nicht verbunden
       clean_nozzle: Düse reinigen
-      load_filament: Filament laden
+      load_filament: Filament einlegen
       park_toolhead: Druckkopf parken
       toolchange: Werkzeugwechsel
-      unload_filament: Filament entladen
+      unload_filament: Filament entnehmen
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -1291,9 +1291,23 @@ app:
     LaneLoadedNone: KEINE
     LedOff: LEDs aus
     LedOn: LEDs ein
-    LoadedInLane: Geladen in {lane}
+    LoadedInLane: Eingelegt in {lane}
     Material: Material
     MaterialSubtitle: z.B. ABS, PETG, PLA etc.
+    ExtruderTemp: Extrudertemperatur
+    ExtruderTempSubtitle: Extrudertemperatur für dieses Filament in °C.
+    BedTemp: Betttemperatur
+    BedTempSubtitle: Betttemperatur für dieses Filament in °C.
+    BrushNozzle: Bürstendüse
+    EjectFilament: Filament auswerfen
+    Ejecting: Wird ausgeworfen
+    Initialized: Initialisiert
+    LaneLoaded: Spur eingelegt
+    LaneMapping: Spurzuordnung
+    Loading: Laden
+    LoadLane: Spur einlegen
+    ManualEntry: Manuelle Eingabe
+    PrepDetected: Filament erkannt, aber nicht eingelegt
   database:
     btn:
       compact_database: Datenbank komprimieren
