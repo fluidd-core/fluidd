@@ -104,64 +104,21 @@
           justify-space-between
         >
           <div
-            v-if="supportedChannels !== 'W'"
+            v-for="channel in visibleChannels"
+            :key="channel"
             class="color-input"
           >
             <v-text-field
-              v-model.number="currentRed"
+              :value="channelText[channel] ?? channelValue(channel)"
               dense
               hide-details
               outlined
               persistent-placeholder
+              @input="onChannelInput(channel, $event)"
               @blur="handleReset"
-              @keyup.enter.exact="handleSubmitPrimary"
+              @keyup.enter.exact="onChannelSubmit(channel)"
             />
-            <div>R</div>
-          </div>
-          <div
-            v-if="supportedChannels !== 'W'"
-            class="color-input"
-          >
-            <v-text-field
-              v-model.number="currentGreen"
-              dense
-              hide-details
-              outlined
-              persistent-placeholder
-              @blur="handleReset"
-              @keyup.enter.exact="handleSubmitPrimary"
-            />
-            <div>G</div>
-          </div>
-          <div
-            v-if="supportedChannels !== 'W'"
-            class="color-input"
-          >
-            <v-text-field
-              v-model.number="currentBlue"
-              dense
-              hide-details
-              outlined
-              persistent-placeholder
-              @blur="handleReset"
-              @keyup.enter.exact="handleSubmitPrimary"
-            />
-            <div>B</div>
-          </div>
-          <div
-            v-if="supportedChannels.includes('W')"
-            class="color-input"
-          >
-            <v-text-field
-              v-model.number="currentWhite"
-              dense
-              hide-details
-              outlined
-              persistent-placeholder
-              @blur="handleReset"
-              @keyup.enter.exact="handleSubmitWhite"
-            />
-            <div>W</div>
+            <div>{{ channelLabel(channel) }}</div>
           </div>
         </v-layout>
       </v-card-text>
@@ -194,6 +151,12 @@ interface PointerPosition {
   x: number;
   y: number;
 }
+
+const colorChannels = ['red', 'green', 'blue', 'white'] as const
+
+type ColorChannel = typeof colorChannels[number]
+
+const numericValueRegExp = /^(?:\d+(?:\.\d*)?|\.\d+)$/
 
 @Component({})
 export default class AppColorPicker extends Vue {
@@ -273,46 +236,30 @@ export default class AppColorPicker extends Vue {
   currentPrimaryColor = new IroColor()
   currentWhiteColor = new IroColor()
 
+  channelText: Record<ColorChannel, string | null> = {
+    red: null,
+    green: null,
+    blue: null,
+    white: null
+  }
+
   @Watch('value')
   onValue (value: string) {
     this.currentPrimaryColor.set(value)
+    this.clearChannelText()
   }
 
   @Watch('white')
   onWhite (value: number) {
     this.currentWhiteColor.set(this.valueToHexColor(value))
+    this.clearChannelText()
   }
 
-  get currentRed (): number {
-    return this.convertValueRange(this.currentPrimaryColor.red, 'out')
-  }
+  get visibleChannels (): ColorChannel[] {
+    const hasPrimary = this.supportedChannels !== 'W'
+    const hasWhite = this.supportedChannels.includes('W')
 
-  set currentRed (value: number) {
-    this.currentPrimaryColor.red = this.convertValueRange(value, 'in')
-  }
-
-  get currentGreen (): number {
-    return this.convertValueRange(this.currentPrimaryColor.green, 'out')
-  }
-
-  set currentGreen (value: number) {
-    this.currentPrimaryColor.green = this.convertValueRange(value, 'in')
-  }
-
-  get currentBlue (): number {
-    return this.convertValueRange(this.currentPrimaryColor.blue, 'out')
-  }
-
-  set currentBlue (value: number) {
-    this.currentPrimaryColor.blue = this.convertValueRange(value, 'in')
-  }
-
-  get currentWhite (): number {
-    return this.convertValueRange(this.currentWhiteColor.red, 'out')
-  }
-
-  set currentWhite (value: number) {
-    this.currentWhiteColor.set(this.valueToHexColor(this.convertValueRange(value, 'in')))
+    return colorChannels.filter(channel => channel === 'white' ? hasWhite : hasPrimary)
   }
 
   get inputWhiteColor (): string {
@@ -341,15 +288,60 @@ export default class AppColorPicker extends Vue {
 
   handleSubmitPrimary () {
     this.inputPrimaryColor = this.currentPrimaryColor.hexString
+    this.clearChannelText()
   }
 
   handleSubmitWhite () {
     this.inputWhiteValue = this.currentWhiteColor.red
+    this.clearChannelText()
   }
 
   handleReset () {
     this.currentPrimaryColor.set(this.inputPrimaryColor)
     this.currentWhiteColor.set(this.inputWhiteColor)
+    this.clearChannelText()
+  }
+
+  clearChannelText () {
+    for (const channel of colorChannels) {
+      this.channelText[channel] = null
+    }
+  }
+
+  channelLabel (channel: ColorChannel): string {
+    return channel.charAt(0).toUpperCase()
+  }
+
+  channelValue (channel: ColorChannel): number {
+    const value = channel === 'white'
+      ? this.currentWhiteColor.red
+      : this.currentPrimaryColor[channel]
+
+    return this.convertValueRange(value, 'out')
+  }
+
+  onChannelSubmit (channel: ColorChannel) {
+    if (channel === 'white') {
+      this.handleSubmitWhite()
+    } else {
+      this.handleSubmitPrimary()
+    }
+  }
+
+  onChannelInput (channel: ColorChannel, value: string) {
+    this.channelText[channel] = value
+
+    if (!numericValueRegExp.test(value)) {
+      return
+    }
+
+    const parsedValue = Math.min(Math.max(this.convertValueRange(Number(value), 'in'), 0), 255)
+
+    if (channel === 'white') {
+      this.currentWhiteColor.set(this.valueToHexColor(parsedValue))
+    } else {
+      this.currentPrimaryColor[channel] = parsedValue
+    }
   }
 
   valueToHexColor (value: number): string {
