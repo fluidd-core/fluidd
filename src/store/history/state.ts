@@ -4,6 +4,8 @@ export const defaultState = (): HistoryState => {
   return {
     count: 0,
     jobs: [],
+    jobsById: {},
+    missingJobIds: {},
     job_totals: {
       total_jobs: 0,
       total_time: 0,
