@@ -1,4 +1,4 @@
-import type { LayerPaths, MoveStore, Point, Tool } from '@/store/gcodePreview/types'
+import type { BuildLayerPathsOptions, LayerPaths, MoveStore, Point, Tool } from '@/store/gcodePreview/types'
 import { MoveFlags } from '@/store/gcodePreview/types'
 import decimalRound from './decimal-round'
 
@@ -85,8 +85,15 @@ export const buildLayerPaths = (
   moves: MoveStore,
   startMove: number,
   endMove: number,
-  ignoreTools: boolean
+  options?: BuildLayerPathsOptions
 ): Readonly<LayerPaths> => {
+  const {
+    includeExtrusions = true,
+    includeMoves = false,
+    includeRetractions = false,
+    includeTools = false
+  } = options ?? {}
+
   const { x, y, tool, flags: moveFlags, length } = moves
 
   const startIndex = Math.min(startMove, length - 1)
@@ -94,7 +101,9 @@ export const buildLayerPaths = (
   let toolheadX = startIndex >= 0 ? x[startIndex] : 0
   let toolheadY = startIndex >= 0 ? y[startIndex] : 0
 
-  const movesPath: string[] = [`M${formatCoordinate(toolheadX)},${formatCoordinate(toolheadY)}`]
+  const movesPath: string[] = includeMoves
+    ? [`M${formatCoordinate(toolheadX)},${formatCoordinate(toolheadY)}`]
+    : []
   const extrusionPaths = new Map<number, string[]>()
   const retractions: Point[] = []
   const unretractions: Point[] = []
@@ -105,45 +114,49 @@ export const buildLayerPaths = (
   let activePath: string[] = []
 
   for (let index = Math.max(0, startMove); index <= endMove && index < length; index++) {
-    if (!ignoreTools) {
+    if (includeTools) {
       currentTool = tool[index]
     }
 
     const flags = moveFlags[index]
 
     if ((flags & MoveFlags.Extruding) !== 0) {
-      if (activeTool < 0) {
+      if (includeRetractions && activeTool < 0) {
         unretractions.push({
           x: formatCoordinate(toolheadX),
           y: formatCoordinate(toolheadY)
         })
       }
 
-      if (activeTool !== currentTool) {
-        activePath = extrusionPaths.get(currentTool) ?? []
+      if (includeExtrusions) {
+        if (activeTool !== currentTool) {
+          activePath = extrusionPaths.get(currentTool) ?? []
 
-        extrusionPaths.set(currentTool, activePath)
-        activePath.push(`M${formatCoordinate(toolheadX)},${formatCoordinate(toolheadY)}`)
+          extrusionPaths.set(currentTool, activePath)
+          activePath.push(`M${formatCoordinate(toolheadX)},${formatCoordinate(toolheadY)}`)
+        }
 
-        activeTool = currentTool
+        activePath.push(moveToSVGPath(moves, index, toolheadX, toolheadY))
       }
 
-      activePath.push(moveToSVGPath(moves, index, toolheadX, toolheadY))
+      activeTool = currentTool
     } else {
-      if (activeTool >= 0) {
-        movesPath.push(`M${formatCoordinate(toolheadX)},${formatCoordinate(toolheadY)}`)
+      if (includeMoves) {
+        if (activeTool >= 0) {
+          movesPath.push(`M${formatCoordinate(toolheadX)},${formatCoordinate(toolheadY)}`)
+        }
 
-        activeTool = -1
+        movesPath.push(moveToSVGPath(moves, index, toolheadX, toolheadY))
       }
 
-      if ((flags & MoveFlags.Retracting) !== 0) {
+      activeTool = -1
+
+      if (includeRetractions && (flags & MoveFlags.Retracting) !== 0) {
         retractions.push({
           x: formatCoordinate(toolheadX),
           y: formatCoordinate(toolheadY)
         })
       }
-
-      movesPath.push(moveToSVGPath(moves, index, toolheadX, toolheadY))
     }
 
     toolheadX = x[index]
