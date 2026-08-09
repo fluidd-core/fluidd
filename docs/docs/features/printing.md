@@ -21,6 +21,12 @@ Less common options can be found on Fluidd's settings page.
 ![G-code viewer display options panel with layer and move-type toggles](/assets/images/gcode_display_opts.png)
 ![G-code viewer settings with rendering and performance options](/assets/images/gcode_settings.png)
 
+!!! note "Very large files"
+    Extremely large G-code files are only partially loaded — Fluidd shows a
+    warning and previews the portion it managed to parse, so later layers may
+    be missing. Your slicer's own preview is the better tool for inspecting a
+    file that big.
+
 ### Exclude Object
 
 The G-code viewer has
@@ -133,6 +139,18 @@ for a full-screen view.
 ![Print history list with job name, status, and duration columns](/assets/images/print_history.png)
 ![Print statistics showing total print time and filament usage](/assets/images/print_stats.png)
 ![Re-print dialog with option to re-start a previous job](/assets/images/reprint.png)
+
+## Extrusion Indicator
+
+The Toolhead card header shows the extruder's current direction of travel: a
+green icon while extruding, and a red icon while retracting. It is driven by
+the live extruder velocity Klipper reports, so it reflects both manual
+moves and the moves of a running print.
+
+The indicator only appears when the extruder is ready — the disconnected and
+below-`min_extrude_temp` warnings take its place when either applies. The
+manual **Extrude** and **Retract** buttons on the same card use matching
+directional icons.
 
 ## Firmware Retraction
 
