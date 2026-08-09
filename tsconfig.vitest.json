@@ -1,19 +1,16 @@
 {
   "extends": "./tsconfig.app.json",
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.vitest.tsbuildinfo",
-
-    "lib": [],
-    "types": [
-      "node",
-      "jsdom"
-    ]
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.vitest.tsbuildinfo"
   },
 
   "include": [
     "tests/**/*",
     "src/**/__tests__/*",
     "src/typings/*.d.ts",
+    // The app project picks the WebWorker lib up from `src/sw.ts`. Specs reach
+    // `src/workers/*` transitively, so this project needs it too.
+    "src/sw.ts",
     "env.d.ts",
   ],
 
