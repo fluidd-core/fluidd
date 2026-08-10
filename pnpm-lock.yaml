@@ -11,6 +11,7 @@ overrides:
   rollup: ^4.62.4
   serialize-javascript: ^7.0.3
   typescript: npm:typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2
+  typescript-eslint: ^8.66.0
   vite: ^8.2.1
   vue: ^2.7.16
   '@originjs/vite-plugin-content>xlsx': '-'
@@ -212,9 +213,6 @@ importers:
       typescript:
         specifier: npm:typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2
         version: typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2
-      typescript-eslint:
-        specifier: ^8.66.0
-        version: 8.66.0(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)
       unplugin-vue-components:
         specifier: ^30.0.0
         version: 30.0.0(@babel/parser@7.29.7)(supports-color@8.1.1)(vue@2.7.16)
@@ -242,9 +240,6 @@ importers:
       workbox-build:
         specifier: ^7.4.1
         version: 7.4.1(supports-color@8.1.1)
-      workbox-core:
-        specifier: ^7.4.1
-        version: 7.4.1
       workbox-precaching:
         specifier: ^7.4.1
         version: 7.4.1
