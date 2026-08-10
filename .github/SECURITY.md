@@ -22,10 +22,11 @@ Reports are reviewed as maintainers are available.
 
 ## Scope
 
-Fluidd is a browser application with no server side of its own. It is served as
-static files and talks to [Moonraker](https://github.com/Arksine/moonraker),
-which is where authentication, network exposure and printer access are actually
-enforced. That boundary determines what belongs here:
+Fluidd is a browser application with no server-side component of its own. It is
+served as static files and talks to
+[Moonraker](https://github.com/Arksine/moonraker), which is where
+authentication, network exposure and printer access are actually enforced. That
+boundary determines what belongs here:
 
 | In scope                                                                       | Out of scope                                                                                                                                           |
 | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
