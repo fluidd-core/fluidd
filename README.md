@@ -17,6 +17,10 @@ Fluidd is a free and open-source Klipper web interface for managing your 3d prin
 See our [Docs](https://docs.fluidd.xyz).
 Join our [Discord!](https://discord.gg/GZ3D5tqfcF).
 
+Want to help out? Read the [contributing guidelines](/CONTRIBUTING.md) and our [code of conduct](/.github/CODE_OF_CONDUCT.md).
+
+Found a security issue? Please follow our [security policy](/.github/SECURITY.md).
+
 ## How to use?
 
 Fluidd can be easily installed via [KIAUH](https://github.com/dw-0/kiauh), along with Klipper, Moonraker, and all of the required dependencies.
