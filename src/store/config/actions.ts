@@ -8,7 +8,7 @@ import { Waits } from '@/globals'
 import type { FileFilterType } from '../files/types'
 import { TinyColor } from '@ctrl/tinycolor'
 import dbKey from '@/util/db-key'
-import { useWaitStore } from '../../stores/wait'
+import { useWaitStore } from '@/stores/wait'
 
 export const actions = {
   /**
