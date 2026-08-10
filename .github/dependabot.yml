@@ -1,0 +1,39 @@
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: friday
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        patterns:
+          - '*'
+    commit-message:
+      prefix: chore
+      include: scope
+    labels:
+      - 'Code - Deps'
+      - 'Code - Infrastructure'
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: pip
+    directory: /docs
+    schedule:
+      interval: weekly
+      day: friday
+    cooldown:
+      default-days: 7
+    groups:
+      docs:
+        patterns:
+          - '*'
+    commit-message:
+      prefix: chore
+      include: scope
+    labels:
+      - 'Code - Deps'
+    open-pull-requests-limit: 5
