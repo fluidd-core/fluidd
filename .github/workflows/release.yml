@@ -9,6 +9,10 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      attestations: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -52,6 +56,11 @@ jobs:
         run: |
           cd ./dist
           zip -r ../fluidd.zip ./
+
+      - name: Attest fluidd.zip
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: ./fluidd.zip
 
       - name: Get version from tag
         id: tag_name
