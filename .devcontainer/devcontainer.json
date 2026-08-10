@@ -18,7 +18,7 @@
   },
   "features": {
   },
-  "postCreateCommand": "pnpm i --frozen-lockfile && pnpm run bootstrap",
+  "postCreateCommand": "pnpm i --frozen-lockfile",
   "customizations": {
     "vscode": {
       "extensions": [

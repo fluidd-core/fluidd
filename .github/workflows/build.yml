@@ -12,6 +12,10 @@ on:
       - develop
       - master
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build:
     name: Build
@@ -129,7 +133,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
           build-args: |
             BASE_IMAGE=${{ matrix.base-image }}
           push: true

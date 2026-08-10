@@ -16,8 +16,10 @@ overrides:
   dompurify: 'catalog:'
   echarts: 'catalog:'
   glob: ^13.0.6
+  rollup: ^4.62.4
   serialize-javascript: ^7.0.3
   typescript: 'catalog:'
+  typescript-eslint: ^8.66.0
   vite: 'catalog:'
   vue: 'catalog:'
   '@originjs/vite-plugin-content>xlsx': '-'
