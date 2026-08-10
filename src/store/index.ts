@@ -29,7 +29,7 @@ import { mmu } from './mmu'
 import { sensors } from './sensors'
 import { database } from './database'
 import { afc } from './afc'
-import { useWaitStore } from '../stores/wait'
+import { useWaitStore } from '@/stores/wait'
 import { useAnalysisStore } from '@/stores/analysis'
 import type { StoreGeneric } from 'pinia'
 
