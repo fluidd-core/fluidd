@@ -88,7 +88,6 @@
     "jsdom": "^29.1.1",
     "mockdate": "^3.0.5",
     "neostandard": "^0.13.0",
-    "rollup": "^4.62.4",
     "sass-embedded": "^1.100.0",
     "skott": "^0.35.11",
     "svgo": "^4.0.2",

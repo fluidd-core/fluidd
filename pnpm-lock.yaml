@@ -8,6 +8,7 @@ overrides:
   dompurify: ^3.4.13
   echarts: ^6.1.0
   glob: ^13.0.6
+  rollup: ^4.62.4
   serialize-javascript: ^7.0.3
   typescript: npm:typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2
   vite: ^8.2.1
@@ -199,9 +200,6 @@ importers:
       neostandard:
         specifier: ^0.13.0
         version: 0.13.0(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)
-      rollup:
-        specifier: ^4.62.4
-        version: 4.62.4
       sass-embedded:
         specifier: ^1.100.0
         version: 1.100.0
@@ -1350,7 +1348,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0
       '@types/babel__core': ^7.1.9
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+      rollup: ^4.62.4
     peerDependenciesMeta:
       '@types/babel__core':
         optional: true
@@ -1361,7 +1359,7 @@ packages:
     resolution: {integrity: sha512-lUYM3UBGuM93CnMPG1YocWu7X802BrNF3jW2zny5gQyLQgRFJhV1Sq0Zi74+dh/6NBx1DxFC4b4GXg9wUCG5Qg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^2.78.0||^3.0.0||^4.0.0
+      rollup: ^4.62.4
     peerDependenciesMeta:
       rollup:
         optional: true
@@ -1370,7 +1368,7 @@ packages:
     resolution: {integrity: sha512-J4RZarRvQAm5IF0/LwUUg+obsm+xZhYnbMXmXROyoSE1ATJe3oXSb9L5MMppdxP2ylNSjv6zFBwKYjcKMucVfA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+      rollup: ^4.62.4
     peerDependenciesMeta:
       rollup:
         optional: true
@@ -1379,7 +1377,7 @@ packages:
     resolution: {integrity: sha512-FnCxhTBx6bMOYQrar6C8h3scPt8/JwIzw3+AJ2K++6guogH5fYaIFia+zZuhqv0eo1RN7W1Pz630SyvLbDjhtQ==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      rollup: ^2.0.0||^3.0.0||^4.0.0
+      rollup: ^4.62.4
     peerDependenciesMeta:
       rollup:
         optional: true
@@ -1392,7 +1390,7 @@ packages:
     resolution: {integrity: sha512-MfPp06CjRLfXQ3wY0R8vJDYBy/MvVcc9OulEfR0B8Iv9ko+GCNaRZ+EpJYFl27LhKsZK0o420sYCRHCjfCgeUg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+      rollup: ^4.62.4
     peerDependenciesMeta:
       rollup:
         optional: true

@@ -16,6 +16,7 @@ overrides:
   dompurify: 'catalog:'
   echarts: 'catalog:'
   glob: ^13.0.6
+  rollup: ^4.62.4
   serialize-javascript: ^7.0.3
   typescript: 'catalog:'
   vite: 'catalog:'
