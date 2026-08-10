@@ -14,7 +14,7 @@
     "serve:prod": "vite preview --port 5000",
     "serve:docs": "cd ./docs && zensical serve",
     "lint": "eslint .",
-    "bootstrap": "husky",
+    "prepare": "husky",
     "release": "commit-and-tag-version",
     "release:major": "pnpm run release --release-as major",
     "release:minor": "pnpm run release --release-as minor",
