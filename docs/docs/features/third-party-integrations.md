@@ -41,8 +41,10 @@ Features include:
 
 - Hub and lane management
 - Buffer status monitoring
-- Extruder control
+- Extruder control, including toolchanger tool selection
 - LED state and stepper monitoring
+- Lane assignment dialog on print start
+- Manual filament and spool data entry, with Spoolman integration
 
 Requires AFC-Klipper-Add-On installed on your Klipper instance.
 

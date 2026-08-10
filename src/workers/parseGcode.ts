@@ -1,11 +1,74 @@
-import type { ArcMove, ArcPlane, BBox, Layer, LinearMove, Move, Part, PositioningMode } from '@/store/gcodePreview/types'
-import { pick } from 'lodash-es'
+import type { BBox, Layer, MoveStore, Part } from '@/store/gcodePreview/types'
+import { MoveFlags } from '@/store/gcodePreview/types'
+import decimalRound from '@/util/decimal-round'
 import { split } from 'shlex'
+
+type PositioningMode = 'relative' | 'absolute'
+
+type ArcPlane = 'xy' | 'xz' | 'yz'
+
+// axes named by a single G-code line, before positioning mode is applied; every
+// field is required so each construction site keeps the same shape
+interface GcodeMove {
+  x: number | undefined;
+  y: number | undefined;
+  z: number | undefined;
+  e: number | undefined;
+  i: number | undefined;
+  j: number | undefined;
+  r: number | undefined;
+}
+
+const MAX_TOOL = 255
+
+// guards against a corrupt or hostile file exhausting memory
+const MAX_MOVES = 20_000_000
+const MAX_PARTS = 10_000
+const MAX_POLYGON_POINTS = 10_000
+
+// file positions are stored in a Uint32Array
+const MAX_FILE_POSITION = 0xffffffff
+
+const INITIAL_MOVE_CAPACITY = 1 << 14
+const MOVE_GROWTH_FACTOR = 1.5
+
+const growFloat32Array = (source: Float32Array<ArrayBuffer>, capacity: number) => {
+  const result = new Float32Array(capacity)
+
+  result.set(source)
+
+  return result
+}
+
+const growUint32Array = (source: Uint32Array<ArrayBuffer>, capacity: number) => {
+  const result = new Uint32Array(capacity)
+
+  result.set(source)
+
+  return result
+}
+
+const growUint8Array = (source: Uint8Array<ArrayBuffer>, capacity: number) => {
+  const result = new Uint8Array(capacity)
+
+  result.set(source)
+
+  return result
+}
+
+// [a-z] is required, so no match is zero-length and the exec loop cannot spin
+const gcodeCommandArgsRegExp = /([a-z])[ \t]*([-+]?\d*\.?\d+)?/gi
 
 const getArgsFromGcodeCommandArgs = (gcodeCommandArgs: string) => {
   const args: Record<string, number | undefined> = {}
 
-  for (const [, key, value] of gcodeCommandArgs.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))?/gi)) {
+  gcodeCommandArgsRegExp.lastIndex = 0
+
+  let match: RegExpExecArray | null
+
+  while ((match = gcodeCommandArgsRegExp.exec(gcodeCommandArgs)) !== null) {
+    const [, key, value] = match
+
     args[key.toLowerCase()] = value ? +value : undefined
   }
 
@@ -28,27 +91,29 @@ const getArgsFromMacroCommandArgs = (macroCommandArgs: string) => {
 const parseLine = (line: string) => {
   const clearedLine = line
     .trim()
-    .split(';', 2)[0]
+    .split(';', 1)[0]
 
-  const [, gcodeCommand, gcodeCommandArgs = ''] = clearedLine
-    .split(/^([gmt]\d+)\s*/i)
+  if (clearedLine) {
+    const [, gcodeCommand, gcodeCommandArgs = ''] = clearedLine
+      .split(/^([gmt]\d+)\s*/i)
 
-  if (gcodeCommand) {
-    return {
-      type: 'gcode' as const,
-      command: gcodeCommand.toUpperCase(),
-      args: getArgsFromGcodeCommandArgs(gcodeCommandArgs)
+    if (gcodeCommand) {
+      return {
+        type: 'gcode' as const,
+        command: gcodeCommand.toUpperCase(),
+        args: getArgsFromGcodeCommandArgs(gcodeCommandArgs)
+      }
     }
-  }
 
-  const [, macroCommand, macroCommandArgs = ''] = clearedLine
-    .split(/^(SET_PRINT_STATS_INFO|EXCLUDE_OBJECT_DEFINE|SET_RETRACTION)\s+/i)
+    const [, macroCommand, macroCommandArgs = ''] = clearedLine
+      .split(/^(SET_PRINT_STATS_INFO|EXCLUDE_OBJECT_DEFINE|SET_RETRACTION)\s+/i)
 
-  if (macroCommand) {
-    return {
-      type: 'macro' as const,
-      command: macroCommand.toUpperCase(),
-      args: getArgsFromMacroCommandArgs(macroCommandArgs)
+    if (macroCommand) {
+      return {
+        type: 'macro' as const,
+        command: macroCommand.toUpperCase(),
+        args: getArgsFromMacroCommandArgs(macroCommandArgs)
+      }
     }
   }
 
@@ -57,17 +122,34 @@ const parseLine = (line: string) => {
   }
 }
 
-const linearMoveParams: (keyof LinearMove)[] = [
-  'x', 'y', 'z', 'e'
-]
+/** Converts an R-form (radius) G2/G3 arc to I/J form, or `null` if the radius cannot span the two points. */
+const arcRadiusToCenterOffset = (
+  fromX: number,
+  fromY: number,
+  toX: number,
+  toY: number,
+  r: number | undefined,
+  clockwise: boolean
+): { i: number, j: number } | null => {
+  if (r === undefined) {
+    return null
+  }
 
-const arcMoveParams: (keyof ArcMove)[] = [
-  'x', 'y', 'z', 'e',
-  'i', 'j', 'k', 'r'
-]
+  const deltaX = toX - fromX
+  const deltaY = toY - fromY
+  const chord = Math.hypot(deltaX, deltaY)
 
-const decimalRound = (a: number) => {
-  return Math.round(a * 10000) / 10000
+  if (chord === 0 || chord > 2 * Math.abs(r)) {
+    return null
+  }
+
+  const h = Math.sqrt(r * r - (chord * chord) / 4)
+  const sign = ((r < 0) !== clockwise) ? -1 : 1
+
+  return {
+    i: deltaX / 2 + (sign * h * -deltaY) / chord,
+    j: deltaY / 2 + (sign * h * deltaX) / chord
+  }
 }
 
 const createBounds = (): BBox => ({
@@ -81,7 +163,13 @@ const createBounds = (): BBox => ({
   }
 })
 
+const nonAsciiRegExp = /[^\x20-\x7e]/
+
 const utf8ByteLength = (str: string) => {
+  if (!nonAsciiRegExp.test(str)) {
+    return str.length
+  }
+
   let bytes = 0
 
   for (let i = 0; i < str.length; i++) {
@@ -126,11 +214,23 @@ const parseGcode = async (
   const progressStep = Math.max(1, Math.floor(fileSize / 100))
   let nextProgressByte = 0
 
-  const moves: Move[] = []
+  let moveCapacity = INITIAL_MOVE_CAPACITY
+  let moveX = new Float32Array(moveCapacity)
+  let moveY = new Float32Array(moveCapacity)
+  let moveZ = new Float32Array(moveCapacity)
+  let moveI = new Float32Array(moveCapacity)
+  let moveJ = new Float32Array(moveCapacity)
+  let moveTool = new Uint8Array(moveCapacity)
+  let moveFlags = new Uint8Array(moveCapacity)
+  let moveFilePosition = new Uint32Array(moveCapacity)
+  let moveCount = 0
+  let lastArcMoveIndex = -1
+
   const layers: Layer[] = []
   const parts: Part[] = []
   const tools = new Set<number>()
 
+  let truncated = false
   let newLayerForNextMove = false
   let extrusionMode: PositioningMode = 'absolute'
   let positioningMode: PositioningMode = 'absolute'
@@ -156,9 +256,11 @@ const parseGcode = async (
   }
 
   const handleLine = (line: string) => {
-    const { type, command, args } = parseLine(line) ?? {}
+    const { type, command, args } = parseLine(line)
 
-    let move: Move | null = null
+    let move: GcodeMove | undefined
+    let isArcMove = false
+    let isClockwise = false
     let isSynthesizedMove = false
 
     if (type === 'macro') {
@@ -169,11 +271,11 @@ const parseGcode = async (
           }
           break
         case 'EXCLUDE_OBJECT_DEFINE':
-          if ('polygon' in args && args.polygon) {
+          if ('polygon' in args && args.polygon && parts.length < MAX_PARTS) {
             try {
               const data = JSON.parse(args.polygon)
 
-              if (isPolygonData(data)) {
+              if (isPolygonData(data) && data.length <= MAX_POLYGON_POINTS) {
                 const part: Part = {
                   polygon: data
                     .map(([x, y]) => ({ x, y }))
@@ -199,27 +301,25 @@ const parseGcode = async (
       switch (command) {
         case 'G0':
         case 'G1': {
-          if (linearMoveParams.some(param => param in args)) {
-            move = {
-              ...pick(args, linearMoveParams),
-              tool,
-              filePosition
-            } satisfies LinearMove
+          const { x, y, z, e } = args
+
+          if (x !== undefined || y !== undefined || z !== undefined || e !== undefined) {
+            move = { x, y, z, e, i: undefined, j: undefined, r: undefined }
           }
           break
         }
         case 'G2':
         case 'G3': {
-          if (arcMoveParams.some(param => param in args)) {
-            move = {
-              ...pick(args, arcMoveParams),
-              d: command === 'G2'
-                ? 'clockwise'
-                : 'counter-clockwise',
-              plane,
-              tool,
-              filePosition
-            } satisfies ArcMove
+          const { x, y, z, e, i, j, r } = args
+
+          if (
+            x !== undefined || y !== undefined || z !== undefined || e !== undefined ||
+            i !== undefined || j !== undefined || r !== undefined
+          ) {
+            move = { x, y, z, e, i, j, r }
+
+            isArcMove = true
+            isClockwise = command === 'G2'
           }
           break
         }
@@ -233,53 +333,48 @@ const parseGcode = async (
           plane = 'yz'
           break
         case 'G10':
-          isSynthesizedMove = true
-
           move = {
+            x: undefined,
+            y: undefined,
+            z: fwretraction.z !== 0 ? decimalRound(toolhead.z + fwretraction.z, 4) : undefined,
             e: -fwretraction.length,
-            tool,
-            filePosition
-          } satisfies LinearMove
-
-          if (fwretraction.z !== 0) {
-            move.z = decimalRound(toolhead.z + fwretraction.z)
+            i: undefined,
+            j: undefined,
+            r: undefined
           }
+
+          isSynthesizedMove = true
           break
         case 'G11':
-          isSynthesizedMove = true
-
           move = {
-            e: decimalRound(fwretraction.length + fwretraction.extrudeExtra),
-            tool,
-            filePosition
-          } satisfies LinearMove
-
-          if (fwretraction.z !== 0) {
-            move.z = decimalRound(toolhead.z - fwretraction.z)
+            x: undefined,
+            y: undefined,
+            z: fwretraction.z !== 0 ? decimalRound(toolhead.z - fwretraction.z, 4) : undefined,
+            e: decimalRound(fwretraction.length + fwretraction.extrudeExtra, 4),
+            i: undefined,
+            j: undefined,
+            r: undefined
           }
+
+          isSynthesizedMove = true
           break
         case 'G28': {
-          isSynthesizedMove = true
-
           const hasX = 'x' in args
           const hasY = 'y' in args
           const hasZ = 'z' in args
           const noXYZ = !hasX && !hasY && !hasZ
 
           move = {
-            tool,
-            filePosition
-          } satisfies LinearMove
+            x: hasX || noXYZ ? 0 : undefined,
+            y: hasY || noXYZ ? 0 : undefined,
+            z: hasZ || noXYZ ? 0 : undefined,
+            e: undefined,
+            i: undefined,
+            j: undefined,
+            r: undefined
+          }
 
-          if (hasX || noXYZ) {
-            move.x = 0
-          }
-          if (hasY || noXYZ) {
-            move.y = 0
-          }
-          if (hasZ || noXYZ) {
-            move.z = 0
-          }
+          isSynthesizedMove = true
           break
         }
         case 'G90':
@@ -314,79 +409,157 @@ const parseGcode = async (
           break
         default:
           if (command.startsWith('T')) {
-            tool = +command.substring(1)
-            tools.add(tool)
+            const requestedTool = +command.substring(1)
+
+            if (
+              Number.isInteger(requestedTool) &&
+              requestedTool >= 0 &&
+              requestedTool <= MAX_TOOL
+            ) {
+              tool = requestedTool
+              tools.add(tool)
+            }
           }
           break
       }
 
       if (move) {
-        if (move.e !== undefined) {
-          if (positioningMode === 'absolute' && extrusionMode === 'absolute' && !isSynthesizedMove) {
-            const extrusionLength = decimalRound(move.e - toolhead.e)
+        if (moveCount >= MAX_MOVES || filePosition > MAX_FILE_POSITION) {
+          truncated = true
+        } else {
+          if (move.e !== undefined) {
+            if (positioningMode === 'absolute' && extrusionMode === 'absolute' && !isSynthesizedMove) {
+              const extrusionLength = decimalRound(move.e - toolhead.e, 4)
 
-            toolhead.e = move.e
-            move.e = extrusionLength
+              toolhead.e = move.e
+              move.e = extrusionLength
+            } else {
+              toolhead.e = decimalRound(toolhead.e + move.e, 4)
+            }
+          }
+
+          const extrusion = move.e ?? 0
+
+          if (positioningMode === 'relative' && !isSynthesizedMove) {
+            if (move.x !== undefined) {
+              move.x = decimalRound(move.x + toolhead.x, 4)
+            }
+
+            if (move.y !== undefined) {
+              move.y = decimalRound(move.y + toolhead.y, 4)
+            }
+
+            if (move.z !== undefined) {
+              move.z = decimalRound(move.z + toolhead.z, 4)
+            }
+          }
+
+          if (newLayerForNextMove && extrusion > 0) {
+            if (
+              (move.x !== undefined && move.x !== toolhead.x) ||
+              (move.y !== undefined && move.y !== toolhead.y) ||
+              (move.i !== undefined && move.i !== 0) ||
+              (move.j !== undefined && move.j !== 0)
+            ) {
+              if (layers.length > 0) {
+                lastBounds = {
+                  x: { ...bounds.x },
+                  y: { ...bounds.y }
+                }
+
+                if (layers.length === 1) {
+                  bounds = createBounds()
+                }
+              }
+
+              const layerMove = Math.max(0, moveCount - 1)
+
+              const layer: Layer = {
+                z: toolhead.z,
+                move: layerMove,
+                // move `moveCount` is only written below
+                filePosition: moveCount > 0 ? moveFilePosition[layerMove] : filePosition
+              }
+
+              layers.push(layer)
+
+              newLayerForNextMove = false
+            }
+          }
+
+          // only record arcs that can actually be drawn as one; everything else
+          // falls back to a straight line at render time
+          let arcI = 0
+          let arcJ = 0
+
+          if (isArcMove && plane === 'xy') {
+            if (move.i !== undefined || move.j !== undefined) {
+              arcI = move.i ?? 0
+              arcJ = move.j ?? 0
+            } else {
+              const offset = arcRadiusToCenterOffset(
+                toolhead.x,
+                toolhead.y,
+                move.x ?? toolhead.x,
+                move.y ?? toolhead.y,
+                move.r,
+                isClockwise
+              )
+
+              if (offset) {
+                arcI = offset.i
+                arcJ = offset.j
+              } else {
+                isArcMove = false
+              }
+            }
           } else {
-            toolhead.e = decimalRound(toolhead.e + move.e)
-          }
-        }
-
-        if (positioningMode === 'relative' && !isSynthesizedMove) {
-          if (move.x !== undefined) {
-            move.x = decimalRound(move.x + toolhead.x)
+            isArcMove = false
           }
 
-          if (move.y !== undefined) {
-            move.y = decimalRound(move.y + toolhead.y)
+          toolhead.x = move.x ?? toolhead.x
+          toolhead.y = move.y ?? toolhead.y
+          toolhead.z = move.z ?? toolhead.z
+
+          if (moveCount === moveCapacity) {
+            moveCapacity = Math.min(MAX_MOVES, Math.ceil(moveCapacity * MOVE_GROWTH_FACTOR))
+
+            moveX = growFloat32Array(moveX, moveCapacity)
+            moveY = growFloat32Array(moveY, moveCapacity)
+            moveZ = growFloat32Array(moveZ, moveCapacity)
+            moveI = growFloat32Array(moveI, moveCapacity)
+            moveJ = growFloat32Array(moveJ, moveCapacity)
+            moveTool = growUint8Array(moveTool, moveCapacity)
+            moveFlags = growUint8Array(moveFlags, moveCapacity)
+            moveFilePosition = growUint32Array(moveFilePosition, moveCapacity)
           }
 
-          if (move.z !== undefined) {
-            move.z = decimalRound(move.z + toolhead.z)
+          moveX[moveCount] = toolhead.x
+          moveY[moveCount] = toolhead.y
+          moveZ[moveCount] = toolhead.z
+          moveI[moveCount] = arcI
+          moveJ[moveCount] = arcJ
+          moveTool[moveCount] = tool
+          moveFilePosition[moveCount] = filePosition
+          moveFlags[moveCount] = (
+            (extrusion > 0 ? MoveFlags.Extruding : 0) |
+            (extrusion < 0 ? MoveFlags.Retracting : 0) |
+            (isArcMove ? MoveFlags.Arc : 0) |
+            (isArcMove && isClockwise ? MoveFlags.Clockwise : 0)
+          )
+
+          if (isArcMove) {
+            lastArcMoveIndex = moveCount
           }
-        }
 
-        if (newLayerForNextMove && move.e && move.e > 0) {
-          if (
-            ('x' in move && move.x !== toolhead.x) ||
-            ('y' in move && move.y !== toolhead.y) ||
-            ('i' in move && move.i !== 0) ||
-            ('j' in move && move.j !== 0)
-          ) {
-            if (layers.length > 0) {
-              lastBounds = {
-                x: { ...bounds.x },
-                y: { ...bounds.y }
-              }
+          moveCount++
 
-              if (layers.length === 1) {
-                bounds = createBounds()
-              }
-            }
-
-            const layer: Layer = {
-              z: toolhead.z,
-              move: moves.length - 1,
-              filePosition
-            }
-
-            layers.push(layer)
-
-            newLayerForNextMove = false
+          if (layers.length > 0) {
+            bounds.x.min = Math.min(bounds.x.min, toolhead.x)
+            bounds.x.max = Math.max(bounds.x.max, toolhead.x)
+            bounds.y.min = Math.min(bounds.y.min, toolhead.y)
+            bounds.y.max = Math.max(bounds.y.max, toolhead.y)
           }
-        }
-
-        toolhead.x = move.x ?? toolhead.x
-        toolhead.y = move.y ?? toolhead.y
-        toolhead.z = move.z ?? toolhead.z
-
-        moves.push(move)
-
-        if (layers.length > 0) {
-          bounds.x.min = Math.min(bounds.x.min, toolhead.x)
-          bounds.x.max = Math.max(bounds.x.max, toolhead.x)
-          bounds.y.min = Math.min(bounds.y.min, toolhead.y)
-          bounds.y.max = Math.max(bounds.y.max, toolhead.y)
         }
       }
     }
@@ -415,6 +588,10 @@ const parseGcode = async (
       handleLine(buffer.slice(cursor, nl))
 
       cursor = nl + 1
+
+      if (truncated) {
+        break
+      }
     }
 
     if (cursor > 0) {
@@ -435,12 +612,37 @@ const parseGcode = async (
 
       buffer += decoder.decode(value, { stream: true })
       drainLines()
+
+      if (truncated) {
+        break
+      }
+    }
+
+    if (truncated) {
+      try {
+        await reader.cancel()
+      } catch {
+        // the moves parsed so far are still usable
+      }
     }
   } finally {
     reader.releaseLock()
   }
 
   sendProgress(filePosition)
+
+  const moves: MoveStore = {
+    // sliced to length so the transferred buffers carry no slack
+    x: moveX.slice(0, moveCount),
+    y: moveY.slice(0, moveCount),
+    z: moveZ.slice(0, moveCount),
+    i: moveI.slice(0, lastArcMoveIndex + 1),
+    j: moveJ.slice(0, lastArcMoveIndex + 1),
+    tool: moveTool.slice(0, moveCount),
+    flags: moveFlags.slice(0, moveCount),
+    filePosition: moveFilePosition.slice(0, moveCount),
+    length: moveCount
+  }
 
   return {
     moves,
@@ -450,7 +652,8 @@ const parseGcode = async (
       ? lastBounds ?? bounds
       : null,
     tools: [...tools]
-      .sort((a, b) => a - b)
+      .sort((a, b) => a - b),
+    truncated
   }
 }
 

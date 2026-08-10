@@ -1,5 +1,6 @@
 import type { ActionTree } from 'vuex'
 import type { GcodePreviewState } from './types'
+import { defaultMoveStore } from './state'
 import type { RootState } from '../types'
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 import { EventBus } from '@/eventBus'
@@ -61,6 +62,10 @@ export const actions = {
             commit('setBounds', message.bounds)
             commit('setParserProgress', payload.file.size)
 
+            if (message.truncated) {
+              EventBus.$emit(i18n.t('app.general.msg.gcode_preview_truncated').toString(), { type: 'warning' })
+            }
+
             if (rootState.config.uiSettings.gcodePreview.hideSinglePartBoundingBox && message.parts.length <= 1) {
               dispatch('config/saveByPath', {
                 path: 'uiSettings.gcodePreview.showParts',
@@ -96,7 +101,7 @@ export const actions = {
     }
 
     commit('setParserProgress', 0)
-    commit('setMoves', [])
+    commit('setMoves', defaultMoveStore)
     commit('setLayers', [])
     commit('setParts', [])
     commit('setTools', [])

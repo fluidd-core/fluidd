@@ -2,10 +2,7 @@ import type { Commit } from 'vuex'
 import type { RootState } from './types'
 import type { ChartData } from './charts/types'
 import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
-
-const decimalRound = (value: number) => {
-  return Math.round(value * 100) / 100
-}
+import decimalRound from '@/util/decimal-round'
 
 export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, state: RootState, commit: Commit) => {
   for (const key in payload) {
@@ -54,9 +51,9 @@ export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, sta
           retention: 600,
           data: {
             date,
-            load: decimalRound(load),
-            awake: decimalRound(awake),
-            bw: decimalRound(bw)
+            load: decimalRound(load, 2),
+            awake: decimalRound(awake, 2),
+            bw: decimalRound(bw, 2)
           }
         }, { root: true })
       }
@@ -90,7 +87,7 @@ export const handleSystemStatsChange = (payload: Partial<Klipper.PrinterState>, 
         retention: 600,
         data: {
           date,
-          memused: decimalRound(percent_mem_used)
+          memused: decimalRound(percent_mem_used, 2)
         }
       }, { root: true })
     }
@@ -109,8 +106,8 @@ export const handleSystemStatsChange = (payload: Partial<Klipper.PrinterState>, 
         retention: 600,
         data: {
           date,
-          load: decimalRound(stats.sysload),
-          cputime_change: decimalRound((cputime - last_cputime) * 100)
+          load: decimalRound(stats.sysload, 2),
+          cputime_change: decimalRound((cputime - last_cputime) * 100, 2)
         }
       }, { root: true })
     }
@@ -133,7 +130,7 @@ export const handleAddSensorChartEntry = (state: RootState, commit: Commit) => {
       const value = values[field]
 
       if (typeof value === 'number') {
-        data[field] = decimalRound(value)
+        data[field] = decimalRound(value, 2)
 
         hasNumericValue = true
       }
@@ -180,18 +177,18 @@ export const handleAddChartEntry = (retention: number, state: RootState, commit:
 
         const { temperature, target, power, speed } = sensor
 
-        chartData[key] = decimalRound(temperature)
+        chartData[key] = decimalRound(temperature, 2)
 
         if (target != null) {
-          chartData[`${key}#target`] = decimalRound(target)
+          chartData[`${key}#target`] = decimalRound(target, 2)
         }
 
         if (power != null) {
-          chartData[`${key}#power`] = decimalRound(power)
+          chartData[`${key}#power`] = decimalRound(power, 2)
         }
 
         if (speed != null) {
-          chartData[`${key}#speed`] = decimalRound(speed)
+          chartData[`${key}#speed`] = decimalRound(speed, 2)
         }
       }
     }

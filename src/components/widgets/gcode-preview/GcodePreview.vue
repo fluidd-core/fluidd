@@ -176,18 +176,15 @@
           id="currentLayer"
           class="layer"
         >
-          <template v-if="showExtrusions">
-            <path
-              v-for="(extrusion, tool) in svgPathCurrent.extrusions"
-              :key="tool"
-              :d="extrusion"
-              :stroke="toolColors[tool]"
-              :stroke-width="extrusionLineWidth"
-              :shape-rendering="shapeRendering"
-            />
-          </template>
           <path
-            v-if="showMoves"
+            v-for="(extrusion, tool) in svgPathCurrent.extrusions"
+            :key="tool"
+            :d="extrusion"
+            :stroke="toolColors[tool]"
+            :stroke-width="extrusionLineWidth"
+            :shape-rendering="shapeRendering"
+          />
+          <path
             :d="svgPathCurrent.moves"
             stroke="gray"
             :stroke-width="moveLineWidth"
@@ -203,7 +200,7 @@
           />
 
           <g
-            v-if="showRetractions && svgPathCurrent.retractions.length > 0"
+            v-if="svgPathCurrent.retractions.length > 0"
             id="retractions"
           >
             <use
@@ -217,7 +214,7 @@
           </g>
 
           <g
-            v-if="showRetractions && svgPathCurrent.unretractions.length > 0"
+            v-if="svgPathCurrent.unretractions.length > 0"
             id="unretractions"
           >
             <use
@@ -346,7 +343,7 @@ import { markRaw } from 'vue'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import panzoom, { type PanZoom } from 'panzoom'
-import type { BBox, Layer, LayerPaths, Tool } from '@/store/gcodePreview/types'
+import type { BBox, BuildLayerPathsOptions, Layer, LayerPaths, Tool } from '@/store/gcodePreview/types'
 import type AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
 import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
 import GcodePreviewButton from './GcodePreviewButton.vue'
@@ -630,13 +627,20 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
 
     const layer: Layer | undefined = this.$typedGetters['gcodePreview/getLayers'][this.layer]
 
+    const options: BuildLayerPathsOptions = {
+      includeExtrusions: this.showExtrusions,
+      includeMoves: this.showMoves,
+      includeRetractions: this.showRetractions,
+      includeTools: true
+    }
+
     if (this.followProgress) {
       const end: number = this.$typedGetters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
 
-      return this.$typedGetters['gcodePreview/getPaths'](layer?.move ?? 0, end)
+      return this.$typedGetters['gcodePreview/getPaths'](layer?.move ?? 0, end, options)
     }
 
-    return this.$typedGetters['gcodePreview/getPaths'](layer?.move ?? 0, this.progress)
+    return this.$typedGetters['gcodePreview/getPaths'](layer?.move ?? 0, this.progress, options)
   }
 
   get svgPathActive (): Readonly<LayerPaths> {
