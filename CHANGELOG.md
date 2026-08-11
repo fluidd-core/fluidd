@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.37.4](https://github.com/fluidd-core/fluidd/compare/v1.37.3...v1.37.4) (2026-08-11)
+
+
+### Features
+
+* **AFC:** Adding ability to manually enter spool data when spoolman is enabled ([#1910](https://github.com/fluidd-core/fluidd/issues/1910)) ([d81a43e](https://github.com/fluidd-core/fluidd/commit/d81a43e073462e7e712bb6982392f6557e1db9e5))
+* **AFC:** Adding toolchanger support into AFC panel ([#1907](https://github.com/fluidd-core/fluidd/issues/1907)) ([3554250](https://github.com/fluidd-core/fluidd/commit/355425039716807394205b56d35630577fa68407))
+* Automated Layers theme ([#1914](https://github.com/fluidd-core/fluidd/issues/1914)) ([d00d5ed](https://github.com/fluidd-core/fluidd/commit/d00d5edeb842632448ed3dc726c9905fcd7e6849))
+* G-code template highlighting in Klipper config ([#1915](https://github.com/fluidd-core/fluidd/issues/1915)) ([cdefdcb](https://github.com/fluidd-core/fluidd/commit/cdefdcbd0143d2af116461ede23fbd598c356d63))
+* **i18n-de:** Update German translations ([f3a4208](https://github.com/fluidd-core/fluidd/commit/f3a4208a3649596eb208a4cd5f1940bc2111a7c8))
+* **i18n-en:** Update English translations ([30d5f76](https://github.com/fluidd-core/fluidd/commit/30d5f7655f34d9320dc94e5d08811392c1d28a80))
+* **i18n-fr:** Update French translations ([caff913](https://github.com/fluidd-core/fluidd/commit/caff91376550382fe4fc8a012138183964af41b1))
+* Snapmaker theme ([#1912](https://github.com/fluidd-core/fluidd/issues/1912)) ([27efc27](https://github.com/fluidd-core/fluidd/commit/27efc27e1d279387c567a1dfbe49e135af5de216))
+* **spoolman:** diagnose blocked live updates ([#1929](https://github.com/fluidd-core/fluidd/issues/1929)) ([7cc466f](https://github.com/fluidd-core/fluidd/commit/7cc466f5330a10cc1da55d0a36eafcac097e387f))
+
+
+### Bug Fixes
+
+* **AFC:** Not defaulting to black in Print Dialog if lane not loaded ([#1905](https://github.com/fluidd-core/fluidd/issues/1905)) ([682a4bb](https://github.com/fluidd-core/fluidd/commit/682a4bbabfb35f7600bda1a990af1ff05bb0dcab))
+* color picker behavior when manually typing ([#1917](https://github.com/fluidd-core/fluidd/issues/1917)) ([745781c](https://github.com/fluidd-core/fluidd/commit/745781cc82cad4cd02e5d528216a673e3a4ed7fe))
+* **GcodePreview:** toolhead position, extrusion modes and bounds ([#1913](https://github.com/fluidd-core/fluidd/issues/1913)) ([fe310d7](https://github.com/fluidd-core/fluidd/commit/fe310d76aab78d6be7e847ba5fae8991fb635ec5))
+
+
+### Code Refactorings
+
+* **GcodePreview:** path generation ([#1919](https://github.com/fluidd-core/fluidd/issues/1919)) ([c644d9b](https://github.com/fluidd-core/fluidd/commit/c644d9b04d3745bd7ccc2ca262c05ec48c20dd60))
+* **GcodePreview:** performance and memory improvements ([#1916](https://github.com/fluidd-core/fluidd/issues/1916)) ([8e4acf5](https://github.com/fluidd-core/fluidd/commit/8e4acf586f47c92625509a9186809c12359b6c3a))
+* typing improvements ([256bfc6](https://github.com/fluidd-core/fluidd/commit/256bfc61ce6f37dfcbffd0b78a9e76824d312b56))
+
 ## [1.37.3](https://github.com/fluidd-core/fluidd/compare/v1.37.2...v1.37.3) (2026-07-20)
 
 
