@@ -194,6 +194,9 @@ cd .../path/to/fluidd
 pnpm i --frozen-lockfile
 ```
 
+This also runs the `prepare` script, which installs the Git hooks that validate
+your commit messages and lint staged files before each commit.
+
 ### Run a local development server
 
 ```bash

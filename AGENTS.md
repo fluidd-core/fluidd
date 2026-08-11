@@ -82,7 +82,7 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 ### Essential Commands
 
 ```bash
-pnpm run bootstrap      # Install git hooks (after clone)
+pnpm run prepare        # Install git hooks (runs automatically on `pnpm i`)
 pnpm run dev            # Start development server (port 8080)
 pnpm run build          # Production build
 pnpm run type-check     # TypeScript validation (vue-tsc)
@@ -273,7 +273,7 @@ src/
 ## Dev Container
 
 - VSCode Dev Container (`.devcontainer/`) bundles a `docker-klipper-simulavr` container — real Klipper/Moonraker simulation on port 7125, Fluidd on port 8080
-- `postCreateCommand` runs `pnpm i --frozen-lockfile && pnpm run bootstrap` automatically
+- `postCreateCommand` runs `pnpm i --frozen-lockfile` automatically (which in turn runs `prepare`)
 
 ## Documentation Site
 
