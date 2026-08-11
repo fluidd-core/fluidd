@@ -16,86 +16,14 @@
 
     <template #menu>
       <app-btn
-        v-if="!klippyReady || !targetableMacros.length"
         small
         class="me-1 my-1"
         :disabled="!isConnected"
-        @click="handleSelectSpool"
+        :loading="repushing"
+        @click="handleRepush"
       >
-        {{ $t('app.spoolman.label.change_spool') }}
+        {{ $t('app.filaman.btn.repush') }}
       </app-btn>
-
-      <v-menu
-        v-else
-        bottom
-        left
-        offset-y
-        transition="slide-y-transition"
-        min-width="150"
-      >
-        <template #activator="{ on, attrs, value }">
-          <app-btn
-            v-bind="attrs"
-            small
-            class="me-1 my-1"
-            :disabled="!isConnected"
-            v-on="on"
-          >
-            {{ $t('app.spoolman.label.change_spool') }}
-            <v-icon
-              small
-              class="ml-1"
-              :class="{ 'rotate-180': value }"
-            >
-              $chevronDown
-            </v-icon>
-          </app-btn>
-        </template>
-
-        <v-list dense>
-          <v-list-item @click="handleSelectSpool">
-            <v-list-item-content>
-              <v-list-item-title>
-                {{ $t('app.spoolman.label.active_spool') }}
-              </v-list-item-title>
-            </v-list-item-content>
-
-            <v-list-item-icon v-if="activeSpool">
-              <img
-                src="/img/icons/filaman-spool.svg"
-                alt="FilaMan Spool"
-                class="filaman-spool-icon"
-              >
-            </v-list-item-icon>
-          </v-list-item>
-
-          <v-divider />
-
-          <template v-for="macro of targetableMacros">
-            <v-list-item
-              :key="macro.name"
-              :class="{
-                primary: macro.variables?.active
-              }"
-              @click="handleSelectSpool(macro)"
-            >
-              <v-list-item-content>
-                <v-list-item-title>
-                  {{ macro.name.toUpperCase() }}
-                </v-list-item-title>
-              </v-list-item-content>
-
-              <v-list-item-icon v-if="macro.variables.spool_id">
-                <img
-                  src="/img/icons/filaman-spool.svg"
-                  alt="FilaMan Spool"
-                  class="filaman-spool-icon"
-                >
-              </v-list-item-icon>
-            </v-list-item>
-          </template>
-        </v-list>
-      </v-menu>
     </template>
 
     <v-progress-linear
@@ -390,12 +318,15 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
+import { consola } from 'consola'
 import StateMixin from '@/mixins/state'
 import type { Spool } from '@/store/spoolman/types'
 import StatusLabel from '@/components/widgets/status/StatusLabel.vue'
 import type { Macro } from '@/store/macros/types'
 import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
 import type { KnownExtruder } from '@/store/printer/types'
+import { EventBus } from '@/eventBus'
+import { FilamanActions } from '@/api/filamanActions'
 
 type MacroWithSpoolId = Macro & {
   variables: Record<string, unknown> & {
@@ -407,6 +338,22 @@ type MacroWithSpoolId = Macro & {
   components: { StatusLabel }
 })
 export default class FilamanCard extends Mixins(StateMixin) {
+  repushing = false
+
+  async handleRepush () {
+    this.repushing = true
+
+    try {
+      await FilamanActions.repush()
+      EventBus.$emit(this.$tc('app.filaman.msg.repushed'), { timeout: 2000 })
+    } catch (e) {
+      consola.error('[FilamanCard] repush failed', e)
+      EventBus.$emit(this.$t('app.filaman.msg.repush_failed').toString(), { type: 'error' })
+    } finally {
+      this.repushing = false
+    }
+  }
+
   get isFilamanActive (): boolean {
     return this.$typedGetters['server/componentSupport']('filaman')
   }

@@ -46,6 +46,15 @@ export const FilamanActions = {
     )
   },
 
+  repush (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Spoolman.FilamanExtruderSpoolsResponse>(
+      'server.filaman.repush', {
+        dispatch: 'spoolman/onExtruderSpoolsChanged',
+        ...options
+      }
+    )
+  },
+
   proxyGetAvailableSpools (page = 1, pageSize = 200, options?: NotifyOptions) {
     const query = new URLSearchParams({
       page: String(page),
