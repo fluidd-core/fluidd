@@ -110,8 +110,8 @@
 
       <v-row v-if="activeSpool">
         <v-col
-          v-for="(fields, i) in selectedCardFields"
-          :key="`spoolman-card-col-${i}`"
+          v-for="fields in selectedCardFields"
+          :key="`spoolman-card-col-${fields.join(',')}`"
           align-self="center"
         >
           <template v-for="field in fields">

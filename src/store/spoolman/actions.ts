@@ -220,6 +220,7 @@ export const actions = {
 
       socket.onopen = () => {
         opened = true
+        diagnoseSocketFailureAbortController?.abort()
         commit('setSocketDiagnostic', null)
       }
 
