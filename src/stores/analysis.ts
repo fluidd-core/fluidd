@@ -1,22 +1,16 @@
 import { defineStore } from 'pinia'
-
-export interface AnalysisState {
-  status: Moonraker.Analysis.StatusResponse | null;
-}
+import { SocketActions } from '@/api/socketActions'
+import type { ObjectWithRequest } from '@/plugins/socketClient'
 
 export const useAnalysisStore = defineStore('analysis', {
-  state: (): AnalysisState => ({
-    status: null,
-  }),
-  getters: {
-
-  },
   actions: {
-    onAnalysisStatus (payload: Moonraker.Analysis.StatusResponse) {
-      if (payload) {
-        this.status = payload
+    async onAnalysisProcess (payload: ObjectWithRequest<Moonraker.Analysis.ProcessResponse>) {
+      const { filename } = payload.__request__.params ?? {}
+
+      if (!payload.bypassed) {
+        SocketActions.serverFilesMetadata(filename)
       }
-    },
+    }
   }
 
 })

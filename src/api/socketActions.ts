@@ -2,7 +2,6 @@ import Vue from 'vue'
 import { Globals, Waits } from '@/globals'
 import type { NotifyOptions } from '@/plugins/socketClient'
 import { consola } from 'consola'
-import { useAnalysisStore } from '@/stores/analysis'
 
 const baseEmit = async <T = unknown>(method: string, options: NotifyOptions): Promise<T> => {
   if (!Vue.$socket) {
@@ -919,18 +918,6 @@ export const SocketActions = {
     )
   },
 
-  serverAnalysisStatus (options?: NotifyOptions) {
-    return baseEmit<Moonraker.Analysis.StatusResponse>(
-      'server.analysis.status', {
-        ...options
-      }
-    ).then((result) => {
-      useAnalysisStore().onAnalysisStatus(result)
-
-      return result
-    })
-  },
-
   serverAnalysisEstimate (filename: string, estimator_config?: string, options?: NotifyOptions) {
     return baseEmit<Moonraker.Analysis.EstimateResponse>(
       'server.analysis.estimate', {
@@ -948,6 +935,7 @@ export const SocketActions = {
     return baseEmit<Moonraker.Analysis.ProcessResponse>(
       'server.analysis.process', {
         wait: `${Waits.onFileSystem}/gcodes/${filename}`,
+        pinia: 'analysis/onAnalysisProcess',
         ...options,
         params: {
           filename,
@@ -955,13 +943,7 @@ export const SocketActions = {
           force
         }
       }
-    ).then((result) => {
-      if (!result.bypassed) {
-        SocketActions.serverFilesMetadata(filename)
-      }
-
-      return result
-    })
+    )
   },
 
   accessInfo (options?: NotifyOptions) {
