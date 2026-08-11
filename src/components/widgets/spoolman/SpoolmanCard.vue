@@ -169,7 +169,6 @@
           class="pa-0"
         >
           <v-progress-circular
-            v-if="activeSpool"
             :rotate="-90"
             :size="102"
             :width="7"
@@ -185,19 +184,6 @@
               $filament
             </v-icon>
           </v-progress-circular>
-          <v-icon
-            v-else-if="isConnected"
-            size="55"
-          >
-            $progressQuestion
-          </v-icon>
-          <v-icon
-            v-else
-            color="warning"
-            size="55"
-          >
-            $warning
-          </v-icon>
         </v-col>
       </v-row>
 
