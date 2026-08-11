@@ -10,12 +10,13 @@ export type HttpDiagnosticResult =
 export interface DiagnoseOptions {
   timeout?: number;
   signal?: AbortSignal;
+  probePath?: string;
 }
 
 const diagnoseHttpEndpoint = async (apiUrl: string, options: DiagnoseOptions = {}): Promise<HttpDiagnosticResult> => {
   const debug = (message: string, ...args: unknown[]) => consola.debug(`[diagnoseHttpEndpoint] ${apiUrl} ${message}`, ...args)
 
-  const { timeout, signal } = options
+  const { timeout, signal, probePath = '/server/info' } = options
 
   // A secure page can't open an insecure connection; detected before any request.
   if (window.location.protocol === 'https:' && apiUrl.startsWith('http://')) {
@@ -35,7 +36,13 @@ const diagnoseHttpEndpoint = async (apiUrl: string, options: DiagnoseOptions = {
       .filter(Boolean)
   )
 
-  const probeUrl = `${apiUrl}/server/info?t=${Date.now()}`
+  const baseUrl = apiUrl.endsWith('/')
+    ? apiUrl.slice(0, -1)
+    : apiUrl
+  const path = probePath.startsWith('/')
+    ? probePath
+    : `/${probePath}`
+  const probeUrl = `${baseUrl}${path}?t=${Date.now()}`
 
   try {
     const response = await fetch(probeUrl, {

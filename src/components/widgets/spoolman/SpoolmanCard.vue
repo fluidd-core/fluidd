@@ -99,74 +99,67 @@
     />
 
     <v-card-text>
-      <v-row>
-        <template v-if="activeSpool">
-          <v-col
-            v-for="(fields, i) in selectedCardFields"
-            :key="`spoolman-card-col-${i}`"
-            align-self="center"
-          >
-            <template v-for="field in fields">
-              <status-label
-                :key="`spoolman-card-${field}`"
-                :label="getFieldLabel(field)"
-                :label-width="86"
-              >
-                <template v-if="field === 'remaining_weight'">
-                  <span v-if="remainingFilamentUnit === 'weight'">
-                    {{ getFormattedField('remaining_weight') }}
-                    <small>/ {{ getFormattedField('initial_weight') }}</small>
-                  </span>
-                  <span v-else-if="remainingFilamentUnit === 'length'">
-                    {{ getFormattedField('remaining_length') }}
-                    <small>/ {{ getFormattedField('initial_length') }}</small>
-                  </span>
-                </template>
+      <v-alert
+        v-if="socketDiagnosticMessage"
+        type="warning"
+        dense
+        text
+      >
+        {{ socketDiagnosticMessage }}
+      </v-alert>
 
-                <template v-else-if="field === 'used_weight'">
-                  <span v-if="remainingFilamentUnit === 'weight'">
-                    {{ getFormattedField('used_weight') }}
-                    <small>/ {{ getFormattedField('initial_weight') }}</small>
-                  </span>
-                  <span v-else-if="remainingFilamentUnit === 'length'">
-                    {{ getFormattedField('used_length') }}
-                    <small>/ {{ getFormattedField('initial_length') }}</small>
-                  </span>
-                </template>
-
-                <template v-else-if="getTooltipField(field) != null">
-                  <v-tooltip bottom>
-                    <template #activator="{ on, attrs }">
-                      <span
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        {{ getFormattedField(field) }}
-                      </span>
-                    </template>
-
-                    {{ getTooltipField(field) }}
-                  </v-tooltip>
-                </template>
-
-                <span v-else>{{ getFormattedField(field) }}</span>
-              </status-label>
-            </template>
-          </v-col>
-        </template>
-
+      <v-row v-if="activeSpool">
         <v-col
-          v-else-if="isConnected"
+          v-for="(fields, i) in selectedCardFields"
+          :key="`spoolman-card-col-${i}`"
           align-self="center"
         >
-          {{ $t('app.spoolman.msg.tracking_inactive') }}
-        </v-col>
+          <template v-for="field in fields">
+            <status-label
+              :key="`spoolman-card-${field}`"
+              :label="getFieldLabel(field)"
+              :label-width="86"
+            >
+              <template v-if="field === 'remaining_weight'">
+                <span v-if="remainingFilamentUnit === 'weight'">
+                  {{ getFormattedField('remaining_weight') }}
+                  <small>/ {{ getFormattedField('initial_weight') }}</small>
+                </span>
+                <span v-else-if="remainingFilamentUnit === 'length'">
+                  {{ getFormattedField('remaining_length') }}
+                  <small>/ {{ getFormattedField('initial_length') }}</small>
+                </span>
+              </template>
 
-        <v-col
-          v-else
-          align-self="center"
-        >
-          {{ $t('app.spoolman.msg.not_connected') }}
+              <template v-else-if="field === 'used_weight'">
+                <span v-if="remainingFilamentUnit === 'weight'">
+                  {{ getFormattedField('used_weight') }}
+                  <small>/ {{ getFormattedField('initial_weight') }}</small>
+                </span>
+                <span v-else-if="remainingFilamentUnit === 'length'">
+                  {{ getFormattedField('used_length') }}
+                  <small>/ {{ getFormattedField('initial_length') }}</small>
+                </span>
+              </template>
+
+              <template v-else-if="getTooltipField(field) != null">
+                <v-tooltip bottom>
+                  <template #activator="{ on, attrs }">
+                    <span
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      {{ getFormattedField(field) }}
+                    </span>
+                  </template>
+
+                  {{ getTooltipField(field) }}
+                </v-tooltip>
+              </template>
+
+              <span v-else>{{ getFormattedField(field) }}</span>
+            </status-label>
+          </template>
         </v-col>
 
         <v-col
@@ -205,6 +198,29 @@
           >
             $warning
           </v-icon>
+        </v-col>
+      </v-row>
+
+      <v-alert
+        v-else-if="isConnected"
+        type="info"
+        dense
+        text
+        class="mb-0"
+      >
+        {{ $t('app.spoolman.msg.tracking_inactive') }}
+      </v-alert>
+
+      <v-row v-else>
+        <v-col>
+          <v-alert
+            type="warning"
+            dense
+            text
+            class="mb-0"
+          >
+            {{ $t('app.spoolman.msg.not_connected') }}
+          </v-alert>
         </v-col>
       </v-row>
     </v-card-text>
@@ -263,6 +279,29 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
 
   get isConnected (): boolean {
     return this.$typedState.spoolman.connected
+  }
+
+  get socketDiagnosticMessage (): string | null {
+    const diagnostic = this.$typedState.spoolman.socketDiagnostic
+
+    if (!this.isConnected || !diagnostic) return null
+
+    switch (diagnostic) {
+      case 'mixed-content':
+        return this.$t('app.spoolman.msg.live_updates.mixed_content').toString()
+
+      case 'cors':
+        return this.$t('app.spoolman.msg.live_updates.cors').toString()
+
+      case 'unreachable':
+        return this.$t('app.spoolman.msg.live_updates.unreachable').toString()
+
+      case 'reachable':
+        return this.$t('app.spoolman.msg.live_updates.failed').toString()
+
+      case 'cancelled':
+        return null
+    }
   }
 
   get targetableMacros () {

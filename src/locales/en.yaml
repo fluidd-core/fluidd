@@ -1168,6 +1168,21 @@ app:
         Filament tracking is inactive.
         To get started, please select a spool.
       not_connected: Spoolman server not available.
+      live_updates:
+        cors: >-
+          Live updates from Spoolman aren't working. Spoolman is blocking
+          Fluidd's browser origin - check your Spoolman configuration to
+          allow it.
+        mixed_content: >-
+          Live updates from Spoolman aren't working. Fluidd is served over
+          HTTPS but the Spoolman address uses HTTP, so the browser blocks the
+          direct connection.
+        unreachable: >-
+          Live updates from Spoolman aren't working. Fluidd's browser can't
+          reach the Spoolman server directly.
+        failed: >-
+          Live updates from Spoolman aren't working. The direct connection to
+          Spoolman failed for an unknown reason.
       info:
         howto: >-
           Show your spool's QR code to the camera.

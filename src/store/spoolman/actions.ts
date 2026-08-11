@@ -11,6 +11,7 @@ import { SocketActions } from '@/api/socketActions'
 import { consola } from 'consola'
 import { EventBus } from '@/eventBus'
 import { gte, valid } from 'semver'
+import diagnoseHttpEndpoint from '@/util/http-endpoint-diagnostics'
 
 const logPrefix = '[SPOOLMAN]'
 
@@ -48,6 +49,8 @@ const createSpoolmanSocket = (spoolmanUrl: string): WebSocket | undefined => {
     consola.error(`${logPrefix} failed to create websocket`, err)
   }
 }
+
+let diagnoseSocketFailureAbortController: AbortController | undefined
 
 export const actions = {
   /**
@@ -209,10 +212,25 @@ export const actions = {
 
       if (socket == null) {
         commit('setSocket', null)
+        commit('setSocketDiagnostic', 'unreachable')
         return
       }
 
+      let opened = false
+
+      socket.onopen = () => {
+        opened = true
+        commit('setSocketDiagnostic', null)
+      }
+
       socket.onerror = err => consola.warn(`${logPrefix} received websocket error`, err)
+
+      socket.onclose = () => {
+        if (!opened && state.socket === socket) {
+          dispatch('diagnoseSocketFailure')
+        }
+      }
+
       socket.onmessage = event => {
         let data: WebsocketBasePayload
 
@@ -245,5 +263,28 @@ export const actions = {
     } else {
       commit('setSocket', null)
     }
+  },
+
+  async diagnoseSocketFailure ({ getters, commit }) {
+    const spoolmanUrl: string | undefined = getters.getSpoolmanUrl
+
+    if (!spoolmanUrl) {
+      return
+    }
+
+    diagnoseSocketFailureAbortController?.abort()
+    diagnoseSocketFailureAbortController = new AbortController()
+
+    const result = await diagnoseHttpEndpoint(spoolmanUrl, {
+      probePath: 'api/v1/info',
+      timeout: 5000,
+      signal: diagnoseSocketFailureAbortController.signal
+    })
+
+    if (result.kind === 'cancelled') {
+      return
+    }
+
+    commit('setSocketDiagnostic', result.kind)
   }
 } satisfies ActionTree<SpoolmanState, RootState>
