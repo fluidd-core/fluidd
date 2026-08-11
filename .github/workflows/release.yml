@@ -9,9 +9,13 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      attestations: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -19,7 +23,7 @@ jobs:
           run_install: false
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: 'pnpm'
@@ -52,6 +56,11 @@ jobs:
         run: |
           cd ./dist
           zip -r ../fluidd.zip ./
+
+      - name: Attest fluidd.zip
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: ./fluidd.zip
 
       - name: Get version from tag
         id: tag_name
@@ -113,7 +122,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Download fluidd.zip
         uses: actions/download-artifact@v8

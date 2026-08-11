@@ -24,6 +24,14 @@
       }
     },
     {
+      "name": "Automated Layers",
+      "color": "#81bfc6",
+      "isDark": true,
+      "logo": {
+        "src": "logo_automated_layers.svg"
+      }
+    },
+    {
       "name": "BTT",
       "color": "#475A91",
       "isDark": true,
@@ -129,6 +137,14 @@
       "isDark": true,
       "logo": {
         "src": "logo_siboor.svg"
+      }
+    },
+    {
+      "name": "Snapmaker",
+      "color": "#0c63e2",
+      "isDark": true,
+      "logo": {
+        "src": "logo_snapmaker.svg"
       }
     },
     {

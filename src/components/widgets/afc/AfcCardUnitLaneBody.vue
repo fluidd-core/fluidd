@@ -224,7 +224,8 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
     this.$typedCommit('spoolman/setDialogState', {
       show: true,
       spoolSelectionOnly: true,
-      selectedSpoolId: this.spoolId
+      selectedSpoolId: this.spoolId,
+      allowManualEntry: true
     })
   }
 
@@ -235,6 +236,16 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
       this.spoolmanSelection
     ) {
       this.spoolmanSelection = false
+
+      if (dialog.switchToManualEntry) {
+        this.$typedCommit('spoolman/setDialogState', {
+          ...dialog,
+          switchToManualEntry: false,
+          allowManualEntry: false
+        })
+        this.showFilamentDialog = true
+        return
+      }
 
       if (dialog.selectedSpoolId !== this.spoolId) {
         this.sendGcode(`SET_SPOOL_ID LANE=${this.name} SPOOL_ID=${dialog.selectedSpoolId ?? ''}`)

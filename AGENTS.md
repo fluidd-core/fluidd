@@ -69,7 +69,10 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 - **`@pedrolamas/plugin-vue2`** — Vue 2 SFC support for Vite
 - **`unplugin-vue-components/rolldown`** — auto-imports components from `src/components/common|layout|ui`
 - **`sass-embedded`** — SCSS preprocessor (variables auto-injected via `@/scss/variables`)
-- **vitest v4** — unit test runner (jsdom environment)
+- **vitest v4** — unit test runner; `test:unit` is a bare `vitest` call, with the jsdom environment and setup files declared in `vitest.config.ts`
+- **pnpm catalog** (`pnpm-workspace.yaml`) — `dompurify`, `echarts`, `typescript`, `vite` and `vue` are pinned in the catalog and blanket-mapped through `overrides` so every transitive dependency resolves to the same version
+- **`typescript-native-bridge`** — the `typescript` catalog entry is `npm:typescript-native-bridge@…` (tsgo), not stock `typescript`
+- Local config imports use explicit `.ts` extensions (`./vite.config.ts`) and `import.meta.dirname` — no `__dirname`
 - **`commit-and-tag-version`** — release versioning (`pnpm run release`)
 - **ESLint flat config** (`eslint.config.mjs`) — enforced at dev time via `vite-plugin-checker` with `useFlatConfig: true`
 - **`vite-plugin-checker`** — runs vue-tsc and ESLint during dev (disabled at build time)
@@ -79,7 +82,7 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 ### Essential Commands
 
 ```bash
-pnpm run bootstrap      # Install git hooks (after clone)
+pnpm run prepare        # Install git hooks (runs automatically on `pnpm i`)
 pnpm run dev            # Start development server (port 8080)
 pnpm run build          # Production build
 pnpm run type-check     # TypeScript validation (vue-tsc)
@@ -100,7 +103,7 @@ src/
 │   ├── ui/             # Reusable: AppBtn, AppDialog, AppChart (auto-imported)
 │   └── widgets/        # 27 feature widget dirs: bedmesh/, camera/, console/, filesystem/, macros/, mmu/, thermals/, toolhead/, etc.
 ├── directives/         # Custom Vue directives (v-safe-html for DOMPurify)
-├── locales/            # i18n YAML files (23 languages)
+├── locales/            # i18n YAML files (24 languages)
 ├── mixins/             # Vue mixins (StateMixin, FilesMixin, etc.)
 ├── monaco/             # Monarch tokenizers and editor themes
 ├── plugins/            # Vue plugins (i18n, socketClient, vuetify, filters, colorSet)
@@ -127,7 +130,7 @@ src/
 
 ### Icons & Theming
 
-- MDI icons via `@mdi/js` — mapped in `src/globals.ts` (`Icons` object, ~228 mappings)
+- MDI icons via `@mdi/js` — mapped in `src/globals.ts` (`Icons` object, ~233 mappings)
 - Usage: `<v-icon>{{ $globals.Icons.close }}</v-icon>`
 - Vuetify theme with custom dark/light overrides in `src/scss/variables.scss`
 - PWA support with service worker in `src/sw.ts` (Workbox, injectManifest strategy)
@@ -136,9 +139,39 @@ src/
 
 - Setup in `src/components/widgets/filesystem/setupMonaco.ts` (includes worker environment setup)
 - Monarch tokenizers for `gcode`, `klipper-config`, `moonraker-config`, `log` languages (in `src/monaco/language/*.monarch.ts`)
+- `src/monaco/language/gcode-rules.ts` is the shared G-code tokenizer factory — `createGcodeRules('standalone')` backs the `gcode` language, `createGcodeRules('embedded')` is spliced into `klipper-config` values
+- `klipper-config` highlights any option whose name **ends in** `gcode` (`gcode`, `*_gcode`) as a Klipper G-code template — `gcode_id`, `gcode_x_offset` and `gcode_load_sequence` merely start with it and stay plain values
+- Klipper's Jinja uses **single-brace** delimiters (`{ … }`, not `{{ }}`), so these rules are not reusable for standard Jinja; both hosts must set `ignoreCase: true` at language level because Monarch drops per-rule regex flags
+- Both editor themes in `setupMonaco.ts` carry `delimiter.jinja`, `keyword.control.jinja`, `variable.jinja` and `number.jinja` token colours
 - Custom CodeLens providers (links to Klipper/Moonraker docs from config sections)
 - CodeLens and document symbol providers for `klipper-config` and `moonraker-config`; folding range provider for `klipper-config`, `moonraker-config`, and `gcode`
 - Language providers run in dedicated Web Workers (`monacoCodeLensWorker`, `monacoDocumentSymbolsWorker`, `monacoFoldingRangesWorker`)
+
+### G-code Preview
+
+- Parsed in `src/workers/parseGcode.worker.ts` → `parseGcode.ts` — streamed via `fetch` +
+  `ReadableStream`, reporting progress by file position
+- Result is a **columnar `MoveStore`** of typed arrays, not `Move` objects (`src/store/gcodePreview/types.ts`):
+  `x`/`y`/`z`/`i`/`j` `Float32Array`, `tool`/`flags` `Uint8Array`, `filePosition` `Uint32Array`,
+  plus a `length` — every column is indexed by the same move index
+- `x`/`y`/`z` are **forward-filled** absolute positions after each move — there are no `undefined`
+  axes to fall back through
+- `i`/`j` are arc centre offsets, **truncated after the last `Arc` move** — only read them when
+  that move has the `Arc` flag set
+- `MoveFlags` is a bit field: `Extruding`, `Retracting`, `Arc`, `Clockwise` — test with
+  `(flags[i] & MoveFlags.Arc) !== 0`
+- The worker **transfers** the `MoveStore` buffers via `postMessage` transferables rather than
+  copying them; the parser owns nothing afterwards. `defaultMoveStore` (`gcodePreview/state.ts`) is
+  the empty store used on reset
+- A layer's `move` is an **anchor** — the move whose *endpoint* is the layer start, i.e. the move
+  before the layer's first real move. `buildLayerPaths` both seeds the toolhead from it and
+  iterates from it, drawing it as a zero-length segment
+- SVG path data is built by `buildLayerPaths` in `src/util/gcode-preview.ts` (extracted from the old
+  `getPaths` getter, which now just delegates). Every emitted `d` **must** start with a moveto — a
+  `d` beginning with `L` or `A` renders nothing
+- Oversized files are truncated by the parser, which sets `truncated` on the result;
+  `gcodePreview/actions.ts` surfaces it as an `EventBus` warning
+  (`app.general.msg.gcode_preview_truncated`)
 
 ## Integration Points
 
@@ -164,13 +197,23 @@ src/
 
 ## Testing Conventions
 
-- Unit tests in `src/util/__tests__/*.spec.ts` with Vitest + jsdom
+- Unit tests in any `src/**/__tests__/*.spec.ts` with Vitest + jsdom — not just `src/util/`; e.g.
+  `src/workers/__tests__/parseGcode.spec.ts`. `tsconfig.vitest.json` includes `src/**/__tests__/*`
+  at any depth, plus `src/typings/*.d.ts` so specs can reference the `Klipper`/`Moonraker`
+  namespaces
 - Monarch tokenizer tests co-located in `src/monaco/language/__tests__/` — use shared `tokenize-helper.ts` (`registerLanguage`, `tokenizeLines`, `tokenBuilder`)
-- Global test functions (`describe`, `it`, `expect`) — `globals: true` in vitest config
+- Global test functions (`describe`, `it`, `expect`, `vi`, `afterEach`, …) — `globals: true` in
+  vitest config, typed via `/// <reference types="vitest/globals" />` in `env.d.ts`; specs import
+  no vitest symbols
 - Setup file: `tests/unit/setup.ts` — includes `CSS.escape` and `window.matchMedia` polyfills required by Monaco in jsdom
 - Time manipulation utility: `timeTravel(date, callback)` in `tests/unit/utils.ts`
 - Parameterized tests: `it.each([...])` pattern
 - Test store actions/mutations independently from UI
+- Stub `fetch` with `vi.stubGlobal('fetch', …)`, always restore with `vi.unstubAllGlobals()` in
+  `afterEach` — see `src/util/__tests__/http-endpoint-diagnostics.spec.ts` and
+  `src/workers/__tests__/parseGcode.spec.ts` (the latter stubs a real `ReadableStream` body)
+- `Float32Array` values read back are inexact (`0.2` → `0.20000000298…`) — assert with
+  `toBeCloseTo`, or pick exactly-representable fixtures
 
 ## Code Style
 
@@ -183,6 +226,11 @@ src/
 - Use `consola` for logging, not `console.log` (configured in `src/setupConsola.ts` — warn in prod, verbose in dev)
 - Type imports: `import type { ... }` for types only (`verbatimModuleSyntax: true`)
 - `satisfies` keyword for store module type checking
+- `decimalRound(value, places)` (`src/util/decimal-round.ts`) is the shared rounding helper — use it
+  instead of ad-hoc `Math.round(value * 100) / 100`
+- **Stable `v-for` keys** — key by identity, never by index (`` :key="`component::${component.name}`" ``).
+  Separators belong inside the loop with their own key (`` :key="`component:divider:${component.name}`" ``)
+  rather than a trailing `v-if="i < items.length - 1"` sibling
 - No double-cast type assertions (`as unknown as T`) — use a proper TypeScript type guard instead (`in`, `typeof`, `instanceof`, or a custom type predicate):
 
   ```typescript
@@ -215,7 +263,6 @@ src/
 - Dynamic imports for code splitting (see `vue-echarts-chunk.ts`, `src/dynamicImports.ts`)
 - SCSS deprecation warnings silenced: `import`, `global-builtin`, `slash-div`, `if-function`
 - `@/scss/variables` auto-injected into all SCSS/Sass files via Vite config
-- `path` aliased to `path-browserify` for browser compatibility
 - Strict Vuex mode enabled only in dev (`strict: import.meta.env.DEV`)
 - **SVG files auto-optimized on commit** — pre-commit hook runs SVGO on staged `.svg`, `.vue`, and `src/globals.ts` files
 - **`VUE_` env prefix required** — only env vars prefixed `VUE_` are exposed to app code via `import.meta.env` (Vite `envPrefix`)
@@ -226,7 +273,7 @@ src/
 ## Dev Container
 
 - VSCode Dev Container (`.devcontainer/`) bundles a `docker-klipper-simulavr` container — real Klipper/Moonraker simulation on port 7125, Fluidd on port 8080
-- `postCreateCommand` runs `pnpm i --frozen-lockfile && pnpm run bootstrap` automatically
+- `postCreateCommand` runs `pnpm i --frozen-lockfile` automatically (which in turn runs `prepare`)
 
 ## Documentation Site
 

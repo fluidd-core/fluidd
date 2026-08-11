@@ -742,7 +742,7 @@ declare namespace Klipper {
     num_units: number;
   }
 
-  export type AfcStateState = 'Initialized' | 'Idle' | 'Error' | 'Loading' | 'Unloading' | 'Ejecting' | 'Moving' | 'Restoring'
+  export type AfcStateState = 'Initialized' | 'Idle' | 'Error' | 'Loading' | 'Unloading' | 'Ejecting' | 'Moving' | 'Restoring' | 'ToolSwap' | 'ToolDock' | 'ToolPickup'
 
   export interface AfcState {
     current_load: string | null;
@@ -770,6 +770,7 @@ declare namespace Klipper {
     }
     led_state: boolean;
   }
+  export type AfcExtruderStatus = 'Idle' | 'Error' | 'ToolSwap' | 'ToolDock' | 'ToolPickup'
 
   export interface AfcExtruderState {
     tool_stn: number;
@@ -784,6 +785,10 @@ declare namespace Klipper {
     tool_end: string | null;
     tool_end_status: boolean;
     lanes: string[];
+    on_shuttle?: boolean;
+    is_standalone?: boolean;
+    next_pickup?: boolean;
+    status?: AfcExtruderStatus;
   }
 
   export type AfcBufferStatus = 'Unknown' | 'Advancing' | 'Trailing'
@@ -819,6 +824,7 @@ declare namespace Klipper {
     weight: number;
     filament_name?: string;
     extruder_temp: number | null;
+    bed_temp?: number | null;
     runout_lane: string | null;
     filament_status: 'In Tool' | 'Ready' | 'Prep' | 'Not Ready';
     filament_status_led: string;

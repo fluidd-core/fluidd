@@ -266,6 +266,16 @@
       <v-spacer v-if="isMobileViewport" />
 
       <app-btn
+        v-if="allowManualEntry"
+        text
+        color="primary"
+        type="button"
+        @click="handleSwitchToManualEntry"
+      >
+        {{ $t('app.afc.ManualEntry') }}
+      </app-btn>
+
+      <app-btn
         v-if="spoolmanURL"
         :href="spoolmanURL"
         target="_blank"
@@ -565,6 +575,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.$typedState.spoolman.dialog.spoolSelectionOnly ?? false
   }
 
+  get allowManualEntry (): boolean {
+    return this.$typedState.spoolman.dialog.allowManualEntry ?? false
+  }
+
   get targetMacro (): string | undefined {
     return this.$typedState.spoolman.dialog.targetMacro
   }
@@ -780,6 +794,13 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       path: 'uiSettings.spoolman.selectionDialogSortOrder.desc',
       value: value ?? null,
       server: true
+    })
+  }
+
+  handleSwitchToManualEntry () {
+    this.$typedCommit('spoolman/setDialogState', {
+      show: false,
+      switchToManualEntry: true
     })
   }
 

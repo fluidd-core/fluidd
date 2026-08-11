@@ -129,6 +129,14 @@ Files must be uploaded after enabling these settings. See
 See [Slicer Uploads](/features/slicer-uploads) for setup instructions
 covering OrcaSlicer, PrusaSlicer, SuperSlicer, and Cura.
 
+### My Spoolman spool weight stopped updating after a Spoolman upgrade
+
+Spoolman 0.26 added browser origin checks that block the direct connection
+Fluidd uses for live spool updates, even though spool selection and everything
+else still work. Add Fluidd's address to `SPOOLMAN_CORS_ORIGIN` on your
+Spoolman host and restart it. See
+[Live updates](/features/multi-material#live-updates) for details.
+
 ## System
 
 ### The host reboot / shutdown commands don't work

@@ -5,6 +5,7 @@ import type {
   SpoolmanState,
   SpoolSelectionDialogState
 } from '@/store/spoolman/types'
+import type { HttpDiagnosticResult } from '@/util/http-endpoint-diagnostics'
 
 export const mutations = {
   /**
@@ -42,5 +43,9 @@ export const mutations = {
   setSocket (state, payload: WebSocket | null) {
     state.socket?.close()
     state.socket = payload != null ? markRaw(payload) : null
+  },
+
+  setSocketDiagnostic (state, payload: HttpDiagnosticResult['kind'] | null) {
+    state.socketDiagnostic = payload
   }
 } satisfies MutationTree<SpoolmanState>

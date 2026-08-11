@@ -1,18 +1,23 @@
 app:
   afc:
     AfcSettings: "AFC-Settings"
+    BedTemp: "Bed Temp"
+    BedTempSubtitle: "Bed temperature for this filament, in °C."
     BrushNozzle: "Brush Nozzle"
     BufferDisabled: "Buffer Not Active"
     BypassActive: "Filament loaded in bypass tool changes are deactivated!"
     Calibrate: "Calibrate"
     Cancel: "Cancel"
     CaptureTd: "Capture TD"
+    ClearSpoolId: "Clear assigned Spool ID"
     DebugJson: "Debug JSON"
     Detected: "Detected"
     EjectFilament: "Eject Filament"
     Ejecting: "Ejecting"
     Empty: "Empty"
     Error: "Error"
+    ExtruderTemp: "Extruder Temp"
+    ExtruderTempSubtitle: "Extruder temperature for this filament, in °C."
     FilamentForLane: "Filament for {name}"
     Functions: "Functions"
     Headline: "AFC"
@@ -21,6 +26,7 @@ app:
     Idle: "Idle"
     InfiniteSpoolDescription: "Next lane to load if {name} runs out"
     InfiniteSpoolHeadline: "Infinite Spool"
+    Initialized: "Initialized"
     LaneControls: "Lane Controls"
     LaneLoaded: "Lane Loaded"
     LaneLoadedNone: "NONE"
@@ -31,6 +37,7 @@ app:
     LoadedInLane: "Loaded in {lane}"
     Loading: "Loading"
     LoadLane: "Load Lane"
+    ManualEntry: "Manual Entry"
     Material: "Material"
     MaterialSubtitle: "For example ABS PETG PLA etc."
     Moving: "Moving"
@@ -45,15 +52,19 @@ app:
       NoLane: "No Lane"
       NoLaneMapped: "No lane mapped to {tool}"
       NoFilamentLoaded: "No filament loaded into {lane}"
-      FilamentTypeMismatch: "Filament material type mismatch: file requires {file}, lane has {lane}"
-      FilamentWeightNotEnough: "Not enough filament in lane {lane}: requires {required}, available {available}"
+      FilamentTypeMismatch: "Filament material type mismatch: file requires {file},
+        lane has {lane}"
+      FilamentWeightNotEnough: "Not enough filament in lane {lane}: requires {required},
+        available {available}"
       Question: "Do you want to start printing {filename}?"
-      QuestionWithSpool: "Do you want to start printing {filename} with the active spool?"
+      QuestionWithSpool: "Do you want to start printing {filename} with the active
+        spool?"
       SpoolId: "ID #{id}"
       SpoolWeightRemaining: "{remaining}g remaining ({used}g used)"
       LaneWeightRemaining: "Weight remaining {weight}g"
     RammingSensor: "Ramming Sensor"
     Restoring: "Restoring"
+    SelectTool: "Select Tool"
     SetSpool: "Set Spool"
     Settings: "Settings"
     SettingsDialog:
@@ -97,8 +108,12 @@ app:
     ShowUnit: "Show Unit \"{name}\""
     ShowUnitIcons: "Show Unit Icons"
     ShowTd1Color: "Show TD-1 Color"
+    ToolSwap: "Swapping Toolheads"
+    ToolPickup: "Picking up Toolhead"
+    ToolDock: "Docking Toolhead"
     Unloading: "Unloading"
     UnloadLane: "Unload Lane"
+    UnselectTool: "Unselect Tool"
     Weight: "Weight"
     WeightRemaining: "{weight} g remaining"
     WeightSubtitle: "The weight of the filament in grams (without spool)."
@@ -195,7 +210,7 @@ app:
         hidden_files: Filter hidden files and folders
         klipper_backup_files: Filter Klipper backup files
         moonraker_backup_files: Filter Moonraker backup files
-        moonraker_temporary_upload_files: Filter Moonraker temporary upload 
+        moonraker_temporary_upload_files: Filter Moonraker temporary upload
           files
         rolled_log_files: Filter rolled log files
     label:
@@ -352,8 +367,7 @@ app:
       reset_stats: Reset Stats
     error:
       app_setup_link: >-
-        Fluidd setup requirements can be found <a target="_blank"
-        href="%{url}">here.</a>
+        Fluidd setup requirements can be found <a target="_blank" href="%{url}">here</a>.
       app_warnings_found: '%{appName} warnings found.'
       components_config: >-
         Moonraker plugin configuration can be found <a target="_blank"
@@ -500,9 +514,9 @@ app:
       welcome_back: >-
         Welcome back.<br>Sign in below to stay in touch with your printer.
       offline_ready: Fluidd is now ready to work offline.
-      needs_refresh: New content available, please click the <b>Reload</b> 
+      needs_refresh: New content available, please click the <b>Reload</b>
         button to update.
-      pending_configuration_sections_deleted: The following sections are marked 
+      pending_configuration_sections_deleted: The following sections are marked
         for deletion
       rolledover_logs: >-
         The following application logs have been rolled over: %{applications}
@@ -510,8 +524,10 @@ app:
       fluidd_settings_backup_failed: Failed to backup Fluidd settings!
       fluidd_settings_restore_failed: Failed to restore Fluidd settings!
       gcode_preview_failed: Failed to preview G-code file!
-      throttled_warning: This may lead to a throttle condition and result in
-        a failed print
+      gcode_preview_truncated: G-code file is too large, only part of it is
+        previewed
+      throttled_warning: This may lead to a throttle condition and result in a
+        failed print
     simple_form:
       error:
         arrayofnums: Only numbers
@@ -533,39 +549,39 @@ app:
           you want to change the beacon model?
         confirm_clear_mesh: The printer is currently busy. Are you sure you want
           to clear the bed mesh?
-        confirm_delete: Are you sure? This will delete the selected item. | Are 
+        confirm_delete: Are you sure? This will delete the selected item. | Are
           you sure? This will delete the {count} selected items.
-        confirm_emergency_stop: Are you sure you want to emergency stop the 
+        confirm_emergency_stop: Are you sure you want to emergency stop the
           printer?
-        confirm_exclude_object: Are you sure you want to exclude this object 
+        confirm_exclude_object: Are you sure you want to exclude this object
           from printing?
         confirm_forcemove_toggle: Are you sure? This can damage the printer.
-        confirm_load_bedmesh_profile: The printer is currently busy. Are you 
+        confirm_load_bedmesh_profile: The printer is currently busy. Are you
           sure you want to load profile %{name}?
         confirm_reboot_host: Are you sure? This will reboot your host system.
-        confirm_remove_camera: Are you sure you want to remove the camera 
+        confirm_remove_camera: Are you sure you want to remove the camera
           %{name}?
-        confirm_remove_console_filter: Are you sure you want to remove the 
+        confirm_remove_console_filter: Are you sure you want to remove the
           console filter %{name}?
         confirm_remove_macro_category: Are you sure you want to remove the macro
           category %{name}?
-        confirm_remove_printer: Are you sure you want to remove the printer 
+        confirm_remove_printer: Are you sure you want to remove the printer
           %{name}?
-        confirm_remove_thermal_preset: Are you sure you want to remove the 
+        confirm_remove_thermal_preset: Are you sure you want to remove the
           thermal preset %{name}?
         confirm_remove_user: Are you sure you want to remove user %{username}?
-        confirm_restore_backup: Are you sure you want to restore this backup? 
+        confirm_restore_backup: Are you sure you want to restore this backup?
           Moonraker will restart immediately after this request is processed.
-        confirm_shutdown_host: Are you sure? This will shutdown your host 
+        confirm_shutdown_host: Are you sure? This will shutdown your host
           system.
-        confirm_service_start: Are you sure you want to start the %{name} 
+        confirm_service_start: Are you sure you want to start the %{name}
           service?
-        confirm_service_restart: Are you sure you want to restart the %{name} 
+        confirm_service_restart: Are you sure you want to restart the %{name}
           service?
         confirm_service_stop: Are you sure you want to stop the %{name} service?
         confirm_power_device_toggle: Are you sure? This will toggle the power of
           this device.
-        unsaved_changes: You have unsaved changes. Are you sure you want to 
+        unsaved_changes: You have unsaved changes. Are you sure you want to
           close this file?
         no_file_preview: >-
           %{name} cannot currently be previewed.
@@ -760,9 +776,9 @@ app:
       collector: Collector
       confirm_on_estop: Require confirm on Emergency Stop
       confirm_on_power_device_change: Require confirm on Device Power changes
-      confirm_on_save_config_and_restart: Review Pending Configuration Changes 
+      confirm_on_save_config_and_restart: Review Pending Configuration Changes
         before Save and Restart
-      confirm_dirty_editor_close: Require confirm when closing the editor with 
+      confirm_dirty_editor_close: Require confirm when closing the editor with
         unsaved changes
       contains: Contains
       dark_mode: Dark mode
@@ -792,7 +808,7 @@ app:
       fps_target: FPS Target
       fps_idle_target: FPS Target when not in focus
       height: Height
-      hide_single_part_bounding_box: Hide part bounding box when printing a 
+      hide_single_part_bounding_box: Hide part bounding box when printing a
         single part
       gcode_coords: Use GCode Coordinates
       host_restart: Host Restart
@@ -826,7 +842,7 @@ app:
       retraction_icon_size: Retraction Icon Size
       right_y: Right Y-Axis
       save_and_restore_view_state: Save and restore view state
-      sections_to_ignore_pending_configuration_changes: Sections to ignore 
+      sections_to_ignore_pending_configuration_changes: Sections to ignore
         Pending Configuration Changes
       sensor_color: Sensor Color
       service_restart: Service Restart
@@ -839,7 +855,7 @@ app:
       show_logo_on_background: Show logo on background
       show_rate_of_change: Show temperature rate of change
       show_relative_humidity: Show relative humidity
-      show_save_config_and_restart: Save Config and Restart button in top 
+      show_save_config_and_restart: Save Config and Restart button in top
         navigation
       show_upload_and_print: Show Upload and Print button in top navigation
       solid: Solid
@@ -862,14 +878,14 @@ app:
       date_format: Date format
       time_format: Time format
       text_sort_order: Text sort order
-      drag_and_drop_functionality_for_files_and_folders: Drag-and-drop 
+      drag_and_drop_functionality_for_files_and_folders: Drag-and-drop
         functionality for files and folders
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
-      show_manual_probe_dialog_automatically: Show Manual Probe dialog 
+      show_manual_probe_dialog_automatically: Show Manual Probe dialog
         automatically
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog
         automatically
-      show_screws_tilt_adjust_dialog_automatically: Show Screws Tilt Adjust 
+      show_screws_tilt_adjust_dialog_automatically: Show Screws Tilt Adjust
         dialog automatically
     timer_options:
       absolute_file_position: Absolute file position
@@ -899,11 +915,11 @@ app:
       gcode_coords: Use GCode position instead of toolhead position on dashboard
       keyboard_shortcuts: >-
         [BETA] Enable and press '?' to view the list of available keyboard shortcuts
-      show_manual_probe_dialog_automatically: Automatically shows helper dialog 
+      show_manual_probe_dialog_automatically: Automatically shows helper dialog
         if running a Manual Probe tool
-      show_bed_screws_adjust_dialog_automatically: Automatically shows helper 
+      show_bed_screws_adjust_dialog_automatically: Automatically shows helper
         dialog if running BED_SCREWS_ADJUST tool
-      show_screws_tilt_adjust_dialog_automatically: Automatically shows helper 
+      show_screws_tilt_adjust_dialog_automatically: Automatically shows helper
         dialog if running SCREWS_TILT_CALCULATE tool
       theme_disclaimer: >-
         These themes feature brand names and logos that are the intellectual property
@@ -920,7 +936,7 @@ app:
   socket:
     msg:
       connecting: Connecting to Moonraker...
-      no_connection: No Moonraker connection. Please check Moonraker status and 
+      no_connection: No Moonraker connection. Please check Moonraker status and
         / or refresh.
   system_info:
     label:
@@ -980,7 +996,7 @@ app:
       screws_tilt_adjust: Screws Tilt Adjust
     tooltip:
       absolute_positioning: Absolute Positioning
-      extruder_disabled: extruder disabled, below min_extrude_temp 
+      extruder_disabled: extruder disabled, below min_extrude_temp
         (%{min}<small>°C</small>)
       extruding: Extruding
       home_xy: Home XY
@@ -1152,6 +1168,21 @@ app:
         Filament tracking is inactive.
         To get started, please select a spool.
       not_connected: Spoolman server not available.
+      live_updates:
+        cors: >-
+          Live updates from Spoolman aren't working. Spoolman is blocking
+          Fluidd's browser origin - check your Spoolman configuration to
+          allow it.
+        mixed_content: >-
+          Live updates from Spoolman aren't working. Fluidd is served over
+          HTTPS but the Spoolman address uses HTTP, so the browser blocks the
+          direct connection.
+        unreachable: >-
+          Live updates from Spoolman aren't working. Fluidd's browser can't
+          reach the Spoolman server directly.
+        failed: >-
+          Live updates from Spoolman aren't working. The direct connection to
+          Spoolman failed for an unknown reason.
       info:
         howto: >-
           Show your spool's QR code to the camera.
@@ -1169,7 +1200,7 @@ app:
           Please check your camera configuration or try another camera source.
     setting:
       auto_open_qr_camera: Automatically open camera for QR code detection
-      auto_select_spool_on_match: Automatically commit spool selection on QR 
+      auto_select_spool_on_match: Automatically commit spool selection on QR
         code match
       card_fields: Fields to show in the Spoolman card
       prefer_device_camera: Use device camera for QR code detection if available
@@ -1287,19 +1318,19 @@ app:
       color: Color
       spoolid: Spool ID
     msg:
-      reset_gate_map_confirmation: This will reset the entire gate map back to 
-        the default defined in 'mmu_parameters.cfg' or empty map if no defaults 
+      reset_gate_map_confirmation: This will reset the entire gate map back to
+        the default defined in 'mmu_parameters.cfg' or empty map if no defaults
         are available
-      reset_ttg_map_confirmation: This will reset the entire tool-to-gate 
-        mapping and endless spool groups back to the default defined in 
+      reset_ttg_map_confirmation: This will reset the entire tool-to-gate
+        mapping and endless spool groups back to the default defined in
         'mmu_parameters.cfg' or default 1:1 mapping in no defaults are available
       select_gate: Select gate/spool info you would like to edit
       spoolman_off: Spoolman support is "%{mode}" in Happy Hare. Assigning spool
         id to a gate is disabled
       spoolman_other: Spoolman support is "%{mode}". You can optionally assign a
         spool id or edit gate attributes directly
-      spoolman_pull: Spoolman support is in "%{mode}" mode. Local editing of 
-        most gate properties is disabled. Assign spool/gate mapping in spoolman 
+      spoolman_pull: Spoolman support is in "%{mode}" mode. Local editing of
+        most gate properties is disabled. Assign spool/gate mapping in spoolman
         DB directly or use the MMU_SPOOLMAN command
       no_matching_spool: No matching spool found
       are_you_sure: Are you sure?
@@ -1307,14 +1338,14 @@ app:
       filament_available: Filament available in gate
       filament_unknown: Unknown filament state (please set)
       filament_empty: Filament not available
-      maintenance_intro: Directly manage specific MMU functions and selective 
+      maintenance_intro: Directly manage specific MMU functions and selective
         configuration.
       recover_intro: This is a low level recovery for use when Happy Hare is out
         of sync with your MMU. It is recommended to try automatic recovery first
-        however this will be required to correct the current tool or gate 
+        however this will be required to correct the current tool or gate
         (Alternatively on Type-A MMU's you can unload and home the selector).
       no_custom_controls: No Custom Controls
-      filament_loaded: Is the filament completely loaded to the extruder or 
+      filament_loaded: Is the filament completely loaded to the extruder or
         completely unloaded?
       gate_bypass: Gate is set to Bypass!
       no_gate: A gate must be selected
@@ -1328,9 +1359,9 @@ app:
       no_active_spool: No active spool
       no_spool_id: No spool ID
       recover_filament_position: Recover Filament Position
-      multi_color: This looks like a Multi Material Single Extruder print using 
+      multi_color: This looks like a Multi Material Single Extruder print using
         %{numTools} tools. You should probably review tool mapping
-      single_color: This looks like a single color print but you don't have the 
+      single_color: This looks like a single color print but you don't have the
         bypass selected on your MMU. You may want to check the chosen tool
       map_slicer_tools: Map slicer tools to MMU gates for print
       map_tools: Map tools to MMU gates

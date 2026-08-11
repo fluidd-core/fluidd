@@ -1,21 +1,17 @@
-import 'monaco-editor/esm/vs/editor/editor.all.js'
+// All editor features (find, folding, hover, quick access, iPad keyboard, …).
+// Full list of features on 'monaco-editor/esm/metadata.js'
+import 'monaco-editor/features/register.all.js'
 
-// full list of features on 'monaco-editor/esm/metadata.js'
-import 'monaco-editor/esm/vs/editor/standalone/browser/iPadShowKeyboard/iPadShowKeyboard.js'
-import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoLineQuickAccess.js'
-import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoSymbolQuickAccess.js'
-import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess.js'
+import 'monaco-editor/language/css/monaco.contribution'
+import 'monaco-editor/language/json/monaco.contribution'
+import 'monaco-editor/languages/definitions/css/register.js'
+import 'monaco-editor/languages/definitions/markdown/register.js'
 
-import 'monaco-editor/esm/vs/language/css/monaco.contribution'
-import 'monaco-editor/esm/vs/language/json/monaco.contribution'
-import 'monaco-editor/esm/vs/basic-languages/css/css.contribution'
-import 'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution'
+import EditorWorker from 'monaco-editor/editor/editor.worker?worker'
+import JsonWorker from 'monaco-editor/language/json/json.worker?worker'
+import CssWorker from 'monaco-editor/language/css/css.worker?worker'
 
-import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
-import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
-import CssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
-
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import * as monaco from 'monaco-editor/editor/editor.api'
 
 import getVueApp from '@/util/get-vue-app'
 
@@ -107,7 +103,11 @@ async function setupMonaco () {
       { token: 'keyword.param.t', foreground: '7b2fbe' },
       { token: 'keyword.param', foreground: '0070c1' },
       { token: 'operator', foreground: '767676' },
-      { token: 'string.quote', foreground: 'a31515' }
+      { token: 'string.quote', foreground: 'a31515' },
+      { token: 'delimiter.jinja', foreground: 'af00db' },
+      { token: 'keyword.control.jinja', foreground: 'af00db' },
+      { token: 'variable.jinja', foreground: '001080' },
+      { token: 'number.jinja', foreground: '098658' }
     ],
     colors: {},
   })
@@ -141,7 +141,11 @@ async function setupMonaco () {
       { token: 'keyword.param.t', foreground: 'c586c0' },
       { token: 'keyword.param', foreground: '9cdcfe' },
       { token: 'operator', foreground: 'd4d4d4' },
-      { token: 'string.quote', foreground: 'ce9178' }
+      { token: 'string.quote', foreground: 'ce9178' },
+      { token: 'delimiter.jinja', foreground: 'c586c0' },
+      { token: 'keyword.control.jinja', foreground: 'c586c0' },
+      { token: 'variable.jinja', foreground: '9cdcfe' },
+      { token: 'number.jinja', foreground: 'b5cea8' }
     ],
     colors: {
       'editor.background': '#28282b',

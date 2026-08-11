@@ -6,16 +6,20 @@ allowBuilds:
   vue-demi: true
 
 catalog:
-  vue: ^2.7.16
-  dompurify: ^3.4.12
-  vite: ^8.1.5
+  dompurify: ^3.4.13
   echarts: ^6.1.0
+  typescript: npm:typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2
+  vite: ^8.2.1
+  vue: ^2.7.16
 
 overrides:
-  '@vue/tsconfig>vue': 'catalog:'
+  dompurify: 'catalog:'
+  echarts: 'catalog:'
   glob: ^13.0.6
-  'monaco-editor>dompurify': 'catalog:'
+  rollup: ^4.62.4
   serialize-javascript: ^7.0.3
-  'vite-plugin-pwa>vite': 'catalog:'
-  'vue-echarts>echarts': 'catalog:'
+  typescript: 'catalog:'
+  typescript-eslint: ^8.66.0
+  vite: 'catalog:'
+  vue: 'catalog:'
   '@originjs/vite-plugin-content>xlsx': '-'
