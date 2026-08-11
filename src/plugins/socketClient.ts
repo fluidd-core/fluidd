@@ -3,6 +3,7 @@ import { consola } from 'consola'
 import { camelCase, mergeWith } from 'lodash-es'
 import type { TypedStore } from '@/store'
 import { useWaitStore } from '@/stores/wait'
+import { usePiniaStore } from '@/stores/helpers/parseVuexConventions'
 
 const LOG_PREFIX = '[WEBSOCKET]'
 
@@ -21,9 +22,16 @@ export class WebSocketClient {
   private cache: CachedParams | null = null
   private retryCount = 0
   private reconnectTimeout: ReturnType<typeof setTimeout> | null = null
+  private _waitStore: ReturnType<typeof useWaitStore> | null = null
 
   constructor (options: SocketPluginOptions) {
     this.store = options.store
+  }
+
+  private get waitStore () {
+    this._waitStore ??= useWaitStore()
+
+    return this._waitStore
   }
 
   close () {
@@ -83,7 +91,7 @@ export class WebSocketClient {
 
           // Remove a wait if defined.
           if (request?.wait?.length) {
-            useWaitStore().removeWait(request.wait)
+            this.waitStore.removeWait(request.wait)
           }
 
           if ('error' in socketResponse) { // Is it in error?
@@ -112,7 +120,9 @@ export class WebSocketClient {
             Object.defineProperty(result, '__request__', { enumerable: false, value: request })
 
             consola.debug(`${LOG_PREFIX} Response:`, result)
-
+            if (request.pinia) {
+              usePiniaStore(request.pinia, result)
+            }
             if (request.dispatch) {
               this.store.dispatch(request.dispatch, result)
             }
@@ -209,7 +219,7 @@ export class WebSocketClient {
   emit (method: string, options: NotifyOptions = {}) {
     return new Promise((resolve, reject) => {
       try {
-        const { wait, params, dispatch, commit } = options
+        const { wait, params, dispatch, commit, pinia } = options
 
         // Any non-'disconnected' state is eligible to emit; physical readiness
         // is enforced by the readyState check below.
@@ -238,6 +248,7 @@ export class WebSocketClient {
             id,
             dispatch,
             commit,
+            pinia,
             params,
             wait,
             onFulfilled: resolve,
@@ -245,7 +256,7 @@ export class WebSocketClient {
           }
 
           if (wait) {
-            useWaitStore().addWait(wait)
+            this.waitStore.addWait(wait)
           }
 
           this.requests.set(id, request)
@@ -302,6 +313,7 @@ interface SocketPluginOptions {
 
 export interface NotifyOptions {
   params?: Record<string, any>;
+  pinia?: string;
   dispatch?: string;
   commit?: string;
   wait?: string;
@@ -311,6 +323,7 @@ interface Request {
   id: number;
   dispatch?: string;
   commit?: string;
+  pinia?: string;
   params?: Record<string, any>;
   wait?: string;
   onFulfilled: (value: unknown) => void;
