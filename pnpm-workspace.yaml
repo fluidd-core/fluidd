@@ -20,4 +20,5 @@ overrides:
   typescript: 'catalog:'
   vite: 'catalog:'
   vue: 'catalog:'
+  vue-demi: ^0.14.10
   '@originjs/vite-plugin-content>xlsx': '-'
