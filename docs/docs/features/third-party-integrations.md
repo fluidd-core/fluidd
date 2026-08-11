@@ -123,6 +123,12 @@ Filament spool tracking with QR code scanning, toolchanger support, and
 print-start sanity checks. See [Spool Management](/features/multi-material#spool-management-spoolman)
 for details.
 
+!!! warning "Spoolman 0.26+ requires a CORS configuration change"
+    Fluidd connects to Spoolman directly from your browser for live spool
+    updates. Spoolman 0.26 and newer block that connection unless you add
+    Fluidd's address to `SPOOLMAN_CORS_ORIGIN`. See
+    [Live updates](/features/multi-material#live-updates) for details.
+
 [Spoolman on GitHub](https://github.com/Donkie/Spoolman){.md-button}
 
 ### Timelapse

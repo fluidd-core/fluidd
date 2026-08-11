@@ -10,7 +10,8 @@ export const defaultState = (): SpoolmanState => {
     dialog: {
       show: false
     },
-    socket: null
+    socket: null,
+    socketDiagnostic: null
   }
 }
 

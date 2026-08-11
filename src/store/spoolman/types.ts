@@ -1,3 +1,5 @@
+import type { HttpDiagnosticResult } from '@/util/http-endpoint-diagnostics'
+
 export interface SpoolmanState {
   info: Readonly<Moonraker.Spoolman.Info> | null;
   spools: readonly Moonraker.Spoolman.Spool[];
@@ -6,6 +8,7 @@ export interface SpoolmanState {
   connected: boolean;
   dialog: SpoolSelectionDialogState;
   socket: WebSocket | null;
+  socketDiagnostic: HttpDiagnosticResult['kind'] | null;
 }
 
 export interface Spool extends Omit<Moonraker.Spoolman.Spool, 'registered' | 'filament' | 'first_used' | 'last_used'> {

@@ -26,6 +26,36 @@ Pressure Advance values.
 Fluidd integrates with
 [Spoolman](https://github.com/Donkie/Spoolman) for filament spool tracking.
 
+### Live updates
+
+Fluidd connects to Spoolman in two different ways: through Moonraker, for
+loading spool data, and directly from your browser, for live updates (spool
+weight, filament, and vendor changes). Only the direct browser connection is
+subject to your browser's cross-origin rules.
+
+Spoolman 0.26 and newer reject that direct connection unless Fluidd's origin
+is explicitly allowed, which breaks live updates while everything else
+(spool selection, sanity checks) keeps working normally. If your spool
+weight stops updating during a print after upgrading Spoolman, add the
+`SPOOLMAN_CORS_ORIGIN` environment variable to your Spoolman host and
+restart it:
+
+```text title=".env"
+SPOOLMAN_CORS_ORIGIN=http://fluidd.local,http://192.168.1.50
+```
+
+Each entry is the scheme, host, and port shown in your browser's address bar
+when you access Fluidd (no path), separated by commas if you use more than
+one address.
+
+!!! warning "Avoid the wildcard"
+    `SPOOLMAN_CORS_ORIGIN=*` allows every origin and turns off Spoolman's
+    origin checks entirely. Only use it on a trusted network.
+
+See the
+[`.env.example` file](https://github.com/Donkie/Spoolman/blob/master/.env.example)
+in the Spoolman repository for more examples.
+
 ### Print start
 
 On print start, Fluidd shows a modal asking you to select a spool. You can
