@@ -1638,10 +1638,6 @@ packages:
     peerDependencies:
       typescript: '>=4.8.4 <6.1.0'
 
-  '@typescript-eslint/scope-manager@8.65.0':
-    resolution: {integrity: sha512-Esbl8OSYiVxBokYgWPf7VVWg/BE798wXhimnn9ML9Pt5qoDf8bfQlgjlKXR/k98+AcNzlLKYrpCcrcuZ9DZLgg==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
   '@typescript-eslint/scope-manager@8.66.0':
     resolution: {integrity: sha512-8TGcH25j9zqJ/IULB/ppyhRvxA8QYfFEZ7nfbg6/BN9spDgb8fPWQXlE5l8TWBL50EtUx007uZ1o9VOwrq2/9g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -1683,13 +1679,6 @@ packages:
     resolution: {integrity: sha512-8/x4INiiQb10jGgXYD7116/zQ+OL84ZIFn0za68wwFHCanT/VLbBEroWht8RV8fn0/ZCAoazHLQgwUC0UQcDfg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
-      typescript: '>=4.8.4 <6.1.0'
-
-  '@typescript-eslint/utils@8.65.0':
-    resolution: {integrity: sha512-gXiwIHsYreboxeJucHKPvgwl7dXt50mF8s1/c00cP/WoVTyWKFdtfhRWwZiXYFU5H2O8vVoSLNrexFZjYS/SGA==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
       typescript: '>=4.8.4 <6.1.0'
 
   '@typescript-eslint/utils@8.66.0':
@@ -6460,7 +6449,7 @@ snapshots:
   '@typescript-eslint/project-service@8.65.0(supports-color@8.1.1)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.65.0(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)
-      '@typescript-eslint/types': 8.65.0
+      '@typescript-eslint/types': 8.66.0
       debug: 4.4.3(supports-color@8.1.1)
       typescript: typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2
     transitivePeerDependencies:
@@ -6474,11 +6463,6 @@ snapshots:
       typescript: typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2
     transitivePeerDependencies:
       - supports-color
-
-  '@typescript-eslint/scope-manager@8.65.0':
-    dependencies:
-      '@typescript-eslint/types': 8.65.0
-      '@typescript-eslint/visitor-keys': 8.65.0
 
   '@typescript-eslint/scope-manager@8.66.0':
     dependencies:
@@ -6535,17 +6519,6 @@ snapshots:
       semver: 7.8.5
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)
-      typescript: typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2
-    transitivePeerDependencies:
-      - supports-color
-
-  '@typescript-eslint/utils@8.65.0(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)':
-    dependencies:
-      '@eslint-community/eslint-utils': 4.10.1(eslint@9.39.5(supports-color@8.1.1))
-      '@typescript-eslint/scope-manager': 8.65.0
-      '@typescript-eslint/types': 8.65.0
-      '@typescript-eslint/typescript-estree': 8.65.0(supports-color@8.1.1)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)
-      eslint: 9.39.5(supports-color@8.1.1)
       typescript: typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2
     transitivePeerDependencies:
       - supports-color
@@ -6690,9 +6663,9 @@ snapshots:
 
   '@vue/devtools-api@6.6.4': {}
 
-  '@vue/eslint-config-typescript@14.9.0(eslint-plugin-vue@9.33.0(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1))(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)':
+  '@vue/eslint-config-typescript@14.9.0(eslint-plugin-vue@10.10.0(@stylistic/eslint-plugin@2.11.0(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2))(@typescript-eslint/parser@8.66.0(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2))(eslint@9.39.5(supports-color@8.1.1))(vue-eslint-parser@10.4.1(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)))(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)':
     dependencies:
-      '@typescript-eslint/utils': 8.65.0(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)
+      '@typescript-eslint/utils': 8.66.0(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)
       eslint: 9.39.5(supports-color@8.1.1)
       eslint-plugin-vue: 10.10.0(@stylistic/eslint-plugin@2.11.0(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2))(@typescript-eslint/parser@8.66.0(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2))(eslint@9.39.5(supports-color@8.1.1))(vue-eslint-parser@10.4.1(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1))
       fast-glob: 3.3.3
