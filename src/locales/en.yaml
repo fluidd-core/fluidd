@@ -878,8 +878,7 @@ app:
       date_format: Date format
       time_format: Time format
       chart_smoothing: Chart smoothing
-      chart_smoothing_none: None
-      chart_smoothing_seconds: '{count} sec'
+      chart_smoothing_seconds: 'None | {count} sec'
       text_sort_order: Text sort order
       drag_and_drop_functionality_for_files_and_folders: Drag-and-drop
         functionality for files and folders

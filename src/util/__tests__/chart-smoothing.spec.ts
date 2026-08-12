@@ -1,4 +1,4 @@
-import { isPowerOrSpeed, smoothChartData } from '../chart-smoothing'
+import { smoothChartData } from '../chart-smoothing'
 import type { ChartData } from '@/store/charts/types'
 
 // Build a series of 1Hz samples starting at epoch t=0s.
@@ -15,20 +15,30 @@ const buildSeries = (
     return sample
   })
 
-describe('isPowerOrSpeed', () => {
-  it('matches #power and #speed keys only', () => {
-    expect(isPowerOrSpeed('extruder#power')).toBe(true)
-    expect(isPowerOrSpeed('fan#speed')).toBe(true)
-    expect(isPowerOrSpeed('extruder')).toBe(false)
-    expect(isPowerOrSpeed('extruder#target')).toBe(false)
-    expect(isPowerOrSpeed('date')).toBe(false)
-  })
-})
+// Stand-in for the real ThermalChart.vue predicate: smoothChartData is generic
+// over any isSmoothable callback, so a matching key suffix is all these tests need.
+const isPowerOrSpeed = (key: string): boolean =>
+  key.endsWith('#power') || key.endsWith('#speed')
 
 describe('smoothChartData', () => {
   it('returns input unchanged when window is 0', () => {
     const data = buildSeries('extruder#power', [0, 100, 0, 100])
     expect(smoothChartData(data, 0, isPowerOrSpeed)).toBe(data)
+  })
+
+  it('returns input unchanged for non-finite or negative windows', () => {
+    const data = buildSeries('extruder#power', [0, 100, 0, 100])
+    expect(smoothChartData(data, Number.NaN, isPowerOrSpeed)).toBe(data)
+    expect(smoothChartData(data, Number.POSITIVE_INFINITY, isPowerOrSpeed)).toBe(data)
+    expect(smoothChartData(data, -3, isPowerOrSpeed)).toBe(data)
+  })
+
+  it('averages all preceding values once the trailing window spans them', () => {
+    const data = buildSeries('extruder#power', [0, 100, 0, 100, 0, 100])
+    const out = smoothChartData(data, 1000, isPowerOrSpeed)
+    const mean = (0 + 100 + 0 + 100 + 0 + 100) / 6
+
+    expect(out[out.length - 1]['extruder#power']).toBeCloseTo(mean, 5)
   })
 
   it('applies a trailing moving average to a square wave (window=3s, 1Hz)', () => {

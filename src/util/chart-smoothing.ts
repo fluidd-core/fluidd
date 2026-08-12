@@ -1,14 +1,6 @@
 import type { ChartData } from '@/store/charts/types'
 
 /**
- * Matches the spiky PWM-driven series (heater power, fan speed). These are the
- * only series we visually smooth — temperatures are left raw so real thermal
- * lag stays visible.
- */
-export const isPowerOrSpeed = (key: string): boolean =>
-  key.endsWith('#power') || key.endsWith('#speed')
-
-/**
  * Applies a trailing time-window moving average to every smoothable key,
  * returning a new dataset. The input is never mutated.
  *
@@ -26,7 +18,7 @@ export const smoothChartData = (
   windowSeconds: number,
   isSmoothable: (key: string) => boolean
 ): ChartData[] => {
-  if (windowSeconds <= 0 || data.length === 0) return data
+  if (!Number.isFinite(windowSeconds) || windowSeconds <= 0 || data.length === 0) return data
 
   const windowMs = windowSeconds * 1000
 
@@ -39,28 +31,38 @@ export const smoothChartData = (
   }
   if (keys.size === 0) return data
 
-  return data.map((sample, i) => {
-    const result: ChartData = { ...sample }
-    const time = sample.date.getTime()
+  const times = data.map(sample => sample.date.getTime())
+  const result: ChartData[] = [...data]
 
-    for (const key of keys) {
-      // Only smooth samples that actually carry a numeric value for this key.
-      if (typeof sample[key] !== 'number') continue
+  // Two-pointer trailing window per key.
+  for (const key of keys) {
+    let left = 0
+    let sum = 0
+    let count = 0
 
-      let sum = 0
-      let count = 0
-      for (let j = i; j >= 0; j--) {
-        if (time - data[j].date.getTime() >= windowMs) break
-        const value = data[j][key]
-        if (typeof value === 'number') {
-          sum += value
-          count++
-        }
+    for (let i = 0; i < data.length; i++) {
+      const value = data[i][key]
+      if (typeof value === 'number') {
+        sum += value
+        count++
       }
 
-      if (count > 0) result[key] = sum / count
-    }
+      while (times[i] - times[left] >= windowMs) {
+        const leftValue = data[left][key]
+        if (typeof leftValue === 'number') {
+          sum -= leftValue
+          count--
+        }
+        left++
+      }
 
-    return result
-  })
+      // Only smooth samples that actually carry a numeric value for this key.
+      if (typeof value === 'number' && count > 0) {
+        if (result[i] === data[i]) result[i] = { ...data[i] }
+        result[i][key] = sum / count
+      }
+    }
+  }
+
+  return result
 }

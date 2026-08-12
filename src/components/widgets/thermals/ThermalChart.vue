@@ -42,7 +42,7 @@ import { markRaw } from 'vue'
 import { Component, Watch, Prop, Ref, Mixins } from 'vue-property-decorator'
 import type { ECharts, EChartsInitOpts, EChartsOption, LineSeriesOption } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
-import { isPowerOrSpeed, smoothChartData } from '@/util/chart-smoothing'
+import { smoothChartData } from '@/util/chart-smoothing'
 import BrowserMixin from '@/mixins/browser'
 import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
 
@@ -97,10 +97,15 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     return this.$typedState.config.uiSettings.general.chartSmoothingWindow
   }
 
-  // Raw data with a trailing moving average applied to power/speed series only.
-  // A window of 0 returns chartData untouched.
   get smoothedChartData (): Readonly<ChartData>[] {
-    return smoothChartData(this.chartData, this.chartSmoothingWindow, isPowerOrSpeed)
+    return smoothChartData(
+      this.chartData,
+      this.chartSmoothingWindow,
+      key => (
+        key.endsWith('#power') ||
+        key.endsWith('#speed')
+      )
+    )
   }
 
   get chartableSensors (): string[] {
@@ -130,9 +135,9 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     this.chart.setOption({ series: this.series })
   }
 
-  // Watch the smoothed data so both new samples and a smoothing-window change
-  // re-render the chart live.
-  @Watch('smoothedChartData')
+  // Watch the raw inputs so the paused check below can skip smoothing work.
+  @Watch('chartData')
+  @Watch('chartSmoothingWindow')
   onDataChange () {
     if (!this.chart || this.paused) return
 
