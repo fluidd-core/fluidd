@@ -15,27 +15,32 @@ const buildSeries = (
     return sample
   })
 
-// Stand-in for the real ThermalChart.vue predicate: smoothChartData is generic
-// over any isSmoothable callback, so a matching key suffix is all these tests need.
-const isPowerOrSpeed = (key: string): boolean =>
-  key.endsWith('#power') || key.endsWith('#speed')
-
 describe('smoothChartData', () => {
   it('returns input unchanged when window is 0', () => {
     const data = buildSeries('extruder#power', [0, 100, 0, 100])
-    expect(smoothChartData(data, 0, isPowerOrSpeed)).toBe(data)
+    expect(smoothChartData(data, ['extruder#power'], 0)).toBe(data)
   })
 
-  it('returns input unchanged for non-finite or negative windows', () => {
+  it('returns input unchanged for a negative window', () => {
     const data = buildSeries('extruder#power', [0, 100, 0, 100])
-    expect(smoothChartData(data, Number.NaN, isPowerOrSpeed)).toBe(data)
-    expect(smoothChartData(data, Number.POSITIVE_INFINITY, isPowerOrSpeed)).toBe(data)
-    expect(smoothChartData(data, -3, isPowerOrSpeed)).toBe(data)
+    expect(smoothChartData(data, ['extruder#power'], -3)).toBe(data)
+  })
+
+  it('returns input unchanged when keys is empty', () => {
+    const data = buildSeries('extruder#power', [0, 100, 0, 100])
+    expect(smoothChartData(data, [], 3)).toBe(data)
+  })
+
+  it('ignores a key no sample carries', () => {
+    const data = buildSeries('extruder#power', [0, 100, 0, 100])
+    const out = smoothChartData(data, ['bed#power'], 3)
+
+    out.forEach((s, i) => expect(s).toEqual(data[i]))
   })
 
   it('averages all preceding values once the trailing window spans them', () => {
     const data = buildSeries('extruder#power', [0, 100, 0, 100, 0, 100])
-    const out = smoothChartData(data, 1000, isPowerOrSpeed)
+    const out = smoothChartData(data, ['extruder#power'], 1000)
     const mean = (0 + 100 + 0 + 100 + 0 + 100) / 6
 
     expect(out[out.length - 1]['extruder#power']).toBeCloseTo(mean, 5)
@@ -43,7 +48,7 @@ describe('smoothChartData', () => {
 
   it('applies a trailing moving average to a square wave (window=3s, 1Hz)', () => {
     const data = buildSeries('extruder#power', [0, 100, 0, 100, 0, 100])
-    const out = smoothChartData(data, 3, isPowerOrSpeed)
+    const out = smoothChartData(data, ['extruder#power'], 3)
     const got = out.map(s => s['extruder#power'] as number)
 
     expect(got[0]).toBeCloseTo(0, 5) // {0}
@@ -54,9 +59,9 @@ describe('smoothChartData', () => {
     expect(got[5]).toBeCloseTo(200 / 3, 5) // {100,0,100}
   })
 
-  it('leaves non-smoothable keys (temps) and date untouched', () => {
+  it('leaves keys absent from the keys list (temps) and date untouched', () => {
     const data = buildSeries('extruder#power', [0, 100, 0, 100], [200, 201, 202, 203])
-    const out = smoothChartData(data, 3, isPowerOrSpeed)
+    const out = smoothChartData(data, ['extruder#power'], 3)
 
     out.forEach((s, i) => {
       expect(s.extruder).toBe(data[i].extruder) // temps raw
@@ -67,7 +72,7 @@ describe('smoothChartData', () => {
   it('skips null/missing values in the window mean', () => {
     // index 2 has no power value at all
     const data = buildSeries('extruder#power', [0, 100, null, 100])
-    const out = smoothChartData(data, 3, isPowerOrSpeed)
+    const out = smoothChartData(data, ['extruder#power'], 3)
 
     expect(out[1]['extruder#power']).toBeCloseTo(50, 5) // {0,100}
     // window at i=3 is {100 (i1), <gap>, 100 (i3)} -> mean of the two present = 100
@@ -79,7 +84,7 @@ describe('smoothChartData', () => {
   it('does not mutate the input array or its samples', () => {
     const data = buildSeries('extruder#power', [0, 100, 0, 100])
     const snapshot = JSON.stringify(data)
-    smoothChartData(data, 3, isPowerOrSpeed)
+    smoothChartData(data, ['extruder#power'], 3)
     expect(JSON.stringify(data)).toBe(snapshot)
   })
 })

@@ -877,8 +877,7 @@ app:
       z_adjust_values: Z Adjust values
       date_format: Date format
       time_format: Time format
-      chart_smoothing: Chart smoothing
-      chart_smoothing_seconds: 'None | {count} sec'
+      thermal_chart_smoothing: Thermal chart smoothing
       text_sort_order: Text sort order
       drag_and_drop_functionality_for_files_and_folders: Drag-and-drop
         functionality for files and folders

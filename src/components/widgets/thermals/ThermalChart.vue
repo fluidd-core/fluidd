@@ -97,14 +97,20 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     return this.$typedState.config.uiSettings.general.chartSmoothingWindow
   }
 
+  get smoothableKeys (): string[] {
+    return this.series
+      .map(series => series.name as string)
+      .filter(name => (
+        name.endsWith('#power') ||
+        name.endsWith('#speed')
+      ))
+  }
+
   get smoothedChartData (): Readonly<ChartData>[] {
     return smoothChartData(
       this.chartData,
-      this.chartSmoothingWindow,
-      key => (
-        key.endsWith('#power') ||
-        key.endsWith('#speed')
-      )
+      this.smoothableKeys,
+      this.chartSmoothingWindow
     )
   }
 
