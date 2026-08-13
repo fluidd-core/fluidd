@@ -37,6 +37,10 @@ import { Component, Prop, Mixins } from 'vue-property-decorator'
 import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
 import BrowserMixin from '@/mixins/browser'
+import type { ChartDataSource } from '@/util/chart-buffer'
+import { chartBufferSource } from '@/util/chart-buffer'
+import { tooltipValue } from '@/util/chart-tooltip'
+import decimalRound from '@/util/decimal-round'
 
 type LineSeriesOptionExtended = LineSeriesOption & {
   unit?: string
@@ -48,8 +52,8 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
   @Prop({ type: Object, required: true })
   readonly config!: DiagnosticsCardConfig
 
-  get chartData () {
-    return this.$typedState.charts.diagnostics || []
+  get chartData (): ChartDataSource {
+    return chartBufferSource(this.$typedState.charts.diagnostics)
   }
 
   get chartDimensions () {
@@ -126,7 +130,6 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
             .forEach(param => {
               if (
                 param == null ||
-                param.data == null ||
                 param.seriesIndex == null
               ) {
                 return
@@ -141,9 +144,8 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
                 return
               }
 
-              let value: unknown = param.data[metric.encode.y as keyof typeof param.data]
-              if (typeof value === 'number') value = Math.round(value * 1000) / 1000
-              else if (!value) value = '-'
+              const y = tooltipValue(param, 'y')
+              const value = y != null ? decimalRound(y, 3) : '-'
 
               text += `
                 <div>

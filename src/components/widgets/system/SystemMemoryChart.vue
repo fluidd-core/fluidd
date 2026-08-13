@@ -10,11 +10,13 @@
 import { Component, Vue } from 'vue-property-decorator'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
 import type { AppInlineChartLabel } from '@/components/ui/AppInlineChart.vue'
+import type { ChartDataSource } from '@/util/chart-buffer'
+import { chartBufferSource } from '@/util/chart-buffer'
 
 @Component({})
 export default class SystemMemoryChart extends Vue {
-  get chartData () {
-    return this.$typedState.charts.memory || []
+  get chartData (): ChartDataSource {
+    return chartBufferSource(this.$typedState.charts.memory)
   }
 
   get labels (): AppInlineChartLabel[] {

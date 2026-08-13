@@ -1,27 +1,54 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { ChartData, ChartSelectedLegends, ChartState } from './types'
+import type { ChartBuffer } from '@/util/chart-buffer'
+import { appendChartSample, createChartBuffer, resizeChartBuffer } from '@/util/chart-buffer'
+import type { ChartEntryPayload, ChartsDbDocument, ChartSelectedLegends, ChartState } from './types'
 import { defaultState } from './state'
+
+// New columns must go through Vue.set to stay reactive.
+const defineColumn = (columns: Record<string, Float64Array>, key: string, column: Float64Array): void => {
+  Vue.set(columns, key, column)
+}
+
+const resolveBuffer = (state: ChartState, payload: ChartEntryPayload): ChartBuffer => {
+  switch (payload.bucket) {
+    case 'thermal': return state.thermal
+    case 'klipper': return state.klipper
+    case 'memory': return state.memory
+    case 'moonraker': return state.moonraker
+    case 'diagnostics': return state.diagnostics
+
+    case 'mcu': {
+      if (!state.mcus[payload.id]) {
+        Vue.set(state.mcus, payload.id, createChartBuffer(payload.retention))
+      }
+
+      return state.mcus[payload.id]
+    }
+
+    case 'sensor': {
+      if (!state.sensors[payload.id]) {
+        Vue.set(state.sensors, payload.id, createChartBuffer(payload.retention))
+      }
+
+      return state.sensors[payload.id]
+    }
+  }
+}
 
 export const mutations = {
   /**
-   * Reset state
+   * Reset our store
    */
   setReset (state) {
-    // Remove unknown keys first.
-    const d = defaultState()
-    Object.keys(state).forEach(key => {
-      if (!Object.keys(d).includes(key)) delete state[key]
-    })
-
     Object.assign(state, defaultState())
   },
 
   setResetChartStore (state) {
-    const { chart, ready } = defaultState()
+    const { thermal, ready } = defaultState()
 
     Object.assign(state, {
-      chart,
+      thermal,
       ready
     })
   },
@@ -29,30 +56,26 @@ export const mutations = {
   /**
    * Init the chart store from db
    */
-  setInitCharts (state, payload: Partial<ChartState>) {
-    if (payload) Object.assign(state, payload)
+  setInitCharts (state, payload: ChartsDbDocument) {
+    if (payload?.selectedLegends) state.selectedLegends = payload.selectedLegends
   },
 
   /**
    * Inits the chart store from moonraker.
    */
-  setChartStore (state, payload: ChartData[]) {
-    state.chart = payload
-      .map(entry => Object.freeze(entry))
+  setThermalStore (state, payload: ChartBuffer) {
+    state.thermal = payload
     state.ready = true
   },
 
-  /**
-   * Adds a single chart entry.
-   */
-  setChartEntry (state, payload: { type: string; retention: number; data: ChartData }) {
-    // Dont keep data older than our set retention
-    if (!state[payload.type]) {
-      Vue.set(state, payload.type, [])
+  setChartEntry (state, payload: ChartEntryPayload) {
+    const buffer = resolveBuffer(state, payload)
+
+    if (buffer.retention !== payload.retention) {
+      resizeChartBuffer(buffer, payload.retention)
     }
-    state[payload.type].push(Object.freeze(payload.data))
-    const firstInRange = state[payload.type].findIndex((entry: ChartData) => (Date.now() - entry.date.valueOf()) / 1000 < payload.retention)
-    if (firstInRange > 0) state[payload.type].splice(0, firstInRange)
+
+    appendChartSample(buffer, payload.time, payload.values, defineColumn)
   },
 
   setSelectedLegends (state, payload: ChartSelectedLegends) {

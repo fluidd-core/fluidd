@@ -1,7 +1,10 @@
 import type { ActionTree } from 'vuex'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
-import type { ChartData, ChartSelectedLegends, ChartState } from './types'
+import { appendChartSample, createChartBuffer } from '@/util/chart-buffer'
+import type { ChartsDbDocument, ChartSelectedLegends, ChartState } from './types'
+import type { ThermalColumn } from './thermal-columns'
+import { thermalColumn } from './thermal-columns'
 import type { RootState } from '../types'
 import { isEqual } from 'lodash-es'
 
@@ -43,7 +46,7 @@ export const actions = {
       Object.keys(payload).length === 0
     ) {
       // Empty chart data
-      commit('setChartStore', [])
+      commit('setThermalStore', createChartBuffer<ThermalColumn>(retention))
       return
     }
 
@@ -73,29 +76,31 @@ export const actions = {
     }
 
     const keys = Object.keys(payload)
-    const d: ChartData[] = []
+    const buffer = createChartBuffer<ThermalColumn>(retention)
+
     for (let i = 0; i < retention; i++) {
       const date = new Date(now.getTime() - (1000 * (retention - i)) - 2000)
-      const r: ChartData = {
-        date
-      }
+      const values: Record<string, number> = {}
+
       keys.forEach(key => {
         if (rootState.printer.printer[key]) {
-          r[key] = payload[key].temperatures[i]
-          if (payload[key].targets != null) r[`${key}#target`] = payload[key].targets[i]
-          if (payload[key].powers != null) r[`${key}#power`] = payload[key].powers[i]
-          if (payload[key].speeds != null) r[`${key}#speed`] = payload[key].speeds[i]
+          values[key] = payload[key].temperatures[i]
+          if (payload[key].targets != null) values[thermalColumn(key, 'target')] = payload[key].targets[i]
+          if (payload[key].powers != null) values[thermalColumn(key, 'power')] = payload[key].powers[i]
+          if (payload[key].speeds != null) values[thermalColumn(key, 'speed')] = payload[key].speeds[i]
         }
       })
-      d.push(r)
+
+      appendChartSample(buffer, date.getTime(), values)
     }
-    commit('setChartStore', d)
+
+    commit('setThermalStore', buffer)
   },
 
   /**
-   * Init the chart state from db
+   * Init the chart state from db - only ever `selectedLegends`.
    */
-  initCharts ({ commit }, payload: Partial<ChartState>) {
+  initCharts ({ commit }, payload: ChartsDbDocument) {
     commit('setInitCharts', payload)
   },
 

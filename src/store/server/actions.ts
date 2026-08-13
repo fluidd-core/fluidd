@@ -9,6 +9,7 @@ import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
 import { gte, valid } from 'semver'
 import type { ObjectWithRequest } from '@/plugins/socketClient'
+import decimalRound from '@/util/decimal-round'
 
 let retryTimeout: ReturnType<typeof setTimeout>
 
@@ -144,11 +145,11 @@ export const actions = {
       for (const d of stats) {
         if (d.cpu_usage <= 100) {
           commit('charts/setChartEntry', {
-            type: 'moonraker',
-            retention: 600,
-            data: {
-              date: new Date(d.time * 1000),
-              load: Math.round(d.cpu_usage * 100) / 100,
+            bucket: 'moonraker',
+            retention: Globals.CHART_SYSTEM_RETENTION,
+            time: d.time * 1000,
+            values: {
+              load: decimalRound(d.cpu_usage, 2),
             }
           }, { root: true })
         }

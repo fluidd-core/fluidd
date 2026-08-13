@@ -42,9 +42,13 @@ import { markRaw } from 'vue'
 import { Component, Watch, Prop, Ref, Mixins } from 'vue-property-decorator'
 import type { ECharts, EChartsInitOpts, EChartsOption, LineSeriesOption } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
-import { smoothChartData } from '@/util/chart-smoothing'
+import { smoothChartSource } from '@/util/chart-smoothing'
+import type { ChartBuffer, ChartDataSource } from '@/util/chart-buffer'
+import { tooltipValueByDimension } from '@/util/chart-tooltip'
+import { isDutyCycleSubKey, parseThermalColumn, thermalColumn, thermalSubKeys } from '@/store/charts/thermal-columns'
+import type { ThermalColumn, ThermalSubKey } from '@/store/charts/thermal-columns'
 import BrowserMixin from '@/mixins/browser'
-import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
+import type { ChartSelectedLegends } from '@/store/charts/types'
 
 @Component({})
 export default class ThermalChart extends Mixins(BrowserMixin) {
@@ -58,7 +62,6 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   readonly initOptions: EChartsInitOpts = Object.freeze({ renderer: 'canvas' })
 
   paused = false
-  initialized = false
   series: LineSeriesOption[] = []
   initialSelected: Record<string, boolean> = {}
 
@@ -89,27 +92,32 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
   }
 
-  get chartData (): Readonly<ChartData>[] {
-    return this.$typedState.charts.chart
+  get thermalChartBuffer (): ChartBuffer<ThermalColumn> {
+    return this.$typedState.charts.thermal
+  }
+
+  // Vue 2 doesn't observe typed array writes - `revision` is the signal.
+  get chartRevision (): number {
+    return this.thermalChartBuffer.revision
   }
 
   get chartSmoothingWindow (): number {
     return this.$typedState.config.uiSettings.general.chartSmoothingWindow
   }
 
+  // Only temperatures are noisy; targets and duty cycles are exact.
   get smoothableKeys (): string[] {
-    return this.series
-      .map(series => series.name as string)
-      .filter(name => !(
-        name.endsWith('#target') ||
-        name.endsWith('#power') ||
-        name.endsWith('#speed')
-      ))
+    return this.seriesNames
+      .filter(name => parseThermalColumn(name).sub == null)
   }
 
-  get smoothedChartData (): Readonly<ChartData>[] {
-    return smoothChartData(
-      this.chartData,
+  get seriesNames (): string[] {
+    return this.series.map(series => series.name as string)
+  }
+
+  get smoothedChartData (): ChartDataSource {
+    return smoothChartSource(
+      this.thermalChartBuffer,
       this.smoothableKeys,
       this.chartSmoothingWindow
     )
@@ -132,7 +140,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     if (!this.chart) return
 
     for (const series of this.series) {
-      const baseKey = (series.name as string).replace(/(#target|#power|#speed)$/, '')
+      const baseKey = parseThermalColumn(series.name as string).sensor
       const color = this.seriesColor(baseKey)
       series.color = color
       if (series.lineStyle) series.lineStyle.color = color
@@ -143,16 +151,26 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   }
 
   // Watch the raw inputs so the paused check below can skip smoothing work.
-  @Watch('chartData')
+  @Watch('chartRevision')
   @Watch('chartSmoothingWindow')
   onDataChange () {
     if (!this.chart || this.paused) return
 
-    // Series deferred at creation (empty store): build now and re-apply.
-    if (!this.initialized) {
-      this.initSeries()
-      if (this.initialized) this.onChartReady()
+    const seriesCount = this.series.length
+    this.initSeries()
+
+    if (seriesCount === 0) {
+      // Series deferred at creation (empty store): build now and re-apply.
+      if (this.series.length > 0) this.onChartReady()
       return
+    }
+
+    if (this.series.length > seriesCount) {
+      // Merge (no notMerge) so zoom/legend state isn't dropped.
+      this.chart.setOption({
+        series: this.series,
+        legend: { selected: this.initialSelected }
+      })
     }
 
     this.chart.setOption({
@@ -174,33 +192,32 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     this.initSeries()
   }
 
-  // Build the series; no-ops until chartData has at least one entry.
+  // Builds series for any chartable column that has data but no series yet.
   initSeries () {
-    const first = this.chartData[0]
-    if (this.initialized || !first) return
+    const dataKeys = new Set(Object.keys(this.thermalChartBuffer.columns))
+    const existing = new Set(this.seriesNames)
+    const newSeries: LineSeriesOption[] = []
 
-    const dataKeys = Object.keys(first)
-    const keys = this.chartableSensors
-    const series: LineSeriesOption[] = []
+    const addSeries = (key: string, sub?: ThermalSubKey) => {
+      const column = thermalColumn(key, sub)
 
-    keys.forEach((key) => {
-      series.push(this.createSeries(key))
-
-      if (dataKeys.includes(`${key}#target`)) {
-        series.push(this.createSeries(key, '#target'))
+      if (dataKeys.has(column) && !existing.has(column)) {
+        newSeries.push(this.createSeries(key, sub))
+        existing.add(column)
       }
+    }
 
-      if (dataKeys.includes(`${key}#power`)) {
-        series.push(this.createSeries(key, '#power'))
-      }
+    this.chartableSensors.forEach((key) => {
+      addSeries(key)
 
-      if (dataKeys.includes(`${key}#speed`)) {
-        series.push(this.createSeries(key, '#speed'))
+      for (const sub of thermalSubKeys) {
+        addSeries(key, sub)
       }
     })
 
-    this.series = markRaw(series)
-    this.initialized = true
+    if (newSeries.length > 0) {
+      this.series = markRaw([...this.series, ...newSeries])
+    }
   }
 
   // Apply the full options + current data once the chart is ready.
@@ -300,13 +317,17 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
           let text = ''
           params
             .forEach((param: any) => {
+              const sub = param.seriesName ? parseThermalColumn(param.seriesName).sub : undefined
+
               if (
                 param.seriesName &&
-                !param.seriesName.endsWith('#target') &&
-                !param.seriesName.endsWith('#power') &&
-                !param.seriesName.endsWith('#speed') &&
-                param.value[param.seriesName] != null
+                sub == null
               ) {
+                const valueAt = (name: string) => tooltipValueByDimension(param, name)
+
+                const temperature = valueAt(param.seriesName)
+                if (temperature == null) return
+
                 const name = param.seriesName.trim().split(/\s+/).pop() || ''
                 text += `
                   <div>
@@ -315,16 +336,19 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
                       ${this.$filters.prettyCase(name)}:
                     </span>
                     <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
-                      ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`
+                      ${temperature.toFixed(2)}<small>°C</small>`
 
-                if (param.value[`${param.seriesName}#target`] != null) {
-                  text += ` / ${param.value[`${param.seriesName}#target`].toFixed()}<small>°C</small>`
+                const target = valueAt(thermalColumn(param.seriesName, 'target'))
+                if (target != null) {
+                  text += ` / ${target.toFixed()}<small>°C</small>`
                 }
-                if (param.value[`${param.seriesName}#power`] != null) {
-                  text += ` / ${(param.value[`${param.seriesName}#power`] * 100).toFixed()}<small>%</small>`
+                const power = valueAt(thermalColumn(param.seriesName, 'power'))
+                if (power != null) {
+                  text += ` / ${(power * 100).toFixed()}<small>%</small>`
                 }
-                if (param.value[`${param.seriesName}#speed`] != null) {
-                  text += ` / ${(param.value[`${param.seriesName}#speed`] * 100).toFixed()}<small>%</small>`
+                const speed = valueAt(thermalColumn(param.seriesName, 'speed'))
+                if (speed != null) {
+                  text += ` / ${(speed * 100).toFixed()}<small>%</small>`
                 }
                 text += `</span>
                   <div style="clear: both"></div>
@@ -439,9 +463,9 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     return this.$colorset.next(getKlipperType(baseKey), baseKey, this.sensorColors[baseKey])
   }
 
-  createSeries (baseKey: string, subKey?: '#target' | '#power' | '#speed'): LineSeriesOption {
+  createSeries (baseKey: string, subKey?: ThermalSubKey): LineSeriesOption {
     // Grab the color
-    const key = `${baseKey}${subKey ?? ''}`
+    const key = thermalColumn(baseKey, subKey)
     const color = this.seriesColor(baseKey)
 
     // Base properties
@@ -472,7 +496,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
 
     // If this is a target, adjust its display.
-    if (subKey === '#target') {
+    if (subKey === 'target') {
       series.yAxisIndex = 0
       series.lineStyle!.width = 1
       series.lineStyle!.type = 'dashed'
@@ -481,7 +505,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
 
     // If this is a power or speed, adjust its display.
-    if (subKey === '#power' || subKey === '#speed') {
+    if (isDutyCycleSubKey(subKey)) {
       series.yAxisIndex = 1
       series.lineStyle!.width = 1
       series.lineStyle!.type = 'dotted'
@@ -490,7 +514,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
 
     // Set the initial legend state (power and speed default off)
-    this.initialSelected[key] = this.chartSelectedLegends[key] ?? (subKey !== '#power' && subKey !== '#speed')
+    this.initialSelected[key] = this.chartSelectedLegends[key] ?? !isDutyCycleSubKey(subKey)
 
     // Push the series into our options object.
     return series
@@ -499,19 +523,15 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   showPowerAxis (selected: Record<string, boolean>) {
     return Object.keys(selected)
       .some(key =>
-        (
-          key.endsWith('#power') ||
-          key.endsWith('#speed')
-        ) &&
-        selected[key] === true
+        selected[key] === true &&
+        isDutyCycleSubKey(parseThermalColumn(key).sub)
       )
   }
 
   highlightSeries (key: string) {
     if (this.chart) {
-      const seriesName = this.series
-        .map(series => series.name as string)
-        .filter(name => name === key || name.startsWith(`${key}#`))
+      const seriesName = this.seriesNames
+        .filter(name => parseThermalColumn(name).sensor === key)
 
       this.chart.dispatchAction({ type: 'downplay' })
       this.chart.dispatchAction({ type: 'highlight', seriesName })

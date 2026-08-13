@@ -4,7 +4,6 @@ import type { RootState } from '../types'
 import { handlePrintStateChange, handleCurrentFileChange, handleTrinamicDriversChange } from '../helpers'
 import { handleAddChartEntry, handleAddSensorChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
 import { SocketActions } from '@/api/socketActions'
-import { Globals } from '@/globals'
 import { consola } from 'consola'
 import type { DiagnosticsCardContainer } from '@/store/diagnostics/types'
 import sandboxedEval from '@/plugins/sandboxedEval'
@@ -232,7 +231,7 @@ export const actions = {
    */
 
   /** Automated notify events via socket */
-  async onNotifyStatusUpdate ({ rootState, commit, getters, dispatch }, payload: Partial<Klipper.PrinterState>) {
+  async onNotifyStatusUpdate ({ rootState, commit, getters, dispatch, rootGetters }, payload: Partial<Klipper.PrinterState>) {
     // TODO: We potentially get many updates here.
     // Consider caching the updates and sending them every <interval>.
     // We don't want to miss an update - but also don't need all of them
@@ -258,11 +257,7 @@ export const actions = {
       }
 
       // Add a temp chart entry
-      const rootStateServerConfig = rootState.server.config
-      const retention =
-        rootStateServerConfig?.data_store?.temperature_store_size ??
-        rootStateServerConfig?.server?.temperature_store_size ??
-        Globals.CHART_HISTORY_RETENTION
+      const retention: number = rootGetters['charts/getChartRetention']
       handleAddChartEntry(retention, rootState, commit, getters)
       handleAddSensorChartEntry(rootState, commit)
       dispatch('onDiagnosticsMetricsUpdate')
@@ -296,12 +291,18 @@ export const actions = {
 
     const data = await evalCollectors(state.printer, collectors)
 
-    data.date = new Date()
+    // Non-numeric collector results become a gap (NaN).
+    const values: Record<string, number> = {}
+    for (const collector of collectors) {
+      const value = data[collector]
+      values[collector] = typeof value === 'number' ? value : Number.NaN
+    }
 
     commit('charts/setChartEntry', {
-      type: 'diagnostics',
+      bucket: 'diagnostics',
       retention: rootGetters['charts/getChartRetention'],
-      data
+      time: Date.now(),
+      values
     }, { root: true })
   }
 } satisfies ActionTree<PrinterState, RootState>

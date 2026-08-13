@@ -9,8 +9,9 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
-import type { ChartData } from '@/store/charts/types'
 import type { AppInlineChartLabel } from '@/components/ui/AppInlineChart.vue'
+import type { ChartDataSource } from '@/util/chart-buffer'
+import { chartBufferSource } from '@/util/chart-buffer'
 
 @Component({})
 export default class SensorChart extends Vue {
@@ -26,8 +27,8 @@ export default class SensorChart extends Vue {
   @Prop({ type: String })
   readonly units?: string
 
-  get chartData (): ChartData[] {
-    return this.$typedState.charts[`sensor:${this.sensorId}`] ?? []
+  get chartData (): ChartDataSource {
+    return chartBufferSource(this.$typedState.charts.sensors[this.sensorId])
   }
 
   get suffix (): string {
