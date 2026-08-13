@@ -12,5 +12,4 @@ export const useAnalysisStore = defineStore('analysis', {
       }
     }
   }
-
 })

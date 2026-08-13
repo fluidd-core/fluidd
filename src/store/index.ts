@@ -75,7 +75,6 @@ export const storeOptions = {
 
       const resetPiniaIds = resetPiniaStores(payload)
 
-      // Dispatch a reset for each registered module still on Vuex.
       const p: Promise<unknown>[] = []
       keys.forEach((key) => {
         if (resetPiniaIds.includes(key)) {

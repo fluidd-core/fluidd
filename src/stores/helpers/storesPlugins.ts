@@ -1,11 +1,7 @@
-import {
-  type PiniaPluginContext,
-  type StoreGeneric,
-} from 'pinia'
+import type { PiniaPluginContext, StoreGeneric } from 'pinia'
 
 const stores = new Set<StoreGeneric>()
 
-// Hooks into defineStore and registers stores
 export const storeRegistryPlugin = ({ store }: PiniaPluginContext) => {
   stores.add(store)
 }
