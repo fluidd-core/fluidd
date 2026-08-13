@@ -42,6 +42,7 @@ import { markRaw } from 'vue'
 import { Component, Watch, Prop, Ref, Mixins } from 'vue-property-decorator'
 import type { ECharts, EChartsInitOpts, EChartsOption, LineSeriesOption } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
+import { smoothChartData } from '@/util/chart-smoothing'
 import BrowserMixin from '@/mixins/browser'
 import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
 
@@ -65,7 +66,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     this.paused = !this.paused
 
     if (!this.paused) {
-      this.onDataChange(this.chartData)
+      this.onDataChange()
     }
   }
 
@@ -90,6 +91,27 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
   get chartData (): Readonly<ChartData>[] {
     return this.$typedState.charts.chart
+  }
+
+  get chartSmoothingWindow (): number {
+    return this.$typedState.config.uiSettings.general.chartSmoothingWindow
+  }
+
+  get smoothableKeys (): string[] {
+    return this.series
+      .map(series => series.name as string)
+      .filter(name => (
+        name.endsWith('#power') ||
+        name.endsWith('#speed')
+      ))
+  }
+
+  get smoothedChartData (): Readonly<ChartData>[] {
+    return smoothChartData(
+      this.chartData,
+      this.smoothableKeys,
+      this.chartSmoothingWindow
+    )
   }
 
   get chartableSensors (): string[] {
@@ -119,8 +141,10 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     this.chart.setOption({ series: this.series })
   }
 
+  // Watch the raw inputs so the paused check below can skip smoothing work.
   @Watch('chartData')
-  onDataChange (data: any) {
+  @Watch('chartSmoothingWindow')
+  onDataChange () {
     if (!this.chart || this.paused) return
 
     // Series deferred at creation (empty store): build now and re-apply.
@@ -132,7 +156,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
     this.chart.setOption({
       dataset: {
-        source: data
+        source: this.smoothedChartData
       }
     })
   }
@@ -185,7 +209,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     this.chart.setOption({
       ...this.options,
       dataset: {
-        source: this.chartData
+        source: this.smoothedChartData
       }
     }, { notMerge: true })
   }

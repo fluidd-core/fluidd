@@ -19,6 +19,7 @@ export const defaultState = (): ConfigState => {
         instanceName: Globals.APP_NAME,
         locale: 'en',
         chartVisible: true,
+        chartSmoothingWindow: 0,
         hideTempWaits: true,
         axis: {
           x: { inverted: false },
