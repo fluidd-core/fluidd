@@ -100,7 +100,8 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   get smoothableKeys (): string[] {
     return this.series
       .map(series => series.name as string)
-      .filter(name => (
+      .filter(name => !(
+        name.endsWith('#target') ||
         name.endsWith('#power') ||
         name.endsWith('#speed')
       ))
