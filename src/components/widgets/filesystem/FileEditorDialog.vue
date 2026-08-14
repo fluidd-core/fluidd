@@ -276,17 +276,17 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
     if (value) {
       this.updatedContent = this.contents
       this.lastSavedContent = this.contents
+
+      window.addEventListener('beforeunload', this.handleBeforeUnload)
     } else {
       this.updatedContent = null
       this.lastSavedContent = null
       this.peripheralsDialogOpen = false
+
+      window.removeEventListener('beforeunload', this.handleBeforeUnload)
     }
 
     this.editorReady = false
-  }
-
-  mounted () {
-    window.addEventListener('beforeunload', this.handleBeforeUnload)
   }
 
   beforeDestroy () {

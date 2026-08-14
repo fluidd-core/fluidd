@@ -182,6 +182,10 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
       this.renderedMarkdown = null
     }
   }
+
+  beforeDestroy () {
+    this.abortController?.abort()
+  }
 }
 </script>
 
