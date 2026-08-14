@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
+import { Component, Mixins, Prop, VModel, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 
 @Component({})
@@ -45,8 +45,11 @@ export default class FileNameDialog extends Mixins(StateMixin) {
 
   newName = ''
 
-  mounted () {
-    this.newName = this.name
+  @Watch('open')
+  onOpenChanged (value: boolean) {
+    if (value) {
+      this.newName = this.name
+    }
   }
 
   handleFocus (event: FocusEvent) {

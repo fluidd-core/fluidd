@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
+import { Component, Prop, Mixins, VModel, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { AppFile } from '@/store/files/types'
 import { Marked, type MarkedExtension, type Tokens } from 'marked'
@@ -157,9 +157,12 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
     })
   }
 
-  mounted () {
-    if (this.isMarkdown) {
+  @Watch('open')
+  onOpenChanged (value: boolean) {
+    if (value && this.isMarkdown) {
       this.LoadMarkdown()
+    } else {
+      this.renderedMarkdown = null
     }
   }
 }

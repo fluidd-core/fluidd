@@ -146,7 +146,7 @@
       </v-toolbar>
 
       <file-editor
-        v-if="contents !== undefined && !useTextOnlyEditor"
+        v-if="open && !useTextOnlyEditor"
         ref="editor"
         v-model="updatedContent"
         :path="path"
@@ -162,7 +162,7 @@
       />
 
       <file-editor-text-only
-        v-if="contents !== undefined && useTextOnlyEditor"
+        v-if="open && useTextOnlyEditor"
         v-model="updatedContent"
         :filename="filename"
         :readonly="readonly"
@@ -271,9 +271,18 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
     return this.$typedState.config.uiSettings.editor.codeLens
   }
 
-  created () {
-    this.updatedContent = this.contents
-    this.lastSavedContent = this.contents
+  @Watch('open')
+  onOpenChanged (value: boolean) {
+    if (value) {
+      this.updatedContent = this.contents
+      this.lastSavedContent = this.contents
+    } else {
+      this.updatedContent = null
+      this.lastSavedContent = null
+      this.peripheralsDialogOpen = false
+    }
+
+    this.editorReady = false
   }
 
   mounted () {
