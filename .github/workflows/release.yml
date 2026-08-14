@@ -68,7 +68,7 @@ jobs:
           echo "current_version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
       - name: Read ChangeLog
-        uses: mindsers/changelog-reader-action@v2.2.3
+        uses: mindsers/changelog-reader-action@v2.4.0
         id: changelog
         with:
           validation_depth: 1
