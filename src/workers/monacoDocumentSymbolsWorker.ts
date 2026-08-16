@@ -35,14 +35,21 @@ const klipperConfigDocumentSymbols = (lines: string[]): MonacoSymbol[] => {
         const isNotComment = /^\s*[^#;\s]/.test(lineContent)
 
         if (isNotComment && state.current) {
-          const property = /^\s*([^=:\s#;](?:[^=:]*[^=:\s])?)\s*[=:]/.exec(lineContent)
+          const startColumn = getFirstNonWhitespaceColumn(lineContent)
+
+          const property = (
+            state.current.children.current != null &&
+            startColumn > state.current.children.current.range.startColumn
+          )
+            ? null
+            : /^\s*([^=:\s#;](?:[^=:]*[^=:\s])?)\s*[=:]/.exec(lineContent)
 
           if (property) {
             state.current.children.result.push(state.current.children.current = {
               name: property[1],
               range: {
                 startLineNumber: index + 1,
-                startColumn: getFirstNonWhitespaceColumn(lineContent),
+                startColumn,
                 endLineNumber: index + 1,
                 endColumn: getLastNonWhitespaceColumn(lineContent)
               }
