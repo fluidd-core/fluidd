@@ -4,6 +4,7 @@ import {
   chartBufferLastValue,
   chartBufferRateOfChange,
   chartBufferSource,
+  commitChartSamples,
   createChartBuffer,
   resizeChartBuffer
 } from '../chart-buffer'
@@ -124,6 +125,39 @@ describe('chart-buffer', () => {
       expect(buffer.revision).toBe(1)
       appendChartSample(buffer, 2000, { load: 2 })
       expect(buffer.revision).toBe(2)
+    })
+  })
+
+  describe('commitChartSamples', () => {
+    it('publishes samples written directly into the columns', () => {
+      const buffer = createChartBuffer(600, ['load'])
+
+      buffer.time.set([1000, 2000, 3000])
+      buffer.columns.load.set([1, 2, 3])
+
+      commitChartSamples(buffer, 3)
+
+      expect(buffer.offset).toBe(0)
+      expect(buffer.count).toBe(3)
+      expect(buffer.revision).toBe(1)
+      expect(Array.from(chartBufferSource(buffer).load)).toEqual([1, 2, 3])
+    })
+
+    it('clamps the count to the backing capacity', () => {
+      const buffer = createChartBuffer(10)
+
+      commitChartSamples(buffer, 10_000)
+
+      expect(buffer.count).toBe(buffer.time.length)
+    })
+
+    it('resets a non-zero offset', () => {
+      const buffer = createChartBuffer(600, ['load'])
+      buffer.offset = 5
+
+      commitChartSamples(buffer, 2)
+
+      expect(buffer.offset).toBe(0)
     })
   })
 

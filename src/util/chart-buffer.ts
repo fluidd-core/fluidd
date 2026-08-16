@@ -137,6 +137,13 @@ export const appendChartSample = (
   buffer.revision++
 }
 
+// Publishes `count` samples written directly into `time` and `columns`.
+export const commitChartSamples = (buffer: ChartBuffer, count: number): void => {
+  buffer.offset = 0
+  buffer.count = Math.min(count, buffer.time.length)
+  buffer.revision++
+}
+
 // Keeps as much of the live window as the new retention still fits.
 export const resizeChartBuffer = (buffer: ChartBuffer, retention: number): void => {
   if (retention === buffer.retention) return
