@@ -1,4 +1,4 @@
-import type { ChartBuffer, ChartDataSource } from './chart-buffer'
+import type { ChartBuffer, ChartDataSource } from '@/store/charts/types'
 import { chartBufferSource } from './chart-buffer'
 
 // Trailing moving average over `windowSeconds`. NaN gaps stay gaps.

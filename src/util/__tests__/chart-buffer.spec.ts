@@ -219,7 +219,7 @@ describe('chart-buffer', () => {
     it('returns 0 for an empty or unknown column', () => {
       const buffer = createChartBuffer(600, ['load'])
       expect(chartBufferRateOfChange(buffer, 'load')).toBe(0)
-      expect(chartBufferRateOfChange(buffer, 'missing' as never)).toBe(0)
+      expect(chartBufferRateOfChange(buffer, 'missing')).toBe(0)
     })
 
     it('returns 0 with fewer than 2 trailing values', () => {

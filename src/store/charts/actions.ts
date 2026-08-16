@@ -3,7 +3,6 @@ import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import { appendChartSample, createChartBuffer } from '@/util/chart-buffer'
 import type { ChartsDbDocument, ChartSelectedLegends, ChartState } from './types'
-import type { ThermalColumn } from './thermal-columns'
 import { thermalColumn } from './thermal-columns'
 import type { RootState } from '../types'
 import { isEqual } from 'lodash-es'
@@ -46,7 +45,7 @@ export const actions = {
       Object.keys(payload).length === 0
     ) {
       // Empty chart data
-      commit('setThermalStore', createChartBuffer<ThermalColumn>(retention))
+      commit('setThermalStore', createChartBuffer(retention))
       return
     }
 
@@ -76,7 +75,7 @@ export const actions = {
     }
 
     const keys = Object.keys(payload)
-    const buffer = createChartBuffer<ThermalColumn>(retention)
+    const buffer = createChartBuffer(retention)
 
     for (let i = 0; i < retention; i++) {
       const date = new Date(now.getTime() - (1000 * (retention - i)) - 2000)

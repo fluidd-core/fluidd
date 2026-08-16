@@ -26,7 +26,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import type { EChartsOption } from 'echarts'
-import type { ChartDataSource } from '@/util/chart-buffer'
+import type { ChartDataSource } from '@/store/charts/types'
 
 export type AppInlineChartLabel = {
   text: string

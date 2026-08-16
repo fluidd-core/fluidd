@@ -11,7 +11,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import type { MCU } from '@/store/printer/types'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
 import type { AppInlineChartLabel } from '@/components/ui/AppInlineChart.vue'
-import type { ChartDataSource } from '@/util/chart-buffer'
+import type { ChartDataSource } from '@/store/charts/types'
 import { chartBufferSource } from '@/util/chart-buffer'
 
 @Component({})

@@ -1,17 +1,5 @@
 import { markRaw } from 'vue'
-
-// Live samples are [offset, offset + count) of the backing arrays.
-export interface ChartBuffer<K extends string = string> {
-  time: Float64Array;
-  columns: Record<K, Float64Array>;
-  offset: number;
-  count: number;
-  retention: number;
-  revision: number;
-}
-
-// ECharts' "keyed columns" `dataset.source` - a Float64Array subarray fits.
-export type ChartDataSource = Record<string, ArrayLike<number>>
+import type { ChartBuffer, ChartDataSource } from '@/store/charts/types'
 
 const emptyChartSource: ChartDataSource = Object.freeze({ date: [] })
 
@@ -27,15 +15,15 @@ const createTimeColumn = (capacity: number): Float64Array =>
 const createColumn = (capacity: number): Float64Array =>
   createTimeColumn(capacity).fill(Number.NaN)
 
-export const createChartBuffer = <K extends string = string>(
+export const createChartBuffer = (
   retention: number,
-  columns: readonly K[] = []
-): ChartBuffer<K> => {
+  columns: readonly string[] = []
+): ChartBuffer => {
   const capacity = capacityFor(retention)
 
-  const buffer: ChartBuffer<K> = {
+  const buffer: ChartBuffer = {
     time: createTimeColumn(capacity),
-    columns: {} as Record<K, Float64Array>,
+    columns: {},
     offset: 0,
     count: 0,
     retention,
@@ -49,8 +37,8 @@ export const createChartBuffer = <K extends string = string>(
   return buffer
 }
 
-const reallocate = <K extends string>(
-  buffer: ChartBuffer<K>,
+const reallocate = (
+  buffer: ChartBuffer,
   capacity: number,
   start: number,
   count: number
@@ -69,7 +57,7 @@ const reallocate = <K extends string>(
   buffer.count = count
 }
 
-const compact = <K extends string>(buffer: ChartBuffer<K>): void => {
+const compact = (buffer: ChartBuffer): void => {
   const { offset, count } = buffer
 
   if (offset === 0) {
@@ -88,7 +76,7 @@ const compact = <K extends string>(buffer: ChartBuffer<K>): void => {
 }
 
 // Binary search assumes `time` is monotonically non-decreasing.
-const dropExpired = <K extends string>(buffer: ChartBuffer<K>, now: number): void => {
+const dropExpired = (buffer: ChartBuffer, now: number): void => {
   const cutoff = now - (buffer.retention * 1000)
   const { time, offset, count } = buffer
 
@@ -113,11 +101,11 @@ const dropExpired = <K extends string>(buffer: ChartBuffer<K>, now: number): voi
 
 // `revision` is the change signal - Vue 2 doesn't observe typed array writes.
 // `defineColumn` lets the store layer add columns reactively (`Vue.set`).
-export const appendChartSample = <K extends string>(
-  buffer: ChartBuffer<K>,
+export const appendChartSample = (
+  buffer: ChartBuffer,
   time: number,
-  values: Readonly<Partial<Record<K, number>>>,
-  defineColumn?: (columns: Record<K, Float64Array>, key: K, column: Float64Array) => void
+  values: Readonly<Record<string, number>>,
+  defineColumn?: (columns: Record<string, Float64Array>, key: string, column: Float64Array) => void
 ): void => {
   if (buffer.offset + buffer.count >= buffer.time.length) {
     compact(buffer)
@@ -150,7 +138,7 @@ export const appendChartSample = <K extends string>(
 }
 
 // Keeps as much of the live window as the new retention still fits.
-export const resizeChartBuffer = <K extends string>(buffer: ChartBuffer<K>, retention: number): void => {
+export const resizeChartBuffer = (buffer: ChartBuffer, retention: number): void => {
   if (retention === buffer.retention) return
 
   const liveCount = Math.min(buffer.count, retention)
@@ -161,10 +149,10 @@ export const resizeChartBuffer = <K extends string>(buffer: ChartBuffer<K>, rete
   buffer.revision++
 }
 
-const sourceCache = new WeakMap<ChartBuffer<string>, { revision: number; source: ChartDataSource }>()
+const sourceCache = new WeakMap<ChartBuffer, { revision: number; source: ChartDataSource }>()
 
 // `date` must come first - ECharts derives the row count from column 0.
-export const chartBufferSource = <K extends string>(buffer?: ChartBuffer<K>): ChartDataSource => {
+export const chartBufferSource = (buffer?: ChartBuffer): ChartDataSource => {
   if (!buffer) return emptyChartSource
 
   const cached = sourceCache.get(buffer)
@@ -188,13 +176,13 @@ export const chartBufferSource = <K extends string>(buffer?: ChartBuffer<K>): Ch
   return source
 }
 
-export const chartBufferLastValue = <K extends string>(buffer: ChartBuffer<K>, column: K): number | undefined => {
+export const chartBufferLastValue = (buffer: ChartBuffer, column: string): number | undefined => {
   if (buffer.count === 0) return undefined
 
   return buffer.columns[column]?.[buffer.offset + buffer.count - 1]
 }
 
-export const chartBufferLastTime = <K extends string>(buffer: ChartBuffer<K>): number | undefined => {
+export const chartBufferLastTime = (buffer: ChartBuffer): number | undefined => {
   if (buffer.count === 0) return undefined
 
   return buffer.time[buffer.offset + buffer.count - 1]
@@ -203,7 +191,7 @@ export const chartBufferLastTime = <K extends string>(buffer: ChartBuffer<K>): n
 const RATE_OF_CHANGE_WINDOW = 5
 
 // Trailing units/sec, scanning back from the last sample to the first gap.
-export const chartBufferRateOfChange = <K extends string>(buffer: ChartBuffer<K>, column: K): number => {
+export const chartBufferRateOfChange = (buffer: ChartBuffer, column: string): number => {
   const values = buffer.columns[column]
 
   if (!values || buffer.count === 0) return 0

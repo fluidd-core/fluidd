@@ -1,22 +1,25 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { ChartBuffer } from '@/util/chart-buffer'
 import { appendChartSample, createChartBuffer, resizeChartBuffer } from '@/util/chart-buffer'
-import type { ChartEntryPayload, ChartsDbDocument, ChartSelectedLegends, ChartState } from './types'
+import type { ChartBuffer, ChartEntryPayload, ChartsDbDocument, ChartSelectedLegends, ChartState } from './types'
 import { defaultState } from './state'
-
-// New columns must go through Vue.set to stay reactive.
-const defineColumn = (columns: Record<string, Float64Array>, key: string, column: Float64Array): void => {
-  Vue.set(columns, key, column)
-}
 
 const resolveBuffer = (state: ChartState, payload: ChartEntryPayload): ChartBuffer => {
   switch (payload.bucket) {
-    case 'thermal': return state.thermal
-    case 'klipper': return state.klipper
-    case 'memory': return state.memory
-    case 'moonraker': return state.moonraker
-    case 'diagnostics': return state.diagnostics
+    case 'thermal':
+      return state.thermal
+
+    case 'klipper':
+      return state.klipper
+
+    case 'memory':
+      return state.memory
+
+    case 'moonraker':
+      return state.moonraker
+
+    case 'diagnostics':
+      return state.diagnostics
 
     case 'mcu': {
       if (!state.mcus[payload.id]) {
@@ -75,7 +78,15 @@ export const mutations = {
       resizeChartBuffer(buffer, payload.retention)
     }
 
-    appendChartSample(buffer, payload.time, payload.values, defineColumn)
+    appendChartSample(
+      buffer,
+      payload.time,
+      payload.values,
+      // New columns must go through Vue.set to stay reactive.
+      (columns: Record<string, Float64Array>, key: string, column: Float64Array) => {
+        Vue.set(columns, key, column)
+      }
+    )
   },
 
   setSelectedLegends (state, payload: ChartSelectedLegends) {

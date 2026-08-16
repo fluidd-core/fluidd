@@ -19,7 +19,7 @@
 <script lang='ts'>
 import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
 import type { DatasetComponentOption, ECharts, EChartsInitOpts, EChartsOption } from 'echarts'
-import type { ChartDataSource } from '@/util/chart-buffer'
+import type { ChartDataSource } from '@/store/charts/types'
 
 @Component({})
 export default class AppChart extends Vue {

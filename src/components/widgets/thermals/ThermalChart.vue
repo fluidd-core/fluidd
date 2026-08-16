@@ -43,10 +43,10 @@ import { Component, Watch, Prop, Ref, Mixins } from 'vue-property-decorator'
 import type { ECharts, EChartsInitOpts, EChartsOption, LineSeriesOption } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
 import { smoothChartSource } from '@/util/chart-smoothing'
-import type { ChartBuffer, ChartDataSource } from '@/util/chart-buffer'
+import type { ChartBuffer, ChartDataSource } from '@/store/charts/types'
 import { tooltipValueByDimension } from '@/util/chart-tooltip'
 import { isDutyCycleSubKey, parseThermalColumn, thermalColumn, thermalSubKeys } from '@/store/charts/thermal-columns'
-import type { ThermalColumn, ThermalSubKey } from '@/store/charts/thermal-columns'
+import type { ThermalSubKey } from '@/store/charts/thermal-columns'
 import BrowserMixin from '@/mixins/browser'
 import type { ChartSelectedLegends } from '@/store/charts/types'
 
@@ -92,7 +92,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
   }
 
-  get thermalChartBuffer (): ChartBuffer<ThermalColumn> {
+  get thermalChartBuffer (): ChartBuffer {
     return this.$typedState.charts.thermal
   }
 

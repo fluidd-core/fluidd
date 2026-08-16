@@ -355,10 +355,9 @@ import HeaterPidCalibrateDialog from './HeaterPidCalibrateDialog.vue'
 import HeaterMpcCalibrateDialog from './HeaterMpcCalibrateDialog.vue'
 import StateMixin from '@/mixins/state'
 import type { Fan, Heater, Sensor } from '@/store/printer/types'
-import type { ChartBuffer } from '@/util/chart-buffer'
 import { chartBufferRateOfChange } from '@/util/chart-buffer'
-import type { ChartSelectedLegends } from '@/store/charts/types'
-import type { ThermalColumn, ThermalSubKey } from '@/store/charts/thermal-columns'
+import type { ChartBuffer, ChartSelectedLegends } from '@/store/charts/types'
+import type { ThermalSubKey } from '@/store/charts/thermal-columns'
 import { isDutyCycleSubKey, thermalColumn } from '@/store/charts/thermal-columns'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 import isNullOrEmpty, { type NullableOrEmpty } from '@/util/is-null-or-empty'
@@ -409,7 +408,7 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     return this.$typedState.charts.selectedLegends
   }
 
-  get thermalChartBuffer (): ChartBuffer<ThermalColumn> {
+  get thermalChartBuffer (): ChartBuffer {
     return this.$typedState.charts.thermal
   }
 

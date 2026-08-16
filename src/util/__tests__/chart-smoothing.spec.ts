@@ -1,6 +1,6 @@
 import { smoothChartSource } from '../chart-smoothing'
 import { appendChartSample, chartBufferSource, createChartBuffer } from '../chart-buffer'
-import type { ChartBuffer } from '../chart-buffer'
+import type { ChartBuffer } from '@/store/charts/types'
 
 // Builds a buffer of 1Hz samples starting at epoch t=0s, one column, values
 // possibly interrupted by gaps (null -> no value appended for that sample).

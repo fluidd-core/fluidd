@@ -1,25 +1,29 @@
-import type { ChartBuffer } from '@/util/chart-buffer'
-import type { ThermalColumn } from './thermal-columns'
+// Written by `@/util/chart-buffer`; live samples are [offset, offset + count).
+export interface ChartBuffer {
+  time: Float64Array;
+  columns: Record<string, Float64Array>;
+  offset: number;
+  count: number;
+  retention: number;
+  revision: number;
+}
+
+// ECharts' "keyed columns" `dataset.source` - a Float64Array subarray fits.
+export type ChartDataSource = Record<string, ArrayLike<number>>
 
 export interface ChartSample {
   time: number;
   values: Readonly<Record<string, number>>;
 }
 
-export type KlipperChartColumn = 'load' | 'cputime_change'
-export type MemoryChartColumn = 'memused'
-export type MoonrakerChartColumn = 'load'
-export type McuChartColumn = 'load' | 'awake' | 'bw'
-
 export interface ChartState {
   ready: boolean;
-  thermal: ChartBuffer<ThermalColumn>;
-  klipper: ChartBuffer<KlipperChartColumn>;
-  memory: ChartBuffer<MemoryChartColumn>;
-  moonraker: ChartBuffer<MoonrakerChartColumn>;
-  // Collector / sensor field names - runtime data, so not a literal union.
+  thermal: ChartBuffer;
+  klipper: ChartBuffer;
+  memory: ChartBuffer;
+  moonraker: ChartBuffer;
   diagnostics: ChartBuffer;
-  mcus: Record<string, ChartBuffer<McuChartColumn>>;
+  mcus: Record<string, ChartBuffer>;
   sensors: Record<string, ChartBuffer>;
   selectedLegends: ChartSelectedLegends;
 }
