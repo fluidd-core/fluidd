@@ -138,21 +138,18 @@ export const actions = {
 
     // Add a chart entry
     if (payload.moonraker_stats) {
-      const stats = Array.isArray(payload.moonraker_stats)
-        ? payload.moonraker_stats
-        : [payload.moonraker_stats]
-
-      for (const d of stats) {
-        if (d.cpu_usage <= 100) {
-          commit('charts/setChartEntry', {
-            bucket: 'moonraker',
-            retention: Globals.CHART_SYSTEM_RETENTION,
-            time: d.time * 1000,
-            values: {
-              load: decimalRound(d.cpu_usage, 2),
-            }
-          }, { root: true })
-        }
+      if (Array.isArray(payload.moonraker_stats)) {
+        // The backlog replaces the buffer; appending it would unsort the timeline.
+        await dispatch('charts/initMoonrakerStore', payload.moonraker_stats, { root: true })
+      } else if (payload.moonraker_stats.cpu_usage <= 100) {
+        commit('charts/setChartEntry', {
+          bucket: 'moonraker',
+          retention: Globals.CHART_SYSTEM_RETENTION,
+          time: payload.moonraker_stats.time * 1000,
+          values: {
+            load: decimalRound(payload.moonraker_stats.cpu_usage, 2),
+          }
+        }, { root: true })
       }
     }
   },

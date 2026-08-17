@@ -71,6 +71,10 @@ export const mutations = {
     state.ready = true
   },
 
+  setMoonrakerStore (state, payload: ChartBuffer) {
+    state.moonraker = payload
+  },
+
   setChartEntry (state, payload: ChartEntryPayload) {
     const buffer = resolveBuffer(state, payload)
 

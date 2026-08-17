@@ -3,6 +3,7 @@ import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import type { ChartsDbDocument, ChartSelectedLegends, ChartState } from './types'
 import { buildThermalHistoryBuffer } from './thermal-history'
+import { buildMoonrakerHistoryBuffer } from './moonraker-history'
 import type { RootState } from '../types'
 import { isEqual } from 'lodash-es'
 
@@ -31,6 +32,15 @@ export const actions = {
     )
 
     commit('setThermalStore', buffer)
+  },
+
+  /**
+   * Loads Moonraker's process stats backlog.
+   */
+  async initMoonrakerStore ({ commit }, payload: readonly Moonraker.ProcStats.MoonrakerStats[]) {
+    const buffer = buildMoonrakerHistoryBuffer(payload, Globals.CHART_SYSTEM_RETENTION)
+
+    commit('setMoonrakerStore', buffer)
   },
 
   /**
