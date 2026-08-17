@@ -112,7 +112,8 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   }
 
   get seriesNames (): string[] {
-    return this.series.map(series => series.name as string)
+    return this.series
+      .map(series => series.name as string)
   }
 
   get smoothedChartData (): ChartDataSource {
@@ -142,8 +143,12 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     for (const series of this.series) {
       const baseKey = parseThermalColumn(series.name as string).sensor
       const color = this.seriesColor(baseKey)
+
       series.color = color
-      if (series.lineStyle) series.lineStyle.color = color
+
+      if (series.lineStyle) {
+        series.lineStyle.color = color
+      }
     }
 
     // Merge (no notMerge) so the imperatively-set dataset is preserved.
@@ -154,14 +159,23 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   @Watch('chartRevision')
   @Watch('chartSmoothingWindow')
   onDataChange () {
-    if (!this.chart || this.paused) return
+    if (
+      !this.chart ||
+      this.paused
+    ) {
+      return
+    }
 
     const seriesCount = this.series.length
+
     this.initSeries()
 
     if (seriesCount === 0) {
       // Series deferred at creation (empty store): build now and re-apply.
-      if (this.series.length > 0) this.onChartReady()
+      if (this.series.length > 0) {
+        this.onChartReady()
+      }
+
       return
     }
 
@@ -183,7 +197,9 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   // Merge so the imperatively-set dataset and legend selection are preserved.
   @Watch('options')
   onOptionsChange (options: EChartsOption) {
-    if (!this.chart) return
+    if (!this.chart) {
+      return
+    }
 
     this.chart.setOption(options)
   }

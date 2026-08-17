@@ -52,16 +52,19 @@ export default class AppInlineChart extends Vue {
   get items () {
     const lastIndex = this.data.date.length - 1
 
-    return this.labels.map(label => {
-      const value = lastIndex >= 0 ? this.data[label.value]?.[lastIndex] : undefined
+    return this.labels
+      .map(label => {
+        const value = lastIndex >= 0
+          ? this.data[label.value]?.[lastIndex]
+          : undefined
 
-      return {
-        label,
-        value: (value == null || Number.isNaN(value))
-          ? '--'
-          : `${value !== 0 ? value.toFixed(2) : value}${label.suffix ?? ''}`
-      }
-    })
+        return {
+          label,
+          value: (value == null || Number.isNaN(value))
+            ? '--'
+            : `${value !== 0 ? value.toFixed(2) : value}${label.suffix ?? ''}`
+        }
+      })
   }
 }
 </script>
