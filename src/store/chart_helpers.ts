@@ -38,8 +38,9 @@ export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, sta
         // klipper recorded the data.
         const maxbw = 25000
 
-        // The time delta between the last and this entry.
-        const timedelta = (lastTime != null) ? time - lastTime : 1000
+        // The time delta between the last and this entry, clamped so that two
+        // updates within the same millisecond don't divide by zero below.
+        const timedelta = (lastTime != null) ? Math.max(1, time - lastTime) : 1000
 
         let bw = stats.last_stats.bytes_write + stats.last_stats.bytes_retransmit
         let lastbw = lastBw ?? bw

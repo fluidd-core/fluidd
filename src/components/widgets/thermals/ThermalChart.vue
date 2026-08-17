@@ -210,7 +210,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
   // Builds series for any chartable column that has data but no series yet.
   initSeries () {
-    const dataKeys = new Set(Object.keys(this.thermalChartBuffer.columns))
+    const dataKeys = new Set(this.thermalChartBuffer.columns.keys())
     const existing = new Set(this.seriesNames)
     const newSeries: LineSeriesOption[] = []
 

@@ -1,4 +1,4 @@
-import { commitChartSamples, createChartBuffer } from '@/util/chart-buffer'
+import { chartBufferColumn, commitChartSamples, createChartBuffer } from '@/util/chart-buffer'
 import decimalRound from '@/util/decimal-round'
 import type { ChartBuffer } from './types'
 import type { ThermalSubKey } from './thermal-columns'
@@ -27,8 +27,8 @@ interface ColumnSource {
   values: readonly number[];
 }
 
-// Sources are right-aligned on a 1Hz timeline ending at `endTime`, so a sensor
-// with less history than the others reads NaN before its first sample.
+// Sources are right-aligned on a 1Hz timeline whose newest sample sits at
+// `endTime - 1000`, so a sensor with less history reads NaN before its first.
 export const buildThermalHistoryBuffer = (
   payload: Moonraker.DataStore.TemperatureStoreResponse,
   chartableSensors: readonly string[],
@@ -79,7 +79,7 @@ export const buildThermalHistoryBuffer = (
   }
 
   for (const { column, values } of sources) {
-    const target = buffer.columns[column]
+    const target = chartBufferColumn(buffer, column)
     const length = Math.min(values.length, count)
     const from = values.length - length
     const to = count - length

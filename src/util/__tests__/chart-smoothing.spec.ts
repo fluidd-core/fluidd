@@ -1,5 +1,5 @@
 import { smoothChartSource } from '../chart-smoothing'
-import { appendChartSample, chartBufferSource, createChartBuffer } from '../chart-buffer'
+import { appendChartSample, chartBufferColumn, chartBufferSource, createChartBuffer } from '../chart-buffer'
 import type { ChartBuffer } from '@/store/charts/types'
 
 // Builds a buffer of 1Hz samples starting at epoch t=0s, one column, values
@@ -90,10 +90,10 @@ describe('smoothChartSource', () => {
 
   it('does not mutate the buffer', () => {
     const buffer = buildBuffer('extruder#power', [0, 100, 0, 100])
-    const before = Array.from(buffer.columns['extruder#power'])
+    const before = Array.from(chartBufferColumn(buffer, 'extruder#power'))
 
     smoothChartSource(buffer, ['extruder#power'], 3)
 
-    expect(Array.from(buffer.columns['extruder#power'])).toEqual(before)
+    expect(Array.from(chartBufferColumn(buffer, 'extruder#power'))).toEqual(before)
   })
 })

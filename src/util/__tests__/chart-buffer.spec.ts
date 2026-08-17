@@ -1,5 +1,6 @@
 import {
   appendChartSample,
+  chartBufferColumn,
   chartBufferLastTime,
   chartBufferLastValue,
   chartBufferRateOfChange,
@@ -30,9 +31,20 @@ describe('chart-buffer', () => {
     it('pre-creates known columns, NaN-filled', () => {
       const buffer = createChartBuffer(10, ['load', 'awake'])
 
-      expect(Object.keys(buffer.columns)).toEqual(['load', 'awake'])
+      expect([...buffer.columns.keys()]).toEqual(['load', 'awake'])
       expect(buffer.count).toBe(0)
-      expect(buffer.columns.load.every(Number.isNaN)).toBe(true)
+      expect(chartBufferColumn(buffer, 'load').every(Number.isNaN)).toBe(true)
+    })
+
+    it('treats a `__proto__` column as an ordinary key', () => {
+      // Computed, so it lands as a key rather than the literal's setter.
+      const protoKey = '__proto__'
+      const buffer = createChartBuffer(600)
+
+      appendChartSample(buffer, 1000, { [protoKey]: 42 })
+
+      expect([...buffer.columns.keys()]).toEqual([protoKey])
+      expect(Array.from(chartBufferColumn(buffer, protoKey).subarray(0, 1))).toEqual([42])
     })
   })
 
@@ -58,7 +70,7 @@ describe('chart-buffer', () => {
 
       const source = chartBufferSource(buffer)
 
-      expect(Object.keys(buffer.columns)).toEqual(['extruder', 'extruder#target'])
+      expect([...buffer.columns.keys()]).toEqual(['extruder', 'extruder#target'])
       expect(Array.from(source['extruder#target'])).toEqual([Number.NaN, Number.NaN, 210])
     })
 
@@ -133,7 +145,7 @@ describe('chart-buffer', () => {
       const buffer = createChartBuffer(600, ['load'])
 
       buffer.time.set([1000, 2000, 3000])
-      buffer.columns.load.set([1, 2, 3])
+      chartBufferColumn(buffer, 'load').set([1, 2, 3])
 
       commitChartSamples(buffer, 3)
 
@@ -287,6 +299,14 @@ describe('chart-buffer', () => {
       appendChartSample(buffer, 0, { load: 0 })
       appendChartSample(buffer, 1000, { load: 10 })
       appendChartSample(buffer, 2000, {})
+
+      expect(chartBufferRateOfChange(buffer, 'load')).toBe(0)
+    })
+
+    it('returns 0 when the trailing samples share a timestamp', () => {
+      const buffer = createChartBuffer(600, ['load'])
+      appendChartSample(buffer, 1000, { load: 0 })
+      appendChartSample(buffer, 1000, { load: 50 })
 
       expect(chartBufferRateOfChange(buffer, 'load')).toBe(0)
     })

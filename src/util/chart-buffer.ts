@@ -23,7 +23,7 @@ export const createChartBuffer = (
 
   const buffer: ChartBuffer = {
     time: createTimeColumn(capacity),
-    columns: {},
+    columns: new Map(),
     offset: 0,
     count: 0,
     retention,
@@ -31,10 +31,23 @@ export const createChartBuffer = (
   }
 
   for (const column of columns) {
-    buffer.columns[column] = createColumn(capacity)
+    buffer.columns.set(column, createColumn(capacity))
   }
 
   return buffer
+}
+
+// Column names are runtime sensor ids, so misses are expected, not exceptional.
+export const chartBufferColumn = (buffer: ChartBuffer, key: string): Float64Array => {
+  let column = buffer.columns.get(key)
+
+  if (!column) {
+    column = createColumn(buffer.time.length)
+
+    buffer.columns.set(key, column)
+  }
+
+  return column
 }
 
 const reallocate = (
@@ -49,12 +62,12 @@ const reallocate = (
 
   buffer.time = time
 
-  for (const key in buffer.columns) {
+  for (const [key, values] of buffer.columns) {
     const column = createColumn(capacity)
 
-    column.set(buffer.columns[key].subarray(start, start + count))
+    column.set(values.subarray(start, start + count))
 
-    buffer.columns[key] = column
+    buffer.columns.set(key, column)
   }
 
   buffer.offset = 0
@@ -73,8 +86,8 @@ const compact = (buffer: ChartBuffer): void => {
 
   buffer.time.copyWithin(0, offset, offset + count)
 
-  for (const key in buffer.columns) {
-    buffer.columns[key].copyWithin(0, offset, offset + count)
+  for (const column of buffer.columns.values()) {
+    column.copyWithin(0, offset, offset + count)
   }
 
   buffer.offset = 0
@@ -104,13 +117,12 @@ const dropExpired = (buffer: ChartBuffer, now: number): void => {
   buffer.count -= lo - offset
 }
 
-// `revision` is the change signal - Vue 2 doesn't observe typed array writes.
-// `defineColumn` lets the store layer add columns reactively (`Vue.set`).
+// `revision` is the change signal - Vue 2 doesn't observe typed array writes,
+// nor a `Map`, so nothing here needs to go through `Vue.set`.
 export const appendChartSample = (
   buffer: ChartBuffer,
   time: number,
-  values: Readonly<Record<string, number>>,
-  defineColumn?: (columns: Record<string, Float64Array>, key: string, column: Float64Array) => void
+  values: Readonly<Record<string, number>>
 ): void => {
   if (buffer.offset + buffer.count >= buffer.time.length) {
     compact(buffer)
@@ -119,21 +131,11 @@ export const appendChartSample = (
   const index = buffer.offset + buffer.count
 
   for (const key in values) {
-    if (key in buffer.columns) {
-      continue
-    }
-
-    const column = createColumn(buffer.time.length)
-
-    if (defineColumn) {
-      defineColumn(buffer.columns, key, column)
-    } else {
-      buffer.columns[key] = column
-    }
+    chartBufferColumn(buffer, key)
   }
 
-  for (const key in buffer.columns) {
-    buffer.columns[key][index] = values[key] ?? Number.NaN
+  for (const [key, column] of buffer.columns) {
+    column[index] = values[key] ?? Number.NaN
   }
 
   buffer.time[index] = time
@@ -186,8 +188,8 @@ export const chartBufferSource = (buffer?: ChartBuffer): ChartDataSource => {
     date: time.subarray(offset, offset + count)
   }
 
-  for (const key in columns) {
-    source[key] = columns[key].subarray(offset, offset + count)
+  for (const [key, column] of columns) {
+    source[key] = column.subarray(offset, offset + count)
   }
 
   sourceCache.set(buffer, { revision: buffer.revision, source })
@@ -200,7 +202,7 @@ export const chartBufferLastValue = (buffer: ChartBuffer, column: string): numbe
     return undefined
   }
 
-  return buffer.columns[column]?.[buffer.offset + buffer.count - 1]
+  return buffer.columns.get(column)?.[buffer.offset + buffer.count - 1]
 }
 
 export const chartBufferLastTime = (buffer: ChartBuffer): number | undefined => {
@@ -215,7 +217,7 @@ const RATE_OF_CHANGE_WINDOW = 5
 
 // Trailing units/sec, scanning back from the last sample to the first gap.
 export const chartBufferRateOfChange = (buffer: ChartBuffer, column: string): number => {
-  const values = buffer.columns[column]
+  const values = buffer.columns.get(column)
 
   if (
     !values ||
@@ -244,7 +246,8 @@ export const chartBufferRateOfChange = (buffer: ChartBuffer, column: string): nu
 
   if (
     last === -1 ||
-    first === last
+    first === last ||
+    buffer.time[last] === buffer.time[first]
   ) {
     return 0
   }

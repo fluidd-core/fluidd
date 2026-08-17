@@ -63,6 +63,6 @@ describe('buildMoonrakerHistoryBuffer', () => {
     const buffer = buildMoonrakerHistoryBuffer([], 600)
 
     expect(buffer.count).toBe(0)
-    expect(Object.keys(buffer.columns)).toEqual(['load'])
+    expect([...buffer.columns.keys()]).toEqual(['load'])
   })
 })

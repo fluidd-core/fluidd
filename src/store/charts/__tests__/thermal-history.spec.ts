@@ -88,7 +88,7 @@ describe('buildThermalHistoryBuffer', () => {
       END
     )
 
-    expect(Object.keys(buffer.columns).sort()).toEqual([
+    expect([...buffer.columns.keys()].sort()).toEqual([
       'extruder',
       'extruder#power',
       'extruder#target',
@@ -109,9 +109,9 @@ describe('buildThermalHistoryBuffer', () => {
       END
     )
 
-    expect(buffer.columns['heater_bed#target']).toBeDefined()
-    expect(buffer.columns['temperature_sensor mcu#target']).toBeUndefined()
-    expect(buffer.columns['temperature_probe eddy#target']).toBeUndefined()
+    expect(buffer.columns.has('heater_bed#target')).toBe(true)
+    expect(buffer.columns.has('temperature_sensor mcu#target')).toBe(false)
+    expect(buffer.columns.has('temperature_probe eddy#target')).toBe(false)
   })
 
   it('ignores sensors that are not chartable', () => {
@@ -125,7 +125,7 @@ describe('buildThermalHistoryBuffer', () => {
       END
     )
 
-    expect(Object.keys(buffer.columns)).toEqual(['extruder'])
+    expect([...buffer.columns.keys()]).toEqual(['extruder'])
   })
 
   it('ignores chartable sensors missing from the payload', () => {
@@ -136,7 +136,7 @@ describe('buildThermalHistoryBuffer', () => {
       END
     )
 
-    expect(Object.keys(buffer.columns)).toEqual(['extruder'])
+    expect([...buffer.columns.keys()]).toEqual(['extruder'])
   })
 
   it('skips empty field arrays', () => {
@@ -147,7 +147,7 @@ describe('buildThermalHistoryBuffer', () => {
       END
     )
 
-    expect(buffer.columns['extruder#target']).toBeUndefined()
+    expect(buffer.columns.has('extruder#target')).toBe(false)
   })
 
   it('rounds values to 2 decimal places, matching the live path', () => {
@@ -165,7 +165,7 @@ describe('buildThermalHistoryBuffer', () => {
     const buffer = buildThermalHistoryBuffer({}, ['extruder'], 600, END)
 
     expect(buffer.count).toBe(0)
-    expect(Object.keys(buffer.columns)).toEqual([])
+    expect([...buffer.columns.keys()]).toEqual([])
   })
 
   it('yields an empty buffer when there are no chartable sensors', () => {

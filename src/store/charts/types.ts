@@ -1,7 +1,7 @@
 // Written by `@/util/chart-buffer`; live samples are [offset, offset + count).
 export interface ChartBuffer {
   time: Float64Array;
-  columns: Record<string, Float64Array>;
+  columns: Map<string, Float64Array>;
   offset: number;
   count: number;
   retention: number;

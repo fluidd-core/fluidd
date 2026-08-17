@@ -82,15 +82,7 @@ export const mutations = {
       resizeChartBuffer(buffer, payload.retention)
     }
 
-    appendChartSample(
-      buffer,
-      payload.time,
-      payload.values,
-      // New columns must go through Vue.set to stay reactive.
-      (columns: Record<string, Float64Array>, key: string, column: Float64Array) => {
-        Vue.set(columns, key, column)
-      }
-    )
+    appendChartSample(buffer, payload.time, payload.values)
   },
 
   setSelectedLegends (state, payload: ChartSelectedLegends) {

@@ -1,4 +1,4 @@
-import { commitChartSamples, createChartBuffer } from '@/util/chart-buffer'
+import { chartBufferColumn, commitChartSamples, createChartBuffer } from '@/util/chart-buffer'
 import decimalRound from '@/util/decimal-round'
 import type { ChartBuffer } from './types'
 
@@ -8,7 +8,8 @@ export const buildMoonrakerHistoryBuffer = (
   retention: number
 ): ChartBuffer => {
   const buffer = createChartBuffer(retention, ['load'])
-  const { time, columns: { load } } = buffer
+  const { time } = buffer
+  const load = chartBufferColumn(buffer, 'load')
 
   let count = 0
 
