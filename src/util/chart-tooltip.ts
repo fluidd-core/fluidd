@@ -1,9 +1,7 @@
+import type { DefaultLabelFormatterCallbackParams } from 'echarts'
+
 // With a keyed-columns source, `param.value` is positional, not a row object.
-export interface ChartTooltipParam {
-  value?: unknown;
-  encode?: Record<string, number[]>;
-  dimensionNames?: string[];
-}
+export type ChartTooltipParam = Pick<DefaultLabelFormatterCallbackParams, 'value' | 'encode' | 'dimensionNames'>
 
 const valueAt = (param: ChartTooltipParam, index: number): number | undefined => {
   if (index < 0 || !Array.isArray(param.value)) return undefined

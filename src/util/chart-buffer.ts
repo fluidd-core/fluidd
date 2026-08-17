@@ -44,12 +44,16 @@ const reallocate = (
   count: number
 ): void => {
   const time = createTimeColumn(capacity)
+
   time.set(buffer.time.subarray(start, start + count))
+
   buffer.time = time
 
   for (const key in buffer.columns) {
     const column = createColumn(capacity)
+
     column.set(buffer.columns[key].subarray(start, start + count))
+
     buffer.columns[key] = column
   }
 
@@ -63,6 +67,7 @@ const compact = (buffer: ChartBuffer): void => {
   if (offset === 0) {
     // Samples arriving faster than `retention` expires them.
     reallocate(buffer, buffer.time.length * 2, offset, count)
+
     return
   }
 
@@ -114,14 +119,16 @@ export const appendChartSample = (
   const index = buffer.offset + buffer.count
 
   for (const key in values) {
-    if (!(key in buffer.columns)) {
-      const column = createColumn(buffer.time.length)
+    if (key in buffer.columns) {
+      continue
+    }
 
-      if (defineColumn) {
-        defineColumn(buffer.columns, key, column)
-      } else {
-        buffer.columns[key] = column
-      }
+    const column = createColumn(buffer.time.length)
+
+    if (defineColumn) {
+      defineColumn(buffer.columns, key, column)
+    } else {
+      buffer.columns[key] = column
     }
   }
 
@@ -160,11 +167,16 @@ const sourceCache = new WeakMap<ChartBuffer, { revision: number; source: ChartDa
 
 // `date` must come first - ECharts derives the row count from column 0.
 export const chartBufferSource = (buffer?: ChartBuffer): ChartDataSource => {
-  if (!buffer) return emptyChartSource
+  if (!buffer) {
+    return emptyChartSource
+  }
 
   const cached = sourceCache.get(buffer)
 
-  if (cached && cached.revision === buffer.revision) {
+  if (
+    cached &&
+    cached.revision === buffer.revision
+  ) {
     return cached.source
   }
 
@@ -184,13 +196,17 @@ export const chartBufferSource = (buffer?: ChartBuffer): ChartDataSource => {
 }
 
 export const chartBufferLastValue = (buffer: ChartBuffer, column: string): number | undefined => {
-  if (buffer.count === 0) return undefined
+  if (buffer.count === 0) {
+    return undefined
+  }
 
   return buffer.columns[column]?.[buffer.offset + buffer.count - 1]
 }
 
 export const chartBufferLastTime = (buffer: ChartBuffer): number | undefined => {
-  if (buffer.count === 0) return undefined
+  if (buffer.count === 0) {
+    return undefined
+  }
 
   return buffer.time[buffer.offset + buffer.count - 1]
 }
@@ -201,7 +217,12 @@ const RATE_OF_CHANGE_WINDOW = 5
 export const chartBufferRateOfChange = (buffer: ChartBuffer, column: string): number => {
   const values = buffer.columns[column]
 
-  if (!values || buffer.count === 0) return 0
+  if (
+    !values ||
+    buffer.count === 0
+  ) {
+    return 0
+  }
 
   const start = Math.max(0, buffer.count - RATE_OF_CHANGE_WINDOW)
   let first = -1
@@ -210,15 +231,27 @@ export const chartBufferRateOfChange = (buffer: ChartBuffer, column: string): nu
   for (let i = buffer.count - 1; i >= start; i--) {
     const index = buffer.offset + i
 
-    if (Number.isNaN(values[index])) break
+    if (Number.isNaN(values[index])) {
+      break
+    }
 
-    if (last === -1) last = index
+    if (last === -1) {
+      last = index
+    }
+
     first = index
   }
 
-  if (last === -1 || first === last) return 0
+  if (
+    last === -1 ||
+    first === last
+  ) {
+    return 0
+  }
 
   const rate = (values[last] - values[first]) / (buffer.time[last] - buffer.time[first]) * 1000
 
-  return Math.abs(rate) < 0.05 ? 0 : rate
+  return Math.abs(rate) < 0.05
+    ? 0
+    : rate
 }

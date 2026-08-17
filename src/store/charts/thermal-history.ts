@@ -4,12 +4,17 @@ import type { ChartBuffer } from './types'
 import type { ThermalSubKey } from './thermal-columns'
 import { thermalColumn } from './thermal-columns'
 
-const historyFields = [
+type HistoryField = readonly [
+  keyof Moonraker.DataStore.TemperatureStoreEntry,
+  ThermalSubKey | undefined
+]
+
+const historyFields: readonly HistoryField[] = [
   ['temperatures', undefined],
   ['targets', 'target'],
   ['powers', 'power'],
   ['speeds', 'speed']
-] as const satisfies readonly (readonly [keyof Moonraker.DataStore.TemperatureStoreEntry, ThermalSubKey | undefined])[]
+]
 
 // Moonraker reports targets for these even though they have none.
 const noTargetPrefixes = [
@@ -36,16 +41,23 @@ export const buildThermalHistoryBuffer = (
   for (const key of chartableSensors) {
     const entry = payload?.[key]
 
-    if (!entry) continue
+    if (!entry) {
+      continue
+    }
 
-    const noTargets = noTargetPrefixes.some(prefix => key.startsWith(prefix))
+    const noTargets = noTargetPrefixes
+      .some(prefix => key.startsWith(prefix))
 
     for (const [field, sub] of historyFields) {
-      if (sub === 'target' && noTargets) continue
+      if (sub === 'target' && noTargets) {
+        continue
+      }
 
       const values = entry[field]
 
-      if (!values?.length) continue
+      if (!values?.length) {
+        continue
+      }
 
       count = Math.max(count, Math.min(values.length, retention))
 
@@ -56,10 +68,14 @@ export const buildThermalHistoryBuffer = (
     }
   }
 
-  const buffer = createChartBuffer(retention, sources.map(source => source.column))
+  const buffer = createChartBuffer(
+    retention,
+    sources
+      .map(source => source.column)
+  )
 
-  for (let i = 0; i < count; i++) {
-    buffer.time[i] = endTime - (1000 * (count - i))
+  for (let index = 0; index < count; index++) {
+    buffer.time[index] = endTime - (1000 * (count - index))
   }
 
   for (const { column, values } of sources) {
@@ -68,8 +84,8 @@ export const buildThermalHistoryBuffer = (
     const from = values.length - length
     const to = count - length
 
-    for (let i = 0; i < length; i++) {
-      target[to + i] = decimalRound(values[from + i], 2)
+    for (let index = 0; index < length; index++) {
+      target[to + index] = decimalRound(values[from + index], 2)
     }
   }
 

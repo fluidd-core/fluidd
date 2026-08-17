@@ -13,7 +13,9 @@ export const smoothChartSource = (
     windowSeconds <= 0 ||
     buffer.count === 0 ||
     columns.length === 0
-  ) return source
+  ) {
+    return source
+  }
 
   const windowMs = windowSeconds * 1000
   const times = source.date
@@ -23,7 +25,9 @@ export const smoothChartSource = (
   for (const key of columns) {
     const values = source[key]
 
-    if (!values) continue
+    if (!values) {
+      continue
+    }
 
     const smoothed = new Float64Array(count)
     let left = 0
