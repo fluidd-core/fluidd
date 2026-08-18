@@ -1,17 +1,16 @@
-import type { ChartBuffer, ChartDataSource } from '@/store/charts/types'
-import { chartBufferSource } from './chart-buffer'
+import type { ChartDataSource } from '@/store/charts/types'
 
 // Trailing moving average over `windowSeconds`. NaN gaps stay gaps.
 export const smoothChartSource = (
-  buffer: ChartBuffer,
+  source: ChartDataSource,
   columns: readonly string[],
   windowSeconds: number
 ): ChartDataSource => {
-  const source = chartBufferSource(buffer)
+  const count = source.date.length
 
   if (
     windowSeconds <= 0 ||
-    buffer.count === 0 ||
+    count === 0 ||
     columns.length === 0
   ) {
     return source
@@ -19,7 +18,6 @@ export const smoothChartSource = (
 
   const windowMs = windowSeconds * 1000
   const times = source.date
-  const count = buffer.count
   const result: ChartDataSource = { ...source }
 
   for (const key of columns) {

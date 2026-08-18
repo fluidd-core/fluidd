@@ -6,36 +6,21 @@ import { defaultState } from './state'
 
 const resolveBuffer = (state: ChartState, payload: ChartEntryPayload): ChartBuffer => {
   switch (payload.bucket) {
-    case 'thermal':
-      return state.thermal
-
-    case 'klipper':
-      return state.klipper
-
-    case 'memory':
-      return state.memory
-
-    case 'moonraker':
-      return state.moonraker
-
-    case 'diagnostics':
-      return state.diagnostics
-
-    case 'mcu': {
-      if (!state.mcus[payload.id]) {
-        Vue.set(state.mcus, payload.id, createChartBuffer(payload.retention))
-      }
-
-      return state.mcus[payload.id]
-    }
-
+    case 'mcu':
     case 'sensor': {
-      if (!state.sensors[payload.id]) {
-        Vue.set(state.sensors, payload.id, createChartBuffer(payload.retention))
+      const group = payload.bucket === 'mcu'
+        ? state.mcus
+        : state.sensors
+
+      if (!group[payload.id]) {
+        Vue.set(group, payload.id, createChartBuffer(payload.retention))
       }
 
-      return state.sensors[payload.id]
+      return group[payload.id]
     }
+
+    default:
+      return state[payload.bucket]
   }
 }
 
@@ -78,10 +63,7 @@ export const mutations = {
   setChartEntry (state, payload: ChartEntryPayload) {
     const buffer = resolveBuffer(state, payload)
 
-    if (buffer.retention !== payload.retention) {
-      resizeChartBuffer(buffer, payload.retention)
-    }
-
+    resizeChartBuffer(buffer, payload.retention)
     appendChartSample(buffer, payload.time, payload.values)
   },
 

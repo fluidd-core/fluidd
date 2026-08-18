@@ -9,7 +9,7 @@ import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
 import { gte, valid } from 'semver'
 import type { ObjectWithRequest } from '@/plugins/socketClient'
-import decimalRound from '@/util/decimal-round'
+import { moonrakerChartSample } from '../charts/moonraker-history'
 
 let retryTimeout: ReturnType<typeof setTimeout>
 
@@ -141,15 +141,16 @@ export const actions = {
       if (Array.isArray(payload.moonraker_stats)) {
         // The backlog replaces the buffer; appending it would unsort the timeline.
         await dispatch('charts/initMoonrakerStore', payload.moonraker_stats, { root: true })
-      } else if (payload.moonraker_stats.cpu_usage <= 100) {
-        commit('charts/setChartEntry', {
-          bucket: 'moonraker',
-          retention: Globals.CHART_SYSTEM_RETENTION,
-          time: payload.moonraker_stats.time * 1000,
-          values: {
-            load: decimalRound(payload.moonraker_stats.cpu_usage, 2),
-          }
-        }, { root: true })
+      } else {
+        const sample = moonrakerChartSample(payload.moonraker_stats)
+
+        if (sample) {
+          commit('charts/setChartEntry', {
+            bucket: 'moonraker',
+            retention: Globals.CHART_SYSTEM_RETENTION,
+            ...sample
+          }, { root: true })
+        }
       }
     }
   },

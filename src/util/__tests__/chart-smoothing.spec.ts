@@ -17,29 +17,29 @@ const buildBuffer = (key: string, values: (number | null)[]): ChartBuffer => {
 describe('smoothChartSource', () => {
   it('returns the same source reference when window is 0', () => {
     const buffer = buildBuffer('extruder#power', [0, 100, 0, 100])
-    expect(smoothChartSource(buffer, ['extruder#power'], 0)).toBe(chartBufferSource(buffer))
+    expect(smoothChartSource(chartBufferSource(buffer), ['extruder#power'], 0)).toBe(chartBufferSource(buffer))
   })
 
   it('returns the same source reference for a negative window', () => {
     const buffer = buildBuffer('extruder#power', [0, 100, 0, 100])
-    expect(smoothChartSource(buffer, ['extruder#power'], -3)).toBe(chartBufferSource(buffer))
+    expect(smoothChartSource(chartBufferSource(buffer), ['extruder#power'], -3)).toBe(chartBufferSource(buffer))
   })
 
   it('returns the same source reference when columns is empty', () => {
     const buffer = buildBuffer('extruder#power', [0, 100, 0, 100])
-    expect(smoothChartSource(buffer, [], 3)).toBe(chartBufferSource(buffer))
+    expect(smoothChartSource(chartBufferSource(buffer), [], 3)).toBe(chartBufferSource(buffer))
   })
 
   it('is a no-op for a column no sample carries', () => {
     const buffer = buildBuffer('extruder#power', [0, 100, 0, 100])
-    const out = smoothChartSource(buffer, ['bed#power'], 3)
+    const out = smoothChartSource(chartBufferSource(buffer), ['bed#power'], 3)
 
     expect(out).toEqual(chartBufferSource(buffer))
   })
 
   it('averages all preceding values once the trailing window spans them', () => {
     const buffer = buildBuffer('extruder#power', [0, 100, 0, 100, 0, 100])
-    const out = smoothChartSource(buffer, ['extruder#power'], 1000)
+    const out = smoothChartSource(chartBufferSource(buffer), ['extruder#power'], 1000)
     const mean = (0 + 100 + 0 + 100 + 0 + 100) / 6
 
     expect(out['extruder#power'][5]).toBeCloseTo(mean, 5)
@@ -47,7 +47,7 @@ describe('smoothChartSource', () => {
 
   it('applies a trailing moving average to a square wave (window=3s, 1Hz)', () => {
     const buffer = buildBuffer('extruder#power', [0, 100, 0, 100, 0, 100])
-    const out = smoothChartSource(buffer, ['extruder#power'], 3)
+    const out = smoothChartSource(chartBufferSource(buffer), ['extruder#power'], 3)
     const got = Array.from(out['extruder#power'])
 
     expect(got[0]).toBeCloseTo(0, 5) // {0}
@@ -66,7 +66,7 @@ describe('smoothChartSource', () => {
     appendChartSample(buffer, 2000, { 'extruder#power': 0, extruder: 202 })
 
     const rawSource = chartBufferSource(buffer)
-    const out = smoothChartSource(buffer, ['extruder#power'], 3)
+    const out = smoothChartSource(chartBufferSource(buffer), ['extruder#power'], 3)
 
     // Untouched columns pass through as the exact same view.
     expect(out.date).toBe(rawSource.date)
@@ -78,7 +78,7 @@ describe('smoothChartSource', () => {
   it('skips gaps (NaN) in the window mean and preserves them in the output', () => {
     // index 2 has no power value at all
     const buffer = buildBuffer('extruder#power', [0, 100, null, 100])
-    const out = smoothChartSource(buffer, ['extruder#power'], 3)
+    const out = smoothChartSource(chartBufferSource(buffer), ['extruder#power'], 3)
     const got = out['extruder#power']
 
     expect(got[1]).toBeCloseTo(50, 5) // {0,100}
@@ -92,7 +92,7 @@ describe('smoothChartSource', () => {
     const buffer = buildBuffer('extruder#power', [0, 100, 0, 100])
     const before = Array.from(chartBufferColumn(buffer, 'extruder#power'))
 
-    smoothChartSource(buffer, ['extruder#power'], 3)
+    smoothChartSource(chartBufferSource(buffer), ['extruder#power'], 3)
 
     expect(Array.from(chartBufferColumn(buffer, 'extruder#power'))).toEqual(before)
   })

@@ -3,7 +3,7 @@ export const thermalSubKeys = ['target', 'power', 'speed'] as const
 
 export type ThermalSubKey = typeof thermalSubKeys[number]
 
-export interface ParsedThermalColumn {
+interface ParsedThermalColumn {
   sensor: string;
   sub?: ThermalSubKey;
 }

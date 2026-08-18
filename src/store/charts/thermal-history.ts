@@ -28,7 +28,7 @@ interface ColumnSource {
 }
 
 // Sources are right-aligned on a 1Hz timeline whose newest sample sits at
-// `endTime - 1000`, so a sensor with less history reads NaN before its first.
+// `endTime - 1000`, with the lead-in held at each sensor's oldest reading.
 export const buildThermalHistoryBuffer = (
   payload: Moonraker.DataStore.TemperatureStoreResponse,
   chartableSensors: readonly string[],
@@ -36,7 +36,6 @@ export const buildThermalHistoryBuffer = (
   endTime: number
 ): ChartBuffer => {
   const sources: ColumnSource[] = []
-  let count = 0
 
   for (const key of chartableSensors) {
     const entry = payload?.[key]
@@ -59,14 +58,16 @@ export const buildThermalHistoryBuffer = (
         continue
       }
 
-      count = Math.max(count, Math.min(values.length, retention))
-
       sources.push({
         column: thermalColumn(key, sub),
         values
       })
     }
   }
+
+  const count = sources.length > 0
+    ? retention
+    : 0
 
   const buffer = createChartBuffer(
     retention,
@@ -83,6 +84,10 @@ export const buildThermalHistoryBuffer = (
     const length = Math.min(values.length, count)
     const from = values.length - length
     const to = count - length
+
+    // Hold the oldest reading across the lead-in so a short history still
+    // fills the window - the chart's x-axis spans the retention regardless.
+    target.fill(decimalRound(values[from], 2), 0, to)
 
     for (let index = 0; index < length; index++) {
       target[to + index] = decimalRound(values[from + index], 2)

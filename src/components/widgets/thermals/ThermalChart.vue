@@ -42,6 +42,7 @@ import { markRaw } from 'vue'
 import { Component, Watch, Prop, Ref, Mixins } from 'vue-property-decorator'
 import type { ECharts, EChartsInitOpts, EChartsOption, LineSeriesOption } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
+import { chartBufferSource } from '@/util/chart-buffer'
 import { smoothChartSource } from '@/util/chart-smoothing'
 import type { ChartBuffer, ChartDataSource } from '@/store/charts/types'
 import { tooltipValueByDimension } from '@/util/chart-tooltip'
@@ -118,7 +119,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
   get smoothedChartData (): ChartDataSource {
     return smoothChartSource(
-      this.thermalChartBuffer,
+      chartBufferSource(this.thermalChartBuffer),
       this.smoothableKeys,
       this.chartSmoothingWindow
     )
@@ -210,14 +211,14 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
   // Builds series for any chartable column that has data but no series yet.
   initSeries () {
-    const dataKeys = new Set(this.thermalChartBuffer.columns.keys())
+    const { columns } = this.thermalChartBuffer
     const existing = new Set(this.seriesNames)
     const newSeries: LineSeriesOption[] = []
 
     const addSeries = (key: string, sub?: ThermalSubKey) => {
       const column = thermalColumn(key, sub)
 
-      if (dataKeys.has(column) && !existing.has(column)) {
+      if (columns.has(column) && !existing.has(column)) {
         newSeries.push(this.createSeries(key, sub))
         existing.add(column)
       }
@@ -333,44 +334,44 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
           let text = ''
           params
             .forEach((param: any) => {
-              const sub = param.seriesName ? parseThermalColumn(param.seriesName).sub : undefined
-
               if (
-                param.seriesName &&
-                sub == null
+                !param.seriesName ||
+                parseThermalColumn(param.seriesName).sub != null
               ) {
-                const valueAt = (name: string) => tooltipValueByDimension(param, name)
-
-                const temperature = valueAt(param.seriesName)
-                if (temperature == null) return
-
-                const name = param.seriesName.trim().split(/\s+/).pop() || ''
-                text += `
-                  <div>
-                    ${param.marker}
-                    <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
-                      ${this.$filters.prettyCase(name)}:
-                    </span>
-                    <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
-                      ${temperature.toFixed(2)}<small>°C</small>`
-
-                const target = valueAt(thermalColumn(param.seriesName, 'target'))
-                if (target != null) {
-                  text += ` / ${target.toFixed()}<small>°C</small>`
-                }
-                const power = valueAt(thermalColumn(param.seriesName, 'power'))
-                if (power != null) {
-                  text += ` / ${(power * 100).toFixed()}<small>%</small>`
-                }
-                const speed = valueAt(thermalColumn(param.seriesName, 'speed'))
-                if (speed != null) {
-                  text += ` / ${(speed * 100).toFixed()}<small>%</small>`
-                }
-                text += `</span>
-                  <div style="clear: both"></div>
-                </div>
-                <div style="clear: both"></div>`
+                return
               }
+
+              const valueAt = (name: string) => tooltipValueByDimension(param, name)
+
+              const temperature = valueAt(param.seriesName)
+              if (temperature == null) return
+
+              const name = param.seriesName.trim().split(/\s+/).pop() || ''
+              text += `
+                <div>
+                  ${param.marker}
+                  <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
+                    ${this.$filters.prettyCase(name)}:
+                  </span>
+                  <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
+                    ${temperature.toFixed(2)}<small>°C</small>`
+
+              const target = valueAt(thermalColumn(param.seriesName, 'target'))
+              if (target != null) {
+                text += ` / ${target.toFixed()}<small>°C</small>`
+              }
+              const power = valueAt(thermalColumn(param.seriesName, 'power'))
+              if (power != null) {
+                text += ` / ${(power * 100).toFixed()}<small>%</small>`
+              }
+              const speed = valueAt(thermalColumn(param.seriesName, 'speed'))
+              if (speed != null) {
+                text += ` / ${(speed * 100).toFixed()}<small>%</small>`
+              }
+              text += `</span>
+                <div style="clear: both"></div>
+              </div>
+              <div style="clear: both"></div>`
             })
           return text
         }

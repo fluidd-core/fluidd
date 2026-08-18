@@ -54,9 +54,7 @@ export default class AppInlineChart extends Vue {
 
     return this.labels
       .map(label => {
-        const value = lastIndex >= 0
-          ? this.data[label.value]?.[lastIndex]
-          : undefined
+        const value = this.data[label.value]?.[lastIndex]
 
         return {
           label,

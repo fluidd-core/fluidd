@@ -11,7 +11,7 @@ describe('buildThermalHistoryBuffer', () => {
     const buffer = buildThermalHistoryBuffer(
       { extruder: { temperatures: [10, 20, 30] } },
       ['extruder'],
-      600,
+      3,
       END
     )
 
@@ -22,24 +22,23 @@ describe('buildThermalHistoryBuffer', () => {
     expect(Array.from(source.extruder)).toEqual([10, 20, 30])
   })
 
-  it('right-aligns a short history instead of padding it', () => {
+  it('fills the lead-in with each sensor\'s oldest reading', () => {
     const buffer = buildThermalHistoryBuffer(
       {
         extruder: { temperatures: [10, 20, 30, 40] },
         heater_bed: { temperatures: [60] }
       },
       ['extruder', 'heater_bed'],
-      600,
+      4,
       END
     )
 
-    const { heater_bed: bed } = chartBufferSource(buffer)
+    const source = chartBufferSource(buffer)
 
+    // The window is always the full retention, so short history is held flat.
     expect(buffer.count).toBe(4)
-    expect(bed[3]).toBe(60)
-    expect(Number.isNaN(bed[0])).toBe(true)
-    expect(Number.isNaN(bed[1])).toBe(true)
-    expect(Number.isNaN(bed[2])).toBe(true)
+    expect(Array.from(source.heater_bed)).toEqual([60, 60, 60, 60])
+    expect(Array.from(source.extruder)).toEqual([10, 20, 30, 40])
   })
 
   it('keeps the newest samples when history exceeds retention', () => {
@@ -73,7 +72,8 @@ describe('buildThermalHistoryBuffer', () => {
     expect(source.heater_bed.length).toBe(600)
     expect(source.extruder[599]).toBe(599)
     expect(source.heater_bed[599]).toBe(99)
-    expect(Number.isNaN(source.heater_bed[499])).toBe(true)
+    // Lead-in held at the oldest reading rather than left as a gap.
+    expect(source.heater_bed[499]).toBe(0)
     expect(source.heater_bed[500]).toBe(0)
   })
 
@@ -154,7 +154,7 @@ describe('buildThermalHistoryBuffer', () => {
     const buffer = buildThermalHistoryBuffer(
       { extruder: { temperatures: [10.126, 20.124] } },
       ['extruder'],
-      600,
+      2,
       END
     )
 

@@ -9,11 +9,11 @@ const capacityFor = (retention: number): number =>
   retention + Math.max(MIN_SLACK, retention >> 3)
 
 // Vue's deep watcher walks `Object.keys` over every element - `markRaw` skips it.
-const createTimeColumn = (capacity: number): Float64Array =>
+const allocate = (capacity: number): Float64Array =>
   markRaw(new Float64Array(capacity))
 
-const createColumn = (capacity: number): Float64Array =>
-  createTimeColumn(capacity).fill(Number.NaN)
+const createColumn = (capacity: number, from = 0): Float64Array =>
+  allocate(capacity).fill(Number.NaN, from)
 
 export const createChartBuffer = (
   retention: number,
@@ -22,7 +22,7 @@ export const createChartBuffer = (
   const capacity = capacityFor(retention)
 
   const buffer: ChartBuffer = {
-    time: createTimeColumn(capacity),
+    time: allocate(capacity),
     columns: new Map(),
     offset: 0,
     count: 0,
@@ -56,14 +56,14 @@ const reallocate = (
   start: number,
   count: number
 ): void => {
-  const time = createTimeColumn(capacity)
+  const time = allocate(capacity)
 
   time.set(buffer.time.subarray(start, start + count))
 
   buffer.time = time
 
   for (const [key, values] of buffer.columns) {
-    const column = createColumn(capacity)
+    const column = createColumn(capacity, count)
 
     column.set(values.subarray(start, start + count))
 
@@ -197,16 +197,16 @@ export const chartBufferSource = (buffer?: ChartBuffer): ChartDataSource => {
   return source
 }
 
-export const chartBufferLastValue = (buffer: ChartBuffer, column: string): number | undefined => {
-  if (buffer.count === 0) {
+export const chartBufferLastValue = (buffer: ChartBuffer | undefined, column: string): number | undefined => {
+  if (!buffer?.count) {
     return undefined
   }
 
   return buffer.columns.get(column)?.[buffer.offset + buffer.count - 1]
 }
 
-export const chartBufferLastTime = (buffer: ChartBuffer): number | undefined => {
-  if (buffer.count === 0) {
+export const chartBufferLastTime = (buffer: ChartBuffer | undefined): number | undefined => {
+  if (!buffer?.count) {
     return undefined
   }
 
@@ -226,26 +226,20 @@ export const chartBufferRateOfChange = (buffer: ChartBuffer, column: string): nu
     return 0
   }
 
-  const start = Math.max(0, buffer.count - RATE_OF_CHANGE_WINDOW)
-  let first = -1
-  let last = -1
+  const last = buffer.offset + buffer.count - 1
 
-  for (let i = buffer.count - 1; i >= start; i--) {
-    const index = buffer.offset + i
+  if (Number.isNaN(values[last])) {
+    return 0
+  }
 
-    if (Number.isNaN(values[index])) {
-      break
-    }
+  const start = buffer.offset + Math.max(0, buffer.count - RATE_OF_CHANGE_WINDOW)
+  let first = last
 
-    if (last === -1) {
-      last = index
-    }
-
-    first = index
+  while (first > start && !Number.isNaN(values[first - 1])) {
+    first--
   }
 
   if (
-    last === -1 ||
     first === last ||
     buffer.time[last] === buffer.time[first]
   ) {

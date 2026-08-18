@@ -21,8 +21,8 @@ export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, sta
 
         // The last entry in our chart data.
         const buffer = state.charts.mcus[key]
-        const lastTime = buffer && chartBufferLastTime(buffer)
-        const lastBw = buffer && chartBufferLastValue(buffer, 'bw')
+        const lastTime = chartBufferLastTime(buffer)
+        const lastBw = chartBufferLastValue(buffer, 'bw')
 
         // Load & Awake times
         const task_max = 0.0025
@@ -43,8 +43,7 @@ export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, sta
         const timedelta = (lastTime != null) ? Math.max(1, time - lastTime) : 1000
 
         let bw = stats.last_stats.bytes_write + stats.last_stats.bytes_retransmit
-        let lastbw = lastBw ?? bw
-        if (bw < lastbw) lastbw = bw
+        const lastbw = Math.min(bw, lastBw ?? bw)
         bw = 100 * (bw - lastbw) / (maxbw * timedelta)
 
         // Commit the formatted result to our chart data.
