@@ -76,11 +76,11 @@ jobs:
         include:
           - type: Docker
             image-name: ${{ github.repository }}
-            base-image: nginx:alpine
+            base-image: nginx:alpine-slim
             port: 80
           - type: Docker Unprivileged
             image-name: ${{ github.repository }}-unprivileged
-            base-image: nginxinc/nginx-unprivileged:alpine
+            base-image: nginxinc/nginx-unprivileged:alpine-slim
             port: 8080
     permissions:
       id-token: write
