@@ -64,9 +64,8 @@ depends_on:
 ```
 
 The endpoint is a plain `200 ok` response and is excluded from the access log.
-The check runs every 2 seconds while the container starts — so it reports
-`healthy` within a few seconds — then every 30 seconds. It can be overridden
-per-deployment with the `healthcheck` key in Compose.
+The check runs every 10 seconds and can be overridden per-deployment with the
+`healthcheck` key in Compose.
 
 ## Manual Installation
 
