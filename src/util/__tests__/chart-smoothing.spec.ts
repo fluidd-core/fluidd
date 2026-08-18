@@ -96,4 +96,12 @@ describe('smoothChartSource', () => {
 
     expect(Array.from(chartBufferColumn(buffer, 'extruder#power'))).toEqual(before)
   })
+
+  it.each(['__proto__', 'constructor', 'toString'])('smooths a column named %s as an own key', (key) => {
+    const buffer = buildBuffer(key, [0, 100])
+    const out = smoothChartSource(chartBufferSource(buffer), [key], 3)
+
+    expect(Object.keys(out)).toContain(key)
+    expect(out[key][1]).toBeCloseTo(50, 5)
+  })
 })

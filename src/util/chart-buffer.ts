@@ -184,9 +184,9 @@ export const chartBufferSource = (buffer?: ChartBuffer): ChartDataSource => {
 
   const { time, offset, count, columns } = buffer
 
-  const source: ChartDataSource = {
-    date: time.subarray(offset, offset + count)
-  }
+  const source: ChartDataSource = Object.create(null)
+
+  source.date = time.subarray(offset, offset + count)
 
   for (const [key, column] of columns) {
     source[key] = column.subarray(offset, offset + count)
