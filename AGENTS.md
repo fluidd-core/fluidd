@@ -122,7 +122,7 @@ src/
 - Hash-based routing (`#/path`)
 - Views lazy-loaded via dynamic imports: `component: () => import('@/views/X.vue')`
 - No route-level auth guard — authentication is handled entirely by `App.vue`: `socketReady` → render main app; `socketAuthenticating` → render Login overlay; else → render `SocketDisconnected`. Navigating to `/login` is redirected to `home` (the route no longer exists)
-- Socket state machine (`src/store/socket/actions.ts`): `initializing → {connecting | disconnected} → identifying → {ready | authenticating}`. `initializing` is the one-shot startup state; the app begins here and leaves it once `$socket.connect()` runs — transitioning to `connecting` (valid URL) or `disconnected` (empty URL). Every transition goes through `socket/onSetStatus`, which validates the edge against `VALID_TRANSITIONS`, commits the new status, and runs side-effects for the destination state. Entering `connecting` clears per-socket identity (`connectionId`, `acceptingNotifications`); `ready → connecting` additionally resets modules holding live data (charts + `MODULES_TO_RESET_ON_DROP`). Re-running `appInit` (instance switch) calls `store.dispatch('reset')` which mutates socket state back to `initializing` directly via `setReset`, bypassing the state machine
+- Socket state machine (`src/store/socket/actions.ts`): `initializing → {connecting | disconnected} → identifying → {ready | authenticating}`. `initializing` is the one-shot startup state; the app begins here and leaves it once `$socket.connect()` runs — transitioning to `connecting` (valid URL) or `disconnected` (empty URL). Every transition goes through `socket/onSetStatus`, which validates the edge against `VALID_TRANSITIONS`, commits the new status, and runs side-effects for the destination state. Entering `connecting` clears per-socket identity (`connectionId`, `acceptingNotifications`); `ready → connecting` additionally resets modules holding live data (`charts/resetChartStore`, which clears only the thermal bucket, plus `MODULES_TO_RESET_ON_DROP`). Re-running `appInit` (instance switch) calls `store.dispatch('reset')` which mutates socket state back to `initializing` directly via `setReset`, bypassing the state machine
 - JWT auth over WebSocket: `runIdentify` sends `server.connection.identify` with the stored user token (refreshed proactively if expired); if both tokens are expired, identify is called without a token (anonymous/trusted identify). On success it awaits the post-auth bootstrap — every Moonraker DB namespace Fluidd owns (skipping any with empty ROOTS), then `server.info`, `server.config`, `machine.proc_stats`, `machine.system_info`, and `server.files.list('config')` — before transitioning to `ready`; on failure → `authenticating`. `server.connection.identify` is one-shot per socket, so the logout→login path (same physical socket, new user via `access.login`) skips the identify call (connectionId already set) and runs only the bootstrap before transitioning to `ready`. The `ready` transition itself has no side-effects — entering `ready` simply unblocks the main app render
 - `auth/login` stores the fresh tokens then dispatches `socket/onSetStatus` with `identifying` to re-identify the live socket. `auth/logout` (full) transitions the socket to `authenticating`; the socket stays open and `App.vue` renders the Login overlay while `socket.status === 'authenticating'`, so login continues over the existing connection via `access.info` / `access.login`. `notifyUserLoggedOut` (fired when Moonraker invalidates the session) does the same
 - Token refresh policy (`getAccessToken` in `src/store/socket/actions.ts`): valid access token → use it; expired access token + valid refresh token → call `access.refresh_jwt` and use the new token; refresh rejected with code 401 (or both tokens unusable) → clear both from localStorage and identify anonymously; refresh rejected with anything else (transient: socket drop, network) → keep tokens, return `null`, let the next identify cycle retry
@@ -172,6 +172,49 @@ src/
 - Oversized files are truncated by the parser, which sets `truncated` on the result;
   `gcodePreview/actions.ts` surfaces it as an `EventBus` warning
   (`app.general.msg.gcode_preview_truncated`)
+
+### Charts
+
+- Chart data lives in a **columnar ring buffer** of `Float64Array`s (`src/util/chart-buffer.ts`),
+  not an array of point objects — a `time` array plus a `Map<string, Float64Array>` of columns, all
+  indexed by the same sample index
+- The live window is `[offset, offset + count)`, shared by `time` and every column. Read through
+  `chartBufferSource` / `chartBufferColumn` / `chartBufferLastValue` / `chartBufferLastTime`, which
+  apply `offset` for you — never index a column directly
+- **`revision` is the only reactive change signal.** Vue 2 observes neither typed arrays nor a
+  `Map`, and the arrays are `markRaw`'d so the deep watcher skips them — writes are invisible to
+  Vue. `chartBufferSource` reads `revision`, which is what re-runs a consuming computed;
+  `ThermalChart` also `@Watch`es it to rediscover series. Nothing goes through `Vue.set`
+- Missing values are `NaN`, never `undefined` and never a hole in the index — a sample carrying no
+  value for a column still advances every column
+- `columns` is a `Map` for own-key semantics: on a plain object a sensor named `constructor` or
+  `toString` passes `in` and its column is never created. Same reason `chartBufferSource` builds
+  with `Object.create(null)` — `source['__proto__'] = …` on a literal hits the prototype setter
+  instead of creating an own key
+- `chartBufferSource` feeds ECharts' `SOURCE_FORMAT_KEYED_COLUMNS` `dataset.source` as subarray
+  views — zero-copy. **`date` must be dimension 0**; ECharts derives the row count from column 0.
+  Results are memoized per `ChartBuffer` by `revision`
+- With a keyed-columns source a tooltip `param.value` is a **positional array**, not a row object —
+  resolve it via the `encode` / `dimensionNames` helpers in `src/util/chart-tooltip.ts`
+- `dropExpired` binary-searches `time`, so **samples must be appended in non-decreasing time
+  order**. Appending a backlog behind live samples breaks that, so history loads replace the buffer
+  wholesale (`setThermalStore`, `setMoonrakerStore`) instead of appending sample by sample
+- History builders are pure and live outside the store plumbing: `thermal-history.ts` (from
+  `server.temperature_store`) and `moonraker-history.ts` (from `machine.proc_stats`), both writing
+  columns directly and publishing with `commitChartSamples`
+- Thermal history is **right-aligned on a 1Hz timeline** ending at `endTime - 1000`, with the
+  lead-in **held at each sensor's oldest reading** rather than left `NaN`. That padding is
+  load-bearing: `ThermalChart`'s x-axis is `max: 'dataMax'` with `min = max - retention * 1000`, so
+  the window is always retention-wide and an unpadded short history renders as a stub in the corner
+- Thermal column names are `<sensor>` or `<sensor>#<target|power|speed>` — build and parse them with
+  `thermalColumn` / `parseThermalColumn` (`src/store/charts/thermal-columns.ts`); sensor names are
+  runtime data and may themselves contain `#`
+- Retention: `Globals.CHART_HISTORY_RETENTION` (1200s — thermal, diagnostics) and
+  `Globals.CHART_SYSTEM_RETENTION` (600s — system, MCU, sensor). The thermal figure is overridden by
+  Moonraker's `temperature_store_size` through the `charts/getChartRetention` getter
+- `charts/resetChartStore` resets **only `thermal` and `ready`**, not the whole module — it is
+  shared by the socket drop and root `resetKlippy`, and a klippy restart does not re-fetch
+  `machine.proc_stats`, so blanking the other buckets would leave them with nothing to refill from
 
 ## Integration Points
 
