@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=nginx:alpine
+ARG BASE_IMAGE=nginx:alpine-slim
 
 FROM $BASE_IMAGE
 
