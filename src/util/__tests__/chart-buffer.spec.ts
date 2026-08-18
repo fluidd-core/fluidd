@@ -230,14 +230,12 @@ describe('chart-buffer', () => {
       expect(chartBufferSource(buffer)).not.toBe(first)
     })
 
-    it.each(['__proto__', 'constructor', 'toString'])('exposes a column named %s as an own key', (key) => {
-      const buffer = createChartBuffer(600, [key])
-      appendChartSample(buffer, 1000, { [key]: 1 })
+    it('returns a plain object', () => {
+      const buffer = createChartBuffer(600, ['extruder'])
+      appendChartSample(buffer, 1000, { extruder: 1 })
 
-      const source = chartBufferSource(buffer)
-
-      expect(Object.keys(source)).toContain(key)
-      expect(Array.from(source[key])).toEqual([1])
+      // zrender's `clone` calls `source.hasOwnProperty` while cloning the option.
+      expect(Object.getPrototypeOf(chartBufferSource(buffer))).toBe(Object.prototype)
     })
   })
 

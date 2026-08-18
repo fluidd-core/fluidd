@@ -18,7 +18,7 @@ export const smoothChartSource = (
 
   const windowMs = windowSeconds * 1000
   const times = source.date
-  const result: ChartDataSource = Object.assign(Object.create(null), source)
+  const result: ChartDataSource = { ...source }
 
   for (const key of columns) {
     const values = source[key]

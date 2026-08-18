@@ -188,9 +188,12 @@ src/
 - Missing values are `NaN`, never `undefined` and never a hole in the index — a sample carrying no
   value for a column still advances every column
 - `columns` is a `Map` for own-key semantics: on a plain object a sensor named `constructor` or
-  `toString` passes `in` and its column is never created. Same reason `chartBufferSource` builds
-  with `Object.create(null)` — `source['__proto__'] = …` on a literal hits the prototype setter
-  instead of creating an own key
+  `toString` passes `in` and its column is never created
+- The `chartBufferSource` / `smoothChartSource` result **must keep `Object.prototype`** — never
+  `Object.create(null)`. ECharts' `setOption` deep-clones the whole option through zrender's
+  `clone`, which calls `source.hasOwnProperty(key)` and throws on a null-prototype object. That
+  clone also skips a key literally named `__proto__`, so a sensor by that name cannot be charted
+  regardless — not worth defending against
 - `chartBufferSource` feeds ECharts' `SOURCE_FORMAT_KEYED_COLUMNS` `dataset.source` as subarray
   views — zero-copy. **`date` must be dimension 0**; ECharts derives the row count from column 0.
   Results are memoized per `ChartBuffer` by `revision`
