@@ -97,10 +97,6 @@ jobs:
           name: fluidd-${{ github.sha }}.zip
           path: ./dist
 
-      - name: Update nginx configuration
-        run: |
-          sed -i "s/\${PORT} default_server;/${{ matrix.port }} default_server;/g" ./server/nginx/default.conf.template
-
       - name: Prepare Docker image metadata
         id: docker_meta
         uses: docker/metadata-action@v6
@@ -136,6 +132,7 @@ jobs:
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
           build-args: |
             BASE_IMAGE=${{ matrix.base-image }}
+            PORT=${{ matrix.port }}
           push: true
           sbom: true
           provenance: true
