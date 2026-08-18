@@ -188,11 +188,12 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
       })
     }
 
+    // Merging recurses into typed arrays index by index, leaving stale rows.
     this.chart.setOption({
       dataset: {
         source: this.smoothedChartData
       }
-    })
+    }, { replaceMerge: 'dataset' })
   }
 
   // Merge so the imperatively-set dataset and legend selection are preserved.

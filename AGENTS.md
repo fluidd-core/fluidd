@@ -195,8 +195,14 @@ src/
   clone also skips a key literally named `__proto__`, so a sensor by that name cannot be charted
   regardless — not worth defending against
 - `chartBufferSource` feeds ECharts' `SOURCE_FORMAT_KEYED_COLUMNS` `dataset.source` as subarray
-  views — zero-copy. **`date` must be dimension 0**; ECharts derives the row count from column 0.
-  Results are memoized per `ChartBuffer` by `revision`
+  views. **`date` must be dimension 0**; ECharts derives the row count from column 0. Results are
+  memoized per `ChartBuffer` by `revision`. The views only avoid a copy on our side — `setOption`
+  deep-clones the whole option, and `clone` copies typed arrays via `Ctor.from`
+- Incremental `dataset` updates **must** pass `{ replaceMerge: 'dataset' }`. A plain merge runs
+  zrender's `merge`, whose array guard is `Array.isArray` — a `Float64Array` fails it, so `merge`
+  recurses into the column and copies index by index. A source shorter than the one ECharts already
+  holds then keeps stale trailing rows, which duplicate earlier timestamps and make the tooltip
+  report two points per series
 - With a keyed-columns source a tooltip `param.value` is a **positional array**, not a row object —
   resolve it via the `encode` / `dimensionNames` helpers in `src/util/chart-tooltip.ts`
 - `dropExpired` binary-searches `time`, so **samples must be appended in non-decreasing time

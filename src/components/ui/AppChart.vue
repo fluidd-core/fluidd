@@ -72,12 +72,13 @@ export default class AppChart extends Vue {
   @Watch('data')
   onData (data: ChartDataSource) {
     if (this.chart != null) {
+      // Merging recurses into typed arrays index by index, leaving stale rows.
       this.chart.setOption({
         dataset: {
           dimensions: this.dimensions,
           source: data
         }
-      })
+      }, { replaceMerge: 'dataset' })
     }
   }
 
