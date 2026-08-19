@@ -273,6 +273,7 @@ src/
 ## Dev Container
 
 - VSCode Dev Container (`.devcontainer/`) bundles a `docker-klipper-simulavr` container — real Klipper/Moonraker simulation on port 7125, Fluidd on port 8080
+- Base image **must stay glibc** (`node:24-trixie-slim`) — `typescript-native-bridge` ships a Go `c-shared` NAPI bridge with glibc-only native packages (no `-musl` build), so on Alpine it fails to load and segfaults even with `gcompat`
 - `postCreateCommand` runs `pnpm i --frozen-lockfile` automatically (which in turn runs `prepare`)
 
 ## Documentation Site
