@@ -155,6 +155,7 @@ import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-sy
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer, setFileDataTransferDataInDataTransfer } from '@/util/file-data-transfer'
 import { consola } from 'consola'
 import type { DataTableHeader } from 'vuetify'
+import { useWaitStore } from '@/stores/wait'
 import type { KlipperSaveAndRestartAction } from '@/store/config/types'
 
 /**
@@ -1138,11 +1139,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   async handleUpload (files: FileList | File[] | FileWithPath[], print: boolean) {
     const wait = `${this.$waits.onFileSystem}/${this.currentPath}/`
 
-    this.$typedDispatch('wait/addWait', wait)
+    useWaitStore().addWait(wait)
 
     await this.uploadFiles(files, this.visiblePath, this.currentRoot, print)
 
-    this.$typedDispatch('wait/removeWait', wait)
+    useWaitStore().removeWait(wait)
   }
 
   handleAddDir (name: string) {

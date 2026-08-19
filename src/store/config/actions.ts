@@ -8,6 +8,7 @@ import { Waits } from '@/globals'
 import type { FileFilterType } from '../files/types'
 import { TinyColor } from '@ctrl/tinycolor'
 import dbKey from '@/util/db-key'
+import { useWaitStore } from '@/stores/wait'
 
 export const actions = {
   /**
@@ -58,7 +59,7 @@ export const actions = {
     // vuetify.framework.lang.current = state.uiSettings.general.locale
 
     // Add the wait.
-    dispatch('wait/addWait', Waits.onLoadLanguage, { root: true })
+    useWaitStore().addWait(Waits.onLoadLanguage)
 
     // Grab the browsers starting locale.
     const startingLocale = getStartingLocale()
@@ -78,7 +79,7 @@ export const actions = {
         server: true
       })
     }
-    dispatch('wait/removeWait', Waits.onLoadLanguage, { root: true })
+    useWaitStore().removeWait(Waits.onLoadLanguage)
   },
 
   /**

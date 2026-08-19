@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex, { type StoreOptions } from 'vuex'
 import { consola } from 'consola'
 import type { RootActions, RootGetters, RootModules, RootMutations, RootState } from './types'
+import { resetPiniaStores } from '@/stores'
 
 // Modules
 import { socket } from './socket'
@@ -20,7 +21,6 @@ import { version } from './version'
 import { mesh } from './mesh'
 import { notifications } from './notifications'
 import { announcements } from './announcements'
-import { wait } from './wait'
 import { gcodePreview } from './gcodePreview'
 import { timelapse } from './timelapse'
 import { webcams } from './webcams'
@@ -29,7 +29,6 @@ import { spoolman } from './spoolman'
 import { mmu } from './mmu'
 import { sensors } from './sensors'
 import { database } from './database'
-import { analysis } from './analysis'
 import { afc } from './afc'
 
 Vue.use(Vuex)
@@ -53,7 +52,6 @@ export const storeOptions = {
     mesh,
     notifications,
     announcements,
-    wait,
     gcodePreview,
     timelapse,
     webcams,
@@ -62,7 +60,6 @@ export const storeOptions = {
     mmu,
     sensors,
     database,
-    analysis,
     afc
   } satisfies RootModules,
   mutations: {},
@@ -74,12 +71,19 @@ export const storeOptions = {
       // Reset our color set.
       Vue.$colorset.forceResetAll()
 
-      // Dispatch a reset for each registered module.
-      const p: Promise<unknown>[] = []
       const keys = payload || Object.keys(this.state)
+
+      const resetPiniaIds = resetPiniaStores(payload)
+
+      const p: Promise<unknown>[] = []
       keys.forEach((key) => {
+        if (resetPiniaIds.includes(key)) {
+          return
+        }
         if (this.hasModule(key)) {
           p.push(dispatch(key + '/reset'))
+        } else {
+          consola.warn(`[store] reset: "${key}" matched neither a Vuex nor a Pinia store`)
         }
       })
       await Promise.all(p)

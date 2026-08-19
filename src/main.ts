@@ -10,6 +10,7 @@ import Vue from 'vue'
 import i18n from '@/plugins/i18n'
 import router from './router'
 import store from './store'
+import pinia from './stores/index'
 
 // 3rd party.
 import vuetify from './plugins/vuetify'
@@ -58,6 +59,7 @@ new Vue({
   i18n,
   router,
   store,
+  pinia,
   vuetify,
   render: (h) => h(App)
 }).$mount('#app')

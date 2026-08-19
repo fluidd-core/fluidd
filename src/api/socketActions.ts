@@ -918,15 +918,6 @@ export const SocketActions = {
     )
   },
 
-  serverAnalysisStatus (options?: NotifyOptions) {
-    return baseEmit<Moonraker.Analysis.StatusResponse>(
-      'server.analysis.status', {
-        dispatch: 'analysis/onAnalysisStatus',
-        ...options
-      }
-    )
-  },
-
   serverAnalysisEstimate (filename: string, estimator_config?: string, options?: NotifyOptions) {
     return baseEmit<Moonraker.Analysis.EstimateResponse>(
       'server.analysis.estimate', {
@@ -944,7 +935,7 @@ export const SocketActions = {
     return baseEmit<Moonraker.Analysis.ProcessResponse>(
       'server.analysis.process', {
         wait: `${Waits.onFileSystem}/gcodes/${filename}`,
-        dispatch: 'analysis/onAnalysisProcess',
+        pinia: 'analysis/onAnalysisProcess',
         ...options,
         params: {
           filename,
