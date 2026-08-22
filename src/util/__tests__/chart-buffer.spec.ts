@@ -1,5 +1,5 @@
 import {
-  appendChartSample,
+  appendChartSamples,
   chartBufferColumn,
   chartBufferLastTime,
   chartBufferLastValue,
@@ -9,6 +9,12 @@ import {
   createChartBuffer,
   resizeChartBuffer
 } from '../chart-buffer'
+
+const appendChartSample = (
+  buffer: ReturnType<typeof createChartBuffer>,
+  time: number,
+  values: Record<string, number>
+): void => appendChartSamples(buffer, [{ time, values }])
 
 // Appends `count` samples 1s apart starting at `startMs`, one value per key
 // (all keys share the same value at a given sample index).
@@ -48,7 +54,7 @@ describe('chart-buffer', () => {
     })
   })
 
-  describe('appendChartSample', () => {
+  describe('appendChartSamples', () => {
     it('appends and reads back exact values', () => {
       const buffer = createChartBuffer(600, ['load'])
 

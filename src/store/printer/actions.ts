@@ -274,7 +274,7 @@ export const actions = {
     }
   },
 
-  async onDiagnosticsMetricsUpdate ({ state, rootState, commit, rootGetters }) {
+  async onDiagnosticsMetricsUpdate ({ state, rootState, commit }) {
     if (!rootState.config.uiSettings.general.enableDiagnostics) {
       return
     }
@@ -300,7 +300,6 @@ export const actions = {
 
     commit('charts/setChartEntry', {
       bucket: 'diagnostics',
-      retention: rootGetters['charts/getChartRetention'],
       time: Date.now(),
       values
     }, { root: true })

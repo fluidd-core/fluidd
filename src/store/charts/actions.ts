@@ -3,7 +3,7 @@ import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import type { ChartsDbDocument, ChartSelectedLegends, ChartState } from './types'
 import { buildThermalHistoryBuffer } from './thermal-history'
-import { buildMoonrakerHistoryBuffer, moonrakerBacklogSamples } from './moonraker-history'
+import { moonrakerChartSamples } from './moonraker-history'
 import { chartBufferLastTime } from '@/util/chart-buffer'
 import type { RootState } from '../types'
 import { isEqual } from 'lodash-es'
@@ -36,26 +36,17 @@ export const actions = {
   },
 
   /**
-   * Loads Moonraker's process stats backlog.
+   * Adds Moonraker's process stats - a backlog on connect, one sample when live.
    */
-  async initMoonrakerStore ({ commit, state }, payload: readonly Moonraker.ProcStats.MoonrakerStats[]) {
-    const lastTime = chartBufferLastTime(state.moonraker)
+  async onMoonrakerStats ({ commit, state }, payload: Moonraker.ProcStats.MoonrakerStats | readonly Moonraker.ProcStats.MoonrakerStats[]) {
+    const stats = Array.isArray(payload)
+      ? payload
+      : [payload]
 
-    if (lastTime === undefined) {
-      const buffer = buildMoonrakerHistoryBuffer(payload, Globals.CHART_SYSTEM_RETENTION)
-
-      commit('setMoonrakerStore', buffer)
-
-      return
-    }
-
-    for (const sample of moonrakerBacklogSamples(payload, lastTime)) {
-      commit('setChartEntry', {
-        bucket: 'moonraker',
-        retention: Globals.CHART_SYSTEM_RETENTION,
-        ...sample
-      })
-    }
+    commit('setChartEntries', {
+      bucket: 'moonraker',
+      samples: moonrakerChartSamples(stats, chartBufferLastTime(state.moonraker) ?? -Infinity)
+    })
   },
 
   /**

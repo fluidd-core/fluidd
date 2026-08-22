@@ -41,6 +41,7 @@ import type { ChartDataSource } from '@/store/charts/types'
 import { chartBufferSource } from '@/util/chart-buffer'
 import { tooltipValue } from '@/util/chart-tooltip'
 import decimalRound from '@/util/decimal-round'
+import { Globals } from '@/globals'
 
 type LineSeriesOptionExtended = LineSeriesOption & {
   unit?: string
@@ -137,10 +138,7 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
 
               const metric = series[param.seriesIndex]
 
-              if (
-                !metric.displayLegend ||
-                metric.encode?.y == null
-              ) {
+              if (!metric.displayLegend) {
                 return
               }
 
@@ -166,10 +164,7 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
       xAxis: {
         type: 'time',
         max: 'dataMax',
-        min: (value: any) => {
-          const retention: number = this.$typedGetters['charts/getChartRetention']
-          return value.max - (retention * 1000)
-        },
+        min: (value: any) => value.max - (Globals.CHART_HISTORY_RETENTION * 1000),
         axisTick: {
           show: false
         },

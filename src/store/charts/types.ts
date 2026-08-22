@@ -32,16 +32,17 @@ export interface ChartSelectedLegends {
   [key: string]: boolean;
 }
 
-export type ChartEntryPayload =
-  | {
-    bucket: 'thermal' | 'klipper' | 'memory' | 'moonraker' | 'diagnostics';
-    retention: number;
-  } & ChartSample
-  | {
-    bucket: 'mcu' | 'sensor';
-    id: string;
-    retention: number;
-  } & ChartSample
+// Only server-configured windows travel; the rest keep `state.ts`'s retention.
+export type ChartBucket =
+  | { bucket: 'thermal'; retention: number }
+  | { bucket: 'klipper' | 'memory' | 'moonraker' | 'diagnostics' }
+  | { bucket: 'mcu' | 'sensor'; id: string }
+
+export type ChartEntryPayload = ChartBucket & ChartSample
+
+export type ChartEntriesPayload = ChartBucket & {
+  samples: readonly ChartSample[];
+}
 
 // Only `selectedLegends` is ever persisted to this DB document.
 export interface ChartsDbDocument {

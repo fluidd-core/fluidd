@@ -1,5 +1,4 @@
-import { buildMoonrakerHistoryBuffer, moonrakerBacklogSamples } from '../moonraker-history'
-import { chartBufferSource } from '@/util/chart-buffer'
+import { moonrakerChartSamples } from '../moonraker-history'
 
 const stats = (
   length: number,
@@ -13,63 +12,19 @@ const stats = (
     mem_units: 'kB'
   }))
 
-describe('buildMoonrakerHistoryBuffer', () => {
+describe('moonrakerChartSamples', () => {
   it('converts timestamps to milliseconds and rounds load to 2 decimal places', () => {
-    const buffer = buildMoonrakerHistoryBuffer(stats(3, index => 10.126 + index), 600)
+    const samples = moonrakerChartSamples(stats(3, index => 10.126 + index), -Infinity)
 
-    const source = chartBufferSource(buffer)
-
-    expect(buffer.count).toBe(3)
-    expect(Array.from(source.date)).toEqual([1_000_000, 1_001_000, 1_002_000])
-    expect(Array.from(source.load)).toEqual([10.13, 11.13, 12.13])
+    expect(samples).toEqual([
+      { time: 1_000_000, values: { load: 10.13 } },
+      { time: 1_001_000, values: { load: 11.13 } },
+      { time: 1_002_000, values: { load: 12.13 } }
+    ])
   })
 
-  it('keeps the newest samples when the backlog exceeds retention', () => {
-    const buffer = buildMoonrakerHistoryBuffer(stats(1800, index => index % 100), 600)
-
-    const source = chartBufferSource(buffer)
-
-    expect(buffer.count).toBe(600)
-    expect(source.date[0]).toBe(2_200_000)
-    expect(source.date[599]).toBe(2_799_000)
-    expect(source.load[0]).toBe(1200 % 100)
-    expect(source.load[599]).toBe(1799 % 100)
-  })
-
-  it('skips out-of-range samples without leaving a gap', () => {
-    const buffer = buildMoonrakerHistoryBuffer(
-      stats(4, index => (index === 1 ? 4523.7 : index)),
-      600
-    )
-
-    const source = chartBufferSource(buffer)
-
-    expect(buffer.count).toBe(3)
-    expect(Array.from(source.load)).toEqual([0, 2, 3])
-    expect(Array.from(source.date)).toEqual([1_000_000, 1_002_000, 1_003_000])
-  })
-
-  it('yields a monotonically non-decreasing timeline', () => {
-    const buffer = buildMoonrakerHistoryBuffer(stats(1800, index => index % 100), 600)
-
-    const { date } = chartBufferSource(buffer)
-
-    for (let index = 1; index < date.length; index++) {
-      expect(date[index]).toBeGreaterThanOrEqual(date[index - 1])
-    }
-  })
-
-  it('yields an empty buffer for an empty backlog', () => {
-    const buffer = buildMoonrakerHistoryBuffer([], 600)
-
-    expect(buffer.count).toBe(0)
-    expect([...buffer.columns.keys()]).toEqual(['load'])
-  })
-})
-
-describe('moonrakerBacklogSamples', () => {
   it('keeps only the samples past the tail', () => {
-    const samples = moonrakerBacklogSamples(stats(5, index => index), 1_002_000)
+    const samples = moonrakerChartSamples(stats(5, index => index), 1_002_000)
 
     expect(samples).toEqual([
       { time: 1_003_000, values: { load: 3 } },
@@ -78,12 +33,27 @@ describe('moonrakerBacklogSamples', () => {
   })
 
   it('yields nothing for an entirely stale backlog', () => {
-    expect(moonrakerBacklogSamples(stats(3, index => index), 1_002_000)).toEqual([])
+    expect(moonrakerChartSamples(stats(3, index => index), 1_002_000)).toEqual([])
   })
 
-  it('drops samples reporting an impossible load', () => {
-    const samples = moonrakerBacklogSamples(stats(3, index => index === 1 ? 101 : index), 0)
+  it('yields nothing for an empty backlog', () => {
+    expect(moonrakerChartSamples([], -Infinity)).toEqual([])
+  })
 
-    expect(samples.map(sample => sample.time)).toEqual([1_000_000, 1_002_000])
+  it('skips out-of-range samples without leaving a gap', () => {
+    const samples = moonrakerChartSamples(stats(4, index => (index === 1 ? 4523.7 : index)), -Infinity)
+
+    expect(samples.map(sample => sample.time)).toEqual([1_000_000, 1_002_000, 1_003_000])
+    expect(samples.map(sample => sample.values.load)).toEqual([0, 2, 3])
+  })
+
+  it('yields a monotonically increasing timeline', () => {
+    const samples = moonrakerChartSamples(stats(1800, index => index % 100), -Infinity)
+
+    expect(samples).toHaveLength(1800)
+
+    for (let index = 1; index < samples.length; index++) {
+      expect(samples[index].time).toBeGreaterThan(samples[index - 1].time)
+    }
   })
 })

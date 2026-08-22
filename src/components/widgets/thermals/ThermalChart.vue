@@ -46,7 +46,7 @@ import { chartBufferSource } from '@/util/chart-buffer'
 import { smoothChartSource } from '@/util/chart-smoothing'
 import type { ChartBuffer, ChartDataSource } from '@/store/charts/types'
 import { tooltipValueByDimension } from '@/util/chart-tooltip'
-import { isDutyCycleSubKey, parseThermalColumn, thermalColumn, thermalSubKeys } from '@/store/charts/thermal-columns'
+import { isDutyCycleSubKey, isThermalLegendSelected, parseThermalColumn, thermalColumn, thermalSubKeys } from '@/store/charts/thermal-columns'
 import type { ThermalSubKey } from '@/store/charts/thermal-columns'
 import BrowserMixin from '@/mixins/browser'
 import type { ChartSelectedLegends } from '@/store/charts/types'
@@ -65,6 +65,10 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   paused = false
   series: LineSeriesOption[] = []
   initialSelected: Record<string, boolean> = {}
+
+  discoveredColumns?: ReadonlyMap<string, Float64Array>
+  discoveredColumnCount = -1
+  discoveredSensors: readonly string[] = []
 
   togglePause () {
     this.paused = !this.paused
@@ -213,6 +217,21 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   // Builds series for any chartable column that has data but no series yet.
   initSeries () {
     const { columns } = this.thermalChartBuffer
+    const sensors = this.chartableSensors
+
+    // Runs on every append, but only a new column or sensor adds a series.
+    if (
+      columns === this.discoveredColumns &&
+      columns.size === this.discoveredColumnCount &&
+      sensors === this.discoveredSensors
+    ) {
+      return
+    }
+
+    this.discoveredColumns = columns
+    this.discoveredColumnCount = columns.size
+    this.discoveredSensors = sensors
+
     const existing = new Set(this.seriesNames)
     const newSeries: LineSeriesOption[] = []
 
@@ -225,7 +244,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
       }
     }
 
-    this.chartableSensors.forEach((key) => {
+    sensors.forEach((key) => {
       addSeries(key)
 
       for (const sub of thermalSubKeys) {
@@ -532,7 +551,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
 
     // Set the initial legend state (power and speed default off)
-    this.initialSelected[key] = this.chartSelectedLegends[key] ?? !isDutyCycleSubKey(subKey)
+    this.initialSelected[key] = isThermalLegendSelected(this.chartSelectedLegends, baseKey, subKey)
 
     // Push the series into our options object.
     return series

@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import { appendChartSample, createChartBuffer, resizeChartBuffer } from '@/util/chart-buffer'
-import type { ChartBuffer, ChartEntryPayload, ChartsDbDocument, ChartSelectedLegends, ChartState } from './types'
+import { appendChartSamples, createChartBuffer, resizeChartBuffer } from '@/util/chart-buffer'
+import { Globals } from '@/globals'
+import type { ChartBucket, ChartBuffer, ChartEntriesPayload, ChartEntryPayload, ChartsDbDocument, ChartSelectedLegends, ChartState } from './types'
 import { defaultState } from './state'
 
-const resolveBuffer = (state: ChartState, payload: ChartEntryPayload): ChartBuffer => {
+const resolveBuffer = (state: ChartState, payload: ChartBucket): ChartBuffer => {
   switch (payload.bucket) {
     case 'mcu':
     case 'sensor': {
@@ -13,14 +14,21 @@ const resolveBuffer = (state: ChartState, payload: ChartEntryPayload): ChartBuff
         : state.sensors
 
       if (!group[payload.id]) {
-        Vue.set(group, payload.id, createChartBuffer(payload.retention))
+        Vue.set(group, payload.id, createChartBuffer(Globals.CHART_SYSTEM_RETENTION))
       }
 
       return group[payload.id]
     }
 
-    default:
-      return state[payload.bucket]
+    default: {
+      const buffer = state[payload.bucket]
+
+      if ('retention' in payload) {
+        resizeChartBuffer(buffer, payload.retention)
+      }
+
+      return buffer
+    }
   }
 }
 
@@ -56,15 +64,12 @@ export const mutations = {
     state.ready = true
   },
 
-  setMoonrakerStore (state, payload: ChartBuffer) {
-    state.moonraker = payload
+  setChartEntry (state, payload: ChartEntryPayload) {
+    appendChartSamples(resolveBuffer(state, payload), [payload])
   },
 
-  setChartEntry (state, payload: ChartEntryPayload) {
-    const buffer = resolveBuffer(state, payload)
-
-    resizeChartBuffer(buffer, payload.retention)
-    appendChartSample(buffer, payload.time, payload.values)
+  setChartEntries (state, payload: ChartEntriesPayload) {
+    appendChartSamples(resolveBuffer(state, payload), payload.samples)
   },
 
   setSelectedLegends (state, payload: ChartSelectedLegends) {

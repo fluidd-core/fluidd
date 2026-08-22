@@ -1,9 +1,7 @@
-import { chartBufferColumn, commitChartSamples, createChartBuffer } from '@/util/chart-buffer'
 import decimalRound from '@/util/decimal-round'
-import type { ChartBuffer, ChartSample } from './types'
+import type { ChartSample } from './types'
 
-// Shared by the backlog load and the live notification so they can't drift.
-export const moonrakerChartSample = (
+const moonrakerChartSample = (
   stat: Moonraker.ProcStats.MoonrakerStats
 ): ChartSample | undefined => (
   stat.cpu_usage > 100
@@ -16,49 +14,20 @@ export const moonrakerChartSample = (
       }
 )
 
-// Reconnect - only the backlog past the tail is new; older would unsort `time`.
-export const moonrakerBacklogSamples = (
+// `machine.proc_stats` re-runs on reconnect; re-appending would unsort `time`.
+export const moonrakerChartSamples = (
   stats: readonly Moonraker.ProcStats.MoonrakerStats[],
-  lastTime: number
+  after: number
 ): ChartSample[] => {
   const samples: ChartSample[] = []
 
   for (const stat of stats) {
     const sample = moonrakerChartSample(stat)
 
-    if (sample && sample.time > lastTime) {
+    if (sample && sample.time > after) {
       samples.push(sample)
     }
   }
 
   return samples
-}
-
-// Moonraker's backlog outruns the chart; only the newest `retention` samples fit.
-export const buildMoonrakerHistoryBuffer = (
-  stats: readonly Moonraker.ProcStats.MoonrakerStats[],
-  retention: number
-): ChartBuffer => {
-  const buffer = createChartBuffer(retention, ['load'])
-  const { time } = buffer
-  const load = chartBufferColumn(buffer, 'load')
-
-  let count = 0
-
-  for (let index = Math.max(0, stats.length - retention); index < stats.length; index++) {
-    const sample = moonrakerChartSample(stats[index])
-
-    if (!sample) {
-      continue
-    }
-
-    time[count] = sample.time
-    load[count] = sample.values.load
-
-    count++
-  }
-
-  commitChartSamples(buffer, count)
-
-  return buffer
 }

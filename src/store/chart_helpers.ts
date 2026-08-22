@@ -3,7 +3,6 @@ import type { RootState } from './types'
 import { chartBufferLastTime, chartBufferLastValue } from '@/util/chart-buffer'
 import { thermalColumn } from './charts/thermal-columns'
 import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
-import { Globals } from '@/globals'
 import decimalRound from '@/util/decimal-round'
 
 export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, state: RootState, commit: Commit) => {
@@ -50,7 +49,6 @@ export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, sta
         commit('charts/setChartEntry', {
           bucket: 'mcu',
           id: key,
-          retention: Globals.CHART_SYSTEM_RETENTION,
           time,
           values: {
             load: decimalRound(load, 2),
@@ -86,7 +84,6 @@ export const handleSystemStatsChange = (payload: Partial<Klipper.PrinterState>, 
       // Commit the formatted result to our chart data.
       commit('charts/setChartEntry', {
         bucket: 'memory',
-        retention: Globals.CHART_SYSTEM_RETENTION,
         time,
         values: {
           memused: decimalRound(percent_mem_used, 2)
@@ -105,7 +102,6 @@ export const handleSystemStatsChange = (payload: Partial<Klipper.PrinterState>, 
       // Commit the formatted result to our chart data.
       commit('charts/setChartEntry', {
         bucket: 'klipper',
-        retention: Globals.CHART_SYSTEM_RETENTION,
         time,
         values: {
           load: decimalRound(stats.sysload, 2),
@@ -138,7 +134,6 @@ export const handleAddSensorChartEntry = (state: RootState, commit: Commit) => {
       commit('charts/setChartEntry', {
         bucket: 'sensor',
         id: sensorId,
-        retention: Globals.CHART_SYSTEM_RETENTION,
         time,
         values
       }, { root: true })

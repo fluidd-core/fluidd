@@ -184,7 +184,8 @@ src/
 - **`revision` is the only reactive change signal.** Vue 2 observes neither typed arrays nor a
   `Map`, and the arrays are `markRaw`'d so the deep watcher skips them — writes are invisible to
   Vue. `chartBufferSource` reads `revision`, which is what re-runs a consuming computed;
-  `ThermalChart` also `@Watch`es it to rediscover series. Nothing goes through `Vue.set`
+  `ThermalChart` also `@Watch`es it, though `initSeries` then early-outs unless the column `Map` or
+  `getChartableSensors` actually changed. Nothing goes through `Vue.set`
 - Missing values are `NaN`, never `undefined` and never a hole in the index — a sample carrying no
   value for a column still advances every column
 - `columns` is a `Map` for own-key semantics: on a plain object a sensor named `constructor` or
@@ -206,17 +207,21 @@ src/
 - With a keyed-columns source a tooltip `param.value` is a **positional array**, not a row object —
   resolve it via the `encode` / `dimensionNames` helpers in `src/util/chart-tooltip.ts`
 - `dropExpired` binary-searches `time`, so **samples must be appended in non-decreasing time
-  order**. Appending a backlog behind live samples breaks that, so a first history load replaces the
-  buffer wholesale (`setThermalStore`, `setMoonrakerStore`). `machine.proc_stats` re-runs on every
-  reconnect, so `initMoonrakerStore` only replaces an *empty* buffer — otherwise it appends the
-  backlog past the tail (`moonrakerBacklogSamples`), keeping the accumulated window
+  order**. Appending a backlog behind live samples breaks that, so the thermal history load replaces
+  the buffer wholesale (`setThermalStore`). `machine.proc_stats` re-runs on every reconnect, so
+  `charts/onMoonrakerStats` instead appends only the stats past the buffer's tail
+  (`moonrakerChartSamples`), keeping the accumulated window; the same action handles the live
+  single-stat notification, so there is one ingestion path
+- `appendChartSamples` is the only append primitive — it takes a batch and bumps `revision` once
+  for the whole thing, so a backlog is one re-render, not one per sample. `setChartEntry` is the
+  single-sample mutation over it; `setChartEntries` takes the batch
 - `retention` is **seconds everywhere**, never a sample count. `capacityFor` uses it as a
   first-guess capacity only; samples can arrive faster than 1Hz, and `compact` grows the arrays when
   they do. `resizeChartBuffer` therefore keeps the whole live window and leaves expiry to
   `dropExpired` on the next append
-- History builders are pure and live outside the store plumbing: `thermal-history.ts` (from
-  `server.temperature_store`) and `moonraker-history.ts` (from `machine.proc_stats`), both writing
-  columns directly and publishing with `commitChartSamples`
+- History conversion is pure and lives outside the store plumbing: `thermal-history.ts` builds a
+  whole buffer from `server.temperature_store`, writing columns directly and publishing with
+  `commitChartSamples`; `moonraker-history.ts` only maps `machine.proc_stats` to `ChartSample`s
 - Thermal history is **right-aligned on a 1Hz timeline** ending at `endTime - 1000`, with the
   lead-in **held at each sensor's oldest reading** rather than left `NaN`. That padding is
   load-bearing: `ThermalChart`'s x-axis is `max: 'dataMax'` with `min = max - retention * 1000`, so
@@ -225,8 +230,12 @@ src/
   `thermalColumn` / `parseThermalColumn` (`src/store/charts/thermal-columns.ts`); sensor names are
   runtime data and may themselves contain `#`
 - Retention: `Globals.CHART_HISTORY_RETENTION` (1200s — thermal, diagnostics) and
-  `Globals.CHART_SYSTEM_RETENTION` (600s — system, MCU, sensor). The thermal figure is overridden by
-  Moonraker's `temperature_store_size` through the `charts/getChartRetention` getter
+  `Globals.CHART_SYSTEM_RETENTION` (600s — system, MCU, sensor). Only `thermal` carries `retention`
+  on its `setChartEntry` payload — the `ChartBucket` union makes passing one for any other bucket a
+  type error — because only the thermal window is server-configured, overridden by Moonraker's
+  `temperature_store_size` through the `charts/getChartRetention` getter. Diagnostics is fixed at
+  `CHART_HISTORY_RETENTION`, so `DiagnosticsCard`'s x-axis `min` uses the constant too; every other
+  bucket keeps whatever `state.ts` gave its buffer
 - `charts/resetChartStore` resets **only `thermal` and `ready`**, not the whole module — it is
   shared by the socket drop and root `resetKlippy`, and a klippy restart does not re-fetch
   `machine.proc_stats`, so blanking the other buckets would leave them with nothing to refill from

@@ -69,11 +69,7 @@ export const buildThermalHistoryBuffer = (
     ? retention
     : 0
 
-  const buffer = createChartBuffer(
-    retention,
-    sources
-      .map(source => source.column)
-  )
+  const buffer = createChartBuffer(retention)
 
   for (let index = 0; index < count; index++) {
     buffer.time[index] = endTime - (1000 * (count - index))

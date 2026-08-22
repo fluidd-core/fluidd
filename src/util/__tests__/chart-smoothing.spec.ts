@@ -1,5 +1,5 @@
 import { smoothChartSource } from '../chart-smoothing'
-import { appendChartSample, chartBufferColumn, chartBufferSource, createChartBuffer } from '../chart-buffer'
+import { appendChartSamples, chartBufferColumn, chartBufferSource, createChartBuffer } from '../chart-buffer'
 import type { ChartBuffer } from '@/store/charts/types'
 
 // Builds a buffer of 1Hz samples starting at epoch t=0s, one column, values
@@ -8,7 +8,7 @@ const buildBuffer = (key: string, values: (number | null)[]): ChartBuffer => {
   const buffer = createChartBuffer(600, [key])
 
   values.forEach((value, i) => {
-    appendChartSample(buffer, i * 1000, value === null ? {} : { [key]: value })
+    appendChartSamples(buffer, [{ time: i * 1000, values: value === null ? {} : { [key]: value } }])
   })
 
   return buffer
@@ -61,9 +61,11 @@ describe('smoothChartSource', () => {
   it('leaves columns absent from the columns list (date, other series) untouched', () => {
     const buffer = createChartBuffer(600, ['extruder#power', 'extruder'])
 
-    appendChartSample(buffer, 0, { 'extruder#power': 0, extruder: 200 })
-    appendChartSample(buffer, 1000, { 'extruder#power': 100, extruder: 201 })
-    appendChartSample(buffer, 2000, { 'extruder#power': 0, extruder: 202 })
+    appendChartSamples(buffer, [
+      { time: 0, values: { 'extruder#power': 0, extruder: 200 } },
+      { time: 1000, values: { 'extruder#power': 100, extruder: 201 } },
+      { time: 2000, values: { 'extruder#power': 0, extruder: 202 } }
+    ])
 
     const rawSource = chartBufferSource(buffer)
     const out = smoothChartSource(chartBufferSource(buffer), ['extruder#power'], 3)

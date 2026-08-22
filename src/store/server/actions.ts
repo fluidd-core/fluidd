@@ -9,7 +9,6 @@ import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
 import { gte, valid } from 'semver'
 import type { ObjectWithRequest } from '@/plugins/socketClient'
-import { moonrakerChartSample } from '../charts/moonraker-history'
 
 let retryTimeout: ReturnType<typeof setTimeout>
 
@@ -138,20 +137,7 @@ export const actions = {
 
     // Add a chart entry
     if (payload.moonraker_stats) {
-      if (Array.isArray(payload.moonraker_stats)) {
-        // Backlog - only the samples past the buffer's tail are appended.
-        await dispatch('charts/initMoonrakerStore', payload.moonraker_stats, { root: true })
-      } else {
-        const sample = moonrakerChartSample(payload.moonraker_stats)
-
-        if (sample) {
-          commit('charts/setChartEntry', {
-            bucket: 'moonraker',
-            retention: Globals.CHART_SYSTEM_RETENTION,
-            ...sample
-          }, { root: true })
-        }
-      }
+      await dispatch('charts/onMoonrakerStats', payload.moonraker_stats, { root: true })
     }
   },
 

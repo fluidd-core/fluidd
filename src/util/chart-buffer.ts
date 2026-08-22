@@ -1,5 +1,5 @@
 import { markRaw } from 'vue'
-import type { ChartBuffer, ChartDataSource } from '@/store/charts/types'
+import type { ChartBuffer, ChartDataSource, ChartSample } from '@/store/charts/types'
 
 const emptyChartSource: ChartDataSource = Object.freeze({ date: [] })
 
@@ -119,30 +119,32 @@ const dropExpired = (buffer: ChartBuffer, now: number): void => {
 }
 
 // `revision` is the change signal - Vue 2 doesn't observe typed array writes,
-// nor a `Map`, so nothing here needs to go through `Vue.set`.
-export const appendChartSample = (
-  buffer: ChartBuffer,
-  time: number,
-  values: Readonly<Record<string, number>>
-): void => {
-  if (buffer.offset + buffer.count >= buffer.time.length) {
-    compact(buffer)
+// nor a `Map`, so nothing here needs to go through `Vue.set`. One bump per batch.
+export const appendChartSamples = (buffer: ChartBuffer, samples: readonly ChartSample[]): void => {
+  if (samples.length === 0) {
+    return
   }
 
-  const index = buffer.offset + buffer.count
+  for (const { time, values } of samples) {
+    if (buffer.offset + buffer.count >= buffer.time.length) {
+      compact(buffer)
+    }
 
-  for (const key in values) {
-    chartBufferColumn(buffer, key)
+    const index = buffer.offset + buffer.count
+
+    for (const key in values) {
+      chartBufferColumn(buffer, key)
+    }
+
+    for (const [key, column] of buffer.columns) {
+      column[index] = values[key] ?? Number.NaN
+    }
+
+    buffer.time[index] = time
+    buffer.count++
+
+    dropExpired(buffer, time)
   }
-
-  for (const [key, column] of buffer.columns) {
-    column[index] = values[key] ?? Number.NaN
-  }
-
-  buffer.time[index] = time
-  buffer.count++
-
-  dropExpired(buffer, time)
 
   buffer.revision++
 }

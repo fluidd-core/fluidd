@@ -358,7 +358,7 @@ import type { Fan, Heater, Sensor } from '@/store/printer/types'
 import { chartBufferRateOfChange } from '@/util/chart-buffer'
 import type { ChartBuffer, ChartSelectedLegends } from '@/store/charts/types'
 import type { ThermalSubKey } from '@/store/charts/thermal-columns'
-import { isDutyCycleSubKey, thermalColumn } from '@/store/charts/thermal-columns'
+import { isThermalLegendSelected, thermalColumn } from '@/store/charts/thermal-columns'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 import isNullOrEmpty, { type NullableOrEmpty } from '@/util/is-null-or-empty'
 
@@ -451,9 +451,7 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   }
 
   isLegendSelected (item: Heater | Fan | Sensor, subKey?: ThermalSubKey) {
-    const key = thermalColumn(item.key, subKey)
-
-    return this.chartSelectedLegends[key] ?? !isDutyCycleSubKey(subKey)
+    return isThermalLegendSelected(this.chartSelectedLegends, item.key, subKey)
   }
 
   legendClick (item: Heater | Fan | Sensor, subKey?: ThermalSubKey) {
