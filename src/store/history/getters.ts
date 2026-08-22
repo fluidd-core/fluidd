@@ -1,49 +1,53 @@
-import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { HistoryItem, HistoryState } from './types'
 import type { RootState } from '../types'
+import toHistoryItem from './to-history-item'
 
 export const getters = {
   /**
    * Returns all history, sorted by start time.
+   *
+   * Only the loaded page - jobs resolved individually for the file browser are
+   * deliberately absent, so this stays a contiguous page of the history.
    */
   getHistory: (state) => {
     return state.jobs
-      .map((job): HistoryItem => {
-        const { metadata, ...restOfJob } = job
-
-        const item: HistoryItem = restOfJob
-
-        if (metadata != null) {
-          const { filament_name, filament_type, ...restOfMetadata } = metadata
-
-          item.metadata = {
-            ...restOfMetadata,
-            modified: Vue.$filters.moonrakerDateAsUnixTime(metadata.modified)
-          }
-
-          if (filament_name != null) {
-            item.metadata.filament_name = Vue.$filters.getStringArray(filament_name)
-          }
-
-          if (filament_type != null) {
-            item.metadata.filament_type = Vue.$filters.getStringArray(filament_type)
-          }
-        }
-
-        return item
-      })
+      .map(toHistoryItem)
       .sort((a, b) => b.start_time - a.start_time)
+  },
+
+  /**
+   * An index of every job we can resolve, by id.
+   *
+   * A derived getter rather than state: `getHistoryById` is called once per
+   * file by `files/getDirectory`, and a `.find()` there makes that render
+   * O(files x jobs). Deriving it also keeps the Map out of state, which Vue 2
+   * cannot make reactive.
+   */
+  getHistoryByIdMap: (state, getters): Map<string, HistoryItem> => {
+    const map = new Map<string, HistoryItem>()
+
+    for (const [jobId, job] of Object.entries(state.jobsById)) {
+      if (job != null) {
+        map.set(jobId, toHistoryItem(job))
+      }
+    }
+
+    // The loaded page wins over the cache - it is the fresher copy.
+    for (const item of getters.getHistory as HistoryItem[]) {
+      map.set(item.job_id, item)
+    }
+
+    return map
   },
 
   /**
    * Return a history item given a job id.
    */
-  getHistoryById: (state, getters) => (jobId: string) => {
-    const history: HistoryItem[] = getters.getHistory
+  getHistoryById: (state, getters) => (jobId: string): HistoryItem | undefined => {
+    const map: Map<string, HistoryItem> = getters.getHistoryByIdMap
 
-    return history
-      .find(job => job.job_id === jobId)
+    return map.get(jobId)
   },
 
   /**
