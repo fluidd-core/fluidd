@@ -184,14 +184,33 @@ describe('chart-buffer', () => {
       expect(Array.from(chartBufferSource(buffer).load)).toEqual([0, 1, 2])
     })
 
-    it('shrinks capacity, trimming the oldest live samples', () => {
+    it('keeps the whole live window when retention shrinks', () => {
       const buffer = createChartBuffer(10, ['load'])
       fill(buffer, 5, ['load'])
 
       resizeChartBuffer(buffer, 2)
 
       expect(buffer.retention).toBe(2)
-      expect(Array.from(chartBufferSource(buffer).load)).toEqual([3, 4])
+      expect(Array.from(chartBufferSource(buffer).load)).toEqual([0, 1, 2, 3, 4])
+    })
+
+    it('leaves expiry to the next append, which drops by time', () => {
+      const buffer = createChartBuffer(10, ['load'])
+      fill(buffer, 5, ['load'])
+
+      resizeChartBuffer(buffer, 2)
+      appendChartSample(buffer, 5000, { load: 5 })
+
+      expect(Array.from(chartBufferSource(buffer).load)).toEqual([4, 5])
+    })
+
+    it('keeps samples still inside retention when they outnumber it', () => {
+      const buffer = createChartBuffer(600, ['load'])
+      fill(buffer, 40, ['load'], 0, 250)
+
+      resizeChartBuffer(buffer, 30)
+
+      expect(buffer.count).toBe(40)
     })
 
     it('is a no-op when retention is unchanged', () => {

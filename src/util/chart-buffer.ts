@@ -5,8 +5,9 @@ const emptyChartSource: ChartDataSource = Object.freeze({ date: [] })
 
 const MIN_SLACK = 64
 
-const capacityFor = (retention: number): number =>
-  retention + Math.max(MIN_SLACK, retention >> 3)
+// Retention seconds is only a first guess - `compact` grows past 1Hz.
+const capacityFor = (samples: number): number =>
+  samples + Math.max(MIN_SLACK, samples >> 3)
 
 // Vue's deep watcher walks `Object.keys` over every element - `markRaw` skips it.
 const allocate = (capacity: number): Float64Array =>
@@ -153,13 +154,13 @@ export const commitChartSamples = (buffer: ChartBuffer, count: number): void => 
   buffer.revision++
 }
 
-// Keeps as much of the live window as the new retention still fits.
+// Retention is a time window, not a sample count - `dropExpired` trims.
 export const resizeChartBuffer = (buffer: ChartBuffer, retention: number): void => {
   if (retention === buffer.retention) return
 
-  const liveCount = Math.min(buffer.count, retention)
+  const capacity = Math.max(capacityFor(retention), capacityFor(buffer.count))
 
-  reallocate(buffer, capacityFor(retention), buffer.offset + buffer.count - liveCount, liveCount)
+  reallocate(buffer, capacity, buffer.offset, buffer.count)
 
   buffer.retention = retention
   buffer.revision++

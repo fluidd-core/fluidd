@@ -1,4 +1,4 @@
-import { buildMoonrakerHistoryBuffer } from '../moonraker-history'
+import { buildMoonrakerHistoryBuffer, moonrakerBacklogSamples } from '../moonraker-history'
 import { chartBufferSource } from '@/util/chart-buffer'
 
 const stats = (
@@ -64,5 +64,26 @@ describe('buildMoonrakerHistoryBuffer', () => {
 
     expect(buffer.count).toBe(0)
     expect([...buffer.columns.keys()]).toEqual(['load'])
+  })
+})
+
+describe('moonrakerBacklogSamples', () => {
+  it('keeps only the samples past the tail', () => {
+    const samples = moonrakerBacklogSamples(stats(5, index => index), 1_002_000)
+
+    expect(samples).toEqual([
+      { time: 1_003_000, values: { load: 3 } },
+      { time: 1_004_000, values: { load: 4 } }
+    ])
+  })
+
+  it('yields nothing for an entirely stale backlog', () => {
+    expect(moonrakerBacklogSamples(stats(3, index => index), 1_002_000)).toEqual([])
+  })
+
+  it('drops samples reporting an impossible load', () => {
+    const samples = moonrakerBacklogSamples(stats(3, index => index === 1 ? 101 : index), 0)
+
+    expect(samples.map(sample => sample.time)).toEqual([1_000_000, 1_002_000])
   })
 })

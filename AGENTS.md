@@ -206,8 +206,14 @@ src/
 - With a keyed-columns source a tooltip `param.value` is a **positional array**, not a row object —
   resolve it via the `encode` / `dimensionNames` helpers in `src/util/chart-tooltip.ts`
 - `dropExpired` binary-searches `time`, so **samples must be appended in non-decreasing time
-  order**. Appending a backlog behind live samples breaks that, so history loads replace the buffer
-  wholesale (`setThermalStore`, `setMoonrakerStore`) instead of appending sample by sample
+  order**. Appending a backlog behind live samples breaks that, so a first history load replaces the
+  buffer wholesale (`setThermalStore`, `setMoonrakerStore`). `machine.proc_stats` re-runs on every
+  reconnect, so `initMoonrakerStore` only replaces an *empty* buffer — otherwise it appends the
+  backlog past the tail (`moonrakerBacklogSamples`), keeping the accumulated window
+- `retention` is **seconds everywhere**, never a sample count. `capacityFor` uses it as a
+  first-guess capacity only; samples can arrive faster than 1Hz, and `compact` grows the arrays when
+  they do. `resizeChartBuffer` therefore keeps the whole live window and leaves expiry to
+  `dropExpired` on the next append
 - History builders are pure and live outside the store plumbing: `thermal-history.ts` (from
   `server.temperature_store`) and `moonraker-history.ts` (from `machine.proc_stats`), both writing
   columns directly and publishing with `commitChartSamples`

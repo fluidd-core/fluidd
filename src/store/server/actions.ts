@@ -139,7 +139,7 @@ export const actions = {
     // Add a chart entry
     if (payload.moonraker_stats) {
       if (Array.isArray(payload.moonraker_stats)) {
-        // The backlog replaces the buffer; appending it would unsort the timeline.
+        // Backlog - only the samples past the buffer's tail are appended.
         await dispatch('charts/initMoonrakerStore', payload.moonraker_stats, { root: true })
       } else {
         const sample = moonrakerChartSample(payload.moonraker_stats)

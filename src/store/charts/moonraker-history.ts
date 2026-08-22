@@ -16,6 +16,24 @@ export const moonrakerChartSample = (
       }
 )
 
+// Reconnect - only the backlog past the tail is new; older would unsort `time`.
+export const moonrakerBacklogSamples = (
+  stats: readonly Moonraker.ProcStats.MoonrakerStats[],
+  lastTime: number
+): ChartSample[] => {
+  const samples: ChartSample[] = []
+
+  for (const stat of stats) {
+    const sample = moonrakerChartSample(stat)
+
+    if (sample && sample.time > lastTime) {
+      samples.push(sample)
+    }
+  }
+
+  return samples
+}
+
 // Moonraker's backlog outruns the chart; only the newest `retention` samples fit.
 export const buildMoonrakerHistoryBuffer = (
   stats: readonly Moonraker.ProcStats.MoonrakerStats[],
