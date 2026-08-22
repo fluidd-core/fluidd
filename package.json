@@ -70,7 +70,7 @@
     "@originjs/vite-plugin-content": "^1.0.5",
     "@pedrolamas/plugin-vue2": "^2.4.1",
     "@tsconfig/node24": "^24.0.5",
-    "@types/jsdom": "^28.0.3",
+    "@types/jsdom": "^30.0.0",
     "@types/lodash-es": "^4.17.12",
     "@types/md5": "^2.3.6",
     "@types/node": "^24.13.3",
@@ -85,7 +85,7 @@
     "eslint-plugin-regexp": "^3.2.0",
     "eslint-plugin-vue": "^10.10.0",
     "husky": "^9.1.7",
-    "jsdom": "^29.1.1",
+    "jsdom": "^30.0.1",
     "mockdate": "^3.0.5",
     "neostandard": "^0.13.0",
     "sass-embedded": "^1.103.1",
@@ -122,5 +122,5 @@
   "engines": {
     "node": "^22.12.0 || ^24"
   },
-  "packageManager": "pnpm@11.17.0+sha512.cca3cea332ad254bb84145f966d19f4879615210346fc92c79a047f23a0d7b3cca3c3792f0076ba1f1831d277efbcf0a9119b31a9a60eca7fb3d6231f331ef72"
+  "packageManager": "pnpm@11.22.0+sha512.1ff870c4c6133dfd88fb2afc46dd13d47f09c9794b438c6fdb47ca98caf3bc16381ee0be93a091b8e3824cf01f889f46d7d9e20910fb0be1ab0fb5baa80dd621"
 }
