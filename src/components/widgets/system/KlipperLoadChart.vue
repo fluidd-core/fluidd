@@ -10,11 +10,13 @@
 import { Component, Vue } from 'vue-property-decorator'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
 import type { AppInlineChartLabel } from '@/components/ui/AppInlineChart.vue'
+import type { ChartDataSource } from '@/store/charts/types'
+import { chartBufferSource } from '@/util/chart-buffer'
 
 @Component({})
 export default class KlipperLoadChart extends Vue {
-  get chartData () {
-    return this.$typedState.charts.klipper || []
+  get chartData (): ChartDataSource {
+    return chartBufferSource(this.$typedState.charts.klipper)
   }
 
   get labels (): AppInlineChartLabel[] {
