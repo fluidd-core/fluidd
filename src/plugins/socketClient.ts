@@ -96,7 +96,9 @@ export class WebSocketClient {
 
             consola.debug(`${LOG_PREFIX} Response error:`, socketResponse.error)
 
-            this.store.typedDispatch('socket/onSocketError', socketResponse.error)
+            if (request?.suppressError !== true) {
+              this.store.typedDispatch('socket/onSocketError', socketResponse.error)
+            }
 
             return
           }
@@ -208,7 +210,7 @@ export class WebSocketClient {
   emit (method: string, options: NotifyOptions = {}) {
     return new Promise((resolve, reject) => {
       try {
-        const { wait, params, dispatch, commit } = options
+        const { wait, params, dispatch, commit, suppressError } = options
 
         // Any non-'disconnected' state is eligible to emit; physical readiness
         // is enforced by the readyState check below.
@@ -239,6 +241,7 @@ export class WebSocketClient {
             commit,
             params,
             wait,
+            suppressError,
             onFulfilled: resolve,
             onRejected: reject
           }
@@ -304,6 +307,7 @@ export interface NotifyOptions {
   dispatch?: string;
   commit?: string;
   wait?: string;
+  suppressError?: boolean;
 }
 
 interface Request {
@@ -312,6 +316,7 @@ interface Request {
   commit?: string;
   params?: Record<string, any>;
   wait?: string;
+  suppressError?: boolean;
   onFulfilled: (value: unknown) => void;
   onRejected: (reason?: unknown) => void;
 }
