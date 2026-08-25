@@ -5,6 +5,13 @@ import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import getFilePaths from '@/util/get-file-paths'
 
+const isJobNotFoundError = (error: unknown): boolean => (
+  error != null &&
+  typeof error === 'object' &&
+  'code' in error &&
+  error.code === 404
+)
+
 export const actions = {
   /**
    * Reset our store
@@ -46,14 +53,23 @@ export const actions = {
 
     commit('setAddUnresolvedJobIds', jobIds)
 
-    for (const jobId of jobIds) {
-      SocketActions.serverHistoryGetJob(
-        jobId,
-        {
-          suppressError: true
-        }
-      ).catch(() => {})
-    }
+    await Promise.all(
+      jobIds
+        .map(async jobId => {
+          try {
+            await SocketActions.serverHistoryGetJob(
+              jobId,
+              {
+                suppressError: true
+              }
+            )
+          } catch (error) {
+            if (!isJobNotFoundError(error)) {
+              commit('setRemoveUnresolvedJobIds', [jobId])
+            }
+          }
+        })
+    )
   },
 
   async clearHistoryThumbnails ({ commit }, payload: string) {

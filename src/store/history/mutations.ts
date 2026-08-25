@@ -83,6 +83,12 @@ export const mutations = {
     }
   },
 
+  setRemoveUnresolvedJobIds (state, payload: string[]) {
+    for (const jobId of payload) {
+      state.unresolvedJobIds.delete(jobId)
+    }
+  },
+
   setClearUnresolvedJobIds (state) {
     state.unresolvedJobIds.clear()
   }
