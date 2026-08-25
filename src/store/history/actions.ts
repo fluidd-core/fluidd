@@ -52,7 +52,7 @@ export const actions = {
         {
           suppressError: true
         }
-      )
+      ).catch(() => {})
     }
   },
 
