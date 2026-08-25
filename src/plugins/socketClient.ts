@@ -96,7 +96,10 @@ export class WebSocketClient {
 
             consola.debug(`${LOG_PREFIX} Response error:`, socketResponse.error)
 
-            if (request?.suppressError !== true) {
+            if (
+              request?.suppressError !== true ||
+              socketResponse.error.code >= 500
+            ) {
               this.store.typedDispatch('socket/onSocketError', socketResponse.error)
             }
 
