@@ -91,5 +91,9 @@ export const mutations = {
 
   setClearUnresolvedJobIds (state) {
     state.unresolvedJobIds.clear()
+  },
+
+  setAllLoaded (state, payload: boolean) {
+    state.allLoaded = payload
   }
 } satisfies MutationTree<HistoryState>
