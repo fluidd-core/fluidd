@@ -4,6 +4,7 @@ export interface HistoryState {
   jobs: Readonly<Moonraker.History.Job>[];
   job_totals: Moonraker.History.JobTotals;
   unresolvedJobIds: Set<string>;
+  allLoaded: boolean;
 }
 
 export interface HistoryItem extends Omit<Moonraker.History.Job, 'metadata'> {

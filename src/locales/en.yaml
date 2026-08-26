@@ -586,6 +586,9 @@ app:
         no_file_preview: >-
           %{name} cannot currently be previewed.
     table:
+      footer:
+        item_range: "%{pageStart}-%{pageStop} of %{itemsLength}"
+        item_range_loaded: "%{pageStart}-%{pageStop} of %{itemsLength} loaded"
       header:
         actions: Actions
         chamber_temp: Chamber temp
@@ -691,6 +694,9 @@ app:
       confirm: Are you sure? This will clear all history, and printer statistics
       confirm_jobs: Are you sure? This will clear all jobs.
       confirm_stats: Are you sure? This will clear all stats.
+    tooltip:
+      help: Only the most recent jobs are loaded on connect. Use Load all to
+        fetch the complete history.
   job_queue:
     msg:
       confirm: Are you sure? This will clear the entire printer queue

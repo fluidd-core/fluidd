@@ -4,6 +4,7 @@ import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import getFilePaths from '@/util/get-file-paths'
+import type { ObjectWithRequest } from '@/plugins/socketClient'
 
 const isJobNotFoundError = (error: unknown): boolean => (
   error != null &&
@@ -99,9 +100,13 @@ export const actions = {
   /**
    * Update the store with history
    */
-  async onHistoryList ({ commit, dispatch, rootState }, payload: Moonraker.History.ListResponse) {
+  async onHistoryList ({ commit, dispatch, rootState }, payload: ObjectWithRequest<Moonraker.History.ListResponse>) {
     if (payload) {
       commit('setHistoryList', payload)
+
+      const { limit } = payload.__request__.params ?? {}
+
+      commit('setAllLoaded', limit === 0 || (limit != null && (payload.jobs?.length ?? 0) < limit))
 
       commit('setClearUnresolvedJobIds')
 
