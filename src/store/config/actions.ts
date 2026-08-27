@@ -1,4 +1,4 @@
-import vuetify from '@/plugins/vuetify'
+import vuetify, { loadVuetifyLocaleAsync } from '@/plugins/vuetify'
 import type { ActionTree } from 'vuex'
 import type { ConfigState, SaveByPath, InitConfig, InstanceConfig, TemperaturePreset, UiSettings, ThemeConfig, ConfiguredTableHeader } from './types'
 import type { RootState } from '../types'
@@ -54,9 +54,6 @@ export const actions = {
    * Sets, and saves a locale change.
    */
   async onLocaleChange ({ dispatch, state }, payload: string) {
-    // Set the correct language.
-    // vuetify.framework.lang.current = state.uiSettings.general.locale
-
     // Add the wait.
     dispatch('wait/addWait', Waits.onLoadLanguage, { root: true })
 
@@ -67,6 +64,8 @@ export const actions = {
     const locale = (payload !== 'default')
       ? await loadLocaleMessagesAsync(payload)
       : await loadLocaleMessagesAsync(startingLocale)
+
+    await loadVuetifyLocaleAsync(locale)
 
     // If the locale doesn't match what we have in settings, update it.
     if (

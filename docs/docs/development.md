@@ -247,6 +247,23 @@ Fluidd uses [vue-i18n](https://kazupon.github.io/vue-i18n/) for its localization
 
 Locales can be found in the `src/locales` folder and are in YAML format.
 
+### Vuetify component translations
+
+Vuetify keeps its own string table, separate from `src/locales`, for strings its
+components render without Fluidd passing them — the `v-data-table` footer,
+pagination and sort aria-labels, and the `v-file-input` counter. These
+translations ship with Vuetify and are **not** managed through Weblate, so
+editing `src/locales` will not change them.
+
+`src/plugins/vuetify.ts` maps each Fluidd locale code onto the matching Vuetify
+one and loads it when the language changes. Most codes match one-to-one; the
+exceptions are `zh-CN`, `zh-HK` and `pt_BR`, which map onto Vuetify's `zh-Hans`,
+`zh-Hant` and `pt`. A code left out of that map falls back to English, which is
+what happens for Tamil — Vuetify has no `ta` translation.
+
+Adding a language therefore needs an entry in that map alongside the one in
+`SupportedLocales` (`src/globals.ts`), unless Vuetify has no translation for it.
+
 ### How to contribute
 
 Translations are hosted on Weblate. If you want to help translating our project, please click the widget below:
