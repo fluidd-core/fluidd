@@ -261,6 +261,14 @@ src/
   - `I18nLocales` — locale YAML files
   - `CameraComponents` — camera service Vue components
 - Views also dynamically imported in `src/router/index.ts` via `() => import('@/views/X.vue')`
+- `src/plugins/vuetify.ts` holds a private `locales` map of `() => import('vuetify/lib/locale/*')`
+  thunks, keyed by **Fluidd** locale code, so the map doubles as the code translation
+  (`zh-CN` → `zh-Hans`, `zh-HK` → `zh-Hant`, `pt_BR` → `pt`); a missing key (`ta`) leaves
+  `$vuetify.lang` on `en`. `config/onLocaleChange` drives it via `loadVuetifyLocaleAsync`, which
+  `Vue.set`s the locale into `lang.locales` **before** assigning `lang.current` — the `current`
+  write is what re-renders. These `import()`s do not actually code-split: `vuetify/lib/presets/default`
+  statically imports the `lib/locale` barrel, so every referenced locale lands in the eager
+  `vuetify` chunk regardless of `codeSplitting` groups
 
 ## Testing Conventions
 

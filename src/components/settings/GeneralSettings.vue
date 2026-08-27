@@ -34,6 +34,7 @@
           hide-details="auto"
           :items="supportedLocales"
           :value="locale"
+          :loading="hasWait($waits.onLoadLanguage)"
           item-text="name"
           item-value="code"
           @change="setLocale"
