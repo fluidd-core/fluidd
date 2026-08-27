@@ -23,7 +23,7 @@ export const getAllLocales = (): Intl.LocalesArgument => {
  */
 export const getStartingLocale = () => {
   for (const navigatorLocale of getNavigatorLocales()) {
-    const [code] = navigatorLocale.split('_')
+    const code = navigatorLocale.replace('_', '-')
     const [language] = code.split('-')
 
     const supported = (

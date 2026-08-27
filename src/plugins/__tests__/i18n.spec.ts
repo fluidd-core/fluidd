@@ -41,10 +41,13 @@ describe('getStartingLocale', () => {
     expect(getStartingLocale()).toBe('zh-HK')
   })
 
-  it('takes the underscore form of a locale code', () => {
-    setNavigatorLanguages(['pt_BR'])
+  it.each([
+    [['pt_BR'], 'pt'],
+    [['zh_CN'], 'zh-CN']
+  ])('takes the underscore form of a locale code (%j)', (languages, expected) => {
+    setNavigatorLanguages(languages)
 
-    expect(getStartingLocale()).toBe('pt')
+    expect(getStartingLocale()).toBe(expected)
   })
 
   it('walks the preferences in order until one is supported', () => {

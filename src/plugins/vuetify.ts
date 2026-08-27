@@ -84,6 +84,8 @@ export const loadVuetifyLocaleAsync = async (locale: string) => {
   const load = locales[locale]
 
   if (!load) {
+    lang.current = 'en'
+
     return
   }
 
