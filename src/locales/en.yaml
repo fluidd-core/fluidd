@@ -507,7 +507,6 @@ app:
         %{name} Driver
     msg:
       password_changed: Password changed
-      wrong_password: Oops, something went wrong. Is your password correct?
       bed_screws_adjust: >-
         Click <b>Adjusted</b> if a significant adjustment is necessary on the current
         screw; otherwise, click <b>Accept</b> to continue.

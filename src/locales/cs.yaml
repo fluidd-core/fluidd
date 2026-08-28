@@ -229,7 +229,6 @@ app:
       z_offset: Odchylka Z
     msg:
       password_changed: Heslo změněno
-      wrong_password: Sakriš, něco se pokazilo. Zadáváte správné heslo?
     simple_form:
       error:
         arrayofnums: Pouze čísla

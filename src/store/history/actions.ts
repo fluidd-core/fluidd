@@ -5,13 +5,7 @@ import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import getFilePaths from '@/util/get-file-paths'
 import type { ObjectWithRequest } from '@/plugins/socketClient'
-
-const isJobNotFoundError = (error: unknown): boolean => (
-  error != null &&
-  typeof error === 'object' &&
-  'code' in error &&
-  error.code === 404
-)
+import isSocketError from '@/util/is-socket-error'
 
 export const actions = {
   /**
@@ -61,11 +55,14 @@ export const actions = {
             await SocketActions.serverHistoryGetJob(
               jobId,
               {
-                suppressError: true
+                suppressError: error => error.code === 404
               }
             )
           } catch (error) {
-            if (!isJobNotFoundError(error)) {
+            if (
+              !isSocketError(error) ||
+              error.code !== 404
+            ) {
               commit('setRemoveUnresolvedJobIds', [jobId])
             }
           }
