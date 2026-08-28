@@ -76,7 +76,7 @@ export default class UserPasswordDialog extends Vue {
 
       this.open = false
     } catch {
-      // Error is handled by the socketActions
+      // Swallow the rejection — the error already toasts via socket/onSocketError.
     } finally {
       this.loading = false
     }

@@ -22,9 +22,17 @@ const shouldSuppressError = (
     return false
   }
 
-  return typeof suppressError === 'function'
-    ? suppressError(error)
-    : suppressError === true
+  if (typeof suppressError !== 'function') {
+    return suppressError === true
+  }
+
+  try {
+    return suppressError(error)
+  } catch (predicateError) {
+    consola.error(`${LOG_PREFIX} suppressError predicate threw`, predicateError)
+
+    return false
+  }
 }
 
 export class WebSocketClient {
