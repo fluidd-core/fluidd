@@ -393,7 +393,6 @@ app:
       no_data: Ni podatkov
     msg:
       password_changed: Geslo spremenjeno
-      wrong_password: Ups, nekaj se je zalomilo. Ali ste vnesi pravilno geslo?
       bed_screws_adjust: >-
         Pritisnite <b>Prilagojeno</b>, če je potrebna velika prilagoditev na trenutnem
         vijaku. V nasprotnem primeru pritisnite <b>Sprejmi</b> za nadaljevanje.

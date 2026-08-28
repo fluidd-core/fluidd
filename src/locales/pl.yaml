@@ -389,7 +389,6 @@ app:
       needs_refresh: Dostępna jest nowa zawartość, kliknij przycisk 
         <b>Przeładuj</b>, aby zaktualizować.
       password_changed: Hasło zostało zmienione
-      wrong_password: Niestety, coś poszło nie tak. Czy hasło jest prawidłowe?
       pending_configuration_sections_deleted: Następujące sekcje zostały 
         oznaczone do usunięcia
       welcome_back: Witaj ponownie.<br>Zaloguj się, aby pozostać w kontakcie z 

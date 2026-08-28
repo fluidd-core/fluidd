@@ -350,7 +350,6 @@ app:
         en el tornillo actual, de lo contrario haga click en <b>Aceptar</b> para
         continuar.
       password_changed: Contraseña cambiada
-      wrong_password: Se ha producido un error. ¿Es su contraseña correcta?
       fluidd_settings_restore_failed: Fallo al restaurar los Ajustes de Fluid!
       offline_ready: Fluidd se encuentra listo para trabajar fuera de línea.
       welcome_back: Bienvenido de nuevo. <br>A continuación, inicie sesión para 

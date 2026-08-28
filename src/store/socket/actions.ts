@@ -10,6 +10,7 @@ import { jwtDecode } from 'jwt-decode'
 import type { TokenKeys } from '../config/types'
 import type { HistoryItem } from '../history/types'
 import i18n from '@/plugins/i18n'
+import isSocketError from '@/util/is-socket-error'
 
 const MODULES_TO_RESET_ON_DROP = [
   'server',
@@ -52,14 +53,6 @@ const tryGetErrorMessageFromJson = (message: string): string | null => {
 
   return null
 }
-
-const isSocketError = (value: unknown): value is SocketError =>
-  value != null &&
-  typeof value === 'object' &&
-  'code' in value &&
-  typeof value.code === 'number' &&
-  'message' in value &&
-  typeof value.message === 'string'
 
 const getMoonrakerDatabase = async <T = Record<string, unknown>>(namespace: string) => {
   try {

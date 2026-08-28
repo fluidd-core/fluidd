@@ -8,18 +8,6 @@
     @save="handleSave"
   >
     <v-card-text class="pa-0">
-      <template v-if="error">
-        <v-alert
-          type="error"
-          text
-          class="mx-4 mt-4"
-        >
-          {{ $t('app.general.msg.wrong_password') }}
-        </v-alert>
-
-        <v-divider />
-      </template>
-
       <app-setting :title="$t('app.general.label.current_password')">
         <v-text-field
           v-model="currentPassword"
@@ -70,7 +58,6 @@ export default class UserPasswordDialog extends Vue {
 
   currentPassword = ''
   password = ''
-  error = false
   loading = false
 
   get currentUser () {
@@ -89,7 +76,7 @@ export default class UserPasswordDialog extends Vue {
 
       this.open = false
     } catch {
-      this.error = true
+      // Error is handled by the socketActions
     } finally {
       this.loading = false
     }

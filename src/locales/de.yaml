@@ -385,7 +385,6 @@ app:
       unload_filament: Filament entnehmen
     msg:
       password_changed: Passwort geändert
-      wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
       bed_screws_adjust: >-
         Klicken Sie auf <b>Angepasst</b>, wenn eine signifikante Anpassung an der
         aktuellen Schraube erforderlich ist.
