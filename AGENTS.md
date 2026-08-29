@@ -350,7 +350,10 @@ src/
 - **PR branches** must be off a branch other than `develop` or `master`
 - **Clean develop** preferred: squash and rebase feature branches prior to merge
 - **CHANGELOG visibility**: only `feat`, `fix`, `perf`, `refactor` appear in `CHANGELOG.md` (configured in `.versionrc.json`)
-- **CI pipeline order**: `pnpm i --frozen-lockfile` → `lint --no-fix` → `type-check` → `test:unit` → `circular-check` → `build`
+- **CI pipeline order**: `pnpm i --frozen-lockfile` → `lint --no-fix` → `type-check` → `test:unit` → `circular-check` → `build`. Everything after lint carries `if: ${{ !cancelled() }}`, so a lint failure no longer hides type, test or circular errors — one run reports all of them
+- **Reusable workflows**: the build and both publish paths live in `_build.yml`, `_publish-docker.yml` and `_publish-web.yml` (`workflow_call`), called by `build.yml` (PRs + `develop`/`master` pushes) and `release.yml` (`v*` tags, which `build.yml` no longer triggers on). A calling job's `permissions:` is a **ceiling** on the called workflow's token, so every calling job needs its own explicit block — a top-level `permissions: {}` alone starves it. Secret *values* can't cross `workflow_call` via `with:`; `_publish-web.yml` takes them through `on.workflow_call.secrets`
+- **PR bundle-size report**: `tools/bundle-size.mjs` (zero-dependency) emits a gzip-size manifest per build and diffs the PR against its merge-base, posted as a sticky comment by `pr-comment.yml`. That second workflow exists because the report has to build PR code, so it can't hold a write token — it's `workflow_run`-triggered, reads only an artifact, and takes the PR number from `pr-number.txt` since `workflow_run.pull_requests[]` is empty for fork PRs. `workflows: ['Build']` must match `build.yml`'s `name:` exactly, and a `workflow_run` trigger only fires once the file exists on the default branch
+- **Bundle-size baselines are cached by `bundle-size-<hash of tools/bundle-size.mjs>-<sha>`** — the tool's own hash is in the key because the manifest format is not versioned, so without it a format change silently poisons every cached baseline (they're keyed by a base SHA that never changes) and `compare` publishes a table of `NaN B` on a green check. `compare` also rejects non-finite entries for the same reason. The compare step sets `shell: bash` for `pipefail`; the implicit default is `bash -e` without it, so a failure would be masked by `tee`
 
 ## Common Gotchas
 
@@ -375,7 +378,7 @@ src/
 
 ## Docker Images (production)
 
-- `Dockerfile` builds on `nginx:alpine-slim` (`fluidd`) / `nginxinc/nginx-unprivileged:alpine-slim` (`fluidd-unprivileged`), set via a `BASE_IMAGE` build arg per matrix entry in `.github/workflows/build.yml`
+- `Dockerfile` builds on `nginx:alpine-slim` (`fluidd`) / `nginxinc/nginx-unprivileged:alpine-slim` (`fluidd-unprivileged`), set via a `BASE_IMAGE` build arg per matrix entry in `.github/workflows/_publish-docker.yml`
 - The listen port is a `PORT` build arg re-exported as `ENV PORT` (default `80`), substituted into `server/nginx/default.conf.template` by nginx's own envsubst entrypoint at container start — **not** baked in at build time. CI used to `sed` the template's port in `build.yml`; that step is gone now that `PORT` flows through as a build arg, and the port can also be overridden at `docker run` time
 - `HEALTHCHECK` (`wget -q -O /dev/null "http://127.0.0.1:${PORT}/healthz"`, every 10s) — the base image must keep `wget`; `/healthz` is a plain `200 ok` in `default.conf.template`, excluded from the access log
 
@@ -391,7 +394,7 @@ src/
 - Install: `cd docs && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt`
 - Build: `cd docs && zensical build --clean`
 - Serve: `cd docs && zensical serve` or `pnpm run serve:docs` (localhost:8000)
-- Deploy: GitHub Actions (`.github/workflows/docs.yml`) — builds on push to `master`, uploads Pages artifact via `actions/upload-pages-artifact`, deploys via `actions/deploy-pages`
+- Deploy: GitHub Actions (`.github/workflows/docs.yml`) — builds and lints (`codespell` + `markdownlint`) on PRs and on pushes to `master` and `develop`; uploads the Pages artifact via `actions/upload-pages-artifact` on both branches, but only `master` runs the `deploy` job (`actions/deploy-pages`)
 
 ### Documentation Structure
 
