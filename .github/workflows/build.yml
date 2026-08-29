@@ -35,6 +35,7 @@ jobs:
       contents: read
       attestations: write
       packages: write
+      artifact-metadata: write
 
   publish-web:
     name: Deploy to Host
@@ -84,7 +85,7 @@ jobs:
         run: node tools/bundle-size.mjs generate dist bundle-size.base.json
 
       - name: Cache bundle size manifest
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: bundle-size.base.json
           key: bundle-size-${{ hashFiles('tools/bundle-size.mjs') }}-${{ github.sha }}
@@ -122,7 +123,7 @@ jobs:
 
       - name: Restore bundle size baseline
         id: cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: bundle-size.base.json
           key: bundle-size-${{ hashFiles('tools/bundle-size.mjs') }}-${{ steps.mb.outputs.sha }}
@@ -140,7 +141,7 @@ jobs:
 
       - name: Save bundle size baseline
         if: ${{ steps.cache.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: bundle-size.base.json
           key: bundle-size-${{ hashFiles('tools/bundle-size.mjs') }}-${{ steps.mb.outputs.sha }}
