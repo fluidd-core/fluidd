@@ -1,2 +1,2 @@
 codespell==2.4.3
-zensical==0.0.54
+zensical==0.0.57
