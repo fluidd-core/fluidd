@@ -80,8 +80,8 @@ function formatDelta (bytes) {
 function readManifest (file) {
   const { entries } = JSON.parse(readFileSync(file, 'utf8'))
 
-  if (entries === null || typeof entries !== 'object') {
-    throw new Error(`${file}: missing "entries" object`)
+  if (entries === null || typeof entries !== 'object' || Array.isArray(entries)) {
+    throw new Error(`${file}: "entries" is not an object`)
   }
 
   for (const [key, value] of Object.entries(entries)) {
