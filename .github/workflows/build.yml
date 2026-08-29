@@ -69,6 +69,11 @@ jobs:
           persist-credentials: false
           sparse-checkout: tools
 
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+
       - name: Download dist
         uses: actions/download-artifact@v8
         with:
@@ -76,12 +81,12 @@ jobs:
           path: ./dist
 
       - name: Generate bundle size manifest
-        run: node tools/bundle-size.mjs generate dist bundle-size.json
+        run: node tools/bundle-size.mjs generate dist bundle-size.base.json
 
       - name: Cache bundle size manifest
         uses: actions/cache/save@v4
         with:
-          path: bundle-size.json
+          path: bundle-size.base.json
           key: bundle-size-${{ github.sha }}
 
   bundle-size:

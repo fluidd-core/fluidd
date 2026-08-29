@@ -21,6 +21,7 @@ jobs:
   publish-docker:
     name: Publish
     needs: build
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     uses: ./.github/workflows/_publish-docker.yml
     permissions:
       id-token: write
@@ -31,6 +32,7 @@ jobs:
   release:
     name: Release
     needs: build
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -89,7 +91,7 @@ jobs:
   publish-web:
     name: Deploy to Host
     needs: build
-    if: ${{ github.repository == 'fluidd-core/fluidd' }}
+    if: ${{ github.repository == 'fluidd-core/fluidd' && startsWith(github.ref, 'refs/tags/v') }}
     uses: ./.github/workflows/_publish-web.yml
     secrets:
       bucket: ${{ secrets.S3_BUCKET_NAME }}

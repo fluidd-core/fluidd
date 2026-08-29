@@ -32,8 +32,8 @@ function walk (distDir) {
     const full = join(entry.parentPath, entry.name)
     const raw = statSync(full).size
     const gzip = gzipSync(readFileSync(full), { level: 9 }).length
-    const relDir = relative(distDir, entry.parentPath)
-    const key = (relDir ? `${relDir}${sep}` : '') + stripHash(entry.name)
+    const relDir = relative(distDir, entry.parentPath).split(sep).join('/')
+    const key = (relDir ? `${relDir}/` : '') + stripHash(entry.name)
 
     // A hash collision after stripping (unlikely, but not impossible for tiny
     // chunks) would silently overwrite — sum instead so nothing goes missing.
@@ -97,7 +97,7 @@ function compare (baseFile, headFile) {
 
   const changed = rows
     .filter(row => row.delta !== 0)
-    .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))
+    .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta) || a.key.localeCompare(b.key))
 
   const totalBase = rows.reduce((sum, row) => sum + (row.baseGzip ?? 0), 0)
   const totalHead = rows.reduce((sum, row) => sum + (row.headGzip ?? 0), 0)
