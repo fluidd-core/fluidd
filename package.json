@@ -10,7 +10,6 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:analyze": "ANALYZE=1 vite build",
     "preview": "vite preview",
     "serve:prod": "vite preview --port 5000",
     "serve:docs": "cd ./docs && zensical serve",
@@ -89,7 +88,6 @@
     "jsdom": "^30.0.1",
     "mockdate": "^3.0.5",
     "neostandard": "^0.13.0",
-    "rollup-plugin-visualizer": "^7.1.1",
     "sass-embedded": "^1.103.1",
     "skott": "^0.35.11",
     "svgo": "^4.1.0",

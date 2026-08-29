@@ -206,11 +206,6 @@ jobs:
         run: |
           echo "$PR_NUMBER" > pr-number.txt
 
-      - name: Build treemap
-        continue-on-error: true
-        run: |
-          pnpm run build:analyze
-
       - name: Upload bundle size report
         uses: actions/upload-artifact@v7
         with:
@@ -218,6 +213,4 @@ jobs:
           path: |
             bundle-size-report.md
             pr-number.txt
-            .analyze/stats.html
           retention-days: 7
-          if-no-files-found: ignore
