@@ -1,0 +1,44 @@
+name: BUNDLE COMMENT
+
+on:
+  workflow_run:
+    workflows: ['BUILD']
+    types:
+      - completed
+
+permissions: {}
+
+jobs:
+  comment:
+    name: Post Bundle Size Comment
+    if: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pull-requests: write
+      actions: read
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
+      - name: Download bundle size report
+        uses: actions/download-artifact@v8
+        with:
+          name: bundle-size-report
+          path: ./report
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      - name: Read PR number
+        id: pr
+        run: |
+          echo "number=$(cat ./report/pr-number.txt)" >> "$GITHUB_OUTPUT"
+
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+        with:
+          number_force: ${{ steps.pr.outputs.number }}
+          header: bundle-size
+          path: ./report/bundle-size-report.md

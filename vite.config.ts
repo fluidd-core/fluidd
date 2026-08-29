@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type PluginOption } from 'vite'
 import vue from '@pedrolamas/plugin-vue2'
 import { VitePWA } from 'vite-plugin-pwa'
 import Components from 'unplugin-vue-components/rolldown'
@@ -6,6 +6,7 @@ import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 import content from '@originjs/vite-plugin-content'
 import checker from 'vite-plugin-checker'
+import { visualizer } from 'rollup-plugin-visualizer'
 import version from './vite.config.inject-version.ts'
 
 export default defineConfig({
@@ -109,7 +110,14 @@ export default defineConfig({
       resolvers: [
         VuetifyResolver()
       ]
-    })
+    }),
+    // Opt-in treemap for `pnpm run build:analyze` — emitted outside dist/ so it
+    // can never be swept into the deployed bundle or the PWA precache manifest.
+    !!process.env.ANALYZE && visualizer({
+      filename: path.resolve(import.meta.dirname, './.analyze/stats.html'),
+      gzipSize: true,
+      template: 'treemap'
+    }) as PluginOption
   ],
 
   css: {

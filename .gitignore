@@ -3,6 +3,7 @@ node_modules
 .pnpm-store
 /dist
 /dev-dist
+/.analyze
 
 /tests/e2e/videos/
 /tests/e2e/screenshots/

@@ -1,0 +1,80 @@
+name: _BUILD
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: Name for the uploaded dist artifact
+        required: true
+        type: string
+      upload-artifact:
+        description: Whether to upload the dist artifact
+        required: false
+        type: boolean
+        default: true
+
+permissions: {}
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+      - name: Run lint
+        run: |
+          pnpm run lint --no-fix
+
+      - name: Run type check
+        if: ${{ !cancelled() }}
+        run: |
+          pnpm run type-check
+
+      - name: Run tests
+        if: ${{ !cancelled() }}
+        run: |
+          pnpm run test:unit
+
+      - name: Run circular references check
+        if: ${{ !cancelled() }}
+        run: |
+          pnpm run circular-check
+
+      - name: Build
+        run: |
+          pnpm run build
+
+      - name: Upload dist
+        if: inputs.upload-artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ./dist
+          retention-days: 7

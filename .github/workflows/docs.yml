@@ -6,29 +6,52 @@ on:
       - master
     paths:
       - 'docs/**'
+      - '.github/workflows/docs.yml'
   pull_request:
     branches:
       - master
       - develop
     paths:
       - 'docs/**'
+      - '.github/workflows/docs.yml'
+  merge_group:
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+permissions: {}
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
+          cache: pip
+          cache-dependency-path: docs/requirements.txt
 
       - name: Install docs dependencies
         run: pip install -r docs/requirements.txt
+
+      - name: Lint docs
+        run: |
+          codespell docs/docs/
+          npx --yes markdownlint-cli@0.49.1 --config docs/.markdownlint.json docs/docs/
 
       - name: Build docs
         run: zensical build --clean
@@ -43,12 +66,19 @@ jobs:
     needs: build
     if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       pages: write
       id-token: write
+      contents: read
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
       - id: deployment
         uses: actions/deploy-pages@v5
