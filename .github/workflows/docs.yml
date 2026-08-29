@@ -1,9 +1,10 @@
-name: Deploy docs
+name: Deploy Docs
 
 on:
   push:
     branches:
       - master
+      - develop
     paths:
       - 'docs/**'
       - '.github/workflows/docs.yml'
@@ -64,7 +65,7 @@ jobs:
 
   deploy:
     needs: build
-    if: ${{ github.event_name != 'pull_request' }}
+    if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

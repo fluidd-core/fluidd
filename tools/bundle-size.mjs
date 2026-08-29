@@ -3,7 +3,7 @@
 //
 // Usage:
 //   node tools/bundle-size.mjs generate <dist-dir> <out.json>
-//   node tools/bundle-size.mjs compare <base.json> <head.json> [--markdown-only]
+//   node tools/bundle-size.mjs compare <base.json> <head.json>
 //
 // No dependencies — only node:fs, node:path and node:zlib. Sizes are gzip'd since
 // server/nginx/default.conf.template serves assets gzipped; that's the number that
@@ -23,31 +23,28 @@ function stripHash (filename) {
   return filename.replace(HASH_RE, '-*$1')
 }
 
-function walk (dir, root = dir, out = {}) {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, entry.name)
-    if (entry.isDirectory()) {
-      walk(full, root, out)
-      continue
-    }
+function walk (distDir) {
+  const entries = {}
 
-    if (!/\.(?:js|css)$/.test(entry.name)) continue
+  for (const entry of readdirSync(distDir, { recursive: true, withFileTypes: true })) {
+    if (entry.isDirectory() || !/\.(?:js|css)$/.test(entry.name)) continue
 
+    const full = join(entry.parentPath, entry.name)
     const raw = statSync(full).size
     const gzip = gzipSync(readFileSync(full), { level: 9 }).length
-    const relDir = relative(root, dir)
+    const relDir = relative(distDir, entry.parentPath)
     const key = (relDir ? `${relDir}${sep}` : '') + stripHash(entry.name)
 
     // A hash collision after stripping (unlikely, but not impossible for tiny
     // chunks) would silently overwrite — sum instead so nothing goes missing.
-    if (out[key]) {
-      out[key] = { raw: out[key].raw + raw, gzip: out[key].gzip + gzip }
+    if (entries[key]) {
+      entries[key] = { raw: entries[key].raw + raw, gzip: entries[key].gzip + gzip }
     } else {
-      out[key] = { raw, gzip }
+      entries[key] = { raw, gzip }
     }
   }
 
-  return out
+  return entries
 }
 
 function generate (distDir, outFile) {

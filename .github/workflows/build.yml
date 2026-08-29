@@ -1,4 +1,4 @@
-name: BUILD
+name: Build
 
 on:
   push:
@@ -22,8 +22,6 @@ jobs:
   build:
     name: Build
     uses: ./.github/workflows/_build.yml
-    with:
-      artifact-name: fluidd-${{ github.sha }}
     permissions:
       contents: read
 
@@ -32,8 +30,6 @@ jobs:
     needs: build
     if: ${{ github.event_name != 'pull_request' }}
     uses: ./.github/workflows/_publish-docker.yml
-    with:
-      artifact-name: fluidd-${{ github.sha }}
     permissions:
       id-token: write
       contents: read
@@ -44,49 +40,19 @@ jobs:
     name: Deploy to Host
     needs: build
     if: ${{ github.repository == 'fluidd-core/fluidd' && github.ref == 'refs/heads/develop' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+    uses: ./.github/workflows/_publish-web.yml
+    secrets:
+      bucket: ${{ secrets.DEV_S3_BUCKET_NAME }}
+      distribution-id: ${{ secrets.DEV_CF_DISTRIBUTION_ID }}
+      aws-role: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
     permissions:
       id-token: write
       contents: read
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
-        with:
-          egress-policy: audit
-
-      - name: Checkout
-        uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-
-      - name: Download fluidd dist
-        uses: actions/download-artifact@v8
-        with:
-          name: fluidd-${{ github.sha }}
-          path: ./dist
-
-      - name: Prepare Deploy
-        run: |
-          cp ./server/config.json ./dist/config.json
-
-      - uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
-        with:
-          aws-region: us-east-1
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-
-      - name: Deploy to Host
-        env:
-          BUCKET: ${{ secrets.DEV_S3_BUCKET_NAME }}
-          DIST_ID: ${{ secrets.DEV_CF_DISTRIBUTION_ID }}
-        run: |
-          aws s3 sync ./dist "s3://${BUCKET}" --delete --cache-control no-cache
-          aws cloudfront create-invalidation --distribution-id "${DIST_ID}" --paths '/*'
 
   bundle-baseline:
     name: Save Bundle Size Baseline
     needs: build
-    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master') }}
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -148,10 +114,6 @@ jobs:
         with:
           node-version-file: .node-version
           cache: 'pnpm'
-
-      - name: Install dependencies
-        run: |
-          pnpm i --frozen-lockfile
 
       - name: Resolve merge-base
         id: mb

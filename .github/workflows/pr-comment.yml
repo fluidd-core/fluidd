@@ -1,8 +1,8 @@
-name: BUNDLE COMMENT
+name: PR Comment
 
 on:
   workflow_run:
-    workflows: ['BUILD']
+    workflows: ['Build']
     types:
       - completed
 

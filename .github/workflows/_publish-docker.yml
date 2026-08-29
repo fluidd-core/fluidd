@@ -1,12 +1,7 @@
-name: _PUBLISH DOCKER
+name: Publish Docker (Reusable)
 
 on:
   workflow_call:
-    inputs:
-      artifact-name:
-        description: Name of the dist artifact to publish
-        required: true
-        type: string
 
 permissions: {}
 
@@ -46,7 +41,7 @@ jobs:
       - name: Download dist
         uses: actions/download-artifact@v8
         with:
-          name: ${{ inputs.artifact-name }}
+          name: fluidd-${{ github.sha }}
           path: ./dist
 
       - name: Prepare Docker image metadata

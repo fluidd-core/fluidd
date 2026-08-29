@@ -1,17 +1,7 @@
-name: _BUILD
+name: Build (Reusable)
 
 on:
   workflow_call:
-    inputs:
-      artifact-name:
-        description: Name for the uploaded dist artifact
-        required: true
-        type: string
-      upload-artifact:
-        description: Whether to upload the dist artifact
-        required: false
-        type: boolean
-        default: true
 
 permissions: {}
 
@@ -72,9 +62,8 @@ jobs:
           pnpm run build
 
       - name: Upload dist
-        if: inputs.upload-artifact
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ inputs.artifact-name }}
+          name: fluidd-${{ github.sha }}
           path: ./dist
           retention-days: 7
