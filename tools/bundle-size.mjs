@@ -9,7 +9,7 @@
 // server/nginx/default.conf.template serves assets gzipped; that's the number that
 // matters for what a browser actually downloads.
 
-import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { gzipSync } from 'node:zlib'
 import { join, relative, sep } from 'node:path'
 
@@ -30,18 +30,13 @@ function walk (distDir) {
     if (entry.isDirectory() || !/\.(?:js|css)$/.test(entry.name)) continue
 
     const full = join(entry.parentPath, entry.name)
-    const raw = statSync(full).size
     const gzip = gzipSync(readFileSync(full), { level: 9 }).length
     const relDir = relative(distDir, entry.parentPath).split(sep).join('/')
     const key = (relDir ? `${relDir}/` : '') + stripHash(entry.name)
 
     // A hash collision after stripping (unlikely, but not impossible for tiny
     // chunks) would silently overwrite — sum instead so nothing goes missing.
-    if (entries[key]) {
-      entries[key] = { raw: entries[key].raw + raw, gzip: entries[key].gzip + gzip }
-    } else {
-      entries[key] = { raw, gzip }
-    }
+    entries[key] = (entries[key] ?? 0) + gzip
   }
 
   return entries
@@ -87,8 +82,8 @@ function compare (baseFile, headFile) {
   const keys = new Set([...Object.keys(base), ...Object.keys(head)])
 
   const rows = [...keys].map(key => {
-    const baseGzip = base[key]?.gzip ?? null
-    const headGzip = head[key]?.gzip ?? null
+    const baseGzip = base[key] ?? null
+    const headGzip = head[key] ?? null
     const delta = (headGzip ?? 0) - (baseGzip ?? 0)
     const status = baseGzip == null ? 'added' : headGzip == null ? 'removed' : 'changed'
 

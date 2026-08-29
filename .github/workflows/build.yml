@@ -109,23 +109,14 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-        with:
-          run_install: false
-
-      - name: Setup Node
-        uses: actions/setup-node@v7
-        with:
-          node-version-file: .node-version
-          cache: 'pnpm'
+      - name: Setup pnpm and Node
+        uses: ./.github/actions/setup-pnpm-node
 
       - name: Resolve merge-base
         id: mb
         env:
           BASE_REF: ${{ github.base_ref }}
         run: |
-          git fetch --no-tags origin "$BASE_REF"
           MERGE_BASE=$(git merge-base "origin/$BASE_REF" HEAD)
           echo "sha=$MERGE_BASE" >> "$GITHUB_OUTPUT"
 
