@@ -52,6 +52,7 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 - Wait constants defined in `src/globals.ts` (`Waits` object, ~90 operation types)
 - Real-time updates handled via store mutations from socket events
 - Auto-reconnect with configurable interval (`Globals.SOCKET_RETRY_DELAY`)
+- `NotifyOptions.suppressError` (`boolean | (error: SocketError) => boolean`) skips the global `socket/onSocketError` toast for that request — the emit promise still rejects, callers still need a `catch`. A `code >= 500` is never suppressible (a 503 drives klippy recovery in `socket/onSocketError`), and a predicate that throws logs via consola and falls back to not suppressing. Narrow a caught rejection with `isSocketError` (`src/util/is-socket-error.ts`) — see `history/fetchMissingJobs` suppressing 404s from `serverHistoryGetJob`
 
 ### Component Registration
 
@@ -78,6 +79,7 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 - **`vite-plugin-checker`** — runs vue-tsc and ESLint during dev (disabled at build time)
 - **`skott`** — circular dependency detection (`pnpm run circular-check`)
 - **ES2020 lib target** (`tsconfig.app.json`) — no ES2021+ built-ins without polyfills
+- `vite.config.ts`'s `build.rolldownOptions.output.codeSplitting.groups` pins `lodash-es`, `vue`/`vue-router`/`vuex`/`vue-i18n` (as `vue-vendor`), and `vuetify` into named vendor chunks; everything else (monaco, echarts, hls.js, iro, qr-scanner, …) deliberately stays on rolldown's default lazy chunking — do not sweep those into a group
 
 ### Essential Commands
 
@@ -239,6 +241,13 @@ src/
 - `charts/resetChartStore` resets **only `thermal` and `ready`**, not the whole module — it is
   shared by the socket drop and root `resetKlippy`, and a klippy restart does not re-fetch
   `machine.proc_stats`, so blanking the other buckets would leave them with nothing to refill from
+- `smoothChartSource` (`src/util/chart-smoothing.ts`) is a trailing moving average over
+  `uiSettings.general.chartSmoothingWindow` seconds (0 = off, the default); `NaN` values stay `NaN`
+  rather than pulling the average down. Only bare thermal columns are smoothed — `ThermalChart`'s
+  `smoothableKeys` filters to `parseThermalColumn(name).sub == null`, so target temperatures, heater
+  power, and fan speed stay exact. `ThermalChart` `@Watch`es `chartRevision` and
+  `chartSmoothingWindow` (the raw inputs), not the smoothed source, so the paused check can skip the
+  recompute entirely
 
 ## Integration Points
 
@@ -248,6 +257,12 @@ src/
 - Store updates from WebSocket events (not polling)
 - File operations through Moonraker's file API (`src/store/files/`)
 - File uploads/downloads are the sole consumer of `axios` — direct calls in `src/mixins/files.ts` (for upload/download progress, which `fetch` cannot report for uploads), authenticated with a oneshot token fetched via `SocketActions.accessOneshotToken()`. There is no HTTP client plugin, and the rest of the app uses `fetch` or the WebSocket
+
+### Print History
+
+- `Globals.JOB_HISTORY_LOAD` (100) bounds the initial `server.history.list` fetch; `history/onHistoryList` derives `state.allLoaded` from the echoed request's `limit` (via `ObjectWithRequest.__request__.params`, not the response), so a short page (or `limit: 0`, used by "Load all") both flip it correctly
+- A job referenced by a file in the loaded file listing but outside the loaded history window is back-filled individually: `history/fetchMissingJobs` diffs against loaded jobs and `state.unresolvedJobIds`, then calls `SocketActions.serverHistoryGetJob` per missing id, suppressing 404s (`suppressError: error => error.code === 404`) since a file can reference a job Moonraker has since pruned
+- Job lookups go through `history/getHistoryByIdMap` (a memoized `Map`), not a linear scan of `getHistory`
 
 ### Component Communication
 
@@ -269,6 +284,13 @@ src/
   write is what re-renders. These `import()`s do not actually code-split: `vuetify/lib/presets/default`
   statically imports the `lib/locale` barrel, so every referenced locale lands in the eager
   `vuetify` chunk regardless of `codeSplitting` groups
+- `loadLocaleMessagesAsync(locale?)` (`src/plugins/i18n.ts`) defaults to `getStartingLocale()` when
+  called with no argument, guards on `i18n.availableLocales` rather than a separate loaded-list, and
+  on a failed `I18nLocales[locale]()` import logs via consola and keeps the current `i18n.locale`
+  instead of throwing. `getStartingLocale` walks `navigator.languages`, matching each entry's full
+  code first (`pt-BR`, `zh-CN`) then its bare language, before falling back to
+  `VUE_APP_I18N_LOCALE` or `en`. `config/onLocaleChange` holds `Waits.onLoadLanguage` for the
+  duration, which drives the loading spinner on the language `v-select` in `GeneralSettings`
 
 ## Testing Conventions
 
@@ -350,6 +372,12 @@ src/
 - VSCode Dev Container (`.devcontainer/`) bundles a `docker-klipper-simulavr` container — real Klipper/Moonraker simulation on port 7125, Fluidd on port 8080
 - Base image **must stay glibc** (`node:24-trixie-slim`) — `typescript-native-bridge` ships a Go `c-shared` NAPI bridge with glibc-only native packages (no `-musl` build), so on Alpine it fails to load and segfaults even with `gcompat`
 - `postCreateCommand` runs `pnpm i --frozen-lockfile` automatically (which in turn runs `prepare`)
+
+## Docker Images (production)
+
+- `Dockerfile` builds on `nginx:alpine-slim` (`fluidd`) / `nginxinc/nginx-unprivileged:alpine-slim` (`fluidd-unprivileged`), set via a `BASE_IMAGE` build arg per matrix entry in `.github/workflows/build.yml`
+- The listen port is a `PORT` build arg re-exported as `ENV PORT` (default `80`), substituted into `server/nginx/default.conf.template` by nginx's own envsubst entrypoint at container start — **not** baked in at build time. CI used to `sed` the template's port in `build.yml`; that step is gone now that `PORT` flows through as a build arg, and the port can also be overridden at `docker run` time
+- `HEALTHCHECK` (`wget -q -O /dev/null "http://127.0.0.1:${PORT}/healthz"`, every 10s) — the base image must keep `wget`; `/healthz` is a plain `200 ok` in `default.conf.template`, excluded from the access log
 
 ## Documentation Site
 
