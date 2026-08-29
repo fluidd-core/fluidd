@@ -121,7 +121,8 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         run: |
           git fetch --no-tags origin "$BASE_REF"
-          echo "sha=$(git merge-base "origin/$BASE_REF" HEAD)" >> "$GITHUB_OUTPUT"
+          MERGE_BASE=$(git merge-base "origin/$BASE_REF" HEAD)
+          echo "sha=$MERGE_BASE" >> "$GITHUB_OUTPUT"
 
       - name: Restore bundle size baseline
         id: cache
