@@ -1,0 +1,96 @@
+name: Publish Docker (Reusable)
+
+on:
+  workflow_call:
+
+permissions: {}
+
+jobs:
+  publish-docker:
+    name: Publish ${{ matrix.type }} Image
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - type: Docker
+            image-name: ${{ github.repository }}
+            base-image: nginx:alpine-slim
+            port: 80
+          - type: Docker Unprivileged
+            image-name: ${{ github.repository }}-unprivileged
+            base-image: nginxinc/nginx-unprivileged:alpine-slim
+            port: 8080
+    permissions:
+      id-token: write
+      contents: read
+      attestations: write
+      packages: write
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Download dist
+        uses: actions/download-artifact@v8
+        with:
+          name: fluidd-${{ github.sha }}
+          path: ./dist
+
+      - name: Prepare Docker image metadata
+        id: docker_meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: |
+            ghcr.io/${{ matrix.image-name }}
+          tags: |
+            type=semver,pattern={{raw}}
+            type=sha,format=long
+            type=raw,value=latest-develop,enable=${{ github.ref == 'refs/heads/develop' }}
+            type=raw,value=latest-master,enable=${{ github.ref == 'refs/heads/master' }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        id: docker_push
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
+          build-args: |
+            BASE_IMAGE=${{ matrix.base-image }}
+            PORT=${{ matrix.port }}
+          push: true
+          sbom: true
+          provenance: true
+          cache-from: type=gha,scope=${{ matrix.type }}
+          cache-to: type=gha,mode=min,scope=${{ matrix.type }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
+          annotations: ${{ steps.docker_meta.outputs.annotations }}
+
+      - name: Attest Docker image
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-name: ghcr.io/${{ matrix.image-name }}
+          subject-digest: ${{ steps.docker_push.outputs.digest }}
+          push-to-registry: true

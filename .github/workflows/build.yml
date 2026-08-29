@@ -1,188 +1,178 @@
-name: BUILD
+name: Build
 
 on:
   push:
     branches:
       - develop
       - master
-    tags:
-      - 'v*'
   pull_request:
     branches:
       - develop
       - master
+  merge_group:
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+permissions: {}
+
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          run_install: false
-
-      - name: Setup Node
-        uses: actions/setup-node@v7
-        with:
-          node-version: 24
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: |
-          pnpm i --frozen-lockfile
-
-      - name: Run lint
-        run: |
-          pnpm run lint --no-fix
-
-      - name: Run type check
-        run: |
-          pnpm run type-check
-
-      - name: Run tests
-        run: |
-          pnpm run test:unit
-
-      - name: Run circular references check
-        run: |
-          pnpm run circular-check
-
-      - name: Build
-        run: |
-          pnpm run build
-
-      - name: Upload fluidd.zip
-        uses: actions/upload-artifact@v7
-        with:
-          name: fluidd-${{ github.sha }}.zip
-          path: ./dist
+    uses: ./.github/workflows/_build.yml
+    permissions:
+      contents: read
 
   publish-docker:
-    name: Publish ${{ matrix.type }} Image
+    name: Publish
     needs: build
     if: ${{ github.event_name != 'pull_request' }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - type: Docker
-            image-name: ${{ github.repository }}
-            base-image: nginx:alpine-slim
-            port: 80
-          - type: Docker Unprivileged
-            image-name: ${{ github.repository }}-unprivileged
-            base-image: nginxinc/nginx-unprivileged:alpine-slim
-            port: 8080
+    uses: ./.github/workflows/_publish-docker.yml
     permissions:
       id-token: write
       contents: read
       attestations: write
       packages: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Download fluidd.zip
-        uses: actions/download-artifact@v8
-        with:
-          name: fluidd-${{ github.sha }}.zip
-          path: ./dist
-
-      - name: Prepare Docker image metadata
-        id: docker_meta
-        uses: docker/metadata-action@v6
-        with:
-          images: |
-            ghcr.io/${{ matrix.image-name }}
-          tags: |
-            type=semver,pattern={{raw}}
-            type=ref,event=pr
-            type=sha,format=long
-            type=raw,value=latest-develop,enable=${{ github.ref == 'refs/heads/develop' }}
-            type=raw,value=latest-master,enable=${{ github.ref == 'refs/heads/master' }}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@v4
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push Docker image
-        id: docker_push
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
-          build-args: |
-            BASE_IMAGE=${{ matrix.base-image }}
-            PORT=${{ matrix.port }}
-          push: true
-          sbom: true
-          provenance: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          tags: ${{ steps.docker_meta.outputs.tags }}
-          labels: ${{ steps.docker_meta.outputs.labels }}
-          annotations: ${{ steps.docker_meta.outputs.annotations }}
-
-      - name: Attest Docker image
-        uses: actions/attest-build-provenance@v4
-        with:
-          subject-name: ghcr.io/${{ matrix.image-name }}
-          subject-digest: ${{ steps.docker_push.outputs.digest }}
-          push-to-registry: true
 
   publish-web:
     name: Deploy to Host
     needs: build
     if: ${{ github.repository == 'fluidd-core/fluidd' && github.ref == 'refs/heads/develop' }}
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/_publish-web.yml
+    secrets:
+      bucket: ${{ secrets.DEV_S3_BUCKET_NAME }}
+      distribution-id: ${{ secrets.DEV_CF_DISTRIBUTION_ID }}
+      aws-role: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
     permissions:
       id-token: write
       contents: read
+
+  bundle-baseline:
+    name: Save Bundle Size Baseline
+    needs: build
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          sparse-checkout: tools
 
-      - name: Download fluidd.zip
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+
+      - name: Download dist
         uses: actions/download-artifact@v8
         with:
-          name: fluidd-${{ github.sha }}.zip
+          name: fluidd-${{ github.sha }}
           path: ./dist
 
-      - name: Prepare Deploy
+      - name: Generate bundle size manifest
+        run: node tools/bundle-size.mjs generate dist bundle-size.base.json
+
+      - name: Cache bundle size manifest
+        uses: actions/cache/save@v4
+        with:
+          path: bundle-size.base.json
+          key: bundle-size-${{ hashFiles('tools/bundle-size.mjs') }}-${{ github.sha }}
+
+  bundle-size:
+    name: Bundle Size Report
+    needs: build
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Setup pnpm and Node
+        uses: ./.github/actions/setup-pnpm-node
+
+      - name: Resolve merge-base
+        id: mb
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
-          cp ./server/config.json ./dist/config.json
+          MERGE_BASE=$(git merge-base "origin/$BASE_REF" HEAD)
+          echo "sha=$MERGE_BASE" >> "$GITHUB_OUTPUT"
 
-      - uses: aws-actions/configure-aws-credentials@v6
+      - name: Restore bundle size baseline
+        id: cache
+        uses: actions/cache/restore@v4
         with:
-          aws-region: us-east-1
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+          path: bundle-size.base.json
+          key: bundle-size-${{ hashFiles('tools/bundle-size.mjs') }}-${{ steps.mb.outputs.sha }}
 
-      - name: Deploy to Host
-        uses: reggionick/s3-deploy@v4
+      - name: Build merge-base
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        env:
+          MERGE_BASE: ${{ steps.mb.outputs.sha }}
+        run: |
+          git worktree add ../base "$MERGE_BASE"
+          cd ../base
+          pnpm i --frozen-lockfile
+          pnpm run build
+          node "$GITHUB_WORKSPACE/tools/bundle-size.mjs" generate dist "$GITHUB_WORKSPACE/bundle-size.base.json"
+
+      - name: Save bundle size baseline
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
         with:
-          folder: dist
-          bucket: ${{ secrets.DEV_S3_BUCKET_NAME }}
-          bucket-region: us-east-1
-          dist-id: ${{ secrets.DEV_CF_DISTRIBUTION_ID }}
-          delete-removed: true
-          no-cache: true
-          private: true
+          path: bundle-size.base.json
+          key: bundle-size-${{ hashFiles('tools/bundle-size.mjs') }}-${{ steps.mb.outputs.sha }}
+
+      - name: Download PR dist
+        uses: actions/download-artifact@v8
+        with:
+          name: fluidd-${{ github.sha }}
+          path: ./dist
+
+      - name: Generate PR bundle size manifest
+        run: |
+          node tools/bundle-size.mjs generate dist bundle-size.head.json
+
+      - name: Compare bundle sizes
+        # `shell: bash` for pipefail; the implicit default is `bash -e` without it,
+        # so a failing `compare` would be masked by `tee`.
+        shell: bash
+        run: |
+          node tools/bundle-size.mjs compare bundle-size.base.json bundle-size.head.json | tee bundle-size-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Write PR number
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "$PR_NUMBER" > pr-number.txt
+
+      - name: Upload bundle size report
+        uses: actions/upload-artifact@v7
+        with:
+          name: bundle-size-report
+          path: |
+            bundle-size-report.md
+            pr-number.txt
+          retention-days: 7
