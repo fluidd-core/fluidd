@@ -75,9 +75,27 @@ function formatDelta (bytes) {
   return `${bytes > 0 ? '+' : ''}${formatBytes(bytes)}`
 }
 
+// A malformed (or older-format) manifest would flow through as NaN and publish a
+// table of `NaN B` cells on a green check. Fail instead.
+function readManifest (file) {
+  const { entries } = JSON.parse(readFileSync(file, 'utf8'))
+
+  if (entries === null || typeof entries !== 'object') {
+    throw new Error(`${file}: missing "entries" object`)
+  }
+
+  for (const [key, value] of Object.entries(entries)) {
+    if (!Number.isFinite(value)) {
+      throw new Error(`${file}: entry "${key}" is not a byte count (got ${JSON.stringify(value)}) — manifest is malformed, or was written by an incompatible version of this tool`)
+    }
+  }
+
+  return entries
+}
+
 function compare (baseFile, headFile) {
-  const base = JSON.parse(readFileSync(baseFile, 'utf8')).entries
-  const head = JSON.parse(readFileSync(headFile, 'utf8')).entries
+  const base = readManifest(baseFile)
+  const head = readManifest(headFile)
 
   const keys = new Set([...Object.keys(base), ...Object.keys(head)])
 

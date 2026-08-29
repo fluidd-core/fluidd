@@ -87,7 +87,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: bundle-size.base.json
-          key: bundle-size-${{ github.sha }}
+          key: bundle-size-${{ hashFiles('tools/bundle-size.mjs') }}-${{ github.sha }}
 
   bundle-size:
     name: Bundle Size Report
@@ -125,7 +125,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: bundle-size.base.json
-          key: bundle-size-${{ steps.mb.outputs.sha }}
+          key: bundle-size-${{ hashFiles('tools/bundle-size.mjs') }}-${{ steps.mb.outputs.sha }}
 
       - name: Build merge-base
         if: ${{ steps.cache.outputs.cache-hit != 'true' }}
@@ -143,7 +143,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: bundle-size.base.json
-          key: bundle-size-${{ steps.mb.outputs.sha }}
+          key: bundle-size-${{ hashFiles('tools/bundle-size.mjs') }}-${{ steps.mb.outputs.sha }}
 
       - name: Download PR dist
         uses: actions/download-artifact@v8
@@ -156,6 +156,9 @@ jobs:
           node tools/bundle-size.mjs generate dist bundle-size.head.json
 
       - name: Compare bundle sizes
+        # `shell: bash` for pipefail; the implicit default is `bash -e` without it,
+        # so a failing `compare` would be masked by `tee`.
+        shell: bash
         run: |
           node tools/bundle-size.mjs compare bundle-size.base.json bundle-size.head.json | tee bundle-size-report.md >> "$GITHUB_STEP_SUMMARY"
 
