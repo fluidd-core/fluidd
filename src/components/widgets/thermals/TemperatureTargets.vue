@@ -55,9 +55,9 @@
           </td>
           <td class="temp-power">
             <span
-              :class="{ 'active': isLegendSelected(item, '#power') }"
+              :class="{ 'active': isLegendSelected(item, 'power') }"
               class="legend-item toggle"
-              @click="legendClick(item, '#power')"
+              @click="legendClick(item, 'power')"
             >
               <span v-if="item.power <= 0 && item.target <= 0">off</span>
               <span v-if="item.target > 0">
@@ -70,9 +70,9 @@
             class="text-no-wrap"
           >
             <span
-              :class="{ 'active': isLegendSelected(item, '#power') }"
+              :class="{ 'active': isLegendSelected(item, 'power') }"
               class="legend-item toggle"
-              @click="legendClick(item, '#power')"
+              @click="legendClick(item, 'power')"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -139,9 +139,9 @@
           <td class="temp-power">
             <span
               v-if="item.speed"
-              :class="{ 'active':isLegendSelected(item, '#speed') }"
+              :class="{ 'active':isLegendSelected(item, 'speed') }"
               class="legend-item toggle"
-              @click="legendClick(item, '#speed')"
+              @click="legendClick(item, 'speed')"
             >
               <span v-if="item.speed > 0 && (item.target > 0 || !item.target)">
                 {{ (item.speed * 100).toFixed(0) }}<small>%</small>
@@ -157,9 +157,9 @@
             class="text-no-wrap"
           >
             <span
-              :class="{ 'active': isLegendSelected(item, '#power') }"
+              :class="{ 'active': isLegendSelected(item, 'power') }"
               class="legend-item toggle"
-              @click="legendClick(item, '#power')"
+              @click="legendClick(item, 'power')"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -355,8 +355,10 @@ import HeaterPidCalibrateDialog from './HeaterPidCalibrateDialog.vue'
 import HeaterMpcCalibrateDialog from './HeaterMpcCalibrateDialog.vue'
 import StateMixin from '@/mixins/state'
 import type { Fan, Heater, Sensor } from '@/store/printer/types'
-import { takeRightWhile } from 'lodash-es'
-import type { ChartData, ChartSelectedLegends } from '@/store/charts/types'
+import { chartBufferRateOfChange } from '@/util/chart-buffer'
+import type { ChartBuffer, ChartSelectedLegends } from '@/store/charts/types'
+import type { ThermalSubKey } from '@/store/charts/thermal-columns'
+import { isThermalLegendSelected, thermalColumn } from '@/store/charts/thermal-columns'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 import isNullOrEmpty, { type NullableOrEmpty } from '@/util/is-null-or-empty'
 
@@ -406,8 +408,8 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     return this.$typedState.charts.selectedLegends
   }
 
-  get chartData (): Readonly<ChartData>[] {
-    return this.$typedState.charts.chart
+  get thermalChartBuffer (): ChartBuffer {
+    return this.$typedState.charts.thermal
   }
 
   get showRateOfChange (): boolean {
@@ -443,37 +445,20 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   }
 
   getRateOfChange (item: Heater | Sensor) {
-    const recentChartData = this.chartData
-      .slice(-5)
-    const filteredChartData = takeRightWhile(recentChartData, x => x[item.key] != null)
-
-    let rateOfChange = 0
-    if (filteredChartData.length >= 2) {
-      const curr = filteredChartData[filteredChartData.length - 1]
-      const prev = filteredChartData[0]
-
-      rateOfChange = (+curr[item.key] - +prev[item.key]) / (+curr.date - +prev.date) * 1000
-
-      if (Math.abs(rateOfChange) < 0.05) {
-        rateOfChange = 0 // prevent constant change of sign
-      }
-    }
+    const rateOfChange = chartBufferRateOfChange(this.thermalChartBuffer, item.key)
 
     return `${rateOfChange < 0 ? '' : '+'}${rateOfChange.toFixed(1)}`
   }
 
-  isLegendSelected (item: Heater | Fan | Sensor, subKey?: string) {
-    const key = `${item.key}${subKey ?? ''}`
-
-    return this.chartSelectedLegends[key] ?? (subKey !== '#power' && subKey !== '#speed')
+  isLegendSelected (item: Heater | Fan | Sensor, subKey?: ThermalSubKey) {
+    return isThermalLegendSelected(this.chartSelectedLegends, item.key, subKey)
   }
 
-  legendClick (item: Heater | Fan | Sensor, subKey?: string) {
+  legendClick (item: Heater | Fan | Sensor, subKey?: ThermalSubKey) {
     const value = !this.isLegendSelected(item, subKey)
-    const key = `${item.key}${subKey ?? ''}`
 
     const chartSelectedLegends: ChartSelectedLegends = {
-      [key]: value
+      [thermalColumn(item.key, subKey)]: value
     }
 
     // If this has a target, toggle that too.
@@ -481,7 +466,7 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
       !subKey &&
       'target' in item
     ) {
-      chartSelectedLegends[`${item.key}#target`] = value
+      chartSelectedLegends[thermalColumn(item.key, 'target')] = value
     }
 
     this.$emit('updateChartSelectedLegends', chartSelectedLegends)

@@ -9,6 +9,10 @@ declare namespace Moonraker.History {
     jobs: Job[];
   }
 
+  export interface JobResponse {
+    job: Job;
+  }
+
   export interface DeleteJobResponse {
     deleted_jobs: string[];
   }

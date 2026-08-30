@@ -1,63 +1,60 @@
-import type { ChartData } from '@/store/charts/types'
+import type { ChartDataSource } from '@/store/charts/types'
 
-/**
- * Applies a trailing moving average (window in seconds) to each key in
- * `keys`, returning a new dataset — the input is never mutated. A window of
- * 0 (or an empty `keys` list) is a no-op returning the original reference.
- * Samples missing a numeric value are skipped in the mean and left absent.
- */
-export const smoothChartData = (
-  data: ChartData[],
-  keys: readonly string[],
+// Trailing moving average over `windowSeconds`. NaN gaps stay gaps.
+export const smoothChartSource = (
+  source: ChartDataSource,
+  columns: readonly string[],
   windowSeconds: number
-): ChartData[] => {
+): ChartDataSource => {
+  const count = source.date.length
+
   if (
     windowSeconds <= 0 ||
-    data.length === 0 ||
-    keys.length === 0
-  ) return data
+    count === 0 ||
+    columns.length === 0
+  ) {
+    return source
+  }
 
   const windowMs = windowSeconds * 1000
-  const times = data
-    .map(sample => sample.date.getTime())
-  const result = [...data]
+  const times = source.date
+  const result: ChartDataSource = { ...source }
 
-  // Two-pointer trailing window per key.
-  for (const key of keys) {
+  for (const key of columns) {
+    const values = source[key]
+
+    if (!values) {
+      continue
+    }
+
+    const smoothed = new Float64Array(count)
     let left = 0
     let sum = 0
-    let count = 0
+    let sumCount = 0
 
-    for (let index = 0; index < data.length; index++) {
-      const value = data[index][key]
+    for (let index = 0; index < count; index++) {
+      const value = values[index]
 
-      if (typeof value === 'number') {
+      if (!Number.isNaN(value)) {
         sum += value
-        count++
+        sumCount++
       }
 
       while (times[index] - times[left] >= windowMs) {
-        const leftValue = data[left][key]
+        const leftValue = values[left]
 
-        if (typeof leftValue === 'number') {
+        if (!Number.isNaN(leftValue)) {
           sum -= leftValue
-          count--
+          sumCount--
         }
 
         left++
       }
 
-      // Only smooth samples that actually carry a numeric value for this key.
-      if (typeof value === 'number' && count > 0) {
-        if (result[index] === data[index]) {
-          result[index] = {
-            ...data[index]
-          }
-        }
-
-        result[index][key] = sum / count
-      }
+      smoothed[index] = Number.isNaN(value) ? Number.NaN : sum / sumCount
     }
+
+    result[key] = smoothed
   }
 
   return result

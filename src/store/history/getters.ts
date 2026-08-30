@@ -37,13 +37,21 @@ export const getters = {
   },
 
   /**
+   * Returns all history, indexed by job id.
+   */
+  getHistoryByIdMap: (state, getters) => {
+    const history: HistoryItem[] = getters.getHistory
+
+    return new Map(history.map(job => [job.job_id, job]))
+  },
+
+  /**
    * Return a history item given a job id.
    */
   getHistoryById: (state, getters) => (jobId: string) => {
-    const history: HistoryItem[] = getters.getHistory
+    const historyByIdMap: Map<string, HistoryItem> = getters.getHistoryByIdMap
 
-    return history
-      .find(job => job.job_id === jobId)
+    return historyByIdMap.get(jobId)
   },
 
   /**

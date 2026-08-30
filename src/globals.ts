@@ -240,7 +240,8 @@ export const Globals = Object.freeze({
   CONSOLE_SEND_PREFIX: '$ ',
   CONSOLE_COMMAND_HISTORY: 20,
   CHART_HISTORY_RETENTION: 1200,
-  JOB_HISTORY_LOAD: 50,
+  CHART_SYSTEM_RETENTION: 600, // system / mcu / sensor charts, in seconds
+  JOB_HISTORY_LOAD: 100,
   KLIPPY_DISCONNECTED_REDIRECT: '/configuration',
   LOCAL_CARDSTATE_STORAGE_KEY: 'cardState', // collapsed or not
   LOCAL_CARDLAYOUT_STORAGE_KEY: 'cardLayout2', // Specific layout / enabled / disabled

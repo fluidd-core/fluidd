@@ -1,7 +1,10 @@
 import type { ActionTree } from 'vuex'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
-import type { ChartData, ChartSelectedLegends, ChartState } from './types'
+import type { ChartsDbDocument, ChartSelectedLegends, ChartState } from './types'
+import { buildThermalHistoryBuffer } from './thermal-history'
+import { moonrakerChartSamples } from './moonraker-history'
+import { chartBufferLastTime } from '@/util/chart-buffer'
 import type { RootState } from '../types'
 import { isEqual } from 'lodash-es'
 
@@ -20,82 +23,36 @@ export const actions = {
   /**
    * Loads stored server data for the past 20 minutes.
    */
-  async initTempStore ({ commit, rootGetters, rootState }, payload: Moonraker.DataStore.TemperatureStoreResponse) {
-    const now = new Date() // Set a base time to work out the temp data from.
-    // On a fresh boot of the host system, moonraker should give us enough data;
-    // however, it seems sometimes it does not. So - we should pad this out when
-    // we need to.
-    // Otherwise, for a system that has been running for a bit - we should expect
-    // enough data from moonraker to start with.
+  async initTempStore ({ commit, rootGetters }, payload: Moonraker.DataStore.TemperatureStoreResponse) {
+    const buffer = buildThermalHistoryBuffer(
+      payload,
+      rootGetters['printer/getChartableSensors'],
+      rootGetters['charts/getChartRetention'],
+      // Leave a gap so history doesn't collide with the first live sample.
+      Date.now() - 2000
+    )
 
-    // Note that some items come back with targets when they should not,
-    // so we have to account for this too.
-
-    // how many datasets to add. Moonraker should give us 20 minutes, in 1 second intervals.. but we only need 10 minutes.
-    const retention = rootGetters['charts/getChartRetention']
-    const targetsToAvoid = [
-      'temperature_probe',
-      'temperature_sensor'
-    ]
-
-    if (
-      payload &&
-      Object.keys(payload).length === 0
-    ) {
-      // Empty chart data
-      commit('setChartStore', [])
-      return
-    }
-
-    for (const originalKey in payload) { // each heater / temp fan
-      // If the dataset is less than what we need, then pad the beginning
-      // until we get to our intended count
-      if (targetsToAvoid.some(e => originalKey.startsWith(e))) {
-        delete payload[originalKey].targets
-      }
-
-      const keys: (keyof Moonraker.DataStore.TemperatureStoreEntry)[] = [
-        'temperatures', 'targets', 'powers', 'speeds'
-      ]
-
-      keys.forEach((k) => {
-        const arr = payload[originalKey][k]
-        if (arr && arr.length) {
-          if (arr.length < retention) {
-            const length = retention - arr.length
-            const lastValue = arr[0]
-            payload[originalKey][k] = [...Array.from({ length }, () => lastValue), ...arr]
-          } else {
-            payload[originalKey][k] = arr.splice(arr.length - retention)
-          }
-        }
-      })
-    }
-
-    const keys = Object.keys(payload)
-    const d: ChartData[] = []
-    for (let i = 0; i < retention; i++) {
-      const date = new Date(now.getTime() - (1000 * (retention - i)) - 2000)
-      const r: ChartData = {
-        date
-      }
-      keys.forEach(key => {
-        if (rootState.printer.printer[key]) {
-          r[key] = payload[key].temperatures[i]
-          if (payload[key].targets != null) r[`${key}#target`] = payload[key].targets[i]
-          if (payload[key].powers != null) r[`${key}#power`] = payload[key].powers[i]
-          if (payload[key].speeds != null) r[`${key}#speed`] = payload[key].speeds[i]
-        }
-      })
-      d.push(r)
-    }
-    commit('setChartStore', d)
+    commit('setThermalStore', buffer)
   },
 
   /**
-   * Init the chart state from db
+   * Adds Moonraker's process stats - a backlog on connect, one sample when live.
    */
-  initCharts ({ commit }, payload: Partial<ChartState>) {
+  async onMoonrakerStats ({ commit, state }, payload: Moonraker.ProcStats.MoonrakerStats | readonly Moonraker.ProcStats.MoonrakerStats[]) {
+    const stats = Array.isArray(payload)
+      ? payload
+      : [payload]
+
+    commit('setChartEntries', {
+      bucket: 'moonraker',
+      samples: moonrakerChartSamples(stats, chartBufferLastTime(state.moonraker) ?? -Infinity)
+    })
+  },
+
+  /**
+   * Init the chart state from db - only ever `selectedLegends`.
+   */
+  initCharts ({ commit }, payload: ChartsDbDocument) {
     commit('setInitCharts', payload)
   },
 

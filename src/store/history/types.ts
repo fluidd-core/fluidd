@@ -1,9 +1,10 @@
 import type { AppFileMeta } from '@/store/files/types.metadata'
 
 export interface HistoryState {
-  count: number;
   jobs: Readonly<Moonraker.History.Job>[];
   job_totals: Moonraker.History.JobTotals;
+  unresolvedJobIds: Set<string>;
+  allLoaded: boolean;
 }
 
 export interface HistoryItem extends Omit<Moonraker.History.Job, 'metadata'> {

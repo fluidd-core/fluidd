@@ -34,6 +34,7 @@
           hide-details="auto"
           :items="supportedLocales"
           :value="locale"
+          :loading="hasWait($waits.onLoadLanguage)"
           item-text="name"
           item-value="code"
           @change="setLocale"
@@ -654,7 +655,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
 
   async handleBackupSettings () {
     try {
-      const response = await SocketActions.serverDatabaseGetItem()
+      const response = await SocketActions.serverDatabaseGetItem(
+        undefined,
+        undefined,
+        { suppressError: true }
+      )
 
       const data = response.value
 
@@ -691,7 +696,12 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
           }
 
           for (const key in backupData.data) {
-            await SocketActions.serverDatabasePostItem(key, backupData.data[key])
+            await SocketActions.serverDatabasePostItem(
+              key,
+              backupData.data[key],
+              undefined,
+              { suppressError: true }
+            )
           }
 
           window.location.reload()
