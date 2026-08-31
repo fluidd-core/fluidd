@@ -156,6 +156,7 @@ import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataT
 import { consola } from 'consola'
 import type { DataTableHeader } from 'vuetify'
 import { useWaitStore } from '@/stores/wait'
+import { useAnalysisStore } from '@/stores/analysis'
 import type { KlipperSaveAndRestartAction } from '@/store/config/types'
 
 /**
@@ -899,7 +900,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
 
     for (const filename of filenames) {
-      SocketActions.serverAnalysisProcess(filename, undefined, true)
+      useAnalysisStore().process(filename, undefined, true)
     }
   }
 

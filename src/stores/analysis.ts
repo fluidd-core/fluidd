@@ -1,13 +1,12 @@
 import { defineStore } from 'pinia'
 import { SocketActions } from '@/api/socketActions'
-import type { ObjectWithRequest } from '@/plugins/socketClient'
 
 export const useAnalysisStore = defineStore('analysis', {
   actions: {
-    async onAnalysisProcess (payload: ObjectWithRequest<Moonraker.Analysis.ProcessResponse>) {
-      const { filename } = payload.__request__.params ?? {}
+    async process (filename: string, estimatorConfig?: string, force?: boolean) {
+      const { bypassed } = await SocketActions.serverAnalysisProcess(filename, estimatorConfig, force)
 
-      if (!payload.bypassed) {
+      if (!bypassed) {
         SocketActions.serverFilesMetadata(filename)
       }
     }

@@ -947,7 +947,6 @@ export const SocketActions = {
     return baseEmit<Moonraker.Analysis.ProcessResponse>(
       'server.analysis.process', {
         wait: `${Waits.onFileSystem}/gcodes/${filename}`,
-        pinia: 'analysis/onAnalysisProcess',
         ...options,
         params: {
           filename,

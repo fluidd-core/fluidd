@@ -3,6 +3,7 @@ import Vuex, { type StoreOptions } from 'vuex'
 import { consola } from 'consola'
 import type { RootActions, RootGetters, RootModules, RootMutations, RootState } from './types'
 import { resetPiniaStores } from '@/stores'
+import { useWaitStore } from '@/stores/wait'
 
 // Modules
 import { socket } from './socket'
@@ -65,39 +66,32 @@ export const storeOptions = {
   mutations: {},
   actions: {
     /**
-     * Resets all stores
+     * Resets all stores. `payload` names Vuex modules only; Pinia stores are
+     * reset in full when no payload is given, individually by their owner otherwise.
      */
-    async reset ({ dispatch }, payload: string[] | undefined) {
+    async reset ({ dispatch }, payload?: (keyof RootState)[]) {
       // Reset our color set.
       Vue.$colorset.forceResetAll()
 
-      const keys = payload || Object.keys(this.state)
+      if (!payload) {
+        resetPiniaStores()
+      }
 
-      const resetPiniaIds = resetPiniaStores(payload)
+      const keys = payload ?? Object.keys(this.state) as (keyof RootState)[]
 
-      const p: Promise<unknown>[] = []
-      keys.forEach((key) => {
-        if (resetPiniaIds.includes(key)) {
-          return
-        }
-        if (this.hasModule(key)) {
-          p.push(dispatch(key + '/reset'))
-        } else {
-          consola.warn(`[store] reset: "${key}" matched neither a Vuex nor a Pinia store`)
-        }
-      })
-      await Promise.all(p)
+      await Promise.all(keys.map(key => dispatch(`${key}/reset`)))
     },
 
     async resetKlippy ({ dispatch, commit }) {
       commit('socket/setAcceptNotifications', false)
 
+      useWaitStore().$reset()
+
       await Promise.all([
         dispatch('server/resetKlippy'),
         dispatch('charts/resetChartStore'),
         dispatch('reset', [
-          'printer',
-          'wait'
+          'printer'
         ])
       ])
     },

@@ -10,7 +10,7 @@ import Vue from 'vue'
 import i18n from '@/plugins/i18n'
 import router from './router'
 import store from './store'
-import pinia from './stores/index'
+import pinia from '@/stores'
 
 // 3rd party.
 import vuetify from './plugins/vuetify'
