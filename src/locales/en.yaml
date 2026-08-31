@@ -507,7 +507,6 @@ app:
         %{name} Driver
     msg:
       password_changed: Password changed
-      wrong_password: Oops, something went wrong. Is your password correct?
       bed_screws_adjust: >-
         Click <b>Adjusted</b> if a significant adjustment is necessary on the current
         screw; otherwise, click <b>Accept</b> to continue.
@@ -586,6 +585,9 @@ app:
         no_file_preview: >-
           %{name} cannot currently be previewed.
     table:
+      footer:
+        item_range: "%{pageStart}-%{pageStop} of %{itemsLength}"
+        item_range_loaded: "%{pageStart}-%{pageStop} of %{itemsLength} loaded"
       header:
         actions: Actions
         chamber_temp: Chamber temp
@@ -691,6 +693,9 @@ app:
       confirm: Are you sure? This will clear all history, and printer statistics
       confirm_jobs: Are you sure? This will clear all jobs.
       confirm_stats: Are you sure? This will clear all stats.
+    tooltip:
+      help: Only the most recent jobs are loaded on connect. Use Load all to
+        fetch the complete history.
   job_queue:
     msg:
       confirm: Are you sure? This will clear the entire printer queue
@@ -877,6 +882,7 @@ app:
       z_adjust_values: Z Adjust values
       date_format: Date format
       time_format: Time format
+      thermal_chart_smoothing: Thermal chart smoothing
       text_sort_order: Text sort order
       drag_and_drop_functionality_for_files_and_folders: Drag-and-drop
         functionality for files and folders
@@ -1168,6 +1174,21 @@ app:
         Filament tracking is inactive.
         To get started, please select a spool.
       not_connected: Spoolman server not available.
+      live_updates:
+        cors: >-
+          Live updates from Spoolman aren't working. Spoolman is blocking
+          Fluidd's browser origin - check your Spoolman configuration to
+          allow it.
+        mixed_content: >-
+          Live updates from Spoolman aren't working. Fluidd is served over
+          HTTPS but the Spoolman address uses HTTP, so the browser blocks the
+          direct connection.
+        unreachable: >-
+          Live updates from Spoolman aren't working. Fluidd's browser can't
+          reach the Spoolman server directly.
+        failed: >-
+          Live updates from Spoolman aren't working. The direct connection to
+          Spoolman failed for an unknown reason.
       info:
         howto: >-
           Show your spool's QR code to the camera.

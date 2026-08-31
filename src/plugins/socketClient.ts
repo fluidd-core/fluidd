@@ -4,6 +4,7 @@ import { camelCase, mergeWith } from 'lodash-es'
 import type { TypedStore } from '@/store'
 import { useWaitStore } from '@/stores/wait'
 import { usePiniaStore } from '@/stores/helpers/parseVuexConventions'
+import type { SocketError } from '@/store/socket/types'
 
 const LOG_PREFIX = '[WEBSOCKET]'
 
@@ -13,6 +14,28 @@ const EXPONENTIAL_BACKOFF = 1.4
 const FAST_NOTIFY_KEYS = [
   'motion_report'
 ] as const
+
+// A 5xx is never suppressible — a 503 drives klippy recovery in socket/onSocketError.
+const shouldSuppressError = (
+  error: SocketError,
+  suppressError: SuppressError | undefined
+): boolean => {
+  if (error.code >= 500) {
+    return false
+  }
+
+  if (typeof suppressError !== 'function') {
+    return suppressError === true
+  }
+
+  try {
+    return suppressError(error)
+  } catch (predicateError) {
+    consola.error(`${LOG_PREFIX} suppressError predicate threw`, predicateError)
+
+    return false
+  }
+}
 
 export class WebSocketClient {
   private connection: WebSocket | null = null
@@ -105,7 +128,9 @@ export class WebSocketClient {
 
             consola.debug(`${LOG_PREFIX} Response error:`, socketResponse.error)
 
-            this.store.typedDispatch('socket/onSocketError', socketResponse.error)
+            if (!shouldSuppressError(socketResponse.error, request?.suppressError)) {
+              this.store.typedDispatch('socket/onSocketError', socketResponse.error)
+            }
 
             return
           }
@@ -219,7 +244,7 @@ export class WebSocketClient {
   emit (method: string, options: NotifyOptions = {}) {
     return new Promise((resolve, reject) => {
       try {
-        const { wait, params, dispatch, commit, pinia } = options
+        const { wait, params, dispatch, commit, suppressError, pinia } = options
 
         // Any non-'disconnected' state is eligible to emit; physical readiness
         // is enforced by the readyState check below.
@@ -251,6 +276,7 @@ export class WebSocketClient {
             pinia,
             params,
             wait,
+            suppressError,
             onFulfilled: resolve,
             onRejected: reject
           }
@@ -311,12 +337,15 @@ interface SocketPluginOptions {
   store: TypedStore;
 }
 
+export type SuppressError = boolean | ((error: SocketError) => boolean)
+
 export interface NotifyOptions {
   params?: Record<string, any>;
   pinia?: string;
   dispatch?: string;
   commit?: string;
   wait?: string;
+  suppressError?: SuppressError;
 }
 
 interface Request {
@@ -326,6 +355,7 @@ interface Request {
   pinia?: string;
   params?: Record<string, any>;
   wait?: string;
+  suppressError?: SuppressError;
   onFulfilled: (value: unknown) => void;
   onRejected: (reason?: unknown) => void;
 }
@@ -361,11 +391,6 @@ interface SocketNotificationResponse extends SocketResponseBase {
 }
 
 type SocketResponse = SocketApiResponse | SocketApiErrorResponse | SocketNotificationResponse
-
-interface SocketError {
-  code: number;
-  message: string;
-}
 
 interface CachedParams {
   timestamp: number;

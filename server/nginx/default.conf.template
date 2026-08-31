@@ -30,4 +30,10 @@ server {
   location = /index.html {
     add_header Cache-Control "no-store, no-cache, must-revalidate";
   }
+
+  location = /healthz {
+    access_log off;
+    default_type text/plain;
+    return 200 "ok\n";
+  }
 }

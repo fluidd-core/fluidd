@@ -25,8 +25,8 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import type { DatasetComponentOption, EChartsOption } from 'echarts'
-import { get } from 'lodash-es'
+import type { EChartsOption } from 'echarts'
+import type { ChartDataSource } from '@/store/charts/types'
 
 export type AppInlineChartLabel = {
   text: string
@@ -36,8 +36,8 @@ export type AppInlineChartLabel = {
 
 @Component({})
 export default class AppInlineChart extends Vue {
-  @Prop({ type: Array, required: true })
-  readonly data!: Extract<DatasetComponentOption['source'], unknown[]>
+  @Prop({ type: Object, required: true })
+  readonly data!: ChartDataSource
 
   @Prop({ type: Object, required: true })
   readonly options!: EChartsOption
@@ -46,39 +46,23 @@ export default class AppInlineChart extends Vue {
   readonly labels!: AppInlineChartLabel[]
 
   get hasData (): boolean {
-    return (
-      Array.isArray(this.data) &&
-      this.data.length > 0
-    )
-  }
-
-  isEmpty (value: unknown) {
-    return (
-      value == null ||
-      value === '' ||
-      (
-        Array.isArray(value) &&
-        value.length === 0
-      )
-    )
+    return this.data.date.length > 0
   }
 
   get items () {
-    const item = this.data[this.data.length - 1]
+    const lastIndex = this.data.date.length - 1
 
-    return this.labels.map(label => {
-      const value = get(item, label.value)
-      const formattedValue = typeof value === 'number' && value !== 0
-        ? value.toFixed(2)
-        : value
+    return this.labels
+      .map(label => {
+        const value = this.data[label.value]?.[lastIndex]
 
-      return {
-        label,
-        value: this.isEmpty(value)
-          ? '--'
-          : `${formattedValue}${label.suffix ?? ''}`
-      }
-    })
+        return {
+          label,
+          value: (value == null || Number.isNaN(value))
+            ? '--'
+            : `${value !== 0 ? value.toFixed(2) : value}${label.suffix ?? ''}`
+        }
+      })
   }
 }
 </script>

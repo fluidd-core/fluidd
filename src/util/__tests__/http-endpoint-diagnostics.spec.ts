@@ -66,6 +66,18 @@ describe('diagnoseHttpEndpoint', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2)
   })
 
+  it('probes a custom path when probePath is provided', async () => {
+    setProtocol('http:')
+
+    const fetchMock = vi.fn().mockResolvedValue({ status: 200 })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const result = await diagnoseHttpEndpoint('http://spoolman.local/', { probePath: 'api/v1/info' })
+
+    expect(result).toEqual({ kind: 'reachable', status: 200 })
+    expect(fetchMock.mock.calls[0][0]).toMatch(/^http:\/\/spoolman\.local\/api\/v1\/info\?t=\d+$/)
+  })
+
   it('returns cancelled when the signal aborts before the cors fetch settles', async () => {
     setProtocol('http:')
 

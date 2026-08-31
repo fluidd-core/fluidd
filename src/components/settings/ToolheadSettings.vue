@@ -726,12 +726,13 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   handleReset () {
-    const { instanceName, chartVisible, hideTempWaits }: GeneralConfig = this.$typedState.config.uiSettings.general
+    const { instanceName, chartVisible, chartSmoothingWindow, hideTempWaits }: GeneralConfig = this.$typedState.config.uiSettings.general
 
     const value: GeneralConfig = {
       ...defaultState().uiSettings.general,
       instanceName,
       chartVisible,
+      chartSmoothingWindow,
       hideTempWaits
     }
 

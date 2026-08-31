@@ -26,19 +26,6 @@ export const mutations = {
       state.jobs = payload.jobs
         .map(job => Object.freeze(job))
     }
-    if (payload.count != null) {
-      state.count = payload.count
-    }
-  },
-
-  /**
-   * Adds a history item.
-   */
-  setAddHistory (state, payload: Moonraker.History.Job) {
-    if (payload) {
-      state.jobs.push(Object.freeze(payload))
-      state.count++
-    }
   },
 
   /**
@@ -47,17 +34,24 @@ export const mutations = {
   setUpdateHistory (state, payload: Moonraker.History.Job) {
     if (payload) {
       const i = state.jobs.findIndex(job => job.job_id === payload.job_id)
+
       if (i >= 0) {
         Vue.set(state.jobs, i, Object.freeze(payload))
+      } else {
+        state.jobs.push(Object.freeze(payload))
       }
+
+      state.unresolvedJobIds.delete(payload.job_id)
     }
   },
 
   setClearHistoryThumbnails (state, payload: string) {
     if (payload) {
       const i = state.jobs.findIndex(job => job.job_id === payload)
+
       if (i >= 0) {
         const job = state.jobs[i]
+
         Vue.set(state.jobs, i, Object.freeze({
           ...job,
           metadata: {
@@ -69,12 +63,37 @@ export const mutations = {
     }
   },
 
-  setDeleteJob (state, payload: string[]) {
+  setDeleteJobs (state, payload: string[]) {
     if (payload) {
-      payload.forEach((job_id) => {
-        const i = state.jobs.findIndex(job => job.job_id === job_id)
-        if (i >= 0) state.jobs.splice(i, 1)
-      })
+      for (const jobId of payload) {
+        const i = state.jobs.findIndex(job => job.job_id === jobId)
+
+        if (i >= 0) {
+          state.jobs.splice(i, 1)
+        }
+
+        state.unresolvedJobIds.add(jobId)
+      }
     }
+  },
+
+  setAddUnresolvedJobIds (state, payload: string[]) {
+    for (const jobId of payload) {
+      state.unresolvedJobIds.add(jobId)
+    }
+  },
+
+  setRemoveUnresolvedJobIds (state, payload: string[]) {
+    for (const jobId of payload) {
+      state.unresolvedJobIds.delete(jobId)
+    }
+  },
+
+  setClearUnresolvedJobIds (state) {
+    state.unresolvedJobIds.clear()
+  },
+
+  setAllLoaded (state, payload: boolean) {
+    state.allLoaded = payload
   }
 } satisfies MutationTree<HistoryState>

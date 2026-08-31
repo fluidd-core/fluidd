@@ -369,7 +369,6 @@ app:
       time_in_days: Idő napokban
     msg:
       password_changed: A jelszó megváltozott
-      wrong_password: Hoppá! Valami rosszul sült el. Ez a jelszavad?
       bed_screws_adjust: >-
         Kattints a <b>Adjusted</b> ha jelentős csavar módosításra van szükség
         ellenkező esetben kattints a <b>Accept</b> gombra a folytatáshoz.

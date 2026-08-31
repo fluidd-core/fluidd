@@ -83,7 +83,6 @@
     />
 
     <file-editor-dialog
-      v-if="fileEditorDialogState.open"
       v-model="fileEditorDialogState.open"
       :contents="fileEditorDialogState.contents"
       :filename="fileEditorDialogState.filename"
@@ -98,7 +97,6 @@
     <!-- A generic dialog to define the name of a file, or folder.
          Used to create, or rename a file or folder. -->
     <file-name-dialog
-      v-if="fileNameDialogState.open"
       v-model="fileNameDialogState.open"
       :name="fileNameDialogState.value"
       :title="fileNameDialogState.title"
@@ -115,7 +113,6 @@
     />
 
     <file-preview-dialog
-      v-if="filePreviewState.open"
       v-model="filePreviewState.open"
       :file="filePreviewState.file"
       :filename="filePreviewState.filename"
@@ -130,7 +127,6 @@
     />
 
     <file-system-go-to-file-dialog
-      v-if="goToFileDialogOpen"
       v-model="goToFileDialogOpen"
       :root="currentRoot"
       @path-change="loadFiles"

@@ -1,56 +1,61 @@
-name: RELEASE
+name: Release
 
 on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+
+concurrency:
+  group: release-${{ github.ref }}
+
+permissions: {}
 
 jobs:
   build:
     name: Build
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    uses: ./.github/workflows/_build.yml
+    permissions:
+      contents: read
+
+  publish-docker:
+    name: Publish
+    needs: build
+    uses: ./.github/workflows/_publish-docker.yml
+    permissions:
+      id-token: write
+      contents: read
+      attestations: write
+      packages: write
+      artifact-metadata: write
+
+  release:
+    name: Release
+    needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       id-token: write
       contents: write
       attestations: write
+      artifact-metadata: write
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@v7
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
         with:
-          run_install: false
+          persist-credentials: false
 
-      - name: Setup Node
-        uses: actions/setup-node@v7
+      - name: Download fluidd dist
+        uses: actions/download-artifact@v8
         with:
-          node-version: 24
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: |
-          pnpm i --frozen-lockfile
-
-      - name: Run lint
-        run: |
-          pnpm run lint --no-fix
-
-      - name: Run type check
-        run: |
-          pnpm run type-check
-
-      - name: Run tests
-        run: |
-          pnpm run test:unit
-
-      - name: Run circular references check
-        run: |
-          pnpm run circular-check
-
-      - name: Build
-        run: |
-          pnpm run build
+          name: fluidd-${{ github.sha }}
+          path: ./dist
 
       - name: Create Artifact
         run: |
@@ -65,10 +70,10 @@ jobs:
       - name: Get version from tag
         id: tag_name
         run: |
-          echo "current_version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          echo "current_version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
 
       - name: Read ChangeLog
-        uses: mindsers/changelog-reader-action@v2.2.3
+        uses: mindsers/changelog-reader-action@1faaf50aa09d5793d9a100819973df801febfb31 # v2.4.0
         id: changelog
         with:
           validation_depth: 1
@@ -76,76 +81,23 @@ jobs:
           path: ./CHANGELOG.md
 
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: |
-            ${{ steps.changelog.outputs.changes }}
-          draft: true
-          prerelease: false
-
-      - name: Upload Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./fluidd.zip
-          asset_name: fluidd.zip
-          asset_content_type: application/zip
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: fluidd-${{ github.sha }}.zip
-          path: ./dist
-
-      - name: Publish Release
-        uses: eregon/publish-release@v1.0.6
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_id: ${{ steps.create_release.outputs.id }}
+          name: ${{ steps.tag_name.outputs.current_version }}
+          body: ${{ steps.changelog.outputs.changes }}
+          files: ./fluidd.zip
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-rc') }}
 
   publish-web:
     name: Deploy to Host
     needs: build
     if: ${{ github.repository == 'fluidd-core/fluidd' }}
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/_publish-web.yml
+    secrets:
+      bucket: ${{ secrets.S3_BUCKET_NAME }}
+      distribution-id: ${{ secrets.CF_DISTRIBUTION_ID }}
+      aws-role: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
     permissions:
       id-token: write
       contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Download fluidd.zip
-        uses: actions/download-artifact@v8
-        with:
-          name: fluidd-${{ github.sha }}.zip
-          path: ./dist
-
-      - name: Prepare Deploy
-        run: |
-          cp ./server/config.json ./dist/config.json
-
-      - uses: aws-actions/configure-aws-credentials@v6
-        with:
-          aws-region: us-east-1
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-
-      - name: Deploy to Host
-        uses: reggionick/s3-deploy@v4
-        with:
-          folder: dist
-          bucket: ${{ secrets.S3_BUCKET_NAME }}
-          bucket-region: us-east-1
-          dist-id: ${{ secrets.CF_DISTRIBUTION_ID }}
-          delete-removed: true
-          no-cache: true
-          private: true

@@ -1,6 +1,7 @@
 <template>
   <collapsable-card
     :title="$t('app.general.title.history')"
+    :help-tooltip="$t('app.history.tooltip.help')"
     icon="$history"
   >
     <job-history />
@@ -10,6 +11,7 @@
         <app-btn
           small
           class="ms-1 my-1"
+          :disabled="allLoaded"
           @click="handleLoadAll"
         >
           <v-icon
@@ -51,6 +53,10 @@ import { SocketActions } from '@/api/socketActions'
 export default class PrinterHistoryCard extends Vue {
   @Prop({ type: Boolean })
   readonly narrow?: boolean
+
+  get allLoaded (): boolean {
+    return this.$typedState.history.allLoaded
+  }
 
   async handleRemoveAll () {
     const result = await this.$confirm(

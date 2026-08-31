@@ -322,7 +322,6 @@ app:
       device: Dispositivo
     msg:
       password_changed: Senha trocada
-      wrong_password: Oops, algo errado! Sua senha esta correta?
       welcome_back: Bem-vindo de volta.<br>Faça login abaixo para manter contato
         com sua impressora.
       offline_ready: Fluidd está pronto para trabalhar offline.

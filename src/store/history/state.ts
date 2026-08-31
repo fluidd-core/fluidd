@@ -2,8 +2,9 @@ import type { HistoryState } from './types'
 
 export const defaultState = (): HistoryState => {
   return {
-    count: 0,
     jobs: [],
+    unresolvedJobIds: new Set(),
+    allLoaded: false,
     job_totals: {
       total_jobs: 0,
       total_time: 0,
