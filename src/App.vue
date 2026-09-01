@@ -433,12 +433,13 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
             : pathWithRoot.substring(root.length + 1)
 
           const wait = `${this.$waits.onFileSystem}/${pathWithRoot}/`
+          const waitStore = useWaitStore()
 
-          useWaitStore().addWait(wait)
+          waitStore.addWait(wait)
 
           await this.uploadFiles(files, path, root, false)
 
-          useWaitStore().removeWait(wait)
+          waitStore.removeWait(wait)
         }
       }
     }

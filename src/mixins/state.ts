@@ -7,14 +7,6 @@ import { useWaitStore } from '@/stores/wait'
 
 @Component
 export default class StateMixin extends Vue {
-  private _waitStore?: ReturnType<typeof useWaitStore>
-
-  private get waitStore () {
-    this._waitStore ??= useWaitStore()
-
-    return this._waitStore
-  }
-
   get socketInitializing (): boolean {
     return this.$typedGetters['socket/getIsInitializing']
   }
@@ -101,21 +93,21 @@ export default class StateMixin extends Vue {
    * Supports a single string or a list of.
    */
   hasWait (wait: string | string[]): boolean {
-    return this.waitStore.hasWait(wait)
+    return useWaitStore().hasWait(wait)
   }
 
   /**
    * Indicates if we have any waits.
    */
   get hasWaits (): boolean {
-    return this.waitStore.hasWaits
+    return useWaitStore().hasWaits
   }
 
   /**
    * Indicates if we have any waits prefixed by.
    */
   hasWaitsBy (prefix: string): boolean {
-    return this.waitStore.hasWaitsBy(prefix)
+    return useWaitStore().hasWaitsBy(prefix)
   }
 
   /**

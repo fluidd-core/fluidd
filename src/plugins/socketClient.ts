@@ -44,16 +44,9 @@ export class WebSocketClient {
   private cache: CachedParams | null = null
   private retryCount = 0
   private reconnectTimeout: ReturnType<typeof setTimeout> | null = null
-  private _waitStore: ReturnType<typeof useWaitStore> | null = null
 
   constructor (options: SocketPluginOptions) {
     this.store = options.store
-  }
-
-  private get waitStore () {
-    this._waitStore ??= useWaitStore()
-
-    return this._waitStore
   }
 
   close () {
@@ -113,7 +106,7 @@ export class WebSocketClient {
 
           // Remove a wait if defined.
           if (request?.wait?.length) {
-            this.waitStore.removeWait(request.wait)
+            useWaitStore().removeWait(request.wait)
           }
 
           if ('error' in socketResponse) { // Is it in error?
@@ -277,7 +270,7 @@ export class WebSocketClient {
           }
 
           if (wait) {
-            this.waitStore.addWait(wait)
+            useWaitStore().addWait(wait)
           }
 
           this.requests.set(id, request)
