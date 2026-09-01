@@ -901,6 +901,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     for (const filename of filenames) {
       useAnalysisStore().process(filename, undefined, true)
+        .catch(error => consola.error('[FileSystem] time analysis', error))
     }
   }
 
