@@ -83,6 +83,60 @@ auto_append = [
   "includes/glossary.md"
 ]
 
+[project.plugins.redirects.redirect_maps]
+# Installation -> Getting Started
+"installation/index.md" = "getting-started.md"
+"installation/kiauh.md" = "getting-started.md#kiauh"
+"installation/docker.md" = "getting-started.md#docker"
+"installation/manual.md" = "getting-started.md#manual-installation"
+"installation/fluiddpi.md" = "getting-started.md#fluiddpi"
+
+# Configuration
+"configuration/initial_setup.md" = "configuration.md#initial-setup"
+"configuration/required.md" = "configuration.md#initial-setup"
+"configuration/moonraker.md" = "configuration.md#moonraker"
+"configuration/moonraker_conf.md" = "configuration.md#example-configuration"
+"configuration/multiple_printers.md" = "configuration.md#multiple-printers"
+"configuration/fluidd_xyz.md" = "getting-started.md#fluiddxyz"
+"configuration/obico_for_remote_access.md" = "features/third-party-integrations.md#obico"
+"configuration/octoeverywhere_free_remote_access.md" = "features/third-party-integrations.md#octoeverywhere"
+
+# Customize
+"customize/layout.md" = "customize.md#application-layout"
+"customize/themes.md" = "customize.md#themes"
+"customize/hide.md" = "customize.md#hiding-components"
+
+# Top-level sections that moved under Features
+"authorization/index.md" = "features/authorization.md"
+"updates/index.md" = "features/updates.md"
+"updates/automated.md" = "features/updates.md#automated-updates"
+"updates/manual.md" = "features/updates.md#manual-updates"
+
+# Features -> Printing
+"features/gcode-viewer.md" = "features/printing.md#g-code-viewer"
+"features/bed_mesh.md" = "features/printing.md#bed-mesh"
+"features/print_history.md" = "features/printing.md#print-history"
+"features/thumbnails.md" = "features/printing.md#thumbnails"
+
+# Features -> Thermals
+"features/chart.md" = "features/thermals.md#chart"
+"features/presets.md" = "features/thermals.md#presets"
+"features/sensors.md" = "features/thermals.md#sensors"
+
+# Features -> Multi-Material
+"features/multiple_extruders.md" = "features/multi-material.md#multiple-extruders"
+"features/spoolman.md" = "features/multi-material.md#spool-management-spoolman"
+
+# Features -> renamed pages
+"features/printers.md" = "features/multiple-printers.md"
+"features/multiple_printers.md" = "features/multiple-printers.md"
+"features/system.md" = "features/system-and-notifications.md#system"
+"features/notifications.md" = "features/system-and-notifications.md#notifications"
+"features/integrations.md" = "features/third-party-integrations.md"
+
+# Development
+"development/localization.md" = "development.md#localization"
+
 [[project.extra.social]]
 icon = "fontawesome/brands/github"
 link = "https://github.com/fluidd-core/fluidd"
