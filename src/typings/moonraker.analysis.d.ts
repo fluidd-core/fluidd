@@ -1,12 +1,4 @@
 declare namespace Moonraker.Analysis {
-  export interface StatusResponse {
-    estimator_executable: string;
-    estimator_ready: boolean;
-    estimator_version: string;
-    estimator_config_exists: boolean;
-    using_default_config: boolean;
-  }
-
   export interface EstimateResponse {
     total_time: number;
     total_distance: number;

@@ -11,15 +11,15 @@ import type { TokenKeys } from '../config/types'
 import type { HistoryItem } from '../history/types'
 import i18n from '@/plugins/i18n'
 import isSocketError from '@/util/is-socket-error'
+import { useWaitStore } from '@/stores/wait'
 
-const MODULES_TO_RESET_ON_DROP = [
+const MODULES_TO_RESET_ON_DROP: (keyof RootState)[] = [
   'server',
   'power',
   'webcams',
   'jobQueue',
-  'wait',
   'gcodePreview'
-] as const
+]
 
 let retryTimeout: ReturnType<typeof setTimeout>
 
@@ -165,6 +165,8 @@ export const actions = {
         commit('setConnectionId', null)
 
         if (prev === 'ready') {
+          useWaitStore().$reset()
+
           await Promise.all([
             dispatch('charts/resetChartStore', undefined, { root: true }),
             dispatch('reset', MODULES_TO_RESET_ON_DROP, { root: true })

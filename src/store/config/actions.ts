@@ -8,6 +8,7 @@ import { Waits } from '@/globals'
 import type { FileFilterType } from '../files/types'
 import { TinyColor } from '@ctrl/tinycolor'
 import dbKey from '@/util/db-key'
+import { useWaitStore } from '@/stores/wait'
 
 export const actions = {
   /**
@@ -54,7 +55,7 @@ export const actions = {
    * Sets, and saves a locale change.
    */
   async onLocaleChange ({ dispatch, state }, payload: string) {
-    dispatch('wait/addWait', Waits.onLoadLanguage, { root: true })
+    useWaitStore().addWait(Waits.onLoadLanguage)
 
     try {
       const locale = await loadLocaleMessagesAsync(
@@ -75,7 +76,7 @@ export const actions = {
         })
       }
     } finally {
-      dispatch('wait/removeWait', Waits.onLoadLanguage, { root: true })
+      useWaitStore().removeWait(Waits.onLoadLanguage)
     }
   },
 

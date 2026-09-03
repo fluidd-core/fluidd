@@ -101,6 +101,7 @@ import FileSystemUploadDialog from '@/components/widgets/filesystem/FileSystemUp
 import SpoolSelectionDialog from '@/components/widgets/spoolman/SpoolSelectionDialog.vue'
 import type { FlashMessage } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
+import { useWaitStore } from '@/stores/wait'
 import type { ThemeConfig } from '@/store/config/types'
 import ActionCommandPromptDialog from '@/components/common/ActionCommandPromptDialog.vue'
 import KeyboardShortcutsDialog from '@/components/common/KeyboardShortcutsDialog.vue'
@@ -432,12 +433,13 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
             : pathWithRoot.substring(root.length + 1)
 
           const wait = `${this.$waits.onFileSystem}/${pathWithRoot}/`
+          const waitStore = useWaitStore()
 
-          this.$typedDispatch('wait/addWait', wait)
+          waitStore.addWait(wait)
 
           await this.uploadFiles(files, path, root, false)
 
-          this.$typedDispatch('wait/removeWait', wait)
+          waitStore.removeWait(wait)
         }
       }
     }

@@ -155,6 +155,8 @@ import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-sy
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer, setFileDataTransferDataInDataTransfer } from '@/util/file-data-transfer'
 import { consola } from 'consola'
 import type { DataTableHeader } from 'vuetify'
+import { useWaitStore } from '@/stores/wait'
+import { useAnalysisStore } from '@/stores/analysis'
 import type { KlipperSaveAndRestartAction } from '@/store/config/types'
 
 /**
@@ -897,8 +899,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       .filter((item): item is AppFileWithMeta => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
       .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
 
+    const analysisStore = useAnalysisStore()
+
     for (const filename of filenames) {
-      SocketActions.serverAnalysisProcess(filename, undefined, true)
+      analysisStore.process(filename, undefined, true)
+        .catch(error => consola.error('[FileSystem] time analysis', error))
     }
   }
 
@@ -1137,12 +1142,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   async handleUpload (files: FileList | File[] | FileWithPath[], print: boolean) {
     const wait = `${this.$waits.onFileSystem}/${this.currentPath}/`
+    const waitStore = useWaitStore()
 
-    this.$typedDispatch('wait/addWait', wait)
+    waitStore.addWait(wait)
 
     await this.uploadFiles(files, this.visiblePath, this.currentRoot, print)
 
-    this.$typedDispatch('wait/removeWait', wait)
+    waitStore.removeWait(wait)
   }
 
   handleAddDir (name: string) {
