@@ -1,11 +1,9 @@
 import type { AfcState } from './types'
 
-export const defaultState = (): AfcState => {
+export const state = (): AfcState => {
   return {
     dialog: {
       show: false
     }
   }
 }
-
-export const state = defaultState()

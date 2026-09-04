@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import type { FilesState, MoonrakerPathContent, FilePaths, FileUpload, FileDownload } from './types'
-import { defaultState } from './state'
+import { state as defaultState } from './state'
 import { Globals } from '@/globals'
 
 export const mutations = {

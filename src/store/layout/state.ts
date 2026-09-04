@@ -9,7 +9,7 @@ import type { DiagnosticsCardContainer } from '@/store/diagnostics/types'
  * - If card is collapsed or not.
  * - If card is enabled or not.
  */
-export const defaultState = (): LayoutState => {
+export const state = (): LayoutState => {
   return {
     layouts: {
       dashboard: {
@@ -79,5 +79,3 @@ export const defaultState = (): LayoutState => {
     }
   }
 }
-
-export const state = defaultState()

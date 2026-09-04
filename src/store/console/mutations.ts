@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import type { MutationTree } from 'vuex'
-import { defaultState } from './state'
+import { state as defaultState } from './state'
 import { Globals } from '@/globals'
 import type { ConsoleEntry, ConsoleFilter, ConsoleState, PromptDialogItemButton, PromptDialogItem } from './types'
 import { escapeRegExp } from 'lodash-es'

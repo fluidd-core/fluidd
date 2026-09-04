@@ -4,7 +4,7 @@ import type { PrinterState } from './types'
  * Maintains the state of the printer, by way of moonraker notifications.
  * We should never directly modify data here.
  */
-export const defaultState = (): PrinterState => {
+export const state = (): PrinterState => {
   return {
     info: null,
     manualProbeDialogOpen: false,
@@ -60,5 +60,3 @@ export const defaultState = (): PrinterState => {
     }
   }
 }
-
-export const state = defaultState()

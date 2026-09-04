@@ -1,6 +1,6 @@
 import type { MeshState } from './types'
 
-export const defaultState = (): MeshState => {
+export const state = (): MeshState => {
   return {
     range: 0,
     wireframe: false,
@@ -10,5 +10,3 @@ export const defaultState = (): MeshState => {
     matrix: 'mesh_matrix'
   }
 }
-
-export const state = defaultState()

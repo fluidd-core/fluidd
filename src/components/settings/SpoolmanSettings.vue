@@ -127,7 +127,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { defaultState } from '@/store/config/state'
+import { state as defaultState } from '@/store/config/state'
 import StateMixin from '@/mixins/state'
 import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
 

@@ -1,11 +1,9 @@
 import type { AuthState } from './types'
 
-export const defaultState = (): AuthState => {
+export const state = (): AuthState => {
   return {
     currentUser: null,
     users: [],
     apiKey: ''
   }
 }
-
-export const state = defaultState()

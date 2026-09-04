@@ -159,7 +159,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
 import MetricsCollectorConfig from './MetricsCollectorConfig.vue'
-import { defaultState } from '@/store/layout/state'
+import { state as defaultState } from '@/store/layout/state'
 
 @Component({
   components: {

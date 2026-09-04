@@ -1,6 +1,6 @@
 import { markRaw } from 'vue'
 import type { MutationTree } from 'vuex'
-import { defaultState } from './state'
+import { state as defaultState } from './state'
 import type {
   SpoolmanState,
   SpoolSelectionDialogState

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import { defaultState as getDefaultState } from './state'
+import { state as defaultState } from './state'
 import type { LayoutConfig, LayoutState, LayoutContainer } from './types'
 import type { DiagnosticsCardContainer } from '../diagnostics/types'
 
@@ -9,7 +9,7 @@ export const mutations = {
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, getDefaultState())
+    Object.assign(state, defaultState())
   },
 
   /**
@@ -20,10 +20,10 @@ export const mutations = {
    */
   setInitLayout (state, payload: LayoutState) {
     if (payload && Object.keys(payload).length > 0) {
-      const defaultState = getDefaultState()
+      const defaultLayouts = defaultState().layouts
 
       // add new layouts
-      for (const [layoutKey, defaultLayout] of Object.entries(defaultState.layouts)) {
+      for (const [layoutKey, defaultLayout] of Object.entries(defaultLayouts)) {
         if (!payload.layouts[layoutKey]) {
           payload.layouts[layoutKey] = defaultLayout
         }
@@ -43,7 +43,7 @@ export const mutations = {
         const migratableLayoutKey = migratableLayoutKeys.find(key => layoutKey.startsWith(key))
 
         if (migratableLayoutKey) {
-          const defaultLayout = defaultState.layouts[migratableLayoutKey]
+          const defaultLayout = defaultLayouts[migratableLayoutKey]
           const defaultComponentIds = Object.values(defaultLayout).flat().map(card => card.id)
           const currentComponentIds = Object.values(currentLayout).flat().map(card => card.id)
 

@@ -1,5 +1,5 @@
 import type { MutationTree } from 'vuex'
-import { defaultState } from './state'
+import { state as defaultState } from './state'
 import type { TimelapseState } from './types'
 
 export const mutations = {

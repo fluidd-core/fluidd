@@ -4,7 +4,7 @@ import type { ChartState } from './types'
 
 // Fixed-shape buckets pre-create columns so their dimension names exist from
 // the first sample; thermal and diagnostics discover theirs at runtime.
-export const defaultState = (): ChartState => {
+export const state = (): ChartState => {
   return {
     ready: false,
     thermal: createChartBuffer(Globals.CHART_HISTORY_RETENTION),
@@ -17,5 +17,3 @@ export const defaultState = (): ChartState => {
     selectedLegends: {}
   }
 }
-
-export const state = defaultState()

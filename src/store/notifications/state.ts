@@ -1,6 +1,6 @@
 import type { NotificationsState } from './types'
 
-export const defaultState = (): NotificationsState => {
+export const state = (): NotificationsState => {
   return {
     notifications: []
 
@@ -23,5 +23,3 @@ export const defaultState = (): NotificationsState => {
 
   }
 }
-
-export const state = defaultState()

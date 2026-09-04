@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import { defaultState } from './state'
+import { state as defaultState } from './state'
 import type { NotificationsState, AppNotification } from './types'
 
 export const mutations = {

@@ -1,6 +1,6 @@
 import type { SpoolmanState } from './types'
 
-export const defaultState = (): SpoolmanState => {
+export const state = (): SpoolmanState => {
   return {
     info: null,
     spools: [],
@@ -14,5 +14,3 @@ export const defaultState = (): SpoolmanState => {
     socketDiagnostic: null
   }
 }
-
-export const state = defaultState()

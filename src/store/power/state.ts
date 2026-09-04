@@ -1,9 +1,7 @@
 import type { DevicePowerState } from './types'
 
-export const defaultState = (): DevicePowerState => {
+export const state = (): DevicePowerState => {
   return {
     devices: []
   }
 }
-
-export const state = defaultState()

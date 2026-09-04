@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import type { PrinterState } from './types'
-import { defaultState } from './state'
+import { state as defaultState } from './state'
 
 export const mutations = {
   /**

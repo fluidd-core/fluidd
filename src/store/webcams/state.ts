@@ -1,10 +1,8 @@
 import type { WebcamsState } from './types'
 
-export const defaultState = (): WebcamsState => {
+export const state = (): WebcamsState => {
   return {
     webcams: [],
     activeWebcam: 'all'
   }
 }
-
-export const state = defaultState()

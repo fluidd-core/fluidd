@@ -74,7 +74,7 @@ import type { DiagnosticsCardConfig, DiagnosticsCardContainer } from '@/store/di
 import DiagnosticsCard from '@/components/widgets/diagnostics/DiagnosticsCard.vue'
 import DiagnosticsCardConfigDialog from '@/components/widgets/diagnostics/DiagnosticsCardConfigDialog.vue'
 import type { LayoutConfig } from '@/store/layout/types'
-import { defaultState } from '@/store/layout/state'
+import { state as defaultState } from '@/store/layout/state'
 import type Sortable from 'sortablejs'
 
 @Component({

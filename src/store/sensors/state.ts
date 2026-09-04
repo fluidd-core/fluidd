@@ -1,10 +1,8 @@
 import type { MoonrakerSensorsState } from './types'
 
-export const defaultState = (): MoonrakerSensorsState => {
+export const state = (): MoonrakerSensorsState => {
   return {
     sensors: {},
     expanded: []
   }
 }
-
-export const state = defaultState()

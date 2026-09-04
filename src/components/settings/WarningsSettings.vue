@@ -50,7 +50,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { defaultState } from '@/store/config/state'
+import { state as defaultState } from '@/store/config/state'
 
 @Component({})
 export default class WarningsSettings extends Vue {

@@ -1,9 +1,7 @@
 import type { WaitState } from './types'
 
-export const defaultState = (): WaitState => {
+export const state = (): WaitState => {
   return {
     waits: []
   }
 }
-
-export const state = defaultState()
