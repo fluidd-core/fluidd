@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import type { PrinterState } from './types'
-import { defaultState } from './state'
+import { createState } from './state'
 
 export const mutations = {
   /**
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   setManualProbeDialogOpen (state, payload: boolean) {

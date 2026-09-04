@@ -1,6 +1,6 @@
 import { markRaw } from 'vue'
 import type { MutationTree } from 'vuex'
-import { defaultState } from './state'
+import { createState } from './state'
 import type {
   SpoolmanState,
   SpoolSelectionDialogState
@@ -13,7 +13,7 @@ export const mutations = {
    */
   setReset (state) {
     state.socket?.close()
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   setActiveSpool (state, payload: number) {

@@ -74,7 +74,7 @@ import type { DiagnosticsCardConfig, DiagnosticsCardContainer } from '@/store/di
 import DiagnosticsCard from '@/components/widgets/diagnostics/DiagnosticsCard.vue'
 import DiagnosticsCardConfigDialog from '@/components/widgets/diagnostics/DiagnosticsCardConfigDialog.vue'
 import type { LayoutConfig } from '@/store/layout/types'
-import { defaultState } from '@/store/layout/state'
+import { createDiagnosticsCardState } from '@/store/layout/state'
 import type Sortable from 'sortablejs'
 
 @Component({
@@ -96,9 +96,9 @@ export default class Diagnostics extends Mixins(StateMixin) {
   }
 
   handleAddCard () {
-    const clonedDefaultCard = JSON.parse(JSON.stringify(defaultState().layouts.diagnostics.container1[0])) as DiagnosticsCardConfig
-    clonedDefaultCard.id = ''
-    this.dialogState.card = clonedDefaultCard
+    const defaultCard = createDiagnosticsCardState()
+    defaultCard.id = ''
+    this.dialogState.card = defaultCard
     this.dialogState.active = true
   }
 

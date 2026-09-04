@@ -1,6 +1,6 @@
 import type { ConsoleState } from './types'
 
-export const defaultState = (): ConsoleState => {
+export const createState = (): ConsoleState => {
   return {
     consoleCommand: '',
     consoleSearch: '',
@@ -19,5 +19,3 @@ export const defaultState = (): ConsoleState => {
     consoleFiltersRegexp: []
   }
 }
-
-export const state = defaultState()

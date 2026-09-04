@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import { defaultState } from './state'
+import { createState } from './state'
 import type { NotificationsState, AppNotification } from './types'
 
 export const mutations = {
@@ -8,7 +8,7 @@ export const mutations = {
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   setPushNotification (state, n: AppNotification) {

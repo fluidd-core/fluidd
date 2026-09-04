@@ -1,11 +1,9 @@
 import type { MmuState } from './types'
 
-export const defaultState = (): MmuState => {
+export const createState = (): MmuState => {
   return {
     dialog: {
       show: false
     }
   }
 }
-
-export const state = defaultState()

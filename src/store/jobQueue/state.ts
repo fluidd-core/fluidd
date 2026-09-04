@@ -1,10 +1,8 @@
 import type { JobQueueState } from './types'
 
-export const defaultState = (): JobQueueState => {
+export const createState = (): JobQueueState => {
   return {
     queueState: 'paused',
     queuedJobs: []
   }
 }
-
-export const state = defaultState()

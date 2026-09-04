@@ -1,6 +1,46 @@
 import type { LayoutState } from './types'
 import { v4 as uuidv4 } from 'uuid'
-import type { DiagnosticsCardContainer } from '@/store/diagnostics/types'
+import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
+
+export const createDiagnosticsCardState = (): DiagnosticsCardConfig => {
+  return {
+    id: uuidv4(),
+    enabled: true,
+    title: 'Speeds',
+    collapsed: false,
+    height: 300,
+    icon: 'motion',
+    axes: [{
+      enabled: true,
+      unit: 'mm/s',
+      showLegend: true,
+      metrics: [{
+        collector: 'printer.motion_report.live_velocity',
+        name: 'Velocity',
+        style: { lineStyle: 'solid', lineColor: '#2196f3', fillColor: null, fillOpacity: 0, displayLegend: true }
+      }, {
+        collector: 'printer.toolhead.max_velocity',
+        name: 'Max Velocity',
+        style: { lineStyle: 'dotted', lineColor: '#0075d2', fillColor: null, fillOpacity: 0, displayLegend: false }
+      }]
+    }, {
+      enabled: true,
+      unit: 'mm³/s',
+      showLegend: true,
+      max: 20,
+      metrics: [{
+        collector: 'printer.motion_report.live_extruder_velocity * Math.PI * ' +
+          '(printer.configfile.settings.extruder.filament_diameter / 2) ** 2',
+        name: 'Flow',
+        style: { lineStyle: 'solid', lineColor: '#b12f36', fillColor: null, fillOpacity: 5, displayLegend: true }
+      }, {
+        collector: '12',
+        name: 'Max Flow',
+        style: { lineStyle: 'dashed', lineColor: '#820007', fillColor: null, fillOpacity: 0, displayLegend: false }
+      }]
+    }]
+  }
+}
 
 /**
  * Maintains the state of our page layouts.
@@ -9,7 +49,7 @@ import type { DiagnosticsCardContainer } from '@/store/diagnostics/types'
  * - If card is collapsed or not.
  * - If card is enabled or not.
  */
-export const defaultState = (): LayoutState => {
+export const createState = (): LayoutState => {
   return {
     layouts: {
       dashboard: {
@@ -38,46 +78,8 @@ export const defaultState = (): LayoutState => {
         ]
       },
       diagnostics: {
-        container1: [{
-          id: uuidv4(),
-          enabled: true,
-          title: 'Speeds',
-          collapsed: false,
-          height: 300,
-          icon: 'motion',
-          axes: [{
-            enabled: true,
-            unit: 'mm/s',
-            showLegend: true,
-            metrics: [{
-              collector: 'printer.motion_report.live_velocity',
-              name: 'Velocity',
-              style: { lineStyle: 'solid', lineColor: '#2196f3', fillColor: null, fillOpacity: 0, displayLegend: true }
-            }, {
-              collector: 'printer.toolhead.max_velocity',
-              name: 'Max Velocity',
-              style: { lineStyle: 'dotted', lineColor: '#0075d2', fillColor: null, fillOpacity: 0, displayLegend: false }
-            }]
-          }, {
-            enabled: true,
-            unit: 'mm³/s',
-            showLegend: true,
-            max: 20,
-            metrics: [{
-              collector: 'printer.motion_report.live_extruder_velocity * Math.PI * ' +
-                '(printer.configfile.settings.extruder.filament_diameter / 2) ** 2',
-              name: 'Flow',
-              style: { lineStyle: 'solid', lineColor: '#b12f36', fillColor: null, fillOpacity: 5, displayLegend: true }
-            }, {
-              collector: '12',
-              name: 'Max Flow',
-              style: { lineStyle: 'dashed', lineColor: '#820007', fillColor: null, fillOpacity: 0, displayLegend: false }
-            }]
-          }]
-        }]
-      } as DiagnosticsCardContainer
+        container1: [createDiagnosticsCardState()]
+      }
     }
   }
 }
-
-export const state = defaultState()

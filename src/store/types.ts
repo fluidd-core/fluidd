@@ -59,7 +59,7 @@ type RootModulesType = {
 }
 
 type RootStateType = {
-  [K in keyof RootModulesType]: RootModulesType[K] extends { state: infer U } ? U : never
+  [K in keyof RootModulesType]: ReturnType<RootModulesType[K]['state']>
 }
 
 type RootGettersType = UnionToIntersection<{
