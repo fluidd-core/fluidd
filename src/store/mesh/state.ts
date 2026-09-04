@@ -1,6 +1,6 @@
 import type { MeshState } from './types'
 
-export const state = (): MeshState => {
+export const createState = (): MeshState => {
   return {
     range: 0,
     wireframe: false,

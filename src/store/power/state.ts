@@ -1,6 +1,6 @@
 import type { DevicePowerState } from './types'
 
-export const state = (): DevicePowerState => {
+export const createState = (): DevicePowerState => {
   return {
     devices: []
   }

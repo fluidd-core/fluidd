@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import type { FilesState, MoonrakerPathContent, FilePaths, FileUpload, FileDownload } from './types'
-import { state as defaultState } from './state'
+import { createState } from './state'
 import { Globals } from '@/globals'
 
 export const mutations = {
@@ -9,7 +9,7 @@ export const mutations = {
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   setResetRoot (state, root: string) {

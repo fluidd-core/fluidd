@@ -1,6 +1,6 @@
 import type { SocketState } from './types'
 
-export const state = (): SocketState => {
+export const createState = (): SocketState => {
   return {
     status: 'initializing',
     acceptingNotifications: false,

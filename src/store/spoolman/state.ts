@@ -1,6 +1,6 @@
 import type { SpoolmanState } from './types'
 
-export const state = (): SpoolmanState => {
+export const createState = (): SpoolmanState => {
   return {
     info: null,
     spools: [],

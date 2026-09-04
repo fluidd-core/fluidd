@@ -1,6 +1,6 @@
 import type { MacrosState } from './types'
 
-export const state = (): MacrosState => {
+export const createState = (): MacrosState => {
   return {
     stored: [],
     categories: [],

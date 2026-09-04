@@ -1,10 +1,10 @@
 import type { MutationTree } from 'vuex'
 import type { SocketState, SocketStatus } from './types'
-import { state as defaultState } from './state'
+import { createState } from './state'
 
 export const mutations = {
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   setStatus (state, payload: SocketStatus) {

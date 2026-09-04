@@ -127,7 +127,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { state as defaultState } from '@/store/config/state'
+import { createState } from '@/store/config/state'
 import StateMixin from '@/mixins/state'
 import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
 
@@ -281,7 +281,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   handleReset () {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman',
-      value: defaultState().uiSettings.spoolman,
+      value: createState().uiSettings.spoolman,
       server: true
     })
   }

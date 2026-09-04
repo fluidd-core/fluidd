@@ -110,7 +110,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
-import { state as defaultState } from '@/store/config/state'
+import { createState } from '@/store/config/state'
 
 @Component({
   components: {}
@@ -215,7 +215,7 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
   handleReset () {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu',
-      value: defaultState().uiSettings.mmu,
+      value: createState().uiSettings.mmu,
       server: true
     })
   }

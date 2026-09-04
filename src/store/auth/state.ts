@@ -1,6 +1,6 @@
 import type { AuthState } from './types'
 
-export const state = (): AuthState => {
+export const createState = (): AuthState => {
   return {
     currentUser: null,
     users: [],

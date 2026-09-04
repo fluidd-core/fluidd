@@ -1,6 +1,6 @@
 import type { AnalysisState } from './types'
 
-export const state = (): AnalysisState => {
+export const createState = (): AnalysisState => {
   return {
     status: null
   }

@@ -1,11 +1,11 @@
 import type { MutationTree } from 'vuex'
-import { state as defaultState } from './state'
+import { createState } from './state'
 import type { DatabaseInfo, DatabaseState } from './types'
 import getFilePaths from '@/util/get-file-paths'
 
 export const mutations = {
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   setServerDatabaseList (state, payload: DatabaseInfo) {

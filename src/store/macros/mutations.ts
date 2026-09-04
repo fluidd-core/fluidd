@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import type { MutationTree } from 'vuex'
-import { state as defaultState } from './state'
+import { createState } from './state'
 import type { Macro, MacroCategory, MacrosState } from './types'
 import { MACRO_DEFAULTS } from '@/store/macros/getters'
 
@@ -20,7 +20,7 @@ export const mutations = {
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   // Sets macro state from db

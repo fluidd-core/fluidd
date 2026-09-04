@@ -1,6 +1,6 @@
 import type { NotificationsState } from './types'
 
-export const state = (): NotificationsState => {
+export const createState = (): NotificationsState => {
   return {
     notifications: []
 

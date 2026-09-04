@@ -1,6 +1,6 @@
 import type { ConsoleState } from './types'
 
-export const state = (): ConsoleState => {
+export const createState = (): ConsoleState => {
   return {
     consoleCommand: '',
     consoleSearch: '',

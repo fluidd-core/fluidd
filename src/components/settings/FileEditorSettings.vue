@@ -85,7 +85,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { state as defaultState } from '@/store/config/state'
+import { createState } from '@/store/config/state'
 import type { KlipperSaveAndRestartAction, RestoreViewState } from '@/store/config/types'
 
 @Component({})
@@ -195,7 +195,7 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   handleReset () {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor',
-      value: defaultState().uiSettings.editor,
+      value: createState().uiSettings.editor,
       server: true
     })
   }

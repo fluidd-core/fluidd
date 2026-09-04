@@ -1,6 +1,6 @@
 import type { ServerState } from './types'
 
-export const state = (): ServerState => {
+export const createState = (): ServerState => {
   return {
     info: {
       failed_components: [],

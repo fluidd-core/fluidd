@@ -1,5 +1,5 @@
 import type { MutationTree } from 'vuex'
-import { state as defaultState } from './state'
+import { createState } from './state'
 import type { Peripherals, ServerState } from './types'
 
 export const mutations = {
@@ -7,11 +7,11 @@ export const mutations = {
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   setResetKlippy (state) {
-    const { info } = defaultState()
+    const { info } = createState()
 
     state.info.klippy_connected = info.klippy_connected
     state.info.klippy_state = info.klippy_state

@@ -34,7 +34,7 @@ export const defaultWritableSettings: Moonraker.Timelapse.WriteableSettings = Ob
   saveframes: false
 })
 
-export const state = (): TimelapseState => {
+export const createState = (): TimelapseState => {
   return {
     lastFrame: null,
     settings: null,

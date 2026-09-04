@@ -1,6 +1,6 @@
 import type { VersionState } from './types'
 
-export const state = (): VersionState => {
+export const createState = (): VersionState => {
   return {
     status: null,
     responses: [],

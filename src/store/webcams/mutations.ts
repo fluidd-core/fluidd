@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import type { WebcamsState } from './types'
-import { state as defaultState } from './state'
+import { createState } from './state'
 
 export const mutations = {
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   setInitWebcams (state, payload: { activeWebcam?: string }) {

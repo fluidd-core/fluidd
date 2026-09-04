@@ -242,7 +242,7 @@ import UserPasswordDialog from '@/components/settings/auth/UserPasswordDialog.vu
 import PendingChangesDialog from '@/components/settings/PendingChangesDialog.vue'
 import AppSaveConfigAndRestartBtn from './AppSaveConfigAndRestartBtn.vue'
 import AppUploadAndPrintBtn from './AppUploadAndPrintBtn.vue'
-import { state as defaultState } from '@/store/layout/state'
+import { createState } from '@/store/layout/state'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import FilesMixin from '@/mixins/files'
@@ -404,7 +404,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
       ? this.$route.name
       : undefined
     const layoutDefaultState = pathLayout
-      ? defaultState().layouts[pathLayout]
+      ? createState().layouts[pathLayout]
       : this.$typedGetters['layout/getLayout']('dashboard')!
 
     const toReset = pathLayout ?? this.$typedGetters['layout/getSpecificLayoutName']
@@ -437,7 +437,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   handleResetDefaultLayout () {
     this.$typedDispatch('layout/onLayoutChange', {
       name: 'dashboard',
-      value: defaultState().layouts.dashboard
+      value: createState().layouts.dashboard
     })
   }
 

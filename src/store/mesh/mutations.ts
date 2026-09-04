@@ -1,5 +1,5 @@
 import type { MutationTree } from 'vuex'
-import { state as defaultState } from './state'
+import { createState } from './state'
 import type { MatrixType, MeshState } from './types'
 
 export const mutations = {
@@ -7,7 +7,7 @@ export const mutations = {
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   setMatrix (state, payload: MatrixType) {

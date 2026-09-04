@@ -1,7 +1,7 @@
 import type { ConfigState } from './types'
 import { Globals } from '@/globals'
 
-export const state = (): ConfigState => {
+export const createState = (): ConfigState => {
   return {
     apiUrl: '',
     socketUrl: '',

@@ -3,7 +3,7 @@ import type { MutationTree } from 'vuex'
 import { appendChartSamples, createChartBuffer, resizeChartBuffer } from '@/util/chart-buffer'
 import { Globals } from '@/globals'
 import type { ChartBucket, ChartBuffer, ChartEntriesPayload, ChartEntryPayload, ChartsDbDocument, ChartSelectedLegends, ChartState } from './types'
-import { state as defaultState } from './state'
+import { createState } from './state'
 
 const resolveBuffer = (state: ChartState, payload: ChartBucket): ChartBuffer => {
   switch (payload.bucket) {
@@ -37,11 +37,11 @@ export const mutations = {
    * Reset our store
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   setResetChartStore (state) {
-    const { thermal, ready } = defaultState()
+    const { thermal, ready } = createState()
 
     Object.assign(state, {
       thermal,

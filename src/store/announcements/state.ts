@@ -1,6 +1,6 @@
 import type { AnnouncementsState } from './types'
 
-export const state = (): AnnouncementsState => {
+export const createState = (): AnnouncementsState => {
   return {
     entries: [],
     feeds: []

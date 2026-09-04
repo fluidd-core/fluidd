@@ -1,6 +1,6 @@
 import { markRaw } from 'vue'
 import type { MutationTree } from 'vuex'
-import { state as defaultState } from './state'
+import { createState } from './state'
 import type { BBox, GcodePreviewState, Layer, MoveStore, Part } from './types'
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 
@@ -9,7 +9,7 @@ export const mutations = {
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   setMoves (state, payload: MoveStore) {

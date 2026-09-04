@@ -196,7 +196,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { state as defaultState } from '@/store/config/state'
+import { createState } from '@/store/config/state'
 
 @Component({
   components: {}
@@ -365,7 +365,7 @@ export default class GcodePreviewSettings extends Vue {
   handleReset () {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview',
-      value: defaultState().uiSettings.gcodePreview,
+      value: createState().uiSettings.gcodePreview,
       server: true
     })
   }
