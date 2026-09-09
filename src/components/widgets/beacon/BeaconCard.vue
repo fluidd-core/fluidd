@@ -124,7 +124,6 @@
     </v-card-text>
 
     <save-model-dialog
-      v-if="saveDialogState.open"
       v-model="saveDialogState.open"
       :existing-name="saveDialogState.existingName"
       @save="handleModelSave"

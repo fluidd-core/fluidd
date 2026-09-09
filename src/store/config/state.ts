@@ -1,7 +1,7 @@
 import type { ConfigState } from './types'
 import { Globals } from '@/globals'
 
-export const defaultState = (): ConfigState => {
+export const createState = (): ConfigState => {
   return {
     apiUrl: '',
     socketUrl: '',
@@ -19,6 +19,7 @@ export const defaultState = (): ConfigState => {
         instanceName: Globals.APP_NAME,
         locale: 'en',
         chartVisible: true,
+        chartSmoothingWindow: 0,
         hideTempWaits: true,
         axis: {
           x: { inverted: false },
@@ -168,5 +169,3 @@ export const defaultState = (): ConfigState => {
     }
   }
 }
-
-export const state = defaultState()

@@ -1,0 +1,58 @@
+name: Publish Web (Reusable)
+
+on:
+  workflow_call:
+    secrets:
+      bucket:
+        description: S3 bucket name to deploy to
+        required: true
+      distribution-id:
+        description: CloudFront distribution id to invalidate
+        required: true
+      aws-role:
+        description: ARN of the AWS role to assume via OIDC
+        required: true
+
+permissions: {}
+
+jobs:
+  publish-web:
+    name: Deploy to Host
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Download fluidd dist
+        uses: actions/download-artifact@v8
+        with:
+          name: fluidd-${{ github.sha }}
+          path: ./dist
+
+      - name: Prepare Deploy
+        run: |
+          cp ./server/config.json ./dist/config.json
+
+      - uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.aws-role }}
+
+      - name: Deploy to Host
+        env:
+          BUCKET: ${{ secrets.bucket }}
+          DIST_ID: ${{ secrets.distribution-id }}
+        run: |
+          aws s3 sync ./dist "s3://${BUCKET}" --delete --cache-control no-cache
+          aws cloudfront create-invalidation --distribution-id "${DIST_ID}" --paths '/*'

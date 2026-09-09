@@ -46,6 +46,37 @@ Both are updated on each release and each commit. Available tags:
 
 [View on GitHub Container registry](https://github.com/fluidd-core/fluidd/pkgs/container/fluidd){.md-button}
 
+Both images are built on the `alpine-slim` NGINX variants. The listen port can
+be overridden at runtime with the `PORT` environment variable:
+
+```bash
+docker run -e PORT=8081 -p 8081:8081 ghcr.io/fluidd-core/fluidd
+```
+
+The bundled health check (below) automatically polls whichever port `PORT` is
+set to, so overriding it keeps the health check working.
+
+### Health Check
+
+Both images ship a Docker `HEALTHCHECK` that polls `/healthz` on the image's own
+port, so `docker ps` reports the container as `healthy` once NGINX is serving:
+
+```bash
+docker inspect --format '{{.State.Health.Status}}' fluidd
+```
+
+With Docker Compose, other services can wait for it:
+
+```yaml
+depends_on:
+  fluidd:
+    condition: service_healthy
+```
+
+The endpoint is a plain `200 ok` response and is excluded from the access log.
+The check runs every 10 seconds and can be overridden per-deployment with the
+`healthcheck` key in Compose.
+
 ## Manual Installation
 
 Every Fluidd release includes a pre-built `fluidd.zip` on the

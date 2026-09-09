@@ -137,6 +137,31 @@ export default defineConfig({
 
   base: './',
 
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          // everything else (monaco, echarts, hls, iro, qr-scanner, …) stays
+          // on rolldown's default lazy chunking — do NOT sweep into one chunk
+          groups: [
+            {
+              name: 'lodash',
+              test: /[\\/]node_modules[\\/]lodash-es[\\/]/
+            },
+            {
+              name: 'vue-vendor',
+              test: /[\\/]node_modules[\\/](?:vue|vue-router|vuex|vue-i18n)[\\/]/
+            },
+            {
+              name: 'vuetify',
+              test: /[\\/]node_modules[\\/]vuetify[\\/]/
+            }
+          ]
+        }
+      }
+    }
+  },
+
   server: {
     host: '0.0.0.0',
     port: 8080

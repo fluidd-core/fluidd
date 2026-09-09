@@ -19,6 +19,17 @@ fans in real time.
 
 ![Thermal graph showing real-time temperature history for heaters and sensors](/assets/images/graph.png)
 
+### Chart smoothing
+
+Noisy temperature readings can be smoothed with a trailing moving average.
+Set it in **Settings — General — Thermal chart smoothing**, choosing
+**None** (the default) or a window of 1, 3, 5, 10, 15, or 30 seconds.
+
+Smoothing only affects temperature traces — target temperatures, heater
+power, and fan speed are always plotted exactly. It is a display-only
+setting: nothing stored by Moonraker changes, and switching back to
+**None** restores the raw trace immediately.
+
 ## Sensor colors
 
 Each heater, fan, and sensor row displays a colored icon. Click it to open a

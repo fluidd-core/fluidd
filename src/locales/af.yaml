@@ -325,7 +325,6 @@ app:
       file_time: Lêer
     msg:
       password_changed: Wagwoord is verander
-      wrong_password: Gits, iets het verkeerd gegaan. Is die wagwoord korrek?
       bed_screws_adjust: >-
         Klik <b>Aangepas</b> as 'n noemenswaardige verstelling van die huidige skroef
         nodig is; anders, klink <b>Aanvaar</b> om te begin.

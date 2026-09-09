@@ -357,7 +357,6 @@ app:
       z_hop_height: Z-Hop Hoogte
     msg:
       password_changed: Wachtwoord aangepast
-      wrong_password: Oeps! Er is iets fout gegaan, klopt je wachtwoord wel?
       offline_ready: Fluidd is nu klaar om offline te werken.
       bed_screws_adjust: Klik <b>Aangepast</b> als een significante aanpassing 
         nodig is voor de huidige schroef; anders, klik <b>Accepteer</b> om door 

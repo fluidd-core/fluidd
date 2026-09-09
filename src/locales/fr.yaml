@@ -394,8 +394,6 @@ app:
       z_hop_height: Hauteur de Z-Hop
     msg:
       password_changed: Mot de passe modifié
-      wrong_password: Oups, il y a eu un problème. Le mot de passe est-il 
-        correct ?
       pending_configuration_sections_deleted: Les sections suivantes sont 
         marquées pour suppression
       bed_screws_adjust: Cliquez sur <b>Ajusté</b> si un ajustement significatif

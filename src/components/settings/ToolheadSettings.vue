@@ -392,7 +392,7 @@
 
 <script lang="ts">
 import { Component, Ref, Mixins } from 'vue-property-decorator'
-import { defaultState } from '@/store/config/state'
+import { createState } from '@/store/config/state'
 import type { VCombobox } from 'vuetify/lib'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { GeneralConfig, ToolheadControlStyle } from '@/store/config/types'
@@ -726,12 +726,13 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   }
 
   handleReset () {
-    const { instanceName, chartVisible, hideTempWaits }: GeneralConfig = this.$typedState.config.uiSettings.general
+    const { instanceName, chartVisible, chartSmoothingWindow, hideTempWaits }: GeneralConfig = this.$typedState.config.uiSettings.general
 
     const value: GeneralConfig = {
-      ...defaultState().uiSettings.general,
+      ...createState().uiSettings.general,
       instanceName,
       chartVisible,
+      chartSmoothingWindow,
       hideTempWaits
     }
 

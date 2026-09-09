@@ -374,7 +374,6 @@ app:
       z_hop_height: Z-Hop Yüksekliği
     msg:
       password_changed: Şifre değiştirildi
-      wrong_password: Ups, bir şeyler ters gitti. Şifreniz doğru mu?
       bed_screws_adjust: >-
         Mevcut vida için önemli bir ayarlama gerekiyorsa <b>Düzenlendi</b>'yi tıklayın;
         aksi halde devam etmek için <b>Kabul Et</b>'i tıklayın.

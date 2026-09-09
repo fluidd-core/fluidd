@@ -4,6 +4,7 @@ import type { GetterTree } from 'vuex'
 import type { ChartState } from './types'
 import type { RootState } from '../types'
 import { Globals } from '@/globals'
+import { tooltipDimensionName, tooltipValue } from '@/util/chart-tooltip'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
 
 export const getters = {
@@ -76,36 +77,29 @@ export const getters = {
           let text = '<div>'
           params
             .forEach(param => {
-              if (
-                param == null ||
-                param.value == null ||
-                param.dimensionNames == null ||
-                param.encode == null
-              ) {
+              if (param == null) {
                 return
               }
 
-              const xDimension = param.dimensionNames[param.encode.x[0]]
-              const yDimension = param.dimensionNames[param.encode.y[0]]
+              const yDimension = tooltipDimensionName(param, 'y')
+              const yValue = tooltipValue(param, 'y')
 
-              const ySuffix = tooltipSuffix[yDimension] || ''
+              const ySuffix = (yDimension && tooltipSuffix[yDimension]) || ''
               if (
-                xDimension &&
                 yDimension &&
                 param.seriesName
               ) {
-                if (!title) {
+                const xValue = tooltipValue(param, 'x')
+
+                if (!title && xValue != null) {
                   text += `
                   <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
-                    ${Vue.$filters.formatTimeWithSeconds(param.value[xDimension as keyof typeof param.value])}
+                    ${Vue.$filters.formatTimeWithSeconds(xValue)}
                   </span>
                   `
                   title = true
                 }
-                const value = param.value[yDimension as keyof typeof param.value] as unknown
-                const formattedValue = typeof value === 'number'
-                  ? value.toFixed(2)
-                  : value
+                const formattedValue = yValue?.toFixed(2) ?? '-'
 
                 text += `
                   <div style="white-space: nowrap;">

@@ -9,7 +9,7 @@ app:
       remove_profile: 'Borrar el perfil %{name}'
       scale: Escala de color
       wireframe: Wireframe
-      base: base
+      base: Base
       active: activo
     msg:
       hint: >-
@@ -29,6 +29,8 @@ app:
       power: Potencia
       rate_of_change: Cambio
       target: Objetivo
+      target_temperature: Temperatura objetivo
+      turn_off: Apagar
     tooltip:
       help: >-
         Mantenga presionada la tecla <kbd>Mayús</kbd> para hacer zoom. <br /> Haga
@@ -51,6 +53,13 @@ app:
         Esto puede indicar que necesita modificar su configuración de Moonraker.
         Consulte la documentación sobre las configuraciones con varias
         impresoras <a href="%{url}" target="_blank">aquí</a>.
+      mixed_content: Fluidd esta funcionando a través de HTTPS pero la dirección
+        web utiliza HTTP. Los navegadores web bloquean la conexiones mixtas 
+        (inseguras). Utiliza una dirección segura/HTTPS o configure Fluidd por 
+        HTTP.
+      websocket_failed: El servidor respondió sobre HTTP pero la conexión 
+        WebSocket falló. Si está utilizando un proxy inverso, asegúrese de que 
+        está configurado para actualizar y reenviar conexiones WebSocket.
     hint:
       add_printer: 'Ex., http://fluidd.local'
     msg:
@@ -86,6 +95,7 @@ app:
       transfer_rate: Tasa de transferencia
       uploaded: Subido
       view_section_documentation: 'Ver documentación sobre ''%{section}'''
+      sd_card_info: Información de la Tarjeta SD
     msg:
       not_found: No se encontraron archivos
       processing: Procesando...
@@ -101,6 +111,7 @@ app:
       duplicate_dir: Directorio duplicado
       go_to_file: Ir al archivo
       duplicate_file: Archivo duplicado
+      save_as: Guardar Cómo
     tooltip:
       low_on_space: Espacio en disco limitado
       root_disabled: '{root} root no esta disponible. Por favor chequear los registros.'
@@ -225,6 +236,10 @@ app:
       refresh_metadata: Actualizar metadatos
       upload_files: Subir archivos
       return_dashboard: Volver al panel de control
+      clear: Limpiar
+      power_on_printer: Encender la impresora
+      reset_to_default: Resetear de fábrica
+      scroll_to_latest: Desplazar a la más nueva
     error:
       app_setup_link: >-
         Las instrucciones de instalación de Fluidd están disponibles <a
@@ -236,6 +251,8 @@ app:
       failed_components: >-
         Moonraker ha fallado en los complementos. Verifique los registros,
         actualice su configuración y reinicie Moonraker.
+      printer_powered_off: La impresora está ahora mismo apagada. <br/><br/>Para
+        encender la impresora presione el botón en la izquierda.
     label:
       accel_to_decel: Aceleración a deceleración
       acceleration: Aceleración
@@ -344,13 +361,21 @@ app:
       bars: Barras
       ldap: LDAP
       cross: Cruz
+      clean_nozzle: Limpiar Boquilla
+      connected: Conectado
+      device: Dispositivo
+      length_in_kilometers: Longitud en kilómetros
+      load_filament: Cargar Filamento
+      disconnected: Desconectado
+      no_data: No hay informacion
+      time_in_days: Tiempo en días
+      unload_filament: Descargar Filamento
     msg:
       bed_screws_adjust: >-
         Haga click en <b>Ajustado</b> si fue necesario un ajuste significativo
         en el tornillo actual, de lo contrario haga click en <b>Aceptar</b> para
         continuar.
       password_changed: Contraseña cambiada
-      wrong_password: Se ha producido un error. ¿Es su contraseña correcta?
       fluidd_settings_restore_failed: Fallo al restaurar los Ajustes de Fluid!
       offline_ready: Fluidd se encuentra listo para trabajar fuera de línea.
       welcome_back: Bienvenido de nuevo. <br>A continuación, inicie sesión para 
@@ -359,6 +384,13 @@ app:
         <b>Actualizar</b> para ver los cambios.
       pending_configuration_sections_deleted: Las siguientes secciones se 
         encuentran marcadas para ser eliminadas
+      not_valid_fluidd_backup_file: No es un archivo de respaldo de Fluidd 
+        válido!
+      fluidd_settings_backup_failed: Fallo al restaurar los Ajustes de Fluid!
+      gcode_preview_failed: ¡No se pudo generar la vista previa del archivo 
+        G-code!
+      gcode_preview_truncated: El archivo G-code es demasiado grande; solo se 
+        previsualiza una parte.
     simple_form:
       error:
         arrayofnums: Solo números
@@ -371,12 +403,32 @@ app:
         min_or_0: 'Mín. %{min} o 0'
         password_username: No se puede emparejar con el nombre de usuario
         required: Obligatorio
+        invalid_expression: Expresión no valida
+        invalid_aspect: Relación de aspecto no válida
       msg:
         confirm: ¿Está seguro?
         confirm_power_device_toggle: ¿Está seguro? Esto alternará la 
           alimentación del dispositivo.
         confirm_reboot_host: ¿Está seguro? Esto reiniciará el sistema anfitrión.
         confirm_shutdown_host: ¿Está seguro? Esto apagará el sistema anfitrión.
+        confirm_cancel_print: ¿Estás seguro que quieres cancelar la impresión 
+          actual?
+        confirm_change_beacon_model: La impresora está actualmente ocupada. 
+          ¿Estás seguro que quieres cambiar el modelo beacon?
+        confirm_clear_mesh: La impresora está actualmente ocupada. ¿Seguro que 
+          quieres limpiar la malla de la cama?
+        confirm_delete: ¿Estás seguro? Esto va a eliminar los objetos 
+          seleccionados. | ¿Estás seguro? Esto va a eliminar los {count} objetos
+          seleccionados.
+        confirm_emergency_stop: ¿Estás seguro que quieres hacer una parada de 
+          emergencia a la impresora?
+        confirm_exclude_object: ¿Estás seguro que quieres excluir este objeto de
+          la impresión?
+        confirm_forcemove_toggle: ¿Estás seguro? Esto puede dañar la impresora.
+        confirm_load_bedmesh_profile: La impresora está actualmente ocupada. 
+          ¿Estás seguro que quieres cargar el perfil %{name}?
+        confirm_remove_camera: ¿Estás seguro que quieres eliminar la cámara 
+          %{name}?
     table:
       header:
         actions: Acciones
@@ -607,3 +659,74 @@ app:
       invalid: indica cambios locales a la repo
       packages: Paquetes
       release_notes: Notas de lanzamiento
+  afc:
+    BedTemp: Temperatura de cama
+    Calibrate: Calibrar
+    Cancel: Cancelar
+    Detected: Detectado
+    EjectFilament: Expulsar filamento
+    Ejecting: Expulsando
+    Initialized: Inicializado
+    LaneLoadedNone: NADA
+    LedOff: LEDs Apagadas
+    LedOn: LEDs Encendidos
+    Loading: Cargando
+    ManualEntry: Entrada Manual
+    Material: Material
+    MaterialSubtitle: 'Por ejemplo: ABS, PETG, PLA, etc.'
+    Moving: Moviendo
+    PrepDetected: Filamento detectado pero no cargado
+    Printing: Imprimiendo
+    PrintStartDialog:
+      StartJob: Empezar trabajo
+      SpoolWeightRemaining: '{remaining}g restante ({used}g utilizado)'
+      Question: ¿Quieres empezar a imprimir {filename}?
+      QuestionWithSpool: Quieres empezar a imprimir {filename} con el rollo 
+        activo?
+      SpoolId: 'ID #{id}'
+      LaneWeightRemaining: 'Peso restante: {weight}g'
+    Restoring: Restaurando
+    SelectTool: Seleccione la herramienta
+    SetSpool: Seleccione rollo de filamento
+    Settings: Configuración
+    SettingsDialog:
+      BowdenLength: Longitud del arco
+      BowdenLengthDescription: Esta es la longitud del tubo de Bowden entre el 
+        Hub y el Toolhead.
+      Help: Ayuda
+      Length: Duración
+      LoadUnloadLaneDescription: Haga click en los botones para cargar o 
+        descargar el filamento del rollo al extrusor
+      SaveExtruderValues: Guardar valores del extrusor
+      SaveExtruderValuesDescription: Esto escribirá los valores actuales de 
+        extrusor al archivo de configuración del extrusor actual.
+      SensorAfterExtruder: Sensor después del extrusor
+      SettingsForTitle: Configuración para {name}
+      ToolSensorAfterExtruder: Herramienta del sensor después del extrusor
+      ToolSensorAfterExtruderDescription: Distancia de los engranajes extrusores
+        al sensor tool_end en mm. Esto se utiliza para descargar el filamento de
+        los engranajes de extrusor después de que el sensor tool_end ya no se 
+        activa.
+      ToolStn: Herramienta de longitud de carga
+      ToolStnDescriptionWithEndSensor: Distancia del sensor tool_end al inicio 
+        de la zona de fundición en mm.
+      ToolStnDescriptionWithRamming: Distancia de los engranajes extrusores al 
+        inicio de la zona de fundición en mm.
+      ToolStnUnload: Herramienta de longitud de descarga
+    BedTempSubtitle: Temperatura de la cama para este filamento en °C.
+    BufferDisabled: Buffer No Activo
+    CaptureTd: Capturar TD
+    DebugJson: Debuggear JSON
+    Empty: Vacío
+    Error: Error
+    ExtruderTemp: Temperatura del extrusor
+    ExtruderTempSubtitle: Temperatura del extrusor para este filamento en °C.
+    Functions: Funciones
+    Headline: AFC
+    RammingSensor: Sensor de regulación
+    FilamentForLane: Filamento para {name}
+    ShowTool: Mostrar la herramienta "{name}"
+    AfcSettings: Configuración-AFC
+  database:
+    tooltip:
+      delete_backup: Eliminar Copia de Seguridad

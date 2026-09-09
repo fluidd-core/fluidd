@@ -587,6 +587,18 @@ export const SocketActions = {
     )
   },
 
+  serverHistoryGetJob (uid: string, options?: NotifyOptions) {
+    return baseEmit<Moonraker.History.JobResponse>(
+      'server.history.get_job', {
+        dispatch: 'history/onHistoryJob',
+        ...options,
+        params: {
+          uid
+        }
+      }
+    )
+  },
+
   serverHistoryList (params?: { start?: number; limit?: number; before?: number; since?: number; order?: string }, options?: NotifyOptions) {
     return baseEmit<Moonraker.History.ListResponse>(
       'server.history.list', {

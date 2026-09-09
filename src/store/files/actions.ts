@@ -28,7 +28,7 @@ export const actions = {
     commit('setReset')
   },
 
-  async onServerFilesGetDirectory ({ commit }, payload: ObjectWithRequest<Moonraker.Files.GetDirectoryResponse>) {
+  async onServerFilesGetDirectory ({ commit, dispatch }, payload: ObjectWithRequest<Moonraker.Files.GetDirectoryResponse>) {
     const { disk_usage, files, dirs } = payload
     const { path } = payload.__request__.params ?? {}
     const [root] = path.split('/', 1)
@@ -42,6 +42,18 @@ export const actions = {
 
     commit('setDiskUsage', { root, disk_usage })
     commit('setServerFilesGetDirectory', { path, content: { files, dirs: filteredDirs } })
+
+    if (root === 'gcodes') {
+      const jobIds = files
+        .map(file => (
+          'job_id' in file
+            ? file.job_id
+            : null
+        ))
+        .filter(Boolean)
+
+      dispatch('history/fetchMissingJobs', jobIds, { root: true })
+    }
   },
 
   async onServerFilesRoots ({ commit }, payload: Moonraker.Files.RootsResponse) {
@@ -57,7 +69,7 @@ export const actions = {
   /**
    * If we request the metadata (a file..) then we load and update here.
    */
-  async onFileMetaData ({ commit }, payload: Moonraker.Files.FileWithMetaResponse) {
+  async onFileMetaData ({ commit, dispatch }, payload: Moonraker.Files.FileWithMetaResponse) {
     const paths = getFilePaths(payload.filename, 'gcodes')
 
     if (!paths.filtered) {
@@ -68,6 +80,10 @@ export const actions = {
       }
 
       commit('setFileUpdate', { paths, file })
+
+      if (file.job_id) {
+        dispatch('history/fetchMissingJobs', [file.job_id], { root: true })
+      }
     }
   },
 

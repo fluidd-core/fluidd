@@ -11,14 +11,16 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import type { MCU } from '@/store/printer/types'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
 import type { AppInlineChartLabel } from '@/components/ui/AppInlineChart.vue'
+import type { ChartDataSource } from '@/store/charts/types'
+import { chartBufferSource } from '@/util/chart-buffer'
 
 @Component({})
 export default class McuLoadChart extends Vue {
   @Prop({ type: Object, required: true })
   readonly mcu!: MCU
 
-  get chartData () {
-    return this.$typedState.charts[this.mcu.key] || []
+  get chartData (): ChartDataSource {
+    return chartBufferSource(this.$typedState.charts.mcus[this.mcu.key])
   }
 
   get labels (): AppInlineChartLabel[] {

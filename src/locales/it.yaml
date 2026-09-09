@@ -262,9 +262,6 @@ app:
       z_offset: Offset Z
     msg:
       password_changed: Password cambiata
-      wrong_password: |-
-        Oops! Qualcosa è andato storto.
-        La tua password è corretta?
     simple_form:
       error:
         arrayofnums: Solo numeri

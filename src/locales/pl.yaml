@@ -4,7 +4,7 @@ app:
       box_scale: Skala pudełka
       mesh_matrix: Macierz siatki
       active: aktywny
-      flat_surface: Pokaż płaszczyznę
+      flat_surface: Pokaż płaską powierzchnię
       probed_matrix: Zbadana macierz
       profile_name: Nazwa profilu
       remove_profile: Usuń profil %{name}
@@ -144,7 +144,7 @@ app:
       requested_speed: Prędkość
       extrude_length: Długość wytłaczania
       synced_extruder: Zsynchronizowany ekstruder
-      z_offset: Przesunięcie Z
+      z_offset: Korekcja Z
       heaters_busy: Drukarka jest obecnie zajęta. Wyłączenie grzałek może 
         spowodować nieudany wydruk.
       flow: Przepływ
@@ -231,7 +231,7 @@ app:
       visible: Widoczne
       turn_device_off: Wyłącz %{device}
       alias: Alias
-      apply_z_offset: Zastosuj i zapisz przesunięcie Z
+      apply_z_offset: Zastosuj i zapisz korekcję Z
       edit_category: Edytuj kategorię
       add_category: Dodaj kategorię
       unsaved_changes: Niezapisane zmiany
@@ -347,7 +347,7 @@ app:
       scroll_to_latest: Przewiń do najnowszych
       reset_to_default: Przywróć domyślne
     title:
-      home: Ekran główny
+      home: Pulpit
       camera: Kamera | Kamery
       tool: Narzędzie
       console: Konsola
@@ -389,7 +389,6 @@ app:
       needs_refresh: Dostępna jest nowa zawartość, kliknij przycisk 
         <b>Przeładuj</b>, aby zaktualizować.
       password_changed: Hasło zostało zmienione
-      wrong_password: Niestety, coś poszło nie tak. Czy hasło jest prawidłowe?
       pending_configuration_sections_deleted: Następujące sekcje zostały 
         oznaczone do usunięcia
       welcome_back: Witaj ponownie.<br>Zaloguj się, aby pozostać w kontakcie z 
@@ -403,6 +402,10 @@ app:
         ustawień Fluidd!
       fluidd_settings_restore_failed: Nie udało się przywrócić ustawień Fluidd!
       gcode_preview_failed: Nie udało się wyświetlić podglądu pliku G-code!
+      gcode_preview_truncated: Plik G-code jest zbyt duży — wyświetlono tylko 
+        jego część
+      throttled_warning: Może to doprowadzić do ograniczenia wydajności i 
+        nieudanego wydruku
     simple_form:
       error:
         exists: Już istnieje
@@ -461,7 +464,7 @@ app:
     error:
       app_warnings_found: '%{appName} - znaleziono ostrzeżenia.'
       app_setup_link: Wymagania dotyczące konfiguracji Fluidd można znaleźć <a 
-        target="_blank" href="%{url}">tutaj.</a>
+        target="_blank" href="%{url}">tutaj</a>.
       failed_components: Moonraker wykrył błędy w działaniu wtyczek. Sprawdź 
         logi, zaktualizuj konfigurację i zrestartuj Moonraker.
       components_config: Konfigurację wtyczki Moonrakera można znaleźć <a 
@@ -510,6 +513,9 @@ app:
         printer_variant: Wariant drukarki
         printer_vendor: Producent drukarki
         profile_version: Wersja profilu
+      footer:
+        item_range: '%{pageStart}-%{pageStop} z %{itemsLength}'
+        item_range_loaded: '%{pageStart}–%{pageStop} z %{itemsLength} załadowanych'
     tooltip:
       estop: Awaryjny stop
       managed_by_moonraker: Zarządzane przez konfigurację Moonraker
@@ -574,6 +580,8 @@ app:
       manual_probe: Sonda ręczna
       relative_positioning: Pozycjonowanie względne
       select_tool: Wybierz narzędzie %{tool}
+      extruding: Ekstruzja
+      retracting: Retrakcja
     title:
       bed_screws_adjust: Regulacja śrub stołu
       manual_probe: Sonda ręczna
@@ -754,6 +762,7 @@ app:
       warn_on_stepper_driver_overheating: Ostrzegaj w przypadku przegrzania 
         sterownika silnika krokowego
       sensor_color: Kolor sensora
+      thermal_chart_smoothing: Wygładzanie wykresu temperatury
     camera_type_options:
       mjpegstream: Strumień MJPEG
       mjpegadaptive: Adaptacyjny MJPEG
@@ -888,6 +897,9 @@ app:
       confirm_jobs: Czy na pewno? Spowoduje to wyczyszczenie wszystkich zadań.
       confirm_stats: Czy na pewno? Spowoduje to wyczyszczenie wszystkich 
         statystyk.
+    tooltip:
+      help: Po połączeniu ładowane są tylko najnowsze zadania. Użyj „Załaduj 
+        wszystko”, aby pobrać pełną historię.
   job_queue:
     msg:
       confirm: Czy na pewno? Spowoduje to wyczyszczenie całej kolejki drukowania
@@ -1056,6 +1068,18 @@ app:
         cors: Wystąpił błąd dostępu do transmisji z kamery. Upewnij się, że 
           serwer webcam umożliwia dostęp CORS.
       not_connected: Serwer Spoolman jest niedostępny.
+      live_updates:
+        cors: Aktualizacje na żywo ze Spoolmana nie działają. Spoolman blokuje 
+          źródło przeglądarki Fluidd — sprawdź konfigurację Spoolmana i zezwól 
+          na to źródło.
+        mixed_content: Aktualizacje na żywo ze Spoolmana nie działają. Fluidd 
+          jest udostępniany przez HTTPS, ale adres Spoolmana używa HTTP, dlatego
+          przeglądarka blokuje bezpośrednie połączenie.
+        unreachable: Aktualizacje na żywo ze Spoolmana nie działają. 
+          Przeglądarka Fluidd nie może bezpośrednio połączyć się z serwerem 
+          Spoolmana.
+        failed: Aktualizacje na żywo ze Spoolmana nie działają. Bezpośrednie 
+          połączenie ze Spoolmanem nie powiodło się z nieznanego powodu.
     setting:
       auto_open_qr_camera: Automatyczne otwórz kamerę w celu wykrycia kodu QR
       show_spool_selection_dialog_on_print_start: Pokaż okno dialogowe wyboru 
@@ -1177,6 +1201,27 @@ app:
       drying_queued: Kolejkowanie suszenia
       drying_complete: Suszenie ukończone
       drying_cancelled: Przerwano suszenie
+      active: AKTYWNY
+      auto: Automatycznie
+      bypass: OBEJŚCIE
+      clog: ZATOR
+      compression: Kompresja
+      encoder: Enkoder
+      entry: Wejście
+      exit: Wyjście
+      extruder: Ekstruder
+      filament_position: Pozycja filamentu
+      flow: PRZEPŁYW
+      gear: Koło zębate
+      last_error: Ostatni błąd
+      neutral: Neutralny
+      pre_gate: Przed bramką
+      status: Stan
+      tangle: SPLĄTANIE
+      tension: Naprężenie
+      tool: Narzędzie
+      toolhead: Głowica narzędziowa
+      tools: Narzędzia
     msg:
       color: Kolor
       reset_gate_map_confirmation: Spowoduje to zresetowanie całej mapy bramki 
@@ -1256,7 +1301,7 @@ app:
       show_climate: Pokaż informacje o klimacie
   database:
     btn:
-      compact_database: Kompaktowa baza danych
+      compact_database: Optymalizuj bazę danych
       create_backup: Utwórz kopię zapasową
     label:
       moonraker_database: Baza danych Moonraker
@@ -1286,19 +1331,19 @@ app:
     Hub: Hub
     HubLoad: Ładowanie do huba
     Idle: Bezczynność
-    InfiniteSpoolDescription: Następna ścieżka do załadowania, gdy {name} się 
-      skończy
+    InfiniteSpoolDescription: Następny tor do załadowania po wyczerpaniu 
+      filamentu {name}
     InfiniteSpoolHeadline: Nieskończona szpula
-    LaneControls: Sterowanie ścieżką
-    LaneLoaded: Ścieżka załadowana
-    LaneLoadedNone: Brak
-    LaneMapping: Mapowanie scieżki
-    LaneMappingToCommand: Przypisz {name} do komendy narzędzia
+    LaneControls: Sterowanie torem
+    LaneLoaded: Tor został załadowany
+    LaneLoadedNone: BRAK
+    LaneMapping: Mapowanie toru
+    LaneMappingToCommand: Przypisz ponownie {name} do polecenia narzędzia
     LedOff: Oświetlenie wył.
     LedOn: Oświetlenie wł.
     LoadedInLane: Załadowano w {lane}
     Loading: Ładowanie
-    LoadLane: Załaduj ścieżkę
+    LoadLane: Załaduj tor
     Material: Materiał
     MaterialSubtitle: Na przykład ABS, PETG, PLA itp.
     Moving: Przemieszczanie
@@ -1314,14 +1359,14 @@ app:
       BowdenLengthDescription: Jest to długość przewodu Bowdena między hubem a 
         głowicą narzędziową.
       DistHub: Odległość do huba
-      DistHubDescription: Odległość od kół zębatych ekstrudera danej ścieżki do 
-        huba w milimetrach.
-      SaveHubDist: Zapisz wartości ścieżki
-      SaveHubDistDescription: Zapisz wartości z wybranej ścieżki do pliku 
-        konfiguracyjnego.
-      LoadUnloadLane: Załaduj / Rozładuj ścieżkę
-      LoadUnloadLaneDescription: Kliknij przyciski, aby załadować lub rozładować
-        filament ze ścieżki do ekstrudera.
+      DistHubDescription: Odległość od kół zębatych ekstrudera toru do piasty w 
+        mm.
+      SaveHubDist: Zapisz wartości toru
+      SaveHubDistDescription: Zapisz wartości określonego toru w pliku 
+        konfiguracyjnym.
+      LoadUnloadLane: Załaduj / Rozładuj tor
+      LoadUnloadLaneDescription: Kliknij przyciski, aby załadować filament z 
+        toru do ekstrudera lub rozładować go z ekstrudera.
       ToolStnUnloadDescription: Odległość, na jaką należy cofnąć filament, aby 
         rozładować go z narzędzia, w milimetrach.
       ToolSensorAfterExtruderDescription: Odległość od kół zębatych ekstrudera 
@@ -1347,7 +1392,7 @@ app:
       WriteToFile: Zapisz do pliku
     SettingsForLane: Ustawienia dla {lane}
     ShowLaneInfinite: Pokaż przycisk „Nieskończoność”
-    UnloadLane: Rozładuj ścieżkę
+    UnloadLane: Rozładuj tor
     Unloading: Rozładowywanie
     RammingSensor: Czujnik docisku
     Restoring: Przywracanie
@@ -1361,3 +1406,31 @@ app:
     WeightSubtitle: Waga filamentu w gramach (bez szpuli).
     WeightRemaining: Pozostało {weight}g
     WeightUsed: Użyto {weight}g
+    BedTemp: Temperatura stołu
+    BedTempSubtitle: Temperatura stołu dla tego filamentu w °C.
+    ClearSpoolId: Wyczyść przypisany identyfikator szpuli
+    ExtruderTemp: Temperatura ekstrudera
+    ExtruderTempSubtitle: Temperatura ekstrudera dla tego filamentu w °C.
+    Initialized: Zainicjalizowano
+    ManualEntry: Wpis ręczny
+    PrintStartDialog:
+      StartJob: Rozpocznij zadanie
+      Title: Przypisanie torów AFC
+      NoLane: Brak toru
+      NoLaneMapped: Do narzędzia {tool} nie przypisano żadnego toru
+      NoFilamentLoaded: Do toru {lane} nie załadowano filamentu
+      FilamentTypeMismatch: 'Niezgodność typu materiału filamentu: plik wymaga {file},
+        a tor zawiera {lane}'
+      FilamentWeightNotEnough: 'Niewystarczająca ilość filamentu w torze {lane}: wymagane
+        {required}, dostępne {available}'
+      Question: Czy chcesz rozpocząć drukowanie {filename}?
+      QuestionWithSpool: Czy chcesz rozpocząć drukowanie {filename} z aktywną 
+        szpulą?
+      SpoolId: 'ID #{id}'
+      SpoolWeightRemaining: Pozostało {remaining} g (zużyto {used} g)
+      LaneWeightRemaining: 'Pozostała masa: {weight} g'
+    SelectTool: Wybierz narzędzie
+    ToolSwap: Wymiana głowic narzędziowych
+    ToolPickup: Pobieranie głowicy narzędziowej
+    ToolDock: Odkładanie głowicy narzędziowej
+    UnselectTool: Odznacz narzędzie

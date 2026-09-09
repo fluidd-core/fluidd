@@ -39,6 +39,16 @@
       sort-desc
       fixed-header
     >
+      <template #[`footer.page-text`]="{ pageStart, pageStop, itemsLength }">
+        {{
+          itemsLength === 0
+            ? '–'
+            : allLoaded
+              ? $t('app.general.table.footer.item_range', { pageStart, pageStop, itemsLength })
+              : $t('app.general.table.footer.item_range_loaded', { pageStart, pageStop, itemsLength })
+        }}
+      </template>
+
       <template #item="{ headers, item }">
         <app-data-table-row
           :key="item.job_id"
@@ -428,6 +438,10 @@ export default class JobHistory extends Mixins(FilesMixin) {
 
   get history (): HistoryItem[] {
     return this.$typedGetters['history/getHistory']
+  }
+
+  get allLoaded (): boolean {
+    return this.$typedState.history.allLoaded
   }
 
   getFilePaths (filename: string) {

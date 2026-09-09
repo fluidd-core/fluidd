@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
+import { Component, Prop, Mixins, VModel, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { AppFile } from '@/store/files/types'
 import { Marked, type MarkedExtension, type Tokens } from 'marked'
@@ -104,6 +104,8 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
 
   renderedMarkdown: string | null = null
 
+  abortController: AbortController | null = null
+
   get calculatedWidth () {
     const defaultWidth = window.innerWidth * (this.$vuetify.breakpoint.mdAndDown ? 1 : 0.75)
     return Math.min(window.innerWidth * 0.9, Math.max(this.width ?? defaultWidth, defaultWidth / 2))
@@ -125,7 +127,7 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
     return this.$typedState.config.apiUrl
   }
 
-  async LoadMarkdown () {
+  async LoadMarkdown (signal: AbortSignal) {
     if (!this.path) {
       // refuse rendering markdown if no base path has been supplied
       consola.error('[FilePreviewDialog] missing path property in markdown viewer')
@@ -133,34 +135,56 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
       return
     }
 
-    const response = await fetch(this.src)
-    const data = await response.text()
+    try {
+      const response = await fetch(this.src, { signal })
+      const data = await response.text()
 
-    const apiFileUrl = `${this.apiUrl}/server/files/${this.path}/`
+      const apiFileUrl = `${this.apiUrl}/server/files/${this.path}/`
 
-    const baseUrlExtension = baseUrl(apiFileUrl)
+      const baseUrlExtension = baseUrl(apiFileUrl)
 
-    const customExtension: MarkedExtension = {
-      renderer: {
-        link (args: Tokens.Link) {
-          const html = this.constructor.prototype.link.call(this, args)
+      const customExtension: MarkedExtension = {
+        renderer: {
+          link (args: Tokens.Link) {
+            const html = this.constructor.prototype.link.call(this, args)
 
-          return html.replace(/^<a /, '<a target="_blank" rel="noopener noreferrer" ')
+            return html.replace(/^<a /, '<a target="_blank" rel="noopener noreferrer" ')
+          }
         }
       }
+
+      const marked = new Marked(baseUrlExtension, customExtension)
+
+      const renderedMarkdown = await marked.parse(data, {
+        async: true
+      })
+
+      if (!signal.aborted) {
+        this.renderedMarkdown = renderedMarkdown
+      }
+    } catch (error: unknown) {
+      if (!signal.aborted) {
+        consola.error('[FilePreviewDialog] load markdown', error)
+      }
     }
-
-    const marked = new Marked(baseUrlExtension, customExtension)
-
-    this.renderedMarkdown = await marked.parse(data, {
-      async: true
-    })
   }
 
-  mounted () {
-    if (this.isMarkdown) {
-      this.LoadMarkdown()
+  @Watch('open')
+  onOpenChanged (value: boolean) {
+    if (value && this.isMarkdown) {
+      const controller = this.abortController = new AbortController()
+
+      this.LoadMarkdown(controller.signal)
+    } else {
+      this.abortController?.abort()
+      this.abortController = null
+
+      this.renderedMarkdown = null
     }
+  }
+
+  beforeDestroy () {
+    this.abortController?.abort()
   }
 }
 </script>

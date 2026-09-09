@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
+import { Component, Mixins, Prop, VModel, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
@@ -52,13 +52,16 @@ export default class SaveMeshDialog extends Mixins(StateMixin, ToolheadMixin) {
   @Prop({ type: Boolean })
   readonly adaptive!: boolean
 
-  mounted () {
-    this.name = 'default'
-    this.removeDefault = false
-  }
-
   name = 'default'
   removeDefault = false
+
+  @Watch('open')
+  onOpenChanged (value: boolean) {
+    if (value) {
+      this.name = 'default'
+      this.removeDefault = false
+    }
+  }
 
   handleSubmit () {
     this.$emit('save', { name: this.name, removeDefault: this.removeDefault })

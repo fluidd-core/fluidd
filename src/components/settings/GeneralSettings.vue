@@ -34,6 +34,7 @@
           hide-details="auto"
           :items="supportedLocales"
           :value="locale"
+          :loading="hasWait($waits.onLoadLanguage)"
           item-text="name"
           item-value="code"
           @change="setLocale"
@@ -226,6 +227,19 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.setting.label.thermal_chart_smoothing')">
+        <v-select
+          v-model="chartSmoothingWindow"
+          filled
+          dense
+          single-line
+          hide-details="auto"
+          :items="availableChartSmoothingWindows"
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting
         :title="$t('app.setting.label.enable_diagnostics')"
         :sub-title="$t('app.setting.tooltip.diagnostics_performance')"
@@ -355,6 +369,30 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
       .map(([key, entry]) => ({
         value: key,
         text: `${date.toLocaleTimeString(entry.locales ?? getAllLocales(), entry.options)}${entry.suffix ?? ''}`
+      }))
+  }
+
+  get chartSmoothingWindow (): number {
+    return this.$typedState.config.uiSettings.general.chartSmoothingWindow
+  }
+
+  set chartSmoothingWindow (value: number) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.general.chartSmoothingWindow',
+      value,
+      server: true
+    })
+  }
+
+  get availableChartSmoothingWindows () {
+    const nf = new Intl.NumberFormat(getAllLocales(), { style: 'unit', unit: 'second', unitDisplay: 'short' })
+
+    return [0, 1, 3, 5, 10, 15, 30]
+      .map(value => ({
+        value,
+        text: value === 0
+          ? this.$t('app.setting.label.none').toString()
+          : nf.format(value)
       }))
   }
 
@@ -617,7 +655,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
 
   async handleBackupSettings () {
     try {
-      const response = await SocketActions.serverDatabaseGetItem()
+      const response = await SocketActions.serverDatabaseGetItem(
+        undefined,
+        undefined,
+        { suppressError: true }
+      )
 
       const data = response.value
 
@@ -654,7 +696,12 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
           }
 
           for (const key in backupData.data) {
-            await SocketActions.serverDatabasePostItem(key, backupData.data[key])
+            await SocketActions.serverDatabasePostItem(
+              key,
+              backupData.data[key],
+              undefined,
+              { suppressError: true }
+            )
           }
 
           window.location.reload()

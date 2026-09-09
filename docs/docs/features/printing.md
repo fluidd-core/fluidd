@@ -132,9 +132,11 @@ insights into past prints.
 | **Statistics**    | Track total print time and filament usage over time.                  |
 | **Re-print**      | Re-start failed or cancelled jobs directly from the history.          |
 
-Fluidd loads the last 50 prints by default. The full history can hold up to
+Fluidd loads the last 100 prints by default. The full history can hold up to
 10,000 entries — a dedicated History page is available from the main navigation
-for a full-screen view.
+for a full-screen view. Use **Load all** to pull the remaining entries; the
+button greys out once everything has been loaded. Until then, the table
+footer reads e.g. "1-25 of 100 loaded" to make clear the count is partial.
 
 ![Print history list with job name, status, and duration columns](/assets/images/print_history.png)
 ![Print statistics showing total print time and filament usage](/assets/images/print_stats.png)

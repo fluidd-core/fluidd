@@ -1,9 +1,9 @@
-import vuetify from '@/plugins/vuetify'
+import vuetify, { loadVuetifyLocaleAsync } from '@/plugins/vuetify'
 import type { ActionTree } from 'vuex'
 import type { ConfigState, SaveByPath, InitConfig, InstanceConfig, TemperaturePreset, UiSettings, ThemeConfig, ConfiguredTableHeader } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
-import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'
+import { loadLocaleMessagesAsync } from '@/plugins/i18n'
 import { Waits } from '@/globals'
 import type { FileFilterType } from '../files/types'
 import { TinyColor } from '@ctrl/tinycolor'
@@ -54,31 +54,29 @@ export const actions = {
    * Sets, and saves a locale change.
    */
   async onLocaleChange ({ dispatch, state }, payload: string) {
-    // Set the correct language.
-    // vuetify.framework.lang.current = state.uiSettings.general.locale
-
-    // Add the wait.
     dispatch('wait/addWait', Waits.onLoadLanguage, { root: true })
 
-    // Grab the browsers starting locale.
-    const startingLocale = getStartingLocale()
+    try {
+      const locale = await loadLocaleMessagesAsync(
+        payload === 'default'
+          ? null
+          : payload
+      )
 
-    // Set the locale. If its set as default, use the starting locale.
-    const locale = (payload !== 'default')
-      ? await loadLocaleMessagesAsync(payload)
-      : await loadLocaleMessagesAsync(startingLocale)
+      await loadVuetifyLocaleAsync(locale)
 
-    // If the locale doesn't match what we have in settings, update it.
-    if (
-      state.uiSettings.general.locale !== payload
-    ) {
-      dispatch('saveByPath', {
-        path: 'uiSettings.general.locale',
-        value: (payload !== 'default') ? locale : payload,
-        server: true
-      })
+      if (state.uiSettings.general.locale !== payload) {
+        dispatch('saveByPath', {
+          path: 'uiSettings.general.locale',
+          value: payload === 'default'
+            ? payload
+            : locale,
+          server: true
+        })
+      }
+    } finally {
+      dispatch('wait/removeWait', Waits.onLoadLanguage, { root: true })
     }
-    dispatch('wait/removeWait', Waits.onLoadLanguage, { root: true })
   },
 
   /**

@@ -4,6 +4,8 @@ import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import getFilePaths from '@/util/get-file-paths'
+import type { ObjectWithRequest } from '@/plugins/socketClient'
+import isSocketError from '@/util/is-socket-error'
 
 export const actions = {
   /**
@@ -24,10 +26,48 @@ export const actions = {
     SocketActions.serverHistoryTotals()
   },
 
-  async updateHistory ({ commit }, payload: Moonraker.History.Job) {
-    if (payload) {
-      commit('setUpdateHistory', payload)
+  async fetchMissingJobs ({ commit, state, rootGetters }, payload: string[]) {
+    if (!rootGetters['server/componentSupport']('history')) {
+      return
     }
+
+    const loadedJobIds = new Set(
+      state.jobs
+        .map(job => job.job_id)
+    )
+
+    const jobIds = [...new Set(payload)]
+      .filter(jobId => (
+        !loadedJobIds.has(jobId) &&
+        !state.unresolvedJobIds.has(jobId)
+      ))
+
+    if (jobIds.length === 0) {
+      return
+    }
+
+    commit('setAddUnresolvedJobIds', jobIds)
+
+    await Promise.all(
+      jobIds
+        .map(async jobId => {
+          try {
+            await SocketActions.serverHistoryGetJob(
+              jobId,
+              {
+                suppressError: error => error.code === 404
+              }
+            )
+          } catch (error) {
+            if (
+              !isSocketError(error) ||
+              error.code !== 404
+            ) {
+              commit('setRemoveUnresolvedJobIds', [jobId])
+            }
+          }
+        })
+    )
   },
 
   async clearHistoryThumbnails ({ commit }, payload: string) {
@@ -46,11 +86,37 @@ export const actions = {
   },
 
   /**
+   * Update a job in the store
+   */
+  async onHistoryJob ({ commit }, payload: Moonraker.History.JobResponse) {
+    if (payload.job) {
+      commit('setUpdateHistory', payload.job)
+    }
+  },
+
+  /**
    * Update the store with history
    */
-  async onHistoryList ({ commit }, payload: Moonraker.History.ListResponse) {
+  async onHistoryList ({ commit, dispatch, rootState }, payload: ObjectWithRequest<Moonraker.History.ListResponse>) {
     if (payload) {
       commit('setHistoryList', payload)
+
+      const { limit } = payload.__request__.params ?? {}
+
+      commit('setAllLoaded', limit === 0 || (limit != null && (payload.jobs?.length ?? 0) < limit))
+
+      commit('setClearUnresolvedJobIds')
+
+      const jobIds = Object.values(rootState.files.pathContent)
+        .flatMap(pathContent => pathContent?.files ?? [])
+        .map(file => (
+          'job_id' in file
+            ? file.job_id
+            : null
+        ))
+        .filter(Boolean)
+
+      await dispatch('fetchMissingJobs', jobIds)
     }
   },
 
@@ -63,7 +129,7 @@ export const actions = {
     if (payload) {
       switch (payload.action) {
         case 'added': {
-          commit('setAddHistory', payload.job)
+          commit('setUpdateHistory', payload.job)
 
           const { rootPath, filename } = getFilePaths(payload.job.filename, 'gcodes')
 
@@ -85,6 +151,6 @@ export const actions = {
   },
 
   async onDelete ({ commit }, payload: Moonraker.History.DeleteJobResponse) {
-    commit('setDeleteJob', payload.deleted_jobs)
+    commit('setDeleteJobs', payload.deleted_jobs)
   }
 } satisfies ActionTree<HistoryState, RootState>

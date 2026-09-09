@@ -1,9 +1,10 @@
 import type { HistoryState } from './types'
 
-export const defaultState = (): HistoryState => {
+export const createState = (): HistoryState => {
   return {
-    count: 0,
     jobs: [],
+    unresolvedJobIds: new Set(),
+    allLoaded: false,
     job_totals: {
       total_jobs: 0,
       total_time: 0,
@@ -14,5 +15,3 @@ export const defaultState = (): HistoryState => {
     }
   }
 }
-
-export const state = defaultState()

@@ -110,9 +110,14 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
     this.open = false
   }
 
-  mounted () {
-    this.loaded = false
-    SocketActions.serverFilesList(this.root)
+  @Watch('open')
+  onOpenChanged (value: boolean) {
+    if (value) {
+      this.search = ''
+      this.loaded = false
+
+      SocketActions.serverFilesList(this.root)
+    }
   }
 }
 </script>

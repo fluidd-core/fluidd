@@ -1,13 +1,13 @@
 import type { MutationTree } from 'vuex'
 import type { VersionState } from './types'
-import { defaultState } from './state'
+import { createState } from './state'
 
 export const mutations = {
   /**
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   setUpdateStatus (state, payload: Partial<Moonraker.UpdateManager.StatusResponse>) {

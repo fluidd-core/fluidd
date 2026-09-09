@@ -1,0 +1,61 @@
+name: Build (Reusable)
+
+on:
+  workflow_call:
+
+permissions: {}
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm and Node
+        uses: ./.github/actions/setup-pnpm-node
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+      - name: Run lint
+        run: |
+          pnpm run lint --no-fix
+
+      - name: Run type check
+        if: ${{ !cancelled() }}
+        run: |
+          pnpm run type-check
+
+      - name: Run tests
+        if: ${{ !cancelled() }}
+        run: |
+          pnpm run test:unit
+
+      - name: Run circular references check
+        if: ${{ !cancelled() }}
+        run: |
+          pnpm run circular-check
+
+      - name: Build
+        run: |
+          pnpm run build
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v7
+        with:
+          name: fluidd-${{ github.sha }}
+          path: ./dist
+          retention-days: 7

@@ -1,13 +1,13 @@
 import type { MutationTree } from 'vuex'
 import type { DevicePowerState } from './types'
-import { defaultState } from './state'
+import { createState } from './state'
 
 export const mutations = {
   /**
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   setDevices (state, payload: Moonraker.Power.DevicesResponse) {

@@ -225,7 +225,6 @@
     </v-card-text>
 
     <file-preview-dialog
-      v-if="filePreviewState.open"
       v-model="filePreviewState.open"
       :filename="filePreviewState.filename"
       :src="filePreviewState.src"

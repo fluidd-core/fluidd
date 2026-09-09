@@ -219,7 +219,6 @@ app:
       z_offset: موازنة Z
     msg:
       password_changed: تم تغيير كلمة المرور
-      wrong_password: حدث خطأ هل انت متأكد من كلمة المرور؟
     simple_form:
       error:
         arrayofnums: ارقام فقط

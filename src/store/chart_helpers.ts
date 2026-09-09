@@ -1,6 +1,7 @@
 import type { Commit } from 'vuex'
 import type { RootState } from './types'
-import type { ChartData } from './charts/types'
+import { chartBufferLastTime, chartBufferLastValue } from '@/util/chart-buffer'
+import { thermalColumn } from './charts/thermal-columns'
 import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
 import decimalRound from '@/util/decimal-round'
 
@@ -15,13 +16,12 @@ export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, sta
 
       if (stats.last_stats != null) {
         // Datestamp for this chart entry.
-        const date = new Date()
+        const time = Date.now()
 
         // The last entry in our chart data.
-        let lastEntry: any
-        if (state.charts[key]) {
-          lastEntry = state.charts[key][state.charts[key].length - 1]
-        }
+        const buffer = state.charts.mcus[key]
+        const lastTime = chartBufferLastTime(buffer)
+        const lastBw = chartBufferLastValue(buffer, 'bw')
 
         // Load & Awake times
         const task_max = 0.0025
@@ -37,20 +37,20 @@ export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, sta
         // klipper recorded the data.
         const maxbw = 25000
 
-        // The time delta between the last and this entry.
-        const timedelta = (lastEntry) ? date.getTime() - lastEntry.date.getTime() : 1000
+        // The time delta between the last and this entry, clamped so that two
+        // updates within the same millisecond don't divide by zero below.
+        const timedelta = (lastTime != null) ? Math.max(1, time - lastTime) : 1000
 
         let bw = stats.last_stats.bytes_write + stats.last_stats.bytes_retransmit
-        let lastbw = (lastEntry) ? parseFloat(lastEntry.bw) : bw
-        if (bw < lastbw) lastbw = bw
+        const lastbw = Math.min(bw, lastBw ?? bw)
         bw = 100 * (bw - lastbw) / (maxbw * timedelta)
 
         // Commit the formatted result to our chart data.
         commit('charts/setChartEntry', {
-          type: key,
-          retention: 600,
-          data: {
-            date,
+          bucket: 'mcu',
+          id: key,
+          time,
+          values: {
             load: decimalRound(load, 2),
             awake: decimalRound(awake, 2),
             bw: decimalRound(bw, 2)
@@ -70,7 +70,7 @@ export const handleSystemStatsChange = (payload: Partial<Klipper.PrinterState>, 
     }
 
     // Datestamp for this chart entry.
-    const date = new Date()
+    const time = Date.now()
 
     // Add an entry for the memory graph.
     if (
@@ -83,10 +83,9 @@ export const handleSystemStatsChange = (payload: Partial<Klipper.PrinterState>, 
 
       // Commit the formatted result to our chart data.
       commit('charts/setChartEntry', {
-        type: 'memory',
-        retention: 600,
-        data: {
-          date,
+        bucket: 'memory',
+        time,
+        values: {
           memused: decimalRound(percent_mem_used, 2)
         }
       }, { root: true })
@@ -102,10 +101,9 @@ export const handleSystemStatsChange = (payload: Partial<Klipper.PrinterState>, 
 
       // Commit the formatted result to our chart data.
       commit('charts/setChartEntry', {
-        type: 'klipper',
-        retention: 600,
-        data: {
-          date,
+        bucket: 'klipper',
+        time,
+        values: {
           load: decimalRound(stats.sysload, 2),
           cputime_change: decimalRound((cputime - last_cputime) * 100, 2)
         }
@@ -115,32 +113,29 @@ export const handleSystemStatsChange = (payload: Partial<Klipper.PrinterState>, 
 }
 
 export const handleAddSensorChartEntry = (state: RootState, commit: Commit) => {
-  const date = new Date()
+  const time = Date.now()
 
   for (const sensorId in state.sensors.sensors) {
-    const { values } = state.sensors.sensors[sensorId]
+    const { values: sensorValues } = state.sensors.sensors[sensorId]
 
-    const data: ChartData = {
-      date
-    }
-
+    const values: Record<string, number> = {}
     let hasNumericValue = false
 
-    for (const field in values) {
-      const value = values[field]
+    for (const field in sensorValues) {
+      const value = sensorValues[field]
 
       if (typeof value === 'number') {
-        data[field] = decimalRound(value, 2)
-
+        values[field] = decimalRound(value, 2)
         hasNumericValue = true
       }
     }
 
     if (hasNumericValue) {
       commit('charts/setChartEntry', {
-        type: `sensor:${sensorId}`,
-        retention: 600,
-        data
+        bucket: 'sensor',
+        id: sensorId,
+        time,
+        values
       }, { root: true })
     }
   }
@@ -154,9 +149,7 @@ export const handleAddChartEntry = (retention: number, state: RootState, commit:
   const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
 
   const configureChartEntry = () => {
-    const chartData: ChartData = {
-      date: new Date()
-    }
+    const values: Record<string, number> = {}
 
     const keys: string[] = getters.getChartableSensors
 
@@ -177,31 +170,32 @@ export const handleAddChartEntry = (retention: number, state: RootState, commit:
 
         const { temperature, target, power, speed } = sensor
 
-        chartData[key] = decimalRound(temperature, 2)
+        values[thermalColumn(key)] = decimalRound(temperature, 2)
 
         if (target != null) {
-          chartData[`${key}#target`] = decimalRound(target, 2)
+          values[thermalColumn(key, 'target')] = decimalRound(target, 2)
         }
 
         if (power != null) {
-          chartData[`${key}#power`] = decimalRound(power, 2)
+          values[thermalColumn(key, 'power')] = decimalRound(power, 2)
         }
 
         if (speed != null) {
-          chartData[`${key}#speed`] = decimalRound(speed, 2)
+          values[thermalColumn(key, 'speed')] = decimalRound(speed, 2)
         }
       }
     }
 
-    return chartData
+    return values
   }
 
   if (state.charts.ready) {
-    const data = configureChartEntry()
+    const values = configureChartEntry()
     commit('charts/setChartEntry', {
-      type: 'chart',
-      data,
-      retention
+      bucket: 'thermal',
+      retention,
+      time: Date.now(),
+      values
     }, { root: true })
   }
 }

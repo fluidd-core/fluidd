@@ -1,6 +1,6 @@
 declare namespace Moonraker.ProcStats {
   export interface Response {
-    moonraker_stats: MoonrakerStats[];
+    moonraker_stats: MoonrakerStats | MoonrakerStats[];
     throttled_state: ThrottledState | null;
     cpu_temp: number | null;
     network: Record<string, NetworkStats>;

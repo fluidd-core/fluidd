@@ -101,6 +101,7 @@ export interface GeneralConfig {
   instanceName: string;
   locale: string;
   chartVisible: boolean;
+  chartSmoothingWindow: number;
   hideTempWaits: boolean;
   axis: Axis;
   defaultExtrudeLength: number;

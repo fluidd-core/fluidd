@@ -291,7 +291,6 @@ app:
       file_time: 預計剩余
     msg:
       password_changed: 密碼已更改
-      wrong_password: 出現不明錯誤。您確定輸入正確密碼嗎？
       bed_screws_adjust: 如果需要對當前螺釘進行重大調整，請單擊<b>已調整</b>； 否則，單擊<b>接受</b>繼續。
       welcome_back: 歡迎回來。<br>在下面登錄以與您的打印機保持聯繫。
       offline_ready: Fluidd 現在可以離線工作了。

@@ -326,7 +326,6 @@ app:
       alias: 별칭
     msg:
       password_changed: 비밀번호 변경됨
-      wrong_password: 무언가 잘못되었습니다. 비밀번호가 일치합니까?
       bed_screws_adjust: 현재 나사를 크게 조정해야 하는 경우 조정됨을 <b>클릭</b>하고, 그렇지 않은 경우 
         <b>수락</b>을 클릭하여 계속합니다.
       rolledover_logs: '다음 애플리케이션 로그가 롤오버되었습니다: %{applications}'

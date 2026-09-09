@@ -50,7 +50,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { defaultState } from '@/store/config/state'
+import { createState } from '@/store/config/state'
 
 @Component({})
 export default class WarningsSettings extends Vue {
@@ -81,7 +81,7 @@ export default class WarningsSettings extends Vue {
   handleReset () {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.warnings',
-      value: defaultState().uiSettings.warnings,
+      value: createState().uiSettings.warnings,
       server: true
     })
   }

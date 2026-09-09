@@ -1,6 +1,6 @@
 import type { FilesState } from './types'
 
-export const defaultState = (): FilesState => {
+export const createState = (): FilesState => {
   return {
     uploads: [],
     download: null,
@@ -11,5 +11,3 @@ export const defaultState = (): FilesState => {
     pathContent: {}
   }
 }
-
-export const state = defaultState()

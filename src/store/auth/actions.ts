@@ -65,7 +65,7 @@ export const actions = {
     // anonymous; Moonraker does not close the connection.
     if (invalidate) {
       try {
-        await SocketActions.accessLogout()
+        await SocketActions.accessLogout({ suppressError: true })
       } catch (e) {
         consola.debug('accessLogout failed', e)
       }
@@ -96,13 +96,13 @@ export const actions = {
    */
   async checkTrust ({ dispatch, commit }) {
     try {
-      const info = await SocketActions.accessInfo()
+      const info = await SocketActions.accessInfo({ suppressError: true })
 
       if (info.trusted && !info.login_required) {
         await dispatch('logout', { partial: true })
 
         try {
-          const user = await SocketActions.accessGetUser()
+          const user = await SocketActions.accessGetUser({ suppressError: true })
           commit('setCurrentUser', user)
         } catch (e) {
           consola.debug('accessGetUser after trust check failed', e)

@@ -32,8 +32,8 @@ import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
 
 const spoomanDataPatterns = [
-  /web\+spoolman:s-(\d+)/,
-  /\/spool\/show\/(\d+)\/?/
+  /web\+spoolman:s-(\d+)/i,
+  /\/spool\/show\/(\d+)\/?/i
 ]
 
 @Component({

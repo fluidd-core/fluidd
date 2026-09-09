@@ -377,7 +377,6 @@ app:
       pending_configuration_sections_deleted: 次のセクションは削除の対象です
       rolledover_logs: '以下のアプリケーションログがロールオーバーされました： %{applications}'
       welcome_back: お帰りなさい。<br>以下でログインして、プリンタと接続してください。
-      wrong_password: おっと、何か問題が発生したようですよ。パスワードは正しいですか？
     simple_form:
       error:
         arrayofnums: 数字のみ

@@ -493,7 +493,6 @@ app:
         para atualizar.
       pending_configuration_sections_deleted: As seguintes secções estão 
         marcadas para apagar
-      wrong_password: Possa, algo errado! A sua palavra-passe está correta?
       welcome_back: Bem-vindo de volta.<br>Faça login abaixo para manter contato
         com a sua impressora.
       fluidd_settings_restore_failed: Falha ao restaurar as configurações do 

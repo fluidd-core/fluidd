@@ -1,17 +1,20 @@
-FROM node:24-alpine
+# NOTE: must stay on a glibc base. typescript-native-bridge (the `typescript`
+# catalog entry) ships a Go c-shared NAPI bridge with no musl build — on Alpine
+# it fails to load, and segfaults even with `gcompat`. See issue #1938.
+FROM node:24-trixie-slim
 
 RUN \
-  apk update \
-  && apk add \
+  apt-get update \
+  && apt-get install -y --no-install-recommends \
+    ca-certificates \
     git \
-    git-zsh-completion \
+    wget \
     zsh \
-    zsh-completions \
-  && sed -i '/^node:/s|/bin/ash|/bin/zsh|' /etc/passwd \
+  && usermod --shell /bin/zsh node \
   && corepack enable \
   && mkdir -p /workspaces/fluidd/node_modules /workspaces/fluidd/.pnpm-store \
   && chown -R node:node /workspaces/fluidd \
-  && rm -f /etc/apk/cache/* /root/.cache
+  && rm -rf /var/lib/apt/lists/*
 
 USER node
 WORKDIR /workspaces/fluidd

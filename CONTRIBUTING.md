@@ -57,7 +57,12 @@ pnpm run test
 ```
 
 CI runs the same checks (plus `pnpm run circular-check` and a production build) on
-every pull request.
+every pull request. They no longer stop at the first failure, so a single run reports
+lint, type, test and circular-dependency problems together.
+
+CI also comments on each pull request with the gzip bundle-size difference against the
+merge-base, so changes that pull a large dependency into an eagerly loaded chunk are
+visible in review.
 
 ## Translations
 

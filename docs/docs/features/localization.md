@@ -22,8 +22,7 @@ Translations are managed through
 [Weblate](https://hosted.weblate.org/engage/fluidd/). Do not edit non-English
 locale files directly — use Weblate instead. The
 [Weblate project page](https://hosted.weblate.org/engage/fluidd/) shows the
-current completion percentage for each language, and new languages can be added
-there without needing a code change.
+current completion percentage for each language.
 
 See the [developer localization](/development#localization) docs for technical
 details on how translations work.

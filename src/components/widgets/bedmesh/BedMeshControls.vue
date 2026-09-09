@@ -258,7 +258,6 @@
     </v-card-text>
 
     <save-mesh-dialog
-      v-if="saveDialogState.open"
       v-model="saveDialogState.open"
       :existing-name="saveDialogState.existingName"
       :adaptive="saveDialogState.adaptive"
