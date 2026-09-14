@@ -2,7 +2,7 @@ name: PR Comment
 
 on:
   workflow_run:
-    workflows: ['Build']
+    workflows: ['CI']
     types:
       - completed
 
