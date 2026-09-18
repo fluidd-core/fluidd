@@ -19,7 +19,7 @@ export const actions = {
    * Inits moonraker component
    */
   async init () {
-    // Get the last 50 history items.
+    // Get the most recent history items.
     SocketActions.serverHistoryList({ limit: Globals.JOB_HISTORY_LOAD })
 
     // Load the known totals.
@@ -50,8 +50,8 @@ export const actions = {
 
     // Chunked, one commit per chunk: a commit per job re-renders every history
     // and file table row, and hundreds of jobs then block the page for seconds.
-    for (let i = 0; i < jobIds.length; i += Globals.JOB_HISTORY_FETCH_CHUNK) {
-      const chunk = jobIds.slice(i, i + Globals.JOB_HISTORY_FETCH_CHUNK)
+    for (let index = 0; index < jobIds.length; index += Globals.JOB_HISTORY_FETCH_CHUNK) {
+      const chunk = jobIds.slice(index, index + Globals.JOB_HISTORY_FETCH_CHUNK)
 
       const jobs = await Promise.all(
         chunk
@@ -107,8 +107,6 @@ export const actions = {
       const { limit } = payload.__request__.params ?? {}
 
       commit('setAllLoaded', limit === 0 || (limit != null && (payload.jobs?.length ?? 0) < limit))
-
-      commit('setClearUnresolvedJobIds')
 
       const jobIds = Object.values(rootState.files.pathContent)
         .flatMap(pathContent => pathContent?.files ?? [])
