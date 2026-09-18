@@ -588,9 +588,9 @@ export const SocketActions = {
   },
 
   serverHistoryGetJob (uid: string, options?: NotifyOptions) {
+    // Answered to the caller, which commits jobs in batches.
     return baseEmit<Moonraker.History.JobResponse>(
       'server.history.get_job', {
-        dispatch: 'history/onHistoryJob',
         ...options,
         params: {
           uid

@@ -262,6 +262,7 @@ src/
 
 - `Globals.JOB_HISTORY_LOAD` (100) bounds the initial `server.history.list` fetch; `history/onHistoryList` derives `state.allLoaded` from the echoed request's `limit` (via `ObjectWithRequest.__request__.params`, not the response), so a short page (or `limit: 0`, used by "Load all") both flip it correctly
 - A job referenced by a file in the loaded file listing but outside the loaded history window is back-filled individually: `history/fetchMissingJobs` diffs against loaded jobs and `state.unresolvedJobIds`, then calls `SocketActions.serverHistoryGetJob` per missing id, suppressing 404s (`suppressError: error => error.code === 404`) since a file can reference a job Moonraker has since pruned
+- Those requests go out in chunks of `Globals.JOB_HISTORY_FETCH_CHUNK`, and each chunk lands as **one** `setUpdateHistoryJobs` commit. `serverHistoryGetJob` deliberately has no `dispatch` — a per-response commit re-runs `getHistory` and `files/getDirectory` and re-renders the file table once per job, which froze large directories. `unresolvedJobIds` holds ids both in flight and confirmed 404s — a success or non-404 failure removes the id, a 404 leaves it. `onHistoryList` deliberately never clears it: that would re-send in-flight requests and re-ask pruned jobs
 - Job lookups go through `history/getHistoryByIdMap` (a memoized `Map`), not a linear scan of `getHistory`
 
 ### Component Communication
