@@ -45,6 +45,23 @@ export const mutations = {
     }
   },
 
+  /**
+   * Updates or adds many history items in a single mutation.
+   */
+  setUpdateHistoryJobs (state, payload: Moonraker.History.Job[]) {
+    for (const job of payload) {
+      const i = state.jobs.findIndex(({ job_id }) => job_id === job.job_id)
+
+      if (i >= 0) {
+        Vue.set(state.jobs, i, Object.freeze(job))
+      } else {
+        state.jobs.push(Object.freeze(job))
+      }
+
+      state.unresolvedJobIds.delete(job.job_id)
+    }
+  },
+
   setClearHistoryThumbnails (state, payload: string) {
     if (payload) {
       const i = state.jobs.findIndex(job => job.job_id === payload)

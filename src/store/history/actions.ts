@@ -48,26 +48,38 @@ export const actions = {
 
     commit('setAddUnresolvedJobIds', jobIds)
 
-    await Promise.all(
-      jobIds
-        .map(async jobId => {
-          try {
-            await SocketActions.serverHistoryGetJob(
-              jobId,
-              {
-                suppressError: error => error.code === 404
+    // Chunked, one commit per chunk: a commit per job re-renders every history
+    // and file table row, and hundreds of jobs then block the page for seconds.
+    for (let i = 0; i < jobIds.length; i += Globals.JOB_HISTORY_FETCH_CHUNK) {
+      const chunk = jobIds.slice(i, i + Globals.JOB_HISTORY_FETCH_CHUNK)
+
+      const jobs = await Promise.all(
+        chunk
+          .map(async jobId => {
+            try {
+              const { job } = await SocketActions.serverHistoryGetJob(
+                jobId,
+                {
+                  suppressError: error => error.code === 404
+                }
+              )
+
+              return job
+            } catch (error) {
+              if (
+                !isSocketError(error) ||
+                error.code !== 404
+              ) {
+                commit('setRemoveUnresolvedJobIds', [jobId])
               }
-            )
-          } catch (error) {
-            if (
-              !isSocketError(error) ||
-              error.code !== 404
-            ) {
-              commit('setRemoveUnresolvedJobIds', [jobId])
+
+              return null
             }
-          }
-        })
-    )
+          })
+      )
+
+      commit('setUpdateHistoryJobs', jobs.filter(Boolean))
+    }
   },
 
   async clearHistoryThumbnails ({ commit }, payload: string) {
@@ -82,15 +94,6 @@ export const actions = {
   async onHistoryTotals ({ commit }, payload: Moonraker.History.TotalsResponse) {
     if (payload) {
       commit('setHistoryTotals', payload)
-    }
-  },
-
-  /**
-   * Update a job in the store
-   */
-  async onHistoryJob ({ commit }, payload: Moonraker.History.JobResponse) {
-    if (payload.job) {
-      commit('setUpdateHistory', payload.job)
     }
   },
 
