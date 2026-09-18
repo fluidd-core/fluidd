@@ -3,6 +3,34 @@ import { getAllLocales } from '@/plugins/i18n'
 
 type GetDefaultDateTimeFormatFunction = () => string
 
+// Building an Intl.DateTimeFormat is expensive, and a data table formats a date
+// per cell on every render, so the instances are reused.
+const dateTimeFormatCache = new Map<string, Intl.DateTimeFormat>()
+
+const getDateTimeFormat = (locales: Intl.LocalesArgument, options: Intl.DateTimeFormatOptions): Intl.DateTimeFormat => {
+  const key = JSON.stringify([locales, options])
+
+  let dateTimeFormat = dateTimeFormatCache.get(key)
+
+  if (!dateTimeFormat) {
+    dateTimeFormat = new Intl.DateTimeFormat(locales, options)
+
+    dateTimeFormatCache.set(key, dateTimeFormat)
+  }
+
+  return dateTimeFormat
+}
+
+// Date.toLocaleString renders an invalid date as 'Invalid Date' where
+// Intl.DateTimeFormat.format throws, so invalid values keep the old path.
+const formatDateTimeValue = (value: number | string | Date, locales: Intl.LocalesArgument, options: Intl.DateTimeFormatOptions): string => {
+  const date = new Date(value)
+
+  return Number.isNaN(date.getTime())
+    ? date.toLocaleString(locales, options)
+    : getDateTimeFormat(locales, options).format(date)
+}
+
 const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFunction, getDefaultTimeFormat: GetDefaultDateTimeFormatFunction) => {
   const instance = {
     getDateFormat: (override?: string): DateTimeFormat => {
@@ -112,20 +140,18 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
     },
 
     formatDate: (value: number | string | Date, options?: Intl.DateTimeFormatOptions) => {
-      const date = new Date(value)
       const dateFormat = instance.getDateFormat()
 
-      return date.toLocaleDateString(dateFormat.locales, {
+      return formatDateTimeValue(value, dateFormat.locales, {
         ...dateFormat.options,
         ...options
       })
     },
 
     formatTime: (value: number | string | Date, options?: Intl.DateTimeFormatOptions) => {
-      const date = new Date(value)
       const timeFormat = instance.getTimeFormat()
 
-      return date.toLocaleTimeString(timeFormat.locales, {
+      return formatDateTimeValue(value, timeFormat.locales, {
         ...timeFormat.options,
         ...options
       })
@@ -146,9 +172,7 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
         return instance.formatDate(value, options) + ' ' + instance.formatTime(value, options)
       }
 
-      const date = new Date(value)
-
-      return date.toLocaleDateString(dateFormat.locales, {
+      return formatDateTimeValue(value, dateFormat.locales, {
         ...dateFormat.options,
         ...timeFormat.options,
         ...options
