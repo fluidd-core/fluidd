@@ -15,6 +15,8 @@
       @legendselectchanged="handleLegendSelectChanged"
       @legendselected="handleLegendSelectChanged"
       @legendunselected="handleLegendSelectChanged"
+      @zr:mousemove="onPointerMove"
+      @zr:globalout="onPointerOut"
     />
 
     <div class="chart-options">
@@ -63,6 +65,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   readonly initOptions: EChartsInitOpts = Object.freeze({ renderer: 'canvas' })
 
   paused = false
+  pointer: number[] | null = null
   series: LineSeriesOption[] = []
   initialSelected: Record<string, boolean> = {}
 
@@ -198,6 +201,8 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
         source: this.smoothedChartData
       }
     }, { replaceMerge: 'dataset' })
+
+    this.syncAxisPointer()
   }
 
   // Merge so the imperatively-set dataset and legend selection are preserved.
@@ -267,6 +272,25 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
         source: this.smoothedChartData
       }
     }, { notMerge: true })
+  }
+
+  onPointerMove (event: { offsetX: number, offsetY: number }) {
+    this.pointer = [event.offsetX, event.offsetY]
+  }
+
+  onPointerOut () {
+    this.pointer = null
+  }
+
+  // setOption drops the axis pointer's symbols without it noticing and leaves
+  // its line on a sample that scrolls away. Reset it and redraw at the mouse.
+  syncAxisPointer () {
+    if (!this.chart || !this.pointer) return
+
+    const [x, y] = this.pointer
+
+    this.chart.dispatchAction({ type: 'updateAxisPointer', currTrigger: 'leave' })
+    this.chart.dispatchAction({ type: 'showTip', x, y })
   }
 
   beforeDestroy () {
