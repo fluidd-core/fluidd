@@ -38,6 +38,10 @@ describe('formatCounterSeconds', () => {
 describe('formatDate and formatTime', () => {
   const dtf = buildTestDateTimeFormatters('iso', 'iso')
 
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('Builds a formatter once per distinct format', () => {
     const date = new Date(2022, 10, 19, 14, 32)
     const dateTimeFormatSpy = vi.spyOn(Intl, 'DateTimeFormat')
@@ -46,8 +50,15 @@ describe('formatDate and formatTime', () => {
 
     expect(dtf.formatDate(date, { era: 'short' })).toBe(first)
     expect(dateTimeFormatSpy).toHaveBeenCalledTimes(1)
+  })
 
-    dateTimeFormatSpy.mockRestore()
+  it('Builds a relative time formatter once per distinct format', () => {
+    const relativeTimeFormatSpy = vi.spyOn(Intl, 'RelativeTimeFormat')
+
+    const first = dtf.formatRelativeTime(3, 'day', { numeric: 'always', style: 'narrow' })
+
+    expect(dtf.formatRelativeTime(3, 'day', { numeric: 'always', style: 'narrow' })).toBe(first)
+    expect(relativeTimeFormatSpy).toHaveBeenCalledTimes(1)
   })
 
   it('Keeps distinct formats apart', () => {

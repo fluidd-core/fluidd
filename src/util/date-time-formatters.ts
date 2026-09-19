@@ -1,33 +1,16 @@
 import { DateFormats, TimeFormats, type DateTimeFormat } from '@/globals'
 import { getAllLocales } from '@/plugins/i18n'
+import { getDateTimeFormat, getRelativeTimeFormat } from '@/util/intl-format-cache'
 
 type GetDefaultDateTimeFormatFunction = () => string
 
-// Building an Intl.DateTimeFormat is expensive, and a data table formats a date
-// per cell on every render, so the instances are reused.
-const dateTimeFormatCache = new Map<string, Intl.DateTimeFormat>()
-
-const getDateTimeFormat = (locales: Intl.LocalesArgument, options: Intl.DateTimeFormatOptions): Intl.DateTimeFormat => {
-  const key = JSON.stringify([locales, options])
-
-  let dateTimeFormat = dateTimeFormatCache.get(key)
-
-  if (!dateTimeFormat) {
-    dateTimeFormat = new Intl.DateTimeFormat(locales, options)
-
-    dateTimeFormatCache.set(key, dateTimeFormat)
-  }
-
-  return dateTimeFormat
-}
-
-// Date.toLocaleString renders an invalid date as 'Invalid Date' where
-// Intl.DateTimeFormat.format throws, so invalid values keep the old path.
+// Intl.DateTimeFormat.format throws on an invalid date, where the
+// Date.toLocale*String methods it replaces returned 'Invalid Date'.
 const formatDateTimeValue = (value: number | string | Date, locales: Intl.LocalesArgument, options: Intl.DateTimeFormatOptions): string => {
   const date = new Date(value)
 
   return Number.isNaN(date.getTime())
-    ? date.toLocaleString(locales, options)
+    ? date.toString()
     : getDateTimeFormat(locales, options).format(date)
 }
 
@@ -82,7 +65,7 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
     secondsAsRange: (seconds: number | string) => {
       seconds = +seconds
 
-      if (Number.isNaN(seconds) || !Number.isFinite(seconds)) {
+      if (!Number.isFinite(seconds)) {
         seconds = 0
       }
 
@@ -95,7 +78,7 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
         days: Math.floor(seconds / 86400),
         hours: Math.floor(seconds % 86400 / 3600),
         minutes: Math.floor(seconds % 3600 / 60),
-        seconds: Math.floor(seconds % 3600 % 60)
+        seconds: Math.floor(seconds % 60)
       }
     },
 
@@ -165,18 +148,11 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
     },
 
     formatDateTime: (value: number | string | Date, options?: Intl.DateTimeFormatOptions) => {
-      const timeFormat = instance.getTimeFormat()
-      const dateFormat = instance.getDateFormat()
+      const date = new Date(value)
 
-      if (timeFormat.locales !== dateFormat.locales) {
-        return instance.formatDate(value, options) + ' ' + instance.formatTime(value, options)
-      }
-
-      return formatDateTimeValue(value, dateFormat.locales, {
-        ...dateFormat.options,
-        ...timeFormat.options,
-        ...options
-      })
+      return Number.isNaN(date.getTime())
+        ? date.toString()
+        : instance.formatDate(date, options) + ' ' + instance.formatTime(date, options)
     },
 
     formatRelativeTimeToNow (value: number | string | Date, options?: Intl.RelativeTimeFormatOptions) {
@@ -221,12 +197,10 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
     },
 
     formatRelativeTime (value: number, unit: Intl.RelativeTimeFormatUnit, options?: Intl.RelativeTimeFormatOptions) {
-      const rtf = new Intl.RelativeTimeFormat(getAllLocales(), {
+      return getRelativeTimeFormat(getAllLocales(), {
         numeric: 'auto',
         ...options
-      })
-
-      return rtf.format(value, unit)
+      }).format(value, unit)
     },
 
     formatAbsoluteDateTime: (value: number | string | Date, options?: Intl.RelativeTimeFormatOptions) => {
