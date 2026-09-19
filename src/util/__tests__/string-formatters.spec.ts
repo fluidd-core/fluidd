@@ -33,3 +33,27 @@ describe('getReadableLengthString', () => {
     expect(sf.getReadableLengthString(1234, { fractionDigits: 0 })).toBe('1 m')
   })
 })
+
+describe('getReadableCurrencyString', () => {
+  const sf = stringFormatters()
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('Builds a formatter once per distinct format', () => {
+    const numberFormatSpy = vi.spyOn(Intl, 'NumberFormat')
+
+    const first = sf.getReadableCurrencyString(12.5, 'EUR', { currencyDisplay: 'name' })
+
+    expect(sf.getReadableCurrencyString(12.5, 'EUR', { currencyDisplay: 'name' })).toBe(first)
+    expect(numberFormatSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it.each([
+    ['', '12.50'],
+    ['XX', '12.50 XX']
+  ])('Falls back to a plain value when currency is "%s"', (currency, expected) => {
+    expect(sf.getReadableCurrencyString(12.5, currency)).toBe(expected)
+  })
+})

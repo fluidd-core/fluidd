@@ -1,7 +1,18 @@
 import { DateFormats, TimeFormats, type DateTimeFormat } from '@/globals'
 import { getAllLocales } from '@/plugins/i18n'
+import { getDateTimeFormat, getRelativeTimeFormat } from '@/util/intl-format-cache'
 
 type GetDefaultDateTimeFormatFunction = () => string
+
+// Intl.DateTimeFormat.format throws on an invalid date, where the
+// Date.toLocale*String methods it replaces returned 'Invalid Date'.
+const formatDateTimeValue = (value: number | string | Date, locales: Intl.LocalesArgument, options: Intl.DateTimeFormatOptions): string => {
+  const date = new Date(value)
+
+  return Number.isNaN(date.getTime())
+    ? date.toString()
+    : getDateTimeFormat(locales, options).format(date)
+}
 
 const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFunction, getDefaultTimeFormat: GetDefaultDateTimeFormatFunction) => {
   const instance = {
@@ -54,7 +65,7 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
     secondsAsRange: (seconds: number | string) => {
       seconds = +seconds
 
-      if (Number.isNaN(seconds) || !Number.isFinite(seconds)) {
+      if (!Number.isFinite(seconds)) {
         seconds = 0
       }
 
@@ -67,7 +78,7 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
         days: Math.floor(seconds / 86400),
         hours: Math.floor(seconds % 86400 / 3600),
         minutes: Math.floor(seconds % 3600 / 60),
-        seconds: Math.floor(seconds % 3600 % 60)
+        seconds: Math.floor(seconds % 60)
       }
     },
 
@@ -112,20 +123,18 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
     },
 
     formatDate: (value: number | string | Date, options?: Intl.DateTimeFormatOptions) => {
-      const date = new Date(value)
       const dateFormat = instance.getDateFormat()
 
-      return date.toLocaleDateString(dateFormat.locales, {
+      return formatDateTimeValue(value, dateFormat.locales, {
         ...dateFormat.options,
         ...options
       })
     },
 
     formatTime: (value: number | string | Date, options?: Intl.DateTimeFormatOptions) => {
-      const date = new Date(value)
       const timeFormat = instance.getTimeFormat()
 
-      return date.toLocaleTimeString(timeFormat.locales, {
+      return formatDateTimeValue(value, timeFormat.locales, {
         ...timeFormat.options,
         ...options
       })
@@ -139,20 +148,11 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
     },
 
     formatDateTime: (value: number | string | Date, options?: Intl.DateTimeFormatOptions) => {
-      const timeFormat = instance.getTimeFormat()
-      const dateFormat = instance.getDateFormat()
-
-      if (timeFormat.locales !== dateFormat.locales) {
-        return instance.formatDate(value, options) + ' ' + instance.formatTime(value, options)
-      }
-
       const date = new Date(value)
 
-      return date.toLocaleDateString(dateFormat.locales, {
-        ...dateFormat.options,
-        ...timeFormat.options,
-        ...options
-      })
+      return Number.isNaN(date.getTime())
+        ? date.toString()
+        : instance.formatDate(date, options) + ' ' + instance.formatTime(date, options)
     },
 
     formatRelativeTimeToNow (value: number | string | Date, options?: Intl.RelativeTimeFormatOptions) {
@@ -197,12 +197,10 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
     },
 
     formatRelativeTime (value: number, unit: Intl.RelativeTimeFormatUnit, options?: Intl.RelativeTimeFormatOptions) {
-      const rtf = new Intl.RelativeTimeFormat(getAllLocales(), {
+      return getRelativeTimeFormat(getAllLocales(), {
         numeric: 'auto',
         ...options
-      })
-
-      return rtf.format(value, unit)
+      }).format(value, unit)
     },
 
     formatAbsoluteDateTime: (value: number | string | Date, options?: Intl.RelativeTimeFormatOptions) => {

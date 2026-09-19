@@ -35,6 +35,45 @@ describe('formatCounterSeconds', () => {
   })
 })
 
+describe('formatDate and formatTime', () => {
+  const dtf = buildTestDateTimeFormatters('iso', 'iso')
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('Builds a formatter once per distinct format', () => {
+    const date = new Date(2022, 10, 19, 14, 32)
+    const dateTimeFormatSpy = vi.spyOn(Intl, 'DateTimeFormat')
+
+    const first = dtf.formatDate(date, { era: 'short' })
+
+    expect(dtf.formatDate(date, { era: 'short' })).toBe(first)
+    expect(dateTimeFormatSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('Builds a relative time formatter once per distinct format', () => {
+    const relativeTimeFormatSpy = vi.spyOn(Intl, 'RelativeTimeFormat')
+
+    const first = dtf.formatRelativeTime(3, 'day', { numeric: 'always', style: 'narrow' })
+
+    expect(dtf.formatRelativeTime(3, 'day', { numeric: 'always', style: 'narrow' })).toBe(first)
+    expect(relativeTimeFormatSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('Keeps distinct formats apart', () => {
+    const date = new Date(2022, 10, 19, 14, 32, 45)
+
+    expect(dtf.formatTime(date, { second: '2-digit' })).not.toBe(dtf.formatTime(date))
+  })
+
+  it('Renders invalid dates as Invalid Date', () => {
+    expect(dtf.formatDate(NaN)).toBe('Invalid Date')
+    expect(dtf.formatTime(NaN)).toBe('Invalid Date')
+    expect(dtf.formatDateTime(NaN)).toBe('Invalid Date')
+  })
+})
+
 describe('formatDateTime', () => {
   it('Formats as human readable when in future', () => {
     timeTravel('2022-11-19 14:32', () => {
