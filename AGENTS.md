@@ -417,7 +417,9 @@ src/
 - Overrides: `docs/overrides/` — custom Jinja2 templates (header, htmltitle)
 - Custom CSS: `docs/docs/stylesheets/extra.css` — Fluidd brand colors
 - Glossary: `docs/includes/glossary.md` — abbreviation tooltips auto-appended to all pages
-- Lint: `markdownlint --config docs/.markdownlint.json docs/docs/`
+- Lint: `markdownlint --config docs/.markdownlint.json docs/docs/` — in CI it runs as
+  `pnpm dlx markdownlint-cli@…`, because `npx` cannot run inside this repo (EBADDEVENGINES),
+  which is why `docs.yml` sets up pnpm at all
 - Install: `cd docs && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt`
 - Build: `cd docs && zensical build --clean --strict` (CI uses `--strict`; warnings, including broken links/anchors, fail the build)
 - Serve: `cd docs && zensical serve` or `pnpm run serve:docs` (localhost:8000)

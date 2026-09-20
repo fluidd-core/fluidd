@@ -40,6 +40,11 @@ jobs:
         with:
           persist-credentials: false
 
+      # markdownlint runs through `pnpm dlx`: npm refuses to run inside this
+      # repo, since `devEngines.packageManager` names pnpm (EBADDEVENGINES).
+      - name: Setup pnpm and Node
+        uses: ./.github/actions/setup-pnpm-node
+
       - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
@@ -52,7 +57,7 @@ jobs:
       - name: Lint docs
         run: |
           codespell docs/docs/
-          npx --yes markdownlint-cli@0.49.1 --config docs/.markdownlint.json docs/docs/
+          pnpm dlx markdownlint-cli@0.49.1 --config docs/.markdownlint.json docs/docs/
 
       - name: Build docs
         run: zensical build --clean --strict
