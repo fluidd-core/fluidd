@@ -1,3 +1,7 @@
+/**
+ * @vitest-environment jsdom
+ */
+
 import { conf, language } from '../klipper-config.monarch'
 import { registerLanguage, type TokenLine, tokenBuilder, tokenizeLines } from './tokenize-helper'
 
