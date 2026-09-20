@@ -65,7 +65,11 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 
 ### Build Toolchain
 
-- **Node.js 24** — pinned in `.node-version` (engines: `^22.12.0 || ^24`)
+- **Node.js 24** — pinned in `package.json` via `devEngines.runtime` `^24.11.0` with
+  `onFail: download` (engines: `^22.12.0 || ^24`). pnpm provisions it; there is no
+  `.node-version` file and Corepack is not used anywhere — the pnpm version itself is pinned
+  the same way, through `devEngines.packageManager`. Setting `packageManager` **as well** is an
+  error in pnpm 12 ("Cannot use both"), so the two fields are mutually exclusive
 - **Vite 8** — build tool and dev server
 - **`@pedrolamas/plugin-vue2`** — Vue 2 SFC support for Vite
 - **`unplugin-vue-components/rolldown`** — auto-imports components from `src/components/common|layout|ui`
@@ -351,6 +355,11 @@ src/
 - **PR branches** must be off a branch other than `develop` or `master`
 - **Clean develop** preferred: squash and rebase feature branches prior to merge
 - **CHANGELOG visibility**: only `feat`, `fix`, `perf`, `refactor` appear in `CHANGELOG.md` (configured in `.versionrc.json`)
+- **CI setup**: `.github/actions/setup-pnpm-node` is a composite action wrapping `pnpm/setup`
+  (`install: false`, `cache: true`), which installs both pnpm and Node from `devEngines` — it
+  replaced `pnpm/action-setup` + `actions/setup-node`. `ci.yml`'s `bundle-baseline` job uses it
+  too, which is why its `sparse-checkout` lists `.github/actions` alongside `tools`: cone mode
+  checks out root files (so `package.json` and `pnpm-lock.yaml` are there) but no other directory
 - **CI pipeline order**: `pnpm i --frozen-lockfile` → `lint --no-fix` → `type-check` → `test:unit` → `circular-check` → `build`. The three checks after lint (`type-check`, `test:unit`, `circular-check`) each carry `if: ${{ !cancelled() }}`, so a lint failure no longer hides them — one run reports all four. `build` and the artifact upload deliberately do not, so they still skip once anything above has failed
 - **Reusable workflows**: the build and both publish paths live in `_build.yml`, `_publish-docker.yml` and `_publish-web.yml` (`workflow_call`), called by `ci.yml` (PRs + `develop`/`master` pushes) and `release.yml` (`v*` tags, which `ci.yml` no longer triggers on). A calling job's `permissions:` is a **ceiling** on the called workflow's token, so every calling job needs its own explicit block — a top-level `permissions: {}` alone starves it. Secret *values* can't cross `workflow_call` via `with:`; `_publish-web.yml` takes them through `on.workflow_call.secrets`
 - **PR bundle-size report**: `tools/bundle-size.mjs` (zero-dependency) emits a gzip-size manifest per build and diffs the PR against its merge-base, posted as a sticky comment by `pr-comment.yml`. That second workflow exists because the report has to build PR code, so it can't hold a write token — it's `workflow_run`-triggered, reads only an artifact, and takes the PR number from `pr-number.txt` since `workflow_run.pull_requests[]` is empty for fork PRs. `workflows: ['CI']` must match `ci.yml`'s `name:` exactly, and a `workflow_run` trigger only fires once the file exists on the default branch
@@ -369,12 +378,26 @@ src/
 - **`VUE_` env prefix required** — only env vars prefixed `VUE_` are exposed to app code via `import.meta.env` (Vite `envPrefix`)
 - **`import.meta.env.VERSION`** and **`import.meta.env.HASH`** (short git hash) are injected at build time
 - **`server/config.json`** is the runtime config source (deployed as `dist/config.json`) — contains theme presets, endpoints, hosted flag
+- **`npm` and `npx` refuse to run inside this repo** — `devEngines.packageManager` names `pnpm`
+  with `onFail: download`, which npm reads as a hard `EBADDEVENGINES` failure (no flag overrides
+  it, `engine-strict` included). Use `pnpm dlx` in place of `npx`, and install pnpm itself from
+  outside the clone
 - **Translations managed via Weblate** — do not directly edit non-English locale files in `src/locales/`
 
 ## Dev Container
 
 - VSCode Dev Container (`.devcontainer/`) bundles a `docker-klipper-simulavr` container — real Klipper/Moonraker simulation on port 7125, Fluidd on port 8080
-- Base image **must stay glibc** (`node:24-trixie-slim`) — `typescript-native-bridge` ships a Go `c-shared` NAPI bridge with glibc-only native packages (no `-musl` build), so on Alpine it fails to load and segfaults even with `gcompat`
+- Base image is `ghcr.io/pnpm/pnpm:12` — pnpm's official image, Debian-based, carrying only the
+  pnpm binary (`PNPM_HOME=/pnpm`, `/pnpm/bin` on `PATH`); Node.js is downloaded by pnpm from
+  `devEngines.runtime` on first use. It **must stay glibc** — `typescript-native-bridge` ships a Go
+  `c-shared` NAPI bridge with glibc-only native packages (no `-musl` build), so on Alpine it fails
+  to load and segfaults even with `gcompat`
+- The image has no `node` user and runs as root, so the Dockerfile creates one (uid 1000, zsh) to
+  match `devcontainer.json`'s `remoteUser`, and `chown`s `/pnpm` to it — pnpm writes the downloaded
+  runtime and its global shims there
+- `pnpm add --global node@^24.11.0` in the Dockerfile is **load-bearing**: without a globally
+  installed `node` there is no shim for pnpm to dispatch from, and a bare `node` in the container is
+  simply "not found". With it, `node` inside the workspace runs the `devEngines.runtime` version
 - `postCreateCommand` runs `pnpm i --frozen-lockfile` automatically (which in turn runs `prepare`)
 
 ## Docker Images (production)

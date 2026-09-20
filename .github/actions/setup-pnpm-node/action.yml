@@ -1,16 +1,11 @@
 name: Setup pnpm and Node
-description: Puts pnpm on PATH, then sets up Node using .node-version with the pnpm store cached.
+description: Installs pnpm and the project's Node.js runtime from package.json, with the pnpm store cached.
 
 runs:
   using: composite
   steps:
-    - name: Setup pnpm
-      uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+    - name: Setup pnpm and Node
+      uses: pnpm/setup@703c52620218391530e48b9e8870d5c0082e1b9b # v2.1.0
       with:
-        run_install: false
-
-    - name: Setup Node
-      uses: actions/setup-node@v7
-      with:
-        node-version-file: .node-version
-        cache: 'pnpm'
+        install: false
+        cache: true

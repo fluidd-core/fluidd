@@ -182,6 +182,8 @@ minify_css = true
 
 # Development
 "development/localization.md" = "development.md#localization"
+# Corepack dropped in favour of pnpm's own installer — heading renamed
+"development.md#enable-pnpm" = "development.md#install-pnpm"
 
 # Per-slicer / per-sensor sections became content tabs — preserve the anchors
 # of the headings they replaced (anchor redirects, Zensical 0.0.61+)
