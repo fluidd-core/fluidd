@@ -1,5 +1,6 @@
 ---
 title: Multiple Printers
+icon: lucide/network
 ---
 
 # Multiple Printers

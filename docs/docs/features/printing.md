@@ -1,5 +1,6 @@
 ---
 title: Printing
+icon: lucide/printer
 ---
 
 # Printing

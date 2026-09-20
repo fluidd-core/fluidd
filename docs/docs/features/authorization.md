@@ -1,5 +1,6 @@
 ---
 title: Authorization
+icon: lucide/shield-check
 ---
 
 # Authorization

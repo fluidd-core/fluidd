@@ -1,5 +1,6 @@
 ---
 title: System & Notifications
+icon: lucide/bell
 ---
 
 # System & Notifications

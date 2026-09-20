@@ -1,5 +1,6 @@
 ---
 title: Multi-Material
+icon: lucide/layers
 ---
 
 # Multi-Material

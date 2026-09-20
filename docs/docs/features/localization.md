@@ -1,5 +1,6 @@
 ---
 title: Localization
+icon: lucide/languages
 ---
 
 # Localization

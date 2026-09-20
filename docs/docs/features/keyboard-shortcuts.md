@@ -1,5 +1,6 @@
 ---
 title: Keyboard Shortcuts
+icon: lucide/keyboard
 ---
 
 # Keyboard Shortcuts

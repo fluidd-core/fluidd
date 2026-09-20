@@ -1,5 +1,6 @@
 ---
 title: Third-Party Integrations
+icon: lucide/puzzle
 ---
 
 # Third-Party Integrations

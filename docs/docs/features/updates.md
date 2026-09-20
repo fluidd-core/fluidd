@@ -1,5 +1,6 @@
 ---
 title: Updates
+icon: lucide/refresh-cw
 ---
 
 # Updates

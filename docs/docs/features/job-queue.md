@@ -1,5 +1,6 @@
 ---
 title: Job Queue
+icon: lucide/list-ordered
 ---
 
 # Job Queue

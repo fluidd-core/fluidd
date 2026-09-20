@@ -1,5 +1,6 @@
 ---
 title: File Editor
+icon: lucide/file-text
 ---
 
 # File Editor

@@ -1,5 +1,6 @@
 ---
 title: Thermals
+icon: lucide/thermometer
 ---
 
 # Thermals

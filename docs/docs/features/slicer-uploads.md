@@ -1,5 +1,6 @@
 ---
 title: Slicer Uploads
+icon: lucide/upload
 ---
 
 # Slicer Uploads

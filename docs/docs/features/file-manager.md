@@ -1,5 +1,6 @@
 ---
 title: File Manager
+icon: lucide/folder
 ---
 
 # File Manager
