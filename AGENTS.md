@@ -386,14 +386,17 @@ src/
 ## Documentation Site
 
 - **Zensical** (Material for MkDocs successor) — static site generator in `docs/`
-- Config: `docs/zensical.toml` — nav, theme, extensions, social links
+- Config: `docs/zensical.toml` — nav, theme, extensions, plugins (`glightbox`, `minify`, `redirects`), social links
+- **`[project.markdown_extensions]` REPLACES Zensical's `DEFAULT_MARKDOWN_EXTENSIONS`, it does not merge with them** (`config.get("markdown_extensions", DEFAULTS)` in `zensical/config.py`). Anything omitted from that table is off, including `toc.permalink` — dropping an entry silently removes heading anchors sitewide. Keep it in sync with `zensical/bootstrap/zensical.toml` in the installed package
+- `pymdownx.tabbed` carries `combine_header_slug` + `slugify`, so a content tab is linkable as `#<enclosing-heading>-<tab-label>` (e.g. `#thumbnails-orcaslicer`). Replacing a heading with a tab changes its anchor — preserve the old one with an **anchor redirect** in `[project.plugins.redirects.redirect_maps]` (`"page.md#old" = "page.md#new"`, Zensical 0.0.61+), which lands in `site/redirect.json`
+- Internal links are **relative `.md` paths** (`printing.md#thumbnails`, `../configuration.md`), never site-absolute — Zensical's `invalid_links` / `invalid_link_anchors` validation cannot resolve `/features/printing`, so absolute links are silently unchecked. Image paths stay site-absolute (`/assets/images/…`)
 - Content: `docs/docs/` — Markdown files with YAML frontmatter
 - Overrides: `docs/overrides/` — custom Jinja2 templates (header, htmltitle)
 - Custom CSS: `docs/docs/stylesheets/extra.css` — Fluidd brand colors
 - Glossary: `docs/includes/glossary.md` — abbreviation tooltips auto-appended to all pages
 - Lint: `markdownlint --config docs/.markdownlint.json docs/docs/`
 - Install: `cd docs && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt`
-- Build: `cd docs && zensical build --clean`
+- Build: `cd docs && zensical build --clean --strict` (CI uses `--strict`; warnings, including broken links/anchors, fail the build)
 - Serve: `cd docs && zensical serve` or `pnpm run serve:docs` (localhost:8000)
 - Deploy: GitHub Actions (`.github/workflows/docs.yml`) — builds and lints (`codespell` + `markdownlint`) on PRs and on pushes to `master` and `develop`; uploads the Pages artifact via `actions/upload-pages-artifact` on both branches, but only `master` runs the `deploy` job (`actions/deploy-pages`)
 
@@ -434,7 +437,7 @@ docs/
 │   └── glossary.md        # Abbreviation definitions (auto-appended)
 ├── overrides/             # Jinja2 template overrides
 ├── zensical.toml          # Site configuration
-└── .markdownlint.json     # Lint rules (MD013 and MD025 disabled)
+└── .markdownlint.json     # Lint rules (MD013/MD025/MD046 disabled, MD033 allows `div` for card grids)
 ```
 
 ### Documentation Conventions
