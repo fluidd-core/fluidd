@@ -13,7 +13,7 @@ one starts automatically (if configured) or waits for you to resume.
 
 Add `[job_queue]` to your `moonraker.conf` and restart Moonraker. See the
 [Moonraker `[job_queue]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#job_queue)
-and the [Moonraker configuration](/configuration#example-configuration) for a
+and the [Moonraker configuration](../configuration.md#example-configuration) for a
 complete example.
 
 !!! note "Manual start by default"
@@ -30,7 +30,7 @@ on the Jobs page.
 There are several ways to add files to the queue:
 
 - **Context menu** — right-click a G-code file in the
-  [File Manager](/features/file-manager) and select **Add to queue**.
+  [File Manager](file-manager.md) and select **Add to queue**.
 - **Drag and drop** — drag G-code files directly into the job queue card.
 - **Bulk actions** — select multiple files in the file manager and use the
   **Add to queue** toolbar action.

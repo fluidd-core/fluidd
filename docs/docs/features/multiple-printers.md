@@ -20,7 +20,7 @@ connection details locally.
 
 If the connection fails with a CORS error, you need to add Fluidd's origin to
 Moonraker's `cors_domains`. See the
-[Moonraker configuration](/configuration#cors-domains) docs.
+[Moonraker configuration](../configuration.md#cors-domains) docs.
 
 ## Switching printers
 
@@ -52,7 +52,7 @@ remove it. The active printer cannot be removed.
   local connections.
 - If Fluidd is served from a different host (e.g., `app.fluidd.xyz` or a
   separate server), Moonraker must list Fluidd's origin in `cors_domains`.
-  See the [configuration example](/configuration#example-configuration).
+  See the [configuration example](../configuration.md#example-configuration).
 
 Each printer connection runs over a single WebSocket to Moonraker for both
 initialization and live data. The WebSocket URL is derived automatically from

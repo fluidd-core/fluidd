@@ -37,7 +37,7 @@ required Klipper sections and enhanced macros in a single include file.
 
 ### Installation
 
-If you installed Fluidd via [KIAUH](/getting-started#kiauh), you can install
+If you installed Fluidd via [KIAUH](getting-started.md#kiauh), you can install
 fluidd-config directly from the KIAUH menu — no manual cloning needed.
 
 For manual installations, clone the repository and create a symlink:
@@ -265,7 +265,7 @@ enable_object_processing: True
 
 Controls how much history Moonraker buffers in memory. The
 `temperature_store_size` value directly affects how much time is shown on
-the X axis of the [thermals graph](/features/thermals#chart). Temperature
+the X axis of the [thermals graph](features/thermals.md#chart). Temperature
 entries are stored once per second, so `600` equals approximately 10 minutes.
 See the [Moonraker `[data_store]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#data_store).
 
@@ -309,12 +309,12 @@ format.
 
 Enables job history, reprinting failed or cancelled prints, and sorting the
 file browser by last print time.
-See the [feature docs](/features/printing#print-history) for more details, and the
+See the [feature docs](features/printing.md#print-history) for more details, and the
 [Moonraker `[history]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#history).
 
 !!! tip "Backup & Restore"
     You can back up and restore the Moonraker database from the
-    [System page](/features/system-and-notifications). This preserves Fluidd settings, print
+    [System page](features/system-and-notifications.md). This preserves Fluidd settings, print
     history, and other Moonraker data.
 
 ### [octoprint_compat]
@@ -322,7 +322,7 @@ See the [feature docs](/features/printing#print-history) for more details, and t
 Enables the slicer upload feature, allowing PrusaSlicer, SuperSlicer, and
 Cura users to upload G-code files directly. This section must be explicitly
 included in your `moonraker.conf` and Moonraker must be restarted for the
-module to load. See the [slicer uploads feature docs](/features/slicer-uploads)
+module to load. See the [slicer uploads feature docs](features/slicer-uploads.md)
 and the [configuration example](#example-configuration).
 
 ### [announcements]
@@ -351,7 +351,7 @@ See the [Moonraker `[analysis]` reference](https://moonraker.readthedocs.io/en/l
 Enables the job queue feature. When enabled, Fluidd shows a job queue card on
 the dashboard, a queue tab on the Jobs page, and "Add to queue" actions in the
 file browser context menu and bulk actions toolbar.
-See the [job queue feature docs](/features/job-queue) and the
+See the [job queue feature docs](features/job-queue.md) and the
 [Moonraker `[job_queue]` reference](https://moonraker.readthedocs.io/en/latest/configuration/#job_queue).
 
 ### [update_manager]
@@ -441,8 +441,8 @@ Reading through the documentation surrounding `cors_domains` in the
 ### Example
 
 Assuming you have a single host setup with Fluidd, by way of a
-[docker installation](/getting-started#docker) or
-[KIAUH installation](/getting-started#kiauh);
+[docker installation](getting-started.md#docker) or
+[KIAUH installation](getting-started.md#kiauh);
 
 1. Note the URL you use to access Fluidd
    - For this example, let's assume you access Fluidd on `http://fluidd.local`

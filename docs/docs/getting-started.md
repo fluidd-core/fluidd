@@ -106,7 +106,7 @@ network — no data leaves your network unless you configure it to.
 
 To connect, add `*://app.fluidd.xyz` to the `cors_domains` section of your
 `moonraker.conf`. See the
-[Moonraker example configuration](/configuration#example-configuration).
+[Moonraker example configuration](configuration.md#example-configuration).
 
 ## FluiddPI
 

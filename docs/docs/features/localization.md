@@ -25,5 +25,5 @@ locale files directly — use Weblate instead. The
 [Weblate project page](https://hosted.weblate.org/engage/fluidd/) shows the
 current completion percentage for each language.
 
-See the [developer localization](/development#localization) docs for technical
+See the [developer localization](../development.md#localization) docs for technical
 details on how translations work.
