@@ -74,7 +74,8 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 - **`@pedrolamas/plugin-vue2`** — Vue 2 SFC support for Vite
 - **`unplugin-vue-components/rolldown`** — auto-imports components from `src/components/common|layout|ui`
 - **`sass-embedded`** — SCSS preprocessor (variables auto-injected via `@/scss/variables`)
-- **vitest v4** — unit test runner; `test:unit` is a bare `vitest` call, with the jsdom environment and setup files declared in `vitest.config.ts`
+- **vitest v5** — unit test runner; `test:unit` is a bare `vitest` call, with the environment,
+  pool and setup files declared in `vitest.config.ts`
 - **pnpm catalog** (`pnpm-workspace.yaml`) — `dompurify`, `echarts`, `typescript`, `vite` and `vue` are pinned in the catalog and blanket-mapped through `overrides` so every transitive dependency resolves to the same version
 - **`typescript-native-bridge`** — the `typescript` catalog entry is `npm:typescript-native-bridge@…` (tsgo), not stock `typescript`
 - Local config imports use explicit `.ts` extensions (`./vite.config.ts`) and `import.meta.dirname` — no `__dirname`
@@ -299,15 +300,30 @@ src/
 
 ## Testing Conventions
 
-- Unit tests in any `src/**/__tests__/*.spec.ts` with Vitest + jsdom — not just `src/util/`; e.g.
+- Unit tests in any `src/**/__tests__/*.spec.ts` — not just `src/util/`; e.g.
   `src/workers/__tests__/parseGcode.spec.ts`. `tsconfig.vitest.json` includes `src/**/__tests__/*`
   at any depth, plus `src/typings/*.d.ts` so specs can reference the `Klipper`/`Moonraker`
   namespaces
+- **`environment: 'node'` is the default**, with `pool: 'vmThreads'` so each worker builds one
+  environment instead of one per file. A spec needing a DOM opts in with a `@vitest-environment
+  jsdom` docblock — only the three Monarch tokenizer specs (monaco touches `window`) and the two
+  `http-endpoint-diagnostics` ones do. Building jsdom for all 21 files was ~40% of the run;
+  `environmentMatchGlobs` is not an alternative, it was removed in Vitest 3
+- **Under `vmThreads`, jsdom's `location` cannot be redefined** — `Object.defineProperty`,
+  `vi.stubGlobal('location', …)` and `vi.spyOn(location, 'protocol', 'get')` all throw `Cannot
+  redefine property`. Set the page URL per file instead, with an
+  `@vitest-environment-options { "url": "https://…" }` docblock; that is why the mixed-content case
+  lives in its own `http-endpoint-diagnostics.mixed-content.spec.ts`. jsdom's default URL is
+  already `http://localhost:3000/`, so http-protocol cases need no stub at all
+- `navigator` is a Node global (21+), so specs defining `navigator.languages` on the instance
+  (`src/plugins/__tests__/i18n.spec.ts`) work unchanged under the `node` environment
 - Monarch tokenizer tests co-located in `src/monaco/language/__tests__/` — use shared `tokenize-helper.ts` (`registerLanguage`, `tokenizeLines`, `tokenBuilder`)
 - Global test functions (`describe`, `it`, `expect`, `vi`, `afterEach`, …) — `globals: true` in
   vitest config, typed via `/// <reference types="vitest/globals" />` in `env.d.ts`; specs import
   no vitest symbols
-- Setup file: `tests/unit/setup.ts` — includes `CSS.escape` and `window.matchMedia` polyfills required by Monaco in jsdom
+- Setup file: `tests/unit/setup.ts` — includes `CSS.escape` and `window.matchMedia` polyfills
+  required by Monaco in jsdom. It runs for every spec, including the `node`-environment ones, so
+  the `matchMedia` half stays behind a `typeof window !== 'undefined'` guard
 - Time manipulation utility: `timeTravel(date, callback)` in `tests/unit/utils.ts`
 - Parameterized tests: `it.each([...])` pattern
 - Test store actions/mutations independently from UI

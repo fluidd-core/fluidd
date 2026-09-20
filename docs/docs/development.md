@@ -29,7 +29,8 @@ second source for humans too.
 - **Vuex** for state management — namespaced modules mirror Klipper and Moonraker
   domains
 - **[Vite](https://vitejs.dev/) 8** as the build tool and dev server
-- **[Vitest](https://vitest.dev/) 4** with `jsdom` for unit tests
+- **[Vitest](https://vitest.dev/) 5** for unit tests — `node` environment by default, with
+  `jsdom` opted into per spec
 - **Node.js 24** — pinned in `package.json` via `devEngines.runtime`
   (engines: `^22.12.0 || ^24`)
 
