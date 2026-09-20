@@ -1,5 +1,6 @@
 ---
 title: Console
+icon: lucide/terminal
 ---
 
 # Console

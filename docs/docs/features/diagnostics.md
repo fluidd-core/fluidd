@@ -1,5 +1,6 @@
 ---
 title: Diagnostics
+icon: lucide/gauge
 ---
 
 # Diagnostics

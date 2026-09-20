@@ -55,7 +55,7 @@ jobs:
           npx --yes markdownlint-cli@0.49.1 --config docs/.markdownlint.json docs/docs/
 
       - name: Build docs
-        run: zensical build --clean
+        run: zensical build --clean --strict
         working-directory: docs
 
       - uses: actions/upload-pages-artifact@v5

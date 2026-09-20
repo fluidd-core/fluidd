@@ -102,7 +102,7 @@ sensor_type: MCU
 
 Macros can also be hidden directly from the Fluidd settings by toggling their
 visibility, in order to not change their name. For full macro management
-options including categories and colors, see the [Macros](/features/macros) page.
+options including categories and colors, see the [Macros](features/macros.md) page.
 
 ![Macro settings panel with visibility toggles for each macro](/assets/images/macro_visibility.png)
 

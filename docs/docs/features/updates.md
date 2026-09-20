@@ -1,5 +1,6 @@
 ---
 title: Updates
+icon: lucide/refresh-cw
 ---
 
 # Updates
@@ -22,7 +23,7 @@ It will notify you of available updates — and provide buttons to upgrade each 
 
 In order for this feature to be enabled, you need to configure Moonraker's
 update plugin. See the
-[Moonraker configuration](/configuration#example-configuration) docs. For
+[Moonraker configuration](../configuration.md#example-configuration) docs. For
 advanced options (custom repositories, pinned branches, etc.), see the
 [Moonraker update_manager documentation](https://moonraker.readthedocs.io/en/latest/configuration/#update_manager).
 

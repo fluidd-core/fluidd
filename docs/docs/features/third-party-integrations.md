@@ -1,5 +1,6 @@
 ---
 title: Third-Party Integrations
+icon: lucide/puzzle
 ---
 
 # Third-Party Integrations
@@ -87,7 +88,7 @@ No extra Fluidd configuration is needed.
 
 Any sensor Klipper exposes is shown automatically. This includes AHT10/20/30,
 BME280, BMP180/388, SHT3X, HTU21D, LM75, PT100/PT1000, and more. See
-[Thermals](/features/thermals#sensors) for configuration examples.
+[Thermals](thermals.md#sensors) for configuration examples.
 
 ## Kalico Firmware
 
@@ -120,28 +121,28 @@ For the full feature reference, see the
 ### Spoolman
 
 Filament spool tracking with QR code scanning, toolchanger support, and
-print-start sanity checks. See [Spool Management](/features/multi-material#spool-management-spoolman)
+print-start sanity checks. See [Spool Management](multi-material.md#spool-management-spoolman)
 for details.
 
 !!! warning "Spoolman 0.26+ requires a CORS configuration change"
     Fluidd connects to Spoolman directly from your browser for live spool
     updates. Spoolman 0.26 and newer block that connection unless you add
     Fluidd's address to `SPOOLMAN_CORS_ORIGIN`. See
-    [Live updates](/features/multi-material#live-updates) for details.
+    [Live updates](multi-material.md#live-updates) for details.
 
 [Spoolman on GitHub](https://github.com/Donkie/Spoolman){.md-button}
 
 ### Timelapse
 
 Render and browse timelapse videos via Moonraker's timelapse component.
-See [Timelapse](/features/timelapse) for details.
+See [Timelapse](timelapse.md) for details.
 
 [moonraker-timelapse on GitHub](https://github.com/mainsail-crew/moonraker-timelapse){.md-button}
 
 ### Crowsnest
 
 Recommended camera manager for Klipper setups. Fluidd recognizes
-`crowsnest.conf` in the config file editor. See [Cameras](/features/cameras)
+`crowsnest.conf` in the config file editor. See [Cameras](cameras.md)
 for supported streaming types.
 
 [Crowsnest documentation](https://crowsnest.mainsail.xyz/){.md-button}

@@ -1,5 +1,6 @@
 ---
 title: Timelapse
+icon: lucide/clapperboard
 ---
 
 # Timelapse

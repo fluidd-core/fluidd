@@ -1,5 +1,6 @@
 ---
 title: Printing
+icon: lucide/printer
 ---
 
 # Printing
@@ -75,39 +76,42 @@ sizes are:
 - `300x300` — for large previews
 - `48x48` — for file browser thumbnails
 
-### PrusaSlicer (2.3.0+)
+=== "OrcaSlicer"
 
-1. Open `Printer Settings` → `General` tab → `Firmware` section.
-2. Set `G-code thumbnails` to `48x48/PNG, 300x300/PNG`.
+    1. Open `Printer Settings` → `Basic information` tab.
+    2. In the `Thumbnails` section, ensure `48x48/PNG` and `300x300/PNG` are
+       listed. OrcaSlicer includes these by default for most printer
+       profiles.
 
-### PrusaSlicer (2.2.0 and below)
+=== "PrusaSlicer / SuperSlicer"
 
-1. Click `Help` → `Show Configuration Folder`, then close PrusaSlicer.
-2. Open the `printer` folder and edit your printer profile.
-3. Set `thumbnails = 48x48, 300x300`.
-4. Restart PrusaSlicer.
+    **PrusaSlicer 2.3.0 and above:**
 
-### SuperSlicer
+    1. Open `Printer Settings` → `General` tab → `Firmware` section.
+    2. Set `G-code thumbnails` to `48x48/PNG, 300x300/PNG`.
 
-1. Open `Printer Settings` → `General` tab → `Thumbnails` section.
-2. Set `Small` to `48x48` and `Large` to `300x300`.
+    **PrusaSlicer 2.2.0 and below:**
 
-### OrcaSlicer
+    1. Click `Help` → `Show Configuration Folder`, then close PrusaSlicer.
+    2. Open the `printer` folder and edit your printer profile.
+    3. Set `thumbnails = 48x48, 300x300`.
+    4. Restart PrusaSlicer.
 
-1. Open `Printer Settings` → `Basic information` tab.
-2. In the `Thumbnails` section, ensure `48x48/PNG` and `300x300/PNG` are
-   listed. OrcaSlicer includes these by default for most printer profiles.
+    **SuperSlicer:**
 
-### Cura
+    1. Open `Printer Settings` → `General` tab → `Thumbnails` section.
+    2. Set `Small` to `48x48` and `Large` to `300x300`.
 
-**OctoPrint plugin (recommended):** Enable
-[slicer uploads](/features/slicer-uploads), then install the
-[OctoPrint Connection plugin](https://github.com/fieldOfView/Cura-OctoPrintPlugin#installation).
-Use the `Print with OctoPrint` button after slicing.
+=== "Cura"
 
-**Post-processing script:** Go to `Extensions` → `Post Processing` →
-`Modify G-Code`. Add two `Create Thumbnail` scripts — one at `300x300` and
-one at `48x48`.
+    **OctoPrint plugin (recommended):** Enable
+    [slicer uploads](slicer-uploads.md), then install the
+    [OctoPrint Connection plugin](https://github.com/fieldOfView/Cura-OctoPrintPlugin#installation).
+    Use the `Print with OctoPrint` button after slicing.
+
+    **Post-processing script:** Go to `Extensions` → `Post Processing` →
+    `Modify G-Code`. Add two `Create Thumbnail` scripts — one at `300x300` and
+    one at `48x48`.
 
 ![File browser showing thumbnail previews of sliced print files](/assets/images/thumbnails.png)
 

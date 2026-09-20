@@ -1,5 +1,6 @@
 ---
 title: Thermals
+icon: lucide/thermometer
 ---
 
 # Thermals
@@ -58,43 +59,45 @@ that need active cooling (e.g., PLA) or none at all (e.g., ABS).
 ## Sensors
 
 Fluidd displays any temperature sensor that Klipper exposes. Below are the
-two most common built-in sensor types.
+most common built-in sensor types.
 
-### Host temperature (Raspberry Pi)
+=== "Host temperature"
 
-See the [Klipper `temperature_host` reference](https://www.klipper3d.org/Config_Reference.html#temperature_host).
+    For the Raspberry Pi (or other host) CPU temperature. See the
+    [Klipper `temperature_host` reference](https://www.klipper3d.org/Config_Reference.html#temperature_host).
 
-```ini title="printer.cfg"
-[temperature_sensor raspberry_pi]
-sensor_type: temperature_host
-min_temp: 10
-max_temp: 100
-```
+    ```ini title="printer.cfg"
+    [temperature_sensor raspberry_pi]
+    sensor_type: temperature_host
+    min_temp: 10
+    max_temp: 100
+    ```
 
-### MCU temperature (ATSAM, ATAMD, STM32)
+=== "MCU temperature"
 
-See the [Klipper `temperature_mcu` reference](https://www.klipper3d.org/Config_Reference.html#temperature_mcu).
+    For ATSAM, ATAMD and STM32 microcontrollers. See the
+    [Klipper `temperature_mcu` reference](https://www.klipper3d.org/Config_Reference.html#temperature_mcu).
 
-```ini title="printer.cfg"
-[temperature_sensor mcu_temp]
-sensor_type: temperature_mcu
-min_temp: 0
-max_temp: 100
-```
+    ```ini title="printer.cfg"
+    [temperature_sensor mcu_temp]
+    sensor_type: temperature_mcu
+    min_temp: 0
+    max_temp: 100
+    ```
 
-### Environmental sensors
+=== "Environmental sensors"
 
-Klipper supports a wide range of I2C temperature, humidity, and pressure
-sensors — including AHT10/20/30, BME280/680, BMP180/388, SHT3X, HTU21D,
-LM75, and more. Fluidd displays these automatically when configured. For
-setup details, refer to the
-[Klipper temperature sensor documentation](https://www.klipper3d.org/Config_Reference.html#temperature-sensors).
+    Klipper supports a wide range of I2C temperature, humidity, and pressure
+    sensors — including AHT10/20/30, BME280/680, BMP180/388, SHT3X, HTU21D,
+    LM75, and more. Fluidd displays these automatically when configured. For
+    setup details, refer to the
+    [Klipper temperature sensor documentation](https://www.klipper3d.org/Config_Reference.html#temperature-sensors).
 
-### MPC (Kalico)
+=== "MPC (Kalico)"
 
-If you are running [Kalico](/features/third-party-integrations#kalico-firmware) with MPC
-(Model Predictive Control) configured for your extruder, Fluidd shows an
-`MPC_CALIBRATE` button in the thermals card.
+    If you are running [Kalico](third-party-integrations.md#kalico-firmware)
+    with MPC (Model Predictive Control) configured for your extruder, Fluidd
+    shows an `MPC_CALIBRATE` button in the thermals card.
 
 ## Troubleshooting
 
