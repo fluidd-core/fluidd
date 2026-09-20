@@ -37,12 +37,12 @@ action, the first match in the list is used:
 
 ## Troubleshooting
 
-### Macro not appearing on the dashboard
+??? question "Macro not appearing on the dashboard"
 
-- Macros prefixed with `_` are hidden automatically. Remove the underscore if you want the macro visible.
-- Verify the macro loaded without errors — check the Fluidd console for any startup messages after a Klipper restart. A config syntax problem will prevent macros from loading.
-- If the macro appears in Klipper but not Fluidd, try refreshing the page after restarting Klipper.
+    - Macros prefixed with `_` are hidden automatically. Remove the underscore if you want the macro visible.
+    - Verify the macro loaded without errors — check the Fluidd console for any startup messages after a Klipper restart. A config syntax problem will prevent macros from loading.
+    - If the macro appears in Klipper but not Fluidd, try refreshing the page after restarting Klipper.
 
-### Tool Card button not appearing
+??? question "Tool Card button not appearing"
 
-Fluidd matches macro names case-insensitively, but the name must be an exact match otherwise. Confirm your macro name matches one of the names listed in the [Tool Card Macros](#tool-card-macros) table above.
+    Fluidd matches macro names case-insensitively, but the name must be an exact match otherwise. Confirm your macro name matches one of the names listed in the [Tool Card Macros](#tool-card-macros) table above.
