@@ -67,22 +67,22 @@ complete example.
 
 ## Troubleshooting
 
-??? question "Connection refused"
+### Connection refused
 
-    - Verify Moonraker is running — try opening
-      `http://<your-printer>/server/info` in a browser.
-    - Check that `[octoprint_compat]` is present in `moonraker.conf` and that
-      Moonraker has been restarted after adding it.
-    - If your Moonraker instance runs on a non-default port, append the port to
-      the URL (e.g. `http://192.168.1.100:7125`).
+- Verify Moonraker is running — try opening
+  `http://<your-printer>/server/info` in a browser.
+- Check that `[octoprint_compat]` is present in `moonraker.conf` and that
+  Moonraker has been restarted after adding it.
+- If your Moonraker instance runs on a non-default port, append the port to
+  the URL (e.g. `http://192.168.1.100:7125`).
 
-??? question "API key is invalid"
+### API key is invalid
 
-    The API key field is not validated by Moonraker — any non-empty string will
-    work. If your slicer rejects the key, ensure the field is not blank.
+The API key field is not validated by Moonraker — any non-empty string will
+work. If your slicer rejects the key, ensure the field is not blank.
 
-??? question "Upload succeeds but the print does not start"
+### Upload succeeds but the print does not start
 
-    Check whether your slicer's "start print after upload" option is enabled. If
-    it is disabled, the file will be uploaded but you will need to start the print
-    manually from Fluidd.
+Check whether your slicer's "start print after upload" option is enabled. If
+it is disabled, the file will be uploaded but you will need to start the print
+manually from Fluidd.
