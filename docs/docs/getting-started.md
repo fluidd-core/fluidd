@@ -83,11 +83,14 @@ Every Fluidd release includes a pre-built `fluidd.zip` on the
 [GitHub Releases](https://github.com/fluidd-core/fluidd/releases) page.
 Extract it and serve with any HTTP server (e.g. NGINX).
 
-To build from source (requires Node.js v24.x and Git):
+To build from source (requires Git, plus Node.js v22.13 or newer to run the
+[pnpm](https://pnpm.io/) installer — pnpm then downloads the Node.js version Fluidd
+is built with):
 
-1. `git clone https://github.com/fluidd-core/fluidd.git`
-2. `cd fluidd`
-3. `corepack enable` (enables Node.js' [Corepack](https://nodejs.org/api/corepack.html), which downloads the project-pinned `pnpm` on first use)
+1. `npx get-pnpm` (installs pnpm; run it **before** entering the clone, as `npm`
+   refuses to run inside a project that pins a different package manager)
+2. `git clone https://github.com/fluidd-core/fluidd.git`
+3. `cd fluidd`
 4. `pnpm i --frozen-lockfile`
 5. `pnpm run build`
 

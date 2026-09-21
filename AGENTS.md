@@ -65,12 +65,17 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 
 ### Build Toolchain
 
-- **Node.js 24** — pinned in `.node-version` (engines: `^22.12.0 || ^24`)
+- **Node.js 24** — pinned in `package.json` via `devEngines.runtime` `^24.11.0` with
+  `onFail: download` (engines: `^22.12.0 || ^24`). pnpm provisions it; there is no
+  `.node-version` file and Corepack is not used anywhere — the pnpm version itself is pinned
+  the same way, through `devEngines.packageManager`. Setting `packageManager` **as well** is an
+  error in pnpm 12 ("Cannot use both"), so the two fields are mutually exclusive
 - **Vite 8** — build tool and dev server
 - **`@pedrolamas/plugin-vue2`** — Vue 2 SFC support for Vite
 - **`unplugin-vue-components/rolldown`** — auto-imports components from `src/components/common|layout|ui`
 - **`sass-embedded`** — SCSS preprocessor (variables auto-injected via `@/scss/variables`)
-- **vitest v4** — unit test runner; `test:unit` is a bare `vitest` call, with the jsdom environment and setup files declared in `vitest.config.ts`
+- **vitest v5** — unit test runner; `test:unit` is a bare `vitest` call, with the environment,
+  pool and setup files declared in `vitest.config.ts`
 - **pnpm catalog** (`pnpm-workspace.yaml`) — `dompurify`, `echarts`, `typescript`, `vite` and `vue` are pinned in the catalog and blanket-mapped through `overrides` so every transitive dependency resolves to the same version
 - **`typescript-native-bridge`** — the `typescript` catalog entry is `npm:typescript-native-bridge@…` (tsgo), not stock `typescript`
 - Local config imports use explicit `.ts` extensions (`./vite.config.ts`) and `import.meta.dirname` — no `__dirname`
@@ -295,15 +300,30 @@ src/
 
 ## Testing Conventions
 
-- Unit tests in any `src/**/__tests__/*.spec.ts` with Vitest + jsdom — not just `src/util/`; e.g.
+- Unit tests in any `src/**/__tests__/*.spec.ts` — not just `src/util/`; e.g.
   `src/workers/__tests__/parseGcode.spec.ts`. `tsconfig.vitest.json` includes `src/**/__tests__/*`
   at any depth, plus `src/typings/*.d.ts` so specs can reference the `Klipper`/`Moonraker`
   namespaces
+- **`environment: 'node'` is the default**, with `pool: 'vmThreads'` so each worker builds one
+  environment instead of one per file. A spec needing a DOM opts in with a `@vitest-environment
+  jsdom` docblock — only the three Monarch tokenizer specs (monaco touches `window`) and the two
+  `http-endpoint-diagnostics` ones do. Building jsdom for all 21 files was ~40% of the run;
+  `environmentMatchGlobs` is not an alternative, it was removed in Vitest 3
+- **Under `vmThreads`, jsdom's `location` cannot be redefined** — `Object.defineProperty`,
+  `vi.stubGlobal('location', …)` and `vi.spyOn(location, 'protocol', 'get')` all throw `Cannot
+  redefine property`. Set the page URL per file instead, with an
+  `@vitest-environment-options { "url": "https://…" }` docblock; that is why the mixed-content case
+  lives in its own `http-endpoint-diagnostics.mixed-content.spec.ts`. jsdom's default URL is
+  already `http://localhost:3000/`, so http-protocol cases need no stub at all
+- `navigator` is a Node global (21+), so specs defining `navigator.languages` on the instance
+  (`src/plugins/__tests__/i18n.spec.ts`) work unchanged under the `node` environment
 - Monarch tokenizer tests co-located in `src/monaco/language/__tests__/` — use shared `tokenize-helper.ts` (`registerLanguage`, `tokenizeLines`, `tokenBuilder`)
 - Global test functions (`describe`, `it`, `expect`, `vi`, `afterEach`, …) — `globals: true` in
   vitest config, typed via `/// <reference types="vitest/globals" />` in `env.d.ts`; specs import
   no vitest symbols
-- Setup file: `tests/unit/setup.ts` — includes `CSS.escape` and `window.matchMedia` polyfills required by Monaco in jsdom
+- Setup file: `tests/unit/setup.ts` — includes `CSS.escape` and `window.matchMedia` polyfills
+  required by Monaco in jsdom. It runs for every spec, including the `node`-environment ones, so
+  the `matchMedia` half stays behind a `typeof window !== 'undefined'` guard
 - Time manipulation utility: `timeTravel(date, callback)` in `tests/unit/utils.ts`
 - Parameterized tests: `it.each([...])` pattern
 - Test store actions/mutations independently from UI
@@ -351,6 +371,11 @@ src/
 - **PR branches** must be off a branch other than `develop` or `master`
 - **Clean develop** preferred: squash and rebase feature branches prior to merge
 - **CHANGELOG visibility**: only `feat`, `fix`, `perf`, `refactor` appear in `CHANGELOG.md` (configured in `.versionrc.json`)
+- **CI setup**: `.github/actions/setup-pnpm-node` is a composite action wrapping `pnpm/setup`
+  (`install: false`, `cache: true`), which installs both pnpm and Node from `devEngines` — it
+  replaced `pnpm/action-setup` + `actions/setup-node`. `ci.yml`'s `bundle-baseline` job uses it
+  too, which is why its `sparse-checkout` lists `.github/actions` alongside `tools`: cone mode
+  checks out root files (so `package.json` and `pnpm-lock.yaml` are there) but no other directory
 - **CI pipeline order**: `pnpm i --frozen-lockfile` → `lint --no-fix` → `type-check` → `test:unit` → `circular-check` → `build`. The three checks after lint (`type-check`, `test:unit`, `circular-check`) each carry `if: ${{ !cancelled() }}`, so a lint failure no longer hides them — one run reports all four. `build` and the artifact upload deliberately do not, so they still skip once anything above has failed
 - **Reusable workflows**: the build and both publish paths live in `_build.yml`, `_publish-docker.yml` and `_publish-web.yml` (`workflow_call`), called by `ci.yml` (PRs + `develop`/`master` pushes) and `release.yml` (`v*` tags, which `ci.yml` no longer triggers on). A calling job's `permissions:` is a **ceiling** on the called workflow's token, so every calling job needs its own explicit block — a top-level `permissions: {}` alone starves it. Secret *values* can't cross `workflow_call` via `with:`; `_publish-web.yml` takes them through `on.workflow_call.secrets`
 - **PR bundle-size report**: `tools/bundle-size.mjs` (zero-dependency) emits a gzip-size manifest per build and diffs the PR against its merge-base, posted as a sticky comment by `pr-comment.yml`. That second workflow exists because the report has to build PR code, so it can't hold a write token — it's `workflow_run`-triggered, reads only an artifact, and takes the PR number from `pr-number.txt` since `workflow_run.pull_requests[]` is empty for fork PRs. `workflows: ['CI']` must match `ci.yml`'s `name:` exactly, and a `workflow_run` trigger only fires once the file exists on the default branch
@@ -369,12 +394,26 @@ src/
 - **`VUE_` env prefix required** — only env vars prefixed `VUE_` are exposed to app code via `import.meta.env` (Vite `envPrefix`)
 - **`import.meta.env.VERSION`** and **`import.meta.env.HASH`** (short git hash) are injected at build time
 - **`server/config.json`** is the runtime config source (deployed as `dist/config.json`) — contains theme presets, endpoints, hosted flag
+- **`npm` and `npx` refuse to run inside this repo** — `devEngines.packageManager` names `pnpm`
+  with `onFail: download`, which npm reads as a hard `EBADDEVENGINES` failure (no flag overrides
+  it, `engine-strict` included). Use `pnpm dlx` in place of `npx`, and install pnpm itself from
+  outside the clone
 - **Translations managed via Weblate** — do not directly edit non-English locale files in `src/locales/`
 
 ## Dev Container
 
 - VSCode Dev Container (`.devcontainer/`) bundles a `docker-klipper-simulavr` container — real Klipper/Moonraker simulation on port 7125, Fluidd on port 8080
-- Base image **must stay glibc** (`node:24-trixie-slim`) — `typescript-native-bridge` ships a Go `c-shared` NAPI bridge with glibc-only native packages (no `-musl` build), so on Alpine it fails to load and segfaults even with `gcompat`
+- Base image is `ghcr.io/pnpm/pnpm:12` — pnpm's official image, Debian-based, carrying only the
+  pnpm binary (`PNPM_HOME=/pnpm`, `/pnpm/bin` on `PATH`); Node.js is downloaded by pnpm from
+  `devEngines.runtime` on first use. It **must stay glibc** — `typescript-native-bridge` ships a Go
+  `c-shared` NAPI bridge with glibc-only native packages (no `-musl` build), so on Alpine it fails
+  to load and segfaults even with `gcompat`
+- The image has no `node` user and runs as root, so the Dockerfile creates one (uid 1000, zsh) to
+  match `devcontainer.json`'s `remoteUser`, and `chown`s `/pnpm` to it — pnpm writes the downloaded
+  runtime and its global shims there
+- `pnpm add --global node@^24.11.0` in the Dockerfile is **load-bearing**: without a globally
+  installed `node` there is no shim for pnpm to dispatch from, and a bare `node` in the container is
+  simply "not found". With it, `node` inside the workspace runs the `devEngines.runtime` version
 - `postCreateCommand` runs `pnpm i --frozen-lockfile` automatically (which in turn runs `prepare`)
 
 ## Docker Images (production)
@@ -394,7 +433,9 @@ src/
 - Overrides: `docs/overrides/` — custom Jinja2 templates (header, htmltitle)
 - Custom CSS: `docs/docs/stylesheets/extra.css` — Fluidd brand colors
 - Glossary: `docs/includes/glossary.md` — abbreviation tooltips auto-appended to all pages
-- Lint: `markdownlint --config docs/.markdownlint.json docs/docs/`
+- Lint: `markdownlint --config docs/.markdownlint.json docs/docs/` — in CI it runs as
+  `pnpm dlx markdownlint-cli@…`, because `npx` cannot run inside this repo (EBADDEVENGINES),
+  which is why `docs.yml` sets up pnpm at all
 - Install: `cd docs && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt`
 - Build: `cd docs && zensical build --clean --strict` (CI uses `--strict`; warnings, including broken links/anchors, fail the build)
 - Serve: `cd docs && zensical serve` or `pnpm run serve:docs` (localhost:8000)
