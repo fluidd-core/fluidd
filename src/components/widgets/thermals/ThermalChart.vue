@@ -65,7 +65,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   readonly initOptions: EChartsInitOpts = Object.freeze({ renderer: 'canvas' })
 
   paused = false
-  pointer: number[] | null = null
+  pointer: [number, number] | null = null
   series: LineSeriesOption[] = []
   initialSelected: Record<string, boolean> = {}
 
