@@ -1,5 +1,6 @@
 ---
 title: File Editor
+icon: lucide/file-text
 ---
 
 # File Editor
@@ -12,7 +13,7 @@ directly from your browser.
     The editor handles most config files without issue. For very large G-code
     files (over ~5 MB), the editor may be slow to load and syntax highlighting
     may be limited. For large G-code files, the
-    [File Manager](/features/file-manager) and G-code preview are better tools
+    [File Manager](file-manager.md) and G-code preview are better tools
     than the editor.
 
 ## Syntax highlighting
@@ -92,7 +93,7 @@ G-code files.
 
 All actions are also accessible from the Command Palette. For application-wide
 shortcuts and navigation hotkeys, see
-[Keyboard Shortcuts](/features/keyboard-shortcuts).
+[Keyboard Shortcuts](keyboard-shortcuts.md).
 
 ## View state persistence
 

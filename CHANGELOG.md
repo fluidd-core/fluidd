@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.37.5](https://github.com/fluidd-core/fluidd/compare/v1.37.4...v1.37.5) (2026-09-09)
+
+
+### Features
+
+* adds Docker health check ([#1937](https://github.com/fluidd-core/fluidd/issues/1937)) ([94ea4ea](https://github.com/fluidd-core/fluidd/commit/94ea4ea045be9169e3b26f254fb7148948c1ac84))
+* **i18n-es:** Update Spanish translations ([e2017f2](https://github.com/fluidd-core/fluidd/commit/e2017f220848116727e00bf15e73129e74e0fa0c))
+* **i18n-pl:** Update Polish translations ([39680b3](https://github.com/fluidd-core/fluidd/commit/39680b3679e4e1c9642912b9f4be265db655ef41))
+* improves print history loading ([#1943](https://github.com/fluidd-core/fluidd/issues/1943)) ([e1f6078](https://github.com/fluidd-core/fluidd/commit/e1f607833bf19d4aedf23de522d48573ef23fcf0))
+* optional trailing-average smoothing for power/speed chart series ([#1904](https://github.com/fluidd-core/fluidd/issues/1904)) ([6c04f86](https://github.com/fluidd-core/fluidd/commit/6c04f868b6e13a1fa955a5ac801e76a47b6f6074))
+* use slim Docker image variants ([b751620](https://github.com/fluidd-core/fluidd/commit/b751620e8d868d7533798412245c5b987a7f3d70))
+* Vuetify component translations ([#1945](https://github.com/fluidd-core/fluidd/issues/1945)) ([044954d](https://github.com/fluidd-core/fluidd/commit/044954d519ee121b7e27fecb657ebafc50f506bb))
+* widen suppressError usage across the app ([#1946](https://github.com/fluidd-core/fluidd/issues/1946)) ([1cafab7](https://github.com/fluidd-core/fluidd/commit/1cafab780fc9a226f5edd5cfacc61a5e230115bd))
+
+
+### Bug Fixes
+
+* property extraction logic in klipperConfigDocumentSymbols ([#1934](https://github.com/fluidd-core/fluidd/issues/1934)) ([7d4b1f2](https://github.com/fluidd-core/fluidd/commit/7d4b1f2bd0e9b00990f97f56e1631794678fc330))
+* resolve jobs outside the loaded history ([#1942](https://github.com/fluidd-core/fluidd/issues/1942)) ([631e76e](https://github.com/fluidd-core/fluidd/commit/631e76ece0f2b630392cdd37418f968d5f6cab54))
+* **Spoolman:** use case-insensitive regex ([#1931](https://github.com/fluidd-core/fluidd/issues/1931)) ([3f56551](https://github.com/fluidd-core/fluidd/commit/3f565511fea117dbfd1b93f07075ad9cdaae47ab))
+* **Thermals:** smoothable keys filter ([af3d540](https://github.com/fluidd-core/fluidd/commit/af3d540cdbee429a633aec7a94b5b7e74e055172))
+* use debian base image for dev container ([#1939](https://github.com/fluidd-core/fluidd/issues/1939)) ([03fb37b](https://github.com/fluidd-core/fluidd/commit/03fb37bbda2aacae41804d200f7029144c30fe25))
+
+
+### Code Refactorings
+
+* columnar typed-array chart store ([#1936](https://github.com/fluidd-core/fluidd/issues/1936)) ([8069cbd](https://github.com/fluidd-core/fluidd/commit/8069cbda850b312ccb3a42e7d04665d48d4c1d84))
+* dialogs visibility logic and state ([#1932](https://github.com/fluidd-core/fluidd/issues/1932)) ([b5d6a4a](https://github.com/fluidd-core/fluidd/commit/b5d6a4a0d7ac131fc7039ebd65bd447a8b4b8bc1))
+* Vuex state factory export ([#1952](https://github.com/fluidd-core/fluidd/issues/1952)) ([debecbb](https://github.com/fluidd-core/fluidd/commit/debecbbd611b83bfbbcb170655703332f9d726ac))
+
 ## [1.37.4](https://github.com/fluidd-core/fluidd/compare/v1.37.3...v1.37.4) (2026-08-11)
 
 

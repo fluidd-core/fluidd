@@ -1,9 +1,7 @@
 import type { DatabaseState } from './types'
 
-export const defaultState = (): DatabaseState => {
+export const createState = (): DatabaseState => {
   return {
     info: null
   }
 }
-
-export const state = defaultState()

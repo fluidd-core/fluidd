@@ -1,6 +1,6 @@
 import type { ServerState } from './types'
 
-export const defaultState = (): ServerState => {
+export const createState = (): ServerState => {
   return {
     info: {
       failed_components: [],
@@ -32,5 +32,3 @@ export const defaultState = (): ServerState => {
     websocket_connections: null
   }
 }
-
-export const state = defaultState()

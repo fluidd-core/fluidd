@@ -12,7 +12,7 @@ export const defaultMoveStore: MoveStore = Object.freeze({
   length: 0
 })
 
-export const defaultState = (): GcodePreviewState => {
+export const createState = (): GcodePreviewState => {
   return {
     moves: defaultMoveStore,
     layers: [],
@@ -24,5 +24,3 @@ export const defaultState = (): GcodePreviewState => {
     parserWorker: null
   }
 }
-
-export const state = defaultState()

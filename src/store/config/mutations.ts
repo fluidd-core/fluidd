@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, TemperaturePreset, ConfiguredTableHeader, HostConfig, ApiConfig } from './types'
-import { defaultState } from './state'
+import { createState } from './state'
 import { Globals } from '@/globals'
 import { cloneDeep, mergeWith, set } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
@@ -13,7 +13,7 @@ export const mutations = {
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   /**

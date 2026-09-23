@@ -1,14 +1,14 @@
 import child_process from 'child_process'
 import fs from 'fs'
 import path from 'path'
-import { version } from './package.json' with { type: 'json' }
+import packageJson from './package.json' with { type: 'json' }
 
 import type { Plugin } from 'vite'
 
 const writeVersionFile = async () => {
   const versionFile = await fs.promises.open(path.resolve(import.meta.dirname, 'dist/.version'), 'w')
 
-  await versionFile.writeFile(`v${version}`)
+  await versionFile.writeFile(`v${packageJson.version}`)
 
   await versionFile.close()
 }
@@ -19,7 +19,7 @@ const writeReleaseInfoFile = async () => {
   await releaseInfoFile.writeFile(JSON.stringify({
     project_name: 'fluidd',
     project_owner: 'fluidd-core',
-    version: `v${version}`
+    version: `v${packageJson.version}`
   }))
 
   await releaseInfoFile.close()
@@ -35,7 +35,7 @@ const vitePluginInjectVersion = (): Plugin => {
 
       return {
         define: {
-          'import.meta.env.VERSION': JSON.stringify(version),
+          'import.meta.env.VERSION': JSON.stringify(packageJson.version),
           'import.meta.env.HASH': JSON.stringify(git_hash)
         }
       }

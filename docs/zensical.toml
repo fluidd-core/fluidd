@@ -49,39 +49,158 @@ logo = "assets/images/fluidd_icon.svg"
 favicon = "favicon.ico"
 features = [
   "content.action.edit",
+  "content.action.view",
+  "content.code.annotate",
   "content.code.copy",
-  "navigation.path",
-  "navigation.instant",
-  "navigation.instant.progress",
+  "content.code.select",
+  "content.footnote.tooltips",
+  "content.tabs.link",
+  "content.tooltips",
+  "navigation.footer",
   "navigation.indexes",
+  "navigation.instant",
+  "navigation.instant.prefetch",
+  "navigation.instant.preview",
+  "navigation.instant.progress",
+  "navigation.path",
   "navigation.top",
-  "content.tooltips"
+  "navigation.tracking",
+  "search.highlight",
+  "search.share",
+  "toc.follow"
 ]
 custom_dir = "overrides"
 
 [[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
 scheme = "default"
 toggle.icon = "lucide/sun"
 toggle.name = "Switch to dark mode"
 
 [[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
 scheme = "slate"
 toggle.icon = "lucide/moon"
-toggle.name = "Switch to light mode"
+toggle.name = "Switch to system preference"
 
-[project.markdown_extensions.abbr]
-[project.markdown_extensions.admonition]
-[project.markdown_extensions.attr_list]
-[project.markdown_extensions."pymdownx.highlight"]
-anchor_linenums = true
-[project.markdown_extensions."pymdownx.keys"]
-[project.markdown_extensions."pymdownx.details"]
-[project.markdown_extensions."pymdownx.superfences"]
-
-[project.markdown_extensions."pymdownx.snippets"]
-auto_append = [
-  "includes/glossary.md"
+# NOTE: declaring this table replaces Zensical's DEFAULT_MARKDOWN_EXTENSIONS
+# wholesale (it is a `config.get(...)`, not a merge), so it has to restate the
+# defaults we want. Keep it in sync with zensical/bootstrap/zensical.toml.
+[project.markdown_extensions]
+abbr = {}
+admonition = {}
+attr_list = {}
+def_list = {}
+footnotes = {}
+md_in_html = {}
+toc.permalink = true
+"pymdownx.betterem" = {}
+"pymdownx.caret" = {}
+"pymdownx.details" = {}
+"pymdownx.emoji".emoji_generator = "zensical.extensions.emoji.to_svg"
+"pymdownx.emoji".emoji_index = "zensical.extensions.emoji.twemoji"
+"pymdownx.highlight".anchor_linenums = true
+"pymdownx.highlight".line_spans = "__span"
+"pymdownx.highlight".pygments_lang_class = true
+"pymdownx.inlinehilite" = {}
+"pymdownx.keys" = {}
+"pymdownx.magiclink" = {}
+"pymdownx.mark" = {}
+"pymdownx.smartsymbols" = {}
+"pymdownx.snippets".auto_append = ["includes/glossary.md"]
+"pymdownx.superfences".custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
 ]
+"pymdownx.tabbed".alternate_style = true
+"pymdownx.tabbed".combine_header_slug = true
+"pymdownx.tabbed".slugify = { object = "pymdownx.slugs.slugify", kwds = { case = "lower" } }
+"pymdownx.tasklist".custom_checkbox = true
+"pymdownx.tilde" = {}
+
+[project.plugins.glightbox]
+
+[project.plugins.minify]
+minify_html = true
+minify_js = true
+minify_css = true
+
+[project.plugins.redirects.redirect_maps]
+# Installation -> Getting Started
+"installation/index.md" = "getting-started.md"
+"installation/kiauh.md" = "getting-started.md#kiauh"
+"installation/docker.md" = "getting-started.md#docker"
+"installation/manual.md" = "getting-started.md#manual-installation"
+"installation/fluiddpi.md" = "getting-started.md#fluiddpi"
+
+# Configuration
+"configuration/initial_setup.md" = "configuration.md#initial-setup"
+"configuration/required.md" = "configuration.md#initial-setup"
+"configuration/moonraker.md" = "configuration.md#moonraker"
+"configuration/moonraker_conf.md" = "configuration.md#example-configuration"
+"configuration/multiple_printers.md" = "configuration.md#multiple-printers"
+"configuration/fluidd_xyz.md" = "getting-started.md#fluiddxyz"
+"configuration/obico_for_remote_access.md" = "features/third-party-integrations.md#obico"
+"configuration/octoeverywhere_free_remote_access.md" = "features/third-party-integrations.md#octoeverywhere"
+
+# Customize
+"customize/layout.md" = "customize.md#application-layout"
+"customize/themes.md" = "customize.md#themes"
+"customize/hide.md" = "customize.md#hiding-components"
+
+# Top-level sections that moved under Features
+"authorization/index.md" = "features/authorization.md"
+"updates/index.md" = "features/updates.md"
+"updates/automated.md" = "features/updates.md#automated-updates"
+"updates/manual.md" = "features/updates.md#manual-updates"
+
+# Features -> Printing
+"features/gcode-viewer.md" = "features/printing.md#g-code-viewer"
+"features/bed_mesh.md" = "features/printing.md#bed-mesh"
+"features/print_history.md" = "features/printing.md#print-history"
+"features/thumbnails.md" = "features/printing.md#thumbnails"
+
+# Features -> Thermals
+"features/chart.md" = "features/thermals.md#chart"
+"features/presets.md" = "features/thermals.md#presets"
+"features/sensors.md" = "features/thermals.md#sensors"
+
+# Features -> Multi-Material
+"features/multiple_extruders.md" = "features/multi-material.md#multiple-extruders"
+"features/spoolman.md" = "features/multi-material.md#spool-management-spoolman"
+
+# Features -> renamed pages
+"features/printers.md" = "features/multiple-printers.md"
+"features/multiple_printers.md" = "features/multiple-printers.md"
+"features/system.md" = "features/system-and-notifications.md#system"
+"features/notifications.md" = "features/system-and-notifications.md#notifications"
+"features/integrations.md" = "features/third-party-integrations.md"
+
+# Development
+"development/localization.md" = "development.md#localization"
+# Corepack dropped in favour of pnpm's own installer — heading renamed
+"development.md#enable-pnpm" = "development.md#install-pnpm"
+
+# Per-slicer / per-sensor sections became content tabs — preserve the anchors
+# of the headings they replaced (anchor redirects, Zensical 0.0.61+)
+"features/printing.md#orcaslicer" = "features/printing.md#thumbnails-orcaslicer"
+"features/printing.md#prusaslicer-230" = "features/printing.md#thumbnails-prusaslicer--superslicer"
+"features/printing.md#prusaslicer-220-and-below" = "features/printing.md#thumbnails-prusaslicer--superslicer"
+"features/printing.md#superslicer" = "features/printing.md#thumbnails-prusaslicer--superslicer"
+"features/printing.md#cura" = "features/printing.md#thumbnails-cura"
+
+"features/slicer-uploads.md#orcaslicer" = "features/slicer-uploads.md#slicer-setup-orcaslicer"
+"features/slicer-uploads.md#prusaslicer-superslicer" = "features/slicer-uploads.md#slicer-setup-prusaslicer--superslicer"
+"features/slicer-uploads.md#cura" = "features/slicer-uploads.md#slicer-setup-cura"
+
+"features/thermals.md#host-temperature-raspberry-pi" = "features/thermals.md#sensors-host-temperature"
+"features/thermals.md#mcu-temperature-atsam-atamd-stm32" = "features/thermals.md#sensors-mcu-temperature"
+"features/thermals.md#environmental-sensors" = "features/thermals.md#sensors-environmental-sensors"
+"features/thermals.md#mpc-kalico" = "features/thermals.md#sensors-mpc-kalico"
 
 [[project.extra.social]]
 icon = "fontawesome/brands/github"

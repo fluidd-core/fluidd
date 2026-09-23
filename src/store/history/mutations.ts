@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import { defaultState } from './state'
+import { createState } from './state'
 import type { HistoryState } from './types'
 
 export const mutations = {
@@ -8,7 +8,7 @@ export const mutations = {
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   /**
@@ -42,6 +42,23 @@ export const mutations = {
       }
 
       state.unresolvedJobIds.delete(payload.job_id)
+    }
+  },
+
+  /**
+   * Updates or adds many history items in a single mutation.
+   */
+  setUpdateHistoryJobs (state, payload: Moonraker.History.Job[]) {
+    for (const job of payload) {
+      const i = state.jobs.findIndex(({ job_id }) => job_id === job.job_id)
+
+      if (i >= 0) {
+        Vue.set(state.jobs, i, Object.freeze(job))
+      } else {
+        state.jobs.push(Object.freeze(job))
+      }
+
+      state.unresolvedJobIds.delete(job.job_id)
     }
   },
 
@@ -87,10 +104,6 @@ export const mutations = {
     for (const jobId of payload) {
       state.unresolvedJobIds.delete(jobId)
     }
-  },
-
-  setClearUnresolvedJobIds (state) {
-    state.unresolvedJobIds.clear()
   },
 
   setAllLoaded (state, payload: boolean) {

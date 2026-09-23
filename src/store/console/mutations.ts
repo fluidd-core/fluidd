@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import type { MutationTree } from 'vuex'
-import { defaultState } from './state'
+import { createState } from './state'
 import { Globals } from '@/globals'
 import type { ConsoleEntry, ConsoleFilter, ConsoleState, PromptDialogItemButton, PromptDialogItem } from './types'
 import { escapeRegExp } from 'lodash-es'
@@ -22,7 +22,7 @@ export const mutations = {
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, createState())
   },
 
   /**
@@ -49,7 +49,7 @@ export const mutations = {
   },
 
   setResetPromptDialog (state, payload: string) {
-    const { promptDialog } = defaultState()
+    const { promptDialog } = createState()
 
     Object.assign(state, {
       promptDialog: {
