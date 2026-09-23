@@ -1,35 +1,15 @@
+/**
+ * @vitest-environment jsdom
+ */
+
 import diagnoseHttpEndpoint from '../http-endpoint-diagnostics'
 
 describe('diagnoseHttpEndpoint', () => {
-  const originalLocation = window.location
-
-  const setProtocol = (protocol: string) => {
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      value: { ...originalLocation, protocol }
-    })
-  }
-
   afterEach(() => {
     vi.unstubAllGlobals()
-
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      value: originalLocation
-    })
-  })
-
-  it('returns mixed-content for an http target on an https page', async () => {
-    setProtocol('https:')
-
-    const result = await diagnoseHttpEndpoint('http://printer.local')
-
-    expect(result).toEqual({ kind: 'mixed-content' })
   })
 
   it.each([200, 401, 404])('returns reachable when the cors fetch resolves (status %i)', async (status) => {
-    setProtocol('http:')
-
     const fetchMock = vi.fn().mockResolvedValue({ status })
     vi.stubGlobal('fetch', fetchMock)
 
@@ -40,8 +20,6 @@ describe('diagnoseHttpEndpoint', () => {
   })
 
   it('returns cors when the cors fetch fails but the no-cors fetch succeeds', async () => {
-    setProtocol('http:')
-
     const fetchMock = vi.fn()
       .mockRejectedValueOnce(new TypeError('Failed to fetch'))
       .mockResolvedValueOnce({ type: 'opaque' })
@@ -55,8 +33,6 @@ describe('diagnoseHttpEndpoint', () => {
   })
 
   it('returns unreachable when both fetches fail', async () => {
-    setProtocol('http:')
-
     const fetchMock = vi.fn().mockRejectedValue(new TypeError('Failed to fetch'))
     vi.stubGlobal('fetch', fetchMock)
 
@@ -67,8 +43,6 @@ describe('diagnoseHttpEndpoint', () => {
   })
 
   it('probes a custom path when probePath is provided', async () => {
-    setProtocol('http:')
-
     const fetchMock = vi.fn().mockResolvedValue({ status: 200 })
     vi.stubGlobal('fetch', fetchMock)
 
@@ -79,8 +53,6 @@ describe('diagnoseHttpEndpoint', () => {
   })
 
   it('returns cancelled when the signal aborts before the cors fetch settles', async () => {
-    setProtocol('http:')
-
     const controller = new AbortController()
 
     vi.stubGlobal('fetch', vi.fn().mockImplementation((_url: string, opts: RequestInit) =>

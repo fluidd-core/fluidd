@@ -16,7 +16,7 @@ import type { mesh } from './mesh'
 import type { notifications } from './notifications'
 import type { announcements } from './announcements'
 import type { auth } from './auth'
-import type { timelapse } from '@/store/timelapse'
+import type { timelapse } from './timelapse'
 import type { wait } from './wait'
 import type { webcams } from './webcams'
 import type { jobQueue } from './jobQueue'
@@ -28,6 +28,9 @@ import type { analysis } from './analysis'
 import type { afc } from './afc'
 import type { storeOptions } from '.'
 
+// Deliberately spelled out rather than derived from `storeOptions.modules`: those
+// options are annotated `satisfies StoreOptions<RootState>`, so deriving the list
+// from them would close a cycle and collapse every type below to `any`.
 type RootModulesType = {
   socket: typeof socket,
   auth: typeof auth,
@@ -58,75 +61,68 @@ type RootModulesType = {
   afc: typeof afc
 }
 
-type RootStateType = {
-  [K in keyof RootModulesType]: ReturnType<RootModulesType[K]['state']>
+type RootStateType<TModules> = {
+  [K in keyof TModules]: TModules[K] extends { state: infer S }
+    ? S extends (...args: any[]) => infer R ? R : S
+    : never
 }
 
-type RootGettersType = UnionToIntersection<{
-  [K in keyof RootModulesType]: RootModulesType[K] extends { getters: infer G }
-    ? {
-        [U in keyof G as `${string & K}/${string & U}`]: G[U] extends (...args: any[]) => infer R ? R : never
-      }
-    : never
-}[keyof RootModulesType]>
+type RootGettersType<TModules, TOptions> = UnionToIntersection<{
+  [K in keyof TModules]: GettersOf<TModules[K], K>
+}[keyof TModules] | GettersOf<TOptions, never>>
 
-type RootMutationsType = UnionToIntersection<{
-  [K in keyof RootModulesType]: RootModulesType[K] extends { mutations: infer M }
-    ? {
-        [U in keyof M]: M[U] extends (state: any, ...args: infer P) => void
-          ? (type: `${string & K}/${string & U}`, ...args: P) => void
-          : never
-      }[keyof M]
-    : never
-}[keyof RootModulesType]>
+type RootMutationsType<TModules, TOptions> = UnionToIntersection<{
+  [K in keyof TModules]: MutationsOf<TModules[K], K>
+}[keyof TModules] | MutationsOf<TOptions, never>>
 
-type RootActionsType = UnionToIntersection<{
-  [K in keyof RootModulesType]: RootModulesType[K] extends { actions: infer M }
-    ? {
-        [U in keyof M]: M[U] extends (store: any, ...args: infer P) => infer R
-          ? (type: `${string & K}/${string & U}`, ...args: P extends [] ? [payload?: undefined, options?: DispatchOptions] : [payload: P[0], options?: DispatchOptions]) => R
-          : never
-      }[keyof M]
-    : never
-}[keyof RootModulesType] | (
-  typeof storeOptions extends { actions: infer M }
-    ? {
-        [U in keyof M]: M[U] extends (store: any, ...args: infer P) => infer R
-          ? (type: `${string & U}`, ...args: P extends [] ? [payload?: undefined, options?: DispatchOptions] : [payload: P[0], options?: DispatchOptions]) => R
-          : never
-      }[keyof M]
-    : never
-)>
+type RootActionsType<TModules, TOptions> = UnionToIntersection<{
+  [K in keyof TModules]: ActionsOf<TModules[K], K>
+}[keyof TModules] | ActionsOf<TOptions, never>>
+
+type GettersOf<TModule, K> = TModule extends { getters: infer G }
+  ? {
+      [U in keyof G as ModuleKey<TModule, K, U>]: G[U] extends (...args: any[]) => infer R ? R : never
+    }
+  : never
+
+type MutationsOf<TModule, K> = TModule extends { mutations: infer M }
+  ? {
+      [U in keyof M]: M[U] extends (state: any, ...args: infer P) => void
+        ? (type: ModuleKey<TModule, K, U>, ...args: P) => void
+        : never
+    }[keyof M]
+  : never
+
+type ActionsOf<TModule, K> = TModule extends { actions: infer M }
+  ? {
+      [U in keyof M]: M[U] extends (store: any, ...args: infer P) => infer R
+        ? (type: ModuleKey<TModule, K, U>, ...args: DispatchArgs<P>) => R
+        : never
+    }[keyof M]
+  : never
+
+// The root store's own getters, mutations and actions are reached unprefixed.
+type ModuleKey<TModule, K, U> = TModule extends { namespaced: true }
+  ? `${string & K}/${string & U}`
+  : `${string & U}`
+
+type DispatchArgs<P extends any[]> = P extends []
+  ? [payload?: undefined, options?: DispatchOptions]
+  : [payload: P[0], options?: DispatchOptions]
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
-
-export type RootMutationType = {
-  [K in keyof RootModulesType]: RootModulesType[K] extends { mutations: infer M }
-    ? `${string & K}/${string & keyof M}`
-    : never
-}[keyof RootModulesType]
-
-export type RootActionType = {
-  [K in keyof RootModulesType]: RootModulesType[K] extends { actions: infer M }
-    ? `${string & K}/${string & keyof M}`
-    : never
-}[keyof RootModulesType] | (
-  typeof storeOptions extends { actions: infer M }
-    ? string & keyof M
-    : never
-)
 
 export interface RootModules extends RootModulesType {
 }
 
-export interface RootState extends RootStateType {
+export interface RootState extends RootStateType<RootModulesType> {
 }
 
-export interface RootGetters extends RootGettersType {
+export interface RootGetters extends RootGettersType<RootModulesType, typeof storeOptions> {
 }
 
-export interface RootMutations extends RootMutationsType {
+export interface RootMutations extends RootMutationsType<RootModulesType, typeof storeOptions> {
 }
 
-export interface RootActions extends RootActionsType {
+export interface RootActions extends RootActionsType<RootModulesType, typeof storeOptions> {
 }

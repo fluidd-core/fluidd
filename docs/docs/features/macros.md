@@ -1,5 +1,6 @@
 ---
 title: Macros
+icon: lucide/square-code
 ---
 
 # Macros

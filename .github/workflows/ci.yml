@@ -1,4 +1,4 @@
-name: Build
+name: CI
 
 on:
   push:
@@ -60,7 +60,7 @@ jobs:
       contents: read
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
           egress-policy: audit
 
@@ -68,12 +68,12 @@ jobs:
         uses: actions/checkout@v7
         with:
           persist-credentials: false
-          sparse-checkout: tools
+          sparse-checkout: |
+            .github/actions
+            tools
 
-      - name: Setup Node
-        uses: actions/setup-node@v7
-        with:
-          node-version-file: .node-version
+      - name: Setup pnpm and Node
+        uses: ./.github/actions/setup-pnpm-node
 
       - name: Download dist
         uses: actions/download-artifact@v8
@@ -100,7 +100,7 @@ jobs:
       contents: read
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
           egress-policy: audit
 

@@ -1,5 +1,6 @@
 import { upperFirst } from 'lodash-es'
 import { getAllLocales } from '@/plugins/i18n'
+import { getNumberFormat } from '@/util/intl-format-cache'
 
 const stringFormatters = () => {
   const byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB']
@@ -165,12 +166,12 @@ const stringFormatters = () => {
 
     getReadableCurrencyString: (value: number, currency: string, options?: Intl.NumberFormatOptions) => {
       try {
-        return value.toLocaleString(getAllLocales(), {
+        return getNumberFormat(getAllLocales(), {
           style: 'currency',
           currency,
           notation: 'standard',
           ...options
-        })
+        }).format(value)
       } catch {
         const valueAsString = value.toFixed(2)
 

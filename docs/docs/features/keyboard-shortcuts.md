@@ -1,5 +1,6 @@
 ---
 title: Keyboard Shortcuts
+icon: lucide/keyboard
 ---
 
 # Keyboard Shortcuts
@@ -57,7 +58,7 @@ editor.
 
 ## File editor
 
-The built-in [file editor](/features/file-editor) has its own set of
+The built-in [file editor](file-editor.md) has its own set of
 shortcuts:
 
 | Shortcut                                  | Action            |

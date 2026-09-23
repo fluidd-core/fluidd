@@ -1,5 +1,6 @@
 ---
 title: Cameras
+icon: lucide/camera
 ---
 
 # Cameras

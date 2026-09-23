@@ -19,7 +19,7 @@ export const actions = {
    * Inits moonraker component
    */
   async init () {
-    // Get the last 50 history items.
+    // Get the most recent history items.
     SocketActions.serverHistoryList({ limit: Globals.JOB_HISTORY_LOAD })
 
     // Load the known totals.
@@ -48,26 +48,38 @@ export const actions = {
 
     commit('setAddUnresolvedJobIds', jobIds)
 
-    await Promise.all(
-      jobIds
-        .map(async jobId => {
-          try {
-            await SocketActions.serverHistoryGetJob(
-              jobId,
-              {
-                suppressError: error => error.code === 404
+    // Chunked, one commit per chunk: a commit per job re-renders every history
+    // and file table row, and hundreds of jobs then block the page for seconds.
+    for (let index = 0; index < jobIds.length; index += Globals.JOB_HISTORY_FETCH_CHUNK) {
+      const chunk = jobIds.slice(index, index + Globals.JOB_HISTORY_FETCH_CHUNK)
+
+      const jobs = await Promise.all(
+        chunk
+          .map(async jobId => {
+            try {
+              const { job } = await SocketActions.serverHistoryGetJob(
+                jobId,
+                {
+                  suppressError: error => error.code === 404
+                }
+              )
+
+              return job
+            } catch (error) {
+              if (
+                !isSocketError(error) ||
+                error.code !== 404
+              ) {
+                commit('setRemoveUnresolvedJobIds', [jobId])
               }
-            )
-          } catch (error) {
-            if (
-              !isSocketError(error) ||
-              error.code !== 404
-            ) {
-              commit('setRemoveUnresolvedJobIds', [jobId])
+
+              return null
             }
-          }
-        })
-    )
+          })
+      )
+
+      commit('setUpdateHistoryJobs', jobs.filter(Boolean))
+    }
   },
 
   async clearHistoryThumbnails ({ commit }, payload: string) {
@@ -86,15 +98,6 @@ export const actions = {
   },
 
   /**
-   * Update a job in the store
-   */
-  async onHistoryJob ({ commit }, payload: Moonraker.History.JobResponse) {
-    if (payload.job) {
-      commit('setUpdateHistory', payload.job)
-    }
-  },
-
-  /**
    * Update the store with history
    */
   async onHistoryList ({ commit, dispatch, rootState }, payload: ObjectWithRequest<Moonraker.History.ListResponse>) {
@@ -104,8 +107,6 @@ export const actions = {
       const { limit } = payload.__request__.params ?? {}
 
       commit('setAllLoaded', limit === 0 || (limit != null && (payload.jobs?.length ?? 0) < limit))
-
-      commit('setClearUnresolvedJobIds')
 
       const jobIds = Object.values(rootState.files.pathContent)
         .flatMap(pathContent => pathContent?.files ?? [])

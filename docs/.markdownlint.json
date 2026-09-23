@@ -1,8 +1,17 @@
 {
-  "MD007": { "indent": 4 },
+  "MD007": {
+    "indent": 4
+  },
   "MD010": true,
   "MD013": false,
   "MD025": false,
+  "MD033": {
+    "allowed_elements": [
+      "div"
+    ]
+  },
   "MD046": false,
-  "MD060": { "style": "aligned" }
+  "MD060": {
+    "style": "aligned"
+  }
 }

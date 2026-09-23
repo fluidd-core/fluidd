@@ -17,7 +17,7 @@ your local network — no data leaves your network.
 
 To use it, add `*://app.fluidd.xyz` to the `cors_domains` section of your
 `moonraker.conf` and restart Moonraker. See
-[Getting Started](/getting-started#fluiddxyz) for details.
+[Getting Started](getting-started.md#fluiddxyz) for details.
 
 ### Fluidd cannot connect to my printer
 
@@ -28,7 +28,7 @@ Try these steps in order:
    load, Moonraker is not running or not reachable.
 2. Check the `cors_domains` section in your `moonraker.conf` — the host you
    are connecting from must be listed. See the
-   [configuration example](/configuration#example-configuration).
+   [configuration example](configuration.md#example-configuration).
 3. Check the `trusted_clients` section — your IP range must be included.
 4. If you are connecting from a different network or through a VPN, verify
    there are no firewall rules blocking the connection.
@@ -41,7 +41,7 @@ describe what went wrong. Common fixes:
 
 - Check your `printer.cfg` for syntax errors.
 - Try running `FIRMWARE_RESTART` from the console.
-- Restart the Klipper service from the [System page](/features/system-and-notifications).
+- Restart the Klipper service from the [System page](features/system-and-notifications.md).
 
 ### Klipper updated and now my printer has an error
 
@@ -73,12 +73,12 @@ Three options:
   options to save or load your Fluidd UI settings (layout, theme, presets,
   macros, etc.).
 - **Moonraker database backup** — go to the
-  [System page](/features/system-and-notifications), find the database section, and click
+  [System page](features/system-and-notifications.md), find the database section, and click
   Create Backup to save a backup on the host. Use Restore to select and
   restore from an existing backup.
 - **Config files** — your Klipper and Moonraker configuration files are
   stored in `~/printer_data/config`. You can copy this directory manually
-  via SSH or use the [File Manager](/features/file-manager) to download
+  via SSH or use the [File Manager](features/file-manager.md) to download
   individual files.
 
 ## Cameras
@@ -87,11 +87,11 @@ Three options:
 
 Navigate to the UI Settings page and add a new camera. Fluidd supports
 multiple camera types including MJPEG, HLS, and WebRTC. See
-[Cameras](/features/cameras) for details.
+[Cameras](features/cameras.md) for details.
 
 ### I'd like to set up multiple cameras
 
-See the [cameras feature](/features/cameras) for supported stream types
+See the [cameras feature](features/cameras.md) for supported stream types
 and configuration.
 
 ### My camera is delayed or slow
@@ -122,11 +122,11 @@ required:
    your `moonraker.conf`.
 
 Files must be uploaded after enabling these settings. See
-[Printing — Exclude Object](/features/printing#exclude-object) for details.
+[Printing — Exclude Object](features/printing.md#exclude-object) for details.
 
 ### How do I upload files from my slicer?
 
-See [Slicer Uploads](/features/slicer-uploads) for setup instructions
+See [Slicer Uploads](features/slicer-uploads.md) for setup instructions
 covering OrcaSlicer, PrusaSlicer, SuperSlicer, and Cura.
 
 ### My Spoolman spool weight stopped updating after a Spoolman upgrade
@@ -135,7 +135,7 @@ Spoolman 0.26 added browser origin checks that block the direct connection
 Fluidd uses for live spool updates, even though spool selection and everything
 else still work. Add Fluidd's address to `SPOOLMAN_CORS_ORIGIN` on your
 Spoolman host and restart it. See
-[Live updates](/features/multi-material#live-updates) for details.
+[Live updates](features/multi-material.md#live-updates) for details.
 
 ## System
 
@@ -163,10 +163,10 @@ iwconfig wlan0 power off
 Open the side menu and click **Adjust Layout**. You can drag cards between
 columns, reorder them, or disable cards you don't need. Click the exit button
 when done, or use **Reset Layout** to restore the defaults. See
-[Customize](/customize#application-layout) for more details.
+[Customize](customize.md#application-layout) for more details.
 
 ### How do I use a custom theme?
 
 Create a `.fluidd-theme` folder in your configuration directory and upload a
 `custom.css` file into it. Fluidd also supports custom backgrounds and logos.
-See [Customize — Custom Themes](/customize#custom-themes) for details.
+See [Customize — Custom Themes](customize.md#custom-themes) for details.
