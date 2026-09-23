@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.37.6](https://github.com/fluidd-core/fluidd/compare/v1.37.5...v1.37.6) (2026-09-23)
+
+
+### Features
+
+* **i18n-ru:** Update Russian translations ([61e4448](https://github.com/fluidd-core/fluidd/commit/61e4448cd8ab9854d10832787c953c57edeea779))
+
+
+### Bug Fixes
+
+* resolve missing jobs in batches ([#1956](https://github.com/fluidd-core/fluidd/issues/1956)) ([bf6b45f](https://github.com/fluidd-core/fluidd/commit/bf6b45f4ba24643db66a221f5f65188e5c8f9e9d))
+
+
+### Performance Improvements
+
+* cache Intl formatters ([#1957](https://github.com/fluidd-core/fluidd/issues/1957)) ([470735f](https://github.com/fluidd-core/fluidd/commit/470735fd0b226e856e8ed4a09cde9e817e620de7))
+
+
+### Code Refactorings
+
+* typing improvements ([5d7d63a](https://github.com/fluidd-core/fluidd/commit/5d7d63a1eec5f6ebfe5997ef75e5c7d8806b0f5e))
+
 ## [1.37.5](https://github.com/fluidd-core/fluidd/compare/v1.37.4...v1.37.5) (2026-09-09)
 
 
