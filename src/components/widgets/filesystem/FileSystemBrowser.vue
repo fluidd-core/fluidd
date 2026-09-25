@@ -76,6 +76,7 @@
                   'max-height': `${thumbnailSize}px`
                 }"
                 :src="getThumbUrl(item, root, item.path, thumbnailSize > 16, item.modified)"
+                loading="lazy"
               >
             </v-layout>
           </template>
