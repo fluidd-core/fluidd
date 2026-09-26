@@ -96,8 +96,8 @@ const getAccessToken = async (keys: TokenKeys): Promise<string | null> => {
     } catch (e) {
       consola.error('Error during token refresh', e)
 
-      // if it's NOT a 401, bail out without touching tokens; otherwise fall
-      // through to the clear at the bottom.
+      // if it's NOT an unauthorized error (Moonraker's -32602), bail out without
+      // touching tokens; otherwise fall through to the clear at the bottom.
       if (
         !isSocketError(e) ||
         !isMoonrakerUnauthorizedError(e)
