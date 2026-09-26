@@ -5,7 +5,7 @@ import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import getFilePaths from '@/util/get-file-paths'
 import type { ObjectWithRequest } from '@/plugins/socketClient'
-import isSocketError from '@/util/is-socket-error'
+import { isMoonrakerNotFoundError, isSocketError } from '@/util/is-socket-error'
 
 export const actions = {
   /**
@@ -60,7 +60,7 @@ export const actions = {
               const { job } = await SocketActions.serverHistoryGetJob(
                 jobId,
                 {
-                  suppressError: error => error.code === 404
+                  suppressError: isMoonrakerNotFoundError
                 }
               )
 
@@ -68,7 +68,7 @@ export const actions = {
             } catch (error) {
               if (
                 !isSocketError(error) ||
-                error.code !== 404
+                !isMoonrakerNotFoundError(error)
               ) {
                 commit('setRemoveUnresolvedJobIds', [jobId])
               }

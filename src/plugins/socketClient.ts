@@ -2,7 +2,7 @@ import type _Vue from 'vue'
 import { consola } from 'consola'
 import { camelCase, mergeWith } from 'lodash-es'
 import type { TypedStore } from '@/store'
-import type { SocketError } from '@/store/socket/types'
+import type { SocketError } from '@/util/is-socket-error'
 
 const LOG_PREFIX = '[WEBSOCKET]'
 

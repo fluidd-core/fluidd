@@ -1,6 +1,6 @@
 import type { ActionTree } from 'vuex'
 import { consola } from 'consola'
-import type { SocketError, SocketState, SocketStatus } from './types'
+import type { SocketState, SocketStatus } from './types'
 import type { RootState } from '../types'
 import { Globals } from '@/globals'
 import { SocketActions } from '@/api/socketActions'
@@ -10,7 +10,7 @@ import { jwtDecode } from 'jwt-decode'
 import type { TokenKeys } from '../config/types'
 import type { HistoryItem } from '../history/types'
 import i18n from '@/plugins/i18n'
-import isSocketError from '@/util/is-socket-error'
+import { isMoonrakerNotFoundError, isMoonrakerUnauthorizedError, isSocketError, type SocketError } from '@/util/is-socket-error'
 
 const MODULES_TO_RESET_ON_DROP = [
   'server',
@@ -96,11 +96,11 @@ const getAccessToken = async (keys: TokenKeys): Promise<string | null> => {
     } catch (e) {
       consola.error('Error during token refresh', e)
 
-      // if it's NOT a 401, bail out without touching tokens; otherwise fall
-      // through to the clear at the bottom.
+      // if it's NOT an unauthorized error (Moonraker's -32602), bail out without
+      // touching tokens; otherwise fall through to the clear at the bottom.
       if (
         !isSocketError(e) ||
-        e.code !== 401
+        !isMoonrakerUnauthorizedError(e)
       ) {
         return null
       }
@@ -215,7 +215,7 @@ export const actions = {
         // loading unauthenticated through the normal bootstrap → ready path.
         if (
           isSocketError(e) &&
-          e.code === -32601
+          isMoonrakerNotFoundError(e)
         ) {
           EventBus.$emit(
             i18n.t('app.version.label.old_component_version', { name: 'Moonraker', version: Globals.MOONRAKER_MIN_VERSION }).toString(),

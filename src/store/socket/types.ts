@@ -11,8 +11,3 @@ export type SocketStatus =
   | 'identifying'
   | 'authenticating'
   | 'ready'
-
-export interface SocketError {
-  code: number;
-  message: string;
-}
