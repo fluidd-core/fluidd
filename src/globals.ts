@@ -643,6 +643,7 @@ export const Waits = Object.freeze({
   onQueryEndstops: 'onQueryEndstops',
   onQueryProbe: 'onQueryProbe',
   onVersionRefresh: 'onVersionRefresh',
+  onFirmwareRefresh: 'onFirmwareRefresh',
   onSyncExtruder: 'onSyncExtruder',
   onStepperEnable: 'onStepperEnable',
   onMachinePeripheralsUsb: 'onMachinePeripheralsUsb',

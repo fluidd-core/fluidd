@@ -446,6 +446,49 @@ export const SocketActions = {
     )
   },
 
+  serverExtensionsList (options?: NotifyOptions) {
+    return baseEmit<Moonraker.Server.ExtensionsListResponse>(
+      'server.extensions.list', {
+        dispatch: 'server/onExtensionsList',
+        suppressError: true,
+        ...options
+      }
+    )
+  },
+
+  serverExtensionsRequest<T = unknown> (agent: string, method: string, args: unknown = null, options?: NotifyOptions) {
+    return baseEmit<T>(
+      'server.extensions.request', {
+        ...options,
+        params: {
+          agent,
+          method,
+          arguments: args
+        }
+      }
+    )
+  },
+
+  aldisStatus (options?: NotifyOptions) {
+    return SocketActions.serverExtensionsRequest<Aldis.StatusResponse>(
+      'aldis', 'status', null, {
+        dispatch: 'firmware/onStatus',
+        wait: Waits.onFirmwareRefresh,
+        suppressError: true,
+        ...options
+      }
+    )
+  },
+
+  aldisUpdate (args: Aldis.UpdateArguments, options?: NotifyOptions) {
+    return SocketActions.serverExtensionsRequest<Aldis.UpdateResult>(
+      'aldis', 'update', args, {
+        suppressError: true,
+        ...options
+      }
+    )
+  },
+
   serverConnectionIdentify (params?: { client_name: string, version: string, type: string, url: string, access_token?: string, api_key?: string }, options?: NotifyOptions) {
     return baseEmit<Moonraker.Websocket.ConnectionIdentifyResponse>(
       'server.connection.identify', {
