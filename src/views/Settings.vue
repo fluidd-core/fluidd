@@ -25,6 +25,7 @@
         <mmu-settings v-if="supportsMmu" />
         <spoolman-settings v-if="supportsSpoolman" />
         <version-settings v-if="supportsVersions" />
+        <firmware-settings v-if="supportsFirmware" />
       </div>
     </v-col>
   </v-row>
@@ -41,6 +42,7 @@ import CameraSettings from '@/components/settings/cameras/CameraSettings.vue'
 import ToolheadSettings from '@/components/settings/ToolheadSettings.vue'
 import ThemeSettings from '@/components/settings/ThemeSettings.vue'
 import VersionSettings from '@/components/settings/VersionSettings.vue'
+import FirmwareSettings from '@/components/settings/FirmwareSettings.vue'
 import GcodePreviewSettings from '@/components/settings/GcodePreviewSettings.vue'
 import AuthSettings from '@/components/settings/auth/AuthSettings.vue'
 import ConsoleSettings from '@/components/settings/console/ConsoleSettings.vue'
@@ -63,6 +65,7 @@ import WarningsSettings from '@/components/settings/WarningsSettings.vue'
     ToolheadSettings,
     ThemeSettings,
     VersionSettings,
+    FirmwareSettings,
     GcodePreviewSettings,
     AuthSettings,
     ConsoleSettings,
@@ -74,6 +77,13 @@ import WarningsSettings from '@/components/settings/WarningsSettings.vue'
 export default class Settings extends Mixins(StateMixin) {
   get supportsVersions (): boolean {
     return this.$typedGetters['server/componentSupport']('update_manager')
+  }
+
+  get supportsFirmware (): boolean {
+    return (
+      this.$typedGetters['firmware/isSupported'] ||
+      this.$typedGetters['firmware/isRegistered']
+    )
   }
 
   get supportsAuth (): boolean {

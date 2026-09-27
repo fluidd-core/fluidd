@@ -74,6 +74,13 @@
           :title-finished="$t('app.version.status.finished')"
           @close="handleVersionDialogClose"
         />
+        <updating-dialog
+          :updating="firmwareUpdating"
+          :responses="firmwareResponses"
+          :title-updating="$t('app.firmware.status.updating')"
+          :title-finished="$t('app.firmware.status.finished')"
+          @close="handleFirmwareDialogClose"
+        />
         <spool-selection-dialog />
         <action-command-prompt-dialog />
         <keyboard-shortcuts-dialog />
@@ -114,6 +121,7 @@ import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@
 import MmuEditTtgMapDialog from './components/widgets/mmu/MmuEditTtgMapDialog.vue'
 import AfcPrintStartDialog from './components/widgets/afc/dialogs/AfcPrintStartDialog.vue'
 import type { UpdateResponse } from '@/store/version/types'
+import type { FirmwareUpdateResponse } from '@/store/firmware/types'
 
 @Component<App>({
   metaInfo () {
@@ -181,6 +189,18 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
 
   handleVersionDialogClose () {
     this.$typedCommit('version/setClearUpdateResponse')
+  }
+
+  get firmwareUpdating (): boolean {
+    return this.$typedState.firmware.busy
+  }
+
+  get firmwareResponses (): FirmwareUpdateResponse[] {
+    return this.$typedGetters['firmware/getResponses']
+  }
+
+  handleFirmwareDialogClose () {
+    this.$typedCommit('firmware/setClearResponses')
   }
 
   get inLayout (): boolean {
