@@ -67,7 +67,13 @@
       <template v-if="socketConnected">
         <file-system-download-dialog />
         <file-system-upload-dialog />
-        <updating-dialog />
+        <updating-dialog
+          :updating="versionUpdating"
+          :responses="versionResponses"
+          :title-updating="$t('app.version.status.updating')"
+          :title-finished="$t('app.version.status.finished')"
+          @close="handleVersionDialogClose"
+        />
         <spool-selection-dialog />
         <action-command-prompt-dialog />
         <keyboard-shortcuts-dialog />
@@ -107,6 +113,7 @@ import KeyboardShortcutsDialog from '@/components/common/KeyboardShortcutsDialog
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
 import MmuEditTtgMapDialog from './components/widgets/mmu/MmuEditTtgMapDialog.vue'
 import AfcPrintStartDialog from './components/widgets/afc/dialogs/AfcPrintStartDialog.vue'
+import type { UpdateResponse } from '@/store/version/types'
 
 @Component<App>({
   metaInfo () {
@@ -162,6 +169,18 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   // our translations are loading.
   get updating (): boolean {
     return this.$typedState.version.status?.busy ?? false
+  }
+
+  get versionUpdating (): boolean {
+    return this.$typedState.version.status?.busy ?? false
+  }
+
+  get versionResponses (): UpdateResponse[] {
+    return this.$typedGetters['version/getResponses']
+  }
+
+  handleVersionDialogClose () {
+    this.$typedCommit('version/setClearUpdateResponse')
   }
 
   get inLayout (): boolean {

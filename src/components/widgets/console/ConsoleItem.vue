@@ -17,14 +17,13 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Globals } from '@/globals'
-import type { ConsoleEntry } from '@/store/console/types'
-import type { UpdateResponse } from '@/store/version/types'
+import type { ConsoleEntry, ConsoleLogEntry } from '@/store/console/types'
 import { escapeRegExp } from 'lodash-es'
 
 @Component({})
 export default class ConsoleItem extends Vue {
   @Prop({ type: Object, required: true })
-  readonly value!: ConsoleEntry | UpdateResponse
+  readonly value!: ConsoleEntry | ConsoleLogEntry
 
   @Prop({ type: String })
   readonly search?: string
