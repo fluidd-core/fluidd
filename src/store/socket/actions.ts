@@ -19,7 +19,8 @@ const MODULES_TO_RESET_ON_DROP = [
   'webcams',
   'jobQueue',
   'wait',
-  'gcodePreview'
+  'gcodePreview',
+  'firmware'
 ] as const
 
 let retryTimeout: ReturnType<typeof setTimeout>
