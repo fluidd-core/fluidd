@@ -29,6 +29,8 @@ export const createState = (): ServerState => {
     cpu_temp: null,
     system_cpu_usage: null,
     system_uptime: null,
-    websocket_connections: null
+    websocket_connections: null,
+    agents: [],
+    agentsLoaded: false
   }
 }
