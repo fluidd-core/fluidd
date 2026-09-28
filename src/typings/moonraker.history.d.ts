@@ -4,6 +4,11 @@ declare namespace Moonraker.History {
     auxiliary_totals: AuxiliaryTotal[];
   }
 
+  export interface ResetTotalsResponse {
+    last_totals: JobTotals;
+    last_auxiliary_totals?: AuxiliaryTotal[];
+  }
+
   export interface ListResponse {
     count: number;
     jobs: Job[];
@@ -36,7 +41,7 @@ declare namespace Moonraker.History {
   export interface Job {
     job_id: string;
     exists: boolean;
-    end_time: string | null;
+    end_time: number | null;
     filament_used: number;
     filename: string;
     metadata?: Moonraker.Files.Metadata;
@@ -87,7 +92,7 @@ declare namespace Moonraker {
     },
     'server.history.reset_totals': {
       params: undefined,
-      result: History.TotalsResponse
+      result: History.ResetTotalsResponse
     }
   }
 }

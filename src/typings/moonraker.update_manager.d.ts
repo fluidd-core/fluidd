@@ -1,9 +1,9 @@
 declare namespace Moonraker.UpdateManager {
   export interface StatusResponse {
     busy: boolean;
-    github_rate_limit: number;
-    github_requests_remaining: number;
-    github_limit_reset_time: number;
+    github_rate_limit: number | null;
+    github_requests_remaining: number | null;
+    github_limit_reset_time: number | null;
     version_info: VersionInfo;
   }
 
@@ -81,6 +81,7 @@ declare namespace Moonraker.UpdateManager {
 
   export interface Python {
     configured_type: 'python';
+    detected_type: 'python_package';
     name?: string;
     channel: 'stable' | 'beta' | 'dev';
     channel_invalid: boolean;
@@ -96,6 +97,7 @@ declare namespace Moonraker.UpdateManager {
     remote_hash: string;
     is_valid: boolean;
     is_dirty: boolean;
+    pristine: boolean;
     changelog_url: string;
     anomalies: string[];
     warnings: string[];

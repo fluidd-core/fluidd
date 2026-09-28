@@ -1,7 +1,7 @@
 declare namespace Moonraker.Database {
   export interface ListResponse {
     namespaces: string[];
-    backups: string[];
+    backups?: string[];
   }
 
   export interface CompactResponse {
@@ -24,19 +24,19 @@ declare namespace Moonraker.Database {
 
   export interface PostItemResponse<T = unknown> {
     namespace: string;
-    key: string;
+    key: string | string[];
     value: T;
   }
 
   export interface DeleteItemResponse<T = unknown> {
     namespace: string;
-    key: string;
+    key: string | string[];
     value: T;
   }
 
   export interface GetItemResponse<T = unknown> {
     namespace: string;
-    key?: string;
+    key: string | string[] | null;
     value: T;
   }
 }

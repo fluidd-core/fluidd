@@ -60,7 +60,7 @@ export const actions = {
   },
 
   async checkMoonrakerMinVersion ({ state, dispatch }) {
-    const moonrakerVersion = state.info.moonraker_version ?? '?'
+    const moonrakerVersion = state.info.moonraker_version || '?'
 
     const fullMoonrakerVersion = moonrakerVersion.includes('-')
       ? moonrakerVersion

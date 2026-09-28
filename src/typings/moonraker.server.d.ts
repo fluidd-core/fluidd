@@ -6,15 +6,18 @@ declare namespace Moonraker.Server {
     failed_components: string[];
     registered_directories: string[];
     warnings: string[];
-    websocket_count?: number;
-    moonraker_version?: string;
-    api_version?: number[];
-    api_version_string?: string;
+    websocket_count: number;
+    moonraker_version: string;
+    missing_klippy_requirements: string[];
+    api_version: number[];
+    api_version_string: string;
   }
 
+  export type LogsRolloverApplication = 'moonraker' | 'klipper'
+
   export interface LogsRolloverResponse {
-    rolled_over?: string[];
-    failed?: Record<string, unknown>;
+    rolled_over: string[];
+    failed: Record<string, string>;
   }
 
   export type KlippyState = 'disconnected' | 'startup' | 'ready' | 'error' | 'shutdown'
@@ -22,7 +25,12 @@ declare namespace Moonraker.Server {
   export interface ConfigResponse {
     config: Config;
     orig: Record<string, unknown>;
-    files: [];
+    files: ConfigFile[];
+  }
+
+  export interface ConfigFile {
+    filename: string;
+    sections: string[];
   }
 
   export interface Config {
@@ -68,7 +76,9 @@ declare namespace Moonraker.Server {
 declare namespace Moonraker {
   export interface Methods {
     'server.info': {
-      params: undefined,
+      params: {
+        raw?: boolean
+      },
       result: Server.InfoResponse
     },
     'server.config': {
@@ -81,7 +91,7 @@ declare namespace Moonraker {
     },
     'server.logs.rollover': {
       params: {
-        application?: string
+        application?: Server.LogsRolloverApplication
       },
       result: Server.LogsRolloverResponse
     }

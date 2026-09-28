@@ -1,9 +1,9 @@
 declare namespace Moonraker.Authorization {
   export interface InfoResponse {
-    default_source: string;
-    available_sources: string[];
+    default_source: Source;
+    available_sources: Source[];
     login_required: boolean;
-    trusted: boolean;
+    trusted: boolean | null;
   }
 
   export interface RefreshJwtResponse {
@@ -26,10 +26,14 @@ declare namespace Moonraker.Authorization {
     action: 'user_logged_out';
   }
 
-  export interface GetUserResponse {
+  export type GetUserResponse = {
     username: string;
-    source: string;
+    source: Source;
     created_on: number;
+  } | {
+    username: null;
+    source: null;
+    created_on: null;
   }
 
   export interface UsersListResponse {

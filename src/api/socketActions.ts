@@ -633,7 +633,7 @@ export const SocketActions = {
   serverHistoryResetTotals (options?: NotifyOptions) {
     return baseEmit(
       'server.history.reset_totals', {
-        dispatch: 'history/onHistoryTotals',
+        dispatch: 'history/onHistoryResetTotals',
         ...options
       }
     )
@@ -875,7 +875,7 @@ export const SocketActions = {
     )
   },
 
-  serverLogsRollover (application?: string, options?: NotifyOptions) {
+  serverLogsRollover (application?: Moonraker.Server.LogsRolloverApplication, options?: NotifyOptions) {
     return baseEmit(
       'server.logs.rollover', {
         dispatch: 'server/onLogsRollOver',

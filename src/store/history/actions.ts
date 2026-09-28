@@ -98,6 +98,13 @@ export const actions = {
   },
 
   /**
+   * The reset response only carries the previous totals, so reload the current ones
+   */
+  async onHistoryResetTotals () {
+    SocketActions.serverHistoryTotals()
+  },
+
+  /**
    * Update the store with history
    */
   async onHistoryList ({ commit, dispatch, rootState }, payload: ObjectWithRequest<'server.history.list'>) {

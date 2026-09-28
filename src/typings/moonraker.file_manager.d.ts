@@ -27,19 +27,19 @@ declare namespace Moonraker.Files {
     path: string;
     modified: number;
     size: number;
-    permissions?: Moonraker.Files.FilePermissions;
+    permissions: FilePermissions;
   }
 
   export interface GetDirectoryResponse {
-    dirs: Moonraker.Files.Dir[];
-    files: (Moonraker.Files.File | Moonraker.Files.FileWithMeta)[];
-    disk_usage: Moonraker.Files.DiskUsage;
+    dirs: Dir[];
+    files: (File | FileWithMeta)[];
+    disk_usage: DiskUsage;
     root_info: RootInfo;
   }
 
   export interface RootInfo {
     name: string;
-    permissions?: Moonraker.Files.FilePermissions;
+    permissions: 'r' | 'rw';
   }
 
   export interface RootInfoWithPath extends RootInfo {
@@ -50,16 +50,16 @@ declare namespace Moonraker.Files {
 
   export interface File {
     filename: string;
-    modified: number | string;
+    modified: number;
     size: number;
-    permissions?: FilePermissions;
+    permissions: FilePermissions;
   }
 
   export interface Dir {
     dirname: string;
-    modified: number | string;
+    modified: number;
     size: number;
-    permissions?: Moonraker.Files.FilePermissions;
+    permissions: FilePermissions;
   }
 
   export interface FileWithMeta extends File, Metadata {
@@ -71,7 +71,7 @@ declare namespace Moonraker.Files {
     path: string;
     modified: number;
     size: number;
-    permissions: string;
+    permissions: FilePermissions;
   }
 
   export interface DiskUsage {
@@ -81,7 +81,7 @@ declare namespace Moonraker.Files {
   }
 
   export interface Metadata {
-    modified: number | string;
+    modified: number;
     size: number;
     uuid?: string;
     chamber_temp?: number;

@@ -29,7 +29,7 @@ declare namespace Moonraker.Sensor {
     exclude_paused: boolean;
     report_total: boolean;
     report_maximum: boolean;
-    precision: number;
+    precision: number | null;
     parameter: string;
   }
 }

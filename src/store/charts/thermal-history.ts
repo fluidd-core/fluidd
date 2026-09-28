@@ -24,7 +24,7 @@ const noTargetPrefixes = [
 
 interface ColumnSource {
   column: string;
-  values: readonly number[];
+  values: readonly (number | null)[];
 }
 
 // Sources are right-aligned on a 1Hz timeline whose newest sample sits at
@@ -83,10 +83,10 @@ export const buildThermalHistoryBuffer = (
 
     // Hold the oldest reading across the lead-in so a short history still
     // fills the window - the chart's x-axis spans the retention regardless.
-    target.fill(decimalRound(values[from], 2), 0, to)
+    target.fill(decimalRound(values[from] ?? 0, 2), 0, to)
 
     for (let index = 0; index < length; index++) {
-      target[to + index] = decimalRound(values[from + index], 2)
+      target[to + index] = decimalRound(values[from + index] ?? 0, 2)
     }
   }
 

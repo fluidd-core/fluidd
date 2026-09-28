@@ -7,15 +7,15 @@ declare namespace Moonraker.DataStore {
   }
 
   export interface TemperatureStoreEntry {
-    temperatures: number[];
-    targets?: number[];
-    powers?: number[];
-    speeds?: number[];
+    temperatures: (number | null)[];
+    targets?: (number | null)[];
+    powers?: (number | null)[];
+    speeds?: (number | null)[];
   }
 
   export interface GcodeStoreEntry {
     message: string;
-    time?: number;
+    time: number;
     type: 'command' | 'response';
   }
 }
