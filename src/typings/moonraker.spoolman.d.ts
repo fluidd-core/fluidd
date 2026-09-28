@@ -1,6 +1,6 @@
 declare namespace Moonraker.Spoolman {
   export interface SpoolIdResponse {
-    spool_id: number
+    spool_id: number | null
   }
 
   export interface ProxyResponseV2Success<T> {

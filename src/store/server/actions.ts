@@ -129,8 +129,8 @@ export const actions = {
     }
   },
 
-  async onMachineProcStats ({ commit, dispatch }, payload: Moonraker.ProcStats.Response) {
-    if (payload.throttled_state) {
+  async onMachineProcStats ({ commit, dispatch }, payload: Moonraker.ProcStats.Response | Moonraker.ProcStats.ProcStatUpdate) {
+    if ('throttled_state' in payload && payload.throttled_state) {
       await dispatch('onMachineThrottledState', payload.throttled_state)
     }
     commit('setMoonrakerStats', payload)

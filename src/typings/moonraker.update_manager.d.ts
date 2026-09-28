@@ -106,7 +106,7 @@ declare namespace Moonraker.UpdateManager {
     application: string;
     proc_id: number;
     message: string;
-    complete?: boolean;
+    complete: boolean;
   }
 }
 

@@ -364,12 +364,7 @@ export const actions = {
     dispatch('files/notify' + upperFirst(camelCase(payload.action)), payload, { root: true })
   },
 
-  // Next release, remove.
-  async notifyMetadataUpdate ({ dispatch }, payload: Moonraker.Files.FileWithMetaResponse) {
-    dispatch('files/onFileMetaData', payload, { root: true })
-  },
-
-  async notifyPowerChanged ({ dispatch }, payload: { device: string; status: Moonraker.Power.DeviceState }) {
+  async notifyPowerChanged ({ dispatch }, payload: Moonraker.Power.Device) {
     dispatch('power/onStatus', { [payload.device]: payload.status }, { root: true })
   },
 
@@ -377,7 +372,7 @@ export const actions = {
     dispatch('version/onUpdateResponse', payload, { root: true })
   },
 
-  async notifyUpdateRefreshed ({ dispatch }, payload: Partial<Moonraker.UpdateManager.StatusResponse>) {
+  async notifyUpdateRefreshed ({ dispatch }, payload: Moonraker.UpdateManager.StatusResponse) {
     dispatch('version/onUpdateStatus', payload, { root: true })
   },
 
@@ -389,11 +384,11 @@ export const actions = {
     dispatch('server/onMachineThrottledState', payload, { root: true })
   },
 
-  async notifyProcStatUpdate ({ dispatch }, payload: Moonraker.ProcStats.Response) {
+  async notifyProcStatUpdate ({ dispatch }, payload: Moonraker.ProcStats.ProcStatUpdate) {
     dispatch('server/onMachineProcStats', payload, { root: true })
   },
 
-  async notifyUserCreated ({ dispatch }, payload: { username: string; source?: string }) {
+  async notifyUserCreated ({ dispatch }, payload: { username: string }) {
     dispatch('auth/onUserCreated', payload, { root: true })
   },
 
@@ -413,7 +408,7 @@ export const actions = {
     dispatch('timelapse/onEvent', payload, { root: true })
   },
 
-  async notifyAnnouncementUpdate ({ dispatch }, payload: Moonraker.Announcements.ListResponse) {
+  async notifyAnnouncementUpdate ({ dispatch }, payload: Moonraker.Announcements.AnnouncementUpdate) {
     dispatch('announcements/onAnnouncementUpdate', payload, { root: true })
   },
 

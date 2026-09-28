@@ -60,12 +60,12 @@ export const mutations = {
   /**
    * On initial init, we get the server (moonraker) process stats and any throttled state flags.
    */
-  setMoonrakerStats (state, payload: Moonraker.ProcStats.Response) {
+  setMoonrakerStats (state, payload: Moonraker.ProcStats.Response | Moonraker.ProcStats.ProcStatUpdate) {
     if (payload.cpu_temp != null) {
       state.cpu_temp = payload.cpu_temp
     }
 
-    if (payload.throttled_state != null) {
+    if ('throttled_state' in payload && payload.throttled_state != null) {
       state.throttled_state = {
         ...state.throttled_state,
         ...payload.throttled_state

@@ -4,6 +4,10 @@ declare namespace Moonraker.Announcements {
     feeds: string[];
   }
 
+  export interface AnnouncementUpdate {
+    entries: Entry[];
+  }
+
   export interface DismissResponse {
     entry_id: string;
   }

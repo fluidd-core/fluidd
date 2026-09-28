@@ -24,7 +24,7 @@ export const actions = {
     }
   },
 
-  async onAnnouncementUpdate ({ commit }, payload: Moonraker.Announcements.ListResponse) {
+  async onAnnouncementUpdate ({ commit }, payload: Moonraker.Announcements.AnnouncementUpdate) {
     if (payload) {
       commit('setAnnouncementsList', payload)
     }
