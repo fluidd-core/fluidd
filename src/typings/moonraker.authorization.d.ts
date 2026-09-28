@@ -10,7 +10,7 @@ declare namespace Moonraker.Authorization {
     username: string;
     token: string;
     action: 'user_jwt_refresh';
-    source: string;
+    source: Source;
   }
 
   export interface LoginResponse {
@@ -18,7 +18,7 @@ declare namespace Moonraker.Authorization {
     token: string;
     refresh_token: string;
     action: 'user_logged_in';
-    source: string;
+    source: Source;
   }
 
   export interface LogoutResponse {
@@ -26,22 +26,20 @@ declare namespace Moonraker.Authorization {
     action: 'user_logged_out';
   }
 
-  export type GetUserResponse = {
+  export interface User {
     username: string;
     source: Source;
     created_on: number;
-  } | {
+  }
+
+  export type GetUserResponse = User | {
     username: null;
     source: null;
     created_on: null;
   }
 
   export interface UsersListResponse {
-    users: {
-      username: string;
-      source: string;
-      created_on: number;
-    }[]
+    users: User[]
   }
 
   export interface PostUserResponse {

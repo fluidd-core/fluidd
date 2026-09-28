@@ -98,10 +98,10 @@ export const actions = {
   },
 
   /**
-   * The reset response only carries the previous totals, so reload the current ones
+   * Moonraker resets the totals to zero; the response only carries the previous ones
    */
-  async onHistoryResetTotals () {
-    SocketActions.serverHistoryTotals()
+  async onHistoryResetTotals ({ commit }) {
+    commit('setResetHistoryTotals')
   },
 
   /**

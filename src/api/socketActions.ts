@@ -205,7 +205,7 @@ export const SocketActions = {
     )
   },
 
-  machineDevicePowerSetDevice (device: string, action: 'on' | 'off' | 'toggle', options?: NotifyOptions) {
+  machineDevicePowerSetDevice (device: string, action: Moonraker.Power.DeviceAction, options?: NotifyOptions) {
     return baseEmit(
       'machine.device_power.post_device', {
         dispatch: 'power/onStatus',
@@ -617,15 +617,13 @@ export const SocketActions = {
   },
 
   serverHistoryDeleteJob (uid: string, options?: NotifyOptions) {
-    const params: Moonraker.MethodParams<'server.history.delete_job'> = uid === 'all'
-      ? { all: true }
-      : { uid }
-
     return baseEmit(
       'server.history.delete_job', {
         dispatch: 'history/onDelete',
         ...options,
-        params
+        params: uid === 'all'
+          ? { all: true }
+          : { uid }
       }
     )
   },
@@ -664,16 +662,14 @@ export const SocketActions = {
   },
 
   serverJobQueueDeleteJobs (jobIds: string[], options?: NotifyOptions) {
-    const params: Moonraker.MethodParams<'server.job_queue.delete_job'> = jobIds.length > 0 && jobIds[0] === 'all'
-      ? { all: true }
-      : { job_ids: jobIds }
-
     return baseEmit(
       'server.job_queue.delete_job', {
         dispatch: 'jobQueue/onJobQueueStatus',
         wait: Waits.onJobQueue,
         ...options,
-        params
+        params: jobIds.length > 0 && jobIds[0] === 'all'
+          ? { all: true }
+          : { job_ids: jobIds }
       }
     )
   },

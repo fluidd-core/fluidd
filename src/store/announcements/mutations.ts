@@ -11,11 +11,9 @@ export const mutations = {
   },
 
   setAnnouncementsList (state, payload: Moonraker.Announcements.ListResponse | Moonraker.Announcements.AnnouncementUpdate) {
-    if (payload.entries) {
-      state.entries = payload.entries
-    }
+    state.entries = payload.entries
 
-    if ('feeds' in payload && payload.feeds) {
+    if ('feeds' in payload) {
       state.feeds = payload.feeds
     }
   },

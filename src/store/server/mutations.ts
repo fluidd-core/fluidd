@@ -72,17 +72,15 @@ export const mutations = {
       }
     }
 
-    if (payload.moonraker_stats != null) {
-      if (Array.isArray(payload.moonraker_stats)) {
-        // Update with array.
-        state.moonraker_stats = payload.moonraker_stats
-          .map(stat => Object.freeze(stat))
-      } else {
-        // Append to array.
-        state.moonraker_stats.push(Object.freeze(payload.moonraker_stats))
-        while (state.moonraker_stats.length > 30) {
-          state.moonraker_stats.splice(0, 1)
-        }
+    if (Array.isArray(payload.moonraker_stats)) {
+      // Update with array.
+      state.moonraker_stats = payload.moonraker_stats
+        .map(stat => Object.freeze(stat))
+    } else {
+      // Append to array.
+      state.moonraker_stats.push(Object.freeze(payload.moonraker_stats))
+      while (state.moonraker_stats.length > 30) {
+        state.moonraker_stats.splice(0, 1)
       }
     }
   }

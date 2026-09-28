@@ -136,9 +136,7 @@ export const actions = {
     commit('setMoonrakerStats', payload)
 
     // Add a chart entry
-    if (payload.moonraker_stats) {
-      await dispatch('charts/onMoonrakerStats', payload.moonraker_stats, { root: true })
-    }
+    await dispatch('charts/onMoonrakerStats', payload.moonraker_stats, { root: true })
   },
 
   async onMachineSystemInfo ({ commit }, payload: Moonraker.Machine.SystemInfoResponse) {

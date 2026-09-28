@@ -16,6 +16,8 @@ declare namespace Moonraker.Power {
 
   export type DeviceState = 'on' | 'off' | 'init' | 'error'
 
+  export type DeviceAction = 'on' | 'off' | 'toggle'
+
   export type DeviceType = 'gpio' | 'klipper_device' | 'tplink_smartplug' | 'tasmota' | 'shelly' | 'homeseer' | 'homeassistant' | 'loxonev1' | 'rf' | 'mqtt' | 'smartthings' | 'hue' | 'http' | 'uhubctl'
 }
 
@@ -32,7 +34,7 @@ declare namespace Moonraker {
     'machine.device_power.post_device': {
       params: {
         device: string,
-        action: 'on' | 'off' | 'toggle'
+        action: Power.DeviceAction
       },
       result: Power.StatusResponse
     }

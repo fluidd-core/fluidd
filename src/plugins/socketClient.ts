@@ -228,8 +228,6 @@ export class WebSocketClient {
 
   /**
    * Sends data TO the socket
-   * @param method
-   * @param options
    */
   emit<
     M extends Moonraker.Method,
