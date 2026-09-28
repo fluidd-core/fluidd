@@ -19,3 +19,20 @@ declare namespace Moonraker.DataStore {
     type: 'command' | 'response';
   }
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.temperature_store': {
+      params: {
+        include_monitors?: boolean
+      },
+      result: DataStore.TemperatureStoreResponse
+    },
+    'server.gcode_store': {
+      params: {
+        count?: number
+      },
+      result: DataStore.GcodeStoreResponse
+    }
+  }
+}

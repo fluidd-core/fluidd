@@ -24,3 +24,21 @@ declare namespace Moonraker.Announcements {
 
   export type Priority = 'normal' | 'high'
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.announcements.list': {
+      params: {
+        include_dismissed?: boolean
+      },
+      result: Announcements.ListResponse
+    },
+    'server.announcements.dismiss': {
+      params: {
+        entry_id: string,
+        wake_time?: number
+      },
+      result: Announcements.DismissResponse
+    }
+  }
+}

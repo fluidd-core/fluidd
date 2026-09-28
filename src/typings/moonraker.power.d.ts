@@ -18,3 +18,23 @@ declare namespace Moonraker.Power {
 
   export type DeviceType = 'gpio' | 'klipper_device' | 'tplink_smartplug' | 'tasmota' | 'shelly' | 'homeseer' | 'homeassistant' | 'loxonev1' | 'rf' | 'mqtt' | 'smartthings' | 'hue' | 'http' | 'uhubctl'
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'machine.device_power.devices': {
+      params: undefined,
+      result: Power.DevicesResponse
+    },
+    'machine.device_power.status': {
+      params: Record<string, null>,
+      result: Power.StatusResponse
+    },
+    'machine.device_power.post_device': {
+      params: {
+        device: string,
+        action: 'on' | 'off' | 'toggle'
+      },
+      result: Power.StatusResponse
+    }
+  }
+}

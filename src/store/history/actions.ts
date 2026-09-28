@@ -100,11 +100,11 @@ export const actions = {
   /**
    * Update the store with history
    */
-  async onHistoryList ({ commit, dispatch, rootState }, payload: ObjectWithRequest<Moonraker.History.ListResponse>) {
+  async onHistoryList ({ commit, dispatch, rootState }, payload: ObjectWithRequest<'server.history.list'>) {
     if (payload) {
       commit('setHistoryList', payload)
 
-      const { limit } = payload.__request__.params ?? {}
+      const limit = payload.__request__.params?.limit
 
       commit('setAllLoaded', limit === 0 || (limit != null && (payload.jobs?.length ?? 0) < limit))
 

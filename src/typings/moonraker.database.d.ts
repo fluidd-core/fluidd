@@ -40,3 +40,56 @@ declare namespace Moonraker.Database {
     value: T;
   }
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.database.list': {
+      params: undefined,
+      result: Database.ListResponse
+    },
+    'server.database.compact': {
+      params: undefined,
+      result: Database.CompactResponse
+    },
+    'server.database.post_backup': {
+      params: {
+        filename?: string
+      },
+      result: Database.PostBackupResponse
+    },
+    'server.database.restore': {
+      params: {
+        filename: string
+      },
+      result: Database.RestoreResponse
+    },
+    'server.database.delete_backup': {
+      params: {
+        filename: string
+      },
+      result: Database.DeleteBackupResponse
+    },
+    'server.database.post_item': {
+      params: {
+        namespace: string,
+        key: string | string[],
+        value: unknown
+      },
+      result: Database.PostItemResponse
+    },
+    'server.database.delete_item': {
+      params: {
+        namespace: string,
+        key: string | string[]
+      },
+      result: Database.DeleteItemResponse
+    },
+    'server.database.get_item': {
+      params: {
+        namespace: string,
+        key?: string | string[] | null
+      },
+      result: Database.GetItemResponse
+    }
+  }
+}

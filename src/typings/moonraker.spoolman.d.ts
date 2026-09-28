@@ -95,3 +95,28 @@ declare namespace Moonraker.Spoolman {
     extra?: Record<string, unknown>;
   }
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.spoolman.get_spool_id': {
+      params: undefined,
+      result: Spoolman.SpoolIdResponse
+    },
+    'server.spoolman.post_spool_id': {
+      params: {
+        spool_id?: number
+      },
+      result: Spoolman.SpoolIdResponse
+    },
+    'server.spoolman.proxy': {
+      params: {
+        request_method: string,
+        path: string,
+        query?: string,
+        body?: unknown,
+        use_v2_response?: boolean
+      },
+      result: Spoolman.ProxyResponse<unknown>
+    }
+  }
+}

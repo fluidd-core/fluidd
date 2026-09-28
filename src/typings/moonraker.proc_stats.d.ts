@@ -49,3 +49,12 @@ declare namespace Moonraker.ProcStats {
     used: number;
   }
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'machine.proc_stats': {
+      params: undefined,
+      result: ProcStats.Response
+    }
+  }
+}

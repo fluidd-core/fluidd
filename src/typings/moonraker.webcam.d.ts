@@ -35,4 +35,35 @@ declare namespace Moonraker.Webcam {
   export type Rotation = 0 | 90 | 180 | 270
 
   export type Source = 'config' | 'database'
+
+  // Updates by `uid`, else by `name` (creating the webcam, which then also needs `stream_url`)
+  export type PostItemParams = Omit<Entry, 'source' | 'uid' | 'name'> & (
+    {
+      uid: string,
+      name?: string
+    } | {
+      name: string
+    }
+  )
+}
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.webcams.list': {
+      params: undefined,
+      result: Webcam.ListResponse
+    },
+    'server.webcams.post_item': {
+      params: Webcam.PostItemParams,
+      result: Webcam.PostItemResponse
+    },
+    'server.webcams.delete_item': {
+      params: {
+        uid: string
+      } | {
+        name: string
+      },
+      result: Webcam.DeleteItemResponse
+    }
+  }
 }

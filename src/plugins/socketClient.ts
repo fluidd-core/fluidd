@@ -146,6 +146,7 @@ export class WebSocketClient {
             }
 
             if (request.onFulfilled) {
+              // Unchecked: trusted to match the method's result
               request.onFulfilled(socketResponse.result)
             }
           }
@@ -228,10 +229,13 @@ export class WebSocketClient {
   /**
    * Sends data TO the socket
    * @param method
-   * @param params
+   * @param options
    */
-  emit (method: string, options: NotifyOptions = {}) {
-    return new Promise((resolve, reject) => {
+  emit<
+    M extends Moonraker.Method,
+    R extends Moonraker.MethodResult<M> = Moonraker.MethodResult<M>
+  > (method: M, options: EmitOptions<M>) {
+    return new Promise<R>((resolve, reject) => {
       try {
         const { wait, params, dispatch, commit, suppressError } = options
 
@@ -248,7 +252,7 @@ export class WebSocketClient {
 
           const id = this.requestId + 10_000
 
-          const packet: SocketRequest = {
+          const packet: SocketRequest<M> = {
             id,
             method,
             jsonrpc: '2.0'
@@ -258,7 +262,7 @@ export class WebSocketClient {
             packet.params = params
           }
 
-          const request: Request = {
+          const request: Request<EmitOptions<M>['params'], R> = {
             id,
             dispatch,
             commit,
@@ -328,33 +332,50 @@ interface SocketPluginOptions {
 export type SuppressError = boolean | ((error: SocketError) => boolean)
 
 export interface NotifyOptions {
-  params?: Record<string, any>;
   dispatch?: string;
   commit?: string;
   wait?: string;
   suppressError?: SuppressError;
 }
 
-interface Request {
+// skipLibCheck hides .d.ts errors, so validate the Methods shape here
+type AssertMethods<T extends Record<keyof T, { params: unknown, result: unknown }>> = T
+export type CheckedMethods = AssertMethods<Moonraker.Methods>
+
+type RequestParams<M extends Moonraker.Method> = object extends Moonraker.MethodParams<M>
+  ? Moonraker.MethodParams<M> | undefined
+  : Moonraker.MethodParams<M>
+
+export type EmitOptions<M extends Moonraker.Method> = NotifyOptions & (
+  undefined extends RequestParams<M>
+    ? { params?: RequestParams<M> }
+    : { params: RequestParams<M> }
+)
+
+interface Request<P = unknown, R = unknown> {
   id: number;
   dispatch?: string;
   commit?: string;
-  params?: Record<string, any>;
+  params: P;
   wait?: string;
   suppressError?: SuppressError;
-  onFulfilled: (value: unknown) => void;
+  // Method syntax (bivariant) so any Request<P, R> fits in `requests`
+  onFulfilled (value: R): void;
   onRejected: (reason?: unknown) => void;
 }
 
-export type ObjectWithRequest<T> = T & {
-  __request__: Request
+// String results are dispatched as `{ result }`
+type DispatchedResult<R> = R extends string ? { result: R } : R
+
+export type ObjectWithRequest<M extends Moonraker.Method> = DispatchedResult<Moonraker.MethodResult<M>> & {
+  __request__: Request<RequestParams<M>, Moonraker.MethodResult<M>>
 }
 
-interface SocketRequest {
-  jsonrpc: string;
+interface SocketRequest<M extends Moonraker.Method> {
+  jsonrpc: '2.0';
   id: number;
-  method: string;
-  params?: Record<string, any>;
+  method: M;
+  params?: RequestParams<M>;
 }
 
 interface SocketResponseBase {

@@ -47,7 +47,12 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 ### WebSocket Integration
 
 - All printer communication through `SocketActions` in `src/api/socketActions.ts` (not direct HTTP)
-- Pattern: `baseEmit<T>(method, { dispatch, wait, params })`
+- Pattern: `baseEmit(method, { dispatch, wait, params })` — `method` must be a key of `Moonraker.Methods`; `params` and the result type are inferred from it, never passed as a type argument
+- `Moonraker.Methods` maps every JSON-RPC method Fluidd calls to `{ params, result }`, built by declaration merging: each `src/typings/moonraker.*.d.ts` adds its entries in a separate `declare namespace Moonraker { interface Methods { … } }` block. Every entry declares both fields — `params: undefined` when the method takes none. Params are typed from the Moonraker docs, not from what Fluidd sends. Helpers: `Moonraker.Method`, `MethodParams<M>`, `MethodResult<M>`
+- `skipLibCheck` hides errors in `.d.ts` files, so an entry missing `params` or `result` only fails via `CheckedMethods` in `socketClient.ts` — the error does not name the method. A conflicting duplicate method key is **not** caught at all
+- Params are required in `EmitOptions<M>` when the method has a required param, optional when all are optional, and rejected when it takes none. `NotifyOptions` itself carries no `params`
+- Generic results (`server.database.*_item`, `server.spoolman.proxy`) are `unknown` in the map; narrow at the call site with `baseEmit<'method', Narrower>(…)` — `Narrower` must extend the map's result
+- Dispatched handlers type their payload as `ObjectWithRequest<'method'>`, which types both the result and `__request__.params` (optional params may be `undefined`; default them to Moonraker's documented defaults). A string result is dispatched as `{ result }`
 - Use `wait` parameter for UI loading states: `wait: Waits.onPrintStart`
 - Wait constants defined in `src/globals.ts` (`Waits` object, ~90 operation types)
 - Real-time updates handled via store mutations from socket events

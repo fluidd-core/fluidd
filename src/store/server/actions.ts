@@ -149,8 +149,8 @@ export const actions = {
     commit('setMachinePeripherals', payload)
   },
 
-  async onMachinePeripheralsCanbus ({ commit }, payload: ObjectWithRequest<Moonraker.Peripherals.CanbusResponse>) {
-    const { interface: canbusInterface } = payload.__request__.params ?? {}
+  async onMachinePeripheralsCanbus ({ commit }, payload: ObjectWithRequest<'machine.peripherals.canbus'>) {
+    const canbusInterface = payload.__request__.params?.interface ?? 'can0'
 
     commit('setMachinePeripheralsCanbus', { canbusInterface, can_uuids: payload.can_uuids })
   },

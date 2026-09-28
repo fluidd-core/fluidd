@@ -79,3 +79,26 @@ declare namespace Moonraker.Peripherals {
     application: string;
   }
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'machine.peripherals.usb': {
+      params: undefined,
+      result: Peripherals.UsbResponse
+    },
+    'machine.peripherals.serial': {
+      params: undefined,
+      result: Peripherals.SerialResponse
+    },
+    'machine.peripherals.video': {
+      params: undefined,
+      result: Peripherals.VideoResponse
+    },
+    'machine.peripherals.canbus': {
+      params: {
+        interface?: string
+      },
+      result: Peripherals.CanbusResponse
+    }
+  }
+}

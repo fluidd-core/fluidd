@@ -36,3 +36,66 @@ declare namespace Moonraker.KlippyApis {
 
   export type QueryEndstopsStatus = 'TRIGGERED' | 'open'
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'printer.info': {
+      params: undefined,
+      result: KlippyApis.InfoResponse
+    },
+    'printer.restart': {
+      params: undefined,
+      result: OkResponse
+    },
+    'printer.firmware_restart': {
+      params: undefined,
+      result: OkResponse
+    },
+    'printer.query_endstops.status': {
+      params: undefined,
+      result: KlippyApis.QueryEndstopsStatusResponse
+    },
+    'printer.objects.list': {
+      params: undefined,
+      result: KlippyApis.ObjectsListResponse
+    },
+    'printer.objects.subscribe': {
+      params: {
+        objects: Record<string, string[] | null>
+      },
+      result: KlippyApis.ObjectsSubscribeResponse
+    },
+    'printer.print.start': {
+      params: {
+        filename: string
+      },
+      result: OkResponse
+    },
+    'printer.print.cancel': {
+      params: undefined,
+      result: OkResponse
+    },
+    'printer.print.pause': {
+      params: undefined,
+      result: OkResponse
+    },
+    'printer.print.resume': {
+      params: undefined,
+      result: OkResponse
+    },
+    'printer.gcode.script': {
+      params: {
+        script: string
+      },
+      result: OkResponse
+    },
+    'printer.gcode.help': {
+      params: undefined,
+      result: KlippyApis.GcodeHelpResponse
+    },
+    'printer.emergency_stop': {
+      params: undefined,
+      result: OkResponse
+    }
+  }
+}

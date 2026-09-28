@@ -55,4 +55,39 @@ declare namespace Moonraker.History {
     description: string;
     units: string | null;
   }
+
+  export interface ListParams {
+    limit?: number;
+    start?: number;
+    since?: number;
+    before?: number;
+    order?: 'asc' | 'desc';
+  }
+}
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.history.list': {
+      params: History.ListParams,
+      result: History.ListResponse
+    },
+    'server.history.get_job': {
+      params: {
+        uid: string
+      },
+      result: History.JobResponse
+    },
+    'server.history.delete_job': {
+      params: { uid: string } | { all: true },
+      result: History.DeleteJobResponse
+    },
+    'server.history.totals': {
+      params: undefined,
+      result: History.TotalsResponse
+    },
+    'server.history.reset_totals': {
+      params: undefined,
+      result: History.TotalsResponse
+    }
+  }
 }

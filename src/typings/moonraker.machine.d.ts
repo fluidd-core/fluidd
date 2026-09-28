@@ -110,3 +110,38 @@ declare namespace Moonraker.Machine {
     driver?: string;
   }
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'machine.services.restart': {
+      params: {
+        service: string
+      },
+      result: OkResponse
+    },
+    'machine.services.start': {
+      params: {
+        service: string
+      },
+      result: OkResponse
+    },
+    'machine.services.stop': {
+      params: {
+        service: string
+      },
+      result: OkResponse
+    },
+    'machine.reboot': {
+      params: undefined,
+      result: OkResponse
+    },
+    'machine.shutdown': {
+      params: undefined,
+      result: OkResponse
+    },
+    'machine.system_info': {
+      params: undefined,
+      result: Machine.SystemInfoResponse
+    }
+  }
+}

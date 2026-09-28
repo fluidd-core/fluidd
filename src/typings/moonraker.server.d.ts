@@ -64,3 +64,26 @@ declare namespace Moonraker.Server {
     server?: string;
   }
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.info': {
+      params: undefined,
+      result: Server.InfoResponse
+    },
+    'server.config': {
+      params: undefined,
+      result: Server.ConfigResponse
+    },
+    'server.restart': {
+      params: undefined,
+      result: OkResponse
+    },
+    'server.logs.rollover': {
+      params: {
+        application?: string
+      },
+      result: Server.LogsRolloverResponse
+    }
+  }
+}

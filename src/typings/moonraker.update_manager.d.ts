@@ -109,3 +109,50 @@ declare namespace Moonraker.UpdateManager {
     complete?: boolean;
   }
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'machine.update.status': {
+      params: {
+        refresh?: boolean
+      },
+      result: UpdateManager.StatusResponse
+    },
+    'machine.update.refresh': {
+      params: {
+        name?: string
+      },
+      result: UpdateManager.StatusResponse
+    },
+    'machine.update.recover': {
+      params: {
+        name: string,
+        hard?: boolean,
+        update_deps?: boolean
+      },
+      result: OkResponse
+    },
+    'machine.update.moonraker': {
+      params: undefined,
+      result: OkResponse
+    },
+    'machine.update.klipper': {
+      params: undefined,
+      result: OkResponse
+    },
+    'machine.update.client': {
+      params: {
+        name?: string
+      },
+      result: OkResponse
+    },
+    'machine.update.system': {
+      params: undefined,
+      result: OkResponse
+    },
+    'machine.update.full': {
+      params: undefined,
+      result: OkResponse
+    }
+  }
+}

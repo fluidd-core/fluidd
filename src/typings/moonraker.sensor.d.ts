@@ -33,3 +33,14 @@ declare namespace Moonraker.Sensor {
     parameter: string;
   }
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.sensors.list': {
+      params: {
+        extended?: boolean
+      },
+      result: Sensor.ListResponse
+    }
+  }
+}

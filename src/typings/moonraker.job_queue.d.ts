@@ -29,3 +29,31 @@ declare namespace Moonraker.JobQueue {
     updated_queue?: QueuedJob[] | null;
   }
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.job_queue.status': {
+      params: undefined,
+      result: JobQueue.StatusResponse
+    },
+    'server.job_queue.post_job': {
+      params: {
+        filenames: string[],
+        reset?: boolean
+      },
+      result: JobQueue.StatusResponse
+    },
+    'server.job_queue.delete_job': {
+      params: { job_ids: string[] } | { all: true },
+      result: JobQueue.StatusResponse
+    },
+    'server.job_queue.pause': {
+      params: undefined,
+      result: JobQueue.StatusResponse
+    },
+    'server.job_queue.start': {
+      params: undefined,
+      result: JobQueue.StatusResponse
+    }
+  }
+}

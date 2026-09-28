@@ -123,3 +123,78 @@ declare namespace Moonraker.Files {
     size: number;
   }
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.files.list': {
+      params: {
+        root?: string
+      },
+      result: Files.ListRootResponse
+    },
+    'server.files.roots': {
+      params: undefined,
+      result: Files.RootsResponse
+    },
+    'server.files.metadata': {
+      params: {
+        filename: string
+      },
+      result: Files.FileWithMetaResponse
+    },
+    'server.files.metascan': {
+      params: {
+        filename: string
+      },
+      result: Files.FileWithMetaResponse
+    },
+    'server.files.get_directory': {
+      params: {
+        path?: string,
+        extended?: boolean
+      },
+      result: Files.GetDirectoryResponse
+    },
+    'server.files.post_directory': {
+      params: {
+        path: string
+      },
+      result: Files.ChangeResponse
+    },
+    'server.files.delete_directory': {
+      params: {
+        path: string,
+        force?: boolean
+      },
+      result: Files.ChangeResponse
+    },
+    'server.files.move': {
+      params: {
+        source: string,
+        dest: string
+      },
+      result: Files.ChangeResponse
+    },
+    'server.files.copy': {
+      params: {
+        source: string,
+        dest: string
+      },
+      result: Files.ChangeResponse
+    },
+    'server.files.zip': {
+      params: {
+        dest?: string,
+        items: string[],
+        store_only?: boolean
+      },
+      result: Files.ZipResponse
+    },
+    'server.files.delete_file': {
+      params: {
+        path: string
+      },
+      result: Files.ChangeResponse
+    }
+  }
+}
