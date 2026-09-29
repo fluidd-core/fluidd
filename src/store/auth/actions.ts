@@ -20,7 +20,7 @@ export const actions = {
     await Promise.all([
       // Load current user.
       SocketActions.accessGetUser()
-        .then(response => commit('setCurrentUser', response)),
+        .then(response => commit('setCurrentUser', response.username != null ? response : null)),
 
       // Load user list.
       SocketActions.accessUsersList()
@@ -103,7 +103,7 @@ export const actions = {
 
         try {
           const user = await SocketActions.accessGetUser({ suppressError: true })
-          commit('setCurrentUser', user)
+          commit('setCurrentUser', user.username != null ? user : null)
         } catch (e) {
           consola.debug('accessGetUser after trust check failed', e)
         }
