@@ -317,7 +317,7 @@ interface SocketPluginOptions {
 
 export type SuppressError = boolean | ((error: SocketError) => boolean)
 
-export interface NotifyOptions {
+export interface RequestOptions {
   dispatch?: string;
   wait?: string;
   suppressError?: SuppressError;
@@ -334,7 +334,7 @@ type RequestParams<M extends Moonraker.Method> = object extends Moonraker.Method
   ? Moonraker.MethodParams<M> | undefined
   : Moonraker.MethodParams<M>
 
-export type EmitOptions<M extends Moonraker.Method> = NotifyOptions & (
+export type EmitOptions<M extends Moonraker.Method> = RequestOptions & (
   undefined extends RequestParams<M>
     ? { params?: RequestParams<M> }
     : { params: RequestParams<M> }
