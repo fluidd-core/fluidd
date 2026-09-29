@@ -12,9 +12,37 @@ declare namespace Moonraker.Power {
     status: DeviceState;
     locked_while_printing: boolean;
     type: DeviceType;
+    // klipper_device only
+    is_shutdown?: boolean;
   }
 
   export type DeviceState = 'on' | 'off' | 'init' | 'error'
 
+  export type DeviceAction = 'on' | 'off' | 'toggle'
+
   export type DeviceType = 'gpio' | 'klipper_device' | 'tplink_smartplug' | 'tasmota' | 'shelly' | 'homeseer' | 'homeassistant' | 'loxonev1' | 'rf' | 'mqtt' | 'smartthings' | 'hue' | 'http' | 'uhubctl'
+}
+
+declare namespace Moonraker {
+  export interface Methods {
+    'machine.device_power.devices': {
+      params: undefined,
+      result: Power.DevicesResponse
+    },
+    'machine.device_power.status': {
+      params: Record<string, null>,
+      result: Power.StatusResponse
+    },
+    'machine.device_power.post_device': {
+      params: {
+        device: string,
+        action: Power.DeviceAction
+      },
+      result: Power.StatusResponse
+    }
+  }
+
+  export interface Notifications {
+    notify_power_changed: [Power.Device]
+  }
 }

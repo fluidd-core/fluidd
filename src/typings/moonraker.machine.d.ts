@@ -5,27 +5,27 @@ declare namespace Moonraker.Machine {
 
   export interface SystemInfo {
     provider: string;
-    cpu_info?: CpuInfo;
-    sd_info: SDInfo;
+    cpu_info: CpuInfo;
+    sd_info: SDInfo | Record<string, never>;
     distribution: Distribution;
     available_services: string[];
     instance_ids: InstanceIds;
     service_state: ServiceState;
-    virtualization?: Virtualization;
+    virtualization: Virtualization;
     python: Python;
-    network?: Network;
-    canbus?: CanBus;
+    network: Network;
+    canbus: CanBusState;
   }
 
   export interface CpuInfo {
-    cpu_count: number;
+    cpu_count: number | null;
     bits: string;
     processor: string;
     cpu_desc: string;
     serial_number: string;
     hardware_desc: string;
     model: string;
-    total_memory: number;
+    total_memory: number | null;
     memory_units: string;
   }
 
@@ -48,7 +48,8 @@ declare namespace Moonraker.Machine {
     version_parts: DistributionVersionParts;
     like: string;
     codename: string;
-    release_info?: ReleaseInfo;
+    release_info: ReleaseInfo;
+    kernel_version?: string;
   }
 
   export interface DistributionVersionParts {
@@ -91,22 +92,61 @@ declare namespace Moonraker.Machine {
   }
 
   export interface NetworkInterface {
-    mac_address?: string;
-    ip_addresses?: NetworkIpAddress[];
+    mac_address: string;
+    ip_addresses: NetworkIpAddress[];
   }
 
   export interface NetworkIpAddress {
-    family?: string;
-    address?: string;
-    is_link_local?: boolean;
+    family: string;
+    address: string;
+    is_link_local: boolean;
   }
 
   export interface CanBusState extends Record<string, CanBusInterface> {
   }
 
   export interface CanBusInterface {
-    tx_queue_len?: number;
-    bitrate?: number;
-    driver?: string;
+    tx_queue_len: number;
+    bitrate: number;
+    driver: string;
+  }
+}
+
+declare namespace Moonraker {
+  export interface Methods {
+    'machine.services.restart': {
+      params: {
+        service: string
+      },
+      result: OkResponse
+    },
+    'machine.services.start': {
+      params: {
+        service: string
+      },
+      result: OkResponse
+    },
+    'machine.services.stop': {
+      params: {
+        service: string
+      },
+      result: OkResponse
+    },
+    'machine.reboot': {
+      params: undefined,
+      result: OkResponse
+    },
+    'machine.shutdown': {
+      params: undefined,
+      result: OkResponse
+    },
+    'machine.system_info': {
+      params: undefined,
+      result: Machine.SystemInfoResponse
+    }
+  }
+
+  export interface Notifications {
+    notify_service_state_changed: [Machine.ServiceState]
   }
 }

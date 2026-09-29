@@ -10,22 +10,24 @@ export const mutations = {
     Object.assign(state, createState())
   },
 
-  setCurrentUser (state, user: AppUser | null) {
-    state.currentUser = user
+  setCurrentUser (state, user: AppUser | Moonraker.Authorization.GetUserResponse | null) {
+    state.currentUser = user?.username != null
+      ? user
+      : null
   },
 
-  setUsers (state, users: AppUser[]) {
+  setUsers (state, users: Moonraker.Authorization.User[]) {
     state.users = users
   },
 
-  setAddUser (state, user: { username: string }) {
+  setAddUser (state, user: Moonraker.Authorization.UserEvent) {
     state.users.push({
       ...user,
       source: 'moonraker',
     })
   },
 
-  setRemoveUser (state, user: { username: string }) {
+  setRemoveUser (state, user: Moonraker.Authorization.UserEvent) {
     const i = state.users.findIndex(u => u.username === user.username)
     if (i >= 0) state.users.splice(i, 1)
   },

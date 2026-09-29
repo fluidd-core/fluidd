@@ -7,15 +7,32 @@ declare namespace Moonraker.DataStore {
   }
 
   export interface TemperatureStoreEntry {
-    temperatures: number[];
-    targets?: number[];
-    powers?: number[];
-    speeds?: number[];
+    temperatures: (number | null)[];
+    targets?: (number | null)[];
+    powers?: (number | null)[];
+    speeds?: (number | null)[];
   }
 
   export interface GcodeStoreEntry {
     message: string;
-    time?: number;
+    time: number;
     type: 'command' | 'response';
+  }
+}
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.temperature_store': {
+      params: {
+        include_monitors?: boolean
+      },
+      result: DataStore.TemperatureStoreResponse
+    },
+    'server.gcode_store': {
+      params: {
+        count?: number
+      },
+      result: DataStore.GcodeStoreResponse
+    }
   }
 }

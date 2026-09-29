@@ -141,11 +141,8 @@ export class WebSocketClient {
               this.store.dispatch(request.dispatch, result)
             }
 
-            if (request.commit) {
-              this.store.commit(request.commit, result)
-            }
-
             if (request.onFulfilled) {
+              // Unchecked: trusted to match the method's result
               request.onFulfilled(socketResponse.result)
             }
           }
@@ -154,40 +151,33 @@ export class WebSocketClient {
         }
 
         // These are socket notifications (i.e., no specific request was made..)
-        // Dispatch with the name of the method, converted to camelCase.
-        if (socketResponse.params?.[0]) {
+        if (socketResponse.method !== 'notify_status_update') {
+          // Normally, we let notifications through with no cache...
+          this.store.dispatch(`socket/${camelCase(socketResponse.method)}`, socketResponse.params?.[0])
+        } else {
+          // ...However, status notifications come through thick and fast,
+          // so we cache these and send them through every second.
           const [params, eventtime] = socketResponse.params
 
-          if (socketResponse.method !== 'notify_status_update') {
-            // Normally, we let notifications through with no cache...
-            this.store.dispatch(`socket/${camelCase(socketResponse.method)}`, params)
-          } else {
-            // ...However, status notifications come through thick and fast,
-            // so we cache these and send them through every second.
-
-            // If any of these properties exist, bypass the cache and send immediately
-            for (const key of FAST_NOTIFY_KEYS) {
-              if (key in params) {
-                this.store.typedDispatch('printer/onFastNotifyStatusUpdate', { key, payload: params[key] }, { root: true })
-                delete params[key]
-              }
-            }
-
-            const timestamp = eventtime ? eventtime * 1000 : Date.now()
-
-            this.cache = !this.cache
-              ? { timestamp, params }
-              : { timestamp: this.cache.timestamp, params: mergeWith(this.cache.params, params, (dest, src) => Array.isArray(dest) ? src : undefined) }
-
-            // If there's a second or more difference, flush the cache.
-            if (timestamp - this.cache.timestamp >= 1000) {
-              this.store.typedDispatch('socket/notifyStatusUpdate', this.cache.params)
-              this.cache = { timestamp, params: {} }
+          // If any of these properties exist, bypass the cache and send immediately
+          for (const key of FAST_NOTIFY_KEYS) {
+            if (key in params) {
+              this.store.typedDispatch('printer/onFastNotifyStatusUpdate', { key, payload: params[key] }, { root: true })
+              delete params[key]
             }
           }
-        } else {
-          // No params? Let it through.
-          this.store.dispatch(`socket/${camelCase(socketResponse.method)}`)
+
+          const timestamp = eventtime ? eventtime * 1000 : Date.now()
+
+          this.cache = !this.cache
+            ? { timestamp, params }
+            : { timestamp: this.cache.timestamp, params: mergeWith(this.cache.params, params, (dest, src) => Array.isArray(dest) ? src : undefined) }
+
+          // If there's a second or more difference, flush the cache.
+          if (timestamp - this.cache.timestamp >= 1000) {
+            this.store.typedDispatch('socket/notifyStatusUpdate', this.cache.params)
+            this.cache = { timestamp, params: {} }
+          }
         }
       }
     } catch (error: unknown) {
@@ -227,13 +217,14 @@ export class WebSocketClient {
 
   /**
    * Sends data TO the socket
-   * @param method
-   * @param params
    */
-  emit (method: string, options: NotifyOptions = {}) {
-    return new Promise((resolve, reject) => {
+  emit<
+    M extends Moonraker.Method,
+    R extends Moonraker.MethodResult<M> = Moonraker.MethodResult<M>
+  > (method: M, options: EmitOptions<M>) {
+    return new Promise<R>((resolve, reject) => {
       try {
-        const { wait, params, dispatch, commit, suppressError } = options
+        const { wait, params, dispatch, suppressError } = options
 
         // Any non-'disconnected' state is eligible to emit; physical readiness
         // is enforced by the readyState check below.
@@ -248,7 +239,7 @@ export class WebSocketClient {
 
           const id = this.requestId + 10_000
 
-          const packet: SocketRequest = {
+          const packet: SocketRequest<M> = {
             id,
             method,
             jsonrpc: '2.0'
@@ -258,10 +249,9 @@ export class WebSocketClient {
             packet.params = params
           }
 
-          const request: Request = {
+          const request: Request<EmitOptions<M>['params'], R> = {
             id,
             dispatch,
-            commit,
             params,
             wait,
             suppressError,
@@ -327,34 +317,52 @@ interface SocketPluginOptions {
 
 export type SuppressError = boolean | ((error: SocketError) => boolean)
 
-export interface NotifyOptions {
-  params?: Record<string, any>;
+export interface RequestOptions {
   dispatch?: string;
-  commit?: string;
   wait?: string;
   suppressError?: SuppressError;
 }
 
-interface Request {
+// skipLibCheck hides .d.ts errors, so validate the Methods shape here
+type AssertMethods<T extends Record<keyof T, { params: unknown, result: unknown }>> = T
+export type CheckedMethods = AssertMethods<Moonraker.Methods>
+
+type AssertNotifications<T extends Record<keyof T, [unknown, ...unknown[]] | undefined>> = T
+export type CheckedNotifications = AssertNotifications<Moonraker.Notifications>
+
+type RequestParams<M extends Moonraker.Method> = object extends Moonraker.MethodParams<M>
+  ? Moonraker.MethodParams<M> | undefined
+  : Moonraker.MethodParams<M>
+
+export type EmitOptions<M extends Moonraker.Method> = RequestOptions & (
+  undefined extends RequestParams<M>
+    ? { params?: RequestParams<M> }
+    : { params: RequestParams<M> }
+)
+
+interface Request<P = unknown, R = unknown> {
   id: number;
   dispatch?: string;
-  commit?: string;
-  params?: Record<string, any>;
+  params: P;
   wait?: string;
   suppressError?: SuppressError;
-  onFulfilled: (value: unknown) => void;
+  // Method syntax (bivariant) so any Request<P, R> fits in `requests`
+  onFulfilled (value: R): void;
   onRejected: (reason?: unknown) => void;
 }
 
-export type ObjectWithRequest<T> = T & {
-  __request__: Request
+// String results are dispatched as `{ result }`
+type DispatchedResult<R> = R extends string ? { result: R } : R
+
+export type ObjectWithRequest<M extends Moonraker.Method> = DispatchedResult<Moonraker.MethodResult<M>> & {
+  __request__: Request<RequestParams<M>, Moonraker.MethodResult<M>>
 }
 
-interface SocketRequest {
-  jsonrpc: string;
+interface SocketRequest<M extends Moonraker.Method> {
+  jsonrpc: '2.0';
   id: number;
-  method: string;
-  params?: Record<string, any>;
+  method: M;
+  params?: RequestParams<M>;
 }
 
 interface SocketResponseBase {
@@ -371,10 +379,12 @@ interface SocketApiErrorResponse extends SocketResponseBase {
   error: SocketError;
 }
 
-interface SocketNotificationResponse extends SocketResponseBase {
-  method: string;
-  params?: [Record<string, any>, number];
-}
+type SocketNotificationResponse = {
+  [N in Moonraker.Notification]: SocketResponseBase & {
+    method: N;
+    params: Moonraker.Notifications[N];
+  }
+}[Moonraker.Notification]
 
 type SocketResponse = SocketApiResponse | SocketApiErrorResponse | SocketNotificationResponse
 

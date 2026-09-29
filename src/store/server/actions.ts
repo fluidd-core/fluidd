@@ -60,7 +60,7 @@ export const actions = {
   },
 
   async checkMoonrakerMinVersion ({ state, dispatch }) {
-    const moonrakerVersion = state.info.moonraker_version ?? '?'
+    const moonrakerVersion = state.info.moonraker_version || '?'
 
     const fullMoonrakerVersion = moonrakerVersion.includes('-')
       ? moonrakerVersion
@@ -129,16 +129,14 @@ export const actions = {
     }
   },
 
-  async onMachineProcStats ({ commit, dispatch }, payload: Moonraker.ProcStats.Response) {
-    if (payload.throttled_state) {
+  async onMachineProcStats ({ commit, dispatch }, payload: Moonraker.ProcStats.Response | Moonraker.ProcStats.UpdateEvent) {
+    if ('throttled_state' in payload && payload.throttled_state) {
       await dispatch('onMachineThrottledState', payload.throttled_state)
     }
     commit('setMoonrakerStats', payload)
 
     // Add a chart entry
-    if (payload.moonraker_stats) {
-      await dispatch('charts/onMoonrakerStats', payload.moonraker_stats, { root: true })
-    }
+    await dispatch('charts/onMoonrakerStats', payload.moonraker_stats, { root: true })
   },
 
   async onMachineSystemInfo ({ commit }, payload: Moonraker.Machine.SystemInfoResponse) {
@@ -149,8 +147,8 @@ export const actions = {
     commit('setMachinePeripherals', payload)
   },
 
-  async onMachinePeripheralsCanbus ({ commit }, payload: ObjectWithRequest<Moonraker.Peripherals.CanbusResponse>) {
-    const { interface: canbusInterface } = payload.__request__.params ?? {}
+  async onMachinePeripheralsCanbus ({ commit }, payload: ObjectWithRequest<'machine.peripherals.canbus'>) {
+    const canbusInterface = payload.__request__.params?.interface ?? 'can0'
 
     commit('setMachinePeripheralsCanbus', { canbusInterface, can_uuids: payload.can_uuids })
   },

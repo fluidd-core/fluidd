@@ -1,12 +1,22 @@
 declare namespace Moonraker.ProcStats {
   export interface Response {
-    moonraker_stats: MoonrakerStats | MoonrakerStats[];
+    moonraker_stats: MoonrakerStats[];
     throttled_state: ThrottledState | null;
     cpu_temp: number | null;
     network: Record<string, NetworkStats>;
     system_cpu_usage: Record<string, number>;
     system_uptime: number;
     system_memory: SystemMemory;
+    websocket_connections: number;
+  }
+
+  export interface UpdateEvent {
+    moonraker_stats: MoonrakerStats;
+    cpu_temp: number | null;
+    network: Record<string, NetworkStats>;
+    system_cpu_usage: Record<string, number>;
+    system_memory: SystemMemory;
+    websocket_connections: number;
   }
 
   export interface MoonrakerStats {
@@ -47,5 +57,19 @@ declare namespace Moonraker.ProcStats {
     total: number;
     available: number;
     used: number;
+  }
+}
+
+declare namespace Moonraker {
+  export interface Methods {
+    'machine.proc_stats': {
+      params: undefined,
+      result: ProcStats.Response
+    }
+  }
+
+  export interface Notifications {
+    notify_cpu_throttled: [ProcStats.ThrottledState],
+    notify_proc_stat_update: [ProcStats.UpdateEvent]
   }
 }

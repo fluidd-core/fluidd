@@ -18,8 +18,7 @@ export const getters = {
           const { filament_name, filament_type, ...restOfMetadata } = metadata
 
           item.metadata = {
-            ...restOfMetadata,
-            modified: Vue.$filters.moonrakerDateAsUnixTime(metadata.modified)
+            ...restOfMetadata
           }
 
           if (filament_name != null) {
