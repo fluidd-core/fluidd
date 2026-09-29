@@ -63,4 +63,21 @@ declare namespace Moonraker.Server {
   export interface ConfigSpoolman {
     server?: string;
   }
+
+  export interface AgentInfo {
+    name: string;
+    version: string;
+    type: string;
+    url: string;
+  }
+
+  export interface ExtensionsListResponse {
+    agents: AgentInfo[];
+  }
+
+  export interface AgentEvent {
+    agent: string;
+    event: string;
+    data?: unknown;
+  }
 }
