@@ -274,7 +274,17 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
           throw new Error(`bad status code ${res.status}`)
       }
 
-      this.sessionUrl = new URL(res.headers.get('location') ?? '', this.baseUrl).toString()
+      // Servers behind a reverse proxy (e.g. spyglass under /webcam/webrtc/) return a
+      // root-absolute Location that omits the proxy prefix, so only take the session id
+      // from it and append that to the WHEP url
+      const location = res.headers.get('location') ?? ''
+      const sessionId = location.slice(location.lastIndexOf('/') + 1)
+
+      if (sessionId === '') {
+        throw new Error('missing session location')
+      }
+
+      this.sessionUrl = `${this.whepUrl}/${sessionId}`
 
       const sdp = await res.text()
 
