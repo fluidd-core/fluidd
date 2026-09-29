@@ -98,4 +98,8 @@ declare namespace Moonraker {
       result: OkResponse
     }
   }
+
+  export interface Notifications {
+    notify_status_update: [Partial<Klipper.PrinterState>, number]
+  }
 }

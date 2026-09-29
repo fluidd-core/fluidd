@@ -145,4 +145,8 @@ declare namespace Moonraker {
       result: Machine.SystemInfoResponse
     }
   }
+
+  export interface Notifications {
+    notify_service_state_changed: [Machine.ServiceState]
+  }
 }

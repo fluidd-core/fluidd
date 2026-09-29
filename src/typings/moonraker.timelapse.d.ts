@@ -103,14 +103,14 @@ declare namespace Moonraker.Timelapse {
     pixelformat: string;
   }
 
-  export interface NewFrameResponse {
+  export interface NewFrameEvent {
     action: 'newframe';
     status?: 'error';
     frame: string;
     framefile: string;
   }
 
-  export type Event = NewFrameResponse | RenderResponse
+  export type Event = NewFrameEvent | RenderResponse
 }
 
 declare namespace Moonraker {
@@ -135,5 +135,9 @@ declare namespace Moonraker {
       params: undefined,
       result: Timelapse.LastFrameInfoResponse
     }
+  }
+
+  export interface Notifications {
+    notify_timelapse_event: [Timelapse.Event]
   }
 }

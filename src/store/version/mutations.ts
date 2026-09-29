@@ -17,7 +17,7 @@ export const mutations = {
     }
   },
 
-  setUpdateResponse (state, payload: Moonraker.UpdateManager.UpdateResponse) {
+  setUpdateResponse (state, payload: Moonraker.UpdateManager.UpdateResponseEvent) {
     // If we get a complete === true, then assume the update is complete
     // and set busy to false also.
     if (payload.complete) {

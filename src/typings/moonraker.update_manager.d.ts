@@ -104,7 +104,7 @@ declare namespace Moonraker.UpdateManager {
     info_tags: string[];
   }
 
-  export interface UpdateResponse {
+  export interface UpdateResponseEvent {
     application: string;
     proc_id: number;
     message: string;
@@ -156,5 +156,10 @@ declare namespace Moonraker {
       params: undefined,
       result: OkResponse
     }
+  }
+
+  export interface Notifications {
+    notify_update_response: [UpdateManager.UpdateResponseEvent],
+    notify_update_refreshed: [UpdateManager.StatusResponse]
   }
 }

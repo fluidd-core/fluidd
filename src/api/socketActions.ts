@@ -444,7 +444,7 @@ export const SocketActions = {
     )
   },
 
-  serverConnectionIdentify (params: Moonraker.Websocket.ConnectionIdentifyParams, options?: NotifyOptions) {
+  serverConnectionIdentify (params: Moonraker.MethodParams<'server.connection.identify'>, options?: NotifyOptions) {
     return baseEmit(
       'server.connection.identify', {
         dispatch: 'socket/onConnectionId',
@@ -597,7 +597,7 @@ export const SocketActions = {
     )
   },
 
-  serverHistoryList (params?: Moonraker.History.ListParams, options?: NotifyOptions) {
+  serverHistoryList (params?: Moonraker.MethodParams<'server.history.list'>, options?: NotifyOptions) {
     return baseEmit(
       'server.history.list', {
         dispatch: 'history/onHistoryList',

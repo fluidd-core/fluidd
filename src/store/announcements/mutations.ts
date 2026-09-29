@@ -10,7 +10,7 @@ export const mutations = {
     Object.assign(state, createState())
   },
 
-  setAnnouncementsList (state, payload: Moonraker.Announcements.ListResponse | Moonraker.Announcements.AnnouncementUpdate) {
+  setAnnouncementsList (state, payload: Moonraker.Announcements.ListResponse | Moonraker.Announcements.UpdateEvent) {
     state.entries = payload.entries
 
     if ('feeds' in payload) {

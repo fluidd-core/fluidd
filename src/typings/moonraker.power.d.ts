@@ -12,6 +12,8 @@ declare namespace Moonraker.Power {
     status: DeviceState;
     locked_while_printing: boolean;
     type: DeviceType;
+    // klipper_device only
+    is_shutdown?: boolean;
   }
 
   export type DeviceState = 'on' | 'off' | 'init' | 'error'
@@ -38,5 +40,9 @@ declare namespace Moonraker {
       },
       result: Power.StatusResponse
     }
+  }
+
+  export interface Notifications {
+    notify_power_changed: [Power.Device]
   }
 }

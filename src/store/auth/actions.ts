@@ -20,7 +20,7 @@ export const actions = {
     await Promise.all([
       // Load current user.
       SocketActions.accessGetUser()
-        .then(response => commit('setCurrentUser', response.username != null ? response : null)),
+        .then(response => commit('setCurrentUser', response)),
 
       // Load user list.
       SocketActions.accessUsersList()
@@ -103,7 +103,7 @@ export const actions = {
 
         try {
           const user = await SocketActions.accessGetUser({ suppressError: true })
-          commit('setCurrentUser', user.username != null ? user : null)
+          commit('setCurrentUser', user)
         } catch (e) {
           consola.debug('accessGetUser after trust check failed', e)
         }
@@ -118,20 +118,22 @@ export const actions = {
   },
 
   /**
-   * Moonraker invalidated the current session (we triggered logout, or another
-   * client called access.logout with invalidate=true). The session is already
-   * invalid server-side, so run a plain logout without re-invalidating.
+   * Broadcast to every client, but only that user's connections are de-authenticated
    */
-  async onUserLoggedOut ({ dispatch }) {
-    await dispatch('logout')
+  async onUserLoggedOut ({ dispatch, state }, user: Moonraker.Authorization.UserEvent) {
+    if (user.username === state.currentUser?.username) {
+      await dispatch('logout')
+    }
   },
 
-  async onUserCreated ({ commit }, user: { username: string }) {
+  async onUserCreated ({ commit }, user: Moonraker.Authorization.UserEvent) {
     commit('setAddUser', user)
   },
 
-  async onUserDeleted ({ commit }, user: { username: string }) {
+  async onUserDeleted ({ commit, dispatch }, user: Moonraker.Authorization.UserEvent) {
     commit('setRemoveUser', user)
+
+    await dispatch('onUserLoggedOut', user)
   },
 
   async refreshApiKey ({ commit }) {

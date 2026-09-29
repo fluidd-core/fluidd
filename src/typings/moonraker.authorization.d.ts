@@ -26,6 +26,10 @@ declare namespace Moonraker.Authorization {
     action: 'user_logged_out';
   }
 
+  export interface UserEvent {
+    username: string;
+  }
+
   export interface User {
     username: string;
     source: Source;
@@ -128,5 +132,11 @@ declare namespace Moonraker {
       params: undefined,
       result: StringResponse
     }
+  }
+
+  export interface Notifications {
+    notify_user_created: [Authorization.UserEvent],
+    notify_user_deleted: [Authorization.UserEvent],
+    notify_user_logged_out: [Authorization.UserEvent]
   }
 }

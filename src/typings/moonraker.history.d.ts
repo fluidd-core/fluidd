@@ -38,6 +38,11 @@ declare namespace Moonraker.History {
     total: number;
   }
 
+  export interface ChangedEvent {
+    action: 'added' | 'finished';
+    job: Job;
+  }
+
   export interface Job {
     job_id: string;
     exists: boolean;
@@ -60,20 +65,18 @@ declare namespace Moonraker.History {
     description: string;
     units: string | null;
   }
-
-  export interface ListParams {
-    limit?: number;
-    start?: number;
-    since?: number;
-    before?: number;
-    order?: 'asc' | 'desc';
-  }
 }
 
 declare namespace Moonraker {
   export interface Methods {
     'server.history.list': {
-      params: History.ListParams,
+      params: {
+        limit?: number,
+        start?: number,
+        since?: number,
+        before?: number,
+        order?: 'asc' | 'desc'
+      },
       result: History.ListResponse
     },
     'server.history.get_job': {
@@ -94,5 +97,9 @@ declare namespace Moonraker {
       params: undefined,
       result: History.ResetTotalsResponse
     }
+  }
+
+  export interface Notifications {
+    notify_history_changed: [History.ChangedEvent]
   }
 }

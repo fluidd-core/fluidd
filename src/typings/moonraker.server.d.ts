@@ -96,4 +96,11 @@ declare namespace Moonraker {
       result: Server.LogsRolloverResponse
     }
   }
+
+  export interface Notifications {
+    notify_gcode_response: [string],
+    notify_klippy_ready: undefined,
+    notify_klippy_shutdown: undefined,
+    notify_klippy_disconnected: undefined
+  }
 }

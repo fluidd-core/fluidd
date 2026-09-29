@@ -10,8 +10,10 @@ export const mutations = {
     Object.assign(state, createState())
   },
 
-  setCurrentUser (state, user: AppUser | null) {
-    state.currentUser = user
+  setCurrentUser (state, user: AppUser | Moonraker.Authorization.GetUserResponse | null) {
+    state.currentUser = user?.username != null
+      ? user
+      : null
   },
 
   setUsers (state, users: AppUser[]) {

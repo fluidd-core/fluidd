@@ -197,4 +197,8 @@ declare namespace Moonraker {
       result: Files.ChangeResponse
     }
   }
+
+  export interface Notifications {
+    notify_filelist_changed: [Files.ChangeResponse]
+  }
 }

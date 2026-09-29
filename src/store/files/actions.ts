@@ -91,12 +91,6 @@ export const actions = {
    * Automated notifications from moonraker.
    */
 
-  // Old notifications for backwards compat
-  async notifyCopyItem ({ dispatch }, payload: Moonraker.Files.ChangeResponse) { dispatch('notifyCreateFile', payload) },
-  async notifyMoveItem ({ dispatch }, payload: Moonraker.Files.ChangeResponse) { dispatch('notifyMoveFile', payload) },
-  async notifyUploadFile ({ dispatch }, payload: Moonraker.Files.ChangeResponse) { dispatch('notifyCreateFile', payload) },
-
-  // New notifications
   async notifyRootUpdate ({ commit }, payload: Moonraker.Files.ChangeResponse) {
     const root = payload.item.root
 

@@ -66,4 +66,8 @@ declare namespace Moonraker {
       result: Webcam.DeleteItemResponse
     }
   }
+
+  export interface Notifications {
+    notify_webcams_changed: [Webcam.ListResponse]
+  }
 }

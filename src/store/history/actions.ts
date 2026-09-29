@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { HistoryItem, HistoryState } from './types'
+import type { HistoryState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
@@ -98,7 +98,7 @@ export const actions = {
   },
 
   /**
-   * Moonraker resets the totals to zero; the response only carries the previous ones
+   * Moonraker zeroes the totals; the response only carries the previous ones
    */
   async onHistoryResetTotals ({ commit }) {
     commit('setResetHistoryTotals')
@@ -131,7 +131,7 @@ export const actions = {
   /**
    * History has changed, update the data.
    */
-  async onHistoryChange ({ commit, rootState }, payload: { action: 'added' | 'finished'; job: HistoryItem }) {
+  async onHistoryChange ({ commit, rootState }, payload: Moonraker.History.ChangedEvent) {
     SocketActions.serverHistoryTotals()
 
     if (payload) {

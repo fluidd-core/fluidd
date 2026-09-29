@@ -3,6 +3,10 @@ declare namespace Moonraker.Spoolman {
     spool_id: number | null
   }
 
+  export interface StatusChangedEvent {
+    spoolman_connected: boolean;
+  }
+
   export interface ProxyResponseV2Success<T> {
     response: T;
     response_headers?: Record<string, string>;
@@ -118,5 +122,10 @@ declare namespace Moonraker {
       },
       result: Spoolman.ProxyResponse<unknown>
     }
+  }
+
+  export interface Notifications {
+    notify_active_spool_set: [Spoolman.SpoolIdResponse],
+    notify_spoolman_status_changed: [Spoolman.StatusChangedEvent]
   }
 }

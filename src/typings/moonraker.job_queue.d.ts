@@ -23,7 +23,7 @@ declare namespace Moonraker.JobQueue {
     | 'jobs_removed'
     | 'job_loaded'
 
-  export interface JobQueueChangedResponse {
+  export interface ChangedEvent {
     action: JobQueueChangedAction;
     queue_state: QueueState;
     updated_queue: QueuedJob[] | null;
@@ -55,5 +55,9 @@ declare namespace Moonraker {
       params: undefined,
       result: JobQueue.StatusResponse
     }
+  }
+
+  export interface Notifications {
+    notify_job_queue_changed: [JobQueue.ChangedEvent]
   }
 }

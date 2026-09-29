@@ -24,19 +24,19 @@ export const actions = {
     }
   },
 
-  async onAnnouncementUpdate ({ commit }, payload: Moonraker.Announcements.AnnouncementUpdate) {
+  async onAnnouncementUpdate ({ commit }, payload: Moonraker.Announcements.UpdateEvent) {
     if (payload) {
       commit('setAnnouncementsList', payload)
     }
   },
 
-  async onAnnouncementDismissed ({ commit }, payload: { entry_id: string }) {
+  async onAnnouncementDismissed ({ commit }, payload: Moonraker.Announcements.DismissedEvent) {
     if (payload) {
       commit('setAnnouncementDismissed', { entry_id: payload.entry_id, dismissed: true })
     }
   },
 
-  async onAnnouncementWake ({ commit }, payload: { entry_id: string }) {
+  async onAnnouncementWake ({ commit }, payload: Moonraker.Announcements.WakeEvent) {
     if (payload) {
       commit('setAnnouncementDismissed', { entry_id: payload.entry_id, dismissed: false })
     }

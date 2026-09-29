@@ -43,4 +43,8 @@ declare namespace Moonraker {
       result: Sensor.ListResponse
     }
   }
+
+  export interface Notifications {
+    notify_sensor_update: [Record<string, Sensor.Values>]
+  }
 }

@@ -4,11 +4,19 @@ declare namespace Moonraker.Announcements {
     feeds: string[];
   }
 
-  export interface AnnouncementUpdate {
+  export interface UpdateEvent {
     entries: Entry[];
   }
 
   export interface DismissResponse {
+    entry_id: string;
+  }
+
+  export interface DismissedEvent {
+    entry_id: string;
+  }
+
+  export interface WakeEvent {
     entry_id: string;
   }
 
@@ -44,5 +52,11 @@ declare namespace Moonraker {
       },
       result: Announcements.DismissResponse
     }
+  }
+
+  export interface Notifications {
+    notify_announcement_update: [Announcements.UpdateEvent],
+    notify_announcement_dismissed: [Announcements.DismissedEvent],
+    notify_announcement_wake: [Announcements.WakeEvent]
   }
 }

@@ -89,11 +89,10 @@ export const buildThermalHistoryBuffer = (
 
     // Hold the oldest reading across the lead-in so a short history still
     // fills the window - the chart's x-axis spans the retention regardless.
-    // A null sample is a gap (NaN), so the lead-in holds the oldest non-null one.
-    const oldest = values.slice(from)
-      .find(value => value != null)
+    let oldest = from
+    while (oldest < values.length && values[oldest] == null) oldest++
 
-    target.fill(roundSample(oldest), 0, to)
+    target.fill(roundSample(values[oldest]), 0, to)
 
     for (let index = 0; index < length; index++) {
       target[to + index] = roundSample(values[from + index])

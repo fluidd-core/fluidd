@@ -10,7 +10,7 @@ declare namespace Moonraker.ProcStats {
     websocket_connections: number;
   }
 
-  export interface ProcStatUpdate {
+  export interface UpdateEvent {
     moonraker_stats: MoonrakerStats;
     cpu_temp: number | null;
     network: Record<string, NetworkStats>;
@@ -66,5 +66,10 @@ declare namespace Moonraker {
       params: undefined,
       result: ProcStats.Response
     }
+  }
+
+  export interface Notifications {
+    notify_cpu_throttled: [ProcStats.ThrottledState],
+    notify_proc_stat_update: [ProcStats.UpdateEvent]
   }
 }
