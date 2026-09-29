@@ -49,7 +49,7 @@
         <v-tooltip top>
           <template #activator="{ on, attrs }">
             <v-btn
-              :disabled="toolLoaded || (!laneRunout && toolLoaded)"
+              :disabled="ejectDisabled"
               dense
               class="flex-grow-1 px-0 last-btn"
               v-bind="attrs"
@@ -98,6 +98,12 @@ export default class AfcCardUnitLaneActions extends Mixins(StateMixin, AfcMixin,
 
   get toolLoaded (): boolean {
     return this.lane?.tool_loaded === true
+  }
+
+  get ejectDisabled (): boolean {
+    const mounted = this.lane?.mounted
+    if (mounted !== undefined) return !mounted
+    return this.toolLoaded || (!this.laneRunout && this.toolLoaded)
   }
 
   loadLane () {
