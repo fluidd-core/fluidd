@@ -16,6 +16,12 @@ const historyFields: readonly HistoryField[] = [
   ['speeds', 'speed']
 ]
 
+const roundSample = (value: number | null | undefined): number => (
+  value == null
+    ? Number.NaN
+    : decimalRound(value, 2)
+)
+
 // Moonraker reports targets for these even though they have none.
 const noTargetPrefixes = [
   'temperature_probe',
@@ -83,10 +89,14 @@ export const buildThermalHistoryBuffer = (
 
     // Hold the oldest reading across the lead-in so a short history still
     // fills the window - the chart's x-axis spans the retention regardless.
-    target.fill(decimalRound(values[from] ?? 0, 2), 0, to)
+    // A null sample is a gap (NaN), so the lead-in holds the oldest non-null one.
+    const oldest = values.slice(from)
+      .find(value => value != null)
+
+    target.fill(roundSample(oldest), 0, to)
 
     for (let index = 0; index < length; index++) {
-      target[to + index] = decimalRound(values[from + index] ?? 0, 2)
+      target[to + index] = roundSample(values[from + index])
     }
   }
 
