@@ -132,6 +132,14 @@
       }
     },
     {
+      "name": "SimpleAF",
+      "color": "#3185a9",
+      "isDark": true,
+      "logo": {
+        "src": "logo_simpleaf.svg"
+      }
+    },
+    {
       "name": "Snapmaker",
       "color": "#0c63e2",
       "isDark": true,
