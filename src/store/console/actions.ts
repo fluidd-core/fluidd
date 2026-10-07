@@ -103,7 +103,7 @@ export const actions = {
     }
   },
 
-  async onUpdatePromptDialog ({ commit }, payload: ConsoleEntry) {
+  async onUpdatePromptDialog ({ state, commit }, payload: ConsoleEntry) {
     const parsedMessage = (
       payload.type === 'action' &&
       /^\/\/ action:prompt_([^ ]+)(?: (.+))?/.exec(payload.message)
@@ -114,7 +114,22 @@ export const actions = {
 
       switch (type) {
         case 'begin':
+          commit('setGroupActive', false)
+          commit('clearGroupButtons')
           commit('setResetPromptDialog', param)
+          break
+
+        case 'button_group_start':
+          commit('setGroupActive', true)
+          commit('clearGroupButtons')
+          break
+
+        case 'button_group_end':
+          commit('setGroupActive', false)
+          if (state.currentGroupButtons.length > 0) {
+            commit('setPromptDialogItemGroup', [...state.currentGroupButtons])
+          }
+          commit('clearGroupButtons')
           break
 
         case 'text': {
@@ -137,7 +152,11 @@ export const actions = {
             color
           }
 
-          commit('setPromptDialogItem', item)
+          if (state.isGroupActive) {
+            commit('pushGroupButton', item)
+          } else {
+            commit('setPromptDialogItem', item)
+          }
           break
         }
 

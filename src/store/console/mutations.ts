@@ -63,6 +63,25 @@ export const mutations = {
     state.promptDialog.items.push(payload)
   },
 
+  setPromptDialogItemGroup (state, buttons: PromptDialogItemButton[]) {
+    state.promptDialog.items.push({
+      type: 'button_group',
+      buttons
+    })
+  },
+
+  setGroupActive (state, active: boolean) {
+    state.isGroupActive = active
+  },
+
+  pushGroupButton (state, button: PromptDialogItemButton) {
+    state.currentGroupButtons.push(button)
+  },
+
+  clearGroupButtons (state) {
+    state.currentGroupButtons = []
+  },
+
   setPromptDialogFooterButton (state, payload: PromptDialogItemButton) {
     state.promptDialog.footerButtons.push(payload)
   },
