@@ -44,7 +44,8 @@ export const getters = {
           name: '..',
           dirname: '..',
           modified: 0,
-          size: 0
+          size: 0,
+          permissions: 'rw'
         }
 
         items.push(item)
@@ -54,8 +55,7 @@ export const getters = {
         const item: AppDirectory = {
           ...dir,
           type: 'directory',
-          name: dir.dirname,
-          modified: Vue.$filters.moonrakerDateAsUnixTime(dir.modified)
+          name: dir.dirname
         }
 
         items.push(item)
@@ -97,8 +97,7 @@ export const getters = {
           type: 'file',
           name: file.filename,
           extension,
-          path: pathFilename,
-          modified: Vue.$filters.moonrakerDateAsUnixTime(file.modified)
+          path: pathFilename
         }
 
         items.push(item)
@@ -212,8 +211,7 @@ export const getters = {
         type: 'file',
         name: file.filename,
         extension,
-        path: pathFilename,
-        modified: Vue.$filters.moonrakerDateAsUnixTime(file.modified)
+        path: pathFilename
       }
 
       return item

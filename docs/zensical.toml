@@ -48,6 +48,7 @@ variant = "modern"
 logo = "assets/images/fluidd_icon.svg"
 favicon = "favicon.ico"
 features = [
+  "content.action.copy",
   "content.action.edit",
   "content.action.view",
   "content.code.annotate",
@@ -123,6 +124,30 @@ toc.permalink = true
 "pymdownx.tilde" = {}
 
 [project.plugins.glightbox]
+
+[project.plugins.llmstxt]
+markdown_description = "Fluidd is a free and open-source web interface for Klipper 3D printer firmware, talking to the printer through Moonraker."
+full_output = "llms-full.txt"
+
+[project.plugins.llmstxt.sections]
+"Getting Started" = [
+  "index.md",
+  "getting-started.md",
+  "configuration.md",
+  "customize.md",
+]
+"Features" = ["features/*.md"]
+"Development" = ["development.md"]
+"FAQ" = ["faq.md"]
+
+# The default card layout reads `primary` from the palette, which we leave unset
+# (brand colours live in extra.css), and crashes on it — so pass colours
+# directly. The theme logo is the wide wordmark, which the card crops, so use
+# the square icon; its blues need a dark background to stay visible.
+[project.plugins.social.cards_layout_options]
+background_color = "#1E1E1E"
+color = "#FFFFFF"
+logo = "docs/assets/images/logo.svg"
 
 [project.plugins.minify]
 minify_html = true

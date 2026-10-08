@@ -47,12 +47,20 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 ### WebSocket Integration
 
 - All printer communication through `SocketActions` in `src/api/socketActions.ts` (not direct HTTP)
-- Pattern: `baseEmit<T>(method, { dispatch, wait, params })`
+- Pattern: `baseEmit(method, { dispatch, wait, params })` — `method` must be a key of `Moonraker.Methods`; `params` and the result type are inferred from it, never passed as a type argument
+- `Moonraker.Methods` maps every JSON-RPC method Fluidd calls to `{ params, result }`, built by declaration merging: each `src/typings/moonraker.*.d.ts` adds its entries in a separate `declare namespace Moonraker { interface Methods { … } }` block. Every entry declares both fields — `params: undefined` when the method takes none. Params are typed from the Moonraker docs, not from what Fluidd sends. Helpers: `Moonraker.Method`, `MethodParams<M>`, `MethodResult<M>`
+- `skipLibCheck` hides errors in `.d.ts` files, so an entry missing `params` or `result` only fails via `CheckedMethods` in `socketClient.ts` — the error does not name the method. A conflicting duplicate method key is **not** caught at all
+- Params are required in `EmitOptions<M>` when the method has a required param, optional when all are optional, and rejected when it takes none. `RequestOptions` itself carries no `params`. A response reaches the store only through `dispatch` — there is no `commit` option
+- Generic results (`server.database.*_item`, `server.spoolman.proxy`) are `unknown` in the map; narrow at the call site with `baseEmit<'method', Narrower>(…)` — `Narrower` must extend the map's result
+- Dispatched handlers type their payload as `ObjectWithRequest<'method'>`, which types both the result and `__request__.params` (optional params may be `undefined`; default them to Moonraker's documented defaults). A string result is dispatched as `{ result }`
+- `Moonraker.Notifications` maps each JSON-RPC notification Fluidd handles to its params tuple (`undefined` when Moonraker sends none — it omits `params` entirely), merged per `moonraker.*.d.ts` like `Methods`. `socketClient.ts` dispatches `socket/<camelCase(method)>` with the **first** param only (`notify_status_update` excepted: it is cached and flushed every second, using its `eventtime`); the `socket/` handlers type it as `Moonraker.NotificationPayload<'notify_…'>` (so they follow the map; helpers: `Moonraker.Notification`, `NotificationPayload<N>`, `NotificationAction<N>` — the `socket/` action name, via `TSHelpers.SnakeToCamelCase`), while the module actions they forward to name the concrete type — both spellings are intentional. `CheckedNotificationHandlers` (`src/store/socket/actions.ts`) fails type-check, naming the handler, when an entry has no `socket/` action; `CheckedNotifications` (`socketClient.ts`) checks the entry shape. Notifications outside the map (`notify_sudo_alert`, `notify_button_event`, …) still reach `dispatch` and are dropped as unknown actions
+- Payload types used **only** by notifications end in `Event`, named after the notification with the namespace prefix dropped (`notify_job_queue_changed` → `JobQueue.ChangedEvent`, `notify_proc_stat_update` → `ProcStats.UpdateEvent`). A type shared with a method result keeps its `Response` name. `*Event` types are standalone interfaces — declare every field, never `extends`/alias/`Pick` a `Response`, even when the shape matches (`Announcements.DismissedEvent` vs `DismissResponse`). `Authorization.UserEvent` is the one content-named exception, shared by the three user notifications
+- `notify_user_logged_out` / `notify_user_deleted` are broadcast to every client, but Moonraker only de-authenticates that user's connections — `auth/onUserLoggedOut` and `auth/onUserDeleted` log out only when the `username` is the current user. `access.get_user` answers `{ username: null, … }` for a connection with no user; `auth/setCurrentUser` stores that as `null`. `auth.currentUser` and `auth.users` are `AppUser` (`src/store/auth/types.ts`, no `created_on`): neither the `access.login` response nor `notify_user_created` carries it. `notify_user_created` only fires for users created through the API, which Moonraker restricts to the `moonraker` source, so `setAddUser` sets that `source` itself
 - Use `wait` parameter for UI loading states: `wait: Waits.onPrintStart`
 - Wait constants defined in `src/globals.ts` (`Waits` object, ~90 operation types)
 - Real-time updates handled via store mutations from socket events
 - Auto-reconnect with configurable interval (`Globals.SOCKET_RETRY_DELAY`)
-- `NotifyOptions.suppressError` (`boolean | (error: SocketError) => boolean`) skips the global `socket/onSocketError` toast for that request — the emit promise still rejects, callers still need a `catch`. A `code >= 500` is never suppressible (a 503 drives klippy recovery in `socket/onSocketError`), and a predicate that throws logs via consola and falls back to not suppressing. Narrow a caught rejection with `isSocketError` (`src/util/is-socket-error.ts`) — see `history/fetchMissingJobs` suppressing not-found errors from `serverHistoryGetJob`. Moonraker's JSON-RPC layer rewrites a 404 to `-32601` and a 401 to `-32602` (other codes pass through), so test with `isMoonrakerNotFoundError` / `isMoonrakerUnauthorizedError`, never the HTTP code. `is-socket-error.ts` owns `SocketError` and must stay import-free — `socketClient.ts` imports the store types, so pulling it into a spec drags the whole store into the vitest type-check project
+- `RequestOptions.suppressError` (`boolean | (error: SocketError) => boolean`) skips the global `socket/onSocketError` toast for that request — the emit promise still rejects, callers still need a `catch`. A `code >= 500` is never suppressible (a 503 drives klippy recovery in `socket/onSocketError`), and a predicate that throws logs via consola and falls back to not suppressing. Narrow a caught rejection with `isSocketError` (`src/util/is-socket-error.ts`) — see `history/fetchMissingJobs` suppressing not-found errors from `serverHistoryGetJob`. Moonraker's JSON-RPC layer rewrites a 404 to `-32601` and a 401 to `-32602` (other codes pass through), so test with `isMoonrakerNotFoundError` / `isMoonrakerUnauthorizedError`, never the HTTP code. `is-socket-error.ts` owns `SocketError` and must stay import-free — `socketClient.ts` imports the store types, so pulling it into a spec drags the whole store into the vitest type-check project
 
 ### Component Registration
 
@@ -230,9 +238,10 @@ src/
   whole buffer from `server.temperature_store`, writing columns directly and publishing with
   `commitChartSamples`; `moonraker-history.ts` only maps `machine.proc_stats` to `ChartSample`s
 - Thermal history is **right-aligned on a 1Hz timeline** ending at `endTime - 1000`, with the
-  lead-in **held at each sensor's oldest reading** rather than left `NaN`. That padding is
+  lead-in **held at each sensor's oldest non-null reading** rather than left `NaN`. That padding is
   load-bearing: `ThermalChart`'s x-axis is `max: 'dataMax'` with `min = max - retention * 1000`, so
   the window is always retention-wide and an unpadded short history renders as a stub in the corner
+- `server.temperature_store` samples may be `null`; they become `NaN` gaps, never `0`
 - Thermal column names are `<sensor>` or `<sensor>#<target|power|speed>` — build and parse them with
   `thermalColumn` / `parseThermalColumn` (`src/store/charts/thermal-columns.ts`); sensor names are
   runtime data and may themselves contain `#`
@@ -303,7 +312,7 @@ src/
 - Unit tests in any `src/**/__tests__/*.spec.ts` — not just `src/util/`; e.g.
   `src/workers/__tests__/parseGcode.spec.ts`. `tsconfig.vitest.json` includes `src/**/__tests__/*`
   at any depth, plus `src/typings/*.d.ts` so specs can reference the `Klipper`/`Moonraker`
-  namespaces
+  namespaces, and `tshelpers.d.ts`, which `src/typings` builds on (`TSHelpers.SnakeToCamelCase`)
 - **`environment: 'node'` is the default**, with `pool: 'vmThreads'` so each worker builds one
   environment instead of one per file. A spec needing a DOM opts in with a `@vitest-environment
   jsdom` docblock — only the three Monarch tokenizer specs (monaco touches `window`) and the two
@@ -425,9 +434,11 @@ src/
 ## Documentation Site
 
 - **Zensical** (Material for MkDocs successor) — static site generator in `docs/`
-- Config: `docs/zensical.toml` — nav, theme, extensions, plugins (`glightbox`, `minify`, `redirects`), social links
+- Config: `docs/zensical.toml` — nav, theme, extensions, plugins (`glightbox`, `llmstxt`, `social`, `minify`, `redirects`), social links
 - **`[project.markdown_extensions]` REPLACES Zensical's `DEFAULT_MARKDOWN_EXTENSIONS`, it does not merge with them** (`config.get("markdown_extensions", DEFAULTS)` in `zensical/config.py`). Anything omitted from that table is off, including `toc.permalink` — dropping an entry silently removes heading anchors sitewide. Keep it in sync with `zensical/bootstrap/zensical.toml` in the installed package
 - `pymdownx.tabbed` carries `combine_header_slug` + `slugify`, so a content tab is linkable as `#<enclosing-heading>-<tab-label>` (e.g. `#thumbnails-orcaslicer`). Replacing a heading with a tab changes its anchor — preserve the old one with an **anchor redirect** in `[project.plugins.redirects.redirect_maps]` (`"page.md#old" = "page.md#new"`, Zensical 0.0.61+), which lands in `site/redirect.json`
+- `llmstxt` emits `llms.txt` / `llms-full.txt` plus a per-page `index.md` (backing the `content.action.copy` button) — it only includes pages matched by its `sections`, so a new top-level page must be added there too
+- `social` generates Open Graph cards; its default layout crashes on our palette (no `primary` set), so `cards_layout_options` must keep passing `background_color` and `color`. It fetches fonts from Google Fonts at build time
 - Internal links are **relative `.md` paths** (`printing.md#thumbnails`, `../configuration.md`), never site-absolute — Zensical's `invalid_links` / `invalid_link_anchors` validation cannot resolve `/features/printing`, so absolute links are silently unchecked. Image paths stay site-absolute (`/assets/images/…`)
 - Content: `docs/docs/` — Markdown files with YAML frontmatter
 - Overrides: `docs/overrides/` — custom Jinja2 templates (header, htmltitle)

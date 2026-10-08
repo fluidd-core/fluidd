@@ -93,9 +93,15 @@ export default class ConsoleItem extends Vue {
   }
 
   itemClick (event: Event) {
-    if (event.target instanceof HTMLAnchorElement) {
-      const command = event.target.innerHTML
-        .replace(/<br>/g, '\n')
+    const target = (
+      event.target instanceof HTMLElement &&
+      event.target.tagName === 'MARK'
+    )
+      ? event.target.parentElement
+      : event.target
+
+    if (target instanceof HTMLAnchorElement) {
+      const command = target.innerText
         .replace(/^\s+|\s+$/gm, '')
 
       this.$emit('click', command)

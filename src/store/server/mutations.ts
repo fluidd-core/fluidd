@@ -76,29 +76,27 @@ export const mutations = {
   /**
    * On initial init, we get the server (moonraker) process stats and any throttled state flags.
    */
-  setMoonrakerStats (state, payload: Moonraker.ProcStats.Response) {
+  setMoonrakerStats (state, payload: Moonraker.ProcStats.Response | Moonraker.ProcStats.UpdateEvent) {
     if (payload.cpu_temp != null) {
       state.cpu_temp = payload.cpu_temp
     }
 
-    if (payload.throttled_state != null) {
+    if ('throttled_state' in payload && payload.throttled_state != null) {
       state.throttled_state = {
         ...state.throttled_state,
         ...payload.throttled_state
       }
     }
 
-    if (payload.moonraker_stats != null) {
-      if (Array.isArray(payload.moonraker_stats)) {
-        // Update with array.
-        state.moonraker_stats = payload.moonraker_stats
-          .map(stat => Object.freeze(stat))
-      } else {
-        // Append to array.
-        state.moonraker_stats.push(Object.freeze(payload.moonraker_stats))
-        while (state.moonraker_stats.length > 30) {
-          state.moonraker_stats.splice(0, 1)
-        }
+    if (Array.isArray(payload.moonraker_stats)) {
+      // Update with array.
+      state.moonraker_stats = payload.moonraker_stats
+        .map(stat => Object.freeze(stat))
+    } else {
+      // Append to array.
+      state.moonraker_stats.push(Object.freeze(payload.moonraker_stats))
+      while (state.moonraker_stats.length > 30) {
+        state.moonraker_stats.splice(0, 1)
       }
     }
   }

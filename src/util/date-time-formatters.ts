@@ -54,14 +54,6 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
       return date.getFullYear() === today.getFullYear()
     },
 
-    moonrakerDateAsUnixTime: (value: string | number) => {
-      if (typeof value === 'string') {
-        return new Date(value).getTime() / 1000
-      }
-
-      return value
-    },
-
     secondsAsRange: (seconds: number | string) => {
       seconds = +seconds
 

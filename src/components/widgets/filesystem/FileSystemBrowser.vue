@@ -345,10 +345,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   isItemWriteable (item: FileBrowserEntry) {
     return (
       !this.readonly &&
-      (
-        item.permissions === undefined ||
-        item.permissions.includes('w')
-      )
+      item.permissions.includes('w')
     )
   }
 

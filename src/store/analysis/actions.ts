@@ -15,9 +15,9 @@ export const actions = {
     }
   },
 
-  async onAnalysisProcess (_, payload: ObjectWithRequest<Moonraker.Analysis.ProcessResponse>) {
+  async onAnalysisProcess (_, payload: ObjectWithRequest<'server.analysis.process'>) {
     if (payload) {
-      const { filename } = payload.__request__.params ?? {}
+      const { filename } = payload.__request__.params
 
       if (!payload.bypassed) {
         SocketActions.serverFilesMetadata(filename)

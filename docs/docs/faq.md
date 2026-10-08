@@ -168,5 +168,5 @@ when done, or use **Reset Layout** to restore the defaults. See
 ### How do I use a custom theme?
 
 Create a `.fluidd-theme` folder in your configuration directory and upload a
-`custom.css` file into it. Fluidd also supports custom backgrounds and logos.
+`custom.css` file into it. Fluidd also supports custom backgrounds.
 See [Customize — Custom Themes](customize.md#custom-themes) for details.

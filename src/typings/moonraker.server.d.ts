@@ -6,15 +6,18 @@ declare namespace Moonraker.Server {
     failed_components: string[];
     registered_directories: string[];
     warnings: string[];
-    websocket_count?: number;
-    moonraker_version?: string;
-    api_version?: number[];
-    api_version_string?: string;
+    websocket_count: number;
+    moonraker_version: string;
+    missing_klippy_requirements: string[];
+    api_version: number[];
+    api_version_string: string;
   }
 
+  export type LogsRolloverApplication = 'moonraker' | 'klipper'
+
   export interface LogsRolloverResponse {
-    rolled_over?: string[];
-    failed?: Record<string, unknown>;
+    rolled_over: string[];
+    failed: Record<string, string>;
   }
 
   export type KlippyState = 'disconnected' | 'startup' | 'ready' | 'error' | 'shutdown'
@@ -22,7 +25,12 @@ declare namespace Moonraker.Server {
   export interface ConfigResponse {
     config: Config;
     orig: Record<string, unknown>;
-    files: [];
+    files: ConfigFile[];
+  }
+
+  export interface ConfigFile {
+    filename: string;
+    sections: string[];
   }
 
   export interface Config {
@@ -79,5 +87,50 @@ declare namespace Moonraker.Server {
     agent: string;
     event: string;
     data?: unknown;
+  }
+}
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.info': {
+      params: {
+        raw?: boolean
+      },
+      result: Server.InfoResponse
+    },
+    'server.config': {
+      params: undefined,
+      result: Server.ConfigResponse
+    },
+    'server.restart': {
+      params: undefined,
+      result: OkResponse
+    },
+    'server.logs.rollover': {
+      params: {
+        application?: Server.LogsRolloverApplication
+      },
+      result: Server.LogsRolloverResponse
+    },
+    'server.extensions.list': {
+      params: undefined,
+      result: Server.ExtensionsListResponse
+    },
+    'server.extensions.request': {
+      params: {
+        agent: string,
+        method: string,
+        arguments?: Record<string, unknown> | unknown[] | null
+      },
+      result: unknown
+    }
+  }
+
+  export interface Notifications {
+    notify_gcode_response: [string],
+    notify_klippy_ready: undefined,
+    notify_klippy_shutdown: undefined,
+    notify_klippy_disconnected: undefined,
+    notify_agent_event: [Server.AgentEvent]
   }
 }
