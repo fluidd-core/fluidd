@@ -512,9 +512,12 @@ declare namespace Klipper {
     temperature: number | null;
   }
 
+  export type DualCarriageMode = 'INACTIVE' | 'PRIMARY' | 'COPY' | 'MIRROR'
+
   export interface DualCarriageState {
-    carriage_0: 'INACTIVE' | 'ACTIVE';
-    carriage_1: 'INACTIVE' | 'ACTIVE' | 'COPY' | 'MIRROR';
+    carriages?: Record<string, DualCarriageMode>;
+    carriage_0?: 'INACTIVE' | 'PRIMARY';
+    carriage_1?: DualCarriageMode;
   }
 
   export interface VirtualSdcardState {
