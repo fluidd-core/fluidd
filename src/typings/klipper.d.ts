@@ -1052,7 +1052,7 @@ declare namespace Klipper {
     smooth_time: number;
     heater_pin: string;
     pwm_cycle_time: number;
-    control: 'watermark' | 'pid' | 'pid-v' | 'mpc';
+    control: 'watermark' | 'pid' | 'pid_v' | 'dual_loop_pid' | 'mpc';
     max_delta?: number;
     pid_kp?: number;
     pid_ki?: number;
