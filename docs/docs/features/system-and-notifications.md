@@ -17,6 +17,9 @@ From here you can:
 
 - **View system information** — hostname, operating system, CPU and memory
   usage.
+- **View MCU information** — constants, statistics and, when the firmware
+  reports it, the build configuration of each MCU (requires MCU firmware built
+  from a recent Klipper or Kalico).
 - **Manage services** — start, stop, or restart Klipper, Moonraker, and other
   registered services.
 - **Manage the Moonraker database** — back up and restore your Moonraker
