@@ -402,6 +402,7 @@ declare namespace Klipper {
     last_stats?: Record<string, number>;
     app?: string;
     non_critical_disconnected?: boolean;
+    mcu_kconfig?: string | null;
   }
 
   export interface MotionReportState {

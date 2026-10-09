@@ -971,6 +971,7 @@ app:
       model: CPU Model
       moonraker_load: Moonraker Load
       last_stats: Last Stats
+      build_configuration: Build Configuration
       network: Network
       non_critical_connection: Non-critical connection
       processor_desc: Processor
