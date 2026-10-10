@@ -25,6 +25,7 @@
       </router-link>
 
       <div class="app-header__actions">
+        <app-status-alerts v-if="authenticated" />
         <app-notification-menu v-if="authenticated && socketConnected" />
         <cloud-account-menu v-if="!printerFrame" />
       </div>

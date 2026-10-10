@@ -325,9 +325,12 @@ export default class PrinterSwitcher extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.enableKeyboardShortcuts
   }
 
+  /** By name, or by any address it answers at or was saved at (an offline printer has no host now). */
   matches (e: DirectoryEntry): boolean {
     const q = this.query.trim().toLowerCase()
-    return !q || e.name.toLowerCase().includes(q) || (e.host ?? '').toLowerCase().includes(q)
+    if (!q) return true
+    const addresses = [e.host ?? '', ...e.saved.map(s => s.apiUrl)]
+    return e.name.toLowerCase().includes(q) || addresses.some(a => a.toLowerCase().includes(q))
   }
 
   get cloudEntries (): DirectoryEntry[] {
