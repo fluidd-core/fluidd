@@ -368,11 +368,11 @@
             @dragend="onDragEnd"
           />
           <div
-            v-if="g.editable && (dragging || !g.tiles.length)"
+            v-if="(g.editable || g.id === 'ungrouped') && (dragging || !g.tiles.length)"
             class="drop-hint"
           >
             <frame-icon name="plus" />
-            <span>{{ g.tiles.length ? 'Drop a printer here' : 'Drag printers here' }}</span>
+            <span>{{ dropHint(g) }}</span>
           </div>
         </div>
       </section>
@@ -807,8 +807,15 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
   }
 
   get shownGroups (): TileGroup[] {
-    if (this.filter === 'all') return this.page.groups
-    return this.page.groups.filter(g => this.filtered(g.tiles).length)
+    // An empty "Not in a group" is only a place to drop, so it shows while dragging.
+    const groups = this.page.groups.filter(g => g.tiles.length || g.id !== 'ungrouped' || this.dragging)
+    if (this.filter === 'all') return groups
+    return groups.filter(g => this.filtered(g.tiles).length || (g.id === 'ungrouped' && this.dragging))
+  }
+
+  dropHint (g: TileGroup): string {
+    if (g.id === 'ungrouped') return 'Drop a printer here to take it out of its group'
+    return g.tiles.length ? 'Drop a printer here' : 'Drag printers here'
   }
 
   filtered (tiles: PrinterTile[]): PrinterTile[] {
