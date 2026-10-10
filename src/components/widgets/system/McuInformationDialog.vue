@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import type { KlippyApp, MCU } from '@/store/printer/types'
+import type { MCU } from '@/store/printer/types'
 import { Component, Prop, VModel, Vue } from 'vue-property-decorator'
 
 @Component({})
@@ -64,15 +64,8 @@ export default class McuInformationDialog extends Vue {
   @Prop({ type: Object, required: true })
   readonly mcu!: MCU
 
-  get klippyApp (): KlippyApp {
-    return this.$typedGetters['printer/getKlippyApp']
-  }
-
   get kconfig (): string | null {
-    return (
-      this.klippyApp.isKalico &&
-      this.mcu.mcu_kconfig?.trim()
-    ) || null
+    return this.mcu.mcu_kconfig?.trim() || null
   }
 }
 </script>

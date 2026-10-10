@@ -112,7 +112,6 @@ alternative firmware.
 | **Python templates**               | Python math library available in Jinja2 macro templates for complex calculations.                                                                                                                                                  |
 | **G-code shell commands**          | Execute shell commands directly from macros.                                                                                                                                                                                       |
 | **Firmware retraction with Z-hop** | Built-in Z-hop support during firmware retractions.                                                                                                                                                                                |
-| **MCU build configuration**        | The firmware build configuration of each MCU is shown in its MCU information dialog on the System page.                                                                                                                            |
 
 For the full feature reference, see the
 [Kalico documentation](https://docs.kalico.gg).
