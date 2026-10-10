@@ -15,6 +15,8 @@
       @legendselectchanged="handleLegendSelectChanged"
       @legendselected="handleLegendSelectChanged"
       @legendunselected="handleLegendSelectChanged"
+      @zr:mousemove="onPointerMove"
+      @zr:globalout="onPointerOut"
     />
 
     <div class="chart-options">
@@ -51,6 +53,9 @@ import type { ThermalSubKey } from '@/store/charts/thermal-columns'
 import BrowserMixin from '@/mixins/browser'
 import type { ChartSelectedLegends } from '@/store/charts/types'
 
+const HOVER_TOLERANCE = 16
+const HOVER_WIDTH_INCREASE = 1
+
 @Component({})
 export default class ThermalChart extends Mixins(BrowserMixin) {
   @Prop({ type: Boolean })
@@ -63,9 +68,12 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   readonly initOptions: EChartsInitOpts = Object.freeze({ renderer: 'canvas' })
 
   paused = false
+  pointer: [number, number] | null = null
+  hoveredSeriesName: string | null = null
   series: LineSeriesOption[] = []
   initialSelected: Record<string, boolean> = {}
 
+  displayed?: ChartDataSource
   discoveredColumns?: ReadonlyMap<string, Float64Array>
   discoveredColumnCount = -1
   discoveredSensors: readonly string[] = []
@@ -75,6 +83,12 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
     if (!this.paused) {
       this.onDataChange()
+    } else if (this.displayed) {
+      // These are views into a buffer that compacts in place, while the chart
+      // keeps its own copy.
+      this.displayed = Object.fromEntries(
+        Object.entries(this.displayed).map(([key, values]) => [key, Float64Array.from(values)])
+      )
     }
   }
 
@@ -158,6 +172,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
 
     // Merge (no notMerge) so the imperatively-set dataset is preserved.
     this.chart.setOption({ series: this.series })
+    this.refreshHover()
   }
 
   // Watch the raw inputs so the paused check below can skip smoothing work.
@@ -190,14 +205,21 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
         series: this.series,
         legend: { selected: this.initialSelected }
       })
+      this.refreshHover()
     }
+
+    this.displayed = this.smoothedChartData
 
     // Merging recurses into typed arrays index by index, leaving stale rows.
     this.chart.setOption({
       dataset: {
-        source: this.smoothedChartData
+        source: this.displayed
       }
     }, { replaceMerge: 'dataset' })
+
+    this.syncAxisPointer()
+    // The lines move under a still pointer.
+    this.pickSeries()
   }
 
   // Merge so the imperatively-set dataset and legend selection are preserved.
@@ -208,6 +230,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     }
 
     this.chart.setOption(options)
+    this.refreshHover()
   }
 
   created () {
@@ -261,12 +284,113 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
   onChartReady () {
     if (!this.chart) return
 
+    this.displayed = this.smoothedChartData
+
     this.chart.setOption({
       ...this.options,
       dataset: {
-        source: this.smoothedChartData
+        source: this.displayed
       }
     }, { notMerge: true })
+  }
+
+  onPointerMove (event: { offsetX: number, offsetY: number }) {
+    const point: [number, number] = [event.offsetX, event.offsetY]
+
+    // Conversion extrapolates past the plot, which would still pick a line.
+    this.pointer = this.chart?.containPixel({ gridIndex: 0 }, point) ? point : null
+    this.pickSeries()
+  }
+
+  // Re-applied series options drop the widened line.
+  refreshHover () {
+    this.pickSeries(true)
+  }
+
+  pickSeries (force = false) {
+    const chart = this.chart
+    const point = this.pointer
+    const source = this.displayed
+    const dates = source?.date
+    const date = chart && point ? chart.convertFromPixel({ gridIndex: 0 }, point)[0] : NaN
+
+    if (!chart || !point || !source || !dates?.length || !Number.isFinite(date)) {
+      this.hoverSeries(null, force)
+
+      return
+    }
+
+    // Interpolate so the test follows the drawn segment when zoomed in.
+    let next = 0
+    while (next < dates.length - 1 && dates[next] < date) next++
+    const previous = Math.max(next - 1, 0)
+    const span = dates[next] - dates[previous]
+    const ratio = span > 0 ? (date - dates[previous]) / span : 0
+
+    let nearest: string | null = null
+    let nearestDistance = HOVER_TOLERANCE
+
+    for (const series of this.series) {
+      const name = series.name as string
+
+      // Skip series hidden via the legend.
+      if (this.initialSelected[name] === false) continue
+
+      const column = source[name]
+      const from = column?.[previous]
+      const to = column?.[next]
+
+      if (!Number.isFinite(from) || !Number.isFinite(to)) continue
+
+      const value = from + (to - from) * ratio
+      const y = chart.convertToPixel({ yAxisIndex: series.yAxisIndex ?? 0 }, value)
+      const distance = Math.abs(y - point[1])
+
+      if (distance < nearestDistance) {
+        nearestDistance = distance
+        nearest = name
+      }
+    }
+
+    this.hoverSeries(nearest, force)
+  }
+
+  onPointerOut () {
+    this.pointer = null
+    this.hoverSeries(null)
+  }
+
+  // Widen instead of emphasis, which also restyles the area and flickers.
+  hoverSeries (seriesName: string | null, force = false) {
+    if (!this.chart || (!force && seriesName === this.hoveredSeriesName)) return
+
+    this.hoveredSeriesName = seriesName
+
+    this.chart.setOption({
+      series: this.series
+        .map(series => {
+          const width = series.lineStyle?.width ?? 1
+
+          return {
+            lineStyle: {
+              width: series.name === seriesName ? width + HOVER_WIDTH_INCREASE : width
+            }
+          }
+        })
+    })
+
+    this.syncAxisPointer()
+  }
+
+  // setOption drops the axis pointer's symbols without it noticing and leaves
+  // its line on a sample that scrolls away. Reset it and redraw at the mouse.
+  syncAxisPointer () {
+    if (!this.chart || !this.pointer) return
+
+    const [x, y] = this.pointer
+
+    this.chart.dispatchAction({ type: 'updateAxisPointer', currTrigger: 'leave' })
+    this.chart.dispatchAction({ type: 'showTip', x, y })
   }
 
   beforeDestroy () {
@@ -514,6 +638,10 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
       showSymbol: false,
       animation: false,
       color,
+      // echarts' hover emphasis flashes: landing on a line, symbol or area dims
+      // every other series until the axis pointer highlights them all again on
+      // the next move. The pointer handler picks the nearest line instead.
+      silent: true,
       emphasis: {
         focus: 'series'
       },
@@ -536,7 +664,8 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     if (subKey === 'target') {
       series.yAxisIndex = 0
       series.lineStyle!.width = 1
-      series.lineStyle!.type = 'dashed'
+      // Spelled out, so widening the line on hover keeps this spacing.
+      series.lineStyle!.type = [4, 2]
       series.lineStyle!.opacity = 0.8
       series.areaStyle!.opacity = 0
     }
@@ -545,7 +674,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     if (isDutyCycleSubKey(subKey)) {
       series.yAxisIndex = 1
       series.lineStyle!.width = 1
-      series.lineStyle!.type = 'dotted'
+      series.lineStyle!.type = [1]
       series.lineStyle!.opacity = 1
       series.areaStyle!.opacity = 0
     }
