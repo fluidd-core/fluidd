@@ -16,6 +16,8 @@ export const createState = (): ConsoleState => {
       footerButtons: []
     },
     consoleFilters: [],
-    consoleFiltersRegexp: []
+    consoleFiltersRegexp: [],
+    isGroupActive: false,
+    currentGroupButtons: []
   }
 }

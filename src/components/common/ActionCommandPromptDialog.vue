@@ -6,23 +6,46 @@
     :no-actions="dialog.footerButtons.length === 0"
   >
     <v-card-text>
-      <v-row
+      <div
         v-for="(item, index) in dialog.items"
         :key="`item-${index}`"
+        class="mb-2"
       >
-        <v-col v-if="item.type === 'text'">
-          {{ item.text }}
-        </v-col>
-        <v-col v-else-if="item.type === 'button'">
-          <v-btn
-            :color="item.color"
-            block
-            @click="handleClick(item)"
-          >
+        <v-row v-if="item.type === 'text'">
+          <v-col>
             {{ item.text }}
-          </v-btn>
-        </v-col>
-      </v-row>
+          </v-col>
+        </v-row>
+        <v-row v-else-if="item.type === 'button'">
+          <v-col>
+            <v-btn
+              :color="item.color"
+              block
+              @click="handleClick(item)"
+            >
+              {{ item.text }}
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row
+          v-else-if="item.type === 'button_group'"
+          class="mx-n2"
+        >
+          <v-col
+            v-for="(btn, btnIndex) in item.buttons"
+            :key="`btn-${index}-${btnIndex}`"
+            class="px-2"
+          >
+            <v-btn
+              :color="btn.color"
+              block
+              @click="handleClick(btn)"
+            >
+              {{ btn.text }}
+            </v-btn>
+          </v-col>
+        </v-row>
+      </div>
     </v-card-text>
 
     <template #actions>
