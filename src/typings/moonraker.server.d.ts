@@ -71,6 +71,23 @@ declare namespace Moonraker.Server {
   export interface ConfigSpoolman {
     server?: string;
   }
+
+  export interface AgentInfo {
+    name: string;
+    version: string;
+    type: string;
+    url: string;
+  }
+
+  export interface ExtensionsListResponse {
+    agents: AgentInfo[];
+  }
+
+  export interface AgentEvent {
+    agent: string;
+    event: string;
+    data?: unknown;
+  }
 }
 
 declare namespace Moonraker {
@@ -94,6 +111,18 @@ declare namespace Moonraker {
         application?: Server.LogsRolloverApplication
       },
       result: Server.LogsRolloverResponse
+    },
+    'server.extensions.list': {
+      params: undefined,
+      result: Server.ExtensionsListResponse
+    },
+    'server.extensions.request': {
+      params: {
+        agent: string,
+        method: string,
+        arguments?: Record<string, unknown> | unknown[] | null
+      },
+      result: unknown
     }
   }
 
@@ -101,6 +130,7 @@ declare namespace Moonraker {
     notify_gcode_response: [string],
     notify_klippy_ready: undefined,
     notify_klippy_shutdown: undefined,
-    notify_klippy_disconnected: undefined
+    notify_klippy_disconnected: undefined,
+    notify_agent_event: [Server.AgentEvent]
   }
 }

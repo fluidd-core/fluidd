@@ -10,6 +10,7 @@ import type { macros } from './macros'
 import type { power } from './power'
 import type { history } from './history'
 import type { version } from './version'
+import type { firmware } from './firmware'
 import type { gcodePreview } from './gcodePreview'
 import type { layout } from './layout'
 import type { mesh } from './mesh'
@@ -45,6 +46,7 @@ type RootModulesType = {
   power: typeof power,
   history: typeof history,
   version: typeof version,
+  firmware: typeof firmware,
   mesh: typeof mesh,
   notifications: typeof notifications,
   announcements: typeof announcements,

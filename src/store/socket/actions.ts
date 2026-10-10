@@ -10,6 +10,7 @@ import { jwtDecode } from 'jwt-decode'
 import type { TokenKeys } from '../config/types'
 import i18n from '@/plugins/i18n'
 import { isMoonrakerNotFoundError, isMoonrakerUnauthorizedError, isSocketError, type SocketError } from '@/util/is-socket-error'
+import { resolveAgentEvent } from '@/util/agent-events'
 
 const MODULES_TO_RESET_ON_DROP = [
   'server',
@@ -17,7 +18,8 @@ const MODULES_TO_RESET_ON_DROP = [
   'webcams',
   'jobQueue',
   'wait',
-  'gcodePreview'
+  'gcodePreview',
+  'firmware'
 ] as const
 
 let retryTimeout: ReturnType<typeof setTimeout>
@@ -345,6 +347,8 @@ export const actions = {
   async notifyKlippyDisconnected ({ dispatch }) {
     await dispatch('resetKlippy', undefined, { root: true })
 
+    dispatch('server/onKlippyStateChanged', undefined, { root: true })
+
     SocketActions.serverInfo()
   },
 
@@ -401,6 +405,16 @@ export const actions = {
 
   async notifyServiceStateChanged ({ dispatch }, payload: Moonraker.NotificationPayload<'notify_service_state_changed'>) {
     dispatch('server/onServiceStateChanged', payload, { root: true })
+  },
+
+  async notifyAgentEvent ({ dispatch }, payload: Moonraker.NotificationPayload<'notify_agent_event'>) {
+    const target = resolveAgentEvent(payload, Object.values(Globals.MOONRAKER_AGENTS))
+
+    if (target) {
+      dispatch(target.action, target.payload, { root: true })
+    } else {
+      consola.debug('Unhandled agent event', payload)
+    }
   },
 
   async notifyTimelapseEvent ({ dispatch }, payload: Moonraker.NotificationPayload<'notify_timelapse_event'>) {

@@ -1033,6 +1033,40 @@ app:
         <span class="secondary--text">Assuming a</span>
         %{layerHeight} mm layer height<span class="secondary--text">,
         the</span> estimated maximum print speed is %{estimatedMaxSpeed} mm/s
+  firmware:
+    btn:
+      refresh: Refresh
+      update: Update
+      update_all: Update all
+      view: View firmware
+    label:
+      enable_notifications: Enable notifications
+      host: Klipper Service
+      host_hint: MCU firmware is compared against this version
+      loading: Checking firmware...
+      malformed_status: The firmware agent sent a status Fluidd could not read.
+      not_running: >-
+        The aldis firmware agent is not running. Start the aldis service from the Services list
+        in the Host menu.
+      restart_pending_hint: Restart Klipper from the Services list in the Host menu.
+      status_error: 'Could not read firmware status: %{message}. Refresh to try again.'
+      unknown_version: unknown
+      unsupported_api: This version of Fluidd does not support aldis API version %{version}.
+      updates_available: Firmware updates are available
+    state:
+      current: UP TO DATE
+      externally_managed: EXTERNAL
+      indeterminate: INDETERMINATE
+      not_identified: NOT IDENTIFIED
+      not_responding: NOT RESPONDING
+      unsupported_legacy: LEGACY
+      unsupported_mcu: UNSUPPORTED
+      update_available: UPDATE AVAILABLE
+    status:
+      finished: Firmware updates finished
+      lost_run: Lost track of the run; check the run log under logs/aldis.
+      updating: Updating firmware...
+    title: Firmware Updates
   version:
     btn:
       check_for_updates: Check for updates
