@@ -1,0 +1,87 @@
+app:
+  general:
+    btn:
+      abort: 中止
+      accept: 接受
+      add: 新增
+      add_dir: 新增目錄
+      add_file: 新增檔案
+      add_printer: 新增列印機
+      add_to_queue: 新增至佇列
+      adjust_layout: 調整版面
+      adjusted: 調整
+      all: 全部
+      auth_unsure: 不確定為什麼會看到這個？
+      calibrate: 校正
+      cancel: 取消
+      clear: 清除
+      clear_profile: 清除設定檔
+      close: 關閉
+      config_reference: 組態參考
+      copied: 已複製
+      copy: 複製
+      create_zip_archive: 建立壓縮檔
+      delete: 刪除
+      download: 下載
+      duplicate: 複製
+      edit: 編輯
+      exit_layout: 退出修改模式
+      extrude: 擠出
+      filter: 過濾
+      flip_layout: 翻轉版面
+      forgot_password: 忘記密碼？
+      go_to_file: 前往檔案
+      heaters_off: 關閉加熱器
+      job_queue: 工作佇列
+      load_all: 載入全部
+      login: 登入
+      logout: 登出
+      more_information: 更多資訊
+      pause: 暫停
+      power_on_printer: 開啟列印機電源
+      preheat: 預熱
+      presets: 預設值
+      preview_gcode: 預覽 G-code
+      print: 列印
+      quad_gantry_level: 龍門架調平
+      reboot: 重新啟動
+      recover: 恢復
+      refresh: 重新整理
+      refresh_metadata: 重新整理檔案資訊
+      reload: 重新載入
+      remove: 移除
+      remove_all: 移除全部
+      rename: 重新命名
+      reprint: 重新列印
+      reset_file: 重置檔案
+      reset_layout: 重置版面
+      reset_default_layout: 重置為預設版面
+      reset_to_default: 重置為預設值
+      restart_firmware: 重新啟動韌體
+      restart_service: 重新啟動 %{service}
+      restart_service_klipper: 重新啟動 Klipper
+      restart_service_moonraker: 重新啟動 Moonraker
+      resume: 繼續
+      retract: 回抽
+      retry: 重試
+      return_dashboard: 返回主頁
+      save: 儲存
+      save_as: 另存新檔
+      save_restart: 儲存並重新啟動
+      save_config_and_restart: 儲存組態並重新啟動
+      scroll_to_latest: 滑動至最新
+      select_columns: 選擇欄位
+      send: 傳送
+      set_color: 設定顏色
+      set_default_layout: 設定為預設版面
+      shutdown: 關閉
+      snooze: 稍後提醒
+      socket_reconnect: 重新連線
+      socket_refresh: 重新整理
+      thumbnail_size: 縮圖大小
+      upload: 上傳
+      upload_files: 上傳檔案
+      upload_folder: 上傳資料夾
+      upload_print: 上傳並列印
+      view: 檢視
+      reset_stats: 重置統計資料

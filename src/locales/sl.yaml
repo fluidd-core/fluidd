@@ -252,8 +252,7 @@ app:
       reset_to_default: Ponastavi na privzete nastavitve
     error:
       app_setup_link: >-
-        Zahteve za namestitve Fluidda lahko najdete <a target="_blank"
-        href="%{url}">tukaj.</a>
+        Zahteve za namestitve Fluidda lahko najdete <a target="_blank" href="%{url}">tukaj</a>.
       app_warnings_found: 'Aplikacija %{appName} je zaznala opozorila.'
       components_config: >-
         Konfiguracijo za vtičnik Moonraker lahko najdete <a target="_blank"
@@ -410,6 +409,10 @@ app:
         uspelo!
       fluidd_settings_restore_failed: Obnovitev nastavitev Fluidd ni uspela!
       gcode_preview_failed: Predogled g-kode ni uspel!
+      throttled_warning: To lahko povzroči omejevanje zmogljivosti in neuspešen 
+        tisk
+      gcode_preview_truncated: Datoteka G-kode je prevelika, prikazan je le del 
+        predogleda
     simple_form:
       error:
         arrayofnums: Samo številke
@@ -514,6 +517,9 @@ app:
         printer_variant: Različica tiskalnika
         printer_vendor: Proizvajalec tiskalnika
         profile_version: Verzija profila
+      footer:
+        item_range: '%{pageStart}–%{pageStop} od %{itemsLength}'
+        item_range_loaded: 'Naloženo: %{pageStart}–%{pageStop} od %{itemsLength}'
     title:
       add_chart: Dodaj graf
       add_printer: Dodaj tiskalnik
@@ -583,6 +589,9 @@ app:
         statistiko
       confirm_jobs: Ste prepričani? To dejanje bo počistilo vsa opravila.
       confirm_stats: Ste prepričani? To dejanje bo počistilo vso statistiko.
+    tooltip:
+      help: Ob povezavi se naložijo le najnovejša opravila. Uporabite 'Naloži 
+        vse' za prenos celotne zgodovine.
   job_queue:
     msg:
       confirm: Ste prepričani? To dejanje bo počistilo vrsto za tiskanje
@@ -787,6 +796,7 @@ app:
       show_screws_tilt_adjust_dialog_automatically: Samodejno prikaži dialog za 
         nastavitev naklona vijakov
       sensor_color: Barva senzorja
+      thermal_chart_smoothing: Glajenje toplotnega grafikona
     timer_options:
       absolute_file_position: Absoluten položaj datoteke
       duration: Samo trajanje
@@ -905,6 +915,8 @@ app:
       relative_positioning: Relativna pozicija
       select_tool: Izberi orodje %{tool}
       tools: Orodja
+      extruding: Ekstrudiranje
+      retracting: Umikanje
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Aktivna konfiguracija ekstruderja je nastavljena
@@ -1078,6 +1090,16 @@ app:
         no_image_data: >-
           Ne morem dostopati do kamere.
           Preglejte nastavitve kamere ali izberite drug vir kamere.
+      live_updates:
+        cors: Posodobitve v živo iz Kolutarja ne delujejo. Kolutar blokira izvor
+          brskalnika Fluidd – preverite konfiguracijo Kolutarja, da ga dovolite.
+        mixed_content: Posodobitve v živo iz Kolutarja ne delujejo. Fluidd 
+          uporablja HTTPS, naslov Kolutarja pa HTTP, zato brskalnik blokira 
+          neposredno povezavo.
+        unreachable: Posodobitve v živo iz Kolutarja ne delujejo. Brskalnik 
+          Fluidd ne more neposredno doseči Kolutarjevega strežnika.
+        failed: Posodobitve v živo iz Kolutarja ne delujejo. Neposredna povezava
+          s Kolutarjem je spodletela iz neznanega razloga.
     setting:
       auto_open_qr_camera: Samodejno odpri kamero za zajem QR kode
       auto_select_spool_on_match: Samodejno potrdi izbiro koluta, če se QR koda 
@@ -1172,6 +1194,27 @@ app:
       drying_queued: Sušenje v vrsti
       drying_complete: Sušenje končano
       drying_cancelled: Sušenje preklicano
+      active: AKTIVNO
+      auto: Samodejno
+      bypass: OBVOD
+      clog: ZAMAŠITEV
+      compression: Stiskanje
+      encoder: Kodirnik
+      entry: Vhod
+      exit: Izhod
+      extruder: Ekstruder
+      filament_position: Položaj filamenta
+      flow: PRETOK
+      gear: Zobnik
+      last_error: Zadnja napaka
+      neutral: Nevtralno
+      pre_gate: Pred-vrata
+      status: Stanje
+      tangle: ZAPLET
+      tension: Napetost
+      tool: Orodje
+      toolhead: Glava orodja
+      tools: Orodja
     tooltip:
       empty: Prazno
       color: Barva
@@ -1381,3 +1424,31 @@ app:
     RammingSensor: Senzor trka
     WeightRemaining: preostalo še {weight} g
     WeightUsed: porabljeno {weight} g
+    PrintStartDialog:
+      StartJob: Začni opravilo
+      Title: Dodelitev stez AFC
+      NoLane: Ni steze
+      NoLaneMapped: Orodju {tool} ni dodeljena nobena steza
+      NoFilamentLoaded: V stezo {lane} ni naložen filament
+      FilamentTypeMismatch: 'Neujemanje vrste materiala filamenta: datoteka zahteva
+        {file}, steza ima {lane}'
+      FilamentWeightNotEnough: 'V stezi {lane} ni dovolj filamenta: zahtevano {required},
+        na voljo {available}'
+      Question: Želite začeti tiskanje datoteke {filename}?
+      QuestionWithSpool: Želite začeti tiskanje datoteke {filename} z aktivnim 
+        kolutom?
+      SpoolId: ID št. {id}
+      SpoolWeightRemaining: 'Preostalo: {remaining} g (porabljeno: {used} g)'
+      LaneWeightRemaining: Preostala masa {weight} g
+    Initialized: Inicializirano
+    SelectTool: Izberi orodje
+    ToolSwap: Menjava glav orodja
+    ToolPickup: Pobiranje glave orodja
+    ToolDock: Odlaganje glave orodja
+    UnselectTool: Prekliči izbiro orodja
+    BedTemp: Temp. mize
+    BedTempSubtitle: Temperatura delovne mize za ta filament v °C.
+    ClearSpoolId: Počisti dodeljen ID koluta
+    ExtruderTemp: Temp. ekstruderja
+    ExtruderTempSubtitle: Temperatura ekstruderja za ta filament v °C.
+    ManualEntry: Ročni vnos
