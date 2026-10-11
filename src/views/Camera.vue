@@ -134,7 +134,7 @@ import { jobTitle } from '@/services/jobs/model'
 import { EventBus } from '@/eventBus'
 import { activeSlug } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
-import { cameraFor, liveFacts, snapshotName } from '@/services/camera/model'
+import { cameraFor, liveFacts, snapshotName, snapshotPlan } from '@/services/camera/model'
 import type { WebcamConfig } from '@/store/webcams/types'
 
 /**
@@ -224,7 +224,7 @@ export default class Camera extends Mixins(OverviewMixin, BrowserMixin) {
     const element = item?.componentInstance?.streamingElement
     const name = snapshotName(this.printerName, camera.name ?? 'camera', new Date())
     try {
-      const blob = await frameOf(element)
+      const blob = await frameOf(element, { rotation: camera.rotation, flipX: camera.flip_horizontal, flipY: camera.flip_vertical })
       if (blob) {
         const url = URL.createObjectURL(blob)
         const link = document.createElement('a')
@@ -245,8 +245,8 @@ export default class Camera extends Mixins(OverviewMixin, BrowserMixin) {
   }
 }
 
-/** The frame an image or video shows now, as a JPEG, or null when it isn't one. */
-function frameOf (element: Element | undefined): Promise<Blob | null> {
+/** The frame an image or video shows now, turned as the page turns it, as a JPEG; null when it isn't one. */
+function frameOf (element: Element | undefined, turn: Parameters<typeof snapshotPlan>[2]): Promise<Blob | null> {
   let width = 0
   let height = 0
   if (element instanceof HTMLImageElement) {
@@ -257,10 +257,19 @@ function frameOf (element: Element | undefined): Promise<Blob | null> {
     height = element.videoHeight
   }
   if (!element || !width || !height) return Promise.resolve(null)
+  const plan = snapshotPlan(width, height, turn)
   const canvas = document.createElement('canvas')
-  canvas.width = width
-  canvas.height = height
-  canvas.getContext('2d')?.drawImage(element as HTMLImageElement | HTMLVideoElement, 0, 0, width, height)
+  canvas.width = plan.width
+  canvas.height = plan.height
+  const context = canvas.getContext('2d')
+  if (context) {
+    for (const [op, a, b] of plan.steps) {
+      if (op === 'translate') context.translate(a, b as number)
+      else if (op === 'scale') context.scale(a, b as number)
+      else context.rotate(a)
+    }
+    context.drawImage(element as HTMLImageElement | HTMLVideoElement, -width / 2, -height / 2, width, height)
+  }
   return new Promise((resolve, reject) => {
     try {
       canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.92)
