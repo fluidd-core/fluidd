@@ -9,6 +9,8 @@ import {
   materialInUse,
   materialsFrom,
   pinCommand,
+  pinPercent,
+  extrudeLengths,
   plateToPosition,
   speedName,
   stepTarget
@@ -90,6 +92,18 @@ describe('outputs', () => {
     expect(fanCommand({ type: 'fan', name: 'fan' }, 100)).toBe('M106 S255')
     expect(fanCommand({ type: 'fan_generic', name: 'aux' }, 50)).toBe('SET_FAN_SPEED FAN=aux SPEED=0.5')
     expect(fanCommand({ type: 'heater_fan', name: 'hotend' }, 50)).toBeNull()
+  })
+
+  it("reads a pin's level as Klipper reports it, already divided by its scale", () => {
+    // A light on a 0-255 pin, set to half: SET_PIN VALUE=127.5 reports 0.5.
+    expect(pinPercent(0.5)).toBe(50)
+    expect(pinCommand({ name: 'caselight', scale: 255, pwm: true }, 50)).toBe('SET_PIN PIN=caselight VALUE=127.5')
+  })
+
+  it('offers only the lengths the extruder takes', () => {
+    expect(extrudeLengths(50)).toEqual([5, 10, 25, 50])
+    expect(extrudeLengths(30)).toEqual([5, 10, 25])
+    expect(extrudeLengths(3)).toEqual([3])
   })
 
   it('sets a pin by its scale', () => {

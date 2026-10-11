@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chartLines, filamentFact, heaterTile, longDuration } from '../model'
+import { chartLines, chartWindows, defaultChartWindow, filamentFact, heaterTile, longDuration } from '../model'
 
 describe('a heater tile', () => {
   it('is off without a target', () => {
@@ -63,5 +63,18 @@ describe('the temperature graph', () => {
 
   it('draws nothing with no readings', () => {
     expect(chartLines([], ['extruder'], 900, now).lines).toEqual([])
+  })
+})
+
+describe("the graph's windows", () => {
+  it('offer only what Moonraker keeps, and the whole store between presets', () => {
+    expect(chartWindows(600).map(w => w.label)).toEqual(['5 min', '10 min'])
+    expect(chartWindows(1200).map(w => w.label)).toEqual(['5 min', '15 min', '20 min'])
+    expect(chartWindows(3600).map(w => w.label)).toEqual(['5 min', '15 min', '1 h'])
+  })
+
+  it('open on 15 minutes when kept, else the longest there is', () => {
+    expect(defaultChartWindow(chartWindows(3600))).toBe(900)
+    expect(defaultChartWindow(chartWindows(600))).toBe(600)
   })
 })

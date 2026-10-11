@@ -193,6 +193,7 @@ const toPrinterPage = (to: Route) => {
 const LEGACY_PRINTER_PAGES = [
   ...PRINTER_PAGE_PATHS.filter(path => !['/slice', '/camera'].includes(path)),
   '/settings/macros/:categoryId',
+  '/camera',
   '/camera/:cameraId'
 ]
 
