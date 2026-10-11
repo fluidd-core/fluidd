@@ -116,7 +116,7 @@ import ActionCommandPromptDialog from './components/common/ActionCommandPromptDi
 import KeyboardShortcutsDialog from './components/common/KeyboardShortcutsDialog.vue'
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from './util/event-helpers'
 import { isManagedConsolePath } from '@/router/managedPath'
-import { activeSlug, isActiveSlug } from '@/services/printer-pages'
+import { activeSlug, isActiveSlug, printerPageNeedsLogin } from '@/services/printer-pages'
 import PrinterOpening from './components/muon-cloud/PrinterOpening.vue'
 import FrameMixin from '@/mixins/frame'
 import { ALL_PRINTERS_KEY, sectionForKey } from '@/router/printerSections'
@@ -201,6 +201,22 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
 
   get printerIndependentRoute (): boolean {
     return this.$route.meta?.printerIndependent === true
+  }
+
+  /** A printer opened by its address asks for its own login once it is on (printerPageNeedsLogin). */
+  get needsLogin (): boolean {
+    return printerPageNeedsLogin({
+      apiConnected: this.apiConnected,
+      authenticated: this.authenticated,
+      routePrinter: this.$route.params.printer,
+      routeName: this.$route.name,
+      printerIndependent: this.printerIndependentRoute
+    })
+  }
+
+  @Watch('needsLogin')
+  onNeedsLogin (needs: boolean) {
+    if (needs) this.$router.replace('/login').catch(() => {})
   }
 
   /** The printer has said nothing for a few seconds; the page stays up while Fluidd waits. */
