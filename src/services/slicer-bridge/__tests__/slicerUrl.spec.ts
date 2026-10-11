@@ -17,7 +17,7 @@ const answer = (status: number, body: string, type = 'text/html; charset=utf-8')
 
 describe('slicerUrl', () => {
   it('is /slicer/embed.html on this page by default, http(s) only', () => {
-    expect(slicerUrl(undefined, `${PAGE}/#/slice`)?.href).toBe(EMBED.href)
+    expect(slicerUrl(undefined, `${PAGE}/slice`)?.href).toBe(EMBED.href)
     expect(slicerUrl('https://slicer.example/embed.html#x', PAGE)?.href).toBe('https://slicer.example/embed.html')
     expect(slicerUrl('javascript:alert(1)', PAGE)).toBeNull()
     expect(slicerUrl('https://user:pw@slicer.example/embed.html', PAGE)).toBeNull()

@@ -19,7 +19,8 @@ const dist = path.resolve(process.argv[2] || 'dist')
 const assets = path.join(dist, 'assets')
 const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8')
 
-const entry = [...html.matchAll(/(?:src|href)="\.\/(assets\/[^"]+\.(?:js|css))"/g)].map(m => m[1])
+// Vite writes absolute asset paths (base '/'); older builds wrote ./assets/.
+const entry = [...html.matchAll(/(?:src|href)="(?:\.)?\/(assets\/[^"]+\.(?:js|css))"/g)].map(m => m[1])
 const setupChunk = fs.readdirSync(assets).find(f => /^Setup-[\w-]+\.js$/.test(f))
 if (!setupChunk) {
   console.error('No Setup-*.js chunk in dist/assets: is /setup still a lazy route?')

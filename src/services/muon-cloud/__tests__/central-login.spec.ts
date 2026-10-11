@@ -18,8 +18,8 @@ import { cloudApi, refreshSession, storedRefreshToken, storedToken, storeRefresh
 
 const CONSOLE = 'https://control.muon3d.com'
 
-function at (search: string, hash = '#/') {
-  return { origin: CONSOLE, protocol: 'https:', hostname: 'control.muon3d.com', search, hash }
+function at (search: string, pathname = '/') {
+  return { origin: CONSOLE, protocol: 'https:', hostname: 'control.muon3d.com', search, pathname }
 }
 
 beforeEach(() => {
@@ -70,12 +70,12 @@ describe('/authorize', () => {
 
   it('remembers a verifier whose S256 challenge is the one it sends', async () => {
     const go = vi.fn()
-    await startCentralSignIn({ silent: false, returnTo: '#/join?code=ABC' }, go)
+    await startCentralSignIn({ silent: false, returnTo: '/join?code=ABC' }, go)
     const url = new URL(go.mock.calls[0][0])
     const pending = JSON.parse(sessionStorage.getItem('muon.cloud.authorize')!)
     expect(url.searchParams.get('code_challenge')).toBe(await challengeFor(pending.verifier))
     expect(url.searchParams.get('state')).toBe(pending.state)
-    expect(pending.returnTo).toBe('#/join?code=ABC')
+    expect(pending.returnTo).toBe('/join?code=ABC')
   })
 
   it('applies only where the console serves this page', () => {
@@ -96,16 +96,18 @@ describe('the silent first try (prompt=none)', () => {
   it('is not tried with a session, on a return from /authorize, or on the sign-in or setup page', () => {
     expect(shouldTrySilentSignIn(at('?code=x&state=y'))).toBe(false)
     expect(shouldTrySilentSignIn(at('?error=login_required&state=y'))).toBe(false)
-    expect(shouldTrySilentSignIn(at('', '#/sign-in?continue=%2Fauthorize%3Fx'))).toBe(false)
-    expect(shouldTrySilentSignIn(at('', '#/setup'))).toBe(false)
-    expect(shouldTrySilentSignIn(at('', '#/join?code=ABCDEFGHJK'))).toBe(true)
+    expect(shouldTrySilentSignIn(at('?continue=%2Fauthorize%3Fx', '/sign-in'))).toBe(false)
+    expect(shouldTrySilentSignIn(at('', '/setup'))).toBe(false)
+    expect(shouldTrySilentSignIn(at('?code=ABCDEFGHJK', '/join'))).toBe(false)
+    expect(shouldTrySilentSignIn(at('', '/join'))).toBe(true)
+    expect(shouldTrySilentSignIn(at('', '/setup-guide'))).toBe(true)
     storeToken('t')
     expect(shouldTrySilentSignIn(at(''))).toBe(false)
   })
 })
 
 describe('the return from /authorize', () => {
-  async function begin (silent: boolean, returnTo = '#/fleet') {
+  async function begin (silent: boolean, returnTo = '/boxwood-367a/jobs') {
     await startCentralSignIn({ silent, returnTo }, vi.fn())
     return JSON.parse(sessionStorage.getItem('muon.cloud.authorize')!)
   }
@@ -113,7 +115,7 @@ describe('the return from /authorize', () => {
   it('hands over the code with the verifier it was started with', async () => {
     const pending = await begin(false)
     expect(takeCallback({ search: `?code=c0de&state=${pending.state}&iss=${encodeURIComponent(CONSOLE)}` }, CONSOLE))
-      .toEqual({ outcome: 'code', code: 'c0de', verifier: pending.verifier, returnTo: '#/fleet' })
+      .toEqual({ outcome: 'code', code: 'c0de', verifier: pending.verifier, returnTo: '/boxwood-367a/jobs' })
   })
 
   it('refuses a state it did not send, and a code from another issuer', async () => {
@@ -131,9 +133,9 @@ describe('the return from /authorize', () => {
   })
 
   it('reads login_required after prompt=none as signed out, and as an error otherwise', async () => {
-    let pending = await begin(true, '#/join?code=ABCDEFGHJK')
+    let pending = await begin(true, '/join?code=ABCDEFGHJK')
     expect(takeCallback({ search: `?error=login_required&state=${pending.state}&iss=${encodeURIComponent(CONSOLE)}` }, CONSOLE))
-      .toEqual({ outcome: 'signed_out', returnTo: '#/join?code=ABCDEFGHJK' })
+      .toEqual({ outcome: 'signed_out', returnTo: '/join?code=ABCDEFGHJK' })
     pending = await begin(false)
     expect(takeCallback({ search: `?error=login_required&state=${pending.state}&iss=${encodeURIComponent(CONSOLE)}&error_description=Sign+in` }, CONSOLE))
       .toMatchObject({ outcome: 'error', message: 'Sign in' })
@@ -143,17 +145,47 @@ describe('the return from /authorize', () => {
     expect(takeCallback({ search: '' }, CONSOLE)).toEqual({ outcome: 'none' })
   })
 
+  it("leaves a page's own code alone: an invite or a link code has no state", async () => {
+    const pending = await begin(false)
+    expect(takeCallback({ search: '?code=482913' }, CONSOLE)).toEqual({ outcome: 'none' })
+    // The sign-in in flight is still there to be finished.
+    expect(takeCallback({ search: `?code=c0de&state=${pending.state}&iss=${encodeURIComponent(CONSOLE)}` }, CONSOLE).outcome).toBe('code')
+  })
+
   it('requires the issuer that the central login sends', async () => {
     await startCentralSignIn({ silent: false }, vi.fn())
     const pending = JSON.parse(sessionStorage.getItem('muon.cloud.authorize')!)
     expect(takeCallback({ search: `?code=code&state=${pending.state}` }, CONSOLE).outcome).toBe('error')
   })
 
-  it('only ever returns to a hash route of this page', () => {
-    expect(safeReturnTo('#/join?code=X')).toBe('#/join?code=X')
-    for (const bad of ['', '#', 'https://evil.example/', '#//evil.example', '#/a b', '#/\\evil']) {
-      expect(safeReturnTo(bad)).toBe('#/')
+  it('only ever returns to an address on this page', () => {
+    expect(safeReturnTo('/join?code=X')).toBe('/join?code=X')
+    expect(safeReturnTo('/settings#access')).toBe('/settings#access')
+    for (const bad of ['', '#', 'join', 'https://evil.example/', '//evil.example', '/\\evil', '/a b', '#//evil.example', '#/a b', '#/\\evil']) {
+      expect(safeReturnTo(bad)).toBe('/')
     }
+  })
+
+  it('takes a hash route that a tab remembers from an older Fluidd as its path', async () => {
+    expect(safeReturnTo('#/join?code=X')).toBe('/join?code=X')
+    // A tab that left for /authorize on the hash-routed Fluidd comes back to this one.
+    sessionStorage.setItem('muon.cloud.authorize', JSON.stringify({ state: 'S', verifier: 'V', returnTo: '#/fleet', silent: false }))
+    expect(takeCallback({ search: `?code=c0de&state=S&iss=${encodeURIComponent(CONSOLE)}` }, CONSOLE))
+      .toEqual({ outcome: 'code', code: 'c0de', verifier: 'V', returnTo: '/fleet' })
+  })
+
+  it('puts the address back to the path the trip started from', async () => {
+    const pending = await begin(false, '/boxwood-367a/jobs?sort=name')
+    window.history.replaceState(null, '', `/?code=c0de&state=${pending.state}`)
+    takeCallback({ search: `?code=c0de&state=${pending.state}&iss=${encodeURIComponent(CONSOLE)}` }, CONSOLE)
+    expect(`${window.location.pathname}${window.location.search}`).toBe('/boxwood-367a/jobs?sort=name')
+  })
+
+  it('starts from where the page is now when told nothing else', async () => {
+    window.history.replaceState(null, '', '/join?code=ABC#x')
+    await startCentralSignIn({ silent: true }, vi.fn())
+    expect(JSON.parse(sessionStorage.getItem('muon.cloud.authorize')!).returnTo).toBe('/join?code=ABC#x')
+    window.history.replaceState(null, '', '/')
   })
 })
 
@@ -180,7 +212,7 @@ describe('the sign-in page\'s continue', () => {
   })
 
   it('with no continue, asks /authorize for this page itself', async () => {
-    const url = new URL(await prepareAuthorize({ silent: false, returnTo: '#/' }))
+    const url = new URL(await prepareAuthorize({ silent: false, returnTo: '/' }))
     expect(url.pathname).toBe('/authorize')
     expect(url.searchParams.get('redirect_uri')).toBe(`${CONSOLE}/`)
     expect(safeContinue(`${url.pathname}${url.search}`)).not.toBeNull()

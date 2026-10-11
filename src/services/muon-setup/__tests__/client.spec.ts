@@ -78,7 +78,7 @@ describe('setup client', () => {
   const make = (origin = ORIGIN) => {
     client = createSetupClient({
       origin,
-      href: `${origin}/#/setup`,
+      href: `${origin}/setup`,
       WebSocketImpl: FakeSocket as unknown as typeof WebSocket,
       fetchImpl: fetchImpl as unknown as typeof fetch,
       doc: doc as unknown as Document,
@@ -119,7 +119,7 @@ describe('setup client', () => {
     FakeSocket.last.open()
     expect(FakeSocket.last.sent[0]).toMatchObject({
       method: 'server.connection.identify',
-      params: { client_name: 'muon-setup', version: '1.0.0', type: 'web', url: `${ORIGIN}/#/setup` }
+      params: { client_name: 'muon-setup', version: '1.0.0', type: 'web', url: `${ORIGIN}/setup` }
     })
     await vi.advanceTimersByTimeAsync(0)
     expect(setupState.state?.rev).toBe(4)

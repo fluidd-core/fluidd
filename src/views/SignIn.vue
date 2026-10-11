@@ -148,7 +148,7 @@ export default class SignIn extends Vue {
       // so the handoff ends with Fluidd signed in.
       let next = this.continuePath
       if (!next) {
-        const url = new URL(await prepareAuthorize({ silent: false, returnTo: '#/' }))
+        const url = new URL(await prepareAuthorize({ silent: false, returnTo: '/' }))
         next = `${url.pathname}${url.search}`
       }
       const handoff = await cloudApi.handoff(token)

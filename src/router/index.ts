@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter, { type RouteConfig } from 'vue-router'
-import { applyPathEntry } from './pathEntry'
+import { applyLegacyHash } from './legacyHash'
 
 // Views
 import Dashboard from '@/views/Dashboard.vue'
@@ -244,12 +244,16 @@ const routes: Array<RouteConfig> = [
   }
 ]
 
-// Before the router reads the hash: an address served as a path, such as the
-// link QR code's /link?code=, becomes its hash route.
-applyPathEntry()
+// Before the router reads the address: an old hash address (/#/jobs, the
+// printer's /setup redirect to /#/setup) becomes the path it now is.
+applyLegacyHash()
 
+// Path addresses (/jobs, /link?code=), served from the root of the host. The
+// printer's nginx and the console answer a navigation they have no file for
+// with index.html, and the service worker does too once installed.
 const router = new VueRouter({
-  base: import.meta.env.BASE_URL,
+  mode: 'history',
+  base: '/',
   routes,
   scrollBehavior: (to, from, savedPosition) => {
     if (savedPosition) return savedPosition

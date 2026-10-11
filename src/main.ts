@@ -67,16 +67,6 @@ Vue.use(HttpClientPlugin, {
 // import { AuxClientPlugin } from '@/plugins/auxClient'
 // Vue.use(AuxClientPlugin, { store })
 
-// The panel's QR code and the captive portal use the short address /setup,
-// which nginx redirects to /#/setup. Should the page be served at /setup
-// itself, take the same route; the hash router would otherwise start on /.
-// The router is built on import and has already set the hash to #/, but it
-// reads the hash again when the app mounts, below.
-if (/\/setup$/.test(window.location.pathname) && ['', '#', '#/'].includes(window.location.hash)) {
-  const base = window.location.pathname.replace(/setup$/, '')
-  window.history.replaceState(null, '', `${base}#/setup${window.location.search}`)
-}
-
 // A cloud printer is selected through a placeholder API address that Fluidd
 // records as an instance. It must never be the instance Fluidd starts on.
 forgetManagedInstance()
@@ -105,7 +95,8 @@ const mountApp = () => {
 // reach only the printer, over mobile data on the hotspot (05 §7). The page
 // runs its own client instead. The socket plugin is installed, unconnected,
 // because the shell still refers to Vue.$socket.
-if (/^#\/(?:setup|sign-in)(?:[/?]|$)/.test(window.location.hash)) {
+// The router has already turned an old /#/setup address into /setup.
+if (/^\/(?:setup|sign-in)(?:\/|$)/.test(window.location.pathname)) {
   Vue.use(SocketPlugin, { url: '', store })
   mountApp()
 } else if (shouldTrySilentSignIn()) {
@@ -141,7 +132,7 @@ if (/^#\/(?:setup|sign-in)(?:[/?]|$)/.test(window.location.hash)) {
       initCloud().then((returnTo) => router.onReady(async () => {
         // Back from the console's /authorize: go on where the sign-in started,
         // before anything below reads the current route.
-        if (returnTo && returnTo !== '#/') await router.replace(returnTo.slice(1)).catch(() => {})
+        if (returnTo && returnTo !== '/') await router.replace(returnTo).catch(() => {})
 
         // Setup reached by navigating inside the app keeps its place too:
         // reopening a cloud printer runs appInit, which sends every route but

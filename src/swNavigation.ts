@@ -17,7 +17,12 @@ export const NAVIGATION_DENYLIST: RegExp[] = [
   // The Muon3D Slicer the printer serves beside Fluidd (/slicer/, and the
   // /slicer redirect to it): its own pages, which /slice frames. Workbox
   // matches the path with its query, so /slicer?x is the slicer's too.
-  /^\/slicer(?:[/?]|$)/
+  /^\/slicer(?:[/?]|$)/,
+  // Files the printer or the console serve beside Fluidd, which a browser can
+  // open directly: the licence texts, the M1 model and three.js, the Iroh
+  // client, and the app association files.
+  /^\/(?:licences|muon-3d|muon-link-web|\.well-known)\//,
+  /^\/apple-app-site-association$/
 ]
 
 /** Whether the service worker leaves a navigation to `pathname` to the network. */

@@ -37,9 +37,9 @@
       v-if="!fullscreen && (fullscreenMode === 'embed' || !rawCameraUrl) && camera.service !== 'device'"
       class="camera-fullscreen"
     >
-      <a :href="`/#/camera/${encodeURI(camera.uid)}`">
+      <router-link :to="`/camera/${encodeURI(camera.uid)}`">
         <v-icon>$fullScreen</v-icon>
-      </a>
+      </router-link>
     </div>
     <div
       v-else-if="rawCameraUrl"

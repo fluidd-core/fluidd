@@ -90,7 +90,7 @@ export default defineConfig(async ({ command }) => {
         shortcuts: [
           {
             name: 'Configuration',
-            url: '#/configure',
+            url: '/configure',
             icons: [
               {
                 src: 'img/icons/shortcut-configuration-96x96.png',
@@ -101,7 +101,7 @@ export default defineConfig(async ({ command }) => {
           },
           {
             name: 'Settings',
-            url: '#/settings',
+            url: '/settings',
             icons: [
               {
                 src: 'img/icons/shortcut-settings-96x96.png',
@@ -173,7 +173,9 @@ export default defineConfig(async ({ command }) => {
     ]
   },
 
-  base: './',
+  // Absolute: Fluidd routes by path, so a page at /boxwood-367a/jobs must
+  // still load /assets/…, not /boxwood-367a/assets/….
+  base: '/',
 
   server: {
     host: '0.0.0.0',
