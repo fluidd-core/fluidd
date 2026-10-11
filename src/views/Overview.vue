@@ -85,16 +85,6 @@
         <overview-temps />
         <overview-plate />
       </div>
-      <section
-        class="overview__cards"
-        data-tid="overview-all-cards"
-      >
-        <div class="overview__cards-head">
-          <h2>All cards</h2>
-          <span>The cards you know from Fluidd. Edit layout arranges them.</span>
-        </div>
-        <dashboard />
-      </section>
     </template>
   </div>
 </template>
@@ -103,7 +93,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import OverviewMixin from '@/mixins/overview'
 import BrowserMixin from '@/mixins/browser'
-import Dashboard from './Dashboard.vue'
 import OverviewStage from '@/components/overview/OverviewStage.vue'
 import OverviewThisPrint from '@/components/overview/OverviewThisPrint.vue'
 import OverviewPrintSomething from '@/components/overview/OverviewPrintSomething.vue'
@@ -118,12 +107,10 @@ import ControlSpeed from '@/components/control/ControlSpeed.vue'
  * Overview, a printer's own page (`/boxwood-367a`). Simple is the glance:
  * the whole M1, the print or something to print, four live tiles that
  * open Control, the temperature graph and quick actions. Pro gives the
- * exact numbers, live tuning, the objects on the plate and the macros,
- * then the familiar card grid with Edit layout.
+ * exact numbers, live tuning, the objects on the plate and the macros.
  */
 @Component({
   components: {
-    Dashboard,
     OverviewStage,
     OverviewThisPrint,
     OverviewPrintSomething,
@@ -180,31 +167,6 @@ export default class Overview extends Mixins(OverviewMixin, BrowserMixin) {}
     display: grid;
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     gap: 16px;
-  }
-
-  .overview__cards {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 12px;
-  }
-
-  .overview__cards-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 12px;
-
-    h2 {
-      margin: 0;
-      font-size: 20px;
-      font-weight: 700;
-    }
-
-    span {
-      color: var(--m3d-text-muted);
-      font-size: 13px;
-    }
   }
 
   @media (max-width: 1263px) {
