@@ -214,11 +214,29 @@ export default class M1Live extends Mixins(ControlMixin) {
     try {
       const response = await httpClientActions.serverFilesGet<string>(`gcodes/${job}`, { responseType: 'text', transformResponse: [v => v] })
       if (this.jobPath !== job || !response?.data) return
+      // Asked again after the download: another preview may have begun
+      // parsing meanwhile (onPrintFile tries again when it ends), or the
+      // preview may hold this file already.
+      if (this.$store.state.gcodePreview.parserWorker || this.previewPath === job) return
       const appFile = { ...file, path: file.path ?? job.split('/').slice(0, -1).join('/') }
       this.$store.dispatch('gcodePreview/loadGcode', { file: appFile, gcode: response.data })
     } catch (e) {
       console.warn('[m1] the print could not be fetched; the stage goes on without it', e)
+    } finally {
+      // Only a request in flight holds the job back; a failed or stale one lets the next try go.
+      if (this.loadingFor === job) this.loadingFor = ''
     }
+  }
+
+  /** The job's file once its metadata has come: a print that starts gets it a moment after its name. */
+  get jobFileKnown (): string {
+    const file = this.$store.state.printer.printer.current_file as { filename?: string, size?: number } | undefined
+    return file?.filename && file.size ? `${file.filename}:${file.size}` : ''
+  }
+
+  @Watch('jobFileKnown')
+  onJobFileKnown (known: string) {
+    if (known) this.onPrintFile()
   }
 
   drawPrint () {
