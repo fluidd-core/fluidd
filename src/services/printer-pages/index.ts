@@ -122,7 +122,10 @@ export function isActiveSlug (slug: string): boolean {
  * than two.
  */
 export function stepPrinter (current: string | null, direction: 1 | -1, printers: PrinterTarget[] = knownPrinters()): string | null {
-  const slugs = [...new Set(printers.map(p => p.slug))]
+  // The switcher lists the account's printers first (a linked one among
+  // them), then those saved only in this browser.
+  const ordered = [...printers.filter(p => p.kind === 'cloud'), ...printers.filter(p => p.kind !== 'cloud')]
+  const slugs = [...new Set(ordered.map(p => p.slug))]
   if (slugs.length < 2) return null
   const at = current ? slugs.indexOf(current) : -1
   if (at === -1) return slugs[direction === 1 ? 0 : slugs.length - 1]

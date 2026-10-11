@@ -132,6 +132,12 @@ describe('[ and ]', () => {
     expect(stepPrinter('walnut-8987', -1, printers)).toBe('boxwood-367a')
   })
 
+  it("follow the switcher's order: the account's printers, a linked one among them, then this browser's", () => {
+    const linked = [local('maple-1c04', 'http://10.0.0.7'), local('boxwood-367a', 'http://10.0.0.5'), cloud('walnut-8987', 'p2'), cloud('boxwood-367a', 'p1')]
+    expect(stepPrinter('walnut-8987', 1, linked)).toBe('boxwood-367a')
+    expect(stepPrinter('boxwood-367a', 1, linked)).toBe('maple-1c04')
+  })
+
   it('go round from the last to the first', () => {
     expect(stepPrinter('maple-1c04', 1, printers)).toBe('boxwood-367a')
     expect(stepPrinter('boxwood-367a', -1, printers)).toBe('maple-1c04')

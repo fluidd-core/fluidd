@@ -246,7 +246,7 @@
     <input
       ref="uploadInput"
       type="file"
-      accept=".gcode,.g,.gco,.bgcode,.ufp"
+      :accept="gcodeAccept"
       class="app-header__upload"
       tabindex="-1"
       aria-hidden="true"
@@ -461,6 +461,12 @@ export default class AppBar extends Mixins(FrameMixin, ServicesMixin, FilesMixin
 
   handleExitLayout () {
     this.$store.commit('config/setLayoutMode', false)
+  }
+
+  /** What U's picker takes: the G-code root's own list, as the header's upload button uses. */
+  get gcodeAccept (): string {
+    const root = this.$store.getters['files/getRootProperties']('gcodes') as { accepts?: string[] } | undefined
+    return (root?.accepts ?? []).join(',')
   }
 
   get isDashboard () {
