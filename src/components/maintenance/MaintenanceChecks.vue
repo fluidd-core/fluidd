@@ -11,7 +11,8 @@
       <button
         type="button"
         class="cbtn cbtn--primary"
-        :disabled="printerPrinting || hasWait($waits.onSaveConfig)"
+        :disabled="!!saveBlocked"
+        :title="saveBlocked || undefined"
         @click="saveResults"
       >
         Save
@@ -121,7 +122,7 @@ export default class MaintenanceChecks extends Mixins(MaintenanceMixin, BrowserM
 
   @Watch('isManualProbeActive')
   onManualProbe (active: boolean) {
-    if (active && this.klippyReady && !this.printerPrinting) this.manualProbeDialogOpen = true
+    if (active && this.klippyReady && !this.printerPrinting && !this.printerPaused) this.manualProbeDialogOpen = true
   }
 
   @Watch('evidence', { immediate: true })
