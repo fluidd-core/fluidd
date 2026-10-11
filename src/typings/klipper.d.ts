@@ -827,6 +827,7 @@ declare namespace Klipper {
     color: string | null;
     weight: number;
     filament_name?: string;
+    mounted?: boolean;
     extruder_temp: number | null;
     bed_temp?: number | null;
     runout_lane: string | null;
