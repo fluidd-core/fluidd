@@ -5,7 +5,7 @@
   >
     <m1-live
       class="ov-stage__m1"
-      :state="busy ? 'printing' : 'idle'"
+      :state="stageState"
       :shift="busy && jobThumbnail ? 0.12 : 0"
     />
     <span
@@ -53,6 +53,12 @@ import M1Live from '@/components/m1/M1Live.vue'
  */
 @Component({ components: { M1Live } })
 export default class OverviewStage extends Mixins(OverviewMixin) {
+  /** Offline while the printer isn't there, so the live M1 lets go and the picture shows. */
+  get stageState (): 'offline' | 'printing' | 'idle' {
+    if (!this.socketConnected || !this.klippyReady) return 'offline'
+    return this.busy ? 'printing' : 'idle'
+  }
+
   get badge (): string | null {
     if (this.busy) {
       if (this.printerPaused) return 'Paused'
