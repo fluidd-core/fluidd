@@ -124,11 +124,22 @@ export async function prepareAuthorize (options: { silent: boolean, returnTo?: s
   })
 }
 
+/**
+ * Whether an address is a return from `/authorize`: it carries the `state`
+ * this page sent, with a `code` or an `error`. A page's own `code` (the
+ * invite on /join?code=, the link code on /link?code=) comes without one.
+ */
+export function isAuthCallback (search: string): boolean {
+  const query = new URLSearchParams(search)
+  return query.has('state') && (query.has('code') || query.has('error'))
+}
+
 /** Whether to try `prompt=none` before anything else loads. */
 export function shouldTrySilentSignIn (location: Pick<Location, 'origin' | 'protocol' | 'hostname' | 'search' | 'pathname'> = window.location): boolean {
   if (!centralLoginEnabled(location)) return false
   if (storedToken()) return false
   if (session()?.getItem(SILENT_KEY)) return false
+  // A page's own code too (/join?code=): that page signs in for itself.
   const query = new URLSearchParams(location.search)
   if (query.has('code') || query.has('error')) return false
   // The console's own sign-in page is where `/authorize` sends a browser
@@ -143,8 +154,8 @@ export function shouldTrySilentSignIn (location: Pick<Location, 'origin' | 'prot
  * own storage and the history entry it rewrites.
  */
 export function takeCallback (location: Pick<Location, 'search'> = window.location, consoleUrl: string = cloudBaseUrl()): CallbackResult {
+  if (!isAuthCallback(location.search)) return { outcome: 'none' }
   const query = new URLSearchParams(location.search)
-  if (!query.has('code') && !query.has('error')) return { outcome: 'none' }
 
   const store = session()
   let pending: Pending | null = null

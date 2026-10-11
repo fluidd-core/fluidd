@@ -261,6 +261,27 @@ export function installPrinterPages (router: VueRouter, how: PrinterOpeners): vo
   })
 }
 
+export interface LoginCheck {
+  apiConnected: boolean;
+  authenticated: boolean;
+  /** The printer the route names, if any. */
+  routePrinter: string | undefined;
+  routeName: string | null | undefined;
+  printerIndependent: boolean;
+}
+
+/**
+ * Whether the page on screen needs its printer's login. The route guard
+ * lets a page for another printer in before that printer is on (it opens
+ * after, in installPrinterPages), so the guard never asks that printer for
+ * its password. Once it is on: connected, not signed in, and on its page.
+ */
+export function printerPageNeedsLogin (c: LoginCheck, isActive: (slug: string) => boolean = isActiveSlug): boolean {
+  if (!c.apiConnected || c.authenticated || c.printerIndependent) return false
+  if (!c.routePrinter || c.routeName === 'Login') return false
+  return isActive(c.routePrinter)
+}
+
 /** Replaces the address with the active printer's real slug, keeping the page. */
 export function correctAddress (router: VueRouter): void {
   const route = router.currentRoute

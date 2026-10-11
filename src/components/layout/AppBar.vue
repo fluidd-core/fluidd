@@ -25,6 +25,7 @@
       </router-link>
 
       <div class="app-header__actions">
+        <app-status-alerts v-if="authenticated" />
         <button
           type="button"
           class="app-header__icon"
