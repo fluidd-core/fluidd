@@ -74,6 +74,7 @@ describe('a dropped file', () => {
 
   it('prints when it is G-code', () => {
     expect(isGcodeFile('part.gcode')).toBe(true)
+    for (const name of ['part.g', 'part.gc', 'part.gco', 'part.ufp', 'part.nc', 'part.bgcode']) expect(isGcodeFile(name), name).toBe(true)
     expect(isGcodeFile('part.stl')).toBe(false)
   })
 })
