@@ -6,54 +6,44 @@
     :no-actions="dialog.footerButtons.length === 0"
   >
     <v-card-text>
-      <div
-        v-for="(item, index) in dialog.items"
-        :key="`item-${index}`"
-        class="mb-2"
+      <v-row
+        v-for="item in dialog.items"
+        :key="`item::${item.id}`"
       >
-        <v-row v-if="item.type === 'text'">
-          <v-col>
-            {{ item.text }}
-          </v-col>
-        </v-row>
-        <v-row v-else-if="item.type === 'button'">
-          <v-col>
-            <v-btn
-              :color="item.color"
-              block
-              @click="handleClick(item)"
-            >
-              {{ item.text }}
-            </v-btn>
-          </v-col>
-        </v-row>
-        <v-row
-          v-else-if="item.type === 'button_group'"
-          class="mx-n2"
-        >
-          <v-col
-            v-for="(btn, btnIndex) in item.buttons"
-            :key="`btn-${index}-${btnIndex}`"
-            class="px-2"
+        <v-col v-if="item.type === 'text'">
+          {{ item.text }}
+        </v-col>
+        <v-col v-else-if="item.type === 'button'">
+          <v-btn
+            :color="item.color"
+            block
+            @click="handleClick(item)"
           >
-            <v-btn
-              :color="btn.color"
-              block
-              @click="handleClick(btn)"
-            >
-              {{ btn.text }}
-            </v-btn>
-          </v-col>
-        </v-row>
-      </div>
+            {{ item.text }}
+          </v-btn>
+        </v-col>
+        <v-col
+          v-else-if="item.type === 'button_group'"
+          class="prompt-button-group"
+        >
+          <v-btn
+            v-for="button in item.buttons"
+            :key="`button::${button.id}`"
+            :color="button.color"
+            @click="handleClick(button)"
+          >
+            {{ button.text }}
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-card-text>
 
     <template #actions>
       <v-spacer />
 
       <app-btn
-        v-for="(button, index) in dialog.footerButtons"
-        :key="`button-${index}`"
+        v-for="button in dialog.footerButtons"
+        :key="`button::${button.id}`"
         :color="button.color ?? 'primary'"
         type="button"
         @click="handleClick(button)"
@@ -90,3 +80,15 @@ export default class ActionCommandPromptDialog extends Mixins(StateMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .prompt-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .v-btn {
+      flex: 1 1 0;
+    }
+  }
+</style>

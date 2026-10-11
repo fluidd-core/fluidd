@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import type { MutationTree } from 'vuex'
 import { createState } from './state'
 import { Globals } from '@/globals'
-import type { ConsoleEntry, ConsoleFilter, ConsoleState, PromptDialogItemButton, PromptDialogItem } from './types'
+import type { ConsoleEntry, ConsoleFilter, ConsoleState, PromptDialogItemButton, PromptDialogItem, PromptDialogItemButtonGroup } from './types'
 import { escapeRegExp } from 'lodash-es'
 
 const compileExpression = (filter: ConsoleFilter): RegExp => {
@@ -60,26 +60,37 @@ export const mutations = {
   },
 
   setPromptDialogItem (state, payload: PromptDialogItem) {
-    state.promptDialog.items.push(payload)
+    const { items, pendingItems } = state.promptDialog
+    const target = pendingItems ?? items
+
+    target.push(payload)
   },
 
-  setPromptDialogItemGroup (state, buttons: PromptDialogItemButton[]) {
-    state.promptDialog.items.push({
-      type: 'button_group',
-      buttons
-    })
+  setPromptDialogButtonGroupStart (state) {
+    if (state.promptDialog.pendingItems === null) {
+      state.promptDialog.pendingItems = []
+    }
   },
 
-  setGroupActive (state, active: boolean) {
-    state.isGroupActive = active
-  },
+  setPromptDialogButtonGroupEnd (state, payload: number) {
+    const { items, pendingItems } = state.promptDialog
 
-  pushGroupButton (state, button: PromptDialogItemButton) {
-    state.currentGroupButtons.push(button)
-  },
+    if (pendingItems !== null) {
+      const buttons = pendingItems
+        .filter(item => item.type === 'button')
 
-  clearGroupButtons (state) {
-    state.currentGroupButtons = []
+      if (buttons.length > 0) {
+        const item: PromptDialogItemButtonGroup = {
+          type: 'button_group',
+          id: payload,
+          buttons
+        }
+
+        items.push(item)
+      }
+
+      state.promptDialog.pendingItems = null
+    }
   },
 
   setPromptDialogFooterButton (state, payload: PromptDialogItemButton) {
@@ -87,6 +98,16 @@ export const mutations = {
   },
 
   setPromptDialogOpen (state, payload: boolean) {
+    if (payload) {
+      const { items, pendingItems } = state.promptDialog
+
+      if (pendingItems !== null) {
+        items.push(...pendingItems)
+
+        state.promptDialog.pendingItems = null
+      }
+    }
+
     state.promptDialog.open = payload
   },
 

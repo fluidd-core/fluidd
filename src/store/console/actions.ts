@@ -103,7 +103,7 @@ export const actions = {
     }
   },
 
-  async onUpdatePromptDialog ({ state, commit }, payload: ConsoleEntry) {
+  async onUpdatePromptDialog ({ commit }, payload: ConsoleEntry) {
     const parsedMessage = (
       payload.type === 'action' &&
       /^\/\/ action:prompt_([^ ]+)(?: (.+))?/.exec(payload.message)
@@ -111,30 +111,17 @@ export const actions = {
 
     if (parsedMessage) {
       const [, type, param] = parsedMessage
+      const { id } = payload
 
       switch (type) {
         case 'begin':
-          commit('setGroupActive', false)
-          commit('clearGroupButtons')
           commit('setResetPromptDialog', param)
-          break
-
-        case 'button_group_start':
-          commit('setGroupActive', true)
-          commit('clearGroupButtons')
-          break
-
-        case 'button_group_end':
-          commit('setGroupActive', false)
-          if (state.currentGroupButtons.length > 0) {
-            commit('setPromptDialogItemGroup', [...state.currentGroupButtons])
-          }
-          commit('clearGroupButtons')
           break
 
         case 'text': {
           const item: PromptDialogItemText = {
             type: 'text',
+            id,
             text: param
           }
 
@@ -142,21 +129,26 @@ export const actions = {
           break
         }
 
+        case 'button_group_start':
+          commit('setPromptDialogButtonGroupStart')
+          break
+
+        case 'button_group_end':
+          commit('setPromptDialogButtonGroupEnd', id)
+          break
+
         case 'button': {
           const [text, command, color] = param.split('|')
 
           const item: PromptDialogItemButton = {
             type: 'button',
+            id,
             text,
             command,
             color
           }
 
-          if (state.isGroupActive) {
-            commit('pushGroupButton', item)
-          } else {
-            commit('setPromptDialogItem', item)
-          }
+          commit('setPromptDialogItem', item)
           break
         }
 
@@ -164,6 +156,7 @@ export const actions = {
           const [text, command, color] = param.split('|')
 
           const item: PromptDialogButton = {
+            id,
             text,
             command,
             color

@@ -10,8 +10,6 @@ export interface ConsoleState {
   promptDialog: PromptDialog;
   consoleFilters: ConsoleFilter[];
   consoleFiltersRegexp: RegExp[];
-  isGroupActive: boolean;
-  currentGroupButtons: PromptDialogItemButton[];
 }
 
 export interface ConsoleEntry {
@@ -35,26 +33,30 @@ export interface PromptDialog {
   open: boolean;
   title?: string;
   items: PromptDialogItem[];
-  footerButtons: PromptDialogButton[]
+  pendingItems: PromptDialogItem[] | null;
+  footerButtons: PromptDialogButton[];
 }
 
-export type PromptDialogItem = PromptDialogItemText | PromptDialogItemButton | PromptDialogItemButtonGroup
+export type PromptDialogItem = PromptDialogItemText | PromptDialogItemButtonGroup | PromptDialogItemButton
 
 export interface PromptDialogItemText {
   type: 'text';
+  id: number;
   text: string;
+}
+
+export interface PromptDialogItemButtonGroup {
+  type: 'button_group';
+  id: number;
+  buttons: PromptDialogButton[];
 }
 
 export interface PromptDialogItemButton extends PromptDialogButton {
   type: 'button';
 }
 
-export interface PromptDialogItemButtonGroup {
-  type: 'button_group';
-  buttons: PromptDialogItemButton[];
-}
-
 export interface PromptDialogButton {
+  id: number;
   text: string;
   command?: string;
   color?: string;
