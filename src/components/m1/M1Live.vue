@@ -94,18 +94,30 @@ export default class M1Live extends Mixins(ControlMixin) {
   }
 
   mounted () {
-    if (this.state === 'offline' || !canDrawWebgl() || typeof IntersectionObserver === 'undefined') return
+    if (!canDrawWebgl() || typeof IntersectionObserver === 'undefined') return
     this.observer = new IntersectionObserver(entries => {
       this.visible = entries.some(e => e.isIntersecting)
-      if (this.visible && !this.live) this.start()
-      else if (this.visible) this.push()
+      this.wake()
     })
     this.observer.observe(this.$el)
+    document.addEventListener('visibilitychange', this.wake)
   }
 
   beforeDestroy () {
     this.observer?.disconnect()
+    document.removeEventListener('visibilitychange', this.wake)
     this.stop()
+  }
+
+  /**
+   * Starts the live M1 when it can show (on screen, the printer there), or
+   * brings it up to date: a hidden tab skips the printer's changes, so
+   * coming back to it draws the pose as it is now.
+   */
+  wake () {
+    if (!this.visible || this.state === 'offline' || document.hidden) return
+    if (!this.live) this.start()
+    else this.push()
   }
 
   async start () {
@@ -229,6 +241,7 @@ export default class M1Live extends Mixins(ControlMixin) {
   @Watch('state')
   onState (state: ThumbState) {
     if (state === 'offline') this.stop()
+    else this.wake()
   }
 }
 </script>
