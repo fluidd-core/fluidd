@@ -310,6 +310,7 @@ import { SocketActions } from '@/api/socketActions'
 import type { HistoryItem } from '@/store/history/types'
 import type { QueuedJob } from '@/store/jobQueue/types'
 import { filterJobs, jobFacts, jobTitle, sortJobs, type JobFilter, type JobSort } from '@/services/jobs/model'
+import { historyStatus } from '@/services/history/model'
 import type { TileTone } from '@/services/printers-page/model'
 import getFilePaths from '@/util/get-file-paths'
 import JobCard from '@/components/jobs/JobCard.vue'
@@ -490,19 +491,7 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
   }
 
   statusOf (item: HistoryItem): { text: string, tone: TileTone } {
-    switch (item.status) {
-      case 'completed': return { text: 'Finished', tone: 'ok' }
-      case 'in_progress': return { text: 'Printing', tone: 'run' }
-      case 'cancelled': {
-        const total = item.metadata?.filament_total
-        const progress = item.filament_used && total ? Math.round(item.filament_used / total * 100) : null
-        return { text: progress !== null ? `Stopped at ${progress}%` : 'Stopped', tone: 'err' }
-      }
-      case 'klippy_shutdown':
-      case 'klippy_disconnect':
-      case 'error': return { text: 'Failed', tone: 'err' }
-      default: return { text: String(item.status), tone: 'off' }
-    }
+    return historyStatus(item.status, item.filament_used, item.metadata?.filament_total)
   }
 }
 </script>
