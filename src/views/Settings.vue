@@ -80,7 +80,6 @@ import { proMode } from '@/services/pro-mode'
 import { activeSlug } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
 import { settingsSectionFor, visibleSettingsSections, type SettingsSection } from '@/services/settings/sections'
-import { visibleMacros, type MacroGroup } from '@/util/visible-macros'
 import { printerNameParts } from '@/util/printer-name'
 
 import MacroSettings from '@/components/settings/macros/MacroSettings.vue'
@@ -177,7 +176,8 @@ export default class Settings extends Mixins(StateMixin, BrowserMixin) {
   get updateCount (): number {
     const info = (this.$store.state.version.version_info ?? {}) as Record<string, unknown>
     const hasUpdate = this.$store.getters['version/hasUpdate'] as (component: string) => boolean
-    return Object.keys(info).filter(name => name !== 'system' && hasUpdate(name)).length
+    // The OS packages count too, as the Updates card shows them.
+    return Object.keys(info).filter(name => hasUpdate(name)).length
   }
 
   /** What's beside a section's name: the printer's name, how many cameras, whether it's up to date. */
@@ -194,7 +194,8 @@ export default class Settings extends Mixins(StateMixin, BrowserMixin) {
       case 'materials':
         return countOrNone((this.$store.getters['config/getTempPresets'] as unknown[]).length)
       case 'macros':
-        return countOrNone(visibleMacros(this.$store.getters['macros/getVisibleMacros'] as MacroGroup[]).length)
+        // Every macro the Macros card manages, hidden from the dashboard or not.
+        return countOrNone((this.$store.getters['macros/getMacros'] as unknown[]).length)
       case 'system':
         return 'restart, logs'
       default:
