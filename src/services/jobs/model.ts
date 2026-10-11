@@ -1,7 +1,8 @@
 import type { KlipperFileMeta } from '@/store/files/types.metadata'
 import { shortDuration } from '@/util/short-duration'
 
-const GCODE = /\.(gcode|g|gco|bgcode)$/i
+/** Every G-code file the gcodes root accepts (files/getRootProperties), and Prusa's binary G-code. */
+const GCODE = /\.(gcode|g|gc|gco|ufp|nc|bgcode)$/i
 /** What the slicer adds after the part's name: layer height, material, printer, time. */
 const SLICER_TAIL = /[_\s-]+\d+(?:\.\d+)?mm(?:[_\s-].*)?$/i
 

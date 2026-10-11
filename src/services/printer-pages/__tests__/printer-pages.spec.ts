@@ -3,6 +3,7 @@ import type { InstanceConfig } from '@/store/config/types'
 import {
   isPrintersOwnPage,
   preferSavedPrinterFor,
+  printerPageNeedsLogin,
   printerPagesState,
   resolveSlug,
   samePageFor,
@@ -132,6 +133,12 @@ describe('[ and ]', () => {
     expect(stepPrinter('walnut-8987', -1, printers)).toBe('boxwood-367a')
   })
 
+  it("follow the switcher's order: the account's printers, a linked one among them, then this browser's", () => {
+    const linked = [local('maple-1c04', 'http://10.0.0.7'), local('boxwood-367a', 'http://10.0.0.5'), cloud('walnut-8987', 'p2'), cloud('boxwood-367a', 'p1')]
+    expect(stepPrinter('walnut-8987', 1, linked)).toBe('boxwood-367a')
+    expect(stepPrinter('boxwood-367a', 1, linked)).toBe('maple-1c04')
+  })
+
   it('go round from the last to the first', () => {
     expect(stepPrinter('maple-1c04', 1, printers)).toBe('boxwood-367a')
     expect(stepPrinter('boxwood-367a', -1, printers)).toBe('maple-1c04')
@@ -139,5 +146,25 @@ describe('[ and ]', () => {
 
   it('do nothing with one printer', () => {
     expect(stepPrinter('boxwood-367a', 1, [local('boxwood-367a', 'http://10.0.0.5')])).toBeNull()
+  })
+})
+
+describe('a printer opened by its address', () => {
+  const on = (slug: string) => slug === 'walnut-8987'
+  const page = { apiConnected: true, authenticated: false, routePrinter: 'walnut-8987', routeName: 'Jobs', printerIndependent: false }
+
+  it('asks for its own login once it is on and wants one', () => {
+    expect(printerPageNeedsLogin(page, on)).toBe(true)
+  })
+
+  it('asks nothing before it is on, while unreachable, or once signed in', () => {
+    expect(printerPageNeedsLogin({ ...page, routePrinter: 'boxwood-367a' }, on)).toBe(false)
+    expect(printerPageNeedsLogin({ ...page, apiConnected: false }, on)).toBe(false)
+    expect(printerPageNeedsLogin({ ...page, authenticated: true }, on)).toBe(false)
+  })
+
+  it('leaves the login page and the pages that belong to no printer alone', () => {
+    expect(printerPageNeedsLogin({ ...page, routeName: 'Login' }, on)).toBe(false)
+    expect(printerPageNeedsLogin({ ...page, routePrinter: undefined, printerIndependent: true }, on)).toBe(false)
   })
 })

@@ -90,6 +90,10 @@ describe('what a check runs', () => {
     expect(checkCommand('pid', { commands: all, homed: false, nozzleTarget: 240.4 })).toBe('PID_CALIBRATE HEATER=extruder TARGET=240')
   })
 
+  it("uses the printer's own heater tuning macro when it has one", () => {
+    expect(checkCommand('pid', { commands: { ...all, CALIBRATE_HEATING_HOTEND: {} }, homed: false, nozzleTarget: 240 })).toBe('CALIBRATE_HEATING_HOTEND')
+  })
+
   it('uses the probe for the first layer, else the Z endstop', () => {
     expect(checkCommand('firstLayer', { commands: all, homed: true, nozzleTarget: 215 })).toBe('PROBE_CALIBRATE')
     expect(checkCommand('firstLayer', { commands: { Z_ENDSTOP_CALIBRATE: {} }, homed: true, nozzleTarget: 215 })).toBe('Z_ENDSTOP_CALIBRATE')

@@ -25,7 +25,7 @@
         <span
           v-else
           class="ov-temps__window"
-        >15 min</span>
+        >{{ windowLabel }}</span>
       </div>
     </div>
     <svg
@@ -66,8 +66,8 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import OverviewMixin from '@/mixins/overview'
-import { chartLines, type ChartPoint } from '@/services/overview/model'
-import SegPicker, { type SegOption } from '@/components/control/SegPicker.vue'
+import { chartLines, chartWindows, defaultChartWindow, type ChartPoint } from '@/services/overview/model'
+import SegPicker from '@/components/control/SegPicker.vue'
 
 const COLORS: Record<string, string> = { extruder: '#ff8c42', heater_bed: '#6aa8ff' }
 
@@ -79,7 +79,7 @@ export default class OverviewTemps extends Mixins(OverviewMixin) {
 
   W = 600
   H = 160
-  windowSeconds = 900
+  pickedWindow: number | null = null
   now = Date.now()
   timer: number | null = null
 
@@ -92,12 +92,23 @@ export default class OverviewTemps extends Mixins(OverviewMixin) {
     if (this.timer !== null) window.clearInterval(this.timer)
   }
 
-  get windows (): SegOption[] {
-    return [{ value: 300, label: '5 min' }, { value: 900, label: '15 min' }, { value: 3600, label: '1 h' }]
+  get windows (): Array<{ value: number, label: string }> {
+    return chartWindows(this.$store.getters['charts/getChartRetention'] as number)
+  }
+
+  /** The window picked, while the store keeps that much; else the default. */
+  get windowSeconds (): number {
+    const picked = this.pickedWindow
+    if (picked !== null && this.windows.some(w => w.value === picked)) return picked
+    return defaultChartWindow(this.windows)
+  }
+
+  set windowSeconds (value: number) {
+    this.pickedWindow = value
   }
 
   get windowLabel (): string {
-    return this.windowSeconds >= 3600 ? '1 h' : `${this.windowSeconds / 60} min`
+    return this.windows.find(w => w.value === this.windowSeconds)?.label ?? `${Math.round(this.windowSeconds / 60)} min`
   }
 
   get keys (): string[] {

@@ -139,6 +139,8 @@ export function checkCommand (id: CheckId, c: CheckContext): string | null {
     case 'shaper':
       return knows('SHAPER_CALIBRATE') ? `${home}SHAPER_CALIBRATE` : null
     case 'pid':
+      // A printer's own tuning macro knows its heater and temperature (the M1's tunes at 220°C).
+      if (knows('CALIBRATE_HEATING_HOTEND')) return 'CALIBRATE_HEATING_HOTEND'
       return knows('PID_CALIBRATE') ? `PID_CALIBRATE HEATER=extruder TARGET=${Math.round(c.nozzleTarget)}` : null
   }
 }
