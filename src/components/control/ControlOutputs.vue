@@ -1,0 +1,243 @@
+<template>
+  <control-card
+    title="Outputs and sensors"
+    :locked="klippyReady ? '' : notReadyReason"
+    data-tid="control-outputs"
+  >
+    <div
+      v-if="outputs.length"
+      class="outs__group"
+    >
+      <h3 class="outs__label">
+        Outputs
+      </h3>
+      <div
+        v-for="out in outputs"
+        :key="out.key"
+        class="crow"
+      >
+        <span class="crow__name">{{ out.label }}</span>
+        <span
+          v-if="out.dimmable"
+          class="outs__slider"
+        >
+          <range-slider
+            :value="out.percent"
+            :min="0"
+            :max="100"
+            :label="out.label"
+            :disabled="!klippyReady"
+            @change="setOutput(out, $event)"
+          />
+          <span class="crow__value">{{ out.percent }}%</span>
+        </span>
+        <toggle-switch
+          v-else
+          :value="out.percent > 0"
+          :label="out.label"
+          :disabled="!klippyReady"
+          @input="setOutput(out, $event ? 100 : 0)"
+        />
+      </div>
+    </div>
+
+    <div
+      v-if="sensors.length"
+      class="outs__group"
+      data-tid="control-sensors"
+    >
+      <h3 class="outs__label">
+        Filament sensors
+      </h3>
+      <div
+        v-for="sensor in sensors"
+        :key="sensor.name"
+        class="crow"
+      >
+        <span class="crow__name">
+          {{ sensor.prettyName }}
+          <span class="crow__sub">· {{ !sensor.enabled ? 'off' : sensor.filament_detected ? 'filament in' : 'no filament' }}</span>
+        </span>
+        <toggle-switch
+          :value="sensor.enabled"
+          :label="`${sensor.prettyName} on`"
+          :disabled="!klippyReady"
+          @input="setSensor(sensor.name, $event)"
+        />
+      </div>
+    </div>
+
+    <div
+      class="outs__group"
+      data-tid="control-endstops"
+    >
+      <h3 class="outs__label outs__label--row">
+        Endstops
+        <button
+          type="button"
+          class="outs__link"
+          :disabled="!klippyReady"
+          data-tid="control-endstops-check"
+          @click="checkEndstops"
+        >
+          {{ endstops.length ? 'Check again' : 'Check them' }}
+        </button>
+      </h3>
+      <div
+        v-for="endstop in endstops"
+        :key="endstop.name"
+        class="crow"
+      >
+        <span class="crow__name">{{ endstop.name }}</span>
+        <span
+          class="outs__state"
+          :class="{ 'outs__state--hit': endstop.state === 'triggered' }"
+        >{{ endstop.state === 'triggered' ? 'Triggered' : 'Open' }}</span>
+      </div>
+      <p
+        v-if="!endstops.length"
+        class="outs__note"
+      >
+        Reads each switch once, as it is now. Press one by hand and check again to see it change.
+      </p>
+    </div>
+  </control-card>
+</template>
+
+<script lang="ts">
+import { Component, Mixins } from 'vue-property-decorator'
+import ControlMixin from '@/mixins/control'
+import { SocketActions } from '@/api/socketActions'
+import type { Endstop, Led, OutputPin, Probe, RunoutSensor } from '@/store/printer/types'
+import { ledCommand, ledPercent, pinCommand, pinPercent, sensorCommand } from '@/services/control/model'
+import ControlCard from './ControlCard.vue'
+import RangeSlider from './RangeSlider.vue'
+import ToggleSwitch from './ToggleSwitch.vue'
+
+interface Output {
+  key: string;
+  label: string;
+  percent: number;
+  dimmable: boolean;
+  pin?: OutputPin;
+  led?: Led;
+}
+
+/**
+ * Pro's outputs and sensors: the output pins and LEDs that aren't the
+ * lights (Fans and lights has those), the filament sensors with their
+ * on/off, and the endstops, read when asked.
+ */
+@Component({ components: { ControlCard, RangeSlider, ToggleSwitch } })
+export default class ControlOutputs extends Mixins(ControlMixin) {
+  get outputs (): Output[] {
+    const pins = ((this.$store.getters['printer/getPins'] as OutputPin[]) ?? [])
+      .filter(p => p.controllable && p.name !== this.lightsPin?.name)
+      .map(pin => ({ key: pin.key, label: pin.prettyName, percent: pinPercent(pin.value), dimmable: pin.pwm, pin }))
+    const leds = ((this.$store.getters['printer/getAllLeds'] as Led[]) ?? [])
+      .filter(l => l.name !== this.lightsLed?.name)
+      .map(led => ({ key: led.key, label: led.prettyName, percent: ledPercent(led.color_data), dimmable: true, led }))
+    return [...pins, ...leds]
+  }
+
+  setOutput (out: Output, percent: number) {
+    if (out.pin) this.sendGcode(pinCommand(out.pin, out.pin.pwm ? percent : percent > 0))
+    else if (out.led) this.sendGcode(ledCommand(out.led.name, percent))
+  }
+
+  get sensors (): Array<RunoutSensor & { prettyName: string }> {
+    return (this.$store.getters['printer/getRunoutSensors'] as Array<RunoutSensor & { prettyName: string }>) ?? []
+  }
+
+  setSensor (name: string, enabled: boolean) {
+    this.sendGcode(sensorCommand(name, enabled))
+  }
+
+  get probe (): Probe | undefined {
+    return this.$store.getters['printer/getProbe'] as Probe | undefined
+  }
+
+  get endstops (): Endstop[] {
+    const endstops = [...((this.$store.getters['printer/getEndstops'] as Endstop[]) ?? [])]
+    if (endstops.length && this.probe) endstops.push({ name: 'Probe', state: this.probe.last_query ? 'triggered' : 'open' })
+    // Klipper says open, or TRIGGERED in capitals.
+    return endstops.map(e => ({ name: e.name === 'Probe' ? e.name : e.name.toUpperCase(), state: String(e.state).toLowerCase() }))
+  }
+
+  checkEndstops () {
+    SocketActions.printerQueryEndstops()
+    if (this.probe) this.sendGcode('QUERY_PROBE', this.$waits.onQueryProbe)
+  }
+
+  /** A reading goes stale: leaving the page clears it, as Fluidd's own panel does. */
+  destroyed () {
+    this.$store.commit('printer/setClearEndStops')
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+  .outs__group {
+    display: flex;
+    flex-direction: column;
+
+    > .crow + .crow {
+      border-top: 1px solid var(--m3d-border);
+    }
+  }
+
+  .outs__label {
+    margin: 0 0 4px;
+    color: var(--m3d-text);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .outs__label--row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .outs__link {
+    color: var(--m3d-accent);
+    font-size: 13px;
+    font-weight: 600;
+
+    &:disabled {
+      opacity: 0.45;
+    }
+  }
+
+  .outs__slider {
+    display: flex;
+    flex: 0 1 220px;
+    align-items: center;
+    gap: 10px;
+
+    .crow__value {
+      min-width: 40px;
+      text-align: right;
+    }
+  }
+
+  .outs__state {
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--m3d-surface-2);
+    color: var(--m3d-text-muted);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .outs__state--hit {
+    background: rgba(255, 159, 10, 0.16);
+    color: var(--m3d-warning, #ff9f0a);
+  }
+
+  .outs__note {
+    margin: 0;
+    color: var(--m3d-text-muted);
+    font-size: 13px;
+  }
+</style>

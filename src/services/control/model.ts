@@ -113,3 +113,65 @@ export function extrudeBlocked (temperature: number, minTemp: number, canExtrude
   if (canExtrude || temperature >= minTemp) return null
   return `Heat the nozzle first · it's at ${Math.round(temperature)}°, it needs ${Math.round(minTemp)}°`
 }
+
+// -- Pro's tuning and outputs -------------------------------------------------
+
+/** The shapers Klipper knows, in its order. */
+export const SHAPER_TYPES = ['zv', 'mzv', 'zvd', 'ei', '2hump_ei', '3hump_ei']
+
+export interface AxisShaper {
+  type: string;
+  /** Hz; 0 is off. */
+  freq: number;
+}
+
+export type ShaperAxis = 'x' | 'y'
+
+/**
+ * What Klipper says the shapers are: SET_INPUT_SHAPER, with or without
+ * values, answers "shaper_type_x:mzv shaper_freq_x:52.400
+ * damping_ratio_x:0.100000 ..." (Klipper keeps no status of its own for
+ * them).
+ */
+export function parseShaperReport (text: string): Partial<Record<ShaperAxis, AxisShaper>> {
+  const found: Partial<Record<ShaperAxis, AxisShaper>> = {}
+  for (const axis of ['x', 'y'] as const) {
+    const match = new RegExp(`shaper_type_${axis}:(\\w+)\\s+shaper_freq_${axis}:([\\d.]+)`).exec(text)
+    if (match) found[axis] = { type: match[1], freq: Number(match[2]) }
+  }
+  return found
+}
+
+/** An axis's shaper as printer.cfg sets it: shaper_type_x over shaper_type, and Klipper's mzv by default. */
+export function configShaper (settings: Record<string, unknown> | undefined, axis: ShaperAxis): AxisShaper | null {
+  if (!settings) return null
+  const type = settings[`shaper_type_${axis}`] ?? settings.shaper_type ?? 'mzv'
+  return { type: String(type), freq: Number(settings[`shaper_freq_${axis}`] ?? 0) }
+}
+
+export function shaperCommand (axis: ShaperAxis, shaper: AxisShaper): string {
+  const a = axis.toUpperCase()
+  return `SET_INPUT_SHAPER SHAPER_TYPE_${a}=${shaper.type} SHAPER_FREQ_${a}=${Number(shaper.freq.toFixed(2))}`
+}
+
+export type RetractionKey = 'retract_length' | 'retract_speed' | 'unretract_extra_length' | 'unretract_speed'
+
+export function retractionCommand (key: RetractionKey, value: number): string {
+  return `SET_RETRACTION ${key.toUpperCase()}=${value}`
+}
+
+export function sensorCommand (name: string, enabled: boolean): string {
+  return `SET_FILAMENT_SENSOR SENSOR=${name} ENABLE=${enabled ? 1 : 0}`
+}
+
+/** An LED's brightness, 0 to 100: its brightest channel. */
+export function ledPercent (colorData: number[][] | undefined): number {
+  const first = colorData?.[0] ?? []
+  return Math.round(Math.max(0, ...first) * 100)
+}
+
+/** Every channel of an LED at one brightness: white light, or as white as it gets. */
+export function ledCommand (name: string, percent: number): string {
+  const v = Math.round(percent) / 100
+  return `SET_LED LED=${name} RED=${v} GREEN=${v} BLUE=${v} WHITE=${v}`
+}

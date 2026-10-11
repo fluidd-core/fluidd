@@ -2,6 +2,13 @@ import { describe, expect, it, test } from 'vitest'
 import type { TemperaturePreset } from '@/store/config/types'
 import {
   clampTo,
+  configShaper,
+  ledCommand,
+  ledPercent,
+  parseShaperReport,
+  retractionCommand,
+  sensorCommand,
+  shaperCommand,
   extrudeBlocked,
   fanCommand,
   fanPercent,
@@ -117,5 +124,39 @@ describe('the extruder', () => {
     expect(extrudeBlocked(26, 170)).toBe("Heat the nozzle first · it's at 26°, it needs 170°")
     expect(extrudeBlocked(200, 170)).toBeNull()
     expect(extrudeBlocked(26, 170, true)).toBeNull()
+  })
+})
+
+describe('Pro\'s tuning', () => {
+  it('reads both shapers from what Klipper answers', () => {
+    const text = 'shaper_type_x:mzv shaper_freq_x:52.400 damping_ratio_x:0.100000\nshaper_type_y:2hump_ei shaper_freq_y:38.200 damping_ratio_y:0.100000'
+    expect(parseShaperReport(text)).toEqual({ x: { type: 'mzv', freq: 52.4 }, y: { type: '2hump_ei', freq: 38.2 } })
+  })
+
+  it('reads one axis, or nothing, from other lines', () => {
+    expect(parseShaperReport('shaper_type_y:ei shaper_freq_y:41.000 damping_ratio_y:0.1')).toEqual({ y: { type: 'ei', freq: 41 } })
+    expect(parseShaperReport('// Klipper state: Ready')).toEqual({})
+  })
+
+  it('takes an axis\'s own shaper type from printer.cfg over the shared one', () => {
+    expect(configShaper({ shaper_type: 'ei', shaper_type_x: 'zv', shaper_freq_x: 60, shaper_freq_y: 40 }, 'x')).toEqual({ type: 'zv', freq: 60 })
+    expect(configShaper({ shaper_type: 'ei', shaper_freq_y: 40 }, 'y')).toEqual({ type: 'ei', freq: 40 })
+    expect(configShaper({}, 'y')).toEqual({ type: 'mzv', freq: 0 })
+    expect(configShaper(undefined, 'x')).toBeNull()
+  })
+
+  it('sets a shaper with SET_INPUT_SHAPER, to two places', () => {
+    expect(shaperCommand('y', { type: 'mzv', freq: 38.2049 })).toBe('SET_INPUT_SHAPER SHAPER_TYPE_Y=mzv SHAPER_FREQ_Y=38.2')
+  })
+
+  it('sets retraction and filament sensors', () => {
+    expect(retractionCommand('unretract_extra_length', 0.05)).toBe('SET_RETRACTION UNRETRACT_EXTRA_LENGTH=0.05')
+    expect(sensorCommand('runout', false)).toBe('SET_FILAMENT_SENSOR SENSOR=runout ENABLE=0')
+  })
+
+  it('reads and sets an LED\'s brightness', () => {
+    expect(ledPercent([[0.2, 0.8, 0.4, 0]])).toBe(80)
+    expect(ledPercent(undefined)).toBe(0)
+    expect(ledCommand('status', 40)).toBe('SET_LED LED=status RED=0.4 GREEN=0.4 BLUE=0.4 WHITE=0.4')
   })
 })
