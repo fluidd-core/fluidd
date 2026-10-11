@@ -107,7 +107,7 @@ export default class ControlFilament extends Mixins(ControlMixin) {
 
   get lockReason (): string {
     // Changing filament mid-print is what M600 is for; it pauses the print.
-    return this.klippyReady ? '' : 'Klipper is not ready'
+    return this.klippyReady ? '' : this.notReadyReason
   }
 
   get note (): string {

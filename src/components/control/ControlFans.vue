@@ -9,7 +9,7 @@
       v-if="partFan && !phone"
       title="Part fan"
       :note="klippyReady ? 'The other fans look after themselves.' : ''"
-      :locked="klippyReady ? '' : 'Klipper is not ready'"
+      :locked="klippyReady ? '' : notReadyReason"
       data-tid="control-part-fan"
     >
       <template #aside>
@@ -30,7 +30,7 @@
       v-if="hasLights && !phone"
       title="Lights"
       :note="klippyReady ? 'Off while printing turns the camera dark too.' : ''"
-      :locked="klippyReady ? '' : 'Klipper is not ready'"
+      :locked="klippyReady ? '' : notReadyReason"
       data-tid="control-lights"
     >
       <template #aside>
@@ -101,7 +101,7 @@
   <control-card
     v-else
     title="Fans and lights"
-    :locked="klippyReady ? '' : 'Klipper is not ready'"
+    :locked="klippyReady ? '' : notReadyReason"
     data-tid="control-fans"
   >
     <div class="fans-pro">

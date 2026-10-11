@@ -1,7 +1,7 @@
 <template>
   <control-card
     title="Heat"
-    :locked="ready ? '' : 'Klipper is not ready'"
+    :locked="ready ? '' : notReadyReason"
     :note="pro || !ready ? '' : 'Pick a material to heat both. The table is kept on the printer, so the panel, this page and the app agree.'"
     data-tid="control-heat"
   >

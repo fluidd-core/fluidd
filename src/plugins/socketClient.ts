@@ -45,6 +45,8 @@ export class WebSocketClient {
   private closing = false
   private retryTimer: ReturnType<typeof setTimeout> | null = null
   private retryAction: (() => void) | null = null
+  /** When the waiting retry runs (Date.now() ms), or null when none is waiting. */
+  private retryAt: number | null = null
 
   constructor (options: SocketPluginOptions) {
     this.url = options.url
@@ -321,9 +323,11 @@ export class WebSocketClient {
     this.reconnectCount += 1
     consola.debug(`${this.logPrefix} Reconnecting in ${delay}`)
     this.retryAction = action
+    this.retryAt = Date.now() + delay
     this.retryTimer = setTimeout(() => {
       this.retryTimer = null
       this.retryAction = null
+      this.retryAt = null
       action()
     }, delay)
   }
@@ -332,6 +336,7 @@ export class WebSocketClient {
     if (this.retryTimer !== null) clearTimeout(this.retryTimer)
     this.retryTimer = null
     this.retryAction = null
+    this.retryAt = null
   }
 
   /** Runs a waiting retry now, from the first step of the backoff. */
@@ -341,6 +346,11 @@ export class WebSocketClient {
     this.cancelRetry()
     this.reconnectCount = 0
     action()
+  }
+
+  /** When the waiting try to reconnect runs (Date.now() ms), or null when none is waiting. */
+  get nextRetryAt (): number | null {
+    return this.retryAt
   }
 
   /** Whether a try to reconnect is waiting for its turn. */
