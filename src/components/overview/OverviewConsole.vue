@@ -92,9 +92,9 @@ export default class OverviewConsole extends Mixins(StateMixin) {
     const gcode = this.command.trim()
     if (!gcode || !this.klippyReady) return
     this.sendGcode(gcode)
-    // The Console page's history: newest first, the same length it keeps.
+    // The Console page's history: newest first, repeats kept (its suggestions count them), the same length.
     const history = (this.$store.state.console.commandHistory as string[]) ?? []
-    this.$store.dispatch('console/onUpdateCommandHistory', [gcode, ...history.filter(h => h !== gcode)].slice(0, Globals.CONSOLE_COMMAND_HISTORY))
+    this.$store.dispatch('console/onUpdateCommandHistory', [gcode, ...history].slice(0, Globals.CONSOLE_COMMAND_HISTORY))
     this.command = ''
   }
 
@@ -155,6 +155,15 @@ function clock (seconds?: number): string {
 
   .ov-console__empty {
     color: var(--m3d-text-subtle);
+  }
+
+  // The ring goes round the well, not the text box in it.
+  .ov-console__send input:focus-visible {
+    outline: none;
+  }
+
+  .ov-console__send:focus-within {
+    box-shadow: 0 0 0 2px var(--m3d-accent);
   }
 
   .ov-console__send {

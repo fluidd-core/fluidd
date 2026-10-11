@@ -930,6 +930,15 @@ export default class JobsTable extends Mixins(JobsMixin) {
     }
   }
 
+  // The ring goes round the well, not the text box in it.
+  .jt__filter input:focus-visible {
+    outline: none;
+  }
+
+  .jt__filter:focus-within {
+    box-shadow: 0 0 0 2px var(--m3d-accent);
+  }
+
   .jt__bar {
     display: flex;
     flex-wrap: wrap;
