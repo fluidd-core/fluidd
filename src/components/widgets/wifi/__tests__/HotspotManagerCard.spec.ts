@@ -224,15 +224,13 @@ describe('HotspotManagerCard', () => {
     it('says it is protected, and asks the Aux API nothing', async () => {
       vi.useFakeTimers()
       const wrapper = shallowMount(HotspotManagerCard, {
-        mocks: mocks(true),
-        // Renders the #menu slot too, which holds the on/off switch.
-        stubs: { CollapsableCard: { template: '<div><slot name="menu" /><slot /></div>' } }
+        mocks: mocks(true)
       })
       await vi.advanceTimersByTimeAsync(3000)
 
       expect(wrapper.find('protectednotice-stub').exists()).toBe(true)
-      expect(wrapper.find('.d-flex.align-stretch').exists()).toBe(false)
-      expect(wrapper.find('v-switch-stub').attributes('disabled')).toBe('true')
+      expect(wrapper.find('[data-tid=hotspot-body]').exists()).toBe(false)
+      expect(wrapper.find('[data-tid=hotspot-switch]').attributes('disabled')).toBe('true')
       expect(apDeviceStatus).not.toHaveBeenCalled()
       expect(apShowCredentials).not.toHaveBeenCalled()
       wrapper.destroy()
@@ -241,16 +239,15 @@ describe('HotspotManagerCard', () => {
     it('disables the switch when protection comes on after the card has loaded', async () => {
       const $store = Vue.observable({ getters: { 'protection/isLocked': false }, dispatch })
       const wrapper = shallowMount(HotspotManagerCard, {
-        mocks: { $t: (key: string) => key, $store },
-        stubs: { CollapsableCard: { template: '<div><slot name="menu" /><slot /></div>' } }
+        mocks: { $t: (key: string) => key, $store }
       })
       await new Promise(resolve => setTimeout(resolve, 10))
-      expect(wrapper.find('v-switch-stub').attributes('disabled')).toBeUndefined()
+      expect(wrapper.find('[data-tid=hotspot-switch]').attributes('disabled')).toBeUndefined()
 
       $store.getters['protection/isLocked'] = true
       await wrapper.vm.$nextTick()
 
-      expect(wrapper.find('v-switch-stub').attributes('disabled')).toBe('true')
+      expect(wrapper.find('[data-tid=hotspot-switch]').attributes('disabled')).toBe('true')
       expect(wrapper.find('protectednotice-stub').exists()).toBe(true)
       wrapper.destroy()
     })

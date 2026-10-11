@@ -1,276 +1,190 @@
 <template>
-  <collapsable-card
-    :title="$t('app.general.title.hotspot')"
-    icon="$accessPoint"
-    class="component"
+  <section
+    class="hs"
+    data-tid="hotspot-card"
   >
-    <protected-notice class="ma-4" />
+    <header class="hs__head">
+      <div class="hs__titles">
+        <h2>The printer's hotspot</h2>
+        <p v-if="deviceStatus && apCredentials && !locked && !remote">
+          {{ apState ? 'On' : 'Off' }} · {{ apCredentials.ssid }}{{ apCredentials.security_enabled === false ? ' · open' : '' }}
+        </p>
+      </div>
+      <toggle-switch
+        v-if="!remote"
+        :value="apState"
+        label="Hotspot on"
+        :disabled="locked || !apCredentials || !deviceStatus || toggling"
+        data-tid="hotspot-switch"
+        @input="requestToggle()"
+      />
+    </header>
+
+    <protected-notice />
     <p
       v-if="remote"
-      class="mx-4 mt-4 mb-4 text-body-2"
+      class="hs__note"
     >
       {{ $t('app.wifi.remote_read_only') }}
     </p>
 
-    <template #menu>
-      <!-- hotspot on/off switch -->
-      <v-switch
-        v-if="!remote"
-        dense
-        :hide-details="true"
-        color="primary"
-        :input-value="apState"
-        :disabled="locked || !apCredentials || !deviceStatus || toggling"
-        :loading="toggling"
-        class="mobile-only mt-0"
-        readonly
-        @click.native="requestToggle"
-      />
-    </template>
-
     <div
       v-if="!locked && !remote"
-      class="d-flex align-stretch"
+      class="hs__body"
+      data-tid="hotspot-body"
     >
-      <v-fade-transition mode="out-in">
-        <!-- Skeleton until we have both deviceStatus & credentials -->
-        <template v-if="!deviceStatus">
-          <v-skeleton-loader
-            type="image"
-            class="ma-4 mr-0 desktop-only"
-            style="height: 160px; width: 160px"
+      <p
+        v-if="!apCredentials"
+        class="hs__note"
+      >
+        Reading the hotspot's settings…
+      </p>
+      <v-form
+        v-else
+        ref="apForm"
+        v-model="formIsValid"
+        :disabled="!editing || applying"
+        lazy-validation
+        class="hs__form"
+        @submit.prevent="requestApplyChanges"
+      >
+        <v-text-field
+          v-model="form.ssid"
+          label="Name (SSID)"
+          outlined
+          dense
+          hide-details="auto"
+          :rules="ssidRules"
+        />
+        <div class="hs__row">
+          <span>Needs a password</span>
+          <toggle-switch
+            :value="form.securityEnabled"
+            label="Needs a password"
+            :disabled="!editing || applying"
+            data-tid="hotspot-secured"
+            @input="form.securityEnabled = $event"
           />
-        </template>
-
-        <template v-else>
-          <v-card
-            v-square
-            class="ap-card ma-4 mr-0 desktop-only"
-            color="card-heading"
-            :loading="toggling ? 'primary' : false"
-            :disabled="toggling"
-            style="flex-shrink: 0;"
-            @click="requestToggle"
-          >
-            <div
-              class="d-flex align-center justify-center"
-              style="height:100%"
-            >
-              <v-icon
-                size="60%"
-                :color="deviceStatus?.state === 'connected' ? 'green' : deviceStatus?.state === 'disconnected' ? 'red' : ''"
-                class=""
-              >
-                {{ "$accessPointNetwork" + (deviceStatus?.state === 'connected' ? '' : 'Off') }}
-              </v-icon>
-            </div>
-          </v-card>
-        </template>
-      </v-fade-transition>
-
-      <v-fade-transition mode="out-in">
-        <template v-if="!apCredentials">
-          <v-skeleton-loader
-            type="image"
-            class="ma-4 flex-grow-1"
-            style="height:160px"
-          />
-        </template>
-        <template v-else>
-          <v-card
-            class="ap-card ma-4 d-flex flex-row"
-            color="card-heading"
-            :loading="applying ? 'primary' : false"
-            :link="!editing"
-            :ripple="!editing"
+        </div>
+        <v-text-field
+          ref="passwordInput"
+          v-model="form.password"
+          :label="$t('app.general.label.password')"
+          :type="passwordVisible ? 'text' : 'password'"
+          :append-icon="passwordVisible ? '$eyeOff' : '$eye'"
+          :rules="passwordRules"
+          outlined
+          dense
+          hide-details="auto"
+          :disabled="!form.securityEnabled || !editing || applying"
+          @click:append.stop="passwordVisible = !passwordVisible"
+        />
+        <div class="hs__buttons">
+          <button
+            v-if="!editing"
+            type="button"
+            class="cbtn"
             :disabled="toggling || applying"
-            :class="{ editing: editing }"
-            @click="!editing ? toggleEditing() : null"
+            data-tid="hotspot-edit"
+            @click="toggleEditing"
           >
-            <div class="pa-4">
-              <v-form
-                ref="apForm"
-                v-model="formIsValid"
-                :disabled="!editing || applying"
-                lazy-validation
-                class="d-flex flex-row flex-grow-1"
-                @submit.prevent="requestApplyChanges"
-              >
-                <!-- SSID + Password Inputs -->
-                <div class="d-flex flex-grow-1">
-                  <div class="d-flex flex-column reverse">
-                    <div class="flex-grow-1" />
-                    <!-- security switch always enabled once creds are loaded -->
-                    <v-switch
-                      v-model="form.securityEnabled"
-                      class="me-2"
-                    />
-                  </div>
-                  <div class="pt-3">
-                    <v-text-field
-                      v-model="form.ssid"
-                      label="SSID"
-                      dense
-                      :rules="ssidRules"
-                    />
-                    <v-text-field
-                      ref="passwordInput"
-                      v-model="form.password"
-                      :label="$t('app.general.label.password')"
-                      :type="passwordVisible ? 'text' : 'password'"
-                      :append-icon="passwordVisible ? '$eyeOff' : '$eye'"
-                      :rules="passwordRules"
-                      dense
-                      :disabled="!form.securityEnabled || !editing || applying"
-                      @click:append.stop="passwordVisible = !passwordVisible"
-                    />
-                  </div>
-                </div>
+            Change the name or password
+          </button>
+          <template v-else>
+            <button
+              type="submit"
+              class="cbtn cbtn--primary"
+              :disabled="!isDirty || !formIsValid || applying"
+              data-tid="hotspot-apply"
+            >
+              {{ $t('app.wifi.change') }}
+            </button>
+            <button
+              type="button"
+              class="cbtn cbtn--ghost"
+              :disabled="applying"
+              @click.stop="undoChanges"
+            >
+              {{ isDirty ? 'Undo' : 'Back' }}
+            </button>
+          </template>
+        </div>
+      </v-form>
 
-                <!-- Change / Undo buttons -->
-                <v-expand-x-transition>
-                  <div
-                    v-if="(editing ? delayedEditing : editing) || !apState"
-                    key="actions"
-                    class="actions-outer"
-                  >
-                    <div
-                      key="actions"
-                      class="actions-container d-flex flex-column text-right pl-4"
-                    >
-                      <v-btn
-                        color="primary"
-                        type="submit"
-                        :loading="applying"
-                        :disabled="!isDirty || !formIsValid || applying || !editing"
-                        class="elevation-2"
-                      >
-                        {{ $t('app.wifi.change') }}
-                      </v-btn>
-                      <v-btn
-                        text
-                        type="button"
-                        :disabled="applying || !editing"
-                        :class="{'editing': editing}"
-                        class="back-btn"
-                        @click.stop="undoChanges"
-                      >
-                        {{ isDirty ? "Undo" : "Back" }}
-                      </v-btn>
-                    </div>
-                  </div>
-                </v-expand-x-transition>
-                <v-expand-x-transition>
-                  <div
-                    v-if="(editing ? !editing : !delayedEditing) && apState && QrValue"
-                    key="qr"
-                    class="d-flex"
-                  >
-                    <v-divider
-                      vertical
-                      class="mx-4"
-                    />
-                    <div
-                      class="flex-grow-1"
-                      style="position: relative;"
-                    >
-                      <div
-                        v-square
-                        class="qr-dummy-square"
-                      />
-                      <qrcode-vue
-                        class="qrcode elevation-7"
-                        :value="QrValue"
-                        :size="50"
-                        render-as="svg"
-                      />
-                    </div>
-                  </div>
-                </v-expand-x-transition>
-                <v-expand-x-transition>
-                  <div
-                    v-if="(editing ? !editing : !delayedEditing) && apState && !QrValue"
-                    key="qr-hint"
-                    class="d-flex align-center"
-                  >
-                    <v-divider
-                      vertical
-                      class="mx-4"
-                    />
-                    <p class="mb-0 qr-hint">
-                      {{ $t('app.wifi.hotspot_code_on_printer', { name: printerName }) }}
-                    </p>
-                  </div>
-                </v-expand-x-transition>
-              </v-form>
-            </div>
-          </v-card>
+      <div
+        v-if="apCredentials && apState && !editing"
+        class="hs__join"
+      >
+        <template v-if="QrValue">
+          <qrcode-vue
+            class="hs__qr"
+            :value="QrValue"
+            :size="120"
+            render-as="svg"
+          />
+          <p>Scan to join the hotspot.</p>
         </template>
-      </v-fade-transition>
+        <p v-else>
+          {{ $t('app.wifi.hotspot_code_on_printer', { name: printerName }) }}
+        </p>
+      </div>
     </div>
 
     <v-dialog
       v-model="showToggleWarningDialog"
-      max-width="400"
+      max-width="420"
     >
-      <v-card>
-        <v-card-title class="headline">
-          {{ $t('app.wifi.modal.warning.title') }}
-        </v-card-title>
-        <v-card-text>
-          {{ $t('app.wifi.modal.warning.message') }}
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            text
+      <div class="hs__dialog">
+        <h3>{{ $t('app.wifi.modal.warning.title') }}</h3>
+        <p>{{ $t('app.wifi.modal.warning.message') }}</p>
+        <div class="hs__buttons hs__buttons--end">
+          <button
+            type="button"
+            class="cbtn cbtn--ghost"
             :disabled="toggling || applying"
             @click="showToggleWarningDialog = false"
           >
             {{ $t('app.general.btn.cancel') }}
-          </v-btn>
-          <v-btn
-            color="warning"
-            :loading="toggling || applying"
+          </button>
+          <button
+            type="button"
+            class="cbtn cbtn--danger"
+            :disabled="toggling || applying"
             @click="confirmToggle"
           >
             {{ $t('app.general.btn.Proceed') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+          </button>
+        </div>
+      </div>
     </v-dialog>
-
     <v-dialog
       v-model="showChangeWarningDialog"
-      max-width="400"
+      max-width="420"
     >
-      <v-card>
-        <v-card-title class="headline">
-          {{ $t('app.wifi.modal.warning.title') }}
-        </v-card-title>
-        <v-card-text>
-          {{ $t('app.wifi.modal.warning.message') }}
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            text
+      <div class="hs__dialog">
+        <h3>{{ $t('app.wifi.modal.warning.title') }}</h3>
+        <p>{{ $t('app.wifi.modal.warning.message') }}</p>
+        <div class="hs__buttons hs__buttons--end">
+          <button
+            type="button"
+            class="cbtn cbtn--ghost"
             :disabled="toggling || applying"
             @click="showChangeWarningDialog = false"
           >
             {{ $t('app.general.btn.cancel') }}
-          </v-btn>
-          <v-btn
-            color="warning"
-            :loading="toggling || applying"
+          </button>
+          <button
+            type="button"
+            class="cbtn cbtn--danger"
+            :disabled="toggling || applying"
             @click="confirmApply"
           >
             {{ $t('app.general.btn.Proceed') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+          </button>
+        </div>
+      </div>
     </v-dialog>
-  </collapsable-card>
+  </section>
 </template>
 
 <script lang="ts">
@@ -278,6 +192,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 import { useAuxApi } from '@/aux_api/useAuxApi'
 import type { APCredentials, Device } from '@/aux_api'
 import QrcodeVue from 'qrcode.vue'
+import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
 import i18n from '@/plugins/i18n'
 import { useHotspotCheck } from '@/aux_api/useHotspotCheck'
 import type { VForm } from '@/types'
@@ -316,7 +231,8 @@ const { onHotspot } = useHotspotCheck()
     }
   },
   components: {
-    QrcodeVue
+    QrcodeVue,
+    ToggleSwitch
   }
 })
 export default class HotspotManagerCard extends Vue {
@@ -691,104 +607,123 @@ export default class HotspotManagerCard extends Vue {
 }
 </script>
 
-<style scoped>
-.component {
-  container-type: inline-size;
-}
-
-@container (max-width: 600px) {
-  /* roughly sm breakpoint */
-  .component .desktop-only { display: none !important; }
-}
-
-@container (min-width: 601px) {
-  .component .mobile-only { display: none !important; }
-}
-
-.ap-card {
-  cursor: pointer;
-  transition: filter 0.3s ease;
-}
-
-.ap-card.editing{
-  cursor: default;
-}
-
-.ap-card:not(.editing) {
-  cursor: pointer !important;
-}
-/* deep‐select every descendant and force pointer */
-.ap-card:not(.editing) ::v-deep * {
-  cursor: pointer !important;
-}
-.ap-card:not(.editing) ::v-deep .v-input__control,
-.ap-card:not(.editing) ::v-deep .v-input,
-.ap-card:not(.editing) ::v-deep input,
-.ap-card:not(.editing) ::v-deep textarea,
-.ap-card:not(.editing) ::v-deep .v-switch__thumb,
-.ap-card:not(.editing) ::v-deep .v-switch__track {
-  /* disable their own hit-testing so clicks fall through */
-  pointer-events: none !important;
-}
-
-.actions-container {
-  min-width: 100px;
-  justify-content: space-evenly;
-}
-
-/* disable the focus‐overlay */
-.v-card--link:focus::before {
-  opacity: 0 !important;
-}
-
-/* re-enable it on hover */
-.v-card--link:hover::before {
-  opacity: 0.08 !important;
-}
-
-.v-card--link.editing:hover::before {
-  opacity: 0 !important
-}
-
-.v-card--link::before {
-  border-radius: inherit;
-}
-
-.actions-outer {
-  display: flex;
-  /* shrink to the inner content width */
-  overflow: hidden;
-  /* hide overflow during width animation */
-}
-
-.qr-dummy-square {
-  height: 100%;
-}
-
-.qrcode {
-  padding: 6px;
-  border-radius: 3px;
-  background: #fff;
-  aspect-ratio: 1/1;
-  width: 100% !important;
-  height: 100% !important;
-
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.qrcode :deep(svg) {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-.back-btn {
-  transition: opacity 0.3s ease;
-  opacity: 1;
-  &:not(.editing){
-    opacity: 0;
+<style lang="scss" scoped>
+  .hs {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+    padding: 20px;
+    border-radius: 22px;
+    background: var(--m3d-surface);
+    color: var(--m3d-text);
   }
-}
 
+  .hs__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .hs__titles {
+    min-width: 0;
+
+    h2 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 2px 0 0;
+      color: var(--m3d-text-muted);
+      font-size: 13px;
+    }
+  }
+
+  .hs__note {
+    margin: 0;
+    color: var(--m3d-text-muted);
+    font-size: 14px;
+  }
+
+  .hs__body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .hs__form {
+    display: flex;
+    flex: 1 1 280px;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .hs__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+  }
+
+  .hs__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .hs__buttons--end {
+    justify-content: flex-end;
+  }
+
+  .hs__join {
+    display: flex;
+    flex: 0 1 180px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    border-radius: 16px;
+    background: var(--m3d-surface-2);
+    text-align: center;
+
+    p {
+      margin: 0;
+      color: var(--m3d-text-muted);
+      font-size: 13px;
+    }
+  }
+
+  .hs__qr {
+    padding: 8px;
+    border-radius: 10px;
+    background: #fff;
+    line-height: 0;
+  }
+
+  .hs__dialog {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 22px;
+    border-radius: 22px;
+    background: var(--m3d-surface);
+    color: var(--m3d-text);
+
+    h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    p {
+      margin: 0;
+      color: var(--m3d-text-muted);
+      font-size: 14px;
+    }
+  }
 </style>

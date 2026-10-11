@@ -1,276 +1,202 @@
 <template>
-  <collapsable-card
-    :title="$t('app.general.title.wifi')"
-    icon="$wifi"
+  <section
+    class="wf"
+    data-tid="wifi-card"
   >
-    <protected-notice class="ma-4" />
+    <header class="wf__head">
+      <div class="wf__titles">
+        <h2>Wi-Fi</h2>
+        <p v-if="!locked && !remote">
+          {{ connectedNetwork ? `On ${connectedNetwork.ssid} · signal ${connectedNetwork.signal}%` : 'Not on a Wi-Fi network' }}
+        </p>
+      </div>
+      <button
+        v-if="!locked && !remote"
+        type="button"
+        class="wf__refresh"
+        :disabled="fetching"
+        aria-label="Look for networks again"
+        data-tid="wifi-refresh"
+        @click="fetchDevices"
+      >
+        <frame-icon
+          name="refresh"
+          small
+        />
+      </button>
+    </header>
+
+    <protected-notice />
     <p
       v-if="remote"
-      class="mx-4 mt-4 mb-4 text-body-2"
+      class="wf__note"
     >
       {{ $t('app.wifi.remote_read_only') }}
     </p>
 
-    <!-- Table of available networks -->
-    <v-card v-if="!locked && !remote">
-      <v-simple-table class="temperature-table">
-        <thead>
-          <tr>
-            <th class="tick" />
-            <th width="100%">
-              SSID
-            </th>
-            <th />
-          </tr>
-        </thead>
-
-        <v-fade-transition mode="out-in">
-          <!-- skeleton state -->
-          <tbody
-            v-if="!wifi_available_networks.length"
-            key="skel"
-          >
-            <tr
-              v-for="n in 5"
-              :key="`avail-skel-${n}`"
-            >
-              <td class="tick" />
-              <td><v-skeleton-loader type="text" /></td>
-              <td /><td /><td />
-            </tr>
-          </tbody>
-
-          <!-- real rows -->
-          <tbody
-            v-else
-            key="real"
-          >
-            <tr
-              v-for="network in sortedNetworks"
-              :key="network.ssid"
-              v-ripple
-              :class="{ 'card-heading': network.in_use }"
-              @click="onNetworkClick(network)"
-            >
-              <td class="tick">
-                <v-icon
-                  v-if="network.in_use"
-                  dense
-                >
-                  $check
-                </v-icon>
-              </td>
-              <td class="ssid">
-                {{ network.ssid }}
-              </td>
-              <td>
-                <v-icon
-                  dense
-                  :color="getSignalColor(network.signal)"
-                >
-                  {{ getWifiIconName(network) }}
-                </v-icon>
-              </td>
-              <td>
-                <v-tooltip bottom>
-                  <template #activator="{ on, attrs }">
-                    <v-btn
-                      icon
-                      small
-                      v-bind="attrs"
-                      class="primary--text"
-                      v-on="on"
-                    >
-                      <v-icon small>
-                        $infoOutline
-                      </v-icon>
-                    </v-btn>
-                  </template>
-                  <div
-                    class="px-2 py-1"
-                    style="max-width: 200px; white-space: normal;"
-                  >
-                    <div>
-                      <strong>{{ $t('app.wifi.security') }}:</strong> {{ !network.security ?
-                        $t('app.chart.label.unsecured') : network.security }}
-                    </div>
-                    <div><strong>{{ $t('app.wifi.signal') }}:</strong> {{ network.signal }}%</div>
-                    <div><strong>{{ $t('app.wifi.data_rate') }}:</strong> {{ network.rate }} Mbps</div>
-                    <div><strong>{{ $t('app.wifi.channel') }}:</strong> {{ network.chanList || network.chan }}</div>
-                    <div><strong>{{ $t('app.wifi.freqency') }}:</strong> {{ network.freqList || network.freq }} MHz</div>
-                  </div>
-                </v-tooltip>
-              </td>
-              <td class="pr-2">
-                <v-menu
-                  v-if="network.in_use || knownSsids.has(network.ssid)"
-                  v-model="menuOpen[network.bssid]"
-                  offset-y
-                  open-on-click
-                  close-on-content-click
-                  :nudge-width="300"
-                  transition="fade-transition"
-                  max-width="200"
-                >
-                  <template #activator="{ on, attrs }">
-                    <v-btn
-                      icon
-                      small
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                      <v-icon dense>
-                        $menu
-                      </v-icon>
-                    </v-btn>
-                  </template>
-                  <v-list>
-                    <v-list-item
-                      v-if="network.in_use"
-                      @click="disconnectConfirmDialog = true"
-                    >
-                      <v-list-item-icon>
-                        <v-icon
-                          dense
-                          color="warning"
-                        >
-                          $linkOff
-                        </v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-title>{{ $t('app.general.btn.disconnect') }}</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item @click="forget(network)">
-                      <v-list-item-icon>
-                        <v-icon
-                          dense
-                          color="error"
-                        >
-                          $delete
-                        </v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-title>{{ $t('app.general.btn.forget') }}</v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </td>
-            </tr>
-          </tbody>
-        </v-fade-transition>
-      </v-simple-table>
-    </v-card>
-
-    <template #menu>
-      <!-- <app-btn-collapse-group :collapsed="menuCollapsed">
-
-      </app-btn-collapse-group> -->
-      <v-btn
-        fab
-        x-small
-        text
-        :loading="fetching"
-        @click="fetchDevices"
+    <div
+      v-if="!locked && !remote"
+      class="wf__list"
+      data-tid="wifi-networks"
+    >
+      <p
+        v-if="!wifi_available_networks.length"
+        class="wf__note wf__note--pad"
       >
-        <v-icon>$refresh</v-icon>
-      </v-btn>
-    </template>
+        Looking for networks…
+      </p>
+      <div
+        v-for="network in sortedNetworks"
+        :key="network.ssid"
+        class="wf__row"
+        :class="{ 'wf__row--on': network.in_use }"
+        :data-ssid="network.ssid"
+      >
+        <button
+          type="button"
+          class="wf__main"
+          :title="networkFacts(network)"
+          @click="onNetworkClick(network)"
+        >
+          <svg
+            class="wf__bars"
+            viewBox="0 0 20 16"
+            aria-hidden="true"
+          >
+            <rect
+              v-for="bar in 4"
+              :key="bar"
+              :x="(bar - 1) * 5"
+              :y="16 - bar * 4"
+              width="3.5"
+              :height="bar * 4"
+              rx="1"
+              :class="{ 'wf__bar--on': bar <= signalLevel(network.signal) }"
+            />
+          </svg>
+          <span class="wf__name">
+            <b>{{ network.ssid }}</b>
+            <span>{{ rowState(network) }}</span>
+          </span>
+        </button>
+        <span class="wf__facts">{{ band(network) }}</span>
+        <span
+          v-if="network.in_use || knownSsids.has(network.ssid)"
+          class="wf__actions"
+        >
+          <button
+            v-if="network.in_use"
+            type="button"
+            class="wf__link"
+            data-tid="wifi-disconnect"
+            @click="disconnectConfirmDialog = true"
+          >
+            {{ $t('app.general.btn.disconnect') }}
+          </button>
+          <button
+            type="button"
+            class="wf__link wf__link--danger"
+            data-tid="wifi-forget"
+            @click="forget(network)"
+          >
+            {{ $t('app.general.btn.forget') }}
+          </button>
+        </span>
+      </div>
+    </div>
 
-    <!-- DISCONNECT CONFIRM DIALOG -->
     <v-dialog
       v-model="disconnectConfirmDialog"
-      max-width="400"
+      max-width="420"
     >
-      <v-card>
-        <v-card-title class="headline">
-          {{ $t('app.wifi.modal.disconnect.title') }}
-        </v-card-title>
-        <v-card-text v-if="!onHotspot">
+      <div class="wf__dialog">
+        <h3>{{ $t('app.wifi.modal.disconnect.title') }}</h3>
+        <p v-if="!onHotspot">
           {{ $t('app.wifi.modal.disconnect.message') }}
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            text
+        </p>
+        <div class="wf__buttons">
+          <button
+            type="button"
+            class="cbtn cbtn--ghost"
             @click="disconnectConfirmDialog = false"
           >
             {{ $t('app.general.btn.cancel') }}
-          </v-btn>
-          <v-btn
-            color="error"
+          </button>
+          <button
+            type="button"
+            class="cbtn cbtn--danger"
             @click="disconnect"
           >
             {{ $t('app.general.btn.disconnect') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+          </button>
+        </div>
+      </div>
     </v-dialog>
 
-    <!-- WARNING DIALOG WHEN NOT ON HOTSPOT -->
     <v-dialog
       v-model="showWarningDialog"
-      max-width="400"
+      max-width="420"
     >
-      <v-card>
-        <v-card-title class="headline">
-          {{ $t('app.wifi.modal.warning.title') }}
-        </v-card-title>
-        <v-card-text>
-          {{ onHotspot ? $t('app.wifi.modal.warning.hotspot_message') : $t('app.wifi.modal.warning.message') }}
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            text
+      <div class="wf__dialog">
+        <h3>{{ $t('app.wifi.modal.warning.title') }}</h3>
+        <p>{{ onHotspot ? $t('app.wifi.modal.warning.hotspot_message') : $t('app.wifi.modal.warning.message') }}</p>
+        <div class="wf__buttons">
+          <button
+            type="button"
+            class="cbtn cbtn--ghost"
             :disabled="acceptWarning_loading"
             @click="showWarningDialog = false"
           >
             {{ $t('app.general.btn.cancel') }}
-          </v-btn>
-          <v-btn
-            color="warning"
-            :loading="acceptWarning_loading"
+          </button>
+          <button
+            type="button"
+            class="cbtn cbtn--primary"
+            :disabled="acceptWarning_loading"
+            data-tid="wifi-proceed"
             @click="acceptWarning"
           >
             {{ $t('app.general.btn.Proceed') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+          </button>
+        </div>
+      </div>
     </v-dialog>
 
-    <!-- PASSWORD PROMPT DIALOG -->
     <v-dialog
       v-model="showPasswordDialog"
-      max-width="400"
+      max-width="420"
     >
-      <v-card>
-        <v-card-title class="headline">
-          {{ $t('app.general.confirm.enter_password', { ssid: selectedNetwork?.ssid }) }}
-        </v-card-title>
-        <v-card-text>
-          <v-text-field
-            v-model="password"
-            :label="$t('app.general.label.password')"
-            type="password"
-            @keyup.enter="connectToSelected"
-          />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            text
+      <div class="wf__dialog">
+        <h3>{{ $t('app.general.confirm.enter_password', { ssid: selectedNetwork?.ssid }) }}</h3>
+        <v-text-field
+          v-model="password"
+          :label="$t('app.general.label.password')"
+          type="password"
+          outlined
+          dense
+          hide-details
+          @keyup.enter="connectToSelected"
+        />
+        <div class="wf__buttons">
+          <button
+            type="button"
+            class="cbtn cbtn--ghost"
             @click="showPasswordDialog = false"
           >
             {{ $t('app.general.btn.cancel') }}
-          </v-btn>
-          <v-btn
-            color="primary"
+          </button>
+          <button
+            type="button"
+            class="cbtn cbtn--primary"
+            data-tid="wifi-connect"
             @click="connectToSelected"
           >
             {{ $t('app.general.btn.connect') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+          </button>
+        </div>
+      </div>
     </v-dialog>
-  </collapsable-card>
+  </section>
 </template>
 
 <script lang="ts">
@@ -548,6 +474,39 @@ export default class WifiManagerCard extends Vue {
     this.disconnectConfirmDialog = false
   }
 
+  // -- for the page: what each row says -------------------------------------
+
+  get connectedNetwork (): AggWifi | null {
+    return this.sortedNetworks.find(n => n.in_use) ?? null
+  }
+
+  signalLevel (signal: number): number {
+    return this.getSignalLevel(signal)
+  }
+
+  rowState (network: AggWifi): string {
+    if (network.in_use) return 'Connected'
+    if (this.knownSsids.has(network.ssid)) return 'Saved · joins without a password'
+    return network.security ? network.security : 'Open'
+  }
+
+  /** 2.4 GHz, 5 GHz, or both, from the access points heard under this name. */
+  band (network: AggWifi): string {
+    const freqs = String(network.freqList || network.freq).split(',').map(f => Number(f.trim())).filter(f => f > 0)
+    const bands = new Set(freqs.map(f => (f < 3000 ? '2.4' : f < 5925 ? '5' : '6')))
+    return bands.size ? `${[...bands].sort().join(' & ')} GHz` : ''
+  }
+
+  networkFacts (network: AggWifi): string {
+    return [
+      `Security: ${network.security || 'open'}`,
+      `signal ${network.signal}%`,
+      `${network.rate} Mbps`,
+      `channel ${network.chanList || network.chan}`,
+      `${network.freqList || network.freq} MHz`
+    ].join(' · ')
+  }
+
   async forget (network: DeviceWifi) {
     try {
       await this.auxApi.wifi.wifiForgetWifiForgetDelete(network.ssid)
@@ -561,50 +520,176 @@ export default class WifiManagerCard extends Vue {
 }
 </script>
 
-<style scoped lang="scss">
-.current-ssid {
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.ssid {
-  font-size: 1rem !important;
-}
-
-.v-fade-transition-enter-active,
-.v-fade-transition-leave-active {
-  transition-duration: 0.4s !important;
-}
-
-.connected-network {
-  transition: filter 0.3s ease;
-}
-
-.v-card--link::before {
-  border-radius: inherit;
-}
-
-.v-card--link:focus::before {
-  opacity: 0 !important;
-}
-
-.v-card--link:hover::before {
-  opacity: 0.08 !important;
-}
-
-.temperature-table tbody tr {
-  transition: background-color 0.3s ease;
-  &:hover {
-    cursor: pointer;
+<style lang="scss" scoped>
+  .wf {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+    padding: 20px;
+    border-radius: 22px;
+    background: var(--m3d-surface);
+    color: var(--m3d-text);
   }
-}
 
-.temperature-table thead {
-  visibility: collapse !important;
-  height: 0 !important;
-}
+  .wf__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
 
-td.tick {
-  padding-right: 0 !important;
-}
+  .wf__titles {
+    min-width: 0;
+
+    h2 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 2px 0 0;
+      color: var(--m3d-text-muted);
+      font-size: 13px;
+    }
+  }
+
+  .wf__refresh {
+    display: inline-flex;
+    padding: 8px;
+    border-radius: 10px;
+    color: var(--m3d-text-muted);
+
+    &:hover:not(:disabled) {
+      background: var(--m3d-surface-2);
+      color: var(--m3d-text);
+    }
+
+    &:disabled {
+      opacity: 0.45;
+    }
+  }
+
+  .wf__note {
+    margin: 0;
+    color: var(--m3d-text-muted);
+    font-size: 14px;
+  }
+
+  .wf__note--pad {
+    padding: 12px 4px;
+  }
+
+  .wf__list {
+    display: flex;
+    flex-direction: column;
+
+    > .wf__row + .wf__row {
+      border-top: 1px solid var(--m3d-border);
+    }
+  }
+
+  .wf__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 56px;
+  }
+
+  .wf__row--on .wf__name b {
+    color: var(--m3d-accent);
+  }
+
+  .wf__main {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 6px 0;
+    color: var(--m3d-text);
+    text-align: left;
+  }
+
+  .wf__bars {
+    flex: none;
+    width: 20px;
+    height: 16px;
+
+    rect {
+      fill: var(--m3d-border-strong);
+    }
+
+    .wf__bar--on {
+      fill: var(--m3d-text);
+    }
+  }
+
+  .wf__name {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+
+    b {
+      overflow: hidden;
+      font-size: 15px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    span {
+      color: var(--m3d-text-muted);
+      font-size: 12px;
+    }
+  }
+
+  .wf__facts {
+    flex: none;
+    color: var(--m3d-text-subtle);
+    font-size: 12px;
+  }
+
+  .wf__actions {
+    display: inline-flex;
+    flex: none;
+    gap: 12px;
+  }
+
+  .wf__link {
+    color: var(--m3d-accent);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .wf__link--danger {
+    color: var(--m3d-danger);
+  }
+
+  .wf__dialog {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 22px;
+    border-radius: 22px;
+    background: var(--m3d-surface);
+    color: var(--m3d-text);
+
+    h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    p {
+      margin: 0;
+      color: var(--m3d-text-muted);
+      font-size: 14px;
+    }
+  }
+
+  .wf__buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
 </style>
