@@ -39,7 +39,8 @@ interface CheckInfo {
   icon: string;
   action: string;
   wait: string;
-  confirm: (nozzle: number) => string;
+  /** What to say before it starts; `gcode` is what will run. */
+  confirm: (nozzle: number, gcode: string) => string;
 }
 
 const CHECKS: CheckInfo[] = [
@@ -77,7 +78,9 @@ const CHECKS: CheckInfo[] = [
     icon: 'thermometer',
     action: 'Run',
     wait: Waits.onPidCalibrate,
-    confirm: nozzle => `It heats the nozzle to ${nozzle}°C and lets it cool a few times. Don't touch the nozzle while it runs.`
+    confirm: (nozzle, gcode) => gcode.startsWith('PID_CALIBRATE')
+      ? `It heats the nozzle to ${nozzle}°C and lets it cool a few times. Don't touch the nozzle while it runs.`
+      : "It heats the nozzle and lets it cool a few times, the printer's own way. Don't touch the nozzle while it runs."
   }
 ]
 
@@ -117,7 +120,7 @@ export default class MaintenanceMixin extends Mixins(ControlMixin) {
         wait: info.wait,
         status: checkStatus(info.id, this.lastRun[info.id], now),
         gcode: checkCommand(info.id, context),
-        confirm: info.confirm(this.tuneTemperature)
+        confirm: info.confirm(this.tuneTemperature, checkCommand(info.id, context) ?? '')
       }))
       .filter(row => row.gcode !== null)
   }
@@ -151,7 +154,8 @@ export default class MaintenanceMixin extends Mixins(ControlMixin) {
   async runCheck (row: CheckRow) {
     if (!row.gcode || this.checksBlocked) return
     const ok = await this.$confirm(row.confirm, { title: row.title, color: 'card-heading', icon: '$info' })
-    if (!ok) return
+    // Asked again: a print may have started from elsewhere while the question was open.
+    if (!ok || this.checksBlocked) return
     running.check = { id: row.id, printer: activeSlug(), startedAt: Date.now(), before: this.evidence }
     this.sendGcode(row.gcode, row.wait)
   }
@@ -213,12 +217,20 @@ export default class MaintenanceMixin extends Mixins(ControlMixin) {
     return this.$store.getters['printer/getSaveConfigPending'] as boolean
   }
 
+  /** Why Save can't run now, or '' when it can: SAVE_CONFIG restarts Klipper, which ends a print, paused or not. */
+  get saveBlocked (): string {
+    if (this.printerPrinting || this.printerPaused) return 'Not while printing.'
+    if (this.hasWait(this.$waits.onSaveConfig)) return 'Saving…'
+    return ''
+  }
+
   async saveResults () {
+    if (this.saveBlocked) return
     const ok = await this.$confirm('Saving keeps the new results after a restart. It restarts Klipper, which takes a few seconds.', {
       title: 'Save results',
       color: 'card-heading',
       icon: '$info'
     })
-    if (ok) this.sendGcode('SAVE_CONFIG', this.$waits.onSaveConfig)
+    if (ok && !this.saveBlocked) this.sendGcode('SAVE_CONFIG', this.$waits.onSaveConfig)
   }
 }

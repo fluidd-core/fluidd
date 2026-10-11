@@ -46,6 +46,7 @@ describe('an old address without a printer', () => {
     ['/settings#auth', '/walnut-8987/settings#auth'],
     ['/settings/macros/abc', '/walnut-8987/settings/macros/abc'],
     ['/camera/front', '/walnut-8987/camera/front'],
+    ['/camera', '/walnut-8987/camera'],
     ['/configure?root=config', '/walnut-8987/configure?root=config']
   ])('%s goes to the same page of the printer Fluidd is on: %s', (path, to) => {
     setActiveSlugSource(() => 'walnut-8987')

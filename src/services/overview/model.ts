@@ -84,3 +84,21 @@ export function chartLines (data: ChartPoint[], keys: string[], windowSeconds: n
   }).filter(l => l.path)
   return { lines, min, max }
 }
+
+/**
+ * The graph's windows, as many as Moonraker keeps: temperature_store_size
+ * is a sample a second, so a window longer than it would be mostly blank.
+ * 5 min, 15 min and 1 h where they fit, and the whole store when it falls
+ * between them (10 min on the usual 600).
+ */
+export function chartWindows (retentionSeconds: number): Array<{ value: number, label: string }> {
+  const keep = Math.max(60, Math.floor(retentionSeconds))
+  const values = [300, 900, 3600].filter(v => v <= keep)
+  if (!values.includes(keep) && keep < 3600 && (values.length === 0 || keep > values[values.length - 1])) values.push(keep)
+  return values.map(v => ({ value: v, label: v >= 3600 ? `${v / 3600} h` : `${Math.round(v / 60)} min` }))
+}
+
+/** The window shown first: 15 min when kept, else the longest there is. */
+export function defaultChartWindow (windows: Array<{ value: number }>): number {
+  return windows.some(w => w.value === 900) ? 900 : windows[windows.length - 1]?.value ?? 300
+}

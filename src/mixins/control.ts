@@ -12,6 +12,7 @@ import {
   materialInUse,
   materialsFrom,
   pinCommand,
+  pinPercent,
   type Material
 } from '@/services/control/model'
 import { presetCommands } from '@/util/temperature-preset'
@@ -240,7 +241,7 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
 
   /** The lights, 0 to 100. */
   get lightsValue (): number {
-    if (this.lightsPin) return Math.round(this.lightsPin.value / (this.lightsPin.scale || 1) * 100)
+    if (this.lightsPin) return pinPercent(this.lightsPin.value)
     const data = this.lightsLed?.color_data?.[0] ?? []
     return Math.round(Math.max(0, ...data) * 100)
   }

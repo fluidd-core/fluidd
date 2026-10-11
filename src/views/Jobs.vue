@@ -268,7 +268,7 @@
     <input
       ref="upload"
       type="file"
-      accept=".gcode,.g,.gco,.bgcode"
+      :accept="gcodeAccept"
       class="jobs__upload"
       @change="onPicked"
     >
@@ -332,6 +332,12 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
   view: 'cards' | 'list' = readView()
   query = ''
   detail: JobFile | null = null
+
+  /** What Upload takes: the G-code root's own list, as the header's upload button uses. */
+  get gcodeAccept (): string {
+    const root = this.$store.getters['files/getRootProperties']('gcodes') as { accepts?: string[] } | undefined
+    return (root?.accepts ?? []).join(',')
+  }
 
   mounted () {
     this.loadFiles()
