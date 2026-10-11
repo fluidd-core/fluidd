@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { checkCommand, checkProduced, checkStatus, daysAgo, liveMesh, meshColor, meshSummary, meshValue, probeCount, probedHeights } from '../model'
+import { bedMiddle, checkCommand, checkProduced, checkStatus, daysAgo, liveMesh, meshColor, meshProfileCommand, meshSummary, meshValue, parseProbeAccuracy, probeCount, probeAccuracyScript, probedHeights, probeVerdict, validProfileName } from '../model'
 import type { CheckEvidence } from '../model'
 
 const DAY = 86_400_000
@@ -121,5 +121,43 @@ describe('the mesh while it\'s measured', () => {
     expect(probeCount([7, 5])).toEqual([7, 5])
     expect(probeCount(5)).toEqual([5, 5])
     expect(probeCount(undefined)).toBeNull()
+  })
+})
+
+describe('the Bed mesh page', () => {
+  it('reads PROBE_ACCURACY\'s result line', () => {
+    const line = '// probe accuracy results: maximum 2.003750, minimum 1.995000, range 0.008750, average 1.999188, median 1.999375, standard deviation 0.002313'
+    expect(parseProbeAccuracy(line)).toEqual({ maximum: 2.00375, minimum: 1.995, range: 0.00875, average: 1.999188, median: 1.999375, stddev: 0.002313 })
+    expect(parseProbeAccuracy('// probe at 100.000,100.000 is z=1.999375')).toBeNull()
+  })
+
+  it('reads a negative probe height', () => {
+    expect(parseProbeAccuracy('probe accuracy results: maximum -0.010000, minimum -0.020000, range 0.010000, average -0.015000, median -0.015000, standard deviation 0.004000')?.minimum).toBe(-0.02)
+  })
+
+  it('calls a probe repeatable within a few microns', () => {
+    expect(probeVerdict(0.0023).tone).toBe('ok')
+    expect(probeVerdict(0.005).tone).toBe('warn')
+    expect(probeVerdict(0.02).text).toMatch(/^Spread out/)
+  })
+
+  it('takes profile names Klipper can, and quotes them', () => {
+    expect(validProfileName('default')).toBe(true)
+    expect(validProfileName('PETG 80C')).toBe(true)
+    expect(validProfileName('bad"name')).toBe(false)
+    expect(validProfileName(' ')).toBe(false)
+    expect(meshProfileCommand('SAVE', ' PETG 80C ')).toBe('BED_MESH_PROFILE SAVE="PETG 80C"')
+  })
+})
+
+describe('probe accuracy', () => {
+  it('probes the middle of the meshed area, or of the axes', () => {
+    expect(bedMiddle([10, 10], [190, 170], [0, 0], [200, 200])).toEqual([100, 90])
+    expect(bedMiddle(undefined, undefined, [0, -5], [235, 225])).toEqual([118, 110])
+  })
+
+  it('homes first when it hasn\'t, then goes there and probes', () => {
+    expect(probeAccuracyScript(false, [100, 90])).toBe('G28\nG90\nG1 X100 Y90 F6000\nPROBE_ACCURACY')
+    expect(probeAccuracyScript(true, [100, 90])).toBe('G90\nG1 X100 Y90 F6000\nPROBE_ACCURACY')
   })
 })

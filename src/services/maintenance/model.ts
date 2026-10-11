@@ -176,3 +176,54 @@ export function liveMesh (heights: number[], columns: number, rows: number): Arr
   })
   return mesh
 }
+
+// -- Pro's Bed mesh page ------------------------------------------------------
+
+export interface ProbeAccuracy {
+  maximum: number;
+  minimum: number;
+  range: number;
+  average: number;
+  median: number;
+  stddev: number;
+}
+
+const ACCURACY = /probe accuracy results: maximum (-?[\d.]+), minimum (-?[\d.]+), range (-?[\d.]+), average (-?[\d.]+), median (-?[\d.]+), standard deviation (-?[\d.]+)/
+
+/** PROBE_ACCURACY's last line: "probe accuracy results: maximum 2.003750, minimum 1.995000, range 0.008750, ...". */
+export function parseProbeAccuracy (text: string): ProbeAccuracy | null {
+  const m = ACCURACY.exec(text)
+  if (!m) return null
+  const [maximum, minimum, range, average, median, stddev] = m.slice(1).map(Number)
+  return { maximum, minimum, range, average, median, stddev }
+}
+
+/** How repeatable the probe is, by its standard deviation: a few microns is good; much more and the first layer wanders. */
+export function probeVerdict (stddev: number): { tone: CheckTone, text: string } {
+  if (stddev <= 0.003) return { tone: 'ok', text: 'Repeatable: it lands within a few microns each time.' }
+  if (stddev <= 0.006) return { tone: 'warn', text: 'A little spread. Clean the nozzle tip and run it again.' }
+  return { tone: 'warn', text: 'Spread out. Clean the nozzle, check nothing is loose on the head, and run it again.' }
+}
+
+/** A mesh profile's name as Klipper takes it in BED_MESH_PROFILE: letters, numbers, spaces, dots, dashes and underscores. */
+export function validProfileName (name: string): boolean {
+  return /^[\w][\w .-]*$/.test(name.trim())
+}
+
+export function meshProfileCommand (action: 'LOAD' | 'SAVE' | 'REMOVE', name: string): string {
+  return `BED_MESH_PROFILE ${action}="${name.trim()}"`
+}
+
+/** The middle of the probed area (bed_mesh's mesh_min to mesh_max), else of the axes. */
+export function bedMiddle (meshMin: number[] | undefined, meshMax: number[] | undefined, axisMin: number[], axisMax: number[]): [number, number] {
+  const [lo, hi] = meshMin?.length === 2 && meshMax?.length === 2 ? [meshMin, meshMax] : [axisMin, axisMax]
+  return [Math.round((lo[0] + hi[0]) / 2), Math.round((lo[1] + hi[1]) / 2)]
+}
+
+/**
+ * PROBE_ACCURACY probes wherever the head is, so it goes to the middle of
+ * the bed first, homing if it hasn't.
+ */
+export function probeAccuracyScript (homed: boolean, middle: [number, number]): string {
+  return [...(homed ? [] : ['G28']), 'G90', `G1 X${middle[0]} Y${middle[1]} F6000`, 'PROBE_ACCURACY'].join('\n')
+}

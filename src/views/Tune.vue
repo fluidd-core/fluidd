@@ -1,61 +1,83 @@
 <template>
-  <v-row
-    v-if="klippyReady"
-    :dense="$vuetify.breakpoint.smAndDown"
+  <div
+    class="bedmesh-page"
+    :class="{ 'bedmesh-page--phone': isMobileViewport }"
+    data-tid="bedmesh-page"
   >
-    <v-col
-      v-if="supportsBedMesh"
-      cols="12"
-      md="8"
-    >
-      <bed-mesh-card fullscreen />
-    </v-col>
-    <v-col
-      cols="12"
-      md="4"
-    >
-      <bed-mesh-controls
-        v-if="supportsBedMesh"
-        class="mb-2 mb-sm-4"
-      />
-      <end-stops-card class="mb-2 mb-sm-4" />
-      <runout-sensors-card
-        v-if="supportsRunoutSensors"
-        fullscreen
-      />
-    </v-col>
-  </v-row>
+    <template v-if="supportsBedMesh">
+      <div class="bedmesh-page__main">
+        <bed-surface />
+        <maintenance-mesh :linked="false" />
+      </div>
+      <div class="bedmesh-page__side">
+        <mesh-profiles />
+        <probe-card v-if="hasProbe" />
+      </div>
+    </template>
+    <template v-else>
+      <probe-card v-if="hasProbe" />
+      <p class="bedmesh-page__none">
+        This printer has no bed mesh in its printer.cfg.
+      </p>
+    </template>
+  </div>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import BrowserMixin from '@/mixins/browser'
+import BedSurface from '@/components/maintenance/BedSurface.vue'
+import MaintenanceMesh from '@/components/maintenance/MaintenanceMesh.vue'
+import MeshProfiles from '@/components/maintenance/MeshProfiles.vue'
+import ProbeCard from '@/components/maintenance/ProbeCard.vue'
 
-import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
-import BedMeshControls from '@/components/widgets/bedmesh/BedMeshControls.vue'
-import EndStopsCard from '@/components/widgets/endstops/EndStopsCard.vue'
-import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
-
-@Component({
-  components: {
-    BedMeshCard,
-    BedMeshControls,
-    EndStopsCard,
-    RunoutSensorsCard
-  }
-})
-export default class Tune extends Mixins(StateMixin) {
-  get supportsBedMesh () {
-    return this.$store.getters['mesh/getSupportsBedMesh']
+/**
+ * Bed mesh (Maintenance, Pro): the bed as a 3D surface and as numbers,
+ * the saved mesh profiles, and the probe. Endstops and filament sensors
+ * are on Control, under Outputs and sensors.
+ */
+@Component({ components: { BedSurface, MaintenanceMesh, MeshProfiles, ProbeCard } })
+export default class Tune extends Mixins(StateMixin, BrowserMixin) {
+  get supportsBedMesh (): boolean {
+    return this.$store.getters['mesh/getSupportsBedMesh'] as boolean
   }
 
-  get supportsRunoutSensors () {
-    return this.$store.getters['printer/getRunoutSensors'].length
-  }
-
-  get supportsEndstops () {
-    const endStops = this.$store.getters['printer/getEndstops']
-    return (Object.keys(endStops).length > 0)
+  get hasProbe (): boolean {
+    return !!this.$store.getters['printer/getProbe']
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .bedmesh-page {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  .bedmesh-page__main,
+  .bedmesh-page__side {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .bedmesh-page__none {
+    margin: 0;
+    color: var(--m3d-text-muted);
+  }
+
+  @media (max-width: 1263px) {
+    .bedmesh-page {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .bedmesh-page--phone {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+</style>
