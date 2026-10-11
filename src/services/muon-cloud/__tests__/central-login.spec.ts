@@ -145,6 +145,13 @@ describe('the return from /authorize', () => {
     expect(takeCallback({ search: '' }, CONSOLE)).toEqual({ outcome: 'none' })
   })
 
+  it("leaves a page's own code alone: an invite or a link code has no state", async () => {
+    const pending = await begin(false)
+    expect(takeCallback({ search: '?code=482913' }, CONSOLE)).toEqual({ outcome: 'none' })
+    // The sign-in in flight is still there to be finished.
+    expect(takeCallback({ search: `?code=c0de&state=${pending.state}&iss=${encodeURIComponent(CONSOLE)}` }, CONSOLE).outcome).toBe('code')
+  })
+
   it('requires the issuer that the central login sends', async () => {
     await startCentralSignIn({ silent: false }, vi.fn())
     const pending = JSON.parse(sessionStorage.getItem('muon.cloud.authorize')!)
