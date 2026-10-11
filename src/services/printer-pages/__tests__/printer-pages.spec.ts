@@ -3,6 +3,7 @@ import type { InstanceConfig } from '@/store/config/types'
 import {
   isPrintersOwnPage,
   preferSavedPrinterFor,
+  printerPageNeedsLogin,
   printerPagesState,
   resolveSlug,
   samePageFor,
@@ -115,5 +116,25 @@ describe("a printer's own page (U2)", () => {
     expect(isPrintersOwnPage('http://192.168.1.153', { origin: 'https://app.muon3d.com', hostname: 'app.muon3d.com' })).toBe(false)
     expect(isPrintersOwnPage('https://muon-cloud.invalid', { origin: 'https://muon-cloud.invalid', hostname: 'muon-cloud.invalid' })).toBe(false)
     expect(isPrintersOwnPage('', { origin: 'http://x', hostname: 'x' })).toBe(false)
+  })
+})
+
+describe('a printer opened by its address', () => {
+  const on = (slug: string) => slug === 'walnut-8987'
+  const page = { apiConnected: true, authenticated: false, routePrinter: 'walnut-8987', routeName: 'Jobs', printerIndependent: false }
+
+  it('asks for its own login once it is on and wants one', () => {
+    expect(printerPageNeedsLogin(page, on)).toBe(true)
+  })
+
+  it('asks nothing before it is on, while unreachable, or once signed in', () => {
+    expect(printerPageNeedsLogin({ ...page, routePrinter: 'boxwood-367a' }, on)).toBe(false)
+    expect(printerPageNeedsLogin({ ...page, apiConnected: false }, on)).toBe(false)
+    expect(printerPageNeedsLogin({ ...page, authenticated: true }, on)).toBe(false)
+  })
+
+  it('leaves the login page and the pages that belong to no printer alone', () => {
+    expect(printerPageNeedsLogin({ ...page, routeName: 'Login' }, on)).toBe(false)
+    expect(printerPageNeedsLogin({ ...page, routePrinter: undefined, printerIndependent: true }, on)).toBe(false)
   })
 })
