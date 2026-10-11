@@ -32,19 +32,6 @@
         <overview-actions v-if="overviewHome && !isMobileViewport" />
         <maintenance-due v-if="currentPage === '/maintenance'" />
         <camera-actions v-if="currentSection && currentSection.id === 'camera' && !isMobileViewport" />
-        <button
-          v-if="canEditLayout"
-          type="button"
-          class="app-page-header__btn"
-          data-tid="edit-layout"
-          @click="editLayout"
-        >
-          <frame-icon
-            name="layout"
-            small
-          />
-          Edit layout
-        </button>
       </div>
     </div>
     <nav
@@ -152,16 +139,6 @@ export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin, Print
   isOn (page: SectionPage): boolean {
     return pageMatches(this.currentPage, page.path)
   }
-
-  /** The charts page is laid out from cards; Edit layout arranges them. */
-  get canEditLayout (): boolean {
-    if (this.isMobileViewport || this.$store.state.config.layoutMode) return false
-    return this.currentPage === '/diagnostics'
-  }
-
-  editLayout () {
-    this.$store.commit('config/setLayoutMode', true)
-  }
 }
 </script>
 
@@ -219,24 +196,6 @@ export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin, Print
     flex: none;
     align-items: center;
     gap: 8px;
-  }
-
-  .app-page-header__btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    height: 40px;
-    padding: 0 16px;
-    border-radius: 999px;
-    background: var(--m3d-surface-2);
-    color: var(--m3d-text);
-    font-size: 14px;
-    font-weight: 600;
-    white-space: nowrap;
-
-    &:hover {
-      background: var(--m3d-hover);
-    }
   }
 
   .app-page-header__tabs {

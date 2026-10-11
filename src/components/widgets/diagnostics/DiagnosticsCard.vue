@@ -1,5 +1,13 @@
 <template>
+  <!-- Bare: the chart alone, for a page that draws its own panel round it. -->
+  <app-chart
+    v-if="bare"
+    :data="chartData"
+    :height="`${config.height}px`"
+    :options="options"
+  />
   <collapsable-card
+    v-else
     :title="config.title"
     :icon="`$${config.icon}`"
     draggable
@@ -41,6 +49,9 @@ import BrowserMixin from '@/mixins/browser'
 export default class DiagnosticsCard extends Mixins(BrowserMixin) {
   @Prop({ type: Object, required: true })
   readonly config!: DiagnosticsCardConfig
+
+  @Prop({ type: Boolean })
+  readonly bare?: boolean
 
   get chartData () {
     return this.$store.state.charts.diagnostics || []
