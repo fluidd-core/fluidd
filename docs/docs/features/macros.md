@@ -51,7 +51,8 @@ action:
 A `<button>` is written as `<label>|<gcode>|<color>`. Both `<gcode>` and
 `<color>` are optional — without `<gcode>`, the label itself is sent as the
 command. Supported colors are `primary`, `secondary`, `info`, `warning`, and
-`error`.
+`error`, or any CSS color — a name such as `orange`, or a hex value with or
+without the leading `#` (e.g., `f80` or `ff8800`).
 
 Buttons in a group are given equal widths and wrap onto further rows when they
 do not fit. Closing the dialog sends `action:prompt_end`.

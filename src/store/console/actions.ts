@@ -4,6 +4,16 @@ import type { ConsoleEntry, ConsoleFilter, ConsoleState, PromptDialogButton, Pro
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { takeRightWhile } from 'lodash-es'
+import { TinyColor } from '@ctrl/tinycolor'
+
+// Any color TinyColor can parse is used as such, anything else is kept as a theme color name
+const parsePromptButtonColor = (color?: string) => {
+  const tinyColor = new TinyColor(color)
+
+  return tinyColor.isValid
+    ? tinyColor.toHexString()
+    : color
+}
 
 export const actions = {
   /**
@@ -145,7 +155,7 @@ export const actions = {
             id,
             text,
             command,
-            color
+            color: parsePromptButtonColor(color)
           }
 
           commit('setPromptDialogItem', item)
@@ -159,7 +169,7 @@ export const actions = {
             id,
             text,
             command,
-            color
+            color: parsePromptButtonColor(color)
           }
 
           commit('setPromptDialogFooterButton', item)
