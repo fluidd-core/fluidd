@@ -74,7 +74,9 @@ function stateOf (e: DirectoryEntry, status: Record<string, PrinterStatus>): Til
   if (e.section === 'found' && e.row?.action === 'set-up') return 'new'
   // Online at the service, but this browser could not reach it: the way in
   // failed, not the printer, so it is not one that needs you.
-  const s = e.cloud ? status[e.cloud.id] : undefined
+  // Only when its health came from that way in: a printer Fluidd is on
+  // locally has its own socket's health, and a fault there is a fault.
+  const s = e.cloud && e.active !== 'local' ? status[e.cloud.id] : undefined
   if (e.health === 'error' && s && !s.reachable) return 'unreachable'
   switch (e.health) {
     case 'printing': return 'printing'
@@ -226,7 +228,9 @@ export function printersPage (src: PageSources): PrintersPage {
     groups.push(group(g.id, g.name, place(members.map(e => tileFor(e, src, g.name))), true))
   }
   const ungrouped = cloud.filter(e => !grouped.has(e.key))
-  if (ungrouped.length) {
+  // Kept, even empty, while groups hold printers: it is where a printer is
+  // dragged to take it out of its group.
+  if (ungrouped.length || (src.groups.length && cloud.length)) {
     const name = src.groups.length ? 'Not in a group' : 'Your printers'
     groups.push(group('ungrouped', name, place(ungrouped.map(e => tileFor(e, src, null))), false))
   }
@@ -240,7 +244,7 @@ export function printersPage (src: PageSources): PrintersPage {
 
   return {
     printingNow,
-    groups: groups.filter(g => g.tiles.length || g.editable),
+    groups: groups.filter(g => g.tiles.length || g.editable || g.id === 'ungrouped'),
     found,
     offline,
     counts: {

@@ -135,10 +135,10 @@ export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin, Print
     return pageMatches(this.currentPage, page.path)
   }
 
-  /** Pro's overview and the charts are laid out from cards; Simple's overview isn't. */
+  /** The charts page is laid out from cards; Edit layout arranges them. */
   get canEditLayout (): boolean {
     if (this.isMobileViewport || this.$store.state.config.layoutMode) return false
-    return this.currentPage === '/diagnostics' || (this.currentPage === '/' && this.pro)
+    return this.currentPage === '/diagnostics'
   }
 
   editLayout () {

@@ -138,6 +138,25 @@ describe('the Printers page', () => {
     expect(page.counts.needsYou).toBe(0)
   })
 
+  it("shows a fault on the printer Fluidd is on locally, whatever the account's way in says", () => {
+    const page = printersPage(sources({
+      signedIn: true,
+      directory: { cloud: [cloudEntry('w', 'muon-walnut-8987', { health: 'error', active: 'local', detail: 'Klipper: shutdown' })], local: [], found: [] },
+      status: { w: { reachable: false, error: 'timed out', updatedAt: 1 } }
+    }))
+    expect(page.groups[0].tiles[0].state).toBe('error')
+    expect(page.counts.needsYou).toBe(1)
+  })
+
+  it('keeps "Not in a group" as a place to drop, even when every printer is in a group', () => {
+    const page = printersPage(sources({
+      signedIn: true,
+      directory: { cloud: [cloudEntry('b', 'muon-boxwood-367a')], local: [], found: [] },
+      groups: [{ id: 'g1', name: 'Workshop', printers: ['b'] }]
+    }))
+    expect(page.groups.map(g => [g.name, g.tiles.length])).toEqual([['Workshop', 1], ['Not in a group', 0]])
+  })
+
   it('still counts a printer that answered with a fault', () => {
     const page = printersPage(sources({
       signedIn: true,
