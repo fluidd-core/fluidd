@@ -286,13 +286,21 @@ export default class JobDetail extends Mixins(BrowserMixin, FilesMixin) {
     return !!this.$store.state.gcodePreview.parserWorker
   }
 
+  /** A parse that was running when this job asked for its layers: load them once it ends. */
+  @Watch('parsing')
+  onParsing (parsing: boolean) {
+    if (!parsing && this.view === 'layers' && !this.previewLoaded && !this.previewError) this.loadPreview()
+  }
+
   async loadPreview () {
     const job = this.job
     if (!job || this.previewLoaded || this.parsing) return
     try {
       const response = await this.getGcode(job.file)
       const gcode = response?.data
-      if (!gcode || this.job !== job) return
+      if (!gcode || this.job !== job || this.previewLoaded) return
+      // Another file began parsing while this one downloaded: onParsing tries again once it ends.
+      if (this.parsing) return
       this.$store.dispatch('gcodePreview/loadGcode', { file: job.file, gcode })
     } catch {
       this.previewError = "The printer didn't send this file. Try again in a moment."

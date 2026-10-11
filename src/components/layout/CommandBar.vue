@@ -125,6 +125,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import FrameMixin from '@/mixins/frame'
 import BrowserMixin from '@/mixins/browser'
+import ServicesMixin from '@/mixins/services'
 import { EventBus } from '@/eventBus'
 import { SocketActions } from '@/api/socketActions'
 import type { TemperaturePreset } from '@/store/config/types'
@@ -150,7 +151,7 @@ const MAX_JOBS = 300
  * is sent as G-code.
  */
 @Component({})
-export default class CommandBar extends Mixins(FrameMixin, BrowserMixin) {
+export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, ServicesMixin) {
   open = false
   query = ''
   selected = 0
@@ -165,8 +166,9 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin) {
     EventBus.bus.$off('command-bar', this.show)
   }
 
-  /** Ctrl K or ⌘ K opens it from anywhere, even from a text box. */
+  /** Ctrl K or ⌘ K opens it from anywhere, even from a text box, unless shortcuts are off. */
   onKey (event: KeyboardEvent) {
+    if (!this.keysOn) return
     if ((event.ctrlKey || event.metaKey) && !event.altKey && !event.shiftKey && event.key.toLowerCase() === 'k') {
       event.preventDefault()
       if (this.open) this.open = false
@@ -299,8 +301,8 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin) {
         }
       })
       if (this.pro) {
-        list.push({ id: 'restart-klipper', group: 'Do', label: 'Restart Klipper', words: 'restart reload config', icon: 'refresh', run: () => this.sendGcode('RESTART') })
-        list.push({ id: 'firmware-restart', group: 'Do', label: 'Firmware restart', words: 'firmware_restart mcu', icon: 'refresh', run: () => this.sendGcode('FIRMWARE_RESTART') })
+        list.push({ id: 'restart-klipper', group: 'Do', label: 'Restart Klipper', words: 'restart reload config', icon: 'refresh', run: () => this.restartKlippy() })
+        list.push({ id: 'firmware-restart', group: 'Do', label: 'Firmware restart', words: 'firmware_restart mcu', icon: 'refresh', run: () => this.firmwareRestartKlippy() })
       }
     }
     if (this.inPrinter) {

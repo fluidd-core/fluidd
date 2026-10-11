@@ -53,6 +53,18 @@ describe('PrinterSwitcher', () => {
     expect(nearby.startNearby).not.toHaveBeenCalled()
   })
 
+  it('finds an offline printer by the address it was saved at', async () => {
+    const wrapper = shallowMount(PrinterSwitcher, { mocks, propsData: { visible: false } })
+    const vm = wrapper.vm as unknown as { query: string, matches: (e: unknown) => boolean }
+    const workshop = { name: 'Workshop', host: null, saved: [{ apiUrl: 'http://192.168.1.50' }] }
+    vm.query = '192.168.1.50'
+    expect(vm.matches(workshop)).toBe(true)
+    vm.query = 'workshop'
+    expect(vm.matches(workshop)).toBe(true)
+    vm.query = '10.0.0.9'
+    expect(vm.matches(workshop)).toBe(false)
+  })
+
   it('searches when it opens', async () => {
     const wrapper = shallowMount(PrinterSwitcher, { mocks, propsData: { visible: false } })
     await wrapper.setProps({ visible: true })

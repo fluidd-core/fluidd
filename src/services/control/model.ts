@@ -93,6 +93,21 @@ export function pinCommand (pin: Pick<OutputPin, 'name' | 'scale' | 'pwm'>, valu
   return `SET_PIN PIN=${pin.name} VALUE=${target}`
 }
 
+/**
+ * A pin's level, 0 to 100. Klipper reports an output_pin's value already
+ * divided by its scale (0 to 1), whatever the scale; SET_PIN takes it in
+ * scaled units (pinCommand).
+ */
+export function pinPercent (value: number): number {
+  return Math.round(value * 100)
+}
+
+/** The lengths offered to extrude or retract: those within the extruder's max_extrude_only_distance. */
+export function extrudeLengths (max: number): number[] {
+  const lengths = [5, 10, 25, 50].filter(v => v <= max)
+  return lengths.length ? lengths : [Math.floor(max * 10) / 10]
+}
+
 /** Why the extruder can't move filament now, in words, or null when it can. */
 export function extrudeBlocked (temperature: number, minTemp: number, canExtrude?: boolean): string | null {
   if (canExtrude || temperature >= minTemp) return null
