@@ -176,7 +176,7 @@
             class="cbtn cbtn--grow"
             :disabled="!canExtrude"
             data-tid="retract"
-            @click="sendExtrudeGcode(-length, speed)"
+            @click="sendExtrudeGcode(-extrudeLength, speed)"
           >
             Retract
           </button>
@@ -185,7 +185,7 @@
             class="cbtn cbtn--grow"
             :disabled="!canExtrude"
             data-tid="extrude"
-            @click="sendExtrudeGcode(length, speed)"
+            @click="sendExtrudeGcode(extrudeLength, speed)"
           >
             Extrude
           </button>
@@ -208,7 +208,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import ControlMixin, { BED_FLOOR, NOZZLE_FLOOR } from '@/mixins/control'
-import { extrudeBlocked, stepTarget } from '@/services/control/model'
+import { extrudeBlocked, extrudeLengths, stepTarget } from '@/services/control/model'
 import { activeSlug } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
 import type { Heater } from '@/store/printer/types'
@@ -263,7 +263,12 @@ export default class ControlHeat extends Mixins(ControlMixin) {
   }
 
   get lengthOptions (): SegOption[] {
-    return [5, 10, 25, 50].map((v, i, all) => ({ value: v, label: i === all.length - 1 ? `${v} mm` : String(v) }))
+    return extrudeLengths(this.maxExtrudeLength).map((v, i, all) => ({ value: v, label: i === all.length - 1 ? `${v} mm` : String(v) }))
+  }
+
+  /** The length chosen, kept within max_extrude_only_distance, which Klipper refuses past. */
+  get extrudeLength (): number {
+    return Math.min(this.length, this.maxExtrudeLength)
   }
 
   get minExtrude (): number {
