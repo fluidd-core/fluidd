@@ -145,6 +145,16 @@ export function checkCommand (id: CheckId, c: CheckContext): string | null {
   }
 }
 
+/**
+ * Whether a check drives the nozzle onto the plate: levelling touches it at
+ * every point, and first layer height at its middle. Anything left there (the
+ * last print) is in the way, as for a print, so these ask the same plate
+ * check before they start.
+ */
+export function touchesPlate (id: CheckId): boolean {
+  return id === 'bedMesh' || id === 'firstLayer'
+}
+
 /** The mesh's points across and deep, from bed_mesh's probe_count: one number is both. */
 export function probeCount (setting: unknown): [number, number] | null {
   const counts = (Array.isArray(setting) ? setting : [setting]).map(Number).filter(n => Number.isInteger(n) && n > 0)

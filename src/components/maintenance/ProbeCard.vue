@@ -96,6 +96,7 @@ import type { ConsoleEntry } from '@/store/console/types'
 import type { Probe } from '@/store/printer/types'
 import { bedMiddle, parseProbeAccuracy, probeAccuracyScript, probeVerdict, type ProbeAccuracy } from '@/services/maintenance/model'
 import ControlCard from '@/components/control/ControlCard.vue'
+import { plateCheckNeeded } from '@/services/jobs/plate'
 
 /**
  * Pro's probe: its Z offset, whether it's triggered when asked, and probe
@@ -176,7 +177,8 @@ export default class ProbeCard extends Mixins(MaintenanceMixin) {
     const [x, y] = this.middle
     const ok = await this.$confirm(
       `${this.allHomed ? 'The head' : 'It homes, then the head'} goes to the middle of the bed (X${x} Y${y}) and probes there ten times. Keep the plate on and the nozzle clean.`,
-      { title: 'Check how steady the probe is?', buttonTrueText: 'Start' }
+      // It touches the middle of the plate ten times: the plate check first, as for a print.
+      { title: 'Check how steady the probe is?', buttonTrueText: 'Start', plateCheck: plateCheckNeeded(this.$store.state.history?.jobs) }
     )
     if (!ok || this.checksBlocked) return
     this.sendGcode(probeAccuracyScript(this.allHomed, this.middle), this.$waits.onProbeAccuracy)
