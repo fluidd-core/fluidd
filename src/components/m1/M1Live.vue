@@ -282,11 +282,17 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
     this.drawPrint()
   }
 
-  /** Fetches the job's file into the preview, quietly: on this network, a file under 16 MB, nothing parsing. */
+  /**
+   * Fetches the job's file into the preview, quietly: while it prints, on
+   * this network, a file under 16 MB, nothing parsing. A finished part is
+   * drawn only from a preview that already holds it, so opening the
+   * overview after a print doesn't download the file again.
+   */
   async loadJob () {
     const file = this.$store.state.printer.printer.current_file as { filename?: string, path?: string, size?: number } | undefined
     const job = this.jobPath
     if (!this.live || !job || this.loadingFor === job || cloudState.activePrinterId) return
+    if (this.printState !== 'printing' && this.printState !== 'paused') return
     if (this.$store.state.gcodePreview.parserWorker || !file?.filename || !file.size || file.size > AUTO_LOAD_BYTES) return
     this.loadingFor = job
     try {
