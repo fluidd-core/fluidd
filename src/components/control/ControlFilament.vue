@@ -7,15 +7,19 @@
   >
     <template #aside>
       <span
-        v-if="loaded"
+        v-if="spoolLoaded"
         class="filament__loaded"
       >
         <span
           class="filament__swatch"
-          :style="{ background: loaded.color }"
+          :style="{ background: spoolLoaded.color }"
         />
-        {{ loaded.text }}
+        {{ spoolLoaded.text }}
       </span>
+      <material-picker
+        v-else
+        chip
+      />
     </template>
     <div
       class="filament__buttons"
@@ -64,6 +68,7 @@ import ControlMixin from '@/mixins/control'
 import type { Macro } from '@/store/macros/types'
 import type { Spool } from '@/store/spoolman/types'
 import ControlCard from './ControlCard.vue'
+import MaterialPicker from '@/components/overview/MaterialPicker.vue'
 
 /** A macro, and whether it takes a temperature (TEMP=215). */
 interface FilamentMacro {
@@ -77,7 +82,7 @@ interface FilamentMacro {
  * say when to pull and push, and purge. A macro that takes a TEMP is told
  * the material's nozzle heat.
  */
-@Component({ components: { ControlCard } })
+@Component({ components: { ControlCard, MaterialPicker } })
 export default class ControlFilament extends Mixins(ControlMixin) {
   @Prop({ type: Boolean })
   readonly phone?: boolean
@@ -116,21 +121,24 @@ export default class ControlFilament extends Mixins(ControlMixin) {
       : 'Load and unload heat the nozzle for you first.'
   }
 
-  /** What is loaded: the spool from Spoolman, else the material the heaters are set to. */
-  get loaded (): { text: string, color: string } | null {
+  /**
+   * What is loaded, when Spoolman says: its spool, which then decides. Else
+   * the printer's own record (the material and its colour, muon_material and
+   * muon_material_color), shown and changed here as on Overview.
+   */
+  get spoolLoaded (): { text: string, color: string } | null {
     const spool = this.$store.getters['spoolman/getActiveSpool'] as Spool | null
-    if (spool?.filament) {
-      const f = spool.filament
-      const parts = [f.material, f.name].filter(Boolean)
-      if (spool.remaining_weight != null) parts.push(`about ${Math.round(spool.remaining_weight)} g left`)
-      return { text: parts.join(' · '), color: f.color_hex ? `#${f.color_hex.replace(/^#/, '')}` : 'var(--m3d-text-muted)' }
-    }
-    return this.material ? { text: `${this.material.name} heat set`, color: 'var(--m3d-warning)' } : null
+    if (!spool?.filament) return null
+    const f = spool.filament
+    const parts = [f.material, f.name].filter(Boolean)
+    if (spool.remaining_weight != null) parts.push(`about ${Math.round(spool.remaining_weight)} g left`)
+    return { text: parts.join(' · '), color: f.color_hex ? `#${f.color_hex.replace(/^#/, '')}` : 'var(--m3d-text-muted)' }
   }
 
+  /** Load and unload heat for the material the heaters are set to, else for what's loaded. */
   run (macro: FilamentMacro | null) {
     if (!macro) return
-    const temp = this.material?.nozzle ?? null
+    const temp = this.material?.nozzle ?? this.loadedMaterial?.nozzle ?? null
     this.sendGcode(macro.takesTemp && temp ? `${macro.name} TEMP=${temp}` : macro.name)
   }
 }

@@ -71,7 +71,8 @@ export const defaultState = (): ConfigState => {
         enableDiagnostics: false,
         thumbnailSize: 32,
         colorPickerValueRange: 'absolute',
-        loadedMaterial: null
+        loadedMaterial: null,
+        loadedMaterialColour: null
       },
       theme: {
         isDark: true,

@@ -15,7 +15,10 @@ import {
   materialsFrom,
   pinCommand,
   pinPercent,
+  normaliseColour,
+  saveMaterialColourCommand,
   saveMaterialCommand,
+  savedMaterialColour,
   savedMaterialName,
   type Material,
   type MaterialChoice
@@ -131,7 +134,21 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
     const name = this.savesMaterial
       ? savedMaterialName(this.$store.state.printer.printer.save_variables?.variables)
       : (this.$store.state.config.uiSettings.general.loadedMaterial as string | null)
-    return choiceNamed(this.materialChoices, name)
+    const choice = choiceNamed(this.materialChoices, name)
+    const colour = this.loadedColour
+    return choice && colour ? { ...choice, colour } : choice
+  }
+
+  /**
+   * The loaded filament's colour, when someone has said it: the printer's
+   * save_variables muon_material_color (set here, on Control and from the
+   * slicer), else, on a printer that can't remember one, the one set here.
+   * Null when nobody has: a material's swatch is not its colour.
+   */
+  get loadedColour (): string | null {
+    return this.savesMaterial
+      ? savedMaterialColour(this.$store.state.printer.printer.save_variables?.variables)
+      : normaliseColour(this.$store.state.config.uiSettings.general.loadedMaterialColour)
   }
 
   setLoadedMaterial (choice: MaterialChoice) {
@@ -139,6 +156,16 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
       this.sendGcode(saveMaterialCommand(choice.name))
     } else {
       this.$store.dispatch('config/saveByPath', { path: 'uiSettings.general.loadedMaterial', value: choice.name, server: true })
+    }
+  }
+
+  setLoadedColour (colour: string) {
+    const hex = normaliseColour(colour)
+    if (!hex) return
+    if (this.savesMaterial) {
+      this.sendGcode(saveMaterialColourCommand(hex))
+    } else {
+      this.$store.dispatch('config/saveByPath', { path: 'uiSettings.general.loadedMaterialColour', value: hex, server: true })
     }
   }
 

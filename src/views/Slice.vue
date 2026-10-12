@@ -137,7 +137,7 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
     try {
       const spool = this.$store.getters['spoolman/getActiveSpool'] as ActiveSpool | null | undefined
       const heated = this.material ? this.materialChoices.find(c => c.presetId === this.material?.id) ?? null : null
-      return hostSetup({ spool: spool ?? null, loaded: this.loadedMaterial, heated, choices: this.materialChoices })
+      return hostSetup({ spool: spool ?? null, loaded: this.loadedMaterial, loadedColour: this.loadedColour, heated, choices: this.materialChoices })
     } catch {
       return { material: null, materials: [] }
     }

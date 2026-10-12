@@ -10,6 +10,28 @@
   >
     <template #activator="{ on, attrs }">
       <button
+        v-if="chip"
+        type="button"
+        class="matp__chip"
+        :disabled="!klippyReady"
+        aria-haspopup="listbox"
+        :aria-expanded="open ? 'true' : 'false'"
+        data-tid="chip-filament"
+        v-bind="attrs"
+        v-on="on"
+      >
+        <span
+          class="matp__swatch"
+          :style="{ background: loadedMaterial ? loadedMaterial.colour : 'transparent' }"
+        />
+        {{ chipText }}
+        <frame-icon
+          name="chevronDown"
+          small
+        />
+      </button>
+      <button
+        v-else
         type="button"
         class="ov-tile matp__tile"
         :class="{ 'matp__tile--phone': phone }"
@@ -81,6 +103,53 @@
       >
         Not while printing: the print was sliced for what's loaded.
       </p>
+      <p class="matp__title">
+        Its colour<span
+          v-if="loadedColour"
+          class="matp__colour-name"
+        > · {{ loadedColourName }}</span>
+      </p>
+      <div
+        role="listbox"
+        aria-label="Colour"
+        class="matp__colours"
+        data-tid="material-colours"
+      >
+        <button
+          v-for="c in colours"
+          :key="c.colour"
+          type="button"
+          role="option"
+          class="matp__colour"
+          :class="{ 'matp__colour--on': loadedColour === c.colour }"
+          :style="{ background: c.colour }"
+          :title="c.name"
+          :aria-label="c.name"
+          :aria-selected="loadedColour === c.colour ? 'true' : 'false'"
+          :data-tid="`colour-${c.name}`"
+          @click="chooseColour(c.colour)"
+        />
+        <label
+          class="matp__colour matp__colour--other"
+          :class="{ 'matp__colour--on': loadedColour && !isListed(loadedColour) }"
+          :style="loadedColour && !isListed(loadedColour) ? { background: loadedColour } : undefined"
+          title="Another colour"
+        >
+          <frame-icon
+            v-if="!loadedColour || isListed(loadedColour)"
+            name="plus"
+            small
+          />
+          <input
+            type="color"
+            class="matp__colour-input"
+            aria-label="Another colour"
+            :value="loadedColour || '#888888'"
+            data-tid="colour-other"
+            @change="onOtherColour"
+          >
+        </label>
+      </div>
       <div
         v-if="loadedMaterial"
         class="matp__actions"
@@ -131,27 +200,59 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import ControlMixin from '@/mixins/control'
-import type { MaterialChoice } from '@/services/control/model'
+import { FILAMENT_COLOURS, colourName, normaliseColour, type MaterialChoice } from '@/services/control/model'
 import { scopedPath } from '@/router/printerPagePaths'
 import { activeSlug } from '@/services/printer-pages'
 
 /**
- * Overview's Filament tile, for everyone: what's loaded, and a press to
- * change it. The printer remembers it (save_variables muon_material, as the
- * panel does), so the panel, this page and the slicer agree. From here:
- * heat for it, and load or unload with the printer's own macros.
+ * What's loaded, for everyone, on Overview (a tile) and Control (`chip`):
+ * the material and its colour, and a press to change either. The printer
+ * remembers both (save_variables muon_material, as the panel does, and
+ * muon_material_color beside it), so the panel, these pages, the slicer
+ * and the live M1 agree. From here: heat for it, and load or unload with
+ * the printer's own macros.
  */
 @Component({})
 export default class MaterialPicker extends Mixins(ControlMixin) {
   @Prop({ type: Boolean })
   readonly phone?: boolean
 
+  /** A small button (Control's Filament card) rather than Overview's tile. */
+  @Prop({ type: Boolean })
+  readonly chip?: boolean
+
   open = false
+
+  colours = FILAMENT_COLOURS
 
   get subtitle (): string {
     const m = this.loadedMaterial
     if (!m) return 'Tap to say what\'s loaded'
-    return this.temps(m)
+    return [this.loadedColour ? this.loadedColourName : '', this.temps(m)].filter(Boolean).join(' · ')
+  }
+
+  get loadedColourName (): string {
+    return colourName(this.loadedColour)
+  }
+
+  get chipText (): string {
+    const m = this.loadedMaterial
+    if (!m) return 'Say what\'s loaded'
+    return this.loadedColour ? `${m.name} · ${this.loadedColourName}` : m.name
+  }
+
+  isListed (colour: string): boolean {
+    return this.colours.some(c => c.colour === colour)
+  }
+
+  /** The colour of what's loaded can change at any time: a change of filament mid-print is what M600 is for. */
+  chooseColour (colour: string) {
+    const hex = normaliseColour(colour)
+    if (hex) this.setLoadedColour(hex)
+  }
+
+  onOtherColour (event: Event) {
+    this.chooseColour((event.target as HTMLInputElement).value)
   }
 
   get presetsTo (): string {
@@ -296,6 +397,88 @@ export default class MaterialPicker extends Mixins(ControlMixin) {
     font-size: 13px;
     font-weight: 600;
     text-decoration: none;
+  }
+
+  .matp__colour-name {
+    color: var(--m3d-text);
+    font-weight: 500;
+  }
+
+  .matp__colours {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+    padding: 0 4px 4px;
+  }
+
+  .matp__colour {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    // The theme's own border, so black shows on the dark panel and white on the light one.
+    box-shadow: inset 0 0 0 1px var(--m3d-border-strong);
+    color: var(--m3d-text-muted);
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--m3d-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  .matp__colour--on {
+    box-shadow: inset 0 0 0 1px var(--m3d-border-strong), 0 0 0 2px var(--m3d-surface), 0 0 0 4px var(--m3d-accent);
+  }
+
+  .matp__colour--other {
+    background: var(--m3d-surface-2);
+    box-shadow: inset 0 0 0 1px var(--m3d-border-strong);
+  }
+
+  .matp__colour--other.matp__colour--on {
+    box-shadow: inset 0 0 0 1px var(--m3d-border-strong), 0 0 0 2px var(--m3d-surface), 0 0 0 4px var(--m3d-accent);
+  }
+
+  // The native picker covers the circle, invisible, so a press anywhere on it opens the system's colour chooser.
+  .matp__colour-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .matp__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding: 0 10px;
+    border: 1px solid var(--m3d-border);
+    border-radius: var(--m3d-radius-pill);
+    color: var(--m3d-text);
+    font: inherit;
+    font-size: 13px;
+    white-space: nowrap;
+    cursor: pointer;
+
+    .matp__swatch {
+      margin-right: 0;
+    }
+
+    &:hover:not(:disabled) {
+      background: var(--m3d-hover);
+    }
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.6;
+    }
   }
 </style>
 

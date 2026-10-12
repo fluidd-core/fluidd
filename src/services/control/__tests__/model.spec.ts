@@ -19,8 +19,33 @@ import {
   pinPercent,
   extrudeLengths,
   plateToPosition,
-  stepTarget
+  stepTarget,
+  colourName,
+  normaliseColour,
+  saveMaterialColourCommand,
+  savedMaterialColour
 } from '../model'
+
+describe("the loaded filament's colour", () => {
+  it('is kept on the printer beside the material, without the # a G-code reader could take for a comment', () => {
+    expect(saveMaterialColourCommand('#f07b22')).toBe('SAVE_VARIABLE VARIABLE=muon_material_color VALUE=\'"F07B22"\'')
+    expect(() => saveMaterialColourCommand('orange')).toThrow()
+  })
+
+  it('is read back however it was written, and is nothing when nobody has said', () => {
+    expect(savedMaterialColour({ muon_material_color: 'F07B22' })).toBe('#F07B22')
+    expect(savedMaterialColour({ muon_material_color: '"#f07b22"' })).toBe('#F07B22')
+    expect(savedMaterialColour({ muon_material: 'PLA' })).toBeNull()
+    expect(savedMaterialColour({ muon_material_color: 'red' })).toBeNull()
+    expect(normaliseColour(12)).toBeNull()
+  })
+
+  it('is named as a spool would be, or a custom colour', () => {
+    expect(colourName('#f07b22')).toBe('Orange')
+    expect(colourName('#123456')).toBe('Custom colour')
+    expect(colourName(null)).toBe('')
+  })
+})
 
 const preset = (id: number, name: string, nozzle: number, bed: number | null): TemperaturePreset => ({
   id,
