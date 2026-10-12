@@ -3,7 +3,7 @@
     v-if="!pro || simple"
     title="Speed"
     :locked="klippyReady ? '' : notReadyReason"
-    :note="klippyReady ? 'Slow is kinder to tall or wobbly parts. Fast is rougher.' : ''"
+    :note="klippyReady ? speedNote : ''"
     data-tid="control-speed"
   >
     <template #aside>
@@ -92,7 +92,9 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import ControlMixin from '@/mixins/control'
-import { SPEED_PRESETS, speedName } from '@/services/control/model'
+import { leftAt } from '@/services/control/speed'
+import { shortDuration } from '@/util/short-duration'
+import type { TimeEstimates } from '@/store/printer/types'
 import ControlCard from './ControlCard.vue'
 import SegPicker, { type SegOption } from './SegPicker.vue'
 import NumberField from './NumberField.vue'
@@ -100,9 +102,11 @@ import NumberField from './NumberField.vue'
 type LimitKey = 'VELOCITY' | 'ACCEL' | 'SQUARE_CORNER_VELOCITY' | 'MINIMUM_CRUISE_RATIO' | 'ACCEL_TO_DECEL'
 
 /**
- * Speed. Simple: Slow, Normal or Fast (U4: 75, 100, 125 %), the same
- * three as the panel and the app. Pro: the exact speed and flow, pressure
- * advance, and the motion limits.
+ * Speed. Simple: Slow, Normal or Fast, each saying what it does and, while
+ * printing, about how long is left at it (services/control/speed.ts: Slow
+ * is half speed; Fast is as fast as the nozzle can melt this print's
+ * filament). Pro: the exact speed and flow, pressure advance, and the
+ * motion limits.
  */
 @Component({ components: { ControlCard, SegPicker, NumberField } })
 export default class ControlSpeed extends Mixins(ControlMixin) {
@@ -110,16 +114,36 @@ export default class ControlSpeed extends Mixins(ControlMixin) {
   @Prop({ type: Boolean })
   readonly simple?: boolean
 
+  /** Seconds left in the print, at the speed it runs now. */
+  get secondsLeft (): number | null {
+    if (!this.printerPrinting) return null
+    const eta = (this.$store.getters['printer/getTimeEstimates'] as TimeEstimates).eta
+    const left = (eta - Date.now()) / 1000
+    return left > 60 ? left : null
+  }
+
   get speedOptions (): SegOption[] {
-    return SPEED_PRESETS.map(p => ({ value: p.percent, label: p.label, sub: `${p.percent}%` }))
+    return this.speedChoices.map(c => ({
+      value: c.percent,
+      label: c.label,
+      sub: this.secondsLeft ? `${shortDuration(leftAt(this.secondsLeft, this.speedFactor, c.percent))} left` : `${c.percent}%`
+    }))
   }
 
   get speedName (): string {
-    return speedName(this.speedFactor)
+    return this.speedLabel
   }
 
   get isCustom (): boolean {
-    return !SPEED_PRESETS.some(p => p.percent === this.speedFactor)
+    return !this.speedChoices.some(c => c.percent === this.speedFactor)
+  }
+
+  /** What the speed it runs at does; Fast's limit when there's no room for it. */
+  get speedNote (): string {
+    const choice = this.speedChoices.find(c => c.percent === this.speedFactor)
+    if (choice) return choice.note
+    if (!this.speedChoices.some(c => c.label === 'Fast')) return 'No Fast for this print: it is already as fast as the nozzle can melt the filament.'
+    return 'Slow is half speed. Fast is as fast as the nozzle can melt the filament.'
   }
 
   /** Velocity, acceleration, corner speed, and whichever cruise setting this Klipper has. */

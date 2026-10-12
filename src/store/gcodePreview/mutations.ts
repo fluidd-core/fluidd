@@ -21,6 +21,10 @@ export const mutations: MutationTree<GcodePreviewState> = {
     Vue.set(state, 'layers', Object.freeze(payload.map(Object.freeze)))
   },
 
+  setMaxFlow (state, payload: number | null) {
+    state.maxFlow = payload
+  },
+
   setParts (state, payload) {
     Vue.set(state, 'parts', Object.freeze(payload.map(Object.freeze)))
   },

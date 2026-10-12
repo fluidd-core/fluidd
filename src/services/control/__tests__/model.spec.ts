@@ -19,7 +19,6 @@ import {
   pinPercent,
   extrudeLengths,
   plateToPosition,
-  speedName,
   stepTarget
 } from '../model'
 
@@ -30,12 +29,6 @@ const preset = (id: number, name: string, nozzle: number, bed: number | null): T
     extruder: { value: nozzle, type: 'heater', active: true },
     ...(bed === null ? {} : { heater_bed: { value: bed, type: 'heater', active: true } })
   }
-})
-
-describe('speed (U4)', () => {
-  test.each([[75, 'Slow'], [100, 'Normal'], [125, 'Fast'], [110, 'Custom 110%'], [99.6, 'Normal']])('%s%% is %s', (percent, name) => {
-    expect(speedName(percent)).toBe(name)
-  })
 })
 
 describe('materials (U5)', () => {
@@ -78,10 +71,10 @@ describe('moving', () => {
     expect(clampTo(250, 0, 200)).toBe(200)
   })
 
-  it('puts the head where the plate was clicked, Y up', () => {
+  it('puts the head where the plate was clicked: the M1\'s Y grows toward the front, the bottom of the pad', () => {
     expect(plateToPosition(0.5, 0.5, [0, 0], [200, 180])).toEqual([100, 90])
-    expect(plateToPosition(0, 0, [0, 0], [200, 180])).toEqual([0, 180])
-    expect(plateToPosition(1.2, 1, [0, 0], [200, 180])).toEqual([200, 0])
+    expect(plateToPosition(0, 0, [0, 0], [200, 180])).toEqual([0, 0])
+    expect(plateToPosition(1.2, 1, [0, 0], [200, 180])).toEqual([200, 180])
   })
 })
 

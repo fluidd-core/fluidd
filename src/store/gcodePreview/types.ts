@@ -7,6 +7,8 @@ export interface GcodePreviewState {
   layers: Layer[],
   parts: Part[],
   file?: AppFile;
+  /** The file's own melt limit, mm³/s, from the settings the slicer wrote into it (for Fast). */
+  maxFlow: number | null;
   parserProgress: number;
   parserWorker: Worker | null;
   viewer: ViewerOptions;
@@ -28,6 +30,8 @@ export interface LinearMove {
   y?: number;
   z?: number;
   e?: number;
+  /** The feed rate this move runs at, mm/min: its own F, or the last one given. */
+  f?: number;
 
   filePosition: number;
 }

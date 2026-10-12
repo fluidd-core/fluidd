@@ -5,17 +5,27 @@ import { proMode } from '@/services/pro-mode'
 import type { TemperaturePreset } from '@/store/config/types'
 import type { Fan, Heater, Led, OutputPin, Sensor } from '@/store/printer/types'
 import {
+  choiceNamed,
   clampTo,
   fanCommand,
   fanPercent,
   lightsOutput,
+  materialChoices,
   materialInUse,
   materialsFrom,
   pinCommand,
   pinPercent,
-  type Material
+  saveMaterialCommand,
+  savedMaterialName,
+  type Material,
+  type MaterialChoice
 } from '@/services/control/model'
 import { presetCommands } from '@/util/temperature-preset'
+import { fastPercent, materialMaxFlow, peakFlow, speedChoices, type SpeedChoice } from '@/services/control/speed'
+import type { Move } from '@/store/gcodePreview/types'
+
+/** A print's peak flow, worked out once per parsed file, however many panels ask. */
+const peakFlows = new WeakMap<readonly Move[], number | null>()
 
 type Axis = 'X' | 'Y' | 'Z'
 
@@ -101,6 +111,46 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
 
   get material (): Material | null {
     return materialInUse(this.materials, this.nozzle?.target ?? 0, this.bed?.target ?? 0)
+  }
+
+  get materialChoices (): MaterialChoice[] {
+    return materialChoices(this.materials)
+  }
+
+  /** Whether the printer can remember the material itself (Klipper's [save_variables]; the M1 has it). */
+  get savesMaterial (): boolean {
+    return 'save_variables' in this.$store.state.printer.printer
+  }
+
+  /**
+   * The material loaded: the one the printer remembers (the panel and this
+   * page set the same save_variables muon_material), else, on a printer
+   * that can't remember one, the one set here.
+   */
+  get loadedMaterial (): MaterialChoice | null {
+    const name = this.savesMaterial
+      ? savedMaterialName(this.$store.state.printer.printer.save_variables?.variables)
+      : (this.$store.state.config.uiSettings.general.loadedMaterial as string | null)
+    return choiceNamed(this.materialChoices, name)
+  }
+
+  setLoadedMaterial (choice: MaterialChoice) {
+    if (this.savesMaterial) {
+      this.sendGcode(saveMaterialCommand(choice.name))
+    } else {
+      this.$store.dispatch('config/saveByPath', { path: 'uiSettings.general.loadedMaterial', value: choice.name, server: true })
+    }
+  }
+
+  /** Heats for a material: as its preset says when it has one, else to its temperatures. */
+  heatFor (choice: MaterialChoice) {
+    const preset = choice.presetId === null ? undefined : this.presets.find(p => p.id === choice.presetId)
+    if (preset) {
+      presetCommands(preset).forEach(g => this.sendGcode(g))
+      return
+    }
+    if (choice.nozzle !== null) this.setHeater(this.nozzle, choice.nozzle)
+    if (choice.bed !== null) this.setHeater(this.bed, choice.bed)
   }
 
   setHeater (heater: Heater | null, target: number) {
@@ -194,6 +244,42 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
 
   setSpeed (percent: number) {
     this.sendGcode(`M220 S${Math.round(percent)}`)
+  }
+
+  /** The moves of the file being printed, when the G-code preview holds it. */
+  get printMoves (): readonly Move[] | null {
+    const printing = (this.$store.state.printer.printer.print_stats?.filename as string | undefined) ?? ''
+    const file = this.$store.getters['gcodePreview/getFile'] as { filename: string, path?: string } | undefined
+    if (!printing || !file || this.$store.state.gcodePreview.parserWorker) return null
+    const path = file.path ? `${file.path}/${file.filename}` : file.filename
+    return path === printing ? this.$store.getters['gcodePreview/getMoves'] as Move[] : null
+  }
+
+  /**
+   * Slow, Normal and Fast for the print running (services/control/speed.ts):
+   * Fast is as much faster as the nozzle can melt this filament for this
+   * print, or a quarter when the print's flow isn't known.
+   */
+  get speedChoices (): SpeedChoice[] {
+    const moves = this.printMoves
+    let peak: number | null = null
+    if (moves) {
+      if (!peakFlows.has(moves)) {
+        const diameter = Number(this.$store.state.printer.printer.configfile?.settings?.extruder?.filament_diameter) || 1.75
+        peakFlows.set(moves, peakFlow(moves, diameter))
+      }
+      peak = peakFlows.get(moves) ?? null
+    }
+    const metadata = this.$store.state.printer.printer.current_file as { filament_type?: string } | undefined
+    const maxFlow = (this.$store.state.gcodePreview.maxFlow as number | null) ??
+      materialMaxFlow(metadata?.filament_type) ??
+      materialMaxFlow(this.loadedMaterial?.name)
+    return speedChoices(fastPercent(peak, maxFlow), peak !== null && maxFlow !== null)
+  }
+
+  /** "Slow", "Normal", "Fast", or "110%" for anything else. */
+  get speedLabel (): string {
+    return this.speedChoices.find(c => c.percent === this.speedFactor)?.label ?? `${this.speedFactor}%`
   }
 
   setFlow (percent: number) {

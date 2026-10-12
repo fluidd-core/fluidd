@@ -1,18 +1,6 @@
 import type { TemperaturePreset } from '@/store/config/types'
 import type { Fan, OutputPin } from '@/store/printer/types'
-
-/** Slow, Normal and Fast (U4): the print's speed factor, the same three on the panel and in the app. */
-export const SPEED_PRESETS = [
-  { label: 'Slow', percent: 75 },
-  { label: 'Normal', percent: 100 },
-  { label: 'Fast', percent: 125 }
-] as const
-
-/** The preset a speed factor is, or "Custom 110%". */
-export function speedName (percent: number): string {
-  const preset = SPEED_PRESETS.find(p => p.percent === Math.round(percent))
-  return preset ? preset.label : `Custom ${Math.round(percent)}%`
-}
+import { yAtRow } from '@/services/machine/orientation'
 
 /** One material's two temperatures, from a preset (U5: one table per printer). */
 export interface Material {
@@ -32,6 +20,68 @@ export function materialsFrom (presets: TemperaturePreset[], extruder = 'extrude
   return presets
     .map(p => ({ id: p.id, name: p.name, nozzle: heaterTarget(p, extruder), bed: heaterTarget(p, bed) }))
     .filter(m => m.nozzle !== null)
+}
+
+/**
+ * A material to load, as the picker lists it: the printer's material table
+ * (Fluidd's presets, U5) first, then the panel's own (MuonUI's MATERIALS,
+ * KAN-479) for any it has that the table doesn't, so both name the same
+ * materials and agree on what is loaded.
+ */
+export interface MaterialChoice {
+  name: string;
+  nozzle: number | null;
+  bed: number | null;
+  colour: string;
+  /** The preset it comes from, to heat for it as the table says. */
+  presetId: number | null;
+}
+
+/** The panel's materials (MuonUI src/panel/data.ts MATERIALS): name, swatch, hot end and bed. */
+export const PANEL_MATERIALS: Array<{ name: string, colour: string, nozzle: number, bed: number }> = [
+  { name: 'PLA', colour: '#e8a53b', nozzle: 215, bed: 60 },
+  { name: 'PETG', colour: '#5b7fd6', nozzle: 240, bed: 80 },
+  { name: 'ABS', colour: '#dde3e3', nozzle: 250, bed: 100 },
+  { name: 'ASA', colour: '#c9b48a', nozzle: 255, bed: 100 },
+  { name: 'TPU', colour: '#3fb3ad', nozzle: 225, bed: 50 },
+  { name: 'PA', colour: '#8a9597', nozzle: 260, bed: 80 },
+  { name: 'PC', colour: '#9aa6a8', nozzle: 270, bed: 110 }
+]
+
+const sameName = (a: string, b: string) => a.trim().toUpperCase() === b.trim().toUpperCase()
+
+/** Every material to choose from: the table's, then the panel's it lacks. */
+export function materialChoices (materials: Material[]): MaterialChoice[] {
+  const fromTable = materials.map(m => ({
+    name: m.name,
+    nozzle: m.nozzle,
+    bed: m.bed,
+    colour: PANEL_MATERIALS.find(p => sameName(p.name, m.name))?.colour ?? '#8a9597',
+    presetId: m.id
+  }))
+  const extra = PANEL_MATERIALS
+    .filter(p => !materials.some(m => sameName(m.name, p.name)))
+    .map(p => ({ name: p.name, nozzle: p.nozzle, bed: p.bed, colour: p.colour, presetId: null }))
+  return [...fromTable, ...extra]
+}
+
+/** What save_variables holds: the panel writes VALUE='"PLA"', which Klipper keeps as the string PLA. */
+export function savedMaterialName (variables: unknown): string | null {
+  const raw = (variables as { muon_material?: unknown } | undefined)?.muon_material
+  if (typeof raw !== 'string') return null
+  const name = raw.replace(/^"+|"+$/g, '').trim()
+  return name || null
+}
+
+/** The choice called `name`, if there is one. */
+export function choiceNamed (choices: MaterialChoice[], name: string | null): MaterialChoice | null {
+  return name ? choices.find(c => sameName(c.name, name)) ?? null : null
+}
+
+/** Remembers the loaded material on the printer, exactly as the panel does, so either can change it. */
+export function saveMaterialCommand (name: string): string {
+  const safe = name.replace(/["'\\]/g, '').trim()
+  return `SAVE_VARIABLE VARIABLE=muon_material VALUE='"${safe}"'`
 }
 
 /** The material whose temperatures the heaters are set to now, if any. */
@@ -59,11 +109,14 @@ export function clampTo (value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
 }
 
-/** Where a click on the plate, from 0 to 1 across and down, puts the head, to 0.1 mm. */
+/**
+ * Where a click on the plate, from 0 to 1 across and down, puts the head, to
+ * 0.1 mm. The pad is the plate seen from above with its back at the top;
+ * which Y that is depends on the machine (orientation.ts).
+ */
 export function plateToPosition (fx: number, fy: number, min: number[], max: number[]): [number, number] {
   const x = min[0] + clampTo(fx, 0, 1) * (max[0] - min[0])
-  // The pad is drawn with Y up, as the plate is seen from the front.
-  const y = min[1] + (1 - clampTo(fy, 0, 1)) * (max[1] - min[1])
+  const y = yAtRow(clampTo(fy, 0, 1), min[1], max[1])
   return [Math.round(x * 10) / 10, Math.round(y * 10) / 10]
 }
 

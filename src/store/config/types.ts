@@ -113,6 +113,8 @@ export interface GeneralConfig {
   enableDiagnostics: boolean;
   thumbnailSize: number;
   colorPickerValueRange: ColorPickerValueRange;
+  /** The material loaded, for a printer without [save_variables] (the M1 keeps it there as muon_material). */
+  loadedMaterial: string | null;
 }
 
 export type ToolheadControlStyle = 'cross' | 'bars' | 'circle'
