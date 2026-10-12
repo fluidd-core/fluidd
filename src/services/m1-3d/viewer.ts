@@ -1,6 +1,7 @@
 import { THREE, m1, type M1Root } from './load'
 import { placeModel, type Calibration, type ModelPose } from './pose'
 import type { Toolpath } from './toolpath'
+import { Y_TOWARD_FRONT } from '@/services/machine/orientation'
 
 /**
  * The live M1 on a stage: the photoreal model, lit as its product shots
@@ -173,8 +174,8 @@ function stageBackdrop (width: number, height: number): THREE.CanvasTexture {
  * the head). From these the printer's millimetres place the head and the
  * bed (pose.ts), and the print hangs from the plate in the same
  * millimetres: `printFrame` takes a point (x, y, z) to the bed's own space,
- * x from the plate's left edge, y back from its front edge, z down from its
- * underside.
+ * x from the plate's left edge, y from the edge orientation.ts names, z down
+ * from its underside.
  */
 function calibrate (model: M1Root, mats: Record<string, THREE.Material>) {
   const dim = m1().DIM
@@ -196,6 +197,7 @@ function calibrate (model: M1Root, mats: Record<string, THREE.Material>) {
   const cal: Calibration = {
     plateLeft: plate.min.x,
     plateFront: plate.max.z,
+    plateBack: plate.min.z,
     plateUnderside: plate.min.y,
     nozzleX: tipCentre.x,
     nozzleZ: tipCentre.z,
@@ -206,10 +208,12 @@ function calibrate (model: M1Root, mats: Record<string, THREE.Material>) {
   }
 
   const bed = (model.getObjectByName('bedLift') as THREE.Object3D).getWorldPosition(new THREE.Vector3())
+  // Y from the plate's back edge toward the front (orientation.ts): with Z
+  // building down, that keeps the part as it was sliced rather than mirrored.
   const printFrame = new THREE.Matrix4().set(
     1, 0, 0, plate.min.x - bed.x,
     0, 0, -1, plate.min.y - bed.y,
-    0, -1, 0, plate.max.z - bed.z,
+    0, Y_TOWARD_FRONT ? 1 : -1, 0, (Y_TOWARD_FRONT ? plate.min.z : plate.max.z) - bed.z,
     0, 0, 0, 1
   )
   return { cal, printFrame }
