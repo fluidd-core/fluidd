@@ -1,6 +1,7 @@
 import type { Directory, DirectoryEntry } from '@/services/muon-cloud/directory'
 import type { PrinterStatus } from '@/services/muon-cloud/state'
 import { printerNameParts } from '@/util/printer-name'
+import type { ForeignStatus } from '@/services/foreign-printers/types'
 
 /** What a printer is doing, in the words the page uses. */
 export type TileState = 'printing' | 'paused' | 'ready' | 'error' | 'locked' | 'connecting' | 'unreachable' | 'offline' | 'new'
@@ -54,6 +55,7 @@ export interface PrintersPage {
   groups: TileGroup[];
   found: PrinterTile[];
   offline: PrinterTile[];
+  other: PrinterTile[];
   counts: { printers: number, printing: number, ready: number, needsYou: number, offline: number, found: number };
   /** Nothing saved, linked or found: the page welcomes. */
   welcome: boolean;
@@ -68,9 +70,14 @@ export interface PageSources {
   /** The print on the printer Fluidd is on now, from its own socket. */
   activeJob: TileJob | null;
   signedIn: boolean;
+  foreign?: DirectoryEntry[];
 }
 
 function stateOf (e: DirectoryEntry, status: Record<string, PrinterStatus>): TileState {
+  if (e.foreign) {
+    const state = e.foreign.status?.state ?? 'connecting'
+    return state === 'idle' ? 'ready' : state === 'offline' ? 'offline' : state
+  }
   if (e.section === 'found' && e.row?.action === 'set-up') return 'new'
   // Online at the service, but this browser could not reach it: the way in
   // failed, not the printer, so it is not one that needs you.
@@ -134,7 +141,18 @@ export function jobName (file: string | null): string | null {
 
 function tileFor (e: DirectoryEntry, src: PageSources, groupName: string | null): PrinterTile {
   const state = stateOf(e, src.status)
-  const job = e.active ? src.activeJob : (e.cloud ? cloudJob(src.status[e.cloud.id]) : null)
+  const foreign = e.foreign?.status as ForeignStatus | null | undefined
+  const job = foreign
+    ? {
+        file: foreign.file,
+        progress: foreign.progress === null ? null : Math.floor(foreign.progress * 100),
+        secondsLeft: foreign.timeLeft,
+        layer: null,
+        layers: null,
+        nozzle: foreign.temps.find(t => t.id === 'nozzle')?.actual ?? null,
+        bed: foreign.temps.find(t => t.id === 'bed')?.actual ?? null
+      }
+    : e.active ? src.activeJob : (e.cloud ? cloudJob(src.status[e.cloud.id]) : null)
   const parts = printerNameParts(e.name)
   const remote = e.active === 'cloud' || (!e.host && !!e.cloud)
   let label: string
@@ -239,22 +257,25 @@ export function printersPage (src: PageSources): PrintersPage {
   }
 
   const found = src.directory.found.map(e => tileFor(e, src, null))
-  const printingNow = all.filter(t => t.state === 'printing' || t.state === 'paused')
-  const count = (f: (t: PrinterTile) => boolean) => all.filter(f).length
+  const other = (src.directory.foreign ?? src.foreign ?? []).map(e => tileFor(e, src, null))
+  const allKnown = [...all, ...other]
+  const printingNow = allKnown.filter(t => t.state === 'printing' || t.state === 'paused')
+  const count = (f: (t: PrinterTile) => boolean) => allKnown.filter(f).length
 
   return {
     printingNow,
     groups: groups.filter(g => g.tiles.length || g.editable || g.id === 'ungrouped'),
     found,
     offline,
+    other,
     counts: {
-      printers: all.length,
+      printers: allKnown.length,
       printing: count(t => t.state === 'printing'),
       ready: count(t => t.state === 'ready'),
       needsYou: count(t => needsYou(t.state)),
-      offline: offline.length,
+      offline: count(t => t.state === 'offline'),
       found: found.length
     },
-    welcome: !all.length && !found.length && !src.signedIn
+    welcome: !allKnown.length && !found.length && !src.signedIn
   }
 }

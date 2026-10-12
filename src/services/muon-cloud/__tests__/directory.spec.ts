@@ -3,6 +3,7 @@ import { printerDirectory, savedUpdates, type DirectorySources } from '../direct
 import type { CloudPrinter } from '../api'
 import type { CloudNearbyPrinter, LanPrinter } from '../discovery'
 import type { InstanceConfig } from '@/store/config/types'
+import type { ForeignPrinterRecord } from '@/services/foreign-printers/types'
 
 const BOXWOOD = 'f1f6920f'.repeat(8)
 const WALNUT = '0658ae04'.repeat(8)
@@ -51,6 +52,24 @@ function directory (sources: Partial<DirectorySources>) {
 }
 
 describe('one entry per printer', () => {
+  it('keeps browser-local foreign records separate from local and cloud printers', () => {
+    const record: ForeignPrinterRecord = {
+      id: 'foreign:octo',
+      kind: 'octoprint',
+      name: 'Octo',
+      host: '192.168.1.44',
+      via: 'direct',
+      formFactor: 'bed-slinger',
+      credentialsRef: null,
+      addedAt: 1
+    }
+    const d = directory({ foreign: [{ record, status: null }] })
+    expect(d.foreign).toHaveLength(1)
+    expect(d.foreign![0]).toMatchObject({ key: 'foreign:foreign:octo', section: 'foreign', host: record.host })
+    expect(d.cloud).toHaveLength(0)
+    expect(d.local).toHaveLength(0)
+  })
+
   it('lists Boxwood once, under Cloud, when it is linked, saved at an old address and found here', () => {
     // Jack's case of 2026-10-06: three Boxwood entries, one per way it was seen.
     const d = directory({

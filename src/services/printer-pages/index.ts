@@ -22,6 +22,8 @@ import { cloudState } from '@/services/muon-cloud/state'
 import { isManagedApiUrl } from '@/services/muon-cloud/origin'
 import { mdnsHostFor } from '@/services/muon-cloud/discovery'
 import { setActiveSlugSource } from '@/router/printerSlugSource'
+import { foreignRegistry, foreignSlug } from '@/services/foreign-printers/registry'
+import type { ForeignPrinterRecord } from '@/services/foreign-printers/types'
 import {
   isPrinterSlug,
   slugForAddress,
@@ -34,6 +36,33 @@ import {
 export type PrinterTarget =
   | { kind: 'local', slug: string, instance: InstanceConfig }
   | { kind: 'cloud', slug: string, printerId: string }
+  | { kind: 'foreign', slug: string, id: string }
+
+function foreignTargets (): PrinterTarget[] {
+  const localAndCloud = knownPrinters().filter(target => target.kind !== 'foreign')
+  const used = new Set(localAndCloud.map(target => target.slug))
+  return foreignRegistry.records.map((record: ForeignPrinterRecord) => {
+    let slug = foreignSlug(record)
+    let suffix = 1
+    while (used.has(slug)) slug = slugForAddress(`${record.name} ${suffix++}`, `http://${record.host}`)
+    used.add(slug)
+    return { kind: 'foreign', slug, id: record.id }
+  })
+}
+
+export function foreignSlugForId (id: string): string | undefined {
+  return foreignTargets().find(target => target.kind === 'foreign' && target.id === id)?.slug
+}
+
+export function isForeignSlug (slug: string | undefined): boolean {
+  return !!slug && foreignTargets().some(target => target.slug === slug)
+}
+
+export function foreignRecordForSlug (slug: string | undefined): ForeignPrinterRecord | undefined {
+  if (!slug) return undefined
+  const target = foreignTargets().find(item => item.slug === slug)
+  return target?.kind === 'foreign' ? foreignRegistry.records.find(record => record.id === target.id) : undefined
+}
 
 export const printerPagesState = Vue.observable({
   /** Slugs learned from `/server/muon/identity`, by API address. */
@@ -73,7 +102,16 @@ export function knownPrinters (): PrinterTarget[] {
     slug: printerPagesState.learned[`cloud:${p.id}`] ?? slugForCloudPrinter(p),
     printerId: p.id
   }))
-  return [...local, ...cloud]
+  const targets = [...local, ...cloud]
+  const used = new Set(targets.map(target => target.slug))
+  const foreign = foreignRegistry.records.map(record => {
+    let slug = foreignSlug(record)
+    let suffix = 1
+    while (used.has(slug)) slug = slugForAddress(`${record.name} ${suffix++}`, `http://${record.host}`)
+    used.add(slug)
+    return { kind: 'foreign' as const, slug, id: record.id }
+  })
+  return [...targets, ...foreign]
 }
 
 /**
@@ -94,7 +132,8 @@ export function resolveSlug (slug: string, printers: PrinterTarget[] = knownPrin
   if (!matches.length) return null
   const preferCloud = typeof window !== 'undefined' && window.location.protocol === 'https:'
   const pick = (kind: PrinterTarget['kind']) => matches.find(m => m.kind === kind)
-  return (preferCloud ? pick('cloud') ?? pick('local') : pick('local') ?? pick('cloud')) ?? null
+  return matches.find(target => target.kind === 'foreign') ??
+    (preferCloud ? pick('cloud') ?? pick('local') : pick('local') ?? pick('cloud')) ?? null
 }
 
 /** The slug of the printer Fluidd is on now, or null with none. */
@@ -249,6 +288,7 @@ export async function openPrinterAt (slug: string): Promise<boolean> {
   if (opening === target.slug) return true
   opening = target.slug
   try {
+    if (target.kind === 'foreign') return true
     if (!openers) return false
     if (target.kind === 'local') return await openers.activateLocalPrinter(target.instance)
     await openers.activateCloudPrinter(target.printerId)

@@ -117,7 +117,15 @@ import ActionCommandPromptDialog from './components/common/ActionCommandPromptDi
 import KeyboardShortcutsDialog from './components/common/KeyboardShortcutsDialog.vue'
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from './util/event-helpers'
 import { isManagedConsolePath } from '@/router/managedPath'
-import { activeSlug, isActiveSlug, printerPageNeedsLogin, samePageFor, stepPrinter } from '@/services/printer-pages'
+import {
+  activeSlug,
+  foreignRecordForSlug,
+  isActiveSlug,
+  isForeignSlug,
+  printerPageNeedsLogin,
+  samePageFor,
+  stepPrinter
+} from '@/services/printer-pages'
 import PrinterOpening from './components/muon-cloud/PrinterOpening.vue'
 import ConnectionBanner from './components/layout/ConnectionBanner.vue'
 import ConnectingScreen from './components/layout/ConnectingScreen.vue'
@@ -215,7 +223,11 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
    */
   get otherPrinterRoute (): boolean {
     const slug = this.$route.params.printer
-    return !!slug && !this.printerIndependentRoute && !isActiveSlug(slug)
+    return !!slug && !this.printerIndependentRoute && !isForeignSlug(slug) && !isActiveSlug(slug)
+  }
+
+  get foreignPrinterRoute (): boolean {
+    return isForeignSlug(this.$route.params.printer)
   }
 
   get printerIndependentRoute (): boolean {
@@ -282,6 +294,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
 
   /** What the connection shows: the page, a bar over it, or a screen of its own (services/connection/view). */
   get connection (): ConnectionView {
+    if (this.foreignPrinterRoute) return { page: true, stale: false, banner: null, screen: null }
     return connectionView({
       socketConnected: this.socketConnected,
       apiConnected: this.apiConnected,
@@ -364,7 +377,9 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
       return `Muon3D | ${this.$route.name ?? 'Managed preview'}`
     }
 
-    const instanceName = this.$store.getters['config/getDisplayName'] as string
+    const instanceName = this.foreignPrinterRoute
+      ? foreignRecordForSlug(this.$route.params.printer)?.name ?? 'Other printer'
+      : this.$store.getters['config/getDisplayName'] as string
     const pageName = this.$route.name
 
     if (this.printerPrinting) {

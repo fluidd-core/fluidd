@@ -16,6 +16,7 @@ export interface SectionContext {
   history: boolean;
   timelapse: boolean;
   diagnostics: boolean;
+  foreign: boolean;
 }
 
 export interface SectionPage {
@@ -144,6 +145,7 @@ export function sectionOf (page: string): Section | undefined {
 
 /** The sections shown: Pro's only with Pro on, and each only where it can work. */
 export function visibleSections (c: SectionContext): Section[] {
+  if (c.foreign) return SECTIONS.filter(s => ['overview', 'jobs', 'slice', 'camera'].includes(s.id))
   return SECTIONS.filter(s => (!s.pro || c.pro) && (!s.shows || s.shows(c)))
 }
 

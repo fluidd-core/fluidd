@@ -503,6 +503,72 @@
         </button>
       </div>
 
+      <section
+        v-if="page.other.length"
+        class="printers__section"
+        data-tid="other-printers"
+      >
+        <div class="section-head">
+          <h2 class="section-head__name">
+            Other printers
+          </h2>
+        </div>
+        <p class="foreign-subtitle">
+          Saved in this browser only. They stay on this network and never go through Muon3D's servers.
+        </p>
+        <p
+          v-if="mixedContentBlocked"
+          class="foreign-warning"
+        >
+          Firefox and Safari block this page (https) from talking to a printer on plain http — that's mixed content. Chrome can reach printers on your network: open Fluidd in Chrome.
+        </p>
+        <div class="foreign-grid">
+          <article
+            v-for="tile in page.other"
+            :key="tile.key"
+            class="foreign-tile"
+          >
+            <foreign-silhouette :form-factor="foreignRecord(tile).formFactor" />
+            <div class="foreign-tile__body">
+              <button
+                class="foreign-tile__name"
+                @click="openForeign(tile)"
+              >
+                {{ tile.name }}
+              </button>
+              <span>{{ brandLabel(tile) }}<template v-if="foreignRecord(tile).model"> · {{ foreignRecord(tile).model }}</template></span>
+              <span>{{ foreignRecord(tile).via === 'direct' ? 'direct' : `through ${foreignRecord(tile).m1Name || 'M1'}` }}</span>
+              <tone-pill :tone="tile.tone">
+                {{ tile.label }}
+              </tone-pill>
+            </div>
+            <v-menu
+              left
+              offset-y
+            >
+              <template #activator="{ on, attrs }">
+                <button
+                  type="button"
+                  class="icon-btn"
+                  :aria-label="`Options for ${tile.name}`"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <frame-icon name="more" />
+                </button>
+              </template>
+              <v-list dense>
+                <v-list-item @click="forgetForeignPrinter(tile)">
+                  <v-list-item-title class="error--text">
+                    Forget
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </article>
+        </div>
+      </section>
+
       <!-- Offline: fills itself. -->
       <section
         v-if="page.offline.length"
@@ -612,6 +678,7 @@
       :searching="searching"
       @resolve="openInstance"
       @pick="onPickFound"
+      @saved="refreshForeignPrinters"
     />
     <cloud-account-dialog
       v-if="accountDialog"
@@ -648,9 +715,9 @@ import BrowserMixin from '@/mixins/browser'
 import FilesMixin from '@/mixins/files'
 import { cloudState, saveLayout } from '@/services/muon-cloud/state'
 import { discoverPrinters, discoveryState, lanAddresses, refreshKnownPrinters } from '@/services/muon-cloud/discovery'
-import { savedUpdates, type DirectoryEntry } from '@/services/muon-cloud/directory'
+import { savedUpdates, type Directory, type DirectoryEntry, type PrinterHealth } from '@/services/muon-cloud/directory'
 import { startNearby, stopNearby } from '@/services/muon-ble/nearby'
-import { printerHomePath } from '@/services/printer-pages'
+import { printerHomePath, foreignSlugForId } from '@/services/printer-pages'
 import {
   needsYou,
   printersPage,
@@ -673,6 +740,12 @@ import PrintingNowCard from '@/components/printers/PrintingNowCard.vue'
 import FoundPrinterCard from '@/components/printers/FoundPrinterCard.vue'
 import TonePill from '@/components/printers/TonePill.vue'
 import type { FoundChoice } from '@/components/common/AddInstanceDialog.vue'
+import ForeignSilhouette from '@/components/foreign/ForeignSilhouette.vue'
+import { liveForeign, loadForeign, connectAll, forget as forgetForeign } from '@/services/foreign-printers/live'
+import { foreignBrand } from '@/services/foreign-printers/brands'
+import type { ForeignPrinterRecord } from '@/services/foreign-printers/types'
+import { blocksForeignHttp } from '@/util/browser-family'
+import { pageBlocksPrinter } from '@/util/page-blocks-printer'
 
 type Filter = 'all' | 'printing' | 'ready' | 'needs'
 type View = 'cards' | 'list'
@@ -706,7 +779,8 @@ function readView (): View {
     PrinterTileCard,
     PrintingNowCard,
     FoundPrinterCard,
-    TonePill
+    TonePill,
+    ForeignSilhouette
   }
 })
 export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, FilesMixin) {
@@ -726,6 +800,8 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
   ]
 
   created () {
+    loadForeign().then(() => connectAll()).catch(() => {})
+    if (new URLSearchParams(location.search).get('addPrinter') === '1') this.instanceDialogOpen = true
     discoverPrinters().catch(() => {})
     startNearby().catch(() => {})
     this.timer = window.setInterval(() => { refreshKnownPrinters().catch(() => {}) }, HEALTH_EVERY_MS)
@@ -786,13 +862,63 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
   }
 
   get page (): PrintersPage {
+    const directory: Directory = {
+      ...this.directory,
+      foreign: liveForeign.records.map((record): DirectoryEntry => {
+        const status = liveForeign.status[record.id] ?? null
+        const health: PrinterHealth = status?.state === 'idle' ? 'online' : status?.state ?? 'connecting'
+        return {
+          key: `foreign:${record.id}`,
+          section: 'foreign' as const,
+          name: record.name,
+          endpointId: null,
+          health,
+          detail: status?.message ?? status?.state ?? 'Connecting',
+          host: record.host,
+          active: null,
+          linkedTo: 'none' as const,
+          saved: [],
+          foreign: { record, status }
+        }
+      })
+    }
     return printersPage({
-      directory: this.directory,
+      directory,
       groups: this.account ? cloudState.layout.groups : [],
       status: cloudState.status,
       activeJob: this.activeJob,
       signedIn: !!this.account
     })
+  }
+
+  get mixedContentBlocked (): boolean {
+    return blocksForeignHttp() && this.page.other.some(tile => pageBlocksPrinter(`http://${tile.entry.host}`))
+  }
+
+  brandLabel (tile: PrinterTile): string {
+    return foreignBrand(tile.entry.foreign!.record.kind).label
+  }
+
+  foreignRecord (tile: PrinterTile): ForeignPrinterRecord {
+    return tile.entry.foreign!.record
+  }
+
+  openForeign (tile: PrinterTile) {
+    const slug = foreignSlugForId(tile.entry.foreign!.record.id)
+    if (slug) this.$router.push(`/${slug}`).catch(() => {})
+  }
+
+  async forgetForeignPrinter (tile: PrinterTile) {
+    const name = tile.entry.foreign!.record.name
+    if (await this.$confirm(`Fluidd forgets ${name} in this browser.`, { title: `Forget ${name}?`, buttonTrueText: 'Forget', danger: true })) {
+      await forgetForeign(tile.entry.foreign!.record.id)
+    }
+  }
+
+  async refreshForeignPrinters () {
+    const live = await import('@/services/foreign-printers/live')
+    await live.refreshForeign()
+    await live.connectAll()
   }
 
   /** "7 printers · 1 printing · 5 ready · 1 needs you · 1 offline · 2 found nearby". */
@@ -1003,6 +1129,53 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
   .printers--phone {
     gap: 22px;
     padding: 4px 0 24px;
+  }
+
+  .foreign-subtitle,
+  .foreign-warning {
+    margin: 0;
+    color: var(--m3d-text-muted);
+  }
+
+  .foreign-warning {
+    color: var(--m3d-warning);
+  }
+
+  .foreign-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+  }
+
+  .foreign-tile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--m3d-border);
+    border-radius: 18px;
+    background: var(--m3d-surface);
+  }
+
+  .foreign-tile__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    color: var(--m3d-text-muted);
+    font-size: 12px;
+  }
+
+  .foreign-tile__name {
+    overflow: hidden;
+    color: var(--m3d-text);
+    font-size: 16px;
+    font-weight: 600;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .caps {

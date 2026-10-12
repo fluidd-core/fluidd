@@ -11,8 +11,8 @@ import {
   type SectionContext
 } from '../printerSections'
 
-const simple: SectionContext = { pro: false, slicer: false, camera: null, history: true, timelapse: false, diagnostics: true }
-const everything: SectionContext = { pro: true, slicer: true, camera: 'front', history: true, timelapse: true, diagnostics: true }
+const simple: SectionContext = { pro: false, slicer: false, camera: null, history: true, timelapse: false, diagnostics: true, foreign: false }
+const everything: SectionContext = { pro: true, slicer: true, camera: 'front', history: true, timelapse: true, diagnostics: true, foreign: false }
 
 const ids = (c: SectionContext) => visibleSections(c).map(s => s.id)
 
@@ -43,6 +43,10 @@ describe("a printer's sections", () => {
   it('show Console and Files only with Pro on', () => {
     expect(ids(simple)).toEqual(['overview', 'jobs', 'control', 'maintenance', 'settings'])
     expect(ids(everything)).toEqual(['overview', 'jobs', 'control', 'slice', 'camera', 'maintenance', 'settings', 'console', 'files'])
+  })
+
+  it('shows exactly Overview, Jobs, Slice and Camera for a foreign printer', () => {
+    expect(ids({ ...everything, foreign: true })).toEqual(['overview', 'jobs', 'slice', 'camera'])
   })
 
   it('show a page only where it can work', () => {

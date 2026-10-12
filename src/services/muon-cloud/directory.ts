@@ -19,6 +19,7 @@ import { Globals } from '@/globals'
 import { isPrinter, type NearbyPrinter } from '@/services/muon-ble/nearby'
 import type { CloudPrinter } from './api'
 import type { PrinterStatus } from './state'
+import type { ForeignPrinterRecord, ForeignStatus } from '@/services/foreign-printers/types'
 import {
   lanAddresses,
   sameExactName,
@@ -43,7 +44,7 @@ import { searchRows, type SearchRow } from './searchRows'
 export type PrinterHealth =
   'online' | 'printing' | 'paused' | 'connecting' | 'searching' | 'offline' | 'error' | 'locked' | 'available'
 
-export type DirectorySection = 'cloud' | 'local' | 'found'
+export type DirectorySection = 'cloud' | 'local' | 'found' | 'foreign'
 
 /** Who the printer is linked to, as far as this browser knows. */
 export type LinkedTo = 'mine' | 'other' | 'none' | 'unknown'
@@ -79,6 +80,7 @@ export interface DirectoryEntry {
   nearby?: NearbyPrinter;
   /** Discovery only: the row the welcome page would show, with its action. */
   row?: SearchRow;
+  foreign?: { record: ForeignPrinterRecord, status: ForeignStatus | null };
 }
 
 /** The printer Fluidd is connected to locally, read from its own socket. */
@@ -102,12 +104,14 @@ export interface DirectorySources {
   local: LocalLive | null;
   /** The search is still running, so a printer with no answer may yet answer. */
   searching: boolean;
+  foreign?: Array<{ record: ForeignPrinterRecord, status: ForeignStatus | null }>;
 }
 
 export interface Directory {
   cloud: DirectoryEntry[];
   local: DirectoryEntry[];
   found: DirectoryEntry[];
+  foreign?: DirectoryEntry[];
 }
 
 /**
@@ -326,7 +330,26 @@ export function printerDirectory (src: DirectorySources): Directory {
     }
   })
 
-  return { cloud, local, found }
+  const foreign = (src.foreign ?? []).map(({ record, status }): DirectoryEntry => ({
+    key: `foreign:${record.id}`,
+    section: 'foreign',
+    name: record.name,
+    endpointId: null,
+    health: status?.state === 'printing'
+      ? 'printing'
+      : status?.state === 'paused'
+        ? 'paused'
+        : status?.state === 'idle'
+          ? 'online'
+          : status?.state ?? 'connecting',
+    detail: status?.message ?? (status?.state === 'idle' ? 'Ready' : status?.state ?? 'Connecting'),
+    host: record.host,
+    active: null,
+    linkedTo: 'none',
+    saved: [],
+    foreign: { record, status }
+  }))
+  return { cloud, local, found, foreign }
 }
 
 /** The line under a cloud printer's name. */

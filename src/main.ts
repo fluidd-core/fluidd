@@ -119,8 +119,22 @@ if (/^\/(?:setup|sign-in)(?:\/|$)/.test(window.location.pathname)) {
   startCentralSignIn({ silent: true }).catch((e) => consola.debug('Could not start the central sign-in', e))
 } else {
   appInit()
-    .then((config: InitConfig) => {
+    .then(async (config: InitConfig) => {
       consola.debug('Loaded App Configuration', config)
+      try {
+        if (import.meta.env.DEV && new URLSearchParams(location.search).get('foreignDemo') === '1') {
+          const { loadForeign } = await import('./services/foreign-printers/live')
+          await loadForeign()
+        } else {
+          const [{ listForeign }, { setForeignRecords }] = await Promise.all([
+            import('./services/foreign-printers/store'),
+            import('./services/foreign-printers/registry')
+          ])
+          setForeignRecords(await listForeign())
+        }
+      } catch (e) {
+        consola.debug('Could not load browser-only printers', e)
+      }
 
       // Init the socket plugin
       Vue.use(SocketPlugin, {

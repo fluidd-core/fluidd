@@ -448,7 +448,9 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
       seen.add(target.slug)
       const raw = target.kind === 'local'
         ? savedName(target.instance)
-        : cloudState.printers.find(p => p.id === target.printerId)?.name ?? target.slug
+        : target.kind === 'cloud'
+          ? cloudState.printers.find(p => p.id === target.printerId)?.name ?? target.slug
+          : target.slug
       const parts = printerNameParts(raw)
       const here = target.slug === current
       list.push({
