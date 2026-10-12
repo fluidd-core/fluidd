@@ -57,6 +57,16 @@
       "expect": null
     },
     {
+      "name": "a welcome with the host's look and mode, granted (ui.look, ui.mode)",
+      "messages": [{ "source": "parent", "origin": "https://host.example", "ports": 1, "data": { "protocol": "printer-bridge", "type": "welcome", "version": 1, "nonce": "$nonce", "host": "fluidd", "hostVersion": "1", "capabilities": ["printer", "status", "gcode", "moonraker.read", "files.upload", "print", "ui.look", "ui.mode", "printer.setup"], "theme": "dark", "look": { "theme": "dark", "tokens": { "bg": "#13171a", "accent": "#80d6d1", "radius-md": "6px" } }, "mode": "simple" } }],
+      "expect": 0
+    },
+    {
+      "name": "a welcome whose look and mode are not ones: taken all the same, without them",
+      "messages": [{ "source": "parent", "origin": "https://host.example", "ports": 1, "data": { "protocol": "printer-bridge", "type": "welcome", "version": 1, "nonce": "$nonce", "host": "fluidd", "hostVersion": "1", "capabilities": ["ui.look", "ui.mode"], "theme": "light", "look": "glass", "mode": "expert" } }],
+      "expect": 0
+    },
+    {
       "name": "the old protocol's ready",
       "messages": [{ "source": "parent", "origin": "https://host.example", "ports": 0, "data": { "protocol": "muon3d-slicer/1", "type": "ready", "version": "1", "capabilities": [] } }],
       "expect": null
@@ -119,6 +129,16 @@
       "name": "a hello offering 1 and 2 gets version 1",
       "hellos": [{ "source": "frame", "origin": "https://slicer.example", "data": { "protocol": "printer-bridge", "type": "hello", "versions": [1, 2], "app": "muon3d-slicer", "appVersion": "9", "nonce": "00112233445566778899aabbccddeeff" } }],
       "expect": { "welcomes": 1, "nonces": ["00112233445566778899aabbccddeeff"], "version": 1 }
+    },
+    {
+      "name": "a hello listing the client's features (it uses the host's look, mode and setup)",
+      "hellos": [{ "source": "frame", "origin": "https://slicer.example", "data": { "protocol": "printer-bridge", "type": "hello", "versions": [1], "app": "muon3d-slicer", "appVersion": "0.1.0", "nonce": "00112233445566778899aabbccddeeff", "features": ["ui.look", "ui.mode", "printer.setup"] } }],
+      "expect": { "welcomes": 1, "nonces": ["00112233445566778899aabbccddeeff"] }
+    },
+    {
+      "name": "a hello whose features are not a list: welcomed, as a client with none",
+      "hellos": [{ "source": "frame", "origin": "https://slicer.example", "data": { "protocol": "printer-bridge", "type": "hello", "versions": [1], "app": "muon3d-slicer", "appVersion": "0.1.0", "nonce": "00112233445566778899aabbccddeeff", "features": "ui.look" } }],
+      "expect": { "welcomes": 1, "nonces": ["00112233445566778899aabbccddeeff"] }
     },
     {
       "name": "a hello with a short nonce",

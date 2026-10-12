@@ -1,6 +1,7 @@
 <template>
   <div
     class="slice-view"
+    :class="{ 'slice-view--part': partOfPage }"
     data-test="slice-view"
   >
     <iframe
@@ -32,8 +33,12 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { watch } from 'vue'
 import type { Route, NavigationGuardNext } from 'vue-router'
 import { consola } from 'consola'
-import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
+import ControlMixin from '@/mixins/control'
+import { proMode } from '@/services/pro-mode'
+import { readLook } from '@/services/slicer-bridge/look'
+import { hostSetup, type ActiveSpool } from '@/services/slicer-bridge/setup'
+import type { HostSetup } from '@/services/slicer-bridge/vendor/printer-client/bridge/protocol'
 import PrintConfirmDialog, { type PrintConfirmRequest } from '@/components/slicer/PrintConfirmDialog.vue'
 import { startSlicerHost, type SlicerHost } from '@/services/slicer-bridge/host'
 import { readFluiddSelection } from '@/services/slicer-bridge/fluidd'
@@ -67,14 +72,25 @@ export const CROSS_ORIGIN_SANDBOX = 'allow-scripts allow-same-origin allow-forms
  * The frame stays while Fluidd switches printer: the slicer is told of the
  * new printer and keeps its plates. Leaving /slice with changes the slicer
  * has not saved asks first.
+ *
+ * The Fluidd integration (KAN-511, muon3d-slicer docs/fluidd-integration.md):
+ * the slicer is told Fluidd's look, its Simple or Pro, and what the selected
+ * printer has loaded, each again when it changes. A slicer that draws itself
+ * as a part of the page (its hello lists ui.look) gets a frame with no card
+ * of its own; an older one keeps today's framed card. The rail stays either
+ * way.
  */
 @Component({
   components: {
     PrintConfirmDialog
   }
 })
-export default class Slice extends Mixins(StateMixin, BrowserMixin) {
+export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
   host: SlicerHost | null = null
+  /** The slicer draws itself as a part of the page (its hello listed ui.look). */
+  partOfPage = false
+  styleObserver: MutationObserver | null = null
+  setupFrame = 0
   dialog: OpenDialog | null = null
   dirty = false
   closed = false
@@ -99,6 +115,32 @@ export default class Slice extends Mixins(StateMixin, BrowserMixin) {
 
   get density (): 'compact' | 'touch' {
     return this.isMobileViewport ? 'touch' : 'compact'
+  }
+
+  /** What changes Fluidd's look: the theme, its colour, and the page style (flat or glass). */
+  get lookKey (): string {
+    const themes = this.$vuetify.theme.themes as Record<string, Record<string, unknown>> | undefined
+    return `${this.theme}|${String(themes?.[this.theme]?.primary ?? '')}`
+  }
+
+  readLook () {
+    const root = (document.querySelector('.v-application') as HTMLElement | null) ?? document.documentElement
+    return readLook(root, this.theme)
+  }
+
+  /**
+   * What the selected printer has loaded, and the material table
+   * (setup.ts). Nothing Fluidd can't read yet stops the slicer: it gets no
+   * material, and the next change sends it again.
+   */
+  get currentSetup (): HostSetup {
+    try {
+      const spool = this.$store.getters['spoolman/getActiveSpool'] as ActiveSpool | null | undefined
+      const heated = this.material ? this.materialChoices.find(c => c.presetId === this.material?.id) ?? null : null
+      return hostSetup({ spool: spool ?? null, loaded: this.loadedMaterial, heated, choices: this.materialChoices })
+    } catch {
+      return { material: null, materials: [] }
+    }
   }
 
   get dialogRequest (): PrintConfirmRequest | null {
@@ -129,6 +171,9 @@ export default class Slice extends Mixins(StateMixin, BrowserMixin) {
       confirm: (request) => this.confirm(request),
       theme: this.theme,
       density: this.density,
+      look: this.readLook(),
+      mode: proMode.on ? 'pro' : 'simple',
+      setup: (key) => (key === this.host?.printer()?.key ? this.currentSetup : null),
       hostVersion: String(import.meta.env.VERSION ?? ''),
       onState: (state) => { this.dirty = state.dirty === true },
       log: (entry) => consola.debug('[slicer bridge]', entry)
@@ -139,14 +184,38 @@ export default class Slice extends Mixins(StateMixin, BrowserMixin) {
       () => this.host?.refresh(),
       { flush: 'sync' }
     )
-    this.$watch('theme', (theme: 'light' | 'dark') => this.host?.bridge.setTheme(theme))
+    // The look is read a frame after a change, once the new classes apply. setLook sends ui.theme too.
+    const sendLook = () => requestAnimationFrame(() => this.host?.bridge.setLook(this.readLook()))
+    this.$watch('lookKey', sendLook)
+    this.styleObserver = new MutationObserver(sendLook)
+    this.styleObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-m3d-style'] })
     this.$watch('density', (density: 'compact' | 'touch') => this.host?.bridge.setDensity(density))
+    this.$watch(() => proMode.on, (on: boolean) => this.host?.bridge.setMode(on ? 'pro' : 'simple'))
+    // One printer.setup a frame, however many of its inputs change at once.
+    this.$watch(() => JSON.stringify(this.currentSetup), () => {
+      cancelAnimationFrame(this.setupFrame)
+      this.setupFrame = requestAnimationFrame(() => this.host?.bridge.setupChanged())
+    })
+    this.watchFeatures()
+  }
+
+  /** Once the slicer's hello is welcomed, whether it draws itself as a part of the page. */
+  watchFeatures (tries = 120) {
+    if (this.closed || !this.host) return
+    const features = this.host.bridge.clientFeatures
+    if (features.length || tries <= 0) {
+      this.partOfPage = features.includes('ui.look')
+      return
+    }
+    setTimeout(() => this.watchFeatures(tries - 1), 250)
   }
 
   beforeDestroy () {
     this.closed = true
     window.removeEventListener('beforeunload', this.handleBeforeUnload)
     this.stopWatching?.()
+    this.styleObserver?.disconnect()
+    cancelAnimationFrame(this.setupFrame)
     this.dialog?.reject(new Error('The slicer closed'))
     this.dialog = null
     this.host?.close()
@@ -220,5 +289,11 @@ export default class Slice extends Mixins(StateMixin, BrowserMixin) {
     border: 0;
     border-radius: 12px;
     background: var(--v-background-base, transparent);
+  }
+
+  // A slicer drawn as a part of the page: no card of its own, the page's own ground.
+  .slice-view--part .slice-view__frame {
+    border-radius: 0;
+    background: transparent;
   }
 </style>
