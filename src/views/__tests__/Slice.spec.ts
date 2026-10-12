@@ -73,6 +73,39 @@ describe('Slice', () => {
     wrapper.destroy()
   })
 
+  it('keeps the frame hidden behind "Opening the slicer" until the slicer has said hello and drawn', async () => {
+    const wrapper = await mountSlice()
+    const vm = wrapper.vm as any
+    expect(wrapper.find('iframe').classes()).toContain('slice-view__frame--waiting')
+    expect(wrapper.find('[data-tid=slice-opening]').exists()).toBe(true)
+
+    // The welcome settled (its last try): the frame shows two frames later.
+    vm.watchFeatures(0)
+    expect(vm.ready).toBe(false)
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+    await wrapper.vm.$nextTick()
+    expect(vm.ready).toBe(true)
+    expect(wrapper.find('iframe').classes()).not.toContain('slice-view__frame--waiting')
+    expect(wrapper.find('[data-tid=slice-opening]').exists()).toBe(false)
+    wrapper.destroy()
+  })
+
+  it('shows an older slicer that never says hello a moment after its page loads', async () => {
+    const wrapper = await mountSlice()
+    const vm = wrapper.vm as any
+    vi.useFakeTimers()
+    try {
+      vm.onFrameLoad()
+      vi.advanceTimersByTime(2900)
+      expect(vm.ready).toBe(false)
+      vi.advanceTimersByTime(200)
+      expect(vm.ready).toBe(true)
+    } finally {
+      vi.useRealTimers()
+      wrapper.destroy()
+    }
+  })
+
   it.each([
     ['a 404 (an image without the slicer)', 404, 'Not Found'],
     ['Fluidd\'s own index.html (the SPA fallback)', 200, FLUIDD_HTML]
