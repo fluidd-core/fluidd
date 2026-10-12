@@ -5,8 +5,10 @@
     class="fluidd muon-shell"
     :class="{
       'no-pointer-events': dragState,
-      'muon-shell--tabbed': showTabBar
+      'muon-shell--tabbed': showTabBar,
+      'muon-shell--rail': showRail
     }"
+    :style="showRail ? { '--muon-rail-width': `${railWidth}px` } : undefined"
   >
     <app-rail v-if="showRail" />
 
@@ -262,6 +264,11 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   // and the account's pages use the whole width.
   get showRail (): boolean {
     return !this.managedConsoleRoute && this.printerFrame && !this.isMobileViewport
+  }
+
+  /** The rail's width, as AppRail sets it: icons only below the lg breakpoint. */
+  get railWidth (): number {
+    return this.$vuetify.breakpoint.mdAndDown ? this.$globals.RAIL_WIDTH_COMPACT : this.$globals.RAIL_WIDTH
   }
 
   // Not on /slice: the slicer in its frame has its own bar at the bottom.
@@ -700,6 +707,13 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     pointer-events: none;
     transition: opacity 0.3s ease;
     user-select: none;
+  }
+
+  // The page starts right of the rail from its first paint. Vuetify only
+  // moves it there once the rail has registered its width, and a page that
+  // paints before then (a slow printer, a busy first render) drew under it.
+  .muon-shell--rail .muon-main {
+    padding-left: var(--muon-rail-width) !important;
   }
 
   // Room for the tab bar, so the last card can scroll clear of it.
