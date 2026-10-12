@@ -8,6 +8,10 @@ import { TinyColor } from '@ctrl/tinycolor'
 
 // Any color TinyColor can parse is used as such, anything else is kept as a theme color name
 const parsePromptButtonColor = (color?: string) => {
+  if (!color) {
+    return undefined
+  }
+
   const tinyColor = new TinyColor(color)
 
   return tinyColor.isValid

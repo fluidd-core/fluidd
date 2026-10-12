@@ -14,26 +14,26 @@
           {{ item.text }}
         </v-col>
         <v-col v-else-if="item.type === 'button'">
-          <v-btn
+          <app-btn
             :color="item.color"
             block
             @click="handleClick(item)"
           >
             {{ item.text }}
-          </v-btn>
+          </app-btn>
         </v-col>
         <v-col
           v-else-if="item.type === 'button_group'"
           class="prompt-button-group"
         >
-          <v-btn
+          <app-btn
             v-for="button in item.buttons"
             :key="`button::${button.id}`"
             :color="button.color"
             @click="handleClick(button)"
           >
             {{ button.text }}
-          </v-btn>
+          </app-btn>
         </v-col>
       </v-row>
     </v-card-text>
