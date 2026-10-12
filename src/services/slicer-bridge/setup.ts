@@ -33,13 +33,16 @@ function tableEntry (choice: MaterialChoice): HostMaterial {
  * save_variables muon_material, as the panel sets it), then the material the
  * heaters are set to. With it, Fluidd's material table.
  *
- * The loaded material carries no colour unless a spool gives one: the slicer
- * writes it into the G-code as the filament's colour, and a material type's
- * swatch isn't that.
+ * The loaded material carries a colour only when one was given: a spool's,
+ * or the one someone set for what's loaded (save_variables
+ * muon_material_color, KAN-516). The slicer writes it into the G-code as the
+ * filament's colour, and a material type's swatch isn't that.
  */
 export function hostSetup (input: {
   spool: ActiveSpool | null;
   loaded: MaterialChoice | null;
+  /** The colour set for what's loaded, "#RRGGBB", or null. */
+  loadedColour?: string | null;
   heated: MaterialChoice | null;
   choices: MaterialChoice[];
 }): HostSetup {
@@ -61,7 +64,7 @@ export function hostSetup (input: {
       remaining: input.spool?.remaining_weight ?? null
     }
   } else if (input.loaded) {
-    material = { ...tableEntry(input.loaded), colour: null, source: 'loaded' }
+    material = { ...tableEntry(input.loaded), colour: input.loadedColour ? input.loadedColour.toUpperCase() : null, source: 'loaded' }
   } else if (input.heated) {
     material = { ...tableEntry(input.heated), colour: null, source: 'heaters' }
   }

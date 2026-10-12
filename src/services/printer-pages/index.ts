@@ -38,6 +38,12 @@ export type PrinterTarget =
 export const printerPagesState = Vue.observable({
   /** Slugs learned from `/server/muon/identity`, by API address. */
   learned: {} as Record<string, string>,
+  /**
+   * The address a printer had before its identity was known (from its IP:
+   * 192-168-1-153-hzia), to the slug it learned (boxwood-367a). A page
+   * opened in that moment keeps working, and is corrected to the real one.
+   */
+  aliases: {} as Record<string, string>,
   /** An address whose printer Fluidd could not find, to say so. */
   missing: null as string | null
 })
@@ -112,7 +118,9 @@ export function isActiveSlug (slug: string): boolean {
   const active = activeSlug()
   if (!active) return false
   if (active === slug) return true
-  // A rename, or an address made before the printer's identity was known.
+  // An address made before the printer's identity was known.
+  if (printerPagesState.aliases[slug] === active) return true
+  // A rename.
   return slugSuffix(active) === slugSuffix(slug) && resolveSlug(slug)?.slug === active
 }
 
@@ -156,6 +164,7 @@ export async function learnActiveIdentity (timeout = 3000): Promise<string | nul
     const identity = response.data?.result
     const slug = slugForIdentity(identity as any)
     if (!slug) return null
+    rememberAlias(activeSlug(), slug)
     if (isManagedApiUrl(apiUrl)) {
       Vue.set(printerPagesState.learned, `cloud:${cloudState.activePrinterId}`, slug)
       return slug
@@ -176,6 +185,11 @@ export async function learnActiveIdentity (timeout = 3000): Promise<string | nul
   } catch {
     return null
   }
+}
+
+/** Keeps the address a printer had before it said who it is, as another name for it. */
+export function rememberAlias (before: string | null, learned: string) {
+  if (before && before !== learned) Vue.set(printerPagesState.aliases, before, learned)
 }
 
 /** The first path segment when it is a printer slug: what the address asks for. */

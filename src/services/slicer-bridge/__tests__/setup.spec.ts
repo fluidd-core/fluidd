@@ -24,6 +24,11 @@ describe('what the printer has loaded, for the slicer', () => {
       .toEqual({ name: 'PETG', type: 'PETG', colour: null, nozzle: 245, bed: 80, source: 'loaded' })
   })
 
+  it("with the colour someone set for what's loaded (muon_material_color, KAN-516)", () => {
+    expect(hostSetup({ spool: null, loaded: choices[1], loadedColour: '#2f63c6', heated: null, choices }).material)
+      .toEqual({ name: 'PETG', type: 'PETG', colour: '#2F63C6', nozzle: 245, bed: 80, source: 'loaded' })
+  })
+
   it('then the material the heaters are set to, else nothing', () => {
     expect(hostSetup({ spool: null, loaded: null, heated: choices[0], choices }).material?.source).toBe('heaters')
     expect(hostSetup({ spool: null, loaded: null, heated: null, choices }).material).toBeNull()

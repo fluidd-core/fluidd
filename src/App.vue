@@ -753,8 +753,15 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   // The page starts right of the rail from its first paint. Vuetify only
   // moves it there once the rail has registered its width, and a page that
   // paints before then (a slow printer, a busy first render) drew under it.
+  // v-main also animates its padding, so the page slid out from under the
+  // rail for a fifth of a second when the rail appeared (filmed on Boxwood):
+  // the rail is there from the start, so nothing animates.
   .muon-shell--rail .muon-main {
     padding-left: var(--muon-rail-width) !important;
+  }
+
+  .muon-main {
+    transition: none !important;
   }
 
   // Room for the tab bar, so the last card can scroll clear of it.

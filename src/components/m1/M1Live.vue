@@ -323,10 +323,20 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
     if (known) this.onPrintFile()
   }
 
-  /** The filament's colour, from the file's slicer settings. */
+  /**
+   * The filament's colour: the one set for what's loaded (Overview, Control
+   * or the slicer, kept on the printer as muon_material_color), since that is
+   * what is in the nozzle; else the file's slicer settings.
+   */
   get partColour (): number {
+    if (this.loadedColour) return parseInt(this.loadedColour.slice(1), 16)
     const metadata = this.$store.state.printer.printer.current_file as Record<string, unknown> | undefined
     return partColour(metadata?.filament_colors ?? metadata?.filament_colour)
+  }
+
+  @Watch('partColour')
+  onPartColour () {
+    this.drawPrint()
   }
 
   drawPrint () {
