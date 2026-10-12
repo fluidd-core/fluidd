@@ -345,6 +345,9 @@ declare namespace Klipper {
     is_active: boolean;
     Diameter: number;
     Raw: number;
+    enabled?: boolean;
+    filament_detected?: boolean;
+    flow_compensation_enabled?: boolean;
   }
 
   export interface ExtruderState {
