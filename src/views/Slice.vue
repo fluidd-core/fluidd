@@ -23,6 +23,7 @@
 
     <print-confirm-dialog
       :request="dialogRequest"
+      :loaded="dialogLoaded"
       @answer="handleAnswer"
     />
   </div>
@@ -39,7 +40,7 @@ import { proMode } from '@/services/pro-mode'
 import { readLook } from '@/services/slicer-bridge/look'
 import { hostSetup, type ActiveSpool } from '@/services/slicer-bridge/setup'
 import type { HostSetup } from '@/services/slicer-bridge/vendor/printer-client/bridge/protocol'
-import PrintConfirmDialog, { type PrintConfirmRequest } from '@/components/slicer/PrintConfirmDialog.vue'
+import PrintConfirmDialog, { type LoadedMaterial, type PrintConfirmRequest } from '@/components/slicer/PrintConfirmDialog.vue'
 import { startSlicerHost, type SlicerHost } from '@/services/slicer-bridge/host'
 import { readFluiddSelection } from '@/services/slicer-bridge/fluidd'
 import { configuredSlicerUrl, probeSlicer, slicerPresence, type SlicerPresence } from '@/services/slicer-bridge/slicerUrl'
@@ -149,6 +150,16 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
     return { printer: request.printer.name, paths: request.paths, mode: request.mode, plateClear: request.plateClear }
   }
 
+  /** What the printer has loaded, beside the file in the print check. */
+  get dialogLoaded (): LoadedMaterial | null {
+    try {
+      const loaded = this.loadedMaterial
+      return loaded ? { name: loaded.name, colour: loaded.colour } : null
+    } catch {
+      return null
+    }
+  }
+
   async mounted () {
     window.addEventListener('beforeunload', this.handleBeforeUnload)
     if (!await probeSlicer(this.url)) return
@@ -224,10 +235,12 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
 
   async beforeRouteLeave (to: Route, from: Route, next: NavigationGuardNext) {
     if (!this.dirty) return next()
-    const leave = await this.$confirm(
-      this.$tc('app.slicer.msg.leave'),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-    )
+    const leave = await this.$confirm(this.$tc('app.slicer.leave.text'), {
+      title: this.$tc('app.slicer.leave.title'),
+      buttonTrueText: this.$tc('app.slicer.leave.leave'),
+      buttonFalseText: this.$tc('app.slicer.leave.stay'),
+      danger: true
+    })
     if (leave === true) next()
     else next(false)
   }

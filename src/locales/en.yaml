@@ -1080,16 +1080,26 @@ app:
       unaffected: Printing, files and everything else here work as normal.
   slicer:
     confirm:
+      eyebrow: Ready to print
+      eyebrow_queue: Ready for the queue
       print_title: Print {file} on {printer}?
       queue_title: Queue {file} on {printer}?
-      and_queue_more: and queue {n} more
-      and_more: and {n} more
-      plate_clear: Plate is clear
-      upload_only: Upload only
-      print: Print
-      queue: Queue
+      and_queue_more: then {n} more, queued after it
+      and_more: and {n} more after it
+      file: File | Files
+      printer: Printer
+      loaded: Loaded
+      plate_not_needed: The printer's last job left nothing on the plate, so there's nothing to check.
+      save_note: Save to the printer keeps it in Jobs, to print later.
+      upload_only: Save to the printer
+      print: Print now
+      queue: Add to the queue
+    leave:
+      title: Leave the slicer?
+      text: The slicer has changes you haven't saved. If you leave now, they're lost.
+      leave: Leave without saving
+      stay: Stay in the slicer
     msg:
-      leave: The slicer has changes you have not saved. Leave it?
       no_slicer: The Muon3D Slicer is not available here yet.
   plate_check:
     title: Is the plate clear?
