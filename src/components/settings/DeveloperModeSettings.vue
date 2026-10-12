@@ -194,6 +194,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import consola from 'consola'
 import { useAuxApi } from '@/aux_api/useAuxApi'
 import { devModeState, refreshDevMode } from '@/services/dev-mode/state'
+import { readConsent } from '@/services/dev-mode/consent'
 import { scopedPath } from '@/router/printerPagePaths'
 import { activeSlug } from '@/services/printer-pages'
 import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
@@ -228,6 +229,8 @@ export default class DeveloperModeSettings extends Vue {
   errorMessage = ''
   pollTimer: number | null = null
   countdownTimer: number | null = null
+  /** Asks in a row the printer didn't answer. */
+  pollFailures = 0
 
   mounted () {
     refreshDevMode()
@@ -342,6 +345,7 @@ export default class DeveloperModeSettings extends Vue {
     this.consentInstruction = challenge.instruction
     this.secondsRemaining = Math.max(0, Math.round(challenge.expires_in_seconds))
     this.awaiting = true
+    this.pollFailures = 0
     this.countdownTimer = window.setInterval(() => {
       this.secondsRemaining = Math.max(0, this.secondsRemaining - 1)
       if (this.secondsRemaining === 0) {
@@ -352,15 +356,30 @@ export default class DeveloperModeSettings extends Vue {
     this.pollTimer = window.setInterval(() => { this.pollConsent().catch(() => undefined) }, CONSENT_POLL_MS)
   }
 
+  /**
+   * Asks whether the knob was pressed (services/dev-mode/consent: through
+   * Moonraker's proxy, the only way to reach that route). Turned down at the
+   * printer ends the wait; a printer that stops answering is said so after a
+   * few tries rather than waited on in silence.
+   */
   async pollConsent () {
     const id = this.challengeId
     if (!id) return
+    let answer
     try {
-      const { data } = await this.api.getDevModeConsentDevModeConsentChallengeIdGet(id)
-      if (!data?.confirmed) return
-    } catch {
+      answer = await readConsent(id)
+      this.pollFailures = 0
+    } catch (err) {
+      this.pollFailures++
+      if (this.pollFailures >= 4) this.errorMessage = `The printer isn't saying whether the knob was pressed: ${this.describe(err)}`
       return
     }
+    if (answer?.refused) {
+      this.stopWaiting()
+      this.errorMessage = 'Turned down at the printer. Nothing changed.'
+      return
+    }
+    if (!answer?.confirmed) return
     this.stopWaiting()
     this.loading = true
     try {

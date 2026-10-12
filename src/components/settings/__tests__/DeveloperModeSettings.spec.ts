@@ -14,6 +14,10 @@ vi.mock('@/aux_api/useAuxApi', () => ({
   useAuxApi: () => ({ devMode: api })
 }))
 
+// The knob's answer comes through Moonraker's /server/aux/proxy, as on a real printer (KAN-518).
+const http = vi.hoisted(() => ({ post: vi.fn() }))
+vi.mock('@/api/httpClientActions', () => ({ httpClientActions: http }))
+
 // The mock must be registered before the component and the state capture useAuxApi().
 // eslint-disable-next-line import/first
 import DeveloperModeSettings from '../DeveloperModeSettings.vue'
@@ -67,11 +71,37 @@ describe('developer mode in Settings', () => {
     await vm.confirmEnable()
     expect(vm.awaiting).toBe(true)
 
-    api.getDevModeConsentDevModeConsentChallengeIdGet.mockResolvedValue({ data: { confirmed: true } })
+    http.post.mockResolvedValue({ data: { result: { challenge_id: 'c1', confirmed: false, expires_at: 1 } } })
+    await vm.pollConsent()
+    expect(http.post).toHaveBeenCalledWith('/server/aux/proxy', { path: '/dev_mode/consent/c1', method: 'GET' })
+    expect(api.getDevModeConsentDevModeConsentChallengeIdGet).not.toHaveBeenCalled()
+    expect(api.setDevModeDevModePost).not.toHaveBeenCalled()
+
+    http.post.mockResolvedValue({ data: { result: { challenge_id: 'c1', confirmed: true, expires_at: 1 } } })
     await vm.pollConsent()
     expect(api.setDevModeDevModePost).toHaveBeenCalledWith({ enabled: true, waiver_acknowledged: true, waiver_version: 'w-1', challenge_id: 'c1' })
     expect(vm.enableDialog).toBe(false)
     vm.stopWaiting()
+  })
+
+  it('stops waiting when the knob is held to turn it down, and says so when the printer stops answering', async () => {
+    await refreshDevMode()
+    const vm = component()
+    await vm.toggle()
+    api.openDevModeConsentDevModeConsentPost.mockResolvedValue({ data: { challenge_id: 'c2', instruction: 'Press the knob', expires_in_seconds: 60 } })
+    vm.accepted = true
+    await vm.confirmEnable()
+
+    http.post.mockRejectedValue(new Error('Network Error'))
+    for (let i = 0; i < 4; i++) await vm.pollConsent()
+    expect(vm.awaiting).toBe(true)
+    expect(vm.errorMessage).toMatch(/isn't saying whether the knob was pressed/)
+
+    http.post.mockResolvedValue({ data: { result: { challenge_id: 'c2', confirmed: false, refused: true, expires_at: 1 } } })
+    await vm.pollConsent()
+    expect(vm.awaiting).toBe(false)
+    expect(vm.errorMessage).toMatch(/Turned down at the printer/)
+    expect(api.setDevModeDevModePost).not.toHaveBeenCalled()
   })
 
   it('turns on directly where the printer has no guard', async () => {
