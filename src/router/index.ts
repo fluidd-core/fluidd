@@ -17,14 +17,12 @@ import Diagnostics from '@/views/Diagnostics.vue'
 import History from '@/views/History.vue'
 import Timelapse from '@/views/Timelapse.vue'
 import Configure from '@/views/Configure.vue'
-import System from '@/views/System.vue'
 import Settings from '@/views/Settings.vue'
 import MacroCategorySettings from '@/components/settings/macros/MacroCategorySettings.vue'
 import Camera from '@/views/Camera.vue'
 import NotFound from '@/views/NotFound.vue'
 import Login from '@/views/Login.vue'
 import Icons from '@/views/Icons.vue'
-import Wifi from '@/views/Wifi.vue'
 import LinkLanding from '@/views/LinkLanding.vue'
 import JoinLanding from '@/views/JoinLanding.vue'
 
@@ -119,16 +117,18 @@ const printerRoutes: Array<RouteConfig> = [
     component: History,
     ...defaultRouteConfig
   },
+  // Wi-Fi and System are sections of Settings with pages of their own: they
+  // open inside it, its list beside them (views/Settings.vue).
   {
     path: `${P}/wifi`,
     name: 'Wifi',
-    component: Wifi,
+    component: Settings,
     ...defaultRouteConfig
   },
   {
     path: `${P}/system`,
     name: 'System',
-    component: System,
+    component: Settings,
     ...defaultRouteConfig
   },
   {

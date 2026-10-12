@@ -24,7 +24,7 @@
           :class="{ 'settings-list__hint--warn': section.id === 'updates' && updateCount > 0 }"
         >{{ hintOf(section) }}</span>
         <frame-icon
-          v-if="section.page || isMobileViewport"
+          v-if="isMobileViewport"
           name="chevronRight"
           small
           class="settings-list__go"
@@ -49,8 +49,10 @@
         Settings
       </router-link>
 
-      <router-view v-if="authenticated && socketConnected" />
-      <template v-if="!inChild && current">
+      <wifi-page v-if="ownPage === 'network'" />
+      <system-page v-else-if="ownPage === 'system'" />
+      <router-view v-else-if="authenticated && socketConnected" />
+      <template v-if="!inChild && !ownPage && current">
         <general-settings v-if="shows('general')" />
         <theme-settings v-if="shows('theme')" />
         <access-settings v-if="shows('access') && supports('muon_access')" />
@@ -59,6 +61,7 @@
         <version-settings v-if="shows('versions')" />
         <camera-settings v-if="shows('camera')" />
         <preset-settings v-if="shows('presets')" />
+        <macro-edit-list v-if="shows('macros')" />
         <macro-settings v-if="shows('macros')" />
         <timelapse-settings v-if="shows('timelapse')" />
         <spoolman-settings v-if="shows('spoolman')" />
@@ -67,6 +70,7 @@
         <file-editor-settings v-if="shows('editor')" />
         <toolhead-settings v-if="shows('toolhead')" />
         <gcode-preview-settings v-if="shows('gcodePreview')" />
+        <developer-mode-settings v-if="shows('developer')" />
       </template>
     </div>
   </div>
@@ -98,6 +102,11 @@ import TimelapseSettings from '@/components/settings/timelapse/TimelapseSettings
 import SpoolmanSettings from '@/components/settings/SpoolmanSettings.vue'
 import ProtectionSettings from '@/components/settings/ProtectionSettings.vue'
 import AccessSettings from '@/components/settings/AccessSettings.vue'
+import WifiPage from '@/views/Wifi.vue'
+import MacroEditList from '@/components/settings/macros/MacroEditList.vue'
+import DeveloperModeSettings from '@/components/settings/DeveloperModeSettings.vue'
+import { devModeState, refreshDevMode } from '@/services/dev-mode/state'
+import SystemPage from '@/views/System.vue'
 
 const countOrNone = (count: number) => count ? String(count) : 'none'
 
@@ -107,11 +116,16 @@ const SECTION_COMPONENTS = ['authorization', 'update_manager', 'timelapse', 'spo
 /**
  * Settings (`/boxwood-367a/settings`): the sections on the left, the one
  * chosen on the right, by the address's anchor (`#versions` is Updates).
- * Wi-Fi and System are pages of their own. On a phone the list is a page,
- * and a section opens over it with a way back.
+ * Wi-Fi and System keep addresses of their own (`/wifi`, `/system`) and
+ * open here too, the list still beside them. On a phone the list is a
+ * page, and a section opens over it with a way back.
  */
 @Component({
   components: {
+    WifiPage,
+    SystemPage,
+    MacroEditList,
+    DeveloperModeSettings,
     ProtectionSettings,
     AccessSettings,
     SpoolmanSettings,
@@ -131,6 +145,10 @@ const SECTION_COMPONENTS = ['authorization', 'update_manager', 'timelapse', 'spo
   }
 })
 export default class Settings extends Mixins(StateMixin, BrowserMixin) {
+  mounted () {
+    refreshDevMode()
+  }
+
   supports (component: string): boolean {
     return this.$store.getters['server/componentSupport'](component) as boolean
   }
@@ -144,8 +162,16 @@ export default class Settings extends Mixins(StateMixin, BrowserMixin) {
     return this.$route.matched.length > 1
   }
 
+  /** Wi-Fi's or System's own page, opened at its own address. */
+  get ownPage (): 'network' | 'system' | null {
+    if (this.$route.name === 'Wifi') return 'network'
+    if (this.$route.name === 'System') return 'system'
+    return null
+  }
+
   /** The section shown: the anchor's, Macros for a category, else the first on a wider screen. */
   get current (): SettingsSection | null {
+    if (this.ownPage) return this.sections.find(s => s.id === this.ownPage) ?? null
     if (this.inChild) return this.sections.find(s => s.id === 'macros') ?? null
     const section = settingsSectionFor(this.$route.hash, this.sections)
     if (section || this.isMobileViewport) return section
@@ -198,6 +224,8 @@ export default class Settings extends Mixins(StateMixin, BrowserMixin) {
         return countOrNone((this.$store.getters['macros/getMacros'] as unknown[]).length)
       case 'system':
         return 'restart, logs'
+      case 'developer':
+        return devModeState.enabled === null ? '' : devModeState.enabled ? 'on' : 'off'
       default:
         return ''
     }
