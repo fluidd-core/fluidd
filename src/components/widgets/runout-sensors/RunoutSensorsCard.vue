@@ -25,6 +25,9 @@
       >
         <v-list-item-content>
           <v-list-item-title>{{ item.prettyName }}</v-list-item-title>
+          <v-list-item-subtitle v-if="item.diameter != null">
+            {{ item.diameter.toFixed(2) }} mm
+          </v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-icon>
           <v-icon
