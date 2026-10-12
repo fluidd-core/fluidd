@@ -527,17 +527,25 @@
             v-for="tile in page.other"
             :key="tile.key"
             class="foreign-tile"
+            role="link"
+            tabindex="0"
+            :aria-label="`Open ${tile.name}`"
+            @click="openForeign(tile)"
+            @keydown.enter.prevent="openForeign(tile)"
+            @keydown.space.prevent="openForeign(tile)"
           >
             <foreign-silhouette :form-factor="foreignRecord(tile).formFactor" />
             <div class="foreign-tile__body">
-              <button
-                class="foreign-tile__name"
-                @click="openForeign(tile)"
-              >
+              <span class="foreign-tile__name">
                 {{ tile.name }}
-              </button>
+              </span>
               <span>{{ brandLabel(tile) }}<template v-if="foreignRecord(tile).model"> · {{ foreignRecord(tile).model }}</template></span>
-              <span>{{ foreignRecord(tile).via === 'direct' ? 'direct' : `through ${foreignRecord(tile).m1Name || 'M1'}` }}</span>
+              <tone-pill
+                tone="off"
+                :dot="false"
+              >
+                {{ foreignRecord(tile).via === 'direct' ? 'direct' : `through ${foreignRecord(tile).m1Name || 'M1'}` }}
+              </tone-pill>
               <tone-pill :tone="tile.tone">
                 {{ tile.label }}
               </tone-pill>
@@ -553,12 +561,14 @@
                   :aria-label="`Options for ${tile.name}`"
                   v-bind="attrs"
                   v-on="on"
+                  @click.stop
+                  @keydown.stop
                 >
                   <frame-icon name="more" />
                 </button>
               </template>
               <v-list dense>
-                <v-list-item @click="forgetForeignPrinter(tile)">
+                <v-list-item @click.stop="forgetForeignPrinter(tile)">
                   <v-list-item-title class="error--text">
                     Forget
                   </v-list-item-title>
@@ -715,7 +725,7 @@ import BrowserMixin from '@/mixins/browser'
 import FilesMixin from '@/mixins/files'
 import { cloudState, saveLayout } from '@/services/muon-cloud/state'
 import { discoverPrinters, discoveryState, lanAddresses, refreshKnownPrinters } from '@/services/muon-cloud/discovery'
-import { savedUpdates, type Directory, type DirectoryEntry, type PrinterHealth } from '@/services/muon-cloud/directory'
+import { foreignEntries, savedUpdates, type Directory, type DirectoryEntry } from '@/services/muon-cloud/directory'
 import { startNearby, stopNearby } from '@/services/muon-ble/nearby'
 import { printerHomePath, foreignSlugForId } from '@/services/printer-pages'
 import {
@@ -864,23 +874,7 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
   get page (): PrintersPage {
     const directory: Directory = {
       ...this.directory,
-      foreign: liveForeign.records.map((record): DirectoryEntry => {
-        const status = liveForeign.status[record.id] ?? null
-        const health: PrinterHealth = status?.state === 'idle' ? 'online' : status?.state ?? 'connecting'
-        return {
-          key: `foreign:${record.id}`,
-          section: 'foreign' as const,
-          name: record.name,
-          endpointId: null,
-          health,
-          detail: status?.message ?? status?.state ?? 'Connecting',
-          host: record.host,
-          active: null,
-          linkedTo: 'none' as const,
-          saved: [],
-          foreign: { record, status }
-        }
-      })
+      foreign: foreignEntries(liveForeign.records.map(r => ({ record: r, status: liveForeign.status[r.id] ?? null })))
     }
     return printersPage({
       directory,
@@ -1156,6 +1150,12 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
     border: 1px solid var(--m3d-border);
     border-radius: 18px;
     background: var(--m3d-surface);
+    cursor: pointer;
+  }
+
+  .foreign-tile:focus-visible {
+    outline: 2px solid var(--m3d-accent);
+    outline-offset: 2px;
   }
 
   .foreign-tile__body {

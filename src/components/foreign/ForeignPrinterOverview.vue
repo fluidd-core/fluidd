@@ -7,9 +7,12 @@
     <p class="foreign-muted">
       {{ record.model || brand.label }} · {{ record.host }}
     </p>
-    <foreign-camera :url="status.cameraUrl" />
+    <foreign-camera
+      :url="status.cameraUrl"
+      @failed="cameraFailed = $event"
+    />
     <section class="foreign-card">
-      <h2>{{ status.state === 'printing' ? 'Printing' : status.state === 'paused' ? 'Paused' : status.state }}</h2>
+      <h2>{{ stateLabel(status.state) }}</h2>
       <p v-if="status.file">
         {{ status.file }}
       </p>
@@ -25,21 +28,21 @@
           v-for="reading in status.temps"
           :key="reading.id"
         >
-          {{ reading.id }} {{ Math.round(reading.actual) }}° / {{ reading.target === null ? '—' : `${Math.round(reading.target)}°` }}
+          {{ temperatureName(reading.id) }} {{ Math.round(reading.actual) }}° / {{ reading.target === null ? '—' : `${Math.round(reading.target)}°` }}
         </span>
       </div>
       <div class="foreign-actions">
         <button
           v-if="adapter?.capabilities.pauseResume && status.state === 'printing'"
           class="btn"
-          @click="adapter.pause()"
+          @click="pause"
         >
           Pause
         </button>
         <button
           v-if="adapter?.capabilities.pauseResume && status.state === 'paused'"
           class="btn"
-          @click="adapter.resume()"
+          @click="resume"
         >
           Resume
         </button>
@@ -66,7 +69,11 @@
           :key="item.label"
           :class="{ unsupported: !item.supported }"
         >
-          <span>{{ item.supported ? '✓' : '×' }}</span>{{ item.label }}
+          <frame-icon
+            :name="item.supported ? 'check' : 'x'"
+            small
+          />
+          {{ item.label }}
         </li>
       </ul>
     </section>
@@ -79,19 +86,42 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import { EventBus } from '@/eventBus'
 import { foreignRecordForSlug } from '@/services/printer-pages'
 import { adapterFor, connectAll, forget, liveForeign } from '@/services/foreign-printers/live'
 import { foreignBrand } from '@/services/foreign-printers/brands'
 import { emptyStatus } from '@/services/foreign-printers/adapters/base'
-import type { ForeignStatus } from '@/services/foreign-printers/types'
+import type { ForeignStatus, ForeignTemp } from '@/services/foreign-printers/types'
+import { shortDuration } from '@/util/short-duration'
 import ForeignCamera from './ForeignCamera.vue'
 
 @Component({ components: { ForeignCamera } })
 export default class ForeignPrinterOverview extends Mixins(StateMixin) {
+  cameraFailed = false
+
   get record () { return foreignRecordForSlug(this.$route.params.printer) }
   get status (): ForeignStatus { return this.record ? liveForeign.status[this.record.id] ?? emptyStatus() : emptyStatus() }
   get adapter () { return this.record ? adapterFor(this.record.id) : undefined }
   get brand () { return this.record ? foreignBrand(this.record.kind) : { label: '' } }
+
+  stateLabel (state: ForeignStatus['state']) {
+    return {
+      printing: 'Printing',
+      paused: 'Paused',
+      idle: 'Ready',
+      connecting: 'Connecting',
+      offline: 'Offline',
+      error: 'Error'
+    }[state]
+  }
+
+  temperatureName (id: ForeignTemp['id']) {
+    return id[0].toUpperCase() + id.slice(1)
+  }
+
+  duration (seconds: number) {
+    return shortDuration(seconds)
+  }
 
   get capabilities () {
     const c = this.adapter?.capabilities
@@ -100,7 +130,7 @@ export default class ForeignPrinterOverview extends Mixins(StateMixin) {
       { label: 'See temperatures', supported: true },
       { label: 'Pause and resume', supported: !!c?.pauseResume },
       { label: 'Stop a print', supported: !!c?.stop },
-      { label: 'Watch the camera', supported: !!c?.camera },
+      { label: 'Watch the camera', supported: !!this.status.cameraUrl && !this.cameraFailed },
       { label: 'Start a print from its storage', supported: !!c?.printFromStorage },
       { label: 'Upload and print', supported: !!c?.upload },
       { label: 'Move the axes', supported: false },
@@ -111,14 +141,21 @@ export default class ForeignPrinterOverview extends Mixins(StateMixin) {
   }
 
   created () { connectAll().catch(() => {}) }
-  duration (seconds: number) {
-    const minutes = Math.floor(seconds / 60)
-    return minutes ? `${minutes} min` : `${Math.ceil(seconds)} sec`
-  }
+
+  async pause () { await this.runAction(() => this.adapter?.pause()) }
+  async resume () { await this.runAction(() => this.adapter?.resume()) }
 
   async stop () {
     if (await this.$confirm('This cancels the current print.', { title: 'Stop this print?', buttonTrueText: 'Stop', danger: true })) {
-      await this.adapter?.stop()
+      await this.runAction(() => this.adapter?.stop())
+    }
+  }
+
+  private async runAction (action: () => Promise<void> | undefined) {
+    try {
+      await action()
+    } catch (error) {
+      EventBus.$emit(error instanceof Error ? error.message : 'The printer command failed.', { type: 'error' })
     }
   }
 
@@ -139,7 +176,8 @@ export default class ForeignPrinterOverview extends Mixins(StateMixin) {
 .foreign-card { padding: 20px; border-radius: 18px; background: var(--m3d-surface); }
 .foreign-temps, .foreign-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 16px; }
 .foreign-card ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; padding: 14px 0 0; list-style: none; }
-.foreign-card li span { margin-right: 9px; color: var(--m3d-success); }
+.foreign-card li { display: flex; align-items: center; gap: 9px; }
+.foreign-card li .frame-icon { color: var(--m3d-success); }
 .foreign-card li.unsupported { color: var(--m3d-text-muted); }
-.foreign-card li.unsupported span { color: var(--m3d-danger); }
+.foreign-card li.unsupported .frame-icon { color: var(--m3d-danger); }
 </style>

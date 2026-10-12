@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="url"
+    v-if="url && !failed"
     class="foreign-camera"
   >
     <video
@@ -10,11 +10,13 @@
       muted
       playsinline
       controls
+      @error="onError"
     />
     <img
       v-else
       :src="url"
       alt="Printer camera"
+      @error="onError"
     >
   </div>
   <p
@@ -26,15 +28,28 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 
 @Component
 export default class ForeignCamera extends Vue {
   @Prop({ type: String, default: null })
   readonly url!: string | null
 
+  failed = false
+
   get video () {
     return /\.(mp4|m3u8)(?:$|[?#])/i.test(this.url ?? '')
+  }
+
+  @Watch('url')
+  onUrlChanged () {
+    this.failed = false
+    this.$emit('failed', false)
+  }
+
+  onError () {
+    this.failed = true
+    this.$emit('failed', true)
   }
 }
 </script>

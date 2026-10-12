@@ -75,7 +75,8 @@ export default class OctoPrintAdapter extends SocketAdapter {
   }
 
   protected onDisconnect () {
-    this.startPolling()
+    if (this.pollTimer) clearInterval(this.pollTimer)
+    this.pollTimer = null
   }
 
   private async readCamera () {

@@ -178,11 +178,19 @@
         >
       </label>
       <label class="m3-field">
-        <span class="m3-dlg__note">Name or model</span>
+        <span class="m3-dlg__note">Name</span>
+        <input
+          v-model.trim="foreignName"
+          class="aid__input"
+          :placeholder="selectedBrand.model || selectedBrand.label"
+        >
+      </label>
+      <label class="m3-field">
+        <span class="m3-dlg__note">Model</span>
         <input
           v-model.trim="foreignModel"
           class="aid__input"
-          :placeholder="selectedBrand.model || selectedBrand.label"
+          :placeholder="selectedBrand.model || 'Model'"
         >
       </label>
       <label class="m3-field">
@@ -311,6 +319,7 @@ import { escapeHtml, pageBlocksPrinter, printerPageUrl } from '@/util/page-block
 import { discoveryState, instanceFor, pageBlocksLanIpv4, probeAddress, type LanPrinter } from '@/services/muon-cloud/discovery'
 import M3Dialog from '@/components/ui/M3Dialog.vue'
 import PrinterThumb from '@/components/ui/PrinterThumb.vue'
+import { requestOctoPrintKey } from '@/services/foreign-printers/appkeys'
 import { FOREIGN_BRANDS, foreignBrand } from '@/services/foreign-printers/brands'
 import type { ForeignKind, FormFactor } from '@/services/foreign-printers/types'
 import { lanFetch } from '@/services/muon-cloud/discovery'
@@ -369,6 +378,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   url = ''
   selectedKind: ForeignKind | 'm1' = 'm1'
   foreignHost = ''
+  foreignName = ''
   foreignModel = ''
   formFactor: FormFactor = 'bed-slinger'
   apiKey = ''
@@ -377,7 +387,6 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   foreignVerified = false
   probeMessage = ''
   appKeyMessage = ''
-  appKeyToken = ''
 
   abortController?: AbortController = undefined
 
@@ -406,6 +415,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
     if (kind !== 'm1') {
       const brand = foreignBrand(kind)
       this.foreignModel = brand.model ?? ''
+      this.foreignName = brand.model || brand.label
       this.formFactor = brand.formFactor
     }
   }
@@ -462,40 +472,20 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   async askOctoPrintForKey () {
     const host = this.foreignHost.trim().replace(/^https?:\/\//i, '').replace(/\/.*$/, '')
     try {
-      const probe = await lanFetch(`http://${host}/plugin/appkeys/probe`)
-      if (probe.status === 404) { this.appKeyMessage = 'App keys are not available here. Enter an API key above.'; return }
-      const request = await lanFetch(`http://${host}/plugin/appkeys/request`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ app: 'Muon3D Fluidd' })
+      const key = await requestOctoPrintKey(host, { fetch: lanFetch }, {
+        onPending: () => { this.appKeyMessage = 'Approve in OctoPrint.' }
       })
-      if (request.status !== 201) throw new Error(`HTTP ${request.status}`)
-      const body = await request.json()
-      this.appKeyToken = body.app_token
-      this.appKeyMessage = 'Approve in OctoPrint.'
-      this.pollOctoPrintKey(host).catch(() => {
-        this.appKeyMessage = 'The key request was denied or timed out.'
-      })
-    } catch (error) {
-      this.appKeyMessage = error instanceof Error ? error.message : 'Could not request an API key.'
-    }
-  }
-
-  async pollOctoPrintKey (host: string) {
-    for (let i = 0; i < 60; i++) {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      const response = await lanFetch(`http://${host}/plugin/appkeys/request/${encodeURIComponent(this.appKeyToken)}`)
-      if (response.status === 202) continue
-      if (response.status === 200) {
-        const body = await response.json()
-        this.apiKey = body.api_key
-        this.appKeyMessage = 'API key approved.'
+      if (key === null) {
+        this.appKeyMessage = 'App keys are not available here. Enter an API key above.'
         return
       }
-      this.appKeyMessage = 'The key request was denied or timed out.'
-      return
+      this.apiKey = key
+      this.appKeyMessage = 'API key approved.'
+    } catch (error) {
+      this.appKeyMessage = error instanceof Error && error.message === 'denied'
+        ? 'The key request was denied or timed out.'
+        : error instanceof Error ? error.message : 'Could not request an API key.'
     }
-    this.appKeyMessage = 'The key request was denied or timed out.'
   }
 
   async copyMoonrakerSetup () {
@@ -507,7 +497,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
     const { saveForeign } = await import('@/services/foreign-printers/store')
     await saveForeign({
       kind: this.selectedKind as ForeignKind,
-      name: this.foreignModel || this.selectedBrand.label,
+      name: this.foreignName || this.foreignModel || this.selectedBrand.label,
       model: this.foreignModel || undefined,
       host: this.foreignHost,
       via: 'direct',

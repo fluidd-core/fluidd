@@ -39,15 +39,7 @@ export type PrinterTarget =
   | { kind: 'foreign', slug: string, id: string }
 
 function foreignTargets (): PrinterTarget[] {
-  const localAndCloud = knownPrinters().filter(target => target.kind !== 'foreign')
-  const used = new Set(localAndCloud.map(target => target.slug))
-  return foreignRegistry.records.map((record: ForeignPrinterRecord) => {
-    let slug = foreignSlug(record)
-    let suffix = 1
-    while (used.has(slug)) slug = slugForAddress(`${record.name} ${suffix++}`, `http://${record.host}`)
-    used.add(slug)
-    return { kind: 'foreign', slug, id: record.id }
-  })
+  return knownPrinters().filter(target => target.kind === 'foreign')
 }
 
 export function foreignSlugForId (id: string): string | undefined {

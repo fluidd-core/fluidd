@@ -197,6 +197,28 @@ function lanDetail (lan: LanPrinter): string {
   return `${state} · ${lan.host}`
 }
 
+export function foreignEntries (list: Array<{ record: ForeignPrinterRecord, status: ForeignStatus | null }>): DirectoryEntry[] {
+  return list.map(({ record, status }): DirectoryEntry => ({
+    key: `foreign:${record.id}`,
+    section: 'foreign',
+    name: record.name,
+    endpointId: null,
+    health: status?.state === 'printing'
+      ? 'printing'
+      : status?.state === 'paused'
+        ? 'paused'
+        : status?.state === 'idle'
+          ? 'online'
+          : status?.state ?? 'connecting',
+    detail: status?.message ?? (status?.state === 'idle' ? 'Ready' : status?.state ?? 'Connecting'),
+    host: record.host,
+    active: null,
+    linkedTo: 'none',
+    saved: [],
+    foreign: { record, status }
+  }))
+}
+
 export function printerDirectory (src: DirectorySources): Directory {
   const claimedLan = new Set<LanPrinter>()
   const claimedSaved = new Set<InstanceConfig>()
@@ -330,25 +352,7 @@ export function printerDirectory (src: DirectorySources): Directory {
     }
   })
 
-  const foreign = (src.foreign ?? []).map(({ record, status }): DirectoryEntry => ({
-    key: `foreign:${record.id}`,
-    section: 'foreign',
-    name: record.name,
-    endpointId: null,
-    health: status?.state === 'printing'
-      ? 'printing'
-      : status?.state === 'paused'
-        ? 'paused'
-        : status?.state === 'idle'
-          ? 'online'
-          : status?.state ?? 'connecting',
-    detail: status?.message ?? (status?.state === 'idle' ? 'Ready' : status?.state ?? 'Connecting'),
-    host: record.host,
-    active: null,
-    linkedTo: 'none',
-    saved: [],
-    foreign: { record, status }
-  }))
+  const foreign = foreignEntries(src.foreign ?? [])
   return { cloud, local, found, foreign }
 }
 
