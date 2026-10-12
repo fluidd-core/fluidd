@@ -1,258 +1,301 @@
 <template>
-  <div>
-    <v-subheader id="general">
-      {{ $t('app.setting.title.general') }}
-    </v-subheader>
-    <v-card
-      :elevation="5"
-      dense
-      class="mb-4"
-    >
-      <app-setting :title="$t('app.setting.label.printer_name')">
-        <v-text-field
-          ref="instanceName"
-          filled
-          dense
-          single-line
-          hide-details="auto"
-          :rules="[
-            $rules.required
-          ]"
-          :value="instanceName"
-          :default-value="$globals.APP_NAME"
-          @change="setInstanceName"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.language')">
-        <v-select
-          filled
-          dense
-          single-line
-          hide-details="auto"
-          :items="supportedLocales"
-          :value="locale"
-          item-text="name"
-          item-value="code"
-          @change="setLocale"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.date_format')">
-        <v-select
-          v-model="dateFormat"
-          filled
-          dense
-          hide-details="auto"
-          :items="availableDateFormats"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.time_format')">
-        <v-select
-          v-model="timeFormat"
-          filled
-          dense
-          hide-details="auto"
-          :items="availableTimeFormats"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting
-        :title="$t('app.setting.label.keyboard_shortcuts')"
-        :sub-title="$t('app.setting.tooltip.keyboard_shortcuts')"
-      >
-        <v-switch
-          v-model="enableKeyboardShortcuts"
-          hide-details
-          class="mb-5"
-          @click.native.stop
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.confirm_on_estop')">
-        <v-switch
-          v-model="confirmOnEstop"
-          hide-details
-          class="mb-5"
-          @click.native.stop
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.show_upload_and_print')">
-        <v-switch
-          v-model="showUploadAndPrint"
-          hide-details
-          class="mb-5"
-          @click.native.stop
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.power_toggle_in_top_nav')">
-        <v-select
-          v-model="topNavPowerToggle"
-          filled
-          dense
-          single-line
-          hide-details="auto"
-          :items="[{ text: $tc('app.setting.label.none'), value: null }, ...powerDevicesList]"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.confirm_on_power_device_change')">
-        <v-switch
-          v-model="confirmOnPowerDeviceChange"
-          hide-details
-          class="mb-5"
-          @click.native.stop
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.show_save_config_and_restart')">
-        <v-switch
-          v-model="showSaveConfigAndRestart"
-          hide-details
-          class="mb-5"
-          @click.native.stop
-        />
-      </app-setting>
-
-      <template v-if="showSaveConfigAndRestart">
-        <v-divider />
-
-        <app-setting :title="$t('app.setting.label.confirm_on_save_config_and_restart')">
-          <v-switch
-            v-model="confirmOnSaveConfigAndRestart"
-            hide-details
-            class="mb-5"
-            @click.native.stop
-          />
-        </app-setting>
-      </template>
-
-      <template v-if="showSaveConfigAndRestart && confirmOnSaveConfigAndRestart">
-        <v-divider />
-
-        <app-setting :title="$t('app.setting.label.sections_to_ignore_pending_configuration_changes')">
-          <v-combobox
-            v-model="sectionsToIgnorePendingConfigurationChanges"
-            :items="['bed_mesh default', 'bed_tilt']"
-            filled
+  <div
+    id="general"
+    class="m3-sets"
+    data-tid="general-settings"
+  >
+    <section class="m3-set">
+      <h2 class="m3-set__title">
+        This printer
+      </h2>
+      <div class="m3-set__row">
+        <div class="m3-set__label">
+          <b>Name</b>
+          <span>In the top bar, on Printers, and in your browser's tab.</span>
+        </div>
+        <div class="m3-set__control m3-set__control--wide">
+          <v-text-field
+            ref="instanceName"
+            outlined
             dense
-            hide-selected
+            single-line
             hide-details="auto"
-            multiple
-            small-chips
-            append-icon=""
-            deletable-chips
+            :rules="[$rules.required]"
+            :value="instanceName"
+            :default-value="$globals.APP_NAME"
+            data-tid="setting-name"
+            @change="setInstanceName"
           />
-        </app-setting>
-      </template>
+        </div>
+      </div>
+      <div class="m3-set__row">
+        <div class="m3-set__label">
+          <b>Language</b>
+        </div>
+        <div class="m3-set__control m3-set__control--wide">
+          <v-select
+            outlined
+            dense
+            hide-details
+            item-value="code"
+            item-text="name"
+            :items="supportedLocales"
+            :value="locale"
+            @change="setLocale"
+          />
+        </div>
+      </div>
+      <div class="m3-set__row">
+        <div class="m3-set__label">
+          <b>Dates and times</b>
+          <span>How this page writes them.</span>
+        </div>
+        <div class="m3-set__control m3-set__control--wide m3-set__control--pair">
+          <v-select
+            v-model="dateFormat"
+            outlined
+            dense
+            hide-details
+            :items="availableDateFormats"
+          />
+          <v-select
+            v-model="timeFormat"
+            outlined
+            dense
+            hide-details
+            :items="availableTimeFormats"
+          />
+        </div>
+      </div>
+    </section>
 
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.print_in_progress_layout')">
-        <v-select
-          v-model="printInProgressLayout"
-          filled
-          dense
-          hide-details="auto"
-          :items="availablePrintInProgressLayouts"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting
-        :title="$t('app.setting.label.print_progress_calculation')"
-        :sub-title="$t('app.setting.tooltip.average_calculation')"
+    <section class="m3-set">
+      <h2 class="m3-set__title">
+        Asking first
+      </h2>
+      <div class="m3-set__row">
+        <div class="m3-set__label">
+          <b>Emergency stop</b>
+          <span>{{ confirmOnEstop ? 'It asks before it stops the printer.' : 'One press stops the printer at once, which is safest.' }}</span>
+        </div>
+        <div class="m3-set__control">
+          <toggle-switch
+            :value="confirmOnEstop"
+            label="Ask before an emergency stop"
+            @input="confirmOnEstop = $event"
+          />
+        </div>
+      </div>
+      <div
+        v-if="hasPowerDevices"
+        class="m3-set__row"
       >
-        <v-select
-          v-model="printProgressCalculation"
-          multiple
-          filled
-          dense
-          hide-details="auto"
-          :rules="[
-            $rules.lengthGreaterThanOrEqual(1),
-          ]"
-          :items="availablePrintProgressCalculation"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting
-        :title="$t('app.setting.label.print_eta_calculation')"
-        :sub-title="$t('app.setting.tooltip.average_calculation')"
+        <div class="m3-set__label">
+          <b>Power switches</b>
+          <span>Ask before turning one of the printer's power devices on or off.</span>
+        </div>
+        <div class="m3-set__control">
+          <toggle-switch
+            :value="confirmOnPowerDeviceChange"
+            label="Ask before switching power"
+            @input="confirmOnPowerDeviceChange = $event"
+          />
+        </div>
+      </div>
+      <div
+        v-if="pro"
+        class="m3-set__row"
       >
-        <v-select
-          v-model="printEtaCalculation"
-          multiple
-          filled
-          dense
-          hide-details="auto"
-          :rules="[
-            $rules.lengthGreaterThanOrEqual(1),
-          ]"
-          :items="availablePrintEtaCalculation"
-        />
-      </app-setting>
+        <div class="m3-set__label">
+          <b>Saving the config</b>
+          <span>Show what changed and ask before Klipper restarts to keep it.</span>
+        </div>
+        <div class="m3-set__control">
+          <toggle-switch
+            :value="confirmOnSaveConfigAndRestart"
+            label="Ask before saving the config"
+            @input="confirmOnSaveConfigAndRestart = $event"
+          />
+        </div>
+      </div>
+    </section>
 
-      <v-divider />
+    <section class="m3-set">
+      <h2 class="m3-set__title">
+        Keyboard
+      </h2>
+      <div class="m3-set__row">
+        <div class="m3-set__label">
+          <b>Shortcuts</b>
+          <span>G then a letter goes to a page, Ctrl K finds anything, ? lists them all.</span>
+        </div>
+        <div class="m3-set__control">
+          <toggle-switch
+            :value="enableKeyboardShortcuts"
+            label="Keyboard shortcuts"
+            @input="enableKeyboardShortcuts = $event"
+          />
+        </div>
+      </div>
+    </section>
 
-      <app-setting
-        :title="$t('app.setting.label.enable_diagnostics')"
-        :sub-title="$t('app.setting.tooltip.diagnostics_performance')"
-      >
-        <v-switch
-          v-model="enableDiagnostics"
-          hide-details
-          class="mt-0 mb-4"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.fluidd_settings_in_moonraker_db')">
-        <app-btn
-          outlined
-          small
-          color="primary"
-          class="mr-2"
-          @click="handleBackupSettings"
+    <template v-if="pro">
+      <section class="m3-set">
+        <h2 class="m3-set__title">
+          The top bar
+        </h2>
+        <div class="m3-set__row">
+          <div class="m3-set__label">
+            <b>Upload and print</b>
+            <span>A button to send a file and start it at once.</span>
+          </div>
+          <div class="m3-set__control">
+            <toggle-switch
+              :value="showUploadAndPrint"
+              label="Upload and print button"
+              @input="showUploadAndPrint = $event"
+            />
+          </div>
+        </div>
+        <div class="m3-set__row">
+          <div class="m3-set__label">
+            <b>Save the config and restart</b>
+            <span>A button that appears when a calibration has results to keep.</span>
+          </div>
+          <div class="m3-set__control">
+            <toggle-switch
+              :value="showSaveConfigAndRestart"
+              label="Save config and restart button"
+              @input="showSaveConfigAndRestart = $event"
+            />
+          </div>
+        </div>
+        <div
+          v-if="powerDevicesList.length"
+          class="m3-set__row"
         >
-          {{ $t('app.setting.btn.backup') }}
-        </app-btn>
+          <div class="m3-set__label">
+            <b>A power switch</b>
+            <span>One of the printer's power devices, a press away.</span>
+          </div>
+          <div class="m3-set__control m3-set__control--wide">
+            <v-select
+              v-model="topNavPowerToggle"
+              outlined
+              dense
+              hide-details
+              :items="[{ text: 'None', value: null }, ...powerDevicesList]"
+            />
+          </div>
+        </div>
+      </section>
 
-        <app-btn
-          outlined
-          small
-          color="primary"
-          @click="uploadSettingsFile.click()"
-        >
-          {{ $t('app.setting.btn.restore') }}
-        </app-btn>
-      </app-setting>
-    </v-card>
+      <section class="m3-set">
+        <h2 class="m3-set__title">
+          A print's progress
+        </h2>
+        <div class="m3-set__row">
+          <div class="m3-set__label">
+            <b>How far along</b>
+            <span>Worked out from these; with more than one, their average.</span>
+          </div>
+          <div class="m3-set__control m3-set__control--wide">
+            <v-select
+              v-model="printProgressCalculation"
+              multiple
+              outlined
+              dense
+              hide-details="auto"
+              :rules="[$rules.lengthGreaterThanOrEqual(1)]"
+              :items="availablePrintProgressCalculation"
+            />
+          </div>
+        </div>
+        <div class="m3-set__row">
+          <div class="m3-set__label">
+            <b>Time left</b>
+            <span>Worked out from these; with more than one, their average.</span>
+          </div>
+          <div class="m3-set__control m3-set__control--wide">
+            <v-select
+              v-model="printEtaCalculation"
+              multiple
+              outlined
+              dense
+              hide-details="auto"
+              :rules="[$rules.lengthGreaterThanOrEqual(1)]"
+              :items="availablePrintEtaCalculation"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="m3-set">
+        <h2 class="m3-set__title">
+          Config changes and diagnostics
+        </h2>
+        <div class="m3-set__row">
+          <div class="m3-set__label">
+            <b>Changes not to list</b>
+            <span>Sections whose saved results Save doesn't show, such as the bed mesh.</span>
+          </div>
+          <div class="m3-set__control m3-set__control--wide">
+            <v-combobox
+              v-model="sectionsToIgnorePendingConfigurationChanges"
+              :items="['bed_mesh default', 'bed_tilt']"
+              multiple
+              small-chips
+              deletable-chips
+              outlined
+              dense
+              hide-details
+              append-icon=""
+            />
+          </div>
+        </div>
+        <div class="m3-set__row">
+          <div class="m3-set__label">
+            <b>Diagnostics</b>
+            <span>Records how busy each board is, for Charts. Uses a little more of the printer.</span>
+          </div>
+          <div class="m3-set__control">
+            <toggle-switch
+              :value="enableDiagnostics"
+              label="Diagnostics"
+              @input="enableDiagnostics = $event"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="m3-set">
+        <h2 class="m3-set__title">
+          These settings
+        </h2>
+        <div class="m3-set__row">
+          <div class="m3-set__label">
+            <b>A copy of them</b>
+            <span>Everything set here is kept on the printer. A copy moves it to another one.</span>
+          </div>
+          <div class="m3-set__control">
+            <button
+              type="button"
+              class="cbtn"
+              @click="handleBackupSettings"
+            >
+              Download a copy
+            </button>
+            <button
+              type="button"
+              class="cbtn cbtn--ghost"
+              @click="uploadSettingsFile.click()"
+            >
+              Restore one
+            </button>
+          </div>
+        </div>
+      </section>
+    </template>
 
     <input
       ref="uploadSettingsFile"
@@ -277,11 +320,21 @@ import consola from 'consola'
 import { readFileAsTextAsync } from '@/util/file-system-entry'
 import { EventBus } from '@/eventBus'
 import { isFluiddContent, toFluiddContent } from '@/util/fluidd-content'
+import { proMode } from '@/services/pro-mode'
+import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
 
 @Component({
-  components: {}
+  components: { ToggleSwitch }
 })
 export default class GeneralSettings extends Mixins(StateMixin) {
+  get pro (): boolean {
+    return proMode.on
+  }
+
+  get hasPowerDevices (): boolean {
+    return ((this.$store.getters['power/getDevices'] as Device[] | undefined) ?? []).length > 0
+  }
+
   @Ref('instanceName')
   readonly instanceNameElement!: VInput
 

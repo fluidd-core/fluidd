@@ -1,97 +1,94 @@
 <template>
-  <div>
-    <v-subheader id="theme">
-      {{ $t('app.setting.title.theme') }}
-    </v-subheader>
-    <v-card
-      :elevation="5"
-      dense
-      class="mb-4"
-    >
-      <app-setting :title="$t('app.setting.label.interface_style')">
-        <v-btn-toggle
-          v-model="uiStyle"
-          mandatory
-          dense
-        >
-          <v-btn
-            v-for="style in uiStyles"
-            :key="style"
-            :value="style"
-            small
-          >
-            {{ $t(`app.setting.label.interface_style_${style}`) }}
-          </v-btn>
-        </v-btn-toggle>
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting>
-        <template #title>
-          <span>{{ $t('app.setting.label.theme_preset') }}</span>
-          <app-inline-help
-            bottom
-            small
-            :tooltip="$t('app.setting.tooltip.theme_disclaimer')"
-          />
-        </template>
-        <v-select
-          v-model="themePreset"
-          filled
-          dense
-          single-line
-          hide-details="auto"
-          :items="themePresets"
-          item-value="icon.src"
-          item-text="name"
-          return-object
+  <section
+    id="theme"
+    class="m3-set"
+    data-tid="theme-settings"
+  >
+    <h2 class="m3-set__title">
+      How it looks
+    </h2>
+    <div class="m3-set__row">
+      <div class="m3-set__label">
+        <b>Dark or light</b>
+      </div>
+      <div class="m3-set__control">
+        <seg-picker
+          :options="[{ value: 'dark', label: 'Dark' }, { value: 'light', label: 'Light' }]"
+          :value="isDark ? 'dark' : 'light'"
+          label="Dark or light"
+          @input="isDark = $event === 'dark'"
         />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.primary_color')">
-        <app-btn
-          outlined
-          small
-          color="primary"
-          class="mr-2"
+      </div>
+    </div>
+    <div class="m3-set__row">
+      <div class="m3-set__label">
+        <b>Panels</b>
+        <span>Glass lets the page show through a little; flat is solid.</span>
+      </div>
+      <div class="m3-set__control">
+        <seg-picker
+          :options="uiStyles.map(s => ({ value: s, label: $t(`app.setting.label.interface_style_${s}`) }))"
+          :value="uiStyle"
+          label="Panels"
+          @input="uiStyle = $event"
+        />
+      </div>
+    </div>
+    <div class="m3-set__row">
+      <div class="m3-set__label">
+        <b>Colour</b>
+        <span>Buttons, switches and highlights. Reset goes back to {{ themePreset ? themePreset.name : 'the preset' }}'s.</span>
+      </div>
+      <div class="m3-set__control">
+        <button
+          type="button"
+          class="cbtn cbtn--ghost"
           @click="handleReset"
         >
-          {{ $t('app.setting.btn.reset') }}
-        </app-btn>
-
+          Reset
+        </button>
         <app-color-picker
           v-if="theme"
           v-model="themeColor"
           :title="$t('app.setting.btn.select_theme')"
         />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.dark_mode')">
-        <v-switch
-          v-model="isDark"
-          hide-details
-          class="mb-5"
-          @click.native.stop
+      </div>
+    </div>
+    <div class="m3-set__row">
+      <div class="m3-set__label">
+        <b>Logo behind the pages</b>
+      </div>
+      <div class="m3-set__control">
+        <toggle-switch
+          :value="backgroundLogo"
+          label="Logo behind the pages"
+          @input="backgroundLogo = $event"
         />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.show_logo_on_background')">
-        <v-switch
-          v-model="backgroundLogo"
+      </div>
+    </div>
+    <div
+      v-if="pro"
+      class="m3-set__row"
+    >
+      <div class="m3-set__label">
+        <b>A community theme</b>
+        <span>Another maker's colours and logo. Their names and logos are theirs; Fluidd's makers include them with permission.</span>
+      </div>
+      <div class="m3-set__control m3-set__control--wide">
+        <v-select
+          v-model="themePreset"
+          outlined
+          dense
+          single-line
           hide-details
-          class="mb-5"
-          @click.native.stop
+          :items="themePresets"
+          item-value="icon.src"
+          item-text="name"
+          return-object
         />
-      </app-setting>
-    </v-card>
-  </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -100,13 +97,22 @@ import StateMixin from '@/mixins/state'
 import type { ThemePreset, ThemeConfig, UiStyle } from '@/store/config/types'
 import { UI_STYLES } from '@/util/ui-style'
 import ThemePicker from '../ui/AppColorPicker.vue'
+import SegPicker from '@/components/control/SegPicker.vue'
+import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
+import { proMode } from '@/services/pro-mode'
 
 @Component({
   components: {
-    ThemePicker
+    ThemePicker,
+    SegPicker,
+    ToggleSwitch
   }
 })
 export default class ThemeSettings extends Mixins(StateMixin) {
+  get pro (): boolean {
+    return proMode.on
+  }
+
   get theme (): ThemeConfig {
     return this.$store.state.config.uiSettings.theme as ThemeConfig
   }

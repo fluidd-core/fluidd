@@ -1,394 +1,188 @@
 <template>
-  <div>
-    <v-subheader id="toolhead">
-      {{ $t('app.setting.title.tool') }}
-    </v-subheader>
-    <v-card
-      :elevation="5"
-      dense
-      class="mb-4"
-    >
-      <app-setting
-        :title="$t('app.setting.label.gcode_coords')"
-        :sub-title="$t('app.setting.tooltip.gcode_coords')"
-        :r-cols="2"
+  <div
+    id="toolhead"
+    class="m3-sets"
+    data-tid="moving-settings"
+  >
+    <section class="m3-set">
+      <h2 class="m3-set__title">
+        Moving
+      </h2>
+      <p class="m3-set__intro">
+        How Control's move pad and the plate's buttons move the printer.
+      </p>
+      <div class="m3-set__row">
+        <div class="m3-set__label">
+          <b>The head's speed</b>
+          <span>For a press of the pad or a click on the plate.</span>
+        </div>
+        <div class="m3-set__control">
+          <number-field
+            :value="defaultToolheadXYSpeed"
+            unit="mm/s"
+            :min="1"
+            :max="1000"
+            label="The head's speed"
+            @change="setDefaultToolheadYXSpeed"
+          />
+        </div>
+      </div>
+      <div class="m3-set__row">
+        <div class="m3-set__label">
+          <b>The plate's speed</b>
+        </div>
+        <div class="m3-set__control">
+          <number-field
+            :value="defaultToolheadZSpeed"
+            unit="mm/s"
+            :min="1"
+            :max="100"
+            label="The plate's speed"
+            @change="setDefaultToolheadZSpeed"
+          />
+        </div>
+      </div>
+      <div class="m3-set__row">
+        <div class="m3-set__label">
+          <b>Reverse an axis</b>
+          <span>Only for a printer whose motors run the other way. The M1's directions are known already.</span>
+        </div>
+        <div class="m3-set__control">
+          <label class="m3-set__check"><input
+            type="checkbox"
+            :checked="invertX"
+            @change="onInvert('x', $event)"
+          > X</label>
+          <label class="m3-set__check"><input
+            type="checkbox"
+            :checked="invertY"
+            @change="onInvert('y', $event)"
+          > Y</label>
+          <label class="m3-set__check"><input
+            type="checkbox"
+            :checked="invertZ"
+            @change="onInvert('z', $event)"
+          > Z</label>
+        </div>
+      </div>
+      <div
+        v-if="printerSupportsForceMove"
+        class="m3-set__row"
       >
-        <v-switch
-          v-model="useGcodeCoords"
-          hide-details
-          class="mt-0 mb-4"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.toolhead_control_style')">
-        <v-select
-          v-model="toolheadControlStyle"
-          filled
-          dense
-          hide-details="auto"
-          :items="availableToolheadControlStyles"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <template v-if="toolheadControlStyle === 'cross' || toolheadControlStyle === 'circle'">
-        <app-setting :title="$t('app.setting.label.invert_x_control')">
-          <v-switch
-            v-model="invertX"
-            hide-details
-            class="mt-0 mb-4"
+        <div class="m3-set__label">
+          <b>Moving without homing</b>
+          <span>Warn before a move that skips Klipper's limits (FORCE_MOVE).</span>
+        </div>
+        <div class="m3-set__control">
+          <toggle-switch
+            :value="forceMoveToggleWarning"
+            label="Warn before moving without homing"
+            @input="forceMoveToggleWarning = $event"
           />
-        </app-setting>
+        </div>
+      </div>
+    </section>
 
-        <v-divider />
-
-        <app-setting :title="$t('app.setting.label.invert_y_control')">
-          <v-switch
-            v-model="invertY"
-            hide-details
-            class="mt-0 mb-4"
+    <section class="m3-set">
+      <h2 class="m3-set__title">
+        Extruding
+      </h2>
+      <div class="m3-set__row">
+        <div class="m3-set__label">
+          <b>How much a press pushes</b>
+          <span>Control's Extrude and Retract.</span>
+        </div>
+        <div class="m3-set__control">
+          <number-field
+            :value="defaultExtrudeLength"
+            unit="mm"
+            :min="1"
+            :max="200"
+            label="Extrude length"
+            @change="setDefaultExtrudeLength"
           />
-        </app-setting>
-
-        <v-divider />
-
-        <app-setting :title="$t('app.setting.label.invert_z_control')">
-          <v-switch
-            v-model="invertZ"
-            hide-details
-            class="mt-0 mb-4"
+        </div>
+      </div>
+      <div class="m3-set__row">
+        <div class="m3-set__label">
+          <b>How fast</b>
+        </div>
+        <div class="m3-set__control">
+          <number-field
+            :value="defaultExtrudeSpeed"
+            unit="mm/s"
+            :min="1"
+            :max="50"
+            label="Extrude speed"
+            @change="setDefaultExtrudeSpeed"
           />
-        </app-setting>
+        </div>
+      </div>
+    </section>
 
-        <v-divider />
-      </template>
-
-      <template v-if="toolheadControlStyle === 'cross'">
-        <app-setting :title="$t('app.setting.label.toolhead_move_distances')">
-          <v-combobox
-            ref="toolheadMoveDistances"
-            v-model="toolheadMoveDistances"
-            filled
-            dense
-            hide-selected
-            hide-details="auto"
-            suffix="mm"
-            multiple
-            small-chips
-            append-icon=""
-            deletable-chips
-            :rules="[
-              $rules.lengthGreaterThanOrEqual(1),
-              $rules.lengthLessThanOrEqual(6),
-              $rules.numberArrayValid
-            ]"
+    <section class="m3-set">
+      <h2 class="m3-set__title">
+        Calibration helpers
+      </h2>
+      <p class="m3-set__intro">
+        Open a helper by itself when the printer starts one of these from a macro or the console.
+      </p>
+      <div class="m3-set__row">
+        <div class="m3-set__label">
+          <b>The paper test</b>
+          <span>Manual probing, to set how close the nozzle starts.</span>
+        </div>
+        <div class="m3-set__control">
+          <toggle-switch
+            :value="showManualProbeDialogAutomatically"
+            label="Open the paper test helper"
+            @input="showManualProbeDialogAutomatically = $event"
           />
-        </app-setting>
-
-        <v-divider />
-
-        <app-setting :title="$t('app.setting.label.default_toolhead_move_length')">
-          <v-select
-            :value="defaultToolheadMoveLength"
-            :items="toolheadMoveDistances"
-            :rules="[
-              $rules.required,
-              $rules.numberValid
-            ]"
-            filled
-            dense
-            single-line
-            hide-details="auto"
-            suffix="mm"
-            @change="setDefaultToolheadMoveLength"
+        </div>
+      </div>
+      <div class="m3-set__row">
+        <div class="m3-set__label">
+          <b>Bed screws</b>
+          <span>BED_SCREWS_ADJUST and SCREWS_TILT_CALCULATE, on printers that have them.</span>
+        </div>
+        <div class="m3-set__control">
+          <toggle-switch
+            :value="showBedScrewsAdjustDialogAutomatically && showScrewsTiltAdjustDialogAutomatically"
+            label="Open the bed screws helpers"
+            @input="showBedScrewsAdjustDialogAutomatically = $event; showScrewsTiltAdjustDialogAutomatically = $event"
           />
-        </app-setting>
-
-        <v-divider />
-      </template>
-
-      <template v-else-if="toolheadControlStyle === 'bars'">
-        <app-setting :title="$t('app.setting.label.toolhead_xy_move_distances')">
-          <v-combobox
-            ref="toolheadXYMoveDistances"
-            v-model="toolheadXYMoveDistances"
-            filled
-            dense
-            hide-selected
-            hide-details="auto"
-            suffix="mm"
-            multiple
-            small-chips
-            append-icon=""
-            deletable-chips
-            :rules="[
-              $rules.lengthGreaterThanOrEqual(1),
-              $rules.lengthLessThanOrEqual(3),
-              $rules.numberArrayValid
-            ]"
-          />
-        </app-setting>
-
-        <v-divider />
-
-        <app-setting :title="$t('app.setting.label.toolhead_z_move_distances')">
-          <v-combobox
-            ref="toolheadZMoveDistances"
-            v-model="toolheadZMoveDistances"
-            filled
-            dense
-            hide-selected
-            hide-details="auto"
-            suffix="mm"
-            multiple
-            small-chips
-            append-icon=""
-            deletable-chips
-            :rules="[
-              $rules.lengthGreaterThanOrEqual(1),
-              $rules.lengthLessThanOrEqual(3),
-              $rules.numberArrayValid
-            ]"
-          />
-        </app-setting>
-
-        <v-divider />
-      </template>
-
-      <template v-else-if="toolheadControlStyle === 'circle'">
-        <app-setting :title="$t('app.setting.label.toolhead_xy_move_distances')">
-          <v-combobox
-            ref="toolheadCircleXYMoveDistances"
-            v-model="toolheadCircleXYMoveDistances"
-            filled
-            dense
-            hide-selected
-            hide-details="auto"
-            suffix="mm"
-            multiple
-            small-chips
-            append-icon=""
-            deletable-chips
-            :rules="[
-              $rules.lengthGreaterThanOrEqual(4),
-              $rules.lengthLessThanOrEqual(4),
-              $rules.numberArrayValid
-            ]"
-          />
-        </app-setting>
-
-        <v-divider />
-
-        <app-setting :title="$t('app.setting.label.toolhead_z_move_distances')">
-          <v-combobox
-            ref="toolheadCircleZMoveDistances"
-            v-model="toolheadCircleZMoveDistances"
-            filled
-            dense
-            hide-selected
-            hide-details="auto"
-            suffix="mm"
-            multiple
-            small-chips
-            append-icon=""
-            deletable-chips
-            :rules="[
-              $rules.lengthGreaterThanOrEqual(4),
-              $rules.lengthLessThanOrEqual(4),
-              $rules.numberArrayValid
-            ]"
-          />
-        </app-setting>
-
-        <v-divider />
-
-        <app-setting :title="$t('app.setting.label.enable_xy_homing')">
-          <v-switch
-            v-model="toolheadCircleXYHomingEnabled"
-            hide-details
-            class="mt-0 mb-4"
-          />
-        </app-setting>
-
-        <v-divider />
-      </template>
-
-      <app-setting :title="$t('app.setting.label.default_toolhead_xy_speed')">
-        <v-text-field
-          :value="defaultToolheadXYSpeed"
-          :rules="[
-            $rules.required,
-            $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(1)
-          ]"
-          filled
-          dense
-          single-line
-          hide-details="auto"
-          suffix="mm/s"
-          @change="setDefaultToolheadYXSpeed"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.default_toolhead_z_speed')">
-        <v-text-field
-          :value="defaultToolheadZSpeed"
-          :rules="[
-            $rules.required,
-            $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(1)
-          ]"
-          filled
-          dense
-          single-line
-          hide-details="auto"
-          suffix="mm/s"
-          @change="setDefaultToolheadZSpeed"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.z_adjust_values')">
-        <v-combobox
-          ref="zAdjustValues"
-          v-model="zAdjustValues"
-          filled
-          dense
-          hide-selected
-          hide-details="auto"
-          suffix="mm"
-          multiple
-          small-chips
-          append-icon=""
-          deletable-chips
-          :rules="[
-            $rules.lengthGreaterThanOrEqual(1),
-            $rules.lengthLessThanOrEqual(4),
-            $rules.numberArrayValid
-          ]"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.default_extrude_length')">
-        <v-text-field
-          :value="defaultExtrudeLength"
-          :rules="[
-            $rules.required,
-            $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(1)
-          ]"
-          filled
-          dense
-          single-line
-          hide-details="auto"
-          suffix="mm"
-          @change="setDefaultExtrudeLength"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting :title="$t('app.setting.label.default_extrude_speed')">
-        <v-text-field
-          :value="defaultExtrudeSpeed"
-          :rules="[
-            $rules.required,
-            $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(1)
-          ]"
-          filled
-          dense
-          single-line
-          hide-details="auto"
-          suffix="mm/s"
-          @change="setDefaultExtrudeSpeed"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting
-        :title="$t('app.setting.label.show_manual_probe_dialog_automatically')"
-        :sub-title="$t('app.setting.tooltip.show_manual_probe_dialog_automatically')"
-      >
-        <v-switch
-          v-model="showManualProbeDialogAutomatically"
-          hide-details
-          class="mt-0 mb-4"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting
-        :title="$t('app.setting.label.show_bed_screws_adjust_dialog_automatically')"
-        :sub-title="$t('app.setting.tooltip.show_bed_screws_adjust_dialog_automatically')"
-      >
-        <v-switch
-          v-model="showBedScrewsAdjustDialogAutomatically"
-          hide-details
-          class="mt-0 mb-4"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <app-setting
-        :title="$t('app.setting.label.show_screws_tilt_adjust_dialog_automatically')"
-        :sub-title="$t('app.setting.tooltip.show_screws_tilt_adjust_dialog_automatically')"
-      >
-        <v-switch
-          v-model="showScrewsTiltAdjustDialogAutomatically"
-          hide-details
-          class="mt-0 mb-4"
-        />
-      </app-setting>
-
-      <v-divider />
-
-      <template v-if="printerSupportsForceMove">
-        <app-setting :title="$t('app.setting.label.force_move_toggle_warning')">
-          <v-switch
-            v-model="forceMoveToggleWarning"
-            hide-details
-            class="mt-0 mb-4"
-          />
-        </app-setting>
-
-        <v-divider />
-      </template>
-
-      <app-setting :title="$t('app.setting.label.reset')">
-        <app-btn
-          outlined
-          small
-          color="primary"
-          @click="handleReset"
-        >
-          {{ $t('app.setting.btn.reset') }}
-        </app-btn>
-      </app-setting>
-    </v-card>
+        </div>
+      </div>
+      <div class="m3-set__row">
+        <div class="m3-set__label">
+          <b>Start again</b>
+          <span>These settings back to how they came.</span>
+        </div>
+        <div class="m3-set__control">
+          <button
+            type="button"
+            class="cbtn cbtn--ghost"
+            @click="handleReset"
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Ref, Mixins } from 'vue-property-decorator'
+import NumberField from '@/components/control/NumberField.vue'
+import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
 import { defaultState } from '@/store/config/state'
 import type { VInput } from '@/types'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { ToolheadControlStyle } from '@/store/config/types'
 
 @Component({
-  components: {}
+  components: { NumberField, ToggleSwitch }
 })
 export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   @Ref('toolheadMoveDistances')
@@ -711,6 +505,13 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
       value,
       server: true
     })
+  }
+
+  onInvert (axis: 'x' | 'y' | 'z', event: Event) {
+    const checked = (event.target as HTMLInputElement).checked
+    if (axis === 'x') this.invertX = checked
+    else if (axis === 'y') this.invertY = checked
+    else this.invertZ = checked
   }
 
   handleReset () {

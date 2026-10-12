@@ -1,76 +1,91 @@
 <template>
-  <div>
-    <v-subheader id="presets">
-      {{ $t('app.setting.title.thermal_presets') }}
-    </v-subheader>
-    <v-card
-      :elevation="5"
-      dense
-      class="mb-4"
-    >
-      <app-setting>
-        <app-btn
-          outlined
-          small
-          color="primary"
+  <section
+    id="presets"
+    class="m3-set"
+    data-tid="materials-settings"
+  >
+    <div class="m3-set__row mat__head">
+      <div class="m3-set__label">
+        <h2 class="m3-set__title">
+          Materials
+        </h2>
+        <span>What Overview's Filament picker offers, at the temperatures Heat uses. The slicer starts from what's loaded.</span>
+      </div>
+      <div class="m3-set__control">
+        <button
+          type="button"
+          class="cbtn"
+          data-tid="material-add"
           @click="openAddDialog"
         >
-          <v-icon
-            small
-            left
-          >
-            $plus
-          </v-icon>
-          {{ $t('app.setting.btn.add_thermal_preset') }}
-        </app-btn>
-      </app-setting>
+          Add a material
+        </button>
+      </div>
+    </div>
 
-      <v-divider v-if="presets.length > 0" />
-
-      <template v-for="(preset, i) in presets">
-        <app-setting
-          :key="preset.index"
-          :title="preset.name"
-          :r-cols="2"
+    <div
+      v-for="preset in presets"
+      :key="preset.id"
+      class="m3-set__row"
+      :data-tid="`material-row-${preset.name}`"
+    >
+      <span
+        class="mat__swatch"
+        :style="{ background: swatch(preset.name) }"
+      />
+      <div class="m3-set__label">
+        <b>{{ preset.name }}</b>
+        <span>{{ describe(preset) }}</span>
+      </div>
+      <div class="m3-set__control">
+        <button
+          type="button"
+          class="cbtn cbtn--ghost"
           @click="openEditDialog(preset)"
         >
-          <template #sub-title>
-            <span
-              v-for="(value, k) in preset.values"
-              v-show="value.active"
-              :key="k"
-              class="mr-2"
-            >
-              {{ k }}: {{ value.value }}<small>°C</small>
-            </span>
-          </template>
-          <app-btn
-            fab
-            text
-            x-small
-            color=""
-            @click.stop="handleRemovePreset(preset)"
-          >
-            <v-icon color="">
-              $close
-            </v-icon>
-          </app-btn>
-        </app-setting>
+          Change
+        </button>
+        <button
+          type="button"
+          class="mat__remove"
+          :aria-label="`Remove ${preset.name}`"
+          @click="handleRemovePreset(preset)"
+        >
+          <frame-icon
+            name="trash"
+            small
+          />
+        </button>
+      </div>
+    </div>
 
-        <v-divider
-          v-if="i < presets.length - 1 && presets.length > 0"
-          :key="preset.id"
-        />
-      </template>
+    <div
+      v-if="missing.length"
+      class="m3-set__row"
+    >
+      <div class="m3-set__label">
+        <b>{{ presets.length ? 'The usual ones' : 'No materials yet' }}</b>
+        <span>{{ missing.map(m => m.name).join(', ') }}, at the temperatures the M1 prints them.</span>
+      </div>
+      <div class="m3-set__control">
+        <button
+          type="button"
+          class="cbtn cbtn--primary"
+          data-tid="material-add-usual"
+          @click="addUsual"
+        >
+          Add {{ missing.length === 1 ? missing[0].name : 'them' }}
+        </button>
+      </div>
+    </div>
 
-      <preset-dialog
-        v-if="dialogState.active"
-        v-model="dialogState.active"
-        :preset="dialogState.preset"
-        @save="handleSavePreset"
-      />
-    </v-card>
-  </div>
+    <preset-dialog
+      v-if="dialogState.active"
+      v-model="dialogState.active"
+      :preset="dialogState.preset"
+      @save="handleSavePreset"
+    />
+  </section>
 </template>
 
 <script lang="ts">
@@ -79,6 +94,7 @@ import PresetDialog from './PresetDialog.vue'
 import type { TemperaturePreset } from '@/store/config/types'
 import type { Fan, Heater } from '@/store/printer/types'
 import StateMixin from '@/mixins/state'
+import { PANEL_MATERIALS } from '@/services/control/model'
 
 @Component({
   components: {
@@ -135,13 +151,67 @@ export default class TemperaturePresetSettings extends Mixins(StateMixin) {
   handleRemovePreset (preset: TemperaturePreset) {
     this.$store.dispatch('config/removePreset', preset)
   }
+
+  /** The panel's swatch for a material of that name, else a neutral grey. */
+  swatch (name: string): string {
+    return PANEL_MATERIALS.find(p => p.name.toUpperCase() === name.trim().toUpperCase())?.colour ?? '#8a9597'
+  }
+
+  /** "215° nozzle · 60° bed · Part fan 30%". */
+  describe (preset: TemperaturePreset): string {
+    const parts: string[] = []
+    for (const [name, v] of Object.entries(preset.values ?? {})) {
+      if (!v.active || v.value <= 0) continue
+      if (name === 'extruder') parts.push(`${v.value}° nozzle`)
+      else if (name === 'heater_bed') parts.push(`${v.value}° bed`)
+      else parts.push(`${name.replace(/^(temperature_fan|heater_generic) /, '')} ${v.value}${v.type === 'fan' ? '%' : '°'}`)
+    }
+    return parts.join(' · ') || 'No temperatures set'
+  }
+
+  /** U5's four, where the table doesn't have them. */
+  get missing () {
+    const names = new Set((this.presets as TemperaturePreset[]).map(p => p.name.trim().toUpperCase()))
+    return PANEL_MATERIALS.filter(m => ['PLA', 'PETG', 'ABS', 'TPU'].includes(m.name) && !names.has(m.name))
+  }
+
+  addUsual () {
+    for (const m of this.missing) {
+      this.handleSavePreset({
+        id: -1,
+        name: m.name,
+        values: {
+          extruder: { value: m.nozzle, type: 'heater', active: true },
+          heater_bed: { value: m.bed, type: 'heater', active: true }
+        }
+      } as unknown as TemperaturePreset)
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-  .presets-table table > tbody > tr > td {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    vertical-align: top;
+  .mat__head .m3-set__title {
+    margin: 0;
+  }
+
+  .mat__swatch {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 25%);
+  }
+
+  .mat__remove {
+    display: inline-flex;
+    padding: 8px;
+    border-radius: 10px;
+    color: var(--m3d-text-muted);
+
+    &:hover {
+      background: var(--m3d-hover);
+      color: var(--m3d-danger);
+    }
   }
 </style>

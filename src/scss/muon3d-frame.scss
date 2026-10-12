@@ -83,3 +83,111 @@
 .crow__value {
   font-variant-numeric: tabular-nums;
 }
+
+// Settings' panels (KAN-512): one panel a subject, each row a label (with a
+// line saying what it does) and its control.
+.m3-sets {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.m3-set {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px 10px;
+  border-radius: 22px;
+  background: var(--m3d-surface);
+  color: var(--m3d-text);
+}
+
+.m3-set__title {
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.m3-set__intro {
+  margin: 0 0 6px;
+  color: var(--m3d-text-muted);
+  font-size: 13px;
+}
+
+.m3-set__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 60px;
+  padding: 8px 0;
+
+  & + & {
+    border-top: 1px solid var(--m3d-border);
+  }
+}
+
+.m3-set__label {
+  flex: 1 1 auto;
+  min-width: 0;
+
+  b {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  span {
+    display: block;
+    color: var(--m3d-text-muted);
+    font-size: 13px;
+  }
+}
+
+.m3-set__control {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  max-width: 55%;
+}
+
+.m3-set__control--wide {
+  flex: 0 1 340px;
+  width: 340px;
+}
+
+.m3-set__check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: var(--m3d-surface-2);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.m3-sets + .m3-set,
+.m3-set + .m3-sets,
+.m3-sets + .m3-sets {
+  margin-top: 16px;
+}
+
+.m3-set__control--pair > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .m3-set__row {
+    flex-wrap: wrap;
+  }
+
+  .m3-set__control,
+  .m3-set__control--wide {
+    flex: 1 1 100%;
+    width: auto;
+    max-width: none;
+  }
+}
