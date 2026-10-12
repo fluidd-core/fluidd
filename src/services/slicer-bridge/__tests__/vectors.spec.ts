@@ -23,7 +23,7 @@ import handshake from '../vendor/printer-client/bridge/vectors/handshake.json'
 import hostCases from '../vendor/printer-client/bridge/vectors/host.json'
 import messages from '../vendor/printer-client/bridge/vectors/messages.json'
 import { createBridgeHost, type ConfirmAnswer, type HostLogEntry } from '../vendor/printer-client/bridge/host'
-import { parseIncoming, parsePrintDecision, parseQueueAnswer, parseRequest, type BridgePrinter, type PrintMode, type Welcome } from '../vendor/printer-client/bridge/protocol'
+import { parseClientEvent, parseIncoming, parsePrintDecision, parseQueueAnswer, parseRequest, type BridgePrinter, type PrintMode, type Welcome } from '../vendor/printer-client/bridge/protocol'
 import { createFluiddAdapter } from '../adapter'
 import { startSlicerHost } from '../host'
 import { fakeMoonraker, newPrinter, type MoonrakerPrinter } from './moonraker'
@@ -93,6 +93,14 @@ describe('vectors: messages, as the host reads them', () => {
       const { error, ...rest } = subst(c.expect) as Record<string, unknown>
       expectPartial(parsed, rest, c.name)
       if (error) expect(parsed?.kind === 'failure' && parsed.error.kind).toBe(error)
+    })
+  }
+  // The client's own events (0.3.0: printer.material), as the host reads them.
+  for (const c of messages.clientEvents as any[]) {
+    it(`client event: ${c.name}`, () => {
+      const parsed = parseClientEvent(subst(c.message))
+      if (c.expect === 'ignored') return expect(parsed).toBeNull()
+      expect(parsed, c.name).toEqual(subst(c.expect))
     })
   }
   for (const c of messages.answers as any[]) {

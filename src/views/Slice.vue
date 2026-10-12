@@ -53,7 +53,7 @@ import ControlMixin from '@/mixins/control'
 import { proMode } from '@/services/pro-mode'
 import { readLook } from '@/services/slicer-bridge/look'
 import { hostSetup, type ActiveSpool } from '@/services/slicer-bridge/setup'
-import type { HostSetup } from '@/services/slicer-bridge/vendor/printer-client/bridge/protocol'
+import type { HostSetup, PrinterMaterial } from '@/services/slicer-bridge/vendor/printer-client/bridge/protocol'
 import PrintConfirmDialog, { type LoadedMaterial, type PrintConfirmRequest } from '@/components/slicer/PrintConfirmDialog.vue'
 import { startSlicerHost, type SlicerHost } from '@/services/slicer-bridge/host'
 import { readFluiddSelection } from '@/services/slicer-bridge/fluidd'
@@ -208,6 +208,7 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
       look: this.readLook(),
       mode: proMode.on ? 'pro' : 'simple',
       setup: (key) => (key === this.host?.printer()?.key ? this.currentSetup : null),
+      onMaterial: (key, material) => { if (key === this.host?.printer()?.key) this.takeMaterial(material) },
       hostVersion: String(import.meta.env.VERSION ?? ''),
       onState: (state) => { this.dirty = state.dirty === true },
       log: (entry) => consola.debug('[slicer bridge]', entry)
@@ -231,6 +232,18 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
       this.setupFrame = requestAnimationFrame(() => this.host?.bridge.setupChanged())
     })
     this.watchFeatures()
+  }
+
+  /**
+   * The slicer's material drawer changed what's loaded (printer.material):
+   * the printer keeps it, as when Overview or Control set it, so the panel,
+   * these pages and the live M1 agree. The material only while nothing
+   * prints (the print was sliced for what's loaded); its colour any time.
+   */
+  takeMaterial (material: PrinterMaterial) {
+    const choice = this.materialChoices.find(c => c.name.trim().toUpperCase() === material.material.trim().toUpperCase())
+    if (choice && !this.printerPrinting && !this.printerPaused && choice.name !== this.loadedMaterial?.name) this.setLoadedMaterial(choice)
+    if (material.colour && material.colour.toUpperCase() !== this.loadedColour) this.setLoadedColour(material.colour)
   }
 
   /** Once the slicer's hello is welcomed, whether it draws itself as a part of the page; then it shows. */

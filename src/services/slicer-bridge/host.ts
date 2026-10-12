@@ -25,7 +25,7 @@ import {
   type ConfirmRequest,
   type HostLogEntry
 } from './vendor/printer-client/bridge/host'
-import type { BridgePrinter, Density, HostLook, HostSetup, Theme, UiMode } from './vendor/printer-client/bridge/protocol'
+import type { BridgePrinter, Density, HostLook, HostSetup, PrinterMaterial, Theme, UiMode } from './vendor/printer-client/bridge/protocol'
 import { createFluiddAdapter, type HttpClient } from './adapter'
 import { bridgePrinterFor, createIdentityCache, samePrinter, type FluiddSelection } from './selection'
 import { createStoreStatusFeed } from './statusFeed'
@@ -51,6 +51,13 @@ export interface SlicerHostOptions {
   mode?: UiMode;
   /** What printer `key` has loaded, and the material table (printer.setup, setup.ts); null for any but the selected one. */
   setup?: (key: string) => HostSetup | null;
+  /**
+   * The slicer set what printer `key` has loaded (printer.material, 0.3.0):
+   * the host keeps it as that printer's, as Overview and Control do. Given,
+   * the welcome grants printer.material; the helper passes on only those for
+   * the selected printer while it takes writes.
+   */
+  onMaterial?: (key: string, material: PrinterMaterial) => void;
   hostVersion: string;
   onState?: (state: Record<string, unknown>) => void;
   log?: (entry: HostLogEntry) => void;
@@ -125,6 +132,7 @@ export function startSlicerHost (options: SlicerHostOptions): SlicerHost {
     look: options.look,
     mode: options.mode,
     setup: options.setup,
+    onMaterial: options.onMaterial,
     adapter,
     onState: options.onState,
     log: options.log

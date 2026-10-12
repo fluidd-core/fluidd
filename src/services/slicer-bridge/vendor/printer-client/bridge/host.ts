@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Vendored from @muon3d/printer-client 0.2.0 (src/bridge/host.ts), Copyright 2026 Muon 3D
+// Vendored from @muon3d/printer-client 0.3.0 (src/bridge/host.ts), Copyright 2026 Muon 3D
 // Technologies Limited, under the Apache License 2.0 (vendor/printer-client/LICENSE and NOTICE). Changed for
 // Fluidd by tools/vendor-printer-client.cjs: relative imports without ".ts"; Object.hasOwn as hasOwnProperty.call.
 // The host's side of printer-bridge/1 (protocol.ts), without a framework: the page that frames a printer client (Fluidd's
@@ -42,6 +42,10 @@
 //   a `mode`, ui.mode the same way; given `setup`, printer.setup: the selected printer's setup after the welcome, after
 //   each printer.changed, and again on setupChanged(). `clientFeatures` is what the welcomed hello listed ([] from a
 //   client that predates them), for a host that draws its page differently around a client that uses its look.
+// - The printer's loaded material, the other way (0.3.0): given `onMaterial`, the helper grants printer.material and
+//   hands the host each printer.material event the frame sends, read (parsePrinterMaterial), for the printer the host
+//   has selected now and only while that printer takes writes (not watch-only, online). Anything else is dropped and
+//   logged. The host writes it to its printer and calls setupChanged() once the printer says so.
 //
 // An adapter's error reaches the frame as it is only when it is a PrinterError (errors/kinds.ts), so a host that maps
 // its printer's answers with errors/parse.ts passes the printer's own words through. Any other error (a fetch's, a
@@ -60,6 +64,7 @@ import {
   commonVersion,
   LIMITS,
   OPS,
+  parseClientEvent,
   parseHello,
   parseRequest,
   type BridgeError,
@@ -71,6 +76,7 @@ import {
   type OpRequest,
   type PlateClearAsk,
   type PrintDecision,
+  type PrinterMaterial,
   type PrintMode,
   type ReadMethod,
   type Theme,
@@ -148,6 +154,8 @@ export type HostLogEntry =
   | { kind: 'refused'; op: string; id: number | null; error: BridgeError }
   | { kind: 'answered'; op: string; id: number; result: unknown }
   | { kind: 'state'; data: unknown }
+  /** A printer.material the host was handed (onMaterial). */
+  | { kind: 'material'; printer: string; data: PrinterMaterial }
   /** An adapter's error that is not a PrinterError: the frame was told only "The host could not do it". */
   | { kind: 'adapter-error'; op: string; id: number; error: unknown };
 
@@ -170,6 +178,12 @@ export interface BridgeHostOptions {
   mode?: UiMode;
   /** The setup of printer `key` (printer.setup): what it has loaded and the host's material table; null for none. */
   setup?: (key: string) => HostSetup | null;
+  /**
+   * The frame set printer `key`'s loaded material (printer.material): the host keeps it as that printer's (Muon's
+   * Fluidd: muon_material and muon_material_color in Klipper's save_variables), then calls setupChanged(). Only ever the
+   * selected printer, while it takes writes.
+   */
+  onMaterial?: (key: string, material: PrinterMaterial) => void;
   adapter: HostAdapter;
   /** The client's slicer.state events (Fluidd's leave prompt reads `dirty`). */
   onState?: (state: Record<string, unknown>) => void;
@@ -328,6 +342,7 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
       ...(options.look ? ['ui.look'] : []),
       ...(options.mode ? ['ui.mode'] : []),
       ...(options.setup ? ['printer.setup'] : []),
+      ...(options.onMaterial ? ['printer.material'] : []),
     ]),
   ];
   const now = options.now ?? (() => Date.now());
@@ -442,9 +457,14 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
     const r = typeof data === 'object' && data !== null ? (data as Record<string, unknown>) : null;
     // The client's events.
     if (r && r.v === 1 && typeof r.event === 'string' && !('re' in r)) {
-      if (r.event === 'slicer.state' && typeof r.data === 'object' && r.data !== null && !Array.isArray(r.data)) {
-        log({ kind: 'state', data: r.data });
-        options.onState?.(r.data as Record<string, unknown>);
+      const e = parseClientEvent(data);
+      if (e?.event === 'slicer.state') {
+        log({ kind: 'state', data: e.data });
+        options.onState?.(e.data);
+      } else if (e?.event === 'printer.material') {
+        takeMaterial(s, e.printer, e.material);
+      } else if (r.event === 'printer.material') {
+        log({ kind: 'ignored', why: 'a printer.material that is not one' });
       }
       return;
     }
@@ -455,13 +475,33 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
     const { id, request } = parsed;
     const capability = OPS[request.op];
     if (capability !== null && !s.granted.has(capability)) return fail(s, op, id, request.printer, { kind: 'not-allowed', message: `${request.op} was not granted` });
-    void handle(s, id, request);
+    handle(s, id, request).catch((err: unknown) => {
+      // The host's own code threw outside a run() (its selection, its status feed): the frame is still answered, never
+      // left waiting for ever (a printer that reads Connecting…). The error's words stay in the host's log.
+      if (session !== s || closed) return;
+      log({ kind: 'adapter-error', op, id, error: err });
+      fail(s, op, id, request.printer, printerErrorOf(err) ?? printerError('printer', 'The host could not do it'));
+    });
   };
 
   /** The selected printer when it is `key`, else null. */
   const selectedAs = (key: string): BridgePrinter | null => {
     const sel = adapter.selected();
     return sel && sel.key === key ? sel : null;
+  };
+
+  /** A printer.material from the frame: to the host, for its selected printer while that printer takes writes. */
+  const takeMaterial = (s: Session, key: string, material: PrinterMaterial) => {
+    if (!s.granted.has('printer.material') || !options.onMaterial) return log({ kind: 'ignored', why: 'a printer.material that was not granted' });
+    const sel = selectedAs(key);
+    if (!sel) return log({ kind: 'ignored', why: 'a printer.material for a printer that is not the selection' });
+    if (writeRefusal(sel)) return log({ kind: 'ignored', why: `a printer.material for a printer that takes no writes (${sel.role === 'viewer' ? 'watch-only' : 'offline'})` });
+    log({ kind: 'material', printer: key, data: material });
+    try {
+      options.onMaterial(key, material);
+    } catch (err) {
+      log({ kind: 'ignored', why: `the host's onMaterial failed: ${err instanceof Error ? err.message : String(err)}` });
+    }
   };
 
   /**

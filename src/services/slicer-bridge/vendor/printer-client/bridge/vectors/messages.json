@@ -4,6 +4,7 @@
     "Placeholders: \"$walnut\" and \"$oak\" stand for the keys below; {\"$bytes\": n} for an ArrayBuffer of n bytes (transferred with the message).",
     "requests: a message on the port as the host reads it. expect: \"ignored\" (not a request: no answer), {\"op\": …} (valid, with the fields it must read), or {\"error\": kind} (answered with a failure of that kind; \"re\": the id it carries, null when it has none).",
     "incoming: a message on the port as the client reads it. expect: \"ignored\", or {\"kind\": \"result\" | \"failure\" | \"progress\" | \"event\", …}.",
+    "clientEvents (0.3.0): an event on the port as the host reads it (parseClientEvent), before its own checks (granted, the selected printer, a printer that takes writes). expect: \"ignored\", or {\"event\": …, …} with what it must read.",
     "answers: an operation's result as the client reads it. print.request's (asked with paths and mode): expect the decision, or \"refused\" (not one, or not one that mode answers: the client takes it as the host breaking the protocol, never as a start). queue.add's: expect {\"queued\": boolean} or \"refused\"."
   ],
   "keys": {
@@ -98,5 +99,22 @@
     { "name": "queue.add with an empty answer", "op": "queue.add", "result": {}, "expect": "refused" },
     { "name": "queue.add whose queued is not a boolean", "op": "queue.add", "result": { "queued": "yes" }, "expect": "refused" },
     { "name": "queue.add answering a decision (queue.add asks no dialog)", "op": "queue.add", "result": { "decision": "uploaded-only" }, "expect": "refused" }
+  ],
+  "clientEvents": [
+    { "name": "slicer.state", "message": { "v": 1, "event": "slicer.state", "printer": null, "data": { "mode": "prepare", "dirty": true } }, "expect": { "event": "slicer.state", "data": { "mode": "prepare", "dirty": true } } },
+    { "name": "slicer.state whose data is not an object", "message": { "v": 1, "event": "slicer.state", "printer": null, "data": [1, 2] }, "expect": "ignored" },
+    { "name": "printer.material: a type and a colour", "message": { "v": 1, "event": "printer.material", "printer": "$walnut", "data": { "material": "PETG", "colour": "#1a2b3c" } }, "expect": { "event": "printer.material", "printer": "$walnut", "material": { "material": "PETG", "colour": "#1A2B3C" } } },
+    { "name": "printer.material: a colour without its #", "message": { "v": 1, "event": "printer.material", "printer": "$walnut", "data": { "material": "PLA", "colour": "00a3a3" } }, "expect": { "event": "printer.material", "printer": "$walnut", "material": { "material": "PLA", "colour": "#00A3A3" } } },
+    { "name": "printer.material: no colour (the host keeps the printer's own)", "message": { "v": 1, "event": "printer.material", "printer": "$oak", "data": { "material": "PLA-CF", "colour": null } }, "expect": { "event": "printer.material", "printer": "$oak", "material": { "material": "PLA-CF", "colour": null } } },
+    { "name": "printer.material: the colour left out", "message": { "v": 1, "event": "printer.material", "printer": "$oak", "data": { "material": "TPU" } }, "expect": { "event": "printer.material", "printer": "$oak", "material": { "material": "TPU", "colour": null } } },
+    { "name": "printer.material naming no printer", "message": { "v": 1, "event": "printer.material", "printer": null, "data": { "material": "PLA", "colour": null } }, "expect": "ignored" },
+    { "name": "printer.material naming a printer that is not a key", "message": { "v": 1, "event": "printer.material", "printer": "Walnut", "data": { "material": "PLA", "colour": null } }, "expect": "ignored" },
+    { "name": "printer.material with no material", "message": { "v": 1, "event": "printer.material", "printer": "$walnut", "data": { "colour": "#FFFFFF" } }, "expect": "ignored" },
+    { "name": "printer.material whose material would break a G-code line", "message": { "v": 1, "event": "printer.material", "printer": "$walnut", "data": { "material": "PLA'\"; FIRMWARE_RESTART", "colour": null } }, "expect": "ignored" },
+    { "name": "printer.material whose material is too long", "message": { "v": 1, "event": "printer.material", "printer": "$walnut", "data": { "material": "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", "colour": null } }, "expect": "ignored" },
+    { "name": "printer.material whose colour is a name", "message": { "v": 1, "event": "printer.material", "printer": "$walnut", "data": { "material": "PLA", "colour": "teal" } }, "expect": "ignored" },
+    { "name": "an event this version does not have", "message": { "v": 1, "event": "printer.heat", "printer": "$walnut", "data": { "target": 300 } }, "expect": "ignored" },
+    { "name": "an answer, not an event", "message": { "v": 1, "re": 4, "event": "printer.material", "printer": "$walnut", "data": { "material": "PLA" } }, "expect": "ignored" },
+    { "name": "version 2", "message": { "v": 2, "event": "printer.material", "printer": "$walnut", "data": { "material": "PLA" } }, "expect": "ignored" }
   ]
 }
