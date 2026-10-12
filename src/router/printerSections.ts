@@ -125,6 +125,9 @@ export const SECTIONS: Section[] = [
 /** G then P: every printer. */
 export const ALL_PRINTERS_KEY = 'p'
 
+/** G then B: your Library (KAN-521). */
+export const LIBRARY_KEY = 'b'
+
 /** Pages inside a section that have a G key of their own: G W Network, G U Software updates. */
 export const PAGE_KEYS: Array<{ key: string, label: string, path: string, hash?: string }> = [
   { key: 'w', label: 'Network', path: '/wifi' },

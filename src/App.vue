@@ -129,7 +129,7 @@ import { ACTIVE_PHASES, offlineScreen } from '@/services/updates/model'
 import { printerNameParts } from '@/util/printer-name'
 import { connectionView, type ConnectionView } from '@/services/connection/view'
 import FrameMixin from '@/mixins/frame'
-import { ALL_PRINTERS_KEY, PAGE_KEYS, sectionForKey } from '@/router/printerSections'
+import { ALL_PRINTERS_KEY, LIBRARY_KEY, PAGE_KEYS, sectionForKey } from '@/router/printerSections'
 import { scopedPath } from '@/router/printerPagePaths'
 import { setProMode } from '@/services/pro-mode'
 import { GoKeys } from '@/util/go-keys'
@@ -326,7 +326,8 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   // as tabs. Not the slicer, which fills the page with its own bar; on a
   // phone the console and G-code preview keep that height for the tool.
   get showPageHeader (): boolean {
-    if (!this.printerFrame || this.otherPrinterRoute || this.sliceRoute) return false
+    // The Library draws its own title: it isn't one of the printer's sections.
+    if (!this.printerFrame || this.otherPrinterRoute || this.sliceRoute || this.$route.name?.startsWith('Library')) return false
     // Shown with the page: while connected, and through a drop, when the page keeps its last view.
     if (!this.connection.page || this.connection.screen) return false
     // On a phone, Overview leads with the printer itself; the top bar names it.
@@ -713,6 +714,8 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     let to: string | null = null
     if (step.key === ALL_PRINTERS_KEY) {
       to = '/'
+    } else if (step.key === LIBRARY_KEY) {
+      to = scopedPath('/library', activeSlug())
     } else if (activeSlug()) {
       const section = sectionForKey(step.key, this.sectionContext)
       const page = PAGE_KEYS.find(p => p.key === step.key)

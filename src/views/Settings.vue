@@ -61,6 +61,7 @@
         <software-settings v-if="shows('versions')" />
         <camera-settings v-if="shows('camera')" />
         <preset-settings v-if="shows('presets')" />
+        <library-settings v-if="shows('library')" />
         <macro-edit-list v-if="shows('macros')" />
         <macro-settings v-if="shows('macros')" />
         <timelapse-settings v-if="shows('timelapse')" />
@@ -106,6 +107,8 @@ import AccessSettings from '@/components/settings/AccessSettings.vue'
 import WifiPage from '@/views/Wifi.vue'
 import MacroEditList from '@/components/settings/macros/MacroEditList.vue'
 import DeveloperModeSettings from '@/components/settings/DeveloperModeSettings.vue'
+import LibrarySettings from '@/components/settings/LibrarySettings.vue'
+import { libraryState } from '@/services/library/store'
 import { devModeState, refreshDevMode } from '@/services/dev-mode/state'
 import SystemPage from '@/views/System.vue'
 
@@ -127,6 +130,7 @@ const SECTION_COMPONENTS = ['authorization', 'update_manager', 'timelapse', 'spo
     SystemPage,
     MacroEditList,
     DeveloperModeSettings,
+    LibrarySettings,
     ProtectionSettings,
     AccessSettings,
     SpoolmanSettings,
@@ -231,6 +235,9 @@ export default class Settings extends Mixins(StateMixin, BrowserMixin) {
         return 'restart, logs'
       case 'developer':
         return devModeState.enabled === null ? '' : devModeState.enabled ? 'on' : 'off'
+      case 'library':
+        if (!libraryState.account) return 'signed out'
+        return libraryState.checked ? (libraryState.enabled ? 'on' : 'off') : ''
       default:
         return ''
     }

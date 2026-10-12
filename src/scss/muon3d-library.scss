@@ -1,0 +1,329 @@
+/*
+ * The Library's look (KAN-521, the Library screens of 12 Oct): its buttons,
+ * chips, pills, picture stage, cards and printer rows, shared by the Library
+ * page, a print's page, Print on… and Settings › Library. Global, because
+ * the dialogs mount outside the page. Colours come from the --m3d-* tokens
+ * only, so both themes and both page styles follow.
+ */
+
+.lib-btn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--m3d-border);
+  border-radius: 999px;
+  background: var(--m3d-surface-2);
+  color: var(--m3d-text) !important;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.12);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+}
+
+.lib-btn--sm {
+  height: 30px;
+  padding: 0 12px;
+  font-size: 12.5px;
+}
+
+.lib-btn--lg {
+  height: 46px;
+  padding: 0 22px;
+  font-size: 15px;
+}
+
+.lib-btn--pri {
+  border-color: transparent;
+  background: var(--m3d-accent);
+  color: var(--m3d-on-accent, #00201e) !important;
+}
+
+.lib-btn--ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--m3d-text-muted) !important;
+}
+
+.lib-btn--dng {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--m3d-danger) 14%, transparent);
+  color: var(--m3d-danger) !important;
+}
+
+.lib-btn--sq {
+  width: 38px;
+  padding: 0;
+
+  &.lib-btn--sm {
+    width: 30px;
+  }
+}
+
+.lib-chip {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--m3d-border);
+  border-radius: 999px;
+  background: var(--m3d-surface);
+  color: var(--m3d-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+
+  .lib-chip__n {
+    color: var(--m3d-text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.lib-chip--on {
+  border-color: var(--m3d-accent-line);
+  background: var(--m3d-accent-soft);
+  color: var(--m3d-accent);
+
+  .lib-chip__n {
+    color: var(--m3d-accent);
+    opacity: 0.75;
+  }
+}
+
+.lib-pill {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--m3d-surface-2);
+  color: var(--m3d-text-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.lib-pill--ok { background: color-mix(in srgb, var(--m3d-success) 14%, transparent); color: var(--m3d-success); }
+.lib-pill--run { background: var(--m3d-accent-soft); color: var(--m3d-accent); }
+.lib-pill--warn { background: color-mix(in srgb, var(--m3d-warning) 14%, transparent); color: var(--m3d-warning); }
+.lib-pill--err { background: color-mix(in srgb, var(--m3d-danger) 14%, transparent); color: var(--m3d-danger); }
+
+// On a picture: dark glass, whatever the theme.
+.lib-pill--glass {
+  background: rgb(10 13 14 / 72%);
+  color: #e8ecee;
+  backdrop-filter: blur(8px);
+}
+
+.lib-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.lib-caps {
+  color: var(--m3d-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.lib-surface {
+  min-width: 0;
+  border: 1px solid var(--m3d-border);
+  border-radius: 10px;
+  background: var(--m3d-surface);
+}
+
+.lib-card-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+// A print's picture on the printer's stage.
+.lib-stage {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background: radial-gradient(120% 95% at 50% 38%, var(--m3d-stage-hi) 0%, var(--m3d-stage-mid) 55%, var(--m3d-stage-lo) 100%);
+  color: var(--m3d-text-subtle);
+
+  > img {
+    width: 82%;
+    height: 82%;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 14px rgb(0 0 0 / 35%));
+  }
+}
+
+.lib-ov {
+  position: absolute;
+  display: flex;
+  gap: 6px;
+}
+
+.lib-ov--tl { top: 8px; left: 8px; }
+.lib-ov--tr { top: 8px; right: 8px; }
+.lib-ov--bl { bottom: 8px; left: 8px; }
+.lib-ov--br { right: 8px; bottom: 8px; }
+
+// One printer, and whether a print fits it.
+.lib-fit {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: var(--m3d-surface-2);
+
+  .lib-fit__name {
+    font-weight: 600;
+  }
+
+  .lib-fit__detail {
+    color: var(--m3d-text-muted);
+    font-size: 12px;
+  }
+}
+
+.lib-fit--warn .lib-fit__detail {
+  color: var(--m3d-warning);
+}
+
+.lib-fit--off {
+  opacity: 0.6;
+}
+
+.lib-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--m3d-border);
+  border-radius: 10px;
+  background: var(--m3d-surface);
+  color: var(--m3d-text-subtle);
+
+  input,
+  select {
+    flex: 1 1 0;
+    min-width: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--m3d-text);
+    font: inherit;
+    font-size: 14px;
+  }
+
+  &:focus-within {
+    border-color: var(--m3d-accent);
+    box-shadow: 0 0 0 3px var(--m3d-accent-soft);
+  }
+}
+
+.lib-kbd {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border: 1px solid var(--m3d-border);
+  border-radius: 5px;
+  background: var(--m3d-surface-2);
+  color: var(--m3d-text-muted);
+  font-family: var(--m3d-font-mono);
+  font-size: 11px;
+}
+
+.lib-bar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--m3d-border);
+
+  > i {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    background: var(--m3d-accent);
+  }
+}
+
+// Signed out, off, empty: what to do instead.
+.lib-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 28px;
+  text-align: center;
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  p {
+    max-width: 340px;
+    margin: 0;
+    color: var(--m3d-text-muted);
+    font-size: 13px;
+  }
+}
+
+.lib-empty__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: var(--m3d-surface-2);
+  color: var(--m3d-text-muted);
+}
+
+.lib-empty__icon--accent {
+  background: var(--m3d-accent-soft);
+  color: var(--m3d-accent);
+}
+
+.lib-empty__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}

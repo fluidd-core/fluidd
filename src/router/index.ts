@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import VueRouter, { type RouteConfig, type Route } from 'vue-router'
+import VueRouter, { type NavigationGuard, type RouteConfig, type Route } from 'vue-router'
 import { applyLegacyHash } from './legacyHash'
 import { activeSlugNow } from './printerSlugSource'
 import { PRINTER_PAGE_PATHS } from './printerPagePaths'
@@ -157,6 +157,29 @@ const printerRoutes: Array<RouteConfig> = [
     }
   },
   {
+    // Your Library (KAN-521): the prints saved from Slice, the account's, so
+    // the same whichever printer is open, drawn beside its rail. Lazy, as
+    // Printers is: Print on… opens printers, and the services that do import
+    // the router.
+    path: `${P}/library`,
+    name: 'Library',
+    component: () => import('@/views/Library.vue'),
+    meta: {
+      printerIndependent: true,
+      frame: 'printer'
+    }
+  },
+  {
+    // One print: its picture, your printers, its versions.
+    path: `${P}/library/:item`,
+    name: 'Library print',
+    component: () => import('@/views/LibraryPrint.vue'),
+    meta: {
+      printerIndependent: true,
+      frame: 'printer'
+    }
+  },
+  {
     path: `${P}/configure`,
     name: 'Configuration',
     component: Configure,
@@ -200,9 +223,17 @@ const toPrinterPage = (to: Route) => {
   return slug ? { path: `/${slug}${to.path}`, query: to.query, hash: to.hash } : '/'
 }
 
-// /slice has a page of its own with no printer (the slicer exports without one).
+/** The Library under the printer Fluidd is on, when one is: /library is /boxwood-367a/library. */
+const toLibraryOfActivePrinter: NavigationGuard = (to, from, next) => {
+  const slug = activeSlugNow()
+  if (slug) next({ path: `/${slug}${to.path}`, query: to.query, hash: to.hash })
+  else next()
+}
+
+// /slice and the Library have pages of their own with no printer (the slicer
+// exports without one; the Library is the account's).
 const LEGACY_PRINTER_PAGES = [
-  ...PRINTER_PAGE_PATHS.filter(path => !['/slice', '/camera'].includes(path)),
+  ...PRINTER_PAGE_PATHS.filter(path => !['/slice', '/camera', '/library'].includes(path)),
   '/settings/macros/:categoryId',
   '/camera',
   '/camera/:cameraId'
@@ -231,6 +262,26 @@ const routes: Array<RouteConfig> = [
   {
     path: '/welcome',
     redirect: '/'
+  },
+  // Your Library (KAN-521) with no printer open: with one, the same pages
+  // under that printer, so the rail and the printer stay beside it.
+  {
+    path: '/library',
+    name: 'Library (no printer)',
+    component: () => import('@/views/Library.vue'),
+    beforeEnter: toLibraryOfActivePrinter,
+    meta: {
+      printerIndependent: true
+    }
+  },
+  {
+    path: '/library/:item',
+    name: 'Library print (no printer)',
+    component: () => import('@/views/LibraryPrint.vue'),
+    beforeEnter: toLibraryOfActivePrinter,
+    meta: {
+      printerIndependent: true
+    }
   },
   {
     path: '/link',

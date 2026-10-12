@@ -5,7 +5,7 @@
  * screens only Pro shows: the console, the file editor, the toolhead card.
  */
 export type SettingsSectionId =
-  'general' | 'network' | 'access' | 'updates' | 'cameras' | 'materials' | 'macros' |
+  'general' | 'network' | 'access' | 'updates' | 'cameras' | 'materials' | 'library' | 'macros' |
   'timelapse' | 'spoolman' | 'console' | 'files' | 'toolhead' | 'gcodePreview' | 'developer' | 'system'
 
 /** What decides whether a section shows. */
@@ -40,6 +40,8 @@ export const SETTINGS_SECTIONS: SettingsSection[] = [
   { id: 'updates', label: 'Updates', anchors: ['versions'], shows: has('update_manager') },
   { id: 'cameras', label: 'Cameras', anchors: ['camera'] },
   { id: 'materials', label: 'Materials', anchors: ['presets'] },
+  // The account's, not the printer's: the same on every printer (KAN-521).
+  { id: 'library', label: 'Library', anchors: ['library'] },
   { id: 'macros', label: 'Macros', anchors: ['macros'] },
   { id: 'timelapse', label: 'Timelapse', anchors: ['timelapse'], shows: has('timelapse') },
   { id: 'spoolman', label: 'Spoolman', anchors: ['spoolman'], shows: has('spoolman') },
