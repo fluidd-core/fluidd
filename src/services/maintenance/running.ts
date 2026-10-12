@@ -8,6 +8,8 @@ export interface RunningCheck {
   startedAt: number;
   /** What Klipper held when it started, to tell when it has a new result. */
   before: CheckEvidence;
+  /** Whether its G-code homes first (G28), so the bed's first moments are homing. */
+  homeFirst?: boolean;
 }
 
 /**

@@ -145,36 +145,11 @@ export function checkCommand (id: CheckId, c: CheckContext): string | null {
   }
 }
 
-/** The heights Klipper reported as it probed, in order, from its "probe at X,Y is z=Z" lines. */
-export function probedHeights (messages: string[]): number[] {
-  const heights: number[] = []
-  for (const message of messages) {
-    const match = /probe at -?[\d.]+,\s*-?[\d.]+ is z=(-?[\d.]+)/.exec(message)
-    if (match) heights.push(+match[1])
-  }
-  return heights
-}
-
 /** The mesh's points across and deep, from bed_mesh's probe_count: one number is both. */
 export function probeCount (setting: unknown): [number, number] | null {
   const counts = (Array.isArray(setting) ? setting : [setting]).map(Number).filter(n => Number.isInteger(n) && n > 0)
   if (!counts.length) return null
   return [counts[0], counts[1] ?? counts[0]]
-}
-
-/**
- * The mesh while it's measured: Klipper probes row by row from the front,
- * left to right then back, so the nth height lands in a known cell. Rows
- * not reached yet are null.
- */
-export function liveMesh (heights: number[], columns: number, rows: number): Array<Array<number | null>> {
-  const mesh: Array<Array<number | null>> = Array.from({ length: rows }, () => Array<number | null>(columns).fill(null))
-  heights.slice(0, columns * rows).forEach((z, n) => {
-    const row = Math.floor(n / columns)
-    const step = n % columns
-    mesh[row][row % 2 === 0 ? step : columns - 1 - step] = z
-  })
-  return mesh
 }
 
 // -- Pro's Bed mesh page ------------------------------------------------------
