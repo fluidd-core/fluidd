@@ -70,7 +70,16 @@ export default class RunoutSensorsCard extends Mixins(StateMixin) {
   }
 
   changeSensor (item: RunoutSensor, value: boolean) {
-    this.sendGcode(`SET_FILAMENT_SENSOR SENSOR=${encodeGcodeParamValue(item.name)} ENABLE=${+value}`)
+    const gcodes = [
+      `SET_FILAMENT_SENSOR SENSOR=${encodeGcodeParamValue(item.name)} ENABLE=${+value}`
+    ]
+
+    if (item.name === 'hall_filament_width_sensor') {
+      // Older Klipper versions do not sync the runout state with the width sensor
+      gcodes.unshift(`${value ? 'ENABLE' : 'DISABLE'}_FILAMENT_WIDTH_SENSOR`)
+    }
+
+    this.sendGcode(gcodes.join('\n'))
   }
 }
 </script>
