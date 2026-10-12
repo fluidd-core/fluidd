@@ -124,6 +124,7 @@ import ConnectingScreen from './components/layout/ConnectingScreen.vue'
 import UpdatingScreen from './components/updates/UpdatingScreen.vue'
 import UpdateBanner from './components/updates/UpdateBanner.vue'
 import { printerLost, updateWatch, watchUpdates } from '@/services/updates/watch'
+import { prebuild as prebuildLiveM1 } from '@/services/m1-3d/parked'
 import { ACTIVE_PHASES, offlineScreen } from '@/services/updates/model'
 import { printerNameParts } from '@/util/printer-name'
 import { connectionView, type ConnectionView } from '@/services/connection/view'
@@ -268,6 +269,12 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   }
 
   /** Another printer: nothing has been reached yet. */
+  /** Opening a printer's overview, the live M1 is built while the printer connects, not after. */
+  @Watch('$route.name', { immediate: true })
+  onRouteName (name: string | null | undefined) {
+    if (name === 'Dashboard') prebuildLiveM1()
+  }
+
   @Watch('$store.state.config.apiUrl')
   onPrinterChanged () {
     this.wasConnected = this.socketConnected

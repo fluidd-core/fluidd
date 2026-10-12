@@ -25,8 +25,12 @@ M1.clamp = clamp; M1.lerp = lerp; M1.smooth = smooth; M1.easeInOut = easeInOut;
 
 /* superellipse (squircle) sampler. The whole product language is squircles:
    n = 2 is an ellipse, n -> infinity is a rectangle. The M1 reads around n = 5. */
-function seX(t, hx, n) { var c = Math.cos(t); return hx * Math.sign(c) * Math.pow(Math.abs(c), 2 / n); }
-function seZ(t, hz, n) { var s = Math.sin(t); return hz * Math.sign(s) * Math.pow(Math.abs(s), 2 / n); }
+/* sin(2 pi) is -2.4e-16, not 0, and a high exponent turns that rounding error
+   into a real distance: at n = 60, |s|^(1/30) is 0.30.  That is what cut a
+   triangle out of the glass plate, whose ring closed at z = -27 instead of 0.
+   Anything below 1e-9 is a zero that lost its sign. */
+function seX(t, hx, n) { var c = Math.cos(t); if (Math.abs(c) < 1e-9) c = 0; return hx * Math.sign(c) * Math.pow(Math.abs(c), 2 / n); }
+function seZ(t, hz, n) { var s = Math.sin(t); if (Math.abs(s) < 1e-9) s = 0; return hz * Math.sign(s) * Math.pow(Math.abs(s), 2 / n); }
 M1.seX = seX; M1.seZ = seZ;
 
 /* --------------------------------------------------------------------------

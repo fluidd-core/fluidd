@@ -15,9 +15,22 @@ export interface M1State {
   headZ: number;
   showPrint: boolean;
   showSpool: boolean;
+  /** The LED strips on or off. */
   led: boolean;
-  /** What the base's round screen shows, 0 to 100. */
+  /** One colour for every pixel, [r, g, b] 0 to 1, unless the strips' own are given. */
+  ledColor?: number[];
+  /** Klipper's color_data for `neopixel Left` and `neopixel Right`. */
+  ledLeft?: number[][] | null;
+  ledRight?: number[][] | null;
+  /** What the base's round screen shows (live-state.ts ScreenState); progress 0 to 100. */
+  status?: string;
   progress: number;
+  nozzleTemp?: number;
+  nozzleTarget?: number;
+  bedTemp?: number;
+  bedTarget?: number;
+  jobName?: string;
+  connected?: boolean;
 }
 
 export interface M1Root extends THREE.Group {

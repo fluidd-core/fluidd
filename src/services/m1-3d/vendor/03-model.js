@@ -78,7 +78,18 @@ var D = M1.DIM = {
   idlerR: 7.8,         /* OD 15.6: a flanged 20 tooth GT2, as measured */
   yokeIdlerR: 5.1,     /* the turning idlers are smaller: c_mast reads
                           them 80 px across at 8.33 px/mm, so 9.6 over */
-  beltZ: 0.0,          /* the belt band runs alongside the bar, not over it */
+  /* The cross belt's loop stands in a vertical plane BEHIND the bar: both
+     end idlers sit behind the bar's ends (c_deck 2x: the bar's polished end
+     overlaps the idler's lower half), and the return strand is never seen
+     under the bar.  Half the bar, a 1.2 gap and half the belt. */
+  beltZ: -8.6,
+  /* and it rides HIGH: s3_1 and c_s1deck see the toothed top strand clear
+     above the bar's top face, so the idlers' centres are 1.6 above the
+     bar's and the strand's teeth stand about 5 proud of its top */
+  xBeltY: 72 + 1.6,
+  endIdlerX: 121,      /* 2 inboard of the bar's end, as c_deck shows */
+  cxIdlerX: 11.5,      /* the carriage idlers, 23 apart (s3_1, 52 px) */
+  cxIdlerBack: 5.1,    /* their centres one idler radius behind the strand */
 
   /* the same two belts run back down the trough to the spine, turned 90
      degrees by the four idlers on the block's yoke - which is why the deck
@@ -206,6 +217,7 @@ var D = M1.DIM = {
 D.hs = D.R / Math.SQRT2;             /* half side of the square */
 D.corner = (D.hs - D.cornerR) * Math.SQRT2 + D.cornerR;   /* true plan extent */
 D.mastX = 0; D.n = 5;
+D.xBeltTop = D.xBeltY + D.endIdlerR + 0.63;   /* the top strand's centre line */
 
 function mesh(g, m, cast, receive) {
   var o = new T.Mesh(g, m);
@@ -236,8 +248,8 @@ M1.capScrew = capScrew;
    THE BASE
 
    A rounded square standing on its corner. Crisp arrises: a tight break onto
-   the deck, a short straight wall, the parting line at 25, and a big roll
-   onto the table below it. Sunk down the spine-to-front diagonal is the LED
+   the deck, one straight wall with no parting line, and a big roll onto the
+   table below it. Sunk down the spine-to-front diagonal is the LED
    trough, with a groove down its floor for the carriage block.
    ========================================================================== */
 function buildBase(mats, decals) {
@@ -254,7 +266,12 @@ function buildBase(mats, decals) {
   var dispHole = M1.roundRectHole(D.screenX, 0, dispR * 2, dispR * 2, dispR, 30);
   var fanHole = M1.roundRectHole(D.fanX, 0, D.fanR * 2, D.fanR * 2, D.fanR, 26);
 
-  /* --- lower shell: a big roll off the table up to the parting line ------ */
+  /* --- the shell: ONE piece, a big roll off the table, a straight wall and
+     an almost sharp top arris.  It used to be two shells with a black
+     parting line at 25 between them, and the real base has no such seam:
+     s1_1, s3_1, s5_1, c_deck and h-03 all show one unbroken wall from the
+     roll to the deck.  (s7_1's middle machine and s9_4 do show a split, but
+     there the M1 is standing on a second box.) ------------------------- */
   G.add(mesh(M1.loftRoundSquare([
     { y: 0.0,  h: hs - 12.0, r: cr - 12.0 },
     { y: 1.4,  h: hs - 7.4,  r: cr - 7.4 },
@@ -262,25 +279,11 @@ function buildBase(mats, decals) {
     { y: 6.2,  h: hs - 1.8,  r: cr - 1.8 },
     { y: 9.6,  h: hs - 0.45, r: cr - 0.45 },
     { y: 13.5, h: hs,        r: cr },
-    { y: D.partY - 0.5, h: hs,       r: cr },
-    { y: D.partY,       h: hs - 0.3, r: cr - 0.3 }
-  ], 30, true, false, RY), mats.aluShell));
-
-  /* the shadow line where the two halves meet */
-  G.add(mesh(M1.loftRoundSquare([
-    { y: D.partY - 0.1, h: hs - 0.34, r: cr - 0.34 },
-    { y: D.partY + 1.5, h: hs - 0.34, r: cr - 0.34 }
-  ], 30, false, false, RY), mats.anodBlackMatte, false, false));
-
-  /* --- upper shell: straight wall to an almost sharp top arris ----------- */
-  G.add(mesh(M1.loftRoundSquare([
-    { y: D.partY,        h: hs - 0.3,  r: cr - 0.3 },
-    { y: D.partY + 1.7,  h: hs,        r: cr },
     { y: D.deckY - 1.8,  h: hs,        r: cr },
     { y: D.deckY - 0.8,  h: hs - 0.20, r: cr - 0.20 },
     { y: D.deckY - 0.26, h: hs - 0.62, r: cr - 0.62 },
     { y: D.deckY,        h: hs - 0.95, r: cr - 0.95 }
-  ], 30, false, false, RY), mats.aluDeck));
+  ], 30, true, false, RY), mats.aluShell));
 
   /* --- the deck face, milled through for the LED trough ------------------ */
   var deckTop = mesh(M1.roundSquareCap(hs - 0.95, cr - 0.95, 30, [ledSlot, ledBay, dispHole, fanHole], RY),
@@ -295,11 +298,6 @@ function buildBase(mats, decals) {
      ====================================================================== */
   var chan = new T.Group(); chan.name = 'ledChannel';
   G.add(chan);
-  var lamps = [], diffusers = [];
-  G.userData.ledOn = function (on) {
-    lamps.forEach(function (l) { l.intensity = on ? 260 : 0; });
-    diffusers.forEach(function (d) { d.material.emissiveIntensity = on ? 0.5 : 0.0; });
-  };
 
   /* The channel is DRAFTED, not square-walled, and s3_1 shows it plainly at
      6x: the slot's near side is a long mirror-bright sloped face carrying a
@@ -312,8 +310,10 @@ function buildBase(mats, decals) {
   var draft = (D.ledW - D.ledBotW) / 2;
   var wallBot = M1.roundRectPoints(0, 0, D.ledBotW, D.ledZ * 2 - draft * 2,
                                    D.ledW / 2 - draft, 10, true);
+  /* the wall keeps its own material, so the LEDs can tint it (below) */
+  var wallM = sideOf(mats.troughWall);
   chan.add(mesh(taper(wallPts, D.deckY + 0.05, wallBot, D.deckY - D.ledDrop),
-                sideOf(mats.troughWall), false, true));
+                wallM, false, true));
 
   /* the groove down the middle of the valley floor */
   var groovePts = M1.roundRectPoints(0, 0, D.grooveW, D.ledZ * 2 - 10, D.grooveW / 2, 8, true);
@@ -323,49 +323,132 @@ function buildBase(mats, decals) {
   grooveFloor.position.y = D.deckY - D.grooveDrop - 1;
   chan.add(grooveFloor);
 
-  /* the two lit shoulders either side of the groove. m_led.cfg declares
-     [neopixel Left] on gpio4 and [neopixel Right] on gpio8, 40 pixels each -
-     one strip per shoulder, which is exactly the three-band section the
-     photographs resolve across the trough: light, dark, light. */
-  var shoulderW = (D.ledW - D.grooveW) / 2;
+  /* ======================================================================
+     THE LEDS - the light in the centre of the machine.
+     m_led.cfg drives two 40-pixel chains, [neopixel Left] and [neopixel
+     Right], and every effect addresses each one as two runs of twenty that
+     move together: progress_left is Left (1-20) and progress_left_mirror is
+     Left (40-21).  So each chain is folded into two parallel rows of twenty
+     down the trough, pixel 1 beside pixel 40.  s7_1 shows them lit: the whole
+     channel glows, its polished walls and the carriage fin carry the colour,
+     and no single LED shows; c_deck shows the same channel unlit, with a pale
+     frosted floor down inside it.  So the strips light the two frosted plates
+     either side of the fin's slot - which is also what hides the belts (s3_1
+     shows one narrow dark seam down the trough and nothing else) - and the
+     channel is lit by two lamps in it.  Left is the -x side as you face the
+     machine; which end pixel 1 sits at is not settled by any photograph, and
+     it is put at the spine end.
+     ====================================================================== */
+  var N = 20;
+  var ledSides = [];
   [-1, 1].forEach(function (sx) {
-    var sX = sx * (D.grooveW / 2 + shoulderW / 2);
-    var floor = mesh(new T.BoxGeometry(shoulderW, 1.6, D.ledZ * 2), mats.aluMach, false, true);
-    floor.position.set(sX, D.deckY - D.ledDrop - 0.8, 0);
-    chan.add(floor);
-    /* the strip itself sits on that shoulder, tipped in towards the groove */
-    var dif = mesh(M1.rbox(shoulderW - 1.2, 1.6, D.ledZ * 2 - 8, 0.4, 2), mats.ledDiffuser, false, true);
-    dif.position.set(sX, D.deckY - D.ledDrop + 0.6, 0);
-    chan.add(dif);
-    diffusers.push(dif);
-  });
-  /* THE COVER.  s3_1 looks straight along this trough and shows a bright
-     polished channel with one narrow dark seam down it - no belt, no pulley,
-     nothing dark of any size - while the render was showing three black
-     bands and measuring 150 against the photograph's 179, at sd 70 against
-     49.  The mechanism is under a machined cover, with a slot just wide
-     enough for the carriage fin; that is the seam.  The LED shoulders stay
-     outboard of it, so the rose can still climb the walls in s7_1. */
-  [-1, 1].forEach(function (sx) {
-    /* the cover is the same machined finish as the deck it is let into, and
-       that matters: troughWall is a near mirror at roughness 0.11 and it
-       blew the whole channel to a clipped white, 191 against 179 with the
-       highlights off the top.  aluDeck already lands at 189 on the deck. */
-    var w = 8.4;                                   /* 2.6 .. 11.0 from centre */
-    var cov = mesh(M1.rbox(w, 1.4, D.ledZ * 2 - 6, 0.5, 3), mats.aluDeck, false, true);
+    /* each chain's colours, two rows of twenty: row u=0 is pixels 1..20 and
+       row u=1 is 40..21, both running from the spine end */
+    var data = new Uint8Array(2 * N * 4);
+    var tex = new T.DataTexture(data, 2, N, T.RGBAFormat);
+    tex.magFilter = T.LinearFilter; tex.minFilter = T.LinearFilter;
+    tex.colorSpace = T.NoColorSpace;
+    tex.needsUpdate = true;
+    var w = 8.4, len = D.ledZ * 2 - 6;              /* 2.6 .. 11.0 from centre */
+    var diffuserM = mats.ledDiffuser.clone();
+    var cov = mesh(M1.rbox(w, 1.4, len, 0.5, 3), diffuserM, false, true);
     cov.position.set(sx * (2.6 + w / 2), D.deckY - 7.5, 0);
     chan.add(cov);
+    /* the lit face: the same frosted plate with the pixels behind it */
+    var faceM = mats.ledDiffuser.clone();
+    faceM.emissiveMap = tex;
+    faceM.emissive.setRGB(1, 1, 1);
+    var faceG = new T.PlaneGeometry(w - 0.6, len - 1.2);
+    faceG.rotateX(-PI / 2);
+    /* the left strip's rows read outboard to inboard, the right's mirror it */
+    if (sx > 0) { var uv = faceG.attributes.uv; for (var q = 0; q < uv.count; q++) uv.setX(q, 1 - uv.getX(q)); }
+    var face = mesh(faceG, faceM, false, false);
+    face.position.set(sx * (2.6 + w / 2), D.deckY - 7.5 + 0.72, 0);
+    chan.add(face);
+    ledSides.push({ data: data, tex: tex, body: diffuserM, face: faceM });
   });
 
-  /* the bounce. In s7_1 the rose climbs the trough's silver side walls and
-     catches the underside of the carriage plate, so it has to be light, not
-     a hand-tinted material. */
-  [-56, 56].forEach(function (lz) {
-    var lamp = new T.PointLight(0xff6f90, 330, 46, 2);
+  /* the light the strips throw into the channel: s7_1's colour climbs the
+     silver walls and the fin, so it has to be light, not a tint.  One lamp
+     over each half of the trough, coloured by the pixels in that half.  They
+     are never switched off by visibility - that would change the light count
+     and recompile every material - only by intensity. */
+  var lamps = [-56, 56].map(function (lz) {
+    var lamp = new T.PointLight(0xffffff, 0, 46, 2);
     lamp.position.set(0, D.deckY - D.ledDrop + 2.5, lz);
     chan.add(lamp);
-    lamps.push(lamp);
+    return lamp;
   });
+
+  /* setLeds(on, rgb, left, right): rgb is one [r, g, b] for every pixel and
+     left / right are Klipper's color_data for each chain (40 entries of
+     [r, g, b] or [r, g, b, w], 0..1), which win where given.  Writes only
+     what changed; returns nothing and allocates nothing. */
+  var diffuserBase = mats.ledDiffuser.color.clone();
+  var ledLast = new Float64Array(2 * 40 * 3).fill(-1), ledOnLast = null;
+  var sum = [0, 0, 0, 0, 0, 0];
+  G.userData.setLeds = function (on, rgb, left, right) {
+    var changed = on !== ledOnLast, s, i, k;
+    ledOnLast = on;
+    sum[0] = sum[1] = sum[2] = sum[3] = sum[4] = sum[5] = 0;
+    for (s = 0; s < 2; s++) {
+      var chain = s === 0 ? left : right, side = ledSides[s], sideChanged = false;
+      for (i = 0; i < 40; i++) {
+        var c = chain && chain[i] ? chain[i] : rgb;
+        var r = c ? +c[0] || 0 : 0, g = c ? +c[1] || 0 : 0, b = c ? +c[2] || 0 : 0;
+        /* a white channel, where the strip has one, adds to all three */
+        var wch = c && c.length > 3 ? +c[3] || 0 : 0;
+        r = Math.min(1, r + wch); g = Math.min(1, g + wch); b = Math.min(1, b + wch);
+        if (!on) r = g = b = 0;
+        var o = (s * 40 + i) * 3;
+        if (ledLast[o] !== r || ledLast[o + 1] !== g || ledLast[o + 2] !== b) {
+          ledLast[o] = r; ledLast[o + 1] = g; ledLast[o + 2] = b; sideChanged = true;
+        }
+        /* pixel i (0-based) of the folded chain: rows of twenty from the
+           spine end, pixel 21 coming back beside pixel 20 */
+        var row = i < 20 ? 0 : 1, along = i < 20 ? i : 39 - i;
+        var t = ((N - 1 - along) * 2 + row) * 4;       /* v = 0 is the front end */
+        side.data[t] = Math.round(r * 255); side.data[t + 1] = Math.round(g * 255);
+        side.data[t + 2] = Math.round(b * 255); side.data[t + 3] = 255;
+        var half = along < 10 ? 0 : 3;                 /* spine half, front half */
+        sum[half] += r; sum[half + 1] += g; sum[half + 2] += b;
+      }
+      if (sideChanged) {
+        side.tex.needsUpdate = true;
+        changed = true;
+      }
+    }
+    if (!changed) return;
+    for (s = 0; s < 2; s++) {
+      /* the plate's own glow, under the face: the chain's mean colour */
+      var mr = 0, mg = 0, mb = 0;
+      for (i = 0; i < 40; i++) { k = (s * 40 + i) * 3; mr += ledLast[k]; mg += ledLast[k + 1]; mb += ledLast[k + 2]; }
+      ledSides[s].body.emissive.setRGB(mr / 40, mg / 40, mb / 40);
+      ledSides[s].body.emissiveIntensity = on ? 0.9 : 0;
+      ledSides[s].face.emissiveIntensity = on ? 1.6 : 0;
+      /* A lit diffuser is its LEDs' colour, not studio white with a tint on
+         it: the brighter the strip, the less of the room's light its frosted
+         face is allowed to show, or a red strip renders pink. */
+      var lit = on ? Math.min(1, Math.max(mr, mg, mb) / 40 * 2.5) : 0;
+      ledSides[s].face.color.copy(diffuserBase).multiplyScalar(1 - 0.85 * lit);
+      ledSides[s].body.color.copy(diffuserBase).multiplyScalar(1 - 0.6 * lit);
+    }
+    /* The walls are polished mirrors, and this renderer has no reflections
+       of the scene itself, so they cannot pick the lit plates up the way the
+       real channel does in s7_1 - where the colour runs right up both walls.
+       A faint emissive in the strips' mean colour stands in for that. */
+    var ar = 0, ag = 0, ab = 0;
+    for (i = 0; i < 80; i++) { ar += ledLast[i * 3]; ag += ledLast[i * 3 + 1]; ab += ledLast[i * 3 + 2]; }
+    wallM.emissive.setRGB(ar / 80, ag / 80, ab / 80);
+    wallM.emissiveIntensity = on ? 0.45 : 0;
+    for (k = 0; k < 2; k++) {
+      var lr = sum[k * 3] / 40, lg = sum[k * 3 + 1] / 40, lb = sum[k * 3 + 2] / 40;
+      var peak = Math.max(lr, lg, lb);
+      lamps[k].color.setRGB(peak ? lr / peak : 1, peak ? lg / peak : 1, peak ? lb / peak : 1);
+      lamps[k].intensity = on ? 1400 * peak : 0;
+    }
+    G.userData.ledWrites = (G.userData.ledWrites || 0) + 1;
+  };
 
   /* --- the round display, on the corner anticlockwise from the spine ----- */
   var disp = new T.Group(); disp.name = 'display';
@@ -413,83 +496,103 @@ function buildBase(mats, decals) {
   }
   G.add(port);
 
-  /* --- the scroll wheel, in the left corner under the display ------------ */
+  /* --- the scroll wheel: the left corner itself ---------------------------
+     It is not a small thumb roller in a pocket, which is what it was (a
+     13.5 x 19 pad with a horizontal axle, standing out of the corner).
+     s1_1, s5_1 and s3_1 all show one broad band of matte black rubber
+     wrapping the left corner: a wheel on a VERTICAL axis whose rim IS the
+     corner's own curve, seen through a window in the shell, sitting almost
+     flush.  Measured in s1_1 against a ruler of rings rendered at the
+     matched hero camera (2.5 px per mm of height at that corner) and the
+     photograph's own deck arris: its top is 26 px (10 mm) under the arris
+     and its bottom 96 px (38 mm), so it runs y 20 to 48; and it reaches 47 px
+     round from the corner's silhouette, which on the corner's 31 mm radius
+     is 40 degrees either side of the tip, nearly the whole 90 degree arc.
+     No photograph sees it proud of the shell by more than its own rounded
+     edge, so the rim stands 0.8 out. */
   var wheel = new T.Group(); wheel.name = 'scrollWheel';
-  wheel.position.set(-(D.corner - 2.0), D.partY + 7.0, 0);
-  wheel.rotation.y = PI / 2;
-  var pocket = mesh(M1.rbox(D.padW + 2.5, D.padH + 2, 10, 5.0, 5), mats.anodBlackMatte, false, true);
-  pocket.position.set(0, 0, -5.0);
-  wheel.add(pocket);
-  /* the rim of the wheel, and only the rim: s7_1 measures a flush 13 x 19
-     portrait pad here that never breaks the shell's outline, so the roller
-     lives inside the shell and shows a millimetre of itself. */
-  var roller = mesh(new T.CylinderGeometry(D.wheelR, D.wheelR, D.padW, 72), mats.anodBlackMatte, true, true);
-  roller.rotation.z = PI / 2;
-  roller.position.z = (D.wheelR - 1.0);
-  wheel.add(roller);
-  for (var kn = 0; kn < 72; kn++) {
-    var ka = kn / 72 * TAU;
-    var rib = mesh(new T.BoxGeometry(D.padW + 0.3, 0.7, 0.55), mats.anodBlackMatte, false, false);
-    rib.position.set(0, Math.cos(ka) * D.wheelR, Math.sin(ka) * D.wheelR + (D.wheelR - 1.0));
-    rib.rotation.x = -ka;
-    wheel.add(rib);
-  }
+  var cCx = -(D.corner - cr);                     /* the corner's centre */
+  wheel.position.set(cCx, 0, 0);
+  var wY0 = 20, wY1 = 48, wSpan = 40 * PI / 180, wR = cr + 0.8;
+  /* a rounded band: lathe profile with 1.6 mm rolled edges top and bottom */
+  var prof = [], e = 1.6, k;
+  prof.push(new T.Vector2(cr - 2, wY0));
+  for (k = 0; k <= 5; k++) { var a = -PI / 2 + k / 5 * PI / 2; prof.push(new T.Vector2(wR - e + Math.cos(a) * e, wY0 + e + Math.sin(a) * e)); }
+  for (k = 0; k <= 5; k++) { var b = k / 5 * PI / 2; prof.push(new T.Vector2(wR - e + Math.cos(b) * e, wY1 - e + Math.sin(b) * e)); }
+  prof.push(new T.Vector2(cr - 2, wY1));
+  var band = mesh(new T.LatheGeometry(prof, 48, 1.5 * PI - wSpan, 2 * wSpan), mats.rubber, true, true);
+  wheel.add(band);
+  /* the window it turns in: a dark gap just round the band, laid on the
+     shell's own surface (polygon offset keeps it off the shell) */
+  var gapM = mats.anodBlackMatte.clone();
+  gapM.polygonOffset = true; gapM.polygonOffsetFactor = -2; gapM.polygonOffsetUnits = -2;
+  var gw = 1.1 * PI / 180 * 1.0;
+  var gap = mesh(new T.CylinderGeometry(cr + 0.02, cr + 0.02, wY1 - wY0 + 1.6, 48, 1, true,
+                 1.5 * PI - wSpan - 0.035, 2 * wSpan + 0.07), gapM, false, false);
+  gap.position.y = (wY0 + wY1) / 2;
+  wheel.add(gap);
   G.add(wheel);
   G.userData.scrollWheel = wheel;
 
-  /* --- the umbilical socket, in the front-left wall ----------------------- */
+  /* --- the umbilical boot, in the front-left wall --------------------------
+     c_deck sees it close to square on: an upright black rubber sleeve
+     standing in a rounded pocket milled into the wall, its top domed, and
+     the hose leaving its BOTTOM straight down before it turns for the table.
+     It is not a block with a nose pointing out of the wall, which is what it
+     was.  On c_deck's own scale (4.33 px/mm on the belt, the wall turned 33
+     degrees from the lens) the sleeve is about 22-26 across and 25 tall, its
+     top 12 under the deck and its mouth 37 under it; c_s1deck, nearly face
+     on, sees a round sleeve about 1.3 hose diameters across with its top as
+     an ellipse, so it stands well proud of the wall.  The pocket it stands
+     in is not cut (the shell is one loft); the sleeve's flat back is sunk
+     into the wall instead. */
   var sock = new T.Group(); sock.name = 'umbilicalSocket';
   var sp = wallPoint(-1, 1, D.bootPlan);
-  sock.position.set(sp.x, 31, sp.z);
-  sock.rotation.y = -PI / 4;
-  var boot = mesh(M1.rbox(24, 21, 11, 6.5, 6), mats.rubber, true, true);
-  boot.position.z = 2.5;
-  sock.add(boot);
-  var nose = mesh(new T.CylinderGeometry(8.2, 7.4, 9, 36), mats.rubber, false, true);
-  nose.rotation.x = PI / 2 + 0.42;
-  nose.position.set(0, -2.0, 11.5);
-  sock.add(nose);
-  var bore = mesh(new T.CircleGeometry(7.4, 36), mats.dark, false, false);
-  bore.position.set(0, -3.6, 15.4);
-  sock.add(bore);
+  sock.position.set(sp.x, 0, sp.z);
+  sock.rotation.y = -PI / 4;                    /* local +z is the wall's outward normal */
+  /* an upright rubber sleeve: round in front, flat where it sinks into the
+     wall, with a low dome on top; the hose leaves its open bottom */
+  var sR = 10.8, sOut = 11, sBot = 21, sTop = 44;
+  var sleeve = mesh(new T.CylinderGeometry(sR, sR, sTop - sBot, 40), mats.rubber, true, true);
+  sleeve.position.set(0, (sTop + sBot) / 2, sOut);
+  sock.add(sleeve);
+  var dome = mesh(new T.SphereGeometry(sR, 40, 12, 0, TAU, 0, PI / 2), mats.rubber, true, true);
+  dome.scale.y = 0.5;
+  dome.position.set(0, sTop, sOut);
+  sock.add(dome);
+  /* the back half, filling the sleeve back into its pocket in the wall */
+  var back = mesh(M1.rbox(2 * sR, sTop - sBot + 3, sOut + 4, 3.0, 4), mats.rubber, true, true);
+  back.position.set(0, (sTop + sBot) / 2 + 1.5, (sOut - 4) / 2);
+  sock.add(back);
+  /* the mouth: straight down, leaning a few degrees out of the wall */
+  var sDir = new T.Vector3(0, -0.99, 0.14).normalize();
+  var mouthL = new T.Vector3(0, sBot + 1, sOut);
   G.add(sock);
-  /* the hose ends on the throat's mouth, out along the wall's own normal */
-  G.userData.socketAnchor = new T.Vector3(
-    sp.x + sp.nx * 17, 23, sp.z + sp.nz * 17);
+  sock.updateMatrix();
+  /* the hose starts inside the sleeve, so its open end is never seen */
+  G.userData.socketAnchor = mouthL.clone().addScaledVector(sDir, -4).applyMatrix4(sock.matrix);
+  G.userData.socketDir = sDir.clone().applyQuaternion(sock.quaternion).normalize();
 
-  /* --- the black corner bumpers on the lower shell -----------------------
-     h-03 shows them capping the corner TIPS with no hose on them, s1_1 shows
-     two of them with the umbilical plugged in: the same moulding does both
-     jobs, which is why the corners read black in every studio frame. The
-     spine tip carries the mast and the left tip carries the scroll wheel, so
-     only the front and right tips are free. */
-  [[1, 0], [0, 1]].forEach(function (c) {
-    var bump = mesh(M1.rbox(30, 26, 20, 9.0, 6), mats.rubber, true, true);
-    bump.position.set(c[0] * (D.corner - 6), 17, c[1] * (D.corner - 6));
-    bump.rotation.y = Math.atan2(c[0], c[1]);
-    G.add(bump);
-  });
+  /* No corner bumpers.  There used to be a black rubber block on the front
+     and right corner tips, and no photograph has one: s1_1, s3_1, s5_1,
+     c_deck, h-03 and s7_1 all show those two corners as bare aluminium.  The
+     only black things on the shell are the scroll wheel in the left corner
+     and the umbilical boot on the front-left wall. */
 
-  /* --- the I/O pocket, in the lower shell on the front-right wall -------- */
-  var port = new T.Group(); port.name = 'ioPort';
-  var pp = wallPoint(1, 1, 0.52);
-  port.position.set(pp.x, D.partY - 5, pp.z);
-  port.rotation.y = PI / 4;
-  var recess = mesh(M1.rbox(30, 24, 4.4, 6, 5), mats.aluPolish, false, true);
-  recess.position.z = -1.6; port.add(recess);
-  var pocketFace = mesh(M1.rbox(25, 19, 2.4, 5, 5), mats.aluMach, false, false);
-  pocketFace.position.z = -0.4; port.add(pocketFace);
-  var inlet = mesh(new T.CylinderGeometry(6.5, 6.5, 3.4, 40), mats.anodBlackMatte, false, true);
-  inlet.rotation.x = PI / 2;
-  inlet.position.set(0, 4.4, 0.6); port.add(inlet);
-  var keyway = mesh(M1.rbox(2.4, 3.0, 3.6, 0.6, 2), mats.steelDark, false, false);
-  keyway.position.set(0, 9.0, 0.6); port.add(keyway);
-  var pin = mesh(new T.CylinderGeometry(2.4, 2.4, 3.6, 24), mats.steelRail, false, false);
-  pin.rotation.x = PI / 2;
-  pin.position.set(0, 4.4, 0.7); port.add(pin);
-  var usb = mesh(M1.rbox(9.2, 3.2, 2.2, 1.5, 3), mats.dark, false, false);
-  usb.position.set(0, -5.2, 0.5); port.add(usb);
-  G.add(port);
+  /* --- the ports -----------------------------------------------------------
+     Jack, 2026-10-11, facing the printer from its front: the power connector
+     is on the BACK RIGHT wall, and a USB port and a micro-HDMI port sit side
+     by side on the BACK LEFT wall.  The old model had one pocket on the
+     FRONT right wall with a round inlet over a small port, which is what
+     s7_1's folded machine shows - an earlier revision, going by Jack.  No
+     photograph shows either back wall, so the ports' height (the middle of
+     the straight wall) and their place along each wall (its middle) are
+     assumptions, and so is the connector type: the power inlet is drawn as
+     the round panel jack s7_1 shows, and the USB as a USB-C receptacle (the
+     CM4's own pairing with micro-HDMI).  Sizes are the connectors' real
+     ones: USB-C 8.94 x 3.26, micro-HDMI (type D) 6.4 x 2.8. */
+  G.add(portPanel(mats, 1, -1, 'power'));
+  G.add(portPanel(mats, -1, -1, 'data'));
 
   /* --- the etched wordmark, on the deck between the spine and the right -- */
   /* c_s1deck: the etched N3D glyphs are 28 px tall against a belt that
@@ -526,6 +629,67 @@ function wallPoint(sx, sz, t) {
   var half = hs - D.cornerR;
   var u = (t * 2 - 1) * half;
   return { x: nx * hs + tx * u, z: nz * hs + tz * u, nx: nx, nz: nz };
+}
+
+/* A milled port pocket in one wall (sx, sz pick the wall, as wallPoint),
+   with the connectors standing in it.  Local +z is the wall's outward
+   normal, +x runs along the wall to the viewer's right, y is height. */
+function portPanel(mats, sx, sz, kind) {
+  var g = new T.Group(); g.name = kind === 'power' ? 'powerPort' : 'dataPorts';
+  var wp = wallPoint(sx, sz, 0.5);
+  g.position.set(wp.x, 30, wp.z);
+  g.rotation.y = Math.atan2(wp.nx, wp.nz);
+  var pw = kind === 'power' ? 20 : 27, ph = 14;
+  /* the pocket: its floor sits 1.2 in, shown as a darker machined face
+     framed by a narrow polished chamfer */
+  function slab(w, h, r, d) {
+    var sh = new T.Shape(M1.roundRectPoints(0, 0, w, h, r, 8));
+    return new T.ExtrudeGeometry(sh, { depth: d, bevelEnabled: false, curveSegments: 8 });
+  }
+  var rimM = mesh(slab(pw + 2.2, ph + 2.2, 4.6, 0.25), mats.aluMach, false, true);
+  g.add(rimM);
+  var floor = mesh(slab(pw, ph, 3.6, 0.3), mats.fanBevel, false, true);
+  g.add(floor);
+  var z0 = 0.3;                                   /* the pocket floor's face */
+  if (kind === 'power') {
+    /* a round panel jack: a turned steel bezel, a black insulator and the
+       centre pin down a dark bore */
+    var bezel = mesh(new T.CylinderGeometry(5.6, 5.9, 1.6, 40), mats.steelRail, false, true);
+    bezel.rotation.x = PI / 2; bezel.position.z = z0 + 0.8; g.add(bezel);
+    var ins = mesh(new T.CylinderGeometry(4.3, 4.3, 0.4, 36), mats.anodBlackMatte, false, false);
+    ins.rotation.x = PI / 2; ins.position.z = z0 + 1.65; g.add(ins);
+    var bore = mesh(new T.CircleGeometry(3.2, 32), mats.dark, false, false);
+    bore.position.z = z0 + 1.9; g.add(bore);
+    var pin = mesh(new T.CylinderGeometry(1.0, 1.0, 0.6, 16), mats.steelRail, false, false);
+    pin.rotation.x = PI / 2; pin.position.z = z0 + 1.95; g.add(pin);
+  } else {
+    /* USB-C on the left, micro-HDMI on the right, 7 apart on centre-line */
+    var usb = new T.Group(); usb.position.set(-6.2, 0, z0);
+    var ushell = mesh(M1.rbox(8.94, 3.26, 1.0, 1.62, 5), mats.steelRail, false, false);
+    ushell.position.z = 0.5; usb.add(ushell);
+    var uin = mesh(M1.rbox(8.2, 2.5, 0.2, 1.24, 5), mats.dark, false, false);
+    uin.position.z = 1.02; usb.add(uin);
+    var utongue = mesh(new T.BoxGeometry(6.6, 0.7, 0.2), mats.anodBlackMatte, false, false);
+    utongue.position.z = 1.08; usb.add(utongue);
+    g.add(usb);
+    var hd = new T.Group(); hd.position.set(6.6, 0, z0);
+    /* type D: 6.4 wide, 2.8 tall, the lower corners chamfered */
+    function trap(w, h, c) {
+      var sh = new T.Shape();
+      sh.moveTo(-w / 2, h / 2); sh.lineTo(w / 2, h / 2); sh.lineTo(w / 2, -h / 2 + c);
+      sh.lineTo(w / 2 - c, -h / 2); sh.lineTo(-w / 2 + c, -h / 2); sh.lineTo(-w / 2, -h / 2 + c);
+      sh.closePath();
+      return sh;
+    }
+    var hshell = mesh(new T.ExtrudeGeometry(trap(6.4, 2.8, 0.9), { depth: 1.0, bevelEnabled: false }), mats.steelRail, false, false);
+    hd.add(hshell);
+    var hin = mesh(new T.ShapeGeometry(trap(5.8, 2.2, 0.7)), mats.dark, false, false);
+    hin.position.z = 1.02; hd.add(hin);
+    var htongue = mesh(new T.BoxGeometry(4.6, 0.6, 0.2), mats.anodBlackMatte, false, false);
+    htongue.position.set(0, 0.2, 1.08); hd.add(htongue);
+    g.add(hd);
+  }
+  return g;
 }
 
 /* the same band, but lofted between TWO outlines, so a pocket can be milled
@@ -582,32 +746,36 @@ function offsetOf(m, f) {
 /* ==========================================================================
    THE MOTION SYSTEM
 
-   Two GT2 belts, and they do both axes. Each one runs from the spine end of
-   the machine down the LED trough as a pair of strands - the DOUBLE BELT the
-   deck shows above the LED strip - reaches the block that runs in the
-   groove, is turned ninety degrees by the four idlers on that block's yoke,
-   and then travels the cross rail: one strand over the bar's top land, one
-   under its bottom land, 13.4 apart, wrapping 180 degrees round a small
-   idler on a horizontal axle at each end and terminating at the pod.
+   Two GT2 belts (core.cfg: corexy, 20 tooth pulleys, 2 mm pitch). What the
+   photographs show of them - s3_1, h-03, c_deck and c_s1deck all agree:
 
-   So the block hauls the whole cross rail down the trough, and the belts
-   haul the pod along the bar. Everything screwed to the base is here;
-   everything that travels is in buildCarriage.
+   - the CENTRAL TWO: one strand of each belt runs in the open, above the
+     deck, from the cluster of four idlers at the mast's foot forward to the
+     carriage at the middle of the cross rail.  They leave the cluster lying
+     flat and arrive at the carriage on edge, twisting a quarter turn on the
+     way, and they are closer together at the carriage than at the mast.
+   - the CROSS BELT: one toothed strand, teeth up, running just above the
+     cross bar's top face the length of the bar, between a flanged idler at
+     each end.  Both idlers stand BEHIND the bar's ends (c_deck at 2x: the
+     bar's polished end overlaps the lower half of the idler), so the loop
+     lies in a vertical plane behind the bar and its return strand is hidden
+     by the bar - no photograph shows a second strand under it.
+   - at the carriage, two black flanged idlers on upright axles, 23 apart
+     (s3_1: 52 px at 2.26 px/mm), turn the central strands onto the bar.
+
+   The model used to run both belts as closed loops INSIDE the trough, under
+   the LED covers, where nothing of them showed, and had no central strands
+   at all; and its cross belt ran in the bar's own plane with the return
+   strand on show under the bar.  Which way each belt runs inside the base,
+   and how the strands on the bar meet the carriage idlers, no photograph
+   settles: the loop on the bar is drawn as one loop end to end.
+
+   Everything screwed to the base is here; everything that travels is in
+   buildCarriage.
    ========================================================================== */
 function buildGantry(mats) {
   var G = new T.Group(); G.name = 'gantry';
-
-  /* --- the double belt, running the length of the trough ----------------- */
-  var beltGeo = M1.beltLoop(-D.ledZ + 8, D.ledZ - 8, D.troughPulleyR, D.beltW, 1.38);
-  var pulGeo = M1.pulleyGeometry(D.troughPulleyR, 7.0, 14, 0.7);
-  var flangeGeo = new T.CylinderGeometry(D.troughPulleyR + 1.6, D.troughPulleyR + 1.6, 0.7, 40);
-
-  [-1, 1].forEach(function (sx) {
-    var bx = sx * D.beltX;
-    var belt = mesh(beltGeo, mats.belt, false, true);
-    belt.position.set(bx, D.beltY, 0);
-    G.add(belt);
-  });
+  var spineZ = -(D.ledZ - 8);
 
   /* Four flanged idlers cluster at the SPINE end - h-03 and s5_1 both show a
      block of four bright bearings there, two per belt, turning each run
@@ -619,7 +787,6 @@ function buildGantry(mats) {
      trough into the wrap the cross rail wants.  Within a pair the inner one
      rides about 7 higher and 10 further in than the outer, which is the
      (70, -50) px offset the frame reads at 6.5 px/mm. */
-  var spineZ = -(D.ledZ - 8);
   [-1, 1].forEach(function (sx) {
     [0, 1].forEach(function (inner) {
       var pg = new T.Group();
@@ -636,34 +803,94 @@ function buildGantry(mats) {
       csk.position.y = D.beltW / 2 - 1.2; pg.add(csk);
       var seat = mesh(new T.CylinderGeometry(1.5, 1.5, 0.4, 24), mats.steelDark, false, false);
       seat.position.y = D.beltW / 2 - 2.2; pg.add(seat);
-      var hd = mesh(new T.CylinderGeometry(1.25, 1.25, 1.0, 22), mats.steelRail, false, true);
-      hd.position.y = D.beltW / 2 - 1.7; pg.add(hd);
+      /* the bolt through it: a big bright socket cap, the brightest thing
+         at the mast's foot in s3_1 and h-03 */
+      var hd = capScrew(mats, 3.4, true);
+      hd.position.y = D.beltW / 2 + 1.0; pg.add(hd);
       /* the stub each one is bolted to, running back down to the block */
       var stub = mesh(new T.CylinderGeometry(2.4, 2.8, 10, 20), mats.aluMach, false, true);
       stub.position.y = -(D.beltW / 2 + 4.0); pg.add(stub);
       G.add(pg);
     });
   });
-  /* the plate they all stand on, bridging the trough at the spine */
-  var yplate = mesh(M1.rbox(46, 3.6, 18, 1.8, 3), mats.aluMach, true, true);
-  yplate.position.set(0, D.deckY + 1.5, spineZ + 14);
-  G.add(yplate);
-  /* and the pair that closes the front end, still flat and upright */
+  /* No plate under them: s3_1, h-03 and c_deck show the four standing in
+     dark pockets in the deck either side of the trough's end, not on a
+     bridge across it. */
   [-1, 1].forEach(function (sx) {
-    var pg = new T.Group();
-    pg.position.set(sx * D.beltX, D.beltY, D.ledZ - 8);
-    pg.add(mesh(pulGeo, mats.anodBlack, false, true));
-    var f1 = mesh(flangeGeo, mats.anodBlack, false, true); f1.position.y = 3.85; pg.add(f1);
-    var f2 = mesh(flangeGeo, mats.anodBlack, false, true); f2.position.y = -3.85; pg.add(f2);
-    var bolt = mesh(new T.CylinderGeometry(2.5, 2.5, 13, 20), mats.steelRail, false, true);
-    pg.add(bolt);
-    var bh = mesh(new T.CylinderGeometry(3.6, 3.6, 2.4, 26), mats.steelRail, false, true);
-    bh.position.y = 5.6; pg.add(bh);
-    G.add(pg);
+    var pk = mesh(new T.CylinderGeometry(9.5, 9.5, 0.4, 40), mats.anodBlackMatte, false, true);
+    pk.scale.set(0.85, 1, 1.1);
+    pk.position.set(sx * 15, D.deckY + 0.05, spineZ + 14);
+    G.add(pk);
   });
-  var brk = mesh(M1.rbox(D.ledW + 6, 5, 13, 1.4, 3), mats.aluMach, true, true);
-  brk.position.set(0, D.beltY - 14.5, D.ledZ - 8);
-  G.add(brk);
+
+  /* --- the CENTRAL TWO: one strand of each belt, cluster to carriage -------
+     A ribbon from the inner idler of each cluster pair (lying flat) to the
+     back of the carriage idler on that side (on edge), twisting a quarter
+     turn on the way.  The carriage end moves with the cross rail, so the
+     ribbon's vertices are rewritten in place by updateStrands(hz); nothing
+     is allocated there. */
+  var SEGS = 16;
+  var strands = [-1, 1].map(function (sx) {
+    var g = new T.BufferGeometry();
+    var pos = new Float32Array((SEGS + 1) * 2 * 3), nor = new Float32Array((SEGS + 1) * 2 * 3);
+    var uv = new Float32Array((SEGS + 1) * 2 * 2), idx = [];
+    for (var i = 0; i < SEGS; i++) {
+      var a = i * 2, b = a + 1, c = a + 2, d = a + 3;
+      idx.push(a, c, b, b, c, d);
+    }
+    g.setAttribute('position', new T.BufferAttribute(pos, 3).setUsage(T.DynamicDrawUsage));
+    g.setAttribute('normal', new T.BufferAttribute(nor, 3).setUsage(T.DynamicDrawUsage));
+    g.setAttribute('uv', new T.BufferAttribute(uv, 2).setUsage(T.DynamicDrawUsage));
+    g.setIndex(idx);
+    g.boundingSphere = new T.Sphere(new T.Vector3(sx * 9, D.crossY, 0), 140);
+    var m = mesh(g, mats.beltBoth, true, true);
+    m.name = 'centralBelt';
+    m.frustumCulled = false;
+    G.add(m);
+    /* the cluster end: just in front of the inner idler, lying flat */
+    return { m: m, g: g, pos: pos, nor: nor, uv: uv, sx: sx,
+             a: [sx * 12.0, D.deckY + 12.6, spineZ + 17 + D.yokeIdlerR] };
+  });
+  var lastHz = NaN;
+  G.userData.updateStrands = function (hz) {
+    if (Math.abs(hz - lastHz) < 0.01) return;
+    lastHz = hz;
+    for (var s = 0; s < 2; s++) {
+      var S = strands[s], sx = S.sx, A = S.a;
+      /* the carriage end: off the inboard side of its idler, on edge */
+      var bx = sx * (D.cxIdlerX - D.yokeIdlerR), by = D.xBeltTop;
+      var bz = Math.max(hz + D.beltZ - D.cxIdlerBack, A[2] + 4);
+      var dx = bx - A[0], dy = by - A[1], dz = bz - A[2];
+      var L = Math.hypot(dx, dy, dz);
+      var tx = dx / L, ty = dy / L, tz = dz / L;
+      /* a frame round the strand: u across it at the flat end, v its normal */
+      var ux = 1, uy = 0, uz = 0, d0 = ux * tx;
+      ux -= d0 * tx; uy -= d0 * ty; uz -= d0 * tz;
+      var ul = Math.hypot(ux, uy, uz); ux /= ul; uy /= ul; uz /= ul;
+      var vx = ty * uz - tz * uy, vy = tz * ux - tx * uz, vz = tx * uy - ty * ux;
+      if (vy < 0) { vx = -vx; vy = -vy; vz = -vz; }
+      var hw = D.beltW / 2;
+      for (var i = 0; i <= SEGS; i++) {
+        var f = i / SEGS;
+        /* a quarter turn, eased at both ends as a real twist settles */
+        var ang = (f * f * (3 - 2 * f)) * (PI / 2) * sx;
+        var c = Math.cos(ang), sn = Math.sin(ang);
+        var wx = ux * c + vx * sn, wy = uy * c + vy * sn, wz = uz * c + vz * sn;   /* across */
+        var nx = vx * c - ux * sn, ny = vy * c - uy * sn, nz = vz * c - uz * sn;   /* normal */
+        var px = A[0] + dx * f, py = A[1] + dy * f, pz = A[2] + dz * f;
+        var o = i * 6;
+        S.pos[o] = px - wx * hw; S.pos[o + 1] = py - wy * hw; S.pos[o + 2] = pz - wz * hw;
+        S.pos[o + 3] = px + wx * hw; S.pos[o + 4] = py + wy * hw; S.pos[o + 5] = pz + wz * hw;
+        S.nor[o] = S.nor[o + 3] = nx; S.nor[o + 1] = S.nor[o + 4] = ny; S.nor[o + 2] = S.nor[o + 5] = nz;
+        /* one tile of the tooth map is 32 mm of belt */
+        var u = f * L / 32, q = i * 4;
+        S.uv[q] = u; S.uv[q + 1] = 0; S.uv[q + 2] = u; S.uv[q + 3] = 1;
+      }
+      S.g.attributes.position.needsUpdate = true;
+      S.g.attributes.normal.needsUpdate = true;
+      S.g.attributes.uv.needsUpdate = true;
+    }
+  };
 
   /* --- the end blocks, closing each end of the trough --------------------- */
   /* only the SPINE end is closed. s3_1 shows the far end opening into a bay
@@ -679,12 +906,9 @@ function buildGantry(mats) {
     G.add(s2);
   });
 
-  /* --- the two steppers, under the deck at the spine corner --------------- */
-  [-1, 1].forEach(function (sx) {
-    var mot = mesh(M1.rbox(28, 28, 28, 2.5, 3), mats.anodBlackMatte, true, true);
-    mot.position.set(sx * 22, D.deckY - 24, -D.ledZ + 14);
-    G.add(mot);
-  });
+  /* The two steppers under the deck at the spine corner are not modelled:
+     inside an opaque shell they can never be seen, and the 28 mm boxes that
+     stood for them poked out through both back walls as two black blocks. */
 
   return G;
 }
@@ -744,41 +968,31 @@ function buildCarriage(mats) {
     G.add(gv);
   });
 
-  /* --- the yoke: four idlers in two stacked pairs, turning the belts ------ */
-  var yoke = mesh(M1.rbox(15, 4.5, 14, 1.4, 3), mats.aluMach, true, true);
-  yoke.position.y = barTop + 8;
-  G.add(yoke);
-  /* c_mast sees all four of these from the front and they are TILTED, canted
-     out of vertical by about 45 degrees and splayed two to a side, which is
-     what lets one belt arrive flat down the trough and leave standing up
-     along the bar.  Each is a dark flanged pulley with a bright turned top
-     land and a bright bolt dome in the middle of it. */
+  /* --- the carriage idlers: the central strands turn onto the bar here ----
+     s3_1 and h-03: two black flanged idlers on upright axles at the middle
+     of the rail, 23 apart (52 px at s3_1's 2.26 px/mm), behind the toothed
+     strand, each with a bright bolt head on top.  The old four canted
+     idlers in front of the bar are not in any photograph. */
+  var cz = D.beltZ - D.cxIdlerBack, cyI = D.xBeltTop;
+  var bridge = mesh(M1.rbox(2 * D.cxIdlerX + 12, 3.0, 2 * D.yokeIdlerR + 4, 1.2, 3), mats.aluMach, true, true);
+  bridge.position.set(0, cyI - D.beltW / 2 - 2.6, cz);
+  G.add(bridge);
+  /* the bridge hangs off the fin, behind the bar */
+  var web = mesh(M1.rbox(10, 6, Math.abs(cz) + 2, 1.2, 3), mats.aluMach, true, true);
+  web.position.set(0, cyI - D.beltW / 2 - 5.5, cz / 2);
+  G.add(web);
   [-1, 1].forEach(function (sx) {
-    [-1, 1].forEach(function (sy) {
-      var pg = new T.Group();
-      pg.position.set(sx * 11.5, D.crossY + sy * 5.5, sy * 5.0);
-      pg.rotation.z = sx * 0.62;
-      pg.rotation.x = sy * 0.42;
-      /* the dark body and its two flanges */
-      pg.add(mesh(new T.CylinderGeometry(D.yokeIdlerR - 1.4, D.yokeIdlerR - 1.4, D.beltW - 1.2, 30), mats.anodBlack, true, true));
-      [-1, 1].forEach(function (sf) {
-        var fl = mesh(new T.CylinderGeometry(D.yokeIdlerR, D.yokeIdlerR, 0.8, 34), mats.anodBlack, false, true);
-        fl.position.y = sf * (D.beltW / 2 - 0.6); pg.add(fl);
-      });
-      /* the bright turned face and the bolt standing proud of it */
-      var csk = mesh(new T.CylinderGeometry(D.yokeIdlerR - 1.0, 1.5, 2.0, 34, 1, true), mats.aluPolishBoth, false, true);
-      csk.position.y = D.beltW / 2 - 1.2; pg.add(csk);
-      var seat = mesh(new T.CylinderGeometry(1.5, 1.5, 0.4, 24), mats.steelDark, false, false);
-      seat.position.y = D.beltW / 2 - 2.2; pg.add(seat);
-      var hd = mesh(new T.CylinderGeometry(1.25, 1.25, 1.0, 22), mats.steelRail, false, true);
-      hd.position.y = D.beltW / 2 - 1.7; pg.add(hd);
-      G.add(pg);
+    var pg = new T.Group();
+    pg.position.set(sx * D.cxIdlerX, cyI, cz);
+    pg.add(mesh(new T.CylinderGeometry(D.yokeIdlerR - 1.0, D.yokeIdlerR - 1.0, D.beltW, 30), mats.anodBlack, true, true));
+    [-1, 1].forEach(function (sf) {
+      var fl = mesh(new T.CylinderGeometry(D.yokeIdlerR + 1.0, D.yokeIdlerR + 1.0, 0.8, 34), mats.anodBlack, false, true);
+      fl.position.y = sf * (D.beltW / 2 + 0.4); pg.add(fl);
     });
+    var hd = capScrew(mats, 2.4, false);
+    hd.position.y = D.beltW / 2 + 1.2; pg.add(hd);
+    G.add(pg);
   });
-  /* the shelf they all stand on */
-  var shelf = mesh(M1.rbox(19, 3.0, 13, 1.2, 3), mats.aluMach, true, true);
-  shelf.position.set(0, D.crossY - 8.6, 0);
-  G.add(shelf);
 
   /* --- the end idlers ---------------------------------------------------
      Both ends of the cross rail image as a nearly ROUND black flange in
@@ -788,12 +1002,17 @@ function buildCarriage(mats) {
      axle is horizontal and square to the rail, and the belt loop that wraps
      it therefore stands in a VERTICAL plane along the bar. ---------------- */
   [-1, 1].forEach(function (sx) {
-    var ec = mesh(M1.rbox(5.5, D.crossH + 1.2, 7.5, 1.2, 3), mats.aluMach, true, true);
-    ec.position.set(sx * (D.crossX - 3), D.crossY - 1.4, D.beltZ);
+    /* the bar's end block, and the axle running back from it */
+    var ec = mesh(M1.rbox(5.5, D.crossH + 1.2, D.crossW + 1.0, 1.2, 3), mats.aluMach, true, true);
+    ec.position.set(sx * (D.crossX - 3), D.crossY - 0.6, 0);
     G.add(ec);
+    var axl = mesh(new T.CylinderGeometry(1.5, 1.5, Math.abs(D.beltZ) + 3, 16), mats.steelRail, false, true);
+    axl.rotation.x = PI / 2;
+    axl.position.set(sx * D.endIdlerX, D.xBeltY, D.beltZ / 2 - 1.5);
+    G.add(axl);
 
     var pg = new T.Group();
-    pg.position.set(sx * (D.crossX + 3.5), D.crossY - 1.4, D.beltZ);
+    pg.position.set(sx * D.endIdlerX, D.xBeltY, D.beltZ);
     pg.rotation.x = PI / 2;          /* axle along Z, square to the rail */
     pg.add(mesh(new T.CylinderGeometry(D.endIdlerR, D.endIdlerR, D.beltW + 0.8, 40), mats.anodBlack, true, true));
     [-1, 1].forEach(function (sy) {
@@ -812,11 +1031,11 @@ function buildCarriage(mats) {
      shows the top strand riding clear above the rail's top land with its
      tooth crests turned up at the camera, and the return strand tucked away
      behind the rail - which is why only one band ever reads. */
-  var xBeltGeo = M1.beltLoop(-(D.crossX + 3.5), D.crossX + 3.5, D.endIdlerR + 0.63, D.beltW, 1.38, true);
+  var xBeltGeo = M1.beltLoop(-D.endIdlerX, D.endIdlerX, D.endIdlerR + 0.63, D.beltW, 1.38, true);
   xBeltGeo.rotateY(-PI / 2);
   xBeltGeo.rotateX(PI / 2);
   var xBelt = mesh(xBeltGeo, mats.belt, false, true);
-  xBelt.position.set(0, D.crossY - 1.4, D.beltZ);
+  xBelt.position.set(0, D.xBeltY, D.beltZ);
   G.add(xBelt);
 
   return G;
@@ -868,7 +1087,7 @@ function buildHead(mats) {
   pod.add(car);
   /* the belt clamps, where both runs terminate - on the upright loop the
      two strands sit one idler-diameter apart about the bar */
-  [D.crossY - 1.4 + D.endIdlerR + 0.63, D.crossY - 1.4 - D.endIdlerR - 0.63].forEach(function (by) {
+  [D.xBeltY + D.endIdlerR + 0.63, D.xBeltY - D.endIdlerR - 0.63].forEach(function (by) {
     var cl = mesh(M1.rbox(12, 4.4, D.beltW + 3, 1.0, 2), mats.aluPolish, false, true);
     cl.position.set(-W / 2 + 22, by, D.beltZ);
     pod.add(cl);
@@ -962,39 +1181,35 @@ function buildHead(mats) {
   hole.position.set(discX + 8, top - 0.75, discZ + 20);
   pod.add(hole);
 
-  /* --- the umbilical boot: it WRAPS the near-left corner --------------- */
-  /* c_head is unambiguous about this. The moulding is not a block bolted to
-     the flat end face - it is a saddle pulled over the corner roll itself,
-     running from the top arris down past the bottom one and turning through
-     the corner onto the side face. So it sits ON the corner, at 45 degrees
-     to both faces, and its own radius is big enough to follow the pod's. */
-  var bootX = -11.1, bootZ = L / 2 - 3.0, bootY = y0 + 15.3;
+  /* --- the umbilical boot ------------------------------------------------
+     c_deck at 2x is the clearest view of it: one black moulding the width
+     of half the end face (35 mm, centred 8-11 left of the pod's middle),
+     its top tucked just under the top arris, standing about 15 proud of the
+     end face and carried down past the bottom arris, where it necks round
+     the hose.  The hose leaves through that neck forward and DOWN, not
+     straight out of the face as it did: in c_deck and c_s1deck it drops
+     away from the boot at once.  The pod rides 3 above the deck, so the
+     moulding stops just short of it. */
+  var bootX = -10, bootOut = 15;
+  var bootTop = top - 0.6, bootBot = y0 - 2.6;
   var bootG = new T.Group();
-  bootG.position.set(bootX, bootY, bootZ);
-  bootG.rotation.y = -0.18;
-  bootG.add(mesh(M1.rbox(35, 26.5, 14, 4.5, 5), mats.rubber, true, true));
-  /* and it rolls over the bottom arris the way the moulding does in c_head */
-  var bootLip = mesh(M1.rbox(31, 7, 13, 3.4, 4), mats.rubber, true, true);
-  bootLip.position.y = (y0 + 1.0) - bootY;
-  bootG.add(bootLip);
+  bootG.position.set(bootX, 0, L / 2);
+  var bootBody = mesh(M1.rbox(35, bootTop - bootBot, bootOut + 2, 5.0, 5), mats.rubber, true, true);
+  bootBody.position.set(0, (bootTop + bootBot) / 2, bootOut / 2 - 1);
+  bootG.add(bootBody);
+  /* the neck round the hose, leaning 50 degrees below level */
+  var hDir = new T.Vector3(0, -0.77, 0.64).normalize();
+  var mouth = new T.Vector3(0, y0 + 6.5, bootOut - 4.5);
+  var neck = mesh(new T.CylinderGeometry(9.9, 9.6, 10, 40), mats.rubber, true, true);
+  neck.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), hDir);
+  neck.position.copy(mouth).addScaledVector(hDir, -2.5);
+  bootG.add(neck);
   pod.add(bootG);
-  /* s1_1 and the s3_1 crop both show the cuff as plain black rubber - the
-     only warm metal on the head is the tab beside the nozzle - so the piping
-     ring that used to sit here has gone. */
-  /* it tapers away from the pod into the throat the hose plugs onto */
-  /* it necks straight down into the throat the hose plugs onto: in s1_1 the
-     conduit leaves the pod's end face and turns for the table at once, it
-     does not stand out on a snout */
-  /* no separate throat: the hose emerges straight out of the saddle */
-  /* start the sweep INSIDE the throat: corrugatedTube has no end caps, so
-     an anchor past the throat's mouth showed the tube's own interior as a
-     bright ring hanging off the boot. */
-  /* well INSIDE the rubber, not at its face: at 4.6 the tube's own open end
-     showed as a dark bore ringing the hose where it leaves the boot, which is
-     the very artefact the anchor was moved in to avoid. */
-  var ba = new T.Vector3(0, -3.0, 1.5);
-  bootG.updateMatrix(); ba.applyMatrix4(bootG.matrix);
-  pod.userData.bootAnchor = ba;
+  bootG.updateMatrix();
+  /* the hose starts inside the neck, so its open end is never seen */
+  pod.userData.bootAnchor = mouth.clone().addScaledVector(hDir, -4).applyMatrix4(bootG.matrix);
+  /* the direction the hose leaves the boot by, unit, pod space */
+  pod.userData.bootDir = hDir;
 
   G.add(pod);
   G.userData.pod = pod;
@@ -1263,28 +1478,27 @@ function buildBed(mats, decals) {
 
   /* --- the glass ---------------------------------------------------------- */
   var glassZ = D.glassZ - D.mastZ;   /* the bed group hangs off the mast */
-  /* The plate's corners are all but SQUARE in s1_1 - a crisp point with a
-     chamfer you can barely see - and a squircle exponent of 20 rounds a 200
-     wide plate by 3.4 mm, which at 5x reads as a fat radius nothing in the
-     photograph has.  60 brings it to 1.15. */
-  var glass = mesh(M1.squirclePlate(D.glassW / 2, D.glassD / 2, gt, 60, 0.6), mats.glass, false, false);
+  /* The plate is the vendor's own: the first component of M1_bed_model.stl,
+     44 triangles, taken verbatim (see plateGeometry).  It used to be a
+     squircle loft at n = 60, and that exponent is what cut the triangle out
+     of it: the loop closes at t = 2 pi, where sin() returns -2.4e-16, and
+     |sin|^(2/60) turns that rounding error into 0.30 - so the last rim point
+     landed at z = -27 instead of 0 and the cap's fan never covered the wedge
+     between the two.  On Overview that showed as a triangular bite out of
+     the plate, centre to right-hand edge.  The STL's plate is a plain
+     200 x 180 x 3.85 slab with 0.5 mm chamfers on every edge, so that is
+     what this is now. */
+  var glass = mesh(plateGeometry(false, 0), mats.glass, false, false);
   glass.position.set(-D.mastX, 0, glassZ);
   glass.name = 'glassPlate';
   glass.renderOrder = 2;
   G.add(glass);
 
-  /* The rim goes INSIDE the glass, not outside it.  At 0.04 out it was a
-     third of a pixel from the plate's own side wall and the two interleaved
-     along the near edge into a fine stipple; pushing it to 0.35 out did not
-     clear it either, because the plate is seen nearly edge-on there and the
-     two surfaces stay within a pixel in depth however far apart they are in
-     the plane.  Sunk 0.5 INSIDE, the glass's own wall owns the silhouette
-     and the tinted shell is simply seen through it, which is what a green
-     glass edge is anyway. */
-  var rim = mesh(M1.loftSquircle([
-    { y: 0.3, hx: D.glassW / 2 + 0.25, hz: D.glassD / 2 + 0.25, n: 60 },
-    { y: gt - 0.3, hx: D.glassW / 2 + 0.25, hz: D.glassD / 2 + 0.25, n: 60 }
-  ], 176, false, false), mats.glassEdge, false, false);
+  /* The tinted edge: the STL's own side faces and corner chamfers, pulled
+     0.25 mm inside the glass.  The plate is seen nearly edge-on in every
+     view, so the glass's own wall owns the silhouette and this shell is seen
+     through it, which is what a green glass edge is anyway. */
+  var rim = mesh(plateGeometry(true, 0.25), mats.glassEdge, false, false);
   rim.position.set(-D.mastX, 0, glassZ);
   rim.renderOrder = 3;
   G.add(rim);
@@ -1299,6 +1513,38 @@ function buildBed(mats, decals) {
   G.userData.glassDecal = gd;
   G.userData.rim = rim;
   return G;
+}
+
+/* The glass plate, straight out of the vendor's M1_bed_model.stl: the file
+   welds into two components and the first, 44 triangles, is the glass.
+   STL (X, Y, Z) maps to the model as (X, Z + 3.85, Y): STL -Y is where the
+   clamp bracket sits, which is the model's back (-z), and Z -3.85..0 is the
+   thickness, so the plate's underside - the face the print hangs from - is
+   y = 0 here.  The mapping is a mirror, so every face was re-wound to point
+   away from the centre.  `sides` keeps only the 16 near-vertical faces (the
+   four walls and the four corner chamfers) for the tinted edge, pulled
+   `inset` mm toward the centre. */
+var PLATE_V = [-100, 0.5, -89.5, -100, 0.5, 89.5, -100, 3.35, -89.5, -100, 3.35, 89.5, -99.5, 0, -89.5, -99.5, 0, 89.5, -99.5, 0.5, -90, -99.5, 0.5, 90, -99.5, 3.35, -90, -99.5, 3.35, 90, -99.5, 3.85, -89.5, -99.5, 3.85, 89.5, 99.5, 0, -89.5, 99.5, 0, 89.5, 99.5, 0.5, -90, 99.5, 0.5, 90, 99.5, 3.35, -90, 99.5, 3.35, 90, 99.5, 3.85, -89.5, 99.5, 3.85, 89.5, 100, 0.5, -89.5, 100, 0.5, 89.5, 100, 3.35, -89.5, 100, 3.35, 89.5];
+var PLATE_F = [16, 18, 22, 22, 14, 16, 14, 22, 20, 6, 16, 14, 16, 6, 8, 20, 12, 14, 20, 23, 21, 23, 20, 22, 18, 23, 22, 23, 18, 19, 8, 18, 16, 18, 8, 10, 23, 19, 17, 10, 19, 18, 19, 10, 11, 8, 2, 10, 0, 8, 6, 8, 0, 2, 4, 14, 12, 14, 4, 6, 21, 12, 20, 12, 21, 13, 23, 15, 21, 15, 23, 17, 19, 9, 17, 9, 19, 11, 2, 11, 10, 11, 2, 3, 6, 4, 0, 4, 13, 5, 13, 4, 12, 21, 15, 13, 1, 2, 0, 2, 1, 3, 7, 17, 9, 17, 7, 15, 11, 3, 9, 1, 4, 5, 4, 1, 0, 15, 5, 13, 5, 15, 7, 1, 9, 3, 9, 1, 7, 5, 7, 1];
+function plateGeometry(sides, inset) {
+  var pos = [], f, k, ax, ay, az, bx, by, bz, cx, cy, cz, ny;
+  function v(i) { return [PLATE_V[i * 3], PLATE_V[i * 3 + 1], PLATE_V[i * 3 + 2]]; }
+  for (f = 0; f < PLATE_F.length; f += 3) {
+    var a = v(PLATE_F[f]), b = v(PLATE_F[f + 1]), c = v(PLATE_F[f + 2]);
+    ax = b[0] - a[0]; ay = b[1] - a[1]; az = b[2] - a[2];
+    bx = c[0] - a[0]; by = c[1] - a[1]; bz = c[2] - a[2];
+    ny = az * bx - ax * bz;
+    var len = Math.hypot(ay * bz - az * by, ny, ax * by - ay * bx);
+    if (sides && Math.abs(ny / len) > 0.2) continue;
+    [a, b, c].forEach(function (p) {
+      var s = inset ? 1 - inset / Math.max(Math.abs(p[0]), Math.abs(p[2])) : 1;
+      pos.push(p[0] * s, p[1], p[2] * s);
+    });
+  }
+  var g = new T.BufferGeometry();
+  g.setAttribute('position', new T.Float32BufferAttribute(pos, 3));
+  g.computeVertexNormals();
+  return g;
 }
 
 /* ==========================================================================
@@ -1381,35 +1627,332 @@ function buildPrint(mats) {
 
 /* ==========================================================================
    THE CONDUIT
+
+   The umbilical is a corrugated hose of FIXED length clamped at both ends:
+   the boot on the pod and the boot in the base's front-left wall. Between
+   them it makes one smooth bend - down out of each boot and round in a
+   single U lying out on the table in front of the machine (s1_1, s3_1,
+   s5_1, c_deck, s7_1).
+
+   It used to be a tube swept along an eight-point Catmull-Rom with Frenet
+   frames. The spline wandered (the "all twisted around" Jack saw), and
+   Frenet frames flip wherever the curvature passes through zero, which
+   spun the rib pattern round the hose; and the whole 144k-triangle sweep
+   was rebuilt every time the head moved.
+
+   Now:
+   - the path is a cubic Bezier between the two boot mouths, leaving each
+     along its boot's own axis, with the arm length solved so the hose keeps
+     its one length; it is held on the table and out of the base;
+   - its frames are rotation-minimising (double reflection), so nothing
+     twists;
+   - the hose is ONE static mesh, laid out straight and bent onto the path
+     in the vertex shader from a 128-frame float texture, so a pose change
+     uploads 6 KB instead of rebuilding a mesh, and the ribs stay joined
+     however tight the bend (instanced rigid ribs opened gaps on the
+     outside of the U).
    ========================================================================== */
-function conduitCurve(head, sock) {
-  /* The shell is a square standing on a corner, so a plan point clears the
-     casting only when |x + z| or |x - z| exceeds hs * root2. Every control
-     point below deck level is held outside that line - which is what stops
-     the tube driving through the base the way it used to. It leaves the head
-     high, crosses the deck, drops outside the front corner, hangs in a slack
-     loop almost on the table, and comes back up into the wall socket. */
-  var R = D.hs * Math.SQRT2;              /* |x| + |z| = R is the wall */
-  var clear = R + 16;                     /* a tube radius and a margin */
-  /* The two points after the head used to be FIXED at z 102 and 126. Once
-     the carriage parked forward the boot came out at z 116, past them, and
-     the spline doubled back on itself - a bend tighter than the tube's own
-     radius, which is what tore the sweep into loose rings. Everything
-     downstream of the head is now derived from the head. */
-  var ax = head.x * 0.45 + 18;
-  var zc = clear - Math.abs(ax);
-  return new T.CatmullRomCurve3([
-    head,
-    new T.Vector3(head.x + 11, head.y - 8, head.z + 34),
-    new T.Vector3(ax, D.deckY - 2, Math.max(zc + 8, head.z + 44)),
-    new T.Vector3(ax + 6, 30, zc + 26),
-    new T.Vector3(ax - 10, 8, zc + 40),
-    new T.Vector3(-34, 6, clear + 4),
-    new T.Vector3(-70, 12, clear - 34),
-    sock
-  ], false, 'catmullrom', 0.5);
+var HOSE = {
+  /* OD 16.6. Measured in s1_1 across both legs (59 and 60 px at about
+     3.6 px/mm where they stand, in front of the plate's registration) and in
+     c_deck at the base boot; the old 13.6 was a size thinner than either. */
+  r0: 8.3,
+  amp: 1.9,            /* convolution depth, crest to groove */
+  P: 3.6,              /* pitch of the single-start helix: c_deck counts the
+                          ribs at 3.6-3.8 mm right at the base boot */
+  radial: 24,
+  /* boot mouth to boot mouth. Set so the U lies where s1_1 and s3_1 put it
+     with the head where those photographs put it. */
+  L: 380
+};
+
+/* The straight hose: ribs laid end to end along +z, which is arc length.
+   Its rows follow the helix (see above), so the narrow groove is sampled in
+   every column with nine rows a period; normals are analytic.  The vertex
+   shader (bendHose) carries each vertex out along the path. */
+function hoseGeometry(nRibs) {
+  var P = HOSE.P, R0 = HOSE.r0, A = HOSE.amp, RAD = HOSE.radial, c = P / TAU;
+  var W = [0.22, 0.38, 0.46, 0.5, 0.54, 0.62, 0.78, 1.0];     /* valley at 0.5 */
+  var rows = 1 + nRibs * W.length;
+  var pos = new Float32Array(rows * (RAD + 1) * 3), nor = new Float32Array(rows * (RAD + 1) * 3);
+  var col = new Float32Array(rows * (RAD + 1) * 3), idx = [];
+  var k = 0, q, j, o = 0;
+  function row(ww) {
+    var ph = (ww / P) * TAU;
+    var u = Math.max(1e-3, 0.5 * (1 + Math.cos(ph)));
+    var R = R0 - A * (1 - Math.pow(u, 0.30));
+    var dR = A * 0.30 * Math.pow(u, -0.70) * (-0.5 * Math.sin(ph) * TAU / P);
+    /* the baked occlusion: this renderer has no AO, and the groove floor of
+       a convoluted hose sees perhaps a third of the sky (s1_1 runs 16 to 238
+       along the hose's own axis) */
+    var ao = 0.08 + 0.92 * Math.pow(u, 0.85);
+    for (j = 0; j <= RAD; j++) {
+      var v = j / RAD * TAU, cv = Math.cos(v), sv = Math.sin(v);
+      /* +P so the first rib's helical cut starts at s >= 0 */
+      pos[o] = R * cv; pos[o + 1] = R * sv; pos[o + 2] = ww - c * v + P;
+      var nx = R * cv + c * dR * sv, ny = R * sv - c * dR * cv, nz = -R * dR;
+      var nl = Math.hypot(nx, ny, nz);
+      nor[o] = nx / nl; nor[o + 1] = ny / nl; nor[o + 2] = nz / nl;
+      col[o] = col[o + 1] = col[o + 2] = ao;
+      o += 3;
+    }
+  }
+  row(0);
+  for (q = 0; q < nRibs; q++) for (k = 0; k < W.length; k++) row((q + W[k]) * P);
+  var rowN = RAD + 1;
+  for (k = 0; k < rows - 1; k++) for (j = 0; j < RAD; j++) {
+    var a = k * rowN + j, b = a + 1, cc = a + rowN, d = cc + 1;
+    idx.push(a, b, cc, b, d, cc);
+  }
+  var g = new T.BufferGeometry();
+  g.setAttribute('position', new T.BufferAttribute(pos, 3));
+  g.setAttribute('normal', new T.BufferAttribute(nor, 3));
+  g.setAttribute('color', new T.BufferAttribute(col, 3));
+  g.setIndex(idx);
+  g.userData.trisPerRib = W.length * RAD * 2;
+  return g;
 }
 
+/* GLSL: the path is a texture of M frames at even arc-length steps, three
+   texels each (position, tangent, normal); a vertex at local (x, y, s) goes
+   to P(s) + x N(s) + y B(s), interpolated between the two frames round s. */
+var HOSE_GLSL = [
+  'uniform sampler2D hoseFrames;',
+  'uniform float hoseStep;',
+  'uniform float hoseLen;',
+  'uniform float hoseLast;',
+  'void hoseFrame(float s, out vec3 P, out mat3 R) {',
+  '  float f = clamp(s, 0.0, hoseLen) / hoseStep;',
+  '  float j0 = min(floor(f), hoseLast - 1.0);',
+  '  float t = clamp(f - j0, 0.0, 1.0);',
+  '  int a = int(j0), b = a + 1;',
+  '  P = mix(texelFetch(hoseFrames, ivec2(0, a), 0).xyz, texelFetch(hoseFrames, ivec2(0, b), 0).xyz, t);',
+  '  vec3 Tg = normalize(mix(texelFetch(hoseFrames, ivec2(1, a), 0).xyz, texelFetch(hoseFrames, ivec2(1, b), 0).xyz, t));',
+  '  vec3 Nm = mix(texelFetch(hoseFrames, ivec2(2, a), 0).xyz, texelFetch(hoseFrames, ivec2(2, b), 0).xyz, t);',
+  '  Nm = normalize(Nm - dot(Nm, Tg) * Tg);',
+  '  R = mat3(Nm, cross(Tg, Nm), Tg);',
+  '}'
+].join('\n');
+
+function bendHose(shader, frames) {
+  shader.uniforms.hoseFrames = frames.uniforms.hoseFrames;
+  shader.uniforms.hoseStep = frames.uniforms.hoseStep;
+  shader.uniforms.hoseLen = frames.uniforms.hoseLen;
+  shader.uniforms.hoseLast = frames.uniforms.hoseLast;
+  var vs = shader.vertexShader.replace('#include <common>', '#include <common>\n' + HOSE_GLSL);
+  /* each chunk computes its own frame: the depth shader has the normal
+     chunk only inside an #ifdef, so nothing can be shared between them */
+  vs = vs.replace('#include <beginnormal_vertex>',
+    'vec3 hosePn; mat3 hoseRn; hoseFrame(position.z, hosePn, hoseRn);\n' +
+    'vec3 objectNormal = hoseRn * normal;\n#ifdef USE_TANGENT\nvec3 objectTangent = vec3( tangent.xyz );\n#endif');
+  vs = vs.replace('#include <begin_vertex>',
+    'vec3 hoseP; mat3 hoseR; hoseFrame(position.z, hoseP, hoseR);\n' +
+    'vec3 transformed = hoseP + hoseR * vec3(position.xy, 0.0);');
+  shader.vertexShader = vs;
+}
+
+/* The hose and its solver.  update(A, dA, B, dB) takes the two mouths (root
+   space) and the unit direction the hose leaves each one by, solves the
+   path, and writes its frames into a small float texture.  Nothing here
+   allocates after construction. */
+function buildConduit(mats) {
+  var K = 64;                                   /* path samples for the solve */
+  var M = 128;                                  /* frames handed to the shader */
+  var nRibs = Math.ceil(HOSE.L / HOSE.P) + 2;
+  var geo = hoseGeometry(nRibs);
+  var data = new Float32Array(3 * M * 4);
+  var tex = new T.DataTexture(data, 3, M, T.RGBAFormat, T.FloatType);
+  tex.minFilter = tex.magFilter = T.NearestFilter;
+  tex.needsUpdate = true;
+  var frames = { uniforms: {
+    hoseFrames: { value: tex }, hoseStep: { value: 1 }, hoseLen: { value: 1 }, hoseLast: { value: M - 1 }
+  } };
+  var mat = mats.conduit;
+  mat.onBeforeCompile = function (sh) { bendHose(sh, frames); };
+  mat.customProgramCacheKey = function () { return 'm1-hose'; };
+  /* kept on the material so a viewer that disposes every texture it finds
+     on its materials disposes this one too */
+  mat.hoseFrames = tex;
+  var depth = new T.MeshDepthMaterial({ depthPacking: T.RGBADepthPacking });
+  depth.onBeforeCompile = function (sh) { bendHose(sh, frames); };
+  depth.customProgramCacheKey = function () { return 'm1-hose-depth'; };
+  depth.hoseFrames = tex;
+
+  var hose = new T.Mesh(geo, mat);
+  hose.name = 'conduit';
+  hose.castShadow = true; hose.receiveShadow = true;
+  hose.customDepthMaterial = depth;
+  /* The straight geometry is not where the hose is: it is never culled and
+     not pickable, and its box is set to the BENT hose below, so a viewer
+     fitting its camera to geometry boxes still frames it. */
+  hose.frustumCulled = false;
+  hose.raycast = function () {};
+  geo.boundingBox = new T.Box3();
+  geo.boundingSphere = new T.Sphere();
+
+  var px = new Float64Array(K + 1), py = new Float64Array(K + 1), pz = new Float64Array(K + 1);
+  var qx = new Float64Array(K + 1), qy = new Float64Array(K + 1), qz = new Float64Array(K + 1);
+  var cum = new Float64Array(K + 1);
+  var tx = new Float64Array(K + 1), ty = new Float64Array(K + 1), tz = new Float64Array(K + 1);
+  var nx = new Float64Array(K + 1), ny = new Float64Array(K + 1), nz = new Float64Array(K + 1);
+  var R = D.hs * Math.SQRT2;                    /* |x| + |z| = R is the wall */
+  var r = HOSE.r0;
+  var a0x, a0y, a0z, a1x, a1y, a1z, b1x, b1y, b1z, b0x, b0y, b0z;
+
+  /* keep a point on the table and out of the shell */
+  function hold(i) {
+    var y = py[i];
+    /* the table: a soft floor, so the hose settles onto it rather than
+       folding at it */
+    var e = (y - r) / 8;
+    y = r + (e > 20 ? e : Math.log(1 + Math.exp(e))) * 8;
+    var ax = Math.abs(px[i]), az = Math.abs(pz[i]);
+    var inside = (R + r + 1) - (ax + az);
+    if (inside > 0 && y < D.deckY + r) {
+      /* out of the casting by the shorter way - up onto the deck or out
+         through the wall - blended across the switch so the path never
+         jumps from one to the other, which is what put waves in it */
+      var lift = D.deckY + r - y, push = inside / Math.SQRT2;
+      var w = M1.smooth((lift - push) / 6 + 0.5);
+      y += lift * (1 - w);
+      px[i] += (px[i] < 0 ? -1 : 1) * w * push / Math.SQRT2;
+      pz[i] += (pz[i] < 0 ? -1 : 1) * w * push / Math.SQRT2;
+    }
+    py[i] = y;
+  }
+
+  /* the path for one arm length; returns its length */
+  function trace(arm) {
+    var i, t, s, b0, b1, b2, b3;
+    var c1x = a0x + a1x * arm, c1y = a0y + a1y * arm, c1z = a0z + a1z * arm;
+    var c2x = b0x + b1x * arm, c2y = b0y + b1y * arm, c2z = b0z + b1z * arm;
+    for (i = 0; i <= K; i++) {
+      t = i / K; s = 1 - t;
+      b0 = s * s * s; b1 = 3 * s * s * t; b2 = 3 * s * t * t; b3 = t * t * t;
+      px[i] = b0 * a0x + b1 * c1x + b2 * c2x + b3 * b0x;
+      py[i] = b0 * a0y + b1 * c1y + b2 * c2y + b3 * b0y;
+      pz[i] = b0 * a0z + b1 * c1z + b2 * c2z + b3 * b0z;
+    }
+    /* constrain, then relax so a held point does not leave a kink; the two
+       samples at each end stay put, which keeps both boot axes */
+    for (var pass = 0; pass < 4; pass++) {
+      for (i = 2; i <= K - 2; i++) hold(i);
+      if (pass === 3) break;
+      for (i = 0; i <= K; i++) { qx[i] = px[i]; qy[i] = py[i]; qz[i] = pz[i]; }
+      for (i = 2; i <= K - 2; i++) {
+        px[i] = 0.25 * qx[i - 1] + 0.5 * qx[i] + 0.25 * qx[i + 1];
+        py[i] = 0.25 * qy[i - 1] + 0.5 * qy[i] + 0.25 * qy[i + 1];
+        pz[i] = 0.25 * qz[i - 1] + 0.5 * qz[i] + 0.25 * qz[i + 1];
+      }
+    }
+    cum[0] = 0;
+    for (i = 1; i <= K; i++) cum[i] = cum[i - 1] + Math.hypot(px[i] - px[i - 1], py[i] - py[i - 1], pz[i] - pz[i - 1]);
+    return cum[K];
+  }
+
+  var last = [NaN, NaN, NaN, NaN, NaN, NaN];
+  var box = geo.boundingBox;
+  var trisPerRib = geo.userData.trisPerRib;
+
+  /* The arm length is found by secant steps from the last pose's, which
+     a moving head barely changes (two or three traces), falling back to
+     bisection when that does not settle. */
+  var lastArm = 120;
+  function solveArm() {
+    var x0 = lastArm, f0 = trace(x0) - HOSE.L;
+    if (Math.abs(f0) < 0.3) return x0;
+    var x1 = x0 * (f0 < 0 ? 1.08 : 0.92), f1 = trace(x1) - HOSE.L, k;
+    for (k = 0; k < 6 && Math.abs(f1) >= 0.3; k++) {
+      if (Math.abs(f1 - f0) < 1e-6) break;
+      var x2 = x1 - f1 * (x1 - x0) / (f1 - f0);
+      if (!(x2 > 2 && x2 < 900)) break;
+      x0 = x1; f0 = f1; x1 = x2; f1 = trace(x1) - HOSE.L;
+    }
+    if (Math.abs(f1) < 0.3) return (lastArm = x1);
+    var lo = 2, hi = 900;
+    if (trace(hi) < HOSE.L) return (lastArm = hi);
+    for (k = 0; k < 18; k++) {
+      var mid = 0.5 * (lo + hi);
+      if (trace(mid) < HOSE.L) lo = mid; else hi = mid;
+    }
+    return (lastArm = lo);
+  }
+
+  function update(A, dA, B, dB) {
+    if (Math.abs(A.x - last[0]) < 0.02 && Math.abs(A.y - last[1]) < 0.02 && Math.abs(A.z - last[2]) < 0.02 &&
+        Math.abs(B.x - last[3]) < 0.02 && Math.abs(B.y - last[4]) < 0.02 && Math.abs(B.z - last[5]) < 0.02) return;
+    last[0] = A.x; last[1] = A.y; last[2] = A.z; last[3] = B.x; last[4] = B.y; last[5] = B.z;
+    a0x = A.x; a0y = A.y; a0z = A.z; a1x = dA.x; a1y = dA.y; a1z = dA.z;
+    b0x = B.x; b0y = B.y; b0z = B.z; b1x = dB.x; b1y = dB.y; b1z = dB.z;
+
+    /* the arm length that gives the hose its own length: the U grows out
+       across the table as the two ends come together */
+    var i, len, arm = solveArm();
+    len = trace(arm);
+
+    /* unit tangents, then rotation-minimising frames by double reflection
+       (Wang et al. 2008): no flips, no twist */
+    for (i = 0; i <= K; i++) {
+      var i0 = i > 0 ? i - 1 : 0, i1 = i < K ? i + 1 : K;
+      var dx = px[i1] - px[i0], dy = py[i1] - py[i0], dz = pz[i1] - pz[i0];
+      var dl = Math.hypot(dx, dy, dz) || 1;
+      tx[i] = dx / dl; ty[i] = dy / dl; tz[i] = dz / dl;
+    }
+    /* start square to X, so the rib pattern starts the same way whatever
+       the pose */
+    var sx = 1 - tx[0] * tx[0], sy = -tx[0] * ty[0], sz = -tx[0] * tz[0];
+    var sl = Math.hypot(sx, sy, sz) || 1;
+    nx[0] = sx / sl; ny[0] = sy / sl; nz[0] = sz / sl;
+    for (i = 0; i < K; i++) {
+      var v1x = px[i + 1] - px[i], v1y = py[i + 1] - py[i], v1z = pz[i + 1] - pz[i];
+      var c1 = v1x * v1x + v1y * v1y + v1z * v1z;
+      if (c1 < 1e-12) { nx[i + 1] = nx[i]; ny[i + 1] = ny[i]; nz[i + 1] = nz[i]; continue; }
+      var k1 = 2 / c1 * (v1x * nx[i] + v1y * ny[i] + v1z * nz[i]);
+      var rLx = nx[i] - k1 * v1x, rLy = ny[i] - k1 * v1y, rLz = nz[i] - k1 * v1z;
+      var k2 = 2 / c1 * (v1x * tx[i] + v1y * ty[i] + v1z * tz[i]);
+      var tLx = tx[i] - k2 * v1x, tLy = ty[i] - k2 * v1y, tLz = tz[i] - k2 * v1z;
+      var v2x = tx[i + 1] - tLx, v2y = ty[i + 1] - tLy, v2z = tz[i + 1] - tLz;
+      var c2 = v2x * v2x + v2y * v2y + v2z * v2z;
+      var k3 = c2 < 1e-12 ? 0 : 2 / c2 * (v2x * rLx + v2y * rLy + v2z * rLz);
+      nx[i + 1] = rLx - k3 * v2x; ny[i + 1] = rLy - k3 * v2y; nz[i + 1] = rLz - k3 * v2z;
+    }
+
+    /* resample at even arc-length steps for the shader */
+    var step = len / (M - 1), seg = 0;
+    box.makeEmpty();
+    for (var q = 0; q < M; q++) {
+      var s = q * step;
+      while (seg < K - 1 && cum[seg + 1] < s) seg++;
+      var span = cum[seg + 1] - cum[seg], f = span > 1e-9 ? (s - cum[seg]) / span : 0;
+      if (f > 1) f = 1;
+      var X = px[seg] + (px[seg + 1] - px[seg]) * f;
+      var Y = py[seg] + (py[seg + 1] - py[seg]) * f;
+      var Z = pz[seg] + (pz[seg + 1] - pz[seg]) * f;
+      var o = q * 12;
+      data[o] = X; data[o + 1] = Y; data[o + 2] = Z; data[o + 3] = 1;
+      data[o + 4] = tx[seg] + (tx[seg + 1] - tx[seg]) * f;
+      data[o + 5] = ty[seg] + (ty[seg + 1] - ty[seg]) * f;
+      data[o + 6] = tz[seg] + (tz[seg + 1] - tz[seg]) * f; data[o + 7] = 0;
+      data[o + 8] = nx[seg] + (nx[seg + 1] - nx[seg]) * f;
+      data[o + 9] = ny[seg] + (ny[seg + 1] - ny[seg]) * f;
+      data[o + 10] = nz[seg] + (nz[seg + 1] - nz[seg]) * f; data[o + 11] = 0;
+      if (X - r < box.min.x) box.min.x = X - r; if (X + r > box.max.x) box.max.x = X + r;
+      if (Y - r < box.min.y) box.min.y = Y - r; if (Y + r > box.max.y) box.max.y = Y + r;
+      if (Z - r < box.min.z) box.min.z = Z - r; if (Z + r > box.max.z) box.max.z = Z + r;
+    }
+    tex.needsUpdate = true;
+    frames.uniforms.hoseStep.value = step;
+    frames.uniforms.hoseLen.value = len;
+    /* draw only the ribs the hose has (+1 for the offset start); the rest
+       would collapse onto the far end, inside the boot */
+    geo.setDrawRange(0, Math.min(nRibs, Math.ceil(len / HOSE.P) + 1) * trisPerRib * 3);
+    box.getBoundingSphere(geo.boundingSphere);
+    hose.userData.length = len;
+  }
+
+  hose.userData.update = update;
+  return hose;
+}
 
 /* ==========================================================================
    ASSEMBLY
@@ -1419,14 +1962,15 @@ M1.build = function (mats) {
     glass: M1.glassDecal(2048),
     deck: M1.deckDecal(1024),
     clamp: M1.clampDecal(1024),
-    screen: M1.screenCanvas(768, 41)
+    screen: M1.screenCanvas(512, null)
   };
 
   var root = new T.Group(); root.name = 'M1';
 
   var base = buildBase(mats, decals);
   root.add(base);
-  root.add(buildGantry(mats));
+  var gantry = buildGantry(mats);
+  root.add(gantry);
 
   /* the block in the groove carries the cross rail, and the head rides that */
   var yCarriage = buildCarriage(mats);
@@ -1434,8 +1978,7 @@ M1.build = function (mats) {
   yCarriage.add(beamGroup);
   root.add(yCarriage);
 
-  var conduit = mesh(new T.BufferGeometry(), mats.conduit);
-  conduit.name = 'conduit';
+  var conduit = buildConduit(mats);
   root.add(conduit);
 
   /* the mast folds about its hinge */
@@ -1456,6 +1999,21 @@ M1.build = function (mats) {
   bedLift.add(bed);
   mastPivot.add(bedLift);
 
+  /* The plate's own frame, for drawing what is printed on it, in the
+     printer's millimetres: origin at the plate's front-left corner on its
+     UNDERSIDE (the face the M1 prints onto - it prints upside down), +x to
+     the right along its 200, +y back along its 180, +z down, away from the
+     plate, the way a print grows.  So Klipper's (X, Y, Z) drops straight in
+     with Y measured from the front edge; it moves with the bed. */
+  var plateFrame = new T.Group(); plateFrame.name = 'plateFrame';
+  plateFrame.matrixAutoUpdate = false;
+  plateFrame.matrix.set(
+    1, 0, 0, -D.mastX - D.glassW / 2,
+    0, 0, -1, 0,
+    0, -1, 0, (D.glassZ - D.mastZ) + D.glassD / 2,
+    0, 0, 0, 1);
+  bed.add(plateFrame);
+
   var print = buildPrint(mats);
   var printHolder = new T.Group();
   printHolder.add(print);
@@ -1465,6 +2023,7 @@ M1.build = function (mats) {
     base: base, beamGroup: beamGroup, yCarriage: yCarriage,
     pod: beamGroup.userData.pod, mastPivot: mastPivot, mastYaw: mastYaw,
     bedLift: bedLift, bed: bed, print: print, printHolder: printHolder,
+    plateFrame: plateFrame, plateSize: { x: D.glassW, y: D.glassD, t: D.glassT }, gantry: gantry,
     conduit: conduit, decals: decals, mats: mats, spool: mastParts.userData.spool,
     display: base.userData.display, screenMesh: base.userData.screenMesh
   };
@@ -1475,11 +2034,34 @@ M1.build = function (mats) {
      against 11.8 per cent of the render's pixels over that and a peak of 68.
      So the chamber strip is simply off in the product shot, and a render that
      forces it on cannot match. */
-  var state = { z: 0.42, fold: 0, headX: 0.34, headZ: 0.55, showPrint: true, showSpool: false, led: true, progress: 41 };
+  /* Every field is documented in STATE.md. */
+  var state = {
+    z: 0.42, fold: 0, headX: 0.34, headZ: 0.55, showPrint: true, showSpool: false,
+    led: true, progress: 41,
+    /* the LEDs: one colour for every pixel (m_led.cfg's 'ready' base layer),
+       or Klipper's color_data per chain */
+    ledColor: [0.4, 0.3, 0.2], ledLeft: null, ledRight: null,
+    /* the panel's Home screen */
+    status: 'idle', nozzleTemp: 24, nozzleTarget: 0, bedTemp: 23, bedTarget: 0,
+    jobName: '', connected: true
+  };
   root.userData.state = state;
 
-  var tmp = new T.Vector3();
-  var lastKey = '';
+  var hoseA = new T.Vector3();
+
+  /* the round panel: MuonUI's new Home screen, live (02-materials.js) */
+  var pc = {};
+  var panelTex = root.userData.screenMesh.material.map;
+  function redrawPanel() {
+    M1.drawPanel(decals.screen, M1.panelView(state));
+    panelTex.needsUpdate = true;
+    root.userData.panelDraws = (root.userData.panelDraws || 0) + 1;
+  }
+  /* Krona One may still be loading when the first face is drawn; draw once
+     more when it arrives, so the label is in the right face */
+  if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { redrawPanel(); });
+  }
 
   root.userData.apply = function () {
     mastPivot.rotation.x = state.fold * (PI / 2 - 0.05);
@@ -1491,12 +2073,13 @@ M1.build = function (mats) {
     var lift = 26 + state.z * D.bedTravel;      /* plate underside above the hinge */
     bedLift.position.set(0, lift, 0);
     bedLift.visible = state.fold < 0.02;
-    if (base.userData.ledOn) base.userData.ledOn(state.led !== false && state.fold < 0.5);
+    base.userData.setLeds(state.led !== false && state.fold < 0.5, state.ledColor, state.ledLeft, state.ledRight);
     mastParts.userData.spool.visible = state.showSpool;
 
     var hx = state.headX * D.travelX;
     var hz = state.headZ * D.travelZ;
     yCarriage.position.set(0, 0, hz);          /* the block, down the LED rail */
+    gantry.userData.updateStrands(hz);         /* the central belts follow it */
     beamGroup.userData.pod.position.set(hx, 0, 0);   /* the head, along the cross rail */
 
     /* the print hangs off the plate directly above the nozzle */
@@ -1505,33 +2088,33 @@ M1.build = function (mats) {
     var nozWorldX = hx - D.podW / 2 + 20, nozWorldZ = hz - D.podL / 2 + 16;
     printHolder.position.set(nozWorldX, 0, nozWorldZ - D.mastZ);
     print.visible = state.showPrint && state.fold < 0.02;
+    /* the demo print is rebuilt to fill the gap, so only while it shows:
+       with it hidden (as Fluidd keeps it) a moving bed costs nothing */
     var gap = M1.clamp((D.hingeY + lift) - D.nozzleY + D.printSink, 6, 180);
-    if (Math.abs((root.userData._gap || 0) - gap) > 1.5) {
+    if (print.visible && Math.abs((root.userData._gap || 0) - gap) > 1.5) {
       root.userData._gap = gap;
       var og = print.geometry;
       print.geometry = printGeometry(gap);
       if (og) og.dispose();
     }
 
-    /* the conduit follows the head */
-    beamGroup.updateMatrixWorld(true);
-    tmp.copy(beamGroup.userData.pod.userData.bootAnchor);
-    beamGroup.userData.pod.localToWorld(tmp);
-    root.worldToLocal(tmp);
-    var key = tmp.x.toFixed(1) + ',' + tmp.z.toFixed(1);
-    if (key !== lastKey) {
-      lastKey = key;
-      var old = conduit.geometry;
-      conduit.geometry = M1.corrugatedTube(
-        conduitCurve(tmp, base.userData.socketAnchor), 2400, 6.8, 1.70, 3.6, 30);
-      if (old) old.dispose();
-    }
+    /* the conduit follows the head.  The pod only ever translates (by hx
+       along the bar, hz down the trough), so its boot's mouth is its local
+       anchor plus that offset - no matrix walk needed every frame. */
+    var podU = beamGroup.userData.pod.userData;
+    hoseA.set(podU.bootAnchor.x + hx, podU.bootAnchor.y, podU.bootAnchor.z + hz);
+    conduit.userData.update(hoseA, podU.bootDir, base.userData.socketAnchor, base.userData.socketDir);
 
-    if (root.userData._pct !== Math.round(state.progress)) {
-      root.userData._pct = Math.round(state.progress);
-      var c = M1.screenCanvas(768, state.progress);
-      root.userData.screenMesh.material.map.image = c;
-      root.userData.screenMesh.material.map.needsUpdate = true;
+    /* the panel redraws only when something it shows has changed */
+    if (state.status !== pc.status || Math.round(state.progress) !== pc.progress ||
+        Math.round(state.nozzleTemp) !== pc.heC || Math.round(state.nozzleTarget) !== pc.heT ||
+        Math.round(state.bedTemp) !== pc.bedC || Math.round(state.bedTarget) !== pc.bedT ||
+        state.jobName !== pc.job || state.connected !== pc.connected) {
+      pc.status = state.status; pc.progress = Math.round(state.progress);
+      pc.heC = Math.round(state.nozzleTemp); pc.heT = Math.round(state.nozzleTarget);
+      pc.bedC = Math.round(state.bedTemp); pc.bedT = Math.round(state.bedTarget);
+      pc.job = state.jobName; pc.connected = state.connected;
+      redrawPanel();
     }
   };
 

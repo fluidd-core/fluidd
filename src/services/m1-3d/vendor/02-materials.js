@@ -23,27 +23,39 @@ function canvas(w, h) {
    light's reflection straight down the lens at a clipped 255 where the
    photograph reads a flat 190.5.  A roughness map is meant to be a ripple
    about unity, so these are centred on 0.97. */
-function noiseCanvas(size, scale, contrast, mid) {
-  var c = canvas(size, size), x = c.getContext('2d');
-  var img = x.createImageData(size, size), d = img.data;
+function noiseField(size, scale, contrast, mid) {
   var grid = Math.max(2, Math.round(size / scale));
-  var g = new Float32Array(grid * grid);
+  var g = new Float32Array(grid * grid), out = new Float32Array(size * size);
   var i, j;
   for (i = 0; i < g.length; i++) g[i] = Math.random();
-  function at(ix, iy) { return g[((iy % grid) + grid) % grid * grid + (((ix % grid) + grid) % grid)]; }
-  for (j = 0; j < size; j++) for (i = 0; i < size; i++) {
-    var fx = i / size * grid, fy = j / size * grid;
-    var x0 = Math.floor(fx), y0 = Math.floor(fy);
-    var tx = fx - x0, ty = fy - y0;
-    tx = tx * tx * (3 - 2 * tx); ty = ty * ty * (3 - 2 * ty);
-    var v = (at(x0, y0) * (1 - tx) + at(x0 + 1, y0) * tx) * (1 - ty) +
-            (at(x0, y0 + 1) * (1 - tx) + at(x0 + 1, y0 + 1) * tx) * ty;
-    v = (mid === undefined ? 0.5 : mid) + (v - 0.5) * (contrast || 1);
-    var p = (j * size + i) * 4, b = Math.round(M1.clamp(v, 0, 1) * 255);
-    d[p] = d[p + 1] = d[p + 2] = b; d[p + 3] = 255;
+  for (j = 0; j < size; j++) {
+    var fy = j / size * grid, y0 = Math.floor(fy), ty = fy - y0;
+    ty = ty * ty * (3 - 2 * ty);
+    var r0 = (y0 % grid) * grid, r1 = ((y0 + 1) % grid) * grid;
+    for (i = 0; i < size; i++) {
+      var fx = i / size * grid, x0 = Math.floor(fx), tx = fx - x0;
+      tx = tx * tx * (3 - 2 * tx);
+      var c0 = x0 % grid, c1 = (x0 + 1) % grid;
+      var v = (g[r0 + c0] * (1 - tx) + g[r0 + c1] * tx) * (1 - ty) +
+              (g[r1 + c0] * (1 - tx) + g[r1 + c1] * tx) * ty;
+      v = (mid === undefined ? 0.5 : mid) + (v - 0.5) * (contrast || 1);
+      out[j * size + i] = v < 0 ? 0 : v > 1 ? 1 : v;
+    }
+  }
+  return out;
+}
+function fieldCanvas(size, f) {
+  var c = canvas(size, size), x = c.getContext('2d');
+  var img = x.createImageData(size, size), d = img.data;
+  for (var i = 0; i < size * size; i++) {
+    var b = Math.round(f[i] * 255);
+    d[i * 4] = d[i * 4 + 1] = d[i * 4 + 2] = b; d[i * 4 + 3] = 255;
   }
   x.putImageData(img, 0, 0);
   return c;
+}
+function noiseCanvas(size, scale, contrast, mid) {
+  return fieldCanvas(size, noiseField(size, scale, contrast, mid));
 }
 
 /* height field -> tangent-space normal map */
@@ -52,20 +64,21 @@ function heightToNormal(src, strength) {
   var sx = src.getContext('2d').getImageData(0, 0, size, size).data;
   var out = canvas(size, size), ox = out.getContext('2d');
   var img = ox.createImageData(size, size), d = img.data;
-  function H(i, j) {
-    i = ((i % size) + size) % size; j = ((j % size) + size) % size;
-    return sx[(j * size + i) * 4] / 255;
-  }
-  for (var j = 0; j < size; j++) for (var i = 0; i < size; i++) {
-    var dx = (H(i + 1, j) - H(i - 1, j)) * strength;
-    var dy = (H(i, j + 1) - H(i, j - 1)) * strength;
-    var nx = -dx, ny = -dy, nz = 1;
-    var L = Math.hypot(nx, ny, nz);
-    var p = (j * size + i) * 4;
-    d[p] = Math.round((nx / L * 0.5 + 0.5) * 255);
-    d[p + 1] = Math.round((ny / L * 0.5 + 0.5) * 255);
-    d[p + 2] = Math.round((nz / L * 0.5 + 0.5) * 255);
-    d[p + 3] = 255;
+  var h = new Float32Array(size * size), i, j;
+  for (i = 0; i < size * size; i++) h[i] = sx[i * 4] / 255;
+  for (j = 0; j < size; j++) {
+    var jm = ((j - 1 + size) % size) * size, jp = ((j + 1) % size) * size, jr = j * size;
+    for (i = 0; i < size; i++) {
+      var im = (i - 1 + size) % size, ip = (i + 1) % size;
+      var nx = -(h[jr + ip] - h[jr + im]) * strength;
+      var ny = -(h[jp + i] - h[jm + i]) * strength;
+      var L = Math.sqrt(nx * nx + ny * ny + 1);
+      var p = (jr + i) * 4;
+      d[p] = Math.round((nx / L * 0.5 + 0.5) * 255);
+      d[p + 1] = Math.round((ny / L * 0.5 + 0.5) * 255);
+      d[p + 2] = Math.round((1 / L * 0.5 + 0.5) * 255);
+      d[p + 3] = 255;
+    }
   }
   ox.putImageData(img, 0, 0);
   return out;
@@ -104,17 +117,35 @@ function brushedHeight(size, density, len) {
 
 /* ---- bead-blasted / shot-peened satin ------------------------------------ */
 function beadHeight(size) {
+  /* Each bead is a soft dimple or bump, alpha-blended onto mid grey: a
+     radial ramp from its own level at 0.75 opacity to grey at nothing, which
+     is exactly what the canvas radial gradients used to paint.  Done in a
+     float buffer instead, because 42 thousand gradient fills were most of
+     the model's build time (about two seconds of it). */
   var c = canvas(size, size), x = c.getContext('2d');
-  x.fillStyle = '#808080'; x.fillRect(0, 0, size, size);
-  for (var i = 0; i < size * size * 0.16; i++) {
+  var buf = new Float32Array(size * size).fill(128);
+  var n = Math.round(size * size * 0.16), i, ix, iy;
+  for (i = 0; i < n; i++) {
     var px = Math.random() * size, py = Math.random() * size;
     var r = 0.6 + Math.random() * 1.5;
     var v = Math.random() < 0.5 ? 96 : 168;
-    var gr = x.createRadialGradient(px, py, 0, px, py, r);
-    gr.addColorStop(0, 'rgba(' + v + ',' + v + ',' + v + ',0.75)');
-    gr.addColorStop(1, 'rgba(128,128,128,0)');
-    x.fillStyle = gr; x.beginPath(); x.arc(px, py, r, 0, Math.PI * 2); x.fill();
+    var x0 = Math.floor(px - r), x1 = Math.ceil(px + r), y0 = Math.floor(py - r), y1 = Math.ceil(py + r);
+    for (iy = y0; iy <= y1; iy++) {
+      var dy = iy + 0.5 - py, row = ((iy % size) + size) % size * size;
+      for (ix = x0; ix <= x1; ix++) {
+        var dx = ix + 0.5 - px, t = Math.sqrt(dx * dx + dy * dy) / r;
+        if (t >= 1) continue;
+        var a = 0.75 * (1 - t), col = v + (128 - v) * t, k = row + ((ix % size) + size) % size;
+        buf[k] = buf[k] * (1 - a) + col * a;
+      }
+    }
   }
+  var img = x.createImageData(size, size), d = img.data;
+  for (i = 0; i < size * size; i++) {
+    var b = Math.round(buf[i]);
+    d[i * 4] = d[i * 4 + 1] = d[i * 4 + 2] = b; d[i * 4 + 3] = 255;
+  }
+  x.putImageData(img, 0, 0);
   return c;
 }
 
@@ -162,12 +193,11 @@ function layerHeight(size) {
 
 /* ---- soft-touch rubber --------------------------------------------------- */
 function rubberHeight(size) {
-  var c = canvas(size, size), x = c.getContext('2d');
-  x.drawImage(noiseCanvas(size, 3, 1.5), 0, 0);
-  x.globalAlpha = 0.5;
-  x.drawImage(noiseCanvas(size, 9, 1.2), 0, 0);
-  x.globalAlpha = 1;
-  return c;
+  /* two octaves of value noise, the coarse one at half weight - mixed in a
+     buffer, not by compositing canvases, which cost a canvas read-back */
+  var a = noiseField(size, 3, 1.5), b = noiseField(size, 9, 1.2);
+  for (var i = 0; i < a.length; i++) a[i] = a[i] * 0.5 + b[i] * 0.5;
+  return fieldCanvas(size, a);
 }
 
 /* ==========================================================================
@@ -343,6 +373,9 @@ M1.buildMaterials = function () {
     envMapIntensity: 0.22
   });
   m.belt.normalMap.wrapS = T.RepeatWrapping;
+  /* the open central strands are single ribbons, seen from both sides */
+  m.beltBoth = m.belt.clone();
+  m.beltBoth.side = T.DoubleSide;
 
   /* --- borosilicate build plate ------------------------------------------- */
   m.glass = new T.MeshPhysicalMaterial({
@@ -441,14 +474,13 @@ M1.buildMaterials = function () {
     color: 0xd7d6d4, metalness: 0.92, roughness: 0.11, envMapIntensity: 0.95
   });
 
+  /* the frosted plates the LED strips shine through (sec_base.js).  Unlit
+     they are a pale satin grey, which is what c_deck shows down in the
+     trough; lit, setLeds() drives their emissive from the pixels.  The
+     colour is no longer baked in: s7_1's rose was one LED state of many. */
   m.ledDiffuser = new T.MeshPhysicalMaterial({
-    /* s7_1 settles this: two of its three machines burn rose down the whole
-       channel - R-G runs +30 to +69 along it against +4 on the bare deck
-       beside it - and the third, folded and powered down, shows none. It is
-       a lamp. 0.8 rather than the 1.4 the audit asked for: any more and it
-       clips to white under ACES. */
-    color: 0xffe2e8, metalness: 0, roughness: 0.62,
-    emissive: 0xff5f86, emissiveIntensity: 0.95, envMapIntensity: 0.2
+    color: 0xd6d8d8, metalness: 0, roughness: 0.55,
+    emissive: 0x000000, emissiveIntensity: 0, envMapIntensity: 0.35
   });
   m.ledChannel = new T.MeshPhysicalMaterial({
     color: 0x14181a, metalness: 0.45, roughness: 0.55
@@ -615,61 +647,176 @@ M1.clampDecal = function (px) {
   return c;
 };
 
-M1.screenCanvas = function (px, pct) {
-  var c = canvas(px, px), x = c.getContext('2d');
-  /* Every photograph that shows this panel shows the SAME idle face, and it
-     is nearly empty: a pale cyan ground at (218,237,239) - c_screen and
-     c_mast agree to a level - with a small round mark out at the left, the
-     wordmark just above centre, a dot low and left of it and a signal fan
-     low and right.  No progress ring, no temperatures.  Positions are read
-     off c_screen's ellipse in units of its own radius: (-0.59,-0.07),
-     (0.06,-0.16), (-0.26,0.53) and (0.27,0.59). */
-  var g = x.createLinearGradient(0, 0, 0, px);
-  g.addColorStop(0.00, '#e7f7f9');
-  g.addColorStop(0.45, '#dff4f6');
-  g.addColorStop(1.00, '#cfeaee');
-  x.fillStyle = g; x.beginPath(); x.arc(px / 2, px / 2, px / 2, 0, Math.PI * 2); x.fill();
-
-  function at(u, v) { return [px / 2 + u * px / 2, px / 2 + v * px / 2]; }
-  var ink = '#2a3639', faint = 'rgba(42,54,57,0.42)';
-
-  /* the round certification mark out at the left */
-  var a = at(-0.59, -0.07), ar = px * 0.072;
-  x.strokeStyle = faint; x.lineWidth = px * 0.007;
-  x.beginPath(); x.arc(a[0], a[1], ar, 0, Math.PI * 2); x.stroke();
-  x.beginPath(); x.arc(a[0], a[1], ar * 0.66, 0, Math.PI * 2); x.stroke();
-  x.fillStyle = ink;
-  x.font = '700 ' + (px * 0.052) + 'px Helvetica, Arial, sans-serif';
-  x.textAlign = 'center'; x.textBaseline = 'middle';
-  x.fillText('M1', a[0], a[1]);
-
-  /* the wordmark, just above centre */
-  var w = at(0.06, -0.16);
-  x.fillStyle = ink;
-  x.font = '700 ' + (px * 0.088) + 'px Helvetica, Arial, sans-serif';
-  x.fillText('wm', w[0], w[1]);
-
-  /* the dot, with its short rule running off to the left */
-  var d = at(-0.26, 0.53);
-  x.strokeStyle = faint; x.lineWidth = px * 0.012;
-  x.beginPath(); x.moveTo(d[0] - px * 0.085, d[1]); x.lineTo(d[0] - px * 0.022, d[1]); x.stroke();
-  x.fillStyle = '#182225';
-  x.beginPath(); x.arc(d[0], d[1], px * 0.019, 0, Math.PI * 2); x.fill();
-
-  /* the signal fan, low and right */
-  var f = at(0.27, 0.59), fr = px * 0.068;
-  x.strokeStyle = faint; x.lineWidth = px * 0.007;
-  x.beginPath(); x.arc(f[0], f[1], fr, 0, Math.PI * 2); x.stroke();
-  x.strokeStyle = ink; x.lineWidth = px * 0.011; x.lineCap = 'round';
-  for (var k = 1; k <= 3; k++) {
-    x.beginPath();
-    x.arc(f[0], f[1] + fr * 0.42, fr * 0.24 * k, -Math.PI * 0.82, -Math.PI * 0.18);
-    x.stroke();
+/* ==========================================================================
+   THE ROUND PANEL: MuonUI's NEW Home screen
+   The redesign (MuonUI PR #76, docs/redesign, signed off 2026-10-06; ported
+   in PR #78, src/panel) replaces the old pale-cyan idle face the product
+   photographs show.  Home is a ring of six line-icon circles - Print, Heat,
+   Move, Filament, Tools, System - on a white panel, the focused one inside
+   the black cursor with its icon in white, the focused item's name in Krona
+   One in the middle with its live sub-line under it, the printer's state
+   line under that, and the status rim: nozzle heat left of 12 o'clock, bed
+   heat right of it, the connection dot at 12, print progress at 6.  Every
+   number below is the concept's own (core.js, screens-a.js: ring R 160,
+   item r 38, rim R 235, fonts and colours).  It is drawn on a 480 x 480
+   panel scaled into the canvas, and only when what it shows changes.
+   ========================================================================== */
+var PANEL_TH = {
+  bg: '#ffffff', base: '#e9eded', ink: '#0f1719', mute: '#6a7679',
+  faint: 'rgba(15,23,25,.07)', line: 'rgba(15,23,25,.16)', cur: '#0f1719', curInk: '#ffffff',
+  teal: '#24958f', amber: '#d38d1b', red: '#cf4a3f', green: '#2c9a69'
+};
+var PANEL_F = {
+  disp: function (s) { return s + 'px "Krona One", "Arial Black", sans-serif'; },
+  mono: function (s) { return s + 'px ui-monospace, "SF Mono", Menlo, Consolas, monospace'; }
+};
+/* the six Home icons from the concept's IC set: SVG path data and circles
+   on a 24 grid, stroked */
+var PANEL_IC = {
+  print: { p: ['M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z', 'M14 3v6h6M8 13h8M8 17h5'] },
+  heat: { p: ['M14 14.8V4.5a2 2 0 0 0-4 0v10.3a4 4 0 1 0 4 0z'] },
+  move: { p: ['M12 2v20M2 12h20M9 5l3-3 3 3M9 19l3 3 3-3M5 9l-3 3 3 3M19 9l3 3-3 3'] },
+  spool: { c: [[12, 12, 9], [12, 12, 3]], p: ['M12 3v6'] },
+  tools: { p: ['M21 5h-7M10 5H3M21 12h-9M8 12H3M21 19h-5M12 19H3M14 3v4M8 10v4M16 17v4'] },
+  gear: { c: [[12, 12, 3]], p: ['M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z'] }
+};
+var panelPaths = {};
+function panelIcon(x, name, cx, cy, size, color) {
+  var ic = PANEL_IC[name];
+  if (!ic || typeof Path2D === 'undefined') return;
+  var list = panelPaths[name];
+  if (!list) {
+    list = panelPaths[name] = [];
+    (ic.p || []).forEach(function (d) { list.push(new Path2D(d)); });
+    (ic.c || []).forEach(function (c) { var q = new Path2D(); q.arc(c[0], c[1], c[2], 0, Math.PI * 2); list.push(q); });
   }
-  x.fillStyle = ink;
-  x.beginPath(); x.arc(f[0], f[1] + fr * 0.42, px * 0.010, 0, Math.PI * 2); x.fill();
-  x.lineCap = 'butt';
+  x.save();
+  x.translate(cx - size / 2, cy - size / 2); x.scale(size / 24, size / 24);
+  x.strokeStyle = color; x.lineWidth = 1.8 * 24 / size * Math.pow(size / 24, 0.35);
+  x.lineCap = 'round'; x.lineJoin = 'round';
+  for (var i = 0; i < list.length; i++) x.stroke(list[i]);
+  x.restore();
+}
+
+/* the panel's own view of the model's state: what Home shows */
+var PANEL_STATUS = ['idle', 'printing', 'paused', 'heating', 'homing', 'probing', 'updating'];
+function panelView(st) {
+  var status = PANEL_STATUS.indexOf(st.status) >= 0 ? st.status : 'idle';
+  var n = function (v) { return typeof v === 'number' && isFinite(v) ? v : 0; };
+  return {
+    status: status,
+    progress: M1.clamp(Math.round(n(st.progress)), 0, 100),
+    heC: Math.round(n(st.nozzleTemp)), heT: Math.round(n(st.nozzleTarget)),
+    bedC: Math.round(n(st.bedTemp)), bedT: Math.round(n(st.bedTarget)),
+    job: String(st.jobName || '').replace(/\.gcode$/i, ''),
+    connected: st.connected !== false
+  };
+}
+M1.panelView = panelView;
+/* everything the face depends on, as one string: the panel redraws only
+   when this changes */
+M1.panelKey = function (v) {
+  return v.status + '|' + v.progress + '|' + v.heC + '|' + v.heT + '|' + v.bedC + '|' + v.bedT + '|' + v.job + '|' + v.connected;
+};
+
+M1.drawPanel = function (c, v) {
+  var x = c.getContext('2d'), TH = PANEL_TH, C = 240, TAU = Math.PI * 2, D2R = Math.PI / 180;
+  var DEG = String.fromCharCode(176), DOT = ' ' + String.fromCharCode(183) + ' ', ARROW = ' ' + String.fromCharCode(8594) + ' ';
+  var ELL = String.fromCharCode(8230);
+  function deg(t) { return Math.round(t) + DEG; }
+  function pol(a, r) { return { x: C + r * Math.sin(a * D2R), y: C - r * Math.cos(a * D2R) }; }
+  function text(s, px, py, font, color, ls) {
+    x.font = font; x.fillStyle = color; x.textAlign = 'center'; x.textBaseline = 'middle';
+    if ('letterSpacing' in x) x.letterSpacing = (ls || 0) + 'px';
+    x.fillText(s, px, py);
+    if ('letterSpacing' in x) x.letterSpacing = '0px';
+  }
+  function fitText(s, font, max) {
+    x.font = font; if ('letterSpacing' in x) x.letterSpacing = '1px';
+    if (x.measureText(s).width <= max) return s;
+    while (s.length > 1 && x.measureText(s + ELL).width > max) s = s.slice(0, -1);
+    return s + ELL;
+  }
+  function strokeArc(r, a0, a1, w, color) {
+    if (Math.abs(a1 - a0) < 0.01) return;
+    x.beginPath(); x.arc(C, C, r, (a0 - 90) * D2R, (a1 - 90) * D2R, a1 < a0);
+    x.lineWidth = w; x.strokeStyle = color; x.lineCap = 'round'; x.stroke();
+  }
+  function circle(px, py, r, fill) { x.beginPath(); x.arc(px, py, r, 0, TAU); x.fillStyle = fill; x.fill(); }
+
+  var printing = v.status === 'printing' || v.status === 'paused';
+  var heating = v.heT > 0 || v.bedT > 0;
+  /* the concept's printerLine, plus the states it does not word yet */
+  var line = v.status === 'printing' ? 'Printing' + DOT + v.progress + '%'
+    : v.status === 'paused' ? 'Paused' + DOT + v.progress + '%'
+    : v.status === 'homing' ? 'Homing' + DOT + deg(v.heC) + ' / ' + deg(v.bedC)
+    : v.status === 'probing' ? 'Probing' + DOT + deg(v.heC) + ' / ' + deg(v.bedC)
+    : v.status === 'updating' ? 'Updating' + DOT + deg(v.heC) + ' / ' + deg(v.bedC)
+    : heating || v.status === 'heating' ? 'Heating' + DOT + deg(v.heC) + ' / ' + deg(v.bedC)
+    : 'Ready' + DOT + deg(v.heC) + ' / ' + deg(v.bedC);
+  var heatHalo = v.heT ? { f: M1.clamp(v.heC / v.heT, 0, 1), c: Math.abs(v.heC - v.heT) < 2 ? TH.green : TH.amber } : null;
+  var items = [
+    { label: 'Print', icon: 'print',
+      sub: printing ? (v.job || 'Printing') + DOT + v.progress + '%' : 'Print a file',
+      halo: printing ? { f: v.progress / 100, c: TH.teal } : null },
+    { label: 'Heat', icon: 'heat',
+      sub: 'Nozzle ' + deg(v.heC) + (v.heT ? ARROW + v.heT : '') + DOT + 'Bed ' + deg(v.bedC) + (v.bedT ? ARROW + v.bedT : ''),
+      halo: heatHalo },
+    { label: 'Move', icon: 'move', sub: v.status === 'homing' ? 'Homing' : v.status === 'probing' ? 'Probing the bed' : 'Jog and home' },
+    { label: 'Filament', icon: 'spool', sub: 'Load' + DOT + 'unload' },
+    { label: 'Tools', icon: 'tools', sub: 'Calibrate' + DOT + 'mesh' + DOT + 'fans' + DOT + 'lights' },
+    { label: 'System', icon: 'gear', sub: v.status === 'updating' ? 'Installing an update' : 'Wi-Fi' + DOT + 'software' + DOT + 'display' }
+  ];
+  /* where the knob would be resting: the item the state is about (Home's
+     own default focus is Heat) */
+  var focus = printing ? 0 : (v.status === 'homing' || v.status === 'probing') ? 2 : v.status === 'updating' ? 5 : 1;
+
+  var k = c.width / 480;
+  x.setTransform(k, 0, 0, k, 0, 0);
+  x.clearRect(0, 0, 480, 480);
+  x.save();
+  x.beginPath(); x.arc(C, C, 240, 0, TAU); x.clip();
+  x.fillStyle = TH.bg; x.fillRect(0, 0, 480, 480);
+
+  /* the ring: n = 6 sits at R 160 with r 38, from 9 o'clock clockwise */
+  var R = 160, r = 38, i;
+  var at = [];
+  for (i = 0; i < 6; i++) at.push(pol(-90 + i * 60, R));
+  for (i = 0; i < 6; i++) if (i !== focus) circle(at[i].x, at[i].y, r, TH.base);
+  /* the cursor at rest: the round head on the focused item (the Comet tail
+     has caught up with it) */
+  circle(at[focus].x, at[focus].y, r, TH.cur);
+  for (i = 0; i < 6; i++) panelIcon(x, items[i].icon, at[i].x, at[i].y, 26, i === focus ? TH.curInk : TH.ink);
+  for (i = 0; i < 6; i++) {
+    var hl = items[i].halo;
+    if (!hl || hl.f <= 0) continue;
+    x.beginPath(); x.arc(at[i].x, at[i].y, r + 6, -Math.PI / 2, -Math.PI / 2 + TAU * hl.f);
+    x.strokeStyle = hl.c; x.lineWidth = 3; x.lineCap = 'round'; x.stroke();
+  }
+
+  /* the centre: the focused item, its sub-line, the printer's line */
+  var t = items[focus];
+  text(t.label, C, C, PANEL_F.disp(20), TH.ink, 0.6);
+  text(fitText(t.sub.toUpperCase(), PANEL_F.mono(11), 220), C, C + 28, PANEL_F.mono(11), TH.mute, 1);
+  text(fitText(line.toUpperCase(), PANEL_F.mono(10), 220), C, C + 50, PANEL_F.mono(10), TH.mute, 1);
+
+  /* the status rim */
+  var RR = 235;
+  var hf = M1.clamp(v.heC / 300, 0, 1), bf = M1.clamp(v.bedC / 110, 0, 1);
+  var hc = v.heT ? (Math.abs(v.heC - v.heT) < 2 ? TH.green : TH.amber) : TH.line;
+  var bc = v.bedT ? (Math.abs(v.bedC - v.bedT) < 2 ? TH.green : TH.amber) : TH.line;
+  strokeArc(RR, -44, -6, 3, TH.faint); strokeArc(RR, 6, 44, 3, TH.faint);
+  strokeArc(RR, -6 - 38 * hf, -6, 3, hc); strokeArc(RR, 6, 6 + 38 * bf, 3, bc);
+  var np = pol(0, RR); circle(np.x, np.y, 2.6, v.connected ? TH.green : TH.red);
+  if (printing) { strokeArc(RR, 150, 210, 3, TH.faint); strokeArc(RR, 210 - 60 * v.progress / 100, 210, 3, TH.teal); }
+  x.restore();
   return c;
+};
+
+/* the canvas the panel is drawn on, with its first face */
+M1.screenCanvas = function (px, state) {
+  var c = canvas(px, px);
+  return M1.drawPanel(c, panelView(state || {}));
 };
 
 M1.caseDecal = function (px) {
