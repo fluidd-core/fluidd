@@ -870,6 +870,7 @@ export const getters = {
       si7013: 'htu21d',
       si7020: 'htu21d',
       si7021: 'htu21d',
+      temperature_combined: 'temperature_combined',
     } as const
 
     if (isKeyOf(sensorType, supportedSensors)) {
