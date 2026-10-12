@@ -1,10 +1,14 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import type { InstanceConfig } from '@/store/config/types'
+import store from '@/store'
 import {
+  activeSlug,
+  isActiveSlug,
   isPrintersOwnPage,
   preferSavedPrinterFor,
   printerPageNeedsLogin,
   printerPagesState,
+  rememberAlias,
   resolveSlug,
   samePageFor,
   slugForInstance,
@@ -27,6 +31,7 @@ const cloud = (slug: string, printerId: string): PrinterTarget => ({ kind: 'clou
 
 afterEach(() => {
   printerPagesState.learned = {}
+  printerPagesState.aliases = {}
   localStorage.clear()
 })
 
@@ -66,6 +71,21 @@ describe('the printer an address names', () => {
     expect(resolveSlug('nothing-0000', printers)).toBeNull()
     const clash = [local('alpha-a1b2', 'http://10.0.0.1'), local('beta-a1b2', 'http://10.0.0.2')]
     expect(resolveSlug('gamma-a1b2', clash)).toBeNull()
+  })
+})
+
+describe('a page opened before the printer said who it is', () => {
+  it("stays the printer's page once it has, so the address is corrected rather than opened as another printer", () => {
+    store.state.config.apiUrl = 'http://192.168.1.153'
+    const before = activeSlug() as string
+    expect(before).toMatch(/^192-168-1-153-/)
+    printerPagesState.learned = { 'http://192.168.1.153': 'boxwood-367a' }
+    expect(isActiveSlug(before)).toBe(false)
+    rememberAlias(before, 'boxwood-367a')
+    expect(activeSlug()).toBe('boxwood-367a')
+    expect(isActiveSlug(before)).toBe(true)
+    expect(isActiveSlug('walnut-8987')).toBe(false)
+    store.state.config.apiUrl = ''
   })
 })
 
