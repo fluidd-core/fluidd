@@ -381,13 +381,13 @@ app:
         Click <b>Adjusted</b> if a significant adjustment is necessary on the
         current screw; otherwise, click <b>Accept</b> to continue.
       welcome_back: Welcome back.<br>Sign in below to stay in touch with your printer.
-      offline_ready: The Muon3D interface is now ready to work offline.
-      needs_refresh: New content available, please click the <b>Reload</b> button to update.
+      offline_ready: This page is now saved on this device, so it opens even offline.
+      needs_refresh: A new version of this page is ready. Reload to use it.
       pending_configuration_sections_deleted: The following sections are marked for deletion
       rolledover_logs: 'The following application logs have been rolled over: %{applications}'
-      not_valid_fluidd_backup_file: Not a valid Fluidd backup file!
-      fluidd_settings_backup_failed: Failed to backup Fluidd settings!
-      fluidd_settings_restore_failed: Failed to restore Fluidd settings!
+      not_valid_fluidd_backup_file: That isn't a Fluidd backup file.
+      fluidd_settings_backup_failed: Fluidd's settings couldn't be backed up.
+      fluidd_settings_restore_failed: Fluidd's settings couldn't be restored.
     simple_form:
       error:
         arrayofnums: Only numbers
