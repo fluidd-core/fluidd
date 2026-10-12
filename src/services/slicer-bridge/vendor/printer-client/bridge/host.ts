@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Vendored from @muon3d/printer-client 0.3.0 (src/bridge/host.ts), Copyright 2026 Muon 3D
+// Vendored from @muon3d/printer-client 0.4.0 (src/bridge/host.ts), Copyright 2026 Muon 3D
 // Technologies Limited, under the Apache License 2.0 (vendor/printer-client/LICENSE and NOTICE). Changed for
 // Fluidd by tools/vendor-printer-client.cjs: relative imports without ".ts"; Object.hasOwn as hasOwnProperty.call.
 // The host's side of printer-bridge/1 (protocol.ts), without a framework: the page that frames a printer client (Fluidd's
@@ -46,6 +46,13 @@
 //   hands the host each printer.material event the frame sends, read (parsePrinterMaterial), for the printer the host
 //   has selected now and only while that printer takes writes (not watch-only, online). Anything else is dropped and
 //   logged. The host writes it to its printer and calls setupChanged() once the printer says so.
+// - The account's Library (0.4.0): given `library` (the host's handlers), the helper grants `library` and answers its
+//   five requests through them, naming no printer: a switch of printer never ends one, and the frame's `cancel` (a
+//   printer's) cannot reach one. A save's handler reports its sending steps, which reach the frame as progress. Each
+//   handler's answer is read as a client reads it (parseLibraryStatus and the rest), so a host's mistake reaches the
+//   frame as a failure, never as an answer the client must refuse. libraryStatus() and libraryOpen() send the events.
+//   A handler's PrinterError (`not-signed-in`, `quota`, `console` with the service's words) reaches the frame as it is;
+//   any other error as `console`, "The host could not do it".
 //
 // An adapter's error reaches the frame as it is only when it is a PrinterError (errors/kinds.ts), so a host that maps
 // its printer's answers with errors/parse.ts passes the printer's own words through. Any other error (a fetch's, a
@@ -66,6 +73,10 @@ import {
   OPS,
   parseClientEvent,
   parseHello,
+  parseLibraryOpen,
+  parseLibraryProject,
+  parseLibrarySaved,
+  parseLibraryStatus,
   parseRequest,
   type BridgeError,
   type BridgeObjects,
@@ -73,6 +84,12 @@ import {
   type Density,
   type HostLook,
   type HostSetup,
+  type LibraryOpen,
+  type LibraryPreferencesChange,
+  type LibraryProject,
+  type LibrarySave,
+  type LibrarySaved,
+  type LibraryStatus,
   type OpRequest,
   type PlateClearAsk,
   type PrintDecision,
@@ -127,6 +144,21 @@ export interface HostAdapter {
   confirm(request: ConfirmRequest): Promise<ConfirmAnswer>;
   /** The status feed of `key`, or null when the host has none. */
   status(key: string): StatusFeed | null;
+}
+
+/**
+ * The account's Library, as the host keeps it (0.4.0): one handler per request. Each answers as the protocol says
+ * (protocol.ts LibraryStatus, LibrarySaved, LibraryProject), or rejects with a PrinterError the frame may read
+ * (`not-signed-in`, `quota`, `console`); `signal` aborts when the frame's session ends.
+ */
+export interface HostLibrary {
+  status(signal: AbortSignal): Promise<LibraryStatus>;
+  preferences(change: LibraryPreferencesChange, signal: AbortSignal): Promise<LibraryStatus>;
+  /** Compresses, uploads and completes the save; reports what it sends (`sending`, of the compressed total). */
+  save(save: LibrarySave, options: { signal: AbortSignal; onStep: (step: UploadStep) => void }): Promise<LibrarySaved>;
+  get(item: string, version: number | null, signal: AbortSignal): Promise<LibraryProject>;
+  /** Shows the host's own Library page. */
+  browse(signal: AbortSignal): Promise<void>;
 }
 
 /** The frame: its window now (iframe.contentWindow) and the origin of the src the host set. */
@@ -184,6 +216,8 @@ export interface BridgeHostOptions {
    * selected printer, while it takes writes.
    */
   onMaterial?: (key: string, material: PrinterMaterial) => void;
+  /** The account's Library: its handlers. Given, the welcome grants `library`. */
+  library?: HostLibrary;
   adapter: HostAdapter;
   /** The client's slicer.state events (Fluidd's leave prompt reads `dirty`). */
   onState?: (state: Record<string, unknown>) => void;
@@ -207,6 +241,10 @@ export interface BridgeHost {
   setMode(mode: UiMode): void;
   /** The selected printer's setup changed (a spool, the heaters, the table): printer.setup, read again. */
   setupChanged(): void;
+  /** Sign-in, consent or the preferences changed: library.status. Sent only where `library` was granted. */
+  libraryStatus(status: LibraryStatus): void;
+  /** The person chose "Open in Slice" for a print: library.open. Sent only where `library` was granted. */
+  libraryOpen(open: LibraryOpen): void;
   /** Whether a frame has been welcomed (and not closed since). */
   readonly connected: boolean;
   /** The features the welcomed client's hello listed; [] before a welcome and from a client that lists none. */
@@ -300,7 +338,8 @@ interface Started {
 }
 
 interface Run {
-  printer: string;
+  /** null: a Library request, the account's. */
+  printer: string | null;
   abort: AbortController;
   op: string;
   /** The printer has the write (its start, queue entry or cancel was sent): its answer stands. */
@@ -343,6 +382,7 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
       ...(options.mode ? ['ui.mode'] : []),
       ...(options.setup ? ['printer.setup'] : []),
       ...(options.onMaterial ? ['printer.material'] : []),
+      ...(options.library ? ['library'] : []),
     ]),
   ];
   const now = options.now ?? (() => Date.now());
@@ -509,7 +549,7 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
    * the frame's cancel) can end. `run` marks the points of no return: commit() before a write the printer then has, and
    * settled() when the frame's cancel can no longer end it.
    */
-  const run = async (s: Session, id: number, op: string, printer: string, work: (signal: AbortSignal, run: { commit(): void; settled(): void }) => Promise<unknown>) => {
+  const run = async (s: Session, id: number, op: string, printer: string | null, work: (signal: AbortSignal, run: { commit(): void; settled(): void }) => Promise<unknown>) => {
     const abort = new AbortController();
     const running: Run = { printer, abort, op, committed: false, cancellable: op === 'files.upload' || op === 'print.request' };
     s.running.set(id, running);
@@ -530,7 +570,7 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
       if (known) return fail(s, op, id, printer, known);
       // Not the printer's words: they stay in the host's log (a URL, a token), the frame reads a fixed sentence.
       log({ kind: 'adapter-error', op, id, error: err });
-      fail(s, op, id, printer, printerError('printer', 'The host could not do it'));
+      fail(s, op, id, printer, printerError(printer === null ? 'console' : 'printer', 'The host could not do it'));
     } finally {
       s.running.delete(id);
     }
@@ -601,6 +641,7 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
       if (running && running.printer === req.printer && running.cancellable) running.abort.abort(CANCELLED);
       return answer(s, req.op, id, req.printer, {});
     }
+    if (req.printer === null) return library(s, id, req);
     const sel = selectedAs(req.printer);
     if (!sel) return fail(s, req.op, id, req.printer, printerChangedError());
     if (WRITES.includes(req.op)) {
@@ -725,6 +766,50 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
     }
   };
 
+  // ---- the Library ----------------------------------------------------------------------------------------------
+  /** A handler's answer read as the client reads it; one that is not one is the host's own failure. */
+  const checked = <T>(value: T | null, op: string): T => {
+    if (value === null) throw new Error(`the host's ${op} answered with something that is not one`);
+    return value;
+  };
+
+  const library = (s: Session, id: number, req: Extract<OpRequest, { printer: null }>): Promise<void> | void => {
+    const lib = options.library;
+    if (!lib) return fail(s, req.op, id, null, { kind: 'unsupported', message: 'The host has no Library' });
+    switch (req.op) {
+      case 'library.status':
+        return run(s, id, req.op, null, async (signal) => checked(parseLibraryStatus(await lib.status(signal)), req.op));
+      case 'library.preferences': {
+        const change: LibraryPreferencesChange = {};
+        if (req.ask !== undefined) change.ask = req.ask;
+        if (req.autosave !== undefined) change.autosave = req.autosave;
+        return run(s, id, req.op, null, async (signal) => checked(parseLibraryStatus(await lib.preferences(change, signal)), req.op));
+      }
+      case 'library.save': {
+        const { op: _op, printer: _printer, ...save } = req;
+        return run(s, id, req.op, null, async (signal) => {
+          const onStep = (step: UploadStep) => {
+            if (session === s && !signal.aborted) post(s, { v: 1, re: id, printer: null, progress: step });
+          };
+          return checked(parseLibrarySaved(await lib.save(save, { signal, onStep })), req.op);
+        });
+      }
+      case 'library.get':
+        return run(s, id, req.op, null, async (signal) => checked(parseLibraryProject(await lib.get(req.item, req.version, signal), req), req.op));
+      case 'library.browse':
+        return run(s, id, req.op, null, async (signal) => (await lib.browse(signal), {}));
+    }
+  };
+
+  /** A Library event, read first: one that is not one is logged, never sent. */
+  const libraryEvent = <T>(name: 'library.status' | 'library.open', data: T, read: (value: unknown) => T | null) => {
+    const s = session;
+    if (!s || closed || !s.granted.has('library')) return;
+    const value = read(data);
+    if (!value) return log({ kind: 'ignored', why: `a ${name} that is not one` });
+    event(s, name, null, value);
+  };
+
   // ---- status ---------------------------------------------------------------------------------------------------
   const watch = (s: Session, id: number, key: string, objects: BridgeObjects) => {
     const feed = adapter.status(key);
@@ -773,6 +858,8 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
       if (s.watch && s.watch.printer !== key) stopWatch(s);
       const refusal = next ? writeRefusal(next) : null;
       for (const run of s.running.values()) {
+        // The Library's requests are the account's: no printer's switch ends them.
+        if (run.printer === null) continue;
         if (run.printer !== key) run.abort.abort(CHANGED);
         else if (refusal && WRITES.includes(run.op) && !run.committed) run.abort.abort(refusal);
       }
@@ -800,6 +887,8 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
     setupChanged() {
       if (session && !closed) sendSetup(session);
     },
+    libraryStatus: (status) => libraryEvent('library.status', status, parseLibraryStatus),
+    libraryOpen: (open) => libraryEvent('library.open', open, parseLibraryOpen),
     get connected() {
       return session !== null && !closed;
     },

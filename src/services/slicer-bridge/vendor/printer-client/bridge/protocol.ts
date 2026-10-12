@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Vendored from @muon3d/printer-client 0.3.0 (src/bridge/protocol.ts), Copyright 2026 Muon 3D
+// Vendored from @muon3d/printer-client 0.4.0 (src/bridge/protocol.ts), Copyright 2026 Muon 3D
 // Technologies Limited, under the Apache License 2.0 (vendor/printer-client/LICENSE and NOTICE). Changed for
 // Fluidd by tools/vendor-printer-client.cjs: relative imports without ".ts"; Object.hasOwn as hasOwnProperty.call.
 // printer-bridge/1: how a page that frames a printer client (the host: Fluidd, a reference host in the tests) and the
@@ -55,6 +55,17 @@
 // result in its next printer.setup. An old host never grants it, so a client never sends it there; an old client never
 // sends it, and the host's printer is as before. A host takes it only for the printer it has selected now, and never
 // from a frame whose printer is watch-only or offline.
+//
+// The account's Library (0.4.0, optional the same way): a host that keeps the person's saved prints grants `library`,
+// and a client that lists it in its features may then ask library.status, library.preferences, library.save,
+// library.get and library.browse, and hears the host's events library.status (sign-in, consent or preferences
+// changed) and library.open (the person chose "Open in Slice" in the host). These belong to the account, not to a
+// printer: their params.printer is null, and their answers, failures, progress and events name no printer (null), so
+// a switch of printer in the host never ends one. A save carries the project, each G-code output with its setup, a
+// PNG thumbnail and a short summary, all raw (the host compresses and uploads them, and says what was saved); `item`
+// null makes a new print, an item's id a new version of it. A host's own failures are `not-signed-in`, `quota` (its
+// message says how much is used of what) and `console`. An old host never grants it, so a client never asks one; an
+// old client never asks, and the host's Library is as before.
 import { CHECKSUM_RE } from '../multipart/build';
 import { unsafeNameReason } from '../multipart/names';
 import { cleanText, type ErrorKind, type PrinterError } from '../errors/kinds';
@@ -77,8 +88,21 @@ export const OPS = {
   'queue.add': 'print',
   'print.cancel': 'print',
   cancel: null,
+  'library.status': 'library',
+  'library.preferences': 'library',
+  'library.save': 'library',
+  'library.get': 'library',
+  'library.browse': 'library',
 } as const;
 export type BridgeOp = keyof typeof OPS;
+
+/** The account's capabilities (0.4.0), optional inside version 1 like the host's UI: the person's Library. */
+export const CAPABILITIES_ACCOUNT = ['library'] as const;
+export type AccountCapability = (typeof CAPABILITIES_ACCOUNT)[number];
+
+/** The operations of the Library: account-level, so their params.printer is null. */
+export type LibraryOp = { [K in BridgeOp]: (typeof OPS)[K] extends 'library' ? K : never }[BridgeOp];
+export const isLibraryOp = (op: string): op is LibraryOp => Object.prototype.hasOwnProperty.call(OPS, op) && OPS[op as BridgeOp] === 'library';
 
 /**
  * The host's UI capabilities (see the file comment), optional inside version 1: a host grants the ones it sends (or,
@@ -97,6 +121,8 @@ export const HOST_EVENTS = {
   'ui.look': 'ui.look',
   'ui.mode': 'ui.mode',
   'printer.setup': 'printer.setup',
+  'library.status': 'library',
+  'library.open': 'library',
 } as const;
 export type HostEventName = keyof typeof HOST_EVENTS;
 
@@ -126,7 +152,7 @@ export type ReadMethod = (typeof READ_METHODS)[number];
 export const LIMITS = {
   /** Paths in one print.request or queue.add. */
   paths: 16,
-  /** An upload's bytes: 512 MiB. */
+  /** An upload's bytes: 512 MiB. Also a Library save's, all its files together, and a project library.get answers. */
   uploadBytes: 512 * 1024 * 1024,
   /** How long an upload may wait for its print.request, and an approval for its queue.add: 30 minutes. */
   approvalMs: 30 * 60 * 1000,
@@ -159,8 +185,22 @@ export const LIMITS = {
   url: 512,
   /** Materials in a printer.setup's table. */
   materials: 32,
-  /** A printer.material's material type ("PLA", "PETG"). */
+  /** A printer.material's material type ("PLA", "PETG"); also a Library setup's material. */
   materialName: 32,
+  /** A print's name in the Library, and a saved G-code's file name. */
+  printName: 200,
+  /** The G-code outputs of one Library save. */
+  outputs: 8,
+  /** A Library save's thumbnail, a PNG: 1 MiB. */
+  thumbnailBytes: 1024 * 1024,
+  /** A Library save's summary: its entries, the longest key and the longest text value (4 KiB of JSON at most). */
+  summaryEntries: 32,
+  summaryKey: 32,
+  summaryValue: 64,
+  /** The Library promise's summary, as the client shows it. */
+  promiseSummary: 600,
+  /** A Library version's number. */
+  versions: 1_000_000,
 } as const;
 
 /** A 32-digit hex nonce (16 random bytes). */
@@ -353,7 +393,8 @@ export interface BridgeFailure {
 export interface BridgeProgress {
   v: 1;
   re: number;
-  printer: string;
+  /** null for a library.save's. */
+  printer: string | null;
   progress: UploadStep;
 }
 export interface BridgeEvent {
@@ -384,7 +425,11 @@ export type OpRequest =
   | { op: 'print.request'; printer: string; paths: string[]; mode: PrintMode; plateClear: PlateClearAsk }
   | { op: 'queue.add'; printer: string; paths: string[] }
   | { op: 'print.cancel'; printer: string; path: string }
-  | { op: 'cancel'; printer: string; id: number };
+  | { op: 'cancel'; printer: string; id: number }
+  | { op: 'library.status' | 'library.browse'; printer: null }
+  | ({ op: 'library.preferences'; printer: null } & LibraryPreferencesChange)
+  | ({ op: 'library.save'; printer: null } & LibrarySave)
+  | { op: 'library.get'; printer: null; item: string; version: number | null };
 
 /**
  * What a print.request did. `started` (with `startedPath`): the host's dialog said Print and the printer accepted the
@@ -411,6 +456,89 @@ export const PRINT_DECISIONS: Readonly<Record<PrintMode, readonly PrintDecision[
  */
 export interface QueueAnswer {
   queued: boolean;
+}
+
+// ---- the Library (0.4.0) -------------------------------------------------------------------------------------------
+
+/** What the host offers before the first save: the promise's version (given back as consent), its words, its page. */
+export interface LibraryPromise {
+  version: string;
+  summary: string;
+  /** An http(s) URL of the full promise. */
+  url: string;
+}
+
+/** The account's Library as the host knows it: library.status's and library.preferences' answer, the event's data. */
+export interface LibraryStatus {
+  /** False: the client says "Sign in to keep this in your Library" and offers no Save. */
+  signedIn: boolean;
+  /** The person turned the Library on (consent given). Never true signed out. */
+  enabled: boolean;
+  /** Shown on the client's card while the Library is off. */
+  promise: LibraryPromise | null;
+  /** The account's preferences; null signed out. */
+  preferences: { autosave: boolean; ask: boolean } | null;
+  usedBytes: number | null;
+  quotaBytes: number | null;
+}
+
+/** library.preferences' params: the preferences to change. */
+export interface LibraryPreferencesChange {
+  ask?: boolean;
+  autosave?: boolean;
+}
+
+/** Where a save came from: the header's Save, a completed slice with autosave on, the card's Save. */
+export type LibraryOrigin = 'save' | 'autosave' | 'card';
+export const LIBRARY_ORIGINS: readonly LibraryOrigin[] = ['save', 'autosave', 'card'];
+
+/** One sliced plate of a save: its raw G-code (the host compresses it), and what it was sliced for. */
+export interface LibraryOutput {
+  gcode: ArrayBuffer;
+  /** Its file name, for the Library's download. */
+  name: string;
+  setup: { printerModel: string; nozzleMm: number; material: string };
+  printSeconds: number | null;
+  filamentGrams: number | null;
+}
+
+/** library.save's params. */
+export interface LibrarySave {
+  /** null: a new print; else a new version of this print. */
+  item: string | null;
+  name: string;
+  origin: LibraryOrigin;
+  /** The promise version the person accepted on the client's card, while the Library was off; else null. */
+  consent: string | null;
+  /** The project (.3mf). */
+  project: ArrayBuffer;
+  outputs: LibraryOutput[];
+  /** A PNG. */
+  thumbnail: ArrayBuffer | null;
+  /** The host keeps it as the version's summary. */
+  summary: Record<string, string | number | boolean>;
+}
+
+/** library.save's answer: the print and the version the save became. */
+export interface LibrarySaved {
+  item: string;
+  version: number;
+  /** When, as RFC 3339. */
+  savedAt: string;
+}
+
+/** library.get's answer: one version's project. */
+export interface LibraryProject {
+  item: string;
+  version: number;
+  name: string;
+  project: ArrayBuffer;
+}
+
+/** library.open's data: the print the person chose to open in the client (version null: its current one). */
+export interface LibraryOpen {
+  item: string;
+  version: number | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -817,6 +945,210 @@ export function parseClientEvent(data: unknown): ClientEvent | null {
 }
 
 // ---------------------------------------------------------------------------
+// The Library (0.4.0)
+// ---------------------------------------------------------------------------
+
+/** A Library item's id as the account service writes it (a UUID), or anything of its letters up to 128. */
+const ITEM_ID_RE = /^[A-Za-z0-9_-]{1,128}$/;
+export const isItemId = (value: unknown): value is string => typeof value === 'string' && ITEM_ID_RE.test(value);
+
+const isVersion = (value: unknown): value is number => isInt(value, 1, LIMITS.versions);
+
+/** Bytes a file of the Library takes: a whole number from 0, or null when the host does not say. */
+const byteCount = (value: unknown): number | null => (typeof value === 'number' && Number.isSafeInteger(value) && value >= 0 ? value : null);
+
+/** The first bytes of every PNG. */
+const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+export function isPng(bytes: ArrayBuffer): boolean {
+  if (bytes.byteLength <= PNG_SIGNATURE.length) return false;
+  const head = new Uint8Array(bytes, 0, PNG_SIGNATURE.length);
+  return PNG_SIGNATURE.every((b, i) => head[i] === b);
+}
+
+/** An http(s) URL, as the client may open it in a new tab; null for anything else (a javascript: URL, a path). */
+function httpUrl(value: unknown): string | null {
+  if (typeof value !== 'string' || value.length > LIMITS.url) return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
+/** The Library's promise, or null when it is not one (no version, no words, a URL that is not http(s)). */
+function readPromise(value: unknown): LibraryPromise | null {
+  const r = record(value);
+  if (!r) return null;
+  const version = displayText(r.version, LIMITS.name);
+  const summary = displayText(r.summary, LIMITS.promiseSummary);
+  const url = httpUrl(r.url);
+  return version && summary && url ? { version, summary, url } : null;
+}
+
+/**
+ * A Library status (library.status's and library.preferences' answer, the library.status event's data), or null when
+ * it is not one: signedIn and enabled are booleans. Signed out, the Library is never enabled and has no preferences;
+ * a promise or preferences that are not ones read as none.
+ */
+export function parseLibraryStatus(value: unknown): LibraryStatus | null {
+  const r = record(value);
+  if (!r || typeof r.signedIn !== 'boolean' || typeof r.enabled !== 'boolean') return null;
+  const p = record(r.preferences);
+  const preferences = r.signedIn && p && typeof p.autosave === 'boolean' && typeof p.ask === 'boolean' ? { autosave: p.autosave, ask: p.ask } : null;
+  return {
+    signedIn: r.signedIn,
+    enabled: r.signedIn && r.enabled,
+    promise: readPromise(r.promise),
+    preferences,
+    usedBytes: byteCount(r.usedBytes),
+    quotaBytes: byteCount(r.quotaBytes),
+  };
+}
+
+/** library.save's answer, or null: an item id, a version, and when (an RFC 3339 time a Date reads). */
+export function parseLibrarySaved(value: unknown): LibrarySaved | null {
+  const r = record(value);
+  if (!r || !isItemId(r.item) || !isVersion(r.version)) return null;
+  if (typeof r.savedAt !== 'string' || r.savedAt.length > 64 || !Number.isFinite(Date.parse(r.savedAt))) return null;
+  return { item: r.item, version: r.version, savedAt: r.savedAt };
+}
+
+/** library.get's answer, or null: the item and version asked for (when they were), a name, and the project's bytes. */
+export function parseLibraryProject(value: unknown, asked?: { item: string; version: number | null }): LibraryProject | null {
+  const r = record(value);
+  if (!r || !isItemId(r.item) || !isVersion(r.version)) return null;
+  if (asked && (r.item !== asked.item || (asked.version !== null && r.version !== asked.version))) return null;
+  const name = displayText(r.name, LIMITS.printName);
+  if (!name || !(r.project instanceof ArrayBuffer) || r.project.byteLength < 1 || r.project.byteLength > LIMITS.uploadBytes) return null;
+  return { item: r.item, version: r.version, name, project: r.project };
+}
+
+/** library.open's data, or null: an item id and a version (null: the current one). */
+export function parseLibraryOpen(value: unknown): LibraryOpen | null {
+  const r = record(value);
+  if (!r || !isItemId(r.item)) return null;
+  const version = r.version === null || r.version === undefined ? null : r.version;
+  if (version !== null && !isVersion(version)) return null;
+  return { item: r.item, version };
+}
+
+/** A number of a save that may be unknown: null, or a finite number from 0. */
+function readAmount(value: unknown, what: string): number | null | string {
+  if (value === null || value === undefined) return null;
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : `${what} must be null or a number from 0`;
+}
+
+/** An ArrayBuffer of 1 to `max` bytes, or the reason it is not one. */
+function readBytes(value: unknown, what: string, max: number): ArrayBuffer | string {
+  if (!(value instanceof ArrayBuffer)) return `${what} must be an ArrayBuffer`;
+  return value.byteLength >= 1 && value.byteLength <= max ? value : `${what} must be 1 to ${max} bytes`;
+}
+
+/** One G-code output of a save, its texts cut to their limits; or the reason it is refused. */
+function readOutput(value: unknown, i: number): LibraryOutput | string {
+  const r = record(value);
+  if (!r) return `outputs[${i}] must be an object`;
+  const gcode = readBytes(r.gcode, `outputs[${i}].gcode`, LIMITS.uploadBytes);
+  if (typeof gcode === 'string') return gcode;
+  const name = displayText(r.name, LIMITS.printName);
+  if (!name) return `outputs[${i}].name must be 1 to ${LIMITS.printName} printable characters`;
+  const s = record(r.setup);
+  if (!s) return `outputs[${i}].setup must be an object`;
+  const printerModel = displayText(s.printerModel, LIMITS.text);
+  const material = displayText(s.material, LIMITS.materialName);
+  if (!printerModel || !material) return `outputs[${i}].setup must name its printer model and material`;
+  if (typeof s.nozzleMm !== 'number' || !Number.isFinite(s.nozzleMm) || s.nozzleMm <= 0 || s.nozzleMm > 5) return `outputs[${i}].setup.nozzleMm must be a nozzle's diameter in mm`;
+  const printSeconds = readAmount(r.printSeconds, `outputs[${i}].printSeconds`);
+  if (typeof printSeconds === 'string') return printSeconds;
+  const filamentGrams = readAmount(r.filamentGrams, `outputs[${i}].filamentGrams`);
+  if (typeof filamentGrams === 'string') return filamentGrams;
+  return { gcode, name, setup: { printerModel, nozzleMm: s.nozzleMm, material }, printSeconds: printSeconds === null ? null : Math.round(printSeconds), filamentGrams };
+}
+
+/**
+ * A save's summary: its first 32 entries whose values are text, finite numbers or booleans (others are left out), keys
+ * and texts cut to their limits; or the reason it is refused (not an object).
+ */
+function readSummary(value: unknown): LibrarySave['summary'] | string {
+  const r = record(value);
+  if (!r) return 'summary must be an object';
+  const entries: [string, string | number | boolean][] = [];
+  for (const [k, v] of Object.entries(r)) {
+    if (entries.length >= LIMITS.summaryEntries) break;
+    const key = cleanText(k, LIMITS.summaryKey);
+    if (!key || entries.some(([seen]) => seen === key)) continue;
+    if (typeof v === 'string') entries.push([key, cleanText(v, LIMITS.summaryValue)]);
+    else if (typeof v === 'boolean' || (typeof v === 'number' && Number.isFinite(v))) entries.push([key, v]);
+  }
+  // fromEntries defines each key as its own, so a key "__proto__" is only a key.
+  return Object.fromEntries(entries);
+}
+
+/** library.save's params as the host reads them: every text cut to its limit; or the reason the save is refused. */
+function readLibrarySave(p: Record<string, unknown>): LibrarySave | string {
+  const item = p.item === null || p.item === undefined ? null : p.item;
+  if (item !== null && !isItemId(item)) return 'item must be null or a Library item id';
+  const name = displayText(p.name, LIMITS.printName);
+  if (!name) return `name must be 1 to ${LIMITS.printName} printable characters`;
+  if (!LIBRARY_ORIGINS.includes(p.origin as LibraryOrigin)) return "origin must be 'save', 'autosave' or 'card'";
+  let consent: string | null = null;
+  if (p.consent !== null && p.consent !== undefined) {
+    consent = displayText(p.consent, LIMITS.name);
+    if (!consent) return "consent must be null or the promise's version";
+  }
+  const project = readBytes(p.project, 'project', LIMITS.uploadBytes);
+  if (typeof project === 'string') return project;
+  if (!Array.isArray(p.outputs) || p.outputs.length > LIMITS.outputs) return `outputs must be a list of 0 to ${LIMITS.outputs}`;
+  const outputs: LibraryOutput[] = [];
+  for (const [i, o] of p.outputs.entries()) {
+    const output = readOutput(o, i);
+    if (typeof output === 'string') return output;
+    outputs.push(output);
+  }
+  let thumbnail: ArrayBuffer | null = null;
+  if (p.thumbnail !== null && p.thumbnail !== undefined) {
+    const bytes = readBytes(p.thumbnail, 'thumbnail', LIMITS.thumbnailBytes);
+    if (typeof bytes === 'string') return bytes;
+    if (!isPng(bytes)) return 'thumbnail must be a PNG';
+    thumbnail = bytes;
+  }
+  const summary = readSummary(p.summary);
+  if (typeof summary === 'string') return summary;
+  const total = project.byteLength + (thumbnail?.byteLength ?? 0) + outputs.reduce((sum, o) => sum + o.gcode.byteLength, 0);
+  if (total > LIMITS.uploadBytes) return `a save must be at most ${LIMITS.uploadBytes} bytes in all`;
+  return { item, name, origin: p.origin as LibraryOrigin, consent, project, outputs, thumbnail, summary };
+}
+
+/** A Library request's params (besides printer), checked; or the reason it is refused. */
+function readLibraryParams(op: LibraryOp, p: Record<string, unknown>): OpRequest | string {
+  switch (op) {
+    case 'library.status':
+    case 'library.browse':
+      return { op, printer: null };
+    case 'library.preferences': {
+      const change: LibraryPreferencesChange = {};
+      for (const field of ['ask', 'autosave'] as const) {
+        if (p[field] === undefined) continue;
+        if (typeof p[field] !== 'boolean') return `${field} must be a boolean`;
+        change[field] = p[field];
+      }
+      return { op, printer: null, ...change };
+    }
+    case 'library.save': {
+      const save = readLibrarySave(p);
+      return typeof save === 'string' ? save : { op, printer: null, ...save };
+    }
+    case 'library.get': {
+      if (!isItemId(p.item)) return 'item must be a Library item id';
+      const version = p.version === null || p.version === undefined ? null : p.version;
+      if (version !== null && !isVersion(version)) return 'version must be null or a version number';
+      return { op, printer: null, item: p.item, version };
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Requests (the host's side)
 // ---------------------------------------------------------------------------
 
@@ -824,7 +1156,8 @@ export function parseClientEvent(data: unknown): ClientEvent | null {
  * A port message as a request. null: not a request (no `v: 1`, no op, or an answer or an event), ignored. Otherwise
  * the operation with its parameters checked, or the failure to answer with (`id` when it could be read, `printer` when
  * the key could): an operation this version does not have is `unsupported`, a parameter that breaks its rule
- * `bad-request`, a Moonraker method outside the read allowlist `not-allowed`.
+ * `bad-request`, a Moonraker method outside the read allowlist `not-allowed`. A Library request names no printer
+ * (params.printer null or left out), and its failure names none either.
  */
 export function parseRequest(data: unknown): { ok: true; id: number; request: OpRequest } | { ok: false; id: number | null; printer: string | null; error: BridgeError } | null {
   const r = record(data);
@@ -837,6 +1170,12 @@ export function parseRequest(data: unknown): { ok: true; id: number; request: Op
   if (!Object.prototype.hasOwnProperty.call(OPS, r.op)) return failure({ kind: 'unsupported', message: `Unknown operation "${r.op.slice(0, 64)}"` });
   const op = r.op as BridgeOp;
   if (!params) return failure(bad('params must be an object'));
+  if (isLibraryOp(op)) {
+    const refuse = (message: string) => ({ ok: false as const, id, printer: null, error: bad(message) });
+    if (params.printer !== undefined && params.printer !== null) return refuse(`${op} is the account's: params.printer must be null`);
+    const read = readLibraryParams(op, params);
+    return typeof read === 'string' ? refuse(read) : { ok: true, id, request: read };
+  }
   if (op === 'printer.get') {
     if (params.printer !== undefined && params.printer !== null && printer === null) return failure(bad('printer must be a printer key'));
     return { ok: true, id, request: { op, printer } };
@@ -848,7 +1187,7 @@ export function parseRequest(data: unknown): { ok: true; id: number; request: Op
   return { ok: true, id, request: read };
 }
 
-function readOpParams(op: Exclude<BridgeOp, 'printer.get'>, p: Record<string, unknown>, printer: string): OpRequest | BridgeError | string {
+function readOpParams(op: Exclude<BridgeOp, 'printer.get' | LibraryOp>, p: Record<string, unknown>, printer: string): OpRequest | BridgeError | string {
   switch (op) {
     case 'status.watch': {
       const objects = readObjects(p.objects);
@@ -932,7 +1271,7 @@ function readMoonrakerParams(p: Record<string, unknown>, printer: string): OpReq
 export type ClientIncoming =
   | { kind: 'result'; re: number; printer: string | null; result: unknown }
   | { kind: 'failure'; re: number; printer: string | null; error: PrinterError }
-  | { kind: 'progress'; re: number; printer: string; progress: UploadStep }
+  | { kind: 'progress'; re: number; printer: string | null; progress: UploadStep }
   | { kind: 'event'; event: HostEventName; printer: string | null; data: unknown };
 
 /** An upload step from the host, or null. */
@@ -963,7 +1302,7 @@ export function parseIncoming(data: unknown): ClientIncoming | null {
   if ('error' in r) return { kind: 'failure', re: r.re, printer, error: parseBridgeError(r.error) };
   if ('progress' in r) {
     const progress = parseUploadStep(r.progress);
-    return progress && printer ? { kind: 'progress', re: r.re, printer, progress } : null;
+    return progress ? { kind: 'progress', re: r.re, printer, progress } : null;
   }
   if ('result' in r) return { kind: 'result', re: r.re, printer, result: r.result };
   return null;
