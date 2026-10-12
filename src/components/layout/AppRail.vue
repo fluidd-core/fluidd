@@ -62,33 +62,33 @@
 
       <div class="app-rail__spacer" />
 
-      <v-tooltip
-        right
-        :disabled="!compact"
+      <network-quick-menu
+        :title="routeTitle"
+        :detail="routeDetail"
+        :remote="remote"
+        :compact="compact"
       >
-        <template #activator="{ on, attrs }">
-          <div
-            class="app-rail__route"
-            data-tid="rail-route"
-            v-bind="attrs"
-            v-on="on"
-          >
-            <span class="app-rail__route-title">
-              <frame-icon
-                :name="remote ? 'cloud' : 'wifi'"
-                small
-                :class="remote ? 'app-rail__route-icon--remote' : 'app-rail__route-icon'"
-              />
-              <span v-if="!compact">{{ routeTitle }}</span>
-            </span>
-            <span
-              v-if="!compact && routeDetail"
-              class="app-rail__route-detail"
-            >{{ routeDetail }}</span>
-          </div>
-        </template>
-        <span>{{ routeTitle }}<template v-if="routeDetail"> · {{ routeDetail }}</template></span>
-      </v-tooltip>
+        <span class="app-rail__route">
+          <span class="app-rail__route-title">
+            <frame-icon
+              :name="remote ? 'cloud' : 'wifi'"
+              small
+              :class="remote ? 'app-rail__route-icon--remote' : 'app-rail__route-icon'"
+            />
+            <span v-if="!compact">{{ routeTitle }}</span>
+            <frame-icon
+              v-if="!compact"
+              name="chevronUp"
+              small
+              class="app-rail__route-more"
+            />
+          </span>
+          <span
+            v-if="!compact && routeDetail"
+            class="app-rail__route-detail"
+          >{{ routeDetail }}</span>
+        </span>
+      </network-quick-menu>
     </nav>
   </v-navigation-drawer>
 </template>
@@ -102,13 +102,15 @@ import { cloudState } from '@/services/muon-cloud/state'
 import { hostOf } from '@/services/muon-cloud/directory'
 import { probeSlicer } from '@/services/slicer-bridge/slicerUrl'
 import AppRailLink from './AppRailLink.vue'
+import NetworkQuickMenu from './NetworkQuickMenu.vue'
 
 /**
  * The pages of the printer you're on, named, with their keys. Pro's two
  * sit below a label and show only with Pro on. At the bottom, how this
- * browser reaches the printer. Below the lg breakpoint it keeps the icons.
+ * browser reaches the printer, which opens to its Wi-Fi and hotspot
+ * (NetworkQuickMenu). Below the lg breakpoint it keeps the icons.
  */
-@Component({ components: { AppRailLink } })
+@Component({ components: { AppRailLink, NetworkQuickMenu } })
 export default class AppRail extends Mixins(FrameMixin, BrowserMixin) {
   allPrintersKey = ALL_PRINTERS_KEY
 
@@ -207,6 +209,16 @@ export default class AppRail extends Mixins(FrameMixin, BrowserMixin) {
     padding: 12px 14px;
     border-radius: 14px;
     background: var(--m3d-surface-2);
+    transition: background var(--m3d-duration-base, 0.15s) var(--m3d-ease, ease);
+
+    &:hover {
+      background: var(--m3d-hover);
+    }
+  }
+
+  .app-rail__route-more {
+    margin-left: auto;
+    color: var(--m3d-text-subtle);
   }
 
   .app-rail--compact .app-rail__route {
