@@ -152,17 +152,17 @@ export default class MeshProfiles extends Mixins(MaintenanceMixin) {
 
   async load (name: string) {
     // Mid-print, a different mesh moves the nozzle under the part.
-    if (this.printerPrinting && !(await this.$confirm(`Load ${name} while printing? The nozzle follows the new mesh from the next move.`, { title: 'Load a mesh', color: 'card-heading', icon: '$error' }))) return
+    if (this.printerPrinting && !(await this.$confirm('The nozzle follows the new mesh from the next move.', { title: `Load ${name} while printing?`, buttonTrueText: 'Load it' }))) return
     this.sendGcode(meshProfileCommand('LOAD', name))
   }
 
   async remove (name: string) {
-    if (!(await this.$confirm(`Remove the profile ${name}? It goes from printer.cfg when Klipper next saves.`, { title: 'Remove a profile', color: 'card-heading', icon: '$error' }))) return
+    if (!(await this.$confirm('It goes from printer.cfg the next time Klipper saves.', { title: `Remove the mesh ${name}?`, buttonTrueText: 'Remove', danger: true }))) return
     this.sendGcode(meshProfileCommand('REMOVE', name))
   }
 
   async clear () {
-    if (this.printerPrinting && !(await this.$confirm('Clear the mesh while printing? The nozzle stops following the bed from the next move.', { title: 'Clear the mesh', color: 'card-heading', icon: '$error' }))) return
+    if (this.printerPrinting && !(await this.$confirm('The nozzle stops following the bed from the next move.', { title: 'Clear the mesh while printing?', buttonTrueText: 'Clear it', danger: true }))) return
     this.sendGcode('BED_MESH_CLEAR')
   }
 

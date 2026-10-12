@@ -104,7 +104,7 @@ export default class OverviewPlate extends Mixins(OverviewMixin, MacrosMixin) {
   }
 
   async skip (name: string) {
-    const ok = await this.$confirm(`Stop printing ${name}? The rest of the plate carries on.`, { title: 'Skip an object', color: 'card-heading', icon: '$error' })
+    const ok = await this.$confirm("The rest of the plate carries on. A part that's skipped can't be added back.", { title: `Stop printing ${name}?`, buttonTrueText: 'Skip it', buttonFalseText: 'Keep printing it', danger: true })
     if (ok) this.sendGcode(`EXCLUDE_OBJECT NAME=${name}`)
   }
 

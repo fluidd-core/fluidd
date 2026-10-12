@@ -330,12 +330,12 @@ export default class History extends Mixins(OverviewMixin, BrowserMixin) {
   }
 
   async clearAll () {
-    const ok = await this.$confirm(`Remove all ${this.items.length} prints from ${this.printerName}'s history? The files stay, and so do the totals.`, { title: 'Clear history', color: 'card-heading', icon: '$error' })
+    const ok = await this.$confirm('The files stay, and so do the totals.', { title: `Remove all ${this.items.length} prints from ${this.printerName}'s history?`, buttonTrueText: 'Clear history', danger: true })
     if (ok) SocketActions.serverHistoryDeleteJob('all')
   }
 
   async resetTotals () {
-    const ok = await this.$confirm(`Set ${this.printerName}'s totals back to zero? The prints listed here stay.`, { title: 'Reset the totals', color: 'card-heading', icon: '$error' })
+    const ok = await this.$confirm('The prints listed here stay.', { title: `Set ${this.printerName}'s totals back to zero?`, buttonTrueText: 'Reset the totals', danger: true })
     if (ok) SocketActions.serverHistoryResetTotals()
   }
 }

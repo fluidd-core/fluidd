@@ -176,7 +176,7 @@ export default class ProbeCard extends Mixins(MaintenanceMixin) {
     const [x, y] = this.middle
     const ok = await this.$confirm(
       `${this.allHomed ? 'The head' : 'It homes, then the head'} goes to the middle of the bed (X${x} Y${y}) and probes there ten times. Keep the plate on and the nozzle clean.`,
-      { title: 'Check probe accuracy', color: 'card-heading', icon: '$info' }
+      { title: 'Check how steady the probe is?', buttonTrueText: 'Start' }
     )
     if (!ok || this.checksBlocked) return
     this.sendGcode(probeAccuracyScript(this.allHomed, this.middle), this.$waits.onProbeAccuracy)

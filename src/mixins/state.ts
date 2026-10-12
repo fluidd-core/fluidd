@@ -127,8 +127,8 @@ RESTORE_GCODE_STATE NAME=_ui_retract`
     const result = (
       !confirmOnEstop ||
       await this.$confirm(
-        this.$tc('app.general.simple_form.msg.confirm_emergency_stop'),
-        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+        'Everything stops at once: the print, the heaters and the motors. The printer then has to restart before it can do anything else.',
+        { title: 'Stop the printer now?', buttonTrueText: 'Stop now', buttonFalseText: 'Keep going', danger: true }
       )
     )
 
@@ -139,8 +139,8 @@ RESTORE_GCODE_STATE NAME=_ui_retract`
 
   async cancelPrint () {
     const result = await this.$confirm(
-      this.$tc('app.general.simple_form.msg.confirm_cancel_print'),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+      "The print stops and can't be picked up again. What has printed stays on the plate: take it off before the next print.",
+      { title: 'Cancel this print?', buttonTrueText: 'Cancel the print', buttonFalseText: 'Keep printing', danger: true }
     )
 
     if (result) {

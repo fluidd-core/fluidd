@@ -18,7 +18,6 @@ import { consola } from 'consola'
 import vuetify from './plugins/vuetify'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import VueMeta from 'vue-meta'
-import VuetifyConfirm from 'vuetify-confirm'
 import Vue2TouchEvents from 'vue2-touch-events'
 import { InlineSvgPlugin } from 'vue-inline-svg'
 
@@ -43,6 +42,7 @@ import { HttpClientPlugin } from './plugins/httpClient'
 import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
 import { ColorSetPlugin } from './plugins/colorSet'
+import { ConfirmPlugin } from './plugins/confirm'
 
 // Main App component
 import App from './App.vue'
@@ -63,8 +63,9 @@ Vue.use(VueVirtualScroller)
 Vue.use(FiltersPlugin)
 Vue.use(VueMeta)
 Vue.use(ColorSetPlugin, {})
-Vue.use(VuetifyConfirm, {
-  vuetify
+Vue.use(ConfirmPlugin, {
+  vuetify,
+  i18n
 })
 Vue.use(InlineSvgPlugin)
 Vue.use(Vue2TouchEvents)

@@ -440,7 +440,7 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
   }
 
   async clearQueue () {
-    const ok = await this.$confirm(`Take all ${this.queue.length} jobs out of the queue? The files stay on ${this.printerName}.`, { title: 'Clear the queue', color: 'card-heading', icon: '$error' })
+    const ok = await this.$confirm(`The files stay on ${this.printerName}.`, { title: `Take all ${this.queue.length} jobs out of the queue?`, buttonTrueText: 'Clear the queue', danger: true })
     if (ok) SocketActions.serverJobQueueDeleteJobs(this.queue.map(j => j.job_id))
   }
 

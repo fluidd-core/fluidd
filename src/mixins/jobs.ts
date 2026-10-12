@@ -105,7 +105,7 @@ export default class JobsMixin extends Mixins(OverviewMixin) {
   }
 
   async removeJob (job: JobFile): Promise<boolean> {
-    const ok = await this.$confirm(`Delete ${job.title} from ${this.printerName}? This can't be undone.`, { title: 'Delete', color: 'card-heading', icon: '$error' })
+    const ok = await this.$confirm(`It's removed from ${this.printerName}. This can't be undone.`, { title: `Delete ${job.title}?`, buttonTrueText: 'Delete', danger: true })
     if (!ok) return false
     SocketActions.serverFilesDeleteFile(`${this.root}/${job.path}`)
     return true

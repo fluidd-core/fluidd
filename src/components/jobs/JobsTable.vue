@@ -740,7 +740,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
     ].filter(Boolean).join(' and ')
     const name = rows.length === 1 ? rows[0].name : what
     const note = folders ? ' A folder goes with everything in it.' : ''
-    const ok = await this.$confirm(`Delete ${name} from ${this.printerName}?${note} This can't be undone.`, { title: 'Delete', color: 'card-heading', icon: '$error' })
+    const ok = await this.$confirm(`It's removed from ${this.printerName}.${note} This can't be undone.`, { title: `Delete ${name}?`, buttonTrueText: 'Delete', danger: true })
     if (!ok) return
     for (const row of rows) {
       if (row.kind === 'folder') SocketActions.serverFilesDeleteDirectory(`${this.root}/${row.key}`, true)

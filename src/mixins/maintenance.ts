@@ -179,7 +179,7 @@ export default class MaintenanceMixin extends Mixins(ControlMixin) {
 
   async runCheck (row: CheckRow) {
     if (!row.gcode || this.checksBlocked) return
-    const ok = await this.$confirm(row.confirm, { title: row.title, color: 'card-heading', icon: '$info' })
+    const ok = await this.$confirm(row.confirm, { title: row.title, buttonTrueText: 'Start' })
     // Asked again: a print may have started from elsewhere while the question was open.
     if (!ok || this.checksBlocked) return
     running.check = { id: row.id, printer: activeSlug(), startedAt: Date.now(), before: this.evidence, homeFirst: /(^|\n)G28\b/.test(row.gcode) }
@@ -297,10 +297,10 @@ export default class MaintenanceMixin extends Mixins(ControlMixin) {
 
   async saveResults () {
     if (this.saveBlocked) return
-    const ok = await this.$confirm('Saving keeps the new results after a restart. It restarts Klipper, which takes a few seconds.', {
-      title: 'Save results',
-      color: 'card-heading',
-      icon: '$info'
+    const ok = await this.$confirm('Saving keeps the new results after a restart. Klipper restarts to save them, which takes a few seconds.', {
+      title: 'Save the results?',
+      buttonTrueText: 'Save and restart Klipper',
+      buttonFalseText: 'Not now'
     })
     if (ok && !this.saveBlocked) this.sendGcode('SAVE_CONFIG', this.$waits.onSaveConfig)
   }

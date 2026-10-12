@@ -367,21 +367,21 @@ export default class System extends Mixins(OverviewMixin, ServicesMixin, Browser
       .map(s => ({ name: s.name, state: serviceState(s.active_state, s.sub_state), inactive: s.active_state === 'inactive' }))
   }
 
-  async ask (text: string, title: string): Promise<boolean> {
-    return !!(await this.$confirm(text, { title, color: 'card-heading', icon: '$error' }))
+  async ask (text: string, title: string, button: string, danger = true): Promise<boolean> {
+    return !!(await this.$confirm(text, { title, buttonTrueText: button, danger }))
   }
 
   async reboot () {
-    if (await this.ask(`Restart ${this.printerName}'s computer? This page loses touch for a minute or two.`, 'Restart the computer')) this.hostReboot()
+    if (await this.ask('This page loses touch with it for a minute or two.', `Restart ${this.printerName}'s computer?`, 'Restart')) this.hostReboot()
   }
 
   async shutDown () {
-    if (await this.ask(`Shut down ${this.printerName}'s computer? It stays off until it's switched off and on at the printer.`, 'Shut down')) this.hostShutdown()
+    if (await this.ask("It stays off until it's switched off and on at the printer.", `Shut down ${this.printerName}'s computer?`, 'Shut down')) this.hostShutdown()
   }
 
   async restart (name: string) {
-    const printing = this.printerPrinting ? ' It is printing: restarting Klipper or Moonraker stops the print.' : ''
-    if (await this.ask(`Restart ${name}?${printing}`, 'Restart a service')) await this.serviceRestartByName(name)
+    const printing = this.printerPrinting ? 'It is printing: restarting Klipper or Moonraker stops the print.' : 'It is back in a few seconds.'
+    if (await this.ask(printing, `Restart ${name}?`, 'Restart', this.printerPrinting)) await this.serviceRestartByName(name)
   }
 
   async start (name: string) {
@@ -389,13 +389,13 @@ export default class System extends Mixins(OverviewMixin, ServicesMixin, Browser
   }
 
   async stop (name: string) {
-    if (await this.ask(`Stop ${name}? It stays stopped until it's started here or the computer restarts.`, 'Stop a service')) await this.serviceStopByName(name)
+    if (await this.ask("It stays stopped until it's started here or the computer restarts.", `Stop ${name}?`, 'Stop')) await this.serviceStopByName(name)
   }
 
   async togglePower (device: Device) {
     const confirm = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
     const next = device.status === 'on' ? 'off' : 'on'
-    if (confirm && !(await this.ask(`Turn ${device.device} ${next}?`, 'Power'))) return
+    if (confirm && !(await this.ask(next === 'off' ? 'Whatever runs from it loses power at once.' : 'It switches on straight away.', `Turn ${device.device} ${next}?`, `Turn ${next}`, next === 'off'))) return
     SocketActions.machineDevicePowerToggle(device.device, next, `${this.$waits.onDevicePowerToggle}${device.device}`)
   }
 

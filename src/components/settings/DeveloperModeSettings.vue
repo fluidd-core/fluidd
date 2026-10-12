@@ -395,9 +395,9 @@ export default class DeveloperModeSettings extends Vue {
 
   async restoreDefaults () {
     const ok = await this.$confirm('Your copy of the configuration is backed up, then replaced with the Muon3D defaults, and Klipper restarts.', {
-      title: 'Start again from the defaults',
-      color: 'card-heading',
-      icon: '$error'
+      title: 'Start again from the defaults?',
+      buttonTrueText: 'Back up and replace',
+      danger: true
     })
     if (!ok) return
     this.loading = true

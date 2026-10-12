@@ -50,9 +50,8 @@ export default class FilesMixin extends Vue {
           filename: file.filename,
           size: this.$filters.getReadableFileSizeString(file.size)
         }).toString(), {
-          title: this.$tc('app.general.title.gcode_preview'),
-          color: 'card-heading',
-          icon: '$error'
+          title: 'Load a large file?',
+          buttonTrueText: 'Load it'
         })
     )
 
