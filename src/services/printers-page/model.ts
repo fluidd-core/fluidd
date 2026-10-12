@@ -259,7 +259,7 @@ export function printersPage (src: PageSources): PrintersPage {
   const found = src.directory.found.map(e => tileFor(e, src, null))
   const other = (src.directory.foreign ?? src.foreign ?? []).map(e => tileFor(e, src, null))
   const allKnown = [...all, ...other]
-  const printingNow = allKnown.filter(t => t.state === 'printing' || t.state === 'paused')
+  const printingNow = all.filter(t => t.state === 'printing' || t.state === 'paused')
   const count = (f: (t: PrinterTile) => boolean) => allKnown.filter(f).length
 
   return {

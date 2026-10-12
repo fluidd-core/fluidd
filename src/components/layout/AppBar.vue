@@ -99,7 +99,7 @@
         <app-status-alerts v-if="authenticated" />
 
         <app-upload-and-print-btn
-          v-if="printerFrame && authenticated && socketConnected && showUploadAndPrint"
+          v-if="printerFrame && !sectionContext.foreign && authenticated && socketConnected && showUploadAndPrint"
           :tooltip="uploadTooltip"
           @upload="handleUploadAndPrint"
         />

@@ -1,7 +1,7 @@
 import type { AdapterDeps, ForeignCapabilities, ForeignCredentials, ForeignFile, ForeignPrinterRecord } from '../types'
 import { clampProgress, fetchJson, httpUrl, SocketAdapter, temp } from './base'
 
-const capabilities: ForeignCapabilities = {
+export const OCTOPRINT_CAPABILITIES: ForeignCapabilities = {
   pauseResume: true,
   stop: true,
   camera: true,
@@ -12,7 +12,7 @@ const capabilities: ForeignCapabilities = {
 
 export default class OctoPrintAdapter extends SocketAdapter {
   readonly kind = 'octoprint' as const
-  readonly capabilities = capabilities
+  readonly capabilities = OCTOPRINT_CAPABILITIES
   private pollTimer: ReturnType<typeof setInterval> | null = null
   private sessionAuth = ''
 

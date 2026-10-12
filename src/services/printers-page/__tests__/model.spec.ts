@@ -94,6 +94,48 @@ describe('the Printers page', () => {
     expect(page.welcome).toBe(false)
   })
 
+  it('keeps a foreign print on its Other printers card, not Printing now', () => {
+    const record: ForeignPrinterRecord = {
+      id: 'foreign:voron',
+      kind: 'moonraker',
+      name: 'Workshop Voron',
+      model: 'Voron 2.4',
+      host: '192.168.1.25',
+      via: 'direct',
+      formFactor: 'open-frame',
+      credentialsRef: null,
+      addedAt: 1
+    }
+    const status: ForeignStatus = {
+      state: 'printing',
+      message: 'Printing',
+      file: 'bracket.gcode',
+      progress: 0.62,
+      timeLeft: 1800,
+      temps: [],
+      cameraUrl: null
+    }
+    const page = printersPage(sources({
+      directory: {
+        cloud: [],
+        local: [],
+        found: [],
+        foreign: [entry('foreign:voron', {
+          section: 'foreign',
+          name: record.name,
+          host: record.host,
+          health: 'printing',
+          detail: status.message!,
+          foreign: { record, status }
+        })]
+      }
+    }))
+
+    expect(page.printingNow).toEqual([])
+    expect(page.other[0]).toMatchObject({ state: 'printing', label: '62%', job: { progress: 62, file: 'bracket.gcode' } })
+    expect(page.counts).toMatchObject({ printers: 1, printing: 1 })
+  })
+
   it('puts the account printers in their groups, in the groups\' order, and the rest after', () => {
     const page = printersPage(sources({
       signedIn: true,

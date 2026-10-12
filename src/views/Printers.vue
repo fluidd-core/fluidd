@@ -540,15 +540,17 @@
                 {{ tile.name }}
               </span>
               <span>{{ brandLabel(tile) }}<template v-if="foreignRecord(tile).model"> · {{ foreignRecord(tile).model }}</template></span>
-              <tone-pill
-                tone="off"
-                :dot="false"
-              >
-                {{ foreignRecord(tile).via === 'direct' ? 'direct' : `through ${foreignRecord(tile).m1Name || 'M1'}` }}
-              </tone-pill>
-              <tone-pill :tone="tile.tone">
-                {{ tile.label }}
-              </tone-pill>
+              <div class="foreign-tile__chips">
+                <tone-pill
+                  tone="off"
+                  :dot="false"
+                >
+                  {{ foreignRecord(tile).via === 'direct' ? 'direct' : `through ${foreignRecord(tile).m1Name || 'M1'}` }}
+                </tone-pill>
+                <tone-pill :tone="tile.tone">
+                  {{ tile.label }}
+                </tone-pill>
+              </div>
             </div>
             <v-menu
               left
@@ -1166,6 +1168,18 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
     min-width: 0;
     color: var(--m3d-text-muted);
     font-size: 12px;
+  }
+
+  .foreign-tile__chips {
+    display: flex;
+    align-self: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .foreign-tile__chips .tone-pill {
+    align-self: flex-start;
   }
 
   .foreign-tile__name {

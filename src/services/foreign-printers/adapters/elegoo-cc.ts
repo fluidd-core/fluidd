@@ -1,7 +1,7 @@
 import type { AdapterDeps, ForeignCapabilities, ForeignFile, ForeignPrinterRecord } from '../types'
 import { clampProgress, SocketAdapter, temp } from './base'
 
-const capabilities: ForeignCapabilities = {
+export const ELEGOO_CC_CAPABILITIES: ForeignCapabilities = {
   pauseResume: true,
   stop: true,
   camera: true,
@@ -19,7 +19,7 @@ interface PendingCommand {
 
 export default class ElegooCentauriAdapter extends SocketAdapter {
   readonly kind = 'elegoo-cc' as const
-  readonly capabilities = capabilities
+  readonly capabilities = ELEGOO_CC_CAPABILITIES
   private files: ForeignFile[] = []
   private pending = new Map<string, PendingCommand>()
 

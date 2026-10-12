@@ -3,7 +3,6 @@
     v-if="record"
     class="foreign-page"
   >
-    <h1>{{ record.name }}</h1>
     <p class="foreign-muted">
       {{ record.model || brand.label }} · {{ record.host }}
     </p>
@@ -33,28 +32,28 @@
       </div>
       <div class="foreign-actions">
         <button
-          v-if="adapter?.capabilities.pauseResume && status.state === 'printing'"
-          class="btn"
+          v-if="directCapabilities?.pauseResume && status.state === 'printing'"
+          class="cbtn"
           @click="pause"
         >
           Pause
         </button>
         <button
-          v-if="adapter?.capabilities.pauseResume && status.state === 'paused'"
-          class="btn"
+          v-if="directCapabilities?.pauseResume && status.state === 'paused'"
+          class="cbtn"
           @click="resume"
         >
           Resume
         </button>
         <button
-          v-if="adapter?.capabilities.stop && ['printing', 'paused'].includes(status.state)"
-          class="btn btn--danger"
+          v-if="directCapabilities?.stop && ['printing', 'paused'].includes(status.state)"
+          class="cbtn cbtn--danger"
           @click="stop"
         >
           Stop
         </button>
         <button
-          class="btn btn--ghost"
+          class="cbtn cbtn--ghost"
           @click="forgetPrinter"
         >
           Forget
@@ -77,9 +76,6 @@
         </li>
       </ul>
     </section>
-    <p class="foreign-muted">
-      The printer's own screen does the rest.
-    </p>
   </main>
 </template>
 
@@ -91,7 +87,8 @@ import { foreignRecordForSlug } from '@/services/printer-pages'
 import { adapterFor, connectAll, forget, liveForeign } from '@/services/foreign-printers/live'
 import { foreignBrand } from '@/services/foreign-printers/brands'
 import { emptyStatus } from '@/services/foreign-printers/adapters/base'
-import type { ForeignStatus, ForeignTemp } from '@/services/foreign-printers/types'
+import { FOREIGN_STATE_LABELS, type DirectKind, type ForeignCapabilities, type ForeignStatus, type ForeignTemp } from '@/services/foreign-printers/types'
+import { capabilitiesFor } from '@/services/foreign-printers/adapters'
 import { shortDuration } from '@/util/short-duration'
 import ForeignCamera from './ForeignCamera.vue'
 
@@ -103,16 +100,12 @@ export default class ForeignPrinterOverview extends Mixins(StateMixin) {
   get status (): ForeignStatus { return this.record ? liveForeign.status[this.record.id] ?? emptyStatus() : emptyStatus() }
   get adapter () { return this.record ? adapterFor(this.record.id) : undefined }
   get brand () { return this.record ? foreignBrand(this.record.kind) : { label: '' } }
+  get directCapabilities (): ForeignCapabilities | null {
+    return this.record?.via === 'direct' ? capabilitiesFor(this.record.kind as DirectKind) : null
+  }
 
   stateLabel (state: ForeignStatus['state']) {
-    return {
-      printing: 'Printing',
-      paused: 'Paused',
-      idle: 'Ready',
-      connecting: 'Connecting',
-      offline: 'Offline',
-      error: 'Error'
-    }[state]
+    return FOREIGN_STATE_LABELS[state]
   }
 
   temperatureName (id: ForeignTemp['id']) {
@@ -124,7 +117,7 @@ export default class ForeignPrinterOverview extends Mixins(StateMixin) {
   }
 
   get capabilities () {
-    const c = this.adapter?.capabilities
+    const c = this.directCapabilities
     return [
       { label: 'See status and progress', supported: true },
       { label: 'See temperatures', supported: true },
@@ -153,7 +146,9 @@ export default class ForeignPrinterOverview extends Mixins(StateMixin) {
 
   private async runAction (action: () => Promise<void> | undefined) {
     try {
-      await action()
+      const result = action()
+      if (!result) throw new Error('Not connected')
+      await result
     } catch (error) {
       EventBus.$emit(error instanceof Error ? error.message : 'The printer command failed.', { type: 'error' })
     }

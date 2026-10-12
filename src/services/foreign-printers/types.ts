@@ -19,6 +19,24 @@ export interface ForeignPrinterRecord {
 
 export type ForeignState = 'connecting' | 'idle' | 'printing' | 'paused' | 'error' | 'offline'
 
+export const FOREIGN_STATE_LABELS: Record<ForeignState, string> = {
+  printing: 'Printing',
+  paused: 'Paused',
+  idle: 'Ready',
+  connecting: 'Connecting',
+  offline: 'Offline',
+  error: 'Error'
+}
+
+export const FOREIGN_STATE_TONES: Record<ForeignState, 'run' | 'warn' | 'ok' | 'off' | 'err'> = {
+  printing: 'run',
+  paused: 'warn',
+  idle: 'ok',
+  connecting: 'warn',
+  offline: 'off',
+  error: 'err'
+}
+
 export interface ForeignTemp {
   id: 'nozzle' | 'bed' | 'chamber'
   actual: number

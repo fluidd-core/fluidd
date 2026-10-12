@@ -1,7 +1,7 @@
 import type { AdapterDeps, ForeignCapabilities, ForeignPrinterRecord } from '../types'
 import { clampProgress, SocketAdapter, temp } from './base'
 
-const capabilities: ForeignCapabilities = {
+export const CREALITY_CAPABILITIES: ForeignCapabilities = {
   pauseResume: true,
   stop: true,
   camera: true,
@@ -12,7 +12,7 @@ const capabilities: ForeignCapabilities = {
 
 export default class CrealityAdapter extends SocketAdapter {
   readonly kind = 'creality' as const
-  readonly capabilities = capabilities
+  readonly capabilities = CREALITY_CAPABILITIES
   private telemetry: Record<string, any> = {}
 
   constructor (private readonly record: ForeignPrinterRecord, deps: AdapterDeps) {

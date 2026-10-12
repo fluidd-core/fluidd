@@ -1,7 +1,7 @@
 import type { AdapterDeps, ForeignCapabilities, ForeignCredentials, ForeignFile, ForeignPrinterRecord } from '../types'
 import { clampProgress, fetchJson, httpUrl, SocketAdapter, temp } from './base'
 
-const capabilities: ForeignCapabilities = {
+export const MOONRAKER_CAPABILITIES: ForeignCapabilities = {
   pauseResume: true,
   stop: true,
   camera: true,
@@ -20,7 +20,7 @@ const OBJECTS = {
 
 export default class MoonrakerAdapter extends SocketAdapter {
   readonly kind = 'moonraker' as const
-  readonly capabilities = capabilities
+  readonly capabilities = MOONRAKER_CAPABILITIES
   private requestId = 1
 
   constructor (

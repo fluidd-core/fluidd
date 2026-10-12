@@ -208,7 +208,7 @@
         v-if="selectedKind === 'moonraker' || selectedKind === 'octoprint'"
         class="m3-field"
       >
-        <span class="m3-dlg__note">API key (optional for Moonraker)</span>
+        <span class="m3-dlg__note">{{ selectedKind === 'octoprint' ? 'API key' : 'API key (optional)' }}</span>
         <input
           v-model="apiKey"
           class="aid__input"
@@ -216,17 +216,19 @@
           autocomplete="off"
         >
       </label>
-      <label
+      <div
         v-if="selectedKind === 'octoprint'"
         class="aid__steps"
       >
         <button
           type="button"
-          class="btn"
+          class="cbtn cbtn--ghost"
           @click="askOctoPrintForKey"
-        >Ask OctoPrint for a key</button>
+        >
+          Ask OctoPrint for a key
+        </button>
         <span>{{ appKeyMessage }}</span>
-      </label>
+      </div>
       <label class="aid__remember">
         <input
           v-model="rememberCredentials"
@@ -251,7 +253,7 @@ cors_domains:
         {{ currentOrigin }}</pre>
         <button
           type="button"
-          class="btn btn--sm"
+          class="cbtn cbtn--ghost"
           @click="copyMoonrakerSetup"
         >
           Copy
@@ -266,7 +268,7 @@ cors_domains:
       </p>
       <button
         type="button"
-        class="btn"
+        class="cbtn cbtn--primary"
         :disabled="probing || !foreignHost.trim()"
         @click="probeForeign"
       >

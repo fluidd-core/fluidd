@@ -3,7 +3,7 @@ import { createServer } from 'node:http'
 import { once } from 'node:events'
 import { WebSocketServer } from 'ws'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createAdapter } from '../adapters'
+import { capabilitiesFor, createAdapter } from '../adapters'
 import type { ForeignKind, ForeignPrinterRecord, ForeignStatus } from '../types'
 
 vi.mock('@/services/muon-cloud/discovery', () => ({
@@ -180,6 +180,7 @@ describe('foreign adapters against local HTTP and WebSocket printers', () => {
     })
     try {
       expect(adapter.capabilities).toEqual(adapters[kind])
+      expect(capabilitiesFor(kind)).toEqual(adapters[kind])
       await adapter.connect()
       let latest: ForeignStatus = adapter.status
       adapter.onStatus(status => { latest = status })
