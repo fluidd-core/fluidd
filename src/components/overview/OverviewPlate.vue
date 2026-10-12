@@ -53,13 +53,15 @@
     <div class="ov-plate__macros">
       <button
         v-for="m in pinned"
-        :key="m"
+        :key="m.name"
         type="button"
         class="ov-plate__macro"
-        :disabled="!klippyReady"
-        @click="sendGcode(m)"
+        :disabled="!klippyReady || (m.disabledWhilePrinting && busy)"
+        :title="[m.name, m.description].filter(Boolean).join(' · ')"
+        :data-tid="`pinned-macro-${m.name}`"
+        @click="sendGcode(m.name)"
       >
-        {{ m }}
+        {{ m.title }}
       </button>
       <span
         v-if="!macros.length"
@@ -72,17 +74,19 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import OverviewMixin from '@/mixins/overview'
-import { visibleMacros, type MacroGroup } from '@/util/visible-macros'
+import MacrosMixin, { type ShownMacro } from '@/mixins/macros'
 
 /** How many macros Overview shows; the rest are on Control. */
 const PINNED = 6
 
 /**
  * Pro: the objects on the plate, to skip one that fails (exclude_object),
- * and the printer's macros, the first few here and every one on Control.
+ * and the printer's macros: the six you'd press first here (the everyday
+ * ones from a few groups, and those you run most; mixins/macros.ts), and
+ * every one on Control.
  */
 @Component({})
-export default class OverviewPlate extends Mixins(OverviewMixin) {
+export default class OverviewPlate extends Mixins(OverviewMixin, MacrosMixin) {
   get excludeObject () {
     return this.$store.state.printer.printer.exclude_object ?? {}
   }
@@ -104,13 +108,12 @@ export default class OverviewPlate extends Mixins(OverviewMixin) {
     if (ok) this.sendGcode(`EXCLUDE_OBJECT NAME=${name}`)
   }
 
-  get macros (): string[] {
-    return visibleMacros(this.$store.getters['macros/getVisibleMacros'] as MacroGroup[])
-      .map(m => m.name.toUpperCase())
+  get macros (): ShownMacro[] {
+    return this.arrangedMacros
   }
 
-  get pinned (): string[] {
-    return this.macros.slice(0, PINNED)
+  get pinned (): ShownMacro[] {
+    return this.topMacroList(PINNED)
   }
 }
 </script>
