@@ -608,7 +608,10 @@
     <add-instance-dialog
       v-if="instanceDialogOpen"
       v-model="instanceDialogOpen"
+      :found="foundChoices"
+      :searching="searching"
       @resolve="openInstance"
+      @pick="onPickFound"
     />
     <cloud-account-dialog
       v-if="accountDialog"
@@ -669,6 +672,7 @@ import PrinterTileCard from '@/components/printers/PrinterTileCard.vue'
 import PrintingNowCard from '@/components/printers/PrintingNowCard.vue'
 import FoundPrinterCard from '@/components/printers/FoundPrinterCard.vue'
 import TonePill from '@/components/printers/TonePill.vue'
+import type { FoundChoice } from '@/components/common/AddInstanceDialog.vue'
 
 type Filter = 'all' | 'printing' | 'ready' | 'needs'
 type View = 'cards' | 'list'
@@ -888,6 +892,18 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
     const file = this.$store.state.printer.printer.current_file
     if (!file?.thumbnails?.length) return null
     return this.getThumbUrl(file, 'gcodes', file.path, true, file.modified) ?? null
+  }
+
+  /** What Add a printer offers in one tap: the printers found here that it can open. */
+  get foundChoices (): FoundChoice[] {
+    return this.page.found
+      .filter(t => t.entry.row?.action === 'open' && !!t.entry.host)
+      .map(t => ({ key: t.key, name: t.name, detail: t.entry.host ?? t.detail }))
+  }
+
+  onPickFound (key: string) {
+    const tile = this.page.found.find(t => t.key === key)
+    if (tile) this.openFoundEntry(tile.entry)
   }
 
   onFoundAction (e: DirectoryEntry, id: string) {

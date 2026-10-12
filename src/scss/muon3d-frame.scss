@@ -362,3 +362,66 @@
     display: none;
   }
 }
+
+// A text box in a dialog: a label above it, the box, a line under it.
+.m3-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.m3-field__label {
+  color: var(--m3d-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.m3-field__box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 14px;
+  border-radius: 14px;
+  background: var(--m3d-surface-2);
+  color: var(--m3d-text-muted);
+  cursor: text;
+  transition: box-shadow var(--m3d-duration-fast) var(--m3d-ease);
+
+  input {
+    flex: 1 1 0;
+    min-width: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--m3d-text);
+    font: inherit;
+    font-size: 15px;
+
+    &::placeholder {
+      color: var(--m3d-text-subtle);
+    }
+  }
+
+  &:focus-within {
+    box-shadow: inset 0 0 0 2px var(--m3d-accent);
+  }
+}
+
+.m3-field__box--ok:not(:focus-within) {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--m3d-success) 55%, transparent);
+}
+
+.m3-field__box--err:not(:focus-within) {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--m3d-danger) 55%, transparent);
+}
+
+.m3-field__box--mono input {
+  font-family: var(--m3d-font-mono);
+}
+
+// The box shows the focus; the glass style's ring on the text itself would be a second one.
+.v-application .m3-field .m3-field__box input:focus,
+.v-application .m3-field .m3-field__box input:focus-visible {
+  outline: none;
+}

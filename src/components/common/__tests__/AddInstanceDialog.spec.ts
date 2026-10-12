@@ -54,6 +54,9 @@ describe('AddInstanceDialog', () => {
     expect(url).toMatch(/^http:\/\/192\.168\.1\.50\/server\/info\?t=\d+$/)
     expect(JSON.stringify(config)).not.toContain('cloud-printer-token')
     expect((wrapper.vm as any).verified).toBe(true)
+    // It answered as Moonraker, not as a Muon printer: it can still be added, and the box says so.
+    expect((wrapper.vm as any).outcome).toBe('klipper')
+    expect((wrapper.vm as any).status.title).toBe("A printer answered, but it isn't a Muon printer")
     vi.unstubAllGlobals()
   })
 
@@ -76,7 +79,9 @@ describe('AddInstanceDialog', () => {
     expect(fetch).not.toHaveBeenCalled()
     expect(get).not.toHaveBeenCalled()
     expect((wrapper.vm as any).verified).toBe(true)
-    expect((wrapper.vm as any).note).toBe('app.endpoint.msg.found_printer')
+    expect((wrapper.vm as any).outcome).toBe('muon')
+    expect((wrapper.vm as any).status.title).toBe('Found Boxwood · 367A')
+    expect((wrapper.vm as any).addLabel).toBe('Add Boxwood · 367A')
     ;(wrapper.vm as any).addInstance()
     expect(wrapper.emitted('resolve')?.[0][0]).toMatchObject({
       name: 'Boxwood · 367A',
@@ -117,7 +122,77 @@ describe('AddInstanceDialog', () => {
 
     expect(fetch).not.toHaveBeenCalled()
     expect((wrapper.vm as any).verified).toBe(false)
-    expect((wrapper.vm as any).note).toBe('app.endpoint.error.cant_connect')
+    expect((wrapper.vm as any).verifying).toBe(false)
+    expect((wrapper.vm as any).outcome).toBe('unreachable')
+    expect((wrapper.vm as any).status.title).toBe('Nothing answered at 192.168.1.51')
+    ;(wrapper.vm as any).addInstance()
+    expect(wrapper.emitted('resolve')).toBeUndefined()
     vi.unstubAllGlobals()
+  })
+
+  it('says a Muon printer that wants a sign-in needs one, and still adds it', async () => {
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => {
+      if (url.endsWith('/server/muon/identity')) {
+        return new Response(JSON.stringify({ result: { display: 'Walnut · 8987' } }), { status: 200 })
+      }
+      if (url.includes('/printer/objects/query')) return new Response('', { status: 401 })
+      return new Response('{"result":{}}', { status: 200 })
+    }))
+    const wrapper = shallowMount(AddInstanceDialog, { mocks, propsData: { value: true } })
+
+    ;(wrapper.vm as any).url = '192.168.1.53'
+    await vi.advanceTimersByTimeAsync(750)
+
+    expect((wrapper.vm as any).outcome).toBe('locked')
+    expect((wrapper.vm as any).status.title).toBe('Walnut · 8987 wants you to sign in')
+    expect((wrapper.vm as any).verified).toBe(true)
+    vi.unstubAllGlobals()
+  })
+
+  it('says something that answers, but not as a printer, is not one', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('', { status: 404 })))
+    vi.spyOn(axios, 'get').mockRejectedValue(Object.assign(new Error('Request failed with status code 404'), {
+      isAxiosError: true,
+      request: {},
+      response: { status: 404 }
+    }))
+    const wrapper = shallowMount(AddInstanceDialog, { mocks, propsData: { value: true } })
+
+    ;(wrapper.vm as any).url = 'http://192.168.1.54'
+    await vi.advanceTimersByTimeAsync(750)
+
+    expect((wrapper.vm as any).outcome).toBe('not-printer')
+    expect((wrapper.vm as any).verifying).toBe(false)
+    expect((wrapper.vm as any).verified).toBe(false)
+    vi.unstubAllGlobals()
+  })
+
+  it('says an address that is not one is not, without asking the network', async () => {
+    const network = vi.fn()
+    vi.stubGlobal('fetch', network)
+    const wrapper = shallowMount(AddInstanceDialog, {
+      mocks: { ...mocks, $filters: { getApiUrls: () => { throw new Error('Invalid URL') } } },
+      propsData: { value: true }
+    })
+
+    ;(wrapper.vm as any).url = 'http://'
+    await vi.advanceTimersByTimeAsync(750)
+
+    expect((wrapper.vm as any).outcome).toBe('invalid')
+    expect(network).not.toHaveBeenCalled()
+    vi.unstubAllGlobals()
+  })
+
+  it('offers the printers found on this network, and one tap picks one', async () => {
+    const found = [{ key: 'lan:walnut', name: 'Walnut · 8987', detail: '192.168.1.44' }]
+    const wrapper = shallowMount(AddInstanceDialog, { mocks, propsData: { value: true, found }, stubs: { M3Dialog: { template: '<div><slot /><slot name="actions" /></div>' } } })
+
+    const choice = wrapper.find('[data-tid="add-printer-found-lan:walnut"]')
+    expect(choice.text()).toContain('Walnut · 8987')
+    expect(choice.text()).toContain('192.168.1.44')
+    await choice.trigger('click')
+
+    expect(wrapper.emitted('pick')).toEqual([['lan:walnut']])
+    expect(wrapper.emitted('input')).toEqual([[false]])
   })
 })
