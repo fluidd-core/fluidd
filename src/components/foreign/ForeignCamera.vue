@@ -3,8 +3,12 @@
     v-if="url && !failed"
     class="foreign-camera"
   >
+    <p v-if="cameraPlayer">
+      This camera publishes RTSP, which browsers cannot show. Open its URL in a camera player.
+      <a :href="url || undefined">{{ url }}</a>
+    </p>
     <video
-      v-if="video"
+      v-else-if="video"
       :src="url"
       autoplay
       muted
@@ -23,7 +27,13 @@
     v-else
     class="foreign-camera__empty"
   >
-    This printer doesn't publish a camera Fluidd can show.
+    <template v-if="url">
+      This camera didn't load.
+      <a :href="url">Open its camera URL</a>
+    </template>
+    <template v-else>
+      This printer doesn't publish a camera Fluidd can show.
+    </template>
   </p>
 </template>
 
@@ -36,6 +46,10 @@ export default class ForeignCamera extends Vue {
   readonly url!: string | null
 
   failed = false
+
+  get cameraPlayer () {
+    return /^rtsp:/i.test(this.url ?? '')
+  }
 
   get video () {
     return /\.(mp4|m3u8)(?:$|[?#])/i.test(this.url ?? '')
@@ -66,5 +80,12 @@ export default class ForeignCamera extends Vue {
 
 .foreign-camera__empty {
   color: var(--m3d-text-muted);
+}
+
+.foreign-camera a,
+.foreign-camera__empty a {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--m3d-accent);
 }
 </style>

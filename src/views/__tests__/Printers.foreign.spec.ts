@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
-import Vue from 'vue'
+import Vue, { type CreateElement } from 'vue'
 import VueRouter from 'vue-router'
 import type { ForeignPrinterRecord } from '@/services/foreign-printers/types'
 import store from '@/store'
@@ -43,14 +43,14 @@ describe('Printers foreign cards', () => {
       tone: 'off',
       entry: { key: `foreign:${record.id}`, name: record.name, foreign: { record, status: null } }
     }
-    const menuStub = Vue.extend({
-      render (h) {
+    const menuStub = {
+      render (this: Vue, h: CreateElement) {
         return h('div', [
           this.$scopedSlots.activator?.({ attrs: {}, on: {} }),
           ...(this.$slots.default ?? [])
         ])
       }
-    })
+    }
     const wrapper = shallowMount(Printers, {
       localVue,
       router,
@@ -63,11 +63,11 @@ describe('Printers foreign cards', () => {
       stubs: {
         'v-menu': menuStub,
         'v-list': { template: '<div><slot /></div>' },
-        'v-list-item': Vue.extend({
-          render (h) {
+        'v-list-item': {
+          render (this: Vue, h: CreateElement) {
             return h('button', { on: { click: (event: Event) => this.$emit('click', event) } }, this.$slots.default)
           }
-        }),
+        },
         'v-list-item-title': { template: '<span><slot /></span>' }
       }
     })

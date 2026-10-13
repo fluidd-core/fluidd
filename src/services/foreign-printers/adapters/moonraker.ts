@@ -1,5 +1,6 @@
 import type { AdapterDeps, ForeignCapabilities, ForeignCredentials, ForeignFile, ForeignPrinterRecord } from '../types'
 import { clampProgress, fetchJson, httpUrl, SocketAdapter, temp } from './base'
+import { localCameraUrl } from '../address'
 
 export const MOONRAKER_CAPABILITIES: ForeignCapabilities = {
   pauseResume: true,
@@ -22,6 +23,7 @@ export default class MoonrakerAdapter extends SocketAdapter {
   readonly kind = 'moonraker' as const
   readonly capabilities = MOONRAKER_CAPABILITIES
   private requestId = 1
+  private telemetry: Record<string, any> = {}
 
   constructor (
     private readonly record: ForeignPrinterRecord,
@@ -39,10 +41,17 @@ export default class MoonrakerAdapter extends SocketAdapter {
   }
 
   protected onOpen (socket: WebSocket) {
+    this.telemetry = {}
+    socket.send(JSON.stringify({
+      jsonrpc: '2.0',
+      method: 'server.connection.identify',
+      params: { client_name: 'Muon3D Fluidd', version: '1', type: 'web', url: 'https://github.com/Muon-3D/Muon3D_Fluidd', ...(this.credentials?.apiKey ? { api_key: this.credentials.apiKey } : {}) },
+      id: this.requestId++
+    }))
     socket.send(JSON.stringify({
       jsonrpc: '2.0',
       method: 'printer.objects.subscribe',
-      params: [OBJECTS],
+      params: { objects: OBJECTS },
       id: this.requestId++
     }))
   }
@@ -54,10 +63,21 @@ export default class MoonrakerAdapter extends SocketAdapter {
     } catch {
       return
     }
-    const payload = message?.params?.[0] ?? message?.result?.status ?? message?.result
+    if (message.error) {
+      this.setStatus({ state: 'error', message: String(message.error.message ?? 'Moonraker rejected the request') })
+      return
+    }
+    if (['notify_klippy_shutdown', 'notify_klippy_disconnected'].includes(message.method)) {
+      this.setStatus({ state: 'error', message: 'Klipper is unavailable. Check the printer’s own screen.' })
+      return
+    }
+    const payload = message.method === 'notify_status_update' ? message.params?.[0] : message.result?.status
     if (!payload || typeof payload !== 'object') return
-    const print = payload.print_stats ?? {}
-    const sd = payload.virtual_sdcard ?? {}
+    for (const name of Object.keys(OBJECTS)) {
+      if (payload[name] && typeof payload[name] === 'object') this.telemetry[name] = { ...this.telemetry[name], ...payload[name] }
+    }
+    const print = this.telemetry.print_stats ?? {}
+    const sd = this.telemetry.virtual_sdcard ?? {}
     const state = String(print.state ?? '').toLowerCase()
     const progress = clampProgress(sd.progress)
     const duration = typeof print.print_duration === 'number' ? print.print_duration : null
@@ -65,8 +85,8 @@ export default class MoonrakerAdapter extends SocketAdapter {
       ? Math.max(0, duration / progress - duration)
       : null
     const temps = [
-      temp('nozzle', payload.extruder?.temperature, payload.extruder?.target),
-      temp('bed', payload.heater_bed?.temperature, payload.heater_bed?.target)
+      temp('nozzle', this.telemetry.extruder?.temperature, this.telemetry.extruder?.target),
+      temp('bed', this.telemetry.heater_bed?.temperature, this.telemetry.heater_bed?.target)
     ].filter((item): item is NonNullable<typeof item> => item !== null)
     this.setStatus({
       state: state === 'printing' ? 'printing' : state === 'paused' ? 'paused' : state === 'error' ? 'error' : 'idle',
@@ -84,8 +104,7 @@ export default class MoonrakerAdapter extends SocketAdapter {
       const webcams = response?.result?.webcams ?? response?.webcams ?? []
       const camera = webcams.find((item: any) => item.enabled !== false && typeof item.stream_url === 'string')
       if (!camera) return
-      const url = new URL(camera.stream_url, `http://${this.record.host}`)
-      if (url.protocol === 'http:' || url.protocol === 'https:') this.setStatus({ cameraUrl: url.href })
+      this.setStatus({ cameraUrl: localCameraUrl(camera.stream_url, this.record.host) })
     } catch {}
   }
 

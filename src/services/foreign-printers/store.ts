@@ -1,4 +1,6 @@
 import type { ForeignCredentials, ForeignKind, ForeignPrinterRecord, FormFactor } from './types'
+import { localHost } from './address'
+import { v4 as uuidv4 } from 'uuid'
 
 const DB_NAME = 'muon3d-foreign-printers'
 const DB_VERSION = 1
@@ -43,9 +45,12 @@ async function encryptionKey (db: IDBDatabase): Promise<CryptoKey> {
   if (stored) return stored.key
   const key = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt'])
   const tx = db.transaction('keys', 'readwrite')
-  tx.objectStore('keys').put({ id: 'main', key } satisfies StoredKey)
+  const keys = tx.objectStore('keys')
+  // Another tab or save may have generated its key while Web Crypto was running.
+  const existing = await requestValue(keys.get('main')) as StoredKey | undefined
+  if (!existing) keys.put({ id: 'main', key } satisfies StoredKey)
   await transactionDone(tx)
-  return key
+  return existing?.key ?? key
 }
 
 function transactionDone (tx: IDBTransaction): Promise<void> {
@@ -69,10 +74,14 @@ export async function saveForeign (
   creds: ForeignCredentials | null,
   opts: { remember: boolean }
 ): Promise<ForeignPrinterRecord> {
+  const host = localHost(rec.host)
+  if (hasCredentials(creds) && opts.remember && !crypto.subtle) {
+    throw new Error('Remembering encrypted keys needs HTTPS. Leave Remember off to use this session.')
+  }
   const db = await openDatabase()
-  const id = rec.id ?? crypto.randomUUID()
-  const credentialsRef = hasCredentials(creds) ? crypto.randomUUID() : null
-  const record: ForeignPrinterRecord = { ...rec, id, addedAt: Date.now(), credentialsRef }
+  const id = rec.id ?? uuidv4()
+  const credentialsRef = hasCredentials(creds) ? uuidv4() : null
+  const record: ForeignPrinterRecord = { ...rec, host, id, addedAt: Date.now(), credentialsRef }
   if (credentialsRef && creds) {
     if (opts.remember) {
       const key = await encryptionKey(db)
@@ -85,9 +94,14 @@ export async function saveForeign (
       sessionStorage.setItem(`${SESSION_PREFIX}${credentialsRef}`, JSON.stringify(creds))
     }
   }
-  const tx = db.transaction('printers', 'readwrite')
-  tx.objectStore('printers').put(record)
+  const tx = db.transaction(['printers', 'secrets', 'keys'], 'readwrite')
+  const printers = tx.objectStore('printers')
+  const previous = await requestValue(printers.get(id)) as ForeignPrinterRecord | undefined
+  printers.put(record)
+  if (previous?.credentialsRef) tx.objectStore('secrets').delete(previous.credentialsRef)
+  if (!await requestValue(tx.objectStore('secrets').count())) tx.objectStore('keys').delete('main')
   await transactionDone(tx)
+  if (previous?.credentialsRef) sessionStorage.removeItem(`${SESSION_PREFIX}${previous.credentialsRef}`)
   return record
 }
 

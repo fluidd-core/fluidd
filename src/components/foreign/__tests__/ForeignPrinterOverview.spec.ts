@@ -36,6 +36,43 @@ afterEach(() => {
 })
 
 describe('ForeignPrinterOverview', () => {
+  it('stops the printer that was confirmed even if selection changes while the dialog is open', async () => {
+    const first = { stop: vi.fn(async () => {}) }
+    const second = { stop: vi.fn(async () => {}) }
+    let selected = first
+    let approve!: (answer: boolean) => void
+    const context = {
+      get adapter () { return selected },
+      $confirm: () => new Promise<boolean>(resolve => { approve = resolve }),
+      runAction: async (action: () => Promise<void>) => action()
+    }
+    const stopped = (ForeignPrinterOverview as any).options.methods.stop.call(context)
+    selected = second
+    approve(true)
+    await stopped
+    expect(first.stop).toHaveBeenCalledOnce()
+    expect(second.stop).not.toHaveBeenCalled()
+  })
+
+  it('forgets the confirmed printer even if another page opens during confirmation', async () => {
+    let selected = record
+    let approve!: (answer: boolean) => void
+    const push = vi.fn(async () => {})
+    const context = {
+      get record () { return selected },
+      $route: { params: { printer: foreignSlug(record) } },
+      $router: { push },
+      $confirm: () => new Promise<boolean>(resolve => { approve = resolve })
+    }
+    const forgotten = (ForeignPrinterOverview as any).options.methods.forgetPrinter.call(context)
+    selected = { ...record, id: 'other', name: 'Other' }
+    context.$route.params.printer = 'other-1234'
+    approve(true)
+    await forgotten
+    expect(live.forget).toHaveBeenCalledWith(record.id)
+    expect(push).not.toHaveBeenCalled()
+  })
+
   it('asks before forgetting a saved printer and removes it after confirmation', async () => {
     foreignRegistry.records.push(record)
     const confirm = vi.fn(async () => true)

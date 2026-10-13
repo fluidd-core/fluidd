@@ -1,5 +1,6 @@
 import type { AdapterDeps, ForeignCapabilities, ForeignPrinterRecord } from '../types'
 import { clampProgress, SocketAdapter, temp } from './base'
+import { localCameraUrl } from '../address'
 
 export const CREALITY_CAPABILITIES: ForeignCapabilities = {
   pauseResume: true,
@@ -26,7 +27,6 @@ export default class CrealityAdapter extends SocketAdapter {
 
   protected onOpen (socket: WebSocket) {
     socket.send(JSON.stringify({ method: 'get', params: { ReqPrinterPara: 1 } }))
-    this.setStatus({ cameraUrl: `http://${this.record.host.replace(/:\d+$/, '')}:8080/?action=stream` })
   }
 
   protected onMessage (data: string) {
@@ -45,6 +45,7 @@ export default class CrealityAdapter extends SocketAdapter {
     const error = Number(this.telemetry.err?.errcode ?? 0) !== 0
     const state = Number(this.telemetry.state)
     this.setStatus({
+      cameraUrl: localCameraUrl(this.telemetry.cameraUrl ?? this.telemetry.videoUrl, this.record.host),
       state: error ? 'error' : state === 5 ? 'paused' : state === 1 ? 'printing' : 'idle',
       message: error ? String(this.telemetry.err?.errinfo ?? 'Printer error') : null,
       file: this.telemetry.printFileName ?? null,

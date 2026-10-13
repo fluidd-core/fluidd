@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { createServer } from 'node:http'
 import { once } from 'node:events'
-import { WebSocketServer } from 'ws'
+import { WebSocket as NodeWebSocket, WebSocketServer } from 'ws'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { capabilitiesFor, createAdapter } from '../adapters'
 import type { ForeignKind, ForeignPrinterRecord, ForeignStatus } from '../types'
@@ -36,9 +36,12 @@ async function fakePrinter (kind: ForeignKind) {
       })
       response.setHeader('Content-Type', 'application/json')
       if (url.pathname === '/server/webcams/list') response.end(JSON.stringify({ result: { webcams: [] } }))
-      else if (url.pathname === '/api/login') response.end(JSON.stringify({ name: 'local', session: 'session' }))
-      else if (url.pathname === '/api/settings') response.end(JSON.stringify({ webcam: {} }))
-      else if (url.pathname === '/api/job') response.end(JSON.stringify({ job: { file: { name: 'part.gcode' } }, progress: {} }))
+      else if (url.pathname === '/api/login') {
+        const passive = request.method === 'POST' && JSON.parse(body || '{}').passive === true
+        response.statusCode = passive ? 200 : request.method === 'POST' ? 400 : 405
+        response.end(JSON.stringify(passive ? { name: 'local', session: 'session' } : {}))
+      } else if (url.pathname === '/api/settings') response.end(JSON.stringify({ webcam: {} }))
+      else if (request.method === 'POST' && url.pathname.startsWith('/api/')) { response.statusCode = 204; response.end() } else if (url.pathname === '/api/job') response.end(JSON.stringify({ job: { file: { name: 'part.gcode' } }, progress: {} }))
       else if (url.pathname === '/api/printer') response.end(JSON.stringify({ state: { text: 'Operational', flags: { ready: true } } }))
       else if (url.pathname === '/api/files/local') response.end(JSON.stringify({ files: [] }))
       else response.end(JSON.stringify({}))
@@ -77,7 +80,7 @@ async function fakePrinter (kind: ForeignKind) {
   if (!address || typeof address === 'string') throw new Error('Fake printer did not bind')
   port = address.port
 
-  class LocalWebSocket extends globalThis.WebSocket {
+  class LocalWebSocket extends NodeWebSocket {
     constructor (url: string | URL, protocols?: string | string[]) {
       const original = new URL(String(url))
       super(`ws://127.0.0.1:${port}${original.pathname}`, protocols)
@@ -92,6 +95,9 @@ async function fakePrinter (kind: ForeignKind) {
     sdcpRequests,
     heartbeatReplies,
     clients,
+    push (message: unknown) {
+      for (const client of clients) client.send(JSON.stringify(message))
+    },
     ackByCommand,
     get subprotocol () { return subprotocol },
     get echoRequestId () { return echoRequestId },
@@ -121,8 +127,8 @@ async function fakePrinter (kind: ForeignKind) {
                 MainboardID: 'mainboard-1',
                 Topic: 'sdcp/status/mainboard-1',
                 Status: {
-                  CurrentStatus: [state === 'error' ? 'Error' : 0],
-                  PrintInfo: { Status: state === 'printing' ? 13 : state === 'paused' ? 10 : 0 }
+                  CurrentStatus: [state === 'idle' ? 0 : 1],
+                  PrintInfo: { Status: state === 'printing' ? 13 : state === 'paused' ? 6 : state === 'error' ? 14 : 0 }
                 }
               }
       for (const client of clients) client.send(JSON.stringify(payload))
@@ -172,6 +178,160 @@ afterEach(async () => {
 })
 
 describe('foreign adapters against local HTTP and WebSocket printers', () => {
+  it('authenticates the OctoPrint push socket with an application key and passive login', async () => {
+    const fixture = await fakePrinter('octoprint')
+    const adapter = createAdapter(recordFor('octoprint', fixture.host), { apiKey: 'app-key' }, { fetch, WebSocket: fixture.WebSocket })
+    try {
+      await adapter.connect()
+      await waitFor(() => fixture.socketMessages.some(message => JSON.parse(message).auth === 'local:session'))
+      const login = fixture.requests.find(request => request.url === '/api/login')
+      expect(login).toMatchObject({ method: 'POST', apiKey: 'app-key' })
+      expect(JSON.parse(login!.body)).toEqual({ passive: true })
+      expect(fixture.requests.some(request => request.url === '/api/printer')).toBe(false)
+    } finally { adapter.close() }
+  })
+
+  it('keeps a published local RTSP camera URL for a camera player', async () => {
+    const fixture = await fakePrinter('elegoo-cc')
+    const adapter = createAdapter(recordFor('elegoo-cc', fixture.host), null, { fetch, WebSocket: fixture.WebSocket })
+    try {
+      await adapter.connect()
+      fixture.push({ Status: { CurrentStatus: [1], PrintInfo: { Status: 13 } }, VideoUrl: 'rtsp://192.168.1.25:8554/live' })
+      await waitFor(() => adapter.status.state === 'printing')
+      expect(adapter.status.cameraUrl).toBe('rtsp://192.168.1.25:8554/live')
+    } finally { adapter.close() }
+  })
+
+  it('can send SDCP controls from a plain HTTP origin without randomUUID', async () => {
+    const fixture = await fakePrinter('elegoo-cc')
+    const adapter = createAdapter(recordFor('elegoo-cc', fixture.host), null, { fetch, WebSocket: fixture.WebSocket })
+    try {
+      await adapter.connect()
+      vi.stubGlobal('crypto', { getRandomValues: crypto.getRandomValues.bind(crypto) })
+      await expect(Promise.resolve().then(() => adapter.pause())).resolves.toBeUndefined()
+    } finally { adapter.close(); vi.unstubAllGlobals() }
+  })
+
+  it('maps Centauri FDM checking, pause, completion, stop and numeric errors', async () => {
+    const fixture = await fakePrinter('elegoo-cc')
+    const adapter = createAdapter(recordFor('elegoo-cc', fixture.host), null, { fetch, WebSocket: fixture.WebSocket })
+    try {
+      await adapter.connect()
+      for (const [code, want] of [[10, 'printing'], [6, 'paused'], [9, 'idle'], [8, 'idle'], [14, 'error']] as const) {
+        fixture.push({ MainboardID: 'mainboard-1', Status: { CurrentStatus: [1], PrintInfo: { Status: code, CurrentTicks: 100, TotalTicks: 400 } } })
+        await waitFor(() => adapter.status.state === want)
+        expect(adapter.status.timeLeft).toBe(300)
+      }
+      fixture.push({ Status: { CurrentStatus: [0], PrintInfo: { Status: 13 } } })
+      await waitFor(() => adapter.status.state === 'idle')
+    } finally { adapter.close() }
+  })
+
+  it('rejects public direct records before opening a connection', () => {
+    expect(() => createAdapter(recordFor('octoprint', 'printer.example.com'), { apiKey: 'local-key' }, {
+      fetch, WebSocket: NodeWebSocket as unknown as typeof globalThis.WebSocket
+    })).toThrow(/local network/)
+  })
+
+  it('uses the newest OctoPrint temperature sample and retains it between samples', async () => {
+    const fixture = await fakePrinter('octoprint')
+    const adapter = createAdapter(recordFor('octoprint', fixture.host), null, { fetch, WebSocket: fixture.WebSocket })
+    try {
+      await adapter.connect()
+      fixture.push({
+        current: {
+          state: { flags: { printing: true } },
+          progress: { completion: 60 },
+          temps: [
+            { tool0: { actual: 199, target: 210 }, bed: { actual: 50, target: 60 } },
+            { tool0: { actual: 209, target: 210 }, bed: { actual: 59, target: 60 } }
+          ]
+        }
+      })
+      await waitFor(() => adapter.status.state === 'printing')
+      const expected = [{ id: 'nozzle', actual: 209, target: 210 }, { id: 'bed', actual: 59, target: 60 }]
+      expect(adapter.status.temps).toEqual(expected)
+      fixture.push({ current: { state: { flags: { printing: true } }, progress: { completion: 61 }, temps: [] } })
+      await waitFor(() => adapter.status.progress === 0.61)
+      expect(adapter.status.temps).toEqual(expected)
+    } finally { adapter.close() }
+  })
+
+  it('does not invent a Creality camera and ignores a public camera URL', async () => {
+    const fixture = await fakePrinter('creality')
+    const adapter = createAdapter(recordFor('creality', fixture.host), null, { fetch, WebSocket: fixture.WebSocket })
+    try {
+      await adapter.connect()
+      expect(adapter.status.cameraUrl).toBeNull()
+      fixture.push({ cameraUrl: 'https://camera.example/stream', state: 1 })
+      await waitFor(() => adapter.status.state === 'printing')
+      expect(adapter.status.cameraUrl).toBeNull()
+      fixture.push({ cameraUrl: 'http://192.168.1.9:8080/stream' })
+      await waitFor(() => adapter.status.cameraUrl !== null)
+      expect(adapter.status.cameraUrl).toBe('http://192.168.1.9:8080/stream')
+    } finally { adapter.close() }
+  })
+
+  it('preserves Moonraker state and targets across incremental temperature and progress updates', async () => {
+    const fixture = await fakePrinter('moonraker')
+    const adapter = createAdapter(recordFor('moonraker', fixture.host), { apiKey: 'local-key' }, { fetch, WebSocket: fixture.WebSocket })
+    try {
+      await adapter.connect()
+      fixture.push({
+        result: {
+          status: {
+            print_stats: { state: 'printing', filename: 'part.gcode', print_duration: 100 },
+            virtual_sdcard: { progress: 0.25 },
+            extruder: { temperature: 210, target: 215 },
+            heater_bed: { temperature: 59, target: 60 }
+          }
+        }
+      })
+      await waitFor(() => adapter.status.state === 'printing')
+      fixture.push({ method: 'notify_status_update', params: [{ extruder: { temperature: 212 }, virtual_sdcard: { progress: 0.5 } }, 20] })
+      await waitFor(() => adapter.status.progress === 0.5)
+      expect(adapter.status).toMatchObject({
+        state: 'printing',
+        file: 'part.gcode',
+        timeLeft: 100,
+        temps: [{ id: 'nozzle', actual: 212, target: 215 }, { id: 'bed', actual: 59, target: 60 }]
+      })
+      fixture.push({ method: 'notify_gcode_response', params: ['ok'] })
+      await new Promise(resolve => setTimeout(resolve, 20))
+      expect(adapter.status.state).toBe('printing')
+      await waitFor(() => fixture.socketMessages.length >= 2)
+      expect(JSON.parse(fixture.socketMessages[0])).toMatchObject({ method: 'server.connection.identify', params: { api_key: 'local-key' } })
+      expect(JSON.parse(fixture.socketMessages[1])).toMatchObject({ method: 'printer.objects.subscribe', params: { objects: { print_stats: null } } })
+    } finally { adapter.close() }
+  })
+
+  it('reports Moonraker shutdown and subscription errors instead of Ready', async () => {
+    const fixture = await fakePrinter('moonraker')
+    const adapter = createAdapter(recordFor('moonraker', fixture.host), null, { fetch, WebSocket: fixture.WebSocket })
+    try {
+      await adapter.connect()
+      fixture.push({ method: 'notify_klippy_shutdown' })
+      await waitFor(() => adapter.status.state === 'error')
+      fixture.push({ error: { code: 401, message: 'Unauthorized' }, id: 2 })
+      await waitFor(() => adapter.status.message === 'Unauthorized')
+      expect(adapter.status.state).toBe('error')
+    } finally { adapter.close() }
+  })
+
+  it('reads the camera and keeps REST status when the OctoPrint push socket is blocked', async () => {
+    const fixture = await fakePrinter('octoprint')
+    class BlockedWebSocket { constructor () { throw new Error('Mixed content') } }
+    const adapter = createAdapter(recordFor('octoprint', fixture.host), { apiKey: 'local-key' }, {
+      fetch, WebSocket: BlockedWebSocket as unknown as typeof WebSocket
+    })
+    try {
+      await adapter.connect()
+      expect(adapter.status).toMatchObject({ state: 'idle', file: 'part.gcode' })
+      await waitFor(() => fixture.requests.some(request => request.url === '/api/settings'))
+      await expect(adapter.stop()).resolves.toBeUndefined()
+    } finally { adapter.close() }
+  })
+
   it.each(kinds)('%s maps printing, paused, idle and error states, then goes offline on close', async kind => {
     const fixture = await fakePrinter(kind)
     const adapter = createAdapter(recordFor(kind, fixture.host), null, {
@@ -227,7 +387,7 @@ describe('foreign adapters against local HTTP and WebSocket printers', () => {
       await adapter.pause()
       await adapter.resume()
       await adapter.stop()
-      expect(fixture.requests.filter(request => request.method === 'POST')).toEqual([
+      expect(fixture.requests.filter(request => request.method === 'POST' && request.url === '/api/job')).toEqual([
         expect.objectContaining({ url: '/api/job', body: '{"command":"pause","action":"pause"}', apiKey: 'local-key' }),
         expect.objectContaining({ url: '/api/job', body: '{"command":"pause","action":"resume"}', apiKey: 'local-key' }),
         expect.objectContaining({ url: '/api/job', body: '{"command":"cancel"}', apiKey: 'local-key' })
@@ -331,6 +491,8 @@ describe('foreign adapters against local HTTP and WebSocket printers', () => {
   })
 
   it('does not create direct adapters for bridge-only brands', () => {
-    expect(() => createAdapter(recordFor('bambu', '192.168.1.9'), null)).toThrow('requires an M1 bridge')
+    expect(() => createAdapter(recordFor('bambu', '192.168.1.9'), null, {
+      fetch, WebSocket: NodeWebSocket as unknown as typeof globalThis.WebSocket
+    })).toThrow('requires an M1 bridge')
   })
 })

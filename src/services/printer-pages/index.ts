@@ -21,7 +21,7 @@ import { httpClientActions } from '@/api/httpClientActions'
 import { cloudState } from '@/services/muon-cloud/state'
 import { isManagedApiUrl } from '@/services/muon-cloud/origin'
 import { mdnsHostFor } from '@/services/muon-cloud/discovery'
-import { setActiveSlugSource } from '@/router/printerSlugSource'
+import { setActiveSlugSource, setForeignSlugSource } from '@/router/printerSlugSource'
 import { foreignRegistry, foreignSlug } from '@/services/foreign-printers/registry'
 import type { ForeignPrinterRecord } from '@/services/foreign-printers/types'
 import {
@@ -300,6 +300,7 @@ export async function openPrinterAt (slug: string): Promise<boolean> {
 export function installPrinterPages (router: VueRouter, how: PrinterOpeners): void {
   openers = how
   setActiveSlugSource(activeSlug)
+  setForeignSlugSource(isForeignSlug)
 
   router.afterEach((to) => {
     const slug = to.params.printer

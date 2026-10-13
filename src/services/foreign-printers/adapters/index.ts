@@ -4,6 +4,7 @@ import MoonrakerAdapter, { MOONRAKER_CAPABILITIES } from './moonraker'
 import OctoPrintAdapter, { OCTOPRINT_CAPABILITIES } from './octoprint'
 import CrealityAdapter, { CREALITY_CAPABILITIES } from './creality'
 import ElegooCentauriAdapter, { ELEGOO_CC_CAPABILITIES } from './elegoo-cc'
+import { localHost } from '../address'
 
 export function capabilitiesFor (kind: DirectKind): ForeignCapabilities {
   switch (kind) {
@@ -19,6 +20,7 @@ export function createAdapter (
   creds: ForeignCredentials | null,
   deps: AdapterDeps = defaultAdapterDeps()
 ): ForeignAdapter {
+  localHost(record.host)
   switch (record.kind) {
     case 'moonraker': return new MoonrakerAdapter(record, creds, deps)
     case 'octoprint': return new OctoPrintAdapter(record, creds, deps)

@@ -1,5 +1,7 @@
 <template>
+  <foreign-printer-slice v-if="foreignPrinter" />
   <div
+    v-else
     class="slice-view"
     :class="{ 'slice-view--part': partOfPage }"
     data-test="slice-view"
@@ -61,6 +63,8 @@ import { configuredSlicerUrl, probeSlicer, slicerPresence, type SlicerPresence }
 import { isBoundToPrinterTransport } from '@/services/managed-session/httpTransportBinding'
 import type { ConfirmAnswer, ConfirmRequest } from '@/services/slicer-bridge/vendor/printer-client/bridge/host'
 import { printerError } from '@/services/slicer-bridge/vendor/printer-client/errors/kinds'
+import { isForeignSlug } from '@/services/printer-pages'
+import ForeignPrinterSlice from '@/components/foreign/ForeignPrinterSlice.vue'
 
 interface OpenDialog {
   request: ConfirmRequest;
@@ -97,7 +101,8 @@ export const CROSS_ORIGIN_SANDBOX = 'allow-scripts allow-same-origin allow-forms
  */
 @Component({
   components: {
-    PrintConfirmDialog
+    PrintConfirmDialog,
+    ForeignPrinterSlice
   }
 })
 export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
@@ -119,6 +124,10 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
   dirty = false
   closed = false
   stopWatching: (() => void) | null = null
+
+  get foreignPrinter (): boolean {
+    return isForeignSlug(this.$route?.params.printer)
+  }
 
   get url (): URL | null {
     return configuredSlicerUrl()
@@ -184,6 +193,7 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
   }
 
   async mounted () {
+    if (this.foreignPrinter) return
     window.addEventListener('beforeunload', this.handleBeforeUnload)
     if (!await probeSlicer(this.url)) return
     await this.$nextTick()
@@ -193,7 +203,7 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
   startHost () {
     const url = this.url
     const frame = this.$refs.frame as HTMLIFrameElement | undefined
-    if (!url || !frame || this.host || this.closed) return
+    if (this.foreignPrinter || !url || !frame || this.host || this.closed) return
     this.host = startSlicerHost({
       frame,
       slicerUrl: url,

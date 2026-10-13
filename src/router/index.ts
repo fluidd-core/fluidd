@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter, { type RouteConfig, type Route } from 'vue-router'
 import { applyLegacyHash } from './legacyHash'
-import { activeSlugNow } from './printerSlugSource'
+import { activeSlugNow, foreignSlugNow } from './printerSlugSource'
 import { PRINTER_PAGE_PATHS } from './printerPagePaths'
 import { ROUTE_SLUG_PATTERN } from '@/services/printer-pages/slug'
 import Overview from '@/components/foreign/OverviewRoute.vue'
@@ -40,6 +40,8 @@ const printerHome = () => {
 
 const defaultRouteConfig: Partial<RouteConfig> = {
   beforeEnter: (to, from, next) => {
+    const foreignRedirect = foreignPageRedirect(to)
+    if (foreignRedirect) return next(foreignRedirect)
     // A page for another printer opens that printer (services/printer-pages):
     // whether it wants a password is that printer's to say, not this one's.
     if (to.params.printer && to.params.printer !== activeSlugNow()) {
@@ -53,6 +55,12 @@ const defaultRouteConfig: Partial<RouteConfig> = {
   meta: {
     fileDropRoot: 'gcodes'
   }
+}
+
+function foreignPageRedirect (to: Route): string | null {
+  return foreignSlugNow(to.params.printer) && !['Dashboard', 'Jobs', 'Slice', 'Camera'].includes(String(to.name))
+    ? `/${to.params.printer}`
+    : null
 }
 
 /** One printer's pages: /boxwood-367a, /boxwood-367a/jobs (U1). */
@@ -145,7 +153,7 @@ const printerRoutes: Array<RouteConfig> = [
     // fileDropRoot: a model dropped here is the slicer's, not an upload.
     path: `${P}/slice`,
     name: 'Slice',
-    component: () => import('@/views/Slice.vue'),
+    component: () => import('@/components/foreign/SliceRoute.vue'),
     beforeEnter: defaultRouteConfig.beforeEnter,
     meta: {
       printerIndependent: true,
@@ -340,6 +348,8 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  const foreignRedirect = foreignPageRedirect(to)
+  if (foreignRedirect) return next(foreignRedirect)
   router.app?.$store.commit('config/setContainerColumnCount', 2)
   next()
 })

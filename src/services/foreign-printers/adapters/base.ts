@@ -38,6 +38,7 @@ export async function fetchJson (
   try {
     const response = await deps.fetch(url, { ...init, headers, signal: controller.signal, cache: 'no-store' })
     if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    if (response.status === 204) return null
     return await response.json()
   } finally {
     clearTimeout(timer)

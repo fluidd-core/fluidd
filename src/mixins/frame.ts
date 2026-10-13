@@ -23,6 +23,9 @@ export default class FrameMixin extends Mixins(StateMixin) {
   }
 
   get sectionContext (): SectionContext {
+    if (isForeignSlug(this.$route.params.printer)) {
+      return { pro: false, slicer: false, camera: null, history: false, timelapse: false, diagnostics: false, foreign: true }
+    }
     const cameras = this.$store.getters['webcams/getVisibleWebcams'] as WebcamConfig[]
     return {
       pro: proMode.on,

@@ -16,6 +16,56 @@ const mocks = {
 }
 
 describe('AddInstanceDialog', () => {
+  it('routes a non-Muon Klipper printer into separate setup rather than an M1 instance', () => {
+    const wrapper = shallowMount(AddInstanceDialog, { mocks, propsData: { value: true } })
+    const vm = wrapper.vm as any
+    vm.url = 'http://192.168.1.50'
+    vm.outcome = 'klipper'
+    vm.verified = true
+    vm.addInstance()
+    expect(wrapper.emitted('resolve')).toBeUndefined()
+    expect(vm.selectedKind).toBe('moonraker')
+    expect(vm.foreignHost).toBe('192.168.1.50')
+    expect(vm.foreignVerified).toBe(false)
+    wrapper.destroy()
+  })
+
+  it('ignores a successful probe after the address was edited', async () => {
+    let answer!: (response: Response) => void
+    vi.stubGlobal('fetch', vi.fn(() => new Promise<Response>(resolve => { answer = resolve })))
+    const wrapper = shallowMount(AddInstanceDialog, { mocks, propsData: { value: true } })
+    const vm = wrapper.vm as any
+    vm.selectBrand('octoprint')
+    vm.foreignHost = '192.168.1.10'
+    await wrapper.vm.$nextTick()
+    const probe = vm.probeForeign()
+    vm.foreignHost = '192.168.1.11'
+    await wrapper.vm.$nextTick()
+    answer(new Response('{"api":"0.1","server":"1.11.3"}'))
+    await probe
+    expect(vm.foreignVerified).toBe(false)
+    expect(vm.foreignHost).toBe('192.168.1.11')
+    wrapper.destroy()
+    vi.unstubAllGlobals()
+  })
+
+  it('invalidates a direct printer probe when the address or key changes', async () => {
+    const wrapper = shallowMount(AddInstanceDialog, { mocks, propsData: { value: true } })
+    const vm = wrapper.vm as any
+    vm.selectBrand('octoprint')
+    vm.foreignHost = '192.168.1.10'
+    await wrapper.vm.$nextTick()
+    vm.foreignVerified = true
+    vm.foreignHost = '192.168.1.11'
+    await wrapper.vm.$nextTick()
+    expect(vm.foreignVerified).toBe(false)
+    vm.foreignVerified = true
+    vm.apiKey = 'changed'
+    await wrapper.vm.$nextTick()
+    expect(vm.foreignVerified).toBe(false)
+    wrapper.destroy()
+  })
+
   let fetch: Mock<Parameters<PrinterTransport['fetch']>, ReturnType<PrinterTransport['fetch']>>
   let release: () => void
 

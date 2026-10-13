@@ -168,6 +168,9 @@
       <p class="m3-dlg__text">
         {{ selectedBrand.label }} stays on this network and in this browser.
       </p>
+      <p class="m3-dlg__note">
+        In Chrome on a computer or Android, allow local network access when asked.
+      </p>
       <label class="m3-field">
         <span class="m3-dlg__note">Printer address</span>
         <input
@@ -208,7 +211,7 @@
         v-if="selectedKind === 'moonraker' || selectedKind === 'octoprint'"
         class="m3-field"
       >
-        <span class="m3-dlg__note">{{ selectedKind === 'octoprint' ? 'API key' : 'API key (optional)' }}</span>
+        <span class="m3-dlg__note">{{ selectedKind === 'octoprint' ? 'Application key' : 'API key (optional)' }}</span>
         <input
           v-model="apiKey"
           class="aid__input"
@@ -229,13 +232,23 @@
         </button>
         <span>{{ appKeyMessage }}</span>
       </div>
-      <label class="aid__remember">
+      <label
+        v-if="selectedKind === 'moonraker' || selectedKind === 'octoprint'"
+        class="aid__remember"
+      >
         <input
           v-model="rememberCredentials"
+          :disabled="!canRememberCredentials"
           type="checkbox"
         >
         Remember on this device
       </label>
+      <p
+        v-if="!canRememberCredentials && (selectedKind === 'moonraker' || selectedKind === 'octoprint')"
+        class="m3-dlg__note"
+      >
+        To remember this key, open Fluidd over HTTPS in Chrome. Here, it lasts for this session.
+      </p>
       <p
         v-if="probeMessage"
         class="m3-dlg__note"
@@ -326,6 +339,8 @@ import { FOREIGN_BRANDS, foreignBrand } from '@/services/foreign-printers/brands
 import type { ForeignKind, FormFactor } from '@/services/foreign-printers/types'
 import { lanFetch } from '@/services/muon-cloud/discovery'
 import { blocksForeignHttp } from '@/util/browser-family'
+import { localHost } from '@/services/foreign-printers/address'
+import { v4 as uuidv4 } from 'uuid'
 
 /** A printer found on this network that isn't saved yet: one tap adds it. */
 export interface FoundChoice {
@@ -409,11 +424,22 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   }
 
   get currentOrigin () { return location.origin }
+  get canRememberCredentials () { return !!crypto.subtle }
+
+  @Watch('foreignHost')
+  @Watch('apiKey')
+  invalidateForeignProbe () {
+    this.foreignVerified = false
+    this.probeMessage = ''
+  }
 
   selectBrand (kind: ForeignKind | 'm1') {
     this.selectedKind = kind
     this.foreignVerified = false
     this.probeMessage = ''
+    this.apiKey = ''
+    this.rememberCredentials = false
+    this.appKeyMessage = ''
     if (kind !== 'm1') {
       const brand = foreignBrand(kind)
       this.foreignModel = brand.model ?? ''
@@ -427,28 +453,35 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
     this.probing = true
     this.foreignVerified = false
     this.probeMessage = ''
-    const host = this.foreignHost.trim().replace(/^https?:\/\//i, '').replace(/\/.*$/, '')
+    const address = this.foreignHost.trim()
+    const kind = this.selectedKind
+    const key = this.apiKey
+    const current = () => this.selectedKind === kind && this.foreignHost.trim() === address && this.apiKey === key
     const timeout = (promise: Promise<any>) => Promise.race([
       promise,
       new Promise((_resolve, reject) => setTimeout(() => reject(new Error('Check timed out')), 5000))
     ])
     try {
-      if (this.selectedKind === 'moonraker') {
-        const response = await timeout(lanFetch(`http://${host}/server/info`, { cache: 'no-store' }))
+      const host = localHost(address)
+      if (kind === 'moonraker') {
+        const headers = key ? { 'X-Api-Key': key } : undefined
+        const response = await timeout(lanFetch(`http://${host}/server/info`, { headers, cache: 'no-store', redirect: 'error' }))
         if (!response.ok) throw new Error(`HTTP ${response.status}`)
         await response.json()
-      } else if (this.selectedKind === 'octoprint') {
-        const headers = this.apiKey ? { 'X-Api-Key': this.apiKey } : undefined
-        const response = await timeout(lanFetch(`http://${host}/api/version`, { headers, cache: 'no-store' }))
+      } else if (kind === 'octoprint') {
+        const headers = key ? { 'X-Api-Key': key } : undefined
+        const response = await timeout(lanFetch(`http://${host}/api/version`, { headers, cache: 'no-store', redirect: 'error' }))
         if (!response.ok) throw new Error(`HTTP ${response.status}`)
         await response.json()
       } else {
         await timeout(new Promise<void>((resolve, reject) => {
-          const creality = this.selectedKind === 'creality'
-          const socket = new WebSocket(creality ? `ws://${host}:9999` : `ws://${host}:3030/websocket`, creality ? 'wsslicer' : undefined)
+          const creality = kind === 'creality'
+          const hostname = new URL(`http://${host}`).hostname
+          const socket = new WebSocket(creality ? `ws://${hostname}:9999` : `ws://${hostname}:3030/websocket`, creality ? 'wsslicer' : undefined)
           const timer = setTimeout(() => { socket.close(); reject(new Error('Check timed out')) }, 5000)
           socket.onopen = () => {
-            if (!creality) socket.send(JSON.stringify({ Id: '', Data: { Cmd: 1, Data: {}, RequestID: crypto.randomUUID().replace(/-/g, ''), MainboardID: '', TimeStamp: Math.floor(Date.now() / 1000), From: 1 }, Topic: 'sdcp/request/' }))
+            if (creality) socket.send(JSON.stringify({ method: 'get', params: { ReqPrinterPara: 1 } }))
+            else socket.send(JSON.stringify({ Id: '', Data: { Cmd: 1, Data: {}, RequestID: uuidv4().replace(/-/g, ''), MainboardID: '', TimeStamp: Math.floor(Date.now() / 1000), From: 1 }, Topic: 'sdcp/request/' }))
           }
           socket.onmessage = event => {
             if (!creality) {
@@ -458,25 +491,27 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
             socket.close()
             resolve()
           }
-          socket.onerror = () => { clearTimeout(timer); reject(new Error('Could not reach the printer')) }
+          socket.onerror = () => { clearTimeout(timer); socket.close(); reject(new Error('Could not reach the printer')) }
         }))
       }
-      this.foreignHost = host
+      if (!current()) return
       this.foreignVerified = true
       this.probeMessage = 'Printer found.'
     } catch (error) {
-      this.probeMessage = error instanceof Error ? error.message : 'Could not reach the printer.'
+      if (current()) this.probeMessage = error instanceof Error ? error.message : 'Could not reach the printer.'
     } finally {
       this.probing = false
     }
   }
 
   async askOctoPrintForKey () {
-    const host = this.foreignHost.trim().replace(/^https?:\/\//i, '').replace(/\/.*$/, '')
+    const address = this.foreignHost.trim()
     try {
+      const host = localHost(address)
       const key = await requestOctoPrintKey(host, { fetch: lanFetch }, {
         onPending: () => { this.appKeyMessage = 'Approve in OctoPrint.' }
       })
+      if (this.selectedKind !== 'octoprint' || this.foreignHost.trim() !== address) return
       if (key === null) {
         this.appKeyMessage = 'App keys are not available here. Enter an API key above.'
         return
@@ -567,7 +602,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
       case 'locked':
         return { title: `${name ?? 'This printer'} wants you to sign in`, detail: 'Add it, then sign in on its page.' }
       case 'klipper':
-        return { title: "A printer answered, but it isn't a Muon printer", detail: "You can still add it. The parts of this page made for Muon printers won't work with it." }
+        return { title: "A printer answered, but it isn't a Muon printer", detail: 'Set it up as Klipper to keep it in Other printers, with its own controls.' }
       case 'cors':
         return { title: "It answered, but won't let this page in", html: this.note ?? undefined }
       case 'blocked':
@@ -585,6 +620,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   }
 
   get addLabel (): string {
+    if (this.outcome === 'klipper') return 'Set up as Klipper'
     if ((this.outcome === 'muon' || this.outcome === 'locked') && this.resolved) return `Add ${this.resolved.name}`
     return 'Add printer'
   }
@@ -762,6 +798,11 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   addInstance () {
     if (!this.verified) return
     const apiConfig = this.resolved ? instanceFor(this.resolved) : this.$filters.getApiUrls(this.url)
+    if (this.outcome === 'klipper') {
+      this.selectBrand('moonraker')
+      this.foreignHost = new URL(apiConfig.apiUrl).host
+      return
+    }
     this.open = false
     this.$emit('resolve', apiConfig)
   }

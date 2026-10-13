@@ -1,15 +1,17 @@
 <template>
-  <component :is="isForeign ? 'foreign-overview' : 'overview'" />
+  <component
+    :is="isForeign ? 'foreign-overview' : 'overview'"
+    :key="isForeign ? $route.params.printer : undefined"
+  />
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import Overview from '@/views/Overview.vue'
 import { isForeignSlug } from '@/services/printer-pages'
 
 @Component({
   components: {
-    Overview,
+    Overview: () => import('@/views/Overview.vue'),
     ForeignOverview: () => import('./ForeignPrinterOverview.vue')
   }
 })

@@ -80,17 +80,19 @@
       />
 
       <template v-if="!managedConsoleRoute">
+        <keyboard-shortcuts-dialog />
+        <command-bar />
+      </template>
+      <template v-if="!managedConsoleRoute && !foreignPrinterRoute">
         <file-system-download-dialog />
         <updating-dialog />
         <spool-selection-dialog />
         <action-command-prompt-dialog />
-        <keyboard-shortcuts-dialog />
-        <command-bar />
         <job-ready-dialog />
       </template>
     </v-main>
 
-    <app-footer v-if="!managedConsoleRoute" />
+    <app-footer v-if="!managedConsoleRoute && !foreignPrinterRoute" />
 
     <app-drag-overlay
       v-if="!managedConsoleRoute"
@@ -275,6 +277,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
 
   /** The bar over every page while the printer installs an update, but on the Updating page itself. */
   get showUpdateBanner (): boolean {
+    if (this.foreignPrinterRoute) return false
     const r = updateWatch.remembered
     return !!r && ACTIVE_PHASES.includes(r.phase) && this.printerFrame && this.socketConnected &&
       this.$route.name !== 'Updating' && updateWatch.printer === (activeSlug() ?? '')
@@ -284,7 +287,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   /** Opening a printer's overview, the live M1 is built while the printer connects, not after. */
   @Watch('$route.name', { immediate: true })
   onRouteName (name: string | null | undefined) {
-    if (name === 'Dashboard') prebuildLiveM1()
+    if (name === 'Dashboard' && !this.foreignPrinterRoute) prebuildLiveM1()
   }
 
   @Watch('$store.state.config.apiUrl')
@@ -351,6 +354,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   }
 
   get fileDropRoot () {
+    if (this.foreignPrinterRoute) return false
     return this.$route.meta?.fileDropRoot
   }
 
@@ -633,6 +637,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     const shortcut = keyboardEventToKeyboardShortcut(event)
 
     if (shortcut === 'Ctrl+Shift+E') {
+      if (this.foreignPrinterRoute) return
       event.preventDefault()
 
       this.emergencyStop()
@@ -652,7 +657,8 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
       // The same page of the printer before or after this one.
       case '[':
       case ']': {
-        const next = this.printerFrame ? stepPrinter(activeSlug(), shortcut === ']' ? 1 : -1) : null
+        const current = this.foreignPrinterRoute ? this.$route.params.printer : activeSlug()
+        const next = this.printerFrame ? stepPrinter(current, shortcut === ']' ? 1 : -1) : null
         if (next) {
           event.preventDefault()
           this.$router.push(samePageFor(this.$route, next)).catch(() => {})
@@ -666,7 +672,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
         return
 
       case 'u':
-        if (this.printerFrame && this.socketConnected) {
+        if (!this.foreignPrinterRoute && this.printerFrame && this.socketConnected) {
           event.preventDefault()
           EventBus.bus.$emit('upload-file')
         }
@@ -680,7 +686,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
         return
     }
 
-    if (!this.klippyReady) {
+    if (this.foreignPrinterRoute || !this.klippyReady) {
       return
     }
 
@@ -728,11 +734,11 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     let to: string | null = null
     if (step.key === ALL_PRINTERS_KEY) {
       to = '/'
-    } else if (activeSlug()) {
+    } else if (activeSlug() || this.foreignPrinterRoute) {
       const section = sectionForKey(step.key, this.sectionContext)
       const page = PAGE_KEYS.find(p => p.key === step.key)
       if (section) to = this.sectionTo(section)
-      else if (page) to = `${scopedPath(page.path, activeSlug())}${page.hash ?? ''}`
+      else if (page && !this.foreignPrinterRoute) to = `${scopedPath(page.path, activeSlug())}${page.hash ?? ''}`
     }
     if (to && to !== this.$route.fullPath) this.$router.push(to).catch(() => {})
     return true

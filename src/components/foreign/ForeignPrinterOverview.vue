@@ -6,12 +6,21 @@
     <p class="foreign-muted">
       {{ record.model || brand.label }} · {{ record.host }}
     </p>
+    <p
+      v-if="mixedContentBlocked"
+      class="foreign-muted"
+    >
+      Firefox and Safari block this HTTPS page from reaching a printer over plain HTTP or WebSocket: mixed content. Open Fluidd in Chrome on a computer or Android and allow local network access.
+    </p>
     <foreign-camera
       :url="status.cameraUrl"
       @failed="cameraFailed = $event"
     />
     <section class="foreign-card">
       <h2>{{ stateLabel(status.state) }}</h2>
+      <p v-if="status.message && status.message !== stateLabel(status.state)">
+        {{ status.message }}
+      </p>
       <p v-if="status.file">
         {{ status.file }}
       </p>
@@ -91,6 +100,8 @@ import { FOREIGN_STATE_LABELS, type DirectKind, type ForeignCapabilities, type F
 import { capabilitiesFor } from '@/services/foreign-printers/adapters'
 import { shortDuration } from '@/util/short-duration'
 import ForeignCamera from './ForeignCamera.vue'
+import { blocksForeignHttp } from '@/util/browser-family'
+import { pageBlocksPrinter } from '@/util/page-blocks-printer'
 
 @Component({ components: { ForeignCamera } })
 export default class ForeignPrinterOverview extends Mixins(StateMixin) {
@@ -99,6 +110,7 @@ export default class ForeignPrinterOverview extends Mixins(StateMixin) {
   get record () { return foreignRecordForSlug(this.$route.params.printer) }
   get status (): ForeignStatus { return this.record ? liveForeign.status[this.record.id] ?? emptyStatus() : emptyStatus() }
   get adapter () { return this.record ? adapterFor(this.record.id) : undefined }
+  get mixedContentBlocked () { return this.record?.via === 'direct' && blocksForeignHttp() && pageBlocksPrinter(`http://${this.record.host}`) }
   get brand () { return this.record ? foreignBrand(this.record.kind) : { label: '' } }
   get directCapabilities (): ForeignCapabilities | null {
     return this.record?.via === 'direct' ? capabilitiesFor(this.record.kind as DirectKind) : null
@@ -123,7 +135,8 @@ export default class ForeignPrinterOverview extends Mixins(StateMixin) {
       { label: 'See temperatures', supported: true },
       { label: 'Pause and resume', supported: !!c?.pauseResume },
       { label: 'Stop a print', supported: !!c?.stop },
-      { label: 'Watch the camera', supported: !!this.status.cameraUrl && !this.cameraFailed },
+      { label: 'Get its camera URL', supported: !!this.status.cameraUrl },
+      { label: 'Watch the camera', supported: /^https?:/i.test(this.status.cameraUrl ?? '') && !this.cameraFailed },
       { label: 'Start a print from its storage', supported: !!c?.printFromStorage },
       { label: 'Upload and print', supported: !!c?.upload },
       { label: 'Move the axes', supported: false },
@@ -139,8 +152,9 @@ export default class ForeignPrinterOverview extends Mixins(StateMixin) {
   async resume () { await this.runAction(() => this.adapter?.resume()) }
 
   async stop () {
+    const adapter = this.adapter
     if (await this.$confirm('This cancels the current print.', { title: 'Stop this print?', buttonTrueText: 'Stop', danger: true })) {
-      await this.runAction(() => this.adapter?.stop())
+      await this.runAction(() => adapter?.stop())
     }
   }
 
@@ -155,9 +169,12 @@ export default class ForeignPrinterOverview extends Mixins(StateMixin) {
   }
 
   async forgetPrinter () {
-    if (await this.$confirm('Fluidd forgets this printer in this browser.', { title: `Forget ${this.record?.name}?`, buttonTrueText: 'Forget', danger: true })) {
-      if (this.record) await forget(this.record.id)
-      this.$router.push('/').catch(() => {})
+    const record = this.record
+    const slug = this.$route.params.printer
+    if (!record) return
+    if (await this.$confirm('Fluidd forgets this printer in this browser.', { title: `Forget ${record.name}?`, buttonTrueText: 'Forget', danger: true })) {
+      await forget(record.id)
+      if (this.$route.params.printer === slug) this.$router.push('/').catch(() => {})
     }
   }
 }

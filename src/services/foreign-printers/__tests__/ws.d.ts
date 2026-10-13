@@ -1,5 +1,8 @@
 declare module 'ws' {
   export class WebSocket {
+    constructor (url: string | URL, protocols?: string | string[])
+    static OPEN: number
+    static CLOSING: number
     on (event: string, listener: (...args: any[]) => void): void
     send (data: string): void
     close (): void

@@ -1,15 +1,17 @@
 <template>
-  <component :is="isForeign ? 'foreign-camera' : 'camera'" />
+  <component
+    :is="isForeign ? 'foreign-camera' : 'camera'"
+    :key="isForeign ? $route.params.printer : undefined"
+  />
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import Camera from '@/views/Camera.vue'
 import { isForeignSlug } from '@/services/printer-pages'
 
 @Component({
   components: {
-    Camera,
+    Camera: () => import('@/views/Camera.vue'),
     ForeignCamera: () => import('./ForeignPrinterCamera.vue')
   }
 })

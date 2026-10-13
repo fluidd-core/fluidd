@@ -1,15 +1,17 @@
 <template>
-  <component :is="isForeign ? 'foreign-jobs' : 'jobs'" />
+  <component
+    :is="isForeign ? 'foreign-jobs' : 'jobs'"
+    :key="isForeign ? $route.params.printer : undefined"
+  />
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import Jobs from '@/views/Jobs.vue'
 import { isForeignSlug } from '@/services/printer-pages'
 
 @Component({
   components: {
-    Jobs,
+    Jobs: () => import('@/views/Jobs.vue'),
     ForeignJobs: () => import('./ForeignPrinterJobs.vue')
   }
 })

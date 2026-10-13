@@ -1,5 +1,7 @@
 import type { AdapterDeps, ForeignCapabilities, ForeignFile, ForeignPrinterRecord } from '../types'
 import { clampProgress, SocketAdapter, temp } from './base'
+import { localCameraUrl } from '../address'
+import { v4 as uuidv4 } from 'uuid'
 
 export const ELEGOO_CC_CAPABILITIES: ForeignCapabilities = {
   pauseResume: true,
@@ -46,18 +48,22 @@ export default class ElegooCentauriAdapter extends SocketAdapter {
       const info = status.PrintInfo ?? {}
       const code = Number(info.Status)
       const label = status.CurrentStatus?.[0]
+      // Centauri FDM codes from Elegoo's elegoo-link adapter: 6 paused,
+      // 8 stopped, 9 complete, 10 checking, 13 printing, 14 error.
+      const error = code === 14 || Number(info.ErrorNumber ?? 0) !== 0 || (typeof label === 'string' && /error|failed/i.test(label))
+      const printing = status.CurrentStatus?.includes(1) || (code > 0 && code <= 26)
       const temps = [
         temp('nozzle', status.TempOfNozzle, status.TempTargetNozzle),
         temp('bed', status.TempOfHotbed, status.TempTargetHotbed),
-        temp('chamber', status.TempOfBox, null)
+        temp('chamber', status.TempOfBox, status.TempTargetBox)
       ].filter((item): item is NonNullable<typeof item> => item !== null)
       const elapsed = typeof info.CurrentTicks === 'number' ? info.CurrentTicks : null
       const total = typeof info.TotalTicks === 'number' ? info.TotalTicks : null
       this.setStatus({
-        state: typeof label === 'string' && /error|failed/i.test(label)
+        state: error
           ? 'error'
-          : [13, 8, 9, 20].includes(code) ? 'printing' : [5, 10].includes(code) ? 'paused' : code === 0 ? 'idle' : this.status.state,
-        message: typeof label === 'string' ? label : null,
+          : [8, 9].includes(code) || label === 0 ? 'idle' : [5, 6, 26].includes(code) ? 'paused' : printing ? 'printing' : code === 0 ? 'idle' : this.status.state,
+        message: error ? 'The printer reported a print error.' : typeof label === 'string' ? label : null,
         file: typeof info.Filename === 'string' ? info.Filename : null,
         progress: clampProgress(info.Progress, true) ?? (elapsed !== null && total ? clampProgress(elapsed / total) : null),
         timeLeft: elapsed !== null && total !== null ? Math.max(0, total - elapsed) : null,
@@ -68,15 +74,12 @@ export default class ElegooCentauriAdapter extends SocketAdapter {
     const response = message.Data?.Data ?? message.Data ?? {}
     const videoUrl = response.VideoUrl ?? message.VideoUrl
     if (typeof videoUrl === 'string') {
-      try {
-        const url = new URL(videoUrl, `http://${this.record.host}`)
-        this.setStatus({ cameraUrl: url.protocol === 'http:' || url.protocol === 'https:' ? url.href : null })
-      } catch {}
+      this.setStatus({ cameraUrl: localCameraUrl(videoUrl, this.record.host) })
     }
   }
 
   private envelope (cmd: number, data: Record<string, unknown> = {}) {
-    const id = crypto.randomUUID().replace(/-/g, '')
+    const id = uuidv4().replace(/-/g, '')
     return {
       Id: '',
       Data: {

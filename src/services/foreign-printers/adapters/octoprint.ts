@@ -1,5 +1,6 @@
 import type { AdapterDeps, ForeignCapabilities, ForeignCredentials, ForeignFile, ForeignPrinterRecord } from '../types'
 import { clampProgress, fetchJson, httpUrl, SocketAdapter, temp } from './base'
+import { localCameraUrl } from '../address'
 
 export const OCTOPRINT_CAPABILITIES: ForeignCapabilities = {
   pauseResume: true,
@@ -26,11 +27,15 @@ export default class OctoPrintAdapter extends SocketAdapter {
 
   async connect (): Promise<void> {
     const key = this.credentials?.apiKey
+    this.readCamera().catch(() => {})
     try {
-      const login = await fetchJson(this.deps, httpUrl(this.record.host, '/api/login?passive=true'), {}, key)
+      const login = await fetchJson(this.deps, httpUrl(this.record.host, '/api/login'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passive: true })
+      }, key)
       this.sessionAuth = `${login.name}:${login.session}`
       await this.openSocket(`ws://${this.record.host}/sockjs/websocket`)
-      this.readCamera().catch(() => {})
     } catch {
       this.startPolling()
       await this.poll()
@@ -53,17 +58,20 @@ export default class OctoPrintAdapter extends SocketAdapter {
     const error = !!flags.error
     const job = current.job ?? {}
     const progress = clampProgress(current.progress?.completion, true)
-    const temps = current.temps?.[0] ?? current.temps ?? {}
+    const temps = Array.isArray(current.temps) ? current.temps[current.temps.length - 1] : current.temps
+    const readings = temps
+      ? [
+          temp('nozzle', temps.tool0?.actual, temps.tool0?.target),
+          temp('bed', temps.bed?.actual, temps.bed?.target)
+        ].filter((item): item is NonNullable<typeof item> => item !== null)
+      : this.status.temps
     this.setStatus({
       state: paused ? 'paused' : error ? 'error' : printing ? 'printing' : state.text === 'Offline' ? 'offline' : 'idle',
       message: typeof state.text === 'string' ? state.text : null,
       file: job.file?.path ?? job.file?.name ?? null,
       progress,
       timeLeft: typeof current.progress?.printTimeLeft === 'number' ? current.progress.printTimeLeft : null,
-      temps: [
-        temp('nozzle', temps.tool0?.actual, temps.tool0?.target),
-        temp('bed', temps.bed?.actual, temps.bed?.target)
-      ].filter((item): item is NonNullable<typeof item> => item !== null)
+      temps: readings
     })
   }
 
@@ -84,8 +92,7 @@ export default class OctoPrintAdapter extends SocketAdapter {
       const settings = await fetchJson(this.deps, httpUrl(this.record.host, '/api/settings'), {}, this.credentials?.apiKey)
       const stream = settings?.webcam?.streamUrl ?? settings?.webcam?.snapshotUrl
       if (typeof stream !== 'string') return
-      const url = new URL(stream, `http://${this.record.host}`)
-      if (url.protocol === 'http:' || url.protocol === 'https:') this.setStatus({ cameraUrl: url.href })
+      this.setStatus({ cameraUrl: localCameraUrl(stream, this.record.host) })
     } catch {}
   }
 
