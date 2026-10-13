@@ -1,15 +1,19 @@
-// Usage: PLAYWRIGHT_CORE=/path/to/playwright-core node tools/m1-stage-capture.mjs [url] [outDir]
+// Frames of each M1 accessory animation from the dev stage (src/dev/m1-stage), on a clock the script sets,
+// so every frame is at its exact time however slowly the browser draws.
+// Usage: npm run dev, then
+//   PLAYWRIGHT_CORE=/path/to/playwright-core node tools/m1-stage-capture.mjs [url] [outDir]
+// Chrome must expose CDP on localhost:29229. Writes <outDir>/<step>/NNN.png and <outDir>/<step>/sheet.png.
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 
 const require = createRequire(import.meta.url)
-const playwrightCorePath = process.env.PLAYWRIGHT_CORE ?? '/home/ubuntu/tools-pw/node_modules/playwright-core'
-const { chromium } = require(playwrightCorePath)
+const { chromium } = require(process.env.PLAYWRIGHT_CORE ?? 'playwright-core')
 
 const url = process.argv[2] ?? 'http://localhost:5173/src/dev/m1-stage/index.html'
-const outDir = process.argv[3] ?? '/home/ubuntu/m1-frames'
-const cadenceMs = 120
+const outDir = process.argv[3] ?? 'm1-frames'
+const only = process.env.STEPS ? process.env.STEPS.split(',') : null
+/** How long each step's animation runs (accessory-motion.ts), and how often a frame is taken. */
 const durations = {
   'plate-off-print': 1800,
   'plate-on-print': 2200,
@@ -23,77 +27,76 @@ const durations = {
   'autoload-done': 0,
   'filament-unload': 2200
 }
+const STEP_MS = Number(process.env.STEP_MS ?? 100)
 
 const browser = await chromium.connectOverCDP('http://localhost:29229')
 const context = await browser.newContext({ viewport: { width: 960, height: 640 }, deviceScaleFactor: 1 })
+await context.addInitScript(() => {
+  const real = performance.now.bind(performance)
+  window.__clock = null
+  performance.now = () => window.__clock ?? real()
+})
 try {
   const page = await context.newPage()
-  await page.goto(url, { waitUntil: 'networkidle' })
+  await page.goto(url + (process.env.QUERY ?? ''), { waitUntil: 'networkidle' })
   await page.bringToFront()
   await page.evaluate(() => window.m1Stage.ready)
+  let clock = await page.evaluate(() => performance.now() + 1000)
+  const drawAt = async at => {
+    await page.evaluate(at => new Promise(resolve => {
+      window.__clock = at
+      window.m1Stage.sync && requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+    }), at)
+  }
+  await drawAt(clock)
 
   for (const step of await page.evaluate(() => window.m1Stage.steps)) {
+    const run = only === null || only.includes(step)
     const directory = path.join(outDir, step)
-    await mkdir(directory, { recursive: true })
+    if (run) await mkdir(directory, { recursive: true })
     await page.evaluate(name => window.m1Stage.step(name), step)
-    const stopAt = Date.now() + durations[step] + 300
-    const framePaths = []
-    let frame = 0
-    let inFlight = 0
-    let screenshotError
-    const pending = []
-    const capture = () => {
-      if (Date.now() > stopAt || inFlight >= 2) return
-      const framePath = path.join(directory, `${String(frame).padStart(3, '0')}.png`)
-      inFlight++
-      pending.push(page.screenshot({ path: framePath }).catch(error => {
-        screenshotError ??= error
-      }).finally(() => {
-        inFlight--
-      }))
-      framePaths.push(framePath)
-      frame++
+    const frames = []
+    const end = durations[step] + 300
+    for (let t = 0; t <= end; t += STEP_MS) {
+      await drawAt(clock + t)
+      if (!run) continue
+      const framePath = path.join(directory, `${String(frames.length).padStart(3, '0')}.png`)
+      await page.screenshot({ path: framePath })
+      frames.push({ framePath, t })
     }
-    capture()
-    const timer = setInterval(capture, cadenceMs)
-    await page.waitForTimeout(durations[step] + 300)
-    clearInterval(timer)
-    await Promise.all(pending)
-    if (screenshotError) throw screenshotError
-    await page.screenshot({ path: path.join(directory, 'final.png') })
+    clock += end + 400
+    await drawAt(clock)
+    if (!run) continue
 
-    const selected = framePaths.length <= 8
-      ? framePaths
-      : Array.from({ length: 8 }, (_, i) => framePaths[Math.round(i * (framePaths.length - 1) / 7)])
-    const dataUrls = await Promise.all(selected.map(async framePath => {
-      const image = await readFile(framePath)
-      return `data:image/png;base64,${image.toString('base64')}`
-    }))
-    const sheet = await page.evaluate(async images => {
+    const picked = frames.length <= 8 ? frames : Array.from({ length: 8 }, (_, i) => frames[Math.round(i * (frames.length - 1) / 7)])
+    const images = await Promise.all(picked.map(async f => ({ t: f.t, src: `data:image/png;base64,${(await readFile(f.framePath)).toString('base64')}` })))
+    const sheet = await page.evaluate(async ({ images, title }) => {
       const columns = 4
-      const cellWidth = 240
-      const cellHeight = 160
-      const gap = 12
-      const rows = Math.ceil(images.length / columns)
+      const w = 480
+      const h = 320
       const canvas = document.createElement('canvas')
-      canvas.width = columns * cellWidth + (columns + 1) * gap
-      canvas.height = rows * cellHeight + (rows + 1) * gap
-      const context = canvas.getContext('2d')
-      if (!context) throw new Error('Could not create contact sheet canvas')
-      context.fillStyle = '#d8dbdf'
-      context.fillRect(0, 0, canvas.width, canvas.height)
+      canvas.width = columns * w
+      canvas.height = Math.ceil(images.length / columns) * h + 36
+      const g = canvas.getContext('2d')
+      g.fillStyle = '#d8dbdf'
+      g.fillRect(0, 0, canvas.width, canvas.height)
+      g.fillStyle = '#1a1f22'
+      g.font = '600 20px sans-serif'
+      g.fillText(title, 12, 25)
       for (let i = 0; i < images.length; i++) {
         const image = new Image()
-        image.src = images[i]
+        image.src = images[i].src
         await image.decode()
-        const x = gap + (i % columns) * (cellWidth + gap)
-        const y = gap + Math.floor(i / columns) * (cellHeight + gap)
-        context.drawImage(image, x, y, cellWidth, cellHeight)
+        const x = (i % columns) * w
+        const y = 36 + Math.floor(i / columns) * h
+        g.drawImage(image, x, y, w, h)
+        g.font = '14px sans-serif'
+        g.fillText(`${images[i].t} ms`, x + 10, y + 20)
       }
       return canvas.toDataURL('image/png')
-    }, dataUrls)
-    await writeFile(path.join(directory, 'contact-sheet.png'), Buffer.from(sheet.split(',')[1], 'base64'))
-    console.log(`${step}: ${framePaths.length} frames → ${directory}`)
+    }, { images, title: step })
+    await writeFile(path.join(directory, 'sheet.png'), Buffer.from(sheet.split(',')[1], 'base64'))
+    console.log(`${step}: ${frames.length} frames`)
   }
 } finally {
   await context.close()

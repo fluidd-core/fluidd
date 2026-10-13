@@ -112,8 +112,9 @@ declare global {
       ready: Promise<void>;
       step: (name: string) => void;
       steps: string[];
+      sync: LiveSync;
     };
   }
 }
 
-window.m1Stage = { ready, step, steps }
+window.m1Stage = { ready, step, steps, sync }
