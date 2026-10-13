@@ -50,6 +50,11 @@ import { LOADER_ID, setLoaderProgress, startupState } from './services/startup/l
 import { readSnapshot, renderCachedState } from './services/startup/snapshot'
 import { afterFirstPaint, prefetchRoutes } from './services/startup/idle'
 
+// Register global directives.
+import Blur from '@/directives/blur'
+import { restoreUiStyle } from '@/util/ui-style'
+import { applyGlassIcons } from '@/util/glass-icons'
+
 // The entry is evaluated: the loader's next mark (KAN-525).
 setLoaderProgress(0.8)
 
@@ -58,11 +63,6 @@ setLoaderProgress(0.8)
 const cachedSlot = document.querySelector<HTMLElement>(`#${LOADER_ID} .muon-loader__cached`)
 startupState.cachedShown = !!cachedSlot && renderCachedState(cachedSlot, readSnapshot(), window.location.pathname)
 if (startupState.cachedShown) document.getElementById(LOADER_ID)?.classList.add('muon-loader--cached')
-
-// Register global directives.
-import Blur from '@/directives/blur'
-import { restoreUiStyle } from '@/util/ui-style'
-import { applyGlassIcons } from '@/util/glass-icons'
 
 // Directives...
 Vue.directive('blur', Blur)

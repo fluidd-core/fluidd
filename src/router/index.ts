@@ -4,6 +4,7 @@ import { applyLegacyHash } from './legacyHash'
 import { activeSlugNow } from './printerSlugSource'
 import { PRINTER_PAGE_PATHS } from './printerPagePaths'
 import { ROUTE_SLUG_PATTERN } from '@/services/printer-pages/slug'
+import Updating from '@/views/Updating.vue'
 
 // Views. Every route is lazy (KAN-525) but Updating, which stays in the main
 // chunk: while the printer restarts into an update it can't serve a chunk.
@@ -21,7 +22,6 @@ const History = () => import('@/views/History.vue')
 const Timelapse = () => import('@/views/Timelapse.vue')
 const Configure = () => import('@/views/Configure.vue')
 const Settings = () => import('@/views/Settings.vue')
-import Updating from '@/views/Updating.vue'
 const MacroCategorySettings = () => import('@/components/settings/macros/MacroCategorySettings.vue')
 const Camera = () => import('@/views/Camera.vue')
 const NotFound = () => import('@/views/NotFound.vue')
