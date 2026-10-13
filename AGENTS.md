@@ -145,7 +145,7 @@ src/
 
 ### Icons & Theming
 
-- MDI icons via `@mdi/js` — mapped in `src/globals.ts` (`Icons` object, ~233 mappings)
+- MDI icons via `@mdi/js` — mapped in `src/globals.ts` (`Icons` object, ~234 mappings)
 - Usage: `<v-icon>{{ $globals.Icons.close }}</v-icon>`
 - Vuetify theme with custom dark/light overrides in `src/scss/variables.scss`
 - PWA support with service worker in `src/sw.ts` (Workbox, injectManifest strategy)
@@ -278,6 +278,8 @@ src/
 - A job referenced by a file in the loaded file listing but outside the loaded history window is back-filled individually: `history/fetchMissingJobs` diffs against loaded jobs and `state.unresolvedJobIds`, then calls `SocketActions.serverHistoryGetJob` per missing id, suppressing not-found errors (`suppressError: isMoonrakerNotFoundError`) since a file can reference a job Moonraker has since pruned
 - Those requests go out in chunks of `Globals.JOB_HISTORY_FETCH_CHUNK`, and each chunk lands as **one** `setUpdateHistoryJobs` commit. `serverHistoryGetJob` deliberately has no `dispatch` — a per-response commit re-runs `getHistory` and `files/getDirectory` and re-renders the file table once per job, which froze large directories. `unresolvedJobIds` holds ids both in flight and confirmed not-found — a success or any other failure removes the id, a not-found leaves it. `onHistoryList` deliberately never clears it: that would re-send in-flight requests and re-ask pruned jobs
 - Job lookups go through `history/getHistoryByIdMap` (a memoized `Map`), not a linear scan of `getHistory`
+- CSV export (`JobHistory.handleExportCsv`) always exports the **whole** history — it awaits `serverHistoryList({ limit: 0 })` first when `!allLoaded` (the emit resolves after `history/onHistoryList` has committed) — with filename plus the columns visible in the column picker, ignoring the search box. `getExportValue` returns raw values in base units, with no units in the headers, and a `Date` for the date columns. `Waits.onHistoryExport` is added/removed by hand rather than via the request's `wait`, as it spans the fetch, the build and the download
+- `toCsv` (`src/util/csv.ts`, import-free) owns every cell representation: RFC 4180 quoting, CRLF rows, `Date` → local `YYYY-MM-DD HH:mm:ss` (strict ISO with `T`/`Z` is not parsed as a date by Excel), arrays joined with `; ` element by element, and a leading `'` on formula-like **strings** (`=`, `+`, `-`, `@`) — numbers are exempt so negatives still sum. Callers pass raw values and prepend a `\uFEFF` BOM to the `Blob` so Excel reads UTF-8
 
 ### Component Communication
 

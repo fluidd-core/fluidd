@@ -304,6 +304,7 @@ app:
       duplicate: Duplicate
       edit: Edit
       exit_layout: Exit
+      export_csv: Export CSV
       extrude: Extrude
       filter: Filter
       flip_layout: Flip layout
@@ -693,6 +694,7 @@ app:
       confirm: Are you sure? This will clear all history, and printer statistics
       confirm_jobs: Are you sure? This will clear all jobs.
       confirm_stats: Are you sure? This will clear all stats.
+      export_failed: Failed to export the print history
     tooltip:
       help: Only the most recent jobs are loaded on connect. Use Load all to
         fetch the complete history.
