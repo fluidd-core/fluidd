@@ -277,14 +277,14 @@ export interface AccountSection {
 export const ACCOUNT_SECTIONS: AccountSection[] = [
   { id: 'overview', label: 'Overview', icon: 'user', built: true },
   { id: 'profile', label: 'Profile', icon: 'idCard', built: true },
-  { id: 'security', label: 'Sign-in and security', icon: 'shield', built: false },
-  { id: 'sessions', label: 'Devices and sessions', icon: 'devices', built: false },
-  { id: 'printers', label: 'Printers and access', icon: 'printer', built: false },
-  { id: 'notifications', label: 'Notifications', icon: 'bell', built: false },
+  { id: 'security', label: 'Sign-in and security', icon: 'shield', built: true },
+  { id: 'sessions', label: 'Devices and sessions', icon: 'devices', built: true },
+  { id: 'printers', label: 'Printers and access', icon: 'printer', built: true },
+  { id: 'notifications', label: 'Notifications', icon: 'bell', built: true },
   { id: 'library', label: 'Library and storage', icon: 'library', built: true },
   { id: 'plan', label: 'Plan', icon: 'card', built: true },
-  { id: 'privacy', label: 'Privacy and data', icon: 'eye', built: false },
-  { id: 'delete', label: 'Delete account', icon: 'trash', built: false }
+  { id: 'privacy', label: 'Privacy and data', icon: 'eye', built: true },
+  { id: 'delete', label: 'Delete account', icon: 'trash', built: true }
 ]
 
 /** The sections the list shows. */

@@ -158,6 +158,16 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
+
+  // The words wrap before the button does.
+  > .acct-head {
+    flex: 1 1 320px;
+    min-width: 0;
+  }
+
+  > .lib-btn {
+    flex: none;
+  }
 }
 
 // A card of rows: words on the left, the control on the right.

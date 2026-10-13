@@ -3,6 +3,25 @@
     class="acct-section"
     data-tid="account-overview"
   >
+    <div
+      v-if="deletionDay"
+      class="acct-note acct-note--bad acct-deleting"
+      role="status"
+      data-tid="account-deletion-waiting"
+    >
+      <frame-icon
+        name="clock"
+        small
+      />
+      <span><b>Your account will be deleted on {{ deletionDay }}.</b> Until then you can keep it.</span>
+      <router-link
+        :to="linkTo('delete')"
+        class="lib-btn lib-btn--sm lib-btn--pri"
+      >
+        Keep my account
+      </router-link>
+    </div>
+
     <section
       class="lib-surface acct-you"
       aria-label="You"
@@ -244,6 +263,7 @@ import type { CloudPrinter } from '@/services/muon-cloud/api'
 import { accountState, loadOverview } from '@/services/account/state'
 import {
   ACCOUNT_SECTIONS,
+  dayText,
   deviceCount,
   devicesFrom,
   devicesLine,
@@ -306,6 +326,12 @@ export default class AccountOverview extends Vue {
 
   get error (): string {
     return accountState.error
+  }
+
+  /** A deletion waiting out its 14 days (KAN-532 §2.7). */
+  get deletionDay (): string {
+    const at = this.me?.account.deletion?.delete_after
+    return at ? dayText(at) : ''
   }
 
   get initials (): string {
@@ -416,6 +442,14 @@ export default class AccountOverview extends Vue {
 </script>
 
 <style lang="scss" scoped>
+  .acct-deleting {
+    align-items: center;
+
+    > span {
+      flex: 1 1 auto;
+    }
+  }
+
   .acct-plan {
     display: flex;
     flex-direction: row;

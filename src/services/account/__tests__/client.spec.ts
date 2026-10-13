@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { accountRequest, AccountError, isMissing, sentence } from '../client'
-import { accountApi } from '../api'
+import { accountApi, meFrom } from '../api'
 
 const BASE = 'https://control.example.test'
 
@@ -89,5 +89,51 @@ describe('the account client', () => {
   it('writes the console\'s clauses as sentences', () => {
     expect(sentence('that code is not right')).toBe('That code is not right.')
     expect(sentence('Already a sentence.')).toBe('Already a sentence.')
+  })
+})
+
+describe('the console\'s answers as #26 to #28 build them', () => {
+  let fetchMock: ReturnType<typeof vi.fn>
+
+  beforeEach(() => {
+    localStorage.clear()
+    localStorage.setItem('muon.cloud.url', BASE)
+    localStorage.setItem('muon.cloud.token', 'access-1')
+    fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    localStorage.clear()
+  })
+
+  it('reads the pending address and the recovery codes left from beside the account', async () => {
+    fetchMock.mockResolvedValueOnce(answer(200, {
+      account: { id: 'a1', email: 'jack@muon3d.com', name: 'Jack Smith', created_at: 0, two_step: true, name_source: 'person', deletion: null },
+      endpoint_id: null,
+      sign_in: { password: true, passkeys: 2, identities: [], two_step: true },
+      two_step: { enabled: true, recovery_left: 7, recovery_generated_at: 1 },
+      email_pending: { address: 'new@muon3d.com', expires_at: 2 }
+    }))
+    const me = await accountApi.me()
+    expect(me.account.email_pending).toEqual({ address: 'new@muon3d.com', expires_at: 2 })
+    expect(me.sign_in?.recovery_left).toBe(7)
+    expect(me.account.two_step).toBe(true)
+  })
+
+  it('leaves an older console\'s answer as it is', () => {
+    const me = { account: { id: 'a1', email: 'e', name: 'n', created_at: 0 }, endpoint_id: null, sign_in: { password: true, passkeys: 0, identities: [], two_step: false } }
+    expect(meFrom(me)).toEqual(me)
+  })
+
+  it('unwraps the email preferences, and sends a change flat', async () => {
+    const preferences = { email_access_requests: true, email_shared_with_you: true, email_community: false, email_news: false, updated_at: null }
+    fetchMock
+      .mockResolvedValueOnce(answer(200, { preferences }))
+      .mockResolvedValueOnce(answer(200, { preferences: { ...preferences, email_news: true, updated_at: 5 } }))
+    expect((await accountApi.preferences()).email_access_requests).toBe(true)
+    expect((await accountApi.setPreferences({ email_news: true })).email_news).toBe(true)
+    expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toEqual({ email_news: true })
   })
 })

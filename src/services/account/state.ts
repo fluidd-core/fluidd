@@ -46,6 +46,7 @@ function belongsTo (): boolean {
 }
 
 export function describe (error: unknown): string {
+  if (error instanceof AccountError && error.deletionPending) return 'Your account is waiting to be deleted. Keep it, on Delete account, to use this again.'
   return error instanceof Error ? error.message : 'Something went wrong.'
 }
 

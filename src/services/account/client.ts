@@ -30,6 +30,11 @@ export class AccountError extends CloudError {
       : null
   }
 
+  /** The account is waiting out its 14 days before deletion (console #28): only a few routes answer. */
+  get deletionPending (): boolean {
+    return this.status === 403 && this.body.deletion_pending === true
+  }
+
   /** The console doesn't have this route yet (an older build): no JSON error with it. */
   get missing (): boolean {
     return [404, 405, 501].includes(this.status) && typeof this.body.error !== 'string'

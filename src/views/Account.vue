@@ -145,8 +145,29 @@
           :link-to="linkTo"
         />
         <account-profile v-else-if="current.id === 'profile'" />
+        <account-security
+          v-else-if="current.id === 'security'"
+          :link-to="linkTo"
+        />
+        <account-sessions
+          v-else-if="current.id === 'sessions'"
+          :link-to="linkTo"
+        />
+        <account-printers
+          v-else-if="current.id === 'printers'"
+          :link-to="linkTo"
+        />
+        <account-notifications v-else-if="current.id === 'notifications'" />
         <library-settings v-else-if="current.id === 'library'" />
         <account-plan v-else-if="current.id === 'plan'" />
+        <account-privacy
+          v-else-if="current.id === 'privacy'"
+          :link-to="linkTo"
+        />
+        <account-delete
+          v-else-if="current.id === 'delete'"
+          :link-to="linkTo"
+        />
       </template>
     </div>
 
@@ -160,16 +181,17 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
-import { cloudState, signOut } from '@/services/muon-cloud/state'
-import { activationState } from '@/services/muon-cloud/activate'
+import { cloudState } from '@/services/muon-cloud/state'
 import { cloudBaseUrl } from '@/services/muon-cloud/api'
 import { centralLoginEnabled } from '@/services/muon-cloud/centralLogin'
 import { activeSlug } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
 import { accountSectionFor, accountSections, type AccountSection, type AccountSectionId } from '@/services/account/model'
+import { accountState, loadMe } from '@/services/account/state'
 import AccountOverview from '@/components/account/AccountOverview.vue'
 import AccountProfile from '@/components/account/AccountProfile.vue'
 import AccountPlan from '@/components/account/AccountPlan.vue'
+import { beginSignOut } from '@/services/account/sign-out'
 import LibrarySettings from '@/components/settings/LibrarySettings.vue'
 import CloudAccountDialog from '@/components/muon-cloud/CloudAccountDialog.vue'
 import '@/scss/muon3d-account.scss'
@@ -185,9 +207,36 @@ import '@/scss/muon3d-account.scss'
  * session is the console's own (the canvas's "Account menu on a printer's
  * own page").
  */
-@Component({ components: { AccountOverview, AccountProfile, AccountPlan, LibrarySettings, CloudAccountDialog } })
+@Component({
+  components: {
+    AccountOverview,
+    AccountProfile,
+    AccountSecurity: () => import('@/components/account/AccountSecurity.vue'),
+    AccountSessions: () => import('@/components/account/AccountSessions.vue'),
+    AccountPrinters: () => import('@/components/account/AccountPrinters.vue'),
+    AccountNotifications: () => import('@/components/account/AccountNotifications.vue'),
+    AccountPrivacy: () => import('@/components/account/AccountPrivacy.vue'),
+    AccountDelete: () => import('@/components/account/AccountDelete.vue'),
+    AccountPlan,
+    LibrarySettings,
+    CloudAccountDialog
+  }
+})
 export default class Account extends Mixins(BrowserMixin) {
   accountDialog = false
+
+  created () {
+    if (!accountState.me) loadMe().catch(() => {})
+  }
+
+  /**
+   * Waiting out its 14 days before deletion (console #28), the account
+   * answers only its own details, the export and Keep my account: the
+   * other sections have nothing to show until it's kept.
+   */
+  get deleting (): boolean {
+    return !!accountState.me?.account.deletion
+  }
 
   get ready (): boolean {
     return cloudState.ready
@@ -215,7 +264,8 @@ export default class Account extends Mixins(BrowserMixin) {
   }
 
   get sections (): AccountSection[] {
-    return accountSections()
+    const all = accountSections()
+    return this.deleting ? all.filter(section => section.id === 'privacy' || section.id === 'delete') : all
   }
 
   get mainSections (): AccountSection[] {
@@ -227,7 +277,9 @@ export default class Account extends Mixins(BrowserMixin) {
   }
 
   get current (): AccountSection {
-    return accountSectionFor(this.$route.params.section)
+    const section = accountSectionFor(this.$route.params.section)
+    if (this.deleting && section.id !== 'privacy') return accountSectionFor('delete')
+    return section
   }
 
   /** On a phone, the list on its own until a section is chosen. */
@@ -244,10 +296,8 @@ export default class Account extends Mixins(BrowserMixin) {
     return scopedPath(path, activeSlug())
   }
 
-  async signOut () {
-    const wasCloud = cloudState.activePrinterId !== null || activationState.switching !== null
-    const navigating = await signOut()
-    if (wasCloud && !navigating) window.location.reload()
+  signOut () {
+    return beginSignOut()
   }
 }
 </script>
