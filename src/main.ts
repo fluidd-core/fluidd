@@ -47,6 +47,7 @@ import { ConfirmPlugin } from './plugins/confirm'
 // Main App component
 import App from './App.vue'
 import { setLoaderProgress } from './services/startup/loader'
+import { afterFirstPaint, prefetchRoutes } from './services/startup/idle'
 
 // The entry is evaluated: the loader's next mark (KAN-525).
 setLoaderProgress(0.8)
@@ -101,6 +102,9 @@ const mountApp = () => {
     vuetify,
     render: (h) => h(App)
   }).$mount('#app')
+
+  // The printer pages' chunks fetch ahead once the first frame is drawn.
+  router.onReady(() => afterFirstPaint(() => prefetchRoutes()))
 }
 
 // First-run setup, and the console's sign-in page (WEB-12), mount at once and

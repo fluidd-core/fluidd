@@ -36,6 +36,7 @@ import { cloudState } from '@/services/muon-cloud/state'
 import { activeSlug } from '@/services/printer-pages'
 import { ACTIVE_PHASES } from '@/services/updates/model'
 import { updateWatch } from '@/services/updates/watch'
+import { afterFirstPaint } from '@/services/startup/idle'
 
 /** The biggest file the stage fetches by itself to draw the print: most prints, not a day-long one. */
 const AUTO_LOAD_BYTES = 16 * 1024 * 1024
@@ -100,6 +101,9 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
   tapsShown: PlateTap[] = []
   tapsTimer = 0
 
+  /** Set on destroy so an idle callback still owed does nothing (KAN-525). */
+  gone = false
+
   /** This printer's sync, which outlives the view. Not data: Vue mustn't walk it. */
   sync (): LiveSync {
     return liveSyncFor(activeSlug() ?? (this.$store.state.config.apiUrl as string) ?? '')
@@ -126,16 +130,23 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
       }
     })
     if (!canDrawWebgl() || typeof IntersectionObserver === 'undefined') return
-    prebuild()
-    this.observer = new IntersectionObserver(entries => {
-      this.visible = entries.some(e => e.isIntersecting)
-      this.wake()
+    // The live M1 builds ahead and the observer starts it — but only once the
+    // first frame has painted, so the viewer chunk isn't fetched at the
+    // entry's expense (KAN-525).
+    afterFirstPaint(() => {
+      if (this.gone) return
+      prebuild()
+      this.observer = new IntersectionObserver(entries => {
+        this.visible = entries.some(e => e.isIntersecting)
+        this.wake()
+      })
+      this.observer.observe(this.$el)
+      document.addEventListener('visibilitychange', this.wake)
     })
-    this.observer.observe(this.$el)
-    document.addEventListener('visibilitychange', this.wake)
   }
 
   beforeDestroy () {
+    this.gone = true
     this.stopReports?.()
     this.observer?.disconnect()
     document.removeEventListener('visibilitychange', this.wake)

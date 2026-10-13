@@ -5,27 +5,30 @@ import { activeSlugNow } from './printerSlugSource'
 import { PRINTER_PAGE_PATHS } from './printerPagePaths'
 import { ROUTE_SLUG_PATTERN } from '@/services/printer-pages/slug'
 
-// Views
-import Overview from '@/views/Overview.vue'
-import Console from '@/views/Console.vue'
-import GcodePreview from '@/views/GcodePreview.vue'
-import Jobs from '@/views/Jobs.vue'
-import Tune from '@/views/Tune.vue'
-import Control from '@/views/Control.vue'
-import Maintenance from '@/views/Maintenance.vue'
-import Diagnostics from '@/views/Diagnostics.vue'
-import History from '@/views/History.vue'
-import Timelapse from '@/views/Timelapse.vue'
-import Configure from '@/views/Configure.vue'
-import Settings from '@/views/Settings.vue'
+// Views. Every route is lazy (KAN-525) but Updating, which stays in the main
+// chunk: while the printer restarts into an update it can't serve a chunk.
+// The lazy ones that open printers must be lazy (a static import is a cycle:
+// they reach services/printer-pages, which reaches this router); now all are.
+const Overview = () => import('@/views/Overview.vue')
+const Console = () => import('@/views/Console.vue')
+const GcodePreview = () => import('@/views/GcodePreview.vue')
+const Jobs = () => import('@/views/Jobs.vue')
+const Tune = () => import('@/views/Tune.vue')
+const Control = () => import('@/views/Control.vue')
+const Maintenance = () => import('@/views/Maintenance.vue')
+const Diagnostics = () => import('@/views/Diagnostics.vue')
+const History = () => import('@/views/History.vue')
+const Timelapse = () => import('@/views/Timelapse.vue')
+const Configure = () => import('@/views/Configure.vue')
+const Settings = () => import('@/views/Settings.vue')
 import Updating from '@/views/Updating.vue'
-import MacroCategorySettings from '@/components/settings/macros/MacroCategorySettings.vue'
-import Camera from '@/views/Camera.vue'
-import NotFound from '@/views/NotFound.vue'
-import Login from '@/views/Login.vue'
-import Icons from '@/views/Icons.vue'
-import LinkLanding from '@/views/LinkLanding.vue'
-import JoinLanding from '@/views/JoinLanding.vue'
+const MacroCategorySettings = () => import('@/components/settings/macros/MacroCategorySettings.vue')
+const Camera = () => import('@/views/Camera.vue')
+const NotFound = () => import('@/views/NotFound.vue')
+const Login = () => import('@/views/Login.vue')
+const Icons = () => import('@/views/Icons.vue')
+const LinkLanding = () => import('@/views/LinkLanding.vue')
+const JoinLanding = () => import('@/views/JoinLanding.vue')
 
 Vue.use(VueRouter)
 
@@ -134,7 +137,7 @@ const printerRoutes: Array<RouteConfig> = [
   },
   {
     // The printer updating. In the main chunk, not lazy: while the printer
-    // restarts it can't serve a chunk.
+    // restarts it can't serve a chunk (above).
     path: `${P}/updating`,
     name: 'Updating',
     component: Updating,
