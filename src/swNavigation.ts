@@ -48,13 +48,15 @@ export interface NavigationOptions {
  * server owns reaches the server while online, whatever the list says, and the
  * page is always the current build.
  */
-export const networkFirstNavigation = <O extends NavigationOptions>(
+export function networkFirstNavigation<O extends NavigationOptions> (
   network: (request: Request) => Promise<Response>,
   cachedShell: (options: O) => Promise<Response>
-) => async (options: O): Promise<Response> => {
-  try {
-    return await network(options.request)
-  } catch {
-    return cachedShell(options)
+): (options: O) => Promise<Response> {
+  return async (options: O): Promise<Response> => {
+    try {
+      return await network(options.request)
+    } catch {
+      return cachedShell(options)
+    }
   }
 }
