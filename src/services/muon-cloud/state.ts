@@ -18,6 +18,7 @@ import {
 } from './api'
 import { centralLoginEnabled, clearSilentAttempt, redirectUri, signOutCentral, takeCallback } from './centralLogin'
 import { browserEndpoint, forgetBrowserKey, IrohPrinter } from './iroh'
+import { deletionState } from './deletion'
 
 const ACTIVE_KEY = 'muon.cloud.active'
 
@@ -122,6 +123,11 @@ async function ensureEndpoint (): Promise<void> {
 
 /** Asks the console to deliver a grant for this browser to `printerId`. */
 export async function requestAccess (printerId: string) {
+  if (deletionState.deleteAfter !== null) {
+    throw new CloudError('Your account is waiting to be deleted.', 403, undefined, {
+      deletion_pending: true, delete_after: deletionState.deleteAfter
+    })
+  }
   await ensureEndpoint()
   return cloudApi.access(printerId)
 }
@@ -190,11 +196,17 @@ export function cloudPrinterConnection (printerId: string): Promise<IrohPrinter>
 }
 
 async function pollAll () {
+  if (deletionState.deleteAfter !== null) {
+    for (const connection of statusConnections.values()) connection.then(c => c.close()).catch(() => {})
+    statusConnections.clear()
+    if (Object.keys(cloudState.status).length) cloudState.status = {}
+    return
+  }
   await Promise.all(cloudState.printers.map(p => pollOne(p)))
 }
 
 export async function refreshPrinters () {
-  if (!cloudState.account) return
+  if (!cloudState.account || deletionState.deleteAfter !== null) return
   try {
     cloudState.printers = (await cloudApi.printers()).printers
   } catch (error) {

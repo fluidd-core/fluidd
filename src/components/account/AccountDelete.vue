@@ -10,7 +10,7 @@
 
     <div
       v-if="scheduled"
-      class="acct-note acct-note--bad del__scheduled"
+      class="acct-note del__scheduled"
       role="status"
       data-tid="delete-scheduled"
     >
@@ -211,7 +211,13 @@
 
       <template v-else-if="step === 2">
         <p class="m3-dlg__text">
-          Deleting needs your password, so someone using an unlocked computer can't do it.
+          {{ hasPassword ? 'Deleting needs your password, so someone using an unlocked computer can\'t do it.' : 'Deleting needs a fresh sign-in.' }}
+        </p>
+        <p
+          v-if="hasPasskey"
+          class="m3-dlg__note"
+        >
+          Passkey confirmation: Coming soon.
         </p>
         <template v-if="hasPassword">
           <label class="m3-field">
@@ -244,7 +250,8 @@
           v-else
           class="m3-dlg__text"
         >
-          This account has no password. Sign out, sign in again, and delete it within ten minutes.
+          This account has no password. You can confirm after a sign-in within the last ten minutes.
+          Otherwise, sign out and sign in again first.
         </p>
         <p
           v-if="dialogError"
@@ -307,10 +314,9 @@
             Back
           </button>
           <button
-            v-if="hasPassword"
             type="button"
             class="cbtn cbtn--danger"
-            :disabled="!password || (twoStep && !code.trim()) || busy"
+            :disabled="(hasPassword && (!password || (twoStep && !code.trim()))) || busy"
             data-tid="delete-confirm"
             @click="confirm"
           >
@@ -335,6 +341,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import M3Dialog from '@/components/ui/M3Dialog.vue'
 import { cloudState } from '@/services/muon-cloud/state'
+import { deletionState } from '@/services/muon-cloud/deletion'
 import { accountApi } from '@/services/account/api'
 import { accountState, describe, loadMe } from '@/services/account/state'
 import { dayText, listText, type AccountSectionId } from '@/services/account/model'
@@ -378,11 +385,11 @@ export default class AccountDelete extends Vue {
   }
 
   get scheduled (): boolean {
-    return !!accountState.me?.account.deletion
+    return deletionState.deleteAfter !== null
   }
 
   get deleteDay (): string {
-    const at = accountState.me?.account.deletion?.delete_after
+    const at = deletionState.deleteAfter
     return at ? dayText(at) : ''
   }
 
@@ -396,6 +403,10 @@ export default class AccountDelete extends Vue {
 
   get twoStep (): boolean {
     return accountState.me?.sign_in?.two_step ?? accountState.me?.account.two_step ?? false
+  }
+
+  get hasPasskey (): boolean {
+    return (accountState.me?.sign_in?.passkeys ?? 0) > 0
   }
 
   get owned () {
@@ -477,7 +488,8 @@ export default class AccountDelete extends Vue {
     this.busy = true
     this.dialogError = ''
     try {
-      const answer = await accountApi.deleteAccount({ password: this.password, code: this.twoStep ? this.code.replace(/\s+/g, '') : undefined }, this.grace && this.now)
+      const reauth = this.hasPassword ? { password: this.password, code: this.twoStep ? this.code.replace(/\s+/g, '') : undefined } : {}
+      const answer = await accountApi.deleteAccount(reauth, this.grace && this.now)
       this.password = ''
       this.deletedAt = answer.delete_after ?? null
       this.step = 3

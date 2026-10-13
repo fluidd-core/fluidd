@@ -43,6 +43,7 @@
         }"
         class="constrained-width muon-content pa-2 pa-sm-4"
       >
+        <deletion-banner v-if="deletionPending" />
         <app-page-title
           v-if="showPageHeader"
           :class="{ 'muon-stale': connection.stale }"
@@ -55,8 +56,10 @@
 
         <update-banner v-if="showUpdateBanner" />
 
+        <deletion-notice v-if="deletionCloudView" />
+
         <printer-opening
-          v-if="otherPrinterRoute"
+          v-else-if="otherPrinterRoute"
           :slug="$route.params.printer"
         />
 
@@ -135,6 +138,7 @@ import { setProMode } from '@/services/pro-mode'
 import { GoKeys } from '@/util/go-keys'
 import { isGcodeFile, isModelFile } from '@/services/jobs/model'
 import JobReadyDialog from './components/jobs/JobReadyDialog.vue'
+import { deletionState, deletionBlocksView } from '@/services/muon-cloud/deletion'
 
 @Component<App>({
   metaInfo () {
@@ -145,6 +149,8 @@ import JobReadyDialog from './components/jobs/JobReadyDialog.vue'
     }
   },
   components: {
+    DeletionBanner: () => import('@/components/account/DeletionBanner.vue'),
+    DeletionNotice: () => import('@/components/account/DeletionNotice.vue'),
     ConnectionBanner,
     ConnectingScreen,
     UpdatingScreen,
@@ -158,6 +164,14 @@ import JobReadyDialog from './components/jobs/JobReadyDialog.vue'
   }
 })
 export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, BrowserMixin) {
+  get deletionPending (): boolean {
+    return deletionState.deleteAfter !== null
+  }
+
+  get deletionCloudView (): boolean {
+    return this.deletionPending && deletionBlocksView(this.$route.name)
+  }
+
   dragState = false
   customBackgroundImageStyle: Record<string, string> = {}
   goKeys = new GoKeys()

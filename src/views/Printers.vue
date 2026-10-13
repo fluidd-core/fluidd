@@ -3,6 +3,10 @@
     class="printers"
     :class="{ 'printers--phone': isMobileViewport }"
   >
+    <deletion-notice
+      v-if="deletionPending"
+      tid="printers-deletion"
+    />
     <!-- Nothing saved, linked or found yet: help find the first printer. -->
     <section
       v-if="page.welcome"
@@ -378,7 +382,7 @@
       </section>
 
       <p
-        v-if="!shownGroups.length && filter !== 'all'"
+        v-if="!deletionPending && !shownGroups.length && filter !== 'all'"
         class="printers__none"
       >
         No printers {{ filterNone }}.
@@ -698,6 +702,7 @@ function readView (): View {
  */
 @Component({
   components: {
+    DeletionNotice: () => import('@/components/account/DeletionNotice.vue'),
     CloudAccountDialog,
     LinkPrinterDialog,
     BluetoothSetupDialog,
@@ -788,7 +793,7 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
   get page (): PrintersPage {
     return printersPage({
       directory: this.directory,
-      groups: this.account ? cloudState.layout.groups : [],
+      groups: this.account && !this.deletionPending ? cloudState.layout.groups : [],
       status: cloudState.status,
       activeJob: this.activeJob,
       signedIn: !!this.account
@@ -914,7 +919,7 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
   // -- groups (the account's, U6) --------------------------------------------
 
   get canGroup (): boolean {
-    return !!this.account
+    return !!this.account && !this.deletionPending
   }
 
   persistGroups (groups: Array<{ id: string, name: string, printers: string[] }>) {

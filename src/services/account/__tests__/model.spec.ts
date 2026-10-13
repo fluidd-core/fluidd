@@ -51,10 +51,10 @@ function session (over: Partial<Session> & { id: string }): Session {
 
 describe('the account in words', () => {
   it('makes initials from the name, else the address', () => {
-    expect(initialsOf('Jack Smith')).toBe('JS')
+    expect(initialsOf('Jack Smith')).toBe('J')
     expect(initialsOf('Jack')).toBe('J')
     expect(initialsOf('  ', 'jedsmith2004@example.com')).toBe('J')
-    expect(initialsOf('', 'tamsin.reid@example.com')).toBe('TR')
+    expect(initialsOf('', 'tamsin.reid@example.com')).toBe('T')
     expect(initialsOf(null, null)).toBe('?')
   })
 

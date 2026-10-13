@@ -24,7 +24,11 @@
           class="muon-switcher__hint"
         >{{ account.email }}</span>
       </div>
-      <template v-if="account">
+      <deletion-notice
+        v-if="deletionPending"
+        tid="switcher-deletion"
+      />
+      <template v-else-if="account">
         <printer-card
           v-for="e in cloudEntries"
           :key="e.key"
@@ -260,7 +264,7 @@ const HEALTH_EVERY_MS = 15_000
  * decides which group a printer is in, so a printer seen through the
  * account, a saved address and this network lists once.
  */
-@Component({ components: { CloudAccountDialog, LinkPrinterDialog, PrinterCard, BluetoothSetupDialog, AccessRequestDialog } })
+@Component({ components: { CloudAccountDialog, LinkPrinterDialog, PrinterCard, BluetoothSetupDialog, AccessRequestDialog, DeletionNotice: () => import('@/components/account/DeletionNotice.vue') } })
 export default class PrinterSwitcher extends Mixins(PrinterEntriesMixin) {
   /** Whether the switcher is open. The health checks run only while it is. */
   @Prop({ type: Boolean, default: true })

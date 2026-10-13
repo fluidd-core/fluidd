@@ -182,6 +182,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import { cloudState } from '@/services/muon-cloud/state'
+import { deletionState } from '@/services/muon-cloud/deletion'
 import { cloudBaseUrl } from '@/services/muon-cloud/api'
 import { centralLoginEnabled } from '@/services/muon-cloud/centralLogin'
 import { activeSlug } from '@/services/printer-pages'
@@ -235,7 +236,7 @@ export default class Account extends Mixins(BrowserMixin) {
    * other sections have nothing to show until it's kept.
    */
   get deleting (): boolean {
-    return !!accountState.me?.account.deletion
+    return deletionState.deleteAfter !== null
   }
 
   get ready (): boolean {

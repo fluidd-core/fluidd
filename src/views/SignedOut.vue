@@ -139,6 +139,7 @@
               <printer-thumb :size="44" />
               <span class="acct-row__label">
                 <b>{{ printer.name }}</b>
+                <span data-tid="nearby-status">{{ printer.status }}</span>
                 <span>{{ printer.host }}</span>
               </span>
               <a
@@ -166,7 +167,8 @@ import PrinterThumb from '@/components/ui/PrinterThumb.vue'
 import { cloudApi } from '@/services/muon-cloud/api'
 import { cloudState } from '@/services/muon-cloud/state'
 import { centralLoginEnabled, startCentralSignIn } from '@/services/muon-cloud/centralLogin'
-import { nearbyHost } from '@/services/muon-cloud/discovery'
+import { nearbyHost, printerHealth } from '@/services/muon-cloud/discovery'
+import { printerStatusWord } from '@/util/printer-status-word'
 import { describe } from '@/services/account/state'
 import { finishSignIn, forgotPassword, passkeySignIn } from '@/services/account/sign-in'
 import { cancelledPasskey, passkeysSupported } from '@/services/account/webauthn'
@@ -186,7 +188,7 @@ import '@/scss/muon3d-account.scss'
 })
 export default class SignedOut extends Vue {
   note: SignedOutNote | null = null
-  nearby: Array<{ id: string, name: string, host: string }> = []
+  nearby: Array<{ id: string, name: string, host: string, status: string }> = []
   busy = false
   error = ''
   resetSent = false
@@ -231,8 +233,12 @@ export default class SignedOut extends Vue {
     try {
       const { printers } = await cloudApi.nearby()
       this.nearby = printers
-        .map(p => ({ id: p.printer_id, name: p.name, host: nearbyHost(p.local_addrs ?? []) ?? '' }))
+        .map(p => ({ id: p.printer_id, name: p.name, host: nearbyHost(p.local_addrs ?? []) ?? '', status: 'Checking…' }))
         .filter(p => p.host)
+      await Promise.all(this.nearby.map(async printer => {
+        const health = await printerHealth(`http://${printer.host}`)
+        printer.status = printerStatusWord(health?.state ?? null)
+      }))
     } catch {
       this.nearby = []
     }

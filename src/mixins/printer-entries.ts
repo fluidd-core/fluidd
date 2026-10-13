@@ -2,6 +2,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import type { InstanceConfig } from '@/store/config/types'
 import StateMixin from './state'
 import { cloudState } from '@/services/muon-cloud/state'
+import { deletionState } from '@/services/muon-cloud/deletion'
 import {
   activateCloudPrinter,
   activateLocalPrinter,
@@ -40,6 +41,10 @@ import { lanPrinterAccess, type AccessAsk, type AccessClient } from '@/services/
  */
 @Component
 export default class PrinterEntriesMixin extends Mixins(StateMixin) {
+  get deletionPending (): boolean {
+    return deletionState.deleteAfter !== null
+  }
+
   instanceDialogOpen = false
   accountDialog = false
   linkDialog = false
@@ -126,7 +131,7 @@ export default class PrinterEntriesMixin extends Mixins(StateMixin) {
 
   get directory (): Directory {
     return printerDirectory({
-      account: this.account ? cloudState.printers : [],
+      account: this.account && !this.deletionPending ? cloudState.printers : [],
       status: cloudState.status,
       email: this.account?.email ?? null,
       saved: this.savedInstances,

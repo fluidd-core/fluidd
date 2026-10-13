@@ -10,13 +10,12 @@ const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'Ju
 
 const two = (n: number) => String(n).padStart(2, '0')
 
-/** Two letters for an avatar: the name's first and last words, else the address's. */
+/** One initial for an avatar, from the name or the address. */
 export function initialsOf (name: string | null | undefined, email?: string | null): string {
   const source = (name || '').trim() || (email || '').split('@')[0] || '?'
   const words = source.split(/[\s._-]+/).filter(Boolean)
   if (!words.length) return '?'
-  const letters = words.length > 1 ? [words[0][0], words[words.length - 1][0]] : [words[0][0]]
-  return letters.join('').toUpperCase()
+  return Array.from(words[0])[0].toUpperCase()
 }
 
 /** "11 Oct", with the year when it isn't this one. */

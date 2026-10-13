@@ -2,10 +2,22 @@
   <v-dialog
     v-model="open"
     max-width="480"
-    :persistent="step === 'confirm'"
+    :persistent="step === 'confirm' && !deleting"
   >
     <v-card class="muon-cloud-dialog">
-      <template v-if="step === 'choose'">
+      <template v-if="deleting">
+        <deletion-notice tid="link-deletion" />
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            text
+            @click="open = false"
+          >
+            Close
+          </v-btn>
+        </v-card-actions>
+      </template>
+      <template v-else-if="step === 'choose'">
         <v-card-title>Link a printer to your account</v-card-title>
         <v-card-subtitle class="pt-1">
           Enter the six-digit code the printer's screen shows while it is linking, or scan its
@@ -181,6 +193,7 @@
 <script lang="ts">
 import { Component, Prop, VModel, Vue, Watch } from 'vue-property-decorator'
 import { cloudApi } from '@/services/muon-cloud/api'
+import { deletionState } from '@/services/muon-cloud/deletion'
 import { cloudState, refreshPrinters } from '@/services/muon-cloud/state'
 import { activateCloudPrinter } from '@/services/muon-cloud/activate'
 import {
@@ -196,8 +209,17 @@ import {
   type LanPrinter
 } from '@/services/muon-cloud/discovery'
 
-@Component({})
+@Component({ components: { DeletionNotice: () => import('@/components/account/DeletionNotice.vue') } })
 export default class LinkPrinterDialog extends Vue {
+  get deleting (): boolean {
+    return deletionState.deleteAfter !== null
+  }
+
+  @Watch('deleting')
+  onDeleting (value: boolean) {
+    if (value) this.reset()
+  }
+
   @VModel({ type: Boolean })
     open?: boolean
 
@@ -258,6 +280,7 @@ export default class LinkPrinterDialog extends Vue {
   }
 
   created () {
+    if (this.deleting) return
     this.code = (this.initialCode || '').replace(/\D/g, '').slice(0, 6)
     if (this.code.length === 6) this.claim(this.code)
     else if (this.initialPrinterId) this.askForCode(this.initialPrinterId, this.initialPrinterId)
@@ -279,12 +302,14 @@ export default class LinkPrinterDialog extends Vue {
   }
 
   rescan () {
+    if (this.deleting) return
     discoveryState.cloudChecked = false
     discoverPrinters(true).catch(() => {})
   }
 
   /** Makes a printer show its link code, so that the person can read it and type it here. */
   async showCode (p: { key: string, name: string, cloud?: CloudNearbyPrinter, lan?: LanPrinter }) {
+    if (this.deleting) return
     if (p.cloud) return this.askForCode(p.cloud.printerId, p.key, p.name)
     if (!p.lan) return
     this.error = null
@@ -306,6 +331,7 @@ export default class LinkPrinterDialog extends Vue {
   }
 
   async askForCode (printerId: string, key: string, name?: string) {
+    if (this.deleting) return
     this.error = null
     this.asking = key
     try {
@@ -320,7 +346,7 @@ export default class LinkPrinterDialog extends Vue {
   }
 
   async claim (code: string) {
-    if (this.busy || code.length !== 6) return
+    if (this.deleting || this.busy || code.length !== 6) return
     this.error = null
     this.busy = true
     try {

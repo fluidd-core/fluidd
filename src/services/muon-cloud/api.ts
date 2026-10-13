@@ -6,6 +6,9 @@
  * when the console serves Fluidd, or the URL saved in `muon.cloud.url`.
  */
 
+import { clearDeletion, deletionRevision, observeDeletion } from './deletion'
+export { deletionState } from './deletion'
+
 export const TOKEN_KEY = 'muon.cloud.token'
 /** Only a central-login session (`WEB-12`) has one; it refreshes at `/token`. */
 export const REFRESH_KEY = 'muon.cloud.refresh'
@@ -19,6 +22,7 @@ export interface CloudAccount {
   email: string;
   name: string;
   created_at: number;
+  deletion?: { requested_at: number, delete_after: number } | null;
 }
 
 export interface CloudPrinter {
@@ -95,8 +99,12 @@ export type JoinAnswer =
   | { state: 'pending', printer_id: string, approval: Approval }
 
 export class CloudError extends Error {
-  constructor (message: string, readonly status: number, readonly code?: string) {
+  constructor (message: string, readonly status: number, readonly code?: string, readonly body: Record<string, unknown> = {}) {
     super(message)
+  }
+
+  get deletionPending (): boolean {
+    return this.status === 403 && this.body.deletion_pending === true
   }
 }
 
@@ -135,6 +143,7 @@ export function storedToken (): string | null {
 
 export function storeToken (token: string | null) {
   writeStorage(TOKEN_KEY, token)
+  if (token === null) clearDeletion()
 }
 
 export function storedRefreshToken (): string | null {
@@ -201,6 +210,7 @@ export function refreshSession (): Promise<boolean> {
 }
 
 async function request<T> (method: string, path: string, body?: unknown, token: string | null = storedToken(), retry = true): Promise<T> {
+  const startedAt = deletionRevision()
   const headers: Record<string, string> = {}
   if (token) headers.authorization = `Bearer ${token}`
   if (body !== undefined) headers['content-type'] = 'application/json'
@@ -233,8 +243,13 @@ async function request<T> (method: string, path: string, body?: unknown, token: 
     throw new CloudError('The Muon3D service sent an unreadable answer.', response.status)
   }
   if (!response.ok) {
-    throw new CloudError(data.error ?? `The Muon3D service answered ${response.status}.`, response.status)
+    if (token !== null && token === storedToken()) observeDeletion(method, path, response.status, data, startedAt)
+    const message = response.status === 403 && data.deletion_pending === true
+      ? 'Your account is waiting to be deleted.'
+      : data.error ?? `The Muon3D service answered ${response.status}.`
+    throw new CloudError(message, response.status, undefined, data)
   }
+  if (token !== null && token === storedToken()) observeDeletion(method, path, response.status, data, startedAt)
   return data as T
 }
 
