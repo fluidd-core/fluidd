@@ -132,7 +132,8 @@ import type { TemperaturePreset } from '@/store/config/types'
 import { visibleMacros, type MacroGroup } from '@/util/visible-macros'
 import type { MoonrakerRootFile } from '@/store/files/types'
 import { highlight, rankCommands, type Command, type Segment } from '@/services/command-bar/rank'
-import { ALL_PRINTERS_KEY, LIBRARY_KEY, SECTIONS, visiblePages } from '@/router/printerSections'
+import { ACCOUNT_KEY, ALL_PRINTERS_KEY, LIBRARY_KEY, SECTIONS, visiblePages } from '@/router/printerSections'
+import { accountSections } from '@/services/account/model'
 import { scopedPath } from '@/router/printerPagePaths'
 import { activeSlug, knownPrinters, printerHomePath, printerPath, samePageFor } from '@/services/printer-pages'
 import { cloudState } from '@/services/muon-cloud/state'
@@ -414,7 +415,7 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
       keys: ['G', LIBRARY_KEY.toUpperCase()],
       icon: 'library',
       run: () => this.go('/library')
-    }]
+    }, ...this.accountCommands]
     if (!activeSlug()) return list
     for (const section of SECTIONS) {
       if (section.shows && !section.shows(this.sectionContext)) continue
@@ -444,6 +445,29 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
       }
     }
     return list
+  }
+
+  /** Your account and its sections (KAN-532): G A, then each by name. */
+  get accountCommands (): Command[] {
+    if (!cloudState.account) return []
+    return accountSections().map(section => section.id === 'overview'
+      ? {
+          id: 'go-account',
+          group: 'Go to' as const,
+          label: 'Account',
+          words: 'account profile me sign out',
+          keys: ['G', ACCOUNT_KEY.toUpperCase()],
+          icon: 'user',
+          run: () => this.go('/account')
+        }
+      : {
+          id: `go-account-${section.id}`,
+          group: 'Go to' as const,
+          label: `Account › ${section.label}`,
+          words: 'account',
+          icon: section.icon,
+          run: () => this.go(`/account/${section.id}`)
+        })
   }
 
   /** Each printer this browser knows, once; on a printer's page, the same page of the other. */

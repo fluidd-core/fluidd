@@ -5,7 +5,7 @@
  * screens only Pro shows: the console, the file editor, the toolhead card.
  */
 export type SettingsSectionId =
-  'general' | 'network' | 'access' | 'updates' | 'cameras' | 'materials' | 'library' | 'macros' |
+  'general' | 'network' | 'access' | 'updates' | 'cameras' | 'materials' | 'macros' |
   'timelapse' | 'spoolman' | 'console' | 'files' | 'toolhead' | 'gcodePreview' | 'developer' | 'system'
 
 /** What decides whether a section shows. */
@@ -40,8 +40,6 @@ export const SETTINGS_SECTIONS: SettingsSection[] = [
   { id: 'updates', label: 'Updates', anchors: ['versions'], shows: has('update_manager') },
   { id: 'cameras', label: 'Cameras', anchors: ['camera'] },
   { id: 'materials', label: 'Materials', anchors: ['presets'] },
-  // The account's, not the printer's: the same on every printer (KAN-521).
-  { id: 'library', label: 'Library', anchors: ['library'] },
   { id: 'macros', label: 'Macros', anchors: ['macros'] },
   { id: 'timelapse', label: 'Timelapse', anchors: ['timelapse'], shows: has('timelapse') },
   { id: 'spoolman', label: 'Spoolman', anchors: ['spoolman'], shows: has('spoolman') },
@@ -58,6 +56,13 @@ export const SETTINGS_SECTIONS: SettingsSection[] = [
 export function visibleSettingsSections (c: SettingsContext): SettingsSection[] {
   return SETTINGS_SECTIONS.filter(s => (!s.pro || c.pro) && (!s.shows || s.shows(c)))
 }
+
+/**
+ * Settings' sections that moved to the account (KAN-532): the Library's
+ * settings are the account's, the same on every printer. An old address
+ * (`/boxwood-367a/settings#library`) opens them there.
+ */
+export const MOVED_TO_ACCOUNT: Record<string, string> = { library: '/account/library' }
 
 /**
  * The section an address opens: `#theme` is General, `#versions` Updates.
