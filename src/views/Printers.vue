@@ -651,6 +651,7 @@ import { discoverPrinters, discoveryState, lanAddresses, refreshKnownPrinters } 
 import { savedUpdates, type DirectoryEntry } from '@/services/muon-cloud/directory'
 import { startNearby, stopNearby } from '@/services/muon-ble/nearby'
 import { printerHomePath } from '@/services/printer-pages'
+import { saveSnapshotPrinters, snapshotPrinter } from '@/services/startup/snapshot'
 import {
   needsYou,
   printersPage,
@@ -793,6 +794,24 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
       activeJob: this.activeJob,
       signedIn: !!this.account
     })
+  }
+
+  /** The tiles kept for the next load's cached view (KAN-525), saved a second after the page settles. */
+  snapshotTimer = 0
+
+  @Watch('page')
+  onPageSnapshot () {
+    clearTimeout(this.snapshotTimer)
+    this.snapshotTimer = window.setTimeout(() => {
+      const tiles = [
+        this.page.printingNow,
+        this.page.groups.map(g => g.tiles),
+        this.page.found,
+        this.page.offline
+      ].flat(2)
+      const seen = new Set<string>()
+      saveSnapshotPrinters(tiles.filter(t => t.key && !seen.has(t.key) && !!seen.add(t.key)).map(snapshotPrinter))
+    }, 1000)
   }
 
   /** "7 printers · 1 printing · 5 ready · 1 needs you · 1 offline · 2 found nearby". */

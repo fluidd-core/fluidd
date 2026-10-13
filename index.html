@@ -62,6 +62,32 @@
 
       .muon-loader__error { position: absolute; bottom: 24px; font: 14px sans-serif; color: inherit; opacity: 0.8; }
       .muon-loader__error a { color: #80d6d1; }
+
+      /* The last-known state, drawn in plain DOM while the socket connects. */
+      .muon-loader__cached { display: none; position: absolute; inset: 0; padding: 56px 20px 20px; overflow: auto; font-family: 'IBM Plex Sans', sans-serif; }
+      #muon-loader.muon-loader--cached .muon-loader__cached { display: block; }
+      .muon-loader__cached.muon-stale { filter: grayscale(0.5); opacity: 0.55; user-select: none; }
+      .muon-loader__printers, .muon-loader__status, .muon-loader__connecting { max-width: 520px; margin-left: auto; margin-right: auto; }
+      .muon-loader__printer { display: flex; align-items: center; gap: 12px; padding: 10px 4px; border-bottom: 1px solid #2c3337; font-size: 14px; }
+      html[data-muon-theme=light] .muon-loader__printer { border-color: #d4d9dc; }
+      .muon-loader__printer-name { font-weight: 600; }
+      .muon-loader__printer-detail { margin-left: auto; font-size: 12px; opacity: 0.7; }
+      .muon-loader__pill { padding: 1px 8px; border: 1px solid #3d464b; border-radius: 999px; font-size: 11px; opacity: 0.9; }
+      html[data-muon-theme=light] .muon-loader__pill { border-color: #c3cbce; }
+      .muon-loader__pill--printing { border-color: #80d6d1; color: #80d6d1; }
+      .muon-loader__pill--ready { border-color: #7bc87f; color: #7bc87f; }
+      .muon-loader__pill--paused, .muon-loader__pill--error { border-color: #d9a05b; color: #d9a05b; }
+      .muon-loader__pill--offline, .muon-loader__pill--unreachable { color: #8a9296; }
+      .muon-loader__status-file { font-family: 'IBM Plex Mono', monospace; font-size: 13px; margin: 16px 0 8px; opacity: 0.9; }
+      .muon-loader__progress { height: 3px; background: rgba(128, 214, 209, 0.15); margin: 8px 0; }
+      .muon-loader__progress-fill { height: 100%; background: #80d6d1; }
+      .muon-loader__status-temps { font-size: 13px; opacity: 0.8; margin-top: 12px; }
+      .muon-loader__status-when { font-size: 11px; opacity: 0.6; margin-top: 8px; }
+      .muon-loader__connecting { display: flex; align-items: center; gap: 10px; margin-top: 18px; font-size: 12px; opacity: 0.8; }
+      .muon-loader__connecting-line { position: relative; flex: 1; height: 2px; background: rgba(128, 214, 209, 0.15); overflow: hidden; }
+      .muon-loader__connecting-line::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40%; background: #80d6d1; animation: muon-loader-indet 1.2s ease-in-out infinite; }
+      @keyframes muon-loader-indet { from { left: -40%; } to { left: 100%; } }
+      @media (prefers-reduced-motion: reduce) { .muon-loader__connecting-line::after { animation: none; left: 30%; } }
     </style>
     <title>Muon3D</title>
     <meta name="description" content="The Klipper web interface for managing your 3d printer" />

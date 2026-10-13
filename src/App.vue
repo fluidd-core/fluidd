@@ -135,6 +135,7 @@ import { GoKeys } from '@/util/go-keys'
 import { isGcodeFile, isModelFile } from '@/services/jobs/model'
 import JobReadyDialog from './components/jobs/JobReadyDialog.vue'
 import { loaderCanGo, rememberTheme, removeLoader, startupState } from '@/services/startup/loader'
+import { saveSnapshotStatus } from '@/services/startup/snapshot'
 
 @Component<App>({
   metaInfo () {
@@ -476,6 +477,57 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     return this.$store.getters['config/getCustomThemeFile']('custom', ['.css'])
   }
 
+  /**
+   * The active printer's state kept for the next load's cached view
+   * (KAN-525), at most once every 5 s; changes inside that are drawn by the
+   * next one, and leaving the tab saves on the spot.
+   */
+  get snapshotStatusLine (): string {
+    const p = this.$store.state.printer.printer
+    if (!p) return ''
+    const progress = Math.floor((this.$store.getters['printer/getPrintProgress'] as number) * 100)
+    return [
+      this.displayName,
+      p.print_stats?.state ?? '',
+      p.print_stats?.filename ?? '',
+      progress,
+      Math.round(p.extruder?.temperature ?? 0),
+      Math.round(p.heater_bed?.temperature ?? 0)
+    ].join('|')
+  }
+
+  snapshotSavedAt = 0
+
+  @Watch('snapshotStatusLine')
+  onSnapshotStatusLine (line: string) {
+    if (!line) return
+    const now = Date.now()
+    if (now - this.snapshotSavedAt < 5000) return
+    this.snapshotSavedAt = now
+    this.saveSnapshotStatus()
+  }
+
+  saveSnapshotStatus () {
+    const slug = activeSlug()
+    const p = this.$store.state.printer.printer
+    if (!slug || !p) return
+    const progress = Math.floor((this.$store.getters['printer/getPrintProgress'] as number) * 100)
+    const state = (p.print_stats?.state as string | undefined) ?? 'ready'
+    saveSnapshotStatus(slug, {
+      name: this.displayName,
+      state,
+      label: state === 'printing' ? `${progress}%` : state === 'paused' ? 'Paused' : state.charAt(0).toUpperCase() + state.slice(1),
+      file: (p.print_stats?.filename as string | undefined) || null,
+      progress,
+      nozzle: typeof p.extruder?.temperature === 'number' ? Math.round(p.extruder.temperature) : null,
+      bed: typeof p.heater_bed?.temperature === 'number' ? Math.round(p.heater_bed.temperature) : null
+    })
+  }
+
+  onVisibilitySave () {
+    if (document.hidden) this.saveSnapshotStatus()
+  }
+
   @Watch('customStyleSheet')
   async onCustomStyleSheet (value: string) {
     if (!value) {
@@ -534,6 +586,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     window.addEventListener('dragleave', this.handleDragLeave)
     window.addEventListener('drop', this.handleDrop)
     window.addEventListener('keydown', this.handleKeyDown, false)
+    document.addEventListener('visibilitychange', this.onVisibilitySave)
 
     // this.onLoadLocale(this.$i18n.locale)
     EventBus.bus.$on('flashMessage', (payload: FlashMessage) => {
@@ -567,6 +620,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     window.removeEventListener('dragleave', this.handleDragLeave)
     window.removeEventListener('drop', this.handleDrop)
     window.removeEventListener('keydown', this.handleKeyDown)
+    document.removeEventListener('visibilitychange', this.onVisibilitySave)
   }
 
   handleDragOver (event: DragEvent) {

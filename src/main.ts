@@ -46,11 +46,18 @@ import { ConfirmPlugin } from './plugins/confirm'
 
 // Main App component
 import App from './App.vue'
-import { setLoaderProgress } from './services/startup/loader'
+import { LOADER_ID, setLoaderProgress, startupState } from './services/startup/loader'
+import { readSnapshot, renderCachedState } from './services/startup/snapshot'
 import { afterFirstPaint, prefetchRoutes } from './services/startup/idle'
 
 // The entry is evaluated: the loader's next mark (KAN-525).
 setLoaderProgress(0.8)
+
+// What the printers last showed goes up while the socket connects; the
+// loader's wordmark stays when there is none (/setup, /sign-in, first run).
+const cachedSlot = document.querySelector<HTMLElement>(`#${LOADER_ID} .muon-loader__cached`)
+startupState.cachedShown = !!cachedSlot && renderCachedState(cachedSlot, readSnapshot(), window.location.pathname)
+if (startupState.cachedShown) document.getElementById(LOADER_ID)?.classList.add('muon-loader--cached')
 
 // Register global directives.
 import Blur from '@/directives/blur'
