@@ -6,7 +6,8 @@
  * never innerHTML.
  */
 
-import { slugForCloudPrinter, slugForInstance } from '@/services/printer-pages'
+import { slugForInstance } from '@/services/printer-pages'
+import { slugForCloudPrinter } from '@/services/printer-pages/slug'
 import type { DirectoryEntry } from '@/services/muon-cloud/directory'
 
 export const SNAPSHOT_KEY = 'muon3d.lastSeen'
