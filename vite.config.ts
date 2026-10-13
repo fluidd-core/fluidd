@@ -10,6 +10,7 @@ import content from '@originjs/vite-plugin-content'
 import monacoEditorPluginModule from 'vite-plugin-monaco-editor'
 import checker from 'vite-plugin-checker'
 import version from './vite.config.inject-version'
+import startup from './vite.config.startup'
 import dns from 'dns/promises'
 
 // Fix for incorrect typings on vite-plugin-monaco-editor
@@ -120,6 +121,7 @@ export default defineConfig(async ({ command }) => {
     }),
     vue(),
     version(),
+    startup(),
     content(),
     monacoEditorPlugin({
       languageWorkers: ['editorWorkerService', 'json', 'css']

@@ -46,6 +46,10 @@ import { ConfirmPlugin } from './plugins/confirm'
 
 // Main App component
 import App from './App.vue'
+import { setLoaderProgress } from './services/startup/loader'
+
+// The entry is evaluated: the loader's next mark (KAN-525).
+setLoaderProgress(0.8)
 
 // Register global directives.
 import Blur from '@/directives/blur'

@@ -135,6 +135,7 @@ import { setProMode } from '@/services/pro-mode'
 import { GoKeys } from '@/util/go-keys'
 import { isGcodeFile, isModelFile } from '@/services/jobs/model'
 import JobReadyDialog from './components/jobs/JobReadyDialog.vue'
+import { loaderCanGo, rememberTheme, removeLoader, startupState } from '@/services/startup/loader'
 
 @Component<App>({
   metaInfo () {
@@ -173,10 +174,41 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   // printer switcher in it starts a network search the setup page must never
   // make (it may reach only the printer).
   routerReady = false
+  /** When App mounted, for the loader's 6 s hold on the connecting screen. */
+  mountedAt = 0
 
   created () {
     const ready = () => { this.routerReady = true }
     this.$router.onReady(ready, ready)
+  }
+
+  /**
+   * Whether the index.html loader can go (KAN-525): the first route resolved,
+   * and a loader showing the cached last state doesn't wait on the connecting
+   * screen past 6 s.
+   */
+  get loaderReady (): boolean {
+    return loaderCanGo({
+      routerReady: this.routerReady,
+      screen: this.connection.screen,
+      cachedShown: startupState.cachedShown,
+      msSinceMount: performance.now() - this.mountedAt
+    })
+  }
+
+  @Watch('loaderReady')
+  onLoaderReady (ready: boolean) {
+    if (ready) this.dismissLoader()
+  }
+
+  dismissLoader () {
+    this.$nextTick(() => requestAnimationFrame(() => { removeLoader() }))
+  }
+
+  /** The theme the next load's loader paints in (index.html reads muon3d.theme). */
+  @Watch('theme.isDark', { immediate: true })
+  onThemeDark (isDark: boolean) {
+    rememberTheme(isDark)
   }
 
   get theme (): ThemeConfig {
@@ -502,6 +534,9 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   }
 
   mounted () {
+    this.mountedAt = performance.now()
+    // The loader's 6 s hold on 'connecting' needs a tick even when nothing changes.
+    setTimeout(() => { if (this.loaderReady) this.dismissLoader() }, 6000)
     window.addEventListener('dragover', this.handleDragOver)
     window.addEventListener('dragenter', this.handleDragOver)
     window.addEventListener('dragleave', this.handleDragLeave)

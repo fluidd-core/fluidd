@@ -4,6 +4,65 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <script>
+      /* The theme before anything paints, so the loader is never the wrong
+         colour; the wordmark's font flags html.muon-font once it can draw. */
+      (function () {
+        var html = document.documentElement
+        try {
+          html.dataset.muonTheme = (localStorage.getItem('muon3d.theme') === 'light' ? 'light' : 'dark')
+        } catch (e) {
+          html.dataset.muonTheme = 'dark'
+        }
+        if (document.fonts && document.fonts.load) {
+          document.fonts.load('1em "Krona One"').then(function () {
+            html.classList.add('muon-font')
+          })
+        }
+      })()
+    </script>
+    <link rel="preload" href="/fonts/krona-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <style>
+      @font-face {
+        font-family: 'Krona One';
+        font-style: normal;
+        font-weight: 400;
+        font-display: block;
+        src: url('/fonts/krona-one-latin-400-normal.woff2') format('woff2');
+      }
+      html, body { margin: 0; background: #13171a; }
+      html[data-muon-theme=light], html[data-muon-theme=light] body { background: #f1f3f4; }
+
+      #muon-loader {
+        position: fixed; inset: 0; z-index: 9999;
+        display: flex; align-items: center; justify-content: center;
+        background: #13171a; color: #e8ecee;
+        --muon-loader-progress: 0;
+      }
+      html[data-muon-theme=light] #muon-loader { background: #f1f3f4; color: #121719; }
+      #muon-loader.muon-loader--gone { opacity: 0; transition: opacity 120ms ease-out; pointer-events: none; }
+
+      .muon-loader__bar { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: rgba(128, 214, 209, 0.15); }
+      .muon-loader__fill {
+        height: 100%; width: calc(var(--muon-loader-progress) * 100%);
+        background: linear-gradient(90deg, #80d6d1 0%, #b7ece9 50%, #80d6d1 100%);
+        background-size: 200% 100%;
+        transition: width 0.2s ease;
+        animation: muon-loader-shimmer 1.4s linear infinite;
+      }
+      @keyframes muon-loader-shimmer { to { background-position: -200% 0; } }
+      @media (prefers-reduced-motion: reduce) { .muon-loader__fill { animation: none; } }
+
+      /* The drawn wordmark shows until Krona One can; then the real type does. */
+      .muon-loader__svg { width: 92px; height: 16px; }
+      .muon-loader__span { font-family: 'Krona One'; font-size: 15px; letter-spacing: 0.24em; line-height: 1; visibility: hidden; }
+      html.muon-font .muon-loader__svg { display: none; }
+      html.muon-font .muon-loader__span { visibility: visible; }
+      #muon-loader.muon-loader--cached .muon-loader__word { display: none; }
+
+      .muon-loader__error { position: absolute; bottom: 24px; font: 14px sans-serif; color: inherit; opacity: 0.8; }
+      .muon-loader__error a { color: #80d6d1; }
+    </style>
     <title>Muon3D</title>
     <meta name="description" content="The Klipper web interface for managing your 3d printer" />
 
@@ -25,6 +84,22 @@
     <noscript>
       <strong>We're sorry, but the Muon3D interface doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
+    <div id="muon-loader" role="progressbar" aria-label="Loading Muon3D">
+      <div class="muon-loader__bar"><div class="muon-loader__fill"></div></div>
+      <div class="muon-loader__word">
+        <svg class="muon-loader__svg" viewBox="0 0 92 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M2 14 V2 l5 7 5-7 v12" />
+          <path d="M18 2 v9 a4 4 0 0 0 8 0 V2" />
+          <path d="M32 2 a5 6 0 1 1 0 12 a5 6 0 1 1 0-12" />
+          <path d="M42 14 V2 l8 12 V2" />
+          <path d="M56 2.5 h6.5 l-4 5 a4.2 4.2 0 1 1 -4.6 4.8" />
+          <path d="M70 14 V2 h4 a6 6 0 0 1 0 12 h-4" />
+        </svg>
+        <span class="muon-loader__span">MUON3D</span>
+      </div>
+      <div class="muon-loader__cached"></div>
+      <p class="muon-loader__error" hidden>Muon3D couldn't load. <a href="">Reload</a></p>
+    </div>
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
