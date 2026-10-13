@@ -28,3 +28,33 @@ export const NAVIGATION_DENYLIST: RegExp[] = [
 /** Whether the service worker leaves a navigation to `pathname` to the network. */
 export const isDeniedNavigation = (pathname: string): boolean =>
   NAVIGATION_DENYLIST.some(pattern => pattern.test(pathname))
+
+/** What a navigation handler is given: the request (Workbox passes more). */
+export interface NavigationOptions {
+  request: Request
+}
+
+/**
+ * How the service worker answers a navigation it takes: from the network, and
+ * with the cached index.html only when the network does not answer (offline).
+ *
+ * The denylist above cannot be the only guard. A worker already installed in a
+ * browser keeps the list it was built with until a newer worker activates, and
+ * that waits for every tab of the site to close. On 13 Oct 2026 a browser last
+ * on app.muon3d.com in September still ran that month's worker, whose list did
+ * not name /authorize: it answered the slicer's sign-in with its own cached
+ * Fluidd, so the console never saw the request and the sign-in window showed
+ * Fluidd failing to connect. Answering from the network first means a path the
+ * server owns reaches the server while online, whatever the list says, and the
+ * page is always the current build.
+ */
+export const networkFirstNavigation = <O extends NavigationOptions>(
+  network: (request: Request) => Promise<Response>,
+  cachedShell: (options: O) => Promise<Response>
+) => async (options: O): Promise<Response> => {
+  try {
+    return await network(options.request)
+  } catch {
+    return cachedShell(options)
+  }
+}
