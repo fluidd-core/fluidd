@@ -67,8 +67,8 @@ if (startupState.cachedShown) document.getElementById(LOADER_ID)?.classList.add(
 // The first frame's two pages' chunks, fetched in parallel with appInit;
 // the warm load would otherwise wait for the router to resolve the route.
 if (!NO_PREFETCH_PATHS.test(window.location.pathname)) {
-  void import('@/views/Printers.vue').catch(() => {})
-  void import('@/views/Overview.vue').catch(() => {})
+  import('@/views/Printers.vue').catch(() => {})
+  import('@/views/Overview.vue').catch(() => {})
 }
 
 // Directives...
