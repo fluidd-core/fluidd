@@ -19,6 +19,26 @@
             html.classList.add('muon-font')
           })
         }
+        /* A head start to the printer and the console. Never on /setup or
+           /sign-in: the setup page may reach only the printer (05 §7). */
+        if (!/^\/(?:setup|sign-in)(?:\/|$)/.test(window.location.pathname)) {
+          var preconnect = function (url) {
+            var o = new URL(url, window.location.href)
+            if (o.origin === window.location.origin || !/^https?:$/.test(o.protocol)) return
+            var l = document.createElement('link')
+            l.rel = 'preconnect'
+            l.href = o.origin
+            l.crossOrigin = 'anonymous'
+            document.head.appendChild(l)
+          }
+          var instances = JSON.parse(localStorage.getItem('appInstances') || '[]')
+          for (var i = 0; i < instances.length; i++) {
+            if (instances[i] && instances[i].active) { preconnect(instances[i].apiUrl); break }
+          }
+          if (localStorage.getItem('muon.cloud.token')) {
+            preconnect(localStorage.getItem('muon.cloud.url'))
+          }
+        }
       })()
     </script>
     <link rel="preload" href="/fonts/krona-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>

@@ -86,6 +86,14 @@ describe('index.html', () => {
     expect(html).toContain('rel="preload" href="/fonts/krona-one-latin-400-normal.woff2" as="font"')
   })
 
+  it('preconnects to the active printer and the console, never on /setup', () => {
+    expect(html).toContain("'appInstances'")
+    expect(html).toContain("rel = 'preconnect'")
+    expect(html).toContain("'muon.cloud.token'")
+    expect(html).toContain('muon.cloud.url')
+    expect(html).toContain('setup|sign-in')
+  })
+
   it('runs the theme script before any stylesheet or other script', () => {
     const theme = html.indexOf('muon3d.theme')
     expect(theme).toBeGreaterThan(-1)
