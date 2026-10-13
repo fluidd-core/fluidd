@@ -89,16 +89,21 @@ export default vitePluginStartup
 
 /**
  * Keeps the service worker's precache to the app shell (KAN-525): index.html,
- * the entry scripts and styles it names and the chunks they statically
- * import (the same walk tools/check-setup-budget.cjs does), and the fonts.
- * Lazy chunks — Monaco and its workers, the viewer, charts, wasm — are left
- * to the runtime cache in sw.ts, so a fresh install downloads only the shell.
+ * the entry scripts and styles it names, the two pages the first frame
+ * draws (Printers and Overview, found by filename prefix) and the chunks
+ * they all statically import (the same walk tools/check-setup-budget.cjs
+ * does), and the fonts. Lazy chunks — Monaco and its workers, the viewer,
+ * charts, wasm — are left to the runtime cache in sw.ts, so a fresh install
+ * downloads only the shell.
  */
 export const shellOnly = (distDir: string) => (entries: Array<{ url: string }>) => {
   const keep = new Set(['index.html'])
   const queue = [...fs.readFileSync(path.join(distDir, 'index.html'), 'utf8')
     .matchAll(/(?:src|href)="(?:\.)?\/(assets\/[^"]+\.(?:js|css))"/g)]
     .map(m => m[1])
+  for (const file of fs.readdirSync(path.join(distDir, 'assets'))) {
+    if (/^(?:Printers|Overview)-[^/]+\.(?:js|css)$/.test(file)) queue.push(`assets/${file}`)
+  }
   while (queue.length) {
     const file = queue.shift() as string
     if (keep.has(file)) continue

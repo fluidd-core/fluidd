@@ -48,7 +48,7 @@ import { ConfirmPlugin } from './plugins/confirm'
 import App from './App.vue'
 import { LOADER_ID, setLoaderProgress, startupState } from './services/startup/loader'
 import { readSnapshot, renderCachedState } from './services/startup/snapshot'
-import { afterFirstPaint, prefetchRoutes } from './services/startup/idle'
+import { afterFirstPaint, NO_PREFETCH_PATHS, prefetchRoutes } from './services/startup/idle'
 
 // Register global directives.
 import Blur from '@/directives/blur'
@@ -63,6 +63,13 @@ setLoaderProgress(0.8)
 const cachedSlot = document.querySelector<HTMLElement>(`#${LOADER_ID} .muon-loader__cached`)
 startupState.cachedShown = !!cachedSlot && renderCachedState(cachedSlot, readSnapshot(), window.location.pathname)
 if (startupState.cachedShown) document.getElementById(LOADER_ID)?.classList.add('muon-loader--cached')
+
+// The first frame's two pages' chunks, fetched in parallel with appInit;
+// the warm load would otherwise wait for the router to resolve the route.
+if (!NO_PREFETCH_PATHS.test(window.location.pathname)) {
+  void import('@/views/Printers.vue').catch(() => {})
+  void import('@/views/Overview.vue').catch(() => {})
+}
 
 // Directives...
 Vue.directive('blur', Blur)

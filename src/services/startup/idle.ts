@@ -30,9 +30,11 @@ export function afterFirstPaint (fn: () => void): void {
  * GcodePreview and Configure are too heavy to fetch for a page the person
  * may never open.
  */
+/** Pages that mount without the app (/setup, /sign-in) get nothing ahead. */
+export const NO_PREFETCH_PATHS = /^\/(?:setup|sign-in)(?:\/|$)/
+
 export function prefetchRoutes (): void {
-  // A page that mounts without the app (/setup, /sign-in) gets nothing ahead.
-  if (/^\/(?:setup|sign-in)(?:\/|$)/.test(window.location.pathname)) return
+  if (NO_PREFETCH_PATHS.test(window.location.pathname)) return
   const pages = [
     () => import('@/views/Overview.vue'),
     () => import('@/views/Jobs.vue'),
