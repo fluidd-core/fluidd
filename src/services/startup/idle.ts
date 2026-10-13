@@ -25,14 +25,14 @@ export function afterFirstPaint (fn: () => void): void {
   appPainted().then(() => idle(fn))
 }
 
+/** Pages that mount without the app (/setup, /sign-in) get nothing ahead. */
+export const NO_PREFETCH_PATHS = /^\/(?:setup|sign-in)(?:\/|$)/
+
 /**
  * The printer pages' chunks, fetched ahead in idle time. Slice, Camera,
  * GcodePreview and Configure are too heavy to fetch for a page the person
  * may never open.
  */
-/** Pages that mount without the app (/setup, /sign-in) get nothing ahead. */
-export const NO_PREFETCH_PATHS = /^\/(?:setup|sign-in)(?:\/|$)/
-
 export function prefetchRoutes (): void {
   if (NO_PREFETCH_PATHS.test(window.location.pathname)) return
   const pages = [
