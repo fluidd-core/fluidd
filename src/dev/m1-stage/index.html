@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>M1 accessory stage</title>
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #d8dbdf;
+      }
+
+      body {
+        --m3d-stage-hi: #eceef0;
+        --m3d-stage-mid: #d8dbdf;
+        --m3d-stage-lo: #c4c8cd;
+      }
+
+      canvas {
+        display: block;
+        width: 960px;
+        height: 640px;
+        max-width: 100vw;
+        max-height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas class="m1-live__canvas" width="960" height="640"></canvas>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

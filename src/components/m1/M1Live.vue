@@ -24,6 +24,7 @@ import { Waits } from '@/globals'
 import { claimLiveView } from '@/services/m1-3d/live-slot'
 import { built, canDrawWebgl, loadViewer, newCanvas, park, prebuild, takeParked } from '@/services/m1-3d/parked'
 import { liveSyncFor, type LiveSync } from '@/services/m1-3d/live-sync'
+import { accessoriesFrom, sameAccessories, type Accessories } from '@/services/m1-3d/accessories'
 import { plateTaps, screenFrom, type LedStrip, type PlateTap, type ScreenState } from '@/services/m1-3d/live-state'
 import { motionPathFrom, type MotionPath } from '@/services/m1-3d/motion'
 import { modelPose, samePose, type ModelPose } from '@/services/m1-3d/pose'
@@ -84,6 +85,9 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
   visible = false
   observer: IntersectionObserver | null = null
   stopReports: (() => void) | null = null
+  reducedMotionQuery: MediaQueryList | null = null
+  reducedMotionListener: ((event: MediaQueryListEvent) => void) | null = null
+  lastAccessories: Accessories | null = null
 
   /** The print drawn, built from the preview once per file; frozen, so Vue leaves it alone. */
   printPath: Readonly<Toolpath> | null = null
@@ -118,8 +122,26 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
     return (this.$store.state.printer.printer.print_stats?.state as string | undefined) ?? ''
   }
 
+  get accessories (): Accessories {
+    return accessoriesFrom(
+      this.$store.state.printer.printer,
+      this.$store.state.console.promptDialog
+    )
+  }
+
   mounted () {
     this.sync().setPose(this.pose)
+    this.reducedMotionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)') ?? null
+    this.sync().accessories.reducedMotion = this.reducedMotionQuery?.matches ?? false
+    this.reducedMotionListener = event => {
+      this.sync().accessories.reducedMotion = event.matches
+      this.viewer?.wake()
+    }
+    if (this.reducedMotionQuery?.addEventListener) {
+      this.reducedMotionQuery.addEventListener('change', this.reducedMotionListener)
+    } else {
+      this.reducedMotionQuery?.addListener?.(this.reducedMotionListener)
+    }
     this.stopReports = this.$store.subscribeAction({
       after: action => {
         if (action.type === 'printer/onFastNotifyStatusUpdate' && action.payload?.key === 'motion_report') this.report()
@@ -137,6 +159,15 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
 
   beforeDestroy () {
     this.stopReports?.()
+    if (this.reducedMotionListener) {
+      if (this.reducedMotionQuery?.removeEventListener) {
+        this.reducedMotionQuery.removeEventListener('change', this.reducedMotionListener)
+      } else {
+        this.reducedMotionQuery?.removeListener?.(this.reducedMotionListener)
+      }
+    }
+    this.reducedMotionQuery = null
+    this.reducedMotionListener = null
     this.observer?.disconnect()
     document.removeEventListener('visibilitychange', this.wake)
     clearTimeout(this.tapsTimer)
@@ -216,6 +247,15 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
     if (samePose(this.lastPose, pose)) return
     this.lastPose = pose
     this.sync().setPose(pose)
+    this.viewer?.wake()
+  }
+
+  @Watch('accessories', { immediate: true })
+  onAccessories (a: Accessories) {
+    if (sameAccessories(this.lastAccessories, a)) return
+    this.lastAccessories = a
+    this.sync().accessories.reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+    this.sync().setAccessories(a, performance.now(), !!this.printPath)
     this.viewer?.wake()
   }
 
@@ -355,7 +395,10 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
   /** A new print clears what the last one left on the plate; a resume doesn't. */
   @Watch('printState')
   onPrintState (now: string, before: string) {
-    if (now === 'printing' && before !== 'paused') this.sync().trace.clear()
+    if (now === 'printing' && before !== 'paused') {
+      this.sync().trace.clear()
+      this.sync().newPrint()
+    }
     this.drawPrint()
   }
 
