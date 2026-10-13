@@ -67,12 +67,25 @@
         <h2>Your printers</h2>
         <span class="acct-card__aside">Owner is set at each printer's screen</span>
       </div>
-      <p
+      <div
         v-if="!owned.length"
-        class="acct-muted prn__empty"
+        class="acct-empty"
+        data-tid="printers-empty"
       >
-        No printers in your account yet. Link one with the six-digit code on its screen.
-      </p>
+        <span class="acct-empty__icon"><frame-icon
+          name="printer"
+          large
+        /></span>
+        <h3>No printers in your account yet</h3>
+        <p>Link an M1 with the six-digit code on its screen. Printers on your network work without this.</p>
+        <button
+          type="button"
+          class="lib-btn lib-btn--pri"
+          @click="linkDialog = true"
+        >
+          Link a printer
+        </button>
+      </div>
       <div class="acct-list">
         <div
           v-for="p in owned"

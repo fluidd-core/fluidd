@@ -39,154 +39,280 @@
         role="menu"
         aria-label="Account"
       >
-        <div
-          v-if="account"
-          class="acct-menu__who"
-        >
-          <span class="acct-menu__avatar">{{ initials }}</span>
-          <span class="acct-menu__names">
-            <b>{{ account.name }}</b>
-            <span>{{ account.email }}</span>
-          </span>
-        </div>
-        <div
-          v-if="account"
-          class="acct-menu__rule"
-        />
-        <router-link
-          v-if="account"
-          :to="accountTo('')"
-          class="acct-menu__item"
-          role="menuitem"
-          data-tid="account-open"
-          @click.native="menu = false"
-        >
-          <frame-icon
-            name="user"
-            small
-          />Account<span class="acct-menu__key">G A</span>
-        </router-link>
-        <router-link
-          v-if="account && built('security')"
-          :to="accountTo('security')"
-          class="acct-menu__item"
-          role="menuitem"
-          @click.native="menu = false"
-        >
-          <frame-icon
-            name="shield"
-            small
-          />Sign-in and security
-        </router-link>
-        <router-link
-          v-if="account && built('printers')"
-          :to="accountTo('printers')"
-          class="acct-menu__item"
-          role="menuitem"
-          @click.native="menu = false"
-        >
-          <frame-icon
-            name="printer"
-            small
-          />Printers and access<span
-            v-if="waiting"
-            class="acct-menu__badge"
-            :aria-label="`${waiting} waiting`"
-          >{{ waiting }}</span>
-        </router-link>
-        <router-link
-          v-if="account"
-          :to="libraryTo"
-          class="acct-menu__item"
-          role="menuitem"
-          data-tid="account-library"
-          @click.native="menu = false"
-        >
-          <frame-icon
-            name="library"
-            small
-          />Library<span class="acct-menu__key">G B</span>
-        </router-link>
-        <router-link
-          v-if="!account"
-          to="/"
-          exact
-          class="acct-menu__item"
-          role="menuitem"
-          @click.native="menu = false"
-        >
-          <frame-icon
-            name="printers"
-            small
-          />All printers<span class="acct-menu__key">G P</span>
-        </router-link>
-        <button
-          v-if="account"
-          type="button"
-          class="acct-menu__item"
-          role="menuitem"
-          @click="menu = false; linkDialog = true"
-        >
-          <frame-icon
-            name="plus"
-            small
-          />Link a printer
-        </button>
-        <div class="acct-menu__rule" />
-        <button
-          type="button"
-          class="acct-menu__item"
-          role="menuitem"
-          @click="openKeys"
-        >
-          <frame-icon
-            name="keyboard"
-            small
-          />Keyboard shortcuts<span class="acct-menu__key">?</span>
-        </button>
-        <a
-          :href="helpUrl"
-          target="_blank"
-          rel="noopener"
-          class="acct-menu__item"
-          role="menuitem"
-          @click="menu = false"
-        >
-          <frame-icon
-            name="help"
-            small
-          />Help and support
-        </a>
-        <div class="acct-menu__rule" />
-        <button
-          v-if="account"
-          type="button"
-          class="acct-menu__item"
-          role="menuitem"
-          data-tid="account-sign-out"
-          @click="doSignOut"
-        >
-          <frame-icon
-            name="logout"
-            small
-          />Sign out
-        </button>
-        <button
-          v-else
-          type="button"
-          class="acct-menu__item"
-          role="menuitem"
-          data-tid="account-sign-in"
-          @click="menu = false; dialog = true"
-        >
-          <frame-icon
-            name="signIn"
-            small
-          />Sign in to Muon3D
-        </button>
-        <app-user-menu @click="menu = false" />
+        <!-- A printer's own page (KAN-532 §2.1): the account's settings open on the console. -->
+        <template v-if="printerPage">
+          <span class="acct-menu__caps">Muon3D account</span>
+          <template v-if="account">
+            <div class="acct-menu__who">
+              <span class="acct-menu__avatar">{{ initials }}</span>
+              <span class="acct-menu__names">
+                <b>{{ account.name }}</b>
+                <span>{{ account.email }}</span>
+              </span>
+            </div>
+            <p class="acct-menu__note">
+              <frame-icon
+                name="info"
+                small
+              />You're on {{ printerName }}'s own page. Your account settings, passkeys and Library open on {{ consoleHost }}.
+            </p>
+            <a
+              :href="consoleUrl('/account')"
+              target="_blank"
+              rel="noopener"
+              class="acct-menu__item"
+              role="menuitem"
+              data-tid="account-manage"
+              @click="menu = false"
+            >
+              <frame-icon
+                name="user"
+                small
+              />Manage your account<frame-icon
+                name="external"
+                small
+                class="acct-menu__out"
+              />
+            </a>
+            <a
+              :href="consoleUrl('/library')"
+              target="_blank"
+              rel="noopener"
+              class="acct-menu__item"
+              role="menuitem"
+              @click="menu = false"
+            >
+              <frame-icon
+                name="library"
+                small
+              />Your Library<frame-icon
+                name="external"
+                small
+                class="acct-menu__out"
+              />
+            </a>
+            <button
+              type="button"
+              class="acct-menu__item"
+              role="menuitem"
+              data-tid="account-sign-out"
+              @click="doSignOut"
+            >
+              <frame-icon
+                name="logout"
+                small
+              />Sign out of Muon3D on this page
+            </button>
+          </template>
+          <button
+            v-else
+            type="button"
+            class="acct-menu__item"
+            role="menuitem"
+            data-tid="account-sign-in"
+            @click="menu = false; dialog = true"
+          >
+            <frame-icon
+              name="signIn"
+              small
+            />Sign in to Muon3D
+          </button>
+          <template v-if="printerConnected">
+            <div class="acct-menu__rule" />
+            <span class="acct-menu__caps">This printer</span>
+            <router-link
+              :to="accessTo"
+              class="acct-menu__item"
+              role="menuitem"
+              @click.native="menu = false"
+            >
+              <frame-icon
+                name="shield"
+                small
+              />People and access
+            </router-link>
+            <button
+              v-if="printerUser && printerPasswordHere"
+              type="button"
+              class="acct-menu__item"
+              role="menuitem"
+              @click="menu = false; passwordDialog = true"
+            >
+              <frame-icon
+                name="lock"
+                small
+              />Change {{ printerName }}'s password
+            </button>
+            <button
+              v-if="printerUser"
+              type="button"
+              class="acct-menu__item"
+              role="menuitem"
+              data-tid="account-lock-printer"
+              @click="lockPrinter"
+            >
+              <frame-icon
+                name="logout"
+                small
+              />Lock {{ printerName }} on this browser
+            </button>
+          </template>
+        </template>
+
+        <template v-else>
+          <div
+            v-if="account"
+            class="acct-menu__who"
+          >
+            <span class="acct-menu__avatar">{{ initials }}</span>
+            <span class="acct-menu__names">
+              <b>{{ account.name }}</b>
+              <span>{{ account.email }}</span>
+            </span>
+          </div>
+          <div
+            v-if="account"
+            class="acct-menu__rule"
+          />
+          <router-link
+            v-if="account"
+            :to="accountTo('')"
+            class="acct-menu__item"
+            role="menuitem"
+            data-tid="account-open"
+            @click.native="menu = false"
+          >
+            <frame-icon
+              name="user"
+              small
+            />Account<span class="acct-menu__key">G A</span>
+          </router-link>
+          <router-link
+            v-if="account && built('security')"
+            :to="accountTo('security')"
+            class="acct-menu__item"
+            role="menuitem"
+            @click.native="menu = false"
+          >
+            <frame-icon
+              name="shield"
+              small
+            />Sign-in and security
+          </router-link>
+          <router-link
+            v-if="account && built('printers')"
+            :to="accountTo('printers')"
+            class="acct-menu__item"
+            role="menuitem"
+            @click.native="menu = false"
+          >
+            <frame-icon
+              name="printer"
+              small
+            />Printers and access<span
+              v-if="waiting"
+              class="acct-menu__badge"
+              :aria-label="`${waiting} waiting`"
+            >{{ waiting }}</span>
+          </router-link>
+          <router-link
+            v-if="account"
+            :to="libraryTo"
+            class="acct-menu__item"
+            role="menuitem"
+            data-tid="account-library"
+            @click.native="menu = false"
+          >
+            <frame-icon
+              name="library"
+              small
+            />Library<span class="acct-menu__key">G B</span>
+          </router-link>
+          <router-link
+            v-if="!account"
+            to="/"
+            exact
+            class="acct-menu__item"
+            role="menuitem"
+            @click.native="menu = false"
+          >
+            <frame-icon
+              name="printers"
+              small
+            />All printers<span class="acct-menu__key">G P</span>
+          </router-link>
+          <button
+            v-if="account"
+            type="button"
+            class="acct-menu__item"
+            role="menuitem"
+            @click="menu = false; linkDialog = true"
+          >
+            <frame-icon
+              name="plus"
+              small
+            />Link a printer
+          </button>
+          <div class="acct-menu__rule" />
+          <button
+            type="button"
+            class="acct-menu__item"
+            role="menuitem"
+            @click="openKeys"
+          >
+            <frame-icon
+              name="keyboard"
+              small
+            />Keyboard shortcuts<span class="acct-menu__key">?</span>
+          </button>
+          <a
+            :href="helpUrl"
+            target="_blank"
+            rel="noopener"
+            class="acct-menu__item"
+            role="menuitem"
+            @click="menu = false"
+          >
+            <frame-icon
+              name="help"
+              small
+            />Help and support
+          </a>
+          <div class="acct-menu__rule" />
+          <button
+            v-if="account"
+            type="button"
+            class="acct-menu__item"
+            role="menuitem"
+            data-tid="account-sign-out"
+            @click="doSignOut"
+          >
+            <frame-icon
+              name="logout"
+              small
+            />Sign out
+          </button>
+          <button
+            v-else
+            type="button"
+            class="acct-menu__item"
+            role="menuitem"
+            data-tid="account-sign-in"
+            @click="menu = false; dialog = true"
+          >
+            <frame-icon
+              name="signIn"
+              small
+            />Sign in to Muon3D
+          </button>
+          <app-user-menu @click="menu = false" />
+        </template>
       </div>
     </v-menu>
+    <user-password-dialog
+      v-if="passwordDialog"
+      v-model="passwordDialog"
+    />
 
     <cloud-account-dialog
       v-if="dialog"
@@ -202,7 +328,10 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { cloudState } from '@/services/muon-cloud/state'
+import { cloudBaseUrl } from '@/services/muon-cloud/api'
+import { centralLoginEnabled } from '@/services/muon-cloud/centralLogin'
 import { beginSignOut } from '@/services/account/sign-out'
+import { printerNameParts } from '@/util/printer-name'
 import { activeSlug } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
 import { ACCOUNT_SECTIONS, initialsOf, type AccountSectionId } from '@/services/account/model'
@@ -212,6 +341,7 @@ import { Globals } from '@/globals'
 import CloudAccountDialog from './CloudAccountDialog.vue'
 import LinkPrinterDialog from './LinkPrinterDialog.vue'
 import AppUserMenu from '@/components/layout/AppUserMenu.vue'
+import UserPasswordDialog from '@/components/settings/auth/UserPasswordDialog.vue'
 
 /** A trusted client or an API key has no name to show, password or log out. */
 const NAMELESS_USERS = ['_TRUSTED_USER_', '_API__API_KEY_USER_USER_']
@@ -221,13 +351,61 @@ const NAMELESS_USERS = ['_TRUSTED_USER_', '_API__API_KEY_USER_USER_']
  * its pages, the Library, linking a printer, the keys and help, and signing
  * out; then the printer's own login when it has one (password, accounts,
  * log out).
+ *
+ * On a printer's own page (the canvas's "Account menu on a printer's own
+ * page") the account's settings open on the console instead, and the
+ * printer's login is "This printer": who can use it, its password, and
+ * locking it in this browser.
  */
-@Component({ components: { CloudAccountDialog, LinkPrinterDialog, AppUserMenu } })
+@Component({ components: { CloudAccountDialog, LinkPrinterDialog, AppUserMenu, UserPasswordDialog } })
 export default class CloudAccountMenu extends Vue {
   dialog = false
   linkDialog = false
   menu = false
+  passwordDialog = false
   helpUrl = Globals.DOCS_ROOT
+
+  /** Not the console's page: passkeys, its cookie and the Library's CORS don't reach here. */
+  get printerPage (): boolean {
+    return !centralLoginEnabled()
+  }
+
+  get consoleHost (): string {
+    try {
+      return new URL(cloudBaseUrl()).host
+    } catch {
+      return 'control.muon3d.com'
+    }
+  }
+
+  consoleUrl (path: string): string {
+    return `${cloudBaseUrl()}${path}`
+  }
+
+  get printerName (): string {
+    return printerNameParts(this.$store.getters['config/getDisplayName'] as string).name || 'this printer'
+  }
+
+  /** A printer is open on this page: its own section has something to offer. */
+  get printerConnected (): boolean {
+    return !!this.$store.state.socket?.open
+  }
+
+  /** The printer keeps this login's password itself (not a system login). */
+  get printerPasswordHere (): boolean {
+    const user = this.$store.getters['auth/getCurrentUser'] as { source?: string } | null
+    return user?.source === 'moonraker'
+  }
+
+  get accessTo () {
+    return { path: scopedPath('/settings', activeSlug()), hash: '#access' }
+  }
+
+  /** Logs this browser out of the printer's own login, as AppUserMenu does. */
+  async lockPrinter () {
+    this.menu = false
+    await this.$store.dispatch('auth/checkTrust')
+  }
 
   /** Signed in to this printer by name (Moonraker's own login). */
   get printerUser (): string | null {
@@ -273,7 +451,7 @@ export default class CloudAccountMenu extends Vue {
 
   doSignOut () {
     this.menu = false
-    return beginSignOut()
+    return beginSignOut(this.$router)
   }
 }
 </script>
@@ -429,6 +607,37 @@ export default class CloudAccountMenu extends Vue {
     height: 1px;
     margin: 6px 4px;
     background: var(--m3d-border);
+  }
+
+  .acct-menu__caps {
+    padding: 8px 12px 4px;
+    color: var(--m3d-text-subtle);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .acct-menu__note {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin: 0 6px 6px;
+    padding: 10px 12px;
+    border-radius: 9px;
+    background: var(--m3d-surface-2);
+    color: var(--m3d-text-muted);
+    font-size: 13px;
+
+    .frame-icon {
+      flex: none;
+      margin-top: 2px;
+      color: var(--m3d-accent);
+    }
+  }
+
+  .acct-menu__out {
+    margin-left: auto;
   }
 
   // The printer's own login, under the account (AppUserMenu).

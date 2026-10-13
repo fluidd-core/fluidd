@@ -338,7 +338,7 @@ import { cloudState } from '@/services/muon-cloud/state'
 import { accountApi } from '@/services/account/api'
 import { accountState, describe, loadMe } from '@/services/account/state'
 import { dayText, listText, type AccountSectionId } from '@/services/account/model'
-import { beginSignOut } from '@/services/account/sign-out'
+import { signOutNow } from '@/services/account/sign-out'
 import { libraryItems, libraryPrints, libraryState, refreshLibrary, watchLibraryAccount } from '@/services/library/store'
 import { bytesText } from '@/services/library/format'
 
@@ -501,10 +501,14 @@ export default class AccountDelete extends Vue {
     }
   }
 
-  /** The console has ended every session: this browser's goes too. */
+  /**
+   * The console has ended every session, the browser's included (#28): the
+   * console's /logout still runs, so its frames clear Slice's dead tokens,
+   * and then the signed-out page says what happened.
+   */
   finish () {
     this.dialog = false
-    beginSignOut()
+    signOutNow('deleted')
   }
 }
 </script>

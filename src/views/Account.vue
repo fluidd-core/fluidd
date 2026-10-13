@@ -297,7 +297,7 @@ export default class Account extends Mixins(BrowserMixin) {
   }
 
   signOut () {
-    return beginSignOut()
+    return beginSignOut(this.$router)
   }
 }
 </script>
