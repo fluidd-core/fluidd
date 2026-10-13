@@ -1,3 +1,5 @@
+import fs from 'fs'
+import path from 'path'
 import type { Plugin } from 'vite'
 
 /**
@@ -69,3 +71,32 @@ const vitePluginStartup = (): Plugin => {
 }
 
 export default vitePluginStartup
+
+/**
+ * Keeps the service worker's precache to the app shell (KAN-525): index.html,
+ * the entry scripts and styles it names and the chunks they statically
+ * import (the same walk tools/check-setup-budget.cjs does), and the fonts.
+ * Lazy chunks — Monaco and its workers, the viewer, charts, wasm — are left
+ * to the runtime cache in sw.ts, so a fresh install downloads only the shell.
+ */
+export const shellOnly = (distDir: string) => (entries: Array<{ url: string }>) => {
+  const keep = new Set(['index.html'])
+  const queue = [...fs.readFileSync(path.join(distDir, 'index.html'), 'utf8')
+    .matchAll(/(?:src|href)="(?:\.)?\/(assets\/[^"]+\.(?:js|css))"/g)]
+    .map(m => m[1])
+  while (queue.length) {
+    const file = queue.shift() as string
+    if (keep.has(file)) continue
+    keep.add(file)
+    if (!file.endsWith('.js')) continue
+    const code = fs.readFileSync(path.join(distDir, file), 'utf8')
+    for (const m of code.matchAll(/(?:\bimport|\bexport)\s*(?:[\w$*{}\s,]*?\bfrom\s*)?["']\.\/([^"']+\.js)["']/g)) {
+      queue.push(`assets/${m[1]}`)
+    }
+  }
+
+  const manifest = entries.filter(e => (
+    keep.has(e.url) || /^fonts\/.+\.woff2$/.test(e.url) || /^assets\/.+\.woff2$/.test(e.url)
+  ))
+  return { manifest, warnings: [] as string[] }
+}

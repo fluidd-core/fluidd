@@ -10,7 +10,7 @@ import content from '@originjs/vite-plugin-content'
 import monacoEditorPluginModule from 'vite-plugin-monaco-editor'
 import checker from 'vite-plugin-checker'
 import version from './vite.config.inject-version'
-import startup from './vite.config.startup'
+import startup, { shellOnly } from './vite.config.startup'
 import dns from 'dns/promises'
 
 // Fix for incorrect typings on vite-plugin-monaco-editor
@@ -56,7 +56,8 @@ export default defineConfig(async ({ command }) => {
         globPatterns: [
           '**/*.{js,css,html,ttf,woff,woff2,wasm}'
         ],
-        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2
+        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
+        manifestTransforms: [shellOnly(path.resolve(__dirname, 'dist'))]
       },
       manifest: {
         name: 'Muon3D',
