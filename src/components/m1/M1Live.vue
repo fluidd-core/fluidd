@@ -131,15 +131,17 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
         if (action.type === 'printer/onFastNotifyStatusUpdate' && action.payload?.key === 'motion_report') this.report()
       }
     })
-    if (!canDrawWebgl() || typeof IntersectionObserver === 'undefined') return
+    if (typeof IntersectionObserver === 'undefined') return
     // The observer is cheap and starts at once; the viewer build waits for
     // the view's first intersect AND the app's first paint — building it
     // earlier cost seconds on the frame the overview first draws (KAN-525).
+    // canDrawWebgl is part of that cost too: it makes a WebGL context, and
+    // that stalls the frame it runs in, so it waits here as well.
     this.observer = new IntersectionObserver(entries => {
       this.visible = entries.some(e => e.isIntersecting)
       if (this.visible && !this.armed) {
         afterFirstPaint(() => {
-          if (this.gone) return
+          if (this.gone || !canDrawWebgl()) return
           this.armed = true
           prebuild()
           this.wake()
