@@ -103,6 +103,8 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
 
   /** Set on destroy so an idle callback still owed does nothing (KAN-525). */
   gone = false
+  /** Set once the view has been seen and the app has painted; nothing loads the viewer before. */
+  armed = false
 
   /** This printer's sync, which outlives the view. Not data: Vue mustn't walk it. */
   sync (): LiveSync {
@@ -130,19 +132,23 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
       }
     })
     if (!canDrawWebgl() || typeof IntersectionObserver === 'undefined') return
-    // The live M1 builds ahead and the observer starts it — but only once the
-    // first frame has painted, so the viewer chunk isn't fetched at the
-    // entry's expense (KAN-525).
-    afterFirstPaint(() => {
-      if (this.gone) return
-      prebuild()
-      this.observer = new IntersectionObserver(entries => {
-        this.visible = entries.some(e => e.isIntersecting)
-        this.wake()
-      })
-      this.observer.observe(this.$el)
-      document.addEventListener('visibilitychange', this.wake)
+    // The observer is cheap and starts at once; the viewer build waits for
+    // the view's first intersect AND the app's first paint — building it
+    // earlier cost seconds on the frame the overview first draws (KAN-525).
+    this.observer = new IntersectionObserver(entries => {
+      this.visible = entries.some(e => e.isIntersecting)
+      if (this.visible && !this.armed) {
+        afterFirstPaint(() => {
+          if (this.gone) return
+          this.armed = true
+          prebuild()
+          this.wake()
+        })
+      }
+      this.wake()
     })
+    this.observer.observe(this.$el)
+    document.addEventListener('visibilitychange', this.wake)
   }
 
   beforeDestroy () {
@@ -156,12 +162,14 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
 
   /** Starts the live M1 when it can show (on screen, the printer there), and draws only while it shows. */
   wake () {
+    if (!this.armed) return
     const showing = this.visible && this.state !== 'offline' && !document.hidden
     this.viewer?.setActive(showing)
     if (showing && !this.live) this.start()
   }
 
   async start () {
+    if (!this.armed) return
     this.live = true
     this.giveBack = claimLiveView(() => this.stop())
     try {

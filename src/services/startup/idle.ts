@@ -1,17 +1,28 @@
 /**
  * Work for after the first useful frame (KAN-525): prefetching the printer
- * pages' chunks must not race the first paint.
+ * pages' chunks must not race the first paint. A rAF is no proof a frame
+ * was presented, so the gate is the loader actually leaving the DOM —
+ * removeLoader only runs once the app is up.
  */
 
-/** Runs fn after two frames, in idle time where the browser offers it. */
+import { loaderGone } from './loader'
+
+const idle = (fn: () => void): void => {
+  const ric = (window as Window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => void }).requestIdleCallback
+  if (ric) ric(fn, { timeout: 3000 })
+  else setTimeout(fn, 200)
+}
+
+/** Resolves after the loader is gone and two frames have run. */
+export function appPainted (): Promise<void> {
+  return loaderGone.then(() => new Promise<void>(resolve => {
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+  }))
+}
+
+/** Runs fn once the app has painted, in idle time where the browser offers it. */
 export function afterFirstPaint (fn: () => void): void {
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const ric = (window as Window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => void }).requestIdleCallback
-      if (ric) ric(fn, { timeout: 3000 })
-      else setTimeout(fn, 200)
-    })
-  })
+  appPainted().then(() => idle(fn))
 }
 
 /**

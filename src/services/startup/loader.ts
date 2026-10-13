@@ -26,12 +26,23 @@ export function setLoaderProgress (p: number, doc: Document = document): void {
   doc.getElementById(LOADER_ID)?.style.setProperty('--muon-loader-progress', String(p))
 }
 
+let markLoaderGone: () => void = () => {}
+
+/** Resolves when the loader has left the DOM (at once if there never was one). */
+export const loaderGone: Promise<void> = new Promise(resolve => {
+  markLoaderGone = resolve
+})
+if (typeof document !== 'undefined' && !document.getElementById(LOADER_ID)) markLoaderGone()
+
 const removals = new WeakMap<Document, Promise<void>>()
 
 /** Fades the loader out and takes it from the DOM; safe to call again while it goes. */
 export function removeLoader (doc: Document = document): Promise<void> {
   const el = doc.getElementById(LOADER_ID)
-  if (!el) return Promise.resolve()
+  if (!el) {
+    markLoaderGone()
+    return Promise.resolve()
+  }
   let pending = removals.get(doc)
   if (!pending) {
     setLoaderProgress(1, doc)
@@ -39,6 +50,7 @@ export function removeLoader (doc: Document = document): Promise<void> {
     pending = new Promise<void>(resolve => {
       const done = () => {
         el.remove()
+        markLoaderGone()
         resolve()
       }
       const timer = setTimeout(done, 120)

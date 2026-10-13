@@ -24,7 +24,10 @@ const bootstrap = (entry: string, styles: string[]) => `<script>
   function boot () {
     import(ENTRY).catch(fail)
   }
+  var went = false
   function go () {
+    if (went) return
+    went = true
     progress(0.15)
     if (!CSS.length) { progress(0.5); boot(); return }
     var done = 0
@@ -41,7 +44,19 @@ const bootstrap = (entry: string, styles: string[]) => `<script>
       document.head.appendChild(l)
     })
   }
-  requestAnimationFrame(function () { setTimeout(go, 0) })
+  /* rAF is no proof a frame was presented; the first real paint is. */
+  var observing = false
+  try {
+    new PerformanceObserver(function (list) {
+      var entries = list.getEntries()
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].name === 'first-paint' || entries[i].name === 'first-contentful-paint') { go(); return }
+      }
+    }).observe({ type: 'paint', buffered: true })
+    observing = true
+  } catch (e) {}
+  if (!observing) requestAnimationFrame(function () { setTimeout(go, 0) })
+  setTimeout(go, 300)
 })()
 </script>`
 
