@@ -64,6 +64,7 @@
           v-else-if="connection.page"
           :class="{ 'muon-stale': connection.stale }"
           :aria-busy="connection.stale ? 'true' : undefined"
+          :inert="connection.stale ? '' : undefined"
         />
 
         <register-service-worker />
@@ -128,6 +129,8 @@ import { prebuild as prebuildLiveM1 } from '@/services/m1-3d/parked'
 import { ACTIVE_PHASES, offlineScreen } from '@/services/updates/model'
 import { printerNameParts } from '@/util/printer-name'
 import { connectionView, type ConnectionView } from '@/services/connection/view'
+import { cloudState } from '@/services/muon-cloud/state'
+import { consolePresence } from '@/services/muon-cloud/presence'
 import FrameMixin from '@/mixins/frame'
 import { ALL_PRINTERS_KEY, PAGE_KEYS, sectionForKey } from '@/router/printerSections'
 import { scopedPath } from '@/router/printerPagePaths'
@@ -282,6 +285,10 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
 
   /** What the connection shows: the page, a bar over it, or a screen of its own (services/connection/view). */
   get connection (): ConnectionView {
+    const printer = cloudState.printers.find(p => p.id === cloudState.activePrinterId)
+    // Status polling ticks this reactive clock even for offline printers.
+    const status = printer ? cloudState.status[printer.id] : undefined
+    const presence = printer ? consolePresence(printer, status?.updatedAt ?? Date.now()) : 'online'
     return connectionView({
       socketConnected: this.socketConnected,
       apiConnected: this.apiConnected,
@@ -291,6 +298,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
       stalled: this.socketStalled,
       printerIndependent: this.managedConsoleRoute || this.printerIndependentRoute,
       otherPrinter: this.otherPrinterRoute,
+      cloudPresence: presence === 'online' ? null : presence,
       updating: !this.socketConnected && updateWatch.printer === (activeSlug() ?? '')
         ? offlineScreen(updateWatch.remembered, updateWatch.now)
         : null
@@ -611,7 +619,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   }
 
   handleKeyDown (event: KeyboardEvent) {
-    if (!this.enableKeyboardShortcuts) {
+    if (!this.enableKeyboardShortcuts || this.connection.stale) {
       return
     }
 

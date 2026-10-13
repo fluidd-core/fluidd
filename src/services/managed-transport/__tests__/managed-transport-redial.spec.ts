@@ -38,6 +38,35 @@ afterEach(() => {
 })
 
 describe('ManagedIrohPrinterTransport re-dialling', () => {
+  it('never redials a shared transport after its owner closes it', async () => {
+    const log: string[] = []
+    const openRelay = vi.fn(async () => relay('shared', log))
+    const transport = new ManagedIrohPrinterTransport({ authorizedSession: session('grant'), createEndpoint: async () => ({ openRelay, close () {} }) })
+    await transport.fetch('/server/info')
+    transport.close()
+    await expect(transport.fetch('/server/info')).rejects.toThrow(/closed/)
+    await expect(transport.openWebSocket('/websocket')).rejects.toThrow(/closed/)
+    expect(openRelay).toHaveBeenCalledTimes(1)
+    expect(transport.status.connection).toBe('closed')
+  })
+  it('keeps the shared connection when one HTTP caller cancels its request', async () => {
+    const log: string[] = []
+    const shared = relay('shared', log)
+    const originalFetch = shared.fetch
+    shared.fetch = async (path, init) => {
+      if (init?.signal?.aborted) throw init.signal.reason
+      return originalFetch(path, init)
+    }
+    const openRelay = vi.fn(async () => shared)
+    const transport = new ManagedIrohPrinterTransport({ authorizedSession: session('grant'), createEndpoint: async () => ({ openRelay, close () {} }) })
+    await transport.fetch('/server/info')
+    const cancelled = new AbortController()
+    cancelled.abort()
+    await expect(transport.fetch('/server/files', { signal: cancelled.signal })).rejects.toMatchObject({ name: 'AbortError' })
+    await transport.fetch('/server/info')
+    expect(openRelay).toHaveBeenCalledTimes(1)
+    expect(log).toEqual(['shared:fetch', 'shared:fetch'])
+  })
   it('drops a relay that failed a request, and dials a new one for the next', async () => {
     // Before this, a dead connection was kept for the life of the selection
     // and every request failed until the page was reloaded.

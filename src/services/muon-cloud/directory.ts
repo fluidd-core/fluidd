@@ -28,6 +28,7 @@ import {
   type LanPrinter
 } from './discovery'
 import { searchRows, type SearchRow } from './searchRows'
+import { consolePresence } from './presence'
 
 /**
  * What the status icon says:
@@ -41,7 +42,7 @@ import { searchRows, type SearchRow } from './searchRows'
  * - `available`: found, and its state was not read (Discovery rows).
  */
 export type PrinterHealth =
-  'online' | 'printing' | 'paused' | 'connecting' | 'searching' | 'offline' | 'error' | 'locked' | 'available'
+  'online' | 'printing' | 'paused' | 'connecting' | 'reconnecting' | 'searching' | 'offline' | 'error' | 'locked' | 'available'
 
 export type DirectorySection = 'cloud' | 'local' | 'found'
 
@@ -160,6 +161,7 @@ export function healthLabel (h: PrinterHealth): string {
     case 'printing': return 'Printing'
     case 'paused': return 'Paused'
     case 'connecting': return 'Connecting…'
+    case 'reconnecting': return 'Reconnecting…'
     case 'searching': return 'Looking for it…'
     case 'offline': return 'Offline'
     case 'error': return 'Error'
@@ -169,9 +171,11 @@ export function healthLabel (h: PrinterHealth): string {
 }
 
 /** A cloud printer's state, from the service's online flag and its status reads over Iroh. */
-export function cloudHealth (online: boolean, s: PrinterStatus | undefined): PrinterHealth {
-  if (!online) return 'offline'
+export function cloudHealth (online: boolean, s: PrinterStatus | undefined, lastSeen = 0): PrinterHealth {
+  const presence = consolePresence({ online, last_seen: lastSeen })
+  if (presence !== 'online') return presence
   if (!s) return 'connecting'
+  if (!s.reachable && s.error === 'reconnecting') return 'reconnecting'
   if (!s.reachable) return s.error === 'offline' ? 'offline' : 'error'
   if (s.state === 'printing') return 'printing'
   if (s.state === 'paused') return 'paused'
@@ -215,8 +219,8 @@ export function printerDirectory (src: DirectorySources): Directory {
     const localActive = !!activeLocal && saved.some(s => s.apiUrl === activeLocal)
     const active = src.activeCloudId === c.id ? 'cloud' : localActive ? 'local' : null
     const status = src.status[c.id]
-    let health = cloudHealth(c.online, status)
-    let detail = cloudDetail(c.online, status)
+    let health = cloudHealth(c.online, status, c.last_seen)
+    let detail = cloudDetail(c.online, status, c.last_seen)
     if (active === 'local' && src.local) {
       health = src.local.health
       detail = `${src.local.detail} · connected locally`
@@ -330,9 +334,11 @@ export function printerDirectory (src: DirectorySources): Directory {
 }
 
 /** The line under a cloud printer's name. */
-export function cloudDetail (online: boolean, s: PrinterStatus | undefined): string {
-  if (!online) return 'Offline'
+export function cloudDetail (online: boolean, s: PrinterStatus | undefined, lastSeen = 0): string {
+  const presence = consolePresence({ online, last_seen: lastSeen })
+  if (presence !== 'online') return healthLabel(presence)
   if (!s) return 'Connecting through Muon3D…'
+  if (!s.reachable && s.error === 'reconnecting') return 'Reconnecting…'
   if (!s.reachable) return s.error === 'offline' ? 'Offline' : `Unreachable: ${s.error}`
   const state = (s.state ?? 'unknown').replace(/^\w/, c => c.toUpperCase())
   if (s.state === 'printing' || s.state === 'paused') {

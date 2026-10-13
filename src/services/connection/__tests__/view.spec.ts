@@ -14,6 +14,13 @@ const up: ConnectionFacts = {
 const dropped: ConnectionFacts = { ...up, socketConnected: false, apiConnected: false, socketConnecting: true }
 
 describe('what the connection shows', () => {
+  it('keeps cached pages greyed while the console reports a recent drop, even before the socket closes', () => {
+    expect(connectionView({ ...up, cloudPresence: 'reconnecting' })).toEqual({ page: true, stale: true, banner: 'reconnecting', screen: null })
+  })
+
+  it('labels a prolonged cloud drop Offline while keeping the cached page', () => {
+    expect(connectionView({ ...dropped, cloudPresence: 'offline' })).toEqual({ page: true, stale: true, banner: 'offline', screen: null })
+  })
   it('is the page, with nothing over it, while connected', () => {
     expect(connectionView(up)).toEqual({ page: true, stale: false, banner: null, screen: null })
   })

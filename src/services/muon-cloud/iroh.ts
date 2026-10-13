@@ -13,11 +13,11 @@ import type {
 } from '@/services/managed-transport'
 import { bluetoothRouteFor, type WasmBleLink } from '@/services/muon-ble/link'
 import { cloudBaseUrl } from './api'
+import bundledWasmUrl from './vendor/muon-link-web/d71dbe1/muon_link_web_bg.wasm?url'
 
 const KEY_STORAGE = 'muon.cloud.key'
-// From the Muon3D service, not this page's origin: a printer serves its own
-// Fluidd, and the Iroh client lives with the service it talks to.
-const wasmUrl = () => `${cloudBaseUrl()}/muon-link-web/muon_link_web.js`
+// Remove after one release. Normal loads never depend on the console's files.
+const ALLOW_CONSOLE_CLIENT_FALLBACK = true
 
 interface WasmSocket {
   send (text: string): Promise<void>;
@@ -55,9 +55,16 @@ let endpointRelay = ''
 function loadWasm (): Promise<WasmModule> {
   if (!modulePromise) {
     modulePromise = (async () => {
-      const mod = await import(/* @vite-ignore */ wasmUrl()) as WasmModule
-      await mod.default()
-      return mod
+      try {
+        const mod = await import('./vendor/muon-link-web/d71dbe1/muon_link_web.js') as WasmModule
+        await mod.default({ module_or_path: bundledWasmUrl })
+        return mod
+      } catch (error) {
+        if (!ALLOW_CONSOLE_CLIENT_FALLBACK) throw error
+        const mod = await import(/* @vite-ignore */ `${cloudBaseUrl()}/muon-link-web/muon_link_web.js`) as WasmModule
+        await mod.default()
+        return mod
+      }
     })()
     modulePromise.catch(() => { modulePromise = null })
   }
