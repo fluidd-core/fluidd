@@ -3,8 +3,11 @@ import { LOADER_ID } from '../loader'
 
 const stubFrames = () => {
   // Fake timers own setTimeout; run rAF through it.
-  window.requestAnimationFrame = ((cb: FrameRequestCallback) => setTimeout(() => cb(0), 0)) as typeof window.requestAnimationFrame
-  delete (window as Window & { requestIdleCallback?: unknown }).requestIdleCallback
+  window.requestAnimationFrame = (cb: FrameRequestCallback) => {
+    setTimeout(() => cb(performance.now()), 0)
+    return 0
+  }
+  delete (window as { requestIdleCallback?: unknown }).requestIdleCallback
 }
 
 describe('afterFirstPaint (KAN-525)', () => {
