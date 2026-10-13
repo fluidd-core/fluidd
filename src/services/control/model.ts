@@ -260,7 +260,60 @@ export function retractionCommand (key: RetractionKey, value: number): string {
   return `SET_RETRACTION ${key.toUpperCase()}=${value}`
 }
 
-export function sensorCommand (name: string, enabled: boolean): string {
+/** The parts of Klipper's `configfile` object that say what a filament sensor does. */
+export interface SensorConfigFile {
+  /** What Klipper loaded, by lower-case section name. */
+  settings?: Record<string, unknown>;
+  /** printer.cfg as written. */
+  config?: Record<string, unknown>;
+}
+
+/**
+ * What a filament sensor is for, from its section in printer.cfg:
+ * - `loads`: its insert_gcode is set, so filament pushed in starts the
+ *   automatic load (the M1's INSERT_FILAMENT_SENSOR). Turning the sensor
+ *   off would disarm that, and it stays armed (Jack, 10 Oct 2026).
+ * - `runout`: Klipper loaded the section and it has no insert_gcode, so the
+ *   sensor only watches for runout, and can be off.
+ * - `unknown`: the printer's settings have not arrived yet, or do not name
+ *   the sensor. Until they do, it is kept on.
+ */
+export type FilamentSensorRole = 'loads' | 'runout' | 'unknown'
+
+const SENSOR_TYPES = ['filament_switch_sensor', 'filament_motion_sensor']
+
+/** A sensor's section, either type, matched without regard to case (Klipper lower-cases `settings`). */
+function sensorSection (sections: Record<string, unknown> | undefined, name: string): Record<string, unknown> | undefined {
+  if (!sections || typeof sections !== 'object') return undefined
+  const wanted = SENSOR_TYPES.map(type => `${type} ${name}`.toLowerCase())
+  for (const key of Object.keys(sections)) {
+    const section = sections[key]
+    if (wanted.includes(key.toLowerCase()) && section && typeof section === 'object') return section as Record<string, unknown>
+  }
+  return undefined
+}
+
+/** insert_gcode set to anything but blank. Something other than text counts as set. */
+function loadsOnInsert (section: Record<string, unknown> | undefined): boolean {
+  const gcode = section?.insert_gcode
+  if (gcode == null) return false
+  return typeof gcode !== 'string' || gcode.trim() !== ''
+}
+
+export function filamentSensorRole (configfile: SensorConfigFile | undefined, name: string): FilamentSensorRole {
+  const loaded = sensorSection(configfile?.settings, name)
+  if (loadsOnInsert(loaded) || loadsOnInsert(sensorSection(configfile?.config, name))) return 'loads'
+  return loaded ? 'runout' : 'unknown'
+}
+
+/**
+ * SET_FILAMENT_SENSOR for a sensor, or null when it would turn off one
+ * that is not confirmed runout-only. On is always allowed: it re-arms.
+ * The panels' handlers send through this, so they refuse an off even
+ * when called directly.
+ */
+export function sensorCommand (name: string, enabled: boolean, configfile: SensorConfigFile | undefined): string | null {
+  if (!enabled && filamentSensorRole(configfile, name) !== 'runout') return null
   return `SET_FILAMENT_SENSOR SENSOR=${name} ENABLE=${enabled ? 1 : 0}`
 }
 
