@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Vendored from @muon3d/printer-client 0.2.0 (src/bridge/protocol.ts), Copyright 2026 Muon 3D
+// Vendored from @muon3d/printer-client 0.3.0 (src/bridge/protocol.ts), Copyright 2026 Muon 3D
 // Technologies Limited, under the Apache License 2.0 (vendor/printer-client/LICENSE and NOTICE). Changed for
 // Fluidd by tools/vendor-printer-client.cjs: relative imports without ".ts"; Object.hasOwn as hasOwnProperty.call.
 // printer-bridge/1: how a page that frames a printer client (the host: Fluidd, a reference host in the tests) and the
@@ -47,6 +47,14 @@
 // lists what it uses in its hello's `features`, so a host knows whether the frame will draw itself as a part of the
 // host's page. An old client ignores the fields and the events; an old host never sends them, and the client then
 // draws itself as it always has. A malformed look, mode or setup is dropped: never a reason to refuse a welcome.
+//
+// The other way (0.3.0, optional the same way): a host that keeps its printer's loaded material grants
+// `printer.material`, and a client that lists it in its features then sends the event `printer.material` (the material
+// type and the filament's colour) when the person changes what is loaded on the host's selected printer in the client.
+// The host writes it to the printer (Muon's Fluidd: save_variables' muon_material and muon_material_color) and says the
+// result in its next printer.setup. An old host never grants it, so a client never sends it there; an old client never
+// sends it, and the host's printer is as before. A host takes it only for the printer it has selected now, and never
+// from a frame whose printer is watch-only or offline.
 import { CHECKSUM_RE } from '../multipart/build';
 import { unsafeNameReason } from '../multipart/names';
 import { cleanText, type ErrorKind, type PrinterError } from '../errors/kinds';
@@ -73,10 +81,10 @@ export const OPS = {
 export type BridgeOp = keyof typeof OPS;
 
 /**
- * The host's UI capabilities (see the file comment), optional inside version 1: a host grants the ones it sends, and a
- * client lists the ones it uses in its hello's `features`.
+ * The host's UI capabilities (see the file comment), optional inside version 1: a host grants the ones it sends (or,
+ * for printer.material, takes), and a client lists the ones it uses in its hello's `features`.
  */
-export const CAPABILITIES_HOST_UI = ['ui.look', 'ui.mode', 'printer.setup'] as const;
+export const CAPABILITIES_HOST_UI = ['ui.look', 'ui.mode', 'printer.setup', 'printer.material'] as const;
 export type HostUiCapability = (typeof CAPABILITIES_HOST_UI)[number];
 
 /** The events a host sends, and the capability each comes with (null: always). */
@@ -93,8 +101,14 @@ export const HOST_EVENTS = {
 export type HostEventName = keyof typeof HOST_EVENTS;
 
 /** The events a client sends. */
-export const CLIENT_EVENTS = ['slicer.state'] as const;
+export const CLIENT_EVENTS = ['slicer.state', 'printer.material'] as const;
 export type ClientEventName = (typeof CLIENT_EVENTS)[number];
+
+/** The capability the welcome must grant before a client sends each of its events (null: every host takes it). */
+export const CLIENT_EVENT_CAPABILITIES: Readonly<Record<ClientEventName, HostUiCapability | null>> = {
+  'slicer.state': null,
+  'printer.material': 'printer.material',
+};
 
 /** The Moonraker reads a host allows through `moonraker.read` (version 1). Anything else is `not-allowed`. */
 export const READ_METHODS = [
@@ -145,6 +159,8 @@ export const LIMITS = {
   url: 512,
   /** Materials in a printer.setup's table. */
   materials: 32,
+  /** A printer.material's material type ("PLA", "PETG"). */
+  materialName: 32,
 } as const;
 
 /** A 32-digit hex nonce (16 random bytes). */
@@ -260,6 +276,17 @@ export interface HostMaterial {
 export interface HostSetup {
   material: HostMaterial | null;
   materials: HostMaterial[];
+}
+
+/**
+ * printer.material's data (client → host, with `printer.material`): what the person loaded on the host's selected
+ * printer in the client, for the host to keep as that printer's loaded material. `material` is its type as a printer's
+ * filament panel names materials ("PLA", "PETG"); `colour` the filament's colour, "#RRGGBB", or null when the client
+ * says none (the host then keeps the printer's own).
+ */
+export interface PrinterMaterial {
+  material: string;
+  colour: string | null;
 }
 
 export interface Welcome {
@@ -747,6 +774,46 @@ export function parseHostSetup(value: unknown): HostSetup | null {
         .filter((m): m is HostMaterial => m !== null)
     : [];
   return { material: parseHostMaterial(r.material), materials };
+}
+
+/** A material type a printer's panel names: a letter or digit, then letters, digits, spaces and + . _ - (32 at most). */
+const MATERIAL_NAME_RE = new RegExp(`^[A-Za-z0-9][A-Za-z0-9 +._-]{0,${LIMITS.materialName - 1}}$`);
+
+/**
+ * printer.material's data as a host reads it, or null when it is not one: a material type (MATERIAL_NAME_RE, trimmed),
+ * and a colour that is "#RRGGBB" (with or without "#", written upper-case with it) or null. Nothing a host writes to its
+ * printer is taken from anything else.
+ */
+export function parsePrinterMaterial(value: unknown): PrinterMaterial | null {
+  const r = record(value);
+  if (!r || typeof r.material !== 'string') return null;
+  const material = r.material.trim();
+  if (!MATERIAL_NAME_RE.test(material)) return null;
+  if (r.colour === undefined || r.colour === null) return { material, colour: null };
+  if (typeof r.colour !== 'string' || !/^#?[0-9a-f]{6}$/i.test(r.colour.trim())) return null;
+  return { material, colour: `#${r.colour.trim().replace(/^#/, '').toUpperCase()}` };
+}
+
+/** A client's event as the host reads it (parseClientEvent). */
+export type ClientEvent = { event: 'slicer.state'; data: Record<string, unknown> } | { event: 'printer.material'; printer: string; material: PrinterMaterial };
+
+/**
+ * A port message as a client's event, or null for anything that is not one this version reads (not version 1, an
+ * answer, an unknown event, data that is not its shape, a printer.material that names no printer key). Whether the
+ * welcome granted it, and whether its printer is the host's selection, are the host's to check.
+ */
+export function parseClientEvent(data: unknown): ClientEvent | null {
+  const r = record(data);
+  if (!r || r.v !== 1 || typeof r.event !== 'string' || 're' in r || 'op' in r) return null;
+  if (r.event === 'slicer.state') {
+    const state = record(r.data);
+    return state ? { event: 'slicer.state', data: state } : null;
+  }
+  if (r.event === 'printer.material') {
+    const material = parsePrinterMaterial(r.data);
+    return material && isPrinterKey(r.printer) ? { event: 'printer.material', printer: r.printer, material } : null;
+  }
+  return null;
 }
 
 // ---------------------------------------------------------------------------

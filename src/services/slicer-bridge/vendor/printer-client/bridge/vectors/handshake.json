@@ -62,6 +62,11 @@
       "expect": 0
     },
     {
+      "name": "a welcome that also takes the printer's loaded material (printer.material, 0.3.0)",
+      "messages": [{ "source": "parent", "origin": "https://host.example", "ports": 1, "data": { "protocol": "printer-bridge", "type": "welcome", "version": 1, "nonce": "$nonce", "host": "fluidd", "hostVersion": "2", "capabilities": ["printer", "status", "gcode", "moonraker.read", "files.upload", "print", "ui.look", "ui.mode", "printer.setup", "printer.material"], "theme": "dark", "mode": "simple" } }],
+      "expect": 0
+    },
+    {
       "name": "a welcome whose look and mode are not ones: taken all the same, without them",
       "messages": [{ "source": "parent", "origin": "https://host.example", "ports": 1, "data": { "protocol": "printer-bridge", "type": "welcome", "version": 1, "nonce": "$nonce", "host": "fluidd", "hostVersion": "1", "capabilities": ["ui.look", "ui.mode"], "theme": "light", "look": "glass", "mode": "expert" } }],
       "expect": 0
@@ -133,6 +138,11 @@
     {
       "name": "a hello listing the client's features (it uses the host's look, mode and setup)",
       "hellos": [{ "source": "frame", "origin": "https://slicer.example", "data": { "protocol": "printer-bridge", "type": "hello", "versions": [1], "app": "muon3d-slicer", "appVersion": "0.1.0", "nonce": "00112233445566778899aabbccddeeff", "features": ["ui.look", "ui.mode", "printer.setup"] } }],
+      "expect": { "welcomes": 1, "nonces": ["00112233445566778899aabbccddeeff"] }
+    },
+    {
+      "name": "a hello listing printer.material among its features (0.3.0): welcomed as any other",
+      "hellos": [{ "source": "frame", "origin": "https://slicer.example", "data": { "protocol": "printer-bridge", "type": "hello", "versions": [1], "app": "muon3d-slicer", "appVersion": "0.3.0", "nonce": "00112233445566778899aabbccddeeff", "features": ["ui.look", "ui.mode", "printer.setup", "printer.material"] } }],
       "expect": { "welcomes": 1, "nonces": ["00112233445566778899aabbccddeeff"] }
     },
     {

@@ -210,9 +210,12 @@ var D = M1.DIM = {
                           13 x 19 portrait pad; c_screen shows it standing
                           slightly PROUD of the corner, a soft black pad */
   wheelW: 17,
-  bootPlan: 0.62       /* how far along the front-left wall the socket sits.
-                          c_deck and c_mast both put it a third of the way
-                          from the LEFT corner, not out by the front one */
+  bootPlan: 0.505      /* how far along the front-left wall the hose's cuff
+                          sits, 0 at the front corner's arc and 1 at the
+                          left's: about the middle.  At 0.62 the cuff's left
+                          edge stood 38 px left of the photograph's in s1_1
+                          and 34 px in s3_1, at the fitted cameras; 16 mm
+                          nearer the front corner closes both to 5 px */
 };
 D.hs = D.R / Math.SQRT2;             /* half side of the square */
 D.corner = (D.hs - D.cornerR) * Math.SQRT2 + D.cornerR;   /* true plan extent */
@@ -534,44 +537,52 @@ function buildBase(mats, decals) {
   G.add(wheel);
   G.userData.scrollWheel = wheel;
 
-  /* --- the umbilical boot, in the front-left wall --------------------------
-     c_deck sees it close to square on: an upright black rubber sleeve
-     standing in a rounded pocket milled into the wall, its top domed, and
-     the hose leaving its BOTTOM straight down before it turns for the table.
-     It is not a block with a nose pointing out of the wall, which is what it
-     was.  On c_deck's own scale (4.33 px/mm on the belt, the wall turned 33
-     degrees from the lens) the sleeve is about 22-26 across and 25 tall, its
-     top 12 under the deck and its mouth 37 under it; c_s1deck, nearly face
-     on, sees a round sleeve about 1.3 hose diameters across with its top as
-     an ellipse, so it stands well proud of the wall.  The pocket it stands
-     in is not cut (the shell is one loft); the sleeve's flat back is sunk
-     into the wall instead. */
+  /* --- the umbilical cuff, in the front-left wall --------------------------
+     s1_1, s3_1 and s5_1 at 4-5x, and s9_7: a round black rubber cuff about
+     1.35 hose diameters across (22), standing upright in a pocket in the
+     wall - the pocket's edge shows as a thin dark band round its top and
+     its left side - flat on top, and tapering a little to its mouth.  Its
+     sides image as a true vertical does there (s1_1: 8 degrees against the
+     lens's own 6, s3_1: 3 against 3.5), but its mouth is cut on a slant:
+     in all four the rubber reaches lower on its left-corner side than on
+     its right, where a level rim would image 16-18 px HIGHER on the left
+     at these cameras.  So the mouth opens down and a little towards the
+     front corner, and the hose leaves it bending that way (s3_1, s5_1).
+     Its top stands about 3.5 under the deck and its mouth about 29 above
+     the table (the fitted cameras put its top at 55 in s1_1 and 58 in
+     s3_1), so the hose drops straight out of it for a little way and then
+     turns for the table.  It was a sleeve with a half-dome on top and a
+     block behind it as wide again, cut square and aimed straight down,
+     and it stood 16 mm too far towards the left corner (see D.bootPlan). */
   var sock = new T.Group(); sock.name = 'umbilicalSocket';
   var sp = wallPoint(-1, 1, D.bootPlan);
   sock.position.set(sp.x, 0, sp.z);
-  sock.rotation.y = -PI / 4;                    /* local +z is the wall's outward normal */
-  /* an upright rubber sleeve: round in front, flat where it sinks into the
-     wall, with a low dome on top; the hose leaves its open bottom */
-  var sR = 10.8, sOut = 11, sBot = 21, sTop = 44;
-  var sleeve = mesh(new T.CylinderGeometry(sR, sR, sTop - sBot, 40), mats.rubber, true, true);
-  sleeve.position.set(0, (sTop + sBot) / 2, sOut);
-  sock.add(sleeve);
-  var dome = mesh(new T.SphereGeometry(sR, 40, 12, 0, TAU, 0, PI / 2), mats.rubber, true, true);
-  dome.scale.y = 0.5;
-  dome.position.set(0, sTop, sOut);
-  sock.add(dome);
-  /* the back half, filling the sleeve back into its pocket in the wall */
-  var back = mesh(M1.rbox(2 * sR, sTop - sBot + 3, sOut + 4, 3.0, 4), mats.rubber, true, true);
-  back.position.set(0, (sTop + sBot) / 2 + 1.5, (sOut - 4) / 2);
-  sock.add(back);
-  /* the mouth: straight down, leaning a few degrees out of the wall */
-  var sDir = new T.Vector3(0, -0.99, 0.14).normalize();
-  var mouthL = new T.Vector3(0, sBot + 1, sOut);
+  sock.rotation.y = -PI / 4;     /* local +z is the wall's outward normal, +x runs towards the front corner */
+  var cuffZ = 11.2, cuffMouth = 29, cuffTop = 54.4, cuffSlant = 28 * PI / 180;
+  sock.add(mesh(cuffGeometry(cuffZ, cuffMouth, cuffSlant, cuffTop), mats.rubber, true, true));
+  /* the hose leaves the slanted mouth leaning a little towards the front
+     corner, off the long lip: 6 degrees fits s1_1 and s3_1 best together
+     (s3_1 alone wants 15, s1_1 alone 5) */
+  var sDir = new T.Vector3(Math.sin(6 * PI / 180), -Math.cos(6 * PI / 180), 0);
+  var mouthL = new T.Vector3(0, cuffMouth, cuffZ);
+  /* the pocket it stands in: the shell is one loft, so the pocket is a dark
+     face on the wall.  The cameras stand on the front corner's side of the
+     wall's normal, so the cuff, 11 out from the wall, covers wall to its
+     left (5 mm in s1_1, 7 in s3_1); the pocket is set 8 towards the left
+     corner and up 2.6 past the cuff's top, so that only the band the
+     photographs show - round the cuff's top and down its left side -
+     escapes it */
+  var pocket = mesh(new T.ShapeGeometry(new T.Shape(M1.roundRectPoints(0, 0, 24, 23, 11, 10)), 10), gapM, false, false);
+  pocket.position.set(-8, cuffTop - 8.9, 0.12);
+  sock.add(pocket);
   G.add(sock);
   sock.updateMatrix();
-  /* the hose starts inside the sleeve, so its open end is never seen */
+  /* the hose starts inside the cuff, so its open end is never seen */
   G.userData.socketAnchor = mouthL.clone().addScaledVector(sDir, -4).applyMatrix4(sock.matrix);
   G.userData.socketDir = sDir.clone().applyQuaternion(sock.quaternion).normalize();
+  /* the cuff as an upright cylinder, for the hose to keep off */
+  var cuffC = new T.Vector3(0, 0, cuffZ).applyMatrix4(sock.matrix);
+  G.userData.socketCuff = { x: cuffC.x, z: cuffC.z, r: 11.6, y0: cuffMouth, y1: cuffTop };
 
   /* No corner bumpers.  There used to be a black rubber block on the front
      and right corner tips, and no photograph has one: s1_1, s3_1, s5_1,
@@ -629,6 +640,48 @@ function wallPoint(sx, sz, t) {
   var half = hs - D.cornerR;
   var u = (t * 2 - 1) * half;
   return { x: nx * hs + tx * u, z: nz * hs + tz * u, nx: nx, nz: nz };
+}
+
+/* The hose's cuff, in its socket's frame (x along the wall towards the
+   front corner, y up, z out of it): a round rubber sleeve on a vertical
+   axis `z` out from the wall, flat on top at `top` with a rounded edge,
+   tapering from 11.6 to 10.6 on the way down, its bottom cut on a plane
+   through (0, mouthY) that falls `slant` towards -x, and its lip rolled in
+   onto the hose. */
+function cuffGeometry(z, mouthY, slant, top) {
+  var K = 48, rings = [];
+  var tn = Math.tan(slant), knee = mouthY + 11.6 * tn + 1.5;
+  function cut(x) { return mouthY + x * tn; }
+  /* each ring: radius, and a height that is either level or (f > 0) a
+     share f of the way from the knee down onto the cut */
+  [[0.01, 0], [9.4, 0], [10.5, 0.2], [11.2, 0.7], [11.6, 1.5], [11.6, 2.9]].forEach(function (q) {
+    rings.push({ r: q[0], y: top - q[1], f: 0, dy: 0 });
+  });
+  var i, n = 4;
+  for (i = 1; i <= n; i++) rings.push({ r: 11.6 - 0.35 * i / n, y: top - 2.9 + (knee - top + 2.9) * i / n, f: 0, dy: 0 });
+  for (i = 1; i <= n; i++) rings.push({ r: 11.25 - 0.65 * i / n, y: knee, f: i / n, dy: 0 });
+  /* the lip, and back inside onto the hose */
+  [[10.15, -0.4], [9.45, -0.55], [8.95, -0.3], [HOSE.r0 + 0.3, 0.9]].forEach(function (q) {
+    rings.push({ r: q[0], y: knee, f: 1, dy: q[1] });
+  });
+  var pos = new Float32Array(rings.length * K * 3), idx = [], o = 0;
+  rings.forEach(function (g) {
+    for (var k = 0; k < K; k++) {
+      var ph = k / K * TAU, x = Math.cos(ph) * g.r, w = Math.sin(ph) * g.r;
+      pos[o++] = x;
+      pos[o++] = g.y + g.f * (cut(x) - g.y) + g.dy;
+      pos[o++] = z + w;
+    }
+  });
+  for (var r = 0; r < rings.length - 1; r++) for (var k = 0; k < K; k++) {
+    var a = r * K + k, b = r * K + (k + 1) % K;
+    idx.push(a, b, a + K, b, b + K, a + K);
+  }
+  var geo = new T.BufferGeometry();
+  geo.setAttribute('position', new T.BufferAttribute(pos, 3));
+  geo.setIndex(idx);
+  geo.computeVertexNormals();
+  return geo;
 }
 
 /* A milled port pocket in one wall (sx, sz pick the wall, as wallPoint),
@@ -1060,6 +1113,51 @@ function buildCarriage(mats) {
    core/M1/core.cfg gives the module its own MCU, accelerometer and load
    cell, a filament switch, and an umbilical unlock button.
    ========================================================================== */
+/* A rubber strain relief, lofted along a smooth path from p0 (heading t0)
+   to `mouth` (heading `dir`): a rounded box a0 x b0 (half sizes) for the
+   first quarter of the way, necking down to a round sleeve of radius rm
+   that runs straight for the last few millimetres, and ending in a lip
+   rolled in onto the hose. */
+function strainRelief(p0, t0, mouth, dir, a0, b0, rm) {
+  var K = 40, S = 20, st = [];
+  var d = p0.distanceTo(mouth), m0 = t0.clone().multiplyScalar(d), m1 = dir.clone().multiplyScalar(d);
+  var c = new T.Vector3(), tg = new T.Vector3();
+  for (var i = 0; i <= S; i++) {
+    var t = i / S, t2 = t * t, t3 = t2 * t, w = M1.smooth(Math.min(1, Math.max(0, (t - 0.25) / 0.6)));
+    var h00 = 2 * t3 - 3 * t2 + 1, h10 = t3 - 2 * t2 + t, h01 = -2 * t3 + 3 * t2, h11 = t3 - t2;
+    c.set(0, 0, 0).addScaledVector(p0, h00).addScaledVector(m0, h10).addScaledVector(mouth, h01).addScaledVector(m1, h11);
+    tg.set(0, 0, 0).addScaledVector(p0, 6 * t2 - 6 * t).addScaledVector(m0, 3 * t2 - 4 * t + 1)
+      .addScaledVector(mouth, -6 * t2 + 6 * t).addScaledVector(m1, 3 * t2 - 2 * t).normalize();
+    st.push([c.clone(), tg.clone(), a0 + (rm - a0) * w, b0 + (rm - b0) * w, 6 - 4 * w]);
+  }
+  [[0.35, rm - 0.35], [0.5, rm - 1.0], [0.35, rm - 1.5], [-0.6, HOSE.r0 + 0.25]].forEach(function (q) {
+    st.push([mouth.clone().addScaledVector(dir, q[0]), dir, q[1], q[1], 2]);
+  });
+  var pos = new Float32Array(st.length * K * 3), idx = [], o = 0;
+  var v = new T.Vector3(), side = new T.Vector3();
+  st.forEach(function (s) {
+    v.set(0, 1, 0).addScaledVector(s[1], -s[1].y).normalize();
+    side.crossVectors(v, s[1]).normalize();
+    for (var k = 0; k < K; k++) {
+      var th = k / K * TAU, cs = Math.cos(th), sn = Math.sin(th);
+      var x = s[2] * (cs < 0 ? -1 : 1) * Math.pow(Math.abs(cs), 2 / s[4]);
+      var y = s[3] * (sn < 0 ? -1 : 1) * Math.pow(Math.abs(sn), 2 / s[4]);
+      pos[o++] = s[0].x + side.x * x + v.x * y;
+      pos[o++] = s[0].y + side.y * x + v.y * y;
+      pos[o++] = s[0].z + side.z * x + v.z * y;
+    }
+  });
+  for (var r = 0; r < st.length - 1; r++) for (var k = 0; k < K; k++) {
+    var a = r * K + k, b = r * K + (k + 1) % K;
+    idx.push(a, b, a + K, b, b + K, a + K);
+  }
+  var g = new T.BufferGeometry();
+  g.setAttribute('position', new T.BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  return g;
+}
+
 function buildHead(mats) {
   var G = new T.Group(); G.name = 'headAssembly';
 
@@ -1182,31 +1280,33 @@ function buildHead(mats) {
   pod.add(hole);
 
   /* --- the umbilical boot ------------------------------------------------
-     c_deck at 2x is the clearest view of it: one black moulding the width
-     of half the end face (35 mm, centred 8-11 left of the pod's middle),
-     its top tucked just under the top arris, standing about 15 proud of the
-     end face and carried down past the bottom arris, where it necks round
-     the hose.  The hose leaves through that neck forward and DOWN, not
-     straight out of the face as it did: in c_deck and c_s1deck it drops
-     away from the boot at once.  The pod rides 3 above the deck, so the
-     moulding stops just short of it. */
-  var bootX = -10, bootOut = 15;
-  var bootTop = top - 0.6, bootBot = y0 - 2.6;
+     One black moulding on the end face, half its width (35, centred 10
+     left of the pod's middle), its top tucked just under the top arris.
+     It does not end in a hole: s1_1, s3_1, s5_1 and s9_7 all show its
+     lower front running on into a tapered strain relief that necks down
+     onto the hose and points it forward and down, about 30 degrees below
+     level: the solved hose (THE CONDUIT) matches the centreline traced in
+     s1_1 and s3_1 equally well anywhere from 30 to 40, and steeper starts
+     put it into the deck.  The lip sits 2.7 clear of the deck, so over the
+     deck the hose leaves it, settles and lies down on the deck (s3_1, s5_1,
+     s9_7), and out over the front corner it carries on down (s1_1).  The
+     old boot dropped the hose 50 degrees out of a hole in its underside,
+     9.5 above the deck, so over the deck the hose went straight into the
+     deck and was lifted back out of it, a corner at the connector. */
+  var bootX = -10;
+  var bootTop = top - 0.6, bootBot = y0 - 2.4;
   var bootG = new T.Group();
   bootG.position.set(bootX, 0, L / 2);
-  var bootBody = mesh(M1.rbox(35, bootTop - bootBot, bootOut + 2, 5.0, 5), mats.rubber, true, true);
-  bootBody.position.set(0, (bootTop + bootBot) / 2, bootOut / 2 - 1);
-  bootG.add(bootBody);
-  /* the neck round the hose, leaning 50 degrees below level */
-  var hDir = new T.Vector3(0, -0.77, 0.64).normalize();
-  var mouth = new T.Vector3(0, y0 + 6.5, bootOut - 4.5);
-  var neck = mesh(new T.CylinderGeometry(9.9, 9.6, 10, 40), mats.rubber, true, true);
-  neck.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), hDir);
-  neck.position.copy(mouth).addScaledVector(hDir, -2.5);
-  bootG.add(neck);
+  /* one loft, from the moulding's full footprint on the end face (35 by
+     the face's height, its top just under the arris) forward and down to
+     the mouth, 30 degrees below level, 19 out from the face */
+  var hDir = new T.Vector3(0, -Math.sin(PI / 6), Math.cos(PI / 6));
+  var mouth = new T.Vector3(0, y0 + 8.5, 19);
+  bootG.add(mesh(strainRelief(new T.Vector3(0, (bootTop + bootBot) / 2, -1.5), new T.Vector3(0, 0, 1), mouth, hDir,
+                              17.4, (bootTop - bootBot) / 2, 10.2), mats.rubber, true, true));
   pod.add(bootG);
   bootG.updateMatrix();
-  /* the hose starts inside the neck, so its open end is never seen */
+  /* the hose starts inside the relief, so its open end is never seen */
   pod.userData.bootAnchor = mouth.clone().addScaledVector(hDir, -4).applyMatrix4(bootG.matrix);
   /* the direction the hose leaves the boot by, unit, pod space */
   pod.userData.bootDir = hDir;
@@ -1629,28 +1729,32 @@ function buildPrint(mats) {
    THE CONDUIT
 
    The umbilical is a corrugated hose of FIXED length clamped at both ends:
-   the boot on the pod and the boot in the base's front-left wall. Between
-   them it makes one smooth bend - down out of each boot and round in a
-   single U lying out on the table in front of the machine (s1_1, s3_1,
-   s5_1, c_deck, s7_1).
+   the boot on the pod and the cuff in the base's front-left wall. It leaves
+   each one straight along that connector's own axis, then makes one smooth
+   bend down to the table, where it lies in a single U in front of the
+   machine (s1_1, s3_1, s5_1, s9_7, c_deck).
 
-   It used to be a tube swept along an eight-point Catmull-Rom with Frenet
-   frames. The spline wandered (the "all twisted around" Jack saw), and
-   Frenet frames flip wherever the curvature passes through zero, which
-   spun the rib pattern round the hose; and the whole 144k-triangle sweep
-   was rebuilt every time the head moved.
+   History: an eight-point Catmull-Rom with Frenet frames wandered and spun
+   the ribs round the hose (Jack: "all twisted around"); then a cubic
+   Bezier between the two mouths kinked at both connectors (Jack,
+   2026-10-12: "still bends wrong at the connectors").  Its two arms were
+   one length, some 120 mm, aimed straight down out of the base cuff and
+   50 degrees down out of the pod boot, so both ends drove into the table
+   or the deck and were lifted back out point by point: a corner just past
+   each connector, and a U swung out much wider than the photographs'.
 
-   Now:
-   - the path is a cubic Bezier between the two boot mouths, leaving each
-     along its boot's own axis, with the arm length solved so the hose keeps
-     its one length; it is held on the table and out of the base;
-   - its frames are rotation-minimising (double reflection), so nothing
-     twists;
-   - the hose is ONE static mesh, laid out straight and bent onto the path
-     in the vertex shader from a 128-frame float texture, so a pose change
-     uploads 6 KB instead of rebuilding a mesh, and the ribs stay joined
-     however tight the bend (instanced rigid ribs opened gaps on the
-     outside of the U).
+   Now the hose is solved as what it is: a thin elastic rod of fixed length,
+   clamped along each connector's axis, sagging under its own weight,
+   resting on the table and kept off the base, the deck and the cuff.  Its
+   shape is the one that minimises bending plus weight, found by Newton's
+   method on a banded system (hoseRod, below); a moving head starts it from
+   the last pose, so a frame costs two small Newton steps and allocates
+   nothing.
+
+   The hose is ONE static mesh, laid out straight and bent onto the solved
+   path in the vertex shader from a 128-frame float texture of
+   rotation-minimising frames, so nothing twists, the ribs stay joined
+   however tight the bend, and a pose change uploads 6 KB.
    ========================================================================== */
 var HOSE = {
   /* OD 16.6. Measured in s1_1 across both legs (59 and 60 px at about
@@ -1661,9 +1765,28 @@ var HOSE = {
   P: 3.6,              /* pitch of the single-start helix: c_deck counts the
                           ribs at 3.6-3.8 mm right at the base boot */
   radial: 24,
-  /* boot mouth to boot mouth. Set so the U lies where s1_1 and s3_1 put it
-     with the head where those photographs put it. */
-  L: 380
+  /* anchor to anchor (each anchor is 4 inside its mouth).  Fitted, with
+     bendLen, to the hose's centreline traced in s1_1 and s3_1, solving the
+     rod at each photograph's head position and projecting it through that
+     photograph's fitted camera: RMS 16 px (s1_1) and 24 px (s3_1) from the
+     traced line, where the old 380 hose was 50 and 43 px out, its U swung
+     too wide.  Still long enough that no head position (+-1.05) pulls it
+     taut: under 1 per cent stretch anywhere. */
+  L: 308,
+  N: 48,               /* rod segments: 6.4 mm each */
+  /* bending length (B / rho g)^(1/3): how far the hose stands out before
+     its own weight bends it; fitted with L (150 to 300 all fit within a
+     few px; 220 is the best of them) */
+  bendLen: 220,
+  /* how far past each lip the hose is held straight.  The boot's lip lets
+     the hose pivot (its relief is rubber): it drops steeply when the head
+     is out over the front corner (s1_1) and lies down on the deck when it
+     is over it (s3_1, s9_7).  The cuff grips it 2 mm further, and the hose
+     then turns for the table soon after, its mouth being only 29 up
+     (s3_1, s5_1).  Past the grip the hose stiffens off over reliefLen, so
+     neither end shows a corner. */
+  gripA: 0, gripB: 2,
+  relief: 1.5, reliefLen: 9
 };
 
 /* The straight hose: ribs laid end to end along +z, which is arc length.
@@ -1751,14 +1874,262 @@ function bendHose(shader, frames) {
   shader.vertexShader = vs;
 }
 
-/* The hose and its solver.  update(A, dA, B, dB) takes the two mouths (root
-   space) and the unit direction the hose leaves each one by, solves the
-   path, and writes its frames into a small float texture.  Nothing here
-   allocates after construction. */
-function buildConduit(mats) {
-  var K = 64;                                   /* path samples for the solve */
+/* --- the rod -----------------------------------------------------------
+   N + 1 nodes, N segments of h = L / N.  Nodes 0..cA are clamped along the
+   pod boot's axis and N - cB..N along the base cuff's; the rest are free.
+   Energy, in units of the hose's own weight per millimetre:
+     bending   kb w_j |x_(j-1) - 2 x_j + x_(j+1)|^2,  kb = bendLen^3 / 2h^3,
+               w_j stiffer just past each mouth (the grip easing off)
+     stretch   ks (|x_(j+1) - x_j| - h)^2, stiff: the hose does not stretch
+     weight    h y_j
+     contact   a penalty that starts smoothly once a node comes within the
+               hose's radius of the table, the base (a rounded square on
+               its corner, the deck flat on top, the foot rolled in) or the
+               base cuff
+   Each Newton step assembles the exact Hessian - it is banded, every node
+   touching only its two neighbours either side - factors it by banded
+   Cholesky and backtracks if the energy does not fall. */
+function hoseRod(cfg) {
+  var N = cfg.N, h = cfg.L / N;
+  var kb = cfg.bendLen * cfg.bendLen * cfg.bendLen / (2 * h * h * h);
+  /* the hose must neither stretch nor squash (a stiff hose would rather
+     shorten than bend), and must not sink into what it rests on: both
+     penalties are set well above the bending stiffness */
+  var wg = h, ks = Math.max(1e4, 40 * kb), kc = Math.max(3e4, 8 * kb), cw = 0.5;
+  var rh = cfg.radius + 0.4;
+  var cA = cfg.clampA, cB = cfg.clampB;
+  var i0 = cA + 1, i1 = N - cB - 1, F = i1 - i0 + 1, n = 3 * F, p = 8, bw = p + 1;
+  var X = new Float64Array(3 * (N + 1)), Xt = new Float64Array(3 * (N + 1));
+  var G = new Float64Array(n), Dx = new Float64Array(n), Rhs = new Float64Array(n);
+  var Hb = new Float64Array(n * bw), H = new Float64Array(n * bw), H2 = new Float64Array(n * bw);
+  var wj = new Float64Array(N + 1);
+  var j, k, a, b, CC = [1, -2, 1];
+  for (j = 1; j < N; j++) {
+    var sA = Math.max(0, j * h - cfg.gripEndA), sB = Math.max(0, (N - j) * h - cfg.gripEndB);
+    wj[j] = 1 + cfg.relief * (Math.exp(-sA / cfg.reliefLen) + Math.exp(-sB / cfg.reliefLen));
+  }
+  /* the bending part of the Hessian never changes */
+  for (j = 1; j < N; j++) {
+    for (a = 0; a < 3; a++) for (b = 0; b <= a; b++) {
+      var ia = j - 1 + a - i0, ib = j - 1 + b - i0;
+      if (ia < 0 || ia >= F || ib < 0 || ib >= F) continue;
+      for (k = 0; k < 3; k++) Hb[(3 * ia + k) * bw + 3 * (ia - ib)] += 2 * kb * wj[j] * CC[a] * CC[b];
+    }
+  }
+  /* contact penalty: cubic onset over cw, then quadratic */
+  function pE(f) { return f <= 0 ? 0 : f < cw ? kc * f * f * f / (3 * cw) : kc * (f * f - cw * f + cw * cw / 3); }
+  function pG(f) { return f <= 0 ? 0 : f < cw ? kc * f * f / cw : kc * (2 * f - cw); }
+  function pH(f) { return f <= 0 ? 0 : f < cw ? 2 * kc * f / cw : 2 * kc; }
+  /* signed distance to the base, and its gradient in sdX/Y/Z */
+  var R2 = Math.SQRT1_2, hs = cfg.hs, cr = cfg.cornerR, top = cfg.deckY, rb = cfg.rollR;
+  var sdD = 0, sdX = 0, sdY = 0, sdZ = 0;
+  function baseSDF(x, y, z) {
+    var u = (x - z) * R2, v = (x + z) * R2;
+    var qa = Math.abs(u) - (hs - cr), qb = Math.abs(v) - (hs - cr);
+    var d2, ga, gb;
+    if (qa > 0 && qb > 0) { var ql = Math.sqrt(qa * qa + qb * qb); d2 = ql - cr; ga = qa / ql; gb = qb / ql; }
+    else if (qa > qb) { d2 = qa - cr; ga = 1; gb = 0; }
+    else { d2 = qb - cr; ga = 0; gb = 1; }
+    if (u < 0) ga = -ga;
+    if (v < 0) gb = -gb;
+    var d, gd, gy;
+    if (y < rb && d2 > -rb) {                  /* the rolled foot */
+      var e = d2 + rb, f = y - rb, rr = Math.sqrt(e * e + f * f) || 1e-9;
+      d = rr - rb; gd = e / rr; gy = f / rr;
+    } else if (y > top && d2 > 0) {            /* round the deck's arris */
+      var t2 = Math.sqrt(d2 * d2 + (y - top) * (y - top)); d = t2; gd = d2 / t2; gy = (y - top) / t2;
+    } else {
+      d = d2; gd = 1; gy = 0;
+      if (y - top > d) { d = y - top; gd = 0; gy = 1; }
+    }
+    sdD = d; sdX = gd * (ga + gb) * R2; sdZ = gd * (gb - ga) * R2; sdY = gy;
+    return d;
+  }
+  /* the base cuff stands 22 proud of the wall, so the hose coming down
+     from the head can meet it: an upright cylinder, united with the base
+     for every node but the last few, which are the hose's own end in it */
+  var cu = cfg.cuff, cuLast = cu ? N - Math.ceil(30 / h) : -1;
+  function obstSDF(x, y, z, j) {
+    var d = baseSDF(x, y, z);
+    if (j > cuLast) return d;
+    var dx = x - cu.x, dz = z - cu.z, rr = Math.sqrt(dx * dx + dz * dz) || 1e-9, dr = rr - cu.r;
+    var dyl = cu.y0 - y, dyu = y - cu.y1, dy = dyl > dyu ? dyl : dyu, sy = dyl > dyu ? -1 : 1;
+    var e, gx, gy, gz;
+    if (dr > 0 && dy > 0) { e = Math.sqrt(dr * dr + dy * dy); gx = dr / e * dx / rr; gz = dr / e * dz / rr; gy = sy * dy / e; }
+    else if (dr > dy) { e = dr; gx = dx / rr; gz = dz / rr; gy = 0; }
+    else { e = dy; gx = 0; gz = 0; gy = sy; }
+    if (e < d) { sdD = d = e; sdX = gx; sdY = gy; sdZ = gz; }
+    return d;
+  }
+  function energy(Y) {
+    var E = 0, j, o;
+    for (j = 1; j < N; j++) {
+      o = 3 * j;
+      var rx = Y[o - 3] - 2 * Y[o] + Y[o + 3], ry = Y[o - 2] - 2 * Y[o + 1] + Y[o + 4], rz = Y[o - 1] - 2 * Y[o + 2] + Y[o + 5];
+      E += kb * wj[j] * (rx * rx + ry * ry + rz * rz);
+    }
+    for (j = 0; j < N; j++) {
+      o = 3 * j;
+      var dx = Y[o + 3] - Y[o], dy = Y[o + 4] - Y[o + 1], dz = Y[o + 5] - Y[o + 2];
+      var l = Math.sqrt(dx * dx + dy * dy + dz * dz) - h;
+      E += ks * l * l;
+    }
+    for (j = i0; j <= i1; j++) {
+      o = 3 * j;
+      E += wg * Y[o + 1] + pE(rh - Y[o + 1]) + pE(rh - obstSDF(Y[o], Y[o + 1], Y[o + 2], j));
+    }
+    return E;
+  }
+  function assemble() {
+    var i, j, o, A, B;
+    H.set(Hb); G.fill(0);
+    for (j = 1; j < N; j++) {
+      o = 3 * j;
+      var rx = X[o - 3] - 2 * X[o] + X[o + 3], ry = X[o - 2] - 2 * X[o + 1] + X[o + 4], rz = X[o - 1] - 2 * X[o + 2] + X[o + 5];
+      var f = 2 * kb * wj[j];
+      for (var a = -1; a <= 1; a++) {
+        var ia = j + a - i0;
+        if (ia < 0 || ia >= F) continue;
+        var c = a === 0 ? -2 * f : f;
+        G[3 * ia] += c * rx; G[3 * ia + 1] += c * ry; G[3 * ia + 2] += c * rz;
+      }
+    }
+    for (j = 0; j < N; j++) {
+      o = 3 * j;
+      var dx = X[o + 3] - X[o], dy = X[o + 4] - X[o + 1], dz = X[o + 5] - X[o + 2];
+      var l = Math.sqrt(dx * dx + dy * dy + dz * dz), ux = dx / l, uy = dy / l, uz = dz / l, r = l - h;
+      A = j - i0; B = j + 1 - i0;
+      /* the edge's block K = kk u u^T + gm I, exact */
+      var gm = 2 * ks * r / l, kk = 2 * ks - gm, fr = 2 * ks * r;
+      var k00 = kk * ux * ux + gm, k11 = kk * uy * uy + gm, k22 = kk * uz * uz + gm;
+      var k10 = kk * uy * ux, k20 = kk * uz * ux, k21 = kk * uz * uy;
+      if (A >= 0 && A < F) {
+        var ra = 3 * A * bw;
+        G[3 * A] -= fr * ux; G[3 * A + 1] -= fr * uy; G[3 * A + 2] -= fr * uz;
+        H[ra] += k00; H[ra + bw] += k11; H[ra + bw + 1] += k10;
+        H[ra + 2 * bw] += k22; H[ra + 2 * bw + 1] += k21; H[ra + 2 * bw + 2] += k20;
+      }
+      if (B >= 0 && B < F) {
+        var rB = 3 * B * bw;
+        G[3 * B] += fr * ux; G[3 * B + 1] += fr * uy; G[3 * B + 2] += fr * uz;
+        H[rB] += k00; H[rB + bw] += k11; H[rB + bw + 1] += k10;
+        H[rB + 2 * bw] += k22; H[rB + 2 * bw + 1] += k21; H[rB + 2 * bw + 2] += k20;
+        if (A >= 0) {
+          /* row 3B+q, column 3A+w sits at band offset 3 + q - w: -K */
+          H[rB + 3] -= k00; H[rB + 2] -= k10; H[rB + 1] -= k20;
+          H[rB + bw + 4] -= k10; H[rB + bw + 3] -= k11; H[rB + bw + 2] -= k21;
+          H[rB + 2 * bw + 5] -= k20; H[rB + 2 * bw + 4] -= k21; H[rB + 2 * bw + 3] -= k22;
+        }
+      }
+    }
+    for (i = i0; i <= i1; i++) {
+      var I = 3 * (i - i0), x = X[3 * i], y = X[3 * i + 1], z = X[3 * i + 2], rI = I * bw;
+      G[I + 1] += wg;
+      if (y < rh) { G[I + 1] -= pG(rh - y); H[rI + bw] += pH(rh - y); }
+      if (obstSDF(x, y, z, i) < rh) {
+        var ph = pG(rh - sdD), c2 = pH(rh - sdD);
+        G[I] -= ph * sdX; G[I + 1] -= ph * sdY; G[I + 2] -= ph * sdZ;
+        H[rI] += c2 * sdX * sdX; H[rI + bw] += c2 * sdY * sdY; H[rI + bw + 1] += c2 * sdY * sdX;
+        H[rI + 2 * bw] += c2 * sdZ * sdZ; H[rI + 2 * bw + 1] += c2 * sdZ * sdY; H[rI + 2 * bw + 2] += c2 * sdZ * sdX;
+      }
+    }
+  }
+  /* banded Cholesky in place; false if the matrix is not positive definite */
+  function chol(M) {
+    var ok = true;
+    for (var i = 0; i < n; i++) {
+      var jmin = i > p ? i - p : 0, ib = i * bw;
+      for (var j = jmin; j <= i; j++) {
+        var jb = j * bw, s = M[ib + i - j];
+        var kmin = j - p > jmin ? j - p : jmin;
+        for (var k = kmin; k < j; k++) s -= M[ib + i - k] * M[jb + j - k];
+        if (i === j) { if (s <= 1e-9) { ok = false; s = 1e-9; } M[ib] = Math.sqrt(s); }
+        else M[ib + i - j] = s / M[jb];
+      }
+    }
+    return ok;
+  }
+  function back(M, rhs, out) {
+    var i, k, s;
+    for (i = 0; i < n; i++) {
+      s = rhs[i];
+      for (k = i > p ? i - p : 0; k < i; k++) s -= M[i * bw + i - k] * out[k];
+      out[i] = s / M[i * bw];
+    }
+    for (i = n - 1; i >= 0; i--) {
+      s = out[i];
+      var kmax = i + p < n - 1 ? i + p : n - 1;
+      for (k = i + 1; k <= kmax; k++) s -= M[k * bw + k - i] * out[k];
+      out[i] = s / M[i * bw];
+    }
+  }
+  var mu = 1e-6, Ecur = 0;
+  /* one damped Newton step with backtracking; the largest move, or -1 */
+  function step() {
+    assemble();
+    var E0 = Ecur, i, tries, dg = 0;
+    for (i = 0; i < n; i++) if (H[i * bw] > dg) dg = H[i * bw];
+    for (tries = 0; tries < 8; tries++) {
+      H2.set(H);
+      for (i = 0; i < n; i++) H2[i * bw] += mu * dg + 1e-9;
+      if (!chol(H2)) { mu = mu < 1e-4 ? 1e-4 : Math.min(1e3, mu * 16); continue; }
+      for (i = 0; i < n; i++) Rhs[i] = -G[i];
+      back(H2, Rhs, Dx);
+      var alpha = 1;
+      for (var ls = 0; ls < 4; ls++) {
+        Xt.set(X);
+        var dmax = 0;
+        for (i = 0; i < n; i++) {
+          var dv = alpha * Dx[i];
+          Xt[3 * i0 + i] += dv;
+          if (dv > dmax) dmax = dv; else if (-dv > dmax) dmax = -dv;
+        }
+        var E1 = energy(Xt);
+        if (E1 <= E0 + 1e-9 * Math.abs(E0)) {
+          X.set(Xt); Ecur = E1;
+          if (ls === 0) mu = Math.max(1e-7, mu * 0.25);
+          return dmax;
+        }
+        alpha *= 0.5;
+      }
+      mu = Math.min(1e3, Math.max(1e-4, mu * 16));
+    }
+    return -1;
+  }
+  /* iterate until the largest move is under tol; the last move, or -1 if
+     the last step could not lower the energy */
+  function solve(maxIt, tol) {
+    Ecur = energy(X);
+    var d = -1;
+    for (var it = 0; it < maxIt; it++) {
+      d = step();
+      if (d >= 0 && d < tol) break;
+    }
+    return d;
+  }
+  function setEnds(A, dA, B, dB) {
+    for (var i = 0; i <= cA; i++) {
+      X[3 * i] = A.x + dA.x * h * i; X[3 * i + 1] = A.y + dA.y * h * i; X[3 * i + 2] = A.z + dA.z * h * i;
+    }
+    for (i = 0; i <= cB; i++) {
+      var m = N - i;
+      X[3 * m] = B.x + dB.x * h * i; X[3 * m + 1] = B.y + dB.y * h * i; X[3 * m + 2] = B.z + dB.z * h * i;
+    }
+  }
+  return { X: X, N: N, h: h, i0: i0, i1: i1, setEnds: setEnds, solve: solve, energy: function () { return energy(X); },
+           sdf: baseSDF };
+}
+
+/* The hose and its solver.  `cuff` is the base cuff as an upright
+   cylinder { x, z, r, y0, y1 } (root space), for the hose to keep off.
+   update(A, dA, B, dB) takes the two anchors
+   (root space, each 4 inside its mouth) and the unit direction the hose
+   leaves each one by, solves the rod, and writes its frames into a small
+   float texture.  Nothing here allocates after construction. */
+function buildConduit(mats, cuff) {
   var M = 128;                                  /* frames handed to the shader */
-  var nRibs = Math.ceil(HOSE.L / HOSE.P) + 2;
+  var N = HOSE.N, L = HOSE.L, r = HOSE.r0;
+  var nRibs = Math.ceil(L * 1.10 / HOSE.P) + 2;   /* room for a hose pulled taut */
   var geo = hoseGeometry(nRibs);
   var data = new Float32Array(3 * M * 4);
   var tex = new T.DataTexture(data, 3, M, T.RGBAFormat, T.FloatType);
@@ -1790,158 +2161,181 @@ function buildConduit(mats) {
   geo.boundingBox = new T.Box3();
   geo.boundingSphere = new T.Sphere();
 
-  var px = new Float64Array(K + 1), py = new Float64Array(K + 1), pz = new Float64Array(K + 1);
-  var qx = new Float64Array(K + 1), qy = new Float64Array(K + 1), qz = new Float64Array(K + 1);
-  var cum = new Float64Array(K + 1);
-  var tx = new Float64Array(K + 1), ty = new Float64Array(K + 1), tz = new Float64Array(K + 1);
-  var nx = new Float64Array(K + 1), ny = new Float64Array(K + 1), nz = new Float64Array(K + 1);
-  var R = D.hs * Math.SQRT2;                    /* |x| + |z| = R is the wall */
-  var r = HOSE.r0;
-  var a0x, a0y, a0z, a1x, a1y, a1z, b1x, b1y, b1z, b0x, b0y, b0z;
+  var h = L / N;
+  var rod = hoseRod({
+    N: N, L: L, bendLen: HOSE.bendLen, radius: r,
+    /* the clamp runs from the anchor, 4 inside the mouth, to the end of the
+       grip past it */
+    clampA: Math.max(1, Math.round((4 + HOSE.gripA) / h)),
+    clampB: Math.max(1, Math.round((4 + HOSE.gripB) / h)),
+    gripEndA: 4 + HOSE.gripA, gripEndB: 4 + HOSE.gripB,
+    relief: HOSE.relief, reliefLen: HOSE.reliefLen,
+    hs: D.hs, cornerR: D.cornerR, deckY: D.deckY, rollR: 13.5, cuff: cuff
+  });
+  var X = rod.X, nX = X.length;
+  var Xprev = new Float64Array(nX), Xkeep = new Float64Array(nX);
+  var A0 = new T.Vector3(), Aw = new T.Vector3(), dAp = new T.Vector3(), dAn = new T.Vector3();
+  var started = false, settled = true, hasPrev = false;
 
-  /* keep a point on the table and out of the shell */
-  function hold(i) {
-    var y = py[i];
-    /* the table: a soft floor, so the hose settles onto it rather than
-       folding at it */
-    var e = (y - r) / 8;
-    y = r + (e > 20 ? e : Math.log(1 + Math.exp(e))) * 8;
-    var ax = Math.abs(px[i]), az = Math.abs(pz[i]);
-    var inside = (R + r + 1) - (ax + az);
-    if (inside > 0 && y < D.deckY + r) {
-      /* out of the casting by the shorter way - up onto the deck or out
-         through the wall - blended across the switch so the path never
-         jumps from one to the other, which is what put waves in it */
-      var lift = D.deckY + r - y, push = inside / Math.SQRT2;
-      var w = M1.smooth((lift - push) / 6 + 0.5);
-      y += lift * (1 - w);
-      px[i] += (px[i] < 0 ? -1 : 1) * w * push / Math.SQRT2;
-      pz[i] += (pz[i] < 0 ? -1 : 1) * w * push / Math.SQRT2;
-    }
-    py[i] = y;
-  }
-
-  /* the path for one arm length; returns its length */
-  function trace(arm) {
-    var i, t, s, b0, b1, b2, b3;
-    var c1x = a0x + a1x * arm, c1y = a0y + a1y * arm, c1z = a0z + a1z * arm;
-    var c2x = b0x + b1x * arm, c2y = b0y + b1y * arm, c2z = b0z + b1z * arm;
-    for (i = 0; i <= K; i++) {
-      t = i / K; s = 1 - t;
-      b0 = s * s * s; b1 = 3 * s * s * t; b2 = 3 * s * t * t; b3 = t * t * t;
-      px[i] = b0 * a0x + b1 * c1x + b2 * c2x + b3 * b0x;
-      py[i] = b0 * a0y + b1 * c1y + b2 * c2y + b3 * b0y;
-      pz[i] = b0 * a0z + b1 * c1z + b2 * c2z + b3 * b0z;
-    }
-    /* constrain, then relax so a held point does not leave a kink; the two
-       samples at each end stay put, which keeps both boot axes */
-    for (var pass = 0; pass < 4; pass++) {
-      for (i = 2; i <= K - 2; i++) hold(i);
-      if (pass === 3) break;
-      for (i = 0; i <= K; i++) { qx[i] = px[i]; qy[i] = py[i]; qz[i] = pz[i]; }
-      for (i = 2; i <= K - 2; i++) {
-        px[i] = 0.25 * qx[i - 1] + 0.5 * qx[i] + 0.25 * qx[i + 1];
-        py[i] = 0.25 * qy[i - 1] + 0.5 * qy[i] + 0.25 * qy[i + 1];
-        pz[i] = 0.25 * qz[i - 1] + 0.5 * qz[i] + 0.25 * qz[i + 1];
+  /* First pose only: a cubic between the anchors, its arms grown until it
+     is the hose's length, kept above the table, resampled to even steps.
+     Newton takes it from there. */
+  function firstGuess(A, dA, B, dB) {
+    var K = 256, pts = new Float64Array(3 * (K + 1)), cum = new Float64Array(K + 1);
+    function bez(arm) {
+      var len = 0;
+      for (var k = 0; k <= K; k++) {
+        var t = k / K, s = 1 - t, b0 = s * s * s, b1 = 3 * s * s * t, b2 = 3 * s * t * t, b3 = t * t * t;
+        pts[3 * k] = b0 * A.x + b1 * (A.x + dA.x * arm) + b2 * (B.x + dB.x * arm) + b3 * B.x;
+        pts[3 * k + 1] = Math.max(r + 1, b0 * A.y + b1 * (A.y + dA.y * arm) + b2 * (B.y + dB.y * arm) + b3 * B.y);
+        pts[3 * k + 2] = b0 * A.z + b1 * (A.z + dA.z * arm) + b2 * (B.z + dB.z * arm) + b3 * B.z;
+        if (k) len += Math.hypot(pts[3 * k] - pts[3 * k - 3], pts[3 * k + 1] - pts[3 * k - 2], pts[3 * k + 2] - pts[3 * k - 1]);
+        cum[k] = len;
       }
+      return len;
     }
-    cum[0] = 0;
-    for (i = 1; i <= K; i++) cum[i] = cum[i - 1] + Math.hypot(px[i] - px[i - 1], py[i] - py[i - 1], pz[i] - pz[i - 1]);
-    return cum[K];
+    var lo = 1, hi = 900;
+    for (var it = 0; it < 30; it++) { var mid = 0.5 * (lo + hi); if (bez(mid) < L) lo = mid; else hi = mid; }
+    var tot = bez(lo), seg = 0;
+    for (var i = 0; i <= N; i++) {
+      var s = i / N * tot;
+      while (seg < K - 1 && cum[seg + 1] < s) seg++;
+      var f = (s - cum[seg]) / ((cum[seg + 1] - cum[seg]) || 1);
+      for (var c = 0; c < 3; c++) X[3 * i + c] = pts[3 * seg + c] + (pts[3 * seg + 3 + c] - pts[3 * seg + c]) * f;
+    }
   }
 
-  var last = [NaN, NaN, NaN, NaN, NaN, NaN];
+  /* carry the free nodes with the pod end, fading out along the hose */
+  function drag(dx, dy, dz) {
+    for (var i = 1; i < N; i++) {
+      var w = 1 - i / N;
+      X[3 * i] += dx * w; X[3 * i + 1] += dy * w; X[3 * i + 2] += dz * w;
+    }
+  }
+
   var box = geo.boundingBox;
   var trisPerRib = geo.userData.trisPerRib;
-
-  /* The arm length is found by secant steps from the last pose's, which
-     a moving head barely changes (two or three traces), falling back to
-     bisection when that does not settle. */
-  var lastArm = 120;
-  function solveArm() {
-    var x0 = lastArm, f0 = trace(x0) - HOSE.L;
-    if (Math.abs(f0) < 0.3) return x0;
-    var x1 = x0 * (f0 < 0 ? 1.08 : 0.92), f1 = trace(x1) - HOSE.L, k;
-    for (k = 0; k < 6 && Math.abs(f1) >= 0.3; k++) {
-      if (Math.abs(f1 - f0) < 1e-6) break;
-      var x2 = x1 - f1 * (x1 - x0) / (f1 - f0);
-      if (!(x2 > 2 && x2 < 900)) break;
-      x0 = x1; f0 = f1; x1 = x2; f1 = trace(x1) - HOSE.L;
-    }
-    if (Math.abs(f1) < 0.3) return (lastArm = x1);
-    var lo = 2, hi = 900;
-    if (trace(hi) < HOSE.L) return (lastArm = hi);
-    for (k = 0; k < 18; k++) {
-      var mid = 0.5 * (lo + hi);
-      if (trace(mid) < HOSE.L) lo = mid; else hi = mid;
-    }
-    return (lastArm = lo);
-  }
+  var last = [NaN, NaN, NaN];
 
   function update(A, dA, B, dB) {
-    if (Math.abs(A.x - last[0]) < 0.02 && Math.abs(A.y - last[1]) < 0.02 && Math.abs(A.z - last[2]) < 0.02 &&
-        Math.abs(B.x - last[3]) < 0.02 && Math.abs(B.y - last[4]) < 0.02 && Math.abs(B.z - last[5]) < 0.02) return;
-    last[0] = A.x; last[1] = A.y; last[2] = A.z; last[3] = B.x; last[4] = B.y; last[5] = B.z;
-    a0x = A.x; a0y = A.y; a0z = A.z; a1x = dA.x; a1y = dA.y; a1z = dA.z;
-    b0x = B.x; b0y = B.y; b0z = B.z; b1x = dB.x; b1y = dB.y; b1z = dB.z;
+    var moved = !(Math.abs(A.x - last[0]) < 0.02 && Math.abs(A.y - last[1]) < 0.02 && Math.abs(A.z - last[2]) < 0.02);
+    if (!moved && settled) return;
+    if (moved) {
+      last[0] = A.x; last[1] = A.y; last[2] = A.z;
+      if (!started) {
+        firstGuess(A, dA, B, dB);
+        rod.setEnds(A, dA, B, dB);
+        rod.solve(200, 0.005);
+        started = true;
+      } else {
+        dAn.subVectors(A, A0);
+        var jump = dAn.length();
+        Xkeep.set(X);
+        if (jump > 12) {
+          /* a jump: walk there in steps the solver can follow, so the hose
+             goes round the base the way it would if the head had moved */
+          var steps = Math.ceil(jump / 12);
+          for (var s = 1; s <= steps; s++) {
+            Aw.copy(A0).lerp(A, s / steps);
+            drag(dAn.x / steps, dAn.y / steps, dAn.z / steps);
+            rod.setEnds(Aw, dA, B, dB);
+            rod.solve(s < steps ? 10 : 60, s < steps ? 0.05 : 0.01);
+          }
+          settled = true;
+          hasPrev = false;
+        } else {
+          /* a small move: extrapolate the hose's own last motion when the
+             head keeps going the same way, else drag it along */
+          var k = hasPrev ? dAn.dot(dAp) / Math.max(1e-9, dAp.lengthSq()) : 0;
+          if (k > 0.2 && k < 2) {
+            for (var i = 0; i < nX; i++) X[i] += (X[i] - Xprev[i]) * k;
+          } else drag(dAn.x, dAn.y, dAn.z);
+          rod.setEnds(A, dA, B, dB);
+          /* two Newton steps keep up with a moving head (the hose lags the
+             fully settled shape by under 0.1 mm); more only if they could
+             not, so it never drifts off */
+          var d = rod.solve(2, 0.05);
+          if (d < 0 || d > 0.5) d = rod.solve(8, 0.05);
+          settled = d >= 0 && d < 0.05;
+          hasPrev = true;
+        }
+        Xprev.set(Xkeep);
+        dAp.copy(dAn);
+      }
+      A0.copy(A);
+    } else {
+      /* the head stopped before the hose settled: finish it now */
+      var d2 = rod.solve(4, 0.02);
+      settled = d2 >= 0 && d2 < 0.05;
+    }
+    /* a solve that ever went non-finite would lose the hose for good:
+       start again from the first guess */
+    for (var q = 0; q < nX; q++) if (!isFinite(X[q])) {
+      firstGuess(A, dA, B, dB);
+      rod.setEnds(A, dA, B, dB);
+      rod.solve(200, 0.005);
+      settled = true;
+      hasPrev = false;
+      break;
+    }
+    writeFrames();
+  }
 
-    /* the arm length that gives the hose its own length: the U grows out
-       across the table as the two ends come together */
-    var i, len, arm = solveArm();
-    len = trace(arm);
-
-    /* unit tangents, then rotation-minimising frames by double reflection
-       (Wang et al. 2008): no flips, no twist */
-    for (i = 0; i <= K; i++) {
-      var i0 = i > 0 ? i - 1 : 0, i1 = i < K ? i + 1 : K;
-      var dx = px[i1] - px[i0], dy = py[i1] - py[i0], dz = pz[i1] - pz[i0];
-      var dl = Math.hypot(dx, dy, dz) || 1;
-      tx[i] = dx / dl; ty[i] = dy / dl; tz[i] = dz / dl;
+  /* Catmull-Rom through the nodes (they are evenly spaced, so the spline's
+     parameter is arc length), M frames, rotation-minimising normals by
+     double reflection (Wang et al. 2008): no flips, no twist */
+  var px = new Float64Array(M), py = new Float64Array(M), pz = new Float64Array(M);
+  var tx = new Float64Array(M), ty = new Float64Array(M), tz = new Float64Array(M);
+  function node(i, c) {
+    if (i < 0) return 2 * X[c] - X[3 + c];
+    if (i > N) return 2 * X[3 * N + c] - X[3 * N - 3 + c];
+    return X[3 * i + c];
+  }
+  function writeFrames() {
+    var q, c, len = 0;
+    for (q = 0; q < M; q++) {
+      var u = q / (M - 1) * N, i = Math.min(N - 1, Math.floor(u)), t = u - i, t2 = t * t, t3 = t2 * t;
+      for (c = 0; c < 3; c++) {
+        var p0 = node(i - 1, c), p1 = node(i, c), p2 = node(i + 1, c), p3 = node(i + 2, c);
+        var v = 0.5 * (2 * p1 + (p2 - p0) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (3 * p1 - p0 - 3 * p2 + p3) * t3);
+        var dv = 0.5 * ((p2 - p0) + 2 * (2 * p0 - 5 * p1 + 4 * p2 - p3) * t + 3 * (3 * p1 - p0 - 3 * p2 + p3) * t2);
+        if (c === 0) { px[q] = v; tx[q] = dv; } else if (c === 1) { py[q] = v; ty[q] = dv; } else { pz[q] = v; tz[q] = dv; }
+      }
+      var tl = Math.sqrt(tx[q] * tx[q] + ty[q] * ty[q] + tz[q] * tz[q]) || 1;
+      tx[q] /= tl; ty[q] /= tl; tz[q] /= tl;
+      if (q) len += Math.sqrt((px[q] - px[q - 1]) * (px[q] - px[q - 1]) + (py[q] - py[q - 1]) * (py[q] - py[q - 1]) + (pz[q] - pz[q - 1]) * (pz[q] - pz[q - 1]));
     }
     /* start square to X, so the rib pattern starts the same way whatever
        the pose */
     var sx = 1 - tx[0] * tx[0], sy = -tx[0] * ty[0], sz = -tx[0] * tz[0];
-    var sl = Math.hypot(sx, sy, sz) || 1;
-    nx[0] = sx / sl; ny[0] = sy / sl; nz[0] = sz / sl;
-    for (i = 0; i < K; i++) {
-      var v1x = px[i + 1] - px[i], v1y = py[i + 1] - py[i], v1z = pz[i + 1] - pz[i];
-      var c1 = v1x * v1x + v1y * v1y + v1z * v1z;
-      if (c1 < 1e-12) { nx[i + 1] = nx[i]; ny[i + 1] = ny[i]; nz[i + 1] = nz[i]; continue; }
-      var k1 = 2 / c1 * (v1x * nx[i] + v1y * ny[i] + v1z * nz[i]);
-      var rLx = nx[i] - k1 * v1x, rLy = ny[i] - k1 * v1y, rLz = nz[i] - k1 * v1z;
-      var k2 = 2 / c1 * (v1x * tx[i] + v1y * ty[i] + v1z * tz[i]);
-      var tLx = tx[i] - k2 * v1x, tLy = ty[i] - k2 * v1y, tLz = tz[i] - k2 * v1z;
-      var v2x = tx[i + 1] - tLx, v2y = ty[i + 1] - tLy, v2z = tz[i + 1] - tLz;
-      var c2 = v2x * v2x + v2y * v2y + v2z * v2z;
-      var k3 = c2 < 1e-12 ? 0 : 2 / c2 * (v2x * rLx + v2y * rLy + v2z * rLz);
-      nx[i + 1] = rLx - k3 * v2x; ny[i + 1] = rLy - k3 * v2y; nz[i + 1] = rLz - k3 * v2z;
-    }
-
-    /* resample at even arc-length steps for the shader */
-    var step = len / (M - 1), seg = 0;
+    var sl = Math.sqrt(sx * sx + sy * sy + sz * sz) || 1;
+    var nx = sx / sl, ny = sy / sl, nz = sz / sl;
     box.makeEmpty();
-    for (var q = 0; q < M; q++) {
-      var s = q * step;
-      while (seg < K - 1 && cum[seg + 1] < s) seg++;
-      var span = cum[seg + 1] - cum[seg], f = span > 1e-9 ? (s - cum[seg]) / span : 0;
-      if (f > 1) f = 1;
-      var X = px[seg] + (px[seg + 1] - px[seg]) * f;
-      var Y = py[seg] + (py[seg + 1] - py[seg]) * f;
-      var Z = pz[seg] + (pz[seg + 1] - pz[seg]) * f;
-      var o = q * 12;
-      data[o] = X; data[o + 1] = Y; data[o + 2] = Z; data[o + 3] = 1;
-      data[o + 4] = tx[seg] + (tx[seg + 1] - tx[seg]) * f;
-      data[o + 5] = ty[seg] + (ty[seg + 1] - ty[seg]) * f;
-      data[o + 6] = tz[seg] + (tz[seg + 1] - tz[seg]) * f; data[o + 7] = 0;
-      data[o + 8] = nx[seg] + (nx[seg + 1] - nx[seg]) * f;
-      data[o + 9] = ny[seg] + (ny[seg + 1] - ny[seg]) * f;
-      data[o + 10] = nz[seg] + (nz[seg + 1] - nz[seg]) * f; data[o + 11] = 0;
-      if (X - r < box.min.x) box.min.x = X - r; if (X + r > box.max.x) box.max.x = X + r;
-      if (Y - r < box.min.y) box.min.y = Y - r; if (Y + r > box.max.y) box.max.y = Y + r;
-      if (Z - r < box.min.z) box.min.z = Z - r; if (Z + r > box.max.z) box.max.z = Z + r;
+    for (q = 0; q < M; q++) {
+      if (q) {
+        var v1x = px[q] - px[q - 1], v1y = py[q] - py[q - 1], v1z = pz[q] - pz[q - 1];
+        var c1 = v1x * v1x + v1y * v1y + v1z * v1z;
+        if (c1 > 1e-12) {
+          var k1 = 2 / c1 * (v1x * nx + v1y * ny + v1z * nz);
+          var rLx = nx - k1 * v1x, rLy = ny - k1 * v1y, rLz = nz - k1 * v1z;
+          var k2 = 2 / c1 * (v1x * tx[q - 1] + v1y * ty[q - 1] + v1z * tz[q - 1]);
+          var tLx = tx[q - 1] - k2 * v1x, tLy = ty[q - 1] - k2 * v1y, tLz = tz[q - 1] - k2 * v1z;
+          var v2x = tx[q] - tLx, v2y = ty[q] - tLy, v2z = tz[q] - tLz;
+          var c2 = v2x * v2x + v2y * v2y + v2z * v2z;
+          var k3 = c2 < 1e-12 ? 0 : 2 / c2 * (v2x * rLx + v2y * rLy + v2z * rLz);
+          nx = rLx - k3 * v2x; ny = rLy - k3 * v2y; nz = rLz - k3 * v2z;
+        }
+      }
+      var o2 = q * 12;
+      data[o2] = px[q]; data[o2 + 1] = py[q]; data[o2 + 2] = pz[q]; data[o2 + 3] = 1;
+      data[o2 + 4] = tx[q]; data[o2 + 5] = ty[q]; data[o2 + 6] = tz[q]; data[o2 + 7] = 0;
+      data[o2 + 8] = nx; data[o2 + 9] = ny; data[o2 + 10] = nz; data[o2 + 11] = 0;
+      if (px[q] - r < box.min.x) box.min.x = px[q] - r; if (px[q] + r > box.max.x) box.max.x = px[q] + r;
+      if (py[q] - r < box.min.y) box.min.y = py[q] - r; if (py[q] + r > box.max.y) box.max.y = py[q] + r;
+      if (pz[q] - r < box.min.z) box.min.z = pz[q] - r; if (pz[q] + r > box.max.z) box.max.z = pz[q] + r;
     }
     tex.needsUpdate = true;
-    frames.uniforms.hoseStep.value = step;
+    frames.uniforms.hoseStep.value = len / (M - 1);
     frames.uniforms.hoseLen.value = len;
     /* draw only the ribs the hose has (+1 for the offset start); the rest
        would collapse onto the far end, inside the boot */
@@ -1951,6 +2345,7 @@ function buildConduit(mats) {
   }
 
   hose.userData.update = update;
+  hose.userData.rod = rod;
   return hose;
 }
 
@@ -1978,7 +2373,7 @@ M1.build = function (mats) {
   yCarriage.add(beamGroup);
   root.add(yCarriage);
 
-  var conduit = buildConduit(mats);
+  var conduit = buildConduit(mats, base.userData.socketCuff);
   root.add(conduit);
 
   /* the mast folds about its hinge */

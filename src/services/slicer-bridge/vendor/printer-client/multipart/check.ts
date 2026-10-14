@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Vendored from @muon3d/printer-client 0.2.0 (src/multipart/check.ts), Copyright 2026 Muon 3D
+// Vendored from @muon3d/printer-client 0.3.0 (src/multipart/check.ts), Copyright 2026 Muon 3D
 // Technologies Limited, under the Apache License 2.0 (vendor/printer-client/LICENSE and NOTICE). Changed for
 // Fluidd by tools/vendor-printer-client.cjs: relative imports without ".ts"; Object.hasOwn as hasOwnProperty.call.
 // A checker of the upload rules the printer's gateway applies to a remote POST /server/files/upload before it

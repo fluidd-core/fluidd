@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { shallowMount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Slice, { CROSS_ORIGIN_SANDBOX } from '../Slice.vue'
@@ -70,6 +71,33 @@ describe('Slice', () => {
     expect(frame.getAttribute('title')).toBe('Muon3D Slicer')
     expect(frame.hasAttribute('sandbox')).toBe(false)
     expect((wrapper.vm as any).host).not.toBeNull()
+    wrapper.destroy()
+  })
+
+  it("keeps the slicer's change of what's loaded on the printer: the material while idle, the colour any time", async () => {
+    const printer = Vue.observable({ printing: false })
+    const choices = [{ name: 'PLA', nozzle: 215, bed: 60, colour: '#E8A53B', presetId: null }, { name: 'PETG', nozzle: 240, bed: 80, colour: '#5B7FD6', presetId: null }]
+    const wrapper = await mountSlice(undefined, {
+      computed: {
+        materialChoices: () => choices,
+        loadedMaterial: () => choices[0],
+        loadedColour: () => null,
+        printerPrinting: () => printer.printing,
+        printerPaused: () => false
+      }
+    })
+    const vm = wrapper.vm as any
+    vm.setLoadedMaterial = vi.fn()
+    vm.setLoadedColour = vi.fn()
+
+    vm.takeMaterial({ material: 'petg', colour: '#1A2B3C' })
+    expect(vm.setLoadedMaterial).toHaveBeenCalledWith(choices[1])
+    expect(vm.setLoadedColour).toHaveBeenCalledWith('#1A2B3C')
+
+    printer.printing = true
+    vm.setLoadedMaterial.mockClear()
+    vm.takeMaterial({ material: 'PETG', colour: null })
+    expect(vm.setLoadedMaterial).not.toHaveBeenCalled()
     wrapper.destroy()
   })
 
