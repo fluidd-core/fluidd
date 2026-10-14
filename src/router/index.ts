@@ -5,6 +5,7 @@ import { readSignedOut } from '@/services/account/signed-out-note'
 import { activeSlugNow, foreignSlugNow } from './printerSlugSource'
 import { PRINTER_PAGE_PATHS } from './printerPagePaths'
 import { ROUTE_SLUG_PATTERN } from '@/services/printer-pages/slug'
+import { isManagedApiUrl } from '@/services/muon-cloud/origin'
 import Updating from '@/views/Updating.vue'
 
 // Views. Every route is lazy (KAN-525) but Updating, which stays in the main
@@ -33,9 +34,11 @@ const JoinLanding = () => import('@/views/JoinLanding.vue')
 
 Vue.use(VueRouter)
 
+// A cloud printer is never asked for Moonraker's login (auth/logout).
 const isAuthenticated = () => (
   router.app.$store.getters['auth/getAuthenticated'] ||
-  !router.app.$store.state.socket.apiConnected
+  !router.app.$store.state.socket.apiConnected ||
+  isManagedApiUrl(router.app.$store.state.config.apiUrl)
 )
 
 /** The current printer's page, or Printers with no printer. */

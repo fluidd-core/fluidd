@@ -168,7 +168,13 @@ export const actions: ActionTree<AuthState, RootState> = {
    * Logout the user. This should remove their token from local storage,
    * shut down the socket and send them back to the login page.
    */
-  async logout ({ commit, rootGetters }, options?: { invalidate: boolean; partial: boolean }) {
+  async logout ({ commit, rootGetters, rootState }, options?: { invalidate: boolean; partial: boolean }) {
+    // A cloud printer has no Moonraker user to sign out of, and a 401 through
+    // the gateway is not Moonraker's login: the console's grant is the
+    // sign-in. Closing the socket and showing the login page there only led
+    // to a password posted where muon-link refuses it to every remote role.
+    if (isManagedApiUrl(rootState.config.apiUrl)) return
+
     const opts = {
       invalidate: false,
       partial: false,

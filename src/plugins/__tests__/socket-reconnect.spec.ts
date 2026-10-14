@@ -224,4 +224,35 @@ describe('WebSocketClient reconnecting', () => {
     expect(reopen).toHaveBeenCalledTimes(1)
     expect(client.connection).toBe(second)
   })
+
+  it("drops a connect still waiting for its token once another printer's socket is adopted", async () => {
+    // 14 Oct: a Walnut connect that outlived a switch to Boxwood would open
+    // Walnut's socket under Boxwood's page.
+    const { client } = lanClient()
+    let token!: (value: unknown) => void
+    tokens.get.mockReturnValueOnce(new Promise(resolve => { token = resolve }))
+    const waiting = client.connect()
+
+    const boxwood = new FakeSocket()
+    client.adoptTransportSocket(boxwood, async () => new FakeSocket())
+    token({ data: { result: 'token' } })
+    await waiting
+
+    expect(sockets).toHaveLength(0)
+    expect(client.connection).toBe(boxwood)
+  })
+
+  it('drops a connect still waiting for its token once Fluidd closed it', async () => {
+    const { client } = lanClient()
+    let token!: (value: unknown) => void
+    tokens.get.mockReturnValueOnce(new Promise(resolve => { token = resolve }))
+    const waiting = client.connect()
+
+    client.close()
+    token({ data: { result: 'token' } })
+    await waiting
+
+    expect(sockets).toHaveLength(0)
+    expect(client.retryPending).toBe(false)
+  })
 })
