@@ -114,6 +114,12 @@ export const SECTIONS: Section[] = [
 /** G then P: every printer. */
 export const ALL_PRINTERS_KEY = 'p'
 
+/** Pages inside a section that have a G key of their own: G W Network, G U Software updates. */
+export const PAGE_KEYS: Array<{ key: string, label: string, path: string, hash?: string }> = [
+  { key: 'w', label: 'Network', path: '/wifi' },
+  { key: 'u', label: 'Software updates', path: '/settings', hash: '#versions' }
+]
+
 /** Whether a printer page (without its printer) is `path` or one of its pages. */
 export function pageMatches (page: string, path: string): boolean {
   if (path === '/') return page === '/'

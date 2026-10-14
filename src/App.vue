@@ -86,6 +86,7 @@
         <spool-selection-dialog />
         <action-command-prompt-dialog />
         <keyboard-shortcuts-dialog />
+        <command-bar />
       </template>
     </v-main>
 
@@ -116,10 +117,12 @@ import ActionCommandPromptDialog from './components/common/ActionCommandPromptDi
 import KeyboardShortcutsDialog from './components/common/KeyboardShortcutsDialog.vue'
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from './util/event-helpers'
 import { isManagedConsolePath } from '@/router/managedPath'
-import { activeSlug, isActiveSlug, printerPageNeedsLogin } from '@/services/printer-pages'
+import { activeSlug, isActiveSlug, printerPageNeedsLogin, samePageFor, stepPrinter } from '@/services/printer-pages'
 import PrinterOpening from './components/muon-cloud/PrinterOpening.vue'
 import FrameMixin from '@/mixins/frame'
-import { ALL_PRINTERS_KEY, sectionForKey } from '@/router/printerSections'
+import { ALL_PRINTERS_KEY, PAGE_KEYS, sectionForKey } from '@/router/printerSections'
+import { scopedPath } from '@/router/printerPagePaths'
+import { setProMode } from '@/services/pro-mode'
 import { GoKeys } from '@/util/go-keys'
 
 @Component<App>({
@@ -541,6 +544,31 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
       return
     }
 
+    switch (shortcut) {
+      // The same page of the printer before or after this one.
+      case '[':
+      case ']': {
+        const next = this.printerFrame ? stepPrinter(activeSlug(), shortcut === ']' ? 1 : -1) : null
+        if (next) {
+          event.preventDefault()
+          this.$router.push(samePageFor(this.$route, next)).catch(() => {})
+        }
+        return
+      }
+
+      case 'Shift+X':
+        event.preventDefault()
+        setProMode(!this.pro)
+        return
+
+      case 'u':
+        if (this.printerFrame && this.socketConnected) {
+          event.preventDefault()
+          EventBus.bus.$emit('upload-file')
+        }
+        return
+    }
+
     if (!this.klippyReady) {
       return
     }
@@ -562,6 +590,10 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
           event.preventDefault()
 
           this.pausePrint()
+        } else if (this.printerPaused) {
+          event.preventDefault()
+
+          this.resumePrint()
         }
         break
 
@@ -587,9 +619,11 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
       to = '/'
     } else if (activeSlug()) {
       const section = sectionForKey(step.key, this.sectionContext)
+      const page = PAGE_KEYS.find(p => p.key === step.key)
       if (section) to = this.sectionTo(section)
+      else if (page) to = `${scopedPath(page.path, activeSlug())}${page.hash ?? ''}`
     }
-    if (to && to !== this.$route.path) this.$router.push(to).catch(() => {})
+    if (to && to !== this.$route.fullPath) this.$router.push(to).catch(() => {})
     return true
   }
 }

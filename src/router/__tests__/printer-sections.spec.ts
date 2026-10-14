@@ -1,6 +1,7 @@
 import { describe, expect, it, test } from 'vitest'
 import { PRINTER_PAGE_PATHS } from '../printerPagePaths'
 import {
+  PAGE_KEYS,
   SECTIONS,
   sectionForKey,
   sectionOf,
@@ -56,7 +57,7 @@ describe("a printer's sections", () => {
   })
 
   it('each have their own G key, none of them P', () => {
-    const keys = SECTIONS.map(s => s.key)
+    const keys = [...SECTIONS.map(s => s.key), ...PAGE_KEYS.map(p => p.key)]
     expect(new Set(keys).size).toBe(keys.length)
     expect(keys).not.toContain('p')
     expect(keys).not.toContain('g')

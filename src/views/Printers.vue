@@ -659,6 +659,7 @@ import {
 } from '@/services/printers-page/model'
 import type { TimeEstimates } from '@/store/printer/types'
 import { shortDuration } from '@/util/short-duration'
+import { eventTargetIsContentEditable } from '@/util/event-helpers'
 import CloudAccountDialog from '@/components/muon-cloud/CloudAccountDialog.vue'
 import LinkPrinterDialog from '@/components/muon-cloud/LinkPrinterDialog.vue'
 import BluetoothSetupDialog from '@/components/muon-ble/BluetoothSetupDialog.vue'
@@ -724,11 +725,38 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
     discoverPrinters().catch(() => {})
     startNearby().catch(() => {})
     this.timer = window.setInterval(() => { refreshKnownPrinters().catch(() => {}) }, HEALTH_EVERY_MS)
+    window.addEventListener('keydown', this.onDigit)
   }
 
   beforeDestroy () {
     if (this.timer !== null) window.clearInterval(this.timer)
+    window.removeEventListener('keydown', this.onDigit)
     stopNearby()
+  }
+
+  /** The printers in the groups, in the order shown, each once: 1 to 9 open them. */
+  get numbered (): PrinterTile[] {
+    const seen = new Set<string>()
+    const out: PrinterTile[] = []
+    for (const g of this.shownGroups) {
+      for (const t of this.filtered(g.tiles)) {
+        if (!seen.has(t.key)) {
+          seen.add(t.key)
+          out.push(t)
+        }
+      }
+    }
+    return out
+  }
+
+  onDigit (event: KeyboardEvent) {
+    if (!this.$store.state.config.uiSettings.general.enableKeyboardShortcuts) return
+    if (event.ctrlKey || event.metaKey || event.altKey || eventTargetIsContentEditable(event)) return
+    if (!/^[1-9]$/.test(event.key)) return
+    const tile = this.numbered[Number(event.key) - 1]
+    if (!tile) return
+    event.preventDefault()
+    this.openEntry(tile.entry)
   }
 
   /** Opened from here, a printer's own page follows. */
