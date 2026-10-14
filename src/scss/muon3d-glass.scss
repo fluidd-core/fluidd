@@ -11,9 +11,8 @@
  *    accent on icons and controls. Apple's system colours mark state only
  *    (green on, orange warning, red faults and the E-STOP).
  *  - Icons are line drawings in the manner of SF Symbols (AppGlassIcon).
- *  - Glass is only for chrome that floats over content: the toolbar (once
- *    content scrolls under it), menus, tooltips, the phone tab bar and the
- *    drawers. Cards and dialogs are opaque.
+ *  - Glass is only for chrome that floats over content: menus, tooltips and
+ *    the phone tab bar. Cards and dialogs are opaque.
  *  - Glass is painted on ::before where the element holds fixed children,
  *    because backdrop-filter makes an element their containing block.
  *  - Radii nest: an inset of P inside a radius of R uses R - P.
@@ -266,299 +265,9 @@ $glass: "html[data-m3d-style='glass']";
     letter-spacing: 0.24em;
   }
 
-  /* ---------------------------------------------------------- toolbar -- */
+  /* ------------------------------------------------------------- rail -- */
 
-  // The toolbar is clear over the resting page and turns to frosted glass
-  // once content scrolls under it (macOS 27's uniform toolbar).
-  .v-app-bar.v-toolbar.muon-app-bar {
-    border-bottom: 0 !important;
-    background-color: transparent !important;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      background-color: var(--m3d-glass-thick);
-      -webkit-backdrop-filter: var(--m3d-glass-filter);
-      backdrop-filter: var(--m3d-glass-filter);
-      box-shadow: inset 0 -0.5px 0 var(--m3d-border);
-      opacity: 0;
-      transition: opacity var(--m3d-duration-base) var(--m3d-ease);
-      pointer-events: none;
-    }
-
-    .v-toolbar__content {
-      padding: 0 14px 0 24px;
-    }
-  }
-
-  .muon-shell--scrolled .v-app-bar.v-toolbar.muon-app-bar::before {
-    opacity: 1;
-  }
-
-  .muon-app-bar .toolbar-title {
-    padding: 0;
-  }
-
-  .glass-title {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    line-height: 1.2;
-  }
-
-  .glass-title__main {
-    overflow: hidden;
-    color: var(--m3d-text);
-    font-family: var(--m3d-font-title);
-    font-size: 1.0625rem;
-    font-weight: 700;
-    letter-spacing: -0.012em;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .glass-title__sub.printer-status {
-    gap: 6px;
-    min-width: 0;
-    margin-top: 1px;
-    color: var(--m3d-text-muted);
-    font-family: var(--m3d-font-sans);
-    font-size: 0.75rem;
-    font-weight: 400;
-    letter-spacing: 0;
-    text-transform: none;
-
-    .printer-status__dot {
-      width: 7px;
-      height: 7px;
-    }
-
-    .printer-status__text {
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
-
-  // The toolbar's icon actions share one glass capsule, as on macOS 26/27.
-  .muon-toolbar-actions {
-    gap: 10px;
-  }
-
-  .muon-toolbar-group {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    padding: 3px;
-    border-radius: var(--m3d-radius-pill);
-    background-color: var(--m3d-glass);
-    -webkit-backdrop-filter: var(--m3d-glass-filter);
-    backdrop-filter: var(--m3d-glass-filter);
-    box-shadow: var(--m3d-glass-rim), var(--m3d-glass-edge), 0 1px 3px rgb(0 0 0 / 6%);
-  }
-
-  .muon-toolbar-actions .v-btn.v-btn--fab.v-size--small,
-  .muon-toolbar-actions .v-btn.v-btn--icon {
-    width: 34px !important;
-    min-width: 34px !important;
-    height: 34px !important;
-
-    .v-icon {
-      color: var(--m3d-text) !important;
-      font-size: 20px;
-    }
-  }
-
-  .muon-toolbar-actions > div > .v-btn.v-btn--fab,
-  .muon-toolbar-actions > div > .v-btn.v-btn--icon {
-    background-color: var(--m3d-glass) !important;
-    box-shadow: var(--m3d-glass-rim), var(--m3d-glass-edge) !important;
-  }
-
-  // The E-STOP sits at the trailing edge, where the pointer ends up.
-  .muon-toolbar-actions > div:has(.estop-action) {
-    order: 99;
-  }
-
-  // The E-STOP is stained glass: the one saturated control in the chrome.
-  .v-btn.estop-action {
-    height: 36px !important;
-    margin: 0 !important;
-    padding: 0 18px !important;
-    border: 0 !important;
-    border-radius: var(--m3d-radius-pill) !important;
-    background-color: var(--m3d-estop) !important;
-    box-shadow: inset 0 0.5px 0 rgb(255 255 255 / 35%), inset 0 0 0 0.5px rgb(255 255 255 / 12%), 0 2px 8px color-mix(in srgb, var(--m3d-estop) 30%, transparent) !important;
-    color: #fff !important;
-    font-size: 0.875rem !important;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-
-    .v-icon {
-      color: inherit !important;
-    }
-
-    &:not(.v-btn--disabled):hover {
-      background-color: color-mix(in srgb, var(--m3d-estop) 88%, #000) !important;
-    }
-
-    // Disabled (Klipper not ready) it is a red tint with red text, so it
-    // still reads as the E-STOP in both themes.
-    &.v-btn--disabled {
-      background-color: color-mix(in srgb, var(--m3d-estop) 16%, transparent) !important;
-      box-shadow: none !important;
-      color: var(--m3d-danger) !important;
-    }
-  }
-
-  // On a phone the tab bar holds navigation and the E-STOP; the toolbar keeps
-  // the page title, centred, once the large title has scrolled under it.
-  @media (max-width: 599px) {
-    .v-app-bar.v-toolbar.muon-app-bar .v-toolbar__content {
-      padding: 0 10px;
-    }
-
-    .muon-app-bar .toolbar-title {
-      padding-left: 8px;
-    }
-
-    .muon-app-bar .glass-title {
-      opacity: 0;
-      transition: opacity var(--m3d-duration-fast) var(--m3d-ease);
-    }
-
-    .muon-shell--past-title .muon-app-bar .glass-title {
-      opacity: 1;
-    }
-
-    .glass-title__sub.printer-status {
-      display: none;
-    }
-  }
-
-  /* ---------------------------------------------------------- sidebar -- */
-
-  // Edge to edge and full height, as macOS 27 sidebars are, with icons on
-  // coloured tiles as in System Settings.
-  .v-navigation-drawer.muon-nav {
-    background-color: transparent !important;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      background-color: var(--m3d-sidebar);
-      -webkit-backdrop-filter: var(--m3d-glass-filter);
-      backdrop-filter: var(--m3d-glass-filter);
-      pointer-events: none;
-    }
-
-    .v-navigation-drawer__border {
-      display: none;
-    }
-  }
-
-  .muon-nav__brand {
-    padding: 0 24px;
-    border-bottom: 0;
-  }
-
-  .muon-nav--rail .muon-nav__brand {
-    visibility: hidden;
-  }
-
-  .muon-nav__body {
-    padding: 0 10px 24px;
-  }
-
-  .muon-nav__label {
-    padding: 16px 10px 5px;
-    color: var(--m3d-text-muted);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0;
-    text-transform: none;
-  }
-
-  .muon-nav__group + .muon-nav__group {
-    margin-top: 0;
-    padding-top: 0;
-    border-top: 0;
-  }
-
-  .muon-nav--rail .muon-nav__group + .muon-nav__group {
-    margin-top: 12px;
-    padding-top: 0;
-    border-top: 0;
-  }
-
-  .muon-nav-item {
-    min-height: 34px;
-    margin: 1px 0;
-    padding: 0 8px;
-    border-radius: var(--m3d-radius-sm);
-    color: var(--m3d-text) !important;
-    font-weight: 400;
-    transition: background-color var(--m3d-duration-fast) var(--m3d-ease);
-
-    &:hover {
-      background-color: var(--m3d-fill-2);
-    }
-
-    .v-list-item__icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 22px;
-      min-width: 22px;
-      height: 22px;
-      margin: 0 10px 0 0;
-    }
-
-    .v-list-item__icon .v-icon {
-      color: var(--m3d-accent) !important;
-      font-size: 20px;
-    }
-
-    .v-list-item__title {
-      font-size: 0.84375rem;
-    }
-  }
-
-  // The selected row is washed with the accent, the one colour the sidebar
-  // uses.
-  .muon-nav-item.muon-nav-item--active,
-  .muon-nav-item.v-list-item--active {
-    background-color: var(--m3d-accent-soft);
-    box-shadow: none;
-    color: var(--m3d-text) !important;
-    font-weight: 600;
-  }
-
-  .muon-nav--rail .muon-nav-item {
-    min-height: 44px;
-    margin: 2px 0;
-
-    .v-list-item__icon {
-      width: 24px;
-      min-width: 24px;
-      height: 24px;
-      margin: 0;
-    }
-
-    .v-list-item__icon .v-icon {
-      font-size: 22px;
-    }
-  }
-
-  .muon-nav-item__kbd {
-    background: transparent !important;
-  }
-
-  // Settings sections sit under the Settings row, aligned with its label.
+  // Settings sections sit under the rail's Settings row, aligned with its label.
   .settings-nav {
     margin: 2px 0 6px 34px;
     padding-left: 0;
@@ -567,86 +276,6 @@ $glass: "html[data-m3d-style='glass']";
 
   .settings-nav__item {
     border-radius: 8px;
-  }
-
-  /* -------------------------------------------------- floating drawers -- */
-
-  // A drawer opened over the page is a floating glass panel, inset from the
-  // window edge like an iPad sidebar or inspector. It opens below the
-  // toolbar, and the toolbar rises above the drawer's scrim, so the E-STOP
-  // stays in view and one click away while a drawer is open.
-  // On a phone the navigation drawer is not --temporary but --is-mobile; it
-  // floats the same way.
-  .v-application:has(.v-navigation-drawer--temporary.v-navigation-drawer--open) .v-app-bar.muon-app-bar,
-  .v-application:has(.v-navigation-drawer--is-mobile.v-navigation-drawer--open) .v-app-bar.muon-app-bar {
-    z-index: 8 !important;
-  }
-
-  .v-navigation-drawer.v-navigation-drawer--temporary,
-  .v-navigation-drawer.v-navigation-drawer--is-mobile {
-    top: 64px !important;
-    height: calc(100% - 72px) !important;
-    max-height: calc(100% - 72px) !important;
-    overflow: hidden;
-    border-radius: 26px;
-    background-color: transparent !important;
-    transition-timing-function: var(--m3d-spring) !important;
-    transition-duration: 420ms !important;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      background-color: var(--m3d-glass-thick);
-      -webkit-backdrop-filter: var(--m3d-glass-filter);
-      backdrop-filter: var(--m3d-glass-filter);
-      pointer-events: none;
-    }
-
-    &:not(.v-navigation-drawer--right) {
-      left: 8px !important;
-    }
-
-    &.v-navigation-drawer--right {
-      right: 8px !important;
-      left: auto !important;
-    }
-
-    // Closed, it must clear the inset as well as its own width.
-    &.v-navigation-drawer--close:not(.v-navigation-drawer--right) {
-      transform: translateX(calc(-100% - 16px)) !important;
-    }
-
-    &.v-navigation-drawer--close.v-navigation-drawer--right {
-      transform: translateX(calc(100% + 16px)) !important;
-    }
-
-    // Only an open drawer floats; a closed one's shadow would bleed back in.
-    &.v-navigation-drawer--open {
-      box-shadow: var(--m3d-glass-rim), var(--m3d-glass-edge), var(--m3d-shadow-float) !important;
-    }
-
-    .v-navigation-drawer__border {
-      display: none;
-    }
-
-    .v-divider {
-      margin: 4px 16px;
-    }
-
-    .v-list {
-      padding: 8px;
-    }
-
-    .v-list-item {
-      min-height: 40px;
-      border-radius: 12px;
-    }
-
-    .v-subheader {
-      padding: 14px 16px 6px;
-    }
   }
 
   /* ------------------------------------------------------------ content -- */
@@ -996,7 +625,7 @@ $glass: "html[data-m3d-style='glass']";
   }
 
   // Outlined buttons become tinted: a wash of their own colour.
-  .v-btn.v-btn--outlined:not(.estop-action) {
+  .v-btn.v-btn--outlined {
     border-color: transparent !important;
     background-color: color-mix(in srgb, currentColor 13%, transparent) !important;
   }
@@ -1560,9 +1189,8 @@ $glass: "html[data-m3d-style='glass']";
 
   /* ------------------------------------------------------------- fleet -- */
 
-  // The toolbar names the page, so the page's own heading only shows when
-  // there is no printer and so no toolbar title.
-  .muon-shell:not(.muon-shell--navless) .fleet__title {
+  // The header names the page, so the page's own heading would repeat it.
+  .fleet__title {
     display: none;
   }
 

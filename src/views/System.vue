@@ -4,6 +4,18 @@
       cols="12"
       md="6"
     >
+      <!-- Reboot, shut down, power devices and services: once the header's
+           three-dot drawer. -->
+      <collapsable-card
+        title="Power and services"
+        icon="$power"
+        class="mb-2 mb-sm-4"
+        data-tid="power-and-services"
+      >
+        <v-list dense>
+          <system-commands />
+        </v-list>
+      </collapsable-card>
       <system-overview-card class="mb-2 mb-sm-4" />
       <disk-usage-card />
     </v-col>

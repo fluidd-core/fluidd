@@ -12,48 +12,21 @@
         <v-simple-table dense>
           <tbody>
             <tr>
-              <th>{{ $t('app.general.title.home') }}</th>
-              <td><kbd>{{ keyboardShortcuts.home }}</kbd></td>
+              <th>All printers</th>
+              <td><kbd>G</kbd> <kbd>P</kbd></td>
             </tr>
-            <tr>
-              <th>{{ $t('app.general.title.console') }}</th>
-              <td><kbd>{{ keyboardShortcuts.console }}</kbd></td>
-            </tr>
-            <tr>
-              <th>{{ $t('app.general.title.gcode_preview') }}</th>
-              <td><kbd>{{ keyboardShortcuts.preview }}</kbd></td>
-            </tr>
-            <tr>
-              <th>{{ $t('app.general.title.jobs') }}</th>
-              <td><kbd>{{ keyboardShortcuts.jobs }}</kbd></td>
-            </tr>
-            <tr v-if="supportsHistory">
-              <th>{{ $t('app.general.title.history') }}</th>
-              <td><kbd>{{ keyboardShortcuts.history }}</kbd></td>
-            </tr>
-            <tr v-if="supportsTimelapse">
-              <th>{{ $t('app.general.title.timelapse') }}</th>
-              <td><kbd>{{ keyboardShortcuts.timelapse }}</kbd></td>
-            </tr>
-            <tr>
-              <th>{{ $t('app.general.title.tune') }}</th>
-              <td><kbd>{{ keyboardShortcuts.tune }}</kbd></td>
-            </tr>
-            <tr v-if="enableDiagnostics">
-              <th>{{ $t('app.general.title.diagnostics') }}</th>
-              <td><kbd>{{ keyboardShortcuts.diagnostics }}</kbd></td>
-            </tr>
-            <tr>
-              <th>{{ $t('app.general.title.configure') }}</th>
-              <td><kbd>{{ keyboardShortcuts.configure }}</kbd></td>
-            </tr>
-            <tr>
-              <th>{{ $t('app.general.title.system') }}</th>
-              <td><kbd>{{ keyboardShortcuts.system }}</kbd></td>
-            </tr>
-            <tr>
-              <th>{{ $t('app.general.title.settings') }}</th>
-              <td><kbd>{{ keyboardShortcuts.settings }}</kbd></td>
+            <tr
+              v-for="section in sections"
+              :key="section.id"
+            >
+              <th>
+                {{ section.label }}
+                <span
+                  v-if="section.pro"
+                  class="text--secondary"
+                >(Pro)</span>
+              </th>
+              <td><kbd>G</kbd> <kbd>{{ section.key.toUpperCase() }}</kbd></td>
             </tr>
           </tbody>
         </v-simple-table>
@@ -110,7 +83,8 @@
 </template>
 
 <script lang="ts">
-import { Globals } from '@/globals'
+import { EventBus } from '@/eventBus'
+import { SECTIONS, type Section } from '@/router/printerSections'
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
 import { Component, Vue } from 'vue-property-decorator'
 
@@ -118,24 +92,13 @@ import { Component, Vue } from 'vue-property-decorator'
 export default class KeyboardShortcutsDialog extends Vue {
   open = false
 
-  get keyboardShortcuts () {
-    return Globals.KEYBOARD_SHORTCUTS
+  /** Every page's G key, Pro's too, so the keys can be learned before Pro is on. */
+  get sections (): Section[] {
+    return SECTIONS
   }
 
   get enableKeyboardShortcuts (): boolean {
     return this.$store.state.config.uiSettings.general.enableKeyboardShortcuts
-  }
-
-  get supportsHistory (): boolean {
-    return this.$store.getters['server/componentSupport']('history')
-  }
-
-  get supportsTimelapse (): boolean {
-    return this.$store.getters['server/componentSupport']('timelapse')
-  }
-
-  get enableDiagnostics (): boolean {
-    return this.$store.state.config.uiSettings.general.enableDiagnostics
   }
 
   handleKeyDown (event: KeyboardEvent) {
@@ -155,12 +118,18 @@ export default class KeyboardShortcutsDialog extends Vue {
     }
   }
 
+  openFromHeader () {
+    this.open = true
+  }
+
   created () {
     window.addEventListener('keydown', this.handleKeyDown, false)
+    EventBus.bus.$on('keyboard-shortcuts', this.openFromHeader)
   }
 
   beforeDestroy () {
     window.removeEventListener('keydown', this.handleKeyDown)
+    EventBus.bus.$off('keyboard-shortcuts', this.openFromHeader)
   }
 }
 </script>

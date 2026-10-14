@@ -15,6 +15,7 @@
  * is the last resort, as in `searchRows`.
  */
 import type { InstanceConfig } from '@/store/config/types'
+import { Globals } from '@/globals'
 import { isPrinter, type NearbyPrinter } from '@/services/muon-ble/nearby'
 import type { CloudPrinter } from './api'
 import type { PrinterStatus } from './state'
@@ -97,6 +98,18 @@ export interface Directory {
   cloud: DirectoryEntry[];
   local: DirectoryEntry[];
   found: DirectoryEntry[];
+}
+
+/**
+ * A saved printer's name: the one it was given, else its network name
+ * (muon-boxwood-367a), else its address. Fluidd's own default, "fluidd", is
+ * no name, as getDisplayName treats it.
+ */
+export function savedName (s: InstanceConfig): string {
+  const name = (s.name ?? '').trim()
+  if (name && name !== Globals.APP_NAME) return name
+  if (s.mdnsHost) return s.mdnsHost.replace(/\.local\.?$/i, '')
+  return hostOf(s.apiUrl)
 }
 
 export function hostOf (url: string): string {
@@ -251,7 +264,7 @@ export function printerDirectory (src: DirectorySources): Directory {
     local.push({
       key: `local:${s.apiUrl}`,
       section: 'local',
-      name: lan?.name ?? s.name,
+      name: lan?.name ?? savedName(s),
       endpointId,
       health,
       detail,

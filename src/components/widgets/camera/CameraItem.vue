@@ -37,7 +37,7 @@
       v-if="!fullscreen && (fullscreenMode === 'embed' || !rawCameraUrl) && camera.service !== 'device'"
       class="camera-fullscreen"
     >
-      <router-link :to="`/camera/${encodeURI(camera.uid)}`">
+      <router-link :to="fullscreenPath">
         <v-icon>$fullScreen</v-icon>
       </router-link>
     </div>
@@ -61,9 +61,16 @@ import type { WebcamConfig } from '@/store/webcams/types'
 import type { CameraFullscreenAction } from '@/store/config/types'
 import { CameraComponents } from '@/dynamicImports'
 import CameraMixin from '@/mixins/camera'
+import { activeSlug } from '@/services/printer-pages'
+import { scopedPath } from '@/router/printerPagePaths'
 
 @Component({})
 export default class CameraItem extends Vue {
+  /** This camera's own page, on the printer Fluidd is on. */
+  get fullscreenPath (): string {
+    return scopedPath(`/camera/${encodeURI(this.camera.uid)}`, activeSlug())
+  }
+
   @Prop({ type: Object, required: true })
   readonly camera!: WebcamConfig
 

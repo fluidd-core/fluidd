@@ -1,102 +1,171 @@
 <template>
   <v-app-bar
     app
-    class="muon-app-bar"
-    :clipped-left="!glass"
+    clipped-left
+    flat
+    class="app-header"
+    :class="{ 'app-header--phone': phone }"
+    color="transparent"
     extension-height="46"
-    :color="$vuetify.theme.currentTheme.appbar"
-    :height="$globals.HEADER_HEIGHT"
+    :height="phone ? $globals.HEADER_HEIGHT_PHONE : $globals.HEADER_HEIGHT"
   >
-    <router-link
-      v-if="!isMobileViewport && !glass"
-      to="/"
-      class="muon-brand"
-      :class="{ 'muon-brand--compact': navRail }"
-      :style="navRail ? '' : `width: ${$globals.NAVIGATION_DRAWER_WIDTH}px;`"
-    >
-      <span class="muon-wordmark">MUON3D</span>
-    </router-link>
-
-    <div class="toolbar-title">
-      <v-btn
-        v-if="isMobileViewport && !glass"
-        icon
-        class="mobile-nav-button"
-        @click="$emit('navdrawer')"
+    <!-- A phone: the printer you're on, its alerts, and STOP. -->
+    <template v-if="phone">
+      <printer-switch-button
+        v-if="printerFrame"
+        phone
+      />
+      <router-link
+        v-else
+        to="/"
+        class="app-header__brand app-header__brand--grow"
+        aria-label="All printers"
       >
-        <v-icon>$menuAlt</v-icon>
-      </v-btn>
+        <span class="muon-wordmark">MUON3D</span>
+      </router-link>
 
-      <!-- The glass style names the page, with the printer and its state under it. -->
-      <v-toolbar-title
-        v-if="glass && !navless"
-        class="glass-title"
+      <div class="app-header__actions">
+        <app-status-alerts v-if="authenticated" />
+        <app-notification-menu v-if="authenticated && socketConnected" />
+        <cloud-account-menu v-if="!printerFrame" />
+      </div>
+
+      <button
+        v-if="showEstop"
+        type="button"
+        class="app-header__estop app-header__estop--small"
+        :disabled="!klippyReady"
+        :aria-label="$tc('app.general.tooltip.estop')"
+        data-tid="estop"
+        @click="emergencyStop()"
       >
-        <span class="glass-title__main">{{ pageTitle }}</span>
-        <span
-          class="glass-title__sub printer-status"
-          :class="`printer-status--${statusTone}`"
-        >
-          <span class="printer-status__dot" />
-          <span class="printer-status__text">{{ pageSubtitle }}</span>
-        </span>
-      </v-toolbar-title>
+        <frame-icon
+          name="estop"
+          small
+        />
+        STOP
+      </button>
+    </template>
 
-      <v-toolbar-title
-        v-else-if="!glass"
-        class="printer-title"
+    <!-- A computer: where you are, what the printer is doing, how to stop it. -->
+    <template v-else>
+      <router-link
+        to="/"
+        class="app-header__brand"
+        aria-label="All printers"
+        data-tid="header-brand"
       >
-        <router-link
-          :to="printerHome"
-          class="printer-title__name"
-        >
-          {{ displayName }}
-        </router-link>
-        <span
-          class="printer-status"
-          :class="`printer-status--${statusTone}`"
-        >
-          <span class="printer-status__dot" />
-          <span class="printer-status__text">{{ statusText }}</span>
-        </span>
-      </v-toolbar-title>
-    </div>
+        <span class="muon-wordmark">MUON3D</span>
+      </router-link>
 
-    <!-- <v-spacer /> -->
+      <printer-switch-button v-if="printerFrame" />
+      <span
+        v-else
+        class="app-header__place"
+      >{{ placeName }}</span>
 
-    <div class="toolbar-supplemental muon-toolbar-actions">
-      <div
-        v-if="socketConnected && klippyReady && authenticated && showSaveConfigAndRestartForPendingChanges"
-        class="mr-1"
-      >
+      <v-spacer />
+
+      <div class="app-header__actions">
         <app-save-config-and-restart-btn
+          v-if="socketConnected && klippyReady && authenticated && showSaveConfigAndRestartForPendingChanges"
           :loading="hasWait($waits.onSaveConfig)"
           :disabled="printerPrinting || printerPaused"
           @click="saveConfigAndRestart"
         />
-      </div>
 
-      <div v-if="socketConnected && !isMobileViewport && authenticated">
-        <v-tooltip bottom>
+        <app-status-alerts v-if="authenticated" />
+
+        <app-upload-and-print-btn
+          v-if="printerFrame && authenticated && socketConnected && showUploadAndPrint"
+          :tooltip="uploadTooltip"
+          @upload="handleUploadAndPrint"
+        />
+
+        <v-tooltip
+          v-if="printerFrame && authenticated && socketConnected && topNavPowerToggle"
+          bottom
+        >
           <template #activator="{ on, attrs }">
             <app-btn
-              :disabled="!klippyReady"
-              v-bind="attrs"
-              outlined
+              fab
               small
-              class="estop-action mx-1"
-              color="error"
+              :elevation="0"
+              color="transparent"
+              :disabled="topNavPowerDeviceDisabled"
+              v-bind="attrs"
+              v-on="on"
+              @click="handlePowerToggle()"
+            >
+              <v-icon>
+                {{ topNavPowerDeviceOn ? '$powerOn' : '$powerOff' }}
+              </v-icon>
+            </app-btn>
+          </template>
+          <span>{{ $t(`app.general.label.turn_device_${topNavPowerDeviceOn ? 'off' : 'on'}`, { device: topNavPowerToggle.name }) }}</span>
+        </v-tooltip>
+
+        <app-notification-menu v-if="authenticated && socketConnected" />
+
+        <v-tooltip
+          v-if="enableKeyboardShortcuts && $vuetify.breakpoint.mdAndUp"
+          bottom
+        >
+          <template #activator="{ on, attrs }">
+            <button
+              type="button"
+              class="app-header__icon"
+              aria-label="Keyboard shortcuts"
+              data-tid="keys"
+              v-bind="attrs"
+              v-on="on"
+              @click="openKeys"
+            >
+              <frame-icon name="keyboard" />
+            </button>
+          </template>
+          <span>Keyboard shortcuts <kbd>?</kbd></span>
+        </v-tooltip>
+
+        <button
+          type="button"
+          role="switch"
+          class="app-header__pro"
+          :aria-checked="pro ? 'true' : 'false'"
+          :title="pro ? 'Pro is on: exact values, more rows, Console and Files' : 'Pro shows exact values, more rows, Console and Files'"
+          data-tid="pro-switch"
+          @click="togglePro"
+        >
+          <span class="app-header__pro-label">Pro</span>
+          <span
+            class="app-header__toggle"
+            :class="{ 'app-header__toggle--on': pro }"
+          />
+        </button>
+
+        <cloud-account-menu />
+      </div>
+
+      <template v-if="showEstop">
+        <span class="app-header__rule" />
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <button
+              type="button"
+              class="app-header__estop"
+              :disabled="!klippyReady"
+              :aria-label="$tc('app.general.tooltip.estop')"
+              data-tid="estop"
+              v-bind="attrs"
               v-on="on"
               @click="emergencyStop()"
             >
-              <v-icon
+              <frame-icon
+                name="estop"
                 small
-                left
-              >
-                $estop
-              </v-icon>
-              E-Stop
-            </app-btn>
+              />
+              E-STOP
+            </button>
           </template>
           <span>
             {{ $t('app.general.tooltip.estop') }}
@@ -106,69 +175,8 @@
             </template>
           </span>
         </v-tooltip>
-      </div>
-
-      <app-status-alerts v-if="authenticated" />
-
-      <div v-if="authenticated && socketConnected && showUploadAndPrint">
-        <app-upload-and-print-btn
-          :tooltip="uploadTooltip"
-          @upload="handleUploadAndPrint"
-        />
-      </div>
-
-      <div class="muon-toolbar-group">
-        <div v-if="authenticated && socketConnected && topNavPowerToggle">
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <app-btn
-                fab
-                small
-                :elevation="0"
-                class="toolbar-action mr-1 bg-transparent"
-                color="transparent"
-                :disabled="topNavPowerDeviceDisabled"
-                v-bind="attrs"
-                v-on="on"
-                @click="handlePowerToggle()"
-              >
-                <v-icon>
-                  {{ topNavPowerDeviceOn ? '$powerOn' : '$powerOff' }}
-                </v-icon>
-              </app-btn>
-            </template>
-            <span>{{ $t(`app.general.label.turn_device_${topNavPowerDeviceOn ? 'off' : 'on'}`, { device: topNavPowerToggle.name }) }}</span>
-          </v-tooltip>
-        </div>
-
-        <div
-          v-if="authenticated && socketConnected"
-          class="toolbar-action mr-1"
-        >
-          <app-notification-menu />
-        </div>
-
-        <div
-          v-if="supportsAuth && authenticated && $vuetify.breakpoint.lgAndUp"
-          class="toolbar-action mr-1"
-        >
-          <app-wifi-button />
-        </div>
-
-        <cloud-account-menu class="toolbar-action" />
-
-        <app-btn
-          fab
-          small
-          :elevation="0"
-          class="toolbar-action mr-1"
-          color="transparent"
-          @click="$emit('toolsdrawer')"
-        >
-          <v-icon>$menu</v-icon>
-        </app-btn>
-      </div>
-    </div>
+      </template>
+    </template>
 
     <template
       v-if="inLayout"
@@ -228,8 +236,9 @@ import { Component, Mixins } from 'vue-property-decorator'
 import PendingChangesDialog from '@/components/settings/PendingChangesDialog.vue'
 import AppSaveConfigAndRestartBtn from './AppSaveConfigAndRestartBtn.vue'
 import AppUploadAndPrintBtn from './AppUploadAndPrintBtn.vue'
+import PrinterSwitchButton from './PrinterSwitchButton.vue'
 import { defaultState } from '@/store/layout/state'
-import PrinterStatusMixin from '@/mixins/printer-status'
+import FrameMixin from '@/mixins/frame'
 import ServicesMixin from '@/mixins/services'
 import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
@@ -237,62 +246,48 @@ import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
 import type { OutputPin } from '@/store/printer/types'
 import type { Device } from '@/store/power/types'
-import AppWifiButton from '@/components/ui/AppWifiButton.vue'
-import { printerHomePath } from '@/services/printer-pages'
 import { pageOfRoute } from '@/router/printerPagePaths'
+import { setProMode } from '@/services/pro-mode'
 
+/**
+ * The header answers three questions in order: where am I (Muon3D, the
+ * printer), what is this printer doing (its status, beside its name), and
+ * how do I stop it (E-STOP, alone at the far end). On a page with no
+ * printer it names the page instead and has no E-STOP.
+ */
 @Component({
   components: {
     CloudAccountMenu,
     PendingChangesDialog,
     AppSaveConfigAndRestartBtn,
     AppUploadAndPrintBtn,
-    AppWifiButton
+    PrinterSwitchButton
   }
 })
-export default class AppBar extends Mixins(PrinterStatusMixin, ServicesMixin, FilesMixin, BrowserMixin) {
-  /** The printer's own page: its name leads there, the wordmark to every printer. */
-  get printerHome (): string {
-    return printerHomePath()
-  }
-
-  menu = false
+export default class AppBar extends Mixins(FrameMixin, ServicesMixin, FilesMixin, BrowserMixin) {
   pendingChangesDialogOpen = false
 
-  get supportsAuth () {
-    return this.$store.getters['server/componentSupport']('authorization')
+  get phone (): boolean {
+    return this.isMobileViewport
   }
 
-  get instances () {
-    return this.$store.state.config.instances
+  get showEstop (): boolean {
+    return this.printerFrame && this.authenticated && this.socketConnected
   }
 
-  get instanceName () {
-    return this.$store.state.config.uiSettings.general.instanceName
+  /** A page with no printer names itself: Printers, Fleet, Slice. */
+  get placeName (): string {
+    if (this.$route.path === '/') return 'Printers'
+    if (this.$route.name === 'Slice (no printer)') return 'Slice'
+    return this.$route.name ?? ''
   }
 
-  get navRail (): boolean {
-    return !this.isMobileViewport && this.$vuetify.breakpoint.mdAndDown
+  togglePro () {
+    setProMode(!this.pro)
   }
 
-  // The glass toolbar starts beside the sidebar, which carries the wordmark.
-  get glass (): boolean {
-    return this.$store.getters['config/getUiStyle'] === 'glass'
-  }
-
-  // App.vue's glassNavless: no printer and a page that needs none, so no
-  // sidebar and no page title; the page carries its own heading.
-  get navless (): boolean {
-    return this.glass && this.$route.meta?.printerIndependent === true &&
-      !(this.authenticated && this.socketConnected)
-  }
-
-  get currentFile () {
-    return this.$store.state.printer.printer.print_stats.filename
-  }
-
-  get hasUpdates () {
-    return this.$store.getters['version/hasUpdates']
+  openKeys () {
+    EventBus.bus.$emit('keyboard-shortcuts')
   }
 
   get saveConfigPending (): boolean {
@@ -533,176 +528,242 @@ export default class AppBar extends Mixins(PrinterStatusMixin, ServicesMixin, Fi
 }
 </script>
 
+<style lang="scss">
+  // A sheet's scrim must not cover STOP: while one is open on a phone, the
+  // top bar stands above the scrim. The sheet rises from the bottom, so the
+  // two never overlap.
+  .v-application:has(.v-bottom-sheet.v-dialog--active) .v-app-bar.app-header,
+  body:has(.v-bottom-sheet.v-dialog--active) .v-app-bar.app-header {
+    z-index: 202 !important;
+  }
+</style>
+
 <style lang="scss" scoped>
-  @import 'vuetify/src/styles/styles.sass';
-
-  .muon-app-bar {
+  .app-header {
     border-bottom: 1px solid var(--m3d-border) !important;
+    background-color: var(--m3d-bg) !important;
+
+    :deep(.v-toolbar__content) {
+      gap: 12px;
+      padding: 0 20px;
+    }
+
+    :deep(.v-toolbar__extension) {
+      flex: 1 1 auto;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border-top: 1px solid var(--m3d-border);
+    }
   }
 
-  :deep(.v-toolbar__content) {
-    padding: 0 8px 0 0;
-  }
-
-  .muon-brand {
-    display: flex;
-    flex: 0 0 auto;
-    align-items: center;
-    align-self: stretch;
-    padding: 0 20px;
-    border-right: 1px solid var(--m3d-border);
-    color: var(--m3d-text);
-    text-decoration: none;
-  }
-
-  .muon-brand--compact {
-    border-right: 0;
-    padding-right: 0;
-  }
-
-  .toolbar-title {
-    display: flex;
-    flex: 1 1 auto;
-    min-width: 0;
-    height: inherit;
-    align-items: center;
+  .app-header--phone :deep(.v-toolbar__content) {
     gap: 8px;
-    padding: 0 20px;
+    padding: 0 12px 0 16px;
   }
 
-  // Only the glass style draws the icon actions as one group.
-  .muon-toolbar-group {
-    display: contents;
-  }
-
-  .toolbar-supplemental {
+  .app-header__brand {
     display: flex;
-    flex: 0 0 auto;
-    justify-content: flex-end;
+    flex: none;
     align-items: center;
-    gap: 2px;
-    height: inherit;
-  }
-
-  .printer-title {
-    display: flex;
-    align-items: baseline;
-    min-width: 0;
-    gap: 14px;
-    overflow: hidden;
-  }
-
-  .printer-title__name {
-    overflow: hidden;
+    height: 40px;
+    padding-right: 8px;
     color: var(--m3d-text) !important;
-    font-size: 1rem;
-    font-weight: 600;
     text-decoration: none;
+
+    .muon-wordmark {
+      color: var(--m3d-text);
+      font-size: 13px;
+      letter-spacing: 0.24em;
+    }
+  }
+
+  .app-header__brand--grow {
+    flex: 1 1 0;
+
+    .muon-wordmark {
+      font-size: 12px;
+    }
+  }
+
+  .app-header__place {
+    overflow: hidden;
+    color: var(--m3d-text);
+    font-size: 17px;
+    font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .printer-status {
-    display: inline-flex;
-    flex: 0 0 auto;
+  /* Every icon action is the same 40 px square, 4 px apart. */
+  .app-header__actions {
+    display: flex;
+    flex: none;
     align-items: center;
-    gap: 7px;
-    color: var(--m3d-text-muted);
-    font-family: var(--m3d-font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    white-space: nowrap;
+    gap: 4px;
+
+    :deep(.v-btn.v-btn--fab.v-size--small),
+    :deep(.v-btn.v-btn--icon) {
+      width: 40px !important;
+      min-width: 40px !important;
+      height: 40px !important;
+      margin: 0 !important;
+      border-radius: 12px !important;
+      background-color: transparent !important;
+      box-shadow: none !important;
+    }
+
+    :deep(.v-btn.v-btn--fab.v-size--small .v-icon),
+    :deep(.v-btn.v-btn--icon .v-icon) {
+      color: var(--m3d-text-muted);
+    }
+
+    :deep(.v-btn.v-btn--fab.v-size--small:hover),
+    :deep(.v-btn.v-btn--icon:hover) {
+      background-color: var(--m3d-hover) !important;
+
+      .v-icon {
+        color: var(--m3d-text);
+      }
+    }
+
+    :deep(.mr-1) {
+      margin-right: 0 !important;
+    }
+
+    :deep(> div) {
+      display: flex;
+      align-items: center;
+    }
   }
 
-  .printer-status__dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background-color: currentColor;
-  }
-
-  .printer-status--ok .printer-status__dot { color: var(--m3d-success); }
-  .printer-status--active .printer-status__dot { color: var(--m3d-accent); }
-  .printer-status--warn .printer-status__dot { color: var(--m3d-warning); }
-  .printer-status--fault { color: var(--m3d-danger); }
-  .printer-status--off .printer-status__dot { color: var(--m3d-text-subtle); }
-
-  /* Every icon action in the bar is the same 36px square. */
-  .toolbar-supplemental :deep(.v-btn--fab.v-size--small),
-  .toolbar-supplemental :deep(.v-btn--icon),
-  .mobile-nav-button {
-    width: 36px !important;
-    height: 36px !important;
-    min-width: 36px !important;
-  }
-
-  .toolbar-supplemental :deep(.v-btn--fab.v-size--small .v-icon),
-  .toolbar-supplemental :deep(.v-btn--icon .v-icon) {
-    color: var(--m3d-text-muted);
-  }
-
-  .toolbar-supplemental :deep(.v-btn--fab.v-size--small:hover .v-icon),
-  .toolbar-supplemental :deep(.v-btn--icon:hover .v-icon) {
-    color: var(--m3d-text);
-  }
-
-  .toolbar-supplemental :deep(.v-btn.btncolor) {
-    background-color: transparent !important;
-    border: 0 !important;
-  }
-
-  .toolbar-supplemental :deep(.mr-1) {
-    margin-right: 0 !important;
-  }
-
-  .estop-action {
-    height: 32px !important;
-    margin-right: 8px !important;
-    border-width: 1px;
-    letter-spacing: 0.08em;
-  }
-
-  .estop-action:not(.v-btn--disabled):hover {
-    background-color: var(--m3d-danger) !important;
-    color: #fff !important;
-  }
-
-  .v-toolbar--extended :deep(.v-toolbar__extension) {
-    border-top: 1px solid var(--m3d-border);
-  }
-
-  :deep(.v-toolbar__extension) {
-    flex: 1 1 auto;
+  .app-header__icon {
+    display: inline-flex;
+    flex: none;
     align-items: center;
     justify-content: center;
-    padding: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    color: var(--m3d-text-muted);
+
+    &:hover {
+      background: var(--m3d-hover);
+      color: var(--m3d-text);
+    }
+  }
+
+  .app-header__pro {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 6px 0 12px;
+    border-radius: 12px;
+    color: var(--m3d-text-muted);
+    font-size: 13px;
+    font-weight: 600;
+
+    &:hover {
+      background: var(--m3d-hover);
+      color: var(--m3d-text);
+    }
+  }
+
+  .app-header__toggle {
+    position: relative;
+    flex: none;
+    width: 36px;
+    height: 22px;
+    border-radius: 11px;
+    background: var(--m3d-switch-off, var(--m3d-border-strong));
+    transition: background-color var(--m3d-duration-fast) var(--m3d-ease);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+      transition: left var(--m3d-duration-fast) var(--m3d-ease);
+    }
+  }
+
+  .app-header__toggle--on {
+    background: var(--m3d-accent);
+
+    &::after {
+      left: 16px;
+    }
+  }
+
+  .app-header__rule {
+    flex: none;
+    width: 1px;
+    height: 28px;
+    background: var(--m3d-border-strong);
+  }
+
+  /* E-STOP stands alone: solid red, one line, always in the same place. */
+  .app-header__estop {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 18px 0 14px;
+    border-radius: 999px;
+    background: var(--m3d-estop, #e0241f);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    transition: background-color var(--m3d-duration-fast) var(--m3d-ease);
+
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--m3d-estop, #e0241f) 86%, #000);
+    }
+
+    // Klipper not ready: still the E-STOP, in its place, but a tint.
+    &:disabled {
+      background: color-mix(in srgb, var(--m3d-estop, #e0241f) 16%, transparent);
+      color: var(--m3d-danger);
+      cursor: default;
+    }
+
+    .frame-icon {
+      stroke-width: 2.2;
+    }
+  }
+
+  .app-header__estop--small {
+    height: 36px;
+    padding: 0 12px;
+    font-size: 12px;
   }
 
   .layout-action {
     min-height: 32px !important;
   }
 
-  .v-btn.v-btn--disabled.v-btn--has-bg.bg-transparent {
-    background: none !important;
+  // Narrower windows keep every control at full size: the printer switch
+  // gives up width first (its status line has its own ellipsis), then the
+  // wordmark goes, as the rail's first icon opens every printer too.
+  @media (max-width: 1023px) {
+    .app-header :deep(.printer-switch__button) {
+      min-width: 0 !important;
+    }
   }
 
-  @media #{map-get($display-breakpoints, 'xs-only')} {
-    .toolbar-title {
-      padding: 0 4px;
-    }
-
-    .printer-title {
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .printer-title__name {
-      font-size: 0.9375rem;
-    }
-
-    .printer-status {
-      font-size: 0.6875rem;
+  @media (max-width: 899px) {
+    .app-header:not(.app-header--phone) .app-header__brand {
+      display: none;
     }
   }
 </style>

@@ -50,10 +50,11 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { startCase, capitalize } from 'lodash-es'
 import UserPasswordDialog from '@/components/settings/auth/UserPasswordDialog.vue'
+import { activeSlug } from '@/services/printer-pages'
+import { scopedPath } from '@/router/printerPagePaths'
 
-// The signed-in Moonraker user, in the tools drawer. The toolbar's only
-// account control is the Muon3D account; this keeps the printer login's
-// password, accounts and log out one tap away.
+// The signed-in Moonraker user, in the account menu under the Muon3D
+// account: the printer login's password, accounts and log out.
 @Component({
   components: {
     UserPasswordDialog
@@ -92,7 +93,7 @@ export default class AppUserMenu extends Vue {
   }
 
   manageAccounts () {
-    this.$filters.routeTo(this.$router, '/settings#auth')
+    this.$router.push({ path: scopedPath('/settings', activeSlug()), hash: '#auth' }).catch(() => {})
     this.$emit('click')
   }
 

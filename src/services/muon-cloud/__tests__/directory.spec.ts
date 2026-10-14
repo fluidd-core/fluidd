@@ -147,6 +147,23 @@ describe('one entry per printer', () => {
   })
 })
 
+describe('a saved printer\'s name', () => {
+  it('is the name it was given', () => {
+    const d = directory({ saved: [saved('http://10.0.0.5', { name: 'Workshop' })] })
+    expect(d.local[0].name).toBe('Workshop')
+  })
+
+  it('is its network name when it has only Fluidd\'s default', () => {
+    const d = directory({ saved: [saved('http://10.0.0.5', { name: 'fluidd', mdnsHost: 'muon-boxwood-367a.local' })] })
+    expect(d.local[0].name).toBe('muon-boxwood-367a')
+  })
+
+  it('is its address when it has neither', () => {
+    const d = directory({ saved: [saved('http://10.0.0.5:7125', { name: 'fluidd' })] })
+    expect(d.local[0].name).toBe('10.0.0.5:7125')
+  })
+})
+
 describe('where each printer goes', () => {
   it('puts a printer found here and saved nowhere under Discovery', () => {
     const d = directory({ found: [lan('Churchill · 1A2B', '192.168.137.40', CHURCHILL)] })

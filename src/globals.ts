@@ -211,11 +211,10 @@ export const Globals = Object.freeze({
   // branding. PRODUCT_NAME is what people see.
   APP_NAME: 'fluidd',
   PRODUCT_NAME: 'Muon3D',
-  HEADER_HEIGHT: 56,
-  NAVIGATION_DRAWER_WIDTH: 224,
-  NAVIGATION_RAIL_WIDTH: 56,
-  NAVIGATION_DRAWER_WIDTH_GLASS: 256,
-  NAVIGATION_RAIL_WIDTH_GLASS: 68,
+  HEADER_HEIGHT: 64,
+  HEADER_HEIGHT_PHONE: 56,
+  RAIL_WIDTH: 232,
+  RAIL_WIDTH_COMPACT: 76,
   CHART_FONT_FAMILY: "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif",
   // Keep in step with --m3d-font-sans in src/scss/muon3d-glass.scss.
   CHART_FONT_FAMILY_GLASS: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter Variable', 'Helvetica Neue', Arial, sans-serif",
@@ -304,19 +303,6 @@ export const Globals = Object.freeze({
   FILTERED_FOLDER_NAMES: ['.git'],
   FILTERED_FILES_PREFIX: ['.thumbs', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.ignoreme'],
-  KEYBOARD_SHORTCUTS: {
-    home: 'h',
-    console: 'c',
-    preview: 'p',
-    jobs: 'j',
-    history: 'i',
-    timelapse: 'l',
-    tune: 't',
-    diagnostics: 'g',
-    configure: 'x',
-    system: 'q',
-    settings: 's'
-  },
   // Muon3D's own documentation. It has no pages yet, so every link goes to
   // its root until the pages exist.
   DOCS_ROOT: 'https://muon3d.com/docs',
@@ -534,7 +520,7 @@ export const Icons = Object.freeze({
   bluetooth: mdiBluetooth,
   cloud: mdiCloudOutline,
   linkPrinter: mdiLinkVariantPlus,
-  // The status icon on a printer card (PrinterCard.vue).
+  // A printer's state, as Access settings marks it.
   printerOnline: mdiCheckCircle,
   printerPrinting: mdiPrinter3dNozzle,
   printerPaused: mdiPauseCircle,

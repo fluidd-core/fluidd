@@ -5,20 +5,10 @@
     class="fluidd muon-shell"
     :class="{
       'no-pointer-events': dragState,
-      'muon-shell--scrolled': scrolled,
-      'muon-shell--past-title': scrolledPastTitle || !showLargeTitle,
-      'muon-shell--tabbed': showTabBar,
-      'muon-shell--navless': glassNavless
+      'muon-shell--tabbed': showTabBar
     }"
   >
-    <app-tools-drawer
-      v-if="!managedConsoleRoute"
-      v-model="toolsdrawer"
-    />
-    <app-nav-drawer
-      v-if="!managedConsoleRoute && !glassNavless"
-      v-model="navdrawer"
-    />
+    <app-rail v-if="showRail" />
 
     <inline-svg
       v-if="!managedConsoleRoute && showBackgroundLogo && !isMobileViewport"
@@ -26,11 +16,7 @@
       class="muon-background-logo"
     />
 
-    <app-bar
-      v-if="!managedConsoleRoute"
-      @toolsdrawer="handleToolsDrawerChange"
-      @navdrawer="handleNavDrawerChange"
-    />
+    <app-bar v-if="!managedConsoleRoute" />
 
     <flash-message
       v-if="!managedConsoleRoute && flashMessageState"
@@ -40,25 +26,7 @@
       :timeout="flashMessageState.timeout"
     />
 
-    <app-tab-bar
-      v-if="showTabBar"
-      @more="navdrawer = true"
-    />
-
-    <v-btn
-      v-if="!managedConsoleRoute && isMobileViewport && authenticated && socketConnected && !glass"
-      x-small
-      fab
-      fixed
-      bottom
-      left
-      class="mobile-estop ml-2 mb-2"
-      color="error"
-      style="z-index: 2000"
-      @click="emergencyStop()"
-    >
-      <v-icon>$estop</v-icon>
-    </v-btn>
+    <app-tab-bar v-if="showTabBar" />
 
     <v-main
       class="muon-main"
@@ -73,7 +41,7 @@
         }"
         class="constrained-width muon-content pa-2 pa-sm-4"
       >
-        <app-page-title v-if="showLargeTitle" />
+        <app-page-title v-if="showPageHeader" />
 
         <v-alert
           v-if="socketStalled"
@@ -148,9 +116,11 @@ import ActionCommandPromptDialog from './components/common/ActionCommandPromptDi
 import KeyboardShortcutsDialog from './components/common/KeyboardShortcutsDialog.vue'
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from './util/event-helpers'
 import { isManagedConsolePath } from '@/router/managedPath'
-import { isActiveSlug, printerPageNeedsLogin } from '@/services/printer-pages'
-import { pageOfRoute } from '@/router/printerPagePaths'
+import { activeSlug, isActiveSlug, printerPageNeedsLogin } from '@/services/printer-pages'
 import PrinterOpening from './components/muon-cloud/PrinterOpening.vue'
+import FrameMixin from '@/mixins/frame'
+import { ALL_PRINTERS_KEY, sectionForKey } from '@/router/printerSections'
+import { GoKeys } from '@/util/go-keys'
 
 @Component<App>({
   metaInfo () {
@@ -168,13 +138,10 @@ import PrinterOpening from './components/muon-cloud/PrinterOpening.vue'
     KeyboardShortcutsDialog
   }
 })
-export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
-  toolsdrawer: boolean | null = null
-  navdrawer: boolean | null = null
+export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, BrowserMixin) {
   dragState = false
-  scrolled = false
-  scrolledPastTitle = false
   customBackgroundImageStyle: Record<string, string> = {}
+  goKeys = new GoKeys()
 
   flashMessageState: FlashMessage = {
     open: false,
@@ -261,35 +228,29 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     return isManagedConsolePath(this.$route.path)
   }
 
-  get glass (): boolean {
-    return this.theme.style === 'glass'
-  }
-
-  // With no printer connected, the welcome, fleet and link pages have nothing
-  // to navigate, so the glass style draws no sidebar; they carry their own
-  // heading.
-  get glassNavless (): boolean {
-    return this.glass && this.printerIndependentRoute && !(this.authenticated && this.socketConnected)
-  }
-
-  get glassPhone (): boolean {
-    return this.glass && this.isMobileViewport && !this.managedConsoleRoute &&
-      this.authenticated && this.socketConnected
+  // The rail is a printer's pages, so only a printer's page has it; Printers
+  // and the account's pages use the whole width.
+  get showRail (): boolean {
+    return !this.managedConsoleRoute && this.printerFrame && !this.isMobileViewport
   }
 
   // Not on /slice: the slicer in its frame has its own bar at the bottom.
   get showTabBar (): boolean {
-    return this.glassPhone && !this.sliceRoute
+    return !this.managedConsoleRoute && this.printerFrame && this.isMobileViewport &&
+      this.authenticated && this.socketConnected && !this.sliceRoute
   }
 
   get sliceRoute (): boolean {
     return this.$route.name === 'Slice' || this.$route.name === 'Slice (no printer)'
   }
 
-  // On a phone the glass style names the page in a large title, as iOS does.
-  // The console and G-code preview keep that height for the tool itself.
-  get showLargeTitle (): boolean {
-    return this.glassPhone && !['/console', '/preview', '/slice'].includes(pageOfRoute(this.$route))
+  // Each printer page is named above its content, with its section's pages
+  // as tabs. Not the slicer, which fills the page with its own bar; on a
+  // phone the console and G-code preview keep that height for the tool.
+  get showPageHeader (): boolean {
+    if (!this.printerFrame || this.otherPrinterRoute || this.sliceRoute) return false
+    if (!(this.socketConnected && this.apiConnected)) return false
+    return !(this.isMobileViewport && ['/console', '/preview'].includes(this.currentPage))
   }
 
   get columnCount (): number {
@@ -466,7 +427,6 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     window.addEventListener('dragleave', this.handleDragLeave)
     window.addEventListener('drop', this.handleDrop)
     window.addEventListener('keydown', this.handleKeyDown, false)
-    window.addEventListener('scroll', this.handleScroll, { passive: true })
 
     // this.onLoadLocale(this.$i18n.locale)
     EventBus.bus.$on('flashMessage', (payload: FlashMessage) => {
@@ -500,22 +460,6 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     window.removeEventListener('dragleave', this.handleDragLeave)
     window.removeEventListener('drop', this.handleDrop)
     window.removeEventListener('keydown', this.handleKeyDown)
-    window.removeEventListener('scroll', this.handleScroll)
-  }
-
-  // The glass toolbar turns to frosted glass once content is under it, and
-  // on a phone shows the page title once the large title has gone under it.
-  handleScroll () {
-    this.scrolled = window.scrollY > 1
-    this.scrolledPastTitle = window.scrollY > 44
-  }
-
-  handleToolsDrawerChange () {
-    this.toolsdrawer = !this.toolsdrawer
-  }
-
-  handleNavDrawerChange () {
-    this.navdrawer = !this.navdrawer
   }
 
   handleDragOver (event: DragEvent) {
@@ -589,10 +533,15 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
       return
     }
 
-    if (
-      !this.klippyReady ||
-      eventTargetIsContentEditable(event)
-    ) {
+    if (eventTargetIsContentEditable(event)) {
+      return
+    }
+
+    if (this.handleGoKey(event, shortcut)) {
+      return
+    }
+
+    if (!this.klippyReady) {
       return
     }
 
@@ -625,6 +574,24 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
         break
     }
   }
+
+  /** G then a letter: G P every printer, G O this printer's Overview, G J its Jobs. */
+  handleGoKey (event: KeyboardEvent, shortcut: string): boolean {
+    const step = this.goKeys.feed(shortcut, Date.now())
+    if (!step) return false
+    event.preventDefault()
+    if (step.kind === 'start') return true
+
+    let to: string | null = null
+    if (step.key === ALL_PRINTERS_KEY) {
+      to = '/'
+    } else if (activeSlug()) {
+      const section = sectionForKey(step.key, this.sectionContext)
+      if (section) to = this.sectionTo(section)
+    }
+    if (to && to !== this.$route.path) this.$router.push(to).catch(() => {})
+    return true
+  }
 }
 </script>
 
@@ -641,11 +608,6 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   .muon-content {
     position: relative;
     z-index: 1;
-  }
-
-  .mobile-estop {
-    min-width: 48px !important;
-    min-height: 48px !important;
   }
 
   // Room for the tab bar, so the last card can scroll clear of it.
