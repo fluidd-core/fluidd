@@ -35,7 +35,8 @@ describe("a printer's sections", () => {
   })
 
   it('have a home for every printer page, so none is lost from the rail', () => {
-    for (const page of PRINTER_PAGE_PATHS) {
+    // The Library is the account's, with a rail entry of its own under All printers.
+    for (const page of PRINTER_PAGE_PATHS.filter(path => path !== '/library')) {
       expect(sectionOf(page), page).toBeDefined()
     }
   })

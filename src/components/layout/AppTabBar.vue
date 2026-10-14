@@ -78,6 +78,21 @@
             />
           </router-link>
 
+          <router-link
+            to="/library"
+            class="app-more__row"
+            data-tid="more-library"
+            @click.native="more = false"
+          >
+            <frame-icon name="library" />
+            <span class="app-more__label">Library</span>
+            <frame-icon
+              name="chevronRight"
+              small
+              class="app-more__chevron"
+            />
+          </router-link>
+
           <button
             type="button"
             role="switch"

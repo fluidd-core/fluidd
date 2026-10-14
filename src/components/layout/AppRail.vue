@@ -21,6 +21,16 @@
         data-tid="rail-all-printers"
       />
 
+      <app-rail-link
+        to="/library"
+        icon="library"
+        label="Library"
+        :keys="keysFor(libraryKey)"
+        :active="libraryOpen"
+        :compact="compact"
+        data-tid="rail-library"
+      />
+
       <div class="app-rail__rule" />
 
       <template v-for="section in simpleSections">
@@ -97,7 +107,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import FrameMixin from '@/mixins/frame'
 import BrowserMixin from '@/mixins/browser'
-import { ALL_PRINTERS_KEY, type Section } from '@/router/printerSections'
+import { ALL_PRINTERS_KEY, LIBRARY_KEY, type Section } from '@/router/printerSections'
 import { cloudState } from '@/services/muon-cloud/state'
 import { hostOf } from '@/services/muon-cloud/directory'
 import { probeSlicer } from '@/services/slicer-bridge/slicerUrl'
@@ -113,6 +123,12 @@ import NetworkQuickMenu from './NetworkQuickMenu.vue'
 @Component({ components: { AppRailLink, NetworkQuickMenu } })
 export default class AppRail extends Mixins(FrameMixin, BrowserMixin) {
   allPrintersKey = ALL_PRINTERS_KEY
+  libraryKey = LIBRARY_KEY
+
+  /** The Library, or one of its prints, is open. */
+  get libraryOpen (): boolean {
+    return !!this.$route.name?.startsWith('Library')
+  }
 
   created () {
     probeSlicer()

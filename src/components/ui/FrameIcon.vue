@@ -93,7 +93,10 @@ const ICONS: Record<string, Shape[]> = {
   check: [{ d: 'M20 6 9 17l-5-5' }],
   alert: [{ d: 'm21.7 18-8-14a2 2 0 0 0-3.4 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3' }, { d: 'M12 9v4M12 17h.01' }],
   // The M1's plate, a part hanging from it, and the nozzle coming up beneath.
-  plate: [{ r: [2.5, 3, 19, 3.5, 1.2] }, { r: [8.5, 6.5, 7, 5.5, 0.8] }, { d: 'M9.5 21h5l-1.6-4.2h-1.8z' }]
+  plate: [{ r: [2.5, 3, 19, 3.5, 1.2] }, { r: [8.5, 6.5, 7, 5.5, 0.8] }, { d: 'M9.5 21h5l-1.6-4.2h-1.8z' }],
+  // The Library: books on a shelf, one leaning.
+  library: [{ d: 'm16 6 4 14M12 6v14M8 8v12M4 4v16' }],
+  copy: [{ r: [8, 8, 14, 14, 2] }, { d: 'M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2' }]
 }
 
 @Component({})

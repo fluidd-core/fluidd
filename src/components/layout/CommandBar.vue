@@ -132,7 +132,7 @@ import type { TemperaturePreset } from '@/store/config/types'
 import { visibleMacros, type MacroGroup } from '@/util/visible-macros'
 import type { MoonrakerRootFile } from '@/store/files/types'
 import { highlight, rankCommands, type Command, type Segment } from '@/services/command-bar/rank'
-import { ALL_PRINTERS_KEY, SECTIONS, visiblePages } from '@/router/printerSections'
+import { ALL_PRINTERS_KEY, LIBRARY_KEY, SECTIONS, visiblePages } from '@/router/printerSections'
 import { scopedPath } from '@/router/printerPagePaths'
 import { activeSlug, knownPrinters, printerHomePath, printerPath, samePageFor } from '@/services/printer-pages'
 import { cloudState } from '@/services/muon-cloud/state'
@@ -406,6 +406,14 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
       icon: 'printers',
       suggested: !this.printerFrame,
       run: () => this.go('/')
+    }, {
+      id: 'go-library',
+      group: 'Go to',
+      label: 'Library',
+      words: 'library saved prints projects',
+      keys: ['G', LIBRARY_KEY.toUpperCase()],
+      icon: 'library',
+      run: () => this.go('/library')
     }]
     if (!activeSlug()) return list
     for (const section of SECTIONS) {

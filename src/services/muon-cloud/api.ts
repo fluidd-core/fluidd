@@ -265,6 +265,13 @@ export const cloudApi = {
     request<{ token: string, account: CloudAccount }>('POST', '/v1/auth/sign-up', { email, password, name }),
   signOut: () => request<{ ok: boolean }>('POST', '/v1/auth/sign-out'),
   me: () => request<{ account: CloudAccount, endpoint_id: string | null }>('GET', '/v1/me'),
+  /**
+   * A signed assertion of this account for another Muon3D service (the
+   * model service's Library), which never sees the console session. It lives
+   * minutes; `expires_at` is in seconds.
+   */
+  assertion: (audience: string) =>
+    request<{ assertion: string, expires_at: number }>('POST', '/v1/me/assertion', { audience }),
   registerEndpoint: (endpointId: string) =>
     request<{ endpoint_id: string }>('PUT', '/v1/me/endpoint', { endpoint_id: endpointId }),
   printers: () => request<{ printers: CloudPrinter[] }>('GET', '/v1/printers'),

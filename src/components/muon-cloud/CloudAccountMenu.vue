@@ -55,6 +55,16 @@
         </v-list-item>
         <v-list-item
           v-if="account"
+          to="/library"
+          data-tid="account-library"
+        >
+          <v-list-item-icon>
+            <frame-icon name="library" />
+          </v-list-item-icon>
+          <v-list-item-title>Library</v-list-item-title>
+        </v-list-item>
+        <v-list-item
+          v-if="account"
           @click="linkDialog = true"
         >
           <v-list-item-icon>
