@@ -9,13 +9,13 @@ const ids = (c: typeof simple) => visibleSettingsSections(c).map(s => s.id)
 
 describe("Settings' sections", () => {
   it('show the everyday ones in Simple', () => {
-    expect(ids(simple)).toEqual(['general', 'network', 'access', 'updates', 'cameras', 'materials', 'macros', 'system'])
+    expect(ids(simple)).toEqual(['general', 'network', 'access', 'updates', 'cameras', 'materials', 'macros', 'developer', 'system'])
   })
 
   it("add Pro's screens, and what the printer has", () => {
     expect(ids(pro)).toEqual([
       'general', 'network', 'access', 'updates', 'cameras', 'materials', 'macros', 'timelapse',
-      'console', 'files', 'toolhead', 'gcodePreview', 'system'
+      'console', 'files', 'toolhead', 'gcodePreview', 'developer', 'system'
     ])
   })
 

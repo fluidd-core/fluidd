@@ -1,3 +1,5 @@
+import { Y_TOWARD_FRONT } from '@/services/machine/orientation'
+
 /** What the live M1 shows of the printer. */
 export interface PrinterPose {
   /** Klipper's toolhead position, mm: X, Y, Z. */
@@ -20,9 +22,10 @@ export interface ModelPose {
 
 /** Where the model's parts are, measured from its geometry once it's built (viewer.ts). */
 export interface Calibration {
-  /** The plate's left and front edges, and its underside with the bed at the bottom of its travel (state z 0). */
+  /** The plate's left, front and back edges, and its underside with the bed at the bottom of its travel (state z 0). */
   plateLeft: number;
   plateFront: number;
+  plateBack: number;
   plateUnderside: number;
   /** The nozzle tip with the head at the middle of both rails (head 0, 0). */
   nozzleX: number;
@@ -61,15 +64,16 @@ export function modelPose (p: PrinterPose): ModelPose {
 /**
  * Puts the nozzle tip over the plate point the printer means and the plate
  * that far above it. The printer's X runs left to right from the plate's
- * left edge as you face it, Y from its front edge to the back (Klipper's
- * usual sense, so the model's +Z, the front, is Y 0), and Z is the gap
- * from the tip to the plate. So a print drawn on the plate in the same
- * millimetres meets the nozzle where the printer is.
+ * left edge as you face it, Y from its back edge toward you on the M1
+ * (orientation.ts; the model's +Z is the front), and Z is the gap from the
+ * tip to the plate. So a print drawn on the plate in the same millimetres
+ * meets the nozzle where the printer is.
  */
 export function placeModel (pose: ModelPose, c: Calibration): ModelPlacement {
+  const along = (y: number) => (Y_TOWARD_FRONT ? c.plateBack + y : c.plateFront - y)
   return {
     headX: pose.x === null ? RESTING.headX : clamp((c.plateLeft + pose.x - c.nozzleX) / c.travelX, -1.05, 1.05),
-    headZ: pose.y === null ? RESTING.headZ : clamp((c.plateFront - pose.y - c.nozzleZ) / c.travelZ, -1.05, 1.05),
+    headZ: pose.y === null ? RESTING.headZ : clamp((along(pose.y) - c.nozzleZ) / c.travelZ, -1.05, 1.05),
     z: pose.z === null ? RESTING.z : clamp((c.tipTop + pose.z - c.plateUnderside) / c.bedTravel, -0.2, 1.05)
   }
 }

@@ -1,6 +1,7 @@
 <template>
   <section
     class="wf"
+    :class="{ 'wf--compact': compact }"
     data-tid="wifi-card"
   >
     <header class="wf__head">
@@ -46,7 +47,7 @@
         Looking for networks…
       </p>
       <div
-        v-for="network in sortedNetworks"
+        v-for="network in shownNetworks"
         :key="network.ssid"
         class="wf__row"
         :class="{ 'wf__row--on': network.in_use }"
@@ -79,9 +80,12 @@
             <span>{{ rowState(network) }}</span>
           </span>
         </button>
-        <span class="wf__facts">{{ band(network) }}</span>
         <span
-          v-if="network.in_use || knownSsids.has(network.ssid)"
+          v-if="!compact"
+          class="wf__facts"
+        >{{ band(network) }}</span>
+        <span
+          v-if="!compact && (network.in_use || knownSsids.has(network.ssid))"
           class="wf__actions"
         >
           <button
@@ -215,6 +219,9 @@ type AggWifi = DeviceWifi & { chanList?: string; freqList?: string }
 @Component
 export default class WifiManagerCard extends Vue {
   @Prop({ type: Boolean }) readonly menuCollapsed?: boolean
+
+  /** The rail's quick menu: the network it's on and the next few, to join with the same warnings. */
+  @Prop({ type: Boolean }) readonly compact?: boolean
 
   // Dialog & connection state
   disconnectConfirmDialog = false
@@ -476,6 +483,11 @@ export default class WifiManagerCard extends Vue {
 
   // -- for the page: what each row says -------------------------------------
 
+  /** In the quick menu, the network it's on and the three strongest others. */
+  get shownNetworks (): AggWifi[] {
+    return this.compact ? this.sortedNetworks.slice(0, 4) : this.sortedNetworks
+  }
+
   get connectedNetwork (): AggWifi | null {
     return this.sortedNetworks.find(n => n.in_use) ?? null
   }
@@ -530,6 +542,25 @@ export default class WifiManagerCard extends Vue {
     border-radius: 22px;
     background: var(--m3d-surface);
     color: var(--m3d-text);
+  }
+
+  .wf--compact {
+    gap: 6px;
+    padding: 4px 0;
+    border-radius: 0;
+    background: transparent;
+
+    .wf__titles h2 {
+      font-size: 14px;
+    }
+
+    .wf__row {
+      min-height: 44px;
+    }
+
+    .wf__name b {
+      font-size: 14px;
+    }
   }
 
   .wf__head {

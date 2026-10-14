@@ -77,6 +77,7 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
     y: 0,
     z: 0,
     e: 0,
+    f: 0,
     filePosition: 0
   }
 
@@ -129,6 +130,8 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
       switch (command) {
         case 'G0':
         case 'G1': {
+          // F is modal: a move without one runs at the last given.
+          if (args.f !== undefined) toolhead.f = args.f
           const params = [
             'x', 'y', 'z', 'e'
           ]
@@ -143,6 +146,7 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
         }
         case 'G2':
         case 'G3': {
+          if (args.f !== undefined) toolhead.f = args.f
           const params = [
             'x', 'y', 'z', 'e',
             'i', 'j', 'k', 'r'
@@ -208,6 +212,8 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
       }
 
       if (move) {
+        if (toolhead.f > 0) move.f = toolhead.f
+
         if (extrusionMode === 'absolute' && move.e !== undefined) {
           const extrusionLength = decimalRound(move.e - toolhead.e)
 

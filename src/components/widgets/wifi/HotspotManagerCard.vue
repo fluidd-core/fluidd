@@ -1,11 +1,12 @@
 <template>
   <section
     class="hs"
+    :class="{ 'hs--compact': compact }"
     data-tid="hotspot-card"
   >
     <header class="hs__head">
       <div class="hs__titles">
-        <h2>The printer's hotspot</h2>
+        <h2>{{ compact ? 'Hotspot' : 'The printer\'s hotspot' }}</h2>
         <p v-if="deviceStatus && apCredentials && !locked && !remote">
           {{ apState ? 'On' : 'Off' }} · {{ apCredentials.ssid }}{{ apCredentials.security_enabled === false ? ' · open' : '' }}
         </p>
@@ -29,7 +30,7 @@
     </p>
 
     <div
-      v-if="!locked && !remote"
+      v-if="!locked && !remote && !compact"
       class="hs__body"
       data-tid="hotspot-body"
     >
@@ -188,7 +189,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { useAuxApi } from '@/aux_api/useAuxApi'
 import type { APCredentials, Device } from '@/aux_api'
 import QrcodeVue from 'qrcode.vue'
@@ -236,6 +237,9 @@ const { onHotspot } = useHotspotCheck()
   }
 })
 export default class HotspotManagerCard extends Vue {
+  /** The rail's quick menu: on or off and its name, without the form. */
+  @Prop({ type: Boolean }) readonly compact?: boolean
+
   formIsValid: boolean = false
 
   get onHotspot () {
@@ -617,6 +621,17 @@ export default class HotspotManagerCard extends Vue {
     border-radius: 22px;
     background: var(--m3d-surface);
     color: var(--m3d-text);
+  }
+
+  .hs--compact {
+    gap: 6px;
+    padding: 4px 0;
+    border-radius: 0;
+    background: transparent;
+
+    .hs__titles h2 {
+      font-size: 14px;
+    }
   }
 
   .hs__head {

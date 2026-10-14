@@ -31,6 +31,10 @@
     </router-link>
 
     <!-- Printing: speed and the part fan. Idle: the filament and the lights. -->
+    <material-picker
+      v-if="phone && !busy"
+      phone
+    />
     <template v-if="!phone">
       <div
         v-if="busy"
@@ -39,7 +43,7 @@
       >
         <span class="ov-tile__head">
           <span>Speed</span>
-          <span class="ov-tile__state">{{ speedFactor }}%</span>
+          <span class="ov-tile__state">{{ speedLabel }}<template v-if="speedLabel !== `${speedFactor}%`"> · {{ speedFactor }}%</template></span>
         </span>
         <seg-picker
           :options="speedOptions"
@@ -51,27 +55,7 @@
           @input="setSpeed"
         />
       </div>
-      <router-link
-        v-else
-        :to="controlPath"
-        class="ov-tile"
-        data-tid="tile-filament"
-      >
-        <span class="ov-tile__head">
-          <span>Filament</span>
-          <frame-icon
-            name="spool"
-            small
-          />
-        </span>
-        <span class="ov-tile__value">
-          <span
-            v-if="material"
-            class="ov-tile__swatch"
-          />{{ material ? material.name : 'Not set' }}
-        </span>
-        <span class="ov-tile__sub">{{ material ? `${material.nozzle}° nozzle${material.bed !== null ? ` · ${material.bed}° bed` : ''}` : 'Pick a material in Control' }}</span>
-      </router-link>
+      <material-picker v-else />
 
       <button
         v-if="!busy && hasLights"
@@ -114,9 +98,9 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import OverviewMixin from '@/mixins/overview'
-import { SPEED_PRESETS } from '@/services/control/model'
 import type { HeaterTile } from '@/services/overview/model'
 import SegPicker, { type SegOption } from '@/components/control/SegPicker.vue'
+import MaterialPicker from './MaterialPicker.vue'
 
 interface TileView {
   id: string;
@@ -129,11 +113,12 @@ interface TileView {
 }
 
 /**
- * Four live tiles under the stage. Each opens Control: the nozzle and bed
- * with their targets; printing, the speed (set here) and the part fan;
- * idle, the material and the lights (switched here).
+ * Four live tiles under the stage: the nozzle and bed with their targets
+ * (each opens Control); printing, the speed (set here) and the part fan;
+ * idle, what's loaded (changed here, phones too) and the lights (switched
+ * here).
  */
-@Component({ components: { SegPicker } })
+@Component({ components: { SegPicker, MaterialPicker } })
 export default class OverviewTiles extends Mixins(OverviewMixin) {
   @Prop({ type: Boolean })
   readonly phone?: boolean
@@ -164,7 +149,7 @@ export default class OverviewTiles extends Mixins(OverviewMixin) {
   }
 
   get speedOptions (): SegOption[] {
-    return SPEED_PRESETS.map(p => ({ value: p.percent, label: p.label }))
+    return this.speedChoices.map(c => ({ value: c.percent, label: c.label }))
   }
 }
 </script>
@@ -181,7 +166,7 @@ export default class OverviewTiles extends Mixins(OverviewMixin) {
     gap: 10px;
   }
 
-  .ov-tile {
+  .ov-tiles :deep(.ov-tile) {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -199,11 +184,11 @@ export default class OverviewTiles extends Mixins(OverviewMixin) {
     }
   }
 
-  .ov-tile--static {
+  .ov-tiles :deep(.ov-tile--static) {
     gap: 10px;
   }
 
-  .ov-tile__head {
+  .ov-tiles :deep(.ov-tile__head) {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -212,16 +197,16 @@ export default class OverviewTiles extends Mixins(OverviewMixin) {
     font-size: 13px;
   }
 
-  .ov-tile__state {
+  .ov-tiles :deep(.ov-tile__state) {
     font-size: 12px;
     font-weight: 600;
   }
 
-  .ov-tile__state--ok { color: var(--m3d-success); }
-  .ov-tile__state--warn { color: var(--m3d-warning); }
-  .ov-tile__state--off { color: var(--m3d-text-subtle); font-weight: 400; }
+  .ov-tiles :deep(.ov-tile__state--ok) { color: var(--m3d-success); }
+  .ov-tiles :deep(.ov-tile__state--warn) { color: var(--m3d-warning); }
+  .ov-tiles :deep(.ov-tile__state--off) { color: var(--m3d-text-subtle); font-weight: 400; }
 
-  .ov-tile__value {
+  .ov-tiles :deep(.ov-tile__value) {
     display: flex;
     align-items: baseline;
     gap: 6px;
@@ -238,7 +223,7 @@ export default class OverviewTiles extends Mixins(OverviewMixin) {
     }
   }
 
-  .ov-tile__swatch {
+  .ov-tiles :deep(.ov-tile__swatch) {
     align-self: center;
     width: 12px;
     height: 12px;
@@ -246,12 +231,12 @@ export default class OverviewTiles extends Mixins(OverviewMixin) {
     background: var(--m3d-warning);
   }
 
-  .ov-tile__sub {
+  .ov-tiles :deep(.ov-tile__sub) {
     color: var(--m3d-text-subtle);
     font-size: 13px;
   }
 
-  .ov-tile__bar {
+  .ov-tiles :deep(.ov-tile__bar) {
     height: 4px;
     margin-top: 6px;
     overflow: hidden;
@@ -266,6 +251,6 @@ export default class OverviewTiles extends Mixins(OverviewMixin) {
     }
   }
 
-  .ov-tile__bar--ok { background: var(--m3d-success); }
-  .ov-tile__bar--warn { background: var(--m3d-warning); }
+  .ov-tiles :deep(.ov-tile__bar--ok) { background: var(--m3d-success); }
+  .ov-tiles :deep(.ov-tile__bar--warn) { background: var(--m3d-warning); }
 </style>

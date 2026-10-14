@@ -9,13 +9,39 @@ import {
   checkStatus,
   meshSummary,
   probeCount,
-  probedHeights,
   type CheckEvidence,
   type CheckId,
   type CheckStatus,
   type MeshSummary
 } from '@/services/maintenance/model'
 import type { ConsoleEntry } from '@/store/console/types'
+import {
+  choosePlan,
+  homingTouches,
+  liveGrid,
+  meshLayout,
+  meshPoints,
+  meshProgress,
+  parseProbeLine,
+  planFrom,
+  planFromSettings,
+  type MeshPoint,
+  type MeshProgress,
+  type ProbeTouch
+} from '@/services/maintenance/live-probe'
+
+/** A bed measurement under way, as far as it has got. */
+export interface MeshRun {
+  points: MeshPoint[];
+  /** Rows by Y ascending, cells by X ascending; null where not touched yet. */
+  grid: Array<Array<number | null>>;
+  progress: MeshProgress;
+  /** Every touch of the plate so far, homing included, for the live M1. */
+  touches: ProbeTouch[];
+}
+
+/** A pause between touches longer than this ends a measurement the printer began by itself. */
+const AUTO_GAP_S = 90
 
 export interface CheckRow {
   id: CheckId;
@@ -156,7 +182,7 @@ export default class MaintenanceMixin extends Mixins(ControlMixin) {
     const ok = await this.$confirm(row.confirm, { title: row.title, color: 'card-heading', icon: '$info' })
     // Asked again: a print may have started from elsewhere while the question was open.
     if (!ok || this.checksBlocked) return
-    running.check = { id: row.id, printer: activeSlug(), startedAt: Date.now(), before: this.evidence }
+    running.check = { id: row.id, printer: activeSlug(), startedAt: Date.now(), before: this.evidence, homeFirst: /(^|\n)G28\b/.test(row.gcode) }
     this.sendGcode(row.gcode, row.wait)
   }
 
@@ -197,13 +223,58 @@ export default class MaintenanceMixin extends Mixins(ControlMixin) {
     return this.hasWait(Waits.onMeshCalibrate)
   }
 
-  /** The heights probed so far in the bed measuring now. */
-  get liveHeights (): number[] {
-    const check = running.check
-    if (!this.measuring || !check || check.id !== 'bedMesh') return []
-    const since = Math.floor(check.startedAt / 1000) - 1
+  /**
+   * The plate touches of the measurement under way: since Level the bed was
+   * pressed here, or, for one the printer began by itself (a print's start,
+   * a macro, the console), since the run of touches it is in began, while
+   * the printer is still busy.
+   */
+  get probeTouches (): ProbeTouch[] {
     const entries = this.$store.state.console.console as ConsoleEntry[]
-    return probedHeights(entries.filter(e => (e.time ?? 0) >= since).map(e => e.message))
+    const check = running.check
+    if (this.measuring && check && check.id === 'bedMesh') {
+      const since = Math.floor(check.startedAt / 1000) - 1
+      return entries
+        .filter(e => (e.time ?? 0) >= since)
+        .map(e => parseProbeLine(e.message, e.time ?? 0))
+        .filter((t): t is ProbeTouch => t !== null)
+    }
+    if (this.$store.state.printer.printer.idle_timeout?.state !== 'Printing') return []
+    const touches: ProbeTouch[] = []
+    for (let i = entries.length - 1; i >= 0; i--) {
+      const touch = parseProbeLine(entries[i].message, entries[i].time ?? 0)
+      if (!touch) continue
+      if (touches.length && touches[0].time - touch.time > AUTO_GAP_S) break
+      touches.unshift(touch)
+    }
+    const now = Date.now() / 1000
+    return touches.length && now - touches[touches.length - 1].time <= AUTO_GAP_S ? touches : []
+  }
+
+  /** The bed measurement under way, or null: what it is doing, and the grid so far. */
+  get meshRun (): MeshRun | null {
+    const touches = this.probeTouches
+    if (!this.measuring && !touches.some(t => t.kind === 'touch')) return null
+    const points = meshPoints(touches)
+    const settings = this.$store.state.printer.printer.configfile?.settings?.bed_mesh
+    const plan = choosePlan(points, [
+      planFrom(this.$store.state.printer.printer['gcode_macro _BED_MESH_PLAN']?.points),
+      planFromSettings(settings?.mesh_min, settings?.mesh_max, probeCount(settings?.probe_count))
+    ])
+    const layout = meshLayout(plan ? plan.map(([x, y]) => ({ x, y })) : points)
+    const bed = this.$store.state.printer.printer.heater_bed
+    return {
+      points,
+      grid: liveGrid(points, layout),
+      touches,
+      progress: meshProgress({
+        points,
+        total: plan ? plan.length : null,
+        homingTouches: homingTouches(touches),
+        homedAtStart: !(running.check?.homeFirst ?? !this.allHomed),
+        bed: bed ? { temperature: bed.temperature, target: bed.target } : null
+      })
+    }
   }
 
   /** Lifetime printing hours, from the print history. */

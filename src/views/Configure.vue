@@ -7,10 +7,16 @@
     <aside class="fp__list">
       <div class="fp__list-head">
         <span>{{ printerName }}'s files</span>
-        <file-system-configure-advanced-options-menu
-          @dev-mode="onDevMode"
-          @refresh-fs="refresh"
-        />
+        <router-link
+          v-if="devMode !== null"
+          :to="developerTo"
+          class="fp__dev"
+          :class="{ 'fp__dev--on': devMode }"
+          :title="devMode ? 'Developer mode is on: the config folder is yours to change' : 'Developer mode is off: the printer\'s config is read only'"
+          data-tid="files-dev-mode"
+        >
+          {{ devMode ? 'Developer mode on' : 'Developer mode off' }}
+        </router-link>
       </div>
       <files-tree
         ref="tree"
@@ -139,13 +145,14 @@
           <template v-else-if="content !== null">
             <file-editor
               v-if="!textOnly"
-              :key="current.key"
+              :key="`${current.key}:${openLine}`"
               v-model="content"
               class="fp__monaco"
               :path="`${current.root}${current.dir ? `/${current.dir}` : ''}`"
               :filename="current.name"
               :readonly="readonly"
               :code-lens="codeLens"
+              :line="openLine"
               @save="save(false)"
               @emergency-stop="emergencyStop"
             />
@@ -189,7 +196,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import type { NavigationGuardNext, Route } from 'vue-router'
 import OverviewMixin from '@/mixins/overview'
 import ServicesMixin from '@/mixins/services'
@@ -201,18 +208,22 @@ import FilesTree, { type FileRow } from '@/components/files/FilesTree.vue'
 import FileEditor from '@/components/widgets/filesystem/FileEditor.vue'
 import FileEditorTextOnly from '@/components/widgets/filesystem/FileEditorTextOnly.vue'
 import FileNameDialog from '@/components/widgets/filesystem/FileNameDialog.vue'
-import FileSystemConfigureAdvancedOptionsMenu from '@/components/widgets/filesystem/FileSystemConfigureAdvancedOptionsMenu.vue'
+import { devModeState, refreshDevMode } from '@/services/dev-mode/state'
+import { scopedPath } from '@/router/printerPagePaths'
+import { activeSlug } from '@/services/printer-pages'
 
 /**
  * Files (Pro): the printer's folders on the left (its own settings, the
  * Muon3D defaults, logs and the rest) and the file open on the right, in
  * the editor, with Save, and Save and restart for files a service reads.
- * Dev mode and backups stay in the menu at the top of the list.
+ * Developer mode, which makes the config folder yours, is in Settings; the
+ * head of the list says whether it's on and goes there. `?open=config/
+ * macros/filament.cfg&line=49` opens a file at a line (a macro's Edit).
  */
-@Component({ components: { FilesTree, FileEditor, FileEditorTextOnly, FileNameDialog, FileSystemConfigureAdvancedOptionsMenu } })
+@Component({ components: { FilesTree, FileEditor, FileEditorTextOnly, FileNameDialog } })
 export default class Configure extends Mixins(OverviewMixin, ServicesMixin, BrowserMixin) {
-  devMode = false
   current: FileRow | null = null
+  openLine = 0
   content: string | null = null
   saved = ''
   loading = false
@@ -228,8 +239,31 @@ export default class Configure extends Mixins(OverviewMixin, ServicesMixin, Brow
     return orderRoots([...roots])
   }
 
-  onDevMode (on: boolean) {
-    this.devMode = on
+  /** Whether developer mode is on, or null until the printer says. */
+  get devMode (): boolean | null {
+    return devModeState.enabled
+  }
+
+  get developerTo (): string {
+    return `${scopedPath('/settings', activeSlug())}#developer`
+  }
+
+  @Watch('devMode')
+  onDevMode () {
+    this.refresh()
+  }
+
+  /** `?open=root/dir/name.cfg&line=N`: opens that file, at that line. */
+  @Watch('$route.query', { immediate: true })
+  async onOpenQuery () {
+    const open = String(this.$route.query.open ?? '')
+    const match = /^([^/]+)\/(?:(.*)\/)?([^/]+)$/.exec(open)
+    if (!match) return
+    const [, root, dir = '', name] = match
+    const readonly = !!(this.$store.getters['files/getRootProperties'](root) as { readonly?: boolean } | undefined)?.readonly ||
+      (root === 'config' && this.devMode === false)
+    this.openLine = Number(this.$route.query.line) || 0
+    await this.open({ key: open, root, dir, name, folder: false, depth: 0, size: 0, readonly })
   }
 
   refresh () {
@@ -363,6 +397,7 @@ export default class Configure extends Mixins(OverviewMixin, ServicesMixin, Brow
   // Leaving the page or the site with unsaved changes asks first.
   mounted () {
     window.addEventListener('beforeunload', this.onBeforeUnload)
+    refreshDevMode()
   }
 
   beforeDestroy () {
@@ -408,6 +443,22 @@ export default class Configure extends Mixins(OverviewMixin, ServicesMixin, Brow
     padding: 0 4px 12px 12px;
     color: var(--m3d-text-muted);
     font-size: 13px;
+  }
+
+  .fp__dev {
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--m3d-surface-2);
+    color: var(--m3d-text-muted) !important;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .fp__dev--on {
+    background: rgb(232 150 60 / 18%);
+    color: var(--m3d-warning, #e8963c) !important;
   }
 
   .fp__editor {

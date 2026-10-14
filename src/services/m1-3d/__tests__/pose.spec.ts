@@ -9,6 +9,7 @@ const printer: PrinterPose = { position: [100, 90, 12.5], homed: 'xyz', lights: 
 const cal: Calibration = {
   plateLeft: -110,
   plateFront: 70,
+  plateBack: -110,
   plateUnderside: 98,
   nozzleX: -15,
   nozzleZ: -40,
@@ -47,10 +48,10 @@ describe('placing the model', () => {
     }
   }
 
-  it('puts the tip over the plate point the printer means, X from the left edge and Y from the front', () => {
-    const tip = tipAt()
+  it("puts the tip over the plate point the printer means: X from the left edge, and the M1's Y from the back toward the front", () => {
+    const tip = tipAt(modelPose({ ...printer, position: [100, 40, 12.5] }))
     expect(tip.x).toBeCloseTo(cal.plateLeft + 100)
-    expect(tip.z).toBeCloseTo(cal.plateFront - 90)
+    expect(tip.z).toBeCloseTo(cal.plateBack + 40)
   })
 
   it('holds the plate Z above the tip, so a print on the plate meets the nozzle', () => {
@@ -64,6 +65,6 @@ describe('placing the model', () => {
 
   it('keeps the head on its rails and the bed on its mast', () => {
     const p = placeModel({ x: 900, y: -900, z: 900, led: false, progress: 0 }, cal)
-    expect(p).toEqual({ headX: 1.05, headZ: 1.05, z: 1.05 })
+    expect(p).toEqual({ headX: 1.05, headZ: -1.05, z: 1.05 })
   })
 })

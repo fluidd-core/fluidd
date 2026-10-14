@@ -24,90 +24,105 @@
         @click.prevent="$router.push(arrangeLink)"
       >Arrange</a>
     </template>
-    <div class="macros__grid">
-      <button
-        v-for="macro in shown"
-        :key="macro.name"
-        type="button"
-        class="macros__macro"
-        :disabled="!klippyReady || (macro.disabledWhilePrinting && busy)"
-        :title="macro.description"
-        :data-tid="`macro-${macro.name}`"
-        @click="sendGcode(macro.name)"
+
+    <template v-for="group in shownGroups">
+      <component
+        :is="group.id === 'printer' && !query ? 'details' : 'section'"
+        :key="group.id"
+        class="macros__group"
+        :data-tid="`macro-group-${group.id}`"
       >
-        <span class="macros__name">{{ macro.name }}</span>
-        <span
-          v-if="macro.hint"
-          class="macros__hint"
-        >{{ macro.hint }}</span>
-      </button>
-      <p
-        v-if="!shown.length"
-        class="macros__none"
-      >
-        {{ query ? `No macro matches "${query}".` : 'This printer has no macros to show.' }}
-      </p>
-    </div>
+        <component
+          :is="group.id === 'printer' && !query ? 'summary' : 'h3'"
+          class="macros__group-title"
+        >
+          {{ group.label }}
+          <span>{{ group.macros.length }}</span>
+        </component>
+        <p
+          v-if="group.id === 'printer'"
+          class="macros__group-note"
+        >
+          Prompt buttons, hooks and replacements for standard commands. They run by themselves; press one only if you know why.
+        </p>
+        <div class="macros__grid">
+          <button
+            v-for="macro in group.macros"
+            :key="macro.name"
+            type="button"
+            class="macros__macro"
+            :disabled="!klippyReady || (macro.disabledWhilePrinting && busy) || macro.needsParams"
+            :title="tooltipOf(macro)"
+            :data-tid="`macro-${macro.name}`"
+            @click="run(macro)"
+          >
+            <span class="macros__title">{{ macro.title }}</span>
+            <span class="macros__name">{{ macro.name }}</span>
+            <span
+              v-if="macro.needsParams"
+              class="macros__hint"
+            >needs {{ macro.params.join(', ') }}: run it from the console</span>
+            <span
+              v-else-if="macro.description"
+              class="macros__hint"
+            >{{ macro.description }}</span>
+          </button>
+        </div>
+      </component>
+    </template>
+    <p
+      v-if="!shownGroups.length"
+      class="macros__none"
+    >
+      {{ query ? `No macro matches "${query}".` : 'This printer has no macros to show.' }}
+    </p>
   </control-card>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import ControlMixin from '@/mixins/control'
-import { visibleMacros, type MacroGroup } from '@/util/visible-macros'
+import MacrosMixin, { type ShownMacro, type ShownMacroGroup } from '@/mixins/macros'
 import { activeSlug } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
 import ControlCard from './ControlCard.vue'
 
-interface MacroButton {
-  name: string;
-  hint: string;
-  description: string;
-  disabledWhilePrinting: boolean;
-}
-
-/** The parameters a macro reads, with their defaults where it gives them: TEMP=215. */
-function paramHint (gcode: string): string {
-  const seen = new Map<string, string>()
-  const re = /params\.([A-Z_][A-Z0-9_]*)(?:\s*\|\s*default\(\s*([^)]+)\))?/gi
-  let m: RegExpExecArray | null
-  while ((m = re.exec(gcode)) && seen.size < 2) {
-    const name = m[1].toUpperCase()
-    if (!seen.has(name)) seen.set(name, (m[2] ?? '').replace(/['"]/g, '').trim())
-  }
-  return [...seen].map(([k, v]) => (v ? `${k}=${v}` : k)).join(' ')
-}
-
-/** Pro: every macro the printer shows, to run with one press, and a box to find one. */
+/**
+ * Pro: every macro the printer has, in groups by what it is for (filament,
+ * moving, the nozzle, calibration...), the ones you'd press first at the
+ * front of each. The ones the printer runs by itself sit folded at the end.
+ * A macro that needs a value to run says so instead of running half-asked.
+ */
 @Component({ components: { ControlCard } })
-export default class ControlMacros extends Mixins(ControlMixin) {
+export default class ControlMacros extends Mixins(ControlMixin, MacrosMixin) {
   query = ''
 
-  get macros (): MacroButton[] {
-    return visibleMacros(this.$store.getters['macros/getVisibleMacros'] as MacroGroup[])
-      .map(m => {
-        const description = m.config?.description && m.config.description !== 'G-Code macro' ? String(m.config.description) : ''
-        return {
-          name: m.name.toUpperCase(),
-          hint: paramHint(String(m.config?.gcode ?? '')) || description,
-          description,
-          disabledWhilePrinting: !!m.disabledWhilePrinting
-        }
-      })
-  }
-
-  get shown (): MacroButton[] {
+  get shownGroups (): ShownMacroGroup[] {
     const q = this.query.trim().toLowerCase()
-    return q ? this.macros.filter(m => m.name.toLowerCase().includes(q) || m.hint.toLowerCase().includes(q)) : this.macros
+    if (!q) return this.macroGroups
+    const match = (m: ShownMacro) => [m.name, m.title, m.description].some(s => s.toLowerCase().includes(q))
+    return this.macroGroups
+      .map(g => ({ ...g, macros: g.macros.filter(match) }))
+      .filter(g => g.macros.length)
   }
 
   get note (): string {
-    const n = this.macros.length
-    return `${n} ${n === 1 ? 'macro' : 'macros'}. Hidden: those starting with _ (Settings › Macros).`
+    const all = this.arrangedMacros.length
+    const own = this.arrangedMacros.filter(m => m.group === 'printer').length
+    return `${all} ${all === 1 ? 'macro' : 'macros'}, ${own} run by the printer itself. Grouped automatically; a group set under Settings › Macros wins.`
   }
 
   get arrangeLink (): string {
     return `${scopedPath('/settings', activeSlug())}#macros`
+  }
+
+  tooltipOf (macro: ShownMacro): string {
+    return [macro.name, macro.description, macro.internal].filter(Boolean).join(' · ')
+  }
+
+  run (macro: ShownMacro) {
+    if (macro.needsParams) return
+    this.sendGcode(macro.name)
   }
 }
 </script>
@@ -175,9 +190,10 @@ export default class ControlMacros extends Mixins(ControlMixin) {
   .macros__name {
     max-width: 100%;
     overflow: hidden;
+    color: var(--m3d-text-muted);
     font-family: var(--m3d-font-mono);
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 10px;
+    font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -187,6 +203,52 @@ export default class ControlMacros extends Mixins(ControlMixin) {
     overflow: hidden;
     color: var(--m3d-text-subtle);
     font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .macros__group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    & + & {
+      margin-top: 14px;
+    }
+  }
+
+  .macros__group-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    color: var(--m3d-text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+
+    span {
+      color: var(--m3d-text-subtle);
+      font-weight: 500;
+    }
+  }
+
+  summary.macros__group-title {
+    cursor: pointer;
+  }
+
+  .macros__group-note {
+    margin: 0;
+    color: var(--m3d-text-subtle);
+    font-size: 12px;
+  }
+
+  .macros__title {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 13px;
+    font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
   }

@@ -232,6 +232,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import ControlMixin from '@/mixins/control'
 import { plateToPosition } from '@/services/control/model'
+import { rowFraction, Y_BACK } from '@/services/machine/orientation'
 import ControlCard from './ControlCard.vue'
 import SegPicker, { type SegOption } from './SegPicker.vue'
 import NumberField from './NumberField.vue'
@@ -293,18 +294,21 @@ export default class ControlMove extends Mixins(ControlMixin) {
     return (this.position[0] - this.axisMin[0]) / Math.max(1, this.axisMax[0] - this.axisMin[0]) * 100
   }
 
+  /** The head's height on the pad, back at the top. */
   get headY (): number {
-    return 100 - (this.position[1] - this.axisMin[1]) / Math.max(1, this.axisMax[1] - this.axisMin[1]) * 100
+    return rowFraction(this.position[1], this.axisMin[1], this.axisMax[1]) * 100
   }
 
   get zFraction (): number {
     return (this.position[2] - this.axisMin[2]) / Math.max(1, this.axisMax[2] - this.axisMin[2]) * 100
   }
 
+  /** Up on the pad is the back of the machine, whichever way its Y runs. */
   get arrows () {
+    const sign = (s: number) => (s > 0 ? '+' : '−')
     return [
-      { id: 'up', axis: 'Y' as Axis, sign: 1, icon: 'chevronUp', label: 'Head back (Y+)' },
-      { id: 'down', axis: 'Y' as Axis, sign: -1, icon: 'chevronDown', label: 'Head forward (Y−)' },
+      { id: 'up', axis: 'Y' as Axis, sign: Y_BACK, icon: 'chevronUp', label: `Head back (Y${sign(Y_BACK)})` },
+      { id: 'down', axis: 'Y' as Axis, sign: -Y_BACK, icon: 'chevronDown', label: `Head forward (Y${sign(-Y_BACK)})` },
       { id: 'left', axis: 'X' as Axis, sign: -1, icon: 'chevronLeft', label: 'Head left (X−)' },
       { id: 'right', axis: 'X' as Axis, sign: 1, icon: 'chevronRight', label: 'Head right (X+)' }
     ]
@@ -326,8 +330,8 @@ export default class ControlMove extends Mixins(ControlMixin) {
   onPadKey (event: KeyboardEvent) {
     const by = this.step * (event.shiftKey ? 10 : 1)
     const keys: Record<string, [Axis, number]> = {
-      ArrowUp: ['Y', by],
-      ArrowDown: ['Y', -by],
+      ArrowUp: ['Y', Y_BACK * by],
+      ArrowDown: ['Y', -Y_BACK * by],
       ArrowLeft: ['X', -by],
       ArrowRight: ['X', by],
       PageUp: ['Z', by],

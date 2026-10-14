@@ -3,6 +3,7 @@ import type { GcodePreviewState, ParseGcodeWorkerClientMessage, ParseGcodeWorker
 import type { RootState } from '../types'
 import type { AppFile } from '@/store/files/types'
 import { consola } from 'consola'
+import { fileMaxFlow } from '@/services/control/speed'
 
 import ParseGcodeWorker from '../../workers/parseGcode.worker.ts?worker'
 
@@ -72,6 +73,9 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
     commit('setParserProgress', 0)
     commit('setMoves', [])
     commit('setLayers', [])
+    // Slicers write their settings at the start or the end; the middle is moves.
+    const text = payload.gcode as string
+    commit('setMaxFlow', fileMaxFlow(text.length > 400_000 ? `${text.slice(0, 100_000)}\n${text.slice(-300_000)}` : text))
 
     commit('setFile', payload.file)
 

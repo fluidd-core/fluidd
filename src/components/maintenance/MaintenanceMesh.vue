@@ -5,22 +5,37 @@
     data-tid="maintenance-mesh"
   >
     <template #aside>
-      <span v-if="measuring">measuring</span>
+      <span v-if="run">measuring</span>
       <span v-else-if="measuredWhen">measured {{ measuredWhen }}</span>
     </template>
 
     <div
-      v-if="measuring"
-      class="mmesh__bar"
-      role="progressbar"
-      :aria-valuenow="liveHeights.length"
-      :aria-valuemax="total || undefined"
+      v-if="run"
+      class="mmesh__live"
+      data-tid="mesh-live"
     >
-      <span
-        class="mmesh__fill"
-        :class="{ 'mmesh__fill--unknown': !total || !liveHeights.length }"
-        :style="{ width: total ? `${Math.round(100 * liveHeights.length / total)}%` : undefined }"
-      />
+      <p
+        class="mmesh__phase"
+        aria-live="polite"
+      >
+        <span
+          class="mmesh__dot"
+          :class="`mmesh__dot--${run.progress.phase}`"
+        />
+        {{ run.progress.text }}
+      </p>
+      <div
+        class="mmesh__bar"
+        role="progressbar"
+        :aria-valuenow="run.progress.done"
+        :aria-valuemax="run.progress.total || undefined"
+      >
+        <span
+          class="mmesh__fill"
+          :class="{ 'mmesh__fill--unknown': !run.progress.total || !run.progress.done }"
+          :style="{ width: run.progress.total ? `${Math.round(100 * run.progress.done / run.progress.total)}%` : undefined }"
+        />
+      </div>
     </div>
 
     <div
@@ -37,23 +52,27 @@
           v-for="(cell, n) in cells"
           :key="n"
           class="mmesh__cell"
-          :class="{ 'mmesh__cell--empty': cell === null, 'mmesh__cell--value': pro }"
+          :class="{
+            'mmesh__cell--empty': cell === null,
+            'mmesh__cell--value': pro || !!run,
+            'mmesh__cell--new': !!run && n === newestCell
+          }"
           :style="cell === null ? undefined : { background: colorOf(cell) }"
           :title="cell === null ? undefined : `${cell.toFixed(3)} mm`"
-        >{{ pro && cell !== null ? meshValue(cell) : '' }}</i>
+        >{{ (pro || run) && cell !== null ? meshValue(cell) : '' }}</i>
       </div>
 
       <dl class="mmesh__facts">
-        <template v-if="measuring">
+        <template v-if="run">
           <dt>Points measured</dt>
           <dd>{{ measuredText }}</dd>
         </template>
         <template v-if="range !== null">
-          <dt>{{ measuring ? 'Range so far' : 'Highest to lowest' }}</dt>
+          <dt>{{ run ? 'Range so far' : 'Highest to lowest' }}</dt>
           <dd>{{ range.toFixed(2) }} mm</dd>
         </template>
         <p
-          v-if="summary && !measuring"
+          v-if="summary && !run"
           class="mmesh__verdict"
           :class="`mmesh__verdict--${summary.tone}`"
         >
@@ -67,8 +86,8 @@
       class="mmesh__none"
     >
       <frame-icon name="mesh" />
-      <p v-if="measuring">
-        Measuring the plate…
+      <p v-if="run">
+        {{ run.progress.text }}…
       </p>
       <p v-else>
         No measurement yet. Level the bed to measure the plate.
@@ -86,7 +105,7 @@
     </p>
 
     <p class="mmesh__note">
-      <template v-if="measuring">
+      <template v-if="run">
         Keep the plate on and the nozzle clear while it measures.
       </template>
       <template v-else-if="mesh.length">
@@ -112,7 +131,8 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import MaintenanceMixin from '@/mixins/maintenance'
 import ControlCard from '@/components/control/ControlCard.vue'
-import { daysAgo, liveMesh, meshColor, meshValue } from '@/services/maintenance/model'
+import { daysAgo, meshColor, meshValue } from '@/services/maintenance/model'
+import { backRowFirst } from '@/services/machine/orientation'
 import { scopedPath } from '@/router/printerPagePaths'
 import { activeSlug } from '@/services/printer-pages'
 
@@ -139,26 +159,39 @@ export default class MaintenanceMesh extends Mixins(MaintenanceMixin) {
     return this.grid[0]?.length ?? 0
   }
 
-  get total (): number {
-    return this.meshSize ? this.meshSize[0] * this.meshSize[1] : 0
+  /** The measurement under way, here or started by the printer itself. */
+  get run () {
+    return this.meshRun
   }
 
-  /** Rows front to back: the mesh being measured, else the last one. */
   /** "11 of 25", or just the count when the mesh's size isn't known. */
   get measuredText (): string {
-    return this.total ? `${this.liveHeights.length} of ${this.total}` : `${this.liveHeights.length}`
+    const p = this.run?.progress
+    if (!p) return ''
+    return p.total ? `${p.done} of ${p.total}` : `${p.done}`
   }
 
+  /** Rows by Y ascending: the mesh being measured, else the last one. */
   get grid (): Array<Array<number | null>> {
-    if (this.measuring && this.meshSize && this.liveHeights.length) {
-      return liveMesh(this.liveHeights, this.meshSize[0], this.meshSize[1])
+    if (this.run) return this.run.points.length ? this.run.grid : []
+    return this.mesh
+  }
+
+  /** Where in `cells` the point measured last is, to show it arriving. */
+  get newestCell (): number {
+    const last = this.run?.points[this.run.points.length - 1]
+    if (!last) return -1
+    const rows = backRowFirst(this.grid)
+    for (let r = 0; r < rows.length; r++) {
+      const c = rows[r].indexOf(last.z)
+      if (c >= 0) return r * this.columns + c
     }
-    return this.measuring ? [] : this.mesh
+    return -1
   }
 
   /** The cells to draw, back row first, as you'd see the plate from the front. */
   get cells (): Array<number | null> {
-    return [...this.grid].reverse().flat()
+    return backRowFirst(this.grid).flat()
   }
 
   get values (): number[] {
@@ -244,6 +277,55 @@ export default class MaintenanceMesh extends Mixins(MaintenanceMixin) {
 
   .mmesh__cell--empty {
     background: var(--m3d-surface-2);
+  }
+
+  .mmesh__cell--new {
+    box-shadow: 0 0 0 2px var(--m3d-text);
+    animation: mmesh-arrive 0.6s var(--m3d-ease, ease) both;
+  }
+
+  @keyframes mmesh-arrive {
+    from { transform: scale(0.6); opacity: 0.2; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .mmesh__live {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mmesh__phase {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mmesh__dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--m3d-accent);
+    animation: mmesh-pulse 1.2s ease-in-out infinite;
+  }
+
+  .mmesh__dot--heating {
+    background: var(--m3d-warning, #e8963c);
+  }
+
+  @keyframes mmesh-pulse {
+    50% { opacity: 0.35; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mmesh__cell--new,
+    .mmesh__dot {
+      animation: none;
+    }
   }
 
   .mmesh__facts {

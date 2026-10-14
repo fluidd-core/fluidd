@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bedMiddle, checkCommand, checkProduced, checkStatus, daysAgo, liveMesh, meshColor, meshProfileCommand, meshSummary, meshValue, parseProbeAccuracy, probeCount, probeAccuracyScript, probedHeights, probeVerdict, validProfileName } from '../model'
+import { bedMiddle, checkCommand, checkProduced, checkStatus, daysAgo, meshColor, meshProfileCommand, meshSummary, meshValue, parseProbeAccuracy, probeCount, probeAccuracyScript, probeVerdict, validProfileName } from '../model'
 import type { CheckEvidence } from '../model'
 
 const DAY = 86_400_000
@@ -104,19 +104,7 @@ describe('what a check runs', () => {
   })
 })
 
-describe('the mesh while it\'s measured', () => {
-  it('reads the heights from Klipper\'s probe lines', () => {
-    expect(probedHeights([
-      '// probe at 15.000,15.000 is z=0.042500',
-      'BED_MESH_CALIBRATE',
-      '// probe at 117.500,15.000 is z=-0.031250'
-    ])).toEqual([0.0425, -0.03125])
-  })
-
-  it('fills rows from the front, turning at each end', () => {
-    expect(liveMesh([1, 2, 3, 4, 5], 3, 2)).toEqual([[1, 2, 3], [null, 5, 4]])
-  })
-
+describe('the mesh settings', () => {
   it('reads one probe count as both directions', () => {
     expect(probeCount([7, 5])).toEqual([7, 5])
     expect(probeCount(5)).toEqual([5, 5])

@@ -13,7 +13,7 @@
         class="ov-quick__btn"
         :disabled="!klippyReady"
         data-tid="quick-preheat"
-        @click="applyMaterial(firstMaterial)"
+        @click="heatFor(firstMaterial)"
       >
         <frame-icon
           name="flame"
@@ -68,18 +68,20 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import OverviewMixin from '@/mixins/overview'
-import type { Material } from '@/services/control/model'
+import { materialChoices, type MaterialChoice } from '@/services/control/model'
 
 /** Four things people do before a print, a press each. */
 @Component({})
 export default class OverviewQuickActions extends Mixins(OverviewMixin) {
   /**
-   * The material to offer: the one the heaters are set to, else PLA, the
-   * one most prints use, else the first. Fluidd keeps the table sorted by
-   * name, so "first" alone would mean ABS.
+   * The material to offer: the one loaded, else the one the heaters are set
+   * to, else PLA, the one most prints use, else the first. Fluidd keeps the
+   * table sorted by name, so "first" alone would mean ABS.
    */
-  get firstMaterial (): Material | null {
-    return this.material ?? this.materials.find(m => /^pla$/i.test(m.name)) ?? this.materials[0] ?? null
+  get firstMaterial (): MaterialChoice | null {
+    const choices = materialChoices(this.materials)
+    const heated = this.material ? choices.find(c => c.presetId === this.material?.id) : undefined
+    return this.loadedMaterial ?? heated ?? choices.find(c => /^pla$/i.test(c.name)) ?? choices[0] ?? null
   }
 }
 </script>

@@ -41,6 +41,10 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   @Prop({ type: String, required: true })
   readonly path!: string
 
+  /** A line to open at (a macro's [gcode_macro] section), 1-based. */
+  @Prop({ type: Number, default: 0 })
+  readonly line!: number
+
   @Ref('monaco-editor')
   readonly monacoEditor!: HTMLElement
 
@@ -140,6 +144,13 @@ export default class FileEditor extends Mixins(BrowserMixin) {
       if (viewState) {
         this.editor.restoreViewState(JSON.parse(viewState))
       }
+    }
+
+    // Asked for a line: it wins over where the file was left.
+    if (this.line > 0) {
+      this.editor.revealLineInCenter(this.line)
+      this.editor.setPosition({ lineNumber: this.line, column: 1 })
+      this.editor.setSelection({ startLineNumber: this.line, startColumn: 1, endLineNumber: this.line, endColumn: model.getLineMaxColumn(this.line) })
     }
 
     // Focus the editor.
