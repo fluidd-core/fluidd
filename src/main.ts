@@ -24,9 +24,18 @@ import { InlineSvgPlugin } from 'vue-inline-svg'
 
 // Init.
 import { appInit } from './init'
-import { cloudState, initCloud } from './services/muon-cloud/state'
+import { initCloud } from './services/muon-cloud/state'
 import { shouldTrySilentSignIn, startCentralSignIn } from './services/muon-cloud/centralLogin'
-import { activateCloudPrinter, forgetManagedInstance } from './services/muon-cloud/activate'
+import { activateCloudPrinter, activateLocalPrinter, forgetManagedInstance } from './services/muon-cloud/activate'
+import {
+  activeSlug,
+  installPrinterPages,
+  isActiveSlug,
+  isPrintersOwnPage,
+  learnActiveIdentity,
+  openPrinterAt,
+  preferSavedPrinterFor
+} from './services/printer-pages'
 import type { InitConfig } from './store/config/types'
 
 // Import plugins
@@ -70,6 +79,9 @@ Vue.use(HttpClientPlugin, {
 // A cloud printer is selected through a placeholder API address that Fluidd
 // records as an instance. It must never be the instance Fluidd starts on.
 forgetManagedInstance()
+
+// An address that names a saved printer (/boxwood-367a/jobs) starts on it.
+preferSavedPrinterFor(window.location.pathname, Globals.LOCAL_INSTANCES_STORAGE_KEY)
 
 const restoredUiStyle = restoreUiStyle()
 store.commit('config/setRestoredUiStyle', restoredUiStyle)
@@ -121,11 +133,13 @@ if (/^\/(?:setup|sign-in)(?:\/|$)/.test(window.location.pathname)) {
         Vue.$socket.connect(config.apiConfig.socketUrl)
       }
 
+      // The address names the printer Fluidd shows (/boxwood-367a/jobs).
+      installPrinterPages(router, { activateLocalPrinter, activateCloudPrinter })
+
       mountApp()
 
-      // Restore the Muon3D account, and the cloud printer it was last showing.
-      // With no printer to show at all, start on the welcome page, which finds
-      // printers on this network and offers the account.
+      // Restore the Muon3D account, then open the printer the address names
+      // if it is an account one. A printer's own address opens its page.
       //
       // Wait for the first navigation: a lazy route is not the current route
       // until its chunk has loaded, and its meta decides here.
@@ -139,11 +153,17 @@ if (/^\/(?:setup|sign-in)(?:\/|$)/.test(window.location.pathname)) {
         // the dashboard back to it.
         if (router.currentRoute.name === 'setup') return
 
-        const active = cloudState.activePrinterId
-        if (active && cloudState.account && cloudState.printers.some(p => p.id === active)) {
-          activateCloudPrinter(active).catch((e) => consola.debug('Could not reopen the cloud printer', e))
-        } else if (!store.state.config.apiUrl && !router.currentRoute.meta?.printerIndependent) {
-          router.replace('/welcome').catch(() => {})
+        const wanted = router.currentRoute.params.printer
+        if (wanted) {
+          // The account's printers are known now: one of them may be it.
+          if (!isActiveSlug(wanted)) openPrinterAt(wanted).catch((e) => consola.debug('Could not open the printer', e))
+        } else if (router.currentRoute.name === 'Printers' && isPrintersOwnPage(store.state.config.apiUrl)) {
+          // U2: a printer's own address opens that printer, with Printers a
+          // click away. The shared name (muon3d.local) and the console show
+          // every printer.
+          await learnActiveIdentity()
+          const slug = activeSlug()
+          if (slug && router.currentRoute.name === 'Printers') router.replace(`/${slug}`).catch(() => {})
         }
       }))
     })

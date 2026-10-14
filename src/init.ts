@@ -14,6 +14,7 @@ import sleep from './util/sleep'
 import { setAuxApiBasePath } from './aux_api/useAuxApi'
 import { resetSetupState } from './services/muon-setup/state'
 import { isManagedApiUrl } from './services/muon-cloud/origin'
+import { activeSlug, correctAddress, isActiveSlug, learnActiveIdentity } from './services/printer-pages'
 
 // Load API configuration
 /**
@@ -310,10 +311,16 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   // apiConfig could have empty strings, meaning we have no valid connection.
   await store.dispatch('init', { apiConfig, hostConfig, apiConnected })
 
-  // Ensure users start on the dash, except on a route that stays across a
-  // printer switch (/slice).
-  const startRoute = routeAfterInit(router.currentRoute, store.state.auth.authenticated)
-  if (startRoute) router.push(startRoute)
+  // After a switch, a page of the old printer becomes the same page of this
+  // one: the address always names the printer shown.
+  const nextRoute = routeAfterInit(router.currentRoute, { slug: activeSlug(), isActive: isActiveSlug })
+  if (nextRoute) router.replace(nextRoute).catch(() => {})
+
+  // Learn the printer's own slug (its name and serial suffix), and correct an
+  // address made before it was known, such as one from a saved IP.
+  if (apiConnected && apiAuthenticated) {
+    learnActiveIdentity().then(() => correctAddress(router)).catch(() => {})
+  }
 
   return { apiConfig, hostConfig, apiConnected, apiAuthenticated }
 }

@@ -1,5 +1,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from './state'
+import { pageOfRoute } from '@/router/printerPagePaths'
 
 export type PrinterStatusTone = 'ok' | 'active' | 'warn' | 'fault' | 'off'
 
@@ -60,9 +61,9 @@ export default class PrinterStatusMixin extends Mixins(StateMixin) {
 
   // Home is named by the printer; every other page by its own name.
   get pageTitle (): string {
-    const section = `/${this.$route.path.split('/')[1]}`
+    const section = `/${pageOfRoute(this.$route).split('/')[1]}`
 
-    if (section === '/') return this.displayName
+    if (this.$route.name === 'Dashboard') return this.displayName
 
     const key = pageTitleKeys[section]
 
@@ -70,7 +71,7 @@ export default class PrinterStatusMixin extends Mixins(StateMixin) {
   }
 
   get pageSubtitle (): string {
-    return this.$route.path === '/'
+    return this.$route.name === 'Dashboard'
       ? this.statusText
       : `${this.displayName} · ${this.statusText}`
   }

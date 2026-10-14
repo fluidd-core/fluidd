@@ -1,6 +1,9 @@
 import Vue from 'vue'
-import VueRouter, { type RouteConfig } from 'vue-router'
+import VueRouter, { type RouteConfig, type Route } from 'vue-router'
 import { applyLegacyHash } from './legacyHash'
+import { activeSlugNow } from './printerSlugSource'
+import { PRINTER_PAGE_PATHS } from './printerPagePaths'
+import { ROUTE_SLUG_PATTERN } from '@/services/printer-pages/slug'
 
 // Views
 import Dashboard from '@/views/Dashboard.vue'
@@ -33,9 +36,19 @@ const isAuthenticated = () => (
   !router.app.$store.state.socket.apiConnected
 )
 
+/** The current printer's page, or Printers with no printer. */
+const printerHome = () => {
+  const slug = activeSlugNow()
+  return slug ? `/${slug}` : '/'
+}
+
 const defaultRouteConfig: Partial<RouteConfig> = {
   beforeEnter: (to, from, next) => {
-    if (isAuthenticated()) {
+    // A page for another printer opens that printer (services/printer-pages):
+    // whether it wants a password is that printer's to say, not this one's.
+    if (to.params.printer && to.params.printer !== activeSlugNow()) {
+      next()
+    } else if (isAuthenticated()) {
       next()
     } else {
       next('/login')
@@ -46,39 +59,42 @@ const defaultRouteConfig: Partial<RouteConfig> = {
   }
 }
 
-const routes: Array<RouteConfig> = [
+/** One printer's pages: /boxwood-367a, /boxwood-367a/jobs (U1). */
+const P = `/:printer(${ROUTE_SLUG_PATTERN})`
+
+const printerRoutes: Array<RouteConfig> = [
   {
-    path: '/',
+    path: P,
     name: 'Dashboard',
     component: Dashboard,
     ...defaultRouteConfig
   },
   {
-    path: '/console',
+    path: `${P}/console`,
     name: 'Console',
     component: Console,
     ...defaultRouteConfig
   },
   {
-    path: '/jobs',
+    path: `${P}/jobs`,
     name: 'Jobs',
     component: Jobs,
     ...defaultRouteConfig
   },
   {
-    path: '/tune',
+    path: `${P}/tune`,
     name: 'Tune',
     component: Tune,
     ...defaultRouteConfig
   },
   {
-    path: '/diagnostics',
+    path: `${P}/diagnostics`,
     name: 'Diagnostics',
     component: Diagnostics,
     ...defaultRouteConfig
   },
   {
-    path: '/timelapse',
+    path: `${P}/timelapse`,
     name: 'Timelapse',
     component: Timelapse,
     ...defaultRouteConfig,
@@ -87,36 +103,110 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: '/history',
+    path: `${P}/history`,
     name: 'History',
     component: History,
     ...defaultRouteConfig
   },
   {
-    path: '/wifi',
+    path: `${P}/wifi`,
     name: 'Wifi',
     component: Wifi,
     ...defaultRouteConfig
   },
   {
-    path: '/system',
+    path: `${P}/system`,
     name: 'System',
     component: System,
     ...defaultRouteConfig
   },
   {
     // The Muon3D Slicer in a frame (views/Slice.vue). Lazy, so the slicer's
-    // host loads only here. Printer-independent: the slicer works with no
-    // printer (export only), and its frame, with the person's plates, stays
-    // while Fluidd switches printer (init.ts keeps this route then). No
+    // host loads only here. Its frame, with the person's plates, stays while
+    // Fluidd switches printer (init.ts keeps this route then). No
     // fileDropRoot: a model dropped here is the slicer's, not an upload.
-    path: '/slice',
+    path: `${P}/slice`,
     name: 'Slice',
     component: () => import('@/views/Slice.vue'),
     beforeEnter: defaultRouteConfig.beforeEnter,
     meta: {
       printerIndependent: true,
       keepOnPrinterSwitch: true
+    }
+  },
+  {
+    path: `${P}/configure`,
+    name: 'Configuration',
+    component: Configure,
+    ...defaultRouteConfig,
+    meta: {}
+  },
+  {
+    path: `${P}/settings`,
+    name: 'Settings',
+    ...defaultRouteConfig,
+    meta: {
+      hasSubNavigation: true
+    },
+    components: {
+      default: Settings,
+      navigation: AppSettingsNav
+    },
+    children: [
+      {
+        path: 'macros/:categoryId',
+        name: 'Macros',
+        meta: {
+          hasSubNavigation: true
+        },
+        components: {
+          default: MacroCategorySettings,
+          navigation: AppSettingsNav
+        }
+      }
+    ]
+  },
+  {
+    path: `${P}/camera/:cameraId`,
+    name: 'Camera',
+    component: FullscreenCamera,
+    ...defaultRouteConfig
+  },
+  {
+    path: `${P}/preview`,
+    name: 'Gcode Preview',
+    component: GcodePreview,
+    ...defaultRouteConfig
+  }
+]
+
+/**
+ * An address from before a page per printer (/jobs, /settings#auth, a PWA
+ * shortcut): the same page of the printer Fluidd is on, or Printers when it
+ * is on none.
+ */
+const toPrinterPage = (to: Route) => {
+  const slug = activeSlugNow()
+  return slug ? { path: `/${slug}${to.path}`, query: to.query, hash: to.hash } : '/'
+}
+
+// /slice has a page of its own with no printer (the slicer exports without one).
+const LEGACY_PRINTER_PAGES = [
+  ...PRINTER_PAGE_PATHS.filter(path => !['/slice', '/camera'].includes(path)),
+  '/settings/macros/:categoryId',
+  '/camera/:cameraId'
+]
+
+const routes: Array<RouteConfig> = [
+  {
+    // Every printer: those found on this network, the account's, and a
+    // welcome with none. A printer's own address opens that printer instead
+    // (U2): see main.ts.
+    path: '/',
+    name: 'Printers',
+    component: Welcome,
+    meta: {
+      printerIndependent: true
     }
   },
   {
@@ -129,11 +219,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/welcome',
-    name: 'Welcome',
-    component: Welcome,
-    meta: {
-      printerIndependent: true
-    }
+    redirect: '/'
   },
   {
     path: '/link',
@@ -174,56 +260,28 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: '/configure',
-    name: 'Configuration',
-    component: Configure,
-    ...defaultRouteConfig,
-    meta: {}
-  },
-  {
-    path: '/settings',
-    name: 'Settings',
-    ...defaultRouteConfig,
+    // The slicer works with no printer too (export only).
+    path: '/slice',
+    name: 'Slice (no printer)',
+    component: () => import('@/views/Slice.vue'),
+    beforeEnter: (to, from, next) => {
+      const slug = activeSlugNow()
+      if (slug) next({ path: `/${slug}/slice`, query: to.query, hash: to.hash })
+      else next()
+    },
     meta: {
-      hasSubNavigation: true
-    },
-    components: {
-      default: Settings,
-      navigation: AppSettingsNav
-    },
-    children: [
-      {
-        path: '/settings/macros/:categoryId',
-        name: 'Macros',
-        meta: {
-          hasSubNavigation: true
-        },
-        components: {
-          default: MacroCategorySettings,
-          navigation: AppSettingsNav
-        }
-      }
-    ]
+      printerIndependent: true,
+      keepOnPrinterSwitch: true
+    }
   },
   {
-    path: '/camera/:cameraId',
-    name: 'Camera',
-    component: FullscreenCamera,
-    ...defaultRouteConfig
-  },
-  {
-    path: '/preview',
-    name: 'Gcode Preview',
-    component: GcodePreview,
-    ...defaultRouteConfig
-  },
-  {
+    // The printer's own user login (Moonraker), for the printer Fluidd is on.
     path: '/login',
     name: 'Login',
     component: Login,
     beforeEnter: (to, from, next) => {
       if (isAuthenticated()) {
-        next('/')
+        next(printerHome())
       } else {
         next()
       }
@@ -237,6 +295,8 @@ const routes: Array<RouteConfig> = [
     name: 'Icons',
     component: Icons
   },
+  ...LEGACY_PRINTER_PAGES.map(path => ({ path, redirect: toPrinterPage })),
+  ...printerRoutes,
   {
     path: '*',
     name: '404',

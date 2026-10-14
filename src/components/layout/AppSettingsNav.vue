@@ -6,7 +6,7 @@
       <router-link
         v-if="item.visible"
         :key="item.name"
-        :to="`/settings${item.hash}`"
+        :to="`${settingsPath}${item.hash}`"
         class="settings-nav__item"
         :class="{ 'settings-nav__item--active': $route.hash === item.hash }"
       >
@@ -18,9 +18,15 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { activeSlug } from '@/services/printer-pages'
+import { scopedPath } from '@/router/printerPagePaths'
 
 @Component({})
 export default class AppSettingsNav extends Vue {
+  get settingsPath () {
+    return scopedPath('/settings', activeSlug())
+  }
+
   get isVisible () {
     return !this.$vuetify.breakpoint.mobile
   }

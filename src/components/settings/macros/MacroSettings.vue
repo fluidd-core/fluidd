@@ -106,6 +106,8 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import MacroCategoryDialog from './MacroCategoryDialog.vue'
 import StateMixin from '@/mixins/state'
+import { activeSlug } from '@/services/printer-pages'
+import { scopedPath } from '@/router/printerPagePaths'
 import type { Macro, MacroCategory } from '@/store/macros/types'
 
 @Component({
@@ -177,7 +179,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
 
   handleCategoryClick (category?: MacroCategory) {
     const id = category?.id ?? 0
-    this.$router.push(`/settings/macros/${id}`)
+    this.$router.push(scopedPath(`/settings/macros/${id}`, activeSlug()))
   }
 }
 </script>

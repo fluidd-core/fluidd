@@ -6,7 +6,7 @@
   >
     <template #activator="{ attrs, on }">
       <v-list-item
-        :to="to"
+        :to="target"
         :exact="exact"
         link
         class="muon-nav-item"
@@ -47,6 +47,8 @@ import BrowserMixin from '@/mixins/browser'
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
 import { Globals } from '@/globals'
 import isKeyOf from '@/util/is-key-of'
+import { scopedPath } from '@/router/printerPagePaths'
+import { activeSlug } from '@/services/printer-pages'
 
 @Component({})
 export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
@@ -68,6 +70,11 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
 
   get rail (): boolean {
     return this.isNavRail()
+  }
+
+  /** The link for the printer Fluidd is on: Home is its own page, Jobs its Jobs. */
+  get target (): string {
+    return scopedPath(this.to, activeSlug())
   }
 
   get accelerator (): string | undefined {
@@ -99,11 +106,11 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
     if (
       shortcut === this.accelerator &&
       !eventTargetIsContentEditable(event) &&
-      this.$router.currentRoute.path !== this.to
+      this.$router.currentRoute.path !== this.target
     ) {
       event.preventDefault()
 
-      this.$router.push(this.to)
+      this.$router.push(this.target)
     }
   }
 

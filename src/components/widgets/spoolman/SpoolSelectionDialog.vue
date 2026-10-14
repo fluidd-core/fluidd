@@ -208,6 +208,7 @@ import type { WebcamConfig } from '@/store/webcams/types'
 import QrScanner from 'qr-scanner'
 import type { AppTableHeader } from '@/types'
 import getFilePaths from '@/util/get-file-paths'
+import { printerHomePath } from '@/services/printer-pages'
 
 @Component({
   components: { QRReader }
@@ -496,8 +497,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
 
-      if (this.$router.currentRoute.path !== '/') {
-        this.$router.push({ path: '/' })
+      const home = printerHomePath()
+      if (this.$router.currentRoute.path !== home) {
+        this.$router.push({ path: home })
       }
     }
 

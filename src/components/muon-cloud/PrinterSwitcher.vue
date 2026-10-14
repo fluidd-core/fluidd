@@ -262,6 +262,8 @@ import {
   type LocalLive,
   type PrinterHealth
 } from '@/services/muon-cloud/directory'
+import { activeSlug } from '@/services/printer-pages'
+import { scopedPath } from '@/router/printerPagePaths'
 import { lookNearby, nearbyState, startNearby, stopNearby, type NearbyPrinter } from '@/services/muon-ble/nearby'
 import { useBluetoothFor } from '@/services/muon-ble/link'
 import CloudAccountDialog from './CloudAccountDialog.vue'
@@ -648,8 +650,9 @@ export default class PrinterSwitcher extends Mixins(StateMixin) {
     }
     this.$emit('click')
     const hash = this.$store.getters['server/componentSupport']('muon_access') ? '#access' : '#protection'
-    if (this.$route.path !== '/settings' || this.$route.hash !== hash) {
-      this.$router.push({ path: '/settings', hash }).catch(() => {})
+    const settings = scopedPath('/settings', activeSlug())
+    if (this.$route.path !== settings || this.$route.hash !== hash) {
+      this.$router.push({ path: settings, hash }).catch(() => {})
     }
   }
 }

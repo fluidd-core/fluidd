@@ -203,7 +203,8 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { cloudState, saveLayout, type FleetLayout } from '@/services/muon-cloud/state'
-import { activateCloudPrinter } from '@/services/muon-cloud/activate'
+import { printerPath } from '@/services/printer-pages'
+import { slugForCloudPrinter } from '@/services/printer-pages/slug'
 import FleetCard from '@/components/muon-cloud/FleetCard.vue'
 import CloudAccountDialog from '@/components/muon-cloud/CloudAccountDialog.vue'
 import LinkPrinterDialog from '@/components/muon-cloud/LinkPrinterDialog.vue'
@@ -317,9 +318,10 @@ export default class Fleet extends Vue {
     this.persist({ groups })
   }
 
-  async open (id: string) {
-    this.$router.push('/')
-    await activateCloudPrinter(id).catch(() => {})
+  /** The printer's own page, which opens it (services/printer-pages). */
+  open (id: string) {
+    const printer = cloudState.printers.find(p => p.id === id)
+    if (printer) this.$router.push(printerPath(slugForCloudPrinter(printer))).catch(() => {})
   }
 }
 </script>

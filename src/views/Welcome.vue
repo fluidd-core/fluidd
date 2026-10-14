@@ -317,6 +317,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import type { InstanceConfig } from '@/store/config/types'
 import { cloudState } from '@/services/muon-cloud/state'
 import { activateCloudPrinter, activateLocalPrinter, activationState } from '@/services/muon-cloud/activate'
+import { printerHomePath } from '@/services/printer-pages'
 import { discoverPrinters, discoveryState, instanceForHost } from '@/services/muon-cloud/discovery'
 import { searchRows, type SearchRow } from '@/services/muon-cloud/searchRows'
 import { lookNearby, nearbyState, startNearby, stopNearby, type NearbyPrinter } from '@/services/muon-ble/nearby'
@@ -515,7 +516,7 @@ export default class Welcome extends Vue {
     this.connecting = key
     try {
       if (await activateLocalPrinter(instance)) {
-        this.$router.push('/')
+        this.$router.push(printerHomePath())
         return
       }
       this.error = activationState.error ?? `Could not connect to ${instance.name || instance.apiUrl} from this page.`
@@ -532,7 +533,7 @@ export default class Welcome extends Vue {
     this.connecting = id
     try {
       await activateCloudPrinter(id)
-      this.$router.push('/')
+      this.$router.push(printerHomePath())
     } catch (error) {
       this.error = (error as Error).message
     } finally {

@@ -5,9 +5,12 @@ import { isDeniedNavigation, NAVIGATION_DENYLIST } from '@/swNavigation'
 import swSource from '@/sw.ts?raw'
 
 describe('/slice', () => {
-  it('is the lazy Slice page, printer-independent and kept across a printer switch', () => {
-    const route = router.resolve('/slice').route
-    expect(route.name).toBe('Slice')
+  it.each([
+    ['/boxwood-367a/slice', 'Slice'],
+    ['/slice', 'Slice (no printer)']
+  ])('%s is the lazy Slice page, printer-independent and kept across a printer switch', (path, name) => {
+    const route = router.resolve(path).route
+    expect(route.name).toBe(name)
     expect(route.matched).toHaveLength(1)
     expect(route.matched[0].meta.printerIndependent).toBe(true)
     expect(route.matched[0].meta.keepOnPrinterSwitch).toBe(true)
@@ -19,24 +22,30 @@ describe('/slice', () => {
   })
 
   it('keeps the printer\'s sign-in: not signed in, it goes to the login', () => {
-    const guard = router.resolve('/slice').route.matched[0].beforeEnter
-    const signedIn = router.resolve('/console').route.matched[0].beforeEnter
+    const guard = router.resolve('/boxwood-367a/slice').route.matched[0].beforeEnter
+    const signedIn = router.resolve('/boxwood-367a/console').route.matched[0].beforeEnter
     expect(guard).toBe(signedIn)
   })
 })
 
-describe('where appInit sends the page (a printer switch)', () => {
+describe('where appInit sends the page (a printer switch to walnut-8987)', () => {
+  const walnut = { slug: 'walnut-8987', isActive: (slug: string) => slug === 'walnut-8987' }
+
   test.each([
-    ['/slice', null],
     ['/', null],
-    ['/console', '/'],
-    ['/jobs', '/']
+    ['/fleet', null],
+    ['/slice', null],
+    ['/walnut-8987/jobs', null],
+    ['/boxwood-367a', '/walnut-8987'],
+    ['/boxwood-367a/jobs?sort=name', '/walnut-8987/jobs?sort=name'],
+    ['/boxwood-367a/slice', '/walnut-8987/slice'],
+    ['/boxwood-367a/settings#macros', '/walnut-8987/settings#macros']
   ])('from %s: %s', (path, to) => {
-    expect(routeAfterInit(router.resolve(path).route, true)).toBe(to)
+    expect(routeAfterInit(router.resolve(path).route, walnut)).toBe(to)
   })
 
-  it('nowhere when not signed in to the printer', () => {
-    expect(routeAfterInit(router.resolve('/console').route, false)).toBeNull()
+  it('nowhere while no printer is open', () => {
+    expect(routeAfterInit(router.resolve('/boxwood-367a/jobs').route, { slug: null, isActive: () => false })).toBeNull()
   })
 })
 

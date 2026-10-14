@@ -163,6 +163,8 @@ import type { AppTableHeader, FileWithPath } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer, setFileDataTransferDataInDataTransfer } from '@/util/file-data-transfer'
 import consola from 'consola'
+import { activeSlug, printerHomePath } from '@/services/printer-pages'
+import { scopedPath } from '@/router/printerPagePaths'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
@@ -698,8 +700,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
       if (!gcode) return
 
-      if (this.$router.currentRoute.path !== '/' || !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')) {
-        this.$router.push({ path: '/preview' })
+      if (this.$router.currentRoute.name !== 'Dashboard' || !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')) {
+        this.$router.push({ path: scopedPath('/preview', activeSlug()) })
       }
 
       this.$store.dispatch('gcodePreview/loadGcode', {
@@ -754,9 +756,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     SocketActions.printerPrintStart(filename)
 
-    // If we aren't on the dashboard, push the user back there.
-    if (this.$router.currentRoute.path !== '/') {
-      this.$router.push({ path: '/' })
+    // If we aren't on the printer's own page, take the user there.
+    const home = printerHomePath()
+    if (this.$router.currentRoute.path !== home) {
+      this.$router.push({ path: home })
     }
   }
 

@@ -120,6 +120,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import MacroSettingsDialog from './MacroSettingsDialog.vue'
 import type { Macro, MacroCategory } from '@/store/macros/types'
 import store from '@/store'
+import { scopedPath } from '@/router/printerPagePaths'
 import type { NavigationGuardNext, Route, Location } from 'vue-router'
 
 const routeGuard = (to: Route): Parameters<NavigationGuardNext>[0] => {
@@ -128,7 +129,7 @@ const routeGuard = (to: Route): Parameters<NavigationGuardNext>[0] => {
   const categories = store.getters['macros/getCategories']
   const i = categories.findIndex((c: MacroCategory) => c.id === id)
   if (id !== '0' && i === -1) {
-    return { path: '/settings', hash: 'macros' } satisfies Location
+    return { path: scopedPath('/settings', to.params.printer ?? null), hash: 'macros' } satisfies Location
   }
 }
 

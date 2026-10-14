@@ -43,6 +43,8 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import { scopedPath } from '@/router/printerPagePaths'
+import { activeSlug } from '@/services/printer-pages'
 
 type Tab = {
   to: string;
@@ -57,10 +59,11 @@ type Tab = {
 @Component({})
 export default class AppTabBar extends Mixins(StateMixin) {
   get tabs (): Tab[] {
+    const slug = activeSlug()
     return [
-      { to: '/', icon: '$dash', label: this.$t('app.general.title.home').toString(), exact: true },
-      { to: '/jobs', icon: '$files', label: this.$t('app.general.title.jobs').toString() },
-      { to: '/console', icon: '$console', label: this.$t('app.general.title.console').toString() }
+      { to: scopedPath('/', slug), icon: '$dash', label: this.$t('app.general.title.home').toString(), exact: true },
+      { to: scopedPath('/jobs', slug), icon: '$files', label: this.$t('app.general.title.jobs').toString() },
+      { to: scopedPath('/console', slug), icon: '$console', label: this.$t('app.general.title.console').toString() }
     ]
   }
 
