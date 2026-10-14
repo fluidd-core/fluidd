@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chartLines, chartWindows, defaultChartWindow, filamentFact, heaterTile, longDuration, sensorRows } from '../model'
+import { chartLines, chartWindows, defaultChartWindow, filamentFact, heaterTile, longDuration, sensorRows, spoolFact } from '../model'
 
 describe('a heater tile', () => {
   it('is off without a target', () => {
@@ -91,5 +91,14 @@ describe("Pro's table of heaters and sensors", () => {
       ['Chamber', null, '34.9°', false],
       ['Mcu', null, '—', false]
     ])
+  })
+})
+
+describe('the spool on a printing printer', () => {
+  it('is what someone said is loaded, else what the file was sliced for, else not set', () => {
+    // 14 Oct: Walnut printing showed no spool at all.
+    expect(spoolFact('PETG', '#202022', { name: 'PLA', colour: null })).toBe('PETG · Black')
+    expect(spoolFact(null, null, { name: 'PLA', colour: '#F2F2EE' })).toBe('PLA · White · from the file')
+    expect(spoolFact(null, null, null)).toBe('Not set')
   })
 })

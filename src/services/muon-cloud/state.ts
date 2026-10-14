@@ -21,31 +21,12 @@ import { centralLoginEnabled, clearSilentAttempt, redirectUri, signOutCentral, t
 import { browserEndpoint, forgetBrowserKey, managedEndpointFactory } from './iroh'
 import { createPrinterTransportForSelection, type AuthorizedManagedRelaySession, type PrinterTransport, type PrinterSocket } from '@/services/managed-transport'
 import { consolePresence } from './presence'
+import { STATUS_QUERY, statusFrom, type PrinterStatus } from './status'
 
 const ACTIVE_KEY = 'muon.cloud.active'
 
-/** A printer's live state, read over its own Iroh connection. */
-export interface PrinterStatus {
-  reachable: boolean;
-  error?: string;
-  state?: string;
-  message?: string;
-  filename?: string;
-  progress?: number;
-  printDuration?: number;
-  totalDuration?: number;
-  filamentUsed?: number;
-  extruder?: { temperature: number, target: number };
-  bed?: { temperature: number, target: number };
-  position?: number[];
-  speedFactor?: number;
-  extrudeFactor?: number;
-  layer?: number;
-  totalLayers?: number;
-  filePosition?: number;
-  fileSize?: number;
-  updatedAt: number;
-}
+/** A printer's live state, read over its own Iroh connection (the reading is shared with the network's: status.ts). */
+export type { PrinterStatus } from './status'
 
 export interface FleetLayout {
   groups: Array<{ id: string, name: string, printers: string[] }>;
@@ -205,8 +186,6 @@ async function statusConnection (printerId: string): Promise<PrinterTransport> {
   return existing
 }
 
-const STATUS_QUERY = '/printer/objects/query?print_stats&display_status&virtual_sdcard&extruder=temperature,target&heater_bed=temperature,target&toolhead=position,homed_axes&gcode_move=speed_factor,extrude_factor&webhooks'
-
 async function pollOne (printer: CloudPrinter) {
   const signal = sessionAbort.signal
   const unavailable = (error: string) => {
@@ -226,26 +205,10 @@ async function pollOne (printer: CloudPrinter) {
     const latest = cloudState.printers.find(p => p.id === printer.id)
     if (!latest) return
     const presence = consolePresence(latest)
-    const info = s.print_stats?.info ?? {}
     Vue.set(cloudState.status, printer.id, {
       reachable: presence === 'online',
       error: presence === 'online' ? undefined : presence,
-      state: s.webhooks?.state === 'ready' ? s.print_stats?.state : `klipper ${s.webhooks?.state ?? 'unknown'}`,
-      message: s.display_status?.message ?? undefined,
-      filename: s.print_stats?.filename || undefined,
-      progress: s.virtual_sdcard?.progress ?? s.display_status?.progress,
-      printDuration: s.print_stats?.print_duration,
-      totalDuration: s.print_stats?.total_duration,
-      filamentUsed: s.print_stats?.filament_used,
-      extruder: s.extruder,
-      bed: s.heater_bed,
-      position: s.toolhead?.position,
-      speedFactor: s.gcode_move?.speed_factor,
-      extrudeFactor: s.gcode_move?.extrude_factor,
-      layer: info.current_layer ?? undefined,
-      totalLayers: info.total_layer ?? undefined,
-      filePosition: s.virtual_sdcard?.file_position,
-      fileSize: s.virtual_sdcard?.file_size,
+      ...statusFrom(s),
       updatedAt: Date.now()
     } as PrinterStatus)
   } catch (error) {

@@ -78,6 +78,29 @@ export function choiceNamed (choices: MaterialChoice[], name: string | null): Ma
   return name ? choices.find(c => sameName(c.name, name)) ?? null : null
 }
 
+/**
+ * The loaded material by its recorded name. A name the table doesn't list
+ * ("PLA+", or one another client wrote) is still what's loaded: it used to
+ * read as "Not set".
+ */
+export function loadedChoice (choices: MaterialChoice[], name: string | null): MaterialChoice | null {
+  if (!name) return null
+  return choiceNamed(choices, name) ?? { name, nozzle: null, bed: null, colour: '#8a9597', presetId: null }
+}
+
+/** What the file being printed was sliced for: its filament type (or name) and colour. */
+export function fileFilament (metadata: Record<string, unknown> | null | undefined): { name: string, colour: string | null } | null {
+  if (!metadata) return null
+  const first = (value: unknown): string => {
+    const text = Array.isArray(value) ? value[0] : value
+    return typeof text === 'string' ? text.split(';')[0].trim() : ''
+  }
+  const name = first(metadata.filament_type) || first(metadata.filament_name)
+  if (!name) return null
+  const colour = normaliseColour(first(metadata.filament_colors) || first(metadata.filament_colour))
+  return { name, colour }
+}
+
 /** Remembers the loaded material on the printer, exactly as the panel does, so either can change it. */
 export function saveMaterialCommand (name: string): string {
   const safe = name.replace(/["'\\]/g, '').trim()
