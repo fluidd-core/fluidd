@@ -749,6 +749,8 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
       }
 
       case 'Shift+X':
+        // No Pro on a page with no mode (Slice): the key changes nothing there.
+        if (!this.proSwitchShown) return
         event.preventDefault()
         setProMode(!this.pro)
         return

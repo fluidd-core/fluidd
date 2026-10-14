@@ -18,6 +18,17 @@ function read (): boolean {
  */
 export const proMode = Vue.observable({ on: read() })
 
+/**
+ * Whether the page offers the Pro switch (the header's, More's "Pro controls",
+ * Shift X and the command bar's "Turn Pro on"). A page that frames another
+ * app (Slice, and Design once Control frames it) has no mode: the switch would
+ * change nothing in it, so it is not offered there (KAN-550). Its route says so
+ * with meta.noMode.
+ */
+export function hasProSwitch (route: { meta?: { noMode?: boolean } } | null | undefined): boolean {
+  return route?.meta?.noMode !== true
+}
+
 export function setProMode (on: boolean) {
   proMode.on = on
   try {

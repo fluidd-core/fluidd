@@ -28,7 +28,7 @@ import {
   type HostLibrary,
   type HostLogEntry
 } from './vendor/printer-client/bridge/host'
-import type { BridgePrinter, Density, HostLook, HostSetup, PrinterMaterial, Theme, UiMode } from './vendor/printer-client/bridge/protocol'
+import type { BridgePrinter, Density, HostLook, HostSetup, PrinterMaterial, Theme } from './vendor/printer-client/bridge/protocol'
 import { createFluiddAdapter, type HttpClient } from './adapter'
 import { bridgePrinterFor, createIdentityCache, samePrinter, type FluiddSelection } from './selection'
 import { createStoreStatusFeed } from './statusFeed'
@@ -50,8 +50,6 @@ export interface SlicerHostOptions {
   density?: Density;
   /** Fluidd's look (ui.look, look.ts): the slicer draws itself as a part of the page. */
   look?: HostLook;
-  /** Fluidd's Simple or Pro (ui.mode). */
-  mode?: UiMode;
   /** What printer `key` has loaded, and the material table (printer.setup, setup.ts); null for any but the selected one. */
   setup?: (key: string) => HostSetup | null;
   /**
@@ -135,7 +133,6 @@ export function startSlicerHost (options: SlicerHostOptions): SlicerHost {
     theme: options.theme,
     density: options.density,
     look: options.look,
-    mode: options.mode,
     setup: options.setup,
     onMaterial: options.onMaterial,
     library: options.library,
