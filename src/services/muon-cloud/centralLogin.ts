@@ -13,7 +13,8 @@
  *    `prompt=none`.
  * 2. Back at the redirect URI, the `code` is exchanged at `POST /token` with
  *    the verifier. `state` must be the one this tab sent, and `iss` (RFC 9207)
- *    the console's own URL, or nothing is exchanged.
+ *    the console's own URL (either of its names, KAN-414), or nothing is
+ *    exchanged.
  * 3. Signing out is a form post to `/logout`, which ends the browser session
  *    and every session issued from it, and loads each surface's front-channel
  *    logout page. Fluidd's is `auth/logout.html`.
@@ -21,7 +22,7 @@
  * The console's own sign-in page, which `/authorize` sends a browser to with
  * `continue`, is `views/SignIn.vue`; `safeContinue` below is its guard.
  */
-import { CLIENT_ID, cloudBaseUrl, storedToken } from './api'
+import { CLIENT_ID, cloudBaseUrl, sameConsole, storedToken } from './api'
 import { challengeFor, newState, newVerifier } from './pkce'
 
 const PENDING_KEY = 'muon.cloud.authorize'
@@ -172,8 +173,10 @@ export function takeCallback (location: Pick<Location, 'search'> = window.locati
   if (!pending || query.get('state') !== pending.state) {
     return { outcome: 'error', message: 'That sign-in did not start here. Sign in again.', returnTo }
   }
+  // The console names itself by one URL (MUON_CONSOLE_URL) whichever of its
+  // two names it was reached by (KAN-414), so either name is this console.
   const iss = query.get('iss')
-  if (iss === null || iss.replace(/\/$/, '') !== consoleUrl.replace(/\/$/, '')) {
+  if (iss === null || !sameConsole(iss, consoleUrl)) {
     return { outcome: 'error', message: 'That sign-in came from the wrong place. Sign in again.', returnTo }
   }
 
@@ -203,10 +206,14 @@ export function safeContinue (value: unknown): string | null {
 
 /**
  * Where the sign-in page sends the browser once it holds a handoff: the
- * console's `/handoff`, carrying `continue` on as `next`.
+ * console's `/handoff`, carrying `continue` on as `next`. The console names
+ * the handoff by its own URL; under its other name (KAN-414) the browser stays
+ * on the name this page uses, where the session cookie and `/authorize` are.
  */
 export function handoffUrl (handoff: string, next: string | null): string {
-  const url = new URL(handoff, cloudBaseUrl())
+  const base = cloudBaseUrl()
+  const given = new URL(handoff, base)
+  const url = sameConsole(given.origin, base) ? new URL(`${given.pathname}${given.search}`, base) : given
   url.searchParams.set('next', next ?? '/')
   return url.toString()
 }
