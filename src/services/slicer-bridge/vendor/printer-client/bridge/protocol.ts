@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Vendored from @muon3d/printer-client 0.1.0 (src/bridge/protocol.ts), Copyright 2026 Muon 3D
+// Vendored from @muon3d/printer-client 0.2.0 (src/bridge/protocol.ts), Copyright 2026 Muon 3D
 // Technologies Limited, under the Apache License 2.0 (vendor/printer-client/LICENSE and NOTICE). Changed for
 // Fluidd by tools/vendor-printer-client.cjs: relative imports without ".ts"; Object.hasOwn as hasOwnProperty.call.
 // printer-bridge/1: how a page that frames a printer client (the host: Fluidd, a reference host in the tests) and the
@@ -39,6 +39,14 @@
 // Plate is clear) queues them all. Upload only, the dialog's ✕ and Esc answer uploaded-only in either mode: the files
 // stay uploaded, and nothing is started or queued. The wording is the reference host's
 // (e2e/fixtures/bridgeHost.html); a host's own may differ.
+//
+// The host's UI (inside version 1, optional on both sides): a host that wants the client drawn as a part of its own page
+// grants `ui.look` (its resolved colours, radii and fonts; the client then draws no chrome of its own), `ui.mode` (its
+// Simple or Pro switch) and `printer.setup` (what its selected printer has loaded, and its material table). A welcome
+// may carry the first look and mode; the events `ui.look`, `ui.mode` and `printer.setup` carry each change. A client
+// lists what it uses in its hello's `features`, so a host knows whether the frame will draw itself as a part of the
+// host's page. An old client ignores the fields and the events; an old host never sends them, and the client then
+// draws itself as it always has. A malformed look, mode or setup is dropped: never a reason to refuse a welcome.
 import { CHECKSUM_RE } from '../multipart/build';
 import { unsafeNameReason } from '../multipart/names';
 import { cleanText, type ErrorKind, type PrinterError } from '../errors/kinds';
@@ -64,6 +72,13 @@ export const OPS = {
 } as const;
 export type BridgeOp = keyof typeof OPS;
 
+/**
+ * The host's UI capabilities (see the file comment), optional inside version 1: a host grants the ones it sends, and a
+ * client lists the ones it uses in its hello's `features`.
+ */
+export const CAPABILITIES_HOST_UI = ['ui.look', 'ui.mode', 'printer.setup'] as const;
+export type HostUiCapability = (typeof CAPABILITIES_HOST_UI)[number];
+
 /** The events a host sends, and the capability each comes with (null: always). */
 export const HOST_EVENTS = {
   'printer.changed': 'printer',
@@ -71,6 +86,9 @@ export const HOST_EVENTS = {
   'printer.gcode': 'gcode',
   'ui.theme': null,
   'ui.density': null,
+  'ui.look': 'ui.look',
+  'ui.mode': 'ui.mode',
+  'printer.setup': 'printer.setup',
 } as const;
 export type HostEventName = keyof typeof HOST_EVENTS;
 
@@ -118,8 +136,15 @@ export const LIMITS = {
   /** Console lines in one printer.gcode event, and the longest line. */
   lines: 200,
   line: 2000,
-  /** Capabilities in a welcome. */
+  /** Capabilities in a welcome, and features in a hello. */
   capabilities: 32,
+  /** A look's longest value (a colour, a length, a shadow, a font stack), and its fonts. */
+  lookValue: 256,
+  lookFonts: 16,
+  /** A font's URL. */
+  url: 512,
+  /** Materials in a printer.setup's table. */
+  materials: 32,
 } as const;
 
 /** A 32-digit hex nonce (16 random bytes). */
@@ -140,10 +165,102 @@ export interface Hello {
   app: string;
   appVersion: string;
   nonce: string;
+  /** What the client uses of the host's optional capabilities (CAPABILITIES_HOST_UI); [] from an older client. */
+  features?: string[];
 }
 
 export type Theme = 'light' | 'dark';
 export type Density = 'compact' | 'touch';
+
+/** The host's Simple or Pro switch: a display choice (how much the client shows), never a permission. */
+export type UiMode = 'simple' | 'pro';
+
+/**
+ * The tokens of a host's look, each with the kind of value it takes. The names are the host's own CSS custom
+ * properties without their `--m3d-` prefix (Fluidd's redesign), so a host reads each with getComputedStyle; the
+ * client maps them onto its own.
+ */
+export const LOOK_TOKENS = {
+  bg: 'color',
+  surface: 'color',
+  'surface-2': 'color',
+  raised: 'color',
+  inset: 'color',
+  border: 'color',
+  'border-strong': 'color',
+  text: 'color',
+  'text-muted': 'color',
+  'text-subtle': 'color',
+  hover: 'color',
+  accent: 'color',
+  'on-accent': 'color',
+  'accent-soft': 'color',
+  success: 'color',
+  warning: 'color',
+  danger: 'color',
+  overlay: 'color',
+  'shadow-float': 'shadow',
+  'radius-sm': 'length',
+  'radius-md': 'length',
+  'font-sans': 'font',
+  'font-title': 'font',
+  'font-mono': 'font',
+} as const;
+export type LookToken = keyof typeof LOOK_TOKENS;
+
+/**
+ * A font the host's look uses, for a client to load: its family as the look's font stacks name it, and a URL of a
+ * woff2 or woff file. A client loads only a URL on its own origin (a printer serves the host and the client together).
+ */
+export interface HostFont {
+  family: string;
+  url: string;
+  /** "400", or a variable font's range "100 900". */
+  weight?: string;
+  style?: 'normal' | 'italic';
+}
+
+/**
+ * The host's look: its theme and the resolved values of its tokens (plain colours, lengths and font stacks, never a
+ * reference to another token), and the fonts to load. A token the host leaves out keeps the client's own.
+ */
+export interface HostLook {
+  theme: Theme;
+  tokens: Partial<Record<LookToken, string>>;
+  fonts?: HostFont[];
+}
+
+/**
+ * Where the host's material came from: the spool its spool manager has active; the material the printer was told is
+ * loaded (`loaded`: Muon's Fluidd keeps it in Klipper's save_variables, `muon_material`); the material the heaters are
+ * set to; or an entry of its table (the `materials` list).
+ */
+export type MaterialSource = 'spool' | 'loaded' | 'heaters' | 'table';
+
+/** A material as the host knows it. Strings are display text from the host. */
+export interface HostMaterial {
+  /** Its name as the host shows it ("PLA", "Teal PLA"). */
+  name: string;
+  /** Its filament type ("PLA", "PETG") when the host knows it; else null (a client may read it from the name). */
+  type: string | null;
+  /** "#RRGGBB", or null. */
+  colour: string | null;
+  /** Nozzle and bed temperatures, °C; null where the host has none. */
+  nozzle: number | null;
+  bed: number | null;
+  source: MaterialSource;
+  /** Grams left on a spool, when the spool manager says. */
+  remaining?: number | null;
+}
+
+/**
+ * printer.setup's data, for the printer the event names: what it has loaded now (null: the host cannot tell) and the
+ * host's material table, as the host offers it.
+ */
+export interface HostSetup {
+  material: HostMaterial | null;
+  materials: HostMaterial[];
+}
 
 export interface Welcome {
   protocol: typeof BRIDGE_PROTOCOL;
@@ -155,6 +272,10 @@ export interface Welcome {
   capabilities: string[];
   theme: Theme;
   density?: Density;
+  /** The host's look, when it granted ui.look (else the client ignores one). */
+  look?: HostLook;
+  /** The host's Simple or Pro, when it granted ui.mode. */
+  mode?: UiMode;
 }
 
 export type PrinterRoute = 'cloud' | 'local';
@@ -358,8 +479,17 @@ export function makeNonce(random: (bytes: Uint8Array) => Uint8Array = (b) => cry
   return [...random(new Uint8Array(16))].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-export function helloMessage(opts: { app: string; appVersion: string; nonce: string; versions?: readonly number[] }): Hello {
-  return { protocol: BRIDGE_PROTOCOL, type: 'hello', versions: [...(opts.versions ?? BRIDGE_VERSIONS)], app: opts.app, appVersion: opts.appVersion, nonce: opts.nonce };
+export function helloMessage(opts: { app: string; appVersion: string; nonce: string; versions?: readonly number[]; features?: readonly string[] }): Hello {
+  const hello: Hello = { protocol: BRIDGE_PROTOCOL, type: 'hello', versions: [...(opts.versions ?? BRIDGE_VERSIONS)], app: opts.app, appVersion: opts.appVersion, nonce: opts.nonce };
+  // Only a client that uses one says so: an older host reads the hello as it always has.
+  if (opts.features?.length) hello.features = readFeatures(opts.features);
+  return hello;
+}
+
+/** A hello's features: the names it lists (short strings, at most LIMITS.capabilities, no repeats); [] for anything else. */
+export function readFeatures(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return [...new Set(value.filter((f): f is string => shortString(f)))].slice(0, LIMITS.capabilities);
 }
 
 /** A hello as a host reads it; null when the message is not one (it is then ignored, never answered). */
@@ -375,6 +505,8 @@ export function parseHello(data: unknown): Hello | null {
     app: displayText(r.app),
     appVersion: displayText(r.appVersion),
     nonce: r.nonce,
+    // An older client's hello has none; a list that is not one reads as none, and the hello still counts.
+    features: readFeatures(r.features),
   };
 }
 
@@ -388,6 +520,7 @@ export function commonVersion(offered: readonly number[], spoken: readonly numbe
  * A welcome as the client reads it, against the hello it sent: the protocol, the echoed nonce, a version it offered,
  * the host's name and version, the capabilities and the theme. Returns the welcome, or why it is refused (a string).
  * The window checks (the sender is the parent, its origin is allowed, exactly one port) are the caller's, on the event.
+ * The look and the mode are read only where the welcome grants ui.look and ui.mode; a malformed one is left out.
  */
 export function parseWelcome(data: unknown, hello: Pick<Hello, 'nonce' | 'versions'>): Welcome | string {
   const r = record(data);
@@ -408,6 +541,14 @@ export function parseWelcome(data: unknown, hello: Pick<Hello, 'nonce' | 'versio
     theme: r.theme,
   };
   if (r.density !== undefined) welcome.density = r.density;
+  if (welcome.capabilities.includes('ui.look')) {
+    const look = parseLook(r.look);
+    if (look) welcome.look = look;
+  }
+  if (welcome.capabilities.includes('ui.mode')) {
+    const mode = parseUiMode(r.mode);
+    if (mode) welcome.mode = mode;
+  }
   return welcome;
 }
 
@@ -428,6 +569,184 @@ export function parseBridgePrinter(value: unknown): BridgePrinter | null {
   const printer: BridgePrinter = { key: r.key, name, model, route: r.route, role: r.role, online: r.online };
   if (r.shared === true) printer.shared = true;
   return printer;
+}
+
+// ---------------------------------------------------------------------------
+// The host's UI: its look, its mode, its printer's setup
+// ---------------------------------------------------------------------------
+
+const NUMBER = String.raw`[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?`;
+const CHANNEL = String.raw`(?:${NUMBER}(?:%|deg|turn|rad|grad)?|none)`;
+const HEX_RE = /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+const COLOR_FUNCTION_RE = new RegExp(String.raw`^(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch)\(\s*${CHANNEL}(?:\s*[,/]?\s*${CHANNEL}){2,3}\s*\)$`, 'i');
+const COLOR_SPACE_RE = new RegExp(
+  String.raw`^color\(\s*(?:srgb|srgb-linear|display-p3|a98-rgb|prophoto-rgb|rec2020|xyz|xyz-d50|xyz-d65)(?:\s+(?:${NUMBER}%?|none)){3}(?:\s*/\s*(?:${NUMBER}%?|none))?\s*\)$`,
+  'i',
+);
+const LENGTH_RE = new RegExp(String.raw`^(?:0|(${NUMBER})(px|rem|em))$`, 'i');
+const SHADOW_LENGTH_RE = new RegExp(String.raw`^(?:0|[+-]?(?:\d+\.?\d*|\.\d+)px)$`, 'i');
+const FONT_STACK_RE = /^[A-Za-z0-9 ,'"._-]+$/;
+const FONT_FAMILY_RE = /^[A-Za-z0-9 ._-]{1,64}$/;
+
+/**
+ * A colour as a host's computed style writes it: hex, rgb() and hsl() (with or without alpha), hwb(), the lab and lch
+ * families, color() in a named space, or `transparent`. Nothing that refers to another value (var(), url(),
+ * currentcolor) and no nested function.
+ */
+export function isLookColor(value: string): boolean {
+  return value.toLowerCase() === 'transparent' || HEX_RE.test(value) || COLOR_FUNCTION_RE.test(value) || COLOR_SPACE_RE.test(value);
+}
+
+/** A radius: 0, up to 64px, or up to 4rem or 4em. */
+export function isLookLength(value: string): boolean {
+  const m = LENGTH_RE.exec(value);
+  if (!m) return false;
+  if (m[1] === undefined) return true;
+  const n = Number(m[1]);
+  return n >= 0 && n <= (m[2].toLowerCase() === 'px' ? 64 : 4);
+}
+
+/** A font stack: family names (quoted or not) and generic families, separated by commas, with balanced quotes. */
+export function isLookFont(value: string): boolean {
+  if (!FONT_STACK_RE.test(value)) return false;
+  return (value.match(/'/g)?.length ?? 0) % 2 === 0 && (value.match(/"/g)?.length ?? 0) % 2 === 0;
+}
+
+/** `text` split where `separator` matches outside parentheses; null when the parentheses do not balance. */
+function splitTopLevel(text: string, separator: RegExp): string[] | null {
+  const parts: string[] = [];
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c === '(') depth++;
+    else if (c === ')') {
+      if (--depth < 0) return null;
+    } else if (depth === 0 && separator.test(c)) {
+      parts.push(text.slice(start, i));
+      start = i + 1;
+    }
+  }
+  if (depth !== 0) return null;
+  parts.push(text.slice(start));
+  return parts.map((p) => p.trim()).filter(Boolean);
+}
+
+/** A box shadow: `none`, or up to 4 shadows, each `inset`, 2 to 4 lengths in px and at most one colour (isLookColor). */
+export function isLookShadow(value: string): boolean {
+  if (value.toLowerCase() === 'none') return true;
+  const shadows = splitTopLevel(value, /,/);
+  if (!shadows || shadows.length < 1 || shadows.length > 4) return false;
+  return shadows.every((shadow) => {
+    const parts = splitTopLevel(shadow, /\s/);
+    if (!parts) return false;
+    let lengths = 0;
+    let colours = 0;
+    let inset = 0;
+    for (const part of parts) {
+      if (part.toLowerCase() === 'inset') inset++;
+      else if (SHADOW_LENGTH_RE.test(part)) lengths++;
+      else if (isLookColor(part)) colours++;
+      else return false;
+    }
+    return lengths >= 2 && lengths <= 4 && colours <= 1 && inset <= 1;
+  });
+}
+
+const LOOK_VALUE: Record<(typeof LOOK_TOKENS)[LookToken], (value: string) => boolean> = {
+  color: isLookColor,
+  length: isLookLength,
+  shadow: isLookShadow,
+  font: isLookFont,
+};
+
+/** A font of a look, or null: a family name, and a woff2 or woff URL with nothing a CSS url() would need escaped. */
+function readFont(value: unknown): HostFont | null {
+  const r = record(value);
+  if (!r || typeof r.family !== 'string' || !FONT_FAMILY_RE.test(r.family.trim())) return null;
+  if (typeof r.url !== 'string' || r.url.length > LIMITS.url || !/^[^\s'"()\\]+$/.test(r.url)) return null;
+  if (!/\.woff2?(?:[?#]|$)/i.test(r.url)) return null;
+  const font: HostFont = { family: r.family.trim(), url: r.url };
+  if (r.weight !== undefined) {
+    if (typeof r.weight !== 'string' || !/^\d{1,3}(?: \d{1,3})?$/.test(r.weight)) return null;
+    font.weight = r.weight;
+  }
+  if (r.style !== undefined) {
+    if (r.style !== 'normal' && r.style !== 'italic') return null;
+    font.style = r.style;
+  }
+  return font;
+}
+
+/**
+ * A host's look (the welcome's `look`, a ui.look event's data), or null when it is not one: a theme and an object of
+ * tokens. Each token is checked against its kind (LOOK_TOKENS); one that fails, or that this version does not know, is
+ * left out, and the client keeps its own value for it. A font that is not one is left out.
+ */
+export function parseLook(value: unknown): HostLook | null {
+  const r = record(value);
+  if (!r || (r.theme !== 'light' && r.theme !== 'dark')) return null;
+  const t = record(r.tokens);
+  if (!t) return null;
+  const tokens: Partial<Record<LookToken, string>> = {};
+  for (const [name, kind] of Object.entries(LOOK_TOKENS) as [LookToken, (typeof LOOK_TOKENS)[LookToken]][]) {
+    const raw = t[name];
+    if (typeof raw !== 'string') continue;
+    const text = raw.trim();
+    if (text && text.length <= LIMITS.lookValue && LOOK_VALUE[kind](text)) tokens[name] = text;
+  }
+  const look: HostLook = { theme: r.theme, tokens };
+  if (Array.isArray(r.fonts)) {
+    const fonts = r.fonts
+      .slice(0, LIMITS.lookFonts)
+      .map(readFont)
+      .filter((f): f is HostFont => f !== null);
+    if (fonts.length) look.fonts = fonts;
+  }
+  return look;
+}
+
+/** Simple or Pro (the welcome's `mode`, a ui.mode event's `data.mode`), or null. */
+export function parseUiMode(value: unknown): UiMode | null {
+  return value === 'simple' || value === 'pro' ? value : null;
+}
+
+const MATERIAL_SOURCES: readonly MaterialSource[] = ['spool', 'loaded', 'heaters', 'table'];
+
+/** A temperature in °C, rounded, from 0 to `max`; null for none or anything else. */
+const temperature = (value: unknown, max: number): number | null =>
+  typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= max ? Math.round(value) : null;
+
+/** A material as the host describes it, or null when it is not one (no name, an unknown source). */
+export function parseHostMaterial(value: unknown): HostMaterial | null {
+  const r = record(value);
+  if (!r) return null;
+  const name = displayText(r.name);
+  if (!name || !MATERIAL_SOURCES.includes(r.source as MaterialSource)) return null;
+  const colour = typeof r.colour === 'string' && /^#?[0-9a-f]{6}$/i.test(r.colour.trim()) ? `#${r.colour.trim().replace(/^#/, '').toUpperCase()}` : null;
+  const material: HostMaterial = {
+    name,
+    type: displayText(r.type, 32) || null,
+    colour,
+    nozzle: temperature(r.nozzle, 500),
+    bed: temperature(r.bed, 200),
+    source: r.source as MaterialSource,
+  };
+  if (typeof r.remaining === 'number' && Number.isFinite(r.remaining) && r.remaining >= 0) material.remaining = Math.round(r.remaining);
+  return material;
+}
+
+/** printer.setup's data, or null when it is not an object. A loaded material that is not one reads as none. */
+export function parseHostSetup(value: unknown): HostSetup | null {
+  const r = record(value);
+  if (!r) return null;
+  const materials = Array.isArray(r.materials)
+    ? r.materials
+        .slice(0, LIMITS.materials)
+        .map(parseHostMaterial)
+        .filter((m): m is HostMaterial => m !== null)
+    : [];
+  return { material: parseHostMaterial(r.material), materials };
 }
 
 // ---------------------------------------------------------------------------

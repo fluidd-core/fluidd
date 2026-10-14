@@ -142,7 +142,9 @@ const printerRoutes: Array<RouteConfig> = [
     beforeEnter: defaultRouteConfig.beforeEnter,
     meta: {
       printerIndependent: true,
-      keepOnPrinterSwitch: true
+      keepOnPrinterSwitch: true,
+      // The printer's page all the same: the rail and the E-STOP stay (KAN-511).
+      frame: 'printer'
     }
   },
   {
@@ -342,6 +344,8 @@ declare module 'vue-router' {
     printerIndependent?: boolean
     /** A printer switch (appInit) leaves this route where it is instead of going to the dashboard. */
     keepOnPrinterSwitch?: boolean
+    /** 'printer': drawn as the printer's page (the rail, the E-STOP) though it works without one. */
+    frame?: 'printer'
   }
 }
 

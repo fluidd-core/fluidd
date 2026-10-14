@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Vendored from @muon3d/printer-client 0.1.0 (src/bridge/host.ts), Copyright 2026 Muon 3D
+// Vendored from @muon3d/printer-client 0.2.0 (src/bridge/host.ts), Copyright 2026 Muon 3D
 // Technologies Limited, under the Apache License 2.0 (vendor/printer-client/LICENSE and NOTICE). Changed for
 // Fluidd by tools/vendor-printer-client.cjs: relative imports without ".ts"; Object.hasOwn as hasOwnProperty.call.
 // The host's side of printer-bridge/1 (protocol.ts), without a framework: the page that frames a printer client (Fluidd's
@@ -37,6 +37,11 @@
 //   keeps a history) the first job after the one before the start, so a later print of the same name from the host's
 //   own file list is not the frame's to cancel.
 // - Viewers never upload or print; a printer the host lists offline answers `offline`.
+// - The host's UI (protocol.ts, the file comment), each optional: given a `look`, the helper grants ui.look, puts the
+//   look in the welcome and sends each setLook() as ui.look (and as ui.theme, for a client that predates looks); given
+//   a `mode`, ui.mode the same way; given `setup`, printer.setup: the selected printer's setup after the welcome, after
+//   each printer.changed, and again on setupChanged(). `clientFeatures` is what the welcomed hello listed ([] from a
+//   client that predates them), for a host that draws its page differently around a client that uses its look.
 //
 // An adapter's error reaches the frame as it is only when it is a PrinterError (errors/kinds.ts), so a host that maps
 // its printer's answers with errors/parse.ts passes the printer's own words through. Any other error (a fetch's, a
@@ -61,12 +66,15 @@ import {
   type BridgeObjects,
   type BridgePrinter,
   type Density,
+  type HostLook,
+  type HostSetup,
   type OpRequest,
   type PlateClearAsk,
   type PrintDecision,
   type PrintMode,
   type ReadMethod,
   type Theme,
+  type UiMode,
   type UploadStep,
   type Welcome,
 } from './protocol';
@@ -149,10 +157,19 @@ export interface BridgeHostOptions {
   /** The host's name and version, for the client's logs. */
   host: string;
   hostVersion: string;
-  /** Default: every capability of version 1. */
+  /**
+   * Default: every capability of version 1, with ui.look, ui.mode and printer.setup for the options below that are
+   * given. Given, the list is exactly what the welcome grants.
+   */
   capabilities?: readonly string[];
   theme: Theme;
   density?: Density;
+  /** The host's look (ui.look): the client draws itself as a part of the host's page. */
+  look?: HostLook;
+  /** The host's Simple or Pro (ui.mode). */
+  mode?: UiMode;
+  /** The setup of printer `key` (printer.setup): what it has loaded and the host's material table; null for none. */
+  setup?: (key: string) => HostSetup | null;
   adapter: HostAdapter;
   /** The client's slicer.state events (Fluidd's leave prompt reads `dirty`). */
   onState?: (state: Record<string, unknown>) => void;
@@ -170,8 +187,16 @@ export interface BridgeHost {
   gcode(key: string, lines: readonly string[]): void;
   setTheme(theme: Theme): void;
   setDensity(density: Density): void;
+  /** The host's look changed (its theme too): ui.look, then ui.theme. Granted only when created with a look. */
+  setLook(look: HostLook): void;
+  /** The host's Simple or Pro changed: ui.mode. Granted only when created with a mode. */
+  setMode(mode: UiMode): void;
+  /** The selected printer's setup changed (a spool, the heaters, the table): printer.setup, read again. */
+  setupChanged(): void;
   /** Whether a frame has been welcomed (and not closed since). */
   readonly connected: boolean;
+  /** The features the welcomed client's hello listed; [] before a welcome and from a client that lists none. */
+  readonly clientFeatures: readonly string[];
   close(): void;
 }
 
@@ -285,6 +310,8 @@ interface Session {
   started: Map<string, Started>;
   running: Map<number, Run>;
   watch: { printer: string; objects: BridgeObjects; stop: () => void; pending: HostStatus | null; eventtime: number | null; timer: unknown; last: number } | null;
+  /** What the welcomed hello listed (protocol.ts readFeatures). */
+  features: readonly string[];
 }
 
 const entry = (key: string, path: string) => `${key}\n${path.replace(/^\/+/, '')}`;
@@ -295,7 +322,14 @@ const entry = (key: string, path: string) => `${key}\n${path.replace(/^\/+/, '')
  */
 export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
   const { frame, target, adapter } = options;
-  const capabilities = [...(options.capabilities ?? CAPABILITIES_V1)];
+  const capabilities = [
+    ...(options.capabilities ?? [
+      ...CAPABILITIES_V1,
+      ...(options.look ? ['ui.look'] : []),
+      ...(options.mode ? ['ui.mode'] : []),
+      ...(options.setup ? ['printer.setup'] : []),
+    ]),
+  ];
   const now = options.now ?? (() => Date.now());
   const setTimer = options.setTimer ?? ((fn, ms) => setTimeout(fn, ms));
   const clearTimer = options.clearTimer ?? ((h) => clearTimeout(h as ReturnType<typeof setTimeout>));
@@ -303,6 +337,8 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
   const log = options.log ?? (() => {});
   let theme = options.theme;
   let density = options.density;
+  let look = options.look ?? null;
+  let mode = options.mode ?? null;
   let session: Session | null = null;
   let closed = false;
 
@@ -314,6 +350,20 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
     }
   };
   const event = (s: Session, name: string, printer: string | null, data: unknown) => post(s, { v: 1, event: name, printer, data });
+
+  /** printer.setup of the selected printer, when the session was granted it and the host has one. */
+  const sendSetup = (s: Session) => {
+    if (!s.granted.has('printer.setup') || !options.setup) return;
+    const key = adapter.selected()?.key;
+    if (!key) return;
+    let setup: HostSetup | null = null;
+    try {
+      setup = options.setup(key);
+    } catch (err) {
+      return log({ kind: 'ignored', why: `the host's setup failed: ${err instanceof Error ? err.message : String(err)}` });
+    }
+    if (setup) event(s, 'printer.setup', key, setup);
+  };
 
   const endSession = (s: Session) => {
     for (const run of s.running.values()) run.abort.abort(CANCELLED);
@@ -352,6 +402,7 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
       started: new Map(),
       running: new Map(),
       watch: null,
+      features: hello.features ?? [],
     };
     session = s;
     channel.port1.onmessage = (m: MessageEvent) => onPortMessage(s, m.data);
@@ -365,9 +416,13 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
       capabilities: [...capabilities],
       theme,
       ...(density ? { density } : {}),
+      ...(look && s.granted.has('ui.look') ? { look } : {}),
+      ...(mode && s.granted.has('ui.mode') ? { mode } : {}),
     };
     (e.source as { postMessage(message: unknown, targetOrigin: string, transfer: unknown[]): void }).postMessage(welcome, frame.origin, [channel.port2]);
     log({ kind: 'welcome', nonce: hello.nonce, version });
+    // Queued on the port behind the welcome: the client reads it once it has the port.
+    sendSetup(s);
   };
   target.addEventListener('message', onWindowMessage);
 
@@ -660,6 +715,11 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
     answer(s, 'status.watch', id, key, { status: pick(snapshot.status, objects) ?? {}, eventtime: snapshot.eventtime });
   };
 
+  const setTheme = (next: Theme) => {
+    theme = next;
+    if (session && !closed) event(session, 'ui.theme', null, { theme: next });
+  };
+
   return {
     printerChanged() {
       const s = session;
@@ -669,6 +729,7 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
       // First the news, then the ends of what can no longer run (their failures follow it on the port): everything of
       // the old printer, and the writes the same printer no longer takes (watch-only, offline) that it has not had yet.
       if (s.granted.has('printer')) event(s, 'printer.changed', key, { printer: next });
+      sendSetup(s);
       if (s.watch && s.watch.printer !== key) stopWatch(s);
       const refusal = next ? writeRefusal(next) : null;
       for (const run of s.running.values()) {
@@ -681,16 +742,29 @@ export function createBridgeHost(options: BridgeHostOptions): BridgeHost {
       if (!s || closed || !s.granted.has('gcode') || adapter.selected()?.key !== key) return;
       for (let i = 0; i < lines.length; i += LIMITS.lines) event(s, 'printer.gcode', key, { lines: lines.slice(i, i + LIMITS.lines).map((l) => String(l).slice(0, LIMITS.line)) });
     },
-    setTheme(next) {
-      theme = next;
-      if (session && !closed) event(session, 'ui.theme', null, { theme: next });
-    },
+    setTheme,
     setDensity(next) {
       density = next;
       if (session && !closed) event(session, 'ui.density', null, { density: next });
     },
+    setLook(next) {
+      look = next;
+      if (session && !closed && session.granted.has('ui.look')) event(session, 'ui.look', null, next);
+      // A client that predates looks still follows the theme.
+      if (next.theme !== theme) setTheme(next.theme);
+    },
+    setMode(next) {
+      mode = next;
+      if (session && !closed && session.granted.has('ui.mode')) event(session, 'ui.mode', null, { mode: next });
+    },
+    setupChanged() {
+      if (session && !closed) sendSetup(session);
+    },
     get connected() {
       return session !== null && !closed;
+    },
+    get clientFeatures() {
+      return session && !closed ? session.features : [];
     },
     close() {
       if (closed) return;

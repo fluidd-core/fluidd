@@ -34,9 +34,14 @@ export default class FrameMixin extends Mixins(StateMixin) {
     }
   }
 
-  /** A page of one printer, which the rail and the E-STOP belong to. */
+  /**
+   * A page of one printer, which the rail and the E-STOP belong to. A page
+   * that needs no printer to work (Slice) can still be drawn as the
+   * printer's, with meta.frame 'printer'.
+   */
   get printerFrame (): boolean {
-    return !!this.$route.params.printer && this.$route.meta?.printerIndependent !== true
+    if (!this.$route.params.printer) return false
+    return this.$route.meta?.frame === 'printer' || this.$route.meta?.printerIndependent !== true
   }
 
   /** The page without its printer: /boxwood-367a/history is /history. */
