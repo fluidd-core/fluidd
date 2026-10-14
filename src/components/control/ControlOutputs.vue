@@ -57,11 +57,20 @@
         <span class="crow__name">
           {{ sensor.prettyName }}
           <span class="crow__sub">· {{ !sensor.enabled ? 'off' : sensor.filament_detected ? 'filament in' : 'no filament' }}</span>
+          <span
+            v-if="sensor.role === 'loads'"
+            class="outs__why"
+          >Loads filament automatically; always on</span>
         </span>
+        <span
+          v-if="sensor.role === 'loads' && sensor.enabled"
+          class="outs__state"
+        >On</span>
         <toggle-switch
+          v-else
           :value="sensor.enabled"
           :label="`${sensor.prettyName} on`"
-          :disabled="!klippyReady"
+          :disabled="!klippyReady || (sensor.enabled && sensor.role !== 'runout')"
           @input="setSensor(sensor.name, $event)"
         />
       </div>
@@ -109,7 +118,16 @@ import { Component, Mixins } from 'vue-property-decorator'
 import ControlMixin from '@/mixins/control'
 import { SocketActions } from '@/api/socketActions'
 import type { Endstop, Led, OutputPin, Probe, RunoutSensor } from '@/store/printer/types'
-import { ledCommand, ledPercent, pinCommand, pinPercent, sensorCommand } from '@/services/control/model'
+import {
+  filamentSensorRole,
+  ledCommand,
+  ledPercent,
+  pinCommand,
+  pinPercent,
+  sensorCommand,
+  type FilamentSensorRole,
+  type SensorConfigFile
+} from '@/services/control/model'
 import ControlCard from './ControlCard.vue'
 import RangeSlider from './RangeSlider.vue'
 import ToggleSwitch from './ToggleSwitch.vue'
@@ -123,10 +141,13 @@ interface Output {
   led?: Led;
 }
 
+type Sensor = RunoutSensor & { prettyName: string; role: FilamentSensorRole }
+
 /**
  * Pro's outputs and sensors: the output pins and LEDs that aren't the
  * lights (Fans and lights has those), the filament sensors with their
- * on/off, and the endstops, read when asked.
+ * on/off (none for a sensor that loads filament), and the endstops, read
+ * when asked.
  */
 @Component({ components: { ControlCard, RangeSlider, ToggleSwitch } })
 export default class ControlOutputs extends Mixins(ControlMixin) {
@@ -145,12 +166,20 @@ export default class ControlOutputs extends Mixins(ControlMixin) {
     else if (out.led) this.sendGcode(ledCommand(out.led.name, percent))
   }
 
-  get sensors (): Array<RunoutSensor & { prettyName: string }> {
-    return (this.$store.getters['printer/getRunoutSensors'] as Array<RunoutSensor & { prettyName: string }>) ?? []
+  get configfile (): SensorConfigFile | undefined {
+    return this.$store.state.printer.printer.configfile
   }
 
+  /** Each sensor with what it is for: one that loads filament has no off. */
+  get sensors (): Sensor[] {
+    return ((this.$store.getters['printer/getRunoutSensors'] as Array<RunoutSensor & { prettyName: string }>) ?? [])
+      .map(sensor => ({ ...sensor, role: filamentSensorRole(this.configfile, sensor.name) }))
+  }
+
+  /** Reads the printer's settings as they are now, so an off is refused however this is called. */
   setSensor (name: string, enabled: boolean) {
-    this.sendGcode(sensorCommand(name, enabled))
+    const gcode = sensorCommand(name, enabled, this.configfile)
+    if (gcode) this.sendGcode(gcode)
   }
 
   get probe (): Probe | undefined {
@@ -228,6 +257,13 @@ export default class ControlOutputs extends Mixins(ControlMixin) {
     color: var(--m3d-text-muted);
     font-size: 12px;
     font-weight: 600;
+  }
+
+  .outs__why {
+    display: block;
+    color: var(--m3d-text-muted);
+    font-size: 12px;
+    font-weight: 400;
   }
 
   .outs__state--hit {
