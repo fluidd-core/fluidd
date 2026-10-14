@@ -253,7 +253,8 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   get showPageHeader (): boolean {
     if (!this.printerFrame || this.otherPrinterRoute || this.sliceRoute) return false
     if (!(this.socketConnected && this.apiConnected)) return false
-    return !(this.isMobileViewport && ['/console', '/preview'].includes(this.currentPage))
+    // On a phone, Overview leads with the printer itself; the top bar names it.
+    return !(this.isMobileViewport && ['/', '/console', '/preview'].includes(this.currentPage))
   }
 
   get columnCount (): number {

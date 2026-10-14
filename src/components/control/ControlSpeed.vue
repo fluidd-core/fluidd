@@ -1,6 +1,6 @@
 <template>
   <control-card
-    v-if="!pro"
+    v-if="!pro || simple"
     title="Speed"
     :locked="klippyReady ? '' : 'Klipper is not ready'"
     :note="klippyReady ? 'Slow is kinder to tall or wobbly parts. Fast is rougher.' : ''"
@@ -90,7 +90,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import ControlMixin from '@/mixins/control'
 import { SPEED_PRESETS, speedName } from '@/services/control/model'
 import ControlCard from './ControlCard.vue'
@@ -106,6 +106,10 @@ type LimitKey = 'VELOCITY' | 'ACCEL' | 'SQUARE_CORNER_VELOCITY' | 'MINIMUM_CRUIS
  */
 @Component({ components: { ControlCard, SegPicker, NumberField } })
 export default class ControlSpeed extends Mixins(ControlMixin) {
+  /** Slow, Normal and Fast even with Pro on, as Overview on a phone shows them. */
+  @Prop({ type: Boolean })
+  readonly simple?: boolean
+
   get speedOptions (): SegOption[] {
     return SPEED_PRESETS.map(p => ({ value: p.percent, label: p.label, sub: `${p.percent}%` }))
   }

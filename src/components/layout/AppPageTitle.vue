@@ -5,12 +5,20 @@
   >
     <div class="app-page-header__row">
       <div class="app-page-header__titles">
-        <h1
-          class="app-page-header__title"
-          data-tid="page-title"
-        >
-          {{ title }}
-        </h1>
+        <div class="app-page-header__title-row">
+          <h1
+            class="app-page-header__title"
+            data-tid="page-title"
+          >
+            {{ title }}
+          </h1>
+          <tone-pill
+            v-if="overviewHome"
+            :tone="pillTone"
+          >
+            {{ pillText }}
+          </tone-pill>
+        </div>
         <p
           v-if="subtitle"
           class="app-page-header__subtitle"
@@ -20,6 +28,7 @@
       </div>
       <div class="app-page-header__actions">
         <control-actions v-if="currentSection && currentSection.id === 'control' && !isMobileViewport" />
+        <overview-actions v-if="overviewHome && !isMobileViewport" />
         <button
           v-if="canEditLayout"
           type="button"
@@ -60,21 +69,56 @@ import FrameMixin from '@/mixins/frame'
 import BrowserMixin from '@/mixins/browser'
 import { pageMatches, type SectionPage } from '@/router/printerSections'
 import ControlActions from '@/components/control/ControlActions.vue'
+import OverviewActions from '@/components/overview/OverviewActions.vue'
+import TonePill from '@/components/printers/TonePill.vue'
+import PrinterStatusMixin from '@/mixins/printer-status'
+import { cloudState } from '@/services/muon-cloud/state'
+import { jobName } from '@/services/printers-page/model'
+import { printerNameParts } from '@/util/printer-name'
+import type { TileTone } from '@/services/printers-page/model'
 
 /**
  * A printer page's title on the left and its own actions on the right,
  * with the section's pages as tabs under it (Jobs: Jobs, Preview, History,
  * Timelapse).
  */
-@Component({ components: { ControlActions } })
-export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin) {
+@Component({ components: { ControlActions, OverviewActions, TonePill } })
+export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin, PrinterStatusMixin) {
+  /** Overview is the printer's own page: it is named by the printer, with its state beside it. */
+  get overviewHome (): boolean {
+    return this.currentSection?.id === 'overview' && this.currentPage === '/'
+  }
+
   get title (): string {
+    if (this.overviewHome) return printerNameParts(this.displayName).name
     return this.currentSection?.label ?? this.$route.name ?? ''
+  }
+
+  get pillTone (): TileTone {
+    const tones: Record<string, TileTone> = { ok: 'ok', active: 'run', warn: 'warn', fault: 'err', off: 'off' }
+    return tones[this.statusTone] ?? 'off'
+  }
+
+  get pillText (): string {
+    if (!this.socketConnected) return 'Offline'
+    if (!this.klippyReady) return 'Not ready'
+    return this.$filters.prettyCase(this.printerState || 'ready')
   }
 
   /** A line under the title, for a page that says what it holds. */
   get subtitle (): string {
     if (this.isMobileViewport) return ''
+    if (this.overviewHome) {
+      const file = this.$store.state.printer.printer.print_stats?.filename as string | undefined
+      const route = cloudState.activePrinterId ? 'Through Muon3D' : 'On this network'
+      if ((this.printerPrinting || this.printerPaused) && file) {
+        const duration = this.$store.state.printer.printer.print_stats?.total_duration as number | undefined
+        const started = duration ? new Date(Date.now() - duration * 1000) : null
+        const at = started ? ` · started ${String(started.getHours()).padStart(2, '0')}:${String(started.getMinutes()).padStart(2, '0')}` : ''
+        return `${jobName(file)}${at}`
+      }
+      return route
+    }
     if (this.currentSection?.id === 'control') {
       return this.pro
         ? 'Pro: the exact values, in the same places as Simple, with more below.'
@@ -91,10 +135,10 @@ export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin) {
     return pageMatches(this.currentPage, page.path)
   }
 
-  /** The overview and its charts are the pages laid out from cards. */
+  /** The charts page is laid out from cards; Edit layout arranges them. */
   get canEditLayout (): boolean {
-    return !this.isMobileViewport && !this.$store.state.config.layoutMode &&
-      ['/', '/diagnostics'].includes(this.currentPage)
+    if (this.isMobileViewport || this.$store.state.config.layoutMode) return false
+    return this.currentPage === '/diagnostics'
   }
 
   editLayout () {
@@ -123,6 +167,13 @@ export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin) {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    min-width: 0;
+  }
+
+  .app-page-header__title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     min-width: 0;
   }
 

@@ -6,7 +6,7 @@ import { PRINTER_PAGE_PATHS } from './printerPagePaths'
 import { ROUTE_SLUG_PATTERN } from '@/services/printer-pages/slug'
 
 // Views
-import Dashboard from '@/views/Dashboard.vue'
+import Overview from '@/views/Overview.vue'
 import Console from '@/views/Console.vue'
 import GcodePreview from '@/views/GcodePreview.vue'
 import Jobs from '@/views/Jobs.vue'
@@ -65,7 +65,7 @@ const printerRoutes: Array<RouteConfig> = [
   {
     path: P,
     name: 'Dashboard',
-    component: Dashboard,
+    component: Overview,
     ...defaultRouteConfig
   },
   {
