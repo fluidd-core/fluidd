@@ -3,7 +3,7 @@ import StateMixin from './state'
 import type { WebcamConfig } from '@/store/webcams/types'
 import { proMode } from '@/services/pro-mode'
 import { slicerPresence } from '@/services/slicer-bridge/slicerUrl'
-import { activeSlug } from '@/services/printer-pages'
+import { activeSlug, isForeignSlug } from '@/services/printer-pages'
 import { pageOfRoute, scopedPath } from '@/router/printerPagePaths'
 import {
   sectionOf,
@@ -23,6 +23,9 @@ export default class FrameMixin extends Mixins(StateMixin) {
   }
 
   get sectionContext (): SectionContext {
+    if (isForeignSlug(this.$route.params.printer)) {
+      return { pro: false, slicer: false, camera: null, history: false, timelapse: false, diagnostics: false, foreign: true }
+    }
     const cameras = this.$store.getters['webcams/getVisibleWebcams'] as WebcamConfig[]
     return {
       pro: proMode.on,
@@ -30,7 +33,8 @@ export default class FrameMixin extends Mixins(StateMixin) {
       camera: cameras.length ? encodeURI(cameras[0].uid) : null,
       history: this.$store.getters['server/componentSupport']('history') as boolean,
       timelapse: this.$store.getters['server/componentSupport']('timelapse') as boolean,
-      diagnostics: this.$store.state.config.uiSettings.general.enableDiagnostics as boolean
+      diagnostics: this.$store.state.config.uiSettings.general.enableDiagnostics as boolean,
+      foreign: isForeignSlug(this.$route.params.printer)
     }
   }
 
@@ -58,11 +62,11 @@ export default class FrameMixin extends Mixins(StateMixin) {
   }
 
   sectionTo (section: Section): string {
-    return scopedPath(sectionPath(section, this.sectionContext), activeSlug())
+    return scopedPath(sectionPath(section, this.sectionContext), this.sectionContext.foreign ? this.$route.params.printer : activeSlug())
   }
 
   pageTo (page: SectionPage): string {
-    return scopedPath(page.path, activeSlug())
+    return scopedPath(page.path, this.sectionContext.foreign ? this.$route.params.printer : activeSlug())
   }
 
   pagesOf (section: Section): SectionPage[] {

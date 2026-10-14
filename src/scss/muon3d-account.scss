@@ -1,0 +1,702 @@
+/*
+ * The Account pages' look (KAN-532, the "Muon3D Account" canvas of 13 Oct):
+ * the two panes, a setting's row, the overview's tiles, notes, and the pages
+ * that stand alone (signing out). Loaded with those pages, never in the
+ * first load. Global, because their dialogs mount outside the page. Colours
+ * come from the --m3d-* tokens only, so both themes and both page styles
+ * follow; the buttons, pills, fields and surfaces are the Library's
+ * (muon3d-library.scss).
+ */
+
+.acct-page {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  max-width: 1180px;
+  padding: 6px 12px 40px;
+  color: var(--m3d-text);
+}
+
+.acct-page--phone {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  padding: 4px 0 24px;
+}
+
+// The sections, as Settings lists its own.
+.acct-nav {
+  position: sticky;
+  top: 84px;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 2px;
+  width: 228px;
+
+  .lib-caps {
+    padding: 4px 10px 6px;
+  }
+}
+
+.acct-page--phone .acct-nav {
+  position: static;
+  width: auto;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--m3d-surface);
+}
+
+.acct-nav__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--m3d-text-muted) !important;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+
+  .frame-icon {
+    color: var(--m3d-text-subtle);
+  }
+
+  &:hover {
+    background: var(--m3d-hover);
+  }
+}
+
+.acct-page--phone .acct-nav__item {
+  min-height: 44px;
+}
+
+.acct-nav__item--on {
+  background: var(--m3d-surface);
+  color: var(--m3d-text) !important;
+
+  .frame-icon {
+    color: var(--m3d-accent);
+  }
+}
+
+.acct-page--phone .acct-nav__item--on {
+  background: transparent;
+}
+
+.acct-nav__item--danger,
+.acct-nav__item--danger .frame-icon {
+  color: var(--m3d-danger) !important;
+}
+
+.acct-nav__label {
+  flex: 1 1 auto;
+}
+
+.acct-nav__rule {
+  height: 1px;
+  margin: 8px 6px;
+  background: var(--m3d-border);
+}
+
+.acct-pane {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  max-width: 860px;
+}
+
+// One section's page, inside the pane.
+.acct-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.acct-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--m3d-text-muted) !important;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.acct-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 0;
+    color: var(--m3d-text-muted);
+    font-size: 14px;
+  }
+}
+
+.acct-head--row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+
+  // The words wrap before the button does.
+  > .acct-head {
+    flex: 1 1 320px;
+    min-width: 0;
+  }
+
+  > .lib-btn {
+    flex: none;
+  }
+}
+
+// A card of rows: words on the left, the control on the right.
+.acct-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0 18px;
+}
+
+.acct-card--pad {
+  gap: 12px;
+  padding: 16px 18px;
+}
+
+.acct-card__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 0 6px;
+
+  h2,
+  h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+}
+
+.acct-card__aside {
+  color: var(--m3d-text-subtle);
+  font-size: 12px;
+}
+
+.acct-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 60px;
+  padding: 14px 0;
+
+  & + & {
+    border-top: 1px solid var(--m3d-border);
+  }
+}
+
+.acct-row__label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+
+  b {
+    font-weight: 600;
+  }
+
+  span {
+    color: var(--m3d-text-muted);
+    font-size: 13px;
+  }
+}
+
+.acct-row__control {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+}
+
+.acct-list > * + * {
+  border-top: 1px solid var(--m3d-border);
+}
+
+.acct-lrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 8px 0;
+  font-size: 13px;
+}
+
+.acct-lrow__text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.acct-lrow__time {
+  color: var(--m3d-text-subtle);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+// Notes: what a page needs the person to know.
+.acct-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 9px;
+  background: var(--m3d-surface-2);
+  color: var(--m3d-text-muted);
+  font-size: 13px;
+
+  .frame-icon {
+    flex: none;
+    margin-top: 1px;
+  }
+
+  b {
+    color: var(--m3d-text);
+    font-weight: 600;
+  }
+}
+
+.acct-note--info {
+  background: var(--m3d-accent-soft);
+  color: var(--m3d-text);
+
+  .frame-icon {
+    color: var(--m3d-accent);
+  }
+}
+
+.acct-note--good {
+  background: color-mix(in srgb, var(--m3d-success) 14%, transparent);
+  color: var(--m3d-text);
+
+  .frame-icon {
+    color: var(--m3d-success);
+  }
+}
+
+.acct-note--warn {
+  background: color-mix(in srgb, var(--m3d-warning) 14%, transparent);
+  color: var(--m3d-text);
+
+  .frame-icon {
+    color: var(--m3d-warning);
+  }
+}
+
+.acct-note--bad {
+  background: color-mix(in srgb, var(--m3d-danger) 14%, transparent);
+  color: var(--m3d-text);
+
+  .frame-icon {
+    color: var(--m3d-danger);
+  }
+}
+
+.acct-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--m3d-success);
+}
+
+.acct-dot--fair {
+  background: var(--m3d-warning);
+}
+
+.acct-dot--weak {
+  background: var(--m3d-danger);
+}
+
+.acct-avatar {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--m3d-accent) 32%, var(--m3d-surface-2));
+  color: var(--m3d-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.acct-avatar--lg {
+  width: 48px;
+  height: 48px;
+  font-size: 19px;
+}
+
+.acct-avatar--xl {
+  width: 72px;
+  height: 72px;
+  font-size: 28px;
+}
+
+.acct-icon-box {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--m3d-surface-2);
+  color: var(--m3d-text-muted);
+}
+
+.acct-muted {
+  color: var(--m3d-text-muted);
+}
+
+.acct-subtle {
+  color: var(--m3d-text-subtle);
+}
+
+.acct-link {
+  color: var(--m3d-accent) !important;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.acct-soon {
+  color: var(--m3d-text-subtle);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.acct-error {
+  margin: 0;
+  color: var(--m3d-danger);
+  font-size: 13px;
+}
+
+.acct-grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.acct-page--phone .acct-grid3,
+.acct-grid2 {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.acct-grid2 {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 900px) {
+  .acct-grid2 {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+// The overview's tiles.
+.acct-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 150px;
+  padding: 16px 18px;
+  color: var(--m3d-text) !important;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.acct-page--phone .acct-tile {
+  min-height: 0;
+}
+
+a.acct-tile:hover {
+  border-color: var(--m3d-border-strong);
+}
+
+.acct-tile__top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+
+  > .frame-icon:first-child {
+    color: var(--m3d-accent);
+  }
+}
+
+.acct-tile__go {
+  margin-left: auto;
+  color: var(--m3d-text-subtle);
+}
+
+.acct-tile__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// The person, on the overview.
+.acct-you {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+}
+
+.acct-you__who {
+  display: flex;
+  flex: 1 1 240px;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+
+  h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+}
+
+.acct-you__line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--m3d-text-muted);
+  font-size: 14px;
+}
+
+.acct-you__since {
+  color: var(--m3d-text-subtle);
+  font-size: 13px;
+}
+
+// A field with its label and a line under it.
+.acct-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.acct-field__label {
+  color: var(--m3d-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.acct-field__note {
+  color: var(--m3d-text-subtle);
+  font-size: 12px;
+}
+
+.acct-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+// A page of its own, with no printer chrome: signing out, signed out, and
+// the pages the console's emails open (KAN-532 §2.6).
+.acct-solo {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--m3d-bg);
+  color: var(--m3d-text);
+}
+
+.acct-solo__top {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 64px;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--m3d-border);
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+.acct-solo__links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.acct-solo__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 56px 16px 40px;
+}
+
+.acct-solo__box {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: min(520px, 100%);
+}
+
+// A choice of two or more, as a card each (sign out of this browser, or everywhere).
+.acct-choice {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 14px 16px;
+  border: 1px solid var(--m3d-border);
+  border-radius: 10px;
+  background: var(--m3d-surface);
+  cursor: pointer;
+
+  b {
+    font-weight: 600;
+  }
+}
+
+.acct-choice--on {
+  border-color: var(--m3d-accent-border);
+  background: var(--m3d-accent-soft);
+}
+
+.acct-radio,
+.acct-checkbox {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  border: 1.5px solid var(--m3d-border-strong);
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--m3d-focus-ring, var(--m3d-accent));
+    outline-offset: 2px;
+  }
+}
+
+.acct-radio {
+  border-radius: 50%;
+
+  &:checked {
+    border-color: var(--m3d-accent);
+    background: radial-gradient(circle, var(--m3d-accent) 0 4.5px, transparent 5px);
+  }
+}
+
+.acct-checkbox {
+  border-radius: 5px;
+
+  &:checked {
+    border-color: var(--m3d-accent);
+    background: var(--m3d-accent);
+    box-shadow: inset 0 0 0 3px var(--m3d-surface);
+  }
+}
+
+@media (max-width: 600px) {
+  .acct-solo__top {
+    padding: 0 16px;
+  }
+
+  .acct-solo__main {
+    padding-top: 32px;
+  }
+}
+
+// An empty section (the canvas's "Empty states"): a dashed box saying what's
+// missing and the one or two things to do about it.
+.acct-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 18px;
+  padding: 40px 24px;
+  border: 1px dashed var(--m3d-border-strong);
+  border-radius: 12px;
+  text-align: center;
+
+  h3 {
+    margin: 6px 0 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  p {
+    max-width: 380px;
+    margin: 0;
+    color: var(--m3d-text-muted);
+    font-size: 13.5px;
+  }
+
+  > .lib-btn,
+  > .acct-actions {
+    margin-top: 6px;
+  }
+}
+
+.acct-empty__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: var(--m3d-accent-soft);
+  color: var(--m3d-accent);
+}
+
+.acct-empty__icon--good {
+  background: color-mix(in srgb, var(--m3d-success) 16%, transparent);
+  color: var(--m3d-success);
+}
+
+.acct-actions--center {
+  justify-content: center;
+}

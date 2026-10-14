@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Vendored from @muon3d/printer-client 0.3.0 (src/errors/kinds.ts), Copyright 2026 Muon 3D
+// Vendored from @muon3d/printer-client 0.4.0 (src/errors/kinds.ts), Copyright 2026 Muon 3D
 // Technologies Limited, under the Apache License 2.0 (vendor/printer-client/LICENSE and NOTICE). Changed for
 // Fluidd by tools/vendor-printer-client.cjs: relative imports without ".ts"; Object.hasOwn as hasOwnProperty.call.
 // The one error shape every route reports (the printer's own origin, the relay, a host over the bridge): a kind a
@@ -22,6 +22,8 @@ export const ERROR_KINDS = [
   'printer', // any other error the printer answered with; `detail` is its message
   'signed-out', // the account's session has ended
   'console', // any other error of the account service
+  'not-signed-in', // over the bridge (0.4.0): the host's Library needs an account, and nobody is signed in
+  'quota', // over the bridge (0.4.0): the Library has no room for the save; the message says how much is used of what
   'printer-changed', // over the bridge: the request named a printer the host no longer has selected
   'not-allowed', // over the bridge: the host does not allow the request
   'unsupported', // over the bridge: the host does not know the request

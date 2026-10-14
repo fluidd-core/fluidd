@@ -83,7 +83,7 @@ import BrowserMixin from '@/mixins/browser'
 import { proMode } from '@/services/pro-mode'
 import { activeSlug } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
-import { settingsSectionFor, visibleSettingsSections, type SettingsSection } from '@/services/settings/sections'
+import { MOVED_TO_ACCOUNT, settingsSectionFor, visibleSettingsSections, type SettingsSection } from '@/services/settings/sections'
 import { printerNameParts } from '@/util/printer-name'
 
 import MacroSettings from '@/components/settings/macros/MacroSettings.vue'
@@ -146,6 +146,12 @@ const SECTION_COMPONENTS = ['authorization', 'update_manager', 'timelapse', 'spo
   }
 })
 export default class Settings extends Mixins(StateMixin, BrowserMixin) {
+  created () {
+    // Settings › Library moved to the account (KAN-532): an old address goes there.
+    const moved = MOVED_TO_ACCOUNT[this.$route.hash.replace(/^#/, '')]
+    if (moved) this.$router.replace(scopedPath(moved, activeSlug())).catch(() => {})
+  }
+
   mounted () {
     refreshDevMode()
   }

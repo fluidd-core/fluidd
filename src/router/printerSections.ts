@@ -16,6 +16,7 @@ export interface SectionContext {
   history: boolean;
   timelapse: boolean;
   diagnostics: boolean;
+  foreign: boolean;
 }
 
 export interface SectionPage {
@@ -125,6 +126,12 @@ export const SECTIONS: Section[] = [
 /** G then P: every printer. */
 export const ALL_PRINTERS_KEY = 'p'
 
+/** G then B: your Library (KAN-521). */
+export const LIBRARY_KEY = 'b'
+
+/** G then A: your account (KAN-532). */
+export const ACCOUNT_KEY = 'a'
+
 /** Pages inside a section that have a G key of their own: G W Network, G U Software updates. */
 export const PAGE_KEYS: Array<{ key: string, label: string, path: string, hash?: string }> = [
   { key: 'w', label: 'Network', path: '/wifi' },
@@ -144,6 +151,7 @@ export function sectionOf (page: string): Section | undefined {
 
 /** The sections shown: Pro's only with Pro on, and each only where it can work. */
 export function visibleSections (c: SectionContext): Section[] {
+  if (c.foreign) return SECTIONS.filter(s => ['overview', 'jobs', 'slice', 'camera'].includes(s.id))
   return SECTIONS.filter(s => (!s.pro || c.pro) && (!s.shows || s.shows(c)))
 }
 

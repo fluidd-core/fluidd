@@ -13,6 +13,7 @@ describe('isHotspotOrigin', () => {
     '192.168.1.37',
     '10.42.0.10',
     'app.muon3d.com',
+    'control.muon3d.com',
     'localhost'
   ])('is false for a page served from %s', (hostname) => {
     expect(isHotspotOrigin(hostname)).toBe(false)

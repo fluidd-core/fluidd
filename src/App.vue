@@ -80,17 +80,19 @@
       />
 
       <template v-if="!managedConsoleRoute">
+        <keyboard-shortcuts-dialog />
+        <command-bar />
+      </template>
+      <template v-if="!managedConsoleRoute && !foreignPrinterRoute">
         <file-system-download-dialog />
         <updating-dialog />
         <spool-selection-dialog />
         <action-command-prompt-dialog />
-        <keyboard-shortcuts-dialog />
-        <command-bar />
         <job-ready-dialog />
       </template>
     </v-main>
 
-    <app-footer v-if="!managedConsoleRoute" />
+    <app-footer v-if="!managedConsoleRoute && !foreignPrinterRoute" />
 
     <app-drag-overlay
       v-if="!managedConsoleRoute"
@@ -117,7 +119,15 @@ import ActionCommandPromptDialog from './components/common/ActionCommandPromptDi
 import KeyboardShortcutsDialog from './components/common/KeyboardShortcutsDialog.vue'
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from './util/event-helpers'
 import { isManagedConsolePath } from '@/router/managedPath'
-import { activeSlug, isActiveSlug, printerPageNeedsLogin, samePageFor, stepPrinter } from '@/services/printer-pages'
+import {
+  activeSlug,
+  foreignRecordForSlug,
+  isActiveSlug,
+  isForeignSlug,
+  printerPageNeedsLogin,
+  samePageFor,
+  stepPrinter
+} from '@/services/printer-pages'
 import PrinterOpening from './components/muon-cloud/PrinterOpening.vue'
 import ConnectionBanner from './components/layout/ConnectionBanner.vue'
 import ConnectingScreen from './components/layout/ConnectingScreen.vue'
@@ -128,7 +138,7 @@ import { ACTIVE_PHASES, offlineScreen } from '@/services/updates/model'
 import { printerNameParts } from '@/util/printer-name'
 import { connectionView, type ConnectionView } from '@/services/connection/view'
 import FrameMixin from '@/mixins/frame'
-import { ALL_PRINTERS_KEY, PAGE_KEYS, sectionForKey } from '@/router/printerSections'
+import { ACCOUNT_KEY, ALL_PRINTERS_KEY, LIBRARY_KEY, PAGE_KEYS, sectionForKey } from '@/router/printerSections'
 import { scopedPath } from '@/router/printerPagePaths'
 import { setProMode } from '@/services/pro-mode'
 import { GoKeys } from '@/util/go-keys'
@@ -247,7 +257,11 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
    */
   get otherPrinterRoute (): boolean {
     const slug = this.$route.params.printer
-    return !!slug && !this.printerIndependentRoute && !isActiveSlug(slug)
+    return !!slug && !this.printerIndependentRoute && !isForeignSlug(slug) && !isActiveSlug(slug)
+  }
+
+  get foreignPrinterRoute (): boolean {
+    return isForeignSlug(this.$route.params.printer)
   }
 
   get printerIndependentRoute (): boolean {
@@ -295,6 +309,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
 
   /** The bar over every page while the printer installs an update, but on the Updating page itself. */
   get showUpdateBanner (): boolean {
+    if (this.foreignPrinterRoute) return false
     const r = updateWatch.remembered
     return !!r && ACTIVE_PHASES.includes(r.phase) && this.printerFrame && this.socketConnected &&
       this.$route.name !== 'Updating' && updateWatch.printer === (activeSlug() ?? '')
@@ -307,6 +322,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
 
   /** What the connection shows: the page, a bar over it, or a screen of its own (services/connection/view). */
   get connection (): ConnectionView {
+    if (this.foreignPrinterRoute) return { page: true, stale: false, banner: null, screen: null }
     return connectionView({
       socketConnected: this.socketConnected,
       apiConnected: this.apiConnected,
@@ -351,7 +367,8 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   // as tabs. Not the slicer, which fills the page with its own bar; on a
   // phone the console and G-code preview keep that height for the tool.
   get showPageHeader (): boolean {
-    if (!this.printerFrame || this.otherPrinterRoute || this.sliceRoute) return false
+    // The Library and the account (KAN-532) draw their own titles: they aren't the printer's sections.
+    if (!this.printerFrame || this.otherPrinterRoute || this.sliceRoute || this.$route.name?.startsWith('Library') || this.$route.name?.startsWith('Account')) return false
     // Shown with the page: while connected, and through a drop, when the page keeps its last view.
     if (!this.connection.page || this.connection.screen) return false
     // On a phone, Overview leads with the printer itself; the top bar names it.
@@ -363,6 +380,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   }
 
   get fileDropRoot () {
+    if (this.foreignPrinterRoute) return false
     return this.$route.meta?.fileDropRoot
   }
 
@@ -389,7 +407,9 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
       return `Muon3D | ${this.$route.name ?? 'Managed preview'}`
     }
 
-    const instanceName = this.$store.getters['config/getDisplayName'] as string
+    const instanceName = this.foreignPrinterRoute
+      ? foreignRecordForSlug(this.$route.params.printer)?.name ?? 'Other printer'
+      : this.$store.getters['config/getDisplayName'] as string
     const pageName = this.$route.name
 
     if (this.printerPrinting) {
@@ -699,6 +719,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     const shortcut = keyboardEventToKeyboardShortcut(event)
 
     if (shortcut === 'Ctrl+Shift+E') {
+      if (this.foreignPrinterRoute) return
       event.preventDefault()
 
       this.emergencyStop()
@@ -718,7 +739,8 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
       // The same page of the printer before or after this one.
       case '[':
       case ']': {
-        const next = this.printerFrame ? stepPrinter(activeSlug(), shortcut === ']' ? 1 : -1) : null
+        const current = this.foreignPrinterRoute ? this.$route.params.printer : activeSlug()
+        const next = this.printerFrame ? stepPrinter(current, shortcut === ']' ? 1 : -1) : null
         if (next) {
           event.preventDefault()
           this.$router.push(samePageFor(this.$route, next)).catch(() => {})
@@ -732,7 +754,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
         return
 
       case 'u':
-        if (this.printerFrame && this.socketConnected) {
+        if (!this.foreignPrinterRoute && this.printerFrame && this.socketConnected) {
           event.preventDefault()
           EventBus.bus.$emit('upload-file')
         }
@@ -746,7 +768,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
         return
     }
 
-    if (!this.klippyReady) {
+    if (this.foreignPrinterRoute || !this.klippyReady) {
       return
     }
 
@@ -784,7 +806,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     }
   }
 
-  /** G then a letter: G P every printer, G O this printer's Overview, G J its Jobs. */
+  /** G then a letter: G P every printer, G A your account, G O this printer's Overview, G J its Jobs. */
   handleGoKey (event: KeyboardEvent, shortcut: string): boolean {
     const step = this.goKeys.feed(shortcut, Date.now())
     if (!step) return false
@@ -794,11 +816,15 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     let to: string | null = null
     if (step.key === ALL_PRINTERS_KEY) {
       to = '/'
-    } else if (activeSlug()) {
+    } else if (step.key === LIBRARY_KEY) {
+      to = scopedPath('/library', activeSlug())
+    } else if (step.key === ACCOUNT_KEY) {
+      to = scopedPath('/account', activeSlug())
+    } else if (activeSlug() || this.foreignPrinterRoute) {
       const section = sectionForKey(step.key, this.sectionContext)
       const page = PAGE_KEYS.find(p => p.key === step.key)
       if (section) to = this.sectionTo(section)
-      else if (page) to = `${scopedPath(page.path, activeSlug())}${page.hash ?? ''}`
+      else if (page && !this.foreignPrinterRoute) to = `${scopedPath(page.path, activeSlug())}${page.hash ?? ''}`
     }
     if (to && to !== this.$route.fullPath) this.$router.push(to).catch(() => {})
     return true

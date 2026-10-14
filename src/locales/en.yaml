@@ -302,6 +302,7 @@ app:
       layer: Layer
       layout: Layout
       ldap: LDAP
+      loads_filament_always_on: Loads filament automatically; always on
       longest_job: Longest job
       low: Low
       manage_accounts: Manage Accounts

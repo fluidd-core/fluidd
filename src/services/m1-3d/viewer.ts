@@ -4,6 +4,8 @@ import type { Toolpath } from './toolpath'
 import type { LiveSync } from './live-sync'
 import { middleHeight, stripsLit, tapColour, tapKey, type LedStrip, type PlateTap, type ScreenState } from './live-state'
 import { Y_TOWARD_FRONT } from '@/services/machine/orientation'
+import { buildAccessories } from './accessory-parts'
+import { CROSSFADE_MS } from './accessory-motion'
 
 /**
  * The live M1 on a stage: the photoreal model, lit as its product shots
@@ -302,23 +304,28 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
   })
   const state = model.userData.state
   state.showPrint = false
-  state.showSpool = false
+  state.showSpool = true
   const { cal, printFrame } = calibrate(model, mats)
-  const bedLift = model.getObjectByName('bedLift') as THREE.Object3D
   model.userData.apply()
+
+  // The part, the lines no file drew, and the line being laid now, all in the filament's colour.
+  const partMaterial = new THREE.LineBasicMaterial({ color: 0xc00a66, transparent: true })
+  const tapMaterial = new THREE.MeshBasicMaterial({ toneMapped: false, transparent: true })
+  // The plate coming off and going back, the hose's end, the spool and the filament (accessory-parts.ts).
+  const parts = buildAccessories(model, mats, opacity => {
+    partMaterial.opacity = opacity
+    tapMaterial.opacity = opacity
+  })
   performance.mark('m1:built')
 
-  /** Hangs `object` from the plate, in the printer's millimetres. */
+  /** Hangs `object` from the plate, in the printer's millimetres: it goes where the plate goes. */
   const onPlate = <T extends THREE.Object3D>(object: T): T => {
     object.matrixAutoUpdate = false
     object.matrix.copy(printFrame)
     object.frustumCulled = false
-    bedLift.add(object)
+    parts.cargo.add(object)
     return object
   }
-
-  // The part, the lines no file drew, and the line being laid now, all in the filament's colour.
-  const partMaterial = new THREE.LineBasicMaterial({ color: 0xc00a66 })
   let print: THREE.LineSegments | null = null
   let toolpath: Toolpath | null = null
 
@@ -335,7 +342,6 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
 
   // The touches of the plate: a bead each, just under it, where the nozzle met it.
   const tapGeometry = new THREE.SphereGeometry(2.6, 18, 12)
-  const tapMaterial = new THREE.MeshBasicMaterial({ toneMapped: false })
   const tapMarks = onPlate(new THREE.InstancedMesh(tapGeometry, tapMaterial, MAX_TAPS))
   tapMarks.count = 0
   let taps: PlateTap[] = []
@@ -344,7 +350,10 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
   const tapColourOf = new THREE.Color()
 
   const camera = new THREE.PerspectiveCamera(22.4, 1, 2, 8000)
-  const box = shownBox(model)
+  // The stage makes room for the plate while it is off, beside the printer.
+  const onBox = shownBox(model)
+  const offBox = onBox.clone().union(parts.plateOffBox)
+  const box = onBox.clone()
   const target = box.getCenter(new THREE.Vector3())
   const view = { theta: VIEW.theta, phi: VIEW.phi, goalTheta: VIEW.theta, goalPhi: VIEW.phi }
   let distance = 1300
@@ -369,6 +378,10 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
     if (!width || !height) return
     camera.aspect = width / height
     camera.clearViewOffset()
+    const off = parts.plateOff()
+    box.min.lerpVectors(onBox.min, offBox.min, off)
+    box.max.lerpVectors(onBox.max, offBox.max, off)
+    box.getCenter(target)
     const f = fit(camera, box, target, direction())
     distance = f.distance
     centre = f.centre
@@ -390,6 +403,8 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
   let lastPlacement = ''
   /** What the screen and the strips last showed, so the printer's unchanged reports draw nothing. */
   let lastScreen = ''
+  /** The sync's crossfade count last drawn: with reduced motion a change is shown by fading, not moving. */
+  let lastCrossfade = -1
   let lastLeds = ''
   /** The strips' own pixels, when the printer reports them; else the light's switch alone. */
   let strips: { lit: boolean } | null = null
@@ -422,6 +437,12 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
   function follow (now: number): boolean {
     if (!sync) return false
     const f = sync.frame(now)
+    const accessories = f.accessories
+    if (accessories.crossfade !== lastCrossfade) {
+      if (lastCrossfade !== -1 && lastDraw) crossfade()
+      lastCrossfade = accessories.crossfade
+    }
+    state.showSpool = accessories.spool
     const placement = placeModel(f.pose, cal)
     const led = strips ? strips.lit : f.pose.led
     const placed = `${placement.headX.toFixed(5)},${placement.headZ.toFixed(5)},${placement.z.toFixed(5)},${led}`
@@ -437,7 +458,35 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
       nibGeometry.attributes.position.needsUpdate = true
     }
     showTrace()
-    return f.moving
+    parts.apply(accessories, f.partGone)
+    return f.moving || accessories.animating
+  }
+
+  /**
+   * Reduced motion: the stage as it was, laid over the canvas and faded out
+   * as the new state is drawn under it. Read straight after drawing, while
+   * the WebGL canvas still holds the frame.
+   */
+  function crossfade () {
+    const parent = canvas.parentElement
+    if (!parent || !width || !height) return
+    renderer.render(scene, camera)
+    const still = document.createElement('canvas')
+    still.width = canvas.width
+    still.height = canvas.height
+    still.getContext('2d')?.drawImage(canvas, 0, 0)
+    Object.assign(still.style, {
+      position: 'absolute',
+      left: `${canvas.offsetLeft}px`,
+      top: `${canvas.offsetTop}px`,
+      width: `${canvas.clientWidth}px`,
+      height: `${canvas.clientHeight}px`,
+      pointerEvents: 'none',
+      transition: `opacity ${CROSSFADE_MS}ms ease`
+    })
+    parent.insertBefore(still, canvas.nextSibling)
+    requestAnimationFrame(() => requestAnimationFrame(() => { still.style.opacity = '0' }))
+    window.setTimeout(() => still.remove(), CROSSFADE_MS + 120)
   }
 
   /** Sizes the marks: a new one swells and settles. Whether one still is. */
@@ -489,6 +538,7 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
     onFrame: null,
     follow (next) {
       sync = next
+      lastCrossfade = -1
       traceShown.trace = null
       traceAttribute = null
       invalidate()
@@ -496,8 +546,9 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
     wake: invalidate,
     setPrint (path, colour) {
       partMaterial.color.setHex(colour)
+      parts.setColour(colour)
       if (print) {
-        bedLift.remove(print)
+        parts.cargo.remove(print)
         print.geometry.dispose()
         print = null
       }

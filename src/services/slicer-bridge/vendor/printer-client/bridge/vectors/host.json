@@ -7,6 +7,7 @@
     "  {\"upload\": {\"printer\", \"name\"}, \"during\"?: {\"select\": name} | {\"cancel\": true}, \"expect\"} sends files.upload with the bytes \"G28\\nG1 X10 Y10\\n\" (size and checksum to match); during: what happens while the printer receives it.",
     "  {\"request\": {\"op\", \"params\"}, \"dialog\"?: \"print\" | \"print-ticked\" | \"print-unticked\" | \"upload-only\" | \"close\" | {\"select\": name} | {\"set\": {name: patch}} | {\"cancel\": true}, \"asked\"?: \"ask\" | \"not-needed\", \"expect\"} sends a request; dialog: how the host's own dialog is answered if it opens (print: Print, ticked only when the tick was not asked; print-unticked: Print without the tick; select, set: the host's selection or a printer changes while it is open; cancel: the frame cancels the request while it is open); asked: whether the dialog showed \"Plate is clear\". A step without dialog expects none to open.",
     "  {\"select\": name | null} the host's selection changes (it then tells the frame); {\"set\": {name: {\"state\"?, \"filename\"?, \"role\"?, \"online\"?, \"files\"?, \"queued\"?, \"history\"?}}} a printer changes (the host tells the frame); {\"finish\": name, \"status\"?: \"completed\" | \"cancelled\" | \"error\", \"filament_used\"?: mm} the printer's newest job ends (its state with it); {\"hostStart\": {\"printer\", \"filename\"}} the host prints a file from its own list, without the frame; {\"advance\": ms} time passes; {\"reload\": true} the frame says hello again with a new nonce (a new session).",
+    "library (0.4.0): the host's Library, kept in memory: {\"signedIn\", \"enabled\", \"quotaBytes\"} at the start (a case without it has none). Its promise's version is \"2026-10-12\": a save while the Library is off needs that consent, and is otherwise refused as console (the service's consent_required); with it, the Library is on. Signed out, every request but library.status is not-signed-in; a save the quota cannot take is quota; library.get of an item it does not have is console. A new print's id is item-1, item-2, …, and its versions count from 1. Its writes are calls: \"library.save <name> <origin> <item, or new>\", \"library.preferences ask=false\", \"library.browse\". A request step may have \"during\": {\"select\": name | null}, which happens while a save is sending.",
     "expect: {\"result\": partial} (every field given must equal the result's) or {\"error\": kind}; \"calls\": the adapter's writes during the step, in order (\"upload walnut a.gcode\", \"start walnut a.gcode\", \"queue walnut b.gcode,c.gcode\", \"cancel walnut\"), when the step lists them; a step that lists none expects none."
   ],
   "printers": {
@@ -317,6 +318,84 @@
         { "hostStart": { "printer": "walnut", "filename": "a.gcode" } },
         { "request": { "op": "print.cancel", "params": { "printer": "$walnut", "path": "a.gcode" } }, "expect": { "result": { "cancelled": false } } },
         { "request": { "op": "print.cancel", "params": { "printer": "$walnut", "path": "a.gcode" } }, "expect": { "error": "not-allowed" } }
+      ]
+    },
+    {
+      "name": "the Library (0.4.0): the card's Save gives consent, the next save is a version of the same print, and its project comes back",
+      "selected": "walnut",
+      "library": { "signedIn": true, "enabled": false, "quotaBytes": null },
+      "steps": [
+        { "request": { "op": "library.status", "params": { "printer": null } }, "expect": { "result": { "signedIn": true, "enabled": false, "preferences": { "autosave": false, "ask": true } } } },
+        { "request": { "op": "library.save", "params": { "printer": null, "item": null, "name": "Hinge bracket", "origin": "save", "consent": null, "project": { "$bytes": 64 }, "outputs": [], "thumbnail": null, "summary": { "layer_height_mm": 0.2, "quality": "Normal" } } }, "expect": { "error": "console" } },
+        { "request": { "op": "library.save", "params": { "printer": null, "item": null, "name": "Hinge bracket", "origin": "card", "consent": "2026-10-12", "project": { "$bytes": 64 }, "outputs": [{ "gcode": { "$bytes": 32 }, "name": "hinge-bracket.gcode", "setup": { "printerModel": "Muon3D M1", "nozzleMm": 0.4, "material": "PLA" }, "printSeconds": 4320, "filamentGrams": 23.5 }], "thumbnail": { "$png": 64 }, "summary": { "layer_height_mm": 0.2, "quality": "Normal" } } }, "expect": { "result": { "item": "item-1", "version": 1 } }, "calls": ["library.save Hinge bracket card new"] },
+        { "request": { "op": "library.save", "params": { "printer": null, "item": "item-1", "name": "Hinge bracket", "origin": "save", "consent": null, "project": { "$bytes": 64 }, "outputs": [], "thumbnail": null, "summary": { "layer_height_mm": 0.2, "quality": "Normal" } } }, "expect": { "result": { "item": "item-1", "version": 2 } }, "calls": ["library.save Hinge bracket save item-1"] },
+        { "request": { "op": "library.get", "params": { "printer": null, "item": "item-1" } }, "expect": { "result": { "item": "item-1", "version": 2, "name": "Hinge bracket" } } },
+        { "request": { "op": "library.get", "params": { "printer": null, "item": "item-1", "version": 1 } }, "expect": { "result": { "item": "item-1", "version": 1 } } },
+        { "request": { "op": "library.get", "params": { "printer": null, "item": "item-9" } }, "expect": { "error": "console" } },
+        { "request": { "op": "library.status", "params": { "printer": null } }, "expect": { "result": { "enabled": true } } }
+      ]
+    },
+    {
+      "name": "the Library: Never ask, and the host's own Library page",
+      "selected": "walnut",
+      "library": { "signedIn": true, "enabled": false, "quotaBytes": null },
+      "steps": [
+        { "request": { "op": "library.preferences", "params": { "printer": null, "ask": false } }, "expect": { "result": { "signedIn": true, "preferences": { "autosave": false, "ask": false } } }, "calls": ["library.preferences ask=false"] },
+        { "request": { "op": "library.browse", "params": { "printer": null } }, "expect": { "result": {} }, "calls": ["library.browse"] }
+      ]
+    },
+    {
+      "name": "the Library is the account's: a switch of printer during a save never ends it, and it answers with no printer selected",
+      "selected": "walnut",
+      "library": { "signedIn": true, "enabled": true, "quotaBytes": null },
+      "steps": [
+        { "request": { "op": "library.save", "params": { "printer": null, "item": null, "name": "Hinge bracket", "origin": "autosave", "consent": null, "project": { "$bytes": 64 }, "outputs": [], "thumbnail": null, "summary": { "layer_height_mm": 0.2, "quality": "Normal" } } }, "during": { "select": "oak" }, "expect": { "result": { "item": "item-1", "version": 1 } }, "calls": ["library.save Hinge bracket autosave new"] },
+        { "select": null },
+        { "request": { "op": "library.save", "params": { "printer": null, "item": "item-1", "name": "Hinge bracket", "origin": "autosave", "consent": null, "project": { "$bytes": 64 }, "outputs": [], "thumbnail": null, "summary": { "layer_height_mm": 0.2, "quality": "Normal" } } }, "expect": { "result": { "item": "item-1", "version": 2 } }, "calls": ["library.save Hinge bracket autosave item-1"] }
+      ]
+    },
+    {
+      "name": "the Library signed out: its status says so, and the rest is not-signed-in",
+      "selected": "walnut",
+      "library": { "signedIn": false, "enabled": false, "quotaBytes": null },
+      "steps": [
+        { "request": { "op": "library.status", "params": { "printer": null } }, "expect": { "result": { "signedIn": false, "enabled": false, "preferences": null } } },
+        { "request": { "op": "library.save", "params": { "printer": null, "item": null, "name": "Hinge bracket", "origin": "card", "consent": "2026-10-12", "project": { "$bytes": 64 }, "outputs": [], "thumbnail": null, "summary": { "layer_height_mm": 0.2, "quality": "Normal" } } }, "expect": { "error": "not-signed-in" } },
+        { "request": { "op": "library.preferences", "params": { "printer": null, "ask": false } }, "expect": { "error": "not-signed-in" } }
+      ]
+    },
+    {
+      "name": "the Library has no room for a save: quota",
+      "selected": "walnut",
+      "library": { "signedIn": true, "enabled": true, "quotaBytes": 100 },
+      "steps": [
+        { "request": { "op": "library.save", "params": { "printer": null, "item": null, "name": "Hinge bracket", "origin": "save", "consent": null, "project": { "$bytes": 64 }, "outputs": [], "thumbnail": null, "summary": { "layer_height_mm": 0.2, "quality": "Normal" } } }, "expect": { "result": { "item": "item-1", "version": 1 } }, "calls": ["library.save Hinge bracket save new"] },
+        { "request": { "op": "library.save", "params": { "printer": null, "item": "item-1", "name": "Hinge bracket", "origin": "save", "consent": null, "project": { "$bytes": 64 }, "outputs": [], "thumbnail": null, "summary": { "layer_height_mm": 0.2, "quality": "Normal" } } }, "expect": { "error": "quota" } }
+      ]
+    },
+    {
+      "name": "a host without a Library grants none: its requests are not-allowed",
+      "selected": "walnut",
+      "steps": [
+        { "request": { "op": "library.status", "params": { "printer": null } }, "expect": { "error": "not-allowed" } },
+        { "request": { "op": "library.save", "params": { "printer": null, "item": null, "name": "Hinge bracket", "origin": "card", "consent": "2026-10-12", "project": { "$bytes": 64 }, "outputs": [], "thumbnail": null, "summary": { "layer_height_mm": 0.2, "quality": "Normal" } } }, "expect": { "error": "not-allowed" } }
+      ]
+    },
+    {
+      "name": "a host that lists library but keeps none answers unsupported",
+      "selected": "walnut",
+      "capabilities": ["printer", "status", "gcode", "moonraker.read", "files.upload", "print", "library"],
+      "steps": [{ "request": { "op": "library.status", "params": { "printer": null } }, "expect": { "error": "unsupported" } }]
+    },
+    {
+      "name": "a Library request naming a printer, and a malformed save, are refused and reach no Library",
+      "selected": "walnut",
+      "library": { "signedIn": true, "enabled": true, "quotaBytes": null },
+      "steps": [
+        { "request": { "op": "library.status", "params": { "printer": "$walnut" } }, "expect": { "error": "bad-request" } },
+        { "request": { "op": "library.save", "params": { "printer": "$walnut", "item": null, "name": "Hinge bracket", "origin": "save", "consent": null, "project": { "$bytes": 64 }, "outputs": [], "thumbnail": null, "summary": { "layer_height_mm": 0.2, "quality": "Normal" } } }, "expect": { "error": "bad-request" } },
+        { "request": { "op": "library.save", "params": { "printer": null, "item": null, "name": "Hinge bracket", "origin": "save", "consent": null, "project": { "$bytes": 64 }, "outputs": [], "thumbnail": { "$bytes": 64 }, "summary": { "layer_height_mm": 0.2, "quality": "Normal" } } }, "expect": { "error": "bad-request" } },
+        { "request": { "op": "library.save", "params": { "printer": null, "item": null, "name": "Hinge bracket", "origin": "save", "consent": null, "project": { "$bytes": 0 }, "outputs": [], "thumbnail": null, "summary": { "layer_height_mm": 0.2, "quality": "Normal" } } }, "expect": { "error": "bad-request" } }
       ]
     }
   ]

@@ -1,11 +1,32 @@
-import { afterEach, describe, expect, it, test } from 'vitest'
+import { afterEach, describe, expect, it, test, vi } from 'vitest'
 import router from '@/router'
-import { setActiveSlugSource } from '../printerSlugSource'
+import { setActiveSlugSource, setForeignSlugSource } from '../printerSlugSource'
 import { isPrinterPagePath, pageOfRoute, scopedPath } from '../printerPagePaths'
+import { foreignRegistry, foreignSlug } from '@/services/foreign-printers/registry'
+import type { NavigationGuard } from 'vue-router'
 
-afterEach(() => setActiveSlugSource(() => null))
+afterEach(() => {
+  setActiveSlugSource(() => null)
+  setForeignSlugSource(() => false)
+})
 
 describe("a printer's pages", () => {
+  it('redirects unsupported foreign pages to that printer overview', () => {
+    const record = { id: 'route-foreign', kind: 'octoprint' as const, name: 'Octo', host: '192.168.1.9', via: 'direct' as const, formFactor: 'bed-slinger' as const, credentialsRef: null, addedAt: 0 }
+    foreignRegistry.records.push(record)
+    setForeignSlugSource(slug => slug === foreignSlug(record))
+    try {
+      const slug = foreignSlug(record)
+      for (const page of ['control', 'maintenance', 'settings', 'console']) {
+        const route = router.resolve(`/${slug}/${page}`).route
+        const next = vi.fn()
+        const guard = route.matched[0].beforeEnter as unknown as NavigationGuard
+        guard(route, router.resolve('/').route, next)
+        expect(next).toHaveBeenCalledWith(`/${slug}`)
+      }
+    } finally { foreignRegistry.records.splice(0) }
+  })
+
   test.each([
     ['/boxwood-367a', 'Dashboard'],
     ['/boxwood-367a/jobs', 'Jobs'],

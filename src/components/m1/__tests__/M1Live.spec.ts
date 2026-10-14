@@ -16,16 +16,20 @@ const idle = vi.hoisted(() => ({
 
 vi.mock('@/services/m1-3d/parked', () => parked)
 vi.mock('@/services/startup/idle', () => idle)
-vi.mock('@/services/m1-3d/live-sync', () => ({
-  liveSyncFor: vi.fn(() => ({
+vi.mock('@/services/m1-3d/live-sync', () => {
+  const sync = {
+    accessories: { reducedMotion: false },
+    setAccessories: vi.fn(),
+    newPrint: vi.fn(),
     setPose: vi.fn(),
     observe: vi.fn(),
     setPath: vi.fn(),
     setFileDone: vi.fn(),
     follow: vi.fn(),
     trace: { clear: vi.fn() }
-  }))
-}))
+  }
+  return { liveSyncFor: vi.fn(() => sync) }
+})
 vi.mock('@/services/muon-cloud/state', () => ({ cloudState: { activePrinterId: null } }))
 
 const { default: M1Live } = await import('../M1Live.vue')

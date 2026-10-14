@@ -132,9 +132,9 @@ import type { TemperaturePreset } from '@/store/config/types'
 import { visibleMacros, type MacroGroup } from '@/util/visible-macros'
 import type { MoonrakerRootFile } from '@/store/files/types'
 import { highlight, rankCommands, type Command, type Segment } from '@/services/command-bar/rank'
-import { ALL_PRINTERS_KEY, SECTIONS, visiblePages } from '@/router/printerSections'
-import { scopedPath } from '@/router/printerPagePaths'
-import { activeSlug, knownPrinters, printerHomePath, printerPath, samePageFor } from '@/services/printer-pages'
+import { ACCOUNT_KEY, ALL_PRINTERS_KEY, LIBRARY_KEY, SECTIONS, visiblePages, visibleSections } from '@/router/printerSections'
+import { accountSections } from '@/services/account/model'
+import { activeSlug, foreignRecordForSlug, knownPrinters, printerHomePath, printerPath, samePageFor } from '@/services/printer-pages'
 import { cloudState } from '@/services/muon-cloud/state'
 import { savedName } from '@/services/muon-cloud/directory'
 import { setProMode } from '@/services/pro-mode'
@@ -198,7 +198,7 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
   }
 
   get inPrinter (): boolean {
-    return !!activeSlug() && this.socketConnected && this.authenticated
+    return !this.sectionContext.foreign && !!activeSlug() && this.socketConnected && this.authenticated
   }
 
   get printerName (): string | null {
@@ -406,10 +406,18 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
       icon: 'printers',
       suggested: !this.printerFrame,
       run: () => this.go('/')
-    }]
-    if (!activeSlug()) return list
-    for (const section of SECTIONS) {
-      if (section.shows && !section.shows(this.sectionContext)) continue
+    }, {
+      id: 'go-library',
+      group: 'Go to',
+      label: 'Library',
+      words: 'library saved prints projects',
+      keys: ['G', LIBRARY_KEY.toUpperCase()],
+      icon: 'library',
+      run: () => this.go('/library')
+    }, ...this.accountCommands]
+    if (!activeSlug() && !this.sectionContext.foreign) return list
+    for (const section of this.sectionContext.foreign ? visibleSections(this.sectionContext) : SECTIONS) {
+      if (!this.sectionContext.foreign && section.shows && !section.shows(this.sectionContext)) continue
       const locked = section.pro && !this.pro
       list.push({
         id: `go-${section.id}`,
@@ -431,24 +439,49 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
           group: 'Go to',
           label: `${section.label} › ${page.label}`,
           icon: section.icon,
-          run: () => this.go(scopedPath(page.path, activeSlug()))
+          run: () => this.go(this.pageTo(page))
         })
       }
     }
     return list
   }
 
+  /** Your account and its sections (KAN-532): G A, then each by name. */
+  get accountCommands (): Command[] {
+    if (!cloudState.account) return []
+    return accountSections().map(section => section.id === 'overview'
+      ? {
+          id: 'go-account',
+          group: 'Go to' as const,
+          label: 'Account',
+          words: 'account profile me sign out',
+          keys: ['G', ACCOUNT_KEY.toUpperCase()],
+          icon: 'user',
+          run: () => this.go('/account')
+        }
+      : {
+          id: `go-account-${section.id}`,
+          group: 'Go to' as const,
+          label: `Account › ${section.label}`,
+          words: 'account',
+          icon: section.icon,
+          run: () => this.go(`/account/${section.id}`)
+        })
+  }
+
   /** Each printer this browser knows, once; on a printer's page, the same page of the other. */
   get printerCommands (): Command[] {
     const seen = new Set<string>()
-    const current = activeSlug()
+    const current = this.sectionContext.foreign ? this.$route.params.printer : activeSlug()
     const list: Command[] = []
     for (const target of knownPrinters()) {
       if (seen.has(target.slug)) continue
       seen.add(target.slug)
       const raw = target.kind === 'local'
         ? savedName(target.instance)
-        : cloudState.printers.find(p => p.id === target.printerId)?.name ?? target.slug
+        : target.kind === 'cloud'
+          ? cloudState.printers.find(p => p.id === target.printerId)?.name ?? target.slug
+          : foreignRecordForSlug(target.slug)?.name ?? target.slug
       const parts = printerNameParts(raw)
       const here = target.slug === current
       list.push({
