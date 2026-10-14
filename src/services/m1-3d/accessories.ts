@@ -59,6 +59,21 @@ export function accessoriesFrom (
   }
 }
 
+/**
+ * The accessories once the printer's first status has arrived; null before.
+ * Until then the store has no sensor objects, so the filament reads as
+ * unloaded and the plate as on. Taking that as the first state turned the
+ * real status into a change: a page opened with filament in played a load,
+ * and one opened with the plate off played a removal.
+ */
+export function liveAccessories (
+  printer: Record<string, any>,
+  prompt: PromptFacts | null | undefined,
+  statusArrived: boolean
+): Accessories | null {
+  return statusArrived ? accessoriesFrom(printer, prompt) : null
+}
+
 export function sameAccessories (a: Accessories | null, b: Accessories): boolean {
   return a !== null &&
     a.plateOn === b.plateOn &&

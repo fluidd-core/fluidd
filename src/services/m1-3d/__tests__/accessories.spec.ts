@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   accessoriesFrom,
   autoLoadFromPrompt,
+  liveAccessories,
   sameAccessories,
   type Accessories,
   type PromptFacts
@@ -209,5 +210,46 @@ describe('the per-printer accessory timeline', () => {
     expect(motion.frame(1000)).toMatchObject({ animating: true, filament: { autoLoadAge: 0 } })
     expect(motion.frame(1000 + AUTOLOAD_SETTLE_MS - 1).animating).toBe(true)
     expect(motion.frame(1000 + AUTOLOAD_SETTLE_MS).animating).toBe(false)
+  })
+})
+
+describe('opening the page on a printer that already has filament in', () => {
+  // Before the first status lands, the store has no filament sensor, so the
+  // filament reads as unloaded. Bench, 13 Oct: boxwood played a load on every
+  // page open with filament already in.
+  const loaded = {
+    bed_removal_detector: { bedRemoved: false },
+    'mcu toolhead': { non_critical_disconnected: false },
+    'filament_switch_sensor filament_sensor_toolhead': { filament_detected: true, enabled: true }
+  }
+
+  it('reads nothing until the first status has arrived', () => {
+    expect(liveAccessories({}, null, false)).toBeNull()
+    expect(liveAccessories(loaded, null, false)).toBeNull()
+    expect(liveAccessories(loaded, null, true)).toEqual(signals({ filamentLoaded: true }))
+  })
+
+  it('snaps to the loaded filament instead of animating a load', () => {
+    const sync = new LiveSync()
+    const before = liveAccessories({}, null, false)
+    if (before) sync.setAccessories(before, 0, false)
+    const after = liveAccessories(loaded, null, true)
+    if (after) sync.setAccessories(after, 1300, false)
+    expect(sync.accessories.frame(1300).filament).toMatchObject({ loaded: true, clip: null })
+  })
+
+  it('animates a load when the store defaults are taken as the first state', () => {
+    const sync = new LiveSync()
+    sync.setAccessories(accessoriesFrom({}, null), 0, false)
+    sync.setAccessories(accessoriesFrom(loaded, null), 1300, false)
+    expect(sync.accessories.frame(1300).filament.clip).toBe('load')
+  })
+
+  it('still animates the first real change after a status with nothing to change', () => {
+    const sync = new LiveSync()
+    const empty = { ...loaded, 'filament_switch_sensor filament_sensor_toolhead': { filament_detected: false, enabled: true } }
+    sync.setAccessories(liveAccessories(empty, null, true)!, 0, false)
+    sync.setAccessories(liveAccessories(loaded, null, true)!, 5000, false)
+    expect(sync.accessories.frame(5000).filament.clip).toBe('load')
   })
 })

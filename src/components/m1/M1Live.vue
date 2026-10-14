@@ -24,7 +24,7 @@ import { Waits } from '@/globals'
 import { claimLiveView } from '@/services/m1-3d/live-slot'
 import { built, canDrawWebgl, loadViewer, newCanvas, park, prebuild, takeParked } from '@/services/m1-3d/parked'
 import { liveSyncFor, type LiveSync } from '@/services/m1-3d/live-sync'
-import { accessoriesFrom, sameAccessories, type Accessories } from '@/services/m1-3d/accessories'
+import { liveAccessories, sameAccessories, type Accessories } from '@/services/m1-3d/accessories'
 import { plateTaps, screenFrom, type LedStrip, type PlateTap, type ScreenState } from '@/services/m1-3d/live-state'
 import { motionPathFrom, type MotionPath } from '@/services/m1-3d/motion'
 import { modelPose, samePose, type ModelPose } from '@/services/m1-3d/pose'
@@ -122,10 +122,12 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
     return (this.$store.state.printer.printer.print_stats?.state as string | undefined) ?? ''
   }
 
-  get accessories (): Accessories {
-    return accessoriesFrom(
+  /** Null until the printer's first status has arrived (see liveAccessories). */
+  get accessories (): Accessories | null {
+    return liveAccessories(
       this.$store.state.printer.printer,
-      this.$store.state.console.promptDialog
+      this.$store.state.console.promptDialog,
+      this.$store.state.socket.acceptingNotifications === true
     )
   }
 
@@ -251,8 +253,8 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
   }
 
   @Watch('accessories', { immediate: true })
-  onAccessories (a: Accessories) {
-    if (sameAccessories(this.lastAccessories, a)) return
+  onAccessories (a: Accessories | null) {
+    if (!a || sameAccessories(this.lastAccessories, a)) return
     this.lastAccessories = a
     this.sync().accessories.reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
     this.sync().setAccessories(a, performance.now(), !!this.printPath)
