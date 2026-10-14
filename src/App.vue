@@ -134,7 +134,6 @@ import ConnectingScreen from './components/layout/ConnectingScreen.vue'
 import UpdatingScreen from './components/updates/UpdatingScreen.vue'
 import UpdateBanner from './components/updates/UpdateBanner.vue'
 import { printerLost, updateWatch, watchUpdates } from '@/services/updates/watch'
-import { prebuild as prebuildLiveM1 } from '@/services/m1-3d/parked'
 import { ACTIVE_PHASES, offlineScreen } from '@/services/updates/model'
 import { printerNameParts } from '@/util/printer-name'
 import { connectionView, type ConnectionView } from '@/services/connection/view'
@@ -145,6 +144,8 @@ import { setProMode } from '@/services/pro-mode'
 import { GoKeys } from '@/util/go-keys'
 import { isGcodeFile, isModelFile } from '@/services/jobs/model'
 import JobReadyDialog from './components/jobs/JobReadyDialog.vue'
+import { loaderCanGo, rememberTheme, removeLoader, startupState } from '@/services/startup/loader'
+import { saveSnapshotStatus } from '@/services/startup/snapshot'
 
 @Component<App>({
   metaInfo () {
@@ -183,10 +184,41 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   // printer switcher in it starts a network search the setup page must never
   // make (it may reach only the printer).
   routerReady = false
+  /** When App mounted, for the loader's 6 s hold on the connecting screen. */
+  mountedAt = 0
 
   created () {
     const ready = () => { this.routerReady = true }
     this.$router.onReady(ready, ready)
+  }
+
+  /**
+   * Whether the index.html loader can go (KAN-525): the first route resolved,
+   * and a loader showing the cached last state doesn't wait on the connecting
+   * screen past 6 s.
+   */
+  get loaderReady (): boolean {
+    return loaderCanGo({
+      routerReady: this.routerReady,
+      screen: this.connection.screen,
+      cachedShown: startupState.cachedShown,
+      msSinceMount: performance.now() - this.mountedAt
+    })
+  }
+
+  @Watch('loaderReady')
+  onLoaderReady (ready: boolean) {
+    if (ready) this.dismissLoader()
+  }
+
+  dismissLoader () {
+    this.$nextTick(() => requestAnimationFrame(() => { removeLoader() }))
+  }
+
+  /** The theme the next load's loader paints in (index.html reads muon3d.theme). */
+  @Watch('theme.isDark', { immediate: true })
+  onThemeDark (isDark: boolean) {
+    rememberTheme(isDark)
   }
 
   get theme (): ThemeConfig {
@@ -281,13 +313,6 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     const r = updateWatch.remembered
     return !!r && ACTIVE_PHASES.includes(r.phase) && this.printerFrame && this.socketConnected &&
       this.$route.name !== 'Updating' && updateWatch.printer === (activeSlug() ?? '')
-  }
-
-  /** Another printer: nothing has been reached yet. */
-  /** Opening a printer's overview, the live M1 is built while the printer connects, not after. */
-  @Watch('$route.name', { immediate: true })
-  onRouteName (name: string | null | undefined) {
-    if (name === 'Dashboard' && !this.foreignPrinterRoute) prebuildLiveM1()
   }
 
   @Watch('$store.state.config.apiUrl')
@@ -472,6 +497,57 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     return this.$store.getters['config/getCustomThemeFile']('custom', ['.css'])
   }
 
+  /**
+   * The active printer's state kept for the next load's cached view
+   * (KAN-525), at most once every 5 s; changes inside that are drawn by the
+   * next one, and leaving the tab saves on the spot.
+   */
+  get snapshotStatusLine (): string {
+    const p = this.$store.state.printer.printer
+    if (!p) return ''
+    const progress = Math.floor((this.$store.getters['printer/getPrintProgress'] as number) * 100)
+    return [
+      this.displayName,
+      p.print_stats?.state ?? '',
+      p.print_stats?.filename ?? '',
+      progress,
+      Math.round(p.extruder?.temperature ?? 0),
+      Math.round(p.heater_bed?.temperature ?? 0)
+    ].join('|')
+  }
+
+  snapshotSavedAt = 0
+
+  @Watch('snapshotStatusLine')
+  onSnapshotStatusLine (line: string) {
+    if (!line) return
+    const now = Date.now()
+    if (now - this.snapshotSavedAt < 5000) return
+    this.snapshotSavedAt = now
+    this.saveSnapshotStatus()
+  }
+
+  saveSnapshotStatus () {
+    const slug = activeSlug()
+    const p = this.$store.state.printer.printer
+    if (!slug || !p) return
+    const progress = Math.floor((this.$store.getters['printer/getPrintProgress'] as number) * 100)
+    const state = (p.print_stats?.state as string | undefined) ?? 'ready'
+    saveSnapshotStatus(slug, {
+      name: this.displayName,
+      state,
+      label: state === 'printing' ? `${progress}%` : state === 'paused' ? 'Paused' : state.charAt(0).toUpperCase() + state.slice(1),
+      file: (p.print_stats?.filename as string | undefined) || null,
+      progress,
+      nozzle: typeof p.extruder?.temperature === 'number' ? Math.round(p.extruder.temperature) : null,
+      bed: typeof p.heater_bed?.temperature === 'number' ? Math.round(p.heater_bed.temperature) : null
+    })
+  }
+
+  onVisibilitySave () {
+    if (document.hidden) this.saveSnapshotStatus()
+  }
+
   @Watch('customStyleSheet')
   async onCustomStyleSheet (value: string) {
     if (!value) {
@@ -522,11 +598,15 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   }
 
   mounted () {
+    this.mountedAt = performance.now()
+    // The loader's 6 s hold on 'connecting' needs a tick even when nothing changes.
+    setTimeout(() => { if (this.loaderReady) this.dismissLoader() }, 6000)
     window.addEventListener('dragover', this.handleDragOver)
     window.addEventListener('dragenter', this.handleDragOver)
     window.addEventListener('dragleave', this.handleDragLeave)
     window.addEventListener('drop', this.handleDrop)
     window.addEventListener('keydown', this.handleKeyDown, false)
+    document.addEventListener('visibilitychange', this.onVisibilitySave)
 
     // this.onLoadLocale(this.$i18n.locale)
     EventBus.bus.$on('flashMessage', (payload: FlashMessage) => {
@@ -560,6 +640,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     window.removeEventListener('dragleave', this.handleDragLeave)
     window.removeEventListener('drop', this.handleDrop)
     window.removeEventListener('keydown', this.handleKeyDown)
+    document.removeEventListener('visibilitychange', this.onVisibilitySave)
   }
 
   handleDragOver (event: DragEvent) {

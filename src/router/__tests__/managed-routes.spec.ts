@@ -20,11 +20,15 @@ describe('Muon3D account routes', () => {
     expect(route.matched).toHaveLength(1)
     expect(route.matched[0].meta.printerIndependent).toBe(true)
     // A loader, not a component constructor (those carry a cid): the setup
-    // chunk loads only on this route.
-    const component = route.matched[0].components.default as { cid?: number }
+    // chunk loads only on this route. /link is lazy too now (KAN-525), so the
+    // check that it really is a chunk loader, not an odd component, is that
+    // calling it answers a promise.
+    const component = route.matched[0].components.default as { cid?: number } & (() => unknown)
     expect(typeof component).toBe('function')
     expect(component.cid).toBeUndefined()
-    expect((router.resolve('/link').route.matched[0].components.default as { cid?: number }).cid).toBeDefined()
+    const loaded = component()
+    expect(loaded).toBeDefined()
+    expect(typeof (loaded as Promise<unknown>).then).toBe('function')
   })
 
   it('sends the old fleet address to Printers, which holds the fleet now', () => {

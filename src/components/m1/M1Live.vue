@@ -37,6 +37,7 @@ import { cloudState } from '@/services/muon-cloud/state'
 import { activeSlug } from '@/services/printer-pages'
 import { ACTIVE_PHASES } from '@/services/updates/model'
 import { updateWatch } from '@/services/updates/watch'
+import { afterFirstPaint } from '@/services/startup/idle'
 
 /** The biggest file the stage fetches by itself to draw the print: most prints, not a day-long one. */
 const AUTO_LOAD_BYTES = 16 * 1024 * 1024
@@ -104,6 +105,11 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
   tapsShown: PlateTap[] = []
   tapsTimer = 0
 
+  /** Set on destroy so an idle callback still owed does nothing (KAN-525). */
+  gone = false
+  /** Set once the view has been seen and the app has painted; nothing loads the viewer before. */
+  armed = false
+
   /** This printer's sync, which outlives the view. Not data: Vue mustn't walk it. */
   sync (): LiveSync {
     return liveSyncFor(activeSlug() ?? (this.$store.state.config.apiUrl as string) ?? '')
@@ -149,10 +155,22 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
         if (action.type === 'printer/onFastNotifyStatusUpdate' && action.payload?.key === 'motion_report') this.report()
       }
     })
-    if (!canDrawWebgl() || typeof IntersectionObserver === 'undefined') return
-    prebuild()
+    if (typeof IntersectionObserver === 'undefined') return
+    // The observer is cheap and starts at once; the viewer build waits for
+    // the view's first intersect AND the app's first paint — building it
+    // earlier cost seconds on the frame the overview first draws (KAN-525).
+    // canDrawWebgl is part of that cost too: it makes a WebGL context, and
+    // that stalls the frame it runs in, so it waits here as well.
     this.observer = new IntersectionObserver(entries => {
       this.visible = entries.some(e => e.isIntersecting)
+      if (this.visible && !this.armed) {
+        afterFirstPaint(() => {
+          if (this.gone || !canDrawWebgl()) return
+          this.armed = true
+          prebuild()
+          this.wake()
+        })
+      }
       this.wake()
     })
     this.observer.observe(this.$el)
@@ -160,6 +178,7 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
   }
 
   beforeDestroy () {
+    this.gone = true
     this.stopReports?.()
     if (this.reducedMotionListener) {
       if (this.reducedMotionQuery?.removeEventListener) {
@@ -178,12 +197,14 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
 
   /** Starts the live M1 when it can show (on screen, the printer there), and draws only while it shows. */
   wake () {
+    if (!this.armed) return
     const showing = this.visible && this.state !== 'offline' && !document.hidden
     this.viewer?.setActive(showing)
     if (showing && !this.live) this.start()
   }
 
   async start () {
+    if (!this.armed) return
     this.live = true
     this.giveBack = claimLiveView(() => this.stop())
     try {
