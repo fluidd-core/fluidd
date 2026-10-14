@@ -1,0 +1,85 @@
+/*
+ * The redesign's buttons and rows, shared by Control, Overview, Jobs and
+ * the dialogs they open (which mount outside the page, so a page's own
+ * styles don't reach them). Colours come from the --m3d-* tokens, so both
+ * styles and both themes follow.
+ */
+
+.cbtn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--m3d-surface-2);
+  color: var(--m3d-text) !important;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+
+  .v-icon {
+    color: inherit !important;
+  }
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.12);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+}
+
+.cbtn--primary {
+  background: var(--m3d-accent);
+  color: var(--m3d-on-accent, #00201e) !important;
+}
+
+.cbtn--danger {
+  background: color-mix(in srgb, var(--m3d-danger) 16%, transparent);
+  color: var(--m3d-danger) !important;
+}
+
+.cbtn--ghost {
+  background: transparent;
+  color: var(--m3d-text-muted) !important;
+}
+
+.cbtn--grow {
+  flex: 1 1 0;
+}
+
+.cbtn--wide {
+  width: 100%;
+}
+
+.crow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding: 4px 0;
+}
+
+.crow__name {
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.crow__sub {
+  color: var(--m3d-text-muted);
+  font-weight: 400;
+}
+
+.crow__value {
+  font-variant-numeric: tabular-nums;
+}

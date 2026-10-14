@@ -165,6 +165,7 @@ import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataT
 import consola from 'consola'
 import { activeSlug, printerHomePath } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
+import { proMode } from '@/services/pro-mode'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
@@ -700,7 +701,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
       if (!gcode) return
 
-      if (this.$router.currentRoute.name !== 'Dashboard' || !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')) {
+      // Shown in place where a G-code viewer is on the page: the dashboard's
+      // card, or Pro's Jobs, which has one beside the table.
+      const route = this.$router.currentRoute.name
+      const inPlace = (route === 'Dashboard' && this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')) ||
+        (route === 'Jobs' && proMode.on)
+      if (!inPlace) {
         this.$router.push({ path: scopedPath('/preview', activeSlug()) })
       }
 

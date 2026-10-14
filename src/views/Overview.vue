@@ -302,59 +302,5 @@ export default class Overview extends Mixins(OverviewMixin, BrowserMixin) {}
       font-size: 13px;
       text-decoration: none;
     }
-
-    .cbtn {
-      display: inline-flex;
-      flex: none;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      height: 40px;
-      padding: 0 16px;
-      border-radius: 999px;
-      background: var(--m3d-surface-2);
-      color: var(--m3d-text);
-      font-size: 14px;
-      font-weight: 600;
-      white-space: nowrap;
-
-      &:disabled {
-        opacity: 0.45;
-        cursor: default;
-      }
-    }
-
-    .cbtn--grow {
-      flex: 1 1 0;
-    }
-
-    .cbtn--danger {
-      background: color-mix(in srgb, var(--m3d-danger) 16%, transparent);
-      color: var(--m3d-danger);
-    }
-
-    .crow {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      min-height: 46px;
-      padding: 4px 0;
-    }
-
-    .crow__name {
-      min-width: 0;
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .crow__sub {
-      color: var(--m3d-text-muted);
-      font-weight: 400;
-    }
-
-    .crow__value {
-      font-variant-numeric: tabular-nums;
-    }
   }
 </style>

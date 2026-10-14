@@ -87,6 +87,7 @@
         <action-command-prompt-dialog />
         <keyboard-shortcuts-dialog />
         <command-bar />
+        <job-ready-dialog />
       </template>
     </v-main>
 
@@ -124,6 +125,8 @@ import { ALL_PRINTERS_KEY, PAGE_KEYS, sectionForKey } from '@/router/printerSect
 import { scopedPath } from '@/router/printerPagePaths'
 import { setProMode } from '@/services/pro-mode'
 import { GoKeys } from '@/util/go-keys'
+import { isGcodeFile, isModelFile } from '@/services/jobs/model'
+import JobReadyDialog from './components/jobs/JobReadyDialog.vue'
 
 @Component<App>({
   metaInfo () {
@@ -135,6 +138,7 @@ import { GoKeys } from '@/util/go-keys'
   },
   components: {
     PrinterOpening,
+    JobReadyDialog,
     SpoolSelectionDialog,
     FileSystemDownloadDialog,
     ActionCommandPromptDialog,
@@ -505,6 +509,13 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
         const files = await getFilesFromDataTransfer(event.dataTransfer)
 
         if (files) {
+          // On a printer's pages, a model is Slice's to open, not a file to
+          // keep; G-code goes in, and one file on its own is offered to print.
+          const models = root === 'gcodes' ? files.filter(f => isModelFile(f.file.name)) : []
+          const rest = files.filter(f => !models.includes(f))
+          if (models.length) EventBus.bus.$emit('model-dropped', models.map(f => f.file.name))
+          if (!rest.length) return
+
           const pathWithRoot = this.$store.getters['files/getCurrentPathByRoot'](root) as string || ''
           const path = pathWithRoot === root
             ? ''
@@ -514,9 +525,14 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
 
           this.$store.dispatch('wait/addWait', wait)
 
-          await this.uploadFiles(files, path, root, false)
+          await this.uploadFiles(rest, path, root, false)
 
           this.$store.dispatch('wait/removeWait', wait)
+
+          const gcodes = rest.filter(f => isGcodeFile(f.file.name) && !f.path)
+          if (root === 'gcodes' && gcodes.length === 1) {
+            EventBus.bus.$emit('job-ready', path ? `${path}/${gcodes[0].file.name}` : gcodes[0].file.name)
+          }
         }
       }
     }
