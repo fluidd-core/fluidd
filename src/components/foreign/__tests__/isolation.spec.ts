@@ -50,6 +50,8 @@ describe('foreign printer command isolation', () => {
     const cancelPrint = vi.fn()
     const context = {
       enableKeyboardShortcuts: true,
+      // What App's connection getter returns on a foreign printer's page (KAN-531).
+      connection: { page: true, stale: false, banner: null, screen: null },
       foreignPrinterRoute: true,
       handleGoKey: () => false,
       klippyReady: true,

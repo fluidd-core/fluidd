@@ -13,6 +13,8 @@ export interface ConnectionFacts {
   printerIndependent: boolean;
   /** A page for a printer that is still opening (PrinterOpening says so). */
   otherPrinter: boolean;
+  /** A console-offline printer gets two minutes to reconnect. */
+  cloudPresence?: 'reconnecting' | 'offline' | null;
   /**
    * The printer went quiet while installing an update (services/updates):
    * 'updating', or 'updating-late' past the time it said a restart takes.
@@ -26,7 +28,7 @@ export interface ConnectionView {
   /** Its controls are out of date and must not send: the page is from before the connection dropped. */
   stale: boolean;
   /** A bar over the page: lost touch and trying again, or a quiet spell. */
-  banner: 'reconnecting' | 'quiet' | null;
+  banner: 'reconnecting' | 'quiet' | 'offline' | null;
   /** A whole screen instead of the page: still connecting the first time, unable to, or restarting into an update. */
   screen: 'connecting' | 'unreachable' | 'updating' | 'updating-late' | null;
 }
@@ -41,6 +43,7 @@ export interface ConnectionView {
  */
 export function connectionView (f: ConnectionFacts): ConnectionView {
   if (f.printerIndependent || f.otherPrinter) return { page: true, stale: false, banner: null, screen: null }
+  if (f.cloudPresence && f.wasConnected && !f.updating) return { page: true, stale: true, banner: f.cloudPresence, screen: null }
   if (f.socketConnected && f.apiConnected) return { page: true, stale: false, banner: f.stalled ? 'quiet' : null, screen: null }
   // Moonraker answered and wants a login: the login page.
   if (!f.authenticated && f.apiConnected) return { page: true, stale: false, banner: null, screen: null }

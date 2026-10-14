@@ -4,7 +4,7 @@ import { printerNameParts } from '@/util/printer-name'
 import type { ForeignStatus } from '@/services/foreign-printers/types'
 
 /** What a printer is doing, in the words the page uses. */
-export type TileState = 'printing' | 'paused' | 'ready' | 'error' | 'locked' | 'connecting' | 'unreachable' | 'offline' | 'new'
+export type TileState = 'printing' | 'paused' | 'ready' | 'error' | 'locked' | 'connecting' | 'reconnecting' | 'unreachable' | 'offline' | 'new'
 
 /** The colour a state is shown in: teal running, green ready, amber needs you, red fault, grey off, blue new. */
 export type TileTone = 'run' | 'ok' | 'warn' | 'err' | 'off' | 'info'
@@ -92,6 +92,7 @@ function stateOf (e: DirectoryEntry, status: Record<string, PrinterStatus>): Til
     case 'error': return 'error'
     case 'locked': return 'locked'
     case 'offline': return 'offline'
+    case 'reconnecting': return 'reconnecting'
     case 'available': return e.section === 'found' ? 'ready' : 'connecting'
     default: return 'connecting'
   }
@@ -104,6 +105,7 @@ const TONES: Record<TileState, TileTone> = {
   error: 'err',
   locked: 'warn',
   connecting: 'off',
+  reconnecting: 'warn',
   unreachable: 'off',
   offline: 'off',
   new: 'info'
@@ -115,7 +117,7 @@ export function needsYou (state: TileState): boolean {
 }
 
 function cloudJob (s: PrinterStatus | undefined): TileJob | null {
-  if (!s || !s.reachable || !s.filename) return null
+  if (!s || (!s.reachable && s.error !== 'reconnecting') || !s.filename) return null
   const progress = typeof s.progress === 'number' ? Math.floor(s.progress * 100) : null
   const elapsed = s.printDuration ?? 0
   const secondsLeft = s.progress && s.progress > 0 && elapsed > 0
@@ -163,6 +165,7 @@ function tileFor (e: DirectoryEntry, src: PageSources, groupName: string | null)
     case 'error': label = 'Error'; break
     case 'locked': label = 'Wants access'; break
     case 'offline': label = 'Offline'; break
+    case 'reconnecting': label = 'Reconnecting…'; break
     case 'unreachable': label = 'Unreachable'; break
     case 'new': label = 'New'; break
     default: label = 'Connecting'

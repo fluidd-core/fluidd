@@ -12,6 +12,7 @@ import checker from 'vite-plugin-checker'
 import version from './vite.config.inject-version'
 import startup, { shellOnly } from './vite.config.startup'
 import dns from 'dns/promises'
+import { muonLinkWeb } from './tools/muon-link-web'
 
 // Fix for incorrect typings on vite-plugin-monaco-editor
 const isObjectWithDefaultFunction = (module: unknown): module is { default: typeof monacoEditorPluginModule } => (
@@ -27,10 +28,11 @@ const monacoEditorPlugin = isObjectWithDefaultFunction(monacoEditorPluginModule)
 
 const MDNS_NAME = 'muon-m1-serialnumberhere.local'
 
-export default defineConfig(async ({ command }) => {
+export default defineConfig(async ({ command, mode }) => {
+  const testing = mode === 'test' || !!process.env.VITEST
   // only resolve when `vite serve` (dev mode)
   let deviceIP = '192.168.55.112'
-  if (command === 'serve') {
+  if (command === 'serve' && !testing) {
     try {
       const { address } = await dns.lookup(MDNS_NAME)
       deviceIP = address
@@ -42,6 +44,7 @@ export default defineConfig(async ({ command }) => {
 
   return {
   plugins: [
+    muonLinkWeb(),
     VitePWA({
       srcDir: 'src',
       filename: 'sw.ts',
@@ -56,6 +59,9 @@ export default defineConfig(async ({ command }) => {
         globPatterns: [
           '**/*.{js,css,html,ttf,woff,woff2,wasm}'
         ],
+        // The cloud client loads on demand; /setup must not download it
+        // in the background merely to install the service worker.
+        globIgnores: ['**/muon_link_web*'],
         maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
         manifestTransforms: [shellOnly(path.resolve(__dirname, 'dist'))]
       },
@@ -127,7 +133,9 @@ export default defineConfig(async ({ command }) => {
     monacoEditorPlugin({
       languageWorkers: ['editorWorkerService', 'json', 'css']
     }),
-    checker({
+    // Vitest runs after the separate type-check; do not start another
+    // compiler alongside its workers.
+    !testing && checker({
       vueTsc: {
         tsconfigPath: path.resolve(__dirname, './tsconfig.app.json')
       }
@@ -168,6 +176,9 @@ export default defineConfig(async ({ command }) => {
 
   test: {
     globals: true,
+    pool: 'threads',
+    maxWorkers: 1,
+    minWorkers: 1,
     environment: 'jsdom',
     setupFiles: [
       './tests/unit/setup.ts'
@@ -182,6 +193,7 @@ export default defineConfig(async ({ command }) => {
   base: '/',
 
   server: {
+    hmr: !testing,
     host: '0.0.0.0',
     port: 8080,
     // proxy: {

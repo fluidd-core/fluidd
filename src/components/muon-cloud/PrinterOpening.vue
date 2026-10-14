@@ -34,7 +34,7 @@
         $alertCircle
       </v-icon>
       <h2 class="printer-opening__title">
-        Couldn't open {{ name }}
+        {{ presence === 'offline' ? 'Offline' : `Couldn't open ${name}` }}
       </h2>
       <p class="printer-opening__text">
         {{ error }}
@@ -71,7 +71,7 @@
         class="mb-4"
       />
       <h2 class="printer-opening__title">
-        Opening {{ name }}…
+        {{ presence === 'reconnecting' ? 'Reconnecting…' : `Opening ${name}…` }}
       </h2>
     </template>
   </div>
@@ -81,6 +81,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { activationState } from '@/services/muon-cloud/activate'
 import { cloudState } from '@/services/muon-cloud/state'
+import { consolePresence, type CloudPresence } from '@/services/muon-cloud/presence'
 import { openPrinterAt, printerPagesState, resolveSlug } from '@/services/printer-pages'
 
 /**
@@ -92,6 +93,13 @@ import { openPrinterAt, printerPagesState, resolveSlug } from '@/services/printe
 export default class PrinterOpening extends Vue {
   @Prop({ type: String, required: true })
   readonly slug!: string
+
+  get presence (): CloudPresence {
+    const target = resolveSlug(this.slug)
+    const printer = target?.kind === 'cloud' ? cloudState.printers.find(p => p.id === target.printerId) : undefined
+    const status = printer ? cloudState.status[printer.id] : undefined
+    return printer ? consolePresence(printer, status?.updatedAt ?? Date.now()) : 'online'
+  }
 
   get name (): string {
     const target = resolveSlug(this.slug)

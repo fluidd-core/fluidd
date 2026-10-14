@@ -1,0 +1,2 @@
+# The lockfile hashes exact upstream bytes, including generated JS and notices.
+src/services/muon-cloud/vendor/muon-link-web/** -text -whitespace

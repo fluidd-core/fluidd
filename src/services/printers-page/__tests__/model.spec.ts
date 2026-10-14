@@ -42,6 +42,14 @@ function sources (fields: Partial<PageSources>): PageSources {
 const names = (tiles: PrinterTile[]) => tiles.map(t => t.name)
 
 describe('the Printers page', () => {
+  it('keeps a reconnecting printer in its group with cached print data', () => {
+    const page = printersPage(sources({
+      directory: { cloud: [cloudEntry('b', 'Boxwood', { health: 'reconnecting', detail: 'Reconnecting…' })], local: [], found: [] },
+      status: { b: { reachable: false, error: 'reconnecting', filename: 'part.gcode', progress: 0.42, updatedAt: 1 } }
+    }))
+    expect(page.groups[0].tiles[0]).toMatchObject({ label: 'Reconnecting…', job: { file: 'part.gcode', progress: 42 } })
+    expect(page.offline).toHaveLength(0)
+  })
   it('welcomes when nothing is saved, linked or found, signed out', () => {
     expect(printersPage(sources({})).welcome).toBe(true)
     expect(printersPage(sources({ signedIn: true })).welcome).toBe(false)

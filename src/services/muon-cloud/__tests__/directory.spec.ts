@@ -1,9 +1,12 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { foreignEntries, printerDirectory, savedUpdates, type DirectorySources } from '../directory'
 import type { CloudPrinter } from '../api'
 import type { CloudNearbyPrinter, LanPrinter } from '../discovery'
 import type { InstanceConfig } from '@/store/config/types'
 import type { ForeignPrinterRecord } from '@/services/foreign-printers/types'
+
+// LAN discovery's store belongs to its browser scans, not these pure rows.
+vi.mock('@/store', () => ({ default: { state: { config: {} } } }))
 
 const BOXWOOD = 'f1f6920f'.repeat(8)
 const WALNUT = '0658ae04'.repeat(8)
@@ -50,6 +53,13 @@ function directory (sources: Partial<DirectorySources>) {
     ...sources
   })
 }
+
+it('shows Reconnecting for a recently seen console-offline printer, then Offline after two minutes', () => {
+  const printer = { ...owned(BOXWOOD, 'Boxwood', false), last_seen: Date.now() / 1000 - 60 }
+  expect(directory({ account: [printer] }).cloud[0]).toMatchObject({ health: 'reconnecting', detail: 'Reconnecting…' })
+  printer.last_seen -= 60
+  expect(directory({ account: [printer] }).cloud[0]).toMatchObject({ health: 'offline', detail: 'Offline' })
+})
 
 describe('one entry per printer', () => {
   it('keeps browser-local foreign records separate from local and cloud printers', () => {
