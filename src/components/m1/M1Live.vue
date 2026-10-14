@@ -24,6 +24,7 @@ import { Waits } from '@/globals'
 import { claimLiveView } from '@/services/m1-3d/live-slot'
 import { built, canDrawWebgl, loadViewer, newCanvas, park, prebuild, takeParked } from '@/services/m1-3d/parked'
 import { liveSyncFor, type LiveSync } from '@/services/m1-3d/live-sync'
+import { liveAccessories, sameAccessories, type Accessories } from '@/services/m1-3d/accessories'
 import { plateTaps, screenFrom, type LedStrip, type PlateTap, type ScreenState } from '@/services/m1-3d/live-state'
 import { motionPathFrom, type MotionPath } from '@/services/m1-3d/motion'
 import { modelPose, samePose, type ModelPose } from '@/services/m1-3d/pose'
@@ -36,6 +37,7 @@ import { cloudState } from '@/services/muon-cloud/state'
 import { activeSlug } from '@/services/printer-pages'
 import { ACTIVE_PHASES } from '@/services/updates/model'
 import { updateWatch } from '@/services/updates/watch'
+import { afterFirstPaint } from '@/services/startup/idle'
 
 /** The biggest file the stage fetches by itself to draw the print: most prints, not a day-long one. */
 const AUTO_LOAD_BYTES = 16 * 1024 * 1024
@@ -84,6 +86,9 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
   visible = false
   observer: IntersectionObserver | null = null
   stopReports: (() => void) | null = null
+  reducedMotionQuery: MediaQueryList | null = null
+  reducedMotionListener: ((event: MediaQueryListEvent) => void) | null = null
+  lastAccessories: Accessories | null = null
 
   /** The print drawn, built from the preview once per file; frozen, so Vue leaves it alone. */
   printPath: Readonly<Toolpath> | null = null
@@ -99,6 +104,11 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
   /** The marks on the plate, kept a while after the touching ends. */
   tapsShown: PlateTap[] = []
   tapsTimer = 0
+
+  /** Set on destroy so an idle callback still owed does nothing (KAN-525). */
+  gone = false
+  /** Set once the view has been seen and the app has painted; nothing loads the viewer before. */
+  armed = false
 
   /** This printer's sync, which outlives the view. Not data: Vue mustn't walk it. */
   sync (): LiveSync {
@@ -118,17 +128,49 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
     return (this.$store.state.printer.printer.print_stats?.state as string | undefined) ?? ''
   }
 
+  /** Null until the printer's first status has arrived (see liveAccessories). */
+  get accessories (): Accessories | null {
+    return liveAccessories(
+      this.$store.state.printer.printer,
+      this.$store.state.console.promptDialog,
+      this.$store.state.socket.acceptingNotifications === true
+    )
+  }
+
   mounted () {
     this.sync().setPose(this.pose)
+    this.reducedMotionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)') ?? null
+    this.sync().accessories.reducedMotion = this.reducedMotionQuery?.matches ?? false
+    this.reducedMotionListener = event => {
+      this.sync().accessories.reducedMotion = event.matches
+      this.viewer?.wake()
+    }
+    if (this.reducedMotionQuery?.addEventListener) {
+      this.reducedMotionQuery.addEventListener('change', this.reducedMotionListener)
+    } else {
+      this.reducedMotionQuery?.addListener?.(this.reducedMotionListener)
+    }
     this.stopReports = this.$store.subscribeAction({
       after: action => {
         if (action.type === 'printer/onFastNotifyStatusUpdate' && action.payload?.key === 'motion_report') this.report()
       }
     })
-    if (!canDrawWebgl() || typeof IntersectionObserver === 'undefined') return
-    prebuild()
+    if (typeof IntersectionObserver === 'undefined') return
+    // The observer is cheap and starts at once; the viewer build waits for
+    // the view's first intersect AND the app's first paint — building it
+    // earlier cost seconds on the frame the overview first draws (KAN-525).
+    // canDrawWebgl is part of that cost too: it makes a WebGL context, and
+    // that stalls the frame it runs in, so it waits here as well.
     this.observer = new IntersectionObserver(entries => {
       this.visible = entries.some(e => e.isIntersecting)
+      if (this.visible && !this.armed) {
+        afterFirstPaint(() => {
+          if (this.gone || !canDrawWebgl()) return
+          this.armed = true
+          prebuild()
+          this.wake()
+        })
+      }
       this.wake()
     })
     this.observer.observe(this.$el)
@@ -136,7 +178,17 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
   }
 
   beforeDestroy () {
+    this.gone = true
     this.stopReports?.()
+    if (this.reducedMotionListener) {
+      if (this.reducedMotionQuery?.removeEventListener) {
+        this.reducedMotionQuery.removeEventListener('change', this.reducedMotionListener)
+      } else {
+        this.reducedMotionQuery?.removeListener?.(this.reducedMotionListener)
+      }
+    }
+    this.reducedMotionQuery = null
+    this.reducedMotionListener = null
     this.observer?.disconnect()
     document.removeEventListener('visibilitychange', this.wake)
     clearTimeout(this.tapsTimer)
@@ -145,12 +197,14 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
 
   /** Starts the live M1 when it can show (on screen, the printer there), and draws only while it shows. */
   wake () {
+    if (!this.armed) return
     const showing = this.visible && this.state !== 'offline' && !document.hidden
     this.viewer?.setActive(showing)
     if (showing && !this.live) this.start()
   }
 
   async start () {
+    if (!this.armed) return
     this.live = true
     this.giveBack = claimLiveView(() => this.stop())
     try {
@@ -216,6 +270,15 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
     if (samePose(this.lastPose, pose)) return
     this.lastPose = pose
     this.sync().setPose(pose)
+    this.viewer?.wake()
+  }
+
+  @Watch('accessories', { immediate: true })
+  onAccessories (a: Accessories | null) {
+    if (!a || sameAccessories(this.lastAccessories, a)) return
+    this.lastAccessories = a
+    this.sync().accessories.reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+    this.sync().setAccessories(a, performance.now(), !!this.printPath)
     this.viewer?.wake()
   }
 
@@ -355,7 +418,10 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
   /** A new print clears what the last one left on the plate; a resume doesn't. */
   @Watch('printState')
   onPrintState (now: string, before: string) {
-    if (now === 'printing' && before !== 'paused') this.sync().trace.clear()
+    if (now === 'printing' && before !== 'paused') {
+      this.sync().trace.clear()
+      this.sync().newPrint()
+    }
     this.drawPrint()
   }
 

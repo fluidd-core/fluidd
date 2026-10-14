@@ -1,8 +1,10 @@
 import { describe, expect, it, test } from 'vitest'
 import type { TemperaturePreset } from '@/store/config/types'
+import { defaultState } from '@/store/printer/state'
 import {
   clampTo,
   configShaper,
+  filamentSensorRole,
   ledCommand,
   ledPercent,
   parseShaperReport,
@@ -167,14 +169,115 @@ describe('Pro\'s tuning', () => {
     expect(shaperCommand('y', { type: 'mzv', freq: 38.2049 })).toBe('SET_INPUT_SHAPER SHAPER_TYPE_Y=mzv SHAPER_FREQ_Y=38.2')
   })
 
-  it('sets retraction and filament sensors', () => {
+  it('sets retraction', () => {
     expect(retractionCommand('unretract_extra_length', 0.05)).toBe('SET_RETRACTION UNRETRACT_EXTRA_LENGTH=0.05')
-    expect(sensorCommand('runout', false)).toBe('SET_FILAMENT_SENSOR SENSOR=runout ENABLE=0')
   })
 
   it('reads and sets an LED\'s brightness', () => {
     expect(ledPercent([[0.2, 0.8, 0.4, 0]])).toBe(80)
     expect(ledPercent(undefined)).toBe(0)
     expect(ledCommand('status', 40)).toBe('SET_LED LED=status RED=0.4 GREEN=0.4 BLUE=0.4 WHITE=0.4')
+  })
+})
+
+/**
+ * Klipper's configfile object for the M1's toolhead sensor, as core.cfg
+ * sets it: insert_gcode starts the automatic load, and it stays armed
+ * (Jack, 10 Oct 2026). `settings` is what Klipper loaded, `config` the
+ * file's raw text.
+ */
+const m1 = {
+  settings: {
+    'filament_switch_sensor filament_sensor_toolhead': {
+      pause_on_runout: false,
+      insert_gcode: 'INSERT_FILAMENT_SENSOR',
+      pause_delay: 0.5,
+      event_delay: 3,
+      debounce_delay: 0.2,
+      switch_pin: '!toolhead:gpio3'
+    }
+  },
+  config: {
+    'filament_switch_sensor filament_sensor_toolhead': {
+      pause_on_runout: 'False',
+      insert_gcode: 'INSERT_FILAMENT_SENSOR',
+      debounce_delay: '0.2',
+      switch_pin: '!toolhead:gpio3'
+    }
+  }
+}
+
+/** A stock runout sensor: it pauses the print, and nothing loads filament. */
+const runoutOnly = {
+  settings: {
+    'filament_switch_sensor runout': { pause_on_runout: true, runout_gcode: '', pause_delay: 0.5, event_delay: 3, switch_pin: '^PG12' }
+  },
+  config: {
+    'filament_switch_sensor runout': { switch_pin: '^PG12' }
+  }
+}
+
+describe('filament sensors and the automatic load', () => {
+  it('knows a sensor whose insert_gcode is set loads filament', () => {
+    expect(filamentSensorRole(m1, 'filament_sensor_toolhead')).toBe('loads')
+    expect(filamentSensorRole(runoutOnly, 'runout')).toBe('runout')
+  })
+
+  it('never turns off a sensor that loads filament', () => {
+    expect(sensorCommand('filament_sensor_toolhead', false, m1)).toBeNull()
+  })
+
+  it('turns a sensor that loads filament back on, and only on', () => {
+    expect(sensorCommand('filament_sensor_toolhead', true, m1)).toBe('SET_FILAMENT_SENSOR SENSOR=filament_sensor_toolhead ENABLE=1')
+    expect(sensorCommand('filament_sensor_toolhead', false, m1)).toBeNull()
+  })
+
+  it('turns a runout-only sensor off and on, beside one that loads filament', () => {
+    const both = {
+      settings: { ...m1.settings, ...runoutOnly.settings },
+      config: { ...m1.config, ...runoutOnly.config }
+    }
+    expect(sensorCommand('runout', false, both)).toBe('SET_FILAMENT_SENSOR SENSOR=runout ENABLE=0')
+    expect(sensorCommand('runout', true, both)).toBe('SET_FILAMENT_SENSOR SENSOR=runout ENABLE=1')
+    expect(sensorCommand('filament_sensor_toolhead', false, both)).toBeNull()
+  })
+
+  it('reads a motion sensor the same way', () => {
+    const motion = { settings: { 'filament_motion_sensor smart': { insert_gcode: 'LOAD_IT', detection_length: 7 } } }
+    expect(filamentSensorRole(motion, 'smart')).toBe('loads')
+    expect(sensorCommand('smart', false, motion)).toBeNull()
+  })
+
+  it('takes insert_gcode from the raw config when the settings lack it', () => {
+    const rawOnly = {
+      settings: { 'filament_switch_sensor filament_sensor_toolhead': { pause_on_runout: false } },
+      config: m1.config
+    }
+    expect(sensorCommand('filament_sensor_toolhead', false, rawOnly)).toBeNull()
+  })
+
+  it('matches the section whatever its case', () => {
+    const shouted = { settings: { 'filament_switch_sensor Filament_Sensor_Toolhead': { insert_gcode: 'INSERT_FILAMENT_SENSOR' } } }
+    expect(sensorCommand('filament_sensor_toolhead', false, shouted)).toBeNull()
+  })
+
+  it('treats an empty insert_gcode as no load', () => {
+    const empty = { settings: { 'filament_switch_sensor runout': { pause_on_runout: true, insert_gcode: '  \n' } } }
+    expect(filamentSensorRole(empty, 'runout')).toBe('runout')
+    expect(sensorCommand('runout', false, empty)).toBe('SET_FILAMENT_SENSOR SENSOR=runout ENABLE=0')
+  })
+
+  it('keeps every sensor on while the printer\'s settings are absent or still loading', () => {
+    // What the store holds before Klipper's configfile arrives: no sensor sections.
+    const loading = defaultState().printer.configfile
+    for (const configfile of [undefined, {}, { settings: {} }, loading, { config: runoutOnly.config }]) {
+      expect(filamentSensorRole(configfile, 'runout')).toBe('unknown')
+      expect(sensorCommand('runout', false, configfile)).toBeNull()
+      expect(sensorCommand('runout', true, configfile)).toBe('SET_FILAMENT_SENSOR SENSOR=runout ENABLE=1')
+    }
+  })
+
+  it('keeps on a sensor the settings do not name', () => {
+    expect(sensorCommand('other', false, runoutOnly)).toBeNull()
   })
 })

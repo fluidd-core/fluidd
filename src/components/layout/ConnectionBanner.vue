@@ -20,7 +20,7 @@
       <span>{{ detail }}</span>
     </div>
     <button
-      v-if="kind === 'reconnecting' && !trying"
+      v-if="kind !== 'quiet' && !trying"
       type="button"
       class="cbtn conn-bar__btn"
       data-tid="connection-try-now"
@@ -44,7 +44,7 @@ import { retryIn } from '@/services/connection/view'
 @Component({})
 export default class ConnectionBanner extends Mixins(ReconnectMixin) {
   @Prop({ type: String, required: true })
-  readonly kind!: 'reconnecting' | 'quiet'
+  readonly kind!: 'reconnecting' | 'quiet' | 'offline'
 
   /** A try is running now, rather than waiting its turn. */
   get trying (): boolean {
@@ -53,11 +53,12 @@ export default class ConnectionBanner extends Mixins(ReconnectMixin) {
 
   get title (): string {
     if (this.kind === 'quiet') return `No word from ${this.printerName} for a few seconds`
-    return `Lost touch with ${this.printerName}`
+    return this.kind === 'offline' ? 'Offline' : 'Reconnecting…'
   }
 
   get detail (): string {
     if (this.kind === 'quiet') return 'Probably a slow network. Nothing is lost.'
+    if (this.kind === 'offline') return `${this.printerName} has been offline for at least two minutes. The page keeps its last view.`
     const wait = this.retryInMs
     const when = this.trying ? 'Trying again now.' : wait !== null ? `Trying again in ${retryIn(wait)}.` : 'Not trying.'
     return `${when} The page keeps its last view.`
@@ -78,6 +79,10 @@ export default class ConnectionBanner extends Mixins(ReconnectMixin) {
 
   .conn-bar--reconnecting {
     background: color-mix(in srgb, var(--m3d-warning) 16%, var(--m3d-surface));
+  }
+
+  .conn-bar--offline {
+    background: var(--m3d-surface);
   }
 
   .conn-bar--quiet {

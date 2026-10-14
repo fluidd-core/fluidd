@@ -24,7 +24,13 @@
           v-bind="attrs"
           v-on="on"
         >
+          <foreign-silhouette
+            v-if="foreignRecord"
+            :form-factor="foreignRecord.formFactor"
+            class="printer-switch__silhouette"
+          />
           <printer-thumb
+            v-else
             :size="32"
             :state="thumbState"
           />
@@ -32,7 +38,7 @@
             <span class="printer-switch__name">{{ name }}</span>
             <span
               class="printer-switch__status"
-              :class="`printer-switch__status--${statusTone}`"
+              :class="`printer-switch__status--${switcherTone}`"
             >
               <span class="printer-switch__dot" />
               <span class="printer-switch__status-text">{{ statusLine }}</span>
@@ -59,7 +65,13 @@
         data-tid="printer-switch"
         @click="open = true"
       >
+        <foreign-silhouette
+          v-if="foreignRecord"
+          :form-factor="foreignRecord.formFactor"
+          class="printer-switch__silhouette"
+        />
         <printer-thumb
+          v-else
           :size="34"
           :state="thumbState"
         />
@@ -74,7 +86,7 @@
           </span>
           <span
             class="printer-switch__status"
-            :class="`printer-switch__status--${statusTone}`"
+            :class="`printer-switch__status--${switcherTone}`"
           >
             <span class="printer-switch__dot" />
             <span class="printer-switch__status-text">{{ statusLineShort }}</span>
@@ -105,21 +117,44 @@ import type { ThumbState } from '@/components/ui/PrinterThumb.vue'
 import type { TimeEstimates } from '@/store/printer/types'
 import { printerNameParts } from '@/util/printer-name'
 import { shortDuration } from '@/util/short-duration'
+import { foreignRecordForSlug, isForeignSlug } from '@/services/printer-pages'
+import { liveForeign } from '@/services/foreign-printers/live'
+import { emptyStatus } from '@/services/foreign-printers/adapters/base'
+import { FOREIGN_STATE_LABELS, FOREIGN_STATE_TONES, type ForeignStatus } from '@/services/foreign-printers/types'
+import type { PrinterStatusTone } from '@/mixins/printer-status'
+import ForeignSilhouette from '@/components/foreign/ForeignSilhouette.vue'
 
 /**
  * The printer you're on, top left: its picture, name and what it's doing,
  * on one line. It opens every printer: a menu on a computer, a sheet on a
  * phone. It is never hidden behind three dots, and never near the E-STOP.
  */
-@Component({ components: { PrinterSwitcher } })
+@Component({ components: { ForeignSilhouette, PrinterSwitcher } })
 export default class PrinterSwitchButton extends Mixins(PrinterStatusMixin) {
   @Prop({ type: Boolean })
   readonly phone?: boolean
 
   open = false
 
+  get foreignRecord () {
+    const slug = this.$route.params.printer
+    return isForeignSlug(slug) ? foreignRecordForSlug(slug) : undefined
+  }
+
+  get foreignStatus (): ForeignStatus | null {
+    return this.foreignRecord
+      ? liveForeign.status[this.foreignRecord.id] ?? emptyStatus()
+      : null
+  }
+
   get name (): string {
-    return printerNameParts(this.displayName).name
+    return this.foreignRecord?.name ?? printerNameParts(this.displayName).name
+  }
+
+  get switcherTone (): PrinterStatusTone {
+    if (!this.foreignStatus) return this.statusTone
+    const tone = FOREIGN_STATE_TONES[this.foreignStatus.state]
+    return ({ ok: 'ok', run: 'active', warn: 'warn', err: 'fault', off: 'off' } as const)[tone]
   }
 
   get thumbState (): ThumbState {
@@ -135,11 +170,12 @@ export default class PrinterSwitchButton extends Mixins(PrinterStatusMixin) {
   }
 
   get statusLine (): string {
+    if (this.foreignStatus) return FOREIGN_STATE_LABELS[this.foreignStatus.state]
     return this.timeLeft ? `${this.statusText} · ${this.timeLeft}` : this.statusText
   }
 
   get statusLineShort (): string {
-    return this.statusText
+    return this.statusLine
   }
 }
 </script>
@@ -206,6 +242,11 @@ export default class PrinterSwitchButton extends Mixins(PrinterStatusMixin) {
     font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .printer-switch__silhouette {
+    width: 32px;
+    height: 28px;
   }
 
   .printer-switch__status {

@@ -125,9 +125,28 @@ function writeStorage (key: string, value: string | null) {
   }
 }
 
+/**
+ * The production console's two names (KAN-414). control.muon3d.com is its name
+ * from KAN-404 on; app.muon3d.com keeps answering while printers and installed
+ * apps still use it. The console serves this page under either, and both are
+ * the same console: the same accounts, sessions and codes.
+ */
+export const CONSOLE_ORIGINS: readonly string[] = ['https://control.muon3d.com', 'https://app.muon3d.com']
+
+/** Whether `a` and `b` are one console: the same origin, or its two names. */
+export function sameConsole (a: string, b: string): boolean {
+  const x = a.replace(/\/$/, '')
+  const y = b.replace(/\/$/, '')
+  return x === y || (CONSOLE_ORIGINS.includes(x) && CONSOLE_ORIGINS.includes(y))
+}
+
 export function cloudBaseUrl (): string {
   const saved = readStorage(URL_KEY)
   if (saved) return saved.replace(/\/$/, '')
+  // A page the console serves talks to the console under the name it was
+  // opened by, whichever name the build was made for: its sign-in, its cookie
+  // and its redirect URI all belong to that name.
+  if (CONSOLE_ORIGINS.includes(window.location.origin)) return window.location.origin
   const configured = import.meta.env.VUE_MUON_CLOUD_URL as string | undefined
   if (configured) return configured.replace(/\/$/, '')
   return window.location.origin

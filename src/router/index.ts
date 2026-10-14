@@ -2,31 +2,34 @@ import Vue from 'vue'
 import VueRouter, { type NavigationGuard, type RouteConfig, type Route } from 'vue-router'
 import { applyLegacyHash } from './legacyHash'
 import { readSignedOut } from '@/services/account/signed-out-note'
-import { activeSlugNow } from './printerSlugSource'
+import { activeSlugNow, foreignSlugNow } from './printerSlugSource'
 import { PRINTER_PAGE_PATHS } from './printerPagePaths'
 import { ROUTE_SLUG_PATTERN } from '@/services/printer-pages/slug'
-
-// Views
-import Overview from '@/views/Overview.vue'
-import Console from '@/views/Console.vue'
-import GcodePreview from '@/views/GcodePreview.vue'
-import Jobs from '@/views/Jobs.vue'
-import Tune from '@/views/Tune.vue'
-import Control from '@/views/Control.vue'
-import Maintenance from '@/views/Maintenance.vue'
-import Diagnostics from '@/views/Diagnostics.vue'
-import History from '@/views/History.vue'
-import Timelapse from '@/views/Timelapse.vue'
-import Configure from '@/views/Configure.vue'
-import Settings from '@/views/Settings.vue'
 import Updating from '@/views/Updating.vue'
-import MacroCategorySettings from '@/components/settings/macros/MacroCategorySettings.vue'
-import Camera from '@/views/Camera.vue'
-import NotFound from '@/views/NotFound.vue'
-import Login from '@/views/Login.vue'
-import Icons from '@/views/Icons.vue'
-import LinkLanding from '@/views/LinkLanding.vue'
-import JoinLanding from '@/views/JoinLanding.vue'
+
+// Views. Every route is lazy (KAN-525) but Updating, which stays in the main
+// chunk: while the printer restarts into an update it can't serve a chunk.
+// The lazy ones that open printers must be lazy (a static import is a cycle:
+// they reach services/printer-pages, which reaches this router); now all are.
+const Overview = () => import('@/components/foreign/OverviewRoute.vue')
+const Console = () => import('@/views/Console.vue')
+const GcodePreview = () => import('@/views/GcodePreview.vue')
+const Jobs = () => import('@/components/foreign/JobsRoute.vue')
+const Tune = () => import('@/views/Tune.vue')
+const Control = () => import('@/views/Control.vue')
+const Maintenance = () => import('@/views/Maintenance.vue')
+const Diagnostics = () => import('@/views/Diagnostics.vue')
+const History = () => import('@/views/History.vue')
+const Timelapse = () => import('@/views/Timelapse.vue')
+const Configure = () => import('@/views/Configure.vue')
+const Settings = () => import('@/views/Settings.vue')
+const MacroCategorySettings = () => import('@/components/settings/macros/MacroCategorySettings.vue')
+const Camera = () => import('@/components/foreign/CameraRoute.vue')
+const NotFound = () => import('@/views/NotFound.vue')
+const Login = () => import('@/views/Login.vue')
+const Icons = () => import('@/views/Icons.vue')
+const LinkLanding = () => import('@/views/LinkLanding.vue')
+const JoinLanding = () => import('@/views/JoinLanding.vue')
 
 Vue.use(VueRouter)
 
@@ -43,6 +46,8 @@ const printerHome = () => {
 
 const defaultRouteConfig: Partial<RouteConfig> = {
   beforeEnter: (to, from, next) => {
+    const foreignRedirect = foreignPageRedirect(to)
+    if (foreignRedirect) return next(foreignRedirect)
     // A page for another printer opens that printer (services/printer-pages):
     // whether it wants a password is that printer's to say, not this one's.
     if (to.params.printer && to.params.printer !== activeSlugNow()) {
@@ -56,6 +61,12 @@ const defaultRouteConfig: Partial<RouteConfig> = {
   meta: {
     fileDropRoot: 'gcodes'
   }
+}
+
+function foreignPageRedirect (to: Route): string | null {
+  return foreignSlugNow(to.params.printer) && !['Dashboard', 'Jobs', 'Slice', 'Camera'].includes(String(to.name))
+    ? `/${to.params.printer}`
+    : null
 }
 
 /** One printer's pages: /boxwood-367a, /boxwood-367a/jobs (U1). */
@@ -135,7 +146,7 @@ const printerRoutes: Array<RouteConfig> = [
   },
   {
     // The printer updating. In the main chunk, not lazy: while the printer
-    // restarts it can't serve a chunk.
+    // restarts it can't serve a chunk (above).
     path: `${P}/updating`,
     name: 'Updating',
     component: Updating,
@@ -148,7 +159,7 @@ const printerRoutes: Array<RouteConfig> = [
     // fileDropRoot: a model dropped here is the slicer's, not an upload.
     path: `${P}/slice`,
     name: 'Slice',
-    component: () => import('@/views/Slice.vue'),
+    component: () => import('@/components/foreign/SliceRoute.vue'),
     beforeEnter: defaultRouteConfig.beforeEnter,
     meta: {
       printerIndependent: true,
@@ -454,6 +465,8 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  const foreignRedirect = foreignPageRedirect(to)
+  if (foreignRedirect) return next(foreignRedirect)
   router.app?.$store.commit('config/setContainerColumnCount', 2)
   next()
 })

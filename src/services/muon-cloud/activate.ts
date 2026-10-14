@@ -13,13 +13,8 @@ import { appInit } from '@/init'
 import type { InstanceConfig } from '@/store/config/types'
 import { Globals } from '@/globals'
 import { bindHttpClientToPrinterTransport } from '@/services/managed-session/httpTransportBinding'
-import {
-  createPrinterTransportForSelection,
-  type AuthorizedManagedRelaySession,
-  type PrinterTransport
-} from '@/services/managed-transport'
-import { managedEndpointFactory } from './iroh'
-import { cloudState, printerName, requestAccess, setActiveCloudPrinter } from './state'
+import { type PrinterTransport } from '@/services/managed-transport'
+import { borrowCloudPrinter, cloudState, printerName, setActiveCloudPrinter } from './state'
 import { MANAGED_API_URL, MANAGED_SOCKET_URL } from './origin'
 import { pageCanReach } from './discovery'
 
@@ -43,18 +38,6 @@ function releaseCurrent () {
   current = null
 }
 
-async function handoff (printerId: string): Promise<AuthorizedManagedRelaySession> {
-  const grant = await requestAccess(printerId)
-  return {
-    contractVersion: 'managed-iroh/v1',
-    sessionId: grant.grant_id,
-    tenantId: cloudState.account?.id ?? '',
-    printerId: grant.printer_id,
-    relayUrl: grant.relay_url,
-    expiresAt: new Date(grant.expires_at * 1000).toISOString()
-  }
-}
-
 /** Points Fluidd at a cloud printer. */
 export async function activateCloudPrinter (printerId: string) {
   const mine = ++generation
@@ -64,10 +47,7 @@ export async function activateCloudPrinter (printerId: string) {
   try {
     Vue.$socket?.releaseTransportSocket(true)
     releaseCurrent()
-    const transport = await createPrinterTransportForSelection(
-      { kind: 'managed-iroh', printerId },
-      { handoffSelectedPrinter: handoff, createManagedEndpoint: managedEndpointFactory }
-    )
+    const transport = await borrowCloudPrinter(printerId)
     if (mine !== generation) {
       transport.close()
       return

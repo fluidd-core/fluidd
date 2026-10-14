@@ -25,7 +25,7 @@
       </router-link>
 
       <div class="app-header__actions">
-        <app-status-alerts v-if="authenticated" />
+        <app-status-alerts v-if="!sectionContext.foreign && authenticated" />
         <button
           type="button"
           class="app-header__icon"
@@ -35,7 +35,7 @@
         >
           <frame-icon name="search" />
         </button>
-        <app-notification-menu v-if="authenticated && socketConnected" />
+        <app-notification-menu v-if="!sectionContext.foreign && authenticated && socketConnected" />
         <cloud-account-menu v-if="!printerFrame" />
       </div>
 
@@ -90,22 +90,22 @@
 
       <div class="app-header__actions">
         <app-save-config-and-restart-btn
-          v-if="socketConnected && klippyReady && authenticated && showSaveConfigAndRestartForPendingChanges"
+          v-if="!sectionContext.foreign && socketConnected && klippyReady && authenticated && showSaveConfigAndRestartForPendingChanges"
           :loading="hasWait($waits.onSaveConfig)"
           :disabled="printerPrinting || printerPaused"
           @click="saveConfigAndRestart"
         />
 
-        <app-status-alerts v-if="authenticated" />
+        <app-status-alerts v-if="!sectionContext.foreign && authenticated" />
 
         <app-upload-and-print-btn
-          v-if="printerFrame && authenticated && socketConnected && showUploadAndPrint"
+          v-if="printerFrame && !sectionContext.foreign && authenticated && socketConnected && showUploadAndPrint"
           :tooltip="uploadTooltip"
           @upload="handleUploadAndPrint"
         />
 
         <v-tooltip
-          v-if="printerFrame && authenticated && socketConnected && topNavPowerToggle"
+          v-if="!sectionContext.foreign && printerFrame && authenticated && socketConnected && topNavPowerToggle"
           bottom
         >
           <template #activator="{ on, attrs }">
@@ -127,7 +127,7 @@
           <span>{{ $t(`app.general.label.turn_device_${topNavPowerDeviceOn ? 'off' : 'on'}`, { device: topNavPowerToggle.name }) }}</span>
         </v-tooltip>
 
-        <app-notification-menu v-if="authenticated && socketConnected" />
+        <app-notification-menu v-if="!sectionContext.foreign && authenticated && socketConnected" />
 
         <v-tooltip
           v-if="enableKeyboardShortcuts && $vuetify.breakpoint.mdAndUp"
@@ -150,6 +150,7 @@
         </v-tooltip>
 
         <button
+          v-if="!sectionContext.foreign"
           type="button"
           role="switch"
           class="app-header__pro"
@@ -304,7 +305,7 @@ export default class AppBar extends Mixins(FrameMixin, ServicesMixin, FilesMixin
   }
 
   get showEstop (): boolean {
-    return this.printerFrame && this.authenticated && this.socketConnected
+    return !this.sectionContext.foreign && this.printerFrame && this.authenticated && this.socketConnected
   }
 
   /** A page with no printer names itself: Printers, Fleet, Slice. */

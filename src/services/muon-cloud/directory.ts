@@ -19,6 +19,7 @@ import { Globals } from '@/globals'
 import { isPrinter, type NearbyPrinter } from '@/services/muon-ble/nearby'
 import type { CloudPrinter } from './api'
 import type { PrinterStatus } from './state'
+import type { ForeignPrinterRecord, ForeignStatus } from '@/services/foreign-printers/types'
 import {
   lanAddresses,
   sameExactName,
@@ -28,6 +29,7 @@ import {
   type LanPrinter
 } from './discovery'
 import { searchRows, type SearchRow } from './searchRows'
+import { consolePresence } from './presence'
 
 /**
  * What the status icon says:
@@ -41,9 +43,9 @@ import { searchRows, type SearchRow } from './searchRows'
  * - `available`: found, and its state was not read (Discovery rows).
  */
 export type PrinterHealth =
-  'online' | 'printing' | 'paused' | 'connecting' | 'searching' | 'offline' | 'error' | 'locked' | 'available'
+  'online' | 'printing' | 'paused' | 'connecting' | 'reconnecting' | 'searching' | 'offline' | 'error' | 'locked' | 'available'
 
-export type DirectorySection = 'cloud' | 'local' | 'found'
+export type DirectorySection = 'cloud' | 'local' | 'found' | 'foreign'
 
 /** Who the printer is linked to, as far as this browser knows. */
 export type LinkedTo = 'mine' | 'other' | 'none' | 'unknown'
@@ -79,6 +81,7 @@ export interface DirectoryEntry {
   nearby?: NearbyPrinter;
   /** Discovery only: the row the welcome page would show, with its action. */
   row?: SearchRow;
+  foreign?: { record: ForeignPrinterRecord, status: ForeignStatus | null };
 }
 
 /** The printer Fluidd is connected to locally, read from its own socket. */
@@ -102,12 +105,14 @@ export interface DirectorySources {
   local: LocalLive | null;
   /** The search is still running, so a printer with no answer may yet answer. */
   searching: boolean;
+  foreign?: Array<{ record: ForeignPrinterRecord, status: ForeignStatus | null }>;
 }
 
 export interface Directory {
   cloud: DirectoryEntry[];
   local: DirectoryEntry[];
   found: DirectoryEntry[];
+  foreign?: DirectoryEntry[];
 }
 
 /**
@@ -160,6 +165,7 @@ export function healthLabel (h: PrinterHealth): string {
     case 'printing': return 'Printing'
     case 'paused': return 'Paused'
     case 'connecting': return 'Connecting…'
+    case 'reconnecting': return 'Reconnecting…'
     case 'searching': return 'Looking for it…'
     case 'offline': return 'Offline'
     case 'error': return 'Error'
@@ -169,9 +175,11 @@ export function healthLabel (h: PrinterHealth): string {
 }
 
 /** A cloud printer's state, from the service's online flag and its status reads over Iroh. */
-export function cloudHealth (online: boolean, s: PrinterStatus | undefined): PrinterHealth {
-  if (!online) return 'offline'
+export function cloudHealth (online: boolean, s: PrinterStatus | undefined, lastSeen = 0): PrinterHealth {
+  const presence = consolePresence({ online, last_seen: lastSeen })
+  if (presence !== 'online') return presence
   if (!s) return 'connecting'
+  if (!s.reachable && s.error === 'reconnecting') return 'reconnecting'
   if (!s.reachable) return s.error === 'offline' ? 'offline' : 'error'
   if (s.state === 'printing') return 'printing'
   if (s.state === 'paused') return 'paused'
@@ -191,6 +199,28 @@ function lanDetail (lan: LanPrinter): string {
   const h = lan.health
   const state = h ? (h.message ?? healthLabel(fromLanHealth(h))) : 'On this network'
   return `${state} · ${lan.host}`
+}
+
+export function foreignEntries (list: Array<{ record: ForeignPrinterRecord, status: ForeignStatus | null }>): DirectoryEntry[] {
+  return list.map(({ record, status }): DirectoryEntry => ({
+    key: `foreign:${record.id}`,
+    section: 'foreign',
+    name: record.name,
+    endpointId: null,
+    health: status?.state === 'printing'
+      ? 'printing'
+      : status?.state === 'paused'
+        ? 'paused'
+        : status?.state === 'idle'
+          ? 'online'
+          : status?.state ?? 'connecting',
+    detail: status?.message ?? (status?.state === 'idle' ? 'Ready' : status?.state ?? 'Connecting'),
+    host: record.host,
+    active: null,
+    linkedTo: 'none',
+    saved: [],
+    foreign: { record, status }
+  }))
 }
 
 export function printerDirectory (src: DirectorySources): Directory {
@@ -215,8 +245,8 @@ export function printerDirectory (src: DirectorySources): Directory {
     const localActive = !!activeLocal && saved.some(s => s.apiUrl === activeLocal)
     const active = src.activeCloudId === c.id ? 'cloud' : localActive ? 'local' : null
     const status = src.status[c.id]
-    let health = cloudHealth(c.online, status)
-    let detail = cloudDetail(c.online, status)
+    let health = cloudHealth(c.online, status, c.last_seen)
+    let detail = cloudDetail(c.online, status, c.last_seen)
     if (active === 'local' && src.local) {
       health = src.local.health
       detail = `${src.local.detail} · connected locally`
@@ -326,13 +356,16 @@ export function printerDirectory (src: DirectorySources): Directory {
     }
   })
 
-  return { cloud, local, found }
+  const foreign = foreignEntries(src.foreign ?? [])
+  return { cloud, local, found, foreign }
 }
 
 /** The line under a cloud printer's name. */
-export function cloudDetail (online: boolean, s: PrinterStatus | undefined): string {
-  if (!online) return 'Offline'
+export function cloudDetail (online: boolean, s: PrinterStatus | undefined, lastSeen = 0): string {
+  const presence = consolePresence({ online, last_seen: lastSeen })
+  if (presence !== 'online') return healthLabel(presence)
   if (!s) return 'Connecting through Muon3D…'
+  if (!s.reachable && s.error === 'reconnecting') return 'Reconnecting…'
   if (!s.reachable) return s.error === 'offline' ? 'Offline' : `Unreachable: ${s.error}`
   const state = (s.state ?? 'unknown').replace(/^\w/, c => c.toUpperCase())
   if (s.state === 'printing' || s.state === 'paused') {

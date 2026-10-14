@@ -29,7 +29,7 @@
       </div>
       <div class="app-page-header__actions">
         <control-actions v-if="currentSection && currentSection.id === 'control' && !isMobileViewport" />
-        <overview-actions v-if="overviewHome && !isMobileViewport" />
+        <overview-actions v-if="overviewHome && !foreignRecord && !isMobileViewport" />
         <maintenance-due v-if="currentPage === '/maintenance'" />
         <camera-actions v-if="currentSection && currentSection.id === 'camera' && !isMobileViewport" />
       </div>
@@ -69,6 +69,10 @@ import { cloudState } from '@/services/muon-cloud/state'
 import { jobName } from '@/services/printers-page/model'
 import { printerNameParts } from '@/util/printer-name'
 import type { TileTone } from '@/services/printers-page/model'
+import { foreignRecordForSlug, isForeignSlug } from '@/services/printer-pages'
+import { liveForeign } from '@/services/foreign-printers/live'
+import { emptyStatus } from '@/services/foreign-printers/adapters/base'
+import { FOREIGN_STATE_LABELS, FOREIGN_STATE_TONES, type ForeignStatus } from '@/services/foreign-printers/types'
 
 /**
  * A printer page's title on the left and its own actions on the right,
@@ -77,13 +81,24 @@ import type { TileTone } from '@/services/printers-page/model'
  */
 @Component({ components: { CameraActions, CameraTabs, ControlActions, OverviewActions, MaintenanceDue, TonePill } })
 export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin, PrinterStatusMixin) {
+  get foreignRecord () {
+    const slug = this.$route.params.printer
+    return isForeignSlug(slug) ? foreignRecordForSlug(slug) : undefined
+  }
+
+  get foreignStatus (): ForeignStatus | null {
+    return this.foreignRecord
+      ? liveForeign.status[this.foreignRecord.id] ?? emptyStatus()
+      : null
+  }
+
   /** Overview is the printer's own page: it is named by the printer, with its state beside it. */
   get overviewHome (): boolean {
     return this.currentSection?.id === 'overview' && this.currentPage === '/'
   }
 
   get title (): string {
-    if (this.overviewHome) return printerNameParts(this.displayName).name
+    if (this.overviewHome) return this.foreignRecord?.name ?? printerNameParts(this.displayName).name
     // Settings lists its own sections; Wi-Fi and System are named for themselves.
     if (this.currentSection?.id === 'settings') {
       const page = this.currentSection.pages.find(p => p.path !== '/settings' && this.isOn(p))
@@ -93,11 +108,13 @@ export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin, Print
   }
 
   get pillTone (): TileTone {
+    if (this.foreignStatus) return FOREIGN_STATE_TONES[this.foreignStatus.state]
     const tones: Record<string, TileTone> = { ok: 'ok', active: 'run', warn: 'warn', fault: 'err', off: 'off' }
     return tones[this.statusTone] ?? 'off'
   }
 
   get pillText (): string {
+    if (this.foreignStatus) return FOREIGN_STATE_LABELS[this.foreignStatus.state]
     if (!this.socketConnected) return 'Offline'
     if (!this.klippyReady) return 'Not ready'
     return this.$filters.prettyCase(this.printerState || 'ready')
@@ -107,6 +124,7 @@ export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin, Print
   get subtitle (): string {
     if (this.isMobileViewport) return ''
     if (this.overviewHome) {
+      if (this.foreignRecord) return ''
       const file = this.$store.state.printer.printer.print_stats?.filename as string | undefined
       const route = cloudState.activePrinterId ? 'Through Muon3D' : 'On this network'
       if ((this.printerPrinting || this.printerPaused) && file) {

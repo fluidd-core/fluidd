@@ -70,6 +70,13 @@
         />
       </template>
 
+      <p
+        v-if="sectionContext.foreign"
+        class="app-rail__foreign-note"
+      >
+        The printer's own screen does the rest.
+      </p>
+
       <div class="app-rail__spacer" />
 
       <network-quick-menu
@@ -216,6 +223,12 @@ export default class AppRail extends Mixins(FrameMixin, BrowserMixin) {
   .app-rail__spacer {
     flex: 1 1 auto;
     min-height: 16px;
+  }
+
+  .app-rail__foreign-note {
+    margin: 12px 8px;
+    color: var(--m3d-text-muted);
+    font-size: 12px;
   }
 
   .app-rail__route {

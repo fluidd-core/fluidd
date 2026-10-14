@@ -64,13 +64,18 @@ export class ManagedIrohPrinterTransport implements PrinterTransport {
     init: RequestInit | undefined,
     usage: ManagedTransportRequestUsage
   ): Promise<Response> {
+    this.assertOpen()
     this.updateStatus('connecting', usage)
     const relay = this.relay()
     try {
       const response = await (await relay).fetch(path, init)
+      this.assertOpen()
       this.updateStatus('connected', 'IdleStatus')
       return response
     } catch (error) {
+      // Cancelling an upload or file read must not disconnect every other
+      // caller of a shared relay, including the dashboard socket.
+      if (init?.signal?.aborted) throw error
       this.dropRelay(relay)
       this.markUnavailableUnlessClosed()
       throw error
@@ -78,6 +83,7 @@ export class ManagedIrohPrinterTransport implements PrinterTransport {
   }
 
   async openWebSocket (path: string): Promise<PrinterSocket> {
+    this.assertOpen()
     this.updateStatus('connecting', 'WebSocket')
     const relay = this.relay()
     try {
@@ -124,6 +130,10 @@ export class ManagedIrohPrinterTransport implements PrinterTransport {
       })
     }
     return this.relayPromise
+  }
+
+  private assertOpen () {
+    if (this.currentStatus.connection === 'closed') throw new Error('Managed Iroh printer selection is closed')
   }
 
   private async dial (generation: number): Promise<ManagedIrohRelay> {

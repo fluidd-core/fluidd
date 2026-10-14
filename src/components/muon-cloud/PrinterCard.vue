@@ -131,7 +131,7 @@ export default class PrinterCard extends Vue {
   readonly note!: string
 
   get spinning () {
-    return this.entry.health === 'connecting' || this.entry.health === 'searching'
+    return this.entry.health === 'connecting' || this.entry.health === 'reconnecting' || this.entry.health === 'searching'
   }
 
   get dim () {

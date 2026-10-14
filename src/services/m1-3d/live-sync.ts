@@ -1,5 +1,7 @@
 import type { ModelPose } from './pose'
 import { MotionPredictor, drawnAt, pointAt, type MotionPath, type MotionReport, type Vec3 } from './motion'
+import { AccessoryMotion, type AccessoryFrame } from './accessory-motion'
+import type { Accessories } from './accessories'
 
 /**
  * The live M1 kept in step with one printer: where its head and bed are
@@ -83,11 +85,17 @@ export interface SyncFrame {
   nib: [Vec3, Vec3] | null;
   /** Still moving: draw again soon. */
   moving: boolean;
+  /** The plate, umbilical, filament and spool as they are now. */
+  accessories: AccessoryFrame;
+  /** The part was taken off the plate; stop drawing it until the next print. */
+  partGone: boolean;
 }
 
 export class LiveSync {
   readonly predictor = new MotionPredictor()
   readonly trace = new PlateTrace()
+  readonly accessories = new AccessoryMotion()
+  partGone = false
   private path: MotionPath | null = null
   private pose: ModelPose = { x: null, y: null, z: null, led: false, progress: 0 }
   /** The segments the file says are done (read ahead of the nozzle); used only until the head is found on the file. */
@@ -114,6 +122,18 @@ export class LiveSync {
   /** The segments done by the file's read position, for when the head can't be followed along it. */
   setFileDone (segments: number) {
     this.fileDone = segments
+  }
+
+  /** The current accessory signals for this printer. */
+  setAccessories (a: Accessories, now: number, hasPart: boolean): void {
+    const carriesPrint = !this.partGone && (hasPart || this.trace.count > 0)
+    if (this.accessories.last?.plateOn === false && a.plateOn === true) this.partGone = true
+    this.accessories.set(a, now, carriesPrint)
+  }
+
+  /** A new print puts a part back on the plate. */
+  newPrint (): void {
+    this.partGone = false
   }
 
   private homed (): boolean {
@@ -184,7 +204,14 @@ export class LiveSync {
     const tip = this.trace.tip
     if (!nib && tip && predicted && !predicted.place && predicted.extruding && position) nib = [tip, position]
 
-    return { pose: shown, printDone, nib, moving: !!predicted?.moving || settling }
+    return {
+      pose: shown,
+      printDone,
+      nib,
+      moving: !!predicted?.moving || settling,
+      accessories: this.accessories.frame(now),
+      partGone: this.partGone
+    }
   }
 }
 
