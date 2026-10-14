@@ -20,7 +20,7 @@ import Configure from '@/views/Configure.vue'
 import System from '@/views/System.vue'
 import Settings from '@/views/Settings.vue'
 import MacroCategorySettings from '@/components/settings/macros/MacroCategorySettings.vue'
-import FullscreenCamera from '@/views/FullscreenCamera.vue'
+import Camera from '@/views/Camera.vue'
 import NotFound from '@/views/NotFound.vue'
 import Login from '@/views/Login.vue'
 import Icons from '@/views/Icons.vue'
@@ -166,9 +166,9 @@ const printerRoutes: Array<RouteConfig> = [
     ]
   },
   {
-    path: `${P}/camera/:cameraId`,
+    path: `${P}/camera/:cameraId?`,
     name: 'Camera',
-    component: FullscreenCamera,
+    component: Camera,
     ...defaultRouteConfig
   },
   {
@@ -193,6 +193,7 @@ const toPrinterPage = (to: Route) => {
 const LEGACY_PRINTER_PAGES = [
   ...PRINTER_PAGE_PATHS.filter(path => !['/slice', '/camera'].includes(path)),
   '/settings/macros/:categoryId',
+  '/camera',
   '/camera/:cameraId'
 ]
 

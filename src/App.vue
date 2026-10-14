@@ -584,6 +584,13 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
           EventBus.bus.$emit('upload-file')
         }
         return
+
+      case 'f':
+        if (this.$route.name === 'Camera') {
+          event.preventDefault()
+          EventBus.bus.$emit('camera-fullscreen')
+        }
+        return
     }
 
     if (!this.klippyReady) {

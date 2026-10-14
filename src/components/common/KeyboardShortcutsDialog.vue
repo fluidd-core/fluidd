@@ -162,6 +162,7 @@ export default class KeyboardShortcutsDialog extends Mixins(BrowserMixin) {
         title: 'Act on this printer',
         rows: [
           { keys: ['U'], what: 'Upload a file to print' },
+          { keys: ['F'], what: 'On Camera: full screen' },
           { keys: ['Shift', 'P'], what: 'Pause, or resume' },
           { keys: ['Shift', 'C'], what: 'Stop the print' },
           { keys: ['Shift', 'H'], what: 'Home all' },

@@ -12,6 +12,7 @@
           >
             {{ title }}
           </h1>
+          <camera-tabs v-if="currentSection && currentSection.id === 'camera'" />
           <tone-pill
             v-if="overviewHome"
             :tone="pillTone"
@@ -30,6 +31,7 @@
         <control-actions v-if="currentSection && currentSection.id === 'control' && !isMobileViewport" />
         <overview-actions v-if="overviewHome && !isMobileViewport" />
         <maintenance-due v-if="currentPage === '/maintenance'" />
+        <camera-actions v-if="currentSection && currentSection.id === 'camera' && !isMobileViewport" />
         <button
           v-if="canEditLayout"
           type="button"
@@ -72,6 +74,8 @@ import { pageMatches, type SectionPage } from '@/router/printerSections'
 import ControlActions from '@/components/control/ControlActions.vue'
 import OverviewActions from '@/components/overview/OverviewActions.vue'
 import MaintenanceDue from '@/components/maintenance/MaintenanceDue.vue'
+import CameraTabs from '@/components/camera/CameraTabs.vue'
+import CameraActions from '@/components/camera/CameraActions.vue'
 import TonePill from '@/components/printers/TonePill.vue'
 import PrinterStatusMixin from '@/mixins/printer-status'
 import { cloudState } from '@/services/muon-cloud/state'
@@ -84,7 +88,7 @@ import type { TileTone } from '@/services/printers-page/model'
  * with the section's pages as tabs under it (Jobs: Jobs, Preview, History,
  * Timelapse).
  */
-@Component({ components: { ControlActions, OverviewActions, MaintenanceDue, TonePill } })
+@Component({ components: { CameraActions, CameraTabs, ControlActions, OverviewActions, MaintenanceDue, TonePill } })
 export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin, PrinterStatusMixin) {
   /** Overview is the printer's own page: it is named by the printer, with its state beside it. */
   get overviewHome (): boolean {
