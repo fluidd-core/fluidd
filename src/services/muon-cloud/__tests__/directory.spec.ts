@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { printerDirectory, savedUpdates, type DirectorySources } from '../directory'
+import { foreignEntries, printerDirectory, savedUpdates, type DirectorySources } from '../directory'
 import type { CloudPrinter } from '../api'
 import type { CloudNearbyPrinter, LanPrinter } from '../discovery'
 import type { InstanceConfig } from '@/store/config/types'
+import type { ForeignPrinterRecord } from '@/services/foreign-printers/types'
 
 const BOXWOOD = 'f1f6920f'.repeat(8)
 const WALNUT = '0658ae04'.repeat(8)
@@ -51,6 +52,46 @@ function directory (sources: Partial<DirectorySources>) {
 }
 
 describe('one entry per printer', () => {
+  it('keeps browser-local foreign records separate from local and cloud printers', () => {
+    const record: ForeignPrinterRecord = {
+      id: 'foreign:octo',
+      kind: 'octoprint',
+      name: 'Octo',
+      host: '192.168.1.44',
+      via: 'direct',
+      formFactor: 'bed-slinger',
+      credentialsRef: null,
+      addedAt: 1
+    }
+    const d = directory({ foreign: [{ record, status: null }] })
+    expect(d.foreign).toHaveLength(1)
+    expect(d.foreign![0]).toMatchObject({ key: 'foreign:foreign:octo', section: 'foreign', host: record.host })
+    expect(d.cloud).toHaveLength(0)
+    expect(d.local).toHaveLength(0)
+  })
+
+  it('maps foreign status into directory health and detail', () => {
+    const record: ForeignPrinterRecord = {
+      id: 'foreign:moonraker',
+      kind: 'moonraker',
+      name: 'Workshop',
+      host: '192.168.1.42',
+      via: 'direct',
+      formFactor: 'bed-slinger',
+      credentialsRef: null,
+      addedAt: 1
+    }
+    expect(foreignEntries([
+      { record, status: { state: 'printing', message: 'Printing · 25%', file: null, progress: 0.25, timeLeft: null, temps: [], cameraUrl: null } },
+      { record: { ...record, id: 'idle' }, status: { state: 'idle', message: null, file: null, progress: null, timeLeft: null, temps: [], cameraUrl: null } },
+      { record: { ...record, id: 'unknown' }, status: null }
+    ])).toMatchObject([
+      { health: 'printing', detail: 'Printing · 25%' },
+      { health: 'online', detail: 'Ready' },
+      { health: 'connecting', detail: 'Connecting' }
+    ])
+  })
+
   it('lists Boxwood once, under Cloud, when it is linked, saved at an old address and found here', () => {
     // Jack's case of 2026-10-06: three Boxwood entries, one per way it was seen.
     const d = directory({

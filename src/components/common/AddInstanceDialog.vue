@@ -9,114 +9,289 @@
     data-tid="add-printer-dialog"
     @close="open = false"
   >
-    <p class="m3-dlg__text">
-      Type the name on the printer's screen, or its IP address.
-    </p>
-
-    <form
-      class="m3-field"
-      autocomplete="off"
-      @submit.prevent="submit"
+    <nav
+      class="aid__brands"
+      aria-label="Printer brand"
     >
-      <label
-        class="m3-field__box m3-field__box--mono"
-        :class="`m3-field__box--${tone}`"
+      <button
+        v-for="brand in brandChoices"
+        :key="brand.kind"
+        type="button"
+        class="aid__brand"
+        :class="{ 'aid__brand--selected': selectedKind === brand.kind }"
+        @click="selectBrand(brand.kind)"
       >
-        <frame-icon
-          name="search"
-          small
-        />
-        <input
-          ref="input"
-          v-model="url"
-          type="text"
-          inputmode="url"
-          autocapitalize="off"
-          spellcheck="false"
-          placeholder="muon-boxwood-367a.local"
-          aria-label="The printer's name or IP address"
-          data-tid="add-printer-address"
-        >
-      </label>
-      <span class="m3-dlg__note">
-        Such as <span class="aid__mono">muon-boxwood-367a.local</span> or <span class="aid__mono">192.168.1.20</span>
-      </span>
-    </form>
+        {{ brand.label }}
+        <small v-if="brand.via === 'm1'">needs an M1 on this network</small>
+      </button>
+    </nav>
 
-    <div
-      v-if="status"
-      class="aid__status"
-      :class="`aid__status--${tone}`"
-      role="status"
-      aria-live="polite"
-      data-tid="add-printer-status"
-    >
-      <span class="aid__status-icon">
-        <v-progress-circular
-          v-if="outcome === 'checking'"
-          indeterminate
-          size="16"
-          width="2"
-        />
-        <frame-icon
-          v-else
-          :name="statusIcon"
-          small
-        />
-      </span>
-      <div class="aid__status-text">
-        <b>{{ status.title }}</b>
-        <span
-          v-if="status.html"
-          v-html="status.html"
-        />
-        <span v-else-if="status.detail">{{ status.detail }}</span>
+    <section v-if="selectedKind === 'm1'">
+      <p class="m3-dlg__text">
+        Type the name on the printer's screen, or its IP address.
+      </p>
+
+      <form
+        class="m3-field"
+        autocomplete="off"
+        @submit.prevent="submit"
+      >
+        <label
+          class="m3-field__box m3-field__box--mono"
+          :class="`m3-field__box--${tone}`"
+        >
+          <frame-icon
+            name="search"
+            small
+          />
+          <input
+            ref="input"
+            v-model="url"
+            type="text"
+            inputmode="url"
+            autocapitalize="off"
+            spellcheck="false"
+            placeholder="muon-boxwood-367a.local"
+            aria-label="The printer's name or IP address"
+            data-tid="add-printer-address"
+          >
+        </label>
+        <span class="m3-dlg__note">
+          Such as <span class="aid__mono">muon-boxwood-367a.local</span> or <span class="aid__mono">192.168.1.20</span>
+        </span>
+      </form>
+
+      <div
+        v-if="status"
+        class="aid__status"
+        :class="`aid__status--${tone}`"
+        role="status"
+        aria-live="polite"
+        data-tid="add-printer-status"
+      >
+        <span class="aid__status-icon">
+          <v-progress-circular
+            v-if="outcome === 'checking'"
+            indeterminate
+            size="16"
+            width="2"
+          />
+          <frame-icon
+            v-else
+            :name="statusIcon"
+            small
+          />
+        </span>
+        <div class="aid__status-text">
+          <b>{{ status.title }}</b>
+          <span
+            v-if="status.html"
+            v-html="status.html"
+          />
+          <span v-else-if="status.detail">{{ status.detail }}</span>
+        </div>
       </div>
-    </div>
+
+      <section
+        v-if="found.length || searching"
+        class="aid__found"
+        data-tid="add-printer-found"
+      >
+        <h3 class="aid__found-head">
+          <frame-icon
+            name="wifi"
+            small
+          />
+          Found on this network
+          <v-progress-circular
+            v-if="searching"
+            indeterminate
+            size="11"
+            width="2"
+          />
+        </h3>
+        <button
+          v-for="f in found"
+          :key="f.key"
+          type="button"
+          class="aid__choice"
+          :data-tid="`add-printer-found-${f.key}`"
+          @click="pick(f)"
+        >
+          <printer-thumb :size="40" />
+          <span class="aid__choice-text">
+            <b>{{ f.name }}</b>
+            <span>{{ f.detail }}</span>
+          </span>
+          <span class="aid__choice-go">Add</span>
+        </button>
+        <p
+          v-if="!found.length"
+          class="m3-dlg__note"
+        >
+          Looking for printers on this network…
+        </p>
+      </section>
+    </section>
 
     <section
-      v-if="found.length || searching"
-      class="aid__found"
-      data-tid="add-printer-found"
+      v-else-if="selectedBrand?.via === 'm1'"
+      class="aid__bridge"
     >
-      <h3 class="aid__found-head">
-        <frame-icon
-          name="wifi"
-          small
-        />
-        Found on this network
-        <v-progress-circular
-          v-if="searching"
-          indeterminate
-          size="11"
-          width="2"
-        />
-      </h3>
-      <button
-        v-for="f in found"
-        :key="f.key"
-        type="button"
-        class="aid__choice"
-        :data-tid="`add-printer-found-${f.key}`"
-        @click="pick(f)"
-      >
-        <printer-thumb :size="40" />
-        <span class="aid__choice-text">
-          <b>{{ f.name }}</b>
-          <span>{{ f.detail }}</span>
-        </span>
-        <span class="aid__choice-go">Add</span>
-      </button>
+      <p>{{ selectedBrand.label }} needs an M1 bridge on this network.</p>
+      <ol>
+        <li
+          v-for="step in selectedBrand.steps"
+          :key="step"
+        >
+          {{ step }}
+        </li>
+      </ol>
+      <a
+        v-if="selectedBrand.docs"
+        :href="selectedBrand.docs"
+        target="_blank"
+        rel="noopener"
+      >Open the manufacturer's setup guide</a>
+    </section>
+
+    <section
+      v-else-if="selectedBrand"
+      class="aid__foreign"
+    >
       <p
-        v-if="!found.length"
+        v-if="mixedContentWarning"
+        class="aid__warning"
+      >
+        Firefox and Safari block this page (https) from talking to a printer on plain http — that's mixed content. Chrome can reach printers on your network: open Fluidd in Chrome.
+      </p>
+      <p class="m3-dlg__text">
+        {{ selectedBrand.label }} stays on this network and in this browser.
+      </p>
+      <p class="m3-dlg__note">
+        In Chrome on a computer or Android, allow local network access when asked.
+      </p>
+      <label class="m3-field">
+        <span class="m3-dlg__note">Printer address</span>
+        <input
+          v-model.trim="foreignHost"
+          class="aid__input"
+          placeholder="192.168.1.20"
+          autocomplete="off"
+        >
+      </label>
+      <label class="m3-field">
+        <span class="m3-dlg__note">Name</span>
+        <input
+          v-model.trim="foreignName"
+          class="aid__input"
+          :placeholder="selectedBrand.model || selectedBrand.label"
+        >
+      </label>
+      <label class="m3-field">
+        <span class="m3-dlg__note">Model</span>
+        <input
+          v-model.trim="foreignModel"
+          class="aid__input"
+          :placeholder="selectedBrand.model || 'Model'"
+        >
+      </label>
+      <label class="m3-field">
+        <span class="m3-dlg__note">Form factor</span>
+        <select
+          v-model="formFactor"
+          class="aid__input"
+        >
+          <option value="enclosed">Enclosed</option>
+          <option value="open-frame">Open frame</option>
+          <option value="bed-slinger">Bed slinger</option>
+        </select>
+      </label>
+      <label
+        v-if="selectedKind === 'moonraker' || selectedKind === 'octoprint'"
+        class="m3-field"
+      >
+        <span class="m3-dlg__note">{{ selectedKind === 'octoprint' ? 'Application key' : 'API key (optional)' }}</span>
+        <input
+          v-model="apiKey"
+          class="aid__input"
+          type="password"
+          autocomplete="off"
+        >
+      </label>
+      <div
+        v-if="selectedKind === 'octoprint'"
+        class="aid__steps"
+      >
+        <button
+          type="button"
+          class="cbtn cbtn--ghost"
+          @click="askOctoPrintForKey"
+        >
+          Ask OctoPrint for a key
+        </button>
+        <span>{{ appKeyMessage }}</span>
+      </div>
+      <label
+        v-if="selectedKind === 'moonraker' || selectedKind === 'octoprint'"
+        class="aid__remember"
+      >
+        <input
+          v-model="rememberCredentials"
+          :disabled="!canRememberCredentials"
+          type="checkbox"
+        >
+        Remember on this device
+      </label>
+      <p
+        v-if="!canRememberCredentials && (selectedKind === 'moonraker' || selectedKind === 'octoprint')"
         class="m3-dlg__note"
       >
-        Looking for printers on this network…
+        To remember this key, open Fluidd over HTTPS in Chrome. Here, it lasts for this session.
       </p>
+      <p
+        v-if="probeMessage"
+        class="m3-dlg__note"
+        role="status"
+      >
+        {{ probeMessage }}
+      </p>
+      <div
+        v-if="selectedKind === 'moonraker'"
+        class="aid__setup"
+      >
+        <p>Allow this browser in Moonraker:</p>
+        <pre>[authorization]
+cors_domains:
+        {{ currentOrigin }}</pre>
+        <button
+          type="button"
+          class="cbtn cbtn--ghost"
+          @click="copyMoonrakerSetup"
+        >
+          Copy
+        </button>
+        <p>Restart Moonraker.</p>
+      </div>
+      <p
+        v-if="selectedBrand.steps.length"
+        class="m3-dlg__note"
+      >
+        {{ selectedBrand.steps.join(' ') }}
+      </p>
+      <button
+        type="button"
+        class="cbtn cbtn--primary"
+        :disabled="probing || !foreignHost.trim()"
+        @click="probeForeign"
+      >
+        {{ probing ? 'Checking…' : 'Check printer' }}
+      </button>
     </section>
 
     <template #actions>
       <button
+        v-if="selectedKind === 'm1'"
         type="button"
         class="cbtn cbtn--ghost"
         data-tid="add-printer-cancel"
@@ -125,6 +300,7 @@
         Cancel
       </button>
       <button
+        v-if="selectedKind === 'm1'"
         type="button"
         class="cbtn cbtn--primary"
         :disabled="!verified"
@@ -132,6 +308,15 @@
         @click="addInstance"
       >
         {{ addLabel }}
+      </button>
+      <button
+        v-else-if="selectedBrand?.via === 'direct'"
+        type="button"
+        class="cbtn cbtn--primary"
+        :disabled="!foreignVerified"
+        @click="saveForeignPrinter"
+      >
+        Add printer
       </button>
     </template>
   </m3-dialog>
@@ -149,6 +334,13 @@ import { escapeHtml, pageBlocksPrinter, printerPageUrl } from '@/util/page-block
 import { discoveryState, instanceFor, pageBlocksLanIpv4, probeAddress, type LanPrinter } from '@/services/muon-cloud/discovery'
 import M3Dialog from '@/components/ui/M3Dialog.vue'
 import PrinterThumb from '@/components/ui/PrinterThumb.vue'
+import { requestOctoPrintKey } from '@/services/foreign-printers/appkeys'
+import { FOREIGN_BRANDS, foreignBrand } from '@/services/foreign-printers/brands'
+import type { ForeignKind, FormFactor } from '@/services/foreign-printers/types'
+import { lanFetch } from '@/services/muon-cloud/discovery'
+import { blocksForeignHttp } from '@/util/browser-family'
+import { localHost } from '@/services/foreign-printers/address'
+import { v4 as uuidv4 } from 'uuid'
 
 /** A printer found on this network that isn't saved yet: one tap adds it. */
 export interface FoundChoice {
@@ -201,11 +393,158 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   /** The Muon3D printer that answered for what was typed, by IP address or by name. */
   resolved: LanPrinter | null = null
   url = ''
+  selectedKind: ForeignKind | 'm1' = 'm1'
+  foreignHost = ''
+  foreignName = ''
+  foreignModel = ''
+  formFactor: FormFactor = 'bed-slinger'
+  apiKey = ''
+  rememberCredentials = false
+  probing = false
+  foreignVerified = false
+  probeMessage = ''
+  appKeyMessage = ''
 
   abortController?: AbortController = undefined
 
   mounted () {
     this.$nextTick(() => (this.$refs.input as HTMLInputElement | undefined)?.focus())
+  }
+
+  get brandChoices () {
+    return [{ kind: 'm1' as const, label: 'Muon3D M1', via: 'direct' as const }, ...FOREIGN_BRANDS]
+  }
+
+  get selectedBrand () {
+    return this.selectedKind === 'm1' ? null : foreignBrand(this.selectedKind)
+  }
+
+  get mixedContentWarning () {
+    return blocksForeignHttp() && pageBlocksPrinter(`http://${this.foreignHost}`)
+  }
+
+  get currentOrigin () { return location.origin }
+  get canRememberCredentials () { return !!crypto.subtle }
+
+  @Watch('foreignHost')
+  @Watch('apiKey')
+  invalidateForeignProbe () {
+    this.foreignVerified = false
+    this.probeMessage = ''
+  }
+
+  selectBrand (kind: ForeignKind | 'm1') {
+    this.selectedKind = kind
+    this.foreignVerified = false
+    this.probeMessage = ''
+    this.apiKey = ''
+    this.rememberCredentials = false
+    this.appKeyMessage = ''
+    if (kind !== 'm1') {
+      const brand = foreignBrand(kind)
+      this.foreignModel = brand.model ?? ''
+      this.foreignName = brand.model || brand.label
+      this.formFactor = brand.formFactor
+    }
+  }
+
+  async probeForeign () {
+    if (!this.selectedBrand || this.selectedBrand.via !== 'direct') return
+    this.probing = true
+    this.foreignVerified = false
+    this.probeMessage = ''
+    const address = this.foreignHost.trim()
+    const kind = this.selectedKind
+    const key = this.apiKey
+    const current = () => this.selectedKind === kind && this.foreignHost.trim() === address && this.apiKey === key
+    const timeout = (promise: Promise<any>) => Promise.race([
+      promise,
+      new Promise((_resolve, reject) => setTimeout(() => reject(new Error('Check timed out')), 5000))
+    ])
+    try {
+      const host = localHost(address)
+      if (kind === 'moonraker') {
+        const headers = key ? { 'X-Api-Key': key } : undefined
+        const response = await timeout(lanFetch(`http://${host}/server/info`, { headers, cache: 'no-store', redirect: 'error' }))
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        await response.json()
+      } else if (kind === 'octoprint') {
+        const headers = key ? { 'X-Api-Key': key } : undefined
+        const response = await timeout(lanFetch(`http://${host}/api/version`, { headers, cache: 'no-store', redirect: 'error' }))
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        await response.json()
+      } else {
+        await timeout(new Promise<void>((resolve, reject) => {
+          const creality = kind === 'creality'
+          const hostname = new URL(`http://${host}`).hostname
+          const socket = new WebSocket(creality ? `ws://${hostname}:9999` : `ws://${hostname}:3030/websocket`, creality ? 'wsslicer' : undefined)
+          const timer = setTimeout(() => { socket.close(); reject(new Error('Check timed out')) }, 5000)
+          socket.onopen = () => {
+            if (creality) socket.send(JSON.stringify({ method: 'get', params: { ReqPrinterPara: 1 } }))
+            else socket.send(JSON.stringify({ Id: '', Data: { Cmd: 1, Data: {}, RequestID: uuidv4().replace(/-/g, ''), MainboardID: '', TimeStamp: Math.floor(Date.now() / 1000), From: 1 }, Topic: 'sdcp/request/' }))
+          }
+          socket.onmessage = event => {
+            if (!creality) {
+              try { if (!JSON.parse(event.data).MainboardID) return } catch { return }
+            }
+            clearTimeout(timer)
+            socket.close()
+            resolve()
+          }
+          socket.onerror = () => { clearTimeout(timer); socket.close(); reject(new Error('Could not reach the printer')) }
+        }))
+      }
+      if (!current()) return
+      this.foreignVerified = true
+      this.probeMessage = 'Printer found.'
+    } catch (error) {
+      if (current()) this.probeMessage = error instanceof Error ? error.message : 'Could not reach the printer.'
+    } finally {
+      this.probing = false
+    }
+  }
+
+  async askOctoPrintForKey () {
+    const address = this.foreignHost.trim()
+    try {
+      const host = localHost(address)
+      const key = await requestOctoPrintKey(host, { fetch: lanFetch }, {
+        onPending: () => { this.appKeyMessage = 'Approve in OctoPrint.' }
+      })
+      if (this.selectedKind !== 'octoprint' || this.foreignHost.trim() !== address) return
+      if (key === null) {
+        this.appKeyMessage = 'App keys are not available here. Enter an API key above.'
+        return
+      }
+      this.apiKey = key
+      this.appKeyMessage = 'API key approved.'
+    } catch (error) {
+      this.appKeyMessage = error instanceof Error && error.message === 'denied'
+        ? 'The key request was denied or timed out.'
+        : error instanceof Error ? error.message : 'Could not request an API key.'
+    }
+  }
+
+  async copyMoonrakerSetup () {
+    await navigator.clipboard?.writeText(`[authorization]\ncors_domains:\n  ${location.origin}`)
+  }
+
+  async saveForeignPrinter () {
+    if (!this.selectedBrand || !this.foreignVerified) return
+    const { saveForeign } = await import('@/services/foreign-printers/store')
+    await saveForeign({
+      kind: this.selectedKind as ForeignKind,
+      name: this.foreignName || this.foreignModel || this.selectedBrand.label,
+      model: this.foreignModel || undefined,
+      host: this.foreignHost,
+      via: 'direct',
+      formFactor: this.formFactor
+    }, this.apiKey ? { apiKey: this.apiKey } : null, { remember: this.rememberCredentials })
+    const live = await import('@/services/foreign-printers/live')
+    await live.refreshForeign()
+    await live.connectAll()
+    this.open = false
+    this.$emit('saved')
   }
 
   /**
@@ -263,7 +602,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
       case 'locked':
         return { title: `${name ?? 'This printer'} wants you to sign in`, detail: 'Add it, then sign in on its page.' }
       case 'klipper':
-        return { title: "A printer answered, but it isn't a Muon printer", detail: "You can still add it. The parts of this page made for Muon printers won't work with it." }
+        return { title: "A printer answered, but it isn't a Muon printer", detail: 'Set it up as Klipper to keep it in Other printers, with its own controls.' }
       case 'cors':
         return { title: "It answered, but won't let this page in", html: this.note ?? undefined }
       case 'blocked':
@@ -281,6 +620,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   }
 
   get addLabel (): string {
+    if (this.outcome === 'klipper') return 'Set up as Klipper'
     if ((this.outcome === 'muon' || this.outcome === 'locked') && this.resolved) return `Add ${this.resolved.name}`
     return 'Add printer'
   }
@@ -458,6 +798,11 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   addInstance () {
     if (!this.verified) return
     const apiConfig = this.resolved ? instanceFor(this.resolved) : this.$filters.getApiUrls(this.url)
+    if (this.outcome === 'klipper') {
+      this.selectBrand('moonraker')
+      this.foreignHost = new URL(apiConfig.apiUrl).host
+      return
+    }
     this.open = false
     this.$emit('resolve', apiConfig)
   }
@@ -471,6 +816,76 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
+  .aid__brands {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .aid__brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 9px 11px;
+    border: 1px solid var(--m3d-border);
+    border-radius: 12px;
+    color: var(--m3d-text);
+    text-align: left;
+  }
+
+  .aid__brand--selected {
+    border-color: var(--m3d-accent);
+  }
+
+  .aid__brand small,
+  .aid__bridge,
+  .aid__steps,
+  .aid__warning {
+    color: var(--m3d-text-muted);
+    font-size: 12px;
+  }
+
+  .aid__input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--m3d-border);
+    border-radius: 10px;
+    background: var(--m3d-surface);
+    color: var(--m3d-text);
+  }
+
+  .aid__foreign,
+  .aid__bridge {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .aid__foreign .m3-field {
+    gap: 5px;
+  }
+
+  .aid__remember {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .aid__setup {
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--m3d-surface-2);
+  }
+
+  .aid__setup pre {
+    white-space: pre-wrap;
+  }
+
+  .aid__warning {
+    color: var(--m3d-warning);
+  }
+
   .aid__mono {
     font-family: var(--m3d-font-mono);
   }
