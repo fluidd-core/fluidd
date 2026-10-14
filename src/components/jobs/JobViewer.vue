@@ -110,33 +110,7 @@
               <dd>{{ layerMoves.toLocaleString() }}</dd>
             </div>
           </dl>
-          <div
-            class="jv__toggles"
-            role="group"
-            aria-label="Show"
-          >
-            <button
-              v-for="t in toggles"
-              :key="t.key"
-              type="button"
-              class="jv__chip"
-              :class="{ 'jv__chip--on': t.on }"
-              :aria-pressed="t.on ? 'true' : 'false'"
-              @click="setOption(t.key, !t.on)"
-            >
-              {{ t.label }}
-            </button>
-            <button
-              type="button"
-              class="jv__chip"
-              :class="{ 'jv__chip--on': zoomed }"
-              :aria-pressed="zoomed ? 'true' : 'false'"
-              data-tid="job-viewer-zoom"
-              @click="zoomed = !zoomed"
-            >
-              Zoom to the part
-            </button>
-          </div>
+          <viewer-toggles />
           <label
             v-if="job && job.printing"
             class="jv__follow"
@@ -188,18 +162,17 @@ import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import type { JobFile } from '@/mixins/jobs'
-import type { Layer, ViewerOptions } from '@/store/gcodePreview/types'
+import type { Layer } from '@/store/gcodePreview/types'
 import { fileSize } from '@/services/jobs/model'
 import { activeSlug } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
 import GcodePreview from '@/components/widgets/gcode-preview/GcodePreview.vue'
 import RangeSlider from '@/components/control/RangeSlider.vue'
 import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
+import ViewerToggles from './ViewerToggles.vue'
 
 /** After the first file's layers are asked for, the next file's load once the cursor rests this long. */
 const AUTO_LOAD_MS = 600
-
-type Toggle = keyof Pick<ViewerOptions, 'showMoves' | 'showExtrusions' | 'showRetractions' | 'showPreviousLayer' | 'showNextLayer' | 'showParts'>
 
 /**
  * Pro Jobs' G-code viewer: the file the table's cursor is on, its picture
@@ -207,7 +180,7 @@ type Toggle = keyof Pick<ViewerOptions, 'showMoves' | 'showExtrusions' | 'showRe
  * which is slow on a printer's Wi-Fi), then its layers with a slider,
  * what's drawn, and following the print when it's the one printing.
  */
-@Component({ components: { GcodePreview, RangeSlider, ToggleSwitch } })
+@Component({ components: { GcodePreview, RangeSlider, ToggleSwitch, ViewerToggles } })
 export default class JobViewer extends Mixins(StateMixin, FilesMixin) {
   @Prop({ type: Object, default: null })
   readonly job!: JobFile | null
@@ -277,32 +250,6 @@ export default class JobViewer extends Mixins(StateMixin, FilesMixin) {
     const from = this.layers[this.layer]?.move ?? 0
     const to = this.layers[this.layer + 1]?.move ?? moves
     return Math.max(0, to - from)
-  }
-
-  get toggles (): Array<{ key: Toggle, label: string, on: boolean }> {
-    const option = (key: Toggle) => !!this.$store.getters['gcodePreview/getViewerOption'](key)
-    const list: Array<[Toggle, string]> = [
-      ['showExtrusions', 'Extrusions'],
-      ['showMoves', 'Travel'],
-      ['showRetractions', 'Retractions'],
-      ['showPreviousLayer', 'Layer below'],
-      ['showNextLayer', 'Layer above'],
-      ['showParts', 'Objects']
-    ]
-    return list.map(([key, label]) => ({ key, label, on: option(key) }))
-  }
-
-  setOption (key: Toggle, value: boolean) {
-    this.$store.commit('gcodePreview/setViewerState', { [key]: value })
-  }
-
-  /** The full-screen viewer's magnifier: one saved setting, so both views zoom alike. */
-  get zoomed (): boolean {
-    return !!this.$store.state.config.uiSettings.gcodePreview.autoZoom
-  }
-
-  set zoomed (value: boolean) {
-    this.$store.dispatch('config/saveByPath', { path: 'uiSettings.gcodePreview.autoZoom', value, server: true })
   }
 
   get follow (): boolean {
@@ -550,27 +497,6 @@ export default class JobViewer extends Mixins(StateMixin, FilesMixin) {
       font-weight: 600;
       font-variant-numeric: tabular-nums;
     }
-  }
-
-  .jv__toggles {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .jv__chip {
-    height: 32px;
-    padding: 0 12px;
-    border-radius: 999px;
-    box-shadow: inset 0 0 0 1px var(--m3d-border-strong);
-    color: var(--m3d-text-muted);
-    font-size: 13px;
-  }
-
-  .jv__chip--on {
-    background: rgba(128, 214, 209, 0.14);
-    box-shadow: inset 0 0 0 1px rgba(128, 214, 209, 0.5);
-    color: var(--m3d-accent);
   }
 
   .jv__follow {

@@ -70,7 +70,7 @@ describe('WifiManagerCard under network protection (SEC-8)', () => {
     await vi.advanceTimersByTimeAsync(11000)
 
     expect(wrapper.find('protectednotice-stub').exists()).toBe(true)
-    expect(wrapper.find('v-simple-table-stub').exists()).toBe(false)
+    expect(wrapper.find('[data-tid=wifi-networks]').exists()).toBe(false)
     expect(wifiScan).not.toHaveBeenCalled()
     wrapper.destroy()
   })
@@ -79,7 +79,7 @@ describe('WifiManagerCard under network protection (SEC-8)', () => {
     const wrapper = shallowMount(WifiManagerCard, { mocks: mocks(false) })
     await vi.advanceTimersByTimeAsync(0)
 
-    expect(wrapper.find('v-simple-table-stub').exists()).toBe(true)
+    expect(wrapper.find('[data-tid=wifi-networks]').exists()).toBe(true)
     expect(wifiScan).toHaveBeenCalledTimes(1)
     wrapper.destroy()
   })
@@ -130,7 +130,7 @@ describe('WifiManagerCard over Iroh (07 §3)', () => {
     await vi.advanceTimersByTimeAsync(11000)
 
     expect(wrapper.text()).toContain('app.wifi.remote_read_only')
-    expect(wrapper.find('v-simple-table-stub').exists()).toBe(false)
+    expect(wrapper.find('[data-tid=wifi-networks]').exists()).toBe(false)
     expect(wifiScan).not.toHaveBeenCalled()
     expect(wifiDetails).not.toHaveBeenCalled()
     wrapper.destroy()
