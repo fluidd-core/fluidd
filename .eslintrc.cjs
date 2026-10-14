@@ -2,7 +2,7 @@ module.exports = {
   root: true,
   // Apache-2.0 code copied from @muon3d/printer-client as it is (its own style):
   // tools/vendor-printer-client.cjs.
-  ignorePatterns: ['src/services/slicer-bridge/vendor/**'],
+  ignorePatterns: ['src/services/slicer-bridge/vendor/**', 'src/services/m1-3d/vendor/*.js'],
   extends: [
     'plugin:vue/recommended',
     'eslint:recommended',
