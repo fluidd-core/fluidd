@@ -5,9 +5,17 @@ import Components from 'unplugin-vue-components/vite'
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
 import { defineConfig } from 'vitest/config'
 
+// vite-plugin-pwa supplies virtual:pwa-register, and unit tests don't load it.
+// RegisterServiceWorker.vue imports it, so a spec that imports App.vue needs a stand-in.
+const pwaRegisterStub = {
+  name: 'pwa-register-stub',
+  resolveId: (id: string) => id === 'virtual:pwa-register' ? '\0virtual:pwa-register' : undefined,
+  load: (id: string) => id === '\0virtual:pwa-register' ? 'export function registerSW () { return () => Promise.resolve() }' : undefined
+}
+
 // Keep unit tests independent of Vite's development server and production build plugins.
 export default defineConfig({
-  plugins: [vue(), content(), Components({
+  plugins: [pwaRegisterStub, vue(), content(), Components({
     dts: false,
     dirs: ['src/components/common', 'src/components/layout', 'src/components/ui'],
     resolvers: [VuetifyResolver()]
