@@ -41,18 +41,15 @@
         }"
         class="constrained-width muon-content pa-2 pa-sm-4"
       >
-        <app-page-title v-if="showPageHeader" />
+        <app-page-title
+          v-if="showPageHeader"
+          :class="{ 'muon-stale': connection.stale }"
+        />
 
-        <v-alert
-          v-if="socketStalled"
-          dense
-          text
-          type="warning"
-          class="mb-2"
-          data-tid="socket-stalled"
-        >
-          {{ $t('app.socket.msg.stalled') }}
-        </v-alert>
+        <connection-banner
+          v-if="connection.banner"
+          :kind="connection.banner"
+        />
 
         <printer-opening
           v-if="otherPrinterRoute"
@@ -60,24 +57,17 @@
         />
 
         <router-view
-          v-else-if="
-            managedConsoleRoute ||
-              printerIndependentRoute ||
-              (socketConnected && apiConnected) ||
-              (!authenticated && apiConnected)
-          "
+          v-else-if="connection.page"
+          :class="{ 'muon-stale': connection.stale }"
+          :aria-busy="connection.stale ? 'true' : undefined"
         />
 
         <register-service-worker />
       </v-container>
 
-      <socket-disconnected
-        v-if="
-          !managedConsoleRoute && !printerIndependentRoute && !otherPrinterRoute && (
-            (!socketConnected && !apiConnected) ||
-            (!socketConnected && authenticated)
-          )
-        "
+      <connecting-screen
+        v-if="connection.screen"
+        :state="connection.screen"
       />
 
       <template v-if="!managedConsoleRoute">
@@ -120,6 +110,9 @@ import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '.
 import { isManagedConsolePath } from '@/router/managedPath'
 import { activeSlug, isActiveSlug, printerPageNeedsLogin, samePageFor, stepPrinter } from '@/services/printer-pages'
 import PrinterOpening from './components/muon-cloud/PrinterOpening.vue'
+import ConnectionBanner from './components/layout/ConnectionBanner.vue'
+import ConnectingScreen from './components/layout/ConnectingScreen.vue'
+import { connectionView, type ConnectionView } from '@/services/connection/view'
 import FrameMixin from '@/mixins/frame'
 import { ALL_PRINTERS_KEY, PAGE_KEYS, sectionForKey } from '@/router/printerSections'
 import { scopedPath } from '@/router/printerPagePaths'
@@ -137,6 +130,8 @@ import JobReadyDialog from './components/jobs/JobReadyDialog.vue'
     }
   },
   components: {
+    ConnectionBanner,
+    ConnectingScreen,
     PrinterOpening,
     JobReadyDialog,
     SpoolSelectionDialog,
@@ -231,6 +226,34 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     return this.$store.state.socket.stalled && this.$store.state.socket.open
   }
 
+  /** Fluidd has reached the printer it is on since it was chosen, so a drop keeps the page. */
+  wasConnected = false
+
+  @Watch('socketConnected', { immediate: true })
+  onSocketConnected (connected: boolean) {
+    if (connected) this.wasConnected = true
+  }
+
+  /** Another printer: nothing has been reached yet. */
+  @Watch('$store.state.config.apiUrl')
+  onPrinterChanged () {
+    this.wasConnected = this.socketConnected
+  }
+
+  /** What the connection shows: the page, a bar over it, or a screen of its own (services/connection/view). */
+  get connection (): ConnectionView {
+    return connectionView({
+      socketConnected: this.socketConnected,
+      apiConnected: this.apiConnected,
+      authenticated: this.authenticated,
+      socketConnecting: this.socketConnecting,
+      wasConnected: this.wasConnected,
+      stalled: this.socketStalled,
+      printerIndependent: this.managedConsoleRoute || this.printerIndependentRoute,
+      otherPrinter: this.otherPrinterRoute
+    })
+  }
+
   get managedConsoleRoute (): boolean {
     return isManagedConsolePath(this.$route.path)
   }
@@ -256,7 +279,8 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   // phone the console and G-code preview keep that height for the tool.
   get showPageHeader (): boolean {
     if (!this.printerFrame || this.otherPrinterRoute || this.sliceRoute) return false
-    if (!(this.socketConnected && this.apiConnected)) return false
+    // Shown with the page: while connected, and through a drop, when the page keeps its last view.
+    if (!this.connection.page || this.connection.screen) return false
     // On a phone, Overview leads with the printer itself; the top bar names it.
     return !(this.isMobileViewport && ['/', '/console', '/preview'].includes(this.currentPage))
   }
@@ -666,6 +690,16 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   .muon-content {
     position: relative;
     z-index: 1;
+  }
+
+  // A page from before the connection dropped: its numbers are out of date
+  // and its controls would send into nothing, so it is greyed and still.
+  .muon-stale {
+    filter: grayscale(0.5);
+    opacity: 0.55;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    user-select: none;
   }
 
   // Room for the tab bar, so the last card can scroll clear of it.

@@ -1,7 +1,7 @@
 <template>
   <control-card
     title="Macros"
-    :locked="klippyReady ? '' : 'Klipper is not ready'"
+    :locked="klippyReady ? '' : notReadyReason"
     :note="klippyReady ? note : ''"
     data-tid="control-macros"
   >

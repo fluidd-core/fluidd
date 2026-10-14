@@ -256,7 +256,7 @@ export default class ControlMove extends Mixins(ControlMixin) {
   }
 
   get lockReason (): string {
-    if (!this.ready) return 'Klipper is not ready'
+    if (!this.ready) return this.notReadyReason
     if (this.busy) return 'Not while printing: moving the head would ruin the print'
     return ''
   }

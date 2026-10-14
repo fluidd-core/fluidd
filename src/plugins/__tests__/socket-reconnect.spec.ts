@@ -107,6 +107,18 @@ describe('WebSocketClient reconnecting', () => {
     expect(sockets).toHaveLength(2)
   })
 
+  it('says when its next try runs, and forgets it once that try has run', async () => {
+    const { client } = lanClient()
+    const socket = await opened(client)
+
+    socket.emit('close', { code: 1006, reason: '', wasClean: false })
+    const at = client.nextRetryAt
+    expect(at).not.toBeNull()
+    expect(at! - Date.now()).toBeGreaterThan(0)
+    await vi.advanceTimersByTimeAsync(at! - Date.now() + 1)
+    expect(client.nextRetryAt).toBeNull()
+  })
+
   it('does not retry a close it asked for', async () => {
     const { client, store } = lanClient()
     const socket = await opened(client)

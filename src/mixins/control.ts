@@ -35,6 +35,11 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   /** Printing or paused: moves, extrusion and motors are left alone. */
+  /** Why the controls are locked when Klipper isn't ready: the connection, when that is what's gone. */
+  get notReadyReason (): string {
+    return this.socketConnected ? 'Klipper is not ready' : 'Not connected to the printer'
+  }
+
   get busy (): boolean {
     return this.printerPrinting || this.printerPaused
   }

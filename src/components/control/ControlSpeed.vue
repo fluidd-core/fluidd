@@ -2,7 +2,7 @@
   <control-card
     v-if="!pro || simple"
     title="Speed"
-    :locked="klippyReady ? '' : 'Klipper is not ready'"
+    :locked="klippyReady ? '' : notReadyReason"
     :note="klippyReady ? 'Slow is kinder to tall or wobbly parts. Fast is rougher.' : ''"
     data-tid="control-speed"
   >
@@ -24,7 +24,7 @@
   <control-card
     v-else
     title="Speed and limits"
-    :locked="klippyReady ? '' : 'Klipper is not ready'"
+    :locked="klippyReady ? '' : notReadyReason"
     :note="klippyReady ? 'Velocity and below last until Klipper restarts. Save them in Files › printer.cfg.' : ''"
     data-tid="control-speed"
   >
