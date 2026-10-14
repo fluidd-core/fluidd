@@ -5,7 +5,7 @@
  */
 export const PRINTER_PAGE_PATHS = [
   '/console', '/jobs', '/control', '/maintenance', '/tune', '/diagnostics', '/timelapse', '/history', '/wifi',
-  '/system', '/configure', '/settings', '/camera', '/preview', '/slice', '/updating'
+  '/system', '/configure', '/settings', '/camera', '/preview', '/slice', '/updating', '/library', '/account'
 ]
 
 /** Whether `path` is one of a printer's pages, without the printer. */

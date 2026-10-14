@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { SETTINGS_SECTIONS, settingsSectionFor, visibleSettingsSections } from '../sections'
+import { MOVED_TO_ACCOUNT, SETTINGS_SECTIONS, settingsSectionFor, visibleSettingsSections } from '../sections'
 import { PAGE_KEYS } from '@/router/printerSections'
 
 const simple = { pro: false, components: ['update_manager', 'muon_access'] }
@@ -39,6 +39,12 @@ describe("Settings' sections", () => {
   it("hold G U's anchor, so the key opens Updates", () => {
     const updates = PAGE_KEYS.find(k => k.key === 'u')!
     expect(settingsSectionFor(updates.hash!, visibleSettingsSections(simple))?.id).toBe('updates')
+  })
+
+  it("send the Library's old address to the account, where its settings are now (KAN-532)", () => {
+    expect(SETTINGS_SECTIONS.map(s => s.id)).not.toContain('library')
+    expect(settingsSectionFor('#library', visibleSettingsSections(pro))).toBeNull()
+    expect(MOVED_TO_ACCOUNT.library).toBe('/account/library')
   })
 
   it('give every card one home', () => {

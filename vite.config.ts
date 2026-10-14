@@ -154,7 +154,8 @@ export default defineConfig(async ({ command }) => {
     }
   },
 
-  envPrefix: 'VUE_',
+  // VITE_MODELS_URL: the model service the Library talks to (services/library).
+  envPrefix: ['VUE_', 'VITE_'],
 
   resolve: {
     alias: {

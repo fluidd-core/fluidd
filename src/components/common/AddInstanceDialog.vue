@@ -757,7 +757,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   }
 
   /**
-   * An address this page could not reach at all. From app.muon3d.com (HTTPS)
+   * An address this page could not reach at all. From control.muon3d.com (HTTPS)
    * to a plain-HTTP printer that is usually the browser blocking mixed
    * content, not a wrong address, so say so and link the printer's own page
    * rather than asking whether the address is correct.

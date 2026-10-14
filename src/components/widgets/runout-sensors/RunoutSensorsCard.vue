@@ -27,6 +27,9 @@
       >
         <v-list-item-content>
           <v-list-item-title>{{ item.prettyName }}</v-list-item-title>
+          <v-list-item-subtitle v-if="loadsFilament(item)">
+            {{ $t('app.general.label.loads_filament_always_on') }}
+          </v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-icon>
           <v-icon
@@ -45,6 +48,7 @@
         <v-list-item-action>
           <v-switch
             :input-value="item.enabled"
+            :disabled="item.enabled && !canTurnOff(item)"
             @change="changeSensor(item, $event)"
           />
         </v-list-item-action>
@@ -57,6 +61,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { RunoutSensor } from '@/store/printer/types'
+import { filamentSensorRole, sensorCommand, type SensorConfigFile } from '@/services/control/model'
 
 @Component({})
 export default class RunoutSensorsCard extends Mixins(StateMixin) {
@@ -67,8 +72,23 @@ export default class RunoutSensorsCard extends Mixins(StateMixin) {
     return this.$store.getters['printer/getRunoutSensors']
   }
 
+  get configfile (): SensorConfigFile | undefined {
+    return this.$store.state.printer.printer.configfile
+  }
+
+  /** Its insert_gcode starts the automatic load (the M1's), so it stays on. */
+  loadsFilament (item: RunoutSensor): boolean {
+    return filamentSensorRole(this.configfile, item.name) === 'loads'
+  }
+
+  /** Only a sensor the printer's settings confirm is runout-only. */
+  canTurnOff (item: RunoutSensor): boolean {
+    return filamentSensorRole(this.configfile, item.name) === 'runout'
+  }
+
   changeSensor (item: RunoutSensor, value: boolean) {
-    this.sendGcode(`SET_FILAMENT_SENSOR SENSOR=${item.name} ENABLE=${+value}`)
+    const gcode = sensorCommand(item.name, value, this.configfile)
+    if (gcode) this.sendGcode(gcode)
   }
 }
 </script>

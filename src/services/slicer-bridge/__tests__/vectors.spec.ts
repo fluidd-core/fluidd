@@ -18,19 +18,50 @@
 // minutes, a reload), the host's dialog (Print, Upload only, ✕, the tick,
 // a cancel while it is open), queue entries, print.cancel of a foreign job,
 // and injected names (a.gcode&print=true, ../config/x.cfg).
-import { describe, expect, it } from 'vitest'
+//
+// The account's Library (0.4.0): messages.json's library answers and events
+// against the readers the host checks its handlers with, and host.json's
+// Library scenarios against Fluidd's own handlers (library.ts) and the
+// Library service they use (services/library), over an in-memory model
+// service that keeps the vectors' rules (library/__tests__/fakeService.ts).
+import { describe, expect, it, vi } from 'vitest'
 import handshake from '../vendor/printer-client/bridge/vectors/handshake.json'
 import hostCases from '../vendor/printer-client/bridge/vectors/host.json'
 import messages from '../vendor/printer-client/bridge/vectors/messages.json'
 import { createBridgeHost, type ConfirmAnswer, type HostLogEntry } from '../vendor/printer-client/bridge/host'
-import { parseClientEvent, parseIncoming, parsePrintDecision, parseQueueAnswer, parseRequest, type BridgePrinter, type PrintMode, type Welcome } from '../vendor/printer-client/bridge/protocol'
+import {
+  parseClientEvent,
+  parseIncoming,
+  parseLibraryOpen,
+  parseLibraryProject,
+  parseLibrarySaved,
+  parseLibraryStatus,
+  parsePrintDecision,
+  parseQueueAnswer,
+  parseRequest,
+  type BridgePrinter,
+  type PrintMode,
+  type Welcome
+} from '../vendor/printer-client/bridge/protocol'
 import { createFluiddAdapter } from '../adapter'
 import { startSlicerHost } from '../host'
+import { createFluiddLibrary } from '../library'
+import { notSignedIn } from '@/services/library/api'
+import { resetLibrary, setLibraryClient } from '@/services/library/store'
+import { fakeService } from '@/services/library/__tests__/fakeService'
 import { fakeMoonraker, newPrinter, type MoonrakerPrinter } from './moonraker'
+
+const account = vi.hoisted(() => ({ state: null as unknown as { account: { id: string } | null } }))
+
+vi.mock('@/services/muon-cloud/state', async () => {
+  const { default: V } = await import('vue')
+  account.state = V.observable({ account: null as { id: string } | null })
+  return { cloudState: account.state, cloudPrinterConnection: async () => { throw new Error('no printers here') } }
+})
 
 const KEYS: Record<string, string> = messages.keys
 
-/** The vectors' placeholders: "$walnut", "$oak", "$nonce" and {"$bytes": n}. */
+/** The vectors' placeholders: "$walnut", "$oak", "$nonce", {"$bytes": n} and {"$png": n} (n bytes, a PNG's signature first). */
 function subst (value: unknown): unknown {
   if (typeof value === 'string') {
     if (value === '$nonce') return handshake.nonce
@@ -41,6 +72,11 @@ function subst (value: unknown): unknown {
   if (value && typeof value === 'object') {
     const r = value as Record<string, unknown>
     if (typeof r.$bytes === 'number') return new ArrayBuffer(r.$bytes)
+    if (typeof r.$png === 'number') {
+      const bytes = new Uint8Array(r.$png)
+      bytes.set([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+      return bytes.buffer
+    }
     return Object.fromEntries(Object.entries(r).map(([k, v]) => [k, subst(v)]))
   }
   return value
@@ -101,6 +137,22 @@ describe('vectors: messages, as the host reads them', () => {
       const parsed = parseClientEvent(subst(c.message))
       if (c.expect === 'ignored') return expect(parsed).toBeNull()
       expect(parsed, c.name).toEqual(subst(c.expect))
+    })
+  }
+  // The Library's answers and events (0.4.0), as the host reads its own handlers' answers before sending them.
+  for (const c of messages.library as any[]) {
+    it(`library: ${c.name}`, () => {
+      const value = subst(c.value)
+      const read = c.read === 'status'
+        ? parseLibraryStatus(value)
+        : c.read === 'saved'
+          ? parseLibrarySaved(value)
+          : c.read === 'project'
+            ? parseLibraryProject(value, c.asked)
+            : c.read === 'open' ? parseLibraryOpen(value) : undefined
+      expect(read, `a reader for ${c.read}`).not.toBeUndefined()
+      if (c.expect === 'refused') return expect(read).toBeNull()
+      expect(read).toEqual(subst(c.expect))
     })
   }
   for (const c of messages.answers as any[]) {
@@ -209,7 +261,16 @@ function rawPort (port: MessagePort): RawPort {
   }
 }
 
-async function runScenario (c: { selected: string, capabilities?: string[], steps: Step[] }) {
+/** host.json's Library at a scenario's start: signed in or not, on or off, and its quota. */
+interface LibraryConfig {
+  signedIn: boolean;
+  enabled: boolean;
+  quotaBytes: number | null;
+}
+
+let scenarios = 0
+
+async function runScenario (c: { selected: string | null, capabilities?: string[], library?: LibraryConfig, steps: Step[] }) {
   const printers: Record<string, Live> = {}
   for (const [name, p] of Object.entries(hostCases.printers as Record<string, Record<string, unknown>>)) {
     printers[name] = { ...newPrinter(name), bridge: subst(p) as BridgePrinter }
@@ -221,6 +282,16 @@ async function runScenario (c: { selected: string, capabilities?: string[], step
   let dialog: Step['dialog']
   let cancelRequest: (() => void) | null = null
   const moonraker = fakeMoonraker(printers, () => selected)
+
+  // The account's Library: Fluidd's handlers and its Library service, over an in-memory model service. Each scenario
+  // is its own account, so nothing a previous one left running can reach it.
+  const service = fakeService({ enabled: c.library?.enabled ?? false, quotaBytes: c.library?.quotaBytes ?? null })
+  const browsed: string[] = []
+  const signedIn = c.library?.signedIn === true
+  account.state.account = signedIn ? { id: `account-${++scenarios}` } : null
+  resetLibrary(account.state.account?.id ?? null)
+  setLibraryClient(service.client({ get: async () => { if (!signedIn) throw notSignedIn(); return 'assertion' }, drop: () => {} }))
+  const library = createFluiddLibrary({ browse: () => { browsed.push('library.browse') } })
 
   const waitAbort = (signal: AbortSignal) => new Promise<never>((_resolve, reject) =>
     signal.aborted ? reject(new Error('aborted')) : signal.addEventListener('abort', () => reject(new Error('aborted'))))
@@ -263,6 +334,7 @@ async function runScenario (c: { selected: string, capabilities?: string[], step
     theme: 'dark',
     capabilities: c.capabilities,
     adapter,
+    ...(c.library ? { library } : {}),
     now: () => clock,
     log: entry => { log.push(entry) }
   })
@@ -286,6 +358,9 @@ async function runScenario (c: { selected: string, capabilities?: string[], step
     for (const [i, step] of c.steps.entries()) {
       const what = `step ${i + 1}`
       moonraker.calls.length = 0
+      service.writes.length = 0
+      browsed.length = 0
+      service.whileUploading(null)
       dialogs = 0
       asked = null
       dialog = step.dialog
@@ -335,6 +410,8 @@ async function runScenario (c: { selected: string, capabilities?: string[], step
       } else {
         const request = subst(step.request) as { op: string, params: Record<string, unknown> }
         cancelRequest = () => abort.abort()
+        // While a Library save is sending: the host switches printer.
+        if (step.during && 'select' in step.during) service.whileUploading(() => { selected = step.during.select; host.printerChanged() })
         got = await outcome(client.request(request.op, request.params, [], abort.signal))
       }
       if (abort.signal.aborted) await until(() => log.some(e => e.kind === 'refused' && e.op === op && e.error.kind === 'cancelled'), `${what}: the host ended the ${op}`)
@@ -345,7 +422,7 @@ async function runScenario (c: { selected: string, capabilities?: string[], step
         expect(got.error, `${what}: ${JSON.stringify(got.error)}`).toBeUndefined()
         expectPartial(got.result, step.expect.result, what)
       }
-      expect(moonraker.calls, `${what}: the printer's writes`).toEqual(step.calls ?? [])
+      expect([...moonraker.calls, ...service.writes, ...browsed], `${what}: the printer's and the Library's writes`).toEqual(step.calls ?? [])
       if (step.dialog === undefined) expect(dialogs, `${what}: no dialog`).toBe(0)
       if (step.asked !== undefined) expect(asked, `${what}: the dialog's Plate is clear`).toBe(step.asked)
     }

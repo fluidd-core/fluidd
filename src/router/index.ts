@@ -1,6 +1,7 @@
 import Vue from 'vue'
-import VueRouter, { type RouteConfig, type Route } from 'vue-router'
+import VueRouter, { type NavigationGuard, type RouteConfig, type Route } from 'vue-router'
 import { applyLegacyHash } from './legacyHash'
+import { readSignedOut } from '@/services/account/signed-out-note'
 import { activeSlugNow, foreignSlugNow } from './printerSlugSource'
 import { PRINTER_PAGE_PATHS } from './printerPagePaths'
 import { ROUTE_SLUG_PATTERN } from '@/services/printer-pages/slug'
@@ -163,6 +164,41 @@ const printerRoutes: Array<RouteConfig> = [
     }
   },
   {
+    // Your Library (KAN-521): the prints saved from Slice, the account's, so
+    // the same whichever printer is open, drawn beside its rail. Lazy, as
+    // Printers is: Print on… opens printers, and the services that do import
+    // the router.
+    path: `${P}/library`,
+    name: 'Library',
+    component: () => import('@/views/Library.vue'),
+    meta: {
+      printerIndependent: true,
+      frame: 'printer'
+    }
+  },
+  {
+    // One print: its picture, your printers, its versions.
+    path: `${P}/library/:item`,
+    name: 'Library print',
+    component: () => import('@/views/LibraryPrint.vue'),
+    meta: {
+      printerIndependent: true,
+      frame: 'printer'
+    }
+  },
+  {
+    // Your account (KAN-532), the account's like the Library, so the same
+    // whichever printer is open, drawn beside its rail. Lazy: the first load
+    // doesn't carry it.
+    path: `${P}/account/:section?`,
+    name: 'Account',
+    component: () => import('@/views/Account.vue'),
+    meta: {
+      printerIndependent: true,
+      frame: 'printer'
+    }
+  },
+  {
     path: `${P}/configure`,
     name: 'Configuration',
     component: Configure,
@@ -206,9 +242,17 @@ const toPrinterPage = (to: Route) => {
   return slug ? { path: `/${slug}${to.path}`, query: to.query, hash: to.hash } : '/'
 }
 
-// /slice has a page of its own with no printer (the slicer exports without one).
+/** The Library (and the account) under the printer Fluidd is on, when one is: /library is /boxwood-367a/library. */
+const toLibraryOfActivePrinter: NavigationGuard = (to, from, next) => {
+  const slug = activeSlugNow()
+  if (slug) next({ path: `/${slug}${to.path}`, query: to.query, hash: to.hash })
+  else next()
+}
+
+// /slice and the Library have pages of their own with no printer (the slicer
+// exports without one; the Library is the account's).
 const LEGACY_PRINTER_PAGES = [
-  ...PRINTER_PAGE_PATHS.filter(path => !['/slice', '/camera'].includes(path)),
+  ...PRINTER_PAGE_PATHS.filter(path => !['/slice', '/camera', '/library', '/account'].includes(path)),
   '/settings/macros/:categoryId',
   '/camera',
   '/camera/:cameraId'
@@ -225,6 +269,9 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'Printers',
     component: () => import('@/views/Printers.vue'),
+    // KAN-532: the console's /logout comes back here; a tab that has just
+    // signed out goes on to say so.
+    beforeEnter: (to, from, next) => (readSignedOut() ? next({ path: '/signed-out', replace: true }) : next()),
     meta: {
       printerIndependent: true
     }
@@ -237,6 +284,71 @@ const routes: Array<RouteConfig> = [
   {
     path: '/welcome',
     redirect: '/'
+  },
+  // Your Library (KAN-521) with no printer open: with one, the same pages
+  // under that printer, so the rail and the printer stay beside it.
+  {
+    path: '/library',
+    name: 'Library (no printer)',
+    component: () => import('@/views/Library.vue'),
+    beforeEnter: toLibraryOfActivePrinter,
+    meta: {
+      printerIndependent: true
+    }
+  },
+  {
+    path: '/library/:item',
+    name: 'Library print (no printer)',
+    component: () => import('@/views/LibraryPrint.vue'),
+    beforeEnter: toLibraryOfActivePrinter,
+    meta: {
+      printerIndependent: true
+    }
+  },
+  // KAN-532: the pages the console's emails open (its links are
+  // /#/account/<page>?token=, which legacyHash turns into these paths), and
+  // signing out. No printer chrome, like /sign-in; before /account/:section?.
+  {
+    path: '/account/verify-email',
+    name: 'Email link',
+    component: () => import('@/views/AccountEmailLink.vue'),
+    meta: {
+      printerIndependent: true
+    }
+  },
+  {
+    path: '/account/reset-password',
+    name: 'Password link',
+    component: () => import('@/views/AccountEmailLink.vue'),
+    meta: {
+      printerIndependent: true
+    }
+  },
+  {
+    path: '/sign-out',
+    name: 'Sign out',
+    component: () => import('@/views/SignOut.vue'),
+    meta: {
+      printerIndependent: true
+    }
+  },
+  {
+    path: '/signed-out',
+    name: 'Signed out',
+    component: () => import('@/views/SignedOut.vue'),
+    meta: {
+      printerIndependent: true
+    }
+  },
+  // Your account (KAN-532) with no printer open: with one, under that printer.
+  {
+    path: '/account/:section?',
+    name: 'Account (no printer)',
+    component: () => import('@/views/Account.vue'),
+    beforeEnter: toLibraryOfActivePrinter,
+    meta: {
+      printerIndependent: true
+    }
   },
   {
     path: '/link',

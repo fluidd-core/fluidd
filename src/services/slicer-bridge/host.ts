@@ -16,6 +16,8 @@
  *   $httpClient (the printer on the network, or Iroh); status comes from
  *   Fluidd's own socket subscription; console lines from its
  *   notify_gcode_response handling.
+ * - The account's Library (0.4.0, library.ts): given `library`, the welcome
+ *   grants it. Its requests name no printer, so a switch never ends one.
  */
 import type { Store } from 'vuex'
 import {
@@ -23,6 +25,7 @@ import {
   type BridgeHost,
   type ConfirmAnswer,
   type ConfirmRequest,
+  type HostLibrary,
   type HostLogEntry
 } from './vendor/printer-client/bridge/host'
 import type { BridgePrinter, Density, HostLook, HostSetup, PrinterMaterial, Theme, UiMode } from './vendor/printer-client/bridge/protocol'
@@ -58,6 +61,8 @@ export interface SlicerHostOptions {
    * the selected printer while it takes writes.
    */
   onMaterial?: (key: string, material: PrinterMaterial) => void;
+  /** The account's Library (library.ts): given, the welcome grants `library` (0.4.0). */
+  library?: HostLibrary;
   hostVersion: string;
   onState?: (state: Record<string, unknown>) => void;
   log?: (entry: HostLogEntry) => void;
@@ -133,6 +138,7 @@ export function startSlicerHost (options: SlicerHostOptions): SlicerHost {
     mode: options.mode,
     setup: options.setup,
     onMaterial: options.onMaterial,
+    library: options.library,
     adapter,
     onState: options.onState,
     log: options.log
