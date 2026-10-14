@@ -84,6 +84,53 @@ export function saveMaterialCommand (name: string): string {
   return `SAVE_VARIABLE VARIABLE=muon_material VALUE='"${safe}"'`
 }
 
+/** Filament colours to choose from: the common ones, named as a spool's label names them. */
+export const FILAMENT_COLOURS: Array<{ name: string, colour: string }> = [
+  { name: 'White', colour: '#F2F2EE' },
+  { name: 'Black', colour: '#202022' },
+  { name: 'Grey', colour: '#8B8F94' },
+  { name: 'Silver', colour: '#C3C7CC' },
+  { name: 'Red', colour: '#D13438' },
+  { name: 'Orange', colour: '#F07B22' },
+  { name: 'Yellow', colour: '#F4C430' },
+  { name: 'Green', colour: '#3A9F4F' },
+  { name: 'Teal', colour: '#2FA8A0' },
+  { name: 'Blue', colour: '#2F63C6' },
+  { name: 'Purple', colour: '#7A47B3' },
+  { name: 'Pink', colour: '#E673A8' },
+  { name: 'Brown', colour: '#8A5A36' },
+  { name: 'Natural', colour: '#E7DDC4' }
+]
+
+/** A colour as "#RRGGBB", from "#rrggbb", "rrggbb" or a quoted save_variables value; null for anything else. */
+export function normaliseColour (value: unknown): string | null {
+  if (typeof value !== 'string') return null
+  const hex = value.replace(/^"+|"+$/g, '').trim().replace(/^#/, '')
+  return /^[0-9a-f]{6}$/i.test(hex) ? `#${hex.toUpperCase()}` : null
+}
+
+/** A colour's name from the list, or "Custom colour". */
+export function colourName (colour: string | null): string {
+  if (!colour) return ''
+  return FILAMENT_COLOURS.find(c => c.colour === normaliseColour(colour))?.name ?? 'Custom colour'
+}
+
+/** The colour the printer was told is loaded (save_variables muon_material_color), or null when nobody has said. */
+export function savedMaterialColour (variables: unknown): string | null {
+  return normaliseColour((variables as { muon_material_color?: unknown } | undefined)?.muon_material_color)
+}
+
+/**
+ * Remembers the loaded filament's colour on the printer, beside its material,
+ * so Overview, Control and the slicer all show the same. Kept without its #,
+ * which some G-code readers take for the start of a comment.
+ */
+export function saveMaterialColourCommand (colour: string): string {
+  const hex = normaliseColour(colour)
+  if (!hex) throw new Error(`not a colour: ${colour}`)
+  return `SAVE_VARIABLE VARIABLE=muon_material_color VALUE='"${hex.slice(1)}"'`
+}
+
 /** The material whose temperatures the heaters are set to now, if any. */
 export function materialInUse (materials: Material[], nozzleTarget: number, bedTarget: number): Material | null {
   if (!nozzleTarget) return null

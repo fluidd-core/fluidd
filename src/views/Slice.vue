@@ -8,10 +8,12 @@
       v-if="url && present === 'present'"
       ref="frame"
       class="slice-view__frame"
+      :class="{ 'slice-view__frame--waiting': !ready }"
       title="Muon3D Slicer"
       allow="clipboard-write; fullscreen"
       referrerpolicy="no-referrer"
       :sandbox="sandbox"
+      @load="onFrameLoad"
     />
     <v-alert
       v-else-if="!url || present === 'absent'"
@@ -20,6 +22,18 @@
     >
       {{ $t('app.slicer.msg.no_slicer') }}
     </v-alert>
+    <div
+      v-if="url && present !== 'absent' && !ready"
+      class="slice-view__opening"
+      role="status"
+      data-tid="slice-opening"
+    >
+      <span
+        class="slice-view__spinner"
+        aria-hidden="true"
+      />
+      Opening the slicer…
+    </div>
 
     <print-confirm-dialog
       :request="dialogRequest"
@@ -89,6 +103,15 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
   host: SlicerHost | null = null
   /** The slicer draws itself as a part of the page (its hello listed ui.look). */
   partOfPage = false
+  /**
+   * Whether the frame shows. Until the slicer has said hello and drawn a
+   * frame in Fluidd's look, the frame is hidden behind "Opening the slicer…",
+   * so its first paint (a blank page, white in a browser that gives a frame
+   * its own colour scheme) never shows. An older slicer that never says
+   * hello shows on its load, a moment later.
+   */
+  ready = false
+  readyTimer = 0
   styleObserver: MutationObserver | null = null
   setupFrame = 0
   dialog: OpenDialog | null = null
@@ -137,7 +160,7 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
     try {
       const spool = this.$store.getters['spoolman/getActiveSpool'] as ActiveSpool | null | undefined
       const heated = this.material ? this.materialChoices.find(c => c.presetId === this.material?.id) ?? null : null
-      return hostSetup({ spool: spool ?? null, loaded: this.loadedMaterial, heated, choices: this.materialChoices })
+      return hostSetup({ spool: spool ?? null, loaded: this.loadedMaterial, loadedColour: this.loadedColour, heated, choices: this.materialChoices })
     } catch {
       return { material: null, materials: [] }
     }
@@ -199,19 +222,32 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
     this.watchFeatures()
   }
 
-  /** Once the slicer's hello is welcomed, whether it draws itself as a part of the page. */
+  /** Once the slicer's hello is welcomed, whether it draws itself as a part of the page; then it shows. */
   watchFeatures (tries = 120) {
     if (this.closed || !this.host) return
     const features = this.host.bridge.clientFeatures
     if (features.length || tries <= 0) {
       this.partOfPage = features.includes('ui.look')
+      this.showWhenPainted()
       return
     }
     setTimeout(() => this.watchFeatures(tries - 1), 250)
   }
 
+  /** Two frames after the welcome, the slicer has drawn in the look it was given. */
+  showWhenPainted () {
+    requestAnimationFrame(() => requestAnimationFrame(() => { this.ready = true }))
+  }
+
+  /** The frame's page has loaded: a slicer that hasn't said hello within 3 s shows anyway (an older one never will). */
+  onFrameLoad () {
+    window.clearTimeout(this.readyTimer)
+    this.readyTimer = window.setTimeout(() => { this.ready = true }, 3000)
+  }
+
   beforeDestroy () {
     this.closed = true
+    window.clearTimeout(this.readyTimer)
     window.removeEventListener('beforeunload', this.handleBeforeUnload)
     this.stopWatching?.()
     this.styleObserver?.disconnect()
@@ -295,5 +331,41 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
   .slice-view--part .slice-view__frame {
     border-radius: 0;
     background: transparent;
+  }
+
+  // Hidden, not removed: the slicer loads and says hello behind the page's own "Opening".
+  .slice-view__frame--waiting {
+    visibility: hidden;
+  }
+
+  .slice-view__opening {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    color: var(--m3d-text-muted);
+    font-size: 14px;
+  }
+
+  .slice-view__spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid var(--m3d-border);
+    border-top-color: var(--m3d-accent);
+    border-radius: 50%;
+    animation: slice-opening 0.9s linear infinite;
+  }
+
+  @keyframes slice-opening {
+    to { transform: rotate(360deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slice-view__spinner {
+      animation: none;
+    }
   }
 </style>
