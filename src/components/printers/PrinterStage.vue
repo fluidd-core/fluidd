@@ -49,7 +49,8 @@ export default class PrinterStage extends Vue {
     justify-content: center;
     overflow: hidden;
     border-radius: 18px;
-    background: radial-gradient(120% 90% at 50% 40%, #fbfbfc 0%, #e4e4e8 62%, #cfcfd4 100%);
+    /* The product shot is on white and multiplied in, so its stage stays light in either theme; the live M1 draws its own. */
+    background: radial-gradient(120% 90% at 50% 40%, #eceef0 0%, #d8dbdf 62%, #c4c8cd 100%);
   }
 
   .printer-stage--off {

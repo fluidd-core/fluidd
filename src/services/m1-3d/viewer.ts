@@ -1,23 +1,38 @@
 import { THREE, m1, type M1Root } from './load'
-import { placeModel, type Calibration, type ModelPose } from './pose'
+import { placeModel, type Calibration } from './pose'
 import type { Toolpath } from './toolpath'
+import type { LiveSync } from './live-sync'
+import { middleHeight, stripsLit, tapColour, tapKey, type LedStrip, type PlateTap, type ScreenState } from './live-state'
 import { Y_TOWARD_FRONT } from '@/services/machine/orientation'
 
 /**
  * The live M1 on a stage: the photoreal model, lit as its product shots
- * are, in front of the stage's own backdrop. It draws only when something changes (the pose, its size, a drag), so
- * an idle printer costs nothing. A mouse drag turns it; touch is left to
- * the page, so a phone still scrolls past it.
+ * are, in front of the stage's own backdrop. It follows its printer through
+ * a LiveSync (live-sync.ts), drawing up to 30 times a second while anything
+ * moves and not at all while nothing does, so an idle printer costs nothing.
+ * A mouse drag turns it; touch is left to the page, so a phone still
+ * scrolls past it.
  *
  * The lighting and the studio environment follow the model's own viewer
  * (m1-model/src/04-viewer.js), which measured them against the photographs.
  */
 export interface M1Viewer {
-  setPose: (pose: ModelPose) => void;
-  /** The print to draw under the plate, in the printer's millimetres, or null for none. */
+  /** The printer to follow: where its head is, its print, the lines no file drew. */
+  follow: (sync: LiveSync) => void;
+  /** Something changed that the sync will show: draw. */
+  wake: () => void;
+  /** The print to draw under the plate, in the printer's millimetres, or null for none; its colour is also the loose lines'. */
   setPrint: (path: Toolpath | null, colour: number) => void;
-  /** How many of the print's segments are done, so drawn. */
-  setPrintDone: (segments: number) => void;
+  /** What the base's round screen shows. */
+  setScreen: (screen: ScreenState) => void;
+  /** The LED strips (Klipper's color_data for `neopixel Left` and `neopixel Right`), or nulls to go by the light alone. */
+  setLeds: (left: LedStrip, right: LedStrip) => void;
+  /** The touches of the plate to mark; a new one pulses. */
+  setTaps: (taps: PlateTap[]) => void;
+  /** Draws while shown; stops drawing while scrolled away or hidden. */
+  setActive: (active: boolean) => void;
+  /** Reads the stage's colours again, after the theme changes. */
+  restyle: () => void;
   /** Moves the machine left by this share of the stage's width, to clear something on the right. */
   setShift: (share: number) => void;
   /** Called after each frame drawn; the first means it can be shown. */
@@ -29,8 +44,12 @@ export interface M1Viewer {
 const VIEW = { theta: -0.366, phi: 1.033 }
 /** From well above down to a little under the plate, where the print hangs. */
 const PHI_RANGE = [0.72, 1.62]
-/** The printer's own changes draw at most this often: twice a second. */
-const PRINTER_FRAME_MS = 500
+/** Following the printer, a frame at most this often (30 a second); a turn by hand draws every frame. */
+const FRAME_MS = 1000 / 30
+/** A new mark on the plate swells and settles over this long. */
+const PULSE_MS = 900
+/** The most marks on the plate at once. */
+const MAX_TAPS = 256
 
 /** The share of the stage the machine fills, edge to edge. */
 const FILL = 0.86
@@ -143,24 +162,31 @@ function fit (camera: THREE.PerspectiveCamera, box: THREE.Box3, target: THREE.Ve
   return { distance: hi, centre: [(e.x0 + e.x1) / 2, (e.y0 + e.y1) / 2] }
 }
 
+/** The stage's colours, middle out, from the theme (muon3d.scss's --m3d-stage-*). */
+function stageColours (el: Element): [string, string, string] {
+  const style = getComputedStyle(el)
+  const read = (name: string, fallback: string) => style.getPropertyValue(name).trim() || fallback
+  return [read('--m3d-stage-hi', '#eceef0'), read('--m3d-stage-mid', '#d8dbdf'), read('--m3d-stage-lo', '#c4c8cd')]
+}
+
 /**
- * The stage's own light backdrop (PrinterStage's radial gradient), drawn
- * into the scene. The glass plate refracts what's behind it, so the scene
- * needs an opaque background to see through; on a transparent one the
- * plate turns milky white.
+ * The stage's backdrop (PrinterStage's radial gradient, in the theme's
+ * colours), drawn into the scene. The glass plate refracts what's behind
+ * it, so the scene needs an opaque background to see through; on a
+ * transparent one the plate turns milky white.
  */
-function stageBackdrop (width: number, height: number): THREE.CanvasTexture {
+function stageBackdrop (width: number, height: number, colours: [string, string, string]): THREE.CanvasTexture {
   const c = document.createElement('canvas')
   c.width = Math.max(2, Math.round(width / 4))
   c.height = Math.max(2, Math.round(height / 4))
   const x = c.getContext('2d') as CanvasRenderingContext2D
-  // radial-gradient(120% 90% at 50% 40%, #fbfbfc 0%, #e4e4e8 62%, #cfcfd4 100%)
+  // radial-gradient(120% 90% at 50% 40%, hi 0%, mid 62%, lo 100%)
   x.translate(c.width * 0.5, c.height * 0.4)
   x.scale(1.2 * c.width, 0.9 * c.height)
   const g = x.createRadialGradient(0, 0, 0, 0, 0, 1)
-  g.addColorStop(0, '#fbfbfc')
-  g.addColorStop(0.62, '#e4e4e8')
-  g.addColorStop(1, '#cfcfd4')
+  g.addColorStop(0, colours[0])
+  g.addColorStop(0.62, colours[1])
+  g.addColorStop(1, colours[2])
   x.fillStyle = g
   x.fillRect(-1, -1, 2, 2)
   const texture = new THREE.CanvasTexture(c)
@@ -221,6 +247,8 @@ function calibrate (model: M1Root, mats: Record<string, THREE.Material>) {
 
 /** Puts the live M1 on `canvas`. Throws when the browser can't draw WebGL; the stage then keeps its picture. */
 export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
+  // Marks for the browser's performance timeline: how long the build, the shaders and the first frame take on this device.
+  performance.mark('m1:create')
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'default' })
   renderer.toneMapping = THREE.ACESFilmicToneMapping
   renderer.toneMappingExposure = 1.06
@@ -250,7 +278,8 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
   scene.add(new THREE.HemisphereLight(0xfffdf9, 0xa8a6a3, 0.20))
 
   // Only the shadow is drawn on the floor; the backdrop is the floor.
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), new THREE.ShadowMaterial({ opacity: 0.16 }))
+  const shadowMaterial = new THREE.ShadowMaterial({ opacity: 0.16 })
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), shadowMaterial)
   ground.rotation.x = -Math.PI / 2
   ground.position.y = -0.4
   ground.receiveShadow = true
@@ -271,11 +300,48 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
       }
     }
   })
-  model.userData.state.showPrint = false
-  model.userData.state.showSpool = false
+  const state = model.userData.state
+  state.showPrint = false
+  state.showSpool = false
   const { cal, printFrame } = calibrate(model, mats)
   const bedLift = model.getObjectByName('bedLift') as THREE.Object3D
   model.userData.apply()
+  performance.mark('m1:built')
+
+  /** Hangs `object` from the plate, in the printer's millimetres. */
+  const onPlate = <T extends THREE.Object3D>(object: T): T => {
+    object.matrixAutoUpdate = false
+    object.matrix.copy(printFrame)
+    object.frustumCulled = false
+    bedLift.add(object)
+    return object
+  }
+
+  // The part, the lines no file drew, and the line being laid now, all in the filament's colour.
+  const partMaterial = new THREE.LineBasicMaterial({ color: 0xc00a66 })
+  let print: THREE.LineSegments | null = null
+  let toolpath: Toolpath | null = null
+
+  const traceGeometry = new THREE.BufferGeometry()
+  let traceAttribute: THREE.BufferAttribute | null = null
+  onPlate(new THREE.LineSegments(traceGeometry, partMaterial))
+  const traceShown = { trace: null as unknown, version: -1, count: 0 }
+
+  const nibPositions = new Float32Array(6)
+  const nibGeometry = new THREE.BufferGeometry()
+  nibGeometry.setAttribute('position', new THREE.BufferAttribute(nibPositions, 3).setUsage(THREE.DynamicDrawUsage))
+  const nib = onPlate(new THREE.LineSegments(nibGeometry, partMaterial))
+  nib.visible = false
+
+  // The touches of the plate: a bead each, just under it, where the nozzle met it.
+  const tapGeometry = new THREE.SphereGeometry(2.6, 18, 12)
+  const tapMaterial = new THREE.MeshBasicMaterial({ toneMapped: false })
+  const tapMarks = onPlate(new THREE.InstancedMesh(tapGeometry, tapMaterial, MAX_TAPS))
+  tapMarks.count = 0
+  let taps: PlateTap[] = []
+  const tapSeen = new Map<string, number>()
+  const tapMatrix = new THREE.Matrix4()
+  const tapColourOf = new THREE.Color()
 
   const camera = new THREE.PerspectiveCamera(22.4, 1, 2, 8000)
   const box = shownBox(model)
@@ -308,40 +374,179 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
     centre = f.centre
   }
 
-  let print: THREE.LineSegments | null = null
-  let lastDraw = 0
-  let timer = 0
+  const restyle = () => {
+    const colours = stageColours(canvas)
+    if (width && height) {
+      const old = scene.background as THREE.Texture | null
+      scene.background = stageBackdrop(width, height, colours)
+      old?.dispose()
+    }
+    // A darker stage needs a darker shadow to show one at all.
+    const { l } = new THREE.Color(colours[1]).getHSL({ h: 0, s: 0, l: 0 })
+    shadowMaterial.opacity = 0.16 + (1 - l) * 0.22
+  }
+
+  let sync: LiveSync | null = null
+  let lastPlacement = ''
+  /** What the screen and the strips last showed, so the printer's unchanged reports draw nothing. */
+  let lastScreen = ''
+  let lastLeds = ''
+  /** The strips' own pixels, when the printer reports them; else the light's switch alone. */
+  let strips: { lit: boolean } | null = null
   let raf = 0
+  let lastDraw = 0
+  let dragging = false
+  let active = true
+  let ready = false
   let disposed = false
+
+  /** Brings the trace's new lines to the GPU: only those added since the last frame, unless older ones changed. */
+  function showTrace () {
+    const trace = sync?.trace
+    if (!trace) return
+    if (!traceAttribute) {
+      traceAttribute = new THREE.BufferAttribute(trace.positions, 3).setUsage(THREE.DynamicDrawUsage)
+      traceGeometry.setAttribute('position', traceAttribute)
+    }
+    if (traceShown.trace === trace && traceShown.version === trace.version && traceShown.count === trace.count) return
+    traceAttribute.clearUpdateRanges()
+    if (traceShown.trace === trace && traceShown.version === trace.version && trace.count > traceShown.count) {
+      traceAttribute.addUpdateRange(traceShown.count * 6, (trace.count - traceShown.count) * 6)
+    }
+    traceAttribute.needsUpdate = true
+    traceGeometry.setDrawRange(0, trace.count * 2)
+    Object.assign(traceShown, { trace, version: trace.version, count: trace.count })
+  }
+
+  /** Puts everything where the printer has it now; whether it is still moving. */
+  function follow (now: number): boolean {
+    if (!sync) return false
+    const f = sync.frame(now)
+    const placement = placeModel(f.pose, cal)
+    const led = strips ? strips.lit : f.pose.led
+    const placed = `${placement.headX.toFixed(5)},${placement.headZ.toFixed(5)},${placement.z.toFixed(5)},${led}`
+    if (placed !== lastPlacement) {
+      lastPlacement = placed
+      Object.assign(state, placement, { led })
+      model.userData.apply()
+    }
+    if (print && toolpath) print.geometry.setDrawRange(0, Math.min(f.printDone, toolpath.count) * 2)
+    nib.visible = !!f.nib
+    if (f.nib) {
+      nibPositions.set([...f.nib[0], ...f.nib[1]])
+      nibGeometry.attributes.position.needsUpdate = true
+    }
+    showTrace()
+    return f.moving
+  }
+
+  /** Sizes the marks: a new one swells and settles. Whether one still is. */
+  function pulseTaps (now: number): boolean {
+    let pulsing = false
+    taps.forEach((t, i) => {
+      const age = now - (tapSeen.get(tapKey(t)) ?? 0)
+      const swell = age < PULSE_MS ? 1 + 1.4 * Math.sin(Math.PI * age / PULSE_MS) : 1
+      if (age < PULSE_MS) pulsing = true
+      tapMatrix.makeScale(swell, swell, swell).setPosition(t.x, t.y, 0)
+      tapMarks.setMatrixAt(i, tapMatrix)
+    })
+    tapMarks.instanceMatrix.needsUpdate = true
+    return pulsing
+  }
+
+  function draw () {
+    raf = 0
+    if (disposed || !active || !ready || !width || !height) return
+    const now = performance.now()
+    if (!dragging && now - lastDraw < FRAME_MS - 4) {
+      raf = requestAnimationFrame(draw)
+      return
+    }
+    const d = 0.25
+    view.theta += (view.goalTheta - view.theta) * d
+    view.phi += (view.goalPhi - view.phi) * d
+    const moving = follow(now)
+    const pulsing = pulseTaps(now)
+    // Fitted afresh each frame, so the machine keeps filling the stage as it turns.
+    refit()
+    frame()
+    const first = !lastDraw
+    renderer.render(scene, camera)
+    if (first) performance.mark('m1:first-frame')
+    lastDraw = now
+    viewer.onFrame?.()
+    const turning = Math.abs(view.goalTheta - view.theta) > 1e-3 || Math.abs(view.goalPhi - view.phi) > 1e-3
+    if (moving || pulsing || turning) invalidate()
+  }
+
+  /** Asks for a frame. */
+  function invalidate () {
+    if (raf || disposed) return
+    raf = requestAnimationFrame(draw)
+  }
+
   const viewer: M1Viewer = {
     onFrame: null,
-    setPose (pose) {
-      Object.assign(model.userData.state, placeModel(pose, cal), { led: pose.led, progress: pose.progress })
-      model.userData.apply()
+    follow (next) {
+      sync = next
+      traceShown.trace = null
+      traceAttribute = null
       invalidate()
     },
+    wake: invalidate,
     setPrint (path, colour) {
+      partMaterial.color.setHex(colour)
       if (print) {
         bedLift.remove(print)
         print.geometry.dispose()
-        ;(print.material as THREE.Material).dispose()
         print = null
       }
-      if (path && path.count) {
+      toolpath = path && path.count ? path : null
+      if (toolpath) {
         const geometry = new THREE.BufferGeometry()
-        geometry.setAttribute('position', new THREE.BufferAttribute(path.positions, 3))
+        geometry.setAttribute('position', new THREE.BufferAttribute(toolpath.positions, 3))
         geometry.setDrawRange(0, 0)
-        print = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({ color: colour }))
-        print.matrixAutoUpdate = false
-        print.matrix.copy(printFrame)
-        print.frustumCulled = false
-        bedLift.add(print)
+        print = onPlate(new THREE.LineSegments(geometry, partMaterial))
       }
       invalidate()
     },
-    setPrintDone (segments) {
-      if (!print) return
-      print.geometry.setDrawRange(0, segments * 2)
+    setScreen (screen) {
+      // As the model compares them: whole degrees, whole percent.
+      const shown = [screen.status, Math.round(screen.progress), Math.round(screen.nozzleTemp), Math.round(screen.nozzleTarget),
+        Math.round(screen.bedTemp), Math.round(screen.bedTarget), screen.jobName, screen.connected].join('|')
+      if (shown === lastScreen) return
+      lastScreen = shown
+      Object.assign(state, screen)
+      model.userData.apply()
+      invalidate()
+    },
+    setLeds (left, right) {
+      const shown = JSON.stringify([left, right])
+      if (shown === lastLeds) return
+      lastLeds = shown
+      strips = left || right ? { lit: stripsLit(left, right) } : null
+      Object.assign(state, { ledLeft: left, ledRight: right })
+      lastPlacement = ''
+      invalidate()
+    },
+    setTaps (next) {
+      const now = performance.now()
+      taps = next.slice(-MAX_TAPS)
+      const keys = new Set(taps.map(tapKey))
+      for (const k of [...tapSeen.keys()]) if (!keys.has(k)) tapSeen.delete(k)
+      for (const t of taps) if (!tapSeen.has(tapKey(t))) tapSeen.set(tapKey(t), now)
+      const middle = middleHeight(taps)
+      taps.forEach((t, i) => tapMarks.setColorAt(i, tapColourOf.setHex(tapColour(t, middle))))
+      if (tapMarks.instanceColor) tapMarks.instanceColor.needsUpdate = true
+      tapMarks.count = taps.length
+      invalidate()
+    },
+    setActive (on) {
+      active = on
+      if (on) invalidate()
+    },
+    restyle () {
+      restyle()
       invalidate()
     },
     setShift (share) {
@@ -351,10 +556,10 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
     dispose () {
       disposed = true
       cancelAnimationFrame(raf)
-      clearTimeout(timer)
       resize.disconnect()
       canvas.removeEventListener('pointerdown', onDown)
       canvas.removeEventListener('dblclick', onReset)
+      // The trace's array is the printer's sync's, kept for the next view; only its GPU copy goes.
       scene.traverse(o => {
         const mesh = o as THREE.Mesh
         mesh.geometry?.dispose()
@@ -370,41 +575,6 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
     }
   }
 
-  function draw () {
-    raf = 0
-    if (disposed || !width || !height) return
-    const d = 0.25
-    view.theta += (view.goalTheta - view.theta) * d
-    view.phi += (view.goalPhi - view.phi) * d
-    // Fitted afresh each frame, so the machine keeps filling the stage as it turns.
-    refit()
-    frame()
-    renderer.render(scene, camera)
-    lastDraw = performance.now()
-    viewer.onFrame?.()
-    if (Math.abs(view.goalTheta - view.theta) > 1e-3 || Math.abs(view.goalPhi - view.phi) > 1e-3) invalidate(true)
-  }
-
-  /**
-   * Asks for a frame. The printer's own changes (where the head is, how far
-   * the print has got) arrive several times a second, so they draw at most
-   * every PRINTER_FRAME_MS; a turn by hand (`now`) draws every frame.
-   */
-  function invalidate (now = false) {
-    if (raf || disposed) return
-    const wait = now ? 0 : lastDraw + PRINTER_FRAME_MS - performance.now()
-    if (wait <= 0) {
-      clearTimeout(timer)
-      timer = 0
-      raf = requestAnimationFrame(draw)
-    } else if (!timer) {
-      timer = window.setTimeout(() => {
-        timer = 0
-        invalidate(true)
-      }, wait)
-    }
-  }
-
   const resize = new ResizeObserver(() => {
     const w = canvas.clientWidth
     const h = canvas.clientHeight
@@ -413,17 +583,39 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
     height = h
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, w < 600 ? 1.5 : 2))
     renderer.setSize(w, h, false)
-    ;(scene.background as THREE.Texture | null)?.dispose()
-    scene.background = stageBackdrop(w, h)
+    restyle()
     invalidate()
   })
   resize.observe(canvas)
+
+  // Every shader is built before the first frame, off the main thread where
+  // the browser can, so the page doesn't freeze while they compile: each
+  // material twice, as the screen draws it and as the glass's transmission
+  // pass does (into a target, so without tone mapping, in linear colour),
+  // and the backdrop's. Only the shadow pass's few are left to the first frame.
+  scene.background = stageBackdrop(64, 64, stageColours(canvas))
+  refit()
+  frame()
+  const compiling = [renderer.compileAsync(scene, camera)]
+  const offscreen = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType })
+  renderer.setRenderTarget(offscreen)
+  compiling.push(renderer.compileAsync(scene, camera))
+  renderer.setRenderTarget(null)
+  Promise.all(compiling)
+    .catch(() => undefined)
+    .then(() => {
+      offscreen.dispose()
+      performance.mark('m1:compiled')
+      ready = true
+      invalidate()
+    })
 
   // A mouse drag turns the machine; a double click puts it back.
   let drag: { x: number, y: number } | null = null
   function onDown (e: PointerEvent) {
     if (e.pointerType === 'touch' || e.button !== 0) return
     drag = { x: e.clientX, y: e.clientY }
+    dragging = true
     canvas.setPointerCapture(e.pointerId)
     canvas.addEventListener('pointermove', onMove)
     canvas.addEventListener('pointerup', onUp, { once: true })
@@ -434,16 +626,17 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
     view.goalTheta -= (e.clientX - drag.x) * 0.0062
     view.goalPhi = Math.min(PHI_RANGE[1], Math.max(PHI_RANGE[0], view.goalPhi - (e.clientY - drag.y) * 0.0056))
     drag = { x: e.clientX, y: e.clientY }
-    invalidate(true)
+    invalidate()
   }
   function onUp () {
     drag = null
+    dragging = false
     canvas.removeEventListener('pointermove', onMove)
   }
   function onReset () {
     view.goalTheta = VIEW.theta
     view.goalPhi = VIEW.phi
-    invalidate(true)
+    invalidate()
   }
   canvas.addEventListener('pointerdown', onDown)
   canvas.addEventListener('dblclick', onReset)

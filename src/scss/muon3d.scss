@@ -66,6 +66,10 @@
   --m3d-danger: #f06b61;
   --m3d-overlay: #050708;
   --m3d-shadow-float: 0 8px 24px rgb(0 0 0 / 45%), 0 1px 2px rgb(0 0 0 / 40%);
+  /* The live M1's stage, middle out: a dim studio, so the white machine stands out without glaring. */
+  --m3d-stage-hi: #3a4247;
+  --m3d-stage-mid: #283034;
+  --m3d-stage-lo: #1b2023;
 }
 
 .v-application.theme--light {
@@ -85,6 +89,9 @@
   --m3d-danger: #c23b32;
   --m3d-overlay: #121719;
   --m3d-shadow-float: 0 8px 24px rgb(18 23 25 / 14%), 0 1px 2px rgb(18 23 25 / 8%);
+  --m3d-stage-hi: #eceef0;
+  --m3d-stage-mid: #d8dbdf;
+  --m3d-stage-lo: #c4c8cd;
 }
 
 /*
