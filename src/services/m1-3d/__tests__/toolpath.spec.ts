@@ -98,4 +98,9 @@ describe('a print read straight from its file', () => {
   it('stops at the most a device can hold', () => {
     expect(toolpathFromGcode(bytes, 2).count).toBe(2)
   })
+
+  it('keeps E relative after M83 through a G90, as Klipper does', () => {
+    const relative = ['G90', 'M83', 'G1 X10 Y10', 'G91', 'G1 Z1', 'G90', 'G1 X20 Y10 E0.4', 'G1 X20 Y20 E0.4', '']
+    expect(toolpathFromGcode(new TextEncoder().encode(relative.join('\n'))).count).toBe(2)
+  })
 })

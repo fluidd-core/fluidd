@@ -67,8 +67,10 @@ export function toolpathFromGcode (bytes: Uint8Array, max = MAX_SEGMENTS): Toolp
   let y = 0
   let z = 0
   let e = 0
+  // As Klipper's gcode_move keeps them: G90/G91 set the coordinates, M82/M83
+  // the extruder, and E is absolute only while both are.
   let absolute = true
-  let absoluteE = true
+  let absoluteExtrude = true
   let start = 0
   const n = text.length
   while (start < n && count < max) {
@@ -85,10 +87,10 @@ export function toolpathFromGcode (bytes: Uint8Array, max = MAX_SEGMENTS): Toolp
     if (c0 !== 71 && c0 !== 103 && c0 !== 77 && c0 !== 109) continue
     const words = line.split(/\s+/)
     const command = words[0].toUpperCase()
-    if (command === 'G90') { absolute = true; absoluteE = true; continue }
-    if (command === 'G91') { absolute = false; absoluteE = false; continue }
-    if (command === 'M82') { absoluteE = true; continue }
-    if (command === 'M83') { absoluteE = false; continue }
+    if (command === 'G90') { absolute = true; continue }
+    if (command === 'G91') { absolute = false; continue }
+    if (command === 'M82') { absoluteExtrude = true; continue }
+    if (command === 'M83') { absoluteExtrude = false; continue }
     if (command === 'G92') {
       for (const w of words) if (w[0] === 'E' || w[0] === 'e') e = parseFloat(w.slice(1)) || 0
       continue
@@ -108,7 +110,7 @@ export function toolpathFromGcode (bytes: Uint8Array, max = MAX_SEGMENTS): Toolp
         case 'Y': case 'y': ny = absolute ? v : y + v; movesXY = true; break
         case 'Z': case 'z': nz = absolute ? v : z + v; break
         case 'E': case 'e': {
-          const ne = absoluteE ? v : e + v
+          const ne = absolute && absoluteExtrude ? v : e + v
           extruded = ne - e
           e = ne
           break
