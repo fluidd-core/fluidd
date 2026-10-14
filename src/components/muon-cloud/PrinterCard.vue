@@ -102,18 +102,11 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { healthLabel, type DirectoryEntry } from '@/services/muon-cloud/directory'
+import { healthLabel, type CardAction, type DirectoryEntry } from '@/services/muon-cloud/directory'
 import { printerNameParts, type PrinterNameParts } from '@/util/printer-name'
 import type { ThumbState } from '@/components/ui/PrinterThumb.vue'
 
-export interface CardAction {
-  id: string;
-  label: string;
-  icon: string;
-  hint?: string;
-  disabled?: boolean;
-  danger?: boolean;
-}
+export type { CardAction } from '@/services/muon-cloud/directory'
 
 /**
  * One printer in the switcher: its picture, its name, and how it is now,

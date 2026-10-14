@@ -79,7 +79,7 @@
           <v-spacer />
           <app-btn
             color="primary"
-            @click="$router.push('/fleet')"
+            @click="$router.push('/')"
           >
             Open your printers
           </app-btn>

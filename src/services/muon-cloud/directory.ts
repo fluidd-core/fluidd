@@ -48,6 +48,16 @@ export type DirectorySection = 'cloud' | 'local' | 'found'
 /** Who the printer is linked to, as far as this browser knows. */
 export type LinkedTo = 'mine' | 'other' | 'none' | 'unknown'
 
+/** Something a printer's menu offers: open it locally, link it, ask for access. */
+export interface CardAction {
+  id: string;
+  label: string;
+  icon: string;
+  hint?: string;
+  disabled?: boolean;
+  danger?: boolean;
+}
+
 export interface DirectoryEntry {
   key: string;
   section: DirectorySection;

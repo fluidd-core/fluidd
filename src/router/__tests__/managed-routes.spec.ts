@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest'
+import { describe, expect, it, test } from 'vitest'
 import router from '@/router'
 
 describe('Muon3D account routes', () => {
   test.each([
-    ['/fleet', 'Fleet'],
+    ['/', 'Printers'],
     ['/link', 'Link a printer']
   ])('%s resolves to %s and renders without a printer connection', (path, name) => {
     const route = router.resolve(path).route
@@ -24,7 +24,11 @@ describe('Muon3D account routes', () => {
     const component = route.matched[0].components.default as { cid?: number }
     expect(typeof component).toBe('function')
     expect(component.cid).toBeUndefined()
-    expect((router.resolve('/fleet').route.matched[0].components.default as { cid?: number }).cid).toBeDefined()
+    expect((router.resolve('/link').route.matched[0].components.default as { cid?: number }).cid).toBeDefined()
+  })
+
+  it('sends the old fleet address to Printers, which holds the fleet now', () => {
+    expect(router.resolve('/fleet').route.name).toBe('Printers')
   })
 
   test.each(['/managed/sign-in', '/onboarding', '/link-printer'])('the retired placeholder %s is gone', (path) => {

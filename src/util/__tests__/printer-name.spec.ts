@@ -8,6 +8,8 @@ describe('a printer name, as the frame shows it', () => {
     ['MUON-Walnut-8987', 'Walnut', '8987'],
     ['muon-workshop-one-1c04', 'Workshop One', '1C04'],
     ['boxwood-367a', 'Boxwood', '367A'],
+    ['Boxwood · 367A', 'Boxwood', '367A'],
+    ['Workshop One · 1C04', 'Workshop One', '1C04'],
     ['Ender 3 V2', 'Ender 3 V2', null],
     ['Voron-2.4', 'Voron-2.4', null],
     ['Workshop-ABCD', 'Workshop-ABCD', null],

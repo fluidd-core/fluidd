@@ -66,7 +66,7 @@ export default class LinkLanding extends Vue {
 
   @Watch('linkDialog')
   onClosed (value: boolean) {
-    if (!value && this.signedIn) this.$router.push('/fleet')
+    if (!value && this.signedIn) this.$router.push('/')
   }
 }
 </script>

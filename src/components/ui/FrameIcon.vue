@@ -55,6 +55,8 @@ const ICONS: Record<string, Shape[]> = {
   search: [{ c: [11, 11, 7] }, { d: 'm20 20-3.5-3.5' }],
   chevronDown: [{ d: 'm6 9 6 6 6-6' }],
   chevronRight: [{ d: 'm9 6 6 6-6 6' }],
+  chevronLeft: [{ d: 'm15 18-6-6 6-6' }],
+  list: [{ d: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01' }],
   estop: [{ d: 'M7.9 2h8.2L22 7.9v8.2L16.1 22H7.9L2 16.1V7.9z' }, { d: 'M12 7v6M12 16.5h.01' }],
   wifi: [{ d: 'M5 12.6a11 11 0 0 1 14 0M1.4 9a16 16 0 0 1 21.2 0M8.5 16.1a6 6 0 0 1 7 0M12 20h.01' }],
   cloud: [{ d: 'M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z' }],

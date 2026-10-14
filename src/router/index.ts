@@ -24,10 +24,8 @@ import NotFound from '@/views/NotFound.vue'
 import Login from '@/views/Login.vue'
 import Icons from '@/views/Icons.vue'
 import Wifi from '@/views/Wifi.vue'
-import Fleet from '@/views/Fleet.vue'
 import LinkLanding from '@/views/LinkLanding.vue'
 import JoinLanding from '@/views/JoinLanding.vue'
-import Welcome from '@/views/Welcome.vue'
 
 Vue.use(VueRouter)
 
@@ -199,23 +197,23 @@ const LEGACY_PRINTER_PAGES = [
 
 const routes: Array<RouteConfig> = [
   {
-    // Every printer: those found on this network, the account's, and a
-    // welcome with none. A printer's own address opens that printer instead
-    // (U2): see main.ts.
+    // Every printer: printing now, your groups, those found on this network
+    // and those offline, and a welcome with none. A printer's own address
+    // opens that printer instead (U2): see main.ts. Loaded on its own: it
+    // lists printers through the services that open them, and those import
+    // the router (activate -> init -> router), so a static import here is a
+    // cycle, and the page's pictures stay out of every printer page's load.
     path: '/',
     name: 'Printers',
-    component: Welcome,
+    component: () => import('@/views/Printers.vue'),
     meta: {
       printerIndependent: true
     }
   },
   {
+    // The fleet is the Printers page now.
     path: '/fleet',
-    name: 'Fleet',
-    component: Fleet,
-    meta: {
-      printerIndependent: true
-    }
+    redirect: '/'
   },
   {
     path: '/welcome',

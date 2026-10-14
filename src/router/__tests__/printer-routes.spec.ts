@@ -81,7 +81,7 @@ describe('the page a route is, without its printer', () => {
     ['/boxwood-367a/console', '/console'],
     ['/boxwood-367a/settings/macros/abc', '/settings/macros/abc'],
     ['/p-printer-a1b2/diagnostics', '/diagnostics'],
-    ['/fleet', '/fleet'],
+    ['/link', '/link'],
     ['/', '/']
   ])('%s is %s', (path, page) => {
     expect(pageOfRoute(router.resolve(path).route)).toBe(page)
