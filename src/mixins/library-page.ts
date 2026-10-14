@@ -182,10 +182,9 @@ export default class LibraryPageMixin extends Vue {
     return dayText(libraryState.purgeAfter)
   }
 
-  /** Settings › Library of the printer Fluidd is on; with none, the page turns it on itself. */
-  get settingsTo (): string | null {
-    const slug = activeSlug()
-    return slug ? `${scopedPath('/settings', slug)}#library` : null
+  /** The Library's settings: the account's (KAN-532), under the printer Fluidd is on when there is one. */
+  get settingsTo (): string {
+    return scopedPath('/account/library', activeSlug())
   }
 
   refresh () {

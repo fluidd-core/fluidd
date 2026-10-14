@@ -180,6 +180,18 @@ const printerRoutes: Array<RouteConfig> = [
     }
   },
   {
+    // Your account (KAN-532), the account's like the Library, so the same
+    // whichever printer is open, drawn beside its rail. Lazy: the first load
+    // doesn't carry it.
+    path: `${P}/account/:section?`,
+    name: 'Account',
+    component: () => import('@/views/Account.vue'),
+    meta: {
+      printerIndependent: true,
+      frame: 'printer'
+    }
+  },
+  {
     path: `${P}/configure`,
     name: 'Configuration',
     component: Configure,
@@ -223,7 +235,7 @@ const toPrinterPage = (to: Route) => {
   return slug ? { path: `/${slug}${to.path}`, query: to.query, hash: to.hash } : '/'
 }
 
-/** The Library under the printer Fluidd is on, when one is: /library is /boxwood-367a/library. */
+/** The Library (and the account) under the printer Fluidd is on, when one is: /library is /boxwood-367a/library. */
 const toLibraryOfActivePrinter: NavigationGuard = (to, from, next) => {
   const slug = activeSlugNow()
   if (slug) next({ path: `/${slug}${to.path}`, query: to.query, hash: to.hash })
@@ -233,7 +245,7 @@ const toLibraryOfActivePrinter: NavigationGuard = (to, from, next) => {
 // /slice and the Library have pages of their own with no printer (the slicer
 // exports without one; the Library is the account's).
 const LEGACY_PRINTER_PAGES = [
-  ...PRINTER_PAGE_PATHS.filter(path => !['/slice', '/camera', '/library'].includes(path)),
+  ...PRINTER_PAGE_PATHS.filter(path => !['/slice', '/camera', '/library', '/account'].includes(path)),
   '/settings/macros/:categoryId',
   '/camera',
   '/camera/:cameraId'
@@ -278,6 +290,16 @@ const routes: Array<RouteConfig> = [
     path: '/library/:item',
     name: 'Library print (no printer)',
     component: () => import('@/views/LibraryPrint.vue'),
+    beforeEnter: toLibraryOfActivePrinter,
+    meta: {
+      printerIndependent: true
+    }
+  },
+  // Your account (KAN-532) with no printer open: with one, under that printer.
+  {
+    path: '/account/:section?',
+    name: 'Account (no printer)',
+    component: () => import('@/views/Account.vue'),
     beforeEnter: toLibraryOfActivePrinter,
     meta: {
       printerIndependent: true

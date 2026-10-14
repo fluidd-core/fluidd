@@ -312,6 +312,7 @@ export default class AppBar extends Mixins(FrameMixin, ServicesMixin, FilesMixin
     if (this.$route.path === '/') return 'Printers'
     if (this.$route.name === 'Slice (no printer)') return 'Slice'
     if (this.$route.name?.startsWith('Library')) return 'Library'
+    if (this.$route.name?.startsWith('Account')) return 'Account'
     return this.$route.name ?? ''
   }
 

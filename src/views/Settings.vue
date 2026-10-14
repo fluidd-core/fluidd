@@ -61,7 +61,6 @@
         <software-settings v-if="shows('versions')" />
         <camera-settings v-if="shows('camera')" />
         <preset-settings v-if="shows('presets')" />
-        <library-settings v-if="shows('library')" />
         <macro-edit-list v-if="shows('macros')" />
         <macro-settings v-if="shows('macros')" />
         <timelapse-settings v-if="shows('timelapse')" />
@@ -84,7 +83,7 @@ import BrowserMixin from '@/mixins/browser'
 import { proMode } from '@/services/pro-mode'
 import { activeSlug } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
-import { settingsSectionFor, visibleSettingsSections, type SettingsSection } from '@/services/settings/sections'
+import { MOVED_TO_ACCOUNT, settingsSectionFor, visibleSettingsSections, type SettingsSection } from '@/services/settings/sections'
 import { printerNameParts } from '@/util/printer-name'
 
 import MacroSettings from '@/components/settings/macros/MacroSettings.vue'
@@ -107,8 +106,6 @@ import AccessSettings from '@/components/settings/AccessSettings.vue'
 import WifiPage from '@/views/Wifi.vue'
 import MacroEditList from '@/components/settings/macros/MacroEditList.vue'
 import DeveloperModeSettings from '@/components/settings/DeveloperModeSettings.vue'
-import LibrarySettings from '@/components/settings/LibrarySettings.vue'
-import { libraryState } from '@/services/library/store'
 import { devModeState, refreshDevMode } from '@/services/dev-mode/state'
 import SystemPage from '@/views/System.vue'
 
@@ -130,7 +127,6 @@ const SECTION_COMPONENTS = ['authorization', 'update_manager', 'timelapse', 'spo
     SystemPage,
     MacroEditList,
     DeveloperModeSettings,
-    LibrarySettings,
     ProtectionSettings,
     AccessSettings,
     SpoolmanSettings,
@@ -150,6 +146,12 @@ const SECTION_COMPONENTS = ['authorization', 'update_manager', 'timelapse', 'spo
   }
 })
 export default class Settings extends Mixins(StateMixin, BrowserMixin) {
+  created () {
+    // Settings › Library moved to the account (KAN-532): an old address goes there.
+    const moved = MOVED_TO_ACCOUNT[this.$route.hash.replace(/^#/, '')]
+    if (moved) this.$router.replace(scopedPath(moved, activeSlug())).catch(() => {})
+  }
+
   mounted () {
     refreshDevMode()
   }
@@ -235,9 +237,6 @@ export default class Settings extends Mixins(StateMixin, BrowserMixin) {
         return 'restart, logs'
       case 'developer':
         return devModeState.enabled === null ? '' : devModeState.enabled ? 'on' : 'off'
-      case 'library':
-        if (!libraryState.account) return 'signed out'
-        return libraryState.checked ? (libraryState.enabled ? 'on' : 'off') : ''
       default:
         return ''
     }
