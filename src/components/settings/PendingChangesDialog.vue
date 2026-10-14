@@ -1,28 +1,46 @@
 <template>
-  <app-dialog
-    v-model="open"
-    :title="$t('app.general.title.pending_configuration_changes')"
-    :save-button-text="$t('app.general.btn.save_config_and_restart')"
-    max-width="600"
-    @save="handleSubmit"
+  <m3-dialog
+    :value="open"
+    title="Save the changes and restart Klipper?"
+    max-width="560"
+    data-tid="pending-changes"
+    @close="open = false"
   >
-    <v-card-text>
-      <v-textarea
-        readonly
-        auto-grow
-        rows="1"
-        :value="saveConfigPendingItems"
-        spellcheck="false"
-        style="width: 100%; font-family: monospace; font-size: 1rem; font-weight: 100 !important;"
-      />
-    </v-card-text>
-  </app-dialog>
+    <p class="m3-dlg__text">
+      Klipper writes these to printer.cfg, then restarts to use them, which takes a few seconds.
+    </p>
+    <pre
+      v-if="saveConfigPendingItems"
+      class="m3-dlg__panel pending__list"
+    >{{ saveConfigPendingItems }}</pre>
+
+    <template #actions>
+      <button
+        type="button"
+        class="cbtn cbtn--ghost"
+        data-tid="pending-changes-cancel"
+        @click="open = false"
+      >
+        {{ $t('app.general.btn.cancel') }}
+      </button>
+      <button
+        type="button"
+        class="cbtn cbtn--primary"
+        data-tid="pending-changes-save"
+        @click="handleSubmit"
+      >
+        Save and restart
+      </button>
+    </template>
+  </m3-dialog>
 </template>
 
 <script lang="ts">
 import { Component, Vue, VModel } from 'vue-property-decorator'
+import M3Dialog from '@/components/ui/M3Dialog.vue'
 
-@Component({})
+/** What a Save and restart writes to printer.cfg, before it does. */
+@Component({ components: { M3Dialog } })
 export default class PendingChangesDialog extends Vue {
   @VModel({ type: Boolean })
     open?: boolean
@@ -59,3 +77,15 @@ export default class PendingChangesDialog extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .pending__list {
+    max-height: 50vh;
+    margin: 0;
+    overflow: auto;
+    font-family: var(--m3d-font-mono);
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+</style>

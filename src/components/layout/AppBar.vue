@@ -519,11 +519,13 @@ export default class AppBar extends Mixins(FrameMixin, ServicesMixin, FilesMixin
 
     const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
 
+    const turnOff = this.topNavPowerDeviceOn
+    const name = this.topNavPowerToggle?.name ?? 'the power'
     const result = (
       !confirmOnPowerDeviceChange ||
       await this.$confirm(
-        this.$tc('app.general.simple_form.msg.confirm_power_device_toggle'),
-        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+        turnOff ? 'Whatever runs from it loses power at once.' : 'It switches on straight away.',
+        { title: `Turn ${name} ${turnOff ? 'off' : 'on'}?`, buttonTrueText: turnOff ? 'Turn off' : 'Turn on', danger: turnOff }
       )
     )
 
@@ -544,7 +546,8 @@ export default class AppBar extends Mixins(FrameMixin, ServicesMixin, FilesMixin
     }
   }
 
-  // Idle, the file prints as soon as it is up. Mid-print, it goes to the job
+  // Idle, the file goes up and Ready to print opens, where Print now asks
+  // the plate check like every other print. Mid-print, it goes to the job
   // queue, and with Klipper down it is only uploaded, so the button always
   // does something.
   get uploadPrintsNow (): boolean {
@@ -564,7 +567,10 @@ export default class AppBar extends Mixins(FrameMixin, ServicesMixin, FilesMixin
 
   async handleUploadAndPrint (file: File) {
     if (this.uploadPrintsNow) {
-      await this.uploadFile(file, '/', 'gcodes', true)
+      // Never Moonraker's print-on-upload: that started the print with no
+      // plate check, on a printer that prints upside down onto its plate.
+      await this.uploadFile(file, '/', 'gcodes', false)
+      EventBus.bus.$emit('job-ready', file.name)
       return
     }
 

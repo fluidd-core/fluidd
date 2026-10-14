@@ -1,32 +1,30 @@
 <template>
-  <div>
-    <v-snackbar
-      v-model="needRefresh"
-      timeout="-1"
-      multi-line
-      elevation="24"
-      bottom
-      right
-    >
-      <span v-html="$t('app.general.msg.needs_refresh')" />
-      <template #action="{ attrs }">
-        <app-btn
-          v-bind="attrs"
-          @click="updateServiceWorker"
-        >
-          {{ $t('app.general.btn.reload') }}
-        </app-btn>
-      </template>
-    </v-snackbar>
-  </div>
+  <m3-toast
+    v-model="needRefresh"
+    position="bottom"
+    data-tid="needs-refresh"
+  >
+    {{ $t('app.general.msg.needs_refresh') }}
+    <template #action>
+      <button
+        type="button"
+        class="cbtn cbtn--primary"
+        data-tid="needs-refresh-reload"
+        @click="updateServiceWorker"
+      >
+        {{ $t('app.general.btn.reload') }}
+      </button>
+    </template>
+  </m3-toast>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { consola } from 'consola'
 import { EventBus } from '@/eventBus'
+import M3Toast from '@/components/ui/M3Toast.vue'
 
-@Component({})
+@Component({ components: { M3Toast } })
 export default class RegisterServiceWorker extends Vue {
   updateSW: ((reloadPage?: boolean) => Promise<void>) | null = null
   needRefresh = false
@@ -70,10 +68,3 @@ export default class RegisterServiceWorker extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  :deep(.v-snack__wrapper .v-snack__content) {
-    overflow: hidden;
-    overflow-wrap: break-word;
-  }
-</style>

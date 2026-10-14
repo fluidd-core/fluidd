@@ -289,7 +289,7 @@ export default class Timelapse extends Mixins(StateMixin, FilesMixin, BrowserMix
   }
 
   async remove (item: TimelapseItem) {
-    const ok = await this.$confirm(`Delete ${item.title}${item.when ? ` (${item.when})` : ''}? This can't be undone.`, { title: 'Delete', color: 'card-heading', icon: '$error' })
+    const ok = await this.$confirm("The video goes from the printer. This can't be undone.", { title: `Delete ${item.title}${item.when ? ` (${item.when})` : ''}?`, buttonTrueText: 'Delete', danger: true })
     if (!ok) return
     SocketActions.serverFilesDeleteFile(`timelapse/${item.name}`)
     // The picture saved beside a video goes with it, as Fluidd's file browser does.

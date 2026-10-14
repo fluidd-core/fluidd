@@ -151,8 +151,8 @@ export default class AuthSettings extends Vue {
 
   async handleRemoveUser (user: AppUser) {
     const result = await this.$confirm(
-      this.$t('app.general.simple_form.msg.confirm_remove_user', { username: user.username }).toString(),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+      `${user.username} can't sign in to this printer any more.`,
+      { title: `Remove ${user.username}?`, buttonTrueText: 'Remove', danger: true }
     )
 
     if (result) {

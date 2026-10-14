@@ -139,6 +139,7 @@ import { cloudState } from '@/services/muon-cloud/state'
 import { savedName } from '@/services/muon-cloud/directory'
 import { setProMode } from '@/services/pro-mode'
 import { jobName } from '@/services/printers-page/model'
+import { plateCheckNeeded } from '@/services/jobs/plate'
 import { printerNameParts } from '@/util/printer-name'
 import { presetCommands, presetSummary } from '@/util/temperature-preset'
 
@@ -296,7 +297,7 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
         words: 'heaters off turn_off_heaters cold',
         icon: 'control',
         run: async () => {
-          if (this.printerPrinting && !(await this.$confirm('This turns off the heaters while it prints. Turn them off?', { title: 'Cool down', color: 'card-heading', icon: '$error' }))) return
+          if (this.printerPrinting && !(await this.$confirm('The printer is printing. With the heaters off, the print will most likely fail.', { title: 'Turn the heaters off?', buttonTrueText: 'Turn them off', buttonFalseText: 'Leave them on', danger: true }))) return
           this.sendGcode('TURN_OFF_HEATERS')
         }
       })
@@ -328,8 +329,12 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
   async hostCommand (what: 'reboot' | 'shutdown') {
     const reboot = what === 'reboot'
     const ok = await this.$confirm(
-      reboot ? "Restart the printer's computer? The printer is out of reach for a minute or two." : "Shut down the printer's computer? It stays off until it is switched off and on again.",
-      { title: reboot ? 'Restart' : 'Shut down', color: 'card-heading', icon: '$error' }
+      reboot ? 'The printer is out of reach for a minute or two while it restarts.' : 'It stays off until it is switched off and on again at the printer.',
+      {
+        title: reboot ? "Restart the printer's computer?" : "Shut down the printer's computer?",
+        buttonTrueText: reboot ? 'Restart' : 'Shut down',
+        danger: true
+      }
     )
     if (!ok) return
     if (reboot) SocketActions.machineReboot()
@@ -360,7 +365,13 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
 
   async printJob (path: string) {
     const name = jobName(path) ?? path
-    if (!(await this.$confirm(`Print ${name} on ${this.printerName ?? 'this printer'}?`, { title: 'Print', color: 'card-heading', icon: '$printer' }))) return
+    const printer = this.printerName ?? 'The printer'
+    const ok = await this.$confirm(`${printer} heats up, homes and starts printing.`, {
+      title: `Print ${name} on ${this.printerName ?? 'this printer'}?`,
+      buttonTrueText: 'Print now',
+      plateCheck: plateCheckNeeded(this.$store.state.history?.jobs)
+    })
+    if (!ok) return
     const spoolman = this.$store.getters['spoolman/getAvailable'] && this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
     if (spoolman) {
       this.$store.commit('spoolman/setDialogState', { show: true, filename: path })

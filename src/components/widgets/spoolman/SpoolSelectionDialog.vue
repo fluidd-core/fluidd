@@ -391,7 +391,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
       const confirmation = await this.$confirm(
         this.$tc('app.spoolman.msg.no_spool'),
-        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+        { title: 'Print without a spool?', buttonTrueText: 'Print without one', buttonFalseText: 'Choose a spool' }
       )
 
       if (!confirmation) {
@@ -442,7 +442,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
             const confirmation = await this.$confirm(
               this.$tc('app.spoolman.msg.mismatched_filament'),
-              { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+              { title: "This spool isn't the file's material", buttonTrueText: 'Use it anyway', buttonFalseText: 'Choose another' }
             )
 
             if (!confirmation) {
@@ -463,7 +463,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
           const confirmation = await this.$confirm(
             this.$tc('app.spoolman.msg.no_required_length'),
-            { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+            { title: "The file doesn't say how much it needs", buttonTrueText: 'Use this spool', buttonFalseText: 'Choose another' }
           )
 
           if (!confirmation) {
@@ -482,7 +482,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
             const confirmation = await this.$confirm(
               this.$tc('app.spoolman.msg.no_filament'),
-              { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+              { title: 'This spool may run out', buttonTrueText: 'Use it anyway', buttonFalseText: 'Choose another' }
             )
 
             if (!confirmation) {

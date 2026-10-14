@@ -492,23 +492,6 @@ $glass: "html[data-m3d-style='glass']";
     }
   }
 
-  // Confirm dialogs (vuetify-confirm) hard-code a white title on a
-  // card-heading bar, which is white in the light theme.
-  .v-dialog > .v-card > .v-toolbar:first-child {
-    color: var(--m3d-text) !important;
-    background-color: transparent !important;
-
-    .v-toolbar__title,
-    .v-icon {
-      color: inherit !important;
-    }
-
-    .v-toolbar__title {
-      font-size: 1.1875rem;
-      font-weight: 700;
-    }
-  }
-
   .dialog-transition-enter,
   .dialog-transition-leave-to {
     transform: scale(0.92);

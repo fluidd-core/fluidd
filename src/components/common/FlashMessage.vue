@@ -1,33 +1,26 @@
 <template>
-  <v-snackbar
+  <m3-toast
     v-model="open"
-    :color="type"
+    :tone="tone"
     :timeout="timeout"
-    elevation="24"
-    multi-line
-    top
-    centered
+    :stamp="text"
+    data-tid="flash-message"
   >
-    <span v-html="text" />
-
-    <template #action="{ attrs }">
-      <app-btn
-        dark
-        v-bind="attrs"
-        @click="open = false"
-      >
-        {{ $t('app.general.btn.close') }}
-      </app-btn>
-    </template>
-  </v-snackbar>
+    {{ text }}
+  </m3-toast>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, VModel } from 'vue-property-decorator'
 import type { FlashMessageTypes } from '@/types'
+import M3Toast, { type ToastTone } from '@/components/ui/M3Toast.vue'
 
-@Component({})
+/**
+ * Fluidd's flash message (EventBus.$emit), as the redesign's toast. The text
+ * is shown as text: it is often the printer's own words, or a file's name.
+ */
+@Component({ components: { M3Toast } })
 export default class FlashMessage extends Vue {
   @VModel({ type: Boolean })
     open?: boolean
@@ -35,17 +28,19 @@ export default class FlashMessage extends Vue {
   @Prop({ type: String, default: 'dark' })
   readonly type!: FlashMessageTypes
 
-  @Prop({ type: String, default: 'Saved!' })
+  @Prop({ type: String, default: 'Saved' })
   readonly text!: string
 
   @Prop({ type: Number, default: 1500 })
   readonly timeout!: number
+
+  get tone (): ToastTone {
+    switch (this.type) {
+      case 'success': return 'success'
+      case 'warning': return 'warning'
+      case 'error': return 'error'
+      default: return 'info'
+    }
+  }
 }
 </script>
-
-<style lang="scss" scoped>
-  :deep(.v-snack__wrapper .v-snack__content) {
-    overflow: hidden;
-    overflow-wrap: break-word;
-  }
-</style>

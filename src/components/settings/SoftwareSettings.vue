@@ -295,7 +295,7 @@ export default class SoftwareSettings extends Mixins(StateMixin) {
     if (!this.canInstall) return
     const ok = await this.$confirm(
       `${this.printerName} writes the new version while it keeps working, then restarts into it, which takes a few minutes. Don't turn it off until it is back.`,
-      { title: 'Install the update', color: 'card-heading', icon: '$info' }
+      { title: 'Install the update now?', buttonTrueText: 'Install', buttonFalseText: 'Not now' }
     )
     if (!ok || !this.canInstall) return
     installStarted(this.status?.current_version ?? null, this.status?.target_version ?? null)

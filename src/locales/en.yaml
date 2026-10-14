@@ -149,8 +149,8 @@ app:
       parsing_file: Parsing file
     msg:
       confirm: >-
-        The file "%{filename}" is %{size}, this might be resource intensive for
-        your system. Are you sure?
+        %{filename} is %{size}. Drawing a file this large can make this page
+        slow for a while.
     overlay:
       drag_file_load: <strong>Drag</strong> a gcode file here to load
   general:
@@ -381,13 +381,13 @@ app:
         Click <b>Adjusted</b> if a significant adjustment is necessary on the
         current screw; otherwise, click <b>Accept</b> to continue.
       welcome_back: Welcome back.<br>Sign in below to stay in touch with your printer.
-      offline_ready: The Muon3D interface is now ready to work offline.
-      needs_refresh: New content available, please click the <b>Reload</b> button to update.
+      offline_ready: This page is now saved on this device, so it opens even offline.
+      needs_refresh: A new version of this page is ready. Reload to use it.
       pending_configuration_sections_deleted: The following sections are marked for deletion
       rolledover_logs: 'The following application logs have been rolled over: %{applications}'
-      not_valid_fluidd_backup_file: Not a valid Fluidd backup file!
-      fluidd_settings_backup_failed: Failed to backup Fluidd settings!
-      fluidd_settings_restore_failed: Failed to restore Fluidd settings!
+      not_valid_fluidd_backup_file: That isn't a Fluidd backup file.
+      fluidd_settings_backup_failed: Fluidd's settings couldn't be backed up.
+      fluidd_settings_restore_failed: Fluidd's settings couldn't be restored.
     simple_form:
       error:
         arrayofnums: Only numbers
@@ -967,17 +967,16 @@ app:
       length: Length
     msg:
       no_spool: >-
-        You haven't selected a spool. Are you sure you want to print without
-        filament tracking?
+        With no spool chosen, Spoolman doesn't count the filament this print
+        uses.
       no_filament: >-
-        The spool you selected may not have enough filament left on it to
-        successfully finish the print job. Are you sure you want to continue?
+        The spool you chose may not have enough filament left to finish this
+        print.
       no_required_length: >-
-        The amount of filament required to print the selected file is unknown.
-        Do you wish to continue?
+        The file doesn't say how much filament it uses, so Spoolman can't check
+        the spool has enough.
       mismatched_filament: >-
-        The material of the selected filament does not match the selected
-        material in the slicer. Are you sure you want to continue?
+        The spool's material isn't the one the file was sliced for.
       tracking_inactive: Filament tracking is inactive. To get started, please select a spool.
       not_connected: Spoolman server not available.
       info:
@@ -1081,17 +1080,33 @@ app:
       unaffected: Printing, files and everything else here work as normal.
   slicer:
     confirm:
+      eyebrow: Ready to print
+      eyebrow_queue: Ready for the queue
       print_title: Print {file} on {printer}?
       queue_title: Queue {file} on {printer}?
-      and_queue_more: and queue {n} more
-      and_more: and {n} more
-      plate_clear: Plate is clear
-      upload_only: Upload only
-      print: Print
-      queue: Queue
+      and_queue_more: then {n} more, queued after it
+      and_more: and {n} more after it
+      file: File | Files
+      printer: Printer
+      loaded: Loaded
+      plate_not_needed: The printer's last job left nothing on the plate, so there's nothing to check.
+      save_note: Save to the printer keeps it in Jobs, to print later.
+      upload_only: Save to the printer
+      print: Print now
+      queue: Add to the queue
+    leave:
+      title: Leave the slicer?
+      text: The slicer has changes you haven't saved. If you leave now, they're lost.
+      leave: Leave without saving
+      stay: Stay in the slicer
     msg:
-      leave: The slicer has changes you have not saved. Leave it?
       no_slicer: The Muon3D Slicer is not available here yet.
+  plate_check:
+    title: Is the plate clear?
+    why: >-
+      The M1 prints upside down onto its plate. Anything left on it, like the
+      last print, is in the nozzle's way, and the print crashes into it.
+    clear: The plate is clear
   muon:
     setup:
       title: Set up {name}

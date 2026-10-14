@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { bedMiddle, checkCommand, checkProduced, checkStatus, daysAgo, meshColor, meshProfileCommand, meshSummary, meshValue, parseProbeAccuracy, probeCount, probeAccuracyScript, probeVerdict, validProfileName } from '../model'
+import { bedMiddle, checkCommand, checkProduced, checkStatus, daysAgo, meshColor, meshProfileCommand, meshSummary, meshValue, parseProbeAccuracy, probeCount, probeAccuracyScript, probeVerdict, touchesPlate, validProfileName } from '../model'
 import type { CheckEvidence } from '../model'
+
+describe('the checks that touch the plate', () => {
+  it('are levelling and first layer height, which ask the plate check as a print does', () => {
+    expect(touchesPlate('bedMesh')).toBe(true)
+    expect(touchesPlate('firstLayer')).toBe(true)
+    expect(touchesPlate('shaper')).toBe(false)
+    expect(touchesPlate('pid')).toBe(false)
+  })
+})
 
 const DAY = 86_400_000
 const now = 1_760_000_000_000

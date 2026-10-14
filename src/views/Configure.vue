@@ -319,7 +319,7 @@ export default class Configure extends Mixins(OverviewMixin, ServicesMixin, Brow
   /** Unsaved changes are asked about before they're dropped. */
   async leaveOk (): Promise<boolean> {
     if (!this.dirty) return true
-    return !!(await this.$confirm(`${this.current?.name} has unsaved changes. Drop them?`, { title: 'Unsaved changes', color: 'card-heading', icon: '$error' }))
+    return !!(await this.$confirm("Your changes to it aren't saved. If you go on, they're lost.", { title: `Drop your changes to ${this.current?.name}?`, buttonTrueText: 'Drop changes', buttonFalseText: 'Keep editing', danger: true }))
   }
 
   async open (row: FileRow) {
@@ -387,7 +387,7 @@ export default class Configure extends Mixins(OverviewMixin, ServicesMixin, Brow
   async remove () {
     const row = this.current
     if (!row) return
-    const ok = await this.$confirm(`Delete ${row.name} from ${this.printerName}? This can't be undone.`, { title: 'Delete', color: 'card-heading', icon: '$error' })
+    const ok = await this.$confirm(`It's removed from ${this.printerName}. This can't be undone.`, { title: `Delete ${row.name}?`, buttonTrueText: 'Delete', danger: true })
     if (!ok) return
     SocketActions.serverFilesDeleteFile(`${this.dirOf(row)}/${row.name}`)
     this.current = null

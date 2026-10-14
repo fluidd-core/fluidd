@@ -193,10 +193,11 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
 
   async coolDown () {
     if (this.busy) {
-      const ok = await this.$confirm(this.$tc('app.general.label.heaters_busy'), {
-        title: this.$tc('app.general.simple_form.msg.confirm'),
-        color: 'card-heading',
-        icon: '$error'
+      const ok = await this.$confirm('The printer is busy. With the heaters off, what it is doing now will most likely fail.', {
+        title: 'Turn the heaters off?',
+        buttonTrueText: 'Turn them off',
+        buttonFalseText: 'Leave them on',
+        danger: true
       })
       if (!ok) return
     }

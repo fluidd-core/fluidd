@@ -43,6 +43,8 @@ describe('AddInstanceDialog on a page the browser blocks from IP addresses', () 
 
     expect(vm.error).toBeNull()
     expect(vm.note).toBe('app.endpoint.error.blocked_ip_from_name app.endpoint.error.blocked_ip_from_name_way_round')
+    expect(vm.outcome).toBe('blocked')
+    expect(vm.status.html).toBe(vm.note)
   })
 
   it('drops the answer when the address changed while the check ran', async () => {

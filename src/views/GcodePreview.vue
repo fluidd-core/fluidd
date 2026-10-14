@@ -351,7 +351,7 @@ export default class GcodePreviewPage extends Mixins(JobsMixin, BrowserMixin) {
   }
 
   async cancelObject (id: string) {
-    const ok = await this.$confirm(`Stop printing ${id}? The rest of the plate carries on.`, { title: 'Skip an object', color: 'card-heading', icon: '$error' })
+    const ok = await this.$confirm("The rest of the plate carries on. A part that's skipped can't be added back.", { title: `Stop printing ${id}?`, buttonTrueText: 'Skip it', buttonFalseText: 'Keep printing it', danger: true })
     if (ok) this.sendGcode(`EXCLUDE_OBJECT NAME=${id.toUpperCase().replace(/\s/g, '_')}`)
   }
 }

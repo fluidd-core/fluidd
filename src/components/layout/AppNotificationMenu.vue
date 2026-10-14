@@ -3,151 +3,128 @@
     v-model="menu"
     offset-y
     left
-    :max-width="(isMobileViewport) ? 220 : 420"
+    nudge-bottom="6"
+    content-class="m3-notes__menu"
+    :max-width="isMobileViewport ? 340 : 420"
+    :min-width="isMobileViewport ? 300 : 380"
     :close-on-content-click="false"
-    :close-delay="300"
   >
-    <template #activator="{ on: menu, attrs }">
-      <v-tooltip bottom>
-        <template #activator="{ on: tooltip }">
-          <v-badge
-            :value="notificationsCounter"
-            :content="notificationsCounter"
-            offset-x="17"
-            offset-y="17"
-            bordered
-            overlap
-            :color="badgeColor"
-          >
-            <v-btn
-              v-bind="attrs"
-              fab
-              small
-              :color="color"
-              :elevation="0"
-              v-on="{ ...tooltip, ...menu }"
-            >
-              <v-icon :class="{ 'wiggle': color === 'error'}">
-                $bell
-              </v-icon>
-            </v-btn>
-          </v-badge>
-        </template>
-        <span>{{ $t('app.general.tooltip.notifications') }}</span>
-      </v-tooltip>
+    <template #activator="{ on, attrs }">
+      <button
+        type="button"
+        class="m3-notes__bell"
+        :class="`m3-notes__bell--${tone}`"
+        :aria-label="notificationsCounter ? `Notifications, ${notificationsCounter} new` : 'Notifications'"
+        :title="$t('app.general.tooltip.notifications')"
+        data-tid="notifications-open"
+        v-bind="attrs"
+        v-on="on"
+      >
+        <frame-icon
+          name="bell"
+          :class="{ wiggle: tone === 'error' }"
+        />
+        <span
+          v-if="notificationsCounter"
+          class="m3-notes__count"
+        >{{ notificationsCounter }}</span>
+      </button>
     </template>
 
-    <v-card>
-      <v-list
-        class="py-0 overflow-y-auto app-notifications"
-        style="max-height: 90vh"
+    <div
+      class="m3-notes"
+      data-tid="notifications"
+    >
+      <header class="m3-notes__head">
+        <b>Notifications</b>
+        <button
+          v-if="clearableNotifications.length"
+          type="button"
+          class="m3-notes__clear"
+          data-tid="notifications-clear-all"
+          @click="handleClearAll"
+        >
+          Clear all
+        </button>
+      </header>
+
+      <p
+        v-if="notifications.length === 0"
+        class="m3-notes__empty"
       >
-        <v-list-item
-          v-if="notifications.length === 0"
+        Nothing new. The printer's warnings and news about this page show up here.
+      </p>
+
+      <ul
+        v-else
+        class="m3-notes__list"
+      >
+        <li
+          v-for="n in notifications"
+          :key="`notification-${n.id}`"
+          class="m3-note"
+          :class="`m3-note--${n.type}`"
         >
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.general.label.no_notifications') }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <template v-else-if="notifications.length > 0">
-          <v-list-item
-            :disabled="clearableNotifications.length <= 0"
-            @click="handleClearAll"
-          >
-            <v-list-item-content>
-              <v-list-item-title>{{ $t('app.general.label.clear_all') }}</v-list-item-title>
-            </v-list-item-content>
-            <v-list-item-action class="notification-clear-all">
-              <v-icon small>
-                $close
-              </v-icon>
-            </v-list-item-action>
-          </v-list-item>
-
-          <v-divider />
-        </template>
-
-        <template
-          v-for="(n, i) in notifications"
-        >
-          <v-list-item
-            :key="`notification-${n.id}`"
-            three-line
-            :class="classes(n)"
-          >
-            <v-list-item-content>
-              <v-list-item-title v-html="n.title" />
-              <v-list-item-subtitle
-                v-if="n.description"
-                class="notification-description"
-                v-html="n.description"
-              />
-              <v-list-item-subtitle class="notification-timestamp">
-                {{ $filters.formatRelativeTimeToNow(n.timestamp * 1000) }}
-              </v-list-item-subtitle>
-              <v-list-item-subtitle v-if="n.to">
-                <app-btn
-                  v-if="!n.to.startsWith('http')"
-                  x-small
-                  :to="n.to"
-                  class="mr-1"
-                  @click="menu = false"
-                  v-html="(n.btnText) ? n.btnText : $t('app.general.btn.more_information')"
-                />
-                <app-btn
-                  v-else
-                  x-small
-                  :href="n.to"
-                  target="_blank"
-                  class="mr-1"
-                  @click="menu = false"
-                  v-html="(n.btnText) ? n.btnText : $t('app.general.btn.more_information')"
-                />
-
-                <app-announcement-dismiss-menu
-                  v-if="n.type === 'announcement'"
-                  @dismiss="handleAnnouncementDismiss(n, $event)"
-                />
-              </v-list-item-subtitle>
-            </v-list-item-content>
-            <v-list-item-action
-              v-if="n.suffix"
-              class="notification-suffix"
+          <span class="m3-note__dot" />
+          <div class="m3-note__body">
+            <b
+              class="m3-note__title"
+              v-html="n.title"
+            />
+            <span
+              v-if="n.description"
+              class="m3-note__desc"
+              v-html="n.description"
+            />
+            <span class="m3-note__time">{{ $filters.formatRelativeTimeToNow(n.timestamp * 1000) }}</span>
+            <div
+              v-if="n.to"
+              class="m3-note__links"
             >
-              <v-icon
-                v-if="n.suffixIcon"
-                :color="color"
-                v-html="n.suffixIcon"
-              />
-              <div
-                class="notification-temp"
-                v-html="n.suffix"
-              />
-            </v-list-item-action>
-            <v-list-item-action
-              v-if="n.clear"
-              class="notification-clear"
-              @click="handleClear(n)"
-            >
-              <v-btn
-                icon
-                small
+              <router-link
+                v-if="!n.to.startsWith('http')"
+                :to="n.to"
+                class="m3-note__link"
+                @click.native="menu = false"
               >
-                <v-icon small>
-                  $close
-                </v-icon>
-              </v-btn>
-            </v-list-item-action>
-          </v-list-item>
-
-          <v-divider
-            v-if="i < notifications.length - 1"
-            :key="`divider-${n.id}`"
+                {{ n.btnText || 'Show me' }}
+              </router-link>
+              <a
+                v-else
+                :href="n.to"
+                target="_blank"
+                rel="noopener"
+                class="m3-note__link"
+                @click="menu = false"
+              >
+                {{ n.btnText || 'Read more' }}
+              </a>
+              <app-announcement-dismiss-menu
+                v-if="n.type === 'announcement'"
+                @dismiss="handleAnnouncementDismiss(n, $event)"
+              />
+            </div>
+          </div>
+          <span
+            v-if="n.suffix"
+            class="m3-note__suffix"
+            v-html="n.suffix"
           />
-        </template>
-      </v-list>
-    </v-card>
+          <button
+            v-if="n.clear"
+            type="button"
+            class="m3-note__x"
+            aria-label="Dismiss"
+            @click="handleClear(n)"
+          >
+            <frame-icon
+              name="x"
+              small
+            />
+          </button>
+        </li>
+      </ul>
+    </div>
   </v-menu>
 </template>
 
@@ -158,6 +135,11 @@ import { Component, Watch, Mixins } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import AppAnnouncementDismissMenu from './AppAnnouncementDismissMenu.vue'
 
+/**
+ * The bell in the header and what's behind it: the printer's warnings and
+ * Fluidd's news, newest first, each with a time, a way to it when it has
+ * one, and ✕ for those that can go.
+ */
 @Component({
   components: {
     AppAnnouncementDismissMenu
@@ -187,45 +169,12 @@ export default class AppNotificationMenu extends Mixins(BrowserMixin) {
     return notifications.filter(n => n.clear)
   }
 
-  /**
-   * Color is determined by type. Pull the highest weighted type.
-   */
-  get color () {
-    if (this.notifications.length <= 0) return 'transparent'
-    let c = 'transparent'
-    for (const n of this.notifications) {
-      if (n.type === 'warning' && c !== 'error') c = 'warning'
-      if (n.type === 'error' && c !== 'error') {
-        c = 'error'
-        break
-      }
-    }
-    return c
-  }
-
-  get badgeColor () {
-    if (this.color === 'transparent') return 'info'
-    return this.color
-  }
-
-  /**
-   * If no defined icon, pull from a standard set based on notification type.
-   */
-  icon (n: AppNotification) {
-    if (n.icon) return n.icon
-    switch (n.type) {
-      case 'info':
-      case 'success':
-      case 'announcement':
-        return '$info'
-      case 'warning':
-        return '$warning'
-    }
-    return '$error'
-  }
-
-  classes (n: AppNotification) {
-    return `notification-${n.type}`
+  /** The bell takes the colour of the worst one: error, then warning. */
+  get tone (): 'error' | 'warning' | 'info' | 'none' {
+    if (this.notifications.length <= 0) return 'none'
+    if (this.notifications.some(n => n.type === 'error')) return 'error'
+    if (this.notifications.some(n => n.type === 'warning')) return 'warning'
+    return 'info'
   }
 
   handleClear (n: AppNotification) {
@@ -250,74 +199,201 @@ export default class AppNotificationMenu extends Mixins(BrowserMixin) {
 </script>
 
 <style lang="scss" scoped>
-  @import 'vuetify/src/styles/styles.sass';
+  .m3-notes__bell {
+    position: relative;
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    color: var(--m3d-text-muted);
 
-  :deep(.app-notifications .v-list-item__action.notification-suffix),
-  :deep(.app-notifications .v-list-item__action.notification-clear) {
+    &:hover {
+      background: var(--m3d-hover);
+      color: var(--m3d-text);
+    }
+  }
+
+  .m3-notes__bell--warning {
+    color: var(--m3d-warning);
+  }
+
+  .m3-notes__bell--error {
+    color: var(--m3d-danger);
+  }
+
+  .m3-notes__count {
+    position: absolute;
+    top: 3px;
+    right: 2px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--m3d-accent);
+    color: var(--m3d-on-accent, #00201e);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 17px;
+    text-align: center;
+  }
+
+  .m3-notes__bell--warning .m3-notes__count {
+    background: var(--m3d-warning);
+    color: #1d1300;
+  }
+
+  .m3-notes__bell--error .m3-notes__count {
+    background: var(--m3d-danger);
+    color: #fff;
+  }
+
+  .m3-notes {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    max-height: min(80vh, 640px);
+    padding: 6px;
+    color: var(--m3d-text);
+  }
+
+  .m3-notes__head {
+    display: flex;
     align-items: center;
-    align-self: stretch !important;
-    border-left: thin solid rgba(map-get($shades, 'white'), 0.12);
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 10px 8px;
+
+    b {
+      font-size: 15px;
+      font-weight: 600;
+    }
   }
 
-  :deep(.app-notifications .v-list-item__action.notification-suffix) {
-    padding: 0 0 0 12px;
+  .m3-notes__clear {
+    padding: 4px 10px;
+    border-radius: 999px;
+    color: var(--m3d-accent);
+    font-size: 13px;
+    font-weight: 600;
+
+    &:hover {
+      background: var(--m3d-accent-soft);
+    }
   }
 
-  :deep(.app-notifications .v-list-item__action.notification-clear) {
-    padding: 0 0 0 8px;
-    margin-right: -8px;
+  .m3-notes__empty {
+    margin: 0;
+    padding: 4px 10px 12px;
+    color: var(--m3d-text-muted);
+    font-size: 13px;
   }
 
-:deep(.app-notifications .v-list-item__action.notification-clear-all) {
-    margin-right: -8px;
+  .m3-notes__list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
   }
 
-  :deep(.app-notifications .v-list-item .v-list-item__subtitle.notification-timestamp) {
-    color: rgba(255, 255, 255, 0.47);
+  .m3-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 12px;
+
+    &:hover {
+      background: var(--m3d-hover);
+    }
   }
 
-  .theme--light :deep(.app-notifications .v-list-item .v-list-item__subtitle.notification-timestamp) {
-    color: rgba(0, 0, 0, 0.47);
+  .m3-note__dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: var(--m3d-accent);
   }
 
-  :deep(.app-notifications .v-list-item .v-list-item__subtitle.notification-description) {
-    font-style: italic;
-    color: rgba(255, 255, 255, 0.60);
+  .m3-note--success .m3-note__dot { background: var(--m3d-success); }
+  .m3-note--warning .m3-note__dot { background: var(--m3d-warning); }
+  .m3-note--error .m3-note__dot { background: var(--m3d-danger); }
+
+  .m3-note__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
-  .theme--light :deep(.app-notifications .v-list-item .v-list-item__subtitle.notification-description) {
-    color: rgba(0, 0, 0, 0.60);
+  .m3-note__title {
+    font-size: 14px;
+    font-weight: 600;
   }
 
-  :deep(.notification-description) {
+  .m3-note__desc {
+    display: -webkit-box;
+    overflow: hidden;
+    color: var(--m3d-text-muted);
+    font-size: 13px;
+    -webkit-box-orient: vertical;
     -webkit-line-clamp: 5;
   }
 
-  :deep(.notification-success),
-  :deep(.notification-info),
-  :deep(.notification-warning),
-  :deep(.notification-error),
-  :deep(.notification-announcement) {
-    border-left: solid 3px;
+  .m3-note__time {
+    color: var(--m3d-text-subtle);
+    font-size: 12px;
   }
 
-  :deep(.notification-success) {
-    border-color: var(--v-success-base);
+  .m3-note__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
   }
-  :deep(.notification-info),
-  :deep(.notification-announcement) {
-    border-color: var(--v-info-base);
+
+  .m3-note__link {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: var(--m3d-surface-2);
+    color: var(--m3d-text) !important;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
   }
-  :deep(.notification-warning) {
-    border-color: var(--v-warning-base);
+
+  .m3-note__suffix {
+    flex: none;
+    color: var(--m3d-text-muted);
+    font-size: 20px;
+    font-variant-numeric: tabular-nums;
   }
-  :deep(.notification-error) {
-    border-color: var(--v-error-base);
-  }
-  :deep(.notification-temp) {
-    font-size: 1.5rem;
+
+  .m3-note__x {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: var(--m3d-text-subtle);
+
+    &:hover {
+      background: var(--m3d-surface-2);
+      color: var(--m3d-text);
+    }
   }
 </style>

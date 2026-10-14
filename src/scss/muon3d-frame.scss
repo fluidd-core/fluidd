@@ -47,6 +47,11 @@
   color: var(--m3d-danger) !important;
 }
 
+.cbtn--warn {
+  background: color-mix(in srgb, var(--m3d-warning) 16%, transparent);
+  color: var(--m3d-warning) !important;
+}
+
 .cbtn--ghost {
   background: transparent;
   color: var(--m3d-text-muted) !important;
@@ -190,4 +195,337 @@
     width: auto;
     max-width: none;
   }
+}
+
+// Dialogs (KAN-515): M3Dialog's shell, and what goes inside one. Global,
+// because a dialog mounts outside the page that opens it.
+.v-dialog.m3-dlg-frame {
+  max-height: calc(100% - 32px);
+  background: var(--m3d-surface);
+}
+
+.m3-dlg {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px 22px 20px;
+  border-radius: inherit;
+  background: var(--m3d-surface);
+  color: var(--m3d-text);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.m3-dlg__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.m3-dlg__titles {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.m3-dlg__eyebrow {
+  color: var(--m3d-accent);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.m3-dlg--danger .m3-dlg__eyebrow {
+  color: var(--m3d-danger);
+}
+
+.m3-dlg--warn .m3-dlg__eyebrow {
+  color: var(--m3d-warning);
+}
+
+.m3-dlg__title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+
+}
+
+// Where the focus waits when a dialog opens (tabindex -1, never tabbed to):
+// no ring, or it reads as a field. Above the glass style's ring for all.
+.v-application .m3-dlg .m3-dlg__title:focus,
+.v-application .m3-dlg .m3-dlg__title:focus-visible,
+.v-application .v-dialog.m3-dlg-frame:focus-visible {
+  outline: none;
+}
+
+.m3-dlg__close {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: -4px -6px 0 0;
+  border-radius: 50%;
+  background: var(--m3d-surface-2);
+  color: var(--m3d-text-muted);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    color: var(--m3d-text);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .frame-icon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.m3-dlg__body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+// Vuetify gives every p in the app a bottom margin; a dialog's spacing is its gap.
+.v-application .m3-dlg p {
+  margin-bottom: 0;
+}
+
+.m3-dlg__text {
+  margin: 0;
+  color: var(--m3d-text-muted);
+  font-size: 14px;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.m3-dlg__note {
+  margin: 0;
+  color: var(--m3d-text-subtle);
+  font-size: 12px;
+}
+
+.m3-dlg__error {
+  margin: 0;
+  color: var(--m3d-danger);
+  font-size: 13px;
+}
+
+// A grouped part of a dialog: a step, the facts, a choice.
+.m3-dlg__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--m3d-surface-2);
+}
+
+.m3-dlg__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+
+  .cbtn {
+    min-width: 96px;
+  }
+}
+
+.m3-dlg__grow {
+  flex: 1 1 auto;
+}
+
+@media (max-width: 480px) {
+  .m3-dlg {
+    padding: 20px 18px 18px;
+  }
+
+  // Buttons full width, the one that does it on top.
+  .m3-dlg__actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+
+    .cbtn {
+      width: 100%;
+    }
+  }
+
+  .m3-dlg__grow {
+    display: none;
+  }
+}
+
+// A text box in a dialog: a label above it, the box, a line under it.
+.m3-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.m3-field__label {
+  color: var(--m3d-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.m3-field__box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 14px;
+  border-radius: 14px;
+  background: var(--m3d-surface-2);
+  color: var(--m3d-text-muted);
+  cursor: text;
+  transition: box-shadow var(--m3d-duration-fast) var(--m3d-ease);
+
+  input {
+    flex: 1 1 0;
+    min-width: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--m3d-text);
+    font: inherit;
+    font-size: 15px;
+
+    &::placeholder {
+      color: var(--m3d-text-subtle);
+    }
+  }
+
+  &:focus-within {
+    box-shadow: inset 0 0 0 2px var(--m3d-accent);
+  }
+}
+
+.m3-field__box--ok:not(:focus-within) {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--m3d-success) 55%, transparent);
+}
+
+.m3-field__box--err:not(:focus-within) {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--m3d-danger) 55%, transparent);
+}
+
+.m3-field__box--mono input {
+  font-family: var(--m3d-font-mono);
+}
+
+// The box shows the focus; the glass style's ring on the text itself would be a second one.
+.v-application .m3-field .m3-field__box input:focus,
+.v-application .m3-field .m3-field__box input:focus-visible {
+  outline: none;
+}
+
+// AppDialog (KAN-515): Fluidd's form dialogs (rename, new folder, the
+// printer's settings), drawn as M3Dialog draws the redesign's own.
+.v-application .v-card.app-dlg {
+  border: 0 !important;
+  border-radius: inherit !important;
+  background-color: var(--m3d-surface) !important;
+  color: var(--m3d-text);
+
+  > .app-dlg__head {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 22px 22px 8px !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  > .v-card__text {
+    padding: 8px 22px 12px !important;
+    color: var(--m3d-text);
+  }
+
+  > .app-dlg__actions {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 22px 20px !important;
+
+    > .v-btn,
+    > .cbtn {
+      margin: 0 !important;
+    }
+
+    // A caller's own buttons, as the redesign's round ones.
+    > .v-btn:not(.v-btn--icon):not(.v-btn--fab) {
+      height: 40px !important;
+      padding: 0 16px !important;
+      border-radius: 999px !important;
+      background-color: var(--m3d-surface-2) !important;
+      color: var(--m3d-text) !important;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+
+      &.v-btn--text,
+      &.warning--text {
+        background-color: transparent !important;
+        color: var(--m3d-text-muted) !important;
+      }
+
+      &.primary:not(.v-btn--text) {
+        background-color: var(--m3d-accent) !important;
+        color: var(--m3d-on-accent, #00201e) !important;
+      }
+
+      &.error,
+      &.error--text {
+        background-color: color-mix(in srgb, var(--m3d-danger) 16%, transparent) !important;
+        color: var(--m3d-danger) !important;
+      }
+
+      &.v-btn--disabled {
+        opacity: 0.45;
+      }
+    }
+  }
+}
+
+.app-dlg__titles {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.app-dlg__title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--m3d-text);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.3;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+.v-application .app-dlg__sub {
+  margin: 0;
+  color: var(--m3d-text-muted);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.45;
 }
