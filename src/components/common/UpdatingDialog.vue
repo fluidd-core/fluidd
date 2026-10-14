@@ -33,6 +33,8 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
+import { updateWatch } from '@/services/updates/watch'
+import { ACTIVE_PHASES } from '@/services/updates/model'
 import StateMixin from '@/mixins/state'
 import Console from '@/components/widgets/console/Console.vue'
 import BrowserMixin from '@/mixins/browser'
@@ -46,6 +48,10 @@ export default class UpdatingDialog extends Mixins(StateMixin, BrowserMixin) {
   invokedDialog = false
 
   get open (): boolean {
+    // The printer's own update has its page (views/Updating.vue); Moonraker's
+    // view of it ends at "preparing to reboot", long before it is done.
+    const own = updateWatch.remembered
+    if (own && ACTIVE_PHASES.includes(own.phase)) return false
     if (this.invokedDialog || this.updating) {
       this.invokedDialog = true
 

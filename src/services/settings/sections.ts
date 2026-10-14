@@ -45,7 +45,7 @@ export const SETTINGS_SECTIONS: SettingsSection[] = [
   { id: 'spoolman', label: 'Spoolman', anchors: ['spoolman'], shows: has('spoolman') },
   { id: 'console', label: 'Console', anchors: ['console'], pro: true },
   { id: 'files', label: 'Files and editor', anchors: ['browser', 'editor'], pro: true },
-  { id: 'toolhead', label: 'Toolhead card', anchors: ['toolhead'], pro: true },
+  { id: 'toolhead', label: 'Moving and extruding', anchors: ['toolhead'], pro: true },
   { id: 'gcodePreview', label: 'G-code preview', anchors: ['gcodePreview'], pro: true },
   // Not Pro: the way to change the printer's own configuration and macros has to be findable.
   { id: 'developer', label: 'Developer mode', anchors: ['developer'] },

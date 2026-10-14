@@ -100,7 +100,8 @@ export const SECTIONS: Section[] = [
     pages: [
       { path: '/settings', label: 'Settings' },
       { path: '/wifi', label: 'Wi-Fi and network' },
-      { path: '/system', label: 'System' }
+      { path: '/system', label: 'System' },
+      { path: '/updating', label: 'Updating', shows: () => false }
     ]
   },
   {

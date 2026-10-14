@@ -18,6 +18,7 @@ import History from '@/views/History.vue'
 import Timelapse from '@/views/Timelapse.vue'
 import Configure from '@/views/Configure.vue'
 import Settings from '@/views/Settings.vue'
+import Updating from '@/views/Updating.vue'
 import MacroCategorySettings from '@/components/settings/macros/MacroCategorySettings.vue'
 import Camera from '@/views/Camera.vue'
 import NotFound from '@/views/NotFound.vue'
@@ -129,6 +130,14 @@ const printerRoutes: Array<RouteConfig> = [
     path: `${P}/system`,
     name: 'System',
     component: Settings,
+    ...defaultRouteConfig
+  },
+  {
+    // The printer updating. In the main chunk, not lazy: while the printer
+    // restarts it can't serve a chunk.
+    path: `${P}/updating`,
+    name: 'Updating',
+    component: Updating,
     ...defaultRouteConfig
   },
   {

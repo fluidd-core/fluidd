@@ -53,6 +53,8 @@
           :kind="connection.banner"
         />
 
+        <update-banner v-if="showUpdateBanner" />
+
         <printer-opening
           v-if="otherPrinterRoute"
           :slug="$route.params.printer"
@@ -67,8 +69,13 @@
         <register-service-worker />
       </v-container>
 
+      <updating-screen
+        v-if="connection.screen === 'updating' || connection.screen === 'updating-late'"
+        :offline-state="connection.screen"
+        :printer-name="displayName"
+      />
       <connecting-screen
-        v-if="connection.screen"
+        v-else-if="connection.screen"
         :state="connection.screen"
       />
 
@@ -114,6 +121,11 @@ import { activeSlug, isActiveSlug, printerPageNeedsLogin, samePageFor, stepPrint
 import PrinterOpening from './components/muon-cloud/PrinterOpening.vue'
 import ConnectionBanner from './components/layout/ConnectionBanner.vue'
 import ConnectingScreen from './components/layout/ConnectingScreen.vue'
+import UpdatingScreen from './components/updates/UpdatingScreen.vue'
+import UpdateBanner from './components/updates/UpdateBanner.vue'
+import { printerLost, updateWatch, watchUpdates } from '@/services/updates/watch'
+import { ACTIVE_PHASES, offlineScreen } from '@/services/updates/model'
+import { printerNameParts } from '@/util/printer-name'
 import { connectionView, type ConnectionView } from '@/services/connection/view'
 import FrameMixin from '@/mixins/frame'
 import { ALL_PRINTERS_KEY, PAGE_KEYS, sectionForKey } from '@/router/printerSections'
@@ -134,6 +146,8 @@ import JobReadyDialog from './components/jobs/JobReadyDialog.vue'
   components: {
     ConnectionBanner,
     ConnectingScreen,
+    UpdatingScreen,
+    UpdateBanner,
     PrinterOpening,
     JobReadyDialog,
     SpoolSelectionDialog,
@@ -234,6 +248,23 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   @Watch('socketConnected', { immediate: true })
   onSocketConnected (connected: boolean) {
     if (connected) this.wasConnected = true
+    // The printer's own update: watched while connected, and a drop mid-install is remembered.
+    if (connected && this.printerFrame) {
+      watchUpdates(activeSlug() ?? String(this.$store.state.config.apiUrl ?? ''), url => this.$httpClient.get(url, { validateStatus: () => true }))
+    } else if (!connected && this.wasConnected) {
+      printerLost()
+    }
+  }
+
+  get displayName (): string {
+    return printerNameParts(this.$store.getters['config/getDisplayName'] as string).name
+  }
+
+  /** The bar over every page while the printer installs an update, but on the Updating page itself. */
+  get showUpdateBanner (): boolean {
+    const r = updateWatch.remembered
+    return !!r && ACTIVE_PHASES.includes(r.phase) && this.printerFrame && this.socketConnected &&
+      this.$route.name !== 'Updating' && updateWatch.printer === (activeSlug() ?? '')
   }
 
   /** Another printer: nothing has been reached yet. */
@@ -252,7 +283,10 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
       wasConnected: this.wasConnected,
       stalled: this.socketStalled,
       printerIndependent: this.managedConsoleRoute || this.printerIndependentRoute,
-      otherPrinter: this.otherPrinterRoute
+      otherPrinter: this.otherPrinterRoute,
+      updating: !this.socketConnected && updateWatch.printer === (activeSlug() ?? '')
+        ? offlineScreen(updateWatch.remembered, updateWatch.now)
+        : null
     })
   }
 

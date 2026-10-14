@@ -13,6 +13,11 @@ export interface ConnectionFacts {
   printerIndependent: boolean;
   /** A page for a printer that is still opening (PrinterOpening says so). */
   otherPrinter: boolean;
+  /**
+   * The printer went quiet while installing an update (services/updates):
+   * 'updating', or 'updating-late' past the time it said a restart takes.
+   */
+  updating?: 'updating' | 'updating-late' | null;
 }
 
 export interface ConnectionView {
@@ -22,8 +27,8 @@ export interface ConnectionView {
   stale: boolean;
   /** A bar over the page: lost touch and trying again, or a quiet spell. */
   banner: 'reconnecting' | 'quiet' | null;
-  /** A whole screen instead of the page: still connecting the first time, or unable to. */
-  screen: 'connecting' | 'unreachable' | null;
+  /** A whole screen instead of the page: still connecting the first time, unable to, or restarting into an update. */
+  screen: 'connecting' | 'unreachable' | 'updating' | 'updating-late' | null;
 }
 
 /**
@@ -39,6 +44,8 @@ export function connectionView (f: ConnectionFacts): ConnectionView {
   if (f.socketConnected && f.apiConnected) return { page: true, stale: false, banner: f.stalled ? 'quiet' : null, screen: null }
   // Moonraker answered and wants a login: the login page.
   if (!f.authenticated && f.apiConnected) return { page: true, stale: false, banner: null, screen: null }
+  // Quiet because it is restarting into an update: say so, not "trying again" or "can't reach".
+  if (f.updating) return { page: false, stale: false, banner: null, screen: f.updating }
   if (f.wasConnected) return { page: true, stale: true, banner: 'reconnecting', screen: null }
   return { page: false, stale: false, banner: null, screen: f.socketConnecting ? 'connecting' : 'unreachable' }
 }

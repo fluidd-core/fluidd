@@ -18,6 +18,12 @@ describe('what the connection shows', () => {
     expect(connectionView(up)).toEqual({ page: true, stale: false, banner: null, screen: null })
   })
 
+  it('says the printer is updating, not unreachable, when it went quiet mid-install', () => {
+    expect(connectionView({ ...dropped, updating: 'updating' })).toEqual({ page: false, stale: false, banner: null, screen: 'updating' })
+    expect(connectionView({ ...dropped, updating: 'updating-late' }).screen).toBe('updating-late')
+    expect(connectionView({ ...up, updating: 'updating' }).screen).toBeNull()
+  })
+
   it('says so quietly when the printer goes silent, without taking the page down', () => {
     expect(connectionView({ ...up, stalled: true })).toMatchObject({ page: true, banner: 'quiet', stale: false })
   })

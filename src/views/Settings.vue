@@ -21,7 +21,7 @@
         <span class="settings-list__label">{{ section.label }}</span>
         <span
           class="settings-list__hint"
-          :class="{ 'settings-list__hint--warn': section.id === 'updates' && updateCount > 0 }"
+          :class="{ 'settings-list__hint--warn': section.id === 'updates' && (updateCount > 0 || hintOf(section) === 'update ready') }"
         >{{ hintOf(section) }}</span>
         <frame-icon
           v-if="isMobileViewport"
@@ -58,7 +58,7 @@
         <access-settings v-if="shows('access') && supports('muon_access')" />
         <protection-settings v-else-if="shows('protection') && supports('muon_protection')" />
         <auth-settings v-if="shows('auth') && supports('authorization')" />
-        <version-settings v-if="shows('versions')" />
+        <software-settings v-if="shows('versions')" />
         <camera-settings v-if="shows('camera')" />
         <preset-settings v-if="shows('presets')" />
         <macro-edit-list v-if="shows('macros')" />
@@ -92,7 +92,8 @@ import PresetSettings from '@/components/settings/presets/PresetSettings.vue'
 import CameraSettings from '@/components/settings/cameras/CameraSettings.vue'
 import ToolheadSettings from '@/components/settings/ToolheadSettings.vue'
 import ThemeSettings from '@/components/settings/ThemeSettings.vue'
-import VersionSettings from '@/components/settings/VersionSettings.vue'
+import SoftwareSettings from '@/components/settings/SoftwareSettings.vue'
+import { updateWatch } from '@/services/updates/watch'
 import GcodePreviewSettings from '@/components/settings/GcodePreviewSettings.vue'
 import AuthSettings from '@/components/settings/auth/AuthSettings.vue'
 import ConsoleSettings from '@/components/settings/console/ConsoleSettings.vue'
@@ -136,7 +137,7 @@ const SECTION_COMPONENTS = ['authorization', 'update_manager', 'timelapse', 'spo
     CameraSettings,
     ToolheadSettings,
     ThemeSettings,
-    VersionSettings,
+    SoftwareSettings,
     GcodePreviewSettings,
     AuthSettings,
     ConsoleSettings,
@@ -211,10 +212,14 @@ export default class Settings extends Mixins(StateMixin, BrowserMixin) {
     switch (section.id) {
       case 'general':
         return printerNameParts(this.$store.getters['config/getDisplayName'] as string).name
-      case 'updates':
+      case 'updates': {
+        // The printer's own software, as its Aux API says; else what Moonraker's updater lists.
+        const own = updateWatch.status
+        if (own) return own.update_available && own.target_version !== own.current_version ? 'update ready' : 'up to date'
         if (!Object.keys(this.$store.state.version.version_info ?? {}).length) return ''
         if (!this.updateCount) return 'up to date'
         return this.updateCount === 1 ? '1 update' : `${this.updateCount} updates`
+      }
       case 'cameras':
         return countOrNone((this.$store.getters['webcams/getWebcams'] as unknown[]).length)
       case 'materials':
