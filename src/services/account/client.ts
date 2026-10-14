@@ -12,10 +12,11 @@
  * pages show "Coming soon" there instead of an error.
  */
 import { CloudError, cloudBaseUrl, refreshSession, storedToken } from '@/services/muon-cloud/api'
+import { deletionRevision, observeDeletion } from '@/services/muon-cloud/deletion'
 
 export class AccountError extends CloudError {
-  constructor (message: string, status: number, readonly body: Record<string, unknown> = {}) {
-    super(message, status)
+  constructor (message: string, status: number, body: Record<string, unknown> = {}) {
+    super(message, status, undefined, body)
   }
 
   /** The console wants the person to confirm it's them (`403 reauth_required`). */
@@ -28,11 +29,6 @@ export class AccountError extends CloudError {
     return this.status === 403 && this.body.mfa_required === true && typeof this.body.mfa_token === 'string'
       ? this.body.mfa_token
       : null
-  }
-
-  /** The account is waiting out its 14 days before deletion (console #28): only a few routes answer. */
-  get deletionPending (): boolean {
-    return this.status === 403 && this.body.deletion_pending === true
   }
 
   /** The console doesn't have this route yet (an older build): no JSON error with it. */
@@ -88,22 +84,31 @@ export function sentence (text: string): string {
 }
 
 export async function accountRequest<T> (method: string, path: string, body?: unknown, options: RequestOptions = {}): Promise<T> {
+  let startedAt = deletionRevision()
   const ownToken = options.token !== undefined
-  const token = ownToken ? options.token ?? null : storedToken()
+  let token = ownToken ? options.token ?? null : storedToken()
   let response = await send(method, path, body, token)
   // A central-login access token lasts 15 minutes: refresh once and retry,
   // only for the stored session (services/muon-cloud/api.ts does the same).
   if (response.status === 401 && !ownToken && token !== null) {
     const current = storedToken()
     if (current && (current !== token || await refreshSession())) {
-      response = await send(method, path, body, storedToken())
+      token = storedToken()
+      startedAt = deletionRevision()
+      response = await send(method, path, body, token)
     }
   }
-  if (!response.ok) throw await errorOf(response)
+  if (!response.ok) {
+    const error = await errorOf(response)
+    if (!ownToken && token !== null && token === storedToken()) observeDeletion(method, path, response.status, error.body, startedAt)
+    throw error
+  }
   if (options.raw) return response as unknown as T
   const text = await response.text()
   try {
-    return (text ? JSON.parse(text) : {}) as T
+    const data = text ? JSON.parse(text) : {}
+    if (!ownToken && token !== null && token === storedToken()) observeDeletion(method, path, response.status, data, startedAt)
+    return data as T
   } catch {
     throw new AccountError('The Muon3D service sent an unreadable answer.', response.status)
   }

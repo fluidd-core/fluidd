@@ -32,7 +32,7 @@
         name="userPlus"
         small
       />
-      <span class="prn__grow"><b>{{ requester(request) }}</b> wants to use {{ printerName(request.printer_id) }}{{ request.link_id ? ' with your invite link' : '' }}. Choose what they can do.</span>
+      <span class="prn__grow"><b>{{ requester(request) }}</b> wants to use {{ printerName(request.printer_id) }}{{ request.link_id ? ' with your invite link' : '' }} as {{ request.role === 'viewer' ? 'a Viewer' : 'an Operator' }}. <span class="acct-subtle">Choosing another role: Coming soon. You can change it after allowing access.</span></span>
       <button
         type="button"
         class="lib-btn lib-btn--sm lib-btn--ghost"
@@ -43,19 +43,12 @@
       </button>
       <button
         type="button"
-        class="lib-btn lib-btn--sm"
-        :disabled="busy"
-        @click="answer(request, true, 'viewer')"
-      >
-        Viewer
-      </button>
-      <button
-        type="button"
         class="lib-btn lib-btn--sm lib-btn--pri"
         :disabled="busy"
-        @click="answer(request, true, 'operator')"
+        data-tid="approval-allow"
+        @click="answer(request, true)"
       >
-        Operator
+        Allow {{ request.role === 'viewer' ? 'Viewer' : 'Operator' }}
       </button>
     </div>
 
@@ -178,6 +171,29 @@
               type="button"
               class="lib-btn lib-btn--sm lib-btn--ghost"
               :disabled="busy"
+              data-tid="person-role"
+              @click="openRole(row)"
+            >
+              Change role
+            </button>
+            <button
+              v-if="row.invite && !resendMissing"
+              type="button"
+              class="lib-btn lib-btn--sm lib-btn--ghost"
+              :disabled="busy"
+              data-tid="invite-resend"
+              @click="resend(row)"
+            >
+              Resend
+            </button>
+            <span
+              v-else-if="row.invite"
+              class="acct-soon"
+            >Resending: Coming soon</span>
+            <button
+              type="button"
+              class="lib-btn lib-btn--sm lib-btn--ghost"
+              :disabled="busy"
               @click="removePerson(row)"
             >
               {{ row.invite ? 'Cancel' : 'Remove' }}
@@ -288,6 +304,66 @@
     >
       {{ error }}
     </p>
+
+    <m3-dialog
+      :value="dialog === 'role'"
+      title="Change role"
+      :persistent="busy"
+      @close="dialog = ''"
+    >
+      <p class="m3-dlg__text">
+        What {{ changing && changing.email }} can do with {{ changing && printerName(changing.printerId) }}.
+        Their end date stays the same. Changing to Viewer takes back their control access.
+      </p>
+      <div class="prn__roles">
+        <button
+          type="button"
+          class="lib-chip"
+          :class="{ 'lib-chip--on': form.role === 'operator' }"
+          :aria-pressed="form.role === 'operator' ? 'true' : 'false'"
+          data-tid="role-operator"
+          @click="form.role = 'operator'"
+        >
+          Operator: print and control
+        </button>
+        <button
+          type="button"
+          class="lib-chip"
+          :class="{ 'lib-chip--on': form.role === 'viewer' }"
+          :aria-pressed="form.role === 'viewer' ? 'true' : 'false'"
+          data-tid="role-viewer"
+          @click="form.role = 'viewer'"
+        >
+          Viewer: watch only
+        </button>
+      </div>
+      <p
+        v-if="dialogError"
+        class="m3-dlg__error"
+        role="alert"
+      >
+        {{ dialogError }}
+      </p>
+      <template #actions>
+        <button
+          type="button"
+          class="cbtn cbtn--ghost"
+          :disabled="busy"
+          @click="dialog = ''"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="cbtn cbtn--primary"
+          :disabled="busy || !changing || form.role === changing.role"
+          data-tid="role-save"
+          @click="changeRole"
+        >
+          Save role
+        </button>
+      </template>
+    </m3-dialog>
 
     <m3-dialog
       :value="dialog === 'rename'"
@@ -428,6 +504,7 @@ import { cloudApi, type CloudPrinter } from '@/services/muon-cloud/api'
 import { cloudState, refreshPrinters } from '@/services/muon-cloud/state'
 import { knownPrinters, printerPath } from '@/services/printer-pages'
 import { accountApi, type InviteLink, type JoinApproval, type PrinterInvite, type PrinterShare } from '@/services/account/api'
+import { isMissing } from '@/services/account/client'
 import { accountState, describe, loadApprovals } from '@/services/account/state'
 import { dayText, type AccountSectionId } from '@/services/account/model'
 
@@ -439,6 +516,7 @@ interface PersonRow {
   letter: string;
   role: string;
   until: string;
+  endsAt: number | null;
   state: string;
   invite: boolean;
 }
@@ -457,9 +535,11 @@ export default class AccountPrinters extends Vue {
   shares: Record<string, PrinterShare[]> = {}
   invites: Record<string, PrinterInvite[]> = {}
   linksOf: Record<string, InviteLink[]> = {}
-  dialog: '' | 'rename' | 'invite' = ''
+  dialog: '' | 'rename' | 'invite' | 'role' = ''
   form = { name: '', email: '', printer: '', role: 'operator', until: '' }
   renaming: CloudPrinter | null = null
+  changing: PersonRow | null = null
+  resendMissing = false
   linkDialog = false
   busy = false
   error = ''
@@ -504,6 +584,7 @@ export default class AccountPrinters extends Vue {
           letter: s.email.charAt(0).toUpperCase(),
           role: s.role,
           until: s.ends_at ? dayText(s.ends_at) : 'No end date',
+          endsAt: s.ends_at ?? null,
           state: s.accepted === false ? 'Not signed in yet' : `Since ${dayText(s.created_at)}`,
           invite: false
         })
@@ -517,6 +598,7 @@ export default class AccountPrinters extends Vue {
           letter: i.email.charAt(0).toUpperCase(),
           role: i.role,
           until: i.ends_at ? dayText(i.ends_at) : 'No end date',
+          endsAt: i.ends_at ?? null,
           state: `Invited ${dayText(i.created_at)}, not accepted yet`,
           invite: true
         })
@@ -597,6 +679,10 @@ export default class AccountPrinters extends Vue {
       if (done) this.message = done
       return true
     } catch (error) {
+      if (isMissing(error)) {
+        this.message = 'Coming soon.'
+        return false
+      }
       if (inDialog) this.dialogError = describe(error)
       else this.error = describe(error)
       return false
@@ -605,8 +691,8 @@ export default class AccountPrinters extends Vue {
     }
   }
 
-  async answer (request: JoinApproval, allow: boolean, role?: string) {
-    await this.run(() => accountApi.answerApproval(request.id, allow, role),
+  async answer (request: JoinApproval, allow: boolean) {
+    await this.run(() => accountApi.answerApproval(request.id, allow),
       allow ? `${this.requester(request)} can use ${this.printerName(request.printer_id)} now.` : 'Declined.')
     this.refresh()
   }
@@ -661,6 +747,41 @@ export default class AccountPrinters extends Vue {
     if (!sure) return
     await this.run(() => row.invite ? accountApi.withdrawInvite(row.printerId, row.id) : accountApi.removeShare(row.printerId, row.id))
     this.refresh()
+  }
+
+  openRole (row: PersonRow) {
+    this.changing = row
+    this.form.role = row.role
+    this.dialogError = ''
+    this.dialog = 'role'
+  }
+
+  async changeRole () {
+    const row = this.changing
+    if (!row) return
+    const role = this.form.role
+    const action = () => row.invite
+      ? accountApi.sendInvite(row.printerId, row.email, role, row.endsAt)
+      : accountApi.share(row.printerId, row.email, role, row.endsAt)
+    const verb = role === 'viewer' ? 'watch' : 'print and control'
+    if (await this.run(action, `${row.email} can now ${verb} ${this.printerName(row.printerId)}.`, true)) {
+      this.dialog = ''
+      this.changing = null
+      this.refresh()
+    }
+  }
+
+  async resend (row: PersonRow) {
+    if (!row.invite) return
+    const action = async () => {
+      try {
+        return await accountApi.sendInvite(row.printerId, row.email, row.role, row.endsAt)
+      } catch (error) {
+        if (isMissing(error)) this.resendMissing = true
+        throw error
+      }
+    }
+    if (await this.run(action, `Invitation sent to ${row.email}.`)) this.refresh()
   }
 
   async revoke (link: InviteLink) {
@@ -718,7 +839,7 @@ export default class AccountPrinters extends Vue {
 
   .prn__table {
     display: grid;
-    grid-template-columns: 32px minmax(0, 1fr) 100px 110px 120px 170px;
+    grid-template-columns: 32px minmax(0, 1fr) 100px 110px 120px auto;
     gap: 12px;
     align-items: center;
     padding: 10px 0;
@@ -785,7 +906,13 @@ export default class AccountPrinters extends Vue {
 
   @media (max-width: 760px) {
     .prn__table {
-      grid-template-columns: 28px minmax(0, 1fr) auto auto;
+      grid-template-columns: 28px minmax(0, 1fr) auto;
+    }
+
+    .prn__end {
+      grid-column: 2 / -1;
+      justify-content: flex-start;
+      flex-wrap: wrap;
     }
 
     // On a phone the words take the width and the buttons go underneath.

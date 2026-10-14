@@ -22,6 +22,7 @@ import { browserEndpoint, forgetBrowserKey, managedEndpointFactory } from './iro
 import { createPrinterTransportForSelection, type AuthorizedManagedRelaySession, type PrinterTransport, type PrinterSocket } from '@/services/managed-transport'
 import { consolePresence } from './presence'
 import { STATUS_QUERY, statusFrom, type PrinterStatus } from './status'
+import { deletionState } from './deletion'
 
 const ACTIVE_KEY = 'muon.cloud.active'
 
@@ -130,6 +131,11 @@ function waitForRetry (ms: number, signal: AbortSignal): Promise<void> {
 
 /** One pending grant per printer, retrying only temporary console failures. */
 export function requestAccess (printerId: string): Promise<AccessHandoff> {
+  if (deletionState.deleteAfter !== null) {
+    return Promise.reject(new CloudError('Your account is waiting to be deleted.', 403, undefined, {
+      deletion_pending: true, delete_after: deletionState.deleteAfter
+    }))
+  }
   const existing = grants.get(printerId)
   if (existing) return existing
   const signal = sessionAbort.signal
@@ -253,11 +259,17 @@ export async function borrowCloudPrinter (printerId: string): Promise<PrinterTra
 }
 
 async function pollAll () {
+  if (deletionState.deleteAfter !== null) {
+    for (const connection of statusConnections.values()) connection.then(c => c.close()).catch(() => {})
+    statusConnections.clear()
+    if (Object.keys(cloudState.status).length) cloudState.status = {}
+    return
+  }
   await Promise.all(cloudState.printers.map(p => pollOne(p)))
 }
 
 export async function refreshPrinters () {
-  if (!cloudState.account) return
+  if (!cloudState.account || deletionState.deleteAfter !== null) return
   try {
     cloudState.printers = (await cloudApi.printers()).printers
   } catch (error) {

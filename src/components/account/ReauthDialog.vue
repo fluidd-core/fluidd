@@ -12,6 +12,12 @@
     <p class="m3-dlg__text">
       {{ why }}
     </p>
+    <p
+      v-if="hasPasskey"
+      class="m3-dlg__note"
+    >
+      Passkey confirmation: Coming soon. You can still use a fresh sign-in with a passkey.
+    </p>
     <template v-if="hasPassword">
       <label class="m3-field">
         <span class="m3-field__label">Password</span>
@@ -101,6 +107,9 @@ export default class ReauthDialog extends Vue {
 
   @Prop({ type: Boolean, default: true })
   readonly hasPassword!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  readonly hasPasskey!: boolean
 
   @Prop({ type: Boolean, default: false })
   readonly twoStep!: boolean

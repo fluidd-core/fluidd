@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import AccountDelete from '../AccountDelete.vue'
 import { accountState } from '@/services/account/state'
 import type { Me } from '@/services/account/api'
+import { deletionState } from '@/services/muon-cloud/deletion'
 
 const deleteAccount = vi.hoisted(() => vi.fn(async (): Promise<{ ok: boolean, delete_after?: number, unlinked?: number }> => ({ ok: true })))
 const cancelDeletion = vi.hoisted(() => vi.fn(async () => ({ ok: true })))
@@ -29,6 +30,7 @@ function me (deletion?: Me['account']['deletion'] | 'absent'): Me {
 }
 
 function open (who: Me) {
+  deletionState.deleteAfter = who.account.deletion?.delete_after ?? null
   accountState.accountId = null
   accountState.me = who
   return mount(AccountDelete, {
@@ -52,9 +54,26 @@ async function throughToStep2 (w: ReturnType<typeof open>, now = false) {
 }
 
 describe('Delete account', () => {
+  it('lets a passkey-only account delete after a recent sign-in, without sending an empty password', async () => {
+    const who = me()
+    who.account.has_password = false
+    who.sign_in!.password = false
+    who.sign_in!.passkeys = 1
+    const w = open(who)
+    await tid(w, 'delete-open').trigger('click')
+    await tid(w, 'delete-continue').trigger('click')
+    expect(tid(w, 'delete-confirm').exists()).toBe(true)
+    await tid(w, 'delete-confirm').trigger('click')
+    await new Promise(resolve => setTimeout(resolve))
+    expect(deleteAccount).toHaveBeenCalledWith({}, false)
+    expect(tid(w, 'delete-done').exists()).toBe(true)
+    w.destroy()
+  })
+
   afterEach(() => {
     vi.clearAllMocks()
     accountState.me = null
+    deletionState.deleteAfter = null
   })
 
   it('waits 14 days by default on a console with the grace period, and can still be kept', async () => {

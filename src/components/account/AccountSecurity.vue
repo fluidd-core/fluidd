@@ -832,9 +832,11 @@ export default class AccountSecurity extends Mixins(AccountReauthMixin) {
     const key = this.renaming
     if (!key) return
     const name = this.form.name.trim()
+    let renamed = false
     const done = await this.run(async () => {
       try {
-        await accountApi.renamePasskey(key.id, name)
+        const result = await this.withReauth(r => accountApi.renamePasskey(key.id, name, r), { action: 'Rename passkey' })
+        renamed = result !== null
       } catch (error) {
         if (isMissing(error)) {
           this.renameMissing = true
@@ -843,7 +845,7 @@ export default class AccountSecurity extends Mixins(AccountReauthMixin) {
         throw error
       }
     }, true)
-    if (done) {
+    if (done && renamed) {
       this.dialog = ''
       key.name = name
     }
