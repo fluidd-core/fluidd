@@ -169,6 +169,9 @@ export const defaultState = (): ConfigState => {
           desc: false
         },
         remainingFilamentUnit: 'weight'
+      },
+      maintenance: {
+        lastRun: {}
       }
     }
   }

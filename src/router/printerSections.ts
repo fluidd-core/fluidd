@@ -87,7 +87,10 @@ export const SECTIONS: Section[] = [
     label: 'Maintenance',
     icon: 'maintenance',
     key: 'm',
-    pages: [{ path: '/tune', label: 'Bed mesh' }]
+    pages: [
+      { path: '/maintenance', label: 'Health' },
+      { path: '/tune', label: 'Bed mesh', shows: c => c.pro }
+    ]
   },
   {
     id: 'settings',

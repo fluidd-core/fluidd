@@ -26,6 +26,7 @@ describe("a printer's sections", () => {
     ['/settings/macros/abc', 'settings'],
     ['/wifi', 'settings'],
     ['/camera/front', 'camera'],
+    ['/maintenance', 'maintenance'],
     ['/tune', 'maintenance'],
     ['/control', 'control'],
     ['/configure', 'files']
@@ -50,6 +51,9 @@ describe("a printer's sections", () => {
     const overview = SECTIONS.find(s => s.id === 'overview')!
     expect(visiblePages(overview, simple).map(p => p.path)).toEqual(['/'])
     expect(visiblePages(overview, everything).map(p => p.path)).toEqual(['/', '/diagnostics'])
+    const maintenance = SECTIONS.find(s => s.id === 'maintenance')!
+    expect(visiblePages(maintenance, simple).map(p => p.path)).toEqual(['/maintenance'])
+    expect(visiblePages(maintenance, everything).map(p => p.path)).toEqual(['/maintenance', '/tune'])
   })
 
   it("go to the first camera's own page", () => {

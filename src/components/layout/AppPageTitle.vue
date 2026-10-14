@@ -29,6 +29,7 @@
       <div class="app-page-header__actions">
         <control-actions v-if="currentSection && currentSection.id === 'control' && !isMobileViewport" />
         <overview-actions v-if="overviewHome && !isMobileViewport" />
+        <maintenance-due v-if="currentPage === '/maintenance'" />
         <button
           v-if="canEditLayout"
           type="button"
@@ -70,6 +71,7 @@ import BrowserMixin from '@/mixins/browser'
 import { pageMatches, type SectionPage } from '@/router/printerSections'
 import ControlActions from '@/components/control/ControlActions.vue'
 import OverviewActions from '@/components/overview/OverviewActions.vue'
+import MaintenanceDue from '@/components/maintenance/MaintenanceDue.vue'
 import TonePill from '@/components/printers/TonePill.vue'
 import PrinterStatusMixin from '@/mixins/printer-status'
 import { cloudState } from '@/services/muon-cloud/state'
@@ -82,7 +84,7 @@ import type { TileTone } from '@/services/printers-page/model'
  * with the section's pages as tabs under it (Jobs: Jobs, Preview, History,
  * Timelapse).
  */
-@Component({ components: { ControlActions, OverviewActions, TonePill } })
+@Component({ components: { ControlActions, OverviewActions, MaintenanceDue, TonePill } })
 export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin, PrinterStatusMixin) {
   /** Overview is the printer's own page: it is named by the printer, with its state beside it. */
   get overviewHome (): boolean {
@@ -123,6 +125,9 @@ export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin, Print
       return this.pro
         ? 'Pro: the exact values, in the same places as Simple, with more below.'
         : 'Heat, move, filament, speed, fans and lights.'
+    }
+    if (this.currentPage === '/maintenance') {
+      return "What keeps prints coming out right. Each check says when it last ran and whether it's due."
     }
     return ''
   }

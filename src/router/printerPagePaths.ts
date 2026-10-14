@@ -4,7 +4,7 @@
  * the same page of the printer Fluidd is on.
  */
 export const PRINTER_PAGE_PATHS = [
-  '/console', '/jobs', '/control', '/tune', '/diagnostics', '/timelapse', '/history', '/wifi',
+  '/console', '/jobs', '/control', '/maintenance', '/tune', '/diagnostics', '/timelapse', '/history', '/wifi',
   '/system', '/configure', '/settings', '/camera', '/preview', '/slice'
 ]
 

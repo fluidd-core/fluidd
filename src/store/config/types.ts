@@ -25,6 +25,12 @@ export interface UiSettings {
   fileSystem: FileSystemConfig;
   toolhead: ToolheadConfig;
   spoolman: SpoolmanConfig;
+  maintenance: MaintenanceConfig;
+}
+
+/** When each of Maintenance's checks last ran from Fluidd, in ms, by check (bedMesh, shaper, ...). */
+export interface MaintenanceConfig {
+  lastRun: Record<string, number>;
 }
 
 export interface ToolheadConfig {
