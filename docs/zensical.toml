@@ -209,6 +209,11 @@ minify_css = true
 "development/localization.md" = "development.md#localization"
 # Corepack dropped in favour of pnpm's own installer — heading renamed
 "development.md#enable-pnpm" = "development.md#install-pnpm"
+"development.md#install-node-v24" = "development.md#install-nodejs"
+
+# Renamed headings
+"features/authorization.md#forced-logins" = "features/authorization.md#understanding-forced-logins"
+"features/cameras.md#crowsnest-support" = "features/cameras.md#crowsnest"
 
 # Per-slicer / per-sensor sections became content tabs — preserve the anchors
 # of the headings they replaced (anchor redirects, Zensical 0.0.61+)
@@ -226,6 +231,10 @@ minify_css = true
 "features/thermals.md#mcu-temperature-atsam-atamd-stm32" = "features/thermals.md#sensors-mcu-temperature"
 "features/thermals.md#environmental-sensors" = "features/thermals.md#sensors-environmental-sensors"
 "features/thermals.md#mpc-kalico" = "features/thermals.md#sensors-mpc-kalico"
+"features/thermals.md#aht10-aht20-aht30-temperature-and-humidity" = "features/thermals.md#sensors-environmental-sensors"
+"features/thermals.md#bmp180-bmp280-bmp388-pressure-and-temperature" = "features/thermals.md#sensors-environmental-sensors"
+"features/thermals.md#sht3x-temperature-and-humidity" = "features/thermals.md#sensors-environmental-sensors"
+"features/thermals.md#other-sensors" = "features/thermals.md#sensors-environmental-sensors"
 
 [[project.extra.social]]
 icon = "fontawesome/brands/github"
