@@ -114,7 +114,7 @@ import { probeSlicer } from '@/services/slicer-bridge/slicerUrl'
 import CloudAccountMenu from '@/components/muon-cloud/CloudAccountMenu.vue'
 
 /** The pages used while printing get a tab each; the rest are in More. */
-const TAB_SECTIONS: SectionId[] = ['overview', 'jobs', 'slice']
+const TAB_SECTIONS: SectionId[] = ['overview', 'jobs', 'control', 'slice']
 
 /**
  * The phone's pages: tabs for the ones used while printing, More for the

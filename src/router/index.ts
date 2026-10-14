@@ -11,6 +11,7 @@ import Console from '@/views/Console.vue'
 import GcodePreview from '@/views/GcodePreview.vue'
 import Jobs from '@/views/Jobs.vue'
 import Tune from '@/views/Tune.vue'
+import Control from '@/views/Control.vue'
 import Diagnostics from '@/views/Diagnostics.vue'
 import History from '@/views/History.vue'
 import Timelapse from '@/views/Timelapse.vue'
@@ -77,6 +78,12 @@ const printerRoutes: Array<RouteConfig> = [
     path: `${P}/jobs`,
     name: 'Jobs',
     component: Jobs,
+    ...defaultRouteConfig
+  },
+  {
+    path: `${P}/control`,
+    name: 'Control',
+    component: Control,
     ...defaultRouteConfig
   },
   {

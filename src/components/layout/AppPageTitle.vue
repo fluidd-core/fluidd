@@ -4,13 +4,22 @@
     :class="{ 'app-page-header--phone': isMobileViewport }"
   >
     <div class="app-page-header__row">
-      <h1
-        class="app-page-header__title"
-        data-tid="page-title"
-      >
-        {{ title }}
-      </h1>
+      <div class="app-page-header__titles">
+        <h1
+          class="app-page-header__title"
+          data-tid="page-title"
+        >
+          {{ title }}
+        </h1>
+        <p
+          v-if="subtitle"
+          class="app-page-header__subtitle"
+        >
+          {{ subtitle }}
+        </p>
+      </div>
       <div class="app-page-header__actions">
+        <control-actions v-if="currentSection && currentSection.id === 'control' && !isMobileViewport" />
         <button
           v-if="canEditLayout"
           type="button"
@@ -50,16 +59,28 @@ import { Component, Mixins } from 'vue-property-decorator'
 import FrameMixin from '@/mixins/frame'
 import BrowserMixin from '@/mixins/browser'
 import { pageMatches, type SectionPage } from '@/router/printerSections'
+import ControlActions from '@/components/control/ControlActions.vue'
 
 /**
  * A printer page's title on the left and its own actions on the right,
  * with the section's pages as tabs under it (Jobs: Jobs, Preview, History,
  * Timelapse).
  */
-@Component({})
+@Component({ components: { ControlActions } })
 export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin) {
   get title (): string {
     return this.currentSection?.label ?? this.$route.name ?? ''
+  }
+
+  /** A line under the title, for a page that says what it holds. */
+  get subtitle (): string {
+    if (this.isMobileViewport) return ''
+    if (this.currentSection?.id === 'control') {
+      return this.pro
+        ? 'Pro: the exact values, in the same places as Simple, with more below.'
+        : 'Heat, move, filament, speed, fans and lights.'
+    }
+    return ''
   }
 
   get tabs (): SectionPage[] {
@@ -96,6 +117,19 @@ export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin) {
     justify-content: space-between;
     gap: 12px;
     min-width: 0;
+  }
+
+  .app-page-header__titles {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .app-page-header__subtitle {
+    margin: 0;
+    color: var(--m3d-text-muted);
+    font-size: 14px;
   }
 
   .app-page-header__title {

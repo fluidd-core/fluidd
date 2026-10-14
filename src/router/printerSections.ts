@@ -6,7 +6,7 @@
  *
  * `key` is the second key of the G shortcut (G then O for Overview).
  */
-export type SectionId = 'overview' | 'jobs' | 'slice' | 'camera' | 'maintenance' | 'settings' | 'console' | 'files'
+export type SectionId = 'overview' | 'jobs' | 'control' | 'slice' | 'camera' | 'maintenance' | 'settings' | 'console' | 'files'
 
 /** What decides whether a section or a page shows. */
 export interface SectionContext {
@@ -58,6 +58,13 @@ export const SECTIONS: Section[] = [
       { path: '/history', label: 'History', shows: c => c.history },
       { path: '/timelapse', label: 'Timelapse', shows: c => c.timelapse }
     ]
+  },
+  {
+    id: 'control',
+    label: 'Control',
+    icon: 'control',
+    key: 'c',
+    pages: [{ path: '/control', label: 'Control' }]
   },
   {
     id: 'slice',

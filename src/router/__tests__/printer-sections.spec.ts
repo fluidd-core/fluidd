@@ -27,6 +27,7 @@ describe("a printer's sections", () => {
     ['/wifi', 'settings'],
     ['/camera/front', 'camera'],
     ['/tune', 'maintenance'],
+    ['/control', 'control'],
     ['/configure', 'files']
   ])('%s is in %s', (page, id) => {
     expect(sectionOf(page)?.id).toBe(id)
@@ -39,8 +40,8 @@ describe("a printer's sections", () => {
   })
 
   it('show Console and Files only with Pro on', () => {
-    expect(ids(simple)).toEqual(['overview', 'jobs', 'maintenance', 'settings'])
-    expect(ids(everything)).toEqual(['overview', 'jobs', 'slice', 'camera', 'maintenance', 'settings', 'console', 'files'])
+    expect(ids(simple)).toEqual(['overview', 'jobs', 'control', 'maintenance', 'settings'])
+    expect(ids(everything)).toEqual(['overview', 'jobs', 'control', 'slice', 'camera', 'maintenance', 'settings', 'console', 'files'])
   })
 
   it('show a page only where it can work', () => {
