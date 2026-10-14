@@ -1,5 +1,6 @@
 import { THREE, m1, type M1Root } from './load'
-import type { ModelPose } from './pose'
+import { placeModel, type Calibration, type ModelPose } from './pose'
+import type { Toolpath } from './toolpath'
 
 /**
  * The live M1 on a stage: the photoreal model, lit as its product shots
@@ -12,6 +13,10 @@ import type { ModelPose } from './pose'
  */
 export interface M1Viewer {
   setPose: (pose: ModelPose) => void;
+  /** The print to draw under the plate, in the printer's millimetres, or null for none. */
+  setPrint: (path: Toolpath | null, colour: number) => void;
+  /** How many of the print's segments are done, so drawn. */
+  setPrintDone: (segments: number) => void;
   /** Moves the machine left by this share of the stage's width, to clear something on the right. */
   setShift: (share: number) => void;
   /** Called after each frame drawn; the first means it can be shown. */
@@ -21,7 +26,11 @@ export interface M1Viewer {
 
 /** Seen from the mast side and a little above, as the s1_1 product shot is. */
 const VIEW = { theta: -0.366, phi: 1.033 }
-const PHI_RANGE = [0.72, 1.38]
+/** From well above down to a little under the plate, where the print hangs. */
+const PHI_RANGE = [0.72, 1.62]
+/** The printer's own changes draw at most this often: twice a second. */
+const PRINTER_FRAME_MS = 500
+
 /** The share of the stage the machine fills, edge to edge. */
 const FILL = 0.86
 
@@ -158,6 +167,54 @@ function stageBackdrop (width: number, height: number): THREE.CanvasTexture {
   return texture
 }
 
+/**
+ * Measures the built model with the head centred and the bed at the bottom:
+ * the plate's edges and underside, and the nozzle tip (the highest brass on
+ * the head). From these the printer's millimetres place the head and the
+ * bed (pose.ts), and the print hangs from the plate in the same
+ * millimetres: `printFrame` takes a point (x, y, z) to the bed's own space,
+ * x from the plate's left edge, y back from its front edge, z down from its
+ * underside.
+ */
+function calibrate (model: M1Root, mats: Record<string, THREE.Material>) {
+  const dim = m1().DIM
+  Object.assign(model.userData.state, { headX: 0, headZ: 0, z: 0, fold: 0 })
+  model.userData.apply()
+  model.updateMatrixWorld(true)
+
+  const plate = new THREE.Box3().setFromObject(model.getObjectByName('glassPlate') as THREE.Object3D)
+  let tip: THREE.Box3 | null = null
+  ;(model.userData.pod as THREE.Object3D).traverse(o => {
+    const mesh = o as THREE.Mesh
+    if (!mesh.isMesh || mesh.material !== mats.brass) return
+    const box = new THREE.Box3().setFromObject(mesh)
+    if (!tip || box.max.y > tip.max.y) tip = box
+  })
+  const tipBox = (tip ?? new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())) as THREE.Box3
+  const tipCentre = tipBox.getCenter(new THREE.Vector3())
+
+  const cal: Calibration = {
+    plateLeft: plate.min.x,
+    plateFront: plate.max.z,
+    plateUnderside: plate.min.y,
+    nozzleX: tipCentre.x,
+    nozzleZ: tipCentre.z,
+    tipTop: tipBox.max.y,
+    travelX: dim.travelX,
+    travelZ: dim.travelZ,
+    bedTravel: dim.bedTravel
+  }
+
+  const bed = (model.getObjectByName('bedLift') as THREE.Object3D).getWorldPosition(new THREE.Vector3())
+  const printFrame = new THREE.Matrix4().set(
+    1, 0, 0, plate.min.x - bed.x,
+    0, 0, -1, plate.min.y - bed.y,
+    0, -1, 0, plate.max.z - bed.z,
+    0, 0, 0, 1
+  )
+  return { cal, printFrame }
+}
+
 /** Puts the live M1 on `canvas`. Throws when the browser can't draw WebGL; the stage then keeps its picture. */
 export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'default' })
@@ -195,7 +252,8 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
   ground.receiveShadow = true
   scene.add(ground)
 
-  const model: M1Root = m1().build(m1().buildMaterials())
+  const mats = m1().buildMaterials()
+  const model: M1Root = m1().build(mats)
   scene.add(model)
   // Materials that lean on scene.environment lose their own envMapIntensity; giving each the map keeps it.
   model.traverse(o => {
@@ -211,6 +269,8 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
   })
   model.userData.state.showPrint = false
   model.userData.state.showSpool = false
+  const { cal, printFrame } = calibrate(model, mats)
+  const bedLift = model.getObjectByName('bedLift') as THREE.Object3D
   model.userData.apply()
 
   const camera = new THREE.PerspectiveCamera(22.4, 1, 2, 8000)
@@ -244,13 +304,40 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
     centre = f.centre
   }
 
+  let print: THREE.LineSegments | null = null
+  let lastDraw = 0
+  let timer = 0
   let raf = 0
   let disposed = false
   const viewer: M1Viewer = {
     onFrame: null,
     setPose (pose) {
-      Object.assign(model.userData.state, { headX: pose.headX, headZ: pose.headZ, z: pose.z, led: pose.led, progress: pose.progress })
+      Object.assign(model.userData.state, placeModel(pose, cal), { led: pose.led, progress: pose.progress })
       model.userData.apply()
+      invalidate()
+    },
+    setPrint (path, colour) {
+      if (print) {
+        bedLift.remove(print)
+        print.geometry.dispose()
+        ;(print.material as THREE.Material).dispose()
+        print = null
+      }
+      if (path && path.count) {
+        const geometry = new THREE.BufferGeometry()
+        geometry.setAttribute('position', new THREE.BufferAttribute(path.positions, 3))
+        geometry.setDrawRange(0, 0)
+        print = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({ color: colour }))
+        print.matrixAutoUpdate = false
+        print.matrix.copy(printFrame)
+        print.frustumCulled = false
+        bedLift.add(print)
+      }
+      invalidate()
+    },
+    setPrintDone (segments) {
+      if (!print) return
+      print.geometry.setDrawRange(0, segments * 2)
       invalidate()
     },
     setShift (share) {
@@ -260,6 +347,7 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
     dispose () {
       disposed = true
       cancelAnimationFrame(raf)
+      clearTimeout(timer)
       resize.disconnect()
       canvas.removeEventListener('pointerdown', onDown)
       canvas.removeEventListener('dblclick', onReset)
@@ -288,12 +376,29 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
     refit()
     frame()
     renderer.render(scene, camera)
+    lastDraw = performance.now()
     viewer.onFrame?.()
-    if (Math.abs(view.goalTheta - view.theta) > 1e-3 || Math.abs(view.goalPhi - view.phi) > 1e-3) invalidate()
+    if (Math.abs(view.goalTheta - view.theta) > 1e-3 || Math.abs(view.goalPhi - view.phi) > 1e-3) invalidate(true)
   }
 
-  function invalidate () {
-    if (!raf && !disposed) raf = requestAnimationFrame(draw)
+  /**
+   * Asks for a frame. The printer's own changes (where the head is, how far
+   * the print has got) arrive several times a second, so they draw at most
+   * every PRINTER_FRAME_MS; a turn by hand (`now`) draws every frame.
+   */
+  function invalidate (now = false) {
+    if (raf || disposed) return
+    const wait = now ? 0 : lastDraw + PRINTER_FRAME_MS - performance.now()
+    if (wait <= 0) {
+      clearTimeout(timer)
+      timer = 0
+      raf = requestAnimationFrame(draw)
+    } else if (!timer) {
+      timer = window.setTimeout(() => {
+        timer = 0
+        invalidate(true)
+      }, wait)
+    }
   }
 
   const resize = new ResizeObserver(() => {
@@ -325,7 +430,7 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
     view.goalTheta -= (e.clientX - drag.x) * 0.0062
     view.goalPhi = Math.min(PHI_RANGE[1], Math.max(PHI_RANGE[0], view.goalPhi - (e.clientY - drag.y) * 0.0056))
     drag = { x: e.clientX, y: e.clientY }
-    invalidate()
+    invalidate(true)
   }
   function onUp () {
     drag = null
@@ -334,7 +439,7 @@ export function createViewer (canvas: HTMLCanvasElement): M1Viewer {
   function onReset () {
     view.goalTheta = VIEW.theta
     view.goalPhi = VIEW.phi
-    invalidate()
+    invalidate(true)
   }
   canvas.addEventListener('pointerdown', onDown)
   canvas.addEventListener('dblclick', onReset)

@@ -32,6 +32,8 @@ export interface M1Root extends THREE.Group {
 export interface M1Namespace {
   buildMaterials: () => Record<string, THREE.Material>;
   build: (mats: Record<string, THREE.Material>) => M1Root;
+  /** The model's dimensions: travelX and travelZ are the head's half travel, bedTravel the bed's whole. */
+  DIM: Record<string, number>;
 }
 
 export { THREE }
