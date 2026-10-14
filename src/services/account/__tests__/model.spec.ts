@@ -2,6 +2,7 @@
  * @vitest-environment node
  */
 import { describe, expect, it } from 'vitest'
+import { LIBRARY_RETENTION, retentionRows } from '../retention'
 import {
   accountSectionFor,
   accountSections,
@@ -173,5 +174,42 @@ describe('the Account sections', () => {
     expect(accountSectionFor('profile').id).toBe('profile')
     expect(accountSectionFor('nonsense').id).toBe('overview')
     expect(accountSectionFor(undefined).id).toBe('overview')
+  })
+})
+
+describe('the retention statement, as the Privacy page shows it', () => {
+  // GET /v1/retention as the console answers it today (muon-console retention.rs).
+  const statement = {
+    account: 'until you delete it; deletion removes it at once',
+    sessions: 'until you sign out or the device is signed out, or 30 days after its last use',
+    security_events_days: 90,
+    email_tokens: 'until used, or at most three days',
+    printers: 'until unlinked, or until the account is deleted',
+    backups_days: 30,
+    live_activity_tokens_hours: 8,
+    job_runs_every_seconds: 3600
+  }
+
+  it('names the known keys in words, in the page order, with their units', () => {
+    expect(retentionRows(statement).map(r => [r.label, r.value])).toEqual([
+      ['Your account, name and email', 'Until you delete it; deletion removes it at once'],
+      ['A signed-in device', 'Until you sign out or the device is signed out, or 30 days after its last use'],
+      ['Security activity', '90 days'],
+      ['A printer linked to your account', 'Until unlinked, or until the account is deleted'],
+      ['A link we email you', 'Until used, or at most three days'],
+      ['Lock-screen progress on an iPhone', '8 hours'],
+      ['Backups', '30 days']
+    ])
+  })
+
+  it('leaves out how often the job runs, and shows an unknown key as the console says it', () => {
+    const rows = retentionRows({ ...statement, scan_uploads: 'a week', nested: { a: 1 }, gone: null })
+    expect(rows.some(r => r.key === 'job_runs_every_seconds')).toBe(false)
+    expect(rows[rows.length - 1]).toEqual({ key: 'scan_uploads', label: 'Scan uploads', value: 'A week' })
+    expect(rows.some(r => r.key === 'nested' || r.key === 'gone')).toBe(false)
+  })
+
+  it('has the Library window beside the console ones', () => {
+    expect(LIBRARY_RETENTION[0].label).toBe('Library files')
   })
 })

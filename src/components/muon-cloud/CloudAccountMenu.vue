@@ -201,8 +201,8 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { cloudState, signOut } from '@/services/muon-cloud/state'
-import { activationState } from '@/services/muon-cloud/activate'
+import { cloudState } from '@/services/muon-cloud/state'
+import { beginSignOut } from '@/services/account/sign-out'
 import { activeSlug } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
 import { ACCOUNT_SECTIONS, initialsOf, type AccountSectionId } from '@/services/account/model'
@@ -271,11 +271,9 @@ export default class CloudAccountMenu extends Vue {
     EventBus.bus.$emit('keyboard-shortcuts')
   }
 
-  async doSignOut () {
+  doSignOut () {
     this.menu = false
-    const wasCloud = cloudState.activePrinterId !== null || activationState.switching !== null
-    const navigating = await signOut()
-    if (wasCloud && !navigating) window.location.reload()
+    return beginSignOut()
   }
 }
 </script>

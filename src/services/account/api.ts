@@ -39,6 +39,28 @@ export interface Me {
   endpoint_proven?: boolean;
   session_id?: string;
   sign_in?: SignInMethods;
+  /** New (#27): two-step sign-in's recovery codes, at the top level. */
+  two_step?: { enabled: boolean, recovery_left: number | null, recovery_generated_at: number | null } | null;
+  /** New (#27): an address change waiting, at the top level. */
+  email_pending?: { address: string, expires_at: number } | null;
+}
+
+/**
+ * `GET /v1/me` as the pages read it: the console (#27) answers the pending
+ * address and the recovery codes left beside `account`, and the pages read
+ * them from `account` and `sign_in`.
+ */
+export function meFrom (me: Me): Me {
+  const out: Me = { ...me, account: { ...me.account } }
+  if (me.email_pending !== undefined && out.account.email_pending === undefined) out.account.email_pending = me.email_pending
+  const left = me.two_step?.recovery_left
+  if (out.sign_in && typeof left === 'number' && out.sign_in.recovery_left === undefined) out.sign_in = { ...out.sign_in, recovery_left: left }
+  return out
+}
+
+/** `GET` and `PUT /v1/me/preferences` answer `{preferences: {...}}`. */
+function preferencesFrom (answer: EmailPreferences | { preferences: EmailPreferences }): EmailPreferences {
+  return 'preferences' in answer ? answer.preferences : answer
 }
 
 export interface Session {
@@ -157,7 +179,7 @@ const json = <T>(method: string, path: string, body?: unknown) => accountRequest
 
 export const accountApi = {
   config: () => json<ConsoleConfig>('GET', '/v1/config'),
-  me: () => json<Me>('GET', '/v1/me'),
+  me: async () => meFrom(await json<Me>('GET', '/v1/me')),
   rename: (name: string) => json<{ account: AccountDetails }>('PATCH', '/v1/me', { name }),
 
   sessions: () => json<{ sessions: Session[] }>('GET', '/v1/me/sessions'),
@@ -171,7 +193,7 @@ export const accountApi = {
   passkeyCreate: (ceremonyId: string, credential: unknown, name: string, reauth: Reauth = {}) =>
     json<{ id: string, name: string }>('POST', '/v1/me/passkeys', { ceremony_id: ceremonyId, credential, name, ...reauth }),
   /** New. */
-  renamePasskey: (id: string, name: string) => json<{ ok: boolean }>('PATCH', `/v1/me/passkeys/${encodeURIComponent(id)}`, { name }),
+  renamePasskey: (id: string, name: string) => json<{ id: string, name: string }>('PATCH', `/v1/me/passkeys/${encodeURIComponent(id)}`, { name }),
   removePasskey: (id: string, reauth: Reauth = {}) => json<{ ok: boolean }>('DELETE', `/v1/me/passkeys/${encodeURIComponent(id)}`, reauth),
 
   identities: () => json<{ identities: Identity[] }>('GET', '/v1/me/identities'),
@@ -181,7 +203,7 @@ export const accountApi = {
   totpConfirm: (code: string) => json<{ ok: boolean, recovery_codes: string[] }>('POST', '/v1/me/totp/confirm', { code }),
   totpOff: (code: string) => json<{ ok: boolean }>('DELETE', '/v1/me/totp', { code }),
   /** New. */
-  newRecoveryCodes: (reauth: Reauth = {}) => json<{ recovery_codes: string[] }>('POST', '/v1/me/totp/recovery-codes', reauth),
+  newRecoveryCodes: (reauth: Reauth = {}) => json<{ ok: boolean, recovery_codes: string[], recovery_generated_at?: number }>('POST', '/v1/me/totp/recovery-codes', reauth),
 
   changePassword: (newPassword: string, reauth: Reauth = {}) => json<{ ok: boolean }>('PUT', '/v1/me/password', { new_password: newPassword, ...reauth }),
   changeEmail: (email: string, reauth: Reauth = {}) => json<{ ok: boolean }>('PUT', '/v1/me/email', { email, ...reauth }),
@@ -190,8 +212,9 @@ export const accountApi = {
   resendVerification: () => json<{ ok: boolean, already_verified?: boolean }>('POST', '/v1/me/email/verification'),
 
   /** New. */
-  preferences: () => json<EmailPreferences>('GET', '/v1/me/preferences'),
-  setPreferences: (patch: Partial<EmailPreferences>) => json<EmailPreferences>('PUT', '/v1/me/preferences', patch),
+  preferences: async () => preferencesFrom(await json<{ preferences: EmailPreferences }>('GET', '/v1/me/preferences')),
+  /** Any of the four, flat. */
+  setPreferences: async (patch: Partial<EmailPreferences>) => preferencesFrom(await json<{ preferences: EmailPreferences }>('PUT', '/v1/me/preferences', patch)),
 
   /**
    * The whole account as one JSON file: the raw response, to save. A console
@@ -211,7 +234,7 @@ export const accountApi = {
   deleteAccount: (reauth: Reauth, now = false) =>
     json<{ ok: boolean, delete_after?: number, unlinked?: number }>('DELETE', '/v1/me', { ...reauth, ...(now ? { now: true } : {}) }),
   /** New. */
-  cancelDeletion: () => json<{ ok: boolean }>('POST', '/v1/me/deletion/cancel'),
+  cancelDeletion: () => json<{ ok: boolean, account?: AccountDetails }>('POST', '/v1/me/deletion/cancel'),
 
   shares: (printerId: string) => json<{ shares: PrinterShare[] }>('GET', `/v1/printers/${encodeURIComponent(printerId)}/shares`),
   share: (printerId: string, email: string, role: string, endsAt: number | null) =>
