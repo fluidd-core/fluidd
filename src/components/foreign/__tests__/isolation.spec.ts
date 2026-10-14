@@ -6,6 +6,7 @@ import AppBar from '@/components/layout/AppBar.vue'
 import * as parkedM1 from '@/services/m1-3d/parked'
 import { createLocalVue, mount } from '@vue/test-utils'
 import VueRouter from 'vue-router'
+import type { CreateElement } from 'vue'
 import OverviewRoute from '@/components/foreign/OverviewRoute.vue'
 import { foreignRegistry, foreignSlug } from '@/services/foreign-printers/registry'
 
@@ -26,7 +27,7 @@ describe('foreign printer command isolation', () => {
       const wrapper = mount(OverviewRoute, {
         localVue,
         router,
-        stubs: { Overview: { render: h => h('div', 'native overview') }, ForeignOverview: { render: h => h('div', 'foreign overview') } }
+        stubs: { Overview: { render: (h: CreateElement) => h('div', 'native overview') }, ForeignOverview: { render: (h: CreateElement) => h('div', 'foreign overview') } }
       })
       await new Promise(resolve => setTimeout(resolve, 0))
       expect(wrapper.text()).toBe('foreign overview')

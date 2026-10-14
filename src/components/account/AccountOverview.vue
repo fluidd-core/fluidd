@@ -5,7 +5,7 @@
   >
     <div
       v-if="deletionDay"
-      class="acct-note acct-note--bad acct-deleting"
+      class="acct-note acct-deleting"
       role="status"
       data-tid="account-deletion-waiting"
     >
@@ -259,6 +259,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import PrinterThumb, { type ThumbState } from '@/components/ui/PrinterThumb.vue'
 import { cloudState } from '@/services/muon-cloud/state'
+import { deletionState } from '@/services/muon-cloud/deletion'
 import type { CloudPrinter } from '@/services/muon-cloud/api'
 import { accountState, loadOverview } from '@/services/account/state'
 import {
@@ -330,7 +331,7 @@ export default class AccountOverview extends Vue {
 
   /** A deletion waiting out its 14 days (KAN-532 §2.7). */
   get deletionDay (): string {
-    const at = this.me?.account.deletion?.delete_after
+    const at = deletionState.deleteAfter
     return at ? dayText(at) : ''
   }
 

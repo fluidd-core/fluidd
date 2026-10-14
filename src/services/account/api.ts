@@ -193,7 +193,7 @@ export const accountApi = {
   passkeyCreate: (ceremonyId: string, credential: unknown, name: string, reauth: Reauth = {}) =>
     json<{ id: string, name: string }>('POST', '/v1/me/passkeys', { ceremony_id: ceremonyId, credential, name, ...reauth }),
   /** New. */
-  renamePasskey: (id: string, name: string) => json<{ id: string, name: string }>('PATCH', `/v1/me/passkeys/${encodeURIComponent(id)}`, { name }),
+  renamePasskey: (id: string, name: string, reauth: Reauth = {}) => json<{ id: string, name: string }>('PATCH', `/v1/me/passkeys/${encodeURIComponent(id)}`, { name, ...reauth }),
   removePasskey: (id: string, reauth: Reauth = {}) => json<{ ok: boolean }>('DELETE', `/v1/me/passkeys/${encodeURIComponent(id)}`, reauth),
 
   identities: () => json<{ identities: Identity[] }>('GET', '/v1/me/identities'),
@@ -242,12 +242,14 @@ export const accountApi = {
   removeShare: (printerId: string, shareId: string) =>
     json<{ ok: boolean }>('DELETE', `/v1/printers/${encodeURIComponent(printerId)}/shares/${encodeURIComponent(shareId)}`),
   invites: (printerId: string) => json<{ invites: PrinterInvite[] }>('GET', `/v1/printers/${encodeURIComponent(printerId)}/invites`),
+  sendInvite: (printerId: string, email: string, role: string, endsAt: number | null) =>
+    json<{ invite: PrinterInvite }>('POST', `/v1/printers/${encodeURIComponent(printerId)}/invites`, { email, role, ends_at: endsAt }),
   withdrawInvite: (printerId: string, inviteId: string) =>
     json<{ ok: boolean }>('DELETE', `/v1/printers/${encodeURIComponent(printerId)}/invites/${encodeURIComponent(inviteId)}`),
   links: (printerId: string) => json<{ links: InviteLink[] }>('GET', `/v1/printers/${encodeURIComponent(printerId)}/links`),
   revokeLink: (printerId: string, linkId: string) =>
     json<{ ok: boolean }>('DELETE', `/v1/printers/${encodeURIComponent(printerId)}/links/${encodeURIComponent(linkId)}`),
   approvals: () => json<{ approvals: JoinApproval[] }>('GET', '/v1/approvals'),
-  answerApproval: (id: string, allow: boolean, role?: string) =>
-    json<{ approval: JoinApproval }>('POST', `/v1/approvals/${encodeURIComponent(id)}`, role ? { allow, role } : { allow })
+  answerApproval: (id: string, allow: boolean) =>
+    json<{ approval: JoinApproval }>('POST', `/v1/approvals/${encodeURIComponent(id)}`, { allow })
 }

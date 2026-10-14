@@ -1,6 +1,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from './state'
 import { pageOfRoute } from '@/router/printerPagePaths'
+import { printerStatusWord } from '@/util/printer-status-word'
 
 export type PrinterStatusTone = 'ok' | 'active' | 'warn' | 'fault' | 'off'
 
@@ -54,7 +55,7 @@ export default class PrinterStatusMixin extends Mixins(StateMixin) {
     if (!this.socketConnected) return 'Offline'
     if (!this.klippyReady) return `Klipper ${this.klippyState || 'offline'}`
 
-    const state = this.$filters.prettyCase(this.printerState)
+    const state = printerStatusWord(this.printerState)
 
     return this.printerPrinting ? `${state} · ${this.printProgress}%` : state
   }
