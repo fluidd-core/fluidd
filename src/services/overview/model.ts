@@ -102,3 +102,29 @@ export function chartWindows (retentionSeconds: number): Array<{ value: number, 
 export function defaultChartWindow (windows: Array<{ value: number }>): number {
   return windows.some(w => w.value === 900) ? 900 : windows[windows.length - 1]?.value ?? 300
 }
+
+export interface SensorRow<H> {
+  key: string;
+  label: string;
+  /** Heater power, 0 to 100, or null for a sensor. */
+  power: number | null;
+  actual: string;
+  /** The heater, whose target can be set; null for a sensor. */
+  heater: H | null;
+}
+
+/**
+ * Pro's table of every heater and sensor: the nozzle and bed by their
+ * everyday names, power as a percentage, and temperatures to a tenth.
+ */
+export function sensorRows<H extends { name: string, prettyName: string, temperature: number, power?: number }> (
+  heaters: H[],
+  sensors: Array<{ key: string, prettyName: string, temperature?: number }>
+): Array<SensorRow<H>> {
+  const label = (name: string, pretty: string) => name === 'extruder' ? 'Nozzle' : name === 'heater_bed' ? 'Bed' : pretty
+  const deg = (t: number | undefined) => typeof t === 'number' && Number.isFinite(t) ? `${t.toFixed(1)}°` : '—'
+  return [
+    ...heaters.map(h => ({ key: h.name, label: label(h.name, h.prettyName), power: Math.round((h.power ?? 0) * 100), actual: deg(h.temperature), heater: h })),
+    ...sensors.map(s => ({ key: s.key, label: s.prettyName, power: null, actual: deg(s.temperature), heater: null }))
+  ]
+}

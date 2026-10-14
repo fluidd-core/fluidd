@@ -102,3 +102,134 @@ export function isModelFile (name: string): boolean {
 export function isGcodeFile (name: string): boolean {
   return GCODE.test(name)
 }
+
+// -- Pro's file table ---------------------------------------------------------
+
+/** A row of Pro's file table: a folder, or a file in the folder that's open. */
+export interface TableRow {
+  /** Its path in gcodes/, which is also its key. */
+  key: string;
+  kind: 'folder' | 'file';
+  name: string;
+  /** Seconds, from the slicer. */
+  time?: number;
+  /** Grams. */
+  filament?: number;
+  /** Millimetres. */
+  layer?: number;
+  /** The part's height, in millimetres. */
+  height?: number;
+  /** Seconds since 1970, as the printer gives it. */
+  modified: number;
+  /** Bytes; a folder's is the directory's own. */
+  size: number;
+}
+
+export type TableColumn = 'name' | 'time' | 'filament' | 'layer' | 'height' | 'modified' | 'size'
+
+export interface TableSort {
+  column: TableColumn;
+  desc: boolean;
+}
+
+function valueOf (row: TableRow, column: TableColumn): string | number | undefined {
+  if (column === 'name') return row.name.toLowerCase()
+  if (column === 'size' && row.kind === 'folder') return undefined
+  return row[column]
+}
+
+/**
+ * Folders first, then files by the column. Folders follow a sort by name
+ * or date and stay A to Z otherwise, since they have no time or size of
+ * their own. A file with no value in the column goes last either way, so
+ * sorting by time doesn't lead with files the slicer gave no time.
+ */
+export function sortRows<T extends TableRow> (rows: T[], sort: TableSort): T[] {
+  const by = ({ column, desc }: TableSort) => (a: T, b: T) => {
+    const x = valueOf(a, column)
+    const y = valueOf(b, column)
+    if (x === undefined && y === undefined) return a.name.localeCompare(b.name)
+    if (x === undefined) return 1
+    if (y === undefined) return -1
+    if (x === y) return a.name.localeCompare(b.name)
+    return (typeof x === 'string' ? x.localeCompare(y as string) : x - (y as number)) * (desc ? -1 : 1)
+  }
+  const folderSort: TableSort = sort.column === 'name' || sort.column === 'modified' ? sort : { column: 'name', desc: false }
+  const folders = rows.filter(r => r.kind === 'folder').sort(by(folderSort))
+  const files = rows.filter(r => r.kind === 'file').sort(by(sort))
+  return [...folders, ...files]
+}
+
+/** Clicking a column's head: the same column turns round; another starts the way people expect it (names A to Z, the rest biggest or newest first). */
+export function nextSort (current: TableSort, column: TableColumn): TableSort {
+  if (current.column === column) return { column, desc: !current.desc }
+  return { column, desc: column !== 'name' }
+}
+
+/** Rows whose name has the text in it, any case. */
+export function filterRows<T extends TableRow> (rows: T[], text: string): T[] {
+  const q = text.trim().toLowerCase()
+  return q ? rows.filter(r => r.name.toLowerCase().includes(q)) : rows
+}
+
+/** A checkbox click: in, or out. */
+export function toggleKey (selected: string[], key: string): string[] {
+  return selected.includes(key) ? selected.filter(k => k !== key) : [...selected, key]
+}
+
+/**
+ * A shift-click: everything from the last row clicked to this one joins
+ * the selection, in the order shown. With nothing clicked before, it's
+ * this row alone.
+ */
+export function rangeSelect (order: string[], selected: string[], anchor: string | null, key: string): string[] {
+  const from = anchor === null ? -1 : order.indexOf(anchor)
+  const to = order.indexOf(key)
+  if (to < 0) return selected
+  if (from < 0) return selected.includes(key) ? selected : [...selected, key]
+  const [lo, hi] = from < to ? [from, to] : [to, from]
+  const range = order.slice(lo, hi + 1)
+  return [...selected, ...range.filter(k => !selected.includes(k))]
+}
+
+/** "8.8 MB", "940 KB". */
+export function fileSize (bytes: number): string {
+  if (bytes >= 1e9) return `${(bytes / 1e9).toFixed(1)} GB`
+  if (bytes >= 1e6) return `${(bytes / 1e6).toFixed(1)} MB`
+  if (bytes >= 1e3) return `${Math.round(bytes / 1e3)} KB`
+  return `${bytes} B`
+}
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+/** "today 14:02", "08 Oct", or "08 Oct 2025" from another year. */
+export function shortDate (seconds: number, now: Date = new Date()): string {
+  if (!seconds) return ''
+  const d = new Date(seconds * 1000)
+  const two = (n: number) => String(n).padStart(2, '0')
+  if (d.toDateString() === now.toDateString()) return `today ${two(d.getHours())}:${two(d.getMinutes())}`
+  const day = `${two(d.getDate())} ${MONTHS[d.getMonth()]}`
+  return d.getFullYear() === now.getFullYear() ? day : `${day} ${d.getFullYear()}`
+}
+
+/** "53m 9s", "1h 24m": the table's print time, a little finer than the cards'. */
+export function tableTime (seconds: number | undefined): string {
+  if (!seconds) return '—'
+  const s = Math.round(seconds)
+  const h = Math.floor(s / 3600)
+  const m = Math.floor((s % 3600) / 60)
+  if (h) return `${h}h ${m}m`
+  return m ? `${m}m ${s % 60}s` : `${s}s`
+}
+
+/** The folder above a path in gcodes/: '' is gcodes/ itself. */
+export function parentFolder (path: string): string {
+  return path.split('/').slice(0, -1).join('/')
+}
+
+/** What the selection bar's queue button says. */
+export function queueLabel (count: number): string {
+  if (count === 1) return 'Queue it'
+  if (count === 2) return 'Queue both'
+  return `Queue all ${count}`
+}

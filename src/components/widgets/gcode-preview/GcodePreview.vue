@@ -244,7 +244,7 @@
       </g>
     </svg>
     <div
-      v-if="file"
+      v-if="file && !bare"
       class="preview-options"
       @mousedown.stop=""
       @mouseup="keepFocus"
@@ -309,7 +309,7 @@
       </v-btn>
     </div>
     <div
-      v-if="file"
+      v-if="file && !bare"
       class="preview-name"
     >
       {{ file.filename }}
@@ -345,6 +345,10 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
 
   @Prop({ type: Number, default: 0 })
   readonly layer!: LayerNr
+
+  /** Without the toolbar and file name over the drawing, for a panel that has its own. */
+  @Prop({ type: Boolean })
+  readonly bare?: boolean
 
   @Ref('container')
   readonly container!: AppFocusableContainer

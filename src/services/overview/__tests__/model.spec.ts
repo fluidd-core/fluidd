@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chartLines, chartWindows, defaultChartWindow, filamentFact, heaterTile, longDuration } from '../model'
+import { chartLines, chartWindows, defaultChartWindow, filamentFact, heaterTile, longDuration, sensorRows } from '../model'
 
 describe('a heater tile', () => {
   it('is off without a target', () => {
@@ -76,5 +76,20 @@ describe("the graph's windows", () => {
   it('open on 15 minutes when kept, else the longest there is', () => {
     expect(defaultChartWindow(chartWindows(3600))).toBe(900)
     expect(defaultChartWindow(chartWindows(600))).toBe(600)
+  })
+})
+
+describe("Pro's table of heaters and sensors", () => {
+  it('names the nozzle and bed, gives heaters their power, and sensors none', () => {
+    const rows = sensorRows(
+      [{ name: 'extruder', prettyName: 'Extruder', temperature: 219.84, power: 0.376 }, { name: 'heater_bed', prettyName: 'Heater Bed', temperature: 60, power: 0.31 }],
+      [{ key: 'temperature_sensor chamber', prettyName: 'Chamber', temperature: 34.86 }, { key: 'temperature_sensor mcu', prettyName: 'Mcu', temperature: undefined }]
+    )
+    expect(rows.map(r => [r.label, r.power, r.actual, !!r.heater])).toEqual([
+      ['Nozzle', 38, '219.8°', true],
+      ['Bed', 31, '60.0°', true],
+      ['Chamber', null, '34.9°', false],
+      ['Mcu', null, '—', false]
+    ])
   })
 })

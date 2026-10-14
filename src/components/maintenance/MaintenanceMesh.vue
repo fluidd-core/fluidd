@@ -95,7 +95,7 @@
     </p>
 
     <router-link
-      v-if="pro && supportsBedMesh"
+      v-if="pro && supportsBedMesh && linked"
       :to="meshPageTo"
       class="cbtn mmesh__more"
     >
@@ -109,7 +109,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import MaintenanceMixin from '@/mixins/maintenance'
 import ControlCard from '@/components/control/ControlCard.vue'
 import { daysAgo, liveMesh, meshColor, meshValue } from '@/services/maintenance/model'
@@ -123,6 +123,10 @@ import { activeSlug } from '@/services/printer-pages'
  */
 @Component({ components: { ControlCard } })
 export default class MaintenanceMesh extends Mixins(MaintenanceMixin) {
+  /** With a link to Bed mesh, except on Bed mesh itself. */
+  @Prop({ type: Boolean, default: true })
+  readonly linked!: boolean
+
   get meshPageTo (): string {
     return scopedPath('/tune', activeSlug())
   }

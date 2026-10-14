@@ -1,47 +1,12 @@
 <template>
-  <!-- Pro: the file table you know, the queue, and the G-code viewer beside them. -->
-  <v-row
-    v-if="pro && !isMobileViewport"
-    :dense="$vuetify.breakpoint.smAndDown"
-    data-tid="jobs-pro"
-  >
-    <v-col
-      cols="12"
-      lg="7"
-    >
-      <collapsable-card
-        :title="$t('app.general.title.jobs')"
-        card-key="JobsPage"
-        icon="$files"
-        class="mb-2 mb-sm-4"
-        :help-tooltip="$t('app.general.tooltip.file_browser_help')"
-      >
-        <file-system
-          :roots="'gcodes'"
-          name="jobs"
-          bulk-actions
-          max-height="816"
-        />
-      </collapsable-card>
-      <job-queue-card
-        v-if="hasQueuedJobs"
-        fullscreen
-      />
-    </v-col>
-    <v-col
-      cols="12"
-      lg="5"
-    >
-      <gcode-preview-card />
-    </v-col>
-  </v-row>
-
-  <!-- Simple: what's printing and next, the files as pictures, and what printed. -->
+  <!--
+    What's printing and next, the files, and what printed. Simple shows the
+    files as pictures; Pro as a table with its folders, beside a G-code viewer.
+  -->
   <div
-    v-else
     class="jobs"
-    :class="{ 'jobs--phone': isMobileViewport }"
-    data-tid="jobs-simple"
+    :class="{ 'jobs--phone': isMobileViewport, 'jobs--pro': proLayout }"
+    :data-tid="proLayout ? 'jobs-pro' : 'jobs-simple'"
   >
     <div
       v-if="busy || queue.length"
@@ -84,10 +49,19 @@
           <h2>Up next</h2>
           <span class="jobs__count">{{ queue.length }}</span>
           <span class="jobs__hint">Starts when the plate is lifted off and put back</span>
+          <button
+            v-if="proLayout && queue.length > 1"
+            type="button"
+            class="jobs__link"
+            data-tid="jobs-queue-clear"
+            @click="clearQueue"
+          >
+            Clear
+          </button>
         </div>
         <div class="jobs__next-list">
           <div
-            v-for="queued in queue.slice(0, 3)"
+            v-for="queued in proLayout ? queue : queue.slice(0, 3)"
             :key="queued.job_id"
             class="jobs__queued"
           >
@@ -102,12 +76,47 @@
               <b>{{ titleOf(queued.filename) }}</b>
               <span>{{ factsOf(queued.filename) }}</span>
             </span>
+            <button
+              v-if="proLayout"
+              type="button"
+              class="jobs__unqueue"
+              :aria-label="`Take ${titleOf(queued.filename)} out of the queue`"
+              @click="unqueue(queued)"
+            >
+              <frame-icon
+                name="x"
+                small
+              />
+            </button>
           </div>
         </div>
       </section>
     </div>
 
+    <div
+      v-if="proLayout"
+      class="jobs__pro"
+    >
+      <jobs-table
+        :current="viewing ? viewing.key : null"
+        @view="viewing = $event"
+        @open="open"
+        @files="tableFiles = $event"
+      />
+      <job-viewer
+        class="jobs__viewer"
+        :job="viewing"
+        :busy="busy"
+        :can-queue="canQueue"
+        :can-print="klippyReady && (!busy || canQueue)"
+        :printer-name="printerName"
+        @open="open"
+        @print="printOrQueue"
+      />
+    </div>
+
     <section
+      v-else
       class="jobs__files"
       data-tid="jobs-on-printer"
     >
@@ -279,7 +288,7 @@
       :can-queue="canQueue"
       :can-print="klippyReady && (!busy || canQueue)"
       :has-prev="detailIndex > 0"
-      :has-next="detailIndex >= 0 && detailIndex < shown.length - 1"
+      :has-next="detailIndex >= 0 && detailIndex < detailList.length - 1"
       :material="material ? material.name : null"
       :printer-name="printerName"
       @close="detail = null"
@@ -297,15 +306,16 @@ import { Component, Mixins } from 'vue-property-decorator'
 import JobsMixin, { type JobFile } from '@/mixins/jobs'
 import BrowserMixin from '@/mixins/browser'
 import { EventBus } from '@/eventBus'
+import { SocketActions } from '@/api/socketActions'
 import type { HistoryItem } from '@/store/history/types'
+import type { QueuedJob } from '@/store/jobQueue/types'
 import { filterJobs, jobFacts, jobTitle, sortJobs, type JobFilter, type JobSort } from '@/services/jobs/model'
 import type { TileTone } from '@/services/printers-page/model'
 import getFilePaths from '@/util/get-file-paths'
-import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
-import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
 import JobCard from '@/components/jobs/JobCard.vue'
 import JobDetail from '@/components/jobs/JobDetail.vue'
+import JobsTable from '@/components/jobs/JobsTable.vue'
+import JobViewer from '@/components/jobs/JobViewer.vue'
 import SegPicker, { type SegOption } from '@/components/control/SegPicker.vue'
 import TonePill from '@/components/printers/TonePill.vue'
 
@@ -320,18 +330,27 @@ function readView (): 'cards' | 'list' {
 }
 
 /**
- * Jobs. Simple: what is printing and up next, the files on the printer as
- * pictures (each opens its detail: its picture or its layers, and what to
- * know before printing it), and what printed lately. Pro: the file table,
- * the queue, and the G-code viewer beside them.
+ * Jobs: what is printing and up next, the files on the printer, and what
+ * printed lately. Simple shows the files as pictures, each opening its
+ * detail (its picture or its layers, and what to know before printing it).
+ * Pro shows them as a table with their folders, beside a G-code viewer,
+ * and lets the whole queue be seen and trimmed.
  */
-@Component({ components: { FileSystem, JobQueueCard, GcodePreviewCard, JobCard, JobDetail, SegPicker, TonePill } })
+@Component({ components: { JobCard, JobDetail, JobsTable, JobViewer, SegPicker, TonePill } })
 export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
   filter: JobFilter = 'all'
   sort: JobSort = 'newest'
   view: 'cards' | 'list' = readView()
   query = ''
   detail: JobFile | null = null
+  /** Pro: the file the viewer shows, and the table's files in order, for the detail's arrows. */
+  viewing: JobFile | null = null
+  tableFiles: JobFile[] = []
+
+  /** Pro's table and viewer need a desktop's width; a phone gets Simple's page. */
+  get proLayout (): boolean {
+    return this.pro && !this.isMobileViewport
+  }
 
   /** What Upload takes: the G-code root's own list, as the header's upload button uses. */
   get gcodeAccept (): string {
@@ -341,10 +360,6 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
 
   mounted () {
     this.loadFiles()
-  }
-
-  get hasQueuedJobs (): boolean {
-    return this.canQueue && this.queue.length > 0
   }
 
   get printingTitle (): string {
@@ -404,13 +419,28 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
     this.detail = job
   }
 
+  get detailList (): JobFile[] {
+    return this.proLayout ? this.tableFiles : this.shown
+  }
+
   get detailIndex (): number {
-    return this.detail ? this.shown.findIndex(j => j.key === this.detail?.key) : -1
+    return this.detail ? this.detailList.findIndex(j => j.key === this.detail?.key) : -1
   }
 
   step (by: number) {
-    const next = this.shown[this.detailIndex + by]
+    const next = this.detailList[this.detailIndex + by]
     if (next) this.detail = next
+  }
+
+  // -- the queue (Pro) ---------------------------------------------------------
+
+  unqueue (job: QueuedJob) {
+    SocketActions.serverJobQueueDeleteJobs([job.job_id])
+  }
+
+  async clearQueue () {
+    const ok = await this.$confirm(`Take all ${this.queue.length} jobs out of the queue? The files stay on ${this.printerName}.`, { title: 'Clear the queue', color: 'card-heading', icon: '$error' })
+    if (ok) SocketActions.serverJobQueueDeleteJobs(this.queue.map(j => j.job_id))
   }
 
   async deleteDetail () {
@@ -812,6 +842,43 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
 
   .jobs__upload {
     display: none;
+  }
+
+  .jobs__unqueue {
+    display: inline-flex;
+    flex: none;
+    margin-left: auto;
+    padding: 6px;
+    border-radius: 8px;
+    color: var(--m3d-text-muted);
+
+    &:hover {
+      background: var(--m3d-surface);
+      color: var(--m3d-text);
+    }
+  }
+
+  .jobs__pro {
+    display: grid;
+    grid-template-columns: minmax(0, 1.75fr) minmax(340px, 1fr);
+    align-items: start;
+    gap: 20px;
+  }
+
+  .jobs__viewer {
+    position: sticky;
+    top: 84px;
+  }
+
+  // Under a wide desktop, the viewer goes under the table.
+  @media (max-width: 1263px) {
+    .jobs__pro {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .jobs__viewer {
+      position: static;
+    }
   }
 
   .jobs--phone {

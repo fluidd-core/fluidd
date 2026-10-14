@@ -72,18 +72,28 @@
       </div>
     </template>
 
-    <!-- Pro: the exact numbers, live tuning, the objects and macros, then every card. -->
+    <!--
+      Pro: everything Simple has, with more in the same panels. Live tuning
+      (speed, flow, pressure advance, Z, fan) whether printing or not; every
+      heater and sensor with its target; the objects and macros; the console.
+    -->
     <template v-else>
       <div class="overview__pro-top">
         <overview-stage class="overview__stage" />
         <overview-this-print v-if="busy" />
         <overview-print-something v-else />
-        <overview-live-tune v-if="busy" />
-        <overview-quick-actions v-else />
+        <overview-live-tune />
       </div>
       <div class="overview__pro-middle">
-        <overview-temps />
+        <overview-temps table />
         <overview-plate />
+      </div>
+      <div
+        class="overview__pro-bottom"
+        :class="{ 'overview__pro-bottom--idle': !busy }"
+      >
+        <overview-quick-actions v-if="!busy" />
+        <overview-console />
       </div>
     </template>
   </div>
@@ -101,6 +111,7 @@ import OverviewTemps from '@/components/overview/OverviewTemps.vue'
 import OverviewQuickActions from '@/components/overview/OverviewQuickActions.vue'
 import OverviewLiveTune from '@/components/overview/OverviewLiveTune.vue'
 import OverviewPlate from '@/components/overview/OverviewPlate.vue'
+import OverviewConsole from '@/components/overview/OverviewConsole.vue'
 import ControlSpeed from '@/components/control/ControlSpeed.vue'
 
 /**
@@ -119,6 +130,7 @@ import ControlSpeed from '@/components/control/ControlSpeed.vue'
     OverviewQuickActions,
     OverviewLiveTune,
     OverviewPlate,
+    OverviewConsole,
     ControlSpeed
   }
 })
@@ -169,10 +181,21 @@ export default class Overview extends Mixins(OverviewMixin, BrowserMixin) {}
     gap: 16px;
   }
 
+  .overview__pro-bottom {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .overview__pro-bottom--idle {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+
   @media (max-width: 1263px) {
     .overview__top,
     .overview__bottom--idle,
-    .overview__pro-middle {
+    .overview__pro-middle,
+    .overview__pro-bottom--idle {
       grid-template-columns: minmax(0, 1fr);
     }
 
@@ -181,6 +204,8 @@ export default class Overview extends Mixins(OverviewMixin, BrowserMixin) {}
 
       .overview__stage {
         grid-column: 1 / -1;
+        min-height: 320px;
+        max-height: 440px;
       }
     }
   }

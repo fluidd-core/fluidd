@@ -49,28 +49,31 @@ export default class JobsMixin extends Mixins(OverviewMixin) {
   }
 
   get jobFiles (): JobFile[] {
-    const printing = this.busy ? this.jobFile : ''
     return this.entries
       .filter((e): e is AppFileWithMeta => e.type === 'file' && isGcodeFile(e.filename))
-      .map(f => {
-        const path = f.path ? `${f.path}/${f.filename}` : f.filename
-        return {
-          key: path,
-          path,
-          filename: f.filename,
-          title: jobTitle(f.filename),
-          facts: jobFacts(f),
-          thumbnail: this.getThumbUrl(f, this.root, f.path, true, f.modified) || '',
-          printed: printedBefore(f as never),
-          printing: !!printing && printing === path,
-          modified: f.modified,
-          size: f.size,
-          estimated_time: f.estimated_time,
-          history: f.history as { job_id?: string } | undefined,
-          print_start_time: (f as { print_start_time?: number | null }).print_start_time,
-          file: f
-        }
-      })
+      .map(f => this.toJobFile(f))
+  }
+
+  /** A G-code file from any folder's listing, as Jobs shows it. */
+  toJobFile (f: AppFileWithMeta): JobFile {
+    const printing = this.busy ? this.jobFile : ''
+    const path = f.path ? `${f.path}/${f.filename}` : f.filename
+    return {
+      key: path,
+      path,
+      filename: f.filename,
+      title: jobTitle(f.filename),
+      facts: jobFacts(f),
+      thumbnail: this.getThumbUrl(f, this.root, f.path, true, f.modified) || '',
+      printed: printedBefore(f as never),
+      printing: !!printing && printing === path,
+      modified: f.modified,
+      size: f.size,
+      estimated_time: f.estimated_time,
+      history: f.history as { job_id?: string } | undefined,
+      print_start_time: (f as { print_start_time?: number | null }).print_start_time,
+      file: f
+    }
   }
 
   get folders (): number {

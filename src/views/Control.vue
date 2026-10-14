@@ -14,6 +14,8 @@
       <control-filament phone />
       <control-fans phone />
       <control-macros v-if="pro" />
+      <control-tuning v-if="pro" />
+      <control-outputs v-if="pro" />
     </template>
 
     <template v-else-if="!pro">
@@ -35,6 +37,8 @@
       <control-fans class="area-fans" />
       <control-filament class="area-filament" />
       <control-macros class="area-macros" />
+      <control-tuning class="area-tuning" />
+      <control-outputs class="area-outputs" />
     </template>
   </div>
 </template>
@@ -49,6 +53,8 @@ import ControlFilament from '@/components/control/ControlFilament.vue'
 import ControlSpeed from '@/components/control/ControlSpeed.vue'
 import ControlFans from '@/components/control/ControlFans.vue'
 import ControlMacros from '@/components/control/ControlMacros.vue'
+import ControlTuning from '@/components/control/ControlTuning.vue'
+import ControlOutputs from '@/components/control/ControlOutputs.vue'
 
 /**
  * Control (`/boxwood-367a/control`): heat, move, filament, speed, fans and
@@ -57,7 +63,7 @@ import ControlMacros from '@/components/control/ControlMacros.vue'
  * extruder, the motion limits and the macros.
  */
 @Component({
-  components: { ControlMove, ControlHeat, ControlFilament, ControlSpeed, ControlFans, ControlMacros }
+  components: { ControlMove, ControlHeat, ControlFilament, ControlSpeed, ControlFans, ControlMacros, ControlTuning, ControlOutputs }
 })
 export default class Control extends Mixins(BrowserMixin) {
   get pro (): boolean {
@@ -93,7 +99,8 @@ export default class Control extends Mixins(BrowserMixin) {
     grid-template-areas:
       'move heat limits'
       'fans macros macros'
-      'filament macros macros';
+      'filament macros macros'
+      'tuning outputs outputs';
   }
 
   .control-page--pro .area-move { grid-area: move; }
@@ -102,6 +109,8 @@ export default class Control extends Mixins(BrowserMixin) {
   .control-page--pro .area-fans { grid-area: fans; }
   .control-page--pro .area-filament { grid-area: filament; }
   .control-page--pro .area-macros { grid-area: macros; }
+  .control-page--pro .area-tuning { grid-area: tuning; }
+  .control-page--pro .area-outputs { grid-area: outputs; }
 
   @media (max-width: 1263px) {
     .control-page {
@@ -114,7 +123,8 @@ export default class Control extends Mixins(BrowserMixin) {
         'move move'
         'heat limits'
         'fans filament'
-        'macros macros';
+        'macros macros'
+        'tuning outputs';
     }
   }
 
@@ -127,7 +137,9 @@ export default class Control extends Mixins(BrowserMixin) {
         'limits'
         'fans'
         'filament'
-        'macros';
+        'macros'
+        'tuning'
+        'outputs';
     }
   }
 
