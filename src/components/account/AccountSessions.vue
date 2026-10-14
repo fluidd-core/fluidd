@@ -75,6 +75,18 @@
         </div>
       </div>
     </section>
+    <div
+      v-if="devices && !others.length"
+      class="acct-empty"
+      data-tid="sessions-empty"
+    >
+      <span class="acct-empty__icon acct-empty__icon--good"><frame-icon
+        name="monitor"
+        large
+      /></span>
+      <h3>Only this browser is signed in</h3>
+      <p>Get print alerts and reach your printers away from home with the Muon3D app.</p>
+    </div>
     <span class="acct-field__note sess__aside">A device that hasn't been used for 30 days is signed out by itself.</span>
 
     <section
@@ -237,7 +249,7 @@ export default class AccountSessions extends Vue {
 
   async signOutDevice (device: Device) {
     if (device.current) {
-      beginSignOut()
+      beginSignOut(this.$router)
       return
     }
     this.busy = true

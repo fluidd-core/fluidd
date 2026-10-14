@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter, { type NavigationGuard, type RouteConfig, type Route } from 'vue-router'
 import { applyLegacyHash } from './legacyHash'
+import { readSignedOut } from '@/services/account/signed-out-note'
 import { activeSlugNow } from './printerSlugSource'
 import { PRINTER_PAGE_PATHS } from './printerPagePaths'
 import { ROUTE_SLUG_PATTERN } from '@/services/printer-pages/slug'
@@ -262,6 +263,9 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'Printers',
     component: () => import('@/views/Printers.vue'),
+    // KAN-532: the console's /logout comes back here; a tab that has just
+    // signed out goes on to say so.
+    beforeEnter: (to, from, next) => (readSignedOut() ? next({ path: '/signed-out', replace: true }) : next()),
     meta: {
       printerIndependent: true
     }
@@ -291,6 +295,41 @@ const routes: Array<RouteConfig> = [
     name: 'Library print (no printer)',
     component: () => import('@/views/LibraryPrint.vue'),
     beforeEnter: toLibraryOfActivePrinter,
+    meta: {
+      printerIndependent: true
+    }
+  },
+  // KAN-532: the pages the console's emails open (its links are
+  // /#/account/<page>?token=, which legacyHash turns into these paths), and
+  // signing out. No printer chrome, like /sign-in; before /account/:section?.
+  {
+    path: '/account/verify-email',
+    name: 'Email link',
+    component: () => import('@/views/AccountEmailLink.vue'),
+    meta: {
+      printerIndependent: true
+    }
+  },
+  {
+    path: '/account/reset-password',
+    name: 'Password link',
+    component: () => import('@/views/AccountEmailLink.vue'),
+    meta: {
+      printerIndependent: true
+    }
+  },
+  {
+    path: '/sign-out',
+    name: 'Sign out',
+    component: () => import('@/views/SignOut.vue'),
+    meta: {
+      printerIndependent: true
+    }
+  },
+  {
+    path: '/signed-out',
+    name: 'Signed out',
+    component: () => import('@/views/SignedOut.vue'),
     meta: {
       printerIndependent: true
     }

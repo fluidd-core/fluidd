@@ -17,8 +17,8 @@ vi.mock('@/services/library/store', () => ({
   refreshLibrary: async () => {},
   watchLibraryAccount: () => {}
 }))
-const beginSignOut = vi.hoisted(() => vi.fn())
-vi.mock('@/services/account/sign-out', () => ({ beginSignOut }))
+const signOutNow = vi.hoisted(() => vi.fn())
+vi.mock('@/services/account/sign-out', () => ({ signOutNow }))
 
 const DAY = 86400
 
@@ -68,7 +68,7 @@ describe('Delete account', () => {
     expect(deleteAccount).toHaveBeenCalledWith({ password: 'correct horse', code: undefined }, false)
     expect(w.find('.dialog h2').text()).toMatch(/^Your account will be deleted on /)
     await tid(w, 'delete-done').trigger('click')
-    expect(beginSignOut).toHaveBeenCalled()
+    expect(signOutNow).toHaveBeenCalledWith('deleted')
   })
 
   it('deletes at once when the person chooses it', async () => {

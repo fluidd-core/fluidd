@@ -78,6 +78,36 @@
         <h2>Ways to sign in</h2>
         <span class="acct-card__aside">Keep at least two, in case you lose a phone</span>
       </div>
+      <div
+        v-if="me && !passkeys.length && !twoStep && canAddPasskey"
+        class="acct-empty sec__empty"
+        data-tid="security-empty"
+      >
+        <span class="acct-empty__icon"><frame-icon
+          name="key"
+          large
+        /></span>
+        <h3>No passkeys yet</h3>
+        <p>Add one and sign in with your fingerprint, face or screen lock instead.</p>
+        <div class="acct-actions acct-actions--center">
+          <button
+            type="button"
+            class="lib-btn lib-btn--pri"
+            :disabled="busy"
+            @click="addPasskey"
+          >
+            Add a passkey
+          </button>
+          <button
+            type="button"
+            class="lib-btn"
+            :disabled="busy"
+            @click="startTwoStep"
+          >
+            Turn on two-step
+          </button>
+        </div>
+      </div>
       <div class="acct-list">
         <div class="sec__method">
           <span class="acct-icon-box"><frame-icon
