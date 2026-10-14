@@ -1,31 +1,35 @@
 import Vue from 'vue'
-import VueRouter, { type RouteConfig, type Route } from 'vue-router'
+import VueRouter, { type NavigationGuard, type RouteConfig, type Route } from 'vue-router'
 import { applyLegacyHash } from './legacyHash'
-import { activeSlugNow } from './printerSlugSource'
+import { readSignedOut } from '@/services/account/signed-out-note'
+import { activeSlugNow, foreignSlugNow } from './printerSlugSource'
 import { PRINTER_PAGE_PATHS } from './printerPagePaths'
 import { ROUTE_SLUG_PATTERN } from '@/services/printer-pages/slug'
-
-// Views
-import Overview from '@/views/Overview.vue'
-import Console from '@/views/Console.vue'
-import GcodePreview from '@/views/GcodePreview.vue'
-import Jobs from '@/views/Jobs.vue'
-import Tune from '@/views/Tune.vue'
-import Control from '@/views/Control.vue'
-import Maintenance from '@/views/Maintenance.vue'
-import Diagnostics from '@/views/Diagnostics.vue'
-import History from '@/views/History.vue'
-import Timelapse from '@/views/Timelapse.vue'
-import Configure from '@/views/Configure.vue'
-import Settings from '@/views/Settings.vue'
 import Updating from '@/views/Updating.vue'
-import MacroCategorySettings from '@/components/settings/macros/MacroCategorySettings.vue'
-import Camera from '@/views/Camera.vue'
-import NotFound from '@/views/NotFound.vue'
-import Login from '@/views/Login.vue'
-import Icons from '@/views/Icons.vue'
-import LinkLanding from '@/views/LinkLanding.vue'
-import JoinLanding from '@/views/JoinLanding.vue'
+
+// Views. Every route is lazy (KAN-525) but Updating, which stays in the main
+// chunk: while the printer restarts into an update it can't serve a chunk.
+// The lazy ones that open printers must be lazy (a static import is a cycle:
+// they reach services/printer-pages, which reaches this router); now all are.
+const Overview = () => import('@/components/foreign/OverviewRoute.vue')
+const Console = () => import('@/views/Console.vue')
+const GcodePreview = () => import('@/views/GcodePreview.vue')
+const Jobs = () => import('@/components/foreign/JobsRoute.vue')
+const Tune = () => import('@/views/Tune.vue')
+const Control = () => import('@/views/Control.vue')
+const Maintenance = () => import('@/views/Maintenance.vue')
+const Diagnostics = () => import('@/views/Diagnostics.vue')
+const History = () => import('@/views/History.vue')
+const Timelapse = () => import('@/views/Timelapse.vue')
+const Configure = () => import('@/views/Configure.vue')
+const Settings = () => import('@/views/Settings.vue')
+const MacroCategorySettings = () => import('@/components/settings/macros/MacroCategorySettings.vue')
+const Camera = () => import('@/components/foreign/CameraRoute.vue')
+const NotFound = () => import('@/views/NotFound.vue')
+const Login = () => import('@/views/Login.vue')
+const Icons = () => import('@/views/Icons.vue')
+const LinkLanding = () => import('@/views/LinkLanding.vue')
+const JoinLanding = () => import('@/views/JoinLanding.vue')
 
 Vue.use(VueRouter)
 
@@ -42,6 +46,8 @@ const printerHome = () => {
 
 const defaultRouteConfig: Partial<RouteConfig> = {
   beforeEnter: (to, from, next) => {
+    const foreignRedirect = foreignPageRedirect(to)
+    if (foreignRedirect) return next(foreignRedirect)
     // A page for another printer opens that printer (services/printer-pages):
     // whether it wants a password is that printer's to say, not this one's.
     if (to.params.printer && to.params.printer !== activeSlugNow()) {
@@ -55,6 +61,12 @@ const defaultRouteConfig: Partial<RouteConfig> = {
   meta: {
     fileDropRoot: 'gcodes'
   }
+}
+
+function foreignPageRedirect (to: Route): string | null {
+  return foreignSlugNow(to.params.printer) && !['Dashboard', 'Jobs', 'Slice', 'Camera'].includes(String(to.name))
+    ? `/${to.params.printer}`
+    : null
 }
 
 /** One printer's pages: /boxwood-367a, /boxwood-367a/jobs (U1). */
@@ -134,7 +146,7 @@ const printerRoutes: Array<RouteConfig> = [
   },
   {
     // The printer updating. In the main chunk, not lazy: while the printer
-    // restarts it can't serve a chunk.
+    // restarts it can't serve a chunk (above).
     path: `${P}/updating`,
     name: 'Updating',
     component: Updating,
@@ -147,12 +159,47 @@ const printerRoutes: Array<RouteConfig> = [
     // fileDropRoot: a model dropped here is the slicer's, not an upload.
     path: `${P}/slice`,
     name: 'Slice',
-    component: () => import('@/views/Slice.vue'),
+    component: () => import('@/components/foreign/SliceRoute.vue'),
     beforeEnter: defaultRouteConfig.beforeEnter,
     meta: {
       printerIndependent: true,
       keepOnPrinterSwitch: true,
       // The printer's page all the same: the rail and the E-STOP stay (KAN-511).
+      frame: 'printer'
+    }
+  },
+  {
+    // Your Library (KAN-521): the prints saved from Slice, the account's, so
+    // the same whichever printer is open, drawn beside its rail. Lazy, as
+    // Printers is: Print on… opens printers, and the services that do import
+    // the router.
+    path: `${P}/library`,
+    name: 'Library',
+    component: () => import('@/views/Library.vue'),
+    meta: {
+      printerIndependent: true,
+      frame: 'printer'
+    }
+  },
+  {
+    // One print: its picture, your printers, its versions.
+    path: `${P}/library/:item`,
+    name: 'Library print',
+    component: () => import('@/views/LibraryPrint.vue'),
+    meta: {
+      printerIndependent: true,
+      frame: 'printer'
+    }
+  },
+  {
+    // Your account (KAN-532), the account's like the Library, so the same
+    // whichever printer is open, drawn beside its rail. Lazy: the first load
+    // doesn't carry it.
+    path: `${P}/account/:section?`,
+    name: 'Account',
+    component: () => import('@/views/Account.vue'),
+    meta: {
+      printerIndependent: true,
       frame: 'printer'
     }
   },
@@ -200,9 +247,17 @@ const toPrinterPage = (to: Route) => {
   return slug ? { path: `/${slug}${to.path}`, query: to.query, hash: to.hash } : '/'
 }
 
-// /slice has a page of its own with no printer (the slicer exports without one).
+/** The Library (and the account) under the printer Fluidd is on, when one is: /library is /boxwood-367a/library. */
+const toLibraryOfActivePrinter: NavigationGuard = (to, from, next) => {
+  const slug = activeSlugNow()
+  if (slug) next({ path: `/${slug}${to.path}`, query: to.query, hash: to.hash })
+  else next()
+}
+
+// /slice and the Library have pages of their own with no printer (the slicer
+// exports without one; the Library is the account's).
 const LEGACY_PRINTER_PAGES = [
-  ...PRINTER_PAGE_PATHS.filter(path => !['/slice', '/camera'].includes(path)),
+  ...PRINTER_PAGE_PATHS.filter(path => !['/slice', '/camera', '/library', '/account'].includes(path)),
   '/settings/macros/:categoryId',
   '/camera',
   '/camera/:cameraId'
@@ -219,6 +274,9 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'Printers',
     component: () => import('@/views/Printers.vue'),
+    // KAN-532: the console's /logout comes back here; a tab that has just
+    // signed out goes on to say so.
+    beforeEnter: (to, from, next) => (readSignedOut() ? next({ path: '/signed-out', replace: true }) : next()),
     meta: {
       printerIndependent: true
     }
@@ -231,6 +289,71 @@ const routes: Array<RouteConfig> = [
   {
     path: '/welcome',
     redirect: '/'
+  },
+  // Your Library (KAN-521) with no printer open: with one, the same pages
+  // under that printer, so the rail and the printer stay beside it.
+  {
+    path: '/library',
+    name: 'Library (no printer)',
+    component: () => import('@/views/Library.vue'),
+    beforeEnter: toLibraryOfActivePrinter,
+    meta: {
+      printerIndependent: true
+    }
+  },
+  {
+    path: '/library/:item',
+    name: 'Library print (no printer)',
+    component: () => import('@/views/LibraryPrint.vue'),
+    beforeEnter: toLibraryOfActivePrinter,
+    meta: {
+      printerIndependent: true
+    }
+  },
+  // KAN-532: the pages the console's emails open (its links are
+  // /#/account/<page>?token=, which legacyHash turns into these paths), and
+  // signing out. No printer chrome, like /sign-in; before /account/:section?.
+  {
+    path: '/account/verify-email',
+    name: 'Email link',
+    component: () => import('@/views/AccountEmailLink.vue'),
+    meta: {
+      printerIndependent: true
+    }
+  },
+  {
+    path: '/account/reset-password',
+    name: 'Password link',
+    component: () => import('@/views/AccountEmailLink.vue'),
+    meta: {
+      printerIndependent: true
+    }
+  },
+  {
+    path: '/sign-out',
+    name: 'Sign out',
+    component: () => import('@/views/SignOut.vue'),
+    meta: {
+      printerIndependent: true
+    }
+  },
+  {
+    path: '/signed-out',
+    name: 'Signed out',
+    component: () => import('@/views/SignedOut.vue'),
+    meta: {
+      printerIndependent: true
+    }
+  },
+  // Your account (KAN-532) with no printer open: with one, under that printer.
+  {
+    path: '/account/:section?',
+    name: 'Account (no printer)',
+    component: () => import('@/views/Account.vue'),
+    beforeEnter: toLibraryOfActivePrinter,
+    meta: {
+      printerIndependent: true
+    }
   },
   {
     path: '/link',
@@ -342,6 +465,8 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  const foreignRedirect = foreignPageRedirect(to)
+  if (foreignRedirect) return next(foreignRedirect)
   router.app?.$store.commit('config/setContainerColumnCount', 2)
   next()
 })

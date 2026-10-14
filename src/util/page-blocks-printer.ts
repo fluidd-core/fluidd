@@ -1,6 +1,6 @@
 /**
  * Whether the browser, not the printer, is what stops this page reaching
- * `apiUrl`. A page served over HTTPS (app.muon3d.com) asking a plain-HTTP
+ * `apiUrl`. A page served over HTTPS (control.muon3d.com) asking a plain-HTTP
  * printer is mixed content: every browser but Chromium blocks it before it
  * leaves the machine, and Chromium does too until the person allows local
  * network access. The address is then usually right, and the printer's own

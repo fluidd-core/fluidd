@@ -5,6 +5,7 @@
 // instead (services/printer-pages), and the router asks it.
 
 let source: () => string | null = () => null
+let foreignSource: (slug: string | undefined) => boolean = () => false
 
 export function setActiveSlugSource (fn: () => string | null): void {
   source = fn
@@ -13,4 +14,12 @@ export function setActiveSlugSource (fn: () => string | null): void {
 /** The current printer's slug, or null before any printer is known. */
 export function activeSlugNow (): string | null {
   return source()
+}
+
+export function setForeignSlugSource (fn: (slug: string | undefined) => boolean): void {
+  foreignSource = fn
+}
+
+export function foreignSlugNow (slug: string | undefined): boolean {
+  return foreignSource(slug)
 }

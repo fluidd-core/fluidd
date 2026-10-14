@@ -10,6 +10,7 @@ import content from '@originjs/vite-plugin-content'
 import monacoEditorPluginModule from 'vite-plugin-monaco-editor'
 import checker from 'vite-plugin-checker'
 import version from './vite.config.inject-version'
+import startup, { shellOnly } from './vite.config.startup'
 import dns from 'dns/promises'
 import { muonLinkWeb } from './tools/muon-link-web'
 
@@ -61,7 +62,8 @@ export default defineConfig(async ({ command, mode }) => {
         // The cloud client loads on demand; /setup must not download it
         // in the background merely to install the service worker.
         globIgnores: ['**/muon_link_web*'],
-        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2
+        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
+        manifestTransforms: [shellOnly(path.resolve(__dirname, 'dist'))]
       },
       manifest: {
         name: 'Muon3D',
@@ -126,6 +128,7 @@ export default defineConfig(async ({ command, mode }) => {
     }),
     vue(),
     version(),
+    startup(),
     content(),
     monacoEditorPlugin({
       languageWorkers: ['editorWorkerService', 'json', 'css']
@@ -162,7 +165,8 @@ export default defineConfig(async ({ command, mode }) => {
     }
   },
 
-  envPrefix: 'VUE_',
+  // VITE_MODELS_URL: the model service the Library talks to (services/library).
+  envPrefix: ['VUE_', 'VITE_'],
 
   resolve: {
     alias: {

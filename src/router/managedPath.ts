@@ -3,8 +3,16 @@
 // hides the chrome: it runs in a phone's captive-portal window, before the
 // printer is set up, and shows every error itself.
 // The console's sign-in page (WEB-12) is the identity provider's own page,
-// so it shows no printer chrome either.
-const MANAGED_CONSOLE_PATHS = new Set<string>(['/setup', '/sign-in'])
+// so it shows no printer chrome either, nor do signing out and the pages the
+// console's emails open (KAN-532).
+const MANAGED_CONSOLE_PATHS = new Set<string>([
+  '/setup',
+  '/sign-in',
+  '/sign-out',
+  '/signed-out',
+  '/account/verify-email',
+  '/account/reset-password'
+])
 
 export function isManagedConsolePath (path: string): boolean {
   return MANAGED_CONSOLE_PATHS.has(path)

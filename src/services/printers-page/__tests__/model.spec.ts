@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { DirectoryEntry } from '@/services/muon-cloud/directory'
 import type { CloudPrinter } from '@/services/muon-cloud/api'
+import type { ForeignPrinterRecord, ForeignStatus } from '@/services/foreign-printers/types'
 import { groupSummary, jobName, printersPage, type PageSources, type PrinterTile } from '../model'
 
 function entry (key: string, fields: Partial<DirectoryEntry>): DirectoryEntry {
@@ -58,6 +59,89 @@ describe('the Printers page', () => {
     const page = printersPage(sources({ directory: { cloud: [], local: [], found: [entry('found:a', { section: 'found', name: 'Rowan · 9F1D' })] } }))
     expect(page.welcome).toBe(false)
     expect(page.found).toHaveLength(1)
+  })
+
+  it('keeps foreign printers in Other printers and counts bridge-only records as offline', () => {
+    const record: ForeignPrinterRecord = {
+      id: 'foreign:bambu',
+      kind: 'bambu',
+      name: 'Bambu A1',
+      host: '192.168.1.6',
+      via: 'm1',
+      m1Name: 'Workshop M1',
+      formFactor: 'enclosed',
+      credentialsRef: null,
+      addedAt: 1
+    }
+    const status: ForeignStatus = {
+      state: 'offline',
+      message: 'Needs an M1 bridge',
+      file: null,
+      progress: null,
+      timeLeft: null,
+      temps: [],
+      cameraUrl: null
+    }
+    const page = printersPage(sources({
+      directory: {
+        cloud: [],
+        local: [],
+        found: [],
+        foreign: [entry('foreign:bambu', {
+          section: 'foreign',
+          name: record.name,
+          host: record.host,
+          health: 'offline',
+          detail: status.message!,
+          foreign: { record, status }
+        })]
+      }
+    }))
+    expect(page.other.map(tile => [tile.name, tile.state])).toEqual([['Bambu A1', 'offline']])
+    expect(page.counts).toMatchObject({ printers: 1, offline: 1 })
+    expect(page.welcome).toBe(false)
+  })
+
+  it('keeps a foreign print on its Other printers card, not Printing now', () => {
+    const record: ForeignPrinterRecord = {
+      id: 'foreign:voron',
+      kind: 'moonraker',
+      name: 'Workshop Voron',
+      model: 'Voron 2.4',
+      host: '192.168.1.25',
+      via: 'direct',
+      formFactor: 'open-frame',
+      credentialsRef: null,
+      addedAt: 1
+    }
+    const status: ForeignStatus = {
+      state: 'printing',
+      message: 'Printing',
+      file: 'bracket.gcode',
+      progress: 0.62,
+      timeLeft: 1800,
+      temps: [],
+      cameraUrl: null
+    }
+    const page = printersPage(sources({
+      directory: {
+        cloud: [],
+        local: [],
+        found: [],
+        foreign: [entry('foreign:voron', {
+          section: 'foreign',
+          name: record.name,
+          host: record.host,
+          health: 'printing',
+          detail: status.message!,
+          foreign: { record, status }
+        })]
+      }
+    }))
+
+    expect(page.printingNow).toEqual([])
+    expect(page.other[0]).toMatchObject({ state: 'printing', label: '62%', job: { progress: 62, file: 'bracket.gcode' } })
+    expect(page.counts).toMatchObject({ printers: 1, printing: 1 })
   })
 
   it('puts the account printers in their groups, in the groups\' order, and the rest after', () => {

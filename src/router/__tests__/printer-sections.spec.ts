@@ -11,8 +11,8 @@ import {
   type SectionContext
 } from '../printerSections'
 
-const simple: SectionContext = { pro: false, slicer: false, camera: null, history: true, timelapse: false, diagnostics: true }
-const everything: SectionContext = { pro: true, slicer: true, camera: 'front', history: true, timelapse: true, diagnostics: true }
+const simple: SectionContext = { pro: false, slicer: false, camera: null, history: true, timelapse: false, diagnostics: true, foreign: false }
+const everything: SectionContext = { pro: true, slicer: true, camera: 'front', history: true, timelapse: true, diagnostics: true, foreign: false }
 
 const ids = (c: SectionContext) => visibleSections(c).map(s => s.id)
 
@@ -35,7 +35,9 @@ describe("a printer's sections", () => {
   })
 
   it('have a home for every printer page, so none is lost from the rail', () => {
-    for (const page of PRINTER_PAGE_PATHS) {
+    // The Library is the account's, with a rail entry of its own under All printers;
+    // the account itself (KAN-532) opens from the header's menu and G A.
+    for (const page of PRINTER_PAGE_PATHS.filter(path => !['/library', '/account'].includes(path))) {
       expect(sectionOf(page), page).toBeDefined()
     }
   })
@@ -43,6 +45,10 @@ describe("a printer's sections", () => {
   it('show Console and Files only with Pro on', () => {
     expect(ids(simple)).toEqual(['overview', 'jobs', 'control', 'maintenance', 'settings'])
     expect(ids(everything)).toEqual(['overview', 'jobs', 'control', 'slice', 'camera', 'maintenance', 'settings', 'console', 'files'])
+  })
+
+  it('shows exactly Overview, Jobs, Slice and Camera for a foreign printer', () => {
+    expect(ids({ ...everything, foreign: true })).toEqual(['overview', 'jobs', 'slice', 'camera'])
   })
 
   it('show a page only where it can work', () => {

@@ -81,17 +81,19 @@
       />
 
       <template v-if="!managedConsoleRoute">
+        <keyboard-shortcuts-dialog />
+        <command-bar />
+      </template>
+      <template v-if="!managedConsoleRoute && !foreignPrinterRoute">
         <file-system-download-dialog />
         <updating-dialog />
         <spool-selection-dialog />
         <action-command-prompt-dialog />
-        <keyboard-shortcuts-dialog />
-        <command-bar />
         <job-ready-dialog />
       </template>
     </v-main>
 
-    <app-footer v-if="!managedConsoleRoute" />
+    <app-footer v-if="!managedConsoleRoute && !foreignPrinterRoute" />
 
     <app-drag-overlay
       v-if="!managedConsoleRoute"
@@ -118,26 +120,35 @@ import ActionCommandPromptDialog from './components/common/ActionCommandPromptDi
 import KeyboardShortcutsDialog from './components/common/KeyboardShortcutsDialog.vue'
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from './util/event-helpers'
 import { isManagedConsolePath } from '@/router/managedPath'
-import { activeSlug, isActiveSlug, printerPageNeedsLogin, samePageFor, stepPrinter } from '@/services/printer-pages'
+import {
+  activeSlug,
+  foreignRecordForSlug,
+  isActiveSlug,
+  isForeignSlug,
+  printerPageNeedsLogin,
+  samePageFor,
+  stepPrinter
+} from '@/services/printer-pages'
 import PrinterOpening from './components/muon-cloud/PrinterOpening.vue'
 import ConnectionBanner from './components/layout/ConnectionBanner.vue'
 import ConnectingScreen from './components/layout/ConnectingScreen.vue'
 import UpdatingScreen from './components/updates/UpdatingScreen.vue'
 import UpdateBanner from './components/updates/UpdateBanner.vue'
 import { printerLost, updateWatch, watchUpdates } from '@/services/updates/watch'
-import { prebuild as prebuildLiveM1 } from '@/services/m1-3d/parked'
 import { ACTIVE_PHASES, offlineScreen } from '@/services/updates/model'
 import { printerNameParts } from '@/util/printer-name'
 import { connectionView, type ConnectionView } from '@/services/connection/view'
 import { cloudState } from '@/services/muon-cloud/state'
 import { consolePresence } from '@/services/muon-cloud/presence'
 import FrameMixin from '@/mixins/frame'
-import { ALL_PRINTERS_KEY, PAGE_KEYS, sectionForKey } from '@/router/printerSections'
+import { ACCOUNT_KEY, ALL_PRINTERS_KEY, LIBRARY_KEY, PAGE_KEYS, sectionForKey } from '@/router/printerSections'
 import { scopedPath } from '@/router/printerPagePaths'
 import { setProMode } from '@/services/pro-mode'
 import { GoKeys } from '@/util/go-keys'
 import { isGcodeFile, isModelFile } from '@/services/jobs/model'
 import JobReadyDialog from './components/jobs/JobReadyDialog.vue'
+import { loaderCanGo, rememberTheme, removeLoader, startupState } from '@/services/startup/loader'
+import { saveSnapshotStatus } from '@/services/startup/snapshot'
 
 @Component<App>({
   metaInfo () {
@@ -176,10 +187,41 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   // printer switcher in it starts a network search the setup page must never
   // make (it may reach only the printer).
   routerReady = false
+  /** When App mounted, for the loader's 6 s hold on the connecting screen. */
+  mountedAt = 0
 
   created () {
     const ready = () => { this.routerReady = true }
     this.$router.onReady(ready, ready)
+  }
+
+  /**
+   * Whether the index.html loader can go (KAN-525): the first route resolved,
+   * and a loader showing the cached last state doesn't wait on the connecting
+   * screen past 6 s.
+   */
+  get loaderReady (): boolean {
+    return loaderCanGo({
+      routerReady: this.routerReady,
+      screen: this.connection.screen,
+      cachedShown: startupState.cachedShown,
+      msSinceMount: performance.now() - this.mountedAt
+    })
+  }
+
+  @Watch('loaderReady')
+  onLoaderReady (ready: boolean) {
+    if (ready) this.dismissLoader()
+  }
+
+  dismissLoader () {
+    this.$nextTick(() => requestAnimationFrame(() => { removeLoader() }))
+  }
+
+  /** The theme the next load's loader paints in (index.html reads muon3d.theme). */
+  @Watch('theme.isDark', { immediate: true })
+  onThemeDark (isDark: boolean) {
+    rememberTheme(isDark)
   }
 
   get theme (): ThemeConfig {
@@ -218,7 +260,11 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
    */
   get otherPrinterRoute (): boolean {
     const slug = this.$route.params.printer
-    return !!slug && !this.printerIndependentRoute && !isActiveSlug(slug)
+    return !!slug && !this.printerIndependentRoute && !isForeignSlug(slug) && !isActiveSlug(slug)
+  }
+
+  get foreignPrinterRoute (): boolean {
+    return isForeignSlug(this.$route.params.printer)
   }
 
   get printerIndependentRoute (): boolean {
@@ -266,16 +312,10 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
 
   /** The bar over every page while the printer installs an update, but on the Updating page itself. */
   get showUpdateBanner (): boolean {
+    if (this.foreignPrinterRoute) return false
     const r = updateWatch.remembered
     return !!r && ACTIVE_PHASES.includes(r.phase) && this.printerFrame && this.socketConnected &&
       this.$route.name !== 'Updating' && updateWatch.printer === (activeSlug() ?? '')
-  }
-
-  /** Another printer: nothing has been reached yet. */
-  /** Opening a printer's overview, the live M1 is built while the printer connects, not after. */
-  @Watch('$route.name', { immediate: true })
-  onRouteName (name: string | null | undefined) {
-    if (name === 'Dashboard') prebuildLiveM1()
   }
 
   @Watch('$store.state.config.apiUrl')
@@ -285,6 +325,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
 
   /** What the connection shows: the page, a bar over it, or a screen of its own (services/connection/view). */
   get connection (): ConnectionView {
+    if (this.foreignPrinterRoute) return { page: true, stale: false, banner: null, screen: null }
     const printer = cloudState.printers.find(p => p.id === cloudState.activePrinterId)
     // Status polling ticks this reactive clock even for offline printers.
     const status = printer ? cloudState.status[printer.id] : undefined
@@ -334,7 +375,8 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   // as tabs. Not the slicer, which fills the page with its own bar; on a
   // phone the console and G-code preview keep that height for the tool.
   get showPageHeader (): boolean {
-    if (!this.printerFrame || this.otherPrinterRoute || this.sliceRoute) return false
+    // The Library and the account (KAN-532) draw their own titles: they aren't the printer's sections.
+    if (!this.printerFrame || this.otherPrinterRoute || this.sliceRoute || this.$route.name?.startsWith('Library') || this.$route.name?.startsWith('Account')) return false
     // Shown with the page: while connected, and through a drop, when the page keeps its last view.
     if (!this.connection.page || this.connection.screen) return false
     // On a phone, Overview leads with the printer itself; the top bar names it.
@@ -346,6 +388,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   }
 
   get fileDropRoot () {
+    if (this.foreignPrinterRoute) return false
     return this.$route.meta?.fileDropRoot
   }
 
@@ -372,7 +415,9 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
       return `Muon3D | ${this.$route.name ?? 'Managed preview'}`
     }
 
-    const instanceName = this.$store.getters['config/getDisplayName'] as string
+    const instanceName = this.foreignPrinterRoute
+      ? foreignRecordForSlug(this.$route.params.printer)?.name ?? 'Other printer'
+      : this.$store.getters['config/getDisplayName'] as string
     const pageName = this.$route.name
 
     if (this.printerPrinting) {
@@ -460,6 +505,57 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     return this.$store.getters['config/getCustomThemeFile']('custom', ['.css'])
   }
 
+  /**
+   * The active printer's state kept for the next load's cached view
+   * (KAN-525), at most once every 5 s; changes inside that are drawn by the
+   * next one, and leaving the tab saves on the spot.
+   */
+  get snapshotStatusLine (): string {
+    const p = this.$store.state.printer.printer
+    if (!p) return ''
+    const progress = Math.floor((this.$store.getters['printer/getPrintProgress'] as number) * 100)
+    return [
+      this.displayName,
+      p.print_stats?.state ?? '',
+      p.print_stats?.filename ?? '',
+      progress,
+      Math.round(p.extruder?.temperature ?? 0),
+      Math.round(p.heater_bed?.temperature ?? 0)
+    ].join('|')
+  }
+
+  snapshotSavedAt = 0
+
+  @Watch('snapshotStatusLine')
+  onSnapshotStatusLine (line: string) {
+    if (!line) return
+    const now = Date.now()
+    if (now - this.snapshotSavedAt < 5000) return
+    this.snapshotSavedAt = now
+    this.saveSnapshotStatus()
+  }
+
+  saveSnapshotStatus () {
+    const slug = activeSlug()
+    const p = this.$store.state.printer.printer
+    if (!slug || !p) return
+    const progress = Math.floor((this.$store.getters['printer/getPrintProgress'] as number) * 100)
+    const state = (p.print_stats?.state as string | undefined) ?? 'ready'
+    saveSnapshotStatus(slug, {
+      name: this.displayName,
+      state,
+      label: state === 'printing' ? `${progress}%` : state === 'paused' ? 'Paused' : state.charAt(0).toUpperCase() + state.slice(1),
+      file: (p.print_stats?.filename as string | undefined) || null,
+      progress,
+      nozzle: typeof p.extruder?.temperature === 'number' ? Math.round(p.extruder.temperature) : null,
+      bed: typeof p.heater_bed?.temperature === 'number' ? Math.round(p.heater_bed.temperature) : null
+    })
+  }
+
+  onVisibilitySave () {
+    if (document.hidden) this.saveSnapshotStatus()
+  }
+
   @Watch('customStyleSheet')
   async onCustomStyleSheet (value: string) {
     if (!value) {
@@ -510,11 +606,15 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   }
 
   mounted () {
+    this.mountedAt = performance.now()
+    // The loader's 6 s hold on 'connecting' needs a tick even when nothing changes.
+    setTimeout(() => { if (this.loaderReady) this.dismissLoader() }, 6000)
     window.addEventListener('dragover', this.handleDragOver)
     window.addEventListener('dragenter', this.handleDragOver)
     window.addEventListener('dragleave', this.handleDragLeave)
     window.addEventListener('drop', this.handleDrop)
     window.addEventListener('keydown', this.handleKeyDown, false)
+    document.addEventListener('visibilitychange', this.onVisibilitySave)
 
     // this.onLoadLocale(this.$i18n.locale)
     EventBus.bus.$on('flashMessage', (payload: FlashMessage) => {
@@ -548,6 +648,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     window.removeEventListener('dragleave', this.handleDragLeave)
     window.removeEventListener('drop', this.handleDrop)
     window.removeEventListener('keydown', this.handleKeyDown)
+    document.removeEventListener('visibilitychange', this.onVisibilitySave)
   }
 
   handleDragOver (event: DragEvent) {
@@ -626,6 +727,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     const shortcut = keyboardEventToKeyboardShortcut(event)
 
     if (shortcut === 'Ctrl+Shift+E') {
+      if (this.foreignPrinterRoute) return
       event.preventDefault()
 
       this.emergencyStop()
@@ -645,7 +747,8 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
       // The same page of the printer before or after this one.
       case '[':
       case ']': {
-        const next = this.printerFrame ? stepPrinter(activeSlug(), shortcut === ']' ? 1 : -1) : null
+        const current = this.foreignPrinterRoute ? this.$route.params.printer : activeSlug()
+        const next = this.printerFrame ? stepPrinter(current, shortcut === ']' ? 1 : -1) : null
         if (next) {
           event.preventDefault()
           this.$router.push(samePageFor(this.$route, next)).catch(() => {})
@@ -659,7 +762,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
         return
 
       case 'u':
-        if (this.printerFrame && this.socketConnected) {
+        if (!this.foreignPrinterRoute && this.printerFrame && this.socketConnected) {
           event.preventDefault()
           EventBus.bus.$emit('upload-file')
         }
@@ -673,7 +776,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
         return
     }
 
-    if (!this.klippyReady) {
+    if (this.foreignPrinterRoute || !this.klippyReady) {
       return
     }
 
@@ -711,7 +814,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     }
   }
 
-  /** G then a letter: G P every printer, G O this printer's Overview, G J its Jobs. */
+  /** G then a letter: G P every printer, G A your account, G O this printer's Overview, G J its Jobs. */
   handleGoKey (event: KeyboardEvent, shortcut: string): boolean {
     const step = this.goKeys.feed(shortcut, Date.now())
     if (!step) return false
@@ -721,11 +824,15 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     let to: string | null = null
     if (step.key === ALL_PRINTERS_KEY) {
       to = '/'
-    } else if (activeSlug()) {
+    } else if (step.key === LIBRARY_KEY) {
+      to = scopedPath('/library', activeSlug())
+    } else if (step.key === ACCOUNT_KEY) {
+      to = scopedPath('/account', activeSlug())
+    } else if (activeSlug() || this.foreignPrinterRoute) {
       const section = sectionForKey(step.key, this.sectionContext)
       const page = PAGE_KEYS.find(p => p.key === step.key)
       if (section) to = this.sectionTo(section)
-      else if (page) to = `${scopedPath(page.path, activeSlug())}${page.hash ?? ''}`
+      else if (page && !this.foreignPrinterRoute) to = `${scopedPath(page.path, activeSlug())}${page.hash ?? ''}`
     }
     if (to && to !== this.$route.fullPath) this.$router.push(to).catch(() => {})
     return true

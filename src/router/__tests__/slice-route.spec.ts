@@ -59,7 +59,7 @@ describe('the service worker\'s navigations', () => {
   })
 
   it('is the list the service worker uses', () => {
-    expect(swSource).toMatch(/import \{ NAVIGATION_DENYLIST \} from '\.\/swNavigation'/)
+    expect(swSource).toMatch(/import \{ NAVIGATION_DENYLIST(, [A-Za-z]+)* \} from '\.\/swNavigation'/)
     expect(swSource).toMatch(/const denylist = import\.meta\.env\.DEV\s+\? undefined\s+: NAVIGATION_DENYLIST/)
   })
 

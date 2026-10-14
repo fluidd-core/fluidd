@@ -1,10 +1,15 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import type VueRouter from 'vue-router'
 import type { InstanceConfig } from '@/store/config/types'
 import store from '@/store'
+import type { ForeignPrinterRecord } from '@/services/foreign-printers/types'
+import { foreignRegistry, foreignSlug } from '@/services/foreign-printers/registry'
 import {
   activeSlug,
+  installPrinterPages,
   isActiveSlug,
   isPrintersOwnPage,
+  openPrinterAt,
   preferSavedPrinterFor,
   printerPageNeedsLogin,
   printerPagesState,
@@ -47,6 +52,36 @@ describe("a saved printer's slug", () => {
 
   it('is its name and a hash of its address otherwise', () => {
     expect(slugForInstance(instance('http://192.168.1.20', { name: 'Voron' }))).toMatch(/^voron-[a-z0-9]{4}$/)
+  })
+})
+
+describe('opening a foreign printer', () => {
+  it('does not activate local or cloud printers or change the store', async () => {
+    const record: ForeignPrinterRecord = {
+      id: 'foreign-test',
+      kind: 'octoprint',
+      name: 'Test printer',
+      host: '192.168.1.250',
+      via: 'direct',
+      formFactor: 'bed-slinger',
+      credentialsRef: null,
+      addedAt: 1
+    }
+    foreignRegistry.records.splice(0, foreignRegistry.records.length, record)
+    const openers = {
+      activateLocalPrinter: vi.fn(async () => true),
+      activateCloudPrinter: vi.fn(async () => {})
+    }
+    installPrinterPages({ afterEach: vi.fn() } as unknown as VueRouter, openers)
+    const config = JSON.stringify(store.state.config)
+    try {
+      await expect(openPrinterAt(foreignSlug(record))).resolves.toBe(true)
+      expect(openers.activateLocalPrinter).not.toHaveBeenCalled()
+      expect(openers.activateCloudPrinter).not.toHaveBeenCalled()
+      expect(JSON.stringify(store.state.config)).toBe(config)
+    } finally {
+      foreignRegistry.records.splice(0)
+    }
   })
 })
 

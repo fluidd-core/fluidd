@@ -1,9 +1,12 @@
 import Vue from 'vue'
-import { shallowMount } from '@vue/test-utils'
+import { createLocalVue, shallowMount } from '@vue/test-utils'
+import VueRouter from 'vue-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Slice, { CROSS_ORIGIN_SANDBOX } from '../Slice.vue'
 import { resetSlicerProbe } from '@/services/slicer-bridge/slicerUrl'
+import { foreignRegistry, foreignSlug } from '@/services/foreign-printers/registry'
 import type { ConfirmRequest } from '@/services/slicer-bridge/vendor/printer-client/bridge/host'
+import { resetLibrary } from '@/services/library/store'
 
 const EMBED_HTML = '<!doctype html><html><head><meta name="muon3d-embed-hosts" content="\'self\'" /><title>Muon3D Slicer</title></head></html>'
 const FLUIDD_HTML = '<!doctype html><html><head><title>Fluidd</title></head><body><div id="app"></div></body></html>'
@@ -52,6 +55,23 @@ const request = (signal = new AbortController().signal): ConfirmRequest => ({
 })
 
 describe('Slice', () => {
+  it('does not frame or connect the M1 slicer from a foreign printer page', async () => {
+    const record = { id: 'foreign-slice', kind: 'octoprint' as const, name: 'Octo', host: '192.168.1.9', via: 'direct' as const, formFactor: 'bed-slinger' as const, credentialsRef: null, addedAt: 0 }
+    foreignRegistry.records.push(record)
+    const fetch = serve(200, EMBED_HTML)
+    try {
+      const localVue = createLocalVue()
+      localVue.use(VueRouter)
+      const router = new VueRouter({ mode: 'abstract', routes: [{ path: '/:printer', component: Slice }] })
+      await router.push(`/${foreignSlug(record)}`)
+      const wrapper = await mountSlice(undefined, { localVue, router })
+      expect(wrapper.find('iframe').exists()).toBe(false)
+      expect((wrapper.vm as any).host).toBeNull()
+      expect(fetch).not.toHaveBeenCalled()
+      wrapper.destroy()
+    } finally { foreignRegistry.records.splice(0) }
+  })
+
   beforeEach(() => {
     resetSlicerProbe()
     serve(200, EMBED_HTML)
@@ -193,6 +213,59 @@ describe('Slice', () => {
     await expect(pending).rejects.toThrow('The request ended')
     expect(vm.dialogRequest).toBeNull()
     vm.handleAnswer({ choice: 'print', plateClear: false })
+    wrapper.destroy()
+  })
+
+  it('grants the slicer the account\'s Library, and tells it when the Library changes (library.status)', async () => {
+    const wrapper = await mountSlice(undefined, { attachTo: document.body })
+    const vm = wrapper.vm as any
+    const frame = wrapper.find('iframe').element as HTMLIFrameElement
+    const welcomes: Array<{ capabilities: string[] }> = []
+    vi.spyOn(frame.contentWindow!, 'postMessage').mockImplementation(((message: { capabilities: string[] }) => { welcomes.push(message) }) as never)
+    window.dispatchEvent(new MessageEvent('message', {
+      source: frame.contentWindow,
+      origin: window.location.origin,
+      data: { protocol: 'printer-bridge', type: 'hello', versions: [1], app: 'muon3d-slicer', appVersion: '0.4.0', nonce: '0'.repeat(32), features: ['library'] }
+    }))
+    expect(welcomes).toHaveLength(1)
+    expect(welcomes[0].capabilities).toContain('library')
+
+    const sent = vi.spyOn(vm.host.bridge, 'libraryStatus')
+    resetLibrary('someone')
+    await vm.$nextTick()
+    expect(sent).toHaveBeenCalledWith(expect.objectContaining({ signedIn: true, enabled: false }))
+    resetLibrary(null)
+    wrapper.destroy()
+  })
+
+  it('opens a print from the Library once the slicer shows, and drops it from the address', async () => {
+    const wrapper = await mountSlice(undefined, { computed: { routeQuery: () => ({ library: 'item-7', version: '2', from: 'x' }) } })
+    const vm = wrapper.vm as any
+    vm.replaceQuery = vi.fn()
+    vm.host.close()
+    const open = vi.fn()
+    vm.host = { bridge: { connected: true, clientFeatures: ['ui.look', 'library'], libraryOpen: open, libraryStatus: vi.fn() }, close: () => {}, refresh: () => {}, printer: () => null }
+    vm.ready = false
+    vm.openFromLibrary()
+    expect(open).not.toHaveBeenCalled()
+    vm.ready = true
+    vm.openFromLibrary()
+    expect(open).toHaveBeenCalledWith({ item: 'item-7', version: 2 })
+    expect(vm.replaceQuery).toHaveBeenCalledWith({ from: 'x' })
+    wrapper.destroy()
+  })
+
+  it('tells a slicer that predates the Library nothing, and drops the print from the address', async () => {
+    const wrapper = await mountSlice(undefined, { computed: { routeQuery: () => ({ library: 'item-7' }) } })
+    const vm = wrapper.vm as any
+    vm.replaceQuery = vi.fn()
+    vm.host.close()
+    const open = vi.fn()
+    vm.host = { bridge: { connected: true, clientFeatures: ['ui.look'], libraryOpen: open, libraryStatus: vi.fn() }, close: () => {}, refresh: () => {}, printer: () => null }
+    vm.ready = true
+    vm.openFromLibrary()
+    expect(open).not.toHaveBeenCalled()
+    expect(vm.replaceQuery).toHaveBeenCalledWith({})
     wrapper.destroy()
   })
 

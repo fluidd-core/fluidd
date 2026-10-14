@@ -145,7 +145,7 @@ export const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | 
     endpoints.push(`${document.location.protocol}//${document.location.hostname}:${port}`)
   }
 
-  // Nothing left to probe, as on a blacklisted host such as app.muon3d.com:
+  // Nothing left to probe, as on a blacklisted host such as control.muon3d.com:
   // no printer can answer, so don't hold the first paint for the timeout.
   if (endpoints.length === 0) {
     return {

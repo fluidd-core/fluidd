@@ -1,5 +1,7 @@
 <template>
+  <foreign-printer-slice v-if="foreignPrinter" />
   <div
+    v-else
     class="slice-view"
     :class="{ 'slice-view--part': partOfPage }"
     data-test="slice-view"
@@ -61,6 +63,11 @@ import { configuredSlicerUrl, probeSlicer, slicerPresence, type SlicerPresence }
 import { isBoundToPrinterTransport } from '@/services/managed-session/httpTransportBinding'
 import type { ConfirmAnswer, ConfirmRequest } from '@/services/slicer-bridge/vendor/printer-client/bridge/host'
 import { printerError } from '@/services/slicer-bridge/vendor/printer-client/errors/kinds'
+import { createFluiddLibrary } from '@/services/slicer-bridge/library'
+import { libraryStatus, refreshLibrary, watchLibraryAccount } from '@/services/library/store'
+import { EventBus } from '@/eventBus'
+import { isForeignSlug } from '@/services/printer-pages'
+import ForeignPrinterSlice from '@/components/foreign/ForeignPrinterSlice.vue'
 
 interface OpenDialog {
   request: ConfirmRequest;
@@ -94,10 +101,17 @@ export const CROSS_ORIGIN_SANDBOX = 'allow-scripts allow-same-origin allow-forms
  * as a part of the page (its hello lists ui.look) gets a frame with no card
  * of its own; an older one keeps today's framed card. The rail stays either
  * way.
+ *
+ * The account's Library (KAN-521, printer-client 0.4.0): the slicer saves
+ * to it and opens from it through Fluidd (services/slicer-bridge/library.ts),
+ * and hears library.status whenever sign-in, consent or the preferences
+ * change. "Open in Slice" on the Library page comes here with ?library=<id>:
+ * once the slicer is welcomed, it is sent library.open.
  */
 @Component({
   components: {
-    PrintConfirmDialog
+    PrintConfirmDialog,
+    ForeignPrinterSlice
   }
 })
 export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
@@ -119,6 +133,10 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
   dirty = false
   closed = false
   stopWatching: (() => void) | null = null
+
+  get foreignPrinter (): boolean {
+    return isForeignSlug(this.$route?.params.printer)
+  }
 
   get url (): URL | null {
     return configuredSlicerUrl()
@@ -184,7 +202,10 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
   }
 
   async mounted () {
+    if (this.foreignPrinter) return
     window.addEventListener('beforeunload', this.handleBeforeUnload)
+    watchLibraryAccount()
+    refreshLibrary().catch(() => {})
     if (!await probeSlicer(this.url)) return
     await this.$nextTick()
     this.startHost()
@@ -193,7 +214,7 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
   startHost () {
     const url = this.url
     const frame = this.$refs.frame as HTMLIFrameElement | undefined
-    if (!url || !frame || this.host || this.closed) return
+    if (this.foreignPrinter || !url || !frame || this.host || this.closed) return
     this.host = startSlicerHost({
       frame,
       slicerUrl: url,
@@ -209,6 +230,7 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
       mode: proMode.on ? 'pro' : 'simple',
       setup: (key) => (key === this.host?.printer()?.key ? this.currentSetup : null),
       onMaterial: (key, material) => { if (key === this.host?.printer()?.key) this.takeMaterial(material) },
+      library: createFluiddLibrary({ browse: () => { this.$router.push('/library').catch(() => {}) } }),
       hostVersion: String(import.meta.env.VERSION ?? ''),
       onState: (state) => { this.dirty = state.dirty === true },
       log: (entry) => consola.debug('[slicer bridge]', entry)
@@ -231,7 +253,41 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
       cancelAnimationFrame(this.setupFrame)
       this.setupFrame = requestAnimationFrame(() => this.host?.bridge.setupChanged())
     })
+    // library.status whenever sign-in, consent or the preferences change.
+    this.$watch(() => JSON.stringify(libraryStatus()), () => this.host?.bridge.libraryStatus(libraryStatus()))
+    this.$watch(() => this.routeQuery.library, () => this.openFromLibrary())
     this.watchFeatures()
+  }
+
+  /** The address's query, where "Open in Slice" names the print. */
+  get routeQuery (): Record<string, unknown> {
+    return { ...(this.$route?.query ?? {}) }
+  }
+
+  replaceQuery (query: Record<string, unknown>) {
+    this.$router.replace({ query: query as Route['query'] }).catch(() => {})
+  }
+
+  /**
+   * "Open in Slice" from the Library (?library=<id>, and &version=<n> for an
+   * older one): once the slicer is welcomed, library.open, and the address
+   * drops it, so a reload doesn't open it over the person's changes. A
+   * slicer that predates the Library is told nothing, and the person is.
+   */
+  openFromLibrary () {
+    const query = this.routeQuery
+    const item = query.library
+    const bridge = this.host?.bridge
+    if (typeof item !== 'string' || !item || !bridge?.connected || !this.ready) return
+    if (bridge.clientFeatures.includes('library')) {
+      const version = Number(query.version)
+      bridge.libraryOpen({ item, version: Number.isInteger(version) && version > 0 ? version : null })
+    } else {
+      EventBus.$emit('This slicer can\'t open prints from your Library yet.', { type: 'warning', timeout: 6000 })
+    }
+    delete query.library
+    delete query.version
+    this.replaceQuery(query)
   }
 
   /**
@@ -260,7 +316,10 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
 
   /** Two frames after the welcome, the slicer has drawn in the look it was given. */
   showWhenPainted () {
-    requestAnimationFrame(() => requestAnimationFrame(() => { this.ready = true }))
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      this.ready = true
+      this.openFromLibrary()
+    }))
   }
 
   /** The frame's page has loaded: a slicer that hasn't said hello within 3 s shows anyway (an older one never will). */

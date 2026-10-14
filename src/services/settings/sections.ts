@@ -58,6 +58,13 @@ export function visibleSettingsSections (c: SettingsContext): SettingsSection[] 
 }
 
 /**
+ * Settings' sections that moved to the account (KAN-532): the Library's
+ * settings are the account's, the same on every printer. An old address
+ * (`/boxwood-367a/settings#library`) opens them there.
+ */
+export const MOVED_TO_ACCOUNT: Record<string, string> = { library: '/account/library' }
+
+/**
  * The section an address opens: `#theme` is General, `#versions` Updates.
  * No anchor, or one that isn't shown, is null, so a phone shows the list
  * and a wider screen the first section.
