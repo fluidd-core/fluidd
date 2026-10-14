@@ -34,12 +34,6 @@
           :compact="compact"
           :data-tid="`rail-${section.id}`"
         />
-        <router-view
-          v-if="section.id === 'settings' && currentSection === section && hasSubNavigation && !compact"
-          :key="`${section.id}-sub`"
-          name="navigation"
-          class="app-rail__sub"
-        />
       </template>
 
       <template v-if="proSections.length">
@@ -134,10 +128,6 @@ export default class AppRail extends Mixins(FrameMixin, BrowserMixin) {
     return this.sections.filter(s => s.pro)
   }
 
-  get hasSubNavigation (): boolean {
-    return (this.$route.meta?.hasSubNavigation ?? false) && this.socketConnected && this.authenticated
-  }
-
   get enableKeyboardShortcuts (): boolean {
     return this.$store.state.config.uiSettings.general.enableKeyboardShortcuts
   }
@@ -203,10 +193,6 @@ export default class AppRail extends Mixins(FrameMixin, BrowserMixin) {
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-  }
-
-  .app-rail__sub {
-    margin: 2px 0 6px;
   }
 
   .app-rail__spacer {

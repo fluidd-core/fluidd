@@ -99,7 +99,7 @@ export const SECTIONS: Section[] = [
     key: 's',
     pages: [
       { path: '/settings', label: 'Settings' },
-      { path: '/wifi', label: 'Network' },
+      { path: '/wifi', label: 'Wi-Fi and network' },
       { path: '/system', label: 'System' }
     ]
   },

@@ -20,11 +20,12 @@ describe("a printer's pages", () => {
     expect(route.params.printer).toBe(path.split('/')[1])
   })
 
-  it('keeps the settings sub-navigation, a named view at the top level', () => {
+  it('opens a macro category inside Settings, which lists its own sections', () => {
     const route = router.resolve('/boxwood-367a/settings/macros/abc').route
     expect(route.name).toBe('Macros')
     expect(route.params).toMatchObject({ printer: 'boxwood-367a', categoryId: 'abc' })
-    expect(route.matched.map(r => Object.keys(r.components))).toEqual([['default', 'navigation'], ['default', 'navigation']])
+    expect(route.matched.map(r => r.name)).toEqual(['Settings', 'Macros'])
+    expect(route.matched.map(r => Object.keys(r.components))).toEqual([['default'], ['default']])
   })
 
   test.each(['/link', '/join', '/sign-in', '/setup', '/fleet', '/login', '/icons'])('%s is not a printer', (path) => {

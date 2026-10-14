@@ -93,6 +93,11 @@ export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin, Print
 
   get title (): string {
     if (this.overviewHome) return printerNameParts(this.displayName).name
+    // Settings lists its own sections; Wi-Fi and System are named for themselves.
+    if (this.currentSection?.id === 'settings') {
+      const page = this.currentSection.pages.find(p => p.path !== '/settings' && this.isOn(p))
+      if (page) return page.label
+    }
     return this.currentSection?.label ?? this.$route.name ?? ''
   }
 
@@ -126,6 +131,9 @@ export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin, Print
         ? 'Pro: the exact values, in the same places as Simple, with more below.'
         : 'Heat, move, filament, speed, fans and lights.'
     }
+    if (this.currentPage === '/settings') {
+      return `Kept on ${printerNameParts(this.displayName).name}, so they're the same for everyone who opens it.`
+    }
     if (this.currentPage === '/maintenance') {
       return "What keeps prints coming out right. Each check says when it last ran and whether it's due."
     }
@@ -133,7 +141,8 @@ export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin, Print
   }
 
   get tabs (): SectionPage[] {
-    return this.currentSection ? this.pagesOf(this.currentSection) : []
+    if (!this.currentSection || this.currentSection.id === 'settings') return []
+    return this.pagesOf(this.currentSection)
   }
 
   isOn (page: SectionPage): boolean {

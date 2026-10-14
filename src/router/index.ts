@@ -19,7 +19,6 @@ import Timelapse from '@/views/Timelapse.vue'
 import Configure from '@/views/Configure.vue'
 import System from '@/views/System.vue'
 import Settings from '@/views/Settings.vue'
-import AppSettingsNav from '@/components/layout/AppSettingsNav.vue'
 import MacroCategorySettings from '@/components/settings/macros/MacroCategorySettings.vue'
 import FullscreenCamera from '@/views/FullscreenCamera.vue'
 import NotFound from '@/views/NotFound.vue'
@@ -156,25 +155,13 @@ const printerRoutes: Array<RouteConfig> = [
   {
     path: `${P}/settings`,
     name: 'Settings',
+    component: Settings,
     ...defaultRouteConfig,
-    meta: {
-      hasSubNavigation: true
-    },
-    components: {
-      default: Settings,
-      navigation: AppSettingsNav
-    },
     children: [
       {
         path: 'macros/:categoryId',
         name: 'Macros',
-        meta: {
-          hasSubNavigation: true
-        },
-        components: {
-          default: MacroCategorySettings,
-          navigation: AppSettingsNav
-        }
+        component: MacroCategorySettings
       }
     ]
   },
@@ -329,6 +316,8 @@ const router = new VueRouter({
   routes,
   scrollBehavior: (to, from, savedPosition) => {
     if (savedPosition) return savedPosition
+    // Settings' sections are its anchors: one opens at the top, in place of the last.
+    if (to.name === 'Settings' && from.name === 'Settings') return { x: 0, y: 0 }
     if (to.hash) {
       return {
         selector: to.hash,
@@ -348,7 +337,6 @@ router.beforeEach((to, from, next) => {
 declare module 'vue-router' {
   interface RouteMeta {
     fillHeight?: boolean
-    hasSubNavigation?: boolean
     fileDropRoot?: string
     printerIndependent?: boolean
     /** A printer switch (appInit) leaves this route where it is instead of going to the dashboard. */
