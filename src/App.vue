@@ -128,10 +128,12 @@ import {
   foreignRecordForSlug,
   isActiveSlug,
   isForeignSlug,
+  printerHomePath,
   printerPageNeedsLogin,
   samePageFor,
   stepPrinter
 } from '@/services/printer-pages'
+import { isManagedApiUrl } from '@/services/muon-cloud/origin'
 import PrinterOpening from './components/muon-cloud/PrinterOpening.vue'
 import ConnectionBanner from './components/layout/ConnectionBanner.vue'
 import ConnectingScreen from './components/layout/ConnectingScreen.vue'
@@ -142,6 +144,7 @@ import { ACTIVE_PHASES, offlineScreen } from '@/services/updates/model'
 import { printerNameParts } from '@/util/printer-name'
 import { connectionView, type ConnectionView } from '@/services/connection/view'
 import { cloudState } from '@/services/muon-cloud/state'
+import { activationState } from '@/services/muon-cloud/activate'
 import { consolePresence } from '@/services/muon-cloud/presence'
 import FrameMixin from '@/mixins/frame'
 import { ACCOUNT_KEY, ALL_PRINTERS_KEY, LIBRARY_KEY, PAGE_KEYS, sectionForKey } from '@/router/printerSections'
@@ -290,6 +293,7 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
     return printerPageNeedsLogin({
       apiConnected: this.apiConnected,
       authenticated: this.authenticated,
+      managed: this.cloudPrinter,
       routePrinter: this.$route.params.printer,
       routeName: this.$route.name,
       printerIndependent: this.printerIndependentRoute
@@ -299,6 +303,26 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
   @Watch('needsLogin')
   onNeedsLogin (needs: boolean) {
     if (needs) this.$router.replace('/login').catch(() => {})
+  }
+
+  /** The printer is reached through Muon3D, so it never has Moonraker's login. */
+  get cloudPrinter (): boolean {
+    return isManagedApiUrl(this.$store.state.config.apiUrl)
+  }
+
+  /**
+   * The login page with nothing to sign in to: a cloud printer, or a
+   * printer that turned out to let this browser in. Its own guard checks
+   * only on the way in, so a page that went to /login while a printer was
+   * opening stayed there after the printer answered.
+   */
+  get loginNotWanted (): boolean {
+    return this.$route.name === 'Login' && (this.cloudPrinter || (this.authenticated && this.socketConnected))
+  }
+
+  @Watch('loginNotWanted')
+  onLoginNotWanted (leave: boolean) {
+    if (leave) this.$router.replace(printerHomePath()).catch(() => {})
   }
 
   /** The printer has said nothing for a few seconds; the page stays up while Fluidd waits. */
@@ -348,7 +372,9 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
       socketConnected: this.socketConnected,
       apiConnected: this.apiConnected,
       authenticated: this.authenticated,
-      socketConnecting: this.socketConnecting,
+      // A cloud printer being opened is connecting for the whole switch: its
+      // first reads take seconds over Iroh, and "Can't reach" showed meanwhile.
+      socketConnecting: this.socketConnecting || (!!activationState.switching && activationState.switching === cloudState.activePrinterId),
       wasConnected: this.wasConnected,
       stalled: this.socketStalled,
       printerIndependent: this.managedConsoleRoute || this.printerIndependentRoute,
