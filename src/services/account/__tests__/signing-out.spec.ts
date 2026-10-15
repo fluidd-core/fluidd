@@ -55,11 +55,13 @@ describe('signing out', () => {
     sessionStorage.clear()
   })
 
-  it('opens the sign-out page where the console serves Fluidd', async () => {
+  it('signs this browser out from the menu without opening a choice page or ending other devices', async () => {
     const router = { push: vi.fn(async () => {}) }
     await beginSignOut(router as never)
-    expect(router.push).toHaveBeenCalledWith('/sign-out')
-    expect(signOut).not.toHaveBeenCalled()
+    expect(signOut).toHaveBeenCalledOnce()
+    expect(router.push).not.toHaveBeenCalled()
+    expect(endSessions).not.toHaveBeenCalled()
+    expect(readSignedOut()).toMatchObject({ scope: 'browser' })
   })
 
   it('signs out at once on a printer\'s own page, and says so after', async () => {
