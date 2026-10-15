@@ -730,7 +730,8 @@ import PrinterEntriesMixin from '@/mixins/printer-entries'
 import BrowserMixin from '@/mixins/browser'
 import FilesMixin from '@/mixins/files'
 import { cloudPrinterConnection, cloudState, saveLayout } from '@/services/muon-cloud/state'
-import { discoverPrinters, discoveryState, lanAddresses, lanFetch, refreshKnownPrinters, refreshLanStatus } from '@/services/muon-cloud/discovery'
+import { discoverPrinters, discoveryState, lanAddresses, lanFetch, refreshCloudNearby, refreshKnownPrinters, refreshLanStatus } from '@/services/muon-cloud/discovery'
+import { afterFirstPaint } from '@/services/startup/idle'
 import { loadedRecord } from '@/services/muon-cloud/status'
 import { jobPicture } from '@/services/printers-page/pictures'
 import { foreignEntries, savedUpdates, type Directory, type DirectoryEntry } from '@/services/muon-cloud/directory'
@@ -813,6 +814,8 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
   dropTarget: string | null = null
   renaming: string | null = null
   timer: number | null = null
+  /** Set on destroy, so a sweep still waiting for the first paint doesn't start. */
+  gone = false
   statusTimer: number | null = null
 
   filters: Array<{ id: Filter, label: string }> = [
@@ -825,7 +828,14 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
   created () {
     loadForeign().then(() => connectAll()).catch(() => {})
     if (new URLSearchParams(location.search).get('addPrinter') === '1') this.instanceDialogOpen = true
-    discoverPrinters().catch(() => {})
+    // The console's list of printers on this network is one request, and its
+    // printers are read at once. The sweep is 500 and more (every address on
+    // two or three networks): it waits until the page has painted, so it
+    // doesn't hold up the first load's own requests (KAN-525, 14 Oct 2026).
+    refreshCloudNearby().catch(() => {})
+    afterFirstPaint(() => {
+      if (!this.gone) discoverPrinters().catch(() => {})
+    })
     startNearby().catch(() => {})
     this.timer = window.setInterval(() => { refreshKnownPrinters().catch(() => {}) }, HEALTH_EVERY_MS)
     this.statusTimer = window.setInterval(() => { refreshLanStatus().catch(() => {}) }, STATUS_EVERY_MS)
@@ -833,6 +843,7 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
   }
 
   beforeDestroy () {
+    this.gone = true
     if (this.timer !== null) window.clearInterval(this.timer)
     if (this.statusTimer !== null) window.clearInterval(this.statusTimer)
     window.removeEventListener('keydown', this.onDigit)
