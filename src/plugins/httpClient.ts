@@ -102,4 +102,88 @@ const createHttpClient = (store: Store<RootState>) => {
     }
 
     const url = error.config?.url || ''
+
+    // A cloud printer's gateway refuses what a remote session may never
+    // reach (Moonraker's users, the Aux API, updates). A read refused that
+    // way is expected, and the page shows the feature as unavailable; a
+    // toast on each one only said "Server error" (14 Oct 2026).
+    if (
+      error.response.status === 403 &&
+      isManagedApiUrl(store.state.config.apiUrl) &&
+      (error.config?.method ?? 'get').toLowerCase() === 'get' &&
+      /muon-link policy refused/.test(message ?? '')
+    ) {
+      consola.debug('Refused through Muon3D', url, message)
+      return Promise.reject(error)
+    }
     const quiet = quietErrorRequests.includes(url)
+    switch (error.response.status) {
+      case 500:
+        consola.debug(error.response.status, error.message, message)
+        if (!quiet) EventBus.$emit(message || 'Server error', { type: 'error' })
+        break
+      case 502:
+      case 400:
+        consola.debug(error.response.status, error.message, message)
+        if (!quiet && !handledErrorRequests[error.response.status].includes(url)) {
+          EventBus.$emit(message || 'Server error', { type: 'error' })
+        }
+        break
+      case 401:
+        if (error.config?.withAuth) {
+        // logout.
+          store.dispatch('auth/logout')
+        }
+        break
+      case 404:
+        consola.debug(error.response.status, error.message, message)
+        // EventBus.$emit(message || 'Server error', { type: 'warning' })
+        break
+      default:
+        consola.debug(error.response.status, error.message)
+        if (!quiet) EventBus.$emit(message || 'Server error', { type: 'error' })
+    }
+
+    return Promise.reject(error)
+  }
+
+  httpClient.interceptors.request.use(requestInterceptor, errorInterceptor)
+  httpClient.interceptors.response.use(responseInterceptor, errorInterceptor)
+
+  return httpClient
+}
+
+// Extend axios config to include anything we may need.
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    // Enables axios to redirect if we encounter a 401, and sets the
+    // authenticated flag dependant on our responses.
+    withAuth?: boolean;
+  }
+}
+
+export const HttpClientPlugin = {
+  install (Vue: typeof _Vue, options?: HttpClientPluginOptions) {
+    if (!options?.store) {
+      throw new Error('store is required')
+    }
+
+    const httpClient = createHttpClient(options.store)
+    Vue.prototype.$httpClient = httpClient
+    Vue.$httpClient = httpClient
+  }
+}
+
+interface HttpClientPluginOptions {
+  store?: Store<RootState>
+}
+
+declare module 'vue/types/vue' {
+  interface Vue {
+    $httpClient: ReturnType<typeof createHttpClient>;
+  }
+
+  interface VueConstructor {
+    $httpClient: ReturnType<typeof createHttpClient>;
+  }
+}
