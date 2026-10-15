@@ -39,7 +39,8 @@ export default class AccountReauthMixin extends Vue {
       why: this.reauthState.why || undefined,
       action: this.reauthState.action,
       danger: this.reauthState.danger,
-      hasPassword: me ? me.account.has_password !== false : true,
+      hasPassword: me ? (me.sign_in?.password ?? me.account.has_password !== false) : true,
+      hasPasskey: (me?.sign_in?.passkeys ?? 0) > 0,
       twoStep: me ? (me.sign_in?.two_step ?? me.account.two_step ?? false) : false
     }
   }

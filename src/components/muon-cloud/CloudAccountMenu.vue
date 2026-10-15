@@ -120,6 +120,11 @@
           <template v-if="printerConnected">
             <div class="acct-menu__rule" />
             <span class="acct-menu__caps">This printer</span>
+            <span
+              v-if="ownsPrinter"
+              class="acct-menu__note"
+              data-tid="account-printer-owner"
+            >You own it</span>
             <router-link
               :to="accessTo"
               class="acct-menu__item"
@@ -329,6 +334,8 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { cloudState } from '@/services/muon-cloud/state'
 import { cloudBaseUrl } from '@/services/muon-cloud/api'
+import { deletionState } from '@/services/muon-cloud/deletion'
+import type { InstanceConfig } from '@/store/config/types'
 import { centralLoginEnabled } from '@/services/muon-cloud/centralLogin'
 import { beginSignOut } from '@/services/account/sign-out'
 import { printerNameParts } from '@/util/printer-name'
@@ -391,6 +398,13 @@ export default class CloudAccountMenu extends Vue {
     return !!this.$store.state.socket?.open
   }
 
+  get ownsPrinter (): boolean {
+    if (!this.account) return false
+    const instances = (this.$store.getters['config/getInstances'] ?? []) as InstanceConfig[]
+    const id = instances.find(i => i.apiUrl === this.$store.state.config.apiUrl)?.endpointId
+    return !!id && cloudState.printers.some(p => p.id === id && p.shared === false)
+  }
+
   /** The printer keeps this login's password itself (not a system login). */
   get printerPasswordHere (): boolean {
     const user = this.$store.getters['auth/getCurrentUser'] as { source?: string } | null
@@ -433,6 +447,7 @@ export default class CloudAccountMenu extends Vue {
   }
 
   built (id: AccountSectionId): boolean {
+    if (deletionState.deleteAfter !== null && !['privacy', 'delete'].includes(id)) return false
     return ACCOUNT_SECTIONS.some(s => s.id === id && s.built)
   }
 
