@@ -42,6 +42,13 @@
         </button>
       </div>
 
+      <p
+        v-if="commandRefusal"
+        role="alert"
+        class="command-bar__empty"
+      >
+        {{ commandRefusal }}
+      </p>
       <div
         ref="list"
         class="command-bar__list"
@@ -115,7 +122,7 @@
         <span><kbd>↑</kbd><kbd>↓</kbd> move</span>
         <span><kbd>Enter</kbd> run</span>
         <span class="command-bar__grow" />
-        <span v-if="inPrinter">Pro: start with <kbd>&gt;</kbd> to send G-code</span>
+        <span v-if="inPrinter && commandControlAvailable">Start with <kbd>&gt;</kbd> to send G-code</span>
       </div>
     </div>
   </v-dialog>
@@ -125,7 +132,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import FrameMixin from '@/mixins/frame'
 import BrowserMixin from '@/mixins/browser'
-import ServicesMixin from '@/mixins/services'
+import TypedCommandsMixin from '@/mixins/typed-commands'
 import { EventBus } from '@/eventBus'
 import { SocketActions } from '@/api/socketActions'
 import type { TemperaturePreset } from '@/store/config/types'
@@ -148,11 +155,11 @@ const MAX_JOBS = 300
 
 /**
  * Search or run a command (Ctrl K): printers, pages, jobs, macros and the
- * printer's own actions, in one box. With Pro on, a line starting with >
+ * printer's own actions, in one box. A line starting with >
  * is sent as G-code.
  */
 @Component({})
-export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, ServicesMixin) {
+export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, TypedCommandsMixin) {
   open = false
   query = ''
   selected = 0
@@ -178,6 +185,7 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
   }
 
   show () {
+    this.commandRefusal = ''
     this.query = ''
     this.selected = 0
     this.open = true
@@ -232,8 +240,7 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
   async runAt (i: number) {
     const command = this.results[i]
     if (!command) return
-    this.open = false
-    await command.run()
+    if (await command.run() !== false) this.open = false
   }
 
   go (path: string) {
@@ -244,10 +251,7 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
 
   get gcodeCommands (): Command[] {
     const gcode = this.gcode ?? ''
-    if (!this.inPrinter) return []
-    if (!this.pro) {
-      return [{ id: 'pro-for-gcode', group: 'Do', label: 'Turn Pro on to send G-code', icon: 'console', run: () => setProMode(true) }]
-    }
+    if (!this.inPrinter || !this.commandControlAvailable) return []
     if (!gcode) return []
     return [{
       id: 'send-gcode',
@@ -256,7 +260,7 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
       hint: this.printerName ?? undefined,
       icon: 'console',
       verb: 'Send',
-      run: () => this.sendGcode(gcode)
+      run: () => this.sendTypedGcode(gcode)
     }]
   }
 
@@ -301,14 +305,14 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
           this.sendGcode('TURN_OFF_HEATERS')
         }
       })
-      if (this.pro) {
-        list.push({ id: 'restart-klipper', group: 'Do', label: 'Restart Klipper', words: 'restart reload config', icon: 'refresh', run: () => this.restartKlippy() })
-        list.push({ id: 'firmware-restart', group: 'Do', label: 'Firmware restart', words: 'firmware_restart mcu', icon: 'refresh', run: () => this.firmwareRestartKlippy() })
-      }
+    }
+    if (this.inPrinter && !this.restartRefusal) {
+      list.push({ id: 'restart-klipper', group: 'Do', label: 'Restart Klipper', words: 'restart reload config', icon: 'refresh', run: () => this.restartCommand(false) })
+      list.push({ id: 'firmware-restart', group: 'Do', label: 'Firmware restart', words: 'firmware_restart mcu', icon: 'refresh', run: () => this.restartCommand(true) })
     }
     if (this.inPrinter) {
       list.push({ id: 'estop', group: 'Do', label: 'Emergency stop', words: 'estop e-stop halt', keys: ['Ctrl', 'Shift', 'E'], icon: 'estop', run: () => this.emergencyStop() })
-      if (!this.printerPrinting && !this.printerPaused) {
+      if (!this.restartRefusal) {
         list.push({ id: 'reboot', group: 'Do', label: "Restart the printer's computer", words: 'reboot host power', icon: 'power', run: () => this.hostCommand('reboot') })
         list.push({ id: 'shutdown', group: 'Do', label: "Shut down the printer's computer", words: 'shutdown host power off', icon: 'power', run: () => this.hostCommand('shutdown') })
       }
@@ -326,7 +330,18 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
     return list
   }
 
+  async restartCommand (firmware: boolean): Promise<boolean> {
+    if (!await this.confirmCommandRestart()) return false
+    // Send immediately after the final check. Moonraker's lifecycle notifications reset the UI.
+    if (firmware) SocketActions.printerFirmwareRestart()
+    else SocketActions.printerRestart()
+    return true
+  }
+
   async hostCommand (what: 'reboot' | 'shutdown') {
+    this.commandRefusal = this.restartRefusal
+    if (this.commandRefusal) return false
+    const target = this.commandTarget
     const reboot = what === 'reboot'
     const ok = await this.$confirm(
       reboot ? 'The printer is out of reach for a minute or two while it restarts.' : 'It stays off until it is switched off and on again at the printer.',
@@ -336,9 +351,12 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
         danger: true
       }
     )
-    if (!ok) return
+    if (!ok) return false
+    this.commandRefusal = target !== this.commandTarget ? 'Not sent. The selected printer changed. Try again.' : this.restartRefusal
+    if (this.commandRefusal) return false
     if (reboot) SocketActions.machineReboot()
     else SocketActions.machineShutdown()
+    return true
   }
 
   get jobCommands (): Command[] {
