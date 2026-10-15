@@ -15,6 +15,22 @@ const settle = async () => { for (let i = 0; i < 8; i++) await Promise.resolve()
 afterEach(() => { vi.clearAllMocks(); vi.useRealTimers() })
 
 describe('staff read-only page', () => {
+  it('lets staff start a new read when they switch sections during a request', async () => {
+    vi.mocked(api.confirmStaff).mockResolvedValue({ actor: 'staff', staff_expires_at: Date.now() / 1000 + 120 })
+    let answer!: (v: api.Lookup) => void
+    vi.mocked(api.lookupAccount).mockImplementation(() => new Promise(resolve => { answer = resolve }))
+    const w = mountPage()
+    await w.get('[data-tid=admin-confirm]').trigger('click'); await settle()
+    await w.get('input[name=query]').setValue('account-17')
+    await w.get('textarea[name=reason]').setValue('Review case 1042')
+    await w.get('form').trigger('submit'); await settle()
+    const audit = w.findAll('nav button').at(1)
+    await audit.trigger('click'); await settle()
+    expect(w.get('[data-tid=admin-lookup]').attributes('disabled')).toBeUndefined()
+    answer({ account: null, staff_expires_at: Date.now() / 1000 + 120 }); await settle()
+    expect(w.text()).not.toContain('No account matched')
+    w.destroy()
+  })
   it('locks on cancel, then shows an exact result and clears it when confirmation expires', async () => {
     vi.useFakeTimers()
     vi.mocked(api.confirmStaff).mockRejectedValueOnce(new DOMException('Cancelled', 'NotAllowedError'))

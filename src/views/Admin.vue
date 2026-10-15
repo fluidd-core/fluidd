@@ -206,7 +206,7 @@ export default class Admin extends Vue {
 
   beforeDestroy () { clearInterval(this.timer); document.removeEventListener('visibilitychange', this.hidden); this.lock() }
   hidden () { if (document.hidden) this.lock() }
-  clearResults () { this.revision++; this.account = null; this.entries = []; this.next = null; this.message = '' }
+  clearResults () { this.revision++; this.account = null; this.entries = []; this.next = null; this.message = ''; this.busy = false }
   lock () { this.clearResults(); this.expires = 0; this.query = ''; this.reason = ''; this.busy = false; this.message = 'Confirm staff access to continue.' }
   changeSection (section: string) { this.clearResults(); this.section = section }
   date (seconds: number): string { return new Date(seconds * 1000).toLocaleString() }
