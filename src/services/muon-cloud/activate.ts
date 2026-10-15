@@ -43,20 +43,32 @@ export class SwitchSuperseded extends Error {
   }
 }
 
-let switches: Promise<unknown> = Promise.resolve()
+/**
+ * How long a switch waits for the one before it to finish loading. A load
+ * that stalls (an Iroh read has no time limit) must not hold up every later
+ * switch until the page is reloaded.
+ */
+export const LOAD_WAIT_MS = 10_000
+
+let loading: Promise<unknown> = Promise.resolve()
 
 /**
- * Runs printer switches one after another. Each switch resets the store and
- * loads its printer into it (`appInit`), and two interleaved left one
- * printer's address over the other's data. A switch replaced while it waited
- * never starts.
+ * Loads printers into the store one at a time. Each switch resets the store
+ * and loads its printer (`appInit`), and two interleaved left one printer's
+ * address over the other's data. Only the loading waits its turn: a switch
+ * still asking the console for a grant, or checking that this page can reach
+ * a printer, holds up nobody. A switch replaced while it waited never loads.
  */
-function oneAtATime<T> (mine: number, work: () => Promise<T>): Promise<T> {
-  const run = switches.then(() => {
-    if (mine !== generation) throw new SwitchSuperseded()
-    return work()
-  })
-  switches = run.catch(() => {})
+async function oneAtATime<T> (mine: number, work: () => Promise<T>): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined
+  await Promise.race([
+    loading.catch(() => {}),
+    new Promise(resolve => { timer = setTimeout(resolve, LOAD_WAIT_MS) })
+  ])
+  clearTimeout(timer)
+  if (mine !== generation) throw new SwitchSuperseded()
+  const run = work()
+  loading = run.catch(() => {})
   return run
 }
 
@@ -78,17 +90,16 @@ export async function activateCloudPrinter (printerId: string) {
   activationState.switching = printerId
   activationState.error = null
   activationState.fallbackUrl = null
+  let transport: PrinterTransport | null = null
   try {
+    // The printer Fluidd is on stays usable while the grant comes.
+    const borrowed = transport = await borrowCloudPrinter(printerId)
+    if (superseded()) throw new SwitchSuperseded()
     await oneAtATime(mine, async () => {
       Vue.$socket?.releaseTransportSocket(true)
       releaseCurrent()
-      const transport = await borrowCloudPrinter(printerId)
-      if (superseded()) {
-        transport.close()
-        throw new SwitchSuperseded()
-      }
-      const release = bindHttpClientToPrinterTransport(Vue.$httpClient, transport)
-      current = { transport, release }
+      const release = bindHttpClientToPrinterTransport(Vue.$httpClient, borrowed)
+      current = { transport: borrowed, release }
       setActiveCloudPrinter(printerId)
 
       const instance: InstanceConfig = {
@@ -100,14 +111,16 @@ export async function activateCloudPrinter (printerId: string) {
       await appInit(instance, store.state.config.hostConfig, { isCurrent: () => !superseded() })
       if (superseded()) throw new SwitchSuperseded()
 
-      const socket = await transport.openWebSocket('/websocket')
+      const socket = await borrowed.openWebSocket('/websocket')
       if (superseded()) {
         socket.close()
         throw new SwitchSuperseded()
       }
-      Vue.$socket.adoptTransportSocket(socket, () => transport.openWebSocket('/websocket'))
+      Vue.$socket.adoptTransportSocket(socket, () => borrowed.openWebSocket('/websocket'))
     })
   } catch (error) {
+    // Replaced before it was bound: nothing else will close it.
+    if (transport && current?.transport !== transport) transport.close()
     if (!superseded() && !(error instanceof SwitchSuperseded)) {
       activationState.error = (error as Error).message
       setActiveCloudPrinter(null)
@@ -138,14 +151,13 @@ export async function activateLocalPrinter (instance: InstanceConfig): Promise<b
   activationState.fallbackUrl = null
   const name = instance.name || instance.apiUrl
   try {
-    return await oneAtATime(mine, async () => {
-      if (!await pageCanReach(instance.apiUrl)) {
-        if (superseded()) throw new SwitchSuperseded()
-        activationState.error = `This browser does not let ${location.host} reach ${name} on your network.`
-        activationState.fallbackUrl = `${instance.apiUrl.replace(/\/+$/, '')}/`
-        return false
-      }
+    if (!await pageCanReach(instance.apiUrl)) {
       if (superseded()) throw new SwitchSuperseded()
+      activationState.error = `This browser does not let ${location.host} reach ${name} on your network.`
+      activationState.fallbackUrl = `${instance.apiUrl.replace(/\/+$/, '')}/`
+      return false
+    }
+    return await oneAtATime(mine, async () => {
       releaseCurrent()
       setActiveCloudPrinter(null)
       forgetManagedInstance()
