@@ -19,7 +19,9 @@
       ref="panel"
       class="task-fold__panel"
       :aria-labelledby="`${foldId}-trigger`"
-    ><slot /></div>
+    >
+      <slot />
+    </div>
   </section>
 </template>
 
