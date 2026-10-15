@@ -92,17 +92,18 @@ describe('palette command safety', () => {
     wrapper.destroy()
   })
 
-  it.each(['cancel', 'printing', 'disconnect', 'viewer', 'printer-switch'])('refuses after confirmation changes: %s', async change => {
+  it.each(['cancel', 'printing', 'disconnect', 'viewer', 'printer-switch', 'route-switch'])('refuses after confirmation changes: %s', async change => {
     setProMode(true)
     const wrapper = show()
     wrapper.vm.$confirm = vi.fn().mockImplementation(async () => {
       if (change === 'printing') wrapper.vm.$store.getters['printer/getPrinterState'] = 'printing'
       if (change === 'disconnect') wrapper.vm.$store.getters['socket/getConnectionState'] = false
       if (change === 'printer-switch') wrapper.vm.$store.state.config.apiUrl = 'http://oak.local'
+      if (change === 'route-switch') wrapper.vm.$route.params.printer = 'foreign-printer'
       if (change === 'viewer') {
         wrapper.vm.$store.state.config.apiUrl = 'https://muon-cloud.invalid'
         cloudState.activePrinterId = 'hazel'
-        cloudState.printers = [{ id: 'hazel', name: 'Hazel', online: true, role: 'viewer' }]
+        cloudState.printers = [{ id: 'hazel', name: 'Hazel', model: 'M1', version: 'test', linked_at: 0, last_seen: 0, online_since: null, online: true, role: 'viewer' }]
         printerTransportBinding.remote = true
       }
       return change !== 'cancel'
@@ -120,7 +121,7 @@ describe('palette command safety', () => {
     const wrapper = show()
     wrapper.vm.$store.state.config.apiUrl = 'https://muon-cloud.invalid'
     cloudState.activePrinterId = 'hazel'
-    cloudState.printers = [{ id: 'hazel', name: 'Hazel', online: true, role: 'viewer' }]
+    cloudState.printers = [{ id: 'hazel', name: 'Hazel', model: 'M1', version: 'test', linked_at: 0, last_seen: 0, online_since: null, online: true, role: 'viewer' }]
     printerTransportBinding.remote = true
     await wrapper.setData({ query: '> M105' })
     const vm = wrapper.vm as CommandBar
