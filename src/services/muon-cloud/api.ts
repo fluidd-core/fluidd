@@ -276,8 +276,8 @@ export const cloudApi = {
   config: () => request<CloudConfig>('GET', '/v1/config'),
   signIn: (email: string, password: string) =>
     request<{ token: string, account: CloudAccount }>('POST', '/v1/auth/sign-in', { email, password }),
-  signUp: (email: string, password: string, name: string) =>
-    request<{ token: string, account: CloudAccount }>('POST', '/v1/auth/sign-up', { email, password, name }),
+  signUp: (email: string, password: string, name: string, declaredAge?: number) =>
+    request<{ token: string, account: CloudAccount }>('POST', '/v1/auth/sign-up', { email, password, name, declared_age: declaredAge }),
   signOut: () => request<{ ok: boolean }>('POST', '/v1/auth/sign-out'),
   me: () => request<{ account: CloudAccount, endpoint_id: string | null }>('GET', '/v1/me'),
   /**
@@ -318,8 +318,8 @@ export const cloudApi = {
   /** Signs in with a password for a session that is not kept: the sign-in page hands it off. */
   signInFor: (email: string, password: string) =>
     request<{ token: string, account: CloudAccount }>('POST', '/v1/auth/sign-in', { email, password, device: 'Muon3D sign-in' }, null, false),
-  signUpFor: (email: string, password: string, name: string) =>
-    request<{ token: string, account: CloudAccount }>('POST', '/v1/auth/sign-up', { email, password, name, device: 'Muon3D sign-in' }, null, false),
+  signUpFor: (email: string, password: string, name: string, declaredAge?: number) =>
+    request<{ token: string, account: CloudAccount }>('POST', '/v1/auth/sign-up', { email, password, name, declared_age: declaredAge, device: 'Muon3D sign-in' }, null, false),
   /** Joins with an invite link's code (AB-CON-1). */
   join: (code: string) => request<JoinAnswer>('POST', `/v1/links/join/${encodeURIComponent(code)}`),
   approval: (id: string) => request<{ approval: Approval }>('GET', `/v1/approvals/${encodeURIComponent(id)}`)
