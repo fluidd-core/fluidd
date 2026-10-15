@@ -93,7 +93,7 @@ describe.each([Console, OverviewConsole])('typed batch submission', component =>
     const wrapper = show(component)
     wrapper.vm.$store.state.config.apiUrl = 'https://muon-cloud.invalid'
     cloudState.activePrinterId = 'hazel'
-    cloudState.printers = [{ id: 'hazel', name: 'Hazel', online: true, role }]
+    cloudState.printers = [{ id: 'hazel', name: 'Hazel', model: 'M1', version: 'test', linked_at: 0, last_seen: 0, online_since: null, online: true, role }]
     printerTransportBinding.remote = true
     await wrapper.setData({ command: 'M105' })
     await (wrapper.vm as Console).send()
