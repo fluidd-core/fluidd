@@ -834,7 +834,7 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
     // doesn't hold up the first load's own requests (KAN-525, 14 Oct 2026).
     refreshCloudNearby().catch(() => {})
     afterFirstPaint(() => {
-      if (!this.gone) discoverPrinters().catch(() => {})
+      if (!this.gone) discoverPrinters(false, { nearby: false }).catch(() => {})
     })
     startNearby().catch(() => {})
     this.timer = window.setInterval(() => { refreshKnownPrinters().catch(() => {}) }, HEALTH_EVERY_MS)

@@ -48,7 +48,8 @@ describe('the Printers page on its first load', () => {
     expect(discovery.discoverPrinters).not.toHaveBeenCalled()
     const painted = idle.afterFirstPaint.mock.calls[0][0] as () => void
     painted()
-    expect(discovery.discoverPrinters).toHaveBeenCalledOnce()
+    // The console was asked already: once a mount, not twice (Codex on #79).
+    expect(discovery.discoverPrinters).toHaveBeenCalledWith(false, { nearby: false })
     wrapper.destroy()
   })
 })
