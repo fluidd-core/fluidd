@@ -602,10 +602,11 @@ async function sweep () {
 
 /**
  * Searches the network, or returns the search already running. A search that
- * finished in the last minute is reused unless `force` is set.
+ * finished in the last minute is reused unless `force` is set. `nearby:
+ * false` leaves out the console's list, for a caller that asked it already.
  */
-export function discoverPrinters (force = false): Promise<void> {
-  refreshCloudNearby().catch(() => {})
+export function discoverPrinters (force = false, { nearby = true }: { nearby?: boolean } = {}): Promise<void> {
+  if (nearby) refreshCloudNearby().catch(() => {})
   if (running) return running
   if (!force && Date.now() - discoveryState.finishedAt < FRESH_FOR_MS) return Promise.resolve()
   running = sweep().finally(() => { running = null })
