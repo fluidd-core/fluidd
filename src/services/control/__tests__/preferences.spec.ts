@@ -148,4 +148,81 @@ describe('personal Control choices', () => {
     await reading
     expect(store.state.folds['heat.other']).toBe(true)
   })
+
+  it('keeps a failed fold visibly unsaved when another fold succeeds, and retries both correctly', async () => {
+    const { remote } = service()
+    let fail = true
+    const store = new ControlPreferenceStore({
+      ...remote,
+      patch: async (c, f) => {
+        if (fail && 'heat.other' in f) throw new Error('Offline')
+        return remote.patch(c, f)
+      }
+    }, localStorage)
+    await store.select(alice)
+    await store.setFold('heat.other', true)
+    expect(store.state.error).toContain('not saved')
+    await store.setFold('fans.all', true)
+    expect(store.state.error).toContain('not saved')
+    await store.refresh()
+    expect(store.state.error).toContain('not saved')
+    fail = false
+    await store.retry()
+    expect(store.state.error).toBe('')
+    const second = new ControlPreferenceStore(remote, localStorage)
+    await second.select(alice)
+    expect(second.state.folds).toEqual({ 'heat.other': true, 'fans.all': true })
+  })
+
+  it('refreshes anonymous choices after a second browser tab changes them', async () => {
+    const { remote } = service()
+    const first = new ControlPreferenceStore(remote, localStorage)
+    const second = new ControlPreferenceStore(remote, localStorage)
+    await first.select(anonymous)
+    await first.setFold('heat.other', true)
+    await second.select(anonymous)
+    await second.setFold('heat.other', false)
+    await first.refresh()
+    expect(first.state.folds['heat.other']).toBe(false)
+  })
+
+  it('patches one anonymous fold without replacing another tab’s unrelated choice', async () => {
+    const { remote } = service()
+    const first = new ControlPreferenceStore(remote, localStorage)
+    const second = new ControlPreferenceStore(remote, localStorage)
+    await first.select(anonymous)
+    await second.select(anonymous)
+    await first.setFold('heat.other', true)
+    await second.setFold('fans.all', true)
+    await first.setFold('heat.other', false)
+    const third = new ControlPreferenceStore(remote, localStorage)
+    await third.select(anonymous)
+    expect(third.state.folds).toEqual({ 'heat.other': false, 'fans.all': true })
+  })
+
+  it('keeps a newer click when retrying several failed choices', async () => {
+    const { remote } = service()
+    const late = deferred<ControlPreferences>()
+    const started = deferred<void>()
+    let offline = true
+    const store = new ControlPreferenceStore({
+      ...remote,
+      patch: async (c, f) => {
+        if (offline) throw new Error('Offline')
+        if ('heat.other' in f) { started.resolve(); return late.promise }
+        return remote.patch(c, f)
+      }
+    }, localStorage)
+    await store.select(alice)
+    await store.setFold('heat.other', true)
+    await store.setFold('fans.all', true)
+    offline = false
+    const retry = store.retry()
+    await started.promise
+    const latest = store.setFold('fans.all', false)
+    late.resolve({ version: 1, folds: { 'heat.other': true } })
+    await Promise.all([retry, latest])
+    expect(store.state.folds['fans.all']).toBe(false)
+    expect((await remote.read(alice)).folds['fans.all']).toBe(false)
+  })
 })

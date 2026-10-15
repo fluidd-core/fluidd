@@ -67,7 +67,7 @@ export class ControlPreferenceStore {
         validatePreferences(answer)
         if (generation !== this.generation || revision !== this.revision) return
         this.state.folds = { ...answer.folds, ...this.edited }
-        this.state.error = ''
+        if (Object.keys(this.edited).length === 0) this.state.error = ''
         this.state.ready = true
       } catch {
         if (generation === this.generation && revision === this.revision) this.state.error = 'Your choices are not saved. Try again when the service or browser storage is available.'
@@ -102,10 +102,17 @@ export class ControlPreferenceStore {
           if (this.revisions[key] === revision) delete this.edited[key]
           this.state.folds = { ...answer.folds, ...this.edited }
         } else {
-          this.storage.setItem(this.browserKey(context), JSON.stringify({ version: 1, folds: this.state.folds }))
+          const saved = this.storage.getItem(this.browserKey(context))
+          const current: unknown = saved ? JSON.parse(saved) : { version: 1, folds: {} }
+          validatePreferences(current)
+          const next = { version: 1 as const, folds: { ...current.folds, [key]: open } }
+          validatePreferences(next)
+          this.storage.setItem(this.browserKey(context), JSON.stringify(next))
+          if (this.revisions[key] === revision) delete this.edited[key]
+          this.state.folds = { ...next.folds, ...this.edited }
         }
         if (generation === this.generation) {
-          this.state.error = ''
+          if (Object.keys(this.edited).length === 0) this.state.error = ''
           this.state.ready = true
         }
       } catch {
@@ -124,7 +131,7 @@ export class ControlPreferenceStore {
     const generation = this.generation
     await this.refresh()
     if (generation !== this.generation) return
-    for (const [key, open] of Object.entries(this.edited)) await this.setFold(key, open)
+    await Promise.all(Object.entries(this.edited).map(([key, open]) => this.setFold(key, open)))
   }
 }
 
