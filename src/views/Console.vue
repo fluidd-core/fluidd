@@ -120,6 +120,13 @@
 
     <div class="cons__input">
       <p
+        v-if="commandRefusal"
+        role="alert"
+        class="cons__help"
+      >
+        {{ commandRefusal }}
+      </p>
+      <p
         v-if="help && !(open && list.length)"
         class="cons__help"
       >
@@ -183,10 +190,9 @@
 
 <script lang="ts">
 import { Component, Mixins, Ref, Watch } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import TypedCommandsMixin from '@/mixins/typed-commands'
 import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
-import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import type { ConsoleEntry, GcodeHelp } from '@/store/console/types'
 import { commandHelp, entryKind, explain, filterEntries, suggestions, type LogFilter, type Suggestion } from '@/services/console/model'
@@ -208,7 +214,7 @@ interface Line {
  * goes into the line.
  */
 @Component({ components: { SegPicker } })
-export default class Console extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
+export default class Console extends Mixins(TypedCommandsMixin, FilesMixin, BrowserMixin) {
   @Ref('scroller')
   readonly scroller!: { $el: HTMLElement, scrollToBottom: () => void }
 
@@ -382,12 +388,9 @@ export default class Console extends Mixins(StateMixin, FilesMixin, BrowserMixin
     this.open = false
   }
 
-  send () {
+  async send () {
     const gcode = this.command.trim()
-    if (!gcode || !this.klippyConnected) return
-    // Typed M112 also asks Moonraker for the emergency stop, as Fluidd's console does.
-    if (gcode.toLowerCase() === 'm112') SocketActions.printerEmergencyStop()
-    this.sendGcode(gcode)
+    if (!await this.sendTypedGcode(gcode)) return
     this.$store.dispatch('console/onUpdateCommandHistory', [gcode, ...this.history].slice(0, Globals.CONSOLE_COMMAND_HISTORY))
     this.command = ''
     this.back = -1
