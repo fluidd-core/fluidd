@@ -42,8 +42,8 @@ describe("a printer's sections", () => {
     }
   })
 
-  it('show Console and Files only with Pro on', () => {
-    expect(ids(simple)).toEqual(['overview', 'jobs', 'control', 'maintenance', 'settings'])
+  it('shows native tools with Pro off as well as on', () => {
+    expect(ids(simple)).toEqual(['overview', 'jobs', 'control', 'maintenance', 'settings', 'console', 'files'])
     expect(ids(everything)).toEqual(['overview', 'jobs', 'control', 'slice', 'camera', 'maintenance', 'settings', 'console', 'files'])
   })
 
@@ -76,7 +76,11 @@ describe("a printer's sections", () => {
 
   it('open from their G key only when shown', () => {
     expect(sectionForKey('j', simple)?.id).toBe('jobs')
-    expect(sectionForKey('t', simple)).toBeUndefined()
+    expect(sectionForKey('t', simple)?.id).toBe('console')
+    expect(sectionForKey('f', simple)?.id).toBe('files')
     expect(sectionForKey('t', everything)?.id).toBe('console')
+    expect(sectionForKey('f', everything)?.id).toBe('files')
+    expect(sectionForKey('t', { ...everything, foreign: true })).toBeUndefined()
+    expect(sectionForKey('f', { ...simple, foreign: true })).toBeUndefined()
   })
 })

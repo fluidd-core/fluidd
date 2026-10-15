@@ -201,7 +201,7 @@ interface Line {
 }
 
 /**
- * Console (Pro): the printer's log, filtered to commands, warnings or
+ * Console (Tools): the printer's log, filtered to commands, warnings or
  * errors and searched, with a plain sentence under the errors people
  * meet most; a line to send G-code that suggests what you've sent before
  * and Klipper's commands with their help. A command in the log, clicked,
