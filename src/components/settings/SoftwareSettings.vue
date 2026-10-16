@@ -148,7 +148,8 @@
           v-if="c.update"
           type="button"
           class="cbtn"
-          :disabled="busy"
+          :disabled="busy || !!otherUpdateBlocked"
+          :title="otherUpdateBlocked"
           @click="updateOther(c.key)"
         >
           Update
@@ -160,7 +161,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import TypedCommandsMixin from '@/mixins/typed-commands'
 import { SocketActions } from '@/api/socketActions'
 import { ACTIVE_PHASES, versionLabel } from '@/services/updates/model'
 import { currentOutcome, installStarted, poll, updateWatch } from '@/services/updates/watch'
@@ -185,7 +186,7 @@ interface OtherComponent {
  * Whatever else the updater looks after is available in a nearby fold.
  */
 @Component({ components: { ToggleSwitch, TaskFold } })
-export default class SoftwareSettings extends Mixins(StateMixin) {
+export default class SoftwareSettings extends Mixins(TypedCommandsMixin) {
   checking = false
   otherSoftwareOpen = false
 
@@ -321,6 +322,13 @@ export default class SoftwareSettings extends Mixins(StateMixin) {
     return !!this.$store.state.version.busy
   }
 
+  get otherUpdateBlocked (): string {
+    if (!this.commandControlAvailable) return 'Connect to a printer you can control first.'
+    if (!this.klippyConnected) return 'Klipper is not connected.'
+    if (this.printerBusy) return 'Not while printing.'
+    return ''
+  }
+
   /** Everything else the updater lists: the OS packages and any other client. */
   get others (): OtherComponent[] {
     const info = (this.$store.state.version.version_info ?? {}) as Record<string, Record<string, unknown>>
@@ -339,7 +347,13 @@ export default class SoftwareSettings extends Mixins(StateMixin) {
       })
   }
 
-  updateOther (key: string) {
+  async updateOther (key: string) {
+    if (this.otherUpdateBlocked) return
+    const target = this.commandTarget
+    const ok = await this.$confirm('The printer must be idle. It may restart after this component is updated.', {
+      title: `Update ${key}?`, buttonTrueText: 'Update', buttonFalseText: 'Not now'
+    })
+    if (!ok || target !== this.commandTarget || this.otherUpdateBlocked) return
     this.$store.dispatch('version/onUpdateStatus', { busy: true })
     if (key === 'system') SocketActions.machineUpdateSystem()
     else SocketActions.machineUpdateClient(key)

@@ -139,165 +139,167 @@
     <task-fold
       v-model="detailsOpen"
       fold-id="settings-page-print-details"
-      title="Page, progress and diagnostics"
-      summary="Top bar, estimates, diagnostics and settings copies"
+      title="Choose page and print details"
+      summary="Top bar, estimates and diagnostics"
     >
-      <section class="m3-set">
-        <h2 class="m3-set__title">
-          The top bar
-        </h2>
-        <div class="m3-set__row">
-          <div class="m3-set__label">
-            <b>Upload and print</b>
-            <span>A button to send a file and start it at once.</span>
+      <div class="m3-sets">
+        <section class="m3-set">
+          <h2 class="m3-set__title">
+            The top bar
+          </h2>
+          <div class="m3-set__row">
+            <div class="m3-set__label">
+              <b>Upload and print</b>
+              <span>A button to send a file and start it at once.</span>
+            </div>
+            <div class="m3-set__control">
+              <toggle-switch
+                :value="showUploadAndPrint"
+                label="Upload and print button"
+                @input="showUploadAndPrint = $event"
+              />
+            </div>
           </div>
-          <div class="m3-set__control">
-            <toggle-switch
-              :value="showUploadAndPrint"
-              label="Upload and print button"
-              @input="showUploadAndPrint = $event"
-            />
+          <div class="m3-set__row">
+            <div class="m3-set__label">
+              <b>Save the config and restart</b>
+              <span>A button that appears when a calibration has results to keep.</span>
+            </div>
+            <div class="m3-set__control">
+              <toggle-switch
+                :value="showSaveConfigAndRestart"
+                label="Save config and restart button"
+                @input="showSaveConfigAndRestart = $event"
+              />
+            </div>
           </div>
-        </div>
-        <div class="m3-set__row">
-          <div class="m3-set__label">
-            <b>Save the config and restart</b>
-            <span>A button that appears when a calibration has results to keep.</span>
+          <div
+            v-if="powerDevicesList.length"
+            class="m3-set__row"
+          >
+            <div class="m3-set__label">
+              <b>A power switch</b>
+              <span>One of the printer's power devices, a press away.</span>
+            </div>
+            <div class="m3-set__control m3-set__control--wide">
+              <v-select
+                v-model="topNavPowerToggle"
+                outlined
+                dense
+                hide-details
+                :items="[{ text: 'None', value: null }, ...powerDevicesList]"
+              />
+            </div>
           </div>
-          <div class="m3-set__control">
-            <toggle-switch
-              :value="showSaveConfigAndRestart"
-              label="Save config and restart button"
-              @input="showSaveConfigAndRestart = $event"
-            />
-          </div>
-        </div>
-        <div
-          v-if="powerDevicesList.length"
-          class="m3-set__row"
-        >
-          <div class="m3-set__label">
-            <b>A power switch</b>
-            <span>One of the printer's power devices, a press away.</span>
-          </div>
-          <div class="m3-set__control m3-set__control--wide">
-            <v-select
-              v-model="topNavPowerToggle"
-              outlined
-              dense
-              hide-details
-              :items="[{ text: 'None', value: null }, ...powerDevicesList]"
-            />
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="m3-set">
-        <h2 class="m3-set__title">
-          A print's progress
-        </h2>
-        <div class="m3-set__row">
-          <div class="m3-set__label">
-            <b>How far along</b>
-            <span>Worked out from these; with more than one, their average.</span>
+        <section class="m3-set">
+          <h2 class="m3-set__title">
+            A print's progress
+          </h2>
+          <div class="m3-set__row">
+            <div class="m3-set__label">
+              <b>How far along</b>
+              <span>Worked out from these; with more than one, their average.</span>
+            </div>
+            <div class="m3-set__control m3-set__control--wide">
+              <v-select
+                v-model="printProgressCalculation"
+                multiple
+                outlined
+                dense
+                hide-details="auto"
+                :rules="[$rules.lengthGreaterThanOrEqual(1)]"
+                :items="availablePrintProgressCalculation"
+              />
+            </div>
           </div>
-          <div class="m3-set__control m3-set__control--wide">
-            <v-select
-              v-model="printProgressCalculation"
-              multiple
-              outlined
-              dense
-              hide-details="auto"
-              :rules="[$rules.lengthGreaterThanOrEqual(1)]"
-              :items="availablePrintProgressCalculation"
-            />
+          <div class="m3-set__row">
+            <div class="m3-set__label">
+              <b>Time left</b>
+              <span>Worked out from these; with more than one, their average.</span>
+            </div>
+            <div class="m3-set__control m3-set__control--wide">
+              <v-select
+                v-model="printEtaCalculation"
+                multiple
+                outlined
+                dense
+                hide-details="auto"
+                :rules="[$rules.lengthGreaterThanOrEqual(1)]"
+                :items="availablePrintEtaCalculation"
+              />
+            </div>
           </div>
-        </div>
-        <div class="m3-set__row">
-          <div class="m3-set__label">
-            <b>Time left</b>
-            <span>Worked out from these; with more than one, their average.</span>
-          </div>
-          <div class="m3-set__control m3-set__control--wide">
-            <v-select
-              v-model="printEtaCalculation"
-              multiple
-              outlined
-              dense
-              hide-details="auto"
-              :rules="[$rules.lengthGreaterThanOrEqual(1)]"
-              :items="availablePrintEtaCalculation"
-            />
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="m3-set">
-        <h2 class="m3-set__title">
-          Config changes and diagnostics
-        </h2>
-        <div class="m3-set__row">
-          <div class="m3-set__label">
-            <b>Changes not to list</b>
-            <span>Sections whose saved results Save doesn't show, such as the bed mesh.</span>
+        <section class="m3-set">
+          <h2 class="m3-set__title">
+            Config changes and diagnostics
+          </h2>
+          <div class="m3-set__row">
+            <div class="m3-set__label">
+              <b>Changes not to list</b>
+              <span>Sections whose saved results Save doesn't show, such as the bed mesh.</span>
+            </div>
+            <div class="m3-set__control m3-set__control--wide">
+              <v-combobox
+                v-model="sectionsToIgnorePendingConfigurationChanges"
+                :items="['bed_mesh default', 'bed_tilt']"
+                multiple
+                small-chips
+                deletable-chips
+                outlined
+                dense
+                hide-details
+                append-icon=""
+              />
+            </div>
           </div>
-          <div class="m3-set__control m3-set__control--wide">
-            <v-combobox
-              v-model="sectionsToIgnorePendingConfigurationChanges"
-              :items="['bed_mesh default', 'bed_tilt']"
-              multiple
-              small-chips
-              deletable-chips
-              outlined
-              dense
-              hide-details
-              append-icon=""
-            />
+          <div class="m3-set__row">
+            <div class="m3-set__label">
+              <b>Diagnostics</b>
+              <span>Records how busy each board is, for Charts. Uses a little more of the printer.</span>
+            </div>
+            <div class="m3-set__control">
+              <toggle-switch
+                :value="enableDiagnostics"
+                label="Diagnostics"
+                @input="enableDiagnostics = $event"
+              />
+            </div>
           </div>
-        </div>
-        <div class="m3-set__row">
-          <div class="m3-set__label">
-            <b>Diagnostics</b>
-            <span>Records how busy each board is, for Charts. Uses a little more of the printer.</span>
-          </div>
-          <div class="m3-set__control">
-            <toggle-switch
-              :value="enableDiagnostics"
-              label="Diagnostics"
-              @input="enableDiagnostics = $event"
-            />
-          </div>
-        </div>
-      </section>
-
-      <section class="m3-set">
-        <h2 class="m3-set__title">
-          These settings
-        </h2>
-        <div class="m3-set__row">
-          <div class="m3-set__label">
-            <b>A copy of them</b>
-            <span>Everything set here is kept on the printer. A copy moves it to another one.</span>
-          </div>
-          <div class="m3-set__control">
-            <button
-              type="button"
-              class="cbtn"
-              @click="handleBackupSettings"
-            >
-              Download a copy
-            </button>
-            <button
-              type="button"
-              class="cbtn cbtn--ghost"
-              @click="uploadSettingsFile.click()"
-            >
-              Restore one
-            </button>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </task-fold>
+
+    <section class="m3-set">
+      <h2 class="m3-set__title">
+        These settings
+      </h2>
+      <div class="m3-set__row">
+        <div class="m3-set__label">
+          <b>A copy of them</b>
+          <span>Everything set here is kept on the printer. A copy moves it to another one.</span>
+        </div>
+        <div class="m3-set__control">
+          <button
+            type="button"
+            class="cbtn"
+            @click="handleBackupSettings"
+          >
+            Download a copy
+          </button>
+          <button
+            type="button"
+            class="cbtn cbtn--ghost"
+            @click="uploadSettingsFile.click()"
+          >
+            Restore one
+          </button>
+        </div>
+      </div>
+    </section>
 
     <input
       ref="uploadSettingsFile"

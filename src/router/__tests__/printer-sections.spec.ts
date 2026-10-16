@@ -1,4 +1,7 @@
-import { describe, expect, it, test } from 'vitest'
+import { describe, expect, it, test, vi } from 'vitest'
+import { mount } from '@vue/test-utils'
+import Vue from 'vue'
+import FrameMixin from '@/mixins/frame'
 import { PRINTER_PAGE_PATHS } from '../printerPagePaths'
 import {
   PAGE_KEYS,
@@ -10,6 +13,9 @@ import {
   visibleSections,
   type SectionContext
 } from '../printerSections'
+
+vi.mock('@/services/printer-pages', () => ({ activeSlug: () => 'local', isForeignSlug: (slug?: string) => slug === 'foreign' }))
+vi.mock('@/api/socketActions', () => ({ SocketActions: {} }))
 
 const simple: SectionContext = { pro: false, slicer: false, camera: null, history: true, timelapse: false, diagnostics: true, foreign: false }
 const everything: SectionContext = { pro: true, slicer: true, camera: 'front', history: true, timelapse: true, diagnostics: true, foreign: false, bedMesh: true }
@@ -66,8 +72,13 @@ describe("a printer's sections", () => {
 
   it('does not add printer-only pages to a foreign printer', () => {
     const overview = SECTIONS.find(s => s.id === 'overview')!
-    expect(visibleSections({ ...everything, foreign: true }).map(s => s.id)).toEqual(['overview', 'jobs', 'slice', 'camera'])
-    expect(visiblePages(overview, { ...everything, foreign: true, diagnostics: false }).map(p => p.path)).toEqual(['/'])
+    const wrapper = mount(Vue.extend({ mixins: [FrameMixin], render: h => h('div') }), {
+      mocks: { $route: { params: { printer: 'foreign' } }, $store: { getters: {}, state: {} } }
+    })
+    const vm = wrapper.vm as any
+    expect(vm.sections.map((s: any) => s.id)).toEqual(['overview', 'jobs', 'slice', 'camera'])
+    expect(vm.pagesOf(overview).map((p: any) => p.path)).toEqual(['/'])
+    wrapper.destroy()
   })
 
   it("go to the first camera's own page", () => {
