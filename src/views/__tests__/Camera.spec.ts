@@ -114,14 +114,31 @@ describe('Camera stream details', () => {
     wrapper.destroy()
   })
 
-  it('closes when clicking outside the details bar', async () => {
+  it('closes on an assistive outside click and returns hidden-panel focus to the trigger', async () => {
     const wrapper = mountCamera([front])
     const button = wrapper.get('[data-tid="camera-details-trigger"]')
     await button.trigger('click')
+    expect(document.activeElement).toBe(wrapper.get('#camera-details').element)
     document.body.click()
     await wrapper.vm.$nextTick()
     expect(button.attributes('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(button.element)
     wrapper.destroy()
+  })
+
+  it('keeps focus on a deliberately clicked outside control when closing', async () => {
+    const outside = document.createElement('button')
+    document.body.appendChild(outside)
+    const wrapper = mountCamera([front])
+    const button = wrapper.get('[data-tid="camera-details-trigger"]')
+    await button.trigger('click')
+    outside.focus()
+    outside.click()
+    await wrapper.vm.$nextTick()
+    expect(button.attributes('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(outside)
+    wrapper.destroy()
+    outside.remove()
   })
 
   it('redacts usernames, passwords, hashes, and every query value', () => {
