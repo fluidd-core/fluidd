@@ -57,13 +57,28 @@ it('bounds every velocity limit by printer configuration and rechecks before sen
   wrapper.destroy()
 })
 
-it('uses conservative status fallbacks when config is missing and refuses an unbounded limit', () => {
+it('shows limits disabled and refuses to send when configuration has no valid bounds', () => {
   const store = panelStore()
   const wrapper = mount(ControlSpeed, { mocks: { $store: store, $waits: waits }, stubs: panelStubs })
-  ;(wrapper.vm as any).setLimit('VELOCITY', 801)
+  expect(wrapper.find('input[aria-label="Velocity"]').exists()).toBe(true)
+  expect(wrapper.find('input[aria-label="Velocity"]').attributes('disabled')).toBeDefined()
+  expect(wrapper.text()).toContain("This printer hasn't reported its limits")
   ;(wrapper.vm as any).setLimit('VELOCITY', 800)
-  delete store.state.printer.printer.toolhead.max_velocity
-  ;(wrapper.vm as any).setLimit('VELOCITY', 100)
-  expect(socket.printerGcodeScript.mock.calls.map(c => c[0])).toEqual(['SET_VELOCITY_LIMIT VELOCITY=800'])
+  ;(wrapper.vm as any).setLimit('ACCEL', 20000)
+  expect(socket.printerGcodeScript).not.toHaveBeenCalled()
+  wrapper.destroy()
+})
+
+it.each([
+  ['800', 800, true],
+  ['not-a-number', 100, false],
+  [-1, 100, false],
+  [0, 100, false]
+])('validates configured velocity bound %j', (configured, value, sends) => {
+  const store = panelStore()
+  store.state.printer.printer.configfile.settings.printer = { max_velocity: configured }
+  const wrapper = mount(ControlSpeed, { mocks: { $store: store, $waits: waits }, stubs: panelStubs })
+  ;(wrapper.vm as any).setLimit('VELOCITY', value)
+  expect(socket.printerGcodeScript.mock.calls.map(c => c[0])).toEqual(sends ? [`SET_VELOCITY_LIMIT VELOCITY=${value}`] : [])
   wrapper.destroy()
 })

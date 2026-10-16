@@ -78,9 +78,10 @@
           :value="limit.value"
           :unit="limit.unit"
           :min="['VELOCITY', 'ACCEL'].includes(limit.key) ? 0.001 : 0"
-          :max="limit.max"
+          :max="limit.max ?? 0"
           :decimals="limit.decimals"
-          :disabled="!controlReady"
+          :disabled="!controlReady || limit.max === null"
+          :reason="limit.max === null ? limitReason : ''"
           @change="setLimit(limit.key, $event)"
         />
         <h3
@@ -165,23 +166,27 @@ export default class ControlSpeed extends Mixins(ControlMixin) {
   }
 
   /** Velocity, acceleration, corner speed, and whichever cruise setting this Klipper has. */
-  get limits (): Array<{ key: LimitKey, label: string, value: number | null, unit: string, decimals: number, max: number }> {
+  get limitReason (): string {
+    return "This printer hasn't reported its limits"
+  }
+
+  get limits (): Array<{ key: LimitKey, label: string, value: number | null, unit: string, decimals: number, max: number | null }> {
     const t = this.toolhead
     const row = (key: LimitKey, label: string, value: number | null, unit: string, decimals: number) => {
       const max = this.limitMaximum(key)
-      return max === null ? null : { key, label, value, unit, decimals, max }
+      return { key, label, value, unit, decimals, max }
     }
     const list = [
       row('VELOCITY', 'Velocity', t.max_velocity ?? null, 'mm/s', 0),
       row('ACCEL', 'Acceleration', t.max_accel ?? null, 'mm/s²', 0),
       row('SQUARE_CORNER_VELOCITY', 'Square corner velocity', t.square_corner_velocity ?? null, 'mm/s', 1)
-    ].filter((item): item is NonNullable<typeof item> => item !== null)
+    ]
     if (typeof t.minimum_cruise_ratio === 'number') {
       const ratio = row('MINIMUM_CRUISE_RATIO', 'Minimum cruise ratio', t.minimum_cruise_ratio, '', 2)
-      if (ratio) list.push(ratio)
+      list.push(ratio)
     } else if (typeof t.max_accel_to_decel === 'number') {
       const accelToDecel = row('ACCEL_TO_DECEL', 'Accel to decel', t.max_accel_to_decel, 'mm/s²', 0)
-      if (accelToDecel) list.push(accelToDecel)
+      list.push(accelToDecel)
     }
     return list
   }

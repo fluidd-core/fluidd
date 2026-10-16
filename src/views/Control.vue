@@ -7,6 +7,7 @@
   >
     <control-actions
       class="area-actions"
+      :phone="isMobileViewport"
     />
     <control-heat
       class="area-heat"
