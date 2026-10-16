@@ -63,3 +63,17 @@ it('refuses a stale editor input instead of saving the old arrangement to the ne
     expect(writes).toEqual([])
   } finally { wrapper.destroy() }
 })
+
+it('keeps the stage, current print, Pause and Stop outside a hostile empty card layout', async () => {
+  const preferences = new ControlPreferenceStore({ read: async () => ({ version: 2, folds: {}, overview: { cards: [] } }), patch: async () => ({ version: 1, folds: {} }) }, localStorage)
+  const state = Vue.observable<any>({ config: { apiUrl: 'http://mock.local', uiSettings: { general: {} } }, printer: { printer: { print_stats: { filename: 'part.gcode' } } } })
+  const getters = Vue.observable<any>({ 'socket/getConnectionState': true, 'socket/getApiConnected': true, 'auth/getAuthenticated': true, 'printer/getKlippyReady': true, 'printer/getKlippyConnected': true, 'printer/getPrinterState': 'printing', 'printer/getHeaters': [], 'printer/getSensors': [], 'printer/getAvailableCommands': {}, 'jobQueue/getQueuedJobs': [] })
+  const wrapper = mount(Overview, { propsData: { preferenceStore: preferences }, computed: { isMobileViewport: () => false, layout: () => [] }, mocks: { $store: { state, getters, dispatch: vi.fn() } }, stubs: { 'overview-stage': { template: '<div data-fixed="stage" />' }, 'overview-this-print': { template: '<div data-fixed="print" />' }, 'overview-tiles': true } })
+  await Vue.nextTick()
+  expect(wrapper.find('[data-fixed="stage"]').exists()).toBe(true)
+  expect(wrapper.find('[data-fixed="print"]').exists()).toBe(true)
+  expect(wrapper.find('[data-tid="overview-pause"]').exists()).toBe(true)
+  expect(wrapper.find('[data-tid="overview-stop"]').exists()).toBe(true)
+  expect(wrapper.findAll('.overview__cards [data-card]')).toHaveLength(0)
+  wrapper.destroy()
+})
