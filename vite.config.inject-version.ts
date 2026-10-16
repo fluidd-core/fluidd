@@ -5,46 +5,67 @@ import { version } from './package.json'
 
 import type { Plugin } from 'vite'
 
-const writeVersionFile = async () => {
-  const versionFile = await fs.promises.open(path.resolve(__dirname, 'dist/.version'), 'w')
+const fullCommit = () => {
+  const fromEnvironment = process.env.FLUIDD_BUILD_COMMIT
+  const commit = (fromEnvironment || child_process.execFileSync(
+    'git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }
+  )).trim()
 
-  await versionFile.writeFile(`v${version}`)
-
-  await versionFile.close()
+  if (!/^[0-9a-f]{40}$/.test(commit)) {
+    throw new Error('FLUIDD_BUILD_COMMIT must be a full, lowercase 40-character git SHA')
+  }
+  if (process.env.CI) {
+    const dirty = child_process.execFileSync(
+      'git', ['status', '--porcelain', '--untracked-files=no'], { encoding: 'utf8' }
+    ).trim()
+    if (dirty) throw new Error('Refusing to build from a dirty tree in CI')
+  }
+  return commit
 }
 
-const writeReleaseInfoFile = async () => {
-  const releaseInfoFile = await fs.promises.open(path.resolve(__dirname, 'dist/release_info.json'), 'w')
-
-  await releaseInfoFile.writeFile(JSON.stringify({
-    project_name: 'Muon3D_Fluidd',
-    project_owner: 'Muon-3D',
-    version: `v${version}`
-  }))
-
-  await releaseInfoFile.close()
-}
+const writeJson = (filename: string, value: unknown) => fs.promises.writeFile(
+  path.resolve(__dirname, 'dist', filename),
+  `${JSON.stringify(value, null, 2)}\n`
+)
 
 const vitePluginInjectVersion = (): Plugin => {
+  let commit = ''
+  let buildTime = ''
+
   return {
     name: 'version',
     config: () => {
-      const git_hash = child_process
-        .execSync('git rev-parse --short HEAD')
-        .toString()
-
+      commit = fullCommit()
+      buildTime = new Date().toISOString()
       return {
         define: {
           'import.meta.env.VERSION': JSON.stringify(version),
-          'import.meta.env.HASH': JSON.stringify(git_hash)
+          'import.meta.env.HASH': JSON.stringify(`${commit.slice(0, 7)}\n`)
         }
       }
     },
-    writeBundle: () => {
-      setImmediate(async () => {
-        await writeVersionFile()
-        await writeReleaseInfoFile()
-      })
+    transformIndexHtml: {
+      order: 'pre',
+      handler: () => [{
+        tag: 'meta',
+        attrs: { name: 'fluidd-commit', content: commit },
+        injectTo: 'head'
+      }]
+    },
+    async writeBundle () {
+      await Promise.all([
+        fs.promises.writeFile(path.resolve(__dirname, 'dist/.version'), `v${version}`),
+        writeJson('release_info.json', {
+          project_name: 'Muon3D_Fluidd',
+          project_owner: 'Muon-3D',
+          version: `v${version}`
+        }),
+        writeJson('build-info.json', {
+          commit,
+          buildTime,
+          packageVersion: version
+        })
+      ])
     }
   }
 }

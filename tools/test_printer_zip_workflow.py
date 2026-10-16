@@ -46,6 +46,12 @@ class PrinterZipWorkflowTest(unittest.TestCase):
         self.assertIn("gh release download", self.workflow)
         self.assertIn("sha256sum --check", self.workflow)
         self.assertIn("stat --format='%s'", self.workflow)
+        self.assertIn("FLUIDD_BUILD_COMMIT: ${{ inputs.develop_sha }}", self.workflow)
+        self.assertIn("tools/verify-printer-zip.py", self.workflow)
+        self.assertRegex(
+            self.workflow,
+            r'tools/verify-printer-zip\.py\s+release-download/fluidd\.zip\s+\\\s+"\$BUILT_SHA256"\s+"\$SHA"\s+--expected-size\s+"\$BUILT_SIZE"',
+        )
         self.assertNotIn("--clobber", self.workflow)
         self.assertNotRegex(self.workflow, r"\b(gh release delete|git push .*--delete)\b")
 

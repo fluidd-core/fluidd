@@ -18,6 +18,7 @@ jobs:
     env:
       NODE_OPTIONS: --experimental-websocket
       SHA: ${{ inputs.develop_sha }}
+      FLUIDD_BUILD_COMMIT: ${{ inputs.develop_sha }}
 
     steps:
       - name: Checkout workflow revision
@@ -127,7 +128,8 @@ jobs:
             --dir release-download \
             --pattern 'fluidd.zip' \
             --pattern 'fluidd.zip.sha256'
-          cd release-download
-          sha256sum --check fluidd.zip.sha256
-          test "$(sha256sum fluidd.zip | cut -d' ' -f1)" = "$BUILT_SHA256"
-          test "$(stat --format='%s' fluidd.zip)" = "$BUILT_SIZE"
+          (cd release-download && sha256sum --check fluidd.zip.sha256)
+          test "$(sha256sum release-download/fluidd.zip | cut -d' ' -f1)" = "$BUILT_SHA256"
+          test "$(stat --format='%s' release-download/fluidd.zip)" = "$BUILT_SIZE"
+          python3 tools/verify-printer-zip.py release-download/fluidd.zip \
+            "$BUILT_SHA256" "$SHA" --expected-size "$BUILT_SIZE"
