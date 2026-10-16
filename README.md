@@ -30,11 +30,13 @@ python3 tools/check-printer-fluidd.py http://m1-xxxx.local \
   --zip fluidd.zip --out printer-fluidd-report.json
 ```
 
-The check makes sequential, anonymous GET requests, never follows redirects,
-and exits successfully only when every served file exactly matches the ZIP.
-The JSON report records the served build metadata, printer `hosted` setting,
-all missing, redirected, or changed files, and the service-worker version and
-SHA-256 when `sw.js` is present. HTTPS uses normal certificate verification;
+The check makes sequential, anonymous GET requests, disables environment and
+system proxies, and never follows redirects. It exits successfully only when
+every file in the ZIP is served with identical bytes and `/` equals the ZIP's
+`index.html`; the printer may serve additional files. The JSON report records
+the ZIP's size and SHA-256, served build metadata, printer `hosted` setting,
+all missing, redirected, or changed ZIP entries, and the service-worker version
+and SHA-256 when `sw.js` is present. HTTPS uses normal certificate verification;
 there is intentionally no insecure certificate override.
 
 ![Fluidd](/docs/assets/images/preview_sliced.png "Fluidd")

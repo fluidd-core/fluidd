@@ -13,7 +13,7 @@ import time
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlsplit
-from urllib.request import HTTPRedirectHandler, Request, build_opener
+from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
 import zipfile
 
 
@@ -35,11 +35,11 @@ def validate_base_url(value: str) -> str:
         raise ValueError("BASE_URL must use http or https")
     if not parsed.hostname or parsed.username is not None or parsed.password is not None:
         raise ValueError("BASE_URL must have a host and must not contain credentials")
-    if parsed.path or parsed.query or parsed.fragment:
+    if parsed.path not in {"", "/"} or parsed.query or parsed.fragment:
         raise ValueError("BASE_URL must not contain a path, query, or fragment")
     # urllib's default HTTPS handling verifies certificates. Deliberately offer
     # no insecure/certificate-override switch.
-    return value
+    return value[:-1] if parsed.path == "/" else value
 
 
 def fetch(opener: Any, url: str, timeout: float, retries: int) -> tuple[str, bytes | None, int | None, str | None]:
@@ -68,14 +68,21 @@ def check(base_url: str, zip_path: Path, timeout: float, retries: int) -> dict[s
     report: dict[str, Any] = {
         "baseUrl": base_url,
         "zip": str(zip_path),
+        "zipSize": None,
+        "zipSha256": None,
         "exactMatch": False,
         "served": {"commit": None, "cloudBaseUrl": None, "hosted": None},
         "serviceWorker": None,
+        "root": None,
         "files": {},
         "errors": [],
     }
-    opener = build_opener(NoRedirects())
+    # Printer evidence must never be supplied by an environment or OS proxy.
+    opener = build_opener(ProxyHandler({}), NoRedirects())
     try:
+        zip_bytes = zip_path.read_bytes()
+        report["zipSize"] = len(zip_bytes)
+        report["zipSha256"] = hashlib.sha256(zip_bytes).hexdigest()
         archive = zipfile.ZipFile(zip_path)
     except (OSError, zipfile.BadZipFile) as error:
         report["errors"].append(f"cannot open zip: {error}")
@@ -118,6 +125,22 @@ def check(base_url: str, zip_path: Path, timeout: float, retries: int) -> dict[s
             report["files"][name] = item
             if item["status"] != "match":
                 report["errors"].append(f"{name}: {item['status']}")
+
+        if "index.html" in archive_names:
+            expected_index = archive.read("index.html")
+            status, actual, http_status, detail = fetch(opener, f"{base_url}/", timeout, retries)
+            root: dict[str, Any] = {"status": status, "size": None, "expectedSize": len(expected_index)}
+            if http_status is not None:
+                root["httpStatus"] = http_status
+            if detail:
+                root["detail"] = detail
+            if actual is not None:
+                root["size"] = len(actual)
+                root["comparison"] = "bytes"
+                root["status"] = "match" if actual == expected_index else "mismatch"
+            report["root"] = root
+            if root["status"] != "match":
+                report["errors"].append(f"/: {root['status']}")
 
         def served_json(name: str) -> dict[str, Any] | None:
             try:
