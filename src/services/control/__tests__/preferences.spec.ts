@@ -174,6 +174,30 @@ describe('personal Control choices', () => {
     expect(second.state.folds).toEqual({ 'heat.other': true, 'fans.all': true })
   })
 
+  it('keeps an unsaved fold through a token refresh and retries with the refreshed token', async () => {
+    const { remote, writes } = service()
+    const refreshed = { ...alice, token: 'alice-refreshed-session' }
+    const store = new ControlPreferenceStore({
+      ...remote,
+      patch: async (context, folds) => {
+        if (context.token === alice.token) throw new Error('Expired token')
+        return remote.patch(context, folds)
+      }
+    }, localStorage)
+    await store.select(alice)
+    await store.setFold('heat.other', true)
+    expect(store.state.folds['heat.other']).toBe(true)
+    expect(store.state.error).toContain('not saved')
+
+    await store.select(refreshed)
+    expect(store.state.folds['heat.other']).toBe(true)
+    await store.retry()
+
+    expect(store.state.error).toBe('')
+    expect(writes).toEqual([refreshed])
+    expect((await remote.read(refreshed)).folds['heat.other']).toBe(true)
+  })
+
   it('refreshes anonymous choices after a second browser tab changes them', async () => {
     const { remote } = service()
     const first = new ControlPreferenceStore(remote, localStorage)

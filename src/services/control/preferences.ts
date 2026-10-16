@@ -27,7 +27,7 @@ export class ControlPreferenceStore {
   }
 
   isSelected (context: PreferenceContext): boolean {
-    return JSON.stringify(context) === JSON.stringify(this.context)
+    return context.accountId === this.context?.accountId && context.printerId === this.context?.printerId
   }
 
   select (context: PreferenceContext): Promise<void> {
@@ -42,6 +42,10 @@ export class ControlPreferenceStore {
       this.loading = null
       // Old requests keep their captured session; this context gets its own queue.
       this.queue = Promise.resolve()
+    } else {
+      // A refreshed token is new authority for future requests, not a new person's
+      // preferences. Keep pending edits while rotating the captured credentials.
+      this.context = { ...context }
     }
     return this.refresh()
   }
