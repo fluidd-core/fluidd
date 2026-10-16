@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.37.7](https://github.com/fluidd-core/fluidd/compare/v1.37.6...v1.37.7) (2026-10-16)
+
+### Features
+
+* **console:** add support for prompt action button grouping ([#1977](https://github.com/fluidd-core/fluidd/issues/1977)) ([4b18abe](https://github.com/fluidd-core/fluidd/commit/4b18abe486654a40618a261ed0b46047c0b6377c))
+* **history:** add CSV export ([#1983](https://github.com/fluidd-core/fluidd/issues/1983)) ([625dd1b](https://github.com/fluidd-core/fluidd/commit/625dd1b954d73392d87e48e9471d8eeefb2ee2be))
+* **i18n-pl:** Update Polish translations ([d022779](https://github.com/fluidd-core/fluidd/commit/d022779656f789b4c37556abeb19bf4669808048))
+* **i18n-sl:** Update Slovenian translations ([a818219](https://github.com/fluidd-core/fluidd/commit/a818219f4f7c57f5704306fb1b84faa45c2c1414))
+* **i18n-zh_Hant:** Update Chinese (Traditional Han script) translations ([a2c0124](https://github.com/fluidd-core/fluidd/commit/a2c012429c49b4c13e2f74076607075d58e48185))
+* **i18n:** add pt-BR and use BCP 47 codes ([#1985](https://github.com/fluidd-core/fluidd/issues/1985)) ([e003edc](https://github.com/fluidd-core/fluidd/commit/e003edc9394acd77afdd759d2ea1296341cbc987))
+* show hall filament width sensor ([#1981](https://github.com/fluidd-core/fluidd/issues/1981)) ([16563c4](https://github.com/fluidd-core/fluidd/commit/16563c4b59ddc8fee9bfb4fa68eae71b71b66994))
+* show Kalico MCU build configuration ([#1979](https://github.com/fluidd-core/fluidd/issues/1979)) ([455c306](https://github.com/fluidd-core/fluidd/commit/455c3066c8bb6c9cd6c64378547dc8805f742219))
+* show MCU build configuration for Klipper ([6078547](https://github.com/fluidd-core/fluidd/commit/6078547e423fb096b91d4c674c769ec01c3b8ae7))
+* show temperature_combined extra values ([45f5121](https://github.com/fluidd-core/fluidd/commit/45f5121a5590b85d0fa7ffa5d35da9e462a2730f))
+
+### Bug Fixes
+
+* AppBtn text contrast on light colors ([#1980](https://github.com/fluidd-core/fluidd/issues/1980)) ([f9a7fd4](https://github.com/fluidd-core/fluidd/commit/f9a7fd48248435d9043f10c6fbef8ec60ac12df5))
+* hall filament width sensor toggle ([#1982](https://github.com/fluidd-core/fluidd/issues/1982)) ([454586e](https://github.com/fluidd-core/fluidd/commit/454586e2da9215367b01c59ffa2ad1b7fb0bc449))
+* marked console command click ([#1967](https://github.com/fluidd-core/fluidd/issues/1967)) ([3bd3ab2](https://github.com/fluidd-core/fluidd/commit/3bd3ab23afe4c4d9639c5ae94110ae8ba8340e34))
+* match Moonraker's JSON-RPC error codes ([#1965](https://github.com/fluidd-core/fluidd/issues/1965)) ([a5db1f8](https://github.com/fluidd-core/fluidd/commit/a5db1f8603036ad01d5ccd080739c3a785f7efcb))
+* MediaMTX omits webcam proxy url ([#1969](https://github.com/fluidd-core/fluidd/issues/1969)) ([#1970](https://github.com/fluidd-core/fluidd/issues/1970)) ([d408a11](https://github.com/fluidd-core/fluidd/commit/d408a11db246b586d340c6b4bba47a46989e94d7))
+
+### Performance Improvements
+
+* lazy-load file browser thumbnails ([#1962](https://github.com/fluidd-core/fluidd/issues/1962)) ([97d4c49](https://github.com/fluidd-core/fluidd/commit/97d4c496312067d995ff67ada760c8a4e3affb89))
+
+### Code Refactorings
+
+* Kalico heater control values ([3a2b134](https://github.com/fluidd-core/fluidd/commit/3a2b134d831edd2288e27142b695e699985bcfbd))
+* type-safe Moonraker JSON-RPC ([#1968](https://github.com/fluidd-core/fluidd/issues/1968)) ([7a75e48](https://github.com/fluidd-core/fluidd/commit/7a75e4857282a24d733540ebf07cf6b1bc7717e9))
+
 ## [1.37.6](https://github.com/fluidd-core/fluidd/compare/v1.37.5...v1.37.6) (2026-09-23)
 
 
