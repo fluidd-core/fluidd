@@ -167,7 +167,7 @@ import NumberField from '@/components/control/NumberField.vue'
 import RangeSlider from '@/components/control/RangeSlider.vue'
 
 /**
- * Pro, while it prints: speed and flow, pressure advance, the Z offset a
+ * Deeper controls while it prints: speed and flow, pressure advance, the Z offset a
  * hundredth of a millimetre at a time, the part fan and the acceleration.
  * Each applies at once and lasts until the next restart; the Z offset can
  * be saved for next time.

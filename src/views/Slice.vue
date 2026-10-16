@@ -96,8 +96,8 @@ export const CROSS_ORIGIN_SANDBOX = 'allow-scripts allow-same-origin allow-forms
  *
  * The Fluidd integration (KAN-511, muon3d-slicer docs/fluidd-integration.md):
  * the slicer is told Fluidd's look and what the selected printer has loaded,
- * each again when it changes. Never Fluidd's Simple or Pro: the slicer has no
- * mode, and the Pro switch is not shown on this page (KAN-550, route meta
+ * each again when it changes. The slicer receives no Control layout mode
+ * (KAN-550, route meta
  * noMode). A slicer that draws itself
  * as a part of the page (its hello lists ui.look) gets a frame with no card
  * of its own; an older one keeps today's framed card. The rail stays either

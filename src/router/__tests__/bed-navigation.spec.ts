@@ -7,9 +7,9 @@ import FrameMixin from '@/mixins/frame'
 vi.mock('@/services/printer-pages', () => ({ activeSlug: () => 'mock', isForeignSlug: () => false }))
 vi.mock('@/api/socketActions', () => ({ SocketActions: {} }))
 
-it.each([false, true])('uses Bed capability instead of mode=%s for page links', pro => {
+it('uses Bed capability for page links', () => {
   const section = SECTIONS.find(s => s.id === 'maintenance')!
-  const context = { pro, slicer: false, camera: null, history: false, timelapse: false, diagnostics: false, foreign: false, bedMesh: true }
+  const context = { slicer: false, camera: null, history: false, timelapse: false, diagnostics: false, foreign: false, bedMesh: true }
   expect(visiblePages(section, context).map(p => p.label)).toEqual(['Health', 'Bed'])
   expect(visiblePages(section, { ...context, bedMesh: false }).map(p => p.path)).toEqual(['/maintenance'])
 })

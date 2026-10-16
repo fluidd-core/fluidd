@@ -170,7 +170,7 @@ const printerRoutes: Array<RouteConfig> = [
       keepOnPrinterSwitch: true,
       // The printer's page all the same: the rail and the E-STOP stay (KAN-511).
       frame: 'printer',
-      // The slicer has no mode: no Pro switch here (KAN-550).
+      // The slicer is framed with no Control layout mode (KAN-550).
       noMode: true
     }
   },
@@ -508,7 +508,7 @@ declare module 'vue-router' {
     /** 'printer': drawn as the printer's page (the rail, the E-STOP) though it works without one. */
     frame?: 'printer'
     /**
-     * Another app framed here (Slice, later Design), which has no mode: Control's Pro switch is not offered on it
+     * Another app framed here (Slice, later Design), which receives no Control layout mode.
      * Embedded Slice deliberately has no Control layout mode (KAN-550).
      */
     noMode?: boolean

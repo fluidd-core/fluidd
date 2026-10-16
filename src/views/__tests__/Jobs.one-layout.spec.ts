@@ -31,7 +31,7 @@ function mountJobs (mobile = false, control = true) {
 
 describe('Jobs one layout', () => {
   beforeEach(() => { vi.spyOn(SocketActions, 'serverFilesGetDirectory').mockImplementation(vi.fn() as any) })
-  afterEach(() => { localStorage.setItem('muon3d.pro', '0'); controlPreferenceStore.state.folds = {}; vi.restoreAllMocks() })
+  afterEach(() => { controlPreferenceStore.state.folds = {}; vi.restoreAllMocks() })
 
   it.each([false, true])('offers Pictures, List and Table with legacy Pro=%s', pro => {
     localStorage.setItem('muon3d.pro', pro ? '1' : '0')

@@ -120,8 +120,6 @@
               class="app-more__chevron"
             />
           </router-link>
-
-
         </div>
         <div class="app-more__account">
           <cloud-account-menu />
@@ -168,7 +166,6 @@ export default class AppTabBar extends Mixins(FrameMixin) {
   get moreActive (): boolean {
     return !!this.currentSection && !this.tabs.includes(this.currentSection)
   }
-
 }
 </script>
 
@@ -274,11 +271,6 @@ export default class AppTabBar extends Mixins(FrameMixin) {
     color: var(--m3d-text-muted);
     font-size: 12px;
   }
-
-
-
-
-
   .app-more__account {
     display: flex;
     justify-content: flex-end;

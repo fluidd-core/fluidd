@@ -19,7 +19,6 @@ it.each([false, true])('keeps all six task panels with either legacy setting on 
     if (phone) expect(wrapper.find('[data-tid="control-actions"]').exists()).toBe(true)
     wrapper.destroy()
   }
-  localStorage.setItem('muon3d.pro', '0')
 })
 
 it('drops the previous printer’s macro form when the selected connection changes', async () => {

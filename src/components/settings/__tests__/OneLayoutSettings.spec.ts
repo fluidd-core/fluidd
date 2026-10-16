@@ -13,7 +13,7 @@ vi.mock('@/services/updates/watch', () => ({
 }))
 vi.mock('@/services/dev-mode/state', () => ({ devModeState: {}, refreshDevMode: vi.fn() }))
 
-afterEach(() => { localStorage.setItem('muon3d.pro', '0') })
+afterEach(() => { localStorage.clear() })
 
 const commonStubs = {
   'v-text-field': true,

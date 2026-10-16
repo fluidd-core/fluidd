@@ -238,7 +238,7 @@ export function extrudeBlocked (temperature: number, minTemp: number, canExtrude
   return `Heat the nozzle first · it's at ${Math.round(temperature)}°, it needs ${Math.round(minTemp)}°`
 }
 
-// -- Pro's tuning and outputs -------------------------------------------------
+// -- Tuning and outputs -------------------------------------------------------
 
 /** The shapers Klipper knows, in its order. */
 export const SHAPER_TYPES = ['zv', 'mzv', 'zvd', 'ei', '2hump_ei', '3hump_ei']

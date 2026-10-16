@@ -59,6 +59,12 @@ describe('Tools navigation', () => {
   it.each([AppTabBar, CommandBar])('%s renders no Pro switch or command', async component => {
     const wrapper = show(component)
     if (component === AppTabBar) await wrapper.find('[data-tid="tab-more"]').trigger('click')
+    if (component === CommandBar) {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('[data-tid="command-bar"]').exists()).toBe(true)
+      expect((wrapper.vm as CommandBar).results.every(command => !/pro/i.test(`${command.id} ${command.label}`))).toBe(true)
+    }
     expect(wrapper.find('[data-tid="pro-switch"]').exists()).toBe(false)
     expect(wrapper.find('[data-tid="more-pro"]').exists()).toBe(false)
     expect(wrapper.text()).not.toContain('Turn Pro')
@@ -67,7 +73,6 @@ describe('Tools navigation', () => {
   })
 
   it.each([false, true])('keeps scoped tool links and the active page in the rail (compact: %s)', compact => {
-    localStorage.setItem('muon3d.pro', '0')
     const wrapper = show(AppRail, native, compact)
     const files = wrapper.find('[data-tid="rail-files"]')
     expect(files.exists()).toBe(true)
@@ -79,7 +84,6 @@ describe('Tools navigation', () => {
   })
 
   it('puts Tools in phone More and closes the sheet when a tool is chosen', async () => {
-    localStorage.setItem('muon3d.pro', '0')
     const wrapper = show(AppTabBar)
     await wrapper.find('[data-tid="tab-more"]').trigger('click')
     expect(wrapper.text()).toContain('Tools')
@@ -90,19 +94,16 @@ describe('Tools navigation', () => {
     expect(wrapper.find('[data-tid="tab-console"]').exists()).toBe(false)
     await files.trigger('click')
     expect(wrapper.find('[data-tid="more-files"]').exists()).toBe(false)
-    expect(localStorage.getItem('muon3d.pro')).toBe('0')
     wrapper.destroy()
   })
 
-  it.each(['console', 'files'])('opens %s from the palette without changing Pro', async id => {
-    localStorage.setItem('muon3d.pro', '0')
+  it.each(['console', 'files'])('opens %s from the palette', async id => {
     const wrapper = show(CommandBar, native, false, '/hazel-1234')
     const command = (wrapper.vm as CommandBar).goCommands.find(c => c.id === `go-${id}`)!
     expect(command.keys).toEqual(['G', id === 'console' ? 'T' : 'F'])
     expect(command.hint).toBeUndefined()
     await command.run()
     expect(wrapper.vm.$router.push).toHaveBeenCalledWith(`/hazel-1234/${id === 'console' ? 'console' : 'configure'}`)
-    expect(localStorage.getItem('muon3d.pro')).toBe('0')
     wrapper.destroy()
   })
 

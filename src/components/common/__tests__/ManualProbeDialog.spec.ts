@@ -36,10 +36,9 @@ function show (role?: 'operator' | 'viewer') {
   })
   return { wrapper, state, getters, route, vm: wrapper.vm as any }
 }
-afterEach(() => { socket.printerGcodeScript.mockClear(); localStorage.setItem('muon3d.pro', '0'); cloudState.account = null; cloudState.activePrinterId = null; cloudState.printers = []; printerTransportBinding.remote = false })
+afterEach(() => { socket.printerGcodeScript.mockClear(); cloudState.account = null; cloudState.activePrinterId = null; cloudState.printers = []; printerTransportBinding.remote = false })
 
 it('opens Finer steps with the reported tried range without a mode', async () => {
-  localStorage.setItem('muon3d.pro', '0')
   const { wrapper } = show()
   expect(wrapper.text()).toContain('tried 1.900 to 2.100')
   const fold = wrapper.find('[data-tid="manual-probe-finer"]')

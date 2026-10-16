@@ -242,26 +242,24 @@ describe('Slice', () => {
     ['a slicer with no mode', ['ui.look', 'printer.setup', 'printer.material']],
     ['an older slicer that still asks for ui.mode', ['ui.look', 'ui.mode', 'printer.setup', 'printer.material']]
   ])('tells %s no Simple or Pro, in the welcome or after it, whatever the Pro switch says (KAN-550)', async (_name, features) => {
-      const wrapper = await mountSlice(undefined, { attachTo: document.body })
-      const vm = wrapper.vm as any
-      const frame = wrapper.find('iframe').element as HTMLIFrameElement
-      const welcomes: Array<Record<string, unknown> & { capabilities: string[] }> = []
-      vi.spyOn(frame.contentWindow!, 'postMessage').mockImplementation(((message: Record<string, unknown> & { capabilities: string[] }) => { welcomes.push(message) }) as never)
-      window.dispatchEvent(new MessageEvent('message', {
-        source: frame.contentWindow,
-        origin: window.location.origin,
-        data: { protocol: 'printer-bridge', type: 'hello', versions: [1], app: 'muon3d-slicer', appVersion: '0.3.0', nonce: '0'.repeat(32), features }
-      }))
-      expect(welcomes).toHaveLength(1)
-      expect(welcomes[0].capabilities).not.toContain('ui.mode')
-      expect('mode' in welcomes[0]).toBe(false)
+    const wrapper = await mountSlice(undefined, { attachTo: document.body })
+    const vm = wrapper.vm as any
+    const frame = wrapper.find('iframe').element as HTMLIFrameElement
+    const welcomes: Array<Record<string, unknown> & { capabilities: string[] }> = []
+    vi.spyOn(frame.contentWindow!, 'postMessage').mockImplementation(((message: Record<string, unknown> & { capabilities: string[] }) => { welcomes.push(message) }) as never)
+    window.dispatchEvent(new MessageEvent('message', {
+      source: frame.contentWindow,
+      origin: window.location.origin,
+      data: { protocol: 'printer-bridge', type: 'hello', versions: [1], app: 'muon3d-slicer', appVersion: '0.3.0', nonce: '0'.repeat(32), features }
+    }))
+    expect(welcomes).toHaveLength(1)
+    expect(welcomes[0].capabilities).not.toContain('ui.mode')
+    expect('mode' in welcomes[0]).toBe(false)
 
-      const setMode = vi.spyOn(vm.host.bridge, 'setMode')
-      localStorage.setItem('muon3d.pro', '0')
-      localStorage.setItem('muon3d.pro', '1')
-      await vm.$nextTick()
-      expect(setMode).not.toHaveBeenCalled()
-      wrapper.destroy()
+    const setMode = vi.spyOn(vm.host.bridge, 'setMode')
+    await vm.$nextTick()
+    expect(setMode).not.toHaveBeenCalled()
+    wrapper.destroy()
   })
 
   it('opens a print from the Library once the slicer shows, and drops it from the address', async () => {

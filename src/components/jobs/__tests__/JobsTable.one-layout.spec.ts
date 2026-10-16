@@ -51,7 +51,7 @@ describe('JobsTable one layout', () => {
     if (!globalThis.CSS.escape) globalThis.CSS.escape = (value: string) => value
     Element.prototype.scrollIntoView = vi.fn()
   })
-  afterEach(() => { localStorage.setItem('muon3d.pro', '0'); vi.restoreAllMocks() })
+  afterEach(() => { vi.restoreAllMocks() })
 
   it.each([false, true])('renders every view independently of legacy Pro=%s', pro => {
     localStorage.setItem('muon3d.pro', pro ? '1' : '0')

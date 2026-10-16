@@ -5,10 +5,9 @@ import { panelStore, panelStubs, waits } from './panel-fixture'
 
 const socket = vi.hoisted(() => ({ printerGcodeScript: vi.fn() }))
 vi.mock('@/api/socketActions', () => ({ SocketActions: socket }))
-afterEach(() => { socket.printerGcodeScript.mockClear(); localStorage.setItem('muon3d.pro', '0') })
+afterEach(() => { socket.printerGcodeScript.mockClear() })
 
 it.each([false, true])('opens Go to with limits and uses the configured speed on phone=%s', async phone => {
-  localStorage.setItem('muon3d.pro', '0')
   const store = panelStore()
   const wrapper = mount(ControlMove, { propsData: { phone }, mocks: { $store: store, $waits: waits }, stubs: panelStubs })
   const door = wrapper.find('[data-tid="move-position"]')

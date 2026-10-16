@@ -37,7 +37,7 @@ function show (phone = false) {
   })
   return { wrapper, store }
 }
-afterEach(() => { vi.clearAllMocks(); localStorage.setItem('muon3d.pro', '0') })
+afterEach(() => { vi.clearAllMocks() })
 
 it.each([false, true])('opens Health results and diagnosis without a mode, phone=%s', async phone => {
   const { wrapper } = show(phone)

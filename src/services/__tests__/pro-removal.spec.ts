@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
+import Vue from 'vue'
+import { shallowMount } from '@vue/test-utils'
 import { retireProStorage } from '@/services/retired-storage'
-import appSource from '@/App.vue?raw'
+import App from '@/App.vue'
+import router from '@/router'
 import appBarSource from '@/components/layout/AppBar.vue?raw'
 import appTabBarSource from '@/components/layout/AppTabBar.vue?raw'
 import commandBarSource from '@/components/layout/CommandBar.vue?raw'
@@ -28,8 +31,40 @@ describe('retired Pro mode', () => {
     expect(localStorage.getItem('muon3d.pro')).toBeNull()
   })
 
-  it('leaves Shift X unbound', () => {
-    expect(appSource).not.toContain("case 'Shift+X'")
+  it('does not stop startup when storage refuses removal', () => {
+    const removeItem = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => { throw new Error('storage denied') })
+    expect(() => retireProStorage()).not.toThrow()
+    expect(removeItem).toHaveBeenCalledWith('muon3d.pro')
+  })
+
+  it('leaves Shift X unbound in the mounted app', async () => {
+    const MountedApp = Vue.extend({
+      extends: App,
+      computed: {
+        enableKeyboardShortcuts: () => true,
+        connection: () => ({ stale: false }),
+        foreignPrinterRoute: () => true,
+        loaderReady: () => false
+      },
+      render: h => h('div')
+    })
+    const setItem = vi.spyOn(Storage.prototype, 'setItem')
+    const getters = new Proxy<Record<string, unknown>>({}, { get: (target, key: string) => target[key] ?? false })
+    getters['config/getCustomThemeFile'] = () => null
+    getters['printer/getPrintProgress'] = 0
+    const wrapper = shallowMount(MountedApp, {
+      router,
+      mocks: {
+        $store: { getters, state: { config: { uiSettings: { general: { enableKeyboardShortcuts: true } } }, printer: { printer: null } } }
+      }
+    })
+    setItem.mockClear()
+    const event = new KeyboardEvent('keydown', { key: 'X', shiftKey: true, cancelable: true })
+    window.dispatchEvent(event)
+    await wrapper.vm.$nextTick()
+    expect(event.defaultPrevented).toBe(false)
+    expect(setItem).not.toHaveBeenCalled()
+    wrapper.destroy()
   })
 
   it.each([

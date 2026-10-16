@@ -126,7 +126,7 @@ export interface SensorRow<H> {
 }
 
 /**
- * Pro's table of every heater and sensor: the nozzle and bed by their
+ * The table of every heater and sensor: the nozzle and bed by their
  * everyday names, power as a percentage, and temperatures to a tenth.
  */
 export function sensorRows<H extends { name: string, prettyName: string, temperature: number, power?: number }> (

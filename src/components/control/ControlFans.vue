@@ -163,19 +163,13 @@ export default class ControlFans extends Mixins(ControlMixin) {
     opacity: 0.6;
   }
 
-  .fans-simple__rows > .crow + .crow,
-  .fans > .crow + .crow {
+  .fans-simple__rows > .crow + .crow {
     border-top: 1px solid var(--m3d-border);
   }
 
   .fans__slider {
     flex: 0 1 180px;
     margin-left: auto;
-  }
-
-  .fans .crow__value {
-    min-width: 44px;
-    text-align: right;
   }
 
   .fans__none {
