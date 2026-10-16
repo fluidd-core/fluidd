@@ -209,10 +209,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   @Prop({ type: Boolean })
   readonly bulkActions?: boolean
 
-  /** Jobs embeds its own viewer only in Table view. */
-  @Prop({ type: String, default: 'pictures' })
-  readonly jobsView!: 'pictures' | 'list' | 'table'
-
   // Maintains the path and root.
   currentRoot = ''
 
@@ -704,11 +700,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
       if (!gcode) return
 
-      // Shown in place where a G-code viewer is on the page: the dashboard's
-      // card, or Jobs' Table view, which has one beside the table.
+      // Shown in place where a G-code viewer is on the page: the dashboard's card.
       const route = this.$router.currentRoute.name
-      const inPlace = (route === 'Dashboard' && this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')) ||
-        (route === 'Jobs' && this.jobsView === 'table')
+      const inPlace = route === 'Dashboard' && this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')
       if (!inPlace) {
         this.$router.push({ path: scopedPath('/preview', activeSlug()) })
       }

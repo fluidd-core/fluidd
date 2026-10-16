@@ -1,8 +1,5 @@
 <template>
-  <!--
-    What's printing and next, the files, and what printed. Simple shows the
-    files as pictures; Pro as a table with its folders, beside a G-code viewer.
-  -->
+  <!-- What's printing and next, the files, and what printed. -->
   <div
     class="jobs"
     :class="{ 'jobs--phone': isMobileViewport, 'jobs--table': effectiveView === 'table' }"
@@ -135,6 +132,7 @@
           title="Jobs view"
           summary="Pictures, list or table"
           choice
+          :show-unsaved-note="false"
         >
           <template #default="tableChoice">
             <seg-picker
@@ -151,7 +149,6 @@
     <div class="jobs__browser">
       <jobs-table
         :view="effectiveView"
-        :control-ready="controlReady"
         :current="viewing ? viewing.key : null"
         @view="viewing = $event"
         @open="open"
@@ -222,14 +219,6 @@
       </div>
     </section>
 
-    <input
-      ref="upload"
-      type="file"
-      :accept="gcodeAccept"
-      class="jobs__upload"
-      @change="onPicked"
-    >
-
     <job-detail
       :job="detail"
       :busy="busy"
@@ -250,52 +239,40 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import JobsMixin, { type JobFile } from '@/mixins/jobs'
 import BrowserMixin from '@/mixins/browser'
-import { EventBus } from '@/eventBus'
 import { SocketActions } from '@/api/socketActions'
 import type { HistoryItem } from '@/store/history/types'
 import type { QueuedJob } from '@/store/jobQueue/types'
-import { filterJobs, jobFacts, jobTitle, sortJobs, type JobFilter, type JobSort } from '@/services/jobs/model'
+import { jobFacts, jobTitle } from '@/services/jobs/model'
 import { historyStatus } from '@/services/history/model'
 import type { TileTone } from '@/services/printers-page/model'
 import getFilePaths from '@/util/get-file-paths'
-import JobCard from '@/components/jobs/JobCard.vue'
 import JobDetail from '@/components/jobs/JobDetail.vue'
 import JobsTable from '@/components/jobs/JobsTable.vue'
 import JobViewer from '@/components/jobs/JobViewer.vue'
 import SegPicker, { type SegOption } from '@/components/control/SegPicker.vue'
 import TonePill from '@/components/printers/TonePill.vue'
 import ControlTaskFold from '@/components/control/ControlTaskFold.vue'
+import { controlPreferenceStore } from '@/services/account/control-preferences'
 
 type JobsView = 'pictures' | 'list' | 'table'
 
 /**
  * Jobs: what is printing and up next, the files on the printer, and what
- * printed lately. Simple shows the files as pictures, each opening its
- * detail (its picture or its layers, and what to know before printing it).
- * Pro shows them as a table with their folders, beside a G-code viewer,
- * and lets the whole queue be seen and trimmed.
+ * printed lately. Files can be shown as pictures, a list, or a table with
+ * folders beside a G-code viewer.
  */
-@Component({ components: { ControlTaskFold, JobCard, JobDetail, JobsTable, JobViewer, SegPicker, TonePill } })
+@Component({ components: { ControlTaskFold, JobDetail, JobsTable, JobViewer, SegPicker, TonePill } })
 export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
-  filter: JobFilter = 'all'
-  sort: JobSort = 'newest'
   view: JobsView = 'pictures'
-  query = ''
   detail: JobFile | null = null
-  /** Pro: the file the viewer shows, and the table's files in order, for the detail's arrows. */
+  /** The file the viewer shows, and the currently listed files in order. */
   viewing: JobFile | null = null
   tableFiles: JobFile[] = []
 
   get effectiveView (): JobsView { return this.isMobileViewport && this.view === 'table' ? 'list' : this.view }
-
-  /** What Upload takes: the G-code root's own list, as the header's upload button uses. */
-  get gcodeAccept (): string {
-    const root = this.$store.getters['files/getRootProperties']('gcodes') as { accepts?: string[] } | undefined
-    return (root?.accepts ?? []).join(',')
-  }
 
   mounted () {
     this.loadFiles()
@@ -305,37 +282,28 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
     return jobTitle(this.jobFile)
   }
 
-  get filterOptions (): SegOption[] {
-    return [
-      { value: 'all', label: `All ${this.jobFiles.length}` },
-      { value: 'never', label: 'Never printed' },
-      { value: 'before', label: 'Printed before' }
-    ]
-  }
-
   get viewOptions (): SegOption[] {
     return [{ value: 'pictures', label: 'Pictures' }, { value: 'list', label: 'List' }, { value: 'table', label: 'Table' }]
   }
 
+  get rememberedList (): boolean { return controlPreferenceStore.state.folds['jobs.view.list'] === true }
+  get rememberedTable (): boolean { return controlPreferenceStore.state.folds['jobs.view.table'] === true }
+
+  @Watch('rememberedList', { immediate: true })
+  @Watch('rememberedTable', { immediate: true })
+  restoreView () {
+    this.view = this.rememberedTable ? 'table' : this.rememberedList ? 'list' : 'pictures'
+  }
+
   selectedView (list: boolean, table: boolean): JobsView {
-    this.view = table ? 'table' : list ? 'list' : 'pictures'
-    return this.view
+    const selected = table ? 'table' : list ? 'list' : 'pictures'
+    return this.isMobileViewport && selected === 'table' ? 'list' : selected
   }
 
   setView (view: JobsView, chooseList?: (value: boolean) => void, chooseTable?: (value: boolean) => void) {
     this.view = view
     chooseList?.(view === 'list')
     chooseTable?.(view === 'table')
-  }
-
-  get rows (): boolean {
-    return this.effectiveView === 'list'
-  }
-
-  get shown (): JobFile[] {
-    const q = this.query.trim().toLowerCase()
-    const found = q ? this.jobFiles.filter(j => j.title.toLowerCase().includes(q) || j.filename.toLowerCase().includes(q)) : this.jobFiles
-    return sortJobs(filterJobs(found, this.filter), this.sort)
   }
 
   fileFor (filename: string): JobFile | undefined {
@@ -361,7 +329,7 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
   }
 
   get detailList (): JobFile[] {
-    return this.effectiveView === 'table' ? this.tableFiles : this.shown
+    return this.tableFiles
   }
 
   get detailIndex (): number {
@@ -373,7 +341,7 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
     if (next) this.detail = next
   }
 
-  // -- the queue (Pro) ---------------------------------------------------------
+  // -- the queue ---------------------------------------------------------------
 
   unqueue (job: QueuedJob) {
     if (!this.controlReady) return
@@ -382,8 +350,9 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
 
   async clearQueue () {
     if (!this.controlReady) return
+    const target = this.commandTarget
     const ok = await this.$confirm(`The files stay on ${this.printerName}.`, { title: `Take all ${this.queue.length} jobs out of the queue?`, buttonTrueText: 'Clear the queue', danger: true })
-    if (ok && this.controlReady) SocketActions.serverJobQueueDeleteJobs(this.queue.map(j => j.job_id))
+    if (ok && target === this.commandTarget && this.controlReady) SocketActions.serverJobQueueDeleteJobs(this.queue.map(j => j.job_id))
   }
 
   startQueue () {
@@ -402,22 +371,6 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
 
   async deleteDetail () {
     if (this.detail && await this.removeJob(this.detail)) this.detail = null
-  }
-
-  // -- upload ----------------------------------------------------------------
-
-  pickUpload () {
-    (this.$refs.upload as HTMLInputElement).click()
-  }
-
-  /** An upload here only adds the file; the dialog after it offers to print. */
-  async onPicked (event: Event) {
-    const input = event.target as HTMLInputElement
-    const file = input.files?.[0]
-    input.value = ''
-    if (!file) return
-    await this.uploadFile(file, '/', 'gcodes', false)
-    EventBus.bus.$emit('job-ready', file.name)
   }
 
   // -- history ---------------------------------------------------------------
@@ -804,6 +757,10 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
   }
 
   .jobs__browser {
+    min-width: 0;
+  }
+
+  .jobs--table .jobs__browser {
     display: grid;
     grid-template-columns: minmax(0, 1.75fr) minmax(340px, 1fr);
     align-items: start;
@@ -817,7 +774,7 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
 
   // Under a wide desktop, the viewer goes under the table.
   @media (max-width: 1263px) {
-    .jobs__browser {
+    .jobs--table .jobs__browser {
       grid-template-columns: minmax(0, 1fr);
     }
 

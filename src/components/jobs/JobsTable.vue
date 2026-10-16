@@ -33,6 +33,12 @@
         </div>
       </div>
       <span class="jt__grow" />
+      <seg-picker
+        :options="filterOptions"
+        :value="filter"
+        label="Print history"
+        @input="filter = $event"
+      />
       <label class="jt__filter">
         <frame-icon
           name="search"
@@ -54,6 +60,7 @@
         type="button"
         class="cbtn"
         data-tid="jobs-new-folder"
+        :disabled="!controlReady"
         @click="folderDialog = true"
       >
         <frame-icon
@@ -66,6 +73,7 @@
         type="button"
         class="cbtn cbtn--primary"
         data-tid="jobs-upload"
+        :disabled="!controlReady"
         @click="pickUpload"
       >
         <frame-icon
@@ -94,6 +102,7 @@
         v-if="changeable.length"
         type="button"
         data-tid="jobs-move"
+        :disabled="!controlReady"
         @click="moveOpen = true"
       >
         Move to…
@@ -101,6 +110,7 @@
       <button
         v-if="selected.length === 1 && changeable.length === 1"
         type="button"
+        :disabled="!controlReady"
         @click="renameOpen = true"
       >
         Rename
@@ -117,6 +127,7 @@
         type="button"
         class="jt__danger"
         data-tid="jobs-delete"
+        :disabled="!controlReady"
         @click="deleteRows(selectedRows)"
       >
         Delete
@@ -381,10 +392,11 @@ import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
 import type { AppDirectory, AppFileWithMeta, FileBrowserEntry } from '@/store/files/types'
 import {
-  fileSize, filterRows, isGcodeFile, nextSort, parentFolder, queueLabel, rangeSelect, shortDate, sortRows, tableTime, toggleKey,
-  type TableColumn, type TableRow, type TableSort
+  fileSize, filterJobs, filterRows, isGcodeFile, nextSort, parentFolder, queueLabel, rangeSelect, shortDate, sortRows, tableTime, toggleKey,
+  type JobFilter, type TableColumn, type TableRow, type TableSort
 } from '@/services/jobs/model'
 import FileNameDialog from '@/components/widgets/filesystem/FileNameDialog.vue'
+import SegPicker, { type SegOption } from '@/components/control/SegPicker.vue'
 
 type Row = TableRow & { job?: JobFile }
 
@@ -401,21 +413,21 @@ function readSort (): TableSort {
 }
 
 /**
- * Pro's file table: the G-code on the printer with its folders, sorted by
+ * The G-code on the printer with its folders, sorted by
  * any column, filtered, and selected in ones or ranges for queueing,
  * moving, downloading or deleting together. The row with the cursor is
  * the one the viewer beside it shows; Enter or a double-click opens it.
  */
-@Component({ components: { FileNameDialog } })
+@Component({ components: { FileNameDialog, SegPicker } })
 export default class JobsTable extends Mixins(JobsMixin) {
   @Prop({ type: String, default: 'table' }) readonly view!: 'pictures' | 'list' | 'table'
-  @Prop({ type: Boolean, default: false }) readonly controlReady!: boolean
   /** The job the viewer shows, from outside: the table's cursor follows it. */
   @Prop({ type: String, default: null })
   readonly current!: string | null
 
   path = ''
   query = ''
+  filter: JobFilter = 'all'
   sort: TableSort = readSort()
   selected: string[] = []
   anchor: string | null = null
@@ -433,6 +445,14 @@ export default class JobsTable extends Mixins(JobsMixin) {
       { key: 'height', label: 'Height' },
       { key: 'modified', label: 'Modified' },
       { key: 'size', label: 'Size' }
+    ]
+  }
+
+  get filterOptions (): SegOption[] {
+    return [
+      { value: 'all', label: `All ${this.fileRows.length}` },
+      { value: 'never', label: 'Never printed' },
+      { value: 'before', label: 'Printed before' }
     ]
   }
 
@@ -497,7 +517,9 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   get rows (): Row[] {
-    return sortRows(filterRows([...this.folderRows, ...this.fileRows], this.query), this.sort)
+    const visible = new Set(filterJobs(this.fileRows.flatMap(row => row.job ? [row.job] : []), this.filter).map(job => job.key))
+    const files = this.fileRows.filter(row => visible.has(row.key))
+    return sortRows(filterRows([...this.folderRows, ...files], this.query), this.sort)
   }
 
   get order (): string[] {
@@ -603,6 +625,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
     }
     this.anchor = row.key
     this.moveCursor(row.key)
+    if (this.view !== 'table') this.openRow(row)
   }
 
   onCheck (row: Row, event: MouseEvent) {
@@ -735,6 +758,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   async deleteRows (all: Row[]) {
+    if (!this.controlReady) return
     const rows = all.filter(r => !r.job?.printing)
     if (!rows.length) return
     const files = rows.filter(r => r.kind === 'file').length
@@ -745,8 +769,9 @@ export default class JobsTable extends Mixins(JobsMixin) {
     ].filter(Boolean).join(' and ')
     const name = rows.length === 1 ? rows[0].name : what
     const note = folders ? ' A folder goes with everything in it.' : ''
+    const target = this.commandTarget
     const ok = await this.$confirm(`It's removed from ${this.printerName}.${note} This can't be undone.`, { title: `Delete ${name}?`, buttonTrueText: 'Delete', danger: true })
-    if (!ok) return
+    if (!ok || target !== this.commandTarget) return
     for (const row of rows) {
       if (row.kind === 'folder') SocketActions.serverFilesDeleteDirectory(`${this.root}/${row.key}`, true)
       else SocketActions.serverFilesDeleteFile(`${this.root}/${row.key}`)
@@ -767,6 +792,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   moveInto (folder: string) {
+    if (!this.controlReady) return
     for (const row of this.changeable) {
       SocketActions.serverFilesMove(`${this.root}/${row.key}`, `${this.root}/${folder ? `${folder}/` : ''}${row.name}`)
     }
@@ -775,6 +801,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   rename (name: string) {
+    if (!this.controlReady) return
     const row = this.changeable[0]
     const clean = name.trim()
     if (!row || !clean || clean === row.name) return
@@ -783,6 +810,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   makeFolder (name: string) {
+    if (!this.controlReady) return
     const clean = name.trim()
     if (clean) SocketActions.serverFilesPostDirectory(`${this.dir}/${clean}`)
   }
@@ -795,6 +823,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   pickUpload () {
+    if (!this.controlReady) return
     (this.$refs.upload as HTMLInputElement).click()
   }
 
@@ -803,6 +832,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
     const input = event.target as HTMLInputElement
     const files = [...(input.files ?? [])]
     input.value = ''
+    if (!this.controlReady) return
     if (!files.length) return
     await this.uploadFiles(files, this.path, this.root, false)
     if (files.length === 1 && isGcodeFile(files[0].name)) {
@@ -991,9 +1021,10 @@ export default class JobsTable extends Mixins(JobsMixin) {
 
   .jt--pictures {
     .jt__table { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; overflow: visible; background: transparent; }
-    .jt__row { display: flex; flex-direction: column; justify-content: center; gap: 8px; height: 190px; padding: 16px; border: 0; border-radius: 20px; background: var(--m3d-surface); text-align: center; }
+    .jt__row { position: relative; display: flex; flex-direction: column; justify-content: center; gap: 8px; height: 190px; padding: 16px; border: 0; border-radius: 20px; background: var(--m3d-surface); text-align: center; }
     .jt__row--head { display: none; }
-    .jt__row > :not(.jt__thumb):not(.jt__name) { display: none; }
+    .jt__row > :not(.jt__check):not(.jt__thumb):not(.jt__name) { display: none; }
+    .jt__check { position: absolute; align-self: flex-start; height: auto; }
     .jt__thumb { width: 92px; height: 92px; }
     .jt__name { width: 100%; }
   }
