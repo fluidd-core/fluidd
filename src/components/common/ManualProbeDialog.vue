@@ -128,6 +128,8 @@ import ToolheadMixin from '@/mixins/toolhead'
 import { cloudState } from '@/services/muon-cloud/state'
 import M3Dialog from '@/components/ui/M3Dialog.vue'
 
+const BISECT_MAX = 0.2
+
 /**
  * Klipper's manual probe (PROBE_CALIBRATE, Z_ENDSTOP_CALIBRATE): the paper
  * test, as Maintenance's First layer height runs it. Closer and Away move
@@ -199,13 +201,18 @@ export default class ManualProbeDialog extends Mixins(TypedCommandsMixin, Toolhe
   }
 
   stepLabel (step: string): string {
+    const current = this.manualProbe.z_position
     const lower = this.manualProbe.z_position_lower
     const upper = this.manualProbe.z_position_upper
-    if (step === '--') return lower == null ? 'Closer by up to 0.2 mm' : `Back to ${lower.toFixed(3)} mm`
-    if (step === '-') return lower == null ? 'Closer by up to 0.2 mm' : `Halfway to ${lower.toFixed(3)} mm`
-    if (step === '+') return upper == null ? 'Away by up to 0.2 mm' : `Halfway to ${upper.toFixed(3)} mm`
-    if (step === '++') return upper == null ? 'Away by up to 0.2 mm' : `Back to ${upper.toFixed(3)} mm`
-    return step
+    if (!Number.isFinite(current) || !['--', '-', '+', '++'].includes(step)) return step
+
+    const closer = step.startsWith('-')
+    const neighbour = closer ? lower : upper
+    let target = neighbour
+    if (target == null) target = closer ? -Number.MAX_VALUE : Number.MAX_VALUE
+    if (step.length === 1) target = (target + current) / 2
+    target = closer ? Math.max(target, current - BISECT_MAX) : Math.min(target, current + BISECT_MAX)
+    return `To ${target.toFixed(3)} mm (${closer ? 'closer' : 'away'})`
   }
 
   sendAbort () {

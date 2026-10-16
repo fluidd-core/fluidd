@@ -53,25 +53,16 @@ it('opens Finer steps with the reported tried range without a mode', async () =>
   wrapper.destroy()
 })
 
-it('describes bracket steps using the neighbouring tried heights', async () => {
-  const { wrapper } = show()
-  await wrapper.find('[data-tid="manual-probe-finer"]').trigger('click')
-  expect(wrapper.find('[data-step="--"]').text()).toBe('Back to 1.900 mm')
-  expect(wrapper.find('[data-step="-"]').text()).toBe('Halfway to 1.900 mm')
-  expect(wrapper.find('[data-step="+"]').text()).toBe('Halfway to 2.100 mm')
-  expect(wrapper.find('[data-step="++"]').text()).toBe('Back to 2.100 mm')
-  wrapper.destroy()
-})
-
-it('describes the bounded bracket step when no neighbouring height exists', async () => {
+it.each([
+  ['near neighbours', 1.9, 2.1, ['To 1.900 mm (closer)', 'To 1.950 mm (closer)', 'To 2.050 mm (away)', 'To 2.100 mm (away)']],
+  ['neighbours beyond the cap', 1, 3, ['To 1.800 mm (closer)', 'To 1.800 mm (closer)', 'To 2.200 mm (away)', 'To 2.200 mm (away)']],
+  ['no neighbours', null, null, ['To 1.800 mm (closer)', 'To 1.800 mm (closer)', 'To 2.200 mm (away)', 'To 2.200 mm (away)']]
+] as const)('describes all bracket targets with %s', async (_, lower, upper, labels) => {
   const { wrapper, state } = show()
-  state.printer.printer.manual_probe.z_position_lower = null
-  state.printer.printer.manual_probe.z_position_upper = null
+  state.printer.printer.manual_probe.z_position_lower = lower
+  state.printer.printer.manual_probe.z_position_upper = upper
   await wrapper.find('[data-tid="manual-probe-finer"]').trigger('click')
-  expect(wrapper.find('[data-step="--"]').text()).toBe('Closer by up to 0.2 mm')
-  expect(wrapper.find('[data-step="-"]').text()).toBe('Closer by up to 0.2 mm')
-  expect(wrapper.find('[data-step="+"]').text()).toBe('Away by up to 0.2 mm')
-  expect(wrapper.find('[data-step="++"]').text()).toBe('Away by up to 0.2 mm')
+  expect(['--', '-', '+', '++'].map(step => wrapper.find(`[data-step="${step}"]`).text())).toEqual(labels)
   wrapper.destroy()
 })
 

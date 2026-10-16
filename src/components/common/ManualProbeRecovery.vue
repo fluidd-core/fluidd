@@ -16,9 +16,10 @@ export default class ManualProbeRecovery extends Mixins(TypedCommandsMixin, Tool
   @Prop({ type: Boolean, default: true }) readonly automatic!: boolean
   shown = false
   revision = 0
+  statusRevision = 0
+  selectedContextStatusRevision = 0
   selectedContext = ''
   activeProbeContext: string | null = null
-  selectedContextWasInactive = false
 
   get recoveryContext (): string { return `${this.commandTarget}|${cloudState.account?.id ?? ''}` }
 
@@ -26,23 +27,33 @@ export default class ManualProbeRecovery extends Mixins(TypedCommandsMixin, Tool
     return `${this.recoveryContext}|${this.isManualProbeActive}|${this.klippyReady}|${this.printerState}`
   }
 
+  get manualProbeStatus () { return this.$store.state.printer.printer.manual_probe }
+
+  @Watch('manualProbeStatus', { deep: true })
+  onManualProbeStatus () {
+    this.statusRevision++
+    this.recover()
+  }
+
   @Watch('recoveryState', { immediate: true })
   async recover () {
     const revision = ++this.revision
     const context = this.recoveryContext
     if (context !== this.selectedContext) {
+      const initialContext = this.selectedContext === ''
       this.selectedContext = context
-      this.selectedContextWasInactive = false
+      this.selectedContextStatusRevision = this.statusRevision + (initialContext ? 0 : 1)
+      this.shown = false
+      // On a later context, the Vuex object still contains the previous
+      // printer's in-place status until Moonraker sends this printer's status.
+      if (!initialContext) return
     }
+    if (this.statusRevision < this.selectedContextStatusRevision) return
     if (!this.isManualProbeActive) {
-      this.selectedContextWasInactive = true
       if (this.activeProbeContext === context) this.activeProbeContext = null
-    } else if (this.activeProbeContext === null || this.selectedContextWasInactive) {
-      // A context may claim the probe only initially or after its own state
-      // reported inactive. This prevents the previous target's stale `true`
-      // from being rebound while Vuex changes printer/account sessions.
+    } else {
+      // Only the initial context or a fresh status update may claim the probe.
       this.activeProbeContext = context
-      this.selectedContextWasInactive = false
     }
     this.shown = false
     // Destroy the old dialog before opening one for the verified context.
