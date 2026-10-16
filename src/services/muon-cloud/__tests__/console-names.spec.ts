@@ -55,9 +55,8 @@ describe('a page the console serves under its other name', () => {
     expect(url.searchParams.get('next')).toBe('/authorize?client_id=fluidd&state=s')
   })
 
-  it('leaves a handoff on another console where it is', () => {
-    const url = new URL(handoffUrl('https://staging-app.muon3d.com/handoff?code=h4nd', null))
-    expect(url.origin).toBe('https://staging-app.muon3d.com')
+  it('refuses a handoff on another console', () => {
+    expect(() => handoffUrl('https://staging-app.muon3d.com/handoff?code=h4nd', null)).toThrow('wrong origin')
   })
 })
 

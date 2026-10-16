@@ -266,7 +266,8 @@ export function safeContinue (value: unknown): string | null {
 export function handoffUrl (handoff: string, next: string | null): string {
   const base = cloudBaseUrl()
   const given = new URL(handoff, base)
-  const url = sameConsole(given.origin, base) ? new URL(`${given.pathname}${given.search}`, base) : given
+  if (!sameConsole(given.origin, base)) throw new Error('The sign-in handoff came from the wrong origin.')
+  const url = new URL(`${given.pathname}${given.search}`, base)
   url.searchParams.set('next', next ?? '/')
   return url.toString()
 }
