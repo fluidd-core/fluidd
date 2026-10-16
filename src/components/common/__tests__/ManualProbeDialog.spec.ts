@@ -53,6 +53,28 @@ it('opens Finer steps with the reported tried range without a mode', async () =>
   wrapper.destroy()
 })
 
+it('describes bracket steps using the neighbouring tried heights', async () => {
+  const { wrapper } = show()
+  await wrapper.find('[data-tid="manual-probe-finer"]').trigger('click')
+  expect(wrapper.find('[data-step="--"]').text()).toBe('Back to 1.900 mm')
+  expect(wrapper.find('[data-step="-"]').text()).toBe('Halfway to 1.900 mm')
+  expect(wrapper.find('[data-step="+"]').text()).toBe('Halfway to 2.100 mm')
+  expect(wrapper.find('[data-step="++"]').text()).toBe('Back to 2.100 mm')
+  wrapper.destroy()
+})
+
+it('describes the bounded bracket step when no neighbouring height exists', async () => {
+  const { wrapper, state } = show()
+  state.printer.printer.manual_probe.z_position_lower = null
+  state.printer.printer.manual_probe.z_position_upper = null
+  await wrapper.find('[data-tid="manual-probe-finer"]').trigger('click')
+  expect(wrapper.find('[data-step="--"]').text()).toBe('Closer by up to 0.2 mm')
+  expect(wrapper.find('[data-step="-"]').text()).toBe('Closer by up to 0.2 mm')
+  expect(wrapper.find('[data-step="+"]').text()).toBe('Away by up to 0.2 mm')
+  expect(wrapper.find('[data-step="++"]').text()).toBe('Away by up to 0.2 mm')
+  wrapper.destroy()
+})
+
 it('keeps numeric TESTZ semantics, accepts once and aborts on close', async () => {
   const { wrapper } = show()
   await wrapper.find('[aria-label="0.05 mm closer to the plate"]').trigger('click')

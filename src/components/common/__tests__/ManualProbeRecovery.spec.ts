@@ -2,6 +2,7 @@ import Vue from 'vue'
 import { mount } from '@vue/test-utils'
 import { afterEach, expect, it, vi } from 'vitest'
 import ManualProbeRecovery from '../ManualProbeRecovery.vue'
+import ManualProbeDialog from '../ManualProbeDialog.vue'
 import { cloudState } from '@/services/muon-cloud/state'
 
 const socket = vi.hoisted(() => ({ printerGcodeScript: vi.fn() }))
@@ -14,12 +15,18 @@ it.each(['printer', 'account'])('reopens an active paper test after returning to
   const wrapper = mount({ components: { ManualProbeRecovery }, data: () => ({ open: false }), template: '<manual-probe-recovery v-model="open" />' }, { mocks: { $store: { state, getters, dispatch: vi.fn() }, $route: { params: { printer: 'a' } }, $waits: { onManualProbe: 'probe' } }, stubs: { 'v-dialog': { template: '<div><slot /></div>' }, 'frame-icon': true, 'v-progress-circular': true } })
   await Vue.nextTick(); await Vue.nextTick()
   expect(wrapper.find('[data-tid="manual-probe-accept"]').exists()).toBe(true)
+  const oldDialog = wrapper.findComponent(ManualProbeDialog).vm as any
   if (kind === 'printer') state.config.apiUrl = 'http://b.local'
   else cloudState.account = { id: 'other', name: 'Other', email: 'other@example.test', created_at: 1 }
   await Vue.nextTick(); await Vue.nextTick()
+  expect(wrapper.find('[data-tid="manual-probe-accept"]').exists()).toBe(false)
+  oldDialog.sendAccept()
   expect(socket.printerGcodeScript).not.toHaveBeenCalled()
+  getters['printer/getIsManualProbeActive'] = false
+  await Vue.nextTick()
   if (kind === 'printer') state.config.apiUrl = 'http://a.local'
   else cloudState.account = null
+  getters['printer/getIsManualProbeActive'] = true
   await Vue.nextTick(); await Vue.nextTick(); await Vue.nextTick()
   expect(wrapper.find('[data-tid="manual-probe-abort"]').exists()).toBe(true)
   await wrapper.find('[data-tid="manual-probe-abort"]').trigger('click')

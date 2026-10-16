@@ -199,7 +199,13 @@ export default class ManualProbeDialog extends Mixins(TypedCommandsMixin, Toolhe
   }
 
   stepLabel (step: string): string {
-    return ({ '--': 'Last closer height', '-': 'Halfway closer', '+': 'Halfway away', '++': 'Last away height' } as Record<string, string>)[step]
+    const lower = this.manualProbe.z_position_lower
+    const upper = this.manualProbe.z_position_upper
+    if (step === '--') return lower == null ? 'Closer by up to 0.2 mm' : `Back to ${lower.toFixed(3)} mm`
+    if (step === '-') return lower == null ? 'Closer by up to 0.2 mm' : `Halfway to ${lower.toFixed(3)} mm`
+    if (step === '+') return upper == null ? 'Away by up to 0.2 mm' : `Halfway to ${upper.toFixed(3)} mm`
+    if (step === '++') return upper == null ? 'Away by up to 0.2 mm' : `Back to ${upper.toFixed(3)} mm`
+    return step
   }
 
   sendAbort () {

@@ -16,6 +16,9 @@ export default class ManualProbeRecovery extends Mixins(TypedCommandsMixin, Tool
   @Prop({ type: Boolean, default: true }) readonly automatic!: boolean
   shown = false
   revision = 0
+  selectedContext = ''
+  activeProbeContext: string | null = null
+  selectedContextWasInactive = false
 
   get recoveryContext (): string { return `${this.commandTarget}|${cloudState.account?.id ?? ''}` }
 
@@ -26,10 +29,26 @@ export default class ManualProbeRecovery extends Mixins(TypedCommandsMixin, Tool
   @Watch('recoveryState', { immediate: true })
   async recover () {
     const revision = ++this.revision
+    const context = this.recoveryContext
+    if (context !== this.selectedContext) {
+      this.selectedContext = context
+      this.selectedContextWasInactive = false
+    }
+    if (!this.isManualProbeActive) {
+      this.selectedContextWasInactive = true
+      if (this.activeProbeContext === context) this.activeProbeContext = null
+    } else if (this.activeProbeContext === null || this.selectedContextWasInactive) {
+      // A context may claim the probe only initially or after its own state
+      // reported inactive. This prevents the previous target's stale `true`
+      // from being rebound while Vuex changes printer/account sessions.
+      this.activeProbeContext = context
+      this.selectedContextWasInactive = false
+    }
     this.shown = false
-    // Destroy the old dialog before capturing the newly selected context.
+    // Destroy the old dialog before opening one for the verified context.
     await this.$nextTick()
-    if (revision === this.revision && this.automatic && this.isManualProbeActive && this.klippyReady && !this.printerPrinting && !this.printerPaused) this.shown = true
+    if (revision === this.revision && context === this.recoveryContext && context === this.activeProbeContext &&
+      this.automatic && this.isManualProbeActive && this.klippyReady && !this.printerPrinting && !this.printerPaused) this.shown = true
   }
 
   @Watch('value')
