@@ -30,8 +30,8 @@
       <div class="admin-pane">
         <header class="admin-heading">
           <div>
-            <h1>{{ section === 'accounts' ? 'Accounts' : 'Audit log' }}</h1><p class="muted">
-              Staff tools · Read only
+            <h1>{{ sections.find(item => item.id === section)?.label }}</h1><p class="muted">
+              Staff tools
             </p>
           </div>
           <button
@@ -81,7 +81,16 @@
           <p class="admin-notice">
             Searches and audit reads are recorded with your account and reason.
           </p>
+          <admin-moderation
+            v-if="section === 'queue' || section === 'reservations'"
+            :key="section"
+            :section="section"
+            :actor="actor"
+            @spent="spent"
+            @expired="lock"
+          />
           <form
+            v-else
             class="admin-card"
             @submit.prevent="read(false)"
           >
@@ -143,6 +152,13 @@
                 <dt>Deletion date</dt><dd>{{ date(account.delete_after) }}</dd>
               </template>
             </dl>
+            <admin-account-actions
+              v-if="account.admin_version !== undefined"
+              :key="account.id + ':' + account.admin_version"
+              :account="account"
+              @spent="spent"
+              @expired="lock"
+            />
           </section>
           <section
             v-if="entries.length"
@@ -179,10 +195,13 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { adminAvailable, confirmStaff, lookupAccount, readAudit, AdminError, type AdminAccount, type AuditEntry } from '@/services/admin/client'
 import { storedToken } from '@/services/muon-cloud/api'
+import AdminModeration from '@/components/admin/AdminModeration.vue'
+import AdminAccountActions from '@/components/admin/AdminAccountActions.vue'
 
-@Component
+@Component({ components: { AdminModeration, AdminAccountActions } })
 export default class Admin extends Vue {
-  sections = [{ id: 'accounts', label: 'Accounts' }, { id: 'audit', label: 'Audit log' }]
+  sections = [{ id: 'accounts', label: 'Accounts' }, { id: 'audit', label: 'Audit log' }, { id: 'queue', label: 'Review queue' }, { id: 'reservations', label: 'Handle reservations' }]
+  actor = ''
   section = 'accounts'
   source: 'console' | 'community' = 'console'
   query = ''
@@ -208,6 +227,7 @@ export default class Admin extends Vue {
   hidden () { if (document.hidden) this.lock() }
   clearResults () { this.revision++; this.account = null; this.entries = []; this.next = null; this.message = ''; this.busy = false }
   lock () { this.clearResults(); this.expires = 0; this.query = ''; this.reason = ''; this.busy = false; this.message = 'Confirm staff access to continue.' }
+  spent (message: string) { this.lock(); this.message = message }
   changeSection (section: string) { this.clearResults(); this.section = section }
   date (seconds: number): string { return new Date(seconds * 1000).toLocaleString() }
   failure (error: unknown) {
@@ -223,7 +243,7 @@ export default class Admin extends Vue {
     try {
       const result = await confirmStaff()
       if (revision !== this.revision || result.staff_expires_at * 1000 <= Date.now()) return
-      this.expires = result.staff_expires_at; this.token = storedToken()
+      this.expires = result.staff_expires_at; this.token = storedToken(); this.actor = result.actor
     } catch (error) { if (revision === this.revision) this.failure(error) } finally { if (revision === this.revision) this.busy = false }
   }
 

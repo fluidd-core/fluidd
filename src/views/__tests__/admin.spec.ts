@@ -15,6 +15,11 @@ const settle = async () => { for (let i = 0; i < 8; i++) await Promise.resolve()
 afterEach(() => { vi.clearAllMocks(); vi.useRealTimers() })
 
 describe('staff read-only page', () => {
+  it('keeps moderation queues on the hosted staff page', () => {
+    const w = mountPage()
+    expect(w.findAll('nav button').wrappers.map(b => b.text())).toContain('Review queue')
+    w.destroy()
+  })
   it('lets staff start a new read when they switch sections during a request', async () => {
     vi.mocked(api.confirmStaff).mockResolvedValue({ actor: 'staff', staff_expires_at: Date.now() / 1000 + 120 })
     let answer!: (v: api.Lookup) => void
