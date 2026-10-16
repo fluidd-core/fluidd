@@ -361,7 +361,8 @@ async function completeCentralSignIn (): Promise<string | null> {
  * if this load is the return from one. Answers the hash route to go back to,
  * or null.
  */
-export async function initCloud (): Promise<string | null> {
+export async function initCloud (sessionCheck?: Promise<void>): Promise<string | null> {
+  await sessionCheck
   const returnTo = await completeCentralSignIn()
   const token = storedToken()
   if (token) {
@@ -382,8 +383,8 @@ export async function signIn (email: string, password: string) {
   await adoptSession(token, account)
 }
 
-export async function signUp (email: string, password: string, name: string) {
-  const { token, account } = await cloudApi.signUp(email, password, name)
+export async function signUp (email: string, password: string, name: string, declaredAge?: number) {
+  const { token, account } = await cloudApi.signUp(email, password, name, declaredAge)
   await adoptSession(token, account)
 }
 

@@ -317,15 +317,18 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, TypedCo
         list.push({ id: 'shutdown', group: 'Do', label: "Shut down the printer's computer", words: 'shutdown host power off', icon: 'power', run: () => this.hostCommand('shutdown') })
       }
     }
-    list.push({
-      id: 'pro',
-      group: 'Do',
-      label: this.pro ? 'Turn Pro off' : 'Turn Pro on',
-      words: 'pro mode advanced exact raw',
-      keys: ['Shift', 'X'],
-      icon: 'control',
-      run: () => setProMode(!this.pro)
-    })
+    // No Pro on a page with no mode (Slice): it would change nothing there.
+    if (this.proSwitchShown) {
+      list.push({
+        id: 'pro',
+        group: 'Do',
+        label: this.pro ? 'Turn Pro off' : 'Turn Pro on',
+        words: 'pro mode advanced exact raw',
+        keys: ['Shift', 'X'],
+        icon: 'control',
+        run: () => setProMode(!this.pro)
+      })
+    }
     list.push({ id: 'keys', group: 'Do', label: 'Keyboard shortcuts', words: 'keys cheat sheet help', keys: ['?'], icon: 'keyboard', run: () => { EventBus.bus.$emit('keyboard-shortcuts') } })
     return list
   }
