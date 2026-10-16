@@ -53,11 +53,19 @@ export default class TypedCommandsMixin extends Mixins(StateMixin) {
     const batch = inspectTypedGcode(gcode, this.$store.state.printer.printer.configfile)
     this.commandRefusal = batch.refusal ?? ''
     if (this.commandRefusal) return false
+    if (batch.savesConfig && (!this.klippyConnected || !this.klippyReady)) {
+      this.commandRefusal = 'Not sent. Klipper must be running to save settings.'
+      return false
+    }
     if (!this.klippyConnected && !(batch.restarts && batch.onlyRestarts)) {
       this.commandRefusal = 'Not sent. Klipper is not connected.'
       return false
     }
     if (batch.restarts && !await this.confirmCommandRestart()) return false
+    if (batch.savesConfig && (!this.klippyConnected || !this.klippyReady)) {
+      this.commandRefusal = 'Not sent. Klipper must be running to save settings.'
+      return false
+    }
     if (!this.klippyConnected && !batch.onlyRestarts) {
       this.commandRefusal = 'Not sent. Klipper is not connected.'
       return false

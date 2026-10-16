@@ -149,6 +149,70 @@ describe.each([Console, OverviewConsole])('typed batch submission', component =>
     wrapper.destroy()
   })
 
+  it.each([
+    ['disconnected', false, false, 'disconnected'],
+    ['not ready', true, false, 'startup'],
+    ['shutdown', false, false, 'shutdown']
+  ] as const)('refuses SAVE_CONFIG when Klipper is %s', async (_case, connected, ready, state) => {
+    const wrapper = show(component)
+    wrapper.vm.$store.getters['printer/getKlippyConnected'] = connected
+    wrapper.vm.$store.getters['printer/getKlippyReady'] = ready
+    wrapper.vm.$store.getters['printer/getKlippyState'] = state
+    wrapper.vm.$store.getters['printer/getPrinterState'] = state === 'shutdown' ? 'loading' : 'ready'
+    await wrapper.setData({ command: 'SAVE_CONFIG' })
+    await (wrapper.vm as Console).send()
+    expect(SocketActions.printerGcodeScript).not.toHaveBeenCalled()
+    expect(wrapper.find('[role="alert"]').text()).toContain('Klipper must be running to save settings')
+    wrapper.destroy()
+  })
+
+  it('sends SAVE_CONFIG once when Klipper is ready', async () => {
+    const wrapper = show(component)
+    await wrapper.setData({ command: 'SAVE_CONFIG' })
+    await (wrapper.vm as Console).send()
+    expect(wrapper.vm.$confirm).toHaveBeenCalledTimes(1)
+    expect(SocketActions.printerGcodeScript).toHaveBeenCalledTimes(1)
+    expect(SocketActions.printerGcodeScript).toHaveBeenCalledWith('SAVE_CONFIG', undefined)
+    wrapper.destroy()
+  })
+
+  it('rechecks Klipper readiness after confirming SAVE_CONFIG', async () => {
+    const wrapper = show(component)
+    wrapper.vm.$confirm = vi.fn().mockImplementation(async () => {
+      wrapper.vm.$store.getters['printer/getKlippyReady'] = false
+      return true
+    })
+    await wrapper.setData({ command: 'SAVE_CONFIG' })
+    await (wrapper.vm as Console).send()
+    expect(SocketActions.printerGcodeScript).not.toHaveBeenCalled()
+    expect(wrapper.find('[role="alert"]').text()).toContain('Klipper must be running to save settings')
+    wrapper.destroy()
+  })
+
+  it.each(['RESTART', 'FIRMWARE_RESTART'])('allows %s to recover Klipper from shutdown', async command => {
+    const wrapper = show(component)
+    wrapper.vm.$store.getters['printer/getKlippyConnected'] = false
+    wrapper.vm.$store.getters['printer/getKlippyReady'] = false
+    wrapper.vm.$store.getters['printer/getKlippyState'] = 'shutdown'
+    wrapper.vm.$store.getters['printer/getPrinterState'] = 'loading'
+    await wrapper.setData({ command })
+    await (wrapper.vm as Console).send()
+    expect(SocketActions.printerGcodeScript).toHaveBeenCalledTimes(1)
+    expect(SocketActions.printerGcodeScript).toHaveBeenCalledWith(command, undefined)
+    wrapper.destroy()
+  })
+
+  it('refuses a mixed SAVE_CONFIG batch as a whole when Klipper is not ready', async () => {
+    const wrapper = show(component)
+    wrapper.vm.$store.getters['printer/getKlippyReady'] = false
+    wrapper.vm.$store.getters['printer/getKlippyState'] = 'startup'
+    await wrapper.setData({ command: 'M105\nSAVE_CONFIG' })
+    await (wrapper.vm as Console).send()
+    expect(SocketActions.printerGcodeScript).not.toHaveBeenCalled()
+    expect(wrapper.find('[role="alert"]').text()).toContain('Klipper must be running to save settings')
+    wrapper.destroy()
+  })
+
   it('keeps tuning available during a print', async () => {
     const wrapper = show(component)
     wrapper.vm.$store.getters['printer/getPrinterState'] = 'printing'
