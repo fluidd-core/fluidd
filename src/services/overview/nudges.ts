@@ -26,11 +26,13 @@ export interface NudgeEntry {
   start_time: number
   filename: string
   expected?: number
-  pending?: { created: number; from: number; device?: string; nonce?: string }
+  pending?: { created: number; from: number; step?: number; device?: string; nonce?: string }
 }
 
 export function missingDatabaseKey (error: unknown): boolean {
-  return !!error && typeof error === 'object' && (error as { response?: { status?: number } }).response?.status === 404
+  if (!error || typeof error !== 'object') return false
+  const response = (error as { response?: { status?: number; data?: { error?: { message?: unknown } } } }).response
+  return response?.status === 404 && typeof response.data?.error?.message === 'string' && /database.*(?:key )?not found/i.test(response.data.error.message)
 }
 
 export function readNudgeEntry (value: unknown): NudgeEntry | null | undefined {
@@ -43,9 +45,10 @@ export function readNudgeEntry (value: unknown): NudgeEntry | null | undefined {
   return entry as NudgeEntry
 }
 
-export function expectedCaughtUp (reported: number, expected: number, from: number): boolean {
+export function expectedCaughtUp (reported: number, expected: number, from: number, step?: number): boolean {
   if (![reported, expected, from].every(Number.isFinite)) return false
-  return expected >= from ? reported >= expected - TOLERANCE : reported <= expected + TOLERANCE
+  const target = step === 0.01 || step === -0.01 ? from + step : expected
+  return target >= from ? reported >= target - TOLERANCE : reported <= target + TOLERANCE
 }
 
 export function databasePart (value: string): string {

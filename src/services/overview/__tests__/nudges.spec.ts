@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { firstLayerAllowed, missingDatabaseKey, nudgeBudget, nudgeFits, readNudgeEntry } from '../nudges'
+import { expectedCaughtUp, firstLayerAllowed, missingDatabaseKey, nudgeBudget, nudgeFits, readNudgeEntry } from '../nudges'
 
 it('allows only real M1 layers 1–3 with fresh printing, connection, homing and control', () => {
   const current = { m1: true, layer: 1, printing: true, ready: true, homed: true, waiting: false, identity: 'printer/job' }
@@ -11,9 +11,16 @@ it('allows only real M1 layers 1–3 with fresh printing, connection, homing and
 })
 
 it('recognises only Moonraker-style 404s as absent database keys', () => {
-  expect(missingDatabaseKey({ response: { status: 404 } })).toBe(true)
+  expect(missingDatabaseKey({ response: { status: 404, data: { error: { message: 'Database key not found' } } } })).toBe(true)
+  expect(missingDatabaseKey({ response: { status: 404, data: 'proxy not found' } })).toBe(false)
   expect(missingDatabaseKey({ response: { status: 500 } })).toBe(false)
   expect(missingDatabaseKey(new Error('offline'))).toBe(false)
+})
+
+it('judges both nudge directions relative to an off-grid starting offset', () => {
+  expect(expectedCaughtUp(0.247, 0.247, 0.237, 0.01)).toBe(true)
+  expect(expectedCaughtUp(0.227, 0.227, 0.237, -0.01)).toBe(true)
+  expect(expectedCaughtUp(0.237, 0.247, 0.237, 0.01)).toBe(false)
 })
 
 it('derives the shared total and cap from printer truth relative to the saved baseline', () => {

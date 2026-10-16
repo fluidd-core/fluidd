@@ -38,7 +38,7 @@
     >
       {{ refusal }}
     </p>
-    <small>Layers 1–3 only. Shared limit, best effort; the firmware limit is the real one. These nudges are not saved as calibration.</small>
+    <small>Layers 1–3 only. {{ firmwareNudgeAvailable ? 'The printer enforces the limit.' : "Shared limit, best effort: this printer doesn't enforce one yet." }} These nudges are not saved as calibration.</small>
   </div>
 </template>
 <script lang="ts">
@@ -85,8 +85,16 @@ export default class FirstLayerNudges extends Mixins(OverviewMixin) {
     return !this.pending && this.allowedNow
   }
 
+  get firmwareNudgeAvailable (): boolean { return !!this.$store.getters['printer/getAvailableCommands']?.FIRST_LAYER_NUDGE }
+
   get allowedNow (): boolean {
-    return this.lockingAvailable && this.captured === this.context && firstLayerAllowed({ m1: this.knownM1, identity: this.identity, layer: this.printStats.info?.current_layer ?? NaN, printing: this.printerPrinting && !this.printerPaused && this.$store.state.printer.printer.pause_resume?.is_paused !== true, ready: this.controlReady && !!this.$store.getters['printer/getAvailableCommands']?.SET_GCODE_OFFSET, homed: this.isHomed('Z'), waiting: this.hasWait(this.$waits.onZAdjust) })
+    return this.isAllowedNow()
+  }
+
+  isAllowedNow (): boolean {
+    const commands = this.$store.getters['printer/getAvailableCommands']
+    const roleAllowsControl = !isManagedApiUrl(this.$store.state.config.apiUrl) || this.managedPrinter?.role === 'operator'
+    return this.lockingAvailable && this.captured === this.context && firstLayerAllowed({ m1: this.knownM1, identity: this.identity, layer: this.printStats.info?.current_layer ?? NaN, printing: this.printerPrinting && !this.printerPaused && this.$store.state.printer.printer.pause_resume?.is_paused !== true, ready: roleAllowsControl && this.controlReady && !!(commands?.FIRST_LAYER_NUDGE || commands?.SET_GCODE_OFFSET), homed: this.isHomed('Z'), waiting: this.hasWait(this.$waits.onZAdjust) })
   }
 
   canMove (by: number): boolean { return Number.isFinite(this.reportedOffset) && (this.baseline === null || nudgeFits(this.reportedOffset, this.baseline, by)) }
@@ -138,7 +146,7 @@ export default class FirstLayerNudges extends Mixins(OverviewMixin) {
     const context = this.context
     const execute = async () => {
       // Web Locks can wait: check the actual printer/layer again inside the lock.
-      if (context !== this.context || !this.allowedNow) return
+      if (context !== this.context || !this.isAllowedNow()) return
       const before = this.reportedOffset
       if (!Number.isFinite(before)) { this.refusal = 'No adjustment sent. The printer Z offset is unknown.'; return }
       try {
@@ -159,32 +167,34 @@ export default class FirstLayerNudges extends Mixins(OverviewMixin) {
         this.baseline = entry.baseline
         // Database I/O and Web Locks can wait. Recheck authority, print context,
         // pending adjustment, current printer offset and cap immediately before send.
-        if (context !== this.context || !this.allowedNow) return
-        if (entry.pending && entry.expected !== undefined && !expectedCaughtUp(this.reportedOffset, entry.expected, entry.pending.from) && Date.now() - entry.pending.created <= 5000) {
+        if (context !== this.context || !this.isAllowedNow()) return
+        if (entry.pending && entry.expected !== undefined && !expectedCaughtUp(this.reportedOffset, entry.expected, entry.pending.from, entry.pending.step) && Date.now() - entry.pending.created <= 5000) {
           this.refusal = 'No adjustment sent. A shared nudge is still awaiting printer confirmation.'; return
         }
         if (entry.pending) {
-          entry = { ...entry, expected: entry.expected === undefined ? this.reportedOffset : entry.expected }
+          const printerMoved = Math.abs(this.reportedOffset - entry.pending.from) > 1e-8
+          entry = { ...entry, expected: printerMoved || entry.expected === undefined ? this.reportedOffset : entry.expected }
           delete entry.pending
           await this.pruneAndWrite(entry)
-          if (context !== this.context || !this.allowedNow) return
+          if (context !== this.context || !this.isAllowedNow()) return
         }
         const effectiveOffset = entry.expected === undefined ? this.reportedOffset : Math.abs(entry.expected - entry.baseline) > Math.abs(this.reportedOffset - entry.baseline) ? entry.expected : this.reportedOffset
         if (!nudgeFits(effectiveOffset, entry.baseline, by)) {
           this.refusal = 'No adjustment sent. The shared 0.10 mm allowance would be exceeded.'; return
         }
         const nonce = `${Date.now()}-${Math.random()}`
-        const reserved: NudgeEntry = { ...entry, expected: Math.round((effectiveOffset + by) * 100) / 100, pending: { created: Date.now(), from: this.reportedOffset, device: this.deviceId, nonce } }
+        const reserved: NudgeEntry = { ...entry, expected: effectiveOffset + by, pending: { created: Date.now(), from: this.reportedOffset, step: by, device: this.deviceId, nonce } }
         await this.pruneAndWrite(reserved)
         const confirmed = await this.readSharedEntry()
-        if (context !== this.context || !this.allowedNow || !confirmed || !this.entryMatches(confirmed) || confirmed.expected !== reserved.expected || confirmed.pending?.device !== this.deviceId || confirmed.pending?.nonce !== nonce || confirmed.pending?.from !== this.reportedOffset) {
+        if (context !== this.context || !this.isAllowedNow() || !confirmed || !this.entryMatches(confirmed) || confirmed.expected !== reserved.expected || confirmed.pending?.device !== this.deviceId || confirmed.pending?.nonce !== nonce || confirmed.pending?.from !== this.reportedOffset) {
           this.refusal = 'No adjustment sent. The shared nudge reservation was not confirmed.'; return
         }
       } catch {
         this.refusal = 'No adjustment sent. The shared nudge database is unavailable.'; return
       }
       this.refusal = ''
-      this.adjustZ(by)
+      if (this.firmwareNudgeAvailable) this.sendGcode(`FIRST_LAYER_NUDGE DIRECTION=${by < 0 ? 'CLOSER' : 'FURTHER'}`, this.$waits.onZAdjust)
+      else this.adjustZ(by)
     }
     this.pending = true
     try {

@@ -14,7 +14,7 @@ vi.mock('@/api/httpClientActions', () => ({ httpClientActions: http }))
 const originalLocks = navigator.locks
 let database: Record<string, any>
 
-const missing = () => Object.assign(new Error('Request failed with status code 404'), { response: { status: 404 } })
+const missing = () => Object.assign(new Error('Request failed with status code 404'), { response: { status: 404, data: { error: { message: 'Database key not found' } } } })
 
 async function fakeGet (_namespace: string, options: any) {
   const value = options.params.key.split('.').reduce((v: any, p: string) => v?.[p], database)
@@ -40,14 +40,14 @@ afterEach(() => {
   cloudState.printers = []; cloudState.activePrinterId = null; printerTransportBinding.remote = false
 })
 
-function show () {
+function show (firmwareNudge = false) {
   const store = panelStore()
   store.state.config.apiUrl = 'https://muon-cloud.invalid'
   Vue.set(store.state, 'history', { jobs: [{ job_id: 'run-1', filename: 'part.gcode', start_time: 100, status: 'in_progress', end_time: null }] })
   Vue.set(store.state.printer.printer, 'print_stats', { filename: 'part.gcode', info: { current_layer: 1 } })
   Vue.set(store.state.printer.printer.gcode_move, 'homing_origin', [0, 0, 0, 0])
   store.getters['printer/getPrinterState'] = 'printing'
-  store.getters['printer/getAvailableCommands'] = { SET_GCODE_OFFSET: {} }
+  store.getters['printer/getAvailableCommands'] = { SET_GCODE_OFFSET: {}, ...(firmwareNudge ? { FIRST_LAYER_NUDGE: {} } : {}) }
   cloudState.printers = [{ id: 'p', role: 'operator', model: 'M1' }] as any
   cloudState.activePrinterId = 'p'; printerTransportBinding.remote = true
   const wrapper = mount(FirstLayerNudges, { mocks: { $store: store, $waits: { onZAdjust: 'adjust' } } })
@@ -136,16 +136,71 @@ it('sends after the final rechecks when authority and printer state stay valid',
   device.wrapper.destroy()
 })
 
-it('clears an expired pending marker without forgetting its expected offset', async () => {
+it.each(['layer', 'role', 'pause'])('rechecks %s on the reservation read-back', async (change) => {
+  const device = show(true)
+  atPath(device.vm.databaseKey, { baseline: 0, start_time: 100, filename: 'part.gcode' })
+  http.serverDatabaseItemGet.mockImplementation(async (...args: any[]) => {
+    const response = await fakeGet(args[0], args[1])
+    if (response.data.result.value?.pending?.device === device.vm.deviceId) {
+      if (change === 'layer') device.store.state.printer.printer.print_stats.info.current_layer = 4
+      if (change === 'role') cloudState.printers[0].role = 'viewer'
+      if (change === 'pause') Vue.set(device.store.state.printer.printer, 'pause_resume', { is_paused: true })
+    }
+    return response
+  })
+  await device.vm.nudge(0.01)
+  expect(socket.printerGcodeScript).not.toHaveBeenCalled()
+  device.wrapper.destroy()
+})
+
+it('refuses when another device overwrites this reservation before read-back', async () => {
+  const device = show()
+  atPath(device.vm.databaseKey, { baseline: 0, start_time: 100, filename: 'part.gcode' })
+  http.serverDatabaseItemGet.mockImplementation(async (...args: any[]) => {
+    const response = await fakeGet(args[0], args[1])
+    if (response.data.result.value?.pending?.device === device.vm.deviceId) response.data.result.value.pending.nonce = 'other-nonce'
+    return response
+  })
+  await device.vm.nudge(0.01)
+  expect(socket.printerGcodeScript).not.toHaveBeenCalled()
+  expect(device.vm.refusal).toContain('reservation was not confirmed')
+  device.wrapper.destroy()
+})
+
+it.each([
+  [true, -0.01, 'FIRST_LAYER_NUDGE DIRECTION=CLOSER'],
+  [true, 0.01, 'FIRST_LAYER_NUDGE DIRECTION=FURTHER'],
+  [false, -0.01, 'SET_GCODE_OFFSET Z_ADJUST=-0.01 MOVE=1'],
+  [false, 0.01, 'SET_GCODE_OFFSET Z_ADJUST=+0.01 MOVE=1']
+])('uses the firmware macro when available=%s for step %s', async (macro, by, command) => {
+  const device = show(macro)
+  await device.vm.nudge(by)
+  expect(socket.printerGcodeScript).toHaveBeenCalledWith(command, 'adjust')
+  expect(device.wrapper.text()).toContain(macro ? 'The printer enforces the limit.' : "Shared limit, best effort: this printer doesn't enforce one yet.")
+  device.wrapper.destroy()
+})
+
+it('handles consecutive nudges from an off-grid baseline in both directions without stale waits', async () => {
+  const device = show()
+  device.store.state.printer.printer.gcode_move.homing_origin.splice(2, 1, 0.237)
+  for (const by of [0.01, 0.01, -0.01, -0.01]) {
+    await device.vm.nudge(by)
+    const origin = device.store.state.printer.printer.gcode_move.homing_origin
+    origin.splice(2, 1, origin[2] + by)
+  }
+  expect(socket.printerGcodeScript).toHaveBeenCalledTimes(4)
+  device.wrapper.destroy()
+})
+
+it('drops a stale expected offset after timeout once the printer has moved', async () => {
   const device = show()
   atPath(device.vm.databaseKey, { baseline: 0, start_time: 100, filename: 'part.gcode', expected: 0.1, pending: { created: Date.now() - 6000, from: 0, device: 'other', nonce: 'old' } })
+  device.store.state.printer.printer.gcode_move.homing_origin.splice(2, 1, 0.02)
   await device.vm.nudge(-0.01)
   expect(socket.printerGcodeScript).toHaveBeenCalledTimes(1)
-  expect(database.firstLayerNudges.p['run-1'].expected).toBe(0.09)
-  device.store.state.printer.printer.gcode_move.homing_origin.splice(2, 1, 0.09)
-  await device.vm.nudge(0.01)
-  device.store.state.printer.printer.gcode_move.homing_origin.splice(2, 1, 0.1)
-  await device.vm.nudge(0.01)
+  expect(database.firstLayerNudges.p['run-1'].expected).toBeCloseTo(0.01)
+  device.store.state.printer.printer.gcode_move.homing_origin.splice(2, 1, 0.01)
+  await device.vm.nudge(-0.01)
   expect(socket.printerGcodeScript).toHaveBeenCalledTimes(2)
   device.wrapper.destroy()
 })
