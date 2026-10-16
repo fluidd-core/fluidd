@@ -109,6 +109,13 @@
             class="soft__why"
           >{{ installBlocked }}</span>
         </div>
+        <p
+          v-if="installRefusal"
+          class="soft__note soft__note--warn"
+          data-tid="software-install-refusal"
+        >
+          {{ installRefusal }}
+        </p>
       </template>
     </section>
 
@@ -189,6 +196,7 @@ interface OtherComponent {
 export default class SoftwareSettings extends Mixins(TypedCommandsMixin) {
   checking = false
   otherSoftwareOpen = false
+  installRefusal = ''
 
   mounted () {
     poll()
@@ -267,7 +275,9 @@ export default class SoftwareSettings extends Mixins(TypedCommandsMixin) {
   }
 
   get installBlocked (): string {
-    if (this.printerPrinting || this.printerPaused) return 'Not while printing.'
+    if (!this.commandControlAvailable) return 'Connect to a printer you can control first.'
+    if (!this.klippyConnected) return 'Klipper is not connected.'
+    if (this.printerBusy) return 'Not while printing.'
     if (this.active) return 'An update is already under way.'
     if (this.status?.requires_commit) return 'The printer is still checking the last update.'
     return ''
@@ -288,14 +298,25 @@ export default class SoftwareSettings extends Mixins(TypedCommandsMixin) {
   }
 
   async install () {
+    this.installRefusal = this.installBlocked
     if (!this.canInstall) return
+    this.installRefusal = ''
+    const target = this.commandTarget
+    const component = this.otaKey
+    const fromVersion = this.status?.current_version ?? null
+    const toVersion = this.status?.target_version ?? null
     const ok = await this.$confirm(
       `${this.printerName} writes the new version while it keeps working, then restarts into it, which takes a few minutes. Don't turn it off until it is back.`,
       { title: 'Install the update now?', buttonTrueText: 'Install', buttonFalseText: 'Not now' }
     )
-    if (!ok || !this.canInstall) return
-    installStarted(this.status?.current_version ?? null, this.status?.target_version ?? null)
-    SocketActions.machineUpdateClient(this.otaKey)
+    if (!ok) return
+    if (target !== this.commandTarget) this.installRefusal = 'Not sent. The selected printer or account changed. Try again.'
+    else if (component !== this.otaKey) this.installRefusal = 'Not sent. The update component changed. Check again.'
+    else if (fromVersion !== (this.status?.current_version ?? null) || toVersion !== (this.status?.target_version ?? null)) this.installRefusal = 'Not sent. The available version changed. Check again.'
+    else if (!this.available || this.installBlocked) this.installRefusal = `Not sent. ${this.installBlocked || 'The update is no longer available.'}`
+    if (this.installRefusal) return
+    SocketActions.machineUpdateClient(component)
+    installStarted(fromVersion, toVersion)
     this.$router.push(this.updatingTo).catch(() => undefined)
   }
 
