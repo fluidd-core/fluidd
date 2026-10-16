@@ -29,7 +29,7 @@ function show (component: any = MaintenanceChecks) {
   const wrapper = mount(component, {
     mocks: { $store: store, $waits: { ...waits, onSaveConfig: 'save', onQueryProbe: 'query', onProbeAccuracy: 'accuracy' }, $confirm: confirm, $route: route },
     computed: { isMobileViewport: () => false },
-    stubs: panelStubs
+    stubs: { ...panelStubs, 'router-link': { template: '<a><slot /></a>' } }
   })
   return { wrapper, store, route, confirm, vm: wrapper.vm as any }
 }

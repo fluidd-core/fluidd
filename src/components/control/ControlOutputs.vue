@@ -1,6 +1,6 @@
 <template>
   <control-card
-    :title="outputsOnly ? 'Outputs' : 'Outputs and sensors'"
+    :title="diagnosticsOnly ? 'Switches and sensors' : outputsOnly ? 'Outputs' : 'Outputs and sensors'"
     :locked="controlLock"
     data-tid="control-outputs"
   >
@@ -62,7 +62,7 @@
       >
         <span class="crow__name">
           {{ sensor.prettyName }}
-          <span class="crow__sub">· {{ !sensor.enabled ? 'off' : sensor.filament_detected ? 'filament in' : 'no filament' }}</span>
+          <span class="crow__sub">· {{ typeof sensor.enabled !== 'boolean' || typeof sensor.filament_detected !== 'boolean' ? 'Unknown' : !sensor.enabled ? 'off' : sensor.filament_detected ? 'filament in' : 'no filament' }}</span>
           <span
             v-if="sensor.role === 'loads'"
             class="outs__why"
@@ -76,7 +76,7 @@
           v-else
           :value="sensor.enabled"
           :label="`${sensor.prettyName} on`"
-          :disabled="!controlReady || (sensor.enabled && sensor.role !== 'runout')"
+          :disabled="!controlReady || typeof sensor.enabled !== 'boolean' || (sensor.enabled && sensor.role !== 'runout')"
           @input="setSensor(sensor.name, $event)"
         />
       </div>
@@ -108,7 +108,7 @@
         <span
           class="outs__state"
           :class="{ 'outs__state--hit': endstop.state === 'triggered' }"
-        >{{ endstop.state === 'triggered' ? 'Triggered' : 'Open' }}</span>
+        >{{ endstop.state === 'triggered' ? 'Triggered' : endstop.state === 'open' ? 'Open' : 'Unknown' }}</span>
       </div>
       <p
         v-if="!endstops.length"
@@ -197,17 +197,20 @@ export default class ControlOutputs extends Mixins(ControlMixin) {
     return this.$store.getters['printer/getProbe'] as Probe | undefined
   }
 
+  requested = false
+
   get endstops (): Endstop[] {
+    if (!this.requested) return []
     const endstops = [...((this.$store.getters['printer/getEndstops'] as Endstop[]) ?? [])]
-    if (endstops.length && this.probe) endstops.push({ name: 'Probe', state: this.probe.last_query ? 'triggered' : 'open' })
     // Klipper says open, or TRIGGERED in capitals.
     return endstops.map(e => ({ name: e.name === 'Probe' ? e.name : e.name.toUpperCase(), state: String(e.state).toLowerCase() }))
   }
 
   checkEndstops () {
     if (!this.controlReady) return
+    this.$store.commit('printer/setClearEndStops')
+    this.requested = true
     SocketActions.printerQueryEndstops()
-    if (this.probe) this.sendGcode('QUERY_PROBE', this.$waits.onQueryProbe)
   }
 
   /** A reading goes stale: leaving the page clears it, as Fluidd's own panel does. */
