@@ -105,6 +105,15 @@ export const actions: ActionTree<ServerState, RootState> = {
 
     commit('setServerInfo', payload)
 
+    // An M1 registers `config` only in developer mode; otherwise the printer's
+    // configuration is the read-only `defaults` root. Asking for a root that
+    // isn't there fails with "Failed to build file list, invalid path:
+    // config: None", which every fresh printer showed as an error toast. Once
+    // per connection: this handler repeats while Klippy is starting.
+    if (state.klippy_retries === 0 && payload.registered_directories?.includes('config')) {
+      SocketActions.serverFilesListRoot('config')
+    }
+
     dispatch('checkMoonrakerMinVersion')
 
     if (payload.klippy_state !== 'ready') {
