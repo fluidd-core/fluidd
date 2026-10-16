@@ -2,12 +2,44 @@
   <div
     class="camera-page"
     data-tid="camera-page"
+    @keydown.esc="closeDetails"
   >
+    <div
+      v-if="camera"
+      class="camera-details-bar"
+    >
+      <strong data-tid="camera-details-name">{{ camera.name || 'Camera' }}</strong>
+      <button
+        ref="detailsTrigger"
+        type="button"
+        class="camera-details-trigger"
+        data-tid="camera-details-trigger"
+        :aria-expanded="detailsOpen ? 'true' : 'false'"
+        aria-controls="camera-details"
+        @click="toggleDetails"
+      >
+        Stream info
+      </button>
+      <dl
+        v-show="detailsOpen"
+        id="camera-details"
+        ref="detailsPanel"
+        class="camera-details"
+        tabindex="-1"
+        aria-label="Stream information"
+      >
+        <div><dt>Service</dt><dd>{{ detail(camera.service) }}</dd></div>
+        <div><dt>Stream</dt><dd>{{ displayUrl(camera.stream_url) }}</dd></div>
+        <div><dt>Snapshot</dt><dd>{{ displayUrl(camera.snapshot_url) }}</dd></div>
+        <div><dt>Frame rate</dt><dd>{{ frameRate }}</dd></div>
+        <div><dt>Turned</dt><dd>{{ turnedText || 'Unknown' }}</dd></div>
+      </dl>
+    </div>
+
     <div
       v-if="camera"
       ref="stage"
       class="camera-stage"
-      :class="{ 'camera-stage--pro': pro }"
       data-tid="camera-stage"
     >
       <camera-item
@@ -87,40 +119,12 @@
           Timelapses of finished prints are in
           <router-link :to="timelapseTo">Jobs › Timelapse</router-link>.
         </template>
-        {{ pro ? '' : 'Pro shows the stream\'s address and frame rate.' }}
       </span>
       <span
         v-if="hasLights && !lightsOn"
         class="camera-notes__aside"
       >Lights off makes the picture dark</span>
     </p>
-
-    <dl
-      v-if="pro && camera"
-      class="camera-pro"
-      data-tid="camera-pro"
-    >
-      <div>
-        <dt>Service</dt>
-        <dd>{{ camera.service }}</dd>
-      </div>
-      <div v-if="camera.stream_url">
-        <dt>Stream</dt>
-        <dd>{{ camera.stream_url }}</dd>
-      </div>
-      <div v-if="camera.snapshot_url">
-        <dt>Snapshot</dt>
-        <dd>{{ camera.snapshot_url }}</dd>
-      </div>
-      <div v-if="camera.target_fps">
-        <dt>Frame rate</dt>
-        <dd>{{ camera.target_fps }} fps, {{ camera.target_fps_idle }} idle</dd>
-      </div>
-      <div v-if="camera.rotation || camera.flip_horizontal || camera.flip_vertical">
-        <dt>Turned</dt>
-        <dd>{{ turnedText }}</dd>
-      </div>
-    </dl>
   </div>
 </template>
 
@@ -140,11 +144,13 @@ import type { WebcamConfig } from '@/store/webcams/types'
 /**
  * Camera (`/boxwood-367a/camera/front`): the picture as big as the page
  * allows, with what's printing over it and the lights beside it. Snapshot
- * saves a frame; Full screen (F) fills the screen. Pro lists the stream's
- * details under it.
+ * saves a frame; Full screen (F) fills the screen. Stream info opens beside
+ * the camera's name without exposing credentials carried in its addresses.
  */
 @Component({ components: { CameraActions, CameraItem } })
 export default class Camera extends Mixins(OverviewMixin, BrowserMixin) {
+  detailsOpen = false
+
   get cameras (): WebcamConfig[] {
     return this.$store.getters['webcams/getEnabledWebcams'] as WebcamConfig[]
   }
@@ -195,6 +201,36 @@ export default class Camera extends Mixins(OverviewMixin, BrowserMixin) {
     return parts.join(', ')
   }
 
+  get frameRate (): string {
+    const camera = this.camera
+    if (!camera || camera.target_fps == null) return 'Unknown'
+    const idle = camera.target_fps_idle == null ? 'unknown' : camera.target_fps_idle
+    return `${camera.target_fps} fps, ${idle} idle`
+  }
+
+  detail (value: unknown): string {
+    if (value == null || String(value).trim() === '') return 'Unknown'
+    return String(value)
+  }
+
+  displayUrl (value: string | undefined): string {
+    return value ? redactCameraUrl(value) : 'Unknown'
+  }
+
+  toggleDetails () {
+    if (this.detailsOpen) this.closeDetails()
+    else {
+      this.detailsOpen = true
+      this.$nextTick(() => (this.$refs.detailsPanel as HTMLElement | undefined)?.focus())
+    }
+  }
+
+  closeDetails () {
+    if (!this.detailsOpen) return
+    this.detailsOpen = false
+    this.$nextTick(() => (this.$refs.detailsTrigger as HTMLButtonElement | undefined)?.focus())
+  }
+
   mounted () {
     EventBus.bus.$on('camera-snapshot', this.snapshot)
     EventBus.bus.$on('camera-fullscreen', this.fillScreen)
@@ -242,6 +278,23 @@ export default class Camera extends Mixins(OverviewMixin, BrowserMixin) {
     } else {
       EventBus.$emit("This camera's picture can't be saved from here.", { type: 'warning', timeout: 5000 })
     }
+  }
+}
+
+/** Camera addresses may embed basic-auth credentials or arbitrary signed query values. */
+export function redactCameraUrl (value: string): string {
+  try {
+    const absolute = /^[a-z][a-z\d+.-]*:/i.test(value)
+    const url = new URL(value, document.URL)
+    url.username = ''
+    url.password = ''
+    const keys = Array.from(url.searchParams.keys())
+    for (const key of keys) url.searchParams.set(key, '[redacted]')
+    url.hash = ''
+    const shown = absolute ? url.toString() : `${url.pathname}${url.search}`
+    return shown.replace(/%5Bredacted%5D/g, '[redacted]')
+  } catch {
+    return 'Unknown'
   }
 }
 
@@ -298,6 +351,53 @@ function frameOf (element: Element | undefined, turn: Parameters<typeof snapshot
     background: var(--m3d-surface);
   }
 
+  .camera-details-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    min-height: 32px;
+  }
+
+  .camera-details-trigger {
+    padding: 6px 12px;
+    border: 1px solid var(--m3d-border, currentColor);
+    border-radius: 10px;
+    background: var(--m3d-surface);
+    color: var(--m3d-text);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .camera-details {
+    position: absolute;
+    z-index: 5;
+    top: calc(100% + 6px);
+    right: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(160px, 1fr));
+    gap: 12px;
+    width: min(520px, calc(100vw - 32px));
+    margin: 0;
+    padding: 16px 20px;
+    border-radius: 18px;
+    background: var(--m3d-surface);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+
+    dt {
+      color: var(--m3d-text-muted);
+      font-size: 12px;
+    }
+
+    dd {
+      margin: 2px 0 0;
+      font-family: var(--m3d-font-mono, monospace);
+      font-size: 12px;
+      word-break: break-all;
+    }
+  }
+
   .camera-stage:fullscreen {
     border-radius: 0;
     background: #000;
@@ -307,7 +407,7 @@ function frameOf (element: Element | undefined, turn: Parameters<typeof snapshot
     width: 100%;
     background: transparent !important;
 
-    // The tabs name the camera; the stream's details are Pro's, below.
+    // The page header names the camera and offers its stream details.
     :deep(.camera-name),
     :deep(.camera-frames),
     :deep(.camera-fullscreen) {
@@ -430,25 +530,9 @@ function frameOf (element: Element | undefined, turn: Parameters<typeof snapshot
     color: var(--m3d-text-subtle);
   }
 
-  .camera-pro {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 12px;
-    margin: 0;
-    padding: 16px 20px;
-    border-radius: 18px;
-    background: var(--m3d-surface);
-
-    dt {
-      color: var(--m3d-text-muted);
-      font-size: 12px;
-    }
-
-    dd {
-      margin: 2px 0 0;
-      font-family: var(--m3d-font-mono, monospace);
-      font-size: 12px;
-      word-break: break-all;
+  @media (max-width: 600px) {
+    .camera-details {
+      grid-template-columns: 1fr;
     }
   }
 </style>
