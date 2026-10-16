@@ -8,11 +8,16 @@ const pro = { pro: true, components: ['update_manager', 'muon_access', 'timelaps
 const ids = (c: typeof simple) => visibleSettingsSections(c).map(s => s.id)
 
 describe("Settings' sections", () => {
-  it('show the everyday ones in Simple', () => {
-    expect(ids(simple)).toEqual(['general', 'network', 'access', 'updates', 'cameras', 'materials', 'macros', 'developer', 'system'])
+  it('shows every settings section with the legacy Pro value off or on', () => {
+    const expected = [
+      'general', 'network', 'access', 'updates', 'cameras', 'materials', 'macros',
+      'console', 'files', 'toolhead', 'gcodePreview', 'developer', 'system'
+    ]
+    expect(ids(simple)).toEqual(expected)
+    expect(ids({ ...simple, pro: true })).toEqual(expected)
   })
 
-  it("add Pro's screens, and what the printer has", () => {
+  it('adds only the sections backed by printer capabilities', () => {
     expect(ids(pro)).toEqual([
       'general', 'network', 'access', 'updates', 'cameras', 'materials', 'macros', 'timelapse',
       'console', 'files', 'toolhead', 'gcodePreview', 'developer', 'system'
@@ -33,7 +38,7 @@ describe("Settings' sections", () => {
 
   it('open nothing for no anchor, or a section not shown', () => {
     expect(settingsSectionFor('', visibleSettingsSections(simple))).toBeNull()
-    expect(settingsSectionFor('#console', visibleSettingsSections(simple))).toBeNull()
+    expect(settingsSectionFor('#console', visibleSettingsSections(simple))?.id).toBe('console')
   })
 
   it("hold G U's anchor, so the key opens Updates", () => {

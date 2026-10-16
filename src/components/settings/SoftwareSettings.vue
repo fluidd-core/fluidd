@@ -126,17 +126,15 @@
       </div>
     </section>
 
-    <section
-      v-if="pro && others.length"
+    <task-fold
+      v-if="others.length"
+      v-model="otherSoftwareOpen"
+      fold-id="settings-other-software"
+      title="Other software"
+      summary="What else this printer's updater looks after"
       class="soft__panel"
       data-tid="software-others"
     >
-      <header class="soft__head">
-        <div class="soft__titles">
-          <h2>Other software</h2>
-          <p>What else this printer's updater looks after.</p>
-        </div>
-      </header>
       <div
         v-for="c in others"
         :key="c.key"
@@ -156,7 +154,7 @@
           Update
         </button>
       </div>
-    </section>
+    </task-fold>
   </div>
 </template>
 
@@ -164,13 +162,13 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import { proMode } from '@/services/pro-mode'
 import { ACTIVE_PHASES, versionLabel } from '@/services/updates/model'
 import { currentOutcome, installStarted, poll, updateWatch } from '@/services/updates/watch'
 import { scopedPath } from '@/router/printerPagePaths'
 import { activeSlug } from '@/services/printer-pages'
 import { printerNameParts } from '@/util/printer-name'
 import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
+import TaskFold from '@/components/control/TaskFold.vue'
 
 interface OtherComponent {
   key: string;
@@ -184,18 +182,15 @@ interface OtherComponent {
  * Aux API reports it: what's installed, what's ready, when it last looked,
  * and Install, which opens the Updating page. Moonraker's update row for
  * MuonOS shows "?" for its versions (OtaDeploy), so this reads the Aux API.
- * In Pro, whatever else the updater looks after.
+ * Whatever else the updater looks after is available in a nearby fold.
  */
-@Component({ components: { ToggleSwitch } })
+@Component({ components: { ToggleSwitch, TaskFold } })
 export default class SoftwareSettings extends Mixins(StateMixin) {
   checking = false
+  otherSoftwareOpen = false
 
   mounted () {
     poll()
-  }
-
-  get pro (): boolean {
-    return proMode.on
   }
 
   get printerName (): string {

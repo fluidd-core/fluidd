@@ -55,11 +55,19 @@ describe("a printer's sections", () => {
     const jobs = SECTIONS.find(s => s.id === 'jobs')!
     expect(visiblePages(jobs, simple).map(p => p.path)).toEqual(['/jobs', '/preview', '/history'])
     const overview = SECTIONS.find(s => s.id === 'overview')!
-    expect(visiblePages(overview, simple).map(p => p.path)).toEqual(['/'])
+    expect(visiblePages(overview, simple).map(p => p.path)).toEqual(['/', '/diagnostics'])
+    expect(visiblePages(overview, { ...simple, pro: true }).map(p => p.path)).toEqual(['/', '/diagnostics'])
+    expect(visiblePages(overview, { ...everything, diagnostics: false }).map(p => p.path)).toEqual(['/'])
     expect(visiblePages(overview, everything).map(p => p.path)).toEqual(['/', '/diagnostics'])
     const maintenance = SECTIONS.find(s => s.id === 'maintenance')!
     expect(visiblePages(maintenance, simple).map(p => p.path)).toEqual(['/maintenance'])
     expect(visiblePages(maintenance, everything).map(p => p.path)).toEqual(['/maintenance', '/tune'])
+  })
+
+  it('does not add printer-only pages to a foreign printer', () => {
+    const overview = SECTIONS.find(s => s.id === 'overview')!
+    expect(visibleSections({ ...everything, foreign: true }).map(s => s.id)).toEqual(['overview', 'jobs', 'slice', 'camera'])
+    expect(visiblePages(overview, { ...everything, foreign: true, diagnostics: false }).map(p => p.path)).toEqual(['/'])
   })
 
   it("go to the first camera's own page", () => {

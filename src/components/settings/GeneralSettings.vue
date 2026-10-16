@@ -102,10 +102,7 @@
           />
         </div>
       </div>
-      <div
-        v-if="pro"
-        class="m3-set__row"
-      >
+      <div class="m3-set__row">
         <div class="m3-set__label">
           <b>Saving the config</b>
           <span>Show what changed and ask before Klipper restarts to keep it.</span>
@@ -139,7 +136,12 @@
       </div>
     </section>
 
-    <template v-if="pro">
+    <task-fold
+      v-model="detailsOpen"
+      fold-id="settings-page-print-details"
+      title="Page, progress and diagnostics"
+      summary="Top bar, estimates, diagnostics and settings copies"
+    >
       <section class="m3-set">
         <h2 class="m3-set__title">
           The top bar
@@ -295,7 +297,7 @@
           </div>
         </div>
       </section>
-    </template>
+    </task-fold>
 
     <input
       ref="uploadSettingsFile"
@@ -320,16 +322,14 @@ import consola from 'consola'
 import { readFileAsTextAsync } from '@/util/file-system-entry'
 import { EventBus } from '@/eventBus'
 import { isFluiddContent, toFluiddContent } from '@/util/fluidd-content'
-import { proMode } from '@/services/pro-mode'
 import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
+import TaskFold from '@/components/control/TaskFold.vue'
 
 @Component({
-  components: { ToggleSwitch }
+  components: { ToggleSwitch, TaskFold }
 })
 export default class GeneralSettings extends Mixins(StateMixin) {
-  get pro (): boolean {
-    return proMode.on
-  }
+  detailsOpen = false
 
   get hasPowerDevices (): boolean {
     return ((this.$store.getters['power/getDevices'] as Device[] | undefined) ?? []).length > 0

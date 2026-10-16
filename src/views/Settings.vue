@@ -80,7 +80,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
-import { proMode } from '@/services/pro-mode'
 import { activeSlug } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
 import { MOVED_TO_ACCOUNT, settingsSectionFor, visibleSettingsSections, type SettingsSection } from '@/services/settings/sections'
@@ -161,7 +160,7 @@ export default class Settings extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get sections (): SettingsSection[] {
-    return visibleSettingsSections({ pro: proMode.on, components: SECTION_COMPONENTS.filter(name => this.supports(name)) })
+    return visibleSettingsSections({ components: SECTION_COMPONENTS.filter(name => this.supports(name)) })
   }
 
   /** A macro category's page, inside Settings. */
