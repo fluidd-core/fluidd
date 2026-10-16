@@ -1,52 +1,48 @@
 <template>
   <div
+    :key="contextKey"
     class="control-page"
-    :class="{
-      'control-page--pro': pro,
-      'control-page--phone': isMobileViewport
-    }"
+    :class="{ 'control-page--phone': isMobileViewport }"
     data-tid="control-page"
   >
-    <template v-if="isMobileViewport">
-      <control-heat phone />
-      <control-move phone />
-      <control-speed />
-      <control-filament phone />
-      <control-fans phone />
-      <control-macros v-if="pro" />
-      <control-tuning v-if="pro" />
-      <control-outputs v-if="pro" />
-    </template>
-
-    <template v-else-if="!pro">
-      <control-move class="area-move" />
-      <div class="area-side">
-        <control-heat />
-        <control-filament />
-      </div>
-      <div class="area-row">
-        <control-speed />
-        <control-fans />
-      </div>
-    </template>
-
-    <template v-else>
-      <control-move class="area-move" />
-      <control-heat class="area-heat" />
-      <control-speed class="area-limits" />
-      <control-fans class="area-fans" />
-      <control-filament class="area-filament" />
-      <control-macros class="area-macros" />
-      <control-tuning class="area-tuning" />
-      <control-outputs class="area-outputs" />
-    </template>
+    <control-actions
+      v-if="isMobileViewport"
+      class="area-actions"
+    />
+    <control-heat
+      class="area-heat"
+      :phone="isMobileViewport"
+    />
+    <control-move
+      class="area-move"
+      :phone="isMobileViewport"
+    />
+    <control-speed class="area-speed" />
+    <control-filament
+      class="area-filament"
+      :phone="isMobileViewport"
+    />
+    <control-fans
+      class="area-fans"
+      :phone="isMobileViewport"
+    />
+    <control-macros class="area-macros" />
+    <control-task-fold
+      class="area-diagnosis"
+      fold-key="control.diagnosis"
+      title="Shaper and switches"
+      summary="Input shaper, filament sensors and endstops"
+    >
+      <control-tuning shaper-only />
+      <control-outputs diagnostics-only />
+    </control-task-fold>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
-import { proMode } from '@/services/pro-mode'
+import { cloudState } from '@/services/muon-cloud/state'
 import ControlMove from '@/components/control/ControlMove.vue'
 import ControlHeat from '@/components/control/ControlHeat.vue'
 import ControlFilament from '@/components/control/ControlFilament.vue'
@@ -55,19 +51,16 @@ import ControlFans from '@/components/control/ControlFans.vue'
 import ControlMacros from '@/components/control/ControlMacros.vue'
 import ControlTuning from '@/components/control/ControlTuning.vue'
 import ControlOutputs from '@/components/control/ControlOutputs.vue'
+import ControlTaskFold from '@/components/control/ControlTaskFold.vue'
+import ControlActions from '@/components/control/ControlActions.vue'
 
-/**
- * Control (`/boxwood-367a/control`): heat, move, filament, speed, fans and
- * lights, one page with a panel each. Simple names things (PLA, Normal,
- * Fan on); Pro shows the exact values in the same places and adds the
- * extruder, the motion limits and the macros.
- */
+/** One set of task panels. Diagnosis remains here until Maintenance has its new home. */
 @Component({
-  components: { ControlMove, ControlHeat, ControlFilament, ControlSpeed, ControlFans, ControlMacros, ControlTuning, ControlOutputs }
+  components: { ControlMove, ControlHeat, ControlFilament, ControlSpeed, ControlFans, ControlMacros, ControlTuning, ControlOutputs, ControlTaskFold, ControlActions }
 })
 export default class Control extends Mixins(BrowserMixin) {
-  get pro (): boolean {
-    return proMode.on
+  get contextKey (): string {
+    return `${this.$store.state.config.apiUrl}|${cloudState.activePrinterId ?? ''}|${cloudState.account?.id ?? ''}|${this.$route?.params?.printer ?? ''}`
   }
 }
 </script>
@@ -75,76 +68,35 @@ export default class Control extends Mixins(BrowserMixin) {
 <style lang="scss" scoped>
   .control-page {
     display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-areas:
+      'move move move heat heat heat'
+      'filament filament speed speed fans fans'
+      'macros macros macros macros macros macros'
+      'diagnosis diagnosis diagnosis diagnosis diagnosis diagnosis';
     gap: 16px;
     align-items: start;
   }
-
-  .area-side {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    min-width: 0;
-  }
-
-  .area-row {
-    display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 16px;
-  }
-
-  .control-page--pro {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-areas:
-      'move heat limits'
-      'fans macros macros'
-      'filament macros macros'
-      'tuning outputs outputs';
-  }
-
-  .control-page--pro .area-move { grid-area: move; }
-  .control-page--pro .area-heat { grid-area: heat; }
-  .control-page--pro .area-limits { grid-area: limits; }
-  .control-page--pro .area-fans { grid-area: fans; }
-  .control-page--pro .area-filament { grid-area: filament; }
-  .control-page--pro .area-macros { grid-area: macros; }
-  .control-page--pro .area-tuning { grid-area: tuning; }
-  .control-page--pro .area-outputs { grid-area: outputs; }
-
+  .control-page > * { min-width: 0; }
+  .area-heat { grid-area: heat; }
+  .area-move { grid-area: move; }
+  .area-speed { grid-area: speed; }
+  .area-filament { grid-area: filament; }
+  .area-fans { grid-area: fans; }
+  .area-macros { grid-area: macros; }
+  .area-diagnosis { grid-area: diagnosis; }
+  .area-actions { grid-area: actions; }
   @media (max-width: 1263px) {
     .control-page {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .control-page--pro {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-areas:
-        'move move'
-        'heat limits'
-        'fans filament'
-        'macros macros'
-        'tuning outputs';
+      grid-template-areas: 'move heat' 'filament speed' 'fans fans' 'macros macros' 'diagnosis diagnosis';
     }
   }
-
   @media (max-width: 899px) {
-    .control-page--pro {
+    .control-page {
       grid-template-columns: minmax(0, 1fr);
-      grid-template-areas:
-        'move'
-        'heat'
-        'limits'
-        'fans'
-        'filament'
-        'macros'
-        'tuning'
-        'outputs';
+      grid-template-areas: 'actions' 'heat' 'move' 'speed' 'filament' 'fans' 'macros' 'diagnosis';
+      gap: 12px;
     }
-  }
-
-  .control-page--phone {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
   }
 </style>
