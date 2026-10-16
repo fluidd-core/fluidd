@@ -76,7 +76,7 @@ import SegPicker, { type SegOption } from '@/components/control/SegPicker.vue'
 import BedMeshChart from '@/components/widgets/bedmesh/BedMeshChart.vue'
 
 /**
- * Pro's bed as a 3D surface: the probed points or the smoothed mesh
+ * The bed as a 3D surface: the probed points or the smoothed mesh
  * Klipper moves by, with a flat plane to judge it against. The chart is
  * Fluidd's; its scaling follows the same settings as its own panel.
  */
