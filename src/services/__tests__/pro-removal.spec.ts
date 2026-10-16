@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import Vue from 'vue'
 import { shallowMount } from '@vue/test-utils'
 import { retireProStorage } from '@/services/retired-storage'
@@ -13,6 +13,10 @@ const firstPartyModules = import.meta.glob('../../**/*.{ts,vue}', {
   import: 'default',
   query: '?raw'
 }) as Record<string, string>
+
+afterEach(() => {
+  vi.restoreAllMocks()
+})
 
 describe('retired Pro mode', () => {
   it('has no first-party module importing pro-mode', () => {
@@ -35,6 +39,10 @@ describe('retired Pro mode', () => {
     const removeItem = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => { throw new Error('storage denied') })
     expect(() => retireProStorage()).not.toThrow()
     expect(removeItem).toHaveBeenCalledWith('muon3d.pro')
+  })
+
+  it('restores storage spies between tests', () => {
+    expect(() => localStorage.removeItem('unrelated-key')).not.toThrow()
   })
 
   it('leaves Shift X unbound in the mounted app', async () => {
