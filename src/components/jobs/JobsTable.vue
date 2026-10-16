@@ -1,6 +1,7 @@
 <template>
   <section
     class="jt"
+    :class="`jt--${view}`"
     data-tid="jobs-table"
   >
     <div class="jt__head">
@@ -84,6 +85,7 @@
       <button
         v-if="canQueue && selectedFiles.length === selected.length"
         type="button"
+        :disabled="!controlReady"
         @click="queueSelected"
       >
         {{ queueText }}
@@ -406,6 +408,8 @@ function readSort (): TableSort {
  */
 @Component({ components: { FileNameDialog } })
 export default class JobsTable extends Mixins(JobsMixin) {
+  @Prop({ type: String, default: 'table' }) readonly view!: 'pictures' | 'list' | 'table'
+  @Prop({ type: Boolean, default: false }) readonly controlReady!: boolean
   /** The job the viewer shows, from outside: the table's cursor follows it. */
   @Prop({ type: String, default: null })
   readonly current!: string | null
@@ -721,6 +725,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   async queueSelected () {
+    if (!this.controlReady) return
     await SocketActions.serverJobQueuePostJob(this.selectedFiles.map(f => f.path))
     this.clearSelection()
   }
@@ -976,6 +981,21 @@ export default class JobsTable extends Mixins(JobsMixin) {
     &:focus-visible {
       box-shadow: 0 0 0 2px var(--m3d-accent);
     }
+  }
+
+  .jt--list {
+    .jt__row { grid-template-columns: 28px 36px minmax(0, 1fr); }
+    .jt__row--head { display: none; }
+    .jt__row > :not(.jt__check):not(.jt__thumb):not(.jt__name) { display: none; }
+  }
+
+  .jt--pictures {
+    .jt__table { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; overflow: visible; background: transparent; }
+    .jt__row { display: flex; flex-direction: column; justify-content: center; gap: 8px; height: 190px; padding: 16px; border: 0; border-radius: 20px; background: var(--m3d-surface); text-align: center; }
+    .jt__row--head { display: none; }
+    .jt__row > :not(.jt__thumb):not(.jt__name) { display: none; }
+    .jt__thumb { width: 92px; height: 92px; }
+    .jt__name { width: 100%; }
   }
 
   .jt__row {

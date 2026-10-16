@@ -93,6 +93,7 @@ export default class JobsMixin extends Mixins(OverviewMixin) {
 
   /** Print now, or into the queue when the printer is busy and it has one. */
   async printOrQueue (job: JobFile) {
+    if (!this.controlReady) return
     if (this.busy) {
       if (this.canQueue) await this.addToQueue(job)
       return
@@ -101,6 +102,7 @@ export default class JobsMixin extends Mixins(OverviewMixin) {
   }
 
   async addToQueue (job: JobFile) {
+    if (!this.controlReady || !this.canQueue) return
     await SocketActions.serverJobQueuePostJob([job.path])
   }
 

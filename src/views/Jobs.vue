@@ -5,8 +5,8 @@
   -->
   <div
     class="jobs"
-    :class="{ 'jobs--phone': isMobileViewport, 'jobs--pro': proLayout }"
-    :data-tid="proLayout ? 'jobs-pro' : 'jobs-simple'"
+    :class="{ 'jobs--phone': isMobileViewport, 'jobs--table': effectiveView === 'table' }"
+    :data-view="effectiveView"
   >
     <div
       v-if="busy || queue.length"
@@ -50,10 +50,20 @@
           <span class="jobs__count">{{ queue.length }}</span>
           <span class="jobs__hint">Starts when the plate is lifted off and put back</span>
           <button
-            v-if="proLayout && queue.length > 1"
+            type="button"
+            class="jobs__link"
+            :disabled="!controlReady"
+            data-tid="jobs-queue-start"
+            @click="startQueue"
+          >
+            Start
+          </button>
+          <button
+            v-if="queue.length > 1"
             type="button"
             class="jobs__link"
             data-tid="jobs-queue-clear"
+            :disabled="!controlReady"
             @click="clearQueue"
           >
             Clear
@@ -61,7 +71,7 @@
         </div>
         <div class="jobs__next-list">
           <div
-            v-for="queued in proLayout ? queue : queue.slice(0, 3)"
+            v-for="queued in queue"
             :key="queued.job_id"
             class="jobs__queued"
           >
@@ -77,10 +87,30 @@
               <span>{{ factsOf(queued.filename) }}</span>
             </span>
             <button
-              v-if="proLayout"
+              v-if="queue.length > 1"
+              type="button"
+              class="jobs__unqueue"
+              :disabled="!controlReady || queued === queue[0]"
+              :aria-label="`Move ${titleOf(queued.filename)} earlier`"
+              @click="moveQueued(queued, -1)"
+            >
+              ↑
+            </button>
+            <button
+              v-if="queue.length > 1"
+              type="button"
+              class="jobs__unqueue"
+              :disabled="!controlReady || queued === queue[queue.length - 1]"
+              :aria-label="`Move ${titleOf(queued.filename)} later`"
+              @click="moveQueued(queued, 1)"
+            >
+              ↓
+            </button>
+            <button
               type="button"
               class="jobs__unqueue"
               :aria-label="`Take ${titleOf(queued.filename)} out of the queue`"
+              :disabled="!controlReady"
               @click="unqueue(queued)"
             >
               <frame-icon
@@ -93,134 +123,52 @@
       </section>
     </div>
 
-    <div
-      v-if="proLayout"
-      class="jobs__pro"
+    <control-task-fold
+      fold-key="jobs.view.list"
+      title="Jobs view"
+      summary="Pictures, list or table"
+      choice
     >
+      <template #default="listChoice">
+        <control-task-fold
+          fold-key="jobs.view.table"
+          title="Jobs view"
+          summary="Pictures, list or table"
+          choice
+        >
+          <template #default="tableChoice">
+            <seg-picker
+              :options="viewOptions"
+              :value="selectedView(listChoice.value, tableChoice.value)"
+              label="View"
+              @input="setView($event, listChoice.choose, tableChoice.choose)"
+            />
+          </template>
+        </control-task-fold>
+      </template>
+    </control-task-fold>
+
+    <div class="jobs__browser">
       <jobs-table
+        :view="effectiveView"
+        :control-ready="controlReady"
         :current="viewing ? viewing.key : null"
         @view="viewing = $event"
         @open="open"
         @files="tableFiles = $event"
       />
       <job-viewer
+        v-if="effectiveView === 'table'"
         class="jobs__viewer"
         :job="viewing"
         :busy="busy"
-        :can-queue="canQueue"
-        :can-print="klippyReady && (!busy || canQueue)"
+        :can-queue="controlReady && canQueue"
+        :can-print="controlReady && (!busy || canQueue)"
         :printer-name="printerName"
         @open="open"
         @print="printOrQueue"
       />
     </div>
-
-    <section
-      v-else
-      class="jobs__files"
-      data-tid="jobs-on-printer"
-    >
-      <div class="jobs__files-head">
-        <h2>On the printer</h2>
-        <seg-picker
-          :options="filterOptions"
-          :value="filter"
-          label="Show"
-          @input="filter = $event"
-        />
-        <span class="jobs__grow" />
-        <label class="jobs__find">
-          <frame-icon
-            name="search"
-            small
-          />
-          <input
-            v-model="query"
-            type="search"
-            placeholder="Find a job"
-            aria-label="Find a job"
-            data-tid="jobs-find"
-          >
-        </label>
-        <select
-          v-if="!isMobileViewport"
-          v-model="sort"
-          class="jobs__sort"
-          aria-label="Sort"
-        >
-          <option value="newest">
-            Newest first
-          </option>
-          <option value="name">
-            By name
-          </option>
-          <option value="time">
-            Quickest first
-          </option>
-        </select>
-        <seg-picker
-          v-if="!isMobileViewport"
-          :options="viewOptions"
-          :value="view"
-          label="View"
-          @input="setView"
-        />
-        <button
-          type="button"
-          class="cbtn cbtn--primary"
-          data-tid="jobs-upload"
-          @click="pickUpload"
-        >
-          <frame-icon
-            name="upload"
-            small
-          />
-          Upload
-        </button>
-      </div>
-
-      <p
-        v-if="!loaded"
-        class="jobs__note"
-      >
-        Reading the printer's files…
-      </p>
-      <div
-        v-else
-        :class="rows ? 'jobs__rows' : 'jobs__grid'"
-      >
-        <job-card
-          v-for="job in shown"
-          :key="job.key"
-          :job="job"
-          :row="rows"
-          :busy="busy"
-          :can-print="klippyReady && (!busy || canQueue)"
-          @open="open(job)"
-          @print="printOrQueue(job)"
-        />
-        <div
-          v-if="!rows"
-          class="jobs__drop"
-        >
-          <frame-icon name="upload" />
-          <b>Drop files here</b>
-          <span>G-code goes straight in. STL, 3MF and OBJ open in Slice.</span>
-        </div>
-      </div>
-      <p
-        v-if="loaded && !shown.length"
-        class="jobs__note"
-      >
-        {{ query ? `No job matches "${query}".` : filter === 'all' ? 'No G-code on the printer yet. Upload a file, or slice one in Slice.' : 'None here.' }}
-      </p>
-      <p
-        v-if="folders"
-        class="jobs__note"
-      >
-        {{ folders }} {{ folders === 1 ? 'folder' : 'folders' }} too: open them in the file table with Pro on.
-      </p>
-    </section>
 
     <section
       v-if="history.length"
@@ -265,7 +213,7 @@
             v-if="item.exists"
             type="button"
             class="jobs__again"
-            :disabled="!klippyReady || busy"
+            :disabled="!controlReady || busy"
             @click="printAgain(item.filename)"
           >
             Print again
@@ -285,8 +233,8 @@
     <job-detail
       :job="detail"
       :busy="busy"
-      :can-queue="canQueue"
-      :can-print="klippyReady && (!busy || canQueue)"
+      :can-queue="controlReady && canQueue"
+      :can-print="controlReady && (!busy || canQueue)"
       :has-prev="detailIndex > 0"
       :has-next="detailIndex >= 0 && detailIndex < detailList.length - 1"
       :material="material ? material.name : null"
@@ -319,16 +267,9 @@ import JobsTable from '@/components/jobs/JobsTable.vue'
 import JobViewer from '@/components/jobs/JobViewer.vue'
 import SegPicker, { type SegOption } from '@/components/control/SegPicker.vue'
 import TonePill from '@/components/printers/TonePill.vue'
+import ControlTaskFold from '@/components/control/ControlTaskFold.vue'
 
-const VIEW_KEY = 'muon3d.jobs.view'
-
-function readView (): 'cards' | 'list' {
-  try {
-    return localStorage.getItem(VIEW_KEY) === 'list' ? 'list' : 'cards'
-  } catch {
-    return 'cards'
-  }
-}
+type JobsView = 'pictures' | 'list' | 'table'
 
 /**
  * Jobs: what is printing and up next, the files on the printer, and what
@@ -337,21 +278,18 @@ function readView (): 'cards' | 'list' {
  * Pro shows them as a table with their folders, beside a G-code viewer,
  * and lets the whole queue be seen and trimmed.
  */
-@Component({ components: { JobCard, JobDetail, JobsTable, JobViewer, SegPicker, TonePill } })
+@Component({ components: { ControlTaskFold, JobCard, JobDetail, JobsTable, JobViewer, SegPicker, TonePill } })
 export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
   filter: JobFilter = 'all'
   sort: JobSort = 'newest'
-  view: 'cards' | 'list' = readView()
+  view: JobsView = 'pictures'
   query = ''
   detail: JobFile | null = null
   /** Pro: the file the viewer shows, and the table's files in order, for the detail's arrows. */
   viewing: JobFile | null = null
   tableFiles: JobFile[] = []
 
-  /** Pro's table and viewer need a desktop's width; a phone gets Simple's page. */
-  get proLayout (): boolean {
-    return this.pro && !this.isMobileViewport
-  }
+  get effectiveView (): JobsView { return this.isMobileViewport && this.view === 'table' ? 'list' : this.view }
 
   /** What Upload takes: the G-code root's own list, as the header's upload button uses. */
   get gcodeAccept (): string {
@@ -376,20 +314,22 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
   }
 
   get viewOptions (): SegOption[] {
-    return [{ value: 'cards', label: 'Cards' }, { value: 'list', label: 'List' }]
+    return [{ value: 'pictures', label: 'Pictures' }, { value: 'list', label: 'List' }, { value: 'table', label: 'Table' }]
   }
 
-  setView (view: 'cards' | 'list') {
+  selectedView (list: boolean, table: boolean): JobsView {
+    this.view = table ? 'table' : list ? 'list' : 'pictures'
+    return this.view
+  }
+
+  setView (view: JobsView, chooseList?: (value: boolean) => void, chooseTable?: (value: boolean) => void) {
     this.view = view
-    try {
-      localStorage.setItem(VIEW_KEY, view)
-    } catch {
-      // The choice holds for this visit.
-    }
+    chooseList?.(view === 'list')
+    chooseTable?.(view === 'table')
   }
 
   get rows (): boolean {
-    return this.isMobileViewport || this.view === 'list'
+    return this.effectiveView === 'list'
   }
 
   get shown (): JobFile[] {
@@ -421,7 +361,7 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
   }
 
   get detailList (): JobFile[] {
-    return this.proLayout ? this.tableFiles : this.shown
+    return this.effectiveView === 'table' ? this.tableFiles : this.shown
   }
 
   get detailIndex (): number {
@@ -436,12 +376,28 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
   // -- the queue (Pro) ---------------------------------------------------------
 
   unqueue (job: QueuedJob) {
+    if (!this.controlReady) return
     SocketActions.serverJobQueueDeleteJobs([job.job_id])
   }
 
   async clearQueue () {
+    if (!this.controlReady) return
     const ok = await this.$confirm(`The files stay on ${this.printerName}.`, { title: `Take all ${this.queue.length} jobs out of the queue?`, buttonTrueText: 'Clear the queue', danger: true })
-    if (ok) SocketActions.serverJobQueueDeleteJobs(this.queue.map(j => j.job_id))
+    if (ok && this.controlReady) SocketActions.serverJobQueueDeleteJobs(this.queue.map(j => j.job_id))
+  }
+
+  startQueue () {
+    if (this.controlReady) SocketActions.serverJobQueueStart()
+  }
+
+  async moveQueued (job: QueuedJob, by: number) {
+    if (!this.controlReady) return
+    const jobs = [...this.queue]
+    const from = jobs.findIndex(item => item.job_id === job.job_id)
+    const to = from + by
+    if (from < 0 || to < 0 || to >= jobs.length) return
+    jobs.splice(to, 0, jobs.splice(from, 1)[0])
+    await SocketActions.serverJobQueuePostJob(jobs.map(item => item.filename), true)
   }
 
   async deleteDetail () {
@@ -847,7 +803,7 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
     }
   }
 
-  .jobs__pro {
+  .jobs__browser {
     display: grid;
     grid-template-columns: minmax(0, 1.75fr) minmax(340px, 1fr);
     align-items: start;
@@ -861,7 +817,7 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
 
   // Under a wide desktop, the viewer goes under the table.
   @media (max-width: 1263px) {
-    .jobs__pro {
+    .jobs__browser {
       grid-template-columns: minmax(0, 1fr);
     }
 
