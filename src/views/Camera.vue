@@ -6,9 +6,9 @@
   >
     <div
       v-if="camera"
+      ref="detailsBar"
       class="camera-details-bar"
     >
-      <strong data-tid="camera-details-name">{{ camera.name || 'Camera' }}</strong>
       <button
         ref="detailsTrigger"
         type="button"
@@ -32,7 +32,7 @@
         <div><dt>Stream</dt><dd>{{ displayUrl(camera.stream_url) }}</dd></div>
         <div><dt>Snapshot</dt><dd>{{ displayUrl(camera.snapshot_url) }}</dd></div>
         <div><dt>Frame rate</dt><dd>{{ frameRate }}</dd></div>
-        <div><dt>Turned</dt><dd>{{ turnedText || 'Unknown' }}</dd></div>
+        <div><dt>Turned</dt><dd>{{ turnedText }}</dd></div>
       </dl>
     </div>
 
@@ -145,7 +145,7 @@ import type { WebcamConfig } from '@/store/webcams/types'
  * Camera (`/boxwood-367a/camera/front`): the picture as big as the page
  * allows, with what's printing over it and the lights beside it. Snapshot
  * saves a frame; Full screen (F) fills the screen. Stream info opens beside
- * the camera's name without exposing credentials carried in its addresses.
+ * the picture without exposing credentials carried in its addresses.
  */
 @Component({ components: { CameraActions, CameraItem } })
 export default class Camera extends Mixins(OverviewMixin, BrowserMixin) {
@@ -193,12 +193,12 @@ export default class Camera extends Mixins(OverviewMixin, BrowserMixin) {
 
   get turnedText (): string {
     const camera = this.camera
-    if (!camera) return ''
+    if (!camera || (camera.rotation == null && camera.flip_horizontal == null && camera.flip_vertical == null)) return 'Unknown'
     const parts: string[] = []
     if (camera.rotation) parts.push(`${camera.rotation}°`)
     if (camera.flip_horizontal) parts.push('flipped across')
     if (camera.flip_vertical) parts.push('flipped up and down')
-    return parts.join(', ')
+    return parts.join(', ') || 'Not turned'
   }
 
   get frameRate (): string {
@@ -234,11 +234,19 @@ export default class Camera extends Mixins(OverviewMixin, BrowserMixin) {
   mounted () {
     EventBus.bus.$on('camera-snapshot', this.snapshot)
     EventBus.bus.$on('camera-fullscreen', this.fillScreen)
+    document.addEventListener('click', this.onDocumentClick)
   }
 
   beforeDestroy () {
     EventBus.bus.$off('camera-snapshot', this.snapshot)
     EventBus.bus.$off('camera-fullscreen', this.fillScreen)
+    document.removeEventListener('click', this.onDocumentClick)
+  }
+
+  onDocumentClick (event: MouseEvent) {
+    const bar = this.$refs.detailsBar as HTMLElement | undefined
+    if (!this.detailsOpen || (event.target instanceof Node && bar?.contains(event.target))) return
+    this.detailsOpen = false
   }
 
   fillScreen () {
@@ -355,8 +363,6 @@ function frameOf (element: Element | undefined, turn: Parameters<typeof snapshot
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    gap: 10px;
     min-height: 32px;
   }
 
@@ -407,7 +413,7 @@ function frameOf (element: Element | undefined, turn: Parameters<typeof snapshot
     width: 100%;
     background: transparent !important;
 
-    // The page header names the camera and offers its stream details.
+    // The page's camera tabs provide its name; this page offers stream details.
     :deep(.camera-name),
     :deep(.camera-frames),
     :deep(.camera-fullscreen) {

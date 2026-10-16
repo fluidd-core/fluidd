@@ -1,6 +1,6 @@
 import { shallowMount, type Wrapper } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vitest'
-import Camera from '../Camera.vue'
+import Camera, { redactCameraUrl } from '../Camera.vue'
 import { setProMode } from '@/services/pro-mode'
 import type { WebcamConfig } from '@/store/webcams/types'
 
@@ -58,6 +58,8 @@ describe('Camera stream details', () => {
       setProMode(legacyPro)
       const wrapper = mountCamera([front])
       const button = wrapper.get('[data-tid="camera-details-trigger"]')
+      expect(wrapper.get('[data-tid="camera-stage"]').classes()).not.toContain('camera-stage--pro')
+      expect(wrapper.text()).not.toContain('Pro shows')
       expect(button.attributes('aria-expanded')).toBe('false')
       expect(button.attributes('aria-controls')).toBe('camera-details')
 
@@ -92,11 +94,41 @@ describe('Camera stream details', () => {
     wrapper.destroy()
   })
 
+  it('distinguishes an upright camera from missing turn information', async () => {
+    const upright: WebcamConfig = {
+      ...side,
+      rotation: 0,
+      flip_horizontal: false,
+      flip_vertical: false
+    }
+    const wrapper = mountCamera([upright])
+    await wrapper.get('[data-tid="camera-details-trigger"]').trigger('click')
+    expect(wrapper.findAll('#camera-details dd').at(4).text()).toBe('Not turned')
+    wrapper.destroy()
+  })
+
   it('shows the selected camera when several cameras are available', async () => {
     const wrapper = mountCamera([front, side], 'side')
-    expect(wrapper.get('[data-tid="camera-details-name"]').text()).toBe('Side camera')
     await wrapper.get('[data-tid="camera-details-trigger"]').trigger('click')
     expect(wrapper.get('#camera-details').text()).not.toContain('webrtc-go2rtc')
     wrapper.destroy()
+  })
+
+  it('closes when clicking outside the details bar', async () => {
+    const wrapper = mountCamera([front])
+    const button = wrapper.get('[data-tid="camera-details-trigger"]')
+    await button.trigger('click')
+    document.body.click()
+    await wrapper.vm.$nextTick()
+    expect(button.attributes('aria-expanded')).toBe('false')
+    wrapper.destroy()
+  })
+
+  it('redacts usernames, passwords, hashes, and every query value', () => {
+    const https = redactCameraUrl('https://viewer:secret@camera.local/live?token=private&quality=high#token')
+    expect(https).toBe('https://camera.local/live?token=[redacted]&quality=[redacted]')
+    expect(https).not.toContain('viewer')
+    expect(https).not.toContain('#token')
+    expect(redactCameraUrl('rtsp://user:pass@camera.local/live')).toBe('rtsp://camera.local/live')
   })
 })
