@@ -124,7 +124,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import ControlMixin from '@/mixins/control'
 import { SocketActions } from '@/api/socketActions'
-import type { Endstop, Led, OutputPin, Probe, RunoutSensor } from '@/store/printer/types'
+import type { Endstop, Led, OutputPin, RunoutSensor } from '@/store/printer/types'
 import {
   filamentSensorRole,
   ledCommand,
@@ -151,7 +151,7 @@ interface Output {
 type Sensor = RunoutSensor & { prettyName: string; role: FilamentSensorRole }
 
 /**
- * Pro's outputs and sensors: the output pins and LEDs that aren't the
+ * Outputs and sensors: the output pins and LEDs that aren't the
  * lights (Fans and lights has those), the filament sensors with their
  * on/off (none for a sensor that loads filament), and the endstops, read
  * when asked.
@@ -191,10 +191,6 @@ export default class ControlOutputs extends Mixins(ControlMixin) {
     if (!this.controlReady) return
     const gcode = sensorCommand(name, enabled, this.configfile)
     if (gcode) this.sendGcode(gcode)
-  }
-
-  get probe (): Probe | undefined {
-    return this.$store.getters['printer/getProbe'] as Probe | undefined
   }
 
   requested = false

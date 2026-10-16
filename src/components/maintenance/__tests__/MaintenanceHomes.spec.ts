@@ -117,3 +117,11 @@ it('shows unknown nozzle history and no invented calibration result on an unsupp
   expect(wrapper.find('[data-tid="maintenance-mesh"]').exists()).toBe(false)
   wrapper.destroy()
 })
+
+it('does not turn an empty offset report into zero', async () => {
+  const { wrapper, store } = show()
+  store.state.printer.printer.configfile.settings = { probe: { z_offset: '' } }
+  await Vue.nextTick()
+  expect(wrapper.find('[data-tid="check-firstLayer"]').text()).not.toContain('0.000 mm')
+  wrapper.destroy()
+})
