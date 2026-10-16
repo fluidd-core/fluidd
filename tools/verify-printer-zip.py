@@ -112,6 +112,8 @@ def verify(zip_path: Path, expected_sha: str, expected_commit: str, expected_siz
                 try: text_files[info.filename] = archive.read(info).decode("utf-8")
                 except UnicodeDecodeError: fail(f"text asset is not UTF-8: {info.filename}")
         discovered: set[str] = set()
+        chunk_workers: set[str] = set()
+        monaco_workers: set[str] = set()
         for source_name, contents in text_files.items():
             source_dir = PurePosixPath(source_name).parent
             for match in ASSET_REFERENCE.finditer(contents):
@@ -133,13 +135,20 @@ def verify(zip_path: Path, expected_sha: str, expected_commit: str, expected_siz
                 is_worker = "worker" in PurePosixPath(resolved).name.lower()
                 if resolved.startswith("assets/") and (source_name == "sw.js" or is_worker):
                     discovered.add(resolved)
+                    if is_worker and source_name != "sw.js": chunk_workers.add(resolved)
+                # vite-plugin-monaco-editor writes its workers to
+                # <base>monacoeditorwork/ outside Vite's manifest, and injects
+                # their URLs into index.html as the MonacoEnvironment paths.
+                if resolved.startswith("monacoeditorwork/"):
+                    discovered.add(resolved)
+                    if source_name == "index.html": monaco_workers.add(resolved)
         missing_discovered = sorted(discovered - names)
         if missing_discovered: fail(f"referenced asset is missing: {missing_discovered[0]}")
 
         checked = []
         checked.append("PWA sw.js precache references" if "sw.js" in names else "PWA sw.js (unchecked: not present)")
-        worker_references = sorted(name for name in discovered if "worker" in PurePosixPath(name).name.lower())
-        checked.append("worker URLs referenced from chunks" if worker_references else "worker bundles (unchecked: no URL discoverable)")
+        checked.append("worker URLs referenced from chunks" if chunk_workers else "worker bundles (unchecked: no URL discoverable)")
+        checked.append("Monaco editor workers under monacoeditorwork/ referenced from index.html" if monaco_workers else "Monaco editor workers (unchecked: no monacoeditorwork/ URL in index.html)")
         return checked
 
 def main() -> int:

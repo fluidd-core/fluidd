@@ -96,6 +96,43 @@ class VerifyPrinterZipTest(unittest.TestCase):
         self.write_zip(files)
         self.assert_bad("referenced asset is missing: assets/gcode.worker-deadbeef.js")
 
+    def monaco_files(self) -> dict[str, str]:
+        # vite-plugin-monaco-editor 1.1.0: transformIndexHtml injects the worker
+        # paths as JSON into index.html; writeBundle writes the files under
+        # <base>monacoeditorwork/ (languageWorkers: editorWorkerService, json, css).
+        paths = {
+            "editorWorkerService": "/monacoeditorwork/editor.worker.bundle.js",
+            "css": "/monacoeditorwork/css.worker.bundle.js",
+            "json": "/monacoeditorwork/json.worker.bundle.js",
+            "less": "/monacoeditorwork/css.worker.bundle.js",
+            "scss": "/monacoeditorwork/css.worker.bundle.js",
+        }
+        files = self.files()
+        files["index.html"] = (
+            '<script>self["MonacoEnvironment"] = (function (paths) { return {}; })('
+            + json.dumps(paths, indent=2) + ');</script>' + files["index.html"]
+        )
+        for name in ("editor", "css", "json"):
+            files[f"monacoeditorwork/{name}.worker.bundle.js"] = "self.onmessage=()=>{}"
+        return files
+
+    def test_rejects_missing_monaco_editor_worker(self) -> None:
+        files = self.monaco_files()
+        del files["monacoeditorwork/json.worker.bundle.js"]
+        self.write_zip(files)
+        self.assert_bad("referenced asset is missing: monacoeditorwork/json.worker.bundle.js")
+
+    def test_reports_monaco_workers_checked_or_unchecked(self) -> None:
+        self.write_zip(self.monaco_files())
+        result = self.run_verify()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Monaco editor workers under monacoeditorwork/ referenced from index.html", result.stdout)
+        self.write_zip()
+        result = self.run_verify()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Monaco editor workers (unchecked: no monacoeditorwork/ URL in index.html)", result.stdout)
+        self.assertIn("worker bundles (unchecked: no URL discoverable)", result.stdout)
+
     def test_rejects_missing_workbox_precache_asset(self) -> None:
         files = self.files()
         files["sw.js"] = 'self.__WB_MANIFEST=[{url:"assets/precache-deadbeef.js",revision:null}]'
