@@ -7,7 +7,7 @@
     <button
       type="button"
       class="cbtn"
-      :disabled="!canNudge || !budget || budget.spent >= 0.1"
+      :disabled="!canNudge || !canMove(-0.01)"
       @click="nudge(-0.01)"
     >
       Nozzle closer · 0.01 mm
@@ -15,16 +15,16 @@
     <button
       type="button"
       class="cbtn"
-      :disabled="!canNudge || !budget || budget.spent >= 0.1"
+      :disabled="!canNudge || !canMove(0.01)"
       @click="nudge(0.01)"
     >
       Nozzle further · 0.01 mm
     </button>
     <p v-if="budget">
-      Nudged here: {{ budget.total > 0 ? '+' : '' }}{{ budget.total.toFixed(2) }} mm · {{ budget.spent.toFixed(2) }} of 0.10 mm allowance used.
+      {{ budget.total > 0 ? '+' : '' }}{{ budget.total.toFixed(2) }} mm from the start of this print · {{ budget.remaining.toFixed(2) }} mm remaining.
     </p>
     <p v-else>
-      Nudge allowance is unavailable. No adjustment sent.
+      Shared nudge allowance is loading or unavailable. No adjustment sent.
     </p>
     <p
       v-if="!lockingAvailable"
@@ -38,7 +38,7 @@
     >
       {{ refusal }}
     </p>
-    <small>Layers 1–3 only. This browser remembers the allowance for this print. These nudges are not saved as calibration.</small>
+    <small>Layers 1–3 only. The printer's shared offset is checked for every nudge. These nudges are not saved as calibration.</small>
   </div>
 </template>
 <script lang="ts">
@@ -47,12 +47,13 @@ import OverviewMixin from '@/mixins/overview'
 import { cloudState } from '@/services/muon-cloud/state'
 import { isManagedApiUrl } from '@/services/muon-cloud/origin'
 import { printerTransportBinding } from '@/services/managed-session/httpTransportBinding'
-import { firstLayerAllowed, readNudge, reserveNudge } from '@/services/overview/nudges'
+import { httpClientActions } from '@/api/httpClientActions'
+import { databasePart, firstLayerAllowed, nudgeBudget, nudgeFits, readBaseline } from '@/services/overview/nudges'
 import type { HistoryItem } from '@/store/history/types'
 @Component
 export default class FirstLayerNudges extends Mixins(OverviewMixin) {
   captured = ''
-  budgetRevision = 0
+  baseline: number | null = null
   refusal = ''
   pending = false
   get managedPrinter () { return isManagedApiUrl(this.$store.state.config.apiUrl) && printerTransportBinding.remote ? cloudState.printers.find(p => p.id === cloudState.activePrinterId) : undefined }
@@ -63,29 +64,73 @@ export default class FirstLayerNudges extends Mixins(OverviewMixin) {
   }
 
   get context (): string { return `${this.panelTarget}|${this.identity}` }
+  get databaseKey (): string {
+    const [printerId = '', jobId = ''] = this.identity.split('/')
+    return `firstLayerNudges.${databasePart(printerId)}.${databasePart(jobId)}`
+  }
   get earlyLayer (): boolean { const layer = this.printStats.info?.current_layer; return Number.isInteger(layer) && layer >= 1 && layer <= 3 }
-  get budget () { return this.budgetRevision >= 0 && this.identity ? readNudge(localStorage, this.identity) : null }
+  get reportedOffset (): number {
+    const origin = this.$store.state.printer.printer.gcode_move?.homing_origin
+    return Array.isArray(origin) && origin.length >= 3 && typeof origin[2] === 'number' && Number.isFinite(origin[2]) ? origin[2] : NaN
+  }
+  get budget () { return this.baseline === null ? null : nudgeBudget(this.reportedOffset, this.baseline) }
   get lockingAvailable (): boolean { return typeof navigator.locks?.request === 'function' }
   get canNudge (): boolean {
-    return this.lockingAvailable && this.captured === this.context && firstLayerAllowed({ m1: this.knownM1, identity: this.identity, layer: this.printStats.info?.current_layer ?? NaN, printing: this.printerPrinting && !this.printerPaused && this.$store.state.printer.printer.pause_resume?.is_paused !== true, ready: this.controlReady && !!this.$store.getters['printer/getAvailableCommands']?.SET_GCODE_OFFSET, homed: this.isHomed('Z'), waiting: this.pending || this.hasWait(this.$waits.onZAdjust) })
+    return !this.pending && this.allowedNow
+  }
+  get allowedNow (): boolean {
+    return this.lockingAvailable && this.captured === this.context && firstLayerAllowed({ m1: this.knownM1, identity: this.identity, layer: this.printStats.info?.current_layer ?? NaN, printing: this.printerPrinting && !this.printerPaused && this.$store.state.printer.printer.pause_resume?.is_paused !== true, ready: this.controlReady && !!this.$store.getters['printer/getAvailableCommands']?.SET_GCODE_OFFSET, homed: this.isHomed('Z'), waiting: this.hasWait(this.$waits.onZAdjust) })
   }
 
-  @Watch('context', { immediate: true })
-  bind () { this.captured = this.context; this.budgetRevision++; this.refusal = '' }
+  canMove (by: number): boolean { return Number.isFinite(this.reportedOffset) && (this.baseline === null || nudgeFits(this.reportedOffset, this.baseline, by)) }
 
-  mounted () { window.addEventListener('storage', this.onStorage) }
-  beforeDestroy () { window.removeEventListener('storage', this.onStorage) }
-  onStorage () { this.budgetRevision++ }
+  @Watch('context', { immediate: true })
+  bind () { this.captured = this.context; this.baseline = null; this.refusal = ''; void this.refreshBaseline() }
+
+  async readSharedBaseline (): Promise<number | null | undefined> {
+    const response = await httpClientActions.serverDatabaseItemGet<unknown>('fluidd')
+    return readBaseline(response.data.result.value, this.databaseKey)
+  }
+
+  async refreshBaseline () {
+    if (!this.identity) return
+    const context = this.context
+    try {
+      const baseline = await this.readSharedBaseline()
+      if (context === this.context && typeof baseline === 'number') this.baseline = baseline
+    } catch { /* A send will retry and show an explicit refusal. */ }
+  }
   async nudge (by: number) {
     if (!this.canNudge || ![-0.01, 0.01].includes(by)) return
     const context = this.context
-    const execute = () => {
+    const execute = async () => {
       // Web Locks can wait: check the actual printer/layer again inside the lock.
-      this.pending = false
-      if (context !== this.context || !this.canNudge) return
-      const reserved = reserveNudge(localStorage, this.identity, by)
-      this.budgetRevision++
-      if (!reserved) { this.refusal = 'No adjustment sent. The 0.10 mm allowance is used or cannot be saved.'; return }
+      if (context !== this.context || !this.allowedNow) return
+      const before = this.reportedOffset
+      if (!Number.isFinite(before)) { this.refusal = 'No adjustment sent. The printer Z offset is unknown.'; return }
+      try {
+        let baseline = await this.readSharedBaseline()
+        if (baseline === null) {
+          this.refusal = 'No adjustment sent. The shared baseline is unknown.'; return
+        }
+        if (baseline === undefined) {
+          await httpClientActions.serverDatabaseItemPost('fluidd', this.databaseKey, before)
+          baseline = await this.readSharedBaseline()
+          if (typeof baseline !== 'number' || Math.abs(baseline - before) > 1e-8) {
+            this.refusal = 'No adjustment sent. The shared baseline did not agree after saving.'; return
+          }
+        }
+        this.baseline = baseline
+        // Database I/O and Web Locks can wait. Recheck authority, print context,
+        // pending adjustment, current printer offset and cap immediately before send.
+        if (context !== this.context || !this.allowedNow) return
+        if (!nudgeFits(this.reportedOffset, baseline, by)) {
+          this.refusal = 'No adjustment sent. The shared 0.10 mm allowance would be exceeded.'; return
+        }
+      } catch {
+        this.refusal = 'No adjustment sent. The shared nudge database is unavailable.'; return
+      }
+      this.refusal = ''
       this.adjustZ(by)
     }
     this.pending = true
