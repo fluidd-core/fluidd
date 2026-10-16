@@ -101,7 +101,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import ControlMixin from '@/mixins/control'
 import type { ConsoleEntry } from '@/store/console/types'
 import {
@@ -110,9 +110,6 @@ import {
 } from '@/services/control/model'
 import ControlCard from './ControlCard.vue'
 import NumberField from './NumberField.vue'
-
-/** How far back in the console to look for the shapers Klipper last reported. */
-const REPORT_LINES = 200
 
 /**
  * The input shaper on each axis (Klipper keeps no
@@ -135,17 +132,36 @@ export default class ControlTuning extends Mixins(ControlMixin) {
     return !!this.shaperSettings
   }
 
-  /** The newest report of each axis, from the console's last lines. */
+  reportedShapers: Partial<Record<ShaperAxis, AxisShaper>> = {}
+  reportTarget = ''
+  reportBoundary: number | null = null
+
+  /** Reports received after this panel asked the selected printer. */
   get reported (): Partial<Record<ShaperAxis, AxisShaper>> {
+    return this.reportTarget === this.panelTarget ? this.reportedShapers : {}
+  }
+
+  @Watch('$store.state.console.console', { deep: true })
+  collectShaperReport () {
+    if (this.reportBoundary === null || this.reportTarget !== this.panelTarget) return
     const entries = (this.$store.state.console.console as ConsoleEntry[] | undefined) ?? []
-    const found: Partial<Record<ShaperAxis, AxisShaper>> = {}
-    for (let i = entries.length - 1; i >= Math.max(0, entries.length - REPORT_LINES); i--) {
-      const report = parseShaperReport(entries[i].message ?? '')
-      if (!found.x && report.x) found.x = report.x
-      if (!found.y && report.y) found.y = report.y
-      if (found.x && found.y) break
+    for (const entry of entries.slice(this.reportBoundary)) {
+      if (entry.type === 'response') Object.assign(this.reportedShapers, parseShaperReport(entry.message ?? ''))
     }
-    return found
+    this.reportBoundary = entries.length
+  }
+
+  @Watch('panelTarget')
+  clearShaperReport () {
+    this.reportedShapers = {}
+    this.reportTarget = ''
+    this.reportBoundary = null
+  }
+
+  beginShaperReport () {
+    this.reportedShapers = {}
+    this.reportTarget = this.panelTarget
+    this.reportBoundary = ((this.$store.state.console.console as ConsoleEntry[] | undefined) ?? []).length
   }
 
   get shaperSource (): string {
@@ -166,6 +182,7 @@ export default class ControlTuning extends Mixins(ControlMixin) {
     if (!this.controlReady || this.busy || !this.hasShaper || !this.axes.includes(axis)) return
     const next = { ...this.shaper(axis), ...change }
     if (!Number.isFinite(next.freq) || next.freq < 0 || next.freq > 300 || !this.shaperTypes(axis).includes(next.type) || !/^\w+$/.test(next.type)) return
+    this.beginShaperReport()
     this.sendGcode(shaperCommand(axis, next))
   }
 
@@ -176,6 +193,7 @@ export default class ControlTuning extends Mixins(ControlMixin) {
   /** SET_INPUT_SHAPER with no values only reports them. */
   readShaper () {
     if (!this.controlReady) return
+    this.beginShaperReport()
     this.sendGcode('SET_INPUT_SHAPER')
   }
 
