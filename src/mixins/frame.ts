@@ -1,7 +1,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from './state'
 import type { WebcamConfig } from '@/store/webcams/types'
-import { proMode } from '@/services/pro-mode'
+import { hasProSwitch, proMode } from '@/services/pro-mode'
 import { slicerPresence } from '@/services/slicer-bridge/slicerUrl'
 import { activeSlug, isForeignSlug } from '@/services/printer-pages'
 import { pageOfRoute, scopedPath } from '@/router/printerPagePaths'
@@ -20,6 +20,11 @@ import {
 export default class FrameMixin extends Mixins(StateMixin) {
   get pro (): boolean {
     return proMode.on
+  }
+
+  /** Whether this page offers the Pro switch: not on a page with no mode (Slice). */
+  get proSwitchShown (): boolean {
+    return hasProSwitch(this.$route)
   }
 
   get sectionContext (): SectionContext {

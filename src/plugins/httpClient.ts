@@ -34,6 +34,12 @@ const createHttpClient = (store: Store<RootState>) => {
     ]
   }
 
+  // For these paths, no status is toasted: the page that asked shows the
+  // printer's answer itself (a developer-mode refusal names who may ask).
+  const quietErrorRequests = [
+    '/server/muon/dev_mode/request'
+  ]
+
   const requestInterceptor = async (config: InternalAxiosRequestConfig) => {
     // Check our auth token.
     // If the token is about to expire...
@@ -110,15 +116,16 @@ const createHttpClient = (store: Store<RootState>) => {
       consola.debug('Refused through Muon3D', url, message)
       return Promise.reject(error)
     }
+    const quiet = quietErrorRequests.includes(url)
     switch (error.response.status) {
       case 500:
         consola.debug(error.response.status, error.message, message)
-        EventBus.$emit(message || 'Server error', { type: 'error' })
+        if (!quiet) EventBus.$emit(message || 'Server error', { type: 'error' })
         break
       case 502:
       case 400:
         consola.debug(error.response.status, error.message, message)
-        if (!handledErrorRequests[error.response.status].includes(url)) {
+        if (!quiet && !handledErrorRequests[error.response.status].includes(url)) {
           EventBus.$emit(message || 'Server error', { type: 'error' })
         }
         break
@@ -134,7 +141,7 @@ const createHttpClient = (store: Store<RootState>) => {
         break
       default:
         consola.debug(error.response.status, error.message)
-        EventBus.$emit(message || 'Server error', { type: 'error' })
+        if (!quiet) EventBus.$emit(message || 'Server error', { type: 'error' })
     }
 
     return Promise.reject(error)
