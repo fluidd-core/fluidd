@@ -6,8 +6,9 @@
     data-tid="control-page"
   >
     <control-actions
+      v-if="isMobileViewport"
       class="area-actions"
-      :phone="isMobileViewport"
+      phone
     />
     <control-heat
       class="area-heat"
