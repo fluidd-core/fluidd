@@ -103,7 +103,7 @@
         type="button"
         data-tid="jobs-move"
         :disabled="!controlReady"
-        @click="moveOpen = true"
+        @click="openMove"
       >
         Move to…
       </button>
@@ -111,7 +111,7 @@
         v-if="selected.length === 1 && changeable.length === 1"
         type="button"
         :disabled="!controlReady"
-        @click="renameOpen = true"
+        @click="openRename"
       >
         Rename
       </button>
@@ -215,14 +215,31 @@
         aria-rowindex="2"
         @click="openFolder(parent)"
       >
-        <span />
-        <span class="jt__thumb jt__thumb--folder">
+        <span
+          role="gridcell"
+          aria-colindex="1"
+        />
+        <span
+          class="jt__thumb jt__thumb--folder"
+          role="gridcell"
+          aria-colindex="2"
+        >
           <frame-icon
             name="folderUp"
             small
           />
         </span>
-        <span class="jt__name">Up to {{ parent ? `${parent}/` : 'gcodes/' }}</span>
+        <span
+          class="jt__name"
+          role="gridcell"
+          aria-colindex="3"
+        >Up to {{ parent ? `${parent}/` : 'gcodes/' }}</span>
+        <span
+          v-for="column in 6"
+          :key="column"
+          role="gridcell"
+          :aria-colindex="column + 3"
+        />
       </div>
 
       <div
@@ -462,6 +479,18 @@ export default class JobsTable extends Mixins(JobsMixin) {
   folderDialog = false
   renameOpen = false
   moveOpen = false
+  dialogTarget: string | null = null
+
+  @Watch('commandTarget')
+  onCommandTarget () {
+    this.selected = []
+    this.anchor = null
+    this.cursor = null
+    this.renameOpen = false
+    this.moveOpen = false
+    this.folderDialog = false
+    this.dialogTarget = null
+  }
 
   get columns (): Array<{ key: TableColumn, label: string }> {
     return [
@@ -802,8 +831,9 @@ export default class JobsTable extends Mixins(JobsMixin) {
     const note = folders ? ' A folder goes with everything in it.' : ''
     const target = this.commandTarget
     const ok = await this.$confirm(`It's removed from ${this.printerName}.${note} This can't be undone.`, { title: `Delete ${name}?`, buttonTrueText: 'Delete', danger: true })
-    if (!ok || target !== this.commandTarget) return
+    if (!ok || target !== this.commandTarget || !this.controlReady) return
     for (const row of rows) {
+      if (target !== this.commandTarget || !this.controlReady) return
       if (row.kind === 'folder') SocketActions.serverFilesDeleteDirectory(`${this.root}/${row.key}`, true)
       else SocketActions.serverFilesDeleteFile(`${this.root}/${row.key}`)
     }
@@ -822,9 +852,20 @@ export default class JobsTable extends Mixins(JobsMixin) {
       .sort((a, b) => a.localeCompare(b))
   }
 
+  openMove () {
+    this.dialogTarget = this.commandTarget
+    this.moveOpen = true
+  }
+
+  openRename () {
+    this.dialogTarget = this.commandTarget
+    this.renameOpen = true
+  }
+
   moveInto (folder: string) {
-    if (!this.controlReady) return
+    if (!this.controlReady || this.dialogTarget !== this.commandTarget) return
     for (const row of this.changeable) {
+      if (!this.controlReady || this.dialogTarget !== this.commandTarget) return
       SocketActions.serverFilesMove(`${this.root}/${row.key}`, `${this.root}/${folder ? `${folder}/` : ''}${row.name}`)
     }
     this.moveOpen = false
@@ -832,7 +873,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   rename (name: string) {
-    if (!this.controlReady) return
+    if (!this.controlReady || this.dialogTarget !== this.commandTarget) return
     const row = this.changeable[0]
     const clean = name.trim()
     if (!row || !clean || clean === row.name) return

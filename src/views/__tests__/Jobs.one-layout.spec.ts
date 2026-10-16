@@ -4,13 +4,15 @@ import Jobs from '../Jobs.vue'
 import { setProMode } from '@/services/pro-mode'
 import { SocketActions } from '@/api/socketActions'
 import { controlPreferenceStore } from '@/services/account/control-preferences'
+import Vue from 'vue'
 
-function mountJobs (mobile = false, control = true) {
+function mountJobs (mobile = false, access: { control: boolean, target: string, role?: boolean, connected?: boolean } = { control: true, target: 'account-a|printer-a' }, confirm = vi.fn(async () => true)) {
+  const ready = () => access.control && access.role !== false && access.connected !== false
   return shallowMount(Jobs, {
     mocks: {
       $store: { state: { config: { apiUrl: '', uiSettings: { general: {} } }, socket: {}, printer: { printer: {} } }, getters: { 'files/getRootProperties': () => ({}), 'files/getDirectory': () => [], 'history/getHistory': [], 'server/componentSupport': () => true }, dispatch: vi.fn() },
       $vuetify: { breakpoint: { mobile } },
-      $confirm: vi.fn(async () => true)
+      $confirm: confirm
     },
     computed: {
       queue: () => [{ job_id: '1', filename: 'one.gcode' }],
@@ -18,13 +20,14 @@ function mountJobs (mobile = false, control = true) {
       history: () => [],
       printerName: () => 'M1',
       isMobileViewport: () => mobile,
-      commandControlAvailable: () => control,
-      controlReady: () => control,
-      klippyReady: () => control,
-      klippyConnected: () => control,
-      socketConnected: () => control,
-      apiConnected: () => control,
-      authenticated: () => control
+      commandTarget: () => access.target,
+      commandControlAvailable: ready,
+      controlReady: ready,
+      klippyReady: ready,
+      klippyConnected: ready,
+      socketConnected: ready,
+      apiConnected: ready,
+      authenticated: ready
     },
     stubs: ['router-link', 'frame-icon', 'jobs-table', 'job-viewer', 'job-detail', 'seg-picker', 'tone-pill', 'job-card']
   })
@@ -72,7 +75,7 @@ describe('Jobs one layout', () => {
     const remove = vi.spyOn(SocketActions, 'serverJobQueueDeleteJobs').mockImplementation(vi.fn() as any)
     const start = vi.spyOn(SocketActions, 'serverJobQueueStart').mockImplementation(vi.fn() as any)
     const reorder = vi.spyOn(SocketActions, 'serverJobQueuePostJob').mockImplementation(vi.fn() as any)
-    const wrapper = mountJobs(false, false)
+    const wrapper = mountJobs(false, { control: false, target: 'a|p' })
     await (wrapper.vm as any).unqueue({ job_id: '1' })
     await (wrapper.vm as any).clearQueue()
     await (wrapper.vm as any).startQueue()
@@ -83,8 +86,51 @@ describe('Jobs one layout', () => {
     expect(wrapper.find('[data-tid="jobs-queue-start"]').attributes('disabled')).toBe('disabled')
   })
 
+  it.each(['role', 'connection', 'account', 'printer'])('rechecks %s before a confirmed single delete is sent', async change => {
+    let accept!: (value: boolean) => void
+    const confirmation = new Promise<boolean>(resolve => { accept = resolve })
+    const access = Vue.observable({ control: true, role: true, connected: true, target: 'account-a|printer-a' })
+    const remove = vi.spyOn(SocketActions, 'serverFilesDeleteFile').mockImplementation(vi.fn() as any)
+    const wrapper = mountJobs(false, access, vi.fn(() => confirmation))
+    const pending = (wrapper.vm as any).removeJob({ title: 'Part', path: 'part.gcode' })
+    if (change === 'role') access.role = false
+    else if (change === 'connection') access.connected = false
+    else access.target = change === 'account' ? 'account-b|printer-a' : 'account-a|printer-b'
+    accept(true)
+    await pending
+    expect(remove).not.toHaveBeenCalled()
+  })
+
+  it.each(['print', 'queue'])('clears stale detail state and refuses its %s command after a target switch', async action => {
+    const access = Vue.observable({ control: true, target: 'account-a|printer-a' })
+    const queue = vi.spyOn(SocketActions, 'serverJobQueuePostJob').mockImplementation(vi.fn() as any)
+    const wrapper = mountJobs(false, access)
+    const print = vi.spyOn(wrapper.vm as any, 'printAgain')
+    const job = { key: 'part.gcode', path: 'part.gcode' }
+    ;(wrapper.vm as any).open(job)
+    access.target = 'account-a|printer-b'
+    ;(wrapper.vm as any).onCommandTarget()
+    if (action === 'print') await (wrapper.vm as any).printDetail(job)
+    else await (wrapper.vm as any).queueDetail(job)
+    expect(queue).not.toHaveBeenCalled()
+    expect(print).not.toHaveBeenCalled()
+    expect((wrapper.vm as any).detail).toBeNull()
+  })
+
+  it('clears only the queue IDs shown by the confirmation', async () => {
+    let accept!: (value: boolean) => void
+    const confirmation = new Promise<boolean>(resolve => { accept = resolve })
+    const remove = vi.spyOn(SocketActions, 'serverJobQueueDeleteJobs').mockImplementation(vi.fn() as any)
+    const wrapper = mountJobs(false, { control: true, target: 'a|p' }, vi.fn(() => confirmation))
+    const pending = (wrapper.vm as any).clearQueue()
+    ;(wrapper.vm as any).queue.push({ job_id: '2', filename: 'two.gcode' })
+    accept(true)
+    await pending
+    expect(remove).toHaveBeenCalledWith(['1'])
+  })
+
   it('refuses print-or-queue for viewers and disconnected printers', async () => {
-    const wrapper = mountJobs(false, false)
+    const wrapper = mountJobs(false, { control: false, target: 'a|p' })
     const print = vi.spyOn(wrapper.vm as any, 'printAgain')
     await (wrapper.vm as any).printOrQueue({ path: 'part.gcode' })
     expect(print).not.toHaveBeenCalled()

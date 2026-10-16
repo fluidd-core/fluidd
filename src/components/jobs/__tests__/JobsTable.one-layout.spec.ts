@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import JobsTable from '../JobsTable.vue'
 import { SocketActions } from '@/api/socketActions'
 import { setProMode } from '@/services/pro-mode'
+import Vue from 'vue'
 
 const folder = { type: 'directory', name: 'parts', dirname: 'parts', modified: 1, size: 0 }
 const file = (filename: string, path = '', printed = false) => ({
@@ -14,7 +15,8 @@ const file = (filename: string, path = '', printed = false) => ({
   history: printed ? { job_id: 'done' } : {}
 })
 
-function mountTable (view: 'pictures' | 'list' | 'table' = 'table', control = true) {
+function mountTable (view: 'pictures' | 'list' | 'table' = 'table', access: { control: boolean, target: string, role?: boolean, connected?: boolean } = { control: true, target: 'account-a|printer-a' }, confirm = vi.fn(async () => true)) {
+  const ready = () => access.control && access.role !== false && access.connected !== false
   const directories: Record<string, any[]> = {
     gcodes: [folder, file('root.gcode')],
     'gcodes/parts': [file('old.gcode', 'parts', true), file('new.gcode', 'parts')]
@@ -33,11 +35,12 @@ function mountTable (view: 'pictures' | 'list' | 'table' = 'table', control = tr
         },
         dispatch: vi.fn()
       },
-      $confirm: vi.fn(async () => true)
+      $confirm: confirm
     },
     computed: {
-      controlReady: () => control,
-      commandControlAvailable: () => control,
+      commandTarget: () => access.target,
+      controlReady: ready,
+      commandControlAvailable: ready,
       busy: () => false,
       printerName: () => 'M1'
     },
@@ -71,6 +74,16 @@ describe('JobsTable one layout', () => {
     expect(vm.crumbs).toEqual([{ name: 'parts', path: 'parts' }])
     vm.openFolder(vm.parent)
     expect(vm.path).toBe('')
+  })
+
+  it('gives the nested-folder Up row a complete accessible grid row', async () => {
+    const wrapper = mountTable()
+    ;(wrapper.vm as any).openFolder('parts')
+    await wrapper.vm.$nextTick()
+    const grid = wrapper.get('[role="grid"]')
+    const up = wrapper.get('.jt__row--up')
+    expect(grid.attributes('aria-rowcount')).toBe('4')
+    expect(up.findAll('[role="gridcell"]').length).toBe(9)
   })
 
   it.each(['pictures', 'list'] as const)('opens a file with one click in %s', view => {
@@ -124,9 +137,38 @@ describe('JobsTable one layout', () => {
 
   it('refuses bulk queueing for viewers and disconnected printers', async () => {
     const queue = vi.spyOn(SocketActions, 'serverJobQueuePostJob').mockImplementation(vi.fn() as any)
-    const wrapper = mountTable('table', false)
+    const wrapper = mountTable('table', { control: false, target: 'a|p' })
     ;(wrapper.vm as any).selected = ['root.gcode']
     await (wrapper.vm as any).queueSelected()
     expect(queue).not.toHaveBeenCalled()
+  })
+
+  it.each(['role', 'connection', 'account', 'printer'])('rechecks %s after bulk-delete confirmation', async change => {
+    let accept!: (value: boolean) => void
+    const confirmation = new Promise<boolean>(resolve => { accept = resolve })
+    const access = Vue.observable({ control: true, role: true, connected: true, target: 'account-a|printer-a' })
+    const remove = vi.spyOn(SocketActions, 'serverFilesDeleteFile').mockImplementation(vi.fn() as any)
+    const wrapper = mountTable('table', access, vi.fn(() => confirmation))
+    const pending = (wrapper.vm as any).deleteRows([(wrapper.vm as any).fileRows[0]])
+    if (change === 'role') access.role = false
+    else if (change === 'connection') access.connected = false
+    else access.target = change === 'account' ? 'account-b|printer-a' : 'account-a|printer-b'
+    accept(true)
+    await pending
+    expect(remove).not.toHaveBeenCalled()
+  })
+
+  it.each(['rename', 'move'])('refuses stale %s dialog submissions after a target switch', async action => {
+    const access = Vue.observable({ control: true, target: 'account-a|printer-a' })
+    const move = vi.spyOn(SocketActions, 'serverFilesMove').mockImplementation(vi.fn() as any)
+    const wrapper = mountTable('table', access)
+    const vm = wrapper.vm as any
+    vm.selected = ['root.gcode']
+    action === 'rename' ? vm.openRename() : vm.openMove()
+    access.target = 'account-a|printer-b'
+    vm.onCommandTarget()
+    action === 'rename' ? vm.rename('renamed.gcode') : vm.moveInto('parts')
+    expect(move).not.toHaveBeenCalled()
+    expect(vm.selected).toEqual([])
   })
 })
