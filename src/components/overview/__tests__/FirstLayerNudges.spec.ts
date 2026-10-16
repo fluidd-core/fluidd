@@ -14,6 +14,14 @@ vi.mock('@/api/httpClientActions', () => ({ httpClientActions: http }))
 const originalLocks = navigator.locks
 let database: Record<string, any>
 
+const missing = () => Object.assign(new Error('Request failed with status code 404'), { response: { status: 404 } })
+
+async function fakeGet (_namespace: string, options: any) {
+  const value = options.params.key.split('.').reduce((v: any, p: string) => v?.[p], database)
+  if (value === undefined) throw missing()
+  return { data: { result: { value: structuredClone(value) } } }
+}
+
 function atPath (key: string, value: unknown) {
   const parts = key.split('.'); let target = database
   for (const part of parts.slice(0, -1)) target = target[part] ??= {}
@@ -22,7 +30,7 @@ function atPath (key: string, value: unknown) {
 
 beforeEach(() => {
   database = {}
-  http.serverDatabaseItemGet.mockImplementation(async (_namespace: string, options: any) => ({ data: { result: { value: structuredClone(options.params.key.split('.').reduce((v: any, p: string) => v?.[p], database)) } } }))
+  http.serverDatabaseItemGet.mockImplementation(fakeGet)
   http.serverDatabaseItemPost.mockImplementation(async (_namespace: string, key: string, value: unknown) => { atPath(key, value) })
   Object.defineProperty(navigator, 'locks', { configurable: true, value: { request: (_key: string, callback: () => void) => Promise.resolve(callback()) } })
 })
@@ -66,12 +74,35 @@ it('uses one Moonraker allowance across two devices and opposite directions rest
   one.wrapper.destroy(); two.wrapper.destroy()
 })
 
-it('blocks another device until the printer reports the pending expected offset', async () => {
+it('blocks an interleaved device while the first awaits reservation confirmation', async () => {
   const one = show(); const two = show()
-  await one.vm.nudge(0.01)
+  let release!: () => void
+  let reserved!: () => void
+  const held = new Promise<void>(resolve => { release = resolve })
+  const reached = new Promise<void>(resolve => { reserved = resolve })
+  let heldOnce = false
+  http.serverDatabaseItemGet.mockImplementation(async (...args: any[]) => {
+    const response = await fakeGet(args[0], args[1])
+    const value = response.data.result.value
+    if (!heldOnce && value?.pending?.device === one.vm.deviceId) {
+      heldOnce = true; reserved(); await held
+    }
+    return response
+  })
+  const first = one.vm.nudge(0.01)
+  await reached
   await two.vm.nudge(0.01)
+  release(); await first
   expect(socket.printerGcodeScript).toHaveBeenCalledTimes(1)
   one.wrapper.destroy(); two.wrapper.destroy()
+})
+
+it('treats Moonraker missing-key 404s as an absent baseline and sends the first nudge', async () => {
+  const device = show()
+  await device.vm.nudge(-0.01)
+  expect(socket.printerGcodeScript).toHaveBeenCalledTimes(1)
+  expect(database.firstLayerNudges.p['run-1'].expected).toBe(-0.01)
+  device.wrapper.destroy()
 })
 
 it('refuses a reused job id with different history identity', async () => {
@@ -83,11 +114,62 @@ it('refuses a reused job id with different history identity', async () => {
 
 it.each(['layer', 'role', 'pause'])('rechecks %s changed during the database await', async (change) => {
   const device = show()
-  http.serverDatabaseItemGet.mockImplementation(async () => {
+  atPath(device.vm.databaseKey, { baseline: 0, start_time: 100, filename: 'part.gcode' })
+  http.serverDatabaseItemGet.mockImplementationOnce(async (...args: any[]) => {
+    const response = await fakeGet(args[0], args[1])
     if (change === 'layer') device.store.state.printer.printer.print_stats.info.current_layer = 4
     if (change === 'role') cloudState.printers[0].role = 'viewer'
     if (change === 'pause') Vue.set(device.store.state.printer.printer, 'pause_resume', { is_paused: true })
-    return { data: { result: { value: undefined } } }
+    return response
+  })
+  await device.vm.nudge(0.01)
+  expect(socket.printerGcodeScript).not.toHaveBeenCalled()
+  expect(database.firstLayerNudges.p['run-1'].pending).toBeUndefined()
+  device.wrapper.destroy()
+})
+
+it('sends after the final rechecks when authority and printer state stay valid', async () => {
+  const device = show()
+  atPath(device.vm.databaseKey, { baseline: 0, start_time: 100, filename: 'part.gcode' })
+  await device.vm.nudge(0.01)
+  expect(socket.printerGcodeScript).toHaveBeenCalledTimes(1)
+  device.wrapper.destroy()
+})
+
+it('clears an expired pending marker without forgetting its expected offset', async () => {
+  const device = show()
+  atPath(device.vm.databaseKey, { baseline: 0, start_time: 100, filename: 'part.gcode', expected: 0.1, pending: { created: Date.now() - 6000, from: 0, device: 'other', nonce: 'old' } })
+  await device.vm.nudge(-0.01)
+  expect(socket.printerGcodeScript).toHaveBeenCalledTimes(1)
+  expect(database.firstLayerNudges.p['run-1'].expected).toBe(0.09)
+  device.store.state.printer.printer.gcode_move.homing_origin.splice(2, 1, 0.09)
+  await device.vm.nudge(0.01)
+  device.store.state.printer.printer.gcode_move.homing_origin.splice(2, 1, 0.1)
+  await device.vm.nudge(0.01)
+  expect(socket.printerGcodeScript).toHaveBeenCalledTimes(2)
+  device.wrapper.destroy()
+})
+
+it('uses recorded expected offset when the printer report lags behind', async () => {
+  const device = show()
+  atPath(device.vm.databaseKey, { baseline: 0, start_time: 100, filename: 'part.gcode', expected: 0.1 })
+  await device.vm.nudge(0.01)
+  expect(socket.printerGcodeScript).not.toHaveBeenCalled()
+  expect(device.vm.refusal).toContain('allowance would be exceeded')
+  device.wrapper.destroy()
+})
+
+it('refuses if the reported offset changes after reserving but before send', async () => {
+  const device = show()
+  atPath(device.vm.databaseKey, { baseline: 0, start_time: 100, filename: 'part.gcode' })
+  let changed = false
+  http.serverDatabaseItemGet.mockImplementation(async (...args: any[]) => {
+    const response = await fakeGet(args[0], args[1])
+    if (!changed && response.data.result.value?.pending?.device === device.vm.deviceId) {
+      changed = true
+      device.store.state.printer.printer.gcode_move.homing_origin.splice(2, 1, 0.01)
+    }
+    return response
   })
   await device.vm.nudge(0.01)
   expect(socket.printerGcodeScript).not.toHaveBeenCalled()

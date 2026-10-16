@@ -38,7 +38,7 @@
     >
       {{ refusal }}
     </p>
-    <small>Layers 1–3 only. The printer's shared offset is checked for every nudge. These nudges are not saved as calibration.</small>
+    <small>Layers 1–3 only. Shared limit, best effort; the firmware limit is the real one. These nudges are not saved as calibration.</small>
   </div>
 </template>
 <script lang="ts">
@@ -48,7 +48,7 @@ import { cloudState } from '@/services/muon-cloud/state'
 import { isManagedApiUrl } from '@/services/muon-cloud/origin'
 import { printerTransportBinding } from '@/services/managed-session/httpTransportBinding'
 import { httpClientActions } from '@/api/httpClientActions'
-import { databasePart, expectedCaughtUp, firstLayerAllowed, nudgeBudget, nudgeFits, readNudgeEntry } from '@/services/overview/nudges'
+import { databasePart, expectedCaughtUp, firstLayerAllowed, missingDatabaseKey, nudgeBudget, nudgeFits, readNudgeEntry } from '@/services/overview/nudges'
 import type { NudgeEntry } from '@/services/overview/nudges'
 import type { HistoryItem } from '@/store/history/types'
 @Component
@@ -57,6 +57,7 @@ export default class FirstLayerNudges extends Mixins(OverviewMixin) {
   baseline: number | null = null
   refusal = ''
   pending = false
+  readonly deviceId = `${Date.now()}-${Math.random()}`
   get managedPrinter () { return isManagedApiUrl(this.$store.state.config.apiUrl) && printerTransportBinding.remote ? cloudState.printers.find(p => p.id === cloudState.activePrinterId) : undefined }
   get knownM1 (): boolean { return ['M1', 'Muon3D M1'].includes(this.managedPrinter?.model ?? '') }
   get identity (): string {
@@ -94,8 +95,13 @@ export default class FirstLayerNudges extends Mixins(OverviewMixin) {
   bind () { this.captured = this.context; this.baseline = null; this.refusal = ''; this.refreshBaseline() }
 
   async readSharedEntry (): Promise<NudgeEntry | null | undefined> {
-    const response = await httpClientActions.serverDatabaseItemGet<unknown>('fluidd', { params: { key: this.databaseKey } })
-    return readNudgeEntry(response.data.result.value)
+    try {
+      const response = await httpClientActions.serverDatabaseItemGet<unknown>('fluidd', { params: { key: this.databaseKey } })
+      return readNudgeEntry(response.data.result.value)
+    } catch (error) {
+      if (missingDatabaseKey(error)) return undefined
+      throw error
+    }
   }
 
   entryMatches (entry: NudgeEntry): boolean {
@@ -104,9 +110,15 @@ export default class FirstLayerNudges extends Mixins(OverviewMixin) {
 
   async pruneAndWrite (entry: NudgeEntry): Promise<void> {
     const printerKey = this.databaseKey.split('.').slice(0, 2).join('.')
-    const response = await httpClientActions.serverDatabaseItemGet<Record<string, unknown>>('fluidd', { params: { key: printerKey } })
+    let values: Record<string, unknown> = {}
+    try {
+      const response = await httpClientActions.serverDatabaseItemGet<Record<string, unknown>>('fluidd', { params: { key: printerKey } })
+      values = response.data.result.value ?? {}
+    } catch (error) {
+      if (!missingDatabaseKey(error)) throw error
+    }
     const active = new Set((this.$store.state.history?.jobs ?? []).filter((job: HistoryItem) => job.status === 'in_progress' && !job.end_time).map((job: HistoryItem) => databasePart(String(job.job_id))))
-    for (const jobId of Object.keys(response.data.result.value ?? {})) {
+    for (const jobId of Object.keys(values)) {
       if (!active.has(jobId)) await httpClientActions.serverDatabaseItemDelete('fluidd', `${printerKey}.${jobId}`)
     }
     await httpClientActions.serverDatabaseItemPost('fluidd', this.databaseKey, entry)
@@ -148,11 +160,11 @@ export default class FirstLayerNudges extends Mixins(OverviewMixin) {
         // Database I/O and Web Locks can wait. Recheck authority, print context,
         // pending adjustment, current printer offset and cap immediately before send.
         if (context !== this.context || !this.allowedNow) return
-        if (entry.pending && entry.expected !== undefined && !expectedCaughtUp(this.reportedOffset, entry.expected, entry.pending.from)) {
-          this.refusal = `No adjustment sent. A shared nudge is still awaiting printer confirmation${Date.now() - entry.pending.created > 5000 ? ' and timed out' : ''}.`; return
+        if (entry.pending && entry.expected !== undefined && !expectedCaughtUp(this.reportedOffset, entry.expected, entry.pending.from) && Date.now() - entry.pending.created <= 5000) {
+          this.refusal = 'No adjustment sent. A shared nudge is still awaiting printer confirmation.'; return
         }
         if (entry.pending) {
-          entry = { ...entry, expected: this.reportedOffset }
+          entry = { ...entry, expected: entry.expected === undefined ? this.reportedOffset : entry.expected }
           delete entry.pending
           await this.pruneAndWrite(entry)
           if (context !== this.context || !this.allowedNow) return
@@ -161,10 +173,11 @@ export default class FirstLayerNudges extends Mixins(OverviewMixin) {
         if (!nudgeFits(effectiveOffset, entry.baseline, by)) {
           this.refusal = 'No adjustment sent. The shared 0.10 mm allowance would be exceeded.'; return
         }
-        const reserved: NudgeEntry = { ...entry, expected: this.reportedOffset + by, pending: { created: Date.now(), from: this.reportedOffset } }
+        const nonce = `${Date.now()}-${Math.random()}`
+        const reserved: NudgeEntry = { ...entry, expected: Math.round((effectiveOffset + by) * 100) / 100, pending: { created: Date.now(), from: this.reportedOffset, device: this.deviceId, nonce } }
         await this.pruneAndWrite(reserved)
         const confirmed = await this.readSharedEntry()
-        if (context !== this.context || !this.allowedNow || !confirmed || !this.entryMatches(confirmed) || confirmed.expected !== reserved.expected || confirmed.pending?.created !== reserved.pending?.created) {
+        if (context !== this.context || !this.allowedNow || !confirmed || !this.entryMatches(confirmed) || confirmed.expected !== reserved.expected || confirmed.pending?.device !== this.deviceId || confirmed.pending?.nonce !== nonce || confirmed.pending?.from !== this.reportedOffset) {
           this.refusal = 'No adjustment sent. The shared nudge reservation was not confirmed.'; return
         }
       } catch {

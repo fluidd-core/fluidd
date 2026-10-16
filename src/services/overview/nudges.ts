@@ -26,7 +26,11 @@ export interface NudgeEntry {
   start_time: number
   filename: string
   expected?: number
-  pending?: { created: number; from: number }
+  pending?: { created: number; from: number; device?: string; nonce?: string }
+}
+
+export function missingDatabaseKey (error: unknown): boolean {
+  return !!error && typeof error === 'object' && (error as { response?: { status?: number } }).response?.status === 404
 }
 
 export function readNudgeEntry (value: unknown): NudgeEntry | null | undefined {
