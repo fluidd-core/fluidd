@@ -104,7 +104,11 @@ function openSignUp () {
   const wrapper = shallowMount(SignIn, {
     mocks: { $route: { query: { continue: '/authorize?client_id=fluidd' } } },
     stubs: {
-      'v-card': box, 'v-card-title': box, 'v-card-subtitle': box, 'v-card-text': box, 'v-card-actions': box,
+      'v-card': box,
+      'v-card-title': box,
+      'v-card-subtitle': box,
+      'v-card-text': box,
+      'v-card-actions': box,
       'v-alert': { template: '<div v-bind="$attrs"><slot /></div>' },
       'v-form': { template: '<form @submit="$emit(`submit`, $event)"><slot /></form>' },
       'v-text-field': { props: ['value'], template: '<label><input :value="value" @input="$emit(`input`, $event.target.value)"></label>' },
