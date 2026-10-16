@@ -499,6 +499,10 @@ export default class AccountDelete extends Vue {
         this.dialogError = error instanceof DOMException && error.name === 'NotAllowedError'
           ? 'Passkey confirmation was cancelled. Your account is unchanged.'
           : describe(error)
+      } else if (this.alive && this.dialog && this.step === 2 && storedToken() !== token) {
+        // A passkey prompt can outlive this tab's session. Explain why the
+        // destructive request stopped rather than silently leaving the wizard.
+        this.dialogError = 'The account changed. Open this action again.'
       }
     } finally {
       this.busy = false
