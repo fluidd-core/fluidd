@@ -12,6 +12,21 @@ import { printerTransportBinding } from '@/services/managed-session/httpTranspor
 const socket = vi.hoisted(() => ({ printerPrintPause: vi.fn(), printerPrintCancel: vi.fn(), printerPrintStart: vi.fn() }))
 vi.mock('@/api/socketActions', () => ({ SocketActions: socket }))
 afterEach(() => { proMode.on = false; vi.clearAllMocks(); cloudState.account = null; cloudState.activePrinterId = null; cloudState.printers = []; printerTransportBinding.remote = false; localStorage.clear() })
+it('links the Customise Overview trigger to the revealed editor', async () => {
+  const state = Vue.observable<any>({ config: { apiUrl: 'http://mock.local', uiSettings: { general: {} } }, printer: { printer: {} } })
+  const getters = Vue.observable<any>({ 'printer/getPrinterState': 'ready', 'printer/getHeaters': [], 'printer/getSensors': [], 'printer/getAvailableCommands': {}, 'jobQueue/getQueuedJobs': [] })
+  const wrapper = mount(Overview, { attachTo: document.body, computed: { isMobileViewport: () => false }, mocks: { $store: { state, getters, dispatch: vi.fn() } }, stubs: { 'overview-stage': true, 'overview-print-something': true, 'overview-tiles': true, 'overview-quick-actions': true } })
+  const trigger = wrapper.find('.overview__customise button')
+  const id = trigger.attributes('aria-controls')
+  expect(id).toBeTruthy()
+  expect(wrapper.find(`#${id}`).exists()).toBe(false)
+  const button = trigger.element as HTMLButtonElement
+  button.focus()
+  await trigger.trigger('click')
+  expect(wrapper.find(`#${id}`).exists()).toBe(true)
+  expect(document.activeElement).toBe(trigger.element)
+  wrapper.destroy()
+})
 it('keeps print actions fixed with either old mode value and rechecks the target after Stop confirmation', async () => {
   let confirm!: (value: boolean) => void
   const state = Vue.observable<any>({ config: { apiUrl: 'http://mock.local', uiSettings: { general: {} } }, printer: { printer: { print_stats: { filename: 'part.gcode' } } } })

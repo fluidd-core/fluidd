@@ -47,6 +47,7 @@
         type="button"
         class="cbtn"
         :aria-expanded="editing ? 'true' : 'false'"
+        aria-controls="overview-layout-editor"
         @click="toggleEditing"
       >
         {{ editing ? 'Done' : 'Customise Overview' }}
@@ -55,6 +56,7 @@
     </div>
     <overview-cards
       v-if="editing"
+      id="overview-layout-editor"
       :value="layout"
       :unavailable="unavailable"
       @input="chooseLayout"
