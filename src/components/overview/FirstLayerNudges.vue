@@ -27,6 +27,12 @@
       Nudge allowance is unavailable. No adjustment sent.
     </p>
     <p
+      v-if="!lockingAvailable"
+      role="status"
+    >
+      Nudges are unavailable in this browser.
+    </p>
+    <p
       v-if="refusal"
       role="status"
     >
@@ -59,8 +65,9 @@ export default class FirstLayerNudges extends Mixins(OverviewMixin) {
   get context (): string { return `${this.panelTarget}|${this.identity}` }
   get earlyLayer (): boolean { const layer = this.printStats.info?.current_layer; return Number.isInteger(layer) && layer >= 1 && layer <= 3 }
   get budget () { return this.budgetRevision >= 0 && this.identity ? readNudge(localStorage, this.identity) : null }
+  get lockingAvailable (): boolean { return typeof navigator.locks?.request === 'function' }
   get canNudge (): boolean {
-    return this.captured === this.context && firstLayerAllowed({ m1: this.knownM1, identity: this.identity, layer: this.printStats.info?.current_layer ?? NaN, printing: this.printerPrinting && !this.printerPaused && this.$store.state.printer.printer.pause_resume?.is_paused !== true, ready: this.controlReady && !!this.$store.getters['printer/getAvailableCommands']?.SET_GCODE_OFFSET, homed: this.isHomed('Z'), waiting: this.pending || this.hasWait(this.$waits.onZAdjust) })
+    return this.lockingAvailable && this.captured === this.context && firstLayerAllowed({ m1: this.knownM1, identity: this.identity, layer: this.printStats.info?.current_layer ?? NaN, printing: this.printerPrinting && !this.printerPaused && this.$store.state.printer.printer.pause_resume?.is_paused !== true, ready: this.controlReady && !!this.$store.getters['printer/getAvailableCommands']?.SET_GCODE_OFFSET, homed: this.isHomed('Z'), waiting: this.pending || this.hasWait(this.$waits.onZAdjust) })
   }
 
   @Watch('context', { immediate: true })
@@ -83,8 +90,7 @@ export default class FirstLayerNudges extends Mixins(OverviewMixin) {
     }
     this.pending = true
     try {
-      if (navigator.locks?.request) await navigator.locks.request(`muon-first-layer:${this.identity}`, execute)
-      else execute()
+      await navigator.locks.request(`muon-first-layer:${this.identity}`, execute)
     } catch { this.refusal = 'No adjustment sent. The nudge allowance could not be locked.' } finally { this.pending = false }
   }
 }

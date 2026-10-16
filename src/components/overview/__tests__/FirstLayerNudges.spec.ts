@@ -1,12 +1,15 @@
 import Vue from 'vue'
 import { mount } from '@vue/test-utils'
-import { afterEach, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import FirstLayerNudges from '../FirstLayerNudges.vue'
 import { panelStore } from '@/components/control/__tests__/panel-fixture'
 import { cloudState } from '@/services/muon-cloud/state'
 import { printerTransportBinding } from '@/services/managed-session/httpTransportBinding'
 const socket = vi.hoisted(() => ({ printerGcodeScript: vi.fn() }))
 vi.mock('@/api/socketActions', () => ({ SocketActions: socket }))
+const originalLocks = navigator.locks
+beforeEach(() => { Object.defineProperty(navigator, 'locks', { configurable: true, value: { request: (_key: string, callback: () => void) => Promise.resolve(callback()) } }) })
+afterEach(() => { Object.defineProperty(navigator, 'locks', { configurable: true, value: originalLocks }) })
 afterEach(() => { socket.printerGcodeScript.mockClear(); localStorage.clear(); cloudState.printers = []; cloudState.activePrinterId = null; printerTransportBinding.remote = false })
 function show () {
   const store = panelStore()
@@ -20,6 +23,15 @@ function show () {
   const wrapper = mount(FirstLayerNudges, { mocks: { $store: store, $waits: { onZAdjust: 'adjust' } } })
   return { store, wrapper, vm: wrapper.vm as any }
 }
+it('refuses when this browser cannot serialize the shared print allowance', async () => {
+  Object.defineProperty(navigator, 'locks', { configurable: true, value: undefined })
+  const { wrapper, vm } = show()
+  await vm.nudge(-0.01)
+  expect(socket.printerGcodeScript).not.toHaveBeenCalled()
+  expect(wrapper.find('button').attributes('disabled')).toBeDefined()
+  expect(wrapper.find('[role="status"]').exists()).toBe(true)
+  wrapper.destroy()
+})
 it('sends the shared signed command once per nudge, shows the running total and refuses beyond cumulative cap', async () => {
   const { wrapper, vm } = show()
   for (let i = 0; i < 10; i++) vm.nudge(-0.01)
