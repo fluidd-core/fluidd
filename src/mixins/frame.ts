@@ -34,6 +34,7 @@ export default class FrameMixin extends Mixins(StateMixin) {
       history: this.$store.getters['server/componentSupport']('history') as boolean,
       timelapse: this.$store.getters['server/componentSupport']('timelapse') as boolean,
       diagnostics: this.$store.state.config.uiSettings.general.enableDiagnostics as boolean,
+      bedMesh: !!this.$store.getters['mesh/getSupportsBedMesh'],
       foreign: isForeignSlug(this.$route.params.printer)
     }
   }

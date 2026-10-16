@@ -17,6 +17,7 @@ export interface SectionContext {
   timelapse: boolean;
   diagnostics: boolean;
   foreign: boolean;
+  bedMesh?: boolean;
 }
 
 export interface SectionPage {
@@ -90,7 +91,7 @@ export const SECTIONS: Section[] = [
     key: 'm',
     pages: [
       { path: '/maintenance', label: 'Health' },
-      { path: '/tune', label: 'Bed mesh', shows: c => c.pro }
+      { path: '/tune', label: 'Bed', shows: c => !!c.bedMesh }
     ]
   },
   {

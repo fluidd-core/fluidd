@@ -12,7 +12,7 @@ import {
 } from '../printerSections'
 
 const simple: SectionContext = { pro: false, slicer: false, camera: null, history: true, timelapse: false, diagnostics: true, foreign: false }
-const everything: SectionContext = { pro: true, slicer: true, camera: 'front', history: true, timelapse: true, diagnostics: true, foreign: false }
+const everything: SectionContext = { pro: true, slicer: true, camera: 'front', history: true, timelapse: true, diagnostics: true, foreign: false, bedMesh: true }
 
 const ids = (c: SectionContext) => visibleSections(c).map(s => s.id)
 
