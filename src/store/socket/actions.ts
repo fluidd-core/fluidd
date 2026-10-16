@@ -39,7 +39,8 @@ export const actions: ActionTree<SocketState, RootState> = {
         type: 'web',
         url: Globals.GITHUB_REPO
       })
-      SocketActions.serverFilesListRoot('config')
+      // The config root is listed from server/onServerInfo, once the printer
+      // has said whether it registers one.
     }
   },
 

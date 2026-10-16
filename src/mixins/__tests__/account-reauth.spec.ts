@@ -3,7 +3,10 @@ import { describe, expect, it, vi } from 'vitest'
 import { Component, Mixins } from 'vue-property-decorator'
 import AccountReauthMixin from '../account-reauth'
 import { AccountError } from '@/services/account/client'
+import * as confirmation from '@/services/account/confirmation'
 import type { Reauth } from '@/services/account/api'
+
+vi.mock('@/services/account/confirmation', () => ({ confirmAccount: vi.fn() }))
 
 @Component({ template: '<div />' })
 class Page extends Mixins(AccountReauthMixin) {}
@@ -59,4 +62,40 @@ describe('"Confirm it\'s you"', () => {
     const page = mount(Page).vm
     await expect(page.withReauth(async () => { throw new AccountError('Gone.', 404, { error: 'gone' }) })).rejects.toThrow('Gone.')
   })
+})
+
+describe('passkey confirmation for sensitive account actions', () => {
+  it('retries once with no password only after the ceremony succeeds', async () => {
+    vi.mocked(confirmation.confirmAccount).mockResolvedValueOnce(undefined)
+    const w = mount(Page); const page = w.vm
+    const act = vi.fn().mockRejectedValueOnce(refused()).mockResolvedValueOnce('exported')
+    const result = page.withReauth(act)
+    await new Promise(resolve => setTimeout(resolve))
+    expect(typeof (page.reauthOn as any).passkey).toBe('function')
+    await (page.reauthOn as any).passkey()
+    expect(await result).toBe('exported')
+    expect(act).toHaveBeenCalledTimes(2)
+    expect(act).toHaveBeenLastCalledWith({})
+    w.destroy()
+  })
+  it('does not send the action after a cancelled passkey', async () => {
+    vi.mocked(confirmation.confirmAccount).mockRejectedValueOnce(new DOMException('Cancelled', 'NotAllowedError'))
+    const w = mount(Page); const page = w.vm; const act = vi.fn().mockRejectedValue(refused())
+    const result = page.withReauth(act)
+    await new Promise(resolve => setTimeout(resolve))
+    expect(typeof (page.reauthOn as any).passkey).toBe('function')
+    await (page.reauthOn as any).passkey()
+    expect(act).toHaveBeenCalledTimes(1)
+    expect(page.reauthState.error).toContain('cancelled')
+    page.reauthOn.cancel(); expect(await result).toBeNull(); w.destroy()
+  })
+})
+
+it('discards a completed ceremony after leaving the account page', async () => {
+  let done!:()=>void
+  vi.mocked(confirmation.confirmAccount).mockImplementationOnce(() => new Promise<void>(resolve => { done = resolve }))
+  const w = mount(Page); const act = vi.fn().mockRejectedValueOnce(refused()).mockResolvedValueOnce('must not run')
+  const result = w.vm.withReauth(act); await new Promise(resolve => setTimeout(resolve))
+  const confirming = (w.vm.reauthOn as any).passkey(); w.destroy(); done(); await confirming
+  expect(await result).toBeNull(); expect(act).toHaveBeenCalledTimes(1)
 })
