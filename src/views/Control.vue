@@ -6,7 +6,6 @@
     data-tid="control-page"
   >
     <control-actions
-      v-if="isMobileViewport"
       class="area-actions"
     />
     <control-heat
@@ -70,6 +69,7 @@ export default class Control extends Mixins(BrowserMixin) {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-template-areas:
+      'actions actions actions actions actions actions'
       'move move move heat heat heat'
       'filament filament speed speed fans fans'
       'macros macros macros macros macros macros'
@@ -89,7 +89,7 @@ export default class Control extends Mixins(BrowserMixin) {
   @media (max-width: 1263px) {
     .control-page {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-areas: 'move heat' 'filament speed' 'fans fans' 'macros macros' 'diagnosis diagnosis';
+      grid-template-areas: 'actions actions' 'move heat' 'filament speed' 'fans fans' 'macros macros' 'diagnosis diagnosis';
     }
   }
   @media (max-width: 899px) {

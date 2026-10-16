@@ -77,6 +77,7 @@
           type="button"
           class="cbtn"
           :disabled="!!restartRefusal || !savePending"
+          data-tid="save-config"
           @click="saveConfig"
         >
           Save config and restart{{ savePending ? '' : ' · nothing to save' }}

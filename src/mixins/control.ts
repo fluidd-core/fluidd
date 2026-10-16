@@ -33,6 +33,24 @@ import type { Move } from '@/store/gcodePreview/types'
 const peakFlows = new WeakMap<readonly Move[], number | null>()
 
 type Axis = 'X' | 'Y' | 'Z'
+export type LimitKey = 'VELOCITY' | 'ACCEL' | 'SQUARE_CORNER_VELOCITY' | 'MINIMUM_CRUISE_RATIO' | 'ACCEL_TO_DECEL'
+
+const limitSetting: Record<LimitKey, string> = {
+  VELOCITY: 'max_velocity',
+  ACCEL: 'max_accel',
+  SQUARE_CORNER_VELOCITY: 'square_corner_velocity',
+  MINIMUM_CRUISE_RATIO: 'minimum_cruise_ratio',
+  ACCEL_TO_DECEL: 'max_accel_to_decel'
+}
+
+/** Caps used only when old/incomplete Moonraker data omits the configured value. */
+const fallbackLimitMaximum: Record<LimitKey, number> = {
+  VELOCITY: 1000,
+  ACCEL: 50000,
+  SQUARE_CORNER_VELOCITY: 100,
+  MINIMUM_CRUISE_RATIO: 1,
+  ACCEL_TO_DECEL: 50000
+}
 
 /** The heat below which a nozzle's − goes to Off and its + starts. */
 export const NOZZLE_FLOOR = 170
@@ -360,9 +378,22 @@ export default class ControlMixin extends Mixins(TypedCommandsMixin, ToolheadMix
     this.sendGcode(`SET_PRESSURE_ADVANCE ADVANCE=${value}`)
   }
 
+  /** Configured ceiling, or a validated live-status fallback for older Moonraker data. */
+  limitMaximum (key: LimitKey): number | null {
+    const setting = this.$store.state.printer.printer.configfile?.settings?.printer?.[limitSetting[key]]
+    const positive = key === 'VELOCITY' || key === 'ACCEL'
+    if (typeof setting === 'number' && Number.isFinite(setting) && (positive ? setting > 0 : setting >= 0)) {
+      return key === 'MINIMUM_CRUISE_RATIO' ? Math.min(setting, 1) : setting
+    }
+    const live = this.toolhead[limitSetting[key]]
+    if (typeof live !== 'number' || !Number.isFinite(live) || (positive ? live <= 0 : live < 0)) return null
+    return Math.min(live, fallbackLimitMaximum[key])
+  }
+
   /** Velocity, acceleration, square corner velocity and the cruise ratio, until a restart. */
-  setLimit (key: 'VELOCITY' | 'ACCEL' | 'SQUARE_CORNER_VELOCITY' | 'MINIMUM_CRUISE_RATIO' | 'ACCEL_TO_DECEL', value: number) {
-    if (!this.controlReady || !Number.isFinite(value) || value < 0 || (['VELOCITY', 'ACCEL'].includes(key) && value <= 0) || (key === 'MINIMUM_CRUISE_RATIO' && value > 1)) return
+  setLimit (key: LimitKey, value: number) {
+    const maximum = this.limitMaximum(key)
+    if (!this.controlReady || maximum === null || !Number.isFinite(value) || value < 0 || value > maximum || (['VELOCITY', 'ACCEL'].includes(key) && value <= 0)) return
     this.sendGcode(`SET_VELOCITY_LIMIT ${key}=${value}`)
   }
 

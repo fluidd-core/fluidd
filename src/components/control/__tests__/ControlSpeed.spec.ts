@@ -37,3 +37,33 @@ it('sets firmware retraction and refuses a cruise ratio above one or a stale dis
   expect(socket.printerGcodeScript.mock.calls.map(c => c[0])).toEqual(['SET_RETRACTION RETRACT_LENGTH=1.2'])
   wrapper.destroy()
 })
+
+it('bounds every velocity limit by printer configuration and rechecks before send', async () => {
+  const store = panelStore()
+  store.state.printer.printer.configfile.settings.printer = {
+    max_velocity: 500,
+    max_accel: 12000,
+    square_corner_velocity: 12,
+    minimum_cruise_ratio: 0.8
+  }
+  const wrapper = mount(ControlSpeed, { mocks: { $store: store, $waits: waits }, stubs: panelStubs })
+  const velocity = wrapper.find('input[aria-label="Velocity"]')
+  await velocity.setValue('501'); await velocity.trigger('keydown.enter')
+  expect(wrapper.text()).toContain('from 0.001 to 500 mm/s')
+  ;(wrapper.vm as any).setLimit('VELOCITY', 500)
+  ;(wrapper.vm as any).setLimit('ACCEL', 12001)
+  ;(wrapper.vm as any).setLimit('SQUARE_CORNER_VELOCITY', Number.NaN)
+  expect(socket.printerGcodeScript.mock.calls.map(c => c[0])).toEqual(['SET_VELOCITY_LIMIT VELOCITY=500'])
+  wrapper.destroy()
+})
+
+it('uses conservative status fallbacks when config is missing and refuses an unbounded limit', () => {
+  const store = panelStore()
+  const wrapper = mount(ControlSpeed, { mocks: { $store: store, $waits: waits }, stubs: panelStubs })
+  ;(wrapper.vm as any).setLimit('VELOCITY', 801)
+  ;(wrapper.vm as any).setLimit('VELOCITY', 800)
+  delete store.state.printer.printer.toolhead.max_velocity
+  ;(wrapper.vm as any).setLimit('VELOCITY', 100)
+  expect(socket.printerGcodeScript.mock.calls.map(c => c[0])).toEqual(['SET_VELOCITY_LIMIT VELOCITY=800'])
+  wrapper.destroy()
+})

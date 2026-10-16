@@ -78,7 +78,7 @@
           :value="limit.value"
           :unit="limit.unit"
           :min="['VELOCITY', 'ACCEL'].includes(limit.key) ? 0.001 : 0"
-          :max="limit.key === 'MINIMUM_CRUISE_RATIO' ? 1 : 1000000"
+          :max="limit.max"
           :decimals="limit.decimals"
           :disabled="!controlReady"
           @change="setLimit(limit.key, $event)"
@@ -112,7 +112,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import ControlMixin from '@/mixins/control'
+import ControlMixin, { type LimitKey } from '@/mixins/control'
 import { leftAt } from '@/services/control/speed'
 import { shortDuration } from '@/util/short-duration'
 import type { TimeEstimates } from '@/store/printer/types'
@@ -122,8 +122,6 @@ import NumberField from './NumberField.vue'
 import ControlTaskFold from './ControlTaskFold.vue'
 import TuningValue from './TuningValue.vue'
 import { retractionCommand, type RetractionKey } from '@/services/control/model'
-
-type LimitKey = 'VELOCITY' | 'ACCEL' | 'SQUARE_CORNER_VELOCITY' | 'MINIMUM_CRUISE_RATIO' | 'ACCEL_TO_DECEL'
 
 /** Presets and an exact custom value, with reversible tuning beside them. */
 @Component({ components: { ControlCard, SegPicker, NumberField, ControlTaskFold, TuningValue } })
@@ -167,17 +165,23 @@ export default class ControlSpeed extends Mixins(ControlMixin) {
   }
 
   /** Velocity, acceleration, corner speed, and whichever cruise setting this Klipper has. */
-  get limits (): Array<{ key: LimitKey, label: string, value: number | null, unit: string, decimals: number }> {
+  get limits (): Array<{ key: LimitKey, label: string, value: number | null, unit: string, decimals: number, max: number }> {
     const t = this.toolhead
-    const list: Array<{ key: LimitKey, label: string, value: number | null, unit: string, decimals: number }> = [
-      { key: 'VELOCITY', label: 'Velocity', value: t.max_velocity ?? null, unit: 'mm/s', decimals: 0 },
-      { key: 'ACCEL', label: 'Acceleration', value: t.max_accel ?? null, unit: 'mm/s²', decimals: 0 },
-      { key: 'SQUARE_CORNER_VELOCITY', label: 'Square corner velocity', value: t.square_corner_velocity ?? null, unit: 'mm/s', decimals: 1 }
-    ]
+    const row = (key: LimitKey, label: string, value: number | null, unit: string, decimals: number) => {
+      const max = this.limitMaximum(key)
+      return max === null ? null : { key, label, value, unit, decimals, max }
+    }
+    const list = [
+      row('VELOCITY', 'Velocity', t.max_velocity ?? null, 'mm/s', 0),
+      row('ACCEL', 'Acceleration', t.max_accel ?? null, 'mm/s²', 0),
+      row('SQUARE_CORNER_VELOCITY', 'Square corner velocity', t.square_corner_velocity ?? null, 'mm/s', 1)
+    ].filter((item): item is NonNullable<typeof item> => item !== null)
     if (typeof t.minimum_cruise_ratio === 'number') {
-      list.push({ key: 'MINIMUM_CRUISE_RATIO', label: 'Minimum cruise ratio', value: t.minimum_cruise_ratio, unit: '', decimals: 2 })
+      const ratio = row('MINIMUM_CRUISE_RATIO', 'Minimum cruise ratio', t.minimum_cruise_ratio, '', 2)
+      if (ratio) list.push(ratio)
     } else if (typeof t.max_accel_to_decel === 'number') {
-      list.push({ key: 'ACCEL_TO_DECEL', label: 'Accel to decel', value: t.max_accel_to_decel, unit: 'mm/s²', decimals: 0 })
+      const accelToDecel = row('ACCEL_TO_DECEL', 'Accel to decel', t.max_accel_to_decel, 'mm/s²', 0)
+      if (accelToDecel) list.push(accelToDecel)
     }
     return list
   }

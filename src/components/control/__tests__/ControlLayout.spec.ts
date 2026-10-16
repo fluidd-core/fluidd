@@ -17,7 +17,12 @@ it.each([false, true])('keeps all six task panels with either legacy setting on 
     expect(wrapper.find('[data-tid="control-shaper"]').exists()).toBe(true)
     expect(wrapper.find('[data-tid="control-endstops"]').exists()).toBe(true)
     expect(wrapper.findAll('[data-tid="control-retraction"]').length).toBe(0)
-    if (phone) expect(wrapper.find('[data-tid="control-actions"]').exists()).toBe(true)
+    expect(wrapper.find('[data-tid="control-actions"]').exists()).toBe(true)
+    if (!phone) {
+      for (const action of ['motors-off', 'restart-klipper', 'restart-firmware', 'save-config']) {
+        expect(wrapper.find(`[data-tid="${action}"]`).exists()).toBe(true)
+      }
+    }
     wrapper.destroy()
   }
   proMode.on = false
