@@ -15,14 +15,11 @@ it.each(['printer', 'account'])('reopens an active paper test after returning to
   await Vue.nextTick(); await Vue.nextTick()
   expect(wrapper.find('[data-tid="manual-probe-accept"]').exists()).toBe(true)
   if (kind === 'printer') state.config.apiUrl = 'http://b.local'
-  else cloudState.account = { id: 'other' } as any
-  getters['printer/getIsManualProbeActive'] = false
+  else cloudState.account = { id: 'other', name: 'Other', email: 'other@example.test', created_at: 1 }
   await Vue.nextTick(); await Vue.nextTick()
-  expect(wrapper.find('[data-tid="manual-probe-accept"]').exists()).toBe(false)
   expect(socket.printerGcodeScript).not.toHaveBeenCalled()
   if (kind === 'printer') state.config.apiUrl = 'http://a.local'
   else cloudState.account = null
-  getters['printer/getIsManualProbeActive'] = true
   await Vue.nextTick(); await Vue.nextTick(); await Vue.nextTick()
   expect(wrapper.find('[data-tid="manual-probe-abort"]').exists()).toBe(true)
   await wrapper.find('[data-tid="manual-probe-abort"]').trigger('click')

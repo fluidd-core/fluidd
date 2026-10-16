@@ -8,6 +8,7 @@
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import TypedCommandsMixin from '@/mixins/typed-commands'
 import ToolheadMixin from '@/mixins/toolhead'
+import { cloudState } from '@/services/muon-cloud/state'
 import ManualProbeDialog from './ManualProbeDialog.vue'
 @Component({ components: { ManualProbeDialog } })
 export default class ManualProbeRecovery extends Mixins(TypedCommandsMixin, ToolheadMixin) {
@@ -16,8 +17,10 @@ export default class ManualProbeRecovery extends Mixins(TypedCommandsMixin, Tool
   shown = false
   revision = 0
 
+  get recoveryContext (): string { return `${this.commandTarget}|${cloudState.account?.id ?? ''}` }
+
   get recoveryState (): string {
-    return `${this.commandTarget}|${this.isManualProbeActive}|${this.klippyReady}|${this.printerState}`
+    return `${this.recoveryContext}|${this.isManualProbeActive}|${this.klippyReady}|${this.printerState}`
   }
 
   @Watch('recoveryState', { immediate: true })
