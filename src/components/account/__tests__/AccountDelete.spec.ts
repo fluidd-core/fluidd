@@ -116,6 +116,26 @@ describe('Delete account', () => {
     w.destroy()
   })
 
+  it.each([
+    'Passkey confirmation expired. Try again.',
+    'That passkey belongs to another account.',
+    'No matching passkey was found.',
+    'The Muon3D service could not be reached.',
+    'Passkeys are not supported in this browser. Use your password instead.'
+  ])('renders a passkey refusal without requesting deletion: %s', async (message) => {
+    localStorage.setItem(TOKEN_KEY, 'fixture-session')
+    vi.mocked(confirmAccount).mockRejectedValueOnce(new Error(message))
+    const who = me(); who.sign_in!.passkeys = 1
+    const w = open(who)
+    await tid(w, 'delete-open').trigger('click')
+    await tid(w, 'delete-continue').trigger('click')
+    await tid(w, 'delete-passkey').trigger('click')
+    await new Promise(resolve => setTimeout(resolve))
+    expect(w.find('[role="alert"]').text()).toContain(message)
+    expect(deleteAccount).not.toHaveBeenCalled()
+    expect(tid(w, 'delete-done').exists()).toBe(false)
+  })
+
   it.each(['destroyed', 'different session'])('does not delete after a passkey completes for a %s page', async (reason) => {
     localStorage.setItem(TOKEN_KEY, 'fixture-session')
     let finish!: () => void
@@ -186,5 +206,27 @@ describe('Delete account', () => {
     await new Promise(resolve => setTimeout(resolve))
     expect(w.text()).toContain('That password is not right.')
     expect(tid(w, 'delete-confirm').exists()).toBe(true)
+  })
+  it.each([
+    [409, 'Deletion is already scheduled for 15 January 2027.'],
+    [429, 'Too many attempts. Try again later.']
+  ])('renders a %i refusal and never claims success', async (_status, message) => {
+    deleteAccount.mockRejectedValueOnce(new Error(message))
+    const w = open(me())
+    await throughToStep2(w)
+    await tid(w, 'delete-confirm').trigger('click')
+    await new Promise(resolve => setTimeout(resolve))
+    expect(w.find('[role="alert"]').text()).toContain(message)
+    expect(tid(w, 'delete-done').exists()).toBe(false)
+    expect(deleteAccount).toHaveBeenCalledTimes(1)
+  })
+  it('sends the password and compacted authenticator code together', async () => {
+    const who = me(); who.sign_in!.two_step = true
+    const w = open(who)
+    await throughToStep2(w)
+    await w.find('input[autocomplete="one-time-code"]').setValue('123 456')
+    await tid(w, 'delete-confirm').trigger('click')
+    await new Promise(resolve => setTimeout(resolve))
+    expect(deleteAccount).toHaveBeenCalledWith({ password: 'correct horse', code: '123456' })
   })
 })

@@ -141,6 +141,11 @@
     >
       <div class="del__steps">
         <span
+          class="sr-only"
+          role="status"
+          aria-live="polite"
+        >Step {{ step }} of 3: {{ stepTitle }}</span>
+        <span
           v-for="(name, i) in ['Check', 'It\'s you', 'Done']"
           :key="name"
           class="del__step"
@@ -204,6 +209,7 @@
               type="password"
               autocomplete="current-password"
               aria-label="Password"
+              :aria-describedby="dialogError ? errorId : undefined"
               data-tid="delete-password"
               @keydown.enter="confirm"
             ></span>
@@ -218,6 +224,7 @@
               inputmode="numeric"
               autocomplete="one-time-code"
               aria-label="Code from your authenticator app"
+              :aria-describedby="dialogError ? errorId : undefined"
               @keydown.enter="confirm"
             ></span>
             <span class="m3-dlg__note">Or use a recovery code.</span>
@@ -232,6 +239,7 @@
         </p>
         <p
           v-if="dialogError"
+          :id="errorId"
           class="m3-dlg__error"
           role="alert"
         >
@@ -348,6 +356,7 @@ export default class AccountDelete extends Vue {
   busy = false
   error = ''
   dialogError = ''
+  readonly errorId = 'delete-confirmation-error'
   deletedAt: number | null = null
 
   created () {

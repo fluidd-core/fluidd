@@ -26,4 +26,14 @@ describe('confirmation on console ee19200', () => {
     expect(w.find('[data-tid="reauth-password"]').exists()).toBe(false)
     w.destroy()
   })
+  it('associates a refusal with both confirmation fields', () => {
+    const w = mount(ReauthDialog, {
+      propsData: { value: true, hasPassword: true, twoStep: true, error: 'That code is not right.' },
+      stubs: { M3Dialog: { template: '<div><slot /><slot name="actions" /></div>' } }
+    })
+    const alert = w.find('[role="alert"]')
+    expect(alert.attributes('id')).toBeTruthy()
+    expect(w.find('[data-tid="reauth-password"]').attributes('aria-describedby')).toBe(alert.attributes('id'))
+    expect(w.find('[data-tid="reauth-code"]').attributes('aria-describedby')).toBe(alert.attributes('id'))
+  })
 })

@@ -1,9 +1,10 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { confirmAccount } from '../confirmation'
-import { usePasskey } from '../webauthn'
-vi.mock('../webauthn', () => ({ usePasskey: vi.fn() }))
+import { passkeysSupported, usePasskey } from '../webauthn'
+vi.mock('../webauthn', () => ({ usePasskey: vi.fn(), passkeysSupported: vi.fn(() => true) }))
 afterEach(() => { vi.unstubAllGlobals(); vi.resetAllMocks(); localStorage.clear() })
 describe('ordinary passkey confirmation', () => {
+  beforeEach(() => vi.mocked(passkeysSupported).mockReturnValue(true))
   it('uses the existing session ceremony without a staff purpose or a token swap', async () => {
     localStorage.setItem('muon.cloud.token', 'access-fixture')
     const fetcher = vi.fn().mockResolvedValueOnce(new Response(JSON.stringify({ ceremony_id: 'fixture', expires_at: Math.floor(Date.now() / 1000) + 300, options: { publicKey: { challenge: 'fixture' } } }))).mockResolvedValueOnce(new Response('{}'))
@@ -23,5 +24,19 @@ describe('ordinary passkey confirmation', () => {
     vi.mocked(usePasskey).mockImplementationOnce(async () => { localStorage.setItem('muon.cloud.token', 'new-fixture'); return {} as any })
     await expect(confirmAccount()).rejects.toThrow('account changed')
     expect(fetcher).toHaveBeenCalledTimes(1)
+  })
+  it('sends no credential when the ceremony expires', async () => {
+    localStorage.setItem('muon.cloud.token', 'access-fixture')
+    const fetcher = vi.fn().mockResolvedValueOnce(new Response(JSON.stringify({ ceremony_id: 'fixture', expires_at: 1, options: { publicKey: {} } })))
+    vi.stubGlobal('fetch', fetcher)
+    await expect(confirmAccount()).rejects.toThrow('expired')
+    expect(usePasskey).not.toHaveBeenCalled()
+    expect(fetcher).toHaveBeenCalledTimes(1)
+  })
+  it('does not contact the console in an unsupported browser', async () => {
+    vi.mocked(passkeysSupported).mockReturnValueOnce(false)
+    const fetcher = vi.fn(); vi.stubGlobal('fetch', fetcher)
+    await expect(confirmAccount()).rejects.toThrow('not supported')
+    expect(fetcher).not.toHaveBeenCalled()
   })
 })
