@@ -126,17 +126,15 @@
       </div>
     </section>
 
-    <section
-      v-if="pro && others.length"
+    <task-fold
+      v-if="others.length"
+      v-model="otherSoftwareOpen"
+      fold-id="settings-other-software"
+      title="Other software"
+      summary="What else this printer's updater looks after"
       class="soft__panel"
       data-tid="software-others"
     >
-      <header class="soft__head">
-        <div class="soft__titles">
-          <h2>Other software</h2>
-          <p>What else this printer's updater looks after.</p>
-        </div>
-      </header>
       <div
         v-for="c in others"
         :key="c.key"
@@ -150,27 +148,28 @@
           v-if="c.update"
           type="button"
           class="cbtn"
-          :disabled="busy"
+          :disabled="busy || !!otherUpdateBlocked"
+          :title="otherUpdateBlocked"
           @click="updateOther(c.key)"
         >
           Update
         </button>
       </div>
-    </section>
+    </task-fold>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import TypedCommandsMixin from '@/mixins/typed-commands'
 import { SocketActions } from '@/api/socketActions'
-import { proMode } from '@/services/pro-mode'
 import { ACTIVE_PHASES, versionLabel } from '@/services/updates/model'
 import { currentOutcome, installStarted, poll, updateWatch } from '@/services/updates/watch'
 import { scopedPath } from '@/router/printerPagePaths'
 import { activeSlug } from '@/services/printer-pages'
 import { printerNameParts } from '@/util/printer-name'
 import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
+import TaskFold from '@/components/control/TaskFold.vue'
 
 interface OtherComponent {
   key: string;
@@ -184,18 +183,15 @@ interface OtherComponent {
  * Aux API reports it: what's installed, what's ready, when it last looked,
  * and Install, which opens the Updating page. Moonraker's update row for
  * MuonOS shows "?" for its versions (OtaDeploy), so this reads the Aux API.
- * In Pro, whatever else the updater looks after.
+ * Whatever else the updater looks after is available in a nearby fold.
  */
-@Component({ components: { ToggleSwitch } })
-export default class SoftwareSettings extends Mixins(StateMixin) {
+@Component({ components: { ToggleSwitch, TaskFold } })
+export default class SoftwareSettings extends Mixins(TypedCommandsMixin) {
   checking = false
+  otherSoftwareOpen = false
 
   mounted () {
     poll()
-  }
-
-  get pro (): boolean {
-    return proMode.on
   }
 
   get printerName (): string {
@@ -326,6 +322,13 @@ export default class SoftwareSettings extends Mixins(StateMixin) {
     return !!this.$store.state.version.busy
   }
 
+  get otherUpdateBlocked (): string {
+    if (!this.commandControlAvailable) return 'Connect to a printer you can control first.'
+    if (!this.klippyConnected) return 'Klipper is not connected.'
+    if (this.printerBusy) return 'Not while printing.'
+    return ''
+  }
+
   /** Everything else the updater lists: the OS packages and any other client. */
   get others (): OtherComponent[] {
     const info = (this.$store.state.version.version_info ?? {}) as Record<string, Record<string, unknown>>
@@ -344,7 +347,13 @@ export default class SoftwareSettings extends Mixins(StateMixin) {
       })
   }
 
-  updateOther (key: string) {
+  async updateOther (key: string) {
+    if (this.otherUpdateBlocked) return
+    const target = this.commandTarget
+    const ok = await this.$confirm('The printer must be idle. It may restart after this component is updated.', {
+      title: `Update ${key}?`, buttonTrueText: 'Update', buttonFalseText: 'Not now'
+    })
+    if (!ok || target !== this.commandTarget || this.otherUpdateBlocked) return
     this.$store.dispatch('version/onUpdateStatus', { busy: true })
     if (key === 'system') SocketActions.machineUpdateSystem()
     else SocketActions.machineUpdateClient(key)

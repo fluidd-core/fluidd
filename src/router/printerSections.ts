@@ -46,7 +46,7 @@ export const SECTIONS: Section[] = [
     key: 'o',
     pages: [
       { path: '/', label: 'Overview' },
-      { path: '/diagnostics', label: 'Charts', shows: c => c.pro && c.diagnostics }
+      { path: '/diagnostics', label: 'Charts', shows: c => c.diagnostics }
     ]
   },
   {
