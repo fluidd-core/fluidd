@@ -300,9 +300,9 @@ src/
   (`pt-BR`, `zh-TW`) — what `navigator.languages` sends and `Intl` accepts; `pt_BR` makes `Intl`
   throw. The Weblate component must use the matching hyphen language-code style. `SupportedLocales`
   (`src/globals.ts`) is hand-maintained with hardcoded native labels — a locale file without an
-  entry there (`sv`, `th`, `zh-TW`) exists for Weblate but is not selectable `config/onLocaleChange` drives it via `loadVuetifyLocaleAsync`, which
-  `Vue.set`s the locale into `lang.locales` **before** assigning `lang.current` — the `current`
-  write is what re-renders. These `import()`s do not actually code-split: `vuetify/lib/presets/default`
+  entry there (`sv`, `th`, `zh-TW`) exists for Weblate but is not selectable.
+  `config/onLocaleChange` drives it via `loadVuetifyLocaleAsync`, which `Vue.set`s the locale into
+  `lang.locales` **before** assigning `lang.current` — the `current` write is what re-renders. These `import()`s do not actually code-split: `vuetify/lib/presets/default`
   statically imports the `lib/locale` barrel, so every referenced locale lands in the eager
   `vuetify` chunk regardless of `codeSplitting` groups
 - `loadLocaleMessagesAsync(locale?)` (`src/plugins/i18n.ts`) defaults to `getStartingLocale()` when
