@@ -131,6 +131,7 @@
           class="ov-tune__slider"
           :value="fanValue(partFan)"
           label="Part fan"
+          :value-text-formatter="percentValueText"
           :disabled="!klippyReady"
           @change="setFan(partFan, $event)"
         />
@@ -174,6 +175,10 @@ import RangeSlider from '@/components/control/RangeSlider.vue'
  */
 @Component({ components: { NumberField, RangeSlider } })
 export default class OverviewLiveTune extends Mixins(OverviewMixin) {
+  percentValueText (value: number): string {
+    return `${value} percent`
+  }
+
   get zOffset (): number {
     const origin = this.gcodeMove.homing_origin as number[] | undefined
     return origin && origin.length >= 3 ? +origin[2] : 0
