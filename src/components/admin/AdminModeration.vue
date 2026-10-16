@@ -150,7 +150,7 @@
         <div class="actions">
           <button
             class="cbtn"
-            :disabled="busy || review.state !== 'open' || review.kind !== 'publication' || !sourceAccepted"
+            :disabled="busy || review.state !== 'open' || !review.publication || !sourceAccepted"
             @click="decide('approve')"
           >
             Approve public submission · passkey

@@ -24,6 +24,18 @@ describe('moderation review', () => {
     expect(w.findAll('button').wrappers.some(b => b.text().includes('Fetch source'))).toBe(true)
     w.destroy()
   })
+  it('can approve a reported pending publication after this reviewer accepted its source', async () => {
+    const publication = { licence: 'CC0-1.0', credit: null, manifest: 'a'.repeat(64), files: [], reviewed_by: 'staff-a', reviewed_version: 3 }
+    vi.mocked(api.staffCommand).mockResolvedValueOnce({ cases: [detail] }).mockResolvedValueOnce({ case: { ...detail, state: 'open', publication } } as any).mockResolvedValueOnce({})
+    const w = mount(AdminModeration, { propsData: { section: 'queue', actor: 'staff-a' } })
+    await w.get('textarea').setValue('Review reported submission'); await w.get('form').trigger('submit'); await settle()
+    await w.findAll('article button').at(0).trigger('click'); await settle()
+    const approve = w.findAll('button').wrappers.find(b => b.text().startsWith('Approve'))!
+    expect(approve.attributes('disabled')).toBeUndefined()
+    await approve.trigger('click'); await settle()
+    expect(api.staffCommand).toHaveBeenLastCalledWith(expect.objectContaining({ action: 'approve', target: 'case-1', version: 3 }), false, expect.any(Function))
+    w.destroy()
+  })
   it('reads a case with its server version, escapes evidence and refuses self-restoration', async () => {
     vi.mocked(api.staffCommand).mockResolvedValueOnce({ cases: [detail] }).mockResolvedValueOnce({ case: detail })
     const w = mount(AdminModeration, { propsData: { section: 'queue', actor: 'staff-a' } })
