@@ -3,7 +3,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import AccountDelete from '../AccountDelete.vue'
 import { accountState } from '@/services/account/state'
 import type { Me } from '@/services/account/api'
+import { confirmAccount } from '@/services/account/confirmation'
+import { TOKEN_KEY } from '@/services/muon-cloud/api'
 import { deletionState } from '@/services/muon-cloud/deletion'
+
+vi.mock('@/services/account/confirmation', () => ({ confirmAccount: vi.fn() }))
 
 const deleteAccount = vi.hoisted(() => vi.fn(async (): Promise<{ ok: boolean, delete_after?: number, unlinked?: number }> => ({ ok: true })))
 const cancelDeletion = vi.hoisted(() => vi.fn(async () => ({ ok: true })))
@@ -70,9 +74,64 @@ describe('Delete account', () => {
   })
 
   afterEach(() => {
+    vi.mocked(confirmAccount).mockReset()
+    localStorage.removeItem(TOKEN_KEY)
     vi.clearAllMocks()
     accountState.me = null
     deletionState.deleteAfter = null
+  })
+
+  it('confirms grace-period deletion with a passkey without a password or authenticator code', async () => {
+    localStorage.setItem(TOKEN_KEY, 'fixture-session')
+    vi.mocked(confirmAccount).mockResolvedValueOnce()
+    const who = me()
+    who.sign_in!.passkeys = 1
+    who.sign_in!.two_step = true
+    const w = open(who)
+    await tid(w, 'delete-open').trigger('click')
+    await tid(w, 'delete-continue').trigger('click')
+    expect(tid(w, 'delete-passkey').exists()).toBe(true)
+    deleteAccount.mockResolvedValueOnce({ ok: true, delete_after: 1_800_000_000 + 14 * DAY })
+    await tid(w, 'delete-passkey').trigger('click')
+    await new Promise(resolve => setTimeout(resolve))
+    expect(confirmAccount).toHaveBeenCalledOnce()
+    expect(deleteAccount).toHaveBeenCalledWith({})
+    expect(w.find('.dialog h2').text()).toMatch(/^Your account will be deleted on /)
+    expect(tid(w, 'delete-now').exists()).toBe(false)
+    w.destroy()
+  })
+
+  it('does not request deletion when passkey confirmation is cancelled', async () => {
+    localStorage.setItem(TOKEN_KEY, 'fixture-session')
+    vi.mocked(confirmAccount).mockRejectedValueOnce(new DOMException('Cancelled', 'NotAllowedError'))
+    const who = me()
+    who.sign_in!.passkeys = 1
+    const w = open(who)
+    await tid(w, 'delete-open').trigger('click')
+    await tid(w, 'delete-continue').trigger('click')
+    await tid(w, 'delete-passkey').trigger('click')
+    await new Promise(resolve => setTimeout(resolve))
+    expect(deleteAccount).not.toHaveBeenCalled()
+    expect(w.text()).toContain('Passkey confirmation was cancelled. Your account is unchanged.')
+    w.destroy()
+  })
+
+  it.each(['destroyed', 'different session'])('does not delete after a passkey completes for a %s page', async (reason) => {
+    localStorage.setItem(TOKEN_KEY, 'fixture-session')
+    let finish!: () => void
+    vi.mocked(confirmAccount).mockImplementationOnce(() => new Promise(resolve => { finish = resolve }))
+    const who = me()
+    who.sign_in!.passkeys = 1
+    const w = open(who)
+    await tid(w, 'delete-open').trigger('click')
+    await tid(w, 'delete-continue').trigger('click')
+    await tid(w, 'delete-passkey').trigger('click')
+    if (reason === 'destroyed') w.destroy()
+    else localStorage.setItem(TOKEN_KEY, 'other-fixture-session')
+    finish()
+    await new Promise(resolve => setTimeout(resolve))
+    expect(deleteAccount).not.toHaveBeenCalled()
+    if (reason !== 'destroyed') w.destroy()
   })
 
   it('waits 14 days by default on a console with the grace period, and can still be kept', async () => {
