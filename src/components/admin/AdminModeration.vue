@@ -217,40 +217,72 @@
       </article>
     </template>
     <template v-else>
-      <article
-        v-for="row in reservations"
-        :key="row.pattern"
+      <div
+        v-if="reservations.length"
+        ref="reservationResults"
+        class="table-wrap"
+        tabindex="-1"
       >
-        <b>{{ row.pattern }}</b> · {{ row.active ? 'Reserved' : 'Released' }} · Version {{ row.version }}
-        <p>{{ row.reason }} · {{ row.owner || 'No assigned owner' }} · {{ row.expires_at ? date(row.expires_at) : 'No expiry' }}</p>
-        <button
-          v-if="row.managed && row.active"
-          class="cbtn"
-          :disabled="busy"
-          @click="release(row)"
-        >
-          Release · confirm with passkey
-        </button>
-        <p v-if="!row.managed">
-          Protected service or safety reservation
-        </p>
-      </article>
+        <table>
+          <caption>Handle reservations</caption>
+          <thead>
+            <tr>
+              <th scope="col">
+                Handle or pattern
+              </th><th scope="col">
+                Status and reason
+              </th><th scope="col">
+                Owner and expiry
+              </th><th scope="col">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="row in reservations"
+              :key="row.pattern"
+            >
+              <th scope="row">
+                {{ row.pattern }}
+              </th>
+              <td>{{ row.active ? 'Reserved' : 'Released' }} · Version {{ row.version }}<br>{{ row.reason }}</td>
+              <td>{{ row.owner || 'No assigned owner' }}<br>{{ row.expires_at ? date(row.expires_at) : 'No expiry' }}</td>
+              <td>
+                <button
+                  v-if="row.managed && row.active"
+                  class="cbtn"
+                  :disabled="busy"
+                  :aria-label="'Release reservation for ' + row.pattern"
+                  @click="release(row)"
+                >
+                  Release · confirm with passkey
+                </button><span v-else-if="!row.managed">Protected service or safety reservation</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <form @submit.prevent="reserve">
         <h2>Reserve a handle</h2>
-        <label>Handle or wildcard pattern<input
+        <label for="reservation-pattern">Handle or wildcard pattern</label><input
+          id="reservation-pattern"
           v-model="pattern"
           required
           maxlength="32"
-        ></label>
-        <label>Stable account ID (optional)<input
+          autocomplete="off"
+        >
+        <label for="reservation-owner">Stable account ID (optional)</label><input
+          id="reservation-owner"
           v-model="owner"
           maxlength="64"
           autocomplete="off"
-        ></label>
-        <label>Expiry (optional, your local time)<input
+        >
+        <label for="reservation-expiry">Expiry (optional, your local time)</label><input
+          id="reservation-expiry"
           v-model="expiry"
           type="datetime-local"
-        ></label>
+        >
         <p>A reservation never transfers a current or held handle.</p>
         <button
           class="cbtn"
@@ -418,6 +450,11 @@ export default class AdminModeration extends Vue {
     if (!result) return
     this.cases = result.cases || []; this.reservations = result.reservations || []
     if (!this.cases.length && !this.reservations.length) this.message = 'No work waiting.'
+    else {
+      this.message = this.section === 'reservations' ? 'Reservations loaded.' : 'Review queue loaded.'
+      await this.$nextTick()
+      if (this.section === 'reservations') (this.$refs.reservationResults as HTMLElement | undefined)?.focus()
+    }
   }
 
   async refresh () { this.uncertain = false; await this.read() }
@@ -437,5 +474,6 @@ export default class AdminModeration extends Vue {
 label { display: block; margin-bottom: 16px; } textarea, input { display: block; width: 100%; padding: 10px; border: 1px solid var(--m3d-border); border-radius: 4px; background: var(--m3d-inset); color: var(--m3d-text); font: inherit; }
 textarea { min-height: 80px; } .actions { display: flex; flex-wrap: wrap; gap: 10px; } li { margin: 16px 0; white-space: pre-wrap; } button { white-space: normal; max-width: 100%; } button:disabled { opacity: .5; } :focus-visible { outline: 2px solid var(--m3d-accent); outline-offset: 2px; }
 input[type="checkbox"] { display: inline-block; width: auto; margin-right: 8px; }
-.long-text { word-break: break-all; } .dialog-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, .6); } .decision-dialog { width: min(440px, 100%); padding: 24px; border: 1px solid var(--m3d-border); border-radius: 6px; background: var(--m3d-surface); color: var(--m3d-text); }
+.long-text { word-break: break-all; } .table-wrap { max-width: 100%; overflow-x: auto; } table { width: 100%; table-layout: fixed; border-collapse: collapse; } caption { padding: 16px 0; text-align: left; font-weight: 600; } th, td { padding: 10px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--m3d-border); overflow-wrap: anywhere; word-break: break-word; } .dialog-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, .6); } .decision-dialog { width: min(440px, 100%); padding: 24px; border: 1px solid var(--m3d-border); border-radius: 6px; background: var(--m3d-surface); color: var(--m3d-text); }
+@media (max-width: 520px) { th, td { padding: 8px 4px; font-size: 12px; } }
 </style>
